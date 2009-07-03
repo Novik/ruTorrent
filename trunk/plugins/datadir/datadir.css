@@ -1,0 +1,13 @@
+div#dlg_datadir {width: 405px; height: 250px}
+div#dlg_datadir div.dlg-header {background-image: url(./images/edit16.gif)}
+div#dlg_datadir div.content {width: 380px; padding: 10px}
+
+div#dlg_datadir fieldset div {line-height: 16px}
+div#dlg_datadir fieldset div.props-spacer {width: 90%; float: left}
+div#dlg_datadir label {width: 120px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+
+div#dlg_datadir input {margin-top: 5px; margin-bottom: 5px;}
+div#dlg_datadir br {clear: left; line-height: 0}
+
+#btn_datadir_browse {width:30px}
+#frame_datadir_browse {border-width: 1px; width:170px; height:150px; visibility:hidden; position:absolute;}
