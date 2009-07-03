@@ -98,7 +98,7 @@ if( $req->run() && !$req->fault )
 	// Stop active torrent (if not, then rTorrent can crash)
 	$req = new rXMLRPCRequest( array(
 		new rXMLRPCCommand( "d.stop",  $hash ),
-		new rXMLRPCCommand( "d.close", $hash ),
+		//new rXMLRPCCommand( "d.close", $hash ),
 	) );
 	if( !$req->run() || $req->fault )
 	{
@@ -112,7 +112,7 @@ if( $req->run() && !$req->fault )
 		$sub_dir = AddTailSlash( $base_file );	// $base_file - is a directory
 	else
 		$sub_dir = '';				// $base_file - is really a file
-	Debug( "move from ".$base_path.$sub_dir." to ".$dest_path.$sub_dir );
+	Debug( "move started: ".$base_path.$sub_dir." -> ".$dest_path.$sub_dir );
 	foreach( $torrent_files as $file )
 	{
 		$src = $base_path.$sub_dir.$file;
@@ -121,12 +121,26 @@ if( $req->run() && !$req->fault )
 		if( is_file( $src ) )
 		{
 			if( !is_dir( dirname( $dst ) ) )
-				exec( 'mkdir -p "'.dirname( $dst ).'"' );  // recursive mkdir() only after PHP_5.0
+			{
+				// recursive mkdir() only after PHP_5.0
+				mkdir( dirname( $dst ), 0777, true );
+				//system( 'mkdir -p "'.dirname( $dst ).'"' );
+			}
 			if( is_file( $dst ) )
 				unlink( $dst );
+			$atime = fileatime( $src );
+			$mtime = filemtime( $src );
 			if( !rename( $src, $dst ) )
-				if( copy( $src, $dst ) )
-					unlink( $src );
+			{
+				Debug( "move fail: ".$src." -> ".$dst );
+				if( !copy( $src, $dst ) )
+				{
+					Debug( "copy fail: ".$src." -> ".$dst );
+					exit;
+				}
+				else unlink( $src );
+			}
+			touch( $dst, $atime, $mtime );
 		}
 	}
 	// Recursively remove dirs without files
@@ -137,7 +151,7 @@ if( $req->run() && !$req->fault )
 	Debug( "execute d.set_directory=".$dest_path );
 	$req = new rXMLRPCRequest( array(
 		new rXMLRPCCommand( "d.set_directory", array( $hash, $dest_path ) ),
-		new rXMLRPCCommand( "d.open",  $hash ),
+		//new rXMLRPCCommand( "d.open",  $hash ),
 		new rXMLRPCCommand( "d.start", $hash ),
 	) );
 	if( !$req->run() || $req->fault )
