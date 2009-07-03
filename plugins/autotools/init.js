@@ -76,29 +76,6 @@ utWebUI.setSettings = function()
 		this.Request( "?action=setautotools" );
 }
 
-rTorrentStub.prototype.setautotools = function()
-{
-	this.content = "enable_label=" + ( $$('enable_label').checked ? '1' : '0' ) +
-		"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
-		"&path_to_finished=" + $$('path_to_finished').value;
-//	var arr = $$('eautotools').value.split( "\n" );
-//	for( var i = 0; i < arr.length; i++ )
-//	{
-//		var s = arr[i].replace( /(^\s+)|(\s+$)/g, "" );
-//		//if( s.toLowerCase() != 'dht://' )
-//		//	this.content += "&tracker=" + encodeURIComponent(s);
-//		this.content += "&sample=" + encodeURIComponent(s);
-//	}
-	this.contentType = "application/x-www-form-urlencoded";
-	this.mountPoint = "plugins/autotools/action.php";
-}
-
-rTorrentStub.prototype.setautotoolsResponse = function( xmlDoc, docText )
-{
-	var datas = xmlDoc.getElementsByTagName( 'data' );
-	return datas[0].childNodes[0].data;
-}
-
 utWebUI.autotoolsCreate = function()
 {
 	var dlg = document.createElement( "DIV" );
@@ -157,6 +134,29 @@ utWebUI.showAutoToolsError = function( err )
 		log( err );
 	else
 		setTimeout( 'utWebUI.showAutoToolsError(' + err + ')', 1000 );
+}
+
+rTorrentStub.prototype.setautotools = function()
+{
+	this.content = "enable_label=" + ( $$('enable_label').checked ? '1' : '0' ) +
+		"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
+		"&path_to_finished=" + $$('path_to_finished').value;
+//	var arr = $$('eautotools').value.split( "\n" );
+//	for( var i = 0; i < arr.length; i++ )
+//	{
+//		var s = arr[i].replace( /(^\s+)|(\s+$)/g, "" );
+//		//if( s.toLowerCase() != 'dht://' )
+//		//	this.content += "&tracker=" + encodeURIComponent(s);
+//		this.content += "&sample=" + encodeURIComponent(s);
+//	}
+	this.contentType = "application/x-www-form-urlencoded";
+	this.mountPoint = "plugins/autotools/action.php";
+}
+
+rTorrentStub.prototype.setautotoolsResponse = function( xmlDoc, docText )
+{
+	var datas = xmlDoc.getElementsByTagName( 'data' );
+	return datas[0].childNodes[0].data;
 }
 
 
