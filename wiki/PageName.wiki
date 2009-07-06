@@ -5,7 +5,7 @@
 What's this?
 
 RuTorrent is a front-end for the popular torrent-client rTorrent.
-Main features:
-* Lightweight for the server, so it can run on old and low-end servers;
-* Expandable - there are numerous plugins and everybody can create it's own;
-* Nice look. ;)
+===Main features:===
+  * Lightweight for the server, so it can run on old and low-end servers;
+  * Expandable - there are numerous plugins and everybody can create it's own;
+  * Nice outlook. ;)
