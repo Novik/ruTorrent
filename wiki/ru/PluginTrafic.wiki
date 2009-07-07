@@ -4,7 +4,7 @@
 
 Плагин реализует подсистему регистрации трафика rTorrent по всем используемым трекерам. Доступны три позиции - почасовой график, по дням текущего месяца и по месяцам текущего года. Вы в любой момент можете очистить данные статистики, нажав на специально обученную кнопку на интерфейсе (см. скриншот). 
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/trafic_big.jpg http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/trafic_small.jpg]
+[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/trafic_big.jpg http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/trafic_small.jpg]
 
 == Как оно работает ==
 

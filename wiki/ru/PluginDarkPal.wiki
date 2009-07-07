@@ -1,0 +1,7 @@
+#summary Описание плагина DarkPal
+
+== Введение ==
+
+Темная палитра для ruTorrent. Выглядит так:
+
+[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/darkpal_big.jpg http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/darkpal_small.jpg]
