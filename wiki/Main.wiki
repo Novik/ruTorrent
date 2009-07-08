@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Главная страница.
 
 == Чего требует для работы ==
 
