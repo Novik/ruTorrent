@@ -160,5 +160,19 @@ rTorrentStub.prototype.setautotoolsResponse = function( xmlDoc, docText )
 }
 
 
+// this code works under IE only :(
+//utWebUI.autotoolsShowAdd = utWebUI.showAdd;
+//utWebUI.showAdd = function()
+//{
+//	this.autotoolsShowAdd();
+//	if( $$('tadd').style.visibility != "hidden" )
+//	{
+//		$$("url").value = window.clipboardData.getData('Text');
+//
+//		$$("url").focus();
+//		PastedText = $$("url").createTextRange();
+//		PastedText.execCommand( "Paste" );
+//	}
+//}
 
 
