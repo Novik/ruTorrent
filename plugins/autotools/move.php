@@ -67,7 +67,7 @@ if( $req->run() && !$req->fault )
 	// Check if files are in $path_to_finished dir already
 	if( GetRelativePath( $path_to_finished, $base_path ) != '' )
 	{
-		Debug( "torrent files are already in subdir of \"path_to_finished\"" );
+		Debug( "Torrent files are already in subdir of \"path_to_finished\"" );
 		exit;
 	}
 
@@ -75,7 +75,7 @@ if( $req->run() && !$req->fault )
 	$rel_path = GetRelativePath( $default_dir, $base_path );
 	if( $rel_path == '' )
 	{
-		Debug( "torrent files are not in subdir of \"directory\"" );
+		Debug( "Torrent files are not in subdir of \"directory\"" );
 		exit;
 	}
 	if( $rel_path == './' ) $rel_path = '';
@@ -88,9 +88,13 @@ if( $req->run() && !$req->fault )
 	$req = new rXMLRPCRequest(
 		new rXMLRPCCommand( "f.multicall", array( $hash, "", "f.get_path=" )
 	) );
-	if( $req->run() && !$req->fault )
-		$torrent_files = $req->strings;
-	Debug( "files in torrent    : ".count( $torrent_files ) );
+	if( !$req->run() || $req->fault )
+	{
+		Debug( "rXMLRPCRequest() fail (f.multicall && f.get_path=)!" );
+		exit;
+	}
+	$torrent_files = $req->strings;
+	Debug( "Files in torrent    : ".count( $torrent_files ) );
 	if( count( $torrent_files ) == 0 )
 		exit;
 
@@ -98,7 +102,7 @@ if( $req->run() && !$req->fault )
 	// Stop active torrent (if not, then rTorrent can crash)
 	$req = new rXMLRPCRequest( array(
 		new rXMLRPCCommand( "d.stop",  $hash ),
-		//new rXMLRPCCommand( "d.close", $hash ),
+		new rXMLRPCCommand( "d.close", $hash ),
 	) );
 	if( !$req->run() || $req->fault )
 	{
@@ -112,7 +116,7 @@ if( $req->run() && !$req->fault )
 		$sub_dir = AddTailSlash( $base_file );	// $base_file - is a directory
 	else
 		$sub_dir = '';				// $base_file - is really a file
-	Debug( "move started: ".$base_path.$sub_dir." -> ".$dest_path.$sub_dir );
+	Debug( "Move started: ".$base_path.$sub_dir." -> ".$dest_path.$sub_dir );
 	foreach( $torrent_files as $file )
 	{
 		$src = $base_path.$sub_dir.$file;
@@ -132,7 +136,7 @@ if( $req->run() && !$req->fault )
 			$mtime = filemtime( $src );
 			if( !rename( $src, $dst ) )
 			{
-				Debug( "move fail: ".$src." -> ".$dst );
+				Debug( "Move fail: ".$src." -> ".$dst );
 				if( !copy( $src, $dst ) )
 				{
 					Debug( "copy fail: ".$src." -> ".$dst );
@@ -143,19 +147,31 @@ if( $req->run() && !$req->fault )
 			touch( $dst, $atime, $mtime );
 		}
 	}
+	Debug( "Move finished. Cleanup started: ".$base_path.$sub_dir );
 	// Recursively remove dirs without files
 	if( $sub_dir != '' )
 		RemoveDirectory( $base_path.$sub_dir, false );
 
-	// Setup new directory for torrent & start it (we need to stop it first)
-	Debug( "execute d.set_directory=".$dest_path );
+	// Setup new directory for torrent (we need to stop it first)
+	Debug( "Execute d.set_directory=".$dest_path );
 	$req = new rXMLRPCRequest( array(
 		new rXMLRPCCommand( "d.set_directory", array( $hash, $dest_path ) ),
-		//new rXMLRPCCommand( "d.open",  $hash ),
-		new rXMLRPCCommand( "d.start", $hash ),
 	) );
-	if( !$req->run() || $req->fault )
-		Debug( "rXMLRPCRequest() fail (d.set_directory && d.open && d.start)!" );
+	if( $req->run() && !$req->fault )
+	{
+		// Start it
+		Debug( "Execute d.open & d.start" );
+		$req = new rXMLRPCRequest( array(
+			new rXMLRPCCommand( "d.open",  $hash ),
+			new rXMLRPCCommand( "d.start", $hash ),
+		) );
+		if( !$req->run() || $req->fault )
+			Debug( "rXMLRPCRequest() fail (d.open && d.start)!" );
+	}
+	else {
+		Debug( "rXMLRPCRequest() fail (d.set_directory)!" );
+	}
+
 }
 else {
 	Debug( "rXMLRPCRequest() fail (get info)!" );
