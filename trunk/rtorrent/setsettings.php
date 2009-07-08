@@ -3,7 +3,7 @@
 require_once( 'config.php' );
 
 $filename = $settings."/settings.txt";
-if($w = fopen($filename, "w+"))
+if($w = @fopen($filename, "wb"))
 {
 	if(isset($_REQUEST['v']))
 		fputs($w,$_REQUEST['v']);
