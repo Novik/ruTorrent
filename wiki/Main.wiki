@@ -1,6 +1,10 @@
 #summary Главная страница.
 #labels Featured
 
+== Введение ==
+
+ruTorrent был разработан на базе [http://www.utorrent.com/documentation/webui WebUI] к [http://utorrent.com µTorrent], соответственно, его внешний вид очень напоминает "родителя".
+
 == Чего требует для работы ==
 
  * rTorrent версии не менее 0.8.2, скомпилированный с поддержкой XML-RPC. Если Вы не знаете, где взять таковой для Вашей системы, рекомендую посетить [http://libtorrent.rakshasa.no страницу автора rTorrent].
