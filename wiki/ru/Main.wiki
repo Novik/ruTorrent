@@ -1,4 +1,9 @@
 #summary Главная страница.
+#labels Featured
+
+== Введение ==
+
+ruTorrent был разработан на базе [http://www.utorrent.com/documentation/webui WebUI] к [http://utorrent.com µTorrent], соответственно, его внешний вид очень напоминает "родителя". Собственно, своим названием ruTorrent тоже обязан этому самому родителю - µTorrent + rTorrent = ruTorrent.
 
 == Чего требует для работы ==
 
