@@ -89,7 +89,7 @@ function win2utf($str)
 function toLog( $str )
 {
 //	$filename = "/opt/share/www/rtorrent/error.log";
-	$filename = "/srv/www/htdocs/rtorrent/error.log";
+	$filename = "/tmp/error.log";
 	$w = fopen($filename, "ab+");
 	if($w)
 	{
@@ -126,7 +126,7 @@ function send2RPC( $data )
 
 function isUserHavePermissionPrim($uid,$gid,$file,$flags)
 {
-	if($gid==0)
+	if($gid<=0)
 		return(true);
 	$ss=@stat($file);
 	if($ss)
@@ -150,7 +150,7 @@ function isUserHavePermissionPrim($uid,$gid,$file,$flags)
 
 function isUserHavePermission($uid,$gid,$file,$flags)
 {
-	if($gid==0)
+	if($gid<=0)
 		return(true);
 	if(is_link($file))
 		$file = readlink($file);

@@ -20,6 +20,8 @@ class rTorrentSettings
 	public $iVersion = null;
 	public $version;
 	public $plugins = array();
+	public $mygid = -1;
+	public $myuid = -1;
 
 	static public function load()
 	{
@@ -54,6 +56,23 @@ class rTorrentSettings
 	}
 	public function obtain()
 	{
+		if(function_exists('posix_getuid') && function_exists('posix_getgid'))
+		{
+			$this->myuid = posix_getuid();
+			$this->mygid = posix_getgid();
+		}
+		else
+		{
+			$randName = '/tmp/rutorrent-'.rand().'.tmp';
+			@file_put_contents($randName, '');
+			$ss=@stat($randName);
+			if($ss)
+			{
+		        	$this->mygid = $ss['gid'];
+			        $this->myuid = $ss['uid'];
+			        @unlink($randName);
+			}
+		}
 		$this->path=realpath(dirname('.'));
 		$len = strlen($this->path);
 		if(($len>0) && ($this->path[$len-1]!='/'))

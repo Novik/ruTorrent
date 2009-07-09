@@ -337,5 +337,6 @@
  SuperSeed			: "Суперсид",
  badTestPath			: "rTorrent должен иметь доступ на чтение/выполнение к файлу ./test.sh for read/execute.",
  badSettingsPath2		: "rTorrent должен иметь доступ на чтение/запись/выполнение к директории settings.",
- scrapeDownloaded		: "Завершенные"
+ scrapeDownloaded		: "Завершенные",
+ badSessionPath			: "Веб сервер должен иметь доступ на чтение к директории session rTorrent."
  };
