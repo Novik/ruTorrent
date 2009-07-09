@@ -2,7 +2,7 @@
 
 == Введение ==
 
-Плагин предназначен для работы с [http://ru.wikipedia.org/wiki/Rss RSS-рассылками]. Интерфейсное решение (да и часть этой статьи) во многом скопировано с [http://www.utorrent.com/documentation/rss uTorrent]. 
+Плагин предназначен для работы с [http://ru.wikipedia.org/wiki/Rss RSS-рассылками]. Интерфейсное решение (да и часть этой статьи) во многом скопировано с [http://www.utorrent.com/documentation/rss µTorrent]. 
 
 == Использование ==
 
