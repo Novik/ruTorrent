@@ -19,6 +19,7 @@ if($handle = opendir('./plugins'))
 {
 	ignore_user_abort(true);
 	set_time_limit(0);
+	@chmod('/tmp',0777);
 	$theSettings = new rTorrentSettings();
 	$theSettings->obtain();
 	if(!$theSettings->linkExist)
@@ -30,18 +31,21 @@ if($handle = opendir('./plugins'))
 			@chmod($uploads,0777);
 			@chmod($settings,0777);
 			@chmod('./test.sh',0755);
-			@chmod('/tmp',0777);
-
-        		if(!isUserHavePermission(getmyuid(),getmygid(),$uploads,0x0007))
+        		if(!isUserHavePermission($theSettings->myuid,$theSettings->mygid,$uploads,0x0007))
 				$jResult.="log(WUILang.badUploadsPath+' (".realpath($uploads).")');";
-	        	if(!isUserHavePermission(getmyuid(),getmygid(),$settings,0x0007))
+	        	if(!isUserHavePermission($theSettings->myuid,$theSettings->mygid,$settings,0x0007))
         		        $jResult.="log(WUILang.badSettingsPath+' (".realpath($settings).")');";
-			if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$uploads,0x0007))
-				$jResult.="log(WUILang.badUploadsPath2+' (".realpath($uploads).")');";
-			if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$settings,0x0007))
-				$jResult.="log(WUILang.badSettingsPath2+' (".realpath($settings).")');";
-			if(!isUserHavePermission($theSettings->uid,$theSettings->gid,'./test.sh',0x0005))
-				$jResult.="log(WUILang.badTestPath+' (".realpath('./test.sh').")');";
+			if(($theSettings->uid<0) || ($theSettings->gid<0))
+				$jResult.="log(WUILang.badSessionPath+' (".$theSettings->session.")');";
+			else
+			{
+				if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$uploads,0x0007))
+					$jResult.="log(WUILang.badUploadsPath2+' (".realpath($uploads).")');";
+				if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$settings,0x0007))
+					$jResult.="log(WUILang.badSettingsPath2+' (".realpath($settings).")');";
+				if(!isUserHavePermission($theSettings->uid,$theSettings->gid,'./test.sh',0x0005))
+					$jResult.="log(WUILang.badTestPath+' (".realpath('./test.sh').")');";
+			}
 			if($theSettings->badXMLRPCVersion)
 				$jResult.="log(WUILang.badXMLRPCVersion);";
 		}
