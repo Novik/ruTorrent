@@ -1,8 +1,8 @@
 <?php
-$rootPath = "./";
+$cookiesRootPath = "./";
 if(!is_file('util.php'))
-	$rootPath = "../../";
-require_once( $rootPath."util.php" );
+	$cookiesRootPath = "../../";
+require_once( $cookiesRootPath."util.php" );
 
 class rCookies
 {
@@ -12,8 +12,8 @@ class rCookies
 	static public function load()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $cookiesRootPath;
+		$cache = new rCache( $cookiesRootPath.$settings );
 		$rt = new rCookies();
 		$cache->get($rt);
 		return($rt);
@@ -21,8 +21,8 @@ class rCookies
 	public function store()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $cookiesRootPath;
+		$cache = new rCache( $cookiesRootPath.$settings );
 		return($cache->set($this));
 	}
 	public function set()
