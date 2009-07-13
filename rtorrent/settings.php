@@ -1,10 +1,10 @@
 <?php
 
-$rootPath = "./";
+$settingsRootPath = "./";
 if(!is_file('util.php'))
-	$rootPath = "../../";
-require_once( $rootPath."util.php" );
-require_once( $rootPath."xmlrpc.php" );
+	$settingsRootPath = "../../";
+require_once( $settingsRootPath."util.php" );
+require_once( $settingsRootPath."xmlrpc.php" );
 
 class rTorrentSettings
 {
@@ -26,8 +26,8 @@ class rTorrentSettings
 	static public function load()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $settingsRootPath;
+		$cache = new rCache( $settingsRootPath.$settings );
 		$rts = new rTorrentSettings();
 		$cache->get($rts);
 		return($rts);
@@ -50,8 +50,8 @@ class rTorrentSettings
 	public function store()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $settingsRootPath;
+		$cache = new rCache( $settingsRootPath.$settings );
 		return($cache->set($this));
 	}
 	public function obtain()
