@@ -1,8 +1,8 @@
 <?php
-$rootPath = "./";
+$searchRootPath = "./";
 if(!is_file('util.php'))
-	$rootPath = "../../";
-require_once( $rootPath."util.php" );
+	$searchRootPath = "../../";
+require_once( $searchRootPath."util.php" );
 
 class rSearch
 {
@@ -20,8 +20,8 @@ class rSearch
 	static public function load()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $searchRootPath;
+		$cache = new rCache( $searchRootPath.$settings );
 		$rt = new rSearch();
 		$cache->get($rt);
 		return($rt);
@@ -29,8 +29,8 @@ class rSearch
 	public function store()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $searchRootPath;
+		$cache = new rCache( $searchRootPath.$settings );
 		return($cache->set($this));
 	}
 	public function set()
