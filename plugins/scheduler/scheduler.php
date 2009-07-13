@@ -1,13 +1,13 @@
 <?php
-$rootPath = "./";
-$thisPath = "./plugins/scheduler/";
+$schedulerRootPath = "./";
+$retrackersThisPath = "./plugins/scheduler/";
 if(!is_file('util.php'))
 {
-	$rootPath = "../../";
-	$thisPath = "./";
+	$schedulerRootPath = "../../";
+	$retrackersThisPath = "./";
 }
-require_once( $rootPath."xmlrpc.php" );
-require_once( $thisPath."conf.php" );
+require_once( $schedulerRootPath."xmlrpc.php" );
+require_once( $retrackersThisPath."conf.php" );
 
 define('SCH_FAST', 0);
 define('SCH_STOP', 1);
@@ -29,8 +29,8 @@ class rScheduler
 	static public function load()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $schedulerRootPath;
+		$cache = new rCache( $schedulerRootPath.$settings );
 		$rt = new rScheduler();
 		if(!$cache->get($rt))
 			$rt->fillWeek();
@@ -48,8 +48,8 @@ class rScheduler
 	public function store()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $schedulerRootPath;
+		$cache = new rCache( $schedulerRootPath.$settings );
 		return($cache->set($this));
 	}
 	public function get()
