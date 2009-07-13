@@ -1,13 +1,13 @@
 <?php
-$rootPath = "./";
-$thisPath = "./plugins/throttle/";
+$throttleRootPath = "./";
+$throttleThisPath = "./plugins/throttle/";
 if(!is_file('util.php'))
 {
-	$rootPath = "../../";
-	$thisPath = "./";
+	$throttleRootPath = "../../";
+	$throttleThisPath = "./";
 }
-require_once( $rootPath."xmlrpc.php" );
-require_once( $thisPath."conf.php" );
+require_once( $throttleRootPath."xmlrpc.php" );
+require_once( $throttleThisPath."conf.php" );
 
 define('MAX_SPEED', 100*1024*1024);
 
@@ -19,8 +19,8 @@ class rThrottle
 	static public function load()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $throttleRootPath;
+		$cache = new rCache( $throttleRootPath.$settings );
 		$rt = new rThrottle();
 		if(!$cache->get($rt))
 			$rt->fillArray();
@@ -140,8 +140,8 @@ class rThrottle
 	public function store()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $throttleRootPath;
+		$cache = new rCache( $throttleRootPath.$settings );
 		return($cache->set($this));
 	}
 	public function set()
