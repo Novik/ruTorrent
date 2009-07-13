@@ -1,8 +1,8 @@
 <?php
-$rootPath = "./";
+$retrackersRootPath = "./";
 if(!is_file('util.php'))
-	$rootPath = "../../";
-require_once( $rootPath."util.php" );
+	$retrackersRootPath = "../../";
+require_once( $retrackersRootPath."util.php" );
 
 class rRetrackers
 {
@@ -13,8 +13,8 @@ class rRetrackers
 	static public function load()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $retrackersRootPath;
+		$cache = new rCache( $retrackersRootPath.$settings );
 		$rt = new rRetrackers();
 		$cache->get($rt);
 		return($rt);
@@ -22,8 +22,8 @@ class rRetrackers
 	public function store()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $retrackersRootPath;
+		$cache = new rCache( $retrackersRootPath.$settings );
 		return($cache->set($this));
 	}
 	public function set()
