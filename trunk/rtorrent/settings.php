@@ -99,7 +99,11 @@ class rTorrentSettings
 					$this->iVersion = ($this->iVersion<<8) + $parts[$i];
 				if(is_dir($this->session))
 				{
-					$ss=@stat($this->session.'rtorrent.dht_cache');
+					$ss=@stat($this->session.'rtorrent.lock');
+					if(!$ss)
+						$ss=@stat($this->session.'rtorrent.dht_cache');
+					if(!$ss)
+						$ss=@stat($this->session);
 					if($ss)
 					{
 				        	$this->gid = $ss['gid'];
