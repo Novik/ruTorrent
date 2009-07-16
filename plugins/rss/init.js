@@ -91,9 +91,9 @@ utWebUI.switchRSSLabel = function(el,force)
 		}
 		rss.style.width = lst.style.width;
 		rss.style.height = lst.style.height;
-		show(rss);
 		utWebUI.rssTable.resize(iv(rss.style.width),iv(rss.style.height));
 		utWebUI.rssTable.calcSize();
+		show(rss);
 		hide(lst);
 	}
 	utWebUI.rssTable.refreshRows();
