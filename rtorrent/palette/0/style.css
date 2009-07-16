@@ -75,7 +75,7 @@ a.hide:hover {width: 14px; height: 14px; margin: -20px 0 0 0; background: transp
 a.hide:active {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(./images/hide_on.gif); float: right; border: 0}
 a {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #686868}
 table#maincont {margin: 5px 0 0 0}
-.ie table#maincont td.uicell {vertical-align: top; padding: 0}
+table#maincont td.uicell {vertical-align: top; padding: 0}
 div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: auto}
 
 div#CatList ul {padding: 0px; margin: 0; list-style: none; white-space: nowrap}
@@ -172,7 +172,7 @@ a {text-decoration: none}
 #acty {width: 16px; height: 16px; position: absolute; right: 10px; bottom: 10px; background-image: url()}
 select.cols {border: 1px solid #808080; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 120px}
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
-div#tdetails {height: 50%; padding: 0 5px 5px 5px; background-color: #F5F5F5}
+div#tdetails {height: 50%; padding: 0 5px 5px 0; background-color: #F5F5F5}
 div#tdetails a.h {margin: 0}
 div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 2px}
 div#gcont, div#scont, div#lcont {height: 100%; background: #F5F5F5; overflow: auto}

@@ -294,6 +294,8 @@ function SepMove(e, dir)
 		var lw = getWindowWidth() - cw - 10;
 		$$("List").style.width = lw + "px";
 		$$("CatList").style.width = cw + "px";
+		$$("tdetails").style.width = (lw - 1) + "px";
+
 		document.body.style.cursor = "e-resize";
    	}
 	else 
@@ -318,8 +320,7 @@ function SepMove(e, dir)
 				return(true);
 			}
 			$$("List").style.height = lh + "px";
-			$$("CatList").style.height = lh + "px";
-			$$("HDivider").style.height = lh + "px";
+			$$("HDivider").style.height = gh + "px";
 			o = $$("tdetails");
 			o.style.height = gh + "px";
 			$$("tdcont").style.height = (o.offsetHeight - 39) + "px";
@@ -347,6 +348,7 @@ function SepUp(e, dir)
 			return(true);
 		}
 		utWebUI.trtTable.resize(iv($$("List").style.width));
+		utWebUI.resizeBottomBar(iv($$("tdetails").style.width) - 8 , null);
 		var r = 1 - (mouse.X + e.clientX - $$("HDivider").lastX) / getWindowWidth();
 		r = Math.floor(r * Math.pow(10, 3)) / Math.pow(10, 3);
 		if(utWebUI.hSplit != r) 
@@ -370,7 +372,7 @@ function SepUp(e, dir)
 			        $$("tdcont").style.height = (he - 54) + "px";
 			}
 			var h = iv($$("tdcont").style.height);
-			utWebUI.resizeBottomBar(null,h);
+			utWebUI.resizeBottomBar(null,h-2);
 			var r = (mouse.Y + e.clientY - $$("VDivider").lastY) / getWindowHeight();
 			r = Math.floor(r * Math.pow(10, 3)) / Math.pow(10, 3);
 			if(utWebUI.vSplit != r) 
@@ -645,6 +647,9 @@ function resizeUI()
 	h -= 13 + eh;
 	var lw = Math.floor(ww * ((cs) ? utWebUI.hSplit : 1)) - ((cs) ? 5 : 13);
 	utWebUI.trtTable.resize(lw, h);
+
+	h = (wh-eh-14);
+
 	if(cs == true) 
 	{
 		var cw = Math.floor(ww * (1 - utWebUI.hSplit)) - 5;
@@ -655,16 +660,17 @@ function resizeUI()
 	if(ds == true) 
 	{
 		o = $$("tdetails");
-		o.style.width = (ww - 12) + "px";
+		o.style.width = lw + "px";
 		var he = Math.floor(wh * (1 - utWebUI.vSplit));
 		if(browser.isOldIE)
 			he-=20;
 		o.style.height = he + "px";
 		he = (!browser.isOldIE && o.offsetHeight && (o.offsetHeight>34)) ? o.offsetHeight - 34 : he - 29;
 		$$("tdcont").style.height = he + "px";
-		utWebUI.resizeBottomBar(ww - 20, he);
+		utWebUI.resizeBottomBar(lw - 8 , he-2);
 	}
 	o = $$("HDivider");
+
 	o.style.height = h + "px";
 	resizing = false;
 }
