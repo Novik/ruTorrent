@@ -35,16 +35,19 @@ if($handle = opendir('./plugins'))
 				$jResult.="log(WUILang.badUploadsPath+' (".realpath($uploads).")');";
 	        	if(!isUserHavePermission($theSettings->myuid,$theSettings->mygid,$settings,0x0007))
         		        $jResult.="log(WUILang.badSettingsPath+' (".realpath($settings).")');";
-			if(($theSettings->uid<0) || ($theSettings->gid<0))
-				$jResult.="log(WUILang.badSessionPath+' (".$theSettings->session.")');";
-			else
+			if(!empty($theSettings->session))
 			{
-				if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$uploads,0x0007))
-					$jResult.="log(WUILang.badUploadsPath2+' (".realpath($uploads).")');";
-				if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$settings,0x0007))
-					$jResult.="log(WUILang.badSettingsPath2+' (".realpath($settings).")');";
-				if(!isUserHavePermission($theSettings->uid,$theSettings->gid,'./test.sh',0x0005))
-					$jResult.="log(WUILang.badTestPath+' (".realpath('./test.sh').")');";
+				if(($theSettings->uid<0) || ($theSettings->gid<0))
+					$jResult.="log(WUILang.badSessionPath+' (".$theSettings->session.")');";
+				else
+				{
+					if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$uploads,0x0007))
+						$jResult.="log(WUILang.badUploadsPath2+' (".realpath($uploads).")');";
+					if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$settings,0x0007))
+						$jResult.="log(WUILang.badSettingsPath2+' (".realpath($settings).")');";
+					if(!isUserHavePermission($theSettings->uid,$theSettings->gid,'./test.sh',0x0005))
+						$jResult.="log(WUILang.badTestPath+' (".realpath('./test.sh').")');";
+				}
 			}
 			if($theSettings->badXMLRPCVersion)
 				$jResult.="log(WUILang.badXMLRPCVersion);";
