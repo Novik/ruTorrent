@@ -38,7 +38,8 @@ function hide(obj)
 utWebUI.oldSwitchLabel = utWebUI.switchLabel;
 utWebUI.switchLabel = function(el)
 {
-	if(hide($$("RSSList")))
+        var lst = $$("RSSList");
+	if(isVisible(lst))
 	{
 		utWebUI.trtTable.clearSelection();
 		utWebUI.dID = "";
@@ -49,6 +50,7 @@ utWebUI.switchLabel = function(el)
 		utWebUI.actRSSLbl = null;
 		utWebUI.actLbl = "";
 		show($$("List"));
+		hide(lst);
 	}
 	utWebUI.oldSwitchLabel(el);
 }
@@ -75,7 +77,7 @@ utWebUI.switchRSSLabel = function(el,force)
 	}
 	utWebUI.rssTable.clearSelection();
 	var lst = $$("List");
-	if(hide(lst))
+	if(isVisible(lst))
 	{
 		utWebUI.trtTable.clearSelection();
 		utWebUI.dID = "";
@@ -92,6 +94,7 @@ utWebUI.switchRSSLabel = function(el,force)
 		show(rss);
 		utWebUI.rssTable.resize(iv(rss.style.width),iv(rss.style.height));
 		utWebUI.rssTable.calcSize();
+		hide(lst);
 	}
 	utWebUI.rssTable.refreshRows();
 }
