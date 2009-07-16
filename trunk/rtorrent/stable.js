@@ -270,7 +270,10 @@ dxSTable.prototype.calcSize = function()
 		var h = this.dCont.clientHeight - this.dHead.offsetHeight;
 		if(h >= 0) 
 			this.dBody.style.height = h + "px";
-		var nsb = (this.dBody.offsetWidth == this.dBody.clientWidth) ? -4 : -1;
+		var nsb = -2;
+		if((this.dBody.offsetWidth != this.dBody.clientWidth) && (window.scrollbarWidth!=null))
+			nsb-=window.scrollbarWidth;
+
 		this.dHead.style.width = this.dCont.clientWidth + nsb + "px";
 		if((this.cols > 0) && (!this.isResizing)) 
 		{

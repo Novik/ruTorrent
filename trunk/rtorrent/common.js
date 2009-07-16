@@ -886,3 +886,30 @@ function cloneObject( srcObj )
 	}
 	return newObject;
 }
+
+function calcScrollbarSize()
+{
+	var i = document.createElement('p');
+	i.style.width = '100%';
+        i.style.height = '200px';
+        var o = document.createElement('div');
+	o.style.position = 'absolute';
+	o.style.top = '0px';
+	o.style.left = '0px';
+	o.style.visibility = 'hidden';
+	o.style.width = '200px';
+	o.style.height = '150px';
+	o.style.overflow = 'hidden';
+	o.appendChild(i);
+	document.body.appendChild(o);
+	var w1 = i.offsetWidth;
+	var h1 = i.offsetHeight;
+	o.style.overflow = 'scroll';
+	var w2 = i.offsetWidth;
+	var h2 = i.offsetHeight;
+	if (w1 == w2) w2 = o.clientWidth;
+	if (h1 == h2) h2 = o.clientWidth;
+	document.body.removeChild(o);
+	window.scrollbarWidth = w1-w2;
+	window.scrollbarHeight = h1-h2;
+}
