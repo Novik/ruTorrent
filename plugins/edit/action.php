@@ -68,7 +68,7 @@ if(isset($HTTP_RAW_POST_DATA))
 		{
 			$isStart = (($req->i8s[0]!=0) && ($req->i8s[1]!=0) && ($req->i8s[2]!=0));
 			$fname = $req->strings[0].$hash.".torrent";
-			if(!is_readable($fname))
+			if(empty($req->strings[0]) || !is_readable($fname))
 			{
 				if(strlen($req->strings[1]) && is_readable($req->strings[1]))
 					$fname = $req->strings[1];
