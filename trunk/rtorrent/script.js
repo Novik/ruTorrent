@@ -2,6 +2,7 @@ var resizing = false, resizeTimeout = null;
 var _isResizing = false;
 var tdl = 0, tul = 0, stimer = null;
 var tdb = 0, tub = 0;
+var tdlimit = 0, tulimit = 0;
 var version = "2.5";
 
 function init() 
@@ -696,15 +697,18 @@ function Update()
 
 function UpdateStatus() 
 {
-	if((tdl == 0) && (tul == 0)) 
-	{
-		return;
-	}
-	var s = WUILang.Download + ": " + ffs(tdl) + "/" + WUILang.s + "  ("+
-		ffs(tdb)
-		+")  |  " + WUILang.Upload + ": " + ffs(tul) + "/" + WUILang.s + "  ("+
-		ffs(tub)
-		+")";
+//	if((tdl == 0) && (tul == 0)) 
+//	{
+//		return;
+//	}
+	var s = WUILang.Download + ": " + ffs(tdl) + "/" + WUILang.s;
+	if(tdlimit>0 && tdlimit<100*1024*1024)
+		s+="  ["+ffs(tdlimit) + "/" + WUILang.s+"]";
+	s+="  " + WUILang.Total + ": " + ffs(tdb)+"  |  " + WUILang.Upload + ": " + ffs(tul) + "/" + WUILang.s;
+	if(tulimit>0 && tulimit<100*1024*1024)
+		s+="  ["+ffs(tulimit) + "/" + WUILang.s+"]";
+	s+="  " + WUILang.Total + ": " + ffs(tub);
+
 	if(utWebUI.bSpdDis == 1) 
 	{
    		window.status = s;
@@ -1947,6 +1951,8 @@ utWebUI =
 		var d = eval("(" + ttl + ")");
    		tub = d.total[0];
    		tdb = d.total[1];
+   		tulimit = d.total[2];
+   		tdlimit = d.total[3];
 		ttl = null;
 	}
 , "loadTorrents" : function() 

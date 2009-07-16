@@ -341,6 +341,8 @@ rTorrentStub.prototype.gettotal = function()
 {
 	this.commands.push( new rXMLRPCCommand("get_up_total") );
 	this.commands.push( new rXMLRPCCommand("get_down_total") );
+	this.commands.push( new rXMLRPCCommand("get_upload_rate") );
+	this.commands.push( new rXMLRPCCommand("get_download_rate") );
 }
 
 rTorrentStub.prototype.getprops = function()
@@ -856,7 +858,7 @@ rTorrentStub.prototype.gettotalResponse = function(xmlDoc,docText)
 	var datas = xmlDoc.getElementsByTagName('data');
 	var data = datas[0];
 	var values = data.getElementsByTagName('value');
-	return( '{"":"","total": [ '+this.getValue(values,1)+','+this.getValue(values,3)+' ]}' );
+	return( '{"":"","total": [ '+this.getValue(values,1)+','+this.getValue(values,3)+','+this.getValue(values,5)+','+this.getValue(values,7)+' ]}' );
 }
 
 rTorrentStub.prototype.getsettingsResponse = function(xmlDoc,docText)
