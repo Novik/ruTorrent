@@ -18,7 +18,7 @@
 
 .sch_week {border: 0; width: 22px; text-align: left}
 
-#sch_desc {width: 380px; margin-left: 5px; padding: 5px }
+#sch_desc {width: 390px; margin-left: 5px; padding: 5px; white-space: nowrap}
 
-#sch_legend {width: 380px; border: 0; table-layout: fixed; margin-left: 10px; border-collapse:collapse; }
+#sch_legend {width: 390px; border: 0; table-layout: fixed; margin-left: 10px; border-collapse:collapse; }
 #sch_legend td { padding: 3px; height: 16px }
