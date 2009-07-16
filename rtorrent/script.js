@@ -6,6 +6,7 @@ var version = "2.5";
 
 function init() 
 {
+	calcScrollbarSize();
 	if(arguments.callee.done) 
 	{
 		return;
@@ -38,7 +39,6 @@ function init()
 	{
 		$$("List").style.width = "99%";
 	}
-
 	utWebUI.init();
 	var o = $$("stg_c");
 	o.innerHTML = stgHtml;
