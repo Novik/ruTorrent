@@ -89,16 +89,6 @@
 											$domain = $tmp;
 									}
 								}
-if(empty($domain))
-{
-	toLog($i);
-	toLog($key);
-	toLog($data);
-	toLog($req->strings[$i]);
-	toLog($req->i8s[$i*3]);
-	toLog($req->i8s[$i*3+1]);
-	toLog($req->i8s[$i*3+2]);
-}
                                                                 if(array_key_exists($domain,$trackers))
 								{
 									$trackers[$domain][0]+=$needTorrents[$key][0];
