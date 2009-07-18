@@ -22,7 +22,11 @@
 
 Производится в файле `plugins/retrackers/conf.php`.
     * `$isAutoStart` - переменная определяет способ начала работы. Если она равна `true`, то регистрация события происходит при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы сделать сие самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчку 
-{{{system.method.set_key = event.download.inserted_new,add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="}}}
+{{{
+system.method.set_key = event.download.inserted_new,add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="
+}}}
  для версии rTorrent >= 0.8.4 или строчку
-{{{on_insert = add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="}}}
+{{{
+on_insert = add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="
+}}}
  для более ранних версий. full_path_to_plugin здесь - полный путь к плагину retrackers.
