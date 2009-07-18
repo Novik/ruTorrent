@@ -6,7 +6,7 @@
 
 После установки плагина в настройках ruTorrent появляется раздел "Ретрекеры". 
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/retrackers.jpg]
+[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/retrackers.jpg]
 
 Оформление списка трекеров производится так же, как в [http://www.utorrent.com/ µTorrent] - разные группы трекеров отделяются друг от друга пустой строкой. Все перечисленные трекеры будут добавлены к существующим в закачке начиная с группы трекеров 1. Для частных раздач изменение списка трекеров обычно не приветствуется. Однако, если Вы, тем не менее, очень этого хотите - уберите соотв. галку в диалоге.
 
@@ -22,7 +22,11 @@
 
 Производится в файле `plugins/retrackers/conf.php`.
     * `$isAutoStart` - переменная определяет способ начала работы. Если она равна `true`, то регистрация события происходит при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы сделать сие самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчку 
-{{{system.method.set_key = event.download.inserted_new,add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="}}}
+{{{
+system.method.set_key = event.download.inserted_new,add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="
+}}}
  для версии rTorrent >= 0.8.4 или строчку
-{{{on_insert = add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="}}}
+{{{
+on_insert = add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="
+}}}
  для более ранних версий. full_path_to_plugin здесь - полный путь к плагину retrackers.

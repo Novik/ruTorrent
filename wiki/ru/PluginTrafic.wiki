@@ -24,5 +24,7 @@
 Производится в файле `plugins/trafic/conf.php`.
     * `$updateInterval` - переменная содержит интервал съема показаний трафика с rTorrent (в минутах). По умолчанию - 15 минут.
     * `$isAutoStart` - переменная определяет способ начала работы. Если она равна `true`, то команда планировщику rTorrent на начало работы выдается при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы дать пинка планировщику самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчку 
-{{{schedule = trafic,10,00:15:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"}}}
+{{{
+schedule = trafic,10,00:15:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"
+}}}
  где full_path_to_plugin - полный путь к плагину trafic.
