@@ -20,3 +20,4 @@
  # [PluginSearch search] - позволяет задавать собственный набор поисковых сайтов.
  # [PluginScheduler scheduler] - реализует ограничения скорости закачки/отдачи в зависимости от часа суток и дня недели.
  # [PluginAutotools autotools] - реализует некоторые функции автоматизации (autolabel, automove).
+ # [PluginDataDir datadir] - позволяет сменить каталог данных торрента.
