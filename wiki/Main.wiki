@@ -1,48 +1,48 @@
-#summary Главная страница.
+#summary Main page
 #labels Featured
 
-== Введение ==
+== Introduction ==
 
-ruTorrent был разработан на базе [http://www.utorrent.com/documentation/webui WebUI] к [http://utorrent.com µTorrent], соответственно, его внешний вид очень напоминает "родителя". Собственно, своим названием ruTorrent тоже обязан этому самому родителю - µTorrent + rTorrent = ruTorrent.
+ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui WebUI] of [http://utorrent.com µTorrent] basis. So it's appearance is quite similar to the "parent". Actually ruTorrent is named after the "parent" - µTorrent + rTorrent = ruTorrent. 
 
-== Чего требует для работы ==
+== Requirements ==
 
- * rTorrent версии не менее 0.8.2, скомпилированный с поддержкой XML-RPC. Если Вы не знаете, где взять таковой для Вашей системы, рекомендую посетить [http://libtorrent.rakshasa.no страницу автора rTorrent].
- * Веб-сервер с поддержкой php 5.0.
- * Браузер, как локальный клиент.
-   * IE 7.0, Firefox 2.x, Firefox 3.x - оптимальный выбор.
-   * IE 8.0 - в стандартном режиме пока поддерживается ограниченно. В режиме совместимости с IE7 работает нормально.
-   * IE 6.0 - работает, но медленно, печально и не стабильно. Не рекомендую.
-   * Konqueror 3.5.9 - работает (за исключением диаграммы скорости и плагина trafic).
-   * Opera 9.x - работает.
-   * Safari 3.x - работает. Возможны проблемы с не отображением картинок при использовании протокола https. Полагаю, ошибка в браузере. Нужно подстраивать сервер, чтобы не держал keep-alive соединения, если клиент пользует Safari.
-   * Google Chrome 0.2.149.30 - работает. Возможны проблемы, аналогичные Safari.
+ * rTorrent 0.8.2 or later, compiled with XML-RPC support. If you don't know where to get it for your system, you are suggested to visit [http://libtorrent.rakshasa.no rTorrent official site].
+ * Web-server with php 5.0. 
+ * Browser as a local client: 
+   * IE 7.0, Firefox 2.x, Firefox 3.x - optimal choice.
+   * IE 8.0 - limited support it the standard mode. Works good in the "Compatibility mode". 
+   * IE 6.0 - acceptable, but slow and unstable. Not recommended.
+   * Konqueror 3.5.9 - OK except charts on tabs Speed and Traffic. 
+   * Opera 9.x - works fine. 
+   * Safari 3.x - works, but pictures may not be displayed when https-protocol is used. Probably this is browser issue. Try to adjust server to not make keep-alive connections.
+   * Google Chrome 0.2.149.30 - the same as Safari. 
 
- Прочие браузеры не проверял.
+ Other browsers have not been tested yet.
 
-== Установка и настройка ==
+== Setup and tuning ==
 
- # Скачать архив ruTorrent и развернуть его содержимое в корень веб-сервера. Желательно проделать эту операцию из под пользователя, под которым работает веб-сервер, чтобы потом не разбираться с правами файлов/директорий.
- # Добавить в конфигурационный файл rTorrent строчку `scgi_port = 127.0.0.1:5000` (если ее там еще нет).
- # [WebserverSetup Настроить scgi-gateway в веб-сервере] для проброса запросов с /RPC2 на порт, который слушает rTorrent. Либо просто поставить [Plugins плагин] [PluginRPC RPC].
- # Набрать в браузере `http://адрес_сервера:порт_сервера/rtorrent`
+ # Download the archive ruTorrent and extract it's contents into the root folder of the web-server. It ia good idea to perform this step under the web-server owner's account, so you won't need to set up rights to files/directories afterwards.
+ # Add the string `scgi_port = 127.0.0.1:5000` into rTorrent config file (if it is not present there yet). 
+ # [WebserverSetup Setup scgi-gateway on the web-server]to forward requests from /RPC2 to the port is listened by rTorrent. Another way -  install the [Plugins plug-in] [PluginRPC RPC].
+ # Type in the browser: `http://адрес_сервера:порт_сервера/rtorrent`
 
-== Чего не может ==
+== Not implemented ==
 
- * Разделение доступа. ruTorrent (как и rTorrent впрочем) представляет собой монопользовательскую систему. Если Вам нужно разделение прав на работу с торрентами между несколькими пользователями - используйте несколько копий того и другого.
+ * Access management. ruTorrent (as well as rTorrent) is a single user system. If you need to give some users different rights to work with torrents - make some copies of rTorrent and ruTorrent.
 
-== Некоторые неочевидные моменты ==
+== Some non-obvious points ==
 
- * Галку "Запрашивать сообщения трекера" в настройках ruTorrent можно включать только в том случае, если Вы используете версию rTorrent >= 0.8.5. В противном случае ее включение может привести к потере работоспособности ввиду некорректной обработки rTorrent сообщений трекера, содержащих не UTF-8 символы.
- * Настройки rTorrent, изменяемые пользователем через соответствующий диалог ruTorrent валидны только на время текущей сессии rTorrent. После рестарта последнего они будут утеряны.
- * Если вместо чисел больших 2 гигабайт ruTorrent показывает отрицательные числа, следует рекомпилировать rTorrent с более свежей версией xmlrpc-c. Минимально необходимая версия данной библиотеки - 1.11.
- * При изменении номера порта, на котором rTorrent будет ожидать запросы, необходимо так же внести коррективы в конфигурацию ruTorrent - указать этот же порт в файле rtorrent/conf.php в переменной `$scgi_port`.
- * Авторизация доступа реализуется полностью средствами используемого веб-сервера и от ruTorrent не зависит. Защищать нужно URL /rtorrent и, если используется scgi модуль веб-сервера - /RPC2. В случае использования вместо scgi модуля веб-сервера [Plugins плагина] ruTorrent [PluginRPC RPC] URL /RPC2 защищать не нужно.
+ * Set the "Receive messages from tracker" option on the Settings pane if you only use rTorrent v.0.8.5 or later. Otherwise it can lead to crash because of incorrect processing tracker's messages which contain non-UTF-8 characters by rTorrent. 
+ * Settings of the rTorrent which have been made in the Settings pane of the ruTorrent are valid until rTorrent restart. After restart rTorrent all it's settings will be set as they are described in the rTorrent config file.
+ * If numbers greater than 2Gb are shown as negative, the rTorrent should be recompiled using the xmlrpc-c version 1.11 or later.
+ * If the the port number which rTorrent is listening for requests should be changed, it is necessary to make appropriate changes into configuration of the ruTorrent - set the same port number in the file rtorrent/conf.php the variable `$scgi_port`. 
+ * Authorization may be provided by web-server's means only and does not depend on ruTorrent. If authorization is necessary, make sure /rtorrent and /RPC2 (scgi module, if used) folders are protected. In case the [Plugins plug-in] ruTorrent [PluginRPC RPC] is used, the /RPC2 folder protection is not necessary.
 
-== Особенности браузеров ==
+== Browsers' specialties ==
 
- * Для работы контекстного меню и отображения информации в статус-баре в Firefox и Opera необходимо в настройках браузера разрешить javascript-у выполнять соотв. операции.
- * Имеющиеся клавиатурные хоткеи можно посмотреть нажав F1. Более-менее корректно работает это пока только в Firefox.
- * Ряд аддонов к браузерам может привести к полной или частичной неработоспособности ruTorrent. Пример - установка плагина Firebug к Firefox ведет к сильным утечкам памяти.
+ * To proper work of context menus and to display information in the status bar in Opera and Firefox, allow javascript in their settings.
+ * F1 shows included hot-keys. Works fine in Firefox only as yet. 
+ * Some add-ons for browsers may cause errors in ruTorrent work. For example - plug-in Firebug for Firefox causes significant memoly leaks.
 
-== [Plugins Плагины] ==
+== [Plugins Plug-ins] ==
