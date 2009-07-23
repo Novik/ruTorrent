@@ -3,7 +3,7 @@
 
 == Introduction ==
 
-ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui WebUI] of [http://utorrent.com µTorrent] basis. So it's appearance is quite similar to the "parent". Actually ruTorrent is named after the "parent" - µTorrent + rTorrent = ruTorrent. 
+ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui WebUI] of [http://utorrent.com µTorrent] basis. So it's appearance is quite similar to the "parent". Actually ruTorrent is named after the "parent" - rTorrent + µTorrent = ruTorrent. 
 
 == Requirements ==
 
