@@ -9,9 +9,9 @@ After plug-in installation there would be a new item *"Save to..."* in the conte
 == How it works ==
 
 
-The plug-in doesn't move torrents data files, and simply changes the directory of the data for another.
+The plug-in doesn't move torrent data files, and simply changes the directory of the data for another.
 
-It is required to specify the base directory of the data (without a subdirectory stored in torrent file), by analogy to a directory choice at addition of new torrent.
+It is required to specify the *base* directory of the data (without a subdirectory stored in torrent file), by analogy to a directory choice at addition of new torrent.
 
 Any additional manipulations with re-hashing are not made. *rTorrent* re-hash torrents data by itself if detects changes of size or modification time of torrent data files. 
 From this the following follows:
