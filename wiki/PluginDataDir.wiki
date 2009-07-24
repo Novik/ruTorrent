@@ -1,27 +1,28 @@
-#summary Описание плагина DataDir
+#summary DataDir plug-in description
 
-== Введение ==
+== Introduction ==
 
-Плагин предназначен для замены текущего каталога данных торрента на другой. Такая операция требуется, например, если каталог с данными торрента был перенесен вручную.
+The plug-in is intended for replacement of the current torrent data directory on another. Such operation is required, for example, if the torrent data directory has been transferred manually.
 
-После установки плагина в контекстном меню закачки появляется новый пункт *"Сохранить в..."*, использование которого, приводит к выдаче диалога *"Настройки каталога данных"*. В данном диалоге нужно указать путь к данным торрента.
+There would be a new item *"Save to..."* in the context menu of downloading area after plug-in installation which shows a dialogue *"Torrent data directory"*. In this dialogue you can specify new path to the torrents data.
 
-== Как оно работает ==
+== How it works ==
 
-Плагин не переносит файлы данных торрента, а просто меняет каталог данных на другой.
 
-Указывать нужно базовый каталог данных (без подкаталога, хранящегося в торренте), по аналогии с выбором каталога при добавлении нового торрента.
+The plug-in doesn't move torrents data files, and simply changes the directory of the data for another.
 
-Никаких дополнительных манипуляций с рехэшированием плагином не производится. *rTorrent* самостоятельно рехэширует данные торрента, если обнаруживает смену размера или времени модификации файлов данных торрента. 
-Из этого вытекает следующее:
- # если каталог данных был просто перенесен, то смена каталога данных у торрента не должна приводить к рехэшированию.
- # если каталог данных был скопирован, то рехэширование будет произведено (изменилось время модификации).
+It is required to specify the base directory of the data (without a subdirectory stored in torrent file), by analogy to a directory choice at addition of new torrent.
 
-Для удобства выбора каталога для завершенных закачек на хосте рекомендуется установить сервисный плагин [Plugin_GetDir _getdir], тогда появится возможность навигации по файловой системе хоста.
+Any additional manipulations with re-hashing are not made. *rTorrent* re-hash torrents data by itself if detects changes of size or modification time of torrent data files. 
+From this the following follows:
+ # if the directory of the data has been simply moved, change of the torrents data directory should not lead to re-hashing.
+ # if the directory of the data has been copied, re-hashing will be made (modification time has varied).
+
+For comfortable a choice of the directory on a host for completed downloads it is recommended to install a service plug-in [Plugin_GetDir _getdir]. There will be a possibility of navigation on a host file system.
 
 ----
 
-== История версий ==
+== Version history: ==
 
 *1.0*
- * первая версия
+ * the first version
