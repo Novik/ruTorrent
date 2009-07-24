@@ -1,16 +1,16 @@
-#summary Описание плагина _getdir
+#summary _getdir plug-in description
 
-== Введение ==
+== Introduction ==
 
-Сервисный плагин *`_`getdir* предоставляет другим плагинам возможности комфортной навигации по файловой системе хоста. 
+The service plug-in *`_`getdir* gives to other plug-ins the possibility of comfortable navigation on a host file system.
 
-Показывает только директории, в которые *rtorrent* может писать, и которые *php* может показать.
+Shows only directories to which *rtorrent* can write and which *php* can show.
 
-_Плагин сделан по мотивам плагина *choose* от Novik._
+_The plug-in is made on motives of a plug-in *choose* from Novik.
 
 ----
 
-== История версий: ==
+== Version history: ==
 
 *1.0*
- * первая версия
+ * the first version
