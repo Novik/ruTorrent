@@ -1,23 +1,23 @@
-#summary описание подсистемы плагинов.
 #labels Featured
+#The description of a subsystem of plug-ins.
 
-Часть функциональности ruTorrent реализуется плагинами, что дает пользователю возможность собрать "свой собственный теремок" без ненужных лично ему частей. И даже дописать что-то недостающее, не затрагивая собственно код ruTorrent.
+Some functions of ruTorrent are realized by plug-ins that allow users to customize the system to exclude unnecessary parts. And even to add something lacking, without modifying a ruTorrent code.
 
-Для установки плагина нужно развернуть содержимое его архива в директорию rtorrent/plugins. Уточняю - развернуть не нарушая структуры директорий в архиве, в результате каждому плагину должна соответствовать отдельная директория внутри rtorrent/plugins. Желательно проделать эту операцию из под пользователя, под которым работает веб-сервер, чтобы потом не разбираться с правами файлов/директорий. Для удаления плагина из системы эту директорию нужно, соответственно, удалить.
+For plug-in installation it is necessary to unpack contents of its archive in a directory rtorrent/plugins. Specification - to unpack without breaking a structure of directories in the archive. As a result there should be a separate directory to each plug-in inside rtorrent/plugins. It is desirable to make this operation under a web service user to prevent problems with rights for files/directories. For plug-in deinstallation you have to delete it's directory, accordingly.
 
-На настоящий момент имеются следующие плагины:
- # [PluginRPC RPC] - плагин, осуществляющий связь между rtorrent и веб-сервером.
- # [PluginErasedata erasedata] - добавляет в контекстное меню закачки пункт "Удалить вместе с данными".
- # [PluginDarkPal darkpal] - просто другая раскраска интерфейса ruTorrent.
- # [PluginChoose choose] - внедряет в диалог добавления закачки кнопку для более комфортной навигации по файловой системе сервера.
- # [PluginCreate сreate] - добавляет команду создания нового торрента.
- # [PluginTrafic trafic] - реализует подсистему учета трафика.
- # [PluginRSS RSS] - реализует работу с RSS-рассылками.
- # [PluginEdit edit] - позволяет редактировать список трекеров существующей закачки.
- # [PluginThrottle throttle] - позволяет устанавливать отдельные ограничения скорости для группы закачек.
- # [PluginRetrackers retrackers] - автоматически дописывает в добавляемые закачки необходимые ретрекеры. 
- # [PluginCookies cookies] - позволяет задавать набор cookies для трекеров, использующих соответствующую авторизацию.
- # [PluginSearch search] - позволяет задавать собственный набор поисковых сайтов.
- # [PluginScheduler scheduler] - реализует ограничения скорости закачки/отдачи в зависимости от часа суток и дня недели.
- # [PluginAutotools autotools] - реализует некоторые функции автоматизации (autolabel, automove).
- # [PluginDataDir datadir] - позволяет сменить каталог данных торрента.
+Currently there are following plug-ins:
+ # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server.
+ # [PluginErasedata erasedata] - adds the item "Delete with the data" to the context menu of the downloading area.
+ # [PluginDarkPal darkpal] - just another ruTorrent interface colours.
+ # [PluginChoose choose] - adds the button to the new downloads dialogue for comfortable navigation on a server file system.
+ # [PluginCreate сreate] - adds the command of new torrent creation.
+ # [PluginTrafic trafic] - realizes a subsystem of the traffic registration.
+ # [PluginRSS RSS] - realizes operation with RSS-feeds.
+ # [PluginEdit edit] - allows to edit the trackers list for existing downloads.
+ # [PluginThrottle throttle] - allows to set separated speed limitations for download groups.
+ # [PluginRetrackers retrackers] - automatically adds required re-trackers for new downloads.
+ # [PluginCookies cookies] - allows to set a set of cookies for trackers with appropriate authorisation.
+ # [PluginSearch search] - allows to customize search engines.
+ # [PluginScheduler scheduler] - realizes speed limitations for downloading/uploading depending on hour of day and day of week.
+ # [PluginAutotools autotools] -  realizes some automation functions (autolabel, automove)..
+ # [PluginDataDir datadir] - allows to change the directory of the torrents data.
