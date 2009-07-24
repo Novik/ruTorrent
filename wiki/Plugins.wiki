@@ -1,5 +1,5 @@
+#summary The description of a subsystem of plug-ins.
 #labels Featured
-#The description of a subsystem of plug-ins.
 
 Some functions of ruTorrent are realized by plug-ins that allow users to customize the system to exclude unnecessary parts. And even to add something lacking, without modifying a ruTorrent code.
 
