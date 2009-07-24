@@ -8,7 +8,7 @@ For plug-in installation it is necessary to unpack contents of its archive in a 
 Currently there are following plug-ins:
  # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server.
  # [PluginErasedata erasedata] - adds the item "Delete with the data" to the context menu of the downloading area.
- # [PluginDarkPal darkpal] - just another ruTorrent interface colours.
+ # [PluginDarkPal darkpal] - just another ruTorrent interface colors.
  # [PluginChoose choose] - adds the button to the new downloads dialogue for comfortable navigation on a server file system.
  # [PluginCreate сreate] - adds the command of new torrent creation.
  # [PluginTrafic trafic] - realizes a subsystem of the traffic registration.
@@ -16,7 +16,7 @@ Currently there are following plug-ins:
  # [PluginEdit edit] - allows to edit the trackers list for existing downloads.
  # [PluginThrottle throttle] - allows to set separated speed limitations for download groups.
  # [PluginRetrackers retrackers] - automatically adds required re-trackers for new downloads.
- # [PluginCookies cookies] - allows to set a set of cookies for trackers with appropriate authorisation.
+ # [PluginCookies cookies] - allows to set a set of cookies for trackers with appropriate authorization.
  # [PluginSearch search] - allows to customize search engines.
  # [PluginScheduler scheduler] - realizes speed limitations for downloading/uploading depending on hour of day and day of week.
  # [PluginAutotools autotools] -  realizes some automation functions (autolabel, automove)..
