@@ -11,38 +11,38 @@ ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui
  * Web-server with php 5.0. 
  * Browser as a local client: 
    * IE 7.0, Firefox 2.x, Firefox 3.x - optimal choice.
-   * IE 8.0 - limited support it the standard mode. Works good in the "Compatibility mode". 
+   * IE 8.0 - limited support in the standard mode. Works good in the "Compatibility mode". 
    * IE 6.0 - acceptable, but slow and unstable. Not recommended.
-   * Konqueror 3.5.9 - OK except charts on tabs Speed and Traffic. 
+   * Konqueror 3.5.9 - OK, except charts on tabs Speed and Traffic. 
    * Opera 9.x - works fine. 
-   * Safari 3.x - works, but pictures may not be displayed when https-protocol is used. Probably this is browser issue. Try to adjust server to not make keep-alive connections.
+   * Safari 3.x - works, but pictures may not be displayed when https-protocol is used. Probably this is a browser issue. Try to adjust a server not to make keep-alive connections.
    * Google Chrome 0.2.149.30 - the same as Safari. 
 
  Other browsers have not been tested yet.
 
 == Setup and tuning ==
 
- # Download the archive ruTorrent and extract it's contents into the root folder of the web-server. It ia good idea to perform this step under the web-server owner's account, so you won't need to set up rights to files/directories afterwards.
+ # Download the ruTorrent archive and extract it's content into the root folder of the web-server. It's a good idea to perform this step under the web-server owner's account, so you won't need to set up rights to files/directories afterwards.
  # Add the string `scgi_port = 127.0.0.1:5000` into rTorrent config file (if it is not present there yet). 
- # [WebserverSetup Setup scgi-gateway on the web-server] to forward requests from /RPC2 to the port is listened by rTorrent. Another way -  install the [Plugins plug-in] [PluginRPC RPC].
+ # [WebserverSetup Setup scgi-gateway on the web-server] to forward requests from /RPC2 to the port is listened by rTorrent. Another way - install the [Plugins plug-in] [PluginRPC RPC].
  # Type in the browser: `http://адрес_сервера:порт_сервера/rtorrent`
 
 == Not implemented ==
 
- * Access management. ruTorrent (as well as rTorrent) is a single user system. If you need to give some users different rights to work with torrents - make some copies of rTorrent and ruTorrent.
+ * Access management. ruTorrent (as well as rTorrent) is a single user system. If you need sharing of the rights to work with torrents between several users - use some copies of rTorrent and ruTorrent.
 
 == Some non-obvious points ==
 
- * Set the "Receive messages from tracker" option on the Settings pane if you only use rTorrent v.0.8.5 or later. Otherwise it can lead to crash because of incorrect processing tracker's messages which contain non-UTF-8 characters by rTorrent. 
- * Settings of the rTorrent which have been made in the Settings pane of the ruTorrent are valid until rTorrent restart. After restart rTorrent all it's settings will be set as they are described in the rTorrent config file.
- * If numbers greater than 2Gb are shown as negative, the rTorrent should be recompiled using the xmlrpc-c version 1.11 or later.
- * If the the port number which rTorrent is listening for requests should be changed, it is necessary to make appropriate changes into configuration of the ruTorrent - set the same port number in the file rtorrent/conf.php the variable `$scgi_port`. 
+ * Set the "Receive messages from tracker" option on the Settings pane only in case of  rTorrent v.0.8.5 or later. Otherwise it can lead to crash because of incorrect processing of tracker's messages, containing non-UTF-8 characters, by rTorrent. 
+ * Settings of the rTorrent, changed by the user through the Settings pane of the ruTorrent, are valid until rTorrent restart. After rTorrent restart all settings will be set according to the rTorrent config file.
+ * If numbers greater than 2Gb are shown as negative, the rTorrent should be recompiled with the xmlrpc-c version 1.11 or later.
+ * If the port number which rTorrent is listening for requests should be changed, it is necessary to make appropriate changes into configuration of the ruTorrent - set the same port number in the file rtorrent/conf.php for the variable `$scgi_port`. 
  * Authorization may be provided by web-server's means only and does not depend on ruTorrent. If authorization is necessary, make sure /rtorrent and /RPC2 (scgi module, if used) folders are protected. In case the [Plugins plug-in] ruTorrent [PluginRPC RPC] is used, the /RPC2 folder protection is not necessary.
 
 == Browsers' specialties ==
 
- * To proper work of context menus and to display information in the status bar in Opera and Firefox, allow javascript in their settings.
+ * To proper work of context menu and information display in the status bar in Opera and Firefox it is necessary to allow javascript in their settings.
  * F1 shows included hot-keys. Works fine in Firefox only as yet. 
- * Some add-ons for browsers may cause errors in ruTorrent work. For example - plug-in Firebug for Firefox causes significant memoly leaks.
+ * Some add-ons for browsers may cause errors in ruTorrent work. For example - plug-in Firebug for Firefox causes significant memory leaks.
 
 == [Plugins Plug-ins] ==
