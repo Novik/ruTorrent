@@ -15,7 +15,7 @@ It is required to specify the *base* directory of the data (without a subdirecto
 
 Any additional manipulations with re-hashing are not made. *rTorrent* re-hash torrents data by itself if detects changes of size or modification time of torrent data files. 
 From this the following follows:
- # if the directory of the data has been simply moved, change of the torrents data directory should not lead to re-hashing.
+ # if the directory of the data has been simply moved, change of the torrent data directory should not lead to re-hashing.
  # if the directory of the data has been copied, re-hashing will be made (modification time has varied).
 
 For comfortable a choice of the directory on a host for completed downloads it is recommended to install a service plug-in [Plugin_GetDir _getdir]. There will be a possibility of navigation on a host file system.
