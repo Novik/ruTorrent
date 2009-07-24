@@ -4,7 +4,7 @@
 
 The plug-in is intended for replacement of the current torrent data directory on another. Such operation is required, for example, if the torrent data directory has been moved manually.
 
-After plug-in installation there will be a new item *"Save to..."* in the context menu of the downloading area which shows a dialogue *"Torrent data directory"*. In this dialogue you can specify new path to the torrent data.
+After plug-in installation there will be a new item *"Save to..."* in the context menu of the downloading area which shows a dialogue *"Torrent data directory"*. In this dialogue you can specify a new path to the torrent data.
 
 == How it works ==
 
