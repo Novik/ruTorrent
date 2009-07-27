@@ -57,6 +57,7 @@ function togglePathFrame()
 	return(false);
 }
 
+utWebUI.allCreateStuffLoaded = false;
 utWebUI.initCreate = function()
 {
  	var removeBtn = $$("mnu_remove");
@@ -123,6 +124,7 @@ utWebUI.initCreate = function()
 		edit.onfocus = function () { if(isPathFrameVisible()) hidePathFrame(); }
 	edit.setAttribute('autocomplete','off');
 	$$('createtorrent').onsubmit = checkCreate;
+	utWebUI.allCreateStuffLoaded = true;
 };
 
 function checkCreate()
@@ -146,6 +148,14 @@ utWebUI.showCreate  = function()
 		utWebUI.createInited = true;
 	}
 	Toggle($$("tcreate"));
+}
+
+utWebUI.showCreateError = function(err)
+{
+	if(utWebUI.allCreateStuffLoaded)
+		log(err);
+	else
+		setTimeout('utWebUI.showCreateError('+err+')',1000);
 }
 
 plugin.loadLanguages();

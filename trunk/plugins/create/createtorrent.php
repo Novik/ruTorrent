@@ -2,6 +2,8 @@
 require_once( '../../config.php' );
 require_once( '../../xmlrpc.php' );
 require_once( '../../Torrent.php' );
+require_once( 'conf.php' );
+
 set_time_limit(0);
 if(isset($_REQUEST['path_edit']))
 {
@@ -41,14 +43,39 @@ if(isset($_REQUEST['path_edit']))
 	$path_edit = trim($path_edit);	
 	if(strlen($path_edit))
 	{
-		if(count($announce_list)>0)
-		{
-			$torrent = new Torrent($path_edit,$announce_list[0][0],$piece_size);
-			if($trackersCount>1)
-				$torrent->announce_list($announce_list);
+	        if($useExternal)
+	        {
+	        	$ps = $piece_size*1024;
+	        	$randName = '/tmp/rutorrent-create-'.rand().'.torrent';
+        		if(!$pathToCreatetorrent || ($pathToCreatetorrent==""))
+				$pathToCreatetorrent = "createtorrent";
+	        	exec($pathToCreatetorrent.' -l '.$ps.' -a dummy '.escapeshellcmd($path_edit).' '.$randName,$results,$return);
+	        	if(!$return)
+	        	{
+	        		$torrent = new Torrent($randName);
+	        		$torrent->clear_announce();
+	        		if(count($announce_list)>0)
+	        		{
+	        			$torrent->announce($announce_list[0][0]);
+					if($trackersCount>1)
+						$torrent->announce_list($announce_list);
+	        		}
+	        		@unlink($randName);
+	        	}
+	        	else
+	        		exit(1);
+	        }
+	        else
+	        {
+			if(count($announce_list)>0)
+			{
+				$torrent = new Torrent($path_edit,$announce_list[0][0],$piece_size);
+				if($trackersCount>1)
+					$torrent->announce_list($announce_list);
+			}
+			else
+                	        $torrent = new Torrent($path_edit,array(),$piece_size);
 		}
-		else
-                        $torrent = new Torrent($path_edit,array(),$piece_size);
 		if(isset($_REQUEST['comment']))
 		{
 			$comment = trim($_REQUEST['comment']);
