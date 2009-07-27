@@ -1,0 +1,29 @@
+#summary Как забрать версию с svn
+
+== Как забрать версию с svn ==
+
+Для этого у Вас в системе должна стоять программа [http://subversion.tigris.org/ Subversion].
+Нужно выполнить следующие команды:
+{{{
+cd www-root
+svn checkout http://rutorrent.googlecode.com/svn/trunk/rtorrent
+}}}
+Под www-root здесь понимается корень Вашего веб-сервера, обычно это что-то вроде /www/htdocs.
+Если у Вас уже есть копия версии с svn, и Вы желаете ее обновить, то последовательность команд должна быть следующая:
+{{{
+cd www-root/rtorrent
+svn update
+}}}
+Для плагинов последовательность команд немного отличается (подразумевается, что версия собственно ruTorrent у Вас на диске уже есть):
+{{{
+cd www-root/rtorrent/plugins
+svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/plugin-name
+}}}
+и
+{{{
+cd www-root/rtorrent/plugins/plugin-name
+svn update
+}}}
+соответственно. Здесь plugin-name - имя плагина. Т.е., например, create, rss и т.п.
+
+Производить сии операции лучше всего из под пользователя, под которым работает веб-сервер. Дабы потом не путаться в правах на файлы.
