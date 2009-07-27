@@ -21,7 +21,9 @@ if($isAutoStart)
 		0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0];
 	$interval = $updateInterval*60;
 	if(!$pathToPHP || ($pathToPHP==""))
-		$pathToPHP = "php";
+		$php = "php";
+	else
+		$php = $pathToPHP;
 	send2RPC('<?xml version="1.0" encoding="UTF-8"?>'.
 		'<methodCall>'.
 		'<methodName>schedule</methodName>'.
@@ -29,7 +31,7 @@ if($isAutoStart)
 		'<param><value><string>scheduler</string></value></param>'.
 		'<param><value><string>'.$startAt.'</string></value></param>'.
 		'<param><value><string>'.$interval.'</string></value></param>'.
-		'<param><value><string>execute={sh,-c,'.$pathToPHP.' '.$theSettings->path.'plugins/scheduler/update.php'.'&amp; exit 0}</string></value></param>'.
+		'<param><value><string>execute={sh,-c,'.$php.' '.$theSettings->path.'plugins/scheduler/update.php'.'&amp; exit 0}</string></value></param>'.
 		'</params>'.
 		'</methodCall>');
 }
