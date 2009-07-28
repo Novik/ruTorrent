@@ -1,30 +1,29 @@
-#summary Описание плагина trafic
+#summary Trafic plug-in description
 
-== Введение ==
-
-Плагин реализует подсистему регистрации трафика rTorrent по всем используемым трекерам. Доступны три позиции - почасовой график, по дням текущего месяца и по месяцам текущего года. Вы в любой момент можете очистить данные статистики, нажав на специально обученную кнопку на интерфейсе (см. скриншот). 
+== Introduction ==
+The Trafic plug-in is a subsystem for registration of the total (all trackers counted) rTorrent traffic. The plug-in has three options of the graph - hourly, daily and monthly. Statistics can be cleaned at any time by pressing corresponding button in the interface (see screenshot).
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/trafic_big.jpg http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/trafic_small.jpg]
 
-== Как оно работает ==
+== How does it work ==
 
-После первой загрузки с установленным плагином trafic, ruTorrent выдает команду планировщику rTorrent, который, в свою очередь, начинает периодически сообщать показания текущего трафика.
+When ruTorrent starts with installed Trafic plug-in first time it sends a command to the rTorrent scheduler, which begins provide the application with information about current traffic.
+Once again - traffic registration begins after first start of the ruTorrent only. I.e. traffic is not counting in the time between start of the rTorrent and first (for this rTorrent session) start of the ruTorrent.
+To avoid this, a special string should be added to the rTorrent configuration file (see below).
 
-Еще раз обращаю внимание - процесс опроса начинается только после первой загрузки ruTorrent. Т.е. в промежуток между стартом rTorrent и первым после этого стартом ruTorrent никакой полезной работы производиться не будет. Чтобы избежать этого, нужно добавить в конфигурационный файл rTorrent специально обученную строчку (см. ниже).
+== Some non-obvious points ==
 
-== Некоторые неочевидные моменты ==
+ * The time ticks is shown on the chart are corresponding to the server's time. If time settings on the server and on the client are different, some problems with the chart interpreting may occur. If this happened, it is recommended to set correct time zone on all computers and then clean up statistics.
+ * Activating the button "Clear" while the the option "All trackers" is selected will lead to erase of the whole statistic of all trackers. If a tracker is selected, the button will wipe the data of this particular tracker only.
+ * The traffic is counting for all trackers in the zeroth group of every torrent. For all other groups the traffic will not be registered.
+ * The data on the charts may not match to the tracker's statistics because the plug-in just counting the data provided by rTorrent. It doesn't know if the data has been sent to the tracker or not.
 
- * Время на графике соответствует серверному. Если установки времени на серверной и клиентской машине отличаются, Вы, возможно, будете иметь проблемы с интерпретацией графиков. Посему, если Вы, например, забыли выставить на сервере таймзону - рекомендуется таки сделать это, после чего очистить всю статистику.
- * Нажатие кнопки "Очистить" в позиции "Все трекеры" приведет к полной очистке всей статистики по всем трекерам. В позиции текущего трекера - только по нему, родному.
- * Показания трафика регистрируются для всех трекеров в нулевой группе каждой закачки. Для прочих групп - не регистрируются.
- * То, что Вы наблюдаете на графике, может не совпадать с показаниями статистики на сайте трекера. Т.к. плагин регистрирует только изменение цифирек для закачек, он не может знать - сообщены эти данные трекеру, или нет.
+== Additional plug-in adjustment ==
 
-== Дополнительная настройка плагина ==
-
-Производится в файле `plugins/trafic/conf.php`.
-    * `$updateInterval` - переменная содержит интервал съема показаний трафика с rTorrent (в минутах). По умолчанию - 15 минут.
-    * `$isAutoStart` - переменная определяет способ начала работы. Если она равна `true`, то команда планировщику rTorrent на начало работы выдается при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы дать пинка планировщику самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчку 
+Following changes should be done in the file `plugins/trafic/conf.php`.
+    * `$updateInterval` - the variable sets the interval in minutes between requests to the rTorrent. Default - 15 minutes. 
+    * `$isAutoStart` - he variable defines how the traffic counting starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler need to activated  independently. To do this, the following string should be added into the rTorrent configuration file:
 {{{
 schedule = trafic,10,00:15:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"
 }}}
- где full_path_to_plugin - полный путь к плагину trafic.
+ where full_path_to_plugin - is a full path to the Trafic plug-in. 
