@@ -77,7 +77,7 @@ class rTorrentSettings
 		$len = strlen($this->path);
 		if(($len>0) && ($this->path[$len-1]!='/'))
 			$this->path.='/';
-		$req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", 1024) );
+		$req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 		if($req->run())
 		{
 			$this->linkExist = true;
