@@ -213,10 +213,13 @@ utWebUI.initTrackersLabels = function()
 		var ul = document.createElement('UL');
 		ul.innerHTML = '<li id="_hr_"><hr /></li>';
 		var el = $$('CatList');
-		el.appendChild(ul);
+		var lbl = $$('lbll').parentNode.nextSibling;
+  		el.insertBefore(ul,lbl);
+//		el.appendChild(ul);
 		var div = document.createElement('DIV');
 		div.innerHTML = '<ul id="torrl"></ul>';
-	        el.appendChild(div);
+//	        el.appendChild(div);
+  		el.insertBefore(div,ul.nextSibling);
 	        utWebUI.allTrackersStuffLoaded = true;
 	}
 };
