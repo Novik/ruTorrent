@@ -2,6 +2,31 @@ utWebUI.trackersLabels = new Object();
 utWebUI.actTrackersLbl = null;
 utWebUI.allTrackersStuffLoaded = false;
 
+utWebUI.trkFilterByLabel = utWebUI.filterByLabel;
+utWebUI.filterByLabel = function(hash)
+{
+	if(utWebUI.actTrackersLbl)
+		utWebUI.filterByTracker(hash);
+	else
+		utWebUI.trkFilterByLabel(hash);
+}
+
+utWebUI.filterByTracker = function(hash)
+{
+	if((typeof (this.trackers[hash]) != "undefined") &&
+		this.trackers[hash].length &&
+		this.trackers[hash][0].length)
+	{
+		var tracker = utWebUI.getTrackerName( this.trackers[hash][0][0] );
+		if(tracker && (tracker==utWebUI.actTrackersLbl))
+			this.trtTable.unhideRow(hash);
+		else
+		         this.trtTable.hideRow(hash);
+       	}
+	else
+		this.trtTable.hideRow(hash);
+}
+
 utWebUI.trkSwitchRSSLabel = utWebUI.switchRSSLabel;
 utWebUI.switchRSSLabel = function(el,force)
 {
@@ -76,25 +101,15 @@ utWebUI.switchTrackersLabel = function(el,force)
 		$$(this.actLbl).className = "";
 	this.actLbl = "";
 	for(var hash in this.torrents)
+	        utWebUI.filterByTracker(hash);
+	if(!force)
 	{
-		if((typeof (this.trackers[hash]) != "undefined") &&
-			this.trackers[hash].length &&
-			this.trackers[hash][0].length)
-		{
-			var tracker = utWebUI.getTrackerName( this.trackers[hash][0][0] );
-			if(tracker && (tracker==utWebUI.actTrackersLbl))
-				this.trtTable.unhideRow(hash);
-			else
-			         this.trtTable.hideRow(hash);
-         	}
-		else
-			this.trtTable.hideRow(hash);
-	}
-	this.trtTable.clearSelection();
-	if(this.dID != "")
-	{
-		this.dID = "";
-		this.clearDetails();
+		this.trtTable.clearSelection();
+		if(this.dID != "")
+		{       	
+			this.dID = "";
+			this.clearDetails();
+		}
 	}
 	this.trtTable.refreshRows();
 }
