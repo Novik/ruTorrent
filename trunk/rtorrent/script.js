@@ -1837,6 +1837,7 @@ utWebUI =
 				_87.splice(16, ln-19);
 				this.trtTable.addRow(this.fillAdditionalTorrentsCols(sId,_87), sId, _8c, {"label" : lbl});
 				this.noUpdate = false;
+				this.getTrackers(sId);
          		}
 			else 
 			{
