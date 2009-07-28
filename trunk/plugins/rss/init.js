@@ -82,7 +82,8 @@ utWebUI.switchRSSLabel = function(el,force)
 		utWebUI.trtTable.clearSelection();
 		utWebUI.dID = "";
 		utWebUI.clearDetails();
-		$$(utWebUI.actLbl).className = "";
+		if((this.actLbl != "") && ($$(this.actLbl) != null))
+			$$(utWebUI.actLbl).className = "";
 		var rss = $$("RSSList");
 		if(!utWebUI.cssCorrected)
 		{
