@@ -1796,6 +1796,13 @@ utWebUI =
 , "updateAdditionalTorrentsCols" : function(sId)
 	{
 	}
+, "filterByLabel" : function(sId)
+	{
+		if(this.trtTable.getAttr(sId, "label").indexOf(this.actLbl) >- 1)
+			this.trtTable.unhideRow(sId);
+		else 
+			this.trtTable.hideRow(sId);
+	}
 , "addTorrents" : function(_83) 
 	{
    		var d = eval("(" + _83 + ")");
@@ -1846,14 +1853,7 @@ utWebUI =
 				{
 					this.labels[sId] = lbl;
 					this.trtTable.setAttr(sId, "label", lbl);
-					if(lbl.indexOf(this.actLbl) >- 1) 
-					{
-						this.trtTable.unhideRow(sId);
-					}
-					else 
-					{
-						this.trtTable.hideRow(sId);
-               				}
+					this.filterByLabel(sId);
 				}
 				if((aD[0] != _87[1]) || (aD[3] != _87[4]) || (aD[2] != _87[3]))
 				{
