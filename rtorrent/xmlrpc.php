@@ -124,12 +124,12 @@ class rXMLRPCRequest
 //toLog($answer);
 			if(strlen($answer)>0)
 			{
-				preg_match_all("|<value><string>(.*)</string></value>|U",$answer,$this->strings);
+				preg_match_all("|<value><string>(.*)</string></value>|Us",$answer,$this->strings);
 				$this->strings = str_replace("\\","\\\\",$this->strings[1]);
 				$this->strings = str_replace("\"","\\\"",$this->strings);
 				foreach($this->strings as &$string) 
 					$string = html_entity_decode($string,ENT_COMPAT,"UTF-8");
-				preg_match_all("|<value><i.>(.*)</i.></value>|U",$answer,$this->i8s);
+				preg_match_all("|<value><i.>(.*)</i.></value>|Us",$answer,$this->i8s);
 				$this->i8s = $this->i8s[1];
 				if(strstr($answer,"faultCode")!==false)
 					$this->fault = true;	
