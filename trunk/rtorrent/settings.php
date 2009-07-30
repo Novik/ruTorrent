@@ -91,7 +91,7 @@ class rTorrentSettings
 			if($req->run() && !$req->fault)
 			{
 				$this->directory = $req->strings[0];
-				$this->session = $req->strings[1];
+  		                $this->session = $req->strings[1];
 				$this->version = $req->strings[2];
 				$parts = explode('.', $this->version);
 				$this->iVersion = 0;
@@ -108,6 +108,21 @@ class rTorrentSettings
 					{
 				        	$this->gid = $ss['gid'];
 					        $this->uid = $ss['uid'];
+						if(!empty($this->directory) &&
+							($this->directory[0]=='~'))
+						{
+							if(function_exists('posix_getpwuid'))
+							{
+					        		$ui = posix_getpwuid($this->uid);
+						        	$this->directory = $ui["dir"].substr($this->directory,1);
+			                		}
+			                		else
+			                		{
+			                		 	$req = new rXMLRPCRequest( new rXMLRPCCommand("execute_capture", array("echo","~")) );
+			                		 	if($req->run() && !$req->fault)
+				                		 	$this->directory = trim($req->strings[0]).substr($this->directory,1);
+			                		}
+			                	}
 					}
 				}
 				$this->store();
