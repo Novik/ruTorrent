@@ -6,7 +6,7 @@ The plug-in provides some possibilities on automation.
 Following functions are realized for now:
  * *AutoLabel* automatic creation of labels at addition of new torrent through the web interface.
 
- * *AutoMove* automatic transferring of torrent data files to other directory after downloading completion.
+ * *AutoMove* automatic transferring of torrent data files to other directory on downloading completion.
 
 ----
 
@@ -15,7 +15,7 @@ The label is automatically formed, if:
  * label input field in add torrent dialogue is empty,
  * the directory where it is supposed to save torrent data, is a subdirectory for the directory specified in variable *"directory"* of *rtorrent.rc* file.
 
-Principle of label creation:
+Principles of label creation:
 
  If there is a variable *"directory =/usr/p2p/downloads"* in *rtorrent.rc* <br/> 
  And new torrent is saved as */usr/p2p/downloads/Video/DVD/movie.avi*, <br/>
@@ -24,20 +24,20 @@ Principle of label creation:
 ----
 
 == AutoMove ==
-The downloaded torrent data files are transferred to the directory, set in configurations, with saving the directory structure relative to directory specified in variable *"directory"* of *"rtorrent.rc"* file and then started for seeding.
+The downloaded torrent data files are transferred to the directory, which is set in configuration, with the same directory structure relative to directory specified in variable *"directory"* of *"rtorrent.rc"* file and then started for seeding.
 
 For example:
  If there is a variable *"directory =/usr/p2p/downloads"* in *rtorrent.rc* <br/> 
  And *"/media/p2p"* is set as the directory for ready downloads, <br/>
- The files downloaded to *"/usr/p2p/downloads/Video/Movie/`*`.avi"* will be moved to *"/media/p2p/Video/Movie/`*`.avi"* after downloading completion.
+ The files downloaded to *"/usr/p2p/downloads/Video/Movie/`*`.avi"* will be moved to *"/media/p2p/Video/Movie/`*`.avi"* on downloading completion.
 
 There was an idea to use this plug-in in case when the directory for ready downloads was a mounted resource such as an other disk or SMB share with common access. The SMB share solution works on FreeBSD somehow, but, in *Novik's* opinion, _"under a 2.4 kernel (what takes place to be, for example, on a router), seeding from smb and nfs mounted resources will not go. Mmap call, that is used by rtorrent, does not work on such fs under the given kernel"_.
 
 Some features:
 
- * The plug-in correctly handle a situation with one data directory for several torrents - files are moved according to torrent file list, instead of simple directory moving.
+ * The plug-in handle correctly a situation with one data directory for several torrents - files will be moved according to torrent file list, instead of simple directory moving.
 
- * If files with the same names, as for completed torrent, are in the directory for ready downloads, they will be overwritten.
+ * If there are files with the same names, as for completed torrent, in the directory for ready downloads, they will be overwritten.
 
  * The plug-in is integrated with *rTorrent* at web interface loading. The plug-in will not reintegrate with *rTorrent* after *rTorrent* restart until web interface reloading. To avoid it, you may add something like this to *rtorrent.rc* file (in one line):
 
