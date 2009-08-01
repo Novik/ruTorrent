@@ -1,7 +1,7 @@
-#summary Описание плагина Choose
+#summary Choose plug-in description
 
-== Введение ==
+== Introduction ==
 
-Плагин внедряет в диалог добавления торрента кнопку, позволяющую осуществлять более удобную навигацию по файловой системе. Разумеется, в выпадающем списке будут показаны только те директории, в которых rTorrent может создавать файлы. И которые разрешено просматривать пользователю, из под которого работает веб-сервер. 
+The plug-in adds a button allowing comfortable navigation on a file system to the torrent addition dialogue. Of course, only those directories would be shown in a dropdown list, in which rTorrent can create files. And which are allowed for viewing to the web server user.
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/choose.jpg]
