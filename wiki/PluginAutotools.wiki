@@ -1,69 +1,69 @@
-#summary Описание плагина Autotools
+#summary Autotools plug-in description
 
 == Введение ==
 
-Плагин предоставляет некоторые возможности по автоматизации.
-Пока реализованы следующие функции:
- * *AutoLabel* автоматическое формирование меток при добавлении нового торрента через веб-интерфейс.
+The plug-in provides some possibilities on automation.
+Following functions are realized for now:
+ * *AutoLabel* automatic creation of labels at addition of new torrent through the web interface.
 
- * *AutoMove* автоматическое перенесение файлов данных торрента в другой каталог после полного завершения закачки.
+ * *AutoMove* automatic transferring of torrent data files to other directory after downloading completion.
 
 ----
 
 == AutoLabel ==
-Метка автоматически формируется, если:
- * поле ввода метки в диалоге добавления торрента пустое,
- * место, куда предполагается сохранять данные торрента, является подкаталогом для каталога, указанного в переменной *"directory"* файла *rtorrent.rc*.
+The label is automatically formed, if:
+ * label input field in add torrent dialogue is empty,
+ * the directory where it is supposed to save torrent data, is a subdirectory for the directory specified in variable *"directory"* of *rtorrent.rc* file.
 
-Принцип формирования метки:
+Principle of label creation:
 
- Если в *rtorrent.rc* задана переменная *"directory = /usr/p2p/downloads"*<br/>
- и новый торрент сохраняется в */usr/p2p/downloads/Video/DVD/movie.avi*,<br/>
- то в качестве метки подставится *"Video/DVD"*.
+ If there is a variable *"directory =/usr/p2p/downloads"* in *rtorrent.rc* <br/> 
+ And new torrent is saved as */usr/p2p/downloads/Video/DVD/movie.avi*, <br/>
+ The label will be *"Video/DVD"*.
 
 ----
 
 == AutoMove ==
-Скачанные файлы торрента переносятся в каталог, указаный в конфигурации, с сохранением структуры каталогов относительно директории, указанной в переменной *"directory"* файла *"rtorrent.rc"* и уже оттуда запускаются на раздачу.
+The downloaded torrent data files are transferred to the directory, set in configurations, with saving the directory structure relative to directory specified in variable *"directory"* of *"rtorrent.rc"* file and then started for seeding.
 
-Например:
- Если в *rtorrent.rc* задана переменная *"directory = /usr/p2p/downloads"*,<br/>
- а в качестве каталога для готовых закачек указан каталог *"/media/p2p"*,<br/>
- то файлы загружавшиеся в *"/usr/p2p/downloads/Video/Movie/`*`.avi"* будут перемещены в *"/media/p2p/Video/Movie/`*`.avi"* после завершения закачки.
+For example:
+ If there is a variable *"directory =/usr/p2p/downloads"* in *rtorrent.rc* <br/> 
+ And *"/media/p2p"* is set as the directory for ready downloads, <br/>
+ The files downloaded to *"/usr/p2p/downloads/Video/Movie/`*`.avi"* will be moved to *"/media/p2p/Video/Movie/`*`.avi"* after downloading completion.
 
-Планировалось применять плагин в случае, когда в качестве каталога для готовых закачек монтируется другой диск или SMB ресурс с общим доступом. Данное решение работает на FreeBSD, но, по мнению *Novik*, _"под ядром 2.4 (какое имеет место быть, например, на роутере), раздача с smb и nfs монтированных разделов идти не будет. Вызов mmap, который используется rtorrent на данных fs под данным ядром не работает"_.
+There was an idea to use this plug-in in case when the directory for ready downloads was a mounted resource such as an other disk or SMB share with common access. The SMB share solution works on FreeBSD somehow, but, in *Novik's* opinion, _"under a 2.4 kernel (what takes place to be, for example, on a router), seeding from smb and nfs mounted resources will not go. Mmap call, that is used by rtorrent, does not work on such fs under the given kernel"_.
 
-Некоторые особенности:
+Some features:
 
- * Плагин корректно обрабатывает ситуацию, когда файлы разных торрентов сохраняются в один каталог - делается перенос файлов по списку торрента, а не просто перенос базового каталога.
+ * The plug-in correctly handle a situation with one data directory for several torrents - files are moved according to torrent file list, instead of simple directory moving.
 
- * Если в каталоге для загруженных файлов окажутся файлы с такими же именами, как у завершившегося торрента, то они будут перезаписаны.
+ * If files with the same names, as for completed torrent, are in the directory for ready downloads, they will be overwritten.
 
- * Плагин встраивается в *rTorrent* при загрузке веб-интерфейса. Если, при неактивном веб-интерфейсе, произойдет рестарт *rTorrent*-а, то плагин не переподключится. Если хочется избежать этого, то нужно в конфигурации *rtorrent.rc* прописать примерно следующее (в одну строчку):
+ * The plug-in is integrated with *rTorrent* at web interface loading. The plug-in will not reintegrate with *rTorrent* after *rTorrent* restart until web interface reloading. To avoid it, you may add something like this to *rtorrent.rc* file (in one line):
 
 {{{
 system.method.set_key = event.download.finished,automove, "execute={full_path_to_plugins/autotools/move.sh,full_path_to_php,$d.get_hash=}"
 }}}
 
- * Имя события нужно оставить таким же (*"automove"*), иначе при запуске веб-интерфейса установится вторая копия обработчика.
+ * The event name needs to be left the same (*"automove"*), otherwise the second copy of plug-in will be installed at next web interface loading.
 
- * Для удобства выбора каталога для завершенных закачек на хосте рекомендуется установить сервисный плагин [Plugin_GetDir _getdir], тогда появится возможность навигации по файловой системе хоста.
+ * For comfortable directory choice on the host for completed downloads it is recommended to install the service plug-in [Plugin_GetDir _getdir]. There will be a possibility of navigation on host file system.
 
 ----
 
 == История версий: ==
 
 *1.3* 
- * исправлена ошибка, приводившая к вылету rTorrent, если в именах подкаталогов торрента использовались служебные символы.
- * попытка избежать лишнего рехэширования, которое иногда возникает.
+ * The error leading to rTorrent's crash if torrent subdirectories names contain bad symbols is corrected.
+ * Attempt to avoid redundant re-hashing, which takes place sometimes.
 
 *1.2*
- * плагин переименован в autotools и объединен с automove 1.0
- * добавлена возможность устанавливать настройки в опциях веб-морды
+ * The plug-in is renamed to autotools and united with automove 1.0.
+ * Possibility to set customizations in web interface options is added.
 
 *1.1*
- * обеспечение совместимости с плагинами retrackers и edit
- * плагин теперь запускается до retracker (runlevel.info: 5)
+ * Compatibility with plug-ins retrackers and edit is added.
+ * The plug-in is started now before retracker plug-in (runlevel.info: 5).
 
 *1.0*
- * первая версия
+ * The first version.
