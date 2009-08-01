@@ -1,11 +1,11 @@
-#summary Описание плагина erasedata
+#summary Erasedata plug-in description
 
-== Введение ==
+== Introduction ==
 
-Плагин добавляет в контекстное меню закачки пункт "Удалить данные", использование которого приводит к удалению не только .torrent файла, но и его данных.
+The plug-in adds an item "Delete data" to the context menu the downloading item, which allows to remove not only a .torrent file, but also its data.
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/erasedata.jpg]
 
-== Известные недостатки ==
+== Known lacks ==
 
-Плагин не будет удалять директории, созданные в результате закачки. Удалению подлежат только файлы.
+The plug-in will not delete the directories created as a result of downloading. Files are the only subject to remove.
