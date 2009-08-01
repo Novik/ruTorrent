@@ -2,6 +2,6 @@
 
 == Introduction ==
 
-The plug-in adds a button allowing comfortable navigation on a file system to the torrent addition dialogue. Of course, only those directories would be shown in a dropdown list, in which rTorrent can create files. And which are allowed for viewing to the web server user.
+The plug-in adds a button, allowing comfortable navigation on a file system, to the torrent addition dialogue. Of course, only those directories would be shown in a dropdown list, in which rTorrent can create files. And which are allowed for viewing to the web server user.
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/choose.jpg]
