@@ -1,6 +1,6 @@
 #summary Autotools plug-in description
 
-== Введение ==
+== Introduction ==
 
 The plug-in provides some possibilities on automation.
 Following functions are realized for now:
