@@ -1,8 +1,8 @@
 <?php
 
-$rootPath = "./";
-if( !is_file( "util.php" ) ) $rootPath = "../../";
-require_once( $rootPath."util.php" );
+$atutilsRootPath = "./";
+if( !is_file( "util.php" ) ) $atutilsRootPath = "../../";
+require_once( $atutilsRootPath."util.php" );
 require_once( "conf.php" );
 
 function Debug( $str )
