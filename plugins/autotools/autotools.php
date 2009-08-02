@@ -1,7 +1,7 @@
 <?php
-$rootPath = "./";
-if( !is_file( 'util.php' ) ) $rootPath = "../../";
-require_once( $rootPath."util.php" );
+$autotoolsRootPath = "./";
+if( !is_file( 'util.php' ) ) $autotoolsRootPath = "../../";
+require_once( $autotoolsRootPath."util.php" );
 
 class rAutoTools
 {
@@ -14,8 +14,8 @@ class rAutoTools
 	static public function load()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $autotoolsRootPath;
+		$cache = new rCache( $autotoolsRootPath.$settings );
 		$at = new rAutoTools();
 		$cache->get( $at );
 		return $at;
@@ -23,8 +23,8 @@ class rAutoTools
 	public function store()
 	{
 		global $settings;
-		global $rootPath;
-		$cache = new rCache( $rootPath.$settings );
+		global $autotoolsRootPath;
+		$cache = new rCache( $autotoolsRootPath.$settings );
 		return $cache->set( $this );
 	}
 	public function set()

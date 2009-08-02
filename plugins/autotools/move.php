@@ -1,9 +1,9 @@
 <?php
 
-$rootPath = "./";
-if( !is_file( "util.php" ) ) $rootPath = "../../";
-require_once( $rootPath."util.php" );
-require_once( $rootPath."xmlrpc.php" );
+$automoveRootPath = "./";
+if( !is_file( "util.php" ) ) $automoveRootPath = "../../";
+require_once( $automoveRootPath."util.php" );
+require_once( $automoveRootPath."xmlrpc.php" );
 require_once( "at_utils.php" );
 require_once( "autotools.php" );
 require_once( "conf.php" );
