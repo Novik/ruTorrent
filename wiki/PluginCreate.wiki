@@ -1,26 +1,27 @@
-#summary Описание плагина Create
+#summary Create plug-in description
 
-== Введение ==
+== Introduction ==
 
-Плагин предоставляет возможность создания .torrent файлов. При установленном плагине в меню команд добавляется пункт "Новый торрент", использование которого приводит к появлению следующего диалога: 
+The plug-in provides ability to create .torrent files. After plug-in installation there will be a new item "Create torrent..." in the commands menu, which shows the following dialogue:
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/create.jpg]
 
- # "Выбор источника" - здесь указывается путь к содержимому, которое вы хотите раздать. Перед тем, как указывать путь, следует решить, будете ли вы раздавать один файл или несколько. Если вы создаете торрент из нескольких файлов, эти файлы должны располагаться в одной папке. Кроме них в папке ничего быть не должно.
- # "Трекеры" - список трекеров, на которых будет происходить раздача. Разные группы трекеров отделяются друг от друга пустой строкой.
- # "Комментарий" - к торренту можно добавлять комментарии (в ruTorrent эти комментарии будут отображаться в нижней части на вкладке "Общие").
- # "Размер части" - при создании торрента его содержимое дробится на мелкие части, которые более удобны в передаче и управлении. С помощью данной опции Вы можете выбирать размер частей. Общее правило таково: чем больше размер содержимого, тем большим должен быть и размер частей. В большинстве случаев для этого параметра будет достаточно оставить умолчательное значение (256К)
- # "Начать раздачу" - автоматически загружает созданный торрент в rTorrent сразу после завершения процесса. В некоторых случаях нужно отключить эту функцию. Например, если сайт, на который будет выполняться загрузка, требует "повторной закачки" торрента для раздачи (это происходит в тех случаях, если для сайта требуется пароль или cookies). Если эта функция не выбрана, вы должны будете вручную загрузить торрент в программу rTorrent для раздачи.
- # "Частный торрент" - отключает DHT (Distributed Hash Table) и PEX (Peer EXchange), которые являются альтернативными способами получения других пиров вместо трекера. Это особенно полезно в тех случаях, если трекер по какой-либо причине недоступен. Однако некоторые частные сайты не разрешают применять эти функции, поскольку это не позволяет надлежащим образом следить за коэффициентами раздачи. При этом члены сайта могут раздавать торренты незарегистрированным пользователям.
- # "Создать и сохранить в..." - Это последний шаг при создании торрента. Процедура абсолютно аналогична сохранению файла в любом другом приложении.
+ # "Select Source" - type here path to contents, which you wish to seed. Before specifying a path you have to decide, whether you will distribute one file or several. If you create torrent from several files, these files should be placed in one folder. There should be nothing in this folder except them.
+ # "Trackers" - the list of trackers on which seeding will take place. Different tracker groups have to be separated from each other with an empty line.
+ # "Comment" - it is possible to add comments to torrent (these comments will be displayed at the bottom on the tab "Common" of ruTorrent).
+ # "Piece size" - at torrent creation its contents are split up for small parts, which are more convenient in transmission and handle. By means of this option you can select the size of parts. The common rule is that: the more the contents size, the larger should be and the size of parts. In most cases there will be enough to leave default value for this parameter (256К)
+ # "Start seeding" - loads created torrent into rTorrent automatically, right after process completion. In certain cases it is necessary to disable this function. For example, if the site, on which loading will be fulfilled, requires torrent "re-downloading" for seeding (it occurs if the site requires password or cookies). If this option is not selected, you should load torrent into the rTorrent for seeding manually.
+ # "Private torrent" - disables DHT (Distributed Hash Table) and PEX (Peer EXchange), which are alternative ways of peers reception instead of tracker. It is especially useful if tracker is unavailable for any reason. However some private sites do not allow to use these functions as it does not allow to trace seeding coefficients properly. At the same time site members can seed torrents to non-registered users.
+ # "Create and save as..." - is the last step of torrent creation. Procedure is absolutely similar to file saving in any other application.
 
-== Известные недостатки ==
+== Known lacks ==
 
-Плагин не видит и не обрабатывает файлы размером более 2 гигабайт. Эта неприятность вызвана ограничением php на работу с большими файлами. Обращаю внимание - размер *всей* закачки *может* превышать 2Г. Ограничение относится только к каждому единичному файлу внутри закачки.
+The plug-in cannot see and does not handle files, that are more than 2 gigabytes in size. This trouble is caused by php limitation on operations with the big files. Pay attention - the *total* downloading size *can* exceed 2Gb. Limitation concerns only each individual file of downloading.
 
-Начиная с версии плагина 1.1 есть возможность обойти это ограничение. Для этого следует установить программу [http://www.createtorrent.com createtorrent], и настроить плагин соответствующим образом.
+Since the plug-in version of 1.1 there is a possibility to bypass this limitation. For this purpose it is necessary to install the program [http://www.createtorrent.com createtorrent], and to customize a plug-in in appropriate way.
 
-== Дополнительная настройка плагина ==
-Начиная с версии плагина 1.1 производится в файле plugins/create/conf.php. 
- # $useExternal - если данная переменная равна `true`, то для построения .torrent файла будет использоваться внешняя программа createtorrent.
- # $pathToCreatetorrent - переменная содержит путь к программе createtorrent. Если значение переменной - пустая строка (по умолчанию) то createtorrent будет искаться в PATH пользователя веб-сервера. Данная настройка имеет смысл только для $useExternal=true.
+== Additional customization ==
+
+Since the plug-in version of 1.1 it is made in the file plugins/create/conf.php. 
+ # $useExternal - if the given variable is true, external program createtorrent will be used for .torrent file creation.
+ # $pathToCreatetorrent - the variable with the path to the program createtorrent. If it's value is empty line (by default), createtorrent will be searched in PATH for a web server user. The given option makes sense only if $useExternal=true.
