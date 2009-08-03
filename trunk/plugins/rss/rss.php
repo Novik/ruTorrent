@@ -149,7 +149,11 @@ class rRSS
 		$ret = "{ label: \"".addslashes($label)."\", auto: ".$auto.", enabled: ".$enabled.", hash: \"".$this->hash."\", url: \"".addslashes($this->srcURL)."\", items: [";
 		foreach($this->items as $item)
 		{
-			$ret.="{ time: ".$item['timestamp'].", title: \"".addslashes($item['title'])."\", href: \"".addslashes($item['href'])."\", errcount: ".$history->getCounter($item['href']).", hash: \"".$history->getHash($item['href'])."\" },";
+			if($item['timestamp']>0)
+				$ret.="{ time: ".$item['timestamp'];
+			else
+				$ret.='{ time: null';
+			$ret.=", title: \"".addslashes($item['title'])."\", href: \"".addslashes($item['href'])."\", errcount: ".$history->getCounter($item['href']).", hash: \"".$history->getHash($item['href'])."\" },";
 		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
