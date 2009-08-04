@@ -53,7 +53,7 @@ div#t div#pause {background: transparent url(./images/toolbar2.gif) no-repeat -7
 div#t div#stop {background: transparent url(./images/toolbar2.gif) no-repeat -96px center}
 div#t div#moveu {background: transparent url(./images/toolbar2.gif) no-repeat -168px center}
 div#t div#moved {background: transparent url(./images/toolbar2.gif) no-repeat -144px center}
-div#t div#rss {background: transparent url(./images/toolbar2.gif) no-repeat -144px center; -moz-opacity: 0.5}
+div#t div#rss {background: transparent url(./images/toolbar2.gif) no-repeat -144px center}
 div#t div#setting {background: transparent url(./images/toolbar2.gif) no-repeat -168px center}
 div#t div#search {background: transparent url(./images/toolbar2.gif) no-repeat -120px center}
 div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}

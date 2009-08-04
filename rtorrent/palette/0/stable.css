@@ -21,7 +21,7 @@
 .stable-body tr.selected td {background: #FFF880}
 .stable-body tr.odd td {background: #F3F3F3}
 .stable-body tr.even td {background: #FFFFFF}
-.stable-move-header {position: absolute; background: transparent url(./images/header_move.gif) repeat-x scroll center top; top: 0px; font: menu; padding: 2px 12px 2px 4px; line-height: 12px; -moz-opacity: 0.7; -moz-user-select: none; visibility: visible; border: 1px solid #0099FF; overflow: hidden}
+.stable-move-header {position: absolute; background: transparent url(./images/header_move.gif) repeat-x scroll center top rgba(255,255,255,0.7); top: 0px; font: menu; padding: 2px 12px 2px 4px; line-height: 12px; -moz-user-select: none; visibility: visible; border: 1px solid #0099FF; overflow: hidden; }
 .ie .stable-move-header {filter:alpha(opacity=70)}
 .stable-active-header {border-color: threedface !important}
 .stable-separator-header {position: absolute; top: 0px; left: 0px; font: menu; height: 1em; width: 1px; overflow: hidden; background: #0099FF; padding: 3px 0px}
