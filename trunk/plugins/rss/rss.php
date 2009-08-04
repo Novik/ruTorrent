@@ -1,23 +1,9 @@
 <?php
 
 require_once( 'rssconf.php');
-if(is_file('config.php'))
-{
-	require_once( 'config.php');
-	require_once( 'util.php');
-	require_once( 'Snoopy.class.inc');
-}
-else
-{
-	require_once( '../../config.php');
-	require_once( '../../util.php');
-	require_once( '../../Snoopy.class.inc');
-}
-
-function quoteAndDeslashEach(&$item)
-{
-	$item = "'".addslashes($item)."'"; 
-}
+require_once( '../../config.php');
+require_once( '../../util.php');
+require_once( '../../Snoopy.class.inc');
 
 class rRSS
 {
@@ -379,8 +365,9 @@ class rRSSFilter
 	public $addPath;
 	public $directory = null;
 	public $label = null;
+	public $throttle = null;
 
-	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', $start = 0, $addPath = 1, $directory = null, $label = null )
+	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', $start = 0, $addPath = 1, $directory = null, $label = null, $throttle = null )
 	{
 		$this->name = $name;
 		$this->pattern = $pattern;
@@ -391,6 +378,7 @@ class rRSSFilter
 		$this->addPath = $addPath;
 		$this->directory = $directory;
 		$this->label = $label;
+		$this->throttle = $throttle;
 	}
 	public function isApplicable( $rss )
 	{
@@ -415,6 +403,7 @@ class rRSSFilter
 	{
 		return("{ name: \"".addslashes($this->name)."\", enabled: ".$this->enabled.", pattern: \"".addslashes($this->pattern)."\", label: \"".addslashes($this->label).
 			"\", exclude: \"".addslashes($this->exclude).
+			"\", throttle: \"".addslashes($this->throttle).
 			"\", hash: \"".addslashes($this->rssHash)."\", start: ".$this->start.", add_path: ".$this->addPath.", dir: \"".addslashes($this->directory)."\" }");
 	}
 }
@@ -575,7 +564,7 @@ class rRSSManager
 						$filter->checkItem($item) )
 					{
 						$this->getTorrents( $rss, $item['href'], 
-							$filter->start, $filter->addPath, $filter->directory, $filter->label, false );
+							$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, false );
 					}
 				}
 			}
@@ -622,7 +611,7 @@ class rRSSManager
 				$hash = '';
 			}
 		}
-		array_walk($hrefs, 'quoteAndDeslashEach');
+		$hrefs = array_map(  'quoteAndDeslashEachItem', $hrefs);
 		return($this->rssList->formatErrors().", rss: '".$hash."',list: [".implode(",",$hrefs)."]}");
 	}
 	public function updateRSS($hash)
@@ -787,7 +776,7 @@ class rRSSManager
 			$this->rssList->addError( "WUILang.rssAlreadyExist", $rssURL );
 		$this->cache->set($this->rssList);
 	}
-	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $needFlush = true )
+	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $needFlush = true )
 	{
 		global $uploads;
 		$thash = 'Failed';
@@ -803,7 +792,13 @@ class rRSSManager
 				fclose($f);
 				$name = realpath($name);
 				@chmod($name,0666);
-				if(($thash = sendFile2rTorrent($name, false, $isStart, $isAddPath, $directory, $label))===false)
+
+				$addition = '';
+				if(!empty($throttle))
+				{
+					$addition = "<param><value><string>d.set_throttle_name=".$throttle."</string></value></param>";
+				}
+				if(($thash = sendFile2rTorrent($name, false, $isStart, $isAddPath, $directory, $label, $addition))===false)
 				{
 					$thash = 'Failed';
 					$ret = false;
