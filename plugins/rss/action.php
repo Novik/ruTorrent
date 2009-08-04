@@ -129,6 +129,12 @@ switch($cmd)
 						$flt->rssHash = $parts[1];
 				}
 				else
+				if($parts[0]=="throttle")
+				{
+					if($flt)
+						$flt->throttle = $parts[1];
+				}
+				else
 				if($parts[0]=="start")
 				{
 					if($flt)
@@ -204,7 +210,7 @@ switch($cmd)
 				if($mngr->cache->get($rss))
 				{
 					foreach($urls as $url)
-						$mngr->getTorrents( $rss, $url, $isStart, $isAddPath, $dir, $lbl, false );
+						$mngr->getTorrents( $rss, $url, $isStart, $isAddPath, $dir, $lbl, null, false );
 				}
 			}
 			$mngr->saveHistory();
