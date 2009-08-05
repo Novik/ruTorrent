@@ -2,6 +2,8 @@
 
 == Introduction ==
 
-Dark skin for ruTorrent. Screenshot:
+Dark skin for ruTorrent.
+
+Screenshot:
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/darkpal_big.jpg http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/darkpal_small.jpg]
