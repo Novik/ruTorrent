@@ -1,20 +1,22 @@
-#summary Описание плагина Edit
+#summary Description of the Edit plug-in
 
-== Введение ==
+== Introduction ==
 
-Плагин предоставляет возможность редактирования состава трекеров и комментария существующей закачки.
+The plug-in allows user to edit the list of trackers and commentaries of the current torrent.
 
-После установки плагина в контекстном меню закачки появляется новый пункт "Редактировать...", использование которого приводит к выдаче диалога "Настройки торрента".
+As the plug-in is installed a new option "Edit..." will appear in the context menu of the torrent. Activating this option will open "Torrent Properties" dialog.
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/edit.jpg]
 
-Оформление списка трекеров производится так же, как в [http://www.utorrent.com/ µTorrent] - разные группы трекеров отделяются друг от друга пустой строкой. Содержимое поля "Комментарий" Вы сможете увидеть на закладке "Общее".
+The list of trackers should be formatted the same way as for [http://www.utorrent.com/ µTorrent] - different groups of trackers must be separated by an empty line.
+The content of the "Comment" field will be shown in the "General" tab.
 
-== Как оно работает ==
+== How does it work ==
 
-В rTorrent отсутствует возможность редактировать свойства закачки "на ходу". Плагин попросту удаляет закачку, правит ее .torrent файл в соответствии с Вашим желанием, и добавляет закачку снова. Отсюда следует несколько не совсем очевидных моментов.
+rTorrent does not have a mean to edit torrent's properties on-the-fly. This plug-in just removes the torrent, modifies it in accordance with defined settings and adds it back.
+So there are some not always obvious points:
 
- * Если закачка не была завершена, то после редактирования она будет рехешироваться. Если Вы не хотите терять на это время, то редактируйте только завершенные закачки. Или производите правку непосредственно после добавления новой закачки в состоянии "Остановлена".
- * Ряд свойств закачки (приоритеты файлов, приоритет закачки, показания ратио и т.п.) после правки будут утеряны.
+ * If downloading of a torrent have not been finished, after modification it will be re-hashed. To avoid this the modification should be performed either after the download finished or immediately after new torrent is added in the "Stopped" state.
+ * Some properties of the torrent (file priorities, download priorities, ratio, etc.) will be lost after this modification.
 
-Способ автоматического редактирования состава трекеров закачек предоставляет плагин [PluginRetrackers Retrackers].
+The way to automatic editing of the list of trackers of all torrents is provided via [PluginRetrackers Retrackers] plug-in.
