@@ -301,7 +301,7 @@ class rCache
 		{
 		        fwrite( $fp, serialize( $rss ) );
         		fclose( $fp );
-			chmod($name,0777);
+			@chmod($name,0777);
 	        	return(true);
         	}
 	        return(false);
