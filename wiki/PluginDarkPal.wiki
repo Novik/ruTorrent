@@ -1,4 +1,4 @@
-#summary Description of the DarkPal plug-in
+#summary DarkPal plug-in description
 
 == Introduction ==
 
