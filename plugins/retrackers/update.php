@@ -82,7 +82,7 @@ if(count($trks->list) && (count($argv)>1))
 					$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
 					if($eReq->run() && !$req->fault)
 					{
-						chmod($fname,0666);
+						@chmod($fname,0666);
 						$fname = realpath($fname);
 						$label = rawurldecode($req->strings[2]);
 						if(sendFile2rTorrent($fname, false, $isStart, true, $req->strings[4], $label, 
