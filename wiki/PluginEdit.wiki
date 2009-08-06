@@ -1,4 +1,4 @@
-#summary Description of the Edit plug-in
+#summary Edit plug-in description
 
 == Introduction ==
 
