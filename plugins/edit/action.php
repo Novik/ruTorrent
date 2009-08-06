@@ -102,7 +102,7 @@ if(isset($HTTP_RAW_POST_DATA))
 						$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
 						if($eReq->run() && !$eReq->fault)
 						{
-							chmod($fname,0666);
+							@chmod($fname,0666);
 							$fname = realpath($fname);
 							$label = rawurldecode($req->strings[2]);
 
