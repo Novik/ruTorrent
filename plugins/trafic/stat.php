@@ -51,7 +51,7 @@ class rStat
 			fputcsv($file,$this->yearDown);
 			fputcsv($file,$this->yearHitTimes);
 			fclose($file);
-			chmod($this->fname,0777);
+			@chmod($this->fname,0777);
 		}
 	}
 	public function correct($deltaUp,$deltaDown)

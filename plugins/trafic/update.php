@@ -41,7 +41,7 @@
 					fputcsv($file,$tmp);
 				}
 				fclose($file);
-				chmod("stats/last.csv",0777);
+				@chmod("stats/last.csv",0777);
 			}
 			if($needUpdate)
 			{
