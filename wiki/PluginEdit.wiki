@@ -4,7 +4,7 @@
 
 The plug-in allows user to edit the list of trackers and commentaries of the current torrent.
 
-As the plug-in is installed a new option "Edit..." will appear in the context menu of the torrent. Activating this option will open "Torrent Properties" dialog.
+As the plug-in is installed a new option "Edit torrent..." will appear in the context menu of the torrent. Activating this option will open "Torrent Properties" dialog.
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/edit.jpg]
 
