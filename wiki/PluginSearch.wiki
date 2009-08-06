@@ -1,4 +1,4 @@
-#summary Description of the Search plug-in.
+#summary Search plug-in description
 
 == Introduction ==
 
