@@ -1,4 +1,4 @@
-#summary Setting up SCGI gateway.
+#summary Setting up SCGI gateway
 
 == Theoretics ==
 
