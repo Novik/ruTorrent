@@ -1,4 +1,4 @@
-#summary Description of the Cookies plug-in.
+#summary Cookies plug-in description
 
 == Introduction ==
 
