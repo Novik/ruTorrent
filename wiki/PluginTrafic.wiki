@@ -13,7 +13,7 @@ To avoid this, a special string should be added to the rTorrent configuration fi
 
 == Some non-obvious points ==
 
- * The time ticks is shown on the chart are corresponding to the server's time. If time settings on the server and on the client are different, some problems with the chart interpreting may occur. If this happened, it is recommended to set correct time zone on all computers and then clean up statistics.
+ * The time ticks shown on the chart are corresponding to the server's time. If time settings on the server and on the client are different, some problems with the chart interpreting may occur. If this happened, it is recommended to set correct time zone on all computers and then clean up statistics.
  * Activating the button "Clear" while the the option "All trackers" is selected will lead to erase of the whole statistic of all trackers. If a tracker is selected, the button will wipe the data of this particular tracker only.
  * The traffic is counting for all trackers in the zeroth group of every torrent. For all other groups the traffic will not be registered.
  * The data on the charts may not match to the tracker's statistics because the plug-in just counting the data provided by rTorrent. It doesn't know if the data has been sent to the tracker or not.
