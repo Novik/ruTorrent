@@ -329,12 +329,7 @@ class rRSSHistory
 	{
 		$ret = false;
 		if(array_key_exists($url,$this->lst))
-		{
-			if($this->cnt[$url]=='Failed')
-				$ret = ($this->getCounter( $url )<=HISTORY_MAX_TRY);
-			else
-				$ret = true;
-		}
+			$ret = ($this->getCounter( $url )>=HISTORY_MAX_TRY);
 		return($ret);
 	}
 	public function getHash( $url )
