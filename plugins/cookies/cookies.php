@@ -1,19 +1,18 @@
 <?php
-$cookiesRootPath = "./";
+rCookies::$rootPath = "./";
 if(!is_file('util.php'))
-	$cookiesRootPath = "../../";
-require_once( $cookiesRootPath."util.php" );
-
+	rCookies::$rootPath = "../../";
+require_once( rCookies::$rootPath."util.php" );
 class rCookies
 {
 	public $hash = "cookies.dat";
 	public $list = array();
+	static public $rootPath;
 
 	static public function load()
 	{
 		global $settings;
-		global $cookiesRootPath;
-		$cache = new rCache( $cookiesRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		$rt = new rCookies();
 		$cache->get($rt);
 		return($rt);
