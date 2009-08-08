@@ -1,20 +1,20 @@
 <?php
-$retrackersRootPath = "./";
+rRetrackers::$rootPath = "./";
 if(!is_file('util.php'))
-	$retrackersRootPath = "../../";
-require_once( $retrackersRootPath."util.php" );
+	rRetrackers::$rootPath = "../../";
+require_once( rRetrackers::$rootPath."util.php" );
 
 class rRetrackers
 {
 	public $hash = "retrackers.dat";
 	public $list = array();
 	public $dontAddPrivate = 1;
+	static public $rootPath;
 
 	static public function load()
 	{
 		global $settings;
-		global $retrackersRootPath;
-		$cache = new rCache( $retrackersRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		$rt = new rRetrackers();
 		$cache->get($rt);
 		return($rt);
