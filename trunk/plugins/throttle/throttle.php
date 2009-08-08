@@ -1,9 +1,9 @@
 <?php
-$throttleRootPath = "./";
+rThrottle::$rootPath = "./";
 $throttleThisPath = "./plugins/throttle/";
 if(!is_file('util.php'))
 {
-	$throttleRootPath = "../../";
+	rThrottle::$rootPath = "../../";
 	$throttleThisPath = "./";
 }
 require_once( $throttleRootPath."xmlrpc.php" );
@@ -15,12 +15,12 @@ class rThrottle
 {
 	public $hash = "throttle.dat";
 	public $thr = array();
+	static public $rootPath;
 
 	static public function load()
 	{
 		global $settings;
-		global $throttleRootPath;
-		$cache = new rCache( $throttleRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		$rt = new rThrottle();
 		if(!$cache->get($rt))
 			$rt->fillArray();
