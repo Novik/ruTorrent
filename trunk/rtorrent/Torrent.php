@@ -76,16 +76,17 @@ class Torrent {
      */
     public function __construct ( $data, $meta = array(), $piece_length = 256 ) 
     {
-        if ( $piece_length < 32 || $piece_length > 4096 ) {
-            throw new Exception( __( 'Invalid piece lenth, must be between 32 and 4096' ) );
-        }
         if ( is_string( $meta ) ) {
             $meta =  array( 'announce' => $meta );
         }
         if ( $this->build( $data, $piece_length * 1024 ) ) {
             $this->touch();
         } else {
-            $meta = array_merge( $meta, $this->decode( $data ) );
+            $arr = $this->decode( $data );
+            if(!is_array($arr))
+            	self::$errors[] = new Exception( 'Bad torrent data' );
+	    else
+            	$meta = array_merge( $meta, $arr );
         }
         foreach( $meta as $key => $value ) {
             $this->{$key} = $value;
