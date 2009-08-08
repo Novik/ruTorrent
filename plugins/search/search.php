@@ -1,17 +1,17 @@
 <?php
-$searchRootPath = "./";
+rSearch::$rootPath = "./";
 if(!is_file('util.php'))
-	$searchRootPath = "../../";
-require_once( $searchRootPath."util.php" );
+	rSearch::$rootPath = "../../";
+require_once( rSearch::$rootPath."util.php" );
 
 class rSearch
 {
 	public $hash = "search.dat";
+	static public $rootPath;
 	public $list = array(
 		array( "name"=>'Mininova', 		"url"=>'http://www.mininova.org/search/?utorrent&search=' ),
 		array( "name"=>'HQTtracker.ru', 	"url"=>'http://hqtracker.ru/browse.php?cat=0&search_in=1&search=' ),
 		array( "name"=>'The Pirate Bay',	"url"=>'http://thepiratebay.org/search.php?q=' ),
-		array( "name"=>'INTERFILM', 		"url"=>'http://interfilm.nu/movie/?do=search&str=' ),
 		array( "name"=>'IsoHunt', 		"url"=>'http://isohunt.com/torrents.php?ext=&op=and&ihq=' ),
 		array( "name"=>'VideoTracker.ru',	"url"=>'http://videotracker.ru/browse.php?cat=0&search_in=1&search=' ),
 		array( "name"=>'', 			"url"=>'' ),
@@ -20,8 +20,7 @@ class rSearch
 	static public function load()
 	{
 		global $settings;
-		global $searchRootPath;
-		$cache = new rCache( $searchRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		$rt = new rSearch();
 		$cache->get($rt);
 		return($rt);
