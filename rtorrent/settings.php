@@ -1,14 +1,15 @@
 <?php
 
-$settingsRootPath = "./";
+rTorrentSettings::$rootPath = "./";
 if(!is_file('util.php'))
-	$settingsRootPath = "../../";
-require_once( $settingsRootPath."util.php" );
-require_once( $settingsRootPath."xmlrpc.php" );
+	rTorrentSettings::$rootPath = "../../";
+require_once( rTorrentSettings::$rootPath."util.php" );
+require_once( rTorrentSettings::$rootPath."xmlrpc.php" );
 
 class rTorrentSettings
 {
 	public $hash = "rtorrent.dat";
+	static public $rootPath;
 
 	public $linkExist = false;
 	public $badXMLRPCVersion = true;
@@ -26,8 +27,7 @@ class rTorrentSettings
 	static public function load()
 	{
 		global $settings;
-		global $settingsRootPath;
-		$cache = new rCache( $settingsRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		$rts = new rTorrentSettings();
 		$cache->get($rts);
 		return($rts);
