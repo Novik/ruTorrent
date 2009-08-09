@@ -703,10 +703,10 @@ function Update()
 
 function UpdateStatus() 
 {
-//	if((tdl == 0) && (tul == 0)) 
-//	{
-//		return;
-//	}
+	if((tdl == 0) && (tul == 0)) 
+	{
+		return;
+	}
 	var s = WUILang.Download + ": " + ffs(tdl) + "/" + WUILang.s;
 	if(tdlimit>0 && tdlimit<100*1024*1024)
 		s+="  ["+ffs(tdlimit) + "/" + WUILang.s+"]";
