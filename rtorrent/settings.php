@@ -50,8 +50,7 @@ class rTorrentSettings
 	public function store()
 	{
 		global $settings;
-		global $settingsRootPath;
-		$cache = new rCache( $settingsRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		return($cache->set($this));
 	}
 	public function obtain()
