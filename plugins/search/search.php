@@ -28,8 +28,7 @@ class rSearch
 	public function store()
 	{
 		global $settings;
-		global $searchRootPath;
-		$cache = new rCache( $searchRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		return($cache->set($this));
 	}
 	public function set()
