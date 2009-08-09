@@ -22,8 +22,7 @@ class rRetrackers
 	public function store()
 	{
 		global $settings;
-		global $retrackersRootPath;
-		$cache = new rCache( $retrackersRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		return($cache->set($this));
 	}
 	public function set()
