@@ -20,8 +20,7 @@ class rCookies
 	public function store()
 	{
 		global $settings;
-		global $cookiesRootPath;
-		$cache = new rCache( $cookiesRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		return($cache->set($this));
 	}
 	public function set()
