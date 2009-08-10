@@ -1,32 +1,37 @@
-#summary Описание плагина Retrackers.
+#summary Retrackers plug-in description
 
-== Введение ==
+== Introduction ==
 
-Плагин предоставляет возможность дополнять состав трекеров для вновь добавляемых закачек. Отмечу - закачки могут добавляться любым образом, не только посредством ruTorrent. 
+This plug-in appends specified trackers to the trackers list of all newly added torrents.
+By the way, torrents may be added by any way - not just via ruTorrent.
 
-После установки плагина в настройках ruTorrent появляется раздел "Ретрекеры". 
+After the plug-in is installed an additional section "Retrackers" will appear in the Settings dialog.
 
 [http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/retrackers.jpg]
 
-Оформление списка трекеров производится так же, как в [http://www.utorrent.com/ µTorrent] - разные группы трекеров отделяются друг от друга пустой строкой. Все перечисленные трекеры будут добавлены к существующим в закачке начиная с группы трекеров 1. Для частных раздач изменение списка трекеров обычно не приветствуется. Однако, если Вы, тем не менее, очень этого хотите - уберите соотв. галку в диалоге.
+Format of the trackers list is the same as for [http://www.utorrent.com/ µTorrent] - different groups of trackers must be separated by an empty line. All listed trackers will be added to existing ones beginning from trackers group 1.
+Usually modifications of the the trackers list for private torrents are not welcome. But if you really want it - reset the tick in the dialog window.
 
-== Как оно работает ==
+== How does it work ==
 
-После первой загрузки с установленным плагином retrackers, ruTorrent регистрирует в rTorrent собственный перехватчик события "новая закачка добавлена". После чего по наступлении этого события вызывается специально обученный скрипт, который меняет список трекеров в закачке. 
+After first start of ruTorrent with installed Retrackers plug-in, ruTorrent registers it's own hook for the "New torrent added" event. Then as this event occurs a special script changes the list of trackers in the torrent.
 
-Еще раз обращаю внимание - процесс обработки начинается только после первой загрузки ruTorrent. Т.е. в промежуток между стартом rTorrent и первым после этого стартом ruTorrent никакой полезной работы производиться не будет. Чтобы избежать этого, нужно добавить в конфигурационный файл rTorrent специально обученную строчку (см. ниже).
+Once again - the processing will be started until first start of ruTorrent. I.e. there will not be any useful action between start of rTorrent and then first start of ruTorrent. To avoid this, a special string should be added to the rTorrent configuration file (see below).
 
-Способ ручного редактирования состава трекеров закачек предоставляет плагин [PluginEdit Edit].
+To change the list of trackers manually, use plug-in [PluginEdit Edit].
 
-== Дополнительная настройка плагина ==
+== Tuning ==
 
-Производится в файле `plugins/retrackers/conf.php`.
-    * `$isAutoStart` - переменная определяет способ начала работы. Если она равна `true`, то регистрация события происходит при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы сделать сие самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчку 
+Following changes should be done in the file `plugins/retrackers/conf.php`.
+    * `$isAutoStart` - this variable defines a method of the plug-in starts. If it is set `true`, the event will be registered at the ruTorrent start. Otherwise it should be performed manually.
+ то регистрация события происходит при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы сделать сие самостоятельно. To do this, the following string should be added into the rTorrent configuration file:
 {{{
 system.method.set_key = event.download.inserted_new,add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="
 }}}
- для версии rTorrent >= 0.8.4 или строчку
+ for rTorrent version >= 0.8.4 or the string
 {{{
 on_insert = add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="
 }}}
- для более ранних версий. full_path_to_plugin здесь - полный путь к плагину retrackers.
+ for older versions.
+
+where full_path_to_plugin - is a full path to the Retrackers plug-in.
