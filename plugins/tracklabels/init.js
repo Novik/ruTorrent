@@ -11,18 +11,31 @@ utWebUI.filterByLabel = function(hash)
 		utWebUI.trkFilterByLabel(hash);
 }
 
+utWebUI.isTrackerInActualLabel = function(hash)
+{
+        var ret = false;
+	if((typeof (this.torrents[hash]) != "undefined"))
+	{
+		for( var i=0; i<this.trackers[hash].length; i++)
+		{
+			if(this.trackers[hash][i][3]==0)
+			{
+				var tracker = utWebUI.getTrackerName( this.trackers[hash][i][0] );
+				if(tracker && (tracker==utWebUI.actTrackersLbl))
+				{
+					ret = true;
+					break;
+				}
+			}
+		}
+	}
+	return(ret);
+}
+
 utWebUI.filterByTracker = function(hash)
 {
-	if((typeof (this.trackers[hash]) != "undefined") &&
-		this.trackers[hash].length &&
-		this.trackers[hash][0].length)
-	{
-		var tracker = utWebUI.getTrackerName( this.trackers[hash][0][0] );
-		if(tracker && (tracker==utWebUI.actTrackersLbl))
-			this.trtTable.unhideRow(hash);
-		else
-		         this.trtTable.hideRow(hash);
-       	}
+        if(utWebUI.isTrackerInActualLabel(hash))
+		this.trtTable.unhideRow(hash);
 	else
 		this.trtTable.hideRow(hash);
 }
@@ -63,12 +76,18 @@ utWebUI.getTrackerName = function(announce)
 	if(parts && (parts.length>6))
 	{
 		domain = parts[6];
-		var pos = domain.indexOf(".");
-		if(pos>=0)
+		if(!domain.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))
 		{
-			var tmp = domain.substring(pos+1);
-			if(tmp.indexOf(".")>=0)
-				domain = tmp;
+			parts = domain.split(".");
+			if(parts.length>2)
+			{
+				if((parts[parts.length-2] in ["co", "com", "net", "org"]) ||
+					(parts[parts.length-1] in ["uk"]))
+					parts = parts.slice(parts.length-3);
+				else
+					parts = parts.slice(parts.length-2);
+				domain = parts.join(".");
+			}
 		}
 	}
 	return(domain);
@@ -147,17 +166,21 @@ utWebUI.rebuildTrackersLabels = function()
 		trackersLabels = new Object();
 		for(var hash in this.trackers)
 		{
-			if((typeof (this.torrents[hash]) != "undefined") &&
-				this.trackers[hash].length &&
-				this.trackers[hash][0].length)
+			if((typeof (this.torrents[hash]) != "undefined"))
 			{
-				var tracker = utWebUI.getTrackerName( this.trackers[hash][0][0] );
-				if(tracker)
+				for( var i=0; i<this.trackers[hash].length; i++)
 				{
-					if(typeof (trackersLabels[tracker]) != "undefined")
-						trackersLabels[tracker]++;
-					else
-						trackersLabels[tracker] = 1;
+					if(this.trackers[hash][i][3]==0)
+					{
+						var tracker = utWebUI.getTrackerName( this.trackers[hash][i][0] );
+						if(tracker)
+						{
+							if(typeof (trackersLabels[tracker]) != "undefined")
+								trackersLabels[tracker]++;
+							else
+								trackersLabels[tracker] = 1;
+						}
+					}
 				}
 			}
 		}
@@ -177,9 +200,9 @@ utWebUI.rebuildTrackersLabels = function()
 				li.onclick = function() { utWebUI.switchTrackersLabel(this); return(false);};
 				li.innerHTML = escapeHTML(lbl)+'&nbsp;(<span id="'+lbl+'_c">'+trackersLabels[lbl]+'</span>)';
 				ul.appendChild(li);
+				addRightClickHandler( li, trackersLabelContextMenu );
 			}
 			li.className = (lbl==utWebUI.actTrackersLbl) ? "sel" : "";
-			addRightClickHandler( li, trackersLabelContextMenu );
 		}
 		var needSwitch = false;
 		for(var lbl in this.trackersLabels)
