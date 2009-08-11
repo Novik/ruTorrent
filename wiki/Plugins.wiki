@@ -21,3 +21,4 @@ Currently there are following plug-ins:
  # [PluginScheduler scheduler] - realizes speed limitations for downloading/uploading depending on hour of day and day of week.
  # [PluginAutotools autotools] -  realizes some automation functions (autolabel, automove)..
  # [PluginDataDir datadir] - allows to change the directory of the torrents data.
+ # [PluginTracklabels tracklabels] - adds trackers autolabels to categories pane.
