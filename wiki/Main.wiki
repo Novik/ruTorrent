@@ -46,3 +46,5 @@ ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui
  * Some add-ons for browsers may cause errors in ruTorrent work. For example - plug-in Firebug for Firefox causes significant memory leaks.
 
 == [Plugins Plug-ins] ==
+
+== [Versions Changes] ==
