@@ -157,6 +157,14 @@ function trackersLabelContextMenu(obj)
 		ContextMenu.hide();
 }
 
+utWebUI.trkUpdateLabels = utWebUI.updateLabels;
+utWebUI.updateLabels = function(wasRemoved)
+{
+	utWebUI.trkUpdateLabels();
+	if(wasRemoved)
+		utWebUI.rebuildTrackersLabels();
+}
+
 utWebUI.rebuildTrackersLabels = function()
 {
 	if(!utWebUI.allTrackersStuffLoaded)
