@@ -3,7 +3,7 @@
 == Introduction ==
 The Trafic plug-in is a subsystem for registration of the total (all trackers counted) rTorrent traffic. The plug-in has three options of the graph - hourly, daily and monthly. Statistics can be cleaned at any time by pressing corresponding button in the interface (see screenshot).
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/trafic_big.jpg http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/trafic_small.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/trafic_big.jpg http://rutorrent.googlecode.com/svn/wiki/images/trafic_small.jpg]
 
 == How does it work ==
 
