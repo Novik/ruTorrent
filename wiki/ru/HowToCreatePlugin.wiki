@@ -31,7 +31,7 @@ utWebUI.initDone = function()
 }}}
 Перегружаем ruTorrent, и вот результат:
 
-[http://rutorrent.googlecode.com/svn/wiki/ru/images/speedcolor.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/speedcolor.jpg]
 
 ==== Меняем цвета маркеров в плагине [PluginScheduler scheduler] ====
 
