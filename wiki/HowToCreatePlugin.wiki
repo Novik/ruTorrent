@@ -23,7 +23,7 @@ utWebUI.changeSpeedColorsInitDone = utWebUI.initDone;
 utWebUI.initDone = function() 
 {
 	// вызываем родной обработчик
-	utWebUI.changeSpeedColorsInitDone();
+	this.changeSpeedColorsInitDone();
 	// исправляем цвета
 	this.speedGraph.down.color = "#FF0000";
 	this.speedGraph.up.color = "#00FF00";
