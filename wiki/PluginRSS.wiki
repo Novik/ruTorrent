@@ -66,7 +66,7 @@ http://некий-торрент-сайт.com/rss.php:COOKIE:name1=value;name2=v
     * "Метка": автоматическое назначение метки для торрентов, совпадающих с фильтром.
     * Для проверки параметров фильтра можно использовать кнопку "?". Если фильтр задан корректно, будет показано количество совпадений с ним в рассылке. Если нет - в логе ruTorrent Вы увидите соответствующее сообщение.
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/rssdownloader.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/rssdownloader.jpg]
 
 == Как оно работает ==
 
