@@ -1912,6 +1912,7 @@ utWebUI =
 		}
 		this.trtTable.dBody.scrollLeft = sl;
 		utWebUI.speedGraph.addData(tul,tdl);
+		var wasRemoved = false;
 		for(var k in this.torrents) 
 		{
 			if(this.torrents[k][ln]!=true)
@@ -1940,6 +1941,7 @@ utWebUI =
 		         	this.labels["-_-_-all-_-_-"]--;
         		 	delete this.labels[k];
 	        	 	this.trtTable.removeRow(k);
+	        	 	wasRemoved = true;
 	        	}
 			else
 				this.torrents[k][ln] = false;
@@ -1947,7 +1949,7 @@ utWebUI =
 
 		this.cID = d.torrentc;
 		this.loadLabels(d.label.slice(0));
-		this.updateLabels();
+		this.updateLabels(wasRemoved);
 		d = null;
 		this.loadTorrents();
 		_83 = null;
@@ -2215,7 +2217,7 @@ utWebUI =
 			tdl = 0;
 		}
    	}
-, "updateLabels" : function() {
+, "updateLabels" : function(wasRemoved) {
    for(var k in this.labels) {
       if(k.substr(0, 5) == "-_-_-") {
          $$(k + "c").innerHTML = this.labels[k];
