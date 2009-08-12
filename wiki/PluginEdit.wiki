@@ -6,7 +6,7 @@ The plug-in allows user to edit the list of trackers and commentaries of the cur
 
 As the plug-in is installed a new option "Edit torrent..." will appear in the context menu of the torrent. Activating this option will open "Torrent Properties" dialog.
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/edit.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/edit.jpg]
 
 The list of trackers should be formatted the same way as for [http://www.utorrent.com/ µTorrent] - different groups of trackers must be separated by an empty line.
 The content of the "Comment" field will be shown in the "General" tab.
