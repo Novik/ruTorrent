@@ -4,7 +4,7 @@
 
 The plug-in adds an item "Delete data" to the context menu the downloading item, which allows to remove not only a .torrent file, but also its data.
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/erasedata.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/erasedata.jpg]
 
 == Known lacks ==
 
