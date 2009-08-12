@@ -4,4 +4,4 @@
 
 This plug-in makes it possible to modify the list of search engines. As the plug-in is installed a new section "Search" will appear in the Settings dialog. Each line in the list should contain a name of the search engine and URL for search in it. The name and the URL should be separated by a vertical line character. If the name is left empty, a horizontal line will be shown in the menu. URL must be formatted such as addition of words to it's end would be processed by the search engine correctly.
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/search.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/search.jpg]
