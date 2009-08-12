@@ -4,7 +4,7 @@
 
 Плагин добавляет в контекстное меню закачки пункт "Удалить данные", использование которого приводит к удалению не только .torrent файла, но и его данных.
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/erasedata.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/erasedata.jpg]
 
 == Известные недостатки ==
 

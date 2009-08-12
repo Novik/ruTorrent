@@ -4,4 +4,4 @@
 
 Темная палитра для ruTorrent. Выглядит так:
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/darkpal_big.jpg http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/ru/darkpal_small.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/darkpal_big.jpg http://rutorrent.googlecode.com/svn/wiki/ru/images/darkpal_small.jpg]
