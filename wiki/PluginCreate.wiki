@@ -4,7 +4,7 @@
 
 The plug-in provides ability to create .torrent files. After plug-in installation there will be a new item "Create torrent..." in the commands menu, which shows the following dialogue:
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/create.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/create.jpg]
 
  # "Select Source" - type here path to contents, which you wish to seed. Before specifying a path you have to decide, whether you will distribute one file or several. If you create torrent from several files, these files should be placed in one folder. There should be nothing in this folder except them.
  # "Trackers" - the list of trackers on which seeding will take place. Different tracker groups have to be separated from each other with an empty line.
