@@ -6,4 +6,4 @@ Dark skin for ruTorrent.
 
 Screenshot:
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/darkpal_big.jpg http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/darkpal_small.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/darkpal_big.jpg http://rutorrent.googlecode.com/svn/wiki/images/darkpal_small.jpg]
