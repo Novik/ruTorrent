@@ -1,27 +1,34 @@
-#summary Описание плагина Throttle.
+#summary Throttle plug-in description
 
-== Введение ==
+== Introduction ==
 
-Начиная с версии 0.8.5 в rTorrent появилась возможность устанавливать ограничения по скорости для групп закачек. Плагин реализует удобное управление данной возможностью. При установленном плагине в настройках ruTorrent появляется раздел "Каналы". В данном разделе можно задать ограничения по скорости для нескольких (по умолчанию - 10) каналов. Назначение канала одной или нескольким закачкам осуществляется с помощью пункта в контекстном меню закачки. Отмечу - цифра 0, традиционно для rTorrent, означает не запрет на скачку/раздачу, а отсутствие ограничений вообще. Таким образом минимально возможное ограничение на скорость равно 1 Кб/сек.
+In rTorrent version 0.8.5 and later it is possible to set limits of speed for groups of torrents.
+Throttle plug-in gives a convenient control over this possibility.
+After this plug-in is installed a new option "Channels" will appear in the Settings dialog.
+Speed limits for some (by default - 10) channels can be set here. Assignment of channel number for a particular torrent or for a group of torrents can be made in it's contextual menu.
+Note - "0"-value, conventionally for rTorrent, means "no limits", but not "stop torrent". So the lowest possible limit 
+
+is 1 Kbps.
 
 [http://rutorrent.googlecode.com/svn/wiki/images/throttle.jpg]
 
-== Как оно работает ==
+== How does it work ==
 
-После первой загрузки с установленным плагином Throttle, ruTorrent создает каналы с требуемыми параметрами ограничений скорости.
+When ruTorrent starts with installed Thtottle plug-in first time it makes channels with defined speed limits.
+As these channels will be created after first ruTorrent start only, the speed limits will not work after rTorrent start until first after that start of ruTorrent.
+To avoid this add a special string to the rTorrent configuration file (see below). 
 
-Т.к. каналы создаются только после первой загрузки ruTorrent, то в промежуток между стартом rTorrent и первым после этого стартом ruTorrent ограничения на скорость действовать не будут. Чтобы избежать этого, нужно добавить в конфигурационный файл rTorrent специально обученные строчки (см. ниже).
+== Some non-obvious points ==
 
-== Некоторые неочевидные моменты ==
+ * Speed limits in regard to groups of torrents only works when there are global speed limits for whole system (it is the feature of rTorrent). To get over this disadvantage, ruTorrent, during it's loading, checks if parameters upload_rate and download_rate are set to zero. If it is so, ruTorrent change "0" to a very_big_number.
+ * The channel of torrent can be changed only when the torrent is stopped. If the torrent is active, the plug-in will stop it, change the channel and start again.
 
- * Ограничения скорости применительно к группам закачек работают только тогда, когда имеются глобальные ограничения скорости для всей системы в целом (ума не приложу, зачем автор rTorrent реализовал такое безобразие). Чтобы избавиться от этой неприятности, при загрузке ruTorrent смотрит, установлены ли параметры upload_rate и download_rate в ноль. И если это так - заменяет 0 на ОченьБольшоеЧисло.
- * Смена канала может быть произведена только для остановленной закачки. Если последняя активна - плагин автоматически остановит ее, сменит канал и потом снова стартует.
+== Additional tuning  ==
 
-== Дополнительная настройка плагина ==
-
-Производится в файле `plugins/throttle/conf.php`.
-    * `MAX_THROTTLE` - константа содержит максимальное количество каналов. Вы можете изменить эту величину как в большую, так и в меньшую сторону.
-    * `$isAutoStart` - переменная определяет способ начала работы. Если она равна `true`, то создание каналов производится при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы сделать это самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчки 
+Sould be done in the file `plugins/throttle/conf.php`.
+    * `MAX_THROTTLE` - maximum number of channels. You can make it bigger or smaller.
+    * `$isAutoStart` - the variable defines how the the method of work starts. If it is set as `true`, channels will be created at ruTorrent start. Otherwise you should do it manually.
+To do this, the following strings should be added into the rTorrent configuration file: 
 {{{
 throttle_up = thr_0,up_limit_for_channel0
 throttle_down = thr_0,down_limit_for_channel0
@@ -29,5 +36,5 @@ throttle_down = thr_0,down_limit_for_channel0
 throttle_up = thr_[MAX_THROTTLE],up_limit_for_channelMAX_THROTTLE
 throttle_down = thr_[MAX_THROTTLE],down_limit_for_channelMAX_THROTTLE
 }}}
- где up_limit_for_channel, down_limit_for_channel - ограничения скорости отдачи/закачки в КБ/сек.
- * Если Вы поставили `$isAutoStart` в `false`, не забудьте так же выставить в конфигурационном файле rTorrent значения upload_rate и download_rate во что-либо отличное от нуля. Иначе локальные ограничения скорости работать не будут.
+ here up_limit_for_channel, down_limit_for_channel - speed limits for upload/download in KBps
+ * If the variable `$isAutoStart` has been set to `false`, parameters upload_rate and download_rate should not be equal to "0" in the rTorrent configuration file. Otherwise local speed limits will not work.
