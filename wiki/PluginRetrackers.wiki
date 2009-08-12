@@ -7,7 +7,7 @@ By the way, torrents may be added by any way - not just via ruTorrent.
 
 After the plug-in is installed an additional section "Retrackers" will appear in the Settings dialog.
 
-[http://vif2ne.ru/nvk/stuff/novik/rtorrent/wiki/en/retrackers.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/retrackers.jpg]
 
 Format of the trackers list is the same as for [http://www.utorrent.com/ µTorrent] - different groups of trackers must be separated by an empty line. All listed trackers will be added to existing ones beginning from trackers group 1.
 Usually modifications of the the trackers list for private torrents are not welcome. But if you really want it - reset the tick in the dialog window.
