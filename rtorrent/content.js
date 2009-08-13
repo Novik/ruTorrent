@@ -57,9 +57,6 @@
 		"<div class=\"op100l\">"+
 			"<label for=\"webui.minrows\">"+WUILang.Virt_row_thres+":</label>&nbsp;<input type=\"text\" id=\"webui.minrows\" class=\"TextboxVShort\" value=\"50\" />"+
 		"</div>"+
-		"<div class=\"op100l algnright\">"+
-			"<input type=\"button\" value=\""+WUILang.Restor_def+"\" class=\"Button\" onclick=\"javascript:utWebUI.RestoreUI();return(false);\" />"+
-		"</div>"+
 	"</fieldset>"+
 "</div>"+
 

@@ -80,6 +80,7 @@ function init()
 	utWebUI.trtTable.onresize = utWebUI.Save;
 	utWebUI.trtTable.oncoltoggled = utWebUI.Save;
 	utWebUI.trtTable.reverse = utWebUI.trtSortR;
+
 	if($_COOKIE["webui.fls.colwidth"] != null) 
 	{
 		_3 = $_COOKIE["webui.fls.colwidth"];

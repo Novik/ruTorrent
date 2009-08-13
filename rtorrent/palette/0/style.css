@@ -68,7 +68,8 @@ Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tah
 Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 110px}
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 220px}
 Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 30px}
-input.Button {padding: 1px 10px; background: #F5F5F5 url(./images/h.gif) repeat-x center bottom}
+input.Button {padding: 1px 10px; background: #F0F0F0 url(./images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0;}
+
 select {margin-top: 5px}
 a.hide:link, a.hide:visited {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(./images/hide.gif); float: right; border: 0}
 a.hide:hover {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(./images/hide_over.gif); float: right; border: 0}
@@ -121,7 +122,7 @@ div#FileList, div#TrackerList, div#PeerList {background-color: #FFFFFF; overflow
 .ieStatus_Queued_Up {background: transparent url(./images/status_queued_up.gif) no-repeat scroll left top; padding-left: 20px;}
 .ieStatus_Up_Down {background: transparent url(./images/status_up_down.gif) no-repeat scroll left top; padding-left: 20px;}
 .ieStatus_Checking {background: transparent url(./images/status_checking.gif) no-repeat scroll left top; padding-left: 20px;}
-div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 1px solid #D0D0D0; display: none}
+div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none}
 div#stg a.h {margin: 5px}
 div#stg_h {padding: 2px 24px; line-height: 20px; background: #F5F5F5 url(./images/settings.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
 div#stg .lm {width: 120px; height: 353px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
@@ -164,7 +165,7 @@ legend {color: #000000; font-weight: bold}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
 #st_dl, #st_con, #st_bt, #st_que, #st_sch, #st_ao, #st_dc {display: none}
-#st_btns {float: right; position: relative; width: 455px; height: 20px; padding-right: 5px; text-align: right}
+#st_btns {float: right; position: relative; width: 457px; height: 20px; padding: 3px; text-align: right; }
 #st_btns input {margin-left: 5px}
 a {text-decoration: none}
 #st_ao_h {width: 420px; height: 270px; overflow: auto; }
@@ -180,7 +181,7 @@ div#gcont table {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica
 div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
 div#lcont {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
 div#lcont div {padding: 2px}
-div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 1px solid #D0D0D0}
+div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 2px solid #909090}
 div#tadd_h {padding: 2px 24px; line-height: 20px; background: #F5F5F5 url(./images/world.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
 div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
 div#gcont, div#FileList, div#TrackerList, div#PeerList, div#scont, div#lcont {display: none}
@@ -210,7 +211,8 @@ div#dlgRss div#dlgRss-content {height: 253px; width: 478px; margin: 10px; border
 div.torrentadd {line-height: 18px; margin: 2px 0; padding: 0 0 0 20px; background: transparent url(./images/add.gif) no-repeat scroll 2px center; border-bottom: 1px solid #D0D0D0}
 .itemadd {background: transparent url(./images/add.gif)}
 .itemadded {background: transparent url(./images/tick.gif)}
-div#dlgProps {width: 400px; height: 230px}
+div#dlgProps {width: 400px; height: 205px}
+.konqueror div#dlgProps {height: 213px}
 div#dlgProps div.dlg-header {background-image: url(./images/props.gif)}
 div#dlgProps div.content {width: 380px; padding: 10px}
 div#dlgProps textarea#prop-trackers {width: 100%; height: 70px; background: #FFFFFF; border: 1px solid #D0D0D0}
@@ -222,9 +224,9 @@ input#prop-peers_min {width: 60px; float: right}
 input#prop-peers_max {width: 60px; float: right}
 input#prop-seed_ratio {width: 40px}
 div.aright {text-align: right}
-div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 1px solid #D0D0D0; display: none; overflow: hidden}
+div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
 div.fxcaret {overflow: auto}
-div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F5F5F5 url(./images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
+div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F5F5F5 url(./images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
 a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(./images/hide.gif); float: right; border: 0}
 a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(./images/hide_over.gif); float: right; border: 0}
 a.dlg-close:active {width: 14px; height: 14px; background: transparent url(./images/hide_on.gif); float: right; border: 0}
@@ -252,3 +254,5 @@ span#loadimg {padding: 20px; background: transparent url(./images/ajax-loader.gi
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
 .ieIcon_File {background: transparent url(./images/file.gif) no-repeat scroll left top; padding-left: 20px;}
 .ieIcon_Dir {background: transparent url(./images/dir.gif) no-repeat scroll left top; padding-left: 20px;}
+
+div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }

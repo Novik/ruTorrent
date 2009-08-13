@@ -51,6 +51,8 @@ var dxSTable = function()
 	this.muDrag = 0;
 	this.selCount = 0;
 	this.created = false;
+	this.colReszObj = null;
+	this.rowCover = null;
 };
 
 dxSTable.prototype.setPalette = function(palette) 
@@ -211,6 +213,15 @@ dxSTable.prototype.create = function(_2, _3, aName)
 	addEvent(window, "unload", function() { _5.clearRows(); });
 	this.calcSize();
 	resizeColumn.apply(this);
+
+	this.colReszObj = ELE_DIV.cloneNode(true);
+	this.colReszObj.className = "stable-resize-header";
+	this.dBody.appendChild(this.colReszObj);
+
+	this.rowCover = ELE_DIV.cloneNode(true);
+	this.rowCover.className = "rowcover";
+	this.dHead.appendChild(this.rowCover);
+
 	this.created = true;
 };
 
@@ -262,7 +273,7 @@ var preventSort = function()
 
 dxSTable.prototype.calcSize = function() 
 {
-	if(this.dCont.offsetWidth >= 4) 
+	if(this.created && this.dCont.offsetWidth >= 4) 
 	{
 		this.dBody.style.width = this.dCont.offsetWidth - 2 + "px";
 		this.dBody.style.paddingTop = this.dHead.offsetHeight + "px";
@@ -273,8 +284,8 @@ dxSTable.prototype.calcSize = function()
 		var nsb = -2;
 		if((this.dBody.offsetWidth != this.dBody.clientWidth) && (window.scrollbarWidth!=null))
 			nsb-=window.scrollbarWidth;
-
 		this.dHead.style.width = this.dCont.clientWidth + nsb + "px";
+		this.rowCover.style.width = this.dHead.style.width;
 		if((this.cols > 0) && (!this.isResizing)) 
 		{
 			var j =- 1;
@@ -482,6 +493,7 @@ dxSTable.ColumnMove.prototype = {
          return(_24.end(e)); }
       );
       this.rx = getLeftPos(this.parent.dHead);
+      this.obj.style.cursor = "move";
       return false;
       }
    , "drag" : function(e) 
@@ -526,6 +538,7 @@ dxSTable.ColumnMove.prototype = {
    }
    , "end" : function() {
       try {
+         this.obj.style.cursor = "default";
          this.parent.dHead.removeChild(this.obj);
          this.parent.dHead.removeChild(this.sepobj);
          this.added = false;
@@ -835,6 +848,7 @@ dxSTable.prototype.assignEvents = function()
 					function(e) { return(_57.colDrag(e)); });
 				_57.muDrag = addEvent(document, "mouseup", 
 					function(e) { return(_57.colDragEnd(e)); });
+				_57.rowCover.style.display = "block";
 				CancelEvent(e);
 				return(false);
          		}
@@ -880,28 +894,36 @@ dxSTable.prototype.colDrag = function(e)
 	{
 		return(true);
 	}
+
 	o.style.width = nw + "px";
-/*
-	if(!browser.isOpera && 
-		!browser.isAppleWebKit && 
-		!browser.isFirefox) 
-	{
-		tb.style.width = "auto";
-      	}
-*/
 	o.lastMouseX = ex;
 	document.body.style.cursor = "e-resize";
+
+	this.colReszObj.style.visibility = "visible";
+	if(!browser.isAppleWebKit && !browser.isKonqueror)
+		nw+=4;
+	this.colReszObj.style.left = (o.offsetLeft+nw-this.dBody.scrollLeft) + "px";
+
+	nw = iv(this.dBody.style.height) + iv(this.dHead.offsetHeight);
+	if(this.dBody.scrollWidth > this.dBody.clientWidth)
+		nw-=window.scrollbarHeight;
+	this.colReszObj.style.height = nw + "px";
+
 	try { document.selection.empty(); } catch(ex) {}
 	return(false);
 };
 
 dxSTable.prototype.colDragEnd = function(e) 
 {
+	this.rowCover.style.display = "none";
 	removeEvent(document, "mousemove", this.mmDrag);
 	removeEvent(document, "mouseup", this.muDrag);
 	this.mmDrag = 0;
 	this.muDrag = 0;
 	this.isResizing = false;
+	this.colReszObj.style.left = 0;
+	this.colReszObj.style.height = 0;
+	this.colReszObj.style.visibility = "hidden";
 	resizeColumn.apply(this);
 	if(this.tHead.isOutside) 
 	{
