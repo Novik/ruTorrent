@@ -25,7 +25,7 @@ ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui
  # Download the ruTorrent archive and extract it's contents into the root folder of the web-server. [GetFromSVN Or get the latest version of ruTorrent from svn]. It's a good idea to perform this step under the web-server owner's account, so you won't need to set up rights to files/directories afterwards.
  # Add the string `scgi_port = 127.0.0.1:5000` into rTorrent config file (if it is not present there yet). 
  # [WebserverSetup Setup scgi-gateway on the web-server] to forward requests from /RPC2 to the port is listened by rTorrent. Another way - install the [Plugins plug-in] [PluginRPC RPC].
- # Type in the browser: `http://ip_of_your_server:port_of_your_server/rtorrent`
+ # Type in the browser: `http://address_of_your_server:port_of_your_server/rtorrent`
 
 == Not implemented ==
 
