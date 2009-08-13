@@ -1163,19 +1163,17 @@ utWebUI.MarkRSSLoaded = function()
 
 utWebUI.correctFilterDialg = function()
 {
-	if(utWebUI.allThrottleStuffLoaded)
+	var rule = getCSSRule(".rf fieldset");
+	if(rule && utWebUI.allThrottleStuffLoaded)
 	{
 		var addition = (browser.isIE) ? 52 : 42;
-		var rule = getCSSRule(".rf fieldset");
-		if(rule)
-		{
-			rule.style.height = (iv(rule.style.height)+addition)+"px";
-			$$('filterPropsFieldSet').style.height = rule.style.height;
-		}
+		rule.style.height = (iv(rule.style.height)+addition)+"px";
+		$$('filterPropsFieldSet').style.height = rule.style.height;
 		rule = getCSSRule(".rf");
 		if(rule)
 		{
-			rule.style.height= (iv(rule.style.height)+addition)+"px";
+			var delta = (browser.isKonqueror) ? 5 : 0;
+			rule.style.height= (iv(rule.style.height)+addition+delta)+"px";
 			$$('filterProps').style.height = rule.style.height;
 		}
 		rule = getCSSRule("div#dlgEditFilters");
@@ -1271,7 +1269,7 @@ utWebUI.initRSS = function()
 				"<div id='FLTchk_buttons'>"+
 					"<input type='button' class='Button' value='"+WUILang.rssAddFilter+"' onclick='javascript:utWebUI.addNewFilter();return(false);'/>"+
 					"<input type='button' class='Button' value='"+WUILang.rssDelFilter+"' onclick='javascript:utWebUI.deleteCurrentFilter();return(false);'/>"+
-					"<input type='button' class='Button' value='"+WUILang.rssCheckFilter+"' onclick='javascript:utWebUI.checkCurrentFilter();return(false);'/>"+
+					"<input type='button' id='chkFilterBtn' class='Button' value='"+WUILang.rssCheckFilter+"' onclick='javascript:utWebUI.checkCurrentFilter();return(false);'/>"+
 				"</div>"+
 			"</div>"+
 			"<div class='rf' id='filterProps'>"+
