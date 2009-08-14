@@ -124,7 +124,7 @@ div#FileList, div#TrackerList, div#PeerList {background-color: #FFFFFF; overflow
 .ieStatus_Checking {background: transparent url(./images/status_checking.gif) no-repeat scroll left top; padding-left: 20px;}
 div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none}
 div#stg a.h {margin: 5px}
-div#stg_h {padding: 2px 24px; line-height: 20px; background: #F5F5F5 url(./images/settings.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
+div#stg_h {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(./images/settings.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
 div#stg .lm {width: 120px; height: 353px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
 .ie div#stg .lm {width: 125px}
 .ie div#stg {width: 605px;}
@@ -182,7 +182,7 @@ div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
 div#lcont {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
 div#lcont div {padding: 2px}
 div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 2px solid #909090}
-div#tadd_h {padding: 2px 24px; line-height: 20px; background: #F5F5F5 url(./images/world.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
+div#tadd_h {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(./images/world.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
 div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
 div#gcont, div#FileList, div#TrackerList, div#PeerList, div#scont, div#lcont {display: none}
 div#tadd label, div#tadd input.text {width: 150px; display: block; float: left; margin-bottom: 10px}
@@ -226,7 +226,7 @@ input#prop-seed_ratio {width: 40px}
 div.aright {text-align: right}
 div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
 div.fxcaret {overflow: auto}
-div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F5F5F5 url(./images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
+div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(./images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
 a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(./images/hide.gif); float: right; border: 0}
 a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(./images/hide_over.gif); float: right; border: 0}
 a.dlg-close:active {width: 14px; height: 14px; background: transparent url(./images/hide_on.gif); float: right; border: 0}
@@ -256,3 +256,4 @@ span#loadimg {padding: 20px; background: transparent url(./images/ajax-loader.gi
 .ieIcon_Dir {background: transparent url(./images/dir.gif) no-repeat scroll left top; padding-left: 20px;}
 
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
+textarea { overflow: auto; white-space: nowrap; }

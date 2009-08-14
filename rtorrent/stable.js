@@ -870,6 +870,15 @@ dxSTable.prototype.assignEvents = function()
 	}
 };
 
+function getLeftScrollPos(obj) {
+   var x = 0;
+   while(obj) {
+      x += obj.scrollLeft;
+      obj = obj.offsetParent;
+      }
+   return x;
+   }
+
 dxSTable.prototype.colDrag = function(e) 
 {
 	this.isResizing = true;
@@ -902,7 +911,7 @@ dxSTable.prototype.colDrag = function(e)
 	this.colReszObj.style.visibility = "visible";
 	if(!browser.isAppleWebKit && !browser.isKonqueror)
 		nw+=4;
-	this.colReszObj.style.left = (o.offsetLeft+nw-this.dBody.scrollLeft) + "px";
+	this.colReszObj.style.left = (o.offsetLeft+nw-this.dHead.scrollLeft) + "px";
 
 	nw = iv(this.dBody.style.height) + iv(this.dHead.offsetHeight);
 	if(this.dBody.scrollWidth > this.dBody.clientWidth)
