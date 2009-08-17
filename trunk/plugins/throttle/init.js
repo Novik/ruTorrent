@@ -197,7 +197,7 @@ rTorrentStub.prototype.getAdditionalResponseForListItem = function(values)
 {
 	var ret = this.throttlegetAdditionalResponseForListItem(values);
 	if(utWebUI.throttleSupported)
-	       ret+=(',"'+this.getValue(values,33)+'"');
+	       ret+=(',"'+this.getValue(values,utWebUI.throttleNo+6)+'"');
 	return(ret);
 }
 
