@@ -50,12 +50,13 @@
 				{
 					if(array_key_exists($key,$wasTorrents))
 					{
-						$delta_up = $data[0]-$wasTorrents[$key][0];
-						$delta_down = $data[1]-$wasTorrents[$key][1];
-						if($delta_up<0)
+						$delta_up = floatval($data[0])-floatval($wasTorrents[$key][0]);
+						$delta_down = floatval($data[1])-floatval($wasTorrents[$key][1]);
+						if(($delta_up<0) || ($delta_down<0))
+						{
 							$delta_up = $data[0];
-						if($delta_down<0)
 							$delta_down = $data[1];
+						}
 						if($delta_down!=0 || $delta_up!=0)
 							$needTorrents[$key] = array($delta_up,$delta_down);
 					}
@@ -100,12 +101,13 @@
 						}
 					}
 				}
-				$delta_up = $now[0]-$was[0];
-				if($delta_up<0)
+				$delta_up = floatval($now[0])-floatval($was[0]);
+				$delta_down = floatval($now[1])-floatval($was[1]);
+				if(($delta_up<0) || ($delta_down<0))
+				{
 					$delta_up = $now[0];
-				$delta_down = $now[1]-$was[1];
-				if($delta_down<0)
 					$delta_down = $now[1];
+				}
 				$st = new rStat("stats/global.csv");
 				$st->correct($delta_up,$delta_down);
 				$st->flush();
