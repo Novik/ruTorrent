@@ -135,6 +135,12 @@ switch($cmd)
 						$flt->throttle = $parts[1];
 				}
 				else
+				if($parts[0]=="ratio")
+				{
+					if($flt)
+						$flt->ratio = $parts[1];
+				}
+				else
 				if($parts[0]=="start")
 				{
 					if($flt)
@@ -210,7 +216,7 @@ switch($cmd)
 				if($mngr->cache->get($rss))
 				{
 					foreach($urls as $url)
-						$mngr->getTorrents( $rss, $url, $isStart, $isAddPath, $dir, $lbl, null, false );
+						$mngr->getTorrents( $rss, $url, $isStart, $isAddPath, $dir, $lbl, null, null, false );
 				}
 			}
 			$mngr->saveHistory();

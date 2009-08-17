@@ -753,6 +753,9 @@ utWebUI.storeFilterParams = function()
 		var fltThrottle = $$('FLT_throttle');
 		if(fltThrottle)
 			this.filters[no].throttle = fltThrottle.options[fltThrottle.selectedIndex].value;
+		var fltRatio = $$('FLT_ratio');
+		if(fltRatio)
+			this.filters[no].ratio = fltRatio.options[fltRatio.selectedIndex].value;
 	}
 	return(no);
 }
@@ -797,6 +800,19 @@ utWebUI.selectFilter = function( el )
 				}
 			}
 		}
+		var fltRatio = $$('FLT_ratio');
+		if(fltRatio)
+		{
+			fltRatio.selectedIndex = 0;
+			for(var i = 0; i<fltRatio.options.length; i++)
+			{
+				if(fltRatio.options[i].value==flt.ratio)
+				{	
+					fltRatio.selectedIndex = i;
+					break;
+				}
+			}
+		}
 		utWebUI.editFilersBtn.hideFrame();
 	}
 }
@@ -822,7 +838,7 @@ utWebUI.loadFiltersWithAdditions = function( flt )
 	{
 		var s = this.rssItems[this.rssArray[i]].title;
 		additions.push( { name: s, enabled: 1, 
-			pattern: makePatternString(s), exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "" } );
+			pattern: makePatternString(s), exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "" } );
 	}
 	this.loadFilters( flt, additions );
 }
@@ -868,6 +884,26 @@ utWebUI.loadFilters = function( flt, additions )
 		}
 	}
 
+	var fltRatio = $$('FLT_ratio');
+	if(fltRatio)
+	{
+		for(var i=fltRatio.options.length-1;i>0;i--)
+			fltRatio.remove(i);
+		for(var i=0; i<utWebUI.maxRatio; i++)
+		{
+			if(utWebUI.isCorrectRatio(i))
+			{
+				var elOptNew = document.createElement('option');
+				elOptNew.text = utWebUI.ratios[i].name;
+				elOptNew.value = "rat_"+i;
+				if(browser.isIE)
+					fltRatio.add(elOptNew);
+				else
+					fltRatio.add(elOptNew,null);
+			}
+		}
+	}
+
 	this.filters = eval( flt );
 	if(additions)
 	{
@@ -892,7 +928,7 @@ utWebUI.loadFilters = function( flt, additions )
 utWebUI.addNewFilter = function()
 {
 	var list = $$("fltlist");
-	var f = { name: WUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "" };
+	var f = { name: WUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "" };
 	var li = document.createElement("LI");
 	var i = this.filters.length;
 	li.innerHTML = "<input type='checkbox' id='_fe"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"javascript:utWebUI.selectFilter(this);\" id='_fn"+i+"'/>";
@@ -974,7 +1010,7 @@ rTorrentStub.prototype.setfilters = function()
 		this.content = this.content+"&name="+name+"&pattern="+flt.pattern+"&enabled="+enabled+
 		        "&exclude="+flt.exclude+
 			"&hash="+flt.hash+"&start="+flt.start+"&addPath="+flt.addPath+
-			"&dir="+flt.dir+"&label="+flt.label+"&throttle="+flt.throttle;
+			"&dir="+flt.dir+"&label="+flt.label+"&throttle="+flt.throttle+"&ratio="+flt.ratio;
 	}
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
@@ -1161,6 +1197,42 @@ utWebUI.MarkRSSLoaded = function()
 	utWebUI.allRSSStuffLoaded = true;
 }
 
+utWebUI.correctRatioFilterDialg = function()
+{
+	var rule = getCSSRule(".rf fieldset");
+	if(rule && utWebUI.allRatioStuffLoaded)
+	{
+		var addition = (browser.isIE) ? 52 : 42;
+		rule.style.height = (iv(rule.style.height)+addition)+"px";
+		$$('filterPropsFieldSet').style.height = rule.style.height;
+		rule = getCSSRule(".rf");
+		if(rule)
+		{
+			var delta = (browser.isKonqueror) ? 5 : 0;
+			rule.style.height= (iv(rule.style.height)+addition+delta)+"px";
+			$$('filterProps').style.height = rule.style.height;
+		}
+		rule = getCSSRule("div#dlgEditFilters");
+		if(rule)
+		{
+			rule.style.height= (iv(rule.style.height)+addition)+"px";
+			$$('dlgEditFilters').style.height = rule.style.height;
+		}
+		rule = getCSSRule(".lf");
+		if(rule)
+		{
+			rule.style.height= (iv(rule.style.height)+addition)+"px";
+			$$('filterList').style.height = rule.style.height;
+		}
+		var parent = $$("FLT_label").parentNode;
+		var el = document.createElement("SPAN");
+		el.innerHTML = "<label>"+WUILang.ratio+":</label><select id='FLT_ratio'><option value=''>"+WUILang.mnuRatioUnlimited+"</option></select><br/>";
+		parent.appendChild(el);
+	}
+	else
+		setTimeout('utWebUI.correctRatioFilterDialg()',1000);
+}
+
 utWebUI.correctFilterDialg = function()
 {
 	var rule = getCSSRule(".rf fieldset");
@@ -1192,6 +1264,8 @@ utWebUI.correctFilterDialg = function()
 		var el = document.createElement("SPAN");
 		el.innerHTML = "<label>"+WUILang.throttle+":</label><select id='FLT_throttle'><option value=''>"+WUILang.mnuUnlimited+"</option></select><br/>";
 		parent.appendChild(el);
+		if(utWebUI.ratioSupported)
+			utWebUI.correctRatioFilterDialg();
 	}
 	else
 		setTimeout('utWebUI.correctFilterDialg()',1000);
@@ -1292,6 +1366,9 @@ utWebUI.initRSS = function()
 	b.appendChild(dlg);
 	if(utWebUI.throttleSupported)
 		utWebUI.correctFilterDialg();
+	else
+	if(utWebUI.ratioSupported)
+		utWebUI.correctRatioFilterDialg();
 	injectScript("plugins/rss/browse.js");
 };
 

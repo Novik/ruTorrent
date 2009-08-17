@@ -361,8 +361,9 @@ class rRSSFilter
 	public $directory = null;
 	public $label = null;
 	public $throttle = null;
+	public $ratio = null;
 
-	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', $start = 0, $addPath = 1, $directory = null, $label = null, $throttle = null )
+	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', $start = 0, $addPath = 1, $directory = null, $label = null, $throttle = null, $ratio = null )
 	{
 		$this->name = $name;
 		$this->pattern = $pattern;
@@ -374,6 +375,7 @@ class rRSSFilter
 		$this->directory = $directory;
 		$this->label = $label;
 		$this->throttle = $throttle;
+		$this->ratio = $ratio;
 	}
 	public function isApplicable( $rss )
 	{
@@ -399,6 +401,7 @@ class rRSSFilter
 		return("{ name: \"".addslashes($this->name)."\", enabled: ".$this->enabled.", pattern: \"".addslashes($this->pattern)."\", label: \"".addslashes($this->label).
 			"\", exclude: \"".addslashes($this->exclude).
 			"\", throttle: \"".addslashes($this->throttle).
+			"\", ratio: \"".addslashes($this->ratio).
 			"\", hash: \"".addslashes($this->rssHash)."\", start: ".$this->start.", add_path: ".$this->addPath.", dir: \"".addslashes($this->directory)."\" }");
 	}
 }
@@ -559,7 +562,7 @@ class rRSSManager
 						$filter->checkItem($item) )
 					{
 						$this->getTorrents( $rss, $item['href'], 
-							$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, false );
+							$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, $filter->ratio, false );
 					}
 				}
 			}
@@ -771,7 +774,7 @@ class rRSSManager
 			$this->rssList->addError( "WUILang.rssAlreadyExist", $rssURL );
 		$this->cache->set($this->rssList);
 	}
-	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $needFlush = true )
+	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $ratio, $needFlush = true )
 	{
 		global $uploads;
 		$thash = 'Failed';
@@ -792,6 +795,10 @@ class rRSSManager
 				if(!empty($throttle))
 				{
 					$addition = "<param><value><string>d.set_throttle_name=".$throttle."</string></value></param>";
+				}
+				if(!empty($ratio))
+				{
+					$addition .= "<param><value><string>view.set_visible=".$ratio."</string></value></param>";
 				}
 				if(($thash = sendFile2rTorrent($name, false, $isStart, $isAddPath, $directory, $label, $addition))===false)
 				{
