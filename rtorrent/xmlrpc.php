@@ -23,7 +23,7 @@ class rXMLRPCCommand
 	{
 		$this->command = $cmd;
 		$this->params = array();
-		if($args) 
+		if($args!==null) 
 		{
 		        if(is_array($args))
 				foreach($args as $prm)
@@ -35,7 +35,7 @@ class rXMLRPCCommand
 
 	public function addParameter( $aValue, $aType = null )
 	{
-		if($aType==null)
+		if($aType===null)
 			$aType = self::getPrmType( $aValue );
 		$this->params[] = new rXMLRPCParam( $aType, $aValue );
 	}
