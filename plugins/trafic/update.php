@@ -54,8 +54,10 @@
 						$delta_down = floatval($data[1])-floatval($wasTorrents[$key][1]);
 						if(($delta_up<0) || ($delta_down<0))
 						{
-							$delta_up = $data[0];
-							$delta_down = $data[1];
+//							$delta_up = $data[0];
+//							$delta_down = $data[1];
+							$delta_up = 0;
+							$delta_down = 0;
 						}
 						if($delta_down!=0 || $delta_up!=0)
 							$needTorrents[$key] = array($delta_up,$delta_down);
@@ -105,8 +107,10 @@
 				$delta_down = floatval($now[1])-floatval($was[1]);
 				if(($delta_up<0) || ($delta_down<0))
 				{
-					$delta_up = $now[0];
-					$delta_down = $now[1];
+//					$delta_up = $now[0];
+//					$delta_down = $now[1];
+					$delta_up = 0;
+					$delta_down = 0;
 				}
 				$st = new rStat("stats/global.csv");
 				$st->correct($delta_up,$delta_down);
