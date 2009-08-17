@@ -1,12 +1,18 @@
 <?php
 
-$automoveRootPath = "./";
-if( !is_file( "util.php" ) ) $automoveRootPath = "../../";
-require_once( $automoveRootPath."util.php" );
-require_once( $automoveRootPath."xmlrpc.php" );
+require_once( "../../util.php" );
+require_once( "../../xmlrpc.php" );
 require_once( "at_utils.php" );
 require_once( "autotools.php" );
 require_once( "conf.php" );
+
+
+function Debug( $str )
+{
+	global $autodebug_enabled;
+	if( $autodebug_enabled ) toLog( $str );
+}
+
 
 Debug( "" );
 Debug( "--- move.php begin ---" );
