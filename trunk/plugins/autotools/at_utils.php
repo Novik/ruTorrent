@@ -1,16 +1,5 @@
 <?php
 
-$atutilsRootPath = "./";
-if( !is_file( "util.php" ) ) $atutilsRootPath = "../../";
-require_once( $atutilsRootPath."util.php" );
-require_once( "conf.php" );
-
-function Debug( $str )
-{
-	global $autodebug_enabled;
-	if( $autodebug_enabled ) toLog( $str );
-}
-
 function AddTailSlash( $str )
 {
 	$len = strlen( $str );

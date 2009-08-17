@@ -1,12 +1,17 @@
 <?php
 
-$autolabelRootPath = "./";
-if( !is_file( "util.php" ) ) $autolabelRootPath = "../../";
-require_once( $autolabelRootPath."util.php" );
-require_once( $autolabelRootPath."xmlrpc.php" );
+require_once( "../../util.php" );
+require_once( "../../xmlrpc.php" );
 require_once( "at_utils.php" );
 require_once( "autotools.php" );
 require_once( "conf.php" );
+
+
+function Debug( $str )
+{
+	global $autodebug_enabled;
+	if( $autodebug_enabled ) toLog( $str );
+}
 
 Debug( "" );
 Debug( "--- label.php begin ---" );
@@ -53,15 +58,15 @@ if( $req->run() && !$req->fault )
 		$torrent_dir = RemoveLastToken( $torrent_dir, '/' );
 	$label = GetRelativePath( $default_dir, $torrent_dir );
 	Debug( "Label           : ".$label );
-	if( $label == '' || $label == './' )
-		exit;
-
-	$cmd = new rXMLRPCCommand( "d.set_custom1", array (
-		$hash,
-		rawurlencode( $label )
-	) );
-	$req = new rXMLRPCRequest( $cmd );
-	$req->run();
+	if( $label != '' && $label != './' )
+	{
+		$cmd = new rXMLRPCCommand( "d.set_custom1", array (
+			$hash,
+			rawurlencode( $label )
+		) );
+		$req = new rXMLRPCRequest( $cmd );
+		$req->run();
+	}
 }
 else {
 	Debug( "rXMLRPCRequest() fail!" );
