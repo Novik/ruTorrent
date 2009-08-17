@@ -1,14 +1,38 @@
 <?php
+
 require_once( 'util.php' );
-if($theSettings->iVersion<0x804)
+
+if( $theSettings->iVersion < 0x804 )
 	$s = 'on_erase</methodName><params>';
 else
 	$s = 'system.method.set_key</methodName><params><param><value><string>event.download.erased</string></value></param>';
-send2RPC('<?xml version="1.0" encoding="UTF-8"?>'.
+
+// commands are always executed in alphabetical order of their tag name
+$content =
+	'<?xml version="1.0" encoding="UTF-8"?>'.
 	'<methodCall><methodName>'.$s.
-	'<param><value><string>rm_files</string></value></param>'.
+	'<param><value><string>erasedata_01</string></value></param>'.
 	'<param><value><string>branch=d.get_custom5=,"f.multicall=default,\"execute={rm,-rf,--,$f.get_frozen_path=}\""</string></value></param>'.
 	'</params>'.
-	'</methodCall>');
-$theSettings->registerPlugin("erasedata");
+	'</methodCall>';
+
+$result = send2RPC( $content );
+
+
+// security issue: call script with path to cleanup as parameter,
+//                 but it's not critical - we delete empty dirs only
+$content =
+	'<?xml version="1.0" encoding="UTF-8"?>'.
+	'<methodCall><methodName>'.$s.
+	'<param><value><string>erasedata_02</string></value></param>'.
+	// "$d.get_base_path" can be a single data file or data subdir
+	'<param><value><string>branch=d.get_custom5=,"execute={'.$theSettings->path.'plugins/erasedata/cleanup.sh,$d.get_base_path=}"</string></value></param>'.
+	'</params>'.
+	'</methodCall>';
+
+$result = send2RPC( $content );
+
+$theSettings->registerPlugin( "erasedata" );
+
 ?>
+
