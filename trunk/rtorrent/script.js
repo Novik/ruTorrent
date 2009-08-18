@@ -57,7 +57,8 @@ function init()
 		_3 = $_COOKIE["webui.trt.colwidth"];
 		for(var i in _3)
 		{
-			if(browser.isOldIE && _3[i]>4)
+//			if(browser.isOldIE && _3[i]>4)
+			if(!browser.isAppleWebKit && !browser.isKonqueror && (_3[i]>4))
 				_3[i]-=4;
 			if(i<utWebUI.trtColumns.length)
 	  	                utWebUI.trtColumns[i].width = _3[i] + "px";
