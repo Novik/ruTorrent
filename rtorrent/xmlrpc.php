@@ -10,7 +10,10 @@ class rXMLRPCParam
 	public function rXMLRPCParam( $aType, $aValue )
 	{
 		$this->type = $aType;
-		$this->value = $aValue;
+		if(($this->type=="i8") || ($this->type=="i4"))
+			$this->value = number_format($aValue,0,'.','');
+		else
+			$this->value = $aValue;
 	}
 }
 
