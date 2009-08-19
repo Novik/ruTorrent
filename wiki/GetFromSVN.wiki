@@ -1,29 +1,29 @@
-#summary Как забрать версию с svn
+#summary How to get a version from svn
 
-== Как забрать версию с svn ==
+== How to get a version from svn ==
 
-Для этого у Вас в системе должна стоять программа [http://subversion.tigris.org/ Subversion].
-Нужно выполнить следующие команды:
+To do that the program [http://subversion.tigris.org/ Subversion] has to be installed on your computer.
+Execute the following commands:
 {{{
 cd www-root
 svn checkout http://rutorrent.googlecode.com/svn/trunk/rtorrent
 }}}
-Под www-root здесь понимается корень Вашего веб-сервера, обычно это что-то вроде /www/htdocs.
-Если у Вас уже есть копия версии с svn, и Вы желаете ее обновить, то последовательность команд должна быть следующая:
+www-root here is a root of your web-server. Usually it is something like /www/htdocs.
+If you already have a copy from svn and you would like to update it, execute the following sequence of commands:
 {{{
 cd www-root/rtorrent
 svn update
 }}}
-Для плагинов последовательность команд немного отличается (подразумевается, что версия собственно ruTorrent у Вас на диске уже есть):
+For plug-ins the sequence is a bit different (assuming that a version of ruTorrent is already present on the disk):
 {{{
 cd www-root/rtorrent/plugins
 svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/plugin-name
 }}}
-и
+and
 {{{
 cd www-root/rtorrent/plugins/plugin-name
 svn update
 }}}
-соответственно. Здесь plugin-name - имя плагина. Т.е., например, create, rss и т.п.
+respectively. plugin-name here is name of a plug-in. I.e., for example, create, rss and so on.
 
-Производить сии операции лучше всего из под пользователя, под которым работает веб-сервер. Дабы потом не путаться в правах на файлы.
+It is a good idea to perform all these operations as an owner of the web-server. It will prevent a mess in access rights.
