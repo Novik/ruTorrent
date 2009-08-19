@@ -49,7 +49,7 @@ if(isset($_REQUEST['path_edit']))
 	        	$randName = '/tmp/rutorrent-create-'.rand().'.torrent';
         		if(!$pathToCreatetorrent || ($pathToCreatetorrent==""))
 				$pathToCreatetorrent = "createtorrent";
-	        	exec($pathToCreatetorrent.' -l '.$ps.' -a dummy '.escapeshellcmd($path_edit).' '.$randName,$results,$return);
+	        	exec($pathToCreatetorrent.' -l '.$ps.' -a dummy '.escapeshellarg($path_edit).' '.$randName,$results,$return);
 	        	if(!$return)
 	        	{
 	        		$torrent = new Torrent($randName);
