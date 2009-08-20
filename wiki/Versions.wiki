@@ -1,16 +1,16 @@
-#summary История версий.
+#summary Version history
 
-== История версий ==
+== Version history ==
 
- * ====Версия 2.6 (11.08.2009 r268)==== 
-   # Добавлена проверка на корректность версии библиотеки xmlrpc-c.
-   # Добавлен вывод глобальных ограничений скорости в статусе (или заголовке). Если таковые присутствуют.
-   # Добавлен плагин [PluginTracklabels tracklabels].
-   # Расширена область категорий ввиду появления плагинов, которые активно ее используют ([PluginRSS RSS],[PluginTracklabels tracklabels]).
-   # Исправлено некорректное отображение вертикального скроллбара в списках закачек, файлов, трекеров и т.д.
-   # Исправлено некорректное поведение ruTorrent при попытке добавить torrent-файл c некорректным содержимым (актуально, в основном, для автоматических загрузок плагина [PluginRSS RSS]).
-   # Исправлен некорректный алгоритм определения id пользователя веб-сервера. Ранее таковым считался владелец файла скрипта. Актуально для работы подсистемы диагностики. 
-   # Исправлен некорректный алгоритм определения id пользователя rTorrent. Ранее мог не определяться при отсутствии доступа пользователя веб-сервера к файлу rtorrent.lock. Актуально для работы подсистемы диагностики.
-   # Исправлено отсутствие прозрачности при попытке перемещения столбцов в списках закачек (для ряда браузеров).
-   # Исправлено некорректное отображение времени добавления торрента на закладке "Общее" - теперь учитывается разница между временем на сервере и локальной машине. 
-   # Исправлена путаница с путями в плагинах, которая могла приводить к созданию "лишних" директорий, некорректной работе ряда плагинов и т.п.
+ * ====Version 2.6 (11 Aug 2009 r268)==== 
+   # Added checking of xmlrpc-c library version correctness.
+   # Added output of global speed limits in the status bar or in the window title. If they exist.
+   # Added plug-in [PluginTracklabels tracklabels].
+   # Area of categories has been extended because of some plug-ins that actively use it have been issued. ([PluginRSS RSS],[PluginTracklabels tracklabels]).
+   # Fixed incorrect displaying of the scroll-bar at lists of torrents, files, trackers etc.
+   # Fixed incorrect behavior ruTorrent at attempt to add a torrent-file with incorrect content (refers mainly to automatic downloads via plug-in [PluginRSS RSS]).
+   # Fixed incorrect method of determination of the web-server's user ID. Before this it was assumed as owner of the script file. Refers to the diagnostics sub-system's work.
+   # Fixed incorrect method of determination of the rTorrent user ID. Before this it could not be determined if user had no access to the file rtorrent.lock. Refers to the diagnostics sub-system's work.
+   # Fixed opacity during moving of columns in the list of torrents (in some browsers).
+   # Fixed incorrect displaying of the time when a torrent has been added on the tab "General" - now the difference between time on the server and time on the local computer is being taken into account.
+   # Fixed mess of paths in plug-ins which could cause "redundant" folders creation and incorrect work of some plug-ins.
