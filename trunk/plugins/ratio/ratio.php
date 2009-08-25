@@ -60,7 +60,7 @@ class rRatio
 					$req1->addCommand($cmd);		
 				}						
 			}
-			return($req1->run() && !$req1->fault);
+			return(($req1->getCommandsCount()==0) || ($req1->run() && !$req1->fault));
 		}
 		return(false);
 	}
@@ -101,7 +101,7 @@ class rRatio
 					}
 				}
 			}
-			return($req->run() && !$req->fault);
+			return(($req->getCommandsCount()==0) || ($req->run() && !$req->fault));
 		}
 		return(false);
 	}
