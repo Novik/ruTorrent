@@ -1,51 +1,92 @@
-#summary Описание процесса создания собственного плагина.
+#summary Your own plug-in creation
 
-== Теория ==
+== Theory ==
 
-Плагины ruTorrent располагаются внутри директории plugins. Каждому плагину должна соответствовать директория с уникальным именем, в которой, собственно, файлы плагина и лежат. Среди этих файлов должен быть, по крайней мере, один с именем init.js и/или init.php. Файл init.php просто выполняется при загрузке ruTorrent. Обычно он содержит какую-либо инициализацию, требующую проверки состояния rTorrent на данный момент - например, там может проверяться версия rTorrent, выдаваться указания планировщику, частично формироваться внедряемый javascript. Содержимое же файла init.js полностью внедряется в код ruTorrent в момент загрузки пользователем последнего. Т.е. это хорошее место для для замены или добавления логики в скрипт ruTorrent.
+Plug-ins of ruTorrent are located in the folder plugins. All files of each plug-in must be placed in a separate folder 
 
-Имеется способ управления порядком загрузки плагинов. Каждому плагину поставлено в соответствие число - его номер в очереди загрузки. Данное число должно находиться в файле плагина с именем runlevel.info. Если этот файл отсутствует, то считается, что номер в очереди загрузки для данного плагина равен 10. Плагины с меньшим номером загружаются раньше, с бОльшим, соответственно, позже.
+with unique name. One of files named init.js or init.php or both of them must present in the plug-in folder.
+File init.php is simply starting at the ruTorrent load. Usually is contains an initialization which requires rTorrent 
 
-== Практика ==
+state check at the moment - e.g. it can check rTorrent version, give directions to the scheduler, partially form an 
 
-==== Меняем цвета на диаграмме скорости ====
+imbedded javascript. The contetnt of the file init.js will be fully imbedded in the ruTorrent code at the moment it's 
 
-Итак, цвета линий на диаграмме скорости задаются переменными down.color и up.color экземпляра объекта rSpeedGraph. Самый простой способ задать собственные цвета - поменять значения этих переменных непосредственно в исходнике, файле graph.js. Однако этот путь плох тем, что такую операцию придется проделывать каждый раз после простановки новой версии ruTorrent. Поэтому напишем собственный плагин, который будет вносить необходимые коррективы. Вариантов реализации идеи несколько. Можно, например, целиком заменить в плагине конструктор объекта rSpeedGraph. Но данный метод предполагает, что в будущих версиях этот конструктор останется неизменным, что не очень хорошо. Поэтому будем работать непосредственно с экземпляром объекта rSpeedGraph, он создается внутри метода utWebUI.init в файле script.js:
+load. So it is a good place for replacing or adding a logic into the ruTorrent script.
+
+There is a method of plug-ins load sequence control in here. Each plug-in has a number - it's position in the load 
+
+queue. This number should be placed in the plug-in file runlevel.info. If this file does not exist, the number of 
+
+position is assumed equivalent 10. Plug-ins with lesser numbers are loaded earlier, with greater - later.
+
+== Practice ==
+
+==== Change Speed diagram colors ====
+
+Colors of lines on the Speed diagram are defined by down.color and up.color variables of the instance of the rSpeedGraph 
+
+object. The simplest way to define your own colors - modify values of these variables in the source file - graph.js.
+But in this case such modifications should be performed every time you install new version or update of ruTorrent.
+Therefore let's create our own plug-in, which will perform necessary corrections. There are some ways how to realize 
+
+this idea. For example the whole constructor of the rSpeedGraph object can be replaced with a new one. But in this case
+the constructor is not supposed to be changed in future versions. It's not good. So we will work with the instance of 
+
+the rSpeedGraph object directly. It is made within the method utWebUI.init in the file script.js:
+
 {{{
 this.speedGraph = new rSpeedGraph();
 }}} 
-Казалось бы, можно заменить utWebUI.init, внутри собственной реализации вызвать "родной" init, а потом внести необходимые коррективы. Но - не выйдет, так как на момент внедрения скрипта плагина данный метод уже отработал. Поэтому проделаем похожую операцию с методом utWebUI.initDone, который вызывается в конце инициализации ruTorrent, после внедрения кода скрипта плагина. Плагин будет состоять из единственного файла init.js. Создадим для него директорию внутри plugins, например, с именем speedcolor. Ниже приведено содержимое файла init.js с комментариями.
+It would seem we can replace utWebUI.init, call "native" init and then make necessary modifications. But it will not 
+
+work because at the moment of script inclusion this method has already finished. Therefore let's do a similar operation 
+
+on the method utWebUI.initDone, which is called at the finish of ruTorrent initialization after the code of plug-in's 
+
+script included. The plug-in will be represented as just one file init.js. Create a folder with name e.g. speedcolor in 
+
+the folder plugins. Contents of the file init.js with comments are shown below.
 {{{
-// запоминаем предыдущий обработчик
+// remember a previous handler
 utWebUI.changeSpeedColorsInitDone = utWebUI.initDone;
 
-// устанавливаем свой
+// set up our own
 utWebUI.initDone = function() 
 {
-	// вызываем родной обработчик
+	// call a native handler
 	this.changeSpeedColorsInitDone();
-	// исправляем цвета
+	// modify colors
 	this.speedGraph.down.color = "#FF0000";
 	this.speedGraph.up.color = "#00FF00";
 }
 }}}
-Перегружаем ruTorrent, и вот результат:
+Restart ruTorrent and here is result:
 
 [http://rutorrent.googlecode.com/svn/wiki/images/speedcolor.jpg]
 
-==== Меняем цвета маркеров в плагине [PluginScheduler scheduler] ====
+==== Change colors of markers in the plug-in [PluginScheduler scheduler] ====
 
-Эта задача немного посложнее предыдущей. Во первых, может отсутствовать предмет замены, если плагин [PluginScheduler scheduler] попросту не установлен. И это хорошо бы проверять. Во вторых, цвета маркеров определяются в данном случае не переменными, а содержимым css файла плагина [PluginScheduler scheduler], конкретно - полем background селекторов .sch_fast, .sch_res1, .sch_res2, .sch_res3, .sch_stop и .sch_seed. Данный css подгружается динамически, при этом пока он не загрузится - никаких действий производить нельзя. 
+This tast is a bit more difficult than the previous one. Firstly, there could be no object to replace if the plug-in 
 
-Для того, чтобы проверить первое условие, нам нужно обеспечить, чтобы новый плагин загружался после плагина [PluginScheduler scheduler], а не до него - иначе будет не на что опереться при проверке. Для этого в директории нового плагина должен присутствовать файл с именем runlevel.info содержащий число, большее 10. Для прочей работы достаточно, опять таки, единственного файла init.js:
+[PluginScheduler scheduler] is simply not istalled. And this need to be checked. Secondly, colors of markers are defined 
 
+not by variables but in the plug-in's CSS-file. More specific - via background property of selectors .sch_fast, 
+
+.sch_res1, .sch_res2, .sch_res3, .sch_stop and .sch_seed. This CSS is loaded automatically and until it is finished 
+
+nothing can be done.
+To check the first condition we have to provide the new plug-in will start after the plug-in [PluginScheduler 
+
+scheduler]. Otherwise there will be nothing to check. To do this, the file named runlevel.info and conaining a number 
+
+greater than 10 should exists in the new plug-in folder. For the rest operations just one file init.js will be enough.
 {{{
 utWebUI.waitForSchedulerCSSLoaded = function()
 {
 	var rule = getCSSRule(".sch_fast");
 	if(rule)
 	{
-		// css уже загрузился, меняем цвета
+		// css loaded, change colors
 		rule.style.background = "#FF0000";
 		rule = getCSSRule(".sch_res1");
 		if(rule)
@@ -65,16 +106,16 @@ utWebUI.waitForSchedulerCSSLoaded = function()
         }
 	else
 	{
-		// css еще не загрузился, ждем
+		// css not loaded yet, wait
 		setTimeout('utWebUI.waitForSchedulerCSSLoaded()',1000);
         }
 }
 
-// проверяем - установлен ли плагин scheduler.
-// если таки да - начинаем ждать загрузки его css.
+// check if the plug-in scheduler installed.
+// if YES - wait it's CSS loaded
 if(typeof utWebUI.schedulerCreate != "undefined")
 	utWebUI.waitForSchedulerCSSLoaded();	
 }}}
-Перегружаем ruTorrent, и вот результат:
+Restart ruTorrent and here it is:
 
 [http://rutorrent.googlecode.com/svn/wiki/images/schedcolor.jpg]
