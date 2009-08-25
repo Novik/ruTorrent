@@ -30,7 +30,7 @@ utWebUI.initDone = function()
 	this.speedGraph.up.color = "#00FF00";
 }
 }}}
-Restart ruTorrent and here is result:
+Restart ruTorrent and here is the result:
 
 [http://rutorrent.googlecode.com/svn/wiki/images/speedcolor.jpg]
 
