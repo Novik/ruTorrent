@@ -2,7 +2,7 @@
 
 == Theory ==
 
-Plug-ins of ruTorrent are located in the folder plugins. All files of each plug-in must be placed in a separate folder with unique name. One of files named init.js or init.php or both of them must present in the plug-in folder. File init.php is simply starting at the ruTorrent load. Usually is contains an initialization which requires rTorrent state check at the moment - e.g. it can check rTorrent version, give directions to the scheduler, partially form an imbedded javascript. The contetnt of the file init.js will be fully imbedded in the ruTorrent code at the moment it's load. So it is a good place for replacing or adding a logic into the ruTorrent script.
+Plug-ins of ruTorrent are located in the folder plugins. All files of each plug-in must be placed in a separate folder with unique name. One of files named init.js or init.php or both of them must present in the plug-in folder. File init.php is simply starting at the ruTorrent load. Usually is contains an initialization which requires rTorrent state check at the moment - e.g. it can check rTorrent version, give directions to the scheduler, partially form an embedded javascript. The content of the file init.js will be fully embedded in the ruTorrent code at the moment it's load. So it is a good place for replacing or adding a logic into the ruTorrent script.
 
 There is a method of plug-ins load sequence control in here. Each plug-in has a number - it's position in the load queue. This number should be placed in the plug-in file runlevel.info. If this file does not exist, the number of position is assumed equivalent 10. Plug-ins with lesser numbers are loaded earlier, with greater - later.
 
@@ -36,9 +36,9 @@ Restart ruTorrent and here is the result:
 
 ==== Change colors of markers in the plug-in [PluginScheduler scheduler] ====
 
-This tast is a bit more difficult than the previous one. Firstly, there could be no object to replace if the plug-in [PluginScheduler scheduler] is simply not istalled. And this need to be checked. Secondly, colors of markers are defined not by variables but in the plug-in's CSS-file. More specific - via background property of selectors .sch_fast, 
+This task is a bit more difficult than the previous one. Firstly, there could be no object to replace if the plug-in [PluginScheduler scheduler] is simply not installed. And this need to be checked. Secondly, colors of markers are defined not by variables but in the plug-in's CSS-file. More specific - via background property of selectors .sch_fast, 
 .sch_res1, .sch_res2, .sch_res3, .sch_stop and .sch_seed. This CSS is loaded automatically and until it is finished nothing can be done.
-To check the first condition we have to provide the new plug-in will start after the plug-in [PluginScheduler scheduler]. Otherwise there will be nothing to check. To do this, the file named runlevel.info and conaining a number greater than 10 should exists in the new plug-in folder. For the rest operations just one file init.js will be enough.
+To check the first condition we have to provide the new plug-in will start after the plug-in [PluginScheduler scheduler]. Otherwise there will be nothing to check. To do this, the file named runlevel.info and containing a number greater than 10 should exists in the new plug-in folder. For the rest operations just one file init.js will be enough.
 {{{
 utWebUI.waitForSchedulerCSSLoaded = function()
 {
