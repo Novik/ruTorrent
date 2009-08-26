@@ -1,13 +1,13 @@
-#summary Описание плагина Tracklabels.
+#summary Tracklabels plug-in description
 
-== Введение ==
+== Introduction ==
 
-Плагин добавляет на панель категорий набор меток, которые автоматически формируются на основе трекеров закачек.
+The plug-in adds a set of labels on the category panel. These labels are created automatically on the basis of torrents' trackers.
 
 [http://rutorrent.googlecode.com/svn/wiki/images/tracklabels.jpg]
 
-== Некоторые неочевидные моменты  ==
+== Some non-obvious points  ==
 
- * Плагин корректно работает только для ruTorrent версии 2.6 и старше.
- * Метки формируются для всех трекеров нулевой группы закачки. Как следствие - одна закачка может попасть в несколько категорий сразу.
- * Алгоритм формирования имени трекера "цельнотянут" с deluge и является эвристическим. Т.е. правильный результат гарантируется не всегда. Например, если в нулевой группе трекеров закачки присутствует как трекер `http://clients-tracker.depthstrike.com` так и трекер `http://core-tracker.depthstrike.com`, будет сформировано одно имя - `depthstrike.com`, в котором закачка будет посчитана дважды.
+ * The plug-in works properly with ruTorrent version 2.6 and higher only.
+ * Labels are created for all trackers of zero-group of the torrent. So some torrent may be present in several categories at once.
+ * The method of creating a tracker's name has been "borrowed" from Deluge. It is heuristic and cannot guarantee always correct result. For example if there are two trackers in the zero-group: `http://clients-tracker.depthstrike.com` and `http://core-tracker.depthstrike.com`, the label `depthstrike.com` will be created and the torrent will be counted twice in it.
