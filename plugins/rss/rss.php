@@ -524,18 +524,18 @@ class rRSSManager
 	}
 	public function setFilters($flts)
 	{
+                $this->cache->set($flts);
 		foreach($this->rssList->lst as $hash=>$info)
 		{
 			$rss = new rRSS();
 			$rss->hash = $hash;
 			if($this->cache->get($rss) && $info['enabled'])
 			{
-				$this->cache->set($rss);
+//				$this->cache->set($rss);
 				$this->checkFilters($rss,$info,$flts);
 			}
 		}
 		$this->saveHistory();
-                $this->cache->set($flts);
 	}
 	public function clearHistory()
 	{
