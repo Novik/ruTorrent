@@ -1029,6 +1029,7 @@ rTorrentStub.prototype.getalltrackersResponse = function(xmlDoc,docText)
 {
         var allDatas = xmlDoc.getElementsByTagName('data');
 	var ret = '{"":"","trackers": [';
+	var cnt = 1;
 	for( var i=0; i<this.hashes.length; i++)
 	{
 		if(i>0)
@@ -1036,7 +1037,7 @@ rTorrentStub.prototype.getalltrackersResponse = function(xmlDoc,docText)
 		ret+='"';
 		ret+=this.hashes[i];
 		ret+='", [';
-		var datas = allDatas[i+1].getElementsByTagName('data');
+		var datas = allDatas[cnt].getElementsByTagName('data');
 		for(var j=1;j<datas.length;j++)
 		{
 			var data = datas[j];
@@ -1060,6 +1061,7 @@ rTorrentStub.prototype.getalltrackersResponse = function(xmlDoc,docText)
 				item=','+item;
 			ret+=item;
 		}
+		cnt+=(datas.length+1);
 		ret+=']';
 	}
 	ret+=']}';
