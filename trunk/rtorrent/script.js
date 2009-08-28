@@ -1814,6 +1814,7 @@ utWebUI =
    		tul = 0;
 		tdl = 0;
 		var ln = 27;
+		var tArray = new Array();
    		for(i = 0; i < l; i++) 
    		{
       			var _87 = d.torrents[i];
@@ -1846,7 +1847,8 @@ utWebUI =
 				_87.splice(16, ln-19);
 				this.trtTable.addRow(this.fillAdditionalTorrentsCols(sId,_87), sId, _8c, {"label" : lbl});
 				this.noUpdate = false;
-				this.getTrackers(sId);
+//				this.getTrackers(sId);
+				tArray.push(sId);
          		}
 			else 
 			{
@@ -1912,6 +1914,10 @@ utWebUI =
 			this.torrents[sId][ln] = true;
 			_87 = null;
 		}
+
+		if(tArray.length)
+			this.getAllTrackers(tArray);
+
 		this.trtTable.dBody.scrollLeft = sl;
 		utWebUI.speedGraph.addData(tul,tdl);
 		var wasRemoved = false;
@@ -2822,36 +2828,50 @@ utWebUI =
          	}
       		this.Request("?action=gettrackers&hash=" + k, [this.addTrackers, this]);
    	}
+, "getAllTrackers" : function(arr) 
+	{
+   		if(typeof (this.trackers) == "undefined") 
+   		{
+      			this.trackers = [];
+      		}
+		var req = "?action=getalltrackers";
+		for(var i=0; i<arr.length; i++)
+			req+=("&hash=" + arr[i]);
+      		this.Request(req, [this.addTrackers, this]);
+   	}
 , "addTrackers" : function(_db) 
 	{
    		var d = eval("(" + _db + ")"), i, aData;
-   		var k = d.trackers[0];
-   		this.trackers[k] = new Array();
-   		for(i = 0; i < d.trackers[1].length; i++) 
+   		for(var m = 0; m<d.trackers.length; m+=2)
    		{
-      			aData = d.trackers[1][i].slice(0);
-     			if(typeof this.trackers[k][i] == "undefined") 
-      			{
-         			this.trackers[k][i] = new Array();
-         		}
-      			this.trackers[k][i] = aData.slice(0);
-      			var sId = k + "_t_" + i;
-      			if(this.dID == k) 
-      			{
-         			if(typeof this.trkTable.rowdata[sId] == "undefined") 
-         			{
-            				this.trkTable.addRow(aData, sId, null, {"added" : true});
-            			}
-         			else 
-         			{
-            				for(var j = 0; j < aData.length; j++) 
-            				{
-               					this.trkTable.setValue(sId, j, aData[j]);
-               				}
-               				this.trkTable.setAttr(sId, "added", true);
-            			}
-         		}
-      		}
+			var k = d.trackers[m];
+	   		this.trackers[k] = new Array();
+   			for(i = 0; i < d.trackers[m+1].length; i++) 
+	   		{
+      				aData = d.trackers[m+1][i].slice(0);
+	     			if(typeof this.trackers[k][i] == "undefined") 
+      				{
+         				this.trackers[k][i] = new Array();
+	         		}
+      				this.trackers[k][i] = aData.slice(0);
+      				var sId = k + "_t_" + i;
+      				if(this.dID == k) 
+	      			{
+        	 			if(typeof this.trkTable.rowdata[sId] == "undefined") 
+         				{
+            					this.trkTable.addRow(aData, sId, null, {"added" : true});
+	            			}
+        	 			else 
+         				{
+            					for(var j = 0; j < aData.length; j++) 
+	            				{
+        	       					this.trkTable.setValue(sId, j, aData[j]);
+               					}
+               					this.trkTable.setAttr(sId, "added", true);
+	            			}
+        	 		}
+      			}
+		}
    		var _e0 = false;
    		var rowIDs = this.trkTable.rowIDs.slice(0);
 		for(var i in rowIDs) 

@@ -118,6 +118,24 @@ rTorrentStub.prototype.gettrackers = function()
 	this.commands.push( cmd );
 }
 
+rTorrentStub.prototype.getalltrackers = function()
+{
+	for(var i=0; i<this.hashes.length; i++)
+	{
+		var cmd = new rXMLRPCCommand("t.multicall");
+		cmd.addParameter("string",this.hashes[i]);
+		cmd.addParameter("string","");
+		cmd.addParameter("string","t.get_url=");
+		cmd.addParameter("string","t.get_type=");
+		cmd.addParameter("string","t.is_enabled=");
+		cmd.addParameter("string","t.get_group=");
+		cmd.addParameter("string","t.get_scrape_complete=");
+		cmd.addParameter("string","t.get_scrape_incomplete=");
+		cmd.addParameter("string","t.get_scrape_downloaded=");
+		this.commands.push( cmd );
+	}
+}
+
 rTorrentStub.prototype.settrackerstate = function()
 {
 	for(var i=0; i<this.vs.length; i++)
@@ -1004,6 +1022,47 @@ rTorrentStub.prototype.gettrackersResponse = function(xmlDoc,docText)
 		ret+=item;
 	}
 	ret+=']]}';
+	return(ret);
+}
+
+rTorrentStub.prototype.getalltrackersResponse = function(xmlDoc,docText)
+{
+        var allDatas = xmlDoc.getElementsByTagName('data');
+	var ret = '{"":"","trackers": [';
+	for( var i=0; i<this.hashes.length; i++)
+	{
+		if(i>0)
+			ret=ret+',';
+		ret+='"';
+		ret+=this.hashes[i];
+		ret+='", [';
+		var datas = allDatas[i+1].getElementsByTagName('data');
+		for(var j=1;j<datas.length;j++)
+		{
+			var data = datas[j];
+			var values = data.getElementsByTagName('value');
+			var item = '["';
+			item+=this.getValue(values,0);
+			item+='",';
+			item+=this.getValue(values,1);
+			item+=',';
+			item+=this.getValue(values,2);
+			item+=',';
+			item+=this.getValue(values,3);
+			item+=',';
+			item+=this.getValue(values,4);
+			item+=',';
+			item+=this.getValue(values,5);
+			item+=',';
+			item+=this.getValue(values,6);
+			item+=']';
+			if(j>1)
+				item=','+item;
+			ret+=item;
+		}
+		ret+=']';
+	}
+	ret+=']}';
 	return(ret);
 }
 
