@@ -1007,10 +1007,10 @@ rTorrentStub.prototype.setfilters = function()
 		var flt = utWebUI.filters[i];
 		var enabled = $$("_fe"+i).checked ? 1 : 0;
 		var name = $$("_fn"+i).value;
-		this.content = this.content+"&name="+name+"&pattern="+flt.pattern+"&enabled="+enabled+
-		        "&exclude="+flt.exclude+
+		this.content = this.content+"&name="+encodeURIComponent(name)+"&pattern="+encodeURIComponent(flt.pattern)+"&enabled="+enabled+
+		        "&exclude="+encodeURIComponent(flt.exclude)+
 			"&hash="+flt.hash+"&start="+flt.start+"&addPath="+flt.addPath+
-			"&dir="+flt.dir+"&label="+flt.label+"&throttle="+flt.throttle+"&ratio="+flt.ratio;
+			"&dir="+encodeURIComponent(flt.dir)+"&label="+encodeURIComponent(flt.label)+"&throttle="+flt.throttle+"&ratio="+flt.ratio;
 	}
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
