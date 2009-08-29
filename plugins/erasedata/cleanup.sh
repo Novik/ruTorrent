@@ -10,34 +10,39 @@ item="$@"
 
 # handle directories only
 [ -d "$item" ] || return 1
+# check for "" (?! seems, that on some systems "" is treated as a directory )
+[ "x$item" = "x" ] && return 1
+# ok, a condom for a candle :)
+[ "x$item" = "x/" ] && return 1
+# ignore symlinks (hope, there wouldn't be any in torrents data)
+[ -L "$item" ] && return 1
 
-can_delete=1
-for fn in "$item"/* ; do
+can_delete="YES"
+# check if $item is not empty (hope, this method works everywhere)
+if [ "x$(ls "$item")" != "x" ] ; then
+    for fn in "$item"/* ; do
+        [ "x$log" = "xYES" ] && echo "fn=$fn" >> $log_file
 
-    #echo "fn=$fn"
-    [ "x$log" = "xYES" ] && echo "fn=$fn" >> $log_file
+        # if $item is empty - it can be deleted now (fail on Linux)
+        [ "x$fn" = "x$item/*" ] && break
 
-    # if $item is empty - it can be deleted now
-    [ "x$fn" = "x$item/*" ] && break
+        # if $fn is a directory and not a symlink, then
+        if [ -d "$fn" ] && [ ! -L "$fn" ] ; then
+            # check it...
+            $0 "$fn"
+            # if check fail - directory $item can't be deleted
+            [ "x$?" != "x0" ] && can_delete="NO"
+        else
+            # if a file was found in $item directory - $item can't be deleted
+            can_delete="NO"
+            continue
+        fi
+    done
+fi
 
-    # if $fn is a directory, then
-    if [ -d "$fn" ] ; then
-        # check it...
-        $0 "$fn"
-        # if check fail - directory $item can't be deleted
-        [ "x$?" != "x0" ] && can_delete=0
-    else
-        # if any file found in $item - directory $item can't be deleted
-        can_delete=0
-        continue
-    fi
-
-done
-
-[ "x$can_delete" != "x1" ] && return 1
+[ "x$can_delete" = "xYES" ] || return 1
 
 # we can delete directory $item
-#echo "$item"
 [ "x$log" = "xYES" ] && echo "2del=$item" >> $log_file
 
 rmdir "$item"
