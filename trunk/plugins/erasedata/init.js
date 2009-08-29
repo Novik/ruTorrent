@@ -31,6 +31,9 @@ rTorrentStub.prototype.removewithdata = function()
 		cmd.addParameter( "string", this.hashes[i] );
 		cmd.addParameter( "string", "1" );
 		this.commands.push( cmd );
+		cmd = new rXMLRPCCommand( "d.delete_tied" );
+		cmd.addParameter( "string", this.hashes[i] );
+		this.commands.push( cmd );
 		cmd = new rXMLRPCCommand( "d.erase" );
 		cmd.addParameter( "string", this.hashes[i] );
 		this.commands.push( cmd );
