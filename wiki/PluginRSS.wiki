@@ -55,7 +55,7 @@ To automatically download torrents from a feed, you need to create one or severa
 The filter's contents must be a Perl-compatible regular expression ([http://www.pcre.org/ PCRE]). The syntax of the PCRE is described, for example [http://ru.php.net/manual/en/reference.pcre.pattern.syntax.php here].
 
 This is a basic set of operations, required to setup the automatic downloads. The rest of the functions are extra features for more control of the automatic downloads.
-    * "Exclude:" allows you to exclude certain strings from matching. An example is you don't want releases with AC3 audio and H.264: you can write {{{/(AC3|264)/i}}} in "Not:" to exclude those.
+    * "Exclude:" allows you to exclude certain strings from matching. An example is you don't want releases with AC3 audio and H.264: you can write {{{/(AC3|264)/i}}} in "Exclude:" to exclude those.
     * "RSS:" chooses what feed you want the filter to apply to.
     * "Directory:" allows you to choose a specific folder where torrents will be saved to.
     * "Don't start the download automatically" will add any downloaded torrents in "Stopped" mode. They will be added to your list, but will not begin downloading until you choose them from the torrent list and start them. 
