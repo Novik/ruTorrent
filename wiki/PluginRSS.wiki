@@ -1,85 +1,80 @@
-#summary Описание плагина RSS
+#summary RSS plug-in description
 
-== Введение ==
+== Introduction ==
 
-Плагин предназначен для работы с [http://ru.wikipedia.org/wiki/Rss RSS-рассылками]. Интерфейсное решение (да и часть этой статьи) во многом скопировано с [http://www.utorrent.com/documentation/rss µTorrent]. 
+The plug-in is intended for work with [http://ru.wikipedia.org/wiki/Rss RSS-feeds]. The interface (and a part of this article) has been partially copied from [http://www.utorrent.com/documentation/rss µTorrent]. 
 
-== Использование ==
+== Usage==
 
-====Добавление рассылки====
+====Adding a feed====
 
-Щелкните в любом месте на нижней части боковой панели, на надписи "Все рассылки", и выберите "Добавить рассылку" (либо просто нажмите кнопку RSS в главном меню). Введите в ячейку URL выбранной рассылки RSS и заполните поле "Метка", если вы хотите присвоить этой рассылке имя. 
+Click anywhere in the lower half of the sidebar,  where "All Feeds" is and choose "Add RSS Feed" (or just use the button RSS in the main menu). Enter your RSS feed's URL into the input box, and fill in the "Custom Alias" field if you want to give a name to the feed.
 
-Обратите внимание, что некоторые рассылки не имеют прямых ссылок на файлы .torrent. Такие рассылки нельзя использовать для автоматической загрузки через фильтры.
+Note some feeds do not give direct links to the .torrent files. These feeds cannot be used for automatic downloading through filters.
 
-====Отключение рассылки====
+====Suspending a feed====
 
-Для отключения рассылки просто щелкните по ней правой кнопкой в списке категорий и выберите "Отключить рассылку". Если потребуется повторно активировать эту рассылку, просто щелкните ее еще раз правой кнопкой и выберите "Включить рассылку".
+To suspend a feed, simply right click the feed in the category list and choose "Disable Feed." If you want to re-enable it, simply right click again and choose "Enable Feed."
 
-====Переименование рассылки====
+====Renaming a feed====
 
-Рассылку можно переименовать или изменить ее URL, щелкнув по ней один раз правой кнопкой мыши и выбрав "Правка рассылки".
+Any feed can be renamed and it's URL may be edited by right clicking it and choosing "Edit Feed".
 
-====Просмотр RSS-рассылки====
+====Viewing releases on an RSS feed====
 
-Щелкните RSS-рассылку мышью для ее просмотра. Либо можно щелкнуть "Все рассылки". Все содержание, связанное с текущей рассылкой, будет показано в главном окне списка. По двойному щелчку на строке содержимого будет произведена попытка открытия соответствующего URL в браузере.
+To view the releases for an RSS feed, click on the feed. Alternatively, click on "All Feeds." All the releases currently on the feed will show in the main listview. Double clicking will attempt to open the release's URL in your browser.
 
-Для RSS-рассылок существуют дополнительные информационные колонки. Для их включения/отключения щелкните правой кнопкой на названии любой колонки. Порядок расположения колонок можно изменять, перетаскивая их мышью. Эти параметры не зависят от колонок, доступных при просмотре загруженных торрентов.
+Extra columns of information are available for RSS feeds. To enable or disable them, right click on the name of any column. You can also click and drag columns to rearrange them. These settings are independent of the columns available when viewing your loaded torrents.
 
-====Использование рассылок, требующих HTTP-аутентификации====
+====Using feeds that require HTTP authentication====
 
-Если рассылки требуют HTTP-аутентификации, просто используйте следующий формат при вводе их URL: 
+For feeds that require HTTP authentication, simply use this format for the feed URL: 
 {{{
-http://логин:пароль@некий-торрент-сайт.com/rss.php
+http://username:password@sometorrentsite.com/rss.php
 }}}
 
-====Использование рассылок, требующих cookies====
+====Using feeds that require cookies====
 
-Для использования рассылок, требующих cookies, нужно найти cookies для сайта и взять оттуда требуемые (обычно они называются uid и pass).
-
-    * Файлы cookies в Internet Explorer находятся в `%UserProfile%\Cookies`.
-    * Пользователи Firefox могут найти файлы cookies в меню `Tools (Инструменты) -> Options (Настройки) -> Privacy (Приватность) -> Show Cookies (Показать cookies)`
-    * Пользователи Opera могут найти файлы cookies в меню `Инструменты (Tools) -> Расширенные (Advanced) -> Cookies`.
-    * Пользователям других браузеров следует обратиться к документации своей программы.
-После нахождения всей требуемой информации введите URL рассылки в следующем формате:
+To use feeds that require cookies, you must find the cookie for the site, and grab UID and pass from it.
+    * IE users will find their cookies in `%UserProfile%\Cookies`.
+    * Firefox users will find their cookies in Tools -> Options -> Privacy -> Show Cookies
+    * Opera users will find their cookies in Tools -> Advanced -> Cookies
+    * Users of other browsers will have to consult their browser's documentation.
+Once you have the necessary information, use this format for the feed URL:
 {{{
-http://некий-торрент-сайт.com/rss.php:COOKIE:name1=value;name2=value;
+http://sometorrentsite.com/rss.php:COOKIE:name1=value;name2=value;
 }}}
-Альтернативный метод проинформировать ruTorrent о требуемых cookies предоставляет плагин [PluginCookies Cookies].
+Another way to inform ruTorrent about required cookies is provided via plug-in [PluginCookies Cookies].
 
-====Автоматическая загрузка торрентов====
+====Automatically downloading torrents====
 
-Для автоматической загрузки торрентов Вы должны создать один или несколько фильтров.
+To automatically download torrents from a feed, you need to create one or several filters.
+    # Right click on a feed and choose "RSS Manager". The appropriate dialog window will be shown.
+    # Click on the "Add" button and type in the name of the new filter in the left column.
+    # Enter filter's contents in the field Filter Settings -> Filter.
+The filter's contents must be a Perl-compatible regular expression ([http://www.pcre.org/ PCRE]). The syntax of the PCRE is described, for example [http://ru.php.net/manual/en/reference.pcre.pattern.syntax.php here].
 
-    # Щелкните на любой рассылке правой кнопкой мыши и выберите в меню пункт "Менеджер рассылок". Откроется соотв. диалог.
-    # Нажмите "Добавить", и введите в левой колонке имя добавляемого фильтра.
-    # Введите содержимое фильтра в пункте Настройки фильтров -> Фильтр.
-
-Содержимое фильтра должно представлять собой Perl-совместимое регулярное выражение ([http://www.pcre.org/ PCRE]). С синтаксисом PCRE можно ознакомиться, например, [http://ru.php.net/manual/en/reference.pcre.pattern.syntax.php здесь].
-
-Это минимальный набор действий, требуемых для настройки автоматической загрузки. Остальные функции являются дополнительными и позволяют более полно контролировать процесс.
-
-    * "Кроме": позволяет исключить определенные строки из совпадения. Например, вам не нужны версии с AC3-звуком и кодеком H.264: в разделе "Кроме:" вы можете написать {{{/(AC3|264)/i}}} для их исключения.
-    * "Рассылка": позволяет выбрать рассылку, для которой будет применяться данный фильтр.
-    * "Директория": позволяет выбрать директорию, в которую будут сохраняться торренты. 
-    * "Не начинать закачку автоматически": используется для добавления всех загруженных торрентов в режиме "Остановлен". Загрузки будут добавлены в список, но скачивание начнется только после того, как вы вручную запустите их в списке торрентов.
-    * "Метка": автоматическое назначение метки для торрентов, совпадающих с фильтром.
-    * Для проверки параметров фильтра можно использовать кнопку "?". Если фильтр задан корректно, будет показано количество совпадений с ним в рассылке. Если нет - в логе ruTorrent Вы увидите соответствующее сообщение.
-
+This is a basic set of operations, required to setup the automatic downloads. The rest of the functions are extra features for more control of the automatic downloads.
+    * "Exclude:" allows you to exclude certain strings from matching. An example is you don't want releases with AC3 audio and H.264: you can write {{{/(AC3|264)/i}}} in "Not:" to exclude those.
+    * "RSS:" chooses what feed you want the filter to apply to.
+    * "Directory:" allows you to choose a specific folder where torrents will be saved to.
+    * "Don't start the download automatically" will add any downloaded torrents in "Stopped" mode. They will be added to your list, but will not begin downloading until you choose them from the torrent list and start them. 
+    * "Label:" auto-sets a label for torrents that match the filter. 
+    * Click the button "?" to check filter's settings. If the filer is correct, the number of torrents on the RSS feed that match the filter will be shown. Otherwise you will see an appropriate message in the ruTorrent's log.
 [http://rutorrent.googlecode.com/svn/wiki/images/rssdownloader.jpg]
 
-== Как оно работает ==
+== How does it work ==
 
-После первой загрузки с установленным плагином RSS, ruTorrent выдает команду планировщику rTorrent, который, в свою очередь, начинает периодически опрашивать требуемые RSS-рассылки, сохраняя локальные копии их содержимого на диск. В процессе синхронизации он проверяет содержимое рассылок на предмет совпадения с имеющимися фильтрами. Если таковое имеется - соответствующие .torrent файлы передаются в rTorrent на обработку. Диагностика о неудачных загрузках и/или операциях синхронизации будет показана в окне лога ruTorrent при следующей загрузке последнего.
+When ruTorrent starts with installed RSS plug-in first time it sends a command to the rTorrent scheduler, which begins to poll RSS feeds and saves them locally. During the synchronization it checks feeds' content whether it matches to defined filters. If a match is found, corresponding .torrent-files are sent to rTorrent for proceeding. Diagnostic messages about unsuccessful loads and/or synchronizations will be shown in the ruTorrent log window at the next it's load.
 
-Еще раз обращаю внимание - процесс опроса начинается только после первой загрузки ruTorrent. Т.е. в промежуток между стартом rTorrent и первым после этого стартом ruTorrent никакой полезной работы производиться не будет. Чтобы избежать этого, нужно добавить в конфигурационный файл rTorrent специально обученную строчку (см. ниже).
+Once again - the poll process begins only after first start of the ruTorrent. I.e. there will not be any useful action between start of rTorrent and then first start of ruTorrent. To avoid this, a special string should be added to the rTorrent configuration file (see below). 
 
-== Дополнительная настройка плагина ==
+== Additional plug-in adjustment ==
 
-Производится в файле `plugins/rss/rssconf.php`.
-    * `$updateInterval` - переменная содержит интервал синхронизации локальных копий RSS-рассылок (в минутах). По умолчанию - 30 минут.
-    * `$isAutoStart` - переменная определяет способ начала работы. Если она равна `true`, то команда планировщику rTorrent на начало работы выдается при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы дать пинка планировщику самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчку 
+Sould be done in the file `plugins/rss/rssconf.php`.
+    * `$updateInterval` - the variable sets the time interval between synchronizations of RSS feeds with their local copies (in minutes). By default - 30 minutes.
+    * `$isAutoStart` - the variable defines how the plug-in work starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler needs to be activated independently. To do this, the following string should be added into the rTorrent configuration file: 
 {{{
 schedule = rss,0,00:30:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"
 }}}
- где full_path_to_plugin - полный путь к плагину RSS.
+ where full_path_to_plugin - is a full path to the RSS plug-in.
