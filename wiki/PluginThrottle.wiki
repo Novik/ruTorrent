@@ -27,7 +27,7 @@ To avoid this add a special string to the rTorrent configuration file (see below
 
 Sould be done in the file `plugins/throttle/conf.php`.
     * `MAX_THROTTLE` - maximum number of channels. You can make it bigger or smaller.
-    * `$isAutoStart` - the variable defines how the the method of work starts. If it is set as `true`, channels will be created at ruTorrent start. Otherwise you should do it manually.
+    * `$isAutoStart` - the variable defines the method of work starts. If it is set as `true`, channels will be created at ruTorrent start. Otherwise you should do it manually.
 To do this, the following strings should be added into the rTorrent configuration file: 
 {{{
 throttle_up = thr_0,up_limit_for_channel0
