@@ -22,7 +22,7 @@ To avoid this, a special string should be added to the rTorrent configuration fi
 
 Following changes should be done in the file `plugins/trafic/conf.php`.
     * `$updateInterval` - the variable sets the interval in minutes between requests to the rTorrent. Default - 15 minutes. 
-    * `$isAutoStart` - the variable defines how the traffic counting starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler need to activated independently. To do this, the following string should be added into the rTorrent configuration file:
+    * `$isAutoStart` - the variable defines how the traffic counting starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler needs to be activated independently. To do this, the following string should be added into the rTorrent configuration file:
 {{{
 schedule = trafic,10,00:15:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"
 }}}
