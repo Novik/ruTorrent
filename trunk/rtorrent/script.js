@@ -1834,7 +1834,7 @@ utWebUI =
 			{
 				this.labels[sId] = "";
          		}
-			var lbl = this.getLabels(sId, _87[12], _8a, _87[9], _87[10], _89 & dStatus.error);
+			var lbl = this.getLabels(sId, _87[12], _8a, _87[9], _87[10], _89);
 			ln = _87.length - 1;
 			if(typeof (this.torrents[sId]) == "undefined") 
 			{
@@ -2082,7 +2082,7 @@ utWebUI =
 		}
    	}
 
-, "getLabels" : function(id, lbl, _9d, dls, uls, err) {
+, "getLabels" : function(id, lbl, _9d, dls, uls, status) {
    if(lbl == "") {
       lbl += "-_-_-nlb-_-_-";
       if(this.labels[id].indexOf("-_-_-nlb-_-_-") ==- 1) {
@@ -2131,7 +2131,7 @@ utWebUI =
          this.labels["-_-_-act-_-_-"]--;
          }
       }
-	if(err)
+	if(status & dStatus.error)
 	{
 		lbl += "-_-_-err-_-_-";
       		if(this.labels[id].indexOf("-_-_-err-_-_-") ==- 1)
