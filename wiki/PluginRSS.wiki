@@ -71,7 +71,7 @@ Once again - the poll process begins only after first start of the ruTorrent. I.
 
 == Additional plug-in adjustment ==
 
-Sould be done in the file `plugins/rss/rssconf.php`.
+Should be done in the file `plugins/rss/rssconf.php`.
     * `$updateInterval` - the variable sets the time interval between synchronizations of RSS feeds with their local copies (in minutes). By default - 30 minutes.
     * `$isAutoStart` - the variable defines how the plug-in work starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler needs to be activated independently. To do this, the following string should be added into the rTorrent configuration file: 
 {{{
