@@ -1,30 +1,31 @@
-#summary Описание плагина Scheduler.
+#summary Scheduler plug-in description.
 
-== Введение ==
+== Introduction ==
 
-Вы можете включить расписание и кликать на квадратиках, указывая, какого из шести вариантов ограничений rTorrent должен придерживаться в каждый из 168 часов в неделю. 
+You can enable the scheduler and click the cells to define any of six rTorrent behavior types at each particular hour of 168 week hours.
 
 [http://rutorrent.googlecode.com/svn/wiki/images/scheduler.jpg]
 
- * Без ограничений - используется предопределенное ограничение на закачку/отдачу. По умолчанию - ОченьБольшоеЧисло.
- * Стоп - все закачки/раздачи останавливаются.
- * Только отдача - все закачки останавливаются, все раздачи, ранее остановленные плагином, стартуют, для отдачи используется предопределенное ограничение (по умолчанию - ОченьБольшоеЧисло).
- * Ограничение1, Ограничение2, Ограничение3 - для ограничения скорости используются значения, указанные в соответствующих полях ниже на интерфейсе. Традиционно для rtorrent число 0 означает не запрет на скачку/отдачу, а отсутствие каких-либо ограничений.
+ * Unlimited - use predefined UL/DL limits. Default - a VeryBigNumber.
+ * Turn Off - stop all torrents.
+ * Seeding Only - stop all torrents, then start all torrents stopped by the plug-in using predefined UL speed limit (Default - a VeryBigNumber).
+ * Limited1, Limited2, Limited3 - use speed limits defined in fields below. "0"-value, conventionally for rTorrent, means "no limits", but not "stop torrent".
 
-== Как оно работает ==
+== How does it work ==
 
-После первой загрузки с установленным плагином scheduler, ruTorrent выдает команду планировщику rTorrent, который начинает периодически вызывать специально обученный скрипт. Последний, в свою очередь, и проделывает всю полезную работу. 
+When ruTorrent starts with installed Scheduler plug-in first time it sends a command to the rTorrent scheduler, which begins to call a dedicated script periodically. This script in its turn does all the work.
 
-Еще раз обращаю внимание - процесс опроса начинается только после первой загрузки ruTorrent. Т.е. в промежуток между стартом rTorrent и первым после этого стартом ruTorrent никакой полезной работы производиться не будет. Чтобы избежать этого, нужно добавить в конфигурационный файл rTorrent специально обученную строчку (см. ниже).
+Once again - the poll begins only after first start of the ruTorrent. I.e. there will be no any useful action between start of rTorrent and then first start of ruTorrent. To avoid this, a special string should be added to the rTorrent configuration file (see below).
 
-== Дополнительная настройка плагина ==
+== Additional plug-in adjustment ==
 
-Производится в файле `plugins/scheduler/conf.php`.
-    * `SCH_DEF_DL` - константа определяет ограничение на закачку, использующееся в режиме "Без ограничений". По умолчанию - ОченьБольшоеЧисло.
-    * `SCH_DEF_UL` - константа определяет ограничение на отдачу, использующееся в режиме "Без ограничений". По умолчанию - ОченьБольшоеЧисло.
-    * `$updateInterval` - переменная содержит интервал, через который производится вызов скрипта планировщиком rTorrent (в минутах). По умолчанию - 1 час.
-    * `$isAutoStart` - переменная определяет способ начала работы. Если она равна `true`, то команда планировщику rTorrent на начало работы выдается при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы дать пинка планировщику самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчку 
+Should be done in the file `plugins/scheduler/conf.php`.
+    * `SCH_DEF_DL` - the constant defiles DL speed limit which is used in the Unlimited mode. Default - a VeryBigNumber.
+    * `SCH_DEF_UL` - the constant defiles UL speed limit which is used in the Unlimited mode. Default - a VeryBigNumber.
+    * `$updateInterval` - the variable sets the time interval between calls of the script by rTorrent scheduler (in minutes). Default - 1 hour.
+    * `$isAutoStart` - the variable defines how the how the plug-in starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler needs to be activated independently. 
+To do this, the following string should be added into the rTorrent configuration file:
 {{{
 schedule = scheduler,10,00:15:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"
 }}}
- где full_path_to_plugin - полный путь к плагину scheduler.
+ where full_path_to_plugin - is a full path to the Scheduler plug-in.
