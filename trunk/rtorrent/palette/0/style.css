@@ -87,11 +87,13 @@ div#CatList ul li.sel#-_-_-dls-_-_- {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-com-_-_- {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-act-_-_- {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-iac-_-_- {background-color: #CFDEEF}
+div#CatList ul li.sel#-_-_-err-_-_- {background-color: #CFDEEF}
 div#CatList ul li#-_-_-all-_-_- {padding: 2px 21px; background:url(./images/status_checking.gif) 2px no-repeat;}
 div#CatList ul li#-_-_-dls-_-_- {padding: 2px 21px; background:url(./images/status_down.gif) 2px no-repeat;}
 div#CatList ul li#-_-_-com-_-_- {padding: 2px 21px; background:url(./images/status_up.gif) 2px no-repeat;}
 div#CatList ul li#-_-_-act-_-_- {padding: 2px 21px; background:url(./images/status_up_down.gif) 2px no-repeat;}
 div#CatList ul li#-_-_-iac-_-_- {padding: 2px 21px; background:url(./images/status_incompleted.gif) 2px no-repeat;}
+div#CatList ul li#-_-_-err-_-_- {padding: 2px 21px; background:url(./images/status_error.gif) 2px no-repeat;}
 div#CatList ul li#_hr_{padding: 0 3px; margin: 0px;}
 
 div#HDivider {width: 5px; height: 100px; padding: 0; margin: 0; cursor: e-resize}
