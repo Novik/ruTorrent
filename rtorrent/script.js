@@ -1351,6 +1351,7 @@ utWebUI =
 		this.labels["-_-_-act-_-_-"] = 0;
 		this.labels["-_-_-iac-_-_-"] = 0;
 		this.labels["-_-_-nlb-_-_-"] = 0;
+		this.labels["-_-_-err-_-_-"] = 0;
 		this.actLbl = "-_-_-all-_-_-";
 		this.cLabels = new Object();
 		this.dID = "";
@@ -1833,7 +1834,7 @@ utWebUI =
 			{
 				this.labels[sId] = "";
          		}
-			var lbl = this.getLabels(sId, _87[12], _8a, _87[9], _87[10]);
+			var lbl = this.getLabels(sId, _87[12], _8a, _87[9], _87[10], _89 & dStatus.error);
 			ln = _87.length - 1;
 			if(typeof (this.torrents[sId]) == "undefined") 
 			{
@@ -1945,6 +1946,10 @@ utWebUI =
 		         	if(this.labels[k].indexOf("-_-_-iac-_-_-") >- 1) 
         		 	{
             				this.labels["-_-_-iac-_-_-"]--;
+            			}
+		         	if(this.labels[k].indexOf("-_-_-err-_-_-") >- 1) 
+        		 	{
+            				this.labels["-_-_-err-_-_-"]--;
             			}
 		         	this.labels["-_-_-all-_-_-"]--;
         		 	delete this.labels[k];
@@ -2077,7 +2082,7 @@ utWebUI =
 		}
    	}
 
-, "getLabels" : function(id, lbl, _9d, dls, uls) {
+, "getLabels" : function(id, lbl, _9d, dls, uls, err) {
    if(lbl == "") {
       lbl += "-_-_-nlb-_-_-";
       if(this.labels[id].indexOf("-_-_-nlb-_-_-") ==- 1) {
@@ -2126,6 +2131,15 @@ utWebUI =
          this.labels["-_-_-act-_-_-"]--;
          }
       }
+	if(err)
+	{
+		lbl += "-_-_-err-_-_-";
+      		if(this.labels[id].indexOf("-_-_-err-_-_-") ==- 1)
+			this.labels["-_-_-err-_-_-"]++;
+	}
+	else
+  		if(this.labels[id].indexOf("-_-_-err-_-_-") >- 1)
+			this.labels["-_-_-err-_-_-"]--;
    lbl += "-_-_-all-_-_-";
    if(this.labels[id] == "") {
       this.labels["-_-_-all-_-_-"]++;
