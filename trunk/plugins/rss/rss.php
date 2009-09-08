@@ -90,7 +90,7 @@ class rRSS
 
 	static public function quoteInvalid($str)
 	{
-		return( preg_replace("/\s/"," ",addslashes($str)) );
+		return( preg_replace("/\s\s+/u"," ",addslashes($str)) );
 	}
 
 	public function rRSS( $url = null )
@@ -388,10 +388,15 @@ class rRSSFilter
 	}
 	public function checkItem( $rssItem )
 	{
-		return(array_key_exists('title',$rssItem) && 
-			(($this->pattern!='') || ($this->exclude!='')) &&
-			(($this->pattern=='') || (@preg_match($this->pattern.'u',$rssItem['title'])==1)) &&
-			(($this->exclude=='') || (@preg_match($this->exclude.'u',$rssItem['title'])!=1)));
+		if(array_key_exists('title',$rssItem))
+		{
+			$title = preg_replace("/\s\s+/u"," ",$rssItem['title']);
+			return(
+				(($this->pattern!='') || ($this->exclude!='')) &&
+				(($this->pattern=='') || (@preg_match($this->pattern.'u',$title)==1)) &&
+				(($this->exclude=='') || (@preg_match($this->exclude.'u',$title)!=1)));
+		}
+		return(false);
 	}
 	public function isCorrect()
 	{
