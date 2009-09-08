@@ -88,6 +88,11 @@ class rRSS
 		return implode('', array($scheme, $user, $pass, $host, $port, $path, $query, $fragment));
 	}
 
+	static public function quoteInvalid($str)
+	{
+		return( preg_replace("/\s/"," ",addslashes($str)) );
+	}
+
 	public function rRSS( $url = null )
 	{
 		if($url)
@@ -132,14 +137,14 @@ class rRSS
 
 	public function getContents($label,$auto,$enabled,$history)
 	{
-		$ret = "{ label: \"".addslashes($label)."\", auto: ".$auto.", enabled: ".$enabled.", hash: \"".$this->hash."\", url: \"".addslashes($this->srcURL)."\", items: [";
+		$ret = "{ label: \"".self::quoteInvalid($label)."\", auto: ".$auto.", enabled: ".$enabled.", hash: \"".$this->hash."\", url: \"".self::quoteInvalid($this->srcURL)."\", items: [";
 		foreach($this->items as $item)
 		{
 			if($item['timestamp']>0)
 				$ret.="{ time: ".$item['timestamp'];
 			else
 				$ret.='{ time: null';
-			$ret.=", title: \"".addslashes($item['title'])."\", href: \"".addslashes($item['href'])."\", errcount: ".$history->getCounter($item['href']).", hash: \"".$history->getHash($item['href'])."\" },";
+			$ret.=", title: \"".self::quoteInvalid($item['title'])."\", href: \"".self::quoteInvalid($item['href'])."\", errcount: ".$history->getCounter($item['href']).", hash: \"".$history->getHash($item['href'])."\" },";
 		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
