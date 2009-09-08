@@ -339,5 +339,6 @@
  badSettingsPath2		: "rTorrent должен иметь доступ на чтение/запись/выполнение к директории settings.",
  scrapeDownloaded		: "Завершенные",
  badSessionPath			: "Веб сервер должен иметь доступ на чтение к директории session rTorrent.",
- Total				: "Всего"
+ Total				: "Всего",
+ PCRENotFound			: "PHP модуль PCRE не установлен. ruTorrent не будет работать."
  };
