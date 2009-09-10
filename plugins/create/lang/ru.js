@@ -10,6 +10,6 @@
  WUILang.PrivateTorrent		= "Частный торрент";
  WUILang.CreateAndSaveAs	= "Создать и сохранить в...";
  WUILang.BadTorrentData		= "Вы должны заполнить обязательные поля.";
- WUILang.createExternalNotFound = "Плагин create: веб-серверу не доступна внешняя программа createtorrent. Плагин не будет работать.";
+ WUILang.createExternalNotFound = "Плагин create: веб-серверу не доступна внешняя программа";
 
 utWebUI.initCreate();

@@ -43,13 +43,16 @@ if(isset($_REQUEST['path_edit']))
 	$path_edit = trim($path_edit);	
 	if(strlen($path_edit))
 	{
-	        if($useExternal)
+	        if($useExternal!==false)
 	        {
 	        	$ps = $piece_size*1024;
 	        	$randName = '/tmp/rutorrent-create-'.rand().'.torrent';
         		if(!$pathToCreatetorrent || ($pathToCreatetorrent==""))
-				$pathToCreatetorrent = "createtorrent";
-	        	exec($pathToCreatetorrent.' -l '.$ps.' -a dummy '.escapeshellarg($path_edit).' '.$randName,$results,$return);
+				$pathToCreatetorrent = $useExternal;
+			if($useExternal=="transmissioncli")
+				exec($pathToCreatetorrent.' -n '.escapeshellarg($path_edit).' '.$randName,$results,$return);
+			else
+		        	exec($pathToCreatetorrent.' -l '.$ps.' -a dummy '.escapeshellarg($path_edit).' '.$randName,$results,$return);
 	        	if(!$return)
 	        	{
 	        		$torrent = new Torrent($randName);

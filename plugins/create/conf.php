@@ -1,8 +1,10 @@
 <?php
 	// configuration parameters
 
-	$useExternal = false;           // If true, will be used external program - createtorrent. 
-					// You can download it from http://www.createtorrent.com/
-	$pathToCreatetorrent = '';	// Something like /bin/createtorrent. If empty, will be founded in PATH.
+	$useExternal = false;			// Valid choices:
+						// false - use internal realization (may be too slow for large files)
+						// "transmissioncli" - use program transmissioncli (see http://www.transmissionbt.com/)
+						// "createtorrent" - use program createtorrent (see http://www.createtorrent.com)
+	$pathToCreatetorrent = '';		// Something like /bin/createtorrent, or /bin/transmissioncli. If empty, program will be founded in PATH.
 
 ?>
