@@ -74,6 +74,20 @@ utWebUI.initCreate = function()
 	var dlg = document.createElement("DIV");
 	dlg.className = "dlg-window";
 	dlg.id = "tcreate";
+	var pieceSize = 
+		"<label>"+WUILang.PieceSize+": </label>"+
+		"<select id='piece_size' name='piece_size'/>"+
+			"<option value=\"32\">32"+WUILang.KB+"</option>"+
+			"<option value=\"64\">64"+WUILang.KB+"</option>"+
+			"<option value=\"128\">128"+WUILang.KB+"</option>"+
+			"<option value=\"256\" selected=\"selected\">256"+WUILang.KB+"</option>"+
+			"<option value=\"512\">512"+WUILang.KB+"</option>"+
+			"<option value=\"1024\">1024"+WUILang.KB+"</option>"+
+			"<option value=\"2048\">2048"+WUILang.KB+"</option>"+
+			"<option value=\"4096\">4096"+WUILang.KB+"</option>"+
+			"</select>";
+	if(utWebUI.hidePieceSize)
+		pieceSize = "";	
 	dlg.innerHTML = 
 		"<a href=\"javascript:Hide('tcreate');\" class='dlg-close'></a>"+
 		"<div id='tcreate-header' class='dlg-header'>"+WUILang.CreateNewTorrent+
@@ -91,17 +105,7 @@ utWebUI.initCreate = function()
 					"<textarea id='trackers' name='trackers'></textarea><br/>"+
                                                "<label>"+WUILang.Comment+": </label>"+
                                 	"<input type='text' id='comment' name='comment' class='TextboxLarge'/><br/>"+
-					"<label>"+WUILang.PieceSize+": </label>"+
-					"<select id='piece_size' name='piece_size'/>"+
-						"<option value=\"32\">32"+WUILang.KB+"</option>"+
-						"<option value=\"64\">64"+WUILang.KB+"</option>"+
-						"<option value=\"128\">128"+WUILang.KB+"</option>"+
-						"<option value=\"256\" selected=\"selected\">256"+WUILang.KB+"</option>"+
-						"<option value=\"512\">512"+WUILang.KB+"</option>"+
-						"<option value=\"1024\">1024"+WUILang.KB+"</option>"+
-						"<option value=\"2048\">2048"+WUILang.KB+"</option>"+
-						"<option value=\"4096\">4096"+WUILang.KB+"</option>"+
-					"</select>"+
+					pieceSize+	
 				"</fieldset>"+
 				"<fieldset>"+
 					"<legend>"+WUILang.Other+"</legend>"+
