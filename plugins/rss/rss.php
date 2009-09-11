@@ -312,6 +312,7 @@ class rRSSHistory
 	public $hash = "history";
 	public $lst = array();
 	public $cnt = array();
+	protected $changed = false;
 
 	public function add( $url, $hash )
 	{
@@ -323,6 +324,24 @@ class rRSSHistory
 				$this->cnt[$url] = 1;
 		}
 		$this->lst[$url] = $hash;
+		$this->changed = true;
+	}
+	public function del( $href )
+	{
+		if(array_key_exists($href,$this->lst))
+		{
+			unset($this->lst[$href]);
+			$this->changed = true;
+		}
+		if(array_key_exists($href,$this->cnt))
+		{
+			unset($this->cnt[$href]);
+			$this->changed = true;
+		}
+	}
+	public function isChanged()
+	{
+		return($this->changed);
 	}
 	public function getCounter( $url )
 	{
@@ -345,6 +364,7 @@ class rRSSHistory
 	}
 	public function clear()
 	{
+	        $this->changed = (count($this->lst)>0);
 		$this->lst = array();
 		$this->cnt = array();
 	}
@@ -446,7 +466,31 @@ class rRSSMetaList
 	public $lst = array();
 	public $updatedAt = 0;
 	public $err = array();
+	public $loadedErrors = 0;
 
+	public function merge($instance,$mergeErrorsOnly)
+	{
+		if($this->isErrorsOccured())
+		{
+			$mergedErrors = $instance->err;
+			for($i = $this->loadedErrors; $i<count($this->err); $i++)
+				$mergedErrors[] = $this->err[$i];
+			$this->err = $mergedErrors;
+		}
+		else
+			$this->err = $instance->err;
+		if($mergeErrorsOnly)
+			$this->lst = $instance->lst;
+		return(true);
+	}
+	public function resetErrors()
+	{
+		$this->loadedErrors = count($this->err);
+	}
+	public function isErrorsOccured()
+	{
+		return($this->loadedErrors < count($this->err));
+	}
 	public function isExist( $rss )
 	{
 		return(array_key_exists($rss->hash,$this->lst));
@@ -523,6 +567,7 @@ class rRSSManager
 		$this->cache = new rCache("./cache");
 		$this->rssList = new rRSSMetaList();
 		$this->cache->get($this->rssList);
+		$this->rssList->resetErrors();
 		$this->history = new rRSSHistory();
 		$this->cache->get($this->history);
 	}
@@ -540,17 +585,14 @@ class rRSSManager
 			$rss = new rRSS();
 			$rss->hash = $hash;
 			if($this->cache->get($rss) && $info['enabled'])
-			{
-//				$this->cache->set($rss);
 				$this->checkFilters($rss,$info,$flts);
-			}
 		}
 		$this->saveHistory();
 	}
 	public function clearHistory()
 	{
 		$this->history->clear();
-                $this->cache->set($this->history);
+                $this->saveHistory();
 	}
 	public function checkFilters($rss,$info = null,$filters = null)
 	{
@@ -644,16 +686,13 @@ class rRSSManager
 			}
 		}
 		else
-		{
 			$this->rssList->addError("WUILang.rssDontExist");
-			$this->cache->set($this->rssList);
-		}
 	}
 	public function setStartTime( $startAt )
 	{
 		global $updateInterval;
 		$this->rssList->updatedAt = $startAt-$updateInterval*60;
-		$this->cache->set($this->rssList);
+		$this->saveState(false);
 	}
         public function update( $manual = false )
 	{
@@ -675,8 +714,10 @@ class rRSSManager
 			}
 		}
 		if(!$manual)
+		{
 			$this->rssList->touch();
-		$this->cache->set($this->rssList);
+                	$this->saveState(true);
+		}
 		$this->saveHistory();
 	}
 	public function getIntervals()
@@ -711,7 +752,7 @@ class rRSSManager
 		{
 			foreach($hash as $item)
 				$this->remove($item,false);
-			$this->cache->set($this->rssList);
+			$this->saveState(false);
 		}
 		else
 		{
@@ -721,7 +762,7 @@ class rRSSManager
 			{
 				$this->rssList->remove($rss);
 				if($needFlush)
-					$this->cache->set($this->rssList);
+					$this->saveState(false);
         			$this->cache->remove($rss);
 			}
 		}
@@ -730,7 +771,7 @@ class rRSSManager
 	public function toggleStatus( $hash )
 	{
 		$this->rssList->toggleStatus( $hash );
-		$this->cache->set($this->rssList);
+		$this->saveState(false);
 	}
 	public function change( $hash, $rssURL, $rssLabel, $rssAuto = 1 )
 	{
@@ -745,7 +786,7 @@ class rRSSManager
 			if($rssNew->hash==$hash)
 			{
 				$this->rssList->change($rssNew,$rssLabel,$rssAuto);
-				$this->cache->set($this->rssList);
+				$this->saveState(false);
 				return(true);
 			}
 			else
@@ -773,7 +814,7 @@ class rRSSManager
 						$rssLabel = 'New RSS';
 				}
 				$this->rssList->add($rss,$rssLabel,$rssAuto,$enabled);
-                                $this->cache->set($this->rssList);
+                               	$this->saveState(false);
 				$this->checkFilters($rss);
 				$this->saveHistory();
 			}
@@ -782,7 +823,6 @@ class rRSSManager
 		}
 		else
 			$this->rssList->addError( "WUILang.rssAlreadyExist", $rssURL );
-		$this->cache->set($this->rssList);
 	}
 	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $ratio, $needFlush = true )
 	{
@@ -824,10 +864,7 @@ class rRSSManager
 			$this->rssList->addError( "WUILang.rssCantLoadTorrent", $url );
 		$this->history->add($url,$thash);
 		if($needFlush)
-		{
 			$this->saveHistory();
-			$this->cache->set($this->rssList);
-		}
 	}
 	public function saveHistory()
 	{
@@ -849,19 +886,28 @@ class rRSSManager
 				foreach($this->history->lst as $href=>$hash)
 				{
 					if(!array_key_exists($href,$urls))
-					{
-						unset($this->history->lst[$href]);
-						if(!array_key_exists($href,$cnt))
-							unset($this->history->cnt[$href]);
-					}
+						$this->history->del($href);
 				}
 		}
-		$this->cache->set($this->history);
+		if($this->history->isChanged())
+			$this->cache->set($this->history);
+	}
+	public function isErrorsOccured()
+	{
+		return($this->rssList->isErrorsOccured());
+	}
+	public function hasErrors()
+	{
+		return(count($this->rssList->err)>0);
 	}
 	public function clearErrors()
 	{
 		$this->rssList->clearErrors();
-		$this->cache->set($this->rssList);
+	}
+	public function saveState($mergeErrorsOnly)
+	{
+		$this->cache->set($this->rssList,$mergeErrorsOnly);
+		$this->rssList->resetErrors();
 	}
 }
 
