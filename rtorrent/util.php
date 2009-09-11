@@ -293,9 +293,19 @@ class rCache
 		if(!is_dir($this->dir))
 			mkdir($this->dir, 0777);
 	}
-	public function set( $rss )
+	public function set( $rss, $arg = null )
 	{
 		$name = $this->getName($rss);
+		if(isset($rss->modified) &&
+			method_exists($rss,"merge") &&
+			($rss->modified < filemtime($name)))
+		{
+		        $className = get_class($rss);
+			$newInstance = new $className();
+			if($this->get($newInstance) &&
+				!$rss->merge($newInstance, $arg))
+				return(false);
+		}
 		$fp = @fopen( $name, 'w' );
 		if($fp)
 		{
@@ -308,10 +318,12 @@ class rCache
 	}
 	public function get( &$rss )
 	{
-		$ret = @file_get_contents($this->getName($rss));
+	        $fname = $this->getName($rss);
+		$ret = @file_get_contents($fname);
 		if($ret!==false)
 		{
 			$rss = unserialize($ret);
+			$rss->modified = filemtime($fname);
 			$ret = true;
         	}
 		return($ret);
