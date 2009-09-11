@@ -68,7 +68,7 @@ rTorrentStub.prototype.setschedule = function()
 		this.content += ('&UL'+i+'='+$$('restrictedUL'+(i+1)).value);
 		this.content += ('&DL'+i+'='+$$('restrictedDL'+(i+1)).value);
 	}
-	this.content += ('&enabled='+$$('sch_enable').checked);
+	this.content += ('&enabled='+($$('sch_enable').checked ? '1' : '0'));
         this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/scheduler/action.php";
 }
