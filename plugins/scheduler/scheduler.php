@@ -1,13 +1,13 @@
 <?php
-$schedulerRootPath = "./";
-$retrackersThisPath = "./plugins/scheduler/";
+rScheduler::$rootPath = "./";
+rScheduler::$thisPath = "./plugins/scheduler/";
 if(!is_file('util.php'))
 {
-	$schedulerRootPath = "../../";
-	$retrackersThisPath = "./";
+	rScheduler::$rootPath = "../../";
+	rScheduler::$thisPath = "./";
 }
-require_once( $schedulerRootPath."xmlrpc.php" );
-require_once( $retrackersThisPath."conf.php" );
+require_once( rScheduler::$rootPath."xmlrpc.php" );
+require_once( rScheduler::$thisPath."conf.php" );
 
 define('SCH_FAST', 0);
 define('SCH_STOP', 1);
@@ -25,12 +25,13 @@ class rScheduler
 	public $week = array();
 	public $seedStopped = array();
 	public $leechStopped = array();
+	static public $rootPath;
+	static public $thisPath;
 
 	static public function load()
 	{
 		global $settings;
-		global $schedulerRootPath;
-		$cache = new rCache( $schedulerRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		$rt = new rScheduler();
 		if(!$cache->get($rt))
 			$rt->fillWeek();
@@ -48,8 +49,7 @@ class rScheduler
 	public function store()
 	{
 		global $settings;
-		global $schedulerRootPath;
-		$cache = new rCache( $schedulerRootPath.$settings );
+		$cache = new rCache( self::$rootPath.$settings );
 		return($cache->set($this));
 	}
 	public function get()
