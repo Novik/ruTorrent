@@ -3,7 +3,6 @@
 require_once( 'config.php' );
 require_once( 'util.php' );
 require_once( 'Snoopy.class.inc');
-set_time_limit(0);
 $uploaded_file = '';
 $success = false;
 
@@ -31,6 +30,7 @@ else
 			}
 			$url = substr($url,0,$pos);
 		}
+		set_time_limit(0);
 		if(@$cli->fetch($url) && $cli->status>=200 && $cli->status<300)
 		{
 			$uploaded_file = $uploads."/".md5($url).".torrent";
@@ -58,6 +58,14 @@ if($success)
 		!isset($_REQUEST['torrents_start_stopped']),
 		!isset($_REQUEST['not_add_path']),
 		$dir_edit,$label)===false)
+	{
                 unlink($uploaded_file);
+                $success = false;
+	}
 }
+$content = 'log(WUILang.addTorrent'. ($success ? 'Success' : 'Failed') . ');';
+header("Content-Length: ".strlen($content));
+header("Content-Type: text/html");
+echo $content;
+
 ?>

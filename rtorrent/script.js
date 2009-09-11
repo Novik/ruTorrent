@@ -1129,16 +1129,32 @@ function CheckURLUpload(frm)
 	return true;
 }
 
-function US() 
+function parseAddAnswer(id)
+{
+	var i = $$(id);
+	if (i.contentDocument)
+		var d = i.contentDocument;
+	else if (i.contentWindow)
+		var d = i.contentWindow.document;
+	else        	
+		var d = window.frames[id].document;
+	if(d.location.href != "about:blank")
+		eval(d.body.innerHTML);
+	d.body.innerHTML = "";
+}
+
+function US(frm) 
 {
 	$$("torrent_file").value = "";
 	$$("add_button").disabled = false;
+	parseAddAnswer(frm);
 }
 
-function USurl() 
+function USurl(frm) 
 {
 	$$("url").value = "";
 	$$("add_url").disabled = false;
+	parseAddAnswer(frm);
 }
 
 var amnu = "st_gl";

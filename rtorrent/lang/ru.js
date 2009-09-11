@@ -340,5 +340,7 @@
  scrapeDownloaded		: "Завершенные",
  badSessionPath			: "Веб сервер должен иметь доступ на чтение к директории session rTorrent.",
  Total				: "Всего",
- PCRENotFound			: "PHP модуль PCRE не установлен. ruTorrent не будет работать."
+ PCRENotFound			: "PHP модуль PCRE не установлен. ruTorrent не будет работать.",
+ addTorrentSuccess		: "Закачка успешно передана в rTorrent.",
+ addTorrentFailed		: "Ошибка добавления закачки."
  };
