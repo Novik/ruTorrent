@@ -90,7 +90,7 @@ class rRSS
 
 	static public function quoteInvalid($str)
 	{
-		return( preg_replace("/\s\s+/u"," ",addslashes($str)) );
+		return( preg_replace("/\s+/u"," ",addslashes($str)) );
 	}
 
 	public function rRSS( $url = null )
@@ -410,7 +410,7 @@ class rRSSFilter
 	{
 		if(array_key_exists('title',$rssItem))
 		{
-			$title = preg_replace("/\s\s+/u"," ",$rssItem['title']);
+			$title = preg_replace("/\s+/u"," ",$rssItem['title']);
 			return(
 				(($this->pattern!='') || ($this->exclude!='')) &&
 				(($this->pattern=='') || (@preg_match($this->pattern.'u',$title)==1)) &&
