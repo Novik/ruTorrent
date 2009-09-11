@@ -76,6 +76,7 @@ class Torrent {
      */
     public function __construct ( $data, $meta = array(), $piece_length = 256 ) 
     {
+        try {
         if ( is_string( $meta ) ) {
             $meta =  array( 'announce' => $meta );
         }
@@ -90,6 +91,10 @@ class Torrent {
         }
         foreach( $meta as $key => $value ) {
             $this->{$key} = $value;
+        }
+        } catch(Exception $e)
+        {
+        	self::$errors[] = new Exception( 'Bad torrent data' );
         }
     }
 
@@ -201,6 +206,8 @@ protected function decode( $string )
 
 protected function decode_data() 
 {
+        if($this->pointer>=count($this->data))
+        	throw new Exception();
         switch( $this->data[$this->pointer] )
         {
         	case 'i':
@@ -261,6 +268,8 @@ private function decode_integer()
 
 private function isOfType($type)
 {
+        if($this->pointer>=count($this->data))
+        	throw new Exception();
 	return($this->data[$this->pointer] == $type);
 }
 
