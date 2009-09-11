@@ -220,7 +220,6 @@ switch($cmd)
 				}
 			}
 			$mngr->saveHistory();
-			$mngr->cache->set($mngr->rssList);
 		}
 		break;
 	}
@@ -236,8 +235,19 @@ header("Content-Type: text/xml; charset=UTF-8");
 echo $content;
 ob_flush();
 flush();
-if(!connection_aborted() && $errorsReported)
+
+if(connection_aborted())
 {
-	$mngr->clearErrors();	
+	if($mngr->isErrorsOccured())
+		$mngr->saveState(false);
 }
+else
+{
+	if($errorsReported && $mngr->hasErrors())
+	{
+		$mngr->clearErrors();
+		$mngr->saveState(false);
+	}
+}
+
 ?>
