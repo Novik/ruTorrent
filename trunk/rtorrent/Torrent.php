@@ -206,7 +206,7 @@ protected function decode( $string )
 
 protected function decode_data() 
 {
-        if($this->pointer>=count($this->data))
+        if($this->pointer>=strlen($this->data))
         	throw new Exception();
         switch( $this->data[$this->pointer] )
         {
@@ -268,7 +268,7 @@ private function decode_integer()
 
 private function isOfType($type)
 {
-        if($this->pointer>=count($this->data))
+        if($this->pointer>=strlen($this->data))
         	throw new Exception();
 	return($this->data[$this->pointer] == $type);
 }

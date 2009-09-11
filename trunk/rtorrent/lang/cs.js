@@ -337,5 +337,7 @@
  scrapeDownloaded		: "Downloaded",
  badSessionPath			: "Web server can't access rTorrent's session directory for read. ruTorrent will not work.",
  Total				: "Total",
- PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work."
+ PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
+ addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
+ addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent."
  };
