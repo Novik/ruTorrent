@@ -22,3 +22,4 @@ Currently there are following plug-ins:
  # [PluginAutotools autotools] -  realizes some automation functions (autolabel, automove)..
  # [PluginDataDir datadir] - allows to change the directory of the torrents data.
  # [PluginTracklabels tracklabels] - adds trackers autolabels to categories pane.
+ # [PluginGeoIP geoip] - shows for connected peers.
