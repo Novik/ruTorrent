@@ -10,15 +10,20 @@ PHP extension GeoIP must be installed so this plugin can work properly. If you d
 
 Unpack the plugin archive into rutorrent/plugins directory and refresh contents of your browser. If everything is OK, you should see a new column "Country" next to "Name" in "Peers" tab.
 
-== Localization ==
+== Localization (for languages other than English) ==
 
-GeoIP plugin supports localization. It should be done in two steps:
+GeoIP plugin supports localization. Here is the example of Hungarian localization:
 
-1) Copy file *lang/en.js* into *lang/XX.js* , where *XX* stands for two-letter ISO code of your language. Fill in word for "country" in language XX. If you skip this step, English word "Country" will be displayed by default.
+    * cd plugins/geoip/lang
+    * cp en.js *hu.js*
+    * Edit hu.js, replacing word "Country" with Hungarian equivalent
+    * cp sr.php *hu.php*
+    * Edit hu.php, replacing country names after "=>" with their Hungarian equivalents
 
-2) Copy file *lang/sr.php* into *lang/XX.php* , where *XX* stands for two-letter ISO code of your language. Change names of each country. If you do not localize some country's name, the English name will be displayed by default.
+Same applies for localization in any other language. If you do not localize plugin, English names will be used by default.
 
 
-==== Contact ====
 
-Please send error reports and patches to: zbus021 AT gmail DOT com (Zoltan Csala, author)
+==== Author ====
+
+Zoltan Csala
