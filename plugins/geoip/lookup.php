@@ -18,17 +18,24 @@
     if ( $Action == "dns" ) {
         // Support for IP resolution
         echo( gethostbyaddr($IP) );
-    } else if ( $Action == "geoip" ) {
-        $Ctr = geoip_country_name_by_name( $IP );
-        if ( $Lang != "en" ) {
-            $Res = $Countries[ $Ctr ];
-            if ( isset($Res) ) {
-                echo $Res;
-            } else {
-                echo $Ctr;
+    } else if ( $Action == "geoip-name" || $Action == "geoip-code" ) {
+        if ( $Action == "geoip-name" ) {
+            $Ctr = geoip_country_name_by_name( $IP );
+            if ( $Lang != "en" ) {
+                $Res = $Countries[ $Ctr ];
+                if ( isset($Res) ) {
+                    echo $Res;
+                } else {
+                    echo $Ctr;
+                }
             }
         } else {
-            echo $Ctr;
+            $Ctr = geoip_country_code_by_name( $IP );
+            if ( ! isset($Ctr) || $Ctr == '' ) {
+                echo "unknown";
+            } else {
+                echo strtolower( $Ctr );
+            }
         }
     } else {
         echo "null";
