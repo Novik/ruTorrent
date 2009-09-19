@@ -322,9 +322,15 @@ class rCache
 		$ret = @file_get_contents($fname);
 		if($ret!==false)
 		{
-			$rss = unserialize($ret);
-			$rss->modified = filemtime($fname);
-			$ret = true;
+			$tmp = unserialize($ret);
+			if($tmp!==false)
+			{
+			        $rss = $tmp;
+				$rss->modified = filemtime($fname);
+				$ret = true;
+			}
+			else
+				$ret = false;
         	}
 		return($ret);
 	}
