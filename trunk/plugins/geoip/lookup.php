@@ -28,6 +28,12 @@
                 } else {
                     echo $Ctr;
                 }
+            } else {
+                if ( ! isset($Ctr) || $Ctr == '' ) {
+                    echo "UNKNOWN";
+                } else {
+                    echo $Ctr;
+                }
             }
         } else {
             $Ctr = geoip_country_code_by_name( $IP );
@@ -38,6 +44,6 @@
             }
         }
     } else {
-        echo "null";
+        echo "Unknown action requested: " . $Action;
     }
 ?>
