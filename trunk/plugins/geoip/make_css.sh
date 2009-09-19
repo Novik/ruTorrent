@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Makes CSS file with links to flag pictures
+# Quick and dirty, scans only local "flags" directory
+
+if [ -f geoip.css ]; then
+    cp geoip.css geoip.css.bak
+    echo "Copied geoip.css  to  geoip.css.bak"
+fi
+> geoip.css
+
+for fl in `ls -1 flags/*[Gg][Ii][Ff] flags/*[Jj][Pp][Gg]`
+do
+    # Remove prefix and suffix, we need only country code
+    cnt=${fl/\/*\//}
+    cnt=${cnt/.*/}
+    cnt=${cnt#*/}
+    echo ".geoip_flag_"$cnt" {background: transparent url( \""$fl"\" ) no-repeat left center}" >> geoip.css
+    echo ".iegeoip_flag_"$cnt" {background: transparent url( \""$fl"\" ) no-repeat left center}" >> geoip.css
+done
+
