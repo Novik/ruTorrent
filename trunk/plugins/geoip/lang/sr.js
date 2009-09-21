@@ -1,6 +1,8 @@
 
-if ( utWebUI.GeoIPIndex == 1) {
-    utWebUI.prsColumns[ utWebUI.GeoIPIndex ][ "text" ] = "Држава";
+if ( utWebUI.GeoIPMode == "name" ) {
+    utWebUI.prsColumns[ 0 ][ "text" ] = "Држава";
 } else {
-    utWebUI.prsColumns[ utWebUI.GeoIPIndex ][ "text" ] = "Д.";
+    utWebUI.prsColumns[ 0 ][ "text" ] = "Д.";
 }
+utWebUI.prsColumns[ 1 ][ "text" ] = "ИП";
+

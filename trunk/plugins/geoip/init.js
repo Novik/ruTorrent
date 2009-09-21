@@ -1,6 +1,5 @@
 var plugin = new rPlugin("geoip");
 var item = '';
-var GeoIPMode;
 var ActiveLanguage = GetActiveLanguage();
 
 plugin.loadLanguages();
@@ -36,7 +35,7 @@ rTorrentStub.prototype.getpeersResponse = function( xmlDoc, docText )
 	    AjaxReq = jQuery.ajax( {
 	        async : false,
 		    url : "plugins/geoip/lookup.php",
-		    data : { action : "geoip-" + GeoIPMode, ip : this.getValue(values,1),
+		    data : { action : "geoip-" + utWebUI.GeoIPMode, ip : this.getValue(values,1),
 		        lang : ActiveLanguage },
 		    dataType : "text",
 		    success : LookupSuccess,
@@ -168,14 +167,12 @@ utWebUI.GeoIPInitDone = utWebUI.initDone;
 utWebUI.initDone = function() {
     // call a native handler
     this.GeoIPInitDone();
-    if ( utWebUI.GeoIPIndex > 0 ) {
-        GeoIPMode = 'name';
-    } else {
-        GeoIPMode = 'code';
+    if ( utWebUI.GeoIPMode == "code" ) {
         // Modify function for adding rows so that flags can be added
         utWebUI.addPeers = addGeoIPPeers;
     }
     // Modify peer list table formatter
     utWebUI.prsTable.format = FormatPeers;
 } // initDone
+
 
