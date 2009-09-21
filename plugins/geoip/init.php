@@ -12,11 +12,11 @@ if ( isset($GeoIP) ) {
     $GeoIPMode = "code"; 
     
     if ( $GeoIPMode == "name" ) {
-        $jResult .= "utWebUI.GeoIPIndex = 1; ";
+        $jResult .= "utWebUI.GeoIPMode = \"name\"; ";
         $jResult .= "utWebUI.prsColumns.unshift( {'text' : 'Country', 'width' : '60px', 'type' : TYPE_STRING}); ";
     } else {
         $jResult .= "utWebUI.prsColumns.unshift( {'text' : 'CC', 'width' : '20px', 'type' : TYPE_STRING}); ";
-        $jResult .= "utWebUI.GeoIPIndex = 0; ";
+        $jResult .= "utWebUI.GeoIPMode = \"code\"; ";
     }
     $jResult .= "utWebUI.GeoIPSupported = true; ";
     $theSettings->registerPlugin("geoip");
