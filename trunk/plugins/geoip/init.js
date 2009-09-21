@@ -8,11 +8,7 @@ plugin.loadMainCSS();
 
 // Insert GeoIP information - either country's code or name
 function LookupSuccess(data) {
-    if ( GeoIPMode == 'code') {
-        item += data + ' ';
-    } else {
-        item += data;
-    }
+    item += data + '","';
 } // LookupSuccess
 
 
@@ -36,30 +32,18 @@ rTorrentStub.prototype.getpeersResponse = function( xmlDoc, docText )
 		item += this.getValue(values,0);	//	p.get_id
 		item += '","';
 		
-		if ( GeoIPMode == 'code' ) {
-		    // Pack country code with IP address
-		    AjaxReq = jQuery.ajax( {
-		    async : false,
+	    // Pack country code with IP address
+	    AjaxReq = jQuery.ajax( {
+	        async : false,
 		    url : "plugins/geoip/lookup.php",
-		    data : { action : "geoip-code", ip : this.getValue(values,1) },
-		    dataType : "text",
-		    success : LookupSuccess,
-		    error: LookupFailure } );
-		    
-		    item += this.getValue(values,1);	//	p.get_address
-		} else {
-		    item += this.getValue(values,1);	//	p.get_address
-		    item += '","';
-		    
-		    AjaxReq = jQuery.ajax( {
-		    async : false,
-		    url : "plugins/geoip/lookup.php",
-		    data : { action : "geoip-name", ip : this.getValue(values,1),
+		    data : { action : "geoip-" + GeoIPMode, ip : this.getValue(values,1),
 		        lang : ActiveLanguage },
 		    dataType : "text",
 		    success : LookupSuccess,
 		    error: LookupFailure } );
-		}
+		    
+        item += this.getValue(values,1);	//	p.get_address
+
 		item += '","';
 		var cv = this.getValue(values, 2);
 		var mycv = this.getClientVersion(this.getValue(values,11));
@@ -98,9 +82,9 @@ rTorrentStub.prototype.getpeersResponse = function( xmlDoc, docText )
 
 // Examples of row with country data
 //
-// ["2D5554313737302DF39F6C123C3A428E7B128189", "93.87.249.105", "Serbia", "uTorrent 1.7.7",
+// ["2D5554313737302DF39F6C123C3A428E7B128189", "Serbia", "93.87.249.105", "uTorrent 1.7.7",
 // "I", 36, 0, 43806720, 0, 52428]
-// ["2D5554313737302DF39F6C123C3A428E7B128189", "RS 93.87.249.105", "uTorrent 1.7.7",
+// ["2D5554313737302DF39F6C123C3A428E7B128189", "RS", "93.87.249.105", "uTorrent 1.7.7",
 // "I", 36, 0, 43806720, 0, 52428]
 
 function FormatPeers(aPeerRow, aColIndex) {
@@ -146,16 +130,14 @@ function addGeoIPPeers(aPeerRow)
     
     for (i = 0; i < l; i++) {
         var sId = d.peers[i][0];
-        CountryCode = d.peers[i][1].split( " " );
-        
+
         if (typeof (this.peers[sId]) == "undefined") {
-            this.peers[sId] = d.peers[i].slice(1);
             // Show only IP, use country code to show flag
-            this.peers[sId][0] = CountryCode[1];
-	        this.prsTable.addRow(this.peers[sId], sId, "geoip_flag_" + CountryCode[0] );
+            this.peers[sId] = d.peers[i].slice(1);
+            CountryCode = this.peers[sId][0];
+            this.peers[sId][0] = '';
+	        this.prsTable.addRow(this.peers[sId], sId, "geoip_flag_" + CountryCode );
         } else {
-            this.prsTable.setValue(sId, 0, CountryCode[1]);
-            this.peers[sId][0] = d.peers[i][1];
             for (var j = 2; j < d.peers[i].length; j++) {           
                 this.prsTable.setValue(sId, j-1, d.peers[i][j]);
 		        this.peers[sId][j-1] = d.peers[i][j];
@@ -188,12 +170,12 @@ utWebUI.initDone = function() {
     this.GeoIPInitDone();
     if ( utWebUI.GeoIPIndex > 0 ) {
         GeoIPMode = 'name';
-        // Modify peer list table formatter
-        utWebUI.prsTable.format = FormatPeers;
     } else {
         GeoIPMode = 'code';
         // Modify function for adding rows so that flags can be added
         utWebUI.addPeers = addGeoIPPeers;
     }
+    // Modify peer list table formatter
+    utWebUI.prsTable.format = FormatPeers;
 } // initDone
 
