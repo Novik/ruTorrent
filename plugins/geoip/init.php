@@ -13,9 +13,9 @@ if ( isset($GeoIP) ) {
     
     if ( $GeoIPMode == "name" ) {
         $jResult .= "utWebUI.GeoIPIndex = 1; ";
-        // Insert new column
-        $jResult .= "utWebUI.prsColumns.splice(utWebUI.GeoIPIndex, 0, {'text' : 'Country', 'width' : '60px', 'type' : TYPE_STRING}); ";
+        $jResult .= "utWebUI.prsColumns.unshift( {'text' : 'Country', 'width' : '60px', 'type' : TYPE_STRING}); ";
     } else {
+        $jResult .= "utWebUI.prsColumns.unshift( {'text' : 'CC', 'width' : '20px', 'type' : TYPE_STRING}); ";
         $jResult .= "utWebUI.GeoIPIndex = 0; ";
     }
     $jResult .= "utWebUI.GeoIPSupported = true; ";

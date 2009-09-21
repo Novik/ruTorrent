@@ -15,7 +15,8 @@ do
     cnt=${fl/\/*\//}
     cnt=${cnt/.*/}
     cnt=${cnt#*/}
-    echo ".geoip_flag_"$cnt" {background: transparent url( \""$fl"\" ) no-repeat left center}" >> geoip.css
-    echo ".iegeoip_flag_"$cnt" {background: transparent url( \""$fl"\" ) no-repeat left center}" >> geoip.css
+    echo ".geoip_flag_"$cnt" {background: transparent url( \""$fl"\" ) no-repeat center center; width: 22px; }" >> geoip.css
+    echo ".iegeoip_flag_"$cnt" {background: transparent url( \""$fl"\" ) no-repeat scroll left
+top; padding-left: 20px; }" >> geoip.css
 done
 
