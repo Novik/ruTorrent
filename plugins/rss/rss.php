@@ -436,6 +436,11 @@ class rRSSFilter
 	}
 }
 
+function fltcmp($a, $b)
+{
+	return(strcmp($a->name, $b->name));
+}
+
 class rRSSFilterList
 {
 	public $hash = "filters";
@@ -444,6 +449,10 @@ class rRSSFilterList
 	public function add( $filter )
 	{
 		$this->lst[] = $filter;
+	}
+	public function sort()
+	{
+		usort($this->lst, "fltcmp");
 	}
 	public function getContents()
 	{
@@ -579,6 +588,7 @@ class rRSSManager
 	}
 	public function setFilters($flts)
 	{
+	        $flts->sort();
                 $this->cache->set($flts);
 		foreach($this->rssList->lst as $hash=>$info)
 		{
