@@ -5,6 +5,9 @@ The Trafic plug-in is a subsystem for registration of the total (all trackers co
 
 [http://rutorrent.googlecode.com/svn/wiki/images/trafic_big.jpg http://rutorrent.googlecode.com/svn/wiki/images/trafic_small.jpg]
 
+== Requirements ==
+    * Web-server with php 5.1. 
+
 == How does it work ==
 
 When ruTorrent starts with installed Trafic plug-in first time it sends a command to the rTorrent scheduler, which begins provide the application with information about current traffic.
