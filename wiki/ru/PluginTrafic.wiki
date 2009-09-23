@@ -6,6 +6,10 @@
 
 [http://rutorrent.googlecode.com/svn/wiki/ru/images/trafic_big.jpg http://rutorrent.googlecode.com/svn/wiki/ru/images/trafic_small.jpg]
 
+== Чего требует для работы ==
+
+    * Веб-сервер с поддержкой php 5.1. 
+
 == Как оно работает ==
 
 После первой загрузки с установленным плагином trafic, ruTorrent выдает команду планировщику rTorrent, который, в свою очередь, начинает периодически сообщать показания текущего трафика.
