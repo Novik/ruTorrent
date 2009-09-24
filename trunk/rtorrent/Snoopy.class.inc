@@ -187,8 +187,8 @@ class Snoopy
 				break;
 			case "https":
 				if(!$pathToCurl || ($pathToCurl==""))
-					$pathToCurl = $this->findEXE( 'curl' );
-				if($pathToCurl) {
+					$pathToCurl = findEXE( 'curl' );
+				if(!$pathToCurl) {
 					$this->error = "Bad curl, can't fetch HTTPS \n";
 					return false;
 				}
@@ -611,7 +611,6 @@ class Snoopy
 			$headers[] = "Accept: ".$this->accept;
 		if(!empty($this->referer))
 			$headers[] = "Referer: ".$this->referer;
-
 		global $rootPath;
 		if(empty($this->cookies) && !empty($this->host) && is_file($rootPath."plugins/cookies/cookies.php"))		
 		{
@@ -619,7 +618,6 @@ class Snoopy
 			$cookies = rCookies::load();
 			$this->cookies = $cookies->getCookiesForHost($this->host);
 		}
-
 		if(!empty($this->cookies))
 		{			
 			if(!is_array($this->cookies))
