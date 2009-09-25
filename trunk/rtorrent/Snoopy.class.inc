@@ -662,10 +662,11 @@ class Snoopy
 			$cmdline_params .= " -m ".$this->read_timeout;
 		
 		$headerfile = uniqid(time());
+		$contfile = uniqid(time());
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s"; 
-		exec($pathToCurl." -D \"/tmp/$headerfile\"".escapeshellcmd($cmdline_params)." ".escapeshellcmd($URI),$results,$return);
+		exec($pathToCurl." -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".escapeshellcmd($cmdline_params)." ".escapeshellcmd($URI),$results,$return);
 		
 		if($return)
 		{
@@ -673,9 +674,7 @@ class Snoopy
 			return false;
 		}
 			
-			
-		$results = implode("\r\n",$results);
-		
+		$results = file_get_contents("/tmp/$contfile");
 		$result_headers = file("/tmp/$headerfile");
 						
 		$this->_redirectaddr = false;
@@ -737,7 +736,8 @@ class Snoopy
 			$this->results = $results;
 
 		unlink("/tmp/$headerfile");
-		
+		unlink("/tmp/$contfile");
+				
 		return true;
 	}
 
