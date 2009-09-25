@@ -50,10 +50,11 @@ var AvailableLanguages =
 	de:'German (Deutsch)',
 	hu:'Hungarian (Magyar)',
 	it:'Italian',
-        lv:'Latvian',
+    lv:'Latvian',
 	pl:'Polish',
 	br:'Portuguese (BR)',
 	ru:'Russian',
+	sr:'Serbian',
 	sk:'Slovak',
 	es:'Spanish',
 	uk:'Ukrainian'
