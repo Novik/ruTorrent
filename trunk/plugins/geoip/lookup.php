@@ -18,31 +18,28 @@
     if ( $Action == "dns" ) {
         // Support for IP resolution
         echo( gethostbyaddr($IP) );
-    } else if ( $Action == "geoip-name" || $Action == "geoip-code" ) {
-        if ( $Action == "geoip-name" ) {
-            $Ctr = geoip_country_name_by_name( $IP );
-            if ( $Lang != "en" ) {
-                $Res = $Countries[ $Ctr ];
-                if ( isset($Res) ) {
-                    echo $Res;
-                } else {
-                    echo $Ctr;
-                }
-            } else {
-                if ( ! isset($Ctr) || $Ctr == '' ) {
-                    echo "UNKNOWN";
-                } else {
-                    echo $Ctr;
-                }
+    } else if ( $Action == "geoip" ) {
+        $CtrN = geoip_country_name_by_name( $IP );
+        $CtrC = geoip_country_code_by_name( $IP );
+        if ( ! isset($CtrC) || $CtrC == "" ) {
+            $CtrC = "unknown";
+        } else {
+            $CtrC = strtolower( $CtrC );
+        }
+        if ( $Lang != "en" ) {
+            $Res = $Countries[ $CtrN ];
+            if ( ! isset($Res) || $Res == "" ) {
+                // No localized name for given country
+                $Res = $CtrN;
             }
         } else {
-            $Ctr = geoip_country_code_by_name( $IP );
-            if ( ! isset($Ctr) || $Ctr == '' ) {
-                echo "unknown";
+            if ( ! isset($CtrN) || $CtrN == "" ) {
+                $Res = "Unknown";
             } else {
-                echo strtolower( $Ctr );
+                $Res = $CtrN;
             }
         }
+        echo $CtrC . "|" . $Res;
     } else {
         echo "Unknown action requested: " . $Action;
     }
