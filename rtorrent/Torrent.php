@@ -249,6 +249,8 @@ private function decode_string()
 	$delim_pos = strpos($this->data, ':', $this->pointer);
 	$elem_len = intval(substr($this->data, $this->pointer, $delim_pos - $this->pointer));
 	$this->pointer = $delim_pos + 1;
+        if($this->pointer>=strlen($this->data))
+	       	throw new Exception();
 	$elem_name = substr($this->data, $this->pointer, $elem_len);
 	$this->pointer += $elem_len;
 	return($elem_name);
