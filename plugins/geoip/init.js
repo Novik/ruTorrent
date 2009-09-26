@@ -1,9 +1,7 @@
-var plugin = new rPlugin("geoip");
+//var plugin;
 var item = '';
 var ActiveLanguage = GetActiveLanguage();
-
-plugin.loadLanguages();
-plugin.loadMainCSS();
+    
 
 // Insert GeoIP information - either country's code or name
 function LookupSuccess(data) {
@@ -17,8 +15,7 @@ function LookupFailure (XMLHttpRequest, textStatus, errorThrown) {
 } // LookupFailure
 
 
-// Change original response function
-rTorrentStub.prototype.getpeersResponse = function( xmlDoc, docText )
+function GeoIPResponse( xmlDoc, docText )
 {
     var ret = '{"":"","peers": [';
 	var datas = xmlDoc.getElementsByTagName('data');
@@ -75,7 +72,7 @@ rTorrentStub.prototype.getpeersResponse = function( xmlDoc, docText )
 	ret+=']}';
 	item = '';
 	return(ret);
-} // rTorrentStub.prototype.getpeersResponse
+} // GeoIPResponse
 
 
 // Examples of row with country data
@@ -164,10 +161,15 @@ utWebUI.GeoIPInitDone = utWebUI.initDone;
 utWebUI.initDone = function() {
     // call a native handler
     this.GeoIPInitDone();
-    // Modify function for adding rows so that flags can be added
-    utWebUI.addPeers = addGeoIPPeers;
-    // Modify peer list table formatter
-    utWebUI.prsTable.format = FormatPeers;
+    
+    if ( utWebUI.GeoIPSupported ) {
+        // Modify function for adding rows so that flags can be added
+        utWebUI.addPeers = addGeoIPPeers;
+        // Modify peer list table formatter
+        utWebUI.prsTable.format = FormatPeers;
+        // Change original peer response function
+        rTorrentStub.prototype.getpeersResponse = GeoIPResponse;
+    }
 } // initDone
 
 
