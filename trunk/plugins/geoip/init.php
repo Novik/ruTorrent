@@ -1,9 +1,6 @@
 <?php
 
-// Check if GeoIP exists - assume you installed it properly
-$GeoIP = geoip_database_info(GEOIP_COUNTRY_EDITION);
-
-if ( isset($GeoIP) ) {
+if ( function_exists("geoip_database_info") ) {
     $jResult .= "utWebUI.prsColumns.unshift( {'text' : 'Country', 'width' : '60px', 'type' : TYPE_STRING}); ";
     $jResult .= "utWebUI.GeoIPSupported = true; ";
     $theSettings->registerPlugin("geoip");
