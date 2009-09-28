@@ -45,6 +45,8 @@ ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui
  * F1 shows included hot-keys. Works fine in Firefox only as yet. 
  * Some add-ons for browsers may cause errors in ruTorrent work. For example - plug-in Firebug for Firefox causes significant memory leaks.
 
+== [ErrorMessages Error messages] ==
+
 == [Plugins Plug-ins] ==
 
 == [Versions Changes] ==
