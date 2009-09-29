@@ -184,7 +184,7 @@
  Queued				: "Mis dans la file",
  Finished			: "Termin\u00e9",
  Stopped			: "Arr\u00eat\u00e9",
- Request_timed_out	: "La requ\u00eate vers \xb5Torrent a \u00e9chou\u00e9.",
+ Request_timed_out	: "La requ\u00eate vers rTorrent a \u00e9chou\u00e9.",
  
  Force_Start		: "Forcer le d\u00e9marrage",
  Start				: "D\u00e9marrer",
