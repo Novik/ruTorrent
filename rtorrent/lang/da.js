@@ -184,7 +184,7 @@
  Queued				: "I kø",
  Finished			: "Færdig",
  Stopped			: "Stoppet",
- Request_timed_out	: "Anmodningen om at \xb5Torrent har timedout.",
+ Request_timed_out	: "Anmodningen om at rTorrent har timedout.",
  
  Force_Start		: "Tving Start",
  Start				: "Start",

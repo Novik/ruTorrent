@@ -184,7 +184,7 @@
  Queued				: "Gaida rindā",
  Finished			: "Pabeigts",
  Stopped			: "Apturēts",
- Request_timed_out	: "Pieprasījums \xb5Torrent ir pārtraukts.",
+ Request_timed_out	: "Pieprasījums rTorrent ir pārtraukts.",
  
  Force_Start		: "Piespiedu sākšana",
  Start				: "Sākt",
