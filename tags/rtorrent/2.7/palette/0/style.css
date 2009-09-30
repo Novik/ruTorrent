@@ -1,0 +1,261 @@
+html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%; }
+form{margin:0;}
+div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar2.gif); background-image: url(./images/tstatus.gif); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/hide.gif); background-image: url(./images/hide_over.gif); background-image: url(./images/hide_on.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif)}
+.ie6 div#preload {background-image: url(./images/toolbar2.gif); background-image: url(./images/status_checking.gif); background-image: url(./images/status_completed.gif); background-image: url(./images/status_down.gif); background-image: url(./images/status_error.gif); background-image: url(./images/status_error_down.gif); background-image: url(./images/status_error_up.gif); background-image: url(./images/status_incompleted.gif); background-image: url(./images/status_paused.gif); background-image: url(./images/status_queued_down.gif); background-image: url(./images/status_queued_up.gif); background-image: url(./images/status_up.gif); background-image: url(./images/status_up_down.gif)}
+.webkit div#preload {background-image: url(../../lang/images/br.gif);background-image: url(../../lang/images/cn.gif);background-image: url(../../lang/images/cs.gif);background-image: url(../../lang/images/de.gif);background-image: url(../../lang/images/en.gif);background-image: url(../../lang/images/es.gif);background-image: url(../../lang/images/fi.gif);background-image: url(../../lang/images/hu.gif);background-image: url(../../lang/images/it.gif);background-image: url(../../lang/images/nl.gif);background-image: url(../../lang/images/pl.gif);background-image: url(../../lang/images/ru.gif);background-image: url(../../lang/images/sk.gif);background-image: url(../../lang/images/uk.gif) }
+div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; background: #FFFFFF}
+div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
+div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none}
+sup {font-size: 8px}
+div#sc {width: 150px; right: 57px; top: 40px; position: absolute; display: none; border: 1px solid #808080; background-color: #E0E0E0; z-index: 100}
+div#sc ul {margin: 0; padding: 0; list-style: none}
+div#sc ul li {margin: 0; padding: 0}
+div#sc li div {line-height: 14px; padding: 4px; font-weight: bold; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
+div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
+div#lng {background-color:#E0E0E0; border:1px solid #808080; position:absolute; left:275px; top:40px; width:30px; z-index:100;}
+div#lng ul {margin: 0pt 0pt 0pt 2pt; padding: 0pt; list-style-image: none; list-style-position: outside; list-style-type: none;}
+ul.CMenu {width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
+ul.CMenu li {float: left; margin-right: 1px; position: relative; width: 150px; background: #FFFFFF}
+ul.CMenu li a {display: block}
+ul.CMenu li a.dis {color: #C0C0C0}
+ul.CMenu li a.dis:hover {background-color: #FFFFFF; color: #C0C0C0}
+ul.CMenu li a {line-height: 16px; padding: 3px 4px 3px 16px; font-weight: normal}
+ul.CMenu li hr {width: 90%; border-top: 1px solid #D0D0D0; height: 0px; margin-top: 2px; margin-bottom: 2px}
+ul.CMenu li a.exp {background: transparent url(./images/menuexp.gif) no-repeat scroll 140px center; }
+ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat scroll 4px center}
+ul.CMenu li a:hover {background-color: #CFDEEF; color: #000000}
+
+ul.CMenu li:hover ul {display: block; position: absolute; top: 0; left: 146px; width:150px;}
+ul.CMenu li:hover ul li ul {display: none;}
+ul.CMenu li:hover ul li a {display: block; background-color: #FFFFFF; color: #000000}
+ul.CMenu li:hover ul li a:hover {background-color: #CFDEEF; color: #000000}
+ul.CMenu li:hover ul.left {left: -150px}
+ul.CMenu li ul li a.dis {color: #C0C0C0}
+ul.CMenu li ul li a.dis:hover {background-color: #FFFFFF; color: #C0C0C0}
+
+span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
+#sel {width: 0px; height: 0px; position: absolute; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
+div#al {width: 200px; height: 40px; position: absolute; right: 10px; bottom: 10px; background: #F5F5F5 url(./images/error.gif) no-repeat 10px 10px; border: 1px solid #C0C0C0; padding: 5px 10px 5px 35px; z-index: 350; display: none}
+div#ermsg {width: 180px; height: 100%; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
+div#al a.h {margin: -40px -5px 0 0}
+div.dlbb {width: 96px; height: 12px; position: relative; margin: 1px 0 0 0; padding: 0; line-height: 14px; border: 1px solid #C0C0C0}
+div.dlbp {width: 90px; height: 14px; position: absolute; right: 0; top: -2px; margin: 1px; padding-left: 4px; text-align: right; z-index: 0}
+div#t {width: 100%; height: 36px; background: #F0F0F0 url(./images/t_bg.png) repeat-x center center; line-height: 36px; border-bottom: 1px solid #D0D0D0; white-space: nowrap}
+div#t a {float: left; margin: 3px 0 0 5px; padding: 3px}
+div#t a:hover {background: transparent url(./images/tb_bg.gif) no-repeat scroll center center}
+div#t a:active {padding: 4px 2px 2px 4px}
+div#t div {width: 24px; height: 24px; float: left; cursor: pointer}
+div#t div.TB_Separator {width: 1px; height: 22px; margin: 7px 0 0 5px; padding: 0; border: 0; background-color: #A0A0A0}
+div#t div#add {background: transparent url(./images/toolbar2.gif) no-repeat left center}
+div#t div#remove {background: transparent url(./images/toolbar2.gif) no-repeat -24px center}
+div#t div#start {background: transparent url(./images/toolbar2.gif) no-repeat -48px center}
+div#t div#pause {background: transparent url(./images/toolbar2.gif) no-repeat -72px center}
+div#t div#stop {background: transparent url(./images/toolbar2.gif) no-repeat -96px center}
+div#t div#moveu {background: transparent url(./images/toolbar2.gif) no-repeat -168px center}
+div#t div#moved {background: transparent url(./images/toolbar2.gif) no-repeat -144px center}
+div#t div#rss {background: transparent url(./images/toolbar2.gif) no-repeat -144px center}
+div#t div#setting {background: transparent url(./images/toolbar2.gif) no-repeat -168px center}
+div#t div#search {background: transparent url(./images/toolbar2.gif) no-repeat -120px center}
+div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}
+div#t div#sb {width: 210px; float: right; margin-right: 0px; line-height: 26px; }
+div#t div#sb input {margin-top: 9px}
+div#t div#sb a {margin: 3px 5px 0 0}
+a.h:link, a.h:visited {width: 14px; height: 14px; margin: 11px 5px 0 0; background: transparent url(./images/hide.gif); float: right; border: 0}
+a.h:hover {width: 14px; height: 14px; background: transparent url(./images/hide_over.gif); float: right; border: 0}
+a.h:active {width: 14px; height: 14px; background: transparent url(./images/hide_on.gif); float: right; border: 0}
+input.Textbox, input.Button, select {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px}
+Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 50px}
+Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 110px}
+Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 220px}
+Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 30px}
+input.Button {padding: 1px 10px; background: #F0F0F0 url(./images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0;}
+
+select {margin-top: 5px}
+a.hide:link, a.hide:visited {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(./images/hide.gif); float: right; border: 0}
+a.hide:hover {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(./images/hide_over.gif); float: right; border: 0}
+a.hide:active {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(./images/hide_on.gif); float: right; border: 0}
+a {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #686868}
+table#maincont {margin: 5px 0 0 0}
+table#maincont td.uicell {vertical-align: top; padding: 0}
+div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: auto}
+
+div#CatList ul {padding: 0px; margin: 0; list-style: none; white-space: nowrap}
+div#CatList ul li {padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: pointer}
+div#CatList ul li.sel {background-color: #CFDEEF}
+div#CatList ul li.sel#-_-_-all-_-_- {background-color: #CFDEEF}
+div#CatList ul li.sel#-_-_-dls-_-_- {background-color: #CFDEEF}
+div#CatList ul li.sel#-_-_-com-_-_- {background-color: #CFDEEF}
+div#CatList ul li.sel#-_-_-act-_-_- {background-color: #CFDEEF}
+div#CatList ul li.sel#-_-_-iac-_-_- {background-color: #CFDEEF}
+div#CatList ul li.sel#-_-_-err-_-_- {background-color: #CFDEEF}
+div#CatList ul li#-_-_-all-_-_- {padding: 2px 21px; background:url(./images/status_checking.gif) 2px no-repeat;}
+div#CatList ul li#-_-_-dls-_-_- {padding: 2px 21px; background:url(./images/status_down.gif) 2px no-repeat;}
+div#CatList ul li#-_-_-com-_-_- {padding: 2px 21px; background:url(./images/status_up.gif) 2px no-repeat;}
+div#CatList ul li#-_-_-act-_-_- {padding: 2px 21px; background:url(./images/status_up_down.gif) 2px no-repeat;}
+div#CatList ul li#-_-_-iac-_-_- {padding: 2px 21px; background:url(./images/status_incompleted.gif) 2px no-repeat;}
+div#CatList ul li#-_-_-err-_-_- {padding: 2px 21px; background:url(./images/status_error.gif) 2px no-repeat;}
+div#CatList ul li#_hr_{padding: 0 3px; margin: 0px;}
+
+div#HDivider {width: 5px; height: 100px; padding: 0; margin: 0; cursor: e-resize}
+div#VDivider {width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize}
+div#List {border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div#FileList, div#TrackerList, div#PeerList {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+.Status_Down {background: transparent url(./images/tstatus.gif) no-repeat left center}
+.Status_Up {background: transparent url(./images/tstatus.gif) no-repeat -16px center}
+.Status_Incompleted {background: transparent url(./images/tstatus.gif) no-repeat -32px center}
+.Status_Paused {background: transparent url(./images/tstatus.gif) no-repeat -48px center}
+.Status_Error_Down {background: transparent url(./images/tstatus.gif) no-repeat -64px center}
+.Status_Error_Up {background: transparent url(./images/tstatus.gif) no-repeat -80px center}
+.Status_Error {background: transparent url(./images/tstatus.gif) no-repeat -96px center}
+.Status_Completed {background: transparent url(./images/tstatus.gif) no-repeat -112px center}
+.Status_Queued_Down {background: transparent url(./images/tstatus.gif) no-repeat -128px center}
+.Status_Queued_Up {background: transparent url(./images/tstatus.gif) no-repeat -144px center}
+.Status_Up_Down {background: transparent url(./images/tstatus.gif) no-repeat -160px center}
+.Status_Checking {background: transparent url(./images/tstatus.gif) no-repeat -176px center}
+.ieStatus_Down {background: transparent url(./images/status_down.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Up {background: transparent url(./images/status_up.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Incompleted {background: transparent url(./images/status_incompleted.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Paused {background: transparent url(./images/status_paused.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Error_Down {background: transparent url(./images/status_error_down.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Error_Up {background: transparent url(./images/status_error_up.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Error {background: transparent url(./images/status_error.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Completed {background: transparent url(./images/status_completed.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Queued_Down {background: transparent url(./images/status_queued_down.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Queued_Up {background: transparent url(./images/status_queued_up.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Up_Down {background: transparent url(./images/status_up_down.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieStatus_Checking {background: transparent url(./images/status_checking.gif) no-repeat scroll left top; padding-left: 20px;}
+div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none}
+div#stg a.h {margin: 5px}
+div#stg_h {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(./images/settings.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
+div#stg .lm {width: 120px; height: 353px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
+.ie div#stg .lm {width: 125px}
+.ie div#stg {width: 605px;}
+div.op100l {width: 400px; float: left}
+div.op50l {width: 200px; float: left; }
+div.op50l select {padding: 0}
+div.algnright {text-align: right;}
+.konqueror div.op50l {clear: left}
+.konqueror div.algnright {clear: right}
+.opera div.op50l {clear: left}
+.opera div.algnright {clear: right}
+.lm ul {width: 100%; margin: 0; padding: 0; list-style-position: inside; list-style: none}
+.lm li {margin: 0 5px; padding: 0 12px; line-height: 16px !important; background: transparent url(./images/bul.gif) no-repeat scroll left center}
+.lm ul.child {margin: 0 0 0 5px; display: none}
+.lm ul.child li {margin: 0 0 0 9px}
+.lm li.first {background: transparent url(./images/bul_f.gif) no-repeat scroll left bottom}
+.lm li.last {background: transparent url(./images/bul_l.gif) no-repeat scroll left top}
+.lm li div.toggle {width: 10px; height: 10px; background: transparent url(./images/exp.gif) no-repeat scroll center center; float: left; margin: 3px 0 0 -16px; cursor: pointer}
+.lm li a {color: #000000; padding: 1px 2px}
+.lm li a.focus {background-color: #E0E0E0}
+.ie .lm li a {margin: 0 0 0 -5px; padding: 0}
+.stg_con {float: right; position: relative; width: 455px; height: 340px; margin: 4px; background-color: #FAFAFA}
+.ie6 .stg_con {clear: both;} 
+fieldset {margin: 4px}
+* > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px}
+.stg_con table {width: 100%}
+.stg_con td {font-weight: normal; height: 19px}
+.stg_con td.alr {text-align: right}
+.stg_con td input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
+input.num {text-align: right; width: 50px}
+input.str {text-align: left; width: 130px}
+td label, div label {cursor: pointer}
+input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
+td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
+fieldset div {padding: 3px}
+div input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
+legend {color: #000000; font-weight: bold}
+div.indent {padding-left: 16px}
+#st_gl {display: block}
+#st_dl, #st_con, #st_bt, #st_que, #st_sch, #st_ao, #st_dc {display: none}
+#st_btns {float: right; position: relative; width: 457px; height: 20px; padding: 3px; text-align: right; }
+#st_btns input {margin-left: 5px}
+a {text-decoration: none}
+#st_ao_h {width: 420px; height: 270px; overflow: auto; }
+#st_ao_h table {width: 400px}
+#acty {width: 16px; height: 16px; position: absolute; right: 10px; bottom: 10px; background-image: url()}
+select.cols {border: 1px solid #808080; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 120px}
+div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
+div#tdetails {height: 50%; padding: 0 5px 5px 0; background-color: #F5F5F5}
+div#tdetails a.h {margin: 0}
+div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 2px}
+div#gcont, div#scont, div#lcont {height: 100%; background: #F5F5F5; overflow: auto}
+div#gcont table {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 10px}
+div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
+div#lcont {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
+div#lcont div {padding: 2px}
+div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 2px solid #909090}
+div#tadd_h {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(./images/world.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
+div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
+div#gcont, div#FileList, div#TrackerList, div#PeerList, div#scont, div#lcont {display: none}
+div#tadd label, div#tadd input.text {width: 150px; display: block; float: left; margin-bottom: 10px}
+div#tadd label {text-align: right; width: 75px; padding-right: 20px}
+div#tadd br {clear: left; line-height: 0}
+div#tadd a.h {margin: 5px}
+ul#tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
+ul#tabbar li {margin: 0; padding: 0; display: inline}
+ul#tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
+ul#tabbar li a:hover {border-top: 2px solid #FFC73C}
+ul#tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
+div#dlgLabel {width: 250px; height: 140px}
+div#dlgLabel div.dlg-header {background-image: url(./images/label.gif)}
+div#dlgLabel div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
+div#dlgLabel div.content input {margin-top: 5px}
+#txtLabel {width: 200px}
+div#dlgAbout {width: 250px; height: 250px}
+div#dlgAbout div.dlg-header {background-image: url(./images/about.gif)}
+div#dlgAbout div.content {width: 230px; margin: 5px; padding: 5px}
+div#dlgHelp {width: 250px; height: 250px}
+div#dlgHelp div.dlg-header {background-image: url(./images/about.gif)}
+div#dlgHelp div.content {width: 230px; margin: 5px; padding: 5px}
+div#dlgRss {width: 500px; height: 300px}
+div#dlgRss div.dlg-header {background-image: url(./images/rss.gif)}
+div#dlgRss div#dlgRss-content {height: 253px; width: 478px; margin: 10px; border: 1px solid #D0D0D0; background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div.torrentadd {line-height: 18px; margin: 2px 0; padding: 0 0 0 20px; background: transparent url(./images/add.gif) no-repeat scroll 2px center; border-bottom: 1px solid #D0D0D0}
+.itemadd {background: transparent url(./images/add.gif)}
+.itemadded {background: transparent url(./images/tick.gif)}
+div#dlgProps {width: 400px; height: 205px}
+.konqueror div#dlgProps {height: 213px}
+div#dlgProps div.dlg-header {background-image: url(./images/props.gif)}
+div#dlgProps div.content {width: 380px; padding: 10px}
+div#dlgProps textarea#prop-trackers {width: 100%; height: 70px; background: #FFFFFF; border: 1px solid #D0D0D0}
+div#dlgProps fieldset div {line-height: 16px}
+div#dlgProps fieldset div.props-spacer {width: 90%; float: left}
+input#prop-tracker_numwant {width: 60px; float: right}
+input#prop-ulslots {width: 60px; float: right}
+input#prop-peers_min {width: 60px; float: right}
+input#prop-peers_max {width: 60px; float: right}
+input#prop-seed_ratio {width: 40px}
+div.aright {text-align: right}
+div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
+div.fxcaret {overflow: auto}
+div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(./images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
+a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(./images/hide.gif); float: right; border: 0}
+a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(./images/hide_over.gif); float: right; border: 0}
+a.dlg-close:active {width: 14px; height: 14px; background: transparent url(./images/hide_on.gif); float: right; border: 0}
+
+div.tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div.tab {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
+div.tab {display: none}
+
+div#yesnoDlg {width: 280px; height: 100px}
+div#yesnoDlg div.dlg-header {background-image: url(./images/error.gif)}
+div#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 16px}
+div#yesnoDlg div.content input {margin-top: 5px}
+
+div#t div#ind {margin-top: 7px; background: transparent url(./images/ajax-loader.gif) no-repeat 0px center; width: 32px; float: right; margin-right: 2px; line-height: 26px; cursor: default; display: none;}
+
+.konqueror div#tadd label { width: 80px; }
+.konqueror div#tadd { height: 290px; }
+.konqueror #st_con { height: 340px; overflow: auto; }
+
+span#loadimg {padding: 20px; background: transparent url(./images/ajax-loader.gif) no-repeat center center; }
+.webkit div#msg {position: fixed;}
+.konqueror div#msg {position: fixed;}
+
+.Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
+.Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
+.ieIcon_File {background: transparent url(./images/file.gif) no-repeat scroll left top; padding-left: 20px;}
+.ieIcon_Dir {background: transparent url(./images/dir.gif) no-repeat scroll left top; padding-left: 20px;}
+
+div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
+textarea { overflow: auto; white-space: nowrap; }
