@@ -23,3 +23,4 @@ Currently there are following plug-ins:
  # [PluginDataDir datadir] - allows to change the directory of the torrents data.
  # [PluginTracklabels tracklabels] - adds trackers autolabels to categories pane.
  # [PluginGeoIP geoip] - shows country for connected peers.
+ # [PluginShow_peers_like_wtorrent Show_peers_like_wtorrent] - changes format of columns "Seeds" and "Peers".
