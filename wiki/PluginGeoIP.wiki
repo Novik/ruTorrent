@@ -6,24 +6,9 @@ PHP extension GeoIP must be installed so this plugin can work properly. If you d
 
 == Usage ==
 
-Unpack the plugin archive into rutorrent/plugins directory and refresh contents of your browser. If everything is OK, you should see a new column "Country" next to "Name" in "Peers" tab.
-
-Edit file *geoip/init.php* to set _modus operandi_ for the plugin. This change:
-{{{
-$GeoIPMode = "name";
-}}}
-produces the following result:
+Unpack the plugin archive into rutorrent/plugins directory and refresh contents of your browser. If everything is OK, you should see a new column "Country" next to "IP" in "Peers" tab.
 
 [http://rutorrent.googlecode.com/svn/wiki/images/geoip.jpg]
-
-while this option:
-{{{
-$GeoIPMode = "code";
-}}}
-gives this:
-
-[http://rutorrent.googlecode.com/svn/wiki/images/geoip-code.jpg]
-
 
 == Localization (for languages other than English - optional step) ==
 
