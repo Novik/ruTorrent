@@ -1,6 +1,6 @@
 ﻿
  
- WUILang.cookiesDesc = "Cookies (Format: host|cookie1;cookie2...)";
- WUILang.cookiesName = "Cookies";
+ WUILang.cookiesDesc = "Колачићи (Формат: host|cookie1;cookie2...)";
+ WUILang.cookiesName = "Колачићи";
 
 utWebUI.cookiesCreate();

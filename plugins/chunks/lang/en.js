@@ -1,4 +1,5 @@
-WUILang.chunksLabel = "Chunks";
+
+WUILang.Chunks = "Chunks";
 WUILang.chunksNoChunksFound = "No chunks found!";
 WUILang.chunksRows = "row(s)";
 WUILang.chunksColumns = "column(s)";

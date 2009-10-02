@@ -1,4 +1,5 @@
 
+WUILang.Chunks = "Парчад";
 WUILang.chunksNoChunksFound = "Нема парчади!";
 WUILang.chunksRows = "врста";
 WUILang.chunksColumns = "колона";
