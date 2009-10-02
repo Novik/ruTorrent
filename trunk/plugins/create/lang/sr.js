@@ -1,15 +1,15 @@
 ﻿
  
- WUILang.mnu_create 		= "Create torrent...";
- WUILang.CreateNewTorrent 	= "Create New Torrent";
- WUILang.SelectSource 		= "Select Source";
- WUILang.TorrentProperties 	= "Torrent Properties";
- WUILang.PieceSize 		= "Piece size";
- WUILang.Other 			= "Other";
- WUILang.StartSeeding 		= "Start seeding";
- WUILang.PrivateTorrent		= "Private torrent";
- WUILang.CreateAndSaveAs	= "Create and save as...";
- WUILang.BadTorrentData		= "You must fill all required fields!";
- WUILang.createExternalNotFound = "Create plugin: Plugin will not work. Web-server can't access to external program";
+ WUILang.mnu_create 		= "Направи торент ...";
+ WUILang.CreateNewTorrent 	= "Направи нови торент";
+ WUILang.SelectSource 		= "Избор извора";
+ WUILang.TorrentProperties 	= "Својства торента";
+ WUILang.PieceSize 		    = "Величина парчета";
+ WUILang.Other 			    = "Друго";
+ WUILang.StartSeeding 		= "Почетак сејања";
+ WUILang.PrivateTorrent		= "Приватни торент";
+ WUILang.CreateAndSaveAs	= "Направи и сними као ...";
+ WUILang.BadTorrentData		= "Морате попунити сва обавезна поља!";
+ WUILang.createExternalNotFound = "Креирање додатка: Додатак неће радити. Мрежни сервер не може да приступи екстерном програму";
 
 utWebUI.initCreate();

@@ -1,9 +1,9 @@
 ﻿
 
- WUILang.DataDir		= "Save to";
- WUILang.datadirDlgCaption	= "Torrent data directory";
- WUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
- WUILang.datadirSetDirFail	= "DataDir plugin: rXMLRPCRequest() fail";
+ WUILang.DataDir		= "Сними у";
+ WUILang.datadirDlgCaption	= "Директоријум података за торент";
+ WUILang.datadirDirNotFound	= "Додатак DataDir: Погрешан директоријум";
+ WUILang.datadirSetDirFail	= "Додатак DataDir: rXMLRPCRequest() није успео";
 
 utWebUI.datadirCreate();
 
