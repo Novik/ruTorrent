@@ -4,16 +4,16 @@
 
 Плагин меняет формат выдачи столбцов "Сиды" и "Пиры" для списка закачек. По умолчанию в эти столбцы показываются как
 {{{
-get_peers_complete / (get_peers_not_connected+get_peers_connected)
-get_peers_accounted / (get_peers_not_connected+get_peers_connected)
+get_peers_complete (get_peers_not_connected+get_peers_connected)
+get_peers_accounted (get_peers_not_connected+get_peers_connected)
 }}}
 Для трекеров, которые поддерживают [http://ru.wikipedia.org/wiki/Scrape scrape], имеет смысл более подробный вывод в виде
 {{{
-get_peers_complete / t_get_scrape_complete 
-get_peers_accounted / t_get_scrape_incomplete
+get_peers_complete (t_get_scrape_complete)
+get_peers_accounted (t_get_scrape_incomplete)
 }}}
-Т.е. в знаменателе показывается сумма сидов/пиров по scrape всех трекеров закачки. Так:
+Т.е. в скобках показывается сумма сидов/пиров по scrape всех трекеров закачки. Так:
 
 [http://rutorrent.googlecode.com/svn/wiki/ru/images/peers_like_wtorrent.jpg]
 
-Примерно так показывает данную информацию другой front-end для rTorrent - [http://www.wtorrent-project.org wTorrent]. Если Вы работаете, в основном, с закрытыми трекерами, то данный плагин для Вас бесполезен. На подобных трекерах scrape отключен, и вместо бОльшей информации Вы будете иметь меньшую - в знаменателе всегда будет стоять ноль.
+Примерно так показывает данную информацию другой front-end для rTorrent - [http://www.wtorrent-project.org wTorrent]. Если Вы работаете, в основном, с закрытыми трекерами, то данный плагин для Вас бесполезен. На подобных трекерах scrape отключен, и вместо бОльшей информации Вы будете иметь меньшую - в скобках всегда будет стоять ноль.
