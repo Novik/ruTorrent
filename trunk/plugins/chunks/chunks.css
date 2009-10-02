@@ -1,0 +1,108 @@
+#tEM {
+    padding: 0;
+    position: absolute;
+    visibility: hidden;
+}
+
+.cDiv {
+    margin-top: .5em;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+    width: 99%;
+    display: table;
+    font-family: fixed, Courier New, Lucidatypewriter, Andale Mono;
+    /*overflow: auto;*/
+    font-size: 80%;
+    vertical-align: top;
+}
+
+.tChunks {
+    width: 100%;
+    empty-cells: hide;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: separate;
+}
+
+.tHeader {
+    font-size: 80%;
+}
+
+.cCell {
+    text-align: center;
+    margin: 0;
+    border: 1px dashed;
+}
+
+.Cell0 {
+}
+
+.Cell1 {
+}
+
+.Cell2 {
+    /*background-color: #FCFE63;*/
+    background-color: wheat;
+}
+
+.Cell3 {
+    background-color: #FCFE63;
+}
+
+.Cell4 {
+    background-color: #FF8D63;
+}
+
+.Cell5 {
+    background-color: #FF8D63;
+}
+
+.Cell6 {
+    background-color: #FFAA63;
+}
+
+.Cell7 {
+    background-color: #FFAA63;
+}
+
+.Cell8 {
+    background-color: #FFBD63;
+}
+
+.Cell9 {
+    background-color: #FFBD63;
+    border: 1px solid;
+}
+
+.CellA {
+    background-color: #FFD363;
+    border: 1px solid;
+}
+
+.CellB {
+    background-color: #FFD363;
+    border: 1px solid;
+}
+
+.CellC {
+    background-color: #FFEA63;
+    border: 1px solid;
+}
+
+.CellD {
+    background-color: #FFEA63;
+    border: 1px solid;
+}
+
+.CellE {
+    
+    background-color: #FF6564;
+    border: 1px solid;
+}
+
+.CellF {
+    background-color: #FF6564;
+    border: 1px solid;
+}
+
