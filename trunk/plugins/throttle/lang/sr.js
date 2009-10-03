@@ -1,10 +1,9 @@
 ﻿
- 
- WUILang.throttleUnsupported	= "Throttle plugin: this version of rTorrent does't support throttle. Plugin will not work.";
- WUILang.throttles		= "Channels";
- WUILang.throttle		= "Channel";
- WUILang.mnuThrottle		= "Set channel";
- WUILang.mnuUnlimited		= "No channel";
- WUILang.channelName 		= "Name";
+ WUILang.throttleUnsupported    = "Додатак Throttle: this version of rTorrent does't support throttle. Plugin will not work.";
+ WUILang.throttles              = "Канали";
+ WUILang.throttle               = "Канал";
+ WUILang.mnuThrottle            = "Постави канал";
+ WUILang.mnuUnlimited           = "Нема канала";
+ WUILang.channelName            = "Име";
 
 utWebUI.throttleCreate();

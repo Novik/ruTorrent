@@ -1,9 +1,9 @@
 ﻿
  
- WUILang.retrackers		= "Retrackers";
- WUILang.dontAddToPrivate	= "Don't add retrackers to private torrents";
- WUILang.retrackersPHPNotFound		= "Retrackers plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
- WUILang.retrackersRunNotAvailable	= "Retrackers plugin: rTorrent's user can't access file plugins/retrackers/run.sh for read/execute. Plugin will not work.";
- WUILang.retrackersUpdaterNotAvailable	= "Retrackers plugin: rTorrent's user can't access file plugins/retrackers/update.php for read. Plugin will not work.";
+ WUILang.retrackers		= "Ре-тракер";
+ WUILang.dontAddToPrivate	= "Немојте додавати ре-тракере приватним торентима";
+ WUILang.retrackersPHPNotFound		= "Додатак ре-тракер: Корисник rTorrent-а не може да приступи РНР интепретеру. Додатак неће радити.";
+ WUILang.retrackersRunNotAvailable	= "Додатак ре-тракер: Корисник rTorrent-а не може да приступи датотеци plugins/retrackers/run.sh ради читања/извршавања. Додатак неће радити.";
+ WUILang.retrackersUpdaterNotAvailable	= "Додата ре-тракер: Корисник rTorrent'-а не може да приступи датотеци plugins/retrackers/update.php ради читања. Додатак неће радити.";
 
 utWebUI.retrackersCreate();
