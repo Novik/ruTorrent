@@ -1,6 +1,6 @@
 ﻿
  
- WUILang.searchDesc = "Search Engines (Format: name|URL)";
- WUILang.searchName = "Search";
+ WUILang.searchDesc = "Машине за претрагу (формат: име|URL)";
+ WUILang.searchName = "Претрага";
 
 utWebUI.searchCreate();

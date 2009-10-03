@@ -1,6 +1,6 @@
 ﻿
  
- WUILang.seedingTimeBadVersion	= "SeedingTime plugin: this version of rTorrent does't support this plugin. Plugin will not work.";
- WUILang.seedingTime		= "Finished";
+ WUILang.seedingTimeBadVersion	= "Додатак SeedingTime: Верзија rTorrent-а коју ви користите не подржава овај додатак.";
+ WUILang.seedingTime		= "Завршено";
 
 utWebUI.seedingTimeCreate();

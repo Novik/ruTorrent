@@ -1,17 +1,17 @@
 ﻿
  
- WUILang.ratioUnsupported	= "Ratio plugin: this version of rTorrent does't support ratio. Plugin will not work.";
- WUILang.ratios			= "Ratio groups";
- WUILang.ratio			= "RatioGroup";
- WUILang.mnuRatio		= "Set ratio group";
- WUILang.mnuRatioUnlimited	= "No ratio";
- WUILang.ratioName 		= "Name";
- WUILang.minRatio 		= "Min";
- WUILang.maxRatio 		= "Max";
- WUILang.ratioUpload 		= "UL";
- WUILang.ratioAction 		= "Action";
- WUILang.ratioStop 		= "Stop";
- WUILang.ratioStopAndRemove 	= "Stop & Clear group";
- WUILang.ratioErase 		= "Remove";
+ WUILang.ratioUnsupported	= "Додатак Ratio: this version of rTorrent does't support ratio. Plugin will not work.";
+ WUILang.ratios			    = "Односне групе";
+ WUILang.ratio			    = "Односна група";
+ WUILang.mnuRatio		    = "Поставити односну групу";
+ WUILang.mnuRatioUnlimited	= "Нема односа";
+ WUILang.ratioName 		    = "Име";
+ WUILang.minRatio 		    = "Минимално";
+ WUILang.maxRatio 		    = "Максимално";
+ WUILang.ratioUpload 		= "Узтовар";
+ WUILang.ratioAction 		= "Акција";
+ WUILang.ratioStop 		    = "Зауставити";
+ WUILang.ratioStopAndRemove = "Зауставити и обрисати групу";
+ WUILang.ratioErase 		= "Уклонити";
 
 utWebUI.ratioCreate();
