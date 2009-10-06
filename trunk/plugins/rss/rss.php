@@ -701,7 +701,7 @@ class rRSSManager
 	public function setStartTime( $startAt )
 	{
 		global $updateInterval;
-		$this->rssList->updatedAt = $startAt-$updateInterval*60;
+		$this->rssList->updatedAt = time()+($startAt-$updateInterval*60);
 		$this->saveState(false);
 	}
         public function update( $manual = false )
@@ -735,7 +735,7 @@ class rRSSManager
 		global $updateInterval;
 		$nextTouch = $updateInterval*60;
 		if($this->rssList->updatedAt)
-			$nextTouch = $nextTouch-(time()-$this->rssList->updatedAt)+8;
+			$nextTouch = $nextTouch-(time()-$this->rssList->updatedAt)+15;
 		return("{ next: ".$nextTouch.", interval: ".$updateInterval." }");
 	}
 	public function get()
