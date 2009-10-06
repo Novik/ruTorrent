@@ -625,6 +625,8 @@ class rRSSManager
 					{
 						$this->getTorrents( $rss, $item['href'], 
 							$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, $filter->ratio, false );
+						if(WAIT_AFTER_LOADING)
+							sleep(WAIT_AFTER_LOADING);
 					}
 				}
 			}
