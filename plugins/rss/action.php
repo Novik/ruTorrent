@@ -216,7 +216,11 @@ switch($cmd)
 				if($mngr->cache->get($rss))
 				{
 					foreach($urls as $url)
+					{
 						$mngr->getTorrents( $rss, $url, $isStart, $isAddPath, $dir, $lbl, null, null, false );
+						if(WAIT_AFTER_LOADING)
+							sleep(WAIT_AFTER_LOADING);
+					}
 				}
 			}
 			$mngr->saveHistory();
