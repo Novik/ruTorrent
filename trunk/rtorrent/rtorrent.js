@@ -1029,7 +1029,8 @@ rTorrentStub.prototype.getalltrackersResponse = function(xmlDoc,docText)
 {
         var allDatas = xmlDoc.getElementsByTagName('data');
 	var ret = '{"":"","trackers": [';
-	var cnt = 0;
+	var delta = (this.hashes.length>1) ? 1 : 0;
+	var cnt = delta;
 	for( var i=0; i<this.hashes.length; i++)
 	{
 		if(i>0)
@@ -1038,7 +1039,7 @@ rTorrentStub.prototype.getalltrackersResponse = function(xmlDoc,docText)
 		ret+=this.hashes[i];
 		ret+='", [';
 		var datas = allDatas[cnt].getElementsByTagName('data');
-		for(var j=0;j<datas.length;j++)
+		for(var j=delta;j<datas.length;j++)
 		{
 			var data = datas[j];
 			var values = data.getElementsByTagName('value');
