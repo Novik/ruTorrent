@@ -44,7 +44,10 @@ class rRatio
 	{
 		$cmd = new rXMLRPCCommand("d.multicall",array("default","d.get_hash="));
 		for($i=0; $i<MAX_RATIO; $i++)
+		{
 			$cmd->addParameter("d.views.has=rat_".$i);
+			$cmd->addParameter("view.set_not_visible=rat_".$i);
+		}
 		$req = new rXMLRPCRequest($cmd);
 		if($req->run() && !$req->fault)
 		{
@@ -53,11 +56,8 @@ class rRatio
 			{
 			        for($i=0; $i<MAX_RATIO; $i++)
 			        {
-					if($req->i8s[$no*MAX_RATIO+$i]==1)
-					        $cmd = new rXMLRPCCommand("view.set_visible",array($hash,"rat_".$i));
-					else
-						$cmd = new rXMLRPCCommand("view.set_not_visible",array($hash,"rat_".$i));
-					$req1->addCommand($cmd);		
+					if($req->i8s[$no*MAX_RATIO*2+$i*2]==1)
+						$req1->addCommand(new rXMLRPCCommand("view.set_visible",array($hash,"rat_".$i)));
 				}						
 			}
 			return(($req1->getCommandsCount()==0) || ($req1->run() && !$req1->fault));
