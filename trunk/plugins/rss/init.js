@@ -46,7 +46,7 @@ utWebUI.switchLabel = function(el)
 		utWebUI.clearDetails();
 		utWebUI.rssTable.clearSelection();
 		if(utWebUI.actRSSLbl)
-			$$(utWebUI.actRSSLbl).className = "RSS";
+			$$(utWebUI.actRSSLbl).className = utWebUI.isActiveRSSEnabled() ? "RSS" : "disRSS";
 		utWebUI.actRSSLbl = null;
 		utWebUI.actLbl = "";
 		show($$("List"));
@@ -1009,7 +1009,7 @@ rTorrentStub.prototype.setfilters = function()
 		var name = $$("_fn"+i).value;
 		this.content = this.content+"&name="+encodeURIComponent(name)+"&pattern="+encodeURIComponent(flt.pattern)+"&enabled="+enabled+
 		        "&exclude="+encodeURIComponent(flt.exclude)+
-			"&hash="+flt.hash+"&start="+flt.start+"&addPath="+flt.addPath+
+			"&hash="+flt.hash+"&start="+flt.start+"&addPath="+flt.add_path+
 			"&dir="+encodeURIComponent(flt.dir)+"&label="+encodeURIComponent(flt.label)+"&throttle="+flt.throttle+"&ratio="+flt.ratio;
 	}
 	this.contentType = "application/x-www-form-urlencoded";
