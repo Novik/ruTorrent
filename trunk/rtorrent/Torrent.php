@@ -94,7 +94,7 @@ class Torrent {
         }
         } catch(Exception $e)
         {
-        	self::$errors[] = new Exception( 'Bad torrent data' );
+        	self::$errors[] = $e;
         }
     }
 
@@ -207,7 +207,7 @@ protected function decode( $string )
 protected function decode_data() 
 {
         if($this->pointer>=strlen($this->data))
-        	throw new Exception();
+        	throw new Exception('Bad torrent data1 '.$this->pointer);
         switch( $this->data[$this->pointer] )
         {
         	case 'i':
@@ -247,10 +247,12 @@ private function decode_list()
 private function decode_string() 
 {
 	$delim_pos = strpos($this->data, ':', $this->pointer);
+        if($delim_pos===false)
+	       	throw new Exception('Bad torrent data4');
 	$elem_len = intval(substr($this->data, $this->pointer, $delim_pos - $this->pointer));
 	$this->pointer = $delim_pos + 1;
         if($this->pointer>=strlen($this->data))
-	       	throw new Exception();
+	       	throw new Exception('Bad torrent data2 '.$delim_pos);
 	$elem_name = substr($this->data, $this->pointer, $elem_len);
 	$this->pointer += $elem_len;
 	return($elem_name);
@@ -260,6 +262,8 @@ private function decode_integer()
 {
 	$this->pointer++;
         $delim_pos = strpos($this->data, 'e', $this->pointer);
+        if($delim_pos===false)
+	       	throw new Exception('Bad torrent data4');
 	$integer = substr($this->data, $this->pointer, $delim_pos - $this->pointer);
 	if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
 		self::$errors[] = new Exception( 'Bad integer' );
@@ -271,7 +275,7 @@ private function decode_integer()
 private function isOfType($type)
 {
         if($this->pointer>=strlen($this->data))
-        	throw new Exception();
+        	throw new Exception('Bad torrent data3 '.$this->pointer);
 	return($this->data[$this->pointer] == $type);
 }
 
