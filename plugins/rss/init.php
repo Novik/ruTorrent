@@ -28,6 +28,8 @@ if($isAutoStart)
 	$startAt = mktime($tm["hours"],
 		((integer)($tm["minutes"]/$updateInterval))*$updateInterval+$updateInterval,
 		0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0];
+	if($startAt<0)
+		$startAt = 0;
 	$interval = $updateInterval*60;
 	if(!$pathToPHP || ($pathToPHP==""))
 		$php = "php";
