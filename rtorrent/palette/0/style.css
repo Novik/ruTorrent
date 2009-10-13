@@ -148,7 +148,7 @@ div.algnright {text-align: right;}
 .lm li a {color: #000000; padding: 1px 2px}
 .lm li a.focus {background-color: #E0E0E0}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
-.stg_con {float: right; position: relative; width: 455px; height: 340px; margin: 4px; background-color: #FAFAFA}
+.stg_con {float: right; position: relative; width: 450px; height: 340px; margin: 4px; background-color: #FAFAFA}
 .ie6 .stg_con {clear: both;} 
 fieldset {margin: 4px}
 * > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px}
@@ -167,7 +167,7 @@ legend {color: #000000; font-weight: bold}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
 #st_dl, #st_con, #st_bt, #st_que, #st_sch, #st_ao, #st_dc {display: none}
-#st_btns {float: right; position: relative; width: 457px; height: 20px; padding: 3px; text-align: right; }
+#st_btns {float: right; position: relative; width: 450px; height: 20px; padding: 3px; text-align: right; }
 #st_btns input {margin-left: 5px}
 a {text-decoration: none}
 #st_ao_h {width: 420px; height: 270px; overflow: auto; }

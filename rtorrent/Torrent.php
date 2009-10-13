@@ -90,7 +90,7 @@ class Torrent {
             	$meta = array_merge( $meta, $arr );
         }
         foreach( $meta as $key => $value ) {
-            $this->{$key} = $value;
+                $this->{$key} = $value;
         }
         } catch(Exception $e)
         {
