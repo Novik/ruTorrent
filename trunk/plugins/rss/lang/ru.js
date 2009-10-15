@@ -38,5 +38,6 @@
  WUILang.rssCurlNotFound1	= "Плагин rss: пользователю веб-сервера не доступна программа curl. Вы не сможете работать с https рассылками.";
  WUILang.rssCacheNotAvailable 	= "Плагин rss: rTorrent должен иметь доступ на чтение/запись/выполнение к директории plugins/rss/cache. Плагин не будет работать.";
  WUILang.rssUpdaterNotAvailable = "Плагин rss: rTorrent должен иметь доступ на чтение к файлу plugins/rss/update.php. Плагин не будет работать.";
+ WUILang.rssFeeds = "Рассылки";
 
 utWebUI.initRSS();

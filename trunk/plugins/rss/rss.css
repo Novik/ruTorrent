@@ -1,8 +1,8 @@
 div#RSSList {border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
-div#CatList ul li.selRSS {padding: 2px 21px; background:url(./images/rss.gif) 2px no-repeat; background-color: #CFDEEF}
-div#CatList ul li.selDisRSS {padding: 2px 21px; background:url(./images/disabled.gif) 2px no-repeat; background-color: #CFDEEF}
-div#CatList ul li.RSS {padding: 2px 21px; background:url(./images/rss.gif) 2px no-repeat;}
-div#CatList ul li.disRSS {padding: 2px 21px; background:url(./images/disabled.gif) 2px no-repeat;}
+div#CatList ul li.selRSS {padding: 2px 25px; background:url(./images/rss.gif) 6px no-repeat; background-color: #CFDEEF}
+div#CatList ul li.selDisRSS {padding: 2px 25px; background:url(./images/disabled.gif) 6px no-repeat; background-color: #CFDEEF}
+div#CatList ul li.RSS {padding: 2px 25px; background:url(./images/rss.gif) 6px no-repeat;}
+div#CatList ul li.disRSS {padding: 2px 25px; background:url(./images/disabled.gif) 6px no-repeat;}
 
 div#dlgAddRSS {width: 355px; height: 127px}
 div#dlgAddRSS div.dlg-header {background-image: url(./images/rss.gif)}

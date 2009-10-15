@@ -1273,10 +1273,26 @@ utWebUI.correctFilterDialg = function()
 
 utWebUI.initRSS = function()
 {
+        var el = $$('CatList');
 	var ul = document.createElement('UL');
-	ul.innerHTML = '<li id="_hr_"><hr /></li><li id="_rssAll_" class="RSS" onclick="javascript:utWebUI.switchRSSLabel(this);return(false);">'+WUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>';
-	var el = $$('CatList');
+	if($$("pstate"))
+	{
+		var pnl = document.createElement('DIV');
+	        pnl.className = "catpanel";
+        	pnl.id = "prss";
+		pnl.innerHTML = WUILang.rssFeeds;
+		pnl.onclick = function() { utWebUI.togglePanel(pnl); };
+		el.appendChild(pnl);
+		var div = document.createElement('DIV');
+		div.id = "prss_cont";
+		el.appendChild(div);
+		el = div;
+		ul.innerHTML = '<li id="_rssAll_" class="RSS" onclick="javascript:utWebUI.switchRSSLabel(this);return(false);">'+WUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>';
+	}
+	else
+		ul.innerHTML = '<li id="_hr_"><hr /></li><li id="_rssAll_" class="RSS" onclick="javascript:utWebUI.switchRSSLabel(this);return(false);">'+WUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>';
 	el.appendChild(ul);
+
 	addRightClickHandler( $$("_rssAll_"), rssLabelContextMenu );
 	var div = document.createElement('DIV');
 	div.innerHTML = '<ul id="rssl"></ul>';
