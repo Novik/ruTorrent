@@ -1,8 +1,8 @@
 html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%; }
 form{margin:0;}
-div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar2.gif); background-image: url(./images/tstatus.gif); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/hide.gif); background-image: url(./images/hide_over.gif); background-image: url(./images/hide_on.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif)}
+div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar2.gif); background-image: url(./images/tstatus.gif); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/hide.gif); background-image: url(./images/hide_over.gif); background-image: url(./images/hide_on.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif); background-image: url(./images/pnl_open.gif); background-image: url(./images/pnl_close.gif)}
 .ie6 div#preload {background-image: url(./images/toolbar2.gif); background-image: url(./images/status_checking.gif); background-image: url(./images/status_completed.gif); background-image: url(./images/status_down.gif); background-image: url(./images/status_error.gif); background-image: url(./images/status_error_down.gif); background-image: url(./images/status_error_up.gif); background-image: url(./images/status_incompleted.gif); background-image: url(./images/status_paused.gif); background-image: url(./images/status_queued_down.gif); background-image: url(./images/status_queued_up.gif); background-image: url(./images/status_up.gif); background-image: url(./images/status_up_down.gif)}
-.webkit div#preload {background-image: url(../../lang/images/br.gif);background-image: url(../../lang/images/cn.gif);background-image: url(../../lang/images/cs.gif);background-image: url(../../lang/images/de.gif);background-image: url(../../lang/images/en.gif);background-image: url(../../lang/images/es.gif);background-image: url(../../lang/images/fi.gif);background-image: url(../../lang/images/hu.gif);background-image: url(../../lang/images/it.gif);background-image: url(../../lang/images/nl.gif);background-image: url(../../lang/images/pl.gif);background-image: url(../../lang/images/ru.gif);background-image: url(../../lang/images/sk.gif);background-image: url(../../lang/images/uk.gif) }
+.webkit div#preload {background-image: url(../../lang/images/br.gif);background-image: url(../../lang/images/cn.gif);background-image: url(../../lang/images/cs.gif);background-image: url(../../lang/images/de.gif);background-image: url(../../lang/images/en.gif);background-image: url(../../lang/images/es.gif);background-image: url(../../lang/images/fi.gif);background-image: url(../../lang/images/hu.gif);background-image: url(../../lang/images/it.gif);background-image: url(../../lang/images/nl.gif);background-image: url(../../lang/images/pl.gif);background-image: url(../../lang/images/ru.gif);background-image: url(../../lang/images/sk.gif);background-image: url(../../lang/images/uk.gif); background-image: url(../../lang/images/sr.gif) }
 div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; background: #FFFFFF}
 div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
 div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none}
@@ -80,7 +80,7 @@ table#maincont td.uicell {vertical-align: top; padding: 0}
 div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: auto}
 
 div#CatList ul {padding: 0px; margin: 0; list-style: none; white-space: nowrap}
-div#CatList ul li {padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: pointer}
+div#CatList ul li {padding: 2px 25px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: pointer}
 div#CatList ul li.sel {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-all-_-_- {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-dls-_-_- {background-color: #CFDEEF}
@@ -88,12 +88,12 @@ div#CatList ul li.sel#-_-_-com-_-_- {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-act-_-_- {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-iac-_-_- {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-err-_-_- {background-color: #CFDEEF}
-div#CatList ul li#-_-_-all-_-_- {padding: 2px 21px; background:url(./images/status_checking.gif) 2px no-repeat;}
-div#CatList ul li#-_-_-dls-_-_- {padding: 2px 21px; background:url(./images/status_down.gif) 2px no-repeat;}
-div#CatList ul li#-_-_-com-_-_- {padding: 2px 21px; background:url(./images/status_up.gif) 2px no-repeat;}
-div#CatList ul li#-_-_-act-_-_- {padding: 2px 21px; background:url(./images/status_up_down.gif) 2px no-repeat;}
-div#CatList ul li#-_-_-iac-_-_- {padding: 2px 21px; background:url(./images/status_incompleted.gif) 2px no-repeat;}
-div#CatList ul li#-_-_-err-_-_- {padding: 2px 21px; background:url(./images/status_error.gif) 2px no-repeat;}
+div#CatList ul li#-_-_-all-_-_- {padding: 2px 25px; background:url(./images/status_checking.gif) 6px no-repeat;}
+div#CatList ul li#-_-_-dls-_-_- {padding: 2px 25px; background:url(./images/status_down.gif) 6px no-repeat;}
+div#CatList ul li#-_-_-com-_-_- {padding: 2px 25px; background:url(./images/status_up.gif) 6px no-repeat;}
+div#CatList ul li#-_-_-act-_-_- {padding: 2px 25px; background:url(./images/status_up_down.gif) 6px no-repeat;}
+div#CatList ul li#-_-_-iac-_-_- {padding: 2px 25px; background:url(./images/status_incompleted.gif) 6px no-repeat;}
+div#CatList ul li#-_-_-err-_-_- {padding: 2px 25px; background:url(./images/status_error.gif) 6px no-repeat;}
 div#CatList ul li#_hr_{padding: 0 3px; margin: 0px;}
 
 div#HDivider {width: 5px; height: 100px; padding: 0; margin: 0; cursor: e-resize}
@@ -259,3 +259,5 @@ span#loadimg {padding: 20px; background: transparent url(./images/ajax-loader.gi
 
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
 textarea { overflow: auto; white-space: nowrap; }
+
+.catpanel { background: url(./images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }

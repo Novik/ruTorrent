@@ -341,5 +341,6 @@
  Total				: "Total",
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
- addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent."
+ addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
+ pnlState			: "State"
  };

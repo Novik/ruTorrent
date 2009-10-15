@@ -693,7 +693,7 @@ function ToggleB(obj)
 
 function isShown(id) 
 {
-	return ($$(id).style.display == "block");
+	return(($$(id).style.display == "block") || ($$(id).style.display == ""));
 }
 
 function Update() 
@@ -3390,6 +3390,18 @@ utWebUI =
 			utWebUI.bCategories = 0;
       		resizeUI();
 		utWebUI.Save();
+	}
+, "togglePanel" : function(pnl)
+	{
+		var cont = $$(pnl.id+"_cont");
+		if(cont)
+		{
+			ToggleB(cont);
+			if(isShown(pnl.id+"_cont"))
+				pnl.style.backgroundImage="url("+this.trtTable.paletteURL+"/images/pnl_open.gif)";
+			else
+				pnl.style.backgroundImage="url("+this.trtTable.paletteURL+"/images/pnl_close.gif)";
+		}
 	}
 };
 

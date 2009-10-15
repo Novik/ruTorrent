@@ -342,5 +342,6 @@
  Total				: "Всего",
  PCRENotFound			: "PHP модуль PCRE не установлен. ruTorrent не будет работать.",
  addTorrentSuccess		: "Закачка успешно передана в rTorrent.",
- addTorrentFailed		: "Ошибка добавления закачки."
+ addTorrentFailed		: "Ошибка добавления закачки.",
+ pnlState			: "Состояние"
  };
