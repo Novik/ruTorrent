@@ -241,15 +241,27 @@ utWebUI.initTrackersLabels = function()
 		setTimeout('utWebUI.initTrackersLabels()',1000);
 	else
 	{
-		var ul = document.createElement('UL');
-		ul.innerHTML = '<li id="_hr_"><hr /></li>';
 		var el = $$('CatList');
 		var lbl = $$('lbll').parentNode.nextSibling;
-  		el.insertBefore(ul,lbl);
-//		el.appendChild(ul);
 		var div = document.createElement('DIV');
+		var ul = document.createElement('UL');
+		div.id = "ptrackers_cont";
+		if($$("pstate"))
+		{
+		        var pnl = document.createElement('DIV');
+		        pnl.className = "catpanel";
+	        	pnl.id = "ptrackers";
+			pnl.innerHTML = WUILang.Trackers;
+			pnl.onclick = function() { utWebUI.togglePanel(pnl); };
+			el.insertBefore(ul,lbl);
+			el.insertBefore(pnl,ul);
+		}
+		else
+		{
+			ul.innerHTML = '<li id="_hr_"><hr /></li>';
+  			el.insertBefore(ul,lbl);
+		}
 		div.innerHTML = '<ul id="torrl"></ul>';
-//	        el.appendChild(div);
   		el.insertBefore(div,ul.nextSibling);
 	        utWebUI.allTrackersStuffLoaded = true;
 	}
