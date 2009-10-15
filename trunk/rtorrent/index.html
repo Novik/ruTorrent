@@ -210,7 +210,8 @@
 			<tr>
 				<td class="uicell" rowspan="3">
 					<div id="CatList">
-						<ul>
+						<div class="catpanel" id="pstate" onclick="javascript:utWebUI.togglePanel(this);"><script type="text/javascript"> document.write(WUILang.pnlState); </script></div>
+						<ul id="pstate_cont">
 							<li id="-_-_-all-_-_-" onclick="javascript:utWebUI.switchLabel(this);" class="sel">
 								<script type="text/javascript"> document.write(WUILang.All); </script> (<span id="-_-_-all-_-_-c">0</span>)</li>
 							<li id="-_-_-dls-_-_-" onclick="javascript:utWebUI.switchLabel(this);">
@@ -223,13 +224,13 @@
 								<script type="text/javascript"> document.write(WUILang.Inactive); </script> (<span id="-_-_-iac-_-_-c">0</span>)</li>
 							<li id="-_-_-err-_-_-" onclick="javascript:utWebUI.switchLabel(this);">
 								<script type="text/javascript"> document.write(WUILang.Error); </script> (<span id="-_-_-err-_-_-c">0</span>)</li>
-							<li id="_hr_">
-								<hr />
-							</li>
+						</ul>
+						<div class="catpanel" id="plabel" onclick="javascript:utWebUI.togglePanel(this);"><script type="text/javascript"> document.write(WUILang.Labels); </script></div>
+						<div class="catpanel_cont" id="plabel_cont">
+							<ul>
 							<li id="-_-_-nlb-_-_-" onclick="javascript:utWebUI.switchLabel(this);">
 								<script type="text/javascript"> document.write(WUILang.No_label); </script> (<span id="-_-_-nlb-_-_-c">0</span>)</li>
-						</ul>
-						<div>
+							</ul>
 							<ul id="lbll">
 							</ul>
 						</div>
@@ -313,7 +314,7 @@
 									</tr>
 									<tr>
 										<td nowrap><script type="text/javascript"> document.write(WUILang.Comment); </script>:</td>
-										<td colspan="5" nowrap><span id="cmt"></span></td>
+										<td colspan="5"><span id="cmt"></span></td>
 									</tr>
 								</table>
 							</div>

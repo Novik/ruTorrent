@@ -338,5 +338,6 @@
  badSettingsPath2		: "rTorrent's user can't access settings directory for read/write/execute. ruTorrent will not work.",
  scrapeDownloaded		: "Downloaded",
  badSessionPath			: "Web server can't access rTorrent's session directory for read. ruTorrent will not work.",
- Total				: "Укупно"
+ Total				: "Укупно",
+ pnlState			: "State"
  };
