@@ -38,5 +38,6 @@
  WUILang.rssCurlNotFound1	= "RSS plugin: Web server user can't access curl program. You will not be able to work with https feeds.";
  WUILang.rssCacheNotAvailable 	= "RSS plugin: rTorrent's user can't access directory plugins/rss/cache for read/write/execute. Plugin will not work.";
  WUILang.rssUpdaterNotAvailable = "RSS plugin: rTorrent's user can't access file plugins/rss/update.php for read. Plugin will not work.";
+ WUILang.rssFeeds = "Feeds";
 
 utWebUI.initRSS();
