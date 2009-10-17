@@ -12,7 +12,7 @@ ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui
  * Browser as a local client: 
    * IE 7.0, Firefox 2.x, Firefox 3.x - optimal choice.
    * IE 8.0 - limited support in the standard mode. Works good in the "Compatibility mode". 
-   * IE 6.0 - acceptable, but slow and unstable. Not recommended.
+   * IE 6.0 - Not supported.
    * Konqueror 3.5.9 - OK, except charts on tabs Speed and Traffic. 
    * Opera 9.x - works fine. 
    * Safari 3.x - works, but pictures may not be displayed when https-protocol is used. Probably this is a browser issue. Try to adjust a server not to make keep-alive connections.
