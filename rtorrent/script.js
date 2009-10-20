@@ -1,5 +1,5 @@
 var resizing = false, resizeTimeout = null;
-var _isResizing = false;
+var _isResizing = -1;
 var tdl = 0, tul = 0, stimer = null;
 var tdb = 0, tub = 0;
 var tdlimit = 0, tulimit = 0;
@@ -194,14 +194,31 @@ function init()
 	Drag.init($$("yesnoDlg-header"), $$("yesnoDlg"), 0, ww, 0, wh, true);
 	window.setTimeout(ShowUI, 1000);
 	var d = $$("HDivider");
+	document.onmouseout = function(e) 
+		{
+			e = FixEvent(e);
+			if(_isResizing>=0)
+			{
+				var targ = (e.relatedTarget || e.fromElement);
+				try {
+				if(!targ || !targ.tagName || (targ.tagName.toLowerCase()=="iframe"))
+					SepUp(e, _isResizing);
+				} catch(ex) { SepUp(e, _isResizing); }; 
+			}
+		}
 	d.onmousedown = function(e) 
 		{
 			e = FixEvent(e);
 			if(browser.isFirefox)
 				e.preventDefault();
-			this.lastX = e.clientX;
-			smm = addEvent(document, "mousemove", function(e) { return(SepMove(e, 0)); });
-			smu = addEvent(document, "mouseup", function(e) { return(SepUp(e, 0)); });
+			if(_isResizing>=0)
+				SepUp(e, _isResizing);
+			else
+			{
+				this.lastX = e.clientX;
+				smm = addEvent(document, "mousemove", function(e) { return(SepMove(e, 0)); });
+				smu = addEvent(document, "mouseup", function(e) { return(SepUp(e, 0)); });
+			}
       		};
 	d = $$("VDivider");
 	d.onmousedown = function(e) 
@@ -209,9 +226,14 @@ function init()
 			e = FixEvent(e);
 			if(browser.isFirefox)
 				e.preventDefault();
-			this.lastY = e.clientY;
-			smm = addEvent(document, "mousemove", function(e) { return(SepMove(e, 1)); });
-			smu = addEvent(document, "mouseup", function(e) { return(SepUp(e, 1)); });
+			if(_isResizing>=0)
+				SepUp(e, _isResizing);
+			else
+			{
+				this.lastY = e.clientY;
+				smm = addEvent(document, "mousemove", function(e) { return(SepMove(e, 1)); });
+				smu = addEvent(document, "mouseup", function(e) { return(SepUp(e, 1)); });
+			}
       		};
 	resizeUI();
 	tdTabs.show("gcont");
@@ -270,12 +292,12 @@ addEvent(document, "mouseup",
 	}
 );
 
-var smm, smu, smx;
+var smm = null, smu = null;
 
 function SepMove(e, dir) 
 {
 	e = FixEvent(e);
-	_isResizing = true;
+	_isResizing = dir;
 	utWebUI.trtTable.isResizing = true;
 	utWebUI.flsTable.isResizing = true;
 	utWebUI.trkTable.isResizing = true;
@@ -289,15 +311,14 @@ function SepMove(e, dir)
 		var ex = e.clientX;
 		var cw = mouse.X + ex - $$("HDivider").lastX - 5;
 		$$("HDivider").lastX = ex;
-		if(cw < 60) 
+		var lw = getWindowWidth() - cw - 10;
+		if((cw < 60) || (lw < 1))
 		{
 			return(true);
 		}
-		var lw = getWindowWidth() - cw - 10;
 		$$("List").style.width = lw + "px";
 		$$("CatList").style.width = cw + "px";
 		$$("tdetails").style.width = (lw - 1) + "px";
-
 		document.body.style.cursor = "e-resize";
    	}
 	else 
@@ -322,7 +343,6 @@ function SepMove(e, dir)
 				return(true);
 			}
 			$$("List").style.height = lh + "px";
-			$$("HDivider").style.height = gh + "px";
 			o = $$("tdetails");
 			o.style.height = gh + "px";
 			$$("tdcont").style.height = (o.offsetHeight - 39) + "px";
@@ -338,6 +358,7 @@ function SepUp(e, dir)
 {
 	removeEvent(document, "mousemove", smm);
 	removeEvent(document, "mouseup", smu);
+	smu = smm = null;
 	document.body.style.cursor = "default";
 	utWebUI.trtTable.isResizing = false;
 	utWebUI.flsTable.isResizing = false;
@@ -353,7 +374,7 @@ function SepUp(e, dir)
 		utWebUI.resizeBottomBar(iv($$("tdetails").style.width) - 8 , null);
 		var r = 1 - (mouse.X + e.clientX - $$("HDivider").lastX) / getWindowWidth();
 		r = Math.floor(r * Math.pow(10, 3)) / Math.pow(10, 3);
-		if(utWebUI.hSplit != r) 
+		if((utWebUI.hSplit != r) && (r>0) && (r<1))
 		{
 			utWebUI.hSplit = r;
 			utWebUI.Save();
@@ -377,14 +398,14 @@ function SepUp(e, dir)
 			utWebUI.resizeBottomBar(null,h-2);
 			var r = (mouse.Y + e.clientY - $$("VDivider").lastY) / getWindowHeight();
 			r = Math.floor(r * Math.pow(10, 3)) / Math.pow(10, 3);
-			if(utWebUI.vSplit != r) 
+			if((utWebUI.vSplit != r) && (r>0) && (r<1)) 
 			{
 				utWebUI.vSplit = r;
 				utWebUI.Save();
 			}
       		}
    	}
-	_isResizing = false;
+	_isResizing = -1;
 	return(false);
 }
 
@@ -631,7 +652,7 @@ function showCallStack()
 
 function resizeUI() 
 {
-	if(_isResizing) 
+	if(_isResizing>=0) 
 	{
 		return;
    	}

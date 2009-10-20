@@ -82,6 +82,62 @@ rPlugin.prototype.attachPageToOptions = function(dlg,name)
 	}
 }
 
+rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
+{
+	dlg.className = "tab";
+	tdTabs.tabs[dlg.id] = name; 
+	var newLbl = document.createElement("li");
+	newLbl.id = "tab_"+dlg.id;
+	newLbl.innerHTML = "<a href=\"javascript://utwebui/\" onmousedown=\"javascript:tdTabs.show('"+dlg.id+"');\" onfocus=\"javascript:this.blur();\">" + name + "</a>";
+ 	var beforeTab = idBefore ? $$(idBefore) : null;
+ 	if(beforeTab)
+ 	{
+		beforeTab.parentNode.insertBefore(dlg,beforeTab);
+		var beforeLbl = $$("tab_"+beforeTab);
+		beforeLbl.parentNode.insertBefore(newLbl,beforeLbl);
+	}
+	else
+	{
+		beforeTab = $$("lcont");
+		beforeTab.parentNode.appendChild(dlg);
+		var beforeLbl = $$("tab_lcont");
+		beforeLbl.parentNode.appendChild(newLbl);
+	}
+}
+
+rPlugin.prototype.addButtonToToolbar = function(id,name,href,idBefore)
+{
+	var newBtn = document.createElement("A");
+	newBtn.id="mnu_"+id;
+	newBtn.href=href;
+	newBtn.title=name;
+	newBtn.innerHTML='<div id="'+id+'"></div>';
+	var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;	
+	if(targetBtn)
+		targetBtn.parentNode.insertBefore(newBtn,targetBtn);	
+	else
+	{
+		targetBtn = $$("mnu_remove");
+		targetBtn.parentNode.appendChild(newBtn);
+	}
+	return(newBtn);
+}
+	
+rPlugin.prototype.addSeparatorToToolbar = function(idBefore)	
+{
+        var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;
+	var sep = document.createElement("DIV");
+	sep.className = "TB_Separator";
+	if(targetBtn)
+		targetBtn.parentNode.insertBefore(sep,targetBtn);	
+	else
+	{
+	        targetBtn = $$("mnu_remove");
+		targetBtn.parentNode.appendChild(sep);
+	}
+	return(sep);
+}
+
 function getCSSRule( selectorText )
 {
 	function getRulesArray(i)
