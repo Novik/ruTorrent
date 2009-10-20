@@ -1,5 +1,5 @@
 var resizing = false, resizeTimeout = null;
-var _isResizing = -1;
+var _isResizing = 0;
 var tdl = 0, tul = 0, stimer = null;
 var tdb = 0, tub = 0;
 var tdlimit = 0, tulimit = 0;
@@ -197,7 +197,7 @@ function init()
 	document.onmouseout = function(e) 
 		{
 			e = FixEvent(e);
-			if(_isResizing>=0)
+			if(_isResizing>0)
 			{
 				var targ = (e.relatedTarget || e.fromElement);
 				try {
@@ -211,13 +211,13 @@ function init()
 			e = FixEvent(e);
 			if(browser.isFirefox)
 				e.preventDefault();
-			if(_isResizing>=0)
+			if(_isResizing>0)
 				SepUp(e, _isResizing);
 			else
 			{
 				this.lastX = e.clientX;
-				smm = addEvent(document, "mousemove", function(e) { return(SepMove(e, 0)); });
-				smu = addEvent(document, "mouseup", function(e) { return(SepUp(e, 0)); });
+				smm = addEvent(document, "mousemove", function(e) { return(SepMove(e, 1)); });
+				smu = addEvent(document, "mouseup", function(e) { return(SepUp(e, 1)); });
 			}
       		};
 	d = $$("VDivider");
@@ -226,13 +226,13 @@ function init()
 			e = FixEvent(e);
 			if(browser.isFirefox)
 				e.preventDefault();
-			if(_isResizing>=0)
+			if(_isResizing>0)
 				SepUp(e, _isResizing);
 			else
 			{
 				this.lastY = e.clientY;
-				smm = addEvent(document, "mousemove", function(e) { return(SepMove(e, 1)); });
-				smu = addEvent(document, "mouseup", function(e) { return(SepUp(e, 1)); });
+				smm = addEvent(document, "mousemove", function(e) { return(SepMove(e, 2)); });
+				smu = addEvent(document, "mouseup", function(e) { return(SepUp(e, 2)); });
 			}
       		};
 	resizeUI();
@@ -302,7 +302,7 @@ function SepMove(e, dir)
 	utWebUI.flsTable.isResizing = true;
 	utWebUI.trkTable.isResizing = true;
 	utWebUI.prsTable.isResizing = true;
-	if(dir == 0) 
+	if(dir == 1) 
 	{
 		if(!utWebUI.bCategories) 
 		{
@@ -323,7 +323,7 @@ function SepMove(e, dir)
    	}
 	else 
 	{
-		if(dir == 1) 
+		if(dir == 2) 
 		{
 			if(!utWebUI.bDetails) 
 			{
@@ -364,7 +364,7 @@ function SepUp(e, dir)
 	utWebUI.flsTable.isResizing = false;
 	utWebUI.trkTable.isResizing = false;
 	utWebUI.prsTable.isResizing = false;
-	if(dir == 0) 
+	if(dir == 1) 
 	{
 		if(!utWebUI.bCategories) 
 		{
@@ -382,7 +382,7 @@ function SepUp(e, dir)
 	}
 	else 
 	{
-		if(dir == 1) 
+		if(dir == 2) 
 		{
 			if(!utWebUI.bDetails) 
 			{
@@ -405,7 +405,7 @@ function SepUp(e, dir)
 			}
       		}
    	}
-	_isResizing = -1;
+	_isResizing = 0;
 	return(false);
 }
 
@@ -652,7 +652,7 @@ function showCallStack()
 
 function resizeUI() 
 {
-	if(_isResizing>=0) 
+	if(_isResizing>0) 
 	{
 		return;
    	}
