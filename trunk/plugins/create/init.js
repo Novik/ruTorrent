@@ -82,9 +82,11 @@ utWebUI.initCreate = function()
 			"<option value=\"128\">128"+WUILang.KB+"</option>"+
 			"<option value=\"256\" selected=\"selected\">256"+WUILang.KB+"</option>"+
 			"<option value=\"512\">512"+WUILang.KB+"</option>"+
-			"<option value=\"1024\">1024"+WUILang.KB+"</option>"+
-			"<option value=\"2048\">2048"+WUILang.KB+"</option>"+
-			"<option value=\"4096\">4096"+WUILang.KB+"</option>"+
+			"<option value=\"1024\">1"+WUILang.MB+"</option>"+
+			"<option value=\"2048\">2"+WUILang.MB+"</option>"+
+			"<option value=\"4096\">4"+WUILang.MB+"</option>"+
+			"<option value=\"8192\">8"+WUILang.MB+"</option>"+
+			"<option value=\"16384\">16"+WUILang.MB+"</option>"+
 			"</select>";
 	if(utWebUI.hidePieceSize)
 		pieceSize = "";	

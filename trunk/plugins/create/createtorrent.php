@@ -52,6 +52,12 @@ if(isset($_REQUEST['path_edit']))
 			if($useExternal=="transmissioncli")
 				exec($pathToCreatetorrent.' -n '.escapeshellarg($path_edit).' '.$randName,$results,$return);
 			else
+			if($useExternal=="mktorrent")
+			{
+				$ps = log($ps,2);
+		        	exec($pathToCreatetorrent.' -l '.$ps.' -a dummy  -o '.$randName.' '.escapeshellarg($path_edit),$results,$return);
+			}
+			else
 		        	exec($pathToCreatetorrent.' -l '.$ps.' -a dummy '.escapeshellarg($path_edit).' '.$randName,$results,$return);
 	        	if(!$return)
 	        	{
