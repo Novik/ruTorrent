@@ -521,17 +521,17 @@ oldSepUp = SepUp;
 SepUp = function(e, dir) 
 {
 	oldSepUp(e, dir);
-	_isResizing = true;
+	_isResizing = dir;
 	utWebUI.rssTable.isResizing = false;
 	utWebUI.rssTable.resize(iv($$("RSSList").style.width),iv($$("RSSList").style.height));
 	utWebUI.Save();
-	_isResizing = false;
+	_isResizing = 0;
 }
 
 oldResizeUI = resizeUI;
 resizeUI = function()
 {
-	if(_isResizing) 
+	if(_isResizing>0) 
 	{
 		return;
    	}
