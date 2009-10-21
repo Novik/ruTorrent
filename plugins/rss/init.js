@@ -1306,9 +1306,9 @@ utWebUI.initRSS = function()
 		"</div>"+
 		"<div class='content'>"+
 			"<label>"+WUILang.feedURL+": </label>"+
-			"<input type='text' id='rssURL' name='rssURL' class='TextboxLarge'/><br/>"+
+			"<input type='text' id='rssURL' class='TextboxLarge'/><br/>"+
 			"<label>"+WUILang.alias+": </label>"+
-			"<input type='text' id='rssLabel' name='rssLabel' class='TextboxLarge'/>"+
+			"<input type='text' id='rssLabel' class='TextboxLarge'/>"+
 			"<div class='aright'><input type='button' class='Button' value="+WUILang.ok1+" onclick='javascript:Hide(\"dlgAddRSS\");utWebUI.addRSS();return(false);'/><input type='button' class='Button' value="+WUILang.Cancel1+" onclick='javascript:Hide(\"dlgAddRSS\");return(false);'/></div>"+
 		"</div>";
 	var b = document.getElementsByTagName("body").item(0);
@@ -1323,9 +1323,9 @@ utWebUI.initRSS = function()
 		"</div>"+
 		"<div class='content'>"+
 			"<label>"+WUILang.feedURL+": </label>"+
-			"<input type='text' id='editrssURL' name='rssURL' class='TextboxLarge'/><br/>"+
+			"<input type='text' id='editrssURL' class='TextboxLarge'/><br/>"+
 			"<label>"+WUILang.alias+": </label>"+
-			"<input type='text' id='editrssLabel' name='rssLabel' class='TextboxLarge'/>"+
+			"<input type='text' id='editrssLabel' class='TextboxLarge'/>"+
 			"<div class='aright'><input type='button' class='Button' value="+WUILang.ok1+" onclick='javascript:HideModal(\"dlgEditRSS\");utWebUI.editRSS();return(false);'/><input type='button' class='Button' value="+WUILang.Cancel1+" onclick='javascript:HideModal(\"dlgEditRSS\");return(false);'/></div>"+
 		"</div>";
 	b.appendChild(dlg);
