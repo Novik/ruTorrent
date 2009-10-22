@@ -79,9 +79,9 @@ class rRSS
 	{
 		$headers = array();
 		if($this->etag) 
-			$headers['If-None-Match'] = $this->etag;
+			$headers['If-None-Match'] = trim($this->etag);
 		if($this->lastModified)
-	                $headers['If-Last-Modified'] = $this->lastModified;
+	                $headers['If-Last-Modified'] = trim($this->lastModified);
 		$cli = self::fetchURL($this->url,null,$headers);
 		if($cli->status==304)
 			return(true);
@@ -91,6 +91,7 @@ class rRSS
 		{
 			foreach($cli->headers as $h) 
 			{
+				$h = trim($h);
 				if(strpos($h, ": "))
 					list($name, $val) = explode(": ", $h, 2);
 				else
