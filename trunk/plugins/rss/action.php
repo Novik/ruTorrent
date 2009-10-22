@@ -75,13 +75,22 @@ switch($cmd)
 		$hash = null;
 		$pattern = '';
 		$exclude = '';
+		$checkTitle = 0;
+		$checkDesc = 0;
+		$checkLink = 0;
 		if(isset($_REQUEST['rss']))
 			$hash = $_REQUEST['rss'];
 		if(isset($_REQUEST['pattern']))		
 			$pattern = trim($_REQUEST['pattern']);
 		if(isset($_REQUEST['exclude']))		
 			$exclude = trim($_REQUEST['exclude']);
-		$filter = new rRSSFilter( '', $pattern, $exclude, 1, '', 0, 1, null, '' );
+		if(isset($_REQUEST['chktitle']))
+			$checkTitle = $_REQUEST['chktitle'];
+		if(isset($_REQUEST['chkdesc']))
+			$checkDesc = $_REQUEST['chkdesc'];
+		if(isset($_REQUEST['chklink']))
+			$checkLink = $_REQUEST['chklink'];
+		$filter = new rRSSFilter( '', $pattern, $exclude, 1, '', 0, 1, null, '', $checkTitle, $checkDesc, $checkLink );
         	$val = $mngr->testFilter($filter,$hash);
         	$errorsReported = true;
 		break;
@@ -163,11 +172,36 @@ switch($cmd)
 					if($flt)
 						$flt->label = rawurldecode($parts[1]);
 				}
+				else
+				if($parts[0]=="chktitle")
+				{
+					if($flt)
+						$flt->titleCheck = $parts[1];
+				}
+				else
+				if($parts[0]=="chkdesc")
+				{
+					if($flt)
+						$flt->descCheck = $parts[1];
+				}
+				else
+				if($parts[0]=="chklink")
+				{
+					if($flt)
+						$flt->linkCheck = $parts[1];
+				}
   	                }
 			if($flt)
 				$flts->add($flt);
 			$mngr->setFilters($flts);
 		}
+		break;
+	}
+	case "getdesc":
+	{
+		$val = '';
+	        if(isset($_REQUEST['rss']) && isset($_REQUEST['href']))
+			$val = $mngr->getDescription($_REQUEST['rss'],$_REQUEST['href']);
 		break;
 	}
 	case "loadtorrents":

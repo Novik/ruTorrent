@@ -3,8 +3,8 @@
 .lf li input.TextboxFocus { width: 80%; }
 .lf li input.TextboxNormal { width: 80%; }
 .lf ul {width: 90%; }
-div#dlgEditFilters {height: 285px;}
-.rf {height: 220px;}
-.rf fieldset {height: 211px}
+div#dlgEditFilters {height: 360px;}
+.rf {height: 300px;}
+.rf fieldset {height: 285px}
 div#dlgAddRSS {height: 133px}
 div#dlgEditRSS {height: 133px}
