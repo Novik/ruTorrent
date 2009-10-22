@@ -39,5 +39,8 @@
  WUILang.rssCacheNotAvailable 	= "Плагин rss: rTorrent должен иметь доступ на чтение/запись/выполнение к директории plugins/rss/cache. Плагин не будет работать.";
  WUILang.rssUpdaterNotAvailable = "Плагин rss: rTorrent должен иметь доступ на чтение к файлу plugins/rss/update.php. Плагин не будет работать.";
  WUILang.rssFeeds = "Рассылки";
+ WUILang.rssCheckTitle = "Искать в названии";
+ WUILang.rssCheckDescription = "Искать в описании";
+ WUILang.rssCheckLink = "Искать в ссылке";
 
 utWebUI.initRSS();

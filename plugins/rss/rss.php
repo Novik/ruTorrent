@@ -12,15 +12,228 @@ class rRSS
 	public $url;
 	public $srcURL;
 	public $hash;
-
 	public $cookies = array();
 	public $lastModified = null;
 	public $etag = null;
 	public $encoding = null;
-	public $channeltags = array ('title', 'link', 'lastBuildDate');
-	public $itemtags = array('title', 'link', 'pubDate', 'enclosure', 'guid', 'source');
+	public $version = 1;
+	private $channeltags = array ('title', 'link', 'lastBuildDate');
+	private $itemtags = array('title', 'link', 'pubDate', 'enclosure', 'guid', 'source', 'description', 'dc:date');
 
-	static public function linkencode($p_url)
+	public function rRSS( $url = null )
+	{
+		if($url)
+		{
+			$pos = strpos($url,':COOKIE:');
+			if($pos!==false)
+			{
+				$this->url = substr($url,0,$pos);
+				$tmp = explode(";",substr($url,$pos+8));
+				foreach($tmp as $item)
+				{
+					list($name,$val) = explode("=",$item);
+					$this->cookies[$name] = $val;
+				}
+			}
+			else
+				$this->url = $url;
+			$this->url = self::linkencode($this->url);
+			$this->srcURL = $this->url;
+			if(count($this->cookies))
+			{
+				$this->srcURL = $this->srcURL.':COOKIE:';
+				foreach($this->cookies as $name=>$val)
+					$this->srcURL = $this->srcURL.$name.'='.$val.';';
+				$this->srcURL = substr($this->srcURL,0,strlen($this->srcURL)-1);
+			}
+			$this->hash = md5( $this->srcURL );
+		}
+	}
+
+	public function getTorrent( $href )
+	{
+		$cli = self::fetchURL(self::linkencode($href),$this->cookies);
+		if($cli && $cli->status>=200 && $cli->status<300)
+			return($cli->results);
+		return(false);
+	}
+
+	public function getContents($label,$auto,$enabled,$history)
+	{
+		$ret = "{ label: \"".self::quoteInvalidURI($label)."\", auto: ".$auto.", enabled: ".$enabled.", hash: \"".$this->hash."\", url: \"".self::quoteInvalidURI($this->srcURL)."\", items: [";
+		foreach($this->items as $href=>$item)
+		{
+			if($item['timestamp']>0)
+				$ret.="{ time: ".$item['timestamp'];
+			else
+				$ret.='{ time: null';
+			$ret.=", title: \"".addslashes($item['title'])."\", href: \"".self::quoteInvalidURI($href)."\", errcount: ".$history->getCounter($href).", hash: \"".$history->getHash($href)."\" },";
+		}
+		$len = strlen($ret);
+		if($ret[$len-1]==',')
+			$ret = substr($ret,0,$len-1);
+		return($ret.'] }');
+	}
+
+	public function fetch()
+	{
+		$headers = array();
+		if($this->etag) 
+			$headers['If-None-Match'] = $this->etag;
+		if($this->lastModified)
+	                $headers['If-Last-Modified'] = $this->lastModified;
+		$cli = self::fetchURL($this->url,null,$headers);
+		if($cli->status==304)
+			return(true);
+		$this->etag = null;
+		$this->lastModified = null;
+		if($cli->status>=200 && $cli->status<300)
+		{
+			foreach($cli->headers as $h) 
+			{
+				if(strpos($h, ": "))
+					list($name, $val) = explode(": ", $h, 2);
+				else
+				{
+					$name = $h;
+					$val = "";
+				}
+				if( $name == 'ETag' ) 
+					$this->etag = $val;
+				else				
+				if( $name == 'Last-Modified' )
+					$this->lastModified = $val;
+			}
+			ini_set( "pcre.backtrack_limit", strlen($cli->results) );
+			$this->encoding = strtolower($this->search("'encoding=[\'\"](.*?)[\'\"]'si", $cli->results));
+			if($this->encoding=='')
+				$this->encoding = null;
+			$this->channel = array();
+			if(preg_match("'<channel.*?>(.*?)</channel>'si", $cli->results, $out)==1)
+			{
+				foreach($this->channeltags as $channeltag)
+				{
+					$temp = $this->search("'<$channeltag.*?>(.*?)</$channeltag>'si", $out[1], ($channeltag=='title'));
+					if($temp!='')
+						$this->channel[$channeltag] = $temp;
+				}
+				if( array_key_exists('lastBuildDate',$this->channel) &&
+				        (($timestamp = strtotime($this->channel['lastBuildDate'])) !==-1))
+					$this->channel['timestamp'] = $timestamp;
+				else
+					$this->channel['timestamp'] = 0;
+			}
+			else
+				$this->channel['timestamp'] = 0;
+			$this->items = array();
+			$ret = preg_match_all("'<item(| .*?)>(.*?)</item>'si", $cli->results, $items);
+			if(($ret!==false) && ($ret>0))
+			{
+				foreach($items[2] as $rssItem)
+				{
+					$item = array();
+					foreach($this->itemtags as $itemtag)
+					{
+						if($itemtag=='enclosure')
+							$temp = $this->search("'<enclosure.*url\s*=\s*\"(.*?)\".*>'si", $rssItem);
+						else
+						if($itemtag=='source')
+							$temp = $this->search("'<source\s*url\s*=\s*\"(.*?)\".*>.*</source>'si", $rssItem);
+						else
+						if($itemtag=='title')
+						{
+							$temp = $this->search("'<$itemtag.*?>(.*?)</$itemtag>'si", $rssItem, true);
+							$temp = preg_replace("/\s+/u"," ",$temp);
+						}
+						else
+							$temp = $this->search("'<$itemtag.*?>(.*?)</$itemtag>'si", $rssItem, false);
+						if($itemtag=='description')
+							$temp = html_entity_decode( $temp, ENT_QUOTES, "UTF-8" );
+						if($temp != '')
+						{
+							$item[$itemtag] = $temp;
+							if( (($itemtag=='pubDate') || ($itemtag=='dc:date')) &&
+								(($timestamp = strtotime($temp)) !==-1))
+								$item['timestamp'] = $timestamp;
+						}
+					}
+					$href = '';
+					if(array_key_exists('enclosure',$item))
+						$href = $item['enclosure'];
+					else
+					if(array_key_exists('link',$item))
+						$href = $item['link'];
+					else
+					if(array_key_exists('guid',$item))
+						$href = $item['guid'];
+					else
+					if(array_key_exists('source',$item))
+						$href = $item['source'];
+					if(!array_key_exists('timestamp',$item))
+					{
+						
+// hack for iptorrents.com
+// Category: Movies/Non-English  Size: 707.38 MB Added: 2009-10-21 07:42:37
+						if(array_key_exists('description',$item) && 
+							(strlen($item['description'])<255) &&
+							(($pos = strpos($item['description'],'Added: '))!==false) &&
+							(($timestamp = strtotime(substr($item['description'],$pos+7)))!==-1))
+							$item['timestamp'] = $timestamp;
+						else
+							$item['timestamp'] = 0;
+					}
+					if(!empty($href))
+						$this->items[self::removeTegs( $href )] = $item;
+				}
+			}
+			return(true);
+		}
+		return(false);
+	}
+
+	static public function removeTegs( $s )
+	{
+		$last = '';
+		while($s!=$last)
+		{
+			$last = $s;
+			$s = @html_entity_decode( strip_tags($s), ENT_QUOTES, "UTF-8" );
+		}
+		return($s);
+	}
+
+	protected function search($pattern, $subject, $needTranslate = false)
+	{
+		preg_match($pattern, $subject, $out);
+		if(isset($out[1]))
+		{
+			$out[1] = strtr($out[1], array('<![CDATA['=>'', ']]>'=>''));
+			if($this->encoding && $this->encoding!="utf-8")
+				$out[1] = $this->convert($out[1], $needTranslate);
+			else
+			if($needTranslate)
+				$out[1] = self::removeTegs( $out[1] );
+			return(trim($out[1]));
+		}
+		else
+			return('');
+	}
+
+	protected function convert($out,$needTranslate = false)
+	{
+		if($needTranslate)
+			$out = self::removeTegs( $out );
+		if(function_exists('iconv'))
+			$out = iconv($this->encoding, 'UTF-8//TRANSLIT', $out);
+		else
+                if(function_exists('mb_convert_encoding'))
+			$out = mb_convert_encoding($out, 'UTF-8', $this->encoding );
+		else
+			$out = win2utf($out);
+		return($out);
+	}
+
+	static protected function linkencode($p_url)
 	{
 		if(preg_match("/\%([0-9,A-F]{2})/i",$p_url)==1)
 			return($p_url);
@@ -88,213 +301,9 @@ class rRSS
 		return implode('', array($scheme, $user, $pass, $host, $port, $path, $query, $fragment));
 	}
 
-	static public function quoteInvalid($str)
-	{
-		return( preg_replace("/\s+/u"," ",addslashes($str)) );
-	}
-
-	static public function quoteInvalidURI($str)
+	static protected function quoteInvalidURI($str)
 	{
 		return( preg_replace("/\s/u"," ",addslashes($str)) );
-	}
-
-	public function rRSS( $url = null )
-	{
-		if($url)
-		{
-			$pos = strpos($url,':COOKIE:');
-			if($pos!==false)
-			{
-				$this->url = substr($url,0,$pos);
-				$tmp = explode(";",substr($url,$pos+8));
-				foreach($tmp as $item)
-				{
-					list($name,$val) = explode("=",$item);
-					$this->cookies[$name] = $val;
-				}
-			}
-			else
-				$this->url = $url;
-			$this->url = self::linkencode($this->url);
-			$this->srcURL = $this->url;
-			if(count($this->cookies))
-			{
-				$this->srcURL = $this->srcURL.':COOKIE:';
-				foreach($this->cookies as $name=>$val)
-					$this->srcURL = $this->srcURL.$name.'='.$val.';';
-				$this->srcURL = substr($this->srcURL,0,strlen($this->srcURL)-1);
-			}
-			$this->hash = md5( $this->srcURL );
-		}
-	}
-
-	public function getTorrent( $item )
-	{
-		$ret = false;
-		if(is_array($item) && array_key_exists('href',$item))
-		{
-			$cli = self::fetchURL(self::linkencode($item['href']),$this->cookies);
-			if($cli->status>=200 && $cli->status<300)
-				return($cli->results);
-		}
-		return($ret);
-	}
-
-	public function getContents($label,$auto,$enabled,$history)
-	{
-		$ret = "{ label: \"".self::quoteInvalidURI($label)."\", auto: ".$auto.", enabled: ".$enabled.", hash: \"".$this->hash."\", url: \"".self::quoteInvalidURI($this->srcURL)."\", items: [";
-		foreach($this->items as $item)
-		{
-			if($item['timestamp']>0)
-				$ret.="{ time: ".$item['timestamp'];
-			else
-				$ret.='{ time: null';
-			$ret.=", title: \"".self::quoteInvalid($item['title'])."\", href: \"".self::quoteInvalidURI($item['href'])."\", errcount: ".$history->getCounter($item['href']).", hash: \"".$history->getHash($item['href'])."\" },";
-		}
-		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
-		return($ret.'] }');
-	}
-
-	public function removeTegs( $s )
-	{
-		$last = '';
-		while($s!=$last)
-		{
-			$last = $s;
-			$s = @html_entity_decode( strip_tags($s), ENT_QUOTES, "UTF-8" );
-		}
-		return($s);
-	}
-
-	public function fetch()
-	{
-		$headers = array();
-		if($this->etag) 
-			$headers['If-None-Match'] = $this->etag;
-		if($this->lastModified)
-	                $headers['If-Last-Modified'] = $this->lastModified;
-		$cli = self::fetchURL($this->url,null,$headers);
-		if($cli->status==304)
-			return(true);
-		$this->etag = null;
-		$this->lastModified = null;
-		if($cli->status>=200 && $cli->status<300)
-		{
-			foreach($cli->headers as $h) 
-			{
-				if(strpos($h, ": "))
-					list($name, $val) = explode(": ", $h, 2);
-				else
-				{
-					$name = $h;
-					$val = "";
-				}
-				if( $name == 'ETag' ) 
-					$this->etag = $val;
-				else				
-				if( $name == 'Last-Modified' )
-					$this->lastModified = $val;
-			}
-			ini_set( "pcre.backtrack_limit", strlen($cli->results) );
-			$this->encoding = strtolower($this->search("'encoding=[\'\"](.*?)[\'\"]'si", $cli->results));
-			if($this->encoding=='')
-				$this->encoding = null;
-			$this->channel = array();
-			if(preg_match("'<channel.*?>(.*?)</channel>'si", $cli->results, $out)==1)
-			{
-				foreach($this->channeltags as $channeltag)
-				{
-					$temp = $this->search("'<$channeltag.*?>(.*?)</$channeltag>'si", $out[1], ($channeltag=='title'));
-					if($temp!='')
-						$this->channel[$channeltag] = $temp;
-				}
-				if( array_key_exists('lastBuildDate',$this->channel) &&
-				        (($timestamp = strtotime($this->channel['lastBuildDate'])) !==-1))
-					$this->channel['timestamp'] = $timestamp;
-				else
-					$this->channel['timestamp'] = 0;
-			}
-			else
-				$this->channel['timestamp'] = 0;
-			$this->items = array();
-			$ret = preg_match_all("'<item(| .*?)>(.*?)</item>'si", $cli->results, $items);
-			if(($ret!==false) && ($ret>0))
-			{
-				$i = 0;
-				foreach($items[2] as $rssItem)
-				{
-					foreach($this->itemtags as $itemtag)
-					{
-						if($itemtag=='enclosure')
-							$temp = $this->search("'<enclosure.*url\s*=\s*\"(.*?)\".*>'si", $rssItem);
-						else
-						if($itemtag=='source')
-							$temp = $this->search("'<source\s*url\s*=\s*\"(.*?)\".*>.*</source>'si", $rssItem);
-						else
-							$temp = $this->search("'<$itemtag.*?>(.*?)</$itemtag>'si", $rssItem, ($itemtag=='description') || ($itemtag=='title'));
-						if($temp != '')
-						{
-							$this->items[$i][$itemtag] = $temp;
-							if(($itemtag=='pubDate') &&
-								(($timestamp = strtotime($temp)) !==-1))
-								$this->items[$i]['timestamp'] = $timestamp;
-						}
-					}
-					if(!array_key_exists('timestamp',$this->items[$i]))
-						$this->items[$i]['timestamp'] = 0;
-					$href = '';
-					if(array_key_exists('enclosure',$this->items[$i]))
-						$href = $this->items[$i]['enclosure'];
-					else
-					if(array_key_exists('link',$this->items[$i]))
-						$href = $this->items[$i]['link'];
-					else
-					if(array_key_exists('guid',$this->items[$i]))
-						$href = $this->items[$i]['guid'];
-					else
-					if(array_key_exists('source',$this->items[$i]))
-						$href = $this->items[$i]['source'];
-					$this->items[$i]['href'] = $this->removeTegs( $href );
-//					$this->items[$i]['href'] = $href;
-					$i++;
-				}
-			}
-			return(true);
-		}
-		return(false);
-	}
-
-	protected function convert($out,$needTranslate = false)
-	{
-		if($needTranslate)
-			$out = $this->removeTegs( $out );
-		if(function_exists('iconv'))
-			$out = iconv($this->encoding, 'UTF-8//TRANSLIT', $out);
-		else
-                if(function_exists('mb_convert_encoding'))
-			$out = mb_convert_encoding($out, 'UTF-8', $this->encoding );
-		else
-			$out = win2utf($out);
-		return($out);
-	}
-
-	protected function search($pattern, $subject, $needTranslate = false)
-	{
-		preg_match($pattern, $subject, $out);
-		if(isset($out[1]))
-		{
-			$out[1] = strtr($out[1], array('<![CDATA['=>'', ']]>'=>''));
-			if($this->encoding && $this->encoding!="utf-8")
-				$out[1] = $this->convert($out[1], $needTranslate);
-			else
-			if($needTranslate)
-				$out[1] = $this->removeTegs( $out[1] );
-			return(trim($out[1]));
-		}
-		else
-			return('');
 	}
 
 	static protected function fetchURL($url, $cookies = null, $headers = null )
@@ -392,8 +401,14 @@ class rRSSFilter
 	public $label = null;
 	public $throttle = null;
 	public $ratio = null;
+	public $titleCheck = 1; 
+	public $descCheck = 0;
+	public $linkCheck = 0;
 
-	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', $start = 0, $addPath = 1, $directory = null, $label = null, $throttle = null, $ratio = null )
+	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
+		$start = 0, $addPath = 1, $directory = null, $label = null, 
+		$titleCheck = 1, $descCheck = 0, $linkCheck = 0,
+		$throttle = null, $ratio = null )
 	{
 		$this->name = $name;
 		$this->pattern = $pattern;
@@ -404,24 +419,46 @@ class rRSSFilter
 		$this->addPath = $addPath;
 		$this->directory = $directory;
 		$this->label = $label;
+		$this->titleCheck = $titleCheck;
+		$this->descCheck = $descCheck;
+		$this->linkCheck = $linkCheck;
 		$this->throttle = $throttle;
 		$this->ratio = $ratio;
 	}
 	public function isApplicable( $rss )
 	{
-		return(($this->enabled==1) && (!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash)));
+		return(($this->enabled==1) && 
+			(($this->titleCheck == 1) || ($this->descCheck == 1) || ($this->linkCheck == 1)) &&
+			(!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash)));
 	}
-	public function checkItem( $rssItem )
+	protected function isOK( $string )
 	{
-		if(array_key_exists('title',$rssItem))
+		return(	(($this->pattern!='') || ($this->exclude!='')) &&
+			(($this->pattern=='') || (@preg_match($this->pattern.'u',$string)==1)) &&
+			(($this->exclude=='') || (@preg_match($this->exclude.'u',$string)!=1)));
+	}
+	public function checkItem( $href, $rssItem )
+	{
+		$content = '';
+                if(($this->titleCheck == 1) && 
+			array_key_exists('title',$rssItem))
+			$content = $rssItem['title'];
+		if(($this->descCheck == 1) && 
+			array_key_exists('description',$rssItem))
 		{
-			$title = preg_replace("/\s+/u"," ",$rssItem['title']);
-			return(
-				(($this->pattern!='') || ($this->exclude!='')) &&
-				(($this->pattern=='') || (@preg_match($this->pattern.'u',$title)==1)) &&
-				(($this->exclude=='') || (@preg_match($this->exclude.'u',$title)!=1)));
+			$temp = rRSS::removeTegs( $rssItem['description'] );
+			$temp = preg_replace("/\s+/u"," ",$temp);
+			if(!empty($content))
+				$content.=' ';
+			$content.=$temp;
+		}	
+		if($this->linkCheck == 1)
+		{
+			if(!empty($content))
+				$content.=' ';
+			$content.=$href;
 		}
-		return(false);
+		return($this->isOK( $content ));
 	}
 	public function isCorrect()
 	{
@@ -437,7 +474,11 @@ class rRSSFilter
 			"\", exclude: \"".addslashes($this->exclude).
 			"\", throttle: \"".addslashes($this->throttle).
 			"\", ratio: \"".addslashes($this->ratio).
-			"\", hash: \"".addslashes($this->rssHash)."\", start: ".$this->start.", add_path: ".$this->addPath.", dir: \"".addslashes($this->directory)."\" }");
+			"\", hash: \"".addslashes($this->rssHash)."\", start: ".$this->start.", add_path: ".$this->addPath.
+			", chktitle: ".$this->titleCheck.
+			", chkdesc: ".$this->descCheck.
+			", chklink: ".$this->linkCheck.
+			", dir: \"".addslashes($this->directory)."\" }");
 	}
 }
 
@@ -622,13 +663,12 @@ class rRSSManager
 		{
 			if($filter->isApplicable( $rss ))
 			{
-				foreach($rss->items as $item)
+				foreach($rss->items as $href=>$item)
 				{
-					if( array_key_exists('href',$item) &&
-						!$this->history->wasLoaded($item['href']) &&
-						$filter->checkItem($item) )
+					if( !$this->history->wasLoaded($href) &&
+						$filter->checkItem($href, $item) )
 					{
-						$this->getTorrents( $rss, $item['href'], 
+						$this->getTorrents( $rss, $href, 
 							$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, $filter->ratio, false );
 						if(WAIT_AFTER_LOADING)
 							sleep(WAIT_AFTER_LOADING);
@@ -644,12 +684,11 @@ class rRSSManager
 		$hrefs = array();
 		if($this->rssList->isExist($rss) && $this->cache->get($rss))
 		{
-			foreach($rss->items as $item)
+			foreach($rss->items as $href=>$item)
 			{
-				if( array_key_exists('href',$item) &&
-					$filter->checkItem($item) )
+				if( $filter->checkItem($href, $item) )
 				{
-					$hrefs[] = $item['href'];
+					$hrefs[] = $href;
 				}
 			}
 		}
@@ -763,6 +802,17 @@ class rRSSManager
 			$ret = substr($ret,0,$len-1);
 		return($ret."]}");
 	}
+	public function getDescription( $hash, $href )
+	{
+		$rss = new rRSS();
+		$rss->hash = $hash;
+		if($this->rssList->isExist($rss) && 
+			$this->cache->get($rss) && 
+			array_key_exists($href,$rss->items) &&
+			array_key_exists('description',$rss->items[$href]))
+			return($rss->items[$href]['description']);
+		return('');
+	}
 	public function remove( $hash, $needFlush = true )
 	{
 		if(is_array($hash))
@@ -846,7 +896,7 @@ class rRSSManager
 		global $uploads;
 		$thash = 'Failed';
 		$ret = false;
-		$data = $rss->getTorrent( array('href'=>$url) );
+		$data = $rss->getTorrent( $url );
 		if($data!==false)
 		{
 			$name = "../../".$uploads."/".md5($url).".torrent";
@@ -894,9 +944,8 @@ class rRSSManager
 				$rss->hash = $hash;
 				if($this->cache->get($rss))
 				{
-					foreach($rss->items as $item)
-						if(array_key_exists('href',$item))
-							$urls[$item['href']] = true;
+					foreach($rss->items as $href=>$item)
+						$urls[$href] = true;
 				}
 			}
 			if(count($urls))

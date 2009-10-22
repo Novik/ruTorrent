@@ -36,10 +36,10 @@ div#dlgLoadTorrents input, select {margin-top: 2px; margin-bottom: 2px;}
 div#dlgLoadTorrents br {clear: left; line-height: 0}
 div#dlgLoadTorrents div#buttons { margin-top: 10px; }
 
-div#dlgEditFilters {width: 675px; height: 270px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;}
+div#dlgEditFilters {width: 675px; height: 315px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;}
 div#dlgEditFilters div.dlg-header {background-image: url(./images/rss.gif)}
 .lfc {float: left; position: relative;}
-.lf {width: 245px; height: 170px; margin: 5px; margin-right: 0; padding: 5px; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
+.lf {width: 245px; height: 210px; margin: 5px; margin-right: 0; padding: 5px; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
 .lf ul {width: 100%; margin: 2px; padding: 0; list-style-position: inside; list-style: none; white-space: nowrap}
 .lf li input { margin: 0 5px 0 0; padding: 4px; } 
 .lf li {margin: 0 ; padding: 0}
@@ -47,8 +47,8 @@ div#dlgEditFilters div.dlg-header {background-image: url(./images/rss.gif)}
 .lf li input.TextboxNormal { width: 85%; background-color: #FFFFFF }
 .lf li input { border: 0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: default; font-weight: bold; }
 div#FLTchk_buttons {padding-top: 5px; width: 260px; text-align:center}
-.rf fieldset {margin: 5px; height: 185px}
-.rf {float: right; position: relative; width: 400px; height: 210px; margin: 4px; background-color: #FAFAFA}
+.rf fieldset {margin: 5px; height: 230px}
+.rf {float: right; position: relative; width: 400px; height: 250px; margin: 4px; background-color: #FAFAFA}
 .rf label {width: 70px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 .rf br {clear: left; line-height: 0}
 .rf select {width: 273px; margin-left: 5px; margin-bottom: 5px; }
@@ -59,3 +59,5 @@ div#FLT_buttons {clear: both}
 
 #chkFilterBtn {width: 50px}
 #FLTBtn {width: 30px}
+
+#rsslayout { border: 0; display: none; margin: 5px; }

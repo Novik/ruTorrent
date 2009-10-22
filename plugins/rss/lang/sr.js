@@ -39,5 +39,8 @@
  WUILang.rssCacheNotAvailable 	= "RSS plugin: rTorrent's user can't access directory plugins/rss/cache for read/write/execute. Plugin will not work.";
  WUILang.rssUpdaterNotAvailable = "RSS plugin: rTorrent's user can't access file plugins/rss/update.php for read. Plugin will not work.";
  WUILang.rssFeeds = "Feeds";
+ WUILang.rssCheckTitle = "Check title field";
+ WUILang.rssCheckDescription = "Check description field";
+ WUILang.rssCheckLink = "Check link field";
 
 utWebUI.initRSS();
