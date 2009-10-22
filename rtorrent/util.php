@@ -323,7 +323,10 @@ class rCache
 		if($ret!==false)
 		{
 			$tmp = unserialize($ret);
-			if($tmp!==false)
+			if(($tmp!==false) && 
+				(!isset($rss->version) || 
+				(isset($rss->version) && !isset($tmp->version)) ||
+				(isset($tmp->version) && ($tmp->version==$rss->version))))
 			{
 			        $rss = $tmp;
 				$rss->modified = filemtime($fname);
