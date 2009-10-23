@@ -327,7 +327,9 @@ class rRSSHistory
 	public $hash = "history";
 	public $lst = array();
 	public $cnt = array();
-	protected $changed = false;
+	public $filtersTime = array();
+	public $changed = false;
+	protected $version = 1;
 
 	public function add( $url, $hash )
 	{
@@ -387,6 +389,37 @@ class rRSSHistory
 	{
 		return( count($this->lst) > HISTORY_MAX_COUNT );
 	}
+	public function applyFilter( $filterNo )
+	{
+		$this->changed = true;
+		$this->filtersTime[$filterNo] = time();
+	}
+	public function mayBeApplied( $filterNo, $filterInterval )
+	{
+		return( ($filterInterval<0) ||
+	                !array_key_exists($filterNo,$this->filtersTime) ||
+			(($filterInterval>0) && (time()>$this->filtersTime[$filterNo]+$filterInterval*3600)) );
+	}
+	public function clearFilterTime( $filterNo )
+	{
+		if(array_key_exists($filterNo,$this->filtersTime))
+		{
+			unset($this->filtersTime[$filterNo]);
+			$this->changed = true;
+		}
+	}
+	public function removeOldFilters( $filters )
+	{
+	        $newFiltesTime = array();
+		foreach($filters->lst as $filter)
+			if(array_key_exists($filter->no,$this->filtersTime))
+                        	$newFiltesTime[$filter->no] = $this->filtersTime[$filter->no];
+		if(count($newFiltesTime)!=count($this->filtersTime))
+		{
+			$this->changed = true;
+			$this->filtersTime = $newFiltesTime;
+		}
+	}
 }
 
 class rRSSFilter
@@ -405,11 +438,13 @@ class rRSSFilter
 	public $titleCheck = 1; 
 	public $descCheck = 0;
 	public $linkCheck = 0;
+	public $no = -1;
+	public $interval = -1;
 
 	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
 		$start = 0, $addPath = 1, $directory = null, $label = null, 
 		$titleCheck = 1, $descCheck = 0, $linkCheck = 0,
-		$throttle = null, $ratio = null )
+		$throttle = null, $ratio = null, $no = -1, $interval = -1 )
 	{
 		$this->name = $name;
 		$this->pattern = $pattern;
@@ -425,12 +460,16 @@ class rRSSFilter
 		$this->linkCheck = $linkCheck;
 		$this->throttle = $throttle;
 		$this->ratio = $ratio;
+		$this->no = $no;
+		$this->interval = $interval;
 	}
-	public function isApplicable( $rss )
+	public function isApplicable( $rss, $history )
 	{
 		return(($this->enabled==1) && 
-			(($this->titleCheck == 1) || ($this->descCheck == 1) || ($this->linkCheck == 1)) &&
-			(!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash)));
+  	                (($this->titleCheck == 1) || ($this->descCheck == 1) || ($this->linkCheck == 1)) &&
+			(!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash)) &&
+			$history->mayBeApplied( $this->no, $this->interval )
+			);
 	}
 	protected function isOK( $string )
 	{
@@ -479,6 +518,8 @@ class rRSSFilter
 			", chktitle: ".$this->titleCheck.
 			", chkdesc: ".$this->descCheck.
 			", chklink: ".$this->linkCheck.
+			", no: ".$this->no.
+			", interval: ".$this->interval.
 			", dir: \"".addslashes($this->directory)."\" }");
 	}
 }
@@ -644,6 +685,7 @@ class rRSSManager
 			if($this->cache->get($rss) && $info['enabled'])
 				$this->checkFilters($rss,$info,$flts);
 		}
+		$this->history->removeOldFilters($flts);
 		$this->saveHistory();
 	}
 	public function clearHistory()
@@ -662,13 +704,14 @@ class rRSSManager
 			$info = $this->rssList->lst[$rss->hash];
 		foreach($filters->lst as $filter)
 		{
-			if($filter->isApplicable( $rss ))
+			if($filter->isApplicable( $rss, $this->history ))
 			{
 				foreach($rss->items as $href=>$item)
 				{
 					if( !$this->history->wasLoaded($href) &&
 						$filter->checkItem($href, $item) )
 					{
+					        $this->history->applyFilter( $filter->no );
 						$this->getTorrents( $rss, $href, 
 							$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, $filter->ratio, false );
 						if(WAIT_AFTER_LOADING)
@@ -957,7 +1000,10 @@ class rRSSManager
 				}
 		}
 		if($this->history->isChanged())
+		{
+			$this->history->changed = false;
 			$this->cache->set($this->history);
+		}
 	}
 	public function isErrorsOccured()
 	{
@@ -975,6 +1021,11 @@ class rRSSManager
 	{
 		$this->cache->set($this->rssList,$mergeErrorsOnly);
 		$this->rssList->resetErrors();
+	}
+	public function clearFilterTime( $filterNo )
+	{
+		$this->history->clearFilterTime( $filterNo );
+		$this->saveHistory();
 	}
 }
 

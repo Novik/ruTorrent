@@ -794,6 +794,8 @@ utWebUI.storeFilterParams = function()
 		this.filters[no].chklink = $$('FLTchklink').checked ? 1 : 0;
 		var fltRSS = $$('FLT_rss');
 		this.filters[no].hash = fltRSS.options[fltRSS.selectedIndex].value;
+		var fltInterval = $$('FLT_interval');
+		this.filters[no].interval = fltInterval.options[fltInterval.selectedIndex].value;
 		var fltThrottle = $$('FLT_throttle');
 		if(fltThrottle)
 			this.filters[no].throttle = fltThrottle.options[fltThrottle.selectedIndex].value;
@@ -802,6 +804,22 @@ utWebUI.storeFilterParams = function()
 			this.filters[no].ratio = fltRatio.options[fltRatio.selectedIndex].value;
 	}
 	return(no);
+}
+
+utWebUI.fillFiltersSelect = function( el, val )
+{
+	if(el)
+	{
+		el.selectedIndex = 0;
+		for(var i = 0; i<el.options.length; i++)
+		{
+			if(el.options[i].value==val)
+			{	
+				el.selectedIndex = i;
+				break;
+			}
+		}
+	}
 }
 
 utWebUI.selectFilter = function( el )
@@ -824,42 +842,10 @@ utWebUI.selectFilter = function( el )
 		$$('FLTchkdesc').checked = (flt.chkdesc==1);
 		$$('FLTchklink').checked = (flt.chklink==1);
 		$$('FLT_label').value = flt.label;
-		var fltRSS = $$('FLT_rss');
-		fltRSS.selectedIndex = 0;
-		for(var i = 0; i<fltRSS.options.length; i++)
-		{
-			if(fltRSS.options[i].value==flt.hash)
-			{	
-				fltRSS.selectedIndex = i;
-				break;
-			}
-		}
-		var fltThrottle = $$('FLT_throttle');
-		if(fltThrottle)
-		{
-			fltThrottle.selectedIndex = 0;
-			for(var i = 0; i<fltThrottle.options.length; i++)
-			{
-				if(fltThrottle.options[i].value==flt.throttle)
-				{	
-					fltThrottle.selectedIndex = i;
-					break;
-				}
-			}
-		}
-		var fltRatio = $$('FLT_ratio');
-		if(fltRatio)
-		{
-			fltRatio.selectedIndex = 0;
-			for(var i = 0; i<fltRatio.options.length; i++)
-			{
-				if(fltRatio.options[i].value==flt.ratio)
-				{	
-					fltRatio.selectedIndex = i;
-					break;
-				}
-			}
-		}
+		this.fillFiltersSelect( $$('FLT_rss'), flt.hash );
+		this.fillFiltersSelect( $$('FLT_throttle'), flt.throttle );
+		this.fillFiltersSelect( $$('FLT_ratio'), flt.ratio );
+		this.fillFiltersSelect( $$('FLT_interval'), flt.interval );
 		utWebUI.editFilersBtn.hideFrame();
 	}
 }
@@ -885,11 +871,12 @@ utWebUI.loadFiltersWithAdditions = function( flt )
 	{
 		var s = this.rssItems[this.rssArray[i]].title;
 		additions.push( { name: s, enabled: 1, 
-			pattern: makePatternString(s), exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0 } );
+			pattern: makePatternString(s), exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: -1 } );
 	}
 	this.loadFilters( flt, additions );
 }
 
+utWebUI.maxFilterNo = 0;
 utWebUI.loadFilters = function( flt, additions )
 {
 	this.curFilter = null;
@@ -956,15 +943,27 @@ utWebUI.loadFilters = function( flt, additions )
 	{
 		this.filters = additions.concat(this.filters);
 	}
+	utWebUI.maxFilterNo = 0;
 	for(var i=0; i<this.filters.length; i++)
 	{
 		var f = this.filters[i];
+		if(utWebUI.maxFilterNo<f.no)
+			utWebUI.maxFilterNo = f.no;
 		var li = document.createElement("LI");
 		li.innerHTML = "<input type='checkbox' id='_fe"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"javascript:utWebUI.selectFilter(this);\" id='_fn"+i+"'/>";
 		list.appendChild(li);
 		$$("_fn"+i).value = f.name;
 		if(f.enabled)
 			$$("_fe"+i).checked = true;
+	}
+	for(var i=0; i<this.filters.length; i++)
+	{
+		var f = this.filters[i];
+		if(f.no<0)
+		{
+			utWebUI.maxFilterNo++;
+			f.no = utWebUI.maxFilterNo;
+		}
 	}
 	Show("dlgEditFilters");
 	var first = $$("_fn0");
@@ -975,7 +974,8 @@ utWebUI.loadFilters = function( flt, additions )
 utWebUI.addNewFilter = function()
 {
 	var list = $$("fltlist");
-	var f = { name: WUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0 };
+	utWebUI.maxFilterNo++;
+	var f = { name: WUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: utWebUI.maxFilterNo };
 	var li = document.createElement("LI");
 	var i = this.filters.length;
 	li.innerHTML = "<input type='checkbox' id='_fe"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"javascript:utWebUI.selectFilter(this);\" id='_fn"+i+"'/>";
@@ -1048,6 +1048,26 @@ utWebUI.setFilters = function()
 	this.Request("?action=setfilters",[this.addRSSItems, this]);
 }
 
+utWebUI.rssClearFilter = function()
+{
+	var no = utWebUI.storeFilterParams();
+	var flt = utWebUI.filters[no];
+	if(flt.interval>=0)
+		this.Request("?action=clearfiltertime&v="+flt.no);
+}
+
+rTorrentStub.prototype.clearfiltertime = function()
+{
+	this.content = "mode=clearfiltertime&no="+this.vs[0];
+	this.contentType = "application/x-www-form-urlencoded";
+	this.mountPoint = "plugins/rss/action.php";
+}
+
+rTorrentStub.prototype.clearfiltertimeResponse = function(xmlDoc,docText)
+{
+	return(false);
+}
+
 rTorrentStub.prototype.getrssdetails = function()
 {
 	this.content = "mode=getdesc&href="+encodeURIComponent(utWebUI.currentRSSDetailsID)+"&rss="+utWebUI.rssItems[utWebUI.currentRSSDetailsID].rss;
@@ -1081,7 +1101,7 @@ rTorrentStub.prototype.setfilters = function()
 			"&chkdesc="+flt.chkdesc+
 		        "&exclude="+encodeURIComponent(flt.exclude)+
 			"&hash="+flt.hash+"&start="+flt.start+"&addPath="+flt.add_path+
-			"&dir="+encodeURIComponent(flt.dir)+"&label="+encodeURIComponent(flt.label)+"&throttle="+flt.throttle+"&ratio="+flt.ratio;
+			"&dir="+encodeURIComponent(flt.dir)+"&label="+encodeURIComponent(flt.label)+"&throttle="+flt.throttle+"&ratio="+flt.ratio+"&interval="+flt.interval+"&no="+flt.no;
 	}
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
@@ -1439,13 +1459,27 @@ utWebUI.initRSS = function()
 					"<legend>"+WUILang.rssFiltersLegend+"</legend>"+
 					"<label>"+WUILang.rssFilter+":</label><input type='text' id='FLT_body' class='TextboxLarge'/><br/>"+
 					"<label>"+WUILang.rssExclude+":</label><input type='text' id='FLT_exclude' class='TextboxLarge'/><br/>"+
-					"<label></label><input type='checkbox' id='FLTchktitle'/>"+WUILang.rssCheckTitle+"<br/>"+
-					"<label></label><input type='checkbox' id='FLTchkdesc'/>"+WUILang.rssCheckDescription+"<br/>"+
-					"<label></label><input type='checkbox' id='FLTchklink'/>"+WUILang.rssCheckLink+"<br/>"+
+					"<label></label><input type='checkbox' class='chk' id='FLTchktitle'/>"+WUILang.rssCheckTitle+"<br/>"+
+					"<label></label><input type='checkbox' class='chk'id='FLTchkdesc'/>"+WUILang.rssCheckDescription+"<br/>"+
+					"<label></label><input type='checkbox' class='chk' id='FLTchklink'/>"+WUILang.rssCheckLink+"<br/>"+
 					"<label>"+WUILang.rssStatus+":</label><select id='FLT_rss'><option value=''>"+WUILang.allFeeds+"</option></select><br/>"+
 					"<label>"+WUILang.Base_directory+":</label><input type='text' id='FLTdir_edit' class='TextboxLarge'/><input type=button id='FLTBtn'><br/>"+
-					"<label></label><input type='checkbox' id='FLTnot_add_path'/>"+WUILang.Dont_add_tname+"<br/>"+
-					"<label></label><input type='checkbox' id='FLTtorrents_start_stopped'/>"+WUILang.Dnt_start_down_auto+"<br/>"+
+					"<label></label><input type='checkbox' class='chk'id='FLTnot_add_path'/>"+WUILang.Dont_add_tname+"<br/>"+
+					"<label></label><input type='checkbox' class='chk'id='FLTtorrents_start_stopped'/>"+WUILang.Dnt_start_down_auto+"<br/>"+
+					"<label>"+WUILang.rssMinInterval+":</label><select id='FLT_interval'>"+
+					        "<option value='-1'>"+WUILang.rssIntervalAlways+"</option>"+
+					        "<option value='0'>"+WUILang.rssIntervalOnce+"</option>"+
+					        "<option value='12'>"+WUILang.rssInterval12h+"</option>"+
+					        "<option value='24'>"+WUILang.rssInterval1d+"</option>"+
+					        "<option value='48'>"+WUILang.rssInterval2d+"</option>"+
+					        "<option value='72'>"+WUILang.rssInterval3d+"</option>"+
+					        "<option value='96'>"+WUILang.rssInterval4d+"</option>"+
+					        "<option value='168'>"+WUILang.rssInterval1w+"</option>"+
+					        "<option value='336'>"+WUILang.rssInterval2w+"</option>"+
+					        "<option value='504'>"+WUILang.rssInterval3w+"</option>"+
+					        "<option value='720'>"+WUILang.rssInterval1m+"</option>"+
+						"</select>"+
+						"<input type='button' class='Button' value="+WUILang.rssClearFilter+" onclick='javascript:utWebUI.rssClearFilter();return(false);'/><br/>"+
 					"<label>"+WUILang.Label+":</label><input type='text' id='FLT_label' class='TextboxLarge'/><br/>"+
 				"</fieldset>"+
 			"</div>"+

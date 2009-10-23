@@ -132,6 +132,18 @@ switch($cmd)
 						$flt->enabled = $parts[1];
 				}
 				else
+				if($parts[0]=="no")
+				{
+					if($flt)
+						$flt->no = $parts[1];
+				}
+				else
+				if($parts[0]=="interval")
+				{
+					if($flt)
+						$flt->interval = $parts[1];
+				}
+				else
 				if($parts[0]=="hash")
 				{
 					if($flt)
@@ -195,6 +207,13 @@ switch($cmd)
 				$flts->add($flt);
 			$mngr->setFilters($flts);
 		}
+		break;
+	}
+	case "clearfiltertime":
+	{
+	        if(isset($_REQUEST['no']))
+			$mngr->clearFilterTime( $_REQUEST['no'] );
+		$val = '';
 		break;
 	}
 	case "getdesc":
