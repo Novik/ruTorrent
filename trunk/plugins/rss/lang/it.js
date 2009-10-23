@@ -42,5 +42,18 @@
  WUILang.rssCheckTitle = "Check title field";
  WUILang.rssCheckDescription = "Check description field";
  WUILang.rssCheckLink = "Check link field";
+ WUILang.rssMinInterval = "Min interval";
+ WUILang.rssIntervalAlways = "(match always)";
+ WUILang.rssIntervalOnce = "(match only once)";
+ WUILang.rssInterval12h = "12 hours";
+ WUILang.rssInterval1d = "1 day";
+ WUILang.rssInterval2d = "2 days";
+ WUILang.rssInterval3d = "3 days";
+ WUILang.rssInterval4d = "4 days";
+ WUILang.rssInterval1w = "1 week";
+ WUILang.rssInterval2w = "2 weeks";
+ WUILang.rssInterval3w = "3 weeks";
+ WUILang.rssInterval1m = "1 month";
+ WUILang.rssClearFilter = "Reset";
 
 utWebUI.initRSS();

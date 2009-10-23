@@ -42,5 +42,18 @@
  WUILang.rssCheckTitle = "Искать в названии";
  WUILang.rssCheckDescription = "Искать в описании";
  WUILang.rssCheckLink = "Искать в ссылке";
+ WUILang.rssMinInterval = "Min интервал";
+ WUILang.rssIntervalAlways = "(всегда)";
+ WUILang.rssIntervalOnce = "(один раз)";
+ WUILang.rssInterval12h = "12 часов";
+ WUILang.rssInterval1d = "1 день";
+ WUILang.rssInterval2d = "2 дня";
+ WUILang.rssInterval3d = "3 дня";
+ WUILang.rssInterval4d = "4 дня";
+ WUILang.rssInterval1w = "1 неделя";
+ WUILang.rssInterval2w = "2 недели";
+ WUILang.rssInterval3w = "3 недели";
+ WUILang.rssInterval1m = "1 месяц";
+ WUILang.rssClearFilter = "Сброс";
 
 utWebUI.initRSS();
