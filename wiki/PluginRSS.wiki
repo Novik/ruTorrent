@@ -52,7 +52,7 @@ To automatically download torrents from a feed, you need to create one or severa
     # Right click on a feed and choose "RSS Manager". The appropriate dialog window will be shown.
     # Click on the "Add" button and type in the name of the new filter in the left column.
     # Enter filter's contents in the field Filter Settings -> Filter.
-The filter's contents must be a Perl-compatible regular expression ([http://www.pcre.org/ PCRE]). The syntax of the PCRE is described, for example [http://ru.php.net/manual/en/reference.pcre.pattern.syntax.php here].
+The filter's contents must be a Perl-compatible regular expression ([http://www.pcre.org/ PCRE]). The syntax of the PCRE is described, for example [http://ru.php.net/manual/en/reference.pcre.pattern.syntax.php here]. Also you can see [https://docs.google.com/Doc?docid=0AQYMH4twARqFZGZnazVkaGdfNWR0ajV4Z2No&hl=en this] PCRE tutorial (thanx to [http://code.google.com/u/@VxhSQFBQBRJHWQl0/ gq.2.jpw]).
 
 This is a basic set of operations, required to setup the automatic downloads. The rest of the functions are extra features for more control of the automatic downloads.
     * "Exclude:" allows you to exclude certain strings from matching. An example is you don't want releases with AC3 audio and H.264: you can write {{{/(AC3|264)/i}}} in "Exclude:" to exclude those.
