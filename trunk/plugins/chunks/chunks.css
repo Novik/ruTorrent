@@ -12,7 +12,6 @@
     width: 99%;
     display: table;
     font-family: fixed, Courier New, Lucidatypewriter, Andale Mono;
-    /*overflow: auto;*/
     font-size: 80%;
     vertical-align: top;
 }
@@ -31,78 +30,72 @@
 
 .cCell {
     text-align: center;
+    vertical-align: center;
     margin: 0;
-    border: 1px dashed;
 }
 
 .Cell0 {
+    background-color: #FFFDF0;
+    border: 1px dashed;
 }
 
 .Cell1 {
+    background-color: #FFFDF0;
 }
 
 .Cell2 {
-    /*background-color: #FCFE63;*/
-    background-color: wheat;
+    background-color: #FFFAD8;
 }
 
 .Cell3 {
-    background-color: #FCFE63;
+    background-color: #FFF5B2;
 }
 
 .Cell4 {
-    background-color: #FF8D63;
+    background-color: #FFF5B2;
 }
 
 .Cell5 {
-    background-color: #FF8D63;
+    background-color: #FFF08A;
 }
 
 .Cell6 {
-    background-color: #FFAA63;
+    background-color: #FFEA63;
 }
 
 .Cell7 {
-    background-color: #FFAA63;
+    background-color: #FFEA63;
 }
 
 .Cell8 {
-    background-color: #FFBD63;
+    background-color: #F5DC69;
 }
 
 .Cell9 {
-    background-color: #FFBD63;
-    border: 1px solid;
+    background-color: #EED46E;
 }
 
 .CellA {
-    background-color: #FFD363;
-    border: 1px solid;
+    background-color: #EED46E;
 }
 
 .CellB {
-    background-color: #FFD363;
-    border: 1px solid;
+    background-color: #DEBD7A;
 }
 
 .CellC {
-    background-color: #FFEA63;
-    border: 1px solid;
+    background-color: #CDA684;
 }
 
 .CellD {
-    background-color: #FFEA63;
-    border: 1px solid;
+    background-color: #CDA684;
 }
 
 .CellE {
-    
-    background-color: #FF6564;
-    border: 1px solid;
+    background-color: #C3988B;
 }
 
 .CellF {
-    background-color: #FF6564;
-    border: 1px solid;
+    background-color: #C3988B;
 }
 
