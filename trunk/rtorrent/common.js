@@ -913,3 +913,8 @@ function calcScrollbarSize()
 	window.scrollbarWidth = w1-w2;
 	window.scrollbarHeight = h1-h2;
 }
+
+function addslashes(str)
+{
+	return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\u0000/g, "\\0");
+}
