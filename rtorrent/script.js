@@ -2611,7 +2611,7 @@ utWebUI =
          		}
       			else 
       			{
-         			_bf.push([lbl, "utWebUI.setLabel('" + lbl + "')"]);
+         			_bf.push([lbl, "utWebUI.setLabel('" + addslashes(lbl) + "')"]);
          		}
       		}
       		if(_bf.length>0)
