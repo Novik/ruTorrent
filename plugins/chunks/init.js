@@ -24,10 +24,10 @@ utWebUI.drawChunks = function( chunks ) {
     var Chunk, ChunkNum;
     var cWidth = parseInt( Chunks.tEM.clientWidth ) * 2; // for one cell
     var tWidth = parseInt( Chunks.Body.clientWidth );
+    this.clearChunks();
     if ( cWidth <= 0 || tWidth <= 0 ) {
         return;
     }
-    this.clearChunks();
     var ChunkLen = d.chunks[0].length, tRow, tCell;
     // Calculate number of table columns
     var NumCols = Math.round( tWidth / cWidth );
