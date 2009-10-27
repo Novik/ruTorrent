@@ -1294,7 +1294,7 @@ utWebUI.correctRatioFilterDialg = function()
 	var rule = getCSSRule(".rf fieldset");
 	if(rule && utWebUI.allRatioStuffLoaded)
 	{
-		var addition = (browser.isIE) ? 52 : 42;
+		var addition = (browser.isIE) ? 40 : 32;
 		rule.style.height = (iv(rule.style.height)+addition)+"px";
 		$$('filterPropsFieldSet').style.height = rule.style.height;
 		rule = getCSSRule(".rf");
@@ -1330,7 +1330,7 @@ utWebUI.correctFilterDialg = function()
 	var rule = getCSSRule(".rf fieldset");
 	if(rule && utWebUI.allThrottleStuffLoaded)
 	{
-		var addition = (browser.isIE) ? 52 : 42;
+		var addition = (browser.isIE) ? 40 : 32;
 		rule.style.height = (iv(rule.style.height)+addition)+"px";
 		$$('filterPropsFieldSet').style.height = rule.style.height;
 		rule = getCSSRule(".rf");
