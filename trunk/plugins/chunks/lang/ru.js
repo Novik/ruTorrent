@@ -1,8 +1,8 @@
 
-WUILang.Chunks = "Chunks";
-WUILang.chunksNoChunksFound = "No chunks found!";
-WUILang.chunksRows = "row(s)";
-WUILang.chunksColumns = "column(s)";
-WUILang.chunksChunks = "chunk(s)";
-WUILang.chunksSize = "chunk size";
-WUILang.chunksNotSupported = "You must have rTorrent >= 0.8.5 in order to see chunk progress! Your client reports: ";
+WUILang.Chunks = "Части";
+WUILang.chunksNoChunksFound = "Информации о частях нет.";
+WUILang.chunksRows = "строки";
+WUILang.chunksColumns = "колонки";
+WUILang.chunksChunks = "части";
+WUILang.chunksSize = "размер части";
+WUILang.chunksNotSupported = "Плагин chunks: для работы плагина требуется версия rTorrent >= 0.8.5. Ваша версия: ";
