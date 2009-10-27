@@ -36,7 +36,7 @@ div#dlgLoadTorrents input, select {margin-top: 2px; margin-bottom: 2px;}
 div#dlgLoadTorrents br {clear: left; line-height: 0}
 div#dlgLoadTorrents div#buttons { margin-top: 10px; }
 
-div#dlgEditFilters {width: 675px; height: 350px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; overflow: visible}
+div#dlgEditFilters {width: 690px; height: 360px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; overflow: visible}
 div#dlgEditFilters div.dlg-header {background-image: url(./images/rss.gif)}
 .lfc {float: left; position: relative;}
 .lf {width: 245px; height: 230px; margin: 5px; margin-right: 0; padding: 5px; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
@@ -51,9 +51,9 @@ div#FLTchk_buttons {padding-top: 5px; width: 260px; text-align:center}
 .rf {float: right; position: relative; width: 400px; height: 285px; margin: 4px; background-color: #FAFAFA}
 .rf label {width: 75px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 .rf br {clear: left; line-height: 0}
-.rf select {width: 273px; margin-left: 5px; margin-bottom: 5px; }
-.rf input.TextboxLarge {margin: 5px; width: 273px;}
-.rf input#FLTdir_edit {margin: 5px; width: 220px;}
+.rf select {width: 273px; margin-left: 5px; margin-bottom: 3px; }
+.rf input.TextboxLarge {margin: 3px; width: 273px;}
+.rf input#FLTdir_edit {margin: 3px; width: 220px;}
 .rf input.Button {margin: 3px;}
 div#FLT_buttons {clear: both}
 
