@@ -1,4 +1,4 @@
-/*var setNewPalette = function()
+var setNewPalette = function()
 {
 	var plugin = new rPlugin("darkpal");
 	plugin.loadCSS("style");
@@ -7,4 +7,4 @@
 	utWebUI.flsTable.setPaletteByURL("plugins/darkpal");
 	utWebUI.trkTable.setPaletteByURL("plugins/darkpal");
 	utWebUI.prsTable.setPaletteByURL("plugins/darkpal");
-} .apply(this);*/
+} .apply(this);
