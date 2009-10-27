@@ -12,7 +12,15 @@ utWebUI.addAndShowSettings = function(arg)
 		if(i<hostCookies.length-1)
 			s+='\r\n';
 	}
-	$$('hostcookies').value = s;
+	if(browser.isKonqueror)
+	{
+		var tarea = $$('hostcookies');
+		if(tarea.lastChild)
+			tarea.removeChild(tarea.lastChild);
+		tarea.appendChild(document.createTextNode(s)); 
+	}
+	else
+		$$('hostcookies').value = s;
 	utWebUI.cookiesAddAndShowSettings(arg);
 }
 
