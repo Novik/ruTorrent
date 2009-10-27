@@ -12,7 +12,15 @@ utWebUI.addAndShowSettings = function(arg)
 		if(i<searchSities.length-1)
 			s+='\r\n';
 	}
-	$$('searchsites').value = s;
+	if(browser.isKonqueror)
+	{
+		var tarea = $$('searchsites');
+		if(tarea.lastChild)
+			tarea.removeChild(tarea.lastChild);
+		tarea.appendChild(document.createTextNode(s)); 
+	}
+	else
+		$$('searchsites').value = s;
 	utWebUI.searchAddAndShowSettings(arg);
 }
 
