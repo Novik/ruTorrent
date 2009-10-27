@@ -3711,6 +3711,7 @@ var tdTabs =
    		"TrackerList" : WUILang.Trackers, 
    		"PeerList" : WUILang.Peers,
    		"Speed" : WUILang.Speed,
+   		"Chunks" : WUILang.Chunks,
    		"lcont" : WUILang.Logger
    	}, 
    	"draw" : function() 
