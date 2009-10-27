@@ -39,7 +39,16 @@ utWebUI.EditTrackers = function()
 				}
 			}
 		}
-		$$('etrackers').value = s.replace(/(^\s+)|(\s+$)/g, "");
+		s = s.replace(/(^\s+)|(\s+$)/g, "");
+		if(browser.isKonqueror)
+		{
+			var tarea = $$('etrackers');
+			if(tarea.lastChild)
+				tarea.removeChild(tarea.lastChild);
+			tarea.appendChild(document.createTextNode(s)); 
+		}
+		else
+			$$('etrackers').value = s;
 		$$('ecomment').value = d[24].replace(/(^\s+)|(\s+$)/g, "");
 		$$('editok').disabled = false;
 		ShowModal("tedit");
