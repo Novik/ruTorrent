@@ -11,7 +11,7 @@
     $uploads = './torrents';		// temp directory for uploaded torrents, without tail slash
     $settings = './settings';		// settings directory, without tail slash
 
-    $scgi_port = 1886;
+    $scgi_port = 5000;
     $scgi_host = "127.0.0.1";
 
     $pathToPHP = '';			// Something like /bin/php. If empty, will be founded in PATH.
