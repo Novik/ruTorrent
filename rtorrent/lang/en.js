@@ -228,6 +228,7 @@
  RSS_Downloader		: "RSS Downloader",
  Torrent_properties	: "Torrent Properties",
  Trackers			: "Trackers",
+ Chunks             : "Chunks",
  Max_down_rate		: "Maximum download rate",
  Max_upl_rate		: "Maximum upload rate",
  Bandwidth_sett		: "Bandwidth Settings",
