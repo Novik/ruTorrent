@@ -5,18 +5,9 @@ var tdb = 0, tub = 0;
 var tdlimit = 0, tulimit = 0;
 var version = "2.7";
 
-function init() 
+$(document).ready(function() 
 {
 	calcScrollbarSize();
-	if(arguments.callee.done) 
-	{
-		return;
-	}
-	arguments.callee.done = true;
-	if(_timer) 
-	{
-		clearInterval(_timer);
-	}
 	log("WebUI started.");
 	document.title = "ruTorrent v" + version;
 	Key.onKeyDown = keyDown;
@@ -57,7 +48,6 @@ function init()
 		_3 = $_COOKIE["webui.trt.colwidth"];
 		for(var i in _3)
 		{
-//			if(browser.isOldIE && _3[i]>4)
 			if(!browser.isAppleWebKit && !browser.isKonqueror && (_3[i]>4))
 				_3[i]-=4;
 			if(i<utWebUI.trtColumns.length)
@@ -237,31 +227,13 @@ function init()
       		};
 	resizeUI();
 	tdTabs.show("gcont");
-//	window.onerror = function(msg, url, _3e) 
-//	{
-//		log("JS error: [" + url + " : " + _3e + "] " + msg);
-//		return true;
-//	};
+	window.onerror = function(msg, url, _3e) 
+	{
+		log("JS error: [" + url + " : " + _3e + "] " + msg);
+		return true;
+	};
 	utWebUI.initDone();
-}
-
-function cleanup()
-{
-	window.onload = null;
-	if(document.removeEventListener) 
-        	document.removeEventListener("DOMContentLoaded",init,false);
-}
-
-if(document.addEventListener) 
-{
-	document.addEventListener("DOMContentLoaded", init, false);
-}
-if(/WebKit/i.test(navigator.userAgent))
-{
-	var _timer=setInterval(function(){if(/loaded|complete/.test(document.readyState)){init();}},10);
-}
-window.onload = init;
-addEvent(window, "unload", cleanup);
+});
 
 addEvent(document, "mouseup", 
 	function(e) 
@@ -479,11 +451,6 @@ function linked(obj, _33, lst)
 		}
 		o.className = (d) ? "disabled" : "";
    	}
-}
-
-function redirect(url) 
-{
-	window.location.href = url;
 }
 
 function keyDown(e) 
@@ -1240,8 +1207,9 @@ function ShowSearch()
 			ContextMenu.add([searchSities[i].name, "setSearch("+i+")"]);
 	}
 	var obj = $$("search");
-	mouse.X = getOffsetLeft(obj)-5;
-	mouse.Y = getOffsetTop(obj)+obj.offsetHeight+5;
+	var offs = getOffset(obj);
+	mouse.X = offs.x-5;
+	mouse.Y = offs.y+obj.offsetHeight+5;
 	ContextMenu.show();
 }
 
@@ -3431,19 +3399,6 @@ var CMENU_SEP =	" 0";
 var CMENU_CHILD = " 1";
 var CMENU_SEL = " 2";
 
-function getAbsCoords(obj)
-{
-	var left = 0;
-	var top = 0;
-	while(obj)
-	{
-	        top+=obj.offsetTop;
-		left+=obj.offsetLeft;
-		obj = obj.offsetParent;
-	}
-	return([left,top]);
-}
-
 function oContextMenu(prnt)
 {
 	this.owner = prnt;
@@ -3657,13 +3612,13 @@ oContextMenu.prototype.showChild = function(parent)
 	this.entered = 0;
 	this.obj.style.visibility = "hidden";
 	this.obj.style.display = "block";
-	var coords = getAbsCoords(parent)
-	var x = coords[0]+parent.offsetWidth;
+	var coords = getOffset(parent)
+	var x = coords.x+parent.offsetWidth;
 	if(x + this.obj.offsetWidth > getWindowWidth()) 
 	{
 		x -= this.obj.offsetWidth;
 	}
-	var y = coords[1];
+	var y = coords.y;
 	if(y + this.obj.offsetHeight > getWindowHeight()) 
 	{
 		y -= this.obj.offsetHeight;
@@ -3711,7 +3666,6 @@ var tdTabs =
    		"TrackerList" : WUILang.Trackers, 
    		"PeerList" : WUILang.Peers,
    		"Speed" : WUILang.Speed,
-   		"Chunks" : WUILang.Chunks,
    		"lcont" : WUILang.Logger
    	}, 
    	"draw" : function() 

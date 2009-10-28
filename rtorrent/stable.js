@@ -127,7 +127,7 @@ dxSTable.prototype.create = function(_2, _3, aName)
 					return;
             			}
 				e = FixEvent(e);
-				var x = mouse.X - getOffsetLeft(this) + _5.dBody.scrollLeft;
+				var x = mouse.X - getOffset(this).x + _5.dBody.scrollLeft;
 				this.lastMouseX = e.clientX;
 				var w = this.offsetWidth;
 				var i = parseInt(this.getAttribute("index"));

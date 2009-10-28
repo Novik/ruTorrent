@@ -6,163 +6,213 @@ var ELE_COLGROUP = document.createElement("COLGROUP");
 var ELE_COL = document.createElement("COL");
 var ELE_TR = document.createElement("TR");
 var ELE_TD = document.createElement("TD");
-function $$(id) {
-   if(document.all) {
-      return document.all[id];
-      }
-   else {
-      if(document.getElementById) {
-         return document.getElementById(id);
-         }
-      else {
-         for(var _2 = 1; _2 < document.layers.length; _2++) {
-            if(document.layers[_2].id == id) {
-               return document.layers[_2];
-               }
-            }
-         }
-      }
-   return false;
-   }
-function getOffsetLeft(_3) {
-   var x = 0;
-   while(_3) {
-      x += parseInt(_3.offsetLeft);
-      _3 = _3.offsetParent;
-      }
-   return x;
-   }
-function getOffsetTop(_5) {
-   var y = 0;
-   while(_5) {
-      y += parseInt(_5.offsetTop);
-      _5 = _5.offsetParent;
-      }
-   return y;
-   }
-function getWindowHeight() {
-   if(typeof (window.innerHeight) == "number") {
-      return window.innerHeight;
-      }
-   else {
-      if(document.documentElement && (document.documentElement.clientHeight)) {
-         return document.documentElement.clientHeight;
-         }
-      else {
-         if(document.body && (document.body.clientHeight)) {
-            return document.body.clientHeight;
-            }
-         else {
-            return 0;
-            }
-         }
-      }
-   }
-function getWindowWidth() {
-   if(typeof (window.innerWidth) == "number") {
-      return window.innerWidth;
-      }
-   else {
-      if(document.documentElement && (document.documentElement.clientWidth)) {
-         return document.documentElement.clientWidth;
-         }
-      else {
-         if(document.body && (document.body.clientWidth)) {
-            return document.body.clientWidth;
-            }
-         else {
-            return 0;
-            }
-         }
-      }
-   }
-function ft(_7,noRoundTime) {
-   var _8 = "";
-   if((noRoundTime==null) && (_7 >= 2419200)) {
-      return "\u221e";
-      }
-   var _9, w, d, h, m, s, v = 0;
-   _9 = _7 % (604800 * 52);
-   w = iv(_9 / 604800);
-   _9 = _9 % 604800;
-   d = iv(_9 / 86400);
-   _9 = _9 % 86400;
-   h = iv(_9 / 3600);
-   _9 = _9 % 3600;
-   m = iv(_9 / 60);
-   _9 = _9 % 60;
-   s = _9;
-   if(w > 0) {
-      _8 = w + WUILang.time_w;
-      v++;
-      }
-   if(d > 0) {
-      _8 += d + WUILang.time_d;
-      v++;
-      }
-   if((h > 0) && (v < 2)) {
-      _8 += h + WUILang.time_h;
-      v++;
-      }
-   if((m > 0) && (v < 2)) {
-      _8 += m + WUILang.time_m;
-      v++;
-      }
-   if(v < 2) {
-      _8 += s + WUILang.time_s;
-      }
-   var l = _8.length - 1;
-   return _8.substring(0, l);
-   }
-function ffs(_b, p) {
-   p = (p == null) ? 1 : p;
-   var a = new Array(WUILang.bytes, WUILang.KB, WUILang.MB, WUILang.GB, WUILang.TB, WUILang.PB);
-   var _e = 0;
-   if(_b == 0) {
-      _e = 1;
-      }
-   else {
-      if(_b < 1024) {
-         _b /= 1024;
-         _e = 1;
-         }
-      else {
-         while(_b >= 1024) {
-            _b /= 1024;
-            _e++;
-            }
-         }
-      }
-   return (round(_b, p) + " " + a[_e]);
-   }
-function iv(_f) 
+
+function $$(id)
 {
-	var v = parseInt(_f + "");
+	if(document.getElementById)
+		return(document.getElementById(id));
+	if(document.all)
+		return(document.all[id]);
+	for(var i = 1; i < document.layers.length; i++)
+		if(document.layers[i].id == id)
+			return(document.layers[i]);
+	return(false);
+}
+
+function getOffset(obj)
+{
+	var left = 0;
+	var top = 0;
+	while(obj)
+	{
+	        top += parseInt(obj.offsetTop);
+		left += parseInt(obj.offsetLeft);
+		obj = obj.offsetParent;
+	}
+	return({ x: left, y: top});
+}
+
+function getWindowHeight()
+{
+	if(typeof (window.innerHeight) == "number")
+		return(window.innerHeight);
+	if(document.documentElement && (document.documentElement.clientHeight))
+		return(document.documentElement.clientHeight);
+	if(document.body && (document.body.clientHeight))
+		return(document.body.clientHeight);
+	return(0);
+}
+
+function getWindowWidth()
+{
+	if(typeof (window.innerWidth) == "number")
+		return(window.innerWidth);
+	if(document.documentElement && (document.documentElement.clientWidth))
+		return(document.documentElement.clientWidth);
+	if(document.body && (document.body.clientWidth))
+		return(document.body.clientWidth);
+	return(0);
+}
+
+function calcScrollbarSize()
+{
+	var i = document.createElement('p');
+	i.style.width = '100%';
+        i.style.height = '200px';
+        var o = document.createElement('div');
+	o.style.position = 'absolute';
+	o.style.top = '0px';
+	o.style.left = '0px';
+	o.style.visibility = 'hidden';
+	o.style.width = '200px';
+	o.style.height = '150px';
+	o.style.overflow = 'hidden';
+	o.appendChild(i);
+	document.body.appendChild(o);
+	var w1 = i.offsetWidth;
+	var h1 = i.offsetHeight;
+	o.style.overflow = 'scroll';
+	var w2 = i.offsetWidth;
+	var h2 = i.offsetHeight;
+	if (w1 == w2) w2 = o.clientWidth;
+	if (h1 == h2) h2 = o.clientWidth;
+	document.body.removeChild(o);
+	window.scrollbarWidth = w1-w2;
+	window.scrollbarHeight = h1-h2;
+}
+
+function addslashes(str)
+{
+	return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\u0000/g, "\\0");
+}
+
+function iv(val) 
+{
+	var v = parseInt(val + "");
 	return(isNaN(v) ? 0 : v);
 }
-function round(num, p) {
-   var v = Math.floor(num * Math.pow(10, p)) / Math.pow(10, p);
-   var s = "" + v + "";
-   var d = s.indexOf(".");
-   var n = 0;
-   if(d >- 1) {
-      var ind = s.length - d;
-      p++;
-      if(ind < p) {
-         n = p - ind;
-         }
-      }
-   else {
-      if(p > 0) {
-         n = p;
-         s = s + ".";
-         }
-      }
-   for(var i = 0; i < n; i++) {
-      s += "0";
-      }
-   return s;
-   }
+
+function round(num, p)
+{
+	var v = Math.floor(num * Math.pow(10, p)) / Math.pow(10, p);
+	var s = v + "";
+	var d = s.indexOf(".");
+	var n = 0;
+	if(d >- 1)
+	{
+		var ind = s.length - d;
+		p++;
+		if(ind < p)
+			n = p - ind;
+	}
+	else
+	{
+		if(p > 0)
+		{
+			n = p;
+			s = s + ".";
+		}
+	}
+	for(var i = 0; i < n; i++)
+		s += "0";
+	return(s);
+}
+
+function ft(tm,noRoundTime)
+{
+	if((noRoundTime==null) && (tm >= 2419200))
+		return "\u221e";
+	var val = tm % (604800 * 52);
+	var w = iv(val / 604800);
+	val = val % 604800;
+	var d = iv(val / 86400);
+	val = val % 86400;
+	var h = iv(val / 3600);
+	val = val % 3600;
+	var m = iv(val / 60);
+	val = val % 60;
+	var v = 0;
+	var ret = "";
+	if(w > 0)
+	{	
+		ret = w + WUILang.time_w;
+		v++;
+	}
+	if(d > 0)
+	{
+		ret += d + WUILang.time_d;
+		v++;
+	}
+	if((h > 0) && (v < 2))
+	{
+		ret += h + WUILang.time_h;
+      		v++;
+	}
+	if((m > 0) && (v < 2))
+	{	
+		ret += m + WUILang.time_m;
+		v++;
+	}
+	if(v < 2)
+		ret += val + WUILang.time_s;
+	return( ret.substring(0,ret.length-1) );	
+}
+
+function ffs(bytes, p)
+{
+	p = (p == null) ? 1 : p;
+	var a = new Array(WUILang.bytes, WUILang.KB, WUILang.MB, WUILang.GB, WUILang.TB, WUILang.PB);
+	var ndx = 0;
+	if(bytes == 0)
+		ndx = 1;
+	else
+	{
+		if(bytes < 1024)
+		{
+			bytes /= 1024;
+			ndx = 1;
+		}
+		else
+		{
+			while(bytes >= 1024)
+			{
+            			bytes /= 1024;
+            			ndx++;
+            		}
+         	}
+	}
+	return(round(bytes, p) + " " + a[ndx]);
+}
+
+function escapeHTML(str)
+{
+	var div = document.createElement("div");
+	var txt = document.createTextNode(str);
+	div.appendChild(txt);
+	return(div.innerHTML);
+}
+
+function getHttpObj()
+{
+	var ret = null;
+	if(window.XMLHttpRequest)
+         	ret = new XMLHttpRequest();
+	else
+	{
+		if(window.ActiveXObject)
+		{
+			var objs = new Array("MSXML2", "Microsoft", "MSXML", "MSXML3");
+			for(var i = 0; i < objs.length; i++)
+			{
+				try {
+				ret = new ActiveXObject(objs[i] + ".XmlHttp");
+				break;
+               			} catch(e) { continue; }
+            		}
+         	}
+	}
+	return(ret);
+}
 
 var sav = null;
 function saveDocument()
@@ -177,38 +227,36 @@ function restoreDocument()
 		document.events = sav;
 }
 
-function addEvent(_18, _19, fnc)
+addEvent.guid = 1;
+function addEvent(obj, etype, fnc)
 {
- 	var _1a = fnc;
-	if(_19=="keydown")
+ 	var efnc = fnc;
+	if(etype=="keydown")
 	{
-		_19 = "click";	
-		_1a = function() { document.onkeydown = function(e) { Key.onKeyDown(e); return(fnc(e)); } };
+		etype = "click";
+		efnc = function() { document.onkeydown = function(e) { Key.onKeyDown(e); return(fnc(e)); } };
 	}
-	if(!_1a.$$guid)
-      		_1a.$$guid = addEvent.guid++;
-	if(!_18.events)
-		_18.events = {};
-	var _1b = _18.events[_19];
-	if(!_1b)
+	if(!efnc.$$guid)
+      		efnc.$$guid = addEvent.guid++;
+	if(!obj.events)
+		obj.events = {};
+	var evt = obj.events[etype];
+	if(!evt)
 	{
-		_1b = _18.events[_19] = {};
-		if(_18["on" + _19])
-			_1b[0] = _18["on" + _19];
+		evt = obj.events[etype] = {};
+		if(obj["on" + etype])
+			evt[0] = obj["on" + etype];
 	}
-	_1b[_1a.$$guid] = _1a;
-	_18["on" + _19] = handleEvent;
+	evt[efnc.$$guid] = efnc;
+	obj["on" + etype] = handleEvent;
 	saveDocument();
-	return _1a.$$guid;
+	return(efnc.$$guid);
 }
 
-addEvent.guid = 1;
-function removeEvent(_1c, _1d, _1e) 
+function removeEvent(obj, etype, guid) 
 {
-	if(_1c.events && _1c.events[_1d]) 
-	{
-		delete _1c.events[_1d][_1e];
-	}
+	if(obj.events && obj.events[etype]) 
+		delete obj.events[etype][guid];
 }
 
 function removeElementEvents(el) 
@@ -226,266 +274,206 @@ function removeElementEvents(el)
 	}
 }
 
-function handleEvent(_1f)
+function handleEvent(evt)
 {
 	var ret = false;
 	restoreDocument();
 	if(this.events)
 	{
 		ret = true;
-	        _1f = _1f || fixEvent(window.event);
-		var _21 = this.events[_1f.type];
-		for(var i in _21)
+	        evt = evt || fixEvent(window.event);
+		var earr = this.events[evt.type];
+		for(var i in earr)
 		{
-			this.$$handleEvent = _21[i];
-			if(this.$$handleEvent.apply(this, [_1f])===false)
+			this.$$handleEvent = earr[i];
+			if(this.$$handleEvent.apply(this, [evt])===false)
 				ret = false;
 		}
 	}
 	return(ret);
 }
 
-function fixEvent(_23) {
-   _23.preventDefault = fixEvent.preventDefault;
-   _23.stopPropagation = fixEvent.stopPropagation;
-   return _23;
-   }
-fixEvent.preventDefault = function() {
-   this.returnValue = false;
-   };
-fixEvent.stopPropagation = function() {
-   this.cancelBubble = true;
-   };
-var css_browser_selector = function() {
-   var ua = navigator.userAgent.toLowerCase();
-   var h = document.getElementsByTagName("html")[0];
-   var c = h.className;
-   if(ua.indexOf("msie") !=- 1 &&!(ua.indexOf("opera") !=- 1) && (ua.indexOf("webtv") ==- 1)) {
-      h.className = "ie" + " ie" + ua.charAt(ua.indexOf("msie") + 5) + " " + c;
-      }
-   else {
-      if(ua.indexOf("gecko/") !=- 1) {
-         h.className = ("gecko " + c);
-         }
-      else {
-         if(ua.indexOf("opera") !=- 1) {
-            h.className = ("opera " + c);
-            }
-         else {
-            if(ua.indexOf("konqueror") !=- 1) {
-               h.className = ("konqueror " + c);
-               }
-            else {
-               if(ua.indexOf("applewebkit/") !=- 1) {
-                  h.className = ("webkit safari " + c);
-                  }
-               else {
-                  if(ua.indexOf("mozilla/") !=- 1) {
-                     h.className = ("gecko " + c);
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-.apply(this);
-function BrowserDetect() {
-   var ua = navigator.userAgent.toLowerCase();
-   this.isGecko = (ua.indexOf("gecko") !=- 1 && ua.indexOf("safari") ==- 1);
-   this.isAppleWebKit = (ua.indexOf("applewebkit") !=- 1);
-   this.isKonqueror = (ua.indexOf("konqueror") !=- 1);
-   this.isSafari = (ua.indexOf("safari") !=- 1);
-   this.isOmniweb = (ua.indexOf("omniweb") !=- 1);
-   this.isOpera = (ua.indexOf("opera") !=- 1);
-   this.isIcab = (ua.indexOf("icab") !=- 1);
-   this.isAol = (ua.indexOf("aol") !=- 1);
-   this.isIE = (ua.indexOf("msie") !=- 1 &&!this.isOpera && (ua.indexOf("webtv") ==- 1));
-   this.isMozilla = (this.isGecko && ua.indexOf("gecko/") + 14 == ua.length);
-   this.isFirebird = (ua.indexOf("firebird/") !=- 1);
-   this.isFirefox = (ua.indexOf("firefox/") !=- 1);
-   this.isNS = ((this.isGecko) ? (ua.indexOf("netscape") !=- 1) : ((ua.indexOf("mozilla") !=- 1) &&!this.isOpera &&!this.isSafari && (ua.indexOf("spoofer") ==- 1) && (ua.indexOf("compatible") ==- 1) && (ua.indexOf("webtv") ==- 1) && (ua.indexOf("hotjava") ==- 1)));
-   this.isIECompatible = ((ua.indexOf("msie") !=- 1) &&!this.isIE);
-   this.isNSCompatible = ((ua.indexOf("mozilla") !=- 1) &&!this.isNS &&!this.isMozilla);
-   this.geckoVersion = ((this.isGecko) ? ua.substring((ua.lastIndexOf("gecko/") + 6), (ua.lastIndexOf("gecko/") + 14)) :- 1);
-   this.equivalentMozilla = ((this.isGecko) ? parseFloat(ua.substring(ua.indexOf("rv:") + 3)) :- 1);
-   this.appleWebKitVersion = ((this.isAppleWebKit) ? parseFloat(ua.substring(ua.indexOf("applewebkit/") + 12)) :- 1);
-   this.versionMinor = parseFloat(navigator.appVersion);
-   if(this.isGecko && !this.isMozilla && !this.isKonqueror) {
-      this.versionMinor = parseFloat(ua.substring(ua.indexOf("/", ua.indexOf("gecko/") + 6) + 1));
-      }
-   else {
-      if(this.isMozilla) {
-         this.versionMinor = parseFloat(ua.substring(ua.indexOf("rv:") + 3));
-         }
-      else {
-         if(this.isIE && this.versionMinor >= 4) {
-            this.versionMinor = parseFloat(ua.substring(ua.indexOf("msie ") + 5));
-            }
-         else {
-            if(this.isKonqueror) {
-               this.versionMinor = parseFloat(ua.substring(ua.indexOf("konqueror/") + 10));
-               }
-            else {
-               if(this.isSafari) {
-                  this.versionMinor = parseFloat(ua.substring(ua.lastIndexOf("safari/") + 7));
-                  }
-               else {
-                  if(this.isOmniweb) {
-                     this.versionMinor = parseFloat(ua.substring(ua.lastIndexOf("omniweb/") + 8));
-                     }
-                  else {
-                     if(this.isOpera) {
-                        this.versionMinor = parseFloat(ua.substring(ua.indexOf("opera") + 6));
-                        }
-                     else {
-                        if(this.isIcab) {
-                           this.versionMinor = parseFloat(ua.substring(ua.indexOf("icab") + 5));
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   this.versionMajor = parseInt(this.versionMinor);
-   this.isDOM1 = (document.getElementById);
-   this.isDOM2Event = (document.addEventListener && document.removeEventListener);
-   this.mode = document.compatMode ? document.compatMode : "BackCompat";
-   this.isWin = (ua.indexOf("win") !=- 1);
-   this.isWin32 = (this.isWin && (ua.indexOf("95") !=- 1 || ua.indexOf("98") !=- 1 || ua.indexOf("nt") !=- 1 || ua.indexOf("win32") !=- 1 || ua.indexOf("32bit") !=- 1 || ua.indexOf("xp") !=- 1));
-   this.isMac = (ua.indexOf("mac") !=- 1);
-   this.isUnix = (ua.indexOf("unix") !=- 1 || ua.indexOf("sunos") !=- 1 || ua.indexOf("bsd") !=- 1 || ua.indexOf("x11") !=- 1);
-   this.isLinux = (ua.indexOf("linux") !=- 1);
-   this.isNS4x = (this.isNS && this.versionMajor == 4);
-   this.isNS40x = (this.isNS4x && this.versionMinor < 4.5);
-   this.isNS47x = (this.isNS4x && this.versionMinor >= 4.7);
-   this.isNS4up = (this.isNS && this.versionMinor >= 4);
-   this.isNS6x = (this.isNS && this.versionMajor == 6);
-   this.isNS6up = (this.isNS && this.versionMajor >= 6);
-   this.isNS7x = (this.isNS && this.versionMajor == 7);
-   this.isNS7up = (this.isNS && this.versionMajor >= 7);
-   this.isIE4x = (this.isIE && this.versionMajor == 4);
-   this.isIE4up = (this.isIE && this.versionMajor >= 4);
-   this.isIE5x = (this.isIE && this.versionMajor == 5);
-   this.isIE55 = (this.isIE && this.versionMinor == 5.5);
-   this.isIE5up = (this.isIE && this.versionMajor >= 5);
-   this.isIE6x = (this.isIE && this.versionMajor == 6);
-   this.isIE6up = (this.isIE && this.versionMajor >= 6);
-   this.isIE7x = (this.isIE && this.versionMajor == 7);
-   this.isIE7up = (this.isIE && this.versionMajor >= 7);
-   this.isIE8up = (this.isIE && this.versionMajor >= 8);
-   this.isOldIE = (this.isIE && this.versionMajor < 7);
-   this.isIE4xMac = (this.isIE4x && this.isMac);
-   this.isFirefox3x = (this.isFirefox && this.versionMajor == 3);
-//alert(ua);
-//alert(this.isAppleWebKit);
-   }
-var browser = new BrowserDetect();
-function escapeHTML(str) {
-   var div = document.createElement("div");
-   var _2a = document.createTextNode(str);
-   div.appendChild(_2a);
-   return div.innerHTML;
-   }
+function fixEvent(e)
+{
+	e.preventDefault = fixEvent.preventDefault;
+	e.stopPropagation = fixEvent.stopPropagation;
+	return(e);
+}
 
-function getHttpObj() {
-   var _32 = null;
-   if(window.XMLHttpRequest) {
-      try {
-         _32 = new XMLHttpRequest();
-         }
-      catch(e) {
-         return false;
-         }
-      }
-   else {
-      if(window.ActiveXObject) {
-         var _33 = new Array("MSXML2", "Microsoft", "MSXML", "MSXML3");
-         for(var i = 0; i < _33.length; i++) {
-            try {
-               _32 = new ActiveXObject(_33[i] + ".XmlHttp");
-               break;
-               }
-            catch(e) {
-               continue;
-               }
-            }
-         }
-      }
-   return _32;
-   }
-var Timer = function() {
-   this.initial = 0;
-   this.interval = 0;
-   };
-Timer.prototype.start = function() {
-   this.initial = (new Date()).getTime();
-   };
-Timer.prototype.stop = function() {
-   this.interval = (new Date()).getTime() - this.initial;
-   };
-var mouse = new Object();
-mouse = {
-   "X" : 0, "Y" : 0, "update" : function(x, y) {
-      this.X = x;
-      this.Y = y;
-      }
-   , "button" : 0};
-addEvent(document, "mousemove", function(e) {
-   if(!e) {
-      e = window.event; }
-   var x = (e.clientX) ? e.clientX : e.pageX; var y = (e.clientY) ? e.clientY : e.pageY; mouse.update(x, y); }
-);
-function isArray() {
-   var obj = this;
-   if((obj.constructor.toString().indexOf("Array") >- 1) && (typeof obj.length != "undefined")) {
-      return true;
-      }
-   else {
-      return false;
-      }
-   }
-function json_encode(obj) {
-   if(typeof obj != "object") {
-      return false;
-      }
-   var _3c = isArray.apply(obj);
-   var _3d = (_3c) ? "[" : "{";
-   for(var e in obj) {
-      if(!_3c) {
-         _3d += "\"" + e + "\":";
-         }
-      if((typeof obj[e] == "object") && (!isArray.apply(obj[e]))) {
-         _3d += json_encode(obj[e]) + ",";
-         }
-      else {
-         if(isArray.apply(obj[e])) {
-            _3d += json_encode(obj[e]) + ",";
-            }
-         else {
-            if(typeof obj[e] == "string") {
-               _3d += "\"" + obj[e] + "\",";
-               }
-            else {
-               if(typeof obj[e] == "number") {
-                  _3d += obj[e] + ",";
-                  }
-               else {
-                  if(typeof obj[e] == "boolean") {
-                     _3d += ((obj[e]) ? "true" : "false") + ",";
-                     }
-                  }
-               }
-            }
-         }
-      }
-   if((_3d != "{") && (_3d != "[")) {
-      _3d = _3d.substr(0, _3d.length - 1);
-      }
-   return _3d + ((_3c) ? "]" : "}");
-   }
+fixEvent.preventDefault = function()
+{
+	this.returnValue = false;
+};
+
+fixEvent.stopPropagation = function()
+{
+	this.cancelBubble = true;
+};
+
+function browserDetect()
+{
+	var ua = navigator.userAgent.toLowerCase();
+	this.isGecko = (ua.indexOf("gecko") !=- 1 && ua.indexOf("safari") ==- 1);
+	this.isAppleWebKit = (ua.indexOf("applewebkit") !=- 1);
+	this.isKonqueror = (ua.indexOf("konqueror") !=- 1);
+	this.isSafari = (ua.indexOf("safari") !=- 1);
+	this.isOmniweb = (ua.indexOf("omniweb") !=- 1);
+	this.isOpera = (ua.indexOf("opera") !=- 1);
+	this.isIcab = (ua.indexOf("icab") !=- 1);
+	this.isAol = (ua.indexOf("aol") !=- 1);
+	this.isIE = (ua.indexOf("msie") !=- 1 && !this.isOpera && (ua.indexOf("webtv") ==- 1));
+	this.isMozilla = (this.isGecko && ua.indexOf("gecko/") + 14 == ua.length);
+	this.isFirebird = (ua.indexOf("firebird/") !=- 1);
+	this.isFirefox = (ua.indexOf("firefox/") !=- 1);
+	this.isNS = ((this.isGecko) ? (ua.indexOf("netscape") !=- 1) : 
+		((ua.indexOf("mozilla") !=- 1) && !this.isOpera && !this.isSafari && 
+		(ua.indexOf("spoofer") ==- 1) && (ua.indexOf("compatible") ==- 1) && 
+		(ua.indexOf("webtv") ==- 1) && (ua.indexOf("hotjava") ==- 1)));
+	this.isIECompatible = ((ua.indexOf("msie") !=- 1) && !this.isIE);
+	this.isNSCompatible = ((ua.indexOf("mozilla") !=- 1) && !this.isNS &&!this.isMozilla);
+	this.geckoVersion = ((this.isGecko) ? ua.substring((ua.lastIndexOf("gecko/") + 6), (ua.lastIndexOf("gecko/") + 14)) :- 1);
+	this.equivalentMozilla = ((this.isGecko) ? parseFloat(ua.substring(ua.indexOf("rv:") + 3)) :- 1);
+	this.appleWebKitVersion = ((this.isAppleWebKit) ? parseFloat(ua.substring(ua.indexOf("applewebkit/") + 12)) :- 1);
+	this.versionMinor = parseFloat(navigator.appVersion);
+	if(this.isGecko && !this.isMozilla && !this.isKonqueror)
+		this.versionMinor = parseFloat(ua.substring(ua.indexOf("/", ua.indexOf("gecko/") + 6) + 1));
+	else
+	if(this.isMozilla)
+		this.versionMinor = parseFloat(ua.substring(ua.indexOf("rv:") + 3));
+	else
+	if(this.isIE && this.versionMinor >= 4)
+		this.versionMinor = parseFloat(ua.substring(ua.indexOf("msie ") + 5));
+	else
+	if(this.isKonqueror)
+		this.versionMinor = parseFloat(ua.substring(ua.indexOf("konqueror/") + 10));
+	else
+	if(this.isSafari)
+		this.versionMinor = parseFloat(ua.substring(ua.lastIndexOf("safari/") + 7));
+	else
+	if(this.isOmniweb)
+		this.versionMinor = parseFloat(ua.substring(ua.lastIndexOf("omniweb/") + 8));
+	else
+	if(this.isOpera)
+		this.versionMinor = parseFloat(ua.substring(ua.indexOf("opera") + 6));
+	else
+	if(this.isIcab)
+		this.versionMinor = parseFloat(ua.substring(ua.indexOf("icab") + 5));
+	this.versionMajor = parseInt(this.versionMinor);
+	this.isDOM1 = (document.getElementById);
+	this.isDOM2Event = (document.addEventListener && document.removeEventListener);
+	this.mode = document.compatMode ? document.compatMode : "BackCompat";
+	this.isWin = (ua.indexOf("win") !=- 1);
+	this.isWin32 = (this.isWin && (ua.indexOf("95") !=- 1 || ua.indexOf("98") !=- 1 || ua.indexOf("nt") !=- 1 || ua.indexOf("win32") !=- 1 || ua.indexOf("32bit") !=- 1 || ua.indexOf("xp") !=- 1));
+	this.isMac = (ua.indexOf("mac") !=- 1);
+	this.isUnix = (ua.indexOf("unix") !=- 1 || ua.indexOf("sunos") !=- 1 || ua.indexOf("bsd") !=- 1 || ua.indexOf("x11") !=- 1);
+	this.isLinux = (ua.indexOf("linux") !=- 1);
+	this.isNS4x = (this.isNS && this.versionMajor == 4);
+	this.isNS40x = (this.isNS4x && this.versionMinor < 4.5);
+	this.isNS47x = (this.isNS4x && this.versionMinor >= 4.7);
+	this.isNS4up = (this.isNS && this.versionMinor >= 4);
+	this.isNS6x = (this.isNS && this.versionMajor == 6);
+	this.isNS6up = (this.isNS && this.versionMajor >= 6);
+	this.isNS7x = (this.isNS && this.versionMajor == 7);
+	this.isNS7up = (this.isNS && this.versionMajor >= 7);
+	this.isIE4x = (this.isIE && this.versionMajor == 4);
+	this.isIE4up = (this.isIE && this.versionMajor >= 4);
+	this.isIE5x = (this.isIE && this.versionMajor == 5);
+	this.isIE55 = (this.isIE && this.versionMinor == 5.5);
+	this.isIE5up = (this.isIE && this.versionMajor >= 5);
+	this.isIE6x = (this.isIE && this.versionMajor == 6);
+	this.isIE6up = (this.isIE && this.versionMajor >= 6);
+	this.isIE7x = (this.isIE && this.versionMajor == 7);
+	this.isIE7up = (this.isIE && this.versionMajor >= 7);
+	this.isIE8up = (this.isIE && this.versionMajor >= 8);
+	this.isOldIE = (this.isIE && this.versionMajor < 7);
+	this.isIE4xMac = (this.isIE4x && this.isMac);
+	this.isFirefox3x = (this.isFirefox && this.versionMajor == 3);
+
+	var h = document.getElementsByTagName("html")[0];
+	var c = h.className;
+	if(this.isIE)
+		h.className = "ie" + " ie" + this.versionMajor + " " + c;
+	else
+	if(this.isOpera)
+		h.className = ("opera " + c);
+	else
+	if(this.isKonqueror)
+		h.className = ("konqueror " + c);
+	else
+	if(this.isAppleWebKit)
+		h.className = ("webkit safari " + c);
+	else
+	if(this.isGecko)
+		h.className = ("gecko " + c);
+}
+var browser = new browserDetect();
+
+var Timer = function()
+{
+	this.initial = 0;
+	this.interval = 0;
+};
+
+Timer.prototype.start = function()
+{
+	this.initial = (new Date()).getTime();
+};
+
+Timer.prototype.stop = function()
+{
+	this.interval = (new Date()).getTime() - this.initial;
+};
+
+function trackMouse()
+{
+	this.X = 0;
+	this.Y = 0;
+	this.button = 0;
+	var self = this;
+	$(document).mousemove(
+		function(e)
+		{
+			self.X = e.clientX;
+			self.Y = e.clientY;
+		});
+}
+var mouse = new trackMouse();
+
+function isArray(obj)
+{
+	return( obj && obj.constructor == Array );
+}
+
+function json_encode(obj)
+{
+	if(typeof obj != "object")
+		return(false);
+	var isArr = isArray(obj);
+	var ret = (isArr) ? "[" : "{";
+	for(var e in obj)
+	{
+		if(!isArr)
+			ret += "\"" + e + "\":";
+		if((typeof obj[e] == "object") && (!isArray(obj[e])))
+			ret += json_encode(obj[e]) + ",";
+		else
+		if(isArray(obj[e]))
+			ret += json_encode(obj[e]) + ",";
+		else
+		if(typeof obj[e] == "string")
+			ret += "\"" + obj[e] + "\",";
+		else
+		if(typeof obj[e] == "number")
+			ret += obj[e] + ",";
+		else
+		if(typeof obj[e] == "boolean")
+			ret += ((obj[e]) ? "true" : "false") + ",";
+	}
+	if((ret != "{") && (ret != "["))
+		ret = ret.substr(0, ret.length - 1);
+	return(ret + (isArr ? "]" : "}"));
+}
+
 var cookies = new Object();
 var $_COOKIE = null;
 cookies = {
@@ -516,6 +504,7 @@ cookies = {
       this.setCookie(_45, "", true);
       }
    };
+
 var Key = { LEFT : 37, RIGHT : 39, UP : 38, DOWN : 40, BACKSPACE : 8, CAPSLOCK : 20, CTRL : 17, DELETE : 46, END : 35, ENTER : 13, ESCAPE : 27, HOME : 36, INSERT : 45, TAB : 9, PGDN : 34, PGUP : 33, SPACE : 32, SHIFT : 16 };
 
 Key.onKeyDown = function() {};
@@ -547,8 +536,8 @@ function inScrollBarArea(obj,x,y)
 		if(tg=="input" || tg=="textarea")
 			return(true);
 	}
-	var c = getAbsCoords(obj);
-	return((obj.scrollHeight > obj.clientHeight) && (x>obj.clientWidth+c[0]));
+	var c = getOffset(obj);
+	return((obj.scrollHeight > obj.clientHeight) && (x>obj.clientWidth+c.x));
 }
 
 var Drag = {
@@ -887,34 +876,3 @@ function cloneObject( srcObj )
 	return newObject;
 }
 
-function calcScrollbarSize()
-{
-	var i = document.createElement('p');
-	i.style.width = '100%';
-        i.style.height = '200px';
-        var o = document.createElement('div');
-	o.style.position = 'absolute';
-	o.style.top = '0px';
-	o.style.left = '0px';
-	o.style.visibility = 'hidden';
-	o.style.width = '200px';
-	o.style.height = '150px';
-	o.style.overflow = 'hidden';
-	o.appendChild(i);
-	document.body.appendChild(o);
-	var w1 = i.offsetWidth;
-	var h1 = i.offsetHeight;
-	o.style.overflow = 'scroll';
-	var w2 = i.offsetWidth;
-	var h2 = i.offsetHeight;
-	if (w1 == w2) w2 = o.clientWidth;
-	if (h1 == h2) h2 = o.clientWidth;
-	document.body.removeChild(o);
-	window.scrollbarWidth = w1-w2;
-	window.scrollbarHeight = h1-h2;
-}
-
-function addslashes(str)
-{
-	return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\u0000/g, "\\0");
-}
