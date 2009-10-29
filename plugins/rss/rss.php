@@ -105,7 +105,7 @@ class rRSS
 				if( $name == 'Last-Modified' )
 					$this->lastModified = $val;
 			}
-			ini_set( "pcre.backtrack_limit", strlen($cli->results) );
+			ini_set( "pcre.backtrack_limit", max(strlen($cli->results),100000) );
 			$this->encoding = strtolower($this->search("'encoding=[\'\"](.*?)[\'\"]'si", $cli->results));
 			if($this->encoding=='')
 				$this->encoding = null;
