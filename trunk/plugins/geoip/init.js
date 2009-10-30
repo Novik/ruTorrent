@@ -27,12 +27,11 @@ function GeoIPResponse( xmlDoc, docText )
 		item = '["';
 		item += this.getValue(values,0);	//	p.get_id
 		item += '","';
-		
-	    // Pack country code with IP address
+
 	    AjaxReq = jQuery.ajax( {
 	        async : false,
 		    url : "plugins/geoip/lookup.php",
-		    data : { action : "geoip", ip : this.getValue(values,1), lang : ActiveLanguage },
+		    data : { action : "geoip", ip : this.getValue(values,1) },
 		    dataType : "text",
 		    success : LookupSuccess,
 		    error: LookupFailure } );
@@ -77,7 +76,7 @@ function GeoIPResponse( xmlDoc, docText )
 
 // Examples of row with country data
 //
-// ["2D5554313737302DF39F6C123C3A428E7B128189", "RS|Serbia", "93.XX.XX.105", "uTorrent 1.7.7",
+// ["2D5554313737302DF39F6C123C3A428E7B128189", "RS", "93.XX.XX.105", "uTorrent 1.7.7",
 // "I", 36, 0, 43806720, 0, 52428]
 
 function FormatPeers(aPeerRow, aColIndex) {
@@ -119,7 +118,7 @@ function addGeoIPPeers(aPeerRow)
     var d = eval("(" + aPeerRow + ")");
     var i, l = d.peers.length;
     var sl = this.prsTable.dBody.scrollLeft;
-    var Country;
+    var CountryCode, CountryName;
     
     for (i = 0; i < l; i++) {
         var sId = d.peers[i][0];
@@ -127,9 +126,14 @@ function addGeoIPPeers(aPeerRow)
         if (typeof (this.peers[sId]) == "undefined") {
             // Show only IP, use country code to show flag
             this.peers[sId] = d.peers[i].slice(1);
-            Country = this.peers[sId][0].split("|");
-            this.peers[sId][0] = Country[1];
-	        this.prsTable.addRow(this.peers[sId], sId, "geoip_flag_" + Country[0] );
+            CountryCode = this.peers[sId][0];
+            CountryName = WUILang.country[ CountryCode ];
+            if ( typeof(CountryName) == "undefined" ) {
+                this.peers[sId][0] = CountryCode;
+            } else {
+                this.peers[sId][0] = CountryName;
+            }
+	        this.prsTable.addRow(this.peers[sId], sId, "geoip_flag_" + CountryCode );
         } else {
             for (var j = 2; j < d.peers[i].length; j++) {           
                 this.prsTable.setValue(sId, j-1, d.peers[i][j]);
