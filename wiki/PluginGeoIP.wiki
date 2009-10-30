@@ -15,10 +15,7 @@ Unpack the plugin archive into rutorrent/plugins directory and refresh contents 
 GeoIP plugin supports localization. However, it is not mandatory. Here is the example of Hungarian localization:
 
     * cd plugins/geoip/lang
-    * cp en.js *hu.js*
-    * Edit hu.js, replacing word "Country" with Hungarian equivalent
-    * cp sr.php *hu.php*
-    * Edit hu.php, replacing country names after "=>" with their Hungarian equivalents
+    * Edit hu.js, replacing word "Country" and country names with their Hungarian equivalents
 
 Same applies for localization in any other language. If you do not localize plugin, English names will be used by default.
 
