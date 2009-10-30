@@ -1,12 +1,6 @@
 <?php
 
 $Countries = array (
-    "Argentina" => "Аргентина",
-    "Australia" => "Аустралија",
-    "Austria" => "Аустрија",
-    "Bangladesh" => "Бангладеш",
-    "Belgium" => "Белгија",
-    "Bermuda" => "Бермудска острва",
     "Bosnia and Herzegovina" => "Босна и Херцеговина",
     "Brazil" => "Бразил",
     "Brunei Darussalam" => "Брунеј",
