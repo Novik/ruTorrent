@@ -22,8 +22,8 @@ utWebUI.drawChunks = function( chunks ) {
     var d = eval("(" + chunks + ")");
     var Chunks = utWebUI.Chunks;
     var Chunk, ChunkNum;
-    var cWidth = parseInt( Chunks.tEM.clientWidth ) * 2; // for one cell
-    var tWidth = parseInt( Chunks.Body.clientWidth );
+    var cWidth = parseInt( utWebUI.tEM.clientWidth ) * 2; // for one cell
+    var tWidth = parseInt( Chunks.cTable.clientWidth ) * 0.8;
     this.clearChunks();
     if ( cWidth <= 0 || tWidth <= 0 ) {
         return;
@@ -38,7 +38,8 @@ utWebUI.drawChunks = function( chunks ) {
     tCell = ELE_TD.cloneNode(true);
     tCell.colSpan = NumCols;
     tCell.innerHTML = NumRows + " " + WUILang.chunksRows + ", " + NumCols + " ";
-    tCell.innerHTML += WUILang.chunksColumns + ", " + d.chunks[2] + " ";
+    tCell.innerHTML += WUILang.chunksColumns + ", " + d.chunks[2] + " (";
+    tCell.innerHTML += ( d.chunks[0].length ) + ") ";
     tCell.innerHTML += WUILang.chunksChunks + ", " + WUILang.chunksSize + ": ";
     tCell.innerHTML += ( d.chunks[1] / 1024 ) + " " + WUILang.KB; // Chunk size
     tCell.className = "tHeader";
@@ -122,27 +123,26 @@ function resizeChunks() {
 } // resizeChunks
 
 
-var rChunks = function( aDiv ) {
-    this.Body = aDiv;
-    this.Body.className = "cDiv";
-    this.cTable = ELE_TABLE.cloneNode(true);
-    this.cTable.className = "tChunks";
-    this.cTable.style.verticalAlign = "top";
-    this.Body.onresize = resizeChunks;
-    this.Body.appendChild( this.cTable );
-    // Reference for calculating width of a table cell
-    this.tEM = ELE_DIV.cloneNode(true);
-    this.tEM.id = "tEM";
-	this.tEM.appendChild(document.createTextNode('M'));
-	this.Body.appendChild( this.tEM );
-} // rChunks
-
-
 utWebUI.initDone = function() {
     // call a native handler
     utWebUI.ChunksInitDone();
-    utWebUI.Chunks = new rChunks( $$("Chunks") );
+    
+    // Create "chunks" tab
+    utWebUI.Chunks = document.createElement("DIV");
+    utWebUI.Chunks.id = "Chunks";
+    utWebUI.Chunks.cTable = ELE_TABLE.cloneNode(true);
+    utWebUI.Chunks.cTable.className = "tChunks";
+    utWebUI.Chunks.cTable.style.verticalAlign = "top";
+    utWebUI.Chunks.appendChild( utWebUI.Chunks.cTable );
+    cplugin.attachPageToTabs(utWebUI.Chunks, WUILang.Chunks);
+    
     if ( utWebUI.ChunksEnabled == true ) {
+        // Reference for calculating width of a table cell
+        utWebUI.tEM = ELE_DIV.cloneNode(true);
+        utWebUI.tEM.id = "tEM";
+        utWebUI.tEM.appendChild(document.createTextNode('M'));
+        utWebUI.Chunks.appendChild( utWebUI.tEM );
+        
         rTorrentStub.prototype.getchunks = getChunks;
         rTorrentStub.prototype.getchunksResponse = getChunksResponse;
         utWebUI.updateChunks = updateChunks;
@@ -156,8 +156,10 @@ utWebUI.initDone = function() {
         tCell = ELE_TD.cloneNode(true);
         // Inform user that chunks are not supported
         tCell.innerHTML = WUILang.chunksNotSupported;
-        tCell.innerHTML += utWebUI.rTorrentVersion; 
+        tCell.innerHTML += utWebUI.rTorrentVersion;
+        tRow.id = "tRowNotSupported";
         tRow.appendChild( tCell );
+        tCell.id = "tCellNotSupported";
         utWebUI.Chunks.cTable.appendChild( tRow );
     }
 } // initDone

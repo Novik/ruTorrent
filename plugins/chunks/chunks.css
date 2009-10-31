@@ -4,16 +4,14 @@
     visibility: hidden;
 }
 
-.cDiv {
-    margin-top: .5em;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid black;
-    width: 99%;
-    display: table;
+#Chunks {
+    border: 1px solid #ccc;
+    width: 100%;
+    height: 98%;
+    margin-top: 0.2em;
     font-family: fixed, Courier New, Lucidatypewriter, Andale Mono;
     font-size: 80%;
-    vertical-align: top;
+    overflow: auto;
 }
 
 .tChunks {
@@ -26,12 +24,14 @@
 
 .tHeader {
     font-size: 80%;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }
 
 .cCell {
     text-align: center;
-    vertical-align: center;
-    margin: 0;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
 }
 
 .Cell0 {
@@ -99,3 +99,11 @@
     background-color: #C3988B;
 }
 
+#tCellNotSupported {
+    text-align: center;
+}
+
+#tRowNotSupported {
+    vertical-align: middle;
+    color: red;
+}
