@@ -7,7 +7,22 @@ if( $theSettings->iVersion < 0x804 )
 else
 	$s = 'system.method.set_key</methodName><params><param><value><string>event.download.erased</string></value></param>';
 
-// commands are always executed in alphabetical order of their tag name
+//
+// commands are always executed in the alphabetical order of their tag names
+//
+
+// call d.open to refresh d.get_base_path= variable
+$content =
+	'<?xml version="1.0" encoding="UTF-8"?>'.
+	'<methodCall><methodName>'.$s.
+	'<param><value><string>erasedata_00</string></value></param>'.
+	'<param><value><string>branch=d.get_custom5=,d.open=</string></value></param>'.
+	'</params>'.
+	'</methodCall>';
+
+$result = send2RPC( $content );
+
+// remove all data files, included into torrent
 $content =
 	'<?xml version="1.0" encoding="UTF-8"?>'.
 	'<methodCall><methodName>'.$s.
@@ -19,6 +34,7 @@ $content =
 $result = send2RPC( $content );
 
 
+// remove all empty directories
 // security issue: call script with path to cleanup as parameter,
 //                 but it's not critical - we delete empty dirs only
 $content =
