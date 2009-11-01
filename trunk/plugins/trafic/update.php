@@ -54,8 +54,6 @@
 						$delta_down = floatval($data[1])-floatval($wasTorrents[$key][1]);
 						if(($delta_up<0) || ($delta_down<0))
 						{
-//							$delta_up = $data[0];
-//							$delta_down = $data[1];
 							$delta_up = 0;
 							$delta_down = 0;
 						}
@@ -107,8 +105,6 @@
 				$delta_down = floatval($now[1])-floatval($was[1]);
 				if(($delta_up<0) || ($delta_down<0))
 				{
-//					$delta_up = $now[0];
-//					$delta_down = $now[1];
 					$delta_up = 0;
 					$delta_down = 0;
 				}

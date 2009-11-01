@@ -59,7 +59,7 @@ class rStat
 		$tm = getdate();
 		$ndx = $tm["hours"];
 		$was = getdate($this->hourHitTimes[$ndx]);
-		if(($tm[0] - $this->hourHitTimes[$ndx]>3600) ||
+		if(($tm[0] - $this->hourHitTimes[$ndx]>3600+3600) ||	// +3600 - for daylight
 			($ndx!=$was["hours"]))
 		{
 			$this->hourHitTimes[$ndx] = $tm[0];
@@ -70,7 +70,7 @@ class rStat
 		$this->hourDown[$ndx]+=$deltaDown;
                 $ndx = $tm["mday"]-1;
 		$was = getdate($this->monthHitTimes[$ndx]);
-		if(($tm[0] - $this->monthHitTimes[$ndx]>3600*24) ||
+		if(($tm[0] - $this->monthHitTimes[$ndx]>3600*24+3600) ||
 			($ndx!=$was["mday"]-1))
 		{
 			$this->monthHitTimes[$ndx] = $tm[0];
@@ -81,7 +81,7 @@ class rStat
 		$this->monthDown[$ndx]+=$deltaDown;
                 $ndx = $tm["mon"]-1;
 		$was = getdate($this->yearHitTimes[$ndx]);
-                if(($tm[0] - $this->yearHitTimes[$ndx]>3600*24*31) ||
+                if(($tm[0] - $this->yearHitTimes[$ndx]>3600*24*31+3600) ||
 			($ndx!=$was["mon"]-1))
 		{
 			$this->yearHitTimes[$ndx] = $tm[0];
