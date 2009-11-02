@@ -110,6 +110,7 @@ utWebUI.switchTrackersLabel = function(el,force)
 		utWebUI.actRSSLbl = null;
 		show($$("List"));
 		hide(lst);
+		utWebUI.switchLayout(false);
 	}
 
 	if(utWebUI.actTrackersLbl)
