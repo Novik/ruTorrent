@@ -50,3 +50,5 @@ ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui
 == [Plugins Plug-ins] ==
 
 == [Versions Changes] ==
+
+== [http://forums.rutorrent.org Forum] ==
