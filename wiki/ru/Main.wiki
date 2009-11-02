@@ -51,3 +51,5 @@ ruTorrent был разработан на базе [http://www.utorrent.com/doc
 == [Plugins Плагины] ==
 
 == [Versions История версий] ==
+
+== [http://forums.rutorrent.org Форум] ==
