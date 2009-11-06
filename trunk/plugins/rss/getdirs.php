@@ -4,7 +4,6 @@ require_once( '../../util.php' );
 require_once( '../../settings.php' );
 
 $theSettings = rTorrentSettings::load();
-$tdir = "../..";
 $dh = false;
 
 if(isset($_REQUEST['dir']))
@@ -21,7 +20,7 @@ if(isset($_REQUEST['dir']))
 }
 if(!$dh)
 {
-	$dir = $tdir;
+	$dir = $theSettings->directory;
 	$dh = @opendir($dir);
 }
 $files = array();
