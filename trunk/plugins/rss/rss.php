@@ -775,9 +775,8 @@ class rRSSManager
 			$info = $this->rssList->lst[$hash];
                         if($this->cache->get($rss) && $info['enabled'])
 			{
-				if($rss->fetch())
+				if($rss->fetch() && $this->cache->set($rss))
 				{
-					$this->cache->set($rss);
 					$this->checkFilters($rss,$info,$filters);
 					$this->saveHistory();
 				}
@@ -804,11 +803,8 @@ class rRSSManager
 			$rss->hash = $hash;
 			if($this->cache->get($rss) && $info['enabled'])
 			{
-				if($rss->fetch())
-				{
-					$this->cache->set($rss);
+				if($rss->fetch() && $this->cache->set($rss))
 					$this->checkFilters($rss,$info,$filters);
-				}
 				else
 					$this->rssList->addError( "WUILang.cantFetchRSS", $rss->srcURL );
 			}
@@ -913,10 +909,10 @@ class rRSSManager
 		$rss = new rRSS($rssURL);
 		if(!$this->rssList->isExist($rss))
 		{
-			if($rss->fetch())
+			if($rss->fetch() && $this->cache->set($rss))
 			{
-				$rssLabel = trim($rssLabel);
-				$this->cache->set($rss);
+			        if($rssLabel)
+			        	$rssLabel = trim($rssLabel);
 				if(!$rssLabel || !strlen($rssLabel))
 				{
 					if(array_key_exists('title',$rss->channel))
@@ -925,7 +921,7 @@ class rRSSManager
 						$rssLabel = 'New RSS';
 				}
 				$this->rssList->add($rss,$rssLabel,$rssAuto,$enabled);
-                               	$this->saveState(false);
+               	               	$this->saveState(false);
 				$this->checkFilters($rss);
 				$this->saveHistory();
 			}
