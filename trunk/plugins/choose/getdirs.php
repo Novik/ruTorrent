@@ -3,7 +3,6 @@ require_once( '../../config.php' );
 require_once( '../../util.php' );
 require_once( '../../settings.php' );
 
-$tdir = "../..";
 $dh = false;
 $theSettings = rTorrentSettings::load();
 
