@@ -190,7 +190,7 @@ utWebUI.newConfig = function()
 	{
 		utWebUI.rssTable.reverse = iv($_COOKIE["webui.rss.rev"]);
 	}
-	utWebUI.rssTable.colorEvenRows = (utWebUI.settings["webui.alternate_color"]) ? true : false;
+	utWebUI.rssTable.colorEvenRows = (utWebUI.bAltCol) ? true : false;
 	utWebUI.rssSortR = 0;
 	if(typeof $_COOKIE["webui.rss.sortrev"] != "undefined") 
 	{
@@ -509,7 +509,7 @@ utWebUI.setSettings = function()
 	utWebUI.oldSetSettings();
 	if(utWebUI.allRSSStuffInited)
 	{
-		utWebUI.rssTable.colorEvenRows = (utWebUI.settings["webui.alternate_color"]) ? true : false;
+		utWebUI.rssTable.colorEvenRows = (utWebUI.bAltCol) ? true : false;
 		utWebUI.rssTable.refreshSelection();
 		utWebUI.rssTable.maxRows = this.minRows;
 		utWebUI.rssTable.refreshRows();
