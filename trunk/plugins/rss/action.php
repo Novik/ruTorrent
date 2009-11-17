@@ -291,7 +291,8 @@ header("Content-Length: ".strlen($content));
 header("Content-Type: text/xml; charset=UTF-8");
 echo $content;
 ob_flush();
-flush();
+if(!ini_get("zlib.output_compression"))
+    flush();
 
 if(connection_aborted())
 {
