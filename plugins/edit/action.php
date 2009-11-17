@@ -4,7 +4,6 @@ require_once( '../../xmlrpc.php' );
 require_once( '../../Torrent.php' );
 require_once( '../../settings.php' );
 
-ob_start();
 ignore_user_abort(true);
 set_time_limit(0);
 $errors = array();
@@ -142,6 +141,4 @@ $content = '<?xml version="1.0" encoding="UTF-8"?><data><![CDATA['.$ret.']]></da
 header("Content-Length: ".strlen($content));
 header("Content-Type: text/xml; charset=UTF-8");
 echo $content;
-ob_flush();
-flush();
 ?>
