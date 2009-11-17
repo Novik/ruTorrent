@@ -2,7 +2,6 @@
 
 require_once( '../../xmlrpc.php' );
 
-ob_start();
 ignore_user_abort( true );
 set_time_limit( 0 );
 
@@ -65,6 +64,4 @@ header( "Content-Length: ".strlen( $content ) );
 header( "Content-Type: text/xml; charset=UTF-8" );
 echo $content;
 
-ob_flush();
-flush();
 ?>
