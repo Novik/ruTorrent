@@ -1,39 +1,41 @@
-#summary Детальное описание сообщений об ошибках.
+#summary Detailed description of error messages.
 
-== Детальное описание сообщений об ошибках ==
+== Detailed description of error messages ==
 
  * *Error: torrent is doesn't passed to rTorrent.*
 
- Ошибка может возникнуть при попытке добавления нового торрента на скачку. Означает она то, что ruTorrent не смог корректно обработать ссылку на торрент файл, или сам торрент файл. Причины могут быть разнообразные - например, Вы попытались добавить ссылку на торрент с трекера, который требует авторизации. Или торрент файл побился в процессе скачки.   
+ The error may occur in attempt to add a torrent for download. It means ruTorrent could not process the link to the torrent-file of the torrent-file itself correctly. There could be severeal possible reasons: the torrent tracker requires an authorization or the torrent-file was spoiled during dowload.
 
  * *PHP module PCRE is not installed. ruTorrent will not work.*
 
- Ошибка специфична для систем на базе BSD, в части которых модуль PCRE не поставляется вместе с php по умолчанию. Способ решения очевиден - доставьте необходимый модуль.
+ The error is specific for some of BSD-based systems where the modile PCRE is not installed with php by default. The solution of this problem is obvious - install the necessary module.
 
  * *Web server can't access rTorrent's session directory for read. ruTorrent will not work.*
 
- Ну таки да, должен, но не имеет. Либо проблемы с правами пользователя веб-сервера, либо у php ограничен набор директорий для доступа (см. переменную open_basedir в php.ini). Возможный (но, мягко говоря, не самый лучший) вариант решения - перенести директорию session rTorrent (поправив его конф. файл) непосредственно в директорию установки ruTorrent, и сказать ей chmod -R 0777. Что, скорее всего, обеспечит работоспособность (попутно организовав дырку в системе безопасности).
- 
+ Yes, it needs, but doesn't have. It could be whether web-server user does not have enough rights or a cutdown php instructions set (see the variabe open_basedir in php.ini). Possible (but actually not the best) solution - move the session directory (don't forget to alter rTorrent configuration file appropriately) to the rTorrent installation directory and assign it necessary access rights (chmod -R 0777). Very likely it will make rTorrent work (and add a vulnerability to the sysmem).
+
  * *rTorrent's user can't access settings directory for read/write/execute. ruTorrent will not work.*
  * *rTorrent's user can't access file ./test.sh for read/execute. ruTorrent will not work.*
  * *rTorrent's user can't access torrents directory for read/execute. You can't add torrents through ruTorrent.*
  * *Web server can't access settings directory for read/write/execute. ruTorrent can't save own settings.*
  * *Web server can't access torrents directory for read/write/execute. You can't add torrents through ruTorrent.*
 
- Данная группа ошибок связана, скорее всего, с тем, что Вы некорректно провели процедуру установки ruTorrent. Например, развернули архив не из под пользователя веб-сервера.
+ This group of errors most likely relate to incorrect ruTorrent installation. Say the achive has been unpacked not under a web-server user account.
 
  * *Bad link to rTorrent. Check if it is really running. Check $scgi_port and $scgi_host settings in config.php and scgi_port in rTorrent configuration file.*
 
- Чаще всего это означает, что rTorrent упал или не запущен. Если же несмотря на выдачу данной ошибки Вы видите список закачек в ruTorrent - самое время прислушаться к совету, данному в сообщении об ошибке. Что-то не так с конфигурационным файлом ruTorrent, да.
+ In Ususally it means rTorrent is terminated or has not been started. If despite this error is shown you can see the list of torrents in ruTorrent - there is something wrong in ruTorrent configuration file, as it mentioned in the error message.
 
  * *rTorrent is compiled with incorrect version of xmlrpc-c library, without i8 support. Version must be >= 1.11. Some functionality will be unavailable.*
 
- Собственно, в самом сообщении об ошибке все уже рассказано. Ну не имеют старые версии xmlrpc-c поддержки длинных целых. Как результат - числа, большие 2Г будут показываться как отрицательные. Ну и диалог "Настройки" корректно работать не будет. Замечу - *недостаточно* простого наличия в системе библиотеки xmlrpc-c версии >= 1.11. Нужно, чтобы rtorrent был именно с ней *скомпилирован*.
+ The message explains itself. Old versions of xmlrpc-c do not support long integers. So numbers greater than 2G will be shown as negative. And dialog window @Settings@ will not work properly. Note - *it is not enough* to have just the library xmlrpc-c vesion >=1.11 in the system. It is necessary to have rTorrent *compiled* with it.
 
  * *xxx plugin: Plugin will not work. Web-server can't access to external program (program name)*
 
- Упомянутая программа требуется для работы данному плагину, но недоступна пользователю, из под которого работает веб-сервер. Либо данной программы вообще нет (и надо ее поставить), либо путь к программе отсутствует в переменной окружения PATH пользователя веб-сервера (в этом случае нужно либо поменять PATH, либо обратиться к файлу конфигурации плагина, как правило, там есть возможность явно указать полный путь к данной программе). Особняком стоит ситуация, когда программа в системе вообще-то есть, но веб-сервер выполняется в chroot окружении, и программа ему, понятно, недоступна.
+ The mentioned program is required for this plug-in working but is unavailaible under web-server user's account. Or this program does not exist at all (and it should be installed), or the path to the program was not included in the evironment variable PATH of web-server user (in this case PATH variable should be revised or the plug-in configuration file should be called, usually there is a way to define a path to the program).
+ Another case if the program exists the system but web-server is executed in chroot environment and the program is unavailaible to it.
 
  * *ххх plugin: rTorrent's user can't access php interpreter. Plugin will not work.*
 
- Причины в целом аналогичны предыдущей ошибке, за исключением того, что речь идет не о пользователе веб-сервера, а о пользователе, из под которого выполняется rTorrent. Добавлю - не стоит думать, что раз у Вас вообще php работает, то и php интерпретатор автоматом в системе есть. Необходимо наличие пакета php-cli, веб-сервер же может использовать php-fcgi, например, в состав которого собственно интерпретатор не входит.
+ Reasons for this are usually similar to ones decribed for the previous error message except for the problem is not with web-server user but with rTorrent user.
+ Note - if PHP is working in the system, it does not always mean  that the interpreter exists in the system too. The package php-cli is necessary. Web-server may use e. g. php-fcgi which does not contain an interpreter.
