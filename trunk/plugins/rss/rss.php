@@ -294,7 +294,7 @@ class rRSS
 				if( "&" == $var || "=" == $var )
 					$query .= $var;
 				else
-					$query .= urlencode($var);
+					$query .= urlencode(str_replace("+", " ", $var));
 			}
 		}
 		if(!empty($fragment))
