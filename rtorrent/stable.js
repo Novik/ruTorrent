@@ -116,6 +116,7 @@ dxSTable.prototype.create = function(_2, _3, aName)
 		}
 		this.cols++;
 		this.colsdata[i] = _3[this.colOrder[i]];
+		this.colsdata[i].width = iv(this.colsdata[i].width);
 
 		td = ELE_TD.cloneNode(true);
 		tr.appendChild(td);
@@ -161,7 +162,7 @@ dxSTable.prototype.create = function(_2, _3, aName)
 		span = ELE_DIV.cloneNode(true);
 		span.innerHTML = _3[this.colOrder[i]].text;
 		td.appendChild(span);
-		td.style.width = (_3[this.colOrder[i]].width) ? _3[this.colOrder[i]].width : "auto";
+		td.style.width = (_3[this.colOrder[i]].width) ? (_3[this.colOrder[i]].width+"px") : "auto";
 		td.setAttribute("index", i);
 		this.colMove.init(td, preventSort, null, moveColumn);
 		if(!browser.isIE8up)
@@ -195,7 +196,7 @@ dxSTable.prototype.create = function(_2, _3, aName)
 		cl = ELE_COL.cloneNode(true);
 		if(!browser.isOldIE)
 		{
-			cl.style.width = (this.colsdata[i].width) ? this.colsdata[i].width : "auto";
+			cl.style.width = (this.colsdata[i].width) ? (this.colsdata[i].width+"px") : "auto";
 		}
 		cg.appendChild(cl);
 		this.tBodyCols[j] = cl;
@@ -903,7 +904,7 @@ dxSTable.prototype.colDrag = function(e)
 	{
 		return(true);
 	}
-
+	this.colsdata[this.hotCell].width += (ex-o.lastMouseX);
 	o.style.width = nw + "px";
 	o.lastMouseX = ex;
 	document.body.style.cursor = "e-resize";
@@ -1711,13 +1712,5 @@ dxSTable.prototype.isColumnEnabled = function(i)
 
 dxSTable.prototype.getColWidth = function(i) 
 {
-	var col = this.tHeadCols[this.getColOrder(i)];
-        var ret = col.offsetWidth;
-        if(!ret)
-        {
-	       	ret = iv(col.style.width);
-		if(browser.isIE || browser.isFirefox || browser.isOpera)
-			ret = ret+4;
-	}
-	return(ret);
+	return(this.colsdata[this.getColOrder(i)].width);
 };
