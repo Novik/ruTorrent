@@ -75,11 +75,32 @@ class rThrottle
 		}
 		return($req->run() && !$req->fault);
 	}
+	public function fill()
+	{
+		$req = new rXMLRPCRequest();
+		for($i=0; $i<MAX_THROTTLE; $i++)
+		{
+			$req->addCommand(new rXMLRPCCommand("get_throttle_up_max", array("thr_".$i)));
+			$req->addCommand(new rXMLRPCCommand("get_throttle_down_max", array("thr_".$i)));
+		}
+		if($req->run() && !$req->fault)
+		{
+			for($i=0; $i<MAX_THROTTLE; $i++)
+			{
+				if($i>=count($this->thr))
+					$this->thr[$i] = array( "name" => "thr_".$i );
+				$this->thr[$i]["up"] = $req->i8s[$i*2]/1024;
+				$this->thr[$i]["down"] = $req->i8s[$i*2+1]/1024;
+			}
+			return($this->store());
+		}
+		return(false);
+	}
 	public function correct()
 	{
 		global $isAutoStart;
 		if(!$isAutoStart)
-			return($this->init());
+			return($this->fill());
 		$toCorrect = array();
 		$req = new rXMLRPCRequest( 
 			new rXMLRPCCommand( "d.multicall", array(
