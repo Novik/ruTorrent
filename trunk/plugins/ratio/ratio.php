@@ -64,6 +64,30 @@ class rRatio
 		}
 		return(false);
 	}
+	public function obtain()
+	{
+	        $req = new rXMLRPCRequest();
+		for($i = 0; $i<MAX_RATIO; $i++)
+		{
+			$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.min"));
+			$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.max"));
+			$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.upload"));
+		}
+		if($req->run() && !$req->fault)
+		{
+			for($i = 0; $i<MAX_RATIO; $i++)
+			{
+			        if($i>=count($this->rat))
+			                $this->rat[$i] = array("action"=>RAT_STOP, "name"=>"ratio".$i );
+				$this->rat[$i]["min"] = $req->i8s[$i*3];
+				$this->rat[$i]["max"] = $req->i8s[$i*3+1];
+				$this->rat[$i]["upload"] = floatval($req->i8s[$i*3+2])/1024/1024;
+
+			}
+			return($this->store());
+		}
+                return(false);
+	}
 	public function flush()
 	{
 		$req1 = new rXMLRPCRequest(new rXMLRPCCommand("view_list"));

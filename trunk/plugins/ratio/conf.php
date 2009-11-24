@@ -13,9 +13,9 @@ $isAutoStart = true;	// if false, then you need start plugin mannualy.
  			// system.method.set = group.rat_0.ratio.command, d.close=
 			// ...
 			// group.insert_persistent_view = rat_MAX_RATIO
-			// group.rat_0.ratio.enable=
-			// group.rat_0.ratio.min.set=[min_limit_for_ratioMAX_RATIO]
-			// group.rat_0.ratio.max.set=[max_limit_for_ratioMAX_RATIO]
-			// group.rat_0.ratio.upload.set=[upload_limit_for_ratioMAX_RATIO]
+			// group.rat_MAX_RATIO.ratio.enable=
+			// group.rat_MAX_RATIO.ratio.min.set=[min_limit_for_ratioMAX_RATIO]
+			// group.rat_MAX_RATIO.ratio.max.set=[max_limit_for_ratioMAX_RATIO]
+			// group.rat_MAX_RATIO.ratio.upload.set=[upload_limit_for_ratioMAX_RATIO]
  			// system.method.set = group.rat_MAX_RATIO.ratio.command, d.close=
 ?>
