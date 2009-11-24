@@ -159,7 +159,7 @@
  uTorrent_settings	: "Preferências do rTorrent",
  
 // Main window
- Doesnt_support		: "A interface WebUI<sup>BETA</sup> não suporta o seu navegador.",
+ Doesnt_support		: "A interface ruTorrent não suporta o seu navegador.",
  Name				: "Nome",
  Status				: "Status",
  Size				: "Tamanho",
@@ -345,5 +345,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };

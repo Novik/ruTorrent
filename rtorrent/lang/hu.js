@@ -156,7 +156,7 @@
  uTorrent_settings	: "µTorrent beállítások",
  
 // Main window
- Doesnt_support		: "A WebUI<sup>BETA</sup> nem támogatja az ön böngészőjét.",
+ Doesnt_support		: "A ruTorrent nem támogatja az ön böngészőjét.",
  Name				: "Név",
  Status				: "állapot",
  Size				: "Méret",
@@ -342,5 +342,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };

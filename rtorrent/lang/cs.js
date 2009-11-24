@@ -155,7 +155,7 @@
  uTorrent_settings	: "rTorrent Nastavení",
  
 // Main window
- Doesnt_support		: "WebUI<sup>BETA</sup> nepodporuje Váš webový prohlížeč.",
+ Doesnt_support		: "ruTorrent nepodporuje Váš webový prohlížeč.",
  Name			: "Název",
  Status			: "Stav",
  Size			: "Velikost",
@@ -340,5 +340,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };

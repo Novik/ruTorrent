@@ -8,6 +8,14 @@ var version = "2.7";
 $(document).ready(function() 
 {
 	calcScrollbarSize();
+
+	if(browser.isOldIE)
+	{
+		Hide('loadimg');
+    		$$("msg").innerHTML = WUILang.Doesnt_support;
+      		return;
+	}
+	
 	log("WebUI started.");
 	document.title = "ruTorrent v" + version;
 	Key.onKeyDown = keyDown;
@@ -27,10 +35,6 @@ $(document).ready(function()
 			}
 		};
 	ContextMenu.init("ContextMenu");
-	if(browser.isIE && !browser.isIE7up) 
-	{
-		$$("List").style.width = "99%";
-	}
 	utWebUI.init();
 	var o = $$("stg_c");
 	o.innerHTML = stgHtml;
@@ -2194,7 +2198,7 @@ utWebUI =
          if(sr[k]) {
             var lbl = this.torrents[k][11];
             if(lbl == "") {
-               $$("txtLabel").value = "New Label";
+               $$("txtLabel").value = WUILang.newLabel;
                }
             else {
                $$("txtLabel").value = this.torrents[k][11];
@@ -2203,7 +2207,7 @@ utWebUI =
          }
       }
    else {
-      $$("txtLabel").value = "New Label";
+      $$("txtLabel").value = WUILang.newLabel;
       }
    ShowModal("dlgLabel");
    }

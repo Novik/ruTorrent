@@ -156,7 +156,7 @@
  uTorrent_settings	: "Asetukset",
  
 // Main window
- Doesnt_support		: "WebUI<sup>BETA</sup> ei tue käyttämääsi selainta.",
+ Doesnt_support		: "ruTorrent ei tue käyttämääsi selainta.",
  Name				: "Nimi",
  Status				: "Tila",
  Size				: "Koko",
@@ -342,5 +342,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };

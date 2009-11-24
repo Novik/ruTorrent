@@ -156,7 +156,7 @@
  uTorrent_settings	: "rTorrent Settings",
  
 // Main window
- Doesnt_support		: "The WebUI<sup>BETA</sup> does not support your browser.",
+ Doesnt_support		: "The ruTorrent does not support your browser.",
  Name				: "Name",
  Status				: "Status",
  Size				: "Size",
@@ -342,5 +342,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };

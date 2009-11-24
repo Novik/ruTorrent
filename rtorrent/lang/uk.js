@@ -157,7 +157,7 @@
  uTorrent_settings	: "Налаштування rTorrent",
  
 // Main window
- Doesnt_support		: "WebUI<sup>BETA</sup> не піддтримує Ваш браузер.",
+ Doesnt_support		: "ruTorrent не піддтримує Ваш браузер.",
  Name				: "Ім'я",
  Status				: "Статус",
  Size				: "Розмір",
@@ -343,5 +343,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };

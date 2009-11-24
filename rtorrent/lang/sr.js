@@ -156,7 +156,7 @@
  uTorrent_settings	: "rTorrent Settings",
  
 // Main window
- Doesnt_support		: "The WebUI<sup>BETA</sup> does not support your browser.",
+ Doesnt_support		: "The ruTorrent does not support your browser.",
  Name				: "Име",
  Status				: "Статус",
  Size				: "Величина",
@@ -339,5 +339,7 @@
  scrapeDownloaded		: "Downloaded",
  badSessionPath			: "Web server can't access rTorrent's session directory for read. ruTorrent will not work.",
  Total				: "Укупно",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };
