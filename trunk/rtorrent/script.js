@@ -3461,7 +3461,7 @@ oContextMenu.prototype.add = function()
 			{
 				link = document.createElement("A");
 				link.className = "exp";
-				link.innerHTML = args[i][1];
+				link.innerHTML = escapeHTML(args[i][1]);
 				li.appendChild(link);
 				if(browser.isOldIE)
 				{
@@ -3498,7 +3498,7 @@ oContextMenu.prototype.add = function()
 			 	{
 					link = document.createElement("A");
 					link.className = "sel";
-					link.innerHTML = args[i][1];
+					link.innerHTML = escapeHTML(args[i][1]);
 					if((typeof args[i][2] != "undefined") && args[i][2])
 						link.href = "javascript:" + args[i][2] + ";";
 					li.appendChild(link);
@@ -3512,14 +3512,14 @@ oContextMenu.prototype.add = function()
 					{
 						link = document.createElement("A");
 						link.className = "dis";
-						link.innerHTML = args[i][0]+hotKey;
+						link.innerHTML = escapeHTML(args[i][0])+hotKey;
 						li.appendChild(link);
                   			}
 					else 
 					{
 						link = document.createElement("A");
 						link.href = "javascript:" + args[i][1] + ";";
-						link.innerHTML = args[i][0]+hotKey;
+						link.innerHTML = escapeHTML(args[i][0])+hotKey;
 						li.appendChild(link);
 					}
 				}
