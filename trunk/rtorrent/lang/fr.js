@@ -156,7 +156,7 @@
  uTorrent_settings	: "Options de &micro;Torrent",
  
 // Fen\u00eatre principale
- Doesnt_support		: "La beta de WebUI ne supporte pas votre navigateur.",
+ Doesnt_support		: "La ruTorrent ne supporte pas votre navigateur.",
  Name				: "Nom",
  Status				: "Statut",
  Size				: "Taille",
@@ -342,5 +342,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };

@@ -157,7 +157,7 @@
  uTorrent_settings	: "Настройки rTorrent",
  
 // Main window
- Doesnt_support		: "WebUI<sup>BETA</sup> не поддерживает Ваш браузер.",
+ Doesnt_support		: "ruTorrent не поддерживает Ваш браузер.",
  Name				: "Имя",
  Status				: "Статус",
  Size				: "Размер",
@@ -343,5 +343,7 @@
  PCRENotFound			: "PHP модуль PCRE не установлен. ruTorrent не будет работать.",
  addTorrentSuccess		: "Закачка успешно передана в rTorrent.",
  addTorrentFailed		: "Ошибка добавления закачки.",
- pnlState			: "Состояние"
+ pnlState			: "Состояние",
+ newLabel			: "Новая метка",
+ enterLabel			: "Введите метку"
  };

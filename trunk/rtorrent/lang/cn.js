@@ -156,7 +156,7 @@
  uTorrent_settings	: "rTorrent 设置",
  
 // Main window
- Doesnt_support		: "这个 WebUI<sup>BETA</sup> 不支持你使用的浏览器.",
+ Doesnt_support		: "这个 ruTorrent 不支持你使用的浏览器.",
  Name				: "名称",
  Status				: "状态",
  Size				: "大小",
@@ -342,5 +342,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };

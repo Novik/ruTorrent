@@ -156,7 +156,7 @@
  uTorrent_settings	: "&micro;Torrent atribūti",
  
 // Main window
- Doesnt_support		: "WebUI<sup>BETA</sup> neatbalsta tavu interneta pārlūku.",
+ Doesnt_support		: "ruTorrent neatbalsta tavu interneta pārlūku.",
  Name				: "Nosaukums",
  Status				: "Statuss",
  Size				: "Izmērs",
@@ -342,5 +342,7 @@
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
  addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
- pnlState			: "State"
+ pnlState			: "State",
+ newLabel			: "New Label",
+ enterLabel			: "Enter Label"
  };
