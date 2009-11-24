@@ -909,7 +909,17 @@ rTorrentStub.prototype.getsettingsResponse = function(xmlDoc,docText)
 
 	for( var cmd in this.cmdInfoArray )
 	{
-		ret+='\r\n,["'+this.cmdInfoArray[cmd]+'",0,"'+this.getValue(values,i)+'"]';
+		var v = this.getValue(values,i);
+		switch(this.cmdInfoArray[cmd])
+		{
+			case "hash_interval":
+				v = iv(v)/1000;
+				break;
+			case "hash_read_ahead":
+				v = iv(v)/1048576;
+				break;
+		}
+		ret+='\r\n,["'+this.cmdInfoArray[cmd]+'",0,"'+v+'"]';
 		i+=2;
 	}
 	ret+=']}';
