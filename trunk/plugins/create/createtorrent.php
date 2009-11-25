@@ -4,6 +4,7 @@ require_once( '../../xmlrpc.php' );
 require_once( '../../Torrent.php' );
 require_once( 'conf.php' );
 
+ignore_user_abort(true);
 set_time_limit(0);
 if(isset($_REQUEST['path_edit']))
 {
@@ -41,6 +42,7 @@ if(isset($_REQUEST['path_edit']))
 	if($path_edit[strlen($path_edit)-1]=='/')
 		$path_edit = substr($path_edit,0,-1);	
 	$path_edit = trim($path_edit);	
+	$randName = null;
 	if(strlen($path_edit))
 	{
 	        if($useExternal!==false)
@@ -93,12 +95,13 @@ if(isset($_REQUEST['path_edit']))
 		}
 	        if(isset($_REQUEST['private']))
 			$torrent->is_private(true);
+		global $uploads;
+		$fname = "../../".$uploads."/".$torrent->info['name'].'.torrent';
+		$torrent->save($fname);
+		$fname = realpath($fname);
+		@chmod(fname,0666);
 		if(isset($_REQUEST['start_seeding']))
 		{
-			$fname = "../../".$uploads."/".$torrent->info['name'].'.torrent';
-			$torrent->save($fname);
-			$fname = realpath($fname);
-			@chmod(fname,0666);
         		$path_edit = dirname($path_edit);
 			$cmd = new rXMLRPCCommand( 'load_start_verbose', array( $fname, "d.set_directory=\"".$path_edit."\"" ) );
 			if(isInvalidUTF8($comment))
