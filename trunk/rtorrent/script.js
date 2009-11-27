@@ -3,7 +3,7 @@ var _isResizing = 0;
 var tdl = 0, tul = 0, stimer = null;
 var tdb = 0, tub = 0;
 var tdlimit = 0, tulimit = 0;
-var version = "2.7";
+var version = "2.8";
 
 $(document).ready(function() 
 {
