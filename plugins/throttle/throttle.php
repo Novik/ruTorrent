@@ -89,8 +89,8 @@ class rThrottle
 			{
 				if($i>=count($this->thr))
 					$this->thr[$i] = array( "name" => "thr_".$i );
-				$this->thr[$i]["up"] = $req->i8s[$i*2]/1024;
-				$this->thr[$i]["down"] = $req->i8s[$i*2+1]/1024;
+				$this->thr[$i]["up"] = intval($req->i8s[$i*2]/1024);
+				$this->thr[$i]["down"] = intval($req->i8s[$i*2+1]/1024);
 			}
 			return($this->store());
 		}
