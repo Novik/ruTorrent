@@ -2,7 +2,7 @@
 require_once( 'plugins/ratio/ratio.php');
 
 $rat = rRatio::load();
-if(($theSettings->iVersion<0x804) || ($isAutoStart && !$rat->flush() && !$rat->correct()) || (!$isAutoStart && !$rat->obtain()) )
+if(($theSettings->iVersion<0x804) || !$rat->obtain())
 	$jResult.="utWebUI.showRatioError('WUILang.ratioUnsupported'); utWebUI.ratioSupported = false; ";
 else
 {
