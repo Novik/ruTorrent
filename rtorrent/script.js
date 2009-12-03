@@ -1809,7 +1809,7 @@ utWebUI =
 	}
 , "addTorrents" : function(_83) 
 	{
-   		var d = eval("(" + (_83 || "{ torrents:[] }") + ")");
+   		var d = eval("(" + (_83 || "{ label: [], torrents:[] }") + ")");
    		var i, l = d.torrents.length;
    		this.noUpdate = true;
    		var sl = this.trtTable.dBody.scrollLeft;
@@ -2069,7 +2069,7 @@ utWebUI =
 			{
 				p.removeChild(p.childNodes[i]);
 				delete this.labels[k];
-				delete this.cLabels[k.substr(1, k.length - 2)];
+				delete this.cLabels[k.substr(5, k.length - 10)];
 				if(this.actLbl == k) 
 				{
 					_9a = true;
