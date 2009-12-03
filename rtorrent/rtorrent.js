@@ -1068,7 +1068,7 @@ rTorrentStub.prototype.getalltrackersResponse = function(xmlDoc,docText)
 			item+=',';
 			item+=this.getValue(values,6);
 			item+=']';
-			if(j>1)
+			if(j>delta)
 				item=','+item;
 			ret+=item;
 		}
