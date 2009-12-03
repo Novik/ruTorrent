@@ -1616,7 +1616,7 @@ utWebUI =
 	}
 , "addPeers" : function(_83) 
 	{
-  		var d = eval("(" + _83 + ")");
+  		var d = eval("(" + (_83 || "{ peers: [] }") + ")");
    		var i, l = d.peers.length;
    		var sl = this.prsTable.dBody.scrollLeft;
    		for(i = 0; i < l; i++) 
@@ -1809,7 +1809,7 @@ utWebUI =
 	}
 , "addTorrents" : function(_83) 
 	{
-   		var d = eval("(" + _83 + ")");
+   		var d = eval("(" + (_83 || "{ torrents:[] }") + ")");
    		var i, l = d.torrents.length;
    		this.noUpdate = true;
    		var sl = this.trtTable.dBody.scrollLeft;
@@ -1971,7 +1971,7 @@ utWebUI =
 	}
 , "getTotal" : function( ttl )
 	{
-		var d = eval("(" + ttl + ")");
+		var d = eval("(" + (ttl || "{ total: [0,0,0,0] }") + ")");
    		tub = d.total[0];
    		tdb = d.total[1];
    		tulimit = d.total[2];
@@ -2293,7 +2293,7 @@ utWebUI =
 	}
 , "addSettings" : function(_af) 
 	{
-   		var d = eval("(" + _af + ")"), v;
+   		var d = eval("(" + (_af || "{ settings: [] }") + ")"), v;
    		for(var i = 0, l = d.settings.length; i < l; i++) 
    		{
       			v = d.settings[i][2];
@@ -2647,7 +2647,7 @@ utWebUI =
    	}
 , "loadProperties" : function(_c3) 
 	{
-   		var d = eval("(" + _c3 + ")");
+   		var d = eval("(" + (_c3 || "{ props: [[]] }") + ")");
    		var _c5 = d.props[0];
    		if(typeof this.props[this.pID] == "undefined") 
    		{
@@ -2856,7 +2856,7 @@ utWebUI =
    	}
 , "addTrackers" : function(_db) 
 	{
-   		var d = eval("(" + _db + ")"), i, aData;
+   		var d = eval("(" + (_db || "{ trackers: [] }") + ")"), i, aData;
    		for(var m = 0; m<d.trackers.length; m+=2)
    		{
 			var k = d.trackers[m];
@@ -3098,7 +3098,7 @@ utWebUI =
    	}
 , "addFiles" : function(_db) 
 	{
-   		var d = eval("(" + _db + ")"), i, l;
+   		var d = eval("(" + (_db || "{ files: [0,[]] }") + ")"), i, l;
    		var hash = d.files[0];
    		for(i = 0, l = d.files[1].length; i < l; i++) 
    		{
