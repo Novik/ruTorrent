@@ -81,8 +81,8 @@ utWebUI.getTrackerName = function(announce)
 			parts = domain.split(".");
 			if(parts.length>2)
 			{
-				if((parts[parts.length-2] in ["co", "com", "net", "org"]) ||
-					(parts[parts.length-1] in ["uk"]))
+				if($.inArray(parts[parts.length-2]+"", ["co", "com", "net", "org"])>=0 ||
+					$.inArray(parts[parts.length-1]+"", ["uk"])>=0)
 					parts = parts.slice(parts.length-3);
 				else
 					parts = parts.slice(parts.length-2);
