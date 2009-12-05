@@ -5,6 +5,6 @@
 	$datadir_umask = 0007;
 
 	// set "true" to enable debug output
-	$datadir_debug_enabled = true;
+	$datadir_debug_enabled = false;
 
 ?>
