@@ -15,6 +15,13 @@ utWebUI.EditDataDir = function()
 	{
 		var d = this.torrents[this.dID].slice( 1 );
 		var d20 = d[20].replace(/(^\s+)|(\s+$)/g, "");  // d.get_basepath ???
+//		if( d20 == '' ) // torrent is not open?
+//		{
+//			var cmd = new rXMLRPCCommand( "d.openset_custom5" );
+//			cmd.addParameter( "string", this.hashes[i] );
+//			cmd.addParameter( "string", "1" );
+//			this.commands.push( cmd );
+//		}
 		d20 = d20.replace(/\/[^\/]+$/g, "");            // remove torrent name (subdir or file)
 		$$('edit_datadir').value = d20;
 		$$('btn_datadir_ok').disabled = false;
@@ -80,8 +87,12 @@ utWebUI.datadirCreate = function()
 				"<label id='lbl_datadir' for='edit_datadir'>" + WUILang.DataDir + ": </label>" +
 				"<br/>" +
 				"<div class='aright'>" +
-					"<input type='text' id='edit_datadir' class='TextboxLarge' maxlength='100'/>" +
+					"<input type='text' id='edit_datadir' class='TextboxLarge' maxlength='200'/>" +
 					"<input type='button' id='btn_datadir_browse' class='Button' value='...' />" +
+				"</div>" +
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='move_datafiles'/>"+
+					"<label for='move_datafiles'>"+ WUILang.DataDirMove +"</label>"+
 				"</div>" +
 			"</fieldset>" +
 			"<div class='aright'>" +
@@ -107,8 +118,9 @@ utWebUI.datadirCreate = function()
 
 rTorrentStub.prototype.setdatadir = function()
 {
-	this.content = "hash=" + utWebUI.dID + 
-		"&datadir=" + encodeURIComponent( $$('edit_datadir').value );
+	this.content = "hash=" + utWebUI.dID +
+		"&datadir=" + encodeURIComponent( $$('edit_datadir').value ) +
+		"&move_datafiles=" + ( $$('move_datafiles').checked  ? '1' : '0' );
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/datadir/action.php";
 }

@@ -4,9 +4,11 @@ div#dlg_datadir div.content {width: 380px; padding: 10px}
 
 div#dlg_datadir fieldset div {line-height: 16px}
 div#dlg_datadir fieldset div.props-spacer {width: 90%; float: left}
-div#dlg_datadir label {width: 120px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 
-div#dlg_datadir input {margin-top: 5px; margin-bottom: 5px;}
+//div#dlg_datadir label {width: 120px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+div#dlg_datadir label {width: 120px; vertical-align: middle; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+div#dlg_datadir input {vertical-align: middle; margin-top: 5px; margin-bottom: 5px;}
+
 div#dlg_datadir br {clear: left; line-height: 0}
 
 #btn_datadir_browse {width:30px}
