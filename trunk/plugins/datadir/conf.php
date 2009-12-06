@@ -4,6 +4,9 @@
 	// ( don't forget to set correct umask in rtorrent.rc file )
 	$datadir_umask = 0007;
 
+	// set run mode: "webserver", "rtorrent"
+	$datadir_runmode="rtorrent";
+
 	// set "true" to enable debug output
 	$datadir_debug_enabled = false;
 

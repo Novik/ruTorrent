@@ -14,20 +14,58 @@ utWebUI.EditDataDir = function()
 	if( this.dID != '' && this.torrents[this.dID] )
 	{
 		var d = this.torrents[this.dID].slice( 1 );
-		var d20 = d[20].replace(/(^\s+)|(\s+$)/g, "");  // d.get_basepath ???
-//		if( d20 == '' ) // torrent is not open?
-//		{
-//			var cmd = new rXMLRPCCommand( "d.openset_custom5" );
-//			cmd.addParameter( "string", this.hashes[i] );
-//			cmd.addParameter( "string", "1" );
-//			this.commands.push( cmd );
-//		}
-		d20 = d20.replace(/\/[^\/]+$/g, "");            // remove torrent name (subdir or file)
+		var d20 = d[20].replace(/(^\s+)|(\s+$)/g, "");	// trim( d.get_basepath ) ???
+		if( true || d20 == '' ) // torrent is not open
+		{
+			// async request for (d.open,d.get_basedir,d.close)
+			this.Request( "?action=getbasepath&hash=" + this.dID, [this.showDataDirDlg, this] );
+		}
+		else {
+			d20 = d20.replace(/\/[^\/]+$/g, "");	// remove torrent name (subdir or file)
+			$$('edit_datadir').value = d20;
+			$$('btn_datadir_ok').disabled = false;
+			ShowModal( "dlg_datadir" );
+		}
+	}
+}
+
+utWebUI.showDataDirDlg = function( data )
+{
+	if( this.dID != '' && this.torrents[this.dID] )
+	{
+		var d = eval("(" + data + ")");
+		d20 = d.basepath;
+		d20 = d20.replace(/(^\s+)|(\s+$)/g, "");	// trim( d.get_basepath ) ???
+		//this.torrents[d.hash][20] = d.basepath;
+
+		d20 = d20.replace(/\/[^\/]+$/g, "");		// remove torrent name (subdir or file)
 		$$('edit_datadir').value = d20;
 		$$('btn_datadir_ok').disabled = false;
 		ShowModal( "dlg_datadir" );
 	}
 }
+
+rTorrentStub.prototype.getbasepath = function()
+{
+	var cmd = new rXMLRPCCommand( "d.open" );
+	cmd.addParameter( "string", this.hashes[0] );
+	this.commands.push( cmd );
+	cmd = new rXMLRPCCommand( "d.get_base_path" );
+	cmd.addParameter( "string", this.hashes[0] );
+	this.commands.push( cmd );
+	cmd = new rXMLRPCCommand( "d.close" );
+	cmd.addParameter( "string", this.hashes[0] );
+	this.commands.push( cmd );
+}
+
+rTorrentStub.prototype.getbasepathResponse = function( xmlDoc, docText )
+{
+	var datas = xmlDoc.getElementsByTagName( 'data' );
+	var data = datas[0];
+	var values = data.getElementsByTagName( 'value' );
+	return( '{hash: "' + this.hashes[0] + '",basepath: "' + this.getValue( values, 3 ) + '"}' );
+}
+
 
 utWebUI.datadirCreateMenu = utWebUI.createMenu;
 utWebUI.createMenu = function( e, id )
@@ -42,7 +80,6 @@ utWebUI.createMenu = function( e, id )
 			ContextMenu.add( el, [WUILang.DataDir + "...", "utWebUI.EditDataDir()"] );
 	}
 }
-
 
 function enableDataDirButton()
 {
@@ -62,6 +99,7 @@ utWebUI.receiveDataDir = function( data )
 	var d = eval( "(" + data + ")" );
 	if( !d.errors.length )
 	{
+		//this.torrents[d.hash][20] = d.basepath;
 		HideModal( 'dlg_datadir' );
 	}
 	else

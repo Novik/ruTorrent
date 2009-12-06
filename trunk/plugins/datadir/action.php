@@ -1,14 +1,20 @@
 <?php
 
 require_once( '../../xmlrpc.php' );
+require_once( '../../util.php' );
 require_once( 'util_rt.php' );
 require_once( 'conf.php' );
+
+function Debug( $str )
+{
+        global $datadir_debug_enabled;
+        if( $datadir_debug_enabled ) rtDbg( "DataDir: ".$str );
+}
 
 ignore_user_abort( true );
 set_time_limit( 0 );
 
 umask( $datadir_umask );
-$dbg = $datadir_debug_enabled; // short variable :)
 $errors = array();
 
 if( !isset( $HTTP_RAW_POST_DATA ) )
@@ -36,16 +42,37 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		}
 	}
 
-	if( $dbg )
+	Debug( "" );
+	Debug( "--- begin ---" );
+	if( $move_datafiles == '1' )
+		Debug( $datadir.", move files" );
+	else
+		Debug( $datadir.", don't move files" );
+	Debug( "run mode: \"".$datadir_runmode."\"" );
+
+//	rtExec( "execute",
+//		array( "/tmp/test.sh", __FILE__, ), true );
+
+	if( $hash && $datadir != '' && $datadir_runmode == 'rtorrent' )
 	{
-		rtDbg( "" );
-		if( $move_datafiles == '1' )
-			rtDbg( "DataDir: d.set_directory=".$datadir." and move files" );
-		else
-			rtDbg( "DataDir: d.set_directory=".$datadir." and don't move files" );
+		$script_dir = rtRemoveLastToken( __FILE__, '/' );	// filename or dirname
+		$script_dir = rtAddTailSlash( $script_dir );
+		$res = rtExec( "execute",
+			array(
+				$script_dir."setdir.sh",
+				$pathToPHP,
+				$hash,
+				$datadir,
+				$move_datafiles,
+			),
+			true );
+		if( !$res )
+		{
+			$errors[] = array('desc'=>"WUILang.datadirSetDirFail", 'prm'=>$datadir);
+		}
 	}
 
-	if( $hash && $datadir != '' )
+	if( $hash && $datadir != '' && $datadir_runmode == 'webserver' )
 	{
 		if( !is_dir( $datadir ) )
 		{
@@ -55,12 +82,12 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		}
 		if( !is_dir( $datadir ) )
 		{
-			if( $dbg ) rtDbg( "DataDir: no directory: \"".$datadir."\"" );
+			Debug( "no such directory: \"".$datadir."\"" );
 			$errors[] = array('desc'=>"WUILang.datadirDirNotFound", 'prm'=>$datadir);
 		}
-		elseif( !rtSetDataDir( $hash, $datadir, $move_datafiles == '1', $dbg ) )
+		elseif( !rtSetDataDir( $hash, $datadir, $move_datafiles == '1', $datadir_debug_enabled ) )
 		{
-			if( $dbg ) rtDbg( "DataDir: rtSetDataDir() fail!" );
+			Debug( "rtSetDataDir() fail!" );
 			$errors[] = array('desc'=>"WUILang.datadirSetDirFail", 'prm'=>$datadir);
 		}
 	}
@@ -79,6 +106,6 @@ header( "Content-Length: ".strlen( $content ) );
 header( "Content-Type: text/xml; charset=UTF-8" );
 echo $content;
 
-if( $dbg ) rtDbg( "DataDir: finished" );
+Debug( "--- end ---" );
 
 ?>

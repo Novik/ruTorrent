@@ -268,9 +268,9 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 			$is_multy_file = ( $req->i8s[0] != 0 );
 			$base_path     = trim( $req->strings[0] );
 			$base_file     = trim( $req->strings[1] );
-			if( $dbg ) rtDbg( "rtSetDataDir: d.get_base_path     = ".$base_path );
-			if( $dbg ) rtDbg( "rtSetDataDir: d.get_base_filename = ".$base_file );
-			if( $dbg ) rtDbg( "rtSetDataDir: d.is_multy_file     = ".$is_multy_file );
+			if( $dbg ) rtDbg( "rtSetDataDir: d.get_base_path     : ".$base_path );
+			if( $dbg ) rtDbg( "rtSetDataDir: d.get_base_filename : ".$base_file );
+			if( $dbg ) rtDbg( "rtSetDataDir: d.is_multy_file     : ".$req->i8s[0] );
 		}
 		else $is_ok = false;
 	}
@@ -301,7 +301,7 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 		if( $req )
 		{
 			$torrent_files = $req->strings;
-			if( $dbg ) rtDbg( "rtSetDataDir: files in torrent    = ".count( $torrent_files ) );
+			if( $dbg ) rtDbg( "rtSetDataDir: files in torrent    : ".count( $torrent_files ) );
 		}
 		else $is_ok = false;
 	}
