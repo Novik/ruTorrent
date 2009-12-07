@@ -57,7 +57,8 @@ var AvailableLanguages =
 	sr:'Serbian',
 	sk:'Slovak',
 	es:'Spanish',
-	uk:'Ukrainian'
+	uk:'Ukrainian',
+	tr:'Turkey'
 };
 
 DefaultLanguage = 'en';
