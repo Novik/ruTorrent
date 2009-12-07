@@ -7,6 +7,8 @@
  WUILang.autotoolsEnableLabel		= "Enable \"AutoLabel\" feature";
  WUILang.autotoolsEnableMove		= "Enable \"AutoMove\" feature";
  WUILang.autotoolsPathToFinished	= "Path to finished downloads";
+ WUILang.autotoolsEnableWatch		= "Enable \"AutoWatch\" feature";
+ WUILang.autotoolsPathToWatch		= "Path to base watch directory";
  WUILang.autotoolsPHPNotFound		= s_NoAccess + "php interpreter. " + s_PluginFail;
  WUILang.autotoolsLabelShNotAvailable	= s_NoAccess + "file plugins/autotools/label.sh for read/execute. " + s_PluginFail;
  WUILang.autotoolsLabelPhpNotAvailable	= s_NoAccess + "file plugins/autotools/label.php for read. " + s_PluginFail;

@@ -12,6 +12,10 @@ utWebUI.addAndShowSettings = function( arg )
 	$$('enable_move').checked  = ( utWebUI.autotools.EnableMove  == 1 );
 	$$('path_to_finished').value = utWebUI.autotools.PathToFinished;
 	linked( $$('enable_move'), 0, ['path_to_finished', 'automove_browse_btn'] );
+	$$('enable_watch').checked  = ( utWebUI.autotools.EnableWatch  == 1 );
+	$$('path_to_watch').value = utWebUI.autotools.PathToWatch;
+	linked( $$('enable_watch'), 0, ['path_to_watch', 'autowatch_browse_btn'] );
+
 //	var s = '';
 //	for( var i = 0; i < utWebUI.autotools.sample.length; i++ )
 //	{
@@ -35,6 +39,10 @@ utWebUI.autotoolsWasChanged = function()
 	if( $$('enable_move').checked  != ( utWebUI.autotools.EnableMove  == 1 ) )
 		return true;
 	if( $$('path_to_finished').value != utWebUI.autotools.PathToFinished )
+		return true;
+	if( $$('enable_watch').checked  != ( utWebUI.autotools.EnableWatch  == 1 ) )
+		return true;
+	if( $$('path_to_watch').value != utWebUI.autotools.PathToWatch )
 		return true;
 //	var arr = $$('eautotools').value.split( "\n" );
 //	var groups = new Array();				// array of curGroups
@@ -111,17 +119,42 @@ utWebUI.autotoolsCreate = function()
 					"<input type='button' id='automove_browse_btn' class='Button' value='...' />"+
 				"</td>"+
 			"</tr>"+
+			"<tr />"+
+			"<tr>"+
+				"<td>"+
+					"<input type='checkbox' id='enable_watch' checked='false' "+
+					"onchange='javascript:linked(this, 0, [\"path_to_watch\", \"autowatch_browse_btn\"]);' />"+
+						"<label for='enable_watch'>"+ WUILang.autotoolsEnableWatch +"</label>"+
+				"</td>"+
+			"</tr>"+
+			"<tr>"+
+				"<td>"+
+					"<label id='lbl_path_to_watch' for='path_to_watch' class='disabled' disabled='true'>"+
+					WUILang.autotoolsPathToWatch +":</label>"+
+				"</td>"+
+			"</tr>"+
+			"<tr>"+
+				"<td class='alr'>"+
+					"<input type='text' id='path_to_watch' class='TextboxLarge' maxlength='100' />"+
+					"<input type='button' id='autowatch_browse_btn' class='Button' value='...' />"+
+				"</td>"+
+			"</tr>"+
 			"</table>"+
 		"</fieldset>";
 	plugin.attachPageToOptions( dlg, WUILang.autotools );
 	if( utWebUI.rDirBrowserLoaded )
 	{
-		plugin.DirBrowser = new rDirBrowser( 
+		plugin.DirBrowser1 = new rDirBrowser(
 			dlg, $$('path_to_finished'), $$('automove_browse_btn'), 'automove_browse_frame' );
+		plugin.DirBrowser2 = new rDirBrowser(
+			dlg, $$('path_to_watch'), $$('autowatch_browse_btn'), 'autowatch_browse_frame' );
 	}
 	else {
 		var btn = $$('automove_browse_btn');
 		btn.id = 'automove_browse_btn_disabled';
+		btn.disabled = true;
+		var btn = $$('autowatch_browse_btn');
+		btn.id = 'autowatch_browse_btn_disabled';
 		btn.disabled = true;
 	}
 
@@ -140,7 +173,9 @@ rTorrentStub.prototype.setautotools = function()
 {
 	this.content = "enable_label=" + ( $$('enable_label').checked ? '1' : '0' ) +
 		"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
-		"&path_to_finished=" + $$('path_to_finished').value;
+		"&path_to_finished=" + $$('path_to_finished').value +
+		"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
+		"&path_to_watch=" + $$('path_to_watch').value;
 //	var arr = $$('eautotools').value.split( "\n" );
 //	for( var i = 0; i < arr.length; i++ )
 //	{
