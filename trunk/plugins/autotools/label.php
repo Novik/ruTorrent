@@ -69,7 +69,7 @@ if( $is_ok )
 		}
 	}
 	else {
-		Debug( "rXMLRPCRequest() fail!" );
+		Debug( "rXMLRPCRequest() fail" );
 		$is_ok = false;
 	}
 }
@@ -82,7 +82,7 @@ if( $is_ok )
 	$label = rtGetRelativePath( $default_dir, $torrent_dir );
 	Debug( "label           : \"".$label."\"" );
 	if( $label != '' && $label != './' )
-		rtExec( "d.set_custom1", array( $hash, rawurlencode( $label ) ) );
+		rtExec( "d.set_custom1", array( $hash, rawurlencode( $label ) ), $autodebug_enabled );
 }
 
 Debug( "--- end ---" );
