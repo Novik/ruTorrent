@@ -353,13 +353,15 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 
 	if( $is_ok )
 	{
-		$cmd = array();
-		// Open torrent if need
-		if( $is_open )   $cmd[] = "d.open";
 		// Start torrent if need
-		if( $is_active ) $cmd[] = "d.start";
-		if( count( $cmd ) > 0 )
-			$is_ok = rtExec( $cmd, $hash, $dbg );
+		if( $is_active )
+			$is_ok = rtExec( array( "d.open", "d.start" ), $hash, $dbg );
+		// Open torrent if need
+		elseif( $is_open )
+			$is_ok = rtExec( "d.open", $hash, $dbg );
+		// Refresh torrent info after d.set_directory
+		else
+			$is_ok = rtExec( array( "d.open", "d.close" ), $hash, $dbg );
 	}
 
 	if( $dbg ) rtDbg( "rtSetDataDir: finished" );
