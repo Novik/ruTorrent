@@ -1,13 +1,14 @@
-#summary Описание плагина SeedingTime.
+#summary SeedingTime plug-in decription
 
-== Введение ==
+== Introduction ==
 
-Плагин добавляет в список закачек дополнительный столбец, в котором фиксируется время завершения каждой закачки. Так:
+The plug-in adds the column 'Finished' to the torrents list. This column contains the time when download of the torrent was completed.
+As example:
 
 [http://rutorrent.googlecode.com/svn/wiki/images/seedingtime.jpg]
 
-Разумеется, столбец будет заполнен значениями только для закачек, которые были завершены после установки плагина.
+Of course the column contains values only for torrents completed after the plug-in installed.
 
-== Чего требует для работы ==
+== Requirements ==
 
- * rTorrent версии >= 0.8.5
+ * rTorrent version >= 0.8.5
