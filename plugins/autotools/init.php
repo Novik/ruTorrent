@@ -16,6 +16,7 @@ if( DO_DIAGNOSTIC )
 	@chmod( $theSettings->path.'plugins/autotools/label.php', 0644 );
 	@chmod( $theSettings->path.'plugins/autotools/move.sh', 0755 );
 	@chmod( $theSettings->path.'plugins/autotools/move.php', 0644 );
+	@chmod( $theSettings->path.'plugins/autotools/watch.php', 0644 );
 
 	if( !isUserHavePermission( $theSettings->uid, $theSettings->gid, $theSettings->path.'plugins/autotools/label.sh', 0x0005 ) )
 		$jResult .= "utWebUI.showAutoToolsError('WUILang.autotoolsLabelShNotAvailable');";
@@ -25,6 +26,8 @@ if( DO_DIAGNOSTIC )
 		$jResult .= "utWebUI.showAutoToolsError('WUILang.autotoolsMoveShNotAvailable');";
 	if( !isUserHavePermission( $theSettings->uid, $theSettings->gid, $theSettings->path.'plugins/autotools/move.php',0x0004 ) )
 		$jResult .= "utWebUI.showAutoToolsError('WUILang.autotoolsMovePhpNotAvailable');";
+	if( !isUserHavePermission( $theSettings->uid, $theSettings->gid, $theSettings->path.'plugins/autotools/watch.php',0x0004 ) )
+		$jResult .= "utWebUI.showAutoToolsError('WUILang.autotoolsWatchPhpNotAvailable');";
 }
 
 
@@ -56,6 +59,20 @@ $content =
 $result = send2RPC( $content );
 
 
+$content =
+	'<?xml version="1.0" encoding="UTF-8"?>'.
+	'<methodCall>'.
+	'<methodName>schedule</methodName>'.
+	'<params>'.
+	'<param><value><string>autowatch</string></value></param>'.
+	'<param><value><string>'.'10'.'</string></value></param>'.
+	'<param><value><string>'.$autowatch_interval.'</string></value></param>'.
+	'<param><value><string>execute={sh,-c,'.$pathToPHP.' '.$theSettings->path.'plugins/autotools/watch.php'.'&amp; exit 0}</string></value></param>'.
+	'</params>'.
+	'</methodCall>';
+$result = send2RPC( $content );
+
+
 $at = rAutoTools::load();
 $jResult .= $at->get();
 
@@ -66,6 +83,12 @@ if( DO_DIAGNOSTIC )
 		$path_to_finished = trim( $at->path_to_finished );
 		if( $path_to_finished == '' )
 			$jResult .= "utWebUI.showAutoToolsError('WUILang.autotoolsNoPathToFinished');";
+	}
+	if( $at->enable_watch )
+	{
+		$path_to_watch = trim( $at->path_to_watch );
+		if( $path_to_watch == '' )
+			$jResult .= "utWebUI.showAutoToolsError('WUILang.autotoolsNoPathToWatch');";
 	}
 }
 

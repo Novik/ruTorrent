@@ -90,7 +90,7 @@ if( $is_ok )
 		Debug( "dest_path        : ".$dest_path );
 	}
 	else {
-		Debug( "Torrent files are not in subdir of \"directory\"" );
+		Debug( "Source files are not in subdir of \"directory\"" );
 		$is_ok = false;
 	}
 }
@@ -100,7 +100,7 @@ if( $is_ok )
 {
 	if( !rtSetDataDir( $hash, $dest_path, true, $autodebug_enabled ) )
 	{
-		Debug( "rtSetDataDir() fail!" );
+		Debug( "rtSetDataDir() fail" );
 	}
 }
 
