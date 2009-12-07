@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for lang in br cn cs da de es fi fr hu it lv nl pl sk uk ; do
+for lang in br cn cs da de es fi fr hu it lv nl pl sk uk tr ; do
 
 	cp -f ./en.js $lang".js"
 	chmod 644 $lang".js"
