@@ -7,6 +7,8 @@
  WUILang.autotoolsEnableLabel		= "Включить функцию \"АвтоМетки\"";
  WUILang.autotoolsEnableMove		= "Включить функцию \"АвтоПеремещение\"";
  WUILang.autotoolsPathToFinished	= "Каталог для завершенных закачек";
+ WUILang.autotoolsEnableWatch		= "Включить функцию \"АвтоПеремещение\"";
+ WUILang.autotoolsPathToWatch		= "Каталог для завершенных закачек";
  WUILang.autotoolsPHPNotFound		= s_NoAccess + " интерпретатору php. " + s_PluginFail;
  WUILang.autotoolsLabelShNotAvailable	= s_NoAccess + " к файлу plugins/autotools/label.sh на чтение/выполнение. " + s_PluginFail;
  WUILang.autotoolsLabelPhpNotAvailable	= s_NoAccess + " к файлу plugins/autotools/label.php на чтение. " + s_PluginFail;

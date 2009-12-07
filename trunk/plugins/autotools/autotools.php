@@ -10,6 +10,8 @@ class rAutoTools
 	public $enable_label = 0;
 	public $enable_move = 0;
 	public $path_to_finished = "";
+	public $enable_watch = 0;
+	public $path_to_watch = "";
 //	public $list = array();
 	static public $rootPath;
 
@@ -37,6 +39,8 @@ class rAutoTools
 			$this->enable_label = 0;
 			$this->enable_move = 0;
 			$this->path_to_finished = "";
+			$this->enable_watch = 0;
+			$this->path_to_watch = "";
 //			$this->list = array();
 //			$sample = array();
 			foreach( $vars as $var )
@@ -53,6 +57,14 @@ class rAutoTools
 				else if( $parts[0] == "path_to_finished" )
 				{
 					$this->path_to_finished = $parts[1];
+				}
+				else if( $parts[0] == "enable_watch" )
+				{
+					$this->enable_watch = $parts[1];
+				}
+				else if( $parts[0] == "path_to_watch" )
+				{
+					$this->path_to_watch = $parts[1];
 				}
 //				else if( $parts[0] == "sample" )
 //				{
@@ -79,6 +91,8 @@ class rAutoTools
 		$ret .= "EnableLabel: ".$this->enable_label;
 		$ret .= ", EnableMove: ".$this->enable_move;
 		$ret .= ", PathToFinished: '".addslashes( $this->path_to_finished )."'";
+		$ret .= ", EnableWatch: ".$this->enable_watch;
+		$ret .= ", PathToWatch: '".addslashes( $this->path_to_watch )."'";
 //		$ret .= ", sample: [";
 //		for( $i = 0; $i < count( $this->list ); $i++ )
 //		{
