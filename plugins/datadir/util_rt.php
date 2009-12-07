@@ -68,6 +68,50 @@ function rtGetRelativePath( $base_dir, $real_dir )
 }
 
 //------------------------------------------------------------------------------
+// Move $src file to $dst
+//------------------------------------------------------------------------------
+function rtMoveFile( $src, $dst, $dbg = false )
+{
+	if( !is_file( $src ) )
+	{
+		if( $dbg ) rtDbg( "rtMoveFile: not a file (".$src.")" );
+		return false;
+	}
+	$dst_dir = dirname( $dst );
+	if( !is_dir( $dst_dir ) )
+	{
+		// recursive mkdir() only after PHP_5.0
+		mkdir( $dst_dir, 0777, true );
+		//system( 'mkdir -p "'.$dst_dir.'"' );
+		if( !is_dir( $dst_dir ) )
+		{
+			if( $dbg ) rtDbg( "rtMoveFile: fail to create (".$dst_dir.")" );
+			return false;
+		}
+	}
+	if( is_file( $dst ) )
+		unlink( $dst );
+	//$atime = fileatime( $src_f );
+	//$mtime = filemtime( $src_f );
+	if( !rename( $src, $dst ) )
+	{
+		if( $dbg ) rtDbg( "rtMoveFile: from ".$src );
+		if( $dbg ) rtDbg( "rtMoveFile: to   ".$dst );
+		if( $dbg ) rtDbg( "rtMoveFile: move fail, try to copy" );
+		if( !copy( $src, $dst ) )
+		{
+			if( $dbg ) rtDbg( "rtMoveFile: copy fail" );
+			return false;
+		}
+		if( !unlink( $src ) )
+			if( $dbg ) rtDbg( "rtMoveFile: delete fail (".$src.")" );
+	}
+	// there are problems here, if run-user is not file owner
+	//touch( $dst_f, $atime, $mtime );
+	return true;
+}
+
+//------------------------------------------------------------------------------
 // Move an array of files from $src directory to $dst directory
 // ( files in array are relative to $src directory )
 //------------------------------------------------------------------------------
@@ -116,36 +160,8 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 	if( $dbg ) rtDbg( "rtMoveFiles: to   ".$dst );
 	foreach( $files as $file )
 	{
-		$src_f = $src.$file;
-		$dst_f = $dst.$file;
-		//if( $dbg ) rtDbg( "rtMoveFiles: move ".$src." to ".$dst );
-		if( is_file( $src_f ) )
-		{
-			if( !is_dir( dirname( $dst_f ) ) )
-			{
-				// recursive mkdir() only after PHP_5.0
-				mkdir( dirname( $dst_f ), 0777, true );
-				//system( 'mkdir -p "'.dirname( $dst ).'"' );
-			}
-			if( is_file( $dst_f ) )
-				unlink( $dst_f );
-			$atime = fileatime( $src_f );
-			$mtime = filemtime( $src_f );
-			if( !rename( $src_f, $dst_f ) )
-			{
-				if( $dbg ) rtDbg( "rtMoveFiles: move fail for ".$file );
-				if( $dbg ) rtDbg( "rtMoveFiles: try to copy ".$file );
-				if( !copy( $src_f, $dst_f ) )
-				{
-					if( $dbg ) rtDbg( "rtMoveFiles: copy fail for ".$file );
-					return false;
-				}
-				if( !unlink( $src_f ) )
-					if( $dbg ) rtDbg( "rtMoveFiles: delete fail for ".$file );
-			}
-			// there are problems here, if run-user is not file owner
-			//touch( $dst_f, $atime, $mtime );
-		}
+		if( !rtMoveFile( $src.$file, $dst.$file, $dbg ) )
+			return false;
 	}
 	if( $dbg ) rtDbg( "rtMoveFiles: finished" );
 	return true;
@@ -191,7 +207,7 @@ function rtExec( $cmds, $hash, $dbg )
 	if( !is_array( $cmds ) )
 	{
 		$req->addCommand( new rXMLRPCCommand( $cmds, $hash ) );
-		if( $dbg ) rtDbg( "rtExec: execute ".$cmds );
+		if( $dbg ) rtDbg( "rtExec: ".$cmds );
 	}
 	else {
 		$s = '';
@@ -216,7 +232,9 @@ function rtExec( $cmds, $hash, $dbg )
 //------------------------------------------------------------------------------
 function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 {
-	if( $dbg ) rtDbg( "rtSetDataDir: ".$dest_path.", ".$hash );
+	if( $dbg ) rtDbg( "rtSetDataDir: hash        : ".$hash );
+	if( $dbg ) rtDbg( "rtSetDataDir: dest_path   : ".$dest_path );
+	if( $dbg ) rtDbg( "rtSetDataDir: move files  : ".($move_files ? "1" : "0") );
 
 	$is_ok         = true;
 	$is_open       = false;

@@ -57,6 +57,11 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	{
 		$script_dir = rtRemoveLastToken( __FILE__, '/' );	// filename or dirname
 		$script_dir = rtAddTailSlash( $script_dir );
+		Debug( "script      : ".$script_dir."setdir.sh" );
+		Debug( "path to php : ".$pathToPHP );
+		Debug( "hash        : ".$hash );
+		Debug( "data dir    : ".$datadir );
+		Debug( "move files  : ".$move_datafiles );
 		$res = rtExec( "execute",
 			array(
 				$script_dir."setdir.sh",

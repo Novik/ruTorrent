@@ -29,11 +29,10 @@ else {
 
 if( $is_ok && $hash && $datadir != '' )
 {
-	if( $move_datafiles == '1' )
-		Debug( $datadir.", move files" );
-	else
-		Debug( $datadir.", don't move files" );
-
+	Debug( "hash        : ".$hash );
+	Debug( "data dir    : ".$datadir );
+	Debug( "move files  : ".$move_datafiles );
+ 
 	if( !is_dir( $datadir ) )
 	{
 		// recursive mkdir() only after PHP_5.0
