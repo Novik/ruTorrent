@@ -68,31 +68,46 @@ function rtGetRelativePath( $base_dir, $real_dir )
 }
 
 //------------------------------------------------------------------------------
+// Check if $dir exists and try to create it if not
+//------------------------------------------------------------------------------
+function rtMkDir( $dir, $mode = 0777 )
+{
+	if( !is_dir( $dir ) )
+	{
+		// recursive mkdir() only after PHP_5.0
+		mkdir( $dir, 0777, true );
+		//system( 'mkdir -p "'.$dst_dir.'"' );
+		if( !is_dir( $dir ) )
+			return false;
+	}
+	return true;
+}
+
+//------------------------------------------------------------------------------
 // Move $src file to $dst
 //------------------------------------------------------------------------------
 function rtMoveFile( $src, $dst, $dbg = false )
 {
+	// Check if source file exists
 	if( !is_file( $src ) )
 	{
 		if( $dbg ) rtDbg( "rtMoveFile: not a file (".$src.")" );
 		return false;
 	}
-	$dst_dir = dirname( $dst );
-	if( !is_dir( $dst_dir ) )
+
+	// Check if destination directory exists or can be created
+	if( !rtMkDir( dirname( $dst ), 0777 ) )
 	{
-		// recursive mkdir() only after PHP_5.0
-		mkdir( $dst_dir, 0777, true );
-		//system( 'mkdir -p "'.$dst_dir.'"' );
-		if( !is_dir( $dst_dir ) )
-		{
-			if( $dbg ) rtDbg( "rtMoveFile: fail to create (".$dst_dir.")" );
-			return false;
-		}
+		if( $dbg ) rtDbg( "rtMoveFile: can't create ".dirname( $dst ) );
+		return false;
 	}
+
+	// Check if destination file directory exists or can be deleted
 	if( is_file( $dst ) )
 		unlink( $dst );
-	//$atime = fileatime( $src_f );
-	//$mtime = filemtime( $src_f );
+
+	//$atime = fileatime( $src );
+	//$mtime = filemtime( $src );
 	if( !rename( $src, $dst ) )
 	{
 		if( $dbg ) rtDbg( "rtMoveFile: from ".$src );
@@ -120,37 +135,31 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 	// Check if source and destination directories are valid
 	if( !is_array( $files ) || $src == '' || $dst == '' )
 	{
-		if( $dbg ) rtDbg( "rtMoveFiles: invalid params!" );
+		if( $dbg ) rtDbg( "rtMoveFiles: invalid params" );
 		return false;
 	}
 
 	// Check if source directory exists
 	if( !is_dir( $src ) )
 	{
-		if( $dbg ) rtDbg( "rtMoveFiles: src is not a directory!" );
+		if( $dbg ) rtDbg( "rtMoveFiles: src is not a directory" );
 		if( $dbg ) rtDbg( "rtMoveFiles: ( ".$src." )" );
 		return false;
 	}
+	else $src = rtAddTailSlash( $src );
 
 	// Check if destination directory exists or can be created
-	$src = rtAddTailSlash( $src );
-	if( !is_dir( dirname( $dst ) ) )
+	if( !rtMkDir( dirname( $dst ), 0777 ) )
 	{
-		// recursive mkdir() only after PHP_5.0
-		mkdir( dirname( $dst ), 0777, true );
-		//system( 'mkdir -p "'.dirname( $dst_dir ).'"' );
-		if( !is_dir( dirname( $dst ) ) )
-		{
-			if( $dbg ) rtDbg( "rtMoveFiles: can't create dir ".$dst."!" );
-			return false;
-		}
-		$dst = rtAddTailSlash( $dst );
+		if( $dbg ) rtDbg( "rtMoveFiles: can't create ".dirname( $dst ) );
+		return false;
 	}
+	else $dst = rtAddTailSlash( $dst );
 
 	// Check if source and destination directories are the same
 	if( realpath( $src ) == realpath( $dst ) )
 	{
-		if( $dbg ) rtDbg( "rtMoveFiles: source is equal to destination!" );
+		if( $dbg ) rtDbg( "rtMoveFiles: source is equal to destination" );
 		if( $dbg ) rtDbg( "rtMoveFiles: ( ".realpath( $src )." )" );
 		return false;
 	}
@@ -166,6 +175,42 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 	if( $dbg ) rtDbg( "rtMoveFiles: finished" );
 	return true;
 }
+
+//------------------------------------------------------------------------------
+// Recursively scan files at $path directory
+//------------------------------------------------------------------------------
+function rtScanFiles( $path, $mask, $ignore_case = false, $subdir = '' )
+{
+	$path = rtAddTailSlash( $path );
+	if( $ignore_case )
+		$mask = strtolower( $mask );
+	if( $subdir != '' )
+		$subdir = rtAddTailSlash( $subdir );
+	$ret = array();
+	if( is_dir( $path.$subdir ) )
+	{
+		$handle = opendir( $path.$subdir );
+		while( false !== ( $item = readdir( $handle ) ) )
+		{
+			if( $item == '.' || $item == '..' )
+				continue;
+			$path_to_item = $path.$subdir.$item;
+			if( is_dir( $path_to_item ) )
+			{
+				$ret = array_merge( $ret,
+					rtScanFiles( $path, $mask, $ignore_case, $subdir.$item ) );
+			}
+			elseif( is_file( $path_to_item ) &&
+				fnmatch( $mask, $ignore_case ? strtolower( $item ) : $item ) )
+			{
+				$ret[] = $subdir.$item;
+			}
+		}
+		closedir( $handle );
+	}
+	return ( $ret );
+}
+
 
 //------------------------------------------------------------------------------
 // Recursively remove $path directory (optionally with or without files)
@@ -216,11 +261,11 @@ function rtExec( $cmds, $hash, $dbg )
 			$s.= $cmd.", ";
 			$req->addCommand( new rXMLRPCCommand( $cmd, $hash ) );
 		}
-		if( $dbg ) rtDbg( "rtExec: execute ".substr( $s, 0, -2 ) );
+		if( $dbg ) rtDbg( "rtExec: ".substr( $s, 0, -2 ) );
 	}
 	if( !$req->run() || $req->fault )
 	{
-		if( $dbg ) rtDbg( "rtExec: rXMLRPCRequest() fail (".$cmds.")!" );
+		if( $dbg ) rtDbg( "rtExec: rXMLRPCRequest() fail" );
 		return null;
 	}
 	return $req;
@@ -306,7 +351,7 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 			$base_path = rtAddTailSlash( $base_path );
 		}
 		else {
-			if( $dbg ) rtDbg( "rtSetDataDir: base paths are empty!" );
+			if( $dbg ) rtDbg( "rtSetDataDir: base paths are empty" );
 			$is_ok = false;
 		}
 	}
@@ -356,7 +401,7 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 				{
 					rtRemoveDirectory( $base_path.$sub_dir, false );
 					if( $dbg && is_dir( $base_path.$sub_dir ) )
-						rtDbg( "rtSetDataDir: some files were not deleted!" );
+						rtDbg( "rtSetDataDir: some files were not deleted" );
 				}
 			}
 			else $is_ok = false;
