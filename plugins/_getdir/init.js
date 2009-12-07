@@ -14,6 +14,7 @@ function rDirBrowser( form, edit, btn, frame_id )
 
 	this.edit.setAttribute( "autocomplete", "off" );
 	this.edit.DirBrowser = this;
+	this.edit.readOnly = false;
 	if( browser.isIE )
 		this.edit.onfocusin = function() { if( this.DirBrowser.isFrameVisible() ) this.DirBrowser.hideFrame(); }
 	else
@@ -23,6 +24,7 @@ function rDirBrowser( form, edit, btn, frame_id )
 	this.frame.id = frame_id;
 	this.frame.src = "";
 	this.frame.style.visibility = "hidden";
+	this.frame.style.display = "none";
 
 	this.form.appendChild( this.frame );
 }
