@@ -55,8 +55,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 
 	if( $hash && $datadir != '' && $datadir_runmode == 'rtorrent' )
 	{
-		$script_dir = rtRemoveLastToken( __FILE__, '/' );	// filename or dirname
-		$script_dir = rtAddTailSlash( $script_dir );
+		$script_dir = rtAddTailSlash( dirname( __FILE__ ) );
 		Debug( "script      : ".$script_dir."setdir.sh" );
 		Debug( "path to php : ".$pathToPHP );
 		Debug( "hash        : ".$hash );
@@ -79,21 +78,15 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 
 	if( $hash && $datadir != '' && $datadir_runmode == 'webserver' )
 	{
-		if( !is_dir( $datadir ) )
+		if( !rtMkDir( $datadir, 0777 ) )
 		{
-			// recursive mkdir() only after PHP_5.0
-			mkdir( $datadir, 0777, true );
-			//system( 'mkdir -p "'.$datadir.'"' );
-		}
-		if( !is_dir( $datadir ) )
-		{
-			Debug( "no such directory: \"".$datadir."\"" );
-			$errors[] = array('desc'=>"WUILang.datadirDirNotFound", 'prm'=>$datadir);
+			Debug( "can't create ".$datadir );
+			$errors[] = array( 'desc'=>"WUILang.datadirDirNotFound", 'prm'=>$datadir );
 		}
 		elseif( !rtSetDataDir( $hash, $datadir, $move_datafiles == '1', $datadir_debug_enabled ) )
 		{
 			Debug( "rtSetDataDir() fail!" );
-			$errors[] = array('desc'=>"WUILang.datadirSetDirFail", 'prm'=>$datadir);
+			$errors[] = array( 'desc'=>"WUILang.datadirSetDirFail", 'prm'=>$datadir );
 		}
 	}
 }
