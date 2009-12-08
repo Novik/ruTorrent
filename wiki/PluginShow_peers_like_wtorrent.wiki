@@ -19,4 +19,4 @@ As shown below:
 [http://rutorrent.googlecode.com/svn/wiki/images/peers_like_wtorrent.jpg]
 
 Another front-end for rTorrent [http://www.wtorrent-project.org wTorrent] shows this information similarly.
-If you mostly use closed trackers this plug-in is useless for you. Scrape is disabled on such trackers and you will have less information than without this plug-in - there always will be zero in brackets.
+If you mostly use private trackers this plug-in is useless for you. Scrape is disabled on such trackers and you will have less information than without this plug-in - there always will be zero in brackets.
