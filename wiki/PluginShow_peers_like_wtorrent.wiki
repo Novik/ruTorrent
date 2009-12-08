@@ -2,7 +2,7 @@
 
 == Introduction ==
 
-The plug-in changes the format of the values in columns 'Seeds' and 'Peers' in the torrents list.
+The plug-in changes the format of values in columns 'Seeds' and 'Peers' in the torrents list.
 By default these columns are shown as
 {{{
 get_peers_complete (get_peers_not_connected+get_peers_connected)
