@@ -1,19 +1,22 @@
-#summary Описание плагина Show_peers_like_wtorrent.
+#summary Show_peers_like_wtorrent plug-in description
 
-== Введение ==
+== Introduction ==
 
-Плагин меняет формат выдачи столбцов "Сиды" и "Пиры" для списка закачек. По умолчанию в эти столбцы показываются как
+The plug-in changes the format of the values in columns 'Seeds' and 'Peers' in the torrents list.
+By default these columns are shown as
 {{{
 get_peers_complete (get_peers_not_connected+get_peers_connected)
 get_peers_accounted (get_peers_not_connected+get_peers_connected)
 }}}
-Для трекеров, которые поддерживают [http://en.wikipedia.org/wiki/Tracker_scrape scrape], имеет смысл более подробный вывод в виде
+For trackers which support [http://en.wikipedia.org/wiki/Tracker_scrape scrape], is makes sense to show more details
 {{{
 get_peers_complete (t_get_scrape_complete)
 get_peers_accounted (t_get_scrape_incomplete)
 }}}
-Т.е. в скобках показывается сумма сидов/пиров по scrape всех трекеров закачки. Так:
+I.e. the sum of seeds/peers by scrape of all torrent's trackers is shown in brackets.
+As shown below:
 
 [http://rutorrent.googlecode.com/svn/wiki/images/peers_like_wtorrent.jpg]
 
-Примерно так показывает данную информацию другой front-end для rTorrent - [http://www.wtorrent-project.org wTorrent]. Если Вы работаете, в основном, с закрытыми трекерами, то данный плагин для Вас бесполезен. На подобных трекерах scrape отключен, и вместо бОльшей информации Вы будете иметь меньшую - в скобках всегда будет стоять ноль.
+Another front-end for rTorrent [http://www.wtorrent-project.org wTorrent] shows this information similarly.
+If you mostly use closed trackers this plug-in is useless for you. Scrape is disabled on such trackers and you will have less information than without this plug-in - there always will be zero in brackets.
