@@ -123,13 +123,16 @@ function win2utf($str)
 
 function toLog( $str )
 {
-//	$filename = "/opt/share/www/rtorrent/error.log";
-	$filename = "/tmp/error.log";
-	$w = fopen($filename, "ab+");
-	if($w)
+	// dmrom: set $log_file variable in "config.php"
+	global $log_file;
+	if( $log_file && strlen( $log_file ) > 0 )
 	{
-		fputs($w,"[".strftime("%d.%m.%y %H:%M:%S")."] {$str}\n");
-		fclose($w);
+		$w = fopen( $log_file, "ab+" );
+		if( $w )
+		{
+			fputs( $w, "[".strftime( "%d.%m.%y %H:%M:%S" )."] {$str}\n" );
+			fclose( $w );
+		}
 	}
 }
 

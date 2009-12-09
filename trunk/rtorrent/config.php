@@ -10,6 +10,7 @@
 
     $uploads = './torrents';		// temp directory for uploaded torrents, without tail slash
     $settings = './settings';		// settings directory, without tail slash
+    $log_file = '/tmp/errors.log';	// path to log file (comment or make empty to disable logging)
 
     $scgi_port = 5000;
     $scgi_host = "127.0.0.1";
