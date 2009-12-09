@@ -7,8 +7,8 @@ require_once( 'conf.php' );
 
 function Debug( $str )
 {
-        global $datadir_debug_enabled;
-        if( $datadir_debug_enabled ) rtDbg( "DataDir: ".$str );
+	global $datadir_debug_enabled;
+	if( $datadir_debug_enabled ) rtDbg( "DataDir", $str );
 }
 
 ignore_user_abort( true );
@@ -23,14 +23,14 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 {
 	$vars = split( '&', $HTTP_RAW_POST_DATA );
 	$hash = null;
-	$datadir = '';
-	$move_datafiles = '0';
+	$datadir = "";
+	$move_datafiles = "0";
 	foreach( $vars as $var )
 	{
 		$parts = split( "=", $var );
 		if( $parts[0] == "hash" )
 		{
-			$hash = $parts[1];
+			$hash = trim( $parts[1] );
 		}
 		else if( $parts[0] == "datadir" )
 		{
@@ -38,7 +38,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		}
 		else if( $parts[0] == "move_datafiles" )
 		{
-			$move_datafiles = $parts[1];
+			$move_datafiles = trim( $parts[1] );
 		}
 	}
 
@@ -50,33 +50,28 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		Debug( $datadir.", don't move files" );
 	Debug( "run mode: \"".$datadir_runmode."\"" );
 
-//	rtExec( "execute",
-//		array( "/tmp/test.sh", __FILE__, ), true );
-
-	if( $hash && $datadir != '' && $datadir_runmode == 'rtorrent' )
+	if( $hash && strlen( $datadir ) > 0 && $datadir_runmode == 'rtorrent' )
 	{
 		$script_dir = rtAddTailSlash( dirname( __FILE__ ) );
-		Debug( "script      : ".$script_dir."setdir.sh" );
+		Debug( "script dir  : ".$script_dir );
 		Debug( "path to php : ".$pathToPHP );
 		Debug( "hash        : ".$hash );
 		Debug( "data dir    : ".$datadir );
 		Debug( "move files  : ".$move_datafiles );
 		$res = rtExec( "execute",
-			array(
-				$script_dir."setdir.sh",
-				$pathToPHP,
-				$hash,
-				$datadir,
-				$move_datafiles,
+			array( "sh",
+				"-c",
+				$pathToPHP." ".$script_dir."setdir.php ".
+					$hash." \"".$datadir."\" ".$move_datafiles." &amp; exit 0",
 			),
-			true );
+			$datadir_debug_enabled );
 		if( !$res )
 		{
 			$errors[] = array('desc'=>"WUILang.datadirSetDirFail", 'prm'=>$datadir);
 		}
 	}
 
-	if( $hash && $datadir != '' && $datadir_runmode == 'webserver' )
+	if( $hash && strlen( $datadir ) > 0 && $datadir_runmode == 'webserver' )
 	{
 		if( !rtMkDir( $datadir, 0777 ) )
 		{

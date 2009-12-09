@@ -11,14 +11,27 @@ utWebUI.EditDataDir = function()
 		Drag.init( $$("dlg_datadir-header"), $$("dlg_datadir"), 0, getWindowWidth(), 0, getWindowHeight(), true );
 		utWebUI.datadirInited = true;
 	}
-	if( this.dID != '' && this.torrents[this.dID] )
+
+	var sr = utWebUI.trtTable.rowSel;
+	var id = null;
+	for( var k in sr )
 	{
-		var d = this.torrents[this.dID];
+		if( sr[k] )
+		{
+			id = k;
+			break;
+		}
+	}
+
+	//id = this.dID;
+	if( id && this.torrents[id] )
+	{
+		var d = this.torrents[id];
 		var d20 = d[21].replace(/(^\s+)|(\s+$)/g, "");	// trim( d.get_basepath ) ???
 		if( d20 == '' ) // torrent is not open
 		{
 			// async request for (d.open,d.get_basedir,d.close)
-			this.Request( "?action=getbasepath&hash=" + this.dID, [this.showDataDirDlg, this] );
+			this.Request( "?action=getbasepath&hash=" + id, [this.showDataDirDlg, this] );
 		}
 		else {
 			d20 = d20.replace(/\/[^\/]+$/g, "");	// remove torrent name (subdir or file)
@@ -73,9 +86,9 @@ utWebUI.createMenu = function( e, id )
 	var el = ContextMenu.get( WUILang.Properties );
 	if( el )
 	{
-		if( this.trtTable.selCount > 1 )
-			ContextMenu.add( el, [WUILang.DataDir + "..."] );
-		else
+//		if( this.trtTable.selCount > 1 )
+//			ContextMenu.add( el, [WUILang.DataDir + "..."] );
+//		else
 			ContextMenu.add( el, [WUILang.DataDir + "...", "utWebUI.EditDataDir()"] );
 	}
 }
@@ -89,7 +102,19 @@ function enableDataDirButton()
 utWebUI.sendDataDir = function()
 {
 	$$('btn_datadir_ok').disabled = true;
-	this.RequestWithTimeout( "?action=setdatadir", [this.receiveDataDir, this], enableDataDirButton );
+
+	//this.RequestWithTimeout( "?action=setdatadir", [this.receiveDataDir, this], enableDataDirButton );
+
+	var sr = this.trtTable.rowSel;
+	for( var k in sr )
+	{
+		if( sr[k] )
+		{
+			this.DataDirID = k;
+			this.RequestWithTimeout( "?action=setdatadir", [this.receiveDataDir, this], enableDataDirButton );
+		}
+	}
+
 }
 
 utWebUI.receiveDataDir = function( data )
@@ -131,7 +156,8 @@ utWebUI.datadirCreate = function()
 					"<label for='move_datafiles'>"+ WUILang.DataDirMove +"</label>"+
 				"</div>" +
 			"</fieldset>" +
-			"<div class='aright'>" +
+//			"<div class='aright'>" +
+			"<div id='st_btns'>" +
 				"<input type='button' value='" + WUILang.ok1 + "' class='Button' id='btn_datadir_ok'" +
 					" onclick='javascript:utWebUI.sendDataDir()'/>" +
 				"<input type='button' value='"+ WUILang.Cancel1 + "' class='Button'" +
@@ -154,7 +180,10 @@ utWebUI.datadirCreate = function()
 
 rTorrentStub.prototype.setdatadir = function()
 {
-	this.content = "hash=" + utWebUI.dID +
+	//var id = utWebUI.dID;
+	var id = utWebUI.DataDirID;
+
+	this.content = "hash=" + id +
 		"&datadir=" + encodeURIComponent( $$('edit_datadir').value ) +
 		"&move_datafiles=" + ( $$('move_datafiles').checked  ? '1' : '0' );
 	this.contentType = "application/x-www-form-urlencoded";
