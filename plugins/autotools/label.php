@@ -1,23 +1,27 @@
 <?php
 
+if( !chdir( dirname( __FILE__) ) )
+	exit;
 require_once( "../../util.php" );
 require_once( "../../xmlrpc.php" );
 require_once( "util_rt.php" );
 require_once( "autotools.php" );
 require_once( "conf.php" );
 
+$AutoLabel_Sem = rtSemGet( fileinode( __FILE__ ) );
+rtSemLock( $AutoLabel_Sem );
 
 function Debug( $str )
 {
 	global $autodebug_enabled;
-	if( $autodebug_enabled ) rtDbg( "AutoLabel: ".$str );
+	if( $autodebug_enabled ) rtDbg( "AutoLabel", $str );
 }
 
 Debug( "" );
 Debug( "--- begin ---" );
 
 $is_ok = true;
-if( count( $argv ) < 1 )
+if( count( $argv ) < 2 )
 {
 	Debug( "called without arguments (hash wanted)" );
 	$is_ok = false;
@@ -86,5 +90,7 @@ if( $is_ok )
 }
 
 Debug( "--- end ---" );
+
+rtSemUnlock( $AutoLabel_Sem );
 
 ?>
