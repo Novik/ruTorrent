@@ -6,10 +6,39 @@ require_once( "../../xmlrpc.php" );
 //------------------------------------------------------------------------------
 // Debug stub
 //------------------------------------------------------------------------------
-function rtDbg( $str )
+function rtDbg( $prefix, $str )
 {
-	toLog( $str );
+
+	if( !$str )
+		toLog( "" );
+	elseif( $prefix && strlen( $prefix ) > 0 )
+		toLog( $prefix.": ".$str );
+	else
+		toLog( $str );
 }
+
+//------------------------------------------------------------------------------
+// Operations with semaphores
+//------------------------------------------------------------------------------
+function rtSemGet( $id )
+{
+	//$available = in_array( "sysvsem", get_loaded_extensions() );
+	$available = function_exists( "sem_get" );
+	return $available ? sem_get( $id, 1 ) : false;
+}
+
+//------------------------------------------------------------------------------
+function rtSemLock( $sem_key )
+{
+	if( $sem_key ) sem_acquire( $sem_key );
+}
+
+//------------------------------------------------------------------------------
+function rtSemUnlock( $sem_key )
+{
+	if( $sem_key ) sem_release( $sem_key );
+}
+
 
 //------------------------------------------------------------------------------
 // Operations with slashes in paths
@@ -91,14 +120,14 @@ function rtMoveFile( $src, $dst, $dbg = false )
 	// Check if source file exists
 	if( !is_file( $src ) )
 	{
-		if( $dbg ) rtDbg( "rtMoveFile: not a file (".$src.")" );
+		if( $dbg ) rtDbg( __FUNCTION__, "not a file (".$src.")" );
 		return false;
 	}
 
 	// Check if destination directory exists or can be created
 	if( !rtMkDir( dirname( $dst ), 0777 ) )
 	{
-		if( $dbg ) rtDbg( "rtMoveFile: can't create ".dirname( $dst ) );
+		if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dst ) );
 		return false;
 	}
 
@@ -110,16 +139,16 @@ function rtMoveFile( $src, $dst, $dbg = false )
 	//$mtime = filemtime( $src );
 	if( !rename( $src, $dst ) )
 	{
-		if( $dbg ) rtDbg( "rtMoveFile: from ".$src );
-		if( $dbg ) rtDbg( "rtMoveFile: to   ".$dst );
-		if( $dbg ) rtDbg( "rtMoveFile: move fail, try to copy" );
+		if( $dbg ) rtDbg( __FUNCTION__, "from ".$src );
+		if( $dbg ) rtDbg( __FUNCTION__, "to   ".$dst );
+		if( $dbg ) rtDbg( __FUNCTION__, "move fail, try to copy" );
 		if( !copy( $src, $dst ) )
 		{
-			if( $dbg ) rtDbg( "rtMoveFile: copy fail" );
+			if( $dbg ) rtDbg( __FUNCTION__, "copy fail" );
 			return false;
 		}
 		if( !unlink( $src ) )
-			if( $dbg ) rtDbg( "rtMoveFile: delete fail (".$src.")" );
+			if( $dbg ) rtDbg( __FUNCTION__, "delete fail (".$src.")" );
 	}
 	// there are problems here, if run-user is not file owner
 	//touch( $dst_f, $atime, $mtime );
@@ -135,15 +164,15 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 	// Check if source and destination directories are valid
 	if( !is_array( $files ) || $src == '' || $dst == '' )
 	{
-		if( $dbg ) rtDbg( "rtMoveFiles: invalid params" );
+		if( $dbg ) rtDbg( __FUNCTION__, "invalid params" );
 		return false;
 	}
 
 	// Check if source directory exists
 	if( !is_dir( $src ) )
 	{
-		if( $dbg ) rtDbg( "rtMoveFiles: src is not a directory" );
-		if( $dbg ) rtDbg( "rtMoveFiles: ( ".$src." )" );
+		if( $dbg ) rtDbg( __FUNCTION__, "src is not a directory" );
+		if( $dbg ) rtDbg( __FUNCTION__, "( ".$src." )" );
 		return false;
 	}
 	else $src = rtAddTailSlash( $src );
@@ -151,7 +180,7 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 	// Check if destination directory exists or can be created
 	if( !rtMkDir( dirname( $dst ), 0777 ) )
 	{
-		if( $dbg ) rtDbg( "rtMoveFiles: can't create ".dirname( $dst ) );
+		if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dst ) );
 		return false;
 	}
 	else $dst = rtAddTailSlash( $dst );
@@ -159,20 +188,20 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 	// Check if source and destination directories are the same
 	if( realpath( $src ) == realpath( $dst ) )
 	{
-		if( $dbg ) rtDbg( "rtMoveFiles: source is equal to destination" );
-		if( $dbg ) rtDbg( "rtMoveFiles: ( ".realpath( $src )." )" );
+		if( $dbg ) rtDbg( __FUNCTION__, "source is equal to destination" );
+		if( $dbg ) rtDbg( __FUNCTION__, "( ".realpath( $src )." )" );
 		return false;
 	}
 
 	// Move files
-	if( $dbg ) rtDbg( "rtMoveFiles: from ".$src );
-	if( $dbg ) rtDbg( "rtMoveFiles: to   ".$dst );
+	if( $dbg ) rtDbg( __FUNCTION__, "from ".$src );
+	if( $dbg ) rtDbg( __FUNCTION__, "to   ".$dst );
 	foreach( $files as $file )
 	{
 		if( !rtMoveFile( $src.$file, $dst.$file, $dbg ) )
 			return false;
 	}
-	if( $dbg ) rtDbg( "rtMoveFiles: finished" );
+	if( $dbg ) rtDbg( __FUNCTION__, "finished" );
 	return true;
 }
 
@@ -252,7 +281,7 @@ function rtExec( $cmds, $hash, $dbg )
 	if( !is_array( $cmds ) )
 	{
 		$req->addCommand( new rXMLRPCCommand( $cmds, $hash ) );
-		if( $dbg ) rtDbg( "rtExec: ".$cmds );
+		if( $dbg ) rtDbg( __FUNCTION__, $cmds );
 	}
 	else {
 		$s = '';
@@ -261,14 +290,90 @@ function rtExec( $cmds, $hash, $dbg )
 			$s.= $cmd.", ";
 			$req->addCommand( new rXMLRPCCommand( $cmd, $hash ) );
 		}
-		if( $dbg ) rtDbg( "rtExec: ".substr( $s, 0, -2 ) );
+		if( $dbg ) rtDbg( __FUNCTION__, substr( $s, 0, -2 ) );
 	}
 	if( !$req->run() || $req->fault )
 	{
-		if( $dbg ) rtDbg( "rtExec: rXMLRPCRequest() fail" );
+		if( $dbg ) rtDbg( __FUNCTION__, "rXMLRPCRequest() fail" );
 		return null;
 	}
 	return $req;
+}
+
+//------------------------------------------------------------------------------
+// Make string param for XMLRPC call
+//------------------------------------------------------------------------------
+function rtMakeStrParam( $param )
+{
+	return "<param><value><string>".$param."</string></value></param>";
+}
+
+//------------------------------------------------------------------------------
+// Add ".torrent" file to rTorrent
+//------------------------------------------------------------------------------
+function rtAddFile( $fname, $isStart, $directory, $label, $dbg = false )
+{
+	if( $isStart )
+		$method = 'load_start_verbose';
+	else
+		$method = 'load_verbose';
+
+	$torrent = new Torrent($fname);
+	if( $torrent->errors() )
+	{
+		if( $dbg ) rtDbg( __FUNCTION__, "fail to create Torrent() object" );
+		return false;
+	}
+
+	if( $directory && strlen( $directory ) > 0 )
+	{
+		$directory = rtMakeStrParam( "d.set_directory=\"".$directory."\"" );
+	}
+	else $directory = "";
+
+	$comment = $torrent->comment();
+	if( $comment && strlen( $comment ) > 0 )
+	{
+		if( isInvalidUTF8( $comment ) )
+			$comment = win2utf($comment);
+		if( strlen( $comment ) > 0 )
+			$comment = rtMakeStrParam( "d.set_custom2=VRS24mrker".rawurlencode( $comment ) );
+	}
+	else $comment = "";
+
+	if( $label && strlen( $label ) > 0 )
+	{
+		$label = rtMakeStrParam( "d.set_custom1=\"".rawurlencode( $label )."\"" );
+	}
+	else $label = "";
+
+	$addition = "";
+
+	$delete_tied = rtMakeStrParam( "d.delete_tied=" );
+
+	$content =
+		'<?xml version="1.0" encoding="UTF-8"?>'.
+		'<methodCall>'.
+		'<methodName>'.$method.'</methodName>'.
+		'<params>'.
+			'<param><value><string>'.$fname.'</string></value></param>'.
+			$directory.
+			$comment.
+			$label.
+			$addition.
+			$delete_tied.
+		'</params></methodCall>';
+
+	//if( $dbg ) rtDbg( __FUNCTION__, $content );
+	$res = send2RPC( $content );
+
+	if( $dbg ) rtDbg( __FUNCTION__, "send2RPC() reply (len=".strlen( $res ).")" );
+	//if( $dbg && $res && strlen( $res ) > 0 ) rtDbg( __FUNCTION__, $res );
+
+	if( !$res || $res = '' )
+		return false;
+	else
+		return $torrent->hash_info();
 }
 
 
@@ -277,9 +382,9 @@ function rtExec( $cmds, $hash, $dbg )
 //------------------------------------------------------------------------------
 function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 {
-	if( $dbg ) rtDbg( "rtSetDataDir: hash        : ".$hash );
-	if( $dbg ) rtDbg( "rtSetDataDir: dest_path   : ".$dest_path );
-	if( $dbg ) rtDbg( "rtSetDataDir: move files  : ".($move_files ? "1" : "0") );
+	if( $dbg ) rtDbg( __FUNCTION__, "hash        : ".$hash );
+	if( $dbg ) rtDbg( __FUNCTION__, "dest_path   : ".$dest_path );
+	if( $dbg ) rtDbg( __FUNCTION__, "move files  : ".($move_files ? "1" : "0") );
 
 	$is_ok         = true;
 	$is_open       = false;
@@ -304,7 +409,7 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 		{
 			$is_open   = ( $req->i8s[0] != 0 );
 			$is_active = ( $req->i8s[1] != 0 );
-			if( $dbg ) rtDbg( "rtSetDataDir: is_open=".$req->i8s[0].", is_active=".$req->i8s[1] );
+			if( $dbg ) rtDbg( __FUNCTION__, "is_open=".$req->i8s[0].", is_active=".$req->i8s[1] );
 		}
 		else $is_ok = false;
 	}
@@ -331,9 +436,9 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 			$is_multy_file = ( $req->i8s[0] != 0 );
 			$base_path     = trim( $req->strings[0] );
 			$base_file     = trim( $req->strings[1] );
-			if( $dbg ) rtDbg( "rtSetDataDir: d.get_base_path     : ".$base_path );
-			if( $dbg ) rtDbg( "rtSetDataDir: d.get_base_filename : ".$base_file );
-			if( $dbg ) rtDbg( "rtSetDataDir: d.is_multy_file     : ".$req->i8s[0] );
+			if( $dbg ) rtDbg( __FUNCTION__, "d.get_base_path     : ".$base_path );
+			if( $dbg ) rtDbg( __FUNCTION__, "d.get_base_filename : ".$base_file );
+			if( $dbg ) rtDbg( __FUNCTION__, "d.is_multy_file     : ".$req->i8s[0] );
 		}
 		else $is_ok = false;
 	}
@@ -351,7 +456,7 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 			$base_path = rtAddTailSlash( $base_path );
 		}
 		else {
-			if( $dbg ) rtDbg( "rtSetDataDir: base paths are empty" );
+			if( $dbg ) rtDbg( __FUNCTION__, "base paths are empty" );
 			$is_ok = false;
 		}
 	}
@@ -364,7 +469,7 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 		if( $req )
 		{
 			$torrent_files = $req->strings;
-			if( $dbg ) rtDbg( "rtSetDataDir: files in torrent    : ".count( $torrent_files ) );
+			if( $dbg ) rtDbg( __FUNCTION__, "files in torrent    : ".count( $torrent_files ) );
 		}
 		else $is_ok = false;
 	}
@@ -389,19 +494,19 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 		else
 			$sub_dir = '';					// $base_file - is really a file
 
-		if( $dbg ) rtDbg( "rtSetDataDir: from ".$base_path.$sub_dir );
-		if( $dbg ) rtDbg( "rtSetDataDir: to   ".$dest_path.$sub_dir );
+		if( $dbg ) rtDbg( __FUNCTION__, "from ".$base_path.$sub_dir );
+		if( $dbg ) rtDbg( __FUNCTION__, "to   ".$dest_path.$sub_dir );
 		if( $base_path.$sub_dir != $dest_path.$sub_dir && is_dir( $base_path.$sub_dir ) )
 		{
 			if( rtMoveFiles( $torrent_files, $base_path.$sub_dir, $dest_path.$sub_dir, $dbg ) )
 			{
 				// Recursively remove source dirs without files
-				if( $dbg ) rtDbg( "rtSetDataDir: clean ".$base_path.$sub_dir );
+				if( $dbg ) rtDbg( __FUNCTION__, "clean ".$base_path.$sub_dir );
 				if( $sub_dir != '' )
 				{
 					rtRemoveDirectory( $base_path.$sub_dir, false );
 					if( $dbg && is_dir( $base_path.$sub_dir ) )
-						rtDbg( "rtSetDataDir: some files were not deleted" );
+						rtDbg( __FUNCTION__, "some files were not deleted" );
 				}
 			}
 			else $is_ok = false;
@@ -427,7 +532,7 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 			$is_ok = rtExec( array( "d.open", "d.close" ), $hash, $dbg );
 	}
 
-	if( $dbg ) rtDbg( "rtSetDataDir: finished" );
+	if( $dbg ) rtDbg( __FUNCTION__, "finished" );
 	return $is_ok;
 }
 
