@@ -10,7 +10,7 @@ Assignation of group to one or several torrents is performed by selecting an app
 Perameters of groups are:
  * Min, % - minimal ratio required to perform a defined Action.
  * Max, % - maximal ratio required to perform a defined Action. It may be omitted.
- * UL, Mb - minimal amount uploaded data required to perform a defined Action.
+ * UL, Mb - minimal amount of data to be uploaded before perform a defined Action.
  * Action - what should be done when a condition is satisfied. It may be Stop the torrent, Remove it or Stop the torrent and clean up the ratio group.
 
 All these conditions may be phrased as "Seed this torrent until it's ratio reach Min and with that uploaded not less than UL megabytes. Stop seeding any way if the ratio has reached Max".
