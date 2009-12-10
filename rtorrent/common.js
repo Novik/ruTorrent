@@ -359,6 +359,10 @@ function browserDetect()
 	if(this.isIcab)
 		this.versionMinor = parseFloat(ua.substring(ua.indexOf("icab") + 5));
 	this.versionMajor = parseInt(this.versionMinor);
+
+	if(this.isIE && document.documentMode)
+		this.versionMajor = document.documentMode;
+
 	this.isDOM1 = (document.getElementById);
 	this.isDOM2Event = (document.addEventListener && document.removeEventListener);
 	this.mode = document.compatMode ? document.compatMode : "BackCompat";

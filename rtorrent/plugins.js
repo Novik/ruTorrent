@@ -93,7 +93,7 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
  	if(beforeTab)
  	{
 		beforeTab.parentNode.insertBefore(dlg,beforeTab);
-		var beforeLbl = $$("tab_"+beforeTab);
+		var beforeLbl = $$("tab_"+idBefore);
 		beforeLbl.parentNode.insertBefore(newLbl,beforeLbl);
 	}
 	else
