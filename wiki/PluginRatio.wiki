@@ -1,28 +1,31 @@
-#summary Описание плагина ratio.
+#summary Ratio plug-in description
 
-== Введение ==
+== Introduction ==
 
-Начиная с версии 0.8.5 в rTorrent появилась возможность устанавливать ограничения по ратио для групп закачек. Плагин реализует удобное управление данной возможностью. При установленном плагине в настройках ruTorrent появляется раздел "Группы ratio". В данном разделе можно задать ограничения по ратио для нескольких (по умолчанию - 8) групп. Назначение группы одной или нескольким закачкам осуществляется с помощью пункта в контекстном меню закачки.
+Since version 0.8.5 rTorrent has a capability to set ratio limits for groups of torrents. The plug-in allows to manage it conveniently.
+When the plug-in is installed a new section "Ratio groups" appears in the Settings dialog.
+Here user can define limits of ratio for some (by default - 8) groups.
+Assignation of group to one or several torrents is performed by selecting an appropriate option in the context menu of torrents.
 
-Параметры группы следующие:
- * Min, % - минимальное ратио по достижении которого над закачкой будет произведено некое действие.
- * Max, % - максимальное ратио по достижении которого над закачкой будет произведено некое действие (максимальное ратио может отсутствовать).
- * UL, Мб - минимальное количество данных, которое должно быть отдано, прежде чем над закачкой будет произведено некое действие.
- * Действие - собственно, что предпринимать по достижении условия. Можно остановить закачку, удалить ее или остановить и очистить группу ратио.
+Perameters of groups are:
+ * Min, % - minimal ratio required to perform a defined Action.
+ * Max, % - maximal ratio required to perform a defined Action. It may be omitted.
+ * UL, Mb - minimal amount uploaded data required to perform a defined Action.
+ * Action - what should be done when a condition is satisfied. It may be Stop the torrent, Remove it or Stop the torrent and clean up the ratio group.
 
-Собственно, все эти условия можно выразить следующим образом: "Сидировать закачку, пока ее ратио не достигнет Min и при этом не будет отдано как минимум UL мегабайт. В любом случае прекратить сидирование, если ратио достигнет Max".
+All these conditions may be phrased as "Seed this torrent until it's ratio reach Min and with that uploaded not less than UL megabytes. Stop seeding any way if the ratio has reached Max".
 
 [http://rutorrent.googlecode.com/svn/wiki/images/ratio.jpg]
 
-== Как оно работает ==
+== How does it work ==
 
-После первой загрузки с установленным плагином ratio, ruTorrent создает группы с требуемыми параметрами ратио. Т.к. группы создаются только после первой загрузки ruTorrent, то в промежуток между стартом rTorrent и первым после этого стартом ruTorrent ограничения на ратио действовать не будут. Чтобы избежать этого, нужно добавить в конфигурационный файл rTorrent специально обученные строчки (см. ниже). 
+When ruTorrent starts first time with plug-in Ratio installed, it creates groups with required parameters. As groups are created only after first ruTorrent's start, in the time between start of rTorrent and then first start of ruTorrent defined ratio limits will not work. To avoid this, some special strings should be added to the rTorrent configuration file (see below). 
 
-== Дополнительная настройка плагина ==
+== Additional plug-in adjustment ==
 
-Производится в файле `plugins/ratio/conf.php`.
-    * `MAX_RATIO` - константа содержит максимальное количество групп. Вы можете изменить эту величину как в большую, так и в меньшую сторону.
-    * `$isAutoStart` - переменная определяет способ начала работы. Если она равна true, то создание групп производится при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы сделать это самостоятельно. Для этого в файл конфигурации rTorrent нужно добавить строчки
+Should be done in the file `plugins/ratio/conf.php`.
+    * `MAX_RATIO` - the constant defiles maximum number of groups. You can change this value to bigger as well as to lesser.
+    * `$isAutoStart` - the variable defines how the how the plug-in starts. If it is set to "true", groups are to be created at the ruTorrent start. Otherwise you should perform it by yourself. To do this the following strings should be added into the rTorrent configuration file: 
 {{{
 group.insert_persistent_view = rat_0
 group.rat_0.ratio.enable=
@@ -38,6 +41,10 @@ group.rat_MAX_RATIO.ratio.max.set=[max_limit_for_ratioMAX_RATIO]
 group.rat_MAX_RATIO.ratio.upload.set=[upload_limit_for_ratioMAX_RATIO]
 system.method.set = group.rat_MAX_RATIO.ratio.command, [command]
 }}}
-где min_limit_for_ratio, max_limit_for_ratio, upload_limit_for_ratio - параметры ратио для конкретной группы, а command - предпринимаемое действие по достижению ратио. Оно может быть таким:
- * "d.stop=; d.close=" - остановить закачку.
- * "d.stop=; d.close=; d.erase=" - удалить закачку.
+where
+
+min_limit_for_ratio, max_limit_for_ratio, upload_limit_for_ratio - parameters of ratio for this particular group,
+
+command - the Action that is performed by reaching the ratio. It may be:
+ * "d.stop=; d.close=" - stop the torrent;
+ * "d.stop=; d.close=; d.erase=" - remove the torrent.
