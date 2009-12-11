@@ -13,7 +13,7 @@ The plug-in can change the data directory for another and also move torrent data
 
 It is required to specify the *base* directory of the data (without subdirectory stored in torrent file), by analogy to directory choice at addition of new torrent.
 
-There ara 2 methods of data moving:
+There are 2 methods of data moving:
  # *webserver* - data files would be moved from web-server user.
  # *rtorrent* - data files would be moved from rtorrent user without any control from web-server.
 The method can be set in conf.php. The default is *rtorrent*.
