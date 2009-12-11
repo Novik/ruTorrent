@@ -292,12 +292,17 @@ function rtExec( $cmds, $hash, $dbg )
 		}
 		if( $dbg ) rtDbg( __FUNCTION__, substr( $s, 0, -2 ) );
 	}
-	if( !$req->run() || $req->fault )
+	if( !$req->run() )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "rXMLRPCRequest() fail" );
+		if( $dbg ) rtDbg( __FUNCTION__, "rXMLRPCRequest() run fail" );
 		return null;
 	}
-	return $req;
+	elseif( $req->fault )
+	{
+		if( $dbg ) rtDbg( __FUNCTION__, "rXMLRPCRequest() fault" );
+		return null;
+	}
+	else return $req;
 }
 
 //------------------------------------------------------------------------------
