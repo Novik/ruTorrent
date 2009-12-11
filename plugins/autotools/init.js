@@ -15,6 +15,7 @@ utWebUI.addAndShowSettings = function( arg )
 	$$('enable_watch').checked  = ( utWebUI.autotools.EnableWatch  == 1 );
 	$$('path_to_watch').value = utWebUI.autotools.PathToWatch;
 	linked( $$('enable_watch'), 0, ['path_to_watch', 'autowatch_browse_btn'] );
+	$$('watch_start').checked  = ( utWebUI.autotools.WatchStart  == 1 );
 
 //	var s = '';
 //	for( var i = 0; i < utWebUI.autotools.sample.length; i++ )
@@ -43,6 +44,8 @@ utWebUI.autotoolsWasChanged = function()
 	if( $$('enable_watch').checked  != ( utWebUI.autotools.EnableWatch  == 1 ) )
 		return true;
 	if( $$('path_to_watch').value != utWebUI.autotools.PathToWatch )
+		return true;
+	if( $$('watch_start').checked != ( utWebUI.autotools.WatchStart == 1 ) )
 		return true;
 //	var arr = $$('eautotools').value.split( "\n" );
 //	var groups = new Array();				// array of curGroups
@@ -108,7 +111,7 @@ utWebUI.autotoolsCreate = function()
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td>"+
+				"<td id='ctrls_level2'>"+
 					"<label id='lbl_path_to_finished' for='path_to_finished' class='disabled' disabled='true'>"+
 					WUILang.autotoolsPathToFinished +":</label>"+
 				"</td>"+
@@ -123,12 +126,12 @@ utWebUI.autotoolsCreate = function()
 			"<tr>"+
 				"<td>"+
 					"<input type='checkbox' id='enable_watch' checked='false' "+
-					"onchange='javascript:linked(this, 0, [\"path_to_watch\", \"autowatch_browse_btn\"]);' />"+
+					"onchange='javascript:linked(this, 0, [\"path_to_watch\", \"autowatch_browse_btn\",\"watch_start\"]);' />"+
 						"<label for='enable_watch'>"+ WUILang.autotoolsEnableWatch +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td>"+
+				"<td id='ctrls_level2'>"+
 					"<label id='lbl_path_to_watch' for='path_to_watch' class='disabled' disabled='true'>"+
 					WUILang.autotoolsPathToWatch +":</label>"+
 				"</td>"+
@@ -137,6 +140,12 @@ utWebUI.autotoolsCreate = function()
 				"<td class='alr'>"+
 					"<input type='text' id='path_to_watch' class='TextboxLarge' maxlength='100' />"+
 					"<input type='button' id='autowatch_browse_btn' class='Button' value='...' />"+
+				"</td>"+
+			"</tr>"+
+			"<tr>"+
+				"<td id='ctrls_level2'>"+
+					"<input type='checkbox' id='watch_start' checked='false' />"+
+					"<label id='lbl_watch_start' for='watch_start'>"+ WUILang.autotoolsWatchStart +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"</table>"+
@@ -175,7 +184,8 @@ rTorrentStub.prototype.setautotools = function()
 		"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
 		"&path_to_finished=" + $$('path_to_finished').value +
 		"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
-		"&path_to_watch=" + $$('path_to_watch').value;
+		"&path_to_watch=" + $$('path_to_watch').value +
+		"&watch_start=" + ( $$('watch_start').checked  ? '1' : '0' );
 //	var arr = $$('eautotools').value.split( "\n" );
 //	for( var i = 0; i < arr.length; i++ )
 //	{

@@ -25,8 +25,10 @@ if( $is_ok )
 {
 	$at = rAutoTools::load();
 	Debug( "enabled          : ".$at->enable_watch );
+	Debug( "autostart        : ".$at->watch_start );
 	if( $at->enable_watch )
 	{
+		$auto_start = $at->watch_start;
 		$path_to_watch = rtAddTailSlash( trim( $at->path_to_watch ) );
 		Debug( "path_to_watch    : ".$path_to_watch );
 		if( $path_to_watch == '' || $path_to_watch == '/' )
@@ -90,9 +92,9 @@ if( $is_ok )
 //			);
 
 			// rtAddFile( $fname, $isStart, $directory, $label, $dbg = false )
-			$hash = rtAddFile(
+			$hash = rtAddTorrent(
 				$torrent_file,			// path to .torrent file
-				false,				// don't start it
+				$auto_start,			// don't start it
 				$dest_path,			// directory for torrent's data
 				null,				// label is emply
 				$autodebug_enabled

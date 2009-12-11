@@ -8,7 +8,6 @@ require_once( "../../xmlrpc.php" );
 //------------------------------------------------------------------------------
 function rtDbg( $prefix, $str )
 {
-
 	if( !$str )
 		toLog( "" );
 	elseif( $prefix && strlen( $prefix ) > 0 )
@@ -16,6 +15,24 @@ function rtDbg( $prefix, $str )
 	else
 		toLog( $str );
 }
+
+
+//------------------------------------------------------------------------------
+// Making current process a daemon
+//------------------------------------------------------------------------------
+function rtDaemon()
+{
+	$pid = pcntl_fork();
+	if( $pid < 0 )
+		return false;	// fork fail
+	elseif( $pid )
+		exit;		// I am parent
+	else {
+		posix_setsid();
+		return true;	// I am child
+	}
+}
+
 
 //------------------------------------------------------------------------------
 // Operations with semaphores
@@ -316,7 +333,7 @@ function rtMakeStrParam( $param )
 //------------------------------------------------------------------------------
 // Add ".torrent" file to rTorrent
 //------------------------------------------------------------------------------
-function rtAddFile( $fname, $isStart, $directory, $label, $dbg = false )
+function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 {
 	if( $isStart )
 		$method = 'load_start_verbose';

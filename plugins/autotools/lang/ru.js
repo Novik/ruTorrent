@@ -9,6 +9,7 @@
  WUILang.autotoolsPathToFinished	= "Каталог для завершенных закачек";
  WUILang.autotoolsEnableWatch		= "Включить функцию \"АвтоДобавление\"";
  WUILang.autotoolsPathToWatch		= "Каталог для поиска новых торрентов";
+ WUILang.autotoolsWatchStart		= "Начинать закачку автоматически";
  WUILang.autotoolsPHPNotFound		= s_NoAccess + " интерпретатору php. " + s_PluginFail;
  WUILang.autotoolsLabelShNotAvailable	= s_NoAccess + " к файлу plugins/autotools/label.sh на чтение/выполнение. " + s_PluginFail;
  WUILang.autotoolsLabelPhpNotAvailable	= s_NoAccess + " к файлу plugins/autotools/label.php на чтение. " + s_PluginFail;
