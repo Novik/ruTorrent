@@ -29,5 +29,9 @@ For comfortable directory choice on the host for completed downloads it is recom
 
 == Version history: ==
 
+*1.1*
+ * torrent's data files can also be moved
+ * group operations are supported now
+
 *1.0*
  * the first version
