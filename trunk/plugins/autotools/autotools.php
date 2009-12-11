@@ -12,6 +12,7 @@ class rAutoTools
 	public $path_to_finished = "";
 	public $enable_watch = 0;
 	public $path_to_watch = "";
+	public $watch_start = 0;
 //	public $list = array();
 	static public $rootPath;
 
@@ -41,6 +42,7 @@ class rAutoTools
 			$this->path_to_finished = "";
 			$this->enable_watch = 0;
 			$this->path_to_watch = "";
+			$this->watch_start = 0;
 //			$this->list = array();
 //			$sample = array();
 			foreach( $vars as $var )
@@ -65,6 +67,10 @@ class rAutoTools
 				else if( $parts[0] == "path_to_watch" )
 				{
 					$this->path_to_watch = $parts[1];
+				}
+				else if( $parts[0] == "watch_start" )
+				{
+					$this->watch_start = $parts[1];
 				}
 //				else if( $parts[0] == "sample" )
 //				{
@@ -93,6 +99,7 @@ class rAutoTools
 		$ret .= ", PathToFinished: '".addslashes( $this->path_to_finished )."'";
 		$ret .= ", EnableWatch: ".$this->enable_watch;
 		$ret .= ", PathToWatch: '".addslashes( $this->path_to_watch )."'";
+		$ret .= ", WatchStart: ".$this->watch_start;
 //		$ret .= ", sample: [";
 //		for( $i = 0; $i < count( $this->list ); $i++ )
 //		{

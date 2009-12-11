@@ -2,6 +2,16 @@
 
 if( !chdir( dirname( __FILE__) ) )
 	exit;
+
+// We get hash only, so run this script in background and exit
+if( count( $argv ) < 3 )
+{
+	require_once( "../../config.php" );
+	if( !$pathToPHP || $pathToPHP == '' ) $pathToPHP = 'php';
+	exec( $pathToPHP.' "'.basename( __FILE__ ).'" "'.$argv[1].'" --daemon > /dev/null 2>/dev/null &' );
+	exit;
+}
+
 require_once( "../../util.php" );
 require_once( "../../xmlrpc.php" );
 require_once( "util_rt.php" );
