@@ -51,4 +51,3 @@ $result = send2RPC( $content );
 $theSettings->registerPlugin( "erasedata" );
 
 ?>
-
