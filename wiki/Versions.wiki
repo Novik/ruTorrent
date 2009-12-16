@@ -2,6 +2,26 @@
 
 == Version history ==
 
+ * ====Version 2.8 (27 Nov 2009 r536)==== 
+   # Fixed a bug with columns width change in some cases.
+   # Fixed incorrect program behavior when the name of a label on the category panel contains HTML-tags.
+   # Fixed some localization flaws.
+   # Fixed a bug that leads to the assignment of incorrect values to rTorrent parameters of hashing in case of change of these parameters via Settings dialog.
+   # Fixed a bug that caused incorrect work of the program, if the option magic_quotes_gpc is enabled on the server. 
+   # Changed Category panel appearance.
+
+ * ====Version 2.7 (30 Sep 2009 r420)==== 
+   # Added diagnostics on torrent addition.
+   # Added category "Error" on the Category panel.
+   # Added Serbian localization (partly, some resources are still in English).
+   # Added checking of PHP module PCRE presence (for FreeBSD only).
+   # Added plug-ins [PluginGeoIP geoip], [PluginRatio ratio], [PluginShow_peers_like_wtorrent show_peers_like_wtorrent], [PluginSeedingtime seedingtime].
+   # Revised interface of column width change.
+   # Changed the project logo in accordance with the claim of the company BitTorrent Inc. representative (See  Issue64).
+   # Fixed a bug which sends plenty of requests to rTorrent during loading the interface that caused rTorrent crash in some cases.
+   # Fixed handling of torrent files that contain incorrect data (partly). 
+   # Fixed handling HTTPS resouces (heretofore torrent-files from https-trackers might be loaded incorrectly in some cases).
+
  * ====Version 2.6 (11 Aug 2009 r268)==== 
    # Added checking of xmlrpc-c library version correctness.
    # Added output of global speed limits in the status bar or in the window title. If they exist.
