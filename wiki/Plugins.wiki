@@ -1,7 +1,7 @@
 #summary The description of a subsystem of plug-ins.
 #labels Featured
 
-Some functions of ruTorrent are realized by plug-ins that allow users to customize the system to exclude unnecessary parts. [HowToCreatePlugin And even to add something lacking, without modifying a ruTorrent code].
+Some functions of ruTorrent are realized by plug-ins that allow users to customize the system to exclude unnecessary parts. [HowToCreatePlugin And even to add something missed, without modifying a ruTorrent code].
 
 For plug-in installation it is necessary to unpack contents of its archive in the directory rtorrent/plugins. Note - to unpack without breaking a structure of directories in the archive. As a result there should be a separate directory for each plug-in inside rtorrent/plugins. It is recommended to perform this operation under a web service user to prevent problems with rights for files/directories. For plug-in deinstallation you have to delete it's directory, accordingly (and, for some plug-ins, restart rTorrent).
 
