@@ -2,7 +2,7 @@
 
 	// umask for web-server user (for files & dirs creation mode)
 	// ( don't forget to set correct umask in rtorrent.rc file )
-	$datadir_umask = 0007;
+	$datadir_umask = 0022;
 
 	// set run mode: "webserver", "rtorrent"
 	$datadir_runmode="rtorrent";

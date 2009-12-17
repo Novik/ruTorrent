@@ -22,7 +22,8 @@ function rtDbg( $prefix, $str )
 //------------------------------------------------------------------------------
 function rtSemGet( $id )
 {
-	$available = in_array( "sysvsem", get_loaded_extensions() );
+	//$available = in_array( "sysvsem", get_loaded_extensions() );
+	$available = function_exists( "sem_get" );
 	return $available ? sem_get( $id, 1 ) : false;
 }
 
@@ -362,13 +363,14 @@ function rtAddFile( $fname, $isStart, $directory, $label, $dbg = false )
 			$addition.
 			$delete_tied.
 		'</params></methodCall>';
-	if( $dbg ) rtDbg( __FUNCTION__, $content );
+
+	//if( $dbg ) rtDbg( __FUNCTION__, $content );
 	$res = send2RPC( $content );
 
-	if( $dbg ) rtDbg( __FUNCTION__, "send2RPC() reply (len=".strlen( $res )."):" );
-	if( $dbg && strlen( $res ) > 0 ) rtDbg( __FUNCTION__, $res );
+	if( $dbg ) rtDbg( __FUNCTION__, "send2RPC() reply (len=".strlen( $res ).")" );
+	//if( $dbg && $res && strlen( $res ) > 0 ) rtDbg( __FUNCTION__, $res );
 
-	if( $res = '' )
+	if( !$res || $res = '' )
 		return false;
 	else
 		return $torrent->hash_info();
