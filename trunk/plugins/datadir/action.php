@@ -53,15 +53,17 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	if( $hash && strlen( $datadir ) > 0 && $datadir_runmode == 'rtorrent' )
 	{
 		$script_dir = rtAddTailSlash( dirname( __FILE__ ) );
+		$php = $pathToPHP;
+		if( !$php || $php == "" ) $php = "php";
 		Debug( "script dir  : ".$script_dir );
-		Debug( "path to php : ".$pathToPHP );
+		Debug( "path to php : ".$php );
 		Debug( "hash        : ".$hash );
 		Debug( "data dir    : ".$datadir );
 		Debug( "move files  : ".$move_datafiles );
 		$res = rtExec( "execute",
 			array( "sh",
 				"-c",
-				$pathToPHP." ".$script_dir."setdir.php ".
+				$php." ".$script_dir."setdir.php ".
 					$hash." \"".$datadir."\" ".$move_datafiles." &amp; exit 0",
 			),
 			$datadir_debug_enabled );
