@@ -38,12 +38,13 @@ ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui
  * If numbers greater than 2Gb are shown as negative, the rTorrent should be recompiled with the xmlrpc-c version 1.11 or later.
  * If the port number which rTorrent is listening for requests should be changed, it is necessary to make appropriate changes into configuration of the ruTorrent - set the same port number in the file rtorrent/conf.php for the variable `$scgi_port`. 
  * Authorization may be provided by web-server's means only and does not depend on ruTorrent. If authorization is necessary, make sure /rtorrent and /RPC2 (scgi module, if used) folders are protected. In case the [Plugins plug-in] ruTorrent [PluginRPC RPC] is used, the /RPC2 folder protection is not necessary.
+ * If it is necessary to have several copies of rTorrent/ruTorrent, the name of the default XMLRPC (/RPC2) mounting point might need to be changed. It can be done in the file rs.js. It is not necessary in case of [PluginRPC RPC] ruTorrent plug-in is used instead of scgi-module of the web-server.
 
 == Browsers' specialties ==
 
  * To proper work of context menu and information display in the status bar in Opera and Firefox it is necessary to allow javascript in their settings.
  * F1 shows included hot-keys. Works fine in Firefox only as yet. 
- * Some add-ons for browsers may cause errors in ruTorrent work. For example - plug-in Firebug for Firefox causes significant memory leaks.
+ * Some add-ons for browsers may cause errors in ruTorrent work. For example - plug-in Firebug for Firefox causes significant memory leaks. The Firefox plug-in All-in-One Gestures prevents the context menu proper work. And so on...
 
 == [ErrorMessages Error messages] ==
 
