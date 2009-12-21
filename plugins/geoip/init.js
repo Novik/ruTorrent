@@ -1,41 +1,60 @@
-//var plugin;
+// Made by Zoltan Csala, 2009
+
+var gplugin = new rPlugin("geoip");
 var item = '';
-var ActiveLanguage = GetActiveLanguage();
-    
+var Country = new Array();
+var CntInd;
+
+gplugin.loadMainCSS();
+gplugin.loadLanguages();
 
 // Insert GeoIP information - either country's code or name
 function LookupSuccess(data) {
-    item += data + '","';
+    Country[ CntInd++ ] = data;
 } // LookupSuccess
 
 
 // For some reason, GeoIP data could not be retrieved, put dummy country
 function LookupFailure (XMLHttpRequest, textStatus, errorThrown) {
-    item += '","DUMMY';
+    Country[ CntInd++ ] = "unknown";
 } // LookupFailure
+
+
+// Resolve countries separately
+function getCountryFromIP( aIP ) {
+    var AjaxReq;
+    AjaxReq = jQuery.ajax( {
+        async : false,
+        url : "plugins/geoip/lookup.php",
+        data : { action : "geoip", ip : aIP },
+        dataType : "text",
+        success : LookupSuccess,
+        error: LookupFailure } );
+} // getCountryFromIP
 
 
 function GeoIPResponse( xmlDoc, docText )
 {
     var ret = '{"":"","peers": [';
 	var datas = xmlDoc.getElementsByTagName('data');
-	var AjaxReq;
+	var j;
+
+	Country[ 0 ] = "dummy";
+	CntInd = 1;
+	for(j=1; j<datas.length; j++) {
+		var data = datas[j];
+		var values = data.getElementsByTagName('value');
+		getCountryFromIP( this.getValue(values,1) );
+	}
 	
-	for(var j=1; j<datas.length; j++) {
+	for(j=1; j<datas.length; j++) {
 		var data = datas[j];
 		var values = data.getElementsByTagName('value');
 		item = '["';
 		item += this.getValue(values,0);	//	p.get_id
 		item += '","';
 
-	    AjaxReq = jQuery.ajax( {
-	        async : false,
-		    url : "plugins/geoip/lookup.php",
-		    data : { action : "geoip", ip : this.getValue(values,1) },
-		    dataType : "text",
-		    success : LookupSuccess,
-		    error: LookupFailure } );
-		    
+        item += Country[j] + '","';         //  country code
         item += this.getValue(values,1);	//	p.get_address
 
 		item += '","';
@@ -45,7 +64,7 @@ function GeoIPResponse( xmlDoc, docText )
 			mycv = cv;
 		item+=mycv;
 		item+='","';
-		if (this.getValue(values,3) == 1) //	p.is_incoming
+		if (this.getValue(values,3) == 1)   //	p.is_incoming
             item += 'In';
 		if (this.getValue(values,4) == 1)	//	p.is_encrypted
 			item+=' Enc';
