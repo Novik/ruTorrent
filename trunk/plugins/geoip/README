@@ -13,17 +13,17 @@ PHP extension GeoIP must be installed so this plugin can work properly. If you d
 Usage
 -----
 
-Unpack the plugin archive into rutorrent/plugins directory and refresh contents of your browser. If everything is OK, you should see a new column "Country" next to "Name" in "Peers" tab.
+Unpack the plugin archive into rutorrent/plugins directory and refresh contents of your browser. If everything is OK, you should see a new column "Country" (or its localized equivalent) next to "IP" in "Peers" tab.
 
 
 Localization
 ------------
 
-Geoip plugin supports localization. It should be done in two steps:
+Geoip plugin supports localization. Please do the following:
 
-1) Copy file lang/en.js into lang/XX.js , where "XX" stands for two-letter ISO code of your language. Fill in word for "country" in language XX. If you skip this step, English word "Country" will be displayed by default.
-
-2) Copy file lang/sr.php into lang/XX.php , where "XX" stands for two-letter ISO code of your language. Change names of each country. If you do not localize some country's name, the English name will be displayed by default.
+- Copy file lang/en.js into lang/XX.js , where "XX" stands for two-letter ISO code of your language.
+- Fill in word for "Country" (line "utWebUI.prsColumns[ 0 ]...") and "IP" (line "utWebUI.prsColumns[ 1 ]...") in language XX.
+- If you skip this step, columns "Country" and "IP" will be first and second column, respectively.
 
 
 Contact
