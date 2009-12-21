@@ -55,6 +55,7 @@ WUILang.country[ "jp" ] = "Јапан";
 
 WUILang.country[ "kp" ] = "Северна Кореја";
 WUILang.country[ "kr" ] = "Јужна Кореја";
+WUILang.country[ "kw" ] = "Кувајт";
 
 WUILang.country[ "lv" ] = "Латвија";
 WUILang.country[ "lt" ] = "Литванија";
@@ -63,6 +64,7 @@ WUILang.country[ "lu" ] = "Луксембург";
 WUILang.country[ "md" ] = "Молдавија";
 WUILang.country[ "me" ] = "Црна Гора";
 WUILang.country[ "mk" ] = "Македонија";
+WUILang.country[ "mt" ] = "Малта";
 WUILang.country[ "mx" ] = "Мексико";
 WUILang.country[ "my" ] = "Малезија";
 
