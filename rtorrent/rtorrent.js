@@ -1152,7 +1152,9 @@ rTorrentStub.prototype.listResponse = function(xmlDoc,docText)
 		else
 			item+='-1';
 		item+=',"';
+		try {
 		var label = decodeURIComponent(this.getValue(values,15));
+		} catch(e) { label = ''; }
 		label = label.replace(/(^\s+)|(\s+$)/g, "");
 		label = parseQuote(label.replace(/\"/g, "'"));
 		if(label.length>0)
@@ -1195,8 +1197,10 @@ rTorrentStub.prototype.listResponse = function(xmlDoc,docText)
 		item+=msg; 
 		item+='","';
 		var comment = this.getValue(values,31);
+		try {
 		if(comment.search("VRS24mrker")==0)
 			comment = parseQuote(decodeURIComponent(comment.substr(10)));
+		} catch(e) { comment = ''; }
 		item+=comment; // custom2
 		item+='","';
 
