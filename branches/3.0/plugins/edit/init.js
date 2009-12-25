@@ -1,0 +1,120 @@
+plugin.loadMainCSS();
+plugin.loadLang();
+
+theWebUI.editTrackers = function()
+{
+	if((this.dID != "") && this.torrents[this.dID])
+	{
+		var trk = this.trackers[this.dID];
+		trk.sort(function (a,b)
+		{
+			return( a[3] < b[3] ? -1 : a[3] > b[3] ? 1 : 0 );
+		});
+		var s = "";
+		if(trk.length)
+		{
+			var lastGroup = trk[0].group;
+			for(var i=0; i<trk.length; i++)
+			{
+			        if(trk[i].name!="dht://")
+			        {
+					if(lastGroup != trk[i].group)
+					{
+						s+='\r\n';
+						lastGroup = trk[i].group;
+					}
+					s+=trk[i].name;
+					s+='\r\n';
+				}
+			}
+		}
+		$('#etrackers').val($.trim(s));
+		$('#ecomment').val($.trim(this.torrents[this.dID].comment));
+		$('#editok').attr("disabled",false);
+		theDialogManager.show("tedit");
+	}
+}
+
+if(plugin.canChangeMenu())
+{
+	plugin.createMenu = theWebUI.createMenu;
+	theWebUI.createMenu = function(e, id) 
+	{
+		plugin.createMenu.call(this,e,id);
+		if(plugin.allStuffLoaded)
+		{
+			var el = theContextMenu.get(WUILang.Properties);
+			if(el)
+				theContextMenu.add(el,[WUILang.EditTrackers, (this.getTable("trt").selCount == 1) ? "theWebUI.editTrackers()" : null]);
+		}
+	}
+
+	plugin.createTrackerMenu = theWebUI.createTrackerMenu;
+	theWebUI.createTrackerMenu = function(e, id) 
+	{
+		if(plugin.createTrackerMenu.call(theWebUI, e, id) && plugin.allStuffLoaded)
+		{
+			theContextMenu.add([CMENU_SEP]);
+			theContextMenu.add([WUILang.EditTrackers,"theWebUI.editTrackers()"]);
+			return(true);
+		}
+		return(false);
+	}
+}
+
+theWebUI.sendEdit = function() 
+{
+	$('#editok').attr("disabled",true);
+	this.requestWithTimeout("?action=edittorrent",[this.receiveEdit, this], function()
+	{
+		theWebUI.timeout();
+		$('#editok').attr("disabled",true);
+	});
+}
+
+theWebUI.receiveEdit = function(d)
+{
+	$('#editok').attr("disabled",false);
+	if(!d.errors.length)
+	{
+		theWebUI.getTrackers(theWebUI.dID);	
+		theDialogManager.hide("tedit");
+	}
+	else
+		for( var i=0; i<d.errors.length; i++)
+		{
+			var s = d.errors[i].desc;
+			if(d.errors[i].prm)
+				s = s + " ("+d.errors[i].prm+")";
+			log(s);
+		}
+}
+
+plugin.onLangLoaded = function() 
+{
+	theDialogManager.make( "tedit", WUILang.EditTorrentProperties,
+		"<div class='cont fxcaret'>"+
+			"<fieldset>"+
+				"<label>"+WUILang.Trackers+": </label>"+
+				"<textarea id='etrackers' name='etrackers'></textarea><br/>"+
+				"<label>"+WUILang.Comment+": </label>"+
+                               	"<input type='text' id='ecomment' name='ecomment' class='TextboxLarge'/><br/>"+
+			"</fieldset>"+
+			"<div class='aright'><input type='button' value='"+WUILang.ok+"' class='Button' id='editok' onclick='theWebUI.sendEdit(); return(false);'/><input type='button' value='"+WUILang.Cancel+"' class='Cancel Button'/></div>"+
+		"</div>", true);
+}
+
+rTorrentStub.prototype.edittorrent = function()
+{
+	this.content = "hash="+theWebUI.dID+"&comment="+encodeURIComponent($('#ecomment').val());
+	var arr = $('#etrackers').val().split("\n");
+	for(var i = 0; i<arr.length; i++)	
+	{
+		var s = arr[i].replace(/(^\s+)|(\s+$)/g, "");
+		if(s.toLowerCase()!='dht://')
+			this.content = 	this.content+"&tracker="+encodeURIComponent(s);
+	}
+	this.contentType = "application/x-www-form-urlencoded";
+	this.mountPoint = "plugins/edit/action.php";
+	this.dataType = "json";
+}

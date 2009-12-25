@@ -1,0 +1,3 @@
+description: The plug-in adds an item "Delete data" to the context menu the downloading item, which allows to remove not only a .torrent file, but also its data.
+author: dmrom00
+version: 3.0
