@@ -194,7 +194,6 @@ var theWebUI =
 			        this.catchErrors(true);
 				this.resize();
 				this.update();
-				this.initDone();
 			}
 			else
 				this.msg(WUILang.PHPDoesnt_enabled);
@@ -404,10 +403,6 @@ var theWebUI =
 		}
 		if(this.settings["webui.speed_display"])
 			this.sTimer = window.setInterval(this.updateStatus, 1000);
-	},
-
-	initDone: function()
-	{
 	},
 
 //
