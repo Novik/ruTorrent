@@ -183,8 +183,8 @@ rTorrentStub.prototype.getalltrackers = function()
 		var cmd = new rXMLRPCCommand("t.multicall");
 		cmd.addParameter("string",this.hashes[i]);
 		cmd.addParameter("string","");
-		for( var i in theRequestManager.trk.commands )
-			cmd.addParameter("string",theRequestManager.trk.commands[i]);
+		for( var j in theRequestManager.trk.commands )
+			cmd.addParameter("string",theRequestManager.trk.commands[j]);
 		this.commands.push( cmd );
 	}
 }
@@ -849,7 +849,7 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 		{
 			if((textStatus=="timeout") && ($type(onTimeout) == "function"))
 				onTimeout();
-			if($type(onError)=="function")
+			if(($type(onError) == "function"))
 				onError(XMLHttpRequest.status,XMLHttpRequest.responseText);
 		},
 		success: function(data, textStatus)

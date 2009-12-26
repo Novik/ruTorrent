@@ -186,12 +186,12 @@ var theWebUI =
 		else
 		{
 			this.catchErrors(false);
-			this.assignEvents();
 			this.getPlugins();
    			this.getUISettings();
 			if(this.configured)
 			{
 			        this.catchErrors(true);
+				this.assignEvents();
 				this.resize();
 				this.update();
 			}
@@ -1274,8 +1274,8 @@ var theWebUI =
 		var tArray = [];
 		$.each(data.torrents,function(hash,torrent)
 		{
-			tdl += torrent.dl;
-			tul += torrent.ul;
+			tdl += iv(torrent.dl);
+			tul += iv(torrent.ul);
 			var sInfo = theWebUI.getStatusIcon(torrent.state, torrent.done);
 			torrent.status = sInfo[1];
 			var lbl = theWebUI.getLabels(hash, torrent.label, torrent.done, torrent.dl, torrent.ul, torrent.state);
@@ -1312,14 +1312,11 @@ var theWebUI =
 			}
 			torrent._updated = true;
 		});
-
 		$.extend(this.torrents,data.torrents);
-
 		theWebUI.speedGraph.addData(tul,tdl);
 		this.total.speedDL = tdl;
 		this.total.speedUL = tul;
 		var wasRemoved = false;
-
 		$.each(this.torrents,function(hash,torrent)
 		{
 			if(!torrent._updated)
@@ -1870,26 +1867,29 @@ var theWebUI =
 
 	resize: function()
 	{
-		var ww = $(window).width();
-		var wh = $(window).height();
-	        var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
-	        var th = $("#t").is(":visible") ? $("#t").height()+14 : 13;
-		if(theWebUI.settings["webui.show_cats"])
-		{
-			theWebUI.resizeLeft( w, wh-th );
-			w = ww - w;
+	        if(theWebUI.configured)
+	        {
+			var ww = $(window).width();
+			var wh = $(window).height();
+	        	var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
+		        var th = $("#t").is(":visible") ? $("#t").height()+14 : 13;
+			if(theWebUI.settings["webui.show_cats"])
+			{
+				theWebUI.resizeLeft( w, wh-th );
+				w = ww - w;
+			}
+			else
+			{
+				$("#VDivider").width( ww-w-5 );
+				w = ww;
+			}
+			w-=11;
+			theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th+1 );
+			if(theWebUI.settings["webui.show_dets"])
+				theWebUI.resizeBottom( w, Math.floor(wh * (1 - theWebUI.settings["webui.vsplit"])) );
+			$("#HDivider").height( wh-th+1 );
 		}
-		else
-		{
-			$("#VDivider").width( ww-w-5 );
-			w = ww;
-		}
-		w-=11;
-		theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th+1 );
-		if(theWebUI.settings["webui.show_dets"])
-			theWebUI.resizeBottom( w, Math.floor(wh * (1 - theWebUI.settings["webui.vsplit"])) );
-		$("#HDivider").height( wh-th+1 );
-	},
+	},      	
 
 	update: function()
    	{

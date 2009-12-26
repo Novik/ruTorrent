@@ -964,7 +964,7 @@ var theBTClientVersion =
         	'A' : "ABC", 'R' : "Tribler", 'S' : "Shad0w",
 	        'T': "BitTornado", 'U': "UPnP NAT Bit Torrent"
 	},
-
+// -SP3603 -UT1830%81%80%06%3A%05%CB
 	get: function( origStr )
 	{
 
@@ -1194,7 +1194,7 @@ var theBTClientVersion =
 		{
 			if(str.match(/^[A-Z]([A-Z0-9\-\.]{1,5})/i))
 			{
-				var cli = shLikeClients[str.charAt(0)];
+				var cli = this.shLikeClients[str.charAt(0)];
 				if(cli)
 					ret = cli+" "+shChar(str.charAt(1))+"."+shChar(str.charAt(2))+"."+shChar(str.charAt(3));
 			}

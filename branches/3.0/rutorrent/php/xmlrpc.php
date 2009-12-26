@@ -77,7 +77,7 @@ class rXMLRPCRequest
 
 	public function setParseByTypes( $enable = true )
 	{
-		$parseByTypes = $enable;
+		$this->parseByTypes = $enable;
 	}
 
 	public function getCommandsCount()
@@ -136,7 +136,7 @@ class rXMLRPCRequest
 //toLog($answer);
 			if(strlen($answer)>0)
 			{
-				if($parseByTypes)
+				if($this->parseByTypes)
 				{
 					if((preg_match_all("|<value><string>(.*)</string></value>|Us",$answer,$this->strings)!==false) &&
 						array_key_exists(1,$this->strings) &&
