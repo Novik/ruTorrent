@@ -97,17 +97,17 @@ theWebUI.switchRSSLabel = function(el,force)
 plugin.config = theWebUI.config;
 theWebUI.config = function(data)
 {
-	theWebUI.rssLabels = new Object();
-	theWebUI.rssItems = new Object();
-	theWebUI.actRSSLbl = null;
-	theWebUI.updateRSSTimer = null;
-	theWebUI.updateRSSInterval = 5*60*1000;
-	theWebUI.rssUpdateInProgress = false;
-	theWebUI.rssID = "";
-	theWebUI.cssCorrected = false;
-	theWebUI.rssArray = new Array();
+	this.rssLabels = new Object();
+	this.rssItems = new Object();
+	this.actRSSLbl = null;
+	this.updateRSSTimer = null;
+	this.updateRSSInterval = 5*60*1000;
+	this.rssUpdateInProgress = false;
+	this.rssID = "";
+	this.cssCorrected = false;
+	this.rssArray = new Array();
 	$("#List").after($("<div>").attr("id","RSSList").css("display","none"));
-	theWebUI.tables["rss"] =  
+	this.tables["rss"] =  
 	{
 	        obj:		new dxSTable(),
 		container:	"RSSList",
@@ -117,6 +117,15 @@ theWebUI.config = function(data)
 		ondblclick:	function(obj) { theWebUI.rssDblClick(obj); return(false); }
 	};
 	plugin.config.call(this,data);
+	plugin.start();
+}
+
+plugin.start = function()
+{
+	if(plugin.allStuffLoaded)
+		theWebUI.request("?action=getintervals",[theWebUI.getRSSIntervals, theWebUI]);
+	else
+		setTimeout(arguments.callee,1000);
 }
 
 theWebUI.rssDblClick = function( obj )
@@ -794,7 +803,7 @@ theWebUI.resizeTop = function( w, h )
        	        this.getTable("rss").resize( w );
 	}
         if(h!==null)
-       	{
+	{
 		$("#RSSList").height( h );
 		this.getTable("rss").resize(null,h); 
        	}
@@ -1197,5 +1206,4 @@ plugin.onLangLoaded = function()
 	else
 	if(thePlugins.isInstalled('ratio'))
 		this.correctRatioFilterDialog();
-	theWebUI.request("?action=getintervals",[theWebUI.getRSSIntervals, theWebUI]);
 };
