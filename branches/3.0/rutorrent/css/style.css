@@ -100,9 +100,6 @@ div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize;
 div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
 div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
 
-
-div#List {border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
-div#FileList, div#TrackerList, div#PeerList {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
 .Status_Down {background: transparent url(../images/tstatus.gif) no-repeat left center}
 .Status_Up {background: transparent url(../images/tstatus.gif) no-repeat -16px center}
 .Status_Incompleted {background: transparent url(../images/tstatus.gif) no-repeat -32px center}
@@ -178,15 +175,23 @@ div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute
 div#tdetails {height: 50%; padding: 0 5px 5px 0; background-color: #F5F5F5}
 div#tdetails a.h {margin: 0}
 div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 2px}
-div#gcont, div#scont, div#lcont {height: 100%; background: #F5F5F5; overflow: auto}
+
+div.tab {height: 100%; background: #F5F5F5; overflow: auto}
+
 div#gcont table {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 10px}
 div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
 div#lcont {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
 div#lcont div {padding: 2px}
+
+div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div.graph_tab {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
+
+div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled;}
+div#List {border: 1px solid #A0A0A0;}
+
 div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 2px solid #909090}
 div#tadd-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/world.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
 div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
-div#gcont, div#FileList, div#TrackerList, div#PeerList, div#scont, div#lcont {display: none}
 div#tadd label, div#tadd input.text {width: 150px; display: block; float: left; margin-bottom: 10px}
 div#tadd label {text-align: right; width: 75px; padding-right: 20px}
 div#tadd br {clear: left; line-height: 0}
@@ -229,10 +234,6 @@ div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(..
 a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(../images/hide.gif); float: right; border: 0}
 a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(../images/hide_over.gif); float: right; border: 0}
 a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../images/hide_on.gif); float: right; border: 0}
-
-div.tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
-div.tab {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
-div.tab {display: none}
 
 div#yesnoDlg {width: 280px; height: 100px}
 div#yesnoDlg div.dlg-header {background-image: url(../images/error.gif)}

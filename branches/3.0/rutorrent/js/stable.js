@@ -70,7 +70,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 
 	this.dHead = $("<div>").addClass("stable-head").get(0);
 	this.dBody = $("<div>").addClass("stable-body").get(0);
-	this.dCont.className = "stable";
+	$(this.dCont).addClass("stable");
 	this.tHead = $("<table>").width(100).get(0);
 	this.tHead.cellSpacing = 0;
 	this.tHead.cellPadding = 0;

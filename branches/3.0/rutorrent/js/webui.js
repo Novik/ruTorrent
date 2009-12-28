@@ -370,7 +370,6 @@ var theWebUI =
 		{
 			table.obj.create($$(table.container), table.columns, ndx);
 		});
-		this.configured = true;
 		table = this.getTable("plg");
 		if(table)
 		{
@@ -385,10 +384,8 @@ var theWebUI =
 					status: plugin.enabled ? 1 : 0
 				}, "_plg_"+plugin.name);
 			});
-//			if(table.sIndex !=- 1)
-//				table.Sort();
-//			table.calcSize().resizeHack();
 		}
+		this.configured = true;
 	},
 
 	setStatusUpdate: function()
@@ -689,10 +686,7 @@ var theWebUI =
 			else
 				this.peers[k]._updated = false;
 		}
-//		if(table.sIndex !=- 1)
-			table.Sort();
-//		else
-//			table.resizeHack();
+		table.Sort();
 	},
 
 	prsSelect: function(e, id) 
@@ -773,10 +767,7 @@ var theWebUI =
 	         			this.trackers[hash][no]._updated = false;
 			}
       		}
-//		if(table.sIndex !=- 1)
-			table.Sort();
-//		else
-//			table.resizeHack();
+		table.Sort();
       		this.updateDetails();
    	},
 
@@ -907,7 +898,6 @@ var theWebUI =
 					}
 				}
 			}
-//     			table.calcSize().resizeHack();
        	 	}
 	},
 
@@ -1355,7 +1345,6 @@ var theWebUI =
 		if(this.firstLoad) 
 		{
 			this.firstLoad = false;
-//			table.calcSize().resizeHack();
 			this.show();
 		}
 		else 
@@ -1859,36 +1848,39 @@ var theWebUI =
 			$("#tdcont").height( h );
 			h-=2;
         	}
-        	this.getTable("fls").resize(w,h);
-		this.getTable("trk").resize(w,h);
-		this.getTable("prs").resize(w,h);
-		this.speedGraph.resize(w,h);
+        	if(theWebUI.configured)
+        	{
+	        	this.getTable("fls").resize(w,h);
+			this.getTable("trk").resize(w,h);
+			this.getTable("prs").resize(w,h);
+			var table = this.getTable("plg");
+			if(table)
+				table.resize(w,h);
+			this.speedGraph.resize(w,h);
+		}
 	},
 
 	resize: function()
 	{
-	        if(theWebUI.configured)
-	        {
-			var ww = $(window).width();
-			var wh = $(window).height();
-	        	var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
-		        var th = $("#t").is(":visible") ? $("#t").height()+14 : 13;
-			if(theWebUI.settings["webui.show_cats"])
-			{
-				theWebUI.resizeLeft( w, wh-th );
-				w = ww - w;
-			}
-			else
-			{
-				$("#VDivider").width( ww-w-5 );
-				w = ww;
-			}
-			w-=11;
-			theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th+1 );
-			if(theWebUI.settings["webui.show_dets"])
-				theWebUI.resizeBottom( w, Math.floor(wh * (1 - theWebUI.settings["webui.vsplit"])) );
-			$("#HDivider").height( wh-th+1 );
+		var ww = $(window).width();
+		var wh = $(window).height();
+        	var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
+	        var th = $("#t").is(":visible") ? $("#t").height()+14 : 13;
+		if(theWebUI.settings["webui.show_cats"])
+		{
+			theWebUI.resizeLeft( w, wh-th );
+			w = ww - w;
 		}
+		else
+		{
+			$("#VDivider").width( ww-w-5 );
+			w = ww;
+		}
+		w-=11;
+		theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th+1 );
+		if(theWebUI.settings["webui.show_dets"])
+			theWebUI.resizeBottom( w, Math.floor(wh * (1 - theWebUI.settings["webui.vsplit"])) );
+		$("#HDivider").height( wh-th+1 );
 	},      	
 
 	update: function()

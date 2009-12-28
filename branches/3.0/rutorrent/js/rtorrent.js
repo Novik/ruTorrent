@@ -90,8 +90,9 @@ var theRequestManager =
 	},
 	addRequest: function( system, command, responseHandler )
 	{
-		this[system].handlers.push( { ndx: this[system].commands.length, response: responseHandler } );
-	        this[system].commands.push(command);
+		this[system].handlers.push( { ndx: command ? this[system].commands.length : null, response: responseHandler } );
+		if(command)
+		        this[system].commands.push(command);
 	        return(this);
 	}
 };
@@ -524,7 +525,7 @@ rTorrentStub.prototype.getpropsResponse = function(xml)
 	};
 	$.each( theRequestManager.prp.handlers, function(i,handler)
 	{
-		handler.response( hash, ret, self.getValue(values,handler.ndx*2+1) );
+		handler.response( hash, ret, (handler.ndx===null) ? null : self.getValue(values,handler.ndx*2+1) );
 	});
 	return(ret);
 }
@@ -537,7 +538,7 @@ rTorrentStub.prototype.gettotalResponse = function(xml)
 	var ret = { UL: this.getValue(values,1), DL: this.getValue(values,3), rateUL: this.getValue(values,5), rateDL: this.getValue(values,7) };
 	$.each( theRequestManager.ttl.handlers, function(i,handler)
 	{
-		handler.response( ret, self.getValue(values,handler.ndx*2+1) );
+		handler.response( ret, (handler.ndx===null) ? null : self.getValue(values,handler.ndx*2+1) );
 	});
 	return( ret );
 }
@@ -587,7 +588,7 @@ rTorrentStub.prototype.getsettingsResponse = function(xml)
 
 	$.each( theRequestManager.stg.handlers, function(i,handler)
 	{
-		handler.response( ret, self.getValue(values,i) );
+		handler.response( ret, (handler.ndx===null) ? null : self.getValue(values,i) );
 		i+=2;
 	});
 
@@ -615,7 +616,7 @@ rTorrentStub.prototype.getfilesResponse = function(xml)
 
 		$.each( theRequestManager.fls.handlers, function(i,handler)
 		{
-			handler.response( hash, fls, self.getValue(values,handler.ndx) );
+			handler.response( hash, fls, (handler.ndx===null) ? null : self.getValue(values,handler.ndx) );
 		});
 
                 ret[hash].push(fls);	
@@ -655,7 +656,7 @@ rTorrentStub.prototype.getpeersResponse = function(xml)
 
 		$.each( theRequestManager.prs.handlers, function(i,handler)
 		{
-			handler.response( id, peer, self.getValue(values,handler.ndx) );
+			handler.response( id, peer, (handler.ndx===null) ? null : self.getValue(values,handler.ndx) );
 		});
 
 		ret[id] = peer;
@@ -684,7 +685,7 @@ rTorrentStub.prototype.gettrackersResponse = function(xml)
 
 		$.each( theRequestManager.trk.handlers, function(i,handler)
 		{
-			handler.response( hash, trk, self.getValue(values,handler.ndx) );
+			handler.response( hash, trk, (handler.ndx===null) ? null : self.getValue(values,handler.ndx) );
 		});
 
 		ret[hash].push(trk);
@@ -719,7 +720,7 @@ rTorrentStub.prototype.getalltrackersResponse = function(xml)
 
 			$.each( theRequestManager.trk.handlers, function(i,handler)
 			{
-				handler.response( hash, trk, self.getValue(values,handler.ndx) );
+				handler.response( hash, trk, (handler.ndx===null) ? null : self.getValue(values,handler.ndx) );
 			});
 
 			ret[hash].push(trk);
@@ -811,7 +812,7 @@ rTorrentStub.prototype.listResponse = function(xml)
 		var hash = this.getValue(values,0);
 		$.each( theRequestManager.trt.handlers, function(i,handler)
 		{
-			handler.response( hash, torrent, self.getValue(values,handler.ndx) );
+			handler.response( hash, torrent, (handler.ndx===null) ? null : self.getValue(values,handler.ndx) );
 		});
 		ret.torrents[hash] = torrent;
 	}
