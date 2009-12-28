@@ -797,15 +797,17 @@ plugin.resizeTop = theWebUI.resizeTop;
 theWebUI.resizeTop = function( w, h )
 {
 	plugin.resizeTop.call(theWebUI,w,h);
-       	if(w!==null)
+	if(w!==null)
 	{
 		$("#RSSList").width( w );
-       	        this.getTable("rss").resize( w );
+		if(theWebUI.configured)
+	       	       	this.getTable("rss").resize( w );
 	}
         if(h!==null)
 	{
 		$("#RSSList").height( h );
-		this.getTable("rss").resize(null,h); 
+		if(theWebUI.configured)
+			this.getTable("rss").resize(null,h); 
        	}
 }
 
