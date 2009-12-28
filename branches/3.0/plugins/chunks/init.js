@@ -44,11 +44,11 @@ if(plugin.enabled)
 
 		var tCell = Chunks.cTable.insertRow(-1).insertCell(-1);
 		tCell.colSpan = NumCols;
-		tCell.innerHTML = NumRows + " " + WUILang.chunksRows + ", " + NumCols + " ";
-		tCell.innerHTML += WUILang.chunksColumns + ", " + d.tsize + " (";
+		tCell.innerHTML = NumRows + " " + theUILang.chunksRows + ", " + NumCols + " ";
+		tCell.innerHTML += theUILang.chunksColumns + ", " + d.tsize + " (";
 		tCell.innerHTML += ( d.chunks.length ) + ") ";
-		tCell.innerHTML += WUILang.chunksChunks + ", " + WUILang.chunksSize + ": ";
-		tCell.innerHTML += ( d.size / 1024 ) + " " + WUILang.KB; // Chunk size
+		tCell.innerHTML += theUILang.chunksChunks + ", " + theUILang.chunksSize + ": ";
+		tCell.innerHTML += ( d.size / 1024 ) + " " + theUILang.KB; // Chunk size
 		tCell.className = "tHeader";
     
 		for (var i=0; i < NumRows; i++) {
@@ -108,13 +108,13 @@ plugin.onLangLoaded = function() {
 		theWebUI.Chunks = $("<div>").attr("id","Chunks").get(0);
 		theWebUI.Chunks.cTable = $("<table>").addClass("tChunks").css("vertical-align","top").get(0);
 		theWebUI.Chunks.appendChild( theWebUI.Chunks.cTable );
-		plugin.attachPageToTabs(theWebUI.Chunks, WUILang.Chunks,"lcont");
+		plugin.attachPageToTabs(theWebUI.Chunks, theUILang.Chunks,"lcont");
 		// Reference for calculating width of a table cell
 		theWebUI.tEM = $("<div>").attr("id","tEM").get(0);
 		theWebUI.tEM.appendChild(document.createTextNode('M'));
 		theWebUI.Chunks.appendChild( theWebUI.tEM );
 	} else {
-    		log(WUILang.chunksNotSupported+theWebUI.rTorrentVersion);
+    		log(theUILang.chunksNotSupported+theWebUI.rTorrentVersion);
 	}
 }
 

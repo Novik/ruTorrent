@@ -43,9 +43,9 @@ if(plugin.canChangeMenu())
 		plugin.createMenu.call(this,e,id);
 		if(plugin.allStuffLoaded)
 		{
-			var el = theContextMenu.get(WUILang.Properties);
+			var el = theContextMenu.get(theUILang.Properties);
 			if(el)
-				theContextMenu.add(el,[WUILang.EditTrackers, (this.getTable("trt").selCount == 1) ? "theWebUI.editTrackers()" : null]);
+				theContextMenu.add(el,[theUILang.EditTrackers, (this.getTable("trt").selCount == 1) ? "theWebUI.editTrackers()" : null]);
 		}
 	}
 
@@ -55,7 +55,7 @@ if(plugin.canChangeMenu())
 		if(plugin.createTrackerMenu.call(theWebUI, e, id) && plugin.allStuffLoaded)
 		{
 			theContextMenu.add([CMENU_SEP]);
-			theContextMenu.add([WUILang.EditTrackers,"theWebUI.editTrackers()"]);
+			theContextMenu.add([theUILang.EditTrackers,"theWebUI.editTrackers()"]);
 			return(true);
 		}
 		return(false);
@@ -92,15 +92,15 @@ theWebUI.receiveEdit = function(d)
 
 plugin.onLangLoaded = function() 
 {
-	theDialogManager.make( "tedit", WUILang.EditTorrentProperties,
+	theDialogManager.make( "tedit", theUILang.EditTorrentProperties,
 		"<div class='cont fxcaret'>"+
 			"<fieldset>"+
-				"<label>"+WUILang.Trackers+": </label>"+
+				"<label>"+theUILang.Trackers+": </label>"+
 				"<textarea id='etrackers' name='etrackers'></textarea><br/>"+
-				"<label>"+WUILang.Comment+": </label>"+
+				"<label>"+theUILang.Comment+": </label>"+
                                	"<input type='text' id='ecomment' name='ecomment' class='TextboxLarge'/><br/>"+
 			"</fieldset>"+
-			"<div class='aright'><input type='button' value='"+WUILang.ok+"' class='Button' id='editok' onclick='theWebUI.sendEdit(); return(false);'/><input type='button' value='"+WUILang.Cancel+"' class='Cancel Button'/></div>"+
+			"<div class='aright'><input type='button' value='"+theUILang.ok+"' class='Button' id='editok' onclick='theWebUI.sendEdit(); return(false);'/><input type='button' value='"+theUILang.Cancel+"' class='Cancel Button'/></div>"+
 		"</div>", true);
 }
 

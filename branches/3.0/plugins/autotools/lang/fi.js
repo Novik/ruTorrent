@@ -3,20 +3,20 @@
  var s_NoAccess		= "Autotools plugin: rTorrent's user can't access ";
  var s_PluginFail	= "Plugin will not work.";
 
- WUILang.autotools			= "Autotools";
- WUILang.autotoolsEnableLabel		= "Enable \"AutoLabel\" feature";
- WUILang.autotoolsEnableMove		= "Enable \"AutoMove\" feature";
- WUILang.autotoolsPathToFinished	= "Path to finished downloads";
- WUILang.autotoolsEnableWatch		= "Enable \"AutoWatch\" feature";
- WUILang.autotoolsPathToWatch		= "Path to base watch directory";
- WUILang.autotoolsWatchStart		= "Start download automatically";
- WUILang.autotoolsPHPNotFound		= s_NoAccess + "php interpreter. " + s_PluginFail;
- WUILang.autotoolsLabelShNotAvailable	= s_NoAccess + "file plugins/autotools/label.sh for read/execute. " + s_PluginFail;
- WUILang.autotoolsLabelPhpNotAvailable	= s_NoAccess + "file plugins/autotools/label.php for read. " + s_PluginFail;
- WUILang.autotoolsMoveShNotAvailable	= s_NoAccess + "file plugins/autotools/move.sh for read/execute. " + s_PluginFail;
- WUILang.autotoolsMovePhpNotAvailable	= s_NoAccess + "file plugins/autotools/move.php for read. " + s_PluginFail;
- WUILang.autotoolsWatchPhpNotAvailable	= s_NoAccess + "file plugins/autotools/watch.php for read. " + s_PluginFail;
- WUILang.autotoolsNoPathToFinished	= "Autotools plugin: path to finished downloads is not set. " + s_PluginFail;
- WUILang.autotoolsNoPathToWatch		= "Autotools plugin: path to base watch directory is not set. " + s_PluginFail;
+ theUILang.autotools			= "Autotools";
+ theUILang.autotoolsEnableLabel		= "Enable \"AutoLabel\" feature";
+ theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" feature";
+ theUILang.autotoolsPathToFinished	= "Path to finished downloads";
+ theUILang.autotoolsEnableWatch		= "Enable \"AutoWatch\" feature";
+ theUILang.autotoolsPathToWatch		= "Path to base watch directory";
+ theUILang.autotoolsWatchStart		= "Start download automatically";
+ theUILang.autotoolsPHPNotFound		= s_NoAccess + "php interpreter. " + s_PluginFail;
+ theUILang.autotoolsLabelShNotAvailable	= s_NoAccess + "file plugins/autotools/label.sh for read/execute. " + s_PluginFail;
+ theUILang.autotoolsLabelPhpNotAvailable	= s_NoAccess + "file plugins/autotools/label.php for read. " + s_PluginFail;
+ theUILang.autotoolsMoveShNotAvailable	= s_NoAccess + "file plugins/autotools/move.sh for read/execute. " + s_PluginFail;
+ theUILang.autotoolsMovePhpNotAvailable	= s_NoAccess + "file plugins/autotools/move.php for read. " + s_PluginFail;
+ theUILang.autotoolsWatchPhpNotAvailable	= s_NoAccess + "file plugins/autotools/watch.php for read. " + s_PluginFail;
+ theUILang.autotoolsNoPathToFinished	= "Autotools plugin: path to finished downloads is not set. " + s_PluginFail;
+ theUILang.autotoolsNoPathToWatch		= "Autotools plugin: path to base watch directory is not set. " + s_PluginFail;
 
 thePlugins.get("autotools").langLoaded();

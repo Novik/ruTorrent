@@ -40,7 +40,7 @@ if(plugin.enabled)
 		{
 			if(plugin.allStuffLoaded)
 			{
-				theWebUI.getTable("trt").renameColumnById("throttle",WUILang.throttle);
+				theWebUI.getTable("trt").renameColumnById("throttle",theUILang.throttle);
 				if(thePlugins.isInstalled("rss"))
 					plugin.rssRenameColumn();
 			}
@@ -51,7 +51,7 @@ if(plugin.enabled)
 		plugin.rssRenameColumn = function()
 		{
 			if(theWebUI.getTable("rss").created)
-				theWebUI.getTable("rss").renameColumnById("throttle",WUILang.throttle);
+				theWebUI.getTable("rss").renameColumnById("throttle",theUILang.throttle);
 			else
 				setTimeout(arguments.callee,1000);
 		}
@@ -129,19 +129,19 @@ if(plugin.enabled)
 			plugin.createMenu.call(this, e, id);
 			if(plugin.allStuffLoaded)
 			{
-				var el = theContextMenu.get(WUILang.Priority);
+				var el = theContextMenu.get(theUILang.Priority);
 				var curNo = null;
 				if(this.getTable("trt").selCount==1)
 					curNo = theWebUI.getThrottleData(id);
 				var down = [];
-				down.push([WUILang.mnuUnlimited, (curNo==-1) ? null : "theWebUI.setThrottle('-1')"]);
+				down.push([theUILang.mnuUnlimited, (curNo==-1) ? null : "theWebUI.setThrottle('-1')"]);
 				down.push([CMENU_SEP]);
 				for(var i=0; i<theWebUI.maxThrottle; i++)
 				{
 					if(theWebUI.isCorrectThrottle(i))
 						down.push([theWebUI.throttles[i].name,(i!=curNo) ? "theWebUI.setThrottle('"+i+"')" : null]);
 				}
-				theContextMenu.add(el,[CMENU_CHILD, WUILang.mnuThrottle, down]);
+				theContextMenu.add(el,[CMENU_CHILD, theUILang.mnuThrottle, down]);
 			}
 		}
 
@@ -160,7 +160,7 @@ if(plugin.enabled)
 		{
 			for(var i=0; i<this.vs.length; i++)
 			{
-				var needRestart = (theWebUI.torrents[this.hashes[i]].status==WUILang.Seeding) || (theWebUI.torrents[this.hashes[i]].status==WUILang.Downloading);
+				var needRestart = (theWebUI.torrents[this.hashes[i]].status==theUILang.Seeding) || (theWebUI.torrents[this.hashes[i]].status==theUILang.Downloading);
 				var name = (this.vs[i]>=0) ? "thr_"+this.vs[i] : "";
 				if(needRestart)
 				{
@@ -197,14 +197,14 @@ plugin.onLangLoaded = function()
 	{
 		var s = 
 			"<fieldset>"+
-				"<legend>"+WUILang.throttles+"</legend>"+
+				"<legend>"+theUILang.throttles+"</legend>"+
 				"<div id='st_throttle_h'>"+
 				"<table>"+
 					"<tr>"+
 						"<td><b>No</b></td>"+
-						"<td><b>"+WUILang.channelName+"</b></td>"+
-						"<td><b>"+WUILang.UL+" ("+WUILang.KB+"/"+WUILang.s+")</b></td>"+
-						"<td><b>"+WUILang.DL+" ("+WUILang.KB+"/"+WUILang.s+")</b></td>"+
+						"<td><b>"+theUILang.channelName+"</b></td>"+
+						"<td><b>"+theUILang.UL+" ("+theUILang.KB+"/"+theUILang.s+")</b></td>"+
+						"<td><b>"+theUILang.DL+" ("+theUILang.KB+"/"+theUILang.s+")</b></td>"+
 					"</tr>";
 		for(var i=0; i<theWebUI.maxThrottle; i++)
 			s +=
@@ -215,8 +215,8 @@ plugin.onLangLoaded = function()
 					"<td><input type='text' id='thr_down"+i+"' class='Textbox num' maxlength='6'/></td>"+
 				"</tr>";
 		s+="</table></div></fieldset>";
-		this.attachPageToOptions($("<div>").attr("id","st_throttle").html(s).get(0),WUILang.throttles);
+		this.attachPageToOptions($("<div>").attr("id","st_throttle").html(s).get(0),theUILang.throttles);
 	}
 	else
-		log(WUILang.throttleUnsupported);
+		log(theUILang.throttleUnsupported);
 }

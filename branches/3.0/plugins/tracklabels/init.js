@@ -246,7 +246,7 @@ theWebUI.initTrackersLabels = function()
 		        var pnl = document.createElement('DIV');
 		        pnl.className = "catpanel";
 	        	pnl.id = "ptrackers";
-			pnl.innerHTML = WUILang.Trackers;
+			pnl.innerHTML = theUILang.Trackers;
 			pnl.onclick = function() { theWebUI.togglePanel(pnl); };
 			el.insertBefore(ul,lbl);
 			el.insertBefore(pnl,ul);

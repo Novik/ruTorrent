@@ -9,23 +9,23 @@ $st = getSettingsPath();
 if($do_diagnostic)
 {
 	if(!$pathToPHP || ($pathToPHP==""))
-		findRemoteEXE('php',"thePlugins.get('rss').showError('WUILang.rssPHPNotFound');",$remoteRequests);
+		findRemoteEXE('php',"thePlugins.get('rss').showError('theUILang.rssPHPNotFound');",$remoteRequests);
 	if(!$pathToCurl || ($pathToCurl==""))
 	{
-		findRemoteEXE('curl',"thePlugins.get('rss').showError('WUILang.rssCurlNotFound');",$remoteRequests);
+		findRemoteEXE('curl',"thePlugins.get('rss').showError('theUILang.rssCurlNotFound');",$remoteRequests);
 		if(findEXE('curl')==false)
-			$jEnd.="plugin.showError('WUILang.rssCurlNotFound1');";
+			$jEnd.="plugin.showError('theUILang.rssCurlNotFound1');";
 	}
 	else
 		if(!is_executable($pathToCurl))
-			$jEnd.="plugin.showError('WUILang.rssCurlNotFound1');";
+			$jEnd.="plugin.showError('theUILang.rssCurlNotFound1');";
 	@chmod($st.'/rss',0777);
 	@chmod($st.'/rss/cache',0777);
 	if(is_dir($st.'/rss/cache') && !isUserHavePermission($theSettings->uid,$theSettings->gid,$st.'/rss/cache',0x0007))
-		$jEnd.="plugin.showError('WUILang.rssCacheNotAvailable');";
+		$jEnd.="plugin.showError('theUILang.rssCacheNotAvailable');";
 	@chmod($rootPath.'/plugins/rss/update.php',0644);
 	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/rss/update.php',0x0004))
-		$jEnd.="plugin.showError('WUILang.rssUpdaterNotAvailable');";
+		$jEnd.="plugin.showError('theUILang.rssUpdaterNotAvailable');";
 }
 $tm = getdate();
 $startAt = mktime($tm["hours"],

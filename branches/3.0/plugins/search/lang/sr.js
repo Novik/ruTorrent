@@ -1,6 +1,6 @@
 ﻿
  
- WUILang.searchDesc = "Машине за претрагу (формат: име|URL)";
- WUILang.searchName = "Претрага";
+ theUILang.searchDesc = "Машине за претрагу (формат: име|URL)";
+ theUILang.searchName = "Претрага";
 
 thePlugins.get("search").langLoaded();

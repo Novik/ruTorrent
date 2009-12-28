@@ -1,15 +1,15 @@
 ﻿
  
- WUILang.mnu_create 		= "Новый торрент...";
- WUILang.CreateNewTorrent 	= "Новый торрент";
- WUILang.SelectSource 		= "Выбор источника";
- WUILang.TorrentProperties 	= "Настройка торрента";
- WUILang.PieceSize 		= "Размер части";
- WUILang.Other 			= "Другое";
- WUILang.StartSeeding 		= "Начать раздачу";
- WUILang.PrivateTorrent		= "Частный торрент";
- WUILang.CreateAndSaveAs	= "Создать и сохранить в...";
- WUILang.BadTorrentData		= "Вы должны заполнить обязательные поля.";
- WUILang.createExternalNotFound = "Плагин create: веб-серверу не доступна внешняя программа";
+ theUILang.mnu_create 		= "Новый торрент...";
+ theUILang.CreateNewTorrent 	= "Новый торрент";
+ theUILang.SelectSource 		= "Выбор источника";
+ theUILang.TorrentProperties 	= "Настройка торрента";
+ theUILang.PieceSize 		= "Размер части";
+ theUILang.Other 			= "Другое";
+ theUILang.StartSeeding 		= "Начать раздачу";
+ theUILang.PrivateTorrent		= "Частный торрент";
+ theUILang.CreateAndSaveAs	= "Создать и сохранить в...";
+ theUILang.BadTorrentData		= "Вы должны заполнить обязательные поля.";
+ theUILang.createExternalNotFound = "Плагин create: веб-серверу не доступна внешняя программа";
 
 thePlugins.get("create").langLoaded();

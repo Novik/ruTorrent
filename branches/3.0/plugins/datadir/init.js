@@ -50,9 +50,9 @@ if(plugin.canChangeMenu())
 		plugin.createMenu.call(this, e, id);
 		if(plugin.allStuffLoaded)
 		{
-			var el = theContextMenu.get( WUILang.Properties );
+			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
-				theContextMenu.add( el, [WUILang.DataDir + "...", "theWebUI.EditDataDir()"] );
+				theContextMenu.add( el, [theUILang.DataDir + "...", "theWebUI.EditDataDir()"] );
 		}
 	}
 }
@@ -104,21 +104,21 @@ rTorrentStub.prototype.setdatadir = function()
 
 plugin.onLangLoaded = function()
 {
-	theDialogManager.make( 'dlg_datadir', WUILang.datadirDlgCaption,
+	theDialogManager.make( 'dlg_datadir', theUILang.datadirDlgCaption,
 		"<div class='cont fxcaret'>" +
 			"<fieldset>" +
-				"<label id='lbl_datadir' for='edit_datadir'>" + WUILang.DataDir + ": </label>" +
+				"<label id='lbl_datadir' for='edit_datadir'>" + theUILang.DataDir + ": </label>" +
 				"<input type='text' id='edit_datadir' class='TextboxLarge' maxlength='200'/>" +
 				"<input type='button' id='btn_datadir_browse' class='Button' value='...' />" +
 				"<div class='checkbox'>" +
 					"<input type='checkbox' id='move_datafiles'/>"+
-					"<label for='move_datafiles'>"+ WUILang.DataDirMove +"</label>"+
+					"<label for='move_datafiles'>"+ theUILang.DataDirMove +"</label>"+
 				"</div>" +
 			"</fieldset>" +
 			"<div class='aright'>" +
-				"<input type='button' value='" + WUILang.ok + "' class='Button' id='btn_datadir_ok'" +
+				"<input type='button' value='" + theUILang.ok + "' class='Button' id='btn_datadir_ok'" +
 					" onclick='theWebUI.sendDataDir(); return(false);' />" +
-				"<input type='button' value='"+ WUILang.Cancel + "' class='Cancel Button'/>" +
+				"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
 			"</div>" +
 		"</div>", true);
 	if(thePlugins.isInstalled("_getdir"))

@@ -1,6 +1,6 @@
 ﻿
  
- WUILang.cookiesDesc = "Cookies (Format: host|cookie1;cookie2...)";
- WUILang.cookiesName = "Cookies";
+ theUILang.cookiesDesc = "Cookies (Format: host|cookie1;cookie2...)";
+ theUILang.cookiesName = "Cookies";
 
 thePlugins.get("cookies").langLoaded();

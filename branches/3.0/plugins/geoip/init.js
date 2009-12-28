@@ -21,7 +21,7 @@ if(plugin.enabled)
 						else
 	   					if(table.getIdByCol(i)=="country")
 	   					{
-							var countryName = WUILang.country[arr[i]];
+							var countryName = theUILang.country[arr[i]];
 							if(countryName)
 								arr[i] = countryName;
 							break;
@@ -57,7 +57,7 @@ if(plugin.enabled)
 			if(plugin.allStuffLoaded)
 			{
 				var table = theWebUI.getTable("prs");
-				table.renameColumnById("country",WUILang.countryName);
+				table.renameColumnById("country",theUILang.countryName);
 				table.oldFilesSortAlphaNumeric = table.sortAlphaNumeric;
 				table.sortAlphaNumeric = function(x, y) 
 				{
@@ -65,10 +65,10 @@ if(plugin.enabled)
 					{
 					        var newX = { key: x.k, v: x.v, e: x.e };
 				        	var newY = { key: y.k, v: y.v, e: y.e };		
-						if(WUILang.country[x.v])
-							newX.v = WUILang.country[x.v];
-						if(WUILang.country[y.v])
-							newY.v = WUILang.country[y.v];
+						if(theUILang.country[x.v])
+							newX.v = theUILang.country[x.v];
+						if(theUILang.country[y.v])
+							newY.v = theUILang.country[y.v];
 						return(this.oldFilesSortAlphaNumeric(newX,newY));
 					}
 					return(this.oldFilesSortAlphaNumeric(x,y));

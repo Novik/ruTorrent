@@ -1,10 +1,10 @@
 ﻿
  
- WUILang.EditTrackers 		= "Редактировать...";
- WUILang.EditTorrentProperties 	= "Настройка торрента";
- WUILang.errorAddTorrent	= "Ошибка добавления торрента";
- WUILang.errorWriteTorrent	= "Ошибка записи файла";
- WUILang.errorReadTorrent	= "Ошибка чтения файла";
- WUILang.cantFindTorrent	= "Исходный торрент файл для данной закачки отсутствует.";
+ theUILang.EditTrackers 		= "Редактировать...";
+ theUILang.EditTorrentProperties 	= "Настройка торрента";
+ theUILang.errorAddTorrent	= "Ошибка добавления торрента";
+ theUILang.errorWriteTorrent	= "Ошибка записи файла";
+ theUILang.errorReadTorrent	= "Ошибка чтения файла";
+ theUILang.cantFindTorrent	= "Исходный торрент файл для данной закачки отсутствует.";
 
 thePlugins.get("edit").langLoaded();

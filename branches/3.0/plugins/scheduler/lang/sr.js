@@ -1,24 +1,24 @@
 ﻿
- WUILang.scheduler			        = "Scheduler";
- WUILang.schedulerOn			    = "Омогући Scheduler";
- WUILang.schedulerGraph			    = "Scheduler-ова табела";
- WUILang.schShortWeek			    = [ "пон", "уто", "сре", "чет", "пет", "суб", "нед" ];
- WUILang.schFullWeek			    = [ "понедељак", "уторак", "среда", "четвртак", "петак", "субота", "недеља" ];
+ theUILang.scheduler			        = "Scheduler";
+ theUILang.schedulerOn			    = "Омогући Scheduler";
+ theUILang.schedulerGraph			    = "Scheduler-ова табела";
+ theUILang.schShortWeek			    = [ "пон", "уто", "сре", "чет", "пет", "суб", "нед" ];
+ theUILang.schFullWeek			    = [ "понедељак", "уторак", "среда", "четвртак", "петак", "субота", "недеља" ];
 
- WUILang.schUnlimited			    = "Неограничено";
- WUILang.schLimited			        = "Ограничено";
- WUILang.schTurnOff			        = "Искључено";
- WUILang.schSeedingOnly			    = "Само сејање";
+ theUILang.schUnlimited			    = "Неограничено";
+ theUILang.schLimited			        = "Ограничено";
+ theUILang.schTurnOff			        = "Искључено";
+ theUILang.schSeedingOnly			    = "Само сејање";
 
- WUILang.schUnlimitedDesc		    = "Неограничено - Нема глобалног ограничења";
- WUILang.schLimitedDesc			    = "Ограничено - Uses scheduler-specific bandwidth limit";
- WUILang.schTurnOffDesc			    = "Искључено - Зауставља све торенте";
- WUILang.schSeedingOnlyDesc		    = "Само сејање - Само узтовар података";
+ theUILang.schUnlimitedDesc		    = "Неограничено - Нема глобалног ограничења";
+ theUILang.schLimitedDesc			    = "Ограничено - Uses scheduler-specific bandwidth limit";
+ theUILang.schTurnOffDesc			    = "Искључено - Зауставља све торенте";
+ theUILang.schSeedingOnlyDesc		    = "Само сејање - Само узтовар података";
 
- WUILang.schLimitedUL               = "Ограничен узтовар";
- WUILang.schLimitedDL               = "Ограничен низтовар";
+ theUILang.schLimitedUL               = "Ограничен узтовар";
+ theUILang.schLimitedDL               = "Ограничен низтовар";
 
- WUILang.schedPHPNotFound           = "Додатак Scheduler: Корисник rTorrent-а не може да приступи РНР интерпретеру. Додатак неће радити.";
- WUILang.schedUpdaterNotAvailable   = "Додатак Scheduler: Корисник rTorrent-а не може да приступи датотеци plugins/scheduler/update.php ради читања. Додатак неће радити.";
+ theUILang.schedPHPNotFound           = "Додатак Scheduler: Корисник rTorrent-а не може да приступи РНР интерпретеру. Додатак неће радити.";
+ theUILang.schedUpdaterNotAvailable   = "Додатак Scheduler: Корисник rTorrent-а не може да приступи датотеци plugins/scheduler/update.php ради читања. Додатак неће радити.";
 
 thePlugins.get("scheduler").langLoaded();

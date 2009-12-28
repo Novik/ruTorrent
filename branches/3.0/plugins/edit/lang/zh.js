@@ -1,10 +1,10 @@
 ﻿
  
- WUILang.EditTrackers 		= "Edit torrent...";
- WUILang.EditTorrentProperties 	= "Torrent Properties";
- WUILang.errorAddTorrent	= "Error adding torrent file";
- WUILang.errorWriteTorrent	= "Error writing torrent file";
- WUILang.errorReadTorrent	= "Error reading torrent file";
- WUILang.cantFindTorrent	= "Source torrent file for this download not founded."
+ theUILang.EditTrackers 		= "Edit torrent...";
+ theUILang.EditTorrentProperties 	= "Torrent Properties";
+ theUILang.errorAddTorrent	= "Error adding torrent file";
+ theUILang.errorWriteTorrent	= "Error writing torrent file";
+ theUILang.errorReadTorrent	= "Error reading torrent file";
+ theUILang.cantFindTorrent	= "Source torrent file for this download not founded."
 
 thePlugins.get("edit").langLoaded();

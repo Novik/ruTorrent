@@ -187,7 +187,7 @@ theWebUI.doRSSDelete = function()
 theWebUI.RSSDelete = function()
 {
 	if(theWebUI.bConfDel)
-		askYesNo( WUILang.rssMenuDelete, WUILang.rssDeletePrompt, "theWebUI.doRSSDelete()" );
+		askYesNo( theUILang.rssMenuDelete, theUILang.rssDeletePrompt, "theWebUI.doRSSDelete()" );
 	else
 		theWebUI.doRSSDelete();
 }
@@ -235,32 +235,32 @@ theWebUI.createRSSMenuPrim = function()
 {
         if(plugin.canChangeMenu())
         {
-		theContextMenu.add([ WUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"]);
-		theContextMenu.add([ WUILang.addRSS, "theWebUI.showRSS()"]);
-		theContextMenu.add([ WUILang.rssMenuManager, "theWebUI.RSSManager()"]);
+		theContextMenu.add([ theUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"]);
+		theContextMenu.add([ theUILang.addRSS, "theWebUI.showRSS()"]);
+		theContextMenu.add([ theUILang.rssMenuManager, "theWebUI.RSSManager()"]);
 		if(theWebUI.actRSSLbl) 
 		{
 			if(this.actRSSLbl == "_rssAll_")
 			{
-				theContextMenu.add([ WUILang.rssMenuDisable ]);
-				theContextMenu.add([ WUILang.rssMenuEdit ]);
-				theContextMenu.add([ WUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]);
-				theContextMenu.add([ WUILang.rssMenuDelete ]);
+				theContextMenu.add([ theUILang.rssMenuDisable ]);
+				theContextMenu.add([ theUILang.rssMenuEdit ]);
+				theContextMenu.add([ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]);
+				theContextMenu.add([ theUILang.rssMenuDelete ]);
 			}
 			else
 			{
 				if(this.rssLabels[this.actRSSLbl].enabled==1)
 				{
-					theContextMenu.add([ WUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"]);
-					theContextMenu.add([ WUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]);
+					theContextMenu.add([ theUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"]);
+					theContextMenu.add([ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]);
 				}
 				else
 				{
-					theContextMenu.add([ WUILang.rssMenuEnable, "theWebUI.RSSToggleStatus()"]);
-					theContextMenu.add([ WUILang.rssMenuRefresh ]);
+					theContextMenu.add([ theUILang.rssMenuEnable, "theWebUI.RSSToggleStatus()"]);
+					theContextMenu.add([ theUILang.rssMenuRefresh ]);
 				}
-				theContextMenu.add([ WUILang.rssMenuEdit, "theWebUI.RSSEdit()"]);
-				theContextMenu.add([ WUILang.rssMenuDelete, "theWebUI.RSSDelete()"]);
+				theContextMenu.add([ theUILang.rssMenuEdit, "theWebUI.RSSEdit()"]);
+				theContextMenu.add([ theUILang.rssMenuDelete, "theWebUI.RSSDelete()"]);
 			}
 		}
 	}
@@ -296,9 +296,9 @@ theWebUI.createRSSMenu = function(e, id)
 	{
 	        if(plugin.canChangeMenu())
 	        {
-			theContextMenu.add([ WUILang.rssMenuLoad, "theWebUI.RSSLoad()"]);
-			theContextMenu.add([ WUILang.rssMenuOpen, "theWebUI.RSSOpen()"]);
-			theContextMenu.add([ WUILang.rssMenuAddToFilter, "theWebUI.RSSAddToFilter()"]);
+			theContextMenu.add([ theUILang.rssMenuLoad, "theWebUI.RSSLoad()"]);
+			theContextMenu.add([ theUILang.rssMenuOpen, "theWebUI.RSSOpen()"]);
+			theContextMenu.add([ theUILang.rssMenuAddToFilter, "theWebUI.RSSAddToFilter()"]);
 			theContextMenu.add([CMENU_SEP]);
 			theWebUI.createRSSMenuPrim();
 		}
@@ -379,7 +379,7 @@ theWebUI.loadTorrents = function()
 				updated = table.setValuesById(href,
 				{
 				 	name: item.title,
-				 	status: (item.hash=="") ? WUILang.rssStatus : (item.hash=="Failed") ? WUILang.rssStatusError+" ("+item.errcount+")" : WUILang.rssStatusLoaded, 
+				 	status: (item.hash=="") ? theUILang.rssStatus : (item.hash=="Failed") ? theUILang.rssStatusError+" ("+item.errcount+")" : theUILang.rssStatusLoaded, 
 					label: table.getAttr(href, "label"),
 					created: item.time
 				},true) || updated; 
@@ -417,7 +417,7 @@ theWebUI.processRSS = function(action,elURL,elLbl)
 	var re = new RegExp();
 	re.compile("^[A-Za-z]+://[A-Za-z0-9-]+\.[A-Za-z0-9]+"); 
 	if(!re.test(url))
-		alert(WUILang.incorrectURL);
+		alert(theUILang.incorrectURL);
 	else
 	{
 		elURL.val('');
@@ -524,7 +524,7 @@ theWebUI.addRSSItems = function(d)
 						updated = table.setValuesById(item.href,
 						{
 						 	name: item.title,
-						 	status: (item.hash=="") ? WUILang.rssStatus : (item.hash=="Failed") ? WUILang.rssStatusError+" ("+item.errcount+")" : WUILang.rssStatusLoaded, 
+						 	status: (item.hash=="") ? theUILang.rssStatus : (item.hash=="Failed") ? theUILang.rssStatusError+" ("+item.errcount+")" : theUILang.rssStatusLoaded, 
 							label: rss.label,
 							created: item.time
 						},true) || updated; 
@@ -544,7 +544,7 @@ theWebUI.addRSSItems = function(d)
 						table.addRowById(
 						{
 							name: item.title,
-						 	status: (item.hash=="") ? WUILang.rssStatus : (item.hash=="Failed") ? WUILang.rssStatusError+" ("+item.errcount+")" : WUILang.rssStatusLoaded, 
+						 	status: (item.hash=="") ? theUILang.rssStatus : (item.hash=="Failed") ? theUILang.rssStatusError+" ("+item.errcount+")" : theUILang.rssStatusLoaded, 
 							label: rss.label,
 							created: item.time
 						}, item.href, "Status_RSS", {"rss" : rss.hash, "label" : rss.label});
@@ -664,14 +664,14 @@ theWebUI.loadFilters = function( flt, additions )
 	var list = $("#fltlist");
 	list.empty();
 	$('#FLT_rss option').remove();	
-	$('#FLT_rss').append("<option value=''>"+WUILang.allFeeds+"</option>");
+	$('#FLT_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
 	for(var lbl in this.rssLabels)
 		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
 	var fltThrottle = $('#FLT_throttle');
 	if(fltThrottle.length)
 	{
 		$('#FLT_throttle option').remove();
-		fltThrottle.append("<option value=''>"+WUILang.mnuUnlimited+"</option>");
+		fltThrottle.append("<option value=''>"+theUILang.mnuUnlimited+"</option>");
 		for(var i=0; i<theWebUI.maxThrottle; i++)
 			if(theWebUI.isCorrectThrottle(i))
 				fltThrottle.append("<option value='thr_"+i+"'>"+theWebUI.throttles[i].name+"</option>");
@@ -680,7 +680,7 @@ theWebUI.loadFilters = function( flt, additions )
 	if(fltRatio.length)
 	{
 		$('#FLT_ratio option').remove();
-		fltRatio.append("<option value=''>"+WUILang.mnuRatioUnlimited+"</option>");
+		fltRatio.append("<option value=''>"+theUILang.mnuRatioUnlimited+"</option>");
 		for(var i=0; i<theWebUI.maxRatio; i++)
 			if(theWebUI.isCorrectRatio(i))
 				fltRatio.append("<option value='rat_"+i+"'>"+theWebUI.ratios[i].name+"</option>");
@@ -716,7 +716,7 @@ theWebUI.addNewFilter = function()
 {
 	var list = $("#fltlist");
 	theWebUI.maxFilterNo++;
-	var f = { name: WUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: theWebUI.maxFilterNo };
+	var f = { name: theUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: theWebUI.maxFilterNo };
 	var i = this.filters.length;
 	list.append( $("<li>").html("<input type='checkbox' id='_fe"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectFilter(this);\" id='_fn"+i+"'/>"));
 	this.filters.push(f);
@@ -774,7 +774,7 @@ theWebUI.showFilterResults = function( d )
 	for(var i = 0; i<d.list.length; i++)
 		table.rowSel[d.list[i]] = true;
 	table.refreshSelection();
-	alert(WUILang.foundedByFilter+" : "+d.list.length);
+	alert(theUILang.foundedByFilter+" : "+d.list.length);
 }
 
 theWebUI.setFilters = function()
@@ -1012,7 +1012,7 @@ plugin.correctRatioFilterDialog = function()
 			$$('filterList').style.height = rule.style.height;
 		}
 		$("#FLT_label").after( $("<span></span>").
-			html("<label>"+WUILang.ratio+":</label><select id='FLT_ratio'><option value=''>"+WUILang.mnuRatioUnlimited+"</option></select><br/>") );
+			html("<label>"+theUILang.ratio+":</label><select id='FLT_ratio'><option value=''>"+theUILang.mnuRatioUnlimited+"</option></select><br/>") );
 		theDialogManager.center("dlgEditFilters");
 	}
 	else
@@ -1047,7 +1047,7 @@ plugin.correctFilterDialog = function()
 			$$('filterList').style.height = rule.style.height;
 		}
 		$("#FLT_label").after( $("<span></span>").
-			html(  "<label>"+WUILang.throttle+":</label><select id='FLT_throttle'><option value=''>"+WUILang.mnuUnlimited+"</option></select><br/>" ) );
+			html(  "<label>"+theUILang.throttle+":</label><select id='FLT_throttle'><option value=''>"+theUILang.mnuUnlimited+"</option></select><br/>" ) );
 		if(thePlugins.isInstalled('ratio'))
 			plugin.correctRatioFilterDialog();
 		else
@@ -1102,92 +1102,92 @@ plugin.correctCSS = function()
 
 plugin.onLangLoaded = function()
 {
-        this.addButtonToToolbar("rss",WUILang.mnu_rss,"theWebUI.showRSS()","settings");
+        this.addButtonToToolbar("rss",theUILang.mnu_rss,"theWebUI.showRSS()","settings");
 
         var el = $('#CatList');
 	var ul = $("<ul>");
 	if($$("pstate"))
 	{
-	        el.append($("<div>").addClass("catpanel").attr("id","prss").text(WUILang.rssFeeds).click(function() { theWebUI.togglePanel(this); }));
+	        el.append($("<div>").addClass("catpanel").attr("id","prss").text(theUILang.rssFeeds).click(function() { theWebUI.togglePanel(this); }));
 		var div = $("<div>").attr("id","prss_cont");
 		el.append(div);
 		el = div;
-		ul.html('<li id="_rssAll_" class="RSS">'+WUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
+		ul.html('<li id="_rssAll_" class="RSS">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
 	}
 	else
-		ul.html('<li id="_hr_"><hr /></li><li id="_rssAll_" class="RSS">'+WUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
+		ul.html('<li id="_hr_"><hr /></li><li id="_rssAll_" class="RSS">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
 	el.append(ul).append( $("<div>").html('<ul id="rssl"></ul>') );
 	$("#_rssAll_").mouseclick( theWebUI.rssLabelContextMenu );
 
-	theDialogManager.make( "dlgAddRSS", WUILang.addRSS,
+	theDialogManager.make( "dlgAddRSS", theUILang.addRSS,
 		"<div class='content'>"+
-			"<label>"+WUILang.feedURL+": </label>"+
+			"<label>"+theUILang.feedURL+": </label>"+
 			"<input type='text' id='rssURL' class='TextboxLarge'/><br/>"+
-			"<label>"+WUILang.alias+": </label>"+
+			"<label>"+theUILang.alias+": </label>"+
 			"<input type='text' id='rssLabel' class='TextboxLarge'/>"+
-			"<div class='aright'><input type='button' class='Button' value="+WUILang.ok+" onclick='theDialogManager.hide(\"dlgAddRSS\");theWebUI.addRSS();return(false);'/><input type='button' class='Cancel Button' value='"+WUILang.Cancel+"'/></div>"+
+			"<div class='aright'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgAddRSS\");theWebUI.addRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
 		"</div>",true);
-	theDialogManager.make( "dlgEditRSS", WUILang.rssMenuEdit,
+	theDialogManager.make( "dlgEditRSS", theUILang.rssMenuEdit,
 		"<div class='content'>"+
-			"<label>"+WUILang.feedURL+": </label>"+
+			"<label>"+theUILang.feedURL+": </label>"+
 			"<input type='text' id='editrssURL' class='TextboxLarge'/><br/>"+
-			"<label>"+WUILang.alias+": </label>"+
+			"<label>"+theUILang.alias+": </label>"+
 			"<input type='text' id='editrssLabel' class='TextboxLarge'/>"+
-			"<div class='aright'><input type='button' class='Button' value="+WUILang.ok+" onclick='theDialogManager.hide(\"dlgEditRSS\");theWebUI.editRSS();return(false);'/><input type='button' class='Cancel Button' value='"+WUILang.Cancel+"'/></div>"+
+			"<div class='aright'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgEditRSS\");theWebUI.editRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
 		"</div>",true);
-	theDialogManager.make( "dlgLoadTorrents", WUILang.torrent_add,
+	theDialogManager.make( "dlgLoadTorrents", theUILang.torrent_add,
 		"<div class='content'>"+
-			"<label>"+WUILang.Base_directory+":</label><input type='text' id='RSSdir_edit' class='TextboxLarge'/><br/>"+
-			"<label></label><input type='checkbox' id='RSSnot_add_path'/>"+WUILang.Dont_add_tname+"<br/>"+
-			"<label></label><input type='checkbox' id='RSStorrents_start_stopped'/>"+WUILang.Dnt_start_down_auto+"<br/>"+
-			"<label>"+WUILang.Label+":</label><input type='text' id='RSS_label' class='TextboxLarge'/><br/>"+
-			"<div id='buttons' class='aright'><input type='button' class='Button' value="+WUILang.ok+" onclick='theDialogManager.hide(\"dlgLoadTorrents\");theWebUI.RSSLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+WUILang.Cancel+"'/></div>"+
+			"<label>"+theUILang.Base_directory+":</label><input type='text' id='RSSdir_edit' class='TextboxLarge'/><br/>"+
+			"<label></label><input type='checkbox' id='RSSnot_add_path'/>"+theUILang.Dont_add_tname+"<br/>"+
+			"<label></label><input type='checkbox' id='RSStorrents_start_stopped'/>"+theUILang.Dnt_start_down_auto+"<br/>"+
+			"<label>"+theUILang.Label+":</label><input type='text' id='RSS_label' class='TextboxLarge'/><br/>"+
+			"<div id='buttons' class='aright'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgLoadTorrents\");theWebUI.RSSLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
 		"</div>",true);
-	theDialogManager.make( "dlgEditFilters", WUILang.rssMenuManager,
+	theDialogManager.make( "dlgEditFilters", theUILang.rssMenuManager,
 		"<div class='fxcaret'>"+
 			"<div class='lfc'>"+
 				"<div class='lf' id='filterList'>"+
 					"<ul id='fltlist'></ul>"+
 				"</div>"+
 				"<div id='FLTchk_buttons'>"+
-					"<input type='button' class='Button' value='"+WUILang.rssAddFilter+"' onclick='theWebUI.addNewFilter();return(false);'/>"+
-					"<input type='button' class='Button' value='"+WUILang.rssDelFilter+"' onclick='theWebUI.deleteCurrentFilter();return(false);'/>"+
-					"<input type='button' id='chkFilterBtn' class='Button' value='"+WUILang.rssCheckFilter+"' onclick='theWebUI.checkCurrentFilter();return(false);'/>"+
+					"<input type='button' class='Button' value='"+theUILang.rssAddFilter+"' onclick='theWebUI.addNewFilter();return(false);'/>"+
+					"<input type='button' class='Button' value='"+theUILang.rssDelFilter+"' onclick='theWebUI.deleteCurrentFilter();return(false);'/>"+
+					"<input type='button' id='chkFilterBtn' class='Button' value='"+theUILang.rssCheckFilter+"' onclick='theWebUI.checkCurrentFilter();return(false);'/>"+
 				"</div>"+
 			"</div>"+
 			"<div class='rf' id='filterProps'>"+
 				"<fieldset id='filterPropsFieldSet'>"+
-					"<legend>"+WUILang.rssFiltersLegend+"</legend>"+
-					"<label>"+WUILang.rssFilter+":</label><input type='text' id='FLT_body' class='TextboxLarge'/><br/>"+
-					"<label>"+WUILang.rssExclude+":</label><input type='text' id='FLT_exclude' class='TextboxLarge'/><br/>"+
-					"<label></label><input type='checkbox' class='chk' id='FLTchktitle'/>"+WUILang.rssCheckTitle+"<br/>"+
-					"<label></label><input type='checkbox' class='chk'id='FLTchkdesc'/>"+WUILang.rssCheckDescription+"<br/>"+
-					"<label></label><input type='checkbox' class='chk' id='FLTchklink'/>"+WUILang.rssCheckLink+"<br/>"+
-					"<label>"+WUILang.rssStatus+":</label><select id='FLT_rss'><option value=''>"+WUILang.allFeeds+"</option></select><br/>"+
-					"<label>"+WUILang.Base_directory+":</label><input type='text' id='FLTdir_edit' class='TextboxLarge'/><br/>"+
-					"<label></label><input type='checkbox' class='chk'id='FLTnot_add_path'/>"+WUILang.Dont_add_tname+"<br/>"+
-					"<label></label><input type='checkbox' class='chk'id='FLTtorrents_start_stopped'/>"+WUILang.Dnt_start_down_auto+"<br/>"+
-					"<label>"+WUILang.rssMinInterval+":</label><select id='FLT_interval'>"+
-					        "<option value='-1'>"+WUILang.rssIntervalAlways+"</option>"+
-					        "<option value='0'>"+WUILang.rssIntervalOnce+"</option>"+
-					        "<option value='12'>"+WUILang.rssInterval12h+"</option>"+
-					        "<option value='24'>"+WUILang.rssInterval1d+"</option>"+
-					        "<option value='48'>"+WUILang.rssInterval2d+"</option>"+
-					        "<option value='72'>"+WUILang.rssInterval3d+"</option>"+
-					        "<option value='96'>"+WUILang.rssInterval4d+"</option>"+
-					        "<option value='168'>"+WUILang.rssInterval1w+"</option>"+
-					        "<option value='336'>"+WUILang.rssInterval2w+"</option>"+
-					        "<option value='504'>"+WUILang.rssInterval3w+"</option>"+
-					        "<option value='720'>"+WUILang.rssInterval1m+"</option>"+
+					"<legend>"+theUILang.rssFiltersLegend+"</legend>"+
+					"<label>"+theUILang.rssFilter+":</label><input type='text' id='FLT_body' class='TextboxLarge'/><br/>"+
+					"<label>"+theUILang.rssExclude+":</label><input type='text' id='FLT_exclude' class='TextboxLarge'/><br/>"+
+					"<label></label><input type='checkbox' class='chk' id='FLTchktitle'/>"+theUILang.rssCheckTitle+"<br/>"+
+					"<label></label><input type='checkbox' class='chk'id='FLTchkdesc'/>"+theUILang.rssCheckDescription+"<br/>"+
+					"<label></label><input type='checkbox' class='chk' id='FLTchklink'/>"+theUILang.rssCheckLink+"<br/>"+
+					"<label>"+theUILang.rssStatus+":</label><select id='FLT_rss'><option value=''>"+theUILang.allFeeds+"</option></select><br/>"+
+					"<label>"+theUILang.Base_directory+":</label><input type='text' id='FLTdir_edit' class='TextboxLarge'/><br/>"+
+					"<label></label><input type='checkbox' class='chk'id='FLTnot_add_path'/>"+theUILang.Dont_add_tname+"<br/>"+
+					"<label></label><input type='checkbox' class='chk'id='FLTtorrents_start_stopped'/>"+theUILang.Dnt_start_down_auto+"<br/>"+
+					"<label>"+theUILang.rssMinInterval+":</label><select id='FLT_interval'>"+
+					        "<option value='-1'>"+theUILang.rssIntervalAlways+"</option>"+
+					        "<option value='0'>"+theUILang.rssIntervalOnce+"</option>"+
+					        "<option value='12'>"+theUILang.rssInterval12h+"</option>"+
+					        "<option value='24'>"+theUILang.rssInterval1d+"</option>"+
+					        "<option value='48'>"+theUILang.rssInterval2d+"</option>"+
+					        "<option value='72'>"+theUILang.rssInterval3d+"</option>"+
+					        "<option value='96'>"+theUILang.rssInterval4d+"</option>"+
+					        "<option value='168'>"+theUILang.rssInterval1w+"</option>"+
+					        "<option value='336'>"+theUILang.rssInterval2w+"</option>"+
+					        "<option value='504'>"+theUILang.rssInterval3w+"</option>"+
+					        "<option value='720'>"+theUILang.rssInterval1m+"</option>"+
 						"</select>"+
-						"<input type='button' class='Button' value='"+WUILang.rssClearFilter+"' onclick='theWebUI.rssClearFilter();return(false);'/><br/>"+
-					"<label>"+WUILang.Label+":</label><input type='text' id='FLT_label' class='TextboxLarge'/><br/>"+
+						"<input type='button' class='Button' value='"+theUILang.rssClearFilter+"' onclick='theWebUI.rssClearFilter();return(false);'/><br/>"+
+					"<label>"+theUILang.Label+":</label><input type='text' id='FLT_label' class='TextboxLarge'/><br/>"+
 				"</fieldset>"+
 			"</div>"+
 		"</div>"+
 		"<div id='FLT_buttons' class='aright'>"+
-			"<input type='button' class='Button' value='"+WUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditFilters\");theWebUI.setFilters();return(false);'/>"+
-			"<input type='button' class='Cancel Button' value='"+WUILang.Cancel+"'/>"+
+			"<input type='button' class='Button' value='"+theUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditFilters\");theWebUI.setFilters();return(false);'/>"+
+			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 		"</div>");
 	$("#gcont").append( $("<div>").attr("id","rsslayout").css( "display", "none" ));
 

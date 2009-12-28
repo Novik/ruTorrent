@@ -111,22 +111,22 @@ if(isset($HTTP_RAW_POST_DATA))
 								"<param><value><string>d.set_connection_seed=".$req->val[8]."</string></value></param>".
 								$throttle
 								 )===false)
-								$errors[] = array('desc'=>"WUILang.badLinkTorTorrent", 'prm'=>'');
+								$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');
 						}
 						else
-							$errors[] = array('desc'=>"WUILang.errorAddTorrent", 'prm'=>$fname);
+							$errors[] = array('desc'=>"theUILang.errorAddTorrent", 'prm'=>$fname);
 					}
 					else
-						$errors[] = array('desc'=>"WUILang.errorWriteTorrent", 'prm'=>$fname);
+						$errors[] = array('desc'=>"theUILang.errorWriteTorrent", 'prm'=>$fname);
 				}
 				else
-					$errors[] = array('desc'=>"WUILang.errorReadTorrent", 'prm'=>$fname);
+					$errors[] = array('desc'=>"theUILang.errorReadTorrent", 'prm'=>$fname);
 			}
 			else
-				$errors[] = array('desc'=>"WUILang.cantFindTorrent", 'prm'=>'');
+				$errors[] = array('desc'=>"theUILang.cantFindTorrent", 'prm'=>'');
                 }
                 else
-			$errors[] = array('desc'=>"WUILang.badLinkTorTorrent", 'prm'=>'');
+			$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');
 
 	}
 }

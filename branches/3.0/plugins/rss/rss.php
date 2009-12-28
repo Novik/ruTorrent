@@ -736,17 +736,17 @@ class rRSSManager
 			}
 		}
 		else
-			$this->rssList->addError("WUILang.rssDontExist");
+			$this->rssList->addError("theUILang.rssDontExist");
 		return($hrefs);
 	}
 	public function testFilter($filter,$hash = null)
 	{
 		$hrefs = array();
 		if(!$filter->isCorrect())
-			$this->rssList->addError("WUILang.rssIncorrectFilter",$filter->pattern);
+			$this->rssList->addError("theUILang.rssIncorrectFilter",$filter->pattern);
 		else
 		if(!$filter->isCorrectExclude())
-			$this->rssList->addError("WUILang.rssIncorrectFilter",$filter->exclude);
+			$this->rssList->addError("theUILang.rssIncorrectFilter",$filter->exclude);
 		else
 		{
 			if($hash)
@@ -780,11 +780,11 @@ class rRSSManager
 					$this->saveHistory();
 				}
 				else
-					$this->rssList->addError( "WUILang.cantFetchRSS", $rss->srcURL );
+					$this->rssList->addError( "theUILang.cantFetchRSS", $rss->srcURL );
 			}
 		}
 		else
-			$this->rssList->addError("WUILang.rssDontExist");
+			$this->rssList->addError("theUILang.rssDontExist");
 	}
 	public function setStartTime( $startAt )
 	{
@@ -805,7 +805,7 @@ class rRSSManager
 				if($rss->fetch() && $this->cache->set($rss))
 					$this->checkFilters($rss,$info,$filters);
 				else
-					$this->rssList->addError( "WUILang.cantFetchRSS", $rss->srcURL );
+					$this->rssList->addError( "theUILang.cantFetchRSS", $rss->srcURL );
 			}
 		}
 		if(!$manual)
@@ -925,10 +925,10 @@ class rRSSManager
 				$this->saveHistory();
 			}
 			else
-				$this->rssList->addError( "WUILang.cantFetchRSS", $rssURL );
+				$this->rssList->addError( "theUILang.cantFetchRSS", $rssURL );
 		}
 		else
-			$this->rssList->addError( "WUILang.rssAlreadyExist", $rssURL );
+			$this->rssList->addError( "theUILang.rssAlreadyExist", $rssURL );
 	}
 	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $ratio, $needFlush = true )
 	{
@@ -966,7 +966,7 @@ class rRSSManager
 			}
 		}
 		if(!$ret)
-			$this->rssList->addError( "WUILang.rssCantLoadTorrent", $url );
+			$this->rssList->addError( "theUILang.rssCantLoadTorrent", $url );
 		$this->history->add($url,$thash);
 		if($needFlush)
 			$this->saveHistory();

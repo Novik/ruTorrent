@@ -68,7 +68,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 			$datadir_debug_enabled );
 		if( !$res )
 		{
-			$errors[] = array('desc'=>"WUILang.datadirSetDirFail", 'prm'=>$datadir);
+			$errors[] = array('desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir);
 		}
 	}
 
@@ -77,12 +77,12 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		if( !rtMkDir( $datadir, 0777 ) )
 		{
 			Debug( "can't create ".$datadir );
-			$errors[] = array( 'desc'=>"WUILang.datadirDirNotFound", 'prm'=>$datadir );
+			$errors[] = array( 'desc'=>"theUILang.datadirDirNotFound", 'prm'=>$datadir );
 		}
 		elseif( !rtSetDataDir( $hash, $datadir, $move_datafiles == '1', $datadir_debug_enabled ) )
 		{
 			Debug( "rtSetDataDir() fail!" );
-			$errors[] = array( 'desc'=>"WUILang.datadirSetDirFail", 'prm'=>$datadir );
+			$errors[] = array( 'desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir );
 		}
 	}
 }

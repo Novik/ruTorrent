@@ -5,13 +5,13 @@ require_once( '../plugins/retrackers/retrackers.php');
 if($do_diagnostic)
 {
 	if(!$pathToPHP || ($pathToPHP==""))
-		findRemoteEXE('php',"thePlugins.get('retrackers').showError('WUILang.retrackersPHPNotFound');",$remoteRequests);
+		findRemoteEXE('php',"thePlugins.get('retrackers').showError('theUILang.retrackersPHPNotFound');",$remoteRequests);
 	@chmod($rootPath.'/plugins/retrackers/run.sh',0755);
 	@chmod($rootPath.'/plugins/retrackers/update.php',0644);
 	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/retrackers/run.sh',0x0005))
-		$jEnd.="plugin.showError('WUILang.retrackersRunNotAvailable');";
+		$jEnd.="plugin.showError('theUILang.retrackersRunNotAvailable');";
 	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/retrackers/update.php',0x0004))
-		$jEnd.="plugin.showError('WUILang.retrackersUpdaterNotAvailable');";
+		$jEnd.="plugin.showError('theUILang.retrackersUpdaterNotAvailable');";
 }
 
 if($theSettings->iVersion<0x804)

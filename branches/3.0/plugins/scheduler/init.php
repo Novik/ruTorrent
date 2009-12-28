@@ -6,10 +6,10 @@ require_once( '../plugins/scheduler/scheduler.php' );
 if($do_diagnostic)
 {
 	if(!$pathToPHP || ($pathToPHP==""))
-		findRemoteEXE('php',"thePlugins.get('scheduler').showError('WUILang.schedPHPNotFound');",$remoteRequests);
+		findRemoteEXE('php',"thePlugins.get('scheduler').showError('theUILang.schedPHPNotFound');",$remoteRequests);
 	@chmod($rootPath.'/plugins/scheduler/update.php',0644);
 	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/scheduler/update.php',0x0004))
-		$jEnd.="plugin.showError('WUILang.schedUpdaterNotAvailable');";
+		$jEnd.="plugin.showError('theUILang.schedUpdaterNotAvailable');";
 }
 $schd = rScheduler::load();
 $schd->apply();

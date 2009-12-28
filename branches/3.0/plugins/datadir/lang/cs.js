@@ -1,9 +1,9 @@
 ﻿
 
- WUILang.DataDir		= "Save to";
- WUILang.DataDirMove		= "Move data files";
- WUILang.datadirDlgCaption	= "Torrent data directory";
- WUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
- WUILang.datadirSetDirFail	= "DataDir plugin: Operation fail";
+ theUILang.DataDir		= "Save to";
+ theUILang.DataDirMove		= "Move data files";
+ theUILang.datadirDlgCaption	= "Torrent data directory";
+ theUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
+ theUILang.datadirSetDirFail	= "DataDir plugin: Operation fail";
 
 thePlugins.get("datadir").langLoaded();

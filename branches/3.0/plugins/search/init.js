@@ -58,9 +58,9 @@ plugin.onLangLoaded = function()
 {
 	this.attachPageToOptions($("<div>").attr("id","st_search").html(
 		"<fieldset>"+
-			"<legend>"+WUILang.searchDesc+"</legend>"+
+			"<legend>"+theUILang.searchDesc+"</legend>"+
 			"<div class=\"op100l\">"+
 				"<textarea id='searchsites'></textarea>"+
 			"</div>"+
-		"</fieldset>")[0],WUILang.searchName);
+		"</fieldset>")[0],theUILang.searchName);
 }

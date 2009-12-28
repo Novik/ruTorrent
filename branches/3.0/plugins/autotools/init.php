@@ -12,18 +12,18 @@ $pathToAutoTools = $rootPath.'/plugins/autotools';
 if( $do_diagnostic )
 {
 	if( !$pathToPHP || $pathToPHP == "" )
-		findRemoteEXE( 'php', "thePlugins.get('autotools').showError('WUILang.autotoolsPHPNotFound');", $remoteRequests );
+		findRemoteEXE( 'php', "thePlugins.get('autotools').showError('theUILang.autotoolsPHPNotFound');", $remoteRequests );
 
 	@chmod( $pathToAutoTools.'/label.php', 0644 );
 	@chmod( $pathToAutoTools.'/move.php',  0644 );
 	@chmod( $pathToAutoTools.'/watch.php', 0644 );
 
 	if( !isUserHavePermission( $theSettings->uid, $theSettings->gid, $pathToAutoTools.'/label.php',0x0004 ) )
-		$jEnd .= "plugin.showError('WUILang.autotoolsLabelPhpNotAvailable');";
+		$jEnd .= "plugin.showError('theUILang.autotoolsLabelPhpNotAvailable');";
 	if( !isUserHavePermission( $theSettings->uid, $theSettings->gid, $pathToAutoTools.'/move.php',0x0004 ) )
-		$jEnd .= "plugin.showError('WUILang.autotoolsMovePhpNotAvailable');";
+		$jEnd .= "plugin.showError('theUILang.autotoolsMovePhpNotAvailable');";
 	if( !isUserHavePermission( $theSettings->uid, $theSettings->gid, $pathToAutoTools.'/watch.php',0x0004 ) )
-		$jEnd .= "plugin.showError('WUILang.autotoolsWatchPhpNotAvailable');";
+		$jEnd .= "plugin.showError('theUILang.autotoolsWatchPhpNotAvailable');";
 }
 
 if( $theSettings->iVersion < 0x804 )
@@ -77,13 +77,13 @@ if( $do_diagnostic )
 	{
 		$path_to_finished = trim( $at->path_to_finished );
 		if( $path_to_finished == '' )
-			$jEnd .= "plugin.showError('WUILang.autotoolsNoPathToFinished');";
+			$jEnd .= "plugin.showError('theUILang.autotoolsNoPathToFinished');";
 	}
 	if( $at->enable_watch )
 	{
 		$path_to_watch = trim( $at->path_to_watch );
 		if( $path_to_watch == '' )
-			$jEnd .= "plugin.showError('WUILang.autotoolsNoPathToWatch');";
+			$jEnd .= "plugin.showError('theUILang.autotoolsNoPathToWatch');";
 	}
 }
 

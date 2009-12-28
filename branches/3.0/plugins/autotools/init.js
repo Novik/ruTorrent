@@ -62,12 +62,12 @@ plugin.onLangLoaded = function()
 {
 	this.attachPageToOptions( $("<div>").attr("id","st_autotools").html(
 		"<fieldset>"+
-			"<legend>"+ WUILang.autotools +"</legend>"+
+			"<legend>"+ theUILang.autotools +"</legend>"+
 			"<table>"+
 			"<tr>"+
 				"<td>"+
 					"<input type='checkbox' id='enable_label' checked='false'"+
-					"<label for='enable_label'>"+ WUILang.autotoolsEnableLabel +"</label>"+
+					"<label for='enable_label'>"+ theUILang.autotoolsEnableLabel +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"<tr />"+
@@ -75,13 +75,13 @@ plugin.onLangLoaded = function()
 				"<td>"+
 					"<input type='checkbox' id='enable_move' checked='false' "+
 					"onchange='linked(this, 0, [\"path_to_finished\", \"automove_browse_btn\"]);' />"+
-						"<label for='enable_move'>"+ WUILang.autotoolsEnableMove +"</label>"+
+						"<label for='enable_move'>"+ theUILang.autotoolsEnableMove +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
 				"<td id='ctrls_level2'>"+
 					"<label id='lbl_path_to_finished' for='path_to_finished' class='disabled' disabled='true'>"+
-					WUILang.autotoolsPathToFinished +":</label>"+
+					theUILang.autotoolsPathToFinished +":</label>"+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
@@ -95,13 +95,13 @@ plugin.onLangLoaded = function()
 				"<td>"+
 					"<input type='checkbox' id='enable_watch' checked='false' "+
 					"onchange='linked(this, 0, [\"path_to_watch\", \"autowatch_browse_btn\",\"watch_start\"]);' />"+
-						"<label for='enable_watch'>"+ WUILang.autotoolsEnableWatch +"</label>"+
+						"<label for='enable_watch'>"+ theUILang.autotoolsEnableWatch +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
 				"<td id='ctrls_level2'>"+
 					"<label id='lbl_path_to_watch' for='path_to_watch' class='disabled' disabled='true'>"+
-					WUILang.autotoolsPathToWatch +":</label>"+
+					theUILang.autotoolsPathToWatch +":</label>"+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
@@ -113,11 +113,11 @@ plugin.onLangLoaded = function()
 			"<tr>"+
 				"<td id='ctrls_level2'>"+
 					"<input type='checkbox' id='watch_start' checked='false' disabled='true'/>"+
-					"<label id='lbl_watch_start' for='watch_start' class='disabled'>"+ WUILang.autotoolsWatchStart +"</label>"+
+					"<label id='lbl_watch_start' for='watch_start' class='disabled'>"+ theUILang.autotoolsWatchStart +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"</table>"+
-		"</fieldset>")[0], WUILang.autotools );
+		"</fieldset>")[0], theUILang.autotools );
 	if(thePlugins.isInstalled("_getdir"))
 	{
 		this.DirBrowser1 = new theWebUI.rDirBrowser( 'st_autotools', 'path_to_finished', 'automove_browse_btn', 'automove_browse_frame' );

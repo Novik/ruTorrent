@@ -40,7 +40,7 @@ if(plugin.enabled)
 		{
 			if(plugin.allStuffLoaded)
 			{
-				theWebUI.getTable("trt").renameColumnById("ratiogroup",WUILang.ratio);
+				theWebUI.getTable("trt").renameColumnById("ratiogroup",theUILang.ratio);
 				if(thePlugins.isInstalled("rss"))
 					plugin.rssRenameColumn();
 			}
@@ -51,7 +51,7 @@ if(plugin.enabled)
 		plugin.rssRenameColumn = function()
 		{
 			if(theWebUI.getTable("rss").created)
-				theWebUI.getTable("rss").renameColumnById("ratiogroup",WUILang.ratio);
+				theWebUI.getTable("rss").renameColumnById("ratiogroup",theUILang.ratio);
 			else
 				setTimeout(arguments.callee,1000);
 		}
@@ -130,17 +130,17 @@ if(plugin.enabled)
 			plugin.createMenu.call(this, e, id);
 			if(plugin.allStuffLoaded)
 			{
-				var el = theContextMenu.get(WUILang.Priority);
+				var el = theContextMenu.get(theUILang.Priority);
 				var curNo = null;
 				if(this.getTable("trt").selCount==1)
 					curNo = theWebUI.getRatioData(id);
 				var down = [];
-				down.push([WUILang.mnuRatioUnlimited,(curNo==-1) ? null : "theWebUI.setRatio('-1')"]);
+				down.push([theUILang.mnuRatioUnlimited,(curNo==-1) ? null : "theWebUI.setRatio('-1')"]);
 				down.push([CMENU_SEP]);
 				for(var i=0; i<theWebUI.maxRatio; i++)
 					if(theWebUI.isCorrectRatio(i))
 						down.push([theWebUI.ratios[i].name,(i!=curNo) ? "theWebUI.setRatio('"+i+"')" : null]);
-				theContextMenu.add(el,[CMENU_CHILD, WUILang.mnuRatio, down]);
+				theContextMenu.add(el,[CMENU_CHILD, theUILang.mnuRatio, down]);
 			}
 		}
 
@@ -202,28 +202,28 @@ plugin.onLangLoaded = function()
 	{
 		var s = 
 			"<fieldset>"+
-				"<legend>"+WUILang.ratios+"</legend>"+
+				"<legend>"+theUILang.ratios+"</legend>"+
 				"<div id='st_ratio_h'>"+
 				"<table>"+
 					"<tr>"+
-						"<td><b>"+WUILang.ratioName+"</b></td>"+
-						"<td><b>"+WUILang.minRatio+" (%)</b></td>"+
-						"<td><b>"+WUILang.maxRatio+" (%)</b></td>"+
-						"<td><b>"+WUILang.ratioUpload+" ("+WUILang.MB+")</b></td>"+
-						"<td><b>"+WUILang.ratioAction+"</b></td>"+
+						"<td><b>"+theUILang.ratioName+"</b></td>"+
+						"<td><b>"+theUILang.minRatio+" (%)</b></td>"+
+						"<td><b>"+theUILang.maxRatio+" (%)</b></td>"+
+						"<td><b>"+theUILang.ratioUpload+" ("+theUILang.MB+")</b></td>"+
+						"<td><b>"+theUILang.ratioAction+"</b></td>"+
 					"</tr>";
 		for(var i=0; i<theWebUI.maxRatio; i++)
 			s +=
 				"<tr>"+
 					"<td><input type='text' id='rat_name"+i+"' class='TextboxShort'/></td>"+
 					"<td><select id='rat_min"+i+"'><option value='100'>100</option><option value='200'>200</option><option value='300'>300</option><option value='400'>400</option><option value='500'>500</option><option value='600'>600</option><option value='700'>700</option><option value='800'>800</option><option value='900'>900</option></select></td>"+
-					"<td><select id='rat_max"+i+"'><option value='0'>"+WUILang.mnuRatioUnlimited+"</option><option value='100'>100</option><option value='200'>200</option><option value='300'>300</option><option value='400'>400</option><option value='500'>500</option><option value='600'>600</option><option value='700'>700</option><option value='800'>800</option><option value='900'>900</option></select></td>"+
+					"<td><select id='rat_max"+i+"'><option value='0'>"+theUILang.mnuRatioUnlimited+"</option><option value='100'>100</option><option value='200'>200</option><option value='300'>300</option><option value='400'>400</option><option value='500'>500</option><option value='600'>600</option><option value='700'>700</option><option value='800'>800</option><option value='900'>900</option></select></td>"+
 					"<td><input type='text' id='rat_upload"+i+"' class='Textbox num' maxlength='6'/></td>"+
-					"<td><select id='rat_action"+i+"'><option value='0'>"+WUILang.ratioStop+"</option><option value='1'>"+WUILang.ratioStopAndRemove+"</option><option value='2'>"+WUILang.ratioErase+"</option></select></td>"+
+					"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option></select></td>"+
 				"</tr>";
 		s+="</table></div></fieldset>";
-		this.attachPageToOptions($("<div>").attr("id","st_ratio").html(s).get(0),WUILang.ratios);
+		this.attachPageToOptions($("<div>").attr("id","st_ratio").html(s).get(0),theUILang.ratios);
 	}
 	else
-		log(WUILang.ratioUnsupported);
+		log(theUILang.ratioUnsupported);
 }

@@ -77,12 +77,12 @@ if(plugin.canChangeOptions())
 	theWebUI.schMouseOver = function(i,j)
 	{
 		var from = (j < 10) ? ("0" + j) : j;
-		$('#sch_desc').text( WUILang.schFullWeek[i]+', '+from+':00 - '+from+':59' );
+		$('#sch_desc').text( theUILang.schFullWeek[i]+', '+from+':00 - '+from+':59' );
 	}
 
 	theWebUI.schLegendMouseOver = function(i)
 	{
-		var schDesc = [ WUILang.schUnlimitedDesc, WUILang.schTurnOffDesc, WUILang.schSeedingOnlyDesc, WUILang.schLimitedDesc+"1", WUILang.schLimitedDesc+"2", WUILang.schLimitedDesc+"3" ];
+		var schDesc = [ theUILang.schUnlimitedDesc, theUILang.schTurnOffDesc, theUILang.schSeedingOnlyDesc, theUILang.schLimitedDesc+"1", theUILang.schLimitedDesc+"2", theUILang.schLimitedDesc+"3" ];
 		$('#sch_desc').text( schDesc[i] );
 	}
 
@@ -142,15 +142,15 @@ plugin.onLangLoaded = function()
 		"<div>"+
 			"<input id='sch_enable' type='checkbox' onchange=\"theWebUI.linkedSch(this, ['restrictedUL1', 'restrictedDL1', 'restrictedUL2', 'restrictedDL2', 'restrictedUL3', 'restrictedDL3']);\" />"+
 			"<label for='sch_enable'>"+
-				WUILang.schedulerOn+
+				theUILang.schedulerOn+
 			"</label>"+
 		"</div>"+
 		"<fieldset>"+
-			"<legend>"+WUILang.schedulerGraph+"</legend>"+
+			"<legend>"+theUILang.schedulerGraph+"</legend>"+
 			"<table id='sch_graph'>";
 	for(var i=0; i<7; i++)
 	{
-		s += "<tr><td class='sch_week disabled'>"+WUILang.schShortWeek[i]+"</td>";
+		s += "<tr><td class='sch_week disabled'>"+theUILang.schShortWeek[i]+"</td>";
 		for(var j=0; j<24; j++)
 		{
 			var day = theWebUI.scheduleTable.week[i][j];
@@ -161,55 +161,55 @@ plugin.onLangLoaded = function()
 	s+="</table><div id='sch_desc' class='disabled'>&nbsp;</div>";
 	s+="<table id='sch_legend'>"+
 		"<tr>"+
-		"<td clr='0' class='sch_fastdis' onmouseover='theWebUI.schLegendMouseOver(0);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+WUILang.schUnlimited+"</td>"+
-		"<td clr='1' class='sch_stopdis' onmouseover='theWebUI.schLegendMouseOver(1);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+WUILang.schTurnOff+"</td>"+
-		"<td clr='2' class='sch_seeddis' onmouseover='theWebUI.schLegendMouseOver(2);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+WUILang.schSeedingOnly+"</td>"+
+		"<td clr='0' class='sch_fastdis' onmouseover='theWebUI.schLegendMouseOver(0);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schUnlimited+"</td>"+
+		"<td clr='1' class='sch_stopdis' onmouseover='theWebUI.schLegendMouseOver(1);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schTurnOff+"</td>"+
+		"<td clr='2' class='sch_seeddis' onmouseover='theWebUI.schLegendMouseOver(2);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schSeedingOnly+"</td>"+
 		"</tr>"+
 		"<tr>"+
-		"<td clr='3' class='sch_res1dis' onmouseover='theWebUI.schLegendMouseOver(3);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+WUILang.schLimited+"1</td>"+
-		"<td clr='4' class='sch_res2dis' onmouseover='theWebUI.schLegendMouseOver(4);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+WUILang.schLimited+"2</td>"+
-		"<td clr='5' class='sch_res3dis' onmouseover='theWebUI.schLegendMouseOver(5);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+WUILang.schLimited+"3</td>"+
+		"<td clr='3' class='sch_res1dis' onmouseover='theWebUI.schLegendMouseOver(3);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"1</td>"+
+		"<td clr='4' class='sch_res2dis' onmouseover='theWebUI.schLegendMouseOver(4);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"2</td>"+
+		"<td clr='5' class='sch_res3dis' onmouseover='theWebUI.schLegendMouseOver(5);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"3</td>"+
 		"</tr>"+
 	"</table></fieldset><div id='st_scheduler_h'>";
 
 	s+="<fieldset>"+
-		"<legend>"+WUILang.schLimited+"1</legend>"+
+		"<legend>"+theUILang.schLimited+"1</legend>"+
 		"<table>"+
 			"<tr>"+
-				"<td><label id='lbl_restrictedUL1' for='restrictedUL1' class='disabled'>"+WUILang.schLimitedUL+" ("+WUILang.kbs+"):</label></td>"+
+				"<td><label id='lbl_restrictedUL1' for='restrictedUL1' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.kbs+"):</label></td>"+
 				"<td class=\"alr\"><input type='text' id='restrictedUL1' class='TextboxNum' maxlength='6' disabled=1/></td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td><label id='lbl_restrictedDL1' for='restrictedDL1' class='disabled'>"+WUILang.schLimitedDL+" ("+WUILang.kbs+"):</label></td>"+
+				"<td><label id='lbl_restrictedDL1' for='restrictedDL1' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.kbs+"):</label></td>"+
 				"<td class=\"alr\"><input type='text' id='restrictedDL1' class='TextboxNum' maxlength='6' disabled=1/></td>"+
 			"</tr>"+
 		"</table>"+
 	   "</fieldset>"+
 	   "<fieldset>"+
-		"<legend>"+WUILang.schLimited+"2</legend>"+
+		"<legend>"+theUILang.schLimited+"2</legend>"+
 		"<table>"+
 			"<tr>"+
-				"<td><label id='lbl_restrictedUL2' for='restrictedUL2' class='disabled'>"+WUILang.schLimitedUL+" ("+WUILang.kbs+"):</label></td>"+
+				"<td><label id='lbl_restrictedUL2' for='restrictedUL2' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.kbs+"):</label></td>"+
 				"<td class=\"alr\"><input type='text' id='restrictedUL2' class='TextboxNum' maxlength='6' disabled=1/></td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td><label id='lbl_restrictedDL2' for='restrictedDL2' class='disabled'>"+WUILang.schLimitedDL+" ("+WUILang.kbs+"):</label></td>"+
+				"<td><label id='lbl_restrictedDL2' for='restrictedDL2' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.kbs+"):</label></td>"+
 				"<td class=\"alr\"><input type='text' id='restrictedDL2' class='TextboxNum' maxlength='6' disabled=1/></td>"+
 			"</tr>"+
 		"</table>"+
 	   "</fieldset>"+
 	   "<fieldset>"+
-		"<legend>"+WUILang.schLimited+"3</legend>"+
+		"<legend>"+theUILang.schLimited+"3</legend>"+
 		"<table>"+
 			"<tr>"+
-				"<td><label id='lbl_restrictedUL3' for='restrictedUL3' class='disabled'>"+WUILang.schLimitedUL+" ("+WUILang.kbs+"):</label></td>"+
+				"<td><label id='lbl_restrictedUL3' for='restrictedUL3' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.kbs+"):</label></td>"+
 				"<td class=\"alr\"><input type='text' id='restrictedUL3' class='TextboxNum' maxlength='6' disabled=1/></td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td><label id='lbl_restrictedDL3' for='restrictedDL3' class='disabled'>"+WUILang.schLimitedDL+" ("+WUILang.kbs+"):</label></td>"+
+				"<td><label id='lbl_restrictedDL3' for='restrictedDL3' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.kbs+"):</label></td>"+
 				"<td class=\"alr\"><input type='text' id='restrictedDL3' class='TextboxNum' maxlength='6' disabled=1/></td>"+
 			"</tr>"+
 		"</table>"+
 	   "</fieldset>";
-	this.attachPageToOptions($("<div>").attr("id","st_scheduler").html(s+"</div>")[0],WUILang.scheduler);
+	this.attachPageToOptions($("<div>").attr("id","st_scheduler").html(s+"</div>")[0],theUILang.scheduler);
 }

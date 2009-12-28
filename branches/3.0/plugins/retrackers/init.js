@@ -86,13 +86,13 @@ plugin.onLangLoaded = function()
         this.attachPageToOptions(
 	        $("<div>").attr("id","st_retrackers").html(
 			"<fieldset>"+
-				"<legend>"+WUILang.retrackers+"</legend>"+
+				"<legend>"+theUILang.retrackers+"</legend>"+
 				"<div class=\"op100l\">"+
 					"<textarea id='eretrackers'></textarea>"+
 				"</div>"+
 				"<div class=\"op100l\">"+		
 					"<input type='checkbox' id='dont_private' checked='true' />"+
-					"<label for='dont_private'>"+WUILang.dontAddToPrivate+"</label>"+
+					"<label for='dont_private'>"+theUILang.dontAddToPrivate+"</label>"+
 				"</div>"+
-			"</fieldset>")[0],WUILang.retrackers);
+			"</fieldset>")[0],theUILang.retrackers);
 }

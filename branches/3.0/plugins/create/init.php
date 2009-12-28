@@ -7,7 +7,7 @@ if($useExternal!==false)
 	if($do_diagnostic && empty($pathToCreatetorrent) && (findEXE($useExternal)==false))
 	{
 		$jResult.="plugin.disable();";
-		$jEnd.="plugin.showError('WUILang.createExternalNotFound+\' (".$useExternal.").\'');";
+		$jEnd.="plugin.showError('theUILang.createExternalNotFound+\' (".$useExternal.").\'');";
 	}
 	else
 		if($useExternal === "transmissioncli")

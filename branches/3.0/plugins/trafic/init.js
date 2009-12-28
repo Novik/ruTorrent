@@ -5,11 +5,11 @@ function rTraficGraph()
 rTraficGraph.prototype.create = function( aOwner )
 {
 	this.owner = aOwner;
-	this.down = { label: WUILang.DL, bars: {"show": "true"}, data: [], color: "#1C8DFF" };
-	this.up = { label: WUILang.UL, bars: {"show": "true"}, data: [], color: "#009900" };
+	this.down = { label: theUILang.DL, bars: {"show": "true"}, data: [], color: "#1C8DFF" };
+	this.up = { label: theUILang.UL, bars: {"show": "true"}, data: [], color: "#009900" };
 
-	this.oldDown = { label: WUILang.DL, bars: {"show": "true"}, data: [], color: "#0849BB" };
-	this.oldUp = { label: WUILang.UL, bars: {"show": "true"}, data: [], color: "#005500" };
+	this.oldDown = { label: theUILang.DL, bars: {"show": "true"}, data: [], color: "#0849BB" };
+	this.oldUp = { label: theUILang.UL, bars: {"show": "true"}, data: [], color: "#005500" };
 
 	this.ticks = new Array();
 	this.previousPoint = null;
@@ -169,16 +169,16 @@ plugin.onLangLoaded = function()
  	this.attachPageToTabs(
 		$('<div>').attr("id","traf").html(
 			"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
-				"<input type='button' value='"+WUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>"+
+				"<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>"+
 				"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-					"<option value='global'>"+WUILang.allTrackers+"</option>"+
+					"<option value='global'>"+theUILang.allTrackers+"</option>"+
 				"</select>"+
 				"<select name='traf_mode' id='traf_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-					"<option value='day'>"+WUILang.perDay+"</option>"+
-					"<option value='month'>"+WUILang.perMonth+"</option>"+
-					"<option value='year'>"+WUILang.perYear+"</option>"+
+					"<option value='day'>"+theUILang.perDay+"</option>"+
+					"<option value='month'>"+theUILang.perMonth+"</option>"+
+					"<option value='year'>"+theUILang.perYear+"</option>"+
 				"</select>"+
-			"</div><div id='traf_graph' class='graph_tab'></div>").get(0),WUILang.traf,"lcont");
+			"</div><div id='traf_graph' class='graph_tab'></div>").get(0),theUILang.traf,"lcont");
 	theWebUI.trafGraph = new rTraficGraph();
 	theWebUI.trafGraph.create($("#traf_graph"));
 
@@ -202,7 +202,7 @@ plugin.onLangLoaded = function()
 theWebUI.clearStats = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		 askYesNo( WUILang.ClearButton, WUILang.ClearQuest, "theWebUI.reqForTraficGraph(true)" );
+		 askYesNo( theUILang.ClearButton, theUILang.ClearQuest, "theWebUI.reqForTraficGraph(true)" );
 	else
 		theWebUI.reqForTraficGraph(true);
 }
@@ -229,7 +229,7 @@ theWebUI.showTrafic = function(d)
 {
 	var s = $('#tracker_mode').val();
 	$('#tracker_mode option').remove();	
-	$('#tracker_mode').append("<option value='global'>"+WUILang.allTrackers+"</option>");
+	$('#tracker_mode').append("<option value='global'>"+theUILang.allTrackers+"</option>");
 	for(var i=0; i<d.trackers.length; i++)
 		$('#tracker_mode').append("<option value='"+d.trackers[i]+"'>"+d.trackers[i]+"</option>");
 	$('#tracker_mode').val(s);

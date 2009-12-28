@@ -3,7 +3,7 @@ theWebUI.removeWithData = function()
 	if( theWebUI.settings["webui.confirm_when_deleting"] )
 	{
 		this.delmode = "removewithdata";
-		askYesNo( WUILang.Remove_torrents, WUILang.Rem_torrents_prompt, "theWebUI.doRemove()" );
+		askYesNo( theUILang.Remove_torrents, theUILang.Rem_torrents_prompt, "theWebUI.doRemove()" );
 	}
 	else
 		theWebUI.perform( "removewithdata" );
@@ -15,12 +15,12 @@ if(plugin.canChangeMenu())
 	theWebUI.createMenu = function( e, id )
 	{
 		plugin.createMenu.call(this, e, id);
-		var el = theContextMenu.get( WUILang.Remove );
+		var el = theContextMenu.get( theUILang.Remove );
 		if( el )
 		{
 			var _c0 = [];
-			_c0.push( [WUILang.Delete_data,"theWebUI.removeWithData()"] );
-			theContextMenu.add( el, [CMENU_CHILD, WUILang.Remove_and, _c0] );
+			_c0.push( [theUILang.Delete_data,"theWebUI.removeWithData()"] );
+			theContextMenu.add( el, [CMENU_CHILD, theUILang.Remove_and, _c0] );
 		}
 	}
 }
