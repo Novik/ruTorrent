@@ -63,7 +63,7 @@ if($success)
                 $success = false;
 	}
 }
-$content = 'log(WUILang.addTorrent'. ($success ? 'Success' : 'Failed') . ');';
+$content = 'log(theUILang.addTorrent'. ($success ? 'Success' : 'Failed') . ');';
 header("Content-Length: ".strlen($content));
 header("Content-Type: text/html");
 echo $content;

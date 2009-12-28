@@ -105,13 +105,13 @@ if($handle = opendir('../plugins'))
 	set_time_limit(0);
 	@chmod('/tmp',0777);
 	if(!function_exists('preg_match_all'))
-		$jResult.="log(WUILang.PCRENotFound);";
+		$jResult.="log(theUILang.PCRENotFound);";
 	else
 	{
 		$theSettings = new rTorrentSettings();
 		$theSettings->obtain();
 		if(!$theSettings->linkExist)
-			$jResult.="log(WUILang.badLinkTorTorrent);";
+			$jResult.="log(theUILang.badLinkTorTorrent);";
 		else
 		{
 	        	if($do_diagnostic)
@@ -122,25 +122,25 @@ if($handle = opendir('../plugins'))
 				@chmod($st,0777);
 				@chmod('./test.sh',0755);
 	        		if(!isUserHavePermission($theSettings->myuid,$theSettings->mygid,$up,0x0007))
-					$jResult.="log(WUILang.badUploadsPath+' (".$up.")');";
+					$jResult.="log(theUILang.badUploadsPath+' (".$up.")');";
 	        		if(!isUserHavePermission($theSettings->myuid,$theSettings->mygid,$st,0x0007))
-        			        $jResult.="log(WUILang.badSettingsPath+' (".$st.")');";
+        			        $jResult.="log(theUILang.badSettingsPath+' (".$st.")');";
 				if(!empty($theSettings->session))
 				{
 					if(($theSettings->uid<0) || ($theSettings->gid<0))
-						$jResult.="log(WUILang.badSessionPath+' (".$theSettings->session.")');";
+						$jResult.="log(theUILang.badSessionPath+' (".$theSettings->session.")');";
 					else
 					{
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$up,0x0007))
-							$jResult.="log(WUILang.badUploadsPath2+' (".$up.")');";
+							$jResult.="log(theUILang.badUploadsPath2+' (".$up.")');";
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$st,0x0007))
-							$jResult.="log(WUILang.badSettingsPath2+' (".$st.")');";
+							$jResult.="log(theUILang.badSettingsPath2+' (".$st.")');";
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,'./test.sh',0x0005))
-							$jResult.="log(WUILang.badTestPath+' (".realpath('./test.sh').")');";
+							$jResult.="log(theUILang.badTestPath+' (".realpath('./test.sh').")');";
 					}
 				}
 				if($theSettings->badXMLRPCVersion)
-					$jResult.="log(WUILang.badXMLRPCVersion);";
+					$jResult.="log(theUILang.badXMLRPCVersion);";
 			}
 			$permissions = parse_ini_file("../conf/plugins.ini",true);
 			$init = array();

@@ -150,7 +150,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			attr("index", i));
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
 		if(!browser.isIE8up)
-			addRightClickHandler( td, function(obj,e) { return(self.onRightClick(e)); });
+			td.mouseclick( function(e) { return(self.onRightClick(e)); } );
 		td.mousedown( function(e) { $(document).bind( "keydown", self, self.keyEvents ) } );
 		td.mouseup( function(e) { self.Sort(e, this); } );		
 		this.tHeadCols[i] = td.get(0);
@@ -215,19 +215,22 @@ dxSTable.prototype.toggleColumn = function(i)
 
 dxSTable.prototype.onRightClick = function(e)
 {
-	theContextMenu.clear();
-	for(var i = 0; i<this.colsdata.length; i++)
-	{
-		if(this.colOrder[i])
+        if(e.button==2)
+        {
+		theContextMenu.clear();
+		for(var i = 0; i<this.colsdata.length; i++)
 		{
-			var a = [this.colsdata[i].text, "theWebUI.getTable('"+this.prefix+"').toggleColumn("+i+")"];
-			if(this.colsdata[i].enabled)
-				a.unshift(CMENU_SEL);
-			theContextMenu.add(a);
+			if(this.colOrder[i])
+			{
+				var a = [this.colsdata[i].text, "theWebUI.getTable('"+this.prefix+"').toggleColumn("+i+")"];
+				if(this.colsdata[i].enabled)
+					a.unshift(CMENU_SEL);
+				theContextMenu.add(a);
+			}
 		}
+		theContextMenu.show(e.clientX,e.clientY);
+		return(false);
 	}
-	theContextMenu.show(e.clientX,e.clientY);
-	return(false);
 }
 
 dxSTable.prototype.resizeHack = function()

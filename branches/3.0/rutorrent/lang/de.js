@@ -25,7 +25,7 @@
  * 		schnurlos (utorrent@gmx.at)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "kB/s",

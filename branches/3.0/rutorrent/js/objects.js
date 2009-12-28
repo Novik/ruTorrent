@@ -299,7 +299,7 @@ var theContextMenu =
 		 	        var a = $("<a></a>").addClass("sel").text(val[1]);
 		 	        switch($type(val[2]))
 		 	        {
-		 	        	case "string": attr("href", "javascript:"+val[2] ); break;
+		 	        	case "string": a.attr("href", "javascript:"+val[2] ); break;
 					case "function": a.attr("href","javascript://void();").click(val[2]); break;
 				}
 				li.append(a);

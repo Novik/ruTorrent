@@ -227,28 +227,6 @@ function escapeHTML(str)
 	return( $("<div>").text(str).html() );
 }
 
-function getHttpObj()
-{
-	var ret = null;
-	if(window.XMLHttpRequest)
-         	ret = new XMLHttpRequest();
-	else
-	{
-		if(window.ActiveXObject)
-		{
-			var objs = new Array("MSXML2", "Microsoft", "MSXML", "MSXML3");
-			for(var i = 0; i < objs.length; i++)
-			{
-				try {
-				ret = new ActiveXObject(objs[i] + ".XmlHttp");
-				break;
-               			} catch(e) { continue; }
-            		}
-         	}
-	}
-	return(ret);
-}
-
 function askYesNo( title, content, funcYesName )
 {
 	$("#yesnoDlg-header").html(title);
@@ -256,44 +234,6 @@ function askYesNo( title, content, funcYesName )
 	$("#yesnoOK").unbind('click');
 	$("#yesnoOK").click( function() { eval(funcYesName); theDialogManager.hide("yesnoDlg"); return(false); });
 	theDialogManager.show("yesnoDlg");
-}
-
-var C = null;
-function addRightClickHandler( obj, handler )
-{
-	if(browser.isOpera && !("oncontextmenu" in document.createElement("foo")))
-	{
-        	obj.mousedown(function(e)
-		{
-			if(e.button==2)
-			{
-				if(e.target)
-				{
-					var F = e.target.ownerDocument;
-					if(C)
-						C.parentNode.removeChild(C);
-					C = F.createElement("input");
-					C.type = "button"; 
-					C.style.cssText = "z-index: 10000;position:absolute;top:" + (e.clientY - 2) + "px;left:" + (e.clientX - 2) + "px;width:5px;height:5px;opacity:0.01";
-					(F.body || F.documentElement).appendChild(C);
-				}
-				handler(obj,e);
-				return(false);
-			}
-		});
-		obj.mouseup(function(D)
-		{
-			if(C)
-			{
-				C.parentNode.removeChild(C);
-				C = null;
-				if((D.button==2) &&! (/^input|textarea|a$/i).test(D.target.tagName))
-					return(false);
-			}
-		});
-	}
-	else
-		obj.mousedown( function(e) { if(e.button==2) { handler(obj,e); return(false);}; });
 }
 
 function cloneObject( srcObj )
@@ -377,32 +317,32 @@ var theConverter =
 		var ret = "";
 		if(w > 0)
 		{	
-			ret = w + WUILang.time_w;
+			ret = w + theUILang.time_w;
 			v++;
 		}
 		if(d > 0)
 		{
-			ret += d + WUILang.time_d;
+			ret += d + theUILang.time_d;
 			v++;
 		}
 		if((h > 0) && (v < 2))
 		{
-			ret += h + WUILang.time_h;
+			ret += h + theUILang.time_h;
 	      		v++;
 		}
 		if((m > 0) && (v < 2))
 		{	
-			ret += m + WUILang.time_m;
+			ret += m + theUILang.time_m;
 			v++;
 		}
 		if(v < 2)
-			ret += val + WUILang.time_s;
+			ret += val + theUILang.time_s;
 		return( ret.substring(0,ret.length-1) );
 	},
 	bytes: function(bt, p)
 	{
 		p = (p == null) ? 1 : p;
-		var a = new Array(WUILang.bytes, WUILang.KB, WUILang.MB, WUILang.GB, WUILang.TB, WUILang.PB);
+		var a = new Array(theUILang.bytes, theUILang.KB, theUILang.MB, theUILang.GB, theUILang.TB, theUILang.PB);
 		var ndx = 0;
 		if(bt == 0)
 			ndx = 1;
@@ -426,7 +366,7 @@ var theConverter =
 	},
 	speed: function(bt)
 	{
-		return(this.bytes(bt)+ "/" + WUILang.s);
+		return(this.bytes(bt)+ "/" + theUILang.s);
 	},
 	date: function(dt)
 	{
@@ -492,16 +432,16 @@ var theFormatter =
 		switch(iv(no))
 		{
 			case 0:
-				ret = WUILang.Dont_download;
+				ret = theUILang.Dont_download;
 				break;
 			case 1: 
-				ret = WUILang.Low_priority;
+				ret = theUILang.Low_priority;
 				break;
 			case 2:
-				ret = WUILang.Normal_priority;
+				ret = theUILang.Normal_priority;
 				break;
 			case 3:
-				ret = WUILang.High_priority;
+				ret = theUILang.High_priority;
 				break;
 		}
 		return(ret);
@@ -515,13 +455,13 @@ var theFormatter =
 				ret = "?";
 				break;
 			case 0:
-				ret = WUILang.Dont_download;
+				ret = theUILang.Dont_download;
 				break;
 			case 1:
-				ret = WUILang.Normal_priority;
+				ret = theUILang.Normal_priority;
 				break;
 			case 2:
-				ret = WUILang.High_priority;
+				ret = theUILang.High_priority;
 				break;
 		}
 		return(ret);
@@ -563,10 +503,10 @@ var theFormatter =
 		switch(iv(no))
 		{
 			case 0:
-				ret = WUILang.plgDisabled;
+				ret = theUILang.plgDisabled;
 				break;
 			case 1:
-				ret = WUILang.plgLoaded;
+				ret = theUILang.plgLoaded;
 				break;
 		}
 		return(ret);
@@ -719,13 +659,13 @@ var theTabs =
 {
 	tabs: 
 	{
-   		gcont : WUILang.General, 
-   		FileList : WUILang.Files, 
-   		TrackerList : WUILang.Trackers, 
-   		PeerList : WUILang.Peers,
-   		Speed : WUILang.Speed,
-   		PluginList : WUILang.Plugins,
-   		lcont : WUILang.Logger
+   		gcont : theUILang.General, 
+   		FileList : theUILang.Files, 
+   		TrackerList : theUILang.Trackers, 
+   		PeerList : theUILang.Peers,
+   		Speed : theUILang.Speed,
+   		PluginList : theUILang.Plugins,
+   		lcont : theUILang.Logger
    	}, 
 
    	init: function() 

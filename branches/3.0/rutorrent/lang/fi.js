@@ -25,7 +25,7 @@
  * 		Spike_B (mr.anon.91@hotmail.com)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "kt/s",

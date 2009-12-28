@@ -25,7 +25,7 @@
  * 		Carlos López (the_spide21@yahoo.com)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "kB/s",

@@ -24,7 +24,7 @@
  * 	emc (emc@utorrent.cz)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs			: "kB/s",

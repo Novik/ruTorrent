@@ -38,8 +38,8 @@ rSpeedGraph.prototype.create = function( aOwner )
 	this.owner = aOwner;
 	this.maxSeconds = 600;
 	this.seconds = -1;
-	this.down = { label: WUILang.DL, data: [], color: "#1C8DFF" };
-	this.up = { label: WUILang.UL, data: [], color: "#009900" };
+	this.down = { label: theUILang.DL, data: [], color: "#1C8DFF" };
+	this.up = { label: theUILang.UL, data: [], color: "#009900" };
 	this.startSeconds = new Date().getTime()/1000;
 }
 

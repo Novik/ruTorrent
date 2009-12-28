@@ -25,7 +25,7 @@
  * 		Artem Lopata (mod-s@yandex.ru)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "кБ/с",

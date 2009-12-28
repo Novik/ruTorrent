@@ -25,7 +25,7 @@
  * 		Lord Alderaan (lordalderaan@gmail.com)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "kB/s",

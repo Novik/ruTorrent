@@ -25,7 +25,7 @@
  * 		vebero (vebero@inbox.lv)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "KB/s",

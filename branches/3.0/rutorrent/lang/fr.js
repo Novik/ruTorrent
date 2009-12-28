@@ -25,7 +25,7 @@
  * 	  Platoon21 (charlesprost@gmail.com) and Zempashi
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "ko/s",

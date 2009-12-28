@@ -25,7 +25,7 @@
  * 		skevin (skevin@china.com)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "kB/s",

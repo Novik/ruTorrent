@@ -2,16 +2,16 @@ function makeContent()
 {
 	$(".cat").mouseclick(theWebUI.labelContextMenu);
 
-	$("#mnu_add").attr("title",WUILang.mnu_add);
-	$("#mnu_remove").attr("title",WUILang.mnu_remove);
-	$("#mnu_start").attr("title",WUILang.mnu_start);
-	$("#mnu_pause").attr("title",WUILang.mnu_pause);
-	$("#mnu_stop").attr("title",WUILang.mnu_stop);
-	$("#mnu_settings").attr("title",WUILang.mnu_settings);
-	$("#mnu_search").attr("title",WUILang.mnu_search);
-	$("#mnu_go").attr("title",WUILang.mnu_go);
-	$("#mnu_lang").attr("title",WUILang.mnu_lang);
-	$("#mnu_help").attr("title",WUILang.mnu_help);
+	$("#mnu_add").attr("title",theUILang.mnu_add);
+	$("#mnu_remove").attr("title",theUILang.mnu_remove);
+	$("#mnu_start").attr("title",theUILang.mnu_start);
+	$("#mnu_pause").attr("title",theUILang.mnu_pause);
+	$("#mnu_stop").attr("title",theUILang.mnu_stop);
+	$("#mnu_settings").attr("title",theUILang.mnu_settings);
+	$("#mnu_search").attr("title",theUILang.mnu_search);
+	$("#mnu_go").attr("title",theUILang.mnu_go);
+	$("#mnu_lang").attr("title",theUILang.mnu_lang);
+	$("#mnu_help").attr("title",theUILang.mnu_help);
 
 	$("#query").keydown( function(e) 
 	{
@@ -75,21 +75,21 @@ function makeContent()
 		if(d.location.href != "about:blank")
 			eval(d.body.innerHTML);
 	}));
-	theDialogManager.make("tadd",WUILang.torrent_add,
+	theDialogManager.make("tadd",theUILang.torrent_add,
 		'<div class="cont fxcaret">'+
 			'<form action="addtorrent.php" id="addtorrent" method="post" enctype="multipart/form-data" target="uploadfrm">'+
-				'<label>'+WUILang.Base_directory+':</label><input type="text" id="dir_edit" name="dir_edit" class="TextboxLarge"/><br/>'+
-				'<label></label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+WUILang.Dont_add_tname+'<br/>'+
-				'<label></label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+WUILang.Dnt_start_down_auto+'<br/>'+
-				'<label>'+WUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge"/><br/>'+
+				'<label>'+theUILang.Base_directory+':</label><input type="text" id="dir_edit" name="dir_edit" class="TextboxLarge"/><br/>'+
+				'<label></label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+theUILang.Dont_add_tname+'<br/>'+
+				'<label></label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+theUILang.Dnt_start_down_auto+'<br/>'+
+				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge"/><br/>'+
 				'<hr/>'+
-				'<label>'+WUILang.Torrent_file+':</label><input type="file" name="torrent_file" id="torrent_file" class="TextboxLarge"/><br/>'+
-				'<label></label><input type="submit" value="'+WUILang.add_button+'" id="add_button" class="Button" /><br/>'+
+				'<label>'+theUILang.Torrent_file+':</label><input type="file" name="torrent_file" id="torrent_file" class="TextboxLarge"/><br/>'+
+				'<label></label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
 			'</form>'+
 			'<hr/>'+
 			'<form action="addtorrent.php" id="addtorrenturl" method="post" target="uploadfrmurl">'+
-				'<label>'+WUILang.Torrent_URL+':</label><input type="text" id="url" name="url" class="TextboxLarge"/><br/>'+
-				'<label></label><input type="submit" id="add_url" value="'+WUILang.add_url+'" class="Button"/>'+
+				'<label>'+theUILang.Torrent_URL+':</label><input type="text" id="url" name="url" class="TextboxLarge"/><br/>'+
+				'<label></label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button"/>'+
 			'</form>'+
 		'</div>');
 	var makeAddRequest = function(frm)
@@ -112,7 +112,7 @@ function makeContent()
 	{
 		if(!$("#torrent_file").val().match(".torrent")) 
 		{
-			alert(WUILang.Not_torrent_file);
+			alert(theUILang.Not_torrent_file);
 	   		return(false);
    		}
 		$("#add_button").attr("disabled",true);
@@ -123,23 +123,23 @@ function makeContent()
 	   	$("#add_url").attr("disabled",true);
 	   	return(makeAddRequest(this));
 	});
-	theDialogManager.make("dlgProps",WUILang.Torrent_properties,
+	theDialogManager.make("dlgProps",theUILang.Torrent_properties,
 		'<div class="content fxcaret">'+
 			'<fieldset>'+
-				'<legend>'+WUILang.Bandwidth_sett+'</legend>'+
-				'<div><input type="text" id="prop-ulslots" />'+WUILang.Number_ul_slots+':</div>'+
-				'<div style="clear:right"><input type="text" id="prop-peers_min" />'+WUILang.Number_Peers_min+':</div>'+
-				'<div style="clear:right"><input type="text" id="prop-peers_max" />'+WUILang.Number_Peers_max+':</div>'+
-				'<div style="clear:right"><input type="text" id="prop-tracker_numwant" />'+WUILang.Tracker_Numwant+':</div>'+
+				'<legend>'+theUILang.Bandwidth_sett+'</legend>'+
+				'<div><input type="text" id="prop-ulslots" />'+theUILang.Number_ul_slots+':</div>'+
+				'<div style="clear:right"><input type="text" id="prop-peers_min" />'+theUILang.Number_Peers_min+':</div>'+
+				'<div style="clear:right"><input type="text" id="prop-peers_max" />'+theUILang.Number_Peers_max+':</div>'+
+				'<div style="clear:right"><input type="text" id="prop-tracker_numwant" />'+theUILang.Tracker_Numwant+':</div>'+
 				'<div class="props-spacer">'+
-					'<input type="checkbox" id="prop-pex" /><label for="prop-pex" id="lbl_prop-pex">'+WUILang.Peer_ex+'</label>'+
-					'<input type="checkbox" id="prop-superseed" /><label for="prop-superseed" id="lbl_prop-superseed">'+WUILang.SuperSeed+'</label>'+
+					'<input type="checkbox" id="prop-pex" /><label for="prop-pex" id="lbl_prop-pex">'+theUILang.Peer_ex+'</label>'+
+					'<input type="checkbox" id="prop-superseed" /><label for="prop-superseed" id="lbl_prop-superseed">'+theUILang.SuperSeed+'</label>'+
 				'</div>'+
 			'</fieldset>'+
-			'<div class="aright"><input type="button" value="'+WUILang.ok+'" class="Button" onclick="theWebUI.setProperties(); return(false);" /><input type="button" value="'+WUILang.Cancel+'" class="Cancel Button"/></div>'+
+			'<div class="aright"><input type="button" value="'+theUILang.ok+'" class="Button" onclick="theWebUI.setProperties(); return(false);" /><input type="button" value="'+theUILang.Cancel+'" class="Cancel Button"/></div>'+
 		'</div>',
 		true);
-	theDialogManager.make("dlgHelp",WUILang.Help,
+	theDialogManager.make("dlgHelp",theUILang.Help,
 		'<div class="content">'+
 			'<center>'+
 				'<table width=100% border=0>'+
@@ -156,7 +156,7 @@ function makeContent()
 				'</table>'+
 			'</center>'+
 		'</div>');
-	theDialogManager.make("dlgAbout",WUILang.About,
+	theDialogManager.make("dlgAbout",theUILang.About,
 		'<div class="content"> <strong>Developers</strong>:<br/><br/>'+
 			'&nbsp;&nbsp;&nbsp;Original &micro;Torrent WebUI:<br/>'+
 			'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Carsten Niebuhr (Directrix)<br/><br/>'+
@@ -170,84 +170,84 @@ function makeContent()
 			'&nbsp;&nbsp;&nbsp;Z372104612927<br/>'+
 			'&nbsp;&nbsp;&nbsp;E104676675923<br/>'+
 		'</div>');
-	theDialogManager.make("dlgLabel",WUILang.enterLabel,
-		'<div class="content fxcaret">'+WUILang.Enter_label_prom+':<br/>'+
+	theDialogManager.make("dlgLabel",theUILang.enterLabel,
+		'<div class="content fxcaret">'+theUILang.Enter_label_prom+':<br/>'+
 			'<input type="text" id="txtLabel" class="Textbox"/><br/>'+
-			'<input type="button" class="Button" value="'+WUILang.ok+'" onclick="theWebUI.createLabel();theDialogManager.hide(\'dlgLabel\');return(false);" />&nbsp;&nbsp;'+
-			'<input type="button" class="Cancel Button" value="'+WUILang.Cancel+'"/>'+
+			'<input type="button" class="Button" value="'+theUILang.ok+'" onclick="theWebUI.createLabel();theDialogManager.hide(\'dlgLabel\');return(false);" />&nbsp;&nbsp;'+
+			'<input type="button" class="Cancel Button" value="'+theUILang.Cancel+'"/>'+
 		'</div>',true);
 	theDialogManager.make("yesnoDlg","",
 		'<div class="content" id="yesnoDlg-content"></div>'+
-		'<div id="yesnoDlg-buttons" class="aright"><input type="button" class="Button" value="'+WUILang.ok+'" id="yesnoOK">'+
-		'<input type="button" class="Button Cancel" value="'+WUILang.Cancel+'" id="yesnoCancel"></div>',
+		'<div id="yesnoDlg-buttons" class="aright"><input type="button" class="Button" value="'+theUILang.ok+'" id="yesnoOK">'+
+		'<input type="button" class="Button Cancel" value="'+theUILang.Cancel+'" id="yesnoCancel"></div>',
 		true);
 	languages = '';
 	for (var i in AvailableLanguages)
 		languages+="<option value='"+i+"'>"+AvailableLanguages[i]+"</option>";
-	theDialogManager.make("stg",WUILang.uTorrent_settings,
+	theDialogManager.make("stg",theUILang.uTorrent_settings,
 		'<div id="stg_c" class="fxcaret">'+
 			"<div class=\"lm\">"+
 				"<ul>"+
 					"<li class=\"first\"><a id=\"mnu_st_gl\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_gl\'); return(false);\" class=\"focus\">"+
-						WUILang.General+
+						theUILang.General+
 					"</a></li>"+
 					"<li id='hld_st_dl'><a id=\"mnu_st_dl\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_dl\'); return(false);\">"+
-						WUILang.Downloads+
+						theUILang.Downloads+
 					"</a></li>"+
 					"<li id='hld_st_con'><a id=\"mnu_st_con\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_con\'); return(false);\">"+
-						WUILang.Connection+
+						theUILang.Connection+
 					"</a></li>"+
 					"<li id='hld_st_bt'><a id=\"mnu_st_bt\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_bt\'); return(false);\">"+
-						WUILang.BitTorrent+
+						theUILang.BitTorrent+
 					"</a></li>"+
 					"<li  id='hld_st_ao' class=\"last\"><a id=\"mnu_st_ao\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_ao\'); return(false);\">"+
-						WUILang.Advanced+
+						theUILang.Advanced+
 					"</a></li>"+
 				"</ul>"+
 			"</div>"+
 			"<div id=\"st_gl\" class=\"stg_con\">"+
 				"<fieldset>"+
-					"<legend>"+WUILang.User_Interface+"</legend>"+
+					"<legend>"+theUILang.User_Interface+"</legend>"+
 					"<div class=\"op50l\">"+
 						"<input type=\"checkbox\" id=\"webui.confirm_when_deleting\" checked=\"true\" />"+
-						"<label for=\"webui.confirm_when_deleting\">"+WUILang.Confirm_del_torr+"</label>"+
+						"<label for=\"webui.confirm_when_deleting\">"+theUILang.Confirm_del_torr+"</label>"+
 					"</div>"+
 					"<div class=\"op50l algnright\">"+
-						WUILang.Update_GUI_every+":&nbsp;<input type=\"text\" id=\"webui.update_interval\" class=\"TextboxShort\" value=\"3000\" />"+
-						WUILang.ms+
+						theUILang.Update_GUI_every+":&nbsp;<input type=\"text\" id=\"webui.update_interval\" class=\"TextboxShort\" value=\"3000\" />"+
+						theUILang.ms+
 					"</div>"+
 					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.alternate_color\" />"+
-						"<label for=\"webui.alternate_color\">"+WUILang.Alt_list_bckgnd+"</label>"+
+						"<label for=\"webui.alternate_color\">"+theUILang.Alt_list_bckgnd+"</label>"+
 					"</div>"+
 					"<div class=\"op50l algnright\">"+
-						WUILang.ReqTimeout+":&nbsp;<input type=\"text\" id=\"webui.reqtimeout\" class=\"TextboxShort\" value=\"5000\" />"+
-						WUILang.ms+
+						theUILang.ReqTimeout+":&nbsp;<input type=\"text\" id=\"webui.reqtimeout\" class=\"TextboxShort\" value=\"5000\" />"+
+						theUILang.ms+
 					"</div>"+
 					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.show_cats\" checked=\"true\" />"+
-						"<label for=\"webui.show_cats\">"+WUILang.Show_cat_start+"</label>"+
+						"<label for=\"webui.show_cats\">"+theUILang.Show_cat_start+"</label>"+
 					"</div>"+
 					"<div class=\"op50l algnright\"><input type=\"checkbox\" id=\"webui.show_dets\" checked=\"true\" />"+
-						"<label for=\"webui.show_dets\">"+WUILang.Show_det_start+"</label>"+
+						"<label for=\"webui.show_dets\">"+theUILang.Show_det_start+"</label>"+
 					"</div>"+
 					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.needmessage\"/>"+
-						"<label for=\"webui.needmessage\">"+WUILang.GetTrackerMessage+"</label>"+
+						"<label for=\"webui.needmessage\">"+theUILang.GetTrackerMessage+"</label>"+
 					"</div>"+
 					"<div class=\"op50l algnright\"><input type=\"checkbox\" id=\"webui.effects\"/>"+
-						"<label for=\"webui.effects\">"+WUILang.UIEffects+"</label>"+
+						"<label for=\"webui.effects\">"+theUILang.UIEffects+"</label>"+
 					"</div>"+
 					"<div class=\"op100l\">"+
-						"<label for=\"webui.speed_display\">"+WUILang.Show_speed+":</label>&nbsp;"+
+						"<label for=\"webui.speed_display\">"+theUILang.Show_speed+":</label>&nbsp;"+
 						"<select id=\"webui.speed_display\">"+
-							"<option value=\'0\' selected=\'selected\'>"+WUILang.Don_t+"</option>"+
-							"<option value=\'1\'>"+WUILang.In_status_bar+"</option>"+
-							"<option value=\'2\'>"+WUILang.In_title_bar+"</option>"+
+							"<option value=\'0\' selected=\'selected\'>"+theUILang.Don_t+"</option>"+
+							"<option value=\'1\'>"+theUILang.In_status_bar+"</option>"+
+							"<option value=\'2\'>"+theUILang.In_title_bar+"</option>"+
 						"</select>"+
 					"</div>"+
 					"<div class=\"op100l\">"+
-						"<label for=\"webui.minrows\">"+WUILang.Virt_row_thres+":</label>&nbsp;<input type=\"text\" id=\"webui.minrows\" class=\"TextboxVShort\" value=\"50\" />"+
+						"<label for=\"webui.minrows\">"+theUILang.Virt_row_thres+":</label>&nbsp;<input type=\"text\" id=\"webui.minrows\" class=\"TextboxVShort\" value=\"50\" />"+
 					"</div>"+
 					"<div class=\"op100l\">"+
-						"<label for=\"webui.lang\">"+WUILang.mnu_lang+":</label>&nbsp;"+
+						"<label for=\"webui.lang\">"+theUILang.mnu_lang+":</label>&nbsp;"+
 						"<select id=\"webui.lang\">"+
 							languages+
 						"</select>"+
@@ -256,44 +256,44 @@ function makeContent()
 			"</div>"+
 			"<div id=\"st_dl\" class=\"stg_con\">"+
 				"<fieldset>"+
-					"<legend>"+WUILang.Bandwidth_sett+"</legend>"+
+					"<legend>"+theUILang.Bandwidth_sett+"</legend>"+
 					"<table>"+
 						"<tr>"+
-							"<td>"+WUILang.Number_ul_slots+":</td>"+
+							"<td>"+theUILang.Number_ul_slots+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_uploads\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Number_Peers_min+":</td>"+
+							"<td>"+theUILang.Number_Peers_min+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"min_peers\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Number_Peers_max+":</td>"+
+							"<td>"+theUILang.Number_Peers_max+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_peers\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Number_Peers_For_Seeds_min+":</td>"+
+							"<td>"+theUILang.Number_Peers_For_Seeds_min+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"min_peers_seed\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Number_Peers_For_Seeds_max+":</td>"+
+							"<td>"+theUILang.Number_Peers_For_Seeds_max+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_peers_seed\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Tracker_Numwant+":</td>"+
+							"<td>"+theUILang.Tracker_Numwant+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"tracker_numwant\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 					"</table>"+
 				"</fieldset>"+
 				"<fieldset>"+
-					"<legend>"+WUILang.Ather_sett+"</legend>"+
+					"<legend>"+theUILang.Ather_sett+"</legend>"+
 					"<table>"+
 						"<tr>"+
 							"<td><input id=\"check_hash\" type=\"checkbox\"/>"+
-								"<label for=\"check_hash\">"+WUILang.Check_hash+"</label>"+
+								"<label for=\"check_hash\">"+theUILang.Check_hash+"</label>"+
 							"</td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Directory_For_Dl+":</td>"+
+							"<td>"+theUILang.Directory_For_Dl+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"directory\" class=\"Textbox str\" maxlength=\"100\" /></td>"+
 						"</tr>"+
 					"</table>"+
@@ -303,14 +303,14 @@ function makeContent()
 				"<div>"+
 					"<input id=\"port_open\" type=\"checkbox\" onchange=\"linked(this, 0, ['port_range', 'port_random']);\" />"+
 					"<label for=\"port_open\">"+
-						WUILang.Enable_port_open+
+						theUILang.Enable_port_open+
 					"</label>"+
 				"</div>"+
 				"<fieldset>"+
-					"<legend>"+WUILang.Listening_Port+"</legend>"+
+					"<legend>"+theUILang.Listening_Port+"</legend>"+
 					"<table>"+
 						"<tr>"+
-							"<td><label id=\"lbl_port_range\" for=\"port_range\" class=\"disabled\">"+WUILang.Port_f_incom_conns+":</label></td>"+
+							"<td><label id=\"lbl_port_range\" for=\"port_range\" class=\"disabled\">"+theUILang.Port_f_incom_conns+":</label></td>"+
 							"<td class=\"alr\">"+
 								"<input type=\"text\" id=\"port_range\" class=\"TextboxShort\" class=\"disabled\" maxlength=\"13\" />"+
 							"</td>"+
@@ -318,49 +318,49 @@ function makeContent()
 						"<tr>"+
 							"<td colspan=\"2\">"+
 								"<input id=\"port_random\" type=\"checkbox\"  class=\"disabled\"/>"+
-								"<label  id=\"lbl_port_random\" for=\"port_random\"  class=\"disabled\">"+WUILang.Rnd_port_torr_start+"</label>"+
+								"<label  id=\"lbl_port_random\" for=\"port_random\"  class=\"disabled\">"+theUILang.Rnd_port_torr_start+"</label>"+
 							"</td>"+
 						"</tr>"+
 					"</table>"+
 				"</fieldset>"+
 				"<fieldset>"+
-					"<legend>"+WUILang.Bandwidth_Limiting+"</legend>"+
+					"<legend>"+theUILang.Bandwidth_Limiting+"</legend>"+
 					"<table>"+
 						"<tr>"+
-							"<td>"+WUILang.Global_max_upl+" ("+WUILang.kbs+"): [0: "+WUILang.unlimited+"]</td>"+
+							"<td>"+theUILang.Global_max_upl+" ("+theUILang.kbs+"): [0: "+theUILang.unlimited+"]</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"upload_rate\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Glob_max_downl+" ("+WUILang.kbs+"): [0: "+WUILang.unlimited+"]</td>"+
+							"<td>"+theUILang.Glob_max_downl+" ("+theUILang.kbs+"): [0: "+theUILang.unlimited+"]</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"download_rate\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 					"</table>"+
 				"</fieldset>"+
 				"<fieldset>"+
-					"<legend>"+WUILang.Ather_Limiting+"</legend>"+
+					"<legend>"+theUILang.Ather_Limiting+"</legend>"+
 					"<table>"+
 						"<tr>"+
-							"<td>"+WUILang.Number_ul_slots+":</td>"+
+							"<td>"+theUILang.Number_ul_slots+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_uploads_global\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Number_dl_slots+":</td>"+
+							"<td>"+theUILang.Number_dl_slots+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_downloads_global\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Glob_max_memory+" ("+WUILang.MB+"):</td>"+
+							"<td>"+theUILang.Glob_max_memory+" ("+theUILang.MB+"):</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_memory_usage\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Glob_max_files+":</td>"+
+							"<td>"+theUILang.Glob_max_files+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_open_files\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Glob_max_http+":</td>"+
+							"<td>"+theUILang.Glob_max_http+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_open_http\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Glob_max_sockets+":</td>"+
+							"<td>"+theUILang.Glob_max_sockets+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_open_sockets\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+				
 					"</table>"+
@@ -368,22 +368,22 @@ function makeContent()
 			"</div>"+
 			"<div id=\"st_bt\" class=\"stg_con\">"+
 				"<fieldset>"+
-					"<legend>"+WUILang.Add_bittor_featrs+"</legend>"+
+					"<legend>"+theUILang.Add_bittor_featrs+"</legend>"+
 					"<table>"+
 						"<tr>"+
 							"<td><input id=\"dht\" type=\"checkbox\"  onchange=\"linked(this, 0, ['dht_port']);\" />"+
-								"<label for=\"dht\">"+WUILang.En_DHT_ntw+"</label>"+
+								"<label for=\"dht\">"+theUILang.En_DHT_ntw+"</label>"+
 						"</td>"+
 							"<td><input id=\"peer_exchange\" type=\"checkbox\" />"+
-								"<label for=\"peer_exchange\">"+WUILang.Peer_exch+"</label>"+
+								"<label for=\"peer_exchange\">"+theUILang.Peer_exch+"</label>"+
 							"</td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td id=\"lbl_dht_port\" class=\"disabled\">"+WUILang.dht_port+":</td>"+
+							"<td id=\"lbl_dht_port\" class=\"disabled\">"+theUILang.dht_port+":</td>"+
 							"<td><input type=\"text\" id=\"dht_port\" class=\"Textbox num\" maxlength=\"6\" class=\"disabled\"/></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+WUILang.Ip_report_track+":</td>"+
+							"<td>"+theUILang.Ip_report_track+":</td>"+
 							"<td><input type=\"text\" id=\"ip\" class=\"Textbox str\" maxlength=\"50\" /></td>"+
 						"</tr>"+
 					"</table>"+
@@ -391,7 +391,7 @@ function makeContent()
 			"</div>"+
 			"<div id=\"st_ao\" class=\"stg_con\">"+
 				"<fieldset>"+
-					"<legend>"+WUILang.Advanced+"</legend>"+
+					"<legend>"+theUILang.Advanced+"</legend>"+
 					"<div id=\"st_ao_h\">"+
 						"<table width=\"99%\" cellpadding=\"0\" cellspacing=\"0\">"+
 							"<tr>"+
@@ -510,7 +510,7 @@ function makeContent()
 			"</div>"+
 			"<div id=\"st_btns\">"+
 				"<input type=\"button\" value=\"OK\" onclick=\"theDialogManager.hide('stg');theWebUI.setSettings();return(false);\" class=\"Button\" />"+
-				"<input type=\"button\" value=\""+WUILang.Cancel+"\" class=\"Cancel Button\" />"+
+				"<input type=\"button\" value=\""+theUILang.Cancel+"\" class=\"Cancel Button\" />"+
 			"</div>"+
 		"</div>");
 }

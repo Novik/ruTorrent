@@ -25,7 +25,7 @@
  * 		Turgay Yıldıran (votkalivirgul@gmail)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "kB/s",

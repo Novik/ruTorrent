@@ -25,7 +25,7 @@
  * 		Tibi Diego (ceres@divxmania.it)
  */
  
- var WUILang =
+ var theUILang =
  {
  //all used
  kbs				: "kB/s",
