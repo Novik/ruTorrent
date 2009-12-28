@@ -168,7 +168,7 @@ plugin.onLangLoaded = function()
 {
  	this.attachPageToTabs(
 		$('<div>').attr("id","traf").html(
-			"<div id='traf_graph_ctrl' align=right style='height:30px;'>"+
+			"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
 				"<input type='button' value='"+WUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>"+
 				"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
 					"<option value='global'>"+WUILang.allTrackers+"</option>"+
@@ -178,7 +178,7 @@ plugin.onLangLoaded = function()
 					"<option value='month'>"+WUILang.perMonth+"</option>"+
 					"<option value='year'>"+WUILang.perYear+"</option>"+
 				"</select>"+
-			"</div><div id='traf_graph'></div>").get(0),WUILang.traf,"lcont");
+			"</div><div id='traf_graph' class='graph_tab'></div>").get(0),WUILang.traf,"lcont");
 	theWebUI.trafGraph = new rTraficGraph();
 	theWebUI.trafGraph.create($("#traf_graph"));
 
