@@ -4,10 +4,10 @@ if(plugin.enabled)
 {
 	plugin.loadMainCSS();
 
-	if(plugin.canChangeColumns())
+	plugin.config = theWebUI.config;
+	theWebUI.config = function(data)
 	{
-		plugin.config = theWebUI.config;
-		theWebUI.config = function(data)
+		if(plugin.canChangeColumns())
 		{
 			this.tables.prs.columns.unshift({text : 'Country', width : '60px', id: 'country', type : TYPE_STRING});
 			plugin.prsFormat = this.tables.prs.format;
@@ -29,10 +29,29 @@ if(plugin.enabled)
 		        		}
 				return(plugin.prsFormat(table,arr));
 			}
-			plugin.config.call(this,data);
-			plugin.done();
 		}
+		theRequestManager.addRequest("prs", null, function(id,peer,value)
+		{
+			var AjaxReq = jQuery.ajax(
+			{
+			        async : false,
+				url : "plugins/geoip/lookup.php",
+				data : { action : "geoip", ip : peer.ip },
+				dataType : "text",
+				success : function(data)
+				{
+					peer.country = data;
+					peer.icon = "geoip_flag_"+data;
+				}
+			});
+		});
+		plugin.config.call(this,data);
+		if(plugin.canChangeColumns())
+			plugin.done();
+	}
 
+	if(plugin.canChangeColumns())
+	{
 		plugin.done = function()
 		{
 			if(plugin.allStuffLoaded)
@@ -58,27 +77,5 @@ if(plugin.enabled)
 			else
 				setTimeout(arguments.callee,1000);
 		}
-	}
-
-	plugin.getpeersResponse = rTorrentStub.prototype.getpeersResponse;
-	rTorrentStub.prototype.getpeersResponse = function(xml)
-	{
-		var ret = plugin.getpeersResponse.call(this,xml);
-		$.each( ret, function(id,peer)
-		{
-	                var AjaxReq = jQuery.ajax(
-			{
-			        async : false,
-				url : "plugins/geoip/lookup.php",
-				data : { action : "geoip", ip : peer.ip },
-				dataType : "text",
-				success : function(data)
-				{
-					peer.country = data;
-					peer.icon = "geoip_flag_"+data;
-				}
-			});
-		});
-		return(ret);
 	}
 }
