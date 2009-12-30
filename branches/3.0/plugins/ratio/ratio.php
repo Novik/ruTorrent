@@ -1,6 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
+require_once( $rootPath.'/php/cache.php');
 require_once( $rootPath.'/plugins/ratio/conf.php');
 
 define('RAT_STOP',0);
@@ -36,10 +37,7 @@ class rRatio
 	{
 		$cmd = new rXMLRPCCommand("d.multicall",array("default","d.get_hash="));
 		for($i=0; $i<MAX_RATIO; $i++)
-		{
-			$cmd->addParameter("d.views.has=rat_".$i);
-			$cmd->addParameter("view.set_not_visible=rat_".$i);
-		}
+			$cmd->addParameters( array( "d.views.has=rat_".$i, "view.set_not_visible=rat_".$i ) );
 		$req = new rXMLRPCRequest($cmd);
 		$req->setParseByTypes();
 		if($req->run() && !$req->fault)
