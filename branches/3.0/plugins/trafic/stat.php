@@ -2,11 +2,6 @@
 
 require_once( dirname(__FILE__)."/../../php/util.php" );
 
-function quoteEach(&$item)
-{
-	$item = "'$item'"; 
-}
-
 class rStat
 {
 	public $hourUp = array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
@@ -113,7 +108,7 @@ class rStat
 			}
 		}
 		sort($files,SORT_STRING);
-		array_walk($files, 'quoteEach'); 
+		$files = array_map(  'quoteAndDeslashEachItem', $files);
 		return( implode(",",$files)."]}" );
 	}
         public function getDay()
