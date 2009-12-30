@@ -1,11 +1,11 @@
 <?php
 
-require_once( '../../php/util.php' );
+require_once( '../../php/xmlrpc.php' );
 
 if (!isset($HTTP_RAW_POST_DATA))
    $HTTP_RAW_POST_DATA = file_get_contents("php://input");
-$result = send2RPC($HTTP_RAW_POST_DATA);
-if(strlen($result)>0)
+$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA);
+if($result)
 {
 	header("Content-Type: text/xml; charset=UTF-8");
 	$pos = strpos($result, "\r\n\r\n");

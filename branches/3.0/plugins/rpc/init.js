@@ -1,1 +1,1 @@
-WUIResorces.XMLRPCMountPoint = "plugins/rpc/rpc.php";
+theURLs.XMLRPCMountPoint = "plugins/rpc/rpc.php";
