@@ -1,7 +1,8 @@
 <?php
-require_once( 'util.php' );
+
 require_once( '../plugins/retrackers/retrackers.php');
 
+$needStart = true;
 if($do_diagnostic)
 {
 	if(!$pathToPHP || ($pathToPHP==""))
@@ -9,26 +10,32 @@ if($do_diagnostic)
 	@chmod($rootPath.'/plugins/retrackers/run.sh',0755);
 	@chmod($rootPath.'/plugins/retrackers/update.php',0644);
 	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/retrackers/run.sh',0x0005))
-		$jEnd.="plugin.showError('theUILang.retrackersRunNotAvailable');";
+	{
+		$jResult.="plugin.disable(); plugin.showError('theUILang.retrackersRunNotAvailable');";
+		$needStart = false;
+	}
 	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/retrackers/update.php',0x0004))
-		$jEnd.="plugin.showError('theUILang.retrackersUpdaterNotAvailable');";
+	{
+		$jResult.="plugin.disable(); plugin.showError('theUILang.retrackersUpdaterNotAvailable');";
+		$needStart = false;
+	}
 }
-
-if($theSettings->iVersion<0x804)
-	$s = 'on_insert</methodName><params>';
-else
-	$s = 'system.method.set_key</methodName><params><param><value><string>event.download.inserted_new</string></value></param>';
-if(!$pathToPHP || ($pathToPHP==""))
-	$php = "php";
-else
-	$php = $pathToPHP;
-send2RPC('<?xml version="1.0" encoding="UTF-8"?>'.
-	'<methodCall><methodName>'.$s.
-	'<param><value><string>add_trackers</string></value></param>'.
-	'<param><value><string>branch=$not=$d.get_custom3=,"execute={'.$rootPath.'/plugins/retrackers/run.sh'.','.$php.',$d.get_hash=}" ; d.set_custom3=</string></value></param>'.
-	'</params>'.
-	'</methodCall>');
-$theSettings->registerPlugin("retrackers");
-$trks = rRetrackers::load();
-$jResult.=$trks->get();
+if($needStart)
+{
+	if($theSettings->iVersion<0x804)
+		$cmd = new rXMLRPCCommand('on_insert');
+	else
+        	$cmd = new rXMLRPCCommand('system.method.set_key','event.download.inserted_new');
+	$cmd->addParameters( array('add_trackers',
+		'branch=$not=$d.get_custom3=,"execute={'.$rootPath.'/plugins/retrackers/run.sh'.','.getPHP().',$d.get_hash=}" ; d.set_custom3='));
+	$req = new rXMLRPCRequest($cmd);
+	if($req->run() && !$req->fault)
+	{
+		$theSettings->registerPlugin("retrackers");
+		$trks = rRetrackers::load();
+		$jResult.=$trks->get();
+	}
+	else
+		$jResult .= "plugin.disable(); log('retrackers: '+theUILang.pluginCantStart);";
+}
 ?>

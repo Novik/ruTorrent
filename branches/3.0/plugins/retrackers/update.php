@@ -1,6 +1,7 @@
 <?php
 require_once( 'retrackers.php' );
 require_once( $rootPath.'/php/xmlrpc.php' );
+require_once( $rootPath.'/php/rtorrent.php' );
 
 function clearTracker($addition,$tracker)
 {
@@ -76,7 +77,7 @@ if(count($trks->list) && (count($argv)>1))
 				}
   		                if(isset($torrent->{'libtorrent_resume'}['trackers']))
 					unset($torrent->{'libtorrent_resume'}['trackers']);
-				$fname = getUploadsPath()."/".$hash.'.torrent';
+				$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
 				if($torrent->save($fname))
 				{
 					$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
@@ -85,9 +86,8 @@ if(count($trks->list) && (count($argv)>1))
 						@chmod($fname,0666);
 						$fname = realpath($fname);
 						$label = rawurldecode($req->val[5]);
-						if(sendFile2rTorrent($fname, false, $isStart, true, $req->val[7], $label, 
-							"<param><value><string>d.set_directory_base=\"".$req->val[6]."\"</string></value></param>".
-							"<param><value><string>d.set_custom3=1</string></value></param>" )===false)
+						if(!rTorrent::sendTorrent($fname, $isStart, true, $req->val[7], $label, false, 
+						        array("d.set_directory_base=\"".$req->val[6]."\","d.set_custom3=1") ))
 							$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');
 					}
 				}

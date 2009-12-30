@@ -1,7 +1,7 @@
 plugin.loadMainCSS();
 plugin.loadLang();
 
-if(plugin.canChangeOptions())
+if(plugin.enabled && plugin.canChangeOptions())
 {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 
@@ -83,16 +83,17 @@ if(plugin.canChangeOptions())
 
 plugin.onLangLoaded = function() 
 {
-        this.attachPageToOptions(
-	        $("<div>").attr("id","st_retrackers").html(
-			"<fieldset>"+
-				"<legend>"+theUILang.retrackers+"</legend>"+
-				"<div class=\"op100l\">"+
-					"<textarea id='eretrackers'></textarea>"+
-				"</div>"+
-				"<div class=\"op100l\">"+		
-					"<input type='checkbox' id='dont_private' checked='true' />"+
-					"<label for='dont_private'>"+theUILang.dontAddToPrivate+"</label>"+
-				"</div>"+
-			"</fieldset>")[0],theUILang.retrackers);
+	if(this.enabled && this.canChangeOptions())
+	        this.attachPageToOptions(
+		        $("<div>").attr("id","st_retrackers").html(
+				"<fieldset>"+
+					"<legend>"+theUILang.retrackers+"</legend>"+
+					"<div class=\"op100l\">"+
+						"<textarea id='eretrackers'></textarea>"+
+					"</div>"+
+					"<div class=\"op100l\">"+		
+						"<input type='checkbox' id='dont_private' checked='true' />"+
+						"<label for='dont_private'>"+theUILang.dontAddToPrivate+"</label>"+
+					"</div>"+
+				"</fieldset>")[0],theUILang.retrackers);
 }
