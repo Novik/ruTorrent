@@ -1,8 +1,7 @@
 <?php
 
-require_once( '../../php/xmlrpc.php' );
-require_once( '../../php/Torrent.php' );
 require_once( '../../php/settings.php' );
+require_once( '../../php/rtorrent.php' );
 
 ignore_user_abort(true);
 set_time_limit(0);
@@ -59,7 +58,7 @@ if(isset($HTTP_RAW_POST_DATA))
 			new rXMLRPCCommand("d.get_directory",$hash),
 			new rXMLRPCCommand("d.get_connection_seed",$hash)
 			) );
-		$throttle = "";
+		$throttle = null;
 		$theSettings = rTorrentSettings::load();
 		if($theSettings->isPluginRegistered("throttle"))
 			$req->addCommand(new rXMLRPCCommand("d.get_throttle_name",$hash));
@@ -94,7 +93,7 @@ if(isset($HTTP_RAW_POST_DATA))
 					if(isset($torrent->{'libtorrent_resume'}['trackers']))
 						unset($torrent->{'libtorrent_resume'}['trackers']);
 					if(count($req->val)>8)
-						$throttle = "<param><value><string>d.set_throttle_name=".$req->val[9]."</string></value></param>";
+						$throttle = "d.set_throttle_name=".$req->val[9];
 					$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
 					if($torrent->save($fname))
 					{
@@ -104,13 +103,11 @@ if(isset($HTTP_RAW_POST_DATA))
 							@chmod($fname,0666);
 							$fname = realpath($fname);
 							$label = rawurldecode($req->val[5]);
-
-							if(sendFile2rTorrent($fname, false, $isStart, true, $req->val[7], $label, 
-								"<param><value><string>d.set_directory_base=\"".$req->val[6]."\"</string></value></param>".
-								"<param><value><string>d.set_custom3=1</string></value></param>".
-								"<param><value><string>d.set_connection_seed=".$req->val[8]."</string></value></param>".
-								$throttle
-								 )===false)
+							if(!rTorrent::sendTorrent($fname, $isStart, true, $req->val[7], $label, false,
+							        array("d.set_directory_base=".$req->val[6],
+									"d.set_custom3=1",
+									"d.set_connection_seed=".$req->val[8],
+									$throttle)))
 								$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');
 						}
 						else
