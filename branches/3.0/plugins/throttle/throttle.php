@@ -1,5 +1,6 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
+require_once( $rootPath.'/php/cache.php');
 require_once( $rootPath.'/plugins/throttle/conf.php');
 
 define('MAX_SPEED', 100*1024*1024);
