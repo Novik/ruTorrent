@@ -1,18 +1,18 @@
 <?php
-require_once( 'util.php' );
+
 require_once( '../plugins/create/conf.php');
 
 if($useExternal!==false)
 {
 	if($do_diagnostic && empty($pathToCreatetorrent) && (findEXE($useExternal)==false))
-	{
-		$jResult.="plugin.disable();";
-		$jEnd.="plugin.showError('theUILang.createExternalNotFound+\' (".$useExternal.").\'');";
-	}
+		$jResult.="plugin.disable(); plugin.showError('theUILang.createExternalNotFound+\' (".$useExternal.").\'');";
 	else
+	{
 		if($useExternal === "transmissioncli")
 			$jResult.="plugin.hidePieceSize = true;";
+		$theSettings->registerPlugin("create");
+	}
 }
-
-$theSettings->registerPlugin("create");
+else
+	$theSettings->registerPlugin("create");
 ?>

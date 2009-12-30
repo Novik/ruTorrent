@@ -104,7 +104,11 @@ if(isset($_REQUEST['path_edit']))
 			if(isInvalidUTF8($comment))
 				$comment = win2utf($comment);
 			if(strlen($comment)>0)
-				$cmd->addParameter( "d.set_custom2=VRS24mrker".rawurlencode($comment) );
+			{
+				$comment = "VRS24mrker".rawurlencode($comment);
+				if(strlen($comment)<4096)
+					$cmd->addParameter( "d.set_custom2=".$comment );
+			}
 			$req = new rXMLRPCRequest( $cmd );
 			$req->run();	
         	}
