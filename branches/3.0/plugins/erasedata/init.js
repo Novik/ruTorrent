@@ -1,16 +1,18 @@
-theWebUI.removeWithData = function()
-{
-	if( theWebUI.settings["webui.confirm_when_deleting"] )
-	{
-		this.delmode = "removewithdata";
-		askYesNo( theUILang.Remove_torrents, theUILang.Rem_torrents_prompt, "theWebUI.doRemove()" );
-	}
-	else
-		theWebUI.perform( "removewithdata" );
-}
+plugin.loadLang();
 
-if(plugin.canChangeMenu())
+if(plugin.enabled && plugin.canChangeMenu())
 {
+	theWebUI.removeWithData = function()
+	{
+		if( theWebUI.settings["webui.confirm_when_deleting"] )
+		{
+			this.delmode = "removewithdata";
+			askYesNo( theUILang.Remove_torrents, theUILang.Rem_torrents_prompt, "theWebUI.doRemove()" );
+		}
+		else
+			theWebUI.perform( "removewithdata" );
+	}
+
 	plugin.createMenu = theWebUI.createMenu;
 	theWebUI.createMenu = function( e, id )
 	{
@@ -23,21 +25,21 @@ if(plugin.canChangeMenu())
 			theContextMenu.add( el, [CMENU_CHILD, theUILang.Remove_and, _c0] );
 		}
 	}
-}
 
-rTorrentStub.prototype.removewithdata = function()
-{
-	for( var i = 0; i < this.hashes.length; i++ )
+	rTorrentStub.prototype.removewithdata = function()
 	{
-		var cmd = new rXMLRPCCommand( "d.set_custom5" );
-		cmd.addParameter( "string", this.hashes[i] );
-		cmd.addParameter( "string", "1" );
-		this.commands.push( cmd );
-		cmd = new rXMLRPCCommand( "d.delete_tied" );
-		cmd.addParameter( "string", this.hashes[i] );
-		this.commands.push( cmd );
-		cmd = new rXMLRPCCommand( "d.erase" );
-		cmd.addParameter( "string", this.hashes[i] );
-		this.commands.push( cmd );
+		for( var i = 0; i < this.hashes.length; i++ )
+		{
+			var cmd = new rXMLRPCCommand( "d.set_custom5" );
+			cmd.addParameter( "string", this.hashes[i] );
+			cmd.addParameter( "string", "1" );
+			this.commands.push( cmd );
+			cmd = new rXMLRPCCommand( "d.delete_tied" );
+			cmd.addParameter( "string", this.hashes[i] );
+			this.commands.push( cmd );
+			cmd = new rXMLRPCCommand( "d.erase" );
+			cmd.addParameter( "string", this.hashes[i] );
+			this.commands.push( cmd );
+		}
 	}
 }

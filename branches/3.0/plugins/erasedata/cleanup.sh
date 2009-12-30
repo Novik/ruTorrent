@@ -6,6 +6,7 @@ log_file="/tmp/erasedata.log"
 # Don't use $1, because of possible spaces in data dirname.
 # I've not found, how to force rTorrent to enclose variable with "",
 item="$@"
+
 [ "x$log" = "xYES" ] && echo "item=$item" >> $log_file
 
 # !!! bash doesn't allow "return" command from base script,
