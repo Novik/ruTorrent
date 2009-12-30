@@ -63,7 +63,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 			array( "sh",
 				"-c",
 				$php." ".$script_dir."setdir.php ".
-					$hash." \"".$datadir."\" ".$move_datafiles." &amp; exit 0",
+					$hash." \"".$datadir."\" ".$move_datafiles." & exit 0",
 			),
 			$datadir_debug_enabled );
 		if( !$res )

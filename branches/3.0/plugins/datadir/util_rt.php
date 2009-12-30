@@ -1,5 +1,6 @@
 <?php
 
+require_once( "../../php/util.php" );
 require_once( "../../php/xmlrpc.php" );
 
 //------------------------------------------------------------------------------
@@ -364,10 +365,9 @@ function rtAddFile( $fname, $isStart, $directory, $label, $dbg = false )
 		'</params></methodCall>';
 
 	//if( $dbg ) rtDbg( __FUNCTION__, $content );
-	$res = send2RPC( $content );
+	$res = rXMLRPCRequest::send( $content );
 
-	if( $dbg ) rtDbg( __FUNCTION__, "send2RPC() reply (len=".strlen( $res ).")" );
-	//if( $dbg && $res && strlen( $res ) > 0 ) rtDbg( __FUNCTION__, $res );
+	if( $dbg && $res && strlen( $res ) > 0 ) rtDbg( __FUNCTION__, $res );
 
 	if( !$res || $res = '' )
 		return false;
