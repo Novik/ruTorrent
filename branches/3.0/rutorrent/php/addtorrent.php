@@ -1,14 +1,16 @@
 <?php
 
-require_once( 'util.php' );
 require_once( 'Snoopy.class.inc');
+require_once( 'rtorrent.php' );
 
 $uploaded_file = '';
 $success = false;
 
 if(isset($_FILES['torrent_file']))
 {
-	$uploaded_file = getUploadsPath().'/'.md5($_FILES['torrent_file']['name']).'.torrent';
+	$uploaded_file = getUploadsPath().'/'.$_FILES['torrent_file']['name'];
+	if(pathinfo($uploaded_file,PATHINFO_EXTENSION)!="torrent")
+		$uploaded_file.=".torrent";
 	$success = move_uploaded_file($_FILES['torrent_file']['tmp_name'],$uploaded_file);
 }
 else
@@ -33,7 +35,10 @@ else
 		set_time_limit(0);
 		if(@$cli->fetch($url) && $cli->status>=200 && $cli->status<300)
 		{
-			$uploaded_file = getUploadsPath()."/".md5($url).".torrent";
+		        $name = $cli->get_filename();
+		        if($name===false)
+				$name = md5($url).".torrent";
+			$uploaded_file = getUploadsPath()."/".$name;
 			$f = @fopen($uploaded_file,"w");
 			if($f!==false)
 			{
@@ -53,11 +58,10 @@ if($success)
 	$dir_edit = null;
 	if(isset($_REQUEST['dir_edit']))	
 		$dir_edit = trim($_REQUEST['dir_edit']);
-	if(sendFile2rTorrent($uploaded_file,
-		false,
+	if(rTorrent::sendTorrent($uploaded_file,
 		!isset($_REQUEST['torrents_start_stopped']),
 		!isset($_REQUEST['not_add_path']),
-		$dir_edit,$label)===false)
+		$dir_edit,$label,$saveUploadedTorrents)===false)
 	{
                 unlink($uploaded_file);
                 $success = false;

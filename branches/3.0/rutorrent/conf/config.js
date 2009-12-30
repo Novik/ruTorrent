@@ -1,4 +1,4 @@
-var WUIResorces =
+var theURLs =
 {
 	XMLRPCMountPoint 	: "/RPC2",
 	AddTorrentURL 		: "php/addtorrent.php",

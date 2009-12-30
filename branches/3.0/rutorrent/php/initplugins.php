@@ -74,7 +74,9 @@ function getPluginInfo( $name, $permissions )
 if( !function_exists( 'preg_match_all' ) )
 	exit;
 
+require_once( "util.php" );
 require_once( "settings.php" );
+
 $theSettings = new rTorrentSettings();
 $theSettings->obtain();
 if( $theSettings->linkExist && ($handle = opendir('../plugins')))

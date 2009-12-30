@@ -1,8 +1,7 @@
 /*
  *      Misc objects.
  *
- *	$Date$
- *	$Rev$
+ *	$Id$
  */
 
 function $$(id)

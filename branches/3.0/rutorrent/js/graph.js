@@ -1,3 +1,9 @@
+/*
+ *      Speed graph.
+ *
+ *	$Id$
+ */
+
 function clearElement(target)
 {
 	while(target.hasChildNodes())

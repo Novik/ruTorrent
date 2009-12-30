@@ -1,3 +1,9 @@
+/*
+ *      UI content.
+ *
+ *	$Id$
+ */
+
 function makeContent()
 {
 	$(".cat").mouseclick(theWebUI.labelContextMenu);
@@ -94,7 +100,7 @@ function makeContent()
 		'</div>');
 	var makeAddRequest = function(frm)
 	{
-		var s = WUIResorces.AddTorrentURL+"?";
+		var s = theURLs.AddTorrentURL+"?";
 		if($("#torrents_start_stopped").attr("checked"))
 			s += 'torrents_start_stopped=1&';
 		if($("#not_add_path").attr("checked"))

@@ -1,8 +1,7 @@
 /*
  *      Common UI objects.
  *
- *	$Date$
- *	$Rev$
+ *	$Id$
  */
 
 // Drag & Drop object 

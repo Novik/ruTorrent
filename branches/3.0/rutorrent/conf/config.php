@@ -8,9 +8,13 @@
 	define('RPC_TIME_OUT', 15);		// in seconds
 
 	$do_diagnostic = true;
-	$uploads = './share/torrents';		// temp directory for uploaded torrents, without tail slash
-	$settings = './share/settings';		// settings directory, without tail slash
 	$log_file = '/tmp/errors.log';		// path to log file (comment or make empty to disable logging)
+	define('LOG_RPC_CALLS', false);
+	define('LOG_RPC_FAULTS', true);
+
+	$uploads = './share/torrents';		// temp directory for uploaded torrents, without tail slash
+	$saveUploadedTorrents = true;
+	$settings = './share/settings';		// settings directory, without tail slash
 
 	$scgi_port = 5000;
 	$scgi_host = "127.0.0.1";
@@ -25,5 +29,5 @@
 	// $scgi_port = 0;
 	// $scgi_host = "unix:///tmp/rpc.socket";
 
-	$rootPath = dirname(__FILE__)."/..";	// don't touch this line!
+	$rootPath = realpath(dirname(__FILE__)."/..");	// don't touch this line!
 ?>

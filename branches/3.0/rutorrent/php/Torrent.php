@@ -1,57 +1,13 @@
 <?php
 /**
- * Torrent
- *
- * PHP version 5 only
+ *	Copyright 2008 Adrien Gibrat - Class for create and parse Torrent files
+ *			 (http://www.phpclasses.org/browse/package/4896.html)
+ *	Copyright 2009, 2010 Novik
  *
  * LICENSE: This source file is subject to version 3 of the GNU GPL
  * that is available through the world-wide-web at the following URI:
- * http://www.gnu.org/licenses/gpl.html.  If you did not receive a copy of
- * the GNU GPL License and are unable to obtain it through the web, please
- * send a note to adrien.gibrat@gmail.com so I can mail you a copy.
- *
- * 1) Features:
- * - Decode torrent file or data
- * - Build torrent from source folder/file(s)
- * - Silent Exception error system
- *
- * 2) Usage example
- * <code>
-    require_once 'Torrent.php';
-    
-    // get torrent infos
-    $torrent = new Torrent( './test.torrent' );
-    echo '<br>private: ', $torrent->is_private() ? 'yes' : 'no', 
-         '<br>annonce: ', $torrent->announce(), 
-         '<br>name: ', $torrent->name(), 
-         '<br>comment: ', $torrent->comment(), 
-         '<br>piece_length: ', $torrent->piece_length(), 
-         '<br>size: ', $torrent->size( 2 ),
-         '<br>hash info: ', $torrent->hash_info(),
-         '<br>stats: ';
-    var_dump( $torrent->scrape() );
-    echo '<br>content: ';
-    var_dump( $torrent->content() );
-    echo '<br>source: ',
-         $torrent;
-
-    // create torrent
-    $torrent = new Torrent( array( 'test.mp3', 'test.jpg' ), 'http://torrent.tracker/annonce' );
-    $torrent->send();
-
-    // print errors
-    if ( $errors = $torrent->errors() )
-        var_dump( $errors );
- * </code>
- *
- * @author     Adrien Gibrat <adrien.gibrat@gmail.com>
- * @copyleft   2008 - Just use it!
- * @license    http://www.gnu.org/licenses/gpl.html GNU General Public License version 3
- * @version    Release: 0.1
+ * http://www.gnu.org/licenses/gpl.html.
  */
-
-require_once( 'util.php' );
-
 class Torrent {
 
 	static public $errors = array();

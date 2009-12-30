@@ -1,6 +1,5 @@
 <?php
 require_once( dirname(__FILE__).'/../conf/config.php' );
-require_once( 'Torrent.php' );
 
 function stripSlashesFromArray(&$arr)
 {
@@ -134,36 +133,8 @@ function toLog( $str )
 	}
 }
 
-function send2RPC( $data )
-{
-//toLog($data);
-	global $scgi_host;
-	global $scgi_port;
-	$result = "";
-	$contentlength = strlen($data);
-	if($contentlength>0)
-	{
-		$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, RPC_TIME_OUT);
-		if($socket) 
-		{
-			$reqheader =  "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0";
-			$tosend = strlen($reqheader).":{$reqheader},{$data}";
-			@fputs($socket,$tosend);
-			while (!feof($socket)) 
-			{
-				$result .= @fread($socket, 4096);
-			}
-			fclose($socket);
-		}
-	}
-//toLog($result);
-	return($result);
-}
-
 function isUserHavePermissionPrim($uid,$gid,$file,$flags)
 {
-	if($gid<=0)
-		return(true);
 	$ss=@stat($file);
 	if($ss)
 	{
@@ -187,7 +158,12 @@ function isUserHavePermissionPrim($uid,$gid,$file,$flags)
 function isUserHavePermission($uid,$gid,$file,$flags)
 {
 	if($gid<=0)
-		return(true);
+	{
+	        if(($flags & 0x0001) && !is_dir($file))
+	                return(($ss=@stat($file)) && ($ss['mode'] & 0x49));
+	        else
+			return(true);
+	}
 	if(is_link($file))
 		$file = readlink($file);
 	if(isUserHavePermissionPrim($uid,$gid,$file,$flags))
@@ -235,181 +211,11 @@ function getUploadsPath()
 	return( fullpath($uploads,$rootPath) );
 }
 
-function sendFile2rTorrent($fname, $isURL, $isStart, $isAddPath, $directory, $label, $addition = '')
+function getPHP()
 {
-	$hash = false;
-	if($isStart)
-		$method = 'load_start_verbose';
-	else
-		$method = 'load_verbose';
-	$comment = "";	
-	$delete_tied = "";
-	if(!$isURL)
-	{
-		$torrent = new Torrent($fname);
-		if($torrent->errors())
-			return(false);
-		$comment = $torrent->comment();
-
-		if($comment)
-		{
-			if(isInvalidUTF8($comment))
-				$comment = win2utf($comment);
-			if(strlen($comment)>0)
-				$comment = "<param><value><string>d.set_custom2=VRS24mrker".rawurlencode($comment)."</string></value></param>";
-		}
-		else
-			$comment = "";
-		$hash = $torrent->hash_info();
-		$delete_tied = '<param><value><string>d.delete_tied=</string></value></param>';
-	}
-	$setlabel = "";
-	if($label && (strlen($label)>0))
-		$setlabel = "<param><value><string>d.set_custom1=\"".rawurlencode($label)."\"</string></value></param>";
-	$setdir = "";
-	if($directory && (strlen($directory)>0))
-	{
-		if(!$isAddPath)
-			$setdir = "d.set_directory_base=\"";
-		else
-			$setdir = "d.set_directory=\"";
-		$setdir = "<param><value><string>".$setdir.$directory."\"</string></value></param>";
-	}
-	$content = 
-		'<?xml version="1.0" encoding="UTF-8"?>'.
-		'<methodCall>'.
-		'<methodName>'.$method.'</methodName>'.
-		'<params>'.
-		'<param><value><string>'.$fname.'</string></value></param>'.
-		$setdir.
-		$comment.
-		$setlabel.
-		$addition.
-		$delete_tied.
-		'</params></methodCall>';
-	$result = send2RPC($content);
-	if($result='')
-		$hash = false;
-	return($hash);
+	global $pathToPHP;
+	global $rootPath;
+	return( (!$pathToPHP || ($pathToPHP=="")) ? "php" : fullpath($pathToPHP,$rootPath) );
 }
 
-function findEXE( $exe )
-{
-	$path = explode(":", getenv('PATH'));
-	foreach($path as $tryThis)
-	{
-		$fname = $tryThis . '/' . $exe;
-		if(is_executable($fname))
-			return($fname);
-	}
-	return(false);
-}
-
-function findRemoteEXE( $exe, $err, &$remoteRequests )
-{
-	$st = getSettingsPath().'/';
-	if(!is_file($st.$exe))
-	{
-		if(!array_key_exists($exe,$remoteRequests))
-		{
-			$path=realpath(dirname('.'));
-			$len = strlen($path);
-			if(($len>0) && ($path[$len-1]!='/'))
-				$path.='/';
-			send2RPC(
-				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>".
-				"<methodCall>".
-				"<methodName>execute</methodName>".
-				"<params>".
-				"<param><value><string>sh</string></value></param>".
-				"<param><value><string>-c</string></value></param>".
-				"<param><value><string>".$path."test.sh ".$exe." ".$st."</string></value></param>".
-				"</params>".
-				"</methodCall>");
-		}
-		$remoteRequests[$exe][] = $err;
-	}
-}
-
-function testRemoteRequests($remoteRequests)
-{
-	$jResult = "";
-	$st = getSettingsPath().'/';
-	foreach($remoteRequests as $exe=>$errs)
-	{
-		$file = $st.$exe.".founded";
-		if(!is_file($file))
-		{
-			foreach($errs as $err)
-				$jResult.=$err;
-		}
-		else
-			@unlink($file);
-	}
-	return($jResult);
-}
-
-class rCache
-{
-	protected $dir;
-
-	public function rCache( $name = '' )
-	{
-		$this->dir = getSettingsPath().$name;
-		if(!is_dir($this->dir))
-			mkdir($this->dir, 0777);
-	}
-	public function set( $rss, $arg = null )
-	{
-		$name = $this->getName($rss);
-		if(isset($rss->modified) &&
-			method_exists($rss,"merge") &&
-			($rss->modified < filemtime($name)))
-		{
-		        $className = get_class($rss);
-			$newInstance = new $className();
-			if($this->get($newInstance) &&
-				!$rss->merge($newInstance, $arg))
-				return(false);
-		}
-		$fp = @fopen( $name, 'w' );
-		if($fp)
-		{
-		        fwrite( $fp, serialize( $rss ) );
-        		fclose( $fp );
-			@chmod($name,0777);
-	        	return(true);
-        	}
-	        return(false);
-	}
-	public function get( &$rss )
-	{
-	        $fname = $this->getName($rss);
-		$ret = @file_get_contents($fname);
-		if($ret!==false)
-		{
-			$tmp = unserialize($ret);
-			if(($tmp!==false) && 
-				(!isset($rss->version) || 
-				(isset($rss->version) && !isset($tmp->version)) ||
-				(isset($tmp->version) && ($tmp->version==$rss->version))))
-			{
-			        $rss = $tmp;
-				$rss->modified = filemtime($fname);
-				$ret = true;
-			}
-			else
-				$ret = false;
-        	}
-		return($ret);
-	}
-	public function remove( $rss )
-	{
-		return(@unlink($this->getName($rss)));
-	}
-	protected function getName($rss)
-	{
-	        return($this->dir."/".$rss->hash);
-	}
-}
 ?>

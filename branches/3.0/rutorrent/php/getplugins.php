@@ -1,5 +1,6 @@
 <?php
 
+require_once( "util.php" );
 require_once( "settings.php" );
 
 function pluginsSort($a, $b)
@@ -84,6 +85,54 @@ function getPluginInfo( $name, $permissions )
 	return(array_key_exists("version",$info) ? $info : false);
 }
 
+function findEXE( $exe )
+{
+	$path = explode(":", getenv('PATH'));
+	foreach($path as $tryThis)
+	{
+		$fname = $tryThis . '/' . $exe;
+		if(is_executable($fname))
+			return($fname);
+	}
+	return(false);
+}
+
+function findRemoteEXE( $exe, $err, &$remoteRequests )
+{
+	$st = getSettingsPath().'/';
+	if(!is_file($st.$exe))
+	{
+		if(!array_key_exists($exe,$remoteRequests))
+		{
+			$path=realpath(dirname('.'));
+			$len = strlen($path);
+			if(($len>0) && ($path[$len-1]!='/'))
+				$path.='/';
+			$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", $path."test.sh ".$exe." ".$st)));
+			$req->run();
+		}
+		$remoteRequests[$exe][] = $err;
+	}
+}
+
+function testRemoteRequests($remoteRequests)
+{
+	$jResult = "";
+	$st = getSettingsPath().'/';
+	foreach($remoteRequests as $exe=>$errs)
+	{
+		$file = $st.$exe.".founded";
+		if(!is_file($file))
+		{
+			foreach($errs as $err)
+				$jResult.=$err;
+		}
+		else
+			@unlink($file);
+	}
+	return($jResult);
+}
+
 $jResult = "theWebUI.deltaTime = new Date().getTime() - ".time()."*1000;\n";
 $permissions = parse_ini_file("../conf/access.ini");
 $settingsFlags = array(
@@ -114,6 +163,7 @@ if($handle = opendir('../plugins'))
 			$jResult.="log(theUILang.badLinkTorTorrent);";
 		else
 		{
+			$jResult.="theWebUI.rTorrentVersion = '".$theSettings->version."';";
 	        	if($do_diagnostic)
 	        	{
 	        	        $up = getUploadsPath();

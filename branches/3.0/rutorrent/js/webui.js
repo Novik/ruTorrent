@@ -1,3 +1,9 @@
+/*
+ *      Main object.
+ *
+ *	$Id$
+ */
+
 var theWebUI = 
 {
         version: "3.0 (beta)",
@@ -97,7 +103,7 @@ var theWebUI =
 			ondblclick:	function(obj) 
 			{ 
 				if(obj.id && theWebUI.peers[obj.id])
-					window.open(WUIResorces.RIPEURL + theWebUI.peers[obj.id].ip, "_blank");
+					window.open(theURLs.RIPEURL + theWebUI.peers[obj.id].ip, "_blank");
 				return(false);
 			}
 		},
@@ -440,7 +446,7 @@ var theWebUI =
 			{
 				o = $(o);
 				if(o.is("input:checkbox"))
-					o.attr('checked',v);
+					o.attr('checked',(v!=0));
 				else
 				{
 					switch(i)
@@ -1748,7 +1754,7 @@ var theWebUI =
 			$("#wa").text(theConverter.bytes(d.skip_total,2));
 	        	$("#bf").text(d.base_path);
 	        	$("#co").text(theConverter.date(d.created));
-			$("#tu").text(	($type(this.trackers[this.dID]) && (d.tracker_focus<this.trackers[this.dID].length)) ? this.trackers[this.dID][d.tracker_focus].name : '');
+			$("#tu").text(	$type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
 	        	$("#hs").text(this.dID);
 			$("#ts").text(d.msg);
 			var url = $.trim(d.comment);

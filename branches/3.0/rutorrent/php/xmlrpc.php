@@ -1,6 +1,8 @@
 <?php
 
-require_once( 'util.php' );
+require_once( dirname(__FILE__).'/../conf/config.php' );
+if(LOG_RPC_FAULTS || LOG_RPC_CALLS)
+	require_once( $rootPath.'/php/util.php' );
 
 class rXMLRPCParam
 {
@@ -13,7 +15,7 @@ class rXMLRPCParam
 		if(($this->type=="i8") || ($this->type=="i4"))
 			$this->value = number_format($aValue,0,'.','');
 		else
-			$this->value = $aValue;
+			$this->value = htmlspecialchars($aValue,ENT_NOQUOTES,"UTF-8");
 	}
 }
 
@@ -34,6 +36,13 @@ class rXMLRPCCommand
 			else
 				$this->addParameter($args);
 		}
+	}
+
+	public function addParameters( $args )
+	{
+		if(($args!==null) && is_array($args))
+			foreach($args as $prm)
+				$this->addParameter($prm);
 	}
 
 	public function addParameter( $aValue, $aType = null )
@@ -73,6 +82,32 @@ class rXMLRPCRequest
 			else
 				$this->addCommand($cmds);
 		}
+	}
+
+	public static function send( $data )
+	{
+		if(LOG_RPC_CALLS)
+			toLog($data);
+		global $scgi_host;
+		global $scgi_port;
+		$result = false;
+		$contentlength = strlen($data);
+		if($contentlength>0)
+		{
+			$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, RPC_TIME_OUT);
+			if($socket) 
+			{
+				$reqheader =  "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0";
+				$tosend = strlen($reqheader).":{$reqheader},{$data}";
+				@fputs($socket,$tosend);
+				while (!feof($socket)) 
+					$result .= @fread($socket, 4096);
+				fclose($socket);
+			}
+		}
+		if(LOG_RPC_CALLS)
+			toLog($result);
+		return($result);
 	}
 
 	public function setParseByTypes( $enable = true )
@@ -131,17 +166,15 @@ class rXMLRPCRequest
 		$this->val = array();
 		if($this->makeCall())
 		{
-//toLog($this->content);
-			$answer = send2RPC($this->content);
-//toLog($answer);
-			if(strlen($answer)>0)
+			$answer = self::send($this->content);
+			if($answer)
 			{
 				if($this->parseByTypes)
 				{
 					if((preg_match_all("|<value><string>(.*)</string></value>|Us",$answer,$this->strings)!==false) &&
-						array_key_exists(1,$this->strings) &&
+						count($this->strings)>1 &&
 						(preg_match_all("|<value><i.>(.*)</i.></value>|Us",$answer,$this->i8s)!==false) &&
-						array_key_exists(1,$this->i8s))
+						count($this->i8s)>1)
 					{
 						$this->strings = str_replace("\\","\\\\",$this->strings[1]);
 						$this->strings = str_replace("\"","\\\"",$this->strings);
@@ -154,7 +187,7 @@ class rXMLRPCRequest
 				else
 				{
 					if((preg_match_all("/<value>(<string>|<i.>)(.*)(<\/string>|<\/i.>)<\/value>/Us",$answer,$this->val)!==false) &&
-						array_key_exists(2,$this->val))
+						count($this->val)>2)
 					{
 						$this->val = str_replace("\\","\\\\",$this->val[2]);
 						$this->val = str_replace("\"","\\\"",$this->val);
@@ -166,7 +199,14 @@ class rXMLRPCRequest
 				if($ret)
 				{
 					if(strstr($answer,"faultCode")!==false)
+					{
 						$this->fault = true;	
+						if(LOG_RPC_FAULTS)
+						{
+							toLog($this->content);
+							toLog($answer);
+						}
+					}
 					$this->content = "";
 					$this->commands = array();
 				}

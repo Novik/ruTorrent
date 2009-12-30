@@ -247,7 +247,13 @@ class Snoopy
 		return true;
 	}
 
-
+	function get_filename()
+	{
+		foreach( $this->headers as $i=>$header)
+			if(preg_match_all("/^Content-Disposition:.*(\s|;)filename=\"(.*)\.torrent\"/i",$header,$matches) && (count($matches)>2))
+				return($matches[2][0].".torrent");
+		return(false);	
+	}
 
 /*======================================================================*\
 	Private functions
@@ -445,7 +451,6 @@ class Snoopy
 			if ( count($this->cookies) > 0 ) {
 				$cookie_headers .= 'Cookie: ';
 				foreach ( $this->cookies as $cookieKey => $cookieVal ) {
-//				$cookie_headers .= $cookieKey."=".urlencode($cookieVal)."; ";
 				$cookie_headers .= $cookieKey."=".$cookieVal."; ";
 				}
 				$headers .= substr($cookie_headers,0,-2) . "\r\n";
@@ -492,7 +497,6 @@ class Snoopy
 				return false;
 			}
 				
-		//	if($currentHeader == "\r\n")
 			if(preg_match("/^\r?\n$/", $currentHeader) )
 			      break;
 						
@@ -518,10 +522,10 @@ class Snoopy
 		
 			if(preg_match("|^HTTP/|",$currentHeader))
 			{
-                if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$currentHeader, $status))
+		                if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$currentHeader, $status))
 				{
 					$this->status= $status[1];
-                }				
+                		}				
 				$this->response_code = $currentHeader;
 			}
 			
@@ -532,7 +536,6 @@ class Snoopy
 			$this->headers[] = $currentHeader;
 		}
 
-		# $results = fread($fp, $this->maxlength);
 		$results = "";
 		while ( $data = fread($fp, $this->maxlength) ) {
 		    $results .= $data;

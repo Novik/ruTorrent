@@ -352,5 +352,6 @@
  plgVersion			: "Версия",
  plgAuthor			: "Автор",
  plgDescr			: "Описание",
- mnu_go				: "Искать"
+ mnu_go				: "Искать",
+ pluginCantStart		: "плагин не может стартовать."
  };

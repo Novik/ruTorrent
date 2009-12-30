@@ -1,3 +1,9 @@
+/*
+ *      Link to rTorrent.
+ *
+ *	$Id$
+ */
+
 function rXMLRPCCommand( cmd )
 {
 	this.command = cmd;
@@ -105,7 +111,7 @@ function rTorrentStub( URI )
 	this.vs = new Array();
 	this.listRequired = false;
 	this.content = null;
-	this.mountPoint = WUIResorces.XMLRPCMountPoint;
+	this.mountPoint = theURLs.XMLRPCMountPoint;
 	this.faultString = [];
 	this.contentType = "text/xml; charset=UTF-8";
 	this.dataType = "xml";
@@ -219,19 +225,20 @@ rTorrentStub.prototype.list = function()
 rTorrentStub.prototype.setuisettings = function()
 {
 	this.content = "v="+this.vs[0];
-	this.mountPoint = WUIResorces.SetSettingsURL;
+	this.mountPoint = theURLs.SetSettingsURL;
 	this.contentType = "application/x-www-form-urlencoded";
+	this.dataType = "text";
 }
 
 rTorrentStub.prototype.getuisettings = function()
 {
-	this.mountPoint = WUIResorces.GetSettingsURL;
+	this.mountPoint = theURLs.GetSettingsURL;
 	this.dataType = "json";
 }
 
 rTorrentStub.prototype.getplugins = function()
 {
-	this.mountPoint = WUIResorces.GetPlugingURL;
+	this.mountPoint = theURLs.GetPlugingURL;
 	this.dataType = "script";
 }
 
@@ -591,7 +598,6 @@ rTorrentStub.prototype.getsettingsResponse = function(xml)
 		handler.response( ret, (handler.ndx===null) ? null : self.getValue(values,i) );
 		i+=2;
 	});
-
 	return(ret);
 }
 
@@ -851,7 +857,7 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 			if((textStatus=="timeout") && ($type(onTimeout) == "function"))
 				onTimeout();
 			if(($type(onError) == "function"))
-				onError(XMLHttpRequest.status,XMLHttpRequest.responseText);
+				onError(XMLHttpRequest.status+" ["+stub.action+"]",XMLHttpRequest.responseText);
 		},
 		success: function(data, textStatus)
 		{

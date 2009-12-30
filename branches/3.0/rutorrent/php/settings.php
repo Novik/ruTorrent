@@ -1,6 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__).'/xmlrpc.php' );
+require_once( $rootPath.'/php/cache.php');
 
 class rTorrentSettings
 {
@@ -46,10 +47,10 @@ class rTorrentSettings
 	}
 	public function obtain()
 	{
-		if(function_exists('posix_getuid') && function_exists('posix_getgid'))
+		if(function_exists('posix_geteuid') && function_exists('posix_getegid'))
 		{
-			$this->myuid = posix_getuid();
-			$this->mygid = posix_getgid();
+			$this->myuid = posix_geteuid();
+			$this->mygid = posix_getegid();
 		}
 		else
 		{

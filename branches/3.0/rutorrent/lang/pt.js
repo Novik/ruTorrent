@@ -354,5 +354,6 @@
  plgVersion			: "Version",
  plgAuthor			: "Author",
  plgDescr			: "Description",
- mnu_go				: "Go"
+ mnu_go				: "Go",
+ pluginCantStart		: "plugin can't start for unknown reason."
  };
