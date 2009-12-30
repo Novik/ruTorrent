@@ -857,7 +857,7 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 			if((textStatus=="timeout") && ($type(onTimeout) == "function"))
 				onTimeout();
 			if(($type(onError) == "function"))
-				onError(XMLHttpRequest.status+" ["+stub.action+"]",XMLHttpRequest.responseText);
+				onError(XMLHttpRequest.status+" ["+textStatus+","+stub.action+"]",XMLHttpRequest.responseText);
 		},
 		success: function(data, textStatus)
 		{
