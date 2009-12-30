@@ -64,8 +64,16 @@ div#CatList ul li#-_-_-act-_-_- {padding: 2px 25px; background:url(./images/stat
 div#CatList ul li#-_-_-iac-_-_- {padding: 2px 25px; background:url(./images/status_incompleted.gif) 6px no-repeat;}
 div#CatList ul li#-_-_-err-_-_- {padding: 2px 25px; background:url(./images/status_error.gif) 6px no-repeat;}
 
+div.tab {background: #181818}
+div#lcont {background: #181818}
+div#gcont table td.Header {background: #181818}
+div.graph_tab {background-color: #181818}
+div.table_tab {background-color: #181818}
+div#List {border: 1px solid #333333;}
+
 div#List {border: 1px solid #333333; background-color: #181818; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+
 .Status_Down {background: transparent url(./images/tstatus.gif) no-repeat left center}
 .Status_Up {background: transparent url(./images/tstatus.gif) no-repeat -16px center}
 .Status_Incompleted {background: transparent url(./images/tstatus.gif) no-repeat -32px center}
@@ -111,9 +119,7 @@ select.cols {border: 1px solid #333333; font-size: 11px; font-family: Tahoma, Ve
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #333333}
 div#tdetails {height: 50%; padding: 0 5px 5px 5px; background-color: #181818}
 div#tdcont {height: 200px; background: #181818; border: 1px solid #333333; padding: 2px}
-div#gcont, div#scont, div#lcont {height: 100%; background: #181818; overflow: auto}
-div#gcont table td.Header {font-weight: bold; background: #181818}
-div#lcont, div#Speed {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #181818}
+
 div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #181818; border: 1px solid #333333}
 div#tadd-header {padding: 2px 24px; line-height: 20px; background: #181818 url(./images/world.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #333333}
 ul#tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #333333; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
