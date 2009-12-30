@@ -80,16 +80,6 @@ if( $is_ok )
 
 		if( $is_ok )
 		{
-//			// sendFile2rTorrent($fname, $isURL, $isStart, $isAddPath, $directory, $label, $addition = '')
-//			$hash = sendFile2rTorrent(
-//				$torrent_file,			// path to .torrent file
-//				false,				// not URL
-//				false,				// don't start it
-//				true,				// add torrent's name to directory
-//				$dest_path,			// directory for torrent's data
-//				null				// label is emply
-//			);
-
 			// rtAddFile( $fname, $isStart, $directory, $label, $dbg = false )
 			$hash = rtAddTorrent(
 				$torrent_file,			// path to .torrent file
@@ -101,7 +91,7 @@ if( $is_ok )
 
 			if( $hash === false )
 			{
-				Debug( "sendFile2rTorrent() fail" );
+				Debug( "rtAddTorrent() fail" );
 				$is_ok = false;
 			}
 			else {

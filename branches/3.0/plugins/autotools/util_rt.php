@@ -358,7 +358,11 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 		if( isInvalidUTF8( $comment ) )
 			$comment = win2utf($comment);
 		if( strlen( $comment ) > 0 )
+		{
 			$comment = rtMakeStrParam( "d.set_custom2=VRS24mrker".rawurlencode( $comment ) );
+			if(strlen($comment)>4096)
+				$comment = '';
+		}
 	}
 	else $comment = "";
 
@@ -369,8 +373,8 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 	else $label = "";
 
 	$addition = "";
-
-	$delete_tied = rtMakeStrParam( "d.delete_tied=" );
+	global $saveUploadedTorrents;
+	$delete_tied = ($saveUploadedTorrents ? "" : rtMakeStrParam( "d.delete_tied=" ));
 
 	$content =
 		'<?xml version="1.0" encoding="UTF-8"?>'.
@@ -386,10 +390,9 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 		'</params></methodCall>';
 
 	//if( $dbg ) rtDbg( __FUNCTION__, $content );
-	$res = send2RPC( $content );
+	$res = rXMLRPCRequest::send( $content );
 
-	if( $dbg ) rtDbg( __FUNCTION__, "send2RPC() reply (len=".strlen( $res ).")" );
-	//if( $dbg && $res && strlen( $res ) > 0 ) rtDbg( __FUNCTION__, $res );
+	if( $dbg && $res && strlen( $res ) > 0 ) rtDbg( __FUNCTION__, $res );
 
 	if( !$res || $res = '' )
 		return false;

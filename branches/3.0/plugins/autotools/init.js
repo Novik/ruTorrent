@@ -1,8 +1,8 @@
-plugin.loadMainCSS();
 plugin.loadLang();
 
-if(plugin.canChangeOptions())
+if(plugin.enabled && plugin.canChangeOptions())
 {
+	plugin.loadMainCSS();
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function( arg )
 	{
@@ -60,7 +60,9 @@ if(plugin.canChangeOptions())
 
 plugin.onLangLoaded = function()
 {
-	this.attachPageToOptions( $("<div>").attr("id","st_autotools").html(
+	if(this.enabled && this.canChangeOptions())
+	{
+		this.attachPageToOptions( $("<div>").attr("id","st_autotools").html(
 		"<fieldset>"+
 			"<legend>"+ theUILang.autotools +"</legend>"+
 			"<table>"+
@@ -118,15 +120,16 @@ plugin.onLangLoaded = function()
 			"</tr>"+
 			"</table>"+
 		"</fieldset>")[0], theUILang.autotools );
-	if(thePlugins.isInstalled("_getdir"))
-	{
-		this.DirBrowser1 = new theWebUI.rDirBrowser( 'st_autotools', 'path_to_finished', 'automove_browse_btn', 'automove_browse_frame' );
-		this.DirBrowser2 = new theWebUI.rDirBrowser( 'st_autotools', 'path_to_watch', 'autowatch_browse_btn', 'autowatch_browse_frame' );
-	}
-	else
-	{
-		$('#automove_browse_btn').remove();
-		$('#autowatch_browse_btn').remove();
+		if(thePlugins.isInstalled("_getdir"))
+		{
+			this.DirBrowser1 = new theWebUI.rDirBrowser( 'st_autotools', 'path_to_finished', 'automove_browse_btn', 'automove_browse_frame' );
+			this.DirBrowser2 = new theWebUI.rDirBrowser( 'st_autotools', 'path_to_watch', 'autowatch_browse_btn', 'autowatch_browse_frame' );
+		}
+		else
+		{
+			$('#automove_browse_btn').remove();
+			$('#autowatch_browse_btn').remove();
+		}
 	}
 }
 

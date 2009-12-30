@@ -1,6 +1,6 @@
 <?php
 
-require_once( dirname(__FILE__)."/../../php/util.php" );
+require_once( dirname(__FILE__)."/../../php/cache.php");
 
 class rAutoTools
 {
