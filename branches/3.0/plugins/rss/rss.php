@@ -1,8 +1,9 @@
 <?php
 
-require_once( dirname(__FILE__).'/../../php/util.php');
+require_once( dirname(__FILE__).'/../../php/cache.php');
 require_once( $rootPath.'/php/Snoopy.class.inc');
 require_once( $rootPath.'/plugins/rss/conf.php');
+require_once( $rootPath.'/php/rtorrent.php' );
 
 class rRSS
 {
@@ -53,7 +54,20 @@ class rRSS
 	{
 		$cli = self::fetchURL(self::linkencode($href),$this->cookies);
 		if($cli && $cli->status>=200 && $cli->status<300)
-			return($cli->results);
+		{
+			$name = $cli->get_filename();
+			if($name===false)
+				$name = md5($href).".torrent";
+			$name = getUploadsPath()."/".$name;
+			$f = @fopen($name,"w");
+			if($f!==false)
+			{
+				@fwrite($f,$cli->results,strlen($cli->results));
+				fclose($f);
+				@chmod($name,0666);
+				return($name);
+			}
+		}
 		return(false);
 	}
 
@@ -933,39 +947,23 @@ class rRSSManager
 	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $ratio, $needFlush = true )
 	{
 		$thash = 'Failed';
-		$ret = false;
-		$data = $rss->getTorrent( $url );
-		if($data!==false)
+		$ret = $rss->getTorrent( $url );
+		if($ret!==false)
 		{
-			$name = getUploadsPath()."/".md5($url).".torrent";
-			$f = @fopen($name,"w");
-			if($f!==false)
+			$addition = array();
+			if(!empty($throttle))
+				$addition[] = "d.set_throttle_name=".$throttle;
+			if(!empty($ratio))
+				$addition[] = "view.set_visible=".$ratio;
+			global $saveUploadedTorrents;
+			if(($thash = rTorrent::sendTorrent($ret, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, $addition))===false)
 			{
-				@fwrite($f,$data,strlen($data));
-				fclose($f);
-				$name = realpath($name);
-				@chmod($name,0666);
-
-				$addition = '';
-				if(!empty($throttle))
-				{
-					$addition = "<param><value><string>d.set_throttle_name=".$throttle."</string></value></param>";
-				}
-				if(!empty($ratio))
-				{
-					$addition .= "<param><value><string>view.set_visible=".$ratio."</string></value></param>";
-				}
-				if(($thash = sendFile2rTorrent($name, false, $isStart, $isAddPath, $directory, $label, $addition))===false)
-				{
-					$thash = 'Failed';
-					$ret = false;
-					@unlink($name);
-				}
-				else
-					$ret = true;
+				$thash = 'Failed';
+				@unlink($ret);
+				$ret = false;
 			}
 		}
-		if(!$ret)
+		if($ret===false)
 			$this->rssList->addError( "theUILang.rssCantLoadTorrent", $url );
 		$this->history->add($url,$thash);
 		if($needFlush)
