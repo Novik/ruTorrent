@@ -1,19 +1,14 @@
 <?php
 
-require_once( 'util.php' );
-
 if( $theSettings->iVersion >= 0x805 )
 {
-	$content =
-		'<?xml version="1.0" encoding="UTF-8"?>'.
-		'<methodCall><methodName>system.method.set_key</methodName><params><param><value><string>event.download.finished</string></value></param>'.
-		'<param><value><string>seedingtime</string></value></param>'.
-		'<param><value><string>d.set_custom=seedingtime,"$execute_capture={date,+%s}"</string></value></param>'.
-		'</params>'.
-		'</methodCall>';
-	$result = send2RPC( $content );
-	$theSettings->registerPlugin("seedingtime");
+	$req = new rXMLRPCRequest( new rXMLRPCCommand( "system.method.set_key", 
+		array("event.download.finished","seedingtime",'d.set_custom=seedingtime,"$execute_capture={date,+%s}"') ) );
+	if($req->run() && !$req->fault)
+	        $theSettings->registerPlugin("seedingtime");
+	else
+	        $jResult .= "plugin.disable(); log('seedingtime: '+theUILang.pluginCantStart);";
 }
 else
-	$jResult .= "plugin.disable();";
+	$jResult .= "plugin.disable(); plugin.showError('theUILang.seedingTimeBadVersion');";
 ?>

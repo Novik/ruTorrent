@@ -50,9 +50,3 @@ if(plugin.enabled)
 		}
 	}
 }
-
-plugin.onLonagLoaded = function() 
-{
-	if(!this.enabled)
-		log(theUILang.seedingTimeBadVersion);
-}
