@@ -663,6 +663,7 @@ var theWebUI =
 		this.getTable("prs").clearRows();
 		for(var k in this.peers) 
       			delete this.peers[k];
+		this.peers = {};
 	},
 
 	addPeers: function(data) 
@@ -768,6 +769,7 @@ var theWebUI =
          			{
 	         			table.removeRow(rowIDs[i]);
 	         			delete this.trackers[hash][no];
+		        	 	this.trackers[hash].splice(no,1);
 				}
          			else
 	         			this.trackers[hash][no]._updated = false;
