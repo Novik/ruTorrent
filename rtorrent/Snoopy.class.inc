@@ -79,7 +79,7 @@ class Snoopy
 	var $error			=	"";					// error messages sent here
 	var	$response_code	=	"";					// response code returned from server
 	var	$headers		=	array();			// headers returned from server sent here
-	var	$maxlength		=	500000;				// max return data length (body)
+	var	$maxlength		=	4*1024*1024;				// max return data length (body)
 	var $read_timeout	=	0;					// timeout on read operations, in seconds
 												// supported only since PHP 4 Beta 4
 												// set to 0 to disallow timeouts
