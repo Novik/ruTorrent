@@ -536,7 +536,7 @@ class Snoopy
 
 		# $results = fread($fp, $this->maxlength);
 		$results = "";
-		while ( $data = fread($fp, $this->maxlength) ) {
+		while ( $data = fread($fp, 4096) ) {
 		    $results .= $data;
 		    if (
 		        strlen($results) > $this->maxlength ) {
