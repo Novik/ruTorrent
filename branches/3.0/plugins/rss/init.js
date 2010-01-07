@@ -401,7 +401,7 @@ theWebUI.updateRSS = function()
 
 theWebUI.retryRSSRequest = function()
 {
-	theWebUI.timeoutLog(); 
+	theWebUI.timeout(); 
 	window.setTimeout("theWebUI.loadRSS()", theWebUI.settings["webui.reqtimeout"]);
 }
 
