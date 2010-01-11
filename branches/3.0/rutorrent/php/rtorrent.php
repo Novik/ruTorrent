@@ -44,6 +44,31 @@ class rTorrent
 		}
 		return($hash);
 	}
+
+	static public function getSource($hash)
+	{
+		$req = new rXMLRPCRequest( array(		
+			new rXMLRPCCommand("get_session"),
+			new rXMLRPCCommand("d.get_tied_to_file",$hash)) );
+		if($req->run() && !$req->fault)
+		{
+			$fname = $req->val[0].$hash.".torrent";
+			if(empty($req->val[0]) || !is_readable($fname))
+			{
+				if(strlen($req->val[1]) && is_readable($req->val[1]))
+					$fname = $req->val[4];
+				else
+					$fname = null;
+			}
+			if($fname)
+			{
+				$torrent = new Torrent( $fname );		
+				if( !$torrent->errors() )
+					return($torrent);
+			}
+		}
+		return(false);
+	}
 }
 
 ?>
