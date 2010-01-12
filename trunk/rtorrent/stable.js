@@ -263,7 +263,7 @@ dxSTable.prototype.onRightClick = function(e)
 
 dxSTable.prototype.resizeHack = function()
 {
-	if(browser.isOpera || browser.isFirefox || browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up)
+	if((browser.isOpera || browser.isFirefox || browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) && this.created)
 		resizeColumn.apply(this);
 }
 
