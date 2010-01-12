@@ -103,7 +103,7 @@ if(isset($HTTP_RAW_POST_DATA))
 							@chmod($fname,0666);
 							$fname = realpath($fname);
 							$label = rawurldecode($req->val[5]);
-							if(!rTorrent::sendTorrent($fname, $isStart, true, $req->val[7], $label, false,
+							if(!rTorrent::sendTorrent($fname, $isStart, true, $req->val[7], $label, false, true,
 							        array("d.set_directory_base=".$req->val[6],
 									"d.set_custom3=1",
 									"d.set_connection_seed=".$req->val[8],
