@@ -68,7 +68,7 @@ class rTorrent
 			if(empty($req->val[0]) || !is_readable($fname))
 			{
 				if(strlen($req->val[1]) && is_readable($req->val[1]))
-					$fname = $req->val[4];
+					$fname = $req->val[1];
 				else
 					$fname = null;
 			}
