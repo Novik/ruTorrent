@@ -92,18 +92,22 @@ if(isset($HTTP_RAW_POST_DATA))
 						$torrent->comment($comment);
 					if(isset($torrent->{'libtorrent_resume'}['trackers']))
 						unset($torrent->{'libtorrent_resume'}['trackers']);
+					if(isset($torrent->{'rtorrent'}))
+						unset($torrent->{'rtorrent'});
 					if(count($req->val)>8)
 						$throttle = "d.set_throttle_name=".$req->val[9];
-					$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
-					if($torrent->save($fname))
+					$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
+					if($eReq->run() && !$eReq->fault)
 					{
-						$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
-						if($eReq->run() && !$eReq->fault)
+						$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
+						if(is_readable($fname))
+							$fname = getUploadsPath()."/".rand().'.torrent';
+						if($torrent->save($fname))
 						{
 							@chmod($fname,0666);
 							$fname = realpath($fname);
 							$label = rawurldecode($req->val[5]);
-							if(!rTorrent::sendTorrent($fname, $isStart, true, $req->val[7], $label, false, true,
+							if(!rTorrent::sendTorrent($fname, $isStart, true, $req->val[7], $label, $saveUploadedTorrents, true,
 							        array("d.set_directory_base=".$req->val[6],
 									"d.set_custom3=1",
 									"d.set_connection_seed=".$req->val[8],
@@ -111,10 +115,10 @@ if(isset($HTTP_RAW_POST_DATA))
 								$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');
 						}
 						else
-							$errors[] = array('desc'=>"theUILang.errorAddTorrent", 'prm'=>$fname);
+							$errors[] = array('desc'=>"theUILang.errorWriteTorrent", 'prm'=>$fname);
 					}
 					else
-						$errors[] = array('desc'=>"theUILang.errorWriteTorrent", 'prm'=>$fname);
+						$errors[] = array('desc'=>"theUILang.errorAddTorrent", 'prm'=>$fname);						
 				}
 				else
 					$errors[] = array('desc'=>"theUILang.errorReadTorrent", 'prm'=>$fname);
