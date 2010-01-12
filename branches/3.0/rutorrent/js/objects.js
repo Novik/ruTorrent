@@ -157,6 +157,7 @@ var theDialogManager =
         	}
         	if($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
 	        	this.items[id].beforeShow(id);
+//		this.center(id);
 		obj.show(this.divider);
         	if($type(this.items[id]) && ($type(this.items[id].afterShow)=="function"))
 	        	this.items[id].afterShow(id);

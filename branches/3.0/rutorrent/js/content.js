@@ -85,17 +85,18 @@ function makeContent()
 		'<div class="cont fxcaret">'+
 			'<form action="addtorrent.php" id="addtorrent" method="post" enctype="multipart/form-data" target="uploadfrm">'+
 				'<label>'+theUILang.Base_directory+':</label><input type="text" id="dir_edit" name="dir_edit" class="TextboxLarge"/><br/>'+
-				'<label></label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+theUILang.Dont_add_tname+'<br/>'+
-				'<label></label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+theUILang.Dnt_start_down_auto+'<br/>'+
+				'<label>&nbsp;</label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+theUILang.Dont_add_tname+'<br/>'+
+				'<label>&nbsp;</label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+theUILang.Dnt_start_down_auto+'<br/>'+
+				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
 				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge"/><br/>'+
 				'<hr/>'+
 				'<label>'+theUILang.Torrent_file+':</label><input type="file" name="torrent_file" id="torrent_file" class="TextboxLarge"/><br/>'+
-				'<label></label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
+				'<label>&nbsp;</label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
 			'</form>'+
 			'<hr/>'+
 			'<form action="addtorrent.php" id="addtorrenturl" method="post" target="uploadfrmurl">'+
 				'<label>'+theUILang.Torrent_URL+':</label><input type="text" id="url" name="url" class="TextboxLarge"/><br/>'+
-				'<label></label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button"/>'+
+				'<label>&nbsp;</label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button"/>'+
 			'</form>'+
 		'</div>');
 	var makeAddRequest = function(frm)
@@ -103,6 +104,8 @@ function makeContent()
 		var s = theURLs.AddTorrentURL+"?";
 		if($("#torrents_start_stopped").attr("checked"))
 			s += 'torrents_start_stopped=1&';
+		if($("#fast_resume").attr("checked"))
+			s += 'fast_resume=1&';
 		if($("#not_add_path").attr("checked"))
 			s += 'not_add_path=1&';
 		var dir = $.trim($("#dir_edit").val());

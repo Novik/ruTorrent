@@ -5,6 +5,15 @@ div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z
 div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
 div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none}
 sup {font-size: 8px}
+
+div.aright {text-align: right}
+div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
+div.fxcaret {overflow: auto}
+div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
+a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(../images/hide.gif); float: right; border: 0}
+a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(../images/hide_over.gif); float: right; border: 0}
+a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../images/hide_on.gif); float: right; border: 0}
+
 div#sc {width: 150px; right: 57px; top: 40px; position: absolute; display: none; border: 1px solid #808080; background-color: #E0E0E0; z-index: 100}
 div#sc ul {margin: 0; padding: 0; list-style: none}
 div#sc ul li {margin: 0; padding: 0}
@@ -32,11 +41,7 @@ ul.CMenu li ul li a.dis:hover {background-color: #FFFFFF; color: #C0C0C0}
 
 span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
 #sel {width: 0px; height: 0px; position: absolute; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
-div#al {width: 200px; height: 40px; position: absolute; right: 10px; bottom: 10px; background: #F5F5F5 url(../images/error.gif) no-repeat 10px 10px; border: 1px solid #C0C0C0; padding: 5px 10px 5px 35px; z-index: 350; display: none}
-div#ermsg {width: 180px; height: 100%; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
-div#al a.h {margin: -40px -5px 0 0}
-div.dlbb {width: 96px; height: 12px; position: relative; margin: 1px 0 0 0; padding: 0; line-height: 14px; border: 1px solid #C0C0C0}
-div.dlbp {width: 90px; height: 14px; position: absolute; right: 0; top: -2px; margin: 1px; padding-left: 4px; text-align: right; z-index: 0}
+
 div#t {width: 100%; height: 36px; background: #F0F0F0 url(../images/t_bg.png) repeat-x center center; line-height: 36px; border-bottom: 1px solid #D0D0D0; white-space: nowrap}
 div#t a {float: left; margin: 3px 0 0 5px; padding: 3px}
 div#t a:hover {background: transparent url(../images/tb_bg.gif) no-repeat scroll center center}
@@ -189,13 +194,8 @@ div.graph_tab {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, 
 div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled;}
 div#List {border: 1px solid #A0A0A0;}
 
-div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 2px solid #909090}
-div#tadd-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/world.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
 div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
-div#tadd label, div#tadd input.text {width: 150px; display: block; float: left; margin-bottom: 10px}
-div#tadd label {text-align: right; width: 75px; padding-right: 20px}
-div#tadd br {clear: left; line-height: 0}
-div#tadd a.h {margin: 5px}
+
 ul#tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
 ul#tabbar li {margin: 0; padding: 0; display: inline}
 ul#tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
@@ -212,28 +212,19 @@ div#dlgAbout div.content {width: 230px; margin: 5px; padding: 5px}
 div#dlgHelp {width: 250px; height: 250px}
 div#dlgHelp div.dlg-header {background-image: url(../images/about.gif)}
 div#dlgHelp div.content {width: 230px; margin: 5px; padding: 5px}
-div.torrentadd {line-height: 18px; margin: 2px 0; padding: 0 0 0 20px; background: transparent url(../images/add.gif) no-repeat scroll 2px center; border-bottom: 1px solid #D0D0D0}
-.itemadd {background: transparent url(../images/add.gif)}
-.itemadded {background: transparent url(../images/tick.gif)}
-div#dlgProps {width: 400px; height: 205px}
-.konqueror div#dlgProps {height: 213px}
+
+div#dlgProps {width: 395px; height: 215px}
 div#dlgProps div.dlg-header {background-image: url(../images/props.gif)}
-div#dlgProps div.content {width: 380px; padding: 10px}
+div#dlgProps div.content {width: 380px; margin-left: 5px; }
 div#dlgProps textarea#prop-trackers {width: 100%; height: 70px; background: #FFFFFF; border: 1px solid #D0D0D0}
-div#dlgProps fieldset div {line-height: 16px}
+div#dlgProps fieldset {margin-bottom: 5px; }
+div#dlgProps fieldset div {line-height: 16px; }
 div#dlgProps fieldset div.props-spacer {width: 90%; float: left}
 input#prop-tracker_numwant {width: 60px; float: right}
 input#prop-ulslots {width: 60px; float: right}
 input#prop-peers_min {width: 60px; float: right}
 input#prop-peers_max {width: 60px; float: right}
 input#prop-seed_ratio {width: 40px}
-div.aright {text-align: right}
-div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
-div.fxcaret {overflow: auto}
-div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
-a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(../images/hide.gif); float: right; border: 0}
-a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(../images/hide_over.gif); float: right; border: 0}
-a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../images/hide_on.gif); float: right; border: 0}
 
 div#yesnoDlg {width: 280px; height: 100px}
 div#yesnoDlg div.dlg-header {background-image: url(../images/error.gif)}
@@ -241,10 +232,6 @@ div#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 
 div#yesnoDlg div.content input {margin-top: 5px}
 
 div#t div#ind {margin-top: 7px; background: transparent url(../images/ajax-loader.gif) no-repeat 0px center; width: 32px; float: right; margin-right: 2px; line-height: 26px; cursor: default; display: none;}
-
-.konqueror div#tadd label { width: 80px; }
-.konqueror div#tadd { height: 290px; }
-.konqueror #st_con { height: 340px; overflow: auto; }
 
 span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.gif) no-repeat center center; }
 .webkit div#msg {position: fixed;}
@@ -259,3 +246,13 @@ div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
 textarea { overflow: auto; }
 
 .catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }
+
+div#tadd-header {background-image: url(../images/world.gif)}
+div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 2px solid #909090}
+div#tadd label {text-align: right; width: 75px; padding-right: 20px; float: left }
+div#tadd br {clear: left; line-height: 0}
+div#tadd input {margin-bottom: 1px}
+
+.konqueror div#tadd label { width: 80px; }
+.konqueror div#tadd { height: 290px; }
+.konqueror #st_con { height: 340px; overflow: auto; }

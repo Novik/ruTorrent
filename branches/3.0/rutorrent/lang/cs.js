@@ -350,5 +350,6 @@
  plgAuthor			: "Author",
  plgDescr			: "Description",
  mnu_go				: "Go",
- pluginCantStart		: "plugin can't start for unknown reason."
+ pluginCantStart		: "plugin can't start for unknown reason.",
+ doFastResume			: "Fast resume"
  };

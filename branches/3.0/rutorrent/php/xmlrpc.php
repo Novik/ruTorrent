@@ -214,6 +214,11 @@ class rXMLRPCRequest
 		}
 		return($ret);
 	}
+
+	public function success()
+	{
+		return($this->run() && !$this->fault);
+	}
 }
 
 ?>

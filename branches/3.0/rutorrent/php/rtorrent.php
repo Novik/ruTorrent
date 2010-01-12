@@ -6,13 +6,25 @@ require_once( $rootPath.'/php/Torrent.php' );
 
 class rTorrent
 {
-	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $addition = null)
+	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $addition = null)
 	{
 		$hash = false;
-		$cmd = new rXMLRPCCommand( $isStart ? 'load_start_verbose' : 'load_verbose', $fname );
 		$torrent = new Torrent($fname);
 		if(!$torrent->errors())
 		{
+			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
+				$torrent = $resume;
+			global $scgi_host;
+			if(($scgi_host == "127.0.0.1") || ($scgi_host == "localhost"))
+				$cmd = new rXMLRPCCommand( $isStart ? 'load_start_verbose' : 'load_verbose', $fname );
+			else
+			{
+				$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
+				$cmd->addParameter(base64_encode($torrent),"base64");
+				if(!$saveTorrent)
+					@unlink($fname);
+				$saveTorrent = false;
+			}
 			$comment = $torrent->comment();
 			if($comment)
 			{
@@ -66,6 +78,54 @@ class rTorrent
 				if( !$torrent->errors() )
 					return($torrent);
 			}
+		}
+		return(false);
+	}
+
+	static public function fastResume($torrent, $base, $add_path = true)
+	{
+	        $files = array();
+	        $info = $torrent->info;
+	        $psize = intval($info['piece length']);
+		$base = trim($base);
+	        if($base=='')
+	        {
+	        	$req = new rXMLRPCRequest( new rXMLRPCCommand('get_directory') );
+	        	if($req->success())
+	        		$base=$req->val[0];
+	        }
+	        $base = addslash($base);
+	        if($psize && ($base!=''))
+	        {
+	                $tsize = 0.0;
+			if(isset($info['files']))
+			{
+				foreach($info['files'] as $key=>$file)
+				{
+				        $tsize+=floatval($file['length']);
+					$files[] = ($add_path ? $info['name']."/".implode('/',$file['path']) : implode('/',$file['path']));
+				}
+			}
+			else
+			{
+				$tsize = floatval($info['length']);
+				$files[] = $info['name'];
+			}
+			$chunks = intval(($tsize + $psize - 1) / $psize);
+			$torrent->{'libtorrent_resume'}['bitfield'] = intval($chunks);
+			if(!isset($torrent->{'libtorrent_resume'}['files']))
+				$torrent->{'libtorrent_resume'}['files'] = array();
+			foreach($files as $key=>$file)
+			{
+				$ss = @stat($base.$file);
+				if($ss===false)
+					return(false);
+				if(count($torrent->{'libtorrent_resume'}['files'])<$key)
+					$torrent->{'libtorrent_resume'}['files'][$key]['mtime'] = $ss["mtime"];
+				else
+					$torrent->{'libtorrent_resume'}['files'][$key] = array( "priority" => 2, "mtime" => $ss["mtime"] );
+			}
+			return($torrent);
 		}
 		return(false);
 	}

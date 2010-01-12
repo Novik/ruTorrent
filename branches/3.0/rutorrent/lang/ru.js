@@ -353,5 +353,6 @@
  plgAuthor			: "Автор",
  plgDescr			: "Описание",
  mnu_go				: "Искать",
- pluginCantStart		: "плагин не может стартовать."
+ pluginCantStart		: "плагин не может стартовать.",
+ doFastResume			: "Не проверять хеш на старте"
  };

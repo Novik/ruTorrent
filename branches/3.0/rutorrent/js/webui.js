@@ -1100,9 +1100,9 @@ var theWebUI =
    		for(var lbl in this.cLabels) 
    		{
       			if((table.selCount == 1) && (this.torrents[id].label == lbl)) 
-         			_bf.push([CMENU_SEL, lbl]);
+         			_bf.push([CMENU_SEL, lbl+"&nbsp;"]);
       			else 
-         			_bf.push([lbl, "theWebUI.setLabel('" + addslashes(lbl) + "')"]);
+         			_bf.push([lbl+"&nbsp;", "theWebUI.setLabel('" + addslashes(lbl) + "')"]);
       		}
       		if(_bf.length>0)
 	   		_bf.push([CMENU_SEP]);

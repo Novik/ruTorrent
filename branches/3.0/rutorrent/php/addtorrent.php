@@ -61,7 +61,7 @@ if($success)
 	if(rTorrent::sendTorrent($uploaded_file,
 		!isset($_REQUEST['torrents_start_stopped']),
 		!isset($_REQUEST['not_add_path']),
-		$dir_edit,$label,$saveUploadedTorrents)===false)
+		$dir_edit,$label,$saveUploadedTorrents,isset($_REQUEST['fast_resume']))===false)
 	{
                 unlink($uploaded_file);
                 $success = false;

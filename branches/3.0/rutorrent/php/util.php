@@ -177,13 +177,19 @@ function isUserHavePermission($uid,$gid,$file,$flags)
 	return(false);
 }
 
+function addslash( $str )
+{
+	$len = strlen( $str );
+	return( (($len == 0) || ($str[$len-1] == '/')) ? $str : $str.'/' );
+}
+
 function fullpath($path,$base = '')
 {
 	$root  = '';
 	if($path[0] == '/')
         	$root = '/';
 	else
-		return(fullpath($base.'/'.$path,getcwd()));
+		return(fullpath(addslash($base).$path,getcwd()));
 	$path=explode('/', $path);
 	$newpath=array();
 	foreach($path as $p)
