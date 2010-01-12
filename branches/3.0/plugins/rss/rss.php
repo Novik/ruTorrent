@@ -956,7 +956,7 @@ class rRSSManager
 			if(!empty($ratio))
 				$addition[] = "view.set_visible=".$ratio;
 			global $saveUploadedTorrents;
-			if(($thash = rTorrent::sendTorrent($ret, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, $addition))===false)
+			if(($thash = rTorrent::sendTorrent($ret, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, false, $addition))===false)
 			{
 				$thash = 'Failed';
 				@unlink($ret);
