@@ -206,10 +206,7 @@ function isUserHavePermission($uid,$gid,$file,$flags)
 function sendFile2rTorrent($fname, $isURL, $isStart, $isAddPath, $directory, $label, $addition = '')
 {
 	$hash = false;
-	if($isStart)
-		$method = 'load_start_verbose';
-	else
-		$method = 'load_verbose';
+	$method = $isStart ? 'load_start_verbose' : 'load_verbose';
 	$comment = "";	
 	$delete_tied = "";
 	if(!$isURL)
@@ -218,7 +215,6 @@ function sendFile2rTorrent($fname, $isURL, $isStart, $isAddPath, $directory, $la
 		if($torrent->errors())
 			return(false);
 		$comment = $torrent->comment();
-
 		if($comment)
 		{
 			if(isInvalidUTF8($comment))
@@ -230,7 +226,19 @@ function sendFile2rTorrent($fname, $isURL, $isStart, $isAddPath, $directory, $la
 			$comment = "";
 		$hash = $torrent->hash_info();
 		$delete_tied = '<param><value><string>d.delete_tied=</string></value></param>';
+		global $scgi_host;
+		if(($scgi_host != "127.0.0.1") && ($scgi_host != "localhost"))
+		{
+			$method = $isStart ? 'load_raw_start' : 'load_raw';
+			@unlink($fname);
+			$fname = '<param><value><base64>'.base64_encode($torrent).'</base64></value></param>';
+			$delete_tied = '';
+		}
+		else
+			$fname = '<param><value><string>'.$fname.'</string></value></param>';
 	}
+	else
+		$fname = '<param><value><string>'.$fname.'</string></value></param>';
 	$setlabel = "";
 	if($label && (strlen($label)>0))
 		$setlabel = "<param><value><string>d.set_custom1=\"".rawurlencode($label)."\"</string></value></param>";
@@ -248,7 +256,7 @@ function sendFile2rTorrent($fname, $isURL, $isStart, $isAddPath, $directory, $la
 		'<methodCall>'.
 		'<methodName>'.$method.'</methodName>'.
 		'<params>'.
-		'<param><value><string>'.$fname.'</string></value></param>'.
+		$fname.
 		$setdir.
 		$comment.
 		$setlabel.
