@@ -1,6 +1,7 @@
 <?php
 require_once( '../../php/xmlrpc.php' );
 require_once( '../../php/Torrent.php' );
+require_once( '../../php/rtorrent.php' );
 require_once( './conf.php' );
 
 ignore_user_abort(true);
@@ -95,11 +96,13 @@ if(isset($_REQUEST['path_edit']))
 	        if(isset($_REQUEST['private']))
 			$torrent->is_private(true);
 		$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
-		$torrent->save($fname);
-		@chmod(fname,0666);
 		if(isset($_REQUEST['start_seeding']))
 		{
         		$path_edit = dirname($path_edit);
+			if($resumed = rTorrent::fastResume($torrent,$path_edit))
+				$torrent = $resumed;
+			$torrent->save($fname);
+			@chmod(fname,0666);
 			$cmd = new rXMLRPCCommand( 'load_start_verbose', array( $fname, "d.set_directory=\"".$path_edit."\"" ) );
 			if(isInvalidUTF8($comment))
 				$comment = win2utf($comment);
@@ -112,6 +115,12 @@ if(isset($_REQUEST['path_edit']))
 			$req = new rXMLRPCRequest( $cmd );
 			$req->run();	
         	}
+        	else
+	        	if($saveUploadedTorrents)
+        		{
+				$torrent->save($fname);
+				@chmod(fname,0666);
+			}
 		$torrent->send();
 	}
 }
