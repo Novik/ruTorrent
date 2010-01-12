@@ -857,7 +857,12 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 			if((textStatus=="timeout") && ($type(onTimeout) == "function"))
 				onTimeout();
 			if(($type(onError) == "function"))
-				onError(XMLHttpRequest.status+" ["+textStatus+","+stub.action+"]",XMLHttpRequest.responseText);
+			{
+			        var status = "Status unavailable";
+			        var response = "Responce unavailable";
+				try { status = XMLHttpRequest.status; response = XMLHttpRequest.responseText; } catch(e) {};
+				onError(status+" ["+textStatus+","+stub.action+"]",response);
+			}
 		},
 		success: function(data, textStatus)
 		{
