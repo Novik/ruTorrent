@@ -38,7 +38,7 @@ class rTorrent
 				}
 			}
 			if(!$saveTorrent)
-				$cmd->addParameter("d.delete_tied=".$comment);
+				$cmd->addParameter("d.delete_tied=");
 			if($label && (strlen($label)>0))
 			{
 				$label = rawurlencode($label);
@@ -46,7 +46,7 @@ class rTorrent
 					$cmd->addParameter("d.set_custom1=".$label);
 			}
 			if($directory && (strlen($directory)>0))
-				$cmd->addParameter( ($isAddPath ? "d.set_directory=" : "d.set_directory_base=").$directory );
+				$cmd->addParameter( ($isAddPath ? "d.set_directory=\"" : "d.set_directory_base=\"").$directory."\"" );
 			if(is_array($addition))
 				foreach($addition as $key=>$prm)
 					$cmd->addParameter($prm,'string');
