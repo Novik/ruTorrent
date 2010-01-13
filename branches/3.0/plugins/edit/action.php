@@ -55,7 +55,6 @@ if(isset($HTTP_RAW_POST_DATA))
 			new rXMLRPCCommand("d.get_tied_to_file",$hash),
 			new rXMLRPCCommand("d.get_custom1",$hash),
 			new rXMLRPCCommand("d.get_directory_base",$hash),
-			new rXMLRPCCommand("d.get_directory",$hash),
 			new rXMLRPCCommand("d.get_connection_seed",$hash)
 			) );
 		$throttle = null;
@@ -107,18 +106,17 @@ if(isset($HTTP_RAW_POST_DATA))
 							@chmod($fname,0666);
 							$fname = realpath($fname);
 							$label = rawurldecode($req->val[5]);
-							if(!rTorrent::sendTorrent($fname, $isStart, true, $req->val[7], $label, $saveUploadedTorrents, true,
-							        array("d.set_directory_base=".$req->val[6],
-									"d.set_custom3=1",
-									"d.set_connection_seed=".$req->val[8],
+							if(!rTorrent::sendTorrent($fname, $isStart, false, $req->val[6], $label, $saveUploadedTorrents, true,
+							        array(	"d.set_custom3=1",
+									"d.set_connection_seed=".$req->val[7],
 									$throttle)))
-								$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');
+								$errors[] = array('desc'=>"theUILang.errorAddTorrent", 'prm'=>$fname);
 						}
 						else
 							$errors[] = array('desc'=>"theUILang.errorWriteTorrent", 'prm'=>$fname);
 					}
 					else
-						$errors[] = array('desc'=>"theUILang.errorAddTorrent", 'prm'=>$fname);						
+						$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');
 				}
 				else
 					$errors[] = array('desc'=>"theUILang.errorReadTorrent", 'prm'=>$fname);
