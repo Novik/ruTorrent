@@ -15,7 +15,7 @@
 .stable-lpad {width: 5px; height: 16px; margin: 0; padding: 0; float: left; }
 .stable-body td div {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; overflow: hidden; height: 16px !important;}
 .konqueror .stable-body td div { margin: 0 0px 0 0px !important }
-.stable-body td div { margin: 0 5px 0 5px !important}
+.stable-body td div { margin: 0 2px 0 2px !important}
 .ie .stable-body td, .ie .stable-body td div {display: inline !important; zoom: 1 !important; height: 16px !important; line-height: 16px !important; vertical-align: top; float: none; white-space: nowrap !important}
 .stable-body {background: #F5F5F5}
 .stable-body tr.selected td {background: #FFF880}
@@ -32,3 +32,6 @@
 .stable-resize-header {	position: absolute; background-color: #A0A0A0; width: 1px; top: 0px; font: menu; -moz-user-select: none; visibility: hidden; overflow: hidden; z-index: 100; }
 
 .stable-head .rowcover { position: absolute; left: 0; top: 0; height: 20px; width: 1000px; background: transparent; display: none; }
+
+.meter-value { background: #CFDEEF; position: relative; float: left; }
+.meter-text { position: relative; text-align: left; float: left; width: 0px; height: 0px; overflow: visible; left: 40%; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;	z-index: 1; }

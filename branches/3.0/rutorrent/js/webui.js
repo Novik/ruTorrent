@@ -17,7 +17,7 @@ var theWebUI =
 				{ text: theUILang.Name, 			width: "200px", id: "name",		type: TYPE_STRING }, 
 		      		{ text: theUILang.Status, 		width: "100px",	id: "status",		type: TYPE_STRING },
 		   		{ text: theUILang.Size, 			width: "60px",	id: "size", 		type: TYPE_NUMBER },
-	   			{ text: theUILang.Done, 			width: "80px",	id: "done",		type: TYPE_NUMBER },
+	   			{ text: theUILang.Done, 			width: "100px",	id: "done",		type: TYPE_PROGRESS },
 				{ text: theUILang.Downloaded, 		width: "100px",	id: "downloaded",	type: TYPE_NUMBER },
 				{ text: theUILang.Uploaded, 		width: "100px",	id: "uploaded",		type: TYPE_NUMBER },
 				{ text: theUILang.Ratio, 			width: "60px",	id: "ratio",		type: TYPE_NUMBER },
@@ -44,8 +44,8 @@ var theWebUI =
 			[
 				{ text: theUILang.Name, 			width: "200px",	id: "name",		type: TYPE_STRING },
 				{ text: theUILang.Size, 			width: "60px", 	id: "size",		type: TYPE_NUMBER,	"align" : ALIGN_RIGHT},
-				{ text: theUILang.Done, 			width: "80px", 	id: "done",		type: TYPE_NUMBER },
-				{ text: "%", 				width: "100px",	id: "percent",		type: TYPE_NUMBER },
+				{ text: theUILang.Done, 			width: "100px", 	id: "done",		type: TYPE_NUMBER },
+				{ text: "%", 				width: "100px",	id: "percent",		type: TYPE_PROGRESS },
 				{ text: theUILang.Priority, 		width: "80px", 	id: "priority",		type: TYPE_NUMBER }
 			],
 			container:	"FileList",
@@ -91,7 +91,7 @@ var theWebUI =
 				{ text: theUILang.Name, 			width: "100px", id: "name",		type: TYPE_STRING },
 				{ text: theUILang.ClientVersion,		width: "120px", id: "version",		type: TYPE_STRING },
 				{ text: theUILang.Flags, 			width: "60px", 	id: "flags",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
-				{ text: theUILang.Done, 			width: "80px", 	id: "done",		type: TYPE_NUMBER },
+				{ text: theUILang.Done, 			width: "100px", 	id: "done",		type: TYPE_PROGRESS },
 				{ text: theUILang.Downloaded, 		width: "100px", id: "downloaded",	type: TYPE_NUMBER },
 				{ text: theUILang.Uploaded, 		width: "100px", id: "uploaded",		type: TYPE_NUMBER },
 				{ text: theUILang.DL, 			width: "60px", 	id: "dl",		type: TYPE_NUMBER },

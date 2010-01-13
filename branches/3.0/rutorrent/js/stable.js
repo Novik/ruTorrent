@@ -27,6 +27,7 @@ var TYPE_STRING = 0;
 var TYPE_NUMBER = 1;
 var TYPE_DATE = 2;
 var TYPE_STRING_NO_CASE = 3;
+var TYPE_PROGRESS = 4;
 var ALIGN_AUTO = 0;
 var ALIGN_LEFT = 1;
 var ALIGN_CENTER = 2;
@@ -627,6 +628,7 @@ dxSTable.prototype.Sort = function(e)
 		case TYPE_STRING : 
 			d.sort(function(x, y) { return self.sortAlphaNumeric(x, y); });
       			break;
+      		case TYPE_PROGRESS :
       		case TYPE_NUMBER : 
       			d.sort(function(x, y) { return self.sortNumeric(x, y); });
       			break;
@@ -1277,7 +1279,14 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 		var ind = this.colOrder[i];
 		td = $("<td>").addClass("stable-" + this.dCont.id + "-col-" + ind).attr("rawvalue", $type(cols[ind]) ? cols[ind] : "").get(0);
 		div = $("<div>").get(0);
-		div.innerHTML = (String(data[ind]) == "") ? "&nbsp;" : escapeHTML(data[ind]);
+
+		if(this.colsdata[i].type==TYPE_PROGRESS)
+		{
+		        $(div).addClass("meter-value").css({ float: "left" }).width(iv(data[ind])+"%").html("&nbsp;");
+			$(td).append( $("<span></span>").addClass("meter-text").css({overflow: "visible"}).text(data[ind]) );
+		}
+		else
+			div.innerHTML = (String(data[ind]) == "") ? "&nbsp;" : escapeHTML(data[ind]);
 		if((ind == 0) && (icon != null)) 
 		{ 
 			if(!browser.isFirefox3x)
@@ -1285,9 +1294,6 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 			else 
 				div.className = "ie" + icon;
 		}
-		else
-			if(browser.isKonqueror)
-			        td.appendChild( $("<span></span>").addClass("stable-lpad").get(0) );
 		td.appendChild(div);
 		tr.appendChild(td);
 		if(!this.colsdata[i].enabled && !browser.isIE8up)
@@ -1587,7 +1593,14 @@ dxSTable.prototype.setValue = function(row, col, val)
 		val = this.format(this,arr)[col];
 		var c = this.getColOrder(col);
 		var td = r.cells[c];
-		td.lastChild.innerHTML = escapeHTML(val);
+
+		if(this.colsdata[c].type==TYPE_PROGRESS)
+		{
+			td.lastChild.style.width = iv(val)+"%";
+			td.firstChild.innerHTML = escapeHTML(val);
+		}
+		else
+			td.lastChild.innerHTML = escapeHTML(val);
 		return(true);
 	}
 	return(false);

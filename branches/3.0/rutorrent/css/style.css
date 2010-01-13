@@ -181,7 +181,7 @@ div#tdetails {height: 50%; padding: 0 5px 5px 0; background-color: #F5F5F5}
 div#tdetails a.h {margin: 0}
 div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 2px}
 
-div.tab {height: 100%; background: #F5F5F5; overflow: auto}
+div.tab {height: 100%; background: #F5F5F5; overflow: auto; }
 
 div#gcont table {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 10px}
 div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
