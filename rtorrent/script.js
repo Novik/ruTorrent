@@ -2571,11 +2571,11 @@ utWebUI =
    		{
       			if((this.trtTable.selCount == 1) && (this.torrents[id][11] == lbl)) 
       			{
-         			_bf.push([CMENU_SEL, lbl+"&nbsp;"]);
+         			_bf.push([CMENU_SEL, lbl+" "]);
          		}
       			else 
       			{
-         			_bf.push([lbl+"&nbsp;", "utWebUI.setLabel('" + addslashes(lbl) + "')"]);
+         			_bf.push([lbl+" ", "utWebUI.setLabel('" + addslashes(lbl) + "')"]);
          		}
       		}
       		if(_bf.length>0)
