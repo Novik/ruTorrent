@@ -30,13 +30,12 @@ if(count($trks->list) && (count($argv)>1))
 		new rXMLRPCCommand("d.get_tied_to_file",$hash),
 		new rXMLRPCCommand("d.get_custom1",$hash),
 		new rXMLRPCCommand("d.get_directory_base",$hash),
-		new rXMLRPCCommand("d.get_directory",$hash),
 		new rXMLRPCCommand("d.is_private",$hash)
 		) );
 
-	if($req->run() && !$req->fault)
+	if($req->success())
 	{
-		if($req->val[8] && $trks->dontAddPrivate)
+		if($req->val[7] && $trks->dontAddPrivate)
 			return;
 		$isStart = (($req->val[1]!=0) && ($req->val[2]!=0) && ($req->val[3]!=0));
 		$fname = $req->val[0].$hash.".torrent";
@@ -56,9 +55,7 @@ if(count($trks->list) && (count($argv)>1))
 				if(!$lst)
 				{
 					if($torrent->announce())
-					{
 						$torrent->announce_list(array_merge(array(array($torrent->announce())),$trks->list));
-					}
 					else
 					{
 						$torrent->announce($trks->list[0][0]);
@@ -77,18 +74,21 @@ if(count($trks->list) && (count($argv)>1))
 				}
   		                if(isset($torrent->{'libtorrent_resume'}['trackers']))
 					unset($torrent->{'libtorrent_resume'}['trackers']);
-				$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
-				if($torrent->save($fname))
+				if(isset($torrent->{'rtorrent'}))
+					unset($torrent->{'rtorrent'});
+				$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
+				if($eReq->success())
 				{
-					$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
-					if($eReq->run() && !$req->fault)
+					$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
+					if(is_readable($fname))
+						$fname = getUploadsPath()."/".rand().'.torrent';
+					if($torrent->save($fname))
 					{
 						@chmod($fname,0666);
 						$fname = realpath($fname);
 						$label = rawurldecode($req->val[5]);
-						if(!rTorrent::sendTorrent($fname, $isStart, true, $req->val[7], $label, false, true,
-						        array("d.set_directory_base=\"".$req->val[6]."\","d.set_custom3=1") ))
-							$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');
+						rTorrent::sendTorrent($fname, $isStart, false, $req->val[6], $label, $saveUploadedTorrents, true,
+						        array("d.set_custom3=1") );
 					}
 				}
 			}
