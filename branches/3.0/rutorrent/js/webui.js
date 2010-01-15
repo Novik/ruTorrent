@@ -1473,9 +1473,10 @@ var theWebUI =
 	updateTeg: function(id)
 	{
 		var teg = this.tegs[id];
+		var str = teg.val.toLowerCase();
 		$.each(this.torrents,function(hash,torrent)
 		{
-			if(torrent.name.indexOf(teg.val) >- 1)
+			if(torrent.name.toLowerCase().indexOf(str) >- 1)
 				teg.cnt++;
 		});
 		var counter = $("#"+id+"-c");
@@ -1485,10 +1486,11 @@ var theWebUI =
 
 	updateTegs: function(torrent)
 	{
+	        var str = torrent.name.toLowerCase();
 		for( var id in this.tegs )
 		{
 		        var teg = this.tegs[id];
-			if(torrent.name.indexOf(teg.val) >- 1)
+			if(str.indexOf(teg.val.toLowerCase()) >- 1)
 				teg.cnt++;
 		}
 	},
@@ -1739,7 +1741,7 @@ var theWebUI =
 	                var teg = this.tegs[this.actLbl];
 	                if(teg)
 	                {
-	        		if(table.getValueById(sId, "name").indexOf(teg.val) >- 1)
+	        		if(table.getValueById(sId, "name").toLowerCase().indexOf(teg.val.toLowerCase()) >- 1)
 					table.unhideRow(sId);
 				else 
 					table.hideRow(sId);
