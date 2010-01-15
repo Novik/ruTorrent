@@ -81,7 +81,7 @@ theWebUI.switchRSSLabel = function(el,force)
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
 		if((this.actLbl != "") && ($$(this.actLbl) != null))
-			$$(theWebUI.actLbl).className = "cat";
+			$($$(theWebUI.actLbl)).removeClass("sel");
 		var rss = $("#RSSList");
 		plugin.correctCSS();
 		rss.css( { width: lst.width(), height: lst.height() } );
