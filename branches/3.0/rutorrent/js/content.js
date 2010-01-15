@@ -8,16 +8,15 @@ function makeContent()
 {
 	$(".cat").mouseclick(theWebUI.labelContextMenu);
 
-	$("#mnu_add").attr("title",theUILang.mnu_add);
+	$("#mnu_add").attr("title",theUILang.mnu_add+"...");
 	$("#mnu_remove").attr("title",theUILang.mnu_remove);
 	$("#mnu_start").attr("title",theUILang.mnu_start);
 	$("#mnu_pause").attr("title",theUILang.mnu_pause);
 	$("#mnu_stop").attr("title",theUILang.mnu_stop);
-	$("#mnu_settings").attr("title",theUILang.mnu_settings);
-	$("#mnu_search").attr("title",theUILang.mnu_search);
+	$("#mnu_settings").attr("title",theUILang.mnu_settings+"...");
+	$("#mnu_search").attr("title",theUILang.mnu_search+"...");
 	$("#mnu_go").attr("title",theUILang.mnu_go);
-	$("#mnu_lang").attr("title",theUILang.mnu_lang);
-	$("#mnu_help").attr("title",theUILang.mnu_help);
+	$("#mnu_help").attr("title",theUILang.mnu_help+"...");
 
 	$("#query").keydown( function(e) 
 	{

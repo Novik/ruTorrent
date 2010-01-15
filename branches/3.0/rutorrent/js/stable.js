@@ -1537,6 +1537,11 @@ dxSTable.prototype.getValue = function(row, col)
 	return(row.data[this.colOrder[col]]);
 }
 
+dxSTable.prototype.getValueById = function(row, id)
+{
+	return(this.getRawValue(row, this.getColById(id)));
+}
+
 dxSTable.prototype.getRawValue = function(row, col)
 {
 	return(this.rowdata[row].data[col]);

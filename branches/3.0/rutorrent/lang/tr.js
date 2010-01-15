@@ -274,14 +274,14 @@
  Cancel2			: " İptal ",
  no1				: "   Hayır   ",
  
- mnu_add			: "Torrent Ekle...",
+ mnu_add			: "Torrent Ekle",
  mnu_remove			: "Kaldır",
  mnu_start			: "Başlat",
  mnu_pause			: "Duraklat",
  mnu_stop			: "Durdur",
  mnu_rss			: "RSS Yükleyici",
- mnu_settings		: "Ayarlar...",
- mnu_search			: "Arama...",
+ mnu_settings			: "Ayarlar",
+ mnu_search			: "Arama",
  mnu_lang			: "Dil",
  
  //Other variables added by spide
@@ -327,7 +327,7 @@
  badLinkTorTorrent		: "rTorrent bağlantısında hata. rTorrent'in çalıştığından emin olun. rTorrent ayar dosyası config.php'deki $scgi_port ve $scgi_host ayarlarını kontrol edin.",
  badUploadsPath			: "Web sunucu 'torrents' klasörüne okuma/yazma/çalıştırma erişimi vermemektedir. Bu durumda ruTorrent'e torrent ekleyemezsiniz. Chomod ayarlarını kontrol ediniz.",
  badSettingsPath		: "Web sunucu 'settings' klasörüne okuma/yazma/çalıştırma erişimi vermemektedir. Bu durumda ruTorrent ayarlarını değiştiremezsiniz. Chmod ayarlarını kontrol ediniz.",
- mnu_help			: "Hakkında...",
+ mnu_help			: "Hakkında",
  badUploadsPath2		: " rTorrent kullanıcısının torrent klasöründe okuma/çalıştırma yetkisi yoktur. Bu durumda torrent ekleyemezsiniz. Chmod ayarlarını kontrol ediniz.",
  View				: "Görünüm",
  AsList				: "liste olarak",
@@ -356,5 +356,7 @@
  plgDescr			: "Description",
  mnu_go				: "Go",
  pluginCantStart		: "plugin can't start for unknown reason.",
- doFastResume			: "Fast resume"
+ doFastResume			: "Fast resume",
+ innerSearch			: "Local torrents",
+ removeTeg			: "Remove teg"
  };

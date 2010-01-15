@@ -136,7 +136,8 @@ var theWebUI =
 		"webui.hsplit":			0.88,
 		"webui.vsplit":			0.5,
 		"webui.effects":		0,
-		"webui.minrows":		100
+		"webui.minrows":		100,
+		"webui.search":			-1
 	},
 	showFlags: 0,
 	total:
@@ -178,6 +179,8 @@ var theWebUI =
 	timer:		new Timer(),
 	activeView:	null,
 	delmode:	"remove",
+	tegs:		{},
+	lastTeg:	0,
 
 //
 // init
@@ -464,6 +467,8 @@ var theWebUI =
         	 			o.get(0).onchange.apply(o.get(0));
 			}
 		});
+		if($type(this.settings["webui.search"]))
+			theSearchEngines.set(iv(this.settings["webui.search"]),true);
    	},
 
 	setSettings: function() 
@@ -599,6 +604,7 @@ var theWebUI =
 			theWebUI.settings["webui."+ndx+".rev"] = table.obj.reverse;
 		});
 	        var cookie = {};
+	        theWebUI.settings["webui.search"] = theSearchEngines.current;
 	        $.each(theWebUI.settings, function(i,v)
 		{
 			if((/^webui\./).test(i))
@@ -1283,6 +1289,7 @@ var theWebUI =
 				table.addRowById(torrent, hash, sInfo[0], {label : lbl});
 				needSort = true;
 				tArray.push(hash);
+				theWebUI.filterByLabel(hash);
 			}
 			else
 			{
@@ -1315,6 +1322,7 @@ var theWebUI =
 		this.total.speedDL = tdl;
 		this.total.speedUL = tul;
 		var wasRemoved = false;
+		this.clearTegs();
 		$.each(this.torrents,function(hash,torrent)
 		{
 			if(!torrent._updated)
@@ -1338,7 +1346,10 @@ var theWebUI =
 	        	 	wasRemoved = true;
 			}
 			else
+			{
 				torrent._updated = false;
+				theWebUI.updateTegs(torrent);
+			}
 		});
 		this.getAllTrackers(tArray);
 		this.loadLabels(data.labels);
@@ -1429,6 +1440,90 @@ var theWebUI =
 //
 // labels
 //
+
+	setTeg: function(str)
+	{
+		str = $.trim(str);
+		if(str!="")
+		{
+			for( var id in this.tegs )
+				if(this.tegs[id].val==str)
+				{
+					this.switchLabel($$(id));
+					return;
+				}
+			var tegIg = "teg_"+this.lastTeg;
+			this.lastTeg++;
+			var el = $("<LI>").attr("id",tegIg).addClass("teg").
+				html(escapeHTML(str) + "&nbsp;(<span id=\"" + tegIg + "-c\">0</span>)").
+				mouseclick(theWebUI.tegContextMenu).addClass("cat")
+			$("#lblf").append( el );
+			this.tegs[tegIg] = { val: str, cnt: 0 };
+			this.updateTeg(tegIg);
+			this.switchLabel(el[0]);
+		}
+	},
+
+	clearTegs: function()
+	{
+		for( var id in this.tegs )
+			this.tegs[id].cnt = 0;
+	},
+
+	updateTeg: function(id)
+	{
+		var teg = this.tegs[id];
+		$.each(this.torrents,function(hash,torrent)
+		{
+			if(torrent.name.indexOf(teg.val) >- 1)
+				teg.cnt++;
+		});
+		var counter = $("#"+id+"-c");
+		if(counter.text()!=teg.cnt)
+			counter.text(teg.cnt);
+	},
+
+	updateTegs: function(torrent)
+	{
+		for( var id in this.tegs )
+		{
+		        var teg = this.tegs[id];
+			if(torrent.name.indexOf(teg.val) >- 1)
+				teg.cnt++;
+		}
+	},
+
+	removeTeg: function(id)
+	{
+		delete this.tegs[id];
+		$($$(id)).remove();
+		this.actLbl = "";
+		this.switchLabel($$("-_-_-all-_-_-"));
+	},
+
+	tegContextMenu: function(e)
+	{
+	        if(e.button==2)
+	        {
+		        var table = theWebUI.getTable("trt");
+			table.clearSelection();
+			theWebUI.switchLabel(this);
+			table.fillSelection();
+			var id = table.getFirstSelected();
+			if(id)
+			{
+				theWebUI.createMenu(null, id);
+		   		theContextMenu.add([CMENU_SEP]);
+			}
+			else
+				theContextMenu.clear();
+			theContextMenu.add([theUILang.removeTeg, "theWebUI.removeTeg('"+e.target.id+"');"]);
+			theContextMenu.show(e.clientX,e.clientY);
+		}
+		else
+			theWebUI.switchLabel(this);
+		return(false);
+	},
 
 	labelContextMenu: function(e)
 	{
@@ -1606,6 +1701,13 @@ var theWebUI =
 		for(var k in this.labels)
 			if(k.substr(0, 5) == "-_-_-")
 				$($$(k+"c")).text(this.labels[k]);
+		for( var id in this.tegs )
+		{
+			var counter = $("#"+id+"-c");
+			var teg = this.tegs[id];
+			if(counter.text()!=teg.cnt)
+				counter.text(teg.cnt);
+		}
 	},
 
 	switchLabel: function(obj)
@@ -1613,15 +1715,12 @@ var theWebUI =
 		if(obj.id != this.actLbl)
 		{
 			if((this.actLbl != "") && $$(this.actLbl))
-				$$(this.actLbl).className = "";
+				$($$(this.actLbl)).removeClass("sel");
 			$(obj).addClass("sel");
 			this.actLbl = obj.id;
 			var table = this.getTable("trt");
 			for(var k in this.torrents)
-				if(table.getAttr(k, "label").indexOf(this.actLbl) >- 1)
-					table.unhideRow(k);
-				else
-					table.hideRow(k);
+				this.filterByLabel(k);
 			table.clearSelection();
 			if(this.dID != "")
       			{
@@ -1635,10 +1734,22 @@ var theWebUI =
 	filterByLabel: function(sId)
 	{
 	        var table = this.getTable("trt");
-		if(table.getAttr(sId, "label").indexOf(this.actLbl) >- 1)
-			table.unhideRow(sId);
-		else 
-			table.hideRow(sId);
+	        if($($$(this.actLbl)).hasClass("teg"))
+	        {
+	                var teg = this.tegs[this.actLbl];
+	                if(teg)
+	                {
+	        		if(table.getValueById(sId, "name").indexOf(teg.val) >- 1)
+					table.unhideRow(sId);
+				else 
+					table.hideRow(sId);
+			}
+	        }
+	        else
+			if(table.getAttr(sId, "label").indexOf(this.actLbl) >- 1)
+				table.unhideRow(sId);
+			else 
+				table.hideRow(sId);
 	},
 
 //

@@ -272,14 +272,14 @@
  Cancel				: " Отмена ",
  no				: "   Нет  ",
  
- mnu_add			: "Добавить торрент...",
+ mnu_add			: "Добавить торрент",
  mnu_remove			: "Удалить",
  mnu_start			: "Старт",
  mnu_pause			: "Пауза",
  mnu_stop			: "Стоп",
  mnu_rss			: "RSS Загрузчик",
- mnu_settings		: "Настройки...",
- mnu_search			: "Поиск...",
+ mnu_settings			: "Настройки",
+ mnu_search			: "Поиск",
  mnu_lang			: "Язык",
  
  //Other variables added by spide
@@ -325,7 +325,7 @@
  badLinkTorTorrent		: "Нет связи с rTorrent. Проверьте, запущен ли он. Проверьте, что параметры $scgi_port и $scgi_host в файле config.php совпадают со значением переменной scgi_port в файле конфигурации rTorrent.",
  badUploadsPath			: "Веб сервер не имеет доступа к директории torrents на чтение/запись/выполнение. Вы не сможете добавлять закачки через ruTorrent.",
  badSettingsPath		: "Веб сервер не имеет доступа к директории settings на чтение/запись/выполнение. ruTorrent не сможет сохранять свои настройки.",
- mnu_help			: "Помощь...",
+ mnu_help			: "Помощь",
  badUploadsPath2		: "rTorrent должен иметь доступ на чтение/выполнение к директории torrents. Вы не сможете добавлять закачки через ruTorrent.",
  View				: "Вид",
  AsList				: "список",
@@ -354,5 +354,7 @@
  plgDescr			: "Описание",
  mnu_go				: "Искать",
  pluginCantStart		: "плагин не может стартовать.",
- doFastResume			: "Не проверять хеш на старте"
+ doFastResume			: "Не проверять хеш на старте",
+ innerSearch			: "Локальные закачки",
+ removeTeg			: "Удалить тег"
  };

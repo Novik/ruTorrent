@@ -614,11 +614,16 @@ var theSearchEngines =
 
 	run: function()
 	{
-		window.open(theSearchEngines.sites[theSearchEngines.current].url + $("#query").val(), "_blank");
+	        if(theSearchEngines.current>=0)
+			window.open(theSearchEngines.sites[theSearchEngines.current].url + $("#query").val(), "_blank");
+		else
+			theWebUI.setTeg($("#query").val());
 	},
-	set: function( no )
+	set: function( no, noSave )
 	{
 		theSearchEngines.current = no;
+		if(!noSave)
+			theWebUI.save();
 	},
 	show: function()
 	{
@@ -633,6 +638,11 @@ var theSearchEngines =
 			else
 				theContextMenu.add([val.name, "theSearchEngines.set("+ndx+")"]);
 		});
+		theContextMenu.add([CMENU_SEP]);
+		if(theSearchEngines.current==-1)
+			theContextMenu.add([CMENU_SEL, theUILang.innerSearch, "theSearchEngines.set(-1)"]);
+		else
+			theContextMenu.add([theUILang.innerSearch, "theSearchEngines.set(-1)"]);
 		var offs = $("#search").offset();
 		theContextMenu.show(offs.left-5,offs.top+5+$("#search").height());
         }

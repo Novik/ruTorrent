@@ -271,14 +271,14 @@
  Cancel				: " Annuler ",
  no				: "   Non   ",
  
- mnu_add			: "Ajouter un torrent...",
+ mnu_add			: "Ajouter un torrent",
  mnu_remove			: "Supprimer",
  mnu_start			: "D\u00e9marrer",
  mnu_pause			: "Suspendre",
  mnu_stop			: "Arr\u00eater",
  mnu_rss			: "Gestionnaire RSS",
- mnu_settings		: "Pr\u00e7f\u00e7rences",
- mnu_search			: "Rechercher...",
+ mnu_settings			: "Pr\u00e7f\u00e7rences",
+ mnu_search			: "Rechercher",
  mnu_lang			: "Langue",
  
  //Autres variables ajout\u00e9es par spide
@@ -324,7 +324,7 @@
  badLinkTorTorrent		: "Bad link to rTorrent. Check if it is really running. Check $scgi_port and $scgi_host settings in config.php and scgi_port in rTorrent configuration file.",
  badUploadsPath			: "Web server can't access torrents directory for read/write/execute. You can't add torrents through ruTorrent.",
  badSettingsPath		: "Web server can't access settings directory for read/write/execute. ruTorrent can't save own settings.",
- mnu_help			: "About...",
+ mnu_help			: "About",
  badUploadsPath2		: "rTorrent's user can't access torrents directory for read/execute. You can't add torrents through ruTorrent.",
  View				: "View",
  AsList				: "as list",
@@ -353,5 +353,7 @@
  plgDescr			: "Description",
  mnu_go				: "Go",
  pluginCantStart		: "plugin can't start for unknown reason.",
- doFastResume			: "Fast resume"
+ doFastResume			: "Fast resume",
+ innerSearch			: "Local torrents",
+ removeTeg			: "Remove teg"
  };
