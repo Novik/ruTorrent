@@ -15,7 +15,7 @@ class rTorrent
 			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
 				$torrent = $resume;
 			global $scgi_host;
-			if(($scgi_host == "127.0.0.1") || ($scgi_host == "localhost"))
+			if(isLocalMode())
 				$cmd = new rXMLRPCCommand( $isStart ? 'load_start_verbose' : 'load_verbose', $fname );
 			else
 			{

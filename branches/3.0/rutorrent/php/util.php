@@ -133,6 +133,13 @@ function toLog( $str )
 	}
 }
 
+function isLocalMode()
+{
+	global $scgi_host;
+	global $scgi_post;
+	return(($scgi_host == "127.0.0.1") || ($scgi_host == "localhost") || ($scgi_port == 0));
+}
+
 function isUserHavePermissionPrim($uid,$gid,$file,$flags)
 {
 	$ss=@stat($file);

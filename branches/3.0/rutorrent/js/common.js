@@ -774,11 +774,12 @@ rDirectory.prototype.addFile = function(aData,no)
 		if(!fileAdded)
 		{
 			var sId = "_f_"+no;
-			aData.name = file.name;
+			var data = cloneObject( aData );
+			data.name = file.name;
 		        if(this.dirs[file.path][sId])
-				this.dirs[file.path][sId].data = aData;
+				this.dirs[file.path][sId].data = data;
 			else
-				this.dirs[file.path][sId] = { data: aData, icon: "Icon_File", link: null };
+				this.dirs[file.path][sId] = { "data": data, icon: "Icon_File", link: null };
 			fileAdded = true;
 		}
 		else
