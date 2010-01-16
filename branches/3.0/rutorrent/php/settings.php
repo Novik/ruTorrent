@@ -73,7 +73,8 @@ class rTorrentSettings
 			$req = new rXMLRPCRequest( array(
 				new rXMLRPCCommand("get_directory"),
 				new rXMLRPCCommand("get_session"),
-				new rXMLRPCCommand("system.client_version")
+				new rXMLRPCCommand("system.client_version"),
+				new rXMLRPCCommand("set_xmlrpc_size_limit",67108863)
 				) );
 			if($req->run() && !$req->fault)
 			{
