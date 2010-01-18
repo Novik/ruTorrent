@@ -1,8 +1,6 @@
 <?php
 
-require_once( dirname(__FILE__).'/../conf/config.php' );
-if(LOG_RPC_FAULTS || LOG_RPC_CALLS)
-	require_once( $rootPath.'/php/util.php' );
+require_once( 'util.php' );
 
 class rXMLRPCParam
 {

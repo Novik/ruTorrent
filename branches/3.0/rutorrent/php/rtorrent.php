@@ -9,22 +9,15 @@ class rTorrent
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $addition = null)
 	{
 		$hash = false;
-		$torrent = new Torrent($fname);
+		$torrent = is_object($fname) ? $fname : new Torrent($fname);
 		if(!$torrent->errors())
 		{
 			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
 				$torrent = $resume;
-			global $scgi_host;
-			if(isLocalMode())
-				$cmd = new rXMLRPCCommand( $isStart ? 'load_start_verbose' : 'load_verbose', $fname );
-			else
-			{
-				$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
-				$cmd->addParameter(base64_encode($torrent),"base64");
-				if(!$saveTorrent)
-					@unlink($fname);
-				$saveTorrent = false;
-			}
+			$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
+			$cmd->addParameter(base64_encode($torrent),"base64");
+			if(!$saveTorrent && is_string($fname))
+				@unlink($fname);
 			$comment = $torrent->comment();
 			if($comment)
 			{
@@ -37,8 +30,6 @@ class rTorrent
 						$cmd->addParameter("d.set_custom2=".$comment);
 				}
 			}
-			if(!$saveTorrent)
-				$cmd->addParameter("d.delete_tied=");
 			if($label && (strlen($label)>0))
 			{
 				$label = rawurlencode($label);

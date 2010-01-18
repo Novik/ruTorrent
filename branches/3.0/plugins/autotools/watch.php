@@ -7,6 +7,8 @@ require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
 require_once( "./conf.php" );
 
+if( count( $argv ) > 1 )
+	$_SERVER['REMOTE_USER'] = $argv[1];
 
 function Debug( $str )
 {

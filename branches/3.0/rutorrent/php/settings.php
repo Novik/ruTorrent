@@ -8,7 +8,7 @@ class rTorrentSettings
 	public $hash = "rtorrent.dat";
 	public $linkExist = false;
 	public $badXMLRPCVersion = true;
-	public $directory = null;
+	public $directory = '/tmp';
 	public $session = null;
 	public $gid = -1;
 	public $uid = -1;
@@ -85,7 +85,7 @@ class rTorrentSettings
 				$this->iVersion = 0;
 				for($i = 0; $i<count($parts); $i++)
 					$this->iVersion = ($this->iVersion<<8) + $parts[$i];
-				if(is_dir($this->session))
+				if(is_dir($this->session) && isLocalMode())
 				{
 					$ss=@stat($this->session.'rtorrent.lock');
 					if(!$ss)

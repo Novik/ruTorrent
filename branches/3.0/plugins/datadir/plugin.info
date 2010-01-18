@@ -1,3 +1,4 @@
 description: The plug-in is intended for replacement of the current torrent data directory on another.
 author: dmrom00
 version: 3.0
+remote: error

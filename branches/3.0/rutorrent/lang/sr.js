@@ -352,5 +352,7 @@
  pluginCantStart		: "plugin can't start for unknown reason.",
  doFastResume			: "Fast resume",
  innerSearch			: "Local torrents",
- removeTeg			: "Remove teg"
+ removeTeg			: "Remove teg",
+ errMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. The plugin will not work.",
+ warnMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. Some functionality will be unavailable."
  };

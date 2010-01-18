@@ -31,7 +31,7 @@ if(isset($_REQUEST['dir']))
 if(!$dh)
 {
 	$curFile = null;
-	$dir = $theSettings->directory;
+	$dir = isLocalMode() ? $theSettings->directory : '/tmp';
 	$dh = @opendir($dir);
 }
 $files = array();

@@ -23,7 +23,7 @@ if(isset($_REQUEST['dir']))
 }
 if(!$dh)
 {
-	$dir = $theSettings->directory;
+	$dir = isLocalMode() ? $theSettings->directory : '/tmp';
 	$dh = @opendir($dir);
 }
 $files = array();

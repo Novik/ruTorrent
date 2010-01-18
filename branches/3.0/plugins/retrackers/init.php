@@ -27,7 +27,7 @@ if($needStart)
 	else
         	$cmd = new rXMLRPCCommand('system.method.set_key','event.download.inserted_new');
 	$cmd->addParameters( array('add_trackers',
-		'branch=$not=$d.get_custom3=,"execute={'.$rootPath.'/plugins/retrackers/run.sh'.','.getPHP().',$d.get_hash=}" ; d.set_custom3='));
+		'branch=$not=$d.get_custom3=,"execute={'.$rootPath.'/plugins/retrackers/run.sh'.','.getPHP().',$d.get_hash=,'.getUser().'}" ; d.set_custom3='));
 	$req = new rXMLRPCRequest($cmd);
 	if($req->run() && !$req->fault)
 	{

@@ -98,22 +98,12 @@ if(isset($HTTP_RAW_POST_DATA))
 					$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
 					if($eReq->run() && !$eReq->fault)
 					{
-						$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
-						if(is_readable($fname))
-							$fname = getUploadsPath()."/".rand().'.torrent';
-						if($torrent->save($fname))
-						{
-							@chmod($fname,0666);
-							$fname = realpath($fname);
-							$label = rawurldecode($req->val[5]);
-							if(!rTorrent::sendTorrent($fname, $isStart, false, $req->val[6], $label, $saveUploadedTorrents, true,
-							        array(	"d.set_custom3=1",
-									"d.set_connection_seed=".$req->val[7],
-									$throttle)))
-								$errors[] = array('desc'=>"theUILang.errorAddTorrent", 'prm'=>$fname);
-						}
-						else
-							$errors[] = array('desc'=>"theUILang.errorWriteTorrent", 'prm'=>$fname);
+						$label = rawurldecode($req->val[5]);
+						if(!rTorrent::sendTorrent($torrent, $isStart, false, $req->val[6], $label, false, true,
+						        array(	"d.set_custom3=1",
+								"d.set_connection_seed=".$req->val[7],
+								$throttle)))
+							$errors[] = array('desc'=>"theUILang.errorAddTorrent", 'prm'=>$fname);
 					}
 					else
 						$errors[] = array('desc'=>"theUILang.badLinkTorTorrent", 'prm'=>'');

@@ -103,17 +103,7 @@ if(isset($_REQUEST['path_edit']))
 				$torrent = $resumed;
 			$torrent->save($fname);
 			@chmod(fname,0666);
-			$cmd = new rXMLRPCCommand( 'load_start_verbose', array( $fname, "d.set_directory=\"".$path_edit."\"" ) );
-			if(isInvalidUTF8($comment))
-				$comment = win2utf($comment);
-			if(strlen($comment)>0)
-			{
-				$comment = "VRS24mrker".rawurlencode($comment);
-				if(strlen($comment)<4096)
-					$cmd->addParameter( "d.set_custom2=".$comment );
-			}
-			$req = new rXMLRPCRequest( $cmd );
-			$req->run();	
+			rTorrent::sendTorrent($fname, true, true, $path_edit, null, $saveUploadedTorrents, isLocalMode() );
         	}
         	else
 	        	if($saveUploadedTorrents)

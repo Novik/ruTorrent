@@ -6,11 +6,14 @@ if( !chdir( dirname( __FILE__) ) )
 // We get hash only, so run this script in background and exit
 if( count( $argv ) < 3 )
 {
-        require_once( "../../conf/config.php" );
+        require_once( "../../php/util.php" );
         if( !$pathToPHP || $pathToPHP == '' ) $pathToPHP = 'php';
-        exec( $pathToPHP.' "'.basename( __FILE__ ).'" "'.$argv[1].'" --daemon > /dev/null 2>/dev/null &' );
+        exec( $pathToPHP.' "'.basename( __FILE__ ).'" "'.$argv[1].'" '.$argv[2].' --daemon > /dev/null 2>/dev/null &' );
         exit;
 }
+
+if( count( $argv ) > 2 )
+	$_SERVER['REMOTE_USER'] = $argv[2];
 
 require_once( "../../php/xmlrpc.php" );
 require_once( "./util_rt.php" );

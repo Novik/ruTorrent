@@ -45,6 +45,7 @@ function getPluginInfo( $name, $permissions )
 				{
 					case "author":
 					case "description":
+					case "remote":
 					{
 						$info[$field] = $value;
 						break;
@@ -64,6 +65,8 @@ function getPluginInfo( $name, $permissions )
 			$info["description"] = "";
 		if(!array_key_exists("author",$info))
 			$info["author"] = "unknown";
+		if(!array_key_exists("remote",$info))
+			$info["remote"] = "ok";
 		$perms = 0;
 		if($permissions!==false)
 		{
@@ -134,7 +137,10 @@ function testRemoteRequests($remoteRequests)
 }
 
 $jResult = "theWebUI.deltaTime = new Date().getTime() - ".time()."*1000;\n";
-$permissions = parse_ini_file("../conf/access.ini");
+$access = getConfFile('access.ini');
+if(!$access)
+	$access = "../conf/access.ini";
+$permissions = parse_ini_file($access);
 $settingsFlags = array(
 	"showDownloadsPage" 	=> 0x0001,
 	"showConnectionPage" 	=> 0x0002,
@@ -147,6 +153,7 @@ foreach($settingsFlags as $flagName=>$flagVal)
 	if(array_key_exists($flagName,$permissions) && $permissions[$flagName])
 		$perms|=$flagVal;
 $jResult .= "theWebUI.showFlags = ".$perms.";\n";
+$jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";
 
 if($handle = opendir('../plugins')) 
 {
@@ -192,7 +199,10 @@ if($handle = opendir('../plugins'))
 				if($theSettings->badXMLRPCVersion)
 					$jResult.="log(theUILang.badXMLRPCVersion);";
 			}
-			$permissions = parse_ini_file("../conf/plugins.ini",true);
+			$plg = getConfFile('plugins.ini');
+			if(!$plg)
+				$plg = "../conf/plugins.ini";
+			$permissions = parse_ini_file($plg,true);
 			$init = array();
 			while(false !== ($file = readdir($handle)))
 			{
@@ -201,6 +211,16 @@ if($handle = opendir('../plugins'))
 					$info = getPluginInfo( $file, $permissions );
 					if($info!==false)
 					{
+					        if(!isLocalMode())
+					        {
+					        	if($info["remote"]=="error")
+							{
+								$jResult.="log('".$file.": '+theUILang.errMustBeInSomeHost);";
+								continue;
+							}
+					        	if($info["remote"]=="warning")
+								$jResult.="log('".$file.": '+theUILang.warnMustBeInSomeHost);";
+					        }
 						$js = "../plugins/".$file."/init.js";
 		                	        if(!is_readable($js))
 							$js = NULL;

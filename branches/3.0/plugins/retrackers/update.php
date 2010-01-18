@@ -1,4 +1,8 @@
 <?php
+
+if(count($argv)>1)
+	$_SERVER['REMOTE_USER'] = $argv[1];
+
 require_once( 'retrackers.php' );
 require_once( $rootPath.'/php/xmlrpc.php' );
 require_once( $rootPath.'/php/rtorrent.php' );
@@ -19,9 +23,9 @@ function clearTracker($addition,$tracker)
 }
 
 $trks = rRetrackers::load();
-if(count($trks->list) && (count($argv)>1))
+if(count($trks->list) && (count($argv)>2))
 {
-	$hash = $argv[1];
+	$hash = $argv[2];
 	$req = new rXMLRPCRequest( array(		
 		new rXMLRPCCommand("get_session"),
 		new rXMLRPCCommand("d.is_open",$hash),
@@ -79,17 +83,9 @@ if(count($trks->list) && (count($argv)>1))
 				$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
 				if($eReq->success())
 				{
-					$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
-					if(is_readable($fname))
-						$fname = getUploadsPath()."/".rand().'.torrent';
-					if($torrent->save($fname))
-					{
-						@chmod($fname,0666);
-						$fname = realpath($fname);
-						$label = rawurldecode($req->val[5]);
-						rTorrent::sendTorrent($fname, $isStart, false, $req->val[6], $label, $saveUploadedTorrents, true,
-						        array("d.set_custom3=1") );
-					}
+					$label = rawurldecode($req->val[5]);
+					rTorrent::sendTorrent($torrent, $isStart, false, $req->val[6], $label, false, true,
+					        array("d.set_custom3=1") );
 				}
 			}
 		}

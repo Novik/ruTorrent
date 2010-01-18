@@ -7,7 +7,7 @@
  *
 
 # Load all ruTorrent plugins
-execute = {sh,-c,/usr/local/bin/php /usr/local/www/rt/php/initplugins.php &}
+execute = {sh,-c,/usr/local/bin/php /usr/local/www/rt/php/initplugins.php user_name &}
 
  *
  * All plugins would be run according their runlevel
@@ -73,6 +73,8 @@ function getPluginInfo( $name, $permissions )
 
 if( !function_exists( 'preg_match_all' ) )
 	exit;
+
+$_SERVER['REMOTE_USER'] = $argv[1];
 
 require_once( "util.php" );
 require_once( "settings.php" );

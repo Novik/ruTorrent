@@ -1,5 +1,10 @@
 <?php
-require_once( dirname(__FILE__).'/../conf/config.php' );
+
+$rootPath = realpath(dirname(__FILE__)."/..");
+require_once( $rootPath.'/conf/config.php' );
+$conf = getConfFile('config.php');
+if($conf)
+	require_once(conf);
 
 function stripSlashesFromArray(&$arr)
 {
@@ -210,18 +215,48 @@ function fullpath($path,$base = '')
 	return($root.implode('/', $newpath));
 }
 
+function getConfFile($name)
+{
+	global $rootPath;
+	if(!empty($_SERVER['REMOTE_USER']))
+	{
+		$conf = $rootPath.'/conf/users/'.strtolower($_SERVER['REMOTE_USER']).'/'.$name;
+		if(is_readable($conf))
+			return($conf);
+	}
+	return(false);
+}
+
+function getUser()
+{
+	return( !empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] : '' );
+}
+
+function getProfilePath()
+{
+	global $rootPath;
+        $ret = $rootPath.'/share';
+        if(!empty($_SERVER['REMOTE_USER']))
+        {
+        	$ret.=('/users/'.strtolower($_SERVER['REMOTE_USER']));
+        	if(!is_dir($ret))
+        	{
+	        	mkdir($ret);
+        		mkdir($ret.'/settings',0777);
+        		mkdir($ret.'/torrents',0777);
+		}
+	}
+	return($ret);
+}
+
 function getSettingsPath()
 {
-	global $settings;
-	global $rootPath;
-	return( fullpath($settings,$rootPath) );
+	return( getProfilePath().'/settings' );
 }
 
 function getUploadsPath()
 {
-	global $uploads;
-	global $rootPath;
-	return( fullpath($uploads,$rootPath) );
+	return( getProfilePath().'/torrents' );
 }
 
 function getPHP()
