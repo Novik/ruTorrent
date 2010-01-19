@@ -218,7 +218,7 @@ if($handle = opendir('../plugins'))
 								$jResult.="log('".$file.": '+theUILang.errMustBeInSomeHost);";
 								continue;
 							}
-					        	if($info["remote"]=="warning")
+					        	if($do_diagnostic && ($info["remote"]=="warning"))
 								$jResult.="log('".$file.": '+theUILang.warnMustBeInSomeHost);";
 					        }
 						$js = "../plugins/".$file."/init.js";

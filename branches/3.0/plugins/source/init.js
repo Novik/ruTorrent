@@ -14,7 +14,7 @@ if(plugin.enabled && plugin.canChangeMenu())
 		plugin.createMenu.call(this, e, id);
 		var el = theContextMenu.get( theUILang.Properties );
 		if( el )
-			theContextMenu.add( el, [theUILang.getSource + "...",  (this.getTable("trt").selCount > 1) ? null : "theWebUI.getSource('" + id + "')"] );
+			theContextMenu.add( el, [theUILang.getSource,  (this.getTable("trt").selCount > 1) ? null : "theWebUI.getSource('" + id + "')"] );
 	}
 }
 
