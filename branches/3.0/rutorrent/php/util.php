@@ -4,7 +4,7 @@ $rootPath = realpath(dirname(__FILE__)."/..");
 require_once( $rootPath.'/conf/config.php' );
 $conf = getConfFile('config.php');
 if($conf)
-	require_once(conf);
+	require_once($conf);
 
 function stripSlashesFromArray(&$arr)
 {
