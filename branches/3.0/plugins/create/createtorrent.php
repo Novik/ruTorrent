@@ -2,7 +2,7 @@
 require_once( '../../php/xmlrpc.php' );
 require_once( '../../php/Torrent.php' );
 require_once( '../../php/rtorrent.php' );
-require_once( './conf.php' );
+eval(getPluginConf('create'));
 
 ignore_user_abort(true);
 set_time_limit(0);
@@ -38,12 +38,9 @@ if(isset($_REQUEST['path_edit']))
 	}
 	if(count($trackers)>0)
 		$announce_list[] = $trackers;
-	$path_edit = $_REQUEST['path_edit'];
-	if($path_edit[strlen($path_edit)-1]=='/')
-		$path_edit = substr($path_edit,0,-1);	
-	$path_edit = trim($path_edit);	
+	$path_edit = trim(addslash($_REQUEST['path_edit']));
 	$randName = null;
-	if(strlen($path_edit))
+	if(strpos($path_edit,$topDirectory)===0)
 	{
 	        if($useExternal!==false)
 	        {
@@ -74,7 +71,7 @@ if(isset($_REQUEST['path_edit']))
 	        		@unlink($randName);
 	        	}
 	        	else
-	        		exit(1);
+         		        exit('log(theUILang.cantExecExternal+" ('.$pathToCreatetorrent.')");');
 	        }
 	        else
 	        {
@@ -113,5 +110,7 @@ if(isset($_REQUEST['path_edit']))
 			}
 		$torrent->send();
 	}
+       	else
+	        exit('log(theUILang.incorrectDirectory+" ('.$path_edit.')");');
 }
 ?>

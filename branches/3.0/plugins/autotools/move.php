@@ -18,7 +18,7 @@ if( count( $argv ) > 2 )
 require_once( "../../php/xmlrpc.php" );
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
-require_once( "./conf.php" );
+eval(getPluginConf('autotools'));
 
 $AutoMove_Sem = rtSemGet( fileinode( __FILE__ ) );
 rtSemLock( $AutoMove_Sem );

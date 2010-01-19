@@ -2,7 +2,7 @@
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( $rootPath.'/php/cache.php');
-require_once( $rootPath.'/plugins/ratio/conf.php');
+eval(getPluginConf('ratio'));
 
 define('RAT_STOP',0);
 define('RAT_STOP_AND_REMOVE',1);

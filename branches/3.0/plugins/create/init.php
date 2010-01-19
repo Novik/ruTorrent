@@ -1,6 +1,6 @@
 <?php
 
-require_once( '../plugins/create/conf.php');
+eval(getPluginConf('create'));
 
 if($useExternal!==false)
 {

@@ -14,7 +14,6 @@ if($do_diagnostic)
 }
 if($needStart)
 {
-	require_once( '../plugins/scheduler/conf.php' );
 	require_once( '../plugins/scheduler/scheduler.php' );
 
 	$schd = rScheduler::load();

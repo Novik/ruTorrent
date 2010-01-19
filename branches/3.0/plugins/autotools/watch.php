@@ -5,7 +5,7 @@ if( !chdir( dirname( __FILE__ ) ) )
 require_once( "../../php/xmlrpc.php" );
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
-require_once( "./conf.php" );
+eval(getPluginConf('autotools'));
 
 if( count( $argv ) > 1 )
 	$_SERVER['REMOTE_USER'] = $argv[1];

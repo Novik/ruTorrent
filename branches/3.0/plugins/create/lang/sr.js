@@ -11,5 +11,7 @@
  theUILang.CreateAndSaveAs	= "Направи и сними као ...";
  theUILang.BadTorrentData		= "Морате попунити сва обавезна поља!";
  theUILang.createExternalNotFound = "Креирање додатка: Додатак неће радити. Мрежни сервер не може да приступи екстерном програму";
+ theUILang.incorrectDirectory = "Incorrect directory";
+ theUILang.cantExecExternal = "Can't execute external program";
 
 thePlugins.get("create").langLoaded();

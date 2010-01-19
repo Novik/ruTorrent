@@ -1,7 +1,7 @@
 <?php
 
 require_once( '../plugins/autotools/autotools.php');
-require_once( '../plugins/autotools/conf.php' );
+eval(getPluginConf('autotools'));
 
 $pathToAutoTools = $rootPath.'/plugins/autotools';
 $needStart = true;

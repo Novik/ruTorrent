@@ -1,6 +1,7 @@
 <?php
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
+eval(getPluginConf('_getdir'));
 
 $theSettings = rTorrentSettings::load();
 $dh = false;
@@ -19,9 +20,11 @@ if(isset($_REQUEST['dir']))
 	if(is_dir($dir))
 	{
 		$dh = @opendir($dir);
+		$dir = addslash($dir);
 		if( $dh && 
-			($theSettings->uid>=0) && ($theSettings->gid>=0) && 
-			!isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0005))
+			((strpos($dir,$topDirectory)!==0) ||
+			(($theSettings->uid>=0) && ($theSettings->gid>=0) && 
+			!isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0005))))
 		{
 			closedir($dh);
 			$dh = false;
@@ -38,18 +41,15 @@ $files = array();
 $dirs = array();
 if($dh)
 {
-	$len = strlen($dir);
-	if($len && ($dir[$len-1]!="/"))
-		$dir.="/";
+	$dir = addslash($dir);
 	while(false !== ($file = readdir($dh)))
         {
-	        $path = fullpath($dir . $file . "/");
-		if($path===false)
-			$path = fullpath($dir . $file);	
-		if(($file=="..") && ($dir=="/"))
+	        $path = fullpath($dir . $file);
+		if(($file=="..") && ($dir==$topDirectory))
 			continue;
-		if(is_dir($path) && is_readable($path)
-			 && ( $theSettings->uid<0 || $theSettings->gid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0005))
+		if(is_dir($path) && is_readable($path) &&
+			(strpos(addslash($path),$topDirectory)===0) &&
+			( $theSettings->uid<0 || $theSettings->gid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0005))
 			)
 			$dirs['/'.$file] = $path;
 		else

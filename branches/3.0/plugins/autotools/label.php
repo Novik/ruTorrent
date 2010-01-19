@@ -19,7 +19,7 @@ require_once( "../../php/util.php" );
 require_once( "../../php/xmlrpc.php" );
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
-require_once( "./conf.php" );
+eval(getPluginConf('autotools'));
 
 $AutoLabel_Sem = rtSemGet( fileinode( __FILE__ ) );
 rtSemLock( $AutoLabel_Sem );

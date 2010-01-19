@@ -2,7 +2,7 @@
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( $rootPath.'/php/cache.php');
-require_once( $rootPath.'/plugins/scheduler/conf.php');
+eval(getPluginConf('scheduler'));
 
 define('SCH_FAST', 0);
 define('SCH_STOP', 1);

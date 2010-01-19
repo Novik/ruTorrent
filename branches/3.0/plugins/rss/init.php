@@ -1,5 +1,5 @@
 <?php
-require_once( '../plugins/rss/conf.php' );
+eval(getPluginConf('rss'));
 
 $st = getSettingsPath();
 @rename($rootPath.'/plugins/rss/cache',$st.'/rss/cache');

@@ -221,10 +221,26 @@ function getConfFile($name)
 	if(!empty($_SERVER['REMOTE_USER']))
 	{
 		$conf = $rootPath.'/conf/users/'.strtolower($_SERVER['REMOTE_USER']).'/'.$name;
-		if(is_readable($conf))
+		if(is_file($conf) && is_readable($conf))
 			return($conf);
 	}
 	return(false);
+}
+
+function getPluginConf($plugin)
+{
+        $ret = '';
+	global $rootPath;
+	$conf = $rootPath.'/plugins/'.$plugin.'/conf.php';
+	if(is_file($conf) && is_readable($conf))
+		$ret.='require_once("'.$conf.'");';
+	if(!empty($_SERVER['REMOTE_USER']))
+	{
+		$conf = $rootPath.'/conf/users/'.strtolower($_SERVER['REMOTE_USER']).'/plugins/'.$plugin.'/conf.php';
+		if(is_file($conf) && is_readable($conf))
+			$ret.='require_once("'.$conf.'");';
+	}
+	return($ret);
 }
 
 function getUser()

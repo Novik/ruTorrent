@@ -11,5 +11,7 @@
  theUILang.CreateAndSaveAs	= "Create and save as...";
  theUILang.BadTorrentData		= "You must fill all required fields!";
  theUILang.createExternalNotFound = "Create plugin: Plugin will not work. Web-server can't access to external program";
+ theUILang.incorrectDirectory = "Incorrect directory";
+ theUILang.cantExecExternal = "Can't execute external program";
 
 thePlugins.get("create").langLoaded();

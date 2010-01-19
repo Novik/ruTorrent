@@ -1,5 +1,5 @@
 <?php
-require_once( '../plugins/trafic/conf.php' );
+eval(getPluginConf('trafic'));
 
 $st = getSettingsPath();
 @rename($rootPath.'/plugins/trafic/stats',$st.'/trafic');

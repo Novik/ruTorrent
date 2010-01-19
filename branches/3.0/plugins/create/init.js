@@ -49,8 +49,14 @@ plugin.onLangLoaded = function()
 					"</fieldset>"+
 					"<div class='aright'><input type='submit' id='createAndSave' value='"+theUILang.CreateAndSaveAs+"' class='Button' /><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
 				"</div>"+
-				"<iframe id='createfrm' name='createfrm' src=''></iframe>"+
 			"</form>");
+		$(document.body).append($("<iframe>").attr( { name: "createfrm", id: "createfrm" } ).width(0).height(0).load(function()
+		{
+			var d = (this.contentDocument || this.contentWindow.document);
+			if(d.location.href != "about:blank")
+				eval(d.body.innerHTML);
+		}));
+
 		if(thePlugins.isInstalled("_getdir"))
 		{
 			var btn = new theWebUI.rDirBrowser( 'tcreate', 'path_edit', 'browse_path', null, true );

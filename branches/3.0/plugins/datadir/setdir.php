@@ -2,9 +2,13 @@
 
 if( !chdir( dirname( __FILE__) ) )
 	exit;
+
+if( count( $argv ) > 4 )
+	$_SERVER['REMOTE_USER'] = $argv[4];
+
 require_once( '../../php/xmlrpc.php' );
 require_once( './util_rt.php' );
-require_once( './conf.php' );
+eval(getPluginConf('datadir'));
 
 $DataDir_Sem = rtSemGet( fileinode( __FILE__ ) );
 rtSemLock( $DataDir_Sem );
@@ -21,7 +25,7 @@ Debug( "--- begin ---" );
 $is_ok = true;
 umask( $datadir_umask );
 
-if( count( $argv ) < 4 )
+if( count( $argv ) < 5 )
 {
 	Debug( "called without arguments (3 params wanted)" );
 	$is_ok = false;

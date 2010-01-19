@@ -2,8 +2,8 @@
 
 require_once( dirname(__FILE__).'/../../php/cache.php');
 require_once( $rootPath.'/php/Snoopy.class.inc');
-require_once( $rootPath.'/plugins/rss/conf.php');
 require_once( $rootPath.'/php/rtorrent.php' );
+eval(getPluginConf('rss'));
 
 class rRSS
 {

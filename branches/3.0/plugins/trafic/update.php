@@ -5,7 +5,7 @@
 		$_SERVER['REMOTE_USER'] = $argv[1];
 		require_once( '../../php/xmlrpc.php' );
 		require_once( './stat.php' );
-		require_once( './conf.php' );
+		eval(getPluginConf('trafic'));
 		
 		$req = new rXMLRPCRequest( array(
 			new rXMLRPCCommand("get_up_total"),
