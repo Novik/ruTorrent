@@ -27,7 +27,7 @@ plugin.onLangLoaded = function()
 		        $("#srchash").val('');
 			var d = (this.contentDocument || this.contentWindow.document);
 			if(d.location.href != "about:blank")
-				eval(d.body.innerHTML);
+				try { eval(d.body.innerHTML); } catch(e) { log(d.body.innerHTML); }
 		}));
 		$(document.body).append(
 			$('<form action="plugins/source/action.php" id="getsource" method="get" target="srcfrm">'+

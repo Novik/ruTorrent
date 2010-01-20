@@ -54,7 +54,7 @@ plugin.onLangLoaded = function()
 		{
 			var d = (this.contentDocument || this.contentWindow.document);
 			if(d.location.href != "about:blank")
-				eval(d.body.innerHTML);
+				try { eval(d.body.innerHTML); } catch(e) { log(d.body.innerHTML); }
 		}));
 
 		if(thePlugins.isInstalled("_getdir"))

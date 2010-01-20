@@ -385,7 +385,7 @@ class Torrent
 	 */
 	private function file( $file, $piece_length ) 
 	{
-        	if(!($handle = fopen( $file, 'r' )))
+        	if(!($handle = @fopen( $file, 'r' )))
         	{
 			self::$errors[] = new Exception( 'Failed to open file: "' . $file . '"' );
 			return(false);
@@ -429,7 +429,7 @@ class Torrent
 				self::$errors[] = new Exception( 'Files must be in the same folder: "' . $file . '" discarded' );
 		                continue;
         		}
-			if( !($handle = fopen( $file, 'r' )) )
+			if( !($handle = @fopen( $file, 'r' )) )
 			{
 				self::$errors[] = new Exception( 'Failed to open file: "' . $file . '" discarded' );
 	                	continue;

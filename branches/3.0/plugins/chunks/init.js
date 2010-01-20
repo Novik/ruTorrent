@@ -114,7 +114,7 @@ plugin.onLangLoaded = function() {
 		theWebUI.tEM.appendChild(document.createTextNode('M'));
 		theWebUI.Chunks.appendChild( theWebUI.tEM );
 	} else {
-    		log(theUILang.chunksNotSupported+theWebUI.rTorrentVersion);
+    		log(theUILang.chunksNotSupported+theWebUI.rTorrent.version);
 	}
 }
 

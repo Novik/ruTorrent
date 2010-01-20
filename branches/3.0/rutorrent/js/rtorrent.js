@@ -856,6 +856,7 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 		{
 			if((textStatus=="timeout") && ($type(onTimeout) == "function"))
 				onTimeout();
+			else
 			if(($type(onError) == "function"))
 			{
 			        var status = "Status unavailable";

@@ -9,7 +9,6 @@ if(plugin.enabled)
 		var oldDblClick = this.getTable("fls").ondblclick;
 		this.getTable("fls").ondblclick = function(obj) 
 		{
-			oldDblClick.call(this,obj);
 			if(theWebUI.dID!="")
 			{
 			        if(theWebUI.settings["webui.fls.view"])
@@ -21,7 +20,7 @@ if(plugin.enabled)
 	        	        		theWebUI.getData(theWebUI.dID,obj.id.substr(3));
 				}
 			}
-			return(false);
+			return(oldDblClick.call(this,obj));
 		}
 	}
 
@@ -71,7 +70,7 @@ plugin.onLangLoaded = function()
 		        $("#datano").val('');
 			var d = (this.contentDocument || this.contentWindow.document);
 			if(d.location.href != "about:blank")
-				eval(d.body.innerHTML);
+				try { eval(d.body.innerHTML); } catch(e) { log(d.body.innerHTML); }
 		}));
 		$(document.body).append(
 			$('<form action="plugins/data/action.php" id="getdata" method="get" target="datafrm">'+

@@ -170,7 +170,7 @@ if($handle = opendir('../plugins'))
 			$jResult.="log(theUILang.badLinkTorTorrent);";
 		else
 		{
-			$jResult.="theWebUI.rTorrentVersion = '".$theSettings->version."';";
+			$jResult.="theWebUI.rTorrent = { version : '".$theSettings->version."' };";
 	        	if($do_diagnostic)
 	        	{
 	        	        $up = getUploadsPath();

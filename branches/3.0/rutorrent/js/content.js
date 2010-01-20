@@ -70,7 +70,7 @@ function makeContent()
 		$("#add_button").attr("disabled",false);
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d.location.href != "about:blank")
-			eval(d.body.innerHTML);
+			try { eval(d.body.innerHTML); } catch(e) { log(d.body.innerHTML); }
 	}));
 	$(document.body).append($("<iframe>").attr( { name: "uploadfrmurl", id: "uploadfrmurl" } ).width(0).height(0).load(function()
 	{
@@ -78,7 +78,7 @@ function makeContent()
 		$("#add_url").attr("disabled",false);
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d.location.href != "about:blank")
-			eval(d.body.innerHTML);
+			try { eval(d.body.innerHTML); } catch(e) { log(d.body.innerHTML); }
 	}));
 	theDialogManager.make("tadd",theUILang.torrent_add,
 		'<div class="cont fxcaret">'+

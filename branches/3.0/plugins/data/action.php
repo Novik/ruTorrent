@@ -42,15 +42,15 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 				header('Accept-Ranges: bytes');
 				header('Content-Length:' . $stat['size']);
 				header('Content-Type: application/octet-stream');
-				$filename = end(explode('/',$filename));
+				$fname = end(explode('/',$filename));
 				if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
-					$filename = rawurlencode($filename);
-				header('Content-Disposition: attachment; filename="'.$filename.'"');
+					$fname = rawurlencode($fname);
+				header('Content-Disposition: attachment; filename="'.$fname.'"');
 				header('Content-Transfer-Encoding: binary');
 				header('Content-Description: File Transfer');
 				header('HTTP/1.0 200 OK');
 				@readfile($filename);
-				return;
+				exit;
 			}
 		}
 	}
