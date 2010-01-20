@@ -15,7 +15,7 @@ class rTorrent
 			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
 				$torrent = $resume;
 			$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
-			$cmd->addParameter(base64_encode($torrent),"base64");
+			$cmd->addParameter(base64_encode($torrent->__toString()),"base64");
 			if(!$saveTorrent && is_string($fname))
 				@unlink($fname);
 			$comment = $torrent->comment();
