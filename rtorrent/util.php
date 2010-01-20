@@ -231,7 +231,7 @@ function sendFile2rTorrent($fname, $isURL, $isStart, $isAddPath, $directory, $la
 		{
 			$method = $isStart ? 'load_raw_start' : 'load_raw';
 			@unlink($fname);
-			$fname = '<param><value><base64>'.base64_encode($torrent).'</base64></value></param>';
+			$fname = '<param><value><base64>'.base64_encode($torrent->__toString()).'</base64></value></param>';
 			$delete_tied = '';
 		}
 		else
