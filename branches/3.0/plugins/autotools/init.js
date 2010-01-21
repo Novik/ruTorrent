@@ -6,16 +6,19 @@ if(plugin.enabled && plugin.canChangeOptions())
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function( arg )
 	{
-		$$('enable_label').checked = ( theWebUI.autotools.EnableLabel == 1 );
-		$$('enable_move').checked  = ( theWebUI.autotools.EnableMove  == 1 );
-		$$('path_to_finished').value = theWebUI.autotools.PathToFinished;
-		linked( $$('enable_move'), 0, ['path_to_finished', 'automove_browse_btn'] );
-		$$('enable_watch').checked  = ( theWebUI.autotools.EnableWatch  == 1 );
-		$$('path_to_watch').value = theWebUI.autotools.PathToWatch;
-		linked( $$('enable_watch'), 0, ['path_to_watch', 'autowatch_browse_btn', 'watch_start'] );
-		$$('watch_start').checked  = ( theWebUI.autotools.WatchStart  == 1 );
-		plugin.DirBrowser1.hide();
-		plugin.DirBrowser2.hide();
+	        if(plugin.enabled)
+	        {
+			$$('enable_label').checked = ( theWebUI.autotools.EnableLabel == 1 );
+			$$('enable_move').checked  = ( theWebUI.autotools.EnableMove  == 1 );
+			$$('path_to_finished').value = theWebUI.autotools.PathToFinished;
+			linked( $$('enable_move'), 0, ['path_to_finished', 'automove_browse_btn'] );
+			$$('enable_watch').checked  = ( theWebUI.autotools.EnableWatch  == 1 );
+			$$('path_to_watch').value = theWebUI.autotools.PathToWatch;
+			linked( $$('enable_watch'), 0, ['path_to_watch', 'autowatch_browse_btn', 'watch_start'] );
+			$$('watch_start').checked  = ( theWebUI.autotools.WatchStart  == 1 );
+			plugin.DirBrowser1.hide();
+			plugin.DirBrowser2.hide();
+		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
@@ -40,7 +43,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 	theWebUI.setSettings = function()
 	{
 		plugin.setSettings.call(this);
-		if( this.autotoolsWasChanged() )
+		if( plugin.enabled && this.autotoolsWasChanged() )
 			this.request( "?action=setautotools" );
 	}
 
@@ -133,3 +136,7 @@ plugin.onLangLoaded = function()
 	}
 }
 
+plugin.onRemove = function()
+{
+	this.removePageFromOptions( "st_autotools" );
+}

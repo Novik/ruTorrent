@@ -61,16 +61,19 @@ if(plugin.enabled)
 		plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 		theWebUI.addAndShowSettings = function(arg) 
 		{
-		        for(var i=0; i<theWebUI.maxThrottle; i++)
+			if(plugin.enabled)
 			{
-	        		if(theWebUI.isCorrectThrottle(i))
+			        for(var i=0; i<theWebUI.maxThrottle; i++)
 				{
-					$('#thr_up'+i).val( theWebUI.throttles[i].up );
-					$('#thr_down'+i).val( theWebUI.throttles[i].down );
-					$('#thr_name'+i).val( theWebUI.throttles[i].name );
+	        			if(theWebUI.isCorrectThrottle(i))
+					{
+						$('#thr_up'+i).val( theWebUI.throttles[i].up );
+						$('#thr_down'+i).val( theWebUI.throttles[i].down );
+						$('#thr_name'+i).val( theWebUI.throttles[i].name );
+					}
+					else
+						$('#thr_up'+i+',#thr_down'+i+',#thr_name'+i).val('');
 				}
-				else
-					$('#thr_up'+i+',#thr_down'+i+',#thr_name'+i).val('');
 			}
 			plugin.addAndShowSettings.call(theWebUI,arg);
 		}
@@ -91,7 +94,7 @@ if(plugin.enabled)
 		theWebUI.setSettings = function() 
 		{
 			plugin.setSettings.call(this);
-			if(this.throttleWasChanged())
+			if(plugin.enabled && this.throttleWasChanged())
 				this.request("?action=setthrottleprm");
 		}
 
@@ -127,7 +130,7 @@ if(plugin.enabled)
 		theWebUI.createMenu = function(e, id)
 		{
 			plugin.createMenu.call(this, e, id);
-			if(plugin.allStuffLoaded)
+			if(plugin.enabled && plugin.allStuffLoaded)
 			{
 				var el = theContextMenu.get(theUILang.Priority);
 				var curNo = null;
@@ -219,4 +222,12 @@ plugin.onLangLoaded = function()
 	}
 	else
 		log(theUILang.throttleUnsupported);
+}
+
+plugin.onRemove = function()
+{
+	this.removePageFromOptions("st_throttle");
+	theWebUI.getTable("trt").removeColumnById("throttle");
+	if(thePlugins.isInstalled("rss"))
+		theWebUI.getTable("rss").removeColumnById("throttle");
 }

@@ -90,6 +90,14 @@ rPlugin.prototype.disable = function()
 	return(this);
 }
 
+rPlugin.prototype.remove = function() 
+{
+	if($type(this.onRemove)=="function")
+		this.onRemove();
+	this.disable();
+	return(this);
+}
+
 rPlugin.prototype.showError = function(err) 
 {
 	if( this.allStuffLoaded )
@@ -157,9 +165,19 @@ rPlugin.prototype.attachPageToOptions = function(dlg,name)
         if(this.canChangeOptions())
 	{
 		$("#st_btns").before( $(dlg).addClass("stg_con") );
-		$(".lm ul .last").removeClass("last");
-		$(".lm ul").append( $("<li>").addClass("last").html("<a id='mnu_"+dlg.id+"' href=\"javascript://void()\" onclick=\"theOptionsSwitcher.run('"+dlg.id+"'); return(false);\">"+name+"</a>") );
+		$(".lm ul li:last").removeClass("last");
+		$(".lm ul").append( $("<li>").attr("id","hld_"+dlg.id).addClass("last").html("<a id='mnu_"+dlg.id+"' href=\"javascript://void()\" onclick=\"theOptionsSwitcher.run('"+dlg.id+"'); return(false);\">"+name+"</a>") );
 	}
+	return(this);
+}
+
+rPlugin.prototype.removePageFromOptions = function(id)
+{
+	if(theOptionsSwitcher.current==id)
+		theOptionsSwitcher.run('st_gl');
+	$("#"+id).remove();
+	$("#hld_"+id).remove();
+	$(".lm ul li:last").addClass("last");
 	return(this);
 }
 
@@ -190,6 +208,14 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 	return(this);
 }
 
+rPlugin.prototype.removePageFromTabs = function(id)
+{
+	delete theTabs.tabs[id]; 
+	$('#'+id).remove();
+	$('#tab_'+id).remove();
+	return(this);
+}
+
 rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 {
         if(this.canChangeToolbar())
@@ -210,6 +236,11 @@ rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 	}
 	return(this);
 }
+
+rPlugin.prototype.removeButtonFromToolbar = function(id)
+{
+	$("#mnu_"+id).remove();
+}
 	
 rPlugin.prototype.addSeparatorToToolbar = function(idBefore)	
 {
@@ -227,6 +258,11 @@ rPlugin.prototype.addSeparatorToToolbar = function(idBefore)
 		}
 	}
 	return(this);
+}
+
+rPlugin.prototype.removeSeparatorFromToolbar = function(idBefore)
+{
+	$("#mnu_"+idBefore).prev().remove();
 }
 
 function getCSSRule( selectorText )

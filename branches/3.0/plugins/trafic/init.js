@@ -187,7 +187,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 	plugin.resizeBottom = theWebUI.resizeBottom;
 	theWebUI.resizeBottom = function( w, h )
 	{
-		if(plugin.allStuffLoaded)
+		if(plugin.enabled && plugin.allStuffLoaded)
 			this.trafGraph.resize(w,h);
 		plugin.resizeBottom.call(this,w,h);
 	}
@@ -249,5 +249,10 @@ plugin.onLangLoaded = function()
         	theWebUI.resize();
 	}
 };
+
+plugin.onRemove = function()
+{
+	this.removePageFromTabs("traf");
+}
 
 plugin.loadLang(true);

@@ -357,5 +357,6 @@
  innerSearch			: "Local torrents",
  removeTeg			: "Remove teg",
  errMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. The plugin will not work.",
- warnMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. Some functionality will be unavailable."
+ warnMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. Some functionality will be unavailable.",
+ plgShutdown			: "Shutdown"
  };

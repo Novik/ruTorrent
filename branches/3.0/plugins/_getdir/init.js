@@ -6,9 +6,9 @@ theWebUI.rDirBrowser = function( dlg_id, edit_id, btn_id, frame_id, withFiles )
 	if(!frame_id)
 		frame_id = edit_id+"_frame";
 	var self = this;
-	this.btn.val("...").bind( "click", function() { return(self.toggle()); } );
-	this.edit.attr("autocomplete", "off").bind( browser.isIE ? "focusin" : "focus", function() { return(self.hide()); } );
-	this.frame = $("<iframe>").attr( {id: frame_id, src: ""} ).css({position: "absolute", width: 0, visibility: "hidden"});
+	this.btn.val("...").bind( "click", function() { return(self.toggle()); } ).addClass("browseButton");
+	this.edit.attr("autocomplete", "off").bind( browser.isIE ? "focusin" : "focus", function() { return(self.hide()); } ).addClass("browseEdit");
+	this.frame = $("<iframe>").attr( {id: frame_id, src: ""} ).css({position: "absolute", width: 0, visibility: "hidden"}).addClass("browseFrame");
 	this.dlg_id = dlg_id;
 	$('#'+dlg_id).append( this.frame );
 }
@@ -56,4 +56,11 @@ theWebUI.rDirBrowser.prototype.hide = function()
 theWebUI.rDirBrowser.prototype.toggle = function()
 {
 	return(this.frame.is(":visible") ? this.hide() : this.show());
+}
+
+plugin.onRemove = function()
+{
+	$(".browseButton").remove();
+	$(".browseFrame").remove();
+	$(".browseEdit").attr("autocomplete", "on").unbind( browser.isIE ? "focusin" : "focus" );
 }

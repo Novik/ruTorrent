@@ -6,14 +6,17 @@ if(plugin.canChangeOptions())
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 
 	{
-		var s = '';
-		for(var i=0; i<hostCookies.length; i++)
+		if(plugin.enabled)
 		{
-			s+=(hostCookies[i].host+'|'+hostCookies[i].cookies);
-			if(i<hostCookies.length-1)
-				s+='\r\n';
+			var s = '';
+			for(var i=0; i<hostCookies.length; i++)
+			{
+				s+=(hostCookies[i].host+'|'+hostCookies[i].cookies);
+				if(i<hostCookies.length-1)
+					s+='\r\n';
+			}
+			$('#hostcookies').val(s);
 		}
-		$('#hostcookies').val(s);
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
@@ -40,7 +43,7 @@ if(plugin.canChangeOptions())
 	theWebUI.setSettings = function() 
 	{
 		plugin.setSettings.call(this);
-		if(this.cookiesWasChanged())
+		if(plugin.enabled && this.cookiesWasChanged())
 			this.request("?action=setcookies");
 	}
 
@@ -65,4 +68,9 @@ plugin.onLangLoaded = function()
 				"<textarea id='hostcookies'></textarea>"+
 			"</div>"+
 		"</fieldset>")[0],theUILang.cookiesName);
+}
+
+plugin.onRemove = function()
+{
+	this.removePageFromOptions("st_cookies");
 }

@@ -7,22 +7,25 @@ if(plugin.enabled && plugin.canChangeOptions())
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 
 	{
-		var tbl = $$('sch_graph');
-		for(var i=0; i<7; i++)
+		if(plugin.enabled)
 		{
-			for(var j=1; j<25; j++)
+			var tbl = $$('sch_graph');
+			for(var i=0; i<7; i++)
 			{
-				cell = tbl.rows[i].cells[j];
-				cell.setAttribute("clr",theWebUI.scheduleTable.week[i][j-1]);
+				for(var j=1; j<25; j++)
+				{
+					cell = tbl.rows[i].cells[j];
+					cell.setAttribute("clr",theWebUI.scheduleTable.week[i][j-1]);
+				}
 			}
+			$$('sch_enable').checked = theWebUI.scheduleTable.enabled;
+			for(var i=0; i<3; i++)
+			{
+				$$('restrictedUL'+(i+1)).value = theWebUI.scheduleTable.UL[i];
+				$$('restrictedDL'+(i+1)).value = theWebUI.scheduleTable.DL[i];
+			}
+			theWebUI.linkedSch($$('sch_enable'), ['restrictedUL1', 'restrictedDL1', 'restrictedUL2', 'restrictedDL2', 'restrictedUL3', 'restrictedDL3']);
 		}
-		$$('sch_enable').checked = theWebUI.scheduleTable.enabled;
-		for(var i=0; i<3; i++)
-		{
-			$$('restrictedUL'+(i+1)).value = theWebUI.scheduleTable.UL[i];
-			$$('restrictedDL'+(i+1)).value = theWebUI.scheduleTable.DL[i];
-		}
-		theWebUI.linkedSch($$('sch_enable'), ['restrictedUL1', 'restrictedDL1', 'restrictedUL2', 'restrictedDL2', 'restrictedUL3', 'restrictedDL3']);
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
@@ -46,7 +49,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 	theWebUI.setSettings = function() 
 	{
 		plugin.setSettings.call(this);
-		if(this.schedulerWasChanged())
+		if(plugin.enabled && this.schedulerWasChanged())
 			this.request("?action=setschedule");
 	}
 
@@ -216,4 +219,9 @@ plugin.onLangLoaded = function()
 		   "</fieldset>";
 		this.attachPageToOptions($("<div>").attr("id","st_scheduler").html(s+"</div>")[0],theUILang.scheduler);
 	}
+}
+
+plugin.onRemove = function() 
+{
+	plugin.removePageFromOptions("st_scheduler");
 }

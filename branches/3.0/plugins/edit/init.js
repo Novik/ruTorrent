@@ -41,7 +41,7 @@ if(plugin.canChangeMenu())
 	theWebUI.createMenu = function(e, id) 
 	{
 		plugin.createMenu.call(this,e,id);
-		if(plugin.allStuffLoaded)
+		if(plugin.enabled && plugin.allStuffLoaded)
 		{
 			var el = theContextMenu.get(theUILang.Properties);
 			if(el)
@@ -52,7 +52,7 @@ if(plugin.canChangeMenu())
 	plugin.createTrackerMenu = theWebUI.createTrackerMenu;
 	theWebUI.createTrackerMenu = function(e, id) 
 	{
-		if(plugin.createTrackerMenu.call(theWebUI, e, id) && plugin.allStuffLoaded)
+		if(plugin.createTrackerMenu.call(theWebUI, e, id) && plugin.allStuffLoaded && plugin.enabled)
 		{
 			theContextMenu.add([CMENU_SEP]);
 			theContextMenu.add([theUILang.EditTrackers,"theWebUI.editTrackers()"]);
@@ -117,4 +117,9 @@ rTorrentStub.prototype.edittorrent = function()
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/edit/action.php";
 	this.dataType = "json";
+}
+
+plugin.onRemove = function()
+{
+	theDialogManager.hide("tedit");
 }

@@ -21,7 +21,7 @@ if(plugin.enabled)
 	plugin.clearDetails = theWebUI.clearDetails;
 	theWebUI.clearDetails = function() {
 		plugin.clearDetails.call(theWebUI);
-		if(plugin.allStuffLoaded)
+		if(plugin.enabled && plugin.allStuffLoaded)
 			theWebUI.clearChunks();
 	} // clearDetails
 
@@ -118,3 +118,7 @@ plugin.onLangLoaded = function() {
 	}
 }
 
+plugin.onRemove = function()
+{
+	plugin.removePageFromTabs("Chunks");
+}

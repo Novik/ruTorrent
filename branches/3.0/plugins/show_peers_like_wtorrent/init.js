@@ -24,15 +24,21 @@ theWebUI.calcPeers = function(torrents)
 plugin.getAllTrackers = theWebUI.getAllTrackers;
 theWebUI.getAllTrackers = function(arr)
 {
+	if(!plugin.enabled)
+		plugin.getAllTrackers.call(this,arr);
 }
 
 plugin.addTorrents = theWebUI.addTorrents;
 theWebUI.addTorrents = function(data) 
 {
-        this.calcPeers(data.torrents);
+	if(plugin.enabled)
+	        this.calcPeers(data.torrents);
 	plugin.addTorrents.call(this,data);
-	var tArray = [];
-	for(var hash in this.torrents)
-		tArray.push(hash);
-	plugin.getAllTrackers.call(this,tArray);	
+	if(plugin.enabled)
+	{
+		var tArray = [];
+		for(var hash in this.torrents)
+			tArray.push(hash);
+		plugin.getAllTrackers.call(this,tArray);
+	}
 }

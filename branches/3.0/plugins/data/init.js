@@ -9,7 +9,7 @@ if(plugin.enabled)
 		var oldDblClick = this.getTable("fls").ondblclick;
 		this.getTable("fls").ondblclick = function(obj) 
 		{
-			if(theWebUI.dID!="")
+			if(plugin.enabled && (theWebUI.dID!=""))
 			{
 			        if(theWebUI.settings["webui.fls.view"])
 			        	theWebUI.getData(theWebUI.dID,obj.id.substr(43));
@@ -38,21 +38,24 @@ if(plugin.enabled)
 		{
 			if(plugin.createFileMenu.call(this, e, id))
 			{
-				theContextMenu.add([CMENU_SEP]);
-				var fno = null;
-				var table = this.getTable("fls");
-				if(table.selCount == 1)
-				{
-			        	var fid = table.getFirstSelected();
-					if(this.settings["webui.fls.view"])
-						fno = fid.substr(43);
-					else
-						if(this.dirs[theWebUI.dID].getEntryPriority(fid))
-							fno = fid.substr(3);
-					if((fno!=null) && (this.files[theWebUI.dID][fno].size>=2147483647))
-						fno = null;
+			        if(plugin.enabled)
+			        {
+					theContextMenu.add([CMENU_SEP]);
+					var fno = null;
+					var table = this.getTable("fls");
+					if(table.selCount == 1)
+					{
+			        		var fid = table.getFirstSelected();
+						if(this.settings["webui.fls.view"])
+							fno = fid.substr(43);
+						else
+							if(this.dirs[theWebUI.dID].getEntryPriority(fid))
+								fno = fid.substr(3);
+						if((fno!=null) && (this.files[theWebUI.dID][fno].size>=2147483647))
+							fno = null;
+					}
+					theContextMenu.add( [theUILang.getData,  (fno==null) ? null : "theWebUI.getData('" + theWebUI.dID + "',"+fno+")"] );
 				}
-				theContextMenu.add( [theUILang.getData,  (fno==null) ? null : "theWebUI.getData('" + theWebUI.dID + "',"+fno+")"] );
 				return(true);
 			}
 			return(false);
@@ -78,4 +81,10 @@ plugin.onLangLoaded = function()
 				'<input type="hidden" name="no" id="datano" value="">'+
 			'</form>').width(0).height(0));
         }
+}
+
+plugin.onRemove = function()
+{
+	$("#datafrm").remove();
+	$("#getdata").remove();
 }

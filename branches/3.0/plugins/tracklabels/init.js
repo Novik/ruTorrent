@@ -4,7 +4,7 @@ theWebUI.actTrackersLbl = null;
 plugin.filterByLabel = theWebUI.filterByLabel;
 theWebUI.filterByLabel = function(hash)
 {
-	if(theWebUI.actTrackersLbl)
+	if(plugin.enabled && theWebUI.actTrackersLbl)
 		theWebUI.filterByTracker(hash);
 	else
 		plugin.filterByLabel.call(theWebUI,hash);
@@ -42,7 +42,7 @@ theWebUI.filterByTracker = function(hash)
 plugin.switchRSSLabel = theWebUI.switchRSSLabel;
 theWebUI.switchRSSLabel = function(el,force)
 {
-	if(theWebUI.actTrackersLbl)
+	if(plugin.enabled && theWebUI.actTrackersLbl)
 	{
 		$$(theWebUI.actTrackersLbl).className = "cat";
 		theWebUI.actTrackersLbl = null;
@@ -53,7 +53,7 @@ theWebUI.switchRSSLabel = function(el,force)
 plugin.switchLabel = theWebUI.switchLabel;
 theWebUI.switchLabel = function(el)
 {
-	if(theWebUI.actTrackersLbl)
+	if(plugin.enabled && theWebUI.actTrackersLbl)
 	{
 		$($$(theWebUI.actTrackersLbl)).removeClass("sel");
 		theWebUI.actTrackersLbl = null;
@@ -65,7 +65,8 @@ plugin.addTrackers = theWebUI.addTrackers;
 theWebUI.addTrackers = function(data)
 {
 	plugin.addTrackers.call(theWebUI,data);
-	theWebUI.rebuildTrackersLabels();
+	if(plugin.enabled)
+		theWebUI.rebuildTrackersLabels();
 }
 
 theWebUI.getTrackerName = function(announce)
@@ -158,7 +159,7 @@ plugin.updateLabels = theWebUI.updateLabels;
 theWebUI.updateLabels = function(wasRemoved)
 {
 	plugin.updateLabels.call(theWebUI,wasRemoved);
-	if(wasRemoved)
+	if(plugin.enabled && wasRemoved)
 		theWebUI.rebuildTrackersLabels();
 }
 
@@ -261,5 +262,12 @@ theWebUI.initTrackersLabels = function()
 	        plugin.markLoaded();
 	}
 };
+
+plugin.onRemove = function()
+{
+	$('#ptrackers_cont').remove();
+	$('#ptrackers').remove();
+	theWebUI.switchLabel($$("-_-_-all-_-_-"));
+}
 
 theWebUI.initTrackersLabels();

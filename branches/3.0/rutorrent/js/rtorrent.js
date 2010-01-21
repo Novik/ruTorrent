@@ -238,8 +238,17 @@ rTorrentStub.prototype.getuisettings = function()
 
 rTorrentStub.prototype.getplugins = function()
 {
-	this.mountPoint = theURLs.GetPlugingURL;
+	this.mountPoint = theURLs.GetPluginsURL;
 	this.dataType = "script";
+}
+
+rTorrentStub.prototype.doneplugins = function()
+{
+	this.mountPoint = theURLs.GetDonePluginsURL;
+	this.dataType = "script";
+	this.content = "dummy=1";
+	for(var i=0; i<this.hashes.length; i++)
+		this.content += ("&plg="+this.hashes[i]);
 }
 
 rTorrentStub.prototype.recheck = function()

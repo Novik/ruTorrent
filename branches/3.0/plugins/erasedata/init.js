@@ -17,12 +17,15 @@ if(plugin.enabled && plugin.canChangeMenu())
 	theWebUI.createMenu = function( e, id )
 	{
 		plugin.createMenu.call(this, e, id);
-		var el = theContextMenu.get( theUILang.Remove );
-		if( el )
+		if(plugin.enabled)
 		{
-			var _c0 = [];
-			_c0.push( [theUILang.Delete_data,"theWebUI.removeWithData()"] );
-			theContextMenu.add( el, [CMENU_CHILD, theUILang.Remove_and, _c0] );
+			var el = theContextMenu.get( theUILang.Remove );
+			if( el )
+			{
+				var _c0 = [];
+				_c0.push( [theUILang.Delete_data,"theWebUI.removeWithData()"] );
+				theContextMenu.add( el, [CMENU_CHILD, theUILang.Remove_and, _c0] );
+			}
 		}
 	}
 

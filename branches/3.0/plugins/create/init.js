@@ -78,3 +78,12 @@ plugin.onLangLoaded = function()
 		});
 	}
 };
+
+plugin.onRemove = function()
+{
+	theDialogManager.hide("tcreate");
+	$('#createtorrent').remove();
+	$('#createfrm').remove();
+	this.removeSeparatorFromToolbar("remove");
+	this.removeButtonFromToolbar("create");
+}

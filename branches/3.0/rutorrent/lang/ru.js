@@ -348,7 +348,7 @@
  plgName			: "Имя",
  plgStatus			: "Статус",
  plgLoaded			: "Загружен",
- plgDisabled			: "Запрещен",
+ plgDisabled			: "Выгружен",
  plgVersion			: "Версия",
  plgAuthor			: "Автор",
  plgDescr			: "Описание",
@@ -358,5 +358,6 @@
  innerSearch			: "Локальные закачки",
  removeTeg			: "Удалить тег",
  errMustBeInSomeHost		: "Для корректной работы плагина ruTorrent и rTorrent должны располагаться на одной машине. Плагин не будет работать.",
- warnMustBeInSomeHost		: "Для корректной работы плагина ruTorrent и rTorrent должны располагаться на одной машине. Часть функциональности будет недоступна."
+ warnMustBeInSomeHost		: "Для корректной работы плагина ruTorrent и rTorrent должны располагаться на одной машине. Часть функциональности будет недоступна.",
+ plgShutdown			: "Выгрузить"
  };

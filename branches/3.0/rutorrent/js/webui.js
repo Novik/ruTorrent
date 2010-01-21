@@ -119,7 +119,8 @@ var theWebUI =
 				{ text: theUILang.plgDescr,			width: "500px",	id: "descr",		type: TYPE_STRING }
 			],
 			container:	"PluginList",
-			format:		theFormatter.plugins
+			format:		theFormatter.plugins,
+			onselect:	function(e,id) { theWebUI.plgSelect(e,id) }
 		}
 	},
 	settings:
@@ -313,7 +314,6 @@ var theWebUI =
 			});
 			table.obj.format = table.format;
 			table.obj.onresize = theWebUI.save;
-			table.obj.oncoltoggled = theWebUI.save;
 			table.obj.onmove = theWebUI.save;
 			table.obj.ondblclick = table.ondblclick;
 			table.obj.onselect = table.onselect;
@@ -410,6 +410,52 @@ var theWebUI =
 		if(this.settings["webui.speed_display"])
 			this.sTimer = window.setInterval(this.updateStatus, 1000);
 	},
+
+//
+// plugins
+//
+
+	plgSelect: function(e, id) 
+	{
+		if($type(id) && (e.button == 2))
+		{
+		        theContextMenu.clear();
+		        if(this.getTable("plg").selCount > 1) 
+				theContextMenu.add([theUILang.plgShutdown, "theWebUI.plgShutdown()"]);
+			else
+				theContextMenu.add([theUILang.plgShutdown, thePlugins.isInstalled(id.substr(5)) ? "theWebUI.plgShutdown()" : null]);
+	   		theContextMenu.show();
+			return(true);
+		}
+		return(false);
+   	},
+
+	plgShutdown : function()
+	{
+		var table = this.getTable("plg");
+   		var sr = table.rowSel;
+   		var str = "";
+   		for(var k in sr) 
+   		{
+      			if(sr[k]) 
+      			{
+      				var plg = k.substr(5);
+      			        if(thePlugins.isInstalled(plg))
+            				str += "&hash=" + plg;
+         		}
+      		}
+		if(str.length>0)
+	      		this.request("?action=doneplugins" + str, [this.plgRefresh, this]);
+        },
+
+        plgRefresh : function()
+        {
+        	table = this.getTable("plg");
+		$.each( thePlugins.list, function(ndx,plugin) 
+		{
+			table.setValueById( "_plg_"+plugin.name, "status", plugin.enabled ? 1 : 0 );
+		});
+        },
 
 //
 // settings

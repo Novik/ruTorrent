@@ -12,9 +12,12 @@ if(plugin.enabled && plugin.canChangeMenu())
 	theWebUI.createMenu = function( e, id )
 	{
 		plugin.createMenu.call(this, e, id);
-		var el = theContextMenu.get( theUILang.Properties );
-		if( el )
-			theContextMenu.add( el, [theUILang.getSource,  (this.getTable("trt").selCount > 1) ? null : "theWebUI.getSource('" + id + "')"] );
+		if(plugin.enabled)
+		{
+			var el = theContextMenu.get( theUILang.Properties );
+			if( el )
+				theContextMenu.add( el, [theUILang.getSource,  (this.getTable("trt").selCount > 1) ? null : "theWebUI.getSource('" + id + "')"] );
+		}
 	}
 }
 
@@ -34,4 +37,10 @@ plugin.onLangLoaded = function()
 				'<input type="hidden" name="hash" id="srchash" value="">'+
 			'</form>').width(0).height(0));
         }
+}
+
+plugin.onRemove = function()
+{
+	$('#srcfrm').remove();
+	$('#getsource').remove();
 }

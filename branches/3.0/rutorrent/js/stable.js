@@ -67,7 +67,6 @@ var dxSTable = function()
 	this.onsort = null;
 	this.onmove = null;
 	this.onresize = null;
-	this.oncoltoggled = null;
 	this.ondblclick = null;
 	this.sortTimeout = null;
 	this.hotCell =- 1;
@@ -133,6 +132,10 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		}
 		this.cols++;
 		this.colsdata[i] = styles[this.colOrder[i]];
+
+		if(browser.isIE7x && (this.colsdata[i].type==TYPE_PROGRESS))
+			this.colsdata[i].type = TYPE_NUMBER;
+
 		this.colsdata[i].width = iv(this.colsdata[i].width);
 		this.ids[i] = styles[i].id;
 
@@ -175,13 +178,12 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			width(styles[this.colOrder[i]].width).
 			attr("index", i));
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
-		if(!browser.isIE8up)
-			td.mouseclick( function(e) { return(self.onRightClick(e)); } );
+		td.mouseclick( function(e) { return(self.onRightClick(e)); } );
 		td.mousedown( function(e) { $(document).bind( "keydown", self, self.keyEvents ) } );
 		td.mouseup( function(e) { self.Sort(e, this); } );		
 		this.tHeadCols[i] = td.get(0);
-		if(!this.colsdata[i].enabled && !browser.isIE8up) 
-			td.hide();
+		if(!this.colsdata[i].enabled)
+  	                td.hide();
 		j++;
 	}
 	this.tBody = $("<table>").width(0).get(0);
@@ -202,7 +204,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		cl = $("<col>").width(this.colsdata[i].width);
 		cg.append(cl);
 		this.tBodyCols[i] = cl.get(0);
-      		if(!this.colsdata[i].enabled && !browser.isIE8up)
+      		if(!this.colsdata[i].enabled)
 			cl.hide();
 	}
 	this.scp = $("<span></span>").addClass("stable-scrollpos").get(0);
@@ -210,8 +212,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.dCont.style.position = "relative";
 	this.init();
 	$(window).unload(function() { self.clearRows(); });
-	this.calcSize();
-	this.resizeColumn();
+	this.calcSize().resizeColumn();
 
 	this.colReszObj = $("<div>").addClass("stable-resize-header").get(0);
 	this.dBody.appendChild(this.colReszObj);
@@ -226,16 +227,52 @@ dxSTable.prototype.toggleColumn = function(i)
 	$(this.tBodyCols[i]).toggle();
 	$(this.tHeadCols[i]).toggle();;
 	this.colsdata[i].enabled = !this.colsdata[i].enabled;
-        for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
-        {
-		$(this.tBody.tb.childNodes[D].childNodes[i]).toggle();
+	if(!browser.isIE7x)
+	        for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
+			$(this.tBody.tb.childNodes[D].childNodes[i]).toggle();
+	if(this.colsdata[i].enabled)
+	{
+		$(this.tBodyCols[i]).width( this.colsdata[i].width );
+		$(this.tHeadCols[i]).width( this.colsdata[i].width );
 	}
         this.dHead.scrollLeft = this.dBody.scrollLeft;
-        this.calcSize();
-        this.resizeColumn();
-        if(typeof this.oncoltoggled == "function")
+        this.calcSize().resizeColumn();
+	if(typeof this.onresize == "function")
+		this.onresize();
+}
+
+dxSTable.prototype.removeColumnById = function(id, name)
+{
+	this.removeColumn(this.getColById(id), name);
+}
+
+dxSTable.prototype.removeColumn = function(no)
+{
+	i = this.getColOrder(no);
+	if(i>=0)
 	{
-		this.oncoltoggled();
+		$(this.tHeadCols[i]).remove();
+		$(this.tBodyCols[i]).remove();
+
+		for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
+			$(this.tBody.tb.childNodes[D].childNodes[i]).remove();
+
+		this.ids.splice(no,1);
+		this.colOrder.splice(i,1);
+		for(var j = 0; j < this.cols; j++)
+			if(this.colOrder[j] > no)
+				this.colOrder[j]--;
+
+		this.colsdata.splice(i,1);
+		this.tBodyCols.splice(i,1);
+		this.tHeadCols.splice(i,1);
+
+		this.cols--;
+		if(this.sIndex == i)
+			this.sIndex = -1;
+
+	        this.dHead.scrollLeft = this.dBody.scrollLeft;
+        	this.calcSize().resizeColumn();
 	}
 }
 
@@ -262,7 +299,7 @@ dxSTable.prototype.onRightClick = function(e)
 dxSTable.prototype.resizeHack = function()
 {
 	if(!browser.isIE7x)
-		this.resizeColumn(this);
+		this.resizeColumn();
 }
 
 var preventSort = function() 
@@ -524,9 +561,12 @@ dxSTable.ColumnMove.prototype =
 		var orx = ex + self.parent.dBody.scrollLeft - self.rx;
 		for(i = 0; i < c; i++) 
 		{
-			ox += self.parent.tHeadCols[i].offsetWidth;
-			if(ox > orx) 
-				break;
+		        if(self.parent.colsdata[i].enabled) 
+		        {
+				ox += self.parent.tHeadCols[i].offsetWidth;
+				if(ox > orx) 
+					break;
+			}
 		}
 		if(i >= c) 
 		{
@@ -1296,7 +1336,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 		}
 		td.appendChild(div);
 		tr.appendChild(td);
-		if(!this.colsdata[i].enabled && !browser.isIE8up)
+		if(!this.colsdata[i].enabled && !browser.isIE7x)
 			td.style.display = "none";
 	}
 	tr.title = cols[0];

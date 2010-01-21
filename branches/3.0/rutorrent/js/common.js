@@ -264,7 +264,8 @@ var theURLs =
 	AddTorrentURL 		: "php/addtorrent.php",
 	SetSettingsURL		: "php/setsettings.php",
 	GetSettingsURL		: "php/getsettings.php",
-	GetPlugingURL		: "php/getplugins.php",
+	GetPluginsURL		: "php/getplugins.php",
+	GetDonePluginsURL	: "php/doneplugins.php",
 	RIPEURL			: "http://www.db.ripe.net/whois?alt_database=ALL&form_type=advanced&searchtext="
 };
 

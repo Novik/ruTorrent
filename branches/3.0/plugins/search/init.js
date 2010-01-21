@@ -6,14 +6,17 @@ if(plugin.canChangeOptions())
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 
 	{
-		var s = '';
-		for(var i=0; i<theSearchEngines.sites.length; i++)
+		if(plugin.enabled)
 		{
-			s+=(theSearchEngines.sites[i].name+'|'+theSearchEngines.sites[i].url);
-			if(i<theSearchEngines.sites.length-1)
-				s+='\r\n';
+			var s = '';
+			for(var i=0; i<theSearchEngines.sites.length; i++)
+			{
+				s+=(theSearchEngines.sites[i].name+'|'+theSearchEngines.sites[i].url);
+				if(i<theSearchEngines.sites.length-1)
+					s+='\r\n';
+			}
+			$('#searchsites').val( s );
 		}
-		$('#searchsites').val( s );
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
@@ -38,7 +41,7 @@ if(plugin.canChangeOptions())
 	theWebUI.setSettings = function() 
 	{
 		plugin.setSettings.call(this);
-		if(this.sitesWasChanged())
+		if(plugin.enabled && this.sitesWasChanged())
 			this.request("?action=setsearch");
 	}
 
@@ -63,4 +66,9 @@ plugin.onLangLoaded = function()
 				"<textarea id='searchsites'></textarea>"+
 			"</div>"+
 		"</fieldset>")[0],theUILang.searchName);
+}
+
+plugin.onRemove = function()
+{
+	this.removePageFromOptions("st_search");
 }

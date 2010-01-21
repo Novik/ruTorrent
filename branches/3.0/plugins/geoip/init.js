@@ -32,18 +32,21 @@ if(plugin.enabled)
 		}
 		theRequestManager.addRequest("prs", null, function(id,peer,value)
 		{
-			var AjaxReq = jQuery.ajax(
-			{
-			        async : false,
-				url : "plugins/geoip/lookup.php",
-				data : { action : "geoip", ip : peer.ip },
-				dataType : "text",
-				success : function(data)
+		        if(plugin.enabled)
+		        {
+				var AjaxReq = jQuery.ajax(
 				{
-					peer.country = data;
-					peer.icon = "geoip_flag_"+data;
-				}
-			});
+				        async : false,
+					url : "plugins/geoip/lookup.php",
+					data : { action : "geoip", ip : peer.ip },
+					dataType : "text",
+					success : function(data)
+					{
+						peer.country = data;
+						peer.icon = "geoip_flag_"+data;
+					}
+				});
+			}
 		});
 		plugin.config.call(this,data);
 		if(plugin.canChangeColumns())
@@ -78,4 +81,9 @@ if(plugin.enabled)
 				setTimeout(arguments.callee,1000);
 		}
 	}
+}
+
+plugin.onRemove = function()
+{
+	theWebUI.getTable("prs").removeColumnById("country");
 }

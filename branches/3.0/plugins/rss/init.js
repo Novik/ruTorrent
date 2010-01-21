@@ -365,7 +365,7 @@ plugin.loadTorrents = theWebUI.loadTorrents;
 theWebUI.loadTorrents = function()
 {
 	plugin.loadTorrents.call(this);
-	if(plugin.allStuffLoaded)
+	if(plugin.enabled && plugin.allStuffLoaded)
 	{
 		var updated = false;
 		var table = this.getTable("rss");
@@ -797,18 +797,21 @@ plugin.resizeTop = theWebUI.resizeTop;
 theWebUI.resizeTop = function( w, h )
 {
 	plugin.resizeTop.call(theWebUI,w,h);
-	if(w!==null)
+	if(plugin.enabled)
 	{
-		$("#RSSList").width( w );
-		if(theWebUI.configured)
-	       	       	this.getTable("rss").resize( w );
+		if(w!==null)
+		{
+			$("#RSSList").width( w );
+			if(theWebUI.configured)
+		       	       	this.getTable("rss").resize( w );
+		}
+        	if(h!==null)
+		{
+			$("#RSSList").height( h );
+			if(theWebUI.configured)
+				this.getTable("rss").resize(null,h); 
+	       	}
 	}
-        if(h!==null)
-	{
-		$("#RSSList").height( h );
-		if(theWebUI.configured)
-			this.getTable("rss").resize(null,h); 
-       	}
 }
 
 rTorrentStub.prototype.clearfiltertime = function()
@@ -1209,3 +1212,20 @@ plugin.onLangLoaded = function()
 	if(thePlugins.isInstalled('ratio'))
 		this.correctRatioFilterDialog();
 };
+
+plugin.onRemove = function()
+{
+        if(theWebUI.updateRSSTimer)
+	        window.clearTimeout(theWebUI.updateRSSTimer);
+	theWebUI.switchLayout(false);
+	theWebUI.switchLabel($$("-_-_-all-_-_-"));
+	$("#RSSList").remove();
+	$("#prss").remove();
+	$("#prss_cont").remove();
+	$("#rsslayout").remove();
+	theDialogManager.hide("dlgAddRSS");
+	theDialogManager.hide("dlgEditRSS");
+	theDialogManager.hide("dlgLoadTorrents");
+	theDialogManager.hide("dlgEditFilters");
+	this.removeButtonFromToolbar("rss");
+}

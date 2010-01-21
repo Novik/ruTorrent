@@ -49,4 +49,11 @@ if(plugin.enabled)
 				setTimeout(arguments.callee,1000);
 		}
 	}
+
+	plugin.onRemove = function()
+	{
+		theWebUI.getTable("trt").removeColumnById("seedingtime");
+		if(thePlugins.isInstalled("rss"))
+			theWebUI.getTable("rss").removeColumnById("seedingtime");
+	}
 }

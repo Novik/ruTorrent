@@ -6,20 +6,23 @@ if(plugin.enabled && plugin.canChangeOptions())
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 
 	{
-		$('#dont_private').attr("checked",(theWebUI.retrackers.dontAddPrivate==1));
-		var s = '';
-		for(var i=0; i<theWebUI.retrackers.trackers.length; i++)
-		{
-			var grp = theWebUI.retrackers.trackers[i];
-			if(i>0)
-				s+='\r\n';
-			for(var j=0; j<grp.length; j++)
+	        if(plugin.enabled)
+	        {
+			$('#dont_private').attr("checked",(theWebUI.retrackers.dontAddPrivate==1));
+			var s = '';
+			for(var i=0; i<theWebUI.retrackers.trackers.length; i++)
 			{
-				s+=grp[j];
-				s+='\r\n';
+				var grp = theWebUI.retrackers.trackers[i];
+				if(i>0)
+					s+='\r\n';
+				for(var j=0; j<grp.length; j++)
+				{
+					s+=grp[j];
+					s+='\r\n';
+				}
 			}
+			$('#eretrackers').val(s);
 		}
-		$('#eretrackers').val(s);
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
@@ -61,7 +64,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 	theWebUI.setSettings = function() 
 	{
 		plugin.setSettings.call(this);
-		if(this.retrackersWasChanged())
+		if(plugin.enabled && this.retrackersWasChanged())
 			this.request("?action=setretrackers");
 	}
 
@@ -96,4 +99,9 @@ plugin.onLangLoaded = function()
 						"<label for='dont_private'>"+theUILang.dontAddToPrivate+"</label>"+
 					"</div>"+
 				"</fieldset>")[0],theUILang.retrackers);
+}
+
+plugin.onRemove = function() 
+{
+	this.removePageFromOptions("st_retrackers");
 }

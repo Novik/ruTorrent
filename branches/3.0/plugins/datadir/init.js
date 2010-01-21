@@ -48,7 +48,7 @@ if(plugin.canChangeMenu())
 	theWebUI.createMenu = function( e, id )
 	{
 		plugin.createMenu.call(this, e, id);
-		if(plugin.allStuffLoaded)
+		if(plugin.enabled && plugin.allStuffLoaded)
 		{
 			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
@@ -131,4 +131,9 @@ plugin.onLangLoaded = function()
 	}
 	else
 		$('#btn_datadir_browse').remove();
+}
+
+plugin.onRemove = function()
+{
+	theDialogManager.hide("dlg_datadir");
 }

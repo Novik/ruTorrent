@@ -61,13 +61,16 @@ if(plugin.enabled)
 		plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 		theWebUI.addAndShowSettings = function(arg) 
 		{
-		        for(var i=0; i<theWebUI.maxRatio; i++)
+			if(plugin.enabled)
 			{
-				$('#rat_min'+i).val( theWebUI.ratios[i].min );
-			        $('#rat_max'+i).val( theWebUI.ratios[i].max );
-			        $('#rat_action'+i).val( theWebUI.ratios[i].action );
-				$('#rat_upload'+i).val( theWebUI.ratios[i].upload );
-				$('#rat_name'+i).val( theWebUI.ratios[i].name );
+			        for(var i=0; i<theWebUI.maxRatio; i++)
+				{
+					$('#rat_min'+i).val( theWebUI.ratios[i].min );
+				        $('#rat_max'+i).val( theWebUI.ratios[i].max );
+			        	$('#rat_action'+i).val( theWebUI.ratios[i].action );
+					$('#rat_upload'+i).val( theWebUI.ratios[i].upload );
+					$('#rat_name'+i).val( theWebUI.ratios[i].name );
+				}
 			}
 			plugin.addAndShowSettings.call(theWebUI,arg);
 		}
@@ -90,7 +93,7 @@ if(plugin.enabled)
 		theWebUI.setSettings = function() 
 		{
 			plugin.setSettings.call(this);
-			if(this.ratioWasChanged())
+			if(plugin.enabled && this.ratioWasChanged())
 				this.request("?action=setratioprm");
 		}
 
@@ -128,7 +131,7 @@ if(plugin.enabled)
 		theWebUI.createMenu = function(e, id)
 		{
 			plugin.createMenu.call(this, e, id);
-			if(plugin.allStuffLoaded)
+			if(plugin.enabled && plugin.allStuffLoaded)
 			{
 				var el = theContextMenu.get(theUILang.Priority);
 				var curNo = null;
@@ -226,4 +229,12 @@ plugin.onLangLoaded = function()
 	}
 	else
 		log(theUILang.ratioUnsupported);
+}
+
+plugin.onRemove = function()
+{
+	this.removePageFromOptions("st_ratio");
+	theWebUI.getTable("trt").removeColumnById("ratiogroup");
+	if(thePlugins.isInstalled("rss"))
+		theWebUI.getTable("rss").removeColumnById("ratiogroup");
 }
