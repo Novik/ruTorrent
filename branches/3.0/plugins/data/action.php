@@ -1,6 +1,14 @@
 <?php
 require_once( '../../php/xmlrpc.php' );
 
+if(isset($_REQUEST['result']))
+{
+	$content = 'log(theUILang.cantAccessData);';
+	header("Content-Length: ".strlen($content));
+	header("Content-Type: text/html");
+	exit($content);
+}
+
 if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 {
 	$req = new rXMLRPCRequest( 
@@ -55,9 +63,5 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 		}
 	}
 }
-
-$content = 'log(theUILang.cantAccessData);';
-header("Content-Length: ".strlen($content));
-header("Content-Type: text/html");
-echo $content;
+header("Location: ".$_SERVER['PHP_SELF'].'?result=0');
 ?>

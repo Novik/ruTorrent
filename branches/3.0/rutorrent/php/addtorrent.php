@@ -6,6 +6,13 @@ require_once( 'rtorrent.php' );
 $uploaded_file = '';
 $success = false;
 
+if(isset($_REQUEST['result']))
+{
+	$content = 'log(theUILang.addTorrent'. ($_REQUEST['result'] ? 'Success' : 'Failed') . ');';
+	header("Content-Length: ".strlen($content));
+	header("Content-Type: text/html");
+	exit($content);
+}
 if(isset($_FILES['torrent_file']))
 {
 	$uploaded_file = getUploadsPath().'/'.$_FILES['torrent_file']['name'];
@@ -67,9 +74,6 @@ if($success)
                 $success = false;
 	}
 }
-$content = 'log(theUILang.addTorrent'. ($success ? 'Success' : 'Failed') . ');';
-header("Content-Length: ".strlen($content));
-header("Content-Type: text/html");
-echo $content;
+header("Location: ".$_SERVER['PHP_SELF'].'?result='.intval($success));
 
 ?>

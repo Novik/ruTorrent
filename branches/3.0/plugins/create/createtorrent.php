@@ -4,6 +4,15 @@ require_once( '../../php/Torrent.php' );
 require_once( '../../php/rtorrent.php' );
 eval(getPluginConf('create'));
 
+function doExit($str)
+{
+	header("Location: ".$_SERVER['PHP_SELF'].'?result='.rawurlencode($str));
+	exit;
+}
+
+if(isset($_REQUEST['result']))
+	exit(rawurldecode($_REQUEST['result']));
+
 ignore_user_abort(true);
 set_time_limit(0);
 if(isset($_REQUEST['path_edit']))
@@ -71,7 +80,7 @@ if(isset($_REQUEST['path_edit']))
 	        		@unlink($randName);
 	        	}
 	        	else
-         		        exit('log(theUILang.cantExecExternal+" ('.$pathToCreatetorrent.')");');
+         		        doExit('log(theUILang.cantExecExternal+" ('.$pathToCreatetorrent.')");');
 	        }
 	        else
 	        {
@@ -111,6 +120,6 @@ if(isset($_REQUEST['path_edit']))
 		$torrent->send();
 	}
        	else
-	        exit('log(theUILang.incorrectDirectory+" ('.$path_edit.')");');
+	        doExit('log(theUILang.incorrectDirectory+" ('.$path_edit.')");');
 }
 ?>

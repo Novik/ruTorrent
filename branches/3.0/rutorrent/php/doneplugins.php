@@ -1,7 +1,9 @@
 <?php
 
 require_once( "xmlrpc.php" );
+require_once( 'settings.php' );
 
+$theSettings = rTorrentSettings::load();
 $jResult = "";
 
 if(!isset($HTTP_RAW_POST_DATA))
