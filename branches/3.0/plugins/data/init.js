@@ -12,12 +12,18 @@ if(plugin.enabled)
 			if(plugin.enabled && (theWebUI.dID!=""))
 			{
 			        if(theWebUI.settings["webui.fls.view"])
+			        {
 			        	theWebUI.getData(theWebUI.dID,obj.id.substr(43));
+			        	return(false);
+				}
 			        else
 			        {
 					var lnk = this.getAttr(obj.id, "link");
 		                	if(!lnk)
+		                	{
 	        	        		theWebUI.getData(theWebUI.dID,obj.id.substr(3));
+						return(false);
+        	        		}
 				}
 			}
 			return(oldDblClick.call(this,obj));
