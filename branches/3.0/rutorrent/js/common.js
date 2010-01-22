@@ -380,19 +380,23 @@ var theConverter =
 	},
 	date: function(dt)
 	{
-		var today = new Date();
-		today.setTime(dt*1000);
-		var month = today.getMonth()+1;
-		month = (month < 10) ? ("0" + month) : month;
-		var day = today.getDate();
-		day = (day < 10) ? ("0" + day) : day;
-		var h = today.getHours();
-		var m = today.getMinutes();
-		var s = today.getSeconds();
-		h = (h < 10) ? ("0" + h) : h;
-		m = (m < 10) ? ("0" + m) : m;
-		s = (s < 10) ? ("0" + s) : s;
-		return(day+"."+month+"."+today.getFullYear()+" "+h+":"+m+":"+s);
+	        if(dt>0)
+	        {
+			var today = new Date();
+			today.setTime(dt*1000);
+			var month = today.getMonth()+1;
+			month = (month < 10) ? ("0" + month) : month;
+			var day = today.getDate();
+			day = (day < 10) ? ("0" + day) : day;
+			var h = today.getHours();
+			var m = today.getMinutes();
+			var s = today.getSeconds();
+			h = (h < 10) ? ("0" + h) : h;
+			m = (m < 10) ? ("0" + m) : m;
+			s = (s < 10) ? ("0" + s) : s;
+			return(day+"."+month+"."+today.getFullYear()+" "+h+":"+m+":"+s);
+		}
+		return('');
 	}
 };
 
@@ -1163,3 +1167,105 @@ var theBTClientVersion =
 		return(ret ? ret : "Unknown ("+origStr+")");
 	}
 };
+
+function getCSSRule( selectorText )
+{
+	function getRulesArray(i)
+	{
+		var crossrule = null;
+		try {
+		if(document.styleSheets[i].cssRules)
+			crossrule=document.styleSheets[i].cssRules;
+		else 
+			if(document.styleSheets[i].rules)
+				crossrule=document.styleSheets[i].rules;
+		} catch(e) {}
+		return(crossrule);
+	}
+
+	selectorText = selectorText.toLowerCase()
+	var ret = null;
+	for( var j=document.styleSheets.length-1; j>=0; j-- )
+	{
+		var rules = getRulesArray(j);
+		for( var i=0; rules && i<rules.length; i++ )
+		{
+			if(rules[i].selectorText && rules[i].selectorText.toLowerCase()==selectorText)
+			{
+				ret = rules[i];
+				break;
+			}			
+		}
+	}
+	return(ret);
+}
+
+function RGBackground( selector )
+{
+        this.channels = [0,0,0];
+        if(selector)
+        {
+		var rule = getCSSRule(selector);
+		if(rule)
+		{
+			var cs = rule.style.backgroundColor;
+			if(cs.charAt(0) == '#')
+        			cs = cs.substr(1);
+			cs = cs.replace(/ /g,'').toLowerCase();
+			var colorDefs =
+			[
+        			{
+					re: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
+        				process: function(bits)
+		        		{
+						return([iv(bits[1]),iv(bits[2]),iv(bits[3])]);
+					}
+				},
+				{
+					re: /^(\w{2})(\w{2})(\w{2})$/,
+					process: function(bits)
+					{
+			        	        return([parseInt(bits[1], 16),parseInt(bits[2], 16),parseInt(bits[3], 16)]);
+					}
+				},
+				{
+					re: /^(\w{1})(\w{1})(\w{1})$/,
+					process: function (bits)
+					{
+						return([parseInt(bits[1] + bits[1], 16),parseInt(bits[2] + bits[2], 16),parseInt(bits[3] + bits[3], 16)]);
+					}
+				}
+			];
+			for(var i = 0; i < colorDefs.length; i++)
+			{
+				var bits = colorDefs[i].re.exec(cs);
+				if(bits)
+				{
+					this.channels = colorDefs[i].process(bits);
+					break;
+				}
+			}
+		}
+	}
+	return(this);
+}
+
+RGBackground.prototype.getColor = function()
+{
+	var r = this.channels[0].toString(16);
+        var g = this.channels[1].toString(16);
+        var b = this.channels[2].toString(16);
+        if(r.length == 1) r = '0' + r;
+        if(g.length == 1) g = '0' + g;
+        if(b.length == 1) b = '0' + b;
+        return('#' + r + g + b);
+	return(this);
+}
+
+RGBackground.prototype.setGradient = function(beginColor,endColor,percent)
+{
+	this.channels[0] = beginColor.channels[0] + iv(percent * (endColor.channels[0] - beginColor.channels[0]) / 100);
+	this.channels[1] = beginColor.channels[1] + iv(percent * (endColor.channels[1] - beginColor.channels[1]) / 100);
+	this.channels[2] = beginColor.channels[2] + iv(percent * (endColor.channels[2] - beginColor.channels[2]) / 100);
+	return(this);
+}

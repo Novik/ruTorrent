@@ -347,7 +347,13 @@ class Torrent
 	        header( 'Content-type: application/x-bittorrent' );
         	header( 'Content-Length: ' . strlen( $data ) );
 	        header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $this->{'creation date'} ) . ' GMT');
-        	header( 'Content-Disposition: attachment; filename="' . ( is_null( $filename ) ? $this->info['name'] . '.torrent' : $filename ) . '"' );
+
+	        if(is_null( $filename ))
+			$filename = $this->info['name'].'.torrent';
+		if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
+			$filename = rawurlencode($filename);
+
+        	header( 'Content-Disposition: attachment; filename="'.$filename.'"' );
 	        exit($data);
     	}
 

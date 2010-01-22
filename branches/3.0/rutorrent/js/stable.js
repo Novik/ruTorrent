@@ -77,6 +77,8 @@ var dxSTable = function()
 	this.created = false;
 	this.colReszObj = null;
 	this.rowCover = null;
+	this.prgStartColor = new RGBackground(".meter-value-start-color");
+	this.prgEndColor = new RGBackground(".meter-value-end-color");
 };
 
 dxSTable.prototype.setPaletteByURL = function(url) 
@@ -1322,7 +1324,9 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 
 		if(this.colsdata[i].type==TYPE_PROGRESS)
 		{
-		        $(div).addClass("meter-value").css({ float: "left" }).width(iv(data[ind])+"%").html("&nbsp;");
+		        $(div).addClass("meter-value").
+		        	css({ float: "left", "background-color" : (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(data[ind])).getColor() }).
+		        	width(iv(data[ind])+"%").html("&nbsp;");
 			$(td).append( $("<span></span>").addClass("meter-text").css({overflow: "visible"}).text(data[ind]) );
 		}
 		else
@@ -1642,6 +1646,7 @@ dxSTable.prototype.setValue = function(row, col, val)
 		if(this.colsdata[c].type==TYPE_PROGRESS)
 		{
 			td.lastChild.style.width = iv(val)+"%";
+			td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
 			td.firstChild.innerHTML = escapeHTML(val);
 		}
 		else

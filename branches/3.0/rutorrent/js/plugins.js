@@ -264,35 +264,3 @@ rPlugin.prototype.removeSeparatorFromToolbar = function(idBefore)
 {
 	$("#mnu_"+idBefore).prev().remove();
 }
-
-function getCSSRule( selectorText )
-{
-	function getRulesArray(i)
-	{
-		var crossrule = null;
-		try {
-		if(document.styleSheets[i].cssRules)
-			crossrule=document.styleSheets[i].cssRules;
-		else 
-			if(document.styleSheets[i].rules)
-				crossrule=document.styleSheets[i].rules;
-		} catch(e) {}
-		return(crossrule);
-	}
-
-	selectorText = selectorText.toLowerCase()
-	var ret = null;
-	for( var j=document.styleSheets.length-1; j>=0; j-- )
-	{
-		var rules = getRulesArray(j);
-		for( var i=0; rules && i<rules.length; i++ )
-		{
-			if(rules[i].selectorText && rules[i].selectorText.toLowerCase()==selectorText)
-			{
-				ret = rules[i];
-				break;
-			}			
-		}
-	}
-	return(ret);
-}
