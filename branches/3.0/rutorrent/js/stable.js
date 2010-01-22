@@ -1327,6 +1327,10 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 		        $(div).addClass("meter-value").
 		        	css({ float: "left", "background-color" : (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(data[ind])).getColor() }).
 		        	width(iv(data[ind])+"%").html("&nbsp;");
+			if(!iv(data[ind]))
+				$(div).hide();
+			else
+				$(div).show();
 			$(td).append( $("<span></span>").addClass("meter-text").css({overflow: "visible"}).text(data[ind]) );
 		}
 		else
@@ -1647,6 +1651,10 @@ dxSTable.prototype.setValue = function(row, col, val)
 		{
 			td.lastChild.style.width = iv(val)+"%";
 			td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
+			if(!iv(val))
+				$(td.lastChild).hide();
+			else
+				$(td.lastChild).show();
 			td.firstChild.innerHTML = escapeHTML(val);
 		}
 		else
