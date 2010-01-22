@@ -19,7 +19,7 @@ if(plugin.enabled)
 			        else
 			        {
 					var lnk = this.getAttr(obj.id, "link");
-		                	if(!lnk)
+		                	if(lnk==null)
 		                	{
 	        	        		theWebUI.getData(theWebUI.dID,obj.id.substr(3));
 						return(false);
