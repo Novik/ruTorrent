@@ -141,7 +141,7 @@ function toLog( $str )
 function isLocalMode()
 {
 	global $scgi_host;
-	global $scgi_post;
+	global $scgi_port;
 	return(($scgi_host == "127.0.0.1") || ($scgi_host == "localhost") || ($scgi_port == 0));
 }
 
