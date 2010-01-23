@@ -24,7 +24,7 @@ if($needStart)
 		0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0];
 	$interval = $updateInterval*60;
 
-	$req = new rXMLRPCRequest( new rXMLRPCCommand('schedule', array( "scheduler", $startAt.'', $interval.'', 
+	$req = new rXMLRPCRequest( new rXMLRPCCommand('schedule', array( "scheduler".getUser(), $startAt.'', $interval.'', 
 		'execute={sh,-c,'.getPHP().' '.$rootPath.'/plugins/scheduler/update.php '.getUser().' & exit 0}' )) );
 	if($req->run() && !$req->fault)
 	{

@@ -1,6 +1,6 @@
 <?php
 
-$req = new rXMLRPCRequest( new rXMLRPCCommand('schedule_remove', 'scheduler') );
+$req = new rXMLRPCRequest( new rXMLRPCCommand('schedule_remove', 'scheduler'.getUser()) );
 $req->run();
 
 ?>

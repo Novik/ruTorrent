@@ -10,7 +10,7 @@ foreach( $params as $i=>$prm )
 		$cmd = new rXMLRPCCommand("on_erase");
 	else
 		$cmd = new rXMLRPCCommand("system.method.set_key", "event.download.erased");
-	$cmd->addParameters( array('erasedata'.$i, $prm ) );
+	$cmd->addParameters( array('erasedata'.$i.getUser(), $prm ) );
 	$req->addCommand($cmd);
 }	    
 $req->run();

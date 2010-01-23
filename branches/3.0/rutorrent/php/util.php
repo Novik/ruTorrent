@@ -217,10 +217,11 @@ function fullpath($path,$base = '')
 
 function getConfFile($name)
 {
-	global $rootPath;
-	if(!empty($_SERVER['REMOTE_USER']))
+	$user = getUser();
+	if($user!='')
 	{
-		$conf = $rootPath.'/conf/users/'.strtolower($_SERVER['REMOTE_USER']).'/'.$name;
+	       	global $rootPath;
+		$conf = $rootPath.'/conf/users/'.$user.'/'.$name;
 		if(is_file($conf) && is_readable($conf))
 			return($conf);
 	}
@@ -234,9 +235,10 @@ function getPluginConf($plugin)
 	$conf = $rootPath.'/plugins/'.$plugin.'/conf.php';
 	if(is_file($conf) && is_readable($conf))
 		$ret.='require_once("'.$conf.'");';
-	if(!empty($_SERVER['REMOTE_USER']))
+	$user = getUser();
+	if($user!='')
 	{
-		$conf = $rootPath.'/conf/users/'.strtolower($_SERVER['REMOTE_USER']).'/plugins/'.$plugin.'/conf.php';
+		$conf = $rootPath.'/conf/users/'.$user.'/plugins/'.$plugin.'/conf.php';
 		if(is_file($conf) && is_readable($conf))
 			$ret.='require_once("'.$conf.'");';
 	}
@@ -245,16 +247,17 @@ function getPluginConf($plugin)
 
 function getUser()
 {
-	return( !empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] : '' );
+	return( (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) ? strtolower($_SERVER['REMOTE_USER']) : '' );
 }
 
 function getProfilePath()
 {
 	global $rootPath;
         $ret = $rootPath.'/share';
-        if(!empty($_SERVER['REMOTE_USER']))
+        $user = getUser();
+        if($user!='')
         {
-        	$ret.=('/users/'.strtolower($_SERVER['REMOTE_USER']));
+        	$ret.=('/users/'.$user);
         	if(!is_dir($ret))
         	{
 	        	mkdir($ret);
