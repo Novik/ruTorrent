@@ -1,6 +1,6 @@
 #!/bin/sh
 
-log="YES"
+log="NO"
 log_file="/tmp/erasedata.log"
 
 # Don't use $1, because of possible spaces in data dirname.
