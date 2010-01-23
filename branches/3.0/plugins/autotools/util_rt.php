@@ -113,6 +113,20 @@ function rtGetRelativePath( $base_dir, $real_dir )
 }
 
 //------------------------------------------------------------------------------
+// Check if path is a file (without 2 Gb limit)
+//------------------------------------------------------------------------------
+function rtIsFile( $path )
+{
+	if( is_file( $path ) )
+		return true;
+
+	$out = array();
+	$ret = "1";
+	exec( 'test -f '.escapeshellarg( $path ), $out, $ret );
+	return $ret == "0";
+}
+
+//------------------------------------------------------------------------------
 // Check if $dir exists and try to create it if not
 //------------------------------------------------------------------------------
 function rtMkDir( $dir, $mode = 0777 )
@@ -134,7 +148,7 @@ function rtMkDir( $dir, $mode = 0777 )
 function rtMoveFile( $src, $dst, $dbg = false )
 {
 	// Check if source file exists
-	if( !is_file( $src ) )
+	if( !rtIsFile( $src ) )
 	{
 		if( $dbg ) rtDbg( __FUNCTION__, "not a file (".$src.")" );
 		return false;
@@ -148,7 +162,7 @@ function rtMoveFile( $src, $dst, $dbg = false )
 	}
 
 	// Check if destination file directory exists or can be deleted
-	if( is_file( $dst ) )
+	if( rtIsFile( $dst ) )
 		unlink( $dst );
 
 	//$atime = fileatime( $src );
@@ -245,7 +259,7 @@ function rtScanFiles( $path, $mask, $ignore_case = false, $subdir = '' )
 				$ret = array_merge( $ret,
 					rtScanFiles( $path, $mask, $ignore_case, $subdir.$item ) );
 			}
-			elseif( is_file( $path_to_item ) &&
+			elseif( rtIsFile( $path_to_item ) &&
 				fnmatch( $mask, $ignore_case ? strtolower( $item ) : $item ) )
 			{
 				$ret[] = $subdir.$item;
