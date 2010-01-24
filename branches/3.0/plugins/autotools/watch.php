@@ -2,10 +2,11 @@
 
 if( !chdir( dirname( __FILE__ ) ) )
 	exit;
-require_once( "../../php/xmlrpc.php" );
+
+require_once( "../../php/rtorrent.php" );
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
-eval(getPluginConf('autotools'));
+eval( getPluginConf( 'autotools' ) );
 
 if( count( $argv ) > 1 )
 	$_SERVER['REMOTE_USER'] = $argv[1];
@@ -82,15 +83,22 @@ if( $is_ok )
 
 		if( $is_ok )
 		{
-			// rtAddFile( $fname, $isStart, $directory, $label, $dbg = false )
-			$hash = rtAddTorrent(
+//			$hash = rtAddTorrent(
+//				$torrent_file,			// path to .torrent file
+//				$auto_start,			// start it or not
+//				$dest_path,			// directory for torrent's data
+//				null,				// label is emply
+//				$autodebug_enabled
+//			);
+			$hash = rTorrent::sendTorrent(
 				$torrent_file,			// path to .torrent file
-				$auto_start,			// don't start it
+				$auto_start,			// start it or not
+				true,				// add_path
 				$dest_path,			// directory for torrent's data
 				null,				// label is emply
-				$autodebug_enabled
+				false,				// don't saveUploadedTorrents
+				false				// don't fast_resume
 			);
-
 			if( $hash === false )
 			{
 				Debug( "rtAddTorrent() fail" );

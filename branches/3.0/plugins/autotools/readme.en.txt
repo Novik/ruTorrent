@@ -1,10 +1,11 @@
-Plug-in "autotools" version 1.4
 
-for rutorrent Webui (rtorrent web gui)
-(http://code.google.com/p/rutorrent)
+    Plug-in "autotools" version 1.5
+
+    for rutorrent Webui (rtorrent web gui)
+    (http://code.google.com/p/rutorrent)
 
 
-	Plugin Author: Dmitry Romanovsky (dmrom)
+    Plugin Author: Dmitry Romanovsky (dmrom)
 
 Plugin Features:
 1. "AutoLabel": Automatic creation of labels when adding a new torrent to rutorrent WebUI
@@ -78,6 +79,9 @@ With this, you can create a system of watch directories to drop .torrent files i
 ----------------------------------------------------------------------------------------------
 Version History:
 ----------------------------------------------------------------------------------------------
+
+    1.5
+    - Plugin was adapted for ruTorrent 3.0
 
     1.4
     - Added function AutoWatch

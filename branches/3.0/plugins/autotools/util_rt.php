@@ -1,6 +1,7 @@
 <?php
 
 require_once( "../../php/xmlrpc.php" );
+require_once( "../../php/Torrent.php" );
 
 //------------------------------------------------------------------------------
 // Debug stub
@@ -17,19 +18,27 @@ function rtDbg( $prefix, $str )
 
 
 //------------------------------------------------------------------------------
-// Making current process a daemon
+// Check if script was launched in background (with --daemon switch)
 //------------------------------------------------------------------------------
-function rtDaemon()
+function rtIsDaemon( $args )
 {
-	$pid = pcntl_fork();
-	if( $pid < 0 )
-		return false;	// fork fail
-	elseif( $pid )
-		exit;		// I am parent
-	else {
-		posix_setsid();
-		return true;	// I am child
-	}
+	foreach( $args as $arg )
+		if( $arg == '--daemon' )
+			return true;
+	return false;
+}
+
+//------------------------------------------------------------------------------
+// Making current process a daemon (run in background)
+//------------------------------------------------------------------------------
+function rtDaemon( $php, $script, $args )
+{
+	if( !$php || $php == '' ) $php = 'php';
+	$params = escapeshellarg( $script ).' --daemon';
+	foreach( $args as $arg )
+		$params .= ' '.escapeshellarg( $arg );
+	exec( $php.' '.$params.' > /dev/null 2>/dev/null &', $out, $ret );
+	exit( (int)$ret );
 }
 
 
@@ -123,7 +132,7 @@ function rtIsFile( $path )
 	$out = array();
 	$ret = "1";
 	exec( 'test -f '.escapeshellarg( $path ), $out, $ret );
-	return $ret == "0";
+	return (int)$ret == 0;
 }
 
 //------------------------------------------------------------------------------
@@ -353,7 +362,9 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 	else
 		$method = 'load_verbose';
 
+	if( $dbg ) rtDbg( __FUNCTION__, "1".$fname );
 	$torrent = new Torrent($fname);
+	if( $dbg ) rtDbg( __FUNCTION__, "2" );
 	if( $torrent->errors() )
 	{
 		if( $dbg ) rtDbg( __FUNCTION__, "fail to create Torrent() object" );
