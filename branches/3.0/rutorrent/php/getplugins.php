@@ -170,7 +170,7 @@ if($handle = opendir('../plugins'))
 			$jResult.="log(theUILang.badLinkTorTorrent);";
 		else
 		{
-			$jResult.="theWebUI.rTorrent = { version : '".$theSettings->version."' };";
+			$jResult.="theWebUI.systemInfo = { rTorrent : { version : '".$theSettings->version."' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
 	        	if($do_diagnostic)
 	        	{
 	        	        $up = getUploadsPath();

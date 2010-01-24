@@ -57,7 +57,7 @@ if(plugin.enabled)
 						else
 							if(this.dirs[theWebUI.dID].getEntryPriority(fid))
 								fno = fid.substr(3);
-						if((fno!=null) && (this.files[theWebUI.dID][fno].size>=2147483647))
+						if((fno!=null) && (this.files[theWebUI.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles)
 							fno = null;
 					}
 					theContextMenu.add( [theUILang.getData,  (fno==null) ? null : "theWebUI.getData('" + theWebUI.dID + "',"+fno+")"] );

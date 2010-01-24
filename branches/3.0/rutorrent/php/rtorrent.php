@@ -3,6 +3,7 @@
 require_once( dirname(__FILE__).'/util.php' );
 require_once( $rootPath.'/php/xmlrpc.php' );
 require_once( $rootPath.'/php/Torrent.php' );
+require_once( $rootPath.'/php/lfs.php' );
 
 class rTorrent
 {
@@ -108,7 +109,7 @@ class rTorrent
 				$torrent->{'libtorrent_resume'}['files'] = array();
 			foreach($files as $key=>$file)
 			{
-				$ss = @stat($base.$file);
+				$ss = lfs::stat($base.$file);
 				if($ss===false)
 					return(false);
 				if(count($torrent->{'libtorrent_resume'}['files'])<$key)
