@@ -3,12 +3,18 @@
 if( !chdir( dirname( __FILE__) ) )
 	exit;
 
+# Script arguments are:
+# 0: script name
+# 1: hash
+# 2: target datadir
+# 3: flag, "1" means "move datafiles"
+# 4: username
 if( count( $argv ) > 4 )
 	$_SERVER['REMOTE_USER'] = $argv[4];
 
 require_once( '../../php/xmlrpc.php' );
 require_once( './util_rt.php' );
-eval(getPluginConf('datadir'));
+eval( getPluginConf( 'datadir' ) );
 
 $DataDir_Sem = rtSemGet( fileinode( __FILE__ ) );
 rtSemLock( $DataDir_Sem );
@@ -25,9 +31,9 @@ Debug( "--- begin ---" );
 $is_ok = true;
 umask( $datadir_umask );
 
-if( count( $argv ) < 5 )
+if( count( $argv ) < 4 )
 {
-	Debug( "called without arguments (3 params wanted)" );
+	Debug( "called without arguments (at least 3 params wanted)" );
 	$is_ok = false;
 }
 else {

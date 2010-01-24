@@ -1,8 +1,10 @@
 <?php
 
+// util.php loads config and defines $pathToPHP variable
+require_once( "../../php/util.php" );
 require_once( "../../php/xmlrpc.php" );
 require_once( './util_rt.php' );
-eval(getPluginConf('datadir'));
+eval( getPluginConf( 'datadir' ) );
 
 function Debug( $str )
 {
