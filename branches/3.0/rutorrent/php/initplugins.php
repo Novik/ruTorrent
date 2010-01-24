@@ -60,8 +60,9 @@ function getPluginInfo( $name, $permissions )
 				}
 			}
 		}
-		if(!array_key_exists("runlevel",$info))
-			$level = 10.0;
+//dmrom: Seems like a rudiment and produce warnings in "execute_log="
+//		if(!array_key_exists("runlevel",$info))
+//			$level = 10.0;
 		if($permissions!==false)
 		{
 			if(!getFlag($permissions,$name,"enabled"))
@@ -92,7 +93,7 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 			$level = getPluginInfo( $file, $permissions );
 			if($level!==false)
 			{
-       		                $php = "../plugins/".$file."/init.php";
+				$php = "../plugins/".$file."/init.php";
 				if(!is_readable($php))
 					$php = NULL;
 				$init[] = array( "php" => $php, "name" => $file, "level" => $level );
@@ -103,7 +104,10 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 	usort($init,"pluginsSort");
 	$do_diagnostic = false;
 	foreach($init as $plugin)
-		require_once( $plugin["php"] );
+	{
+		if($plugin["php"])
+			require_once( $plugin["php"] );
+	}
 	$theSettings->store();
 }
 
