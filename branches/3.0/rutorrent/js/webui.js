@@ -2124,9 +2124,9 @@ var theWebUI =
 	{
 		this.timer.stop();
 		if(this.interval ==- 1) 
-			this.interval = this.settings["webui.update_interval"] + this.timer.interval * 4;
+			this.interval = iv(this.settings["webui.update_interval"]) + this.timer.interval * 4;
 		else 
-			this.interval = iv((this.interval + this.settings["webui.update_interval"] + this.timer.interval * 4) / 2);
+			this.interval = iv((this.interval + iv(this.settings["webui.update_interval"]) + this.timer.interval * 4) / 2);
 		this.updTimer = window.setTimeout(this.update, this.interval);
    	},
 
