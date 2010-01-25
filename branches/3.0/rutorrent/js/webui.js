@@ -957,8 +957,8 @@ var theWebUI =
                							table.setValueById(i, j, entry.data[j]);
 					}
 				}
-				table.Sort();
 			}
+			table.Sort();
        	 	}
 	},
 

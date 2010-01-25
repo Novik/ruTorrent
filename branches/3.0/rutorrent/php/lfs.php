@@ -30,16 +30,19 @@ class LFS
 
 	static public function is_file($fname)
 	{
-		return(@is_file($fname) || (!@is_dir($fname) && @file_exists($fname) && self::test($fname,'f')));
+		return(@is_file($fname) || ((PHP_INT_SIZE<=4) && !@is_dir($fname) && @file_exists($fname) && self::test($fname,'f')));
 	}
 
 	static public function stat($fname)
 	{
 	        $ss = @stat($fname);
-	        if($ss==false)
-	        	return(@file_exists($fname) ? self::statPrim($fname) : false);
-	        if((PHP_INT_SIZE<=4) && (($ss["blocks"]==-1) || ($ss["blocks"]>4194303)))
-	        	return(self::statPrim($fname));
+	        if(PHP_INT_SIZE<=4)
+	        {
+		        if($ss==false)
+		        	return(@file_exists($fname) ? self::statPrim($fname) : false);
+		        if(($ss["blocks"]==-1) || ($ss["blocks"]>4194303))
+		        	$ss = self::statPrim($fname);
+		}
 		return($ss);
 	}
 

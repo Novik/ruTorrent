@@ -112,7 +112,7 @@ theWebUI.config = function(data)
 	        obj:		new dxSTable(),
 		container:	"RSSList",
 		columns:	cloneObject(theWebUI.tables["trt"].columns),
-		format:		theFormatter.torrents,
+		format:		this.tables.trt.format,
                 onselect:	function(e,id) { theWebUI.rssSelect(e,id) },
 		ondblclick:	function(obj) { theWebUI.rssDblClick(obj); return(false); }
 	};
@@ -362,9 +362,9 @@ theWebUI.rssSelect = function(e, id)
 }
 
 plugin.loadTorrents = theWebUI.loadTorrents;
-theWebUI.loadTorrents = function()
+theWebUI.loadTorrents = function(needSort)
 {
-	plugin.loadTorrents.call(this);
+	plugin.loadTorrents.call(this,needSort);
 	if(plugin.enabled && plugin.allStuffLoaded)
 	{
 		var updated = false;

@@ -2,17 +2,9 @@
 
 require_once( 'util.php' );
 
-$filename = getSettingsPath()."/uisettings.json";
-$s = '{}';
-if( is_readable($filename) )
-{
-	$w = @fopen($filename, "rb");
-	if($w)
-	{
-    	    $s = fgets($w);
-	    fclose($w);
-	}	    
-}
+$s = @file_get_contents(getSettingsPath()."/uisettings.json");
+if($s==false)
+	$s = '{}';
 header("Content-Length: ".strlen($s));
 header("Content-Type: application/json; charset=UTF-8");
 echo $s;
