@@ -1,6 +1,6 @@
 ﻿
  
- theUILang.ratioUnsupported	= "Додатак Ratio: this version of rTorrent does't support ratio. Plugin will not work.";
+ theUILang.ratioUnsupported	= "Додатак Ratio: this version of rTorrent doesn't support ratio. Plugin will not work.";
  theUILang.ratios			    = "Односне групе";
  theUILang.ratio			    = "Односна група";
  theUILang.mnuRatio		    = "Поставити односну групу";

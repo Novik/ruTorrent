@@ -267,12 +267,9 @@
  //buttons
  add_button			: "Dosya Ekle",
  add_url			: "URL Ekle",
- ok1				: "   Tamam   ",
- ok2				: "   Tamam   ",
- ok3				: "   Tamam   ",
- Cancel1			: " İptal ",
- Cancel2			: " İptal ",
- no1				: "   Hayır   ",
+ ok				: "   Tamam   ",
+ Cancel				: " İptal ",
+ no				: "   Hayır   ",
  
  mnu_add			: "Torrent Ekle",
  mnu_remove			: "Kaldır",
@@ -358,8 +355,8 @@
  pluginCantStart		: "plugin can't start for unknown reason.",
  doFastResume			: "Fast resume",
  innerSearch			: "Local torrents",
- removeTeg			: "Remove teg",
- errMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. The plugin will not work.",
- warnMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. Some functionality will be unavailable.",
+ removeTeg			: "Remove tag",
+ errMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Plugin will not work.",
+ warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
  plgShutdown			: "Shutdown"
  };

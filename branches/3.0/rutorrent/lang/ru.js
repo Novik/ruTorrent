@@ -36,7 +36,6 @@
  General			: "Общее",
  Downloads			: "Закачки",
  Connection			: "Соединение",
- 
  BitTorrent			: "BitTorrent",
  Queueing			: "Очередность",
  Scheduler			: "Расписание",

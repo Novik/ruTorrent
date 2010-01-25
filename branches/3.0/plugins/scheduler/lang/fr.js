@@ -7,13 +7,13 @@
 
  theUILang.schUnlimited			= "Unlimited";
  theUILang.schLimited			= "Limited";
- theUILang.schTurnOff			= "Turn Off";
- theUILang.schSeedingOnly			= "Seeding Only";
+ theUILang.schTurnOff			= "Turn off";
+ theUILang.schSeedingOnly			= "Seeding only";
 
  theUILang.schUnlimitedDesc		= "Unlimited - Global limit is absent";
  theUILang.schLimitedDesc			= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc			= "Turn Off - Stops all torrents";
- theUILang.schSeedingOnlyDesc		= "Seeding Only - Only upload data";
+ theUILang.schTurnOffDesc			= "Turn off - Stops all torrents";
+ theUILang.schSeedingOnlyDesc		= "Seeding only - Only upload data";
 
  theUILang.schLimitedUL			= "Limited UL";
  theUILang.schLimitedDL			= "Limited DL";

@@ -17,6 +17,7 @@
  *    http://www.mozilla.org/MPL/MPL-1.1.html
  * 
  * == END LICENSE == 
+ * 
  * File Name: cs.js
  * 	Czech language file.
  * 
@@ -261,6 +262,7 @@
  Tot_size		: "Celková velikost",
  Created_on		: "Vytvořeno dne",
  Comment		: "Komentář",
+
   
  //buttons
  add_button		: "Přidat soubor",
@@ -314,14 +316,14 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your web server does not support PHP. Correct this and try again.",
+ PHPDoesnt_enabled		: "Your Web-server does not support PHP. Correct this and try again.",
  Speed				: "Speed",
- Dont_add_tname			: "Don't add torrent's name to directory", 
+ Dont_add_tname			: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",
  badXMLRPCVersion		: "rTorrent is compiled with incorrect version of xmlrpc-c library, without i8 support. Version must be >= 1.11. Some functionality will be unavailable.",
  badLinkTorTorrent		: "Bad link to rTorrent. Check if it is really running. Check $scgi_port and $scgi_host settings in config.php and scgi_port in rTorrent configuration file.",
- badUploadsPath			: "Web server can't access torrents directory for read/write/execute. You can't add torrents through ruTorrent.",
- badSettingsPath		: "Web server can't access settings directory for read/write/execute. ruTorrent can't save own settings.",
+ badUploadsPath			: "Web-server can't access torrents directory for read/write/execute. You can't add torrents through ruTorrent.",
+ badSettingsPath		: "Web-server can't access settings directory for read/write/execute. ruTorrent can't save own settings.",
  mnu_help			: "About",
  badUploadsPath2		: "rTorrent's user can't access torrents directory for read/execute. You can't add torrents through ruTorrent.",
  View				: "View",
@@ -332,11 +334,11 @@
  badTestPath			: "rTorrent's user can't access file ./test.sh for read/execute. ruTorrent will not work.",
  badSettingsPath2		: "rTorrent's user can't access settings directory for read/write/execute. ruTorrent will not work.",
  scrapeDownloaded		: "Downloaded",
- badSessionPath			: "Web server can't access rTorrent's session directory for read. ruTorrent will not work.",
+ badSessionPath			: "Web-server can't access rTorrent's session directory for read. ruTorrent will not work.",
  Total				: "Total",
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
- addTorrentSuccess		: "torrent is succesfully passed to rTorrent.",
- addTorrentFailed		: "Error: torrent is doesn't passed to rTorrent.",
+ addTorrentSuccess		: "torrent was successfully passed to rTorrent.",
+ addTorrentFailed		: "Error: torrent wasn't passed to rTorrent.",
  pnlState			: "State",
  newLabel			: "New Label",
  enterLabel			: "Enter Label",
@@ -353,8 +355,8 @@
  pluginCantStart		: "plugin can't start for unknown reason.",
  doFastResume			: "Fast resume",
  innerSearch			: "Local torrents",
- removeTeg			: "Remove teg",
- errMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. The plugin will not work.",
- warnMustBeInSomeHost		: "ruTorrent and rTorrent must be in some host. Some functionality will be unavailable.",
+ removeTeg			: "Remove tag",
+ errMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Plugin will not work.",
+ warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
  plgShutdown			: "Shutdown"
  };
