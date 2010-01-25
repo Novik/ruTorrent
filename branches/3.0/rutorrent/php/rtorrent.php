@@ -109,7 +109,7 @@ class rTorrent
 				$torrent->{'libtorrent_resume'}['files'] = array();
 			foreach($files as $key=>$file)
 			{
-				$ss = lfs::stat($base.$file);
+				$ss = LFS::stat($base.$file);
 				if($ss===false)
 					return(false);
 				if(count($torrent->{'libtorrent_resume'}['files'])<$key)

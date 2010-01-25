@@ -10,7 +10,7 @@ $curFile = null;
 if(isset($_REQUEST['dir']))
 {
 	$dir = rawurldecode($_REQUEST['dir']);
-	if(is_file($dir) && 
+	if(LFS::is_file($dir) && 
 		(($theSettings->uid<0) || ($theSettings->gid>0) || 
 		isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0004)))
 	{
@@ -54,7 +54,7 @@ if($dh)
 			$dirs['/'.$file] = $path;
 		else
 		{
-			if(is_file($path) && is_readable($path)
+			if(LFS::is_file($path) && is_readable($path)
 				&& ( $theSettings->uid<0 || $theSettings->gid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0004))
 				)
 				$files[$file] = $path;

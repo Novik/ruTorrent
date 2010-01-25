@@ -47,7 +47,9 @@ if(isset($_REQUEST['path_edit']))
 	}
 	if(count($trackers)>0)
 		$announce_list[] = $trackers;
-	$path_edit = trim(addslash($_REQUEST['path_edit']));
+	$path_edit = trim($_REQUEST['path_edit']);
+	if(is_dir($path_edit))
+		$path_edit = addslash($path_edit);
 	$randName = null;
 	if(strpos($path_edit,$topDirectory)===0)
 	{

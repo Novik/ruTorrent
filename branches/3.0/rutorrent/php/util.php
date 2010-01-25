@@ -2,6 +2,7 @@
 
 $rootPath = realpath(dirname(__FILE__)."/..");
 require_once( $rootPath.'/conf/config.php' );
+require_once( $rootPath.'/php/lfs.php' );
 $conf = getConfFile('config.php');
 if($conf)
 	require_once($conf);
@@ -153,7 +154,7 @@ function isLocalMode()
 
 function isUserHavePermissionPrim($uid,$gid,$file,$flags)
 {
-	$ss=@stat($file);
+	$ss=LFS::stat($file);
 	if($ss)
 	{
 		$p=$ss['mode'];
@@ -178,7 +179,7 @@ function isUserHavePermission($uid,$gid,$file,$flags)
 	if($gid<=0)
 	{
 	        if(($flags & 0x0001) && !is_dir($file))
-	                return(($ss=@stat($file)) && ($ss['mode'] & 0x49));
+	                return(($ss=LFS::stat($file)) && ($ss['mode'] & 0x49));
 	        else
 			return(true);
 	}
