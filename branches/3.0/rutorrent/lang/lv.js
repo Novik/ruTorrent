@@ -71,9 +71,9 @@
  Listening_Port		: "Savienojuma porti",
  Port_f_incom_conns	: "Ports ienākošajiem savienojumiem",
  Random_Port		: "Nejaušs ports",
- Rnd_port_torr_start: "Mainīt portu pie katras &micro;Torrent palaišanas",
+ Rnd_port_torr_start: "Mainīt portu pie katras rTorrent palaišanas",
  En_UPnP_mapp		: "Ieslēgt UPnP portu kartēšanu",
- Add_torr_mustdie_f	: "Pievienot &micro;Torrent Windows Firewall izņēmumiem (Windows XP SP2 vai jaunāka)",
+ Add_torr_mustdie_f	: "Pievienot rTorrent Windows Firewall izņēmumiem (Windows XP SP2 vai jaunāka)",
  Proxy_Server		: "Proxy serveris",
  Type				: "Tips",
  none				: "(tukšs)",
@@ -153,7 +153,7 @@
  Advanced			: "Papildus",
  Advanced_label		: "Papildus iespējas [Nav ieteicams labot!]",
  Cancel				: "Atcelt",
- uTorrent_settings	: "&micro;Torrent atribūti",
+ uTorrent_settings	: "rTorrent atribūti",
  
 // Main window
  Doesnt_support		: "ruTorrent neatbalsta tavu interneta pārlūku.",

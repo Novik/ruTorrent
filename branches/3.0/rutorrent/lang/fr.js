@@ -71,9 +71,9 @@
  Listening_Port		: "Port d'\u00e9coute",
  Port_f_incom_conns	: "Port utilis\u00e9 pour les connexions entrantes",
  Random_Port		: "Port al\u00e9atoire",
- Rnd_port_torr_start: "S\u00e9lection al\u00e9atoire du port \u00e0 chaque fois que &micro;Torrent d\u00e9marre",
+ Rnd_port_torr_start: "S\u00e9lection al\u00e9atoire du port \u00e0 chaque fois que rTorrent d\u00e9marre",
  En_UPnP_mapp		: "Activer le mappage de port UPnP",
- Add_torr_mustdie_f	: "Ajouter &micro;Torrent aux exceptions du Pare-feu de XP (SP2 ou ult\u00e9rieur)",
+ Add_torr_mustdie_f	: "Ajouter rTorrent aux exceptions du Pare-feu de XP (SP2 ou ult\u00e9rieur)",
  Proxy_Server		: "Serveur proxy",
  Type				: "Type",
  none				: "(aucun)",
@@ -153,7 +153,7 @@
  Advanced			: "Avanc\u00e9es",
  Advanced_label		: "Options avanc\u00e9es [Attention : \u00e0 modifier avec pr\u00e9caution !]",
  Cancel				: "Annuler",
- uTorrent_settings	: "Options de &micro;Torrent",
+ uTorrent_settings	: "Options de rTorrent",
  
 // Fen\u00eatre principale
  Doesnt_support		: "La ruTorrent ne supporte pas votre navigateur.",

@@ -625,6 +625,11 @@ rTorrentStub.prototype.getfilesResponse = function(xml)
 		fls.size = parseInt(this.getValue(values,3));
 		var get_size_chunks = parseInt(this.getValue(values,2));	// f.get_size_chunks
 		var get_completed_chunks = parseInt(this.getValue(values,1));	// f.get_completed_chunks
+log(fls.name);
+log(get_completed_chunks);
+log(get_size_chunks);
+		if(get_completed_chunks>get_size_chunks)
+			get_completed_chunks = get_size_chunks;
 		var get_completed_bytes = (get_size_chunks==0) ? 0 : fls.size/get_size_chunks*get_completed_chunks;
 		fls.done = get_completed_bytes;
 		fls.priority = this.getValue(values,4);
