@@ -569,4 +569,5 @@ function correctContent()
 		$("#PluginList").remove();
 		$("#tab_PluginList").remove();
 	}
+	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
 }

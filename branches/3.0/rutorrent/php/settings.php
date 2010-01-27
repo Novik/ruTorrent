@@ -14,6 +14,7 @@ class rTorrentSettings
 	public $uid = -1;
 	public $iVersion = null;
 	public $version;
+	public $libVersion;
 	public $plugins = array();
 	public $mygid = -1;
 	public $myuid = -1;
@@ -74,6 +75,7 @@ class rTorrentSettings
 				new rXMLRPCCommand("get_directory"),
 				new rXMLRPCCommand("get_session"),
 				new rXMLRPCCommand("system.client_version"),
+				new rXMLRPCCommand("system.library_version"),
 				new rXMLRPCCommand("set_xmlrpc_size_limit",67108863)
 				) );
 			if($req->run() && !$req->fault)
@@ -81,6 +83,7 @@ class rTorrentSettings
 				$this->directory = $req->val[0];
   		                $this->session = $req->val[1];
 				$this->version = $req->val[2];
+				$this->libVersion = $req->val[3];
 				$parts = explode('.', $this->version);
 				$this->iVersion = 0;
 				for($i = 0; $i<count($parts); $i++)

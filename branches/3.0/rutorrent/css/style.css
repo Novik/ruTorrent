@@ -261,6 +261,7 @@ div#tadd input {margin-bottom: 1px}
 #st_up { background:url(../images/status_up.gif) 6px no-repeat; }
 #st_down { background:url(../images/status_down.gif) 6px no-repeat; }
 .statuscell {vertical-align: center; padding-left: 25px; height: 20px; line-height: 20px; border-right: 1px solid #A0A0A0;}
+#st_system { padding-left: 8px }
 .sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
 .stval { padding-right: 3px; overflow: hidden; width: 68px; }
 .speedEdit { width: 320px }
