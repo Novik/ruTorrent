@@ -132,13 +132,14 @@ var theWebUI =
 		"webui.reqtimeout":		30000,
 		"webui.confirm_when_deleting":	1,
 		"webui.alternate_color":	0,
-		"webui.speed_display":		0,
 		"webui.update_interval":	3000,
 		"webui.hsplit":			0.88,
 		"webui.vsplit":			0.5,
 		"webui.effects":		0,
 		"webui.minrows":		100,
-		"webui.search":			-1
+		"webui.search":			-1,
+		"webui.speedlistdl":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
+		"webui.speedlistul":		"100,150,200,250,300,350,400,450,500,750,1000,1250"
 	},
 	showFlags: 0,
 	total:
@@ -399,16 +400,13 @@ var theWebUI =
 
 	setStatusUpdate: function()
 	{
-        	window.status = "";
-		window.defaultStatus = "";
 		document.title = "ruTorrent v" + this.version;
 		if(this.sTimer)
 		{
 			window.clearInterval(this.sTimer);
 			this.sTimer = null;
 		}
-		if(this.settings["webui.speed_display"])
-			this.sTimer = window.setInterval(this.updateStatus, 1000);
+		this.sTimer = window.setInterval(this.updateStatus, 1000);
 	},
 
 //
@@ -548,12 +546,6 @@ var theWebUI =
 						        case "webui.effects":
 						        {
 								theDialogManager.setEffects( iv(nv)*200 );
-								break;
-							}
-							case "webui.speed_display":
-							{
-								theWebUI.settings[i] = nv;
-								theWebUI.setStatusUpdate();
 								break;
 							}
 							case "webui.alternate_color":
@@ -1402,7 +1394,7 @@ var theWebUI =
 		this.loadLabels(data.labels);
 		this.updateLabels(wasRemoved);
 		this.loadTorrents(needSort);
-		this.request("?action=gettotal",[this.getTotal, this]);
+		this.getTotal();
 	},
 
 	loadTorrents: function(needSort) 
@@ -1424,7 +1416,12 @@ var theWebUI =
 		this.updateDetails();
    	},
 
-   	getTotal: function( d )
+   	getTotal: function()
+	{
+	        this.request("?action=gettotal",[this.addTotal, this]);
+	},
+
+   	addTotal: function( d )
 	{
 	        $.extend(this.total,d);
 	},
@@ -1954,27 +1951,70 @@ var theWebUI =
 	updateStatus: function()
 	{
 	        var self = theWebUI;
-		var s = theUILang.Download + ": " + theConverter.speed(self.total.speedDL);
-		if(self.total.rateDL>0 && self.total.rateDL<100*1024*1024)
-			s+="  ["+theConverter.speed(self.total.rateDL)+"]";
-		s+="  " + theUILang.Total + ": " + theConverter.bytes(self.total.DL)+"  |  " + theUILang.Upload + ": " + theConverter.speed(self.total.speedUL);
-		if(self.total.rateUL>0 && self.total.rateUL<100*1024*1024)
-			s+="  ["+theConverter.speed(self.total.rateUL)+"]";
-		s+="  " + theUILang.Total + ": " + theConverter.bytes(self.total.UL);
-		if(self.settings["webui.speed_display"] == 1) 
-		{
-   			window.status = s;
-	   		window.defaultStatus = s;
-   		}
-		else 
-		{
-   			if(self.settings["webui.speed_display"] == 2) 
-   			{
-   				s = "ruTorrent v" + self.version + " - " + s;
-				if(document.title!=s)
-      					document.title = s;
-      			}
-	   	}
+	        $("#stup_speed").text(theConverter.speed(self.total.speedUL));
+	        $("#stup_limit").text((self.total.rateUL>0 && self.total.rateUL<100*1024*1024) ? theConverter.speed(self.total.rateUL) : theUILang.no);
+	        $("#stup_total").text(theConverter.bytes(self.total.UL));
+	        $("#stdown_speed").text(theConverter.speed(self.total.speedDL));
+	        $("#stdown_limit").text((self.total.rateDL>0 && self.total.rateDL<100*1024*1024) ? theConverter.speed(self.total.rateDL) : theUILang.no);
+	        $("#stdown_total").text(theConverter.bytes(self.total.DL));
+	},
+
+	setDLRate: function(spd)
+	{
+		this.request("?action=setdlrate&s="+spd,[this.getTotal, this]);
+	},
+
+	setULRate: function(spd)
+	{
+		this.request("?action=setulrate&s="+spd,[this.getTotal, this]);
+	},
+
+	downRateMenu: function(e)
+	{
+	        if(e.button==2)
+	        {
+	                theContextMenu.clear();
+	                var speeds=theWebUI.settings["webui.speedlistdl"].split(",");
+	                if(theWebUI.total.rateDL<=0 || theWebUI.total.rateDL>=100*1024*1024)
+	                	theContextMenu.add([CMENU_SEL,theUILang.unlimited,"theWebUI.setDLRate(100*1024*1024)"]);
+			else	                
+		                theContextMenu.add([theUILang.unlimited,"theWebUI.setDLRate(100*1024*1024)"]);
+			theContextMenu.add([CMENU_SEP]);
+	                for(var i=0; i<speeds.length; i++)
+	                {
+	                	var spd = iv(speeds[i])*1024;
+		                if(theWebUI.total.rateDL==spd)
+					theContextMenu.add([CMENU_SEL,theConverter.speed(spd),"theWebUI.setDLRate("+spd+")"]);
+				else
+					theContextMenu.add([theConverter.speed(spd),"theWebUI.setDLRate("+spd+")"]);
+			}
+			theContextMenu.show(e.clientX,e.clientY);
+		}
+		return(false);
+	},
+
+	upRateMenu: function(e)
+	{
+	        if(e.button==2)
+	        {
+	                theContextMenu.clear();
+	                var speeds=theWebUI.settings["webui.speedlistul"].split(",");
+	                if(theWebUI.total.rateUL<=0 || theWebUI.total.rateUL>=100*1024*1024)
+	                	theContextMenu.add([CMENU_SEL,theUILang.unlimited,"theWebUI.setULRate(100*1024*1024)"]);
+			else	                
+		                theContextMenu.add([theUILang.unlimited,"theWebUI.setULRate(100*1024*1024)"]);
+			theContextMenu.add([CMENU_SEP]);
+	                for(var i=0; i<speeds.length; i++)
+	                {
+	                	var spd = iv(speeds[i])*1024;
+		                if(theWebUI.total.rateUL==spd)
+					theContextMenu.add([CMENU_SEL,theConverter.speed(spd),"theWebUI.setULRate("+spd+")"]);
+				else
+					theContextMenu.add([theConverter.speed(spd),"theWebUI.setULRate("+spd+")"]);
+			}
+			theContextMenu.show(e.clientX,e.clientY);
+		}
+		return(false);
 	},
 
 	resizeLeft: function( w, h )
@@ -1985,7 +2025,9 @@ var theWebUI =
 			$("#VDivider").width( $(window).width()-w-5 );
 		}
 		if(h!==null)
+		{
 			$("#CatList").height( h );
+		}
 	},
 
 	resizeTop : function( w, h )
@@ -2012,7 +2054,7 @@ var theWebUI =
 		if(h!==null)
         	{
 			$("#tdetails").height( h );
-			h-=($("#tabbar").height()+11);
+			h-=($("#tabbar").height());
 			$("#tdcont").height( h );
 			h-=2;
         	}
@@ -2033,7 +2075,7 @@ var theWebUI =
 		var ww = $(window).width();
 		var wh = $(window).height();
         	var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
-	        var th = $("#t").is(":visible") ? $("#t").height()+14 : 13;
+	        var th = ($("#t").is(":visible") ? $("#t").height() : -1)+$("#StatusBar").height()+14;
 		if(theWebUI.settings["webui.show_cats"])
 		{
 			theWebUI.resizeLeft( w, wh-th );
@@ -2045,10 +2087,10 @@ var theWebUI =
 			w = ww;
 		}
 		w-=11;
-		theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th+1 );
+		theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th-7 );
 		if(theWebUI.settings["webui.show_dets"])
 			theWebUI.resizeBottom( w, Math.floor(wh * (1 - theWebUI.settings["webui.vsplit"])) );
-		$("#HDivider").height( wh-th+1 );
+		$("#HDivider").height( wh-th+2 );
 	},      	
 
 	update: function()
@@ -2151,8 +2193,8 @@ var theWebUI =
    		if($("#cover").is(":visible"))
 		{
 			$("#cover").hide();
-			theTabs.show("lcont");
 			theWebUI.resize();
+			theTabs.show("lcont");
 		}
    	},
 

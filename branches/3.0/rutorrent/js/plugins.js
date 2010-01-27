@@ -204,6 +204,7 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 			var beforeLbl = $$("tab_lcont");
 			beforeLbl.parentNode.appendChild(newLbl);
 		}
+		theTabs.show("lcont");
 	}
 	return(this);
 }

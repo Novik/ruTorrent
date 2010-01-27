@@ -358,5 +358,7 @@
  removeTeg			: "Remove tag",
  errMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Plugin will not work.",
  warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
- plgShutdown			: "Shutdown"
+ plgShutdown			: "Shutdown",
+ limit				: "Limit",
+ speedList			: "Speed popup list (comma-separated)"
  };

@@ -7,6 +7,8 @@
 function makeContent()
 {
 	$(".cat").mouseclick(theWebUI.labelContextMenu);
+	$("#st_up").mouseclick(theWebUI.upRateMenu);
+	$("#st_down").mouseclick(theWebUI.downRateMenu);
 
 	$("#mnu_add").attr("title",theUILang.mnu_add+"...");
 	$("#mnu_remove").attr("title",theUILang.mnu_remove);
@@ -57,8 +59,8 @@ function makeContent()
 		{
 		        var self = e.data;
 		        var offs = self.mask.offset();
-      		        theWebUI.resizeTop(null,offs.top-($("#t").is(":visible") ?  $("#t").height() : 0)-8);
-      		        theWebUI.resizeBottom(null,$(window).height()-offs.top-7);
+      		        theWebUI.resizeTop(null,offs.top-($("#t").is(":visible") ?  $("#t").height() : -1)-8);
+      		        theWebUI.resizeBottom(null,$(window).height()-offs.top-$("#StatusBar").height()-14);
       		        theWebUI.setVSplitter();
 			$(document.body).css( "cursor", "default" );
 		}
@@ -244,14 +246,6 @@ function makeContent()
 						"<label for=\"webui.effects\">"+theUILang.UIEffects+"</label>"+
 					"</div>"+
 					"<div class=\"op100l\">"+
-						"<label for=\"webui.speed_display\">"+theUILang.Show_speed+":</label>&nbsp;"+
-						"<select id=\"webui.speed_display\">"+
-							"<option value=\'0\' selected=\'selected\'>"+theUILang.Don_t+"</option>"+
-							"<option value=\'1\'>"+theUILang.In_status_bar+"</option>"+
-							"<option value=\'2\'>"+theUILang.In_title_bar+"</option>"+
-						"</select>"+
-					"</div>"+
-					"<div class=\"op100l\">"+
 						"<label for=\"webui.minrows\">"+theUILang.Virt_row_thres+":</label>&nbsp;<input type=\"text\" id=\"webui.minrows\" class=\"TextboxVShort\" value=\"50\" />"+
 					"</div>"+
 					"<div class=\"op100l\">"+
@@ -260,6 +254,19 @@ function makeContent()
 							languages+
 						"</select>"+
 					"</div>"+
+				"</fieldset>"+
+				"<fieldset>"+
+					"<legend>"+theUILang.speedList+"</legend>"+
+					"<table>"+
+						"<tr>"+
+							"<td>"+theUILang.UL+":</td>"+
+							"<td class=\"alr\"><input type=\"text\" id=\"webui.speedlistul\" class=\"Textbox speedEdit\" maxlength=\"128\" /></td>"+
+						"</tr>"+
+						"<tr>"+
+							"<td>"+theUILang.DL+":</td>"+
+							"<td class=\"alr\"><input type=\"text\" id=\"webui.speedlistdl\" class=\"Textbox speedEdit\" maxlength=\"128\" /></td>"+
+						"</tr>"+
+					"</table>"+
 				"</fieldset>"+
 			"</div>"+
 			"<div id=\"st_dl\" class=\"stg_con\">"+

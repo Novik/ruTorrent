@@ -432,6 +432,20 @@ rTorrentStub.prototype.setprops = function()
 	}
 }
 
+rTorrentStub.prototype.setulrate = function()
+{
+	var cmd = new rXMLRPCCommand("set_upload_rate");
+	cmd.addParameter("string",this.ss[0]);
+	this.commands.push( cmd );
+}
+
+rTorrentStub.prototype.setdlrate = function()
+{
+	var cmd = new rXMLRPCCommand("set_download_rate");
+	cmd.addParameter("string",this.ss[0]);
+	this.commands.push( cmd );
+}
+
 rTorrentStub.prototype.makeMultiCall = function()
 {
 	this.content = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>';

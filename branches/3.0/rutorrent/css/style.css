@@ -152,8 +152,8 @@ div.algnright {text-align: right; clear: right}
 .lm li a.focus {background-color: #E0E0E0}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
 .stg_con {float: right; position: relative; width: 450px; height: 340px; margin: 4px; background-color: #FAFAFA}
-.fieldset {margin: 4px}
-* > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px}
+fieldset {margin: 4px}
+* > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px; -webkit-border-radius:6px; border-radius:6px;}
 .stg_con table {width: 100%}
 .stg_con td {font-weight: normal; height: 19px}
 .stg_con td.alr {text-align: right}
@@ -177,9 +177,9 @@ a {text-decoration: none}
 #acty {width: 16px; height: 16px; position: absolute; right: 10px; bottom: 10px; background-image: url()}
 select.cols {border: 1px solid #808080; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 120px}
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
-div#tdetails {height: 50%; padding: 0 5px 5px 0; background-color: #F5F5F5}
+div#tdetails {height: 50%; padding: 0 5px 0 0; background-color: #F5F5F5}
 div#tdetails a.h {margin: 0}
-div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 2px}
+div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 0 2px 0 2px }
 
 div.tab {height: 100%; background: #F5F5F5; overflow: auto; }
 
@@ -256,3 +256,11 @@ div#tadd input {margin-bottom: 1px}
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
 .konqueror #st_con { height: 340px; overflow: auto; }
+
+#StatusBar { border-top: 1px solid #A0A0A0; background-color: #FFFFFF; margin-top: 4px; height: 24px; vertical-align: center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; white-space: nowrap; width: 100%; overflow: hidden;}
+#st_up { background:url(../images/status_up.gif) 6px no-repeat; }
+#st_down { background:url(../images/status_down.gif) 6px no-repeat; }
+.statuscell {vertical-align: center; padding-left: 25px; height: 20px; line-height: 20px; border-right: 1px solid #A0A0A0;}
+.sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
+.stval { padding-right: 3px; overflow: hidden; width: 68px; }
+.speedEdit { width: 320px }
