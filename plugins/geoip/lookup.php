@@ -1,4 +1,5 @@
 <?php
+	error_reporting(0);
     $Action = $_GET[ 'action' ];
     $IP     = $_GET[ "ip" ];
     
