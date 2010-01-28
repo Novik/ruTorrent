@@ -50,7 +50,7 @@ plugin.onLangLoaded = function()
 					"<div class='aright'><input type='submit' id='createAndSave' value='"+theUILang.CreateAndSaveAs+"' class='Button' /><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
 				"</div>"+
 			"</form>");
-		$(document.body).append($("<iframe>").attr( { name: "createfrm", id: "createfrm" } ).width(0).height(0).load(function()
+		$(document.body).append($("<iframe>").css({visibility: "hidden"}).attr( { name: "createfrm", id: "createfrm" } ).width(0).height(0).load(function()
 		{
 			var d = (this.contentDocument || this.contentWindow.document);
 			if(d.location.href != "about:blank")

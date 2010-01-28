@@ -1,3 +1,6 @@
+if(browser.isKonqueror && (browser.versionMajor<4))
+	plugin.disable();
+
 if(plugin.enabled && plugin.canChangeTabs())
 {
 
@@ -59,7 +62,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 						'color': 'black',
 						'font-size': '11px',
 						'font-weight': 'bold',
-						'font-family': 'Tahoma, Verdana, Arial, Helvetica, sans-serif',
+						'font-family': 'Tahoma, Arial, Helvetica, sans-serif',
 						opacity: 0.80
 					}).appendTo("body").fadeIn(200);
 				}
@@ -95,7 +98,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 		this.owner.width(newWidth-8);
 		if(newHeight)
 		{
-			newHeight-=(iv($$(this.owner.attr("id")+'_ctrl').style.height)+$("#tabbar").height()+11);
+			newHeight-=(iv($$(this.owner.attr("id")+'_ctrl').style.height)+$("#tabbar").height());
 			this.owner.height(newHeight);
 		}
 		this.draw();
@@ -187,8 +190,13 @@ if(plugin.enabled && plugin.canChangeTabs())
 	plugin.resizeBottom = theWebUI.resizeBottom;
 	theWebUI.resizeBottom = function( w, h )
 	{
-		if(plugin.enabled && plugin.allStuffLoaded)
-			this.trafGraph.resize(w,h);
+		if(plugin.enabled) 
+		{
+		        if(plugin.allStuffLoaded)
+				this.trafGraph.resize(w,h);
+			else
+				setTimeout( 'theWebUI.resize()', 1000 );
+		}
 		plugin.resizeBottom.call(this,w,h);
 	}
 
@@ -232,7 +240,6 @@ plugin.onLangLoaded = function()
 				"</div><div id='traf_graph' class='graph_tab'></div>").get(0),theUILang.traf,"lcont");
 		theWebUI.trafGraph = new rTraficGraph();
 		theWebUI.trafGraph.create($("#traf_graph"));
-
 		plugin.onShow = theTabs.onShow;
 		theTabs.onShow = function(id)
 		{

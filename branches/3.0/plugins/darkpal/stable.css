@@ -8,7 +8,7 @@
 
 .stable-body {background: #181818}
 .stable-body tr.selected td {background: #888888; color:#111111}
-.stable-body tr.odd td {background: #202020}
+.stable-body tr.odd td {background: #333333}
 .stable-body tr.even td {background: #191919}
 .stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top; border: 1px solid #0099FF;}
 

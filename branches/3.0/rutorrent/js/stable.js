@@ -627,7 +627,10 @@ dxSTable.prototype.Sort = function(e)
 	if(e == null) 
 	{
 		if(this.sIndex ==- 1) 
+		{
+		        this.calcSize().resizeHack();
 			return(true);
+		}
 		rev = false;
 		col = this.tHead.tb.rows[0].cells[this.sIndex];
 	}
@@ -1328,9 +1331,9 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 		        	css({ float: "left", "background-color" : (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(data[ind])).getColor() }).
 		        	width(iv(data[ind])+"%").html("&nbsp;");
 			if(!iv(data[ind]))
-				$(div).hide();
+				$(div).css({visibility: "hidden"});
 			else
-				$(div).show();
+				$(div).css({visibility: "visible"});
 			$(td).append( $("<span></span>").addClass("meter-text").css({overflow: "visible"}).text(data[ind]) );
 		}
 		else

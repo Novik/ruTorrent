@@ -1310,7 +1310,6 @@ var theWebUI =
 
 	addTorrents: function(data) 
 	{
-   		var needSort = false;
    		var table = this.getTable("trt");
    		var tul = 0;
 		var tdl = 0;
@@ -1326,7 +1325,6 @@ var theWebUI =
 			{
 				theWebUI.labels[hash] = lbl;
 				table.addRowById(torrent, hash, sInfo[0], {label : lbl});
-				needSort = true;
 				tArray.push(hash);
 				theWebUI.filterByLabel(hash);
 			}
@@ -1351,8 +1349,7 @@ var theWebUI =
 						theWebUI.updateFiles(hash);
 				}
 				for( var prop in torrent)
-				        if(table.setValueById(hash, prop, torrent[prop]))
-				        	needSort = true;
+				        table.setValueById(hash, prop, torrent[prop]);
 			}
 			torrent._updated = true;
 		});
@@ -1393,11 +1390,11 @@ var theWebUI =
 		this.getAllTrackers(tArray);
 		this.loadLabels(data.labels);
 		this.updateLabels(wasRemoved);
-		this.loadTorrents(needSort);
+		this.loadTorrents();
 		this.getTotal();
 	},
 
-	loadTorrents: function(needSort) 
+	loadTorrents: function() 
 	{
 		var table = this.getTable("trt");
 		if(this.firstLoad) 
@@ -1410,8 +1407,7 @@ var theWebUI =
 			if(this.actLbl != "-_-_-all-_-_-") 
 				table.refreshRows();
       		}
-		if(needSort) 
-			table.Sort();
+		table.Sort();
 		this.setInterval();
 		this.updateDetails();
    	},
@@ -2076,6 +2072,7 @@ var theWebUI =
 		var wh = $(window).height();
         	var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
 	        var th = ($("#t").is(":visible") ? $("#t").height() : -1)+$("#StatusBar").height()+14;
+		$("#StatusBar").width(ww);
 		if(theWebUI.settings["webui.show_cats"])
 		{
 			theWebUI.resizeLeft( w, wh-th );
@@ -2118,11 +2115,6 @@ var theWebUI =
 			theWebUI.settings["webui.hsplit"] = r;
 			theWebUI.save();
 		}
-	},
-
-	showRSS: function()
-	{
-		alert("RSS has not been implemented yet.");
 	},
 
 	toggleMenu: function()

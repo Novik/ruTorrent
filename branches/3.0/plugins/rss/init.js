@@ -568,10 +568,7 @@ theWebUI.addRSSItems = function(d)
 			}
 		}
 		if(updated)
-		{
-			if(table.sIndex !=- 1)
-				table.Sort();
-		}
+			table.Sort();
 		this.updateRSSLabels(rssLabels,allCnt);
 		this.rssUpdateInProgress = false;
 	}

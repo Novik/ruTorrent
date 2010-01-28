@@ -2,14 +2,14 @@ html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden;
 form{margin:0;}
 div#preload {width: 0px; height: 0px; display: none; background-image: url(../images/toolbar2.gif); background-image: url(../images/tstatus.gif); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/hide.gif); background-image: url(../images/hide_over.gif); background-image: url(../images/hide_on.gif); background-image: url(../images/file.gif); background-image: url(../images/dir.gif); background-image: url(../images/pnl_open.gif); background-image: url(../images/pnl_close.gif)}
 div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; background: #FFFFFF}
-div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
+div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
 div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none}
 sup {font-size: 8px}
 
 div.aright {text-align: right}
-div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
+div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
 div.fxcaret {overflow: auto}
-div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
+div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
 a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(../images/hide.gif); float: right; border: 0}
 a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(../images/hide_over.gif); float: right; border: 0}
 a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../images/hide_on.gif); float: right; border: 0}
@@ -17,7 +17,7 @@ a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../im
 div#sc {width: 150px; right: 57px; top: 40px; position: absolute; display: none; border: 1px solid #808080; background-color: #E0E0E0; z-index: 100}
 div#sc ul {margin: 0; padding: 0; list-style: none}
 div#sc ul li {margin: 0; padding: 0}
-div#sc li div {line-height: 14px; padding: 4px; font-weight: bold; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
+div#sc li div {line-height: 14px; padding: 4px; font-weight: bold; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif}
 div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
 ul.CMenu {width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
 ul.CMenu li {float: left; margin-right: 1px; position: relative; width: 150px; background: #FFFFFF}
@@ -67,24 +67,24 @@ div#t div#sb a {margin: 3px 5px 0 0}
 a.h:link, a.h:visited {width: 14px; height: 14px; margin: 11px 5px 0 0; background: transparent url(../images/hide.gif); float: right; border: 0}
 a.h:hover {width: 14px; height: 14px; background: transparent url(../images/hide_over.gif); float: right; border: 0}
 a.h:active {width: 14px; height: 14px; background: transparent url(../images/hide_on.gif); float: right; border: 0}
-input.Textbox, input.Button, select {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px}
-Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 50px}
-Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 110px}
-Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 220px}
-Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 30px}
+input.Textbox, input.Button, select {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px}
+Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 50px}
+Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 110px}
+Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 220px}
+Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 30px}
 input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0;}
 
 select {margin-top: 5px}
 a.hide:link, a.hide:visited {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(../images/hide.gif); float: right; border: 0}
 a.hide:hover {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(../images/hide_over.gif); float: right; border: 0}
 a.hide:active {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(../images/hide_on.gif); float: right; border: 0}
-a {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #686868}
+a {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #686868}
 table#maincont {margin: 5px 0 0 0}
-table#maincont td.uicell {vertical-align: top; padding: 0}
+table#maincont td.uicell {vertical-align: top; padding: 0 }
 div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: auto}
 
 div#CatList ul {padding: 0px; margin: 0; list-style: none; white-space: nowrap}
-div#CatList ul li {padding: 2px 25px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: pointer}
+div#CatList ul li {padding: 2px 25px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer}
 div#CatList ul li.sel {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-all-_-_- {background-color: #CFDEEF}
 div#CatList ul li.sel#-_-_-dls-_-_- {background-color: #CFDEEF}
@@ -129,9 +129,9 @@ div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A
 .ieStatus_Queued_Up {background: transparent url(../images/status_queued_up.gif) no-repeat scroll left top; padding-left: 20px;}
 .ieStatus_Up_Down {background: transparent url(../images/status_up_down.gif) no-repeat scroll left top; padding-left: 20px;}
 .ieStatus_Checking {background: transparent url(../images/status_checking.gif) no-repeat scroll left top; padding-left: 20px;}
-div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: visible}
+div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: visible}
 div#stg a.h {margin: 5px}
-div#stg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/settings.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
+div#stg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/settings.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
 div#stg .lm {width: 120px; height: 353px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
 .ie div#stg .lm {width: 125px}
 .ie div#stg {width: 605px;}
@@ -174,31 +174,30 @@ div.indent {padding-left: 16px}
 a {text-decoration: none}
 #st_ao_h {width: 420px; height: 270px; overflow: auto; }
 #st_ao_h table {width: 400px}
-#acty {width: 16px; height: 16px; position: absolute; right: 10px; bottom: 10px; background-image: url()}
-select.cols {border: 1px solid #808080; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; padding: 2px; width: 120px}
+select.cols {border: 1px solid #808080; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 120px}
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
 div#tdetails {height: 50%; padding: 0 5px 0 0; background-color: #F5F5F5}
 div#tdetails a.h {margin: 0}
-div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 0 2px 0 2px }
+div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 0 2px 0 2px; overflow: hidden }
 
-div.tab {height: 100%; background: #F5F5F5; overflow: auto; }
-
-div#gcont table {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 10px}
-div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
-div#lcont {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
+div.tab { height:100%; background: #F5F5F5; overflow: auto }
+div#lcont {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
 div#lcont div {padding: 2px}
 
-div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
-div.graph_tab {font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
+div#gcont table {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; line-height: 10px}
+div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
 
-div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled;}
+div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div.graph_tab {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; line-height: 11px}
+
+div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
 div#List {border: 1px solid #A0A0A0;}
 
-div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif}
+div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif}
 
 ul#tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
 ul#tabbar li {margin: 0; padding: 0; display: inline}
-ul#tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
+ul#tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
 ul#tabbar li a:hover {border-top: 2px solid #FFC73C}
 ul#tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
 div#dlgLabel {width: 250px; height: 140px}
@@ -245,7 +244,7 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
 textarea { overflow: auto; }
 
-.catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }
+.catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }
 
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 2px solid #909090}
@@ -257,11 +256,13 @@ div#tadd input {margin-bottom: 1px}
 .konqueror div#tadd { height: 290px; }
 .konqueror #st_con { height: 340px; overflow: auto; }
 
-#StatusBar { border-top: 1px solid #A0A0A0; background-color: #FFFFFF; margin-top: 4px; height: 24px; vertical-align: center; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; color: #000000; white-space: nowrap; width: 100%; overflow: hidden;}
+#StatusBar { border-top: 1px solid #A0A0A0; background-color: #FFFFFF; margin-top: 4px; height: 24px; vertical-align: center; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; white-space: nowrap; overflow: hidden;}
+#StatusBar table { line-height: 24px; }
 #st_up { background:url(../images/status_up.gif) 6px no-repeat; }
 #st_down { background:url(../images/status_down.gif) 6px no-repeat; }
 .statuscell {vertical-align: center; padding-left: 25px; height: 20px; line-height: 20px; border-right: 1px solid #A0A0A0;}
 #st_system { padding-left: 8px }
 .sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
-.stval { padding-right: 3px; overflow: hidden; width: 68px; }
+.stval { padding-right: 3px; overflow: hidden; width: 65px; }
 .speedEdit { width: 320px }
+.statuscell td { padding: 0 }

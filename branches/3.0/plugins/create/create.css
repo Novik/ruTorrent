@@ -1,7 +1,7 @@
 div#tcreate {width: 405px; height: 350px}
 div#tcreate div.dlg-header {background-image: url(./images/create16.gif)}
 div#tcreate #path_edit {width: 305px}
-div#tcreate textarea#trackers {width: 230px; height: 70px; border: 1px solid #D0D0D0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: text}
+div#tcreate textarea#trackers {width: 230px; height: 70px; border: 1px solid #D0D0D0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: text}
 div#tcreate fieldset div {line-height: 16px}
 div#tcreate fieldset div.props-spacer {width: 90%; float: left}
 

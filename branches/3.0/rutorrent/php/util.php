@@ -1,5 +1,10 @@
 <?php
 
+if(function_exists('ini_set'))
+{
+	ini_set('display_errors',false);
+}
+
 $rootPath = realpath(dirname(__FILE__)."/..");
 require_once( $rootPath.'/conf/config.php' );
 require_once( $rootPath.'/php/lfs.php' );

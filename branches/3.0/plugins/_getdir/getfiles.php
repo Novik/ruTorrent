@@ -71,7 +71,7 @@ if($dh)
 <head>
 <style>
 body { background-color: window; color: windowtext; border: 0px; margin: 0px; padding: 0px; -moz-user-select:none; }
-td { padding-top: 1px; padding-bottom: 1px; padding-left: 0px; padding-right: 0px; cursor:default; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; }
+td { padding-top: 1px; padding-bottom: 1px; padding-left: 0px; padding-right: 0px; cursor:default; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; }
 .rmenuobj { border-width: 0; }
 .rmenuitem { color: windowtext; }
 .rmenuitemselected { color: highlighttext; background-color: highlight; }

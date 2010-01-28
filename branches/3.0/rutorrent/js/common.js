@@ -695,7 +695,10 @@ var theTabs =
    	init: function() 
    	{
 		if(browser.isKonqueror && (browser.versionMajor<4))
+		{
 			delete this.tabs["Speed"];
+			$("#Speed").remove();
+		}
    		var s = "";
    		for(var n in this.tabs) 
       			s += "<li id=\"tab_" + n + "\"><a href=\"javascript://void();\" onmousedown=\"theTabs.show('" + n + "'); return(false);\" onfocus=\"this.blur();\">" + this.tabs[n] + "</a></li>";

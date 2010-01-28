@@ -112,7 +112,7 @@ rSpeedGraph.prototype.draw = function()
 					'color': 'black',
 					'font-size': '11px',
 					'font-weight': 'bold',
-					'font-family': 'Tahoma, Verdana, Arial, Helvetica, sans-serif',
+					'font-family': 'Tahoma, Arial, Helvetica, sans-serif',
 					opacity: 0.80
 				}).appendTo("body").fadeIn(200);
 			}
