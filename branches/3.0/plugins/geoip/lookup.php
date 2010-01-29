@@ -19,7 +19,7 @@
 				{
 					$info = '{ip: "'.$value.'", info: {country: "';
 					$country = "unknown";
-					if($retrieveCountry)
+					if($retrieveCountry && function_exists("geoip_country_code_by_name"))
 					{
 						$country = geoip_country_code_by_name( $value );
 						if(!empty($country))
