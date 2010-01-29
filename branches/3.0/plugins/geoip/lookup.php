@@ -3,6 +3,8 @@
 	require_once( '../../php/util.php' );
 	eval( getPluginConf( 'geoip' ) );
 
+	$retrieveCountry = ($retrieveCountry && function_exists("geoip_country_code_by_name"));
+
 	$ret = array();
 	if(!isset($HTTP_RAW_POST_DATA))
 		$HTTP_RAW_POST_DATA = file_get_contents("php://input");
@@ -19,7 +21,7 @@
 				{
 					$info = '{ip: "'.$value.'", info: {country: "';
 					$country = "unknown";
-					if($retrieveCountry && function_exists("geoip_country_code_by_name"))
+					if($retrieveCountry)
 					{
 						$country = geoip_country_code_by_name( $value );
 						if(!empty($country))

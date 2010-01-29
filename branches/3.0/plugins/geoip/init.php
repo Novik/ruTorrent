@@ -2,7 +2,9 @@
 
 eval( getPluginConf( 'geoip' ) );
 
-if( $retrieveHost || ($retrieveCountry && function_exists("geoip_country_code_by_name")) )
+$retrieveCountry = ($retrieveCountry && function_exists("geoip_country_code_by_name"));
+
+if( $retrieveHost || $retrieveCountry )
 {
 	$theSettings->registerPlugin("geoip");
 	if($retrieveCountry)

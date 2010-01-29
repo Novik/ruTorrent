@@ -50,6 +50,7 @@ if(plugin.enabled)
 					peer.name = info.host;
 				}
 			}
+			return(peer.processed);
 		}
 	};
 
@@ -79,11 +80,6 @@ if(plugin.enabled)
 				return(plugin.prsFormat(table,arr));
 			}
 		}
-		theRequestManager.addRequest("prs", null, function(id,peer,value)
-		{
-		        if(plugin.enabled)
-		                thePeersCache.fill(peer);
-		});
 		plugin.config.call(this,data);
 		if(plugin.retrieveCountry && plugin.canChangeColumns())
 			plugin.done();
@@ -98,7 +94,7 @@ if(plugin.enabled)
 			var content = "";
 			$.each( peers, function(id,peer)
 			{
-				if(!peer.processed)
+				if(!thePeersCache.fill(peer))
 					content += ("&ip="+peer.ip);
 			});
 			if(content.length)
