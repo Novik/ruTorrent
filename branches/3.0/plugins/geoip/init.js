@@ -4,10 +4,59 @@ if(plugin.enabled)
 {
 	plugin.loadMainCSS();
 
+	var thePeersCache = 
+	{
+		MAX_SIZE: 1024,
+		ips: [],
+		info: {},
+
+		add: function( data )
+		{
+			for( var i = 0; i< data.length; i++ )
+			{
+				this.ips.push(data[i].ip);
+				this.info[data[i].ip] = data[i].info;
+			}
+		},
+
+		strip: function()
+		{
+			if(this.ips.length>=this.MAX_SIZE)
+			{
+				for(var int=0; i<this.MAX_SIZE/2; i++)
+					delete this.info[ips[i]];
+				this.ips.splice(0,this.MAX_SIZE/2);
+			}
+		},
+
+		get: function( ip )
+		{
+			return( $type(this.info[ip]) ? this.info[ip] : null );
+		},
+
+		fill: function(peer)
+		{
+		        if(!peer.processed)
+		        {
+		                var info = this.get(peer.ip);
+		                if(info)
+	        	        {
+	                	        peer.processed = true;
+	                	        if(plugin.retrieveCountry)
+	                	        {
+						peer.country = info.country;
+						peer.icon = "geoip_flag_"+peer.country;
+					}
+					peer.name = info.host;
+				}
+			}
+		}
+	};
+
 	plugin.config = theWebUI.config;
 	theWebUI.config = function(data)
 	{
-		if(plugin.canChangeColumns())
+		if(plugin.retrieveCountry && plugin.canChangeColumns())
 		{
 			this.tables.prs.columns.unshift({text : 'Country', width : '60px', id: 'country', type : TYPE_STRING});
 			plugin.prsFormat = this.tables.prs.format;
@@ -33,24 +82,50 @@ if(plugin.enabled)
 		theRequestManager.addRequest("prs", null, function(id,peer,value)
 		{
 		        if(plugin.enabled)
-		        {
-				var AjaxReq = jQuery.ajax(
-				{
-				        async : false,
-					url : "plugins/geoip/lookup.php",
-					data : { action : "geoip", ip : peer.ip },
-					dataType : "text",
-					success : function(data)
-					{
-						peer.country = data;
-						peer.icon = "geoip_flag_"+data;
-					}
-				});
-			}
+		                thePeersCache.fill(peer);
 		});
 		plugin.config.call(this,data);
-		if(plugin.canChangeColumns())
+		if(plugin.retrieveCountry && plugin.canChangeColumns())
 			plugin.done();
+	}
+
+	plugin.getpeersResponse = rTorrentStub.prototype.getpeersResponse;
+	rTorrentStub.prototype.getpeersResponse = function(xml)
+	{
+		var peers = plugin.getpeersResponse.call(this,xml);
+		if(plugin.enabled)
+		{
+			var content = "";
+			$.each( peers, function(id,peer)
+			{
+				if(!peer.processed)
+					content += ("&ip="+peer.ip);
+			});
+			if(content.length)
+			{
+				var AjaxReq = jQuery.ajax(
+				{
+					type: "POST",
+					contentType: "application/x-www-form-urlencoded",
+					processData: false,
+					timeout: 5000,
+				        async : false,
+					url : "plugins/geoip/lookup.php",
+					data : "dummy=1"+content,
+					dataType : "json",
+					success : function(data)
+					{
+						thePeersCache.add(data);
+					}
+				});
+				$.each( peers, function(id,peer)
+				{
+					thePeersCache.fill(peer);
+				});
+				thePeersCache.strip();
+			}
+		}
+		return(peers);
 	}
 
 	if(plugin.canChangeColumns())
@@ -85,5 +160,6 @@ if(plugin.enabled)
 
 plugin.onRemove = function()
 {
-	theWebUI.getTable("prs").removeColumnById("country");
+        if(plugin.retrieveCountry)
+		theWebUI.getTable("prs").removeColumnById("country");
 }

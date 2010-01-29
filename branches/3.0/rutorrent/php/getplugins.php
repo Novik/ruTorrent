@@ -167,7 +167,10 @@ if($handle = opendir('../plugins'))
 		$theSettings = new rTorrentSettings();
 		$theSettings->obtain();
 		if(!$theSettings->linkExist)
+		{
 			$jResult.="log(theUILang.badLinkTorTorrent);";
+			$jResult.="theWebUI.systemInfo = { rTorrent : { version : '?', libVersion : '?' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
+		}
 		else
 		{
 			$jResult.="theWebUI.systemInfo = { rTorrent : { version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
@@ -258,5 +261,7 @@ if($handle = opendir('../plugins'))
 	closedir($handle);
 }
 echo $jResult;
+
+toLog($jResult);
 
 ?>
