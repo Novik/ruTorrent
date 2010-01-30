@@ -1655,9 +1655,9 @@ dxSTable.prototype.setValue = function(row, col, val)
 			td.lastChild.style.width = iv(val)+"%";
 			td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
 			if(!iv(val))
-				$(div).css({visibility: "hidden"});
+				$(td.lastChild).css({visibility: "hidden"});
 			else
-				$(div).css({visibility: "visible"});
+				$(td.lastChild).css({visibility: "visible"});
 			td.firstChild.innerHTML = escapeHTML(val);
 		}
 		else
