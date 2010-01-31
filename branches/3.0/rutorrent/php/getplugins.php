@@ -262,6 +262,4 @@ if($handle = opendir('../plugins'))
 }
 echo $jResult;
 
-toLog($jResult);
-
 ?>
