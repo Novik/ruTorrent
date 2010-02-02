@@ -1,7 +1,7 @@
 <?php
 
-if(count($argv)>1)
-	$_SERVER['REMOTE_USER'] = $argv[1];
+if(count($argv)>2)
+	$_SERVER['REMOTE_USER'] = $argv[2];
 
 require_once( 'retrackers.php' );
 require_once( $rootPath.'/php/xmlrpc.php' );
@@ -23,9 +23,9 @@ function clearTracker($addition,$tracker)
 }
 
 $trks = rRetrackers::load();
-if(count($trks->list) && (count($argv)>2))
+if(count($trks->list) && (count($argv)>1))
 {
-	$hash = $argv[2];
+	$hash = $argv[1];
 	$req = new rXMLRPCRequest( array(		
 		new rXMLRPCCommand("get_session"),
 		new rXMLRPCCommand("d.is_open",$hash),
