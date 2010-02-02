@@ -18,10 +18,15 @@ The plug-in provides ability to create .torrent files. After plug-in installatio
 
 The plug-in cannot see and does not handle files, that are more than 2 gigabytes in size. This trouble is caused by php limitation on operations with the big files. Pay attention - the *total* downloading size *can* exceed 2Gb. Limitation concerns only each individual file of downloading.
 
-Since the plug-in version of 1.1 there is a possibility to bypass this limitation. For this purpose it is necessary to install the program [http://www.createtorrent.com createtorrent], and to customize a plug-in in appropriate way.
+Since the plug-in version of 1.1 there is a possibility to bypass this limitation. For this purpose it is necessary to install the external program like [http://www.createtorrent.com createtorrent], and to customize a plug-in in appropriate way.
 
 == Additional customization ==
 
 Since the plug-in version of 1.1 it is made in the file plugins/create/conf.php. 
- # $useExternal - if the given variable is true, external program createtorrent will be used for .torrent file creation.
+ # $useExternal - if the given variable is not false, external program will be used for .torrent file creation. Valid values for this variable are: 
+  * false - for inner php realization
+  * "transmissioncli" (see [http://www.transmissionbt.com])
+  * "createtorrent" (see [http://www.createtorrent.com])
+  * "mktorrent" (see [http://mktorrent.sourceforge.net])
+  * "buildtorrent" (see [http://claudiusmaximus.goto10.org/cm/torrent.html])
  # $pathToCreatetorrent - the variable with the path to the program createtorrent. If it's value is empty line (by default), createtorrent will be searched in PATH for a web server user. The given option makes sense only if $useExternal=true.
