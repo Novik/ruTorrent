@@ -1,0 +1,211 @@
+plugin.loadLang();
+
+if(plugin.enabled)
+{
+	plugin.loadMainCSS();
+
+	plugin.tasks = { length: 0 };
+
+	if(plugin.canChangeMenu())
+	{
+		plugin.createFileMenu = theWebUI.createFileMenu;
+		theWebUI.createFileMenu = function( e, id )
+		{
+			if(plugin.createFileMenu.call(this, e, id))
+			{
+			        if(plugin.enabled)
+			        {
+					plugin.fno = null;
+					plugin.mode = null;
+					var table = this.getTable("fls");
+					if(table.selCount == 1)
+					{
+			        		var fid = table.getFirstSelected();
+						if(this.settings["webui.fls.view"])
+							plugin.fno = fid.substr(43);
+						else
+							if(!this.dirs[this.dID].isDirectory(fid))
+								plugin.fno = fid.substr(3);
+						if(plugin.fno!=null)
+						{
+							if(this.files[this.dID][plugin.fno].percent!=100)
+								plugin.fno=null;
+							else
+							if(plugin.useUnrar && (/.*\.(rar|r\d\d|\d\d\d)$/i).test(this.files[this.dID][plugin.fno].name))
+								plugin.mode = 'rar';
+							else
+							if(plugin.useUnzip && (/.*\.zip$/i).test(this.files[this.dID][plugin.fno].name))
+								plugin.mode = 'zip';
+							else
+								plugin.fno=null;
+						}
+					}
+					if(!thePlugins.isInstalled("data"))
+						theContextMenu.add([CMENU_SEP]);
+
+					theContextMenu.add( [theUILang.unpack+'...',  (plugin.fno==null) ? null : "theDialogManager.show('dlg_unpack')"] );
+				}
+				return(true);
+			}
+			return(false);
+		}
+
+		plugin.createMenu = theWebUI.createMenu;
+		theWebUI.createMenu = function( e, id )
+		{
+			plugin.createMenu.call(this, e, id);
+			if(plugin.enabled)
+			{
+				plugin.fno = null;
+				plugin.mode = null;
+			        var rarPresent = false;
+			        var zipPresent = false;
+			        var checked = false;
+				if(this.dID && (this.torrents[this.dID].done==1000) && $type(this.files[this.dID]))
+				{
+					for(var i in this.files[this.dID]) 
+					{
+						var file = this.files[this.dID][i];
+						if(plugin.useUnrar && (/.*\.(rar|r\d\d|\d\d\d)$/i).test(file.name))
+							rarPresent = true;
+						else
+						if(plugin.useUnzip && (/.*\.zip$/i).test(file.name))
+							zipPresent = true;
+						checked = true;
+					}
+				}
+				theContextMenu.add( [theUILang.unpack+'...',  
+					(this.dID && (this.torrents[this.dID].done==1000) && (!checked || rarPresent || zipPresent)) ? 
+					"theDialogManager.show('dlg_unpack')" : null] );
+			}
+		}
+	}
+
+	theWebUI.unpack = function()
+	{
+		theDialogManager.hide('dlg_unpack');
+		this.request("?action=unpack",[theWebUI.startUnpackTask,this]);
+	}
+
+	theWebUI.startUnpackTask = function(info)
+	{
+	        if(info.no>=0)
+	        {
+			plugin.tasks[info.no] = info;
+			plugin.tasks.length++;
+			log(theUILang.unpackTaskStarted+' ('+info.name+'=>'+info.out+')');
+		}
+		else
+			log(theUILang.unpackTaskFailed);
+	}
+
+	theWebUI.finishUnpackTask = function(task,info)
+	{
+		for( var i in info.errors )
+			try { log(info.errors[i],true,'mono'); } catch(e) {};
+		if(info.status==0)
+			log(theUILang.unpackTaskOK+' ('+task.name+'=>'+task.out+')');
+		else
+			log(theUILang.unpackTaskFailed+' ('+task.name+'=>'+task.out+')');
+	}
+
+	theWebUI.checkUnpackTask = function(info)
+	{
+		for( var i in info )
+		{
+		        var task = plugin.tasks[info[i].no];
+			if($type(task))
+			{
+				this.finishUnpackTask(task,info[i]);
+				delete plugin.tasks[info[i].no];
+				plugin.tasks.length--;
+			}
+		}
+	}
+
+	plugin.checkTasks = function()
+	{
+		if(plugin.enabled)
+		{
+		        if(plugin.tasks.length)
+				theWebUI.request("?action=checkunpack",[theWebUI.checkUnpackTask,theWebUI]);
+		}
+		else
+			if(plugin.interval)
+				window.clearInterval(plugin.interval);
+	}
+
+	rTorrentStub.prototype.checkunpack = function()
+	{
+	        this.content = "cmd=check";
+		for(var i in plugin.tasks)
+			if(i!="length")
+				this.content+=("&no="+i);
+	        this.contentType = "application/x-www-form-urlencoded";
+		this.mountPoint = "plugins/unpack/action.php";
+		this.dataType = "json";
+	}
+
+	rTorrentStub.prototype.unpack = function()
+	{
+		this.content = "cmd=start&hash="+theWebUI.dID+"&dir="+encodeURIComponent($('#edit_unpack').val());
+		if(plugin.mode!==null)
+			this.content+=("&mode="+plugin.mode);
+		if(plugin.fno!==null)
+			this.content+=("&no="+plugin.fno);
+		if($$('all_unpack').checked)
+			this.content+='&all=1';	
+	        this.contentType = "application/x-www-form-urlencoded";
+		this.mountPoint = "plugins/unpack/action.php";
+		this.dataType = "json";
+	}
+
+}
+
+plugin.onLangLoaded = function()
+{
+	if(this.enabled)
+	{
+		theDialogManager.make( 'dlg_unpack', theUILang.unpack,
+			"<div class='cont fxcaret'>" +
+				"<fieldset>" +
+					"<label id='lbl_unpack' for='edit_unpack'>" + theUILang.unpackPath + ": </label>" +
+					"<input type='text' id='edit_unpack' class='TextboxLarge' maxlength='200'/>" +
+					"<input type='button' id='btn_unpack' class='Button' value='...' />" +
+					"<div class='checkbox'>" +
+						"<input type='checkbox' id='all_unpack'/>"+
+						"<label for='all_unpack'>"+ theUILang.processAll +"</label>"+
+					"</div>" +
+				"</fieldset>" +
+				"<div class='aright'>" +
+					"<input type='button' value='" + theUILang.ok + "' class='Button' " +
+						" onclick='theWebUI.unpack(); return(false);' />" +
+					"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
+				"</div>" +
+			"</div>", true);
+		if(thePlugins.isInstalled("_getdir"))
+		{
+			var btn = new theWebUI.rDirBrowser( 'dlg_unpack', 'edit_unpack', 'btn_unpack' );
+			theDialogManager.setHandler('dlg_unpack','afterHide',function()
+			{
+				btn.hide();
+			});
+		}
+		else
+			$('#btn_unpack').remove();
+		theDialogManager.setHandler('dlg_unpack','beforeShow',function()
+		{
+			$("#all_unpack").attr("disabled",(plugin.mode=='zip') || (plugin.fno===null));
+			if((plugin.mode=='zip') || (plugin.fno===null))
+				$("#all_unpack").next().addClass("disabled");
+			else
+				$("#all_unpack").next().removeClass("disabled");
+		});
+		plugin.interval = window.setInterval( plugin.checkTasks, 3000 );
+        }
+}
+
+plugin.onRemove = function()
+{
+	theDialogManager.hide("dlg_unpack");
+}
