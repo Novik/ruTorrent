@@ -193,7 +193,13 @@ function addslashes(str)
 
 function iv(val) 
 {
-	var v = parseInt(val + "");
+	var v = (val==null) ? 0 : parseInt(val + "");
+	return(isNaN(v) ? 0 : v);
+}
+
+function ir(val) 
+{
+	var v = (val==null) ? 0 : parseFloat(val + "");
 	return(isNaN(v) ? 0 : v);
 }
 
@@ -703,6 +709,13 @@ var theTabs =
    		for(var n in this.tabs) 
       			s += "<li id=\"tab_" + n + "\"><a href=\"javascript://void();\" onmousedown=\"theTabs.show('" + n + "'); return(false);\" onfocus=\"this.blur();\">" + this.tabs[n] + "</a></li>";
 		$("#tabbar").html(s);
+		$("#tab_lcont").append( $("<input type='button'>").attr("id","clear_log").addClass('Button').val(theUILang.ClearButton).hide().click( function()
+		{
+			$("#lcont").empty();
+		}).focus( function()
+		{
+			this.blur();
+		}));
    		this.show("gcont");
    	}, 
 	onShow : function(id)
@@ -744,27 +757,44 @@ var theTabs =
                				        theWebUI.getTable(prefix).calcSize().resizeHack();
                				theWebUI.setActiveView(id);
             				l.addClass("selected").css("z-index",1);
+	            			if(n=="lcont")
+		            			$("#clear_log").show();
             			}
          			else 
          			{
             				p.hide();
             				l.removeClass("selected").css("z-index",0);
+	            			if(n=="lcont")
+		            			$("#clear_log").hide();
             			}
          		}
       		}
    	}
 };
 
-function log(text,noTime) 
+function log(text,noTime,divClass) 
 {
 	var tm = '';
 	if(!noTime)
 		tm = "[" + theConverter.date(new Date().getTime()/1000) + "]";
+	if(!divClass)
+		divClass = 'std';
 	var obj = $("#lcont");
 	if(obj.length)
 	{
-		obj.append( $("<div>").text(tm + " " + text).show() );
-		obj.scrollTop = obj.scrollHeight;
+		obj.append( $("<div>").addClass(divClass).text(tm + " " + text).show() );
+		obj[0].scrollTop = obj[0].scrollHeight;
+		theTabs.show("lcont");
+	}
+}
+
+function logHTML(text) 
+{
+	var obj = $("#lcont");
+	if(obj.length)
+	{
+		obj.append( $("<div>").html(text).show() );
+		obj[0].scrollTop = obj[0].scrollHeight;
 		theTabs.show("lcont");
 	}
 }
@@ -857,6 +887,12 @@ rDirectory.prototype.getEntryPriority = function(k)
 {
 	var entry = this.dirs[this.current][k];
 	return((entry.data.name=="..") ? null : entry.data.priority);
+}
+
+rDirectory.prototype.isDirectory = function(k)
+{
+	var entry = this.dirs[this.current][k];
+	return(entry.link!=null);
 }
 
 rDirectory.prototype.getFilesIds = function(arr,current,k,prt)

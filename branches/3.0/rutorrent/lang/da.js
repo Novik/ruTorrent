@@ -360,6 +360,7 @@
  warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
  plgShutdown			: "Shutdown",
  limit				: "Grænse",
- speedList			: "Speed popup list (comma-separated)"
+ speedList			: "Speed popup list (comma-separated)",
+ ClearButton			: "Clear"
  };
 

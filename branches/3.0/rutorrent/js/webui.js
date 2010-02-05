@@ -1153,8 +1153,8 @@ var theWebUI =
 	   		_bf.push([CMENU_SEP]);
    		_bf.push([theUILang.New_label, "theWebUI.newLabel()"]);
    		_bf.push([theUILang.Remove_label, "theWebUI.removeLabel()"]);
-   		ContextMenu.add([CMENU_CHILD, theUILang.Labels, _bf]);
-   		ContextMenu.add([CMENU_SEP]);
+   		theContextMenu.add([CMENU_CHILD, theUILang.Labels, _bf]);
+   		theContextMenu.add([CMENU_SEP]);
    		var _c0 = [];
 		if(table.selCount > 1) 
 		{

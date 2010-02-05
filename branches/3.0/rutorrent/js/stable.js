@@ -79,7 +79,7 @@ var dxSTable = function()
 	this.rowCover = null;
 	this.prgStartColor = new RGBackground(".meter-value-start-color");
 	this.prgEndColor = new RGBackground(".meter-value-end-color");
-};
+}
 
 dxSTable.prototype.setPaletteByURL = function(url) 
 {
@@ -222,7 +222,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.rowCover = $("<div>").addClass("rowcover").get(0);
 	this.dHead.appendChild(this.rowCover);
 	this.created = true;
-};
+}
 
 dxSTable.prototype.toggleColumn = function(i)
 {
@@ -307,7 +307,7 @@ dxSTable.prototype.resizeHack = function()
 var preventSort = function() 
 {
 	this.cancelSort = true;
-};
+}
 
 dxSTable.prototype.calcSize = function() 
 {
@@ -346,7 +346,7 @@ dxSTable.prototype.calcSize = function()
 		}
 	}
 	return(this);
-};
+}
 
 dxSTable.prototype.resizeColumn = function() 
 {
@@ -385,7 +385,7 @@ dxSTable.prototype.resizeColumn = function()
 	{
 		this.onresize();
 	}
-};
+}
 
 var moveColumn = function(_11, _12) {
    var i, l, oParent, oCol, oBefore, aRows, a;
@@ -485,14 +485,14 @@ var moveColumn = function(_11, _12) {
    if(typeof this.onmove == "function") {
       this.onmove();
       }
-   };
+   }
 
 dxSTable.ColumnMove = function(p)
 {
 	this.parent = p;
 	this.obj = $("<div>").addClass("stable-move-header").get(0);
 	this.sepobj = $("<div>").addClass("stable-separator-header").get(0);
-};
+}
 
 dxSTable.ColumnMove.prototype =
 {
@@ -600,7 +600,7 @@ dxSTable.ColumnMove.prototype =
 		$(document).unbind("mouseup",self.end);
 		return(false);
 	}
-};
+}
 
 dxSTable.prototype.renameColumnById = function(id, name)
 {
@@ -700,87 +700,57 @@ dxSTable.prototype.Sort = function(e)
 	if($type(this.onsort) == "function") 
 		this.onsort();
 	return(false);
-};
+}
 
-dxSTable.prototype.sortNumeric = function(x, y) {
-   var r = Sort.Numeric(x.v, y.v);
-   if(r == 0) {
-      return this.sortSecondary(x, y);
-      }
-   else {
-      return r;
-      }
-   };
-dxSTable.prototype.sortAlphaNumeric = function(x, y) {
-   var r = Sort.AlphaNumeric(x.v, y.v);
-   if(r == 0) {
-      return this.sortSecondary(x, y);
-      }
-   else {
-      return r;
-      }
-   };
-dxSTable.prototype.sortSecondary = function(x, y) {
-   var m = this.getValue(x.e, this.secIndex);
-   var n = this.getValue(y.e, this.secIndex);
-   if(this.secRev) {
-      var _47 = m;
-      m = n;
-      n = _47;
-      }
-   var _48 = this.colsdata[this.colOrder[this.secIndex]].type;
-   switch(_48) {
-      case 0 : return Sort.AlphaNumeric(m, n);
-      break;
-      case 1 : return Sort.Numeric(m, n);
-      break;
-      default : return Sort.Default(m, n);
-      break;
-      }
-   };
-var Sort = new Object();
-Sort = {
-   "Default" : function(x, y) {
-	if(x==null) x = "";
-	if(y==null) y = "";
-      var a = x + "";
-      var b = y + "";
-      if(a < b) {
-         return - 1;
-         }
-      else {
-         if(a > b) {
-            return 1;
-            }
-         else {
-            return 0;
-            }
-         }
-      }
-   , "Numeric" : function(x, y) {
-	if(x==null) x = 0;
-	if(y==null) y = 0;
-      var a = parseFloat(x + ""), b = parseFloat(y + ""), r = null;
-      return (a - b);
-      }
-   , "AlphaNumeric" : function(x, y) {
-	if(x==null) x = "";
-	if(y==null) y = "";
-      var a = (x + "").toLowerCase();
-      var b = (y + "").toLowerCase();
-      if(a < b) {
-         return - 1;
-         }
-      else {
-         if(a > b) {
-            return 1;
-            }
-         else {
-            return 0;
-            }
-         }
-      }
-   };
+dxSTable.prototype.sortNumeric = function(x, y)
+{
+	var r = theSort.Numeric(x.v, y.v);
+	return( (r == 0) ? this.sortSecondary(x, y) : r );
+}
+
+dxSTable.prototype.sortAlphaNumeric = function(x, y)
+{
+	var r = theSort.AlphaNumeric(x.v, y.v);
+	return( (r == 0) ? this.sortSecondary(x, y) : r );
+}
+
+dxSTable.prototype.sortSecondary = function(x, y)
+{
+	var m = this.getValue(x.e, this.secIndex);
+	var n = this.getValue(y.e, this.secIndex);
+	if(this.secRev)
+	{
+		var tmp = m;
+		m = n;
+      		n = tmp;
+	}
+	var ret = this.colsdata[this.colOrder[this.secIndex]].type;
+	return( (ret==0) ? theSort.AlphaNumeric(m, n) : (ret==1) ? theSort.Numeric(m, n) : theSort.Default(m, n) );
+}
+
+var theSort = 
+{
+	Default: function(x, y)
+	{
+		if(x==null) x = "";
+		if(y==null) y = "";
+		var a = x + "";
+		var b = y + "";
+		return((a < b) ? -1 : (a > b) ? 1 : 0);
+	},
+	Numeric: function(x, y)
+	{	
+		return(ir(x) - ir(y));
+	},
+	AlphaNumeric: function(x, y)
+	{
+		if(x==null) x = "";
+		if(y==null) y = "";
+		var a = (x + "").toLowerCase();
+		var b = (y + "").toLowerCase();
+		return((a < b) ? -1 : (a > b) ? 1 : 0);
+	}
+};
 
 dxSTable.prototype.init = function() 
 {
@@ -806,7 +776,7 @@ dxSTable.prototype.init = function()
 	}
 	this.assignEvents();
 	this.setAlignment();
-};
+}
 
 dxSTable.prototype.assignEvents = function() 
 {
@@ -871,16 +841,7 @@ dxSTable.prototype.assignEvents = function()
 			}
 		};
 	$(this.dCont).mousedown( function(e) { $(document).bind( "keydown", self, self.keyEvents ) } );
-};
-
-function getLeftScrollPos(obj) {
-   var x = 0;
-   while(obj) {
-      x += obj.scrollLeft;
-      obj = obj.offsetParent;
-      }
-   return x;
-   }
+}
 
 dxSTable.prototype.colDrag = function(e) 
 {
@@ -921,7 +882,7 @@ dxSTable.prototype.colDrag = function(e)
 
 	try { document.selection.empty(); } catch(ex) {}
 	return(false);
-};
+}
 
 dxSTable.prototype.colDragEnd = function(e) 
 {
@@ -941,46 +902,40 @@ dxSTable.prototype.colDragEnd = function(e)
 	}
 	document.body.style.cursor = "default";
 	return(false);
-};
+}
 
-dxSTable.prototype.scrollPos = function() {
-   this.scp.style.display = "block";
-   var _67 = this.dBody.scrollTop / (this.dBody.scrollHeight - this.dBody.clientHeight);
-   if(isNaN(_67) || (_67 < 0)) {
-      _67 = 0;
-      }
-   var _68 = Math.floor(this.dBody.clientHeight / 19);
-   if(_68 > this.maxRows) {
-      _68 = this.maxRows;
-      }
-   var _69 = Math.floor(Math.floor(this.dBody.scrollTop - ((this.viewRows - this.maxRows) * 19) * _67) / 19);
-   var mni = Math.ceil(this.viewRows * _67) + _69;
-   var mxi = mni + _68;
-   if(mxi > this.viewRows) {
-      mxi = this.viewRows;
-      }
-   var mid = Math.floor(((mni + mxi) / 2));
-   if(mid > this.viewRows) {
-      mid = this.viewRows - 1;
-      }
-   var vr =- 1;
-   var str = "";
-   for(var i = 0; i < this.rows; i++) {
-      var id = this.rowIDs[i];
-      var r = this.rowdata[id];
-      if(typeof r == "undefined") {
-         continue;
-         }
-      if(!r.enabled) {
-         continue;
-         }
-      vr++;
-      if(vr == mid) {
-         str = r.data[0];
-         }
-      }
-   this.scp.innerHTML = escapeHTML("Current Row: " + str);
-   };
+dxSTable.prototype.scrollPos = function()
+{
+	this.scp.style.display = "block";
+	var _67 = this.dBody.scrollTop / (this.dBody.scrollHeight - this.dBody.clientHeight);
+	if(isNaN(_67) || (_67 < 0))
+		_67 = 0;
+	var _68 = Math.floor(this.dBody.clientHeight / 19);
+	if(_68 > this.maxRows)
+		_68 = this.maxRows;
+	var _69 = Math.floor(Math.floor(this.dBody.scrollTop - ((this.viewRows - this.maxRows) * 19) * _67) / 19);
+	var mni = Math.ceil(this.viewRows * _67) + _69;
+	var mxi = mni + _68;
+	if(mxi > this.viewRows)
+		mxi = this.viewRows;
+	var mid = Math.floor(((mni + mxi) / 2));
+	if(mid > this.viewRows)
+		mid = this.viewRows - 1;
+	var vr =- 1;
+	var str = "";
+	for(var i = 0; i < this.rows; i++)
+	{
+		var id = this.rowIDs[i];
+		var r = this.rowdata[id];
+		if($type(r) && r.enabled)
+		{
+			vr++;
+			if(vr == mid)
+				str = r.data[0];
+		}
+	}
+	this.scp.innerHTML = escapeHTML("Current Row: " + str);
+}
 
 function handleScroll() 
 {
@@ -1086,7 +1041,7 @@ dxSTable.prototype.refreshRows = function()
 	this.refreshSelection();
 	this.cancelSort = false;
 	this.calcSize().resizeHack();
-};
+}
 
 dxSTable.prototype.keyEvents = function(e) 
 {
@@ -1121,7 +1076,7 @@ dxSTable.prototype.keyEvents = function(e)
         	 	}
 	      	}
 	}
-};
+}
 
 dxSTable.prototype.selectRow = function(e, row) 
 {
@@ -1186,13 +1141,9 @@ dxSTable.prototype.selectRow = function(e, row)
 						this.selCount--;
                   			}
 					if(k == this.stSel) 
-					{
 						_81 = true;
-					}
 					if(k == id) 
-					{
 						passedCID = true;
-					}
 				}
 			}
 		}
@@ -1203,13 +1154,9 @@ dxSTable.prototype.selectRow = function(e, row)
 				this.stSel = id;
 				this.rowSel[id] =!this.rowSel[id];
 				if(this.rowSel[id]) 
-				{
 					this.selCount++;
-				}
 				else 
-				{
 					this.selCount--;
-				}
 			}
 			else 
 			{
@@ -1223,24 +1170,18 @@ dxSTable.prototype.selectRow = function(e, row)
 						this.selCount++;
 					}
 					else 
-					{
 						this.rowSel[k] = false;
-					}
 				}
 			}
 		}
 		if(this.selCount == 0) 
-		{
 			this.stSel = null;
-		}
 		this.refreshSelection();
 	}
-	if(typeof this.onselect == "function") 
-	{
+	if($type(this.onselect) == "function") 
 		this.onselect(e, id);
-	}
 	return(false);
-};
+}
 
 dxSTable.prototype.addRowById = function(ids, sId, icon, attr)
 {
@@ -1259,9 +1200,7 @@ dxSTable.prototype.addRowById = function(ids, sId, icon, attr)
 dxSTable.prototype.addRow = function(cols, sId, icon, attr) 
 {
 	if(cols.length != this.cols) 
-	{
 		return;
-	}
 	if(this.sortTimeout != null) 
 	{
 		window.clearTimeout(this.sortTimeout);
@@ -1271,44 +1210,32 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	this.rowSel[sId] = false;
 	this.rowIDs.push(sId);
 	if(this.viewRows < this.maxRows) 
-	{
 		this.tBody.tb.appendChild(this.createRow(cols, sId, icon, attr));
-	}
 	this.rows++;
 	this.viewRows++;
 	if(this.viewRows > this.maxRows) 
-	{
 		this.bpad.style.height = ((this.viewRows - this.maxRows) * 19) + "px";
-	}
 	var self = this;
 	if(this.sIndex !=- 1) 
-	{
 		this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
-	}
-};
+}
 
 dxSTable.prototype.createRow = function(cols, sId, icon, attr) 
 {
 	var tr, td, div, data, i, l, j;
-	if(typeof (attr) == "undefined") 
-	{
+	if(!$type(attr)) 
 		attr = [];
-	}
 	tb = this.tBody.tb;
 	tr = $("<tr>").get(0);
 	if(sId != null) 
-	{
 		tr.id = sId;
-	}
 	var self = this;
 	if(this.colorEvenRows) 
-	{
 		tr.className = (this.rows & 1) ? "odd" : "even";
-	}
 
 	$(tr).mouseclick( function(e) { return(self.selectRow(e, this)); });
 
-	if(typeof this.ondblclick == "function") 
+	if($type(this.ondblclick) == "function") 
 	{
 		if(browser.isKonqueror)
 			tr.addEventListener("dblclick", function(e) {self.ondblclick(this);}, false);
@@ -1351,8 +1278,8 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 			td.style.display = "none";
 	}
 	tr.title = cols[0];
-	return tr;
-};
+	return(tr);
+}
 
 dxSTable.prototype.removeRow = function(sId) 
 {
@@ -1383,7 +1310,7 @@ dxSTable.prototype.removeRow = function(sId)
 	}
 	this.rows--;
 	this.refreshSelection();
-};
+}
 
 dxSTable.prototype.clearRows = function() 
 {
@@ -1403,161 +1330,158 @@ dxSTable.prototype.clearRows = function()
 	this.bpad.style.height = "0px";
 	this.tpad.style.height = "0px";
 	this.dBody.scrollTop = 0;
-};
+}
 
-dxSTable.prototype.setAlignment = function() {
-   var i, aRows, aAlign, j;
-   aAlign = new Array();
-   for(i = 0; i < this.cols; i++) {
-      switch(this.colsdata[i].align) {
-         case ALIGN_LEFT : align = "left";
-         break;
-         case ALIGN_CENTER : align = "center";
-         break;
-         case ALIGN_RIGHT : align = "right";
-         break;
-         case ALIGN_AUTO : default : switch(this.colsdata[i].type) {
-            case TYPE_NUMBER : align = "right";
-            break;
-            default : align = "left";
-            }
-         }
-      aAlign.push(align);
-      this.tHeadCols[i].style.textAlign = align;
-      }
-   var _9c = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-   var _9d = _9c.length;
-   if(document.all || browser.isAppleWebKit || browser.isKonqueror) {
-      for(var i = 0; i < _9d; i++) {
-         _9c[i].align = aAlign[i];
-         }
-      }
-   else {
-      var ss = null, rules = null;
-      for(var n = 0, l = document.styleSheets.length; n < l; n++) {
-         if(!document.styleSheets[n].href || (document.styleSheets[n].href.indexOf("stable.css") ==- 1)) {
-            continue;
-            }
-	try {
-         ss = document.styleSheets[n];
-         rules = ss.cssRules;
-	} catch(e) { return; }
-         }
-      if(rules == null) {
-         return;
-         }
-      if(typeof this.colRules == "undefined") {
-         this.colRules = new Array();
-         }
-      for(var j = 0; j < _9d; j++) {
-         var k = this.colOrder[j];
-         if(!this.colRules[k]) {
-            for(var i = 0, l = rules.length; i < l; i++) {
-               if((rules[i].type == CSSRule.STYLE_RULE) && (rules[i].selectorText == ".stable-" + this.dCont.id + "-col-" + k)) {
-                  this.colRules[k] = rules[i];
-                  break;
-                  }
-               }
-            }
-         if(typeof this.colRules[k] != "undefined") {
-            this.colRules[k].style.textAlign = aAlign[j];
-            }
-         else {
-             this.colRules[k] = ss.cssRules[ss.insertRule(".stable-" + this.dCont.id + "-col-" + k + " div { text-align: " + aAlign[j] + "; }", 0)];
-            }
-         }
-      }
-   };
-dxSTable.prototype.hideRow = function(sId) {
-   if(this.rowdata[sId].enabled) {
-      this.viewRows--;
-      }
-   this.rowdata[sId].enabled = false;
-   };
-dxSTable.prototype.unhideRow = function(sId) {
-   if(!this.rowdata[sId].enabled) {
-      this.viewRows++;
-      }
-   this.rowdata[sId].enabled = true;
-   };
-
-dxSTable.prototype.refreshSelection = function(_a6) 
+dxSTable.prototype.setAlignment = function()
 {
-	var _a7 = this.tBody.tb.rows, l = _a7.length, j = 0;
-	if(_a6) 
+	var i, aRows, aAlign, j, align;
+	var aAlign = new Array();
+	for(i = 0; i < this.cols; i++)
 	{
-		j = 1;
+		switch(this.colsdata[i].align)
+		{
+			case ALIGN_LEFT: 
+				align = "left";
+				break;
+			case ALIGN_CENTER: 
+				align = "center";
+				break;
+         		case ALIGN_RIGHT: 
+	         		align = "right";
+				break;
+			case ALIGN_AUTO: 
+			default: 
+				align = (this.colsdata[i].type==TYPE_NUMBER) ? "right" : "left";
+		}
+		aAlign.push(align);
+		this.tHeadCols[i].style.textAlign = align;
 	}
+	var col = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
+	if(document.all || browser.isAppleWebKit || browser.isKonqueror)
+	{
+		for(var i = 0; i < col.length; i++)
+			col[i].align = aAlign[i];
+	}
+	else
+	{
+		var ss = null, rules = null;
+		for(var n = 0, l = document.styleSheets.length; n < l; n++)
+		{
+			if(!document.styleSheets[n].href || (document.styleSheets[n].href.indexOf("stable.css") ==- 1))
+				continue;
+			try {
+			ss = document.styleSheets[n];
+			rules = ss.cssRules;
+			} catch(e) { return; }
+		}
+		if(rules == null)
+			return;
+		if(!$type(this.colRules))
+			this.colRules = new Array();
+		for(var j = 0; j < col.length; j++)
+		{
+			var k = this.colOrder[j];
+			if(!this.colRules[k])
+			{
+				for(var i = 0, l = rules.length; i < l; i++)
+				{
+					if((rules[i].type == CSSRule.STYLE_RULE) && (rules[i].selectorText == ".stable-" + this.dCont.id + "-col-" + k))
+					{
+						this.colRules[k] = rules[i];
+						break;
+					}
+				}
+			}
+			if($type(this.colRules[k]))
+				this.colRules[k].style.textAlign = aAlign[j];
+			else
+				this.colRules[k] = ss.cssRules[ss.insertRule(".stable-" + this.dCont.id + "-col-" + k + " div { text-align: " + aAlign[j] + "; }", 0)];
+		}
+	}
+}
+
+dxSTable.prototype.hideRow = function(sId)
+{
+	if(this.rowdata[sId].enabled)
+		this.viewRows--;
+	this.rowdata[sId].enabled = false;
+}
+
+dxSTable.prototype.unhideRow = function(sId)
+{
+	if(!this.rowdata[sId].enabled)
+		this.viewRows++;
+	this.rowdata[sId].enabled = true;
+}
+
+dxSTable.prototype.refreshSelection = function() 
+{
+	var rows = this.tBody.tb.rows, l = rows.length, j = 0;
 	for(var i = 0; i < l; i++) 
 	{
-		if(this.rowSel[_a7[i].id] == true) 
-		{
-			_a7[i].className = "selected";
-		}
+		if(this.rowSel[rows[i].id] == true) 
+			rows[i].className = "selected";
 		else 
 		{
 			if(!this.colorEvenRows) 
-			{
-				_a7[i].className = "even";
-			}
+				rows[i].className = "even";
 			else 
-			{
-				_a7[i].className = (j & 1) ? "odd" : "even";
-			}
+				rows[i].className = (j & 1) ? "odd" : "even";
 		}
 		j++;
       	}
-};
+}
 
-dxSTable.prototype.clearSelection = function() {
-   for(var k in this.rowSel) {
-      this.rowSel[k] = false;
-      }
-   this.selCount = 0;
-   this.refreshSelection();
-   };
+dxSTable.prototype.clearSelection = function()
+{
+	for(var k in this.rowSel)
+		this.rowSel[k] = false;
+	this.selCount = 0;
+	this.refreshSelection();
+}
+
 dxSTable.prototype.fillSelection = function() 
-	{
-		this.selCount = 0;
-		for(var k in this.rowSel) 
-   		{
-			if(this.rowdata[k].enabled)
-			{
-				this.rowSel[k] = true;
-				this.selCount++;
-			}
+{
+	this.selCount = 0;
+	for(var k in this.rowSel) 
+		if(this.rowdata[k].enabled)
+		{
+			this.rowSel[k] = true;
+			this.selCount++;
 		}
-		this.refreshSelection();
-	};
-dxSTable.prototype.getCache = function(col) {
-   if(!this.tBody) {
-      return [];
-      }
-   var a = new Array(0);
-   for(var k in this.rowdata) {
-      a.push( {
-         "key" : k, "v" : this.getValue(this.rowdata[k], col), "e" : this.rowdata[k]}
-      );
-      }
-   this.rowdata = [];
-   return a;
-   };
-dxSTable.prototype.clearCache = function(a) {
-   var l = a.length;
-   for(var i = 0; i < l; i++) {
-      a[i].v = null;
-      a[i].e = null;
-      a[i] = null;
-      }
-   };
-dxSTable.prototype.getColOrder = function(col) {
-   for(var i = 0; i < this.cols; i++) {
-      if(this.colOrder[i] == col) {
-         return i;
-         }
-      }
-   return - 1;
-   };
+	this.refreshSelection();
+}
+
+dxSTable.prototype.getCache = function(col)
+{
+	var a = new Array(0);
+	if(this.tBody)
+	{
+		for(var k in this.rowdata)
+			a.push( {"key" : k, "v" : this.getValue(this.rowdata[k], col), "e" : this.rowdata[k]} );
+		this.rowdata = [];
+	}
+	return(a);
+}
+
+dxSTable.prototype.clearCache = function(a)
+{
+	var l = a.length;
+	for(var i = 0; i < l; i++)
+	{
+		a[i].v = null;
+		a[i].e = null;
+		a[i] = null;
+	}
+}
+
+dxSTable.prototype.getColOrder = function(col)
+{
+	for(var i = 0; i < this.cols; i++)
+		if(this.colOrder[i] == col)
+			return(i);
+	return(-1);
+}
 
 dxSTable.prototype.getColById = function(id)
 {
@@ -1565,12 +1489,12 @@ dxSTable.prototype.getColById = function(id)
         	if(this.ids[i]==id)
 			return(i);
 	return(-1);
-};
+}
 
 dxSTable.prototype.getIdByCol = function(col)
 {
 	return(this.ids[col]);
-};
+}
 
 dxSTable.prototype.updateRowFrom = function(tbl,tblRow,row)
 {
@@ -1581,7 +1505,7 @@ dxSTable.prototype.updateRowFrom = function(tbl,tblRow,row)
 			updated = true;
 	}
 	return(updated);
-};
+}
 
 dxSTable.prototype.getValue = function(row, col)
 {
@@ -1596,7 +1520,7 @@ dxSTable.prototype.getValueById = function(row, id)
 dxSTable.prototype.getRawValue = function(row, col)
 {
 	return(this.rowdata[row].data[col]);
-};
+}
 
 dxSTable.prototype.getValues = function(row)
 {
@@ -1604,7 +1528,7 @@ dxSTable.prototype.getValues = function(row)
 	for(var i = 0; i < this.cols; i++)
 		ret.push(this.getRawValue(row,i));
 	return(ret);
-};
+}
 
 dxSTable.prototype.setValuesById = function(row,ids,zeroFill)
 {
@@ -1618,8 +1542,6 @@ dxSTable.prototype.setValuesById = function(row,ids,zeroFill)
 			if(zeroFill)
 				ret = this.setValue(row,i,null) || ret;
 	}
-//	for(var i in ids) 
-//		ret = this.setValueById(row,i,ids[i]) || ret;
 	return(ret);
 }
 
@@ -1629,7 +1551,7 @@ dxSTable.prototype.setValues = function(row,arr)
 	for(var i = 0; i < this.cols; i++)
 		ret = this.setValue(row,i,arr[i]) || ret;
 	return(ret);
-};
+}
 
 dxSTable.prototype.setValueById = function(row, id, val)
 {
@@ -1665,7 +1587,7 @@ dxSTable.prototype.setValue = function(row, col, val)
 		return(true);
 	}
 	return(false);
-};
+}
 
 dxSTable.prototype.getIcon = function(row)
 {
@@ -1688,7 +1610,7 @@ dxSTable.prototype.setIcon = function(row, icon)
 		return(true);
 	}
 	return(false);
-};
+}
 
 dxSTable.prototype.setAttr = function(row, attr)
 {
@@ -1703,12 +1625,12 @@ dxSTable.prototype.setAttr = function(row, attr)
 			for(var name in attr) 
 				r.setAttribute(name, attr[name]);
 	}
-};
+}
 
 dxSTable.prototype.getAttr = function(row, attrName)
 {
 	return(this.rowdata[row].attr ? this.rowdata[row].attr[attrName] : null);
-};
+}
 
 dxSTable.prototype.resize = function(w, h) 
 {
@@ -1720,17 +1642,17 @@ dxSTable.prototype.resize = function(w, h)
 			this.dCont.style.height = h + "px";
 		this.calcSize().resizeHack();
 	}
-};
+}
 
 dxSTable.prototype.isColumnEnabled = function(i) 
 {
 	return(this.colsdata[this.getColOrder(i)].enabled ? 1 : 0);
-};
+}
 
 dxSTable.prototype.getColWidth = function(i) 
 {
 	return(this.colsdata[this.getColOrder(i)].width);
-};
+}
 
 dxSTable.prototype.getFirstSelected = function() 
 {

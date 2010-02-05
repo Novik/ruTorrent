@@ -55,9 +55,9 @@ if(plugin.enabled)
 						if(this.settings["webui.fls.view"])
 							fno = fid.substr(43);
 						else
-							if(this.dirs[theWebUI.dID].getEntryPriority(fid))
+							if(!this.dirs[this.dID].isDirectory(fid))
 								fno = fid.substr(3);
-						if((fno!=null) && (this.files[theWebUI.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles)
+						if((fno!=null) && (this.files[this.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles)
 							fno = null;
 					}
 					theContextMenu.add( [theUILang.getData,  (fno==null) ? null : "theWebUI.getData('" + theWebUI.dID + "',"+fno+")"] );
@@ -79,7 +79,7 @@ plugin.onLangLoaded = function()
 		        $("#datano").val('');
 			var d = (this.contentDocument || this.contentWindow.document);
 			if(d.location.href != "about:blank")
-				try { eval(d.body.innerHTML); } catch(e) { log(d.body.innerHTML); }
+				try { eval(d.body.innerHTML); } catch(e) {}
 		}));
 		$(document.body).append(
 			$('<form action="plugins/data/action.php" id="getdata" method="get" target="datafrm">'+

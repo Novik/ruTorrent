@@ -72,7 +72,7 @@ function makeContent()
 		$("#add_button").attr("disabled",false);
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d.location.href != "about:blank")
-			try { eval(d.body.innerHTML); } catch(e) { log(d.body.innerHTML); }
+			try { eval(d.body.innerHTML); } catch(e) {}
 	}));
 	$(document.body).append($("<iframe>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl", id: "uploadfrmurl" } ).width(0).height(0).load(function()
 	{
@@ -80,7 +80,7 @@ function makeContent()
 		$("#add_url").attr("disabled",false);
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d.location.href != "about:blank")
-			try { eval(d.body.innerHTML); } catch(e) { log(d.body.innerHTML); }
+			try { eval(d.body.innerHTML); } catch(e) {}
 	}));
 	theDialogManager.make("tadd",theUILang.torrent_add,
 		'<div class="cont fxcaret">'+
@@ -569,5 +569,6 @@ function correctContent()
 		$("#PluginList").remove();
 		$("#tab_PluginList").remove();
 	}
-	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
+	if($type(theWebUI.systemInfo))
+		$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
 }

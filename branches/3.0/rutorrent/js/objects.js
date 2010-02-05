@@ -264,14 +264,14 @@ var theContextMenu =
 		var args = new Array();
 		$.each(arguments, function(ndx,val) { args.push(val); });
         	var aft = null;
-		if((typeof args[0] == "object") && args[0].hasClass && args[0].hasClass("CMenu")) 
+		if(($type(args[0]) == "object") && args[0].hasClass && args[0].hasClass("CMenu")) 
 		{
 			var o = args[0];
 			args.splice(0, 1);
 		}
 		else 
 			var o = this.obj;
-		if((typeof args[0] == "object") && args[0].hasClass && args[0].hasClass("menuitem")) 
+		if(($type(args[0]) == "object") && args[0].hasClass && args[0].hasClass("menuitem")) 
 		{
 			aft = args[0];
 			args.splice(0, 1);		
@@ -279,46 +279,49 @@ var theContextMenu =
 		var self = this;
 		$.each(args, function(ndx,val) 
 		{
-			var li = $("<li>").addClass("menuitem");
-			if(val[0] == CMENU_SEP)
-				li.append($("<hr>"));
-			else
-			if(val[0] == CMENU_CHILD)
+		        if($type(val))
 			{
-				li.append( $("<a></a>").addClass("exp").text(val[1]) );
-				var ul = $("<ul>").addClass("CMenu");
-				for(var j = 0, len = val[2].length; j < len; j++) 
+				var li = $("<li>").addClass("menuitem");
+				if(val[0] == CMENU_SEP)
+					li.append($("<hr>"));
+				else
+				if(val[0] == CMENU_CHILD)
 				{
-					self.add(ul, val[2][j]);
+					li.append( $("<a></a>").addClass("exp").text(val[1]) );
+					var ul = $("<ul>").addClass("CMenu");
+					for(var j = 0, len = val[2].length; j < len; j++) 
+					{
+						self.add(ul, val[2][j]);
+					}
+					li.append(ul);
 				}
-				li.append(ul);
-			}
-			else
-		       	if(val[0] == CMENU_SEL) 
-		 	{
-		 	        var a = $("<a></a>").addClass("sel").text(val[1]);
-		 	        switch($type(val[2]))
-		 	        {
-		 	        	case "string": a.attr("href", "javascript:"+val[2] ); break;
-					case "function": a.attr("href","javascript://void();").click(val[2]); break;
+				else
+			       	if(val[0] == CMENU_SEL) 
+		 		{
+		 	        	var a = $("<a></a>").addClass("sel").text(val[1]);
+			 	        switch($type(val[2]))
+			 	        {
+			 	        	case "string": a.attr("href", "javascript:"+val[2] ); break;
+						case "function": a.attr("href","javascript://void();").click(val[2]); break;
+					}
+					li.append(a);
 				}
-				li.append(a);
-			}
-			else
-			{
-				var a = $("<a></a>").text(val[0]);
-				switch($type(val[1]))
+				else
 				{
-		 	        	case false: a.addClass("dis"); break;
-		 	        	case "string": a.attr( "href", "javascript:"+val[1] ); break;
-					case "function": a.attr("href","javascript://void();").click(val[1]); break;
+					var a = $("<a></a>").text(val[0]);
+					switch($type(val[1]))
+					{
+			 	        	case false: a.addClass("dis"); break;
+		 		        	case "string": a.attr( "href", "javascript:"+val[1] ); break;
+						case "function": a.attr("href","javascript://void();").click(val[1]); break;
+					}
+					li.append(a);
 				}
-				li.append(a);
+				if(aft)
+					aft.after(li);
+				else
+					o.append(li);
 			}
-			if(aft)
-				aft.after(li);
-			else
-				o.append(li);
                 });
 	},
 	clear: function()
@@ -350,5 +353,3 @@ var theContextMenu =
 	}
 }
 
-// Compatibility
-var ContextMenu = theContextMenu;
