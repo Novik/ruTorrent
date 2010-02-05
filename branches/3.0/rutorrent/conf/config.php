@@ -12,6 +12,8 @@
 	$log_file = '/tmp/errors.log';		// path to log file (comment or make empty to disable logging)
 	$saveUploadedTorrents = true;
 
+	$topDirectory = '/';			// Upper available directory. Absolute path with trail slash.
+
 	$scgi_port = 5000;
 	$scgi_host = "127.0.0.1";
 	$XMLRPCMountPoint = "/RPC2";

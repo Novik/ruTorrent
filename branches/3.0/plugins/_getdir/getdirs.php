@@ -1,7 +1,6 @@
 <?php
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
-eval(getPluginConf('_getdir'));
 
 $dh = false;
 $theSettings = rTorrentSettings::load();

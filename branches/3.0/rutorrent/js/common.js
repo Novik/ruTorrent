@@ -1244,45 +1244,46 @@ function RGBackground( selector )
         this.channels = [0,0,0];
         if(selector)
         {
-		var rule = getCSSRule(selector);
+		var cs;
+                var rule = getCSSRule(selector);
 		if(rule)
-		{
 			var cs = rule.style.backgroundColor;
-			if(cs.charAt(0) == '#')
-        			cs = cs.substr(1);
-			cs = cs.replace(/ /g,'').toLowerCase();
-			var colorDefs =
-			[
-        			{
-					re: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
-        				process: function(bits)
-		        		{
-						return([iv(bits[1]),iv(bits[2]),iv(bits[3])]);
-					}
-				},
-				{
-					re: /^(\w{2})(\w{2})(\w{2})$/,
-					process: function(bits)
-					{
-			        	        return([parseInt(bits[1], 16),parseInt(bits[2], 16),parseInt(bits[3], 16)]);
-					}
-				},
-				{
-					re: /^(\w{1})(\w{1})(\w{1})$/,
-					process: function (bits)
-					{
-						return([parseInt(bits[1] + bits[1], 16),parseInt(bits[2] + bits[2], 16),parseInt(bits[3] + bits[3], 16)]);
-					}
+		else
+			cs = selector;	
+		if(cs.charAt(0) == '#')
+       			cs = cs.substr(1);
+		cs = cs.replace(/ /g,'').toLowerCase();
+		var colorDefs =
+		[
+       			{
+				re: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
+       				process: function(bits)
+	        		{
+					return([iv(bits[1]),iv(bits[2]),iv(bits[3])]);
 				}
-			];
-			for(var i = 0; i < colorDefs.length; i++)
+			},
 			{
-				var bits = colorDefs[i].re.exec(cs);
-				if(bits)
+				re: /^(\w{2})(\w{2})(\w{2})$/,
+				process: function(bits)
 				{
-					this.channels = colorDefs[i].process(bits);
-					break;
+		        	        return([parseInt(bits[1], 16),parseInt(bits[2], 16),parseInt(bits[3], 16)]);
 				}
+			},
+			{
+				re: /^(\w{1})(\w{1})(\w{1})$/,
+				process: function (bits)
+				{
+					return([parseInt(bits[1] + bits[1], 16),parseInt(bits[2] + bits[2], 16),parseInt(bits[3] + bits[3], 16)]);
+				}
+			}
+		];
+		for(var i = 0; i < colorDefs.length; i++)
+		{
+			var bits = colorDefs[i].re.exec(cs);
+			if(bits)
+			{
+				this.channels = colorDefs[i].process(bits);
+				break;
 			}
 		}
 	}
