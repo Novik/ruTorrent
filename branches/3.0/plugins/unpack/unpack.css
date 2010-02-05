@@ -1,4 +1,4 @@
-div#dlg_unpack {width: 370px; height: 160px; overflow: visible}
+div#dlg_unpack {width: 380px; height: 160px; overflow: visible}
 
 div#dlg_unpack fieldset div {line-height: 16px}
 div#dlg_unpack fieldset div.props-spacer {width: 90%; float: left}
