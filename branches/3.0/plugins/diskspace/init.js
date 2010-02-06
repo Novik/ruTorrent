@@ -2,7 +2,9 @@ plugin.loadMainCSS()
 
 plugin.setValue = function( full, free )
 {
-        var percent = iv(full ? free/full*100 : 0);
+        var percent = iv(full ? (full-free)/full*100 : 0);
+        if(percent>100)
+	        percent = 100;
 	$("#meter-disk-value").width( percent+"%" ).css( { "background-color": (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,percent).getColor(),
 		visibility: !percent ? "hidden" : "visible" } );
 	$("#meter-disk-text").text(percent+'%').attr("title", theConverter.bytes(free)+"/"+theConverter.bytes(full));
