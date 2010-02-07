@@ -27,8 +27,14 @@ svn update
 respectively. plugin-name here is name of a plug-in. I.e., for example, create, rss and so on.
 
 It is a good idea to perform all these operations as an owner of the web-server. It will prevent a mess in access rights.
+
+It should be noted that rutorrent 3.0 uses a different svn repository command.  to get 3.0 use
 {{{
-It should be noted that rutorrent 3.0 uses a different svn repository command.  to get 3.0 use}}}
+cd www-root
 svn checkout http://rutorrent.googlecode.com/svn/branches/3.0/rutorrent
-to get 3.0 plugins use
-svn checkout http://rutorrent.googlecode.com/svn/branches/3.0/plugins
+}}}
+to get for 3.0 plugins use
+{{{
+cd www-root/rutorrent/plugins/
+svn checkout http://rutorrent.googlecode.com/svn/branches/3.0/plugins/PLUGINNAME
+}}}
