@@ -184,11 +184,7 @@ class Snoopy
 				break;
 			case "https":
 				if(!$pathToCurl || ($pathToCurl==""))
-					$pathToCurl = findEXE( 'curl' );
-				if(!$pathToCurl) {
-					$this->error = "Bad curl, can't fetch HTTPS \n";
-					return false;
-				}
+					$pathToCurl = 'curl';
 				$this->host = $URI_PARTS["host"];
 				if(!empty($URI_PARTS["port"]))
 					$this->port = $URI_PARTS["port"];
