@@ -1,7 +1,7 @@
 ﻿
 
 theUILang.unpack		= "Распаковать";
-theUILang.unpackPath		= "Путь";
+theUILang.unpackPath		= "Путь (пусто - в директорию закачки)";
 theUILang.processAll		= "Обрабатывать все тома";
 theUILang.unpackTaskFailed      = "Распаковка файла завершена с ошибками";
 theUILang.unpackTaskOK		= "Распаковка файла завершена удачно";

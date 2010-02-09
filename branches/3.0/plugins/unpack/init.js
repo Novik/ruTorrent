@@ -169,7 +169,7 @@ plugin.onLangLoaded = function()
 		theDialogManager.make( 'dlg_unpack', theUILang.unpack,
 			"<div class='cont fxcaret'>" +
 				"<fieldset>" +
-					"<label id='lbl_unpack' for='edit_unpack'>" + theUILang.unpackPath + ": </label>" +
+					"<div>" + theUILang.unpackPath + ": </div>" +
 					"<input type='text' id='edit_unpack' class='TextboxLarge' maxlength='200'/>" +
 					"<input type='button' id='btn_unpack' class='Button' value='...' />" +
 					"<div class='checkbox'>" +

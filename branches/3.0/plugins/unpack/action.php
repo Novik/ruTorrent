@@ -46,16 +46,17 @@ if(isset($_REQUEST['cmd']))
 								$pathToUnzip = "unzip";
 							$arh = (($mode == "zip") ? $pathToUnzip : $pathToUnrar);
 							$c = new rXMLRPCCommand( "execute", array(
-								        $rootPath.'/plugins/unpack/un'.$mode.'_file.sh',
-									$arh,
-									$filename,
-									addslash($outPath),
-									$logPath,
-									$statusPath ));
+							                "sh", "-c",
+								        escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.'_file.sh')." ".
+									escapeshellarg($arh)." ".
+									escapeshellarg($filename)." ".
+									escapeshellarg(addslash($outPath))." ".
+									escapeshellarg($logPath)." ".
+									escapeshellarg($statusPath)." &"));
 							if(isset($_REQUEST['all']))
 								$c->addParameter("-v");
 							$req = new rXMLRPCRequest( $c );
-							if($req->run())
+							if($req->success())
 								$ret = "{ no: ".$taskNo.", name: '".addslashes($filename)."', out: '".addslashes($outPath)."' }";
 						}
 					}
@@ -116,15 +117,16 @@ if(isset($_REQUEST['cmd']))
 									if(empty($outPath))
 										$outPath = dirname($basename);
 								}
-								$req = new rXMLRPCRequest( new rXMLRPCCommand( "execute", array(
-									        $rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh',
-										$arh,
-										$basename,
-										addslash($outPath),
-										$logPath,
-										$statusPath,
-										$pathToUnzip )));
-								if($req->run())
+								$req = new rXMLRPCRequest(new rXMLRPCCommand( "execute", array(
+							                "sh", "-c",
+								        escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
+									escapeshellarg($arh)." ".
+									escapeshellarg($basename)." ".
+									escapeshellarg(addslash($outPath))." ".
+									escapeshellarg($logPath)." ".
+									escapeshellarg($statusPath)." ".
+									escapeshellarg($pathToUnzip)." &")));
+								if($req->success())
 									$ret = "{ no: ".$taskNo.", name: '".addslashes($basename)."', out: '".addslashes($outPath)."' }";
 							}
 						}
