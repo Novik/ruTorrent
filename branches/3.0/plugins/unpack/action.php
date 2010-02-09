@@ -36,9 +36,9 @@ if(isset($_REQUEST['cmd']))
 							$outPath = dirname($filename);
 						if(LFS::is_file($filename) && !empty($outPath))
 						{
-						        $taskNo = rand();
-							$logPath = '/tmp/rutorrent-unpack-log.'.$taskNo;
-							$statusPath = '/tmp/rutorrent-unpack-status.'.$taskNo;
+						        $taskNo = time();
+							$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
+							$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
 							$mode = $_REQUEST['mode'];
 							if(empty($pathToUnrar))
 								$pathToUnrar = "unrar";
@@ -95,9 +95,9 @@ if(isset($_REQUEST['cmd']))
 							$mode = ($rarPresent && $zipPresent) ? 'all' : ($rarPresent ? 'rar' : ($zipPresent ? 'zip' : null));
 							if($mode)
 							{
-							        $taskNo = rand();
-								$logPath = '/tmp/rutorrent-unpack-log.'.$taskNo;
-								$statusPath = '/tmp/rutorrent-unpack-status.'.$taskNo;
+							        $taskNo = time();
+								$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
+								$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
 								if(empty($pathToUnrar))
 									$pathToUnrar = "unrar";
 								if(empty($pathToUnzip))
@@ -152,8 +152,8 @@ if(isset($_REQUEST['cmd']))
 					if($parts[0]=="no")
 					{
 						$taskNo = trim($parts[1]);
-						$logPath = '/tmp/rutorrent-unpack-log.'.$taskNo;
-						$statusPath = '/tmp/rutorrent-unpack-status.'.$taskNo;
+						$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
+						$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
 						if(is_file($statusPath) && is_readable($statusPath))
 						{
 							$status = @file_get_contents($statusPath);
