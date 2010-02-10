@@ -164,7 +164,7 @@ rPlugin.prototype.attachPageToOptions = function(dlg,name)
 {
         if(this.canChangeOptions())
 	{
-		$("#st_btns").before( $(dlg).addClass("stg_con") );
+		$("#st_btns").before( $(dlg).addClass("stg_con").hide() );
 		$(".lm ul li:last").removeClass("last");
 		$(".lm ul").append( $("<li>").attr("id","hld_"+dlg.id).addClass("last").html("<a id='mnu_"+dlg.id+"' href=\"javascript://void()\" onclick=\"theOptionsSwitcher.run('"+dlg.id+"'); return(false);\">"+name+"</a>") );
 	}

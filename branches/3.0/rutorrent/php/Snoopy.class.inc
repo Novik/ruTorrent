@@ -665,78 +665,74 @@ class Snoopy
 		# accept self-signed certs
 		$cmdline_params .= " -k -s"; 
 		exec($pathToCurl." -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".escapeshellcmd($cmdline_params)." ".escapeshellcmd($URI),$results,$return);
-		
-		if($return)
-		{
-			$this->error = "Error: cURL could not retrieve the document, error $return.";
-			return false;
-		}
-			
-		$results = file_get_contents("/tmp/$contfile");
-		$result_headers = file("/tmp/$headerfile");
-						
 		$this->_redirectaddr = false;
 		unset($this->headers);
-						
-		for($currentHeader = 0; $currentHeader < count($result_headers); $currentHeader++)
-		{
-			
-			// if a header begins with Location: or URI:, set the redirect
-			if(preg_match("/^(Location: |URI: )/i",$result_headers[$currentHeader]))
-			{
-				// get URL portion of the redirect
-				preg_match("/^(Location: |URI:)(.*)/",chop($result_headers[$currentHeader]),$matches);
-				// look for :// in the Location header to see if hostname is included
-				if(!preg_match("|\:\/\/|",$matches[2]))
-				{
-					// no host in the path, so prepend
-					$this->_redirectaddr = $URI_PARTS["scheme"]."://".$this->host.":".$this->port;
-					// eliminate double slash
-					if(!preg_match("|^/|",$matches[2]))
-							$this->_redirectaddr .= "/".$matches[2];
-					else
-							$this->_redirectaddr .= $matches[2];
-				}
-				else
-					$this->_redirectaddr = $matches[2];
-			}
 		
-			if(preg_match("|^HTTP/|",$result_headers[$currentHeader]))
-			{
-			    $this->response_code = $result_headers[$currentHeader];
-			    if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$this->response_code, $match))
-			    {
-				$this->status= $match[1];
-                	    }
-			}
-			$this->headers[] = $result_headers[$currentHeader];
-		}
-
-		// check if there is a a redirect meta tag
-		
-		if(preg_match("'<meta[\s]*http-equiv[^>]*?content[\s]*=[\s]*[\"\']?\d+;[\s]+URL[\s]*=[\s]*([^\"\']*?)[\"\']?>'i",$results,$match))
-		{
-			$this->_redirectaddr = $this->_expandlinks($match[1],$URI);	
-		}
-
-		// have we hit our frame depth and is there frame src to fetch?
-		if(($this->_framedepth < $this->maxframes) && preg_match_all("'<frame\s+.*src[\s]*=[\'\"]?([^\'\"\>]+)'i",$results,$match))
-		{
-			$this->results[] = $results;
-			for($x=0; $x<count($match[1]); $x++)
-				$this->_frameurls[] = $this->_expandlinks($match[1][$x],$URI_PARTS["scheme"]."://".$this->host);
-		}
-		// have we already fetched framed content?
-		elseif(is_array($this->results))
-			$this->results[] = $results;
-		// no framed content
+		if($return)
+			$this->error = "Error: cURL could not retrieve the document, error $return.";
 		else
-			$this->results = $results;
+		{
+			$results = file_get_contents("/tmp/$contfile");
+			$result_headers = file("/tmp/$headerfile");
+				
+			for($currentHeader = 0; $currentHeader < count($result_headers); $currentHeader++)
+			{
+			
+				// if a header begins with Location: or URI:, set the redirect
+				if(preg_match("/^(Location: |URI: )/i",$result_headers[$currentHeader]))
+				{
+					// get URL portion of the redirect
+					preg_match("/^(Location: |URI:)(.*)/",chop($result_headers[$currentHeader]),$matches);
+					// look for :// in the Location header to see if hostname is included
+					if(!preg_match("|\:\/\/|",$matches[2]))
+					{
+						// no host in the path, so prepend
+						$this->_redirectaddr = $URI_PARTS["scheme"]."://".$this->host.":".$this->port;
+						// eliminate double slash
+						if(!preg_match("|^/|",$matches[2]))
+								$this->_redirectaddr .= "/".$matches[2];
+						else
+								$this->_redirectaddr .= $matches[2];
+					}
+					else
+						$this->_redirectaddr = $matches[2];
+				}
+		
+				if(preg_match("|^HTTP/|",$result_headers[$currentHeader]))
+				{
+					$this->response_code = $result_headers[$currentHeader];
+					if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$this->response_code, $match))
+					{
+						$this->status= $match[1];
+                	    		}
+				}
+				$this->headers[] = $result_headers[$currentHeader];
+			}
 
+			// check if there is a a redirect meta tag
+		
+			if(preg_match("'<meta[\s]*http-equiv[^>]*?content[\s]*=[\s]*[\"\']?\d+;[\s]+URL[\s]*=[\s]*([^\"\']*?)[\"\']?>'i",$results,$match))
+			{
+				$this->_redirectaddr = $this->_expandlinks($match[1],$URI);	
+			}
+
+			// have we hit our frame depth and is there frame src to fetch?
+			if(($this->_framedepth < $this->maxframes) && preg_match_all("'<frame\s+.*src[\s]*=[\'\"]?([^\'\"\>]+)'i",$results,$match))
+			{
+				$this->results[] = $results;
+				for($x=0; $x<count($match[1]); $x++)
+					$this->_frameurls[] = $this->_expandlinks($match[1][$x],$URI_PARTS["scheme"]."://".$this->host);
+			}
+			// have we already fetched framed content?
+			elseif(is_array($this->results))
+				$this->results[] = $results;
+			// no framed content
+			else
+				$this->results = $results;
+		}
 		unlink("/tmp/$headerfile");
 		unlink("/tmp/$contfile");
-				
-		return true;
+		return(!$return);
 	}
 
 /*======================================================================*\

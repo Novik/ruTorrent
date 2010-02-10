@@ -16,8 +16,10 @@ if(plugin.enabled && plugin.canChangeOptions())
 			$$('path_to_watch').value = theWebUI.autotools.PathToWatch;
 			linked( $$('enable_watch'), 0, ['path_to_watch', 'autowatch_browse_btn', 'watch_start'] );
 			$$('watch_start').checked  = ( theWebUI.autotools.WatchStart  == 1 );
-			plugin.DirBrowser1.hide();
-			plugin.DirBrowser2.hide();
+			if(plugin.DirBrowser1)
+				plugin.DirBrowser1.hide();
+			if(plugin.DirBrowser2)
+				plugin.DirBrowser2.hide();
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}

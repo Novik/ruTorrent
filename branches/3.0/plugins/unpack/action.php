@@ -1,137 +1,34 @@
 <?php
-require_once( '../../php/xmlrpc.php' );
-require_once( '../../php/lfs.php' );
-eval( getPluginConf( 'unpack' ) );
+require_once( 'unpack.php' );
 
 ignore_user_abort(true);
 set_time_limit(0);
+$ctype = "json";
 
 if(isset($_REQUEST['cmd']))
 {
 	$cmd = $_REQUEST['cmd'];
 	switch($cmd)
 	{
+		case "set":
+		{
+			$up = new rUnpack();
+			$up->set();
+			$ret = $up->get();
+			$ctype = "javascript";
+			break;
+		}
 		case "start":
 		{
 			if(isset($_REQUEST['hash']) && isset($_REQUEST['dir']))
 			{
-			        if(isset($_REQUEST['no']) && isset($_REQUEST['mode']))
-			        {
-					$req = new rXMLRPCRequest( 
-						new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no'])) ));
-					if($req->success())
-					{
-						$filename = $req->val[0];
-						if($filename=='')
-						{
-							$req = new rXMLRPCRequest( array(
-								new rXMLRPCCommand( "d.open", $_REQUEST['hash'] ),
-								new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no'])) ),
-								new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ) );
-							if($req->success())
-								$filename = $req->val[1];
-						}
-						$outPath = rawurldecode($_REQUEST['dir']);
-						if(empty($outPath))
-							$outPath = dirname($filename);
-						if(LFS::is_file($filename) && !empty($outPath))
-						{
-						        $taskNo = time();
-							$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
-							$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
-							$mode = $_REQUEST['mode'];
-							if(empty($pathToUnrar))
-								$pathToUnrar = "unrar";
-							if(empty($pathToUnzip))
-								$pathToUnzip = "unzip";
-							$arh = (($mode == "zip") ? $pathToUnzip : $pathToUnrar);
-							$c = new rXMLRPCCommand( "execute", array(
-							                "sh", "-c",
-								        escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.'_file.sh')." ".
-									escapeshellarg($arh)." ".
-									escapeshellarg($filename)." ".
-									escapeshellarg(addslash($outPath))." ".
-									escapeshellarg($logPath)." ".
-									escapeshellarg($statusPath)." &"));
-							if(isset($_REQUEST['all']))
-								$c->addParameter("-v");
-							$req = new rXMLRPCRequest( $c );
-							if($req->success())
-								$ret = "{ no: ".$taskNo.", name: '".addslashes($filename)."', out: '".addslashes($outPath)."' }";
-						}
-					}
-				}
-				else
-				{
-					$req = new rXMLRPCRequest( 
-						new rXMLRPCCommand( "d.get_base_path", $_REQUEST['hash'] ));
-					if($req->success())
-					{
-						$basename = $req->val[0];
-						if($basename=='')
-						{
-							$req = new rXMLRPCRequest( array(
-								new rXMLRPCCommand( "d.open", $_REQUEST['hash'] ),
-								new rXMLRPCCommand( "d.get_base_path", $_REQUEST['hash'] ),
-								new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ) );
-							if($req->success())
-								$basename = $req->val[1];
-						}
-						$outPath = rawurldecode($_REQUEST['dir']);
-						$req = new rXMLRPCRequest( 
-							new rXMLRPCCommand( "f.multicall", array($_REQUEST['hash'],"","f.get_path=") ));
-						if($req->success())
-						{
-						        $rarPresent = false;
-						        $zipPresent = false;
-							foreach($req->val as $no=>$name)
-							{
-								if(USE_UNRAR && (preg_match("'.*\.(rar|r\d\d|\d\d\d)$'si", $name)==1))
-									$rarPresent = true;
-								else
-								if(USE_UNZIP && (preg_match("'.*\.zip$'si", $name)==1))
-									$zipPresent = true;
-							}
-							$mode = ($rarPresent && $zipPresent) ? 'all' : ($rarPresent ? 'rar' : ($zipPresent ? 'zip' : null));
-							if($mode)
-							{
-							        $taskNo = time();
-								$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
-								$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
-								if(empty($pathToUnrar))
-									$pathToUnrar = "unrar";
-								if(empty($pathToUnzip))
-									$pathToUnzip = "unzip";
-								$arh = (($mode == "zip") ? $pathToUnzip : $pathToUnrar);
-								if(is_dir($basename))
-								{
-									$postfix = "_dir";
-									if(empty($outPath))
-										$outPath = $basename;
-									$basename = addslash($basename);
-
-								}
-								else
-								{
-									$postfix = "_file";
-									if(empty($outPath))
-										$outPath = dirname($basename);
-								}
-								$req = new rXMLRPCRequest(new rXMLRPCCommand( "execute", array(
-							                "sh", "-c",
-								        escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
-									escapeshellarg($arh)." ".
-									escapeshellarg($basename)." ".
-									escapeshellarg(addslash($outPath))." ".
-									escapeshellarg($logPath)." ".
-									escapeshellarg($statusPath)." ".
-									escapeshellarg($pathToUnzip)." &")));
-								if($req->success())
-									$ret = "{ no: ".$taskNo.", name: '".addslashes($basename)."', out: '".addslashes($outPath)."' }";
-							}
-						}
-					}
-				}
+		        	$up = rUnpack::load();
+				$arr = $up->startTask( $_REQUEST['hash'], rawurldecode($_REQUEST['dir']), 
+				        isset($_REQUEST['mode']) ? $_REQUEST['mode'] : null, 
+					isset($_REQUEST['no']) ? $_REQUEST['no'] : null,
+					isset($_REQUEST['all']) );
+				if($arr)
+					$ret = "{ no: ".$arr['no'].", name: '".addslashes($arr['name'])."', out: '".addslashes($arr['out'])."' }";
 			}
 			if(empty($ret))
 				$ret = "{ no: -1 }";
@@ -151,30 +48,11 @@ if(isset($_REQUEST['cmd']))
 					$parts = split("=",$var);
 					if($parts[0]=="no")
 					{
-						$taskNo = trim($parts[1]);
-						$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
-						$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
-						if(is_file($statusPath) && is_readable($statusPath))
+						$chk = rUnpack::checkTask( trim($parts[1]) );
+						if($chk)
 						{
-							$status = @file_get_contents($statusPath);
-							if($status===false)
-								$status = -1;
-							else
-								$status = trim($status);
-							if(preg_match( '/^\d*$/',trim($status)) != 1)
-								$status = -1;
-							$errors = false;
-							if(($status!=0) || SHOW_LOG_ON_SUCCESS)
-								$errors = @file($logPath);
-							if($errors===false)
-								$errors=array();
-							$errors = array_map('trim', $errors);
-							$arr[] = "{ no: ".$taskNo.", status: ".$status.", errors: [".
-								implode(",", array_map('quoteAndDeslashEachItem', $errors))."]}";
-							$req = new rXMLRPCRequest( array(
-								new rXMLRPCCommand( "execute", array("rm",$statusPath) ),
-								new rXMLRPCCommand( "execute", array("rm",$logPath) ) ));
-							$req->run();
+							$arr[] = "{ no: ".$chk['no'].", status: ".$chk['status'].", errors: [".
+								implode(",", array_map('quoteAndDeslashEachItem', $chk['errors']))."]}";
 						}
 					}
 				}
@@ -187,7 +65,7 @@ if(isset($_REQUEST['cmd']))
 
 if(!empty($ret))
 {
-	header("Content-Type: application/json; charset=UTF-8");
+	header("Content-Type: application/".$ctype."; charset=UTF-8");
 	header("Content-Length: ".strlen($ret));
 	echo $ret;
 }
