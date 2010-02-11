@@ -14,5 +14,6 @@ theUILang.unpackEnabled		= "Enable autounpacking";
 theUILang.unpackTorrents	= "For unpacking torrents add to it directory";
 theUILang.unpackAddLabel	= "Torrent's label";
 theUILang.unpackAddName		= "Torrent's name";
+theUILang.unpackNoFiles		= "Archives not found in torrent's data.";
 
 thePlugins.get("unpack").langLoaded();

@@ -64,8 +64,8 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		$res = rtExec( "execute",
 			array( "sh",
 				"-c",
-				$php." ".$script_dir."setdir.php ".
-					$hash." \"".$datadir."\" ".$move_datafiles." ".getUser()." & exit 0",
+				escapeshellarg($php)." ".escapeshellarg($script_dir."setdir.php")." ".
+					$hash." ".escapeshellarg($datadir)." ".$move_datafiles." ".escapeshellarg(getUser())." & exit 0",
 			),
 			$datadir_debug_enabled );
 		if( !$res )

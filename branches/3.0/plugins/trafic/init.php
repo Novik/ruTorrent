@@ -35,7 +35,8 @@ if($needStart)
 		$startAt = 0;
 	$interval = $updateInterval*60;
 	$req = new rXMLRPCRequest( new rXMLRPCCommand("schedule", 
-		array( "trafic".getUser(), $startAt."", $interval."", 'execute={sh,-c,'.getPHP().' '.$rootPath.'/plugins/trafic/update.php '.getUser().' & exit 0}' ) ) );
+		array( "trafic".getUser(), $startAt."", $interval."", 
+			'execute={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($rootPath.'/plugins/trafic/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) ) );
 	if($req->run() && !$req->fault)
         	$theSettings->registerPlugin("trafic");
 	else

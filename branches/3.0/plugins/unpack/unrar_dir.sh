@@ -10,7 +10,7 @@ ret=0
 
 process_directory()
 {
-	"$1" x -ierr -idp -kb -o+ -p- -y -v -- "$2." "$3" 2>> "$4"
+	"$1" x -idp -kb -o+ -p- -y -v -- "$2." "$3" 2>> "$4"
 	last=$?
 	[ $last -le 1 ] && ret=$last
 	for fn in "$2"* ; do

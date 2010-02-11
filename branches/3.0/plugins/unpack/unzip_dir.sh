@@ -13,7 +13,7 @@ process_directory()
         for fn in "$2"*.zip ; do
         	if [ -f "$fn" ] && [ -r "$fn" ] ; then
 	        	mkdir -p "$3"
-			"$1" -o "$fn" -d "$3" >>"$4" 2>> "$4"
+			"$1" -o "$fn" -d "$3" > /dev/null 2>> "$4"
 			last=$?
 			[ $last -gt 1 ] && ret=$last
 		fi

@@ -44,7 +44,7 @@ if($needStart)
 		$cmdInsert = new rXMLRPCCommand('system.method.set_key','event.download.inserted_new');
 		$cmdFinished = new rXMLRPCCommand('system.method.set_key','event.download.finished');
 	}
-	$cmdSchedule = new rXMLRPCCommand('schedule', array( 'autowatch'.getUser(), '10', $autowatch_interval."", 'execute={sh,-c,'.getPHP().' '.$pathToAutoTools.'/watch.php '.getUser().' &}' ));
+	$cmdSchedule = new rXMLRPCCommand('schedule', array( 'autowatch'.getUser(), '10', $autowatch_interval."", 'execute={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($pathToAutoTools.'/watch.php').' '.escapeshellarg(getUser()).' &}' ));
 	$cmdInsert->addParameters( array('autolabel'.getUser(), 'branch=$not=$d.get_custom1=,"execute={'.getPHP().','.$pathToAutoTools.'/label.php,$d.get_hash=,'.getUser().'}"') );
 	$cmdFinished->addParameters( array('automove'.getUser(), 'execute={'.getPHP().','.$pathToAutoTools.'/move.php,$d.get_hash=,'.getUser().'}') );
 	$req = new rXMLRPCRequest( array( $cmdInsert, $cmdFinished, $cmdSchedule ) );

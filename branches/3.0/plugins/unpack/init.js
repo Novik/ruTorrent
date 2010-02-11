@@ -134,14 +134,14 @@ if(plugin.enabled)
 
 	theWebUI.startUnpackTask = function(info)
 	{
-	        if(info.no>=0)
+	        if(info.no>0)
 	        {
 			plugin.tasks[info.no] = info;
 			plugin.tasks.length++;
 			log(theUILang.unpackTaskStarted+' ('+info.name+'=>'+info.out+')');
 		}
 		else
-			log(theUILang.unpackTaskFailed);
+			log((info.no<0) ? theUILang.unpackTaskFailed : theUILang.unpackNoFiles);
 	}
 
 	theWebUI.finishUnpackTask = function(task,info)

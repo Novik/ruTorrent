@@ -108,10 +108,7 @@ function findRemoteEXE( $exe, $err, &$remoteRequests )
 		if(!array_key_exists($exe,$remoteRequests))
 		{
 			$path=realpath(dirname('.'));
-			$len = strlen($path);
-			if(($len>0) && ($path[$len-1]!='/'))
-				$path.='/';
-			$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", $path."test.sh ".$exe." ".$st)));
+			$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", escapeshellarg(addslash($path)."test.sh")." ".$exe." ".escapeshellarg($st))));
 			$req->run();
 		}
 		$remoteRequests[$exe][] = $err;

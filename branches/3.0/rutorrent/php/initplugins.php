@@ -60,9 +60,6 @@ function getPluginInfo( $name, $permissions )
 				}
 			}
 		}
-//dmrom: Seems like a rudiment and produce warnings in "execute_log="
-//		if(!array_key_exists("runlevel",$info))
-//			$level = 10.0;
 		if($permissions!==false)
 		{
 			if(!getFlag($permissions,$name,"enabled"))

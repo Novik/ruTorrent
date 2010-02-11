@@ -66,9 +66,11 @@ class rUnpack
 		if(empty($pathToUnzip))
 			$pathToUnzip = "unzip";
 		$outPath = $this->path;
+		$arh = $pathToUnrar;
 		if(is_dir($basename))
 		{
 			$postfix = "_dir";
+			$mode = ((USE_UNRAR && USE_UNZIP) ? "all" : (USE_UNZIP ? "zip" : "rar"));
 			if(empty($outPath))
 				$outPath = $basename;
 			$basename = addslash($basename);
@@ -76,22 +78,31 @@ class rUnpack
 		else
 		{
 			$postfix = "_file";
+			if(USE_UNRAR && (preg_match("'.*\.(rar|r\d\d|\d\d\d)$'si", $basename)==1))
+				$rarPresent = true;
+			else
+			if(USE_UNZIP && (preg_match("'.*\.zip$'si", $basename)==1))
+				$zipPresent = true;
 			if(empty($outPath))
 				$outPath = dirname($basename);
+			$mode = ($zipPresent ? 'zip' : ($rarPresent ? 'rar' : null));
+		        $pathToUnzip = "";
 		}
-		$outPath = addslash($outPath);
-        	if($this->addLabel && ($label!=''))
-        		$outPath.=addslash($label);
-        	if($this->addName && ($name!=''))
-			$outPath.=addslash($name);
-		exec( escapeshellarg($rootPath.'/plugins/unpack/unall'.$postfix.'.sh')." ".
-			escapeshellarg($pathToUnrar)." ".
-			escapeshellarg($basename)." ".
-			escapeshellarg($outPath)." ".
-			"/dev/null ".
-			"/dev/null ".
-			escapeshellarg($pathToUnzip) );
-
+		if($mode)
+		{
+			$outPath = addslash($outPath);
+        		if($this->addLabel && ($label!=''))
+        			$outPath.=addslash($label);
+	        	if($this->addName && ($name!=''))
+				$outPath.=addslash($name);
+			exec( escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
+				escapeshellarg($arh)." ".
+				escapeshellarg($basename)." ".
+				escapeshellarg($outPath)." ".
+				"/dev/null ".
+				"/dev/null ".
+				escapeshellarg($pathToUnzip) );
+		}
 	}
 	public function startTask( $hash, $outPath, $mode = null, $fileno = null, $all = false )
 	{
@@ -156,7 +167,6 @@ class rUnpack
 				$basename = $req->val[0];
 				$label = rawurldecode($req->val[1]);
 				$tname = $req->val[2];
-toLog($tname);
 				if($basename=='')
 				{
 					$req = new rXMLRPCRequest( array(
@@ -203,6 +213,7 @@ toLog($tname);
 							$postfix = "_file";
 							if(empty($outPath))
 								$outPath = dirname($basename);
+		        				$pathToUnzip = "";
 						}
 						$outPath = addslash($outPath);
 				        	if($this->addLabel && ($label!=''))
@@ -221,6 +232,8 @@ toLog($tname);
 						if($req->success())
 							$ret = array( "no"=>$taskNo, "name"=>$basename, "out"=>$outPath );
 					}
+					else
+						$ret = array( "no"=>0, "name"=>$basename );
 				}
 			}
 		}
@@ -240,12 +253,11 @@ toLog($tname);
 				$status = trim($status);
 			if(preg_match( '/^\d*$/',trim($status)) != 1)
 				$status = -1;
-			$errors = false;
-			if(($status!=0) || SHOW_LOG_ON_SUCCESS)
-				$errors = @file($logPath);
+			$errors = @file($logPath);
 			if($errors===false)
 				$errors=array();
-			$errors = array_map('trim', $errors);
+			else
+				$errors = array_map('trim', $errors);
 			$ret = array( "no"=>$taskNo, "status"=>$status, "errors"=>$errors );
 			$req = new rXMLRPCRequest( array(
 				new rXMLRPCCommand( "execute", array("rm",$statusPath) ),

@@ -968,7 +968,7 @@ var theBTClientVersion =
         	'A' : "ABC", 'R' : "Tribler", 'S' : "Shad0w",
 	        'T': "BitTornado", 'U': "UPnP NAT Bit Torrent"
 	},
-// -SP3603 -UT1830%81%80%06%3A%05%CB
+// -SP3603 -UT1830%81%80%06%3A%05%CB -BP4940-
 	get: function( origStr )
 	{
 
@@ -1023,57 +1023,58 @@ var theBTClientVersion =
 				}
 			}
 			else
-				switch(sign)
-				{
-					case 'KT':
-						var ch = str.charAt(5);
-                		                if( ch == 'D' )
-							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" Dev "+shChar(str.charAt(6));
-					        else
-					        if( ch == 'R' )
-						        ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" RC "+shChar(str.charAt(6));
-						else
-							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5));
-						break;
-					case 'AZ':
-						if(str.charAt(3) > '3' || ( str.charAt(3) == '3' && str.charAt(4) >= '1' ))
-							cli = "Vuze";
-						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5))+"."+shChar(str.charAt(6));
-						break;
-	                              	case 'BF':
-	                              	case 'LW':
-						ret = cli;
-						break;
-
-					case 'BB':
-						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+str.charAt(5)+str.charAt(6);
-						break;
-					case 'BR':
-						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+" ("+str.charAt(5)+str.charAt(6)+")";
-						break;
-					case 'CT':
-						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+parseInt(str.substr(5,2),10);
-						break;
-					case 'XX':
-						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" ("+parseInt(str.substr(5,2),10)+")";
-						break;
-				}
-		}
-		else
-		{
-			cli = this.azLikeClients4[sign];
-			if(cli)
-				ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5))+"."+shChar(str.charAt(6));
-			else
 			{
-				cli = this.azLikeClients3[sign];
+				cli = this.azLikeClients4[sign];
 				if(cli)
-					ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5));
+					ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5))+"."+shChar(str.charAt(6));
 				else
 				{
-					cli = this.azLikeClients2x2[sign];
+					cli = this.azLikeClients3[sign];
 					if(cli)
-						ret = cli+" "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
+						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5));
+					else
+					{
+						cli = this.azLikeClients2x2[sign];
+						if(cli)
+							ret = cli+" "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
+					}
+				}
+				if(!ret)
+  		                {	
+					switch(sign)
+					{
+						case 'KT':
+							var ch = str.charAt(5);
+                			                if( ch == 'D' )
+								ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" Dev "+shChar(str.charAt(6));
+					        	else
+						        if( ch == 'R' )
+							        ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" RC "+shChar(str.charAt(6));
+							else
+							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5));
+							break;
+						case 'AZ':
+							if(str.charAt(3) > '3' || ( str.charAt(3) == '3' && str.charAt(4) >= '1' ))
+								cli = "Vuze";
+							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5))+"."+shChar(str.charAt(6));
+							break;
+	        	                      	case 'BF':
+	                	              	case 'LW':
+							ret = cli;
+							break;
+						case 'BB':
+							ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+str.charAt(5)+str.charAt(6);
+							break;
+						case 'BR':
+							ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+" ("+str.charAt(5)+str.charAt(6)+")";
+							break;
+						case 'CT':
+							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+parseInt(str.substr(5,2),10);
+							break;
+						case 'XX':
+							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" ("+parseInt(str.substr(5,2),10)+")";
+							break;
+					}
 				}
 			}
 		}
