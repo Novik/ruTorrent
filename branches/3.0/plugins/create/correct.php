@@ -17,7 +17,9 @@ if( count( $argv ) > 1 )
 
 	$taskNo = $argv[1];
 	$fname = "/tmp/rutorrent-".getUser().$taskNo.".prm";
-	if(is_file($fname) && is_readable($fname))
+	$tname = "/tmp/".getUser().$taskNo."/temp.torrent";
+	if(is_file($fname) && is_readable($fname) &&
+		is_file($tname) && is_readable($tname))
 	{
 		$request = unserialize(file_get_contents( $fname ));
 		$comment = '';
@@ -47,20 +49,14 @@ if( count( $argv ) > 1 )
 		}
 		if(count($trackers)>0)
 			$announce_list[] = $trackers;
-		$path_edit = trim($request['path_edit']);
-		$piece_size = $request['piece_size'];
-		$callback_log = create_function('$msg', '$fp=fopen("php://stderr","w"); fputs($fp, $msg."\n"); fclose($fp);' );
-		$callback_err = create_function('$msg', '$fp=fopen("php://stdout","w"); fputs($fp, $msg."\n"); fclose($fp);' );
-
-		if(count($announce_list)>0)
-		{
-			$torrent = new Torrent($path_edit,$announce_list[0][0],$piece_size,$callback_log,$callback_err);
+       		$torrent = new Torrent($tname);
+       		$torrent->clear_announce();
+       		if(count($announce_list)>0)
+       		{
+       			$torrent->announce($announce_list[0][0]);
 			if($trackersCount>1)
 				$torrent->announce_list($announce_list);
-		}
-		else
-               	        $torrent = new Torrent($path_edit,array(),$piece_size,$callback_log,$callback_err);
-
+       		}
 		if(isset($request['comment']))
 		{
 			$comment = trim($request['comment']);
@@ -72,6 +68,7 @@ if( count( $argv ) > 1 )
 		$fname = getUploadsPath()."/".$torrent->info['name'].'.torrent';
 		if(isset($request['start_seeding']))
 		{
+			$path_edit = trim($request['path_edit']);
 			if(is_dir($path_edit))
 				$path_edit = addslash($path_edit);
         		$path_edit = dirname($path_edit);

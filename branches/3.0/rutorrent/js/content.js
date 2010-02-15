@@ -233,6 +233,9 @@ function makeContent()
 						theUILang.ReqTimeout+":&nbsp;<input type=\"text\" id=\"webui.reqtimeout\" class=\"TextboxShort\" value=\"5000\" />"+
 						theUILang.ms+
 					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.ignore_timeouts\" checked=\"true\" />"+
+						"<label for=\"webui.ignore_timeouts\">"+theUILang.dontShowTimeouts+"</label>"+
+					"</div>"+
 					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.show_cats\" checked=\"true\" />"+
 						"<label for=\"webui.show_cats\">"+theUILang.Show_cat_start+"</label>"+
 					"</div>"+

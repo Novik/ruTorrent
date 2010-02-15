@@ -15,6 +15,8 @@ class Torrent
 	protected $basedir = null;	
 	private $pointer = 0;
 	private $data;
+	public $log_callback = null;
+	public $err_callback = null;
 
 	/** Read and decode torrent file/data OR build a torrent from source folder/file(s)
 	 * Supported signatures:
@@ -31,18 +33,20 @@ class Torrent
 	 * @param string|array announce url or meta informations (optional)
 	 * @param int piece length (optional)
 	 */
-	public function __construct( $data, $meta = array(), $piece_length = 256 ) 
+	public function __construct( $data, $meta = array(), $piece_length = 256, $log_callback = null, $err_callback = null ) 
 	{
         	try {
 		if( is_string( $meta ) )
 			$meta =  array( 'announce' => $meta );
+		$this->log_callback = $log_callback;
+		$this->err_callback = $err_callback;
 		if( $this->build( $data, $piece_length * 1024 ) )
 			$this->touch();
 		else
 		{
 			$arr = $this->decode( $data );
 			if(!is_array($arr))
-				self::$errors[] = new Exception( 'Bad torrent data' );
+				$this->notify_err('Bad torrent data');
 			else
 				$meta = array_merge( $meta, $arr );
 		}
@@ -52,6 +56,25 @@ class Torrent
         	{
         		self::$errors[] = $e;
 		}
+	}
+
+	protected function notify_log( $msg )
+	{
+		if(function_exists($this->log_callback))
+		{
+			$f = $this->log_callback;
+			$f($msg);
+		}
+	}
+
+	protected function notify_err( $msg )
+	{
+		if(function_exists($this->err_callback))
+		{
+			$f = $this->err_callback;
+			$f($msg);
+		}
+		self::$errors[] = new Exception($msg);
 	}
 
 	/** Convert the current Torrent instance in torrent format
@@ -220,7 +243,7 @@ class Torrent
 	       		throw new Exception('Bad torrent data4');
 		$integer = substr($this->data, $this->pointer, $delim_pos - $this->pointer);
 		if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
-			self::$errors[] = new Exception( 'Bad integer' );
+			$this->notify_err('Bad integer');
 		$integer = abs(floatval($integer));
 		$this->pointer = $delim_pos + 1;
 		return($integer);
@@ -391,9 +414,10 @@ class Torrent
 	 */
 	private function file( $file, $piece_length ) 
 	{
+	        $this->notify_log( 'Hash '.$file );
         	if(!($handle = @fopen( $file, 'r' )))
         	{
-			self::$errors[] = new Exception( 'Failed to open file: "' . $file . '"' );
+			$this->notify_err('Failed to open file: "' . $file . '"');
 			return(false);
         	}
 		$pieces = '';
@@ -430,14 +454,15 @@ class Torrent
 	        $info_files = array();
 		foreach( $files as $i => $file )
 		{
+			$this->notify_log( 'Hash '.$file );
 			if( $path != array_intersect_assoc( $file_path = explode( DIRECTORY_SEPARATOR, $file ), $path ) ) 
 			{
-				self::$errors[] = new Exception( 'Files must be in the same folder: "' . $file . '" discarded' );
+				$this->notify_err('Files must be in the same folder: "' . $file . '" discarded');
 		                continue;
         		}
 			if( !($handle = @fopen( $file, 'r' )) )
 			{
-				self::$errors[] = new Exception( 'Failed to open file: "' . $file . '" discarded' );
+				$this->notify_err('Failed to open file: "' . $file . '" discarded');
 	                	continue;
         	    	}
 			while(!feof( $handle ))
@@ -497,6 +522,7 @@ class Torrent
 	 */
 	public function scandir( $dir )
 	{
+	        $this->notify_log('Scan directory '.$dir);
 		$paths = array();
 	        $files = @scandir( $dir );
         	if($files!==false)

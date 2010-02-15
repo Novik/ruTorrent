@@ -283,4 +283,7 @@ plugin.onLangLoaded = function()
 plugin.onRemove = function()
 {
 	theDialogManager.hide("dlg_unpack");
+	plugin.removePageFromOptions("st_unpack");
+	if(plugin.interval)
+		window.clearInterval(plugin.interval);
 }

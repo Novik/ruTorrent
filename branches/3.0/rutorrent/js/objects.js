@@ -121,10 +121,10 @@ var theDialogManager =
 		};
 		obj.mousedown( function(e) 
 		{
-			if(!browser.isOpera || !inScrollBarArea(e.target,e.clientX,e.clientY))
+			if( (!browser.isOpera || !inScrollBarArea(e.target,e.clientX,e.clientY)) && !theDialogManager.modalState )
 				self.bringToTop(this.id);
 		});
-		this.center(id);
+//		this.center(id);
 		this.items[id] = { beforeShow: null, afterShow: null, beforeHide: null, afterHide : null };
 		new DnD(id);
 		return(this);
@@ -157,7 +157,7 @@ var theDialogManager =
         	}
         	if($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
 	        	this.items[id].beforeShow(id);
-//		this.center(id);
+		this.center(id);
 		obj.show(this.divider);
         	if($type(this.items[id]) && ($type(this.items[id].afterShow)=="function"))
 	        	this.items[id].afterShow(id);

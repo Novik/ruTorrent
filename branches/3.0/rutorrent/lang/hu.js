@@ -361,5 +361,6 @@
  plgShutdown			: "Shutdown",
  limit				: "Korlát",
  speedList			: "Speed popup list (comma-separated)",
- ClearButton			: "Clear"
+ ClearButton			: "Clear",
+ dontShowTimeouts		: "Ignore message about timeouts"
  };

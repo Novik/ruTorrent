@@ -104,6 +104,11 @@ class rUnpack
 				escapeshellarg($pathToUnzip) );
 		}
 	}
+	static protected function formatPath( $taskNo )
+	{
+		return('/tmp/rutorrent-'.getUser().$taskNo."." );
+	}
+
 	public function startTask( $hash, $outPath, $mode = null, $fileno = null, $all = false )
 	{
 		global $rootPath;
@@ -132,8 +137,7 @@ class rUnpack
 				if(LFS::is_file($filename) && !empty($outPath))
 				{
 				        $taskNo = time();
-					$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
-					$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
+				        $dir = self::formatPath($taskNo);
 					if(empty($pathToUnrar))
 						$pathToUnrar = "unrar";
 					if(empty($pathToUnzip))
@@ -145,8 +149,8 @@ class rUnpack
 						escapeshellarg($arh)." ".
 						escapeshellarg($filename)." ".
 						escapeshellarg(addslash($outPath))." ".
-						escapeshellarg($logPath)." ".
-						escapeshellarg($statusPath)." &"));
+						escapeshellarg($dir."log")." ".
+						escapeshellarg($dir."status")." &"));
 					if($all)
 						$c->addParameter("-v");
 					$req = new rXMLRPCRequest( $c );
@@ -194,8 +198,7 @@ class rUnpack
 					if($mode)
 					{
 					        $taskNo = time();
-						$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
-						$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
+					        $dir = self::formatPath($taskNo);
 						if(empty($pathToUnrar))
 							$pathToUnrar = "unrar";
 						if(empty($pathToUnzip))
@@ -226,14 +229,14 @@ class rUnpack
 							escapeshellarg($arh)." ".
 							escapeshellarg($basename)." ".
 							escapeshellarg($outPath)." ".
-							escapeshellarg($logPath)." ".
-							escapeshellarg($statusPath)." ".
+							escapeshellarg($dir."log")." ".
+							escapeshellarg($dir."status")." ".
 							escapeshellarg($pathToUnzip)." &")));
 						if($req->success())
 							$ret = array( "no"=>$taskNo, "name"=>$basename, "out"=>$outPath );
 					}
 					else
-						$ret = array( "no"=>0, "name"=>$basename );
+						$ret = array( "no"=>0, "name"=>$basename, "out"=>"" );
 				}
 			}
 		}
@@ -242,8 +245,9 @@ class rUnpack
 	static public function checkTask( $taskNo )
 	{
 		$ret = false;
-		$logPath = '/tmp/rutorrent-task-log.'.$taskNo;
-		$statusPath = '/tmp/rutorrent-task-status.'.$taskNo;
+		$dir = self::formatPath($taskNo);
+		$logPath = $dir."log";
+		$statusPath = $dir."status";
 		if(is_file($statusPath) && is_readable($statusPath))
 		{
 			$status = @file_get_contents($statusPath);
@@ -251,7 +255,7 @@ class rUnpack
 				$status = -1;
 			else
 				$status = trim($status);
-			if(preg_match( '/^\d*$/',trim($status)) != 1)
+			if(preg_match('/^\d*$/',$status)!=1)
 				$status = -1;
 			$errors = @file($logPath);
 			if($errors===false)

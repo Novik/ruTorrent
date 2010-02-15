@@ -139,7 +139,8 @@ var theWebUI =
 		"webui.minrows":		100,
 		"webui.search":			-1,
 		"webui.speedlistdl":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
-		"webui.speedlistul":		"100,150,200,250,300,350,400,450,500,750,1000,1250"
+		"webui.speedlistul":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
+		"webui.ignore_timeouts":	0
 	},
 	showFlags: 0,
 	total:
@@ -2224,7 +2225,8 @@ var theWebUI =
 	timeout: function() 
 	{
 		theWebUI.show();
-		log(theUILang.Request_timed_out);
+		if(!theWebUI.settings["webui.ignore_timeouts"])
+			log(theUILang.Request_timed_out);
 	}
 };
 

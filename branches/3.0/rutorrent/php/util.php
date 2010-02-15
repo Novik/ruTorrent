@@ -3,6 +3,7 @@
 if(function_exists('ini_set'))
 {
 	ini_set('display_errors',false);
+	ini_set('log_errors',true);
 }
 
 $rootPath = realpath(dirname(__FILE__)."/..");
