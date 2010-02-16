@@ -28,9 +28,7 @@ if(count($trks->list) && (count($argv)>1))
 	$hash = $argv[1];
 	$req = new rXMLRPCRequest( array(		
 		new rXMLRPCCommand("get_session"),
-		new rXMLRPCCommand("d.is_open",$hash),
-		new rXMLRPCCommand("d.is_active",$hash),
-		new rXMLRPCCommand("d.get_state",$hash),
+		new rXMLRPCCommand("d.get_custom4",$hash),
 		new rXMLRPCCommand("d.get_tied_to_file",$hash),
 		new rXMLRPCCommand("d.get_custom1",$hash),
 		new rXMLRPCCommand("d.get_directory_base",$hash),
@@ -39,14 +37,14 @@ if(count($trks->list) && (count($argv)>1))
 
 	if($req->success())
 	{
-		if($req->val[7] && $trks->dontAddPrivate)
+		if($req->val[5] && $trks->dontAddPrivate)
 			return;
-		$isStart = (($req->val[1]!=0) && ($req->val[2]!=0) && ($req->val[3]!=0));
+		$isStart = ($req->val[1]!=0);
 		$fname = $req->val[0].$hash.".torrent";
 		if(empty($req->val[0]) || !is_readable($fname))
 		{
-			if(strlen($req->val[4]) && is_readable($req->val[4]))
-				$fname = $req->val[4];
+			if(strlen($req->val[2]) && is_readable($req->val[2]))
+				$fname = $req->val[2];
 			else
 				$fname = null;
 		}
@@ -83,8 +81,8 @@ if(count($trks->list) && (count($argv)>1))
 				$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
 				if($eReq->success())
 				{
-					$label = rawurldecode($req->val[5]);
-					rTorrent::sendTorrent($torrent, $isStart, false, $req->val[6], $label, false, true,
+					$label = rawurldecode($req->val[3]);
+					rTorrent::sendTorrent($torrent, $isStart, false, $req->val[4], $label, false, false,
 					        array("d.set_custom3=1") );
 				}
 			}

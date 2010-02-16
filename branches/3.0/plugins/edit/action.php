@@ -55,7 +55,8 @@ if(isset($HTTP_RAW_POST_DATA))
 			new rXMLRPCCommand("d.get_tied_to_file",$hash),
 			new rXMLRPCCommand("d.get_custom1",$hash),
 			new rXMLRPCCommand("d.get_directory_base",$hash),
-			new rXMLRPCCommand("d.get_connection_seed",$hash)
+			new rXMLRPCCommand("d.get_connection_seed",$hash),
+			new rXMLRPCCommand("d.get_complete",$hash),
 			) );
 		$throttle = null;
 		$theSettings = rTorrentSettings::load();
@@ -99,7 +100,7 @@ if(isset($HTTP_RAW_POST_DATA))
 					if($eReq->run() && !$eReq->fault)
 					{
 						$label = rawurldecode($req->val[5]);
-						if(!rTorrent::sendTorrent($torrent, $isStart, false, $req->val[6], $label, false, true,
+						if(!rTorrent::sendTorrent($torrent, $isStart, false, $req->val[6], $label, false, ($req->val[8]==1),
 						        array(	"d.set_custom3=1",
 								"d.set_connection_seed=".$req->val[7],
 								$throttle)))
