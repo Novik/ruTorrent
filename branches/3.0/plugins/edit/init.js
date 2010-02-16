@@ -1,38 +1,35 @@
 plugin.loadMainCSS();
 plugin.loadLang();
 
-theWebUI.editTrackers = function()
+theWebUI.editTrackers = function(id)
 {
-	if((this.dID != "") && this.torrents[this.dID])
+	var trk = this.trackers[id];
+	trk.sort(function (a,b)
 	{
-		var trk = this.trackers[this.dID];
-		trk.sort(function (a,b)
+		return( a[3] < b[3] ? -1 : a[3] > b[3] ? 1 : 0 );
+	});
+	var s = "";
+	if(trk.length)
+	{
+		var lastGroup = trk[0].group;
+		for(var i=0; i<trk.length; i++)
 		{
-			return( a[3] < b[3] ? -1 : a[3] > b[3] ? 1 : 0 );
-		});
-		var s = "";
-		if(trk.length)
-		{
-			var lastGroup = trk[0].group;
-			for(var i=0; i<trk.length; i++)
-			{
-			        if(trk[i].name!="dht://")
-			        {
-					if(lastGroup != trk[i].group)
-					{
-						s+='\r\n';
-						lastGroup = trk[i].group;
-					}
-					s+=trk[i].name;
+		        if(trk[i].name!="dht://")
+		        {
+				if(lastGroup != trk[i].group)
+				{
 					s+='\r\n';
+					lastGroup = trk[i].group;
 				}
+				s+=trk[i].name;
+				s+='\r\n';
 			}
 		}
-		$('#etrackers').val($.trim(s));
-		$('#ecomment').val($.trim(this.torrents[this.dID].comment));
-		$('#editok').attr("disabled",false);
-		theDialogManager.show("tedit");
 	}
+	$('#etrackers').val($.trim(s));
+	$('#ecomment').val($.trim(this.torrents[id].comment));
+	$('#editok').attr("disabled",false);
+	theDialogManager.show("tedit");
 }
 
 if(plugin.canChangeMenu())
@@ -45,7 +42,7 @@ if(plugin.canChangeMenu())
 		{
 			var el = theContextMenu.get(theUILang.Properties);
 			if(el)
-				theContextMenu.add(el,[theUILang.EditTrackers, (this.getTable("trt").selCount == 1) ? "theWebUI.editTrackers()" : null]);
+				theContextMenu.add(el,[theUILang.EditTrackers, (this.getTable("trt").selCount == 1) ? "theWebUI.editTrackers("+id+")" : null]);
 		}
 	}
 

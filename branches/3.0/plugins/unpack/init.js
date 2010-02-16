@@ -42,7 +42,7 @@ if(plugin.enabled)
 					}
 					if(!thePlugins.isInstalled("data"))
 						theContextMenu.add([CMENU_SEP]);
-
+					this.uID = (plugin.fno==null) ? null : this.dID;
 					theContextMenu.add( [theUILang.unpack+'...',  (plugin.fno==null) ? null : "theDialogManager.show('dlg_unpack')"] );
 				}
 				return(true);
@@ -61,11 +61,12 @@ if(plugin.enabled)
 			        var rarPresent = false;
 			        var zipPresent = false;
 			        var checked = false;
-				if(this.dID && (this.torrents[this.dID].done==1000) && $type(this.files[this.dID]))
+			        this.uID = (this.getTable("trt").selCount == 1) ? (id || this.dID) : null;
+				if(this.uID && (this.torrents[this.uID].done==1000) && $type(this.files[this.uID]))
 				{
-					for(var i in this.files[this.dID]) 
+					for(var i in this.files[this.uID]) 
 					{
-						var file = this.files[this.dID][i];
+						var file = this.files[this.uID][i];
 						if(plugin.useUnrar && (/.*\.(rar|r\d\d|\d\d\d)$/i).test(file.name))
 							rarPresent = true;
 						else
@@ -75,7 +76,7 @@ if(plugin.enabled)
 					}
 				}
 				theContextMenu.add( [theUILang.unpack+'...',  
-					(this.dID && (this.torrents[this.dID].done==1000) && (!checked || rarPresent || zipPresent)) ? 
+					(this.uID && (this.torrents[this.uID].done==1000) && (!checked || rarPresent || zipPresent)) ? 
 					"theDialogManager.show('dlg_unpack')" : null] );
 			}
 		}
@@ -193,7 +194,7 @@ if(plugin.enabled)
 
 	rTorrentStub.prototype.unpack = function()
 	{
-		this.content = "cmd=start&hash="+theWebUI.dID+"&dir="+encodeURIComponent($('#edit_unpack').val());
+		this.content = "cmd=start&hash="+theWebUI.uID+"&dir="+encodeURIComponent($('#edit_unpack').val());
 		if(plugin.mode!==null)
 			this.content+=("&mode="+plugin.mode);
 		if(plugin.fno!==null)

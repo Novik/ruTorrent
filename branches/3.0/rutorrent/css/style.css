@@ -269,3 +269,5 @@ div#tadd input {margin-bottom: 1px}
 .speedEdit { width: 320px }
 .statuscell td { padding: 0 }
 #st_system .sthdr { padding-left: 8px }
+
+.ie fieldset {padding: 5px}

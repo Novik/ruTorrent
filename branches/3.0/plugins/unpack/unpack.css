@@ -1,7 +1,6 @@
 div#dlg_unpack {width: 325px; height: 170px; overflow: visible}
 
 div#dlg_unpack fieldset div {line-height: 16px}
-div#dlg_unpack fieldset div.props-spacer {width: 90%; float: left}
 
 div#dlg_unpack label {width: 120px; vertical-align: middle; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 div#dlg_unpack input {vertical-align: middle; margin-top: 5px; margin-bottom: 5px;}
