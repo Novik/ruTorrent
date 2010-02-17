@@ -42,7 +42,7 @@ if(plugin.canChangeMenu())
 		{
 			var el = theContextMenu.get(theUILang.Properties);
 			if(el)
-				theContextMenu.add(el,[theUILang.EditTrackers, (this.getTable("trt").selCount == 1) ? "theWebUI.editTrackers("+id+")" : null]);
+				theContextMenu.add(el,[theUILang.EditTrackers, (this.getTable("trt").selCount == 1) ? "theWebUI.editTrackers('"+id+"')" : null]);
 		}
 	}
 
