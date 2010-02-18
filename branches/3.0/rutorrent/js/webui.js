@@ -321,11 +321,11 @@ var theWebUI =
 			table.obj.onselect = table.onselect;
 			table.obj.ondelete = table.ondelete;
 			table.obj.colorEvenRows = theWebUI.settings["webui.alternate_color"];
-			table.obj.maxRows = theWebUI.settings["webui.minrows"];
+			table.obj.maxRows = iv(theWebUI.settings["webui.minrows"]);
 			if($type(theWebUI.settings["webui."+ndx+".sindex"]))
-				table.obj.sIndex = theWebUI.settings["webui."+ndx+".sindex"];
+				table.obj.sIndex = iv(theWebUI.settings["webui."+ndx+".sindex"]);
 			if($type(theWebUI.settings["webui."+ndx+".rev"]))
-				table.obj.reverse = theWebUI.settings["webui."+ndx+".rev"];
+				table.obj.reverse = iv(theWebUI.settings["webui."+ndx+".rev"]);
 			if($type(theWebUI.settings["webui."+ndx+".colorder"]))
 				table.obj.colOrder = theWebUI.settings["webui."+ndx+".colorder"];
 			table.obj.onsort = function()
@@ -344,10 +344,10 @@ var theWebUI =
 			        var dir = theWebUI.dirs[theWebUI.dID];
 			        var a = dir.dirs[dir.current][x.key];
 			        var b = dir.dirs[dir.current][y.key];
-		        	if((a.data[0]=="..") ||
+		        	if((a.data.name=="..") ||
 				   ((a.link!=null) && (b.link==null)))
 					return(this.reverse ? 1 : -1);
-				if((b.data[0]=="..") ||
+				if((b.data.name=="..") ||
 				   ((b.link!=null) && (a.link==null)))
 					return(this.reverse ? -1 : 1);
 			}
@@ -361,10 +361,10 @@ var theWebUI =
 			        var dir = theWebUI.dirs[theWebUI.dID];
 			        var a = dir.dirs[dir.current][x.key];
 			        var b = dir.dirs[dir.current][y.key];
-		        	if((a.data[0]=="..") ||
+		        	if((a.data.name=="..") ||
 				   ((a.link!=null) && (b.link==null)))
 					return(this.reverse ? 1 : -1);
-				if((b.data[0]=="..") ||
+				if((b.data.name=="..") ||
 				   ((b.link!=null) && (a.link==null)))
 					return(this.reverse ? -1 : 1);
 			}
@@ -580,7 +580,7 @@ var theWebUI =
 							{
 								$.each(theWebUI.tables, function(ndx,table)	
 								{
-						      			table.obj.maxRows = nv;
+						      			table.obj.maxRows = iv(nv);
 						      			table.obj.refreshRows();
 								});
 								break;

@@ -33,6 +33,8 @@ var ALIGN_LEFT = 1;
 var ALIGN_CENTER = 2;
 var ALIGN_RIGHT = 3;
 
+var TR_HEIGHT	=	19;
+
 var dxSTable = function() 
 {
 	this.rows = 0;
@@ -102,7 +104,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.tHead.cellSpacing = 0;
 	this.tHead.cellPadding = 0;
 	this.tHead.tb = $("<tbody>").get(0);
-	
 	this.dCont.appendChild(this.dHead);
 	this.dCont.appendChild(this.dBody);
 	this.dHead.appendChild(this.tHead);
@@ -126,12 +127,10 @@ dxSTable.prototype.create = function(ele, styles, aName)
 
 	for(var i = 0, l = styles.length; i < l; i++) 
 	{
-		if(typeof this.colOrder[i] == "undefined")
+		if(!$type(this.colOrder[i]))
 			this.colOrder[i] = i;
-		if(typeof styles[this.colOrder[i]].enabled == "undefined") 
-		{
+		if(!$type(styles[this.colOrder[i]].enabled)) 
 			styles[this.colOrder[i]].enabled = true;
-		}
 		this.cols++;
 		this.colsdata[i] = styles[this.colOrder[i]];
 
@@ -239,7 +238,7 @@ dxSTable.prototype.toggleColumn = function(i)
 	}
         this.dHead.scrollLeft = this.dBody.scrollLeft;
         this.calcSize().resizeColumn();
-	if(typeof this.onresize == "function")
+	if($type(this.onresize) == "function")
 		this.onresize();
 }
 
@@ -302,6 +301,7 @@ dxSTable.prototype.resizeHack = function()
 {
 	if(!browser.isIE7x)
 		this.resizeColumn();
+	return(this);
 }
 
 var preventSort = function() 
@@ -381,7 +381,7 @@ dxSTable.prototype.resizeColumn = function()
 	this.tBody.tb.style.width = this.tHead.offsetWidth + "px";
 	this.tBody.style.width = this.tHead.offsetWidth + "px";
 
-	if((typeof this.onresize == "function") && needCallHandler)
+	if(($type(this.onresize) == "function") && needCallHandler)
 	{
 		this.onresize();
 	}
@@ -482,7 +482,7 @@ var moveColumn = function(_11, _12) {
          }
       }
    this.cancelSort = false;
-   if(typeof this.onmove == "function") {
+   if($type(this.onmove) == "function") {
       this.onmove();
       }
    }
@@ -555,7 +555,7 @@ dxSTable.ColumnMove.prototype =
 			self.added = true;
 		}
 		l += ex;
-		if(typeof o.lastMouseX == "undefined")
+		if(!$type(o.lastMouseX))
 			o.lastMouseX = ex;
 		l -= o.lastMouseX;
 		o.style.left = l + "px";
@@ -791,13 +791,14 @@ dxSTable.prototype.assignEvents = function()
 		function() 
 		{
 			self.dHead.scrollLeft = self.dBody.scrollLeft;
-			if((self.scrollTop != self.dBody.scrollTop) && (self.viewRows > self.maxRows)) 
+			var maxRows = self.getMaxRows();
+			if((self.scrollTop != self.dBody.scrollTop) && (self.viewRows > maxRows)) 
 			{
 				this.isScrolling = true;
 				self.scOdd = null;
 				self.scrollDiff = self.scrollTop - self.dBody.scrollTop;
 				self.scrollTop = self.dBody.scrollTop;
-				if(Math.abs(self.scrollDiff) == 19) 
+//				if(Math.abs(self.scrollDiff) == TR_HEIGHT) 
 				{
 					handleScroll.apply(self);
 					return;
@@ -858,7 +859,7 @@ dxSTable.prototype.colDrag = function(e)
 	var ex = e.clientX;
 	var w = parseInt(o.style.width);
 	var nw = w + ex;
-	if(typeof o.lastMouseX == "undefined") 
+	if(!$type(o.lastMouseX)) 
 		o.lastMouseX = ex;
 	nw-=o.lastMouseX;
 	if(nw < 10) 
@@ -907,17 +908,18 @@ dxSTable.prototype.colDragEnd = function(e)
 dxSTable.prototype.scrollPos = function()
 {
 	this.scp.style.display = "block";
-	var _67 = this.dBody.scrollTop / (this.dBody.scrollHeight - this.dBody.clientHeight);
-	if(isNaN(_67) || (_67 < 0))
-		_67 = 0;
-	var _68 = Math.floor(this.dBody.clientHeight / 19);
-	if(_68 > this.maxRows)
-		_68 = this.maxRows;
-	var _69 = Math.floor(Math.floor(this.dBody.scrollTop - ((this.viewRows - this.maxRows) * 19) * _67) / 19);
-	var mni = Math.ceil(this.viewRows * _67) + _69;
-	var mxi = mni + _68;
-	if(mxi > this.viewRows)
-		mxi = this.viewRows;
+
+	var maxRows = this.getMaxRows();
+	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
+	if(mni + maxRows > this.viewRows) 
+	{
+		mni = this.viewRows - maxRows;
+	}
+	if(mni < 0) 
+	{
+		mni = 0;
+   	}
+	var mxi = mni + maxRows;
 	var mid = Math.floor(((mni + mxi) / 2));
 	if(mid > this.viewRows)
 		mid = this.viewRows - 1;
@@ -946,6 +948,11 @@ function handleScroll()
 	this.scp.style.display = "none";
 }
 
+dxSTable.prototype.getMaxRows = function()
+{
+	return(Math.max(Math.ceil(this.dBody.clientHeight / TR_HEIGHT),this.maxRows));	
+}
+
 dxSTable.prototype.refreshRows = function() 
 {
 	if(this.isScrolling) 
@@ -953,42 +960,29 @@ dxSTable.prototype.refreshRows = function()
 		return;
    	}
 	this.cancelSort = true;
-	var _72 = this.dBody.scrollTop / (this.dBody.scrollHeight - this.dBody.clientHeight);
-	if(isNaN(_72) || (_72 < 0)) 
+   	var maxRows = this.getMaxRows();
+	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
+	if(mni + maxRows > this.viewRows) 
 	{
-		_72 = 0;
-   	}
-	var _73 = Math.floor(this.dBody.clientHeight / 19) + 4;
-	var h = (this.viewRows - this.maxRows) * 19;
-	if(h < 0) 
-	{
-		h = 0;
-		_72 = 0;
-	}
-	var ht = Math.floor(h * _72);
-	var hb = h - ht;
-	if(!browser.isIE)
-		this.tpad.style.height = ht + "px";
-	this.bpad.style.height = hb + "px";
-	var mni = Math.ceil(this.viewRows * _72);
-	if(mni + _73 > this.viewRows) 
-	{
-		mni = this.viewRows - this.maxRows;
+		mni = this.viewRows - maxRows;
 	}
 	if(mni < 0) 
 	{
 		mni = 0;
    	}
-	var mxi = mni + this.maxRows;
+	var mxi = mni + maxRows;
+	var h = (this.viewRows - maxRows) * TR_HEIGHT;
+	var ht = (h<0) ? 0 : mni*TR_HEIGHT;
+	var hb = (h<0) ? 0 : h - ht;
+	this.tpad.style.height = ht + "px";
+	this.bpad.style.height = hb + "px";
 	var tb = this.tBody.tb, vr =- 1, i = 0, c = 0, obj = null;
 	for(i = 0; i < this.rows; i++) 
 	{
 		var id = this.rowIDs[i];
 		var r = this.rowdata[id];
-		if(typeof r == "undefined") 
-		{
+		if(!$type(r)) 
 			continue;
-      		}
 		obj = $$(id);
 		if(!r.enabled) 
 		{
@@ -1001,7 +995,7 @@ dxSTable.prototype.refreshRows = function()
 		vr++;
 		if((vr >= mni) && (vr <= mxi)) 
 		{
-			if(typeof tb.rows[c] == "undefined") 
+			if(!$type(tb.rows[c])) 
 			{
 				if(obj != null) 
 				{
@@ -1051,7 +1045,7 @@ dxSTable.prototype.keyEvents = function(e)
 		var c = e.which;
 		if((browser.isKonqueror && c == 127) || (c == 46))
 		{
-			if(typeof self.ondelete == "function") 
+			if($type(self.ondelete) == "function") 
 				self.ondelete();
 		}
 		else 
@@ -1062,14 +1056,14 @@ dxSTable.prototype.keyEvents = function(e)
 				case 65:
 				{
 					self.fillSelection();
-					if(typeof self.onselect == "function") 
+					if($type(self.onselect) == "function") 
 						self.onselect(e);
 					return(false);
 				}
 				case 90:
 				{
 					self.clearSelection();
-					if(typeof self.onselect == "function") 
+					if($type(self.onselect) == "function") 
 						self.onselect(e);
 					return(false);
 	            		}
@@ -1209,12 +1203,13 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	this.rowdata[sId] = {"data" : cols, "icon" : icon, "attr" : attr, "enabled" : true};
 	this.rowSel[sId] = false;
 	this.rowIDs.push(sId);
-	if(this.viewRows < this.maxRows) 
+	var maxRows = this.getMaxRows();
+	if(this.viewRows < maxRows) 
 		this.tBody.tb.appendChild(this.createRow(cols, sId, icon, attr));
 	this.rows++;
 	this.viewRows++;
-	if(this.viewRows > this.maxRows) 
-		this.bpad.style.height = ((this.viewRows - this.maxRows) * 19) + "px";
+	if(this.viewRows > maxRows) 
+		this.bpad.style.height = ((this.viewRows - maxRows) * TR_HEIGHT) + "px";
 	var self = this;
 	if(this.sIndex !=- 1) 
 		this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
@@ -1283,10 +1278,8 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 
 dxSTable.prototype.removeRow = function(sId) 
 {
-	if(typeof this.rowdata[sId] == "undefined") 
-	{
+	if(!$type(this.rowdata[sId])) 
 		return;
-	}
 	if(this.rowdata[sId].enabled) 
 	{
 		this.viewRows--;
@@ -1640,7 +1633,7 @@ dxSTable.prototype.resize = function(w, h)
 			this.dCont.style.width = w + "px";
 		if(h) 
 			this.dCont.style.height = h + "px";
-		this.calcSize().resizeHack();
+		this.refreshRows();
 	}
 }
 

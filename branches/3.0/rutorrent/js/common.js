@@ -754,7 +754,7 @@ var theTabs =
 							this.onShow(n);
                				}
                				if(prefix)
-               				        theWebUI.getTable(prefix).calcSize().resizeHack();
+               				        theWebUI.getTable(prefix).refreshRows();
                				theWebUI.setActiveView(id);
             				l.addClass("selected").css("z-index",1);
 	            			if(n=="lcont")

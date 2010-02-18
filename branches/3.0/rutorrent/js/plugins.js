@@ -185,7 +185,8 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 {
         if(this.canChangeTabs())
         {
-		dlg.className = "tab";
+                if(!dlg.className)
+			dlg.className = "tab";
 		theTabs.tabs[dlg.id] = name; 
 		var newLbl = document.createElement("li");
 		newLbl.id = "tab_"+dlg.id;
@@ -205,6 +206,16 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 			beforeLbl.parentNode.appendChild(newLbl);
 		}
 		theTabs.show("lcont");
+	}
+	return(this);
+}
+
+rPlugin.prototype.renameTab = function(id,name)
+{
+        if(this.canChangeTabs())
+        {
+		theTabs.tabs[id] = name;
+		$("#tab_"+id+" a").text(name);
 	}
 	return(this);
 }
