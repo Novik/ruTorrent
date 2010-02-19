@@ -59,7 +59,6 @@
  In_status_bar		: "In status balk",
  In_title_bar		: "In titel balk",
  Show_cat_start		: "Bij opstarten categorieën weergeven",
- Virt_row_thres		: "Virtuele Rij Drempel",
  Show_det_start		: "Bij opstarten details weergeven",
  Restor_def			: "Standaard-instellingen herstellen",
  When_add_torrent	: "Bij toevoegen torrents",
@@ -362,5 +361,7 @@
  limit				: "Limiet",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

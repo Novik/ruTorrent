@@ -248,8 +248,11 @@ function makeContent()
 					"<div class=\"op50l algnright\"><input type=\"checkbox\" id=\"webui.effects\"/>"+
 						"<label for=\"webui.effects\">"+theUILang.UIEffects+"</label>"+
 					"</div>"+
-					"<div class=\"op100l\">"+
-						"<label for=\"webui.minrows\">"+theUILang.Virt_row_thres+":</label>&nbsp;<input type=\"text\" id=\"webui.minrows\" class=\"TextboxVShort\" value=\"50\" />"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.fullrows\"  onchange=\"linked(this, 1, ['webui.no_delaying_draw']);\"/>"+
+						"<label for=\"webui.fullrows\">"+theUILang.fullTableRender+"</label>"+
+					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.no_delaying_draw\"/>"+
+						"<label for=\"webui.no_delaying_draw\" id=\"lbl_webui.no_delaying_draw\" >"+theUILang.showScrollTables+"</label>"+
 					"</div>"+
 					"<div class=\"op100l\">"+
 						"<label for=\"webui.lang\">"+theUILang.mnu_lang+":</label>&nbsp;"+

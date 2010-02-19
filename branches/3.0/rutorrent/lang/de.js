@@ -59,7 +59,6 @@
  In_status_bar		: "In der Statusleiste",
  In_title_bar		: "In der Titelleiste",
  Show_cat_start		: "Zeige Gruppen beim Start",
- Virt_row_thres		: "Schwellenwert f. Reihen",
  Show_det_start		: "Zeige Details beim Start",
  Restor_def			: "Standardeinstellungen wiederherstellen",
  When_add_torrent	: "Beim Hinzufügen von Torrents",
@@ -362,5 +361,7 @@
  limit				: "Limit",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

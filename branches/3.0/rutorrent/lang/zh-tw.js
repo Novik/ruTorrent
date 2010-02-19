@@ -59,7 +59,6 @@
  In_status_bar		: "在狀態欄",
  In_title_bar		: "在標題欄",
  Show_cat_start		: "啟動時顯示類別",
- Virt_row_thres		: "虛擬隊列限制",
  Show_det_start		: "啟動時顯示詳細內容",
  Restor_def			: "恢復預設值",
  When_add_torrent	: "新增Torrent下載時",
@@ -362,5 +361,7 @@
  limit				: "Limit",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

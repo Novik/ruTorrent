@@ -59,7 +59,6 @@
  In_status_bar		: "Dans la barre d'\u00e9tat",
  In_title_bar		: "Dans la barre de titre",
  Show_cat_start		: "Afficher les cat\u00e9gories au d\u00e9marrage",
- Virt_row_thres		: "Seuil de rang\u00e9e virtuelle",
  Show_det_start		: "Afficher les d\u00e9tails au d\u00e9marrage",
  Restor_def			: "R\u00e9tablir par d\u00e9faut",
  When_add_torrent	: "Quand des torrents sont ajout\u00e9s",
@@ -362,5 +361,7 @@
  limit				: "Limite",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

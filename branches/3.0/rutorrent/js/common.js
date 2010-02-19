@@ -207,7 +207,7 @@ function linked(obj, _33, lst)
 {
 	var tn = obj.tagName.toLowerCase();
 	if((tn == "input") && (obj.type == "checkbox")) 
-		var d = !obj.checked;
+		var d = _33 ? obj.checked : !obj.checked;
 	else 
 		if(tn == "select") 
 		{

@@ -59,7 +59,6 @@
  In_status_bar		: "Statusa joslā",
  In_title_bar		: "Galvenajā joslā",
  Show_cat_start		: "Rādīt kategorijas, kad startē WebUI",
- Virt_row_thres		: "Torentu skaits tabulā",
  Show_det_start		: "Rādīt detaļas, kad startē WebUI",
  Restor_def			: "Atjaunot sākotnējos iestatījumus",
  When_add_torrent	: "Pievienojot torentus",
@@ -362,5 +361,7 @@
  limit				: "Limits",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

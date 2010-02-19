@@ -136,7 +136,8 @@ var theWebUI =
 		"webui.hsplit":			0.88,
 		"webui.vsplit":			0.5,
 		"webui.effects":		0,
-		"webui.minrows":		100,
+		"webui.fullrows":		0,
+		"webui.no_delaying_draw":	1,
 		"webui.search":			-1,
 		"webui.speedlistdl":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
 		"webui.speedlistul":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
@@ -321,7 +322,8 @@ var theWebUI =
 			table.obj.onselect = table.onselect;
 			table.obj.ondelete = table.ondelete;
 			table.obj.colorEvenRows = theWebUI.settings["webui.alternate_color"];
-			table.obj.maxRows = iv(theWebUI.settings["webui.minrows"]);
+			table.obj.maxRows = iv(theWebUI.settings["webui.fullrows"]);
+			table.obj.noDelayingDraw = iv(theWebUI.settings["webui.no_delaying_draw"]);
 			if($type(theWebUI.settings["webui."+ndx+".sindex"]))
 				table.obj.sIndex = iv(theWebUI.settings["webui."+ndx+".sindex"]);
 			if($type(theWebUI.settings["webui."+ndx+".rev"]))
@@ -576,12 +578,20 @@ var theWebUI =
 								reply = theWebUI.reload;
 								break;
 							}
-							case "webui.minrows":
+							case "webui.fullrows":
 							{
 								$.each(theWebUI.tables, function(ndx,table)	
 								{
 						      			table.obj.maxRows = iv(nv);
 						      			table.obj.refreshRows();
+								});
+								break;
+							}
+							case "webui.no_delaying_draw":
+							{
+								$.each(theWebUI.tables, function(ndx,table)	
+								{
+						      			table.obj.noDelayingDraw = iv(nv);
 								});
 								break;
 							}
@@ -2029,16 +2039,7 @@ var theWebUI =
 
 	resizeTop : function( w, h )
 	{
-        	if(w!==null)
-		{
-			$("#List").width( w );
-        	        this.getTable("trt").resize( w );
-		}
-	        if(h!==null)
-        	{
-			$("#List").height( h );
-			this.getTable("trt").resize(null,h); 
-        	}
+		this.getTable("trt").resize(w,h); 
 	},
 
 	resizeBottom : function( w, h )

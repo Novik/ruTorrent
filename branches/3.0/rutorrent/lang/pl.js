@@ -59,7 +59,6 @@
  In_status_bar		: "W pasku statusu",
  In_title_bar		: "W tytule",
  Show_cat_start		: "Pokaż kategorie na starcie",
- Virt_row_thres		: "Virtual Row Threshold",
  Show_det_start		: "Pokaż szczegóły na starcie",
  Restor_def			: "Przywróć domyślne",
  When_add_torrent	: "Po dodaniu torrentów",
@@ -362,5 +361,7 @@
  limit				: "Limit",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

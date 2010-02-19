@@ -41,7 +41,8 @@ var dxSTable = function()
 	this.rowdata = new Object();
 	this.rowIDs = new Array();
 	this.rowSel = new Array();
-	this.maxRows = 50;
+	this.maxRows = false;
+	this.noDelayingDraw = true;
 	this.viewRows = 0;
 	this.cols = 0;
 	this.colsdata = new Array();
@@ -778,6 +779,29 @@ dxSTable.prototype.init = function()
 	this.setAlignment();
 }
 
+dxSTable.prototype.setBodyState = function(v)
+{
+        this.tBody.style.visibility = v;
+	for(var i = 0; i < this.cols; i++) 
+	{
+		if((this.colsdata[i].type==TYPE_PROGRESS) && this.colsdata[i].enabled)
+		{
+                        for(var j = 0; j < this.rows; j++)
+                        {
+				var id = this.rowIDs[j];
+				if($$(id))
+				{
+					var td = $$(id).cells[i];
+					if(iv($(td).attr("rawvalue"))==0)
+						$(td.lastChild).css("visibility", "hidden");
+					else
+						$(td.lastChild).css("visibility", v);
+				}
+			}
+		}
+	}
+}
+
 dxSTable.prototype.assignEvents = function() 
 {
 	var self = this;
@@ -788,7 +812,7 @@ dxSTable.prototype.assignEvents = function()
 	this.isScrolling = false;
 	
 	this.dBody.onscroll = 
-		function() 
+		function(e) 
 		{
 			self.dHead.scrollLeft = self.dBody.scrollLeft;
 			var maxRows = self.getMaxRows();
@@ -798,16 +822,14 @@ dxSTable.prototype.assignEvents = function()
 				self.scOdd = null;
 				self.scrollDiff = self.scrollTop - self.dBody.scrollTop;
 				self.scrollTop = self.dBody.scrollTop;
-//				if(Math.abs(self.scrollDiff) == TR_HEIGHT) 
+				if(self.noDelayingDraw || (Math.abs(self.scrollDiff) <= TR_HEIGHT*3))
 				{
 					handleScroll.apply(self);
 					return;
 				}
-				self.tBody.style.visibility = "hidden";
-				if(self.scrollTimeout != null) 
-				{
+				self.setBodyState("hidden");
+				if(!!self.scrollTimeout) 
 					window.clearTimeout(self.scrollTimeout);
-				}
 				self.scrollTimeout = window.setTimeout(
 					function() { self.isScrolling = false; handleScroll.apply(self); }
 				        , 500);
@@ -908,18 +930,9 @@ dxSTable.prototype.colDragEnd = function(e)
 dxSTable.prototype.scrollPos = function()
 {
 	this.scp.style.display = "block";
-
-	var maxRows = this.getMaxRows();
+   	var maxRows = this.getMaxRows();
 	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
-	if(mni + maxRows > this.viewRows) 
-	{
-		mni = this.viewRows - maxRows;
-	}
-	if(mni < 0) 
-	{
-		mni = 0;
-   	}
-	var mxi = mni + maxRows;
+	var mxi = mni + Math.floor(this.dBody.clientHeight / TR_HEIGHT);
 	var mid = Math.floor(((mni + mxi) / 2));
 	if(mid > this.viewRows)
 		mid = this.viewRows - 1;
@@ -933,7 +946,10 @@ dxSTable.prototype.scrollPos = function()
 		{
 			vr++;
 			if(vr == mid)
+			{
 				str = r.data[0];
+				break;
+			}
 		}
 	}
 	this.scp.innerHTML = escapeHTML("Current Row: " + str);
@@ -941,26 +957,27 @@ dxSTable.prototype.scrollPos = function()
 
 function handleScroll() 
 {
-	window.clearTimeout(this.scrollTimeout);
+	if(!!this.scrollTimeout) 
+		window.clearTimeout(this.scrollTimeout);
 	this.scrollTimeout = null;
 	this.refreshRows();
-	this.tBody.style.visibility = "visible";
+	this.setBodyState("visible");
 	this.scp.style.display = "none";
 }
 
 dxSTable.prototype.getMaxRows = function()
 {
-	return(Math.max(Math.ceil(this.dBody.clientHeight / TR_HEIGHT),this.maxRows));	
+	return((this.maxRows || this.rows<100) ? 1000000 : Math.ceil(this.dBody.clientHeight / TR_HEIGHT));	
 }
 
-dxSTable.prototype.refreshRows = function() 
+dxSTable.prototype.refreshRows = function( height ) 
 {
 	if(this.isScrolling) 
 	{
 		return;
    	}
 	this.cancelSort = true;
-   	var maxRows = this.getMaxRows();
+   	var maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
 	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
 	if(mni + maxRows > this.viewRows) 
 	{
@@ -1633,7 +1650,7 @@ dxSTable.prototype.resize = function(w, h)
 			this.dCont.style.width = w + "px";
 		if(h) 
 			this.dCont.style.height = h + "px";
-		this.refreshRows();
+		this.refreshRows(h);
 	}
 }
 

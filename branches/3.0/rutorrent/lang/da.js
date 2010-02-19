@@ -59,7 +59,6 @@
  In_status_bar		: "I status bar",
  In_title_bar		: "I titel bar",
  Show_cat_start		: "Vis kategorier ved start",
- Virt_row_thres		: "Virtual Row", 
  Show_det_start		: "Vis details ved start",
  Restor_def			: "Gendan til standard",
  When_add_torrent	: "Når der tilføjes torrents",
@@ -362,6 +361,8 @@
  limit				: "Grænse",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };
 

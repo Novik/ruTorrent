@@ -59,7 +59,6 @@
  In_status_bar		: "Barra de Tarea",
  In_title_bar		: "Barra de Título",
  Show_cat_start		: "Mostrar categorías al iniciar",
- Virt_row_thres		: "Umbral de fila virtual",
  Show_det_start		: "Mostrar detalles al iniciar",
  Restor_def			: "Restaurar configuraciones",
  When_add_torrent	: "Cuando se agregen Torrents",
@@ -362,5 +361,7 @@
  limit				: "Límite",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

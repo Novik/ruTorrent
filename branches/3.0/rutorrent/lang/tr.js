@@ -59,7 +59,6 @@
  In_status_bar		: "Durum Çubuğunda",
  In_title_bar		: "Başlık Çubuğunda",
  Show_cat_start		: "Açılışta kategorileri göster",
- Virt_row_thres		: "Kaç sıra gösterilsin",
  Show_det_start		: "Açılışta ayrıntıları göster",
  Restor_def			: "Varsayılan ayarlara dön",
  When_add_torrent	: "Torrent Eklerken",
@@ -362,5 +361,7 @@
  limit				: "Sınırı",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

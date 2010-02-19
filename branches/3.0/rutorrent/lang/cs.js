@@ -59,7 +59,6 @@
  In_status_bar		: "Ve stavové liště",
  In_title_bar		: "V záhlaví okna",
  Show_cat_start		: "Zobrazovat kategorie po spuštění",
- Virt_row_thres		: "Virtual Row Threshold",
  Show_det_start		: "Zobrazit detaily po spuštění",
  Restor_def		: "Obnovit výchozí",
  When_add_torrent	: "Při přidávání torrentů",
@@ -362,5 +361,7 @@
  limit				: "Limit",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

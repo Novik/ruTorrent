@@ -59,7 +59,6 @@
  In_status_bar		: "állapotsorban",
  In_title_bar		: "Címsorban",
  Show_cat_start		: "Kategóriák mutatása indításkor",
- Virt_row_thres		: "Oszlopok megengedett száma",
  Show_det_start		: "Tulajdonságok mutatása indításkor",
  Restor_def			: "Alaphelyzet visszaállítása",
  When_add_torrent	: "Torrent hozzáadásakor",
@@ -362,5 +361,7 @@
  limit				: "Korlát",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

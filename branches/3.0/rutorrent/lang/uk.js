@@ -59,7 +59,6 @@
  In_status_bar		: "У статус бар?",
  In_title_bar		: "У заголовку",
  Show_cat_start		: "Показувати категор?ї при старт?",
- Virt_row_thres		: "Пор?г в?рт. л?н?ї",
  Show_det_start		: "Показувати детал? при старт?",
  Restor_def			: "За замовчуванням",
  When_add_torrent	: "При додаванн? торрента",
@@ -362,5 +361,7 @@
  limit				: "Обмеження",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

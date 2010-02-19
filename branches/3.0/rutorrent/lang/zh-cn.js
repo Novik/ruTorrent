@@ -59,7 +59,6 @@
  In_status_bar		: "在状态栏",
  In_title_bar		: "在标题栏",
  Show_cat_start		: "启动时显示类别",
- Virt_row_thres		: "虚拟队列限制",
  Show_det_start		: "启动时显示详情",
  Restor_def			: "恢复默认",
  When_add_torrent	: "添加任务时",
@@ -362,5 +361,7 @@
  limit				: "Limit",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };

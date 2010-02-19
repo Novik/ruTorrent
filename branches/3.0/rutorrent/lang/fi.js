@@ -59,7 +59,6 @@
  In_status_bar		: "Tilarivillä",
  In_title_bar		: "Otsikkorivillä",
  Show_cat_start		: "Näytä ryhmat käynnistettäessä",
- Virt_row_thres		: "Virtuaali jono kynnys",
  Show_det_start		: "Nayta yksityiskohdat käynnistettäessä",
  Restor_def			: "Palauta oletukset",
  When_add_torrent	: "Torrentin lisäyksessä",
@@ -362,5 +361,7 @@
  limit				: "Limit",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
- dontShowTimeouts		: "Ignore message about timeouts"
+ dontShowTimeouts		: "Ignore message about timeouts",
+ fullTableRender		: "Full render of large tables",
+ showScrollTables		: "Show table contents while scrolling"
  };
