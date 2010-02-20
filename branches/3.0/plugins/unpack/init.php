@@ -21,7 +21,7 @@ if($do_diagnostic)
 		}
 	}
 	@chmod($rootPath.'/plugins/unpack/update.php',0644);
-	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/retrackers/update.php',0x0004))
+	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/unpack/update.php',0x0004))
 	{
 		$jResult.="plugin.disable(); plugin.showError('theUILang.unpackUpdNotAvailable');";
 		$needStart = false;

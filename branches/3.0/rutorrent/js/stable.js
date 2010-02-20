@@ -967,7 +967,7 @@ function handleScroll()
 
 dxSTable.prototype.getMaxRows = function()
 {
-	return((this.maxRows || this.rows<100) ? 1000000 : Math.ceil(this.dBody.clientHeight / TR_HEIGHT));	
+	return((this.maxRows || this.viewRows<100) ? 1000000 : Math.ceil(this.dBody.clientHeight / TR_HEIGHT));	
 }
 
 dxSTable.prototype.refreshRows = function( height ) 
