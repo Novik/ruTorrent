@@ -5,11 +5,16 @@
 
 if [ -f geoip.css ]; then
     cp geoip.css geoip.css.bak
-    echo "Copied geoip.css  to  geoip.css.bak"
+    echo "Copied geoip.css  to  geoip.css.bak."
 fi
 > geoip.css
 
-for fl in `ls -1 flags/*[Gg][Ii][Ff] flags/*[Jj][Pp][Gg]`
+if [ ! -d flags ]; then
+    echo "Directory with flags does not exist."
+    exit 1
+fi
+
+for fl in `ls -1 flags/*[Gg][Ii][Ff]`
 do
     # Remove prefix and suffix, we need only country code
     cnt=${fl/\/*\//}
