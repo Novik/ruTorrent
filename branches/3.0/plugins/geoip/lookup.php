@@ -28,12 +28,13 @@
 							$country = strtolower($country);
 						else
 							$country = "unknown";
-                                        }
-                                        $info.=$country;
+                    }
+                    $info.=$country;
 					$info.='", host: "';
 					$host = $value;
-					if($retrieveHost)
+					if($retrieveHost) {
 						$host = gethostbyaddr($value);
+					}
 					$info.=$host;
 					$info.='" }}';
 					$ret[] = $info;

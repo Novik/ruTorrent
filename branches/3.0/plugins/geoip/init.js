@@ -23,7 +23,7 @@ if(plugin.enabled)
 		{
 			if(this.ips.length>=this.MAX_SIZE)
 			{
-				for(var int=0; i<this.MAX_SIZE/2; i++)
+				for(var i=0; i<this.MAX_SIZE/2; i++)
 					delete this.info[this.ips[i]];
 				this.ips.splice(0,this.MAX_SIZE/2);
 			}
