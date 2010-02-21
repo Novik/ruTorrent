@@ -5,6 +5,7 @@ utWebUI.prsColumns[ 1 ][ "text" ] = "IP Адреса";
 WUILang.country = new Array();
 
 WUILang.country[ "ae" ] = "Уједињени Арапски Емирати";
+WUILang.country[ "af" ] = "Авганистан";
 WUILang.country[ "ar" ] = "Аргентина";
 WUILang.country[ "at" ] = "Аустрија";
 WUILang.country[ "au" ] = "Аустралија";
@@ -74,6 +75,7 @@ WUILang.country[ "nz" ] = "Нови Зеланд";
 
 WUILang.country[ "ph" ] = "Филипини";
 WUILang.country[ "pl" ] = "Пољска";
+WUILang.country[ "pr" ] = "Порторико";
 WUILang.country[ "pt" ] = "Португалија";
 
 WUILang.country[ "ro" ] = "Румунија";
