@@ -43,6 +43,9 @@ top; padding-left: 20px; }
 .geoip_flag_aw {background: transparent url( "flags/aw.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_aw {background: transparent url( "flags/aw.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
+.geoip_flag_ax {background: transparent url( "flags/ax.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_ax {background: transparent url( "flags/ax.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
 .geoip_flag_az {background: transparent url( "flags/az.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_az {background: transparent url( "flags/az.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
@@ -106,6 +109,9 @@ top; padding-left: 20px; }
 .geoip_flag_ca {background: transparent url( "flags/ca.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_ca {background: transparent url( "flags/ca.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
+.geoip_flag_cc {background: transparent url( "flags/cc.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_cc {background: transparent url( "flags/cc.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
 .geoip_flag_cd {background: transparent url( "flags/cd.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_cd {background: transparent url( "flags/cd.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
@@ -145,6 +151,9 @@ top; padding-left: 20px; }
 .geoip_flag_cv {background: transparent url( "flags/cv.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_cv {background: transparent url( "flags/cv.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
+.geoip_flag_cx {background: transparent url( "flags/cx.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_cx {background: transparent url( "flags/cx.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
 .geoip_flag_cy {background: transparent url( "flags/cy.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_cy {background: transparent url( "flags/cy.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
@@ -177,6 +186,9 @@ top; padding-left: 20px; }
 top; padding-left: 20px; }
 .geoip_flag_eg {background: transparent url( "flags/eg.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_eg {background: transparent url( "flags/eg.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
+.geoip_flag_eh {background: transparent url( "flags/eh.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_eh {background: transparent url( "flags/eh.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_er {background: transparent url( "flags/er.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_er {background: transparent url( "flags/er.gif" ) no-repeat scroll left
@@ -220,6 +232,12 @@ top; padding-left: 20px; }
 .geoip_flag_ge {background: transparent url( "flags/ge.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_ge {background: transparent url( "flags/ge.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
+.geoip_flag_gf {background: transparent url( "flags/gf.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_gf {background: transparent url( "flags/gf.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
+.geoip_flag_gg {background: transparent url( "flags/gg.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_gg {background: transparent url( "flags/gg.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
 .geoip_flag_gh {background: transparent url( "flags/gh.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_gh {background: transparent url( "flags/gh.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
@@ -246,6 +264,9 @@ top; padding-left: 20px; }
 top; padding-left: 20px; }
 .geoip_flag_gr {background: transparent url( "flags/gr.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_gr {background: transparent url( "flags/gr.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
+.geoip_flag_gs {background: transparent url( "flags/gs.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_gs {background: transparent url( "flags/gs.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_gt {background: transparent url( "flags/gt.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_gt {background: transparent url( "flags/gt.gif" ) no-repeat scroll left
@@ -481,6 +502,9 @@ top; padding-left: 20px; }
 .geoip_flag_nr {background: transparent url( "flags/nr.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_nr {background: transparent url( "flags/nr.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
+.geoip_flag_nu {background: transparent url( "flags/nu.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_nu {background: transparent url( "flags/nu.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
 .geoip_flag_nz {background: transparent url( "flags/nz.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_nz {background: transparent url( "flags/nz.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
@@ -510,6 +534,9 @@ top; padding-left: 20px; }
 top; padding-left: 20px; }
 .geoip_flag_pm {background: transparent url( "flags/pm.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_pm {background: transparent url( "flags/pm.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
+.geoip_flag_pn {background: transparent url( "flags/pn.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_pn {background: transparent url( "flags/pn.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_pr {background: transparent url( "flags/pr.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_pr {background: transparent url( "flags/pr.gif" ) no-repeat scroll left
@@ -562,8 +589,14 @@ top; padding-left: 20px; }
 .geoip_flag_sg {background: transparent url( "flags/sg.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_sg {background: transparent url( "flags/sg.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
+.geoip_flag_sh {background: transparent url( "flags/sh.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_sh {background: transparent url( "flags/sh.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
 .geoip_flag_si {background: transparent url( "flags/si.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_si {background: transparent url( "flags/si.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
+.geoip_flag_sj {background: transparent url( "flags/sj.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_sj {background: transparent url( "flags/sj.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_sk {background: transparent url( "flags/sk.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_sk {background: transparent url( "flags/sk.gif" ) no-repeat scroll left
@@ -612,6 +645,12 @@ top; padding-left: 20px; }
 top; padding-left: 20px; }
 .geoip_flag_tj {background: transparent url( "flags/tj.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_tj {background: transparent url( "flags/tj.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
+.geoip_flag_tk {background: transparent url( "flags/tk.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_tk {background: transparent url( "flags/tk.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
+.geoip_flag_tl {background: transparent url( "flags/tl.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_tl {background: transparent url( "flags/tl.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_tm {background: transparent url( "flags/tm.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_tm {background: transparent url( "flags/tm.gif" ) no-repeat scroll left
@@ -685,23 +724,23 @@ top; padding-left: 20px; }
 .geoip_flag_vu {background: transparent url( "flags/vu.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_vu {background: transparent url( "flags/vu.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
+.geoip_flag_wf {background: transparent url( "flags/wf.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_wf {background: transparent url( "flags/wf.gif" ) no-repeat scroll left
+top; padding-left: 20px; }
 .geoip_flag_ws {background: transparent url( "flags/ws.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_ws {background: transparent url( "flags/ws.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_ye {background: transparent url( "flags/ye.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_ye {background: transparent url( "flags/ye.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
-.geoip_flag_yu {background: transparent url( "flags/yu.gif" ) no-repeat center center; width: 22px; }
-.iegeoip_flag_yu {background: transparent url( "flags/yu.gif" ) no-repeat scroll left
+.geoip_flag_yt {background: transparent url( "flags/yt.gif" ) no-repeat center center; width: 22px; }
+.iegeoip_flag_yt {background: transparent url( "flags/yt.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_za {background: transparent url( "flags/za.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_za {background: transparent url( "flags/za.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_zm {background: transparent url( "flags/zm.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_zm {background: transparent url( "flags/zm.gif" ) no-repeat scroll left
-top; padding-left: 20px; }
-.geoip_flag_zr {background: transparent url( "flags/zr.gif" ) no-repeat center center; width: 22px; }
-.iegeoip_flag_zr {background: transparent url( "flags/zr.gif" ) no-repeat scroll left
 top; padding-left: 20px; }
 .geoip_flag_zw {background: transparent url( "flags/zw.gif" ) no-repeat center center; width: 22px; }
 .iegeoip_flag_zw {background: transparent url( "flags/zw.gif" ) no-repeat scroll left
