@@ -34,3 +34,4 @@
    # Fixed opacity during moving of columns in the list of torrents (in some browsers).
    # Fixed incorrect displaying of the time when a torrent has been added on the tab "General" - now the difference between time on the server and time on the local computer is being taken into account.
    # Fixed mess of paths in plug-ins which could cause "redundant" folders creation and incorrect work of some plug-ins.
+==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
