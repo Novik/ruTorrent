@@ -55,7 +55,7 @@ var AvailableLanguages =
 	pl:'Polish',
 	pt:'Portuguese',
 	ru:'Русский',
-	sr:'Serbian',
+	sr:'Српски',
 	sk:'Slovak',
 	es:'Spanish',
 	uk:'Ukrainian',
