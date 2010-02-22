@@ -972,7 +972,7 @@ dxSTable.prototype.getMaxRows = function()
 
 dxSTable.prototype.refreshRows = function( height ) 
 {
-	if(this.isScrolling) 
+	if(this.isScrolling || !this.created) 
 	{
 		return;
    	}
