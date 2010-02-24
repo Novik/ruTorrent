@@ -97,6 +97,8 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	var tr, td, cl, cg, div;
 	this.prefix = aName;
 	this.dCont = ele;
+	if(!this.dCont)
+		return;
 
 	this.dHead = $("<div>").addClass("stable-head").get(0);
 	this.dBody = $("<div>").addClass("stable-body").get(0);
@@ -369,7 +371,7 @@ dxSTable.prototype.resizeColumn = function()
 			(browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) &&
 			this.tBody.rows.length>0)
 		{
-			if(this.tBody.rows[0].cells[i].width!=w)
+			if((this.tBody.rows[0].cells[i].width!=w) && (w>=4))
 			{
 				this.tBody.rows[0].cells[i].width=w;
 				needCallHandler = true;
@@ -1324,22 +1326,25 @@ dxSTable.prototype.removeRow = function(sId)
 
 dxSTable.prototype.clearRows = function() 
 {
-	var tb = this.tBody.tb;
-	while(tb.firstChild) 
-	{ 
-		var obj = tb.removeChild(tb.firstChild); 
-		$(obj).unbind();
-		delete obj; 
-	}
-	this.rows = 0;
-	this.viewRows = 0;
+	if(this.created)
+	{
+		var tb = this.tBody.tb;
+		while(tb.firstChild) 
+		{ 
+			var obj = tb.removeChild(tb.firstChild); 
+			$(obj).unbind();
+			delete obj; 
+		}
+		this.rows = 0;
+		this.viewRows = 0;
 
-	this.rowSel = new Array(0);
-	this.rowdata = new Array(0);
-	this.rowIDs = new Array(0);
-	this.bpad.style.height = "0px";
-	this.tpad.style.height = "0px";
-	this.dBody.scrollTop = 0;
+		this.rowSel = new Array(0);
+		this.rowdata = new Array(0);
+		this.rowIDs = new Array(0);
+		this.bpad.style.height = "0px";
+		this.tpad.style.height = "0px";
+		this.dBody.scrollTop = 0;
+	}
 }
 
 dxSTable.prototype.setAlignment = function()

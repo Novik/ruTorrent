@@ -20,7 +20,7 @@ plugin.init = function()
 		$("<div>").attr("id","meter-disk-holder").
 			append( $("<span></span>").attr("id","meter-disk-text").css({overflow: "visible"}) ).
 			append( $("<div>").attr("id","meter-disk-value").css({ visibility: "hidden", float: "left" }).width(0).html("&nbsp;") ) );
-	theRequestManager.addRequest( "ttl", null, function()
+	plugin.check = function()
 	{
 		var AjaxReq = jQuery.ajax(
 		{
@@ -34,7 +34,9 @@ plugin.init = function()
 				plugin.setValue( data.total, data.free );
 			}
 		});
-	});
+	};
+	plugin.check();
+	theRequestManager.addRequest( "ttl", null, plugin.check );
 	this.markLoaded();
 };
 

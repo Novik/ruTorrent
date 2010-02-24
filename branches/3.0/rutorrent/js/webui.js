@@ -376,7 +376,11 @@ var theWebUI =
 		if(!this.settings["webui.show_cats"])
 			$("#CatList").hide();
 		if(!this.settings["webui.show_dets"])
+		{
 			$("#tdetails").hide();
+			if(!theWebUI.systemInfo.rTorrent.started)
+				this.toggleDetails();
+		}
 		theDialogManager.setEffects( iv(this.settings["webui.effects"])*200 );
 		this.setStatusUpdate();
 		$.each(this.tables, function(ndx,table)
@@ -624,12 +628,18 @@ var theWebUI =
 		if($("#stg").is(":visible"))
 			theDialogManager.hide("stg");
 		else
-	   		this.request("?action=getsettings", [this.addAndShowSettings, this], true);
+		{
+			if(this.systemInfo.rTorrent.started)
+		   		this.request("?action=getsettings", [this.addAndShowSettings, this], true);
+			else
+				this.addAndShowSettings();
+		}
    	},
 
 	addAndShowSettings: function(data) 
 	{
-		this.addSettings(data);
+	        if(data)
+			this.addSettings(data);
 		theDialogManager.show("stg");
 	},
 
@@ -2094,7 +2104,10 @@ var theWebUI =
 
 	update: function()
    	{
-		theWebUI.getTorrents("list=1");
+   	        if(theWebUI.systemInfo.rTorrent.started)
+			theWebUI.getTorrents("list=1");
+		else
+			theWebUI.show();
    	},
 
 	setVSplitter : function()

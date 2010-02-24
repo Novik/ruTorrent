@@ -50,6 +50,11 @@ function getPluginInfo( $name, $permissions )
 						$info[$field] = $value;
 						break;
 					}
+					case "need_rtorrent":
+					{
+						$info[$field] = intval($value);
+						break;
+					}
 					case "version":
 					case "runlevel":
 					{
@@ -59,6 +64,8 @@ function getPluginInfo( $name, $permissions )
 				}
 			}
 		}
+		if(!array_key_exists("need_rtorrent",$info))
+			$info["need_rtorrent"] = 1;
 		if(!array_key_exists("runlevel",$info))
 			$info["runlevel"] = 10.0;
 		if(!array_key_exists("description",$info))
@@ -166,11 +173,11 @@ if($handle = opendir('../plugins'))
 		if(!$theSettings->linkExist)
 		{
 			$jResult.="log(theUILang.badLinkTorTorrent);";
-			$jResult.="theWebUI.systemInfo = { rTorrent : { version : '?', libVersion : '?' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
+			$jResult.="theWebUI.systemInfo = { rTorrent : { started: false, version : '?', libVersion : '?' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
 		}
 		else
 		{
-			$jResult.="theWebUI.systemInfo = { rTorrent : { version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
+			$jResult.="theWebUI.systemInfo = { rTorrent : { started: true, version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
 	        	if($do_diagnostic)
 	        	{
 	        	        $up = getUploadsPath();
@@ -199,61 +206,63 @@ if($handle = opendir('../plugins'))
 				if($theSettings->badXMLRPCVersion)
 					$jResult.="log(theUILang.badXMLRPCVersion);";
 			}
-			$plg = getConfFile('plugins.ini');
-			if(!$plg)
-				$plg = "../conf/plugins.ini";
-			$permissions = parse_ini_file($plg,true);
-			$init = array();
-			while(false !== ($file = readdir($handle)))
-			{
-				if($file != "." && $file != ".." && is_dir('../plugins/'.$file))
-				{
-					$info = getPluginInfo( $file, $permissions );
-					if($info!==false)
-					{
-					        if(!isLocalMode())
-					        {
-					        	if($info["remote"]=="error")
-							{
-								$jResult.="log('".$file.": '+theUILang.errMustBeInSomeHost);";
-								continue;
-							}
-					        	if($do_diagnostic && ($info["remote"]=="warning"))
-								$jResult.="log('".$file.": '+theUILang.warnMustBeInSomeHost);";
-					        }
-						$js = "../plugins/".$file."/init.js";
-		                	        if(!is_readable($js))
-							$js = NULL;
-	        		                $php = "../plugins/".$file."/init.php";
-						if(!is_readable($php))
-							$php = NULL;
-						$init[] = array( "js" => $js, "php" => $php, "info" => $info, "name" => $file );
-					}
-				}
-			} 
-			usort($init,"pluginsSort");
-			$remoteRequests = array();
-			foreach($init as $plugin)
-			{
-			        $jEnd = '';
-			        $pInfo = $plugin["info"];
-				$jResult.="(function () { var plugin = new rPlugin( '".$plugin["name"]."',".$pInfo["version"].
-					",'".$pInfo["author"]."','".$pInfo["description"]."',".$pInfo["perms"]." );\n";
-				if($plugin["php"])
-					require_once( $plugin["php"] );
-				else
-					$theSettings->registerPlugin($plugin["name"]);
-				if($plugin["js"])
-				{
-					$jResult.=file_get_contents($plugin["js"]);
-					$jResult.="\n";
-				}
-				$jResult.=$jEnd;
-				$jResult.="\n})();";
-			}
-			$jResult.=testRemoteRequests($remoteRequests);
-			$theSettings->store();
 		}
+		$plg = getConfFile('plugins.ini');
+		if(!$plg)
+			$plg = "../conf/plugins.ini";
+		$permissions = parse_ini_file($plg,true);
+		$init = array();
+		while(false !== ($file = readdir($handle)))
+		{
+			if($file != "." && $file != ".." && is_dir('../plugins/'.$file))
+			{
+				$info = getPluginInfo( $file, $permissions );
+				if($info!==false)
+				{
+				        if(!$theSettings->linkExist && $info["need_rtorrent"])
+						continue;
+				        if(!isLocalMode())
+				        {
+				        	if($info["remote"]=="error")
+						{
+							$jResult.="log('".$file.": '+theUILang.errMustBeInSomeHost);";
+							continue;
+						}
+				        	if($do_diagnostic && ($info["remote"]=="warning"))
+							$jResult.="log('".$file.": '+theUILang.warnMustBeInSomeHost);";
+				        }
+					$js = "../plugins/".$file."/init.js";
+	                	        if(!is_readable($js))
+						$js = NULL;
+        		                $php = "../plugins/".$file."/init.php";
+					if(!is_readable($php))
+						$php = NULL;
+					$init[] = array( "js" => $js, "php" => $php, "info" => $info, "name" => $file );
+				}
+			}
+		} 
+		usort($init,"pluginsSort");
+		$remoteRequests = array();
+		foreach($init as $plugin)
+		{
+		        $jEnd = '';
+		        $pInfo = $plugin["info"];
+			$jResult.="(function () { var plugin = new rPlugin( '".$plugin["name"]."',".$pInfo["version"].
+				",'".$pInfo["author"]."','".$pInfo["description"]."',".$pInfo["perms"]." );\n";
+			if($plugin["php"])
+				require_once( $plugin["php"] );
+			else
+				$theSettings->registerPlugin($plugin["name"]);
+			if($plugin["js"])
+			{
+				$jResult.=file_get_contents($plugin["js"]);
+				$jResult.="\n";
+			}
+			$jResult.=$jEnd;
+			$jResult.="\n})();";
+		}
+		$jResult.=testRemoteRequests($remoteRequests);
+		$theSettings->store();
 	}
 	closedir($handle);
 }

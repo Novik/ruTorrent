@@ -547,33 +547,38 @@ function correctContent()
 		showPluginsTab:		0x0010
 	};
 
+	if(!theWebUI.systemInfo.rTorrent.started)
+        	theWebUI.showFlags &= ~0x000F;
+
 	if(!(theWebUI.showFlags & showEnum.showDownloadsPage))
-	{
-		$("#st_dl").remove();
-		$("#hld_st_dl").remove();
-	}
+		rPlugin.prototype.removePageFromOptions("st_dl");
 	if(!(theWebUI.showFlags & showEnum.showConnectionPage))
-	{
-		$("#st_con").remove();
-		$("#hld_st_con").remove();
-	}
+		rPlugin.prototype.removePageFromOptions("st_con");
 	if(!(theWebUI.showFlags & showEnum.showBittorentPage))
-	{
-		$("#st_bt").remove();
-		$("#hld_st_bt").remove();
-	}
+		rPlugin.prototype.removePageFromOptions("st_bt");
 	if(!(theWebUI.showFlags & showEnum.showAdvancedPage))
-	{
-		$("#st_ao").remove();
-		$("#hld_st_ao").remove();
-	}
-	$(".lm ul:last-child").addClass("last");
+		rPlugin.prototype.removePageFromOptions("st_ao");
 	if(!(theWebUI.showFlags & showEnum.showPluginsTab))
 	{
 		delete theWebUI.tables.plg;
-		delete theTabs.tabs.PluginList;
-		$("#PluginList").remove();
-		$("#tab_PluginList").remove();
+  		rPlugin.prototype.removePageFromTabs("PluginList");
+	}
+	if(!theWebUI.systemInfo.rTorrent.started)
+	{
+		rPlugin.prototype.removePageFromTabs("TrackerList");
+		rPlugin.prototype.removePageFromTabs("FileList");
+		rPlugin.prototype.removePageFromTabs("PeerList");
+		rPlugin.prototype.removePageFromTabs("Speed");
+		$("#st_up").remove();
+		$("#st_down").remove();
+		rPlugin.prototype.removeButtonFromToolbar("add");
+		rPlugin.prototype.removeSeparatorFromToolbar("remove");
+		rPlugin.prototype.removeButtonFromToolbar("remove");
+		rPlugin.prototype.removeSeparatorFromToolbar("start");
+		rPlugin.prototype.removeButtonFromToolbar("start");
+		rPlugin.prototype.removeButtonFromToolbar("pause");
+		rPlugin.prototype.removeButtonFromToolbar("stop");
+		rPlugin.prototype.removeSeparatorFromToolbar("settings");
 	}
 	if($type(theWebUI.systemInfo))
 		$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);

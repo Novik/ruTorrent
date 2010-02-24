@@ -5,8 +5,8 @@ $st = getSettingsPath();
 @rename($rootPath.'/plugins/rss/cache',$st.'/rss/cache');
 @mkdir($st.'/rss');
 @mkdir($st.'/rss/cache');
-$needStart = isLocalMode();
-if($do_diagnostic)
+$needStart = isLocalMode() && $theSettings->linkExist;
+if($do_diagnostic && $theSettings->linkExist)
 {
 	if((!$pathToPHP || ($pathToPHP=="")) && $needStart)
 		findRemoteEXE('php',"thePlugins.get('rss').showError('theUILang.rssPHPNotFound');",$remoteRequests);
