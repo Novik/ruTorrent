@@ -1068,7 +1068,7 @@ dxSTable.prototype.keyEvents = function(e)
 				self.ondelete();
 		}
 		else 
-		if(e.ctrlKey)
+		if(e.metaKey)
 		{
 			switch(c)
 			{
@@ -1162,7 +1162,7 @@ dxSTable.prototype.selectRow = function(e, row)
 		}
 		else 
 		{
-			if(e.ctrlKey) 
+			if(e.metaKey) 
 			{
 				this.stSel = id;
 				this.rowSel[id] =!this.rowSel[id];

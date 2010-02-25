@@ -238,7 +238,7 @@ var theWebUI =
 		   		}
 		   		case 79 : 				// ^O
    				{
-					if(e.ctrlKey && !theDialogManager.isModalState()) 
+					if(e.metaKey && !theDialogManager.isModalState()) 
    					{	
       						theWebUI.showAdd();	
 						return(false);
@@ -247,7 +247,7 @@ var theWebUI =
 				}
 				case 80 :                               // ^P
 				{
-					if(e.ctrlKey && !theDialogManager.isModalState())
+					if(e.metaKey && !theDialogManager.isModalState())
 					{	
       						theWebUI.showSettings();	
 						return(false);
@@ -258,7 +258,7 @@ var theWebUI =
    				{
    				        if(!theDialogManager.isModalState())
    				        {
-			   		        theDialogManager.show(e.ctrlKey ? "dlgAbout" : "dlgHelp");
+			   		        theDialogManager.show(e.metaKey ? "dlgAbout" : "dlgHelp");
 						return(false);
 					}
 		   		}
