@@ -1,6 +1,16 @@
 theWebUI.trackersLabels = new Object();
 theWebUI.actTrackersLbl = null;
 
+plugin.config = theWebUI.config;
+theWebUI.config = function(data)
+{
+	if(plugin.canChangeColumns())
+	{
+		theWebUI.tables.trt.columns.push({ text: theUILang.Tracker, width: '100px', id: 'tracker', type: TYPE_STRING});
+		plugin.config.call(this,data);
+	}
+}
+
 plugin.filterByLabel = theWebUI.filterByLabel;
 theWebUI.filterByLabel = function(hash)
 {
@@ -169,11 +179,13 @@ theWebUI.rebuildTrackersLabels = function()
 		setTimeout('theWebUI.rebuildTrackersLabels()',1000);
 	else
 	{
+		var table = this.getTable('trt');
 		trackersLabels = new Object();
 		for(var hash in this.trackers)
 		{
 			if($type(this.torrents[hash]))
 			{
+			        this.torrents[hash].tracker = null;
 				for( var i=0; i<this.trackers[hash].length; i++)
 				{
 					if(this.trackers[hash][i].group==0)
@@ -181,6 +193,12 @@ theWebUI.rebuildTrackersLabels = function()
 						var tracker = theWebUI.getTrackerName( this.trackers[hash][i].name );
 						if(tracker)
 						{
+							if(!this.torrents[hash].tracker)
+							{
+								this.torrents[hash].tracker = tracker;
+								if(plugin.canChangeColumns())
+									table.setValueById(hash, 'tracker', tracker);
+							}
 							if($type(trackersLabels[tracker]))
 								trackersLabels[tracker]++;
 							else
@@ -190,6 +208,8 @@ theWebUI.rebuildTrackersLabels = function()
 				}
 			}
 		}
+		if(plugin.canChangeColumns())
+			table.Sort();
 		var ul = $("#torrl");
 		for(var lbl in trackersLabels)
 		{
