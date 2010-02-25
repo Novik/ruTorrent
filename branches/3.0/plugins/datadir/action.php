@@ -97,7 +97,8 @@ if( $ret[$len - 1] == ',' )
 	$ret = substr( $ret, 0, $len - 1 );
 $ret .= "]}";
 
-header( "Content-Length: ".strlen( $ret ) );
+if(!ini_get("zlib.output_compression"))
+	header( "Content-Length: ".strlen( $ret ) );
 header("Content-Type: application/json; charset=UTF-8");
 echo $ret;
 

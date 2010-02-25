@@ -368,7 +368,8 @@ class Torrent
 	{
         	$data = (string) $this;
 	        header( 'Content-type: application/x-bittorrent' );
-        	header( 'Content-Length: ' . strlen( $data ) );
+	        if(!ini_get("zlib.output_compression"))
+	        	header( 'Content-Length: ' . strlen( $data ) );
 	        header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $this->{'creation date'} ) . ' GMT');
 
 	        if(is_null( $filename ))

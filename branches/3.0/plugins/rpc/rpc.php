@@ -18,7 +18,8 @@ else
 	$result = "Link to XMLRPC failed. May be, rTorrent is down?";
 	header("Content-Type: text/html; charset=UTF-8");
 }
-header("Content-Length: ".strlen($result));
+if(!ini_get("zlib.output_compression"))
+	header("Content-Length: ".strlen($result));
 header("Cache-Control: no-cache");
 echo $result;
 

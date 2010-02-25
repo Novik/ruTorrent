@@ -27,7 +27,8 @@
 				$val = $st->getYear();
 		}
 	}
-	header("Content-Length: ".strlen($val));
+	if(!ini_get("zlib.output_compression"))
+		header("Content-Length: ".strlen($val));
 	header("Content-Type: application/json; charset=UTF-8");
 	echo $val;
 ?>

@@ -267,7 +267,8 @@ if($handle = opendir('../plugins'))
 	}
 	closedir($handle);
 }
-header("Content-Length: ".strlen($jResult));
+if(!ini_get("zlib.output_compression"))
+	header("Content-Length: ".strlen($jResult));
 header("Content-Type: application/javascript; charset=UTF-8");
 echo $jResult;
 

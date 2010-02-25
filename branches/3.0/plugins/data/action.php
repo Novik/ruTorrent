@@ -4,7 +4,8 @@ require_once( '../../php/xmlrpc.php' );
 if(isset($_REQUEST['result']))
 {
 	$content = 'log(theUILang.cantAccessData);';
-	header("Content-Length: ".strlen($content));
+	if(!ini_get("zlib.output_compression"))
+		header("Content-Length: ".strlen($content));
 	header("Content-Type: text/html");
 	exit($content);
 }
@@ -48,7 +49,8 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 				header('Last-Modified: ' . date('r', $stat['mtime']));
 				header('Etag: "' . $etag . '"');
 				header('Accept-Ranges: bytes');
-				header('Content-Length:' . $stat['size']);
+				if(!ini_get("zlib.output_compression"))
+					header('Content-Length:' . $stat['size']);
 				header('Content-Type: application/octet-stream');
 				$fname = end(explode('/',$filename));
 				if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))

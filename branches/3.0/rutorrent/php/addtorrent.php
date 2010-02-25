@@ -9,7 +9,8 @@ $success = false;
 if(isset($_REQUEST['result']))
 {
 	$content = 'log(theUILang.addTorrent'. ($_REQUEST['result'] ? 'Success' : 'Failed') . ');';
-	header("Content-Length: ".strlen($content));
+	if(!ini_get("zlib.output_compression"))
+		header("Content-Length: ".strlen($content));
 	header("Content-Type: text/html");
 	exit($content);
 }

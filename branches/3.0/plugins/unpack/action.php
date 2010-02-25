@@ -66,7 +66,8 @@ if(isset($_REQUEST['cmd']))
 if(!empty($ret))
 {
 	header("Content-Type: application/".$ctype."; charset=UTF-8");
-	header("Content-Length: ".strlen($ret));
+	if(!ini_get("zlib.output_compression"))
+		header("Content-Length: ".strlen($ret));
 	echo $ret;
 }
 ?>

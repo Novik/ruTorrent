@@ -4,7 +4,8 @@ require_once( '../../php/rtorrent.php' );
 if(isset($_REQUEST['result']))
 {
 	$content = 'log(theUILang.cantFindTorrent);';
-	header("Content-Length: ".strlen($content));
+	if(!ini_get("zlib.output_compression"))
+		header("Content-Length: ".strlen($content));
 	header("Content-Type: text/html");
 	exit($content);
 }
