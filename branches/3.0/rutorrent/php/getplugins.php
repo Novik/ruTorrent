@@ -158,6 +158,7 @@ foreach($settingsFlags as $flagName=>$flagVal)
 		$perms|=$flagVal;
 $jResult .= "theWebUI.showFlags = ".$perms.";\n";
 $jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";
+$jResult.="theWebUI.systemInfo = {};\ntheWebUI.systemInfo.php = { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")." };\n";
 
 if($handle = opendir('../plugins')) 
 {
@@ -173,11 +174,11 @@ if($handle = opendir('../plugins'))
 		if(!$theSettings->linkExist)
 		{
 			$jResult.="log(theUILang.badLinkTorTorrent);";
-			$jResult.="theWebUI.systemInfo = { rTorrent : { started: false, version : '?', libVersion : '?' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
+			$jResult.="theWebUI.systemInfo.rTorrent = { started: false, version : '?', libVersion : '?' };\n";
 		}
 		else
 		{
-			$jResult.="theWebUI.systemInfo = { rTorrent : { started: true, version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' }, php : { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")."} };";
+			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' };\n";
 	        	if($do_diagnostic)
 	        	{
 	        	        $up = getUploadsPath();
@@ -266,6 +267,8 @@ if($handle = opendir('../plugins'))
 	}
 	closedir($handle);
 }
+header("Content-Length: ".strlen($jResult));
+header("Content-Type: application/javascript; charset=UTF-8");
 echo $jResult;
 
 ?>
