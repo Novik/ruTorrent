@@ -1,5 +1,6 @@
 <?php
 require_once('rss.php');
+
 ob_start();
 ignore_user_abort(true);
 set_time_limit(0);
@@ -298,11 +299,13 @@ else
 	$content = $val;
 	header("Content-Type: application/json; charset=UTF-8");
 }
-header("Content-Length: ".strlen($content));
-echo $content;
-ob_flush();
+
 if(!ini_get("zlib.output_compression"))
-    flush();
+	header("Content-Length: ".strlen($content));
+echo $content;
+
+ob_flush();
+flush();
 
 if(connection_aborted())
 {
