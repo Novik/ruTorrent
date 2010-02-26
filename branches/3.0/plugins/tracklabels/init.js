@@ -288,6 +288,12 @@ plugin.onRemove = function()
 	$('#ptrackers_cont').remove();
 	$('#ptrackers').remove();
 	theWebUI.switchLabel($$("-_-_-all-_-_-"));
+	if(plugin.canChangeColumns())
+	{
+		theWebUI.getTable("trt").removeColumnById("tracker");
+		if(thePlugins.isInstalled("rss"))
+			theWebUI.getTable("rss").removeColumnById("tracker");
+	}
 }
 
 theWebUI.initTrackersLabels();

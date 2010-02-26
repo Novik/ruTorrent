@@ -126,7 +126,10 @@ foreach($errors as $err)
 $len = strlen($ret);
 if($ret[$len-1]==',')
 	$ret = substr($ret,0,$len-1);
-$ret.="]}";
+$ret.="]";
+if($hash)
+	$ret.=", hash: '".$hash."'";
+$ret.="}";
 if(!ini_get("zlib.output_compression"))
 	header("Content-Length: ".strlen($ret));
 header("Content-Type: application/json; charset=UTF-8");
