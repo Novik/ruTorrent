@@ -1,44 +1,26 @@
-theWebUI.calcPeers = function(torrents)
+if(plugin.enabled)
 {
-        for(var hash in this.trackers)
-        {
-		var trackers = this.trackers[hash];
-		var torrent = torrents[hash];
-		if($type(torrent))
-		{
-		        var get_scrape_complete = 0;
-		        var get_scrape_incomplete = 0;
-			for(var i in trackers)
-			{
-				get_scrape_complete+=iv(trackers[i].seeds);
-				get_scrape_incomplete+=iv(trackers[i].peers);
-			}
-			torrent.peers_all = get_scrape_incomplete;
-			torrent.seeds_all = get_scrape_complete;
-			torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
-			torrent.peers = torrent.peers_actual + " (" + torrent.peers_all + ")";
-		}
-        }
-}
+	plugin.loadMainCSS();
 
-plugin.getAllTrackers = theWebUI.getAllTrackers;
-theWebUI.getAllTrackers = function(arr)
-{
-	if(!plugin.enabled)
-		plugin.getAllTrackers.call(this,arr);
-}
-
-plugin.addTorrents = theWebUI.addTorrents;
-theWebUI.addTorrents = function(data) 
-{
-	if(plugin.enabled)
-	        this.calcPeers(data.torrents);
-	plugin.addTorrents.call(this,data);
-	if(plugin.enabled)
+	plugin.config = theWebUI.config;
+	theWebUI.config = function(data)
 	{
-		var tArray = [];
-		for(var hash in this.torrents)
-			tArray.push(hash);
-		plugin.getAllTrackers.call(this,tArray);
+		theRequestManager.addRequest("trt", 'cat="$t.multicall=d.get_hash=,t.get_scrape_complete=,cat={#}"',function(hash,torrent,value)
+		{
+		        var arr = value.split('#');
+			torrent.seeds_all = 0;
+			for(var i=0; i<arr.length; i++)
+				torrent.seeds_all += iv(arr[i]);
+			torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
+		});
+		theRequestManager.addRequest("trt", 'cat="$t.multicall=d.get_hash=,t.get_scrape_incomplete=,cat={#}"',function(hash,torrent,value)
+		{
+		        var arr = value.split('#');
+			torrent.peers_all = 0;
+			for(var i=0; i<arr.length; i++)
+				torrent.peers_all += iv(arr[i]);
+			torrent.peers = torrent.peers_actual + " (" + torrent.peers_all + ")";
+		});
+		plugin.config.call(this,data);
 	}
 }
