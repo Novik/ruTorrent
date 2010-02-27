@@ -601,7 +601,7 @@ class Snoopy
 		// GET ... header not needed for curl
 		//$headers[] = $http_method." ".$url." ".$this->_httpversion;		
 		if(!empty($this->agent))
-			$headers[] = "User-Agent: ".$this->agent;
+			+$headers[] = "User-Agent: ".$this->agent;
 		if(!empty($this->host))
 			$headers[] = "Host: ".$this->host;
 		if(!empty($this->accept))
@@ -650,11 +650,11 @@ class Snoopy
 			$headers[] = "Authorization: BASIC ".base64_encode($this->user.":".$this->pass);
 			
 		for($curr_header = 0; $curr_header < count($headers); $curr_header++) {
-			$cmdline_params .= " -H \"".$headers[$curr_header]."\"";
+			$cmdline_params .= " -H ".escapeshellarg($headers[$curr_header]);
 		}
 			  	                         
 		if(!empty($body))
-			$cmdline_params .= " -d \"$body\"";
+			$cmdline_params .= " -d ".escapeshellarg($body);
 		
 		if($this->read_timeout > 0)
 			$cmdline_params .= " -m ".$this->read_timeout;
@@ -664,7 +664,7 @@ class Snoopy
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s"; 
-		exec($pathToCurl." -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".escapeshellcmd($cmdline_params)." ".escapeshellcmd($URI),$results,$return);
+		exec($pathToCurl." -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".$cmdline_params." ".escapeshellarg($URI),$results,$return);
 		$this->_redirectaddr = false;
 		unset($this->headers);
 		
