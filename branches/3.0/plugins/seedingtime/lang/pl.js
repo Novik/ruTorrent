@@ -1,6 +1,6 @@
 ﻿
  
- theUILang.seedingTimeBadVersion	= "SeedingTime plugin: this version of rTorrent doesn't support this plugin. Plugin will not work.";
- theUILang.seedingTime		= "Finished";
+ theUILang.seedingTimeBadVersion	= "Wtyczka SeedingTime: Ta wersja rTorrenta nie wspiera tej funkcjonalności. Wtyczka nie będzie działać.";
+ theUILang.seedingTime		= "Ukończono";
 
 thePlugins.get("seedingtime").langLoaded();

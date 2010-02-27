@@ -1,7 +1,7 @@
 ﻿
 // Contributed by art.spb, December 2009.
 
-theUILang.countryName = "Country";
+theUILang.countryName = "Kraj";
 
 theUILang.country = new Array();
 

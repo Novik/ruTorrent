@@ -1,16 +1,16 @@
 ﻿
  
- theUILang.mnu_create 			= "Create torrent...";
- theUILang.CreateNewTorrent 		= "Create New Torrent";
- theUILang.SelectSource 		= "Select Source";
- theUILang.TorrentProperties 		= "Torrent Properties";
- theUILang.PieceSize 			= "Piece size";
- theUILang.Other 			= "Other";
- theUILang.StartSeeding 		= "Start seeding";
- theUILang.PrivateTorrent		= "Private torrent";
- theUILang.torrentCreate		= "Create...";
- theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound 	= "Create plugin: Plugin will not work. Web-server can't access external program";
+ theUILang.mnu_create 		= "Utwórz Torrent...";
+ theUILang.CreateNewTorrent 	= "Utwórz nowy plik Torrent";
+ theUILang.SelectSource 		= "Wskaż źródło";
+ theUILang.TorrentProperties 	= "Właściwości Torrenta";
+ theUILang.PieceSize 		= "Rozmiar kawałka";
+ theUILang.Other 			= "Inne";
+ theUILang.StartSeeding 		= "Rozpocznij seedowanie";
+ theUILang.PrivateTorrent		= "Prywatny torrent";
+ theUILang.CreateAndSaveAs	= "Utwórz i zapisz jako...";
+ theUILang.BadTorrentData		= "Musisz wypełnić wszystkie wymagane pola!";
+ theUILang.createExternalNotFound = "Wtyczka Utwórz Torrent:  Serwer nie ma dostępu do zewnętrznej aplikacji. Wtyczka nie będzie działać.";
  theUILang.incorrectDirectory 		= "Incorrect directory";
  theUILang.cantExecExternal 		= "Can't execute external program";
  theUILang.createConsole		= "Console";

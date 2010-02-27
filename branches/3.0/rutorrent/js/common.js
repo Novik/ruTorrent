@@ -968,7 +968,6 @@ var theBTClientVersion =
         	'A' : "ABC", 'R' : "Tribler", 'S' : "Shad0w",
 	        'T': "BitTornado", 'U': "UPnP NAT Bit Torrent"
 	},
-// -SP3603 -UT1830%81%80%06%3A%05%CB -BP4940-
 	get: function( origStr )
 	{
 
@@ -1105,6 +1104,9 @@ var theBTClientVersion =
 			else
 			if(str.match(/^-FG\d\d\d\d/))
 				ret = "FlashGet "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
+			else
+			if(str.match(/^-SP\d\d\d/))
+				ret = "BitSpirit "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5);
 			else
 			if(str.match(/^346-/))
 				ret = "TorrenTopia";

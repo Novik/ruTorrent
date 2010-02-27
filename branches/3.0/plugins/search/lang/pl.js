@@ -1,6 +1,6 @@
 ﻿
  
- theUILang.searchDesc = "Search Engines (Format: name|URL)";
- theUILang.searchName = "Search";
+ theUILang.searchDesc = "Silnik wyszukiwarki (Format: nazwa|adres URL)";
+ theUILang.searchName = "Szukaj";
 
 thePlugins.get("search").langLoaded();

@@ -1,6 +1,6 @@
 ﻿
  
- theUILang.cookiesDesc = "Cookies (Format: host|cookie1;cookie2...)";
- theUILang.cookiesName = "Cookies";
+ theUILang.cookiesDesc = "Ciasteczka (Format: adres|ciasteczko1;ciasteczko2...)";
+ theUILang.cookiesName = "Ciasteczka";
 
 thePlugins.get("cookies").langLoaded();

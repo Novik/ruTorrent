@@ -1,24 +1,25 @@
 ﻿
- theUILang.scheduler			= "Scheduler";
- theUILang.schedulerOn			= "Enable Scheduler";
- theUILang.schedulerGraph			= "Scheduler Table";
- theUILang.schShortWeek			= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek			= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
 
- theUILang.schUnlimited			= "Unlimited";
- theUILang.schLimited			= "Limited";
- theUILang.schTurnOff			= "Turn off";
- theUILang.schSeedingOnly			= "Seeding only";
+ theUILang.scheduler			= "Harmonogram";
+ theUILang.schedulerOn			= "Włącz Harmonogram";
+ theUILang.schedulerGraph			= "Tablica harmonogramu";
+ theUILang.schShortWeek			= [ "pon.", "wt.", "śr.", "czw.", "pt.", "sob.", "ndz." ];
+ theUILang.schFullWeek			= [ "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela" ];
 
- theUILang.schUnlimitedDesc		= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc			= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc			= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc		= "Seeding only - Only upload data";
+ theUILang.schUnlimited			= "Nielimitowany";
+ theUILang.schLimited			= "Limit ";
+ theUILang.schTurnOff			= "Wyłącz";
+ theUILang.schSeedingOnly			= "Tylko wysyłanie";
 
- theUILang.schLimitedUL			= "Limited UL";
- theUILang.schLimitedDL			= "Limited DL";
+ theUILang.schUnlimitedDesc		= "Nielimitowany - Ogólny limit nie istnieje";
+ theUILang.schLimitedDesc			= "Limitowany - Użyty Harmonogram do ograniczenia transferu";
+ theUILang.schTurnOffDesc			= "Wyłącz - Zatrzymuje wszystkie torrenty";
+ theUILang.schSeedingOnlyDesc		= "Tylko wysyłanie danych";
 
- theUILang.schedPHPNotFound		= "Scheduler plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
- theUILang.schedUpdaterNotAvailable	= "Scheduler plugin: rTorrent's user can't access file plugins/scheduler/update.php for read. Plugin will not work.";
+ theUILang.schLimitedUL			= "Limit wysyłania";
+ theUILang.schLimitedDL			= "Limit pobierania:";
+
+ theUILang.schedPHPNotFound		= "Wtyczka Harmonogram: użytkownik, który uruchomił rTorrent nie ma dostępu do interpretera PHP. Wtyczka nie będzie działać.";
+ theUILang.schedUpdaterNotAvailable	= "Wtyczka Harmonogram: użytkownik, który uruchomił rTorrent nie prawa odczytu pliku plugins/Harmonogram/update.php . Wtyczka nie będzie działać.";
 
 thePlugins.get("scheduler").langLoaded();

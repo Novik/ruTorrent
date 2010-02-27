@@ -1,9 +1,9 @@
 ﻿
  
  theUILang.retrackers		= "Retrackers";
- theUILang.dontAddToPrivate	= "Don't add retrackers to private torrents";
- theUILang.retrackersPHPNotFound		= "Retrackers plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
- theUILang.retrackersRunNotAvailable	= "Retrackers plugin: rTorrent's user can't access file plugins/retrackers/run.sh for read/execute. Plugin will not work.";
- theUILang.retrackersUpdaterNotAvailable	= "Retrackers plugin: rTorrent's user can't access file plugins/retrackers/update.php for read. Plugin will not work.";
+ theUILang.dontAddToPrivate	= "Nie dodawaj Retrackers do prywatnych trackerów";
+ theUILang.retrackersPHPNotFound		= "Wtyczka Retrackers: Użytkownik, który uruchomił rTorrent, nie ma dostępu do interpretera PHP. Wtyczka nie będzie działać.";
+ theUILang.retrackersRunNotAvailable	= "Wtyczka Retrackers: Użytkownik, który uruchomił rTorrent, nie ma dostępu do odczytu i wykonywania pliku plugins/retrackers/run.sh . Wtyczka nie będzie działać.";
+ theUILang.retrackersUpdaterNotAvailable	= "Wtyczka Retrackers: Użytkownik, który uruchomił rTorrent, nie ma dostępu do odczytu pliku plugins/retrackers/update.php . Wtyczka nie będzie działać.";
 
 thePlugins.get("retrackers").langLoaded();
