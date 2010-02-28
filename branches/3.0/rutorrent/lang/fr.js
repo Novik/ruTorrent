@@ -276,7 +276,7 @@
  mnu_pause			: "Suspendre",
  mnu_stop			: "Arr\u00eater",
  mnu_rss			: "Gestionnaire RSS",
- mnu_settings			: "Pr\u00e7f\u00e7rences",
+ mnu_settings			: "Pr\u00e9f\u00e9rences",
  mnu_search			: "Rechercher",
  mnu_lang			: "Langue",
  
