@@ -109,6 +109,7 @@ if(plugin.enabled)
 					url : "plugins/geoip/lookup.php",
 					data : "dummy=1"+content,
 					dataType : "json",
+					cache: false,
 					success : function(data)
 					{
 						thePeersCache.add(data);
