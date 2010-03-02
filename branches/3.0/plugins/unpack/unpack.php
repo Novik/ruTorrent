@@ -2,6 +2,7 @@
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( dirname(__FILE__)."/../../php/lfs.php" );
 require_once( dirname(__FILE__)."/../../php/cache.php");
+require_once( dirname(__FILE__)."/../../php/settings.php");
 eval( getPluginConf( 'unpack' ) );
 
 class rUnpack
@@ -61,6 +62,16 @@ class rUnpack
 		global $rootPath;
 		global $pathToUnrar;
 		global $pathToUnzip;
+
+		$theSettings = rTorrentSettings::load();
+		if($theSettings->isPluginRegistered('quotaspace'))
+		{
+			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );
+			$qt = rQuota::load();
+			if(!$qt->check())
+				return;
+		}
+
 		if(empty($pathToUnrar))
 			$pathToUnrar = "unrar";
 		if(empty($pathToUnzip))
@@ -114,8 +125,17 @@ class rUnpack
 		global $rootPath;
 		global $pathToUnrar;
 		global $pathToUnzip;
-
 		$ret = false;
+
+		$theSettings = rTorrentSettings::load();
+		if($theSettings->isPluginRegistered('quotaspace'))
+		{
+			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );
+			$qt = rQuota::load();
+			if(!$qt->check())
+				return(false);
+		}
+
 		if(!is_null($fileno) && !is_null($mode))
 	        {
 			$req = new rXMLRPCRequest( 

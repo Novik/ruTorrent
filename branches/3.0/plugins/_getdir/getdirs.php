@@ -26,7 +26,9 @@ if(isset($_REQUEST['dir']))
 }
 if(!$dh)
 {
-	$dir = isLocalMode() ? $theSettings->directory : '/tmp';
+	$dir = isLocalMode() ? $theSettings->directory : $topDirectory;
+	if(strpos(addslash($dir),$topDirectory)!==0)
+		$dir = $topDirectory;
 	$dh = @opendir($dir);
 }
 $files = array();

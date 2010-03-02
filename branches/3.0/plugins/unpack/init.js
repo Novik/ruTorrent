@@ -42,6 +42,8 @@ if(plugin.enabled)
 					}
 					if(!thePlugins.isInstalled("data"))
 						theContextMenu.add([CMENU_SEP]);
+					if(thePlugins.isInstalled("quotaspace") && theWebUI.quotaAlreadyWarn)
+						plugin.fno=null;
 					this.uID = (plugin.fno==null) ? null : this.dID;
 					theContextMenu.add( [theUILang.unpack+'...',  (plugin.fno==null) ? null : "theDialogManager.show('dlg_unpack')"] );
 				}
@@ -61,7 +63,7 @@ if(plugin.enabled)
 			        var rarPresent = false;
 			        var zipPresent = false;
 			        var checked = false;
-			        this.uID = (this.getTable("trt").selCount == 1) ? (id || this.dID) : null;
+			        this.uID = ((this.getTable("trt").selCount == 1) && !(thePlugins.isInstalled("quotaspace") && theWebUI.quotaAlreadyWarn)) ? (id || this.dID) : null;
 				if(this.uID && (this.torrents[this.uID].done==1000) && $type(this.files[this.uID]))
 				{
 					for(var i in this.files[this.uID]) 

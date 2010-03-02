@@ -788,6 +788,19 @@ function log(text,noTime,divClass)
 	}
 }
 
+function logHTML(text,divClass) 
+{
+	var obj = $("#lcont");
+	if(!divClass)
+		divClass = 'std';
+	if(obj.length)
+	{
+		obj.append( $("<div>").addClass(divClass).html(text).show() );
+		obj[0].scrollTop = obj[0].scrollHeight;
+		theTabs.show("lcont");
+	}
+}
+
 function rDirectory()
 {
 	this.dirs = new Array();

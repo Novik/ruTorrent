@@ -33,9 +33,12 @@ if(isset($_REQUEST['dir']))
 if(!$dh)
 {
 	$curFile = null;
-	$dir = isLocalMode() ? $theSettings->directory : '/tmp';
+	$dir = isLocalMode() ? $theSettings->directory : $topDirectory;
+	if(strpos(addslash($dir),$topDirectory)!==0)
+		$dir = $topDirectory;
 	$dh = @opendir($dir);
 }
+toLog($dir);
 $files = array();
 $dirs = array();
 if($dh)
