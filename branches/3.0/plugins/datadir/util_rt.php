@@ -126,13 +126,15 @@ function rtGetRelativePath( $base_dir, $real_dir )
 //------------------------------------------------------------------------------
 function rtIsFile( $path )
 {
-	if( is_file( $path ) )
-		return true;
+	// use Novik's implementation
+	return LFS::is_file( $path );
 
-	$out = array();
-	$ret = "1";
-	exec( 'test -f '.escapeshellarg( $path ), $out, $ret );
-	return (int)$ret == 0;
+	//if( is_file( $path ) )
+	//	return true;
+	//$out = array();
+	//$ret = "1";
+	//exec( 'test -f '.escapeshellarg( $path ), $out, $ret );
+	//return (int)$ret == 0;
 }
 
 //------------------------------------------------------------------------------
