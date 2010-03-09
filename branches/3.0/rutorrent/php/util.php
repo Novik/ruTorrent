@@ -53,7 +53,7 @@ setlocale(LC_CTYPE, "UTF8", "en_US.UTF-8");
 
 function quoteAndDeslashEachItem($item)
 {
-	return("'".addslashes($item)."'"); 
+	return("'".addcslashes($item,"\\\'\"\n\r")."'"); 
 }
 
 function isInvalidUTF8($s)

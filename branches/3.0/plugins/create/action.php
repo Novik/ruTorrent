@@ -72,6 +72,15 @@ if(isset($_REQUEST['cmd']))
 						$log = array_map('trim', file($dir.'/log'));
 						if(count($log)>MAX_CONSOLE_SIZE)
 							array_splice($log,0,count($log)-MAX_CONSOLE_SIZE);
+						$stripped = array();
+						foreach( $log as $ndx=>$item )
+							$stripped = array_merge($stripped,explode("\r",$item));
+						if(count($stripped)>count($log))
+						{
+							$log = $stripped;
+							if(count($log)>MAX_CONSOLE_SIZE)
+								array_splice($log,0,count($log)-MAX_CONSOLE_SIZE);
+						}
 					}
 					$errors=array();
 					if(is_file($dir.'/errors') && is_readable($dir.'/errors'))
@@ -89,7 +98,7 @@ if(isset($_REQUEST['cmd']))
 					$ret = "{ no: ".$taskNo.
 					        ", status: ".$status.
 				        	", pid: ".$pid.
-					        ", out: '".addslashes($out)."'".
+					        ", out: ".quoteAndDeslashEachItem($out).
 						", log: [".implode(",", array_map('quoteAndDeslashEachItem', $log))."]".
 						", errors: [".implode(",", array_map('quoteAndDeslashEachItem', $errors))."] }";
 				}
