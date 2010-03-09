@@ -547,6 +547,9 @@ function correctContent()
 		showPluginsTab:		0x0010
 	};
 
+	if(!$type(theWebUI.systemInfo))
+		theWebUI.systemInfo = { rTorrent: { version: '?', libVersion: '?', started: false } };
+
 	if(!theWebUI.systemInfo.rTorrent.started)
         	theWebUI.showFlags &= ~0x000F;
 
@@ -580,6 +583,5 @@ function correctContent()
 		rPlugin.prototype.removeButtonFromToolbar("stop");
 		rPlugin.prototype.removeSeparatorFromToolbar("settings");
 	}
-	if($type(theWebUI.systemInfo))
-		$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
+	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
 }

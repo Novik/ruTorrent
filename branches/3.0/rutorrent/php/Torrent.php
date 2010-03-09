@@ -272,6 +272,7 @@ class Torrent
 	public function clear_announce()
     	{
     		unset($this->announce);
+    		$this->touch();
     	}
 
 	/** Getter and setter of torrent annouce list
@@ -289,6 +290,7 @@ class Torrent
 	public function clear_announce_list()
 	{
 		unset($this->{'announce-list'});
+		$this->touch();
 	}
 
 	/** Getter and setter of torrent comment
@@ -305,6 +307,7 @@ class Torrent
 	public function clear_comment()
 	{
     		unset($this->comment);
+    		$this->touch();
 	}
 
 	/** Getter and setter of torrent name
