@@ -146,7 +146,7 @@ function makeContent()
 					'<input type="checkbox" id="prop-superseed" /><label for="prop-superseed" id="lbl_prop-superseed">'+theUILang.SuperSeed+'</label>'+
 				'</div>'+
 			'</fieldset>'+
-			'<div class="aright"><input type="button" value="'+theUILang.ok+'" class="Button" onclick="theWebUI.setProperties(); return(false);" /><input type="button" value="'+theUILang.Cancel+'" class="Cancel Button"/></div>'+
+			'<div class="aright"><input type="button" value="'+theUILang.ok+'" class="OK Button" onclick="theWebUI.setProperties(); return(false);" /><input type="button" value="'+theUILang.Cancel+'" class="Cancel Button"/></div>'+
 		'</div>',
 		true);
 	theDialogManager.make("dlgHelp",theUILang.Help,
@@ -544,14 +544,17 @@ function correctContent()
 		showConnectionPage:	0x0002,
 		showBittorentPage:	0x0004,
 		showAdvancedPage:	0x0008,
-		showPluginsTab:		0x0010
+		showPluginsTab:		0x0010,
+		canChangeULRate:	0x0020,
+		canChangeDLRate:	0x0040,
+		canChangeTorrentProperties:	0x0080
 	};
 
 	if(!$type(theWebUI.systemInfo))
 		theWebUI.systemInfo = { rTorrent: { version: '?', libVersion: '?', started: false } };
 
 	if(!theWebUI.systemInfo.rTorrent.started)
-        	theWebUI.showFlags &= ~0x000F;
+        	theWebUI.showFlags &= ~0xFFEF;
 
 	if(!(theWebUI.showFlags & showEnum.showDownloadsPage))
 		rPlugin.prototype.removePageFromOptions("st_dl");
@@ -566,6 +569,22 @@ function correctContent()
 		delete theWebUI.tables.plg;
   		rPlugin.prototype.removePageFromTabs("PluginList");
 	}
+	if(!(theWebUI.showFlags & showEnum.canChangeULRate))
+		$("#st_up").mouseclick(null);
+	if(!(theWebUI.showFlags & showEnum.canChangeDLRate))
+		$("#st_down").mouseclick(null);
+	if(!(theWebUI.showFlags & showEnum.canChangeTorrentProperties))
+	{
+		$("#prop-ulslots").attr("disabled","true");
+		$("#prop-peers_min").attr("disabled","true");
+		$("#prop-peers_max").attr("disabled","true");
+		$("#prop-tracker_numwant").attr("disabled","true");
+		$("#prop-pex").remove();
+		$("#lbl_prop-pex").remove();
+		$("#prop-superseed").remove();
+		$("#lbl_prop-superseed").remove();
+		$("#dlgProps .OK").remove();
+        }		
 	if(!theWebUI.systemInfo.rTorrent.started)
 	{
 		rPlugin.prototype.removePageFromTabs("TrackerList");

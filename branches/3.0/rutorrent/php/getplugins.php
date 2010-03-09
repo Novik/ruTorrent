@@ -151,6 +151,9 @@ $settingsFlags = array(
 	"showBittorentPage"	=> 0x0004,
 	"showAdvancedPage"	=> 0x0008,
 	"showPluginsTab"	=> 0x0010,
+	"canChangeULRate"	=> 0x0020,
+	"canChangeDLRate"	=> 0x0040,
+	"canChangeTorrentProperties"	=> 0x0080,
 );
 $perms = 0;
 foreach($settingsFlags as $flagName=>$flagVal)

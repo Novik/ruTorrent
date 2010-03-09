@@ -144,45 +144,54 @@ $.fn.extend({
 	{
 	        return( this.each( function()
 	        {
-			if(browser.isOpera)
-			{
-		        	$(this).mousedown(function(e)
+	        	if($type(handler)=="function")
+	        	{
+				if(browser.isOpera)
 				{
-					if(e.button==2)
+			        	$(this).mousedown(function(e)
 					{
-						if(e.target)
+						if(e.button==2)
 						{
-							var c = $(this).data("btn");
-							if(c)
-								c.remove();
-							c = $("<input type=button>").css(
+							if(e.target)
 							{
-								"z-index": 10000, position: "absolute",
-								top: (e.clientY - 2), left: (e.clientX - 2),
-								width: 5, height: 5,
-								opacity: 0.01
-							});
-							$(document.body).append(c);
-							$(this).data("btn",c);
+								var c = $(this).data("btn");
+								if(c)
+									c.remove();
+								c = $("<input type=button>").css(
+								{
+									"z-index": 10000, position: "absolute",
+									top: (e.clientY - 2), left: (e.clientX - 2),
+									width: 5, height: 5,
+									opacity: 0.01
+								});
+								$(document.body).append(c);
+								$(this).data("btn",c);
+							}
 						}
-					}
-					return(handler.apply(this,arguments));
-				});
-				$(this).mouseup(function(e)
-				{
-					var c = $(this).data("btn");
-					if(c)
+						return(handler.apply(this,arguments));
+					});
+					$(this).mouseup(function(e)
 					{
-						c.remove();
-						$(this).data("btn",null);
-						if((e.button==2) &&! (/^input|textarea|a$/i).test(e.target.tagName))
-							return(false);
-					}
-				});
+						var c = $(this).data("btn");
+						if(c)
+						{
+							c.remove();
+							$(this).data("btn",null);
+							if((e.button==2) &&! (/^input|textarea|a$/i).test(e.target.tagName))
+								return(false);
+						}
+					});
+				}
+				else
+					$(this).mousedown( handler );
 			}
 			else
-				$(this).mousedown( handler );
-		}));
+			{
+				$(this).unbind( "mousedown" );
+				if(browser.isOpera)
+					$(this).unbind( "mouseup" );
+			}
+		}));            	
 	}
 });
 
