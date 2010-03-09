@@ -57,6 +57,12 @@ function getPluginInfo( $name, $permissions )
 						$level = floatval($value);
 						break;
 					}
+					case "version":
+					{
+						if($level==false)
+							$level = 10.0;
+						break;
+					}
 				}
 			}
 		}
