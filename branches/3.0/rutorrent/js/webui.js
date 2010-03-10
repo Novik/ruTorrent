@@ -6,7 +6,7 @@
 
 var theWebUI = 
 {
-        version: "3.0 (beta)",
+        version: "3.0",
 	tables:
 	{
 		trt: 

@@ -175,10 +175,7 @@ function makeContent()
 			'<br/>'+
 			'<strong>Check new vesion <a href="http://rutorrent.googlecode.com" target=_blank>here</a></strong><br/>'+
 			'<br/>'+
-			'<strong>Donate:</strong> (WebMoney)<br/><br/>'+
-			'&nbsp;&nbsp;&nbsp;R371559329179<br/>'+
-			'&nbsp;&nbsp;&nbsp;Z372104612927<br/>'+
-			'&nbsp;&nbsp;&nbsp;E104676675923<br/>'+
+			'<center><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U" target=_blank><img src="images/btn_donate.gif" border=0/></a></center>'+
 		'</div>');
 	theDialogManager.make("dlgLabel",theUILang.enterLabel,
 		'<div class="content fxcaret">'+theUILang.Enter_label_prom+':<br/>'+
