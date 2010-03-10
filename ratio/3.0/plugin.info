@@ -1,0 +1,4 @@
+description: The plug-in allows to manage a ratio limits for groups of torrents.
+author: Novik
+runlevel: 11
+version: 3.0
