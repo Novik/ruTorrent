@@ -907,11 +907,11 @@ var theWebUI =
 
 	updateFiles: function(hash) 
 	{
-		if((this.dID == hash) && $type(this.files[hash]))
-		{
+	        if(this.dID == hash)
+	        {
       			this.getFiles(hash, true);
       			this.updateDetails();
-      		}
+		}
    	},
 
 	redrawFiles: function(hash) 
@@ -983,16 +983,12 @@ var theWebUI =
       			table.dBody.scrollTop = 0;
       			$(table.tpad).height(0);
       			$(table.bpad).height(0);
+       			table.clearRows();
       		}
    		if($type(this.files[hash]) && !isUpdate) 
-   		{
-      			table.clearRows();
       			this.redrawFiles(hash);
-      		}
    		else 
    		{
-      			if(!isUpdate) 
-         			table.clearRows();
       			if(!$type(this.files[hash]))
          			this.files[hash] = new Array(0);
       			this.request("?action=getfiles&hash=" + hash, [this.addFiles, this]);
@@ -1362,12 +1358,17 @@ var theWebUI =
 					(oldTorrent.size!=torrent.size) ||
 					(oldTorrent.done!=torrent.done))
 					table.setIcon(hash, sInfo[0]);
-				if(theWebUI.dID == hash)
+				if((oldTorrent.seeds!=torrent.seeds) || (oldTorrent.peers!=torrent.peers))
 				{
-					if((oldTorrent.seeds!=torrent.seeds) || (oldTorrent.peers!=torrent.peers))
+				        if(theWebUI.dID == hash)
 						theWebUI.getTrackers(hash);
-					if(oldTorrent.downloaded!=torrent.downloaded)
+				}
+				if(oldTorrent.downloaded!=torrent.downloaded)
+				{
+				        if(theWebUI.dID == hash)
 						theWebUI.updateFiles(hash);
+					else	
+						delete theWebUI.files[hash];
 				}
 				for( var prop in torrent)
 				        table.setValueById(hash, prop, torrent[prop]);

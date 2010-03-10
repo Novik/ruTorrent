@@ -106,6 +106,8 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 	closedir($handle);
 	usort($init,"pluginsSort");
 	$do_diagnostic = false;
+	$jResult = '';
+	$jEnd = '';
 	foreach($init as $plugin)
 	{
 		if($plugin["php"])

@@ -6,6 +6,15 @@ if(function_exists('ini_set'))
 	ini_set('log_errors',true);
 }
 
+if(!isset($_SERVER['REMOTE_USER']))
+{
+	if(isset($_SERVER['PHP_AUTH_USER']))
+		$_SERVER['REMOTE_USER'] = $_SERVER['PHP_AUTH_USER'];
+	else
+	if(isset($_SERVER['REDIRECT_REMOTE_USER']))
+		$_SERVER['REMOTE_USER'] = $_SERVER['REDIRECT_REMOTE_USER'];
+}
+
 $rootPath = realpath(dirname(__FILE__)."/..");
 require_once( $rootPath.'/conf/config.php' );
 require_once( $rootPath.'/php/lfs.php' );
