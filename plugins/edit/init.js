@@ -52,7 +52,7 @@ if(plugin.canChangeMenu())
 		if(plugin.createTrackerMenu.call(theWebUI, e, id) && plugin.allStuffLoaded && plugin.enabled)
 		{
 			theContextMenu.add([CMENU_SEP]);
-			theContextMenu.add([theUILang.EditTrackers,"theWebUI.editTrackers()"]);
+			theContextMenu.add([theUILang.EditTrackers,"theWebUI.editTrackers('"+theWebUI.dID+"')"]);
 			return(true);
 		}
 		return(false);
