@@ -6,22 +6,22 @@
 Нужно выполнить следующие команды:
 {{{
 cd www-root
-svn checkout http://rutorrent.googlecode.com/svn/trunk/rtorrent
+svn checkout http://rutorrent.googlecode.com/svn/trunk/rutorrent
 }}}
 Под www-root здесь понимается корень Вашего веб-сервера, обычно это что-то вроде /www/htdocs.
 Если у Вас уже есть копия версии с svn, и Вы желаете ее обновить, то последовательность команд должна быть следующая:
 {{{
-cd www-root/rtorrent
+cd www-root/rutorrent
 svn update
 }}}
 Для плагинов последовательность команд немного отличается (подразумевается, что версия собственно ruTorrent у Вас на диске уже есть):
 {{{
-cd www-root/rtorrent/plugins
+cd www-root/rutorrent/plugins
 svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/plugin-name
 }}}
 и
 {{{
-cd www-root/rtorrent/plugins/plugin-name
+cd www-root/rutorrent/plugins/plugin-name
 svn update
 }}}
 соответственно. Здесь plugin-name - имя плагина. Т.е., например, create, rss и т.п.
