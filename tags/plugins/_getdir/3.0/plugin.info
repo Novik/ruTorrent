@@ -1,0 +1,4 @@
+description: The service plug-in _getdir gives to other plug-ins the possibility of comfortable navigation on a host file system.
+author: dmrom
+runlevel: 1
+version: 3.0
