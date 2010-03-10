@@ -6,22 +6,22 @@ To do that the program [http://subversion.tigris.org/ Subversion] has to be inst
 Execute the following commands:
 {{{
 cd www-root
-svn checkout http://rutorrent.googlecode.com/svn/trunk/rtorrent
+svn checkout http://rutorrent.googlecode.com/svn/trunk/rutorrent
 }}}
 www-root here is a root of your web-server. Usually it is something like /www/htdocs.
 If you already have a copy from svn and you would like to update it, execute the following sequence of commands:
 {{{
-cd www-root/rtorrent
+cd www-root/rutorrent
 svn update
 }}}
 For plug-ins the sequence is a bit different (assuming that a version of ruTorrent is already present on the disk):
 {{{
-cd www-root/rtorrent/plugins
+cd www-root/rutorrent/plugins
 svn checkout http://rutorrent.googlecode.com/svn/trunk/plugins/plugin-name
 }}}
 and
 {{{
-cd www-root/rtorrent/plugins/plugin-name
+cd www-root/rutorrent/plugins/plugin-name
 svn update
 }}}
 respectively. plugin-name here is name of a plug-in. I.e., for example, create, rss and so on.
