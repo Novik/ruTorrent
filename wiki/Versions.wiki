@@ -2,6 +2,20 @@
 
 == Version history ==
 
+
+ * ====Version 3.0 (10.03.2010 r844)==== 
+   #1. Virtually all of the code rewritten from scratch in order to increase productivity.
+   #2. Added support for multiple users (each user must meet one instance of rtorrent).
+   #3. Added elements of different levels of access for users.
+   #4. Added ability to search through the list of local torrents.
+   #5. Added the "Quick Start" add torrent dialog (for the torrents, for which data already exists on disk).
+   #6. Added several plug-ins.
+   #7. Change the appearance of a number of UI elements.
+   #8. Fixed several bugs.
+
+ * ====Version 2.9 (10.03.2010 r844)====
+   #1. Fixed several minor bugs of version 2.8. In fact, this release is made for the sole purpose - to say goodbye to the 2.x branch and forget it as a nightmare. 
+
  * ====Version 2.8 (27 Nov 2009 r536)==== 
    # Fixed a bug with columns width change in some cases.
    # Fixed incorrect program behavior when the name of a label on the category panel contains HTML-tags.
