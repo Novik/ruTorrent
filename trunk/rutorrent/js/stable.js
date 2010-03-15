@@ -1431,20 +1431,23 @@ dxSTable.prototype.unhideRow = function(sId)
 
 dxSTable.prototype.refreshSelection = function() 
 {
-	var rows = this.tBody.tb.rows, l = rows.length, j = 0;
-	for(var i = 0; i < l; i++) 
-	{
-		if(this.rowSel[rows[i].id] == true) 
-			rows[i].className = "selected";
-		else 
+        if(this.created)
+        {
+		var rows = this.tBody.tb.rows, l = rows.length, j = 0;
+		for(var i = 0; i < l; i++) 
 		{
-			if(!this.colorEvenRows) 
-				rows[i].className = "even";
+			if(this.rowSel[rows[i].id] == true) 
+				rows[i].className = "selected";
 			else 
-				rows[i].className = (j & 1) ? "odd" : "even";
-		}
-		j++;
-      	}
+			{
+				if(!this.colorEvenRows) 
+					rows[i].className = "even";
+				else 
+					rows[i].className = (j & 1) ? "odd" : "even";
+			}
+			j++;
+      		}
+	}
 }
 
 dxSTable.prototype.clearSelection = function()
