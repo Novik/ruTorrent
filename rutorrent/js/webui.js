@@ -198,12 +198,12 @@ var theWebUI =
 			this.msg(theUILang.Doesnt_support);
 		else
 		{
-			this.catchErrors(false);
+//			this.catchErrors(false);
 			this.getPlugins();
    			this.getUISettings();
 			if(this.configured)
 			{
-			        this.catchErrors(true);
+//			        this.catchErrors(true);
 				this.assignEvents();
 				this.resize();
 				this.update();
@@ -669,42 +669,6 @@ var theWebUI =
 			if((/^webui\./).test(i))
 				cookie[i] = v;
 		});
-
-		var json_encode = function(obj)
-		{
-			switch($type(obj))
-			{
-				case "number":
-					return(String(obj));
-				case "boolean":
-					return(obj ? "1" : "0");
-				case "string":
-					return('"'+obj+'"');
-				case "array":
-				{
-				        var s = '';
-				        $.each(obj,function(key,item)
-				        {
-				                if(s.length)
-		                			s+=",";
-				        	s += json_encode(item);
-				        });
-					return("["+s+"]");
-				}
-				case "object":
-				{
-				        var s = '';
-				        $.each(obj,function(key,item)
-				        {
-				                if(s.length)
-		                			s+=",";
-				        	s += ('"'+key+'":'+json_encode(item));
-				        });
-					return("{"+s+"}");
-				}
-			}
-			return("null");
-		}
 		theWebUI.request("?action=setuisettings&v=" + json_encode(cookie),reply);
 	},
 

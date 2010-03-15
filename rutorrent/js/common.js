@@ -142,11 +142,12 @@ $.event.fix = function(e)
 $.fn.extend({
 	mouseclick: function( handler )
 	{
+		var aSpecialCase = (browser.isOpera && !("oncontextmenu"in document.createElement("foo")));
 	        return( this.each( function()
 	        {
 	        	if($type(handler)=="function")
 	        	{
-				if(browser.isOpera)
+				if(aSpecialCase)
 				{
 			        	$(this).mousedown(function(e)
 					{
@@ -188,7 +189,7 @@ $.fn.extend({
 			else
 			{
 				$(this).unbind( "mousedown" );
-				if(browser.isOpera)
+				if(aSpecialCase)
 					$(this).unbind( "mouseup" );
 			}
 		}));            	
@@ -793,7 +794,7 @@ function log(text,noTime,divClass)
 	{
 		obj.append( $("<div>").addClass(divClass).text(tm + " " + text).show() );
 		obj[0].scrollTop = obj[0].scrollHeight;
-		theTabs.show("lcont");
+//		theTabs.show("lcont");
 	}
 }
 
@@ -1352,4 +1353,40 @@ function getCRC( str, crc )
 	for(var i=0; i<str.length; i++)
 		crc = crc16Tab[((crc>>8)^str.charCodeAt(i))&0xFF]^((crc<<8)&0xFFFF);
 	return(crc);
+}
+
+function json_encode(obj)
+{
+	switch($type(obj))
+	{
+		case "number":
+			return(String(obj));
+		case "boolean":
+			return(obj ? "1" : "0");
+		case "string":
+			return('"'+obj+'"');
+		case "array":
+		{
+		        var s = '';
+		        $.each(obj,function(key,item)
+		        {
+		                if(s.length)
+                			s+=",";
+		        	s += json_encode(item);
+		        });
+			return("["+s+"]");
+		}
+		case "object":
+		{
+		        var s = '';
+		        $.each(obj,function(key,item)
+		        {
+		                if(s.length)
+                			s+=",";
+		        	s += ('"'+key+'":'+json_encode(item));
+		        });
+			return("{"+s+"}");
+		}
+	}
+	return("null");
 }
