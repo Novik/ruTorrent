@@ -2,3 +2,4 @@ description: The service plug-in _getdir gives to other plug-ins the possibility
 author: dmrom
 runlevel: 1
 version: 3.0
+need_rtorrent: 0

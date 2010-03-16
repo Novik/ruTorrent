@@ -179,7 +179,7 @@ class rXMLRPCRequest
 						foreach($this->strings as &$string) 
 							$string = html_entity_decode($string,ENT_COMPAT,"UTF-8");
 						$this->i8s = $this->i8s[1];
-						$ret = true;
+						$ret = ((count($this->strings)>0) || (count($this->i8s)>0));
 					}
 				}
 				else
@@ -191,7 +191,7 @@ class rXMLRPCRequest
 						$this->val = str_replace("\"","\\\"",$this->val);
 						foreach($this->val as &$string) 
 							$string = html_entity_decode($string,ENT_COMPAT,"UTF-8");
-						$ret = true;
+						$ret = (count($this->val)>0);
 					}
 				}
 				if($ret)
@@ -205,11 +205,11 @@ class rXMLRPCRequest
 							toLog($answer);
 						}
 					}
-					$this->content = "";
-					$this->commands = array();
 				}
 			}
 		}
+		$this->content = "";
+		$this->commands = array();
 		return($ret);
 	}
 

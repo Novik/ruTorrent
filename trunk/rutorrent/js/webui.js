@@ -1810,7 +1810,7 @@ var theWebUI =
 		}
    		else 
    		{
-   			$("#prop-pex").attr("checked",props.pex).attr("disabled",false).removeClass("disabled");
+   			$("#prop-pex").attr("checked",(props.pex==1)).attr("disabled",false).removeClass("disabled");
 			$("#lbl_prop-pex").removeClass("disabled");
 		}
 		o = $$("prop-superseed");
@@ -1824,7 +1824,7 @@ var theWebUI =
 		        $("#prop-superseed").attr("disabled",true);
       			$("#lbl_prop-superseed").addClass("disabled");
      		}
-     		$("#prop-superseed").attr("checked",props.superseed);
+     		$("#prop-superseed").attr("checked",(props.superseed==1));
    		theDialogManager.show("dlgProps");
    	},
 
