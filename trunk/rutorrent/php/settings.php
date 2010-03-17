@@ -78,7 +78,7 @@ class rTorrentSettings
 				new rXMLRPCCommand("system.library_version"),
 				new rXMLRPCCommand("set_xmlrpc_size_limit",67108863)
 				) );
-			if($req->run() && !$req->fault)
+			if($req->run() && !$req->fault && (count($req->val)>3))
 			{
 				$this->directory = $req->val[0];
   		                $this->session = $req->val[1];

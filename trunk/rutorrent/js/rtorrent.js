@@ -870,7 +870,7 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 		url: stub.mountPoint,
 		async: (isASync == null) ? true : isASync,
 		contentType: stub.contentType,
-		data: stub.content,
+		data: (stub.content == null) ? "" : stub.content,
 		processData: false,
 		timeout: reqTimeout || 10000,
 		cache: false,

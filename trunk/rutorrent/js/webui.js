@@ -198,12 +198,12 @@ var theWebUI =
 			this.msg(theUILang.Doesnt_support);
 		else
 		{
-//			this.catchErrors(false);
+			this.catchErrors(false);
 			this.getPlugins();
    			this.getUISettings();
 			if(this.configured)
 			{
-//			        this.catchErrors(true);
+			        this.catchErrors(true);
 				this.assignEvents();
 				this.resize();
 				this.update();

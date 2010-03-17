@@ -146,15 +146,22 @@ var theDialogManager =
 	{
 		this.divider = divider;
 	},
+	setModalState: function()
+	{
+        	$('#modalbg').show();
+        	this.bringToTop('modalbg');
+		this.modalState = true;
+	},
+	clearModalState: function()
+	{
+       		$('#modalbg').hide();
+		this.modalState = false;
+	},
 	show: function( id )
 	{
 	        var obj = $('#'+id);
 	        if(obj.data("modal"))
-	        {
-	        	$('#modalbg').show();
-	        	this.bringToTop('modalbg');
-			this.modalState = true;
-        	}
+			this.setModalState();
         	if($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
 	        	this.items[id].beforeShow(id);
 		this.center(id);
@@ -175,10 +182,7 @@ var theDialogManager =
         	if($type(this.items[id]) && ($type(this.items[id].afterHide)=="function"))
 	        	this.items[id].afterHide(id);
 		if(obj.data("modal"))
-		{
-        		$('#modalbg').hide();
-			this.modalState = false;
-		}
+			this.clearModalState();
 	},
 	setHandler: function(id,type,handler)
 	{
