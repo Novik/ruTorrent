@@ -12,7 +12,7 @@ mkdir "$dir"
 chmod a+rx "$dir"
 echo $$ > "$dir"/pid
 chmod a+r "$dir"/pid
-"$3" -n "$4" "$dir"/temp.torrent 2> "$dir"/errors | cat 1> "$dir"/log 
+"$3" -n "$4" "$dir"/temp.torrent 2> "$dir"/errors 1> "$dir"/log 
 last=$? 
 chmod a+r "$dir"/*
 if [ $last -le 1 ] ; then
