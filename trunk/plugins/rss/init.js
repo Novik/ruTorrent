@@ -833,6 +833,10 @@ rTorrentStub.prototype.getrssdetailsResponse = function(xml)
 	{ 
 		val.target = "_blank";
 	});
+	$("img","#rsslayout").each( function(ndx,val) 
+	{ 
+		val.onload = null;
+	});
 	return(false);
 }
 
