@@ -22,14 +22,7 @@ if($needStart)
 		$params[] = 'branch=d.get_custom5=,"execute={'.$rootPath.'/plugins/erasedata/cleanup.sh,$d.get_base_path=}"';
 	$req = new rXMLRPCRequest();
 	foreach( $params as $i=>$prm )
-	{
-		if( $theSettings->iVersion < 0x804 )
-			$cmd = new rXMLRPCCommand("on_erase");
-		else
-			$cmd = new rXMLRPCCommand("system.method.set_key", "event.download.erased");
-		$cmd->addParameters( array('erasedata'.$i.getUser(), $prm ) );
-		$req->addCommand($cmd);
-	}	    
+		$req->addCommand($theSettings->getOnEraseCommand(array('erasedata'.$i.getUser(), $prm )));
 	if($req->run() && !$req->fault)
 		$theSettings->registerPlugin( "erasedata" );
 	else

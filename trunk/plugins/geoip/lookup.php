@@ -23,17 +23,20 @@
 					$country = "unknown";
 					if($retrieveCountry)
 					{
-						$country = geoip_country_code_by_name( $value );
+						$country = @geoip_country_code_by_name( $value );
 						if(!empty($country))
 							$country = strtolower($country);
 						else
 							$country = "unknown";
-                    }
-                    $info.=$country;
+                    			}
+					$info.=$country;
 					$info.='", host: "';
 					$host = $value;
-					if($retrieveHost) {
+					if($retrieveHost)
+					{
 						$host = gethostbyaddr($value);
+						if(empty($host) || (strlen($host)<2))
+							$host = $value;
 					}
 					$info.=$host;
 					$info.='" }}';

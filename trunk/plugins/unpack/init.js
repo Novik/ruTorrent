@@ -201,8 +201,6 @@ if(plugin.enabled)
 			this.content+=("&mode="+plugin.mode);
 		if(plugin.fno!==null)
 			this.content+=("&no="+plugin.fno);
-		if($$('all_unpack').checked)
-			this.content+='&all=1';	
 	        this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/unpack/action.php";
 		this.dataType = "json";
@@ -220,10 +218,6 @@ plugin.onLangLoaded = function()
 					"<div>" + theUILang.unpackPath + ": </div>" +
 					"<input type='text' id='edit_unpack' class='TextboxLarge' maxlength='200'/>" +
 					"<input type='button' id='btn_unpack' class='Button' value='...' />" +
-					"<div class='checkbox'>" +
-						"<input type='checkbox' id='all_unpack'/>"+
-						"<label for='all_unpack'>"+ theUILang.processAll +"</label>"+
-					"</div>" +
 				"</fieldset>" +
 				"<div class='aright'>" +
 					"<input type='button' value='" + theUILang.ok + "' class='Button' " +
@@ -231,14 +225,6 @@ plugin.onLangLoaded = function()
 					"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
 				"</div>" +
 			"</div>", true);
-		theDialogManager.setHandler('dlg_unpack','beforeShow',function()
-		{
-			$("#all_unpack").attr("disabled",(plugin.mode=='zip') || (plugin.fno===null));
-			if((plugin.mode=='zip') || (plugin.fno===null))
-				$("#all_unpack").next().addClass("disabled");
-			else
-				$("#all_unpack").next().removeClass("disabled");
-		});
 		plugin.interval = window.setInterval( plugin.checkTasks, 3000 );
 		this.attachPageToOptions( $("<div>").attr("id","st_unpack").html(
 			"<div>"+

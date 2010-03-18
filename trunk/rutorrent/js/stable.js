@@ -183,7 +183,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			attr("index", i));
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
 		td.mouseclick( function(e) { return(self.onRightClick(e)); } );
-		td.mousedown( function(e) { $(document).bind( "keydown", self, self.keyEvents ) } );
+		td.mousedown( function(e) { $(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents ) } );
 		td.mouseup( function(e) { self.Sort(e, this); } );		
 		this.tHeadCols[i] = td.get(0);
 		if(!this.colsdata[i].enabled)
@@ -865,7 +865,7 @@ dxSTable.prototype.assignEvents = function()
 				self.cancelMove = false;
 			}
 		};
-	$(this.dCont).mousedown( function(e) { $(document).bind( "keydown", self, self.keyEvents ) } );
+	$(this.dCont).mousedown( function(e) { $(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents ) } );
 }
 
 dxSTable.prototype.colDrag = function(e) 
@@ -1093,7 +1093,7 @@ dxSTable.prototype.keyEvents = function(e)
 
 dxSTable.prototype.selectRow = function(e, row) 
 {
-        $(document).bind( "keydown", this, this.keyEvents );
+        $(document).bind( browser.isOpera ? "keypress" : "keydown", this, this.keyEvents );
 	var id = row.id;
 	if(!((e.button == 2) && (this.rowSel[id] == true))) 
 	{

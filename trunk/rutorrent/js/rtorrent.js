@@ -92,6 +92,11 @@ var theRequestManager =
 			"split_file_size", "split_suffix", "timeout_safe_sync", "timeout_sync", "tracker_numwant",
 			"use_udp_trackers", "max_uploads_div", "max_open_sockets"
 		],
+
+		aliases:
+		{
+		},
+
 		handlers: []
 	},
 	addRequest: function( system, command, responseHandler )
@@ -280,7 +285,14 @@ rTorrentStub.prototype.setsettings = function()
 			cmd = new rXMLRPCCommand('dht');
 		}
 		else
-			cmd = new rXMLRPCCommand('set_'+this.ss[i].substr(1));
+		{
+			var set = this.ss[i].substr(1);
+			if(theRequestManager.stg.aliases[set])
+				set = theRequestManager.stg.aliases[set].set;
+			else
+				set = 'set_'+set;
+			cmd = new rXMLRPCCommand(set);
+		}
 		cmd.addParameter(prmType,prm);
 		this.commands.push( cmd );
 	}
@@ -290,7 +302,14 @@ rTorrentStub.prototype.getsettings = function()
 {
 	this.commands.push(new rXMLRPCCommand("dht_statistics"));
 	for( var cmd in theRequestManager.stg.commands )
-		this.commands.push(new rXMLRPCCommand("get_"+theRequestManager.stg.commands[cmd]));
+	{
+		var get = theRequestManager.stg.commands[cmd];
+		if(theRequestManager.stg.aliases[get])
+			get = theRequestManager.stg.aliases[get].get;
+		else
+			get = 'get_'+get;
+		this.commands.push(new rXMLRPCCommand(get));
+	}
 }
 
 rTorrentStub.prototype.start = function()

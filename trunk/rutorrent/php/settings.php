@@ -18,6 +18,7 @@ class rTorrentSettings
 	public $plugins = array();
 	public $mygid = -1;
 	public $myuid = -1;
+	public $mostOfMethodsRenamed = false;
 
 	static public function load()
 	{
@@ -88,6 +89,16 @@ class rTorrentSettings
 				$this->iVersion = 0;
 				for($i = 0; $i<count($parts); $i++)
 					$this->iVersion = ($this->iVersion<<8) + $parts[$i];
+				if($this->iVersion>0x806)
+					$this->mostOfMethodsRenamed = true;
+				else
+				if($this->iVersion==0x806)
+				{
+					$req = new rXMLRPCRequest( new rXMLRPCCommand("get_safe_sync") );
+					$req->important = false;
+					if($req->run() && $req->fault)
+						$this->mostOfMethodsRenamed = true;
+				}
 				if(is_dir($this->session) && isLocalMode())
 				{
 					$ss=@stat($this->session.'rtorrent.lock');
@@ -119,6 +130,34 @@ class rTorrentSettings
 				$this->store();
 			}
 		}
+	}
+	public function getEventCommand($cmd1,$cmd2,$args)
+	{
+		if($this->iVersion<0x804)
+			$cmd = new rXMLRPCCommand($cmd1);
+		else
+		if($this->mostOfMethodsRenamed)
+			$cmd = new rXMLRPCCommand('method.set_key','event.download.'.$cmd2);
+		else
+			$cmd = new rXMLRPCCommand('system.method.set_key','event.download.'.$cmd2);
+		$cmd->addParameters($args);
+		return($cmd);
+	}
+	public function getOnInsertCommand($args)
+	{
+		return($this->getEventCommand('on_insert','inserted_new',$args));
+	}
+	public function getOnEraseCommand($args)
+	{
+		return($this->getEventCommand('on_erase','erased',$args));
+	}
+	public function getOnFinishedCommand($args)
+	{
+	        return($this->getEventCommand('on_finished','finished',$args));
+	}
+	public function getOnResumedCommand($args)
+	{
+	        return($this->getEventCommand('on_start','resumed',$args));
 	}
 }
 

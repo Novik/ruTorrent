@@ -38,9 +38,14 @@ class rXMLRPCCommand
 
 	public function addParameters( $args )
 	{
-		if(($args!==null) && is_array($args))
-			foreach($args as $prm)
-				$this->addParameter($prm);
+		if($args!==null) 
+		{
+			if(is_array($args))
+				foreach($args as $prm)
+					$this->addParameter($prm);
+			else
+				$this->addParameter($args);
+		}
 	}
 
 	public function addParameter( $aValue, $aType = null )
@@ -69,6 +74,7 @@ class rXMLRPCRequest
 	public $val = array();
 	public $fault = false;
 	public $parseByTypes = false;
+	public $important = true;
 
 	public function rXMLRPCRequest( $cmds = null )
 	{
@@ -199,7 +205,7 @@ class rXMLRPCRequest
 					if(strstr($answer,"faultCode")!==false)
 					{
 						$this->fault = true;	
-						if(LOG_RPC_FAULTS)
+						if(LOG_RPC_FAULTS && $this->important)
 						{
 							toLog($this->content);
 							toLog($answer);
