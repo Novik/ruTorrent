@@ -226,7 +226,7 @@ var theWebUI =
 			else
 				return(false);
 		});
-		$(document).keydown(function(e)
+		var keyEvent = function (e)
 		{
 			switch(e.which) 
 			{
@@ -278,7 +278,11 @@ var theWebUI =
 					return(false);
 				}
 			}
-		});
+		};
+		if(browser.isOpera)
+			$(document).keypress(keyEvent);
+		else
+			$(document).keydown(keyEvent);
 	},
 
 	getPlugins: function()

@@ -270,7 +270,8 @@ function getPluginConf($plugin)
 
 function getUser()
 {
-	return( (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) ? strtolower($_SERVER['REMOTE_USER']) : '' );
+        global $forbidUserSettings;
+	return( (!$forbidUserSettings && isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) ? strtolower($_SERVER['REMOTE_USER']) : '' );
 }
 
 function getProfilePath()

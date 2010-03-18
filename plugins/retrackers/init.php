@@ -22,20 +22,10 @@ if($do_diagnostic)
 }
 if($needStart)
 {
-	if($theSettings->iVersion<0x804)
-	{
-		$cmd = new rXMLRPCCommand('on_insert');
-		$cmd1 = new rXMLRPCCommand('on_insert');
-	}
-	else
-	{
-        	$cmd = new rXMLRPCCommand('system.method.set_key','event.download.inserted_new');
-        	$cmd1 = new rXMLRPCCommand('system.method.set_key','event.download.inserted_new');
-	}
-	$cmd1->addParameters( array('add_trackers1'.getUser(), 'd.set_custom4=$cat=$d.get_state='));
-	$cmd->addParameters( array('add_trackers2'.getUser(),
-		'branch=$not=$d.get_custom3=,"cat=$d.stop=,\"$execute={'.$rootPath.'/plugins/retrackers/run.sh'.','.getPHP().',$d.get_hash=,'.getUser().'}\"" ; d.set_custom3='));
-	$req = new rXMLRPCRequest(array($cmd1,$cmd));
+	$req = new rXMLRPCRequest( array(
+		$theSettings->getOnInsertCommand(array('add_trackers1'.getUser(), 'd.set_custom4=$cat=$d.get_state=')),
+		$theSettings->getOnInsertCommand(array('add_trackers2'.getUser(),
+			'branch=$not=$d.get_custom3=,"cat=$d.stop=,\"$execute={'.$rootPath.'/plugins/retrackers/run.sh'.','.getPHP().',$d.get_hash=,'.getUser().'}\"" ; d.set_custom3='))));
 	if($req->run() && !$req->fault)
 	{
 		$theSettings->registerPlugin("retrackers");

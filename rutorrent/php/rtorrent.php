@@ -48,7 +48,21 @@ class rTorrent
 		}
 		return($hash);
 	}
-
+	static public function sendMagnet($magnet, $isStart, $isAddPath, $directory, $label)
+	{
+		$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
+		$cmd->addParameter($magnet);
+		if($label && (strlen($label)>0))
+		{
+			$label = rawurlencode($label);
+			if(strlen($label)<=4096)
+				$cmd->addParameter("d.set_custom1=".$label);
+		}
+		if($directory && (strlen($directory)>0))
+			$cmd->addParameter( ($isAddPath ? "d.set_directory=\"" : "d.set_directory_base=\"").$directory."\"" );
+		$req = new rXMLRPCRequest( $cmd );
+		return($req->success());
+	}
 	static public function getSource($hash)
 	{
 		$req = new rXMLRPCRequest( array(		

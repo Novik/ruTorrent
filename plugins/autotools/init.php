@@ -34,20 +34,11 @@ if( $do_diagnostic )
 
 if($needStart)
 {
-	if( $theSettings->iVersion < 0x804 )
-	{
-		$cmdInsert = new rXMLRPCCommand('on_insert');
-		$cmdFinished = new rXMLRPCCommand('on_finished');
-	}
-	else
-	{
-		$cmdInsert = new rXMLRPCCommand('system.method.set_key','event.download.inserted_new');
-		$cmdFinished = new rXMLRPCCommand('system.method.set_key','event.download.finished');
-	}
-	$cmdSchedule = new rXMLRPCCommand('schedule', array( 'autowatch'.getUser(), '10', $autowatch_interval."", 'execute={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($pathToAutoTools.'/watch.php').' '.escapeshellarg(getUser()).' &}' ));
-	$cmdInsert->addParameters( array('autolabel'.getUser(), 'branch=$not=$d.get_custom1=,"execute={'.getPHP().','.$pathToAutoTools.'/label.php,$d.get_hash=,'.getUser().'}"') );
-	$cmdFinished->addParameters( array('automove'.getUser(), 'execute={'.getPHP().','.$pathToAutoTools.'/move.php,$d.get_hash=,'.getUser().'}') );
-	$req = new rXMLRPCRequest( array( $cmdInsert, $cmdFinished, $cmdSchedule ) );
+	$req = new rXMLRPCRequest( array( 
+		$theSettings->getOnInsertCommand(array('autolabel'.getUser(), 'branch=$not=$d.get_custom1=,"execute={'.getPHP().','.$pathToAutoTools.'/label.php,$d.get_hash=,'.getUser().'}"')),
+		$theSettings->getOnFinishedCommand(array('automove'.getUser(), 'execute={'.getPHP().','.$pathToAutoTools.'/move.php,$d.get_hash=,'.getUser().'}')),
+		new rXMLRPCCommand('schedule', array( 'autowatch'.getUser(), '10', $autowatch_interval."", 'execute={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($pathToAutoTools.'/watch.php').' '.escapeshellarg(getUser()).' &}' ))
+		));
 	if($req->run() && !$req->fault)
 	{
 		$at = rAutoTools::load();

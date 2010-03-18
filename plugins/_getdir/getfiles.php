@@ -38,7 +38,6 @@ if(!$dh)
 		$dir = $topDirectory;
 	$dh = @opendir($dir);
 }
-toLog($dir);
 $files = array();
 $dirs = array();
 if($dh)

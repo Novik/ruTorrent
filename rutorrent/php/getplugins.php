@@ -182,6 +182,8 @@ if($handle = opendir('../plugins'))
 		else
 		{
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' };\n";
+			if($theSettings->mostOfMethodsRenamed)
+				$jResult.="theWebUI.systemInfo.rTorrent.newMethodsSet = true;\n";
 	        	if($do_diagnostic)
 	        	{
 	        	        $up = getUploadsPath();
@@ -193,7 +195,7 @@ if($handle = opendir('../plugins'))
 					$jResult.="log(theUILang.badUploadsPath+' (".$up.")');";
 	        		if(!isUserHavePermission($theSettings->myuid,$theSettings->mygid,$st,0x0007))
         			        $jResult.="log(theUILang.badSettingsPath+' (".$st.")');";
-				if(!empty($theSettings->session))
+				if(isLocalMode() && !empty($theSettings->session))
 				{
 					if(($theSettings->uid<0) || ($theSettings->gid<0))
 						$jResult.="log(theUILang.badSessionPath+' (".$theSettings->session.")');";

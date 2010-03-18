@@ -29,12 +29,9 @@ if($do_diagnostic)
 }
 if($needStart && (USE_UNZIP || USE_UNRAR))
 {
-	if( $theSettings->iVersion < 0x804 )
-		$cmdFinished = new rXMLRPCCommand('on_finished');
-	else
-		$cmdFinished = new rXMLRPCCommand('system.method.set_key','event.download.finished');
-	$cmdFinished->addParameters( array('unpack'.getUser(), 'execute={'.getPHP().','.$rootPath.'/plugins/unpack/update.php,$d.get_base_path=,$d.get_custom1=,$d.get_name=,'.getUser().'}') );
-	$req = new rXMLRPCRequest( $cmdFinished );
+	$req = new rXMLRPCRequest( 
+		$theSettings->getOnFinishedCommand(
+			array('unpack'.getUser(), 'execute={'.getPHP().','.$rootPath.'/plugins/unpack/update.php,$d.get_base_path=,$d.get_custom1=,$d.get_name=,'.getUser().'}')));
 	if($req->run() && !$req->fault)
 	{
 		$jResult .= ("plugin.useUnzip = ".(USE_UNZIP ? "true;" : "false;"));

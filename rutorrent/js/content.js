@@ -599,5 +599,23 @@ function correctContent()
 		rPlugin.prototype.removeButtonFromToolbar("stop");
 		rPlugin.prototype.removeSeparatorFromToolbar("settings");
 	}
+	if(theWebUI.systemInfo.rTorrent.newMethodsSet)
+	{
+		theRequestManager["stg"].aliases = 
+		{
+			safe_sync: 		{ get: "pieces.sync.always_safe", 	set: "pieces.sync.always_safe.set" },
+			session_lock:		{ get: "system.session.use_lock", 	set: "system.session.use_lock.set" },
+			session_on_completion:	{ get: "system.session.on_completion",	set: "system.session.on_completion.set" },
+			split_file_size:	{ get: "system.file.split_size",	set: "system.file.split_size.set" },
+			split_suffix:		{ get: "system.file.split_suffix",	set: "system.file.split_suffix.set" },
+			timeout_safe_sync:	{ get: "pieces.sync.timeout_safe",	set: "pieces.sync.timeout_safe.set" },
+			timeout_sync:		{ get: "pieces.sync.timeout",		set: "pieces.sync.timeout.set" },
+			max_file_size:		{ get: "system.file.max_size",		set: "system.file.max_size.set" },
+			max_memory_usage:	{ get: "pieces.memory.max",		set: "pieces.memory.max.set" },
+			preload_min_size:	{ get: "pieces.preload.min_size",	set: "pieces.preload.min_size.set" },
+			preload_required_rate:	{ get: "pieces.preload.min_rate",	set: "pieces.preload.min_rate.set" },
+			preload_type:		{ get: "pieces.preload.type",		set: "pieces.preload.type.set" }
+		};
+	}
 	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
 }

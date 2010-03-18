@@ -2,6 +2,7 @@
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( $rootPath.'/php/cache.php');
+require_once( $rootPath.'/php/settings.php');
 eval(getPluginConf('ratio'));
 
 define('RAT_STOP',0);
@@ -61,6 +62,10 @@ class rRatio
 	}
 	public function flush()
 	{
+	        global $theSettings;
+		if(!$theSettings)
+			$theSettings = rTorrentSettings::load();
+		$method = $theSettings->mostOfMethodsRenamed ? "method.set" : "system.method.set";
 		$req1 = new rXMLRPCRequest(new rXMLRPCCommand("view_list"));
 		if($req1->run() && !$req1->fault)
 		{
@@ -80,17 +85,17 @@ class rRatio
 					{
 						case RAT_STOP:
 						{
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command", "d.stop=; d.close=")));
+							$req->addCommand(new rXMLRPCCommand($method, array("group.rat_".$i.".ratio.command", "d.stop=; d.close=")));
 							break;
 						}
 						case RAT_STOP_AND_REMOVE:
 						{
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command", "d.stop=; d.close=; view.set_not_visible=rat_".$i."; d.views.remove=rat_".$i)));
+							$req->addCommand(new rXMLRPCCommand($method, array("group.rat_".$i.".ratio.command", "d.stop=; d.close=; view.set_not_visible=rat_".$i."; d.views.remove=rat_".$i)));
 							break;
 						}
 						case RAT_ERASE:
 						{
-							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command", "d.stop=; d.close=; d.erase=")));
+							$req->addCommand(new rXMLRPCCommand($method, array("group.rat_".$i.".ratio.command", "d.stop=; d.close=; d.erase=")));
 							break;
 						}
 					}

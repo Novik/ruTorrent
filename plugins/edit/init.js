@@ -74,7 +74,7 @@ theWebUI.receiveEdit = function(d)
 	$('#editok').attr("disabled",false);
 	if(!d.errors.length)
 	{
-		theWebUI.getTrackers(d.hash);	
+		window.setTimeout( function() { theWebUI.getTrackers(d.hash) }, 1000 );
 		theDialogManager.hide("tedit");
 	}
 	else
