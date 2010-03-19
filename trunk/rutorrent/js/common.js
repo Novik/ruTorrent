@@ -392,7 +392,7 @@ var theConverter =
 	},
 	speed: function(bt)
 	{
-		return(this.bytes(bt)+ "/" + theUILang.s);
+		return((bt>0) ? this.bytes(bt)+ "/" + theUILang.s : "");
 	},
 	date: function(dt)
 	{
