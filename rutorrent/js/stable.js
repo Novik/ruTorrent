@@ -359,9 +359,7 @@ dxSTable.prototype.resizeColumn = function()
 	for(var i = 0, l = _e.length; i < l; i++) 
 	{
                 c = this.tHeadCols[i];
-		w = (browser.isIE) ? iv(c.style.width)+2 : c.offsetWidth;
-		if(browser.isIE8up)
-			w = w + 2;
+		w = this.colsdata[i].width;
 		if(iv(_e[i].style.width)!=w)
 		{
 			_e[i].style.width = w + "px";
