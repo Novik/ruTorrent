@@ -168,7 +168,7 @@ function isLocalMode()
 	return(($scgi_host == "127.0.0.1") || ($scgi_host == "localhost") || ($scgi_port == 0));
 }
 
-function isUserHavePermissionPrim($uid,$gid,$file,$flags)
+function isUserHavePermissionPrim($uid,$gids,$file,$flags)
 {
 	$ss=LFS::stat($file);
 	if($ss)
@@ -179,9 +179,10 @@ function isUserHavePermissionPrim($uid,$gid,$file,$flags)
 			return(true);
 		}
 		$flags<<=3;
-        	if(($gid==$ss['gid']) &&
-			(($p & $flags) == $flags))
-			return(true);
+		foreach( $gids as $ndx=>$gid)
+	        	if(($gid==$ss['gid']) &&
+				(($p & $flags) == $flags))
+				return(true);
 		$flags<<=3;
 		if(($uid==$ss['uid']) &&
 			(($p & $flags) == $flags))
@@ -190,9 +191,9 @@ function isUserHavePermissionPrim($uid,$gid,$file,$flags)
 	return(false);
 }
 
-function isUserHavePermission($uid,$gid,$file,$flags)
+function isUserHavePermission($uid,$gids,$file,$flags)
 {
-	if($gid<=0)
+	if($uid<=0)
 	{
 	        if(($flags & 0x0001) && !is_dir($file))
 	                return(($ss=LFS::stat($file)) && ($ss['mode'] & 0x49));
@@ -201,13 +202,13 @@ function isUserHavePermission($uid,$gid,$file,$flags)
 	}
 	if(is_link($file))
 		$file = readlink($file);
-	if(isUserHavePermissionPrim($uid,$gid,$file,$flags))
+	if(isUserHavePermissionPrim($uid,$gids,$file,$flags))
 	{
 		if(($flags & 0x0002) && !is_dir($file))
 			$flags = 0x0007;
 		else
 			$flags = 0x0005;
-		return(isUserHavePermissionPrim($uid,$gid,dirname($file),$flags));
+		return(isUserHavePermissionPrim($uid,$gids,dirname($file),$flags));
 	}
 	return(false);
 }

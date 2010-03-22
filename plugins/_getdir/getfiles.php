@@ -10,7 +10,7 @@ if(isset($_REQUEST['dir']))
 {
 	$dir = rawurldecode($_REQUEST['dir']);
 	if(LFS::is_file($dir) && 
-		(($theSettings->uid<0) || ($theSettings->gid>0) || 
+		(($theSettings->uid<0) || 
 		isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0004)))
 	{
 		$curFile = basename($dir);
@@ -22,7 +22,7 @@ if(isset($_REQUEST['dir']))
 		$dir = addslash($dir);
 		if( $dh && 
 			((strpos($dir,$topDirectory)!==0) ||
-			(($theSettings->uid>=0) && ($theSettings->gid>=0) && 
+			(($theSettings->uid>=0) && 
 			!isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0005))))
 		{
 			closedir($dh);
@@ -50,13 +50,13 @@ if($dh)
 			continue;
 		if(is_dir($path) && is_readable($path) &&
 			(strpos(addslash($path),$topDirectory)===0) &&
-			( $theSettings->uid<0 || $theSettings->gid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0005))
+			( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0005))
 			)
 			$dirs['/'.$file] = $path;
 		else
 		{
 			if(LFS::is_file($path) && is_readable($path)
-				&& ( $theSettings->uid<0 || $theSettings->gid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0004))
+				&& ( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0004))
 				)
 				$files[$file] = $path;
 		}
