@@ -36,8 +36,8 @@ ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui
  * Set the "Receive messages from tracker" option on the Settings pane only in case of  rTorrent v.0.8.5 or later. Otherwise it can lead to crash because of incorrect processing of tracker's messages, containing non-UTF-8 characters, by rTorrent. 
  * Settings of the rTorrent, changed by the user through the Settings pane of the ruTorrent, are valid until rTorrent restart. After rTorrent restart all settings will be set according to the rTorrent config file.
  * If numbers greater than 2Gb are shown as negative, the rTorrent should be recompiled with the xmlrpc-c version 1.11 or later.
- * If the port number which rTorrent is listening for requests should be changed, it is necessary to make appropriate changes into configuration of the ruTorrent - set the same port number in the file rtorrent/conf.php for the variable `$scgi_port`. 
- * Authorization may be provided by web-server's means only and does not depend on ruTorrent. If authorization is necessary, make sure /rtorrent and /RPC2 (scgi module, if used) folders are protected. In case the [Plugins plug-in] ruTorrent [PluginRPC RPC] is used, the /RPC2 folder protection is not necessary.
+ * If the port number which rTorrent is listening for requests should be changed, it is necessary to make appropriate changes into configuration of the ruTorrent - set the same port number in the file rutorrent/conf.php for the variable `$scgi_port`. 
+ * Authorization may be provided by web-server's means only and does not depend on ruTorrent. If authorization is necessary, make sure /rutorrent and /RPC2 (scgi module, if used) folders are protected. In case the [Plugins plug-in] ruTorrent [PluginRPC RPC] is used, the /RPC2 folder protection is not necessary.
  * If it is necessary to have several copies of rTorrent/ruTorrent, the name of the default XMLRPC (/RPC2) mounting point might need to be changed. It can be done in the file rs.js. It is not necessary in case of [PluginRPC RPC] ruTorrent plug-in is used instead of scgi-module of the web-server.
 
 == Browsers' specialties ==
