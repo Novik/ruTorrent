@@ -191,13 +191,13 @@ if($handle = opendir('../plugins'))
 				@chmod($up,0777);
 				@chmod($st,0777);
 				@chmod('./test.sh',0755);
-	        		if(!isUserHavePermission($theSettings->myuid,$theSettings->mygid,$up,0x0007))
+	        		if(!@file_exists($up.'/.') || !is_readable($up) || !is_writable($up))
 					$jResult.="log(theUILang.badUploadsPath+' (".$up.")');";
-	        		if(!isUserHavePermission($theSettings->myuid,$theSettings->mygid,$st,0x0007))
+	        		if(!@file_exists($st.'/.') || !is_readable($st) || !is_writable($st))
         			        $jResult.="log(theUILang.badSettingsPath+' (".$st.")');";
 				if(isLocalMode() && !empty($theSettings->session))
 				{
-					if(($theSettings->uid<0) || ($theSettings->gid<0))
+					if($theSettings->uid<0)
 						$jResult.="log(theUILang.badSessionPath+' (".$theSettings->session.")');";
 					else
 					{

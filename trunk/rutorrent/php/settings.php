@@ -10,14 +10,12 @@ class rTorrentSettings
 	public $badXMLRPCVersion = true;
 	public $directory = '/tmp';
 	public $session = null;
-	public $gid = -1;
+	public $gid = array();
 	public $uid = -1;
 	public $iVersion = null;
 	public $version;
 	public $libVersion;
 	public $plugins = array();
-	public $mygid = -1;
-	public $myuid = -1;
 	public $mostOfMethodsRenamed = false;
 
 	static public function load()
@@ -49,23 +47,6 @@ class rTorrentSettings
 	}
 	public function obtain()
 	{
-		if(function_exists('posix_geteuid') && function_exists('posix_getegid'))
-		{
-			$this->myuid = posix_geteuid();
-			$this->mygid = posix_getegid();
-		}
-		else
-		{
-			$randName = '/tmp/rutorrent-'.rand().'.tmp';
-			@file_put_contents($randName, '');
-			$ss=@stat($randName);
-			if($ss)
-			{
-		        	$this->mygid = $ss['gid'];
-			        $this->myuid = $ss['uid'];
-			        @unlink($randName);
-			}
-		}
 		$req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 		if($req->run())
 		{
@@ -101,30 +82,18 @@ class rTorrentSettings
 				}
 				if(is_dir($this->session) && isLocalMode())
 				{
-					$ss=@stat($this->session.'rtorrent.lock');
-					if(!$ss)
-						$ss=@stat($this->session.'rtorrent.dht_cache');
-					if(!$ss)
-						$ss=@stat($this->session);
-					if($ss)
+					$randName = uniqid("/tmp/rutorrent-stats-");
+					$req = new rXMLRPCRequest(
+        					new rXMLRPCCommand("execute",array("sh","-c","id -u > ".$randName." ; id -G >> ".$randName." ; echo ~ >> ".$randName)));
+					if($req->run() && !$req->fault && (($line=file($randName))!==false) && (count($line)>2))
 					{
-				        	$this->gid = $ss['gid'];
-					        $this->uid = $ss['uid'];
+						$this->uid = intval(trim($line[0]));
+						$this->gid = explode(' ',trim($line[1]));
 						if(!empty($this->directory) &&
 							($this->directory[0]=='~'))
-						{
-							if(function_exists('posix_getpwuid'))
-							{
-					        		$ui = posix_getpwuid($this->uid);
-						        	$this->directory = $ui["dir"].substr($this->directory,1);
-			                		}
-			                		else
-			                		{
-			                		 	$req = new rXMLRPCRequest( new rXMLRPCCommand("execute_capture", array("echo","~")) );
-			                		 	if($req->run() && !$req->fault)
-				                		 	$this->directory = trim($req->val[0]).substr($this->directory,1);
-			                		}
-			                	}
+							$this->directory = trim($line[2]).substr($this->directory,1);	
+						$req = new rXMLRPCRequest(new rXMLRPCCommand( "execute", array("rm",$randName) ));
+						$req->run();
 					}
 				}
 				$this->store();
