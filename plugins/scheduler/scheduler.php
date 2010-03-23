@@ -101,7 +101,7 @@ class rScheduler
 	static public function getActiveTorrents()
 	{
 		$req = new rXMLRPCRequest(  
-			new rXMLRPCCommand("d.multicall", array("started","d.get_hash=", "d.get_connection_current=" )) );		
+			new rXMLRPCCommand("d.multicall", array("started",getCmd("d.get_hash="), getCmd("d.get_connection_current=") )) );		
 		$seeds = array();
 		$leeches = array();
 		if($req->run() && !$req->fault)

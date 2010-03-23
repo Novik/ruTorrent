@@ -1,6 +1,7 @@
 <?php
 
 require_once( 'util.php' );
+require_once( 'settings.php' );
 
 class rXMLRPCParam
 {
@@ -24,7 +25,7 @@ class rXMLRPCCommand
 
 	public function rXMLRPCCommand( $cmd, $args = null )
 	{
-		$this->command = $cmd;
+		$this->command = getCmd($cmd);
 		$this->params = array();
 		if($args!==null) 
 		{
@@ -223,6 +224,14 @@ class rXMLRPCRequest
 	{
 		return($this->run() && !$this->fault);
 	}
+}
+
+function getCmd($cmd)
+{
+	global $theSettings;
+	if(!isset($theSettings))
+		$theSettings = rTorrentSettings::load();
+	return($theSettings->getCommand($cmd));
 }
 
 ?>

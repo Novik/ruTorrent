@@ -20,15 +20,15 @@ if(plugin.enabled)
 			        }
 				return(plugin.trtFormat(table,arr));
 			}
-			theRequestManager.addRequest("trt", "d.get_custom=seedingtime",function(hash,torrent,value)
+			plugin.config.call(this,data);
+			theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"seedingtime",function(hash,torrent,value)
 			{
 				torrent.seedingtime = value;
 			});
-			theRequestManager.addRequest("trt", "d.get_custom=addtime",function(hash,torrent,value)
+			theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"addtime",function(hash,torrent,value)
 			{
 				torrent.addtime = value;
 			});
-			plugin.config.call(this,data);
 			plugin.trtRenameColumn();
 		}
 

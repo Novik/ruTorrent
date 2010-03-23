@@ -15,11 +15,11 @@ if($do_diagnostic)
 if($needStart)
 {
 	$params = array(
-	    'branch=d.get_custom5=,d.open=',
-	    'branch=d.get_custom5=,"f.multicall=default,\"execute={rm,-rf,--,$f.get_frozen_path=}\""'
+	    getCmd('branch=').getCmd('d.get_custom5').'=,'.getCmd('d.open='),
+	    getCmd('branch=').getCmd('d.get_custom5').'=,"'.getCmd('f.multicall').'=default,\"'.getCmd('execute').'={rm,-rf,--,$'.getCmd('f.get_frozen_path').'=}\""'
 	);
 	if(isLocalMode())
-		$params[] = 'branch=d.get_custom5=,"execute={'.$rootPath.'/plugins/erasedata/cleanup.sh,$d.get_base_path=}"';
+		$params[] = getCmd('branch=').getCmd('d.get_custom5').'=,"'.getCmd('execute').'={sh,'.$rootPath.'/plugins/erasedata/cleanup.sh,$'.getCmd('d.get_base_path').'=}"';
 	$req = new rXMLRPCRequest();
 	foreach( $params as $i=>$prm )
 		$req->addCommand($theSettings->getOnEraseCommand(array('erasedata'.$i.getUser(), $prm )));

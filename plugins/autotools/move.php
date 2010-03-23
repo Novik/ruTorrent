@@ -66,14 +66,11 @@ if( $is_ok )
 // Ask info from rTorrent (torrent is assumed to be open)
 if( $is_ok )
 {
-	$req = new rXMLRPCRequest( array(
-		new rXMLRPCCommand( "get_directory" ),
-		new rXMLRPCCommand( "d.get_base_path", $hash ),
-	) );
+	$req = new rXMLRPCRequest( new rXMLRPCCommand( "d.get_base_path", $hash ) );
 	if( $req->run() && !$req->fault )
 	{
-		$directory = trim( $req->val[0] );
-		$base_path = trim( $req->val[1] );
+		$directory = $theSettings->directory;
+		$base_path = trim( $req->val[0] );
 		Debug( "get_directory    : ".$directory );
 		Debug( "d.get_base_path  : ".$base_path );
 		if( $directory != '' && $base_path != '' )

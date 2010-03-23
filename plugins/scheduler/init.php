@@ -25,7 +25,7 @@ if($needStart)
 	$interval = $updateInterval*60;
 
 	$req = new rXMLRPCRequest( new rXMLRPCCommand('schedule', array( "scheduler".getUser(), $startAt.'', $interval.'', 
-		'execute={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($rootPath.'/plugins/scheduler/update.php').' '.escapeshellarg(getUser()).' & exit 0}' )) );
+		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($rootPath.'/plugins/scheduler/update.php').' '.escapeshellarg(getUser()).' & exit 0}' )) );
 	if($req->run() && !$req->fault)
 	{
 		$theSettings->registerPlugin("scheduler");

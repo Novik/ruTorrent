@@ -1,8 +1,8 @@
 <?php
 
 $req = new rXMLRPCRequest(array(
-	$theSettings->getOnInsertCommand(array('add_trackers1'.getUser(), 'cat=')),
-	$theSettings->getOnInsertCommand(array('add_trackers2'.getUser(),'cat='))
+	$theSettings->getOnInsertCommand(array('tadd_trackers1'.getUser(), getCmd('cat='))),
+	$theSettings->getOnInsertCommand(array('tadd_trackers2'.getUser(), getCmd('cat=')))
 	));
 $req->run();
 

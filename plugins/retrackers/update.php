@@ -7,6 +7,8 @@ require_once( 'retrackers.php' );
 require_once( $rootPath.'/php/xmlrpc.php' );
 require_once( $rootPath.'/php/rtorrent.php' );
 
+toLog('retrackers started');
+
 function clearTracker($addition,$tracker)
 {
 	foreach( $addition as $kg=>$group )
@@ -87,7 +89,7 @@ if(count($argv)>1)
 						{
 							$label = rawurldecode($req->val[3]);
 							rTorrent::sendTorrent($torrent, $isStart, false, $req->val[4], $label, false, false,
-							        array("d.set_custom3=1") );
+							        array(getCmd("d.set_custom3")."=1") );
 							$processed = true;
 						}
 					}
@@ -101,4 +103,7 @@ if(count($argv)>1)
 		}
 	}
 }
+
+toLog('retrackers finished');
+
 ?>

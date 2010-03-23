@@ -73,10 +73,10 @@ class rThrottle
 		$req = new rXMLRPCRequest( 
 			new rXMLRPCCommand( "d.multicall", array(
 			        "",
-				"d.get_hash=",
-				"d.get_throttle_name=",
-				'cat=$get_throttle_up_max=$d.get_throttle_name=',
-				'cat=$get_throttle_down_max=$d.get_throttle_name='))
+				getCmd("d.get_hash="),
+				getCmd("d.get_throttle_name="),
+				getCmd('cat').'=$'.getCmd("get_throttle_up_max").'=$'.getCmd("d.get_throttle_name="),
+				getCmd('cat').'=$'.getCmd("get_throttle_down_max").'=$'.getCmd("d.get_throttle_name=")))
 			);
 		if($req->run() && !$req->fault)
 		{
@@ -96,7 +96,10 @@ class rThrottle
 				foreach($toCorrect as $hash=>$name)
 				{
 					$req->addCommand(new rXMLRPCCommand( "branch", array(
-						$hash, "d.is_active=", 'cat=$d.stop=,$d.set_throttle_name='.$name.',$d.start=', 'd.set_throttle_name='.$name )));
+						$hash, 
+						getCmd("d.is_active="), 
+						getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$name.',$'.getCmd('d.start='), 
+						getCmd('d.set_throttle_name=').$name )));
 				}
 				if($req->getCommandsCount())
 				{
