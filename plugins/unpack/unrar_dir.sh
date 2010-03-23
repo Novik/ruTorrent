@@ -14,9 +14,9 @@ process_directory()
 	last=$?
 	[ $last -le 1 ] && ret=$last
 	for fn in "$2"* ; do
-		if [ -d "$fn" ] && [ ! -L "$fn" ] ; then
-			name=$(basename "$fn")
-			process_directory "$1" "$fn/" "$3$name/" "$4"
+		if [ -d "${fn}" ] && [ ! -L "${fn}" ] ; then
+			name=$(basename "${fn}")
+			process_directory "$1" "${fn}/" "$3${name}/" "$4"
 			last=$?
 			[ $last -gt 1 ] && ret=$last
 		fi

@@ -11,17 +11,17 @@ ret=0
 process_directory()
 {
         for fn in "$2"*.zip ; do
-        	if [ -f "$fn" ] && [ -r "$fn" ] ; then
+        	if [ -f "${fn}" ] && [ -r "${fn}" ] ; then
 	        	mkdir -p "$3"
-			"$1" -o "$fn" -d "$3" > /dev/null 2>> "$4"
+			"$1" -o "${fn}" -d "$3" > /dev/null 2>> "$4"
 			last=$?
 			[ $last -gt 1 ] && ret=$last
 		fi
 	done
 	for fn in "$2"* ; do
-		if [ -d "$fn" ] && [ ! -L "$fn" ] ; then
-			name=$(basename "$fn")
-			process_directory "$1" "$fn/" "$3$name/" "$4" 
+		if [ -d "${fn}" ] && [ ! -L "${fn}" ] ; then
+			name=$(basename "${fn}")
+			process_directory "$1" "${fn}/" "$3${name}/" "$4" 
 			last=$?
 			[ $last -gt 1 ] && ret=$last
 		fi
