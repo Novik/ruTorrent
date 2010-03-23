@@ -7,8 +7,6 @@ require_once( 'retrackers.php' );
 require_once( $rootPath.'/php/xmlrpc.php' );
 require_once( $rootPath.'/php/rtorrent.php' );
 
-toLog('retrackers started');
-
 function clearTracker($addition,$tracker)
 {
 	foreach( $addition as $kg=>$group )
@@ -103,7 +101,5 @@ if(count($argv)>1)
 		}
 	}
 }
-
-toLog('retrackers finished');
 
 ?>
