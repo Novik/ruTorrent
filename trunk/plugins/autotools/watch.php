@@ -42,15 +42,12 @@ if( $is_ok )
 // Ask info from rTorrent
 if( $is_ok )
 {
-	$req = rtExec( "get_directory", null, $autodebug_enabled );
-	if( $req )
-	{
-		$directory = rtAddTailSlash( trim( $req->val[0] ) );
-		Debug( "get_directory    : ".$directory );
-		if( $directory == '' || $directory == '/' )
-			$is_ok = false;
-	}
-	else $is_ok = false;
+	if(!isset($theSettings))
+		$theSettings = rTorrentSettings::load();
+	$directory = rtAddTailSlash( $theSettings->directory );
+	Debug( "get_directory    : ".$directory );
+	if( $directory == '' || $directory == '/' )
+		$is_ok = false;
 }
 
 // Scan for *.torrent files at $path_to_watch

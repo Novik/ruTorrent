@@ -25,11 +25,11 @@ if(plugin.enabled)
 				return(plugin.trtFormat(table,arr));
 			};
 		}
-		theRequestManager.addRequest("trt", "cat=$d.views=",function(hash,torrent,value)
+		plugin.config.call(this,data);
+		theRequestManager.addRequest("trt", theRequestManager.map("cat=")+'$'+theRequestManager.map("d.views="),function(hash,torrent,value)
 		{
 			torrent.ratiogroup = value;
 		});
-		plugin.config.call(this,data);
 		if(plugin.canChangeColumns())
 			plugin.trtRenameColumn();
 	}

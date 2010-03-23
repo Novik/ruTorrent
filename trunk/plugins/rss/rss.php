@@ -952,9 +952,9 @@ class rRSSManager
 		{
 			$addition = array();
 			if(!empty($throttle))
-				$addition[] = "d.set_throttle_name=".$throttle;
+				$addition[] = getCmd("d.set_throttle_name=").$throttle;
 			if(!empty($ratio))
-				$addition[] = "view.set_visible=".$ratio;
+				$addition[] = getCmd("view.set_visible=").$ratio;
 			global $saveUploadedTorrents;
 			if(($thash = rTorrent::sendTorrent($ret, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, false, $addition))===false)
 			{

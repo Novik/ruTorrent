@@ -35,9 +35,12 @@ if( $do_diagnostic )
 if($needStart)
 {
 	$req = new rXMLRPCRequest( array( 
-		$theSettings->getOnInsertCommand(array('autolabel'.getUser(), 'branch=$not=$d.get_custom1=,"execute={'.getPHP().','.$pathToAutoTools.'/label.php,$d.get_hash=,'.getUser().'}"')),
-		$theSettings->getOnFinishedCommand(array('automove'.getUser(), 'execute={'.getPHP().','.$pathToAutoTools.'/move.php,$d.get_hash=,'.getUser().'}')),
-		new rXMLRPCCommand('schedule', array( 'autowatch'.getUser(), '10', $autowatch_interval."", 'execute={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($pathToAutoTools.'/watch.php').' '.escapeshellarg(getUser()).' &}' ))
+		$theSettings->getOnInsertCommand(array('autolabel'.getUser(), 
+			getCmd('branch').'=$'.getCmd('not').'=$'.getCmd("d.get_custom1").'=,"'.getCmd('execute').'={'.getPHP().','.$pathToAutoTools.'/label.php,$'.getCmd("d.get_hash").'=,'.getUser().'}"')),
+		$theSettings->getOnFinishedCommand(array('automove'.getUser(), 
+			getCmd('execute').'={'.getPHP().','.$pathToAutoTools.'/move.php,$'.getCmd("d.get_hash").'=,'.getUser().'}')),
+		new rXMLRPCCommand('schedule', array( 'autowatch'.getUser(), '10', $autowatch_interval."", 
+			getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($pathToAutoTools.'/watch.php').' '.escapeshellarg(getUser()).' &}' ))
 		));
 	if($req->run() && !$req->fault)
 	{

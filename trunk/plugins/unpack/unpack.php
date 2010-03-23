@@ -106,7 +106,7 @@ class rUnpack
         			$outPath.=addslash($label);
 	        	if($this->addName && ($name!=''))
 				$outPath.=addslash($name);
-			exec( escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
+			exec( 'sh '.escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
 				escapeshellarg($arh)." ".
 				escapeshellarg($basename)." ".
 				escapeshellarg($outPath)." ".
@@ -201,7 +201,7 @@ class rUnpack
 						$basename = $req->val[1];
 				}
 				$req = new rXMLRPCRequest( 
-					new rXMLRPCCommand( "f.multicall", array($hash,"","f.get_path=") ));
+					new rXMLRPCCommand( "f.multicall", array($hash,"",getCmd("f.get_path=")) ));
 				if($req->success())
 				{
 				        $rarPresent = false;

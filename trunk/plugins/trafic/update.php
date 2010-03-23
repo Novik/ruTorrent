@@ -11,7 +11,7 @@
 		$req = new rXMLRPCRequest( array(
 			new rXMLRPCCommand("get_up_total"),
 			new rXMLRPCCommand("get_down_total"), 
-			new rXMLRPCCommand("d.multicall", array("main","d.get_hash=","d.get_up_total=","d.get_down_total="))));
+			new rXMLRPCCommand("d.multicall", array("main",getCmd("d.get_hash="),getCmd("d.get_up_total="),getCmd("d.get_down_total=")))));
 		$req->setParseByTypes();
 		if($req->run() && !$req->fault)
 		{
@@ -70,7 +70,7 @@
 				{
 				        $req = new rXMLRPCRequest( array(
 						new rXMLRPCCommand("t.multicall", 
-							array($key,"","t.is_enabled=","t.get_type=","t.get_group=","t.get_url="))));
+							array($key,"",getCmd("t.is_enabled="),getCmd("t.get_type="),getCmd("t.get_group="),getCmd("t.get_url=")))));
 					$req->setParseByTypes();
 					if($req->run() && !$req->fault)
 					{

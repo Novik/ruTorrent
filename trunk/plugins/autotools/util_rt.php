@@ -2,7 +2,6 @@
 
 require_once( "../../php/xmlrpc.php" );
 require_once( "../../php/Torrent.php" );
-require_once( "../../php/settings.php");
 
 //------------------------------------------------------------------------------
 // Debug stub
@@ -476,9 +475,8 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 	// Ask info from rTorrent
 	if( $is_ok && $move_files )
 	{
-		$theSettings = rTorrentSettings::load();
 		$req = rtExec(
-			array( "d.get_base_path", ($theSettings->mostOfMethodsRenamed ? "d.base_filename" : "d.get_base_filename"), "d.is_multi_file" ),
+			array( "d.get_base_path", "d.get_base_filename", "d.is_multi_file" ),
 			$hash, $dbg );
 		if( $req )
 		{

@@ -59,17 +59,16 @@ if( $is_ok )
 if( $is_ok )
 {
 	$req = new rXMLRPCRequest( array (
-		new rXMLRPCCommand( "get_directory" ),
 		new rXMLRPCCommand( "d.get_directory", $hash ),
 		new rXMLRPCCommand( "d.get_custom3",   $hash ),
 		new rXMLRPCCommand( "d.is_multi_file", $hash ),
 	) );
 	if( $req->run() && !$req->fault )
 	{
-		$is_multy_file = ( $req->val[3] != 0 );
-		$default_dir = trim( $req->val[0] );
-		$torrent_dir = trim( $req->val[1] );
-		$custom3     = trim( $req->val[2] );
+		$is_multy_file = ( $req->val[2] != 0 );
+		$default_dir = $theSettings->directory;
+		$torrent_dir = trim( $req->val[0] );
+		$custom3     = trim( $req->val[1] );
 		Debug( "get_directory   : ".$default_dir );
 		Debug( "d.get_directory : ".$torrent_dir );
 		Debug( "d.get_custom3   : ".$custom3 );

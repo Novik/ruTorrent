@@ -44,7 +44,7 @@ if($needStart)
 		$startAt = 0;
 	$interval = $updateInterval*60;
 	$req = new rXMLRPCRequest( new rXMLRPCCommand("schedule", array('rss'.getUser(),$startAt."",$interval."",
-		'execute={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($rootPath.'/plugins/rss/update.php').' '.escapeshellarg(getUser()).' & exit 0}')) );
+		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($rootPath.'/plugins/rss/update.php').' '.escapeshellarg(getUser()).' & exit 0}')) );
 	if($req->run() && !$req->fault)
 	{
 		require_once($rootPath.'/plugins/rss/rss.php');

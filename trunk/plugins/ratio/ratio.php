@@ -36,9 +36,9 @@ class rRatio
 	}
 	public function correct()
 	{
-		$cmd = new rXMLRPCCommand("d.multicall",array("default","d.get_hash="));
+		$cmd = new rXMLRPCCommand("d.multicall",array("default",getCmd("d.get_hash=")));
 		for($i=0; $i<MAX_RATIO; $i++)
-			$cmd->addParameters( array( "d.views.has=rat_".$i, "view.set_not_visible=rat_".$i ) );
+			$cmd->addParameters( array( getCmd("d.views.has")."=rat_".$i, getCmd("view.set_not_visible")."=rat_".$i ) );
 		$req = new rXMLRPCRequest($cmd);
 		$req->setParseByTypes();
 		if($req->run() && !$req->fault)
@@ -62,10 +62,6 @@ class rRatio
 	}
 	public function flush()
 	{
-	        global $theSettings;
-		if(!$theSettings)
-			$theSettings = rTorrentSettings::load();
-		$method = $theSettings->mostOfMethodsRenamed ? "method.set" : "system.method.set";
 		$req1 = new rXMLRPCRequest(new rXMLRPCCommand("view_list"));
 		if($req1->run() && !$req1->fault)
 		{
@@ -85,17 +81,20 @@ class rRatio
 					{
 						case RAT_STOP:
 						{
-							$req->addCommand(new rXMLRPCCommand($method, array("group.rat_".$i.".ratio.command", "d.stop=; d.close=")));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command", 
+								getCmd("d.stop=")."; ".getCmd("d.close="))));
 							break;
 						}
 						case RAT_STOP_AND_REMOVE:
 						{
-							$req->addCommand(new rXMLRPCCommand($method, array("group.rat_".$i.".ratio.command", "d.stop=; d.close=; view.set_not_visible=rat_".$i."; d.views.remove=rat_".$i)));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command", 
+								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("view.set_not_visible")."=rat_".$i."; ".getCmd("d.views.remove")."=rat_".$i)));
 							break;
 						}
 						case RAT_ERASE:
 						{
-							$req->addCommand(new rXMLRPCCommand($method, array("group.rat_".$i.".ratio.command", "d.stop=; d.close=; d.erase=")));
+							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command", 
+								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("d.erase="))));
 							break;
 						}
 					}

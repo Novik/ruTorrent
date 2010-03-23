@@ -4,21 +4,11 @@
  *	$Id$
  */
 
-function rXMLRPCCommand( cmd )
-{
-	this.command = cmd;
-	this.params = new Array();
-}
-
-rXMLRPCCommand.prototype.addParameter = function(aType,aValue)
-{
-	this.params.push( {type : aType, value : aValue} );	
-}
-
 var dStatus = { started : 1, paused : 2, checking : 4, hashing : 8, error : 16 };
 
 var theRequestManager = 
 {
+	aliases: {},
         trt:
         {
 		commands:
@@ -93,10 +83,6 @@ var theRequestManager =
 			"use_udp_trackers", "max_uploads_div", "max_open_sockets"
 		],
 
-		aliases:
-		{
-		},
-
 		handlers: []
 	},
 	addRequest: function( system, command, responseHandler )
@@ -105,8 +91,33 @@ var theRequestManager =
 		if(command)
 		        this[system].commands.push(command);
 	        return(this);
+	},
+	map: function(cmd,no)
+	{
+		if(!$type(no))
+		{
+			var add = '';
+			if(cmd.length && (cmd[cmd.length-1]=='='))
+			{
+				cmd = cmd.substr(0,cmd.length-1);
+				add = '=';
+			}
+			return(this.aliases[cmd] ? this.aliases[cmd]+add : cmd+add);
+		}			
+		return( this.map(this[cmd].commands[no]) );
 	}
 };
+
+function rXMLRPCCommand( cmd )
+{
+	this.command = theRequestManager.map(cmd);
+	this.params = new Array();
+}
+
+rXMLRPCCommand.prototype.addParameter = function(aType,aValue)
+{
+	this.params.push( {type : aType, value : aValue} );	
+}
 
 function rTorrentStub( URI )
 {
@@ -164,7 +175,7 @@ rTorrentStub.prototype.getfiles = function()
 	cmd.addParameter("string",this.hashes[0]);
 	cmd.addParameter("string","");
 	for( var i in theRequestManager.fls.commands )
-		cmd.addParameter("string",theRequestManager.fls.commands[i]);
+		cmd.addParameter("string",theRequestManager.map("fls",i));
 	this.commands.push( cmd );
 }
 
@@ -174,7 +185,7 @@ rTorrentStub.prototype.getpeers = function()
 	cmd.addParameter("string",this.hashes[0]);
 	cmd.addParameter("string","");
 	for( var i in theRequestManager.prs.commands )
-		cmd.addParameter("string",theRequestManager.prs.commands[i]);
+		cmd.addParameter("string",theRequestManager.map("prs",i));
 	this.commands.push( cmd );
 }
 
@@ -184,7 +195,7 @@ rTorrentStub.prototype.gettrackers = function()
 	cmd.addParameter("string",this.hashes[0]);
 	cmd.addParameter("string","");
 	for( var i in theRequestManager.trk.commands )
-		cmd.addParameter("string",theRequestManager.trk.commands[i]);
+		cmd.addParameter("string",theRequestManager.map("trk",i));
 	this.commands.push( cmd );
 }
 
@@ -196,7 +207,7 @@ rTorrentStub.prototype.getalltrackers = function()
 		cmd.addParameter("string",this.hashes[i]);
 		cmd.addParameter("string","");
 		for( var j in theRequestManager.trk.commands )
-			cmd.addParameter("string",theRequestManager.trk.commands[j]);
+			cmd.addParameter("string",theRequestManager.map("trk",j));
 		this.commands.push( cmd );
 	}
 }
@@ -220,9 +231,9 @@ rTorrentStub.prototype.list = function()
 	for( var i in theRequestManager.trt.commands )
 	{
 		if(!theWebUI.settings["webui.needmessage"] && (theRequestManager.trt.commands[i]=="d.get_message="))
-			cmd.addParameter("string","d.get_custom5=");
+			cmd.addParameter("string",theRequestManager.map("d.get_custom5="));
 		else
-			cmd.addParameter("string",theRequestManager.trt.commands[i]);
+			cmd.addParameter("string",theRequestManager.map("trt",i));
 	}
 	this.commands.push( cmd );
 }
@@ -285,14 +296,7 @@ rTorrentStub.prototype.setsettings = function()
 			cmd = new rXMLRPCCommand('dht');
 		}
 		else
-		{
-			var set = this.ss[i].substr(1);
-			if(theRequestManager.stg.aliases[set])
-				set = theRequestManager.stg.aliases[set].set;
-			else
-				set = 'set_'+set;
-			cmd = new rXMLRPCCommand(set);
-		}
+			cmd = new rXMLRPCCommand('set_'+this.ss[i].substr(1));
 		cmd.addParameter(prmType,prm);
 		this.commands.push( cmd );
 	}
@@ -302,14 +306,7 @@ rTorrentStub.prototype.getsettings = function()
 {
 	this.commands.push(new rXMLRPCCommand("dht_statistics"));
 	for( var cmd in theRequestManager.stg.commands )
-	{
-		var get = theRequestManager.stg.commands[cmd];
-		if(theRequestManager.stg.aliases[get])
-			get = theRequestManager.stg.aliases[get].get;
-		else
-			get = 'get_'+get;
-		this.commands.push(new rXMLRPCCommand(get));
-	}
+		this.commands.push(new rXMLRPCCommand('get_'+theRequestManager.stg.commands[cmd]));
 }
 
 rTorrentStub.prototype.start = function()
@@ -431,9 +428,14 @@ rTorrentStub.prototype.setprops = function()
         		var conn = (this.vs[i]!=0) ? "initial_seed" : "seed";
 			cmd = new rXMLRPCCommand("branch");
 			cmd.addParameter("string",this.hashes[0]);
-			cmd.addParameter("string","d.is_active=");
-			cmd.addParameter("string","cat=$d.stop=,$d.close=,$d.set_connection_seed="+conn+",$d.open=,$d.start=");
-			cmd.addParameter("string","d.set_connection_seed="+conn);
+			cmd.addParameter("string",theRequestManager.map("d.is_active="));
+			cmd.addParameter("string",theRequestManager.map("cat")+
+				'=$'+theRequestManager.map("d.stop=")+
+				',$'+theRequestManager.map("d.close=")+
+				',$'+theRequestManager.map("d.set_connection_seed=")+conn+
+				',$'+theRequestManager.map("d.open=")+
+				',$'+theRequestManager.map("d.start="));
+			cmd.addParameter("string",theRequestManager.map("d.set_connection_seed=")+conn);
 		}
 		else
 		{

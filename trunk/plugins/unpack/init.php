@@ -30,8 +30,9 @@ if($do_diagnostic)
 if($needStart && (USE_UNZIP || USE_UNRAR))
 {
 	$req = new rXMLRPCRequest( 
-		$theSettings->getOnFinishedCommand(
-			array('unpack'.getUser(), 'execute={'.getPHP().','.$rootPath.'/plugins/unpack/update.php,$d.get_base_path=,$d.get_custom1=,$d.get_name=,'.getUser().'}')));
+		$theSettings->getOnFinishedCommand( array('unpack'.getUser(), 
+			getCmd('execute').'={'.getPHP().','.$rootPath.'/plugins/unpack/update.php,$'.getCmd('d.get_base_path').
+				'=,$'.getCmd('d.get_custom1').'=,$'.getCmd('d.get_name').'=,'.getUser().'}')));
 	if($req->run() && !$req->fault)
 	{
 		$jResult .= ("plugin.useUnzip = ".(USE_UNZIP ? "true;" : "false;"));

@@ -95,14 +95,14 @@ if(isset($HTTP_RAW_POST_DATA))
 					if(isset($torrent->{'rtorrent'}))
 						unset($torrent->{'rtorrent'});
 					if(count($req->val)>8)
-						$throttle = "d.set_throttle_name=".$req->val[9];
+						$throttle = getCmd("d.set_throttle_name=").$req->val[9];
 					$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
 					if($eReq->run() && !$eReq->fault)
 					{
 						$label = rawurldecode($req->val[5]);
 						if(!rTorrent::sendTorrent($torrent, $isStart, false, $req->val[6], $label, false, ($req->val[8]==1),
-						        array(	"d.set_custom3=1",
-								"d.set_connection_seed=".$req->val[7],
+						        array(	getCmd("d.set_custom3")."=1",
+								getCmd("d.set_connection_seed=").$req->val[7],
 								$throttle)))
 							$errors[] = array('desc'=>"theUILang.errorAddTorrent", 'prm'=>$fname);
 					}
