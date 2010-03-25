@@ -256,7 +256,7 @@ var theWebUI =
 				}
 		  		case 112:				// F1
    				{
-   				        if(!theDialogManager.isModalState())
+   				        if((!browser.isOpera || !e.fromTextCtrl) && !theDialogManager.isModalState())
    				        {
 			   		        theDialogManager.show(e.metaKey ? "dlgAbout" : "dlgHelp");
 						return(false);
@@ -264,18 +264,27 @@ var theWebUI =
 		   		}
 				case 115 : 				// F4
 				{
-					theWebUI.toggleMenu();
-					return(false);
+					if(!browser.isOpera || !e.fromTextCtrl)
+					{
+						theWebUI.toggleMenu();
+						return(false);
+					}
 				}
 				case 117 :                      	// F6
 				{
-					theWebUI.toggleDetails();
-					return(false);
+				        if(!browser.isOpera || !e.fromTextCtrl)
+				        {
+						theWebUI.toggleDetails();
+						return(false);
+					}
 				}
 				case 118 :                      	// F7
 				{
-					theWebUI.toggleCategories();
-					return(false);
+				        if(!browser.isOpera || !e.fromTextCtrl)
+				        {
+						theWebUI.toggleCategories();
+						return(false);
+					}
 				}
 			}
 		};
