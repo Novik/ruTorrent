@@ -3,13 +3,13 @@
 if( !chdir( dirname( __FILE__ ) ) )
 	exit;
 
+if( count( $argv ) > 1 )
+	$_SERVER['REMOTE_USER'] = $argv[1];
+
 require_once( "../../php/rtorrent.php" );
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
 eval( getPluginConf( 'autotools' ) );
-
-if( count( $argv ) > 1 )
-	$_SERVER['REMOTE_USER'] = $argv[1];
 
 function Debug( $str )
 {

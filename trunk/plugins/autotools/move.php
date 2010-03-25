@@ -3,15 +3,22 @@
 if( !chdir( dirname( __FILE__) ) )
 	exit;
 
-// util.php loads config and defines $pathToPHP variable
-require_once( "../../php/util.php" );
+if( count( $argv ) > 1 )
+{
+	$usr = ($argv[1]=='--daemon') ? 3 : 2;
+	if( count( $argv ) > $usr )
+		$_SERVER['REMOTE_USER'] = $argv[$usr];
+}
+
 require_once( "./util_rt.php" );
+require_once( "./autotools.php" );
+eval( getPluginConf( 'autotools' ) );
 
 // If we are not in background, run this script in background
 array_shift( $argv );
 if( !rtIsDaemon( $argv ) )
 {
-	rtDaemon( $pathToPHP, basename( __FILE__ ), $argv );
+	rtDaemon( getPHP(), basename( __FILE__ ), $argv );
 	// script was exited at the line above
 }
 
@@ -19,12 +26,6 @@ if( !rtIsDaemon( $argv ) )
 // 0: --daemon
 // 1: hash
 // 2: username
-if( count( $argv ) > 2 )
-	$_SERVER['REMOTE_USER'] = $argv[2];
-
-require_once( "../../php/xmlrpc.php" );
-require_once( "./autotools.php" );
-eval( getPluginConf( 'autotools' ) );
 
 $AutoMove_Sem = rtSemGet( fileinode( __FILE__ ) );
 rtSemLock( $AutoMove_Sem );
