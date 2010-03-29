@@ -1279,10 +1279,10 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 			div.innerHTML = (String(data[ind]) == "") ? "&nbsp;" : escapeHTML(data[ind]);
 		if((ind == 0) && (icon != null)) 
 		{ 
-			if(!browser.isFirefox3x)
+//			if(!browser.isFirefox3x)
 				td.appendChild( $("<span></span>").addClass("stable-icon " + icon).get(0) );
-			else 
-				div.className = "ie" + icon;
+//			else 
+//				div.className = "ie" + icon;
 		}
 		td.appendChild(div);
 		tr.appendChild(td);
@@ -1619,10 +1619,14 @@ dxSTable.prototype.setIcon = function(row, icon)
 		if(r == null) 
 			return(false);
 		var td = r.cells[this.getColOrder(0)];
+
+		td.firstChild.className = (icon) ? "stable-icon " + icon : "";
+/*
 		if(icon)
 			td.firstChild.className = (browser.isFirefox3x) ? "ie"+icon : "stable-icon " + icon;
 		else
 			td.firstChild.className = "";
+*/
 		return(true);
 	}
 	return(false);

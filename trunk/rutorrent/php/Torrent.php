@@ -360,7 +360,7 @@ class Torrent
 	 */
 	public function save( $filename = null ) 
 	{
-        	return file_put_contents( is_null( $filename ) ? $this->info['name'] . '.torrent' : $filename, $this );
+        	return file_put_contents( is_null( $filename ) ? $this->info['name'] . '.torrent' : $filename, $this->__toString() );
 	}
 
 	/** Send torrent file to client
@@ -369,7 +369,7 @@ class Torrent
 	 */
 	public function send( $filename = null ) 
 	{
-        	$data = (string) $this;
+        	$data = $this->__toString();
 	        header( 'Content-type: application/x-bittorrent' );
 	        if(!ini_get("zlib.output_compression"))
 	        	header( 'Content-Length: ' . strlen( $data ) );

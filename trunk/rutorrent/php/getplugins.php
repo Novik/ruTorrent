@@ -144,6 +144,7 @@ $jResult = "theWebUI.deltaTime = new Date().getTime() - ".time()."*1000;\n";
 $access = getConfFile('access.ini');
 if(!$access)
 	$access = "../conf/access.ini";
+$mtime = filemtime($access);
 $permissions = parse_ini_file($access);
 $settingsFlags = array(
 	"showDownloadsPage" 	=> 0x0001,
@@ -165,6 +166,7 @@ $jResult.="theWebUI.systemInfo = {};\ntheWebUI.systemInfo.php = { canHandleBigFi
 
 if($handle = opendir('../plugins')) 
 {
+	$mtime = max($mtime,filemtime('../plugins'));
 	ignore_user_abort(true);
 	set_time_limit(0);
 	@chmod('/tmp',0777);
@@ -216,12 +218,14 @@ if($handle = opendir('../plugins'))
 		$plg = getConfFile('plugins.ini');
 		if(!$plg)
 			$plg = "../conf/plugins.ini";
+		$mtime = max($mtime,filemtime($plg));
 		$permissions = parse_ini_file($plg,true);
 		$init = array();
 		while(false !== ($file = readdir($handle)))
 		{
 			if($file != "." && $file != ".." && is_dir('../plugins/'.$file))
 			{
+				$mtime = max($mtime,filemtime('../plugins/'.$file));
 				$info = getPluginInfo( $file, $permissions );
 				if($info!==false)
 				{
@@ -272,6 +276,7 @@ if($handle = opendir('../plugins'))
 	}
 	closedir($handle);
 }
+
 if(!ini_get("zlib.output_compression"))
 	header("Content-Length: ".strlen($jResult));
 header("Content-Type: application/javascript; charset=UTF-8");

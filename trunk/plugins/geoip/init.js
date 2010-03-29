@@ -45,7 +45,7 @@ if(plugin.enabled)
 	                	        if(plugin.retrieveCountry)
 	                	        {
 						peer.country = info.country;
-						peer.icon = "geoip_flag_"+peer.country;
+						peer.icon = "geoip geoip_flag_"+peer.country;
 					}
 					peer.name = info.host;
 				}

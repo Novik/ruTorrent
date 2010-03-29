@@ -1,6 +1,6 @@
 html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%; }
 form{margin:0;}
-div#preload {width: 0px; height: 0px; display: none; background-image: url(../images/toolbar2.gif); background-image: url(../images/tstatus.gif); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/hide.gif); background-image: url(../images/hide_over.gif); background-image: url(../images/hide_on.gif); background-image: url(../images/file.gif); background-image: url(../images/dir.gif); background-image: url(../images/pnl_open.gif); background-image: url(../images/pnl_close.gif)}
+div#preload {width: 0px; height: 0px; display: none; background-image: url(../images/toolbar.png); background-image: url(../images/tstatus.png); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/close.png); background-image: url(../images/file.gif); background-image: url(../images/dir.gif); background-image: url(../images/pnl_open.gif); background-image: url(../images/pnl_close.gif)}
 div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; background: #FFFFFF}
 div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
 div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none}
@@ -10,9 +10,9 @@ div.aright {text-align: right}
 div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
 div.fxcaret {overflow: auto}
 div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
-a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(../images/hide.gif); float: right; border: 0}
-a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(../images/hide_over.gif); float: right; border: 0}
-a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../images/hide_on.gif); float: right; border: 0}
+a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(../images/close.png) no-repeat scroll left center; float: right; border: 0}
+a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(../images/close.png) no-repeat scroll -14px center; float: right; border: 0}
+a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../images/close.png) no-repeat scroll -28px center; float: right; border: 0}
 
 div#sc {width: 150px; right: 57px; top: 40px; position: absolute; display: none; border: 1px solid #808080; background-color: #E0E0E0; z-index: 100}
 div#sc ul {margin: 0; padding: 0; list-style: none}
@@ -48,15 +48,19 @@ div#t a:hover {background: transparent url(../images/tb_bg.gif) no-repeat scroll
 div#t a:active {padding: 4px 2px 2px 4px}
 div#t div {width: 24px; height: 24px; float: left; cursor: pointer}
 div#t div.TB_Separator {width: 1px; height: 22px; margin: 7px 0 0 5px; padding: 0; border: 0; background-color: #A0A0A0}
-div#t div#add {background: transparent url(../images/toolbar2.gif) no-repeat left center}
-div#t div#remove {background: transparent url(../images/toolbar2.gif) no-repeat -24px center}
-div#t div#start {background: transparent url(../images/toolbar2.gif) no-repeat -48px center}
-div#t div#pause {background: transparent url(../images/toolbar2.gif) no-repeat -72px center}
-div#t div#stop {background: transparent url(../images/toolbar2.gif) no-repeat -96px center}
-div#t div#moveu {background: transparent url(../images/toolbar2.gif) no-repeat -168px center}
-div#t div#moved {background: transparent url(../images/toolbar2.gif) no-repeat -144px center}
-div#t div#setting {background: transparent url(../images/toolbar2.gif) no-repeat -168px center}
-div#t div#search {background: transparent url(../images/toolbar2.gif) no-repeat -120px center}
+
+div#t div#add {background: transparent url(../images/toolbar.png) no-repeat -24px center}
+div#t div#create {background: transparent url(../images/toolbar.png) no-repeat -48px center}
+div#t div#remove {background: transparent url(../images/toolbar.png) no-repeat -72px center}
+div#t div#start {background: transparent url(../images/toolbar.png) no-repeat -96px center}
+div#t div#pause {background: transparent url(../images/toolbar.png) no-repeat -120px center}
+div#t div#stop {background: transparent url(../images/toolbar.png) no-repeat -144px center}
+div#t div#moveu {background: transparent url(../images/toolbar.png) no-repeat -168px center}
+div#t div#moved {background: transparent url(../images/toolbar.png) no-repeat -192px center}
+div#t div#search {background: transparent url(../images/toolbar.png) no-repeat -216px center}
+div#t div#rss {background: transparent url(../images/toolbar.png) no-repeat -240px center}
+div#t div#setting {background: transparent url(../images/toolbar.png) no-repeat -264px center}
+
 div#t div#help {background: transparent url(../images/quest.gif) no-repeat 0px center}
 div#t div#go {background: transparent url(../images/go.gif) no-repeat 0px center; }
 
@@ -64,9 +68,6 @@ div#t div#sb {width: 230px; float: right; margin-right: 0px; line-height: 26px; 
 div#t div#sb input {margin-top: 9px; float: left;}
 div#t div#sb a {margin: 3px 5px 0 0}
 
-a.h:link, a.h:visited {width: 14px; height: 14px; margin: 11px 5px 0 0; background: transparent url(../images/hide.gif); float: right; border: 0}
-a.h:hover {width: 14px; height: 14px; background: transparent url(../images/hide_over.gif); float: right; border: 0}
-a.h:active {width: 14px; height: 14px; background: transparent url(../images/hide_on.gif); float: right; border: 0}
 input.Textbox, input.Button, select {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px}
 Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 50px}
 Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 110px}
@@ -75,60 +76,44 @@ Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Ta
 input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0;}
 
 select {margin-top: 5px}
-a.hide:link, a.hide:visited {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(../images/hide.gif); float: right; border: 0}
-a.hide:hover {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(../images/hide_over.gif); float: right; border: 0}
-a.hide:active {width: 14px; height: 14px; margin: -20px 0 0 0; background: transparent url(../images/hide_on.gif); float: right; border: 0}
 a {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #686868}
 table#maincont {margin: 5px 0 0 0}
 table#maincont td.uicell {vertical-align: top; padding: 0 }
-div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: auto}
 
-div#CatList ul {padding: 0px; margin: 0; list-style: none; white-space: nowrap}
-div#CatList ul li {padding: 2px 25px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer}
-div#CatList ul li.sel {background-color: #CFDEEF}
-div#CatList ul li.sel#-_-_-all-_-_- {background-color: #CFDEEF}
-div#CatList ul li.sel#-_-_-dls-_-_- {background-color: #CFDEEF}
-div#CatList ul li.sel#-_-_-com-_-_- {background-color: #CFDEEF}
-div#CatList ul li.sel#-_-_-act-_-_- {background-color: #CFDEEF}
-div#CatList ul li.sel#-_-_-iac-_-_- {background-color: #CFDEEF}
-div#CatList ul li.sel#-_-_-err-_-_- {background-color: #CFDEEF}
-div#CatList ul li#-_-_-all-_-_- {padding: 2px 25px; background:url(../images/status_checking.gif) 6px no-repeat;}
-div#CatList ul li#-_-_-dls-_-_- {padding: 2px 25px; background:url(../images/status_down.gif) 6px no-repeat;}
-div#CatList ul li#-_-_-com-_-_- {padding: 2px 25px; background:url(../images/status_up.gif) 6px no-repeat;}
-div#CatList ul li#-_-_-act-_-_- {padding: 2px 25px; background:url(../images/status_up_down.gif) 6px no-repeat;}
-div#CatList ul li#-_-_-iac-_-_- {padding: 2px 25px; background:url(../images/status_incompleted.gif) 6px no-repeat;}
-div#CatList ul li#-_-_-err-_-_- {padding: 2px 25px; background:url(../images/status_error.gif) 6px no-repeat;}
-div#CatList ul li#_hr_{padding: 0 3px; margin: 0px;}
+div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: auto}
+div#CatList ul {padding: 0; margin: 0; list-style: none; white-space: nowrap}
+div#CatList ul li {padding: 2px 25px; margin: 0; line-height: 14px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer; border: 1px solid #FFFFFF; background-repeat: no-repeat}
+div#CatList ul li.sel {background-color: #CFDEEF; border-color: #CFDEEF }
+#-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(../images/tstatus.png)}
+#-_-_-all-_-_- {background-position: 4px -174px;}
+#-_-_-dls-_-_- {background-position: 4px 2px;}
+#-_-_-com-_-_- {background-position: 4px -14px;}
+#-_-_-act-_-_- {background-position: 4px -158px;}
+#-_-_-iac-_-_- {background-position: 4px -30px;}
+#-_-_-err-_-_- {background-position: 4px -94px;}
+div#CatList ul li.RSS {background-image: url(../images/tstatus.png); background-position: 4px -206px}
+div#CatList ul li.disRSS {background-image: url(../images/tstatus.png); background-position: 4px -190px}
+
+.stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
+.Status_Down {background-position: 0px 0px}
+.Status_Up {background-position: 0px -16px}
+.Status_Incompleted {background-position: 0px -32px}
+.Status_Paused {background-position: 0px -48px}
+.Status_Error_Down {background-position: 0px -64px}
+.Status_Error_Up {background-position: 0px -80px}
+.Status_Error {background-position: 0px -96px}
+.Status_Completed {background-position: 0px -112px}
+.Status_Queued_Down {background-position: 0px -128px}
+.Status_Queued_Up {background-position: 0px -144px}
+.Status_Up_Down {background-position: 0px -160px}
+.Status_Checking {background-position: 0px -176px}
+.Status_RSS {background-position: 0px -208px}
 
 div#HDivider, div#VDivider { font-size: 0; }
 div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize; }
 div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
 div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
 
-.Status_Down {background: transparent url(../images/tstatus.gif) no-repeat left center}
-.Status_Up {background: transparent url(../images/tstatus.gif) no-repeat -16px center}
-.Status_Incompleted {background: transparent url(../images/tstatus.gif) no-repeat -32px center}
-.Status_Paused {background: transparent url(../images/tstatus.gif) no-repeat -48px center}
-.Status_Error_Down {background: transparent url(../images/tstatus.gif) no-repeat -64px center}
-.Status_Error_Up {background: transparent url(../images/tstatus.gif) no-repeat -80px center}
-.Status_Error {background: transparent url(../images/tstatus.gif) no-repeat -96px center}
-.Status_Completed {background: transparent url(../images/tstatus.gif) no-repeat -112px center}
-.Status_Queued_Down {background: transparent url(../images/tstatus.gif) no-repeat -128px center}
-.Status_Queued_Up {background: transparent url(../images/tstatus.gif) no-repeat -144px center}
-.Status_Up_Down {background: transparent url(../images/tstatus.gif) no-repeat -160px center}
-.Status_Checking {background: transparent url(../images/tstatus.gif) no-repeat -176px center}
-.ieStatus_Down {background: transparent url(../images/status_down.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Up {background: transparent url(../images/status_up.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Incompleted {background: transparent url(../images/status_incompleted.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Paused {background: transparent url(../images/status_paused.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Error_Down {background: transparent url(../images/status_error_down.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Error_Up {background: transparent url(../images/status_error_up.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Error {background: transparent url(../images/status_error.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Completed {background: transparent url(../images/status_completed.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Queued_Down {background: transparent url(../images/status_queued_down.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Queued_Up {background: transparent url(../images/status_queued_up.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Up_Down {background: transparent url(../images/status_up_down.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieStatus_Checking {background: transparent url(../images/status_checking.gif) no-repeat scroll left top; padding-left: 20px;}
 div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: visible}
 div#stg a.h {margin: 5px}
 div#stg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/settings.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
@@ -239,8 +224,6 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 
 .Icon_File {background: transparent url(../images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(../images/dir.gif) no-repeat left center}
-.ieIcon_File {background: transparent url(../images/file.gif) no-repeat scroll left top; padding-left: 20px;}
-.ieIcon_Dir {background: transparent url(../images/dir.gif) no-repeat scroll left top; padding-left: 20px;}
 
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
 textarea { overflow: auto; }

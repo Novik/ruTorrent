@@ -17,7 +17,7 @@ theWebUI.switchLabel = function(el)
 		theWebUI.clearDetails();
 		theWebUI.getTable("rss").clearSelection();
 		if(theWebUI.actRSSLbl)
-			$$(theWebUI.actRSSLbl).className = theWebUI.isActiveRSSEnabled() ? "RSS" : "disRSS";
+			$$(theWebUI.actRSSLbl).className = theWebUI.isActiveRSSEnabled() ? "RSS cat" : "disRSS cat";
 		theWebUI.actRSSLbl = null;
 		theWebUI.actLbl = "";
 		$("#List").show();
@@ -64,7 +64,7 @@ theWebUI.switchRSSLabel = function(el,force)
 	if(theWebUI.actRSSLbl)
 		$$(theWebUI.actRSSLbl).className = theWebUI.isActiveRSSEnabled() ? "RSS cat" : "disRSS cat";
 	theWebUI.actRSSLbl = el.id;
-	el.className = theWebUI.isActiveRSSEnabled() ? "selRSS cat" : "selDisRSS cat";
+	el.className = theWebUI.isActiveRSSEnabled() ? "sel RSS cat" : "sel disRSS cat";
 	var table = theWebUI.getTable("rss");
 	for(var k in theWebUI.rssItems)
 	{
@@ -456,9 +456,9 @@ theWebUI.updateRSSLabels = function(rssLabels,allCnt)
 			ul.append(li);
 		}
 		if(lbl==this.actRSSLbl)
-			li[0].className = (rssLabels[lbl].enabled==1) ?  "selRSS" : "selDisRSS";
+			li[0].className = (rssLabels[lbl].enabled==1) ?  "sel RSS cat" : "sel disRSS cat";
 		else
-			li[0].className = (rssLabels[lbl].enabled==1) ?  "RSS" : "disRSS";
+			li[0].className = (rssLabels[lbl].enabled==1) ?  "RSS cat" : "disRSS cat";
 		li.mouseclick( this.rssLabelContextMenu );
 	}
 	var needSwitch = false;
@@ -1118,10 +1118,10 @@ plugin.onLangLoaded = function()
 		var div = $("<div>").attr("id","prss_cont");
 		el.append(div);
 		el = div;
-		ul.html('<li id="_rssAll_" class="RSS">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
+		ul.html('<li id="_rssAll_" class="RSS cat">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
 	}
 	else
-		ul.html('<li id="_hr_"><hr /></li><li id="_rssAll_" class="RSS">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
+		ul.html('<li id="_hr_"><hr /></li><li id="_rssAll_" class="RSS cat">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
 	el.append(ul).append( $("<div>").html('<ul id="rssl"></ul>') );
 	$("#_rssAll_").mouseclick( theWebUI.rssLabelContextMenu );
 

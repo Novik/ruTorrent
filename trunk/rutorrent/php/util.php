@@ -310,4 +310,23 @@ function getPHP()
 	return( (!$pathToPHP || ($pathToPHP=="")) ? "php" : fullpath($pathToPHP,$rootPath) );
 }
 
+function cachedEcho( $content, $mtime = null )
+{
+	header('Expires: ');
+	header('Cache-Control: ');
+	header('Pragma: ');
+	if(!is_null($mtime))
+	{
+		header('Last-Modified: ' . date('r', $mtime));
+		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $mtime)
+		{
+			header('HTTP/1.0 304 Not Modified');
+			return;
+		}
+	}
+	if(!ini_get("zlib.output_compression"))
+		header("Content-Length: ".strlen($content));
+	echo $content;	
+}
+
 ?>
