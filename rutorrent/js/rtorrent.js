@@ -894,7 +894,8 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 		data: (stub.content == null) ? "" : stub.content,
 		processData: false,
 		timeout: reqTimeout || 10000,
-		cache: false,
+		cache: true,
+		ifModified: true,
 		dataType: stub.dataType,
 		global: true,
 

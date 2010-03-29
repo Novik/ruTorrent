@@ -13,8 +13,6 @@ div#tcreate iframe {border-width: 1px; width:170px; height:200px; visibility:hid
 
 #browse_path {width: 30px;}
 
-div#t div#create {background: transparent url(./images/create.gif) no-repeat left center}
-
 .console {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre; overflow: scroll; height: 130px; width: 460px}
 div#tconsole {width: 500px; height: 400px}
 div#tconsole div.dlg-header {background-image: url(./images/create16.gif)}

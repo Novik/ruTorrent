@@ -17,14 +17,14 @@ if [ ! -d flags ]; then
 	exit 1
 fi
 
+echo ".geoip {background-repeat: no-repeat; background-position: center center; width: 22px; }" >> geoip.css
+
 for fl in `ls -1 flags/*[Gg][Ii][Ff]`
 do
     # Remove prefix and suffix, we need only country code
     cnt=${fl/\/*\//}
     cnt=${cnt/.*/}
     cnt=${cnt#*/}
-    echo ".geoip_flag_"$cnt" {background: transparent url( \""$fl"\" ) no-repeat center center; width: 22px; }" >> geoip.css
-    echo ".iegeoip_flag_"$cnt" {background: transparent url( \""$fl"\" ) no-repeat scroll left
-top; padding-left: 20px; }" >> geoip.css
+    echo ".geoip_flag_"$cnt" {background-image: url( \""$fl"\" ); }" >> geoip.css
 done
 

@@ -2703,7 +2703,6 @@ jQuery.extend({
 			// Set the correct header, if data is being sent
 			if ( s.data )
 				xhr.setRequestHeader("Content-Type", s.contentType);
-
 			// Set the If-Modified-Since header, if ifModified mode.
 			if ( s.ifModified )
 				xhr.setRequestHeader("If-Modified-Since",
@@ -2867,9 +2866,8 @@ jQuery.extend({
 	httpNotModified: function( xhr, url ) {
 		try {
 			var xhrRes = xhr.getResponseHeader("Last-Modified");
-
 			// Firefox always returns 200. check Last-Modified date
-			return xhr.status == 304 || xhrRes == jQuery.lastModified[url] ||
+			return xhr.status == 304 || (jQuery.lastModified[url] && xhrRes == jQuery.lastModified[url]) ||
 				jQuery.browser.safari && xhr.status == undefined;
 		} catch(e){}
 		return false;
