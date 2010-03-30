@@ -99,7 +99,7 @@ function findEXE( $exe )
 {
 	global $pathToExternals;
 	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-		return(is_executable($pathToExternals[$exe]));
+		return(is_executable($pathToExternals[$exe]) ? $pathToExternals[$exe] : false);
 	$path = explode(":", getenv('PATH'));
 	foreach($path as $tryThis)
 	{
@@ -174,6 +174,7 @@ $jResult.="theWebUI.systemInfo = {};\ntheWebUI.systemInfo.php = { canHandleBigFi
 $config = getConfFile('config.php');
 if($config)
 	$mtime = max($mtime,filemtime($config));
+$mtime = max($mtime,filemtime('../conf/config.php'));
 
 if($handle = opendir('../plugins')) 
 {
@@ -203,6 +204,11 @@ if($handle = opendir('../plugins'))
 				$jResult.="theWebUI.systemInfo.rTorrent.newMethodsSet = true;\n";
 	        	if($do_diagnostic)
 	        	{
+	        	        if(PHP_USE_GZIP && (findEXE('gzip')===false))
+	        	        {
+	        	        	@define('PHP_USE_GZIP', false);
+	        	        	$jResult.="log(theUILang.gzipNotFound);";
+	        	        }
 	        	        $up = getUploadsPath();
 	        	        $st = getSettingsPath();
 				@chmod($up,0777);
