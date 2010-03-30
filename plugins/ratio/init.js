@@ -26,7 +26,7 @@ if(plugin.enabled)
 			};
 		}
 		plugin.config.call(this,data);
-		theRequestManager.addRequest("trt", theRequestManager.map("cat=")+'$'+theRequestManager.map("d.views="),function(hash,torrent,value)
+		plugin.reqId = theRequestManager.addRequest("trt", theRequestManager.map("cat=")+'$'+theRequestManager.map("d.views="),function(hash,torrent,value)
 		{
 			torrent.ratiogroup = value;
 		});
@@ -237,4 +237,5 @@ plugin.onRemove = function()
 	theWebUI.getTable("trt").removeColumnById("ratiogroup");
 	if(thePlugins.isInstalled("rss"))
 		theWebUI.getTable("rss").removeColumnById("ratiogroup");
+	theRequestManager.removeRequest( "trt", plugin.reqId );
 }

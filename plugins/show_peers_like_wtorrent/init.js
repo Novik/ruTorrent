@@ -6,7 +6,7 @@ if(plugin.enabled)
 	theWebUI.config = function(data)
 	{
 		plugin.config.call(this,data);
-		theRequestManager.addRequest("trt", 
+		plugin.reqId1 = theRequestManager.addRequest("trt", 
 			theRequestManager.map('cat=')+
 			'"$'+theRequestManager.map("t.multicall=")+
 			theRequestManager.map("d.get_hash=")+
@@ -21,7 +21,7 @@ if(plugin.enabled)
 				torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
 			}
 		);
-		theRequestManager.addRequest("trt", 
+		plugin.reqId2 = theRequestManager.addRequest("trt", 
 			theRequestManager.map('cat=')+
 			'"$'+theRequestManager.map("t.multicall=")+
 			theRequestManager.map("d.get_hash=")+
@@ -37,4 +37,10 @@ if(plugin.enabled)
 			}
 		);
 	}
+}
+
+plugin.onRemove = function()
+{
+	theRequestManager.removeRequest( "trt", plugin.reqId1 );
+	theRequestManager.removeRequest( "trt", plugin.reqId2 );
 }

@@ -60,8 +60,6 @@ class rUnpack
 	public function startSilentTask($basename,$label,$name)
 	{
 		global $rootPath;
-		global $pathToUnrar;
-		global $pathToUnzip;
 
 		$theSettings = rTorrentSettings::load();
 		if($theSettings->isPluginRegistered('quotaspace'))
@@ -72,10 +70,8 @@ class rUnpack
 				return;
 		}
 
-		if(empty($pathToUnrar))
-			$pathToUnrar = "unrar";
-		if(empty($pathToUnzip))
-			$pathToUnzip = "unzip";
+		$pathToUnrar = getExternal("unrar");
+		$pathToUnzip = getExternal("unzip");
 		$outPath = $this->path;
 		$arh = $pathToUnrar;
 		if(is_dir($basename))
@@ -123,8 +119,6 @@ class rUnpack
 	public function startTask( $hash, $outPath, $mode = null, $fileno = null, $all = false )
 	{
 		global $rootPath;
-		global $pathToUnrar;
-		global $pathToUnzip;
 		$ret = false;
 
 		$theSettings = rTorrentSettings::load();
@@ -158,10 +152,8 @@ class rUnpack
 				{
 				        $taskNo = time();
 				        $dir = self::formatPath($taskNo);
-					if(empty($pathToUnrar))
-						$pathToUnrar = "unrar";
-					if(empty($pathToUnzip))
-						$pathToUnzip = "unzip";
+				        $pathToUnrar = getExternal('unrar');
+					$pathToUnzip = getExternal('unzip');
 					$arh = (($mode == "zip") ? $pathToUnzip : $pathToUnrar);
 					$c = new rXMLRPCCommand( "execute", array(
 				                "sh", "-c",
@@ -219,10 +211,8 @@ class rUnpack
 					{
 					        $taskNo = time();
 					        $dir = self::formatPath($taskNo);
-						if(empty($pathToUnrar))
-							$pathToUnrar = "unrar";
-						if(empty($pathToUnzip))
-							$pathToUnzip = "unzip";
+						$pathToUnrar = getExternal("unrar");
+						$pathToUnzip = getExternal("unzip");
 						$arh = (($mode == "zip") ? $pathToUnzip : $pathToUnrar);
 						if(is_dir($basename))
 						{

@@ -1,6 +1,5 @@
 <?php
 
-// util.php loads config and defines $pathToPHP variable
 require_once( "../../php/util.php" );
 require_once( "../../php/xmlrpc.php" );
 require_once( './util_rt.php' );
@@ -54,8 +53,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	if( $hash && strlen( $datadir ) > 0 && $datadir_runmode == 'rtorrent' )
 	{
 		$script_dir = rtAddTailSlash( dirname( __FILE__ ) );
-		$php = $pathToPHP;
-		if( !$php || $php == "" ) $php = "php";
+		$php = getPHP();
 		Debug( "script dir  : ".$script_dir );
 		Debug( "path to php : ".$php );
 		Debug( "hash        : ".$hash );
@@ -97,10 +95,8 @@ if( $ret[$len - 1] == ',' )
 	$ret = substr( $ret, 0, $len - 1 );
 $ret .= "]}";
 
-if(!ini_get("zlib.output_compression"))
-	header( "Content-Length: ".strlen( $ret ) );
 header("Content-Type: application/json; charset=UTF-8");
-echo $ret;
+cachedEcho($ret);
 
 Debug( "--- end ---" );
 

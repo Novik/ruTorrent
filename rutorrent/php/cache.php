@@ -63,6 +63,10 @@ class rCache
 	{
 	        return($this->dir."/".$rss->hash);
 	}
+	public function getModified()
+	{
+		return(filemtime($this->dir));
+	}
 }
 
 ?>

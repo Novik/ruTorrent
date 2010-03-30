@@ -8,8 +8,7 @@ $st = getSettingsPath();
 $needStart = true;
 if($do_diagnostic)
 {
-	if(!$pathToPHP || ($pathToPHP==""))
-		findRemoteEXE('php',"thePlugins.get('trafic').showError('theUILang.trafPHPNotFound');",$remoteRequests);
+	findRemoteEXE('php',"thePlugins.get('trafic').showError('theUILang.trafPHPNotFound');",$remoteRequests);
 	@chmod($st.'/trafic',0777);
 	@chmod($st.'/trafic/trackers',0777);
 	if( (is_dir($st.'/trafic') && !isUserHavePermission($theSettings->uid,$theSettings->gid,$st.'/trafic',0x0007)) ||

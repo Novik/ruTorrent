@@ -15,12 +15,9 @@ if($result)
 else
 {
 	header("HTTP/1.0 500 Server Error");
-	$result = "Link to XMLRPC failed. May be, rTorrent is down?";
 	header("Content-Type: text/html; charset=UTF-8");
+	$result = "Link to XMLRPC failed. May be, rTorrent is down?";
 }
-if(!ini_get("zlib.output_compression"))
-	header("Content-Length: ".strlen($result));
-header("Cache-Control: no-cache");
-echo $result;
+cachedEcho($result);
 
 ?>

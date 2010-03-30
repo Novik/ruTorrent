@@ -45,10 +45,6 @@
 			}
 		}
 	}
-	$content = '['.implode(',',$ret).']';
-	if(!ini_get("zlib.output_compression"))
-		header( "Content-Length: ".strlen( $content ) );
 	header("Content-Type: application/json; charset=UTF-8");
-	echo $content;
-
+	cachedEcho('['.implode(',',$ret).']');
 ?>

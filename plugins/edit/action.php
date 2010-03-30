@@ -130,8 +130,8 @@ $ret.="]";
 if($hash)
 	$ret.=", hash: '".$hash."'";
 $ret.="}";
-if(!ini_get("zlib.output_compression"))
-	header("Content-Length: ".strlen($ret));
+
 header("Content-Type: application/json; charset=UTF-8");
-echo $ret;
+cachedEcho($ret);
+
 ?>

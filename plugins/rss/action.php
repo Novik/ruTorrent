@@ -300,9 +300,7 @@ else
 	header("Content-Type: application/json; charset=UTF-8");
 }
 
-if(!ini_get("zlib.output_compression"))
-	header("Content-Length: ".strlen($content));
-echo $content;
+cachedEcho($content,$mngr->getModified());
 
 ob_flush();
 flush();

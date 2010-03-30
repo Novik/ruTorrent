@@ -18,6 +18,8 @@ class rTorrentSettings
 	public $plugins = array();
 	public $mostOfMethodsRenamed = false;
 	public $aliases = array();
+	public $started = 0;
+	public $idNotFound = false;
 
 	static public function load()
 	{
@@ -48,118 +50,131 @@ class rTorrentSettings
 	}
 	public function obtain()
 	{
-		$req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
-		if($req->run())
+		$req = new rXMLRPCRequest( new rXMLRPCCommand("system.client_version") );
+		if($req->run() && count($req->val))
 		{
 			$this->linkExist = true;
-			if(!$req->fault)
-				$this->badXMLRPCVersion = false;
-			$req = new rXMLRPCRequest( array(
-				new rXMLRPCCommand("get_directory"),
-				new rXMLRPCCommand("get_session"),
-				new rXMLRPCCommand("system.client_version"),
-				new rXMLRPCCommand("system.library_version"),
-				new rXMLRPCCommand("set_xmlrpc_size_limit",67108863)
-				) );
-			if($req->run() && !$req->fault && (count($req->val)>3))
+			$this->version = $req->val[0];
+			$parts = explode('.', $this->version);
+			$this->iVersion = 0;
+			for($i = 0; $i<count($parts); $i++)
+				$this->iVersion = ($this->iVersion<<8) + $parts[$i];
+			if($this->iVersion>0x806)
+				$this->mostOfMethodsRenamed = true;
+			else
+			if($this->iVersion==0x806)
 			{
-				$this->directory = $req->val[0];
-  		                $this->session = $req->val[1];
-				$this->version = $req->val[2];
-				$this->libVersion = $req->val[3];
-				$parts = explode('.', $this->version);
-				$this->iVersion = 0;
-				for($i = 0; $i<count($parts); $i++)
-					$this->iVersion = ($this->iVersion<<8) + $parts[$i];
-				if($this->iVersion>0x806)
+				$req = new rXMLRPCRequest( new rXMLRPCCommand("get_safe_sync") );
+				$req->important = false;
+				if($req->run() && $req->fault)
 					$this->mostOfMethodsRenamed = true;
-				else
-				if($this->iVersion==0x806)
+			}
+			if($this->mostOfMethodsRenamed)
+			{
+				$this->aliases = array(
+					"d.get_base_filename" 		=> "d.base_filename",
+					"d.get_base_path" 		=> "d.base_path",
+					"d.get_bitfield" 		=> "d.bitfield",
+					"d.get_creation_date" 		=> "d.creation_date",
+					"d.get_down_rate" 		=> "d.down.rate",
+					"d.get_down_total" 		=> "d.down.total",
+					"d.get_hash" 			=> "d.hash",
+					"d.get_local_id" 		=> "d.local_id",
+					"d.get_local_id_html" 		=> "d.local_id_html",
+					"d.get_name" 			=> "d.name",
+					"d.get_peer_exchange" 		=> "d.peer_exchange",
+					"d.get_skip_rate" 		=> "d.skip.rate",
+					"d.get_skip_total" 		=> "d.skip.total",
+					"d.get_up_rate" 		=> "d.up.rate",
+					"d.get_up_total" 		=> "d.up.total",
+					"d.save_session" 		=> "d.save_full_session",
+					"d.set_peer_exchange" 		=> "d.peer_exchange.set",
+					"get_handshake_log" 		=> "log.handshake",
+					"get_log.tracker" 		=> "log.tracker",
+					"get_max_file_size" 		=> "system.file.max_size",
+					"get_max_memory_usage" 		=> "pieces.memory.max",
+					"get_memory_usage" 		=> "pieces.memory.current",
+					"get_name" 			=> "system.session_name",
+					"get_preload_min_size" 		=> "pieces.preload.min_size",
+					"get_preload_required_rate" 	=> "pieces.preload.min_rate",
+					"get_preload_type" 		=> "pieces.preload.type",
+					"get_safe_free_diskspace" 	=> "pieces.sync.safe_free_diskspace",
+					"get_safe_sync" 		=> "pieces.sync.always_safe",
+					"get_session_lock"		=> "system.session.use_lock",
+					"get_session_on_completion" 	=> "system.session.on_completion",
+					"get_split_file_size" 		=> "system.file.split_size",
+					"get_split_suffix" 		=> "system.file.split_suffix",
+					"get_stats_not_preloaded" 	=> "pieces.stats_not_preloaded",
+					"get_stats_preloaded" 		=> "pieces.stats_preloaded",
+					"get_timeout_safe_sync" 	=> "pieces.sync.timeout_safe",
+					"get_timeout_sync" 		=> "pieces.sync.timeout",
+					"set_handshake_log" 		=> "log.handshake.set",
+					"set_log.tracker" 		=> "log.tracker.set",
+					"set_max_file_size"		=> "system.file.max_size.set",
+					"set_max_memory_usage"		=> "pieces.memory.max.set",
+					"set_name" 			=> "system.session_name.set",
+					"set_preload_min_size" 		=> "pieces.preload.min_size.set",
+					"set_preload_required_rate" 	=> "pieces.preload.min_rate.set",
+					"set_preload_type" 		=> "pieces.preload.type.set",
+					"set_safe_sync" 		=> "pieces.sync.always_safe.set",
+					"set_session_lock" 		=> "system.session.use_lock.set",
+					"set_session_on_completion" 	=> "system.session.on_completion.set",
+					"set_split_file_size" 		=> "system.file.split_size.set",
+					"set_split_suffix" 		=> "system.file.split_suffix.set",
+					"set_timeout_safe_sync" 	=> "pieces.sync.timeout_safe.set",
+					"set_timeout_sync" 		=> "pieces.sync.timeout.set",
+					"system.method.erase" 		=> "method.erase",
+					"system.method.get" 		=> "method.get",
+					"system.method.has_key" 	=> "method.has_key",
+					"system.method.insert" 		=> "method.insert",
+					"system.method.list_keys" 	=> "method.list_keys",
+					"system.method.set" 		=> "method.set",
+					"system.method.set_key" 	=> "method.set_key"
+				);
+			}
+                        $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
+			if($req->run())
+			{
+				if(!$req->fault)
+					$this->badXMLRPCVersion = false;
+				$req = new rXMLRPCRequest( array(
+					new rXMLRPCCommand("get_directory"),
+					new rXMLRPCCommand("get_session"),
+					new rXMLRPCCommand("system.library_version"),
+					new rXMLRPCCommand("set_xmlrpc_size_limit",67108863)
+					) );
+				if($req->run() && !$req->fault)
 				{
-					$req = new rXMLRPCRequest( new rXMLRPCCommand("get_safe_sync") );
-					$req->important = false;
-					if($req->run() && $req->fault)
+					$this->directory = $req->val[0];
+  		        	        $this->session = $req->val[1];
+					$this->libVersion = $req->val[2];
+					if(isLocalMode())
 					{
-						$this->mostOfMethodsRenamed = true;
-						$this->aliases = array(
-							"d.get_base_filename" 		=> "d.base_filename",
-							"d.get_base_path" 		=> "d.base_path",
-							"d.get_bitfield" 		=> "d.bitfield",
-							"d.get_creation_date" 		=> "d.creation_date",
-							"d.get_down_rate" 		=> "d.down.rate",
-							"d.get_down_total" 		=> "d.down.total",
-							"d.get_hash" 			=> "d.hash",
-							"d.get_local_id" 		=> "d.local_id",
-							"d.get_local_id_html" 		=> "d.local_id_html",
-							"d.get_name" 			=> "d.name",
-							"d.get_peer_exchange" 		=> "d.peer_exchange",
-							"d.get_skip_rate" 		=> "d.skip.rate",
-							"d.get_skip_total" 		=> "d.skip.total",
-							"d.get_up_rate" 		=> "d.up.rate",
-							"d.get_up_total" 		=> "d.up.total",
-							"d.save_session" 		=> "d.save_full_session",
-							"d.set_peer_exchange" 		=> "d.peer_exchange.set",
-							"get_handshake_log" 		=> "log.handshake",
-							"get_log.tracker" 		=> "log.tracker",
-							"get_max_file_size" 		=> "system.file.max_size",
-							"get_max_memory_usage" 		=> "pieces.memory.max",
-							"get_memory_usage" 		=> "pieces.memory.current",
-							"get_name" 			=> "system.session_name",
-							"get_preload_min_size" 		=> "pieces.preload.min_size",
-							"get_preload_required_rate" 	=> "pieces.preload.min_rate",
-							"get_preload_type" 		=> "pieces.preload.type",
-							"get_safe_free_diskspace" 	=> "pieces.sync.safe_free_diskspace",
-							"get_safe_sync" 		=> "pieces.sync.always_safe",
-							"get_session_lock"		=> "system.session.use_lock",
-							"get_session_on_completion" 	=> "system.session.on_completion",
-							"get_split_file_size" 		=> "system.file.split_size",
-							"get_split_suffix" 		=> "system.file.split_suffix",
-							"get_stats_not_preloaded" 	=> "pieces.stats_not_preloaded",
-							"get_stats_preloaded" 		=> "pieces.stats_preloaded",
-							"get_timeout_safe_sync" 	=> "pieces.sync.timeout_safe",
-							"get_timeout_sync" 		=> "pieces.sync.timeout",
-							"set_handshake_log" 		=> "log.handshake.set",
-							"set_log.tracker" 		=> "log.tracker.set",
-							"set_max_file_size"		=> "system.file.max_size.set",
-							"set_max_memory_usage"		=> "pieces.memory.max.set",
-							"set_name" 			=> "system.session_name.set",
-							"set_preload_min_size" 		=> "pieces.preload.min_size.set",
-							"set_preload_required_rate" 	=> "pieces.preload.min_rate.set",
-							"set_preload_type" 		=> "pieces.preload.type.set",
-							"set_safe_sync" 		=> "pieces.sync.always_safe.set",
-							"set_session_lock" 		=> "system.session.use_lock.set",
-							"set_session_on_completion" 	=> "system.session.on_completion.set",
-							"set_split_file_size" 		=> "system.file.split_size.set",
-							"set_split_suffix" 		=> "system.file.split_suffix.set",
-							"set_timeout_safe_sync" 	=> "pieces.sync.timeout_safe.set",
-							"set_timeout_sync" 		=> "pieces.sync.timeout.set",
-							"system.method.erase" 		=> "method.erase",
-							"system.method.get" 		=> "method.get",
-							"system.method.has_key" 	=> "method.has_key",
-							"system.method.insert" 		=> "method.insert",
-							"system.method.list_keys" 	=> "method.list_keys",
-							"system.method.set" 		=> "method.set",
-							"system.method.set_key" 	=> "method.set_key"
-						);
+	                                        if(!empty($this->session))
+	                                        {
+							$this->started = @filemtime($this->session.'/rtorrent.lock');
+							if($this->started===false)
+								$this->started = 0;
+						}
+						$randName = uniqid("/tmp/rutorrent-stats-");
+						$id = getExternal('id');
+						$req = new rXMLRPCRequest(
+        						new rXMLRPCCommand("execute",array("sh","-c",$id." -u > ".$randName." ; ".$id." -G >> ".$randName." ; echo ~ >> ".$randName)));
+						if($req->run() && !$req->fault && (($line=file($randName))!==false) && (count($line)>2))
+						{
+							$this->uid = intval(trim($line[0]));
+							$this->gid = explode(' ',trim($line[1]));
+							if(!empty($this->directory) &&
+								($this->directory[0]=='~'))
+								$this->directory = trim($line[2]).substr($this->directory,1);	
+							$req = new rXMLRPCRequest(new rXMLRPCCommand( "execute", array("rm",$randName) ));
+							$req->run();
+						}
+						else
+							$this->idNotFound = true;
 					}
+					$this->store();
 				}
-				if(is_dir($this->session) && isLocalMode())
-				{
-					$randName = uniqid("/tmp/rutorrent-stats-");
-					$req = new rXMLRPCRequest(
-        					new rXMLRPCCommand("execute",array("sh","-c","id -u > ".$randName." ; id -G >> ".$randName." ; echo ~ >> ".$randName)));
-					if($req->run() && !$req->fault && (($line=file($randName))!==false) && (count($line)>2))
-					{
-						$this->uid = intval(trim($line[0]));
-						$this->gid = explode(' ',trim($line[1]));
-						if(!empty($this->directory) &&
-							($this->directory[0]=='~'))
-							$this->directory = trim($line[2]).substr($this->directory,1);	
-						$req = new rXMLRPCRequest(new rXMLRPCCommand( "execute", array("rm",$randName) ));
-						$req->run();
-					}
-				}
-				$this->store();
 			}
 		}
 	}

@@ -8,13 +8,10 @@ $needStart = true;
 
 if( $do_diagnostic )
 {
-	if( !$pathToPHP || $pathToPHP == "" )
-		findRemoteEXE( 'php', "thePlugins.get('autotools').showError('theUILang.autotoolsPHPNotFound');", $remoteRequests );
-
+	findRemoteEXE( 'php', "thePlugins.get('autotools').showError('theUILang.autotoolsPHPNotFound');", $remoteRequests );
 	@chmod( $pathToAutoTools.'/label.php', 0644 );
 	@chmod( $pathToAutoTools.'/move.php',  0644 );
 	@chmod( $pathToAutoTools.'/watch.php', 0644 );
-
 	if( !isUserHavePermission( $theSettings->uid, $theSettings->gid, $pathToAutoTools.'/label.php',0x0004 ) )
 	{
 		$jResult .= "plugin.disable(); plugin.showError('theUILang.autotoolsLabelPhpNotAvailable');";

@@ -13,7 +13,7 @@ function injectScript(fname,initFunc)
 		else
 			s.onload = initFunc;
 	}
-	fname = fname + "?time=" + (new Date()).getTime();
+//	fname = fname + "?time=" + (new Date()).getTime();
 	if(s.setAttribute)
 		s.setAttribute('src', fname);
 	else

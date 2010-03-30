@@ -8,18 +8,13 @@ $st = getSettingsPath();
 $needStart = isLocalMode() && $theSettings->linkExist;
 if($do_diagnostic && $theSettings->linkExist)
 {
-	if((!$pathToPHP || ($pathToPHP=="")) && $needStart)
-		findRemoteEXE('php',"thePlugins.get('rss').showError('theUILang.rssPHPNotFound');",$remoteRequests);
-	if(!$pathToCurl || ($pathToCurl==""))
+	if($needStart)
 	{
-	        if($needStart)
-			findRemoteEXE('curl',"thePlugins.get('rss').showError('theUILang.rssCurlNotFound');",$remoteRequests);
-		if(findEXE('curl')==false)
-			$jResult.="plugin.showError('theUILang.rssCurlNotFound1');";
+		findRemoteEXE('php',"thePlugins.get('rss').showError('theUILang.rssPHPNotFound');",$remoteRequests);
+		findRemoteEXE('curl',"thePlugins.get('rss').showError('theUILang.rssCurlNotFound');",$remoteRequests);
 	}
-	else
-		if(!is_executable($pathToCurl))
-			$jResult.="plugin.showError('theUILang.rssCurlNotFound1');";
+	if(findEXE('curl')==false)
+		$jResult.="plugin.showError('theUILang.rssCurlNotFound1');";
 	@chmod($st.'/rss',0777);
 	@chmod($st.'/rss/cache',0777);
 	if($needStart && is_dir($st.'/rss/cache') && !isUserHavePermission($theSettings->uid,$theSettings->gid,$st.'/rss/cache',0x0007))

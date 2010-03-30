@@ -3,11 +3,9 @@ require_once( '../../php/xmlrpc.php' );
 
 if(isset($_REQUEST['result']))
 {
-	$content = 'log(theUILang.cantAccessData);';
-	if(!ini_get("zlib.output_compression"))
-		header("Content-Length: ".strlen($content));
 	header("Content-Type: text/html");
-	exit($content);
+	cachedEcho('log(theUILang.cantAccessData);');
+	exit();
 }
 
 if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))

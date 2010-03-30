@@ -27,6 +27,7 @@ plugin.init = function()
 			type: "GET",
 			timeout: 3000,
 		        async : true,
+		        cache: false,
 			url : "plugins/diskspace/action.php",
 			dataType : "json",
 			cache: false,
@@ -37,13 +38,14 @@ plugin.init = function()
 		});
 	};
 	plugin.check();
-	theRequestManager.addRequest( "ttl", null, plugin.check );
+	plugin.reqId = theRequestManager.addRequest( "ttl", null, plugin.check );
 	this.markLoaded();
 };
 
 plugin.onRemove = function()
 {
 	$("#meter-disk-td").remove();
+	theRequestManager.removeRequest( "ttl", plugin.reqId );
 }
 
 plugin.init();

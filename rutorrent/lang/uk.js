@@ -363,5 +363,6 @@
  ClearButton			: "Clear",
  dontShowTimeouts		: "Ignore message about timeouts",
  fullTableRender		: "Full render of large tables",
- showScrollTables		: "Show table contents while scrolling"
+ showScrollTables		: "Show table contents while scrolling",
+ idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable."
  };

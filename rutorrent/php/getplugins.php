@@ -97,6 +97,9 @@ function getPluginInfo( $name, $permissions )
 
 function findEXE( $exe )
 {
+	global $pathToExternals;
+	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
+		return(is_executable($pathToExternals[$exe]));
 	$path = explode(":", getenv('PATH'));
 	foreach($path as $tryThis)
 	{
@@ -115,7 +118,11 @@ function findRemoteEXE( $exe, $err, &$remoteRequests )
 		if(!array_key_exists($exe,$remoteRequests))
 		{
 			$path=realpath(dirname('.'));
-			$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", escapeshellarg(addslash($path)."test.sh")." ".$exe." ".escapeshellarg($st))));
+			global $pathToExternals;
+			$add = '';
+			if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
+				$add = " ".escapeshellarg($pathToExternals[$exe]);
+			$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", escapeshellarg(addslash($path)."test.sh")." ".$exe." ".escapeshellarg($st).$add)));
 			$req->run();
 		}
 		$remoteRequests[$exe][] = $err;
@@ -164,6 +171,10 @@ $jResult .= "theWebUI.showFlags = ".$perms.";\n";
 $jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";
 $jResult.="theWebUI.systemInfo = {};\ntheWebUI.systemInfo.php = { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")." };\n";
 
+$config = getConfFile('config.php');
+if($config)
+	$mtime = max($mtime,filemtime($config));
+
 if($handle = opendir('../plugins')) 
 {
 	$mtime = max($mtime,filemtime('../plugins'));
@@ -180,9 +191,13 @@ if($handle = opendir('../plugins'))
 		{
 			$jResult.="log(theUILang.badLinkTorTorrent);";
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: false, version : '?', libVersion : '?' };\n";
+			$mtime = null;
 		}
 		else
 		{
+		        if($theSettings->idNotFound)
+				$jResult.="log(theUILang.idNotFound);";
+			$mtime = max($mtime,$theSettings->started);
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' };\n";
 			if($theSettings->mostOfMethodsRenamed)
 				$jResult.="theWebUI.systemInfo.rTorrent.newMethodsSet = true;\n";
@@ -197,7 +212,7 @@ if($handle = opendir('../plugins'))
 					$jResult.="log(theUILang.badUploadsPath+' (".$up.")');";
 	        		if(!@file_exists($st.'/.') || !is_readable($st) || !is_writable($st))
         			        $jResult.="log(theUILang.badSettingsPath+' (".$st.")');";
-				if(isLocalMode() && !empty($theSettings->session))
+				if(isLocalMode() && !$theSettings->idNotFound)
 				{
 					if($theSettings->uid<0)
 						$jResult.="log(theUILang.badSessionPath+' (".$theSettings->session.")');";
@@ -248,6 +263,13 @@ if($handle = opendir('../plugins'))
 					if(!is_readable($php))
 						$php = NULL;
 					$init[] = array( "js" => $js, "php" => $php, "info" => $info, "name" => $file );
+					$user = getUser();
+					if($user!='')
+					{
+						$config = @filemtime($rootPath.'/conf/users/'.$user.'/plugins/'.$file.'/conf.php');
+						if($config)
+							$mtime = max($mtime,$config);					
+					}
 				}
 			}
 		} 
@@ -276,10 +298,5 @@ if($handle = opendir('../plugins'))
 	}
 	closedir($handle);
 }
-
-if(!ini_get("zlib.output_compression"))
-	header("Content-Length: ".strlen($jResult));
-header("Content-Type: application/javascript; charset=UTF-8");
-echo $jResult;
-
+cachedEcho($jResult,$mtime);
 ?>
