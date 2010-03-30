@@ -3,8 +3,7 @@
 $needStart = true;
 if($do_diagnostic)
 {
-	if(!$pathToPHP || ($pathToPHP==""))
-		findRemoteEXE('php',"thePlugins.get('scheduler').showError('theUILang.schedPHPNotFound');",$remoteRequests);
+	findRemoteEXE('php',"thePlugins.get('scheduler').showError('theUILang.schedPHPNotFound');",$remoteRequests);
 	@chmod($rootPath.'/plugins/scheduler/update.php',0644);
 	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/scheduler/update.php',0x0004))
 	{

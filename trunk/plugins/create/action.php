@@ -142,8 +142,6 @@ if(isset($_REQUEST['cmd']))
 if(empty($ret))
 	$ret = "{ no: 0, errors: [".$error."], status: -1, out: '' }";
 header("Content-Type: application/json; charset=UTF-8");
-if(!ini_get("zlib.output_compression"))
-	header("Content-Length: ".strlen($ret));
-echo $ret;
+cachedEcho($ret);
 
 ?>

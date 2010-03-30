@@ -35,7 +35,7 @@ http://snoopy.sourceforge.com
 
 *************************************************/
 
-require_once( dirname(__FILE__)."/../conf/config.php" );
+require_once( 'util.php' );
 
 class Snoopy
 {
@@ -114,7 +114,6 @@ class Snoopy
 
 	function fetch($URI)
 	{
-		global $pathToCurl;
 		$URI_PARTS = parse_url($URI);
 		if (!empty($URI_PARTS["user"]))
 			$this->user = $URI_PARTS["user"];
@@ -183,8 +182,6 @@ class Snoopy
 				return true;					
 				break;
 			case "https":
-				if(!$pathToCurl || ($pathToCurl==""))
-					$pathToCurl = 'curl';
 				$this->host = $URI_PARTS["host"];
 				if(!empty($URI_PARTS["port"]))
 					$this->port = $URI_PARTS["port"];
@@ -415,14 +412,8 @@ class Snoopy
 		if($this->use_gzip) {
 			// make sure PHP was built with --with-zlib
 			// and we can handle gzipp'ed data
-			if ( function_exists(gzinflate) ) {
+			if ( function_exists("gzinflate") ) {
 			   $headers .= "Accept-encoding: gzip\r\n";
-			}
-			else {
-			   trigger_error(
-			   	"use_gzip is on, but PHP was built without zlib support.".
-				"  Requesting file(s) without gzip encoding.", 
-				E_USER_NOTICE);
 			}
 		}
 		
@@ -589,7 +580,6 @@ class Snoopy
 	
 	function _httpsrequest($url,$URI,$http_method,$content_type="",$body="")
 	{
-		global $pathToCurl;
 		if($this->passcookies && $this->_redirectaddr)
 			$this->setcookies();
 
@@ -664,7 +654,7 @@ class Snoopy
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s"; 
-		exec($pathToCurl." -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".$cmdline_params." ".escapeshellarg($URI),$results,$return);
+		exec(escapeshellarg(getExternal('curl'))." -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".$cmdline_params." ".escapeshellarg($URI),$results,$return);
 		$this->_redirectaddr = false;
 		unset($this->headers);
 		

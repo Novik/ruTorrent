@@ -303,20 +303,24 @@ function getUploadsPath()
 	return( getProfilePath().'/torrents' );
 }
 
+function getExternal($exe)
+{
+	global $pathToExternals;
+	return( (isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe])) ? $pathToExternals[$exe] : $exe );
+}
+
 function getPHP()
 {
-	global $pathToPHP;
-	global $rootPath;
-	return( (!$pathToPHP || ($pathToPHP=="")) ? "php" : fullpath($pathToPHP,$rootPath) );
+	return( getExternal("php") );
 }
 
 function cachedEcho( $content, $mtime = null )
 {
-	header('Expires: ');
-	header('Cache-Control: ');
-	header('Pragma: ');
 	if(!is_null($mtime))
 	{
+		header('Expires: ');
+		header('Cache-Control: ');
+		header('Pragma: ');
 		header('Last-Modified: ' . date('r', $mtime));
 		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $mtime)
 		{
@@ -324,8 +328,30 @@ function cachedEcho( $content, $mtime = null )
 			return;
 		}
 	}
+	$len = strlen($content);
+	if(ini_get("zlib.output_compression") && ($len<2048))
+		ini_set("zlib.output_compression",false);
 	if(!ini_get("zlib.output_compression"))
-		header("Content-Length: ".strlen($content));
+	{
+	        if(PHP_USE_GZIP && isset($_SERVER['HTTP_ACCEPT_ENCODING']))
+	        {
+		        if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false ) 
+		        	$encoding = 'x-gzip'; 
+			else if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false )
+		        	$encoding = 'gzip'; 
+			if($encoding && ($len>=2048))
+			{
+				$gzip = getExternal('gzip');
+				header('Content-Encoding: '.$encoding); 
+				$randName = uniqid("/tmp/rutorrent-ans-");
+				file_put_contents($randName,$content);
+				passthru( $gzip." -".PHP_GZIP_LEVEL." -c < ".$randName );
+				unlink($randName);
+				return;
+			}
+		}
+		header("Content-Length: ".$len);
+	}
 	echo $content;	
 }
 

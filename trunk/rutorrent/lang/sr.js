@@ -363,5 +363,6 @@
  ClearButton			: "Clear",
  dontShowTimeouts		: "Ignore message about timeouts",
  fullTableRender		: "Full render of large tables",
- showScrollTables		: "Прикажи садржај табеле приликом померања"
+ showScrollTables		: "Прикажи садржај табеле приликом померања",
+ idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable."
  };

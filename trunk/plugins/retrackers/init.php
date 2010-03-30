@@ -5,8 +5,7 @@ require_once( '../plugins/retrackers/retrackers.php');
 $needStart = true;
 if($do_diagnostic)
 {
-	if(!$pathToPHP || ($pathToPHP==""))
-		findRemoteEXE('php',"thePlugins.get('retrackers').showError('theUILang.retrackersPHPNotFound');",$remoteRequests);
+	findRemoteEXE('php',"thePlugins.get('retrackers').showError('theUILang.retrackersPHPNotFound');",$remoteRequests);
 	@chmod($rootPath.'/plugins/retrackers/run.sh',0755);
 	@chmod($rootPath.'/plugins/retrackers/update.php',0644);
 	if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/retrackers/run.sh',0x0005))

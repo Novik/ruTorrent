@@ -823,6 +823,8 @@ rTorrentStub.prototype.getrssdetails = function()
 	this.content = "mode=getdesc&href="+encodeURIComponent(theWebUI.currentRSSDetailsID)+"&rss="+theWebUI.rssItems[theWebUI.currentRSSDetailsID].rss;
         this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
+	this.method = 'GET';
+	this.cache = true;
 }
 
 rTorrentStub.prototype.getrssdetailsResponse = function(xml)
@@ -950,6 +952,8 @@ rTorrentStub.prototype.rssrefresh = function()
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
 	this.dataType = "json";
+	this.method = 'GET';
+	this.cache = true;
 }
 
 rTorrentStub.prototype.rsstoggle = function()
@@ -978,6 +982,8 @@ rTorrentStub.prototype.getfilters = function()
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
 	this.dataType = "json";
+	this.method = 'GET';
+	this.cache = true;
 }
 
 rTorrentStub.prototype.getintervals = function()

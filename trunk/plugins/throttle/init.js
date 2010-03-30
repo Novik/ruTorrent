@@ -25,7 +25,7 @@ if(plugin.enabled)
 				return(plugin.trtFormat(table,arr));
 			};
 		}
-		theRequestManager.addRequest("trt", "d.get_throttle_name=",function(hash,torrent,value)
+		plugin.reqId = theRequestManager.addRequest("trt", "d.get_throttle_name=",function(hash,torrent,value)
 		{
 			torrent.throttle = value;
 		});
@@ -230,4 +230,5 @@ plugin.onRemove = function()
 	theWebUI.getTable("trt").removeColumnById("throttle");
 	if(thePlugins.isInstalled("rss"))
 		theWebUI.getTable("rss").removeColumnById("throttle");
+	theRequestManager.removeRequest( "trt", plugin.reqId );
 }

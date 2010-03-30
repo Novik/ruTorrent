@@ -363,5 +363,6 @@
  ClearButton			: "Verwijder",
  dontShowTimeouts		: "Negeer timeout berichten",
  fullTableRender		: "Gebruik volledige tabellen",
- showScrollTables		: "Toon tabel inhoud tijdens scrollen"
+ showScrollTables		: "Toon tabel inhoud tijdens scrollen",
+ idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable."
  };

@@ -2,11 +2,13 @@
 
 require_once( 'util.php' );
 
-$s = @file_get_contents(getSettingsPath()."/uisettings.json");
+$fname = getSettingsPath()."/uisettings.json";
+$s = @file_get_contents($fname);
 if($s==false)
 	$s = '{}';
-if(!ini_get("zlib.output_compression"))
-	header("Content-Length: ".strlen($s));
+else
+	$mtime = filemtime($fname);
 header("Content-Type: application/json; charset=UTF-8");
-echo $s;
+cachedEcho($s,$mtime);
+
 ?>
