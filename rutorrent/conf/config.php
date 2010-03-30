@@ -12,7 +12,7 @@
 	@define('LOG_RPC_FAULTS', true, true);
 
 	// for php	
-	@define('PHP_USE_GZIP', true, true);
+	@define('PHP_USE_GZIP', false, true);
 	@define('PHP_GZIP_LEVEL', 2, true);
 
 	$do_diagnostic = true;
