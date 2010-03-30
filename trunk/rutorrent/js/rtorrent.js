@@ -131,6 +131,9 @@ function rTorrentStub( URI )
 	this.faultString = [];
 	this.contentType = "text/xml; charset=UTF-8";
 	this.dataType = "xml";
+	this.method = "POST";
+	this.ifModified = false;
+	this.cache = false;
 
 	var loc = URI.indexOf("?");
 	if(loc>=0)
@@ -887,15 +890,15 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
         var stub = new rTorrentStub(URI);
 	$.ajax(
 	{
-		type: "POST",
+		type: stub.method,
 		url: stub.mountPoint,
 		async: (isASync == null) ? true : isASync,
 		contentType: stub.contentType,
 		data: (stub.content == null) ? "" : stub.content,
 		processData: false,
 		timeout: reqTimeout || 10000,
-		cache: true,
-		ifModified: true,
+		cache: stub.cache,
+		ifModified: stub.ifModified,
 		dataType: stub.dataType,
 		global: true,
 
