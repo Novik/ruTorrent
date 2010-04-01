@@ -534,12 +534,8 @@ class Torrent
 	        	        if( $item != '.' && $item != '..')
 				{
 					$path = $dir . DIRECTORY_SEPARATOR . $item;
-					$item = realpath( $path );
-					if(!is_link($path))
-						$path = $item;
-					else
-						if(strpos($item,$this->basedir.'/')===0)
-							continue;
+					if(is_link($path) && (strpos(realpath( $path ),$this->basedir.'/')===0))
+						continue;
 					if(is_dir( $path ))
 						$paths = array_merge( self::scandir( $path ), $paths );
 					else
