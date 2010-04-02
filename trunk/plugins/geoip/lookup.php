@@ -45,6 +45,5 @@
 			}
 		}
 	}
-	header("Content-Type: application/json; charset=UTF-8");
-	cachedEcho('['.implode(',',$ret).']');
+	cachedEcho('['.implode(',',$ret).']',"application/json");
 ?>

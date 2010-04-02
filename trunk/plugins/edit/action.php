@@ -131,7 +131,6 @@ if($hash)
 	$ret.=", hash: '".$hash."'";
 $ret.="}";
 
-header("Content-Type: application/json; charset=UTF-8");
-cachedEcho($ret);
+cachedEcho($ret,"application/json");
 
 ?>

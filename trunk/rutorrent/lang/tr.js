@@ -333,7 +333,6 @@
  badTestPath			: "rTorrent kullanıcısının ./test.sh dosyasına okuma/çalıştırma yetkisi yoktur. ruTorrent çalışmayacaktır. Chmod ayarlarını kontrol ediniz.",
  badSettingsPath2		: "rTorrent kullanıcısının settings klasöründe okuma/yazma/çalıştırma yetkisi yoktur. Chmod ayarlarını kontrol ediniz.",
  scrapeDownloaded		: "Yüklenen",
- badSessionPath			: "Web sunucu rTorrent'in session klasörüne erişim sağlayamıyor. ruTorrent çalışmayacaktır. Chmod ayarlarını kontrol ediniz.",
  Total				: "Toplam",
  PCRENotFound			: "PHP'nin PCRE modülü yüklü değildir. ruTorrent çalışmayacaktır.",
  addTorrentSuccess		: "torrent başarıyla rTorrent'ten geçmiştir.",
@@ -365,5 +364,6 @@
  fullTableRender		: "Full render of large tables",
  showScrollTables		: "Show table contents while scrolling",
  idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable.",
- gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work."
+ gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
+ cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable."
  };

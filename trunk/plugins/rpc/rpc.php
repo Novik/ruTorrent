@@ -7,17 +7,17 @@ if (!isset($HTTP_RAW_POST_DATA))
 $result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA);
 if($result)
 {
-	header("Content-Type: text/xml; charset=UTF-8");
+	$dataType = "text/xml";
 	$pos = strpos($result, "\r\n\r\n");
 	if($pos !== false)
 		$result = substr($result,$pos+4);
 }
 else
 {
+	$dataType = "text/html";
 	header("HTTP/1.0 500 Server Error");
-	header("Content-Type: text/html; charset=UTF-8");
 	$result = "Link to XMLRPC failed. May be, rTorrent is down?";
 }
-cachedEcho($result);
+cachedEcho($result,$dataType);
 
 ?>

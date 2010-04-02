@@ -9,7 +9,7 @@ $cmd = "get";
 if(isset($_REQUEST['mode']))
 	$cmd = $_REQUEST['mode'];
 $errorsReported = false;
-$dataType="json";
+$dataType="application/json";
 $mngr = new rRSSManager();
 switch($cmd)
 {
@@ -220,7 +220,7 @@ switch($cmd)
 	}
 	case "getdesc":
 	{
-		$dataType="xml";
+		$dataType="text/xml";
 		$val = '';
 	        if(isset($_REQUEST['rss']) && isset($_REQUEST['href']))
 			$val = $mngr->getDescription($_REQUEST['rss'],$_REQUEST['href']);
@@ -289,18 +289,12 @@ if($val===null)
 	$val = $mngr->get();
 	$errorsReported = true;
 }
-if($dataType=="xml")
-{
+if($dataType=="text/xml")
 	$content = '<?xml version="1.0" encoding="UTF-8"?><data><![CDATA['.$val.']]></data>';
-	header("Content-Type: text/xml; charset=UTF-8");
-}
 else
-{
 	$content = $val;
-	header("Content-Type: application/json; charset=UTF-8");
-}
 
-cachedEcho($content,$mngr->getModified());
+cachedEcho($content,$dataType,$mngr->getModified());
 
 ob_flush();
 flush();

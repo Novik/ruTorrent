@@ -3,7 +3,7 @@ require_once( 'unpack.php' );
 
 ignore_user_abort(true);
 set_time_limit(0);
-$ctype = "json";
+$ctype = "application/json";
 
 if(isset($_REQUEST['cmd']))
 {
@@ -15,7 +15,7 @@ if(isset($_REQUEST['cmd']))
 			$up = new rUnpack();
 			$up->set();
 			$ret = $up->get();
-			$ctype = "javascript";
+			$ctype = "application/javascript";
 			break;
 		}
 		case "start":
@@ -64,9 +64,6 @@ if(isset($_REQUEST['cmd']))
 }
 
 if(!empty($ret))
-{
-	header("Content-Type: application/".$ctype."; charset=UTF-8");
-	cachedEcho($ret);
-}
+	cachedEcho($ret,$ctype);
 
 ?>

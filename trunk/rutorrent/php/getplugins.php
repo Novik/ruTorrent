@@ -221,7 +221,7 @@ if($handle = opendir('../plugins'))
 				if(isLocalMode() && !$theSettings->idNotFound)
 				{
 					if($theSettings->uid<0)
-						$jResult.="log(theUILang.badSessionPath+' (".$theSettings->session.")');";
+						$jResult.="log(theUILang.cantObtainUser);";
 					else
 					{
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$up,0x0007))
@@ -304,5 +304,6 @@ if($handle = opendir('../plugins'))
 	}
 	closedir($handle);
 }
-cachedEcho($jResult,$mtime);
+
+cachedEcho($jResult,"application/javascript",$mtime);
 ?>

@@ -333,7 +333,6 @@
  badTestPath			: "Użytkownik, który uruchomił rTorrent nie ma praw zezwalających na odczyt/wykonywanie pliku ./test.sh . ruTorrent nie będzie działać..",
  badSettingsPath2		: "Użytkownik, który uruchomił rTorrent nie ma praw do odczytu/zapisu/wykonywania ustawień. ruTorrent nie będzie działać..",
  scrapeDownloaded		: "Downloaded",
- badSessionPath			: "Web server can't access rTorrent's session directory for read. ruTorrent nie będzie działać..",
  Total				: "Suma",
  PCRENotFound			: "Moduł PHP:PCRE nie jest zainstalowany. ruTorrent nie będzie działać.",
  addTorrentSuccess		: "Torrent został prawidłowo podany dla rTorrent.",
@@ -365,5 +364,6 @@
  fullTableRender		: "Full render of large tables",
  showScrollTables		: "Show table contents while scrolling",
  idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable.",
- gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work."
+ gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
+ cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable."
  };

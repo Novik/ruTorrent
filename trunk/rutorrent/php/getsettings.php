@@ -8,7 +8,6 @@ if($s==false)
 	$s = '{}';
 else
 	$mtime = filemtime($fname);
-header("Content-Type: application/json; charset=UTF-8");
-cachedEcho($s,$mtime);
+cachedEcho($s,"application/json",$mtime);
 
 ?>

@@ -9,6 +9,8 @@
  * http://www.gnu.org/licenses/gpl.html.
  */
 
+require_once( 'util.php' );
+
 class Torrent
 {
 	static public $errors = array();
@@ -369,19 +371,13 @@ class Torrent
 	 */
 	public function send( $filename = null ) 
 	{
-        	$data = $this->__toString();
-	        header( 'Content-type: application/x-bittorrent' );
-	        if(!ini_get("zlib.output_compression"))
-	        	header( 'Content-Length: ' . strlen( $data ) );
-	        header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $this->{'creation date'} ) . ' GMT');
-
 	        if(is_null( $filename ))
 			$filename = $this->info['name'].'.torrent';
 		if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 			$filename = rawurlencode($filename);
-
         	header( 'Content-Disposition: attachment; filename="'.$filename.'"' );
-	        exit($data);
+        	cachedEcho( $this->__toString(), 'application/x-bittorrent', $this->{'creation date'} );
+	        exit();
     	}
 
 	/** Build torrent info

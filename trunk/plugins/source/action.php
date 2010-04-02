@@ -3,8 +3,7 @@ require_once( '../../php/rtorrent.php' );
 
 if(isset($_REQUEST['result']))
 {
-	header("Content-Type: text/html");
-	cachedEcho('log(theUILang.cantFindTorrent);');
+	cachedEcho('log(theUILang.cantFindTorrent);',"text/html");
 	exit();
 }
 if(isset($_REQUEST['hash']))
