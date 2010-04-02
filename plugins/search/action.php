@@ -3,6 +3,6 @@ require_once( 'search.php' );
 
 $sites = new rSearch();
 $sites->set();
-cachedEcho($sites->get());
+cachedEcho($sites->get(),"application/javascript");
 
 ?>

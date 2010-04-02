@@ -334,7 +334,6 @@
  badTestPath			: "rTorrent ne peut pas acc\u00e9der au fichier ./test.sh en Lecture/Ecriture. ruTorrent ne fonctionnera pas.",
  badSettingsPath2		: "rTorrent ne peut pas acc\u00e9der au dossier de configuration en Lecture/Ecriture. ruTorrent ne fonctionnera pas.",
  scrapeDownloaded		: "T\u00e9l\u00e9charg\u00e9",
- badSessionPath			: "Le serveur web n'a pas acc\u00e8s en lecture au dossier des session de rTorrent. ruTorrent ne fonctionnera pas.",
  Total				: "Total",
  PCRENotFound			: "Le module PCRE de PHP n'est pas install\u00e9. ruTorrent ne fonctionnera pas.",
  addTorrentSuccess		: "Torrent ajouter \u00e0 rTorrent avec succ\u00e8s.",
@@ -366,5 +365,6 @@
  fullTableRender		: "Rendu complet des grands tableaux",
  showScrollTables		: "Montrer le contenu des tableaux pendant le d\u00e9filement",
  idNotFound			: "rTorrent ne peut pas acc\u00e9der au program 'id'. Certaines fonctionnalit\u00e9s ne seront pas disponibles.",
- gzipNotFound			: "Le serveur web n'a pas acc\u00e8s au programme 'gzip'. ruTorrent ne fonctionnera pas."
+ gzipNotFound			: "Le serveur web n'a pas acc\u00e8s au programme 'gzip'. ruTorrent ne fonctionnera pas.",
+ cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable."
  };

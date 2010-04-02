@@ -333,7 +333,6 @@
  badTestPath			: "rTorrent's user can't access file ./test.sh for read/execute. ruTorrent will not work.",
  badSettingsPath2		: "rTorrent's user can't access settings directory for read/write/execute. ruTorrent will not work.",
  scrapeDownloaded		: "Downloaded",
- badSessionPath			: "Web-server can't access rTorrent's session directory for read. ruTorrent will not work.",
  Total					: "Укупно",
  PCRENotFound			: "PHP module PCRE is not installed. ruTorrent will not work.",
  addTorrentSuccess		: "torrent was successfully passed to rTorrent.",
@@ -365,5 +364,6 @@
  fullTableRender		: "Full render of large tables",
  showScrollTables		: "Прикажи садржај табеле приликом померања",
  idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable.",
- gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work."
+ gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
+ cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable."
  };

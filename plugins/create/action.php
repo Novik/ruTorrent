@@ -141,7 +141,6 @@ if(isset($_REQUEST['cmd']))
 
 if(empty($ret))
 	$ret = "{ no: 0, errors: [".$error."], status: -1, out: '' }";
-header("Content-Type: application/json; charset=UTF-8");
-cachedEcho($ret);
+cachedEcho($ret,"application/json");
 
 ?>

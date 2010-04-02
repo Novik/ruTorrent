@@ -333,7 +333,6 @@
  badTestPath			: "rTorrent должен иметь доступ на чтение/выполнение к файлу ./test.sh",
  badSettingsPath2		: "rTorrent должен иметь доступ на чтение/запись/выполнение к директории settings.",
  scrapeDownloaded		: "Завершенные",
- badSessionPath			: "Веб сервер должен иметь доступ на чтение к директории session rTorrent.",
  Total				: "Всего",
  PCRENotFound			: "PHP модуль PCRE не установлен. ruTorrent не будет работать.",
  addTorrentSuccess		: "Закачка успешно передана в rTorrent.",
@@ -365,5 +364,6 @@
  fullTableRender		: "Рендерить большие таблицы полностью",
  showScrollTables		: "Показывать содержимое таблиц при скроллировании",
  idNotFound			: "Пользователю rTorrent не доступна программа id. Часть функциональности будет недоступна.",
- gzipNotFound			: "Веб сервер не имеет доступа к программе 'gzip'. ruTorrent не будет работать."
+ gzipNotFound			: "Веб сервер не имеет доступа к программе 'gzip'. ruTorrent не будет работать.",
+ cantObtainUser			: "ruTorrent не может определить uid пользователя rtorrent. Часть функциональности будет недоступна."
  };

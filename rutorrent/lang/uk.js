@@ -333,7 +333,6 @@
  badTestPath			: "Користувач rTorrent-а не має доступа до файла ./test.sh на читання/виконання. ruTorrent не працюватиме",
  badSettingsPath2		: "Користувач rTorrent-а не має доступа до теки налаштування на читання/запис/виконання. ruTorrent не працюватиме",
  scrapeDownloaded		: "Завантажено",
- badSessionPath			: "Web не має доступа до теки сесії rTorrent на читання. ruTorrent не працюватиме",
  Total				: "Загалом",
  PCRENotFound			: "PHP модуль PCRE не встановлено. ruTorrent не працюватиме",
  addTorrentSuccess		: "torrent-файл успішно додався до rTorrent",
@@ -365,5 +364,6 @@
  fullTableRender		: "Full render of large tables",
  showScrollTables		: "Show table contents while scrolling",
  idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable.",
- gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work."
+ gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
+ cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable."
  };

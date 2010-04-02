@@ -1,7 +1,5 @@
 if(plugin.enabled)
 {
-	plugin.loadMainCSS();
-
 	plugin.config = theWebUI.config;
 	theWebUI.config = function(data)
 	{

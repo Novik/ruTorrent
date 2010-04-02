@@ -314,8 +314,10 @@ function getPHP()
 	return( getExternal("php") );
 }
 
-function cachedEcho( $content, $mtime = null )
+function cachedEcho( $content, $type = null, $mtime = null )
 {
+	if(!is_null($type))
+		header("Content-Type: ".$type."; charset=UTF-8");
 	if(!is_null($mtime))
 	{
 		header('Expires: ');

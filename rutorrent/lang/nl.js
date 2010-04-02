@@ -333,7 +333,6 @@
  badTestPath			: "rTorrent user heeft geen lees/uitvoer rechten op ./test.sh. ruTorrent zal niet werken.",
  badSettingsPath2		: "rTorrent user heeft geen lees/schrijf/uitvoer rechten op de settings folder. ruTorrent zal niet werken.",
  scrapeDownloaded		: "Gedownload",
- badSessionPath			: "Webserver user heeft geen lees rechten op rTorrent's sessie folder. ruTorrent zal niet werken.",
  Total					: "Totaal",
  PCRENotFound			: "PHP module PCRE is niet geinstalleerd. ruTorrent zal niet werken.",
  addTorrentSuccess		: "Torrent is succesvol verstuurd naar rtorrent.",
@@ -365,5 +364,6 @@
  fullTableRender		: "Gebruik volledige tabellen",
  showScrollTables		: "Toon tabel inhoud tijdens scrollen",
  idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable.",
- gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work."
+ gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
+ cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable."
  };

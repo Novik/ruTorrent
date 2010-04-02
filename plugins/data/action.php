@@ -3,8 +3,7 @@ require_once( '../../php/xmlrpc.php' );
 
 if(isset($_REQUEST['result']))
 {
-	header("Content-Type: text/html");
-	cachedEcho('log(theUILang.cantAccessData);');
+	cachedEcho('log(theUILang.cantAccessData);',"text/html");
 	exit();
 }
 

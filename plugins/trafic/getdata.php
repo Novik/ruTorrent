@@ -29,7 +29,6 @@ if(isset($_REQUEST['tracker']))
 	}
 }
 
-header("Content-Type: application/json; charset=UTF-8");
-cachedEcho($val);
+cachedEcho($val,"application/json");
 
 ?>

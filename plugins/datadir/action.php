@@ -95,8 +95,7 @@ if( $ret[$len - 1] == ',' )
 	$ret = substr( $ret, 0, $len - 1 );
 $ret .= "]}";
 
-header("Content-Type: application/json; charset=UTF-8");
-cachedEcho($ret);
+cachedEcho($ret,"application/json");
 
 Debug( "--- end ---" );
 

@@ -333,7 +333,6 @@
  badTestPath		: "rTorrent's 所設定的使用者無權限讀/執行./test.sh，ruTorrent 無法正常運作",
  badSettingsPath2	: "rTorrent's 無法存取(讀/寫/執行)您所設定的使用者家目錄，ruTorrent 無法正常運作",
  scrapeDownloaded	: "已下載",
- badSessionPath		: "網頁伺服器無法讀取 rTorrent 的 session 目錄，ruTorrent 無法正常運作",
  Total			: "總計",
  PCRENotFound		: "PHP 中未安裝 PCRE 模組，ruTorrent 無法正常運>作",
  addTorrentSuccess	: "torrent 檔案上傳完成",
@@ -365,5 +364,6 @@
  fullTableRender		: "Full render of large tables",
  showScrollTables		: "Show table contents while scrolling",
  idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable.",
- gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work."
+ gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
+ cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable."
  };
