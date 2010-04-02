@@ -82,8 +82,15 @@ var theRequestManager =
 			"split_file_size", "split_suffix", "timeout_safe_sync", "timeout_sync", "tracker_numwant",
 			"use_udp_trackers", "max_uploads_div", "max_open_sockets"
 		],
-
 		handlers: []
+	},
+	init: function()
+	{
+	        var self = this;
+		$.each( ["trt","trk", "fls", "prs", "ttl", "prp", "stg"], function(ndx,cmd)
+		{
+			self[cmd].count = self[cmd].commands.length;
+		});
 	},
 	addRequest: function( system, command, responseHandler )
 	{
@@ -111,6 +118,8 @@ var theRequestManager =
 		return( this.map(this[cmd].commands[no]) );
 	}
 };
+
+theRequestManager.init();
 
 function rXMLRPCCommand( cmd )
 {
@@ -632,7 +641,7 @@ rTorrentStub.prototype.getsettingsResponse = function(xml)
 			break;
 	}
 
-	for( var cmd in theRequestManager.stg.commands )
+	for( var cmd=0; cmd<theRequestManager.stg.count; cmd++ )
 	{
 	        var v = this.getValue(values,i);
 		switch(theRequestManager.stg.commands[cmd])
