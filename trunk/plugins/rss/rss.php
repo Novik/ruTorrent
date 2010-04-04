@@ -681,9 +681,9 @@ class rRSSManager
 		$this->history = new rRSSHistory();
 		$this->cache->get($this->history);
 	}
-	public function getModified()
+	public function getModified($obj = null)
 	{
-		return($this->cache->getModified());
+		return($this->cache->getModified($obj));
 	}
         public function getFilters()
 	{
