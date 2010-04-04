@@ -63,9 +63,11 @@ class rCache
 	{
 	        return($this->dir."/".$rss->hash);
 	}
-	public function getModified()
+	public function getModified( $obj = null )
 	{
-		return(filemtime($this->dir));
+		return(filemtime( is_null($obj) ? $this->dir : 
+			(is_object($obj) ? $this->getName($obj) : $this->dir."/".$obj) ));
+			
 	}
 }
 

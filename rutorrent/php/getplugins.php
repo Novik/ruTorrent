@@ -265,9 +265,13 @@ if($handle = opendir('../plugins'))
 					$js = "../plugins/".$file."/init.js";
 	                	        if(!is_readable($js))
 						$js = NULL;
+					else
+						$mtime = max($mtime,filemtime($js));
         		                $php = "../plugins/".$file."/init.php";
 					if(!is_readable($php))
 						$php = NULL;
+					else
+						$mtime = max($mtime,filemtime($php));
 					$init[] = array( "js" => $js, "php" => $php, "info" => $info, "name" => $file );
 					$user = getUser();
 					if($user!='')
