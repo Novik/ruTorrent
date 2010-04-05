@@ -115,7 +115,8 @@ if(plugin.enabled && plugin.canChangeTabs())
 		{
 			if(arr.labels[i]!=0)
 			{       	
-				var dt = new Date(arr.labels[i]*1000+theWebUI.deltaTime);
+//				var dt = new Date(arr.labels[i]*1000+theWebUI.deltaTime);
+				var dt = new Date(arr.labels[i]*1000);
 				var month = dt.getMonth()+1;
 				month = (month < 10) ? ("0" + month) : month;
 				var day = dt.getDate();
@@ -123,7 +124,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 				var h = dt.getHours();
 				h = (h < 10) ? ("0" + h) : h;
 				var now = new Date();
-//				now.setTime(now.getTime()-theWebUI.deltaTime);
+				now.setTime(now.getTime()-theWebUI.deltaTime);
 				var actualData = true;
 			
 			        switch(arr.mode)
