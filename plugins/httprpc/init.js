@@ -1,7 +1,8 @@
+theRequestManager.torrents = {};
+
 plugin.list = rTorrentStub.prototype.list;
 rTorrentStub.prototype.list = function()
 {
-        this.torrents = cloneObject(theWebUI.torrents);
 	this.mountPoint = "plugins/httprpc/action.php";
 	this.dataType = "json";
 	this.contentType = "application/x-www-form-urlencoded";
@@ -15,25 +16,37 @@ rTorrentStub.prototype.list = function()
 plugin.listResponse = rTorrentStub.prototype.listResponse;
 rTorrentStub.prototype.listResponse = function(data)
 {
-        var ret = {};
-        ret.torrents = this.torrents;
+//log(json_encode(data));
+        var ret = { labels: {}, torrents: {} };
         theRequestManager.cid = data.cid;
 	if(data.d)
 		$.each( data.d, function( ndx, hash )
 		{
-			delete ret.torrents[hash];
+			delete theRequestManager.torrents[hash];
 		});
-	$.each( data.t, function( ndx, values )
+	$.each( data.t, function( hash, values )
+	{
+		if($type(theRequestManager.torrents[hash]))
+		{
+			$.each( values, function( ndx, value )
+			{
+				theRequestManager.torrents[hash][ndx] = value;
+			});
+		}
+		else
+			theRequestManager.torrents[hash] = values;
+	});
+	$.each( theRequestManager.torrents, function( hash, values )
 	{
 		var torrent = {};
 		var state = 0;
-		var is_open = iv(values[1]);
-		var is_hash_checking = iv(values[2]);
-		var is_hash_checked = iv(values[3]);
-		var get_state = iv(values[4]);
-		var get_hashing = iv(values[24]);
-		var is_active = iv(values[29]);
-		torrent.msg = values[30];
+		var is_open = iv(values[0]);
+		var is_hash_checking = iv(values[1]);
+		var is_hash_checked = iv(values[2]);
+		var get_state = iv(values[3]);
+		var get_hashing = iv(values[23]);
+		var is_active = iv(values[28]);
+		torrent.msg = values[29];
 		if(is_open!=0)
 		{
 			state|=dStatus.started;
@@ -47,65 +60,61 @@ rTorrentStub.prototype.listResponse = function(data)
 		if(torrent.msg.length && torrent.msg!="Tracker: [Tried all trackers.]")
 			state|=dStatus.error;
 		torrent.state = state;
-		torrent.name = values[5];
-		torrent.size = values[6];
-		var get_completed_chunks = iv(values[7]);
-		var get_hashed_chunks = iv(values[25]);
-		var get_size_chunks = iv(values[8]);
+		torrent.name = values[4];
+		torrent.size = values[5];
+		var get_completed_chunks = iv(values[6]);
+		var get_hashed_chunks = iv(values[24]);
+		var get_size_chunks = iv(values[7]);
 		var chunks_processing = (is_hash_checking==0) ? get_completed_chunks : get_hashed_chunks;
 		torrent.done = Math.floor(chunks_processing/get_size_chunks*1000);
-		torrent.downloaded = iv(values[9]);
-		torrent.uploaded = iv(values[10]);
-		torrent.ratio = iv(values[11]);
-		torrent.ul = iv(values[12]);
-		torrent.dl = iv(values[13]);
-		var get_chunk_size = iv(values[14]);
+		torrent.downloaded = iv(values[8]);
+		torrent.uploaded = iv(values[9]);
+		torrent.ratio = iv(values[10]);
+		torrent.ul = iv(values[11]);
+		torrent.dl = iv(values[12]);
+		var get_chunk_size = iv(values[13]);
 		torrent.eta = (torrent.dl>0) ? Math.floor((get_size_chunks-get_completed_chunks)*get_chunk_size/torrent.dl) : -1;
 		try {
-		torrent.label = $.trim(decodeURIComponent(values[15]));
+		torrent.label = $.trim(decodeURIComponent(values[14]));
 		} catch(e) { torrent.label = ''; }
-		var get_peers_not_connected = iv(values[17]);
-		var get_peers_connected = iv(values[18]);
-		var get_peers_all = get_peers_not_connected+get_peers_connected;
-		torrent.peers_actual = values[16];
-		torrent.peers_all = get_peers_all;
-		torrent.seeds_actual = values[19];
-		torrent.seeds_all = get_peers_all;
-		torrent.remaining = values[20];
-		torrent.priority = values[21];
-		torrent.state_changed = values[22];
-		torrent.skip_total = values[23];
-		torrent.base_path = values[26];
-		torrent.created = values[27];
-		torrent.tracker_focus = values[28];
-		try {
-		torrent.comment = values[31];
-		if(torrent.comment.search("VRS24mrker")==0)
-			torrent.comment = decodeURIComponent(torrent.comment.substr(10));
-		} catch(e) { torrent.comment = ''; }
-		torrent.free_diskspace = values[32];
-		torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
-		torrent.peers = torrent.peers_actual + " (" + torrent.peers_all + ")";
-		var hash = values[0];
-		$.each( theRequestManager.trt.handlers, function(i,handler)
-		{
-		        if(handler)
-				handler.response( hash, torrent, (handler.ndx===null) ? null : values[handler.ndx] );
-		});
-		ret.torrents[hash] = torrent;
-	});
-	ret.labels = {};
-	$.each( ret.torrents, function( hash, torrent )
-	{
+
 		if(torrent.label.length>0)
 		{
 			if(!$type(ret.labels[torrent.label]))
 				ret.labels[torrent.label] = 1;
 			else
 				ret.labels[torrent.label]++;
-		}		
+		}
+
+		var get_peers_not_connected = iv(values[16]);
+		var get_peers_connected = iv(values[17]);
+		var get_peers_all = get_peers_not_connected+get_peers_connected;
+		torrent.peers_actual = values[15];
+		torrent.peers_all = get_peers_all;
+		torrent.seeds_actual = values[18];
+		torrent.seeds_all = get_peers_all;
+		torrent.remaining = values[19];
+		torrent.priority = values[20];
+		torrent.state_changed = values[21];
+		torrent.skip_total = values[22];
+		torrent.base_path = values[25];
+		torrent.created = values[26];
+		torrent.tracker_focus = values[27];
+		try {
+		torrent.comment = values[30];
+		if(torrent.comment.search("VRS24mrker")==0)
+			torrent.comment = decodeURIComponent(torrent.comment.substr(10));
+		} catch(e) { torrent.comment = ''; }
+		torrent.free_diskspace = values[31];
+		torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
+		torrent.peers = torrent.peers_actual + " (" + torrent.peers_all + ")";
+		$.each( theRequestManager.trt.handlers, function(i,handler)
+		{
+		        if(handler)
+				handler.response( hash, torrent, (handler.ndx===null) ? null : values[handler.ndx-1] );
+		});
+		ret.torrents[hash] = torrent;
 	});
-	this.torrents = ret.torrents;
 	return( ret );
 }
 

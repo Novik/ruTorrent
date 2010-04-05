@@ -6,6 +6,29 @@ define("SIZEOF_MD5", 	32);
 
 require_once( dirname(__FILE__)."/../../php/util.php" );
 
+function array_diff_assoc_recursive($array1, $array2)
+{
+	foreach($array1 as $key => $value)
+	{
+		if(is_array($value))
+		{
+			if(!isset($array2[$key]))
+				$difference[$key] = $value;
+			elseif(!is_array($array2[$key]))
+				$difference[$key] = $value;
+			else
+			{
+				$diff = array_diff_assoc_recursive($value, $array2[$key]);
+				if($diff!==false)
+					$difference[$key] = $diff;
+			}
+		}
+		elseif(!isset($array2[$key]) || $array2[$key] != $value)
+			$difference[$key] = $value;
+	}
+	return(isset($difference) ? $difference : false);
+} 
+
 class rpcCache
 {
 
@@ -18,52 +41,29 @@ class rpcCache
 			mkdir($this->dir, 0777);
         }
 	
-	protected function makeHash( $torrents = array() )
+	protected function store( $torrents = array() )
 	{
-		$torrentsHash = array();
-		foreach($torrents as $torrent)
+	        $cid = 0;
+		$result = serialize($torrents);
+		if($result!==false)
 		{
-			$hash = '';
-			foreach($torrent as $var)
-				$hash.=$var;
-			$torrentsHash[$torrent[0]] = md5($hash);
+			$cid = crc32($result);
+			file_put_contents($this->dir.'/'.dechex($cid),$result);
 		}
-		return($torrentsHash);
-	}
-
-	protected function storeHash( $torrentsHash = array() )
-	{
-		$cid = time();
-		$w = fopen($this->dir.'/'.$cid, "wb");
-		foreach($torrentsHash as $key=>$data)
-		{
-			fputs($w,$key);
-			fputs($w,$data);
-		}
-		fclose($w);
 		$this->strip();
 		return($cid);
 	}
 
-	protected function loadHash( $cid )
+	protected function load( $cid )
 	{
-		$torrentsHash = array();
+		$torrents = array();
 		if($cid)
 		{
-			$filename = $this->dir.'/'.$cid;
-			if( is_readable($filename) && is_file($filename) )
-			{
-				$w = fopen($filename, "rb");
-				while(!feof($w))
-				{
-					$hash = fgets($w,SIZEOF_HASH+1);
-					if($hash!=false)
-						$torrentsHash[$hash] = fgets($w,SIZEOF_MD5+1);
-	    			}
-				fclose($w);
-			}
+			$ret = @file_get_contents($this->dir.'/'.dechex($cid));
+			if($ret!==false)
+				$torrents = unserialize($ret);
 		}
-		return($torrentsHash);
+		return($torrents);
 	}
 
 	protected function strip()
@@ -93,21 +93,16 @@ class rpcCache
 		}
 	}
 
-	public function calcDifference( $torrents, &$cid, &$mTorrents, &$dTorrents )
+	public function calcDifference( &$cid, &$torrents, &$dTorrents )
 	{
-		$torrentsHash = $this->makeHash( $torrents );
-		$oldHash = $this->loadHash( $cid );
-		$cid = $this->storeHash( $torrentsHash );
-		$mod = array_diff_assoc($torrentsHash,$oldHash);
-		foreach($torrents as $torrent)
-		{
-			if(array_key_exists($torrent[0],$mod))
-				$mTorrents[] = $torrent;
-		}
-		$del = array_diff_key($oldHash,$torrentsHash);
+		$oldTorrents = $this->load( $cid );
+		$cid = $this->store( $torrents );
+		$mod = array_diff_assoc_recursive($torrents,$oldTorrents);
+		$del = array_diff_key($oldTorrents,$torrents);
 		foreach($del as $hash=>$val)
 			$dTorrents[] = $hash;
-		return(count($oldHash)>0);
+		$torrents = $mod;			
+		return(count($oldTorrents)>0);
 	}
 
 }
