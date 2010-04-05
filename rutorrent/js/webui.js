@@ -1907,7 +1907,7 @@ var theWebUI =
 			$("#et").text(theConverter.time(Math.floor((new Date().getTime()-theWebUI.deltaTime)/1000-iv(d.state_changed)),true));
 			$("#wa").text(theConverter.bytes(d.skip_total,2));
 	        	$("#bf").text(d.base_path);
-	        	$("#co").text(theConverter.date(d.created));
+	        	$("#co").text(theConverter.date(iv(d.created)+theWebUI.deltaTime/1000));
 			$("#tu").text(	$type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
 	        	$("#hs").text(this.dID);
 			$("#ts").text(d.msg);

@@ -61,7 +61,7 @@ rSpeedGraph.prototype.draw = function()
 			clearCanvas( self.owner.get(0) );
 			function xTick(n) 
 			{
-				var dt = new Date(n*1000-theWebUI.deltaTime);
+				var dt = new Date(n*1000);
 				var h = dt.getHours();
 				var m = dt.getMinutes();
 				var s = dt.getSeconds();
