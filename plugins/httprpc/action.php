@@ -162,10 +162,10 @@ switch($mode)
 	        	$result = array();
 			$dht_active = $req->val[0];
                         $dht = $req->val[1];
-			$i = 2;
+			$i = 3;
                         if($dht_active!='0')
 			{
-				$i+=12;
+				$i+=11;
 				$dht = $req->val[5];
 			}
 			$result = array_slice($req->val, $i, count($cmds));
@@ -294,7 +294,7 @@ switch($mode)
 		foreach($vs as $ndx=>$v)
 		{
 			if($ss[$ndx][0]=='n')
-				$v = intval($v);
+				$v = floatval($v);
 			if($ss[$ndx]=="ndht")
 				$cmd = new rXMLRPCCommand('dht',(($v==0) ? "disable" : "auto"));
 			else
