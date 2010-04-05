@@ -103,21 +103,14 @@ switch($mode)
 		if($req->success())
 		{
 			$theCache = new rpcCache();
-			$mTorrents = array(); 
 			$dTorrents = array();
 			$torrents = array();
 			for($i = 0; $i<count($req->val); $i+=$cnt)
-				$torrents[] = array_slice($req->val, $i, $cnt);
-			$cachePresent = $theCache->calcDifference( $torrents, $cid, $mTorrents, $dTorrents );
-			$result = array( "cid"=>$cid );
-			if($cachePresent)
-			{
-				$result["t"] = $mTorrents;
-				if(count($dTorrents))
-					$result["d"] = $dTorrents;
-			}
-			else
-				$result["t"] = $torrents;
+				$torrents[$req->val[$i]] = array_slice($req->val, $i+1, $cnt-1);
+			$theCache->calcDifference( $cid, $torrents, $dTorrents );
+			$result = array( "t"=>$torrents, "cid"=>$cid );
+			if(count($dTorrents))
+				$result["d"] = $dTorrents;
 		}
 		break;
 	}
