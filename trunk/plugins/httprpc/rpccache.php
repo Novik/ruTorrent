@@ -101,7 +101,7 @@ class rpcCache
 		$del = array_diff_key($oldTorrents,$torrents);
 		foreach($del as $hash=>$val)
 			$dTorrents[] = $hash;
-		$torrents = $mod;			
+		$torrents = ($mod===false) ? array() : $mod;
 		return(count($oldTorrents)>0);
 	}
 
