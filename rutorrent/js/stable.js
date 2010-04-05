@@ -816,9 +816,10 @@ dxSTable.prototype.assignEvents = function()
 		{
 			self.dHead.scrollLeft = self.dBody.scrollLeft;
 			var maxRows = self.getMaxRows();
-			if((self.scrollTop != self.dBody.scrollTop) && (self.viewRows > maxRows)) 
+			if((self.scrollTop != self.dBody.scrollTop) 
+//				&& (self.viewRows > maxRows)
+				) 
 			{
-				this.isScrolling = true;
 				self.scOdd = null;
 				self.scrollDiff = self.scrollTop - self.dBody.scrollTop;
 				self.scrollTop = self.dBody.scrollTop;
@@ -827,6 +828,7 @@ dxSTable.prototype.assignEvents = function()
 					handleScroll.apply(self);
 					return;
 				}
+				this.isScrolling = true;
 				self.setBodyState("hidden");
 				if(!!self.scrollTimeout) 
 					window.clearTimeout(self.scrollTimeout);
