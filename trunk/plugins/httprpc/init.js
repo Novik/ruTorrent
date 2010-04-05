@@ -1,9 +1,9 @@
 theRequestManager.torrents = {};
+theURLs.XMLRPCMountPoint = "plugins/httprpc/action.php";
 
 plugin.list = rTorrentStub.prototype.list;
 rTorrentStub.prototype.list = function()
 {
-	this.mountPoint = "plugins/httprpc/action.php";
 	this.dataType = "json";
 	this.contentType = "application/x-www-form-urlencoded";
 	this.content = "mode=list";
@@ -120,7 +120,6 @@ rTorrentStub.prototype.listResponse = function(data)
 
 rTorrentStub.prototype.getCommon = function(cmd)
 {
-	this.mountPoint = "plugins/httprpc/action.php";
 	this.dataType = "json";
 	this.contentType = "application/x-www-form-urlencoded";
 	this.content = "mode="+cmd;

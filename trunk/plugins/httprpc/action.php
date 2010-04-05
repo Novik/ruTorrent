@@ -351,6 +351,22 @@ switch($mode)
 	        	$result = $req->val;
 		break;
 	}
+	default:
+	{
+		if(isset($HTTP_RAW_POST_DATA) && (strpos($HTTP_RAW_POST_DATA,"execute")===false))
+		{
+			$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA);
+			if(!empty($result))
+			{
+				$pos = strpos($result, "\r\n\r\n");
+				if($pos !== false)
+					$result = substr($result,$pos+4);
+				cachedEcho($result, "text/xml");
+				exit();
+			}
+		}
+		break;
+	}
 }
 
 if(empty($result))

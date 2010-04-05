@@ -32,7 +32,7 @@ if(plugin.enabled)
 		var cWidth = iv( theWebUI.tEM.clientWidth ) * 2; // for one cell
 		var tWidth = iv( Chunks.cTable.clientWidth ) * 0.8;
 		this.clearChunks();
-		if ( cWidth <= 0 || tWidth <= 0 ) {
+		if( (cWidth <= 0) || (tWidth <= 0) || !$type(d.chunks) ) {
 			return;
 		}
 		var ChunkLen = d.chunks.length, tRow, tCell;
@@ -76,29 +76,22 @@ if(plugin.enabled)
 	} // clearChunks
 	
 	rTorrentStub.prototype.getchunks = function() {
-		var cmd = new rXMLRPCCommand( "d.multicall" );
-		cmd.addParameter("string", "default" );
-		cmd.addParameter("string", "d.get_hash=");
-		cmd.addParameter("string", "d.get_bitfield=" );
-		cmd.addParameter("string", "d.get_chunk_size=");
-		cmd.addParameter("string", "d.get_size_chunks=");
-		this.commands.push( cmd );
+		var commands = ["d.get_bitfield", "d.get_chunk_size", "d.get_size_chunks"];
+		for(var i in commands)
+		{
+			var cmd = new rXMLRPCCommand( commands[i] );
+			cmd.addParameter("string",CurrHash);
+	        	this.commands.push( cmd );
+		}
 	} // getchunks
 
 	rTorrentStub.prototype.getchunksResponse = function(xml) {
+		if(CurrHash!=theWebUI.dID)
+		        return({});
 		var datas = xml.getElementsByTagName('data');
-		var ret = { chunks: 0, size: 0, tsize: 0 };
-		for (var i=1; i < datas.length; i++) {
-			var data = datas[i];
-			var values = data.getElementsByTagName('value');
-			if ( this.getValue(values,0) == CurrHash ) { // hash
-			        ret.chunks = this.getValue(values,1);
-				ret.size = this.getValue(values,2);
-				ret.tsize = this.getValue(values,3);
-				break;
-			}
-		}
-		return(ret);
+		var data = datas[0];
+		var values = data.getElementsByTagName('value');
+		return( { chunks: this.getValue(values,1), size: this.getValue(values,3), tsize: this.getValue(values,5) } );
 	}
 }
 
