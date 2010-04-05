@@ -147,11 +147,10 @@ function testRemoteRequests($remoteRequests)
 	return($jResult);
 }
 
-$jResult = "theWebUI.deltaTime = new Date().getTime() - ".time()."*1000;\n";
+$jResult = "theWebUI.deltaTime = 0;\n";
 $access = getConfFile('access.ini');
 if(!$access)
 	$access = "../conf/access.ini";
-$mtime = filemtime($access);
 $permissions = parse_ini_file($access);
 $settingsFlags = array(
 	"showDownloadsPage" 	=> 0x0001,
@@ -171,14 +170,8 @@ $jResult .= "theWebUI.showFlags = ".$perms.";\n";
 $jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";
 $jResult.="theWebUI.systemInfo = {};\ntheWebUI.systemInfo.php = { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")." };\n";
 
-$config = getConfFile('config.php');
-if($config)
-	$mtime = max($mtime,filemtime($config));
-$mtime = max($mtime,filemtime('../conf/config.php'));
-
 if($handle = opendir('../plugins')) 
 {
-	$mtime = max($mtime,filemtime('../plugins'));
 	ignore_user_abort(true);
 	set_time_limit(0);
 	@chmod('/tmp',0777);
@@ -192,13 +185,11 @@ if($handle = opendir('../plugins'))
 		{
 			$jResult.="log(theUILang.badLinkTorTorrent);";
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: false, version : '?', libVersion : '?' };\n";
-			$mtime = null;
 		}
 		else
 		{
 		        if($theSettings->idNotFound)
 				$jResult.="log(theUILang.idNotFound);";
-			$mtime = max($mtime,$theSettings->started);
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' };\n";
 			if($theSettings->mostOfMethodsRenamed)
 				$jResult.="theWebUI.systemInfo.rTorrent.newMethodsSet = true;\n";
@@ -239,14 +230,12 @@ if($handle = opendir('../plugins'))
 		$plg = getConfFile('plugins.ini');
 		if(!$plg)
 			$plg = "../conf/plugins.ini";
-		$mtime = max($mtime,filemtime($plg));
 		$permissions = parse_ini_file($plg,true);
 		$init = array();
 		while(false !== ($file = readdir($handle)))
 		{
 			if($file != "." && $file != ".." && is_dir('../plugins/'.$file))
 			{
-				$mtime = max($mtime,filemtime('../plugins/'.$file));
 				$info = getPluginInfo( $file, $permissions );
 				if($info!==false)
 				{
@@ -265,21 +254,11 @@ if($handle = opendir('../plugins'))
 					$js = "../plugins/".$file."/init.js";
 	                	        if(!is_readable($js))
 						$js = NULL;
-					else
-						$mtime = max($mtime,filemtime($js));
         		                $php = "../plugins/".$file."/init.php";
 					if(!is_readable($php))
 						$php = NULL;
-					else
-						$mtime = max($mtime,filemtime($php));
 					$init[] = array( "js" => $js, "php" => $php, "info" => $info, "name" => $file );
 					$user = getUser();
-					if($user!='')
-					{
-						$config = @filemtime($rootPath.'/conf/users/'.$user.'/plugins/'.$file.'/conf.php');
-						if($config)
-							$mtime = max($mtime,$config);					
-					}
 				}
 			}
 		} 
@@ -309,5 +288,5 @@ if($handle = opendir('../plugins'))
 	closedir($handle);
 }
 
-cachedEcho($jResult,"application/javascript",$mtime);
+cachedEcho($jResult,"application/javascript",true);
 ?>

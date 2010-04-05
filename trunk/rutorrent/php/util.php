@@ -314,22 +314,23 @@ function getPHP()
 	return( getExternal("php") );
 }
 
-function cachedEcho( $content, $type = null, $mtime = null )
+function cachedEcho( $content, $type = null, $cacheable = false )
 {
-	if(!is_null($type))
-		header("Content-Type: ".$type."; charset=UTF-8");
-	if(!is_null($mtime))
+	if($cacheable && isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD']=='GET'))
 	{
 		header('Expires: ');
 		header('Cache-Control: ');
 		header('Pragma: ');
-		header('Last-Modified: ' . date('r', $mtime));
-		if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $mtime)
+		$etag = '"'.strtoupper(dechex(crc32($content))).'"';
+		header('Etag: '.$etag);
+		if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag)
 		{
 			header('HTTP/1.0 304 Not Modified');
 			return;
 		}
 	}
+	if(!is_null($type))
+		header("Content-Type: ".$type."; charset=UTF-8");
 	$len = strlen($content);
 	if(ini_get("zlib.output_compression") && ($len<2048))
 		ini_set("zlib.output_compression",false);

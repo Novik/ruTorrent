@@ -376,7 +376,7 @@ class Torrent
 		if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 			$filename = rawurlencode($filename);
         	header( 'Content-Disposition: attachment; filename="'.$filename.'"' );
-        	cachedEcho( $this->__toString(), 'application/x-bittorrent', $this->{'creation date'} );
+        	cachedEcho( $this->__toString(), 'application/x-bittorrent', true );
 	        exit();
     	}
 

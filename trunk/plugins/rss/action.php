@@ -11,7 +11,6 @@ if(isset($_REQUEST['mode']))
 $errorsReported = false;
 $dataType="application/json";
 $mngr = new rRSSManager();
-$mtime = null;
 switch($cmd)
 {
 	case "getintervals":
@@ -225,10 +224,7 @@ switch($cmd)
 		$dataType="text/xml";
 		$val = '';
 	        if(isset($_REQUEST['rss']) && isset($_REQUEST['href']))
-	        {
 			$val = $mngr->getDescription($_REQUEST['rss'],$_REQUEST['href']);
-			$modify = $mngr->getModified();
-		}
 		break;
 	}
 	case "loadtorrents":
@@ -288,11 +284,6 @@ switch($cmd)
 		}
 		break;
 	}
-	case "get":
-	{
-		$modify = $mngr->getModified();
-		break;
-	}
 }
 if($val===null)
 {
@@ -304,7 +295,7 @@ if($dataType=="text/xml")
 else
 	$content = $val;
 
-cachedEcho($content,$dataType,$modify);
+cachedEcho($content,$dataType,true);
 
 ob_flush();
 flush();

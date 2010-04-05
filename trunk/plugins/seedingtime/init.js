@@ -16,7 +16,7 @@ if(plugin.enabled)
 				{
 				        var s = table.getIdByCol(i);
    					if((s=="seedingtime") || (s=="addtime"))
-						arr[i] = arr[i] ? theConverter.date(arr[i]) : "";
+						arr[i] = arr[i] ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : "";
 			        }
 				return(plugin.trtFormat(table,arr));
 			}

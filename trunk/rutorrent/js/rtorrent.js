@@ -925,6 +925,13 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 		dataType: stub.dataType,
 		global: true,
 
+		complete: function(XMLHttpRequest, textStatus)
+		{
+			try {
+			var diff = new Date().getTime()-Date.parse(XMLHttpRequest.getResponseHeader("Date"));
+			} catch(e) { return; };
+			theWebUI.deltaTime = diff;
+		},
 		error: function(XMLHttpRequest, textStatus, errorThrown)
 		{
 			if((textStatus=="timeout") && ($type(onTimeout) == "function"))
