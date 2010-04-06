@@ -9,6 +9,7 @@ class rTorrent
 {
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $addition = null)
 	{
+	        global $topDirectory;
 		$hash = false;
 		$torrent = is_object($fname) ? $fname : new Torrent($fname);
 		if(!$torrent->errors())
@@ -19,6 +20,12 @@ class rTorrent
 			$cmd->addParameter(base64_encode($torrent->__toString()),"base64");
 			if(!$saveTorrent && is_string($fname))
 				@unlink($fname);
+			if($directory && (strlen($directory)>0))
+			{
+				if(strpos(addslash($directory),$topDirectory)!==0)
+					return(false);
+				$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
+			}
 			$comment = $torrent->comment();
 			if($comment)
 			{
@@ -37,8 +44,6 @@ class rTorrent
 				if(strlen($label)<=4096)
 					$cmd->addParameter(getCmd("d.set_custom1=").$label);
 			}
-			if($directory && (strlen($directory)>0))
-				$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
 			if(is_array($addition))
 				foreach($addition as $key=>$prm)
 					$cmd->addParameter($prm,'string');
@@ -50,16 +55,21 @@ class rTorrent
 	}
 	static public function sendMagnet($magnet, $isStart, $isAddPath, $directory, $label)
 	{
+	        global $topDirectory;
 		$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
 		$cmd->addParameter($magnet);
+		if($directory && (strlen($directory)>0))
+		{
+			if(strpos(addslash($directory),$topDirectory)!==0)
+				return(false);
+			$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
+		}
 		if($label && (strlen($label)>0))
 		{
 			$label = rawurlencode($label);
 			if(strlen($label)<=4096)
 				$cmd->addParameter(getCmd("d.set_custom1=").$label);
 		}
-		if($directory && (strlen($directory)>0))
-			$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
 		$req = new rXMLRPCRequest( $cmd );
 		return($req->success());
 	}
