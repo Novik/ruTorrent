@@ -4,20 +4,21 @@ require_once( '../../php/xmlrpc.php' );
 
 if (!isset($HTTP_RAW_POST_DATA))
 	$HTTP_RAW_POST_DATA = file_get_contents("php://input");
-$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA);
-if($result)
+
+if(isset($HTTP_RAW_POST_DATA) && (strpos($HTTP_RAW_POST_DATA,"execute")===false))
 {
-	$dataType = "text/xml";
-	$pos = strpos($result, "\r\n\r\n");
-	if($pos !== false)
-		$result = substr($result,$pos+4);
+	$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA);
+	if(!empty($result))
+	{
+		$pos = strpos($result, "\r\n\r\n");
+		if($pos !== false)
+			$result = substr($result,$pos+4);
+		cachedEcho($result, "text/xml");
+		exit();
+	}
 }
-else
-{
-	$dataType = "text/html";
-	header("HTTP/1.0 500 Server Error");
-	$result = "Link to XMLRPC failed. May be, rTorrent is down?";
-}
-cachedEcho($result,$dataType);
+
+header("HTTP/1.0 500 Server Error");
+cachedEcho("Link to XMLRPC failed. May be, rTorrent is down?","text/html");
 
 ?>

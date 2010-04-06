@@ -81,6 +81,8 @@ function makeSimpleCall($cmds,$hash)
        	return($req->success() ? $req->val : false);
 }
 
+$result = null;
+
 switch($mode)
 {
 	case "list":	/**/
@@ -372,7 +374,7 @@ switch($mode)
 if(empty($result))
 {
 	header("HTTP/1.0 500 Server Error");
-	cachedEcho("Link to XMLRPC failed. May be, rTorrent is down?","text/html");
+	cachedEcho((defined($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. May be, rTorrent is down?","text/html");
 }
 else
 	cachedEcho(json_encode($result),"application/json");
