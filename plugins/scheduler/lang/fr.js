@@ -1,24 +1,33 @@
-﻿
- theUILang.scheduler			= "Scheduler";
- theUILang.schedulerOn			= "Enable Scheduler";
- theUILang.schedulerGraph			= "Scheduler Table";
- theUILang.schShortWeek			= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek			= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
+/*
+ * PLUGIN SCHEDULER
+ *
+ * File Name: fr.js
+ * 	French language file.
+ *
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
+ 
+ theUILang.scheduler                    = "Planificateur";
+ theUILang.schedulerOn                  = "Activer le planificateur";
+ theUILang.schedulerGraph                       = "Scheduler Table";
+ theUILang.schShortWeek                 = [ "Lun", "Mar", "Mer", "Jeu", "Vre", "Sam", "Dim" ];
+ theUILang.schFullWeek                  = [ "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" ];
 
- theUILang.schUnlimited			= "Unlimited";
- theUILang.schLimited			= "Limited";
- theUILang.schTurnOff			= "Turn off";
- theUILang.schSeedingOnly			= "Seeding only";
+ theUILang.schUnlimited                 = "Illimit\u00e9";
+ theUILang.schLimited                   = "Limit\u00e9";
+ theUILang.schTurnOff                   = "Eteins";
+ theUILang.schSeedingOnly                       = "Seulement en Seed";
 
- theUILang.schUnlimitedDesc		= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc			= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc			= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc		= "Seeding only - Only upload data";
+ theUILang.schUnlimitedDesc             = "Illimit\u00e9 - Sans limite globale";
+ theUILang.schLimitedDesc                       = "Limit\u00e9 - Utilise les limites sp\u00e9cifiques du planificateur";
+ theUILang.schTurnOffDesc                       = "Eteins - Arrete tous les torrents";
+ theUILang.schSeedingOnlyDesc           = "Seulement en Seed - Partage uniquement les donn\u00e9es";
 
- theUILang.schLimitedUL			= "Limited UL";
- theUILang.schLimitedDL			= "Limited DL";
+ theUILang.schLimitedUL                 = "Envoi limit\u00e9";
+ theUILang.schLimitedDL                 = "R\u00e9ception limit\u00e9e";
 
- theUILang.schedPHPNotFound		= "Scheduler plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
- theUILang.schedUpdaterNotAvailable	= "Scheduler plugin: rTorrent's user can't access file plugins/scheduler/update.php for read. Plugin will not work.";
+ theUILang.schedPHPNotFound             = "Plugin 'Scheduler': rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
+ theUILang.schedUpdaterNotAvailable     = "Plugin 'Scheduler': rTorrent ne peut pas acc\u00e9der au fichier plugins/scheduler/update.php en Lecture. Le plugin ne fonctionnera pas.";
 
 thePlugins.get("scheduler").langLoaded();
