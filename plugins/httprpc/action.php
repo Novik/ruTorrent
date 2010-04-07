@@ -366,12 +366,15 @@ switch($mode)
 				cachedEcho($result, "text/xml");
 				exit();
 			}
+			else
+				$result = null;
+
 		}
 		break;
 	}
 }
 
-if(empty($result))
+if(is_null($result))
 {
 	header("HTTP/1.0 500 Server Error");
 	cachedEcho((defined($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. May be, rTorrent is down?","text/html");
