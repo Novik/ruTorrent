@@ -1219,7 +1219,7 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 		window.clearTimeout(this.sortTimeout);
 		this.sortTimeout = null;
 	}
-	this.rowdata[sId] = {"data" : cols, "icon" : icon, "attr" : attr, "enabled" : true};
+	this.rowdata[sId] = {"data" : cols, "icon" : icon, "attr" : attr, "enabled" : true, fmtdata: this.format(this,cols.slice(0))};
 	this.rowSel[sId] = false;
 	this.rowIDs.push(sId);
 	var maxRows = this.getMaxRows();
@@ -1259,7 +1259,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 	tr.setAttribute("index", this.rows);
 	for(var k in attr) 
 		tr.setAttribute(k, attr[k]);
-	data = this.format(this,cols.slice(0));
+	data = this.rowdata[sId].fmtdata;
 	for(i = 0, j = 0; i < this.cols; i++) 
 	{
 		var ind = this.colOrder[i];
@@ -1280,12 +1280,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 		else
 			div.innerHTML = (String(data[ind]) == "") ? "&nbsp;" : escapeHTML(data[ind]);
 		if((ind == 0) && (icon != null)) 
-		{ 
-//			if(!browser.isFirefox3x)
 				td.appendChild( $("<span></span>").addClass("stable-icon " + icon).get(0) );
-//			else 
-//				div.className = "ie" + icon;
-		}
 		td.appendChild(div);
 		tr.appendChild(td);
 		if(!this.colsdata[i].enabled && !browser.isIE7x)
@@ -1578,7 +1573,7 @@ dxSTable.prototype.setValueById = function(row, id, val)
 
 dxSTable.prototype.setValue = function(row, col, val)
 {
-	if((col>=0) && (this.getRawValue(row,col)!=val))
+	if(col>=0)
 	{
 		this.rowdata[row].data[col] = val;
 		var r = $$(row);
@@ -1587,22 +1582,27 @@ dxSTable.prototype.setValue = function(row, col, val)
 		arr = {};
 		arr[col] = val;
 		val = this.format(this,arr)[col];
-		var c = this.getColOrder(col);
-		var td = r.cells[c];
 
-		if(this.colsdata[c].type==TYPE_PROGRESS)
+		if(this.rowdata[row].fmtdata[col] != val)
 		{
-			td.lastChild.style.width = iv(val)+"%";
-			td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
-			if(!iv(val))
-				$(td.lastChild).css({visibility: "hidden"});
+			this.rowdata[row].fmtdata[col] = val;
+        		var c = this.getColOrder(col);
+			var td = r.cells[c];
+
+			if(this.colsdata[c].type==TYPE_PROGRESS)
+			{
+				td.lastChild.style.width = iv(val)+"%";
+				td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
+				if(!iv(val))
+					$(td.lastChild).css({visibility: "hidden"});
+				else
+					$(td.lastChild).css({visibility: "visible"});
+				td.firstChild.innerHTML = escapeHTML(val);
+			}
 			else
-				$(td.lastChild).css({visibility: "visible"});
-			td.firstChild.innerHTML = escapeHTML(val);
+				td.lastChild.innerHTML = escapeHTML(val);
+			return(true);
 		}
-		else
-			td.lastChild.innerHTML = escapeHTML(val);
-		return(true);
 	}
 	return(false);
 }
@@ -1623,12 +1623,6 @@ dxSTable.prototype.setIcon = function(row, icon)
 		var td = r.cells[this.getColOrder(0)];
 
 		td.firstChild.className = (icon) ? "stable-icon " + icon : "";
-/*
-		if(icon)
-			td.firstChild.className = (browser.isFirefox3x) ? "ie"+icon : "stable-icon " + icon;
-		else
-			td.firstChild.className = "";
-*/
 		return(true);
 	}
 	return(false);
