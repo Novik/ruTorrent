@@ -236,7 +236,7 @@ theWebUI.createRSSMenuPrim = function()
         if(plugin.canChangeMenu())
         {
 		theContextMenu.add([ theUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"]);
-		theContextMenu.add([ theUILang.addRSS, "theWebUI.showRSS()"]);
+		theContextMenu.add([ theUILang.addRSS, "theDialogManager.toggle('dlgAddRSS')"]);
 		theContextMenu.add([ theUILang.rssMenuManager, "theWebUI.RSSManager()"]);
 		if(theWebUI.actRSSLbl) 
 		{
@@ -482,7 +482,10 @@ theWebUI.updateRSSLabels = function(rssLabels,allCnt)
 
 theWebUI.showRSS = function()
 {
-	theDialogManager.toggle("dlgAddRSS");
+        if($('#rssl').children().length)
+        	theWebUI.RSSManager();
+        else
+		theDialogManager.toggle("dlgAddRSS");
 }
 
 theWebUI.showErrors = function(d)

@@ -24,10 +24,19 @@
 					if($retrieveCountry)
 					{
 						$country = @geoip_country_code_by_name( $value );
-						if(!empty($country))
-							$country = strtolower($country);
-						else
+						if(empty($country))
+						{
+						        if(geoip_db_avail(GEOIP_CITY_EDITION_REV1) || geoip_db_avail(GEOIP_CITY_EDITION_REV0))
+						        {
+        					        	$country = @geoip_record_by_name( $value );
+        					        	if(!empty($country))
+        					        		$country = $country["country_code"];
+							}
+						}
+						if(empty($country))
 							$country = "unknown";
+						else
+							$country = strtolower($country);
                     			}
 					$info.=$country;
 					$info.='", host: "';
