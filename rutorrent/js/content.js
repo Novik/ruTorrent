@@ -77,7 +77,6 @@ function makeContent()
 	$(document.body).append($("<iframe>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl", id: "uploadfrmurl" } ).width(0).height(0).load(function()
 	{
 		$("#url").val("");
-		$("#add_url").attr("disabled",false);
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d.location.href != "about:blank")
 			try { eval(d.body.innerHTML); } catch(e) {}
@@ -97,9 +96,12 @@ function makeContent()
 			'<hr/>'+
 			'<form action="addtorrent.php" id="addtorrenturl" method="post" target="uploadfrmurl">'+
 				'<label>'+theUILang.Torrent_URL+':</label><input type="text" id="url" name="url" class="TextboxLarge"/><br/>'+
-				'<label>&nbsp;</label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button"/>'+
+				'<label>&nbsp;</label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button" disabled="true"/>'+
 			'</form>'+
 		'</div>');
+	var input = $$('url');
+	input.onupdate = input.onkeyup = function() { $('#add_url').attr('disabled',$.trim(input.value)==''); };
+	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
 	{
 		var s = theURLs.AddTorrentURL+"?";
