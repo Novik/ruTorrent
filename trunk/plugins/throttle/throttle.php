@@ -14,7 +14,7 @@ class rThrottle
 	{
 		$cache = new rCache();
 		$rt = new rThrottle();
-		if(!$cache->get($rt))
+		if(!$cache->get($rt) || (count($rt->thr)!=MAX_THROTTLE))
 			$rt->fillArray();
 		return($rt);
 	}
