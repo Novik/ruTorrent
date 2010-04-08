@@ -633,7 +633,7 @@ var theWebUI =
 
    	reload: function()
    	{
-		window.location.reload( true );
+		window.location.reload();
    	},
 
    	showSettings: function() 

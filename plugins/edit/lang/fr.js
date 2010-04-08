@@ -1,10 +1,19 @@
-﻿
+/*
+ * PLUGIN EDIT
+ * 
+ * File Name: fr.js
+ * 	French language file.
+ * 
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
+
  
- theUILang.EditTrackers 		= "Edit torrent...";
- theUILang.EditTorrentProperties 	= "Torrent Properties";
- theUILang.errorAddTorrent	= "Error adding torrent file";
- theUILang.errorWriteTorrent	= "Error writing torrent file";
- theUILang.errorReadTorrent	= "Error reading torrent file";
- theUILang.cantFindTorrent      = "Source torrent file for this download not found."
+ theUILang.EditTrackers 		= "Editer le torrent...";
+ theUILang.EditTorrentProperties 	= "Propri\u00e9t\u00e9s du torrent";
+ theUILang.errorAddTorrent	= "Erreur lors de l'ajout du .torrent";
+ theUILang.errorWriteTorrent	= "Erreur lors de l'\u00e9criture du .torrent";
+ theUILang.errorReadTorrent	= "Erreur lors de la lecture du .torrent";
+ theUILang.cantFindTorrent      = "Le fichier source pour ce torrent n'a pas \u00e9t\u00e9 trouv\u00e9."
 
 thePlugins.get("edit").langLoaded();
