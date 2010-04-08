@@ -1,11 +1,19 @@
-﻿
+/*
+ * PLUGIN CHUNKS
+ * 
+ * File Name: fr.js
+ * 	French language file.
+ * 
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
 
 theUILang.Chunks = "Chunks";
-theUILang.chunksNoChunksFound = "No chunks found!";
-theUILang.chunksRows = "row(s)";
-theUILang.chunksColumns = "column(s)";
+theUILang.chunksNoChunksFound = "Pas de chunks trouv\u00e9s!";
+theUILang.chunksRows = "ligne(s)";
+theUILang.chunksColumns = "colonne(s)";
 theUILang.chunksChunks = "chunk(s)";
-theUILang.chunksSize = "chunk size";
-theUILang.chunksNotSupported = "You must have rTorrent >= 0.8.5 in order to see chunk progress! Your client reports: ";
+theUILang.chunksSize = "taille d'un chunk";
+theUILang.chunksNotSupported = "Votre version de rTorrent doit \u00eatre >= 0.8.5 pour voir la progression des chunks. Votre version : ";
 
 thePlugins.get("chunks").langLoaded();

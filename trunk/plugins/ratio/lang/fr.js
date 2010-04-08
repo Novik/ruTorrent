@@ -1,17 +1,26 @@
-﻿
+/*
+ * PLUGIN RATIO
+ * 
+ * File Name: fr.js
+ * 	French language file.
+ * 
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
+
  
- theUILang.ratioUnsupported     = "Ratio plugin: this version of rTorrent doesn't support ratio. Plugin will not work.";
- theUILang.ratios			= "Ratio groups";
- theUILang.ratio			= "RatioGroup";
- theUILang.mnuRatio		= "Set ratio group";
- theUILang.mnuRatioUnlimited	= "No ratio";
- theUILang.ratioName 		= "Name";
+ theUILang.ratioUnsupported     = "Plugin 'Ratio': cette version de rTorrent ne support pas 'ratio'. Le plugin ne fonctionnera pas.";
+ theUILang.ratios			= "Groupes de ratio";
+ theUILang.ratio			= "Groupe de ratio";
+ theUILang.mnuRatio		= "Affecter a un groupe de ratio";
+ theUILang.mnuRatioUnlimited	= "Pas de ratio";
+ theUILang.ratioName 		= "Nom";
  theUILang.minRatio 		= "Min";
  theUILang.maxRatio 		= "Max";
- theUILang.ratioUpload 		= "UL";
+ theUILang.ratioUpload 		= "Envoi";
  theUILang.ratioAction 		= "Action";
- theUILang.ratioStop 		= "Stop";
- theUILang.ratioStopAndRemove 	= "Stop & Clear group";
- theUILang.ratioErase 		= "Remove";
+ theUILang.ratioStop 		= "Arr\u00eater";
+ theUILang.ratioStopAndRemove 	= "Arr\u00eater et retirer du groupe";
+ theUILang.ratioErase 		= "Effacer";
 
 thePlugins.get("ratio").langLoaded();

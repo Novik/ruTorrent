@@ -28,13 +28,13 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 			$stat = @stat($filename);
 			$etag = sprintf('"%x-%x-%x"', $stat['ino'], $stat['size'], $stat['mtime'] * 1000000);
 			header('Cache-Control: private, max-age=0, no-cache, must-revalidate, proxy-revalidate');
+			header('Expires: ');
+			header('Pragma: ');
 			if( 	(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) ||
                         	(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $stat['mtime']))
 				header('HTTP/1.0 304 Not Modified');
 			else
 			{
-				header('Expires: ');
-				header('Pragma: ');
 				header('Etag: '.$etag);
 				header('Last-Modified: ' . date('r', $stat['mtime']));
 				set_time_limit(0);
