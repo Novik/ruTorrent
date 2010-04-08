@@ -318,16 +318,16 @@ function cachedEcho( $content, $type = null, $cacheable = false )
 {
 	if($cacheable && isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD']=='GET'))
 	{
-		header('Expires: ');
-		header('Cache-Control: ');
-		header('Pragma: ');
 		$etag = '"'.strtoupper(dechex(crc32($content))).'"';
-		header('Etag: '.$etag);
+		header('Cache-Control: private, max-age=0, no-cache, must-revalidate, proxy-revalidate');
 		if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag)
 		{
 			header('HTTP/1.0 304 Not Modified');
 			return;
 		}
+		header('Expires: ');
+		header('Pragma: ');
+		header('Etag: '.$etag);
 	}
 	if(!is_null($type))
 		header("Content-Type: ".$type."; charset=UTF-8");
