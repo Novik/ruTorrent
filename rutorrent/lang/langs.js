@@ -47,7 +47,7 @@ var AvailableLanguages =
 	da:'Danish',
 	nl:'Dutch',
 	fi:'Finnish',
-	fr:'French',
+	fr:'Français',
 	de:'German',
 	hu:'Hungarian',
 	it:'Italian',

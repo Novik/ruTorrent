@@ -219,6 +219,12 @@ function addslash( $str )
 	return( (($len == 0) || ($str[$len-1] == '/')) ? $str : $str.'/' );
 }
 
+function delslash( $str )
+{
+	$len = strlen( $str );
+	return( (($len == 0) || ($str[$len-1] != '/')) ? $str : substr($str,0,$len-1) );
+}
+
 function fullpath($path,$base = '')
 {
 	$root  = '';

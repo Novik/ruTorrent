@@ -159,11 +159,11 @@ function rtMkDir( $dir, $mode = 0777 )
 function rtMoveFile( $src, $dst, $dbg = false )
 {
 	// Check if source file exists
-	if( !rtIsFile( $src ) )
-	{
-		if( $dbg ) rtDbg( __FUNCTION__, "not a file (".$src.")" );
-		return false;
-	}
+//	if( !rtIsFile( $src ) )
+//	{
+//		if( $dbg ) rtDbg( __FUNCTION__, "not a file (".$src.")" );
+//		return false;
+//	}
 
 	// Check if destination directory exists or can be created
 	if( !rtMkDir( dirname( $dst ), 0777 ) )
