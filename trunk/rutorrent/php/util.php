@@ -327,7 +327,7 @@ function cachedEcho( $content, $type = null, $cacheable = false )
 		$etag = '"'.strtoupper(dechex(crc32($content))).'"';
 		header('Expires: ');
 		header('Pragma: ');
-		header('Cache-Control: private, max-age=0, no-cache, must-revalidate, proxy-revalidate');
+		header('Cache-Control: ');
 		if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag)
 		{
 			header('HTTP/1.0 304 Not Modified');
