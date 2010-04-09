@@ -24,7 +24,8 @@
 
 	$scgi_port = 5000;
 	$scgi_host = "127.0.0.1";
-	$XMLRPCMountPoint = "/RPC2";
+
+	$XMLRPCMountPoint = "/RPC2";		// DO NOT DELETE THIS LINE!!! DO NOT COMMENT THIS LINE!!!
 
 	$pathToExternals = array(
 		"php" 	=> '',			// Something like /usr/bin/php. If empty, will be founded in PATH.

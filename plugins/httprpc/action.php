@@ -377,7 +377,7 @@ switch($mode)
 if(is_null($result))
 {
 	header("HTTP/1.0 500 Server Error");
-	cachedEcho((defined($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. May be, rTorrent is down?","text/html");
+	cachedEcho( (isset($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. May be, rTorrent is down?","text/html");
 }
 else
 	cachedEcho(json_encode($result),"application/json");
