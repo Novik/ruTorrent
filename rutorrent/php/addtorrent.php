@@ -27,7 +27,7 @@ if(isset($_FILES['torrent_file']))
 else
 	if(isset($_REQUEST['url']))
 	{
-		$url = $_REQUEST['url'];
+		$url = trim($_REQUEST['url']);
 		if(strpos($url,"magnet:")===0)
 		{
 			$success = rTorrent::sendMagnet($url,
