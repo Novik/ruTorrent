@@ -28,7 +28,7 @@ else
 	if(isset($_REQUEST['url']))
 	{
 		$url = $_REQUEST['url'];
-		if(strpos($url,"magnet:")==0)
+		if(strpos($url,"magnet:")===0)
 		{
 			$success = rTorrent::sendMagnet($url,
 				!isset($_REQUEST['torrents_start_stopped']),
