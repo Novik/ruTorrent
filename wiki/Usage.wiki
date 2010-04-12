@@ -22,6 +22,25 @@ These include:
 
 == Left Side Menu ==
 
+<img src="http://img708.imageshack.us/img708/1741/leftside.png" align="left">
+   * <font size="4" face="Verdana"><b>State:</b></font><font size="3" face="Verdana">Sorts torrents by category</font><BR CLEAR="all">
+<font size="3" face="Verdana"> <b>    All:</b></font><font size="2" face="Verdana"> All torrents, running, stopped, seeding, finished</font><BR CLEAR="all">
+<font size="3" face="Verdana"> <b>Download:</b></font><font size= "2" face="Verdana"> Torrents which are downloading (stopped, but incomplete torrents will show here)</font><BR CLEAR="all">
+<font size="3" face="Verdana"> <b>Finished:</b></font><font size="2" face="Verdana"> Finished torrents, (seeding or Complete)</font><BR CLEAR="all">
+<font size="3" face="Verdana"> <b>Active:</b></font><font size="2" face="Verdana"> Torrents which are currently uploading or downloading data </font><BR CLEAR="all">
+<font size="3" face="Verdana"> <b>Inactive:</b></font><font size="2" face="Verdana"> Torrents which are not currently uploading or downloading data  </font><BR CLEAR="all">
+<font size="3" face="Verdana"> <b>Error</b></font><font size="2" face="Verdana"> Torrents which have received an error notification from the tracker. </font><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Labels:</b></font><font size="3" face="Verdana">Lets you sort by label (Requires the [PluginsLabel Labels] plugin)</font><BR><BR CLEAR="all">
+<BR><BR><BR>
+   * <font size="4" face="Verdana"><b>Tracker:</b></font><font size="3" face="Verdana"> Lets you sort by Tracker (Requires the [PluginsTracklabels TrackLabels] Plugin</font><BR><BR CLEAR="all">
+<BR><BR><BR>
+   * <font size="4" face="Verdana"><b>Search:</b></font><font size="3" face="Verdana"> Lets you sort by local Search Query (Requires the [PluginsSearch Search] Plugin</font><BR><BR CLEAR="all">
+<BR><BR>
+   * <font size="4" face="Verdana"><b>Feeds:</b></font><font size="3" face="Verdana"> Lets you view rss items (Requires the [PluginsRSS RSS] Plugin</font><BR><BR CLEAR="all">
+<BR><BR><BR>
+
+
+
 == Tabs ==
 
 == Bottom Menu Bar ==
