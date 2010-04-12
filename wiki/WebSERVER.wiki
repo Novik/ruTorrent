@@ -1,0 +1,143 @@
+#summary Webserver Setup
+
+<wiki:toc />
+
+= Introduction =
+Basic "how to" guide for webserver specific information
+
+
+== Basic points ==
+
+  # ruTorrent is written in javascript and php, so your webserver must be setup for php.
+  # ruTorrent communicates with rtorrent via an SCGI gateway. For this you need:
+    * Webserver with Mod_SCGI or something equivalent.
+    * [PluginRPC RPC Plugin]
+    * [PluginHTTPRPC HTTPRPC Plugin] (similar to [PluginRPC RPC Plugin], but designed with low bandwidth use in mind.
+  # There are multiple ways to configure a webserver, this page is not meant as a all inclusive guide
+
+=== SCGI setup ====
+
+Most webservers have some sort of scgi module.  For lowest server load, it's best to use a scgi module.  For lowest BANDWIDTH clients, however, it's best to use [PluginHTTPRPC HTTPRPC Plugin] (this is not an option for very slow computers, or embedded systems)
+
+====Apache Specific SCGI Config ====
+
+Apache doesn't come wiht mod_scgi, you need to install it.  This is different for each distro, for ubuntu/debian it is:
+
+{{{
+apt-get install libapache2-mod-scgi
+}}}
+
+for freebsd, 
+
+{{{
+cd /usr/ports/www/mod_scgi && make install clean
+}}}
+
+(some distros require you to enable this module manually Consult your distro for specific information about loading apache modules)
+
+
+Once you have mod_scgi installed and loaded, adding scgi mounts is almost trival.
+
+add something like this for each mount:
+
+{{{
+SCGIMount /RPC2 127.0.0.1:5000
+}}}
+
+====Lighttpd Specific SCGI Config ====
+  [http://www.lighttpd.net Lighttpd] comes with mod_scgi built in, but it is normally not configured by default. To enable it add
+{{{
+server.modules += ( "mod_scgi" )
+}}}
+to your config (or uncomment/add it to the existing server.modules section
+
+   add scgi.server as shown below:
+{{{
+scgi.server = (
+        "/RPC2" =>
+                ( "127.0.0.1" =>
+                        (                
+                                "host" => "127.0.0.1",
+                                "port" => 5000,
+                                "check-local" => "disable"
+                        )
+                )
+        )
+}}}
+
+
+For multiple scgi mounts you'd add something like this:
+{{{
+scgi.server = (
+                "/RPC1"=>
+                (
+                        "127.0.0.1" =>
+                        (
+                                "host" => "127.0.0.1",
+                                "port" => 5001,
+                                "check-local" => "disable"
+                        )
+                ),
+                "/RPC2"=>
+                (
+                        "127.0.0.1" =>
+                        (
+                                "host" => "127.0.0.1",
+                                "port" => 5002,
+                                "check-local" => "disable"
+                        ),
+                "/RPC3"=>
+                (
+                        "127.0.0.1" =>
+                        (
+                                "host" => "127.0.0.1",
+                                "port" => 5003,
+                                "check-local" => "disable"
+                        ),
+                "/RPC4"=>
+                (
+                        "127.0.0.1" =>
+                        (
+                                "host" => "127.0.0.1",
+                                "port" => 5004,
+                                "check-local" => "disable"
+                        )
+                )
+)
+}}}
+
+it's important to note the comma between each section.
+
+====Cherokee Specific SCGI Config ====
+
+Cherokee makes everything really easy if you use [http://www.cherokee-project.com/doc/admin.html cherokee-admin] To add an scgi mount in cherokee, simply select your virtual server (the default server is fine, or you could create one specifically for rutorrent), select the "behavior" tab as show in this screenshot:
+
+http://img18.imageshack.us/img18/4320/cherokeescgi1.png
+
+Then select "wizards" and "misc" as shown in this screenshot:
+
+http://img580.imageshack.us/img580/6915/cherokeescgi2.png
+
+Then select the rtorrent wizard, and set it accordingly, as shown here:
+
+http://img29.imageshack.us/img29/2991/cherokeescgi3.png
+
+(note:  you add php to cherokee in almost the exact same way, except instead of "misc/rtorrent" select "languages/php" )
+
+
+If you don't use cherokee admin, it might look something like this:
+
+{{{
+vserver!20!rule!500!disabled = 1
+vserver!20!rule!500!handler = scgi
+vserver!20!rule!500!handler!balancer = round_robin
+vserver!20!rule!500!handler!balancer!source!1 = 11
+vserver!20!rule!500!match = request
+vserver!20!rule!500!match!final = 1
+vserver!20!rule!500!match!request = ^/RPC1
+}}}
+
+
+====Nginx SCGI notes ====
+
+I was unable to find a working mod_scgi for nginx.  I was able to find an old version, which may or may not work, but seeing as it's very outdated, I wouldn't recommend it.  For this webserver, stick to [PluginRPC RPC Plugin] or [PluginHTTPRPC HTTPRPC Plugin]
