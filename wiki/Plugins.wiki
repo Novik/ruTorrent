@@ -24,7 +24,7 @@ rm -r /var/www/rutorrent/plugins/rpc/
 }}}
 
 
-== Currently there are following plug-ins: ==
+== Currently there are the following plug-ins: ==
 
  # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server. (replacement for mod_scgi )
  # [PluginErasedata erasedata] - adds "Delete with the data" to the right click context menu.
