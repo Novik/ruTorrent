@@ -35,6 +35,7 @@
         * [PluginShow_peers_like_wtorrent Show Peers Like Wtorrent]
         * [PluginSeedingtime Seeding Time]
         * [PluginHTTPRPC HttpRPC Plugin]
+        * [PluginDiskspace Diskspace Plugin]
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
