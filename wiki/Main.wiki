@@ -53,9 +53,9 @@ For detailed setup and configuration information, see [Installation] [WebSERVER 
  * Some Browser Add-ons cause problems.  (for example the [http://getfirebug.com/ Firebug] addon for Firefox causes a significant memory leak. Also, the Firefox Add-on [http://pagesperso-orange.fr/marc.boullet/ext/extensions-en.html All-in-One-Gestures] prevents the context menus from loading properly, and so on...)
 
   
-== [http://forums.rutorrent.org Rutorrent Forums] ==
+== [http://forums.rutorrent.org Rutorrent] Forums ==
 
 If you have any questions, please post them in the [http://forums.rutorrent.org forums] _*don't post questions in the wiki comments section*_  If you have an issue, or have found a bug, please report it on the [http://code.google.com/p/wikitesting1/issues/list Issues Page] 
 
 
-==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
+[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
