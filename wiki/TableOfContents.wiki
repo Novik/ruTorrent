@@ -4,7 +4,7 @@
     * [Versions]
   * [Installation]
     * [MainInstall rtorrent Install]
-      * [WebSERVER Web Server]
+    * [WebSERVER Web Server]
         * Apache
         * Lighttpd
         * Cherokee
