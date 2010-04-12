@@ -1,16 +1,34 @@
 #summary The description of a subsystem of plug-ins.
 #labels Featured
 
-Some functions of ruTorrent are realized by plug-ins that allow users to customize the system to exclude unnecessary parts. [HowToCreatePlugin And even to add something missed, without modifying a ruTorrent code].
+ruTorrent is designed with a robust plugin system.  The reason for this is to allow users to customize the behavior of the WebUI, and exlude the parts they do not need [HowToCreatePlugin And even add something we missed, without modifying a ruTorrent code]
 
-For plug-in installation it is necessary to unpack contents of its archive in the directory rtorrent/plugins. Note - to unpack without breaking a structure of directories in the archive. As a result there should be a separate directory for each plug-in inside rtorrent/plugins. It is recommended to perform this operation under a web service user to prevent problems with rights for files/directories. For plug-in deinstallation you have to delete it's directory, accordingly (and, for some plug-ins, restart rTorrent).
+== Installation ==
+
+To install a plugin, download the tarball from [http://code.google.com/p/rutorrent/downloads/list the download page] and extract it in the plugins directory. (if rutorrent is installed to /var/www/rutorrent this would be
+{{{
+/var/www/rutorrent/plugins
+}}}
+If you use the svn version of rutorrent, you can fetch the plguins via svn as well as follows:
+{{{
+svn co http://rutorrent.googlecode.com/trunk/plugins/PLUGIN_NAME
+}}}
 
 Attention! Please install only those plug-ins you really need. The more plug-ins are installed - the longer load of the ruTorrent interface.
 
-Currently there are following plug-ins:
- # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server.
- # [PluginErasedata erasedata] - adds the item "Delete with the data" to the context menu of the torrent.
- # [PluginDarkPal darkpal] - just another ruTorrent interface colors.
+== Uninstallation ==
+
+Simply remove the plugin directory, for example, to remove the rpc plugin you might do this:
+{{{
+rm -r /var/www/rutorrent/plugins/rpc/
+}}}
+
+
+== Currently there are following plug-ins: ==
+
+ # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server. (replacement for mod_scgi )
+ # [PluginErasedata erasedata] - adds "Delete with the data" to the right click context menu.
+ # [PluginDarkPal darkpal] - A ruTorrent Theme with dark colors designed to burn your eyes.
  # [PluginChoose choose] - adds a button to the New Torrent dialogue for comfortable navigation through the server file system.
  # [PluginCreate сreate] - adds the command of new torrent creation.
  # [PluginTrafic trafic] - adds a subsystem of the traffic counting.
@@ -27,6 +45,7 @@ Currently there are following plug-ins:
  # [PluginGeoIP geoip] - shows country name and flag for connected peers.
  # [PluginRatio ratio] - allows to set different ratio limitations for groups of torrents.
  # [PluginShow_peers_like_wtorrent Show_peers_like_wtorrent] - changes the format of values in "Seeds" and "Peers" columns of the torrents list.
- # [PluginSeedingtime seedingtime] - adds the column with the torrent's finishing time to torrents list. 
+ # [PluginSeedingtime seedingtime] - adds the column with the torrent's finishing time to torrents list.
+ # [PluginHTTPRPC HTTPRPC] - Similar to [PluginRPC RPC] but with low bandwidth use in mind. 
 
 ==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
