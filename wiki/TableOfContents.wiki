@@ -34,6 +34,7 @@
         * [PluginRatio Ratio]
         * [PluginShow_peers_like_wtorrent Show Peers Like Wtorrent]
         * [PluginSeedingtime Seeding Time]
+        * [PluginHTTPRPC HttpRPC Plugin]
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
