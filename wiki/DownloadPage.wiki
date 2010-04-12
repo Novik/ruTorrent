@@ -1,0 +1,42 @@
+#summary Downloads Page
+
+= http://img442.imageshack.us/img442/6560/downloadiconc.gif =
+
+Tarball archives.  _note For the latest version, please see [GetFromSVN SVN Wiki]_
+
+_*Do not mix files from this page with svn files, use one or the other*_
+
+== http://img121.imageshack.us/img121/9530/logozp.png RuTorrent ==
+
+ * [http://rutorrent.googlecode.com/files/rutorrent-3.0.tar.gz ruTorrent 3.0]
+ * [http://rutorrent.googlecode.com/files/rutorrent-2.9.tar.gz ruTorrent 2.9]
+
+== http://img249.imageshack.us/img249/772/photoshoppluginicon.jpg Plugins ==
+  * [http://rutorrent.googlecode.com/files/plugins-3.0.tar.gz All Plugins for 3.0]
+    * [http://rutorrent.googlecode.com/files/unpack-3.0.tar.gz Unpack 3.0] 
+    * [http://rutorrent.googlecode.com/files/trafic-3.0.tar.gz Traffic 3.0]
+    * [http://rutorrent.googlecode.com/files/tracklabels-3.0.tar.gz Track Labels 3.0]
+    * [http://rutorrent.googlecode.com/files/throttle-3.0.tar.gz Throttle for 3.0]
+    * [http://rutorrent.googlecode.com/files/source-3.0.tar.gz Source for 3.0]
+    * [http://rutorrent.googlecode.com/files/show_peers_like_wtorrent-3.0.tar.gz show peers like wtorrent for 3.0]
+    * [http://rutorrent.googlecode.com/files/seedingtime-3.0.tar.gz seedingtime for 3.0]
+    * [http://rutorrent.googlecode.com/files/search-3.0.tar.gz search for 3.0]
+    * [http://rutorrent.googlecode.com/files/scheduler-3.0.tar.gz scheduler for 3.0]
+    * [http://rutorrent.googlecode.com/files/rss-3.0.tar.gz rss for 3.0]
+    * [http://rutorrent.googlecode.com/files/rpc-3.0.tar.gz rpc for 3.0]
+    * [http://rutorrent.googlecode.com/files/retrackers-3.0.tar.gz retrackers for 3.0]
+    * [http://rutorrent.googlecode.com/files/ratio-3.0.tar.gz ratio fro 3.0]
+    * [http://rutorrent.googlecode.com/files/geoip-3.0.tar.gz geoip for 3.0]
+    * [http://rutorrent.googlecode.com/files/erasedata-3.0.tar.gz erasedata for 3.0]
+    * [http://rutorrent.googlecode.com/files/edit-3.0.tar.gz edit for 3.0]
+    * [http://rutorrent.googlecode.com/files/diskspace-3.0.tar.gz diskspace for 3.0]
+    * [http://rutorrent.googlecode.com/files/datadir-3.0.tar.gz datadir for 3.0]
+    * [http://rutorrent.googlecode.com/files/data-3.0.tar.gz data for 3.0]
+    * [http://rutorrent.googlecode.com/files/darkpal-3.0.tar.gz darkpal for 3.0]
+    * [http://rutorrent.googlecode.com/files/create-3.0.tar.gz create for 3.0]
+    * [http://rutorrent.googlecode.com/files/cookies-3.0.tar.gz cookies for 3.0]
+    * [http://rutorrent.googlecode.com/files/chunks-3.0.tar.gz chunks for 3.0]
+    * [http://rutorrent.googlecode.com/files/autotools-3.0.tar.gz autottols for 3.0]
+    * [http://rutorrent.googlecode.com/files/_getdir-3.0.tar.gz _getdir for 3.0]
+  * [http://rutorrent.googlecode.com/files/plugins-2.9.tar.gz All Plugins for 2.9]
+    
