@@ -419,7 +419,7 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 	//if( $dbg ) rtDbg( __FUNCTION__, $content );
 	$res = rXMLRPCRequest::send( $content );
 
-	if( $dbg && $res && strlen( $res ) > 0 ) rtDbg( __FUNCTION__, $res );
+	if( $dbg && !empty($res) ) rtDbg( __FUNCTION__, $res );
 
 	if( !$res || $res = '' )
 		return false;
