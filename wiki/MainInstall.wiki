@@ -1,17 +1,8 @@
-#summary Main Install Principles
+#summary rtorrent Install
 
 <wiki:toc />
 
 = Installation =
-
-== Dependencies ==
-  * Unix Like OS
-  * [http://libtorrent.rakshasa.no/ Rtorrent] (compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc] )
-  * [http://php.net/ PHP]
-  * (recommended)  [http://www.gnu.org/software/screen/ screen] or [http://www.freebsdsoftware.org/sysutils/detach.html detatch]
-  * [WebSERVER Web Server]
-
-== rtorrent ==
 
 Most distros do not come with [http://libtorrent.rakshasa.no/ rtorrent] compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]  Rutorrent _*REQUIRES*_ [http://libtorrent.rakshasa.no/ rtorrent] to be compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]
 
