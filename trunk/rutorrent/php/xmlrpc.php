@@ -99,14 +99,20 @@ class rXMLRPCRequest
 		$contentlength = strlen($data);
 		if($contentlength>0)
 		{
-			$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, RPC_TIME_OUT);
+			$socket = @pfsockopen($scgi_host, $scgi_port, $errno, $errstr, RPC_TIME_OUT);
 			if($socket) 
 			{
+				stream_set_timeout($socket,RPC_TIME_OUT);
 				$reqheader =  "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0";
 				$tosend = strlen($reqheader).":{$reqheader},{$data}";
-				@fputs($socket,$tosend);
-				while (!feof($socket)) 
-					$result .= @fread($socket, 4096);
+				@fwrite($socket,$tosend);
+				$info = stream_get_meta_data($socket); 
+				$result = '';
+				while(!$info['timed_out'] && ($data = fread($socket, 4096)))
+				{
+					$result .= $data;
+					$info = stream_get_meta_data($socket); 
+				}
 				fclose($socket);
 			}
 		}
@@ -172,7 +178,7 @@ class rXMLRPCRequest
 		if($this->makeCall())
 		{
 			$answer = self::send($this->content);
-			if($answer)
+			if(!empty($answer))
 			{
 				if($this->parseByTypes)
 				{
