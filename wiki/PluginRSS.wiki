@@ -1,39 +1,166 @@
-#summary RSS plug-in description
+= RSS Plugin =
 
-== Introduction ==
+                                                             <wiki:toc />
 
-The plug-in is intended for work with [http://ru.wikipedia.org/wiki/Rss RSS-feeds]. The interface (and a part of this article) has been partially copied from [http://www.utorrent.com/documentation/rss µTorrent]. 
 
-== Usage==
+== Description ==
 
-====Adding a feed====
+This plugin is designed to fetch torrents via rss download links.  It has 2 main parts, one for entering feeds, the other for setting up filters.  For more information about rss, see http://en.wikipedia.org/wiki/RSS
 
-Click anywhere in the lower half of the sidebar,  where "All Feeds" is and choose "Add RSS Feed" (or just use the button RSS in the main menu). Enter your RSS feed's URL into the input box, and fill in the "Custom Alias" field if you want to give a name to the feed.
 
-Note some feeds do not give direct links to the .torrent files. These feeds cannot be used for automatic downloading through filters.
+== Installation ==
 
-====Suspending a feed====
+If you use the tarball installation, download the rss tarball from [http://code.google.com/p/rutorrent/downloads/list] and untar it into your plugins diectory.
 
-To suspend a feed, simply right click the feed in the category list and choose "Disable Feed." If you want to re-enable it, simply right click again and choose "Enable Feed."
+If you use the svn version, svn the rss plugin into your plugins dir like this:
+{{{
+svn co http://rutorrent.googlecode.com/svn/trunk/plugins/rss
+}}}
 
-====Renaming a feed====
+==  Usage ==
 
-Any feed can be renamed and it's URL may be edited by right clicking it and choosing "Edit Feed".
+=== Adding a feed ===
+To add a feed, right click the RSS icon on the left hand side of the screen 
+and select "Add Rss Feed" as shown in the next two images.
+(note:  Prior to r890 you can also use the feed icon on the top menu bar, in r890 this was changed to open the rss manager)
 
-====Viewing releases on an RSS feed====
+http://img708.imageshack.us/img708/416/rssnew.png
 
-To view the releases for an RSS feed, click on the feed. Alternatively, click on "All Feeds." All the releases currently on the feed will show in the main listview. Double clicking will attempt to open the release's URL in your browser.
+http://img693.imageshack.us/img693/1413/rss03.png
 
-Extra columns of information are available for RSS feeds. To enable or disable them, right click on the name of any column. You can also click and drag columns to rearrange them. These settings are independent of the columns available when viewing your loaded torrents.
 
-====Using feeds that require HTTP authentication====
+This should bring up a new window, as shown in the next image:
 
-For feeds that require HTTP authentication, simply use this format for the feed URL: 
+
+
+http://img80.imageshack.us/img80/4782/rss02.png
+
+
+You need to add your RSS feed where it says "Feed URL" and give it a name where it says "Custom Alias"  (note:  It's important that you always use a DOWNLOAD feed.  If you use a web feed, you will end up with errors.  Also, it's important to note that some feeds require cookies to use.  These feeds will require you to use the "cookies" plugin [PluginCookies])
+
+
+http://img185.imageshack.us/img185/9524/rss04.png
+
+
+
+If you added the feed correctly, you should end up with something like this:
+
+http://img693.imageshack.us/img693/258/rss05.png
+
+With this, you have everything you need to manually download torrents via rss feed.  To manually download items from this feed, right click on the item and select LOAD, as shown in this screenshot:
+http://img535.imageshack.us/img535/7455/rss06.png
+
+This should bring up an "add torrent" window like this:
+
+http://img185.imageshack.us/img185/8540/rss07.png
+
+if you click ok, it will add it and download it to your default dir, otherwise you can fill out the window options like this:
+
+http://img686.imageshack.us/img686/6803/rss08.png
+
+(if you select "Don't start the download automatically"  the torrent will be added in the program "stopped")
+If all went well, you should have a downloading torrent as shown here:
+
+http://img510.imageshack.us/img510/6961/rss09.png
+
+
+=== Automatic Downloading via RSS Manager ===
+
+Manually adding torrents via a feed is somewhat convenient but lets face it, if you are going to add rss feed, you probably want to automate downloading.  Now that you know how to add feeds, it's time to create filters.
+
+==== RSS Manager ====
+
+To Open the rss manager, right click on the RSS icon from the left side of the menu, and select "Rss Manager"  (note  as of r890 you can use the rss icon from the top bar to bring up the rss manager) 
+
+http://img185.imageshack.us/img185/5267/rssman00.png
+
+
+The filter manager has SEVERAL options/settings so rather than give you a step by step, i'm going to post a pic explaining what each option does.
+
+
+http://img189.imageshack.us/img189/3881/rssman01.png
+
+
+
+
+
+  # Add:  This adds a new filter rule
+  # Filter:  This is where you put the filter regex
+  # Exclude:  This is where you put the exclude regex
+  # Check Fields:  This is where you decide what the filter should match against 
+    *  Title Field:  This is the title of the RSS entry 
+    *  Description field:  This is the description data for the rss item 
+    *  Link Field:   This is the http link for the rss item 
+    (The default is to use only the "Title Field", if you use the others, make sure you know what you are doing, otherwise it could lead to unwanted matches)
+  # Directory:  This is the save path for the torrent data,  having _getdir plugin helps here
+  # Match Interval:  This is the rate at which the filter will download new torrents (the default is always)
+  # Label:  This is the label for rutorrent, used mainly to sort the list of seeding torrents (note: if you use auto-tools, and leave this blank, it will automatically label the torrent based on normal auto-tools rules)
+  # Ratio Group:  This is the ratio group you want the matched torrents to be in
+  # Channel:   This is the download/upload channel you want the matched torrents in
+  # Download options:  These define behavior for matched torrents, don't add the torrent's name to path or don't start download automatically (torrent added to list in "stopped" format)
+
+
+So to add a filter, just click the ADD button (1) This will create an empty filter rule, give it a name, and enter your regex filter in the Filter section (2)  
+(for more info on regex, see [regex] or [http://www.regular-expressions.info/]  Also, regex filters in rutorrent need to be enclosed in /  /i tags, you could use other tags, but this is the standard, case insensitive tag)  An example of a filter might be:
+{{{
+/Lost.S06E.*/i
+}}}
+
+If you wish to exclude items from your filter, you could code this into the standard filter, but it's much more simple to use the "EXCLUDE" option (3)The syntax for this field is the same as the "Filter" field, a standard exclude might look like this:
+{{{
+/(DVDR|Complete|DVDRip|BDrip|Bluray)/i
+}}}
+
+for (4)  The default is often the desired case, the other 2 options are used much less often.  The description field is the RSS description, or category.  The link field is the actual HTTP link.  Using these check boxes allows you to match text in these areas.
+
+for (5) you set the download path.  This can come in great handy when using AutoTools plugin [PluginAutotools]
+
+Most of the other options have already been explained or are self explanatory.  If you have any questions, be sure to ask in the forums at [http://forums.rutorrent.org]
+
+Here is what an RSS filter might look like:
+http://img41.imageshack.us/img41/3899/rssman03.png
+
+
+You can add as many filters as you like.  To disable a filter, you can click the check box next to the filter's name.
+
+==== Plugin Settings ====
+
+You might want to edit the config file for RSS.  If you wish to make a general setting for all users, just edit plugins/rss/conf.php and change 
+
+You can have different settings for each user by creating a plugins/rss/ dir in the conf/users/USERNAME dir and copying the conf.php file to this dir.  (this works for all plugins which have settings)
+
+
+{{{
+$updateInterval = 30;   // in minutes
+}}}
+to whatever you like.
+
+you can also change these options:
+
+{{{
+define('HISTORY_MAX_COUNT', 100);
+define('HISTORY_MAX_TRY', 3);
+define('WAIT_AFTER_LOADING', 0);
+}}}
+
+=== Renaming a Feed ===
+
+To rename a feed, right click on the feed and select "edit feed"
+
+http://img694.imageshack.us/img694/912/rssedit.png
+
+This should open a window with the feed name and path, allowing you to rename the feed.
+
+http://img254.imageshack.us/img254/8726/rename.png
+ 
+=== Using feeds that require HTTP authentication ===
+
+For feeds that require HTTP authentication, simply use this format for the feed URL:
 {{{
 http://username:password@sometorrentsite.com/rss.php
 }}}
 
-====Using feeds that require cookies====
+==== Using feeds that require cookies ====
 
 To use feeds that require cookies, you must find the cookie for the site, and grab UID and pass from it.
     * IE users will find their cookies in `%UserProfile%\Cookies`.
@@ -46,35 +173,16 @@ http://sometorrentsite.com/rss.php:COOKIE:name1=value;name2=value;
 }}}
 Another way to inform ruTorrent about required cookies is provided via plug-in [PluginCookies Cookies].
 
-====Automatically downloading torrents====
 
-To automatically download torrents from a feed, you need to create one or several filters.
-    # Right click on a feed and choose "RSS Manager". The appropriate dialog window will be shown.
-    # Click on the "Add" button and type in the name of the new filter in the left column.
-    # Enter filter's contents in the field Filter Settings -> Filter.
-The filter's contents must be a Perl-compatible regular expression ([http://www.pcre.org/ PCRE]). The syntax of the PCRE is described, for example [http://ru.php.net/manual/en/reference.pcre.pattern.syntax.php here]. Also you can see [https://docs.google.com/Doc?docid=0AQYMH4twARqFZGZnazVkaGdfNWR0ajV4Z2No&hl=en this] PCRE tutorial (thanx to [http://code.google.com/u/@VxhSQFBQBRJHWQl0/ gq.2.jpw]).
+==== Autostart rss ====
 
-This is a basic set of operations, required to setup the automatic downloads. The rest of the functions are extra features for more control of the automatic downloads.
-    * "Exclude:" allows you to exclude certain strings from matching. An example is you don't want releases with AC3 audio and H.264: you can write {{{/(AC3|264)/i}}} in "Exclude:" to exclude those.
-    * "RSS:" chooses what feed you want the filter to apply to.
-    * "Directory:" allows you to choose a specific folder where torrents will be saved to.
-    * "Don't start the download automatically" will add any downloaded torrents in "Stopped" mode. They will be added to your list, but will not begin downloading until you choose them from the torrent list and start them. 
-    * "Label:" auto-sets a label for torrents that match the filter. 
-    * Click the button "?" to check filter's settings. If the filer is correct, the number of torrents on the RSS feed that match the filter will be shown. Otherwise you will see an appropriate message in the ruTorrent's log.
-[http://rutorrent.googlecode.com/svn/wiki/images/rssdownloader.jpg]
+rss will automatically start when you load the webui, but if for some reason your server reboots, you might wish to have it start automatically.  In rutorrent 3.0, you can auto-start all plugins, including rss, by adding something like this to your .rtorrent.rc
 
-== How does it work ==
-
-When ruTorrent starts with installed RSS plug-in first time it sends a command to the rTorrent scheduler, which begins to poll RSS feeds and saves them locally. During the synchronization it checks feeds' content whether it matches to defined filters. If a match is found, corresponding .torrent-files are sent to rTorrent for proceeding. Diagnostic messages about unsuccessful loads and/or synchronizations will be shown in the ruTorrent log window at the next it's load.
-
-Once again - the poll process begins only after first start of the ruTorrent. I.e. there will not be any useful action between start of rTorrent and then first start of ruTorrent. To avoid this, a special string should be added to the rTorrent configuration file (see below). 
-
-== Additional plug-in adjustment ==
-
-Should be done in the file `plugins/rss/rssconf.php`.
-    * `$updateInterval` - the variable sets the time interval between synchronizations of RSS feeds with their local copies (in minutes). By default - 30 minutes.
-    * `$isAutoStart` - the variable defines how the plug-in work starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler needs to be activated independently. To do this, the following string should be added into the rTorrent configuration file: 
 {{{
-schedule = rss,0,00:30:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"
+execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php USERNAME &}
 }}}
- where full_path_to_plugin - is a full path to the RSS plug-in.
+
+(note, the username option is needed if you use web authentication and or multiple users, this username would be the WEB AUTH name )
+
+
+For any QUESTIONS, please join us in the forums at [http://forums.rutorrent.org]
