@@ -38,3 +38,5 @@
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
+  * [FuturePlans Future Plans]
+  * [SpecialThanks Special Thanks]
