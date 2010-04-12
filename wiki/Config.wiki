@@ -1,0 +1,38 @@
+#summary Config file settings for rutorrent
+
+<wiki:toc />
+
+= Introduction =
+
+How to configure rtorrent, and what each option is for.
+
+
+== Basics ==
+
+Since 3.0, ruTorrent keeps all config info for the webui (excluding plugins) in the conf/ directory
+
+(for example, if you installed rutorrent to /var/www/rutorrent the config files would be in
+
+{{{
+/var/www/rutorrent/conf
+}}}
+
+The base install comes with 3 config files:
+
+  # config.php
+  # plugins.ini
+  # access.ini
+
+For a single user system (or a system without authentication)  It's fine to keep these files in the conf/ directory.  For multiple user systems, or systems using web auth, create a subdirectory for each user in conf/users/ with the webauth username
+(note:  This name may or may not be the same as the user actually running rtorrent)
+
+for example, if you wanted 3 users named tom dick and harry and you had rutorrent installed to /var/www/rutorrent you might do something like this:
+
+{{{
+mkdir /var/www/rutorrent/conf/users/tom
+mkdir /var/www/rutorrent/conf/users/dick
+mkdir /var/www/rutorrent/conf/users/harry
+cp /var/www/rutorrent/conf/config.php /var/www/rutorrent/conf/users/tom/
+cp /var/www/rutorrent/conf/config.php /var/www/rutorrent/conf/users/dick/
+cp /var/www/rutorrent/conf/config.php /var/www/rutorrent/conf/users/harry/
+}}}
