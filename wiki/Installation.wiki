@@ -1,0 +1,9 @@
+#summary How to Install Rutorrent
+
+= Introduction =
+
+Rutorrent can be installed on most unix type operating systems.
+
+== How to Install ==
+  * [MainInstall Main Install]
+  * [Plugins_Install Plugins]
