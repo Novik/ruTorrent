@@ -1,8 +1,19 @@
 #summary How to Install Rutorrent
 
+<wiki:toc />
+
 = Introduction =
 
 Rutorrent can be installed on most unix type operating systems.
+
+
+== Dependencies ==
+  * Unix Like OS
+  * [http://libtorrent.rakshasa.no/ Rtorrent] (compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc] )
+  * [http://php.net/ PHP]
+  * (recommended)  [http://www.gnu.org/software/screen/ screen] or [http://www.freebsdsoftware.org/sysutils/detach.html detatch]
+  * [WebSERVER Web Server]
+
 
 == How to Install ==
   * [MainInstall Main Install]
