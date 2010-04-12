@@ -43,7 +43,20 @@ These include:
 
 == Tabs http://img576.imageshack.us/img576/2391/tabs2.png ==
 
-The Tabs on the lower half of the screen allow you to access 
+The Tabs on the lower half of the screen allow access to various types of information.  Some of these items are only available by plugin.
+The tabs are:
+ * *General* : This tab is exactly what it sounds like, general information for whatever torrent you have selected.  You can also find remaining disk space here.
+ * *Files* : This tab shows all files or parts for the current torrent selected, and download status of each.  You can use this tab to set per-file download priority. (Can also be used to download via http if you have [PluginData Data] installed)
+ * *Trackers* : This tab shows the tracker(s) for the current torrent selected.
+ * *Peers* : This tab displays peer information for the current torrent. (will also show country flag for each peer if [PluginGeoIP GeoIP] is installed)
+ * *Speed* : This tab shows a graph of upload and download speed over the last few minutes.
+ * *Plugins* : This tab shows installed and active plugins
+ * *Trafic* : This tab shows per tracker, and overal Traffic statistics in a variety of time intervals. (Requires [PluginTrafic Traffic Plugin]
+ * *Chunks* : This tab shows which pieces of a torrent have downloaded (Requires [PluginChunks Chunks] Plugin)
+ * *Logger* : This tab shows error messages, and other system events.
+
 
 
 == Bottom Menu Bar http://img190.imageshack.us/img190/6798/bottomrg.png ==
+
+The Bottom menu bar was added in ruTorrent 3.0.  It shows general "total" speed information, and can be used to set the server Throttle level. Also shows remaining space if you have [PluginDiskspace Diskspace] installed.
