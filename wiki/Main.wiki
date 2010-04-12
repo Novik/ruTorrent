@@ -1,50 +1,57 @@
 #summary Main page
 #labels Featured
 
+<wiki:toc />
+
 == Introduction ==
 
-ruTorrent has been developed on the [http://www.utorrent.com/documentation/webui WebUI] of [http://utorrent.com µTorrent] basis. So it's appearance is quite similar to the "parent". Actually ruTorrent is named after the "parent" - rTorrent + µTorrent = ruTorrent. 
+ruTorrent is a web frontend for [http://libtorrent.rakshasa.no/ rtorrent] designed to emulate the look and feel of [http://www.utorrent.com/documentation/webui µTorrent WebUI] so it's appearance is quite similar to the "parent".  The name "RuTorrent" is the combination of µTorrent and rTorrent.
+
+The original version of ruTorrent was based on an older version of µTorrent Webui but has been completely rewritten as of 3.0.  
+
 
 == Requirements ==
 
- * rTorrent 0.8.2 or later, compiled with XML-RPC support. If you don't know where to get it for your system, you are suggested to visit [http://libtorrent.rakshasa.no rTorrent official site].
- * Web-server with php 5.0. 
+ * [http://libtorrent.rakshasa.no/ rTorrent] 0.8.2 or later, compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c] support. If you don't know where to get it for your system, you are suggested to visit [http://libtorrent.rakshasa.no rTorrent official site].
+ * Web-server with [http://php.net/ php 5.0] 
  * Browser as a local client: 
-   * IE 7.0, Firefox 2.x, Firefox 3.x - optimal choice.
+   * IE 7.0, Firefox 2.x, Firefox 3.x - For optimal compatibility
    * IE 8.0 - limited support in the standard mode. Works good in the "Compatibility mode". 
    * IE 6.0 - Not supported.
    * Konqueror 3.5.9 - OK, except charts on tabs Speed and Traffic. 
    * Opera 9.x - works fine. 
    * Safari 3.x - works, but pictures may not be displayed when https-protocol is used. Probably this is a browser issue. Try to adjust a server not to make keep-alive connections.
-   * Google Chrome 0.2.149.30 - the same as Safari. 
+   * Google Chrome 0.2.149.30 - the same as Safari. ( _some users have reported issues with reloading in chrome, see issue 243_ )
 
  Other browsers have not been tested yet.
 
-== Setup and tuning ==
+== Setup and Configuration  ==
 
- # Download the ruTorrent archive and extract it's contents into the root folder of the web-server. [GetFromSVN Or get the latest version of ruTorrent from svn]. It's a good idea to perform this step under the web-server owner's account, so you won't need to set up rights to files/directories afterwards.
- # Add the string `scgi_port = 127.0.0.1:5000` into rTorrent config file (if it is not present there yet). 
- # [WebserverSetup Setup scgi-gateway on the web-server] to forward requests from /RPC2 to the port is listened by rTorrent. Another way - install the [Plugins plug-in] [PluginRPC RPC].
- # Type in the browser: `http://address_of_your_server:port_of_your_server/rutorrent`
+For detailed setup and configuration information, see [Installation] [WebSERVER Web Server Setup] and [Config].  Any questions should be asked in the [http://forums.rutorrent.org support forums] _*Not in the Comments Section*_  (If you have an issue or a bug, open a ticket)
 
 == Not implemented ==
 
- * Access management. ruTorrent (as well as rTorrent) is a single user system. If you need sharing of the rights to work with torrents between several users - use some copies of rTorrent and ruTorrent.
+ * ~~Access management. ruTorrent (as well as rTorrent) is a single user system. If you need sharing of the rights to work with torrents between several users - use some copies of rTorrent and ruTorrent.~~
+ * as of 3.0 rutorrent is can support multiple users with one copy of ruTorrent. _however multiple instances of rtorrent are required due to limitations in rtorrent_
+ * Authentication -  Currently rutorrent does not have any sort of authentication.  For authentication, use whatever your webserver supports. 
+
 
 == Some non-obvious points ==
 
- * Set the "Receive messages from tracker" option on the Settings pane only in case of  rTorrent v.0.8.5 or later. Otherwise it can lead to crash because of incorrect processing of tracker's messages, containing non-UTF-8 characters, by rTorrent. 
- * Settings of the rTorrent, changed by the user through the Settings pane of the ruTorrent, are valid until rTorrent restart. After rTorrent restart all settings will be set according to the rTorrent config file.
- * If numbers greater than 2Gb are shown as negative, the rTorrent should be recompiled with the xmlrpc-c version 1.11 or later.
- * If the port number which rTorrent is listening for requests should be changed, it is necessary to make appropriate changes into configuration of the ruTorrent - set the same port number in the file rutorrent/conf.php for the variable `$scgi_port`. 
- * Authorization may be provided by web-server's means only and does not depend on ruTorrent. If authorization is necessary, make sure /rutorrent and /RPC2 (scgi module, if used) folders are protected. In case the [Plugins plug-in] ruTorrent [PluginRPC RPC] is used, the /RPC2 folder protection is not necessary.
- * If it is necessary to have several copies of rTorrent/ruTorrent, the name of the default XMLRPC (/RPC2) mounting point might need to be changed. It can be done in the file rs.js. It is not necessary in case of [PluginRPC RPC] ruTorrent plug-in is used instead of scgi-module of the web-server.
+ * Only enable the "Receive messages from tracker" option in the Settings panel for rTorrent v.0.8.5 or later. Otherwise it can lead to a crash because of incorrect processing of tracker's messages, containing non-UTF-8 characters, by rTorrent. 
+ * rTorrent Settings, changed by the user through the "Settings" panel in ruTorrent, are valid until rTorrent restart. After which all settings will be set according to the rTorrent config file ( .rotrrent.rc ).
+ * If numbers greater than 2Gb are shown as negative, rTorrent should be recompiled with a xmlrpc-c version 1.11 or later.
+ * If the port which rTorrent is listening for requests is changed, it is necessary to make appropriate changes in the ruTorrent configuration file ( _see [Config] for more details_ ) - set the same port number in rutorrent/conf/config.php for the variable `$scgi_port`. 
+ * As stated above, Authentication should be provided by web-server only and does not depend on ruTorrent. If authentication is necessary, make sure the webroot and the scgi mount point are both protected (_if you mount the scgi directory in a subdirectory of the webroot, and enable authentication on the webroot, this is sufficent_) If either the [PluginsRPC The RPC] or [PluginHTTPRPC HttpRPC] plugin is used, the scgi mountpoint (for example, /RPC2 ) folder protection is not necessary.
+ * If you are running a multi-user setup, each user should have a different scgi mountpoint.  You can name these mountpoints anything you like, provided you change the configuration settings accordingly, for more info see [Config] and [WebSERVER]
 
 == Browsers' specialties ==
+ 
+ * For proper page rendering of the context menus, make sure javascript is enabled in [http://www.mozilla.com/en-US/firefox/firefox.html Firefox] and [http://www.opera.com/ Opera]
+ * F1 shows included hot-keys.  This works flawlessly only in Firefox.
+ * Some of the plugins don't play nice in every browser, for best compatibility, use firefox.
+ * Some Browser Add-ons cause problems.  (for example the [http://getfirebug.com/ Firebug] addon for Firefox causes a significant memory leak. Also, the Firefox Add-on [http://pagesperso-orange.fr/marc.boullet/ext/extensions-en.html All-in-One-Gestures] prevents the context menus from loading properly, and so on...)
 
- * To proper work of context menu and information display in the status bar in Opera and Firefox it is necessary to allow javascript in their settings.
- * F1 shows included hot-keys. Works fine in Firefox only as yet. 
- * Some add-ons for browsers may cause errors in ruTorrent work. For example - plug-in Firebug for Firefox causes significant memory leaks. The Firefox plug-in All-in-One Gestures prevents the context menu proper work. And so on...
 
 == [ErrorMessages Error messages] ==
 
