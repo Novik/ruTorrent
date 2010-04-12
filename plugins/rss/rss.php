@@ -300,14 +300,20 @@ class rRSS
 
 		if(!empty($query))
 		{
-			$arr = preg_split("/([&=])/", $query, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split("/([&=;])/", $query, -1, PREG_SPLIT_DELIM_CAPTURE);
 			$query = "?";
 			foreach($arr as $var)
 			{
-				if( "&" == $var || "=" == $var )
-					$query .= $var;
-				else
-					$query .= urlencode(str_replace("+", " ", $var));
+				switch($var)
+				{
+					case "&":
+					case "=":
+					case ";":
+						$query .= $var;
+						break;
+					default:
+						$query .= urlencode(str_replace("+", " ", $var));
+				}
 			}
 		}
 		if(!empty($fragment))
