@@ -1,5 +1,7 @@
 #summary Main Install Principles
 
+<wiki:toc />
+
 = Installation =
 
 == Dependencies ==
@@ -8,3 +10,47 @@
   * [http://php.net/ PHP]
   * (recommended)  [http://www.gnu.org/software/screen/ screen] or [http://www.freebsdsoftware.org/sysutils/detach.html detatch]
   * [WebSERVER Web Server]
+
+== rtorrent ==
+
+Most distros do not come with [http://libtorrent.rakshasa.no/ rtorrent] compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]  Rutorrent _*REQUIRES*_ [http://libtorrent.rakshasa.no/ rtorrent] to be compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]
+
+=== Dependencies: ===
+ * [http://gcc.gnu.org/ gcc]
+ * [http://www.gnu.org/software/ncurses/ ncurses]
+ * [http://libsigc.sourceforge.net/ libsigc++-2.0]
+ * [http://www.openssl.org/ libssl]
+ * [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]
+ * _recommended_ [http://subversion.apache.org/ subversion] (for downloading latest xmlrpc
+ 
+=== Installing xmlrpc-c ===
+It's recommended that you use a newer version of [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]  
+
+For example, the svn version.
+
+{{{
+svn co http://xmlrpc-c.svn.sourceforge.net/svnroot/xmlrpc-c/advanced xmlrpc-c
+cd xmlrpc-c
+./configure
+make
+make install
+}}}
+
+This installed xmlrpc-c-config to /usr/local/bin/xmlrpc-c-config
+=== fetch and install rtorrent ===
+now, provided you have the other dependencies for rtorrent installed, you can install libtorrent and rtorrent as follows (note: _currently, the svn version of rtorrent has some changes in the xmlrpc-c api, please use the lates *STABLE* version of rtorrent, 0.8.6_
+
+{{{
+wget http://libtorrent.rakshasa.no/downloads/libtorrent-0.12.6.tar.gz
+wget http://libtorrent.rakshasa.no/downloads/rtorrent-0.8.6.tar.gz
+tar xzfv libtorrent-0.12.6.tar.gz
+tar xzfv rtorrent-0.8.6.tar.gz
+cd libtorrent-0.12.6
+./configure
+make
+make install
+cd ../rtorrent-0.8.6/
+./configure --with-xmlrpc-c=/usr/local/bin/xmlrpc-c-config
+make
+make install
+}}}
