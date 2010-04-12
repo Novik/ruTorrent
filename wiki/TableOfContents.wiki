@@ -28,7 +28,7 @@
         * [PluginSearch Search]
         * [PluginScheduler Scheduler]
         * [PluginAutotools Auto Tools]
-        * [PluginDatadir DataDir]
+        * [PluginDataDir DataDir]
         * [PluginTracklabels Track Labels]
         * [PluginGeoIP GeoIP]
         * [PluginRatio Ratio]
