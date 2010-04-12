@@ -45,3 +45,11 @@ cd ../rtorrent-0.8.6/
 make
 make install
 }}}
+
+
+(_note:  on a [http://www.freebsd.org/ FreeBSD] system with [http://www.freebsd.org/ports/ Ports] installed, all of the above can be done with a single line of code]
+
+
+{{{
+cd /usr/ports/net-p2p/rtorrent/ && make install clean
+}}}
