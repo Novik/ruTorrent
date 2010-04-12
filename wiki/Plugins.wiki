@@ -46,6 +46,7 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginRatio ratio] - allows to set different ratio limitations for groups of torrents.
  # [PluginShow_peers_like_wtorrent Show_peers_like_wtorrent] - changes the format of values in "Seeds" and "Peers" columns of the torrents list.
  # [PluginSeedingtime seedingtime] - adds the column with the torrent's finishing time to torrents list.
- # [PluginHTTPRPC HTTPRPC] - Similar to [PluginRPC RPC] but with low bandwidth use in mind. 
+ # [PluginHTTPRPC HTTPRPC] - Similar to [PluginRPC RPC] but with low bandwidth use in mind.
+ # [PluginDiskspace Diskspace] -- Shows remaining space on the bottom bar in an easy to read fashion 
 
 ==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
