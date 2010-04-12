@@ -1,0 +1,10 @@
+#summary Main Install Principles
+
+= Installation =
+
+== Dependencies ==
+  * Unix Like OS
+  * [http://libtorrent.rakshasa.no/ Rtorrent] (compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc] )
+  * [http://php.net/ PHP]
+  * (recommended)  [http://www.gnu.org/software/screen/ screen] or [http://www.freebsdsoftware.org/sysutils/detach.html detatch]
+  * [WebSERVER Web Server]
