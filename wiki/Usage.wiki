@@ -30,17 +30,20 @@ These include:
 <font size="3" face="Verdana"> <b>Active:</b></font><font size="2" face="Verdana"> Torrents which are currently uploading or downloading data </font><BR CLEAR="all">
 <font size="3" face="Verdana"> <b>Inactive:</b></font><font size="2" face="Verdana"> Torrents which are not currently uploading or downloading data  </font><BR CLEAR="all">
 <font size="3" face="Verdana"> <b>Error</b></font><font size="2" face="Verdana"> Torrents which have received an error notification from the tracker. </font><BR CLEAR="all">
-   * <font size="4" face="Verdana"><b>Labels:</b></font><font size="3" face="Verdana">Lets you sort by label (Requires the [PluginsLabel Labels] plugin)</font><BR><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Labels:</b></font><font size="3" face="Verdana">Lets you sort by label (Requires the [PluginLabel Labels] plugin)</font><BR><BR CLEAR="all">
 <BR><BR><BR>
-   * <font size="4" face="Verdana"><b>Tracker:</b></font><font size="3" face="Verdana"> Lets you sort by Tracker (Requires the [PluginsTracklabels TrackLabels] Plugin</font><BR><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Tracker:</b></font><font size="3" face="Verdana"> Lets you sort by Tracker (Requires the [PluginTracklabels TrackLabels] Plugin</font><BR><BR CLEAR="all">
 <BR><BR><BR>
-   * <font size="4" face="Verdana"><b>Search:</b></font><font size="3" face="Verdana"> Lets you sort by local Search Query (Requires the [PluginsSearch Search] Plugin</font><BR><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Search:</b></font><font size="3" face="Verdana"> Lets you sort by local Search Query (Requires the [PluginSearch Search] Plugin</font><BR><BR CLEAR="all">
 <BR><BR>
-   * <font size="4" face="Verdana"><b>Feeds:</b></font><font size="3" face="Verdana"> Lets you view rss items (Requires the [PluginsRSS RSS] Plugin</font><BR><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Feeds:</b></font><font size="3" face="Verdana"> Lets you view rss items (Requires the [PluginRSS RSS] Plugin</font><BR><BR CLEAR="all">
 <BR><BR><BR>
 
 
 
-== Tabs ==
+== Tabs http://img576.imageshack.us/img576/2391/tabs2.png ==
 
-== Bottom Menu Bar ==
+The Tabs on the lower half of the screen allow you to access 
+
+
+== Bottom Menu Bar http://img190.imageshack.us/img190/6798/bottomrg.png ==
