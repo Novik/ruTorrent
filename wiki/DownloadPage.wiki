@@ -1,5 +1,3 @@
-#summary Downloads Page
-
 = http://img442.imageshack.us/img442/6560/downloadiconc.gif =
 
 Tarball archives.  _note For the latest version, please see [GetFromSVN SVN Wiki]_
