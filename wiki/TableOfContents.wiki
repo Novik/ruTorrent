@@ -3,7 +3,7 @@
   * [Main Description]
     * [Versions]
   * [Installation]
-    * [MainInstall Rutorrent Install]
+    * [MainInstall rtorrent Install]
       * [WebSERVER Web Server]
         * Apache
         * Lighttpd
