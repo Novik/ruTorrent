@@ -4,7 +4,7 @@ Tarball archives.  _note For the latest version, please see [GetFromSVN SVN Wiki
 
 _*Do not mix files from this page with svn files, use one or the other*_
 
-== http://img121.imageshack.us/img121/9530/logozp.png RuTorrent ==
+== http://img121.imageshack.us/img121/9530/logozp.png ruTorrent ==
 
  * [http://rutorrent.googlecode.com/files/rutorrent-3.0.tar.gz ruTorrent 3.0]
  * [http://rutorrent.googlecode.com/files/rutorrent-2.9.tar.gz ruTorrent 2.9]
