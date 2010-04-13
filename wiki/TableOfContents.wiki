@@ -10,11 +10,11 @@
         * Lighttpd
         * Cherokee
         * Nginx
-      * [Config]
-      * [Downloading]
-        * [GetFromSVN Get From SVN]
-        * [http://code.google.com/p/rutorrent/downloads/list Tar Download]
-          * [DownloadPage Download links]
+    * [Config]
+    * [Downloading]
+      * [GetFromSVN Get From SVN
+      * [http://code.google.com/p/rutorrent/downloads/list Tar Download]
+        * [DownloadPage Download links]
     * [Plugins]
       * Current plugins
         * [PluginRPC RPC]
