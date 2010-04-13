@@ -12,7 +12,7 @@
         * Nginx
     * [Config]
     * [Downloading]
-      * [GetFromSVN Get From SVN
+      * [GetFromSVN Get From SVN]
       * [http://code.google.com/p/rutorrent/downloads/list Tar Download]
         * [DownloadPage Download links]
     * [Plugins]
