@@ -13,8 +13,7 @@
     * [Config]
     * [Downloading]
       * [GetFromSVN Get From SVN]
-      * [http://code.google.com/p/rutorrent/downloads/list Tar Download]
-        * [DownloadPage Download links]
+      * [DownloadPage Tar Ball Download]
     * [Plugins]
       * Current plugins
         * [PluginRPC RPC]
