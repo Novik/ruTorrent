@@ -37,6 +37,7 @@
         * [PluginSeedingtime Seeding Time]
         * [PluginHTTPRPC HttpRPC Plugin]
         * [PluginDiskspace Diskspace Plugin]
+        * [PluginUnpack Unpack Plugin]
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
