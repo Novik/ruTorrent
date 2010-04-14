@@ -3,13 +3,14 @@
 Tarball archives.  _note For the latest version, please see [GetFromSVN SVN Wiki]_
 
 _*Do not mix files from this page with svn files, use one or the other*_
-
+----
 == http://img121.imageshack.us/img121/9530/logozp.png ruTorrent ==
 
  * [http://rutorrent.googlecode.com/files/rutorrent-3.0.tar.gz ruTorrent 3.0]
  * [http://rutorrent.googlecode.com/files/rutorrent-2.9.tar.gz ruTorrent 2.9]
-
+----
 == http://img249.imageshack.us/img249/772/photoshoppluginicon.jpg Plugins ==
+
   * [http://rutorrent.googlecode.com/files/plugins-3.0.tar.gz All Plugins for 3.0]
     * [http://rutorrent.googlecode.com/files/unpack-3.0.tar.gz Unpack 3.0] _*(see [PluginUnpack Unpack] for more info)*_
     * [http://rutorrent.googlecode.com/files/trafic-3.0.tar.gz Traffic 3.0] _*(see [PluginTrafic Traffic] for more info)*_
@@ -37,4 +38,6 @@ _*Do not mix files from this page with svn files, use one or the other*_
     * [http://rutorrent.googlecode.com/files/autotools-3.0.tar.gz autottols for 3.0] _*(see [PluginAutotools AutoTools] for more info)*_
     * [http://rutorrent.googlecode.com/files/_getdir-3.0.tar.gz _getdir for 3.0] _*(see [Plugin_getdir _getdir] for more info)*_
   * [http://rutorrent.googlecode.com/files/plugins-2.9.tar.gz All Plugins for 2.9]
+----
     
+[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
