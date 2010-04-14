@@ -51,5 +51,6 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginUnpack Unpack] -- Unrars and Unzips downloaded torrents
  # [Plugin_getdir _getdir Plugin]  -- this plugin helps rutorrent find and render directories
  # [PluginSource Source Plugin] -- This plugin lets you download the .torrent file
+ # [PluginChunks Chunks Plugin] -- This plugin shows info on torrent pieces (which pieces have downloaded)
 
 ==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
