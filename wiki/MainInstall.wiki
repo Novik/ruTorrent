@@ -2,8 +2,9 @@
 
 <wiki:toc />
 
+----
 = Installation =
-
+----
 Most distros do not come with [http://libtorrent.rakshasa.no/ rtorrent] compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]  Rutorrent _*REQUIRES*_ [http://libtorrent.rakshasa.no/ rtorrent] to be compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]
 
 === Dependencies: ===
