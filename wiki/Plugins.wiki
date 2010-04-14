@@ -49,5 +49,6 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginHTTPRPC HTTPRPC] - Similar to [PluginRPC RPC] but with low bandwidth use in mind.
  # [PluginDiskspace Diskspace] -- Shows remaining space on the bottom bar in an easy to read fashion 
  # [PluginUnpack Unpack] -- Unrars and Unzips downloaded torrents
+ # [Plugin_getdir _getdir Plugin]  -- this plugin helps rutorrent find and render directories
 
 ==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
