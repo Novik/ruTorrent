@@ -1,6 +1,10 @@
 #summary The description of a subsystem of plug-ins.
 #labels Featured
 
+<wiki:toc />
+----
+= Plugins =
+----
 ruTorrent is designed with a robust plugin system.  The reason for this is to allow users to customize the behavior of the WebUI, and exlude the parts they do not need [HowToCreatePlugin And even add something we missed, without modifying a ruTorrent code]
 
 == Installation ==
@@ -23,9 +27,8 @@ Simply remove the plugin directory, for example, to remove the rpc plugin you mi
 rm -r /var/www/rutorrent/plugins/rpc/
 }}}
 
-
+----
 == Currently there are the following plug-ins: ==
-
  # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server. (replacement for mod_scgi )
  # [PluginErasedata erasedata] - adds "Delete with the data" to the right click context menu.
  # [PluginDarkPal darkpal] - A ruTorrent Theme with dark colors designed to burn your eyes.
@@ -53,5 +56,5 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginSource Source Plugin] -- This plugin lets you download the .torrent file
  # [PluginChunks Chunks Plugin] -- This plugin shows info on torrent pieces (which pieces have downloaded)
  # [PluginData Data Plugin] -- This plugin adds an http download option to the "files" tab and torrent menu
-
-==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
+----
+[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
