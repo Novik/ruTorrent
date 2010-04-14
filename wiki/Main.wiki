@@ -3,7 +3,11 @@
 
 <wiki:toc />
 
+----
+
 == Introduction ==
+
+----
 
 ruTorrent is a web frontend for [http://libtorrent.rakshasa.no/ rtorrent] designed to emulate the look and feel of [http://www.utorrent.com/documentation/webui µTorrent WebUI] so it's appearance is quite similar to the "parent".  The name "RuTorrent" is the combination of µTorrent and rTorrent.
 
@@ -11,6 +15,7 @@ The original version of ruTorrent was based on an older version of µTorrent Web
 
 
 == Requirements ==
+----
 
  * [http://libtorrent.rakshasa.no/ rTorrent] 0.8.2 or later, compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c] support. If you don't know where to get it for your system, you are suggested to visit [http://libtorrent.rakshasa.no rTorrent official site].
  * Web-server with [http://php.net/ php 5.0] 
