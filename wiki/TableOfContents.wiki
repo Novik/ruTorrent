@@ -1,6 +1,7 @@
 #labels Featured
+----
 = Rutorrent Webui =
-
+----
   * [Main Description]
     * [Versions]
   * [Installation]
@@ -48,5 +49,5 @@
   * [FuturePlans Future Plans]
   * [SpecialThanks Special Thanks]
 
-
+----
 [https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
