@@ -2,8 +2,9 @@
 
 <wiki:toc />
 
+----
 = Introduction =
-
+----
 Rutorrent can be installed on most unix type operating systems.
 
 
