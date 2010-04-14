@@ -1,0 +1,6 @@
+#summary Special Thanks
+
+= Special Thanks =
+
+This is just a page to give special thanks to a few people who have helped the project.
+
