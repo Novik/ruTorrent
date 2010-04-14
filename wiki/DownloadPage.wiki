@@ -30,7 +30,7 @@ _*Do not mix files from this page with svn files, use one or the other*_
     * [http://rutorrent.googlecode.com/files/diskspace-3.0.tar.gz diskspace for 3.0] _*(see [PluginDiskspace Diskspace] for more info)*_
     * [http://rutorrent.googlecode.com/files/datadir-3.0.tar.gz datadir for 3.0] _*(see [PluginDataDir  Datadir] for more info)*_
     * [http://rutorrent.googlecode.com/files/data-3.0.tar.gz data for 3.0] _*(see [PluginData Data] for more info)*_
-    * [http://rutorrent.googlecode.com/files/darkpal-3.0.tar.gz darkpal for 3.0] _*(see [PluginDarkpal Darkpal] for more info)*_
+    * [http://rutorrent.googlecode.com/files/darkpal-3.0.tar.gz darkpal for 3.0] _*(see [PluginDarkPal Darkpal] for more info)*_
     * [http://rutorrent.googlecode.com/files/create-3.0.tar.gz create for 3.0] _*(see [PluginCreate Create] for more info)*_
     * [http://rutorrent.googlecode.com/files/cookies-3.0.tar.gz cookies for 3.0] _*(see [PluginCookies Cookies] for more info)*_
     * [http://rutorrent.googlecode.com/files/chunks-3.0.tar.gz chunks for 3.0] _*(see [PluginChunks Chunks] for more info)*_
