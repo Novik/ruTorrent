@@ -4,7 +4,7 @@
 
 = Introduction =
 
-How to configure rtorrent, and what each option is for.
+How to configure rutorrent, and what each option is for.
 
 
 == Basics ==
@@ -35,4 +35,91 @@ mkdir /var/www/rutorrent/conf/users/harry
 cp /var/www/rutorrent/conf/config.php /var/www/rutorrent/conf/users/tom/
 cp /var/www/rutorrent/conf/config.php /var/www/rutorrent/conf/users/dick/
 cp /var/www/rutorrent/conf/config.php /var/www/rutorrent/conf/users/harry/
+}}}
+
+If you want to set up different plugin settings for each user, simply create a directory named plugins under the users conf/users directory, and create another directory with the specific plugin name, then copy the original conf.php file for that plugin to the new directory.  For example, if you wish to have different settings for the rss plugin for the user "tom" you'd do something like this:
+
+{{{
+mkdir -p /var/www/rutorrent/conf/users/tom/plugins/rss
+cp /var/www/rutorrent/plugins/rss/conf.php /var/www/rutorrent/conf/users/tom/plugins/rss
+}}}
+
+then edit the conf.php file with the user specific settings.
+
+== Limiting settings ==
+
+If you want to limit a users access to specific settings, copy the access.ini from the base conf/ directory to the specific user directory, then edit it accordingly.
+
+This is what the base file looks like:
+
+{{{
+;; ruTorrent permissions.
+;; By default all flags is assumed as "yes".
+
+[settings]
+showDownloadsPage = yes
+showConnectionPage = yes
+showBittorentPage = yes
+showAdvancedPage = yes
+
+[tabs]
+showPluginsTab = yes
+
+[statusbar]
+canChangeULRate = yes
+canChangeDLRate = yes
+
+[dialogs]
+canChangeTorrentProperties = yes
+}}}
+
+These options are pretty self explanatory. 
+
+so, to limit some of these settings for user tom, simply copy the file to tom's direcory and edit the file, changing the "yes" to "no" under the appropriate section.
+
+{{{
+cp /var/www/rutorrent/conf/access.ini /var/www/rutorrent/conf/users/tom/
+}}}
+
+
+== Limiting Plugins ==
+
+You can limit plugins in much the same manner.  It's also possible to have plugins which you allow for one user, but disable for another.  This is handled by way of the plugins.ini file.
+
+The Default plugins.ini file looks like this:
+
+{{{
+;; Plugin's permissions. 
+;; If flag not founded in plugin section, it finded in section "default".
+;; If not founded in this section - it assumed as "yes". 
+;;
+;; For setting individual plugin's permissions you must write something like that:
+;;
+;; [ratio]
+;; enabled = yes
+;; canChangeToolbar = yes
+;; canChangeMenu = yes
+;; canChangeOptions = no
+;; canChangeTabs = yes
+;; canChangeColumns = yes
+
+[default]
+enabled = yes
+canChangeToolbar = yes
+canChangeMenu = yes
+canChangeOptions = yes
+canChangeTabs = yes
+canChangeColumns = yes
+}}}
+
+to disable a plugin, simply create a section with the plugin and changed enabled = yes to enabled = no.  so, to disable the rss plugin for top you'd copy the plugins.ini file to his directory:
+{{{
+cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/conf/users/tom/
+}}}
+
+then edit the file, adding something like this:
+
+{{{
+[rss]
+enabled = no
 }}}
