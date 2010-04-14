@@ -1,11 +1,11 @@
 #summary Config file settings for rutorrent
 
 <wiki:toc />
-
+----
 = Introduction =
 
 How to configure rutorrent, and what each option is for.
-
+----
 
 == Basics ==
 
