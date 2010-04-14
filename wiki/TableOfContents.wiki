@@ -40,6 +40,7 @@
         * [PluginUnpack Unpack Plugin]
         * [Plugin_getdir _getdir Plugin]
         * [PluginSource Source Plugin]
+        * [PluginChunks Chunks Plugin]
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
