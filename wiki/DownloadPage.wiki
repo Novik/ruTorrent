@@ -11,7 +11,7 @@ _*Do not mix files from this page with svn files, use one or the other*_
 
 == http://img249.imageshack.us/img249/772/photoshoppluginicon.jpg Plugins ==
   * [http://rutorrent.googlecode.com/files/plugins-3.0.tar.gz All Plugins for 3.0]
-    * [http://rutorrent.googlecode.com/files/unpack-3.0.tar.gz Unpack 3.0] 
+    * [http://rutorrent.googlecode.com/files/unpack-3.0.tar.gz Unpack 3.0] [PluginUnpack Unpack]
     * [http://rutorrent.googlecode.com/files/trafic-3.0.tar.gz Traffic 3.0]
     * [http://rutorrent.googlecode.com/files/tracklabels-3.0.tar.gz Track Labels 3.0]
     * [http://rutorrent.googlecode.com/files/throttle-3.0.tar.gz Throttle for 3.0]
