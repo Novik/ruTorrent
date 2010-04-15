@@ -53,6 +53,10 @@ var previousSpeedPoint = null;
 rSpeedGraph.prototype.draw = function()
 {
 	var self = this;
+	var ruleMain = getCSSRule("html, body");
+        if(!ruleMain)
+        	ruleMain = getCSSRule("html");
+	var gridColor = ruleMain ? ruleMain.style.color : 0x545454;
 	$(function() 
 	{
 		if((theWebUI.activeView=='Speed') &&
@@ -83,6 +87,7 @@ rSpeedGraph.prototype.draw = function()
 				},
 				grid:
 				{
+					color: gridColor,
 					hoverable: true
 				},
 				xaxis: 
