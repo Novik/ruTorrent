@@ -482,6 +482,7 @@ theWebUI.updateRSSLabels = function(rssLabels,allCnt)
 
 theWebUI.showRSS = function()
 {
+	plugin.correctCSS();
         if($('#rssl').children().length)
         	theWebUI.RSSManager();
         else
