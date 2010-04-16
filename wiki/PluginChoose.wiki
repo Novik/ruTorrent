@@ -1,4 +1,5 @@
 #summary Choose plug-in description
+#labels Deprecated
 
 == Introduction ==
 
