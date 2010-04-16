@@ -38,6 +38,3 @@ _*Do not mix files from this page with svn files, use one or the other*_
     * [http://rutorrent.googlecode.com/files/autotools-3.0.tar.gz autottols for 3.0] _*(see [PluginAutotools AutoTools] for more info)*_
     * [http://rutorrent.googlecode.com/files/_getdir-3.0.tar.gz _getdir for 3.0] _*(see [Plugin_getdir _getdir] for more info)*_
   * [http://rutorrent.googlecode.com/files/plugins-2.9.tar.gz All Plugins for 2.9]
-----
-    
-[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
