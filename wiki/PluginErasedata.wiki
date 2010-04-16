@@ -21,8 +21,3 @@ Select "Delete Data" and a new context window comes up as shown here:
 http://img696.imageshack.us/img696/6184/removedata.png
 
 Click "Ok" and your torrent data will be removed
-
-
-== Known limitations ==
-
-~~The plug-in will not delete the directories created as a result of downloading. Files are the only subject to remove.~~  *This has been fixed to the best of my knowledge*
