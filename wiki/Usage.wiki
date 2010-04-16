@@ -27,22 +27,21 @@ These include:
 === Left Side Menu ===
 
 <img src="http://img708.imageshack.us/img708/1741/leftside.png" align="left">
-   * <font size="4" face="Verdana"><b>State:</b></font><font size="3" face="Verdana">Sorts torrents by category</font><BR CLEAR="all">
-<font size="3" face="Verdana"> <b>    All:</b></font><font size="2" face="Verdana"> All torrents, running, stopped, seeding, finished</font><BR CLEAR="all">
-<font size="3" face="Verdana"> <b>Download:</b></font><font size= "2" face="Verdana"> Torrents which are downloading (stopped, but incomplete torrents will show here)</font><BR CLEAR="all">
-<font size="3" face="Verdana"> <b>Finished:</b></font><font size="2" face="Verdana"> Finished torrents, (seeding or Complete)</font><BR CLEAR="all">
-<font size="3" face="Verdana"> <b>Active:</b></font><font size="2" face="Verdana"> Torrents which are currently uploading or downloading data </font><BR CLEAR="all">
-<font size="3" face="Verdana"> <b>Inactive:</b></font><font size="2" face="Verdana"> Torrents which are not currently uploading or downloading data  </font><BR CLEAR="all">
-<font size="3" face="Verdana"> <b>Error</b></font><font size="2" face="Verdana"> Torrents which have received an error notification from the tracker. </font><BR CLEAR="all">
-   * <font size="4" face="Verdana"><b>Labels:</b></font><font size="3" face="Verdana">Lets you sort by label</font><BR><BR CLEAR="all">
+   * <b>State: </b>Sorts torrents by category<BR CLEAR="all">
+<b>All: </b>All torrents, running, stopped, seeding, finished<BR CLEAR="all">
+<b>Download: </b>Torrents which are downloading (stopped, but incomplete torrents will show here)<BR CLEAR="all">
+<b>Finished: </b>Finished torrents, (seeding or Complete)<BR CLEAR="all">
+<b>Active: </b>Torrents which are currently uploading or downloading data<BR CLEAR="all">
+<b>Inactive: </b>Torrents which are not currently uploading or downloading data  <BR CLEAR="all">
+<b>Error: </b>Torrents which have received an error notification from the tracker. <BR CLEAR="all">
+   * <b>Labels: </b>Lets you sort by label<BR><BR CLEAR="all">
 <BR><BR><BR>
-   * <font size="4" face="Verdana"><b>Tracker:</b></font><font size="3" face="Verdana"> Lets you sort by Tracker (Requires the [PluginTracklabels TrackLabels] Plugin)</font><BR><BR CLEAR="all">
-<BR><BR><BR>
-   * <font size="4" face="Verdana"><b>Search:</b></font><font size="3" face="Verdana"> Lets you sort by local Search Query</font><BR><BR CLEAR="all">
-<BR><BR>
-   * <font size="4" face="Verdana"><b>Feeds:</b></font><font size="3" face="Verdana"> Lets you view rss items (Requires the [PluginRSS RSS] Plugin)</font><BR><BR CLEAR="all">
-<BR><BR><BR>
-
+   * <b>Tracker: </b>Lets you sort by Tracker (Requires the [PluginTracklabels TrackLabels] Plugin)<BR><BR CLEAR="all">
+<BR><BR><BR><BR><BR><BR>
+   * <b>Search: </b>Lets you sort by local Search Query<BR CLEAR="all">
+   * <b>Feeds: </b>Lets you view rss items (Requires the [PluginRSS RSS] Plugin)<BR><BR CLEAR="all">
+<BR><BR><BR><BR>
+<BR CLEAR="all">
 
 
 === Tabs http://img576.imageshack.us/img576/2391/tabs2.png ===
@@ -59,20 +58,17 @@ The tabs are:
  * *Chunks* : This tab shows which pieces of a torrent have downloaded (Requires [PluginChunks Chunks] Plugin)
  * *Logger* : This tab shows error messages, and other system events.
 
-
-
 === Bottom Menu Bar http://img190.imageshack.us/img190/6798/bottomrg.png ===
 
 The Bottom menu bar was added in ruTorrent 3.0.  It shows general "total" speed information, and can be used to set the server Throttle level. Also shows remaining space if you have [PluginDiskspace Diskspace] installed.
 
 ----
+= General Use =
 ----
-== General Use ==
-----
+
 Now that you know where the buttons are, this section is designed to explain how to use them.
 
 === Adding Torrents ===
-
 To begin adding torrents, click the "add a torrent" menu button ( http://img441.imageshack.us/img441/5994/icon01start.png )
 
 This should open the following menu:
