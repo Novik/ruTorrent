@@ -20,7 +20,7 @@ div#dlgEditRSS br {clear: left; line-height: 0}
 
 div#dlgLoadTorrents #RSSBtn {width: 30px;}
 div#dlgLoadTorrents {width: 380px; height: 170px; overflow: visible}
-div#dlgLoadTorrents div.dlg-header {background-image: url(./images/world.gif)}
+div#dlgLoadTorrents div.dlg-header {background-image: url(../../images/world.gif)}
 div#dlgLoadTorrents div.content {margin: 5px; padding: 5px; line-height: 16px}
 div#dlgLoadTorrents div.content input {margin-top: 0px}
 div#dlgLoadTorrents label {width: 75px; display: block; float: left; margin-top: 0px; margin-bottom: 5px; margin-left: 5px; }

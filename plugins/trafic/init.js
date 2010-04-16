@@ -19,15 +19,13 @@ if(plugin.enabled && plugin.canChangeTabs())
 
 		this.ticks = new Array();
 		this.previousPoint = null;
+		var rule = getCSSRule("div.graph_tab");
+		this.gridColor = rule ? rule.style.color : "#545454";
 	}
 
 	rTraficGraph.prototype.draw = function()
 	{
 		var self = this;
-		var ruleMain = getCSSRule("html, body");
-        	if(!ruleMain)
-        		ruleMain = getCSSRule("html");
-		var gridColor = ruleMain ? ruleMain.style.color : 0x545454;
 		$(function() 
 		{
 			if(self.owner.height() && self.owner.width())
@@ -45,7 +43,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 				 	},
 					grid:
 					{
-						color: gridColor,
+						color: self.gridColor,
 						hoverable: true
 					},
 				  	yaxis: 
