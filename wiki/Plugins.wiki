@@ -72,12 +72,12 @@ and edit each accordingly.  For more information about multi-user setups, see [C
 
 === Explanation of plugin.ini settings ===
 
- * *enabled*  _this setting should be obvious, when set to yes, a plugin is enabled.  When set to no, it is not.
- * *canChangeToolbar* _this setting controls whether or not a plugin can make changes to the main toolbar_.
- * *canChangeMenu* _this setting controls whether or not the plugin can effect the rightclick menu_.
- * *canChangeOptions* _this setting controls whether or not the plugin can add to the "Settings" menu_.
- * *canChangeTabs* _this setting controls whether or not a plugin can add a tab to the tab bar_.
- * *canChangeColumns* _this setting controls whether or not a plugin can add a data column to the torrent information window_.
+ * *enabled* - this setting should be obvious, when set to yes, a plugin is enabled.  When set to no, it is not.
+ * *canChangeToolbar* - this setting controls whether or not a plugin can make changes to the main toolbar.
+ * *canChangeMenu* - this setting controls whether or not the plugin can effect the rightclick menu.
+ * *canChangeOptions* - this setting controls whether or not the plugin can add to the "Settings" menu.
+ * *canChangeTabs* - this setting controls whether or not a plugin can add a tab to the tab bar.
+ * *canChangeColumns* - this setting controls whether or not a plugin can add a data column to the torrent information window.
   
 === An Example of how to use plugins.ini ===
 
