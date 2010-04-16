@@ -32,7 +32,7 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server. (replacement for mod_scgi )
  # [PluginErasedata erasedata] - adds "Delete with the data" to the right click context menu.
  # [PluginDarkPal darkpal] - A ruTorrent Theme with dark colors designed to burn your eyes.
- # [PluginChoose choose] - adds a button to the New Torrent dialogue for comfortable navigation through the server file system.
+ # ~~[PluginChoose choose] - adds a button to the New Torrent dialogue for comfortable navigation through the server file system.~~ -Depreciated plugin
  # [PluginCreate сreate] - adds the command of new torrent creation.
  # [PluginTrafic trafic] - adds a subsystem of the traffic counting.
  # [PluginRSS RSS] - realizes operations with RSS-feeds.
