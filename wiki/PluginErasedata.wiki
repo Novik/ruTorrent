@@ -1,11 +1,28 @@
 #summary Erasedata plug-in description
 
-== Introduction ==
+----
+= Erase Data Plugin =
+----
 
-The plug-in adds an item "Delete data" to the context menu the downloading item, which allows to remove not only a .torrent file, but also its data.
+This plugin adds a context menu item to the right click menu which allows you to delete data.
 
-[http://rutorrent.googlecode.com/svn/wiki/images/erasedata.jpg]
+To access this menu, select a torrent, and right click as shown here:
 
-== Known lacks ==
+http://img688.imageshack.us/img688/4228/rightclick2.png
 
-The plug-in will not delete the directories created as a result of downloading. Files are the only subject to remove.
+
+Then, on the right click menu, select "Remove and" as shown here:
+
+http://img718.imageshack.us/img718/4228/rightclick2.png
+
+
+Select "Delete Data" and a new context window comes up as shown here:
+
+http://img696.imageshack.us/img696/6184/removedata.png
+
+Click "Ok" and your torrent data will be removed
+
+
+== Known limitations ==
+
+~~The plug-in will not delete the directories created as a result of downloading. Files are the only subject to remove.~~  *This has been fixed to the best of my knowledge*
