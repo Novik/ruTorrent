@@ -1,7 +1,23 @@
-#summary Search plug-in description
+#summary Search plugin description
 
-== Introduction ==
+----
+=Search Plugin=
+----
+This plugin makes it possible to modify the list of default search engines.  Once the plugin is installed, a new section called "Search" will apear in the "Settings" dialog. Each line in the list should contain a name of the search engine and URL for search in it. The name and the URL should be separated by a vertical line character. If the name is left empty, a horizontal line will be shown in the menu. The URL must be formatted in such a way that words added to the end would be processed by the search engine correctly.
 
-This plug-in makes it possible to modify the list of search engines. As the plug-in is installed a new section "Search" will appear in the Settings dialog. Each line in the list should contain a name of the search engine and URL for search in it. The name and the URL should be separated by a vertical line character. If the name is left empty, a horizontal line will be shown in the menu. URL must be formatted such as addition of words to it's end would be processed by the search engine correctly.
 
 [http://rutorrent.googlecode.com/svn/wiki/images/search.jpg]
+
+== Local Search ==  
+
+A new "local search" has been included with this plugin.  This is infact the default option in 3.0:
+
+http://img402.imageshack.us/img402/240/localsearch.png
+
+The local search option allows you to search the current list of running torrents.  It also adds a new menu category for each search on the left hand of the screen which will stay open until you close the webui or manually remove it.
+
+http://img151.imageshack.us/img151/5387/localsearchubuntu1.png
+
+http://img63.imageshack.us/img63/8645/localsearchubuntu2.png
+
+http://img199.imageshack.us/img199/1733/localsearchubuntu3.png
