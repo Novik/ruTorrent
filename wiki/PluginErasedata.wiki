@@ -16,8 +16,18 @@ Then, on the right click menu, select "Remove and" as shown here:
 http://img718.imageshack.us/img718/4228/rightclick2.png
 
 
-Select "Delete Data" and a new context window comes up as shown here:
+Select "Delete Data", and by default, a new context window will come up:
+
+
 
 http://img696.imageshack.us/img696/6184/removedata.png
 
 Click "Ok" and your torrent data will be removed
+
+
+If you wish to disable this context window, and not be asked to confirm each time, you can change the menu option in settings.
+
+Click the settings icon: http://img215.imageshack.us/img215/5652/icon06settings.png
+
+and uncheck "Confirm when deleting torrents"  _(this is shown checked in the screenshot below, as it is the default setting)_
+http://img504.imageshack.us/img504/314/confirmo.png
