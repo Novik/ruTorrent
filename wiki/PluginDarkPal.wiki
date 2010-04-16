@@ -1,9 +1,11 @@
 #summary DarkPal plug-in description
 
-== Introduction ==
+= Darkpal =
 
-Dark skin for ruTorrent.
+A darker theme for ruTorrent.
 
-Screenshot:
+Screenshot: _(click image for larger view)_
 
-[http://rutorrent.googlecode.com/svn/wiki/images/darkpal_big.jpg http://rutorrent.googlecode.com/svn/wiki/images/darkpal_small.jpg]
+[http://img340.imageshack.us/img340/452/darkpal2.png http://img641.imageshack.us/img641/5599/darkpal2shrink.png]
+
+(special thanks to stumpy for icons)
