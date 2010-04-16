@@ -26,11 +26,11 @@ Attention! Please install only those plug-ins you really need. The more plug-ins
 {{{
 rm -r /var/www/rutorrent/plugins/rpc/
 }}}
- # restart rtorrent _*This is important for plugins which work with the rtorrent scheduler, such plugins will send a command to rtorrent telling it to do something every x minutes. If you do not restart rtorrent, this even will keep occuring.*_
+ # restart rtorrent. _*This is important for plugins which work with the rtorrent scheduler, such plugins will send a command to rtorrent telling it to do something every x minutes. If you do not restart rtorrent, this even will keep occuring.*_
 
 == plugin.ini ==
 
-*_Some of the following information is also included in [Config#Limiting_Plugins]_*
+*_Some of the following information is also included in [Config#Limiting_Plugins Config page]_*
 
 Since 3.0, rutorrent includes a configuration file for plugins called plugin.ini.  It is located at rutorrent/conf/plugins.ini.  As of the writing of this wiki, the default format is as follows:
 
@@ -68,28 +68,28 @@ cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/users/dick
 cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/users/harry
 }}} 
 
-and edit each accordingly.  For more information about multi-user setups, see [Config] and [Installation#Single_user_(or_no_Web_Auth)_OR_Multiuser_(Web_Auth)]
+and edit each accordingly.  For more information about multi-user setups, see [Config] and [Installation#Single_user_(or_no_Web_Auth)_OR_Multiuser_(Web_Auth) Installation]
 
 === Explanation of plugin.ini settings ===
 
  * *enabled*  _this setting should be obvious, when set to yes, a plugin is enabled.  When set to no, it is not.
- * *canChangeToolbar* _this setting controls whether or not a plugin can make changes to the main toolbar_
- * *canChangeMenu* _this setting controls whether or not the plugin can effect the rightclick menu_
- * *canChangeOptions* _this setting controls whether or not the plugin can add to the "Settings" menu_
- * *canChangeTabs* _this setting controls whether or not a plugin can add a tab to the tab bar_
- * *canChangeColumns* _this setting controls whether or not a plugin can add a data column to the torrent information window_
+ * *canChangeToolbar* _this setting controls whether or not a plugin can make changes to the main toolbar_.
+ * *canChangeMenu* _this setting controls whether or not the plugin can effect the rightclick menu_.
+ * *canChangeOptions* _this setting controls whether or not the plugin can add to the "Settings" menu_.
+ * *canChangeTabs* _this setting controls whether or not a plugin can add a tab to the tab bar_.
+ * *canChangeColumns* _this setting controls whether or not a plugin can add a data column to the torrent information window_.
   
 === An Example of how to use plugins.ini ===
 
-So why is this useful?   Using our 3 user system from the earlier example, lets say
-for harry and dick , you want to completely disable the [PluginRSS RSS] plugin, but you wish to allow tom access to it. You would install [PluginRSS RSS] and add the following to both */var/www/rutorrent/conf/users/harry/plugins.ini* and */var/www/rutorrent/conf/users/dick/plugins.ini
+So why is this useful? Using our 3 user system from the earlier example, lets say
+for harry and dick, you want to completely disable the [PluginRSS RSS] plugin, but you wish to allow tom access to it. You would install [PluginRSS RSS] and add the following to both */var/www/rutorrent/conf/users/harry/plugins.ini* and */var/www/rutorrent/conf/users/dick/plugins.ini
 
 {{{
 [rss]
 enabled = no
 }}}
 
-Lets say you want to let tom use the "unpack" plugin, but you do not want him to be able to enable "automatic unpack" via the settings window.  you might add soemthing like this to */var/www/rutorrent/conf/users/tom/plugins.ini*
+Lets say you want to let tom use the [PluginUnpack unpack] plugin, but you do not want him to be able to enable "automatic unpack" via the settings window. You might add soemthing like this to */var/www/rutorrent/conf/users/tom/plugins.ini*
 
 {{{
 [unpack]
@@ -101,15 +101,11 @@ canChangeTabs = yes
 canChangeColumns = yes
 }}}
 
-
-
-
 ----
 == Currently there are the following plug-ins: ==
- # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server. (replacement for mod_scgi )
+ # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server. (Replacement for mod_scgi).
  # [PluginErasedata erasedata] - adds "Delete with the data" to the right click context menu.
  # [PluginDarkPal darkpal] - A ruTorrent Theme with dark colors designed to burn your eyes.
- # ~~[PluginChoose choose] - adds a button to the New Torrent dialogue for comfortable navigation through the server file system.~~ -Depreciated plugin
  # [PluginCreate сreate] - adds the command of new torrent creation.
  # [PluginTrafic trafic] - adds a subsystem of the traffic counting.
  # [PluginRSS RSS] - realizes operations with RSS-feeds.
@@ -127,11 +123,9 @@ canChangeColumns = yes
  # [PluginShow_peers_like_wtorrent Show_peers_like_wtorrent] - changes the format of values in "Seeds" and "Peers" columns of the torrents list.
  # [PluginSeedingtime seedingtime] - adds the column with the torrent's finishing time to torrents list.
  # [PluginHTTPRPC HTTPRPC] - Similar to [PluginRPC RPC] but with low bandwidth use in mind.
- # [PluginDiskspace Diskspace] -- Shows remaining space on the bottom bar in an easy to read fashion 
- # [PluginUnpack Unpack] -- Unrars and Unzips downloaded torrents
- # [Plugin_getdir _getdir Plugin]  -- this plugin helps rutorrent find and render directories
- # [PluginSource Source Plugin] -- This plugin lets you download the .torrent file
- # [PluginChunks Chunks Plugin] -- This plugin shows info on torrent pieces (which pieces have downloaded)
- # [PluginData Data Plugin] -- This plugin adds an http download option to the "files" tab and torrent menu
-----
-[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
+ # [PluginDiskspace Diskspace] -- Shows remaining space on the bottom bar in an easy to read fashion.
+ # [PluginUnpack Unpack] -- Unrars and Unzips downloaded torrents.
+ # [Plugin_getdir _getdir Plugin]  -- this plugin helps rutorrent find and render directories.
+ # [PluginSource Source] -- This plugin lets you download the .torrent file.
+ # [PluginChunks Chunks] -- This plugin shows info on torrent pieces (which pieces have downloaded).
+ # [PluginData Data] -- This plugin adds an http download option to the "files" tab and torrent menu.
