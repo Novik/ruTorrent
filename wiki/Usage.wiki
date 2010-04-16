@@ -34,13 +34,13 @@ These include:
 <font size="3" face="Verdana"> <b>Active:</b></font><font size="2" face="Verdana"> Torrents which are currently uploading or downloading data </font><BR CLEAR="all">
 <font size="3" face="Verdana"> <b>Inactive:</b></font><font size="2" face="Verdana"> Torrents which are not currently uploading or downloading data  </font><BR CLEAR="all">
 <font size="3" face="Verdana"> <b>Error</b></font><font size="2" face="Verdana"> Torrents which have received an error notification from the tracker. </font><BR CLEAR="all">
-   * <font size="4" face="Verdana"><b>Labels:</b></font><font size="3" face="Verdana">Lets you sort by label (Requires the [PluginLabel Labels] plugin)</font><BR><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Labels:</b></font><font size="3" face="Verdana">Lets you sort by label</font><BR><BR CLEAR="all">
 <BR><BR><BR>
-   * <font size="4" face="Verdana"><b>Tracker:</b></font><font size="3" face="Verdana"> Lets you sort by Tracker (Requires the [PluginTracklabels TrackLabels] Plugin</font><BR><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Tracker:</b></font><font size="3" face="Verdana"> Lets you sort by Tracker (Requires the [PluginTracklabels TrackLabels] Plugin)</font><BR><BR CLEAR="all">
 <BR><BR><BR>
-   * <font size="4" face="Verdana"><b>Search:</b></font><font size="3" face="Verdana"> Lets you sort by local Search Query (Requires the [PluginSearch Search] Plugin</font><BR><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Search:</b></font><font size="3" face="Verdana"> Lets you sort by local Search Query</font><BR><BR CLEAR="all">
 <BR><BR>
-   * <font size="4" face="Verdana"><b>Feeds:</b></font><font size="3" face="Verdana"> Lets you view rss items (Requires the [PluginRSS RSS] Plugin</font><BR><BR CLEAR="all">
+   * <font size="4" face="Verdana"><b>Feeds:</b></font><font size="3" face="Verdana"> Lets you view rss items (Requires the [PluginRSS RSS] Plugin)</font><BR><BR CLEAR="all">
 <BR><BR><BR>
 
 
@@ -124,4 +124,3 @@ You can also right click a torrent from the list, bringing up a menu with differ
 _*(note: some of the options in the screenshot below are only available by plugin.  See [Plugins] for more details)*_
 
 http://img689.imageshack.us/img689/6369/rightclick.png
-
