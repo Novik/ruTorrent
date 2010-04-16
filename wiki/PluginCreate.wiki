@@ -1,4 +1,8 @@
 #summary Create plugin
+
+
+<wiki:toc />
+
 ----
 = Create Plugin http://img227.imageshack.us/img227/1341/createicon.png =
 ----
@@ -108,4 +112,3 @@ to this:
 
  $pathToCreatetorrent = '/usr/local/bin/mktorrent'; 
 }}}
-
