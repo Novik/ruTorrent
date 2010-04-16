@@ -1,32 +1,111 @@
-#summary Create plug-in description
+#summary Create plugin
+----
+= Create Plugin http://img227.imageshack.us/img227/1341/createicon.png =
+----
+----
+This plugin allows for the creation of new .torrent files from a file or directory full of files.
 
-== Introduction ==
 
-The plug-in provides ability to create .torrent files. After plug-in installation there will be a new item "Create torrent..." in the commands menu, which shows the following dialogue:
+== Usage ==
 
-[http://rutorrent.googlecode.com/svn/wiki/images/create.jpg]
+To use this plugin, click the "Create a torrent" icon: http://img227.imageshack.us/img227/1341/createicon.png
 
- # "Select Source" - type here path to contents, which you wish to seed. Before specifying a path you have to decide, whether you will distribute one file or several. If you create torrent from several files, these files should be placed in one folder. There should be nothing in this folder except them.
- # "Trackers" - the list of trackers on which seeding will take place. Different tracker groups have to be separated from each other with an empty line.
- # "Comment" - it is possible to add comments to torrent (these comments will be displayed at the bottom on the tab "Common" of ruTorrent).
- # "Piece size" - at torrent creation its contents are split up for small parts, which are more convenient in transmission and handle. By means of this option you can select the size of parts. The common rule is that: the more the contents size, the larger should be and the size of parts. In most cases there will be enough to leave default value for this parameter (256К)
- # "Start seeding" - loads created torrent into rTorrent automatically, right after process completion. In certain cases it is necessary to disable this function. For example, if the site, on which loading will be fulfilled, requires torrent "re-downloading" for seeding (it occurs if the site requires password or cookies). If this option is not selected, you should load torrent into the rTorrent for seeding manually.
- # "Private torrent" - disables DHT (Distributed Hash Table) and PEX (Peer EXchange), which are alternative ways of peers reception instead of tracker. It is especially useful if tracker is unavailable for any reason. However some private sites do not allow to use these functions as it does not allow to trace seeding coefficients properly. At the same time site members can seed torrents to non-registered users.
- # "Create and save as..." - is the last step of torrent creation. Procedure is absolutely similar to file saving in any other application.
+This should open the "Create new Torrent" window as shown below:
 
-== Known lacks ==
+http://img189.imageshack.us/img189/37/createbase.png
 
-The plug-in cannot see and does not handle files, that are more than 2 gigabytes in size. This trouble is caused by php limitation on operations with the big files. Pay attention - the *total* downloading size *can* exceed 2Gb. Limitation concerns only each individual file of downloading.
+Next, add a file source *_(note: the [Plugin_getdir _getdir] plugin will make this a much easier process)_*
 
-Since the plug-in version of 1.1 there is a possibility to bypass this limitation. For this purpose it is necessary to install the external program like [http://www.createtorrent.com createtorrent], and to customize a plug-in in appropriate way.
+http://img341.imageshack.us/img341/4640/createselectsource.png
 
-== Additional customization ==
+Next, fill in the tracker information *_(note: for public trackers, you may wish to enter more than one tracker here)_*
 
-Since the plug-in version of 1.1 it is made in the file plugins/create/conf.php. 
- # $useExternal - if the given variable is not false, external program will be used for .torrent file creation. Valid values for this variable are: 
-  * false - for inner php realization
-  * "transmissioncli" (see [http://www.transmissionbt.com])
-  * "createtorrent" (see [http://www.createtorrent.com])
-  * "mktorrent" (see [http://mktorrent.sourceforge.net])
-  * "buildtorrent" (see [http://claudiusmaximus.goto10.org/cm/torrent.html])
- # $pathToCreatetorrent - the variable with the path to the program createtorrent. If it's value is empty line (by default), createtorrent will be searched in PATH for a web server user. The given option makes sense only if $useExternal=true.
+
+http://img191.imageshack.us/img191/1804/createtracker.png
+
+Optional: Select a "piece size" 
+
+http://img685.imageshack.us/img685/9793/createpiecesize.png
+
+Optional:  Fill in the checkboxed
+ # Start seeding _*this will add the torrent to the download list immediately upon creation*_
+ # Private Torrent _*select this if you are uploading to a private tracker*_
+
+http://img186.imageshack.us/img186/4561/createcheckboxes.png
+
+
+Click "Create ..." This will open the "Create Console window", here you can see the progress, any status information and errors that occur: 
+
+http://img690.imageshack.us/img690/1/createrunning.png
+
+When everything is finished and you see "Done." in the status window, you have the option to download the .torrent file directly from rutorrent by clicking the "Save" button:
+
+http://img189.imageshack.us/img189/9918/createsave.png
+
+
+
+== Configuration ==
+
+This plugin has a few config options.  Prior to 3.0, "create plugin" in it's default state couldn't handle large torrents.  If you are on a 64 bit os, this is no longer the case.  
+
+You can still use several external programs to create torrents with this plugin.  Currently the plugin supports:
+
+ # [http://www.transmissionbt.com/ transmissioncli] _*This is the cli install of  transmission, originally added because createtorrent was horribly slow on BSD systems*_
+ # createtorrent _* A linux command line tool for creating torrents (note: I can't find the current home page)*_
+ # [http://mktorrent.sourceforge.net/ mktorrent] _* A light weight, VERY SMALL command line torrent tool for bsd/linux *_
+ # [http://claudiusmaximus.goto10.org/cm/torrent.html buildtorrent] _*yet another lightweight command line tool for creating torrents *_
+
+The default config file looks like this:
+
+
+{{{
+<?php
+        // configuration parameters
+
+        define('MAX_CONSOLE_SIZE',25,true);
+
+        $useExternal = false;                   // Valid choices:
+                                                // false - use internal realization (may be too slow for large files)
+                                                // "transmissioncli" - use program transmissioncli (see http://www.transmissionbt.com/)
+                                                // "createtorrent" - use program createtorrent (see http://www.createtorrent.com)
+                                                // "mktorrent" - use program createtorrent (see http://mktorrent.sourceforge.net)
+                                                // "buildtorrent" - use program buildtorrent (see http://claudiusmaximus.goto10.org/cm/torrent.html)
+        $pathToCreatetorrent = '';              // Something like /bin/createtorrent, or /bin/transmissioncli. If empty, program will be founded in PATH.
+
+?>
+}}}
+ 
+This should be pretty easy to understand, but some people still get this wrong.  If you are using an external program, pick the correct option, and change useExternal accordingly, so for example, for mktorrent, you'd change THIS:
+
+
+{{{
+
+        $useExternal = false;                   // Valid choices:
+       
+}}}
+
+
+TO THIS:
+
+{{{
+
+        $useExternal = mktorrent;                   // Valid choices:
+       
+}}}
+
+
+and, of course, add the proper PATH in the location provided, so keeping with our previous example, lets say mktorrent is located at /usr/local/bin/mktorrent, you'd change this:
+
+
+
+{{{
+
+ $pathToCreatetorrent = ''; 
+}}}
+
+to this:
+{{{
+
+ $pathToCreatetorrent = '/usr/local/bin/mktorrent'; 
+}}}
+
