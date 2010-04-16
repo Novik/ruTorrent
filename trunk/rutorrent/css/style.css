@@ -174,7 +174,7 @@ div#gcont table {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-se
 div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
 
 div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
-div.graph_tab {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; line-height: 11px}
+div.graph_tab {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; line-height: 11px; color: #545454}
 
 div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
 div#List {border: 1px solid #A0A0A0;}

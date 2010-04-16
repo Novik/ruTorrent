@@ -47,16 +47,14 @@ rSpeedGraph.prototype.create = function( aOwner )
 	this.down = { label: theUILang.DL, data: [], color: "#1C8DFF" };
 	this.up = { label: theUILang.UL, data: [], color: "#009900" };
 	this.startSeconds = new Date().getTime()/1000;
+	var rule = getCSSRule("div.graph_tab");
+	this.gridColor = rule ? rule.style.color : "#545454";
 }
 
 var previousSpeedPoint = null;
 rSpeedGraph.prototype.draw = function()
 {
 	var self = this;
-	var ruleMain = getCSSRule("html, body");
-        if(!ruleMain)
-        	ruleMain = getCSSRule("html");
-	var gridColor = ruleMain ? ruleMain.style.color : 0x545454;
 	$(function() 
 	{
 		if((theWebUI.activeView=='Speed') &&
@@ -87,7 +85,7 @@ rSpeedGraph.prototype.draw = function()
 				},
 				grid:
 				{
-					color: gridColor,
+					color: self.gridColor,
 					hoverable: true
 				},
 				xaxis: 
