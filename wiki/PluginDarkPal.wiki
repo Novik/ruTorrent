@@ -1,7 +1,7 @@
 #summary DarkPal plug-in description
-
+----
 = Darkpal =
-
+----
 A darker theme for ruTorrent.
 
 Screenshot: _(click image for larger view)_
