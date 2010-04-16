@@ -56,5 +56,3 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginSource Source Plugin] -- This plugin lets you download the .torrent file
  # [PluginChunks Chunks Plugin] -- This plugin shows info on torrent pieces (which pieces have downloaded)
  # [PluginData Data Plugin] -- This plugin adds an http download option to the "files" tab and torrent menu
-----
-[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
