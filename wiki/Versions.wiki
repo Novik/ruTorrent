@@ -5,19 +5,19 @@
 ----
 
  * ====Version 3.0 (March 10th 2010 r844)==== 
-   #1. Virtually all of the code rewritten from scratch in order to increase productivity.
-   #2. Added support for multiple users (each user must meet one instance of rtorrent).
-   #3. Added elements of different levels of access for users.
-   #4. Added ability to search through the list of local torrents.
-   #5. Added the "Quick Start" add torrent dialog (for the torrents, for which data already exists on disk).
-   #6. Added several plug-ins.
-   #7. Change the appearance of a number of UI elements.
-   #8. Fixed several bugs.
+   # Virtually all of the code rewritten from scratch in order to increase productivity.
+   # Added support for multiple users (each user must meet one instance of rtorrent).
+   # Added elements of different levels of access for users.
+   # Added ability to search through the list of local torrents.
+   # Added the "Quick Start" add torrent dialog (for the torrents, for which data already exists on disk).
+   # Added several plug-ins.
+   # Change the appearance of a number of UI elements.
+   # Fixed several bugs.
 
 ----
 
  * ====Version 2.9 (March 10th 2010 r844)====
-   #1. Fixed several minor bugs of version 2.8. In fact, this release is made for the sole purpose - to say goodbye to the 2.x branch and forget it as a nightmare. 
+   # Fixed several minor bugs of version 2.8. In fact, this release is made for the sole purpose - to say goodbye to the 2.x branch and forget it as a nightmare. 
 
 ----
 
@@ -57,4 +57,3 @@
    # Fixed opacity during moving of columns in the list of torrents (in some browsers).
    # Fixed incorrect displaying of the time when a torrent has been added on the tab "General" - now the difference between time on the server and time on the local computer is being taken into account.
    # Fixed mess of paths in plug-ins which could cause "redundant" folders creation and incorrect work of some plug-ins.
-==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
