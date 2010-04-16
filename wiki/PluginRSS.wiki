@@ -10,7 +10,7 @@ This plugin is designed to fetch torrents via rss download links.  It has 2 main
 
 == Installation ==
 
-If you use the tarball installation, download the rss tarball from [http://code.google.com/p/rutorrent/downloads/list] and untar it into your plugins diectory.
+If you use the tarball installation, download the rss tarball from [http://code.google.com/p/rutorrent/downloads/list the download page] and untar it into your plugins diectory.
 
 If you use the svn version, svn the rss plugin into your plugins dir like this:
 {{{
