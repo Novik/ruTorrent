@@ -2,9 +2,9 @@
 ----
 = HTTPRPC Plugin =
 ----
-This plugin is designed as a easy to use replacement for the mod_scgi (or similar) webserver module, with emphasis on extremely low bandwidth use.  If you install this plugin, you do not need to use mod_scgi or [PluginRPC the RPC Plugin]. _Note: This plugin requires a faster server, and is not recommended for embedded systems, like a router or slow computer_
+This plugin is designed as a easy to use replacement for the mod_scgi (or similar) webserver module, with emphasis on extremely low bandwidth use. If you install this plugin, you do not need to use mod_scgi or [PluginRPC the RPC Plugin]. _Note: This plugin requires a faster server, and is not recommended for embedded systems, like a router or slow computer._
 
-It simplifies system setup and adds a layer of security. (There is no /RPC2 mount point exposed with this plugins. _*This does not mean you can remove the " $XMLRPCMountPoint" entry from your rutorrent/conf/config.php file*_ )
+It simplifies system setup and adds a layer of security. (There is no /RPC2 mount point exposed with this plugins. _*This does not mean you can remove the "$XMLRPCMountPoint" entry from your rutorrent/conf/config.php file*._)
 
 On the otherhand, because this plugin implements the scgi function in php, it does add additional load (in comparison to mod_scgi)
 
@@ -14,7 +14,7 @@ Use of this plugin reduces bandwidth 10 fold.
 
 == Installation ==
 
-Currently, this plugin is only available in the development version of rutorrent, and is scheduled for release with ruTorrent 3.1
+Currently, this plugin is only available in the development version of rutorrent, and is scheduled for release with ruTorrent 3.1.
 If you wish to try it, upgrade your main rutorrent files to svn, and install the plugin by svn.  For example, if your rutorrent install is at /var/www/rutorrent :
 
 {{{
