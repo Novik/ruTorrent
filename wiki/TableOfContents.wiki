@@ -7,10 +7,10 @@
   * [Installation]
     * [MainInstall rtorrent Install]
     * [WebSERVER Web Server]
-        * Apache
-        * Lighttpd
-        * Cherokee
-        * Nginx
+        * [WebSERVER#Apache_Specific_SCGI_Config Apache]
+        * [WebSERVER#Lighttpd_Specific_SCGI_Config Lighttpd]
+        * [WebSERVER#Cherokee_Specific_SCGI_Config Cherokee]
+        * [WebSERVER#Nginx_SCGI_notes Nginx]
     * [Config]
     * [Downloading]
       * [GetFromSVN Get From SVN]
