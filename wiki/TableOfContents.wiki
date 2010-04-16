@@ -20,7 +20,6 @@
         * [PluginRPC RPC]
         * [PluginErasedata Erasedata]
         * [PluginDarkPal Darkpal]
-        * [PluginChoose Choose]
         * [PluginCreate Create]
         * [PluginTrafic Traffic]
         * [PluginRSS RSS]
