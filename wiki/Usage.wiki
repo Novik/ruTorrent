@@ -1,12 +1,16 @@
 #summary How to use rutorrent
 
 <wiki:toc />
-
+----
 = Introduction =
-
+----
 This page will serve as a general "how to" for the basic day to day use or rutorrent.
 
-== Top Menu Bar http://img543.imageshack.us/img543/6357/menubar.png ==
+== Menu Bars ==
+
+The following is a list of each menu item.  
+
+=== Top Menu Bar http://img543.imageshack.us/img543/6357/menubar.png ===
 
 The top Menu Bar has some quick action buttons.  
 These include:
@@ -20,7 +24,7 @@ These include:
  * http://img339.imageshack.us/img339/6176/icon08create.png Create _optional plugin_
  * http://img693.imageshack.us/img693/1561/icon09rss.png RSS _optional plugin_
 
-== Left Side Menu ==
+=== Left Side Menu ===
 
 <img src="http://img708.imageshack.us/img708/1741/leftside.png" align="left">
    * <font size="4" face="Verdana"><b>State:</b></font><font size="3" face="Verdana">Sorts torrents by category</font><BR CLEAR="all">
@@ -41,7 +45,7 @@ These include:
 
 
 
-== Tabs http://img576.imageshack.us/img576/2391/tabs2.png ==
+=== Tabs http://img576.imageshack.us/img576/2391/tabs2.png ===
 
 The Tabs on the lower half of the screen allow access to various types of information.  Some of these items are only available by plugin.
 The tabs are:
@@ -57,6 +61,67 @@ The tabs are:
 
 
 
-== Bottom Menu Bar http://img190.imageshack.us/img190/6798/bottomrg.png ==
+=== Bottom Menu Bar http://img190.imageshack.us/img190/6798/bottomrg.png ===
 
 The Bottom menu bar was added in ruTorrent 3.0.  It shows general "total" speed information, and can be used to set the server Throttle level. Also shows remaining space if you have [PluginDiskspace Diskspace] installed.
+
+----
+----
+== General Use ==
+----
+Now that you know where the buttons are, this section is designed to explain how to use them.
+
+=== Adding Torrents ===
+
+To begin adding torrents, click the "add a torrent" menu button ( http://img441.imageshack.us/img441/5994/icon01start.png )
+
+This should open the following menu:
+
+http://img718.imageshack.us/img718/4192/addmi.png
+
+This gives you 2 options for adding torrents
+
+==== Add torrent via url ====
+
+If you know the url for the torrent you wish to download, you can just add it like shown in the following screenshot _*(note: you can leave the directory space blank if you like, doing so will download to the base download directory set in your .rtorrent.rc)*_
+
+http://img340.imageshack.us/img340/4152/addurlc.png
+
+==== Add torrent via direct upload of .torrent file ====
+
+You might find it more convenient to download the .torrent file, and uploaded to the webui.  To do this, click the "Choose file" button, this should open a window like this:
+
+http://img301.imageshack.us/img301/3722/addtorrent1.png
+
+simply browse to the .torrent file you wish to add, and click "open" _*(or "ok" on some browsers)*_   This should add the .torrent file to the location where "Choose file" was previously.  
+
+http://img151.imageshack.us/img151/5613/addtorrent2.png
+
+Now, simply click "Add File"
+
+=== Stop, Pause, Remove ===
+
+There are 2 methods to stop, pause or remove torrents.
+
+
+==== Using the Menu Bar buttons ====
+
+This is really almost self explanatory...but you can use the top menu buttons to stop pause and remove torrents.  To do so, simply select a torrent you wish to control:
+
+http://img413.imageshack.us/img413/4963/controls.png
+
+and click the option on the top bar you wish to use.
+
+ * to stop click http://img90.imageshack.us/img90/8159/icon05stop.png
+ * to pause click http://img687.imageshack.us/img687/4872/icon04pause.png
+ * to remove click http://img696.imageshack.us/img696/2161/icon02remove.png
+
+
+==== Using the right click menu ====
+
+You can also right click a torrent from the list, bringing up a menu with different options.  
+
+_*(note: some of the options in the screenshot below are only available by plugin.  See [Plugins] for more details)*_
+
+http://img689.imageshack.us/img689/6369/rightclick.png
+
