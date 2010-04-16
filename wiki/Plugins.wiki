@@ -22,10 +22,87 @@ Attention! Please install only those plug-ins you really need. The more plug-ins
 
 == Uninstallation ==
 
-Simply remove the plugin directory, for example, to remove the rpc plugin you might do this:
+ # remove the plugin directory, for example, to remove the rpc plugin you might do this:
 {{{
 rm -r /var/www/rutorrent/plugins/rpc/
 }}}
+ # restart rtorrent _*This is important for plugins which work with the rtorrent scheduler, such plugins will send a command to rtorrent telling it to do something every x minutes. If you do not restart rtorrent, this even will keep occuring.*_
+
+== plugin.ini ==
+
+*_Some of the following information is also included in [Config#Limiting_Plugins]_*
+
+Since 3.0, rutorrent includes a configuration file for plugins called plugin.ini.  It is located at rutorrent/conf/plugins.ini.  As of the writing of this wiki, the default format is as follows:
+
+{{{
+;; Plugin's permissions. 
+;; If flag not founded in plugin section, it finded in section "default".
+;; If not founded in this section - it assumed as "yes". 
+;;
+;; For setting individual plugin's permissions you must write something like that:
+;;
+;; [ratio]
+;; enabled = yes
+;; canChangeToolbar = yes
+;; canChangeMenu = yes
+;; canChangeOptions = no
+;; canChangeTabs = yes
+;; canChangeColumns = yes
+
+[default]
+enabled = yes
+canChangeToolbar = yes
+canChangeMenu = yes
+canChangeOptions = yes
+canChangeTabs = yes
+canChangeColumns = yes
+}}}
+
+These options allow you to change how each plugin behaves and allow you to create a unique configuration for multiple user systems.
+
+For a multiuser system with rutorrent installed at /var/www/rutorrent with users tom dick and harry you would do something like:
+
+{{{
+cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/users/tom
+cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/users/dick
+cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/users/harry
+}}} 
+
+and edit each accordingly.  For more information about multi-user setups, see [Config] and [Installation#Single_user_(or_no_Web_Auth)_OR_Multiuser_(Web_Auth)]
+
+=== Explanation of plugin.ini settings ===
+
+ * *enabled*  _this setting should be obvious, when set to yes, a plugin is enabled.  When set to no, it is not.
+ * *canChangeToolbar* _this setting controls whether or not a plugin can make changes to the main toolbar_
+ * *canChangeMenu* _this setting controls whether or not the plugin can effect the rightclick menu_
+ * *canChangeOptions* _this setting controls whether or not the plugin can add to the "Settings" menu_
+ * *canChangeTabs* _this setting controls whether or not a plugin can add a tab to the tab bar_
+ * *canChangeColumns* _this setting controls whether or not a plugin can add a data column to the torrent information window_
+  
+=== An Example of how to use plugins.ini ===
+
+So why is this useful?   Using our 3 user system from the earlier example, lets say
+for harry and dick , you want to completely disable the [PluginRSS RSS] plugin, but you wish to allow tom access to it. You would install [PluginRSS RSS] and add the following to both */var/www/rutorrent/conf/users/harry/plugins.ini* and */var/www/rutorrent/conf/users/dick/plugins.ini
+
+{{{
+[rss]
+enabled = no
+}}}
+
+Lets say you want to let tom use the "unpack" plugin, but you do not want him to be able to enable "automatic unpack" via the settings window.  you might add soemthing like this to */var/www/rutorrent/conf/users/tom/plugins.ini*
+
+{{{
+[unpack]
+enabled = yes               
+canChangeToolbar = yes      
+canChangeMenu = yes         
+canChangeOptions = no      
+canChangeTabs = yes         
+canChangeColumns = yes
+}}}
+
+
+
 
 ----
 == Currently there are the following plug-ins: ==
@@ -56,3 +133,5 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginSource Source Plugin] -- This plugin lets you download the .torrent file
  # [PluginChunks Chunks Plugin] -- This plugin shows info on torrent pieces (which pieces have downloaded)
  # [PluginData Data Plugin] -- This plugin adds an http download option to the "files" tab and torrent menu
+----
+[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
