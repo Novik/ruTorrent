@@ -5,7 +5,7 @@
 
 == Description ==
 
-This plugin is designed to fetch torrents via rss download links.  It has 2 main parts, one for entering feeds, the other for setting up filters.  For more information about rss, see http://en.wikipedia.org/wiki/RSS
+This plugin is designed to fetch torrents via rss download links.  It has 2 main parts, one for entering feeds, the other for setting up filters.  For more information about rss, see [http://en.wikipedia.org/wiki/RSS].
 
 
 == Installation ==
@@ -22,32 +22,26 @@ svn co http://rutorrent.googlecode.com/svn/trunk/plugins/rss
 === Adding a feed ===
 To add a feed, right click the RSS icon on the left hand side of the screen 
 and select "Add Rss Feed" as shown in the next two images.
-(note:  Prior to r890 you can also use the feed icon on the top menu bar, in r890 this was changed to open the rss manager)
+(_note: prior to r890 you can also use the feed icon on the top menu bar, in r890 this was changed to open the rss manager_).
 
 http://img708.imageshack.us/img708/416/rssnew.png
 
 http://img693.imageshack.us/img693/1413/rss03.png
 
-
 This should bring up a new window, as shown in the next image:
-
-
 
 http://img80.imageshack.us/img80/4782/rss02.png
 
-
-You need to add your RSS feed where it says "Feed URL" and give it a name where it says "Custom Alias"  (note:  It's important that you always use a DOWNLOAD feed.  If you use a web feed, you will end up with errors.  Also, it's important to note that some feeds require cookies to use.  These feeds will require you to use the "cookies" plugin [PluginCookies])
-
+You need to add your RSS feed where it says "Feed URL" and give it a name where it says "Custom Alias"  (_note:  It's important that you always use a DOWNLOAD feed.  If you use a web feed, you will end up with errors.  Also, it's important to note that some feeds require cookies to use. These feeds will require you to use the "cookies" plugin [PluginCookies] _).
 
 http://img185.imageshack.us/img185/9524/rss04.png
-
-
 
 If you added the feed correctly, you should end up with something like this:
 
 http://img693.imageshack.us/img693/258/rss05.png
 
 With this, you have everything you need to manually download torrents via rss feed.  To manually download items from this feed, right click on the item and select LOAD, as shown in this screenshot:
+
 http://img535.imageshack.us/img535/7455/rss06.png
 
 This should bring up an "add torrent" window like this:
@@ -58,11 +52,10 @@ if you click ok, it will add it and download it to your default dir, otherwise y
 
 http://img686.imageshack.us/img686/6803/rss08.png
 
-(if you select "Don't start the download automatically"  the torrent will be added in the program "stopped")
+(if you select "Don't start the download automatically"  the torrent will be added in the program "stopped").
 If all went well, you should have a downloading torrent as shown here:
 
 http://img510.imageshack.us/img510/6961/rss09.png
-
 
 === Automatic Downloading via RSS Manager ===
 
@@ -70,82 +63,65 @@ Manually adding torrents via a feed is somewhat convenient but lets face it, if 
 
 ==== RSS Manager ====
 
-To Open the rss manager, right click on the RSS icon from the left side of the menu, and select "Rss Manager"  (note  as of r890 you can use the rss icon from the top bar to bring up the rss manager) 
+To Open the rss manager, right click on the RSS icon from the left side of the menu, and select "Rss Manager" (_note: as of r890 you can use the rss icon from the top bar to bring up the rss manager_).
 
 http://img185.imageshack.us/img185/5267/rssman00.png
 
-
 The filter manager has SEVERAL options/settings so rather than give you a step by step, i'm going to post a pic explaining what each option does.
-
 
 http://img189.imageshack.us/img189/3881/rssman01.png
 
-
-
-
-
-  # Add:  This adds a new filter rule
-  # Filter:  This is where you put the filter regex
-  # Exclude:  This is where you put the exclude regex
+  # Add: This adds a new filter rule.
+  # Filter: This is where you put the filter regex.
+  # Exclude: This is where you put the exclude regex.
   # Check Fields:  This is where you decide what the filter should match against 
-    *  Title Field:  This is the title of the RSS entry 
-    *  Description field:  This is the description data for the rss item 
-    *  Link Field:   This is the http link for the rss item 
-    (The default is to use only the "Title Field", if you use the others, make sure you know what you are doing, otherwise it could lead to unwanted matches)
-  # Directory:  This is the save path for the torrent data,  having _getdir plugin helps here
-  # Match Interval:  This is the rate at which the filter will download new torrents (the default is always)
-  # Label:  This is the label for rutorrent, used mainly to sort the list of seeding torrents (note: if you use auto-tools, and leave this blank, it will automatically label the torrent based on normal auto-tools rules)
-  # Ratio Group:  This is the ratio group you want the matched torrents to be in
-  # Channel:   This is the download/upload channel you want the matched torrents in
-  # Download options:  These define behavior for matched torrents, don't add the torrent's name to path or don't start download automatically (torrent added to list in "stopped" format)
+    *  Title Field: This is the title of the RSS entry. 
+    *  Description field: This is the description data for the rss item. 
+    *  Link Field: This is the http link for the rss item. 
+    (The default is to use only the "Title Field", if you use the others, make sure you know what you are doing, otherwise it could lead to unwanted matches).
+  # Directory: This is the save path for the torrent data, having [Plugin_getdir _getdir] plugin helps here.
+  # Match Interval: This is the rate at which the filter will download new torrents (the default is always).
+  # Label: This is the label for rutorrent, used mainly to sort the list of seeding torrents (note: if you use auto-tools, and leave this blank, it will automatically label the torrent based on normal auto-tools rules).
+  # Ratio Group:  This is the ratio group you want the matched torrents to be in. (Plugin [PluginRatio ratio] must be installed).
+  # Channel:   This is the download/upload channel you want the matched torrents in. (Plugin [PluginThrottle throttle] must be installed).
+  # Download options:  These define behavior for matched torrents, don't add the torrent's name to path or don't start download automatically (torrent added to list in "stopped" format).
 
-
-So to add a filter, just click the ADD button (1) This will create an empty filter rule, give it a name, and enter your regex filter in the Filter section (2)  
-(for more info on regex, see [regex] or [http://www.regular-expressions.info/]  Also, regex filters in rutorrent need to be enclosed in /  /i tags, you could use other tags, but this is the standard, case insensitive tag)  An example of a filter might be:
+So to add a filter, just click the ADD button (1). This will create an empty filter rule, give it a name, and enter your regex filter in the Filter section (2). (For more info on regex, see [http://www.regular-expressions.info]. Also, regex filters in rutorrent need to be enclosed in /  /i tags, you could use other tags, but this is the standard, case insensitive tag). An example of a filter might be:
 {{{
 /Lost.S06E.*/i
 }}}
 
-If you wish to exclude items from your filter, you could code this into the standard filter, but it's much more simple to use the "EXCLUDE" option (3)The syntax for this field is the same as the "Filter" field, a standard exclude might look like this:
+If you wish to exclude items from your filter, you could code this into the standard filter, but it's much more simple to use the "EXCLUDE" option (3). The syntax for this field is the same as the "Filter" field, a standard exclude might look like this:
 {{{
 /(DVDR|Complete|DVDRip|BDrip|Bluray)/i
 }}}
 
-for (4)  The default is often the desired case, the other 2 options are used much less often.  The description field is the RSS description, or category.  The link field is the actual HTTP link.  Using these check boxes allows you to match text in these areas.
+For (4) the default is often the desired case, the other 2 options are used much less often.  The description field is the RSS description, or category.  The link field is the actual HTTP link.  Using these check boxes allows you to match text in these areas.
 
-for (5) you set the download path.  This can come in great handy when using AutoTools plugin [PluginAutotools]
+For (5) you set the download path.  This can come in great handy when using plugin [PluginAutotools AutoTools].
 
-Most of the other options have already been explained or are self explanatory.  If you have any questions, be sure to ask in the forums at [http://forums.rutorrent.org]
+Most of the other options have already been explained or are self explanatory.  If you have any questions, be sure to ask in the forums at [http://forums.rutorrent.org].
 
 Here is what an RSS filter might look like:
-http://img41.imageshack.us/img41/3899/rssman03.png
 
+http://img41.imageshack.us/img41/3899/rssman03.png
 
 You can add as many filters as you like.  To disable a filter, you can click the check box next to the filter's name.
 
 ==== Plugin Settings ====
 
-You might want to edit the config file for RSS.  If you wish to make a general setting for all users, just edit plugins/rss/conf.php and change 
+You might want to edit the config file for RSS.  If you wish to make a general setting for all users, just edit plugins/rss/conf.php and change it. 
 
-You can have different settings for each user by creating a plugins/rss/ dir in the conf/users/USERNAME dir and copying the conf.php file to this dir.  (this works for all plugins which have settings)
-
+You can have different settings for each user by creating a plugins/rss/ dir in the conf/users/USERNAME dir and copying the conf.php file to this dir. (This works for all plugins which have settings).
 
 {{{
 $updateInterval = 30;   // in minutes
 }}}
 to whatever you like.
 
-you can also change these options:
-
-{{{
-define('HISTORY_MAX_COUNT', 100);
-define('HISTORY_MAX_TRY', 3);
-define('WAIT_AFTER_LOADING', 0);
-}}}
-
 === Renaming a Feed ===
 
-To rename a feed, right click on the feed and select "edit feed"
+To rename a feed, right click on the feed and select "edit feed".
 
 http://img694.imageshack.us/img694/912/rssedit.png
 
@@ -182,9 +158,6 @@ rss will automatically start when you load the webui, but if for some reason you
 execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php USERNAME &}
 }}}
 
-(note, the username option is needed if you use web authentication and or multiple users, this username would be the WEB AUTH name )
+(_note: the username option is needed if you use web authentication and or multiple users, this username would be the WEB AUTH name_)
 
-
-For any QUESTIONS, please join us in the forums at [http://forums.rutorrent.org]
-
-==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
+For any QUESTIONS, please join us in the forums at [http://forums.rutorrent.org].
