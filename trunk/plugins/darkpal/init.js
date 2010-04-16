@@ -9,6 +9,7 @@ theWebUI.config = function(data)
 	{
 		table.obj.setPaletteByURL("plugins/darkpal");
 	});
+	plugin.loadCSS("plugins");
 }
 
 
