@@ -1,6 +1,42 @@
 #summary Special Thanks
-
+----
 = Special Thanks =
+----
 
-This is just a page to give special thanks to a few people who have helped the project.
+This is just a page to give special thanks to a few people who have helped the project.  This is by no means an all inclusive list. 
 
+== dmrom ==
+ 
+A big special thanks goes to dmrom. 
+
+his contributions include:
+
+ * [Plugin_getdir _getdir]
+ * [PluginAutotools Auto Tools]
+ * [PluginsDatadir Datadir]
+ * [PluginErasedata Erase Data]
+ *  initplugins.php 
+
+
+== zoltan csala ==
+
+A big special thanks goes out to zoltan csala
+
+his contributions include:
+
+ * [PluginChunks Chunks]
+ * [PluginGeoIP GeoIP]
+
+== Tranlation Shout outs ==
+
+ _*(note:  This is likely not an all inclusive list. I have added the information i personally know about, if you provided a translation and i forgot to include it, please email me at wonslung@gmail.com -Wonslung)*_
+
+ * BlueEyes -- Chinese
+ * Nicobubulle -- French (also, a big thanks for running the French section of the [http://forums.rutorrent.org/index.php?board=28.0 Forums]
+ * RascalliM -- Dutch
+
+
+
+== Special mention ==
+
+Also, i would like to say thanks to Alexander from the rutorrent [http://forums.rutorrent.org Forums] for his low bandwidth bounty.  The work which resulted from this bounty will bring huge benefits to the rutorrent community.  For more information, see http://forums.rutorrent.org/index.php?topic=192.0
