@@ -1,22 +1,23 @@
 #summary Edit plug-in description
+----
+= Edit Plugin =
+----
 
-== Introduction ==
+== Description ==
 
-The plug-in allows user to edit the list of trackers and commentaries of the current torrent.
+This plugin allows you to edit the list of trackers, and change the comment of the current torrent. After installation, a new context menu item will become available when you right click a torrent from the list, "Edit Torrent..."  Selecting this will open the "Torrent Properties" menu.
 
-As the plug-in is installed a new option "Edit torrent..." will appear in the context menu of the torrent. Activating this option will open "Torrent Properties" dialog.
 
 [http://rutorrent.googlecode.com/svn/wiki/images/edit.jpg]
 
-The list of trackers should be formatted the same way as for [http://www.utorrent.com/ µTorrent] - different groups of trackers must be separated by an empty line.
-The content of the "Comment" field will be shown in the "General" tab.
+The list of trackers should be formatted the same way as [http://www.utorrent.com/ µTorrent] - Different groups must be separated by an empty line.  The content of the "Comment" field will be shown in the "General" tab.
 
-== How does it work ==
 
-rTorrent does not have a mean to edit torrent's properties on-the-fly. This plug-in just removes the torrent, modifies it in accordance with defined settings and adds it back.
-So there are some not always obvious points:
 
- * If downloading of a torrent have not been finished, after modification it will be re-hashed. To avoid this the modification should be performed either after the download finished or immediately after new torrent is added in the "Stopped" state.
+== How it works ==
+
+rTorrent, by default, does not provide a method for modifying torrent properties on the fly. In order to work around this limitation, this plugin removes the torrent, modifies it according to the settings defined, then adds it back. Due to this, there may be some non-obvious side effects.
+ * If the torrent is modified before downloading has finished, It will need to rehash data.  To prevent this, modify the torrent before starting, or after it has finished.
  * Some properties of the torrent (file priorities, download priorities, ratio, etc.) will be lost after this modification.
 
-The way to automatic editing of the list of trackers of all torrents is provided via [PluginRetrackers Retrackers] plug-in.
+To automatically edit the list of trackers for all torrents, see [PluginRetrackers Retrackers]
