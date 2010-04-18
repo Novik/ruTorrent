@@ -13,7 +13,7 @@ his contributions include:
 
  * [Plugin_getdir _getdir]
  * [PluginAutotools Auto Tools]
- * [PluginsDatadir Datadir]
+ * [PluginsDataDir Datadir]
  * [PluginErasedata Erase Data]
  *  initplugins.php 
 
