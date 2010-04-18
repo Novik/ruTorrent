@@ -40,3 +40,5 @@ his contributions include:
 == Special mention ==
 
 Also, i would like to say thanks to Alexander from the rutorrent [http://forums.rutorrent.org Forums] for his low bandwidth bounty.  The work which resulted from this bounty will bring huge benefits to the rutorrent community.  For more information, see http://forums.rutorrent.org/index.php?topic=192.0
+
+A Special thanks to TheDuckster for the current rutorrent logo.
