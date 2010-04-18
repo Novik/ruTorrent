@@ -1,32 +1,36 @@
 #summary Trafic plug-in description
+<wiki:TOC />
+----
+=Plugin Trafic =
+----
 
-== Introduction ==
-The Trafic plug-in is a subsystem for registration of the total (all trackers counted) rTorrent traffic. The plug-in has three options of the graph - hourly, daily and monthly. Statistics can be cleaned at any time by pressing corresponding button in the interface (see screenshot).
+== Description ==
+The Trafic plugin is a subsystem for monitoring rtorrent traffic totals.  It tracks both system wide and per-tracker totals.  The plugin can display totals in three formats, hourly, daily, and mouthly.  Statistics can be cleaned out at any time by clicking the "Clear" button on the interface (see screenshot).
+
 
 [http://rutorrent.googlecode.com/svn/wiki/images/trafic_big.jpg http://rutorrent.googlecode.com/svn/wiki/images/trafic_small.jpg]
 
 == Requirements ==
-    * Web-server with php 5.1. 
+ * Web-server with php 5.1. 
 
 == How does it work ==
 
-When ruTorrent starts with installed Trafic plug-in first time it sends a command to the rTorrent scheduler, which begins provide the application with information about current traffic.
-Once again - traffic registration begins after first start of the ruTorrent only. I.e. traffic is not counting in the time between start of the rTorrent and first (for this rTorrent session) start of the ruTorrent.
-To avoid this, a special string should be added to the rTorrent configuration file (see below).
+When rutorrent is loaded for the first time (with the trafic plugin) it sends a command to the rTorrent scheduler, which begins to provide the application with information about it's current traffic statistics. _*(Once again, it's important to understand that traffic statistics do not begin registering until he first load of the plugin.  If rtorrent is running, but rutorrent hasn't been loaded, the Trafic Plugin is not keeping track)*_
+
+To avoid this issue, we can use the initplugins.php method to load all plugins at rtorrent start _*(see [Plugins#Starting_plugins_with_rtorrent] )*_
+
 
 == Some non-obvious points ==
+ * The time ticks shown on the chart correspond to the server's time settings.  If time settings on the client differ from those of the server, this plugin may not function as intended.  If this happens, the recommended solution is to sync both client and server with the correct time zone information and clear the traffic statistics.
+ * Clicking "Clear" while "All Trackers" is selected will erase all Traffic stats. Clicking "Clear" when a specific tracker is selected will only erase Traffic data for that tracker.
+ * Traffic is counted for all trackers in the zeroth group of every torrent.  All other groups will be ignored.
+ * Traffic data on the charts may not match up with the tracker's internal statistics because the plugin can only keep track of data provided by rTorrent.  It doesn't know what information has been sent to the tracker.
 
- * The time ticks shown on the chart are corresponding to the server's time. If time settings on the server and on the client are different, some problems with the chart interpreting may occur. If this happened, it is recommended to set correct time zone on all computers and then clean up statistics.
- * Activating the button "Clear" while the the option "All trackers" is selected will lead to erase of the whole statistic of all trackers. If a tracker is selected, the button will wipe the data of this particular tracker only.
- * The traffic is counting for all trackers in the zeroth group of every torrent. For all other groups the traffic will not be registered.
- * The data on the charts may not match to the tracker's statistics because the plug-in just counting the data provided by rTorrent. It doesn't know if the data has been sent to the tracker or not.
 
-== Additional plug-in adjustment ==
+== Additional plug-in configuration ==
 
-Following changes should be done in the file `plugins/trafic/conf.php`.
-    * `$updateInterval` - the variable sets the interval in minutes between requests to the rTorrent. Default - 15 minutes. 
-    * `$isAutoStart` - the variable defines how the traffic counting starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler needs to be activated independently. To do this, the following string should be added into the rTorrent configuration file:
-{{{
-schedule = trafic,10,00:15:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"
-}}}
- where full_path_to_plugin - is a full path to the Trafic plug-in. 
+You can adjust the update interval by editing the config file.  
+
+The config file is  `plugins/trafic/conf.php`.
+
+Look for     `$updateInterval =` and change it accordingly.
