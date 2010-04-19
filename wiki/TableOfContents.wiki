@@ -24,6 +24,7 @@
         * [PluginTrafic Traffic]
         * [PluginRSS RSS]
         * [PluginEdit Edit]
+        * [PluginRetrackers Retrackers]
         * [PluginThrottle Throttle]
         * [PluginCookies Cookies]
         * [PluginSearch Search]
