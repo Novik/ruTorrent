@@ -219,8 +219,8 @@ plugin.onLangLoaded = function()
 			s +=
 				"<tr>"+
 					"<td><input type='text' id='rat_name"+i+"' class='TextboxShort'/></td>"+
-					"<td><select id='rat_min"+i+"'><option value='100'>100</option><option value='200'>200</option><option value='300'>300</option><option value='400'>400</option><option value='500'>500</option><option value='600'>600</option><option value='700'>700</option><option value='800'>800</option><option value='900'>900</option></select></td>"+
-					"<td><select id='rat_max"+i+"'><option value='0'>"+theUILang.mnuRatioUnlimited+"</option><option value='100'>100</option><option value='200'>200</option><option value='300'>300</option><option value='400'>400</option><option value='500'>500</option><option value='600'>600</option><option value='700'>700</option><option value='800'>800</option><option value='900'>900</option></select></td>"+
+					"<td><input type='text' id='rat_min"+i+"' class='Textbox num'/></td>"+
+					"<td><input type='text' id='rat_max"+i+"' class='Textbox num'/></td>"+
 					"<td><input type='text' id='rat_upload"+i+"' class='Textbox num' maxlength='6'/></td>"+
 					"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option></select></td>"+
 				"</tr>";
