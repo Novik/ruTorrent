@@ -1,21 +1,22 @@
-#summary rtorrent Install
+----
+= rTorrent install =
+----
 
 <wiki:toc />
 
-----
-= Installation =
-----
+== Introduction ==
+
 Most distros do not come with [http://libtorrent.rakshasa.no/ rtorrent] compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]  Rutorrent _*REQUIRES*_ [http://libtorrent.rakshasa.no/ rtorrent] to be compiled with [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]
 
-=== Dependencies: ===
+== Dependencies: ==
  * [http://gcc.gnu.org/ gcc]
  * [http://www.gnu.org/software/ncurses/ ncurses]
  * [http://libsigc.sourceforge.net/ libsigc++-2.0]
  * [http://www.openssl.org/ libssl]
  * [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]
- * _recommended_ [http://subversion.apache.org/ subversion] (for downloading latest xmlrpc
+ * _recommended_ [http://subversion.apache.org/ subversion] (for downloading latest xmlrpc-c version)
  
-=== Installing xmlrpc-c ===
+== Installing xmlrpc-c ==
 It's recommended that you use a newer version of [http://xmlrpc-c.sourceforge.net/ xmlrpc-c]  
 
 For example, the svn version.
@@ -29,7 +30,7 @@ make install
 }}}
 
 This installed xmlrpc-c-config to /usr/local/bin/xmlrpc-c-config
-=== fetch and install rtorrent ===
+== fetch and install rtorrent ==
 now, provided you have the other dependencies for rtorrent installed, you can install libtorrent and rtorrent as follows (note: _currently, the svn version of rtorrent has some changes in the xmlrpc-c api, please use the lates *STABLE* version of rtorrent, 0.8.6_
 
 {{{
