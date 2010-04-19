@@ -8,7 +8,7 @@
 The Trafic plugin is a subsystem for monitoring rtorrent traffic totals.  It tracks both system wide and per-tracker totals.  The plugin can display totals in three formats, hourly, daily, and mouthly.  Statistics can be cleaned out at any time by clicking the "Clear" button on the interface (see screenshot).
 
 
-[http://rutorrent.googlecode.com/svn/wiki/images/trafic_big.jpg http://rutorrent.googlecode.com/svn/wiki/images/trafic_small.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginTrafic/trafic_big.jpg http://rutorrent.googlecode.com/svn/wiki/images/PluginTrafic/trafic_small.jpg]
 
 == Requirements ==
  * Web-server with php 5.1. 
