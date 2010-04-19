@@ -1,12 +1,9 @@
-#summary Create plugin
-
-
-<wiki:toc />
-
 ----
 = Create Plugin http://img227.imageshack.us/img227/1341/createicon.png =
 ----
-----
+
+<wiki:toc />
+
 This plugin allows for the creation of new .torrent files from a file or directory full of files.
 
 
@@ -55,9 +52,9 @@ This plugin has a few config options.  Prior to 3.0, "create plugin" in it's def
 You can still use several external programs to create torrents with this plugin.  Currently the plugin supports:
 
  # [http://www.transmissionbt.com/ transmissioncli] _*This is the cli install of  transmission, originally added because createtorrent was horribly slow on BSD systems*_
- # createtorrent _* A linux command line tool for creating torrents (note: I can't find the current home page)*_
+ # createtorrent _*A linux command line tool for creating torrents*_
  # [http://mktorrent.sourceforge.net/ mktorrent] _* A light weight, VERY SMALL command line torrent tool for bsd/linux *_
- # [http://claudiusmaximus.goto10.org/cm/torrent.html buildtorrent] _*yet another lightweight command line tool for creating torrents *_
+ # [http://claudiusmaximus.goto10.org/cm/torrent.html buildtorrent] _*Yet another lightweight command line tool for creating torrents *_
 
 The default config file looks like this:
 
@@ -81,22 +78,16 @@ The default config file looks like this:
  
 This should be pretty easy to understand, but some people still get this wrong.  If you are using an external program, pick the correct option, and change useExternal accordingly, so for example, for mktorrent, you'd change THIS:
 
-
 {{{
-
-        $useExternal = false;                   // Valid choices:
-       
+        $useExternal = false;
 }}}
 
 
 TO THIS:
 
 {{{
-
-        $useExternal = mktorrent;                   // Valid choices:
-       
+        $useExternal = 'mktorrent';
 }}}
-
 
 and, of course, add the proper PATH in the location provided, so keeping with our previous example, lets say mktorrent is located at /usr/local/bin/mktorrent, you'd change this:
 
