@@ -1,11 +1,12 @@
-#summary Unpack Plugin
+----
+=Plugin Unpack=
+----
 
-<wiki:toc />
+<wiki:TOC />
 
-= Plugin Unpack =
+== Description ==
 
 This plugin is designed to manually or automatically unrar/unzip torrent data.
-
 
 == Manual Unpack ==
 
@@ -13,7 +14,7 @@ To manually unpack a torrent, right click on the seeding torrent and select unpa
 
 [http://img511.imageshack.us/img511/4781/snip01.png]
 
-_*(note: you can also launch a manual unpack from the "files" tab as shown here:)*_
+You can also launch a manual unpack from the "files" tab as shown here:
 
 [http://img408.imageshack.us/img408/9479/snip02.png]
 
@@ -57,6 +58,4 @@ When you're done setting it up, it should look something like this:
 [http://img687.imageshack.us/img687/863/auto03.png]
 
 Click ok to save.
-
-
 
