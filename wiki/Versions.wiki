@@ -1,7 +1,5 @@
-#summary Version history
-
+----
 == Version history ==
-
 ----
 
  * ====Version 3.0 (March 10th 2010 r844)==== 
