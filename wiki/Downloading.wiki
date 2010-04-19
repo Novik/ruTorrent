@@ -1,13 +1,9 @@
-#summary Downloading Page Links
-
-
 ----
 = Downloading ruTorrent =
 ----
 ==  Tar Balls ==
 
 [DownloadPage Downloading page]
-
 
 == SVN ==
 
@@ -16,6 +12,7 @@
 ----
 = Downloading rTorrent =
 ----
+
 == Tar Balls ==
 
 [http://libtorrent.rakshasa.no/downloads/ rTorrent Download Page]
