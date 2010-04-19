@@ -1,4 +1,3 @@
-#summary DarkPal plug-in description
 ----
 = Darkpal =
 ----
