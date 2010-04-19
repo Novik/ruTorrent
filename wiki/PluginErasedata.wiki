@@ -1,10 +1,10 @@
-#summary Erasedata plug-in description
-
 ----
 = Erase Data Plugin =
 ----
 
 This plugin adds a context menu item to the right click menu which allows you to delete data.
+
+== Usage ==
 
 To access this menu, select a torrent, and right click as shown here:
 
