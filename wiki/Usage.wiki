@@ -12,7 +12,7 @@ This page will serve as a general "how to" for the basic day to day use or rutor
 
 The following is a list of each menu item.  
 
-=== Top Menu Bar http://img543.imageshack.us/img543/6357/menubar.png ===
+=== Top Menu Bar [http://rutorrent.googlecode.com/svn/wiki/images/menubar.png] ===
 
 The top Menu Bar has some quick action buttons.  
 These include:
@@ -28,7 +28,7 @@ These include:
 
 === Left Side Menu ===
 
-<img src="http://img708.imageshack.us/img708/1741/leftside.png" align="left">
+<img src="http://rutorrent.googlecode.com/svn/wiki/images/leftside.png" align="left">
    * <b>State: </b>Sorts torrents by category<BR CLEAR="all">
 <b>All: </b>All torrents, running, stopped, seeding, finished.<BR CLEAR="all">
 <b>Download: </b>Torrents which are downloading (stopped, but incomplete torrents will show here).<BR CLEAR="all">
@@ -46,7 +46,7 @@ These include:
 <BR CLEAR="all">
 
 
-=== Tabs http://img576.imageshack.us/img576/2391/tabs2.png ===
+=== Tabs [http://rutorrent.googlecode.com/svn/wiki/images/tabs2.png] ===
 
 The Tabs on the lower half of the screen allow access to various types of information.  Some of these items are only available by plugin.
 The tabs are:
@@ -60,7 +60,7 @@ The tabs are:
  * *Chunks* : This tab shows which pieces of a torrent have downloaded (Requires [PluginChunks Chunks] Plugin).
  * *Logger* : This tab shows error messages, and other system events.
 
-=== Bottom Menu Bar http://img190.imageshack.us/img190/6798/bottomrg.png ===
+=== Bottom Menu Bar [http://rutorrent.googlecode.com/svn/wiki/images/bottomrg.png] ===
 
 The Bottom menu bar was added in ruTorrent 3.0.  It shows general "total" speed information, and can be used to set the server Throttle level. Also shows remaining space if you have [PluginDiskspace Diskspace] installed.
 
@@ -73,7 +73,7 @@ To begin adding torrents, click the "add a torrent" menu button ([http://rutorre
 
 This should open the following menu:
 
-http://img718.imageshack.us/img718/4192/addmi.png
+[http://rutorrent.googlecode.com/svn/wiki/images/addmi.png]
 
 This gives you 2 options for adding torrents
 
@@ -81,17 +81,17 @@ This gives you 2 options for adding torrents
 
 If you know the url for the torrent you wish to download, you can just add it like shown in the following screenshot _*(note: you can leave the directory space blank if you like, doing so will download to the base download directory set in your .rtorrent.rc)*_
 
-http://img340.imageshack.us/img340/4152/addurlc.png
+[http://rutorrent.googlecode.com/svn/wiki/images/addurlc.png]
 
 ==== Add torrent via direct upload of .torrent file ====
 
 You might find it more convenient to download the .torrent file, and uploaded to the webui.  To do this, click the "Choose file" button, this should open a window like this:
 
-http://img301.imageshack.us/img301/3722/addtorrent1.png
+[http://rutorrent.googlecode.com/svn/wiki/images/addtorrent1.png]
 
 simply browse to the .torrent file you wish to add, and click "open" _*(or "ok" on some browsers)*_   This should add the .torrent file to the location where "Choose file" was previously.  
 
-http://img151.imageshack.us/img151/5613/addtorrent2.png
+[http://rutorrent.googlecode.com/svn/wiki/images/addtorrent2.png]
 
 Now, simply click "Add File"
 
@@ -104,7 +104,7 @@ There are 2 methods to stop, pause or remove torrents.
 
 This is really almost self explanatory...but you can use the top menu buttons to stop pause and remove torrents.  To do so, simply select a torrent you wish to control:
 
-http://img413.imageshack.us/img413/4963/controls.png
+[http://rutorrent.googlecode.com/svn/wiki/images/controls.png]
 
 and click the option on the top bar you wish to use.
 
@@ -119,20 +119,18 @@ You can also right click a torrent from the list, bringing up a menu with differ
 
 _*(note: some of the options in the screenshot below are only available by plugin.  See [Plugins] for more details)*_
 
-http://img689.imageshack.us/img689/6369/rightclick.png
-
-
+[http://rutorrent.googlecode.com/svn/wiki/images/rightclick.png]
 
 === Local Search ===
 
 A new "local search" has been included with the base since 3.0.  This is infact the default option in 3.0:
 
-http://img402.imageshack.us/img402/240/localsearch.png
+[http://rutorrent.googlecode.com/svn/wiki/images/localsearch.png]
 
 The local search option allows you to search the current list of running torrents.  It also adds a new menu category for each search on the left hand of the screen which will stay open until you close the webui or manually remove it.
 
-http://img151.imageshack.us/img151/5387/localsearchubuntu1.png
+[http://rutorrent.googlecode.com/svn/wiki/images/localsearchubuntu1.png]
 
-http://img63.imageshack.us/img63/8645/localsearchubuntu2.png
+[http://rutorrent.googlecode.com/svn/wiki/images/localsearchubuntu2.png]
 
-http://img199.imageshack.us/img199/1733/localsearchubuntu3.png
+[http://rutorrent.googlecode.com/svn/wiki/images/localsearchubuntu3.png]
