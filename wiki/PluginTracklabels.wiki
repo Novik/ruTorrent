@@ -8,7 +8,7 @@
 
 The plug-in adds a set of labels on the category panel. These labels are created automatically on the basis of torrents' trackers.
 
-[http://rutorrent.googlecode.com/svn/wiki/images/tracklabels.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginTracklabels/tracklabels.jpg]
 
 == Some non-obvious points  ==
 

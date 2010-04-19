@@ -6,4 +6,4 @@
 
 This plugin adds an easy to read disk meter to the bottom menu bar.
 
-http://img217.imageshack.us/img217/7672/diskspace.png
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginDiskspace/diskspace.png]

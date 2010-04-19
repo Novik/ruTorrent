@@ -8,7 +8,7 @@
 
 You can enable the scheduler and click the cells to define any of six rTorrent behavior types at each particular hour of 168 week hours.
 
-[http://rutorrent.googlecode.com/svn/wiki/images/scheduler.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginScheduler/scheduler.jpg]
 
  * Unlimited - use predefined UL/DL limits. Default - a VeryBigNumber.
  * Turn Off - stop all torrents.

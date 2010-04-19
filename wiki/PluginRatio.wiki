@@ -19,7 +19,7 @@ Perameters of groups are:
 
 All these conditions may be phrased as "Seed this torrent until it's ratio reach Min and with that uploaded not less than UL megabytes. Stop seeding any way if the ratio has reached Max".
 
-[http://rutorrent.googlecode.com/svn/wiki/images/ratio.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginRatio/ratio.jpg]
 
 == How does it work ==
 

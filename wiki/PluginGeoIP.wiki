@@ -6,7 +6,7 @@
 
 == Description ==
 
-[http://rutorrent.googlecode.com/svn/wiki/images/geoip.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginGeoIP/geoip.jpg]
 
 == Requirements ==
 

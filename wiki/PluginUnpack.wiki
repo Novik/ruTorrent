@@ -12,50 +12,50 @@ This plugin is designed to manually or automatically unrar/unzip torrent data.
 
 To manually unpack a torrent, right click on the seeding torrent and select unpack, like shown in this screenshot:
 
-[http://img511.imageshack.us/img511/4781/snip01.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip01.png]
 
 You can also launch a manual unpack from the "files" tab as shown here:
 
-[http://img408.imageshack.us/img408/9479/snip02.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip02.png]
 
 This will open the "Unpack" Dialog window, as shown here:
 
-[http://img340.imageshack.us/img340/925/snip03.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip03.png]
 
 If you wish to unpack the data to the directory it is in, simply click "OK" , otherwise, enter a directory in the space provided 
 _(note:  having [Plugin_getdir the _getdir plugin] can be very helpful, otherwise you have to manually type the directory here)_ 
 
-[http://img251.imageshack.us/img251/6310/snip05.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip05.png]
 
 Once you click "OK", your file should unpack, showing something like this in the Logger
 
-[http://img202.imageshack.us/img202/7492/snip04.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip04.png]
 
 
 == Automatic Unpack ==
 
 To automatically unpack torrents, you need to open settings
 
-[http://img126.imageshack.us/img126/3466/settingsb.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/settingsb.png]
 
 Then select "unpack" from the list on the left.  Notice "enable autounpacking", Check this box.
 
 
-[http://img69.imageshack.us/img69/6861/auto01.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/auto01.png]
 
 
 Next, enter the patch you'd like files unpacked to.
 
-[http://img535.imageshack.us/img535/3391/auto02.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/auto02.png]
 
 Notice you have 2 other options: "Torrent Label" and "Torrent Name"  these create directories for the unpacked items.   If you select both, you'll end up with a directory structure like this:
 
-[http://img299.imageshack.us/img299/7025/struct.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/struct.png]
 
 
 When you're done setting it up, it should look something like this:
 
-[http://img687.imageshack.us/img687/863/auto03.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/auto03.png]
 
 Click ok to save.
 
