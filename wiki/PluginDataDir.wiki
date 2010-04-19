@@ -1,13 +1,15 @@
-#summary DataDir plug-in description
+----
+=Plugin DataDir=
+----
 
-== Introduction ==
+<wiki:TOC />
 
+== Description ==
 The plug-in is intended for replacement of the current torrent data directory on another. Such operation is required, for example, if the torrent data directory has been moved manually. It is also possible to move downloaded torrent's data.
 
 After plug-in installation there will be a new item *"Save to..."* in the context menu of the downloading area which shows a dialogue *"Torrent data directory"*. In this dialogue you can specify a new path to the torrent data.
 
 == How it works ==
-
 
 The plug-in can change the data directory for another and also move torrent data files.
 
@@ -25,14 +27,4 @@ From this the following follows:
 
 For comfortable directory choice on the host for completed downloads it is recommended to install the service plug-in [Plugin_GetDir _getdir]. There will be a possibility of navigation on host file system.
 
-It is recommended to install php extention *sysvsem.so* to prevent simultaneous data moving with group operation.
-----
-
-== Version history: ==
-
-*1.1*
- * torrent's data files can also be moved
- * group operations are supported now
-
-*1.0*
- * the first version
+It is recommended to install php extention [http://ru.php.net/manual/en/sem.installation.php sysvsem.so] to prevent simultaneous data moving with group operation.
