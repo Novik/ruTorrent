@@ -1,6 +1,9 @@
 ----
 = Darkpal =
 ----
+
+== Description ==
+
 A darker theme for ruTorrent.
 
 Screenshot: _(click image for larger view)_
