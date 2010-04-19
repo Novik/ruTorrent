@@ -1,6 +1,10 @@
-#summary Ratio plug-in description
+----
+=Plugin Ratio =
+----
 
-== Introduction ==
+<wiki:TOC />
+
+== Description ==
 
 Since version 0.8.5 rTorrent has a capability to set ratio limits for groups of torrents. The plug-in allows to manage it conveniently.
 When the plug-in is installed a new section "Ratio groups" appears in the Settings dialog.
@@ -19,32 +23,9 @@ All these conditions may be phrased as "Seed this torrent until it's ratio reach
 
 == How does it work ==
 
-When ruTorrent starts first time with plug-in Ratio installed, it creates groups with required parameters. As groups are created only after first ruTorrent's start, in the time between start of rTorrent and then first start of ruTorrent defined ratio limits will not work. To avoid this, some special strings should be added to the rTorrent configuration file (see below). 
+When ruTorrent starts first time with plug-in Ratio installed, it creates groups with required parameters. As groups are created only after first ruTorrent's start, in the time between start of rTorrent and then first start of ruTorrent defined ratio limits will not work. To avoid this, some special strings should be added to the rTorrent configuration file (see [Plugins#Starting_plugins_with_rtorrent How to start plugins with rtorrent] for details). 
 
 == Additional plug-in adjustment ==
 
 Should be done in the file `plugins/ratio/conf.php`.
     * `MAX_RATIO` - the constant defiles maximum number of groups. You can change this value to bigger as well as to lesser.
-    * `$isAutoStart` - the variable defines how the how the plug-in starts. If it is set to "true", groups are to be created at the ruTorrent start. Otherwise you should perform it by yourself. To do this the following strings should be added into the rTorrent configuration file: 
-{{{
-group.insert_persistent_view = rat_0
-group.rat_0.ratio.enable=
-group.rat_0.ratio.min.set=[min_limit_for_ratio0]
-group.rat_0.ratio.max.set=[max_limit_for_ratio0]
-group.rat_0.ratio.upload.set=[upload_limit_for_ratio0]
-system.method.set = group.rat_0.ratio.command, [command]
-...
-group.insert_persistent_view = rat_MAX_RATIO
-group.rat_MAX_RATIO.ratio.enable=
-group.rat_MAX_RATIO.ratio.min.set=[min_limit_for_ratioMAX_RATIO]
-group.rat_MAX_RATIO.ratio.max.set=[max_limit_for_ratioMAX_RATIO]
-group.rat_MAX_RATIO.ratio.upload.set=[upload_limit_for_ratioMAX_RATIO]
-system.method.set = group.rat_MAX_RATIO.ratio.command, [command]
-}}}
-where
-
-min_limit_for_ratio, max_limit_for_ratio, upload_limit_for_ratio - parameters of ratio for this particular group,
-
-command - the Action that is performed by reaching the ratio. It may be:
- * "d.stop=; d.close=" - stop the torrent;
- * "d.stop=; d.close=; d.erase=" - remove the torrent.
