@@ -1,16 +1,17 @@
-#summary Autotools plug-in description
+----
+=Plugin Auto Tools =
+----
 
-== Introduction ==
+<wiki:TOC />
+
+== Description ==
 
 The plug-in provides some possibilities on automation.
 Following functions are realized for now:
- * *AutoLabel* automatic creation of labels at addition of new torrent through the web interface.
+ * *Auto Label* automatic creation of labels at addition of new torrent through the web interface.
+ * *Auto Move* automatic transferring of torrent data files to other directory on downloading completion.
 
- * *AutoMove* automatic transferring of torrent data files to other directory on downloading completion.
-
-----
-
-== AutoLabel ==
+== Auto Label ==
 The label is automatically formed, if:
  * label input field in add torrent dialogue is empty,
  * the directory where it is supposed to save torrent data, is a subdirectory for the directory specified in variable *"directory"* of *rtorrent.rc* file.
@@ -21,9 +22,7 @@ Principles of label creation:
  And new torrent is saved as */usr/p2p/downloads/Video/DVD/movie.avi*, <br/>
  The label will be *"Video/DVD"*.
 
-----
-
-== AutoMove ==
+== Auto Move ==
 The downloaded torrent data files are transferred to the directory, which is set in configuration, with the same directory structure relative to directory specified in variable *"directory"* of *"rtorrent.rc"* file and then started for seeding.
 
 For example:
@@ -31,39 +30,12 @@ For example:
  And *"/media/p2p"* is set as the directory for ready downloads, <br/>
  The files downloaded to *"/usr/p2p/downloads/Video/Movie/`*`.avi"* will be moved to *"/media/p2p/Video/Movie/`*`.avi"* on downloading completion.
 
-There was an idea to use this plug-in in case when the directory for ready downloads was a mounted resource such as an other disk or SMB share with common access. The SMB share solution works on FreeBSD somehow, but, in *Novik's* opinion, _"under a 2.4 kernel (what takes place to be, for example, on a router), seeding from smb and nfs mounted resources will not go. Mmap call, that is used by rtorrent, does not work on such fs under the given kernel"_.
+There was an idea to use this plug-in in case when the directory for ready downloads was a mounted resource such as an other disk or SMB share with common access. 
 
-Some features:
+=== Some features ===
 
  * The plug-in handle correctly a situation with one data directory for several torrents - files will be moved according to torrent file list, instead of simple directory moving.
-
  * If there are files with the same names, as for completed torrent, in the directory for ready downloads, they will be overwritten.
-
- * The plug-in is integrated with *rTorrent* at web interface loading. The plug-in will not reintegrate with *rTorrent* after *rTorrent* restart until web interface reloading. To avoid it, you may add something like this to *rtorrent.rc* file (in one line):
-
-{{{
-system.method.set_key = event.download.finished,automove, "execute={full_path_to_plugins/autotools/move.sh,full_path_to_php,$d.get_hash=}"
-}}}
-
+ * The plug-in is integrated with *rTorrent* at web interface loading. The plug-in will not reintegrate with *rTorrent* after *rTorrent* restart until web interface reloading. To avoid it, you may add a specific line to *rTorrent* configuration file (see [Plugins#Starting_plugins_with_rtorrent How to start plugins with rtorrent] for details)
  * The event name needs to be left the same (*"automove"*), otherwise the second copy of plug-in will be installed at next web interface loading.
-
  * For comfortable directory choice on the host for completed downloads it is recommended to install the service plug-in [Plugin_GetDir _getdir]. There will be a possibility of navigation on host file system.
-
-----
-
-== История версий: ==
-
-*1.3* 
- * The error leading to rTorrent's crash if torrent subdirectories names contain bad symbols is corrected.
- * Attempt to avoid redundant re-hashing, which takes place sometimes.
-
-*1.2*
- * The plug-in is renamed to autotools and united with automove 1.0.
- * Possibility to set customizations in web interface options is added.
-
-*1.1*
- * Compatibility with plug-ins retrackers and edit is added.
- * The plug-in is started now before retracker plug-in (runlevel.info: 5).
-
-*1.0*
- * The first version.
