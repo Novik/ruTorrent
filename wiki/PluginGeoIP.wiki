@@ -1,26 +1,13 @@
-#summary This plugin shows geolocation of peers for selected torrent.
+----
+=Plugin Geo IP=
+----
+
+<wiki:TOC />
+
+== Description ==
+
+[http://rutorrent.googlecode.com/svn/wiki/images/geoip.jpg]
 
 == Requirements ==
 
 PHP extension GeoIP must be installed so this plugin can work properly. If you do not have the PHP extension, no serious error should happen. For details about installation and configuration of GeoIP PHP extension, please visit: [http://us3.php.net/manual/en/book.geoip.php PHP GeoIP page].
-
-== Usage ==
-
-Unpack the plugin archive into rutorrent/plugins directory and refresh contents of your browser. If everything is OK, you should see a new column "Country" next to "IP" in "Peers" tab.
-
-[http://rutorrent.googlecode.com/svn/wiki/images/geoip.jpg]
-
-== Localization (for languages other than English - optional step) ==
-
-GeoIP plugin supports localization. However, it is not mandatory. Here is the example of Hungarian localization:
-
-    * cd plugins/geoip/lang
-    * Edit hu.js, replacing word "Country" and country names with their Hungarian equivalents
-
-Same applies for localization in any other language. If you do not localize plugin, English names will be used by default.
-
-
-
-==== Author ====
-
-Zoltan Csala
