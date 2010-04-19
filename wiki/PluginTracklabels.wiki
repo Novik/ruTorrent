@@ -1,6 +1,10 @@
-#summary Tracklabels plug-in description
+----
+=Plugin Track Labels=
+----
 
-== Introduction ==
+<wiki:TOC />
+
+== Description ==
 
 The plug-in adds a set of labels on the category panel. These labels are created automatically on the basis of torrents' trackers.
 
