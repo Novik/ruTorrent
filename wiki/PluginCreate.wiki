@@ -4,8 +4,9 @@
 
 <wiki:toc />
 
-This plugin allows for the creation of new .torrent files from a file or directory full of files.
+== Description ==
 
+This plugin allows for the creation of new .torrent files from a file or directory full of files.
 
 == Usage ==
 
