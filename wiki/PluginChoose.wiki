@@ -1,8 +1,0 @@
-#summary Choose plug-in description
-#labels Deprecated
-
-== Introduction ==
-
-The plug-in adds a button, allowing comfortable navigation on a file system, to the torrent addition dialogue. Of course, only those directories would be shown in a dropdown list, in which rTorrent can create files. And which are allowed for viewing to the web server user.
-
-[http://rutorrent.googlecode.com/svn/wiki/images/choose.jpg]

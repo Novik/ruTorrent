@@ -7,7 +7,7 @@ By the way, torrents may be added by any way - not just via ruTorrent.
 
 After the plug-in is installed an additional section "Retrackers" will appear in the Settings dialog.
 
-[http://rutorrent.googlecode.com/svn/wiki/images/retrackers.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginRetrackers/retrackers.jpg]
 
 Format of the trackers list is the same as for [http://www.utorrent.com/ µTorrent] - different groups of trackers must be separated by an empty line. All listed trackers will be added to existing ones beginning from trackers group 1.
 Usually modifications of the the trackers list for private torrents are not welcome. But if you really want it - reset the tick in the dialog window.
@@ -19,19 +19,3 @@ After first start of ruTorrent with installed Retrackers plug-in, ruTorrent regi
 Once again - the processing will be started until first start of ruTorrent. I.e. there will not be any useful action between start of rTorrent and then first start of ruTorrent. To avoid this, a special string should be added to the rTorrent configuration file (see below).
 
 To change the list of trackers manually, use plug-in [PluginEdit Edit].
-
-== Tuning ==
-
-Following changes should be done in the file `plugins/retrackers/conf.php`.
-    * `$isAutoStart` - this variable defines a method of the plug-in starts. If it is set `true`, the event will be registered at the ruTorrent start. Otherwise it should be performed manually.
- то регистрация события происходит при загрузке ruTorrent. В противном случае Вы должны позаботиться о том, чтобы сделать сие самостоятельно. To do this, the following string should be added into the rTorrent configuration file:
-{{{
-system.method.set_key = event.download.inserted_new,add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="
-}}}
- for rTorrent version >= 0.8.4 or the string
-{{{
-on_insert = add_trackers,"branch=$not=$d.get_custom3=,\"execute={full_path_to_plugin/run.sh,php,$d.get_hash=}\" ; d.set_custom3="
-}}}
- for older versions.
-
-where full_path_to_plugin - is a full path to the Retrackers plug-in.
