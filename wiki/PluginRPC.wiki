@@ -1,4 +1,6 @@
-#summary RPC plug-in description
+----
+= RPC Plugin =
+----
 
 == Introduction ==
 
