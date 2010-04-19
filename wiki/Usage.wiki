@@ -120,3 +120,19 @@ You can also right click a torrent from the list, bringing up a menu with differ
 _*(note: some of the options in the screenshot below are only available by plugin.  See [Plugins] for more details)*_
 
 http://img689.imageshack.us/img689/6369/rightclick.png
+
+
+
+=== Local Search ===
+
+A new "local search" has been included with the base since 3.0.  This is infact the default option in 3.0:
+
+http://img402.imageshack.us/img402/240/localsearch.png
+
+The local search option allows you to search the current list of running torrents.  It also adds a new menu category for each search on the left hand of the screen which will stay open until you close the webui or manually remove it.
+
+http://img151.imageshack.us/img151/5387/localsearchubuntu1.png
+
+http://img63.imageshack.us/img63/8645/localsearchubuntu2.png
+
+http://img199.imageshack.us/img199/1733/localsearchubuntu3.png
