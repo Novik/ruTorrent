@@ -1,5 +1,5 @@
 ----
-= Create Plugin http://img227.imageshack.us/img227/1341/createicon.png =
+= Create Plugin =
 ----
 
 <wiki:toc />
