@@ -1,8 +1,8 @@
-#summary Trafic plug-in description
-<wiki:TOC />
 ----
 =Plugin Trafic =
 ----
+
+<wiki:TOC />
 
 == Description ==
 The Trafic plugin is a subsystem for monitoring rtorrent traffic totals.  It tracks both system wide and per-tracker totals.  The plugin can display totals in three formats, hourly, daily, and mouthly.  Statistics can be cleaned out at any time by clicking the "Clear" button on the interface (see screenshot).
@@ -17,7 +17,7 @@ The Trafic plugin is a subsystem for monitoring rtorrent traffic totals.  It tra
 
 When rutorrent is loaded for the first time (with the trafic plugin) it sends a command to the rTorrent scheduler, which begins to provide the application with information about it's current traffic statistics. _*(Once again, it's important to understand that traffic statistics do not begin registering until he first load of the plugin.  If rtorrent is running, but rutorrent hasn't been loaded, the Trafic Plugin is not keeping track)*_
 
-To avoid this issue, we can use the initplugins.php method to load all plugins at rtorrent start _*(see [Plugins#Starting_plugins_with_rtorrent] )*_
+To avoid this issue, we can use the initplugins.php method to load all plugins at rtorrent start _*(see [Plugins#Starting_plugins_with_rtorrent How to start plugins with rtorrent] )*_
 
 
 == Some non-obvious points ==
@@ -29,8 +29,8 @@ To avoid this issue, we can use the initplugins.php method to load all plugins a
 
 == Additional plug-in configuration ==
 
-You can adjust the update interval by editing the config file.  
+You can adjust the update interval (in minutes) by editing the config file.  
 
 The config file is  `plugins/trafic/conf.php`.
 
-Look for     `$updateInterval =` and change it accordingly.
+Look for `$updateInterval` and change it accordingly.
