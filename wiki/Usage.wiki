@@ -16,15 +16,15 @@ The following is a list of each menu item.
 
 The top Menu Bar has some quick action buttons.  
 These include:
- * http://img441.imageshack.us/img441/5994/icon01start.png Add a torrent
- * http://img696.imageshack.us/img696/2161/icon02remove.png Remove
- * http://img144.imageshack.us/img144/5613/icon03play.png Start
- * http://img687.imageshack.us/img687/4872/icon04pause.png Pause
- * http://img90.imageshack.us/img90/8159/icon05stop.png Stop
- * http://img215.imageshack.us/img215/5652/icon06settings.png Settings
- * http://img59.imageshack.us/img59/4756/icon07about.png About 
- * http://img339.imageshack.us/img339/6176/icon08create.png Create (requires the [PluginCreate Create] plugin)
- * http://img693.imageshack.us/img693/1561/icon09rss.png RSS (requires the [PluginRSS RSS] plugin)
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon01start.png] Add a torrent
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon02remove.png] Remove
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon03play.png] Start
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon04pause.png] Pause
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon05stop.png] Stop
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon06settings.png] Settings
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon07about.png] About 
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon08create.png] Create (requires the [PluginCreate Create] plugin)
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon09rss.png] RSS (requires the [PluginRSS RSS] plugin)
 
 === Left Side Menu ===
 
@@ -69,7 +69,7 @@ The Bottom menu bar was added in ruTorrent 3.0.  It shows general "total" speed 
 Now that you know where the buttons are, this section is designed to explain how to use them.
 
 === Adding Torrents ===
-To begin adding torrents, click the "add a torrent" menu button ( http://img441.imageshack.us/img441/5994/icon01start.png )
+To begin adding torrents, click the "add a torrent" menu button ([http://rutorrent.googlecode.com/svn/wiki/images/icon01start.png])
 
 This should open the following menu:
 
@@ -108,9 +108,9 @@ http://img413.imageshack.us/img413/4963/controls.png
 
 and click the option on the top bar you wish to use.
 
- * to stop click http://img90.imageshack.us/img90/8159/icon05stop.png
- * to pause click http://img687.imageshack.us/img687/4872/icon04pause.png
- * to remove click http://img696.imageshack.us/img696/2161/icon02remove.png
+ * to stop click [http://rutorrent.googlecode.com/svn/wiki/images/icon05stop.png]
+ * to pause click [http://rutorrent.googlecode.com/svn/wiki/images/icon04pause.png]
+ * to remove click [http://rutorrent.googlecode.com/svn/wiki/images/icon02remove.png]
 
 
 ==== Using the right click menu ====
