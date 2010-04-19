@@ -12,7 +12,7 @@ After this plug-in is installed a new option "Channels" will appear in the Setti
 Speed limits for some (by default - 10) channels can be set here. Assignment of channel number for a particular torrent or for a group of torrents can be made in it's contextual menu.
 Note - "0"-value, conventionally for rTorrent, means "no limits", but not "stop torrent". So the lowest possible limit is 1 Kbps.
 
-[http://rutorrent.googlecode.com/svn/wiki/images/throttle.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginThrottle/throttle.jpg]
 
 == How does it work ==
 

@@ -25,6 +25,6 @@ in the Add Torrent dialog for example. It should be done for each adding URL. It
 
 After the plug-in is installed an additional section "Cookies" will appear in the Settings dialog. In the input form user can define parities host=>cookies. Each definition should be on a separate line. The name of a host should be separated by a vertical line. Different cookies should be separated by a semicolon. Example:
 
-[http://rutorrent.googlecode.com/svn/wiki/images/cookies.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginCookies/cookies.jpg]
 
 That's all. Now all operations with an URL on the server side will be performed using necessary cookies. But be careful! The name of the host should be exactly the same as used. For example `www.some-torrents.com` and `some-torrents.com` will be considered as two different hosts. So, add a separate string for each instance.
