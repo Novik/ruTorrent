@@ -1,6 +1,10 @@
-#summary Scheduler plug-in description.
+----
+=Plugin Scheduler=
+----
 
-== Introduction ==
+<wiki:TOC />
+
+== Description ==
 
 You can enable the scheduler and click the cells to define any of six rTorrent behavior types at each particular hour of 168 week hours.
 
@@ -15,7 +19,7 @@ You can enable the scheduler and click the cells to define any of six rTorrent b
 
 When ruTorrent starts with installed Scheduler plug-in first time it sends a command to the rTorrent scheduler, which begins to call a dedicated script periodically. This script in its turn does all the work.
 
-Once again - the poll begins only after first start of the ruTorrent. I.e. there will be no any useful action between start of rTorrent and then first start of ruTorrent. To avoid this, a special string should be added to the rTorrent configuration file (see below).
+Once again - the poll begins only after first start of the ruTorrent. I.e. there will be no any useful action between start of rTorrent and then first start of ruTorrent. To avoid this, a special string should be added to the rTorrent configuration file (see [Plugins#Starting_plugins_with_rtorrent How to start plugins with rtorrent] for details).
 
 == Additional plug-in adjustment ==
 
@@ -23,9 +27,3 @@ Should be done in the file `plugins/scheduler/conf.php`.
     * `SCH_DEF_DL` - the constant defiles DL speed limit which is used in the Unlimited mode. Default - a VeryBigNumber.
     * `SCH_DEF_UL` - the constant defiles UL speed limit which is used in the Unlimited mode. Default - a VeryBigNumber.
     * `$updateInterval` - the variable sets the time interval between calls of the script by rTorrent scheduler (in minutes). Default - 1 hour.
-    * `$isAutoStart` - the variable defines how the how the plug-in starts. If it is set to "true", the command to the rTorrent scheduler will be sent on ruTorrent first start. Otherwise the scheduler needs to be activated independently. 
-To do this, the following string should be added into the rTorrent configuration file:
-{{{
-schedule = scheduler,10,00:15:00,"execute={sh,-c,php full_path_to_plugin/update.php& exit 0}"
-}}}
- where full_path_to_plugin - is a full path to the Scheduler plug-in.
