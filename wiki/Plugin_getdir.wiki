@@ -1,5 +1,5 @@
 ----
-=Plugin _getdir=
+=Plugin getdir=
 ----
 
 <wiki:TOC />
