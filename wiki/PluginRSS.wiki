@@ -1,23 +1,14 @@
+----
 = RSS Plugin =
+----
 
-                                                             <wiki:toc />
-
+<wiki:toc />
 
 == Description ==
 
 This plugin is designed to fetch torrents via rss download links.  It has 2 main parts, one for entering feeds, the other for setting up filters.  For more information about rss, see [http://en.wikipedia.org/wiki/RSS].
 
-
-== Installation ==
-
-If you use the tarball installation, download the rss tarball from [http://code.google.com/p/rutorrent/downloads/list the download page] and untar it into your plugins diectory.
-
-If you use the svn version, svn the rss plugin into your plugins dir like this:
-{{{
-svn co http://rutorrent.googlecode.com/svn/trunk/plugins/rss
-}}}
-
-==  Usage ==
+== Usage ==
 
 === Adding a feed ===
 To add a feed, right click the RSS icon on the left hand side of the screen 
@@ -136,7 +127,7 @@ For feeds that require HTTP authentication, simply use this format for the feed 
 http://username:password@sometorrentsite.com/rss.php
 }}}
 
-==== Using feeds that require cookies ====
+=== Using feeds that require cookies ===
 
 To use feeds that require cookies, you must find the cookie for the site, and grab UID and pass from it.
     * IE users will find their cookies in `%UserProfile%\Cookies`.
@@ -150,14 +141,6 @@ http://sometorrentsite.com/rss.php:COOKIE:name1=value;name2=value;
 Another way to inform ruTorrent about required cookies is provided via plug-in [PluginCookies Cookies].
 
 
-==== Autostart rss ====
+=== Autostart rss ===
 
-rss will automatically start when you load the webui, but if for some reason your server reboots, you might wish to have it start automatically.  In rutorrent 3.0, you can auto-start all plugins, including rss, by adding something like this to your .rtorrent.rc
-
-{{{
-execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php USERNAME &}
-}}}
-
-(_note: the username option is needed if you use web authentication and or multiple users, this username would be the WEB AUTH name_)
-
-For any QUESTIONS, please join us in the forums at [http://forums.rutorrent.org].
+rss will automatically start when you load the webui, but if for some reason your server reboots, you might wish to have it start automatically. See [Plugins#Starting_plugins_with_rtorrent How to start plugins with rtorrent] for details.
