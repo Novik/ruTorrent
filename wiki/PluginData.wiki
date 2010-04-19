@@ -1,14 +1,9 @@
-#summary One-sentence summary of this page.
+----
+=Plugin Data =
+----
 
-= Introduction =
-Placeholder
+<wiki:TOC />
 
-Add your content here.
+== Description ==
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+*Under construction*
