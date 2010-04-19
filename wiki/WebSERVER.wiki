@@ -1,10 +1,8 @@
-#summary Webserver Setup
+----
+= Webserver Setup =
+----
 
 <wiki:toc />
-----
-= Introduction =
-Basic "how to" guide for webserver specific information.
-----
 
 == Basic points ==
 
@@ -15,11 +13,11 @@ Basic "how to" guide for webserver specific information.
     * [PluginHTTPRPC HTTPRPC Plugin] (similar to [PluginRPC RPC Plugin], but designed with low bandwidth use in mind).
   # There are multiple ways to configure a webserver, this page is not meant as a all inclusive guide.
 
-=== SCGI setup ====
+== SCGI setup ==
 
 Most webservers have some sort of scgi module.  For lowest server load, it's best to use a scgi module.  For lowest BANDWIDTH clients, however, it's best to use [PluginHTTPRPC HTTPRPC Plugin] (this is not an option for very slow computers, or embedded systems).
 
-====Apache Specific SCGI Config ====
+===Apache Specific SCGI Config ===
 
 Apache doesn't come wiht mod_scgi, you need to install it. This is different for each distro, for ubuntu/debian it is:
 
@@ -43,8 +41,8 @@ add something like this for each mount:
 SCGIMount /RPC2 127.0.0.1:5000
 }}}
 
-====Lighttpd Specific SCGI Config ====
-  [http://www.lighttpd.net Lighttpd] comes with mod_scgi built in, but it is normally not configured by default. To enable it add
+===Lighttpd Specific SCGI Config ===
+[http://www.lighttpd.net Lighttpd] comes with mod_scgi built in, but it is normally not configured by default. To enable it add
 {{{
 server.modules += ( "mod_scgi" )
 }}}
@@ -106,7 +104,7 @@ scgi.server = (
 
 it's important to note the comma between each section.
 
-====Cherokee Specific SCGI Config ====
+===Cherokee Specific SCGI Config ===
 
 Cherokee makes everything really easy if you use [http://www.cherokee-project.com/doc/admin.html cherokee-admin]. To add an scgi mount in cherokee, simply select your virtual server (the default server is fine, or you could create one specifically for rutorrent), select the "behavior" tab as show in this screenshot:
 
@@ -134,6 +132,6 @@ vserver!20!rule!500!match!final = 1
 vserver!20!rule!500!match!request = ^/RPC1
 }}}
 
-====Nginx SCGI notes ====
+===Nginx SCGI notes ===
 
 I was unable to find a working mod_scgi for nginx.  I was able to find an old version, which may or may not work, but seeing as it's very outdated, I wouldn't recommend it.  For this webserver, stick to [PluginRPC RPC Plugin] or [PluginHTTPRPC HTTPRPC Plugin].
