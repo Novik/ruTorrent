@@ -1,10 +1,10 @@
-#summary The description of a subsystem of plug-ins.
 #labels Featured
-
-<wiki:toc />
 ----
 = Plugins =
 ----
+
+<wiki:toc />
+
 ruTorrent is designed with a robust plugin system.  The reason for this is to allow users to customize the behavior of the WebUI, and exlude the parts they do not need [HowToCreatePlugin And even add something we missed, without modifying a ruTorrent code]
 
 == Installation ==
@@ -19,8 +19,6 @@ svn co http://rutorrent.googlecode.com/trunk/plugins/PLUGIN_NAME
 }}}
 
 Attention! Please install only those plug-ins you really need. The more plug-ins are installed - the longer load of the ruTorrent interface.
-
-
 
 === plugins.ini ===
 
