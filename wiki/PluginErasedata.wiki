@@ -2,6 +2,10 @@
 = Erase Data Plugin =
 ----
 
+<wiki:toc />
+
+== Description ==
+
 This plugin adds a context menu item to the right click menu which allows you to delete data.
 
 == Usage ==
@@ -10,22 +14,15 @@ To access this menu, select a torrent, and right click as shown here:
 
 http://img688.imageshack.us/img688/4228/rightclick2.png
 
-
 Then, on the right click menu, select "Remove and" as shown here:
 
 http://img718.imageshack.us/img718/4228/rightclick2.png
 
-
 Select "Delete Data", and by default, a new context window will come up:
-
-
 
 http://img696.imageshack.us/img696/6184/removedata.png
 
-Click "Ok" and your torrent data will be removed
-
-
-If you wish to disable this context window, and not be asked to confirm each time, you can change the menu option in settings.
+Click "Ok" and your torrent data will be removed. If you wish to disable this context window, and not be asked to confirm each time, you can change the menu option in settings.
 
 Click the settings icon: http://img215.imageshack.us/img215/5652/icon06settings.png
 
