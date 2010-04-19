@@ -22,7 +22,7 @@ Attention! Please install only those plug-ins you really need. The more plug-ins
 
 
 
-=== plugin.ini ===
+=== plugins.ini ===
 
 *_Some of the following information is also included in [Config#Limiting_Plugins Config page]_*
 
@@ -30,8 +30,8 @@ Since 3.0, rutorrent includes a configuration file for plugins called plugin.ini
 
 {{{
 ;; Plugin's permissions. 
-;; If flag not founded in plugin section, it finded in section "default".
-;; If not founded in this section - it assumed as "yes". 
+;; If flag is not found in plugin section, corresponding flag from "default" section is used.
+;; If flag is not found in "default" section, it is assumed to be "yes".
 ;;
 ;; For setting individual plugin's permissions you must write something like that:
 ;;
