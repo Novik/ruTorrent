@@ -8,6 +8,6 @@ A darker theme for ruTorrent.
 
 Screenshot: _(click image for larger view)_
 
-[http://img340.imageshack.us/img340/452/darkpal2.png http://img641.imageshack.us/img641/5599/darkpal2shrink.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/darkpal2.png http://rutorrent.googlecode.com/svn/wiki/images/darkpal2shrink.png]
 
 (special thanks to [http://forum.utorrent.com/profile.php?id=37418 Bumpy] for icons)

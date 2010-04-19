@@ -10,39 +10,39 @@ This plugin allows for the creation of new .torrent files from a file or directo
 
 == Usage ==
 
-To use this plugin, click the "Create a torrent" icon: http://img227.imageshack.us/img227/1341/createicon.png
+To use this plugin, click the "Create a torrent" icon: [http://rutorrent.googlecode.com/svn/wiki/images/icon08create.png]
 
 This should open the "Create new Torrent" window as shown below:
 
-http://img189.imageshack.us/img189/37/createbase.png
+[http://rutorrent.googlecode.com/svn/wiki/images/createbase.png]
 
 Next, add a file source *_(note: the [Plugin_getdir _getdir] plugin will make this a much easier process)_*
 
-http://img341.imageshack.us/img341/4640/createselectsource.png
+[http://rutorrent.googlecode.com/svn/wiki/images/createselectsource.png]
 
 Next, fill in the tracker information *_(note: for public trackers, you may wish to enter more than one tracker here)_*
 
 
-http://img191.imageshack.us/img191/1804/createtracker.png
+[http://rutorrent.googlecode.com/svn/wiki/images/createtracker.png]
 
 Optional: Select a "piece size" 
 
-http://img685.imageshack.us/img685/9793/createpiecesize.png
+[http://rutorrent.googlecode.com/svn/wiki/images/createpiecesize.png]
 
 Optional:  Fill in the checkboxed
  # Start seeding _*this will add the torrent to the download list immediately upon creation*_
  # Private Torrent _*select this if you are uploading to a private tracker*_
 
-http://img186.imageshack.us/img186/4561/createcheckboxes.png
+[http://rutorrent.googlecode.com/svn/wiki/images/createcheckboxes.png]
 
 
 Click "Create ..." This will open the "Create Console window", here you can see the progress, any status information and errors that occur: 
 
-http://img690.imageshack.us/img690/1/createrunning.png
+[http://rutorrent.googlecode.com/svn/wiki/images/createrunning.png]
 
 When everything is finished and you see "Done." in the status window, you have the option to download the .torrent file directly from rutorrent by clicking the "Save" button:
 
-http://img189.imageshack.us/img189/9918/createsave.png
+[http://rutorrent.googlecode.com/svn/wiki/images/createsave.png]
 
 
 
@@ -95,12 +95,10 @@ and, of course, add the proper PATH in the location provided, so keeping with ou
 
 
 {{{
-
  $pathToCreatetorrent = ''; 
 }}}
 
 to this:
 {{{
-
  $pathToCreatetorrent = '/usr/local/bin/mktorrent'; 
 }}}
