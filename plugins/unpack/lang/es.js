@@ -1,7 +1,7 @@
 ﻿
  
 theUILang.unpack		= "Unpack";
-theUILang.unpackPath		= "Unpack to (leave this blank for torrents directory)";
+theUILang.unpackPath		= "Unpack to (leave blank for torrent's current directory):";
 theUILang.processAll		= "Process all volumes";
 theUILang.unpackTaskFailed      = "Unpacking finished with errors";
 theUILang.unpackTaskOK		= "Unpacking finished successfully";
@@ -11,9 +11,9 @@ theUILang.unrarNotFound		= "Unpack plugin: rTorrent's user can't access unrar pr
 theUILang.unpackRunNotAvailable	= "Unpack plugin: rTorrent's user can't access external file for read/execute. Plugin will not work.";
 theUILang.unpackUpdNotAvailable = "Unpack plugin: rTorrent's user can't access file plugins/unpack/update.php for read. Plugin will not work.";
 theUILang.unpackEnabled		= "Enable autounpacking";
-theUILang.unpackTorrents	= "For unpacking torrents add to it directory";
+theUILang.unpackTorrents	= "Add to path when unpacking torrent data:";
 theUILang.unpackAddLabel	= "Torrent's label";
 theUILang.unpackAddName		= "Torrent's name";
-theUILang.unpackNoFiles		= "Archives not found in torrent's data.";
+theUILang.unpackNoFiles		= "No archives found in torrent data.";
 
 thePlugins.get("unpack").langLoaded();
