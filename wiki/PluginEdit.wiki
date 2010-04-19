@@ -1,18 +1,16 @@
-#summary Edit plug-in description
 ----
 = Edit Plugin =
 ----
+
+<wiki:TOC />
 
 == Description ==
 
 This plugin allows you to edit the list of trackers, and change the comment of the current torrent. After installation, a new context menu item will become available when you right click a torrent from the list, "Edit Torrent..."  Selecting this will open the "Torrent Properties" menu.
 
-
 [http://rutorrent.googlecode.com/svn/wiki/images/edit.jpg]
 
 The list of trackers should be formatted the same way as [http://www.utorrent.com/ µTorrent] - Different groups must be separated by an empty line.  The content of the "Comment" field will be shown in the "General" tab.
-
-
 
 == How it works ==
 
