@@ -1,10 +1,11 @@
-#summary How to Install Rutorrent
+----
+= Installation =
+----
 
 <wiki:toc />
 
-----
-= Introduction =
-----
+== Introduction ==
+
 Rutorrent can be installed on most unix type operating systems.
 
 
