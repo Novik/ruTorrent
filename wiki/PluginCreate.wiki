@@ -14,35 +14,35 @@ To use this plugin, click the "Create a torrent" icon: [http://rutorrent.googlec
 
 This should open the "Create new Torrent" window as shown below:
 
-[http://rutorrent.googlecode.com/svn/wiki/images/createbase.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginCreate/createbase.png]
 
 Next, add a file source *_(note: the [Plugin_getdir _getdir] plugin will make this a much easier process)_*
 
-[http://rutorrent.googlecode.com/svn/wiki/images/createselectsource.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginCreate/createselectsource.png]
 
 Next, fill in the tracker information *_(note: for public trackers, you may wish to enter more than one tracker here)_*
 
 
-[http://rutorrent.googlecode.com/svn/wiki/images/createtracker.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginCreate/createtracker.png]
 
 Optional: Select a "piece size" 
 
-[http://rutorrent.googlecode.com/svn/wiki/images/createpiecesize.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginCreate/createpiecesize.png]
 
 Optional:  Fill in the checkboxed
  # Start seeding _*this will add the torrent to the download list immediately upon creation*_
  # Private Torrent _*select this if you are uploading to a private tracker*_
 
-[http://rutorrent.googlecode.com/svn/wiki/images/createcheckboxes.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginCreate/createcheckboxes.png]
 
 
 Click "Create ..." This will open the "Create Console window", here you can see the progress, any status information and errors that occur: 
 
-[http://rutorrent.googlecode.com/svn/wiki/images/createrunning.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginCreate/createrunning.png]
 
 When everything is finished and you see "Done." in the status window, you have the option to download the .torrent file directly from rutorrent by clicking the "Save" button:
 
-[http://rutorrent.googlecode.com/svn/wiki/images/createsave.png]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginCreate/createsave.png]
 
 
 
