@@ -1,6 +1,10 @@
-#summary Throttle plug-in description
+----
+=Plugin Throttle =
+----
 
-== Introduction ==
+<wiki:TOC />
+
+== Description ==
 
 In rTorrent version 0.8.5 and later it is possible to set limits of speed for groups of torrents.
 Throttle plug-in gives a convenient control over this possibility.
@@ -14,7 +18,7 @@ Note - "0"-value, conventionally for rTorrent, means "no limits", but not "stop 
 
 When ruTorrent starts with installed Thtottle plug-in first time it makes channels with defined speed limits.
 As these channels will be created after first ruTorrent start only, the speed limits will not work after rTorrent start until first after that start of ruTorrent.
-To avoid this add a special string to the rTorrent configuration file (see below). 
+To avoid this you need to add a special string to the rTorrent configuration file (see [Plugins#Starting_plugins_with_rtorrent How to start plugins with rtorrent] for details).
 
 == Some non-obvious points ==
 
@@ -25,14 +29,3 @@ To avoid this add a special string to the rTorrent configuration file (see below
 
 Sould be done in the file `plugins/throttle/conf.php`.
     * `MAX_THROTTLE` - maximum number of channels. You can make it bigger or smaller.
-    * `$isAutoStart` - the variable defines the method of work starts. If it is set as `true`, channels will be created at ruTorrent start. Otherwise you should do it manually.
-To do this, the following strings should be added into the rTorrent configuration file: 
-{{{
-throttle_up = thr_0,up_limit_for_channel0
-throttle_down = thr_0,down_limit_for_channel0
-...
-throttle_up = thr_[MAX_THROTTLE],up_limit_for_channelMAX_THROTTLE
-throttle_down = thr_[MAX_THROTTLE],down_limit_for_channelMAX_THROTTLE
-}}}
- here up_limit_for_channel, down_limit_for_channel - speed limits for upload/download in KBps
- * If the variable `$isAutoStart` has been set to `false`, parameters upload_rate and download_rate should not be equal to "0" in the rTorrent configuration file. Otherwise local speed limits will not work.
