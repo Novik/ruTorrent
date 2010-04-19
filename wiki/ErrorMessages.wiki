@@ -1,6 +1,6 @@
-#summary Detailed description of error messages.
-
-== Detailed description of error messages ==
+----
+= Detailed description of error messages =
+----
 
  * *Error: torrent is doesn't passed to rTorrent.*
 
@@ -39,4 +39,3 @@
 
  Reasons for this are usually similar to ones described for the previous error message except for the problem is not with web-server user but with rTorrent user.
  Note - if PHP is working in the system, it does not always mean  that the interpreter exists in the system too. The package php-cli is necessary. Web-server may use e. g. php-fcgi which does not contain an interpreter.
-==[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]==
