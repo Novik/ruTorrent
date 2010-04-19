@@ -1,8 +1,10 @@
-#summary How to get a version from svn
+----
+=How to download ruTorrent via SVN=
+----
 
 <wiki:toc />
 
-== How to download ruTorrent via SVN ==
+== Description ==
 
 You must have [http://subversion.tigris.org/ Subversion] installed. Consult your unix distribution page for details.
  
@@ -40,7 +42,7 @@ cd /var/www/rutorrent/plugins
 svn co http://rutorrent.googlecode.com/svn/trunk/plugins/rpc
 }}}
 
-_(note: for a full list of available plugins please see [Plugins], or see [HowToCreatePlugin This page to learn how to make your own])_.
+_(note: for a full list of available plugins please see [Plugins] page)_.
 
 == Updating Plugins ==
 
