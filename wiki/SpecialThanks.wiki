@@ -1,4 +1,3 @@
-#summary Special Thanks
 ----
 = Special Thanks =
 ----
@@ -13,14 +12,13 @@ his contributions include:
 
  * [Plugin_getdir _getdir]
  * [PluginAutotools Auto Tools]
- * [PluginsDataDir Datadir]
+ * [PluginDataDir Datadir]
  * [PluginErasedata Erase Data]
  *  initplugins.php 
 
+== Zoltan Csala ==
 
-== zoltan csala ==
-
-A big special thanks goes out to zoltan csala
+A big special thanks goes out to Zoltan Csala
 
 his contributions include:
 
@@ -34,8 +32,6 @@ his contributions include:
  * Blueeyes -- Chinese
  * Nicobubulle -- French (also, a big thanks for running the French section of the [http://forums.rutorrent.org/index.php?board=28.0 Forums]
  * RascalliM -- Dutch
-
-
 
 == Special mention ==
 
