@@ -1391,6 +1391,7 @@ var theWebUI =
 		this.updateLabels(wasRemoved);
 		this.loadTorrents();
 		this.getTotal();
+		data = null;
 	},
 
 	loadTorrents: function() 

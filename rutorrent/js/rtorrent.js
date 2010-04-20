@@ -931,6 +931,7 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 			var diff = new Date().getTime()-Date.parse(XMLHttpRequest.getResponseHeader("Date"));
 			} catch(e) { return; };
 			theWebUI.deltaTime = diff;
+			stub = null;
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown)
 		{
@@ -950,7 +951,7 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 			var responseText = stub.getResponse(data);
 			stub.logErrorMessages();
 			if(stub.listRequired)
-				new Ajax("?list=1", httpMethod, isASync, onComplete, onTimeout, onError, reqTimeout);
+				Ajax("?list=1", httpMethod, isASync, onComplete, onTimeout, onError, reqTimeout);
 			else
 	            	{
 	            		if(!stub.isError())
