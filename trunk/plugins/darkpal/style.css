@@ -64,6 +64,8 @@ div.graph_tab {background-color: #181818}
 div.table_tab {background-color: #181818}
 div#List {border: 1px solid #333333;}
 
+div#modalbg {background-color: #181818;}
+
 div#List {border: 1px solid #333333; background-color: #181818}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
