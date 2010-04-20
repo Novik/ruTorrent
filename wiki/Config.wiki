@@ -177,25 +177,9 @@ $pathToExternals = array(
  "php"  => '/usr/local/bin/php',   // Something like /usr/bin/php. If empty, will be founded in PATH.
  "curl" => '/usr/local/bin/curl',   // Something like /usr/bin/curl. If empty, will be founded in PATH.
  "gzip" => '/usr/bin/gzip',   // Something like /usr/bin/gzip. If empty, will be founded in PATH.
- "id" => '/usr/bin/gzip',   // Something like /usr/bin/id. If empty, will be founded in PATH.
+ "id" => '/usr/bin/id',   // Something like /usr/bin/id. If empty, will be founded in PATH.
 );
 }}}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 === Limiting settings (access.ini)===
 
