@@ -955,7 +955,7 @@ var theBTClientVersion =
 		"SD" : "Xunlei", "SS" : "SwarmScope", "SZ" : "Shareaza",
 		"S~" : "Shareaza beta", "st" : "SharkTorrent", "TN" : "Torrent .NET",
 		"TS" : "TorrentStorm", "UL" : "uLeecher!", "VG" : "Vagaa",
-		"WT" : "BitLet", "WY" : "Wyzo", "XL" : "Xunlei",
+		"WY" : "Wyzo", "XL" : "Xunlei",
 		"XT" : "XanTorrent", "ZT" : "Zip Torrent", 
 		'GS' : "GSTorrent", 'KG' : "KGet", 'ST' : "SymTorrent", 
 		'BE' : "BitTorrent SDK"
@@ -1016,6 +1016,9 @@ var theBTClientVersion =
 			{
 			        switch(sign)
 			        {
+					case 'LW':
+						ret = cli;
+						break;
 					case 'UT':
 					case 'UM':
 						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5)+getMnemonicEnd(str.charAt(6));
@@ -1189,6 +1192,9 @@ var theBTClientVersion =
 			else
 			if(str.match(/^-NE/))
 				ret = "BT Next Evolution "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5)+"."+str.charAt(6);
+			else
+			if(str.match(/^-WT-/))
+				ret = "BitLet "+str.charAt(4)+"."+str.charAt(5)+"."+str.charAt(6)+"."+str.charAt(7);
 			else
 			{
 				var mod = null;
