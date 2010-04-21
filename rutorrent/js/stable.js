@@ -182,7 +182,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			width(styles[this.colOrder[i]].width).
 			attr("index", i));
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
-		td.mouseclick( self.onRightClick );
+		td.mouseclick( function(e) { self.onRightClick(e) } );
 		td.mousedown( function(e) { $(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents ) } );
 		td.mouseup( function(e) { self.Sort(e, this); } );		
 		this.tHeadCols[i] = td.get(0);
