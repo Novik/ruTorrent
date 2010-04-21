@@ -61,6 +61,8 @@ rSpeedGraph.prototype.draw = function()
 			self.owner.height() && self.owner.width())
 		{
 			clearCanvas( self.owner.get(0) );
+			self.owner.empty();
+
 			function xTick(n) 
 			{
 				var dt = new Date(n*1000);
@@ -120,6 +122,7 @@ rSpeedGraph.prototype.draw = function()
 				}).appendTo("body").fadeIn(200);
 			}
 
+			self.owner.unbind("plothover"); 
 			self.owner.bind("plothover", 
 				function (event, pos, item) 
 				{ 

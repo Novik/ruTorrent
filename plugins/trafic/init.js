@@ -31,6 +31,8 @@ if(plugin.enabled && plugin.canChangeTabs())
 			if(self.owner.height() && self.owner.width())
 			{
 				clearCanvas( self.owner[0] );
+				self.owner.empty();
+
 				$.plot(self.owner, [ self.down, self.up, self.oldDown, self.oldUp ],
 				{ 
 					colors:
@@ -70,6 +72,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 					}).appendTo("body").fadeIn(200);
 				}
 
+				self.owner.unbind("plothover");
 				self.owner.bind("plothover", 
 					function (event, pos, item) 
 					{ 
