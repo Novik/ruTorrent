@@ -108,8 +108,10 @@ rPlugin.prototype.showError = function(err)
 
 rPlugin.prototype.langLoaded = function() 
 {
+	try {
 	if($type(this.onLangLoaded)=="function")
-		this.onLangLoaded();	        	
+		this.onLangLoaded();
+	} catch(e) {}			// konqueror hack
 	this.markLoaded();
 }
 
@@ -164,9 +166,10 @@ rPlugin.prototype.attachPageToOptions = function(dlg,name)
 {
         if(this.canChangeOptions())
 	{
-		$("#st_btns").before( $(dlg).addClass("stg_con").hide() );
+		$("#st_btns").before( $(dlg).addClass("stg_con") );
 		$(".lm ul li:last").removeClass("last");
 		$(".lm ul").append( $("<li>").attr("id","hld_"+dlg.id).addClass("last").html("<a id='mnu_"+dlg.id+"' href=\"javascript://void()\" onclick=\"theOptionsSwitcher.run('"+dlg.id+"'); return(false);\">"+name+"</a>") );
+		$(dlg).css( {display: "none"} );
 	}
 	return(this);
 }
