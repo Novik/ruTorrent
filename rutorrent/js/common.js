@@ -25,6 +25,7 @@ function browserDetect()
 	this.isIE = (ua.indexOf("msie") !=- 1 && !this.isOpera && (ua.indexOf("webtv") ==- 1));
 	this.isMozilla = (this.isGecko && ua.indexOf("gecko/") + 14 == ua.length);
 	this.isFirefox = (ua.indexOf("firefox/") !=- 1);
+	this.isChrome = (ua.indexOf("chrome/") !=- 1);
 	this.versionMinor = parseFloat(navigator.appVersion);
 	if(this.isGecko && !this.isMozilla && !this.isKonqueror)
 		this.versionMinor = parseFloat(ua.substring(ua.indexOf("/", ua.indexOf("gecko/") + 6) + 1));
@@ -64,6 +65,9 @@ function browserDetect()
 	else
 	if(this.isKonqueror)
 		h.className = ("konqueror " + c);
+	else
+	if(this.isChrome)
+		h.className = ("webkit chrome " + c);
 	else
 	if(this.isAppleWebKit)
 		h.className = ("webkit safari " + c);
