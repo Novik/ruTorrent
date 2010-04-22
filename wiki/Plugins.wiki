@@ -108,6 +108,14 @@ cp /var/www/rutorrent/plugins/rss/conf.php /var/www/rutorrent/conf/users/harry/p
 
 then edit accordingly.  This works for all plugins which have a conf.php file.  
 
+=== a note on upgrading plugins ===
+
+It's very important to remember, when upgrading a plugin, you should always:
+ # stop rtorrent
+ # upgrade the plugin(s)
+ # restart rtorrent
+
+Failure to stop/start rtorrent can result in plugins not behaving as you'd expect.
 
 
 == Starting plugins with rtorrent ==
