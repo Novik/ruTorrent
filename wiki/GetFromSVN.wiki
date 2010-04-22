@@ -33,6 +33,8 @@ svn up -r 870
 }}}
 
 
+_*(note:  It's very important to remember, when upgrading from one revision to another, you should always stop rtorrent before you upgrade, upgrade, then restart rtorrent.  Failure to stop/start rtorrent when upgrading can lead to plugins not working properly)*_
+
 == Checking out Plugins ==
 
 Checking out plugins is basically the same as checking out the base system. If you already have rutorrent installed, simply change to the *plugins/* directory under rutorrent, and check out your plugin, like in the following example. For example, if you have rutorrent installed to /var/www/rutorrent and would like to check out the rpc plugin:
