@@ -58,3 +58,14 @@ find /var/www/rutorrent/share/ -type f -exec chmod 666 {} \;
 }}}
 
 This same principle will work for MOST plugins. 
+
+=== A note on upgrading ===
+
+It should be noted that when upgrading rutorrent (or a plugin)
+
+To upgrade, the process is to:
+ # stop rtorrent
+ # upgrade
+ # restart rtorrent
+
+If you fail to do this, stop/start rtorrent, you may end up with non-working plugins.
