@@ -157,7 +157,7 @@ var theDialogManager =
        		$('#modalbg').hide();
 		this.modalState = false;
 	},
-	show: function( id )
+	show: function( id, callback )
 	{
 	        var obj = $('#'+id);
 	        if(obj.data("modal"))
@@ -165,12 +165,12 @@ var theDialogManager =
         	if($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
 	        	this.items[id].beforeShow(id);
 		this.center(id);
-		obj.show(this.divider);
+		obj.show(this.divider,callback);
         	if($type(this.items[id]) && ($type(this.items[id].afterShow)=="function"))
 	        	this.items[id].afterShow(id);
 		this.bringToTop(id);
 	},
-	hide: function( id )
+	hide: function( id, callback )
 	{
 		var pos = $.inArray(id+"",this.visible);
 		if(pos>=0)
@@ -178,7 +178,7 @@ var theDialogManager =
         	var obj = $('#'+id);
         	if($type(this.items[id]) && ($type(this.items[id].beforeHide)=="function"))
 	        	this.items[id].beforeHide(id);
-		obj.hide(this.divider);
+		obj.hide(this.divider,callback);
         	if($type(this.items[id]) && ($type(this.items[id].afterHide)=="function"))
 	        	this.items[id].afterHide(id);
 		if(obj.data("modal"))
