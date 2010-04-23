@@ -112,33 +112,30 @@ function findEXE( $exe )
 
 function findRemoteEXE( $exe, $err, &$remoteRequests )
 {
-	$st = getSettingsPath().'/';
-	if(!is_file($st.$exe))
+	$st = getSettingsPath().'/'.rand();
+	if(!array_key_exists($exe,$remoteRequests))
 	{
-		if(!array_key_exists($exe,$remoteRequests))
-		{
-			$path=realpath(dirname('.'));
-			global $pathToExternals;
-			$add = '';
-			if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-				$add = " ".escapeshellarg($pathToExternals[$exe]);
-			$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", escapeshellarg(addslash($path)."test.sh")." ".$exe." ".escapeshellarg($st).$add)));
-			$req->run();
-		}
-		$remoteRequests[$exe][] = $err;
+		$path=realpath(dirname('.'));
+		global $pathToExternals;
+		$add = '';
+		if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
+			$add = " ".escapeshellarg($pathToExternals[$exe]);
+		$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", escapeshellarg(addslash($path)."test.sh")." ".$exe." ".escapeshellarg($st).$add)));
+		$req->run();
+		$remoteRequests[$exe] = array( "path"=>$st, "err"=>array() );
 	}
+	$remoteRequests[$exe]["err"][] = $err;
 }
 
 function testRemoteRequests($remoteRequests)
 {
 	$jResult = "";
-	$st = getSettingsPath().'/';
-	foreach($remoteRequests as $exe=>$errs)
+	foreach($remoteRequests as $exe=>$info)
 	{
-		$file = $st.$exe.".founded";
+		$file = $info["path"].$exe.".founded";
 		if(!is_file($file))
 		{
-			foreach($errs as $err)
+			foreach($info["err"] as $err)
 				$jResult.=$err;
 		}
 		else

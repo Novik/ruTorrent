@@ -1,9 +1,6 @@
 plugin.loadMainCSS();
 if(browser.isIE && browser.versionMajor < 8)
 	plugin.loadCSS("ie");
-else
-if(browser.isKonqueror)
-	plugin.loadCSS("konqueror");
 plugin.loadLang();
 
 plugin.switchLabel = theWebUI.switchLabel;
@@ -1003,6 +1000,7 @@ plugin.correctRatioFilterDialog = function()
 	var rule = getCSSRule(".rf fieldset");
 	if(rule && thePlugins.get('ratio').allStuffLoaded)
 	{
+/*
 		var addition = (browser.isIE) ? 40 : 32;
 		rule.style.height = (iv(rule.style.height)+addition)+"px";
 		$$('filterPropsFieldSet').style.height = rule.style.height;
@@ -1025,8 +1023,14 @@ plugin.correctRatioFilterDialog = function()
 			rule.style.height= (iv(rule.style.height)+addition)+"px";
 			$$('filterList').style.height = rule.style.height;
 		}
-		$("#FLT_label").after( $("<span></span>").
-			html("<label>"+theUILang.ratio+":</label><select id='FLT_ratio'><option value=''>"+theUILang.mnuRatioUnlimited+"</option></select><br/>") );
+*/
+		$("#FLT_label").after( $("<div></div>").css({ padding: 0 }).
+			html("<label>"+theUILang.ratio+":</label><select id='FLT_ratio'><option value=''>"+theUILang.mnuRatioUnlimited+"</option></select>") );
+
+		$$('filterProps').style.height = "auto";
+		$("#FLT_label").parent().get(0).style.height = "auto";
+		$$('dlgEditFilters').style.height = "auto";	
+
 		theDialogManager.center("dlgEditFilters");
 	}
 	else
@@ -1038,6 +1042,7 @@ plugin.correctFilterDialog = function()
 	var rule = getCSSRule(".rf fieldset");
 	if(rule && thePlugins.get('throttle').allStuffLoaded)
 	{
+/*
 		var addition = (browser.isIE) ? 40 : 32;
 		rule.style.height = (iv(rule.style.height)+addition)+"px";
 		$$('filterPropsFieldSet').style.height = rule.style.height;
@@ -1060,12 +1065,18 @@ plugin.correctFilterDialog = function()
 			rule.style.height= (iv(rule.style.height)+addition)+"px";
 			$$('filterList').style.height = rule.style.height;
 		}
-		$("#FLT_label").after( $("<span></span>").
+*/
+		$("#FLT_label").after( $("<div></div>").css({ padding: 0 }).
 			html(  "<label>"+theUILang.throttle+":</label><select id='FLT_throttle'><option value=''>"+theUILang.mnuUnlimited+"</option></select><br/>" ) );
 		if(thePlugins.isInstalled('ratio'))
 			plugin.correctRatioFilterDialog();
 		else
+		{
+			$$('filterProps').style.height = "auto";
+			$("#FLT_label").parent().get(0).style.height = "auto";
+			$$('dlgEditFilters').style.height = "auto";	
 			theDialogManager.center("dlgEditFilters");
+		}
 	}
 	else
 		setTimeout(plugin.correctFilterDialog,1000);
@@ -1141,24 +1152,27 @@ plugin.onLangLoaded = function()
 			"<input type='text' id='rssURL' class='TextboxLarge'/><br/>"+
 			"<label>"+theUILang.alias+": </label>"+
 			"<input type='text' id='rssLabel' class='TextboxLarge'/>"+
-			"<div class='aright'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgAddRSS\");theWebUI.addRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
-		"</div>",true);
+		"</div>"+
+		"<div class='aright buttons-list'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgAddRSS\");theWebUI.addRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
+		true);
 	theDialogManager.make( "dlgEditRSS", theUILang.rssMenuEdit,
 		"<div class='content'>"+
 			"<label>"+theUILang.feedURL+": </label>"+
 			"<input type='text' id='editrssURL' class='TextboxLarge'/><br/>"+
 			"<label>"+theUILang.alias+": </label>"+
 			"<input type='text' id='editrssLabel' class='TextboxLarge'/>"+
-			"<div class='aright'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgEditRSS\");theWebUI.editRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
-		"</div>",true);
+		"</div>"+
+		"<div class='aright buttons-list'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgEditRSS\");theWebUI.editRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
+		true);
 	theDialogManager.make( "dlgLoadTorrents", theUILang.torrent_add,
 		"<div class='content'>"+
 			"<label>"+theUILang.Base_directory+":</label><input type='text' id='RSSdir_edit' class='TextboxLarge'/><br/>"+
 			"<label></label><input type='checkbox' id='RSSnot_add_path'/>"+theUILang.Dont_add_tname+"<br/>"+
 			"<label></label><input type='checkbox' id='RSStorrents_start_stopped'/>"+theUILang.Dnt_start_down_auto+"<br/>"+
-			"<label>"+theUILang.Label+":</label><input type='text' id='RSS_label' class='TextboxLarge'/><br/>"+
-			"<div id='buttons' class='aright'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgLoadTorrents\");theWebUI.RSSLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
-		"</div>",true);
+			"<label>"+theUILang.Label+":</label><input type='text' id='RSS_label' class='TextboxLarge'/>"+
+		"</div>"+
+		"<div id='buttons' class='aright buttons-list'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgLoadTorrents\");theWebUI.RSSLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
+		true);
 	theDialogManager.make( "dlgEditFilters", theUILang.rssMenuManager,
 		"<div class='fxcaret'>"+
 			"<div class='lfc'>"+
@@ -1201,7 +1215,7 @@ plugin.onLangLoaded = function()
 				"</fieldset>"+
 			"</div>"+
 		"</div>"+
-		"<div id='FLT_buttons' class='aright'>"+
+		"<div id='FLT_buttons' class='aright buttons-list'>"+
 			"<input type='button' class='Button' value='"+theUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditFilters\");theWebUI.setFilters();return(false);'/>"+
 			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 		"</div>");

@@ -156,7 +156,7 @@ class rTorrentSettings
 							if($this->started===false)
 								$this->started = 0;
 						}
-						$randName = uniqid("/tmp/rutorrent-stats-");
+						$randName = uniqid("/tmp/rutorrent-stats-".rand());
 						$id = getExternal('id');
 						$req = new rXMLRPCRequest(
         						new rXMLRPCCommand("execute",array("sh","-c",$id." -u > ".$randName." ; ".$id." -G >> ".$randName." ; echo ~ >> ".$randName)));

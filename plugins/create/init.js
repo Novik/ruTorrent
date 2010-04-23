@@ -217,14 +217,14 @@ plugin.onLangLoaded = function()
 					"<label id='nomargin'><input type='checkbox' name='start_seeding' id='start_seeding'/>"+theUILang.StartSeeding+"</label>"+
 					"<label id='nomargin'><input type='checkbox' name='private' id='private'/>"+theUILang.PrivateTorrent+"</label><br/>"+
 				"</fieldset>"+
-				"<div class='aright'><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>"+
-			"</div>");
+			"</div>"+
+			"<div class='aright buttons-list'><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>");
 		theDialogManager.make("tconsole",theUILang.CreateNewTorrent,
-			"<form action='plugins/create/action.php' method='post' id='saveform' target='_blank'>"+
-				"<input type='hidden' id='createfile' name='tname'/>"+
-				"<input type='hidden' name='cmd' value='get'/>"+
-			"</form>"+
-			"<div class='cont fxcaret'>"+
+			"<div class='fxcaret'>"+
+				"<form action='plugins/create/action.php' method='post' id='saveform' target='_blank'>"+
+					"<input type='hidden' id='createfile' name='tname'/>"+
+					"<input type='hidden' name='cmd' value='get'/>"+
+				"</form>"+
 				"<fieldset>"+
 					"<legend>"+theUILang.createConsole+"</legend>"+
 					"<div class='console' id='createlog'></div>"+
@@ -233,11 +233,11 @@ plugin.onLangLoaded = function()
 					"<legend>"+theUILang.createErrors+"</legend>"+
 					"<div class='console' id='createerrors'></div>"+
 				"</fieldset>"+
-				"<div class='aright' id='create_btns'>"+
-					"<input type='button' id='torrentSave' value='"+theUILang.torrentSave+"' class='Button' onclick='theWebUI.saveTorrent()'/>"+
-					"<input type='button' id='torrentKill' value='"+theUILang.torrentKill+"' class='Button' onclick='theWebUI.killTorrent()'/>"+
-					"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
-				"</div>"+
+			"</div>"+
+			"<div class='aright buttons-list' id='create_btns'>"+
+				"<input type='button' id='torrentSave' value='"+theUILang.torrentSave+"' class='Button' onclick='theWebUI.saveTorrent()'/>"+
+				"<input type='button' id='torrentKill' value='"+theUILang.torrentKill+"' class='Button' onclick='theWebUI.killTorrent()'/>"+
+				"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 			"</div>",true);
 		if(thePlugins.isInstalled("_getdir"))
 		{

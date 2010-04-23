@@ -57,6 +57,25 @@ var thePlugins =
 	{
 	        var plg = this.list[name];
 	        return(plg && plg.enabled && (!version || (plg.version>=version)) ? true : false);
+	},
+
+	checkLoad: function()
+	{
+		for( var i in this.list )
+		{
+			var plg = this.list[i];
+			if(plg.enabled && ($type(plg.onLangLoaded)=="function") && !plg.allStuffLoaded)
+				return(false);
+		}
+		return(true);
+	},
+
+	waitLoad: function( callback )
+	{
+		if(this.checkLoad())
+			eval( callback+'()' );
+		else
+			window.setTimeout( 'thePlugins.waitLoad("'+callback+'")', 500 );
 	}
 };
 
@@ -239,7 +258,8 @@ rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 		newBtn.id="mnu_"+id;
 		newBtn.href='javascript://void();';
 		newBtn.title=name;
-		newBtn.innerHTML='<div id="'+id+'" onclick="'+onclick+';return(false);" ></div>';
+		newBtn.innerHTML='<div id="'+id+'" onclick="'+onclick+';return(false);"></div>';
+		$(newBtn).focus( function(e) { this.blur(); } );
 		var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;	
 		if(targetBtn)
 			targetBtn.parentNode.insertBefore(newBtn,targetBtn);	
