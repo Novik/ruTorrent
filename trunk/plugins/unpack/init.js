@@ -219,12 +219,13 @@ plugin.onLangLoaded = function()
 					"<input type='text' id='edit_unpack' class='TextboxLarge' maxlength='200'/>" +
 					"<input type='button' id='btn_unpack' class='Button' value='...' />" +
 				"</fieldset>" +
-				"<div class='aright'>" +
-					"<input type='button' value='" + theUILang.ok + "' class='Button' " +
-						" onclick='theWebUI.unpack(); return(false);' />" +
-					"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
-				"</div>" +
+			"</div>"+
+			"<div class='aright buttons-list'>" +
+				"<input type='button' value='" + theUILang.ok + "' class='Button' " +
+					" onclick='theWebUI.unpack(); return(false);' />" +
+				"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
 			"</div>", true);
+
 		plugin.interval = window.setInterval( plugin.checkTasks, 3000 );
 		this.attachPageToOptions( $("<div>").attr("id","st_unpack").html(
 			"<div>"+

@@ -97,8 +97,9 @@ plugin.onLangLoaded = function()
 				"<label>"+theUILang.Comment+": </label>"+
                                	"<input type='text' id='ecomment' name='ecomment' class='TextboxLarge'/><br/>"+
 			"</fieldset>"+
-			"<div class='aright'><input type='button' value='"+theUILang.ok+"' class='Button' id='editok' onclick='theWebUI.sendEdit(); return(false);'/><input type='button' value='"+theUILang.Cancel+"' class='Cancel Button'/></div>"+
-		"</div>", true);
+		"</div>"+
+		"<div class='aright buttons-list'><input type='button' value='"+theUILang.ok+"' class='Button' id='editok' onclick='theWebUI.sendEdit(); return(false);'/><input type='button' value='"+theUILang.Cancel+"' class='Cancel Button'/></div>",
+		true);
 }
 
 rTorrentStub.prototype.edittorrent = function()

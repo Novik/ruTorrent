@@ -115,11 +115,11 @@ plugin.onLangLoaded = function()
 					"<label for='move_datafiles'>"+ theUILang.DataDirMove +"</label>"+
 				"</div>" +
 			"</fieldset>" +
-			"<div class='aright'>" +
-				"<input type='button' value='" + theUILang.ok + "' class='Button' id='btn_datadir_ok'" +
-					" onclick='theWebUI.sendDataDir(); return(false);' />" +
-				"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
-			"</div>" +
+		"</div>"+
+		"<div class='aright buttons-list'>" +
+			"<input type='button' value='" + theUILang.ok + "' class='Button' id='btn_datadir_ok'" +
+				" onclick='theWebUI.sendDataDir(); return(false);' />" +
+			"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
 		"</div>", true);
 	if(thePlugins.isInstalled("_getdir"))
 	{

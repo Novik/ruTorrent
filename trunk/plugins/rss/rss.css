@@ -1,6 +1,6 @@
 div#RSSList {border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
 
-div#dlgAddRSS {width: 355px; height: 127px}
+div#dlgAddRSS {width: 355px; height: 132px}
 div#dlgAddRSS div.dlg-header {background-image: url(./images/rss.gif)}
 div#dlgAddRSS div.content {width: 330px; margin: 5px; padding: 5px; line-height: 16px}
 div#dlgAddRSS div.content input {margin-top: 5px}
@@ -9,7 +9,7 @@ div#dlgAddRSS label#nomargin { margin-top: 0px; margin-bottom: 0px; }
 div#dlgAddRSS input, select {margin-top: 5px; margin-bottom: 5px;}
 div#dlgAddRSS br {clear: left; line-height: 0}
 
-div#dlgEditRSS {width: 355px; height: 127px}
+div#dlgEditRSS {width: 355px; height: 132px}
 div#dlgEditRSS div.dlg-header {background-image: url(./images/rss.gif)}
 div#dlgEditRSS div.content {width: 330px; margin: 5px; padding: 5px; line-height: 16px}
 div#dlgEditRSS div.content input {margin-top: 5px}
@@ -26,11 +26,10 @@ div#dlgLoadTorrents div.content input {margin-top: 0px}
 div#dlgLoadTorrents label {width: 75px; display: block; float: left; margin-top: 0px; margin-bottom: 5px; margin-left: 5px; }
 div#dlgLoadTorrents input, select {margin-top: 2px; margin-bottom: 2px;}
 div#dlgLoadTorrents br {clear: left; line-height: 0}
-div#dlgLoadTorrents div#buttons { margin-top: 10px; }
 
 div#dlgEditFilters {width: 690px; height: 360px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
 div#dlgEditFilters div.dlg-header {background-image: url(./images/rss.gif)}
-.lfc {float: left; position: relative;}
+.lfc {float: left; }
 .lf {width: 245px; height: 230px; margin: 5px; margin-right: 0; padding: 5px; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
 .lf ul {width: 100%; margin: 2px; padding: 0; list-style-position: inside; list-style: none; white-space: nowrap}
 .lf li input { margin: 0 5px 0 0; padding: 4px; } 
@@ -40,7 +39,7 @@ div#dlgEditFilters div.dlg-header {background-image: url(./images/rss.gif)}
 .lf li input { border: 0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: default; font-weight: bold; }
 div#FLTchk_buttons {padding-top: 5px; width: 260px; text-align:center}
 .rf fieldset {margin: 3px; height: 265px}
-.rf {float: right; position: relative; width: 400px; height: 285px; margin: 4px; background-color: #FAFAFA}
+.rf {float: right; width: 400px; height: 285px; margin: 4px; background-color: #FAFAFA}
 .rf label {width: 75px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 .rf br {clear: left; line-height: 0}
 .rf select {width: 273px; margin-left: 5px; margin-bottom: 3px; }

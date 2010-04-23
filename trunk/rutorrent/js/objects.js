@@ -126,7 +126,7 @@ var theDialogManager =
 		});
 //		this.center(id);
 		this.items[id] = { beforeShow: null, afterShow: null, beforeHide: null, afterHide : null };
-		new DnD(id);
+		obj.data("dnd",new DnD(id));
 		return(this);
 	},
 	center: function( id )

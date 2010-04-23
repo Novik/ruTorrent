@@ -65,14 +65,14 @@ if(plugin.enabled)
 				tCell.className = "cCell Cell" + Chunk;
 			}
 		}
+
+		d = null;
 	} // drawChunks
 
 	theWebUI.clearChunks = function() {
 		var Chunks = theWebUI.Chunks;
 		// Delete rows and columns from table
-		while (Chunks.cTable.firstChild ) {
-			Chunks.cTable.removeChild( Chunks.cTable.firstChild );
-		}
+		$(Chunks.cTable).empty();		
 	} // clearChunks
 	
 	rTorrentStub.prototype.getchunks = function() {

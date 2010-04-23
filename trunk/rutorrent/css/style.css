@@ -5,8 +5,7 @@ div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z
 div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
 div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none; opacity: 0.5; background-color: #CCCCCC;}
 .konqueror div#modalbg { background: none; }
-.ie div#modalbg { background-color: transparent };
-sup {font-size: 8px}
+.ie div#modalbg { background-color: transparent; }
 
 div.aright {text-align: right}
 div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
@@ -116,9 +115,10 @@ div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize;
 div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
 div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
 
-div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: visible}
-div#stg a.h {margin: 5px}
-div#stg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/settings.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #D0D0D0}
+div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
+div#stg_c {overflow: hidden}
+div#stg-header { background-image: url(../images/settings.gif); }
+
 div#stg .lm {width: 120px; height: 353px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
 .ie div#stg .lm {width: 125px}
 .ie div#stg {width: 605px;}
@@ -233,7 +233,7 @@ textarea { overflow: auto; }
 .catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }
 
 div#tadd-header {background-image: url(../images/world.gif)}
-div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto; background-color: #FAFAFA; border: 2px solid #909090}
+div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto }
 div#tadd label {text-align: right; width: 75px; padding-right: 20px; float: left }
 div#tadd br {clear: left; line-height: 0}
 div#tadd input {margin-bottom: 1px}
@@ -256,3 +256,4 @@ div#tadd input {margin-bottom: 1px}
 #st_system .sthdr { padding-left: 8px }
 
 .ie fieldset {padding: 5px}
+.buttons-list {  margin-bottom: 5px }
