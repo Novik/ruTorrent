@@ -95,21 +95,6 @@ function getPluginInfo( $name, $permissions )
 	return(array_key_exists("version",$info) ? $info : false);
 }
 
-function findEXE( $exe )
-{
-	global $pathToExternals;
-	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-		return(is_executable($pathToExternals[$exe]) ? $pathToExternals[$exe] : false);
-	$path = explode(":", getenv('PATH'));
-	foreach($path as $tryThis)
-	{
-		$fname = $tryThis . '/' . $exe;
-		if(is_executable($fname))
-			return($fname);
-	}
-	return(false);
-}
-
 function findRemoteEXE( $exe, $err, &$remoteRequests )
 {
 	$st = getSettingsPath().'/'.rand();
