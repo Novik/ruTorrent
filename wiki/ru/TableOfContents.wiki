@@ -2,19 +2,19 @@
 ----
 = Rutorrent Webui =
 ----
-  * [Main Description О ruTorrent]
+  * [Main О ruTorrent]
     * [Versions История версий]
   * [Installation Установка и настройка]
-    * [MainInstall rTorrent]
-    * [WebSERVER Веб-серверы]
+    * [Downloading Загрузка]
+      * [GetFromSVN Загрузка с SVN]
+      * [DownloadPage Загрузка архива]
+    * [MainInstall Установка rTorrent]
+    * [WebSERVER Настройка веб-серверов]
         * [WebSERVER#Apache_Specific_SCGI_Config Apache]
         * [WebSERVER#Lighttpd_Specific_SCGI_Config Lighttpd]
         * [WebSERVER#Cherokee_Specific_SCGI_Config Cherokee]
         * [WebSERVER#Nginx_SCGI_notes Nginx]
-    * [Config Настройка]
-    * [Downloading Загрузка]
-      * [GetFromSVN Загрузка с SVN]
-      * [DownloadPage Загрузка архива]
+    * [Config Настройка ruTorrent]
     * [Plugins Плагины]
       * Текущие
         * [PluginRPC RPC]

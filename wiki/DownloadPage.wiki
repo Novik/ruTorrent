@@ -1,6 +1,6 @@
 = http://img442.imageshack.us/img442/6560/downloadiconc.gif =
 
-Tarball archives.  _note For the latest version, please see [GetFromSVN SVN Wiki]_
+Tarball archives.  _For the latest version, please see [GetFromSVN SVN Wiki]_
 
 _*Do not mix files from this page with svn files, use one or the other*_
 ----

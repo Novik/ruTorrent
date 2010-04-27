@@ -45,12 +45,12 @@ ruTorrent был разработан на базе [http://www.utorrent.com/doc
 
  * Для работы контекстного меню и отображения информации в статус-баре в Firefox и Opera необходимо в настройках браузера разрешить javascript-у выполнять соотв. операции.
  * Имеющиеся клавиатурные хоткеи можно посмотреть нажав F1. Более-менее корректно работает это пока только в Firefox.
- * Ряд аддонов к браузерам может привести к полной или частичной неработоспособности ruTorrent. Например, установка плагина Firebug к Firefox ведет к сильным утечкам памяти. Установка плагина All-in-One Gestures к Firefox ведет к неработоспособности контекстного меню. И т.п.
+ * Ряд аддонов к браузерам может привести к полной или частичной неработоспособности ruTorrent. Например, установка плагина [http://pagesperso-orange.fr/marc.boullet/ext/extensions-en.html All-in-One Gestures] к Firefox ведет к неработоспособности контекстного меню.
 
 == Внешние ссылки  ==
 
  * [http://donik.org/wiki/index.php/RuTorrent_%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B8_%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%BF%D0%BE%D0%B4_Gentoo RuTorrent установка и настройка под Gentoo]
 
-== [http://forums.rutorrent.org форум] ruTorrent ==
+== [http://forums.rutorrent.org ruTorrent] Форум ==
 
 Вопросы Вы можете задать на [http://forums.rutorrent.org форуме]. О предложениях и ошибках Вы можете написать [http://code.google.com/p/rutorrent/issues/entry тут].

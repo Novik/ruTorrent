@@ -19,7 +19,7 @@ The original version of ruTorrent was based on an older version of µTorrent Web
    * IE 7.0, IE 8.0, Firefox 2.x, Firefox 3.x - for optimal compatibility.
    * IE 6.0 - not supported.
    * Konqueror 3.5.9 - OK, except charts on tabs Speed and Traffic. 
-   * Opera 9.x - works fine. 
+   * Opera 9.x/10.x - works fine. 
    * Safari 3.x - works, but pictures may not be displayed when https-protocol is used. Probably this is a browser issue. Try to adjust a server not to make keep-alive connections.
    * Google Chrome 4.1.249.1045 - the same as Safari. (_some users have reported issues with reloading in chrome, see issue 243_).
 
