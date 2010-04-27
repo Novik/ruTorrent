@@ -335,7 +335,7 @@ function findEXE( $exe )
 	return(false);
 }
 
-function cachedEcho( $content, $type = null, $cacheable = false )
+function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 {
 	if($cacheable && isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD']=='GET'))
 	{
@@ -376,7 +376,10 @@ function cachedEcho( $content, $type = null, $cacheable = false )
 		}
 		header("Content-Length: ".$len);
 	}
-	echo $content;	
+	if($exit)
+		exit($content);
+	else
+		echo($content);
 }
 
 ?>

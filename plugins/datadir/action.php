@@ -95,8 +95,8 @@ if( $ret[$len - 1] == ',' )
 	$ret = substr( $ret, 0, $len - 1 );
 $ret .= "]}";
 
-cachedEcho($ret,"application/json");
-
 Debug( "--- end ---" );
+
+cachedEcho($ret,"application/json");
 
 ?>

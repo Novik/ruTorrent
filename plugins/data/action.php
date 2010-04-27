@@ -2,10 +2,7 @@
 require_once( '../../php/xmlrpc.php' );
 
 if(isset($_REQUEST['result']))
-{
 	cachedEcho('log(theUILang.cantAccessData);',"text/html");
-	exit();
-}
 
 if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 {

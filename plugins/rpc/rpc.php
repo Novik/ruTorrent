@@ -14,7 +14,6 @@ if(isset($HTTP_RAW_POST_DATA) && (strpos($HTTP_RAW_POST_DATA,"execute")===false)
 		if($pos !== false)
 			$result = substr($result,$pos+4);
 		cachedEcho($result, "text/xml");
-		exit();
 	}
 }
 

@@ -377,7 +377,6 @@ class Torrent
 			$filename = rawurlencode($filename);
         	header( 'Content-Disposition: attachment; filename="'.$filename.'"' );
         	cachedEcho( $this->__toString(), 'application/x-bittorrent', true );
-	        exit();
     	}
 
 	/** Build torrent info
