@@ -22,7 +22,7 @@ Attention! Please install only those plug-ins you really need. The more plug-ins
 
 === plugins.ini ===
 
-*_Some of the following information is also included in [Config#Limiting_Plugins Config page]_*
+*_Some of the following information is also included in [Config#Limiting_Plugins_(plugins.ini) Config page]_*
 
 Since 3.0, rutorrent includes a configuration file for plugins called plugin.ini.  It is located at rutorrent/conf/plugins.ini.  As of the writing of this wiki, the default format is as follows:
 
