@@ -612,6 +612,12 @@ var theWebUI =
 								});
 								break;
 							}
+							case "webui.update_interval":
+							{
+								theWebUI.settings["webui.update_interval"] = nv;
+								theWebUI.resetInterval();
+								break;
+							}
 						}
 					}
 					else
@@ -2148,6 +2154,15 @@ var theWebUI =
    		theDialogManager.toggle("tadd");
    	},
 	
+	resetInterval: function() 
+	{
+		this.timer.stop();
+		if(this.updTimer)
+			window.clearTimeout(this.updTimer);
+		this.interval = iv(this.settings["webui.update_interval"]);
+		this.updTimer = window.setTimeout(this.update, this.interval);
+	},
+
 	setInterval: function() 
 	{
 		this.timer.stop();
