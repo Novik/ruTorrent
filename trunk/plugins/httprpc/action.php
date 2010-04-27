@@ -364,7 +364,6 @@ switch($mode)
 				if($pos !== false)
 					$result = substr($result,$pos+4);
 				cachedEcho($result, "text/xml");
-				exit();
 			}
 			else
 				$result = null;
@@ -381,5 +380,4 @@ if(is_null($result))
 }
 else
 	cachedEcho(json_encode($result),"application/json");
-
 ?>      	

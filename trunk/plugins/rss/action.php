@@ -295,7 +295,7 @@ if($dataType=="text/xml")
 else
 	$content = $val;
 
-cachedEcho($content,$dataType,true);
+cachedEcho($content,$dataType,true,false);
 
 ob_flush();
 flush();
