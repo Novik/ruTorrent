@@ -936,11 +936,7 @@ function Ajax(URI, httpMethod, isASync, onComplete, onTimeout, onError, reqTimeo
 		error: function(XMLHttpRequest, textStatus, errorThrown)
 		{
 			if((textStatus=="timeout") && ($type(onTimeout) == "function"))
-			{
 				onTimeout();
-				if(stub.listRequired)
-					Ajax("?list=1", httpMethod, isASync, onComplete, onTimeout, onError, reqTimeout);
-			}
 			else
 			if(($type(onError) == "function"))
 			{

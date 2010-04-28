@@ -145,6 +145,7 @@ fieldset {margin: 4px}
 .stg_con td {font-weight: normal; height: 19px}
 .stg_con td.alr {text-align: right}
 .stg_con td input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
+.stg_con select {margin: 1px 4px; font-size: 11px; padding: 1px 4px}
 input.num {text-align: right; width: 50px}
 input.str {text-align: left; width: 130px}
 td label, div label {cursor: pointer}

@@ -357,7 +357,7 @@
  errMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Plugin will not work.",
  warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
  plgShutdown			: "Shutdown",
- limit				: "Ð_Ð+Ð_Ð÷Ð¶Ð÷Ð_Ð_Ñ_",
+ limit				: "limit",
  speedList			: "Speed popup list (comma-separated)",
  ClearButton			: "Clear",
  dontShowTimeouts		: "Ignore message about timeouts",
@@ -365,5 +365,7 @@
  showScrollTables		: "Show table contents while scrolling",
  idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable.",
  gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
- cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable."
+ cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable.",
+ retryOnErrorTitle		: "If rtorrent is not available try again after",
+ retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" }
  };
