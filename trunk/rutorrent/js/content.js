@@ -190,9 +190,12 @@ function makeContent()
 		'<div id="yesnoDlg-buttons" class="aright buttons-list"><input type="button" class="Button" value="'+theUILang.ok+'" id="yesnoOK">'+
 		'<input type="button" class="Button Cancel" value="'+theUILang.Cancel+'" id="yesnoCancel"></div>',
 		true);
-	languages = '';
+	var languages = '';
 	for (var i in AvailableLanguages)
 		languages+="<option value='"+i+"'>"+AvailableLanguages[i]+"</option>";
+	var retries = '';
+	for (var i in theUILang.retryOnErrorList)
+		retries+="<option value='"+i+"'>"+theUILang.retryOnErrorList[i]+"</option>";
 	theDialogManager.make("stg",theUILang.uTorrent_settings,
 		'<div id="stg_c" class="fxcaret">'+
 			"<div class=\"lm\">"+
@@ -252,6 +255,12 @@ function makeContent()
 					"</div>"+
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.no_delaying_draw\"/>"+
 						"<label for=\"webui.no_delaying_draw\" id=\"lbl_webui.no_delaying_draw\" >"+theUILang.showScrollTables+"</label>"+
+					"</div>"+
+					"<div class=\"op100l\">"+
+						"<label for=\"webui.retry_on_error\">"+theUILang.retryOnErrorTitle+":</label>&nbsp;"+
+						"<select id=\"webui.retry_on_error\">"+
+							retries+
+						"</select>"+
 					"</div>"+
 					"<div class=\"op100l\">"+
 						"<label for=\"webui.lang\">"+theUILang.mnu_lang+":</label>&nbsp;"+

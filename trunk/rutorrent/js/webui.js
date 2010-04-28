@@ -141,7 +141,8 @@ var theWebUI =
 		"webui.search":			-1,
 		"webui.speedlistdl":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
 		"webui.speedlistul":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
-		"webui.ignore_timeouts":	0
+		"webui.ignore_timeouts":	0,
+		"webui.retry_on_error":		120,
 	},
 	showFlags: 0,
 	total:
@@ -615,7 +616,8 @@ var theWebUI =
 							case "webui.update_interval":
 							{
 								theWebUI.settings["webui.update_interval"] = nv;
-								theWebUI.resetInterval();
+								if(theWebUI.systemInfo.rTorrent.started)
+									theWebUI.resetInterval();
 								break;
 							}
 						}
@@ -631,7 +633,7 @@ var theWebUI =
 		});
 		if(needResize)
 			this.resize();
-		if(req.length>0)
+		if((req.length>0) && theWebUI.systemInfo.rTorrent.started)
 	      		this.request("?action=setsettings" + req,null,true);
 		if(needSave)
 			this.save(reply);
@@ -1292,11 +1294,19 @@ var theWebUI =
 		this.timer.start();
 		if(qs != "list=1")
 			qs = "action=" + qs;
-		this.requestWithTimeout("?" + qs + "&getmsg=1", [this.addTorrents, this], function() 
-		{	 
-	   		theWebUI.timeout(); 
-			theWebUI.update();
-	   	});
+		this.requestWithTimeout("?" + qs + "&getmsg=1", [this.addTorrents, this], 
+			function() 
+			{	 
+	   			theWebUI.timeout(); 
+				theWebUI.setInterval();
+		   	},
+			function(status,text)
+			{	 
+				theWebUI.systemInfo.rTorrent.started = false;
+	   			theWebUI.error(status,text); 
+				if(theWebUI.settings["webui.retry_on_error"]!=0)
+					theWebUI.setInterval( iv(theWebUI.settings["webui.retry_on_error"])*1000 );
+		   	});
    	},
 
 	fillAdditionalTorrentsCols: function(hash,cols)
@@ -1310,6 +1320,7 @@ var theWebUI =
 
 	addTorrents: function(data) 
 	{
+		theWebUI.systemInfo.rTorrent.started = true;
    		var table = this.getTable("trt");
    		var tul = 0;
 		var tdl = 0;
@@ -2089,7 +2100,7 @@ var theWebUI =
 
 	update: function()
    	{
-   	        if(theWebUI.systemInfo.rTorrent.started)
+   	        if(theWebUI.systemInfo.rTorrent.started || !this.firstLoad)
 			theWebUI.getTorrents("list=1");
 		else
 			theWebUI.show();
@@ -2163,9 +2174,12 @@ var theWebUI =
 		this.updTimer = window.setTimeout(this.update, this.interval);
 	},
 
-	setInterval: function() 
+	setInterval: function( force ) 
 	{
 		this.timer.stop();
+		if(force)
+			this.interval = force;
+		else
 		if(this.interval ==- 1) 
 			this.interval = iv(this.settings["webui.update_interval"]) + this.timer.interval * 4;
 		else 
@@ -2181,12 +2195,12 @@ var theWebUI =
 
 	request: function(qs, onComplite, isASync) 
 	{
-		this.requestWithTimeout(qs, onComplite, this.timeout, isASync);
+		this.requestWithTimeout(qs, onComplite, this.timeout, this.error, isASync);
 	},
 
-	requestWithTimeout: function(qs, onComplite, onTimeout, isASync) 
+	requestWithTimeout: function(qs, onComplite, onTimeout, onError, isASync) 
 	{
-		new Ajax(this.url + qs, "GET", isASync, onComplite, onTimeout, this.error, this.settings["webui.reqtimeout"]);
+		Ajax(this.url + qs, "GET", isASync, onComplite, onTimeout, onError, this.settings["webui.reqtimeout"]);
    	},
 
    	show: function() 
