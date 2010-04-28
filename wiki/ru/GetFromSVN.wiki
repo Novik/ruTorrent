@@ -6,13 +6,13 @@
 
 == Получение текущей версии ==
 
-Для получения версии с SVN у Вас в системе должна стоять программа [http://subversion.tigris.org/ Subversion].
+Для получения версии с svn у Вас в системе должна стоять программа [http://subversion.tigris.org/ Subversion].
 Нужно выполнить следующие команды:
 {{{
 cd www-root
 svn co http://rutorrent.googlecode.com/svn/trunk/rutorrent
 }}}
-Под www-root здесь понимается корень Вашего веб-сервера, обычно это что-то вроде /var/www/htdocs.
+Под `www-root` здесь понимается корень Вашего веб-сервера, обычно это что-то вроде `/var/www/htdocs`.
 Производить сии операции лучше всего из под пользователя, под которым работает веб-сервер. Дабы потом не путаться в правах на файлы.
 
 == Обновление существующей версии ==
@@ -23,7 +23,7 @@ cd /var/www/rutorrent
 svn up
 }}}
 
-Если по каким-то причинам Вы хотите получить не последнюю версию, а промежуточную, то Вы должны добавить к команде флаг -r revision_number. Где revision_number - номер версии.
+Если по каким-то причинам Вы хотите получить не последнюю версию, а промежуточную, то Вы должны добавить к команде флаг `-r revision_number`. Где `revision_number` - номер версии.
 Например, для получения версии 870 Вы должны написать что-то вроде:
 {{{
 cd /var/www/rutorrent
@@ -38,7 +38,7 @@ cd www-root/rutorrent/plugins
 svn co http://rutorrent.googlecode.com/svn/trunk/plugins/plugin-name
 }}}
 
-Где plugin-name - имя плагина. Пример, для плагина rpc:
+Где `plugin-name` - имя плагина. Пример, для плагина [PluginRPC RPC]:
 {{{
 cd /var/www/rutorrent/plugins
 svn co http://rutorrent.googlecode.com/svn/trunk/plugins/rpc
