@@ -1,0 +1,6 @@
+----
+= Загрузка ruTorrent =
+----
+
+ * [http://code.google.com/p/rutorrent/downloads/list Архивом]
+ * [GetFromSVN из SVN]

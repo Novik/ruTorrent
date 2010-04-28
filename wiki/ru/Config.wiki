@@ -1,0 +1,238 @@
+----
+=Настройка=
+----
+
+<wiki:toc />
+
+== Введение ==
+
+Файлы конфигурации ruTorrent находятся в директории rutorrent/conf. Основных файлов три:
+
+  # config.php
+  # access.ini
+  # plugins.ini
+
+Плагины могут иметь собственные файлы конфигурации, как правило, это файл conf.php в директории плагина.
+
+=== config.php ===
+
+Выглядит примерно так:
+
+{{{
+
+<?php
+        // configuration parameters
+
+        // for snoopy client
+        @define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; pl; rv:1.9) Gecko/2008052906 Firefox/3.0', true);
+        @define('HTTP_TIME_OUT', 30, true);     // in seconds
+        @define('HTTP_USE_GZIP', true, true);
+
+        @define('RPC_TIME_OUT', 5, true);       // in seconds
+
+        @define('LOG_RPC_CALLS', false, true);
+        @define('LOG_RPC_FAULTS', true, true);
+
+        // for php
+        @define('PHP_USE_GZIP', false, true);
+        @define('PHP_GZIP_LEVEL', 2, true);
+
+        $do_diagnostic = true;
+        $log_file = '/tmp/errors.log';          // path to log file (comment or make empty to disable logging)
+        $saveUploadedTorrents = true;
+
+        $topDirectory = '/';                    // Upper available directory. Absolute path with trail slash.
+        $forbidUserSettings = false;
+
+        $scgi_port = 5000;
+        $scgi_host = "127.0.0.1";
+        $XMLRPCMountPoint = "/RPC2";
+
+        $pathToExternals = array(
+                "php"   => '',                  // Something like /usr/bin/php. If empty, will be founded in PATH.
+                "curl"  => '',                  // Something like /usr/bin/curl. If empty, will be founded in PATH.
+                "gzip"  => '',                  // Something like /usr/bin/gzip. If empty, will be founded in PATH.
+                "id"    => '',                  // Something like /usr/bin/id. If empty, will be founded in PATH.
+        );
+
+        // For web->rtorrent link through unix domain socket 
+        // (scgi_local in rtorrent conf file), change variables 
+        // above to something like this:
+        //
+        // $scgi_port = 0;
+        // $scgi_host = "unix:///tmp/rpc.socket";
+
+?>
+}}}
+
+==== Связь с rTorrent ====
+
+ * `$scgi_host = "127.0.0.1";`
+
+SCGI хост. Должен соответствовать настройке в файле конфигурации rTorrent. Как правило, всегда 127.0.0.1. 
+В случае использования unix domain socket должен содержать что-то типа `"unix:///tmp/rpc.socket"`. В теории возможно использование ruTorrent с rTorrent, находящимся на другом хосте, 
+но на практике я такую конфигурацию не советую - большинство плагинов работать не будут.
+
+ * `$scgi_port = 5000;`
+
+SCGI порт. Должен соответствовать настройке в файле конфигурации rTorrent. В случае использоваия для связи unix domain socket должен быть 0.
+
+ * `$XMLRPCMountPoint = "/RPC2";`
+
+Точка монтирования XMLRPC. *Внимание!* Не нужно удалять либо комментировать данную строку даже если в Вашей системе не используется прямой доступ к точке монтирования (т.е., например, стоит плагин [PluginRPC RPC]).
+
+==== Диагностика ====
+
+ * `$do_diagnostic = true;`
+
+Если данная переменная будет равна false, то при загрузке ruTorrent диагностика (проверка прав доступа и т.п.) производиться не будет. Что может обеспечить более быструю загрузку.
+
+ * `$log_file = '/tmp/errors.log';`
+
+Имя файла, в который будут записываться сообщения об ошибках.
+
+==== Прочее ====
+
+ * `$forbidUserSettings = false;`
+
+Если true, то независимо от наличия/отсутствия внешней авторизации будет использоваться монопольный (однопользовательский) режим работы ruTorrent. 
+
+ * `@define('PHP_USE_GZIP', false, true);`
+
+Данная константа определяет, будет ли отдаваемый контент фильтроваться через внешнюю программу сжатия (gzip). Если выставить ее в true (второй параметр), то все страницы, генерируемые php, размером более 2К будут сжиматься.
+Это
+ # Уменьшает трафик
+ # Увеличивает загрузку сервера
+ # Не имеет никакого смысла, если php уже использует какую-либо подсистему сжатия, например, если настройка zlib.output_compression выставлена в on.
+
+ * `@define('PHP_GZIP_LEVEL', 2, true);`
+
+Уровень сжатия для gzip. Если PHP_USE_GZIP выставлена в false, никакого смысла не несет.
+
+ * `$saveUploadedTorrents = true;`
+
+Если true, то все .torrent файлы, добавляемые пользователем через ruTorrent, будут сохраняться в директории share/torrents (или share/users/USERNAME/torrents для многопользовательской конфигурации). Если false, то все .torrent файлы будут удаляться с диска непосредственно после передачи их rTorrent.
+
+ * `$topDirectory = '/';`
+
+Директории выше данной не будут доступны пользователю ruTorrent. 
+
+ * Пути к внешним программам
+{{{
+$pathToExternals = array(
+ "php"  => '', 
+ "curl" => '',
+ "gzip" => '',
+ "id" => '', 
+}}}
+Элементы массива должны содержать полный путь к соответствующим программам. Если вместо пути указана пустая строка, то поиск внешней программы будет проводиться согласно переменной окружения PATH пользователей (веб-сервера или rtorrent, смотря кому в данный конкретный момент программа нужна).
+
+
+Порочие настройки в данном файле трогать категорически не рекомендуется.
+
+=== access.ini ===
+
+Файл предназначен для ограничения пользователя ruTorrent в правах. Представляет из себя обычный ini файл и выглядит так:
+
+{{{
+;; ruTorrent permissions.
+;; By default all flags is assumed as "yes".
+
+[settings]
+showDownloadsPage = yes
+showConnectionPage = yes
+showBittorentPage = yes
+showAdvancedPage = yes
+
+[tabs]
+showPluginsTab = yes
+
+[statusbar]
+canChangeULRate = yes
+canChangeDLRate = yes
+
+[dialogs]
+canChangeTorrentProperties = yes
+}}}
+
+ * showDownloadsPage - доступна ли пользователю вкладка "Закачки" в диалоге настроек rTorrent.
+ * showConnectionPage - доступна ли пользователю вкладка "Соединение" в диалоге настроек rTorrent.
+ * showBittorentPage - доступна ли пользователю вкладка "BitTorrent" в диалоге настроек rTorrent.
+ * showAdvancedPage - доступна ли пользователю вкладка "Дополнительно" в диалоге настроек rTorrent.
+ * showPluginsTab - доступна ли пользователю закладка "Плагины" на интерфейсе ruTorrent.
+ * canChangeULRate - может ли пользователь менять ограничение на скорость отдачи (контекстное меню статус-бара).
+ * canChangeDLRate - может ли пользователь менять ограничение на скорость закачки (контекстное меню статус-бара).
+ * canChangeTorrentProperties - может ли пользователь менять свойства конкретной закачки.
+
+=== plugins.ini ===
+
+Файл предназначен для управления плагинами ruTorrent. Представляет из себя обычный ini файл и выглядит так:
+
+{{{
+;; Plugin's permissions. 
+;; If flag not founded in plugin section, it finded in section "default".
+;; If not founded in this section - it assumed as "yes". 
+;;
+;; For setting individual plugin's permissions you must write something like that:
+;;
+;; [ratio]
+;; enabled = yes
+;; canChangeToolbar = yes
+;; canChangeMenu = yes
+;; canChangeOptions = no
+;; canChangeTabs = yes
+;; canChangeColumns = yes
+
+[default]
+enabled = yes
+canChangeToolbar = yes
+canChangeMenu = yes
+canChangeOptions = yes
+canChangeTabs = yes
+canChangeColumns = yes
+}}}
+
+Каждая секция в файле (за исключением секции default) соответствует конкретному плагину. Если секции с именем плагина нет, то информация будет браться из секции с именем default.
+
+ * enabled - будет ли плагин вообще использоваться.
+ * canChangeToolbar - может ли плагин менять содержимое главного тулбара.
+ * canChangeMenu - может ли плагин менять содержимое контекстного меню.
+ * canChangeOptions - может ли плагин менять содержимое диалога настройки.
+ * canChangeTabs - может ли плагин добавлять новые закладки на интерфейс.
+ * canChangeColumns - может ли плагин изменять структуру отображаемых таблиц (например, списка закачек).
+
+== Про аутентификацию ==
+
+Как ранее уже [Main#%D0%A7%D0%B5%D0%B3%D0%BE_%D0%BD%D0%B5_%D0%BC%D0%BE%D0%B6%D0%B5%D1%82 упоминалось] ruTorrent не имеет собственной системы аутентификации, защиту файлов следует оргаизовывать средствами веб-сервера.
+Защищать нужно собственно корневую директорию ruTorrent и, если Вы не используете плагины [PluginRPC RPC] или [PluginHTTPRPC HTTPRPC], точку монтирования XMLRPC (по умолчанию /RPC2).
+Аутентификация обоих частей должна иметь одинаковый realm, либо Вы можете поместить точку монтирования внутрь корневой директории ruTorrent и защищать только одну область. 
+При наличии аутентификации Вы можете настроить ruTorrent на работу с несколькими пользователями. *Замечание:* желательно (но, строго говоря, не обязательно), чтобы каждому пользователю 
+соответствовал свой экземпляр rTorrent. 
+
+== Многопользовательская и однопользовательская установка ==
+
+Если Вы не используете аутентификацию, либо явно отключили многопользовательский вариант в настроках, то
+
+ # Все файлы данных пользователя ruTorrent будут размещены в директории share/settings. Если одновременно запущено несколько копий ruTorrent это может привести к неприятностям, т.к. какие-либо механизмы блокировки файлов отсутствуют в принципе.
+ # Все настройки ruTorrent будут считываться из директории ruTorrent/conf. 
+
+Если директория ruTorrent защищена аутентификацией Вы автоматически имеете многопользовательский вариант установки. В этом случае 
+
+ # Все файлы данных конкретного пользователя будут автоматически размещены в директории share/users/USERNAME/settings, где USERNAME - логин, с которым пользователь авторизовался.
+ # Существует возможность настроить ruTorrent для каждого пользователя индивидуально. 
+
+Для этого следует скопировать требуемые файлы конфигурации ruTorrent в директорию conf/users/USERNAME (в отличие от случая с данными пользователя эту директорию нужно создать). 
+Например, если Вы имеете трех пользователей - tom, dick и harry, Вы должны сделать что-то вроде этого:
+{{{
+mkdir /var/www/rutorrent/conf/users/tom
+mkdir /var/www/rutorrent/conf/users/dick
+mkdir /var/www/rutorrent/conf/users/harry
+cp /var/www/rutorrent/conf/* /var/www/rutorrent/conf/users/tom/
+}}}
+После чего отредактировать соответствующим образом файлы config.php, access.ini и plugins.ini в директории пользователя.
+
+*Замечание 1:* Все три файла копировать вовсе не обязательно.
+
+*Замечание 2:* ruTorrent все равно будет загружать файл conf/config.php. А уже после него - файл конфигурации пользователя. Таким образом, файл конфигурации пользователя может содержать только отличия от основного файла. К access.ini и plugins.ini данное замечание не относится.
+
+Некоторые плагины имеют собственные файлы конфигурации, такие плагины тоже могут быть сконфигурированы индивидуально.
