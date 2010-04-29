@@ -3,7 +3,7 @@
 = Rutorrent Webui =
 ----
   * [Main О ruTorrent]
-  * [Downloading Загрузка]
+  * Загрузка
     * [GetFromSVN Загрузка с SVN]
     * [http://code.google.com/p/rutorrent/downloads/list Загрузка архива]
   * Установка и настройка
