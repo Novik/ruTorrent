@@ -5,7 +5,7 @@
   * [Main О ruTorrent]
   * [Downloading Загрузка]
     * [GetFromSVN Загрузка с SVN]
-    * [DownloadPage Загрузка архива]
+    * [http://code.google.com/p/rutorrent/downloads/list Загрузка архива]
   * Установка и настройка
     * [http://ru.wikibooks.org/wiki/RTorrent rTorrent]
     * [WebSERVER Веб-серверы]
