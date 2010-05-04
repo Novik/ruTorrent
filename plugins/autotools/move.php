@@ -70,6 +70,8 @@ if( $is_ok )
 	$req = new rXMLRPCRequest( new rXMLRPCCommand( "d.get_base_path", $hash ) );
 	if( $req->run() && !$req->fault )
 	{
+		if(!isset($theSettings))
+			$theSettings = rTorrentSettings::load();
 		$directory = $theSettings->directory;
 		$base_path = trim( $req->val[0] );
 		Debug( "get_directory    : ".$directory );

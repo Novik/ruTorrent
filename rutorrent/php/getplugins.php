@@ -166,13 +166,13 @@ if($handle = opendir('../plugins'))
 		if(!$theSettings->linkExist)
 		{
 			$jResult.="log(theUILang.badLinkTorTorrent);";
-			$jResult.="theWebUI.systemInfo.rTorrent = { started: false, version : '?', libVersion : '?' };\n";
+			$jResult.="theWebUI.systemInfo.rTorrent = { started: false, iVersion : 0, version : '?', libVersion : '?' };\n";
 		}
 		else
 		{
 		        if($theSettings->idNotFound)
 				$jResult.="log(theUILang.idNotFound);";
-			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' };\n";
+			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, iVersion : ".$theSettings->iVersion.", version : '".$theSettings->version."', libVersion : '".$theSettings->libVersion."' };\n";
 			if($theSettings->mostOfMethodsRenamed)
 				$jResult.="theWebUI.systemInfo.rTorrent.newMethodsSet = true;\n";
 	        	if($do_diagnostic)

@@ -1,5 +1,63 @@
 plugin.loadLang();
 
+if(plugin.enabled && plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVersion >= 0x805))
+{
+	plugin.config = theWebUI.config;
+	theWebUI.config = function(data)
+	{
+		plugin.config.call(this,data);
+		plugin.reqId = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"sch_ignore",function(hash,torrent,value)
+		{
+			torrent.sch_ignore = iv(value);
+		});
+	}
+
+	theWebUI.toggleSchIgnore = function()
+	{
+		var h = "";
+		var sr = theWebUI.getTable("trt").rowSel;
+		for(var k in sr) 
+			if(sr[k] == true)
+			{
+				var state = theWebUI.torrents[k].sch_ignore ? 0 : 1;
+				h += "&hash="+k+"&s="+state;
+			}
+		theWebUI.request("?action=schignore" + h + "&list=1");
+	}
+
+	plugin.createMenu = theWebUI.createMenu;
+	theWebUI.createMenu = function( e, id )
+	{
+		plugin.createMenu.call(this, e, id);
+		if(plugin.enabled)
+		{
+			var table = this.getTable("trt");
+			if(table.selCount == 1)
+			{
+				var hash = table.getFirstSelected();
+				if(this.torrents[hash].sch_ignore)
+					theContextMenu.add( [CMENU_SEL, theUILang.shcIgnore, theWebUI.toggleSchIgnore] );
+				else
+					theContextMenu.add( [theUILang.shcIgnore, theWebUI.toggleSchIgnore] );
+			}
+			else
+				theContextMenu.add( [theUILang.shcIgnore, theWebUI.toggleSchIgnore] );
+		}
+	}
+
+	rTorrentStub.prototype.schignore = function()
+	{
+		for(var i=0; i<this.hashes.length; i++)
+		{
+			var cmd = new rXMLRPCCommand( "d.set_custom" );
+			cmd.addParameter("string",this.hashes[i]);
+			cmd.addParameter("string","sch_ignore");
+			cmd.addParameter("string",this.ss[i]);
+			this.commands.push( cmd );
+		}
+	}
+}
+
 if(plugin.enabled && plugin.canChangeOptions())
 {
 	plugin.loadMainCSS();
@@ -224,4 +282,6 @@ plugin.onLangLoaded = function()
 plugin.onRemove = function() 
 {
 	plugin.removePageFromOptions("st_scheduler");
+	if($type(plugin.reqId))
+		theRequestManager.removeRequest( "trt", plugin.reqId );
 }

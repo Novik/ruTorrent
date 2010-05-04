@@ -100,19 +100,29 @@ class rScheduler
 	}
 	static public function getActiveTorrents()
 	{
-		$req = new rXMLRPCRequest(  
-			new rXMLRPCCommand("d.multicall", array("started",getCmd("d.get_hash="), getCmd("d.get_connection_current=") )) );		
+		$delta = 2;
+		$cmd = new rXMLRPCCommand("d.multicall", array("started",getCmd("d.get_hash="),getCmd("d.get_connection_current=") ));
+		$theSettings = rTorrentSettings::load();
+		if($theSettings->iVersion>=0x805)
+		{
+			$cmd->addParameter( getCmd("d.get_custom=")."sch_ignore" );
+			$delta = 3;
+		}
+		$req = new rXMLRPCRequest(  $cmd );
 		$seeds = array();
 		$leeches = array();
 		if($req->run() && !$req->fault)
 		{
-			for($i=0; $i<count($req->val); $i+=2)
+			for($i=0; $i<count($req->val); $i+=$delta)
 			{
 				$hash = $req->val[$i];
-				if($req->val[$i+1]=='leech')
-					$leeches[$hash] = true;
-				else
-					$seeds[$hash] = true;
+				if( ($delta==2) || empty($req->val[$i+2]) )
+				{
+					if($req->val[$i+1]=='leech')
+						$leeches[$hash] = true;
+					else
+						$seeds[$hash] = true;
+				}
 			}
 		}
 		return( array("seeds"=>$seeds,"leeches"=>$leeches) );

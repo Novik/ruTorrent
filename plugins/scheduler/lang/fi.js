@@ -21,4 +21,6 @@
  theUILang.schedPHPNotFound		= "Scheduler plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
  theUILang.schedUpdaterNotAvailable	= "Scheduler plugin: rTorrent's user can't access file plugins/scheduler/update.php for read. Plugin will not work.";
 
+ theUILang.shcIgnore			= "Ignore scheduler";
+
 thePlugins.get("scheduler").langLoaded();

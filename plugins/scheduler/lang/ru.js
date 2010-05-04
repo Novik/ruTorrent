@@ -22,4 +22,6 @@
  theUILang.schedPHPNotFound	= "Плагин scheduler: пользователю rTorrent не доступен интерпретатор php. Плагин не будет работать.";
  theUILang.schedUpdaterNotAvailable= "Плагин scheduler: rTorrent должен иметь доступ на чтение к файлу plugins/scheduler/update.php. Плагин не будет работать.";
 
+ theUILang.shcIgnore			= "Игнорировать планировщик";
+
 thePlugins.get("scheduler").langLoaded();
