@@ -19,7 +19,7 @@ if(plugin.enabled && plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVe
 		for(var k in sr) 
 			if(sr[k] == true)
 			{
-				var state = theWebUI.torrents[k].sch_ignore ? 0 : 1;
+				var state = theWebUI.torrents[k].sch_ignore ? '' : 1;
 				h += "&hash="+k+"&s="+state;
 			}
 		theWebUI.request("?action=schignore" + h + "&list=1");
@@ -49,7 +49,24 @@ if(plugin.enabled && plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVe
 	{
 		for(var i=0; i<this.hashes.length; i++)
 		{
-			var cmd = new rXMLRPCCommand( "d.set_custom" );
+			var needRestart = (theWebUI.torrents[this.hashes[i]].status==theUILang.Seeding) || (theWebUI.torrents[this.hashes[i]].status==theUILang.Downloading);
+			if(needRestart)
+			{
+				var cmd = new rXMLRPCCommand('d.stop');
+				cmd.addParameter("string",this.hashes[i]);
+				this.commands.push( cmd );
+			}
+			cmd = new rXMLRPCCommand('d.set_throttle_name');
+			cmd.addParameter("string",this.hashes[i]);
+			cmd.addParameter("string",this.ss[i]=='' ? "" : "NULL");
+			this.commands.push( cmd );
+			if(needRestart)
+			{
+				cmd = new rXMLRPCCommand('d.start');
+				cmd.addParameter("string",this.hashes[i]);
+				this.commands.push( cmd );
+			}
+			cmd = new rXMLRPCCommand( "d.set_custom" );
 			cmd.addParameter("string",this.hashes[i]);
 			cmd.addParameter("string","sch_ignore");
 			cmd.addParameter("string",this.ss[i]);
