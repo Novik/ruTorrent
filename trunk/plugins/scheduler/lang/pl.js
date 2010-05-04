@@ -22,4 +22,6 @@
  theUILang.schedPHPNotFound		= "Wtyczka Harmonogram: użytkownik, który uruchomił rTorrent nie ma dostępu do interpretera PHP. Wtyczka nie będzie działać.";
  theUILang.schedUpdaterNotAvailable	= "Wtyczka Harmonogram: użytkownik, który uruchomił rTorrent nie prawa odczytu pliku plugins/Harmonogram/update.php . Wtyczka nie będzie działać.";
 
+ theUILang.shcIgnore			= "Ignore scheduler";
+
 thePlugins.get("scheduler").langLoaded();

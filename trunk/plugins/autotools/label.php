@@ -67,6 +67,8 @@ if( $is_ok )
 	if( $req->run() && !$req->fault )
 	{
 		$is_multy_file = ( $req->val[2] != 0 );
+		if(!isset($theSettings))
+			$theSettings = rTorrentSettings::load();
 		$default_dir = $theSettings->directory;
 		$torrent_dir = trim( $req->val[0] );
 		$custom3     = trim( $req->val[1] );
