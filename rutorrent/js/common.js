@@ -968,15 +968,14 @@ var theBTClientVersion =
 	},
 	azLikeClients2x2:
 	{
-	        "AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent",
-        	"LP" : "Lphant"
+	        "AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent"
 	},
 	azLikeClientsSpec:
 	{
 		'UM' : "uTorrent for Mac", 'UT' : "uTorrent", 'TR' : "Transmission",
 		'AZ' : "Azureus", 'KT' : "KTorrent", "BF" : "BitFlu",
 	        'LW' : "LimeWire", "BB" : "BitBuddy", "BR" : "BitRocket",
-		"CT" : "CTorrent", 'XX' : "Xtorrent"
+		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant"
 	},
 	shLikeClients:
 	{
@@ -1016,6 +1015,7 @@ var theBTClientVersion =
 			{
 			        switch(sign)
 			        {
+					case 'BF':
 					case 'LW':
 						ret = cli;
 						break;
@@ -1027,10 +1027,45 @@ var theBTClientVersion =
 						if(str.substr(3,2)=='00')
 						{
 							if(str.charAt(5)=='0')
-							ret = cli+" 0."+str.charAt(6);
+								ret = cli+" 0."+str.charAt(6);
+							else
+								ret = cli+" 0."+parseInt(str.substr(5,2),10);
 						}
 						else
-							ret = cli+" 0."+parseInt(str.substr(5,2),10);
+						{
+							var type = str.substr(6,1);
+							ret = cli+" "+parseInt(str.substr(3,1),10)+"."+parseInt(str.substr(4,2),10)+(((type=='Z') || (type=='X')) ? '+' : '');
+						}
+						break;
+					case 'KT':
+						var ch = str.charAt(5);
+               			                if( ch == 'D' )
+							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" Dev "+shChar(str.charAt(6));
+				        	else
+					        if( ch == 'R' )
+						        ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" RC "+shChar(str.charAt(6));
+						else
+						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5));
+						break;
+					case 'AZ':
+						if(str.charAt(3) > '3' || ( str.charAt(3) == '3' && str.charAt(4) >= '1' ))
+							cli = "Vuze";
+						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5))+"."+shChar(str.charAt(6));
+						break;
+					case 'BB':
+						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+str.charAt(5)+str.charAt(6);
+						break;
+					case 'BR':
+						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+" ("+str.charAt(5)+str.charAt(6)+")";
+						break;
+					case 'CT':
+						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+parseInt(str.substr(5,2),10);
+						break;
+					case 'XX':
+						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" ("+parseInt(str.substr(5,2),10)+")";
+						break;
+					case 'LP':
+                                                ret = cli+" "+parseInt(str.substr(3,1),10)+"."+parseInt(str.substr(5,2),10);
 						break;
 					default:
 						var ch = str.charAt(6);
@@ -1055,43 +1090,6 @@ var theBTClientVersion =
 						cli = this.azLikeClients2x2[sign];
 						if(cli)
 							ret = cli+" "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
-					}
-				}
-				if(!ret)
-  		                {	
-					switch(sign)
-					{
-						case 'KT':
-							var ch = str.charAt(5);
-                			                if( ch == 'D' )
-								ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" Dev "+shChar(str.charAt(6));
-					        	else
-						        if( ch == 'R' )
-							        ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" RC "+shChar(str.charAt(6));
-							else
-							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5));
-							break;
-						case 'AZ':
-							if(str.charAt(3) > '3' || ( str.charAt(3) == '3' && str.charAt(4) >= '1' ))
-								cli = "Vuze";
-							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5))+"."+shChar(str.charAt(6));
-							break;
-	        	                      	case 'BF':
-	                	              	case 'LW':
-							ret = cli;
-							break;
-						case 'BB':
-							ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+str.charAt(5)+str.charAt(6);
-							break;
-						case 'BR':
-							ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+" ("+str.charAt(5)+str.charAt(6)+")";
-							break;
-						case 'CT':
-							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+parseInt(str.substr(5,2),10);
-							break;
-						case 'XX':
-							ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" ("+parseInt(str.substr(5,2),10)+")";
-							break;
 					}
 				}
 			}
