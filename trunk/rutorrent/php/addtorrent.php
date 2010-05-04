@@ -31,6 +31,7 @@ else
 				!isset($_REQUEST['torrents_start_stopped']),
 				!isset($_REQUEST['not_add_path']),
 				$dir_edit,$label);
+			header("HTTP/1.0 302 Moved Temporarily");
 			header("Location: ".$_SERVER['PHP_SELF'].'?result='.intval($success));
 			exit();
 		}
@@ -81,6 +82,6 @@ if($success)
                 $success = false;
 	}
 }
+header("HTTP/1.0 302 Moved Temporarily");
 header("Location: ".$_SERVER['PHP_SELF'].'?result='.intval($success));
-
 ?>

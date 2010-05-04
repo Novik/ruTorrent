@@ -66,7 +66,7 @@ function makeContent()
 		}
 	});
 
-	$(document.body).append($("<iframe>").css({visibility: "hidden"}).attr( { name: "uploadfrm", id: "uploadfrm" } ).width(0).height(0).load(function()
+	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).load(function()
 	{
 		$("#torrent_file").val("");
 		$("#add_button").attr("disabled",false);
@@ -74,7 +74,7 @@ function makeContent()
 		if(d.location.href != "about:blank")
 			try { eval(d.body.innerHTML); } catch(e) {}
 	}));
-	$(document.body).append($("<iframe>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl", id: "uploadfrmurl" } ).width(0).height(0).load(function()
+	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).load(function()
 	{
 		$("#url").val("");
 		var d = (this.contentDocument || this.contentWindow.document);
