@@ -9,5 +9,6 @@ if(isset($_REQUEST['hash']))
 	if($torrent)
 		$torrent->send();
 }
+header("HTTP/1.0 302 Moved Temporarily");
 header("Location: ".$_SERVER['PHP_SELF'].'?result=0');
 ?>

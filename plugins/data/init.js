@@ -73,7 +73,7 @@ plugin.onLangLoaded = function()
 {
 	if(this.enabled)
 	{
-		$(document.body).append($("<iframe>").css({visibility: "hidden"}).attr( { name: "datafrm", id: "datafrm" } ).width(0).height(0).load(function()
+		$(document.body).append($("<iframe name='datafrm'/>").css({visibility: "hidden"}).attr( { name: "datafrm", id: "datafrm" } ).width(0).height(0).load(function()
 		{
 		        $("#datahash").val('');
 		        $("#datano").val('');
