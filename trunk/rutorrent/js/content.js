@@ -99,6 +99,10 @@ function makeContent()
 				'<label>&nbsp;</label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button" disabled="true"/>'+
 			'</form>'+
 		'</div>');
+	theDialogManager.setHandler('tadd','beforeShow',function()
+	{
+		$("#add_button").attr("disabled",false);
+	});
 	var input = $$('url');
 	input.onupdate = input.onkeyup = function() { $('#add_url').attr('disabled',$.trim(input.value)==''); };
 	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
