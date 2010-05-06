@@ -25,7 +25,7 @@ plugin.init = function()
 		var AjaxReq = jQuery.ajax(
 		{
 			type: "GET",
-			timeout: 3000,
+			timeout: theWebUI.settings["webui.reqtimeout"],
 		        async : true,
 		        cache: false,
 			url : "plugins/diskspace/action.php",
