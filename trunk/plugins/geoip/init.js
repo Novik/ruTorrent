@@ -104,7 +104,7 @@ if(plugin.enabled)
 					type: "POST",
 					contentType: "application/x-www-form-urlencoded",
 					processData: false,
-					timeout: 5000,
+					timeout: theWebUI.settings["webui.reqtimeout"],
 				        async : false,
 					url : "plugins/geoip/lookup.php",
 					data : "dummy=1"+content,
