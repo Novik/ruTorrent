@@ -1,7 +1,11 @@
-#summary Описание плагина DarkPal
+----
+= Плагин darkpal =
+----
 
-== Введение ==
+== Описание ==
 
 Темная палитра для ruTorrent. Выглядит так:
 
-[http://rutorrent.googlecode.com/svn/wiki/ru/images/darkpal_big.jpg http://rutorrent.googlecode.com/svn/wiki/ru/images/darkpal_small.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/images/PluginDarkpal/darkpal2.png http://rutorrent.googlecode.com/svn/wiki/images/PluginDarkpal/darkpal2shrink.png]
+
+Отдельное спасибо г-ну [http://forum.utorrent.com/profile.php?id=37418 Bumpy] за разрешение использовать созданную им графику.
