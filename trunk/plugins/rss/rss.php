@@ -9,9 +9,9 @@ class rRSS
 {
 	public $items = array();
 	public $channel = array();
-	public $url;
-	public $srcURL;
-	public $hash;
+	public $url = null;
+	public $srcURL = null;
+	public $hash = null;
 	public $cookies = array();
 	public $lastModified = null;
 	public $etag = null;
@@ -617,12 +617,13 @@ class rRSSMetaList
 	}
 	public function add( $rss, $label, $auto, $enabled )
 	{
-		$this->lst[$rss->hash] = array( 'label'=>$label, 'auto'=>$auto, 'enabled'=>$enabled );
+		$this->lst[$rss->hash] = array( 'label'=>$label, 'auto'=>$auto, 'enabled'=>$enabled, 'url'=>$rss->srcURL );
 	}
 	public function change( $rss, $label, $auto )
 	{
 		$this->lst[$rss->hash]['label'] = $label;
 		$this->lst[$rss->hash]['auto'] = $auto;
+		$this->lst[$rss->hash]['url'] = $rss->srcURL;
 	}
 	public function toggleStatus( $hash )
 	{
@@ -849,17 +850,32 @@ class rRSSManager
 	}
 	public function get()
 	{
+		$corrected = false;
 		$ret = $this->rssList->formatErrors().", list: [";
 		foreach($this->rssList->lst as $hash=>$info)
 		{
-			$rss = new rRSS();
+			$rss = new rRSS(array_key_exists('url',$info) ? $info['url'] : null);
 			$rss->hash = $hash;
-			if($this->cache->get($rss))
+			if(!$this->cache->get($rss) && !empty($rss->srcURL) && $rss->fetch())
+				$this->cache->set($rss);
+			if(!empty($rss->srcURL))
 			{
 				$ret.=$rss->getContents($info['label'],$info['auto'],$info['enabled'],$this->history);
 				$ret.=",";
+				if(!array_key_exists('url',$info))
+				{
+					$this->rssList->lst[$hash]['url'] = $rss->srcURL;
+					$corrected = true;
+				}
+			}
+			else
+			{
+				$corrected = true;
+				$this->remove($hash,false);
 			}
 		}
+		if($corrected)
+			$this->cache->set($this->rssList);
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);

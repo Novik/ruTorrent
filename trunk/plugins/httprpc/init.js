@@ -338,7 +338,7 @@ rTorrentStub.prototype.getsettingsResponse = function(values)
 					v = iv(v)/1048576;
 					break;
 			}
-			ret[theRequestManager.stg.commands[cmd]] = values[cmd+1];
+			ret[theRequestManager.stg.commands[cmd]] = v;
 		}
 		$.each( theRequestManager.stg.handlers, function(i,handler)
 		{
