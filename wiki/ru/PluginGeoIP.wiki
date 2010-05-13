@@ -13,7 +13,7 @@
 
 Выглядит это примерно так:
 
-[http://rutorrent.googlecode.com/svn/wiki/images/PluginGeoIP/geoip.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginGeoIP/geoip.jpg]
 
 Замечу, что данный плагин может существенно замедлить обновление списка показываемых пиров. Для роутеров и прочих embedded систем применение плагина не рекомендую.
 
