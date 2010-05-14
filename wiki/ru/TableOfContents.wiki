@@ -1,6 +1,6 @@
 #labels Featured
 ----
-= Rutorrent Webui =
+= ruTorrent WebUI =
 ----
   * [Main О ruTorrent]
   * Загрузка
