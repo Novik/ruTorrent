@@ -121,4 +121,4 @@ http://img29.imageshack.us/img29/2991/cherokeescgi3.png
 
 ===Nginx===
 
-Мне неизвестны нормально работающие реализации модуля mod_scgi для nginx. Используйте плагин [PluginRPC RPC] или плагин [PluginHTTPRPC HTTPRPC].
+Мне неизвестны нормально работающие реализации модуля `mod_scgi` для [http://nginx.net nginx]. Используйте плагин [PluginRPC RPC] или плагин [PluginHTTPRPC HTTPRPC].

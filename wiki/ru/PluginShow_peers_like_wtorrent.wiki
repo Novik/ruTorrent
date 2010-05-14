@@ -4,7 +4,7 @@
 
 == Описание ==
 
-Плагин меняет формат выдачи столбцов "Сиды" и "Пиры" для списка закачек. По умолчанию в эти столбцы показываются как
+Плагин меняет формат выдачи столбцов "Сиды" и "Пиры" для списка закачек. По умолчанию эти столбцы показываются как
 {{{
 get_peers_complete (get_peers_not_connected+get_peers_connected)
 get_peers_accounted (get_peers_not_connected+get_peers_connected)

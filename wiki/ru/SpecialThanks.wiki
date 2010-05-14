@@ -11,7 +11,7 @@
  * [Plugin_getdir _getdir]
  * [PluginAutotools AutoTools]
  * [PluginDataDir datadir]
- * [PluginErasedata EraseData]
+ * [PluginErasedata Erasedata]
 
 == Zoltan Csala ==
 

@@ -4,6 +4,6 @@
 
 <wiki:TOC />
 
-== Описание ==
+== Введение ==
 
 *Under construction*
