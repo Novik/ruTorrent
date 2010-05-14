@@ -12,25 +12,25 @@
 
 Вы можете распаковать данные завешенной закачки выбрав соответсвующий пункт из ее контекстного меню, так:
 
-[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip01.png]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginUnpack/snip01.jpg]
 
 Либо проделать ту же операцию на закладке "Файлы", так:
 
-[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip02.png]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginUnpack/snip02.jpg]
 
 После чего Вам будет показан диалог выбора директории, куда будет производиться распаковка.
 
-[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip03.png]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginUnpack/snip03.jpg]
 
-В случае, если Вы оставите поле ввода имени директории пустым, распаковка будет производиться непосредственно в диреторию данной заккачки.
+В случае, если Вы оставите поле ввода имени директории пустым, распаковка будет производиться непосредственно в директорию данной закачки.
 
-[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/snip04.png]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginUnpack/snip04.jpg]
 
 == Автоматическое разархивирование ==
 
 В соответствующем разделе диалога настроек ([http://rutorrent.googlecode.com/svn/wiki/images/icon06settings.png]) Вы можете увидеть следующее:
 
-[http://rutorrent.googlecode.com/svn/wiki/images/PluginUnpack/auto01.png]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginUnpack/auto01.jpg]
 
-Включите галку "Разрешить автораспаковкуЭ и заполните необходимые поля.
+Включите галку "Разрешить автораспаковку" и заполните необходимые поля.
 После чего любой скачанный торрент будет автоматически разархивирован сразу после завершения согласно указанным настройкам.
