@@ -1,78 +1,10 @@
-#summary Your own plug-in creation
+----
+=Your own plug-in creation=
+----
 
-== Theory ==
+<wiki:TOC />
 
-RuTorrent plug-ins are located in the 'plugins' folder. All of the files for each plug-in must be placed in a separate folder with a unique name. One of files named init.js or init.php or both of them must be present in the plug-in folder. The file init.php is simply run when ruTorrent is loaded. Usually is contains an initialization which requires rTorrent state check at the moment - e.g. it can check the rTorrent version, give directions to the scheduler, partially form an embedded javascript. The content of the file init.js will be fully embedded into the ruTorrent code at the moment of it's load. It is, therefore, a good place for replacing or adding a logic into the ruTorrent script.
+== Description ==
 
-The plug-in load sequence can be controlled. Each plug-in has a number which signifies its position in the load queue. This number ought to be placed in the plug-in file 'runlevel.info'. If the file does not exist then the number of position is assumed to be 10. Plug-ins with lower numbers are loaded earlier while those with greater numbers are loaded later.
+*Under construction*
 
-== Practice ==
-
-==== Change Speed diagram colors ====
-
-The colors of the lines on the Speed diagram are defined by the 'down.color' and the 'up.color' variables of the rSpeedGraph object instance. The simplest way to define your own colors is to modify values of these variables in the source file - 'graph.js'. In this case, however, such modifications would need to be performed every time that you install a new version or an update of ruTorrent. Let us, therefore, create our own plug-in which will perform necessary corrections. There are a number of ways in which this idea can be realised. One method would be to replace the entire rSpeedGraph constructor with a new one. But in this case the constructor will not be altered in future versions and so this method is not good. A better method is to work with the instance of the rSpeedGraph object directly. It is made within the method utWebUI.init in the file 'script.js':
-{{{
-this.speedGraph = new rSpeedGraph();
-}}} 
-It would seem we can replace utWebUI.init, call "native" init and then make necessary modifications. But this will not work because at the moment of script inclusion this method has already finished. Therefore, let's do a similar operation on the method utWebUI.initDone, which is called at the end of ruTorrent initialization and after the code of plug-in's script is included. The plug-in will be represented as just one file 'init.js'. Create a folder with a name e.g. 'speedcolor' in the folder 'plugins'. The contents of the file init.js with comments are shown below.
-{{{
-// remember a previous handler
-utWebUI.changeSpeedColorsInitDone = utWebUI.initDone;
-
-// set up our own
-utWebUI.initDone = function() 
-{
-	// call a native handler
-	this.changeSpeedColorsInitDone();
-	// modify colors
-	this.speedGraph.down.color = "#FF0000";
-	this.speedGraph.up.color = "#00FF00";
-}
-}}}
-Restart ruTorrent and here is the result:
-
-[http://rutorrent.googlecode.com/svn/wiki/images/speedcolor.jpg]
-
-==== Change colors of markers in the plug-in [PluginScheduler scheduler] ====
-
-This task is a bit more difficult than the previous one. Firstly, there may be no object to replace if the plug-in [PluginScheduler scheduler] is simply not installed. And this need to be checked. Secondly, the colors of markers are defined not by variables, but in the plug-in's CSS-file. More specifically - via background property of selectors .sch_fast, .sch_res1, .sch_res2, .sch_res3, .sch_stop and .sch_seed. This CSS is loaded automatically and until it is finished nothing can be done.
-In order to check the first condition we have to ensure that the new plug-in will start after the plug-in [PluginScheduler Scheduler]. Otherwise there will be nothing to check. To do this, the file named 'runlevel.info' containing a number greater than 10 should exists in the new plug-in folder. For the remaining operations just one file 'init.js' will be enough.
-{{{
-utWebUI.waitForSchedulerCSSLoaded = function()
-{
-	var rule = getCSSRule(".sch_fast");
-	if(rule)
-	{
-		// css loaded, change colors
-		rule.style.background = "#FF0000";
-		rule = getCSSRule(".sch_res1");
-		if(rule)
-			rule.style.background = "#00FF00";
-		rule = getCSSRule(".sch_res2");
-		if(rule)
-			rule.style.background = "#0000FF";
-		rule = getCSSRule(".sch_res3");
-		if(rule)
-			rule.style.background = "#770000";
-		rule = getCSSRule(".sch_stop");
-		if(rule)
-			rule.style.background = "#007700";
-		rule = getCSSRule(".sch_seed");
-		if(rule)
-			rule.style.background = "#000077";
-        }
-	else
-	{
-		// css not loaded yet, wait
-		setTimeout('utWebUI.waitForSchedulerCSSLoaded()',1000);
-        }
-}
-
-// check if the plug-in scheduler installed.
-// if YES - wait it's CSS loaded
-if(typeof utWebUI.schedulerCreate != "undefined")
-	utWebUI.waitForSchedulerCSSLoaded();	
-}}}
-Restart ruTorrent and here it is:
-
-[http://rutorrent.googlecode.com/svn/wiki/images/schedcolor.jpg]
