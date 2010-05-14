@@ -181,7 +181,7 @@
  Checking			: "Checking",
  Error				: "Error",
  Queued				: "Queued",
- Finished			: "Finished",
+ Finished			: "Completed",
  Stopped			: "Stopped",
  Request_timed_out	: "The request to rTorrent has timed out.",
  
