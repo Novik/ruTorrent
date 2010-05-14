@@ -1,4 +1,8 @@
-#summary Описание плагина Show_peers_like_wtorrent.
+----
+= Плагин show_peers_like_wtorrent =
+----
+
+<wiki:toc />
 
 == Введение ==
 
