@@ -21,6 +21,7 @@ rLoadGraph.prototype.draw = function( percent )
 	{
 		if(self.owner.height() && self.owner.width())
 		{
+			clearCanvas( self.owner.get(0) );
 			self.owner.empty();
 
 			$.plot(self.owner, [ self.load.data ],
