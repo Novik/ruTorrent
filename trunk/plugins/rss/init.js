@@ -183,7 +183,7 @@ theWebUI.doRSSDelete = function()
 
 theWebUI.RSSDelete = function()
 {
-	if(theWebUI.bConfDel)
+	if(theWebUI.settings["webui.confirm_when_deleting"])
 		askYesNo( theUILang.rssMenuDelete, theUILang.rssDeletePrompt, "theWebUI.doRSSDelete()" );
 	else
 		theWebUI.doRSSDelete();
