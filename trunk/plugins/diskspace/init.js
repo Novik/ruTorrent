@@ -14,12 +14,10 @@ plugin.init = function()
 {
 	this.prgStartColor = new RGBackground("#99D699");
 	this.prgEndColor = new RGBackground("#E69999");
-	var row = $("#firstStatusRow").get(0);
-	var td = row.insertCell(0);
-	$(td).attr("id","meter-disk-td").append(
-		$("<div>").attr("id","meter-disk-holder").
-			append( $("<span></span>").attr("id","meter-disk-text").css({overflow: "visible"}) ).
-			append( $("<div>").attr("id","meter-disk-value").css({ visibility: "hidden", float: "left" }).width(0).html("&nbsp;") ) );
+	plugin.addPaneToStatusbar( "meter-disk-td", $("<div>").attr("id","meter-disk-holder").
+		append( $("<span></span>").attr("id","meter-disk-text").css({overflow: "visible"}) ).
+		append( $("<div>").attr("id","meter-disk-value").css({ visibility: "hidden", float: "left" }).width(0).html("&nbsp;") ).get(0) );
+
 	plugin.check = function()
 	{
 		var AjaxReq = jQuery.ajax(
@@ -44,7 +42,7 @@ plugin.init = function()
 
 plugin.onRemove = function()
 {
-	$("#meter-disk-td").remove();
+	plugin.removePaneFromStatusbar("meter-disk-td");
 	theRequestManager.removeRequest( "ttl", plugin.reqId );
 }
 

@@ -85,6 +85,7 @@ function getPluginInfo( $name, $permissions )
 				"canChangeOptions"	=> 0x0004,
 				"canChangeTabs"		=> 0x0008,
 				"canChangeColumns"	=> 0x0010,
+				"canChangeStatusBar"	=> 0x0020,
 				);
 			foreach($flags as $flagName=>$flagVal)
 				if(!getFlag($permissions,$name,$flagName))
