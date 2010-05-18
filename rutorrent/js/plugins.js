@@ -40,7 +40,8 @@ var thePlugins =
 		cantChangeMenu:		0x0002,
 		cantChangeOptions:	0x0004,
 		cantChangeTabs:		0x0008,
-		cantChangeColumns:	0x0010
+		cantChangeColumns:	0x0010,
+		cantChangeStatusBar:	0x0020
 	},
 
 	register: function(plg)
@@ -181,6 +182,11 @@ rPlugin.prototype.canChangeColumns = function()
 	return(!(this.restictions & thePlugins.restictions.cantChangeColumns));
 }
 
+rPlugin.prototype.canChangeStatusBar = function()
+{
+	return(!(this.restictions & thePlugins.restictions.cantChangeStatusBar));
+}
+
 rPlugin.prototype.attachPageToOptions = function(dlg,name)
 {
         if(this.canChangeOptions())
@@ -298,4 +304,21 @@ rPlugin.prototype.addSeparatorToToolbar = function(idBefore)
 rPlugin.prototype.removeSeparatorFromToolbar = function(idBefore)
 {
 	$("#mnu_"+idBefore).prev().remove();
+}
+
+rPlugin.prototype.addPaneToStatusbar = function(id,div,no)
+{
+        if(this.canChangeStatusBar())
+        {
+		var row = $("#firstStatusRow").get(0);
+		var td = row.insertCell(iv(no));
+		$(td).attr("id",id).append( $(div) );
+	}
+	return(this);
+}
+
+rPlugin.prototype.removePaneFromStatusbar = function(id)
+{
+	$("#"+id).remove();
+	return(this);
 }

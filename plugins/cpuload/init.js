@@ -84,10 +84,7 @@ plugin.init = function()
 {
 	this.prgStartColor = new RGBackground("#99D699");
 	this.prgEndColor = new RGBackground("#E69999");
-	var row = $("#firstStatusRow").get(0);
-	var td = row.insertCell(0);
-	$(td).attr("id","meter-cpu-td").append(
-		$("<div>").attr("id","meter-cpu-holder") );
+	this.addPaneToStatusbar("meter-cpu-td",$("<div>").attr("id","meter-cpu-holder").get(0));
 	plugin.graph = new rLoadGraph();
 	plugin.graph.create( $("#meter-cpu-holder") );
 	plugin.check = function()
@@ -114,7 +111,7 @@ plugin.init = function()
 
 plugin.onRemove = function()
 {
-	$("#meter-cpu-td").remove();
+	plugin.removePaneFromStatusbar("meter-cpu-td");
 	theRequestManager.removeRequest( "ttl", plugin.reqId );
 }
 
