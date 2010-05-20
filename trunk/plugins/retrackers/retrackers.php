@@ -6,6 +6,7 @@ class rRetrackers
 	public $hash = "retrackers.dat";
 	public $list = array();
 	public $dontAddPrivate = 1;
+	public $addToBegin = 0;
 
 	static public function load()
 	{
@@ -35,6 +36,9 @@ class rRetrackers
 				if($parts[0]=="dont_private")
 					$this->dontAddPrivate = $parts[1];
 				else
+				if($parts[0]=="add_begin")
+					$this->addToBegin = $parts[1];
+				else
 				if($parts[0]=="tracker")
 				{
 					$value = trim(rawurldecode($parts[1]));
@@ -57,7 +61,7 @@ class rRetrackers
 	}
 	public function get()
 	{
-		$ret = "theWebUI.retrackers = { dontAddPrivate: ".$this->dontAddPrivate.", trackers: [";
+		$ret = "theWebUI.retrackers = { dontAddPrivate: ".$this->dontAddPrivate.", addToBegin: ".$this->addToBegin.", trackers: [";
 		for($i=0; $i<count($this->list); $i++)
 		{
   	                $grp = array_map(  'quoteAndDeslashEachItem',  $this->list[$i]);

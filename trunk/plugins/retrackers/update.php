@@ -58,7 +58,8 @@ if(count($argv)>1)
 					if(!$lst)
 					{
 						if($torrent->announce())
-							$torrent->announce_list(array_merge(array(array($torrent->announce())),$trks->list));
+							$torrent->announce_list($trks->addToBegin ? array_merge($trks->list, array(array($torrent->announce()))) : 
+								array_merge(array(array($torrent->announce())),$trks->list));
 						else
 						{
 							$torrent->announce($trks->list[0][0]);
@@ -72,7 +73,7 @@ if(count($argv)>1)
 							foreach( $group as $tracker )
 								$addition = clearTracker($addition,$tracker);
 						if(count($addition))
-							$torrent->announce_list(array_merge($lst,$addition));
+							$torrent->announce_list($trks->addToBegin ? array_merge($addition,$lst) : array_merge($lst,$addition));
 						else
 							$needToProcessed = false;		
 					}
