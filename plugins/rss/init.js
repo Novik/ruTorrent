@@ -111,7 +111,8 @@ theWebUI.config = function(data)
 		columns:	cloneObject(theWebUI.tables["trt"].columns),
 		format:		this.tables.trt.format,
                 onselect:	function(e,id) { theWebUI.rssSelect(e,id) },
-		ondblclick:	function(obj) { theWebUI.rssDblClick(obj); return(false); }
+		ondblclick:	function(obj) { theWebUI.rssDblClick(obj); return(false); },
+		ondelete:	function() { theWebUI.remove(); }
 	};
 	plugin.config.call(this,data);
 	plugin.start();
