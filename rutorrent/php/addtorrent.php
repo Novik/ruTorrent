@@ -19,6 +19,7 @@ if(isset($_FILES['torrent_file']))
 	$uploaded_file = getUploadsPath().'/'.$_FILES['torrent_file']['name'];
 	if(pathinfo($uploaded_file,PATHINFO_EXTENSION)!="torrent")
 		$uploaded_file.=".torrent";
+	$uploaded_file = getUniqueFilename($uploaded_file);
 	$success = move_uploaded_file($_FILES['torrent_file']['tmp_name'],$uploaded_file);
 }
 else
@@ -58,7 +59,7 @@ else
 			        $name = $cli->get_filename();
 			        if($name===false)
 					$name = md5($url).".torrent";
-				$uploaded_file = getUploadsPath()."/".$name;
+				$uploaded_file = getUniqueFilename(getUploadsPath()."/".$name);
 				$f = @fopen($uploaded_file,"w");
 				if($f!==false)
 				{
