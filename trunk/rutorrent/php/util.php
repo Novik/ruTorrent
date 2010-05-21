@@ -309,6 +309,29 @@ function getUploadsPath()
 	return( getProfilePath().'/torrents' );
 }
 
+function getUniqueFilename($fname)
+{
+	while(file_exists($fname))
+	{
+		$ext = '';
+		$pos = strrpos($fname,'.');
+		if($pos!==false) 
+		{
+			$ext = substr($fname,$pos);
+			$fname = substr($fname,0,$pos);
+		}
+		$pos = preg_match('/.*\((?P<no>\d+)\)$/',$fname,$matches);
+		$no = 1;
+		if($pos)
+		{		
+			$no = intval($matches["no"])+1;
+			$fname = substr($fname,0,strrpos($fname,'('));
+		}
+		$fname = $fname.'('.$no.')'.$ext;
+	}
+	return($fname);
+}
+
 function getExternal($exe)
 {
 	global $pathToExternals;
