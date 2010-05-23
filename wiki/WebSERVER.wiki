@@ -41,6 +41,18 @@ add something like this for each mount:
 SCGIMount /RPC2 127.0.0.1:5000
 }}}
 
+
+==== Mod_Proxy_SCGI ====
+
+Recently, i have found this module.  In some situations this might be a better fit _(though i have no idea of the performance differences between mod_scgi and mod_proxy_scgi)_  On OpenSolaris, for instance, there is no mod_scgi package, but mod_proxy_scgi comes with the default apache config.
+
+
+It's very simple to use, just add a directive like:
+{{{
+ProxyPass /RPC2/ scgi://localhost:5000/
+}}}
+
+
 ===Lighttpd Specific SCGI Config ===
 [http://www.lighttpd.net Lighttpd] comes with mod_scgi built in, but it is normally not configured by default. To enable it add
 {{{
