@@ -42,7 +42,7 @@ SCGIMount /RPC2 127.0.0.1:5000
 }}}
 
 
-==== Mod_Proxy_SCGI ====
+==== Mod Proxy SCGI ====
 
 Recently, i have found this module.  In some situations this might be a better fit _(though i have no idea of the performance differences between mod_scgi and mod_proxy_scgi)_  On OpenSolaris, for instance, there is no mod_scgi package, but mod_proxy_scgi comes with the default apache config.
 
