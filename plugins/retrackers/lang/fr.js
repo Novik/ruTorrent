@@ -14,6 +14,6 @@
  theUILang.retrackersPHPNotFound		= "Plugin 'Retrackers': rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
  theUILang.retrackersRunNotAvailable	= "Plugin 'Retrackers': rTorrent ne peut pas acc\u00e9der au fichier plugins/retrackers/run.sh en Lecture/Execution. Le plugin ne fonctionnera pas.";
  theUILang.retrackersUpdaterNotAvailable	= "Plugin 'Retrackers': rTorrent ne peut pas acc\u00e9der au fichier plugins/retrackers/update.php en Lecture. Le plugin ne fonctionnera pas.";
- theUILang.addToBegin		= "Add retrackers to begin of trackers list";
+ theUILang.addToBegin		= "Add retrackers to the beginning of the trackers list";
 
 thePlugins.get("retrackers").langLoaded();
