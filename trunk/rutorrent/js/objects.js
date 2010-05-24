@@ -342,6 +342,8 @@ var theContextMenu =
 			x -= this.obj.width();
 		if(y + this.obj.height() > $(window).height()) 
 			y -= this.obj.height();
+		if(y<0)
+			y = 0;
 		this.obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
                 this.obj.show(theDialogManager.divider);
 	},

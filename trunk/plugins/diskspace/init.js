@@ -12,32 +12,37 @@ plugin.setValue = function( full, free )
 
 plugin.init = function()
 {
-	this.prgStartColor = new RGBackground("#99D699");
-	this.prgEndColor = new RGBackground("#E69999");
-	plugin.addPaneToStatusbar( "meter-disk-td", $("<div>").attr("id","meter-disk-holder").
-		append( $("<span></span>").attr("id","meter-disk-text").css({overflow: "visible"}) ).
-		append( $("<div>").attr("id","meter-disk-value").css({ visibility: "hidden", float: "left" }).width(0).html("&nbsp;") ).get(0) );
-
-	plugin.check = function()
+	if(getCSSRule("#meter-disk-holder"))
 	{
-		var AjaxReq = jQuery.ajax(
+		plugin.prgStartColor = new RGBackground("#99D699");
+		plugin.prgEndColor = new RGBackground("#E69999");
+		plugin.addPaneToStatusbar( "meter-disk-td", $("<div>").attr("id","meter-disk-holder").
+			append( $("<span></span>").attr("id","meter-disk-text").css({overflow: "visible"}) ).
+			append( $("<div>").attr("id","meter-disk-value").css({ visibility: "hidden", float: "left" }).width(0).html("&nbsp;") ).get(0) );
+
+		plugin.check = function()
 		{
-			type: "GET",
-			timeout: theWebUI.settings["webui.reqtimeout"],
-		        async : true,
-		        cache: false,
-			url : "plugins/diskspace/action.php",
-			dataType : "json",
-			cache: false,
-			success : function(data)
+			var AjaxReq = jQuery.ajax(
 			{
-				plugin.setValue( data.total, data.free );
-			}
-		});
-	};
-	plugin.check();
-	plugin.reqId = theRequestManager.addRequest( "ttl", null, plugin.check );
-	this.markLoaded();
+				type: "GET",
+				timeout: theWebUI.settings["webui.reqtimeout"],
+			        async : true,
+			        cache: false,
+				url : "plugins/diskspace/action.php",
+				dataType : "json",
+				cache: false,
+				success : function(data)
+				{
+					plugin.setValue( data.total, data.free );
+				}
+			});
+		};
+		plugin.check();
+		plugin.reqId = theRequestManager.addRequest( "ttl", null, plugin.check );
+		plugin.markLoaded();
+	}
+	else
+		window.setTimeout(arguments.callee,500);
 };
 
 plugin.onRemove = function()

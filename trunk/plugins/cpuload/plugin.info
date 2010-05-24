@@ -2,3 +2,4 @@ description: The plug-in adds to status bar an indicator of cpu load.
 author: Novik
 version: 3.0
 need_rtorrent: 0
+runlevel: 9
