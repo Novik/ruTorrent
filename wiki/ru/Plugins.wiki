@@ -82,3 +82,4 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
  # [PluginSource Source] - добавляет в контекстное меню закачки пункт "Получить .torrent файл".
  # [PluginChunks Chunks] - показывает информацию о скачанных частях закачки.
  # [PluginData Data] - добавляет в контекстное меню файла закачки пункт "Получить файл по HTTP".
+ # [PluginCpuload Cpuload] - индикатор загрузки процессора.
