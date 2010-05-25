@@ -1,4 +1,4 @@
 description: The plug-in provides chunks information for opened torrents.
 author: Zoltan Csala
 runlevel: 11
-version: 3.0
+version: 3.1
