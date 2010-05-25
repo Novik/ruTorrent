@@ -43,6 +43,7 @@
         * [PluginSource Source]
         * [PluginChunks Chunks]
         * [PluginData Data]
+        * [PluginCpuload Cpuload]
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
