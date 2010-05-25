@@ -6,7 +6,7 @@
 
 Плагин добавляет на панель статуса индикатор загрузки процессора сервера. Так:
 
-[http://rutorrent.googlecode.com/svn/wiki/images/PluginCpuload/cpluload.jpg]
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginCpuload/cpluload.jpg]
 
 == Как оно работает ==
 
