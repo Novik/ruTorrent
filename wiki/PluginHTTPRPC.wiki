@@ -15,13 +15,3 @@ On the otherhand, because this plugin implements the scgi function in php, it do
 This plugin was sponsored by [http://forums.rutorrent.org/index.php?action=profile;u=213 Alexander] from the [http://forums.rutorrent.org rutorrent forums], and is the direct result of a bounty.
 
 Use of this plugin reduces bandwidth 10 fold.
-
-== Installation ==
-
-Currently, this plugin is only available in the development version of rutorrent, and is scheduled for release with ruTorrent 3.1.
-If you wish to try it, upgrade your main rutorrent files to svn, and install the plugin by svn.  For example, if your rutorrent install is at /var/www/rutorrent :
-
-{{{
-cd /var/www/rutorrent/plugins/
-svn co http://rutorrent.googlecode.com/svn/trunk/plugins/httprpc
-}}}
