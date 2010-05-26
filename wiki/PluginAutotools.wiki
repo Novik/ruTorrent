@@ -12,21 +12,18 @@ Following functions are realized for now:
  * *Auto Move* automatic transferring of torrent data files to other directory on downloading completion.
 
 == Auto Label ==
-Label will be created automatically, if:
-* Label is created by template, that can be set in Autotools options page.
-* Label is created if label input field in add torrent dialogue is empty.
+Label will be created automatically, if:<br/> 
+ * Label is created by template, that can be set in Autotools options page. 
+ * Label is created if label input field in add torrent dialogue is empty.
 
-Template variables:
-*{DIR}*
- If there is a variable *"directory =/usr/p2p/downloads"* in *rtorrent.rc* <br/> 
+Template variables:<br/> 
+ * *{DIR}*: If there is a variable *"directory =/usr/p2p/downloads"* in *rtorrent.rc* <br/> 
  And new torrent is saved as */usr/p2p/downloads/Video/DVD/movie.avi*, <br/>
  This variable will be *"Video/DVD"*.
 
-*{TRACKER}*
- This variable will be set to tracker name.
+ * *{TRACKER}*: This variable will be set to tracker name.
 
-*{NOW}*
- This variable will be set to the current date using *strftime()* function. <br/> 
+ * *{NOW}*: This variable will be set to the current date using *strftime()* function. <br/> 
  Default format is *"%Y-%m-%d"*. It is possible to set custom format using <br/> 
  syntax: *"{NOW[:<format>]}"*, for example: *"{NOW:%Y-%m-%d %H:%M}"*
 
