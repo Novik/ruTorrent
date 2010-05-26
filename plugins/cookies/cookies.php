@@ -24,17 +24,17 @@ class rCookies
 			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
 		if(isset($HTTP_RAW_POST_DATA))
 		{
-			$vars = split('&', $HTTP_RAW_POST_DATA);
+			$vars = explode('&', $HTTP_RAW_POST_DATA);
 			$this->list = array(); 
 			foreach($vars as $var)
 			{
-				$parts = split("=",$var);
+				$parts = explode("=",$var);
 				if($parts[0]=="cookie")
 				{
 					$value = trim(rawurldecode($parts[1]));
 					if(strlen($value))
 					{
-						$tmp = split("\|",$value);
+						$tmp = explode("|",$value);
 						if(count($tmp>1) && (trim($tmp[1])!=''))
 						{
 							$cookies = array();

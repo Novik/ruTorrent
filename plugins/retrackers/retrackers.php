@@ -26,13 +26,13 @@ class rRetrackers
 			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
 		if(isset($HTTP_RAW_POST_DATA))
 		{
-			$vars = split('&', $HTTP_RAW_POST_DATA);
+			$vars = explode('&', $HTTP_RAW_POST_DATA);
 			$this->list = array(); 
 			$this->dontAddPrivate = 0;
 			$trackers = array();
 			foreach($vars as $var)
 			{
-				$parts = split("=",$var);
+				$parts = explode("=",$var);
 				if($parts[0]=="dont_private")
 					$this->dontAddPrivate = $parts[1];
 				else

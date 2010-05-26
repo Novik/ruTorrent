@@ -10,10 +10,10 @@
 		$HTTP_RAW_POST_DATA = file_get_contents("php://input");
 	if(isset($HTTP_RAW_POST_DATA))
 	{
-		$vars = split('&', $HTTP_RAW_POST_DATA);
+		$vars = explode('&', $HTTP_RAW_POST_DATA);
 		foreach($vars as $var)
 		{
-			$parts = split("=",$var);
+			$parts = explode("=",$var);
 			if($parts[0]=="ip")
 			{
 				$value = trim($parts[1]);

@@ -31,12 +31,12 @@ class rUnpack
 			$HTTP_RAW_POST_DATA = file_get_contents( "php://input" );
 		if( isset( $HTTP_RAW_POST_DATA ) )
 		{
-			$vars = split( '&', $HTTP_RAW_POST_DATA );
+			$vars = explode( '&', $HTTP_RAW_POST_DATA );
 			$this->enabled = 0;
 			$this->path_to_finished = "";
 			foreach( $vars as $var )
 			{
-				$parts = split( "=", $var );
+				$parts = explode( "=", $var );
 				if( $parts[0] == "unpack_enabled" )
 					$this->enabled = $parts[1];
 				else

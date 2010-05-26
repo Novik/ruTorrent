@@ -10,7 +10,7 @@ if(!isset($HTTP_RAW_POST_DATA))
 	$HTTP_RAW_POST_DATA = file_get_contents("php://input");
 if(isset($HTTP_RAW_POST_DATA))
 {
-	$vars = split('&', $HTTP_RAW_POST_DATA);
+	$vars = explode('&', $HTTP_RAW_POST_DATA);
 	$hash = null;
 	$announce_list = array(); 
 	$trackers = array();
@@ -18,7 +18,7 @@ if(isset($HTTP_RAW_POST_DATA))
 	$trackersCount = 0;
 	foreach($vars as $var)
 	{
-		$parts = split("=",$var);
+		$parts = explode("=",$var);
 		if($parts[0]=="hash")
 			$hash = $parts[1];
 		else

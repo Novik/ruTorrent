@@ -106,10 +106,10 @@ switch($cmd)
 		$flt = null;
 		if(isset($HTTP_RAW_POST_DATA))
 		{
-			$vars = split('&', $HTTP_RAW_POST_DATA);
+			$vars = explode('&', $HTTP_RAW_POST_DATA);
 			foreach($vars as $var)
 			{
-				$parts = split("=",$var);
+				$parts = explode("=",$var);
 				if($parts[0]=="name")
 				{
 					if($flt)
@@ -234,7 +234,7 @@ switch($cmd)
 		if(isset($HTTP_RAW_POST_DATA))
 		{
 			set_time_limit(0);
-			$vars = split('&', $HTTP_RAW_POST_DATA);
+			$vars = explode('&', $HTTP_RAW_POST_DATA);
 			$lbl = null;
 			$dir = null;
 			$isStart = true; 
@@ -243,7 +243,7 @@ switch($cmd)
 			$rssArray = array();
 			foreach($vars as $var)
 			{
-				$parts = split("=",$var);
+				$parts = explode("=",$var);
 				if($parts[0]=="torrents_start_stopped")
 					$isStart = false;
 				else
