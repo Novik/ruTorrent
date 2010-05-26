@@ -4,7 +4,7 @@
  var s_PluginFail	= "Plugin will not work.";
 
  theUILang.autotools			= "Autotools";
- theUILang.autotoolsEnableLabel		= "Enable \"AutoLabel\" feature";
+ theUILang.autotoolsEnableLabel		= "Enable \"AutoLabel\" feature, Template:";
  theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" feature";
  theUILang.autotoolsPathToFinished	= "Path to finished downloads";
  theUILang.autotoolsEnableWatch		= "Enable \"AutoWatch\" feature";
