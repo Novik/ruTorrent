@@ -9,6 +9,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 	        if(plugin.enabled)
 	        {
 			$$('enable_label').checked = ( theWebUI.autotools.EnableLabel == 1 );
+			$$('label_template').value = theWebUI.autotools.LabelTemplate;
+			linked( $$('enable_label'), 0, ['label_template'] );
 			$$('enable_move').checked  = ( theWebUI.autotools.EnableMove  == 1 );
 			$$('path_to_finished').value = theWebUI.autotools.PathToFinished;
 			linked( $$('enable_move'), 0, ['path_to_finished', 'automove_browse_btn'] );
@@ -27,6 +29,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 	theWebUI.autotoolsWasChanged = function()
 	{
 		if( $$('enable_label').checked != ( theWebUI.autotools.EnableLabel == 1 ) )
+			return true;
+		if( $$('label_template').value != theWebUI.autotools.LabelTemplate )
 			return true;
 		if( $$('enable_move').checked  != ( theWebUI.autotools.EnableMove  == 1 ) )
 			return true;
@@ -52,6 +56,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 	rTorrentStub.prototype.setautotools = function()
 	{
 		this.content = "enable_label=" + ( $$('enable_label').checked ? '1' : '0' ) +
+			"&label_template=" + $$('label_template').value +
 			"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
 			"&path_to_finished=" + $$('path_to_finished').value +
 			"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
@@ -73,8 +78,12 @@ plugin.onLangLoaded = function()
 			"<table>"+
 			"<tr>"+
 				"<td>"+
-					"<input type='checkbox' id='enable_label' checked='false'"+
-					"<label for='enable_label'>"+ theUILang.autotoolsEnableLabel +"</label>"+
+					"<input type='checkbox' id='enable_label' checked='false' "+
+					"onchange='linked(this, 0, [\"label_template\"]);' />"+
+						"<label for='enable_label'>"+ theUILang.autotoolsEnableLabel +"</label>"+
+				"</td>"+
+				"<td class='alr'>"+
+					"<input type='text' id='label_template' class='TextboxNormal' maxlength='100' />"+
 				"</td>"+
 			"</tr>"+
 			"<tr />"+

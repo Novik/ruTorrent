@@ -4,7 +4,7 @@
  var s_PluginFail	= "Плагин не будет работать.";
 
  theUILang.autotools			= "Автоматизация";
- theUILang.autotoolsEnableLabel		= "Включить функцию \"АвтоМетки\"";
+ theUILang.autotoolsEnableLabel		= "Включить функцию \"АвтоМетки\", Шаблон:";
  theUILang.autotoolsEnableMove		= "Включить функцию \"АвтоПеремещение\"";
  theUILang.autotoolsPathToFinished	= "Каталог для завершенных закачек";
  theUILang.autotoolsEnableWatch		= "Включить функцию \"АвтоДобавление\"";

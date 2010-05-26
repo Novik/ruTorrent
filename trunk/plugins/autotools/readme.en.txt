@@ -1,5 +1,5 @@
 
-    Plug-in "autotools" version 1.5
+    Plug-in "autotools" version, 2010-05-26
 
     for rutorrent Webui (rtorrent web gui)
     (http://code.google.com/p/rutorrent)
@@ -11,8 +11,8 @@ Plugin Features:
 1. "AutoLabel": Automatic creation of labels when adding a new torrent to rutorrent WebUI
 
 2. "AutoMove":  Automatically moves torrents which have finished downloading from the 
-		rtorrent download directory to a new directory.  rtorrent will seed from\
-		this new location.
+                rtorrent download directory to a new directory.  rtorrent will seed from\
+                this new location.
 
 3. "Autowatch: Automatically add torrents to rtorrent via a nested set of watch directories.
 
@@ -22,12 +22,24 @@ Plugin Features:
 ---------------------------------------------------------------------------------------------
 Label will be created automatically if:
 
-- "Label" field is empty in the "add torrent" window.
+- Label is created by template, that is set in Autotools options page.
+- Label is created only if "Label" field in the "add torrent" window is empty.
 
-- The new torrent is set to download to a subdirectory of the "directory =" setting in .rtorrent.rc
+Template variables:
 
-For example, if your download directory is "directory = /usr/p2p/downloads"
-and the new torrent is set to download to /usr/p2p/downloads/Video/DVD/ then the label would be "Video/DVD"
+{DIR}
+  If your download directory is "directory = /usr/p2p/downloads"
+  and the new torrent is set to download to /usr/p2p/downloads/Video/DVD/ then 
+  the variable would be "Video/DVD"
+
+{TRACKER)
+  The variable would be set to tracker name.
+
+{NOW}
+  The variable would be set to the current date using strftime() function.
+  Default format is "%Y-%m-%d". It is possible to set custom format using
+  syntax: "{NOW[:<format>]}", for example: "{NOW:%Y-%m-%d %H:%M}"
+
 
 ---------------------------------------------------------------------------------------------
 "AutoMove"
@@ -61,6 +73,7 @@ different from the first, in this very unlikely situation.
 For your convenience, it is recommended that you install the plugin "_getdir"  This will make navigating the filesystem from the webgui
 much easier.
 
+
 ----------------------------------------------------------------------------------------------
 "AutoWatch"
 ----------------------------------------------------------------------------------------------
@@ -79,6 +92,10 @@ With this, you can create a system of watch directories to drop .torrent files i
 ----------------------------------------------------------------------------------------------
 Version History:
 ----------------------------------------------------------------------------------------------
+
+    2010-06-26:
+    - Plugin was adapted for ruTorrent 3.1
+    - Function AutoLabel can be configured by templates
 
     1.5
     - Plugin was adapted for ruTorrent 3.0

@@ -4,7 +4,7 @@
  var s_PluginFail	= "Wtyczka nie będzie działać.";
 
  theUILang.autotools			= "Autotools";
- theUILang.autotoolsEnableLabel		= "Włącz funkcję \"AutoEtykieta\" ";
+ theUILang.autotoolsEnableLabel		= "Włącz funkcję \"AutoEtykieta\", Template: ";
  theUILang.autotoolsEnableMove		= "Włącz funkcję \"AutoPrzenoszenie\" ";
  theUILang.autotoolsPathToFinished	= "Ścieżka dla ukończonych pobierań";
  theUILang.autotoolsEnableWatch		= "Enable \"AutoWatch\" feature";
