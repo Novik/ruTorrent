@@ -2,6 +2,30 @@
 == Version history ==
 ----
 
+
+
+ * ==== Version 3.1 (25.05.2010 r1167 )====
+   # Added a directive to force single user mode  ($ forbidUserSettings).
+   # Added support for compressed php pages via an external program (gzip).
+   # Added support for browser's resource caching.
+   # Added plugins cpuload , HTTPRPC.
+   # Added support for magnet-links (for svn rtorrent 0.8.6 r1144 and above).
+   # Added support for svn rtorrent  r1148.
+   # Added support for Opera browser, version 10.5x.
+   # New option ""If rtorrent is not available try again after".
+   # Changed the setup of paths to external programs. (example: php, curl)
+   # Optimized downloadable graphic resources.
+   # Error with URL, containing a slash symbol in query is corrected.
+   # Error with support cookies in https feeds is corrected.
+   # The algorithm of descovering of the version of the peer's client is corrected.
+   # Fixed error with adding torrents in IE7.
+   # Fixed an error which makes it impossible to change to a new positions in torrent properties.
+   # Fixed diagnostic resource availability for the rtorrent user.
+   # Fixed a bug which resulted in a memory leak due to "Speed" tab being open.
+   # Fixed a bug which allowed a User to add torrents outside of $topDirectory.
+
+----
+
  * ====Version 3.0 (March 10th 2010 r844)==== 
    # Virtually all of the code rewritten from scratch in order to increase productivity.
    # Added support for multiple users (each user must meet one instance of rtorrent).
