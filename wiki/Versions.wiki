@@ -8,11 +8,11 @@
    # Added a directive to force single user mode  ($ forbidUserSettings).
    # Added support for compressed php pages via an external program (gzip).
    # Added support for browser's resource caching.
-   # Added plugins cpuload , HTTPRPC.
-   # Added support for magnet-links (for svn rtorrent 0.8.6 r1144 and above).
-   # Added support for svn rtorrent  r1148.
+   # Added plugins [PluginCpuload cpuload], [PluginHTTPRPC, HTTPRPC].
+   # Added support for magnet-links (for svn rtorrent 0.8.6 `r1144` and above).
+   # Added support for svn rtorrent `r1148`.
    # Added support for Opera browser, version 10.5x.
-   # New option ""If rtorrent is not available try again after".
+   # New option "If rtorrent is not available try again after".
    # Changed the setup of paths to external programs. (example: php, curl)
    # Optimized downloadable graphic resources.
    # Error with URL, containing a slash symbol in query is corrected.
