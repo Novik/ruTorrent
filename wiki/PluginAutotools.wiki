@@ -35,9 +35,23 @@ The downloaded torrent data files are transferred to the directory, which is set
 For example:
  If there is a variable *"directory =/usr/p2p/downloads"* in *rtorrent.rc* <br/> 
  And *"/media/p2p"* is set as the directory for ready downloads, <br/>
- The files downloaded to *"/usr/p2p/downloads/Video/Movie/`*`.avi"* will be moved to *"/media/p2p/Video/Movie/`*`.avi"* on downloading completion.
+ The files downloaded to *"/usr/p2p/downloads/Video/Movie/`*`.avi"* will be moved to<br/> *"/media/p2p/Video/Movie/`*`.avi"* on downloading completion.
 
-There was an idea to use this plug-in in case when the directory for ready downloads was a mounted resource such as an other disk or SMB share with common access. 
+There was an idea to use this plug-in in case when the directory for ready downloads was a mounted resource such as an other disk or SMB share with common access.
+
+After file transfer the plug-in searches for file *".mailto"* in directories, from *"/media/p2p/Video/Movie/"* downto *"/media/p2p/"*. If this file is found, e-mail will be sent according to information from this file. Sample file is:
+{{{
+TO : user@domain.ru
+FROM : Torrent Downloader<admin@domain.ru>
+SUBJECT : Torrent "{TORRENT}" is finished!
+Hello, User!
+
+  Requested torrent
+
+  "{TORRENT}"
+
+  was successifully downloaded.
+}}}
 
 == Auto Watch ==
 *.torrent* files are placed in nested subdirectories of a desired structure on
