@@ -67,15 +67,21 @@ if( $is_ok )
 // Ask info from rTorrent (torrent is assumed to be open)
 if( $is_ok )
 {
-	$req = new rXMLRPCRequest( new rXMLRPCCommand( "d.get_base_path", $hash ) );
+	$req = new rXMLRPCRequest( array (
+		new rXMLRPCCommand( "d.get_base_path", $hash ),
+		new rXMLRPCCommand( "d.get_name",      $hash ),
+	) );
+
 	if( $req->run() && !$req->fault )
 	{
 		if(!isset($theSettings))
 			$theSettings = rTorrentSettings::load();
-		$directory = $theSettings->directory;
-		$base_path = trim( $req->val[0] );
+		$directory    = $theSettings->directory;
+		$base_path    = trim( $req->val[0] );
+		$torrent_name = trim( $req->val[1] );
 		Debug( "get_directory    : ".$directory );
 		Debug( "d.get_base_path  : ".$base_path );
+		Debug( "d.get_name       : ".$torrent_name );
 		if( $directory != '' && $base_path != '' )
 		{
 			$directory = rtAddTailSlash( $directory );
@@ -123,7 +129,60 @@ if( $is_ok )
 	if( !rtSetDataDir( $hash, $dest_path, true, $autodebug_enabled ) )
 	{
 		Debug( "rtSetDataDir() fail" );
+		$is_ok = false;
 	}
+}
+
+// Check .mailto file
+if( $is_ok )
+{
+	$path = rtRemoveTailSlash( $dest_path );
+	$path_to_finished = rtRemoveTailSlash( $path_to_finished );
+	$mailto_file = "";
+	while( $path != '' && $path != $path_to_finished )
+	{
+		$mailto_file = $path."/.mailto";
+		if( is_file( $mailto_file ) )
+		{
+			Debug( "\".mailto\" file   : ".$mailto_file );
+			$lines = file( $mailto_file );
+			while( count( $lines ) > 0 )
+			{
+				$params = explode( ":", $lines[0] );
+				if( count( $params ) < 2 )
+					break;
+				if( trim( $params[0] ) == "TO" ) $mail_to = trim( $params[1] );
+				else if( trim( $params[0] ) == "FROM"    ) $mail_from = trim( $params[1] );
+				else if( trim( $params[0] ) == "SUBJECT" ) $subject   = trim( $params[1] );
+				else break;
+				array_shift( $lines );
+			}
+			if( $mail_to == '' )
+			{
+				Debug( "mail recepient is not set!" );
+			}
+			else {
+				Debug( "mail to          : ".$mail_to   );
+				Debug( "mail from        : ".$mail_from );
+				Debug( "mail subject     : ".$subject   );
+				$subject = str_replace( "{TORRENT}", $torrent_name, $subject );
+				$message = implode( '', $lines );
+				$message = str_replace( "{TORRENT}", $torrent_name, $message );
+				$headers  = "From: ".$mail_from."\r\n";
+				$headers .= "Content-type: text/plain; charset=utf-8"."\r\n";
+				if( !mail( $mail_to, $subject, $message, $headers ) )
+				{
+					Debug( "mail() to \"".$mail_to."\" fail!" );
+					$is_ok = false;
+				}
+			}
+			break;
+		}
+		$path = rtRemoveLastToken( $path, "/" );
+		$mailto_file = "";
+	}
+	if( $mailto_file == '' )
+		Debug( "\".mailto\" file   : not found!" );
 }
 
 Debug( "--- end ---" );
