@@ -210,63 +210,188 @@ if(plugin.enabled && plugin.canChangeTabs())
 	theWebUI.showTrafic = function(d)
 	{
 		var s = $('#tracker_mode').val();
-		$('#tracker_mode option').remove();	
-		$('#tracker_mode').append("<option value='global'>"+theUILang.allTrackers+"</option>");
+		$('#tracker_mode option').remove();
+		var tMode = plugin.collectStatForTorrents ? "<option value='none'>"+theUILang.selectedTorrent+"</option>" : "";
+		$('#tracker_mode').append(tMode+"<option value='global' selected>"+theUILang.allTrackers+"</option>");
 		for(var i=0; i<d.trackers.length; i++)
 			$('#tracker_mode').append("<option value='"+d.trackers[i]+"'>"+d.trackers[i]+"</option>");
 		$('#tracker_mode').val(s);
+		if(s!=$('#tracker_mode').val())
+			$('#tracker_mode').val('global');
 		$('#traf_mode').val(d.mode);
 		this.trafGraph.setData(d);
 	}
 
 	rTorrentStub.prototype.gettrafic = function()
 	{
-		this.content = "mode="+this.vs[0]+"&tracker="+this.ss[0];
+		this.content = "mode="+this.vs[0]+"&tracker="+this.ss[0]+"&hash="+theWebUI.dID;
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/trafic/getdata.php";
+		this.dataType = "json";
+	}
+
+	if(plugin.collectStatForTorrents)
+	{
+		plugin.showDetails = theWebUI.showDetails;
+		theWebUI.showDetails = function(hash, noSwitch)
+		{
+			plugin.showDetails.call(this,hash,noSwitch);
+			if( (this.activeView == 'traf') && ($('#tracker_mode').val()=='none'))
+				theWebUI.reqForTraficGraph();
+		}
+	}
+}
+
+if(plugin.enabled && plugin.canChangeColumns() && plugin.collectStatForTorrents)
+{
+	plugin.config = theWebUI.config;
+	theWebUI.config = function(data)
+	{
+		this.tables.trt.columns.push({ text: 'Ratio/day', width: '75x', id: "ratioday", type: TYPE_NUMBER});
+		this.tables.trt.columns.push({ text: 'Ratio/week', width: '75px', id: "ratioweek", type: TYPE_NUMBER});
+		this.tables.trt.columns.push({ text: 'Ratio/month', width: '75px', id: "ratiomonth", type: TYPE_NUMBER});
+		plugin.trtFormat = this.tables.trt.format;
+		this.tables.trt.format = function(table,arr)
+		{
+			for(var i in arr)
+			{
+			        var s = table.getIdByCol(i);
+				if((s=="ratioday") || (s=="ratiomonth") || (s=="ratioweek"))
+					arr[i] = (arr[i]!=null) ? theConverter.round(arr[i], 3) : "";
+		        }
+			return(plugin.trtFormat(table,arr));
+		}
+		plugin.config.call(this,data);
+		plugin.reqId = theRequestManager.addRequest("trt", null, function(hash,torrent,value)
+		{
+			if($type(theWebUI.torrents[hash]))
+			{
+				torrent.ratioday = theWebUI.torrents[hash].ratioday;
+				torrent.ratioweek = theWebUI.torrents[hash].ratioweek;
+				torrent.ratiomonth = theWebUI.torrents[hash].ratiomonth;
+			}
+		});
+		plugin.trtRenameColumn();
+	}
+
+	plugin.trtRenameColumn = function()
+	{
+		if(plugin.allStuffLoaded)
+		{
+			theWebUI.getTable("trt").renameColumnById("ratioday",theUILang.ratioDay);
+			theWebUI.getTable("trt").renameColumnById("ratioweek",theUILang.ratioWeek);
+			theWebUI.getTable("trt").renameColumnById("ratiomonth",theUILang.ratioMonth);
+			if(thePlugins.isInstalled("rss"))
+				plugin.rssRenameColumn();
+		}
+		else
+			setTimeout(arguments.callee,1000);
+	}
+        
+	plugin.rssRenameColumn = function()
+	{
+		if(theWebUI.getTable("rss").created)
+		{
+			theWebUI.getTable("rss").renameColumnById("ratioday",theUILang.ratioDay);
+			theWebUI.getTable("rss").renameColumnById("ratioweek",theUILang.ratioWeek);
+			theWebUI.getTable("rss").renameColumnById("ratiomonth",theUILang.ratioMonth);
+		}
+		else
+			setTimeout(arguments.callee,1000);
+	}
+
+	plugin.startRatios = function()
+	{
+		theWebUI.request("?action=getratios",[plugin.updateRatios, this]);	
+	}
+
+	plugin.updateRatios = function( d )
+	{
+		for( var hash in d )
+		{
+			var torrent = theWebUI.torrents[hash];
+			if($type( torrent ) && torrent.size)
+			{
+				torrent.ratioday = d[hash][0]/torrent.size;
+				torrent.ratioweek = d[hash][1]/torrent.size;
+				torrent.ratiomonth = d[hash][2]/torrent.size;
+			}
+		}
+		window.setTimeout( plugin.startRatios, plugin.updateInterval*60000 );
+	}
+
+	plugin.loadTorrents = theWebUI.loadTorrents;
+	theWebUI.loadTorrents = function() 
+	{
+		if(theWebUI.firstLoad)
+			plugin.startRatios();
+                plugin.loadTorrents.call(theWebUI);
+	}
+
+	rTorrentStub.prototype.getratios = function()
+	{
+		this.contentType = "application/x-www-form-urlencoded";
+		this.mountPoint = "plugins/trafic/action.php";
 		this.dataType = "json";
 	}
 }
 
 plugin.onLangLoaded = function()
 {
-	if(this.enabled && this.canChangeTabs())
+	if(this.enabled)
 	{
-	 	this.attachPageToTabs(
-			$('<div>').attr("id","traf").html(
-				"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
-					"<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>"+
-					"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-						"<option value='global'>"+theUILang.allTrackers+"</option>"+
-					"</select>"+
-					"<select name='traf_mode' id='traf_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-						"<option value='day'>"+theUILang.perDay+"</option>"+
-						"<option value='month'>"+theUILang.perMonth+"</option>"+
-						"<option value='year'>"+theUILang.perYear+"</option>"+
-					"</select>"+
-				"</div><div id='traf_graph' class='graph_tab'></div>").get(0),theUILang.traf,"lcont");
-		theWebUI.trafGraph = new rTraficGraph();
-		theWebUI.trafGraph.create($("#traf_graph"));
-		plugin.onShow = theTabs.onShow;
-		theTabs.onShow = function(id)
+		if(this.canChangeTabs())
 		{
-			if(id=="traf")
+		 	this.attachPageToTabs(
+				$('<div>').attr("id","traf").html(
+					"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
+						"<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>"+
+						"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
+							"<option value='global' selected>"+theUILang.allTrackers+"</option>"+
+						"</select>"+
+						"<select name='traf_mode' id='traf_mode' onchange='theWebUI.reqForTraficGraph()'>"+
+							"<option value='day'>"+theUILang.perDay+"</option>"+
+							"<option value='month'>"+theUILang.perMonth+"</option>"+
+							"<option value='year'>"+theUILang.perYear+"</option>"+
+						"</select>"+
+					"</div><div id='traf_graph' class='graph_tab'></div>").get(0),theUILang.traf,"lcont");
+			theWebUI.trafGraph = new rTraficGraph();
+			theWebUI.trafGraph.create($("#traf_graph"));
+			plugin.onShow = theTabs.onShow;
+			theTabs.onShow = function(id)
 			{
-				if(theWebUI.activeView!="traf")
-					theWebUI.reqForTraficGraph();
+				if(id=="traf")
+				{
+					if(theWebUI.activeView!="traf")
+						theWebUI.reqForTraficGraph();
+					else
+						theWebUI.trafGraph.resize();
+				}
 				else
-					theWebUI.trafGraph.resize();
-			}
-			else
-				plugin.onShow.call(this,id);
-		};
-        	theWebUI.resize();
+					plugin.onShow.call(this,id);
+			};
+        		theWebUI.resize();
+		}
 	}
 };
 
 plugin.onRemove = function()
 {
 	this.removePageFromTabs("traf");
+	if(plugin.canChangeColumns() && plugin.collectStatForTorrents)
+	{
+		theRequestManager.removeRequest( "trt", plugin.reqId );
+		theWebUI.getTable("trt").removeColumnById("ratioday");
+		theWebUI.getTable("trt").removeColumnById("ratioweek");
+		theWebUI.getTable("trt").removeColumnById("ratiomonth");
+
+		if(thePlugins.isInstalled("rss"))
+		{
+			theWebUI.getTable("rss").removeColumnById("ratioday");
+			theWebUI.getTable("rss").removeColumnById("ratioweek");
+			theWebUI.getTable("rss").removeColumnById("ratiomonth");
+		}		
+	}
 }
 
 plugin.loadLang(true);

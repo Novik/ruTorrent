@@ -5,14 +5,17 @@ $st = getSettingsPath();
 @rename($rootPath.'/plugins/trafic/stats',$st.'/trafic');
 @mkdir($st.'/trafic');
 @mkdir($st.'/trafic/trackers');
+@mkdir($st.'/trafic/torrents');
 $needStart = true;
 if($do_diagnostic)
 {
 	findRemoteEXE('php',"thePlugins.get('trafic').showError('theUILang.trafPHPNotFound');",$remoteRequests);
 	@chmod($st.'/trafic',0777);
 	@chmod($st.'/trafic/trackers',0777);
+	@chmod($st.'/trafic/torrents',0777);
 	if( (is_dir($st.'/trafic') && !isUserHavePermission($theSettings->uid,$theSettings->gid,$st.'/trafic',0x0007)) ||
-	    (is_dir($st.'/trafic/trackers') && !isUserHavePermission($theSettings->uid,$theSettings->gid,$st.'/trafic/trackers',0x0007)))
+	    (is_dir($st.'/trafic/trackers') && !isUserHavePermission($theSettings->uid,$theSettings->gid,$st.'/trafic/trackers',0x0007)) ||
+	    (is_dir($st.'/trafic/torrents') && !isUserHavePermission($theSettings->uid,$theSettings->gid,$st.'/trafic/torrents',0x0007)))
 	{
 		$jResult.="plugin.disable(); plugin.showError('theUILang.trafStatsNotAvailable');";
 		$needStart = false;
@@ -40,5 +43,7 @@ if($needStart)
         	$theSettings->registerPlugin("trafic");
 	else
         	$jResult .= "plugin.disable(); log('trafic: '+theUILang.pluginCantStart);";
+	$jResult .= "plugin.collectStatForTorrents = ".($collectStatForTorrents ? "true;" : "false;");
+	$jResult .= "plugin.updateInterval = ".$updateInterval.";";
 }
 ?>

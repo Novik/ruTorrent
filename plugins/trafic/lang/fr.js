@@ -18,3 +18,7 @@
  theUILang.trafPHPNotFound      = "Plugin 'Traffic' : rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
  theUILang.trafStatsNotAvailable        = "Plugin 'Traffic': rTorrent ne peut pas acc\u00e9der aux dossiers plugins/trafic/stats et plugins/trafic/stats/trackers en Lecture/Ecriture/Execution. Le plugin ne fonctionnera pas.";
  theUILang.trafUpdaterNotAvailable= "Plugin 'Traffic': rTorrentne peut pas acc\u00e9der au fichier plugins/trafic/update.php en Lecture. Le plugin ne fonctionnera pas.";
+ theUILang.selectedTorrent	= "Selected torrent";
+ theUILang.ratioDay	= "Ratio/day";
+ theUILang.ratioWeek	= "Ratio/week";
+ theUILang.ratioMonth	= "Ratio/month";
