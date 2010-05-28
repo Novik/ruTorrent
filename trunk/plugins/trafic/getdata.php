@@ -2,31 +2,41 @@
 require_once( 'stat.php' );
 
 $val = "";
+$storage = "global.csv";
+
 if(isset($_REQUEST['tracker']))
 {
-	if($_REQUEST['tracker']!="global")
-		$tracker = "trackers/".$_REQUEST['tracker'].".csv";
-	else
-                $tracker = "global.csv";
-	if(isset($_REQUEST['mode']))
+	if($_REQUEST['tracker']=="none")
 	{
-		$mode = $_REQUEST['mode'];
-		if($mode=='clear')
+		if(isset($_REQUEST['hash']))
+			$storage = "torrents/".$_REQUEST['hash'].".csv";		
+	}		
+	else
+		if($_REQUEST['tracker']!="global")
+			$storage = "trackers/".$_REQUEST['tracker'].".csv";
+}
+
+if(isset($_REQUEST['mode']))
+{
+	$mode = $_REQUEST['mode'];
+	if($mode=='clear')
+	{
+		@unlink(getSettingsPath().'/trafic/'.$storage);
+		if($_REQUEST['tracker']!="none")
 		{
-			@unlink(getSettingsPath().'/trafic/'.$tracker);
 			$mode='day';
-			$tracker = "global.csv";
+			$storage = "global.csv";
 		}
-		$st = new rStat($tracker);
-		if($mode=='day')
-			$val = $st->getDay();
-		else
-		if($mode=='month')
-			$val = $st->getMonth();
-		else
-		if($mode=='year')
-			$val = $st->getYear();
 	}
+	$st = new rStat($storage);
+	if($mode=='day')
+		$val = $st->getDay();
+	else
+	if($mode=='month')
+		$val = $st->getMonth();
+	else
+	if($mode=='year')
+		$val = $st->getYear();
 }
 
 cachedEcho($val,"application/json");

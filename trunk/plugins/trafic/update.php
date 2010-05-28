@@ -60,7 +60,15 @@
 							$delta_down = 0;
 						}
 						if($delta_down!=0 || $delta_up!=0)
+						{
 							$needTorrents[$key] = array($delta_up,$delta_down);
+							if($collectStatForTorrents)
+							{
+								$st = new rStat("torrents/".$key.".csv");
+								$st->correct($delta_up,$delta_down);
+								$st->flush();
+							}
+						}
 					}
 					else
 						$needTorrents[$key] = $data;
@@ -137,6 +145,30 @@
 						$st = new rStat("trackers/".$key.".csv");
 						$st->correct($data[0],$data[1]);
 						$st->flush();
+					}
+				}
+
+				if($collectStatForTorrents)
+				{
+					$existingStats = array();
+					$dh = @opendir($dir."torrents");
+					if($dh)
+					{
+						while(false !== ($file = readdir($dh)))
+						{
+							if(is_file($dir."torrents/".$file))
+							{
+								$hash = basename($file, ".csv");
+								$existingStats[$hash] = mtime($dir."torrents/".$file);
+							}
+						}
+					}
+					closedir($dh);
+					$deletedTorrents = array_diff_key( $existingStats, $nowTorrents );
+					foreach($deletedTorrents as $hash=>$time)
+					{
+						if($tm - $time > $storeDeletedTorrentsStatsDuring)
+							@unlink($dir."torrents/".$hash.".csv");
 					}
 				}
 			}

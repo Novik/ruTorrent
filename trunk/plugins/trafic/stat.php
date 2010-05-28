@@ -123,6 +123,21 @@ class rStat
 	{
 		return(self::format($this->yearUp,$this->yearDown,$this->yearHitTimes,'year').self::getTrackers());
 	}
+	public function getRatios( $time )
+	{
+		$ret = array(0,0,0);
+		for($i = 0; $i<count($this->hourHitTimes); $i++)
+			if( $time-$this->hourHitTimes[$i] < 60*60*24 )
+				$ret[0]+=$this->hourUp[$i];
+		for($i = 0; $i<count($this->monthHitTimes); $i++)
+		{
+			if( $time-$this->monthHitTimes[$i] < 60*60*24*7 )
+				$ret[1]+=$this->monthUp[$i];
+			if( $time-$this->monthHitTimes[$i] < 60*60*24*30 )
+				$ret[2]+=$this->monthUp[$i];
+		}
+		return($ret);
+	}
 }
 
 ?>
