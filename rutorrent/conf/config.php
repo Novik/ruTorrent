@@ -32,6 +32,7 @@
 		"curl"	=> '',			// Something like /usr/bin/curl. If empty, will be founded in PATH.
 		"gzip"	=> '',			// Something like /usr/bin/gzip. If empty, will be founded in PATH.
 		"id"	=> '',			// Something like /usr/bin/id. If empty, will be founded in PATH.
+		"stat"	=> '',			// Something like /usr/bin/stat. If empty, will be founded in PATH.
 	);
 
 	// For web->rtorrent link through unix domain socket 

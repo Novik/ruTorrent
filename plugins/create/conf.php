@@ -10,5 +10,6 @@
 						// "mktorrent" - use program createtorrent (see http://mktorrent.sourceforge.net)
 						// "buildtorrent" - use program buildtorrent (see http://claudiusmaximus.goto10.org/cm/torrent.html)
 	$pathToCreatetorrent = '';		// Something like /bin/createtorrent, or /bin/transmissioncli. If empty, program will be founded in PATH.
+	$pathToExternals["pgrep"] = '';		// Something like /usr/bin/pgrep. If empty, will be founded in PATH.
 
 ?>

@@ -3,7 +3,6 @@
 require_once( dirname(__FILE__).'/util.php' );
 require_once( $rootPath.'/php/xmlrpc.php' );
 require_once( $rootPath.'/php/Torrent.php' );
-require_once( $rootPath.'/php/lfs.php' );
 
 class rTorrent
 {

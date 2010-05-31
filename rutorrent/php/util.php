@@ -17,10 +17,10 @@ if(!isset($_SERVER['REMOTE_USER']))
 
 $rootPath = realpath(dirname(__FILE__)."/..");
 require_once( $rootPath.'/conf/config.php' );
-require_once( $rootPath.'/php/lfs.php' );
 $conf = getConfFile('config.php');
 if($conf)
 	require_once($conf);
+require_once( $rootPath.'/php/lfs.php' );
 
 function stripSlashesFromArray(&$arr)
 {
