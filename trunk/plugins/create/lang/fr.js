@@ -26,6 +26,6 @@
  theUILang.torrentSave                  = "Enregistrer";
  theUILang.torrentKill                  = "Stop";
  theUILang.torrentKilled                = "Le processus a \u00e9t\u00e9 interrompu.";
-
+ theUILang.badScriptPath 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access script file for read/execute.";
 
 thePlugins.get("create").langLoaded();

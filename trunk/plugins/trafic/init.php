@@ -1,5 +1,6 @@
 <?php
 eval(getPluginConf('trafic'));
+require_once( '../plugins/trafic/ratios.php' );
 
 $st = getSettingsPath();
 @rename($rootPath.'/plugins/trafic/stats',$st.'/trafic');
@@ -45,5 +46,6 @@ if($needStart)
         	$jResult .= "plugin.disable(); log('trafic: '+theUILang.pluginCantStart);";
 	$jResult .= "plugin.collectStatForTorrents = ".($collectStatForTorrents ? "true;" : "false;");
 	$jResult .= "plugin.updateInterval = ".$updateInterval.";";
+	$jResult .= getRatiosStat();
 }
 ?>

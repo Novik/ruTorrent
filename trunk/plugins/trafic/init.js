@@ -264,11 +264,11 @@ if(plugin.enabled && plugin.canChangeColumns() && plugin.collectStatForTorrents)
 		plugin.config.call(this,data);
 		plugin.reqId = theRequestManager.addRequest("trt", null, function(hash,torrent,value)
 		{
-			if($type(theWebUI.torrents[hash]))
+			if($type(theWebUI.ratiosStat[hash]) && torrent.size)
 			{
-				torrent.ratioday = theWebUI.torrents[hash].ratioday;
-				torrent.ratioweek = theWebUI.torrents[hash].ratioweek;
-				torrent.ratiomonth = theWebUI.torrents[hash].ratiomonth;
+				torrent.ratioday = theWebUI.ratiosStat[hash][0]/torrent.size;
+				torrent.ratioweek = theWebUI.ratiosStat[hash][1]/torrent.size;
+				torrent.ratiomonth = theWebUI.ratiosStat[hash][2]/torrent.size;
 			}
 		});
 		plugin.trtRenameColumn();
@@ -307,33 +307,17 @@ if(plugin.enabled && plugin.canChangeColumns() && plugin.collectStatForTorrents)
 
 	plugin.updateRatios = function( d )
 	{
-		for( var hash in d )
-		{
-			var torrent = theWebUI.torrents[hash];
-			if($type( torrent ) && torrent.size)
-			{
-				torrent.ratioday = d[hash][0]/torrent.size;
-				torrent.ratioweek = d[hash][1]/torrent.size;
-				torrent.ratiomonth = d[hash][2]/torrent.size;
-			}
-		}
 		window.setTimeout( plugin.startRatios, plugin.updateInterval*60000 );
-	}
-
-	plugin.loadTorrents = theWebUI.loadTorrents;
-	theWebUI.loadTorrents = function() 
-	{
-		if(theWebUI.firstLoad)
-			plugin.startRatios();
-                plugin.loadTorrents.call(theWebUI);
 	}
 
 	rTorrentStub.prototype.getratios = function()
 	{
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/trafic/action.php";
-		this.dataType = "json";
+		this.dataType = "script";
 	}
+
+	plugin.startRatios();
 }
 
 plugin.onLangLoaded = function()
