@@ -162,6 +162,7 @@ if($handle = opendir('../plugins'))
 		$jResult.="log(theUILang.PCRENotFound);";
 	else
 	{
+		$remoteRequests = array();
 		$theSettings = new rTorrentSettings();
 		$theSettings->obtain();
 		if(!$theSettings->linkExist)
@@ -183,6 +184,12 @@ if($handle = opendir('../plugins'))
 	        	        	@define('PHP_USE_GZIP', false);
 	        	        	$jResult.="log(theUILang.gzipNotFound);";
 	        	        }
+				if(PHP_INT_SIZE<=4)
+				{
+					if(findEXE('stat')===false)
+						$jResult.="log(theUILang.statNotFoundW);";
+                                        findRemoteEXE('stat',"log(theUILang.statNotFound);",$remoteRequests);
+				}
 	        	        $up = getUploadsPath();
 	        	        $st = getSettingsPath();
 				@chmod($up,0777);
@@ -246,7 +253,6 @@ if($handle = opendir('../plugins'))
 			}
 		} 
 		usort($init,"pluginsSort");
-		$remoteRequests = array();
 		foreach($init as $plugin)
 		{
 		        $jEnd = '';

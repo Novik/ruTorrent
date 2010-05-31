@@ -1,7 +1,6 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( dirname(__FILE__)."/../../php/Torrent.php" );
-require_once( dirname(__FILE__)."/../../php/lfs.php" );
 eval( getPluginConf( 'create' ) );
 
 ignore_user_abort(true);
@@ -115,7 +114,8 @@ if(isset($_REQUEST['cmd']))
 				{
 					$pid = trim(file_get_contents($dir.'/pid'));
 					$req = new rXMLRPCRequest( 
-						new rXMLRPCCommand( "execute", array("pkill","-9","-P",$pid) ) );
+//						new rXMLRPCCommand( "execute", array(getExternal("pkill"),"-9","-P",$pid) ) );
+						new rXMLRPCCommand( "execute", array("sh","-c","kill -9 `".getExternal("pgrep")." -P ".$pid."`") ) );
 					if($req->success())
 						$ret = "{ no: ".$taskNo." }";	
 					$req = new rXMLRPCRequest( 

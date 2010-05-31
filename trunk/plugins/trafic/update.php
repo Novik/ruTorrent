@@ -159,7 +159,7 @@
 							if(is_file($dir."torrents/".$file))
 							{
 								$hash = basename($file, ".csv");
-								$existingStats[$hash] = mtime($dir."torrents/".$file);
+								$existingStats[$hash] = filemtime($dir."torrents/".$file);
 							}
 						}
 					}

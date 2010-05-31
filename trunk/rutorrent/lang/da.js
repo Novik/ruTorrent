@@ -367,6 +367,8 @@
  gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
  cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable.",
  retryOnErrorTitle		: "If rtorrent is not available try again after",
- retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" }
+ retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },
+ statNotFound			: "rTorrent's user can't access 'stat' program. Some functionality will be unavailable.",
+ statNotFoundW			: "Web-server user can't access 'stat' program. Some functionality will be unavailable."
  };
 

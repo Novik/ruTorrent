@@ -1,6 +1,5 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
-require_once( dirname(__FILE__)."/../../php/lfs.php" );
 require_once( dirname(__FILE__)."/../../php/cache.php");
 require_once( dirname(__FILE__)."/../../php/settings.php");
 eval( getPluginConf( 'unpack' ) );

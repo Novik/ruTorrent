@@ -368,5 +368,7 @@
  gzipNotFound			: "Le serveur web n'a pas acc\u00e8s au programme 'gzip'. ruTorrent ne fonctionnera pas.",
  cantObtainUser         	: "ruTorrent ne d\u00e9tecte pas l'uid ou l'utilisateur de rtorrent. Certaines fonctionnalit\u00e9s ne seront pas disponibles.",
  retryOnErrorTitle		: "If rtorrent is not available try again after",
- retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" }
+ retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },
+ statNotFound			: "rTorrent ne peut pas acc\u00e9der au programme 'stat'. Certaines fonctionnalit\u00e9s ne seront pas disponibles.",
+ statNotFoundW			: "Le serveur web n'a pas acc\u00e8s au programme 'stat'. Certaines fonctionnalit\u00e9s ne seront pas disponibles."
 };
