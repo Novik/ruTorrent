@@ -18,5 +18,6 @@
  theUILang.torrentSave		 	= "Сохранить";
  theUILang.torrentKill		 	= "Остановить";
  theUILang.torrentKilled	 	= "Процесс остановлен.";
+ theUILang.badScriptPath 		= "Плагин create: Часть функциональности будет недоступна. rTorrent должен иметь доступ на чтение/выполнение к файлу";
 
 thePlugins.get("create").langLoaded();
