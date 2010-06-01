@@ -9,7 +9,7 @@ if($hth = opendir('../plugins/theme/themes'))
 {
 	while(false !== ($file = readdir($hth)))
 	{
-		if($file != "." && $file != ".." && is_dir('../plugins/theme/themes/'.$file))
+		if($file[0] != "." && is_dir('../plugins/theme/themes/'.$file))
 		{
 			if($themes != "plugin.themes = [")
 				$themes.=',';
