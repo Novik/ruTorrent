@@ -1,0 +1,4 @@
+description: Theme support for ruTorrent.
+author: Novik
+runlevel: 5
+version: 3.1
