@@ -266,7 +266,7 @@ function makeContent()
 							retries+
 						"</select>"+
 					"</div>"+
-					"<div class=\"op100l\">"+
+					"<div class=\"op50l\">"+
 						"<label for=\"webui.lang\">"+theUILang.mnu_lang+":</label>&nbsp;"+
 						"<select id=\"webui.lang\">"+
 							languages+
