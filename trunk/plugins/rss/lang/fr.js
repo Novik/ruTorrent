@@ -64,5 +64,8 @@
  theUILang.rssInterval3w = "3 semaine";
  theUILang.rssInterval1m = "1 mois";
  theUILang.rssClearFilter = "Remise \u00e0 z\u00e9ro";
+ theUILang.rssMarkAs = "Mark as";
+ theUILang.rssAsLoaded = "loaded";
+ theUILang.rssAsUnloaded = "unloaded";
 
 thePlugins.get("rss").langLoaded();

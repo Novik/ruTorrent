@@ -55,5 +55,8 @@
  theUILang.rssInterval3w = "3 недели";
  theUILang.rssInterval1m = "1 месяц";
  theUILang.rssClearFilter = "Сброс";
+ theUILang.rssMarkAs = "Пометить как";
+ theUILang.rssAsLoaded = "загруженный";
+ theUILang.rssAsUnloaded = "не загруженный";
 
 thePlugins.get("rss").langLoaded();

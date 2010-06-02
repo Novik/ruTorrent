@@ -55,5 +55,8 @@
  theUILang.rssInterval3w = "3 weeks";
  theUILang.rssInterval1m = "1 month";
  theUILang.rssClearFilter = "Reset";
+ theUILang.rssMarkAs = "Mark as";
+ theUILang.rssAsLoaded = "loaded";
+ theUILang.rssAsUnloaded = "unloaded";
 
 thePlugins.get("rss").langLoaded();
