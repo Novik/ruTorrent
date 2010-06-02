@@ -227,6 +227,24 @@ switch($cmd)
 			$val = $mngr->getDescription($_REQUEST['rss'],$_REQUEST['href']);
 		break;
 	}
+	case "mark":
+	{
+		if(!isset($HTTP_RAW_POST_DATA))
+			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+		if(isset($HTTP_RAW_POST_DATA) && isset($_REQUEST['state']))
+		{
+			$urls = array();
+			$vars = explode('&', $HTTP_RAW_POST_DATA);
+			foreach($vars as $var)
+			{
+				$parts = explode("=",$var);
+				if($parts[0]=="url")
+					$urls[] = rawurldecode($parts[1]);
+			}
+			$mngr->setHistoryState( $urls, $_REQUEST['state'] );
+		}
+		break;
+	}
 	case "loadtorrents":
 	{
 		if(!isset($HTTP_RAW_POST_DATA))

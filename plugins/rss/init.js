@@ -146,6 +146,11 @@ theWebUI.getRSSIntervals = function( d )
 	theWebUI.updateRSSTimer = window.setTimeout("theWebUI.updateRSS()", d.next*1000);
 }
 
+theWebUI.RSSMarkState = function( state )
+{
+	this.request("?action=rssmarkstate&s="+state,[this.addRSSItems, this]);
+}
+
 theWebUI.RSSOpen = function()
 {
 	for(var i = 0; i<this.rssArray.length; i++)
@@ -297,6 +302,7 @@ theWebUI.createRSSMenu = function(e, id)
 			theContextMenu.add([ theUILang.rssMenuLoad, "theWebUI.RSSLoad()"]);
 			theContextMenu.add([ theUILang.rssMenuOpen, "theWebUI.RSSOpen()"]);
 			theContextMenu.add([ theUILang.rssMenuAddToFilter, "theWebUI.RSSAddToFilter()"]);
+			theContextMenu.add([CMENU_CHILD, theUILang.rssMarkAs, [ [ theUILang.rssAsLoaded, "theWebUI.RSSMarkState(1)"], [ theUILang.rssAsUnloaded, "theWebUI.RSSMarkState(0)"] ]]);
 			theContextMenu.add([CMENU_SEP]);
 			theWebUI.createRSSMenuPrim();
 		}
@@ -963,6 +969,16 @@ rTorrentStub.prototype.rsstoggle = function()
 	this.content = "mode=toggle";
 	if(theWebUI.actRSSLbl && (theWebUI.actRSSLbl != "_rssAll_"))
 		this.content = this.content + "&rss=" + theWebUI.actRSSLbl;
+	this.contentType = "application/x-www-form-urlencoded";
+	this.mountPoint = "plugins/rss/action.php";
+	this.dataType = "json";
+}
+
+rTorrentStub.prototype.rssmarkstate = function()
+{
+	this.content = "mode=mark&state="+this.ss[0];
+	for( var i=0; i<theWebUI.rssArray.length; i++)
+		this.content+=("&url="+encodeURIComponent(theWebUI.rssArray[i]));
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
 	this.dataType = "json";

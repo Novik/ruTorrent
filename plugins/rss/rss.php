@@ -717,6 +717,17 @@ class rRSSManager
 		$this->history->clear();
                 $this->saveHistory();
 	}
+	public function setHistoryState( $urls, $state )
+	{
+		foreach( $urls as $url )
+		{
+			if($state)
+				$this->history->add($url,'Loaded');
+			else
+				$this->history->del($url);
+		}
+                $this->saveHistory();
+	}
 	public function checkFilters($rss,$info = null,$filters = null)
 	{
 		if($filters===null)
