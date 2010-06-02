@@ -46,10 +46,10 @@ theDialogManager.setHandler('stg','beforeShow',function()
 	$($$("webui.theme")).val(theWebUI.theme);
 });
 
-theDialogManager.setHandler('stg','afterHide',function()
+plugin.setSettings = theWebUI.setSettings;
+theWebUI.setSettings = function() 
 {
+	plugin.setSettings.call(this);
 	if($($$("webui.theme")).val()!=theWebUI.theme)
-	{
 		theWebUI.request("?action=settheme",[theWebUI.reload, theWebUI]);
-	}
-});
+}
