@@ -12,6 +12,7 @@ if($do_diagnostic)
 		if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0005))
 			$jResult.="plugin.showError('theUILang.badScriptPath+\' (".$fname.")\'');";
 	}
+	findRemoteEXE('php',"thePlugins.get('create').showError('theUILang.createPHPNotFound');",$remoteRequests);
 	findRemoteEXE('pgrep',"thePlugins.get('create').showError('theUILang.pgrepNotFound');",$remoteRequests);
 }
 
