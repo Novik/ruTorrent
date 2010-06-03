@@ -211,8 +211,15 @@ theWebUI.rebuildTrackersLabels = function()
 		if(plugin.canChangeColumns())
 			table.Sort();
 		var ul = $("#torrl");
+
+		var keys = new Array();
 		for(var lbl in trackersLabels)
+			keys.push(lbl);
+		keys.sort();
+
+		for(var i=0; i<keys.length; i++) 
 		{
+			var lbl = keys[i];
 			var li = null;
 			if(lbl in this.trackersLabels)
 			{

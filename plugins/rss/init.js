@@ -443,10 +443,16 @@ theWebUI.editRSS = function()
 
 theWebUI.updateRSSLabels = function(rssLabels,allCnt)
 {
+	var keys = new Array();
+	for(var lbl in rssLabels)
+		keys.push(lbl);
+	keys.sort();
+
 	$("#_rssAll_c").text(allCnt);
 	var ul = $("#rssl");
-	for(var lbl in rssLabels)
+	for(var i=0; i<keys.length; i++) 
 	{
+		var lbl = keys[i];
 		var li = null;
 		if(lbl in this.rssLabels)
 		{
