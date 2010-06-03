@@ -28,6 +28,6 @@
  theUILang.torrentKilled                = "Le processus a \u00e9t\u00e9 interrompu.";
  theUILang.badScriptPath 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access script file for read/execute.";
  theUILang.pgrepNotFound 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access 'pgrep' program.";
- theUILang.createPHPNotFound		= "Create plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
+ theUILang.createPHPNotFound      	= "Plugin 'create' : rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
 
 thePlugins.get("create").langLoaded();
