@@ -1610,8 +1610,14 @@ var theWebUI =
 	{
 		var p = $("#lbll");
 		var temp = new Array();
-		for(var lbl in d) 
+		var keys = new Array();
+		for(var lbl in d)
+			keys.push(lbl);
+		keys.sort();
+
+		for(var i=0; i<keys.length; i++) 
 		{
+			var lbl = keys[i];
 			this.labels["-_-_-" + lbl + "-_-_-"] = d[lbl];
 			this.cLabels[lbl] = 1;
 			temp["-_-_-" + lbl + "-_-_-"] = true;
