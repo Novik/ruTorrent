@@ -94,7 +94,7 @@ if(isset($HTTP_RAW_POST_DATA))
 						unset($torrent->{'libtorrent_resume'}['trackers']);
 					if(isset($torrent->{'rtorrent'}))
 						unset($torrent->{'rtorrent'});
-					if(count($req->val)>8)
+					if(count($req->val)>9)
 						$throttle = getCmd("d.set_throttle_name=").$req->val[9];
 					$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
 					if($eReq->run() && !$eReq->fault)
