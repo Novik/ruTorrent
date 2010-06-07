@@ -1683,3 +1683,10 @@ dxSTable.prototype.getFirstSelected = function()
 	}
 	return(ret);
 }
+
+dxSTable.prototype.scrollTo = function(value) 
+{
+	var old = this.dBody.scrollTop;
+	this.dBody.scrollTop = value;
+	return(old);
+}

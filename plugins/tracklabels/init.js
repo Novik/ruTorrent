@@ -129,6 +129,7 @@ theWebUI.switchTrackersLabel = function(el,force)
 	if((this.actLbl != "") && ($$(this.actLbl) != null))
 		$($$(this.actLbl)).removeClass("sel");
 	this.actLbl = "";
+	table.scrollTo(0);
 	for(var hash in this.torrents)
 	        this.filterByTracker(hash);
 	if(!force)
