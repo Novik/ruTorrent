@@ -63,6 +63,7 @@ theWebUI.switchRSSLabel = function(el,force)
 	theWebUI.actRSSLbl = el.id;
 	el.className = theWebUI.isActiveRSSEnabled() ? "sel RSS cat" : "sel disRSS cat";
 	var table = theWebUI.getTable("rss");
+	table.scrollTo(0);
 	for(var k in theWebUI.rssItems)
 	{
 		if((theWebUI.actRSSLbl == "_rssAll_") || (table.getAttr(k, "rss")==theWebUI.actRSSLbl))

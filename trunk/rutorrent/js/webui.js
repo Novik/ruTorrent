@@ -324,7 +324,7 @@ var theWebUI =
 		        var enabled = theWebUI.settings["webui."+ndx+".colenabled"];
 			$.each(table.columns, function(i,col)
 			{
-				if(width && i<width.length)
+				if(width && i<width.length && width[i]>4)
 					col.width = width[i];
 				if(enabled && i<enabled.length)
 					col.enabled = enabled[i];
@@ -1784,6 +1784,7 @@ var theWebUI =
 			$(obj).addClass("sel");
 			this.actLbl = obj.id;
 			var table = this.getTable("trt");
+			table.scrollTo(0);
 			for(var k in this.torrents)
 				this.filterByLabel(k);
 			table.clearSelection();
