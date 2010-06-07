@@ -93,7 +93,7 @@ plugin.onLangLoaded = function()
 		"<div class='cont fxcaret'>"+
 			"<fieldset>"+
 				"<label>"+theUILang.Trackers+": </label>"+
-				"<textarea id='etrackers' name='etrackers'></textarea><br/>"+
+				"<textarea id='etrackers'></textarea><br/>"+
 				"<label>"+theUILang.Comment+": </label>"+
                                	"<input type='text' id='ecomment' name='ecomment' class='TextboxLarge'/><br/>"+
 			"</fieldset>"+
