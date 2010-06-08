@@ -162,10 +162,10 @@ var theDialogManager =
 	        var obj = $('#'+id);
 	        if(obj.data("modal"))
 			this.setModalState();
-        	if($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
+	      	if($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
 	        	this.items[id].beforeShow(id);
-		this.center(id);
 		obj.show(this.divider,callback);
+		this.center(id);
         	if($type(this.items[id]) && ($type(this.items[id].afterShow)=="function"))
 	        	this.items[id].afterShow(id);
 		this.bringToTop(id);
