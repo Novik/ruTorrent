@@ -533,7 +533,7 @@ var theWebUI =
 			}
 		});
 		if($type(this.settings["webui.search"]))
-			theSearchEngines.set(iv(this.settings["webui.search"]),true);
+			theSearchEngines.set(this.settings["webui.search"],true);
    	},
 
 	setSettings: function() 

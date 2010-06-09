@@ -4,10 +4,10 @@ plugin.loadLang();
 theWebUI.editTrackers = function(id)
 {
 	var trk = this.trackers[id];
-	trk.sort(function (a,b)
-	{
-		return( a[3] < b[3] ? -1 : a[3] > b[3] ? 1 : 0 );
-	});
+//	trk.sort(function (a,b)
+//	{
+//		return( a[3]-b[3] );
+//	});
 	var s = "";
 	if(trk.length)
 	{
