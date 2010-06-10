@@ -43,6 +43,8 @@ if(plugin.enabled)
 				theWebUI.getTable("trt").renameColumnById("throttle",theUILang.throttle);
 				if(thePlugins.isInstalled("rss"))
 					plugin.rssRenameColumn();
+				if(thePlugins.isInstalled("extsearch"))
+					plugin.tegRenameColumn();
 			}
 			else
 				setTimeout(arguments.callee,1000);
@@ -52,6 +54,14 @@ if(plugin.enabled)
 		{
 			if(theWebUI.getTable("rss").created)
 				theWebUI.getTable("rss").renameColumnById("throttle",theUILang.throttle);
+			else
+				setTimeout(arguments.callee,1000);
+		}
+
+		plugin.tegRenameColumn = function()
+		{
+			if(theWebUI.getTable("teg").created)
+				theWebUI.getTable("teg").renameColumnById("throttle",theUILang.throttle);
 			else
 				setTimeout(arguments.callee,1000);
 		}

@@ -283,6 +283,8 @@ if(plugin.enabled && plugin.canChangeColumns() && plugin.collectStatForTorrents)
 			theWebUI.getTable("trt").renameColumnById("ratiomonth",theUILang.ratioMonth);
 			if(thePlugins.isInstalled("rss"))
 				plugin.rssRenameColumn();
+			if(thePlugins.isInstalled("extsearch"))
+				plugin.tegRenameColumn();
 		}
 		else
 			setTimeout(arguments.callee,1000);
@@ -295,6 +297,18 @@ if(plugin.enabled && plugin.canChangeColumns() && plugin.collectStatForTorrents)
 			theWebUI.getTable("rss").renameColumnById("ratioday",theUILang.ratioDay);
 			theWebUI.getTable("rss").renameColumnById("ratioweek",theUILang.ratioWeek);
 			theWebUI.getTable("rss").renameColumnById("ratiomonth",theUILang.ratioMonth);
+		}
+		else
+			setTimeout(arguments.callee,1000);
+	}
+
+	plugin.tegRenameColumn = function()
+	{
+		if(theWebUI.getTable("teg").created)
+		{
+			theWebUI.getTable("teg").renameColumnById("ratioday",theUILang.ratioDay);
+			theWebUI.getTable("teg").renameColumnById("ratioweek",theUILang.ratioWeek);
+			theWebUI.getTable("teg").renameColumnById("ratiomonth",theUILang.ratioMonth);
 		}
 		else
 			setTimeout(arguments.callee,1000);

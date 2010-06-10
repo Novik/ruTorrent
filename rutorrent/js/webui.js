@@ -2207,7 +2207,12 @@ var theWebUI =
 
 	requestWithTimeout: function(qs, onComplite, onTimeout, onError, isASync) 
 	{
-		Ajax(this.url + qs, "GET", isASync, onComplite, onTimeout, onError, this.settings["webui.reqtimeout"]);
+		Ajax(this.url + qs, isASync, onComplite, onTimeout, onError, this.settings["webui.reqtimeout"]);
+   	},
+
+	requestWithoutTimeout: function(qs, onComplite, isASync) 
+	{
+		Ajax(this.url + qs, isASync, onComplite, null, this.error, -1);
    	},
 
    	show: function() 
