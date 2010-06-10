@@ -818,14 +818,12 @@ dxSTable.prototype.assignEvents = function()
 		{
 			self.dHead.scrollLeft = self.dBody.scrollLeft;
 			var maxRows = self.getMaxRows();
-			if((self.scrollTop != self.dBody.scrollTop) 
-//				&& (self.viewRows > maxRows)
-				) 
+			if(self.scrollTop != self.dBody.scrollTop) 
 			{
 				self.scOdd = null;
 				self.scrollDiff = self.scrollTop - self.dBody.scrollTop;
 				self.scrollTop = self.dBody.scrollTop;
-				if(self.noDelayingDraw || (Math.abs(self.scrollDiff) <= TR_HEIGHT*3))
+				if(self.noDelayingDraw || (Math.abs(self.scrollDiff) <= TR_HEIGHT*3) || (self.viewRows <= maxRows))
 				{
 					handleScroll.apply(self);
 					return;
@@ -964,7 +962,7 @@ function handleScroll()
 	if(!!this.scrollTimeout) 
 		window.clearTimeout(this.scrollTimeout);
 	this.scrollTimeout = null;
-	this.refreshRows();
+	this.refreshRows(null, true);
 	this.setBodyState("visible");
 	this.scp.style.display = "none";
 }
@@ -974,7 +972,7 @@ dxSTable.prototype.getMaxRows = function()
 	return((this.maxRows || this.viewRows<100) ? 1000000 : Math.ceil(this.dBody.clientHeight / TR_HEIGHT));	
 }
 
-dxSTable.prototype.refreshRows = function( height ) 
+dxSTable.prototype.refreshRows = function( height, fromScroll ) 
 {
 	if(this.isScrolling || !this.created) 
 	{
@@ -992,7 +990,7 @@ dxSTable.prototype.refreshRows = function( height )
    	}
 	var mxi = mni + maxRows;
 
-	if(mni==this.mni && mxi==this.mxi)
+	if((mni==this.mni && mxi==this.mxi) && fromScroll)
 		return;
 
 	this.cancelSort = true;
