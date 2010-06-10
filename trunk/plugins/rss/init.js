@@ -75,7 +75,6 @@ theWebUI.switchRSSLabel = function(el,force)
 	var lst = $("#List");
 	if(lst.is(":visible"))
 	{
-		table.clearSelection();
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
 		if((this.actLbl != "") && ($$(this.actLbl) != null))
@@ -87,6 +86,7 @@ theWebUI.switchRSSLabel = function(el,force)
 		table.calcSize();
 		rss.show();
 		lst.hide();
+		table.scrollTo(0);
 	}
 	theWebUI.switchLayout(true);
 	table.refreshRows();

@@ -82,6 +82,8 @@ var dxSTable = function()
 	this.rowCover = null;
 	this.prgStartColor = new RGBackground(".meter-value-start-color");
 	this.prgEndColor = new RGBackground(".meter-value-end-color");
+	this.mni = 0;
+	this.mxi = 0;
 }
 
 dxSTable.prototype.setPaletteByURL = function(url) 
@@ -978,7 +980,6 @@ dxSTable.prototype.refreshRows = function( height )
 	{
 		return;
    	}
-	this.cancelSort = true;
    	var maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
 	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
 	if(mni + maxRows > this.viewRows) 
@@ -990,6 +991,14 @@ dxSTable.prototype.refreshRows = function( height )
 		mni = 0;
    	}
 	var mxi = mni + maxRows;
+
+	if(mni==this.mni && mxi==this.mxi)
+		return;
+
+	this.cancelSort = true;
+	this.mni = mni;
+	this.mxi = mxi;
+
 	var h = (this.viewRows - maxRows) * TR_HEIGHT;
 	var ht = (h<0) ? 0 : mni*TR_HEIGHT;
 	var hb = (h<0) ? 0 : h - ht;
@@ -1230,7 +1239,7 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	if(this.viewRows > maxRows) 
 		this.bpad.style.height = ((this.viewRows - maxRows) * TR_HEIGHT) + "px";
 	var self = this;
-	if(this.sIndex !=- 1) 
+	if((this.sIndex !=- 1) && !this.noSort)
 		this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
 }
 
@@ -1280,7 +1289,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 		else
 			div.innerHTML = (String(data[ind]) == "") ? "&nbsp;" : escapeHTML(data[ind]);
 		if((ind == 0) && (icon != null)) 
-				td.appendChild( $("<span></span>").addClass("stable-icon " + icon).get(0) );
+			td.appendChild( $("<span></span>").addClass("stable-icon " + icon).get(0) );
 		td.appendChild(div);
 		tr.appendChild(td);
 		if(!this.colsdata[i].enabled && !browser.isIE7x)

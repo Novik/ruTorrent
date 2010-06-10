@@ -40,6 +40,8 @@ if(plugin.enabled)
 				theWebUI.getTable("trt").renameColumnById("addtime",theUILang.addTime);
 				if(thePlugins.isInstalled("rss"))
 					plugin.rssRenameColumn();
+				if(thePlugins.isInstalled("extsearch"))
+					plugin.tegRenameColumn();
 			}
 			else
 				setTimeout(arguments.callee,1000);
@@ -51,6 +53,17 @@ if(plugin.enabled)
 			{
 				theWebUI.getTable("rss").renameColumnById("seedingtime",theUILang.seedingTime);
 				theWebUI.getTable("rss").renameColumnById("addtime",theUILang.addTime);
+			}
+			else
+				setTimeout(arguments.callee,1000);
+		}
+
+		plugin.tegRenameColumn = function()
+		{
+			if(theWebUI.getTable("teg").created)
+			{
+				theWebUI.getTable("teg").renameColumnById("seedingtime",theUILang.seedingTime);
+				theWebUI.getTable("teg").renameColumnById("addtime",theUILang.addTime);
 			}
 			else
 				setTimeout(arguments.callee,1000);

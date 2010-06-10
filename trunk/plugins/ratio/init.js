@@ -43,6 +43,8 @@ if(plugin.enabled)
 				theWebUI.getTable("trt").renameColumnById("ratiogroup",theUILang.ratio);
 				if(thePlugins.isInstalled("rss"))
 					plugin.rssRenameColumn();
+				if(thePlugins.isInstalled("extsearch"))
+					plugin.tegRenameColumn();
 			}
 			else
 				setTimeout(arguments.callee,1000);
@@ -52,6 +54,14 @@ if(plugin.enabled)
 		{
 			if(theWebUI.getTable("rss").created)
 				theWebUI.getTable("rss").renameColumnById("ratiogroup",theUILang.ratio);
+			else
+				setTimeout(arguments.callee,1000);
+		}
+
+		plugin.tegRenameColumn = function()
+		{
+			if(theWebUI.getTable("teg").created)
+				theWebUI.getTable("teg").renameColumnById("ratiogroup",theUILang.ratio);
 			else
 				setTimeout(arguments.callee,1000);
 		}
