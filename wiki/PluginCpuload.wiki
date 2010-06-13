@@ -6,4 +6,12 @@
 
 == Description ==
 
-*Under construction*
+This plugin adds a CPU Load usage bar to the bottom toolbar.
+
+http://img217.imageshack.us/img217/1285/screenshot20100613at757.png
+
+== How it Works ==
+
+The plugin is purely for cosmetic use.  It's pretty generalized in it's current state, and should not be taken as 100% accurate.  
+
+_( note: there is a formula which i will add once i get it translated -- wonslung)_
