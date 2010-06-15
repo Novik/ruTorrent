@@ -626,7 +626,7 @@ rTorrentStub.prototype.getsettingsResponse = function(xml)
 	var dht = this.getValue(values,3);
 	if(dht_active!='0')
 	{
-		i+=11;
+		i+=(values.length-101);
 		dht = this.getValue(values,7);
 	}
 	if((dht=="auto") || (dht=="on"))

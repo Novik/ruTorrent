@@ -54,7 +54,7 @@ else
 				$url = substr($url,0,$pos);
 			}
 			set_time_limit(0);
-			if(@$cli->fetch($url) && $cli->status>=200 && $cli->status<300)
+			if(@$cli->fetch(Snoopy::linkencode($url)) && $cli->status>=200 && $cli->status<300)
 			{
 			        $name = $cli->get_filename();
 			        if($name===false)
