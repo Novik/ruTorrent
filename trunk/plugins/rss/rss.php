@@ -37,7 +37,7 @@ class rRSS
 			}
 			else
 				$this->url = $url;
-			$this->url = self::linkencode($this->url);
+			$this->url = Snoopy::linkencode($this->url);
 			$this->srcURL = $this->url;
 			if(count($this->cookies))
 			{
@@ -52,7 +52,7 @@ class rRSS
 
 	public function getTorrent( $href )
 	{
-		$cli = self::fetchURL(self::linkencode($href),$this->cookies);
+		$cli = self::fetchURL(Snoopy::linkencode($href),$this->cookies);
 		if($cli && $cli->status>=200 && $cli->status<300)
 		{
 			$name = $cli->get_filename();
@@ -247,79 +247,7 @@ class rRSS
 		return($out);
 	}
 
-	static protected function linkencode($p_url)
-	{
-		if(preg_match("/\%([0-9,A-F]{2})/i",$p_url)==1)
-			return($p_url);
-		$uparts = @parse_url($p_url);
-		$scheme = array_key_exists('scheme',$uparts) ? $uparts['scheme'] : "";
-		$pass = array_key_exists('pass',$uparts) ? $uparts['pass']  : "";
-		$user = array_key_exists('user',$uparts) ? $uparts['user']  : "";
-		$port = array_key_exists('port',$uparts) ? $uparts['port']  : "";
-		$host = array_key_exists('host',$uparts) ? $uparts['host']  : "";
-		$path = array_key_exists('path',$uparts) ? $uparts['path']  : "";
-		$query = array_key_exists('query',$uparts) ? $uparts['query']  : "";
-		$fragment = array_key_exists('fragment',$uparts) ? $uparts['fragment']  : "";
 
-		if(!empty($scheme))
-			$scheme .= '://';
-
-		if(!empty($pass) && !empty($user))
-		{
-			$user = rawurlencode($user).':';
-			$pass = rawurlencode($pass).'@';
-		}
-		elseif(!empty($user))
-			$user .= '@';
-
-		if(!empty($port) && !empty($host))
-			$host = ''.$host.':';
-		elseif(!empty($host))
-			$host=$host;
-
-		if(!empty($path))
-		{
-			$arr = preg_split("/([\/;=])/", $path, -1, PREG_SPLIT_DELIM_CAPTURE);
-			$path = "";
-			foreach($arr as $var)
-			{
-				switch($var)
-				{
-					case "/":
-					case ";":
-					case "=":
-						$path .= $var;
-						break;
-					default:
-						$path .= rawurlencode($var);
-				}
-			}
-			// legacy patch for servers that need a literal /~username
-			$path = str_replace("/%7E","/~",$path);
-		}
-
-		if(!empty($query))
-		{
-			$arr = preg_split("/([&=;])/", $query, -1, PREG_SPLIT_DELIM_CAPTURE);
-			$query = "?";
-			foreach($arr as $var)
-			{
-				switch($var)
-				{
-					case "&":
-					case "=":
-					case ";":
-						$query .= $var;
-						break;
-					default:
-						$query .= urlencode(str_replace("+", " ", $var));
-				}
-			}
-		}
-		if(!empty($fragment))
-			$fragment = '#'.urlencode($fragment);
-		return implode('', array($scheme, $user, $pass, $host, $port, $path, $query, $fragment));
-	}
 
 	static protected function quoteInvalidURI($str)
 	{
