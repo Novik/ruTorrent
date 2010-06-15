@@ -167,7 +167,7 @@ switch($mode)
 			$i = 3;
                         if($dht_active!='0')
 			{
-				$i+=11;
+				$i+=(count($req->val)-51);
 				$dht = $req->val[5];
 			}
 			$result = array_slice($req->val, $i, count($cmds));
