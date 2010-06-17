@@ -15,3 +15,6 @@ On the otherhand, because this plugin implements the scgi function in php, it do
 This plugin was sponsored by [http://forums.rutorrent.org/index.php?action=profile;u=213 Alexander] from the [http://forums.rutorrent.org rutorrent forums], and is the direct result of a bounty.
 
 Use of this plugin reduces bandwidth 10 fold.
+
+
+_*This plugin requires php 5.2.x or higher*_
