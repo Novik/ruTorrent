@@ -927,11 +927,14 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 
 		complete: function(XMLHttpRequest, textStatus)
 		{
-			try {
-			var diff = new Date().getTime()-Date.parse(XMLHttpRequest.getResponseHeader("Date"));
-			} catch(e) { return; };
-			theWebUI.deltaTime = diff;
-			stub = null;
+			if(theWebUI.deltaTime==0)
+			{
+				try {
+				var diff = new Date().getTime()-Date.parse(XMLHttpRequest.getResponseHeader("Date"));
+				} catch(e) { return; };
+				theWebUI.deltaTime = diff;
+				stub = null;
+			}
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown)
 		{
