@@ -186,13 +186,14 @@ class Snoopy
 		return implode('', array($scheme, $user, $pass, $host, $port, $path, $query, $fragment));
 	}
 
-	function fetch($URI)
+	function fetch($URI,$method="GET",$content_type="",$body="")
 	{
 		$URI_PARTS = parse_url($URI);
 		if (!empty($URI_PARTS["user"]))
 			$this->user = $URI_PARTS["user"];
 		if (!empty($URI_PARTS["pass"]))
 			$this->pass = $URI_PARTS["pass"];
+		$this->_httpmethod = $method;
 				
 		switch($URI_PARTS["scheme"])
 		{
@@ -205,13 +206,13 @@ class Snoopy
 					if($this->_isproxy)
 					{
 						// using proxy, send entire URI
-						$this->_httprequest($URI,$fp,$URI,$this->_httpmethod);
+						$this->_httprequest($URI,$fp,$URI,$this->_httpmethod,$content_type,$body);
 					}
 					else
 					{
 						$path = $URI_PARTS["path"].(isset($URI_PARTS["query"]) ? "?".$URI_PARTS["query"] : "");
 						// no proxy, send only the path
-						$this->_httprequest($path, $fp, $URI, $this->_httpmethod);
+						$this->_httprequest($path, $fp, $URI, $this->_httpmethod,$content_type,$body);
 					}
 					
 					$this->_disconnect($fp);
@@ -262,13 +263,13 @@ class Snoopy
 				if($this->_isproxy)
 				{
 					// using proxy, send entire URI
-					$this->_httpsrequest($URI,$URI,$this->_httpmethod);
+					$this->_httpsrequest($URI,$URI,$this->_httpmethod,$content_type,$body);
 				}
 				else
 				{
 					$path = $URI_PARTS["path"].($URI_PARTS["query"] ? "?".$URI_PARTS["query"] : "");
 					// no proxy, send only the path
-					$this->_httpsrequest($path, $URI, $this->_httpmethod);
+					$this->_httpsrequest($path, $URI, $this->_httpmethod,$content_type,$body);
 				}
 
 				if($this->_redirectaddr)
