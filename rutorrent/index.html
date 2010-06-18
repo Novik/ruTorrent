@@ -55,16 +55,24 @@
 			<a id="mnu_help" href="javascript://void();" onclick="theDialogManager.toggle('dlgHelp'); return(false);" onfocus="this.blur()" title="Help">
 				<div id="help"></div>
 			</a>
-			<div id="sb">
-			<a id="mnu_search" href="javascript://void();" onclick="theSearchEngines.show(); return(false);" onfocus="this.blur()" title="Search">
-				<div id="search"></div>
-			</a>
-			<input type="text" class="TextboxMid" id="query" onfocus="$('#sc').hide();"/>
-			<a id="mnu_go" href="javascript://void();" onclick="theSearchEngines.run(); return(false);" onfocus="this.blur()" title="Go">
-				<div id="go"></div>
-			</a>
-			<div id="ind"></div>
-			</div>
+			<table id='rc' cellpadding="0" cellspacing="0"><tr id='rrow'>
+				<td>
+					<a id="mnu_search" href="javascript://void();" onclick="theSearchEngines.show(); return(false);" onfocus="this.blur()" title="Search">
+						<div id="search"></div>
+					</a>
+				</td>
+				<td>
+					<input type="text" class="TextboxMid" id="query" onfocus="$('#sc').hide();"/>
+				</td>
+				<td>
+					<a id="mnu_go" href="javascript://void();" onclick="theSearchEngines.run(); return(false);" onfocus="this.blur()" title="Go">
+						<div id="go"></div>
+					</a>
+				</td>
+				<td>
+					<div id="ind"></div>
+				</td>
+			</tr></table>
 		</div>
 		<table id="maincont" cellpadding="0" cellspacing="0" summary="layout table">
 			<tr>

@@ -979,7 +979,7 @@ $(document).ready(function()
 {
 	$('#ind').ajaxStart( function()
 	{
-		this.timer = window.setTimeout("$('#ind').show()", 500);
+		this.timer = window.setTimeout("$('#ind').css( { visibility: 'visible' } )", 500);
 	});
 	$('#ind').ajaxStop( function()
 	{
@@ -988,6 +988,6 @@ $(document).ready(function()
         		window.clearTimeout(this.timer);
 	        	this.timer = null;
 		}
-		$(this).hide();
+		$(this).css( { visibility: "hidden" } );
 	});
 });
