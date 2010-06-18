@@ -63,11 +63,12 @@ div#t div#rss {background: transparent url(../images/toolbar.png) no-repeat -240
 div#t div#setting {background: transparent url(../images/toolbar.png) no-repeat -264px center}
 
 div#t div#help {background: transparent url(../images/quest.gif) no-repeat 0px center}
-div#t div#go {background: transparent url(../images/go.gif) no-repeat 0px center; }
 
-div#t div#sb {width: 230px; float: right; margin-right: 0px; line-height: 26px; }
-div#t div#sb input {margin-top: 9px; float: left;}
-div#t div#sb a {margin: 3px 5px 0 0}
+#rc { float: right; }
+#go {background: transparent url(../images/go.gif) no-repeat 0px center; }
+#query { margin-top: 4px; }
+div#t a#mnu_go {margin: 3px 0 0 0; padding: 3px}
+div#t #ind {margin-top: 2px; background: transparent url(../images/ajax-loader.gif) no-repeat 0px center; width: 32px; margin-right: 2px; line-height: 26px; cursor: default; }
 
 input.Textbox, input.Button, select {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px}
 Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 50px}
@@ -218,8 +219,6 @@ div#yesnoDlg {width: 280px; height: 100px}
 div#yesnoDlg div.dlg-header {background-image: url(../images/error.gif)}
 div#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 16px}
 div#yesnoDlg div.content input {margin-top: 5px}
-
-div#t div#ind {margin-top: 7px; background: transparent url(../images/ajax-loader.gif) no-repeat 0px center; width: 32px; float: right; margin-right: 2px; line-height: 26px; cursor: default; display: none;}
 
 span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.gif) no-repeat center center; }
 .webkit div#msg {position: fixed;}
