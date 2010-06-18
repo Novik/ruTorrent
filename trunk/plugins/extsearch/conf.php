@@ -1,0 +1,5 @@
+<?php
+
+$searchHistoryMaxCount = 256;
+
+?>
