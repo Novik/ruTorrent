@@ -1,6 +1,7 @@
 .EngineMininova {background-image: url(./images/mininova.png); background-repeat: no-repeat}
 .EngineISOHunt {background-image: url(./images/isohunt.png); background-repeat: no-repeat}
 .EngineTorrentPortal {background-image: url(./images/torrentportal.png); background-repeat: no-repeat}
+.EngineIPTorrents {background-image: url(./images/iptorrents.png); background-repeat: no-repeat}
 
 div#tegLoadTorrents #RSSBtn {width: 30px;}
 div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}
