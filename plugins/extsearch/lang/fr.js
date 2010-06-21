@@ -4,7 +4,7 @@
  theUILang.tegMenuDeleteItem = "Remove item";
  theUILang.tegMenuDelete = "Remove tag";
  theUILang.tegRefresh	= "Refresh tag";
- theUILang.exsGlobal	= "Include to 'All' category";
+ theUILang.exsGlobal	= "Include into 'All' category";
  theUILang.exsLimit	= "Result limit";
  theUILang.exsEngines	= "Engines";
  theUILang.exsSearch	= "Search";

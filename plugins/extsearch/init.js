@@ -143,7 +143,7 @@ plugin.reloadData = function(id)
 				table.addRowById(
 				{
 					name: item.name,
-					created: item.time,
+					created: item.time-theWebUI.deltaTime/1000,
 					peers: item.peers,
 					seeds: item.seeds,
 					size: item.size,
@@ -433,7 +433,7 @@ theWebUI.loadTorrents = function(needSort)
 					updated = table.setValuesById(ndx,
 					{
 						name: item.name,
-						created: item.time,
+						created: item.time-theWebUI.deltaTime/1000,
 						peers: item.peers,
 						seeds: item.seeds,
 						size: item.size,

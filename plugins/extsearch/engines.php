@@ -32,12 +32,14 @@ class commonEngine
 			"peers"=>0,
 			));
 	}
-	static public function fetch($url)
+	static public function fetch($url,$cookies = '')
 	{
 		$client = new Snoopy();
 		$client->agent = HTTP_USER_AGENT;
 		$client->read_timeout = 5;
 		$client->use_gzip = HTTP_USE_GZIP;
+		if(!empty($cookies))
+			$client->cookies = $cookies;
 		@$client->fetch(Snoopy::linkencode($url));
 		if($client->status>=200 && $client->status<300)
 		{
@@ -58,12 +60,16 @@ class commonEngine
 			$val = floatval($sz[0]);
 			switch($sz[1])
 			{
+				case "TiB":
 				case "TB":
 					$val*=1024;
+				case "GiB":
 				case "GB":
 					$val*=1024;
+				case "MiB":
 				case "MB":
 					$val*=1024;	
+				case "KiB":
 				case "KB":
 					$val*=1024;	
 			}
