@@ -2,6 +2,16 @@
 .EngineISOHunt {background-image: url(./images/isohunt.png); background-repeat: no-repeat}
 .EngineTorrentPortal {background-image: url(./images/torrentportal.png); background-repeat: no-repeat}
 .EngineIPTorrents {background-image: url(./images/iptorrents.png); background-repeat: no-repeat}
+.EngineFenopy {background-image: url(./images/fenopy.png); background-repeat: no-repeat}
+.EngineBTJunkie {background-image: url(./images/btjunkie.png); background-repeat: no-repeat}
+.EngineExtraTorrent {background-image: url(./images/extratorrent.png); background-repeat: no-repeat}
+.EngineKickAssTorrents {background-image: url(./images/kickasstorrents.png); background-repeat: no-repeat}
+.EnginePirateBay {background-image: url(./images/piratebay.png); background-repeat: no-repeat}
+.EngineSumoTorrent {background-image: url(./images/sumotorrent.png); background-repeat: no-repeat}
+.EngineTorrentDownloads {background-image: url(./images/torrentdownloads.png); background-repeat: no-repeat}
+.EngineTorrentReactor {background-image: url(./images/torrentreactor.png); background-repeat: no-repeat}
+.EngineTorrentZap {background-image: url(./images/torrentzap.png); background-repeat: no-repeat}
+.EngineVector {background-image: url(./images/vertor.png); background-repeat: no-repeat}
 
 div#tegLoadTorrents #RSSBtn {width: 30px;}
 div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}
