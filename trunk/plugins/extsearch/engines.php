@@ -260,7 +260,7 @@ class engineManager
 		uasort($arr, create_function( '$a,$b', 'return( (intval($a["seeds"]) > intval($b["seeds"])) ? -1 : ((intval($a["seeds"]) < intval($b["seeds"])) ? 1 : 0) );'));
 		$cnt = 0;		
 		$history = self::loadHistory(true);
-                $ret = '{eng: '.quoteAndDeslashEachItem($eng).', data: [';
+                $ret = '{eng: '.quoteAndDeslashEachItem($eng).', cat: '.quoteAndDeslashEachItem($cat).', data: [';
 		foreach( $arr as $href=>$nfo )
 		{
 			$hash = $history->getHash( $href );

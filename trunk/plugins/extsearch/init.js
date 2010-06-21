@@ -379,7 +379,7 @@ theWebUI.setExtSearchTag = function( d )
 {
 	$("#query").removeAttr("readonly");
 	var what = $.trim($("#query").val());
-	var str = (d.eng=="all" ? theUILang.All : d.eng)+": "+what;
+	var str = (d.eng=="all" ? theUILang.All : d.eng)+"/"+theUILang["excat"+d.cat]+": "+what;
 	for( var id in plugin.tegs )
 		if(plugin.tegs[id].val==str)
 		{
@@ -393,7 +393,7 @@ theWebUI.setExtSearchTag = function( d )
 		html(escapeHTML(str) + "&nbsp;(<span id=\"" + tegId + "-c\">0</span>)").
 		mouseclick(plugin.extTegContextMenu).addClass("cat")
 	$("#lblf").append( el );
-	plugin.tegs[tegId] = { "val": str, "what": what, "eng": d.eng, "data": d.data };
+	plugin.tegs[tegId] = { "val": str, "what": what, "cat": d.cat, "eng": d.eng, "data": d.data };
 	theWebUI.switchLabel(el[0]);
 	plugin.forceMode = false;
 }
@@ -456,7 +456,7 @@ theWebUI.tegRefresh = function()
 		var item = plugin.tegs[theWebUI.actLbl];
 		$("#query").val(item.what);
 		$("#query").attr("readonly",true);
-		theWebUI.requestWithoutTimeout("?action=extsearch&s="+item.eng+"&v="+encodeURIComponent(item.what),[theWebUI.setExtSearchTag, theWebUI]);
+		theWebUI.requestWithoutTimeout("?action=extsearch&s="+item.eng+"&v="+encodeURIComponent(item.what)+"&v="+encodeURIComponent(item.cat),[theWebUI.setExtSearchTag, theWebUI]);
 	}
 }
 
