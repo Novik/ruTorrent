@@ -4,9 +4,9 @@ plugin.loadLang();
 plugin.categories = [ 'all', 'movies', 'tv', 'music', 'games', 'anime', 'software', 'pictures', 'books' ];
 
 plugin.set = theSearchEngines.set;
-theSearchEngines.set = function(val)
+theSearchEngines.set = function(val, noSave)
 {
-	plugin.set.call(theSearchEngines);
+	plugin.set.call(theSearchEngines,val,noSave);
         theSearchEngines.checkForIncorrectCurrent();
 }
 
