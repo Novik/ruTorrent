@@ -32,19 +32,42 @@ class commonEngine
 			"peers"=>0,
 			));
 	}
-	static public function fetch($url,$cookies = '')
+	public function makeClient($url)
 	{
 		$client = new Snoopy();
 		$client->agent = HTTP_USER_AGENT;
 		$client->read_timeout = 5;
 		$client->use_gzip = HTTP_USE_GZIP;
-		if(!empty($cookies))
-			$client->cookies = $cookies;
+		return($client);
+	}
+	public function fetch($url)
+	{
+		$client = $this->makeClient($url);
 		@$client->fetch(Snoopy::linkencode($url));
 		if($client->status>=200 && $client->status<300)
 		{
 			ini_set( "pcre.backtrack_limit", max(strlen($client->results),100000) );
 			return($client);
+		}
+		return(false);
+	}
+	public function getTorrent( $url )
+	{
+		$cli = $this->fetch( $url );
+		if($cli)
+		{
+			$name = $cli->get_filename();
+			if($name===false)
+				$name = md5($url).".torrent";
+			$name = getUniqueFilename(getUploadsPath()."/".$name);
+			$f = @fopen($name,"w");
+			if($f!==false)
+			{
+				@fwrite($f,$cli->results,strlen($cli->results));
+				fclose($f);
+				@chmod($name,0666);
+				return($name);
+			}
 		}
 		return(false);
 	}
@@ -237,6 +260,19 @@ class engineManager
 		return(true);
 	}
 
+	public function getObject( $eng )
+	{
+		if(array_key_exists($eng,$this->engines))
+		{
+			$nfo = $this->engines[$eng];
+			require_once( $nfo["path"] );
+			$object = new $nfo["object"]();
+		}
+		else
+			$object = new commonEngine();
+		return($object);
+	}
+
 	public function action( $eng, $what, $cat = "all" )
 	{
 		$arr = array();
@@ -255,13 +291,8 @@ class engineManager
 		}
 		else
 		{
-			if(array_key_exists($eng,$this->engines))
-			{
-				$nfo = $this->engines[$eng];
-				require_once( $nfo["path"] );
-				$object = new $nfo["object"]();
-				$object->action($what,$cat,$arr,$this->limit);
-			}
+			$object = $this->getObject($eng);
+			$object->action($what,$cat,$arr,$this->limit);
 		}
 		uasort($arr, create_function( '$a,$b', 'return( (intval($a["seeds"]) > intval($b["seeds"])) ? -1 : ((intval($a["seeds"]) < intval($b["seeds"])) ? 1 : 0) );'));
 		$cnt = 0;		
@@ -286,39 +317,20 @@ class engineManager
 		return($ret.']}');
 	}
 
-	static public function getTorrent( $url )
-	{
-		$cli = commonEngine::fetch( $url );;
-		if($cli)
-		{
-			$name = $cli->get_filename();
-			if($name===false)
-				$name = md5($url).".torrent";
-			$name = getUniqueFilename(getUploadsPath()."/".$name);
-			$f = @fopen($name,"w");
-			if($f!==false)
-			{
-				@fwrite($f,$cli->results,strlen($cli->results));
-				fclose($f);
-				@chmod($name,0666);
-				return($name);
-			}
-		}
-		return(false);
-	}
-
-	static public function getTorrents( $urls, $isStart, $isAddPath, $directory, $label, $fast )
+	public function getTorrents( $engs, $urls, $isStart, $isAddPath, $directory, $label, $fast )
 	{
 		$ret = array();
 		$history = self::loadHistory();
-		foreach( $urls as $url )
+		for( $i=0; $i<count($urls); $i++ )
 		{
+			$url = $urls[$i];
 			$success = false;
 			if(strpos($url,"magnet:")===0)
 				$success = rTorrent::sendMagnet($url, $isStart, $isAddPath, $directory, $label);
 			else
 			{
-        			$torrent = self::getTorrent( $url );
+				$object = $this->getObject($engs[$i]);
+        			$torrent = $object->getTorrent( $url, $object );
 				if($torrent!==false)
 				{	
 					global $saveUploadedTorrents;

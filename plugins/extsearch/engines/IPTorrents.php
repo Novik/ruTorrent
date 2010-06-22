@@ -11,7 +11,7 @@ class IPTorrentsEngine extends commonEngine
 			$cat = 'all';
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = self::fetch( $url.'/browse.php?search='.$what.'&sort=seeders&d=DESC&incldead=0&page='.$pg.$categories[$cat] );
+			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&sort=seeders&d=DESC&incldead=0&page='.$pg.$categories[$cat] );
 			if( ($cli==false) || (strpos($cli->results, "<h3>Nothing found!</h3>")!==false) ||
 				(strpos($cli->results, "<h1>Not logged in!</h1>")!==false))
 				break;

@@ -12,7 +12,7 @@ class ISOHuntEngine extends commonEngine
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$itemsOnPage = 0;
-			$cli = self::fetch( $url.'/torrents.php?ihq='.$what.'&iht='.$categories[$cat].'&ihp='.$pg.'&ihs1=2&iho1=d' );
+			$cli = $this->fetch( $url.'/torrents.php?ihq='.$what.'&iht='.$categories[$cat].'&ihp='.$pg.'&ihs1=2&iho1=d' );
 			if( ($cli==false) || (strpos($cli->results, "Search returned 0 results.")!==false) )
 				break;
 			$result = $cli->results;

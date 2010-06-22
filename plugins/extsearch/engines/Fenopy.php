@@ -17,7 +17,7 @@ class FenopyEngine extends commonEngine
 		$maxPage = 10;
 		for($pg = 0; $pg<$maxPage; $pg++)
 		{
-			$cli = self::fetch( $url.'/?keyword='.$what.'&inside=0&cat='.$categories[$cat].'&order=2&start='.$pg*50 );
+			$cli = $this->fetch( $url.'/?keyword='.$what.'&inside=0&cat='.$categories[$cat].'&order=2&start='.$pg*50 );
 			if( ($cli==false) || (strpos($cli->results, "<h2>No match found</h2>")!==false))
 				break;
 			$pos = strpos($cli->results, "<span class=\"page_no\">Page 1 of ");
