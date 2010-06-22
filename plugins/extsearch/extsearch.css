@@ -13,6 +13,7 @@
 .EngineTorrentZap {background-image: url(./images/torrentzap.png); background-repeat: no-repeat}
 .EngineVector {background-image: url(./images/vertor.png); background-repeat: no-repeat}
 .EngineFreshOn {background-image: url(./images/freshon.png); background-repeat: no-repeat}
+.EngineWhatCD {background-image: url(./images/whatcd.png); background-repeat: no-repeat}
 
 div#tegLoadTorrents #RSSBtn {width: 30px;}
 div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}

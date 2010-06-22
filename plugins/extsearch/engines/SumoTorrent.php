@@ -9,8 +9,9 @@ class SumoTorrentEngine extends commonEngine
 	}
 	public function makeClient($url)
 	{
-		$client = commonEngine::makeClient($url);
-		$client->rawheaders["Referer"] = "http://torrents.sumotorrent.com/searchResult.php";
+		$client = parent::makeClient($url);
+		if(strpos($url,'/download/')!==false)
+			$client->rawheaders["Referer"] = "http://torrents.sumotorrent.com/searchResult.php";
 		return($client);
 	}
 	public function action($what,$cat,&$ret,$limit)

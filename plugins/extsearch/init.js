@@ -118,7 +118,7 @@ rTorrentStub.prototype.loadtegtorrents = function()
 	for(var i = 0; i<plugin.tegArray.length; i++)
 	{
 		var item = plugin.tegArray[i];
-		this.content += ('&url='+encodeURIComponent(item.data.link)+'&eng='+item.eng+'&teg='+item.id+'&ndx='+item.ndx);
+		this.content += ('&url='+encodeURIComponent(item.data.link)+'&eng='+item.data.src+'&teg='+item.id+'&ndx='+item.ndx);
 	}
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/extsearch/action.php";
@@ -416,7 +416,7 @@ plugin.getTegByRowId = function( rowId )
 		var tegId = rowId.substr(0,pos);
 		var index = rowId.substr(pos+1);
 		if($type(plugin.tegs[tegId]) && (plugin.tegs[tegId].data.length>index))
-			return( { id: tegId, ndx: index, eng: plugin.tegs[tegId].eng, data: plugin.tegs[tegId].data[index] } );
+			return( { id: tegId, ndx: index, data: plugin.tegs[tegId].data[index] } );
 	}
 	return(null);
 }

@@ -116,6 +116,7 @@ class Snoopy
 	{
 		if(preg_match("/\%([0-9,A-F]{2})/i",$p_url)==1)
 			return($p_url);
+		$p_url = str_replace("\t","%09",$p_url);
 		$uparts = @parse_url($p_url);
 		$scheme = array_key_exists('scheme',$uparts) ? $uparts['scheme'] : "";
 		$pass = array_key_exists('pass',$uparts) ? $uparts['pass']  : "";

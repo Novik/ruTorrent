@@ -8,6 +8,8 @@ eval( getPluginConf( 'extsearch' ) );
 
 class commonEngine
 {
+	public $defaults = array( "public"=>true, "page_size"=>100 );
+
 	public function action($what,$cat,$arr,$limit)
 	{
 	}
@@ -181,6 +183,9 @@ class engineManager
 				{
 					$name = basename($file,".php");
 					$this->engines[$name] = array( "name"=>$name, "path"=>fullpath($dir.'/'.$file), "object"=>$name."Engine", "enabled"=>true, "global"=>true, "limit"=>100 );
+					$obj = $this->getObject($name);
+					$this->engines[$name]["enabled"] = $obj->defaults["public"];
+					$this->engines[$name]["limit"] = $obj->defaults["page_size"];
 					if(array_key_exists($name,$oldEngines) && array_key_exists("limit",$oldEngines[$name]))
 					{
 						$this->engines[$name]["enabled"] = $oldEngines[$name]["enabled"];

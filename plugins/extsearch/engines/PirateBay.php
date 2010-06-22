@@ -4,7 +4,7 @@ class PirateBayEngine extends commonEngine
 {
 	public function makeClient($url)
 	{
-		$client = commonEngine::makeClient($url);
+		$client = parent::makeClient($url);
 		$client->cookies = array("lw"=>"s");
 		return($client);
 	}
