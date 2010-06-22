@@ -2,6 +2,8 @@
 
 class FreshOnEngine extends commonEngine
 {
+	public $defaults = array( "public"=>false, "page_size"=>100 );
+
 	public function action($what,$cat,&$ret,$limit)
 	{
 		$added = 0;
