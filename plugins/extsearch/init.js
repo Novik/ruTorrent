@@ -3,6 +3,13 @@ plugin.loadLang();
 
 plugin.categories = [ 'all', 'movies', 'tv', 'music', 'games', 'anime', 'software', 'pictures', 'books' ];
 
+plugin.set = theSearchEngines.set;
+theSearchEngines.set = function(val)
+{
+	plugin.set.call(theSearchEngines);
+        theSearchEngines.checkForIncorrectCurrent();
+}
+
 plugin.sitesShow = theSearchEngines.show;
 theSearchEngines.show = function()
 {
@@ -41,22 +48,25 @@ theSearchEngines.show = function()
 
 theSearchEngines.checkForIncorrectCurrent = function()
 {
-	if(($type(theSearchEngines.current)=="number") && (theSearchEngines.current>=0))
+	if(plugin.enabled)
 	{
-		theSearchEngines.current = -1;
-		theWebUI.save();
-	}
-	else
-		$.each(this.sites,function(ndx,val)
+		if(($type(theSearchEngines.current)=="number") && (theSearchEngines.current>=0))
 		{
-			if(!val.enabled && (theSearchEngines.current==val.name))
+			theSearchEngines.current = -1;
+			theWebUI.save();
+		}
+		else
+			$.each(this.sites,function(ndx,val)
 			{
-				theSearchEngines.current = -1;
-				theWebUI.save();
-				return(false);
-			}
-		});
-	$("#exscategory").attr("disabled",(theSearchEngines.current == -1));
+				if(!val.enabled && (theSearchEngines.current==val.name))
+				{
+					theSearchEngines.current = -1;
+					theWebUI.save();
+					return(false);
+				}
+			});
+		$("#exscategory").attr("disabled",(theSearchEngines.current == -1));
+	}
 }
 
 plugin.sitesRun = theSearchEngines.run;
