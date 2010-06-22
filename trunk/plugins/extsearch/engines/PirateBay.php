@@ -2,17 +2,23 @@
 
 class PirateBayEngine extends commonEngine
 {
+	public function makeClient($url)
+	{
+		$client = commonEngine::makeClient($url);
+		$client->cookies = array("lw"=>"s");
+		return($client);
+	}
 	public function action($what,$cat,&$ret,$limit)
 	{
 		$added = 0;
-		$url = 'http://thepiratebay.org/';
+		$url = 'http://thepiratebay.org';
 		$categories = array( 'all'=>'0', 'movies'=>'200', 'tv'=>'205', 'music'=>'100', 'games'=>'400', 'anime'=>'0', 'software'=>'300', 'pictures'=>'603', 'books'=>'601' );
 		if(!array_key_exists($cat,$categories))
 			$cat = 'all';
 		$maxPage = 10;
 		for($pg = 0; $pg<$maxPage; $pg++)
 		{
-			$cli = self::fetch( $url.'/search/'.$what.'/'.$pg.'/7/'.$categories[$cat], array("lw"=>"s") );
+			$cli = $this->fetch( $url.'/search/'.$what.'/'.$pg.'/7/'.$categories[$cat] );
 			if($cli==false || !preg_match('/<\/span>&nbsp;Displaying hits from \d+ to \d+ \(approx (?P<cnt>\d+) found\)/siU',$cli->results, $matches))
 				break;
 			$maxPage = ceil(intval($matches["cnt"])/30);
@@ -35,7 +41,7 @@ class PirateBayEngine extends commonEngine
 			{
 				for($i=0; $i<count($matches["link"]); $i++)
 				{
-					$link = $url."/".$matches["link"][$i];
+					$link = "http://torrents.thepiratebay.org/".$matches["link"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();

@@ -40,6 +40,7 @@ if(isset($_REQUEST['mode']))
 				$isAddPath = true;
 				$fast = false;
 				$urls = array();
+				$engs = array();
 				$ndx = array();
 				$teg = '';
 				foreach($vars as $var)
@@ -66,10 +67,13 @@ if(isset($_REQUEST['mode']))
 					if($parts[0]=="url")
 						$urls[] = rawurldecode($parts[1]);
 					else
+					if($parts[0]=="eng")
+						$engs[] = $parts[1];
+					else
 					if($parts[0]=="ndx")
 						$ndx[] = $parts[1];
 				}
-				$status = $em->getTorrents( $urls, $isStart, $isAddPath, $dir, $lbl, $fast );
+				$status = $em->getTorrents( $engs, $urls, $isStart, $isAddPath, $dir, $lbl, $fast );
 				$ret = '{ teg: "'.$teg.'", data: [';
 				for($i = 0; $i< count($status); $i++)
 					$ret .= '{ hash : "'.$status[$i].'", ndx: '.$ndx[$i].' },';

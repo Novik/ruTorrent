@@ -12,7 +12,7 @@ class MininovaEngine extends commonEngine
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$itemsOnPage = 0;
-			$cli = self::fetch( $url.'/search/'.$what.'/'.$categories[$cat].'/seeds/'.$pg );
+			$cli = $this->fetch( $url.'/search/'.$what.'/'.$categories[$cat].'/seeds/'.$pg );
 			if( ($cli==false) || (strpos($cli->results, "<h1>No results for")!==false) )
 				break;
 			$result = $cli->results;
