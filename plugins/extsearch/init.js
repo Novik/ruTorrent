@@ -388,7 +388,7 @@ theWebUI.setExtSearchTag = function( d )
 {
 	$("#query").removeAttr("readonly");
 	var what = $.trim($("#query").val());
-	var str = (d.eng=="all" ? theUILang.All : d.eng)+"/"+theUILang["excat"+d.cat]+": "+what;
+	var str = (d.eng=="all" ? theUILang.All : d.eng)+"/"+($type(theUILang["excat"+d.cat]) ? theUILang["excat"+d.cat] : d.cat)+": "+what;
 	for( var id in plugin.tegs )
 		if(plugin.tegs[id].val==str)
 		{
