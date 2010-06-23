@@ -2,17 +2,27 @@
 
 class MininovaEngine extends commonEngine
 {
-	public function action($what,$cat,&$ret,$limit)
+	public $defaults = array( "public"=>true, "page_size"=>200 );
+	public $categories = array( 'all'=>'0', 'Anime'=>1, 'Books'=>'2', 'Games'=>'3', 'Movies'=>'4', 'Music'=>5,
+		'Other'=>9, 'Pictures'=>'6', 'Software'=>'7', 'TV Shows'=>'8', 'ViewCave'=>'11' );
+
+	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://www.mininova.org';
-		$categories = array( 'all'=>'0', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'pictures'=>'6', 'books'=>'2' );
+		if($useGlobalCats)
+			$categories = array( 'all'=>'0', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'pictures'=>'6', 'books'=>'2' );
+		else
+			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
-			$cat = 'all';
+			$cat = $categories['all'];
+		else
+			$cat = $categories[$cat];
+
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$itemsOnPage = 0;
-			$cli = $this->fetch( $url.'/search/'.$what.'/'.$categories[$cat].'/seeds/'.$pg );
+			$cli = $this->fetch( $url.'/search/'.$what.'/'.$cat.'/seeds/'.$pg );
 			if( ($cli==false) || (strpos($cli->results, "<h1>No results for")!==false) )
 				break;
 			$result = $cli->results;

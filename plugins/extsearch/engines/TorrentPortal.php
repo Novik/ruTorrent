@@ -2,16 +2,25 @@
 
 class TorrentPortalEngine extends commonEngine
 {
-	public function action($what,$cat,&$ret,$limit)
+       	public $defaults = array( "public"=>true, "page_size"=>50 );
+	public $categories = array( 'all'=>'0', 'Games'=>'1', 'Movies'=>'2', 'TV'=>'3', 'Videos'=>'4', 
+		'Apps'=>'5', 'Anime'=>'6', 'Audio'=>'7', 'Comics'=>'8', 'Unsorted'=>'9' );
+
+	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://www.torrentportal.com';
-		$categories = array( 'all'=>'0', 'movies'=>'2', 'tv'=>'3', 'music'=>'7', 'games'=>'1', 'anime'=>'6', 'software'=>'5', 'pictures'=>'8', 'books'=>'9' );
+		if($useGlobalCats)
+			$categories = array( 'all'=>'0', 'movies'=>'2', 'tv'=>'3', 'music'=>'7', 'games'=>'1', 'anime'=>'6', 'software'=>'5', 'pictures'=>'8', 'books'=>'9' );
+		else
+			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
-			$cat = 'all';
+			$cat = $categories['all'];
+		else
+			$cat = $categories[$cat];
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/torrents-search.php?search='.$what.'&cat='.$categories[$cat].'&sort=seeders&d=desc&type=and&hidedead=on&page='.$pg );
+			$cli = $this->fetch( $url.'/torrents-search.php?search='.$what.'&cat='.$cat.'&sort=seeders&d=desc&type=and&hidedead=on&page='.$pg );
 			if( ($cli==false) || (strpos($cli->results, "<b>No Torrents Found</b>")!==false) )
 				break;
 			$res = preg_match_all('/<a href="\/download\/(?P<link>.*)">.*<a href="torrents.php\\?cat=\d{1,2}">(?P<cat>.*)<\/a>.*<a href="\/details\/(?P<desc>.*)".*<b>(?P<name>.*)<\/b><\/a><\/td><td .*>.*<\/td><td .*>(?P<size>.*)<\/td><td .*>(?P<seeds>.*)<\/td><td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);

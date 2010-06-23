@@ -25,4 +25,4 @@ div#tegLoadTorrents input, select {margin-top: 2px; margin-bottom: 2px;}
 div#tegLoadTorrents br {clear: left; line-height: 0}
 
 #st_extsearch { overflow: auto }
-#exscategory { margin-top: 6px; }
+#exscategory { margin-top: 6px; width: 100px }

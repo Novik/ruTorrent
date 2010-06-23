@@ -7,7 +7,7 @@ plugin.set = theSearchEngines.set;
 theSearchEngines.set = function(val, noSave)
 {
 	plugin.set.call(theSearchEngines,val,noSave);
-        theSearchEngines.checkForIncorrectCurrent();
+        theSearchEngines.checkForIncorrectCurrent(!noSave);
 }
 
 plugin.sitesShow = theSearchEngines.show;
@@ -16,7 +16,7 @@ theSearchEngines.show = function()
 	if(plugin.enabled)
 	{
 		theContextMenu.clear();
-		theSearchEngines.checkForIncorrectCurrent();
+		theSearchEngines.checkForIncorrectCurrent(false);
 		if(theSearchEngines.current=='all')
 			theContextMenu.add([CMENU_SEL, theUILang.All, "theSearchEngines.set('all')"]);
 		else
@@ -25,13 +25,13 @@ theSearchEngines.show = function()
 		{
 			if(val.enabled)
 			{
-				if(theSearchEngines.current==val.name)
-					theContextMenu.add([CMENU_SEL, val.name, "theSearchEngines.set('"+val.name+"')"]);
+				if(theSearchEngines.current==ndx)
+					theContextMenu.add([CMENU_SEL, ndx, "theSearchEngines.set('"+ndx+"')"]);
 				else
-					theContextMenu.add([val.name, "theSearchEngines.set('"+val.name+"')"]);
+					theContextMenu.add([ndx, "theSearchEngines.set('"+ndx+"')"]);
 			}
 			else
-				if(theSearchEngines.current==val.name)
+				if(theSearchEngines.current==ndx)
 					theSearchEngines.current=-1;
 		});
 		theContextMenu.add([CMENU_SEP]);
@@ -46,7 +46,7 @@ theSearchEngines.show = function()
 		plugin.sitesShow.call(theSearchEngines);
 }
 
-theSearchEngines.checkForIncorrectCurrent = function()
+theSearchEngines.checkForIncorrectCurrent = function( refreshCats )
 {
 	if(plugin.enabled)
 	{
@@ -56,16 +56,15 @@ theSearchEngines.checkForIncorrectCurrent = function()
 			theWebUI.save();
 		}
 		else
-			$.each(this.sites,function(ndx,val)
+		{
+			if((theSearchEngines.current!='all') && (!$type(theSearchEngines.sites[theSearchEngines.current]) || !theSearchEngines.sites[theSearchEngines.current].enabled))
 			{
-				if(!val.enabled && (theSearchEngines.current==val.name))
-				{
-					theSearchEngines.current = -1;
-					theWebUI.save();
-					return(false);
-				}
-			});
-		$("#exscategory").attr("disabled",(theSearchEngines.current == -1));
+				theSearchEngines.current = -1;
+				theWebUI.save();
+			};
+		}
+		if(refreshCats)
+			plugin.refreshCategories();
 	}
 }
 
@@ -77,7 +76,7 @@ theSearchEngines.run = function()
 		var s = $.trim($("#query").val());
 		if(s.length)
 		{
-			this.checkForIncorrectCurrent();
+			this.checkForIncorrectCurrent(false);
 		        if(theSearchEngines.current==-1)
 			        theWebUI.setTeg(s);
 			else
@@ -569,7 +568,7 @@ theWebUI.config = function(data)
 		ondelete:	function() { theWebUI.tegItemRemove(); }
 	};
 	plugin.config.call(this,data);
-	theSearchEngines.checkForIncorrectCurrent();
+	theSearchEngines.checkForIncorrectCurrent(true);
 }
 
 if(plugin.enabled && plugin.canChangeOptions())
@@ -582,11 +581,11 @@ if(plugin.enabled && plugin.canChangeOptions())
 			$('#exs_limit').val(theSearchEngines.globalLimit);
 			$.each(theSearchEngines.sites,function(ndx,val)
 			{
-				$('#'+val.name+'_enabled').attr("checked", (val.enabled==1));
-				$('#'+val.name+'_global').attr("checked", (val.global==1));
-				$('#'+val.name+'_limit').val(val.limit);
-				$('#'+val.name+'_enabled').change();
-				$('#'+val.name+'_global').change();
+				$('#'+ndx+'_enabled').attr("checked", (val.enabled==1));
+				$('#'+ndx+'_global').attr("checked", (val.global==1));
+				$('#'+ndx+'_limit').val(val.limit);
+				$('#'+ndx+'_enabled').change();
+				$('#'+ndx+'_global').change();
 			});
 		}
 		plugin.andShowSettings.call(theWebUI,arg);
@@ -599,9 +598,9 @@ if(plugin.enabled && plugin.canChangeOptions())
 		var ret = false;
 		$.each(theSearchEngines.sites,function(ndx,val)
 		{
-			if( 	(($('#'+val.name+'_enabled').attr("checked") ? 1 : 0) ^ val.enabled) ||
-				(($('#'+val.name+'_global').attr("checked") ? 1 : 0) ^ val.global) ||
-				iv($('#'+val.name+'_limit').val())!=val.limit )
+			if( 	(($('#'+ndx+'_enabled').attr("checked") ? 1 : 0) ^ val.enabled) ||
+				(($('#'+ndx+'_global').attr("checked") ? 1 : 0) ^ val.global) ||
+				iv($('#'+ndx+'_limit').val())!=val.limit )
 			{
 				ret = true;
 				return(false);
@@ -615,7 +614,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 	{
 		plugin.setSettings.call(this);
 		if(plugin.enabled && plugin.dataWasChanged())
-			this.request("?action=setexsearch");
+			this.request("?action=setexsearch",[theSearchEngines.checkForIncorrectCurrent,theSearchEngines]);
 	}
 
 	rTorrentStub.prototype.setexsearch = function()
@@ -623,9 +622,9 @@ if(plugin.enabled && plugin.canChangeOptions())
 		var req = "mode=set&limit="+$('#exs_limit').val();
 		$.each(theSearchEngines.sites,function(ndx,val)
 		{
-			req += ('&'+val.name+'_enabled='+($('#'+val.name+'_enabled').attr("checked") ? 1 : 0)+
-				'&'+val.name+'_global='+($('#'+val.name+'_global').attr("checked") ? 1 : 0)+
-				'&'+val.name+'_limit='+$('#'+val.name+'_limit').val());
+			req += ('&'+ndx+'_enabled='+($('#'+ndx+'_enabled').attr("checked") ? 1 : 0)+
+				'&'+ndx+'_global='+($('#'+ndx+'_global').attr("checked") ? 1 : 0)+
+				'&'+ndx+'_limit='+$('#'+ndx+'_limit').val());
 		});
 		this.content = req;
 		this.contentType = "application/x-www-form-urlencoded";
@@ -634,6 +633,27 @@ if(plugin.enabled && plugin.canChangeOptions())
 	}
 }
 
+plugin.refreshCategories = function()
+{
+	$('#exscategory option').remove();
+	if(theSearchEngines.current == 'all')
+	{
+		if(plugin.allStuffLoaded)
+		{
+			for( var i=0; i<plugin.categories.length; i++)
+				$('#exscategory').append("<option value='"+plugin.categories[i]+"'>"+theUILang["excat"+plugin.categories[i]]+"</option>");
+		}
+		else
+			$('#exscategory').append("<option value='all'>"+theUILang.excatall+"</option>");
+	}
+	else
+        if($type(theSearchEngines.sites[theSearchEngines.current]))
+	{
+		for( var i=0; i<theSearchEngines.sites[theSearchEngines.current].cats.length; i++)
+			$('#exscategory').append("<option value='"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"'>"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"</option>");
+	}
+	$("#exscategory").attr("disabled",(theSearchEngines.current == -1));
+}
 
 plugin.onLangLoaded = function()
 {
@@ -665,21 +685,19 @@ plugin.onLangLoaded = function()
 	{
 		s+=
 			"<fieldset>"+
-				"<legend>"+val.name+"</legend>"+
-				"<div class='checkbox'><input type='checkbox' id='"+val.name+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+val.name+"_global','"+val.name+"_limit']);\"/><label for='"+val.name+"_enabled' id='lbl_"+val.name+"_enabled'>"+theUILang.Enabled+"</label></div>"+
-				"<div class='checkbox'><input type='checkbox' id='"+val.name+"_global' checked='true' onchange=\"linked(this, 0, ['"+val.name+"_limit']);\"/><label for='"+val.name+"_global' id='lbl_"+val.name+"_global'>"+theUILang.exsGlobal+"</label></div>"+
-				"<div class='checkbox'><label for='"+val.name+"_limit' id='lbl_"+val.name+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+val.name+"_limit'/></div>"+
+				"<legend>"+ndx+"</legend>"+
+				"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
+				"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
+				"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>"+
 			"</fieldset>";
 	});
 	s+="</fieldset>";
 	this.attachPageToOptions($("<div>").attr("id","st_extsearch").html(s)[0],theUILang.exsSearch);
 	var td = $$('rrow').insertCell(2);
-	s ="<select id='exscategory' title='"+theUILang.excat+"'>";
-	for( var i=0; i<plugin.categories.length; i++)
-		s+="<option value='"+plugin.categories[i]+"'>"+theUILang["excat"+plugin.categories[i]]+"</option>";
-	s+="</select>"
+	s ="<select id='exscategory' title='"+theUILang.excat+"'></select>";
 	$(td).attr("id","exscat").html(s); 
-	
+	plugin.markLoaded();
+	theSearchEngines.checkForIncorrectCurrent(true);
 }
 
 plugin.onRemove = function()

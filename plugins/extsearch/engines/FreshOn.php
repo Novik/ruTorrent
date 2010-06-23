@@ -2,19 +2,28 @@
 
 class FreshOnEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>100 );
+	public $defaults = array( "public"=>false, "page_size"=>15 );
+	public $categories = array( 'all'=>'', '...2010 World Cup Africa...'=>"457", '..Anime..'=>"235",
+		'..Cartoons..'=>"17", '..Comedy..'=>"262", '..Documentaries..'=>"15", '..Miniseries..'=>"231",
+		'..NBA..'=>"450", '..Other..'=>"16", '..Poker..'=>"138", '..Reality-TV..'=>"13", '..Sports..'=>"156" );
 
-	public function action($what,$cat,&$ret,$limit)
+	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://freshon.tv';
-		$categories = array( 'all'=>'', 'anime'=>'235' );
+
+		if($useGlobalCats)
+			$categories = array( 'all'=>'', 'anime'=>'235' );
+		else
+			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
-			$cat = 'all';
+			$cat = $categories['all'];
+		else
+			$cat = $categories[$cat];
 
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&sort=seeders&d=DESC&incldead=0&page='.$pg.'&cat='.$categories[$cat] );
+			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&sort=seeders&d=DESC&incldead=0&page='.$pg.'&cat='.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<strong>Nothing found</strong>")!==false) ||
 				(strpos($cli->results, "<label>Password</label>")!==false))
 				break;

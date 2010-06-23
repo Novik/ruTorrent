@@ -2,17 +2,28 @@
 
 class ISOHuntEngine extends commonEngine
 {
-	public function action($what,$cat,&$ret,$limit)
+	public $defaults = array( "public"=>true, "page_size"=>20 );
+	public $categories = array( 'all'=>'', 'Video / Movies'=>'1', 'TV'=>'3', 'Audio'=>'2',
+		'Music Video'=>'10', 'Games'=>'4', 'Applications'=>'5', 'Pictures'=>'6', 'Anime'=>'7', 'Comics'=>'8', 
+		'Books'=>'9', 'Misc'=>'0', 'Unclassified'=>'11' );
+
+	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://isohunt.com';
-		$categories = array( 'all'=>'', 'movies'=>'1', 'tv'=>'3', 'music'=>'2', 'games'=>'4', 'anime'=>'7', 'software'=>'5', 'pictures'=>'6', 'books'=>'9' );
+		if($useGlobalCats)
+			$categories = array( 'all'=>'', 'movies'=>'1', 'tv'=>'3', 'music'=>'2', 'games'=>'4', 'anime'=>'7', 'software'=>'5', 'pictures'=>'6', 'books'=>'9' );
+		else
+			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
-			$cat = 'all';
+			$cat = $categories['all'];
+		else
+			$cat = $categories[$cat];
+
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$itemsOnPage = 0;
-			$cli = $this->fetch( $url.'/torrents.php?ihq='.$what.'&iht='.$categories[$cat].'&ihp='.$pg.'&ihs1=2&iho1=d' );
+			$cli = $this->fetch( $url.'/torrents.php?ihq='.$what.'&iht='.$cat.'&ihp='.$pg.'&ihs1=2&iho1=d' );
 			if( ($cli==false) || (strpos($cli->results, "Search returned 0 results.")!==false) )
 				break;
 			$result = $cli->results;

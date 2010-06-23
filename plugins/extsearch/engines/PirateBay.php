@@ -2,23 +2,31 @@
 
 class PirateBayEngine extends commonEngine
 {
+	public $defaults = array( "public"=>true, "page_size"=>30 );
+	public $categories = array( 'all'=>'0', 'Audio'=>'100', 'Video'=>'200', 'Applications'=>'300', 'Games'=>'400', 'Porn'=>'500', 'Other'=>'600' );
+
 	public function makeClient($url)
 	{
 		$client = parent::makeClient($url);
 		$client->cookies = array("lw"=>"s");
 		return($client);
 	}
-	public function action($what,$cat,&$ret,$limit)
+	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://thepiratebay.org';
-		$categories = array( 'all'=>'0', 'movies'=>'200', 'tv'=>'205', 'music'=>'100', 'games'=>'400', 'anime'=>'0', 'software'=>'300', 'pictures'=>'603', 'books'=>'601' );
+		if($useGlobalCats)
+			$categories = array( 'all'=>'0', 'movies'=>'200', 'tv'=>'205', 'music'=>'100', 'games'=>'400', 'anime'=>'0', 'software'=>'300', 'pictures'=>'603', 'books'=>'601' );
+		else
+			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
-			$cat = 'all';
+			$cat = $categories['all'];
+		else
+			$cat = $categories[$cat];
 		$maxPage = 10;
 		for($pg = 0; $pg<$maxPage; $pg++)
 		{
-			$cli = $this->fetch( $url.'/search/'.$what.'/'.$pg.'/7/'.$categories[$cat] );
+			$cli = $this->fetch( $url.'/search/'.$what.'/'.$pg.'/7/'.$cat );
 			if($cli==false || !preg_match('/<\/span>&nbsp;Displaying hits from \d+ to \d+ \(approx (?P<cnt>\d+) found\)/siU',$cli->results, $matches))
 				break;
 			$maxPage = ceil(intval($matches["cnt"])/30);
