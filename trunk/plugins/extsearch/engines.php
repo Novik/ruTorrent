@@ -9,8 +9,9 @@ eval( getPluginConf( 'extsearch' ) );
 class commonEngine
 {
 	public $defaults = array( "public"=>true, "page_size"=>100 );
+	public $categories = array( 'All'=>'' );
 
-	public function action($what,$cat,$arr,$limit)
+	public function action($what,$cat,$arr,$limit,$useGlobalCats)
 	{
 	}
 	public function getSource()
@@ -201,13 +202,25 @@ class engineManager
 
 	public function get()
 	{
-                $ret = "theSearchEngines.globalLimit = ".$this->limit."; theSearchEngines.sites = [";
+                $ret = "theSearchEngines.globalLimit = ".$this->limit."; theSearchEngines.sites = {";
 		foreach( $this->engines as $name=>$nfo )
-			$ret.="{ name: '".$name."', url: '".$name."', enabled: ".intval($nfo["enabled"]). ", global: ".intval($nfo["global"]).", limit: ".$nfo["limit"]." },";
+		{
+			$ret.="'".$name."': { enabled: ".intval($nfo["enabled"]). ", global: ".intval($nfo["global"]).", limit: ".$nfo["limit"].", cats: [";
+			$obj = $this->getObject($name);
+			foreach( $obj->categories as $cat=>$prm )
+			{
+				$ret.=quoteAndDeslashEachItem($cat);
+				$ret.=',';
+			}
+			$len = strlen($ret);
+			if($ret[$len-1]==',')
+				$ret = substr($ret,0,$len-1);
+			$ret.=']},';
+		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);
-		return($ret."];\n");
+		return($ret."};\n");
 	}
 
 	public function set()
@@ -290,14 +303,14 @@ class engineManager
 				{
 					require_once( $nfo["path"] );
 					$object = new $nfo["object"]();
-					$object->action($what,$cat,$arr,$nfo["limit"]);
+					$object->action($what,$cat,$arr,$nfo["limit"],true);
 				}
 			}
 		}
 		else
 		{
 			$object = $this->getObject($eng);
-			$object->action($what,$cat,$arr,$this->limit);
+			$object->action($what,$cat,$arr,$this->limit,false);
 		}
 		uasort($arr, create_function( '$a,$b', 'return( (intval($a["seeds"]) > intval($b["seeds"])) ? -1 : ((intval($a["seeds"]) < intval($b["seeds"])) ? 1 : 0) );'));
 		$cnt = 0;		

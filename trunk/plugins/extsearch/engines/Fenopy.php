@@ -2,22 +2,31 @@
 
 class FenopyEngine extends commonEngine
 {
+       	public $defaults = array( "public"=>true, "page_size"=>50 );
+	public $categories = array( 'all'=>'0', 'Anime'=>'5', 'Book'=>'7', 'Game'=>'4', 'Movie'=>'3', 
+		'Music'=>'1', 'Other'=>'72', 'Software'=>'6', 'TV Shows'=>'78', 'Video'=>'2' ); 
+
 	static protected function getInnerCategory($cat)
 	{
-		$categories = array( '3'=>'Movies', '1'=>'Music', '78'=>'TV shows', '4'=>'Games', '6'=>'Applications', '2'=>'Videos', '5'=>'Anime', '7'=>'Books', '72'=>'Other' );
+		$categories = array( '3'=>'Movies', '1'=>'Music', '78'=>'TV shows', '4'=>'Games', '6'=>'Software', '2'=>'Video', '5'=>'Anime', '7'=>'Books', '72'=>'Other' );
 		return(array_key_exists($cat,$categories) ? $categories[$cat] : '');
 	}
-	public function action($what,$cat,&$ret,$limit)
+	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://fenopy.com';
-		$categories = array( 'all'=>'0', 'movies'=>'3', 'tv'=>'78', 'music'=>'1', 'games'=>'4', 'anime'=>'5', 'software'=>'6', 'pictures'=>'72', 'books'=>'7' );
+		if($useGlobalCats)
+			$categories = array( 'all'=>'0', 'movies'=>'3', 'tv'=>'78', 'music'=>'1', 'games'=>'4', 'anime'=>'5', 'software'=>'6', 'pictures'=>'72', 'books'=>'7' );
+		else
+			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
-			$cat = 'all';
+			$cat = $categories['all'];
+		else
+			$cat = $categories[$cat];
 		$maxPage = 10;
 		for($pg = 0; $pg<$maxPage; $pg++)
 		{
-			$cli = $this->fetch( $url.'/?keyword='.$what.'&inside=0&cat='.$categories[$cat].'&order=2&start='.$pg*50 );
+			$cli = $this->fetch( $url.'/?keyword='.$what.'&inside=0&cat='.$cat.'&order=2&start='.$pg*50 );
 			if( ($cli==false) || (strpos($cli->results, "<h2>No match found</h2>")!==false))
 				break;
 			$pos = strpos($cli->results, "<span class=\"page_no\">Page 1 of ");
