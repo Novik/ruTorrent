@@ -300,13 +300,13 @@ class engineManager
 
 	static protected function correctItem(&$nfo)
 	{
-		if(is_null($nfo["time"]))
+		if(empty($nfo["time"]))
 			$nfo["time"] = 0;
-		if(is_null($nfo["size"]))
+		if(empty($nfo["size"]))
 			$nfo["time"] = 0;
-		if(is_null($nfo["seeds"]))
+		if(empty($nfo["seeds"]))
 			$nfo["seeds"] = 0;
-		if(is_null($nfo["peers"]))
+		if(empty($nfo["peers"]))
 			$nfo["seeds"] = 0;
 	}
 
