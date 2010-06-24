@@ -46,7 +46,7 @@ class commonEngine
 	public function fetch($url,$encode = true)
 	{
 		$client = $this->makeClient($url);
-		if(encode)
+		if($encode)
 			$url = Snoopy::linkencode($url);
 		@$client->fetch($url);
 		if($client->status>=200 && $client->status<300)
