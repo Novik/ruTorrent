@@ -1,6 +1,6 @@
 <?php
 
-class BroadCastleEngine extends commonEngine
+class BroadcasTheEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>50 );
 	public $categories = array( 'all'=>'' );
