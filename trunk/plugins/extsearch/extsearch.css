@@ -18,6 +18,7 @@
 .EngineBitMeTV {background-image: url(./images/bitmetv.png); background-repeat: no-repeat}
 .EngineTorrentLeech {background-image: url(./images/torrentleech.png); background-repeat: no-repeat}
 .EngineRevolutionTT {background-image: url(./images/revolutiontt.png); background-repeat: no-repeat}
+.EngineSceneAccess {background-image: url(./images/sceneaccess.png); background-repeat: no-repeat}
 
 div#tegLoadTorrents #RSSBtn {width: 30px;}
 div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}
