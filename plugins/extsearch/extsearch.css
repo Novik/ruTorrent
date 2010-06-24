@@ -16,6 +16,7 @@
 .EngineWhatCD {background-image: url(./images/whatcd.png); background-repeat: no-repeat}
 .EngineFeedTheNet {background-image: url(./images/feedthenet.png); background-repeat: no-repeat}
 .EngineBitMeTV {background-image: url(./images/bitmetv.png); background-repeat: no-repeat}
+.EngineTorrentLeech {background-image: url(./images/torrentleech.png); background-repeat: no-repeat}
 
 div#tegLoadTorrents #RSSBtn {width: 30px;}
 div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}

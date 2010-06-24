@@ -447,7 +447,7 @@ theWebUI.updateRSSLabels = function(rssLabels,allCnt)
 	var keys = new Array();
 	for(var lbl in rssLabels)
 		keys.push(lbl);
-	keys.sort();
+	keys.sort( function(a,b) {  return((rssLabels[a].name>rssLabels[b].name) ? 1 : (rssLabels[a].name<rssLabels[b].name) ? -1 : 0); } );
 
 	$("#_rssAll_c").text(allCnt);
 	var ul = $("#rssl");

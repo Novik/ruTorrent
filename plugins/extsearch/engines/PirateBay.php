@@ -3,7 +3,7 @@
 class PirateBayEngine extends commonEngine
 {
 	public $defaults = array( "public"=>true, "page_size"=>30 );
-	public $categories = array( 'all'=>'0', 'Audio'=>'100', 'Video'=>'200', 'Applications'=>'300', 'Games'=>'400', 'Porn'=>'500', 'Other'=>'600' );
+	public $categories = array( 'all'=>'100,200,300,400,500,600', 'Audio'=>'100', 'Video'=>'200', 'Applications'=>'300', 'Games'=>'400', 'Porn'=>'500', 'Other'=>'600' );
 
 	public function makeClient($url)
 	{
@@ -16,7 +16,7 @@ class PirateBayEngine extends commonEngine
 		$added = 0;
 		$url = 'http://thepiratebay.org';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'0', 'movies'=>'200', 'tv'=>'205', 'music'=>'100', 'games'=>'400', 'anime'=>'0', 'software'=>'300', 'pictures'=>'603', 'books'=>'601' );
+			$categories = array( 'all'=>'100,200,300,400,500,600', 'movies'=>'200', 'tv'=>'205', 'music'=>'100', 'games'=>'400', 'anime'=>'0', 'software'=>'300', 'pictures'=>'603', 'books'=>'601' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
@@ -26,7 +26,7 @@ class PirateBayEngine extends commonEngine
 		$maxPage = 10;
 		for($pg = 0; $pg<$maxPage; $pg++)
 		{
-			$cli = $this->fetch( $url.'/search/'.$what.'/'.$pg.'/7/'.$cat );
+			$cli = $this->fetch( Snoopy::linkencode($url.'/search/'.$what.'/'.$pg).'/7/'.$cat );
 			if($cli==false || !preg_match('/<\/span>&nbsp;Displaying hits from \d+ to \d+ \(approx (?P<cnt>\d+) found\)/siU',$cli->results, $matches))
 				break;
 			$maxPage = ceil(intval($matches["cnt"])/30);
@@ -68,7 +68,8 @@ class PirateBayEngine extends commonEngine
 						}
 						else
 							$tm = strptime($tm,"%m-%d %Y");
-						$item["time"] = mktime(	$tm["tm_hour"], $tm["tm_min"], $tm["tm_sec"], $tm["tm_mon"]+1, $tm["tm_mday"], $tm["tm_year"]+1900 );
+						if($tm!==false)
+							$item["time"] = mktime(	$tm["tm_hour"], $tm["tm_min"], $tm["tm_sec"], $tm["tm_mon"]+1, $tm["tm_mday"], $tm["tm_year"]+1900 );
 						$ret[$link] = $item;
 						$added++;
 						if($added>=$limit)
