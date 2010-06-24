@@ -307,7 +307,7 @@ class engineManager
 		if(empty($nfo["seeds"]))
 			$nfo["seeds"] = 0;
 		if(empty($nfo["peers"]))
-			$nfo["seeds"] = 0;
+			$nfo["peers"] = 0;
 	}
 
 	public function action( $eng, $what, $cat = "all" )
