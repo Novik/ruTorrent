@@ -43,10 +43,12 @@ class commonEngine
 		$client->use_gzip = HTTP_USE_GZIP;
 		return($client);
 	}
-	public function fetch($url)
+	public function fetch($url,$encode = true)
 	{
 		$client = $this->makeClient($url);
-		@$client->fetch(Snoopy::linkencode($url));
+		if(encode)
+			$url = Snoopy::linkencode($url);
+		@$client->fetch($url);
 		if($client->status>=200 && $client->status<300)
 		{
 			ini_set( "pcre.backtrack_limit", max(strlen($client->results),100000) );
@@ -187,6 +189,8 @@ class engineManager
 					$obj = $this->getObject($name);
 					$this->engines[$name]["enabled"] = $obj->defaults["public"];
 					$this->engines[$name]["limit"] = $obj->defaults["page_size"];
+					if(array_key_exists("disabled",$obj->defaults) && $obj->defaults["disabled"])
+						$this->engines[$name]["enabled"] = false;
 					if(array_key_exists($name,$oldEngines) && array_key_exists("limit",$oldEngines[$name]))
 					{
 						$this->engines[$name]["enabled"] = $oldEngines[$name]["enabled"];
@@ -206,15 +210,18 @@ class engineManager
 		foreach( $this->engines as $name=>$nfo )
 		{
 			$ret.="'".$name."': { enabled: ".intval($nfo["enabled"]). ", global: ".intval($nfo["global"]).", limit: ".$nfo["limit"].", cats: [";
-			$obj = $this->getObject($name);
-			foreach( $obj->categories as $cat=>$prm )
+			if($nfo["enabled"])
 			{
-				$ret.=quoteAndDeslashEachItem($cat);
-				$ret.=',';
+				$obj = $this->getObject($name);
+				foreach( $obj->categories as $cat=>$prm )
+				{
+					$ret.=quoteAndDeslashEachItem($cat);
+					$ret.=',';
+				}
+				$len = strlen($ret);
+				if($ret[$len-1]==',')
+					$ret = substr($ret,0,$len-1);
 			}
-			$len = strlen($ret);
-			if($ret[$len-1]==',')
-				$ret = substr($ret,0,$len-1);
 			$ret.=']},';
 		}
 		$len = strlen($ret);
@@ -291,6 +298,18 @@ class engineManager
 		return($object);
 	}
 
+	static protected function correctItem(&$nfo)
+	{
+		if(is_null($nfo["time"]))
+			$nfo["time"] = 0;
+		if(is_null($nfo["size"]))
+			$nfo["time"] = 0;
+		if(is_null($nfo["seeds"]))
+			$nfo["seeds"] = 0;
+		if(is_null($nfo["peers"]))
+			$nfo["seeds"] = 0;
+	}
+
 	public function action( $eng, $what, $cat = "all" )
 	{
 		$arr = array();
@@ -299,7 +318,7 @@ class engineManager
 		{
 			foreach( $this->engines as $name=>$nfo )
 			{
-				if($nfo["global"])
+				if($nfo["global"] && $nfo["enabled"])
 				{
 					require_once( $nfo["path"] );
 					$object = new $nfo["object"]();
@@ -319,6 +338,7 @@ class engineManager
 		foreach( $arr as $href=>$nfo )
 		{
 			$hash = $history->getHash( $href );
+			self::correctItem($nfo);
 			$item = "{ time: ".$nfo["time"].", cat: ".quoteAndDeslashEachItem($nfo["cat"]).", size: ".$nfo["size"].
 				", name: ".quoteAndDeslashEachItem($nfo["name"]).", desc: ".quoteAndDeslashEachItem($nfo["desc"]).
 				", src: ".quoteAndDeslashEachItem($nfo["src"]).", link: ".quoteAndDeslashEachItem($href).
