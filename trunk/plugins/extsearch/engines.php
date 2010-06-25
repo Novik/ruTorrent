@@ -37,9 +37,10 @@ class commonEngine
 	}
 	public function makeClient($url)
 	{
+		global $HTTPTimeoutPerSite;
 		$client = new Snoopy();
 		$client->agent = HTTP_USER_AGENT;
-		$client->read_timeout = 5;
+		$client->read_timeout = $HTTPTimeoutPerSite;
 		$client->use_gzip = HTTP_USE_GZIP;
 		return($client);
 	}
