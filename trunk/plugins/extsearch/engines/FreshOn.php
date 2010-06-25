@@ -2,7 +2,7 @@
 
 class FreshOnEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>15 );
+	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"freshon.tv|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'', '...2010 World Cup Africa...'=>"457", '..Anime..'=>"235",
 		'..Cartoons..'=>"17", '..Comedy..'=>"262", '..Documentaries..'=>"15", '..Miniseries..'=>"231",
 		'..NBA..'=>"450", '..Other..'=>"16", '..Poker..'=>"138", '..Reality-TV..'=>"13", '..Sports..'=>"156" );

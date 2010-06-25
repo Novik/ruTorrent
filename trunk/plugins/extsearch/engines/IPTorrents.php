@@ -2,7 +2,7 @@
 
 class IPTorrentsEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>35 );
+	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"www.iptorrents.com|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'', 'Anime'=>'&c60=1', 'Appz/misc'=>'&c1=1', 'AudioBook'=>'&c64=1',
 		'Books - Mags'=>'&c35=1', 'Games'=>'&c2=1&c47=1&c43=1&c45=1&c39=1&c40=1&c67=1&c50=1&c42=1&c44=1','HD/X264'=>'&c48=1',
 		'iPod'=>'&c62=1&c66=1', 'Kids'=>'&c54=1', 'MAC'=>'&c69=1', 'Mobile'=>'&c58=1', 'Movies'=>'&c6=1&c70=1&c38=1&c68=1&c7=1&c48=1',

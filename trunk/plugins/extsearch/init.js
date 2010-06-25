@@ -10,6 +10,28 @@ theSearchEngines.set = function(val, noSave)
         theSearchEngines.checkForIncorrectCurrent(!noSave);
 }
 
+theSearchEngines.getEngName = function(eng)
+{
+	return(eng=="all" ? theUILang.All : 
+		eng=="public" ? theUILang.extAllPublic : 
+		eng=="private" ? theUILang.extAllPrivate : 
+		eng);
+}
+
+theSearchEngines.isPublicPresent = function(enable)
+{
+	var ret = false;
+	$.each(this.sites,function(ndx,val)
+	{
+		if((val.public==enable) && val.enabled && val.global)
+		{
+			ret = true;
+			return(false);
+		}
+	});
+	return(ret);
+}
+
 plugin.sitesShow = theSearchEngines.show;
 theSearchEngines.show = function()
 {
@@ -21,6 +43,20 @@ theSearchEngines.show = function()
 			theContextMenu.add([CMENU_SEL, theUILang.All, "theSearchEngines.set('all')"]);
 		else
 			theContextMenu.add([theUILang.All, "theSearchEngines.set('all')"]);
+
+		if(this.isPublicPresent(true) && this.isPublicPresent(false))
+		{
+			if(theSearchEngines.current=='public')
+				theContextMenu.add([CMENU_SEL, theUILang.extAllPublic, "theSearchEngines.set('public')"]);
+			else
+				theContextMenu.add([theUILang.extAllPublic, "theSearchEngines.set('public')"]);
+			if(theSearchEngines.current=='private')
+				theContextMenu.add([CMENU_SEL, theUILang.extAllPrivate, "theSearchEngines.set('private')"]);
+			else
+				theContextMenu.add([theUILang.extAllPrivate, "theSearchEngines.set('private')"]);
+		}
+		theContextMenu.add([CMENU_SEP]);
+
 		$.each(this.sites,function(ndx,val)
 		{
 			if(val.enabled)
@@ -57,7 +93,15 @@ theSearchEngines.checkForIncorrectCurrent = function( refreshCats )
 		}
 		else
 		{
-			if((theSearchEngines.current!='all') && (!$type(theSearchEngines.sites[theSearchEngines.current]) || !theSearchEngines.sites[theSearchEngines.current].enabled))
+			if((    (theSearchEngines.current!='all') && 
+				(theSearchEngines.current!='private') && 
+				(theSearchEngines.current!='public') && 
+				(!$type(theSearchEngines.sites[theSearchEngines.current]) || !theSearchEngines.sites[theSearchEngines.current].enabled) 
+			   ) ||
+			   (
+				!(this.isPublicPresent(true) && this.isPublicPresent(false)) && 
+				((theSearchEngines.current=='private') || (theSearchEngines.current!='public'))
+			   ))
 			{
 				theSearchEngines.current = -1;
 				theWebUI.save();
@@ -82,7 +126,7 @@ theSearchEngines.run = function()
 			else
 			{		
 				$("#query").attr("readonly",true);
-				theWebUI.requestWithoutTimeout("?action=extsearch&s="+theSearchEngines.current+"&v="+encodeURIComponent(s)+"&v="+$("#exscategory").val(),[theWebUI.setExtSearchTag, theWebUI]);
+				theWebUI.requestWithoutTimeout("?action=extsearch&s="+theSearchEngines.current+"&v="+encodeURIComponent(s)+"&v="+encodeURIComponent($("#exscategory").val()),[theWebUI.setExtSearchTag, theWebUI]);
 			}
 		}
 	}
@@ -388,7 +432,7 @@ theWebUI.setExtSearchTag = function( d )
 {
 	$("#query").removeAttr("readonly");
 	var what = $.trim($("#query").val());
-	var str = (d.eng=="all" ? theUILang.All : d.eng)+"/"+($type(theUILang["excat"+d.cat]) ? theUILang["excat"+d.cat] : d.cat)+": "+what;
+	var str = theSearchEngines.getEngName(d.eng)+"/"+($type(theUILang["excat"+d.cat]) ? theUILang["excat"+d.cat] : d.cat)+": "+what;
 	for( var id in plugin.tegs )
 		if(plugin.tegs[id].val==str)
 		{
@@ -636,7 +680,9 @@ if(plugin.enabled && plugin.canChangeOptions())
 plugin.refreshCategories = function()
 {
 	$('#exscategory option').remove();
-	if(theSearchEngines.current == 'all')
+	if((theSearchEngines.current == 'all') ||
+		(theSearchEngines.current == 'private') ||
+		(theSearchEngines.current == 'public'))
 	{
 		if(plugin.allStuffLoaded)
 		{
@@ -653,6 +699,17 @@ plugin.refreshCategories = function()
 			$('#exscategory').append("<option value='"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"'>"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"</option>");
 	}
 	$("#exscategory").attr("disabled",(theSearchEngines.current == -1));
+}
+
+plugin.shutdownOldVersion = function()
+{
+	if(thePlugins.get('search').allStuffLoaded)
+	{
+		thePlugins.get('search').remove();
+		theWebUI.plgRefresh();
+	}
+	else
+		setTimeout(arguments.callee,1000);
 }
 
 plugin.onLangLoaded = function()
@@ -679,18 +736,47 @@ plugin.onLangLoaded = function()
 	var s = "<fieldset>"+
 			"<legend>"+theUILang.exsGlobalLimit+"</legend>"+
 			"<div class='checkbox'><label for='exs_limit' id='lbl_exs_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='exs_limit'/></div>"+
-		"</fieldset>"+
-		"<fieldset><legend>"+theUILang.exsEngines+"</legend>";
+		"</fieldset>";
+	var cont = "";
 	$.each(theSearchEngines.sites,function(ndx,val)
 	{
-		s+=
-			"<fieldset>"+
-				"<legend>"+ndx+"</legend>"+
-				"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
-				"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
-				"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>"+
-			"</fieldset>";
+		if(val.public)
+			cont+=
+				"<fieldset>"+
+					"<legend>"+ndx+"</legend>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
+					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>"+
+				"</fieldset>";
 	});
+	if(cont.length)
+	{
+		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPublic+")</legend>";
+		s+=cont;
+	}
+        cont = "";
+	$.each(theSearchEngines.sites,function(ndx,val)
+	{
+		if(!val.public)
+		{
+			cont+=
+				"<fieldset>"+
+					"<legend>"+ndx+"</legend>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
+					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>";
+			if(thePlugins.isInstalled("cookies"))
+				cont+=		
+					"<div class='checkbox'><a href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_cookies\'); return(false);\">"+theUILang.exsCookies+":</a><input type='text' class='TextboxLarge' readOnly=true id='"+ndx+"_cookies' value='"+val.cookies+"'/></div>";
+			cont+=
+				"</fieldset>";
+		}
+	});
+	if(cont.length)
+	{
+		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPrivate+")</legend>";
+		s+=cont;
+	}
 	s+="</fieldset>";
 	this.attachPageToOptions($("<div>").attr("id","st_extsearch").html(s)[0],theUILang.exsSearch);
 	var td = $$('rrow').insertCell(2);
@@ -698,6 +784,8 @@ plugin.onLangLoaded = function()
 	$(td).attr("id","exscat").html(s); 
 	plugin.markLoaded();
 	theSearchEngines.checkForIncorrectCurrent(true);
+	if(thePlugins.isInstalled('search'))
+		plugin.shutdownOldVersion();
 }
 
 plugin.onRemove = function()

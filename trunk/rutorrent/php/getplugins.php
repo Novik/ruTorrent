@@ -125,7 +125,7 @@ function testRemoteRequests($remoteRequests)
 				$jResult.=$err;
 		}
 		else
-			unlink($file);
+			@unlink($file);
 	}
 	return($jResult);
 }

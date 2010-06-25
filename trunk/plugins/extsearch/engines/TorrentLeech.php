@@ -2,7 +2,7 @@
 
 class TorrentLeechEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>25 );
+	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.torrentleech.org|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'&cat=0', 'Anime/Cartoon' => "&cat=27", 'Appz' => "&cat=39&cat=22&cat=1&cat=32",
 		'Books' => "&cat=28", 'Documentaries' => "&cat=40", 'Episodes' => "&cat=33&cat=7",
 		'Games' => "&cat=4&cat=41&cat=21&cat=17&cat=45&cat=26&cat=36&cat=44&cat=24&cat=10",

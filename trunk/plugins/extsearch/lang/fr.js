@@ -19,5 +19,10 @@
  theUILang.excatsoftware = "Software";
  theUILang.excatpictures = "Pictures";
  theUILang.excatbooks 	= "Books";
+ theUILang.extPrivate	= "Private";
+ theUILang.extPublic	= "Public";
+ theUILang.exsCookies	= "Format of cookies";
+ theUILang.extAllPublic = "All public";
+ theUILang.extAllPrivate = "All private";
 
 thePlugins.get("extsearch").langLoaded();
