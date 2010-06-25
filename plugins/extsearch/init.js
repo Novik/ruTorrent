@@ -97,10 +97,11 @@ theSearchEngines.checkForIncorrectCurrent = function( refreshCats )
 				(theSearchEngines.current!='private') && 
 				(theSearchEngines.current!='public') && 
 				(!$type(theSearchEngines.sites[theSearchEngines.current]) || !theSearchEngines.sites[theSearchEngines.current].enabled) 
-			   ) ||
+			   ) 
+				||
 			   (
 				!(this.isPublicPresent(true) && this.isPublicPresent(false)) && 
-				((theSearchEngines.current=='private') || (theSearchEngines.current!='public'))
+				((theSearchEngines.current=='private') || (theSearchEngines.current=='public'))
 			   ))
 			{
 				theSearchEngines.current = -1;

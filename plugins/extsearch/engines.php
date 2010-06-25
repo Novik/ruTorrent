@@ -325,8 +325,7 @@ class engineManager
 				foreach( $this->engines as $name=>$nfo )
 				{
 					if(($nfo["global"] && $nfo["enabled"]) &&
-						(($nfo["public"] && ($eng=="public")) ||
-						 (!$nfo["public"] && ($eng=="private"))))
+						(($nfo["public"] && ($eng=="public")) || (!$nfo["public"] && ($eng=="private")) || ($eng=="all")))
 					{
 						require_once( $nfo["path"] );
 						$object = new $nfo["object"]();
