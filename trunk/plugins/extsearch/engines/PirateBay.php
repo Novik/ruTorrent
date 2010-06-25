@@ -65,8 +65,14 @@ class PirateBayEngine extends commonEngine
 						{
 							$tm = strptime($tms,"%m-%d %H:%M");
 							if($tm===false)
+							{
 								$tm = strtotime($tms);
-							if($tm!==false)
+								if($tm!==false)
+									$tm = localtime($tm,true);
+else
+toLog($tms);
+							}
+							else
 								$tm["tm_year"] = date("Y")-1900;
 						}
 						else
