@@ -2,7 +2,7 @@
 
 class SceneAccessEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>15 );
+	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"www.sceneaccess.org|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'&cat=0', 'Apps' => '&cat=1', 'DOX' => '&cat=14', 'Games' => "&cat=3&cat=5&cat=24&cat=20&cat=28&cat=6&cat=23",
 		'MiSC' => '&cat=21', 'Movies' => "&cat=8&cat=10&cat=22&cat=7", 'TV' => "&cat=27&cat=17&cat=11", 'XXX' => '&cat=12' );
 

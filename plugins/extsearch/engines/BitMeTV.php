@@ -2,7 +2,7 @@
 
 class BitMeTVEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>35 );
+	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"www.bitmetv.org|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'', "(70s Shows)"=>"211", "(80s Shows)"=>"110", "(Adult Swim)"=>"269", "(Anime)"=>"86",
 		"(Billiards-Snooker-Pool)"=>"199", "(British - UK Comedy)"=>"116", "(British - UK Drama)"=>"231", "(British Mystery)"=>"215",
 		"(Canadian Comedy)"=>"260", "(Canadian TV)"=>"261", "(Cartoons)"=>"90", "(Discovery)"=>"301", "(Documentaries)"=>"101",

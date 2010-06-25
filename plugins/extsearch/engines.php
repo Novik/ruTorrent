@@ -188,7 +188,10 @@ class engineManager
 					$this->engines[$name] = array( "name"=>$name, "path"=>fullpath($dir.'/'.$file), "object"=>$name."Engine", "enabled"=>true, "global"=>true, "limit"=>100 );
 					$obj = $this->getObject($name);
 					$this->engines[$name]["enabled"] = $obj->defaults["public"];
+					$this->engines[$name]["public"] = $obj->defaults["public"];
 					$this->engines[$name]["limit"] = $obj->defaults["page_size"];
+					$this->engines[$name]["cats"] = $obj->categories;
+					$this->engines[$name]["cookies"] = (array_key_exists("cookies",$obj->defaults) ? $obj->defaults["cookies"] : '');
 					if(array_key_exists("disabled",$obj->defaults) && $obj->defaults["disabled"])
 						$this->engines[$name]["enabled"] = false;
 					if(array_key_exists($name,$oldEngines) && array_key_exists("limit",$oldEngines[$name]))
@@ -201,6 +204,7 @@ class engineManager
 			} 
 			closedir($handle);		
 	        }
+		ksort($this->engines);
 		$this->store();
 	}
 
@@ -209,19 +213,16 @@ class engineManager
                 $ret = "theSearchEngines.globalLimit = ".$this->limit."; theSearchEngines.sites = {";
 		foreach( $this->engines as $name=>$nfo )
 		{
-			$ret.="'".$name."': { enabled: ".intval($nfo["enabled"]). ", global: ".intval($nfo["global"]).", limit: ".$nfo["limit"].", cats: [";
-			if($nfo["enabled"])
+			$ret.="'".$name."': { enabled: ".intval($nfo["enabled"]). ", global: ".intval($nfo["global"]).
+				", limit: ".$nfo["limit"].", public: ".intval($nfo["public"]). ", cookies: ".quoteAndDeslashEachItem($nfo["cookies"]).", cats: [";
+			foreach( $nfo["cats"] as $cat=>$prm )
 			{
-				$obj = $this->getObject($name);
-				foreach( $obj->categories as $cat=>$prm )
-				{
-					$ret.=quoteAndDeslashEachItem($cat);
-					$ret.=',';
-				}
-				$len = strlen($ret);
-				if($ret[$len-1]==',')
-					$ret = substr($ret,0,$len-1);
+				$ret.=quoteAndDeslashEachItem($cat);
+				$ret.=',';
 			}
+			$len = strlen($ret);
+			if($ret[$len-1]==',')
+				$ret = substr($ret,0,$len-1);
 			$ret.=']},';
 		}
 		$len = strlen($ret);
@@ -314,22 +315,30 @@ class engineManager
 	{
 		$arr = array();
 		$what = urlencode($what);
-		if($eng=="all")
+		switch($eng)
 		{
-			foreach( $this->engines as $name=>$nfo )
+			case "public":
+			case "private":
+			case "all":
 			{
-				if($nfo["global"] && $nfo["enabled"])
+				foreach( $this->engines as $name=>$nfo )
 				{
-					require_once( $nfo["path"] );
-					$object = new $nfo["object"]();
-					$object->action($what,$cat,$arr,$nfo["limit"],true);
+					if(($nfo["global"] && $nfo["enabled"]) &&
+						(($nfo["public"] && ($eng=="public")) ||
+						 (!$nfo["public"] && ($eng=="private"))))
+					{
+						require_once( $nfo["path"] );
+						$object = new $nfo["object"]();
+						$object->action($what,$cat,$arr,$nfo["limit"],true);
+					}
 				}
+				break;
 			}
-		}
-		else
-		{
-			$object = $this->getObject($eng);
-			$object->action($what,$cat,$arr,$this->limit,false);
+			default:
+			{
+				$object = $this->getObject($eng);
+				$object->action($what,$cat,$arr,$this->limit,false);
+			}
 		}
 		uasort($arr, create_function( '$a,$b', 'return( (intval($a["seeds"]) > intval($b["seeds"])) ? -1 : ((intval($a["seeds"]) < intval($b["seeds"])) ? 1 : 0) );'));
 		$cnt = 0;		

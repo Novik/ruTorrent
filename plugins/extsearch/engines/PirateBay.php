@@ -60,14 +60,18 @@ class PirateBayEngine extends commonEngine
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 
-						$tm = self::removeTags($matches["date"][$i]);
-						if(strpos($tm,":")!==false)
+						$tms = self::removeTags($matches["date"][$i]);
+						if(strpos($tms,":")!==false)
 						{
-							$tm = strptime($tm,"%m-%d %H:%M");
-							$tm["tm_year"] = date("Y")-1900;
+							$tm = strptime($tms,"%m-%d %H:%M");
+							if($tm===false)
+								$tm = strtotime($tms);
+							if($tm!==false)
+								$tm["tm_year"] = date("Y")-1900;
 						}
 						else
-							$tm = strptime($tm,"%m-%d %Y");
+							$tm = strptime($tms,"%m-%d %Y");
+
 						if($tm!==false)
 							$item["time"] = mktime(	$tm["tm_hour"], $tm["tm_min"], $tm["tm_sec"], $tm["tm_mon"]+1, $tm["tm_mday"], $tm["tm_year"]+1900 );
 						$ret[$link] = $item;

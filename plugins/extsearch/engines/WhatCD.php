@@ -2,7 +2,7 @@
 
 class WhatCDEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50 );
+	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"what.cd|session=XXX" );
 	public $categories = array( 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Applications'=>'&filter_cat[2]=1', 'E-Books'=>'&filter_cat[3]=1', 
 		'Audiobooks'=>'&filter_cat[4]=1', 'E-Learning Videos'=>'&filter_cat[5]=1', 'Comedy'=>'&filter_cat[6]=1', 'Comics'=>'&filter_cat[7]=1' );
 

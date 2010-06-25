@@ -2,7 +2,7 @@
 
 class RevolutionTTEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>25 );
+	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.revolutiontt.net|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'&cat=0', 'Anime' => '&cat=23', 'Appz' => "&cat=22&cat=1",
 		'E-Book' => '&cat=36', 'Games' => "&cat=4&cat=21&cat=17&cat=16&cat=40&cat=39",
 		'Handheld' => "&cat=35&cat=34", 'Mac' => '&cat=2', 'Movies' => "&cat=20&cat=44&cat=3&cat=10&cat=19",
