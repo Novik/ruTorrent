@@ -14,4 +14,12 @@ http://img217.imageshack.us/img217/1285/screenshot20100613at757.png
 
 The plugin is purely for cosmetic use.  It's pretty generalized in it's current state, and should not be taken as 100% accurate.  
 
-_( note: there is a formula which i will add once i get it translated -- wonslung)_
+
+The formula for cpuload, currently is
+
+*`min(load_average[0]*100/processors_count,100)`*
+
+where `load_average[0]` - count of processes in run queue in the last
+minute.
+
+processors_count is always 1 for non-Linux systems.
