@@ -44,6 +44,7 @@
         * [PluginChunks Chunks]
         * [PluginData Data]
         * [PluginCpuload Cpuload]
+        * [PluginExtsearch extsearch]
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
