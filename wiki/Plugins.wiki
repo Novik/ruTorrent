@@ -172,3 +172,4 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginChunks Chunks] -- This plugin shows info on torrent pieces (which pieces have downloaded).
  # [PluginData Data] -- This plugin adds an http download option to the "files" tab and torrent menu.
  # [PluginCpuload Cpuload] - Shows cpu loading on the bottom bar in an easy to read fashion.
+ # [PluginExtsearch extsearch] - adds an internal search function to many popular public and private sites
