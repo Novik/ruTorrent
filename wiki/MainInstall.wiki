@@ -55,3 +55,14 @@ make install
 {{{
 cd /usr/ports/net-p2p/rtorrent/ && make install clean
 }}}
+
+= Rtorrent Setup and Configuration =
+
+Rtorrent can be run as any user (or multiple users).  Generally, it's a bad idea to run rtorrent as the root user, so create a unique user, and make sure to add a [http://libtorrent.rakshasa.no/browser/trunk/rtorrent/doc/rtorrent.rc?rev=latest .rtorrent.rc]
+
+make sure to enable scgi port with something like this:
+
+{{{
+
+scgi_port = 127.0.0.1:5001
+}}}
