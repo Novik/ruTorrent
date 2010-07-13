@@ -85,6 +85,7 @@ class Snoopy
 	
 	// send Accept-encoding: gzip?
 	var $use_gzip		= true;	
+	var $IP			= null;
 	
 	/**** Private variables ****/	
 	
@@ -724,6 +725,9 @@ class Snoopy
 		
 		if($this->read_timeout > 0)
 			$cmdline_params .= " -m ".$this->read_timeout;
+
+		if(!is_null($this->IP))
+			$cmdline_params .= " --interface ".$this->IP;
 		
 		$headerfile = uniqid(time());
 		$contfile = uniqid(time());
@@ -853,19 +857,26 @@ class Snoopy
 			$host = $this->host;
 			$port = $this->port;
 		}
-	
 		$this->status = 0;
-		
-		if($fp = fsockopen(
+		if(function_exists("stream_socket_client") && !is_null($this->IP))
+		{
+			$opts = array('socket' => array('bindto' => $this->IP.':0'));
+			$context = stream_context_create($opts);
+			$fp = stream_socket_client("tcp://".$host.":".$this->port, $errno, $errstr, $this->_fp_timeout, STREAM_CLIENT_CONNECT, $context); 
+		}
+		else
+		{
+			$fp = fsockopen(
 					$host,
 					$port,
 					$errno,
 					$errstr,
 					$this->_fp_timeout
-					))
+					);
+		}
+		if($fp)
 		{
 			// socket connection succeeded
-
 			return true;
 		}
 		else
