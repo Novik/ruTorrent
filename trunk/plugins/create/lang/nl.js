@@ -1,25 +1,25 @@
-﻿
- 
- theUILang.mnu_create 			= "Create torrent...";
- theUILang.CreateNewTorrent 		= "Create New Torrent";
- theUILang.SelectSource 		= "Select Source";
- theUILang.TorrentProperties 		= "Torrent Properties";
- theUILang.PieceSize 			= "Piece size";
- theUILang.Other 			= "Other";
- theUILang.StartSeeding 		= "Start seeding";
- theUILang.PrivateTorrent		= "Private torrent";
- theUILang.torrentCreate		= "Create...";
- theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound 	= "Create plugin: Plugin will not work. Web-server can't access external program";
- theUILang.incorrectDirectory 		= "Incorrect directory";
- theUILang.cantExecExternal 		= "Can't execute external program";
- theUILang.createConsole		= "Console";
- theUILang.createErrors		 	= "Errors";
- theUILang.torrentSave		 	= "Save";
- theUILang.torrentKill		 	= "Stop";
- theUILang.torrentKilled	 	= "Process was stopped.";
- theUILang.badScriptPath 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access script file for read/execute.";
- theUILang.pgrepNotFound 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access 'pgrep' program.";
- theUILang.createPHPNotFound		= "Create plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
+
+
+ theUILang.mnu_create = "Maak torrent ...";
+ theUILang.CreateNewTorrent = "Maak Torrent";
+ theUILang.SelectSource = "Selecteer Folder/Bestand";
+ theUILang.TorrentProperties = "Torrent Eigenschappen";
+ theUILang.PieceSize = "Stuk Grote";
+ theUILang.Other = "Diverse";
+ theUILang.StartSeeding = "Start uploaden";
+ theUILang.PrivateTorrent = "Prive torrent";
+ theUILang.torrentCreate = "Maak ...";
+ theUILang.BadTorrentData = "U moet alle verplichte velden invullen!";
+ theUILang.createExternalNotFound = "Maak Torrent plugin: Plugin zal niet werken. web-server heeft geen toegang tot extern programma";
+ theUILang.incorrectDirectory = "Ongeldige map";
+ theUILang.cantExecExternal = "Kan extern programma niet uitvoeren";
+ theUILang.createConsole = "Console";
+ theUILang.createErrors = "Fouten";
+ theUILang.torrentSave = "Opslaan";
+ theUILang.torrentKill = "Stop";
+ theUILang.torrentKilled = "proces is gestopt.";
+ theUILang.badScriptPath = "Maak Torrent plugin: Sommige functionaliteiten zijn niet beschikbaar. rtorrent's gebruiker heeft geen toegang tot script voor lezen/uitvoeren."
+ theUILang.pgrepNotFound = "Maak Torrent plugin: Sommige functionaliteiten zijn niet beschikbaar. rtorrent's gebruiker heeft geen toegang tot 'pgrep' programma.";
+ theUILang.createPHPNotFound = "Maak Torrent plugin: rtorrent's gebruiker heeft geen toegang tot de PHP-interpreter. De plugin zal niet werken.";
 
 thePlugins.get("create").langLoaded();

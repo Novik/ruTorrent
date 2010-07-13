@@ -1,5 +1,5 @@
-﻿
+
  
- theUILang.erasedataRunNotAvailable	= "Erasedata plugin: rTorrent's user can't access file plugins/erasedata/cleanup.sh for read/execute. Plugin will not work.";
+ theUILang.erasedataRunNotAvailable	= "Erasedata plugin: rtorrent's gebruiker heeft geen lees/uitvoer rechten voor het toegang bestand plugins/erasedata/cleanup.sh . De plugin zal niet werken.";
 
 thePlugins.get("erasedata").langLoaded();

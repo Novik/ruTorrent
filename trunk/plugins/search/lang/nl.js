@@ -1,6 +1,6 @@
-﻿
+
  
- theUILang.searchDesc = "Search Engines (Format: name|URL)";
- theUILang.searchName = "Search";
+ theUILang.searchDesc = "Zoek Machine (Format: name|URL)";
+ theUILang.searchName = "Zoek";
 
 thePlugins.get("search").langLoaded();

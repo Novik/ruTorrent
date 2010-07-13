@@ -1,6 +1,6 @@
 <?php
 
-class SceneAccessEngine extends commonEngine
+class ScCEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"www.sceneaccess.org|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'&cat=0', 'Apps' => '&cat=1', 'DOX' => '&cat=14', 'Games' => "&cat=3&cat=5&cat=24&cat=20&cat=28&cat=6&cat=23",
