@@ -1,6 +1,6 @@
 <?php
 
-class FeedTheNetEngine extends commonEngine
+class FtNEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"feedthe.net|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'', "Apps" => "&c2=1&c3=1", "DOX" => "&c4=1", "Games" => "&c8=1&c10=1&c11=1&c25=1&c12=1", 

@@ -1,26 +1,27 @@
-﻿
- theUILang.scheduler			= "Scheduler";
- theUILang.schedulerOn			= "Enable Scheduler";
- theUILang.schedulerGraph			= "Scheduler Table";
- theUILang.schShortWeek			= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek			= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
 
- theUILang.schUnlimited			= "Unlimited";
- theUILang.schLimited			= "Limited";
- theUILang.schTurnOff			= "Turn off";
- theUILang.schSeedingOnly			= "Seeding only";
+ theUILang.scheduler				= "Taakplanner";
+ theUILang.schedulerOn			= "Taakplanner Aanzetten";
+ theUILang.schedulerGraph 			= "Taakplanner tabel";
 
- theUILang.schUnlimitedDesc		= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc			= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc			= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc		= "Seeding only - Only upload data";
+ theUILang.schShortWeek 			= ["Ma", "Di", "Wo", "Don", "Vrij", "Zat", "Zon"];
+ theUILang.schFullWeek 			= ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"];
 
- theUILang.schLimitedUL			= "Limited UL";
- theUILang.schLimitedDL			= "Limited DL";
+ theUILang.schUnlimited 			= "Onbeperkt";
+ theUILang.schLimited 			= "Beperkt";
+ theUILang.schTurnOff 			= "Uitzetten";
+ theUILang.schSeedingOnly 			= "Alleen bij seeden";
 
- theUILang.schedPHPNotFound		= "Scheduler plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
- theUILang.schedUpdaterNotAvailable	= "Scheduler plugin: rTorrent's user can't access file plugins/scheduler/update.php for read. Plugin will not work.";
+ theUILang.schUnlimitedDesc 		= "Onbeperkt - Globale Limiet is niet aanwezig";
+ theUILang.schLimitedDesc 			= "Beperkt - Gebruikt scheduler-specifieke bandbreedte beperken";
+ theUILang.schTurnOffDesc 			= "Uitzetten - Stopt alle torrents";
+ theUILang.schSeedingOnlyDesc 		= "Seeden - Alleen uploaden van gegevens";
 
- theUILang.shcIgnore			= "Ignore scheduler";
+ theUILang.schLimitedUL 			= "Beperkte UL";
+ theUILang.schLimitedDL 			= "Beperkte DL";
 
-thePlugins.get("scheduler").langLoaded();
+ theUILang.schedPHPNotFound 		= "Scheduler plugin: rtorrent's gebruiker heeft geen toegang tot de PHP-interpreter. De plugin zal niet werken.";
+ theUILang.schedUpdaterNotAvailable 	= "Scheduler plugin: rtorrent's gebruiker geen lees toegang tot het bestand plugins/planner/update.php. De plugin zal niet werken.";
+
+ theUILang.shcIgnore 			= "Negeer Taakplanner";
+
+thePlugins.get ("scheduler"). langLoaded ();

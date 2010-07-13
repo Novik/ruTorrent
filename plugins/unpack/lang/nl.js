@@ -1,19 +1,19 @@
-﻿
+
  
-theUILang.unpack		= "Unpack";
-theUILang.unpackPath		= "Unpack to (leave blank for torrent's current directory):";
-theUILang.processAll		= "Process all volumes";
-theUILang.unpackTaskFailed      = "Unpacking finished with errors";
-theUILang.unpackTaskOK		= "Unpacking finished successfully";
-theUILang.unpackTaskStarted	= "Unpacking started";
-theUILang.unzipNotFound		= "Unpack plugin: rTorrent's user can't access unzip program.";
-theUILang.unrarNotFound		= "Unpack plugin: rTorrent's user can't access unrar program.";
-theUILang.unpackRunNotAvailable	= "Unpack plugin: rTorrent's user can't access external file for read/execute. Plugin will not work.";
-theUILang.unpackUpdNotAvailable = "Unpack plugin: rTorrent's user can't access file plugins/unpack/update.php for read. Plugin will not work.";
-theUILang.unpackEnabled		= "Enable autounpacking";
-theUILang.unpackTorrents	= "Add to path when unpacking torrent data:";
-theUILang.unpackAddLabel	= "Torrent's label";
-theUILang.unpackAddName		= "Torrent's name";
-theUILang.unpackNoFiles		= "No archives found in torrent data.";
+theUILang.unpack			= "Uitpakken";
+theUILang.unpackPath			= "Uitpakken naar (laat blank voor huidige folder):";
+theUILang.processAll			= "Pak alle rar's uit";
+theUILang.unpackTaskFailed  	= "Uitpakken gereed met errors";
+theUILang.unpackTaskOK		= "Succesvol uitgepakt";
+theUILang.unpackTaskStarted		= "Uitpakken gestart";
+theUILang.unzipNotFound		= "Uitpak plugin: rTorrent's user heeft geen toegang tot unzip programa.";
+theUILang.unrarNotFound		= "Unpack plugin: rTorrent's user heeft geen toegang tot unrar programa.";
+theUILang.unpackRunNotAvailable	= "Unpack plugin: rTorrent's user heeft geen lees/uitvoer rechten. De plugin zal niet werken.";
+theUILang.unpackUpdNotAvailable 	= "Unpack plugin: rTorrent's user heeft geen lees rechten op plugins/unpack/update.php. De plugin zal niet werken.";
+theUILang.unpackEnabled		= "Automatich uitpakken aanzetten";
+theUILang.unpackTorrents		= "Voeg toe aan pad tijdens uitpakken:";
+theUILang.unpackAddLabel		= "Torrent's label";
+theUILang.unpackAddName		= "Torrent's naam";
+theUILang.unpackNoFiles		= "Geen archief gevonden in de torrent data.";
 
 thePlugins.get("unpack").langLoaded();

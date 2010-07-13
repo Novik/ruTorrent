@@ -754,6 +754,7 @@ plugin.onLangLoaded = function()
 	{
 		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPublic+")</legend>";
 		s+=cont;
+		s+="</fieldset>";
 	}
         cont = "";
 	$.each(theSearchEngines.sites,function(ndx,val)
@@ -777,8 +778,8 @@ plugin.onLangLoaded = function()
 	{
 		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPrivate+")</legend>";
 		s+=cont;
+		s+="</fieldset>";
 	}
-	s+="</fieldset>";
 	this.attachPageToOptions($("<div>").attr("id","st_extsearch").html(s)[0],theUILang.exsSearch);
 	var td = $$('rrow').insertCell(2);
 	s ="<select id='exscategory' title='"+theUILang.excat+"'></select>";

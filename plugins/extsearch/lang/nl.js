@@ -1,28 +1,29 @@
-﻿
- theUILang.tegMenuLoad	= "Load";
- theUILang.tegMenuOpen	= "Open in browser";
- theUILang.tegMenuDeleteItem = "Remove item";
- theUILang.tegMenuDelete = "Remove tag";
- theUILang.tegRefresh	= "Refresh tag";
- theUILang.exsGlobal	= "Include into 'All' category";
- theUILang.exsLimit	= "Result limit";
- theUILang.exsEngines	= "Engines";
- theUILang.exsSearch	= "Search";
- theUILang.exsGlobalLimit = "Common limitations";
- theUILang.excat	= "Category";
- theUILang.excatall	= "All";
- theUILang.excatmovies	= "Movies";
- theUILang.excattv	= "TV";
- theUILang.excatmusic	= "Music";
- theUILang.excatgames	= "Games";
- theUILang.excatanime	= "Anime";
+
+
+ theUILang.tegMenuLoad = "Laad";
+ theUILang.tegMenuOpen = "Openen in browser";
+ theUILang.tegMenuDeleteItem = "Verwijder item";
+ theUILang.tegMenuDelete = "Verwijder tag";
+ theUILang.tegRefresh = "refresh-tag";
+ theUILang.exsGlobal = "Voeg toe aan' Alles 'categorie ";
+ theUILang.exsLimit = "Resultaat beperken";
+ theUILang.exsEngines = "Zoek Machines";
+ theUILang.exsSearch = "Zoeken";
+ theUILang.exsGlobalLimit = "Globale beperkingen";
+ theUILang.excat = "Categorie";
+ theUILang.excatall = "Alle";
+ theUILang.excatmovies = "Films";
+ theUILang.excattv = "TV";
+ theUILang.excatmusic = "Muziek";
+ theUILang.excatgames = "Games";
+ theUILang.excatanime = "Anime";
  theUILang.excatsoftware = "Software";
- theUILang.excatpictures = "Pictures";
- theUILang.excatbooks 	= "Books";
- theUILang.extPrivate	= "Private";
- theUILang.extPublic	= "Public";
- theUILang.exsCookies	= "Format of cookies";
- theUILang.extAllPublic = "All public";
- theUILang.extAllPrivate = "All private";
+ theUILang.excatpictures = "Foto's";
+ theUILang.excatbooks = "Boeken";
+ theUILang.extPrivate = "Prive";
+ theUILang.extPublic = "Public";
+ theUILang.exsCookies = "Opmaak van cookies";
+ theUILang.extAllPublic = "Alle open trackers";
+ theUILang.extAllPrivate = "Alle gesloten trackers (private)";
 
 thePlugins.get("extsearch").langLoaded();

@@ -1,17 +1,16 @@
-﻿
- 
- theUILang.ratioUnsupported	= "Wtyczka Ratio: Ta wersja rTorrenta nie wspiera ratio. Wtyczka nie będzie działać.";
- theUILang.ratios			= "Grupy ratio";
- theUILang.ratio			= "GrupaRatio";
- theUILang.mnuRatio		= "Ustaw grupę ratio";
- theUILang.mnuRatioUnlimited	= "Bez ratio";
- theUILang.ratioName 		= "Nazwa";
- theUILang.minRatio 		= "Minimum";
- theUILang.maxRatio 		= "Maksimum";
- theUILang.ratioUpload 		= "Wysył";
- theUILang.ratioAction 		= "Akcja";
- theUILang.ratioStop 		= "Zatrzymaj";
- theUILang.ratioStopAndRemove 	= "Zatrzymaj i wyczyść grupę";
- theUILang.ratioErase 		= "Usuń";
+
+ theUILang.ratioUnsupported     	= "Deze versie van rtorrent support geen ratio. De ratio plugin zal niet werken";
+ theUILang.ratios			= "Ratio Groepen";
+ theUILang.ratio			= "RatioGroep";
+ theUILang.mnuRatio			= "Set Ratio groep";
+ theUILang.mnuRatioUnlimited	= "Geen Ratio";
+ theUILang.ratioName 		= "Naam";
+ theUILang.minRatio 			= "Min";
+ theUILang.maxRatio 			= "Max";
+ theUILang.ratioUpload 		= "UL";
+ theUILang.ratioAction 		= "Actie";
+ theUILang.ratioStop 		= "Stop";
+ theUILang.ratioStopAndRemove 	= "Stop & Clear groep";
+ theUILang.ratioErase 		= "Verwijder";
 
 thePlugins.get("ratio").langLoaded();

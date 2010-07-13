@@ -1,6 +1,6 @@
 <?php
 
-class FreshOnEngine extends commonEngine
+class TvTEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"freshon.tv|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'', '...2010 World Cup Africa...'=>"457", '..Anime..'=>"235",

@@ -1,6 +1,6 @@
 <?php
 
-class RevolutionTTEngine extends commonEngine
+class RevTTEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.revolutiontt.net|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'&cat=0', 'Anime' => '&cat=23', 'Appz' => "&cat=22&cat=1",
