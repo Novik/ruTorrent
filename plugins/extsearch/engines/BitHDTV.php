@@ -1,18 +1,22 @@
 <?php
 
-// Created by Matt Porter
+/*
+ *@author Matt Porter
+ *@version $Id$
+*/
+
 
 class BitHDTVEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"www.bit-hdtv.com|h_su=XXX;h_sp=XXX;h_sl=XXX;" );
-	public $categories = array( 'all'=>'&cat=0', 'Anime'=>'&cat=1', 'Blu-ray'=>'&cat=2', 'Demo'=>'&cat=3', 'Doc'=>'&cat=4', 'HQ-Audio'=>'&cat=6', 'Movies'=>'&cat=7', 'Music Videos'=>'&cat=8', 'Other'=>'&cat=9', 'HD-DVD'=>'&cat=5', 'TV'=>'&cat=10&cat=12', 'XXX'=>'&cat=11' );
+	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"www.bit-hdtv.com|h_su=XXX;h_sp=XXX;h_sl=XXX;" );
+	public $categories = array( 'all'=>'&cat=0', 'Anime'=>'&cat=1', 'Blu-ray'=>'&cat=2', 'Demo'=>'&cat=3', 'Doc'=>'&cat=4', 'HQ-Audio'=>'&cat=6', 'Movies'=>'&cat=7', 'Music Videos'=>'&cat=8', 'Other'=>'&cat=9', 'HD-DVD'=>'&cat=5', 'TV'=>'&cat=10', 'TV/Season'=>'&cat=12', 'XXX'=>'&cat=11' );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://www.bit-hdtv.com';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'&cat=0', 'movies'=>'&cat=2&cat=7&cat=5', 'tv'=>'&cat=10&cat=12', 'music'=>'&cat=6&cat=8', 'anime'=>'&cat=1' );
+			$categories = array( 'all'=>'&cat=0' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
