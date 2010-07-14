@@ -1,10 +1,14 @@
 <?php
 
-// Created by Matt Porter
+/*
+ *@author Matt Porter
+ *@version $Id$
+*/
+
 
 class BitMeEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.bitme.org|pass=XXX;uid=XXX;" );
+	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"www.bitme.org|pass=XXX;uid=XXX;" );
 	public $categories = array( 'all'=>'', '3D'=>'20', 'AppDev'=>'1', 'Art'=>'14', 'Audio'=>'2', 'CBT'=>'3', 'Dating'=>'21', 
 		'DIY'=>'29', 'Documentaries'=>'5', 'e-Books'=>'6', 'KeyStone'=>'7', 'Languages'=>'8', 'LearnKey'=>'9', 'Lynda.com'=>'10',
 		'Magic'=>'19', 'Math'=>'30', 'Medical'=>'18', 'Misc'=>'11', 'Misc e-Learning'=>'12', 'Music Learning'=>'22',
