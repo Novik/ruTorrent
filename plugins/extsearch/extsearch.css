@@ -23,6 +23,7 @@
 .EngineBroadcasThe {background-image: url(./images/broadcasthe.png); background-repeat: no-repeat}
 .EngineBitHDTV {background-image: url(./images/bit-hdtv.png); background-repeat: no-repeat}
 .EngineBitMe {background-image: url(./images/bitme.png); background-repeat: no-repeat}
+.EngineSceneHD {background-image: url(./images/scenehd.png); background-repeat: no-repeat}
 
 div#tegLoadTorrents #RSSBtn {width: 30px;}
 div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}
