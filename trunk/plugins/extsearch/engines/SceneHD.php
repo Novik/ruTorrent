@@ -25,9 +25,8 @@ class SceneHDEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h2>No torrents found!</h2>")!==false) ||
 				(strpos($cli->results, "<td>Password</td>")!==false))
 				break;
-
 			$res = preg_match_all('/<img border="0" src="\/pic\/cats\/.*" title="(?P<cat>.*)"><\/a><\/td>.*'.
-				'<a href="details.php\?id=(?P<id>.*)">(?P<name>.*)<\/a></nobr><br></td>.*'.
+				'<a href="details\.php\?id=(?P<id>.*)">(?P<name>.*)<\/a><\/nobr><br><\/td>.*'.
 				'<td.*>.*<\/td>.*'.
 				'<td.*>.*<\/td>.*'.
 				'<td.*>.*<\/td>.*'.
@@ -36,7 +35,6 @@ class SceneHDEngine extends commonEngine
 				'<td.*>(?P<seeds>.*)<\/td>.*'.
 				'<td.*>(?P<leech>.*)<\/td>.*'.
 				'<td.*>.*<\/td>.*<\/tr>/siU', $cli->results, $matches);
-
 			if(($res!==false) && ($res>0) &&
 				count($matches["cat"])==count($matches["id"]) &&
 				count($matches["id"])==count($matches["name"]) && 
@@ -45,7 +43,7 @@ class SceneHDEngine extends commonEngine
 				count($matches["size"])==count($matches["date"]) &&
 				count($matches["seeds"])==count($matches["leech"]) )
 			{
-				for($i=0; $i<count($matches["link"]); $i++)
+				for($i=0; $i<count($matches["id"]); $i++)
 				{
 					$link = $url."/download.php?id=".$matches["id"][$i];
 					if(!array_key_exists($link,$ret))
