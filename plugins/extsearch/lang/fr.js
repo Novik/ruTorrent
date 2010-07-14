@@ -1,28 +1,36 @@
-
- theUILang.tegMenuLoad	= "Load";
- theUILang.tegMenuOpen	= "Open in browser";
- theUILang.tegMenuDeleteItem = "Remove item";
- theUILang.tegMenuDelete = "Remove tag";
- theUILang.tegRefresh	= "Refresh tag";
- theUILang.exsGlobal	= "Include into 'All' category";
- theUILang.exsLimit	= "Result limit";
- theUILang.exsEngines	= "Engines";
- theUILang.exsSearch	= "Search";
- theUILang.exsGlobalLimit = "Common limitations";
- theUILang.excat	= "Category";
- theUILang.excatall	= "All";
- theUILang.excatmovies	= "Movies";
- theUILang.excattv	= "TV";
- theUILang.excatmusic	= "Music";
- theUILang.excatgames	= "Games";
- theUILang.excatanime	= "Anime";
- theUILang.excatsoftware = "Software";
- theUILang.excatpictures = "Pictures";
- theUILang.excatbooks 	= "Books";
- theUILang.extPrivate	= "Private";
- theUILang.extPublic	= "Public";
- theUILang.exsCookies	= "Format of cookies";
- theUILang.extAllPublic = "All public";
- theUILang.extAllPrivate = "All private";
+/*
+ * PLUGIN EXTSEARCH
+ * 
+ * File Name: fr.js
+ *      French language file.
+ * 
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
+ theUILang.tegMenuLoad  = "Télécharger";
+ theUILang.tegMenuOpen  = "Ouvrir dans le navigateur";
+ theUILang.tegMenuDeleteItem = "Supprimer";
+ theUILang.tegMenuDelete = "Supprimer le tag";
+ theUILang.tegRefresh   = "Rafraichir le tag";
+ theUILang.exsGlobal    = "Inclure dans la cat\u00e9gorie 'Tous les ...'";
+ theUILang.exsLimit     = "Limite des r\u00e9sultats";
+ theUILang.exsEngines   = "Moteurs";
+ theUILang.exsSearch    = "Recherche";
+ theUILang.exsGlobalLimit = "Limitations communes";
+ theUILang.excat        = "Cat\u00e9gories";
+ theUILang.excatall     = "Tous";
+ theUILang.excatmovies  = "Films";
+ theUILang.excattv      = "TV";
+ theUILang.excatmusic   = "Musiques";
+ theUILang.excatgames   = "Jeux";
+ theUILang.excatanime   = "Anime";
+ theUILang.excatsoftware = "Logiciels";
+ theUILang.excatpictures = "Photos";
+ theUILang.excatbooks   = "Livres";
+ theUILang.extPrivate   = "Priv\u00e9";
+ theUILang.extPublic    = "Public";
+ theUILang.exsCookies   = "Format du cookie";
+ theUILang.extAllPublic = "Tous les public";
+ theUILang.extAllPrivate = "Tous les priv\u00e9";
 
 thePlugins.get("extsearch").langLoaded();

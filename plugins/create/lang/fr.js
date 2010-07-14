@@ -2,7 +2,7 @@
  * PLUGIN CREATE
  * 
  * File Name: fr.js
- * 	French language file.
+ *      French language file.
  * 
  * File Author:
  *    Nicobubulle (nicobubulle@gmail.com)
@@ -26,8 +26,8 @@
  theUILang.torrentSave                  = "Enregistrer";
  theUILang.torrentKill                  = "Stop";
  theUILang.torrentKilled                = "Le processus a \u00e9t\u00e9 interrompu.";
- theUILang.badScriptPath 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access script file for read/execute.";
- theUILang.pgrepNotFound 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access 'pgrep' program.";
- theUILang.createPHPNotFound      	= "Plugin 'create' : rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
+ theUILang.badScriptPath                = "Plugin 'Create' : Certaines fonctionnalit\u00e9s ne seront pas disponibles. rTorrent ne peut pas acc\u00e9der au script en Lecture/Execution.";
+ theUILang.pgrepNotFound                = "Plugin 'Create' : Certaines fonctionnalit\u00e9s ne seront pas disponibles. rTorrent ne peut pas acc\u00e9der au programme 'pgrep'.";
+ theUILang.createPHPNotFound            = "Plugin 'create' : rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
 
 thePlugins.get("create").langLoaded();
