@@ -400,7 +400,7 @@ var theConverter =
 	},
 	date: function(dt)
 	{
-	        if(dt>0)
+	        if(dt>3600*24*365)
 	        {
 			var today = new Date();
 			today.setTime(dt*1000);
