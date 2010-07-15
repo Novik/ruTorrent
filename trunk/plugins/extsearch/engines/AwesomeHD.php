@@ -25,15 +25,18 @@ class AwesomeHDEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h2>Your search did not match anything.</h2>")!==false) ||
 				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
 				break;
+
 			$res = preg_match_all('/<tr class="group">.*<td class="center">.*'.
 				'<div title="View" id="showimg_(?P<id>\d+)".*'.
+				'<td class="center cats_col">.*<div title="(?P<cat>.*)".*'.
 				'<td colspan="2">(?P<name>.*)<span/siU', $cli->results, $matches);
+
 			if(($res!==false) && ($res>0) &&
 				count($matches["id"])==count($matches["name"]))
 			{
 				$groups = array();
                                 for($i=0; $i<count($matches["id"]); $i++)
-					$groups[intval($matches["id"][$i])] = self::removeTags($matches["name"][$i]);
+					$groups[intval($matches["id"][$i])] = array( "name" => self::removeTags($matches["name"][$i]), "cat" => self::removeTags($matches["cat"][$i]) );
 
 				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)">'.
 					'.*<td colspan="3">.*'.
@@ -66,7 +69,10 @@ class AwesomeHDEngine extends commonEngine
 							$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 							$grp = intval($matches["id"][$i]);
 							if(array_key_exists($grp,$groups))
-								$item["name"] = $groups[$grp].self::removeTags($matches["name"][$i]);
+							{
+								$item["cat"] = $groups[$grp]["cat"];
+								$item["name"] = $groups[$grp]["name"].self::removeTags($matches["name"][$i]);
+							}
 							else
 								$item["name"] = self::removeTags($matches["name"][$i]);
 
