@@ -63,26 +63,14 @@ class DemonoidEngine extends commonEngine
 								if($added>=$limit)
 									return;
 							}
-else
-{
-toLog("Old: ".$ret[$link]["name"]);
-toLog("New: ".self::removeTags($matches["name"][$j]));
-toLog($link);
-}							
 						}
 					}
 					else
-{					
 						return;
-toLog(1);						
-}						
 				}
 			}
 			else
-{			
 				return;
-toLog(2);				
-}				
 		}
 	}
 }
