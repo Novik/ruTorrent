@@ -49,7 +49,7 @@ class commonEngine
 		$client = $this->makeClient($url);
 		if($encode)
 			$url = Snoopy::linkencode($url);
-		@$client->fetch($url);
+		$client->fetch($url);
 		if($client->status>=200 && $client->status<300)
 		{
 			ini_set( "pcre.backtrack_limit", max(strlen($client->results),100000) );
