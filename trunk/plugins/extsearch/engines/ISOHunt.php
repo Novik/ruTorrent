@@ -2,7 +2,7 @@
 
 class ISOHuntEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>20 );
+	public $defaults = array( "public"=>true, "page_size"=>20, "disabled"=>true );
 	public $categories = array( 'all'=>'', 'Video / Movies'=>'1', 'TV'=>'3', 'Audio'=>'2',
 		'Music Video'=>'10', 'Games'=>'4', 'Applications'=>'5', 'Pictures'=>'6', 'Anime'=>'7', 'Comics'=>'8', 
 		'Books'=>'9', 'Misc'=>'0', 'Unclassified'=>'11' );
