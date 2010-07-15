@@ -5,17 +5,36 @@ class SumoTorrentEngine extends commonEngine
 	public $categories = array( 'all'=>'', 'Movies'=>'4', 'Music'=>'3', 'TV series'=>'9', 'Games'=>'2', 'Applications'=>'1', 
 		'Handheld'=>'6', 'Anime'=>'8', 'Non-English'=>'7', 'No Category'=>'10000', 'XXX'=>'10', 'Assorted'=>'5' );
 
+	public function getTorrent( $url )
+	{
+		$cli = $this->fetch( $url );
+		if($cli)
+		{
+			$url = str_replace( "/download/", "/torrent_download/", $url );
+			$cli->setcookies();
+			$cli->fetch(Snoopy::linkencode($url));
+			if($cli->status>=200 && $cli->status<300)
+			{
+				$name = $cli->get_filename();
+				if($name===false)
+					$name = md5($url).".torrent";
+				$name = getUniqueFilename(getUploadsPath()."/".$name);
+				$f = @fopen($name,"w");
+				if($f!==false)
+				{
+					@fwrite($f,$cli->results,strlen($cli->results));
+					fclose($f);
+					@chmod($name,0666);
+					return($name);
+				}
+			}
+		}
+		return(false);
+	}
 	static protected function getInnerCategory($cat)
 	{
 		$categories = array( '4'=>'Movies', '3'=>'Music', '9'=>'TV series', '2'=>'Games', '1'=>'Applications', '6'=>'Handheld', '8'=>'Anime', '7'=>'Non-English', '10000'=>'No Category', '10'=>'XXX', '5'=>'Assorted' );
 		return(array_key_exists($cat,$categories) ? $categories[$cat] : '');
-	}
-	public function makeClient($url)
-	{
-		$client = parent::makeClient($url);
-		if(strpos($url,'/download/')!==false)
-			$client->rawheaders["Referer"] = "http://torrents.sumotorrent.com/searchResult.php";
-		return($client);
 	}
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
