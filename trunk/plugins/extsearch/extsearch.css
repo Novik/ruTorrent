@@ -27,6 +27,9 @@
 .EnginePtP {background-image: url(./images/passthepopcorn.png); background-repeat: no-repeat}
 .EngineAwesomeHD {background-image: url(./images/awesome-hd.png); background-repeat: no-repeat}
 .EngineISOHuntLite {background-image: url(./images/isohunt.png); background-repeat: no-repeat}
+.EngineBlackcatsGames {background-image: url(./images/blackcats-games.png); background-repeat: no-repeat}
+.EngineBitGAMER {background-image: url(./images/bitgamer.png); background-repeat: no-repeat}
+.EngineGForcesTracker {background-image: url(./images/thegft.png); background-repeat: no-repeat}
 
 div#tegLoadTorrents #RSSBtn {width: 30px;}
 div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}
