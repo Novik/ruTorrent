@@ -486,13 +486,8 @@ class Snoopy
 		if(!empty($this->accept))
 			$headers .= "Accept: ".$this->accept."\r\n";
 		
-		if($this->use_gzip) {
-			// make sure PHP was built with --with-zlib
-			// and we can handle gzipp'ed data
-			if ( function_exists("gzinflate") ) {
-			   $headers .= "Accept-encoding: gzip\r\n";
-			}
-		}
+		if($this->use_gzip && function_exists("gzinflate")) 
+			$headers .= "Accept-encoding: gzip\r\n";
 		
 		if(!empty($this->referer))
 			$headers .= "Referer: ".$this->referer."\r\n";
@@ -513,7 +508,7 @@ class Snoopy
 	
 			reset($this->cookies);
 			if ( count($this->cookies) > 0 ) {
-				$cookie_headers .= 'Cookie: ';
+				$cookie_headers = 'Cookie: ';
 				foreach ( $this->cookies as $cookieKey => $cookieVal ) {
 				$cookie_headers .= $cookieKey."=".$cookieVal."; ";
 				}
@@ -610,10 +605,23 @@ class Snoopy
 		}
 		
 		// gunzip
-		if ( $is_gzipped ) {
-			// per http://www.php.net/manual/en/function.gzencode.php
-			$results = substr($results, 10);
-			$results = gzinflate($results);
+		if ( $is_gzipped ) 
+		{
+			if(function_exists("gzinflate"))
+			{
+				$results = substr($results, 10);
+				$results = gzinflate($results);
+			}
+			else
+			{
+				$randName = uniqid("/tmp/rutorrent-gz-");
+				file_put_contents($randName.".gz",$results);
+				exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
+				if(is_file($randName))
+					$results = file_get_contents($randName);
+				else				
+					unlink($randName.".gz");
+			}
 		}
 		
 		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
