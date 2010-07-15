@@ -87,19 +87,19 @@ class commonEngine
 		if(count($sz)>1)
 		{
 			$val = floatval($sz[0]);
-			switch($sz[1])
+			switch(strtolower($sz[1]))
 			{
-				case "TiB":
-				case "TB":
+				case "tib":
+				case "tb":
 					$val*=1024;
-				case "GiB":
-				case "GB":
+				case "gib":
+				case "gb":
 					$val*=1024;
-				case "MiB":
-				case "MB":
+				case "mib":
+				case "mb":
 					$val*=1024;	
-				case "KiB":
-				case "KB":
+				case "kib":
+				case "kb":
 					$val*=1024;	
 			}
 			return($val);

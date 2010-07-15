@@ -1,17 +1,17 @@
 <?php
 
-class TorrentDownloadsEngine extends commonEngine
+class TorrentZapEngine extends commonEngine
 {
 	public $defaults = array( "public"=>true, "page_size"=>50 );
-	public $categories = array( 'all'=>'0', 'Anime'=>'1', 'Books'=>'2', 'Games'=>'3',
-		'Movies'=>'4', 'Music'=>'5', 'Software'=>'7', 'TV Shows'=>'8', 'Other'=>'9' );
+	public $categories = array( 'all'=>'', 'Anime'=>'1', 'Books'=>'2', 'Games'=>'3',
+		'Movies'=>'4', 'Music'=>'5', 'Pictures'=>'6', 'Software'=>'7', 'TV Shows'=>'8', 'Other'=>'9' );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.torrentdownloads.net';
+		$url = 'http://www.torrentzap.com';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'0', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'books'=>'2' );
+			$categories = array( 'all'=>'0', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'pictures'=>'6', 'books'=>'2' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
@@ -21,15 +21,16 @@ class TorrentDownloadsEngine extends commonEngine
 
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/search/?page='.$pg.'&search='.$what.'&s_cat='.$cat.'&srt=seeds&order=desc' );
-			if( ($cli==false) || (strpos($cli->results, "</ul>No torrents</div>")!==false) )
+			$cli = $this->fetch( $url.'/search.php?type=2&q='.$what.'&sort=seeds&pg='.$pg.'&cats='.$cat );
+			if($cli==false)
 				break;
-			$res = preg_match_all('/<a href="http:\/\/www.torrentdownloads.net\/torrent\/(?P<id>.*)\/.*">(?P<name>.*)<\/a><\/li><li>(?P<size>.*)<\/li><li>(?P<seeds>.*)<\/li><li>(?P<leech>.*)<\/li>/siU', $cli->results, $matches );
+			$res = preg_match_all('/id="lb"><\/td><td>(?P<date>.*)<\/td>.*<a href="http:\/\/www\.torrentzap\.com\/torrent\/(?P<id>.*)\/.*>(?P<name>.*)<\/a>.*'.
+				'id="size1">(?P<size>.*)<\/span><\/td>.*id="seeds" align="right">(?P<seeds>.*)<\/td>.*id="leechs" align="right">(?P<leech>.*)<\/td>/siU', $cli->results, $matches );
 			if($res)
 			{
 				for( $i=0; $i<$res; $i++)
 				{
-					$link = $url."/download/".$matches["id"][$i];
+					$link = $url."/download/dummy/".$matches["id"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
@@ -38,8 +39,6 @@ class TorrentDownloadsEngine extends commonEngine
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
-						if(!$item["seeds"] && !$item["peers"])
-							continue;
 						$ret[$link] = $item;
 						$added++;
 						if($added>=$limit)
