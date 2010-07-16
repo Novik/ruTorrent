@@ -21,28 +21,28 @@ class KickAssTorrentsEngine extends commonEngine
 
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/new/?q='.$what.'&categories[0]='.$cat.'&page='.$pg.'&field=seeders&sorder=desc' );
-			if($cli==false || (strpos($cli->results, "Nothing found!</h2>")!==false))
+			$cli = $this->fetch( $url.'/search/'.$what.'/'.$pg.'/?categories[]='.$cat.'&field=seeders&sorder=desc&json=1' );
+			if($cli==false || 
+				!preg_match('/"total_results": (?P<cnt>\d+)/siU',$cli->results, $matches) ||
+				(intval($matches["cnt"])<=0))
 				break;
-
-			$res = preg_match_all('/<div><a title="Download torrent file" href="(?P<link>.*)".*<div class="torrentname"><img.*\/> <a href="(?P<desc>.*)">(?P<name>.*)<\/a>.*'.
-				'<span> in <span.*><a href=".*">(?P<cat>.*)<\/a>.*<td class="nobr">(?P<size>.*)<\/td>.*'.
-				'<td>.*<\/td>.*<td>(?P<date>.*)<\/td>.*<td.*>(?P<seeds>.*)<\/td>.*<td.*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-
+			$res = preg_match_all('/[\,\[]\{\n"title": "(?P<name>.*)",\n"category": "(?P<cat>.*)",\n"link": "(?P<desc>.*)",.*'.
+				'"pubDate": "(?P<date>.*)",\n"torrentLink": "(?P<link>.*)",.*'.
+				'"seeds": "(?P<seeds>.*)",\n"leechs": "(?P<peers>.*)",\n"size": "(?P<size>.*)",.*\}/siU', $cli->results, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
 				{
 					$link = $matches["link"][$i];
-					if(!array_key_exists($link,$ret))
+					if(!array_key_exists($link,$ret) && intval($matches["seeds"][$i]))
 					{
 						$item = $this->getNewEntry();
-						$item["desc"] = $url.$matches["desc"][$i];
+						$item["desc"] = $matches["desc"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
-						$item["size"] = self::formatSize(trim($matches["size"][$i]));
-						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
-						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
-						$item["time"] = strtotime(trim(self::removeTags($matches["date"][$i])));
+						$item["size"] = $matches["size"][$i];
+						$item["seeds"] = intval($matches["seeds"][$i]);
+						$item["peers"] = intval($matches["leech"][$i]);
+						$item["time"] = strtotime($matches["date"][$i]);
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$ret[$link] = $item;
 						$added++;
