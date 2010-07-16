@@ -15,6 +15,11 @@ class rTorrent
 		{
 			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
 				$torrent = $resume;
+			else
+			{
+				if(isset($torrent->{'libtorrent_resume'}))
+					unset($torrent->{'libtorrent_resume'});
+			}			
 			$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
 			$cmd->addParameter(base64_encode($torrent->__toString()),"base64");
 			if(!$saveTorrent && is_string($fname))
@@ -91,7 +96,11 @@ class rTorrent
 			{
 				$torrent = new Torrent( $fname );		
 				if( !$torrent->errors() )
+				{
+					if(isset($torrent->{'libtorrent_resume'}))
+						unset($torrent->{'libtorrent_resume'});
 					return($torrent);
+				}
 			}
 		}
 		return(false);
