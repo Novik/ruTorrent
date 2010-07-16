@@ -2,6 +2,7 @@
 
 class SumoTorrentEngine extends commonEngine
 {
+	public $defaults = array( "public"=>true, "page_size"=>100 );
 	public $categories = array( 'all'=>'', 'Movies'=>'4', 'Music'=>'3', 'TV series'=>'9', 'Games'=>'2', 'Applications'=>'1', 
 		'Handheld'=>'6', 'Anime'=>'8', 'Non-English'=>'7', 'No Category'=>'10000', 'XXX'=>'10', 'Assorted'=>'5' );
 
