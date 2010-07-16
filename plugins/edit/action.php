@@ -90,8 +90,6 @@ if(isset($HTTP_RAW_POST_DATA))
 					$comment = trim($comment);
 					if(strlen($comment))
 						$torrent->comment($comment);
-					if(isset($torrent->{'libtorrent_resume'}['trackers']))
-						unset($torrent->{'libtorrent_resume'}['trackers']);
 					if(isset($torrent->{'rtorrent'}))
 						unset($torrent->{'rtorrent'});
 					if(count($req->val)>9)

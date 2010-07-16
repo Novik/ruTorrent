@@ -618,7 +618,10 @@ class Snoopy
 				file_put_contents($randName.".gz",$results);
 				exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 				if(is_file($randName))
+				{
 					$results = file_get_contents($randName);
+					unlink($randName);
+				}
 				else				
 					unlink($randName.".gz");
 			}

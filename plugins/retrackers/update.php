@@ -79,8 +79,6 @@ if(count($argv)>1)
 					}
 					if($needToProcessed)
 					{
-	  		                	if(isset($torrent->{'libtorrent_resume'}['trackers']))
-							unset($torrent->{'libtorrent_resume'}['trackers']);
 						if(isset($torrent->{'rtorrent'}))
 							unset($torrent->{'rtorrent'});
 						$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
