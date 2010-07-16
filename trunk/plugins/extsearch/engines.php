@@ -41,6 +41,7 @@ class commonEngine
 		$client = new Snoopy();
 		$client->agent = HTTP_USER_AGENT;
 		$client->read_timeout = $HTTPTimeoutPerSite;
+		$client->_fp_timeout = $HTTPTimeoutPerSite;
 		$client->use_gzip = HTTP_USE_GZIP;
 		return($client);
 	}
