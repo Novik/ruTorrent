@@ -23,7 +23,6 @@ class BTJunkieEngine extends commonEngine
 		{
 			$cli = $this->fetch( $url.'/search?q='.$what.'&c='.$cat.'&p='.$pg.'&t=1&o=52&s=1' );
 			if($cli==false || 
-				(strpos($cli->results, "Next &gt;&gt;</font>")!==false) ||
 				(strpos($cli->results, "<strong>0 matches</strong>")!==false) ||
 				(strpos($cli->results, "<b>Did you mean:</b></font")!==false))
 				break;
@@ -36,7 +35,7 @@ class BTJunkieEngine extends commonEngine
 				'<th .*>.*<\/font><\/th>.*'.
 				'<th width="5%" align="center">(?P<seeds>.*)<\/th>.*'.
 				'<th width="5%" align="center">(?P<leech>.*)<\/th>/siU', $cli->results, $matches);
-			if($res!==false)
+			if($res)
 			{
 				for($i=0; $i<$res; $i++)
 				{

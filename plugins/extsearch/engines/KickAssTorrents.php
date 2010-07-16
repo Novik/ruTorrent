@@ -29,7 +29,7 @@ class KickAssTorrentsEngine extends commonEngine
 				'<span> in <span.*><a href=".*">(?P<cat>.*)<\/a>.*<td class="nobr">(?P<size>.*)<\/td>.*'.
 				'<td>.*<\/td>.*<td>(?P<date>.*)<\/td>.*<td.*>(?P<seeds>.*)<\/td>.*<td.*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
 
-			if($res!==false)
+			if($res)
 			{
 				for($i=0; $i<$res; $i++)
 				{
