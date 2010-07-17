@@ -31,6 +31,18 @@ function injectCSS(fname)
 	void (h.appendChild(newSS));
 }
 
+function injectCSSText(text) 
+{
+	var style=document.createElement('style'); 
+	style.setAttribute("type", "text/css");
+	if(style.styleSheet)
+		style.styleSheet.cssText = text;
+	else 
+		style.appendChild(document.createTextNode(text));
+	var h = document.getElementsByTagName("head").item(0);
+	void (h.appendChild(style));
+}
+
 var thePlugins = 
 {
 	list: {},
