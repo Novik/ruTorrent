@@ -1,36 +1,3 @@
-.EngineMininova {background-image: url(./images/mininova.png); background-repeat: no-repeat}
-.EngineISOHunt {background-image: url(./images/isohunt.png); background-repeat: no-repeat}
-.EngineTorrentPortal {background-image: url(./images/torrentportal.png); background-repeat: no-repeat}
-.EngineIPTorrents {background-image: url(./images/iptorrents.png); background-repeat: no-repeat}
-.EngineFenopy {background-image: url(./images/fenopy.png); background-repeat: no-repeat}
-.EngineBTJunkie {background-image: url(./images/btjunkie.png); background-repeat: no-repeat}
-.EngineExtraTorrent {background-image: url(./images/extratorrent.png); background-repeat: no-repeat}
-.EngineKickAssTorrents {background-image: url(./images/kickasstorrents.png); background-repeat: no-repeat}
-.EnginePirateBay {background-image: url(./images/piratebay.png); background-repeat: no-repeat}
-.EngineSumoTorrent {background-image: url(./images/sumotorrent.png); background-repeat: no-repeat}
-.EngineTorrentDownloads {background-image: url(./images/torrentdownloads.png); background-repeat: no-repeat}
-.EngineTorrentReactor {background-image: url(./images/torrentreactor.png); background-repeat: no-repeat}
-.EngineTorrentZap {background-image: url(./images/torrentzap.png); background-repeat: no-repeat}
-.EngineVertor {background-image: url(./images/vertor.png); background-repeat: no-repeat}
-.EngineTvT {background-image: url(./images/freshon.png); background-repeat: no-repeat}
-.EngineWhatCD {background-image: url(./images/whatcd.png); background-repeat: no-repeat}
-.EngineFtN {background-image: url(./images/feedthenet.png); background-repeat: no-repeat}
-.EngineBitMeTV {background-image: url(./images/bitmetv.png); background-repeat: no-repeat}
-.EngineTorrentLeech {background-image: url(./images/torrentleech.png); background-repeat: no-repeat}
-.EngineRevTT {background-image: url(./images/revolutiontt.png); background-repeat: no-repeat}
-.EngineScC {background-image: url(./images/sceneaccess.png); background-repeat: no-repeat}
-.EngineDemonoid {background-image: url(./images/demonoid.png); background-repeat: no-repeat}
-.EngineBroadcasThe {background-image: url(./images/broadcasthe.png); background-repeat: no-repeat}
-.EngineBitHDTV {background-image: url(./images/bit-hdtv.png); background-repeat: no-repeat}
-.EngineBitMe {background-image: url(./images/bitme.png); background-repeat: no-repeat}
-.EngineSceneHD {background-image: url(./images/scenehd.png); background-repeat: no-repeat}
-.EnginePtP {background-image: url(./images/passthepopcorn.png); background-repeat: no-repeat}
-.EngineAwesomeHD {background-image: url(./images/awesome-hd.png); background-repeat: no-repeat}
-.EngineISOHuntLite {background-image: url(./images/isohunt.png); background-repeat: no-repeat}
-.EngineBlackcatsGames {background-image: url(./images/blackcats-games.png); background-repeat: no-repeat}
-.EngineBitGAMER {background-image: url(./images/bitgamer.png); background-repeat: no-repeat}
-.EngineGForcesTracker {background-image: url(./images/thegft.png); background-repeat: no-repeat}
-
 div#tegLoadTorrents #RSSBtn {width: 30px;}
 div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}
 div#tegLoadTorrents div.dlg-header {background-image: url(../../images/world.gif)}

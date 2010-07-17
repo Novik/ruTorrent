@@ -26,6 +26,7 @@ function browserDetect()
 	this.isMozilla = (this.isGecko && ua.indexOf("gecko/") + 14 == ua.length);
 	this.isFirefox = (ua.indexOf("firefox/") !=- 1);
 	this.isChrome = (ua.indexOf("chrome/") !=- 1);
+	this.isMidori = (ua.indexOf("midori/") !=- 1);
 	this.versionMinor = parseFloat(navigator.appVersion);
 	if(this.isGecko && !this.isMozilla && !this.isKonqueror)
 		this.versionMinor = parseFloat(ua.substring(ua.indexOf("/", ua.indexOf("gecko/") + 6) + 1));

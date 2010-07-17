@@ -738,48 +738,50 @@ plugin.onLangLoaded = function()
 			"<legend>"+theUILang.exsGlobalLimit+"</legend>"+
 			"<div class='checkbox'><label for='exs_limit' id='lbl_exs_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='exs_limit'/></div>"+
 		"</fieldset>";
-	var cont = "";
+	var contPublic = "";
+	var contPrivate = "";
+	var styles = "";
 	$.each(theSearchEngines.sites,function(ndx,val)
 	{
 		if(val.public)
-			cont+=
+			contPublic +=
 				"<fieldset>"+
 					"<legend>"+ndx+"</legend>"+
 					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
 					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
 					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>"+
 				"</fieldset>";
-	});
-	if(cont.length)
-	{
-		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPublic+")</legend>";
-		s+=cont;
-		s+="</fieldset>";
-	}
-        cont = "";
-	$.each(theSearchEngines.sites,function(ndx,val)
-	{
-		if(!val.public)
+		else
 		{
-			cont+=
+			contPrivate +=  
 				"<fieldset>"+
 					"<legend>"+ndx+"</legend>"+
 					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
 					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
 					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>";
 			if(thePlugins.isInstalled("cookies"))
-				cont+=		
+				contPrivate+=		
 					"<div class='checkbox'><a href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_cookies\'); return(false);\">"+theUILang.exsCookies+":</a><input type='text' class='TextboxLarge' readOnly=true id='"+ndx+"_cookies' value='"+val.cookies+"'/></div>";
-			cont+=
+			contPrivate+=
 				"</fieldset>";
 		}
+		styles +=
+			(".Engine"+ndx+" {background-image: url(./plugins/extsearch/images/"+ndx+".png); background-repeat: no-repeat}\n");
 	});
-	if(cont.length)
+	if(contPublic.length)
 	{
-		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPrivate+")</legend>";
-		s+=cont;
+		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPublic+")</legend>";
+		s+=contPublic;
 		s+="</fieldset>";
 	}
+	if(contPrivate.length)
+	{
+		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPrivate+")</legend>";
+		s+=contPrivate;
+		s+="</fieldset>";
+	}
+	if(styles.length)
+		injectCSSText(styles);
 	this.attachPageToOptions($("<div>").attr("id","st_extsearch").html(s)[0],theUILang.exsSearch);
 	var td = $$('rrow').insertCell(2);
 	s ="<select id='exscategory' title='"+theUILang.excat+"'></select>";
