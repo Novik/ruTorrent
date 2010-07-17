@@ -28,7 +28,7 @@ class KickAssTorrentsEngine extends commonEngine
 				break;
 			$res = preg_match_all('/[\,\[]\{\n"title": "(?P<name>.*)",\n"category": "(?P<cat>.*)",\n"link": "(?P<desc>.*)",.*'.
 				'"pubDate": "(?P<date>.*)",\n"torrentLink": "(?P<link>.*)",.*'.
-				'"seeds": "(?P<seeds>.*)",\n"leechs": "(?P<peers>.*)",\n"size": "(?P<size>.*)",.*\}/siU', $cli->results, $matches);
+				'"seeds": "(?P<seeds>.*)",\n"leechs": "(?P<leech>.*)",\n"size": "(?P<size>.*)",.*\}/siU', $cli->results, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
