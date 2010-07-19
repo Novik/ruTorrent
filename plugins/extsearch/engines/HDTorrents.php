@@ -24,7 +24,7 @@ class HDTorrentsEngine extends commonEngine
 
 		for($pg = 0; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/torrents.php?active=1search='.$what.'&order=seeds&by=DESC&page='.$pg.'&category='.$cat );
+			$cli = $this->fetch( $url.'/torrents.php?active=1&search='.$what.'&order=seeds&by=DESC&page='.$pg.'&category='.$cat );
 			if( ($cli==false) || (strpos($cli->results, ">No torrents here...</td>")!==false) ||
 				(strpos($cli->results, ">Password:</td>")!==false))
 				break;
@@ -32,15 +32,13 @@ class HDTorrentsEngine extends commonEngine
 			$first = strpos($result, "<!-- Column Headers  -->");
 			if($first!==false)
 				$result = substr($result,$first);
-
-			$res = preg_match_all('/<img src=images\/categories\/.*alt="(?P<cat>.*)"\/><\/td>.*'.
+			$res = preg_match_all('/<td align="center" class="lista"><a href=torrents.php\?category=\d+><img src=images\/categories\/.*alt="(?P<cat>.*)"\/><\/td>.*'.
 				'<TD align="left" class="lista">&nbsp;&nbsp;<A HREF="details.php\?id=(?P<id>.*)".*'.
 				'nd\(\);">(?P<name>.*)<\/A>.*<\/td>.*<TD align="center" class="header">.*<\/td>.*<TD align="center" class="lista">.*<\/td>.*<td align="center" class="lista">(?P<date>.*)<\/td>.*'.
-				'<td align="center" class="lista">(?P<size>.*)<\/td>*.'.
-				'<td align="center" class="lista">.*<\/td>*.'.
-				'<td .*>(?P<seeds>.*)<\/td>*.'.
-				'<td .*>(?P<peers>.*)<\/td>/siU', $result, $matches);
-
+				'<td align="center" class="lista">(?P<size>.*)<\/td>.*'.
+				'<td .*>.*<\/td>.*'.
+				'<td .*>(?P<seeds>.*)<\/td>.*'.
+				'<td .*>(?P<leech>.*)<\/td>/siU', $result, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
@@ -49,11 +47,11 @@ class HDTorrentsEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["cat"] = self::formatSize($matches["cat"][$i]);
+						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
-						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
+						$item["time"] = strtotime(str_replace("/", "-",self::removeTags($matches["date"][$i])));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
