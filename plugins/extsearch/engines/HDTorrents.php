@@ -35,7 +35,7 @@ class HDTorrentsEngine extends commonEngine
 
 			$res = preg_match_all('/<img src=images\/categories\/.*alt="(?P<cat>.*)"\/><\/td>.*'.
 				'<TD align="left" class="lista">&nbsp;&nbsp;<A HREF="details.php\?id=(?P<id>.*)".*'.
-				'nd();">(?P<name>.*)<\/A>.*<\/td>.*<TD align="center" class="header">.*<\/td>.*<TD align="center" class="lista">.*<\/td>.*<td align="center" class="lista">(?P<date>.*)<\/td>.*'.
+				'nd\(\);">(?P<name>.*)<\/A>.*<\/td>.*<TD align="center" class="header">.*<\/td>.*<TD align="center" class="lista">.*<\/td>.*<td align="center" class="lista">(?P<date>.*)<\/td>.*'.
 				'<td align="center" class="lista">(?P<size>.*)<\/td>*.'.
 				'<td align="center" class="lista">.*<\/td>*.'.
 				'<td .*>(?P<seeds>.*)<\/td>*.'.
