@@ -25,10 +25,13 @@ class HDTorrentsEngine extends commonEngine
 		for($pg = 0; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/torrents.php?active=1search='.$what.'&order=seeds&by=DESC&page='.$pg.'&category='.$cat );
-
 			if( ($cli==false) || (strpos($cli->results, ">No torrents here...</td>")!==false) ||
 				(strpos($cli->results, ">Password:</td>")!==false))
 				break;
+			$result = $cli->results;
+			$first = strpos($result, "<!-- Column Headers  -->");
+			if($first!==false)
+				$result = substr($result,$first);
 
 			$res = preg_match_all('/<img src=images\/categories\/.*alt="(?P<cat>.*)"\/><\/td>.*'.
 				'<TD align="left" class="lista">&nbsp;&nbsp;<A HREF="details.php\?id=(?P<id>.*)".*'.
@@ -36,7 +39,7 @@ class HDTorrentsEngine extends commonEngine
 				'<td align="center" class="lista">(?P<size>.*)<\/td>*.'.
 				'<td align="center" class="lista">.*<\/td>*.'.
 				'<td .*>(?P<seeds>.*)<\/td>*.'.
-				'<td .*>(?P<peers>.*)<\/td>'/siU', $cli->results, $matches);
+				'<td .*>(?P<peers>.*)<\/td>/siU', $result, $matches);
 
 			if($res)
 			{
