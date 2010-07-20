@@ -726,7 +726,8 @@ class Snoopy
 			$headers[] = "Content-length: ".strlen($body);
 		if(!empty($this->user) || !empty($this->pass))	
 			$headers[] = "Authorization: BASIC ".base64_encode($this->user.":".$this->pass);
-			
+
+		$cmdline_params = '';			
 		for($curr_header = 0; $curr_header < count($headers); $curr_header++) {
 			$cmdline_params .= " -H ".escapeshellarg($headers[$curr_header]);
 		}
