@@ -107,6 +107,25 @@ class commonEngine
 		}
 		return(0);
 	}
+	static public function fromUTF($out,$encoding)
+	{
+		if(function_exists('iconv'))
+			$out = iconv('UTF-8', $encoding.'//TRANSLIT', $out);
+		else
+		if(function_exists('mb_convert_encoding'))
+		        $out = mb_convert_encoding($out, $encoding, 'UTF-8');
+		return($out);	
+	}
+	static public function toUTF($out,$encoding)
+	{
+		if(function_exists('iconv'))
+			$out = iconv($encoding, 'UTF-8//TRANSLIT', $out);
+		else
+		if(function_exists('mb_convert_encoding'))
+		        $out = mb_convert_encoding($out, 'UTF-8', $encoding );
+		return($out);	
+	}
+	
 }
 
 class rSearchHistory
@@ -312,6 +331,7 @@ class engineManager
 		if(empty($nfo["peers"]))
 			$nfo["peers"] = 0;
 	}
+
 
 	public function action( $eng, $what, $cat = "all" )
 	{
