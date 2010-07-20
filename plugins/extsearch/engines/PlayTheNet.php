@@ -1,13 +1,8 @@
 <?php
 
-class HDTorrentsEngine extends commonEngine
+class PlayTheNetEngine extends commonEngine
 {
        	public $defaults = array( "public"=>false, "page_size"=>20, "cookies"=>"www.play-the.net|WebsiteID=XXX;" );
-
-	public $categories = array( 'all'=>'0', 'Blu-Ray'=>'1', 'HD-DVD'=>'6', 'Remux'=>'55', 'BD-25'=>'56', 
-		'Movies 720p'=>'3', 'Movies 1080p'=>'5', 'HDTV 720p'=>'38', 'HDTV 1080p'=>'30', 'Doc 720p'=>'29', 
-		'Doc 1080p'=>'34', 'Anime 720p'=>'32', 'Anime 1080p'=>'41', 'HQ Audio'=>'44', 'HQ Videos'=>'45', 
-		'XXX 720p'=>'47', 'XXX 1080p'=>'48', 'HQ-Images'=>'50', 'Other'=>'51', 'Software'=>'53', 'Trailers'=>'54' ); 
 
 	public $categories = array( 
 		'all' => array( 'sd'=>'', 'hd'=>'' ),
@@ -49,10 +44,10 @@ class HDTorrentsEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, ">a retourné aucun résultat.</div>")!==false) ||
 				(strpos($cli->results, 'type="password"')!==false))
 				break;
-                        $res = preg_match_all('/<ul class=".*">.*<li class="categories_parent_cat.*"><a href="?section=.*"><img src="themes/images/CAT/.*" alt="(?P<cat>.*)" \/><\/a><\/li>.*'.
-				'<li class="torrents_name.*"><a href="?section=INFOS&amp;id=(?P<id>.*)">(?P<name>.*)<\/a><\/li>.*'.
+                        $res = preg_match_all('/<ul class=".*">.*<li class="categories_parent_cat.*"><a href="\?section=.*"><img src="themes\/images\/CAT\/.*" alt="(?P<cat>.*)" \/><\/a><\/li>.*'.
+				'<li class="torrents_name.*"><a href="\?section=INFOS&amp;id=(?P<id>.*)">(?P<name>.*)<\/a><\/li>.*'.
 				'<li class="torrents_size.*">(?P<size>.*)<\/li>.*'.
-				'<li class="torrents_seeders.*">(?P<seeders>.*)<\/li>.*'.
+				'<li class="torrents_seeders.*">(?P<seeds>.*)<\/li>.*'.
 				'<li class="torrents_leechers.*">(?P<leech>.*)<\/li>.*<\/ul>/siU', $cli->results, $matches);
 			if($res)
 			{
@@ -63,7 +58,7 @@ class HDTorrentsEngine extends commonEngine
 					{
 						$item = $this->getNewEntry();
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["desc"] = $url."?section=INFO&id=".$matches["id"][$i];
+						$item["desc"] = $url."?section=INFOS&id=".$matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
