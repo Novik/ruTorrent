@@ -28,7 +28,7 @@ class XThorEngine extends commonEngine
 		for($pg = 1; $pg<10; $pg++)
 		{
 			$cli = $this->fetch( $url.'/browse.php?do=search&keywords='.$what.'&search_type=t_name&sort_order=yes&sortby=seeders&orderby=DESC&page='.$pg.'&category='.$cat );
-			if($cli==false) 
+			if($cli==false || (strpos($cli->results, '<input type="password" name="password" class="inputPassword"')!==false)) 
 				break;
 
 			$res = preg_match_all('/<tr>.*<td width="1"><a href="http:\/\/www\.xthor\.net\/browse\.php\?browse_categories&amp;category=\d+" target="_self" \/><img src="http:\/\/www\.xthor\.net\/pic\/categories\/.*" border="0" alt=".*: (?P<cat>.*)".*\/><\/a><\/td>.*'.
@@ -50,7 +50,7 @@ class XThorEngine extends commonEngine
 						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
 						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i]),"ISO-8859-1");
 						$item["size"] = self::formatSize($matches["size"][$i]);
-						$item["time"] = strtotime(self::removeTags(str_replace("&nbsp;at&nbsp;", " ",$matches["date"][$i])));
+						$item["time"] = strtotime(self::removeTags(str_replace("-", "/",$matches["date"][$i])));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
