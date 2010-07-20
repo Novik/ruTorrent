@@ -16,7 +16,6 @@ class PlayTheNetEngine extends commonEngine
 		'SPECTACLE' => array( 'sd'=>'10', 'hd'=>null ),
 		'FILMS VO' => array( 'sd'=>'3', 'hd'=>null ),
 		'JEUX' => array( 'sd'=>'14', 'hd'=>null ),
-		'R5' => array( 'sd'=>'6', 'hd'=>null ),
 		'TELEVISION' => array( 'sd'=>'8', 'hd'=>null ),
 		'PISTE SON' => array( 'sd'=>null, 'hd'=>'29' ),
 		'SERIES TV VF' => array( 'sd'=>'12', 'hd'=>'26' ),
@@ -28,6 +27,7 @@ class PlayTheNetEngine extends commonEngine
 		'DVDRIP' => array( 'sd'=>'4', 'hd'=>null ),
 		'DVDRIP VOSTFR' => array( 'sd'=>'5', 'hd'=>null ),
 		'VHSRIP' => array( 'sd'=>'9', 'hd'=>null ),
+		'R5' => array( 'sd'=>'6', 'hd'=>null ),
 		'BD5/BD9' => array( 'sd'=>null, 'hd'=>'24' ),
 		'FULL BLU RAY' => array( 'sd'=>null, 'hd'=>'30' ),
 		'HD 1080P' => array( 'sd'=>null, 'hd'=>'23' ),
@@ -78,7 +78,7 @@ class PlayTheNetEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		if($useGlobalCats)
-			$categories = array( 'all'=>array( 'sd'=>'', 'hd'=>'' ), array( 'sd'=>'16', 'hd'=>'28' ), 
+			$categories = array( 'all'=>array( 'sd'=>'', 'hd'=>'' ), 'music' => array( 'sd'=>'16', 'hd'=>'28' ), 'games'=>array( 'sd'=>'14', 'hd'=>null ),
 				'anime'=>array( 'sd'=>'20', 'hd'=>'25' ), 'software'=>array( 'sd'=>'15', 'hd'=>'31' ), 
 				'pictures'=>array( 'sd'=>'18', 'hd'=>null ), 'books'=>array( 'sd'=>'17', 'hd'=>null ) );
 		else
