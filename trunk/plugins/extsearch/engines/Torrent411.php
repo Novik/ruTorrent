@@ -29,20 +29,21 @@ class Torrent411Engine extends commonEngine
 			$cat = $categories['all'];
 		else
 			$cat = $categories[$cat];
-
+		$what = rawurlencode(self::fromUTF(rawurldecode($what),"ISO-8859-1"));
 		for($pg = 0; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/search/?search='.$what.'&sort=6&type=desc&page='.$pg.'&cat='.$cat );
-			if( ($cli==false) || (strpos($cli->results, "<br>Aucun .torrents n'as encore été uploadé.")!==false))
+			if( ($cli==false) || (strpos($cli->results, "<br />Aucun .torrents")!==false))
 				break;
-
+				
 			$res = preg_match_all('/<tr>.*<td class=ttable_col1 align=center><a href="\.\/browse\.php\?cat=\d+"><img.*alt="(?P<cat>.*)" \/><\/a><\/td>.*'.
 				'<td class=ttable_col2>.*<b>(?P<name>.*)<\/b><\/a>.*'.
 				'<b>Date Added:<\/b><\/td>.*<td>(?P<date>.*)<\/td>.*'.
-				'<a href="torrents-details.php?id=(?P<id>.*)#startcomments.*'.
-				'<td class=\'ttable_col2 tailleStyle\' align=center>(?P<size>.*)<\/td>.*'.
-				'<td class=\'ttable_col2 seedersStyle\' align=center>(?P<seeds>.*)<\/td>.*'
-				'<td class=\'ttable_col1 leechersStyle\' align=center>(?P<leech>.*)<\/td><\/tr>/siU', $result, $matches);
+				'<a href="torrents-details\.php\?id=(?P<id>.*)#startcomments.*'.
+				"tailleStyle.*' align=center>(?P<size>.*)<\/td>.*".
+    				"seedersStyle(| nonBold)' align=center>(?P<seeds>.*)<\/td>.*".
+				"<td class='ttable_col1 leechersStyle(| nonBold)' align=center>(?P<leech>.*)<\/td><\/tr>/siU", $cli->results, $matches);
+				
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
@@ -51,11 +52,11 @@ class Torrent411Engine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
-						$item["name"] = self::removeTags($matches["name"][$i]);
+						$item["cat"] = self::toUTF(self::removeTags($matches["cat"][$i]),"ISO-8859-1");
+						$item["desc"] = $url."/torrents-details.php?id=".$matches["id"][$i];
+						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i]),"ISO-8859-1");
 						$item["size"] = self::formatSize($matches["size"][$i]);
-						$item["time"] = strtotime(str_replace("&nbsp;at&nbsp;", " ",self::removeTags($matches["date"][$i])));
+						$item["time"] = strtotime(self::removeTags(str_replace("&nbsp;at&nbsp;", " ",$matches["date"][$i])));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;
