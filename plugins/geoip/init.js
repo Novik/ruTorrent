@@ -45,7 +45,7 @@ if(plugin.enabled)
 	                	        if(plugin.retrieveCountry)
 	                	        {
 						peer.country = info.country;
-						peer.icon = "geoip geoip_flag_"+peer.country;
+						peer.icon = "geoip geoip_flag_"+peer.country.substr(0,2);
 					}
 					peer.name = info.host;
 				}
@@ -71,9 +71,9 @@ if(plugin.enabled)
 						else
 	   					if(table.getIdByCol(i)=="country")
 	   					{
-							var countryName = theUILang.country[arr[i]];
+							var countryName = theUILang.country[arr[i].substr(0,2)];
 							if(countryName)
-								arr[i] = countryName;
+								arr[i] = countryName+arr[i].substr(2);
 							break;
 						}
 		        		}

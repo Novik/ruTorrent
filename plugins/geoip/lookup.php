@@ -24,26 +24,32 @@
 				$value = trim($parts[1]);
 				if(strlen($value))
 				{
+					$city = '';
 					$info = '{ip: "'.$value.'", info: {country: "';
-					$country = "unknown";
 					if($retrieveCountry)
 					{
-						$country = @geoip_country_code_by_name( $value );
-						if(!isValidCode($country) )
-						{
-						        if(geoip_db_avail(GEOIP_CITY_EDITION_REV1) || geoip_db_avail(GEOIP_CITY_EDITION_REV0))
-						        {
-        					        	$country = @geoip_record_by_name( $value );
-        					        	if(!empty($country))
-        					        		$country = $country["country_code"];
+						$country = '';
+					        if(geoip_db_avail(GEOIP_CITY_EDITION_REV1) || geoip_db_avail(GEOIP_CITY_EDITION_REV0))
+					        {
+       					        	$country = @geoip_record_by_name( $value );
+       					        	if(!empty($country))
+							{
+								$city = $country["city"];
+       					        		$country = $country["country_code"];
 							}
 						}
+						if(!isValidCode($country) )
+							$country = @geoip_country_code_by_name( $value );
 						if(!isValidCode($country))
-							$country = "unknown";
+							$country = "un";
 						else
 							$country = strtolower($country);
                     			}
-					$info.=$country;
+					else
+						$country = "un";
+					if(!empty($city))
+                                               $country.=" (".$city.")";
+					$info.=$country;				
 					$info.='", host: "';
 					$host = $value;
 					if($retrieveHost)
