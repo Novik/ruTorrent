@@ -443,7 +443,7 @@ theWebUI.setExtSearchTag = function( d )
 		}
 	var tegId = "extteg_"+plugin.lastTeg;
 	plugin.lastTeg++;
-	var el = $("<LI>").attr("id",tegId).addClass("exteg").
+	var el = $("<LI>").attr("id",tegId).addClass("exteg").addClass('Engine'+d.eng).
 		html(escapeHTML(str) + "&nbsp;(<span id=\"" + tegId + "-c\">0</span>)").
 		mouseclick(plugin.extTegContextMenu).addClass("cat")
 	$("#lblf").append( el );
