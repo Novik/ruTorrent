@@ -24,5 +24,8 @@
  theUILang.exsCookies	= "Формат cookies";
  theUILang.extAllPublic = "Все открытые";
  theUILang.extAllPrivate = "Все закрытые";
+ theUILang.exsMustInstallCookies	= "Вы должны установить плагин 'Cookies' для работы этого движка."; 
+ theUILang.exsMustInstallLoginMgr	= "Вы должны установить плагин 'LoginMgr' для работы этого движка."; 
+ theUILang.exsLoginMgr	= "Для корректной работы данного движка заполните данные аккаунта в плагине 'LoginMgr'."; 
 
 thePlugins.get("extsearch").langLoaded();

@@ -41,20 +41,10 @@ else
 			$cli = new Snoopy();
 			$cli->agent = HTTP_USER_AGENT;
 			$cli->read_timeout = HTTP_TIME_OUT;
+			$client->_fp_timeout = HTTP_TIME_OUT;
 			$cli->use_gzip = HTTP_USE_GZIP;
-			$pos = strpos($url,':COOKIE:');
-			if($pos!==false)
-			{
-				$tmp = explode(";",substr($url,$pos+8));
-				foreach($tmp as $item)
-				{
-					list($name,$val) = explode("=",$item);
-					$cli->cookies[$name] = $val;
-				}
-				$url = substr($url,0,$pos);
-			}
 			set_time_limit(0);
-			if(@$cli->fetch(Snoopy::linkencode($url)) && $cli->status>=200 && $cli->status<300)
+			if(@$cli->fetchComplex(Snoopy::linkencode($url)) && $cli->status>=200 && $cli->status<300)
 			{
 			        $name = $cli->get_filename();
 			        if($name===false)

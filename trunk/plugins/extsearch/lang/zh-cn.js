@@ -24,5 +24,8 @@
  theUILang.exsCookies	= "Format of cookies";
  theUILang.extAllPublic = "All public";
  theUILang.extAllPrivate = "All private";
+ theUILang.exsMustInstallCookies	= "You must install plugin 'Cookies' for work with this engine."; 
+ theUILang.exsMustInstallLoginMgr	= "You must install plugin 'LoginMgr' for work with this engine.";
+ theUILang.exsLoginMgr	= "Setup your account in plugin 'LoginMgr' for work with this engine.";
 
 thePlugins.get("extsearch").langLoaded();

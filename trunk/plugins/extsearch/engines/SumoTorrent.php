@@ -13,7 +13,7 @@ class SumoTorrentEngine extends commonEngine
 		{
 			$url = str_replace( "/download/", "/torrent_download/", $url );
 			$cli->setcookies();
-			$cli->fetch(Snoopy::linkencode($url));
+			$cli->fetchComplex(Snoopy::linkencode($url));
 			if($cli->status>=200 && $cli->status<300)
 			{
 				$name = $cli->get_filename();

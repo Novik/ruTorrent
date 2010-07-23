@@ -36,6 +36,7 @@ http://snoopy.sourceforge.com
 *************************************************/
 
 require_once( 'util.php' );
+require_once( 'settings.php' );
 
 class Snoopy
 {
@@ -188,7 +189,53 @@ class Snoopy
 		return implode('', array($scheme, $user, $pass, $host, $port, $path, $query, $fragment));
 	}
 
-	function fetch($URI,$method="GET",$content_type="",$body="")
+	static public function getURLCookies(&$url)
+	{	
+		$cookies = array();
+		$pos = strpos($url,':COOKIE:');
+		if($pos!==false)
+		{
+			$tmp = explode(";",substr($url,$pos+8));
+			foreach($tmp as $item)
+			{
+				list($name,$val) = explode("=",$item);
+				$cookies[$name] = $val;
+			}
+			$url = substr($url,0,$pos);
+		}
+		return($cookies);
+	}
+
+	public function fetchComplex($URI,$method="GET",$content_type="",$body="")
+	{
+		global $rootPath;
+		global $theSettings;
+		if(!isset($theSettings))
+			$theSettings = rTorrentSettings::load();
+		if($theSettings->isPluginRegistered('cookies') && !empty($this->host))
+		{
+			require_once($rootPath."/plugins/cookies/cookies.php");	
+			$cookies = rCookies::load();
+			$this->cookies = array_merge($this->cookies,$cookies->getCookiesForHost($this->host));
+		}
+		$this->cookies = array_merge($this->cookies,self::getURLCookies($URI));
+		if($theSettings->isPluginRegistered('loginmgr'))
+		{
+			require_once($rootPath."/plugins/loginmgr/accounts.php");	
+			$am = accountManager::load();
+			if($am===false)
+			{
+				$am = new accountManager();
+				$am->obtain($rootPath."/plugins/loginmgr/accounts");
+			}
+			$acc = $am->getAccount($URI);
+			if($acc)
+				return($am->fetch( $acc, $this, $URI, $method, $content_type, $body ));
+		}
+		return($this->fetch($URI,$method,$content_type,$body));
+	}
+
+	public function fetch($URI,$method="GET",$content_type="",$body="")
 	{
 		$URI_PARTS = parse_url($URI);
 		if (!empty($URI_PARTS["user"]))
@@ -492,15 +539,6 @@ class Snoopy
 		if(!empty($this->referer))
 			$headers .= "Referer: ".$this->referer."\r\n";
 
-		global $rootPath;
-		$cookiesEngine = $rootPath."/plugins/cookies/cookies.php";
-		if(empty($this->cookies) && !empty($this->host) && is_file($cookiesEngine))
-		{
-			require_once($cookiesEngine);	
-			$cookies = rCookies::load();
-			$this->cookies = $cookies->getCookiesForHost($this->host);
-		}
-
 		if(!empty($this->cookies))
                 {			
 			if(!is_array($this->cookies))
@@ -539,7 +577,6 @@ class Snoopy
 		if ($this->read_timeout > 0)
 			socket_set_timeout($fp, $this->read_timeout);
 		$this->timed_out = false;
-		
 		fwrite($fp,$headers.$body,strlen($headers.$body));
 		
 		$this->_redirectaddr = false;
@@ -686,14 +723,7 @@ class Snoopy
 			$headers[] = "Accept: ".$this->accept;
 		if(!empty($this->referer))
 			$headers[] = "Referer: ".$this->referer;
-		global $rootPath;
-		$cookiesEngine = $rootPath."/plugins/cookies/cookies.php";
-		if(empty($this->cookies) && !empty($this->host) && is_file($cookiesEngine))
-		{
-			require_once($cookiesEngine);
-			$cookies = rCookies::load();
-			$this->cookies = $cookies->getCookiesForHost($this->host);
-		}
+
 		if(!empty($this->cookies))
 		{			
 			if(!is_array($this->cookies))
@@ -703,7 +733,6 @@ class Snoopy
 			if ( count($this->cookies) > 0 ) {
 				$cookie_str = 'Cookie: ';
 				foreach ( $this->cookies as $cookieKey => $cookieVal ) {
-//				$cookie_str .= $cookieKey."=".urlencode($cookieVal)."; ";
 				$cookie_str .= $cookieKey."=".$cookieVal."; ";
 				}
 				$headers[] = substr($cookie_str,0,-2);

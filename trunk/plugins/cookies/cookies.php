@@ -79,7 +79,7 @@ class rCookies
 		$host = strtolower($host);
 		if(array_key_exists($host,$this->list))
 			return($this->list[$host]);
-		return(null);
+		return(array());
 	}
 }
 

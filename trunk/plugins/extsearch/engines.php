@@ -50,7 +50,7 @@ class commonEngine
 		$client = $this->makeClient($url);
 		if($encode)
 			$url = Snoopy::linkencode($url);
-		$client->fetch($url);
+		$client->fetchComplex($url);
 		if($client->status>=200 && $client->status<300)
 		{
 			ini_set( "pcre.backtrack_limit", max(strlen($client->results),100000) );
@@ -213,6 +213,7 @@ class engineManager
 					$this->engines[$name]["limit"] = $obj->defaults["page_size"];
 					$this->engines[$name]["cats"] = $obj->categories;
 					$this->engines[$name]["cookies"] = (array_key_exists("cookies",$obj->defaults) ? $obj->defaults["cookies"] : '');
+					$this->engines[$name]["auth"] = (array_key_exists("auth",$obj->defaults) ? 1 : 0);
 					if(array_key_exists("disabled",$obj->defaults) && $obj->defaults["disabled"])
 						$this->engines[$name]["enabled"] = false;
 					if(array_key_exists($name,$oldEngines) && array_key_exists("limit",$oldEngines[$name]))
@@ -221,6 +222,18 @@ class engineManager
 						$this->engines[$name]["global"] = $oldEngines[$name]["global"];
 						$this->engines[$name]["limit"] = $oldEngines[$name]["limit"];
 					}
+
+					global $theSettings;
+					if(!isset($theSettings))
+						$theSettings = rTorrentSettings::load();
+					if(!$theSettings->isPluginRegistered('cookies') && 
+						$this->engines[$name]["enabled"] && 
+						!empty($this->engines[$name]["cookies"]))
+						$this->engines[$name]["enabled"] = 0;
+					if(!$theSettings->isPluginRegistered('loginmgr') && 
+						$this->engines[$name]["enabled"] && 
+						$this->engines[$name]["auth"])
+						$this->engines[$name]["enabled"] = 0;
 				}
 			} 
 			closedir($handle);		
@@ -235,7 +248,7 @@ class engineManager
 		foreach( $this->engines as $name=>$nfo )
 		{
 			$ret.="'".$name."': { enabled: ".intval($nfo["enabled"]). ", global: ".intval($nfo["global"]).
-				", limit: ".$nfo["limit"].", public: ".intval($nfo["public"]). ", cookies: ".quoteAndDeslashEachItem($nfo["cookies"]).", cats: [";
+				", auth: ".intval($nfo["auth"]).", limit: ".$nfo["limit"].", public: ".intval($nfo["public"]). ", cookies: ".quoteAndDeslashEachItem($nfo["cookies"]).", cats: [";
 			foreach( $nfo["cats"] as $cat=>$prm )
 			{
 				$ret.=quoteAndDeslashEachItem($cat);
