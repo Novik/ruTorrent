@@ -1512,7 +1512,7 @@ var theWebUI =
 			var tegIg = "teg_"+this.lastTeg;
 			this.lastTeg++;
 			var el = $("<LI>").attr("id",tegIg).addClass("teg").
-				html(escapeHTML(str) + "&nbsp;(<span id=\"" + tegIg + "-c\">0</span>)").
+				html(escapeHTML(str) + "&nbsp;(<span id=\"" + tegIg + "-c\">0</span>)").attr("title",str+" (0)").
 				mouseclick(theWebUI.tegContextMenu).addClass("cat")
 			$("#lblf").append( el );
 			this.tegs[tegIg] = { val: str, cnt: 0 };
@@ -1538,7 +1538,10 @@ var theWebUI =
 		});
 		var counter = $("#"+id+"-c");
 		if(counter.text()!=teg.cnt)
+		{
 			counter.text(teg.cnt);
+			$("#"+id).attr("title",teg.val+" ("+teg.cnt+")");
+		}
 	},
 
 	updateTegs: function(torrent)
@@ -1771,7 +1774,10 @@ var theWebUI =
 			var counter = $("#"+id+"-c");
 			var teg = this.tegs[id];
 			if(counter.text()!=teg.cnt)
+			{
 				counter.text(teg.cnt);
+				$("#"+id).attr("title",teg.val+" ("+teg.cnt+")");
+			}
 		}
 	},
 

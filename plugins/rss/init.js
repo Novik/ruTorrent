@@ -450,6 +450,8 @@ theWebUI.updateRSSLabels = function(rssLabels,allCnt)
 	keys.sort( function(a,b) {  return((rssLabels[a].name>rssLabels[b].name) ? 1 : (rssLabels[a].name<rssLabels[b].name) ? -1 : 0); } );
 
 	$("#_rssAll_c").text(allCnt);
+	$("#_rssAll_").attr("title",theUILang.allFeeds+" ("+allCnt+")");
+
 	var ul = $("#rssl");
 	for(var i=0; i<keys.length; i++) 
 	{
@@ -466,6 +468,7 @@ theWebUI.updateRSSLabels = function(rssLabels,allCnt)
 				html( escapeHTML(rssLabels[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssLabels[lbl].cnt+'</span>)');
 			ul.append(li);
 		}
+		li.attr("title",rssLabels[lbl].name+" ("+rssLabels[lbl].cnt+")");
 		if(lbl==this.actRSSLbl)
 			li[0].className = (rssLabels[lbl].enabled==1) ?  "sel RSS cat" : "sel disRSS cat";
 		else

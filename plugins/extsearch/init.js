@@ -263,6 +263,7 @@ plugin.correctCounter = function(id,count)
 					count++;
 		}
 		$("#"+id+"-c").text(count);
+		$("#"+id).attr("title",plugin.tegs[id].val+" (0)");
 	}
 }
 
@@ -443,7 +444,7 @@ theWebUI.setExtSearchTag = function( d )
 		}
 	var tegId = "extteg_"+plugin.lastTeg;
 	plugin.lastTeg++;
-	var el = $("<LI>").attr("id",tegId).addClass("exteg").addClass('Engine'+d.eng).
+	var el = $("<LI>").attr("id",tegId).addClass("exteg").addClass('Engine'+d.eng).attr("title",str+" (0)").
 		html(escapeHTML(str) + "&nbsp;(<span id=\"" + tegId + "-c\">0</span>)").
 		mouseclick(plugin.extTegContextMenu).addClass("cat")
 	$("#lblf").append( el );
@@ -741,6 +742,7 @@ plugin.onLangLoaded = function()
 	var contPublic = "";
 	var contPrivate = "";
 	var styles = "";
+	var toDisable = [];
 	$.each(theSearchEngines.sites,function(ndx,val)
 	{
 		if(val.public)
@@ -759,9 +761,29 @@ plugin.onLangLoaded = function()
 					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
 					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
 					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>";
-			if(thePlugins.isInstalled("cookies"))
-				contPrivate+=		
-					"<div class='checkbox'><a href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_cookies\'); return(false);\">"+theUILang.exsCookies+":</a><input type='text' class='TextboxLarge' readOnly=true id='"+ndx+"_cookies' value='"+val.cookies+"'/></div>";
+			if(val.cookies)
+			{
+				if(thePlugins.isInstalled("cookies"))
+					contPrivate+=		
+						"<div class='checkbox'><a href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_cookies\'); return(false);\">"+theUILang.exsCookies+":</a><input type='text' class='TextboxLarge' readOnly=true id='"+ndx+"_cookies' value='"+val.cookies+"'/></div>";
+				else
+				{
+					contPrivate+="<div class='checkbox'>"+theUILang.exsMustInstallCookies+"</div>";
+					toDisable.push(ndx);
+				}
+			}
+			else
+			if(val.auth)
+			{
+				if(thePlugins.isInstalled("loginmgr"))
+					contPrivate+=		
+						"<div class='checkbox'><a href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_loginmgr\'); return(false);\">"+theUILang.exsLoginMgr+"</a></div>";
+				else
+				{
+					contPrivate+="<div class='checkbox'>"+theUILang.exsMustInstallLoginMgr+"</div>";
+					toDisable.push(ndx);
+				}
+			}
 			contPrivate+=
 				"</fieldset>";
 		}
@@ -783,6 +805,11 @@ plugin.onLangLoaded = function()
 	if(styles.length)
 		injectCSSText(styles);
 	this.attachPageToOptions($("<div>").attr("id","st_extsearch").html(s)[0],theUILang.exsSearch);
+	for( var i in toDisable )
+	{
+		$('#'+toDisable[i]+'_enabled').attr("disabled",true).attr("checked",false);
+		$('#lbl_'+toDisable[i]+'_enabled').addClass("disabled");
+	}
 	var td = $$('rrow').insertCell(2);
 	s ="<select id='exscategory' title='"+theUILang.excat+"'></select>";
 	$(td).attr("id","exscat").html(s); 

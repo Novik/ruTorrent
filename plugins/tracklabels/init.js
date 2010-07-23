@@ -234,7 +234,7 @@ theWebUI.rebuildTrackersLabels = function()
 			        	mouseclick(theWebUI.trackersLabelContextMenu)
 				ul.append(li);
 			}
-			li.addClass("cat");
+			li.addClass("cat").attr("title",lbl+" ("+trackersLabels[lbl]+")");
 			if(lbl==theWebUI.actTrackersLbl)
 				li.addClass("sel");
 		}
