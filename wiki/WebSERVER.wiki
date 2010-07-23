@@ -17,6 +17,10 @@
 
 Most webservers have some sort of scgi module.  For lowest server load, it's best to use a scgi module.  For lowest BANDWIDTH clients, however, it's best to use [PluginHTTPRPC HTTPRPC Plugin] (this is not an option for very slow computers, or embedded systems).
 
+_*Also, a note on authentication.  If you are password protecting your rutorrent directory, make sure to set your scgi mountpoint under that directory, or provide authentication for it as well.*_
+
+
+
 ===Apache Specific SCGI Config ===
 
 Apache doesn't come wiht mod_scgi, you need to install it. This is different for each distro, for ubuntu/debian it is:
