@@ -121,9 +121,14 @@ plugin.check = function(data)
 
 rTorrentStub.prototype.startcreate = function()
 {
+	var arr = $('#trackers').val().split("\n");
+	var trk = '';
+	for( var i in arr )
+		trk+=($.trim(arr[i])+'\r');
+
 	this.content = "cmd=start&path_edit="+encodeURIComponent($.trim($("#path_edit").val()))+
 		"&comment="+encodeURIComponent($.trim($("#comment").val()))+
-		"&trackers="+encodeURIComponent($.trim($("#trackers").val()));
+		"&trackers="+encodeURIComponent(trk);
 	if($("#piece_size").length)
 		this.content+=("&piece_size="+$("#piece_size").val());
 	if($("#private").attr("checked"))
