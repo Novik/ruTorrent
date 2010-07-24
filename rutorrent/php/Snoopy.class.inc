@@ -212,6 +212,8 @@ class Snoopy
 		global $theSettings;
 		if(!isset($theSettings))
 			$theSettings = rTorrentSettings::load();
+		$URI_PARTS = parse_url($URI);
+		$this->host = $URI_PARTS["host"];
 		if($theSettings->isPluginRegistered('cookies') && !empty($this->host))
 		{
 			require_once($rootPath."/plugins/cookies/cookies.php");	
