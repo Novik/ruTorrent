@@ -17,4 +17,4 @@ This plugin was sponsored by [http://forums.rutorrent.org/index.php?action=profi
 Use of this plugin reduces bandwidth 10 fold.
 
 
-_*This plugin requires php 5.2.x or higher*_
+_*This plugin requires php 5.2.x or higher and the json php module*_
