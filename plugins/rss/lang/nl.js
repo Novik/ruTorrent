@@ -1,16 +1,13 @@
-
  
- 
-
  theUILang.addRSS = "Toevoegen RSS-feed";
  theUILang.feedURL = "Feed URL";
  theUILang.alias = "Naam RSS-Feed";
  theUILang.rssAuto = "automatisch downloaden items gepubliceerd in feed";
  theUILang.allFeeds = "Alle feeds";
  theUILang.incorrectURL = "Geeft u alstublieft de juiste URL";
- theUILang.cantFetchRSS = "Fout bij het laden te voeden.";
+ theUILang.cantFetchRSS = "Fout bij het laden van de feed.";
  theUILang.rssAlreadyExist = "Feed bestaat reeds.";
- theUILang.rssDontExist = "Feed bestat niet. ";
+ theUILang.rssDontExist = "Feed bestaat niet. ";
  theUILang.rssCantLoadTorrent = "Fout bij het laden van de torrent.";
  theUILang.rssStatus = "RSS";
  theUILang.rssStatusLoaded = "Reeds geladen";

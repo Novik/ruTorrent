@@ -1,5 +1,5 @@
 /*
- * PLUGIN EXTSEARCH
+ * PLUGIN CREATE
  * 
  * File Name: fr.js
  *      French language file.
@@ -7,11 +7,11 @@
  * File Author:
  *    Nicobubulle (nicobubulle@gmail.com)
  */
- theUILang.tegMenuLoad  = "TÃ©lÃ©charger";
+ theUILang.tegMenuLoad  = "Télécharger";
  theUILang.tegMenuOpen  = "Ouvrir dans le navigateur";
  theUILang.tegMenuDeleteItem = "Supprimer";
- theUILang.tegMenuDelete = "Supprimer le tag";
- theUILang.tegRefresh   = "Rafraichir le tag";
+ theUILang.tegMenuDelete = "Supprimer la recherche";
+ theUILang.tegRefresh   = "Rafraichir la recherche";
  theUILang.exsGlobal    = "Inclure dans la cat\u00e9gorie 'Tous les ...'";
  theUILang.exsLimit     = "Limite des r\u00e9sultats";
  theUILang.exsEngines   = "Moteurs";
@@ -30,10 +30,11 @@
  theUILang.extPrivate   = "Priv\u00e9";
  theUILang.extPublic    = "Public";
  theUILang.exsCookies   = "Format du cookie";
- theUILang.extAllPublic = "Tous les public";
- theUILang.extAllPrivate = "Tous les priv\u00e9";
- theUILang.exsMustInstallCookies	= "You must install plugin 'Cookies' for work with this engine."; 
- theUILang.exsMustInstallLoginMgr	= "You must install plugin 'LoginMgr' for work with this engine.";
- theUILang.exsLoginMgr	= "Setup your account in plugin 'LoginMgr' for work with this engine.";
+ theUILang.extAllPublic = "Tous les publics";
+ theUILang.extAllPrivate = "Tous les priv\u00e9s";
+ theUILang.exsMustInstallCookies	= "Vous devez installer le plugin 'Cookies' pour fonctionner avec ce moteur de recherche.";
+ theUILang.exsMustInstallLoginMgr	= "Vous devez installer le plugin 'LoginMgr' pour fonctionner avec ce moteur de recherche.";
+ theUILang.exsLoginMgr	= "Configurez votre compte dans le plugin 'LoginMgr' pour fonctionner avec ce moteur de recherche.";
+ 
 
 thePlugins.get("extsearch").langLoaded();
