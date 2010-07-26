@@ -1,6 +1,6 @@
 <?php
 
-class ruTrackerEngine extends commonEngine
+class RUTrackerEngine extends commonEngine
 {
        	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
 
