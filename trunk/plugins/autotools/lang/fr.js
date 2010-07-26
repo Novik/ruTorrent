@@ -1,20 +1,21 @@
 ﻿/*
- * PLUGIn AUTOTOOLS
+ * PLUGIN AUTOTOOLS
  * 
- * au fichier Name: fr.js
- *      French language au fichier.
+ * File Name: fr.js
+ * 	French language file.
  * 
- * au fichier Author:
+ * File Author:
  *    Nicobubulle (nicobubulle@gmail.com)
  */
+
  var s_NoAccess         = "Plugin 'Autotools' : rTorrent ne peut pas acc\u00e9der ";
  var s_PluginFail       = "Le plugin ne fonctionnera pas.";
 
  theUILang.autotools                    = "Autotools";
- theUILang.autotoolsActiverLabel         = "Activer la fonctionnalit\u00e9 'AutoLabel'. Masque:";
- theUILang.autotoolsActiverMove          = "Activer la fonctionnalit\u00e9 'AutoMove'.";
+ theUILang.autotoolsEnableLabel         = "Activer la fonctionnalit\u00e9 'AutoLabel'. Masque:";
+ theUILang.autotoolsEnableMove          = "Activer la fonctionnalit\u00e9 'AutoMove'.";
  theUILang.autotoolsPathToFinished      = "Chemin vers le r\u00e9pertoire des torrents termin\u00e9s";
- theUILang.autotoolsActiverWatch         = "Activer la fonctionnalit\u00e9 'AutoWatch'.";
+ theUILang.autotoolsEnableWatch         = "Activer la fonctionnalit\u00e9 'AutoWatch'.";
  theUILang.autotoolsPathToWatch         = "Chemin vers le r\u00e9pertoire \u00e0 observer";
  theUILang.autotoolsWatchStart          = "D\u00e9marrer le t\u00e9l\u00e9chargement automatiquement.";
  theUILang.autotoolsPHPNotFound         = s_NoAccess + "\u00e0 l'interpr\u00e9teur php. " + s_PluginFail;
