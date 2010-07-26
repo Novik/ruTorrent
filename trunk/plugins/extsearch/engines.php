@@ -45,12 +45,12 @@ class commonEngine
 		$client->use_gzip = HTTP_USE_GZIP;
 		return($client);
 	}
-	public function fetch($url,$encode = true)
+	public function fetch($url, $encode = 1, $method="GET", $content_type="", $body="")
 	{
 		$client = $this->makeClient($url);
 		if($encode)
 			$url = Snoopy::linkencode($url);
-		$client->fetchComplex($url);
+		$client->fetchComplex($url, $method, $content_type, $body);
 		if($client->status>=200 && $client->status<300)
 		{
 			ini_set( "pcre.backtrack_limit", max(strlen($client->results),100000) );
@@ -208,19 +208,19 @@ class engineManager
 					$name = basename($file,".php");
 					$this->engines[$name] = array( "name"=>$name, "path"=>fullpath($dir.'/'.$file), "object"=>$name."Engine", "enabled"=>true, "global"=>true, "limit"=>100 );
 					$obj = $this->getObject($name);
-					$this->engines[$name]["enabled"] = $obj->defaults["public"];
-					$this->engines[$name]["public"] = $obj->defaults["public"];
+					$this->engines[$name]["enabled"] = intval($obj->defaults["public"]);
+					$this->engines[$name]["public"] = intval($obj->defaults["public"]);
 					$this->engines[$name]["limit"] = $obj->defaults["page_size"];
 					$this->engines[$name]["cats"] = $obj->categories;
 					$this->engines[$name]["cookies"] = (array_key_exists("cookies",$obj->defaults) ? $obj->defaults["cookies"] : '');
 					$this->engines[$name]["auth"] = (array_key_exists("auth",$obj->defaults) ? 1 : 0);
 					if(array_key_exists("disabled",$obj->defaults) && $obj->defaults["disabled"])
-						$this->engines[$name]["enabled"] = false;
+						$this->engines[$name]["enabled"] = 0;
 					if(array_key_exists($name,$oldEngines) && array_key_exists("limit",$oldEngines[$name]))
 					{
-						$this->engines[$name]["enabled"] = $oldEngines[$name]["enabled"];
-						$this->engines[$name]["global"] = $oldEngines[$name]["global"];
-						$this->engines[$name]["limit"] = $oldEngines[$name]["limit"];
+						$this->engines[$name]["enabled"] = intval($oldEngines[$name]["enabled"]);
+						$this->engines[$name]["global"] = intval($oldEngines[$name]["global"]);
+						$this->engines[$name]["limit"] = intval($oldEngines[$name]["limit"]);
 					}
 
 					global $theSettings;
@@ -270,9 +270,9 @@ class engineManager
 		foreach( $this->engines as $name=>$nfo )
 		{
 			if(isset($_REQUEST[$name."_enabled"]))
-				$this->engines[$name]["enabled"] = $_REQUEST[$name."_enabled"];
+				$this->engines[$name]["enabled"] = intval($_REQUEST[$name."_enabled"]);
 			if(isset($_REQUEST[$name."_global"]))
-				$this->engines[$name]["global"] = $_REQUEST[$name."_global"];
+				$this->engines[$name]["global"] = intval($_REQUEST[$name."_global"]);
 			if(isset($_REQUEST[$name."_limit"]))
 				$this->engines[$name]["limit"] = intval($_REQUEST[$name."_limit"]);
 		}

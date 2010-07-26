@@ -9,6 +9,7 @@ class privateData
 {
 	public $hash = '';
 	public $cookies = null;
+	public $referer = null;
 	public $loaded = false;
 
 	static public function load( $owner, $client = null )
@@ -20,6 +21,7 @@ class privateData
 			if($cache->get($rt))
 			{
 				$client->cookies = $rt->cookies;
+				$client->referer = $rt->referer;
 				$rt->loaded = true;
 			}
 		}
@@ -41,6 +43,7 @@ class privateData
 	public function store( $client )
 	{
 	        $this->cookies = $client->cookies;
+		$this->referer = $client->referer;
 		$cache = new rCache('/accounts');
 		return($cache->set($this));
 	}
@@ -69,7 +72,7 @@ abstract class commonAccount
 	public function fetch( $client, $url, $login, $password, $method, $content_type, $body )
 	{
 		$data = privateData::load( $this->getName(), $client );
-		return( ($data->loaded && 
+		$ret = ( ($data->loaded && 
 				$this->updateCached($client,$url) && 
 				$client->fetch($url,$method, $content_type, $body) &&
 				$this->isOK($client)) ||
@@ -80,6 +83,9 @@ abstract class commonAccount
                                 $client->fetch($url,$method, $content_type, $body) &&
 				$this->isOK($client) &&
 				$data->store($client)) );
+		if(!$ret)
+			$data->remove();
+		return($ret);
 	}
 	
 }
