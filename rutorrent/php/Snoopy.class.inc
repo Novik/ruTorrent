@@ -642,7 +642,6 @@ class Snoopy
 		        break;
 		    }
 		}
-
 		// gunzip
 		if ( $is_gzipped ) 
 		{

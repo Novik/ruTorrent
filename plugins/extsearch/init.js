@@ -263,7 +263,7 @@ plugin.correctCounter = function(id,count)
 					count++;
 		}
 		$("#"+id+"-c").text(count);
-		$("#"+id).attr("title",plugin.tegs[id].val+" (0)");
+		$("#"+id).attr("title",plugin.tegs[id].val+" ("+count+")");
 	}
 }
 
@@ -630,8 +630,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 				$('#'+ndx+'_enabled').attr("checked", (val.enabled==1));
 				$('#'+ndx+'_global').attr("checked", (val.global==1));
 				$('#'+ndx+'_limit').val(val.limit);
-				$('#'+ndx+'_enabled').change();
 				$('#'+ndx+'_global').change();
+				$('#'+ndx+'_enabled').change();
 			});
 		}
 		plugin.andShowSettings.call(theWebUI,arg);
@@ -749,8 +749,8 @@ plugin.onLangLoaded = function()
 			contPublic +=
 				"<fieldset>"+
 					"<legend>"+ndx+"</legend>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
 					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>"+
 				"</fieldset>";
 		else
@@ -758,8 +758,8 @@ plugin.onLangLoaded = function()
 			contPrivate +=  
 				"<fieldset>"+
 					"<legend>"+ndx+"</legend>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' checked='true' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
 					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>";
 			if(val.cookies)
 			{

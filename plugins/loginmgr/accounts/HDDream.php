@@ -18,7 +18,7 @@ class HDDreamAccount extends commonAccount
                         $client->setcookies();
 			$client->referer = "http://hd-dream.net/login.php";
         		if($client->fetch( "http://hd-dream.net/takelogin.php","POST","application/x-www-form-urlencoded", 
-				"username=".rawurlencode($login)."&password=".rawurlencode($password) ))
+				"logout=yes&username=".rawurlencode($login)."&password=".rawurlencode($password) ))
 			{
 				$client->setcookies();
 				return(true);
