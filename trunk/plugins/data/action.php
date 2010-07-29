@@ -46,7 +46,8 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 				header('Content-Transfer-Encoding: binary');
 				header('Content-Description: File Transfer');
 				header('HTTP/1.0 200 OK');
-				@readfile($filename);
+				ob_end_flush();
+				readfile($filename);
 				exit;
 			}
 		}
