@@ -137,7 +137,7 @@ theWebUI.rssDblClick = function( obj )
         	delete tmp;
 	}
 	else
-		window.open(obj.id,"_blank");
+		window.open(theWebUI.rssItems[obj.id].guid,"_blank");
 }
 
 theWebUI.getRSSIntervals = function( d )
@@ -1027,30 +1027,6 @@ plugin.correctRatioFilterDialog = function()
 	var rule = getCSSRule(".rf fieldset");
 	if(rule && thePlugins.get('ratio').allStuffLoaded)
 	{
-/*
-		var addition = (browser.isIE) ? 40 : 32;
-		rule.style.height = (iv(rule.style.height)+addition)+"px";
-		$$('filterPropsFieldSet').style.height = rule.style.height;
-		rule = getCSSRule(".rf");
-		if(rule)
-		{
-			var delta = (browser.isKonqueror) ? 5 : 0;
-			rule.style.height= (iv(rule.style.height)+addition+delta)+"px";
-			$$('filterProps').style.height = rule.style.height;
-		}
-		rule = getCSSRule("div#dlgEditFilters");
-		if(rule)
-		{
-			rule.style.height= (iv(rule.style.height)+addition)+"px";
-			$$('dlgEditFilters').style.height = rule.style.height;
-		}
-		rule = getCSSRule(".lf");
-		if(rule)
-		{
-			rule.style.height= (iv(rule.style.height)+addition)+"px";
-			$$('filterList').style.height = rule.style.height;
-		}
-*/
 		$("#FLT_label").after( $("<div></div>").css({ padding: 0 }).
 			html("<label>"+theUILang.ratio+":</label><select id='FLT_ratio'><option value=''>"+theUILang.mnuRatioUnlimited+"</option></select>") );
 
@@ -1069,30 +1045,6 @@ plugin.correctFilterDialog = function()
 	var rule = getCSSRule(".rf fieldset");
 	if(rule && thePlugins.get('throttle').allStuffLoaded)
 	{
-/*
-		var addition = (browser.isIE) ? 40 : 32;
-		rule.style.height = (iv(rule.style.height)+addition)+"px";
-		$$('filterPropsFieldSet').style.height = rule.style.height;
-		rule = getCSSRule(".rf");
-		if(rule)
-		{
-			var delta = (browser.isKonqueror) ? 5 : 0;
-			rule.style.height= (iv(rule.style.height)+addition+delta)+"px";
-			$$('filterProps').style.height = rule.style.height;
-		}
-		rule = getCSSRule("div#dlgEditFilters");
-		if(rule)
-		{
-			rule.style.height= (iv(rule.style.height)+addition)+"px";
-			$$('dlgEditFilters').style.height = rule.style.height;
-		}
-		rule = getCSSRule(".lf");
-		if(rule)
-		{
-			rule.style.height= (iv(rule.style.height)+addition)+"px";
-			$$('filterList').style.height = rule.style.height;
-		}
-*/
 		$("#FLT_label").after( $("<div></div>").css({ padding: 0 }).
 			html(  "<label>"+theUILang.throttle+":</label><select id='FLT_throttle'><option value=''>"+theUILang.mnuUnlimited+"</option></select><br/>" ) );
 		if(thePlugins.isInstalled('ratio'))

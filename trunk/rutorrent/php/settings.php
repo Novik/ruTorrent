@@ -16,21 +16,19 @@ class rTorrentSettings
 	public $version;
 	public $libVersion;
 	public $plugins = array();
+	public $hooks = array();
 	public $mostOfMethodsRenamed = false;
 	public $aliases = array();
 	public $started = 0;
 	public $idNotFound = false;
 
-	static public function load()
-	{
-		$cache = new rCache();
-		$rts = new rTorrentSettings();
-		$cache->get($rts);
-		return($rts);
-	}
 	public function registerPlugin($plugin,$data = true)
 	{
 		$this->plugins[$plugin] = $data;
+	}
+	public function unregisterPlugin($plugin)
+	{
+		unset($this->plugins[$plugin]);
 	}
 	public function getPluginData($plugin)
 	{
@@ -43,10 +41,63 @@ class rTorrentSettings
 	{
 		return(array_key_exists($plugin,$this->plugins));
 	}
+
+	public function registerEventHook( $plugin, $ename )
+	{
+		if(is_array($ename))
+			foreach( $ename as $name )
+				$this->hooks[$name][] = $plugin;
+		else
+			$this->hooks[$ename][] = $plugin;
+	}
+	public function unregisterEventHook( $plugin, $ename )
+	{
+		for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
+		{
+			if($this->hooks[$ename][$i] == $plugin)
+			{
+				unset($this->hooks[$ename][$i]);
+				if( count($this->hooks[$ename])==0 )
+					unset($this->hooks[$ename]);
+				break;
+			}
+		}
+	}
+	public function pushEvent( $ename, $prm )
+	{
+		for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
+		{
+			$pname = $this->hooks[$ename][$i];
+			$file = dirname(__FILE__).'/../plugins/'.$pname.'/hooks.php';
+			if(is_file($file))
+			{
+				require_once( $file );
+				$func = $pname.'Hooks::On'.$ename;
+				if(is_callable( $func ) && 
+					(call_user_func_array($func,array($prm))==true))
+					break;
+			}
+		}
+	}	
+
+	static public function load()
+	{
+		$cache = new rCache();
+		$rts = new rTorrentSettings();
+		$cache->get($rts);
+		return($rts);
+	}
 	public function store()
 	{
 		$cache = new rCache();
 		return($cache->set($this));
+	}
+	static public function get()
+	{
+		global $theSettings;
+		if(!isset($theSettings))
+			$theSettings = rTorrentSettings::load();
+		return($theSettings);
 	}
 	public function obtain()
 	{

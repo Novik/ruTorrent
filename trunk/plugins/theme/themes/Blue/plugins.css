@@ -1,5 +1,9 @@
-.lf li input.TextboxFocus { background: #CFDEEF; }
+.lf li input.TextboxFocus { background: #CFDEEF }
 .lf li input.TextboxNormal { background: #FAFAFA }
 #qmeter-disk-holder { border-color: #99BBE8 }
 #meter-disk-holder { border-color: #99BBE8 }
 #PDivider { background-color: #DFE8F6; border-left: 1px solid #8DB2E3; }
+
+div#t div#rssurlrewrite {background: transparent url(./images/rssurlrewrite.png) no-repeat }
+.lf_rur li input.TextboxFocus { background: #CFDEEF }
+.lf_rur li input.TextboxNormal { background: #FAFAFA }
