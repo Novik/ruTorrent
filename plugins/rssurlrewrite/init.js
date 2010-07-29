@@ -123,7 +123,10 @@ theWebUI.deleteCurrentRule = function()
 theWebUI.checkCurrentRule = function()
 {
 	if(this.curRule)
+	{
+		$('#RLS_result').val('');
 		this.request("?action=checkrule",[this.showRuleResults, this]);
+	}
 }
 
 theWebUI.showRuleResults = function( d )
