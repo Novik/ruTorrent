@@ -61,10 +61,10 @@ abstract class commonAccount
 	}
 
 	abstract protected function isOK($client);
-	abstract protected function login($client,$login,$password,$url);
+	abstract protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body);
 	abstract public function test($url);
 
-	protected function updateCached($client,$url)
+	protected function updateCached($client,&$url,&$method,&$content_type,&$body)
 	{
 		return(true);
 	}
@@ -73,10 +73,10 @@ abstract class commonAccount
 	{
 		$data = privateData::load( $this->getName(), $client );
 		$ret = ( ($data->loaded && 
-				$this->updateCached($client,$url) && 
+				$this->updateCached($client,$url,$method,$content_type,$body) && 
 				$client->fetch($url,$method, $content_type, $body) &&
 				$this->isOK($client)) ||
-			($this->login($client,$login,$password,$url) && 
+			($this->login($client,$login,$password,$url,$method,$content_type,$body) && 
 				$client->status>=200 && 
 				$client->status<400 &&
 				$this->isOK($client) &&

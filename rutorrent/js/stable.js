@@ -91,7 +91,8 @@ dxSTable.prototype.setPaletteByURL = function(url)
 	this.paletteURL = url;	
 	this.sortAscImage = url+"/images/asc.gif";
 	this.sortDescImage = url+"/images/desc.gif";
-	this.Sort();
+	if(this.created)
+		this.Sort();
 }
 
 dxSTable.prototype.create = function(ele, styles, aName)

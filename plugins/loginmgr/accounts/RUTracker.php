@@ -6,13 +6,16 @@ class ruTrackerAccount extends commonAccount
 	{
 		return(strpos( $client->results, ' name="login_password"' )==false);
 	}
-	protected function updateCached($client,$url)
+	protected function updateCached($client,&$url,&$method,&$content_type,&$body)
 	{
 		$id = $this->getDownloadId($url);
                 if($id!==false)
 		{
 			$client->referer = "http://rutracker.org/forum/viewtopic.php?t=".$id;	
 			$client->cookies["bb_dl"]=$id;
+			$method = "POST";
+			$content_type = "application/x-www-form-urlencoded";
+			$body = '';
 		}
 		return(true);
 	}
@@ -22,7 +25,7 @@ class ruTrackerAccount extends commonAccount
 			return($matches["id"]);
 		return(false);
 	}
-	protected function login($client,$login,$password,$url)
+	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body)
 	{                                                                   
 		$id = $this->getDownloadId($url);
 		if($id===false)
@@ -41,7 +44,12 @@ class ruTrackerAccount extends commonAccount
 			$client->setcookies();
 			$client->referer = $referer;
 			if($id!==false)
+			{
 				$client->cookies["bb_dl"]=$id;
+				$method = "POST";
+				$content_type = "application/x-www-form-urlencoded";
+				$body = '';
+			}
 			return(true);
 		}
 		return(false);
