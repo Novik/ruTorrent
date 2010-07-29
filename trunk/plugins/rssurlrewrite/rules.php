@@ -39,7 +39,7 @@ class rURLRewriteRule
         public function apply( &$href, &$guid )
 	{
 		$src = $this->hrefAsSrc ? $href : $guid;
-		$dst = preg_replace($this->pattern,$this->replacement,$src);
+		$dst = @preg_replace($this->pattern,$this->replacement,$src);
 		if(($dst!==false) && ($dst!=$src))
 		{
 			if($this->hrefAsDest)
