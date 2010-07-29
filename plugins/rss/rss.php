@@ -80,7 +80,9 @@ class rRSS
 				$ret.="{ time: ".$item['timestamp'];
 			else
 				$ret.='{ time: null';
-			$ret.=", title: \"".addslashes($item['title'])."\", href: \"".self::quoteInvalidURI($href)."\", errcount: ".$history->getCounter($href).", hash: \"".$history->getHash($href)."\" },";
+			$ret.=", title: \"".addslashes($item['title'])."\", href: \"".self::quoteInvalidURI($href).
+				"\", guid: \"".self::quoteInvalidURI($item['guid']).
+				"\", errcount: ".$history->getCounter($href).", hash: \"".$history->getHash($href)."\" },";
 		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
@@ -183,9 +185,15 @@ class rRSS
 					else
 					if(array_key_exists('source',$item))
 						$href = $item['source'];
+					$guid = $href;
+					if(array_key_exists('guid',$item))
+						$guid = $item['guid'];
+					else
+					if(array_key_exists('link',$item))
+						$guid = $item['link'];
+					$item['guid'] = self::removeTegs( $guid );
 					if(!array_key_exists('timestamp',$item))
 					{
-						
 // hack for iptorrents.com
 // Category: Movies/Non-English  Size: 707.38 MB Added: 2009-10-21 07:42:37
 						if(array_key_exists('description',$item) && 
@@ -200,6 +208,7 @@ class rRSS
 						$this->items[self::removeTegs( $href )] = $item;
 				}
 			}
+			rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
 			return(true);
 		}
 		return(false);
@@ -676,6 +685,9 @@ class rRSSManager
 						$filter->checkItem($href, $item) )
 					{
 					        $this->history->applyFilter( $filter->no );
+
+						rTorrentSettings::get()->pushEvent( "RSSAutoLoad", array( "rss"=>&$rss, "href"=>&$href, "item"=>&$item, "filter"=>&$filter ) );
+
 						$this->getTorrents( $rss, $href, 
 							$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, $filter->ratio, false );
 						if(WAIT_AFTER_LOADING)

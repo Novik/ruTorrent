@@ -18,10 +18,14 @@ if(isset($HTTP_RAW_POST_DATA))
 		{
 			$php = "../plugins/".$parts[1]."/done.php";
 			if(is_file($php) && is_readable($php))
+			{
 				require_once($php);
+				$theSettings->unregisterPlugin($parts[1]);
+			}
 			$jResult.="thePlugins.get('".$parts[1]."').remove();";
 		}
 	}
+	$theSettings->store();
 }
 
 echo $jResult;

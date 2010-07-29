@@ -70,7 +70,6 @@ switch($cmd)
 	case "getfilters":
 	{
 		$val = $mngr->getFilters();
-		$mtime = $mngr->getModified("filters");
 		break;
 	}
 	case "checkfilter":
