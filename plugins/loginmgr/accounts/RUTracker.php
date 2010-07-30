@@ -39,7 +39,7 @@ class ruTrackerAccount extends commonAccount
 			$referer = "http://rutracker.org/forum/viewtopic.php?t=".$id;
 		}
 		if($client->fetch( "http://login.rutracker.org/forum/login.php","POST","application/x-www-form-urlencoded", 
-			"redirect=".rawurlencode($redirect)."&login_username=".rawurlencode($login)."&login_password=".rawurlencode($password)."&ses_short=1&login=%C2%F5%EE%E4" ))
+			"redirect=".rawurlencode($redirect)."&login_username=".rawurlencode($login)."&login_password=".rawurlencode($password)."&login=%C2%F5%EE%E4" ))
 		{
 			$client->setcookies();
 			$client->referer = $referer;
