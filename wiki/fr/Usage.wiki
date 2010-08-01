@@ -1,0 +1,136 @@
+----
+=How to use rutorrent=
+----
+
+<wiki:TOC />
+
+== Introduction ==
+
+This page will serve as a general "how to" for the basic day to day use or rutorrent.
+
+== Menu Bars ==
+
+The following is a list of each menu item.  
+
+=== Top Menu Bar [http://rutorrent.googlecode.com/svn/wiki/images/menubar.png] ===
+
+The top Menu Bar has some quick action buttons.  
+These include:
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon01start.png] Add a torrent
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon02remove.png] Remove
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon03play.png] Start
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon04pause.png] Pause
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon05stop.png] Stop
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon06settings.png] Settings
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon07about.png] About 
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon08create.png] Create (requires the [PluginCreate Create] plugin)
+ * [http://rutorrent.googlecode.com/svn/wiki/images/icon09rss.png] RSS (requires the [PluginRSS RSS] plugin)
+
+=== Left Side Menu ===
+
+<img src="http://rutorrent.googlecode.com/svn/wiki/images/leftside.png" align="left">
+   * <b>State: </b>Sorts torrents by category<BR CLEAR="all">
+<b>All: </b>All torrents, running, stopped, seeding, finished.<BR CLEAR="all">
+<b>Download: </b>Torrents which are downloading (stopped, but incomplete torrents will show here).<BR CLEAR="all">
+<b>Finished: </b>Finished torrents, (seeding or complete).<BR CLEAR="all">
+<b>Active: </b>Torrents which are currently uploading or downloading data.<BR CLEAR="all">
+<b>Inactive: </b>Torrents which are not currently uploading or downloading data.<BR CLEAR="all">
+<b>Error: </b>Torrents which have received an error notification from the tracker.<BR CLEAR="all">
+   * <b>Labels: </b>Lets you sort by label.<BR><BR CLEAR="all">
+<BR><BR><BR>
+   * <b>Tracker: </b>Lets you sort by Tracker (Requires the [PluginTracklabels TrackLabels] Plugin)<BR><BR CLEAR="all">
+<BR><BR><BR><BR><BR><BR>
+   * <b>Search: </b>Lets you sort by local Search Query.<BR CLEAR="all">
+   * <b>Feeds: </b>Lets you view rss items (requires the [PluginRSS RSS] plugin).<BR><BR CLEAR="all">
+<BR><BR><BR><BR>
+<BR CLEAR="all">
+
+
+=== Tabs [http://rutorrent.googlecode.com/svn/wiki/images/tabs2.png] ===
+
+The Tabs on the lower half of the screen allow access to various types of information.  Some of these items are only available by plugin.
+The tabs are:
+ * *General* : This tab is exactly what it sounds like, general information for whatever torrent you have selected.  You can also find remaining disk space here.
+ * *Files* : This tab shows all files or parts for the current torrent selected, and download status of each.  You can use this tab to set per-file download priority. (Can also be used to download via http if you have [PluginData Data] plugin installed).
+ * *Trackers* : This tab shows the tracker(s) for the current torrent selected.
+ * *Peers* : This tab displays peer information for the current torrent. (Will also show country flag for each peer if [PluginGeoIP GeoIP] is installed).
+ * *Speed* : This tab shows a graph of upload and download speed over the last few minutes.
+ * *Plugins* : This tab shows installed and active plugins.
+ * *Trafic* : This tab shows per tracker, and overal Traffic statistics in a variety of time intervals. (Requires [PluginTrafic Traffic Plugin].
+ * *Chunks* : This tab shows which pieces of a torrent have downloaded (Requires [PluginChunks Chunks] Plugin).
+ * *Logger* : This tab shows error messages, and other system events.
+
+=== Bottom Menu Bar [http://rutorrent.googlecode.com/svn/wiki/images/bottomrg.png] ===
+
+The Bottom menu bar was added in ruTorrent 3.0.  It shows general "total" speed information, and can be used to set the server Throttle level. Also shows remaining space if you have [PluginDiskspace Diskspace] installed.
+
+== General Use ==
+
+Now that you know where the buttons are, this section is designed to explain how to use them.
+
+=== Adding Torrents ===
+To begin adding torrents, click the "add a torrent" menu button ([http://rutorrent.googlecode.com/svn/wiki/images/icon01start.png])
+
+This should open the following menu:
+
+[http://rutorrent.googlecode.com/svn/wiki/images/addmi.png]
+
+This gives you 2 options for adding torrents
+
+==== Add torrent via url ====
+
+If you know the url for the torrent you wish to download, you can just add it like shown in the following screenshot _*(note: you can leave the directory space blank if you like, doing so will download to the base download directory set in your .rtorrent.rc)*_
+
+[http://rutorrent.googlecode.com/svn/wiki/images/addurlc.png]
+
+==== Add torrent via direct upload of .torrent file ====
+
+You might find it more convenient to download the .torrent file, and uploaded to the webui.  To do this, click the "Choose file" button, this should open a window like this:
+
+[http://rutorrent.googlecode.com/svn/wiki/images/addtorrent1.png]
+
+simply browse to the .torrent file you wish to add, and click "open" _*(or "ok" on some browsers)*_   This should add the .torrent file to the location where "Choose file" was previously.  
+
+[http://rutorrent.googlecode.com/svn/wiki/images/addtorrent2.png]
+
+Now, simply click "Add File"
+
+=== Stop, Pause, Remove ===
+
+There are 2 methods to stop, pause or remove torrents.
+
+
+==== Using the Menu Bar buttons ====
+
+This is really almost self explanatory...but you can use the top menu buttons to stop pause and remove torrents.  To do so, simply select a torrent you wish to control:
+
+[http://rutorrent.googlecode.com/svn/wiki/images/controls.png]
+
+and click the option on the top bar you wish to use.
+
+ * to stop click [http://rutorrent.googlecode.com/svn/wiki/images/icon05stop.png]
+ * to pause click [http://rutorrent.googlecode.com/svn/wiki/images/icon04pause.png]
+ * to remove click [http://rutorrent.googlecode.com/svn/wiki/images/icon02remove.png]
+
+
+==== Using the right click menu ====
+
+You can also right click a torrent from the list, bringing up a menu with different options.  
+
+_*(note: some of the options in the screenshot below are only available by plugin.  See [Plugins] for more details)*_
+
+[http://rutorrent.googlecode.com/svn/wiki/images/rightclick.png]
+
+=== Local Search ===
+
+A new "local search" has been included with the base since 3.0.  This is infact the default option in 3.0:
+
+[http://rutorrent.googlecode.com/svn/wiki/images/localsearch.png]
+
+The local search option allows you to search the current list of running torrents.  It also adds a new menu category for each search on the left hand of the screen which will stay open until you close the webui or manually remove it.
+
+[http://rutorrent.googlecode.com/svn/wiki/images/localsearchubuntu1.png]
+
+[http://rutorrent.googlecode.com/svn/wiki/images/localsearchubuntu2.png]
+
+[http://rutorrent.googlecode.com/svn/wiki/images/localsearchubuntu3.png]

@@ -1,0 +1,104 @@
+----
+=How to download ruTorrent via SVN=
+----
+
+<wiki:toc />
+
+== Description ==
+
+You must have [http://subversion.tigris.org/ Subversion] installed. Consult your unix distribution page for details.
+ 
+If you wish to install rutorrent to /var/www/rutorrent, execute the following commands:
+{{{
+cd /var/www/
+svn co http://rutorrent.googlecode.com/svn/trunk/rutorrent
+}}}
+
+== Updating or checking out a different revision ==
+
+If you've already checked out ruTorrent from svn, and which to update it to the current revision, cd to the directory ruTorrent is installed and run a "svn update" like in the following example.
+_(note: in this example rutorrent has been installed to /var/www/rutorrent. Your webroot may be different)_
+
+{{{
+cd /var/www/rutorrent
+svn up
+}}}
+
+If you wish to check out a specific revision, add -r revision_number.  For example, to check out revision 870 you would do something like this:
+_(note: this is rarely necessary, but in rare occasions, a new revision will break compatibility.  In these situations, knowing how to check out an earlier revision can be golden)._
+
+{{{
+cd /var/www/rutorrent
+svn up -r 870
+}}}
+
+
+_*(note:  It's very important to remember, when upgrading from one revision to another, you should always stop rtorrent before you upgrade, upgrade, then restart rtorrent.  Failure to stop/start rtorrent when upgrading can lead to plugins not working properly)*_
+
+== Checking out Plugins ==
+
+Checking out plugins is basically the same as checking out the base system. If you already have rutorrent installed, simply change to the *plugins/* directory under rutorrent, and check out your plugin, like in the following example. For example, if you have rutorrent installed to /var/www/rutorrent and would like to check out the rpc plugin:
+
+{{{
+cd /var/www/rutorrent/plugins
+svn co http://rutorrent.googlecode.com/svn/trunk/plugins/rpc
+}}}
+
+_(note: for a full list of available plugins please see [Plugins] page)_.
+
+== Updating Plugins ==
+
+Updating plugins works exactly like updating rutorrent:
+
+{{{
+cd /var/www/rutorrent/plugins/rpc
+svn up
+}}}
+
+but you can also update all the plugins by doing something like this:
+{{{
+cd /var/www/rutorrent/plugins
+svn up *
+}}}
+
+
+=== Wonslung's Method ===
+
+_*(NOTE: If you read this and do not understand it, please stick to the section ABOVE this point)*_
+
+
+I tend to prefer downloading everything from trunk, removing the plugins i don't want, then editing the svn file to keep from downloading them again.
+
+This works something like this:
+
+_(note: in the following example, i want all plugins except darkpal and rpc)_
+
+{{{
+cd /var/www
+svn co http://rutorrent.googlecode.com/svn/trunk
+cd trunk/
+rm -r plugins/darkpal plugins/rpc rutorrent/plugins && mv plugins/ rutorrent/
+mv rutorrent/ ../ && cd ../ && rm -r trunk/
+}}}
+
+This gives you a rutorrent install that you can update by running only svn up from the main rutorrent dir.  In it's CURRENT form, however, it will always redownload rpc and darkpal, so you will need to either remove them every time (which isn't that hard if you write a script especially FOR updating rutorrent) or edit the svn files.
+
+To do this, you need to edit the .svn/entires files in the plugins directory, and remove the entries for the plugins you don't want.
+
+if you open the plugins/.svn/entries file in a text editor, it should become apparent.
+
+so, to remove rpc and darkpal, you look for the following sections and remove them
+
+{{{
+rpc
+dir
+^L
+}}}
+and
+{{{
+darkpal
+dir
+^L
+}}}
+
+then save the file. now when you run svn update from /var/www/rutorrent  it should update all the installed plugins and skip redownloading the ones you do not want.  The best part is you do not have to manually update each plugin. 

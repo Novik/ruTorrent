@@ -1,0 +1,175 @@
+#labels Featured
+----
+= Plugins =
+----
+
+<wiki:toc />
+
+ruTorrent is designed with a robust plugin system.  The reason for this is to allow users to customize the behavior of the WebUI, and exlude the parts they do not need [HowToCreatePlugin And even add something we missed, without modifying a ruTorrent code]
+
+== Installation ==
+
+To install a plugin, download the tarball from [http://code.google.com/p/rutorrent/downloads/list the download page] and extract it in the plugins directory. (if rutorrent is installed to /var/www/rutorrent this would be
+{{{
+/var/www/rutorrent/plugins
+}}}
+If you use the svn version of rutorrent, you can fetch the plguins via svn as well as follows:
+{{{
+svn co http://rutorrent.googlecode.com/trunk/plugins/PLUGIN_NAME
+}}}
+
+Attention! Please install only those plug-ins you really need. The more plug-ins are installed - the longer load of the ruTorrent interface.
+
+=== plugins.ini ===
+
+*_Some of the following information is also included in [Config#Limiting_Plugins_(plugins.ini) Config page]_*
+
+Since 3.0, rutorrent includes a configuration file for plugins called plugin.ini.  It is located at rutorrent/conf/plugins.ini.  As of the writing of this wiki, the default format is as follows:
+
+{{{
+;; Plugin's permissions. 
+;; If flag is not found in plugin section, corresponding flag from "default" section is used.
+;; If flag is not found in "default" section, it is assumed to be "yes".
+;;
+;; For setting individual plugin's permissions you must write something like that:
+;;
+;; [ratio]
+;; enabled = yes
+;; canChangeToolbar = yes
+;; canChangeMenu = yes
+;; canChangeOptions = no
+;; canChangeTabs = yes
+;; canChangeColumns = yes
+
+[default]
+enabled = yes
+canChangeToolbar = yes
+canChangeMenu = yes
+canChangeOptions = yes
+canChangeTabs = yes
+canChangeColumns = yes
+}}}
+
+These options allow you to change how each plugin behaves and allow you to create a unique configuration for multiple user systems.
+
+For a multiuser system with rutorrent installed at /var/www/rutorrent with users tom dick and harry you would do something like:
+
+{{{
+cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/users/tom
+cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/users/dick
+cp /var/www/rutorrent/conf/plugins.ini /var/www/rutorrent/users/harry
+}}} 
+
+and edit each accordingly.  For more information about multi-user setups, see [Config] and [Installation#Single_user_(or_no_Web_Auth)_OR_Multiuser_(Web_Auth) Installation]
+
+==== Explanation of plugin.ini settings ====
+
+ * *enabled* - this setting should be obvious, when set to yes, a plugin is enabled.  When set to no, it is not.
+ * *canChangeToolbar* - this setting controls whether or not a plugin can make changes to the main toolbar.
+ * *canChangeMenu* - this setting controls whether or not the plugin can effect the rightclick menu.
+ * *canChangeOptions* - this setting controls whether or not the plugin can add to the "Settings" menu.
+ * *canChangeTabs* - this setting controls whether or not a plugin can add a tab to the tab bar.
+ * *canChangeColumns* - this setting controls whether or not a plugin can add a data column to the torrent information window.
+  
+==== An Example of how to use plugins.ini ====
+
+So why is this useful? Using our 3 user system from the earlier example, lets say
+for harry and dick, you want to completely disable the [PluginRSS RSS] plugin, but you wish to allow tom access to it. You would install [PluginRSS RSS] and add the following to both */var/www/rutorrent/conf/users/harry/plugins.ini* and */var/www/rutorrent/conf/users/dick/plugins.ini
+
+{{{
+[rss]
+enabled = no
+}}}
+
+Lets say you want to let tom use the [PluginUnpack unpack] plugin, but you do not want him to be able to enable "automatic unpack" via the settings window. You might add soemthing like this to */var/www/rutorrent/conf/users/tom/plugins.ini*
+
+{{{
+[unpack]
+enabled = yes               
+canChangeToolbar = yes      
+canChangeMenu = yes         
+canChangeOptions = no      
+canChangeTabs = yes         
+canChangeColumns = yes
+}}}
+
+=== per user plugin config files ===
+
+In the new rutorrent 3.0 multi-user setup, it is possible to have different plugins config settings for each user.  This is done by creating a plugins directory for each user, adding a directory for the plugin you wish to have the config for, and copying the base plugin conf.php to this directory.  For example:  If you have 3 users, tom dick and harry, and you want to have different rss update intervals for each user, you would do something like this: _*(note: the following assumes rutorrent installed at /var/www/rutorrent )*_
+
+{{{
+mkdir -p /var/www/rutorrent/conf/users/tom/plugins/rss
+mkdir -p /var/www/rutorrent/conf/users/dick/plugins/rss
+mkdir -p /var/www/rutorrent/conf/users/harry/plugins/rss
+cp /var/www/rutorrent/plugins/rss/conf.php /var/www/rutorrent/conf/users/tom/plugins/rss
+cp /var/www/rutorrent/plugins/rss/conf.php /var/www/rutorrent/conf/users/dick/plugins/rss
+cp /var/www/rutorrent/plugins/rss/conf.php /var/www/rutorrent/conf/users/harry/plugins/rss
+}}}
+
+then edit accordingly.  This works for all plugins which have a conf.php file.  
+
+=== a note on upgrading plugins ===
+
+It's very important to remember, when upgrading a plugin, you should always:
+ # stop rtorrent
+ # upgrade the plugin(s)
+ # restart rtorrent
+
+Failure to stop/start rtorrent can result in plugins not behaving as you'd expect.
+
+
+== Starting plugins with rtorrent ==
+
+Plugins will load when the webui is opened.  If you have plugins which need to poll for data (like rss or scheduler) you may wish to have them start when rtorrent starts, regardless of whether or not the webui has been loaded.  In 2.0, this used to require a setting for each plugin via the .rtorrent.rc
+Now, all plugins can be brought up with a single .rtorrent.rc command.  Be sure to edit this command for:
+ # php path *_Your path may be different_*
+ # rutorrent location *_Rutorrent may be installed in a different location on your syste_*
+ # webusername _*you may or may not be using web authentication, if you aren't, remove the username entirely, if you are, edit it accordingly_*
+
+(the following is for user tom with rutorrent installed at /var/www/rutorrent)
+
+{{{
+execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
+}}}
+
+
+
+== Uninstallation ==
+
+ # remove the plugin directory, for example, to remove the rpc plugin you might do this:
+{{{
+rm -r /var/www/rutorrent/plugins/rpc/
+}}}
+ # restart rtorrent. _*This is important for plugins which work with the rtorrent scheduler, such plugins will send a command to rtorrent telling it to do something every x minutes. If you do not restart rtorrent, this even will keep occuring.*_
+
+
+----
+== Currently there are the following plug-ins: ==
+ # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server. (Replacement for mod_scgi).
+ # [PluginErasedata erasedata] - adds "Delete with the data" to the right click context menu.
+ # [PluginDarkPal darkpal] - A ruTorrent Theme with dark colors designed to burn your eyes.
+ # [PluginCreate сreate] - adds the command of new torrent creation.
+ # [PluginTrafic trafic] - adds a subsystem of the traffic counting.
+ # [PluginRSS RSS] - realizes operations with RSS-feeds.
+ # [PluginEdit edit] - allows to edit the trackers list of the existing torrent.
+ # [PluginThrottle throttle] - allows to set different speed limitations for groups of torrents.
+ # [PluginRetrackers retrackers] - automatically adds defined re-trackers for newly added torrents.
+ # [PluginCookies cookies] - allows to define a set of cookies for trackers which use such method of authorization.
+ # [PluginSearch search] - allows to redefine the list of search engines.
+ # [PluginScheduler scheduler] - allows to change speed limitations of downloads/uploads depending on hour of the day and day of the week.
+ # [PluginAutotools autotools] -  realizes some automation functions (autolabel, automove).
+ # [PluginDataDir datadir] - allows to change the torrent's data directory.
+ # [PluginTracklabels tracklabels] - adds a set of automatically generated by trackers' names labels onto categories pane.
+ # [PluginGeoIP geoip] - shows country name and flag for connected peers.
+ # [PluginRatio ratio] - allows to set different ratio limitations for groups of torrents.
+ # [PluginShow_peers_like_wtorrent Show_peers_like_wtorrent] - changes the format of values in "Seeds" and "Peers" columns of the torrents list.
+ # [PluginSeedingtime seedingtime] - adds the column with the torrent's finishing time to torrents list.
+ # [PluginHTTPRPC HTTPRPC] - Similar to [PluginRPC RPC] but with low bandwidth use in mind.
+ # [PluginDiskspace Diskspace] -- Shows remaining space on the bottom bar in an easy to read fashion.
+ # [PluginUnpack Unpack] -- Unrars and Unzips downloaded torrents.
+ # [Plugin_getdir _getdir Plugin]  -- this plugin helps rutorrent find and render directories.
+ # [PluginSource Source] -- This plugin lets you download the .torrent file.
+ # [PluginChunks Chunks] -- This plugin shows info on torrent pieces (which pieces have downloaded).
+ # [PluginData Data] -- This plugin adds an http download option to the "files" tab and torrent menu.
+ # [PluginCpuload Cpuload] - Shows cpu loading on the bottom bar in an easy to read fashion.
+ # [PluginExtsearch extsearch] - adds an internal search function to many popular public and private sites

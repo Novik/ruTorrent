@@ -1,0 +1,22 @@
+----
+= Downloading ruTorrent =
+----
+==  Tar Balls ==
+
+[DownloadPage Downloading page]
+
+== SVN ==
+
+[GetFromSVN SVN guide]
+
+----
+= Downloading rTorrent =
+----
+
+== Tar Balls ==
+
+[http://libtorrent.rakshasa.no/downloads/ rTorrent Download Page]
+
+== Get from SVN ==
+
+[http://libtorrent.rakshasa.no/wiki/Download SVN link Page]

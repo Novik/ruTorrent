@@ -1,0 +1,81 @@
+----
+== Version history ==
+----
+
+
+
+ * ==== Version 3.1 (25.05.2010 r1167 )====
+   # Added a directive to force single user mode  ($ forbidUserSettings).
+   # Added support for compressed php pages via an external program (gzip).
+   # Added support for browser's resource caching.
+   # Added plugins [PluginCpuload cpuload], [PluginHTTPRPC HTTPRPC].
+   # Added support for magnet-links (for svn rtorrent 0.8.6 `r1144` and above).
+   # Added support for svn rtorrent `r1148`.
+   # Added support for Opera browser, version 10.5x.
+   # New option "If rtorrent is not available try again after".
+   # Changed the setup of paths to external programs. (example: php, curl)
+   # Optimized downloadable graphic resources.
+   # Error with URL, containing a slash symbol in query is corrected.
+   # Error with support cookies in https feeds is corrected.
+   # The algorithm of descovering of the version of the peer's client is corrected.
+   # Fixed error with adding torrents in IE7.
+   # Fixed an error which makes it impossible to change to a new positions in torrent properties.
+   # Fixed diagnostic resource availability for the rtorrent user.
+   # Fixed a bug which resulted in a memory leak due to "Speed" tab being open.
+   # Fixed a bug which allowed a User to add torrents outside of $topDirectory.
+
+----
+
+ * ====Version 3.0 (March 10th 2010 r844)==== 
+   # Virtually all of the code rewritten from scratch in order to increase productivity.
+   # Added support for multiple users (each user must meet one instance of rtorrent).
+   # Added elements of different levels of access for users.
+   # Added ability to search through the list of local torrents.
+   # Added the "Quick Start" add torrent dialog (for the torrents, for which data already exists on disk).
+   # Added several plug-ins.
+   # Change the appearance of a number of UI elements.
+   # Fixed several bugs.
+
+----
+
+ * ====Version 2.9 (March 10th 2010 r844)====
+   # Fixed several minor bugs of version 2.8. In fact, this release is made for the sole purpose - to say goodbye to the 2.x branch and forget it as a nightmare. 
+
+----
+
+ * ====Version 2.8 (27 Nov 2009 r536)==== 
+   # Fixed a bug with columns width change in some cases.
+   # Fixed incorrect program behavior when the name of a label on the category panel contains HTML-tags.
+   # Fixed some localization flaws.
+   # Fixed a bug that leads to the assignment of incorrect values to rTorrent parameters of hashing in case of change of these parameters via Settings dialog.
+   # Fixed a bug that caused incorrect work of the program, if the option magic_quotes_gpc is enabled on the server. 
+   # Changed Category panel appearance.
+
+----
+
+ * ====Version 2.7 (30 Sep 2009 r420)==== 
+   # Added diagnostics on torrent addition.
+   # Added category "Error" on the Category panel.
+   # Added Serbian localization (partly, some resources are still in English).
+   # Added checking of PHP module PCRE presence (for FreeBSD only).
+   # Added plug-ins [PluginGeoIP geoip], [PluginRatio ratio], [PluginShow_peers_like_wtorrent show_peers_like_wtorrent], [PluginSeedingtime seedingtime].
+   # Revised interface of column width change.
+   # Changed the project logo in accordance with the claim of the company BitTorrent Inc. representative (See  Issue64).
+   # Fixed a bug which sends plenty of requests to rTorrent during loading the interface that caused rTorrent crash in some cases.
+   # Fixed handling of torrent files that contain incorrect data (partly). 
+   # Fixed handling HTTPS resouces (heretofore torrent-files from https-trackers might be loaded incorrectly in some cases).
+
+----
+
+ * ====Version 2.6 (11 Aug 2009 r268)==== 
+   # Added checking of xmlrpc-c library version correctness.
+   # Added output of global speed limits in the status bar or in the window title. If they exist.
+   # Added plug-in [PluginTracklabels tracklabels].
+   # Area of categories has been extended because of some plug-ins that actively use it have been issued. ([PluginRSS RSS],[PluginTracklabels tracklabels]).
+   # Fixed incorrect displaying of the scroll-bar at lists of torrents, files, trackers etc.
+   # Fixed incorrect behavior ruTorrent at attempt to add a torrent-file with incorrect content (refers mainly to automatic downloads via plug-in [PluginRSS RSS]).
+   # Fixed incorrect method of determination of the web-server's user ID. Before this it was assumed as owner of the script file. Refers to the diagnostics sub-system's work.
+   # Fixed incorrect method of determination of the rTorrent user ID. Before this it could not be determined if user had no access to the file rtorrent.lock. Refers to the diagnostics sub-system's work.
+   # Fixed opacity during moving of columns in the list of torrents (in some browsers).
+   # Fixed incorrect displaying of the time when a torrent has been added on the tab "General" - now the difference between time on the server and time on the local computer is being taken into account.
+   # Fixed mess of paths in plug-ins which could cause "redundant" folders creation and incorrect work of some plug-ins.
