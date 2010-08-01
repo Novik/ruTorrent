@@ -7,7 +7,7 @@
  * File Author:
  *    Nicobubulle (nicobubulle@gmail.com)
  */
- theUILang.tegMenuLoad  = "Télécharger";
+ theUILang.tegMenuLoad  = "T\u00e9l\u00e9charger";
  theUILang.tegMenuOpen  = "Ouvrir dans le navigateur";
  theUILang.tegMenuDeleteItem = "Supprimer";
  theUILang.tegMenuDelete = "Supprimer la recherche";
