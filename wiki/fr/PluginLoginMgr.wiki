@@ -1,0 +1,9 @@
+----
+=PluginLoginMgr=
+----
+
+<wiki:TOC />
+
+== Description ==
+
+A venir
