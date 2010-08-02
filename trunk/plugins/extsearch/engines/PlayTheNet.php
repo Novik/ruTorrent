@@ -53,12 +53,12 @@ class PlayTheNetEngine extends commonEngine
 			{
 				for($i=0; $i<$res; $i++)
 				{
-					$link = $url."?section=DOWNLOAD&id=".$matches["id"][$i];
+					$link = $url."/?section=DOWNLOAD&id=".$matches["id"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["desc"] = $url."?section=INFOS&id=".$matches["id"][$i];
+						$item["desc"] = $url."/?section=INFOS&id=".$matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
