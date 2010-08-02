@@ -4,7 +4,8 @@ class FtNAccount extends commonAccount
 {
 	protected function isOK($client)
 	{
-		return(strpos($client->results, '<input name="password" type="password"')===false);
+		return((strpos($client->results, '<input name="password" type="password"')===false) &&
+			(strpos($client->results, '<h2>Error</h2>')===false));
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body)
 	{                                                                   
