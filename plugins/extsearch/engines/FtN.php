@@ -2,7 +2,7 @@
 
 class FtNEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"feedthe.net|pass=XXX;uid=XXX" );
+	public $defaults = array( "public"=>false, "page_size"=>15, "auth"=>1 );
 	public $categories = array( 'all'=>'', "Apps" => "&c2=1&c3=1", "DOX" => "&c4=1", "Games" => "&c8=1&c10=1&c11=1&c25=1&c12=1", 
 		"Misc" => "&c13=1", "Movies" => "&c14=1&c24=1&c18=1", "Music" => "&c19=1", "Mvids" => "&c20=1", "TV" => "&c21=1&c22=1", "XXX" => "&c4=23" );
 
