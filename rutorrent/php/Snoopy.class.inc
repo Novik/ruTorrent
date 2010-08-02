@@ -165,6 +165,8 @@ class Snoopy
 			// legacy patch for servers that need a literal /~username
 			$path = str_replace("/%7E","/~",$path);
 		}
+		else
+		    $path="/";
 
 		if(!empty($query))
 		{
@@ -245,7 +247,6 @@ class Snoopy
 		if (!empty($URI_PARTS["pass"]))
 			$this->pass = $URI_PARTS["pass"];
 		$this->_httpmethod = $method;
-				
 		switch($URI_PARTS["scheme"])
 		{
 			case "http":
@@ -261,7 +262,7 @@ class Snoopy
 					}
 					else
 					{
-						$path = $URI_PARTS["path"].(isset($URI_PARTS["query"]) ? "?".$URI_PARTS["query"] : "");
+						$path = (isset($URI_PARTS["path"]) ? $URI_PARTS["path"] : "/").(isset($URI_PARTS["query"]) ? "?".$URI_PARTS["query"] : "");
 						// no proxy, send only the path
 						$this->_httprequest($path, $fp, $URI, $this->_httpmethod,$content_type,$body);
 					}
@@ -318,7 +319,7 @@ class Snoopy
 				}
 				else
 				{
-					$path = $URI_PARTS["path"].($URI_PARTS["query"] ? "?".$URI_PARTS["query"] : "");
+    					$path = (isset($URI_PARTS["path"]) ? $URI_PARTS["path"] : "/").(isset($URI_PARTS["query"]) ? "?".$URI_PARTS["query"] : "");
 					// no proxy, send only the path
 					$this->_httpsrequest($path, $URI, $this->_httpmethod,$content_type,$body);
 				}
@@ -580,7 +581,6 @@ class Snoopy
 			socket_set_timeout($fp, $this->read_timeout);
 		$this->timed_out = false;
 		fwrite($fp,$headers.$body,strlen($headers.$body));
-		
 		$this->_redirectaddr = false;
 		unset($this->headers);
 		
