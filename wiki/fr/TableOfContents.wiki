@@ -48,7 +48,7 @@
         * [PluginTrafic Trafic]
         * [PluginUnpack Unpack]
       * [HowToCreatePlugin Comment créer un plugin]
-  * [Utilisation]
+  * [Usage Utilisation]
   * [ErrorMessages Messages d'erreur]
   * [FuturePlans A venir]
   * [SpecialThanks Remerciement]
