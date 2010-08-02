@@ -2,7 +2,7 @@
 
 class PlayTheNetEngine extends commonEngine
 {
-       	public $defaults = array( "public"=>false, "page_size"=>20, "cookies"=>"www.play-the.net|WebsiteID=XXX;" );
+       	public $defaults = array( "public"=>false, "page_size"=>20, "auth"=>1 );
 
 	public $categories = array( 
 		'all' => array( 'sd'=>'', 'hd'=>'' ),

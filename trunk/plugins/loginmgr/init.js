@@ -1,4 +1,5 @@
 plugin.loadLang();
+plugin.loadMainCSS();
 
 if(plugin.enabled && plugin.canChangeOptions())
 {
