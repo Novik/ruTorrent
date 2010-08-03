@@ -92,15 +92,23 @@ class commonEngine
 			{
 				case "tib":
 				case "tb":
+				case "Ú·":				
+				case "“¡":
 					$val*=1024;
 				case "gib":
 				case "gb":
+				case "√¡":
+				case "„·":
 					$val*=1024;
 				case "mib":
 				case "mb":
+				case "Ã¡":
+				case "Ï·":
 					$val*=1024;	
 				case "kib":
 				case "kb":
+				case "Í·":
+				case " ¡":
 					$val*=1024;	
 			}
 			return($val);
