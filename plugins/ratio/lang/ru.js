@@ -13,5 +13,6 @@
  theUILang.ratioStop 		= "Стоп";
  theUILang.ratioStopAndRemove 	= "Стоп & очистить";
  theUILang.ratioErase 		= "Удалить";
+ theUILang.ratioEraseData	= "Удалить данные";
 
 thePlugins.get("ratio").langLoaded();

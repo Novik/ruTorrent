@@ -343,7 +343,7 @@ var theConverter =
 		var h = iv(val / 3600);
 		val = val % 3600;
 		var m = iv(val / 60);
-		val = val % 60;
+		val = iv(val % 60);
 		var v = 0;
 		var ret = "";
 		if(w > 0)

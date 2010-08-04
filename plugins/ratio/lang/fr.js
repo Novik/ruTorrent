@@ -22,5 +22,6 @@
  theUILang.ratioStop 		= "Arr\u00eater";
  theUILang.ratioStopAndRemove 	= "Arr\u00eat/retrait du gpe";
  theUILang.ratioErase 		= "Effacer";
+ theUILang.ratioEraseData 	= "Remove data";
 
 thePlugins.get("ratio").langLoaded();
