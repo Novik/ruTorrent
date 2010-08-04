@@ -66,6 +66,7 @@ class PirateBayEngine extends commonEngine
 							$tm = strptime($tms,"%m-%d %H:%M");
 							if($tm===false)
 							{
+								$tms = str_replace( "Y-day", "-1 day", $tms );
 								$tm = strtotime($tms);
 								if($tm!==false)
 									$tm = localtime($tm,true);
@@ -74,7 +75,17 @@ class PirateBayEngine extends commonEngine
 								$tm["tm_year"] = date("Y")-1900;
 						}
 						else
-							$tm = strptime($tms,"%m-%d %Y");
+						{
+							if(preg_match( '/^(\d+) mins? ago$/i', $tms, $match ))
+							{
+								$tms = "-".$match[1]." minute";
+								$tm = strtotime($tms);
+								if($tm!==false)
+									$tm = localtime($tm,true);
+							}
+							else
+								$tm = strptime($tms,"%m-%d %Y");
+						}
 
 						if($tm!==false)
 							$item["time"] = mktime(	$tm["tm_hour"], $tm["tm_min"], $tm["tm_sec"], $tm["tm_mon"]+1, $tm["tm_mday"], $tm["tm_year"]+1900 );

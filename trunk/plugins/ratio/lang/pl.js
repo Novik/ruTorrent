@@ -13,5 +13,6 @@
  theUILang.ratioStop 		= "Zatrzymaj";
  theUILang.ratioStopAndRemove 	= "Zatrzymaj i wyczyść grupę";
  theUILang.ratioErase 		= "Usuń";
+ theUILang.ratioEraseData 	= "Remove data";
 
 thePlugins.get("ratio").langLoaded();

@@ -232,7 +232,7 @@ plugin.onLangLoaded = function()
 					"<td><input type='text' id='rat_min"+i+"' class='Textbox num'/></td>"+
 					"<td><input type='text' id='rat_max"+i+"' class='Textbox num'/></td>"+
 					"<td><input type='text' id='rat_upload"+i+"' class='Textbox num' maxlength='6'/></td>"+
-					"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option></select></td>"+
+					"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option><option value='3'>"+theUILang.ratioEraseData+"</option></select></td>"+
 				"</tr>";
 		s+="</table></div></fieldset>";
 		this.attachPageToOptions($("<div>").attr("id","st_ratio").html(s).get(0),theUILang.ratios);
