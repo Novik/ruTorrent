@@ -253,6 +253,8 @@ class Snoopy
 				$this->host = $URI_PARTS["host"];
 				if(!empty($URI_PARTS["port"]))
 					$this->port = $URI_PARTS["port"];
+				else
+					$this->port = 80;
 				if($this->_connect($fp))
 				{
 					if($this->_isproxy)
@@ -312,6 +314,8 @@ class Snoopy
 				$this->host = $URI_PARTS["host"];
 				if(!empty($URI_PARTS["port"]))
 					$this->port = $URI_PARTS["port"];
+				else
+					$this->port = 443;
 				if($this->_isproxy)
 				{
 					// using proxy, send entire URI
@@ -339,7 +343,6 @@ class Snoopy
 						}
 					}
 				}
-
 				if($this->_framedepth < $this->maxframes && count($this->_frameurls) > 0)
 				{
 					$frameurls = $this->_frameurls;
@@ -794,7 +797,7 @@ class Snoopy
 				if(preg_match("/^(Location: |URI: )/i",$result_headers[$currentHeader]))
 				{
 					// get URL portion of the redirect
-					preg_match("/^(Location: |URI:)(.*)/",chop($result_headers[$currentHeader]),$matches);
+					preg_match("/^(Location: |URI:)(.*)/i",chop($result_headers[$currentHeader]),$matches);
 					// look for :// in the Location header to see if hostname is included
 					if(!preg_match("|\:\/\/|",$matches[2]))
 					{
