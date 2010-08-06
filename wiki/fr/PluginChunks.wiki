@@ -6,10 +6,10 @@
 
 == Description ==
 
-Ce plugin ajoute un nouvel onglet appelé "chunks". 
+Ce plugin ajoute un nouvel onglet appelÃ© "chunks". 
 
-Ce dernier vous permet observer le téléchargement de chaques "pièces" du torrent.
+Ce dernier vous permet observer le tÃ©lÃ©chargement de chaques "piÃ¨ces" du torrent.
 
 http://img709.imageshack.us/img709/5394/screenshot20100613at811.png
 
-_Requière une version de rtorrent supérieur ou égale à la 0.8.5_
+_RequiÃ¨re une version de rtorrent supÃ©rieur ou Ã©gale Ã  la 0.8.5_

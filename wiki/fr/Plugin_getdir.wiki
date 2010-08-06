@@ -4,9 +4,9 @@
 
 == Description ==
 
-Ce plugin permet aux autres plugins de bénéficier d'une navigation agréable dans les répertoires.
+Ce plugin permet aux autres plugins de bÃ©nÃ©ficier d'une navigation agrÃ©able dans les rÃ©pertoires.
 
-Attention : Seuls les répertoires où rtorrent peut écrire et que php peut lire ne seront montrés.
+Attention : Seuls les rÃ©pertoires oÃ¹ rtorrent peut Ã©crire et que php peut lire ne seront montrÃ©s.
 
 [http://www.play-files.net/images/1279103094-2010-07-14-12h1952.png]
 

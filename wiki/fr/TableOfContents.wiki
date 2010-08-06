@@ -12,11 +12,11 @@
         * [WebSERVER#Cherokee_Specific_SCGI_Config Cherokee]
         * [WebSERVER#Nginx_SCGI_notes Nginx]
     * [Config Configuration]
-    * [Downloading Téléchargement]
-      * [GetFromSVN Depuis le dépôt SVN]
+    * [Downloading TÃ©lÃ©chargement]
+      * [GetFromSVN Depuis le dÃ©pÃ´t SVN]
       * [DownloadPage Depuis les archives]
     * [Plugins Les plugins]
-      * Détails des plugins
+      * DÃ©tails des plugins
         * [Plugin_getdir _getdir]
         * [PluginAutotools Auto Tools]
         * [PluginChunks Chunks]
@@ -47,7 +47,7 @@
         * [PluginTracklabels Track Labels]
         * [PluginTrafic Trafic]
         * [PluginUnpack Unpack]
-      * [HowToCreatePlugin Comment créer un plugin]
+      * [HowToCreatePlugin Comment crÃ©er un plugin]
   * [Usage Utilisation]
   * [ErrorMessages Messages d'erreur]
   * [FuturePlans A venir]

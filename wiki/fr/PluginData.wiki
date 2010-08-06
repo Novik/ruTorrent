@@ -6,13 +6,13 @@
 
 == Description ==
 
-Ce plugin permet de télécharger via http les données d'un torrent.
+Ce plugin permet de tÃ©lÃ©charger via http les donnÃ©es d'un torrent.
 
-== Comment ça marche? ==
+== Comment Ã§a marche? ==
 
-Il suffit de se rendre dans l'onglet "Fichiers", puis bouton droit sur le fichier à télécharger > "Télécharger le fichier".
+Il suffit de se rendre dans l'onglet "Fichiers", puis bouton droit sur le fichier Ã  tÃ©lÃ©charger > "TÃ©lÃ©charger le fichier".
 
 http://www.play-files.net/images/1279452664-data.png
 
 Remarque :
-Sur un système 32bits, vous ne pourrez pas télécharger de fichiers supérieurs à 2 Go. Cela vient d'une limitation de PHP.
+Sur un systÃ¨me 32bits, vous ne pourrez pas tÃ©lÃ©charger de fichiers supÃ©rieurs Ã  2 Go. Cela vient d'une limitation de PHP.

@@ -6,20 +6,20 @@
 
 == Description ==
 
-Ce plugin ajoute un graphique représentant la charge du processeur dans la barre d'état.
+Ce plugin ajoute un graphique reprÃ©sentant la charge du processeur dans la barre d'Ã©tat.
 
 http://img217.imageshack.us/img217/1285/screenshot20100613at757.png
 
-== Comment ça marche? ==
+== Comment Ã§a marche? ==
 
-Ce plugin est exclusivement pour l'esthétique. Il ne doit pas être pris comme précis à 100%
+Ce plugin est exclusivement pour l'esthÃ©tique. Il ne doit pas Ãªtre pris comme prÃ©cis Ã  100%
 
-_La formule utilisée par cpuload est actuellement :_
+_La formule utilisÃ©e par cpuload est actuellement :_
 
 min(load_average[0]*100/processors_count,100)
 
 Avec :
 
-load_average[0] - le nombre de processus en cours d'exécution pendant la dernière minute.
+load_average[0] - le nombre de processus en cours d'exÃ©cution pendant la derniÃ¨re minute.
 
-processors_count=1 pour les systèmes non linuxiens.
+processors_count=1 pour les systÃ¨mes non linuxiens.

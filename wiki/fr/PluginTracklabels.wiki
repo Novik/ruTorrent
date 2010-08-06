@@ -6,13 +6,13 @@
 
 == Description ==
 
-Ce plugin permet d'avoir une section étiquettes correspondante aux trackers des torrents.
+Ce plugin permet d'avoir une section Ã©tiquettes correspondante aux trackers des torrents.
 
 [http://www.play-files.net/images/1279440543-tracker.png]
 
-== Comment ça marche?  ==
+== Comment Ã§a marche?  ==
 
- Il n'y a rien à faire, les étiquettes sont créées automatiquement en fonction des torrents téléchargés.
+ Il n'y a rien Ã  faire, les Ã©tiquettes sont crÃ©Ã©es automatiquement en fonction des torrents tÃ©lÃ©chargÃ©s.
 
 *Remarque :*
-Si un torrent à deux trackers venant du même domaine (Ex : http://clients-tracker.depthstrike.com et http://core-tracker.depthstrike.com), ce dernier sera compté deux fois sous le nom "depthstrike.com".
+Si un torrent Ã  deux trackers venant du mÃªme domaine (Ex : http://clients-tracker.depthstrike.com et http://core-tracker.depthstrike.com), ce dernier sera comptÃ© deux fois sous le nom "depthstrike.com".
