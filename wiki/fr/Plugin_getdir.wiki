@@ -4,7 +4,10 @@
 
 == Description ==
 
-The service plug-in *`_`getdir* gives to other plug-ins the possibility of comfortable navigation on a host file system.
+Ce plugin permet aux autres plugins de bénéficier d'une navigation agréable dans les répertoires.
 
-Shows only directories to which *rtorrent* can write and which *php* can show.
+Attention : Seuls les répertoires où rtorrent peut écrire et que php peut lire ne seront montrés.
 
+[http://www.play-files.net/images/1279103094-2010-07-14-12h1952.png]
+
+[http://www.play-files.net/images/1279103204-2010-07-14-12h2626.png]

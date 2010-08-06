@@ -4,10 +4,10 @@
 
 == Description ==
 
-A darker theme for ruTorrent.
+Ce plugin permet changer l'apparence de ruTorrent (thème foncé).
 
-Screenshot: _(click image for larger view)_
+Apercu : _(cliquer pour agrandir)_
 
 [http://rutorrent.googlecode.com/svn/wiki/images/PluginDarkpal/darkpal2.png http://rutorrent.googlecode.com/svn/wiki/images/PluginDarkpal/darkpal2shrink.png]
 
-(special thanks to [http://forum.utorrent.com/profile.php?id=37418 Bumpy] for icons)
+Remplacé par le plugin "Theme".

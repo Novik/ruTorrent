@@ -4,6 +4,6 @@
 
 == Description ==
 
-This plugin adds an easy to read disk meter to the bottom menu bar.
+Ce plugin permet d'avoir une information sur le niveau d'utilisation du disque dur.
 
 [http://rutorrent.googlecode.com/svn/wiki/images/PluginDiskspace/diskspace.png]

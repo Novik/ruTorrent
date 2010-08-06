@@ -6,9 +6,13 @@
 
 == Description ==
 
-This plugin adds the "Get Data" item to the right click menu.  This allows you to download the file in question via http to your local machine.  
+Ce plugin permet de télécharger via http les données d'un torrent.
 
-_On 32 bit systems, you can not download files larger than 2 GB, this is due to a php limitation_
+== Comment ça marche? ==
 
+Il suffit de se rendre dans l'onglet "Fichiers", puis bouton droit sur le fichier à télécharger > "Télécharger le fichier".
 
-http://img291.imageshack.us/img291/6010/screenshot20100613at805.png
+http://www.play-files.net/images/1279452664-data.png
+
+Remarque :
+Sur un système 32bits, vous ne pourrez pas télécharger de fichiers supérieurs à 2 Go. Cela vient d'une limitation de PHP.

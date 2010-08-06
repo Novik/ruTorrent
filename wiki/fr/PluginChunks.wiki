@@ -6,9 +6,10 @@
 
 == Description ==
 
-This plugin adds a new tab to the tab bar called "chunks"  The added tab allows you to monitor the download status of each individual torrent "piece" 
+Ce plugin ajoute un nouvel onglet appelé "chunks". 
+
+Ce dernier vous permet observer le téléchargement de chaques "pièces" du torrent.
 
 http://img709.imageshack.us/img709/5394/screenshot20100613at811.png
 
-
-_Requires rtorrent 0.8.5 or newer_
+_Requière une version de rtorrent supérieur ou égale à la 0.8.5_

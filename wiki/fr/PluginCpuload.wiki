@@ -6,20 +6,20 @@
 
 == Description ==
 
-This plugin adds a CPU Load usage bar to the bottom toolbar.
+Ce plugin ajoute un graphique représentant la charge du processeur dans la barre d'état.
 
 http://img217.imageshack.us/img217/1285/screenshot20100613at757.png
 
-== How it Works ==
+== Comment ça marche? ==
 
-The plugin is purely for cosmetic use.  It's pretty generalized in it's current state, and should not be taken as 100% accurate.  
+Ce plugin est exclusivement pour l'esthétique. Il ne doit pas être pris comme précis à 100%
 
+_La formule utilisée par cpuload est actuellement :_
 
-The formula for cpuload, currently is
+min(load_average[0]*100/processors_count,100)
 
-*`min(load_average[0]*100/processors_count,100)`*
+Avec :
 
-where `load_average[0]` - count of processes in run queue in the last
-minute.
+load_average[0] - le nombre de processus en cours d'exécution pendant la dernière minute.
 
-processors_count is always 1 for non-Linux systems.
+processors_count=1 pour les systèmes non linuxiens.
