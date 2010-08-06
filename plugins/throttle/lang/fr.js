@@ -10,10 +10,10 @@
 
  
  theUILang.throttleUnsupported	= "Plugin 'Throttle': cette version rTorrent ne supporte pas throttle. Le plugin ne fonctionnera pas.";
- theUILang.throttles		= "Flux";
- theUILang.throttle		= "Flux";
- theUILang.mnuThrottle		= "Affecter un flux";
- theUILang.mnuUnlimited		= "Pas de flux";
+ theUILang.throttles		= "Vitesses";
+ theUILang.throttle		= "Vitesse";
+ theUILang.mnuThrottle		= "Affecter une vitesse";
+ theUILang.mnuUnlimited		= "Pas de restriction";
  theUILang.channelName 		= "Nom";
 
 thePlugins.get("throttle").langLoaded();

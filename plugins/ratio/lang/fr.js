@@ -10,8 +10,8 @@
 
  
  theUILang.ratioUnsupported     = "Plugin 'Ratio': cette version de rTorrent ne support pas 'ratio'. Le plugin ne fonctionnera pas.";
- theUILang.ratios			= "Groupes de ratio";
- theUILang.ratio			= "Groupe de ratio";
+ theUILang.ratios			= "Ratios";
+ theUILang.ratio			= "Ratio";
  theUILang.mnuRatio		= "Affecter un ratio";
  theUILang.mnuRatioUnlimited	= "Pas de ratio";
  theUILang.ratioName 		= "Nom";
@@ -19,9 +19,9 @@
  theUILang.maxRatio 		= "Max";
  theUILang.ratioUpload 		= "Envoi";
  theUILang.ratioAction 		= "Action";
- theUILang.ratioStop 		= "Arr\u00eater";
+ theUILang.ratioStop 		= "Arr\u00eat";
  theUILang.ratioStopAndRemove 	= "Arr\u00eat/retrait du gpe";
- theUILang.ratioErase 		= "Effacer";
- theUILang.ratioEraseData 	= "Remove data";
+ theUILang.ratioErase 		= "Efface";
+ theUILang.ratioEraseData 	= "Supprime les donn\u00e9es";
 
 thePlugins.get("ratio").langLoaded();
