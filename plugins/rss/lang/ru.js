@@ -58,5 +58,16 @@
  theUILang.rssMarkAs = "Пометить как";
  theUILang.rssAsLoaded = "загруженный";
  theUILang.rssAsUnloaded = "не загруженный";
+ theUILang.addRSSGroup		= "Добавить группу";
+ theUILang.editRSSGroup		= "Правка группы";
+ theUILang.addRSSGroupContent	= "Содержимое";
+ theUILang.rssMenuGroupDisable  = "Отключить группу";
+ theUILang.rssMenuGroupRefresh	= "Обновить группу";
+ theUILang.rssMenuGroupEnable	= "Включить группу";
+ theUILang.rssMenuGroupEdit	= "Правка группы";
+ theUILang.rssMenuGroupDelete	= "Удалить группу";
+ theUILang.rssMenuGroupContentsDelete = "Удалить содержимое";
+ theUILang.rssDeleteGroupPrompt	= "Вы действительно хотите удалить выбранную группу?";
+ theUILang.rssDeleteGroupContentsPrompt	= "Вы действительно хотите удалить выбранную группу со всем ее содержимым?";
 
 thePlugins.get("rss").langLoaded();

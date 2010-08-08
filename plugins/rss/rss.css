@@ -53,3 +53,10 @@ div#FLT_buttons {clear: both}
 #FLTBtn {width: 30px}
 
 #rsslayout { border: 0; display: none; margin: 5px; }
+
+#dlgAddRSSGroup {width: 320px; height: 300px}
+#dlgAddRSSGroup div.dlg-header {background-image: url(./images/rss.gif)}
+div#dlgAddRSSGroup div.content {width: 302px; margin: 5px; padding: 5px; line-height: 16px}
+#rssGroupSet { overflow: auto; width: 275px; height: 160px }
+
+div#CatList ul li.RSSGroup {background-image: url(../../images/tstatus.png); background-position: 4px -239px}
