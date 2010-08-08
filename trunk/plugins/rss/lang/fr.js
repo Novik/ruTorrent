@@ -67,5 +67,16 @@
  theUILang.rssMarkAs = "Marquer comme";
  theUILang.rssAsLoaded = "charg\u00e9";
  theUILang.rssAsUnloaded = "d\u00e9charg\u00e9";
+ theUILang.addRSSGroup		= "Add RSS group";
+ theUILang.editRSSGroup		= "Edit RSS Group";
+ theUILang.addRSSGroupContent	= "Content";
+ theUILang.rssMenuGroupDisable  = "Disable group";
+ theUILang.rssMenuGroupRefresh	= "Update group";
+ theUILang.rssMenuGroupEnable	= "Enable group";
+ theUILang.rssMenuGroupEdit	= "Edit group";
+ theUILang.rssMenuGroupDelete	= "Delete group";
+ theUILang.rssMenuGroupContentsDelete = "Delete contents";
+ theUILang.rssDeleteGroupPrompt	= "Do you really want to delete selected group?";
+ theUILang.rssDeleteGroupContentsPrompt	= "Do you really want to delete selected group with all contents?";
 
 thePlugins.get("rss").langLoaded();

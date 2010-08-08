@@ -544,11 +544,6 @@ class rRSSFilter
 	}
 }
 
-function fltcmp($a, $b)
-{
-	return(strcmp($a->name, $b->name));
-}
-
 class rRSSFilterList
 {
 	public $hash = "filters";
@@ -560,7 +555,7 @@ class rRSSFilterList
 	}
 	public function sort()
 	{
-		usort($this->lst, "fltcmp");
+		usort($this->lst, create_function( '$a,$b', 'return(strcmp($a->name, $b->name));'));
 	}
 	public function getContents()
 	{
@@ -574,6 +569,84 @@ class rRSSFilterList
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);
 		return( $ret."]" );
+	}
+}
+
+class rRSSGroup
+{
+	public $name;
+	public $hash;
+	public $lst = array();
+
+	public function	rRSSGroup( $name, $hash = null )
+	{
+		$this->name = $name;
+		if(is_null($hash))
+			$this->hash = 'grp_'.uniqid(time());
+		else
+			$this->hash = $hash;
+	}
+	public function getContents()
+	{
+		return($this->hash." : { name: ".quoteAndDeslashEachItem($this->name).", lst: [".implode(",", array_map('quoteAndDeslashEachItem', $this->lst))."]}");
+	}
+	public function check( $rssList )	
+	{
+		$changed = false;
+		foreach( $this->lst as $ndx=>$item )
+			if(!array_key_exists( $item, $rssList->lst ))
+			{
+				unset($this->lst[$ndx]);
+				$changed = true;
+			}
+		if($changed)
+			$this->lst = array_merge($this->lst);
+		return($changed);
+	}
+}
+
+class rRSSGroupList
+{
+	public $hash = "groups";
+        public $lst = array();
+	
+	public function add( $grp )
+	{
+		$this->lst[$grp->hash] = $grp;
+	}
+	public function sort()
+	{
+		uasort($this->lst, create_function( '$a,$b', 'return(strcmp($a->name, $b->name));'));
+	}
+	public function getContents()
+	{
+		$ret = "{";
+		foreach( $this->lst as $item )
+		{
+			$ret.=$item->getContents();
+			$ret.=",";
+		}
+		$len = strlen($ret);
+		if($ret[$len-1]==',')
+			$ret = substr($ret,0,$len-1);
+		return( $ret."}" );
+	}
+	public function check( $rssList )
+	{
+		$changed = false;
+		foreach( $this->lst as $item )
+			if($item->check($rssList))
+				$changed = true;
+		return($changed);
+	}
+	public function get( $hash )
+	{
+		return(array_key_exists($hash,$this->lst) ? $this->lst[$hash] : null);
+	}
+	public function remove( $hash )
+	{
+		if(array_key_exists($hash,$this->lst))
+			unset($this->lst[$hash]);
 	}
 }
 
@@ -679,6 +752,7 @@ class rRSSManager
 	public $cache = null;
 	public $history = null;
 	public $rssList = null;
+	public $groups = null;
 
 	public function rRSSManager()
 	{
@@ -688,6 +762,8 @@ class rRSSManager
 		$this->rssList->resetErrors();
 		$this->history = new rRSSHistory();
 		$this->cache->get($this->history);
+		$this->groups = new rRSSGroupList();
+		$this->cache->get($this->groups);
 	}
 	public function getModified($obj = null)
 	{
@@ -803,28 +879,39 @@ class rRSSManager
 		$hrefs = array_map(  'quoteAndDeslashEachItem', $hrefs);
 		return($this->rssList->formatErrors().", rss: '".$hash."',list: [".implode(",",$hrefs)."]}");
 	}
+	public function updateRSSGroup($hash)
+	{
+		$grp = $this->groups->get($hash);
+		if($grp)
+			$this->updateRSS($grp->lst);
+	}
 	public function updateRSS($hash)
 	{
 		$filters = new rRSSFilterList();
                 $this->cache->get($filters);
 		$rss = new rRSS();
-		$rss->hash = $hash;
-		if($this->rssList->isExist($rss))
+		if(!is_array($hash))
+			$hash = array( $hash );
+		foreach( $hash as $item )
 		{
-			$info = $this->rssList->lst[$hash];
-                        if($this->cache->get($rss) && $info['enabled'])
+			$rss->hash = $item;
+			if($this->rssList->isExist($rss))
 			{
-				if($rss->fetch() && $this->cache->set($rss))
+				$info = $this->rssList->lst[$hash];
+	                        if($this->cache->get($rss) && $info['enabled'])
 				{
-					$this->checkFilters($rss,$info,$filters);
-					$this->saveHistory();
+					if($rss->fetch() && $this->cache->set($rss))
+					{
+						$this->checkFilters($rss,$info,$filters);
+						$this->saveHistory();
+					}
+					else
+						$this->rssList->addError( "theUILang.cantFetchRSS", $rss->srcURL );
 				}
-				else
-					$this->rssList->addError( "theUILang.cantFetchRSS", $rss->srcURL );
 			}
+			else
+				$this->rssList->addError("theUILang.rssDontExist");
 		}
-		else
-			$this->rssList->addError("theUILang.rssDontExist");
 	}
 	public function setStartTime( $startAt )
 	{
@@ -894,7 +981,10 @@ class rRSSManager
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);
-		return($ret."]}");
+		if($this->groups->check($this->rssList))
+			$this->saveGroups();
+		$ret.="], groups: ".$this->groups->getContents();
+		return($ret."}");
 	}
 	public function getDescription( $hash, $href )
 	{
@@ -906,6 +996,18 @@ class rRSSManager
 			array_key_exists('description',$rss->items[$href]))
 			return($rss->items[$href]['description']);
 		return('');
+	}
+	public function removeGroup( $hash )
+	{
+		$this->groups->remove($hash);
+		$this->saveGroups();
+	}
+	public function removeGroupContents( $hash )
+	{
+		$grp = $this->groups->get($hash);
+		if($grp)
+			$this->remove($grp->lst);
+		$this->removeGroup($hash);
 	}
 	public function remove( $hash, $needFlush = true )
 	{
@@ -929,10 +1031,31 @@ class rRSSManager
 		}
 		return(true);
 	}
+	public function setStatusGroup( $hash, $enable )
+	{
+		$grp = $this->groups->get($hash);
+		if($grp)
+		{
+			foreach( $grp->lst as $item )
+				$this->rssList->lst[$item]['enabled'] = $enable;
+			$this->saveState(false);
+		}
+	}
 	public function toggleStatus( $hash )
 	{
 		$this->rssList->toggleStatus( $hash );
 		$this->saveState(false);
+	}
+	public function changeGroup( $hash, $label, $rssList )
+	{
+		$grp = $this->groups->get($hash);
+		if($grp)
+		{
+			$grp->name = $label;
+			$grp->lst = $rssList;
+			$grp->check($this->rssList);
+			$this->saveGroups();	
+		}
 	}
 	public function change( $hash, $rssURL, $rssLabel, $rssAuto = 1 )
 	{
@@ -957,6 +1080,14 @@ class rRSSManager
 				$this->add($rssURL, $rssLabel, $rssAuto, $enabled);
 			}
 		}
+	}
+	public function addGroup( $label, $rssList )
+	{
+		$grp = new rRSSGroup( $label );
+		$grp->lst = $rssList;
+		$grp->check($this->rssList);
+		$this->groups->add($grp);
+		$this->saveGroups();			
 	}
 	public function add( $rssURL, $rssLabel = null, $rssAuto = 0, $enabled = 1 )
 	{
@@ -1049,6 +1180,11 @@ class rRSSManager
 	public function clearErrors()
 	{
 		$this->rssList->clearErrors();
+	}
+	public function saveGroups()
+	{
+		$this->groups->sort();
+		$this->cache->set($this->groups);
 	}
 	public function saveState($mergeErrorsOnly)
 	{

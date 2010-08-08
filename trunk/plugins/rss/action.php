@@ -27,10 +27,34 @@ switch($cmd)
 			$mngr->add($_REQUEST['url'],$lbl);
 		break;
 	}
+	case "addgroup":
+	{
+		$lbl = "RSS Group";
+		if(isset($_REQUEST['label']) && ($_REQUEST['label']!=""))
+			$lbl = $_REQUEST['label'];
+		if(!isset($HTTP_RAW_POST_DATA))
+			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+		$rssList = array();
+		if(isset($HTTP_RAW_POST_DATA))
+		{
+			$vars = explode('&', $HTTP_RAW_POST_DATA);
+			foreach($vars as $var)
+			{
+				$parts = explode("=",$var);
+				if($parts[0]=="rss")
+					$rssList[] = $parts[1];
+			}
+		}
+		if(isset($_REQUEST['hash']) && ($_REQUEST['hash']!=""))
+			$mngr->changeGroup($_REQUEST['hash'],$lbl,$rssList);
+		else
+			$mngr->addGroup($lbl,$rssList);
+		break;
+	}
 	case "edit":
 	{
-		$lbl = null;
-		if(isset($_REQUEST['label']))
+		$lbl = "RSS Group";
+		if(isset($_REQUEST['label']) && ($_REQUEST['label']!=""))
 			$lbl = $_REQUEST['label'];
 		if(isset($_REQUEST['rss']) && isset($_REQUEST['url']))
 			$mngr->change($_REQUEST['rss'],$_REQUEST['url'],$lbl);
@@ -44,27 +68,45 @@ switch($cmd)
 	case "refresh":
 	{
 		if(isset($_REQUEST['rss']))
-		{
 			$mngr->updateRSS($_REQUEST['rss']);
-		}
 		else
 			$mngr->update(true);
+		break;
+	}
+	case "refreshgroup":
+	{
+		if(isset($_REQUEST['rss']))
+			$mngr->updateRSSGroup($_REQUEST['rss']);
 		break;
 	}
 	case "toggle":
 	{
 		if(isset($_REQUEST['rss']))
-		{
 			$mngr->toggleStatus($_REQUEST['rss']);
-		}
+		break;
+	}
+	case "setgroupstate":
+	{
+		if(isset($_REQUEST['rss']))
+			$mngr->setStatusGroup($_REQUEST['rss'],$_REQUEST['state']);
 		break;
 	}
 	case "remove":
 	{
 		if(isset($_REQUEST['rss']))
-		{
 			$mngr->remove($_REQUEST['rss']);
-		}
+		break;
+	}
+	case "removegroup":
+	{
+		if(isset($_REQUEST['rss']))
+			$mngr->removeGroup($_REQUEST['rss']);
+		break;
+	}
+	case "removegroupcontents":
+	{
+		if(isset($_REQUEST['rss']))
+			$mngr->removeGroupContents($_REQUEST['rss']);
 		break;
 	}
 	case "getfilters":
