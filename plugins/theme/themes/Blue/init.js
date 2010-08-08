@@ -42,6 +42,13 @@ plugin.allDone = function()
 				plugin.addNewFilter.call(theWebUI);
 				plugin.correctCheckboxes();
 			}
+
+			plugin.fillRSSGroups = theWebUI.fillRSSGroups;
+			theWebUI.fillRSSGroups = function()
+			{
+				plugin.fillRSSGroups.call(theWebUI);
+				plugin.correctCheckboxes();
+			}
 		}
 
 	});
