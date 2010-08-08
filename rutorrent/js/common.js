@@ -279,6 +279,19 @@ function cloneObject( srcObj )
 	return newObject;
 }
 
+function propsCount(obj)
+{
+	var count = "__count__";
+	var hasOwnProp = Object.prototype.hasOwnProperty;
+	if(typeof obj[count] === "number" && !hasOwnProp.call(obj, count))
+		return obj[count];
+	count = 0;
+	for (var prop in obj)
+		if(hasOwnProp.call(obj, prop))
+			++count;
+	return(count);
+}
+
 var theURLs =
 {
 	XMLRPCMountPoint 	: "/RPC2",
