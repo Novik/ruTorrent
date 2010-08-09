@@ -67,16 +67,16 @@
  theUILang.rssMarkAs = "Marquer comme";
  theUILang.rssAsLoaded = "charg\u00e9";
  theUILang.rssAsUnloaded = "d\u00e9charg\u00e9";
- theUILang.addRSSGroup		= "Add RSS group";
- theUILang.editRSSGroup		= "Edit RSS Group";
- theUILang.addRSSGroupContent	= "Content";
- theUILang.rssMenuGroupDisable  = "Disable group";
- theUILang.rssMenuGroupRefresh	= "Update group";
- theUILang.rssMenuGroupEnable	= "Enable group";
- theUILang.rssMenuGroupEdit	= "Edit group";
- theUILang.rssMenuGroupDelete	= "Delete group";
- theUILang.rssMenuGroupContentsDelete = "Delete contents";
- theUILang.rssDeleteGroupPrompt	= "Do you really want to delete selected group?";
- theUILang.rssDeleteGroupContentsPrompt	= "Do you really want to delete selected group with all contents?";
+ theUILang.addRSSGroup          = "Ajouter un groupe";
+ theUILang.editRSSGroup         = "Modifier un groupe";
+ theUILang.addRSSGroupContent   = "Contenu";
+ theUILang.rssMenuGroupDisable  = "D\u00e9sactiver le groupe";
+ theUILang.rssMenuGroupRefresh  = "Mettre à jour le groupe";
+ theUILang.rssMenuGroupEnable   = "Activer le groupe";
+ theUILang.rssMenuGroupEdit     = "Modifier le groupe";
+ theUILang.rssMenuGroupDelete   = "Supprimer le groupe";
+ theUILang.rssMenuGroupContentsDelete = "Supprimer le contenu";
+ theUILang.rssDeleteGroupPrompt = "\u00cates-vous s\u00fbr de vouloir supprimer ce groupe?";
+ theUILang.rssDeleteGroupContentsPrompt = "\u00cates-vous s\u00fbr de vouloir supprimer ce groupe ainsi que tout son contenu?";
 
 thePlugins.get("rss").langLoaded();
