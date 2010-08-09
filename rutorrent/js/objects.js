@@ -100,7 +100,7 @@ var theDialogManager =
 	        var obj = $('#'+id);
 	        if(!isModal)
 		        isModal = false;
-		obj.css( { position: "absolute", display: "none" } ).
+		obj.css( { position: "absolute", display: "none", outline: "0px solid transparent" } ).
 	        	data("modal",isModal).find(".dlg-close").attr("href","javascript:theDialogManager.hide('"+id+"');");
 	        var self = this;
 		var checkForButtons = function me(val)
@@ -123,7 +123,12 @@ var theDialogManager =
 		{
 			if( (!browser.isOpera || !inScrollBarArea(e.target,e.clientX,e.clientY)) && !theDialogManager.modalState )
 				self.bringToTop(this.id);
+		}).attr("tabindex","0").keypress( function (e)
+		{
+			if((e.keyCode==13) && !(e.target && e.target.tagName && (/^textarea$/i).test(e.target.tagName)))
+				$('#'+id+' .OK').click();
 		});
+
 //		this.center(id);
 		this.items[id] = { beforeShow: null, afterShow: null, beforeHide: null, afterHide : null };
 		obj.data("dnd",new DnD(id));
@@ -207,7 +212,7 @@ var theDialogManager =
 			}
 			this.visible.push(id);
 		}
-		$('#'+id).css("z-index",++theDialogManager.maxZ);
+		$('#'+id).css("z-index",++theDialogManager.maxZ).focus();
 	},
 	hideTopmost: function()
 	{

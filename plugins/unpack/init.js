@@ -221,7 +221,7 @@ plugin.onLangLoaded = function()
 				"</fieldset>" +
 			"</div>"+
 			"<div class='aright buttons-list'>" +
-				"<input type='button' value='" + theUILang.ok + "' class='Button' " +
+				"<input type='button' value='" + theUILang.ok + "' class='OK Button' " +
 					" onclick='theWebUI.unpack(); return(false);' />" +
 				"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
 			"</div>", true);

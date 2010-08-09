@@ -240,7 +240,7 @@ plugin.onLangLoaded = function()
 				"</fieldset>"+
 			"</div>"+
 			"<div class='aright buttons-list' id='create_btns'>"+
-				"<input type='button' id='torrentSave' value='"+theUILang.torrentSave+"' class='Button' onclick='theWebUI.saveTorrent()'/>"+
+				"<input type='button' id='torrentSave' value='"+theUILang.torrentSave+"' class='OK Button' onclick='theWebUI.saveTorrent()'/>"+
 				"<input type='button' id='torrentKill' value='"+theUILang.torrentKill+"' class='Button' onclick='theWebUI.killTorrent()'/>"+
 				"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 			"</div>",true);
