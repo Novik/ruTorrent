@@ -55,6 +55,8 @@ theWebUI.loadRules = function( rle )
 	list.empty();
 	$('#RLS_rss option').remove();	
 	$('#RLS_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
+	for(var lbl in this.rssGroups)
+		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
 	for(var lbl in this.rssLabels)
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
 	this.rules = rle;

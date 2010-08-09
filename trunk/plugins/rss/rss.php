@@ -483,11 +483,11 @@ class rRSSFilter
 		$this->no = $no;
 		$this->interval = $interval;
 	}
-	public function isApplicable( $rss, $history )
+	public function isApplicable( $rss, $history, $groups )
 	{
 		return(($this->enabled==1) && 
   	                (($this->titleCheck == 1) || ($this->descCheck == 1) || ($this->linkCheck == 1)) &&
-			(!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash)) &&
+			(!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash) || $groups->hashPresent( $this->rssHash, $rss->hash )) &&
 			$history->mayBeApplied( $this->no, $this->interval )
 			);
 	}
@@ -603,6 +603,10 @@ class rRSSGroup
 			$this->lst = array_merge($this->lst);
 		return($changed);
 	}
+	public function hashPresent( $rssHash )
+	{
+		return(in_array($rssHash, $this->lst));
+	}
 }
 
 class rRSSGroupList
@@ -648,6 +652,14 @@ class rRSSGroupList
 		if(array_key_exists($hash,$this->lst))
 			unset($this->lst[$hash]);
 	}
+	public function hashPresent( $grpHash, $rssHash )
+	{
+
+		$grp = $this->get($grpHash);
+		if($grp)
+			return($grp->hashPresent($rssHash));
+		return(false);
+	}	
 }
 
 class rRSSMetaList
@@ -784,7 +796,7 @@ class rRSSManager
 			$rss = new rRSS();
 			$rss->hash = $hash;
 			if($this->cache->get($rss) && $info['enabled'])
-				$this->checkFilters($rss,$info,$flts);
+				$this->checkFilters($rss,$flts);
 		}
 		$this->history->removeOldFilters($flts);
 		$this->saveHistory();
@@ -805,18 +817,16 @@ class rRSSManager
 		}
                 $this->saveHistory();
 	}
-	public function checkFilters($rss,$info = null,$filters = null)
+	public function checkFilters($rss,$filters = null)
 	{
 		if($filters===null)
 		{
 			$filters = new rRSSFilterList();
 	                $this->cache->get($filters);
 		}
-		if($info===null)
-			$info = $this->rssList->lst[$rss->hash];
 		foreach($filters->lst as $filter)
 		{
-			if($filter->isApplicable( $rss, $this->history ))
+			if($filter->isApplicable( $rss, $this->history, $this->groups ))
 			{
 				foreach($rss->items as $href=>$item)
 				{
@@ -867,16 +877,21 @@ class rRSSManager
 		{
 			if($hash)
 			{
-				$hrefs = $this->testOneFilter($filter,$hash);
+				$grp = $this->groups->get($hash);
+				if($grp)
+					foreach($grp->lst as $hsh)
+						$hrefs = array_merge($hrefs,$this->testOneFilter($filter,$hsh));
+				else
+					$hrefs = $this->testOneFilter($filter,$hash);
 			}
 			else
 			{
-				foreach($this->rssList->lst as $hash=>$info)
-					$hrefs = array_merge($hrefs,$this->testOneFilter($filter,$hash));
+				foreach($this->rssList->lst as $hsh=>$info)
+					$hrefs = array_merge($hrefs,$this->testOneFilter($filter,$hsh));
 				$hash = '';
 			}
 		}
-		$hrefs = array_map(  'quoteAndDeslashEachItem', $hrefs);
+		$hrefs = array_map(  'quoteAndDeslashEachItem', array_unique($hrefs));
 		return($this->rssList->formatErrors().", rss: '".$hash."',list: [".implode(",",$hrefs)."]}");
 	}
 	public function updateRSSGroup($hash)
@@ -902,7 +917,7 @@ class rRSSManager
 				{
 					if($rss->fetch() && $this->cache->set($rss))
 					{
-						$this->checkFilters($rss,$info,$filters);
+						$this->checkFilters($rss,$filters);
 						$this->saveHistory();
 					}
 					else
@@ -930,7 +945,7 @@ class rRSSManager
 			if($this->cache->get($rss) && $info['enabled'])
 			{
 				if($rss->fetch() && $this->cache->set($rss))
-					$this->checkFilters($rss,$info,$filters);
+					$this->checkFilters($rss,$filters);
 				else
 					$this->rssList->addError( "theUILang.cantFetchRSS", $rss->srcURL );
 			}
@@ -1008,6 +1023,8 @@ class rRSSManager
 		if($grp)
 			$this->remove($grp->lst);
 		$this->removeGroup($hash);
+		if($this->groups->check($this->rssList))
+			$this->saveGroups();
 	}
 	public function remove( $hash, $needFlush = true )
 	{

@@ -31,10 +31,10 @@ class rURLRewriteRule
 		return("{ name: ".quoteAndDeslashEachItem($this->name).", enabled: ".$this->enabled.", pattern: ".quoteAndDeslashEachItem($this->pattern).", replacement: ".quoteAndDeslashEachItem($this->replacement).
 			", hash: ".quoteAndDeslashEachItem($this->rssHash).", hrefAsSrc: ".$this->hrefAsSrc.", hrefAsDest: ".$this->hrefAsDest." }");
 	}
-	public function isApplicable( $rss )
+	public function isApplicable( $rss, $groups )
 	{
 		return(($this->enabled==1) && 
-			(!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash)));
+			(!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash) || $groups->hashPresent( $this->rssHash, $rss->hash )));
 	}
         public function apply( &$href, &$guid )
 	{
@@ -152,11 +152,11 @@ class rURLRewriteRulesList
 			$ret = substr($ret,0,$len-1);
 		return( $ret."]" );
 	}
-	public function apply( $rss, &$href, &$guid )
+	public function apply( $rss, $groups, &$href, &$guid )
 	{
 		foreach( $this->lst as $item )
 		{
-			if($item->isApplicable( $rss ))
+			if($item->isApplicable( $rss, $groups ))
 			{
 				$item->apply( $href, $guid );
 				break;
