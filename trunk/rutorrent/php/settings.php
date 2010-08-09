@@ -65,20 +65,21 @@ class rTorrentSettings
 	}
 	public function pushEvent( $ename, $prm )
 	{
-		for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
-		{
-			$pname = $this->hooks[$ename][$i];
-			$file = dirname(__FILE__).'/../plugins/'.$pname.'/hooks.php';
-			if(is_file($file))
+		if( array_key_exists($ename,$this->hooks))
+			for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
 			{
-				require_once( $file );
-				$func = $pname.'Hooks::On'.$ename;
-				if(is_callable( $func ) && 
-					(call_user_func_array($func,array($prm))==true))
-					break;
+				$pname = $this->hooks[$ename][$i];
+				$file = dirname(__FILE__).'/../plugins/'.$pname.'/hooks.php';
+				if(is_file($file))
+				{
+					require_once( $file );
+					$func = $pname.'Hooks::On'.$ename;
+					if(is_callable( $func ) && 
+						(call_user_func_array($func,array($prm))==true))
+						break;
+				}
 			}
-		}
-	}	
+	}
 
 	static public function load()
 	{
