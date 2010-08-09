@@ -848,6 +848,8 @@ theWebUI.loadFilters = function( flt, additions )
 	list.empty();
 	$('#FLT_rss option').remove();	
 	$('#FLT_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
+	for(var lbl in this.rssGroups)
+		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
 	for(var lbl in this.rssLabels)
 		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
 	var fltThrottle = $('#FLT_throttle');

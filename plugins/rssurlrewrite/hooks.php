@@ -6,12 +6,13 @@ class rssurlrewriteHooks
 {
 	static public function OnRSSFetched( $prm )
 	{
+		$mngr = new rRSSManager();
 		$rules = rURLRewriteRulesList::load();
 		$newHrefs = array();
 		foreach( $prm["rss"]->items as $href=>&$item )
 		{
 			$oldHref = $href;
-			$rules->apply($prm["rss"],$href,$item['guid']);
+			$rules->apply($prm["rss"],$mngr->groups,$href,$item['guid']);
 			if($oldHref != $href)
 			{
 				$newHrefs[$href] = $item;
