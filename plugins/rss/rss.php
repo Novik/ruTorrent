@@ -912,7 +912,7 @@ class rRSSManager
 			$rss->hash = $item;
 			if($this->rssList->isExist($rss))
 			{
-				$info = $this->rssList->lst[$hash];
+				$info = $this->rssList->lst[$item];
 	                        if($this->cache->get($rss) && $info['enabled'])
 				{
 					if($rss->fetch() && $this->cache->set($rss))
