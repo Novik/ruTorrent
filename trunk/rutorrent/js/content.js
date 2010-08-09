@@ -186,12 +186,12 @@ function makeContent()
 	theDialogManager.make("dlgLabel",theUILang.enterLabel,
 		'<div class="content fxcaret">'+theUILang.Enter_label_prom+':<br/>'+
 			'<input type="text" id="txtLabel" class="Textbox"/></div>'+
-		'<div class="aright buttons-list"><input type="button" class="Button" value="'+theUILang.ok+'" onclick="theWebUI.createLabel();theDialogManager.hide(\'dlgLabel\');return(false);" />'+
+		'<div class="aright buttons-list"><input type="button" class="OK Button" value="'+theUILang.ok+'" onclick="theWebUI.createLabel();theDialogManager.hide(\'dlgLabel\');return(false);" />'+
 			'<input type="button" class="Cancel Button" value="'+theUILang.Cancel+'"/></div>',
 		true);
 	theDialogManager.make("yesnoDlg","",
 		'<div class="content" id="yesnoDlg-content"></div>'+
-		'<div id="yesnoDlg-buttons" class="aright buttons-list"><input type="button" class="Button" value="'+theUILang.ok+'" id="yesnoOK">'+
+		'<div id="yesnoDlg-buttons" class="aright buttons-list"><input type="button" class="OK Button" value="'+theUILang.ok+'" id="yesnoOK">'+
 		'<input type="button" class="Button Cancel" value="'+theUILang.Cancel+'" id="yesnoCancel"></div>',
 		true);
 	var languages = '';
@@ -542,7 +542,7 @@ function makeContent()
 				"</fieldset>"+
 			"</div>"+
 			"<div id=\"st_btns\" class='aright buttons-list'>"+
-				"<input type=\"button\" value=\"OK\" onclick=\"theDialogManager.hide('stg');theWebUI.setSettings();return(false);\" class=\"Button\" />"+
+				"<input type=\"button\" value=\"OK\" onclick=\"theDialogManager.hide('stg');theWebUI.setSettings();return(false);\" class=\"OK Button\" />"+
 				"<input type=\"button\" value=\""+theUILang.Cancel+"\" class=\"Cancel Button\" />"+
 			"</div>"+
 		"</div>");

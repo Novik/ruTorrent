@@ -94,7 +94,7 @@ plugin.onLangLoaded = function()
                                	"<input type='text' id='ecomment' name='ecomment' class='TextboxLarge'/><br/>"+
 			"</fieldset>"+
 		"</div>"+
-		"<div class='aright buttons-list'><input type='button' value='"+theUILang.ok+"' class='Button' id='editok' onclick='theWebUI.sendEdit(); return(false);'/><input type='button' value='"+theUILang.Cancel+"' class='Cancel Button'/></div>",
+		"<div class='aright buttons-list'><input type='button' value='"+theUILang.ok+"' class='OK Button' id='editok' onclick='theWebUI.sendEdit(); return(false);'/><input type='button' value='"+theUILang.Cancel+"' class='Cancel Button'/></div>",
 		true);
 }
 

@@ -287,7 +287,7 @@ plugin.onLangLoaded = function()
 			"</div>"+
 		"</div>"+
 		"<div id='RLS_buttons' class='aright buttons-list'>"+
-			"<input type='button' class='Button' value='"+theUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditRules\");theWebUI.setRules();return(false);'/>"+
+			"<input type='button' class='OK Button' value='"+theUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditRules\");theWebUI.setRules();return(false);'/>"+
 			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 		"</div>");
 	$("#gcont").append( $("<div>").attr("id","rsslayout").css( "display", "none" ));

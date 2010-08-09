@@ -724,7 +724,7 @@ plugin.onLangLoaded = function()
 			'<label></label><input type="checkbox" id="tegfast_resume"/>'+theUILang.doFastResume+'<br/>'+
 			"<label>"+theUILang.Label+":</label><input type='text' id='teglabel' class='TextboxLarge'/>"+
 		"</div>"+
-		"<div id='buttons' class='aright buttons-list'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"tegLoadTorrents\");theWebUI.tegLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
+		"<div id='buttons' class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"tegLoadTorrents\");theWebUI.tegLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
 		true);
 	if(thePlugins.isInstalled("_getdir"))
 	{

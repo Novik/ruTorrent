@@ -1361,7 +1361,7 @@ plugin.onLangLoaded = function()
 			"<label>"+theUILang.alias+": </label>"+
 			"<input type='text' id='rssLabel' class='TextboxLarge'/>"+
 		"</div>"+
-		"<div class='aright buttons-list'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgAddRSS\");theWebUI.addRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
+		"<div class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgAddRSS\");theWebUI.addRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
 		true);
 	theDialogManager.make( "dlgAddRSSGroup", theUILang.addRSSGroup,
 		"<div class='content'>"+
@@ -1373,7 +1373,7 @@ plugin.onLangLoaded = function()
 				"</div>"+
 			"</fieldset>"+
 		"</div>"+
-		"<div class='aright buttons-list'><input type='button' class='Button' value="+theUILang.ok+" onclick='theWebUI.addRSSGroup();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
+		"<div class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theWebUI.addRSSGroup();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
 		true);
 	theDialogManager.make( "dlgEditRSS", theUILang.rssMenuEdit,
 		"<div class='content'>"+
@@ -1382,7 +1382,7 @@ plugin.onLangLoaded = function()
 			"<label>"+theUILang.alias+": </label>"+
 			"<input type='text' id='editrssLabel' class='TextboxLarge'/>"+
 		"</div>"+
-		"<div class='aright buttons-list'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgEditRSS\");theWebUI.editRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
+		"<div class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgEditRSS\");theWebUI.editRSS();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
 		true);
 	theDialogManager.make( "dlgLoadTorrents", theUILang.torrent_add,
 		"<div class='content'>"+
@@ -1391,7 +1391,7 @@ plugin.onLangLoaded = function()
 			"<label></label><input type='checkbox' id='RSStorrents_start_stopped'/>"+theUILang.Dnt_start_down_auto+"<br/>"+
 			"<label>"+theUILang.Label+":</label><input type='text' id='RSS_label' class='TextboxLarge'/>"+
 		"</div>"+
-		"<div id='buttons' class='aright buttons-list'><input type='button' class='Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgLoadTorrents\");theWebUI.RSSLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
+		"<div id='buttons' class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgLoadTorrents\");theWebUI.RSSLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
 		true);
 	theDialogManager.make( "dlgEditFilters", theUILang.rssMenuManager,
 		"<div class='fxcaret'>"+
@@ -1436,7 +1436,7 @@ plugin.onLangLoaded = function()
 			"</div>"+
 		"</div>"+
 		"<div id='FLT_buttons' class='aright buttons-list'>"+
-			"<input type='button' class='Button' value='"+theUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditFilters\");theWebUI.setFilters();return(false);'/>"+
+			"<input type='button' class='OK Button' value='"+theUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditFilters\");theWebUI.setFilters();return(false);'/>"+
 			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 		"</div>");
 	$("#gcont").append( $("<div>").attr("id","rsslayout").css( "display", "none" ));
