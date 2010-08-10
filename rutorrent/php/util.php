@@ -20,7 +20,7 @@ require_once( $rootPath.'/conf/config.php' );
 $conf = getConfFile('config.php');
 if($conf)
 	require_once($conf);
-require_once( $rootPath.'/php/lfs.php' );
+require_once( 'lfs.php' );
 
 function stripSlashesFromArray(&$arr)
 {

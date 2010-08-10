@@ -7,7 +7,7 @@ class rssurlrewriteHooks
 	static public function OnRSSFetched( $prm )
 	{
 		$mngr = new rRSSManager();
-		$rules = rURLRewriteRulesList::load();
+		$rules = rURLRewriteRulesList::load($mngr);
 		$newHrefs = array();
 		foreach( $prm["rss"]->items as $href=>&$item )
 		{

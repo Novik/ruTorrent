@@ -1,8 +1,8 @@
 <?php
 
 require_once( dirname(__FILE__).'/../../php/cache.php');
-require_once( $rootPath.'/php/Snoopy.class.inc');
-require_once( $rootPath.'/php/rtorrent.php' );
+require_once( dirname(__FILE__).'/../../php/Snoopy.class.inc');
+require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
 eval(getPluginConf('rss'));
 
 class rRSS
@@ -654,7 +654,6 @@ class rRSSGroupList
 	}
 	public function hashPresent( $grpHash, $rssHash )
 	{
-
 		$grp = $this->get($grpHash);
 		if($grp)
 			return($grp->hashPresent($rssHash));
@@ -695,7 +694,7 @@ class rRSSMetaList
 	}
 	public function isExist( $rss )
 	{
-		return(array_key_exists($rss->hash,$this->lst));
+		return(is_object($rss) ? array_key_exists($rss->hash,$this->lst) : array_key_exists($rss,$this->lst));
 	}
 	public function touch()
 	{
@@ -781,11 +780,28 @@ class rRSSManager
 	{
 		return($this->cache->getModified($obj));
 	}
-        public function getFilters()
+        public function loadFilters()
 	{
 		$flts = new rRSSFilterList();
                 $this->cache->get($flts);
-		return($flts->getContents());
+		$changed = false;
+		foreach($flts->lst as $filter)
+		{
+			if(!empty($filter->rssHash) &&
+				!$this->rssList->isExist($filter->rssHash) &&
+				!$this->groups->get( $filter->rssHash ))
+			{
+				$filter->rssHash = '';
+				$changed = true;
+			}
+		}
+		if($changed)
+			$this->cache->set($flts);
+		return($flts);
+	}
+        public function getFilters()
+	{
+		return($this->loadFilters()->getContents());
 	}
 	public function setFilters($flts)
 	{
@@ -820,10 +836,7 @@ class rRSSManager
 	public function checkFilters($rss,$filters = null)
 	{
 		if($filters===null)
-		{
-			$filters = new rRSSFilterList();
-	                $this->cache->get($filters);
-		}
+			$filters = $this->loadFilters();
 		foreach($filters->lst as $filter)
 		{
 			if($filter->isApplicable( $rss, $this->history, $this->groups ))
@@ -902,8 +915,7 @@ class rRSSManager
 	}
 	public function updateRSS($hash)
 	{
-		$filters = new rRSSFilterList();
-                $this->cache->get($filters);
+		$filters = $this->loadFilters();
 		$rss = new rRSS();
 		if(!is_array($hash))
 			$hash = array( $hash );
@@ -936,8 +948,7 @@ class rRSSManager
 	}
         public function update( $manual = false )
 	{
-		$filters = new rRSSFilterList();
-                $this->cache->get($filters);
+		$filters = $this->loadFilters();
 		foreach($this->rssList->lst as $hash=>$info)
 		{
 			$rss = new rRSS();
@@ -1145,7 +1156,7 @@ class rRSSManager
 			if(!empty($ratio))
 				$addition[] = getCmd("view.set_visible=").$ratio;
 			global $saveUploadedTorrents;
-			if(($thash = rTorrent::sendTorrent($ret, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, false, $addition))===false)
+			if(($thash = rTorrent::sendTorrent($ret, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, false, true, $addition))===false)
 			{
 				$thash = 'Failed';
 				@unlink($ret);
