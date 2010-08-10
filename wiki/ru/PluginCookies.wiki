@@ -39,4 +39,4 @@
 
  * [PluginLoginMgr плагин LoginMgr]
  * [PluginRSS плагин RSS]
- * [PluginExtSearch плагин ExtSearch]
+ * [PluginExtsearch плагин ExtSearch]

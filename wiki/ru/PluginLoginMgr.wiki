@@ -23,4 +23,4 @@
 
  * [PluginCookies плагин Cookies]
  * [PluginRSS плагин RSS]
- * [PluginExtSearch плагин ExtSearch]
+ * [PluginExtsearch плагин ExtSearch]
