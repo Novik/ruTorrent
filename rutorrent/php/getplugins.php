@@ -11,7 +11,7 @@ function pluginsSort($a, $b)
 		return(1);
 	if($lvl1<$lvl2)	
 		return(-1);
-	return( 0 );
+	return( strcmp($a["name"],$b["name"]) );
 }
 
 function getFlag($permissions,$pname,$fname)
