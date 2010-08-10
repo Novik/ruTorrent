@@ -27,7 +27,7 @@
       * [PluginThrottle Throttle]
       * [PluginCookies Cookies]
       * [PluginLoginMgr LoginMgr]
-      * [PluginSearch Search]
+      * [PluginExtsearch ExtSearch]
       * [PluginScheduler Scheduler]
       * [PluginAutotools AutoTools]
       * [PluginDataDir DataDir]
