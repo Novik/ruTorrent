@@ -98,7 +98,7 @@ if(isset($HTTP_RAW_POST_DATA))
 					if($eReq->run() && !$eReq->fault)
 					{
 						$label = rawurldecode($req->val[5]);
-						if(!rTorrent::sendTorrent($torrent, $isStart, false, $req->val[6], $label, false, ($req->val[8]==1),
+						if(!rTorrent::sendTorrent($torrent, $isStart, false, $req->val[6], $label, false, ($req->val[8]==1), false,
 						        array(	getCmd("d.set_custom3")."=1",
 								getCmd("d.set_connection_seed=").$req->val[7],
 								$throttle)))

@@ -1,7 +1,7 @@
 <?php
 
-require_once( dirname(__FILE__).'/xmlrpc.php' );
-require_once( $rootPath.'/php/cache.php');
+require_once( 'xmlrpc.php' );
+require_once( 'cache.php');
 
 class rTorrentSettings
 {

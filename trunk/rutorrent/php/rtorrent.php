@@ -1,12 +1,12 @@
 <?php
 
-require_once( dirname(__FILE__).'/util.php' );
-require_once( $rootPath.'/php/xmlrpc.php' );
-require_once( $rootPath.'/php/Torrent.php' );
+require_once( 'util.php' );
+require_once( 'xmlrpc.php' );
+require_once( 'Torrent.php' );
 
 class rTorrent
 {
-	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $addition = null)
+	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
 	{
 	        global $topDirectory;
 		$hash = false;
@@ -16,10 +16,16 @@ class rTorrent
 			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
 				$torrent = $resume;
 			else
+				if($isNew)
+				{
+					if(isset($torrent->{'libtorrent_resume'}))
+						unset($torrent->{'libtorrent_resume'});
+				}			
+			if($isNew)
 			{
-				if(isset($torrent->{'libtorrent_resume'}))
-					unset($torrent->{'libtorrent_resume'});
-			}			
+				if(isset($torrent->{'rtorrent'}))
+					unset($torrent->{'rtorrent'});
+			}
 			$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
 			$cmd->addParameter(base64_encode($torrent->__toString()),"base64");
 			if(!$saveTorrent && is_string($fname))

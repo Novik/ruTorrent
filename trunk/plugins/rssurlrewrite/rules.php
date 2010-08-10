@@ -2,6 +2,7 @@
 
 require_once( dirname(__FILE__).'/../../php/cache.php');
 require_once( dirname(__FILE__).'/../../php/util.php');
+require_once( dirname(__FILE__).'/../../php/settings.php');
 
 class rURLRewriteRule
 {
@@ -12,10 +13,9 @@ class rURLRewriteRule
 	public $rssHash;
 	public $hrefAsSrc;
 	public $hrefAsDest;
-	public $no = -1;
 
 	public function	rURLRewriteRule( $name, $pattern = '', $replacement = '', $enabled = 0, $rssHash = '', 
-		$hrefAsSrc = 0, $hrefAsDest = 0, $no = -1 )
+		$hrefAsSrc = 0, $hrefAsDest = 0 )
 	{
 		$this->name = $name;
 		$this->pattern = $pattern;
@@ -24,7 +24,6 @@ class rURLRewriteRule
 		$this->rssHash = $rssHash;
 		$this->hrefAsSrc = $hrefAsSrc;
 		$this->hrefAsDest = $hrefAsDest;
-		$this->no = $no;
 	}
 	public function getContents()
 	{
@@ -56,11 +55,32 @@ class rURLRewriteRulesList
 	public $hash = "urlrewriterules.dat";
         public $lst = array();
 
-	static public function load()
+	static public function load( $mngr = null )
 	{
 		$cache = new rCache();
 		$ar = new rURLRewriteRulesList();
 		$cache->get($ar);
+		if(rTorrentSettings::get()->isPluginRegistered("rss"))
+		{
+			$changed = false;
+			if(is_null($mngr))
+			{
+				require_once( dirname(__FILE__).'/../rss/rss.php' );
+				$mngr = new rRSSManager();	
+			}
+			foreach($ar->lst as $rule)
+			{
+				if(!empty($rule->rssHash) &&
+					!$mngr->rssList->isExist($rule->rssHash) &&
+					!$mngr->groups->get( $rule->rssHash ))
+				{
+					$rule->rssHash = '';
+					$changed = true;
+				}
+			}
+			if($changed)
+				$ar->store();
+		}			
 		return($ar);
 	}
 	public function store()
