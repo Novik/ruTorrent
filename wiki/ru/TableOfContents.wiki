@@ -26,6 +26,7 @@
       * [PluginRetrackers Retrackers]
       * [PluginThrottle Throttle]
       * [PluginCookies Cookies]
+      * [PluginLoginMgr LoginMgr]
       * [PluginSearch Search]
       * [PluginScheduler Scheduler]
       * [PluginAutotools AutoTools]

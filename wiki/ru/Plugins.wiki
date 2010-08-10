@@ -66,6 +66,7 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
  # [PluginThrottle throttle] - позволяет устанавливать отдельные ограничения скорости для группы закачек.
  # [PluginRetrackers retrackers] - автоматически дописывает в добавляемые закачки необходимые ретрекеры. 
  # [PluginCookies cookies] - позволяет задавать набор cookies для трекеров, использующих соответствующую авторизацию.
+ # [PluginLoginMgr loginMgr] - позволяет задавать логин/пароль для доступа к ряду трекеров, с которыми использование плагина cookies невозможно.
  # [PluginSearch search] - позволяет задавать собственный набор поисковых сайтов.
  # [PluginScheduler scheduler] - реализует ограничения скорости закачки/отдачи в зависимости от часа суток и дня недели.
  # [PluginAutotools autotools] -  реализует некоторые функции автоматизации (autolabel, automove).
