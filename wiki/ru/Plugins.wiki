@@ -60,7 +60,8 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
  # [PluginErasedata EraseData] - добавляет в контекстное меню закачки пункт "Удалить вместе с данными".
  # [PluginCreate Сreate] - добавляет команду создания нового торрента.
  # [PluginTrafic Trafic] - реализует подсистему учета трафика.
- # [PluginRSS RSS] - реализует работу с RSS-рассылками.
+ # [PluginRSS RSS] - реализует работу с RSS рассылками.
+ # [PluginRSSURLRewrite RSSURLRewrite] - формирование URL для элементов RSS рассылок.
  # [PluginEdit Edit] - позволяет редактировать список трекеров существующей закачки.
  # [PluginThrottle Throttle] - позволяет устанавливать отдельные ограничения скорости для группы закачек.
  # [PluginRetrackers Retrackers] - автоматически дописывает в добавляемые закачки необходимые ретрекеры. 

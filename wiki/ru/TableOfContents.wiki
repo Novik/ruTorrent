@@ -22,6 +22,7 @@
       * [PluginCreate Create]
       * [PluginTrafic Traffic]
       * [PluginRSS RSS]
+      * [PluginRSSURLRewrite RSSURLRewrite]
       * [PluginEdit Edit]
       * [PluginRetrackers Retrackers]
       * [PluginThrottle Throttle]
