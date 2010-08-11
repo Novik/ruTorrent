@@ -53,7 +53,7 @@ Recently, i have found this module.  In some situations this might be a better f
 
 It's very simple to use, just add a directive like:
 {{{
-ProxyPass /RPC2/ scgi://localhost:5000/
+ProxyPass /RPC2 scgi://localhost:5000/
 }}}
 
 
