@@ -46,3 +46,4 @@
 == См. также ==
 
  * [PluginRSS плагин RSS]
+ * [PluginLoginMgr плагин LoginMgr]
