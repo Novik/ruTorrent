@@ -1,0 +1,14 @@
+----
+= Плагин Theme =
+----
+
+== Описание ==
+
+Плагин позволяет менять стиль оформления ruTorrent. На настоящий момент доступны следующие стили:
+
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/blue_small.png http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/blue_big.png]
+
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/dark_small.png http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/dark_big.png]
+
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/acid_small.png http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/acid_big.png]
+
