@@ -18,7 +18,7 @@
     * Текущие
       * [PluginRPC RPC]
       * [PluginErasedata Erasedata]
-      * [PluginDarkPal Darkpal]
+      * [PluginTheme Theme]
       * [PluginCreate Create]
       * [PluginTrafic Traffic]
       * [PluginRSS RSS]

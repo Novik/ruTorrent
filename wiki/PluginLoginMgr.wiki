@@ -1,5 +1,5 @@
 ----
-= Плагин LoginMgr =
+= Plugin LoginMgr =
 ----
 
 <wiki:toc />
