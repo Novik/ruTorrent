@@ -1,0 +1,34 @@
+<?php
+require_once( 'stat.php' );
+
+$val = "";
+if(isset($_REQUEST['tracker']))
+{
+	if($_REQUEST['tracker']!="global")
+		$tracker = "trackers/".$_REQUEST['tracker'].".csv";
+	else
+                $tracker = "global.csv";
+	if(isset($_REQUEST['mode']))
+	{
+		$mode = $_REQUEST['mode'];
+		if($mode=='clear')
+		{
+			@unlink(getSettingsPath().'/trafic/'.$tracker);
+			$mode='day';
+			$tracker = "global.csv";
+		}
+		$st = new rStat($tracker);
+		if($mode=='day')
+			$val = $st->getDay();
+		else
+		if($mode=='month')
+			$val = $st->getMonth();
+		else
+		if($mode=='year')
+			$val = $st->getYear();
+	}
+}
+
+cachedEcho($val,"application/json");
+
+?>
