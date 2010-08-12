@@ -2,7 +2,7 @@
 
 class DemonoidEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"www.demonoid.com|uhsh=;uid=XXX" );
+	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"www.demonoid.com|uhsh=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'0', 'Anime'=>'9', 'Applications'=>'5', 'Audio Books'=>'17', 'Books'=>'11', 'Comics'=>'10',
 		'Games'=>'4', 'Miscellaneous'=>'6', 'Movies'=>'1', 'Music'=>'2', 'Music Videos'=>'13', 'Pictures'=>'8', 'TV'=>'3' );
 
