@@ -1,4 +1,4 @@
 description: The plug-in provides country information for peers.
 author: Zoltan Csala,Novik
 runlevel: 15
-version: 3.1
+version: 3.2
