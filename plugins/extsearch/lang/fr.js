@@ -35,6 +35,9 @@
  theUILang.exsMustInstallCookies	= "Vous devez installer le plugin 'Cookies' pour fonctionner avec ce moteur de recherche.";
  theUILang.exsMustInstallLoginMgr	= "Vous devez installer le plugin 'LoginMgr' pour fonctionner avec ce moteur de recherche.";
  theUILang.exsLoginMgr	= "Configurez votre compte dans le plugin 'LoginMgr' pour fonctionner avec ce moteur de recherche.";
+ theUILang.exsURLInfo           = "Info URL";
+ theUILang.exsURLGUID           = "URL de la description";
+ theUILang.exsURLHref           = "URL \u00e0 charger";
  
 
 thePlugins.get("extsearch").langLoaded();

@@ -340,6 +340,16 @@ theWebUI.tegItemRemove = function()
 	table.refreshRows();
 }
 
+theWebUI.showTegURLInfo = function()
+{
+	var table = theWebUI.getTable("teg");
+	for(var i = 0; i<plugin.tegArray.length; i++)
+	{
+		log(theUILang.rssURLGUID+": "+plugin.tegs[theWebUI.actLbl].data[plugin.tegArray[i].ndx].desc);
+		log(theUILang.rssURLHref+": "+plugin.tegs[theWebUI.actLbl].data[plugin.tegArray[i].ndx].link);
+	}
+}
+
 theWebUI.extTegDelete = function()
 {
 	var lbl = theWebUI.actLbl;
@@ -377,6 +387,7 @@ plugin.createExtTegMenu = function(e, id)
 			theContextMenu.add([ theUILang.tegMenuLoad, "theWebUI.extTegLoad()"]);
 			theContextMenu.add([ theUILang.tegMenuOpen, "theWebUI.extTegOpen()"]);
 			theContextMenu.add([ theUILang.tegMenuDeleteItem, "theWebUI.tegItemRemove()"]);
+			theContextMenu.add([ theUILang.exsURLInfo, "theWebUI.showTegURLInfo()"] );
 		}
 		else
 			theContextMenu.hide();

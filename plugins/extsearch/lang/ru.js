@@ -27,5 +27,8 @@
  theUILang.exsMustInstallCookies	= "Вы должны установить плагин 'Cookies' для работы этого движка."; 
  theUILang.exsMustInstallLoginMgr	= "Вы должны установить плагин 'LoginMgr' для работы этого движка."; 
  theUILang.exsLoginMgr	= "Для корректной работы данного движка заполните данные аккаунта в плагине 'LoginMgr'."; 
+ theUILang.exsURLInfo		= "Информация об URL";
+ theUILang.exsURLGUID		= "URL описания";
+ theUILang.exsURLHref           = "URL загрузки";
 
 thePlugins.get("extsearch").langLoaded();
