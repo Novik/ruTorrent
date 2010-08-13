@@ -28,5 +28,8 @@
  theUILang.exsMustInstallCookies	= "You must install plugin 'Cookies' for work with this engine."; 
  theUILang.exsMustInstallLoginMgr	= "You must install plugin 'LoginMgr' for work with this engine.";
  theUILang.exsLoginMgr	= "Setup your account in plugin 'LoginMgr' for work with this engine.";
+ theUILang.exsURLInfo		= "URL info";
+ theUILang.exsURLGUID		= "Description URL";
+ theUILang.exsURLHref           = "Load URL";
 
 thePlugins.get("extsearch").langLoaded();
