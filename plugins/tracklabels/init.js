@@ -235,7 +235,10 @@ theWebUI.rebuildTrackersLabels = function()
 				ul.append(li);
 				var rule = getCSSRule("#"+lbl);
 				if(!rule)
-					li.css( { background: "url(http://"+lbl+"/favicon.ico) no-repeat 4px 50%"} );
+				{
+//					li.css( { background: "url(http://"+lbl+"/favicon.ico) no-repeat 4px 50%"} );
+					li.prepend( $("<img>").attr("src","http://"+lbl+"/favicon.ico").width(16).height(16).css({ "margin-right": 5, "float" : "left" }) ).css({ padding: "2px 4px"});
+				}
 			}
 			li.addClass("cat").attr("title",lbl+" ("+trackersLabels[lbl]+")");
 			if(lbl==theWebUI.actTrackersLbl)
