@@ -27,7 +27,7 @@ class BTJunkieEngine extends commonEngine
 				(strpos($cli->results, "<b>Did you mean:</b></font")!==false))
 				break;
 
-			$res = preg_match_all('/<a href="(?P<link>.*)" rel="nofollow"><img src="\/images\/down.gif" alt="Download Torrent" border="0"><\/a>.*'.
+			$res = preg_match_all('/<a href="(?P<link>[^"]*)" rel="nofollow"><img src="\/images\/down.gif" alt="Download Torrent" border="0"><\/a>.*'.
 				'<a href="\/torrent\/.*;">.*<img name=".*alt="File Listing" border="0"><\/a>&nbsp;.*'.
 				'<a href="\/torrent\/(?P<desc>.*)".*>(?P<name>.*)<\/a><\/th>.*'.
 				'<a class="LightOrange" href="\/browse\/.*"><b>(?P<cat>.*)<\/b><\/a><\/th>.*'.
