@@ -73,7 +73,7 @@ class WhatCDEngine extends commonEngine
 				$groups = array();
                                 for($i=0; $i<count($matches["id"]); $i++)
 					$groups[intval($matches["id"][$i])] = array( "name" => self::removeTags($matches["name"][$i]), "cat" => self::removeTags($matches["cat"][$i]) );
-				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)">.*<td colspan="3">.*\[<a href="torrents.php?(?P<link>.*)" title="Download">DL<\/a>.*'.
+				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)">.*<td colspan="3">.*\[<a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
 					'<a href="torrents.php\?id=(?P<desc>.*)">(?P<name>.*)<\/a>.*'.
 					'<td class="nobr"><span title="(?P<date>.*)">.*<\/span><\/td>.*'.
 					'<td class="nobr">(?P<size>.*)<\/td>.*'.
