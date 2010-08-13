@@ -233,6 +233,9 @@ theWebUI.rebuildTrackersLabels = function()
 			        	html(escapeHTML(lbl)+'&nbsp;(<span id="'+lbl+'_c">'+trackersLabels[lbl]+'</span>)').
 			        	mouseclick(theWebUI.trackersLabelContextMenu)
 				ul.append(li);
+				var rule = getCSSRule("#"+lbl);
+				if(!rule)
+					li.css( { background: "url(http://"+lbl+"/favicon.ico) no-repeat 4px 50%"} );
 			}
 			li.addClass("cat").attr("title",lbl+" ("+trackersLabels[lbl]+")");
 			if(lbl==theWebUI.actTrackersLbl)

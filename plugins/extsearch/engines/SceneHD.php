@@ -26,10 +26,11 @@ class SceneHDEngine extends commonEngine
 				(strpos($cli->results, "<td>Password</td>")!==false))
 				break;
 			$res = preg_match_all('/<img border="0" src="\/pic\/cats\/.*" title="(?P<cat>.*)"><\/a><\/td>.*'.
-				'<a href="details\.php\?id=(?P<id>.*)">(?P<name>.*)<\/a><\/nobr><br><\/td>.*'.
+				'<a href="details\.php\?id=(?P<id>\d+)" title="(?P<name>.*)">.*'.
 				'<td.*>.*<\/td>.*'.
 				'<td.*>.*<\/td>.*'.
 				'<td.*>.*<\/td>.*'.
+				'<td.*>.*<\/td>.*'.				
 				'<td.*>(?P<size>.*)<\/td>.*'.
 				'<td.*>(?P<date>.*)<\/td>.*'.
 				'<td.*>(?P<seeds>.*)<\/td>.*'.
@@ -52,6 +53,7 @@ class SceneHDEngine extends commonEngine
 						$item["cat"] = $matches["cat"][$i];
 						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
+toLog($matches["size"][$i]);						
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["time"] = strtotime(self::removeTags(str_replace("<br>"," ",$matches["date"][$i])));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
