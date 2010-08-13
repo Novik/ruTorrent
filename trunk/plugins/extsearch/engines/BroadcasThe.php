@@ -2,7 +2,7 @@
 
 class BroadcasTheEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"broadcasthe.net|keeplogged=XXX" );
+	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
 	public $categories = array( 'all'=>'&action=basic', 
 		'Season'=>'&action=advanced&filter_cat[2]=1',
 		'Episode'=>'&action=advanced&filter_cat[1]=1',
@@ -36,26 +36,17 @@ class BroadcasTheEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h2>Your search was way too l33t, try dumbing it down a bit.</h2>")!==false)
 				|| (strpos($cli->results, '<form name="loginform" id="loginform" method="post"')!==false))
 				break;
-
 			$res = preg_match_all('/<tr class="torrent">.*<td class="center"><img src=".*" alt="(?P<cat>.*)".*<\/td>.*'.
-				'\[<a href="torrents.php\?action=download(?P<link>.*)" title="Download">.*'.
+				'<a href="torrents.php\?action=download(?P<link>.*)" title="Download">.*'.
                 		'<a href="series.php\?id=.*>(?P<name1>.*)<\/a> - <a href="torrents.php\?id=(?P<desc>.*)" title="View Torrent">(?P<name2>.*)<\/a><br \/>.*'.
-		             	'<\/a> - <b>Added:<\/b>(?P<date>.*)<\/div>.*'.
+		             	'<b>Added:<\/b>(?P<date>.*)<\/div>.*'.
 				'<td>.*<\/td>.*'.
 				'<td class="nobr">(?P<size>.*)<\/td>.*'.
 				'<td>(?P<seeds>.*)<\/td>.*'.
 				'<td>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-
-			if(($res!==false) && ($res>0) &&
-				count($matches["link"])==count($matches["cat"]) &&
-				count($matches["cat"])==count($matches["name1"]) && 
-				count($matches["name1"])==count($matches["name2"]) &&
-				count($matches["name2"])==count($matches["desc"]) &&
-				count($matches["desc"])==count($matches["date"]) &&
-				count($matches["date"])==count($matches["leech"]) &&
-				count($matches["seeds"])==count($matches["leech"]))
+			if($res)
 			{
-				for($i=0; $i<count($matches["link"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
 
 					$link = $url."/torrents.php?action=download".self::removeTags($matches["link"][$i]);

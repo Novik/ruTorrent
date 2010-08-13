@@ -584,6 +584,7 @@ class Snoopy
 			socket_set_timeout($fp, $this->read_timeout);
 		$this->timed_out = false;
 		fwrite($fp,$headers.$body,strlen($headers.$body));
+//toLog($headers.$body);
 		$this->_redirectaddr = false;
 		unset($this->headers);
 		
@@ -592,6 +593,7 @@ class Snoopy
 						
 		while($currentHeader = fgets($fp,$this->_maxlinelen))
 		{
+//toLog($currentHeader);
 			if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 			{
 				$this->status=-100;
@@ -605,7 +607,7 @@ class Snoopy
 			if(preg_match("/^(Location:|URI:)/i",$currentHeader))
 			{
 				// get URL portion of the redirect
-				preg_match("/^(Location:|URI:)\s+(.*)/",chop($currentHeader),$matches);
+				preg_match("/^(Location:|URI:)\s+(.*)/i",chop($currentHeader),$matches);
 				// look for :// in the Location header to see if hostname is included
 				if(!preg_match("|\:\/\/|",$matches[2]))
 				{
@@ -645,6 +647,7 @@ class Snoopy
 		        break;
 		    }
 		}
+//toLog($results);
 		// gunzip
 		if ( $is_gzipped ) 
 		{
@@ -859,8 +862,13 @@ class Snoopy
 	{
 		for($x=0; $x<count($this->headers); $x++)
 		{
-		if(preg_match("/^set-cookie:[\s]+([^=]+)=([^;]+)/i", $this->headers[$x],$match))
-			$this->cookies[$match[1]] = $match[2];
+			if(preg_match("/^set-cookie:[\s]+([^=]+)=([^;]+)/i", $this->headers[$x],$match))
+			{
+				if($match[2]=="deleted")
+					unset($this->cookies[$match[1]]);
+				else
+					$this->cookies[$match[1]] = $match[2];
+			}
 		}
 	}
 
