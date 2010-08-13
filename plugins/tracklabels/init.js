@@ -225,22 +225,19 @@ theWebUI.rebuildTrackersLabels = function()
 			if(lbl in this.trackersLabels)
 			{
 				li = $($$(lbl));
-	                	li.html(escapeHTML(lbl)+'&nbsp;(<span id="'+lbl+'_c">'+trackersLabels[lbl]+'</span>)');
+	                	li.children("span").text(trackersLabels[lbl]);
 			}
 			else
 			{
 			        li = $('<li>').attr("id",lbl).
 			        	html(escapeHTML(lbl)+'&nbsp;(<span id="'+lbl+'_c">'+trackersLabels[lbl]+'</span>)').
 			        	mouseclick(theWebUI.trackersLabelContextMenu)
-				ul.append(li);
 				var rule = getCSSRule("#"+lbl);
 				if(!rule)
-				{
-//					li.css( { background: "url(http://"+lbl+"/favicon.ico) no-repeat 4px 50%"} );
 					li.prepend( $("<img>").attr("src","http://"+lbl+"/favicon.ico").width(16).height(16).css({ "margin-right": 5, "float" : "left" }) ).css({ padding: "2px 4px"});
-				}
+				li.addClass("cat").attr("title",lbl+" ("+trackersLabels[lbl]+")");
+				ul.append(li);
 			}
-			li.addClass("cat").attr("title",lbl+" ("+trackersLabels[lbl]+")");
 			if(lbl==theWebUI.actTrackersLbl)
 				li.addClass("sel");
 		}
