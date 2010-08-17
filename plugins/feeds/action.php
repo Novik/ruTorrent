@@ -56,11 +56,11 @@ if(isset($_REQUEST['mode']))
 	                        if(empty($req->val[$i+2]))
 					continue;
 				else
-					$item["description"] = rawurldecode($req->val[$i+2]);
+					$item["description"] = $req->val[$i+2];
 			}
 			else
 			{
-				$item["description"] = substr($req->val[$i+6],10);
+				$item["description"] = rawurldecode(substr($req->val[$i+6],10));
 				if($_REQUEST['mode']=='active')
 				{
 					if( floatval($req->val[$i+3])<1024 && floatval($req->val[$i+4])<1024 )
