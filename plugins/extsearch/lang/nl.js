@@ -24,12 +24,12 @@
  theUILang.extPublic = "Public";
  theUILang.exsCookies = "Opmaak van cookies";
  theUILang.extAllPublic = "Alle open trackers";
- theUILang.extAllPrivate = "Alle gesloten trackers (private)";
- theUILang.exsMustInstallCookies	= "You must install plugin 'Cookies' for work with this engine."; 
- theUILang.exsMustInstallLoginMgr	= "You must install plugin 'LoginMgr' for work with this engine.";
- theUILang.exsLoginMgr	= "Setup your account in plugin 'LoginMgr' for work with this engine.";
+ theUILang.extAllPrivate = "Alle prive trackers (private)";
+ theUILang.exsMustInstallCookies	= "De plugin : COOKIES dient geinstalleerd te zijn voor deze zoekmachine."; 
+ theUILang.exsMustInstallLoginMgr	= "De plugin : LOGINMGR dient geinstalleerd te zijn voor deze zoekmachine";
+ theUILang.exsLoginMgr		= "Zet je account op in LOGINMGR om deze zoekmachine te gebruiken.";
  theUILang.exsURLInfo		= "URL info";
- theUILang.exsURLGUID		= "Description URL";
- theUILang.exsURLHref           = "Load URL";
+ theUILang.exsURLGUID		= "Omschrijving URL";
+ theUILang.exsURLHref           = "Laad URL";
 
 thePlugins.get("extsearch").langLoaded();

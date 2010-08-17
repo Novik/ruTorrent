@@ -31,7 +31,7 @@
  theUILang.rssIncorrectFilter = "Filter is onjuist.";
  theUILang.foundedByFilter = "Matches";
  theUILang.rssExclude = "Uitsluiten";
- theUILang.rssStatusError = "Load error";
+ theUILang.rssStatusError = "Laadd error";
  theUILang.rssPHPNotFound = "RSS plugin: rtorrent's gebruiker heeft geen toegang tot PHP-interpreter. Plugin zal niet werken.";
  theUILang.rssCurlNotFound = "RSS plugin: rtorrent's gebruiker heeft geen toegang tot CURL . U zult niet in staat om te werken met https feeds.";
  theUILang.rssCurlNotFound1 = "RSS plugin: webserver gebruiker heeft geen toegang tot CURL. U zult niet in staat om te werken met https feeds.";
@@ -43,7 +43,7 @@
  theUILang.rssCheckLink = "Controleer link veld";
  theUILang.rssMinInterval = "Min interval";
  theUILang.rssIntervalAlways = "(match altijd)";
- theUILang.rssIntervalOnce = "(matchslechts een keer)";
+ theUILang.rssIntervalOnce = "(match slechts een keer)";
  theUILang.rssInterval12h = "12 uur";
  theUILang.rssInterval1d = "1 dag";
  theUILang.rssInterval2d = "2 dagen";
@@ -57,16 +57,16 @@
  theUILang.rssMarkAs = "Markeer als";
  theUILang.rssAsLoaded = "Geladen";
  theUILang.rssAsUnloaded = "Uitgeschakeld";
- theUILang.addRSSGroup		= "Add RSS group";
- theUILang.editRSSGroup		= "Edit RSS Group";
- theUILang.addRSSGroupContent	= "Content";
- theUILang.rssMenuGroupDisable  = "Disable group";
- theUILang.rssMenuGroupRefresh	= "Update group";
- theUILang.rssMenuGroupEnable	= "Enable group";
- theUILang.rssMenuGroupEdit	= "Edit group";
- theUILang.rssMenuGroupDelete	= "Delete group";
- theUILang.rssMenuGroupContentsDelete = "Delete contents";
- theUILang.rssDeleteGroupPrompt	= "Do you really want to delete selected group?";
- theUILang.rssDeleteGroupContentsPrompt	= "Do you really want to delete selected group with all contents?";
+ theUILang.addRSSGroup		= "Toevoegen RSS groep";
+ theUILang.editRSSGroup		= "Bewerk RSS Groep";
+ theUILang.addRSSGroupContent	= "Inhoud";
+ theUILang.rssMenuGroupDisable  = "Uitzetten groep";
+ theUILang.rssMenuGroupRefresh	= "Update groep";
+ theUILang.rssMenuGroupEnable	= "Aanzetten groep";
+ theUILang.rssMenuGroupEdit		= "Bewerk groep";
+ theUILang.rssMenuGroupDelete	= "Verwijder groep";
+ theUILang.rssMenuGroupContentsDelete = "Verwijder Inhoud";
+ theUILang.rssDeleteGroupPrompt	= "Weet u zeker dat u de geslecteerde groep wilt verwijderen ?";
+ theUILang.rssDeleteGroupContentsPrompt	= "Weet u zeker dat u de geslecteerde groep + inhoud wilt verwijderen?";
 
 thePlugins.get("rss").langLoaded();

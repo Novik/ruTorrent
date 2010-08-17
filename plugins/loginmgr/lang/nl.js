@@ -1,6 +1,6 @@
 
 theUILang.accLogin = "Login";
-theUILang.accPassword = "Password";
+theUILang.accPassword = "Paswoord";
 theUILang.accAccounts = "Accounts";
 
 thePlugins.get("loginmgr").langLoaded();
