@@ -2,7 +2,7 @@
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
 
-$url = strtolower(substr($_SERVER['SERVER_PROTOCOL'],0,-4))."://".$_SERVER['HTTP_HOST'].str_replace('/plugins/feeds/action.php','/',$_SERVER['PHP_SELF']);
+$url = (empty($_SERVER['HTTPS']) ? "http" : "https")."://".$_SERVER['HTTP_HOST'].str_replace('/plugins/feeds/action.php','/',$_SERVER['PHP_SELF']);
 $title = (isset($_REQUEST['title'])) ? $_REQUEST['title'] : 'Torrents feed';
 $ret = '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>'.$title.'</title><link>'.
 	$url.'</link><description>'.$title.'</description>';
