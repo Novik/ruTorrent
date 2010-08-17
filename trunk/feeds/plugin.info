@@ -1,0 +1,4 @@
+description: The plug-in is intended for making RSS feeds with information of torrents.
+author: Novik
+version: 3.2
+need_rtorrent: 1
