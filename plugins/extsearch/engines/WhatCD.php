@@ -2,7 +2,7 @@
 
 class WhatCDEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"what.cd|session=XXX" );
+	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
 	public $categories = array( 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Applications'=>'&filter_cat[2]=1', 'E-Books'=>'&filter_cat[3]=1', 
 		'Audiobooks'=>'&filter_cat[4]=1', 'E-Learning Videos'=>'&filter_cat[5]=1', 'Comedy'=>'&filter_cat[6]=1', 'Comics'=>'&filter_cat[7]=1' );
 
@@ -75,9 +75,9 @@ class WhatCDEngine extends commonEngine
 					$groups[intval($matches["id"][$i])] = array( "name" => self::removeTags($matches["name"][$i]), "cat" => self::removeTags($matches["cat"][$i]) );
 				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)">.*<td colspan="3">.*\[<a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
 					'<a href="torrents.php\?id=(?P<desc>.*)">(?P<name>.*)<\/a>.*'.
-					'<td class="nobr"><span title="(?P<date>.*)">.*<\/span><\/td>.*'.
+					'<td class="nobr"><span class="time" title="(?P<date>.*)">.*<\/span><\/td>.*'.
 					'<td class="nobr">(?P<size>.*)<\/td>.*'.
-					'<td>.*<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
+					'<td>.*<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);					
 				if(($res!==false) && ($res>0) &&
 					count($matches["id"])==count($matches["link"]) && 
 					count($matches["link"])==count($matches["desc"]) &&
