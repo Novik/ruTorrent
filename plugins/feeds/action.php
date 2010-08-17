@@ -56,7 +56,7 @@ if(isset($_REQUEST['mode']))
 	                        if(empty($req->val[$i+2]))
 					continue;
 				else
-					$item["description"] = $req->val[$i+2];
+					$item["description"] = rawurldecode($req->val[$i+2]);
 			}
 			else
 			{
