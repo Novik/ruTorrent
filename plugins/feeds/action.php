@@ -49,8 +49,9 @@ if(isset($_REQUEST['mode']))
 				"guid"=>$req->val[$i],
 				"title"=>$req->val[$i+1],
 				"category"=>rawurldecode($req->val[$i+5]),
-				"link"=>$url.'plugins/data/action.php?hash='.$req->val[$i].'&no=0&readable=1',
 				"pubDate"=>(empty($req->val[$i+7]) ? 0 : floatval($req->val[$i+7])) );
+			if(rTorrentSettings::get()->isPluginRegistered('data'))
+				$item["link"] = $url.'plugins/data/action.php?hash='.$req->val[$i].'&no=0&readable=1';
 			if($_REQUEST['mode']=='error')
 			{
 	                        if(empty($req->val[$i+2]))
