@@ -48,11 +48,17 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 				header('HTTP/1.0 200 OK');
 				ob_end_flush();
 				readfile($filename);
-				exit;
 			}
+			exit;
 		}
 	}
 }
-header("HTTP/1.0 302 Moved Temporarily");
-header("Location: ".$_SERVER['PHP_SELF'].'?result=0');
+
+if(isset($_REQUEST['readable']))
+	cachedEcho("Cant retrieve such large file, sorry","text/html");
+else
+{
+	header("HTTP/1.0 302 Moved Temporarily");
+	header("Location: ".$_SERVER['PHP_SELF'].'?result=0');
+}
 ?>
