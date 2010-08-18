@@ -1,9 +1,9 @@
 
-theUILang.feedAll		= "All torrents";
-theUILang.feedCompleted		= "Completed torrents";
-theUILang.feedDownloading	= "Downloading torrents";
-theUILang.feedActive		= "Active torrents";
-theUILang.feedInactive		= "Inactive torrents";
-theUILang.feedError		= "Error torrents";
+theUILang.feedAll		= "Alle Torrents";
+theUILang.feedCompleted		= "Voltooide Torrents";
+theUILang.feedDownloading	= "Torrents aan het Downloaden";
+theUILang.feedActive		= "Actieve Torrents";
+theUILang.feedInactive		= "Inactieve Torrents";
+theUILang.feedError		= "Foutieve Torrents";
 
 thePlugins.get("feeds").langLoaded();
