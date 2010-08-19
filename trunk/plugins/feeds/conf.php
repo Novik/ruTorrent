@@ -1,0 +1,5 @@
+<?php
+
+$showItemDescription = true;
+
+?>

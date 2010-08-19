@@ -20,6 +20,7 @@ class rTorrentSettings
 	public $mostOfMethodsRenamed = false;
 	public $aliases = array();
 	public $started = 0;
+	public $server = '';
 	public $idNotFound = false;
 
 	public function registerPlugin($plugin,$data = true)
@@ -193,13 +194,15 @@ class rTorrentSettings
 					new rXMLRPCCommand("get_directory"),
 					new rXMLRPCCommand("get_session"),
 					new rXMLRPCCommand("system.library_version"),
-					new rXMLRPCCommand("set_xmlrpc_size_limit",67108863)
+					new rXMLRPCCommand("set_xmlrpc_size_limit",67108863),
+					new rXMLRPCCommand("get_name"),
 					) );
 				if($req->run() && !$req->fault)
 				{
 					$this->directory = $req->val[0];
   		        	        $this->session = $req->val[1];
 					$this->libVersion = $req->val[2];
+					$this->server = $req->val[4];
 					if(isLocalMode())
 					{
 	                                        if(!empty($this->session))
