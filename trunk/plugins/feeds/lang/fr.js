@@ -1,9 +1,18 @@
+﻿/*
+ * PLUGIN FEEDS
+ * 
+ * File Name: fr.js
+ * 	French language file.
+ * 
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
 
-theUILang.feedAll		= "All torrents";
-theUILang.feedCompleted		= "Completed torrents";
-theUILang.feedDownloading	= "Downloading torrents";
-theUILang.feedActive		= "Active torrents";
-theUILang.feedInactive		= "Inactive torrents";
-theUILang.feedError		= "Error torrents";
+theUILang.feedAll		= "Tous les torrents";
+theUILang.feedCompleted		= "Torrents terminés";
+theUILang.feedDownloading	= "Torrents en cours de téléchargement";
+theUILang.feedActive		= "Torrents actifs";
+theUILang.feedInactive		= "Torrents inactifs";
+theUILang.feedError		= "Torrents en erreur";
 
 thePlugins.get("feeds").langLoaded();
