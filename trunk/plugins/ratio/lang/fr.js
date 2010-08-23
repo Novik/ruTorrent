@@ -23,5 +23,6 @@
  theUILang.ratioStopAndRemove 	= "Arr\u00eat/retrait du gpe";
  theUILang.ratioErase 		= "Efface";
  theUILang.ratioEraseData 	= "Supprime les donn\u00e9es";
+ theUILang.maxTime 		= "Time";
 
 thePlugins.get("ratio").langLoaded();

@@ -14,5 +14,6 @@
  theUILang.ratioStopAndRemove 	= "Stop & Clear group";
  theUILang.ratioErase 		= "Remove";
  theUILang.ratioEraseData 	= "Remove data";
+ theUILang.maxTime 		= "Time";
 
 thePlugins.get("ratio").langLoaded();
