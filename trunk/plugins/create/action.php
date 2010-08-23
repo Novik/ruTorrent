@@ -68,19 +68,35 @@ if(isset($_REQUEST['cmd']))
 					$log=array();
 					if(is_file($dir.'/log') && is_readable($dir.'/log'))
 					{
-						$log = array_map('trim', file($dir.'/log'));
-						if(count($log)>MAX_CONSOLE_SIZE)
-							array_splice($log,0,count($log)-MAX_CONSOLE_SIZE);
-						$stripped = array();
-						foreach( $log as $ndx=>$item )
-							$stripped = array_merge($stripped,explode("\r",$item));
-						if(count($stripped)>count($log))
+						$lines = file($dir.'/log');
+						foreach( $lines as $line )
 						{
-							$log = $stripped;
-							if(count($log)>MAX_CONSOLE_SIZE)
-								array_splice($log,0,count($log)-MAX_CONSOLE_SIZE);
+							$pos = strrpos($line,"\r");
+							if($pos!==false)
+							{
+								$line = rtrim(substr($line,$pos+1));
+								if(strlen($line)==0)
+									continue;
+							}
+							if(strrpos($line,chr(8))!==false)
+							{
+								$len = strlen($line);
+								$res = array();
+								for($i=0; $i<$len; $i++)
+								{
+									if($line[$i]==chr(8))
+										array_pop($res);
+									else
+										$res[] = $line[$i];
+								}
+								$line = implode('',$res);
+							}
+							$log[] = rtrim($line);
 						}
 					}
+					if(count($log)>MAX_CONSOLE_SIZE)
+						array_splice($log,0,count($log)-MAX_CONSOLE_SIZE);
+
 					$errors=array();
 					if(is_file($dir.'/errors') && is_readable($dir.'/errors'))
 						$errors = array_map('trim', file($dir.'/errors'));
