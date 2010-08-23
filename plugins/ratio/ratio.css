@@ -1,5 +1,5 @@
 #st_ratio {display: none;}
 #st_ratio_h table {width: 400px; border-collapse: collapse;}
-#st_ratio_h table tr td {padding: 0px;}
+#st_ratio_h table tr td {padding: 1px;}
 #st_ratio_h {width: 420px; height: 270px; overflow: auto; }
-
+input.num1 {text-align: right; width: 33px}

@@ -14,5 +14,6 @@
  theUILang.ratioStopAndRemove 	= "Стоп & очистить";
  theUILang.ratioErase 		= "Удалить";
  theUILang.ratioEraseData	= "Удалить данные";
+ theUILang.maxTime 		= "Время";
 
 thePlugins.get("ratio").langLoaded();

@@ -79,6 +79,7 @@ if(plugin.enabled)
 				        $('#rat_max'+i).val( theWebUI.ratios[i].max );
 			        	$('#rat_action'+i).val( theWebUI.ratios[i].action );
 					$('#rat_upload'+i).val( theWebUI.ratios[i].upload );
+					$('#rat_time'+i).val( theWebUI.ratios[i].time );
 					$('#rat_name'+i).val( theWebUI.ratios[i].name );
 				}
 			}
@@ -93,6 +94,7 @@ if(plugin.enabled)
 					(theWebUI.ratios[i].max != $('#rat_max'+i).val()) ||
 					(theWebUI.ratios[i].action != $('#rat_action'+i).val()) ||
 					($('#rat_upload'+i).val() != theWebUI.ratios[i].upload) ||
+					($('#rat_time'+i).val() != theWebUI.ratios[i].time) ||
 					($('#rat_name'+i).val() != theWebUI.ratios[i].name))
 					return(true);
 			}
@@ -115,10 +117,11 @@ if(plugin.enabled)
 				var name = $.trim($('#rat_name'+i).val());
 				var upload = iv($('#rat_upload'+i).val());
 				var min = $('#rat_min'+i).val();
+				var time = $('#rat_time'+i).val();
 				var max = $('#rat_max'+i).val();
 				var action = $('#rat_action'+i).val();
         	        	if(name.length)
-					this.content += ('&rat_upload'+i+'='+upload+'&rat_action'+i+'='+action+'&rat_min'+i+'='+min+'&rat_max'+i+'='+max+'&rat_name'+i+'='+encodeURIComponent(name));
+					this.content += ('&rat_upload'+i+'='+upload+'&rat_action'+i+'='+action+'&rat_min'+i+'='+min+'&rat_max'+i+'='+max+'&rat_time'+i+'='+time+'&rat_name'+i+'='+encodeURIComponent(name));
 			}
         		this.contentType = "application/x-www-form-urlencoded";
 			this.mountPoint = "plugins/ratio/action.php";
@@ -219,19 +222,21 @@ plugin.onLangLoaded = function()
 				"<div id='st_ratio_h'>"+
 				"<table>"+
 					"<tr>"+
-						"<td><b>"+theUILang.ratioName+"</b></td>"+
-						"<td><b>"+theUILang.minRatio+" (%)</b></td>"+
-						"<td><b>"+theUILang.maxRatio+" (%)</b></td>"+
-						"<td><b>"+theUILang.ratioUpload+" ("+theUILang.MB+")</b></td>"+
-						"<td><b>"+theUILang.ratioAction+"</b></td>"+
+						"<td align=center><b>"+theUILang.ratioName+"</b></td>"+
+						"<td align=center><b>"+theUILang.minRatio+",%</b></td>"+
+						"<td align=center><b>"+theUILang.maxRatio+",%</b></td>"+
+						"<td align=center><b>"+theUILang.ratioUpload+","+theUILang.MB+"</b></td>"+
+						"<td align=center><b>"+theUILang.maxTime+","+theUILang.time_h.substr(0,theUILang.time_h.length-1)+"</b></td>"+
+						"<td align=center><b>"+theUILang.ratioAction+"</b></td>"+
 					"</tr>";
 		for(var i=0; i<theWebUI.maxRatio; i++)
 			s +=
 				"<tr>"+
 					"<td><input type='text' id='rat_name"+i+"' class='TextboxShort'/></td>"+
-					"<td><input type='text' id='rat_min"+i+"' class='Textbox num'/></td>"+
-					"<td><input type='text' id='rat_max"+i+"' class='Textbox num'/></td>"+
-					"<td><input type='text' id='rat_upload"+i+"' class='Textbox num' maxlength='6'/></td>"+
+					"<td><input type='text' id='rat_min"+i+"' class='Textbox num1'/></td>"+
+					"<td><input type='text' id='rat_max"+i+"' class='Textbox num1'/></td>"+
+					"<td><input type='text' id='rat_upload"+i+"' class='Textbox num1' maxlength='6'/></td>"+
+					"<td><input type='text' id='rat_time"+i+"' class='Textbox num1' maxlength='6'/></td>"+
 					"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option><option value='3'>"+theUILang.ratioEraseData+"</option></select></td>"+
 				"</tr>";
 		s+="</table></div></fieldset>";
