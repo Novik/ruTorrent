@@ -281,12 +281,12 @@
  mnu_lang			: "Taal",
  
  //Other variables added by spide
- torrent_add			: "Torrent toevoegen", /*Caption of torrent add box*/
- time_w				: "w ", /*for x weeks*/
- time_d				: "d ", /*for x days remaining*/
- time_h				: "u ", /*for x hours remaining*/
- time_m				: "m ", /*for x minutes remaining*/
- time_s				: "s ", /*for x seconds remaining*/
+ torrent_add				: "Torrent toevoegen", /*Caption of torrent add box*/
+ time_w				: "W", /*for x weeks*/
+ time_d				: "D", /*for x days remaining*/
+ time_h				: "U", /*for x hours remaining*/
+ time_m				: "M", /*for x minutes remaining*/
+ time_s				: "S", /*for x seconds remaining*/
 
  //Novik's addition
  Base_directory    		: "Folder",
