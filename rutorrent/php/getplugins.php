@@ -115,19 +115,19 @@ function findRemoteEXE( $exe, $err, &$remoteRequests )
 
 function testRemoteRequests($remoteRequests)
 {
-	$jResult = "";
+	$ret = "";
 	foreach($remoteRequests as $exe=>$info)
 	{
 		$file = $info["path"].$exe.".founded";
 		if(!is_file($file))
 		{
 			foreach($info["err"] as $err)
-				$jResult.=$err;
+				$ret.=$err;
 		}
 		else
 			@unlink($file);
 	}
-	return($jResult);
+	return($ret);
 }
 
 $jResult = "theWebUI.deltaTime = 0;\n";
