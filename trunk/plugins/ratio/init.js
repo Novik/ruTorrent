@@ -4,6 +4,14 @@ if(plugin.enabled)
 {
 	plugin.loadMainCSS();
 
+	plugin.allDone = function()
+	{
+		if(!thePlugins.isInstalled("seedingtime"))
+		{
+			$('.ratio_time').remove();
+		}
+	}
+
 	plugin.config = theWebUI.config;
 	theWebUI.config = function(data)
 	{
@@ -32,6 +40,7 @@ if(plugin.enabled)
 		});
 		if(plugin.canChangeColumns())
 			plugin.trtRenameColumn();
+		thePlugins.waitLoad( "thePlugins.get('ratio').allDone" );
 	}
 
 	if(plugin.canChangeColumns())
@@ -226,7 +235,7 @@ plugin.onLangLoaded = function()
 						"<td align=center><b>"+theUILang.minRatio+",%</b></td>"+
 						"<td align=center><b>"+theUILang.maxRatio+",%</b></td>"+
 						"<td align=center><b>"+theUILang.ratioUpload+","+theUILang.MB+"</b></td>"+
-						"<td align=center><b>"+theUILang.maxTime+","+theUILang.time_h.substr(0,theUILang.time_h.length-1)+"</b></td>"+
+						"<td class='ratio_time' align=center><b>"+theUILang.maxTime+","+theUILang.time_h.substr(0,theUILang.time_h.length-1)+"</b></td>"+
 						"<td align=center><b>"+theUILang.ratioAction+"</b></td>"+
 					"</tr>";
 		for(var i=0; i<theWebUI.maxRatio; i++)
@@ -236,7 +245,7 @@ plugin.onLangLoaded = function()
 					"<td><input type='text' id='rat_min"+i+"' class='Textbox num1'/></td>"+
 					"<td><input type='text' id='rat_max"+i+"' class='Textbox num1'/></td>"+
 					"<td><input type='text' id='rat_upload"+i+"' class='Textbox num1' maxlength='6'/></td>"+
-					"<td><input type='text' id='rat_time"+i+"' class='Textbox num1' maxlength='6'/></td>"+
+					"<td class='ratio_time'><input type='text' id='rat_time"+i+"' class='Textbox num1' maxlength='6'/></td>"+
 					"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option><option value='3'>"+theUILang.ratioEraseData+"</option></select></td>"+
 				"</tr>";
 		s+="</table></div></fieldset>";
