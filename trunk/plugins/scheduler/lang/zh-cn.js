@@ -1,26 +1,26 @@
 ﻿
- theUILang.scheduler			= "Scheduler";
- theUILang.schedulerOn			= "Enable Scheduler";
- theUILang.schedulerGraph			= "Scheduler Table";
- theUILang.schShortWeek			= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek			= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
+ theUILang.scheduler			= "调度";
+ theUILang.schedulerOn			= "启用调度";
+ theUILang.schedulerGraph			= "调度表";
+ theUILang.schShortWeek			= [ "一", "二", "三", "四", "五", "六", "日" ];
+ theUILang.schFullWeek			= [ "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日" ];
 
- theUILang.schUnlimited			= "Unlimited";
- theUILang.schLimited			= "Limited";
- theUILang.schTurnOff			= "Turn off";
- theUILang.schSeedingOnly			= "Seeding only";
+ theUILang.schUnlimited			= "不限制";
+ theUILang.schLimited			= "限制";
+ theUILang.schTurnOff			= "关闭";
+ theUILang.schSeedingOnly			= "只做种";
 
- theUILang.schUnlimitedDesc		= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc			= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc			= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc		= "Seeding only - Only upload data";
+ theUILang.schUnlimitedDesc		= "不限制 - 全局限制无效";
+ theUILang.schLimitedDesc			= "限制 - 使用调度-特定的带宽限制";
+ theUILang.schTurnOffDesc			= "关闭 - 停止所有 Torrents";
+ theUILang.schSeedingOnlyDesc		= "只做种 - 只上传数据";
 
- theUILang.schLimitedUL			= "Limited UL";
- theUILang.schLimitedDL			= "Limited DL";
+ theUILang.schLimitedUL			= "限制上传";
+ theUILang.schLimitedDL			= "限制下载";
 
  theUILang.schedPHPNotFound		= "Scheduler plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
  theUILang.schedUpdaterNotAvailable	= "Scheduler plugin: rTorrent's user can't access file plugins/scheduler/update.php for read. Plugin will not work.";
 
- theUILang.shcIgnore			= "Ignore scheduler";
+ theUILang.shcIgnore			= "忽略调度";
 
 thePlugins.get("scheduler").langLoaded();

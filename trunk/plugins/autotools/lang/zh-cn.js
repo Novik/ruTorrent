@@ -3,13 +3,13 @@
  var s_NoAccess		= "Autotools plugin: rTorrent's user can't access ";
  var s_PluginFail	= "Plugin will not work.";
 
- theUILang.autotools			= "Autotools";
- theUILang.autotoolsEnableLabel		= "Enable \"AutoLabel\" feature, Template:";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" feature";
- theUILang.autotoolsPathToFinished	= "Path to finished downloads";
- theUILang.autotoolsEnableWatch		= "Enable \"AutoWatch\" feature";
- theUILang.autotoolsPathToWatch		= "Path to base watch directory";
- theUILang.autotoolsWatchStart		= "Start download automatically";
+ theUILang.autotools			= "自动工具";
+ theUILang.autotoolsEnableLabel		= "启用 \"自动标签\" 功能, 模板:";
+ theUILang.autotoolsEnableMove		= "启用 \"自动移动\" 功能";
+ theUILang.autotoolsPathToFinished	= "下载完成路径";
+ theUILang.autotoolsEnableWatch		= "启用 \"自动监视\" 功能";
+ theUILang.autotoolsPathToWatch		= "监视路径";
+ theUILang.autotoolsWatchStart		= "自动开始下载";
  theUILang.autotoolsPHPNotFound		= s_NoAccess + "php interpreter. " + s_PluginFail;
  theUILang.autotoolsLabelShNotAvailable	= s_NoAccess + "file plugins/autotools/label.sh for read/execute. " + s_PluginFail;
  theUILang.autotoolsLabelPhpNotAvailable	= s_NoAccess + "file plugins/autotools/label.php for read. " + s_PluginFail;
