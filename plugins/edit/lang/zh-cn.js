@@ -1,7 +1,7 @@
 ﻿
  
- theUILang.EditTrackers 		= "Edit torrent...";
- theUILang.EditTorrentProperties 	= "Torrent Properties";
+ theUILang.EditTrackers 		= "编辑 Torrent...";
+ theUILang.EditTorrentProperties 	= "Torrent 属性";
  theUILang.errorAddTorrent	= "Error adding torrent file";
  theUILang.errorWriteTorrent	= "Error writing torrent file";
  theUILang.errorReadTorrent	= "Error reading torrent file";

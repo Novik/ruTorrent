@@ -78,5 +78,6 @@
  theUILang.rssMenuGroupContentsDelete = "Supprimer le contenu";
  theUILang.rssDeleteGroupPrompt = "\u00cates-vous s\u00fbr de vouloir supprimer ce groupe?";
  theUILang.rssDeleteGroupContentsPrompt = "\u00cates-vous s\u00fbr de vouloir supprimer ce groupe ainsi que tout son contenu?";
+ theUILang.rssAllFiters = "All filters";
 
 thePlugins.get("rss").langLoaded();
