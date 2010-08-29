@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN LoginMGR
  * 
  * File Name: fr.js

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN CREATE
  * 
  * File Name: fr.js
@@ -8,26 +8,26 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
  
- theUILang.mnu_create                   = "Cr\u00e9er un torrent...";
- theUILang.CreateNewTorrent             = "Cr\u00e9er un nouveau Torrent";
- theUILang.SelectSource                 = "S\u00e9lectionner la source";
- theUILang.TorrentProperties            = "Propri\u00e9t\u00e9s du torrent";
- theUILang.PieceSize                    = "Taille des pi\u00e8ces";
+ theUILang.mnu_create                   = "Créer un torrent...";
+ theUILang.CreateNewTorrent             = "Créer un nouveau Torrent";
+ theUILang.SelectSource                 = "Sélectionner la source";
+ theUILang.TorrentProperties            = "Propriétés du torrent";
+ theUILang.PieceSize                    = "Taille des pièces";
  theUILang.Other                        = "Autre";
  theUILang.StartSeeding                 = "Mettre en seed";
- theUILang.PrivateTorrent               = "Tracker priv\u00e9";
- theUILang.torrentCreate                = "Cr\u00e9er...";
+ theUILang.PrivateTorrent               = "Tracker privé";
+ theUILang.torrentCreate                = "Créer...";
  theUILang.BadTorrentData               = "Vous devez remplir tous les champs requis";
- theUILang.createExternalNotFound       = "Plugin 'Create' : Le plugin ne fonctionnera pas. Le serveur Web n'a pas acc\u00e8s au programme externe.";
- theUILang.incorrectDirectory           = "Mauvais r\u00e9pertoire";
- theUILang.cantExecExternal             = "Ne peut pas ex\u00e9cuter le programme externe";
+ theUILang.createExternalNotFound       = "Plug-in 'Create' : Le serveur Web n'a pas accès au programme externe. Le plug-in ne fonctionnera pas.";
+ theUILang.incorrectDirectory           = "Mauvais répertoire";
+ theUILang.cantExecExternal             = "Ne peut pas exécuter le programme externe";
  theUILang.createConsole                = "Console";
  theUILang.createErrors                 = "Erreurs";
  theUILang.torrentSave                  = "Enregistrer";
  theUILang.torrentKill                  = "Stop";
- theUILang.torrentKilled                = "Le processus a \u00e9t\u00e9 interrompu.";
- theUILang.badScriptPath                = "Plugin 'Create' : Certaines fonctionnalit\u00e9s ne seront pas disponibles. rTorrent ne peut pas acc\u00e9der au script en Lecture/Execution.";
- theUILang.pgrepNotFound                = "Plugin 'Create' : Certaines fonctionnalit\u00e9s ne seront pas disponibles. rTorrent ne peut pas acc\u00e9der au programme 'pgrep'.";
- theUILang.createPHPNotFound            = "Plugin 'create' : rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
+ theUILang.torrentKilled                = "Le processus a été interrompu.";
+ theUILang.badScriptPath                = "Plug-in 'Create' : rTorrent ne peut pas accéder au script en Lecture/Execution. Certaines fonctionnalités ne seront pas disponibles.";
+ theUILang.pgrepNotFound                = "Plug-in 'Create' : rTorrent ne peut pas accéder au programme 'pgrep'.Certaines fonctionnalités ne seront pas disponibles. ";
+ theUILang.createPHPNotFound            = "Plug-in 'create' : rTorrent ne peut pas accéder à l'interpréteur php. Le plug-in ne fonctionnera pas.";
 
 thePlugins.get("create").langLoaded();
