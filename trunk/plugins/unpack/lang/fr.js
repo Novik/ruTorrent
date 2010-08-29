@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN UNPACK
  * 
  * File Name: fr.js
@@ -8,21 +8,21 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
-theUILang.unpack                = "D\u00e9compression";
-theUILang.unpackPath            = "D\u00e9compresser vers (vide = dossier du torrent)";
-theUILang.processAll            = "D\u00e9compression en cours";
-theUILang.unpackTaskFailed      = "D\u00e9compression termin\u00e9e avec erreurs";
-theUILang.unpackTaskOK          = "D\u00e9compression termin\u00e9e sans erreurs";
-theUILang.unpackTaskStarted     = "D\u00e9compression commenc\u00e9e";
-theUILang.unzipNotFound         = "Plugin 'Unpack': rTorrent ne peut pas acc\u00e9der au programme 'unzip'.";
-theUILang.unrarNotFound         = "Plugin 'Unpack': rTorrent ne peut pas acc\u00e9der au programme 'unrar'.";
-theUILang.unpackRunNotAvailable = "Plugin 'Unpack': rTorrent ne peut pas acc\u00e9der au fichier externe en Lecture/Ecriture. Le plugin ne fonctionnera pas.";
-theUILang.unpackUpdNotAvailable = "Plugin 'Unpack': rTorrent ne peut pas acc\u00e9der au fichier plugins/unpack/update.php en Lecture. Le plugin ne fonctionnera pas.";
-theUILang.unpackEnabled         = "Activer la d\u00e9compression automatique";
-theUILang.unpackTorrents        = "Lors de la d\u00e9compression d'un torrent, ajouter au nom du dossier";
-theUILang.unpackAddLabel        = "Etiquette du torrent";
+theUILang.unpack                = "Décompression";
+theUILang.unpackPath            = "Décompresser vers (vide = dossier du torrent)";
+theUILang.processAll            = "Décompression en cours";
+theUILang.unpackTaskFailed      = "Décompression terminée avec erreurs";
+theUILang.unpackTaskOK          = "Décompression terminée sans erreurs";
+theUILang.unpackTaskStarted     = "Décompression commencée";
+theUILang.unzipNotFound         = "Plug-in 'Unpack': rTorrent ne peut pas accéder au programme 'unzip'.";
+theUILang.unrarNotFound         = "Plug-in 'Unpack': rTorrent ne peut pas accéder au programme 'unrar'.";
+theUILang.unpackRunNotAvailable = "Plug-in 'Unpack': rTorrent ne peut pas accéder au fichier externe en Lecture/Écriture. Le plug-in ne fonctionnera pas.";
+theUILang.unpackUpdNotAvailable = "Plug-in 'Unpack': rTorrent ne peut pas accéder au fichier plugins/unpack/update.php en Lecture. Le plug-in ne fonctionnera pas.";
+theUILang.unpackEnabled         = "Activer la décompression automatique";
+theUILang.unpackTorrents        = "Lors de la décompression d'un torrent, ajouter au nom du dossier";
+theUILang.unpackAddLabel        = "Étiquette du torrent";
 theUILang.unpackAddName         = "Nom du torrent";
-theUILang.unpackNoFiles         = "Aucune archive trouv\u00e9e dans les donn\u00e9es du torrent.";
+theUILang.unpackNoFiles         = "Aucune archive trouvée dans les données du torrent.";
 
 
 thePlugins.get("unpack").langLoaded();

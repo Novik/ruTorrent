@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN EDIT
  * 
  * File Name: fr.js
@@ -9,11 +9,11 @@
  */
 
  
- theUILang.EditTrackers 		= "Editer le torrent...";
- theUILang.EditTorrentProperties 	= "Propri\u00e9t\u00e9s du torrent";
+ theUILang.EditTrackers 		= "Éditer le torrent...";
+ theUILang.EditTorrentProperties 	= "Propriétés du torrent";
  theUILang.errorAddTorrent	= "Erreur lors de l'ajout du .torrent";
- theUILang.errorWriteTorrent	= "Erreur lors de l'\u00e9criture du .torrent";
+ theUILang.errorWriteTorrent	= "Erreur lors de l'écriture du .torrent";
  theUILang.errorReadTorrent	= "Erreur lors de la lecture du .torrent";
- theUILang.cantFindTorrent      = "Le fichier source pour ce torrent n'a pas \u00e9t\u00e9 trouv\u00e9."
+ theUILang.cantFindTorrent      = "Le fichier source pour ce torrent n'a pas été trouvé."
 
 thePlugins.get("edit").langLoaded();

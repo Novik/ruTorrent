@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN ERASEDATA
  *
  * File Name: fr.js
@@ -8,6 +8,6 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
  
- theUILang.erasedataRunNotAvailable     = "Plugin 'Erasedata': rTorrent ne peut pas acc\u00e9der au fichier plugins/erasedata/cleanup.sh en Lecture/Execution. Le plugin ne fonctionnera pas.";
+ theUILang.erasedataRunNotAvailable     = "Plug-in 'Erasedata': rTorrent ne peut pas accéder au fichier plugins/erasedata/cleanup.sh en Lecture/Éxécution. Le plug-in ne fonctionnera pas.";
 
 thePlugins.get("erasedata").langLoaded();

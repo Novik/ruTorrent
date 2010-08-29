@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN RATIO
  * 
  * File Name: fr.js
@@ -9,7 +9,7 @@
  */
 
  
- theUILang.ratioUnsupported     = "Plugin 'Ratio': cette version de rTorrent ne support pas 'ratio'. Le plugin ne fonctionnera pas.";
+ theUILang.ratioUnsupported     = "Plug-in 'Ratio': cette version de rTorrent ne support pas 'ratio'. Le plug-in ne fonctionnera pas.";
  theUILang.ratios			= "Ratios";
  theUILang.ratio			= "Ratio";
  theUILang.mnuRatio		= "Affecter un ratio";
@@ -19,10 +19,10 @@
  theUILang.maxRatio 		= "Max";
  theUILang.ratioUpload 		= "Envoi";
  theUILang.ratioAction 		= "Action";
- theUILang.ratioStop 		= "Arr\u00eat";
- theUILang.ratioStopAndRemove 	= "Arr\u00eat/retrait du gpe";
+ theUILang.ratioStop 		= "Arrêt";
+ theUILang.ratioStopAndRemove 	= "Arrêt/retrait du gpe";
  theUILang.ratioErase 		= "Efface";
- theUILang.ratioEraseData 	= "Supprime les donn\u00e9es";
- theUILang.maxTime 		= "Time";
+ theUILang.ratioEraseData 	= "Supprime les données";
+ theUILang.maxTime 		= "Temps";
 
 thePlugins.get("ratio").langLoaded();

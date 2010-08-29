@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN THEME
  * 
  * File Name: fr.js
@@ -9,6 +9,6 @@
  */
 
  theUILang.themeStandard = "Standard";
- theUILang.theme         = "Th\u00e8me";
+ theUILang.theme         = "Thème";
 
 thePlugins.get("theme").langLoaded();

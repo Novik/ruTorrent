@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN DATADIR
  * 
  * File Name: fr.js
@@ -9,10 +9,10 @@
  */
 
  theUILang.DataDir		= "Enregistrer sous";
- theUILang.DataDirMove		= "D\u00e9placer les fichiers";
- theUILang.datadirDlgCaption	= "R\u00e9pertoire du torrent";
- theUILang.datadirDirNotFound	= "Plugin 'DataDir': R\u00e9pertoire invalide";
- theUILang.datadirSetDirFail	= "Plugin 'DataDir': L'op\u00e9ration a \u00e9chou\u00e9e";
- theUILang.datadirPHPNotFound	= "Plugin 'DataDir': rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
+ theUILang.DataDirMove		= "Déplacer les fichiers";
+ theUILang.datadirDlgCaption	= "Répertoire du torrent";
+ theUILang.datadirDirNotFound	= "Plug-in 'DataDir': Répertoire invalide";
+ theUILang.datadirSetDirFail	= "Plug-in 'DataDir': L'opération a échoué";
+ theUILang.datadirPHPNotFound	= "Plug-in 'DataDir': rTorrent ne peut pas accéder à l'interpréteur php. Le plug-in ne fonctionnera pas.";
 
 thePlugins.get("datadir").langLoaded();

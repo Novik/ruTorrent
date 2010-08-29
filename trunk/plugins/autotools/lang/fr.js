@@ -8,23 +8,23 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
- var s_NoAccess         = "Plugin 'Autotools' : rTorrent ne peut pas acc\u00e9der ";
- var s_PluginFail       = "Le plugin ne fonctionnera pas.";
+ var s_NoAccess         = "Plug-in 'Autotools' : rTorrent ne peut pas accéder ";
+ var s_PluginFail       = "Le plug-in ne fonctionnera pas.";
 
  theUILang.autotools                    = "Autotools";
- theUILang.autotoolsEnableLabel         = "Activer la fonctionnalit\u00e9 'AutoLabel'. Masque:";
- theUILang.autotoolsEnableMove          = "Activer la fonctionnalit\u00e9 'AutoMove'.";
- theUILang.autotoolsPathToFinished      = "Chemin vers le r\u00e9pertoire des torrents termin\u00e9s";
- theUILang.autotoolsEnableWatch         = "Activer la fonctionnalit\u00e9 'AutoWatch'.";
- theUILang.autotoolsPathToWatch         = "Chemin vers le r\u00e9pertoire \u00e0 observer";
- theUILang.autotoolsWatchStart          = "D\u00e9marrer le t\u00e9l\u00e9chargement automatiquement.";
- theUILang.autotoolsPHPNotFound         = s_NoAccess + "\u00e0 l'interpr\u00e9teur php. " + s_PluginFail;
- theUILang.autotoolsLabelShNotAvailable = s_NoAccess + "au fichier plugins/autotools/label.sh en lecture/ex\u00e9cution. " + s_PluginFail;
+ theUILang.autotoolsEnableLabel         = "Activer la fonctionnalité 'AutoLabel'. Masque:";
+ theUILang.autotoolsEnableMove          = "Activer la fonctionnalité 'AutoMove'.";
+ theUILang.autotoolsPathToFinished      = "Chemin vers le répertoire des torrents terminés";
+ theUILang.autotoolsEnableWatch         = "Activer la fonctionnalité 'AutoWatch'.";
+ theUILang.autotoolsPathToWatch         = "Chemin vers le répertoire à observer";
+ theUILang.autotoolsWatchStart          = "Démarrer le téléchargement automatiquement.";
+ theUILang.autotoolsPHPNotFound         = s_NoAccess + "à l'interpréteur php. " + s_PluginFail;
+ theUILang.autotoolsLabelShNotAvailable = s_NoAccess + "au fichier plugins/autotools/label.sh en lecture/exécution. " + s_PluginFail;
  theUILang.autotoolsLabelPhpNotAvailable        = s_NoAccess + "au fichier plugins/autotools/label.php en lecture. " + s_PluginFail;
- theUILang.autotoolsMoveShNotAvailable  = s_NoAccess + "au fichier plugins/autotools/move.sh en lecture/ex\u00e9cution. " + s_PluginFail;
+ theUILang.autotoolsMoveShNotAvailable  = s_NoAccess + "au fichier plugins/autotools/move.sh en lecture/exécution. " + s_PluginFail;
  theUILang.autotoolsMovePhpNotAvailable = s_NoAccess + "au fichier plugins/autotools/move.php en lecture. " + s_PluginFail;
  theUILang.autotoolsWatchPhpNotAvailable        = s_NoAccess + "au fichier plugins/autotools/watch.php en lecture. " + s_PluginFail;
- theUILang.autotoolsNoPathToFinished    = "Plugin 'Autotools': le chemin vers le r\u00e9pertoire des torrents termin\u00e9s n'est pas d\u00e9fini. " + s_PluginFail;
- theUILang.autotoolsNoPathToWatch               = "Plugin 'Autotools': le chemin vers le r\u00e9pertoire \u00e0 observer n'est pas d\u00e9fini. " + s_PluginFail;
+ theUILang.autotoolsNoPathToFinished    = "Plug-in 'Autotools': le chemin vers le répertoire des torrents terminés n'est pas défini. " + s_PluginFail;
+ theUILang.autotoolsNoPathToWatch               = "Plug-in 'Autotools': le chemin vers le répertoire à observer n'est pas défini. " + s_PluginFail;
 
 thePlugins.get("autotools").langLoaded();

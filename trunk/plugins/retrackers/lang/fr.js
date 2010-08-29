@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN RETRACKERS
  * 
  * File Name: fr.js
@@ -10,10 +10,10 @@
 
  
  theUILang.retrackers           = "Retrackers";
- theUILang.dontAddToPrivate     = "Ne pas ajouter retrackers aux torrents priv\u00e9s";
- theUILang.retrackersPHPNotFound                = "Plugin 'Retrackers': rTorrent ne peut pas acc\u00e9der \u00e0 l'interpr\u00e9teur php. Le plugin ne fonctionnera pas.";
- theUILang.retrackersRunNotAvailable    = "Plugin 'Retrackers': rTorrent ne peut pas acc\u00e9der au fichier plugins/retrackers/run.sh en Lecture/Execution. Le plugin ne fonctionnera pas.";
- theUILang.retrackersUpdaterNotAvailable        = "Plugin 'Retrackers': rTorrent ne peut pas acc\u00e9der au fichier plugins/retrackers/update.php en Lecture. Le plugin ne fonctionnera pas.";
- theUILang.addToBegin           = "Ajouter 'retrackers' au d\u00e9but de la liste des trackers";
+ theUILang.dontAddToPrivate     = "Ne pas ajouter retrackers aux torrents privés";
+ theUILang.retrackersPHPNotFound                = "Plug-in 'Retrackers': rTorrent ne peut pas accéder à l'interpréteur php. Le plug-in ne fonctionnera pas.";
+ theUILang.retrackersRunNotAvailable    = "Plug-in 'Retrackers': rTorrent ne peut pas accéder au fichier plugins/retrackers/run.sh en Lecture/Éxécution. Le plug-in ne fonctionnera pas.";
+ theUILang.retrackersUpdaterNotAvailable        = "Plug-in 'Retrackers': rTorrent ne peut pas accéder au fichier plugins/retrackers/update.php en Lecture. Le plug-in ne fonctionnera pas.";
+ theUILang.addToBegin           = "Ajouter 'retrackers' au début de la liste des trackers";
 
 thePlugins.get("retrackers").langLoaded();

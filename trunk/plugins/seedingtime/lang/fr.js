@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN SeedingTime
  *
  * File Name: fr.js
@@ -8,8 +8,8 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.seedingTimeBadVersion        = "Plugin 'SeedingTime': Cette version de rTorrent ne supporte pas ce plugin. Le plugin ne fonctionnera pas.";
- theUILang.seedingTime          = "Termin\u00e9";
- theUILang.addTime              = "Ajout\u00e9";
+ theUILang.seedingTimeBadVersion        = "Plug-in 'SeedingTime': Cette version de rTorrent ne supporte pas ce plug-in. Le plug-in ne fonctionnera pas.";
+ theUILang.seedingTime          = "Terminé";
+ theUILang.addTime              = "Ajouté";
 
 thePlugins.get("seedingtime").langLoaded();

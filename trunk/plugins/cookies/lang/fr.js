@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PLUGIN COOKIES
  * 
  * File Name: fr.js
