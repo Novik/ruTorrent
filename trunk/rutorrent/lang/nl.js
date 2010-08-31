@@ -282,11 +282,11 @@
  
  //Other variables added by spide
  torrent_add				: "Torrent toevoegen", /*Caption of torrent add box*/
- time_w				: "W", /*for x weeks*/
- time_d				: "D", /*for x days remaining*/
- time_h				: "u", /*for x hours remaining*/
- time_m				: "m", /*for x minutes remaining*/
- time_s				: "s", /*for x seconds remaining*/
+ time_w				: "W ", /*for x weeks*/
+ time_d				: "D ", /*for x days remaining*/
+ time_h				: "U ", /*for x hours remaining*/
+ time_m				: "M ", /*for x minutes remaining*/
+ time_s				: "S ", /*for x seconds remaining*/
 
  //Novik's addition
  Base_directory    		: "Folder",
@@ -370,12 +370,12 @@
  retryOnErrorList		: { 0: "Probeer niet opnieuw", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },
  statNotFound			: "rTorrent's user heeft geen toegang tot: 'stat' programa. Sommige functies zullen niet werken.",
  statNotFoundW		: "Web-server heeft geen toegang tot: 'stat' programa. Sommige functies zullen niet werken.",
- badrTorrentVersion		: "This version of rTorrent doesn't support this plugin. Plugin will not work. rTorrent version must be >=",
- badPHPVersion                  : "This version of PHP doesn't support this plugin. Plugin will not work. PHP version must be >=",
- rTorrentExternalNotFoundError	: "Plugin will not work. rTorrent's user can't access external program",
- rTorrentExternalNotFoundWarning: "Some functionality will be unavailable. rTorrent's user can't access external program",
- webExternalNotFoundError	: "Plugin will not work. Web-server user can't access external program",
- webExternalNotFoundWarning	: "Some functionality will be unavailable. Web-server user can't access external program",
- rTorrentBadScriptPath		: "Plugin will not work. rTorrent's user can't access file for read/execute",
- rTorrentBadPHPScriptPath	: "Plugin will not work. rTorrent's user can't access file for read"
+ badrTorrentVersion		: "Deze versie van rtorrent support deze plugin niet. De plugin zal niet werken. rTorrent versie moet zijn >=",
+ badPHPVersion                  : "Deze PHP versie support deze plugin niet. De plugin zal niet werken. PHP versie moet zijn >=",
+ rTorrentExternalNotFoundError: "De Plugin zal niet werken. rtorrent's gebruiker heeft geen toegang tot extern programma",
+ rTorrentExternalNotFoundWarning: "Sommige functionaliteit is niet beschikbaar. rtorrent's gebruiker heeft geen toegang tot extern programma",
+ webExternalNotFoundError: "Plugin zal niet werken. Web-Server gebruiker heeft geen toegang tot extern programma",
+ webExternalNotFoundWarning: "Sommige functionaliteit is niet beschikbaar. Web-Server gebruiker heeft geen toegang tot extern programma",
+ rTorrentBadScriptPath: "Plugin zal niet werken. rtorrent's gebruiker heeft geen lees / uitvoer rechten op het bestand",
+ rTorrentBadPHPScriptPath: "Plugin zal niet werken. rtorrent's gebruiker heeft geen lees rechten op het bestand"
  };
