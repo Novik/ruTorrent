@@ -26,10 +26,10 @@ $theUILang["MB"]		= "MB";
 $theUILang["GB"]		= "GB";
 $theUILang["TB"]		= "TB";
 $theUILang["PB"]		= "PB";
-$theUILang["time_w"]		= "w ";
-$theUILang["time_d"]		= "d ";
-$theUILang["time_h"]		= "u ";
-$theUILang["time_m"]		= "m ";
-$theUILang["time_s"]		= "s ";
+$theUILang["time_w"]		= "W ";
+$theUILang["time_d"]		= "D ";
+$theUILang["time_h"]		= "U ";
+$theUILang["time_m"]		= "M ";
+$theUILang["time_s"]		= "S ";
 
 ?>
