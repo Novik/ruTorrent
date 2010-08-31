@@ -1,4 +1,4 @@
-description: The plug-in is intended for obtaining source .torrent file.
-author: Novik
-version: 3.2
-remote: error
+plugin.description: The plug-in is intended for obtaining source .torrent file.
+plugin.author: Novik
+plugin.version: 3.2
+rtorrent.remote: error

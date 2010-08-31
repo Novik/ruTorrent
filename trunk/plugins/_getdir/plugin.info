@@ -1,5 +1,5 @@
-description: The service plug-in _getdir gives to other plug-ins the possibility of comfortable navigation on a host file system.
-author: dmrom
-runlevel: 1
-version: 3.2
-need_rtorrent: 0
+plugin.description: The service plug-in _getdir gives to other plug-ins the possibility of comfortable navigation on a host file system.
+plugin.author: dmrom
+plugin.runlevel: 1
+plugin.version: 3.2
+rtorrent.need: 0

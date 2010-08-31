@@ -1,5 +1,4 @@
-description: The plug-in adds to status bar an indicator of available disk space.
-author: Novik
-version: 3.2
-remote: error
-need_rtorrent: 0
+plugin.description: The plug-in adds to status bar an indicator of available disk space.
+plugin.author: Novik
+plugin.version: 3.2
+rtorrent.need: 0

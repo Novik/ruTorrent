@@ -1,4 +1,5 @@
-description: The plug-in provides chunks information for opened torrents.
-author: Zoltan Csala
-runlevel: 11
-version: 3.2
+plugin.description: The plug-in provides chunks information for opened torrents.
+plugin.author: Zoltan Csala
+plugin.runlevel: 11
+plugin.version: 3.2
+rtorrent.version: 0.8.5

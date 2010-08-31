@@ -17,10 +17,6 @@
 
  theUILang.schLimitedUL               = "Ограничен узтовар";
  theUILang.schLimitedDL               = "Ограничен низтовар";
-
- theUILang.schedPHPNotFound           = "Додатак Scheduler: Корисник rTorrent-а не може да приступи РНР интерпретеру. Додатак неће радити.";
- theUILang.schedUpdaterNotAvailable   = "Додатак Scheduler: Корисник rTorrent-а не може да приступи датотеци plugins/scheduler/update.php ради читања. Додатак неће радити.";
-
  theUILang.shcIgnore			= "Ignore scheduler";
 
 thePlugins.get("scheduler").langLoaded();

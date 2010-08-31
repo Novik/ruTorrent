@@ -1,5 +1,5 @@
-description: The plug-in is intended for url rewrite in RSS plugin.
-author: Novik
-runlevel: 11
-version: 3.2
-need_rtorrent: 0
+plugin.description: The plug-in is intended for url rewrite in RSS plugin.
+plugin.author: Novik
+plugin.runlevel: 11
+plugin.version: 3.2
+rtorrent.need: 0

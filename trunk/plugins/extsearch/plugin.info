@@ -1,5 +1,5 @@
-description: The plug-in is intended for external search of torrents.
-author: Novik
-version: 3.2
-need_rtorrent: 0
-runlevel: 10.5
+plugin.description: The plug-in is intended for external search of torrents.
+plugin.author: Novik
+plugin.version: 3.2
+plugin.runlevel: 10.5
+rtorrent.need: 0

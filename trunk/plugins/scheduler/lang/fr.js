@@ -26,10 +26,6 @@
 
  theUILang.schLimitedUL                 = "Envoi limité";
  theUILang.schLimitedDL                 = "Réception limitée";
-
- theUILang.schedPHPNotFound             = "Plugin 'Scheduler': rTorrent ne peut pas accéder à l'interpréteur php. Le plug-in ne fonctionnera pas.";
- theUILang.schedUpdaterNotAvailable     = "Plugin 'Scheduler': rTorrent ne peut pas accéder au fichier plugins/scheduler/update.php en Lecture. Le plug-in ne fonctionnera pas.";
-
  theUILang.shcIgnore                    = "Ignorer le planificateur";
 
 thePlugins.get("scheduler").langLoaded();

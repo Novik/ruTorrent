@@ -1,4 +1,5 @@
-description: The plug-in allows to remove not only a .torrent file, but also its data.
-author: dmrom
-version: 3.2
-remote: warning
+plugin.description: The plug-in allows to remove not only a .torrent file, but also its data.
+plugin.author: dmrom
+plugin.version: 3.2
+rtorrent.remote: warning
+rtorrent.script.error: cleanup.sh

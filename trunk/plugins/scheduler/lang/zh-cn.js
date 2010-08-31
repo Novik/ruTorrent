@@ -17,10 +17,6 @@
 
  theUILang.schLimitedUL			= "限制上传";
  theUILang.schLimitedDL			= "限制下载";
-
- theUILang.schedPHPNotFound		= "Scheduler plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
- theUILang.schedUpdaterNotAvailable	= "Scheduler plugin: rTorrent's user can't access file plugins/scheduler/update.php for read. Plugin will not work.";
-
  theUILang.shcIgnore			= "忽略调度";
 
 thePlugins.get("scheduler").langLoaded();

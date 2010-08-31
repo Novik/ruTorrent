@@ -2,33 +2,9 @@
 eval(getPluginConf('rss'));
 
 $st = getSettingsPath();
-@rename($rootPath.'/plugins/rss/cache',$st.'/rss/cache');
 @mkdir($st.'/rss');
 @mkdir($st.'/rss/cache');
 $needStart = isLocalMode() && $theSettings->linkExist;
-if($do_diagnostic && $theSettings->linkExist)
-{
-	if($needStart)
-	{
-		findRemoteEXE('php',"thePlugins.get('rss').showError('theUILang.rssPHPNotFound');",$remoteRequests);
-		findRemoteEXE('curl',"thePlugins.get('rss').showError('theUILang.rssCurlNotFound');",$remoteRequests);
-	}
-	if(findEXE('curl')==false)
-		$jResult.="plugin.showError('theUILang.rssCurlNotFound1');";
-	@chmod($st.'/rss',0777);
-	@chmod($st.'/rss/cache',0777);
-	if($needStart && is_dir($st.'/rss/cache') && !isUserHavePermission($theSettings->uid,$theSettings->gid,$st.'/rss/cache',0x0007))
-	{
-	        $needStart = false;
-		$jResult.="plugin.disable(); plugin.showError('theUILang.rssCacheNotAvailable');";
-	}
-	@chmod($rootPath.'/plugins/rss/update.php',0644);
-	if($needStart && !isUserHavePermission($theSettings->uid,$theSettings->gid,$rootPath.'/plugins/rss/update.php',0x0004))
-	{
-	        $needStart = false;
-		$jResult.="plugin.disable(); plugin.showError('theUILang.rssUpdaterNotAvailable');";
-	}
-}
 if($needStart)
 {
 	$tm = getdate();

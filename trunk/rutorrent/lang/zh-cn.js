@@ -369,5 +369,13 @@
  retryOnErrorTitle		: "If rtorrent is not available try again after",
  retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },
  statNotFound			: "rTorrent's user can't access 'stat' program. Some functionality will be unavailable.",
- statNotFoundW			: "Web-server user can't access 'stat' program. Some functionality will be unavailable."
+ statNotFoundW			: "Web-server user can't access 'stat' program. Some functionality will be unavailable.",
+ badrTorrentVersion		: "This version of rTorrent doesn't support this plugin. Plugin will not work. rTorrent version must be >=",
+ badPHPVersion                  : "This version of PHP doesn't support this plugin. Plugin will not work. PHP version must be >=",
+ rTorrentExternalNotFoundError	: "Plugin will not work. rTorrent's user can't access external program",
+ rTorrentExternalNotFoundWarning: "Some functionality will be unavailable. rTorrent's user can't access external program",
+ webExternalNotFoundError	: "Plugin will not work. Web-server user can't access external program",
+ webExternalNotFoundWarning	: "Some functionality will be unavailable. Web-server user can't access external program",
+ rTorrentBadScriptPath		: "Plugin will not work. rTorrent's user can't access file for read/execute",
+ rTorrentBadPHPScriptPath	: "Plugin will not work. rTorrent's user can't access file for read"
 };

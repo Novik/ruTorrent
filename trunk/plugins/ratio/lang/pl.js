@@ -1,6 +1,4 @@
 ﻿
- 
- theUILang.ratioUnsupported	= "Wtyczka Ratio: Ta wersja rTorrenta nie wspiera ratio. Wtyczka nie będzie działać.";
  theUILang.ratios			= "Grupy ratio";
  theUILang.ratio			= "GrupaRatio";
  theUILang.mnuRatio		= "Ustaw grupę ratio";

@@ -52,11 +52,13 @@ function getPluginInfo( $name, $permissions )
 				$field = trim($fields[0]); 
 				switch($field)
 				{
+					case "plugin.runlevel":
 					case "runlevel":
 					{
 						$level = floatval($value);
 						break;
 					}
+					case "plugin.version":
 					case "version":
 					{
 						if($level==false)

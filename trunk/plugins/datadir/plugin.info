@@ -1,4 +1,4 @@
-description: The plug-in is intended for moving torrent's data files.
-author: dmrom
-version: 3.2
-remote: error
+plugin.description: The plug-in is intended for moving torrent's data files.
+plugin.author: dmrom
+plugin.version: 3.2
+rtorrent.remote: error

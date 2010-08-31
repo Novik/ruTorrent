@@ -1,5 +1,8 @@
-description: The plug-in is intended for work with RSS-feeds.
-author: Novik
-version: 3.2
-remote: warning
-need_rtorrent: 0
+plugin.description: The plug-in is intended for work with RSS-feeds.
+plugin.author: Novik
+plugin.version: 3.2
+plugin.remote: warning
+rtorrent.external.warning: curl
+rtorrent.external.error: php
+rtorrent.php.error: update.php,rss.php,conf.php
+web.external.warning: curl

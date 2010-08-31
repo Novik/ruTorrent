@@ -18,8 +18,5 @@
  theUILang.torrentSave		 	= "Save";
  theUILang.torrentKill		 	= "Stop";
  theUILang.torrentKilled	 	= "Process was stopped.";
- theUILang.badScriptPath 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access script file for read/execute.";
- theUILang.pgrepNotFound 		= "Create plugin: Some functionality will be unavailable. rTorrent's user can't access 'pgrep' program.";
- theUILang.createPHPNotFound		= "Create plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
 
 thePlugins.get("create").langLoaded();
