@@ -1,4 +1,4 @@
-description: The plug-in is intended for obtaining torrent data through http.
-author: Novik
-version: 3.2
-remote: error
+plugin.description: The plug-in is intended for obtaining torrent data through http.
+plugin.author: Novik
+plugin.version: 3.2
+rtorrent.remote: error

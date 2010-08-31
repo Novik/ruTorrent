@@ -14,6 +14,5 @@ theUILang.chunksRows = "ligne(s)";
 theUILang.chunksColumns = "colonne(s)";
 theUILang.chunksChunks = "pièce(s)";
 theUILang.chunksSize = "taille d'une pièce";
-theUILang.chunksNotSupported = "Votre version de rTorrent doit être >= 0.8.5 pour voir la progression des pièces. Votre version : ";
 
 thePlugins.get("chunks").langLoaded();

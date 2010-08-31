@@ -1,5 +1,8 @@
-description: The plug-in is intended for unpack torrent's data.
-author: Novik
-version: 3.2
-runlevel: 11
-remote: error
+plugin.description: The plug-in is intended for unpack torrent's data.
+plugin.author: Novik
+plugin.version: 3.2
+plugin.runlevel: 11
+rtorrent.remote: error
+rtorrent.script.error: unall_dir.sh,unrar_dir.sh,unrar_file.sh,unzip_dir.sh,unzip_file.sh
+rtorrent.external.error: php
+rtorrent.php.error: update.php,unpack.php,conf.php

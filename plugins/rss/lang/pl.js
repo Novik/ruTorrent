@@ -33,11 +33,6 @@
  theUILang.foundedByFilter	= "Dopasowania";
  theUILang.rssExclude	= "Wyklucz";
  theUILang.rssStatusError	= "Błąd ładowania";
- theUILang.rssPHPNotFound	= "Wtyczka RSS: użytkownik, który uruchomił rTorrent nie ma dostępu do interpretera PHP. Wtyczka nie będzie działać.";
- theUILang.rssCurlNotFound= "Wtyczka RSS: użytkownik, który uruchomił rTorrent nie ma dostępu do: curl. Nie będziesz mógł pracować z podajnikami https.";
- theUILang.rssCurlNotFound1	= "Wtyczka RSS: Serwer nie ma dostępu do zewnętrznej aplikacji: curl. Nie będziesz mógł pracować z podajnikami https.";
- theUILang.rssCacheNotAvailable 	= "Wtyczka RSS: Użytkownik, który uruchomił rTorrent nie ma praw zezwalających na odczyt/zapis/wykonywanie operacji w katalogu plugins/rss/cache . Wtyczka nie będzie działać.";
- theUILang.rssUpdaterNotAvailable = "Wtyczka RSS: Użytkownik, który uruchomił rTorrent nie ma praw zezwalających na odczyt pliku plugins/rss/update.php . Wtyczka nie będzie działać.";
  theUILang.rssFeeds = "Podajniki";
  theUILang.rssCheckTitle = "Sprawdź tytuł pola";
  theUILang.rssCheckDescription = "Sprawdź opis pola";

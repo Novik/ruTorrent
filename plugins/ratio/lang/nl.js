@@ -1,5 +1,4 @@
 
- theUILang.ratioUnsupported     	= "Deze versie van rtorrent support geen ratio. De ratio plugin zal niet werken";
  theUILang.ratios			= "Ratio";
  theUILang.ratio			= "Ratio";
  theUILang.mnuRatio			= "Set Ratio groep";

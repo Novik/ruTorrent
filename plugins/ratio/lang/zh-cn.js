@@ -1,6 +1,4 @@
 ﻿
- 
- theUILang.ratioUnsupported     = "Ratio plugin: this version of rTorrent doesn't support ratio. Plugin will not work.";
  theUILang.ratios			= "分享率设置";
  theUILang.ratio			= "分享率设置";
  theUILang.mnuRatio		= "设置分享率";

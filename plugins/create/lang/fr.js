@@ -26,8 +26,5 @@
  theUILang.torrentSave                  = "Enregistrer";
  theUILang.torrentKill                  = "Stop";
  theUILang.torrentKilled                = "Le processus a été interrompu.";
- theUILang.badScriptPath                = "Plug-in 'Create' : rTorrent ne peut pas accéder au script en Lecture/Execution. Certaines fonctionnalités ne seront pas disponibles.";
- theUILang.pgrepNotFound                = "Plug-in 'Create' : rTorrent ne peut pas accéder au programme 'pgrep'.Certaines fonctionnalités ne seront pas disponibles. ";
- theUILang.createPHPNotFound            = "Plug-in 'create' : rTorrent ne peut pas accéder à l'interpréteur php. Le plug-in ne fonctionnera pas.";
 
 thePlugins.get("create").langLoaded();

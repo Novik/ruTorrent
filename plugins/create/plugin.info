@@ -1,4 +1,8 @@
-description: The plug-in provides ability to create .torrent files.
-author: Novik
-version: 3.2
-remote: error
+plugin.description: The plug-in provides ability to create .torrent files.
+plugin.author: Novik
+plugin.version: 3.2
+rtorrent.remote: error
+rtorrent.external.error: php
+rtorrent.external.warning: pgrep
+rtorrent.script.error: buildtorrent.sh,createtorrent.sh,inner.sh,mktorrent.sh,transmissioncli.sh
+rtorrent.php.error: correct.php,createtorrent.php,conf.php

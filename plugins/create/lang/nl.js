@@ -18,8 +18,5 @@
  theUILang.torrentSave = "Opslaan";
  theUILang.torrentKill = "Stop";
  theUILang.torrentKilled = "proces is gestopt.";
- theUILang.badScriptPath = "Maak Torrent plugin: Sommige functionaliteiten zijn niet beschikbaar. rtorrent's gebruiker heeft geen toegang tot script voor lezen/uitvoeren."
- theUILang.pgrepNotFound = "Maak Torrent plugin: Sommige functionaliteiten zijn niet beschikbaar. rtorrent's gebruiker heeft geen toegang tot 'pgrep' programma.";
- theUILang.createPHPNotFound = "Maak Torrent plugin: rtorrent's gebruiker heeft geen toegang tot de PHP-interpreter. De plugin zal niet werken.";
 
 thePlugins.get("create").langLoaded();

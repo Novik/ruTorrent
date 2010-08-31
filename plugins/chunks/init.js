@@ -106,8 +106,6 @@ plugin.onLangLoaded = function() {
 		theWebUI.tEM = $("<div>").attr("id","tEM").get(0);
 		theWebUI.tEM.appendChild(document.createTextNode('M'));
 		theWebUI.Chunks.appendChild( theWebUI.tEM );
-	} else {
-    		log(theUILang.chunksNotSupported+theWebUI.systemInfo.rTorrent.version);
 	}
 }
 

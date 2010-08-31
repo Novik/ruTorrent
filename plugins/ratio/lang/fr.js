@@ -8,8 +8,6 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
- 
- theUILang.ratioUnsupported     = "Plug-in 'Ratio': cette version de rTorrent ne support pas 'ratio'. Le plug-in ne fonctionnera pas.";
  theUILang.ratios			= "Ratios";
  theUILang.ratio			= "Ratio";
  theUILang.mnuRatio		= "Affecter un ratio";

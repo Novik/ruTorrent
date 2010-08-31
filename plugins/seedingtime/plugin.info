@@ -1,4 +1,5 @@
-description: The plug-in adds the column 'Finished' to the torrents list. This column contains the time when download of the torrent was completed.
-author: Novik
-runlevel: 11.4
-version: 3.2
+plugin.description: The plug-in adds the column 'Finished' to the torrents list. This column contains the time when download of the torrent was completed.
+plugin.author: Novik
+plugin.runlevel: 11.4
+plugin.version: 3.2
+rtorrent.version: 0.8.6

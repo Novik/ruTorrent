@@ -18,10 +18,6 @@
 
  theUILang.schLimitedUL 			= "Beperkte UL";
  theUILang.schLimitedDL 			= "Beperkte DL";
-
- theUILang.schedPHPNotFound 		= "Scheduler plugin: rtorrent's gebruiker heeft geen toegang tot de PHP-interpreter. De plugin zal niet werken.";
- theUILang.schedUpdaterNotAvailable 	= "Scheduler plugin: rtorrent's gebruiker geen lees toegang tot het bestand plugins/planner/update.php. De plugin zal niet werken.";
-
  theUILang.shcIgnore 			= "Negeer Taakplanner";
 
 thePlugins.get ("scheduler"). langLoaded ();

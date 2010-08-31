@@ -1,6 +1,4 @@
 ﻿
- 
- theUILang.ratioUnsupported     = "Ratio plugin: this version of rTorrent doesn't support ratio. Plugin will not work.";
  theUILang.ratios			= "Ratio groups";
  theUILang.ratio			= "RatioGroup";
  theUILang.mnuRatio		= "Set ratio group";

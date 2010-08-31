@@ -1,4 +1,7 @@
-description: This plug-in appends specified trackers to the trackers list of all newly added torrents.
-author: Novik
-version: 3.2
-remote: error
+plugin.description: This plug-in appends specified trackers to the trackers list of all newly added torrents.
+plugin.author: Novik
+plugin.version: 3.2
+rtorrent.remote: error
+rtorrent.external.error: php
+rtorrent.script.error: run.sh
+rtorrent.php.error: update.php,retrackers.php

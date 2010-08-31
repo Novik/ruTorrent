@@ -32,11 +32,6 @@
  theUILang.foundedByFilter = "Matches";
  theUILang.rssExclude = "Uitsluiten";
  theUILang.rssStatusError = "Laadd error";
- theUILang.rssPHPNotFound = "RSS plugin: rtorrent's gebruiker heeft geen toegang tot PHP-interpreter. Plugin zal niet werken.";
- theUILang.rssCurlNotFound = "RSS plugin: rtorrent's gebruiker heeft geen toegang tot CURL . U zult niet in staat om te werken met https feeds.";
- theUILang.rssCurlNotFound1 = "RSS plugin: webserver gebruiker heeft geen toegang tot CURL. U zult niet in staat om te werken met https feeds.";
- theUILang.rssCacheNotAvailable = "RSS plugin: rtorrent's gebruiker heeft geen lees/schrijf/uitvoer toegang tot :plugins/rss/cache. Plugin zal niet werken.";
- theUILang.rssUpdaterNotAvailable = "RSS plugin: rtorrent's gebruiker heeft geen lees toegang tot plugins/rss/update.php . Plugin zal niet werken.";
  theUILang.rssFeeds = "feeds";
  theUILang.rssCheckTitle = "Controleer titel veld";
  theUILang.rssCheckDescription = "Controleer het beschrijving veld";

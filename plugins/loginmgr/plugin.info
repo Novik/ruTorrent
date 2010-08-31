@@ -1,5 +1,5 @@
-description: The plug-in is intended for manage accounts on private trackers.
-author: Novik
-runlevel: 0
-version: 3.2
-need_rtorrent: 0
+plugin.description: The plug-in is intended for manage accounts on private trackers.
+plugin.author: Novik
+plugin.runlevel: 0
+plugin.version: 3.2
+rtorrent.need: 0

@@ -1,4 +1,4 @@
-description: The plug-in provides cookies information.
-author: Novik
-version: 3.2
-need_rtorrent: 0
+plugin.description: The plug-in provides cookies information.
+plugin.author: Novik
+plugin.version: 3.2
+rtorrent.need: 0

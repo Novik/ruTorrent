@@ -42,11 +42,6 @@
  theUILang.foundedByFilter      = "Correspondances";
  theUILang.rssExclude   = "Exclure";
  theUILang.rssStatusError       = "Erreur lors du chargement";
- theUILang.rssPHPNotFound       = "Plugin 'RSS': rTorrent ne peut pas accéder à l'interpréteur php. Le plug-in ne fonctionnera pas.";
- theUILang.rssCurlNotFound= "Plugin 'RSS': rTorrent ne peut pas accéder au programme 'curl'. Vous ne pourrez pas utiliser des flux en HTTPS.";
- theUILang.rssCurlNotFound1     = "Plugin 'RSS': Le serveur web ne peut pas accéder au programme 'curl'. Vous ne pourrez pas utiliser des flux en HTTPS.";
- theUILang.rssCacheNotAvailable         = "Plugin 'RSS': rTorrent ne peut pas accéder au répertoire plugins/rss/cache en Lecture/Écriture/Exécution. Le plug-in ne fonctionnera pas.";
- theUILang.rssUpdaterNotAvailable = "Plugin 'RSS': rTorrent ne peut pas accéder au fichier plugins/rss/update.php en Lecture. Le plug-in ne fonctionnera pas.";
  theUILang.rssFeeds = "Flux";
  theUILang.rssCheckTitle = "Regarder dans le titre";
  theUILang.rssCheckDescription = "Regarder dans la description";

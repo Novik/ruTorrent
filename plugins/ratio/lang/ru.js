@@ -1,6 +1,4 @@
 ﻿
- 
- theUILang.ratioUnsupported	= "Плагин ratio: эта версия rTorrent не поддерживает индивидуальное управление ratio. Плагин не будет работать.";
  theUILang.ratios			= "Группы ratio";
  theUILang.ratio			= "ГруппаRatio";
  theUILang.mnuRatio		= "Установить ratio";

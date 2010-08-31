@@ -33,11 +33,6 @@
  theUILang.foundedByFilter	= "Найдено совпадений";
  theUILang.rssExclude	= "Кроме";
  theUILang.rssStatusError	= "Ошибка загрузки";
- theUILang.rssPHPNotFound	= "Плагин rss: пользователю rTorrent не доступен интерпретатор php. Плагин не будет работать.";
- theUILang.rssCurlNotFound= "Плагин rss: пользователю rTorrent не доступна программа curl. Вы не сможете работать с https рассылками.";
- theUILang.rssCurlNotFound1	= "Плагин rss: пользователю веб-сервера не доступна программа curl. Вы не сможете работать с https рассылками.";
- theUILang.rssCacheNotAvailable 	= "Плагин rss: rTorrent должен иметь доступ на чтение/запись/выполнение к директории plugins/rss/cache. Плагин не будет работать.";
- theUILang.rssUpdaterNotAvailable = "Плагин rss: rTorrent должен иметь доступ на чтение к файлу plugins/rss/update.php. Плагин не будет работать.";
  theUILang.rssFeeds = "Рассылки";
  theUILang.rssCheckTitle = "Искать в названии";
  theUILang.rssCheckDescription = "Искать в описании";

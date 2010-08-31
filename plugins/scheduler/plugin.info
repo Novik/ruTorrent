@@ -1,4 +1,6 @@
-description: You can enable the scheduler and click the cells to define any of six rTorrent behavior types at each particular hour of 168 week hours.
-author: Novik
-version: 3.2
-remote: error
+plugin.description: You can enable the scheduler and click the cells to define any of six rTorrent behavior types at each particular hour of 168 week hours.
+plugin.author: Novik
+plugin.version: 3.2
+rtorrent.remote: error
+rtorrent.external.error: php
+rtorrent.php.error: update.php,scheduler.php,conf.php

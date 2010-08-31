@@ -33,11 +33,6 @@
  theUILang.foundedByFilter	= "Matches";
  theUILang.rssExclude	= "Exclude";
  theUILang.rssStatusError	= "Load error";
- theUILang.rssPHPNotFound	= "RSS plugin: rTorrent's user can't access php interpreter. Plugin will not work.";
- theUILang.rssCurlNotFound= "RSS plugin: rTorrent's user can't access curl program. You will not be able to work with https feeds.";
- theUILang.rssCurlNotFound1	= "RSS plugin: Web server user can't access curl program. You will not be able to work with https feeds.";
- theUILang.rssCacheNotAvailable 	= "RSS plugin: rTorrent's user can't access directory plugins/rss/cache for read/write/execute. Plugin will not work.";
- theUILang.rssUpdaterNotAvailable = "RSS plugin: rTorrent's user can't access file plugins/rss/update.php for read. Plugin will not work.";
  theUILang.rssFeeds = "Feeds";
  theUILang.rssCheckTitle = "Check title field";
  theUILang.rssCheckDescription = "Check description field";

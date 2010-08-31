@@ -1,5 +1,3 @@
-plugin.loadLang();
-
 if(plugin.enabled && plugin.canChangeMenu())
 {
 	theWebUI.removeWithData = function()
