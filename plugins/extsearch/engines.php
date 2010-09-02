@@ -385,16 +385,16 @@ class engineManager
 		uasort($arr, create_function( '$a,$b', 'return( (intval($a["seeds"]) > intval($b["seeds"])) ? -1 : ((intval($a["seeds"]) < intval($b["seeds"])) ? 1 : 0) );'));
 		$cnt = 0;		
 		$history = self::loadHistory(true);
-                $ret = '{eng: '.quoteAndDeslashEachItem($eng).', cat: '.quoteAndDeslashEachItem($cat).', data: [';
+                $ret = '{"eng": '.quoteAndDeslashEachItem($eng).', "cat": '.quoteAndDeslashEachItem($cat).', "data": [';
 		foreach( $arr as $href=>$nfo )
 		{
 			$hash = $history->getHash( $href );
 			self::correctItem($nfo);
-			$item = "{ time: ".$nfo["time"].", cat: ".quoteAndDeslashEachItem($nfo["cat"]).", size: ".$nfo["size"].
-				", name: ".quoteAndDeslashEachItem($nfo["name"]).", desc: ".quoteAndDeslashEachItem($nfo["desc"]).
-				", src: ".quoteAndDeslashEachItem($nfo["src"]).", link: ".quoteAndDeslashEachItem($href).
-				", hash: ".quoteAndDeslashEachItem($hash).
-				", seeds: ".$nfo["seeds"].", peers: ".$nfo["peers"]." },";
+			$item = '{ "time": '.$nfo["time"].', "cat": '.quoteAndDeslashEachItem($nfo["cat"]).', "size": '.$nfo["size"].
+				', "name": '.quoteAndDeslashEachItem($nfo["name"]).', "desc": '.quoteAndDeslashEachItem($nfo["desc"]).
+				', "src": '.quoteAndDeslashEachItem($nfo["src"]).', "link": '.quoteAndDeslashEachItem($href).
+				', "hash": '.quoteAndDeslashEachItem($hash).
+				', "seeds": '.$nfo["seeds"].', "peers": '.$nfo["peers"].' },';
 			$ret.=$item;
 			$cnt++;
 			if($cnt>=$this->limit)

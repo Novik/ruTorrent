@@ -27,8 +27,9 @@ class rURLRewriteRule
 	}
 	public function getContents()
 	{
-		return("{ name: ".quoteAndDeslashEachItem($this->name).", enabled: ".$this->enabled.", pattern: ".quoteAndDeslashEachItem($this->pattern).", replacement: ".quoteAndDeslashEachItem($this->replacement).
-			", hash: ".quoteAndDeslashEachItem($this->rssHash).", hrefAsSrc: ".$this->hrefAsSrc.", hrefAsDest: ".$this->hrefAsDest." }");
+		return('{ "name": '.quoteAndDeslashEachItem($this->name).', "enabled": '.$this->enabled.', "pattern": '.
+			quoteAndDeslashEachItem($this->pattern).', "replacement": '.quoteAndDeslashEachItem($this->replacement).
+			', "hash": '.quoteAndDeslashEachItem($this->rssHash).', "hrefAsSrc": '.$this->hrefAsSrc.', "hrefAsDest": '.$this->hrefAsDest.' }');
 	}
 	public function isApplicable( $rss, $groups )
 	{

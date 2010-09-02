@@ -15,9 +15,9 @@ switch($cmd)
 		$href = trim($_REQUEST['test']);
 		$rslt = $rule->apply($href,$href);
 		if($rslt==false)
-			$val = "{ msg: theUILang.rssPatternError }";
+			$val = '{ "msg": theUILang.rssPatternError }';
 		else
-			$val = "{ msg: ".quoteAndDeslashEachItem($rslt)." }";
+			$val = '{ "msg": '.quoteAndDeslashEachItem($rslt).' }';
 		break;
 	}
 	case "setrules":

@@ -75,16 +75,16 @@ class rRSS
 
 	public function getContents($label,$auto,$enabled,$history)
 	{
-		$ret = "{ label: \"".self::quoteInvalidURI($label)."\", auto: ".$auto.", enabled: ".$enabled.", hash: \"".$this->hash."\", url: \"".self::quoteInvalidURI($this->srcURL)."\", items: [";
+		$ret = '{ "label": '.self::quoteInvalidURI($label).', "auto": '.$auto.', "enabled": '.$enabled.', "hash": "'.$this->hash.'", "url": '.self::quoteInvalidURI($this->srcURL).', "items": [';
 		foreach($this->items as $href=>$item)
 		{
 			if($item['timestamp']>0)
-				$ret.="{ time: ".$item['timestamp'];
+				$ret.='{ "time": '.$item['timestamp'];
 			else
-				$ret.='{ time: null';
-			$ret.=", title: \"".addslashes($item['title'])."\", href: \"".self::quoteInvalidURI($href).
-				"\", guid: \"".self::quoteInvalidURI($item['guid']).
-				"\", errcount: ".$history->getCounter($href).", hash: \"".$history->getHash($href)."\" },";
+				$ret.='{ "time": null';
+			$ret.=', "title": "'.addslashes($item['title']).'", "href": '.self::quoteInvalidURI($href).
+				', "guid": '.self::quoteInvalidURI($item['guid']).
+				', "errcount": '.$history->getCounter($href).', "hash": "'.$history->getHash($href).'" },';
 		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
@@ -323,7 +323,7 @@ class rRSS
 
 	static protected function quoteInvalidURI($str)
 	{
-		return( preg_replace("/\s/u"," ",addslashes($str)) );
+		return( '"'.preg_replace("/\s/u"," ",addslashes($str)).'"' );
 	}
 
 	static protected function fetchURL($url, $cookies = null, $headers = null )
@@ -530,17 +530,17 @@ class rRSSFilter
 	}
 	public function getContents()
 	{
-		return("{ name: \"".addslashes($this->name)."\", enabled: ".$this->enabled.", pattern: \"".addslashes($this->pattern)."\", label: \"".addslashes($this->label).
-			"\", exclude: \"".addslashes($this->exclude).
-			"\", throttle: \"".addslashes($this->throttle).
-			"\", ratio: \"".addslashes($this->ratio).
-			"\", hash: \"".addslashes($this->rssHash)."\", start: ".$this->start.", add_path: ".$this->addPath.
-			", chktitle: ".$this->titleCheck.
-			", chkdesc: ".$this->descCheck.
-			", chklink: ".$this->linkCheck.
-			", no: ".$this->no.
-			", interval: ".$this->interval.
-			", dir: \"".addslashes($this->directory)."\" }");
+		return('{ "name": "'.addslashes($this->name).'", "enabled": '.$this->enabled.', "pattern": "'.addslashes($this->pattern).'", "label": "'.addslashes($this->label).
+			'", "exclude": "'.addslashes($this->exclude).
+			'", "throttle": "'.addslashes($this->throttle).
+			'", "ratio": "'.addslashes($this->ratio).
+			'", "hash": "'.addslashes($this->rssHash).'", "start": '.$this->start.', "add_path": '.$this->addPath.
+			', "chktitle": '.$this->titleCheck.
+			', "chkdesc": '.$this->descCheck.
+			', "chklink": '.$this->linkCheck.
+			', "no": '.$this->no.
+			', "interval": '.$this->interval.
+			', "dir": "'.addslashes($this->directory).'" }');
 	}
 }
 
@@ -588,7 +588,7 @@ class rRSSGroup
 	}
 	public function getContents()
 	{
-		return($this->hash." : { name: ".quoteAndDeslashEachItem($this->name).", lst: [".implode(",", array_map('quoteAndDeslashEachItem', $this->lst))."]}");
+		return('"'.$this->hash.'" : { "name": '.quoteAndDeslashEachItem($this->name).', "lst": ['.implode(",", array_map('quoteAndDeslashEachItem', $this->lst)).']}');
 	}
 	public function check( $rssList )	
 	{
@@ -732,13 +732,13 @@ class rRSSMetaList
 	}
 	public function formatErrors()
 	{
-		$ret = "{ errors: [";
+		$ret = '{ "errors": [';
 		$time = time();
 		foreach($this->err as $err)
 		{
 			if(array_key_exists('time',$err))
 				$time = $err['time'];
-			$ret.="{ time: ".$time.", prm: \"".addslashes($err['prm'])."\", desc: ".$err['desc']." },";
+			$ret.='{ "time": '.$time.', "prm": "'.addslashes($err['prm']).'", "desc": '.$err['desc'].' },';
 		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
@@ -905,7 +905,7 @@ class rRSSManager
 			}
 		}
 		$hrefs = array_map(  'quoteAndDeslashEachItem', array_unique($hrefs));
-		return($this->rssList->formatErrors().", rss: '".$hash."',list: [".implode(",",$hrefs)."]}");
+		return($this->rssList->formatErrors().', "rss": "'.$hash.'","list": ['.implode(",",$hrefs).']}');
 	}
 	public function updateRSSGroup($hash)
 	{
@@ -974,12 +974,12 @@ class rRSSManager
 		$nextTouch = $updateInterval*60;
 		if($this->rssList->updatedAt)
 			$nextTouch = $nextTouch-(time()-$this->rssList->updatedAt)+15;
-		return("{ next: ".$nextTouch.", interval: ".$updateInterval." }");
+		return('{ "next": '.$nextTouch.', "interval": '.$updateInterval.' }');
 	}
 	public function get()
 	{
 		$corrected = false;
-		$ret = $this->rssList->formatErrors().", list: [";
+		$ret = $this->rssList->formatErrors().', "list": [';
 		foreach($this->rssList->lst as $hash=>$info)
 		{
 			$rss = new rRSS(array_key_exists('url',$info) ? $info['url'] : null);
@@ -1009,7 +1009,7 @@ class rRSSManager
 			$ret = substr($ret,0,$len-1);
 		if($this->groups->check($this->rssList))
 			$this->saveGroups();
-		$ret.="], groups: ".$this->groups->getContents();
+		$ret.='], "groups": '.$this->groups->getContents();
 		return($ret."}");
 	}
 	public function getDescription( $hash, $href )

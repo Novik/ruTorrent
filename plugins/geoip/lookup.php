@@ -25,7 +25,7 @@
 				if(strlen($value))
 				{
 					$city = '';
-					$info = '{ip: "'.$value.'", info: {country: "';
+					$info = '{"ip": "'.$value.'", "info": {"country": "';
 					if($retrieveCountry)
 					{
 						$country = '';
@@ -50,7 +50,7 @@
 					if(!empty($city))
                                                $country.=" (".$city.")";
 					$info.=$country;				
-					$info.='", host: "';
+					$info.='", "host": "';
 					$host = $value;
 					if($retrieveHost)
 					{
