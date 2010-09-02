@@ -74,9 +74,9 @@ if(isset($_REQUEST['mode']))
 						$ndx[] = $parts[1];
 				}
 				$status = $em->getTorrents( $engs, $urls, $isStart, $isAddPath, $dir, $lbl, $fast );
-				$ret = '{ teg: "'.$teg.'", data: [';
+				$ret = '{ "teg": "'.$teg.'", "data": [';
 				for($i = 0; $i< count($status); $i++)
-					$ret .= '{ hash : "'.$status[$i].'", ndx: '.$ndx[$i].' },';
+					$ret .= '{ "hash" : "'.$status[$i].'", "ndx": '.$ndx[$i].' },';
 				$len = strlen($ret);
 				if($ret[$len-1]==',')
 					$ret = substr($ret,0,$len-1);

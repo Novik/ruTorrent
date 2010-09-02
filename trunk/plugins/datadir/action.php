@@ -87,9 +87,9 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	}
 }
 
-$ret = "{ errors: [";
+$ret = '{ "errors": [';
 foreach( $errors as $err )
-	$ret .= "{ prm: \"".addslashes( $err['prm'] )."\", desc: ".$err['desc']." },";
+	$ret .= '{ "prm": "'.addslashes( $err['prm'] ).'", "desc": '.$err['desc'].' },';
 $len = strlen( $ret );
 if( $ret[$len - 1] == ',' )
 	$ret = substr( $ret, 0, $len - 1 );

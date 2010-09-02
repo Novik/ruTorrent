@@ -88,8 +88,8 @@ class rStat
 	}
 	static protected function format( $arrUp, $arrDown, $arrLabel, $mode )
 	{
-		return( "{ up: [".implode(",",$arrUp)."], down: [".implode(",",$arrDown).
-			"], labels: [".implode(",",$arrLabel)."], mode: '".$mode."', trackers: [" );
+		return( '{ "up": ['.implode(",",$arrUp).'], "down": ['.implode(",",$arrDown).
+			'], "labels": ['.implode(",",$arrLabel).'], "mode": "'.$mode.'", "trackers": [' );
 	}
 	static protected function getTrackers()
 	{

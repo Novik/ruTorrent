@@ -28,10 +28,10 @@ if(isset($_REQUEST['cmd']))
 					isset($_REQUEST['no']) ? $_REQUEST['no'] : null,
 					isset($_REQUEST['all']) );
 				if($arr)
-					$ret = "{ no: ".$arr['no'].", name: '".addslashes($arr['name'])."', out: '".addslashes($arr['out'])."' }";
+					$ret = '{ "no": '.$arr['no'].', "name": "'.addslashes($arr['name']).'", "out": "'.addslashes($arr['out']).'" }';
 			}
 			if(empty($ret))
-				$ret = "{ no: -1 }";
+				$ret = '{ "no": -1 }';
   	                break;
 
 		}
@@ -51,8 +51,8 @@ if(isset($_REQUEST['cmd']))
 						$chk = rUnpack::checkTask( trim($parts[1]) );
 						if($chk)
 						{
-							$arr[] = "{ no: ".$chk['no'].", status: ".$chk['status'].", errors: [".
-								implode(",", array_map('quoteAndDeslashEachItem', $chk['errors']))."]}";
+							$arr[] = '{ "no": '.$chk['no'].', "status": '.$chk['status'].', "errors": ['.
+								implode(",", array_map('quoteAndDeslashEachItem', $chk['errors'])).']}';
 						}
 					}
 				}
