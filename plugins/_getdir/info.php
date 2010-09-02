@@ -21,7 +21,7 @@ if(isset($_REQUEST['mode']))
 				if( $val!='' )
 					$labels[$val] = true;
 			}
-			$output[] = "labels: [".implode(',',array_map("quoteAndDeslashEachItem",array_keys($labels)))."]";
+			$output[] = '"labels": ['.implode(',',array_map("quoteAndDeslashEachItem",array_keys($labels))).']';
 		}
 	}
 	if(in_array("dirlist",$modes))
@@ -68,7 +68,7 @@ if(isset($_REQUEST['mode']))
 			}
 		        closedir($dh);
 			sort($files,SORT_STRING);
-			$output[] = "basedir: ".quoteAndDeslashEachItem($dir).", dirlist: [".implode(',',array_map("quoteAndDeslashEachItem",$files))."]";
+			$output[] = '"basedir": '.quoteAndDeslashEachItem($dir).', "dirlist": ['.implode(',',array_map("quoteAndDeslashEachItem",$files)).']';
 		}
         }
 	if(in_array("channels",$modes) && $theSettings->isPluginRegistered('throttle'))
@@ -78,7 +78,7 @@ if(isset($_REQUEST['mode']))
 		$tnames = array();
 		foreach( $trt->thr as $thr )
 			$tnames[] = $thr["name"];
-		$output[] = "channels: [".implode(',',array_map("quoteAndDeslashEachItem",$tnames))."]";
+		$output[] = '"channels": ['.implode(',',array_map("quoteAndDeslashEachItem",$tnames)).']';
 	}
 	if(in_array("ratios",$modes) && $theSettings->isPluginRegistered('ratio'))
 	{
@@ -87,7 +87,7 @@ if(isset($_REQUEST['mode']))
 		$rnames = array();
 		foreach( $rat->rat as $r )
 			$rnames[] = $r["name"];
-		$output[] = "ratios: [".implode(',',array_map("quoteAndDeslashEachItem",$rnames))."]";
+		$output[] = '"ratios": ['.implode(',',array_map("quoteAndDeslashEachItem",$rnames)).']';
 	}
 	$ret.=implode(',',$output);
 }
