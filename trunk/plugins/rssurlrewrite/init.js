@@ -1,10 +1,7 @@
-if(thePlugins.isInstalled("rss"))
-{
-	plugin.loadMainCSS();
-	if(browser.isIE && browser.versionMajor < 8)
-		plugin.loadCSS("ie");
-	plugin.loadLang();
-}
+plugin.loadMainCSS();
+if(browser.isIE && browser.versionMajor < 8)
+	plugin.loadCSS("ie");
+plugin.loadLang();
 
 theWebUI.curRule = null;
 theWebUI.maxRuleNo = 0;
