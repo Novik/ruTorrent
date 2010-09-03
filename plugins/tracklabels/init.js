@@ -182,11 +182,13 @@ theWebUI.rebuildTrackersLabels = function()
 	{
 		var table = this.getTable('trt');
 		trackersLabels = new Object();
+		var counted = new Object();
 		for(var hash in this.trackers)
 		{
 			if($type(this.torrents[hash]))
 			{
 			        this.torrents[hash].tracker = null;
+				counted[hash] = new Array();
 				for( var i=0; i<this.trackers[hash].length; i++)
 				{
 					if(this.trackers[hash][i].group==0)
@@ -200,10 +202,14 @@ theWebUI.rebuildTrackersLabels = function()
 								if(plugin.canChangeColumns())
 									table.setValueById(hash, 'tracker', tracker);
 							}
-							if($type(trackersLabels[tracker]))
-								trackersLabels[tracker]++;
-							else
-								trackersLabels[tracker] = 1;
+							if($.inArray(tracker, counted[hash]) == -1)
+							{
+								if($type(trackersLabels[tracker]))
+									trackersLabels[tracker]++;
+								else
+									trackersLabels[tracker] = 1;
+								counted[hash].push(tracker);
+							}
 						}
 					}
 				}
