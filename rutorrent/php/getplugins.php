@@ -41,6 +41,7 @@ function getPluginInfo( $name, $permissions )
 		'plugin.runlevel'=>10.0, 
 		'plugin.description'=>'', 
 		'plugin.author'=>'unknown',
+		'plugin.dependencies'=>array(),
 		'php.version'=>0x50000,
 		'php.version.readable'=>'5.0.0',
 		'web.external.warning'=>array(),
@@ -85,6 +86,7 @@ function getPluginInfo( $name, $permissions )
 						$info[$field.'.readable'] = $value;
 						break;
 					}
+					case "plugin.dependencies":
 					case "rtorrent.external.warning":
 					case "rtorrent.external.error":
 					case "rtorrent.script.error":
@@ -269,6 +271,7 @@ if($handle = opendir('../plugins'))
 			$plg = "../conf/plugins.ini";
 		$permissions = parse_ini_file($plg,true);
 		$init = array();
+		$names = array();
 		$phpVersion = phpversion();
 		if( ($pos=strpos($phpVersion, '-'))!==false )
 			$phpVersion = substr($phpVersion,0,$pos);
@@ -283,18 +286,11 @@ if($handle = opendir('../plugins'))
 				{
 				        if(!$theSettings->linkExist && $info["rtorrent.need"])
 						continue;
-					if($info['rtorrent.version']>$theSettings->iVersion)
-					{
-						$jResult.="log('".$file.": '+theUILang.badrTorrentVersion+' '+'".$info['rtorrent.version.readable']."'+'.');";
-						continue;
-					}
 					if($info['php.version']>$phpIVersion)
 					{
 						$jResult.="log('".$file.": '+theUILang.badPHPVersion+' '+'".$info['php.version.readable']."'+'.');";
 						continue;
 					}
-					foreach( $info['rtorrent.external.error'] as $external )
-						findRemoteEXE($external,"log('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').'); thePlugins.get('".$file."').disable();",$remoteRequests);
 					$extError = false;
 					foreach( $info['web.external.error'] as $external )
 					{
@@ -306,44 +302,55 @@ if($handle = opendir('../plugins'))
 					}
 					if($extError)
 						continue;
-					foreach( $info['rtorrent.script.error'] as $external )
+					if($theSettings->linkExist)
 					{
-					       	$fname = $rootPath.'/plugins/'.$file.'/'.$external;
-						@chmod($fname,0755);
-						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0005))
+						if($info['rtorrent.version']>$theSettings->iVersion)
 						{
-							$jResult.="log('".$file.": '+theUILang.rTorrentBadScriptPath+' ('+'".$fname."'+').');";
-							$extError = true;
-						}
-					}
-					if($extError)
-						continue;
-					foreach( $info['rtorrent.php.error'] as $external )
-					{
-					       	$fname = $rootPath.'/plugins/'.$file.'/'.$external;
-						@chmod($fname,0644);
-						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0004))
-						{
-							$jResult.="log('".$file.": '+theUILang.rTorrentBadPHPScriptPath+' ('+'".$fname."'+').');";
-							$extError = true;
-						}
-					}
-					if($extError)
-						continue;
-				        if(!isLocalMode())
-				        {
-				        	if($info["rtorrent.remote"]=="error")
-						{
-							$jResult.="log('".$file.": '+theUILang.errMustBeInSomeHost);";
+							$jResult.="log('".$file.": '+theUILang.badrTorrentVersion+' '+'".$info['rtorrent.version.readable']."'+'.');";
 							continue;
 						}
-				        	if($do_diagnostic && ($info["rtorrent.remote"]=="warning"))
-							$jResult.="log('".$file.": '+theUILang.warnMustBeInSomeHost);";
-				        }
+                				foreach( $info['rtorrent.external.error'] as $external )
+							findRemoteEXE($external,"log('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').'); thePlugins.get('".$file."').disable();",$remoteRequests);
+						foreach( $info['rtorrent.script.error'] as $external )
+						{
+						       	$fname = $rootPath.'/plugins/'.$file.'/'.$external;
+							@chmod($fname,0755);
+							if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0005))
+							{
+								$jResult.="log('".$file.": '+theUILang.rTorrentBadScriptPath+' ('+'".$fname."'+').');";
+								$extError = true;
+							}
+						}
+						if($extError)
+							continue;
+						foreach( $info['rtorrent.php.error'] as $external )
+						{
+					       		$fname = $rootPath.'/plugins/'.$file.'/'.$external;
+							@chmod($fname,0644);
+							if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0004))
+							{
+								$jResult.="log('".$file.": '+theUILang.rTorrentBadPHPScriptPath+' ('+'".$fname."'+').');";
+								$extError = true;
+							}
+						}
+						if($extError)
+							continue;
+				        	if(!isLocalMode())
+					        {
+					        	if($info["rtorrent.remote"]=="error")
+							{
+								$jResult.="log('".$file.": '+theUILang.errMustBeInSomeHost);";
+								continue;
+							}
+				        		if($do_diagnostic && ($info["rtorrent.remote"]=="warning"))
+								$jResult.="log('".$file.": '+theUILang.warnMustBeInSomeHost);";
+					        }
+					}
 					if($do_diagnostic)
 					{
-						foreach( $info['rtorrent.external.warning'] as $external )
-							findRemoteEXE($external,"log('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').');",$remoteRequests);
+						if($theSettings->linkExist)
+							foreach( $info['rtorrent.external.warning'] as $external )
+								findRemoteEXE($external,"log('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').');",$remoteRequests);
 						foreach( $info['web.external.warning'] as $external )
 							if(findEXE($external)==false)
 								$jResult.="log('".$file.": '+theUILang.webExternalNotFoundWarning+' ('+'".$external."'+').');";
@@ -355,7 +362,7 @@ if($handle = opendir('../plugins'))
 					if(!is_readable($php))
 						$php = NULL;
 					$init[] = array( "js" => $js, "php" => $php, "info" => $info, "name" => $file );
-					$user = getUser();
+					$names[] = $file;
 				}
 			}
 		} 
@@ -364,6 +371,10 @@ if($handle = opendir('../plugins'))
 		{
 		        $jEnd = '';
 		        $pInfo = $plugin["info"];
+
+			if(count(array_diff( $pInfo["plugin.dependencies"], $names )))
+				continue;
+
 			$jResult.="(function () { var plugin = new rPlugin( '".$plugin["name"]."',".$pInfo["plugin.version"].
 				",'".$pInfo["plugin.author"]."','".$pInfo["plugin.description"]."',".$pInfo["perms"]." );\n";
 			if($plugin["php"])
