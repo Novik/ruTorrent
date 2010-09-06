@@ -372,8 +372,12 @@ if($handle = opendir('../plugins'))
 		        $jEnd = '';
 		        $pInfo = $plugin["info"];
 
-			if(count(array_diff( $pInfo["plugin.dependencies"], $names )))
+			$deps = array_diff( $pInfo["plugin.dependencies"], $names );
+			if(count($deps))
+			{
+				$jResult.="log('".$plugin["name"].": '+theUILang.dependenceError+' ".implode(",",$deps)."');";
 				continue;
+			}
 
 			$jResult.="(function () { var plugin = new rPlugin( '".$plugin["name"]."',".$pInfo["plugin.version"].
 				",'".$pInfo["plugin.author"]."','".$pInfo["plugin.description"]."',".$pInfo["perms"]." );\n";
