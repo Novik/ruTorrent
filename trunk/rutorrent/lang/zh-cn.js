@@ -377,5 +377,6 @@
  webExternalNotFoundError	: "Plugin will not work. Web-server user can't access external program",
  webExternalNotFoundWarning	: "Some functionality will be unavailable. Web-server user can't access external program",
  rTorrentBadScriptPath		: "Plugin will not work. rTorrent's user can't access file for read/execute",
- rTorrentBadPHPScriptPath	: "Plugin will not work. rTorrent's user can't access file for read"
+ rTorrentBadPHPScriptPath	: "Plugin will not work. rTorrent's user can't access file for read",
+ dependenceError		: "Plugin will not work. It require existence of plugin(s)"
 };

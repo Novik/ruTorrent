@@ -378,5 +378,6 @@
  webExternalNotFoundError	: "Le plug-in ne fonctionnera pas. Le serveur web ne peut pas accéder au(x) programme(s) externe(s).",
  webExternalNotFoundWarning	: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web ne peut pas accéder au(x) programme(s) externe(s).",
  rTorrentBadScriptPath		: "Le plug-in ne fonctionnera pas. rTorrent ne peut pas accéder au(x) fichier(s) en Lecture/Exécution.",
- rTorrentBadPHPScriptPath	: "Le plug-in ne fonctionnera pas. rTorrent ne peut pas accéder au(x) fichier(s) en Lecture."
+ rTorrentBadPHPScriptPath	: "Le plug-in ne fonctionnera pas. rTorrent ne peut pas accéder au(x) fichier(s) en Lecture.",
+ dependenceError		: "Plugin will not work. It require existence of plugin(s)"
 };
