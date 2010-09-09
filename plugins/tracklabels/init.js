@@ -30,7 +30,7 @@ theWebUI.isTrackerInActualLabel = function(hash)
 			if(this.trackers[hash][i].group==0)
 			{
 				var tracker = theWebUI.getTrackerName( this.trackers[hash][i].name );
-				if(tracker && (tracker==theWebUI.actTrackersLbl))
+				if(tracker && (('i'+tracker)==theWebUI.actTrackersLbl))
 				{
 					ret = true;
 					break;
@@ -230,15 +230,15 @@ theWebUI.rebuildTrackersLabels = function()
 			var li = null;
 			if(lbl in this.trackersLabels)
 			{
-				li = $($$(lbl));
+				li = $($$('i'+lbl));
 	                	li.children("span").text(trackersLabels[lbl]);
 			}
 			else
 			{
-			        li = $('<li>').attr("id",lbl).
-			        	html(escapeHTML(lbl)+'&nbsp;(<span id="'+lbl+'_c">'+trackersLabels[lbl]+'</span>)').
+			        li = $('<li>').attr("id",'i'+lbl).
+			        	html(escapeHTML(lbl)+'&nbsp;(<span id="-'+lbl+'_c">'+trackersLabels[lbl]+'</span>)').
 			        	mouseclick(theWebUI.trackersLabelContextMenu)
-				var rule = getCSSRule("#"+lbl);
+				var rule = getCSSRule("#-"+lbl);
 				if(!rule)
 					li.prepend( $("<img>").attr("src","http://"+lbl+"/favicon.ico").width(16).height(16).css({ "margin-right": 5, "float" : "left" }) ).css({ padding: "2px 4px"});
 				li.addClass("cat").attr("title",lbl+" ("+trackersLabels[lbl]+")");
@@ -251,8 +251,8 @@ theWebUI.rebuildTrackersLabels = function()
 		for(var lbl in this.trackersLabels)
 			if(!(lbl in trackersLabels))
 			{
-				$($$(lbl)).remove();
-				if(theWebUI.actTrackersLbl == lbl)
+				$($$('i'+lbl)).remove();
+				if(theWebUI.actTrackersLbl == 'i'+lbl)
 				{
 					needSwitch = true;
 					theWebUI.actTrackersLbl = null;
