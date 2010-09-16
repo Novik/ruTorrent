@@ -68,7 +68,7 @@ if(isset($_REQUEST['mode']))
 			}
 		        closedir($dh);
 			sort($files,SORT_STRING);
-			$output[] = '"basedir": '.quoteAndDeslashEachItem($dir).', "dirlist": ['.implode(',',array_map("quoteAndDeslashEachItem",$files)).']';
+			$output[] = '"basedir": '.quoteAndDeslashEachItem(fullpath($dir)).', "dirlist": ['.implode(',',array_map("quoteAndDeslashEachItem",$files)).']';
 		}
         }
 	if(in_array("channels",$modes) && $theSettings->isPluginRegistered('throttle'))
