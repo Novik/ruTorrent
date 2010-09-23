@@ -23,7 +23,7 @@ function clearCanvas( target )
 			cnv[i].onmousemove = null;
 			cnv[i].onpropertychange = null;
 			cnv[i].onresize = null;
-			if(browser.isIE)
+			if(browser.isIE && browser.versionMajor<9)
 			{
 				cnv[i].getContext = null;
 				cnv[i].context_.canvas = null;

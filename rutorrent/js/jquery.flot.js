@@ -467,7 +467,7 @@
                 var c = document.createElement('canvas');
                 c.width = width;
                 c.height = height;
-                if ($.browser.msie) // excanvas hack
+                if ($.browser.msie && window.G_vmlCanvasManager) // excanvas hack
                     c = window.G_vmlCanvasManager.initElement(c);
                 return c;
             }
