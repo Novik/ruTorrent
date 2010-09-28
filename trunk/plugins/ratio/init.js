@@ -251,8 +251,6 @@ plugin.onLangLoaded = function()
 		s+="</table></div></fieldset>";
 		this.attachPageToOptions($("<div>").attr("id","st_ratio").html(s).get(0),theUILang.ratios);
 	}
-	else
-		log(theUILang.ratioUnsupported);
 }
 
 plugin.onRemove = function()

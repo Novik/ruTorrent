@@ -9,7 +9,6 @@
  */
 
  
- theUILang.throttleUnsupported	= "Plug-in 'Throttle': cette version rTorrent ne supporte pas throttle. Le plug-in ne fonctionnera pas.";
  theUILang.throttles		= "Vitesses";
  theUILang.throttle		= "Vitesse";
  theUILang.mnuThrottle		= "Affecter une vitesse";

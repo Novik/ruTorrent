@@ -230,8 +230,6 @@ plugin.onLangLoaded = function()
 		s+="</table></div></fieldset>";
 		this.attachPageToOptions($("<div>").attr("id","st_throttle").html(s).get(0),theUILang.throttles);
 	}
-	else
-		log(theUILang.throttleUnsupported);
 }
 
 plugin.onRemove = function()

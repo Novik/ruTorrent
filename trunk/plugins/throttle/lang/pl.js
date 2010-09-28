@@ -1,6 +1,5 @@
 ﻿
  
- theUILang.throttleUnsupported	= "Wtyczka Throttle: Twoja wersja rTorrent nie wspiera throttle (przepustnicy). Wtyczka nie będzie działać.";
  theUILang.throttles		= "Kanały";
  theUILang.throttle		= "Kanał";
  theUILang.mnuThrottle		= "Ustaw kanał";
