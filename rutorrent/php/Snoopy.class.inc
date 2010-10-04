@@ -647,7 +647,6 @@ class Snoopy
 		        break;
 		    }
 		}
-//toLog($results);
 		// gunzip
 		if ( $is_gzipped ) 
 		{
@@ -697,7 +696,7 @@ class Snoopy
 		// no framed content
 		else
 			$this->results = $results;
-		
+//toLog($this->results);		
 		return true;
 	}
 
