@@ -257,7 +257,7 @@ switch($cmd)
 	{
 	        if(isset($_REQUEST['no']))
 			$mngr->clearFilterTime( $_REQUEST['no'] );
-		$val = '';
+		$val = '{}';
 		break;
 	}
 	case "getdesc":

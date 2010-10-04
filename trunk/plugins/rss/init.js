@@ -1015,6 +1015,7 @@ rTorrentStub.prototype.clearfiltertime = function()
 	this.content = "mode=clearfiltertime&no="+this.vs[0];
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
+	this.dataType = "json";
 }
 
 rTorrentStub.prototype.getrssdetails = function()
