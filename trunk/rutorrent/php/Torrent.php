@@ -13,7 +13,7 @@ require_once( 'util.php' );
 
 class Torrent
 {
-	static public $errors = array();
+	public $errors = array();
 	protected $basedir = null;	
 	private $pointer = 0;
 	private $data;
@@ -56,7 +56,7 @@ class Torrent
                 	$this->{$key} = $value;
 	        } catch(Exception $e)
         	{
-        		self::$errors[] = $e;
+        		$this->errors[] = $e;
 		}
 	}
 
@@ -76,7 +76,7 @@ class Torrent
 			$f = $this->err_callback;
 			$f($msg);
 		}
-		self::$errors[] = new Exception($msg);
+		$this->errors[] = new Exception($msg);
 	}
 
 	/** Convert the current Torrent instance in torrent format
@@ -92,7 +92,7 @@ class Torrent
 	 */
 	public function errors() 
 	{
-		return(empty( self::$errors ) ? false : self::$errors);
+		return(empty( $this->errors ) ? false : $this->errors);
 	}
 
 	/**** Encode BitTorrent ****/
