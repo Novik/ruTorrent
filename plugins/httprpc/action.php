@@ -257,7 +257,7 @@ switch($mode)
 	{
 		$req = new rXMLRPCRequest();
 		foreach($hash as $ndx=>$h)
-			$req->addCommand( new rXMLRPCCommand( "d.set_priority", array($h, intval($vs[$ndx])) ) );
+			$req->addCommand( new rXMLRPCCommand( "d.set_priority", array($h, intval($vs[0])) ) );
 		if($req->success())
 	        	$result = $req->val;
 		break;

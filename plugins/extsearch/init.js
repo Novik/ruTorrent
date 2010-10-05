@@ -345,8 +345,8 @@ theWebUI.showTegURLInfo = function()
 	var table = theWebUI.getTable("teg");
 	for(var i = 0; i<plugin.tegArray.length; i++)
 	{
-		log(theUILang.rssURLGUID+": "+plugin.tegs[theWebUI.actLbl].data[plugin.tegArray[i].ndx].desc);
-		log(theUILang.rssURLHref+": "+plugin.tegs[theWebUI.actLbl].data[plugin.tegArray[i].ndx].link);
+		log(theUILang.exsURLGUID+": "+plugin.tegs[theWebUI.actLbl].data[plugin.tegArray[i].ndx].desc);
+		log(theUILang.exsURLHref+": "+plugin.tegs[theWebUI.actLbl].data[plugin.tegArray[i].ndx].link);
 	}
 }
 
