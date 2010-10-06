@@ -248,7 +248,7 @@ var theContextMenu =
 			}
 			else
 			{
-				if((ele.id!="search") && (ele.id!="mnu_search"))
+				if(ele.className!="top-menu-item")
 	   				window.setTimeout("theContextMenu.hide()", 50); 
 			}
 		});
