@@ -50,7 +50,7 @@ div#CatList ul li.disRSS {background-image: url(./images/tstatus.png); }
 
 .stable-icon {background-image: url(./images/tstatus.png); }
 
-div#stg { background-color: #1E2124; color: #000000; border: 2px solid #909090; }
+div#stg { background-color: #1E2124; color: #BDDBDB; border: 2px solid #909090; }
 div#stg-header { background: #1e2124 url(./images/settings.gif) no-repeat scroll 4px center; color: #00ff00;}
 div#stg .lm { background-color: #272E36; border: 1px solid #D0D0D0; }
 

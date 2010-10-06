@@ -115,7 +115,7 @@ plugin.allDone = function()
 	plugin.show = theDialogManager.show;
 	theDialogManager.show = function( id, callback )
 	{
-		if(this.divider)
+		if(this.divider && !$('#'+id).data("modal"))
 			plugin.show.call(theDialogManager,id, function() 
 			{
 				plugin.showShadow(id,callback);
