@@ -244,7 +244,7 @@ theUILang.country["ua"]=="Ukraine";
 theUILang.country["ug"]=="Ouganda";
 theUILang.country["uk"]=="Royaume-Uni";
 theUILang.country["um"]=="États-Unis Îles mineures éloignées";
-theUILang.country["unknown"]=="Inconnu";
+theUILang.country["un"]=="Inconnu";
 theUILang.country["us"]=="États-Unis";
 theUILang.country["uy"]=="Uruguay";
 theUILang.country["uz"]=="Ouzbékistan";
