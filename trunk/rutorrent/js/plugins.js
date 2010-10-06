@@ -276,8 +276,8 @@ rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 		newBtn.id="mnu_"+id;
 		newBtn.href='javascript://void();';
 		newBtn.title=name;
-		newBtn.innerHTML='<div id="'+id+'" onclick="'+onclick+';return(false);"></div>';
-		$(newBtn).focus( function(e) { this.blur(); } );
+		newBtn.innerHTML='<div class="top-menu-item" id="'+id+'" onclick="'+onclick+';return(false);"></div>';
+		$(newBtn).addClass('top-menu-item').focus( function(e) { this.blur(); } );
 		var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;	
 		if(targetBtn)
 			targetBtn.parentNode.insertBefore(newBtn,targetBtn);	

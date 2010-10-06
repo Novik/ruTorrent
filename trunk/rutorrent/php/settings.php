@@ -112,6 +112,7 @@ class rTorrentSettings
 			$this->iVersion = 0;
 			for($i = 0; $i<count($parts); $i++)
 				$this->iVersion = ($this->iVersion<<8) + $parts[$i];
+/*
 			if($this->iVersion>0x806)
 				$this->mostOfMethodsRenamed = true;
 			else
@@ -121,6 +122,7 @@ class rTorrentSettings
 				$req->important = false;
 				if($req->run() && $req->fault)
 					$this->mostOfMethodsRenamed = true;
+
 			}
 			if($this->mostOfMethodsRenamed)
 			{
@@ -185,6 +187,7 @@ class rTorrentSettings
 					"system.method.set_key" 	=> "method.set_key"
 				);
 			}
+*/
                         $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 			if($req->run())
 			{
