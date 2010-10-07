@@ -63,7 +63,7 @@
  Show_det_start		: "Afficher les détails au démarrage",
  Restor_def			: "Rétablir par défaut",
  When_add_torrent	: "Quand des torrents sont ajoutés",
- Dnt_start_down_auto: "Afficher une demande de confirmation",
+ Dnt_start_down_auto: "Ne pas démarrer le télécharchement",
  Other_sett			: "Autres options",
  Append_ut_incompl	: "Rajouter l'extension .!ut aux fichiers incomplets",
  Prealloc_all_files	: "Préallouer tous les fichiers",
