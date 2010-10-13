@@ -113,6 +113,7 @@ rTorrentStub.prototype.listResponse = function(data)
 				torrent.comment = decodeURIComponent(torrent.comment.substr(10));
 			} catch(e) { torrent.comment = ''; }
 			torrent.free_diskspace = values[31];
+			torrent.private = values[32];
 			torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
 			torrent.peers = torrent.peers_actual + " (" + torrent.peers_all + ")";
 			$.each( theRequestManager.trt.handlers, function(i,handler)
@@ -406,8 +407,12 @@ rTorrentStub.prototype.getpeersResponse = function(values)
 				peer.flags+='I';
 			if(data[4]==1)			//	p.is_encrypted
 				peer.flags+='E';
+			peer.snubbed = 0;
 			if(data[5]==1)			//	p.is_snubbed
+			{
 				peer.flags+='S';
+				peer.snubbed = 1;
+			}
 			peer.done = iv(data[6]);	//	get_completed_percent
 			peer.downloaded = iv(data[7]);	//	p.get_down_total
 			peer.uploaded = iv(data[8]);	//	p.get_up_total

@@ -81,6 +81,11 @@ function makeContent()
 		if(d.location.href != "about:blank")
 			try { eval(d.body.innerHTML); } catch(e) {}
 	}));
+	theDialogManager.make("padd",theUILang.peerAdd,
+		'<div class="content fxcaret">'+theUILang.peerAddLabel+'<br><input type="text" id="peerIP" class="Textbox" value="my.friend.addr:6881"/></div>'+
+		'<div class="aright buttons-list"><input type="button" class="OK Button" value="'+theUILang.ok+'" onclick="theWebUI.addNewPeer();theDialogManager.hide(\'padd\');return(false);" />'+
+			'<input type="button" class="Cancel Button" value="'+theUILang.Cancel+'"/></div>',
+		true);
 	theDialogManager.make("tadd",theUILang.torrent_add,
 		'<div class="cont fxcaret">'+
 			'<form action="addtorrent.php" id="addtorrent" method="post" enctype="multipart/form-data" target="uploadfrm">'+

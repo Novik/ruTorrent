@@ -19,7 +19,7 @@ var theRequestManager =
 			"d.get_custom1=", "d.get_peers_accounted=", "d.get_peers_not_connected=", "d.get_peers_connected=", "d.get_peers_complete=",
 			"d.get_left_bytes=", "d.get_priority=", "d.get_state_changed=", "d.get_skip_total=", "d.get_hashing=",
 			"d.get_chunks_hashed=", "d.get_base_path=", "d.get_creation_date=", "d.get_tracker_focus=", "d.is_active=",
-			"d.get_message=", "d.get_custom2=", "d.get_free_diskspace="
+			"d.get_message=", "d.get_custom2=", "d.get_free_diskspace=", "d.is_private="
 		],
 		handlers: []
 	},
@@ -485,6 +485,60 @@ rTorrentStub.prototype.setdlrate = function()
 	this.commands.push( cmd );
 }
 
+rTorrentStub.prototype.snub = function()
+{
+	for(var i=0; i<this.vs.length; i++)
+	{
+		var cmd = new rXMLRPCCommand("p.snubbed.set");
+		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
+                cmd.addParameter("i4",1);
+		this.commands.push( cmd );
+	}
+}
+
+rTorrentStub.prototype.unsnub = function()
+{
+	for(var i=0; i<this.vs.length; i++)
+	{
+		var cmd = new rXMLRPCCommand("p.snubbed.set");
+		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
+                cmd.addParameter("i4",0);
+		this.commands.push( cmd );
+	}
+}
+
+rTorrentStub.prototype.ban = function()
+{
+	for(var i=0; i<this.vs.length; i++)
+	{
+		var cmd = new rXMLRPCCommand("p.banned.set");
+		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
+                cmd.addParameter("i4",1);
+		this.commands.push( cmd );
+		cmd = new rXMLRPCCommand("p.disconnect_delayed");
+		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
+		this.commands.push( cmd );
+	}
+}
+
+rTorrentStub.prototype.kick = function()
+{
+	for(var i=0; i<this.vs.length; i++)
+	{
+		var cmd = new rXMLRPCCommand("p.disconnect");
+		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
+		this.commands.push( cmd );
+	}
+}
+
+rTorrentStub.prototype.addpeer = function()
+{
+	var cmd = new rXMLRPCCommand("add_peer");
+	cmd.addParameter("string",this.hashes[0]);
+	cmd.addParameter("string",decodeURIComponent(this.vs[0]));
+	this.commands.push( cmd );
+}
+
 rTorrentStub.prototype.makeMultiCall = function()
 {
 	this.content = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>';
@@ -719,15 +773,18 @@ rTorrentStub.prototype.getpeersResponse = function(xml)
 			peer.flags+='I';
 		if(this.getValue(values,4)==1)	//	p.is_encrypted
 			peer.flags+='E';
+		peer.snubbed = 0;
 		if(this.getValue(values,5)==1)	//	p.is_snubbed
+		{
 			peer.flags+='S';
+			peer.snubbed = 1;
+		}
 		peer.done = this.getValue(values,6);		//	get_completed_percent
 		peer.downloaded = this.getValue(values,7);	//	p.get_down_total
 		peer.uploaded = this.getValue(values,8);	//	p.get_up_total
 		peer.dl = this.getValue(values,9);		//	p.get_down_rate
 		peer.ul = this.getValue(values,10);		//	p.get_up_rate
 		var id = this.getValue(values,0);
-
 		$.each( theRequestManager.prs.handlers, function(i,handler)
 		{
         	        if(handler)
@@ -884,6 +941,7 @@ rTorrentStub.prototype.listResponse = function(xml)
 			torrent.comment = decodeURIComponent(torrent.comment.substr(10));
 		} catch(e) { torrent.comment = ''; }
 		torrent.free_diskspace = this.getValue(values,32);
+		torrent.private = this.getValue(values,33);
 		torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
 		torrent.peers = torrent.peers_actual + " (" + torrent.peers_all + ")";
 		var hash = this.getValue(values,0);
