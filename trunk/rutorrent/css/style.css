@@ -197,6 +197,11 @@ div#dlgLabel div.dlg-header {background-image: url(../images/label.gif)}
 div#dlgLabel div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
 div#dlgLabel div.content input {margin-top: 5px}
 #txtLabel {width: 200px}
+div#padd {width: 250px; height: 120px}
+div#padd div.dlg-header {background-image: url(../images/props.gif)}
+div#padd div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
+div#padd div.content input {margin-top: 5px}
+#peerIP {width: 200px}
 div#dlgAbout {width: 250px; height: 250px}
 div#dlgAbout div.dlg-header {background-image: url(../images/about.gif)}
 div#dlgAbout div.content {width: 230px; margin: 5px; padding: 5px}

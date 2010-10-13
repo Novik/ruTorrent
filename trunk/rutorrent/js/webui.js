@@ -748,6 +748,61 @@ var theWebUI =
 
 	prsSelect: function(e, id) 
 	{
+		if($type(id) && theWebUI.createPeerMenu(e, id))
+	   		theContextMenu.show();
+   	},
+
+	getPeerIds: function(cmd) 
+	{
+   		var sr = this.getTable("prs").rowSel;
+   		var str = "";
+   		for(var k in sr) 
+   		{
+			var enabled = ((cmd=='unsnub') && this.peers[k].snubbed) || 
+				((cmd=='snub') && !this.peers[k].snubbed) || ((cmd=='ban') || (cmd=='kick'));
+      			if((sr[k] == true) && enabled)
+				str += "&f=" + k;
+      		}
+   		return(str);
+   	},
+
+	addNewPeer: function()
+	{
+		this.request("?action=addpeer&hash="+this.dID+"&f="+encodeURIComponent($("#peerIP").val()), [this.updatePeers,this]);
+	},
+
+	setPeerState: function(cmd)
+	{
+   		var prs = this.getPeerIds(cmd);
+		if(prs.length)
+	   		this.request("?action="+cmd+"&hash="+this.dID+prs, [this.updatePeers,this]);
+	},
+
+   	createPeerMenu : function(e, id)
+	{
+   		if(e.button != 2) 
+      			return(false);
+   		theContextMenu.clear();
+		theContextMenu.add([theUILang.peerAdd, 
+			(this.dID && $type(this.torrents[this.dID]) && (this.torrents[this.dID].private==0) && (theWebUI.systemInfo.rTorrent.iVersion>=0x804)) ? 
+			"theDialogManager.show('padd')"	: null]);
+		theContextMenu.add([theUILang.peerBan, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('ban')" : null]);
+		theContextMenu.add([theUILang.peerKick, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('kick')" : null]);
+   		if(this.getTable("prs").selCount > 1) 
+   		{
+			theContextMenu.add([theUILang.peerSnub, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('snub')" : null]);
+			theContextMenu.add([theUILang.peerUnsnub, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('unsnub')" : null]);
+		}
+		else
+                {
+      			if(!this.peers[id].snubbed) 
+      				theContextMenu.add([theUILang.peerSnub, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('snub')" : null]);
+			else
+				theContextMenu.add([theUILang.peerUnsnub, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('unsnub')" : null]);
+      		}
+                theContextMenu.add([CMENU_SEP]); 
+		theContextMenu.add([theUILang.peerDetails, (this.getTable("prs").selCount > 1) ? null : "theWebUI.getTable('prs').ondblclick({ id: '"+id+"'})"]); 
+		return(true);
    	},
 
 //
@@ -1122,25 +1177,17 @@ var theWebUI =
       			theContextMenu.add([theUILang.Pause, "theWebUI.pause()"]);
       			theContextMenu.add([theUILang.Stop, "theWebUI.stop()"]);
       			theContextMenu.add([theUILang.Force_recheck, "theWebUI.recheck()"]);
+			theContextMenu.add([theUILang.peerAdd]);
    		}
    		else 
    		{
-   			if(this.isCommandEnabled("start",status))
-	   			theContextMenu.add([theUILang.Start, "theWebUI.start()"]);
-			else
-				theContextMenu.add([theUILang.Start]);
-   			if(this.isCommandEnabled("pause",status) || this.isCommandEnabled("unpause",status))
-	   			theContextMenu.add([theUILang.Pause, "theWebUI.pause()"]);
-			else
-				theContextMenu.add([theUILang.Pause]);
-   			if(this.isCommandEnabled("stop",status))
-	   			theContextMenu.add([theUILang.Stop, "theWebUI.stop()"]);
-			else
-				theContextMenu.add([theUILang.Stop]);
-			if(this.isCommandEnabled("recheck",status))
-				theContextMenu.add([theUILang.Force_recheck, "theWebUI.recheck()"]);
-			else
-				theContextMenu.add([theUILang.Force_recheck]);
+   			theContextMenu.add([theUILang.Start, this.isCommandEnabled("start",status) ? "theWebUI.start()" : null]);
+   			theContextMenu.add([theUILang.Pause, (this.isCommandEnabled("pause",status) || this.isCommandEnabled("unpause",status)) ? "theWebUI.pause()" : null]);
+   			theContextMenu.add([theUILang.Stop, this.isCommandEnabled("stop",status) ? "theWebUI.stop()" : null]);
+			theContextMenu.add([theUILang.Force_recheck, this.isCommandEnabled("recheck",status) ? "theWebUI.recheck()" : null]);
+			theContextMenu.add([theUILang.peerAdd, 
+				(!this.isCommandEnabled("start",status) && $type(this.torrents[id]) && (this.torrents[id].private==0) && (theWebUI.systemInfo.rTorrent.iVersion>=0x804)) ? 
+				"theDialogManager.show('padd')"	: null]);
 		}
    		theContextMenu.add([CMENU_SEP]);
    		var _bf = [];

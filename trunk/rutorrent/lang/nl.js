@@ -378,5 +378,12 @@
  webExternalNotFoundWarning: "Sommige functionaliteiten zijn niet beschikbaar. Web-Server gebruiker heeft geen toegang tot extern programma",
  rTorrentBadScriptPath: "Plugin zal niet werken. rtorrent gebruiker heeft geen lees / uitvoer rechten op het bestand",
  rTorrentBadPHPScriptPath: "Plugin zal niet werken. rtorrent gebruiker heeft geen lees rechten op het bestand",
- dependenceError		: "Plugin will not work. It require existence of plugin(s)"
+ dependenceError		: "Plugin will not work. It require existence of plugin(s)",
+ peerAdd			: "Add peer...",
+ peerBan			: "Ban",
+ peerKick			: "Kick",
+ peerSnub			: "Snub",
+ peerDetails			: "Details",
+ peerUnsnub			: "Unsnub",
+ peerAddLabel			: "Enter IP/Hostname[:port]"
  };

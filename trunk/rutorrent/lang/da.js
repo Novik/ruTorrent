@@ -378,6 +378,13 @@
  webExternalNotFoundWarning	: "Some functionality will be unavailable. Web-server user can't access external program",
  rTorrentBadScriptPath		: "Plugin will not work. rTorrent's user can't access file for read/execute",
  rTorrentBadPHPScriptPath	: "Plugin will not work. rTorrent's user can't access file for read",
- dependenceError		: "Plugin will not work. It require existence of plugin(s)"
+ dependenceError		: "Plugin will not work. It require existence of plugin(s)",
+ peerAdd			: "Add peer...",
+ peerBan			: "Ban",
+ peerKick			: "Kick",
+ peerSnub			: "Snub",
+ peerDetails			: "Details",
+ peerUnsnub			: "Unsnub",
+ peerAddLabel			: "Enter IP/Hostname[:port]"
  };
 
