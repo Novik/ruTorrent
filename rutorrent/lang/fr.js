@@ -379,12 +379,12 @@
  webExternalNotFoundWarning	: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web ne peut pas accéder au(x) programme(s) externe(s).",
  rTorrentBadScriptPath		: "Le plug-in ne fonctionnera pas. rTorrent ne peut pas accéder au(x) fichier(s) en Lecture/Exécution.",
  rTorrentBadPHPScriptPath	: "Le plug-in ne fonctionnera pas. rTorrent ne peut pas accéder au(x) fichier(s) en Lecture.",
- dependenceError		: "Plugin will not work. It require existence of plugin(s)",
- peerAdd			: "Add peer...",
- peerBan			: "Ban",
- peerKick			: "Kick",
- peerSnub			: "Snub",
- peerDetails			: "Details",
- peerUnsnub			: "Unsnub",
- peerAddLabel			: "Enter IP/Hostname[:port]"
+ dependenceError		: "Le plugin ne fonctionnera pas. Il est dépendant d'autre(s) plugin(s).",
+ peerAdd			: "Ajouter un peer...",
+ peerBan			: "Bannir",
+ peerKick			: "Kicker",
+ peerSnub			: "Snuber",
+ peerDetails			: "Détails",
+ peerUnsnub			: "Désnuber",
+ peerAddLabel			: "Entrer IP/Hostname[:port]"
 };
