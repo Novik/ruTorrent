@@ -12,7 +12,7 @@ rTorrentStub.prototype.list = function()
 		this.content = "mode=list";
 		if(theRequestManager.cid)
 			this.content+=("&cid="+theRequestManager.cid);
-		for(var i=33; i<theRequestManager.trt.commands.length; i++)
+		for(var i=theRequestManager.trt.count; i<theRequestManager.trt.commands.length; i++)
 			this.content+=("&cmd="+encodeURIComponent(theRequestManager.map("trt",i)));
 	}
 	else
