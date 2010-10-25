@@ -139,3 +139,7 @@ div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header {background: #181818 url(./im
 
 div#t div#rssurlrewrite {background: transparent url(./images/toolbar.png) no-repeat -217px 0px}
 div#t div#rssurlrewrite:hover {background: transparent url(./images/toolbar.png) no-repeat -217px -24px}
+
+#autodl-tb {
+	background: transparent url(./images/001_52.png) no-repeat center;
+}
