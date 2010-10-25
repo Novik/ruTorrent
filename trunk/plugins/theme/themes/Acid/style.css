@@ -79,10 +79,10 @@ div#lcont { background: #272E36; font-weight: bold; color: #BDDBDB;}
 div#gcont table {color: #BDDBDB; font-weight: bold;}
 div#gcont table td.Header {background: #323A46;}
 
-ul#tabbar {background-color: #1e2124;}
-ul#tabbar li a:hover {border-top: 2px solid #00FF00;}
+.tabbar {background-color: #1e2124;}
+.tabbar li a:hover {border-top: 2px solid #00FF00;}
+.tabbar li.selected a { border-top: 2px solid #BDDBDB; background: #272E36; color: #BDDBDB; font-weight: bold;}
 
-ul#tabbar li.selected a { border-top: 2px solid #BDDBDB; background: #272E36; color: #BDDBDB; font-weight: bold;}
 div.dlg-header { background-color: #1e2124; color: #00FF00;}
 div.content {color: #BDDBDB;}
 div#dlgLabel div.dlg-header {background-image: url(./images/label.gif); }

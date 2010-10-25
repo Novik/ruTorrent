@@ -1,3 +1,8 @@
+/*
+ *  Oblivion skin for ruTorrent
+ *  Author: LesBleus
+ */ 
+
 plugin.oblivionAllDone = plugin.allDone;
 plugin.allDone = function()
 {

@@ -187,11 +187,11 @@ div#List {border: 1px solid #A0A0A0;}
 
 div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif}
 
-ul#tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
-ul#tabbar li {margin: 0; padding: 0; display: inline; white-space: nowrap;}
-ul#tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
-ul#tabbar li a:hover {border-top: 2px solid #FFC73C}
-ul#tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
+.tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
+.tabbar li {margin: 0; padding: 0; display: inline; white-space: nowrap;}
+.tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
+.tabbar li a:hover {border-top: 2px solid #FFC73C}
+.tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
 div#dlgLabel {width: 250px; height: 140px}
 div#dlgLabel div.dlg-header {background-image: url(../images/label.gif)}
 div#dlgLabel div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}

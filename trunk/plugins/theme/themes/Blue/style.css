@@ -23,9 +23,9 @@ div#CatList { border-color: #99BBE8 }
 
 div#tdetails {background: transparent url(./images/tab-strip-bg.gif) repeat-x 0px center;} 
 
-ul#tabbar li a { border: 1px solid #8DB2E3; border-bottom: none; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B }
-ul#tabbar li a:hover {border-top: 1px solid #8DB2E3}
-ul#tabbar li.selected a { border-top: 2px solid #8DB2E3; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B; font-weight: bold}
+.tabbar li a { border: 1px solid #8DB2E3; border-bottom: none; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B }
+.tabbar li a:hover {border-top: 1px solid #8DB2E3}
+.tabbar li.selected a { border-top: 2px solid #8DB2E3; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B; font-weight: bold}
 
 input.Button { background-image: url(./images/btn-sprite.gif); background-position: 0 -43px }
 
