@@ -92,9 +92,9 @@ div#tdcont {background: #181818; border: 1px solid #333333}
 
 div#tadd {background-color: #181818; border: 1px solid #333333}
 div#tadd-header {background-color: #181818; border-bottom: 1px solid #333333}
-ul#tabbar li a {border: 1px solid #333333; }
-ul#tabbar li a:hover {border-top: 2px solid #222222}
-ul#tabbar li.selected a {border-top: 2px solid #999999; background: #181818; color: #888888}
+.tabbar li a {border: 1px solid #333333; }
+.tabbar li a:hover {border-top: 2px solid #222222}
+.tabbar li.selected a {border-top: 2px solid #999999; background: #181818; color: #888888}
 
 div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333333}
 div.dlg-window {background-color: #181818; color: #888888; border: 1px solid #333333;}
