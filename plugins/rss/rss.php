@@ -839,22 +839,21 @@ class rRSSManager
 			$filters = $this->loadFilters();
 		foreach($filters->lst as $filter)
 		{
-			if($filter->isApplicable( $rss, $this->history, $this->groups ))
+			foreach($rss->items as $href=>$item)
 			{
-				foreach($rss->items as $href=>$item)
+				if(!$filter->isApplicable( $rss, $this->history, $this->groups ))
+					break;
+				if(     !$this->history->wasLoaded($href) &&
+					$filter->checkItem($href, $item) )
 				{
-					if( !$this->history->wasLoaded($href) &&
-						$filter->checkItem($href, $item) )
-					{
-					        $this->history->applyFilter( $filter->no );
+				        $this->history->applyFilter( $filter->no );
 
-						rTorrentSettings::get()->pushEvent( "RSSAutoLoad", array( "rss"=>&$rss, "href"=>&$href, "item"=>&$item, "filter"=>&$filter ) );
+					rTorrentSettings::get()->pushEvent( "RSSAutoLoad", array( "rss"=>&$rss, "href"=>&$href, "item"=>&$item, "filter"=>&$filter ) );
 
-						$this->getTorrents( $rss, $href, 
-							$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, $filter->ratio, false );
-						if(WAIT_AFTER_LOADING)
-							sleep(WAIT_AFTER_LOADING);
-					}
+					$this->getTorrents( $rss, $href, 
+						$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, $filter->ratio, false );
+					if(WAIT_AFTER_LOADING)
+						sleep(WAIT_AFTER_LOADING);
 				}
 			}
 		}
