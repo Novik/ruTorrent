@@ -412,7 +412,7 @@ var theConverter =
 	{
 		return((bt>0) ? this.bytes(bt)+ "/" + theUILang.s : "");
 	},
-	date: function(dt)
+	date: function(dt,timeOnly)
 	{
 	        if(dt>3600*24*365)
 	        {
@@ -428,7 +428,7 @@ var theConverter =
 			h = (h < 10) ? ("0" + h) : h;
 			m = (m < 10) ? ("0" + m) : m;
 			s = (s < 10) ? ("0" + s) : s;
-			return(day+"."+month+"."+today.getFullYear()+" "+h+":"+m+":"+s);
+			return(timeOnly ? h+":"+m+":"+s : day+"."+month+"."+today.getFullYear()+" "+h+":"+m+":"+s);
 		}
 		return('');
 	}

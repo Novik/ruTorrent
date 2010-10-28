@@ -143,3 +143,6 @@ div#t div#rssurlrewrite:hover {background: transparent url(./images/toolbar.png)
 #autodl-tb {
 	background: transparent url(./images/001_52.png) no-repeat center;
 }
+
+.shieven {background: #191919; }
+.shiodd {background: #333333; }
