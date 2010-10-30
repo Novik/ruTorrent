@@ -139,9 +139,16 @@ div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header {background: #181818 url(./im
 
 div#t div#rssurlrewrite {background: transparent url(./images/toolbar.png) no-repeat -217px 0px}
 div#t div#rssurlrewrite:hover {background: transparent url(./images/toolbar.png) no-repeat -217px -24px}
+div#dlgEditRules-header, div#dlgEditRules div.dlg-header {background: #181818 url(./images/dlg-rssurlrewrite.gif) no-repeat 0px -48px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
 
 #autodl-tb {
-	background: transparent url(./images/001_52.png) no-repeat center;
+	background: transparent url(./images/autodll-irc1.png) no-repeat center;
+}
+#autodl-tb:hover {
+	background: transparent url(./images/autodll-irc2.png) no-repeat center;
+}
+#autodl-multiselect-header {
+	background: #181818 url(./images/dlg-autodl-irc.gif) no-repeat 0px -48px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;
 }
 
 .shieven {background: #191919; }
