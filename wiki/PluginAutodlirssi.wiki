@@ -126,7 +126,6 @@ gui-server-port = 12345
 gui-server-password = password
 }}}
 
-
 == Sources ==
 
 This information is from the following pages and forum posts:
