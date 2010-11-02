@@ -174,7 +174,7 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginCpuload Cpuload] - Shows cpu loading on the bottom bar in an easy to read fashion.
  # [PluginExtsearch extsearch] - adds an internal search function to many popular public and private sites
 
-==3rd Party Plugins ==
+== 3rd Party Plugins ==
 # [PluginAutodlirssi Autodl-irssi] - irc bot for auto downloading.
 # [PluginPause Pause] -- plugin to pause the ui
 # [PluginTaddLabel tadd-labels] - plugin which makes labeling torrents easier
