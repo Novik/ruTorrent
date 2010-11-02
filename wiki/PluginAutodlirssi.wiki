@@ -117,7 +117,7 @@ $autodlPort = 12345;
 $autodlPassword = "password";
 
 ?>
-
+}}}
 Finally, edit the  ~/.autodl/autodl.cfg in the rtorrent user's home directory adding the port/password:
 
 {{{
