@@ -1,0 +1,135 @@
+----
+= Plugin Autodl-Irssi =
+----
+
+
+== Description ==
+
+Plugin for rutorrent which uses irssi to monitor IRC announce channels and download torrents based on user defined filters.
+
+
+== 3rd party download site == 
+
+http://sourceforge.net/projects/autodl-irssi/
+
+
+
+== Installation ==
+
+This plugin depends on irssi and several perl modules.  Check your distribution for info on installing irssi
+
+
+=== Perl modules ===
+
+*Debian/Ubuntu*
+
+{{{
+apt-get -y install libarchive-zip-perl libnet-ssleay-perl libhtml-parser-perl libxml-libxml-perl libdigest-sha1-perl libjson-perl libjson-xs-perl libxml-libxslt-perl
+}}}
+
+*Fedora/Centos*
+{{{
+yum -y install perl-Archive-Zip perl-Net-SSLeay perl-HTML-Parser perl-XML-LibXML perl-Digest-SHA1 perl-JSON perl-JSON-XS perl-XML-LibXSLT
+}}}
+
+*OpenSUSE*
+{{{
+yast -i perl-Archive-Zip perl-Net-SSLeay perl-HTML-Parser perl-XML-LibXML perl-Digest-SHA1 perl-XML-LibXSLT
+# This may fail, so you may need to add a 3rd-party repo to install them or use the cpan utility.
+yast -i perl-JSON perl-JSON-XS
+}}}
+
+*PCLinuxOS*
+{{{
+apt-get -y install perl-Archive-Zip perl-HTML-Parser perl-XML-LibXML perl-Digest-SHA1
+use cpan: perl-Net-SSLeay perl-JSON perl-JSON-XS perl-XML-LibXSLT
+}}}
+
+*Mandriva*
+{{{
+urpmi perl-Archive-Zip perl-Net-SSLeay perl-HTML-Parser perl-XML-LibXML perl-Digest-SHA1 perl-JSON perl-JSON-XS perl-XML-LibXSLT
+}}}
+
+*Arch Linux*
+{{{
+1-pacman -S perl-archive-zip perl-net-ssleay perl-html-parser perl-xml-libxml perl-digest-sha1 perl-json perl-json-xs perl-xml-libxslt
+}}}
+
+*FreeBSD*
+{{{
+pkg_add -r p5-Archive-Zip p5-Net-SSLeay p5-HTML-Parser p5-XML-LibXML p5-Digest-SHA1 p5-JSON p5-JSON-XS p5-XML-LibXSLT
+}}}
+
+*Other os/Generic method via CPAN*
+{{{
+cpan Archive::Zip Net::SSLeay HTML::Entities XML::LibXML Digest::SHA1 JSON JSON::XS XML::LibXSLT
+}}}
+
+
+=== Installing autodl-irssi ===
+
+For the rtorrent plugin to work, you need to install the irssi script.  After installing the perl dependencies, login as your rtorrent user and do the following:
+
+{{{
+mkdir -p ~/.irssi/scripts/autorun
+cd ~/.irssi/scripts
+wget https://sourceforge.net/projects/autodl-irssi/files/autodl-irssi-v1.05.zip/download
+unzip -o autodl-irssi-v*.zip
+rm autodl-irssi-v*.zip
+cp autodl-irssi.pl autorun/
+mkdir -p ~/.autodl
+touch ~/.autodl/autodl.cfg
+}}}
+
+_(or to install via svn)_
+
+{{{
+mkdir -p ~/.irssi/
+cd ~/.irssi/
+svn export https://autodl-irssi.svn.sourceforge.net/svnroot/autodl-irssi/trunk/src scripts
+mkdir scripts/autorun/
+cp scripts/autodl-irssi.pl scripts/autorun/
+mkdir -p ~/.autodl
+touch ~/.autodl/autodl.cfg
+}}}
+
+
+=== Install the rutorrent plugin ===
+
+Installing the autodl-irssi-rutorrent plugin is like installing any other plugin
+
+Assuming rutorrent is intalled at /var/www/ issue the following commands:
+{{{
+cd /var/www/rutorrent/plugins
+sudo svn co https://autodl-irssi.svn.sourceforge.net/svnroot/autodl-irssi/trunk/rutorrent/autodl-irssi
+sudo cp autodl-irssi/_conf.php autodl-irssi/conf.php
+sudo chown -R www-data:www-data autodl-irssi
+}}}
+
+
+Edit the conf.php file, adding a port and password.
+
+assuming port 12345 and password as the password it would look like the following:
+{{{
+<?php
+
+$autodlPort = 12345;
+$autodlPassword = "password";
+
+?>
+
+Finally, edit the  ~/.autodl/autodl.cfg in the rtorrent user's home directory adding the port/password:
+
+{{{
+[options]
+gui-server-port = 12345
+gui-server-password = password
+}}}
+
+
+== Sources ==
+
+This information is from the following pages and forum posts:
+
+http://forums.rutorrent.org/index.php?topic=517.0
+http://sourceforge.net/apps/phpbb/autodl-irssi/viewtopic.php?f=1&t=3
