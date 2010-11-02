@@ -175,6 +175,6 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginExtsearch extsearch] - adds an internal search function to many popular public and private sites
 
 == 3rd Party Plugins ==
-# [PluginAutodlirssi Autodl-irssi] - irc bot for auto downloading.
-# [PluginPause Pause] -- plugin to pause the ui
-# [PluginTaddLabel tadd-labels] - plugin which makes labeling torrents easier
+ # [PluginAutodlirssi Autodl-irssi] - irc bot for auto downloading.
+ # [PluginPause Pause] -- plugin to pause the ui
+ # [PluginTaddLabel tadd-labels] - plugin which makes labeling torrents easier
