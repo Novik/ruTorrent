@@ -1,0 +1,18 @@
+----
+= Pause UI =
+----
+
+
+== Description ==
+
+Plugin to pause the refresh timer, and add a button to manually refresh the page.
+
+
+== Download  from ==
+
+Currently available from the rutorrent forums.  http://forums.rutorrent.org/index.php?topic=517.0
+
+
+=== Installation ===
+
+download, unzip and add to the rutorrent plugins directory.
