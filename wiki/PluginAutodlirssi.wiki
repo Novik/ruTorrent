@@ -246,7 +246,7 @@ http://img.skitch.com/20101103-c1k3t8rkgd12yfhw9sbdd8i8ft.png
  * *Run Program* _Run a script/program_
  * *Save to Dynamic Folder _Save to a dynamic folder, i.e. /home/$USER/$(date)$(time)_
 
-==== WebUi ====
+==== Webui ====
 
 These are the settings for the uTorrent web uploader mentioned earlier.  I'm going to bet you won't be needing these for rutorrent.
 
