@@ -174,19 +174,106 @@ http://img.skitch.com/20101103-f3nay9a6t4a12q3t26nbdksqua.png
 
 http://img.skitch.com/20101103-xi7s36tjt75bn9tepfet2kymx7.png
 
-* *Years* - _Years, i.e. 1997, 1959, 2010_
-* *Artists* - _Artist or Artists you wish to match_
-* *Albums* - _Album or Albums you wish to match_
-* *Formats* - _Formats, i.e. MP3, FLAC_
-* *Bitrates* - _Bitrate you wish to match i.e. 320, Lossless_
-* *Media* - _Source Media i.e. CD, WEB_
-* *Tags* - _Tags you wish to match, hip-hop, rock, blues_
-* *Scene* - _Whether or not it's scene or not_
-* *Log* - _Log, yes or no or don't care_
-* *Cue* -  _Cue, yes or no or don't care_
+ * *Years* - _Years, i.e. 1997, 1959, 2010_
+ * *Artists* - _Artist or Artists you wish to match_
+ * *Albums* - _Album or Albums you wish to match_
+ * *Formats* - _Formats, i.e. MP3, FLAC_
+ * *Bitrates* - _Bitrate you wish to match i.e. 320, Lossless_
+ * *Media* - _Source Media i.e. CD, WEB_
+ * *Tags* - _Tags you wish to match, hip-hop, rock, blues_
+ * *Scene* - _Whether or not it's scene or not_
+ * *Log* - _Log, yes or no or don't care_
+ * *Cue* -  _Cue, yes or no or don't care_
 
-==== http://img.skitch.com/20101103-idt474xgh2w38m5x962wcqui5.png ====
+==== Advanced ====
 
+http://img.skitch.com/20101103-idt474xgh2w38m5x962wcqui5.png
+
+ * *Match Categories* - _Categories you want_
+ * *Except Categories* - _Categories you do not want_
+ * *Match Uploaders* - _Uploaders you wish to match_
+ * *Except Uploaders* - _Uploaders you do not wish to match_
+ * *Except Sites* - _Sites you do not wish to match for this filter_
+ * *Maximum pretime* - _maximum pretime, i.e, 10min, 4s_
+
+
+==== Upload Method ====
+
+http://img.skitch.com/20101103-b3kfh9hcpnnb28532jrq66gun4.png
+
+
+ * *Use global settings* - _use the settings set in "Preferences"_
+ * *Save to Watch Folder* - _Specify a specific watch path for this filter_
+ * *uTorrent Webui Upload_ - _upload to torrent web (don't ask me why =) )_
+ * *FTP Upload* - _upload to an FTP server_
+ * *Run Program* _Run a script/program for this filter_
+ * *Save to Dynamic Folder* - _i.e /home/$USER/$(month)($day)/_
+
+
+=== Announce Channels ===
+
+This is just a gui display of the servers and their announce channels.  Nothin can be edited here.
+
+http://img.skitch.com/20101103-jxxb29wq9dub5x899rktcj8ba1.png
+
+=== Trackers ===
+
+This tab is for setting tracker specific settings.  Follow the on screen instructions for each tracker you wish to use.  This mostly includes saving passkey info and/or cookies.  This is needed in order to actually fetch the torrents.
+
+http://img.skitch.com/20101103-cqj4ftudfupm5cur83nts364qw.png
+
+
+=== Preferences ===
+
+This is where you set the general plugin preferences.
+
+==== General ====
+
+http://img.skitch.com/20101103-jc35qxuh4q6syxn9api4jmasyd.png
+
+ * *Maximum saved releases* - _Number of maximum saved releases_
+ * *Save download history* - _whether or not to keep a history of matched items_
+ * *Download duplicate releases* -whether or not to download dupes_
+ * *Automatic updates* - _whether or not to auto-update_
+
+==== Upload Method ====
+
+http://img.skitch.com/20101103-c1k3t8rkgd12yfhw9sbdd8i8ft.png
+
+ * *Save to Watch Folder* - _Save to a watch folder, i.e. /export/home/wonslung/rtorrent/watch_
+ * *uTorrent Webui Upload* _Send to torrent web (nevermind this is a rutorrent plugin)_
+ * *FTP Upload* _Send to an FTP Server_
+ * *Run Program* _Run a script/program_
+ * *Save to Dynamic Folder _Save to a dynamic folder, i.e. /home/$USER/$(date)$(time)_
+
+==== WebUi ====
+
+These are the settings for the uTorrent web uploader mentioned earlier.  I'm going to bet you won't be needing these for rutorrent.
+
+http://img.skitch.com/20101103-f2s2jkt5h7rma46gt7r33kkyyj.png
+
+==== FTP ====
+
+These are the settings for the FTP uploader, mentioned earlier.
+
+http://img.skitch.com/20101103-k59s9qcy62drb89ax1p8mkdk6h.png
+
+ * *User Name* - _FTP user_
+ * * Hostname* - _FTP hostname_
+ * *Password* - _FTP Password_
+ * *Port* - _FTP Port_
+
+==== Programs ====
+
+Path to utorrent.exe (doubtful we'll be needing this either)
+
+http://img.skitch.com/20101103-xh71g3wp3xbkbjxk3mtahqp1gb.png
+
+==== Advanced ====
+
+Advanced settings.  Probably shouldn't change anything here unless the author tells you to or you know what you are doing.
+
+http://img.skitch.com/20101103-ng23gd1etd8f25kicxtwqpws75.png
 
 == Sources ==
 
