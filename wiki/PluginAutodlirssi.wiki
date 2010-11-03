@@ -2,6 +2,8 @@
 = Plugin Autodl-Irssi =
 ----
 
+<wiki:toc />
+
 
 == Description ==
 
@@ -125,6 +127,66 @@ Finally, edit the  ~/.autodl/autodl.cfg in the rtorrent user's home directory ad
 gui-server-port = 12345
 gui-server-password = password
 }}}
+
+== Usage ==
+
+autodl-irssi adds the following menu item to the top bar:
+
+http://img.skitch.com/20101103-kc2udj8anegqatw8ns765xbfjt.png
+
+Clicking on this icon brings up the following menu:
+
+http://img.skitch.com/20101103-fue8tfwx2dgue4us1xmi2awm7j.png
+
+=== Filters ===
+
+Under this section you can add and edit your filters.  The main filter menu looks like this:
+This is all really self explanatory but as you can see, the first tab has the following items:
+
+
+==== General ====
+
+http://img.skitch.com/20101103-rtckeunr4fjetr4idxn65mdbh3.png
+
+ * *New* - _Add a new filter_
+ * *Remove* - _Remove an existing filter_
+ * *Display name* - _Name of the filter_
+ * *Match Release* - _Releases you want to match_
+ * *Except releases* - _Releases you do not want to match_
+ * *Match Sites* - _ist of sites you wish to match against_
+ * *Minimum size*- _minimum size_
+ * *Maximum size* - _maximum size_
+
+==== TV/Movies ====
+
+http://img.skitch.com/20101103-f3nay9a6t4a12q3t26nbdksqua.png
+
+ * *TV Show/Movie* - _Name of TV Show_
+ * *Seasons* - _Seasons you wish you match, i.e 1,4,7 or 1-5_
+ * *Episodes*  _Episodes you wish to match i.e. 2,4,13  2-9_
+ * *Resolutions* _Resolutions you wish to match i.e 720p, 1080p_
+ * *Encodes* - _Encodes you wish to match i.e DivX, h.264, x264_
+ * *Sources* - _Sources you wish to match i.e. HDTV, Web-DL_
+ * *Years* - _Years  i.e. 2008, 1975, 1982_
+
+
+==== Music ====
+
+http://img.skitch.com/20101103-xi7s36tjt75bn9tepfet2kymx7.png
+
+* *Years* - _Years, i.e. 1997, 1959, 2010_
+* *Artists* - _Artist or Artists you wish to match_
+* *Albums* - _Album or Albums you wish to match_
+* *Formats* - _Formats, i.e. MP3, FLAC_
+* *Bitrates* - _Bitrate you wish to match i.e. 320, Lossless_
+* *Media* - _Source Media i.e. CD, WEB_
+* *Tags* - _Tags you wish to match, hip-hop, rock, blues_
+* *Scene* - _Whether or not it's scene or not_
+* *Log* - _Log, yes or no or don't care_
+* *Cue* -  _Cue, yes or no or don't care_
+
+==== http://img.skitch.com/20101103-idt474xgh2w38m5x962wcqui5.png ====
+
 
 == Sources ==
 
