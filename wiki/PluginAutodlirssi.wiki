@@ -91,6 +91,8 @@ touch ~/.autodl/autodl.cfg
 
 _(or to install via svn)_
 
+*NOTE:* The svn version allows you to control server settings from the gui, autoconnects to servers, and periodically checks connection status. 
+
 {{{
 mkdir -p ~/.irssi/
 cd ~/.irssi/
@@ -143,6 +145,10 @@ http://img.skitch.com/20101103-kc2udj8anegqatw8ns765xbfjt.png
 Clicking on this icon brings up the following menu:
 
 http://img.skitch.com/20101103-fue8tfwx2dgue4us1xmi2awm7j.png
+
+*SVN Version*
+
+http://img.skitch.com/20101104-n4cn3tpmehs2wgsw9kanu1fs3g.png
 
 === Filters ===
 
@@ -228,6 +234,49 @@ This tab is for setting tracker specific settings.  Follow the on screen instruc
 
 http://img.skitch.com/20101103-cqj4ftudfupm5cur83nts364qw.png
 
+
+=== IRC Servers ===
+
+_*Note:*_ _This is only available in the svn version at the time of writing this wiki_
+
+This is a gui menu which allows you to display and configure the IRC servers you wish to connect to.
+
+==== Left hand side display window and buttons ====
+
+http://img.skitch.com/20101104-e8k3cu829pwdk87b5hq3mhabxg.png
+
+In this area you can view IRC servers already configured, add new servers or remove servers.  You can also disable servers by using the check boxes to the left of each entry.
+
+
+
+==== IRC Server Section ====
+
+http://img.skitch.com/20101104-quwp75pkkpgrrju6jncs4ut469.png
+
+ * *Server* - _This is where you put the server address, i.e irc.server.com_
+ * *Port* -_ This is where you specify the port (leaving this blank uses 6667)_
+ * *SSL* - _Check this box if you are connecting to an SSL server port_
+ * *Nick* - _This is the irc username for this server_
+ * *Password* - _This is the nickserv password_
+ * *Email* - _This is the email address your user is registered under_
+
+*Note:* - _If you haven't registered your nick, autodl-irssi will attempt to register it using the settings here_
+
+==== IRC Channel Section ====
+
+http://img.skitch.com/20101104-gr26x56n4mj8n9kt4r1i5k7hqe.png
+
+In this section you can set up the channels you wish autodl-irssi to join and monitor.
+
+ * *Channel Select* - _ Marked with #1 in the picture above, this allows you to select channels which are already configured in order to edit settings._
+ * *New* - _Creates a new channel entry_
+ * *Remove* - _Removes the currently selected channel_
+ * *Channel* - _Channel name, i.e  #torrent-announce_
+ * *Password* - _If the irc channel requires a password to join, it goes here_
+ * *Invite Command* - _If you must enter a specific command to join a channel, it goes here, i.e "/msg SOMEONE something password"_
+ * *Invite HTTP URL* - _if your channel requires a websites url, it goes here_
+ * *Invite HTTP Header* - _website header_
+ * *Invite HTTP Data* - _Invite  website data_
 
 === Preferences ===
 
