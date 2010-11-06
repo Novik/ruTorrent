@@ -139,7 +139,7 @@ div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header {background: #181818 url(./im
 
 div#t div#rssurlrewrite {background: transparent url(./images/toolbar.png) no-repeat -217px 0px}
 div#t div#rssurlrewrite:hover {background: transparent url(./images/toolbar.png) no-repeat -217px -24px}
-div#dlgEditRules-header, div#dlgEditRules div.dlg-header {background: #181818 url(./images/dlg-rssurlrewrite.gif) no-repeat 0px -48px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+div#dlgEditRules-header, div#dlgEditRules div.dlg-header {background: #181818 url(./images/dlg-rssurlrewrite.gif) no-repeat 0px 0px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
 
 #autodl-tb {
 	background: transparent url(./images/autodll-irc1.png) no-repeat center;
@@ -148,8 +148,26 @@ div#dlgEditRules-header, div#dlgEditRules div.dlg-header {background: #181818 ur
 	background: transparent url(./images/autodll-irc2.png) no-repeat center;
 }
 #autodl-multiselect-header {
-	background: #181818 url(./images/dlg-autodl-irc.gif) no-repeat 0px -48px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;
+	background-image: url("./images/dlg-autodl-irc.gif");
 }
-
 .shieven {background: #191919; }
 .shiodd {background: #333333; }
+
+div#webuiUpdateToggle.pause {
+	background: transparent url(./images/pauseui.png) no-repeat;
+}
+div#webuiUpdateToggle.pause:hover {
+	background: transparent url(./images/pauseuih.png) no-repeat;
+}
+div#webuiUpdateToggle.resume {
+	background: transparent url(./images/playui.png) no-repeat;
+}
+div#webuiUpdateToggle.resume:hover {
+	background: transparent url(./images/playuih.png) no-repeat;
+}
+div#webuiRefresh {
+	background: transparent url(./images/refreshui.png) no-repeat;	
+}
+div#webuiRefresh :hover{
+	background: transparent url(./images/refreshuih.png) no-repeat;
+}
