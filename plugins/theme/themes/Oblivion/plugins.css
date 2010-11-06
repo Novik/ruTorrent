@@ -168,6 +168,6 @@ div#webuiUpdateToggle.resume:hover {
 div#webuiRefresh {
 	background: transparent url(./images/refreshui.png) no-repeat;	
 }
-div#webuiRefresh :hover{
+div#webuiRefresh:hover{
 	background: transparent url(./images/refreshuih.png) no-repeat;
 }
