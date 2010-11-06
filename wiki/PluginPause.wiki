@@ -10,7 +10,9 @@ Plugin to pause the refresh timer, and add a button to manually refresh the page
 
 == Download  from ==
 
-Currently available from the rutorrent forums.  http://forums.rutorrent.org/index.php?topic=517.0
+This project has it's own googlecode page at http://code.google.com/p/rutorrent-pausewebui/
+
+It was originally available via the rutorrent forums in the following post: http://forums.rutorrent.org/index.php?topic=530.0
 
 
 === Installation ===
