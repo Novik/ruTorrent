@@ -27,3 +27,21 @@ cd /var/www/rutorrent/plugins/
 svn co http://rutorrent-pausewebui.googlecode.com/svn/trunk/pausewebui
 
 }}}
+
+
+== Usage ==
+
+This plugin is very simple (but elegant).
+
+It adds 2 buttons to your menubar as shown here:
+
+http://img.skitch.com/20101106-1b9gg2ra9qr8dq51g65j411kx7.png
+
+Upon clicking the "pause" button, rutorrent will stop refreshing automatically.  You can manually refresh the ui by clicking the "refresh button" _This is the button to the right of the pause button in the picture above_
+
+After clicking the "pause" button, it will change to a "play" button as shown here:
+
+http://img.skitch.com/20101106-j88wdxkxgyjiybpqe1au39te4c.png
+
+
+According to the plugins author, this plugin will also stop rutorrent from refreshing automatically when the tab isn't in use via the web browser, saving bandwidth, cpu cylces and memory.
