@@ -178,4 +178,5 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginAutodlirssi Autodl-irssi] - irc bot for auto downloading.
  # [PluginPause Pause] -- plugin to pause the ui
  # [PluginTaddLabel tadd-labels] - plugin which makes labeling torrents easier
- # [http://www.rozhuk.org.ru/forum/index.php?topic=283.0 HostName] - plugin which show host column for peers
+ # [PluginHostname HostName] - plugin which show host column for peers
+ # [PluginNFO NFO] - plugin for displaying the content of the .nfo file
