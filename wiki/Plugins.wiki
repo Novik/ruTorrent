@@ -15,7 +15,7 @@ To install a plugin, download the tarball from [http://code.google.com/p/rutorre
 }}}
 If you use the svn version of rutorrent, you can fetch the plguins via svn as well as follows:
 {{{
-svn co http://rutorrent.googlecode.com/trunk/plugins/PLUGIN_NAME
+svn co http://rutorrent.googlecode.com/svn/trunk/plugins/PLUGIN_NAME
 }}}
 
 Attention! Please install only those plug-ins you really need. The more plug-ins are installed - the longer load of the ruTorrent interface.
