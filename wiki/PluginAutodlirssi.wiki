@@ -1,4 +1,4 @@
-----
+ƒ----
 = Plugin Autodl-Irssi =
 ----
 
@@ -81,7 +81,7 @@ For the rtorrent plugin to work, you need to install the irssi script.  After in
 {{{
 mkdir -p ~/.irssi/scripts/autorun
 cd ~/.irssi/scripts
-wget https://sourceforge.net/projects/autodl-irssi/files/autodl-irssi-v1.10.zip/download
+wget https://sourceforge.net/projects/autodl-irssi/files/autodl-irssi-v1.10.zip
 unzip -o autodl-irssi-v*.zip
 rm autodl-irssi-v*.zip
 cp autodl-irssi.pl autorun/
