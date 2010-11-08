@@ -1,5 +1,5 @@
 ----
-=Plugin HostName =
+=Plugin Host Name =
 ----
 
 <wiki:TOC />
