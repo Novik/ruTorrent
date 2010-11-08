@@ -91,7 +91,6 @@ touch ~/.autodl/autodl.cfg
 
 _(or to install via svn)_
 
-*NOTE:* The svn version allows you to control server settings from the gui, autoconnects to servers, and periodically checks connection status. 
 
 {{{
 mkdir -p ~/.irssi/
@@ -128,12 +127,40 @@ $autodlPassword = "password";
 
 ?>
 }}}
-Finally, edit the  ~/.autodl/autodl.cfg in the rtorrent user's home directory adding the port/password:
+*Note:  As of version 1.10 the gui-server settings can be kept in a separate file in order to keep users who do not have shell access from altering the settings.  if you wish to use this option, save the gui-server* options in*
+
+*~/.autodl/autodl2.cfg*
+
+otherwise, edit the  ~/.autodl/autodl.cfg in the rtorrent user's home directory adding the port/password:
 
 {{{
 [options]
 gui-server-port = 12345
 gui-server-password = password
+}}}
+
+*It's possible to disable exec otions, or limit them to watch directories, or ftp, or any combination.*
+
+Create /etc/autodl.cfg and add this:
+
+{{{
+[options]
+allowed = watchdir
+}}}
+
+This will limit users to the "save to watch directory" option.  Other options you can add to the "allowed" line (separated by a comma are:
+
+ * *watchdir*
+ * *webui* _(requires uTorrent)_
+ * *ftp*
+ * *exec*
+ * *dyndir* _(requires uTorrent)_
+
+like so:
+
+{{{
+[options]
+allowed = watchdir, ftp
 }}}
 
 == Usage ==
