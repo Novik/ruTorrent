@@ -85,3 +85,10 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
  # [PluginData Data] - добавляет в контекстное меню файла закачки пункт "Получить файл по HTTP".
  # [PluginCpuload Cpuload] - индикатор загрузки процессора.
  # [PluginTheme Theme] - смена стиля оформления ruTorrent.
+ # [PluginExtsearch extsearch] - поиск торрентов по внешним сайтам
+
+== 3rd Party Plugins ==
+ # [PluginAutodlirssi Autodl-irssi] - irc бот для автоматизаци закачек.
+ # [PluginPause Pause] - реализует паузу в автообновлении UI
+ # [PluginTaddLabel tadd-labels] - плагин для работы с метками
+ # [http://www.rozhuk.org.ru/forum/index.php?topic=283.0 HostName] - plugin which show host column for peers
