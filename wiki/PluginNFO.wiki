@@ -16,7 +16,7 @@ Download from http://srious.biz/nfo.tar.gz ( or http://barrel-roll.org/nfo.tar.g
 
 {{{
 cd /var/www/rutorrent/plugins/
-fetch http://srious.biz/nfo.tar.gz
+wget http://srious.biz/nfo.tar.gz
 tar xzfv nfo.tar.gz
 rm nfo.tar.gz
 }}}
@@ -38,4 +38,3 @@ http://img.skitch.com/20101108-t48h78qu338kqsp9y2dj6djgpp.png
 
 
 Originally posted in the rutorrent forums here:  http://forums.rutorrent.org/index.php?topic=537.0
-
