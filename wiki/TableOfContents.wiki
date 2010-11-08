@@ -46,7 +46,7 @@
         * [PluginCpuload Cpuload]
         * [PluginExtsearch extsearch]
       * 3rd Party Plugins
-       *  [PluginAutodlirssi Autodl-irssi]
+       * [PluginAutodlirssi Autodl-irssi]
        * [PluginPause Pause]
        * [PluginTaddLabel tadd-labels] 
       * [HowToCreatePlugin How to make a plugin]
