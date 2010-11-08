@@ -48,7 +48,9 @@
       * 3rd Party Plugins
        * [PluginAutodlirssi Autodl-irssi]
        * [PluginPause Pause]
-       * [PluginTaddLabel tadd-labels] 
+       * [PluginTaddLabel tadd-labels]
+       * [PluginHostname HostName]
+       * [PluginNFO NFO]
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
