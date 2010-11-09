@@ -54,7 +54,7 @@ urpmi perl-Archive-Zip perl-Net-SSLeay perl-HTML-Parser perl-XML-LibXML perl-Dig
 
 *Arch Linux*
 {{{
-1-pacman -S perl-archive-zip perl-net-ssleay perl-html-parser perl-xml-libxml perl-digest-sha1 perl-json perl-json-xs perl-xml-libxslt
+pacman -S perl-archive-zip perl-net-ssleay perl-html-parser perl-xml-libxml perl-digest-sha1 perl-json perl-json-xs perl-xml-libxslt
 }}}
 
 *FreeBSD*
@@ -170,10 +170,6 @@ autodl-irssi adds the following menu item to the top bar:
 http://img.skitch.com/20101103-kc2udj8anegqatw8ns765xbfjt.png
 
 Clicking on this icon brings up the following menu:
-
-http://img.skitch.com/20101103-fue8tfwx2dgue4us1xmi2awm7j.png
-
-*SVN Version*
 
 http://img.skitch.com/20101104-n4cn3tpmehs2wgsw9kanu1fs3g.png
 
