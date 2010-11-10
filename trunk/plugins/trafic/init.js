@@ -11,6 +11,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 	rTraficGraph.prototype.create = function( aOwner )
 	{
 		this.owner = aOwner;
+		this.owner.parent().css('overflow', 'hidden');
 		this.down = { label: theUILang.DL, bars: {"show": "true"}, data: [], color: "#1C8DFF" };
 		this.up = { label: theUILang.UL, bars: {"show": "true"}, data: [], color: "#009900" };
 
@@ -21,6 +22,26 @@ if(plugin.enabled && plugin.canChangeTabs())
 		this.previousPoint = null;
 		var rule = getCSSRule("div.graph_tab");
 		this.gridColor = rule ? rule.style.color : "#545454";
+
+		this.checked = [ true, true, true, true ];
+		this.datasets = [ this.down, this.up, this.oldDown, this.oldUp ];
+	}
+
+	rTraficGraph.prototype.getDataSets = function()
+	{
+		var ret = new Array();		
+		for( var i in this.checked )
+		{
+			if(this.checked[i])
+				ret.push(this.datasets[i]);
+			else
+			{
+				var arr = cloneObject( this.datasets[i] );
+				arr.data = [];
+				ret.push(arr);
+			}
+		}
+		return(ret);
 	}
 
 	rTraficGraph.prototype.draw = function()
@@ -33,12 +54,9 @@ if(plugin.enabled && plugin.canChangeTabs())
 				clearCanvas( self.owner[0] );
 				self.owner.empty();
 
-				$.plot(self.owner, [ self.down, self.up, self.oldDown, self.oldUp ],
+				$.plot(self.owner,  self.getDataSets(),
 				{ 
-					colors:
-					[
-					 	self.down.color, self.up.color, self.oldDown.color, self.oldUp.color
-					],
+					colors: [ self.down.color, self.up.color, self.oldDown.color, self.oldUp.color ],
 					xaxis: 
 					{ 
 						ticks: self.ticks
@@ -94,6 +112,16 @@ if(plugin.enabled && plugin.canChangeTabs())
 						}
 					}
 				);
+
+				$('.legendColorBox').before("<td class='legendCheckBox'><input type='checkbox'></td>");
+				$.each($('.legendCheckBox input'),function(ndx,element)
+				{
+					$(element).click( function() 
+					{
+						self.checked[ndx] = !self.checked[ndx];
+						self.draw();
+					}).attr("checked",self.checked[ndx]);
+				});
 			}
 		});
 	}
