@@ -150,6 +150,7 @@ div#dlgEditRules-header, div#dlgEditRules div.dlg-header {background: #181818 ur
 #autodl-multiselect-header {
 	background-image: url("./images/dlg-autodl-irc.gif");
 }
+
 .shieven {background: #191919; }
 .shiodd {background: #333333; }
 
@@ -171,3 +172,6 @@ div#webuiRefresh {
 div#webuiRefresh:hover{
 	background: transparent url(./images/refreshuih.png) no-repeat;
 }
+
+#maillayout #letterform table tr td {background: #181818 }
+#maillayout #replyform table tr td {background: #181818 }

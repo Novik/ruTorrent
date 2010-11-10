@@ -1,6 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/cache.php" );
+eval( getPluginConf( 'theme' ) );
 
 class rTheme
 {
@@ -9,10 +10,12 @@ class rTheme
 
 	static public function load()
 	{
+		global $defaultTheme;
 		$cache = new rCache();
 		$theme = new rTheme();
+		$theme->current = $defaultTheme;
 		if(!$cache->get($theme))
-			$theme->current = "";
+			$theme->current = $defaultTheme;
 		return($theme);
 	}
 
