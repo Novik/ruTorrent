@@ -53,7 +53,8 @@ var thePlugins =
 		cantChangeOptions:	0x0004,
 		cantChangeTabs:		0x0008,
 		cantChangeColumns:	0x0010,
-		cantChangeStatusBar:	0x0020
+		cantChangeStatusBar:	0x0020,
+		cantChangeCategory:	0x0040
 	},
 
 	register: function(plg)
@@ -199,6 +200,11 @@ rPlugin.prototype.canChangeStatusBar = function()
 	return(!(this.restictions & thePlugins.restictions.cantChangeStatusBar));
 }
 
+rPlugin.prototype.canChangeCategory = function()
+{
+	return(!(this.restictions & thePlugins.restictions.cantChangeCategory));
+}
+
 rPlugin.prototype.attachPageToOptions = function(dlg,name)
 {
         if(this.canChangeOptions())
@@ -332,5 +338,23 @@ rPlugin.prototype.addPaneToStatusbar = function(id,div,no)
 rPlugin.prototype.removePaneFromStatusbar = function(id)
 {
 	$("#"+id).remove();
+	return(this);
+}
+
+rPlugin.prototype.addPaneToCategory = function(id,name)
+{
+        if(this.canChangeCategory())
+        {
+		$('#CatList').append(
+			$("<div>").addClass("catpanel").attr("id",id).text(name).click(function() { theWebUI.togglePanel(this); })).
+				append($("<div>").attr("id",id+"_cont"));
+	}
+	return($("#"+id+"_cont"));
+}
+
+rPlugin.prototype.removePaneFromCategory = function(id)
+{
+	$("#"+id).remove();
+	$("#"+id+"_cont").remove();
 	return(this);
 }

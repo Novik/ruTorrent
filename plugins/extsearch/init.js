@@ -137,7 +137,6 @@ theSearchEngines.run = function()
 
 rTorrentStub.prototype.extsearch = function()
 {
-	plugin.forceMode = true;
 	this.content = "mode=get&eng="+this.ss[0]+"&what="+this.vs[0]+"&cat="+this.vs[1];
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/extsearch/action.php";
@@ -214,23 +213,16 @@ plugin.reloadData = function(id)
 	}
 }
 
-plugin.enterTeg = function(id)
+plugin.enterTeg = function()
 {
-	plugin.reloadData(id);
+	plugin.reloadData(theWebUI.actLbl);
 	var lst = $("#List");
 	var table = theWebUI.getTable("teg");
-	if(!lst.is(":visible"))
-		lst = $("#RSSList");
 	if(lst.is(":visible"))	
 	{
 		theWebUI.getTable("trt").clearSelection();
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
-		if(theWebUI.getTable("rss"))
-		{
-			theWebUI.getTable("rss").clearSelection();
-			theWebUI.actRSSLbl = null;
-		}
 		var teg = $("#TegList");
 		teg.css( { width: lst.width(), height: lst.height() } );
 		table.resize(lst.width(), lst.height());
@@ -241,13 +233,10 @@ plugin.enterTeg = function(id)
 	table.calcSize().resizeHack();
 }
 
-plugin.leaveTeg = function(id)
+plugin.leaveTeg = function()
 {
-	if(!$type(plugin.tegs[id]))
-	{
-		$("#TegList").hide();
-		$("#List").show();
-	}
+	$("#TegList").hide();
+	$("#List").show();
 }
 
 plugin.correctCounter = function(id,count)
@@ -267,28 +256,14 @@ plugin.correctCounter = function(id,count)
 	}
 }
 
-plugin.switchRSSLabel = theWebUI.switchRSSLabel;
-theWebUI.switchRSSLabel = function(el,force)
-{
-	if(plugin.enabled && this.actLbl && $type(plugin.tegs[this.actLbl]))
-		plugin.leaveTeg(el.id);
-	plugin.switchRSSLabel.call(theWebUI,el,force);
-}
-
 plugin.switchLabel = theWebUI.switchLabel;
 theWebUI.switchLabel = function(obj)
 {
-	var actLbl = theWebUI.actLbl;
-	var rssLbl = theWebUI.actRSSLbl;
+	if(plugin.enabled && theWebUI.actLbl && $type(plugin.tegs[theWebUI.actLbl]))
+		plugin.leaveTeg();
 	plugin.switchLabel.call(theWebUI,obj);
-	if(plugin.enabled && ((actLbl!=theWebUI.actLbl) || rssLbl || plugin.forceMode))
-	{
-		if($type(plugin.tegs[obj.id]))
-			plugin.enterTeg(obj.id);
-		else
-			if(actLbl && $type(plugin.tegs[actLbl]))
-				plugin.leaveTeg(obj.id);
-	}
+	if(plugin.enabled && theWebUI.actLbl && $type(plugin.tegs[theWebUI.actLbl]))
+		plugin.enterTeg();
 }
 
 plugin.filterByLabel = theWebUI.filterByLabel;
@@ -461,7 +436,6 @@ theWebUI.setExtSearchTag = function( d )
 	$("#lblf").append( el );
 	plugin.tegs[tegId] = { "val": str, "what": what, "cat": d.cat, "eng": d.eng, "data": d.data };
 	theWebUI.switchLabel(el[0]);
-	plugin.forceMode = false;
 }
 
 plugin.getTegByRowId = function( rowId )
@@ -605,14 +579,6 @@ theWebUI.resizeTop = function( w, h )
 plugin.config = theWebUI.config;
 theWebUI.config = function(data)
 {
-	plugin.switchTrackersLabel = theWebUI.switchTrackersLabel;
-	theWebUI.switchTrackersLabel = function(el,force)
-	{
-		if(plugin.enabled && this.actLbl && $type(plugin.tegs[this.actLbl]))
-			plugin.leaveTeg(el.id);
-		plugin.switchTrackersLabel.call(theWebUI,el,force);
-	}
-
 	$("#List").after($("<div>").attr("id","TegList").css("display","none"));
 	this.tables["teg"] =  
 	{

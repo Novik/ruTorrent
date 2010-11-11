@@ -21,6 +21,12 @@ theWebUI.switchLabel = function(el)
 		lst.hide();
 		theWebUI.switchLayout(false);
 	}
+
+	if( $(el).hasClass('RSS') ||
+		$(el).hasClass('disRSS') ||
+		$(el).hasClass('RSSGroup'))
+		theWebUI.switchRSSLabel(el);
+
 	plugin.switchLabel.call(theWebUI,el);
 }
 
@@ -31,12 +37,10 @@ theWebUI.isActiveRSSEnabled = function()
 		(!theWebUI.isGroupSelected() && theWebUI.rssLabels[theWebUI.actRSSLbl].enabled==1));
 }
 
-theWebUI.currentRSSDetailsID = null;
 theWebUI.updateRSSDetails = function(id)
 {
-	theWebUI.currentRSSDetailsID = id;
 	if(id)
-		this.request("?action=getrssdetails");
+		this.request("?action=getrssdetails&s="+encodeURIComponent(id));
 	else
 		$("#rsslayout").html('');
 }
@@ -56,9 +60,9 @@ theWebUI.switchLayout = function(toRSS,id)
 	}
 }
 
-theWebUI.switchRSSLabel = function(el,force)
+theWebUI.switchRSSLabel = function(el)
 {
-	if((el.id == theWebUI.actRSSLbl) && !force)
+	if((el.id == theWebUI.actRSSLbl) && $(el).hasClass('sel'))
 		return;
 	if(theWebUI.actRSSLbl)
 		$$(theWebUI.actRSSLbl).className = "cat "+(theWebUI.isActiveRSSEnabled() ? 
@@ -227,7 +231,7 @@ theWebUI.rssLabelContextMenu = function(e)
 		{
 			theWebUI.getTable("trt").clearSelection();
 			theWebUI.getTable("rss").clearSelection();
-			theWebUI.switchRSSLabel(this);
+			theWebUI.switchLabel(this);
 			theWebUI.getTable("rss").fillSelection();
 			theWebUI.createRSSMenu(null, null);
 			theContextMenu.show();
@@ -235,11 +239,11 @@ theWebUI.rssLabelContextMenu = function(e)
 		else
 		{
 			theContextMenu.hide();
-			theWebUI.switchRSSLabel(this);
+			theWebUI.switchLabel(this);
 		}
 	}
 	else
-		theWebUI.switchRSSLabel(this);
+		theWebUI.switchLabel(this);
 	return(false);
 }
 
@@ -657,10 +661,14 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 		}
 	this.rssLabels = rssLabels;
 	if(needSwitch)
-		this.switchRSSLabel($$("_rssAll_"));
+		this.switchLabel($$("_rssAll_"));
 	else
 	if(this.actRSSLbl)
-		this.switchRSSLabel($$(theWebUI.actRSSLbl),true);
+	{
+		var actRSSLbl = theWebUI.actRSSLbl;
+		theWebUI.actRSSLbl = null;
+		this.switchLabel($$(actRSSLbl));
+	}
 }
 
 theWebUI.showRSS = function()
@@ -949,9 +957,9 @@ theWebUI.showFilterResults = function( d )
 {
 	this.showErrors(d);
 	if(d.rss.length)
-		this.switchRSSLabel($$(d.rss));
+		this.switchLabel($$(d.rss));
 	else
-		this.switchRSSLabel($$('_rssAll_'));
+		this.switchLabel($$('_rssAll_'));
 	var table = this.getTable("rss");
 	for(var k in table.rowSel)
 		table.rowSel[k] = false;
@@ -1020,7 +1028,8 @@ rTorrentStub.prototype.clearfiltertime = function()
 
 rTorrentStub.prototype.getrssdetails = function()
 {
-	this.content = "mode=getdesc&href="+encodeURIComponent(theWebUI.currentRSSDetailsID)+"&rss="+plugin.getFirstRSS(theWebUI.rssItems[theWebUI.currentRSSDetailsID]);
+	var ndx = decodeURIComponent(this.ss[0]);
+	this.content = "mode=getdesc&href="+this.ss[0]+"&rss="+plugin.getFirstRSS(theWebUI.rssItems[ndx]);
         this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
 	this.method = 'GET';
@@ -1340,19 +1349,9 @@ plugin.onLangLoaded = function()
 {
         this.addButtonToToolbar("rss",theUILang.mnu_rss,"theWebUI.showRSS()","settings");
 
-        var el = $('#CatList');
-	var ul = $("<ul>");
-	if($$("pstate"))
-	{
-	        el.append($("<div>").addClass("catpanel").attr("id","prss").text(theUILang.rssFeeds).click(function() { theWebUI.togglePanel(this); }));
-		var div = $("<div>").attr("id","prss_cont");
-		el.append(div);
-		el = div;
-		ul.html('<li id="_rssAll_" class="RSS cat">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
-	}
-	else
-		ul.html('<li id="_hr_"><hr /></li><li id="_rssAll_" class="RSS cat">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>');
-	el.append(ul).append( $("<div>").html('<ul id="rssl"></ul>') );
+	plugin.addPaneToCategory("prss",theUILang.rssFeeds).
+		append( $("<ul></ul>").html('<li id="_rssAll_" class="RSS cat">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>')).
+		append( $("<div>").html('<ul id="rssl"></ul>') );
 	$("#_rssAll_").mouseclick( theWebUI.rssLabelContextMenu );
 
 	theDialogManager.make( "dlgAddRSS", theUILang.addRSS,
@@ -1468,8 +1467,7 @@ plugin.onRemove = function()
 	theWebUI.switchLayout(false);
 	theWebUI.switchLabel($$("-_-_-all-_-_-"));
 	$("#RSSList").remove();
-	$("#prss").remove();
-	$("#prss_cont").remove();
+	plugin.removePaneFromCategory("prss");
 	$("#rsslayout").remove();
 	theDialogManager.hide("dlgAddRSS");
 	theDialogManager.hide("dlgEditRSS");
