@@ -1,4 +1,4 @@
 plugin.description: The plug-in adds a set of labels on the category panel. These labels are created automatically on the basis of torrents' trackers.
 plugin.author: Novik
-plugin.runlevel: 11.1
+plugin.runlevel: 11
 plugin.version: 3.2

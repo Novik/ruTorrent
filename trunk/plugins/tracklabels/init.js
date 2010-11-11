@@ -14,10 +14,18 @@ theWebUI.config = function(data)
 plugin.filterByLabel = theWebUI.filterByLabel;
 theWebUI.filterByLabel = function(hash)
 {
-	if(plugin.enabled && theWebUI.actTrackersLbl)
+	if(plugin.enabled && theWebUI.actLbl && $($$(theWebUI.actLbl)).hasClass('tracker'))
 		theWebUI.filterByTracker(hash);
 	else
 		plugin.filterByLabel.call(theWebUI,hash);
+}
+
+theWebUI.filterByTracker = function(hash)
+{
+        if(theWebUI.isTrackerInActualLabel(hash))
+		this.getTable("trt").unhideRow(hash);
+	else
+		this.getTable("trt").hideRow(hash);
 }
 
 theWebUI.isTrackerInActualLabel = function(hash)
@@ -30,7 +38,7 @@ theWebUI.isTrackerInActualLabel = function(hash)
 			if(this.trackers[hash][i].group==0)
 			{
 				var tracker = theWebUI.getTrackerName( this.trackers[hash][i].name );
-				if(tracker && (('i'+tracker)==theWebUI.actTrackersLbl))
+				if(tracker && (('i'+tracker)==theWebUI.actLbl))
 				{
 					ret = true;
 					break;
@@ -41,34 +49,19 @@ theWebUI.isTrackerInActualLabel = function(hash)
 	return(ret);
 }
 
-theWebUI.filterByTracker = function(hash)
-{
-        if(theWebUI.isTrackerInActualLabel(hash))
-		this.getTable("trt").unhideRow(hash);
-	else
-		this.getTable("trt").hideRow(hash);
-}
-
-plugin.switchRSSLabel = theWebUI.switchRSSLabel;
-theWebUI.switchRSSLabel = function(el,force)
-{
-	if(plugin.enabled && theWebUI.actTrackersLbl)
-	{
-		$$(theWebUI.actTrackersLbl).className = "cat";
-		theWebUI.actTrackersLbl = null;
-	}
-	plugin.switchRSSLabel.call(theWebUI,el,force);
-}
-
 plugin.switchLabel = theWebUI.switchLabel;
 theWebUI.switchLabel = function(el)
 {
-	if(plugin.enabled && theWebUI.actTrackersLbl)
-	{
-		$($$(theWebUI.actTrackersLbl)).removeClass("sel");
-		theWebUI.actTrackersLbl = null;
-	}
+	if(plugin.enabled && theWebUI.actTrackersLbl && !theWebUI.actLbl)
+		theWebUI.actLbl = theWebUI.actTrackersLbl;
 	plugin.switchLabel.call(theWebUI,el);
+	if(plugin.enabled && theWebUI.actLbl && $($$(theWebUI.actLbl)).hasClass('tracker'))
+	{
+		theWebUI.actTrackersLbl = theWebUI.actLbl;
+		theWebUI.actLbl = null;
+	}
+	else
+		theWebUI.actTrackersLbl = null;
 }
 
 plugin.addTrackers = theWebUI.addTrackers;
@@ -103,54 +96,13 @@ theWebUI.getTrackerName = function(announce)
 	return(domain);
 }
 
-theWebUI.switchTrackersLabel = function(el,force)
-{
-	if((el.id == this.actTrackersLbl) && !force)
-		return;
-        var table = this.getTable("trt");
-        var lst = $("#RSSList");
-	if(lst.length && lst.is(":visible"))
-	{
-		table.clearSelection();
-		this.dID = "";
-		this.clearDetails();
-		this.getTable("rss").clearSelection();
-		if(this.actRSSLbl)
-			$$(theWebUI.actRSSLbl).className = theWebUI.isActiveRSSEnabled() ? "RSS cat" : "disRSS cat";
-		this.actRSSLbl = null;
-		$("#List").show();
-		lst.hide();
-		this.switchLayout(false);
-	}
-	if(this.actTrackersLbl)
-		$($$(this.actTrackersLbl)).removeClass("sel");
-	this.actTrackersLbl = el.id;
-	$(el).addClass("sel");
-	if((this.actLbl != "") && ($$(this.actLbl) != null))
-		$($$(this.actLbl)).removeClass("sel");
-	this.actLbl = "";
-	table.scrollTo(0);
-	for(var hash in this.torrents)
-	        this.filterByTracker(hash);
-	if(!force)
-	{
-		table.clearSelection();
-		if(this.dID != "")
-		{       	
-			this.dID = "";
-			this.clearDetails();
-		}
-	}
-	table.refreshRows();
-}
-
 theWebUI.trackersLabelContextMenu = function(e)
 {
         if(e.button==2)
         {
 	        var table = theWebUI.getTable("trt");
 		table.clearSelection();
-		theWebUI.switchTrackersLabel(this);
+		theWebUI.switchLabel(this);
 		table.fillSelection();
 		var id = table.getFirstSelected();
 		if(id && plugin.canChangeMenu())
@@ -162,7 +114,7 @@ theWebUI.trackersLabelContextMenu = function(e)
 			theContextMenu.hide();
 	}
 	else
-		theWebUI.switchTrackersLabel(this);
+		theWebUI.switchLabel(this);
 	return(false);
 }
 
@@ -237,11 +189,10 @@ theWebUI.rebuildTrackersLabels = function()
 			{
 			        li = $('<li>').attr("id",'i'+lbl).
 			        	html(escapeHTML(lbl)+'&nbsp;(<span id="-'+lbl+'_c">'+trackersLabels[lbl]+'</span>)').
-			        	mouseclick(theWebUI.trackersLabelContextMenu)
+			        	mouseclick(theWebUI.trackersLabelContextMenu).addClass("cat tracker").attr("title",lbl+" ("+trackersLabels[lbl]+")");
 				var rule = getCSSRule("#-"+lbl);
 				if(!rule)
 					li.prepend( $("<img>").attr("src","http://"+lbl+"/favicon.ico").width(16).height(16).css({ "margin-right": 5, "float" : "left" }) ).css({ padding: "2px 4px"});
-				li.addClass("cat").attr("title",lbl+" ("+trackersLabels[lbl]+")");
 				ul.append(li);
 			}
 			if(lbl==theWebUI.actTrackersLbl)
@@ -261,49 +212,19 @@ theWebUI.rebuildTrackersLabels = function()
 		this.trackersLabels = trackersLabels;
 		if(needSwitch)
 			theWebUI.switchLabel($$("-_-_-all-_-_-"));
-		else
-		if(theWebUI.actTrackersLbl)
-			theWebUI.switchTrackersLabel($$(theWebUI.actTrackersLbl),true);
 	}
 }
 
 theWebUI.initTrackersLabels = function()
 {
-	if( thePlugins.isInstalled("rss") &&
-		!thePlugins.get("rss").allStuffLoaded)
-		setTimeout('theWebUI.initTrackersLabels()',1000);
-	else
-	{
-		var el = $$('CatList');
-		var lbl = $$('lbll').parentNode.nextSibling;
-		var div = document.createElement('DIV');
-		var ul = document.createElement('UL');
-		div.id = "ptrackers_cont";
-		if($$("pstate"))
-		{
-		        var pnl = document.createElement('DIV');
-		        pnl.className = "catpanel";
-	        	pnl.id = "ptrackers";
-			pnl.innerHTML = theUILang.Trackers;
-			pnl.onclick = function() { theWebUI.togglePanel(pnl); };
-			el.insertBefore(ul,lbl);
-			el.insertBefore(pnl,ul);
-		}
-		else
-		{
-			ul.innerHTML = '<li id="_hr_"><hr /></li>';
-  			el.insertBefore(ul,lbl);
-		}
-		div.innerHTML = '<ul id="torrl"></ul>';
-  		el.insertBefore(div,ul.nextSibling);
-	        plugin.markLoaded();
-	}
+	plugin.addPaneToCategory("ptrackers",theUILang.Trackers).
+		append($("<ul></ul>").attr("id","torrl"));
+        plugin.markLoaded();
 };
 
 plugin.onRemove = function()
 {
-	$('#ptrackers_cont').remove();
-	$('#ptrackers').remove();
+	plugin.removePaneFromCategory('ptrackers');
 	theWebUI.switchLabel($$("-_-_-all-_-_-"));
 	if(plugin.canChangeColumns())
 	{
