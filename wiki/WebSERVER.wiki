@@ -150,4 +150,5 @@ vserver!20!rule!500!match!request = ^/RPC1
 
 ===Nginx SCGI notes ===
 
-I was unable to find a working mod_scgi for nginx.  I was able to find an old version, which may or may not work, but seeing as it's very outdated, I wouldn't recommend it.  For this webserver, stick to [PluginRPC RPC Plugin] or [PluginHTTPRPC HTTPRPC Plugin].
+
+It seems that the latest 0.8.x branch of nginx has working scgi.  I will add notes to how to get this set up for rutorrent sometime later this week.
