@@ -786,20 +786,23 @@ var theWebUI =
 		theContextMenu.add([theUILang.peerAdd, 
 			(this.dID && $type(this.torrents[this.dID]) && (this.torrents[this.dID].private==0) && (theWebUI.systemInfo.rTorrent.iVersion>=0x804)) ? 
 			"theDialogManager.show('padd')"	: null]);
-		theContextMenu.add([theUILang.peerBan, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('ban')" : null]);
-		theContextMenu.add([theUILang.peerKick, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('kick')" : null]);
-   		if(this.getTable("prs").selCount > 1) 
-   		{
-			theContextMenu.add([theUILang.peerSnub, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('snub')" : null]);
-			theContextMenu.add([theUILang.peerUnsnub, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('unsnub')" : null]);
-		}
-		else
-                {
-      			if(!this.peers[id].snubbed) 
-      				theContextMenu.add([theUILang.peerSnub, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('snub')" : null]);
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x807)
+		{
+			theContextMenu.add([theUILang.peerBan, "theWebUI.setPeerState('ban')"]);
+			theContextMenu.add([theUILang.peerKick, "theWebUI.setPeerState('kick')"]);
+	   		if(this.getTable("prs").selCount > 1) 
+   			{
+				theContextMenu.add([theUILang.peerSnub, "theWebUI.setPeerState('snub')"]);
+				theContextMenu.add([theUILang.peerUnsnub, "theWebUI.setPeerState('unsnub')"]);
+			}
 			else
-				theContextMenu.add([theUILang.peerUnsnub, (theWebUI.systemInfo.rTorrent.iVersion>=0x807) ? "theWebUI.setPeerState('unsnub')" : null]);
-      		}
+                	{
+      				if(!this.peers[id].snubbed) 
+      					theContextMenu.add([theUILang.peerSnub, "theWebUI.setPeerState('snub')"]);
+				else
+					theContextMenu.add([theUILang.peerUnsnub, "theWebUI.setPeerState('unsnub')"]);
+      			}
+		}
                 theContextMenu.add([CMENU_SEP]); 
 		theContextMenu.add([theUILang.peerDetails, (this.getTable("prs").selCount > 1) ? null : "theWebUI.getTable('prs').ondblclick({ id: '"+id+"'})"]); 
 		return(true);

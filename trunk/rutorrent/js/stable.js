@@ -1587,6 +1587,7 @@ dxSTable.prototype.setValue = function(row, col, val)
 		var r = $$(row);
 		if(r == null)
 			return(false);
+		var rawvalue = val;
 		arr = {};
 		arr[col] = val;
 		val = this.format(this,arr)[col];
@@ -1596,6 +1597,8 @@ dxSTable.prototype.setValue = function(row, col, val)
 			this.rowdata[row].fmtdata[col] = val;
         		var c = this.getColOrder(col);
 			var td = r.cells[c];
+
+			$(td).attr("rawvalue",rawvalue);
 
 			if(this.colsdata[c].type==TYPE_PROGRESS)
 			{

@@ -20,6 +20,8 @@ if($hth = opendir('../plugins/theme/themes'))
 }
 $jResult.=($themes.'];');
 
+$theSettings->registerPlugin("theme");
+
 if($theme->isValid())
 {
 	$themeInit = "../plugins/theme/themes/".$theme->current."/init.js";

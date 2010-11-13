@@ -769,6 +769,8 @@ var theTabs =
 							prefix = "trk";
 							break;
                					case "PeerList":
+               						theWebUI.setActiveView(id);
+							theWebUI.updatePeers();
 							prefix = "prs";
 							break;
 						case "PluginList":
