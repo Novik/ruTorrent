@@ -34,7 +34,7 @@
        					        	$country = @geoip_record_by_name( $value );
        					        	if(!empty($country))
 							{
-								$city = $country["city"];
+								$city = utf8_encode($country["city"]);
        					        		$country = $country["country_code"];
 							}
 						}

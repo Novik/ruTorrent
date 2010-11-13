@@ -4,8 +4,8 @@
 	{
 		if( count( $argv ) > 1 )
 			$_SERVER['REMOTE_USER'] = $argv[1];
-		require_once( '../../php/xmlrpc.php' );
-		require_once( './stat.php' );
+		require_once( dirname(__FILE__).'/../../php/xmlrpc.php' );
+		require_once( 'stat.php' );
 		eval(getPluginConf('trafic'));
 		
 		$req = new rXMLRPCRequest( array(

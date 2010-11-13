@@ -21,6 +21,7 @@ class rTorrentSettings
 	public $aliases = array();
 	public $started = 0;
 	public $server = '';
+	public $portRange = '6890-6999';
 	public $idNotFound = false;
 
 	public function registerPlugin($plugin,$data = true)
@@ -199,6 +200,7 @@ class rTorrentSettings
 					new rXMLRPCCommand("system.library_version"),
 					new rXMLRPCCommand("set_xmlrpc_size_limit",67108863),
 					new rXMLRPCCommand("get_name"),
+					new rXMLRPCCommand("get_port_range"),
 					) );
 				if($req->run() && !$req->fault)
 				{
@@ -206,6 +208,7 @@ class rTorrentSettings
   		        	        $this->session = $req->val[1];
 					$this->libVersion = $req->val[2];
 					$this->server = $req->val[4];
+					$this->portRange = $req->val[5];
 					if(isLocalMode())
 					{
 	                                        if(!empty($this->session))
