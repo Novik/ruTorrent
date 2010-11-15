@@ -319,7 +319,7 @@ switch($mode)
 					$hash[0],
 					getCmd("d.is_active="),
 					getCmd("cat").'=$'.getCmd("d.stop=").',$'.getCmd("d.close=").',$'.getCmd("d.set_connection_seed=").conn.',$'.getCmd("d.open=").',$'.getCmd("d.start="),
-					getCmd("d.set_connection_seed=").conn
+					getCmd("d.set_connection_seed=").$conn
 					));
 			}
 			else
