@@ -45,6 +45,7 @@
       * [PluginChunks Chunks]
       * [PluginData Data]
       * [PluginCpuload Cpuload]
+      * [PluginFeeds Feeds]
     * [HowToCreatePlugin Как написать плагин самому]
   * [Usage Использование]
   * [Versions История версий]

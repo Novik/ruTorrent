@@ -4,7 +4,7 @@
 
 == Описание ==
 
-Плагин позволяет менять стиль оформления ruTorrent. В настоящий момент плагин поддерживается только SVN версией ruTorrent.
+Плагин позволяет менять стиль оформления ruTorrent.
 Доступны следующие стили:
 
 [http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/blue_big.png http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/blue_small.png]
@@ -12,4 +12,6 @@
 [http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/dark_big.png http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/dark_small.png]
 
 [http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/acid_big.png http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/acid_small.png]
+
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/oblivion_big.png http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginTheme/oblivion_small.png]
 
