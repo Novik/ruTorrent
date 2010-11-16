@@ -1,0 +1,5 @@
+plugin.description: Theme support for ruTorrent.
+plugin.author: Novik
+plugin.runlevel: 5
+plugin.version: 3.2
+rtorrent.need: 0
