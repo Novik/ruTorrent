@@ -45,6 +45,7 @@
         * [PluginData Data]
         * [PluginCpuload Cpuload]
         * [PluginExtsearch extsearch]
+        * [PluginTheme Theme]
       * 3rd Party Plugins
        * [PluginAutodlirssi Autodl-irssi]
        * [PluginPause Pause]
