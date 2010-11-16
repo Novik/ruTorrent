@@ -38,6 +38,6 @@ _*Do not mix files from this page with svn files, use one or the other*_
     * [http://rutorrent.googlecode.com/files/cpuload-3.2.tar.gz cpuload 3.2] _*(see [PluginCpuload cpuload] for more info)*_
     * [http://rutorrent.googlecode.com/files/theme-3.2.tar.gz theme 3.2] _*(see [PluginTheme theme] for more info)*_
     * [http://rutorrent.googlecode.com/files/rssurlrewrite-3.2.tar.gz rssurlrewrite 3.2] _*(see [PluginRSSURLRewrite Rssurlrewrite] for more info)*_
-    * [http://rutorrent.googlecode.com/files/loginmgr-3.2.tar.gz loginmgr 3.2] _*(see [PluginLoginmgr Loginmgr] for more info)*_
+    * [http://rutorrent.googlecode.com/files/loginmgr-3.2.tar.gz loginmgr 3.2] _*(see [ PluginLoginMgr Loginmgr] for more info)*_
     * [http://rutorrent.googlecode.com/files/feeds-3.2.tar.gz feeds 3.2] _*(see [PluginFeeds Feeds] for more info)*_
     * [http://rutorrent.googlecode.com/files/extsearch-3.2.tar.gz extsearch 3.2] _*(see [PluginExtsearch Extsearch] for more info)*_
