@@ -245,6 +245,8 @@ canChangeMenu = yes
 canChangeOptions = yes
 canChangeTabs = yes
 canChangeColumns = yes
+canChangeStatusBar = yes
+canChangeCategory = yes
 }}}
 
 to disable a plugin, simply create a section with the plugin and changed enabled = yes to enabled = no.  so, to disable the rss plugin for top you'd copy the plugins.ini file to his directory:
