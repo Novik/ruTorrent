@@ -150,5 +150,17 @@ vserver!20!rule!500!match!request = ^/RPC1
 
 ===Nginx SCGI notes ===
 
+Nginx  0.8.42 and newer has a scgi module.  It's enabled by default when you build nginx.  It's config options are failry simple.
 
-It seems that the latest 0.8.x branch of nginx has working scgi.  I will add notes to how to get this set up for rutorrent sometime later this week.
+{{{
+location /RPC2 {
+  include scgi_params;
+  scgi_pass localhost:5000;
+}
+}}}
+
+For more info, see [http://wiki.nginx.org/HttpScgiModule Nginx Scgi docs]
+
+== Php Setup ==
+
+rutorrent depends on php.  I will include some basic php configuation options in the wiki when i have time to write it.  For now, use your distros documentation or google.
