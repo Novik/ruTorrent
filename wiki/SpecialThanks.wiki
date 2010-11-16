@@ -25,6 +25,36 @@ his contributions include:
  * [PluginChunks Chunks]
  * [PluginGeoIP GeoIP]
 
+== Brock / stfnborg ==
+
+A really big thanks goes out to Brock for his amazing irc plugin. 
+
+ * [PluginAutodlirssi Autodl-irssi]
+
+== Gyran ==
+
+Special thanks are due to gyran for his really cool plugin which pauses the webui.
+
+ * [PluginPause Pause]
+
+== thezwallrus ==
+
+Special thanks to thezwallrus for his label modifications.
+
+ * [PluginTaddLabel Tadd-Suite]
+
+== soupnazi ==
+
+Also, thanks are due to soupnazi for his nfo viewing plugin.
+
+ * [PluginNFO NFO]
+
+== Ivan_83 ==
+
+And thanks are due to Ivan_83 for his hostname plugin.
+
+ * [PluginHostname Hostname]
+
 == Tranlation Shout outs ==
 
  _*(note:  This is likely not an all inclusive list. I have added the information i personally know about, if you provided a translation and i forgot to include it, please email me at wonslung@gmail.com -Wonslung)*_
