@@ -2,9 +2,9 @@
 == Version history ==
 ----
  * ==== Version 3.2 (16.11.2010 r1552 ) ====
-   # Added plugins [PluginTheme theme], [PluginRSSURLRewrite RSSURLRewrite], [PluginLoginMgr LoginMgr] [PluginFeeds Feeds], [PluginExtsearch ExtSearch].
+   # Added plugins [PluginTheme Theme], [PluginRSSURLRewrite RSSURLRewrite], [PluginLoginMgr LoginMgr] [PluginFeeds Feeds], [PluginExtsearch ExtSearch].
   # Added support for rtorrent svn r1189 (Attention! Not for unstable version 0.8.7)
-  # API rewritten to support new changes in rtorrent. 
+  # API rewritten to support plugins. 
   # Fixed a lot of errors.
   # Removed depreciated plugins Darkpal and Search _([PluginTheme Theme] and [PluginExtsearch ExtSearch] replace these )_
 
