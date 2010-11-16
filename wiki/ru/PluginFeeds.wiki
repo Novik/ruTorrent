@@ -6,12 +6,12 @@
 
 Данный плагин добавляет возможность просмотра текущих закачек по категориям средствами RSS. Ссылки на соответствующие rss ленты выглядят так:
 
-# `http://your_server/rutorrent/plugins/feeds/action.php?mode=all&lang=ru` - все закачки
-# `http://your_server/rutorrent/plugins/feeds/action.php?mode=downloading&lang=ru` - загружаемые закачки
-# `http://your_server/rutorrent/plugins/feeds/action.php?mode=completed&lang=ru` - завершенные закачки
-# `http://your_server/rutorrent/plugins/feeds/action.php?mode=active&lang=ru` - активные закачки
-# `http://your_server/rutorrent/plugins/feeds/action.php?mode=inactive&lang=ru` - неактивные закачки
-# `http://your_server/rutorrent/plugins/feeds/action.php?mode=error&lang=ru` - закачки с ошибками
+ # `http://your_server/rutorrent/plugins/feeds/action.php?mode=all&lang=ru` - все закачки
+ # `http://your_server/rutorrent/plugins/feeds/action.php?mode=downloading&lang=ru` - загружаемые закачки
+ # `http://your_server/rutorrent/plugins/feeds/action.php?mode=completed&lang=ru` - завершенные закачки
+ # `http://your_server/rutorrent/plugins/feeds/action.php?mode=active&lang=ru` - активные закачки
+ # `http://your_server/rutorrent/plugins/feeds/action.php?mode=inactive&lang=ru` - неактивные закачки
+ # `http://your_server/rutorrent/plugins/feeds/action.php?mode=error&lang=ru` - закачки с ошибками
 
 Впрочем, большинство современных браузеров выносят данные ссылки в адресную строку сайта, так:
 

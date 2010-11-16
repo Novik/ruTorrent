@@ -3,7 +3,7 @@
 ----
 
  * ====Версия 3.2 (16.11.2010 r1552)==== 
-   # Добавлены плагины [PluginTheme theme], [PluginRSSURLRewrite RSSURLRewrite], [PluginLoginMgr LoginMgr], [PluginFeeds Feeds], [PluginExtsearch ExtSearch].
+   # Добавлены плагины [PluginTheme Theme], [PluginRSSURLRewrite RSSURLRewrite], [PluginLoginMgr LoginMgr], [PluginFeeds Feeds], [PluginExtsearch ExtSearch].
    # Добавлена поддержка svn версии rtorrent начиная с `r1189` включительно.
    # Переработан и дополнен API поддержки плагинов.
    # Исправлен ряд ошибок. 
