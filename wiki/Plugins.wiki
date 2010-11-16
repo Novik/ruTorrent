@@ -147,7 +147,6 @@ rm -r /var/www/rutorrent/plugins/rpc/
 == Currently there are the following plug-ins: ==
  # [PluginRPC RPC] - a plug-in for linking rtorrent and a web server. (Replacement for mod_scgi).
  # [PluginErasedata erasedata] - adds "Delete with the data" to the right click context menu.
- # [PluginDarkPal darkpal] - A ruTorrent Theme with dark colors designed to burn your eyes.
  # [PluginCreate сreate] - adds the command of new torrent creation.
  # [PluginTrafic trafic] - adds a subsystem of the traffic counting.
  # [PluginRSS RSS] - realizes operations with RSS-feeds.
@@ -155,7 +154,6 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginThrottle throttle] - allows to set different speed limitations for groups of torrents.
  # [PluginRetrackers retrackers] - automatically adds defined re-trackers for newly added torrents.
  # [PluginCookies cookies] - allows to define a set of cookies for trackers which use such method of authorization.
- # [PluginSearch search] - allows to redefine the list of search engines.
  # [PluginScheduler scheduler] - allows to change speed limitations of downloads/uploads depending on hour of the day and day of the week.
  # [PluginAutotools autotools] -  realizes some automation functions (autolabel, automove).
  # [PluginDataDir datadir] - allows to change the torrent's data directory.
@@ -172,11 +170,15 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginChunks Chunks] -- This plugin shows info on torrent pieces (which pieces have downloaded).
  # [PluginData Data] -- This plugin adds an http download option to the "files" tab and torrent menu.
  # [PluginCpuload Cpuload] - Shows cpu loading on the bottom bar in an easy to read fashion.
- # [PluginExtsearch extsearch] - adds an internal search function to many popular public and private sites
-
+ # [PluginExtsearch Extsearch] - adds an internal search function to many popular public and private sites
+ # [PluginTheme Theme]  - adds several themes and the ability to choose which one to use from the settings menu.
+ # [PluginLoginMgr Loginmgr] - This plugin is used for sites where cookies fail, to help support [PluginRSS RSS] and [PluginExtsearch] Extsearch
 == 3rd Party Plugins ==
  # [PluginAutodlirssi Autodl-irssi] - irc bot for auto downloading.
  # [PluginPause Pause] -- plugin to pause the ui
  # [PluginTaddLabel tadd-labels] - plugin which makes labeling torrents easier
  # [PluginHostname HostName] - plugin which show host column for peers
  # [PluginNFO NFO] - plugin for displaying the content of the .nfo file
+== Depreciated Plugins == 
+ # [PluginSearch search] - allows to redefine the list of search engines. *_replaced by [PluginExtsearch Extsearch]_*
+ # [PluginDarkpal Darkpal] - a darker theme *_(replaced by [PluginTheme Theme]_*
