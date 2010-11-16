@@ -47,6 +47,7 @@
         * [PluginExtsearch extsearch]
         * [PluginTheme Theme]
         * [PluginLoginMgr  Loginmgr]
+        * [PluginRSSURLRewrite Rssurlrewrite]
       * 3rd Party Plugins
        * [PluginAutodlirssi Autodl-irssi]
        * [PluginPause Pause]
