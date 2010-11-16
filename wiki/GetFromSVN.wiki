@@ -67,38 +67,26 @@ svn up *
 _*(NOTE: If you read this and do not understand it, please stick to the section ABOVE this point)*_
 
 
-I tend to prefer downloading everything from trunk, removing the plugins i don't want, then editing the svn file to keep from downloading them again.
+I tend to prefer downloading everything from trunk, and using plugins.ini to disable the plugins i do not plan to use.  _(See [http://code.google.com/p/rutorrent/wiki/Plugins#plugins.ini plugins.ini] for more details)*_
 
 This works something like this:
-
-_(note: in the following example, i want all plugins except darkpal and rpc)_
 
 {{{
 cd /var/www
 svn co http://rutorrent.googlecode.com/svn/trunk
-cd trunk/
-rm -r plugins/darkpal plugins/rpc rutorrent/plugins && mv plugins/ rutorrent/
-mv rutorrent/ ../ && cd ../ && rm -r trunk/
+rm -rf trunk/rutorrent/plugins/
+mv trunk/plugins/ trunk/rutorrent/
+mv trunk/rutorrent/ /var/www/
+rm -rf /var/www/trunk/
 }}}
 
-This gives you a rutorrent install that you can update by running only svn up from the main rutorrent dir.  In it's CURRENT form, however, it will always redownload rpc and darkpal, so you will need to either remove them every time (which isn't that hard if you write a script especially FOR updating rutorrent) or edit the svn files.
-
-To do this, you need to edit the .svn/entires files in the plugins directory, and remove the entries for the plugins you don't want.
-
-if you open the plugins/.svn/entries file in a text editor, it should become apparent.
-
-so, to remove rpc and darkpal, you look for the following sections and remove them
+This will give you rutorrent installed to /var/www/rutorrent with all plugins.  If you wish to update the svn, you simply do the following:
 
 {{{
-rpc
-dir
-^L
-}}}
-and
-{{{
-darkpal
-dir
-^L
+cd /var/www/rutorrent/
+svn up
 }}}
 
-then save the file. now when you run svn update from /var/www/rutorrent  it should update all the installed plugins and skip redownloading the ones you do not want.  The best part is you do not have to manually update each plugin. 
+and it will update rutorrent core and all of the plugins which come from the rutorrent svn _*but not any 3rd party plugins.  Refer to any documentation from the 3rd party vendor for these plugins. *_
+
+Like i said above, i simply disable any plugins i do not plan to use by editing the plugins.ini file.  You can do this on a per user basis as well.
