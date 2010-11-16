@@ -8,6 +8,8 @@
   # Fixed a lot of errors.
   # Removed depreciated plugins Darkpal and Search _([PluginTheme Theme] and [PluginExtsearch ExtSearch] replace these )_
 
+----
+
  * ==== Version 3.1 (25.05.2010 r1167 )====
    # Added a directive to force single user mode  ($ forbidUserSettings).
    # Added support for compressed php pages via an external program (gzip).
