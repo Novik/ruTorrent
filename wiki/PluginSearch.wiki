@@ -1,3 +1,4 @@
+#labels Deprecated
 ----
 =Search Plugin=
 ----
@@ -8,3 +9,6 @@ This plugin makes it possible to modify the list of default search engines.  Onc
 
 
 [http://rutorrent.googlecode.com/svn/wiki/images/PluginSearch/search.jpg]
+
+
+*_Depreciated in 3.2_*
