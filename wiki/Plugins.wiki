@@ -173,6 +173,7 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginExtsearch Extsearch] - adds an internal search function to many popular public and private sites
  # [PluginTheme Theme]  - adds several themes and the ability to choose which one to use from the settings menu.
  # [PluginLoginMgr Loginmgr] - This plugin is used for sites where cookies fail, to help support [PluginRSS RSS] and [PluginExtsearch] Extsearch
+ # [PluginRSSURLRewrite Rssurlrewrite] - This plugin is used to rewrite http links for rss using regular expressions
 == 3rd Party Plugins ==
  # [PluginAutodlirssi Autodl-irssi] - irc bot for auto downloading.
  # [PluginPause Pause] -- plugin to pause the ui
