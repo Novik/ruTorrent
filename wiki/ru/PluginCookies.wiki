@@ -1,5 +1,5 @@
 ----
-= Плагин cookies =
+= Плагин Cookies =
 ----
 
 <wiki:toc />

@@ -87,8 +87,9 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
  # [PluginTheme Theme] - смена стиля оформления ruTorrent.
  # [PluginFeeds Feeds] - доступ к текущим закачкам средствами RSS.
 
-== 3rd Party Plugins ==
+== Плагины прочих разработчиков ==
  # [PluginAutodlirssi Autodl-irssi] - irc бот для автоматизаци закачек.
- # [PluginPause Pause] - реализует паузу в автообновлении UI
- # [PluginTaddLabel tadd-labels] - плагин для работы с метками
- # [http://www.rozhuk.org.ru/forum/index.php?topic=283.0 HostName] - plugin which show host column for peers
+ # [PluginPause Pause] - реализует паузу в автообновлении UI.
+ # [PluginTaddLabel tadd-labels] - плагин для работы с метками.
+ # [PluginHostname HostName] - показывает для пира имя хоста вместо IP адреса.
+ # [PluginNFO NFO] - реализует показ .nfo файла закачки.
