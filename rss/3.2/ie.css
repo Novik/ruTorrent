@@ -1,0 +1,11 @@
+.lf li input { margin: -10px 3px 0 0; padding: 0; } 
+.lf li {margin: 0 0 0 -20px; padding: 0}
+.lf li input.TextboxFocus { width: 80%; }
+.lf li input.TextboxNormal { width: 80%; }
+.lf ul {width: 90%; }
+div#dlgEditFilters {height: 380px;}
+.rf {height: 325px;}
+.rf fieldset {height: 310px;vertical-align: top;}
+div#dlgAddRSS {height: 133px}
+div#dlgEditRSS {height: 133px}
+.chk {margin: 0; padding: 0; height: 15px; overflow:hidden;}
