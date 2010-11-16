@@ -46,6 +46,7 @@
         * [PluginCpuload Cpuload]
         * [PluginExtsearch extsearch]
         * [PluginTheme Theme]
+        * [PluginLoginMgr  Loginmgr]
       * 3rd Party Plugins
        * [PluginAutodlirssi Autodl-irssi]
        * [PluginPause Pause]
