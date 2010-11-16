@@ -19,7 +19,6 @@
       * Current plugins
         * [PluginRPC RPC]
         * [PluginErasedata Erasedata]
-        * [PluginDarkPal Darkpal]
         * [PluginCreate Create]
         * [PluginTrafic Traffic]
         * [PluginRSS RSS]
@@ -27,7 +26,6 @@
         * [PluginRetrackers Retrackers]
         * [PluginThrottle Throttle]
         * [PluginCookies Cookies]
-        * [PluginSearch Search]
         * [PluginScheduler Scheduler]
         * [PluginAutotools Auto Tools]
         * [PluginDataDir DataDir]
@@ -54,6 +52,9 @@
        * [PluginTaddLabel tadd-labels]
        * [PluginHostname HostName]
        * [PluginNFO NFO]
+      * Depreciated Plugins
+        * [PluginDarkPal Darkpal]
+        * [PluginSearch Search]
       * [HowToCreatePlugin How to make a plugin]
   * [Usage]
   * [ErrorMessages Error Messages]
