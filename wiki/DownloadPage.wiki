@@ -13,12 +13,11 @@ _*Do not mix files from this page with svn files, use one or the other*_
   * [http://rutorrent.googlecode.com/files/plugins-3.2.tar.gz All Plugins for 3.2]
     * [http://rutorrent.googlecode.com/files/unpack-3.2.tar.gz Unpack 3.2] _*(see [PluginUnpack Unpack] for more info)*_
     * [http://rutorrent.googlecode.com/files/trafic-3.2.tar.gz Traffic 3.2] _*(see [PluginTrafic Traffic] for more info)*_
-    * [http://rutorrent.googlecode.com/files/tracklabels-3.0.tar.gz Track Labels 3.0] _*(see [PluginTracklabels Tracker Labels] for more info)*_
+    * [http://rutorrent.googlecode.com/files/tracklabels-3.2.tar.gz Track Labels 3.2] _*(see [PluginTracklabels Tracker Labels] for more info)*_
     * [http://rutorrent.googlecode.com/files/throttle-3.2.tar.gz Throttle 3.2] _*(see [PluginThrottle Throttle] for more info)*_
     * [http://rutorrent.googlecode.com/files/source-3.2.tar.gz Source 3.2] _*(see [PluginSource Source] for more info)*_
     * [http://rutorrent.googlecode.com/files/show_peers_like_wtorrent-3.2.tar.gz show peers like wtorrent 3.2] _*(see [PluginShow_peers_like_wtorrent Show Peers Like wtorrent] for more info)*_
     * [http://rutorrent.googlecode.com/files/seedingtime-3.2.tar.gz seedingtime 3.2] _*(see [PluginSeedingtime Seedingtime] for more info)*_
-    * [http://rutorrent.googlecode.com/files/search-3.2.tar.gz search 3.2] _*(see [PluginSearch Search] for more info)*_
     * [http://rutorrent.googlecode.com/files/scheduler-3.2.tar.gz scheduler 3.2] _*(see [PluginScheduler Scheduler ] for more info)*_
     * [http://rutorrent.googlecode.com/files/rss-3.2.tar.gz rss 3.2] _*(see [PluginRSS RSS] for more info)*_
     * [http://rutorrent.googlecode.com/files/rpc-3.2.tar.gz rpc 3.2] _*(see [PluginRPC RPC] for more info)*_
@@ -30,11 +29,15 @@ _*Do not mix files from this page with svn files, use one or the other*_
     * [http://rutorrent.googlecode.com/files/diskspace-3.2.tar.gz diskspace 3.2] _*(see [PluginDiskspace Diskspace] for more info)*_
     * [http://rutorrent.googlecode.com/files/datadir-3.2.tar.gz datadir 3.2] _*(see [PluginDataDir  Datadir] for more info)*_
     * [http://rutorrent.googlecode.com/files/data-3.2.tar.gz data 3.2] _*(see [PluginData Data] for more info)*_
-    * [http://rutorrent.googlecode.com/files/darkpal-3.2.tar.gz darkpal 3.2] _*(see [PluginDarkPal Darkpal] for more info)*_
     * [http://rutorrent.googlecode.com/files/create-3.2.tar.gz create 3.2] _*(see [PluginCreate Create] for more info)*_
     * [http://rutorrent.googlecode.com/files/cookies-3.2.tar.gz cookies 3.2] _*(see [PluginCookies Cookies] for more info)*_
     * [http://rutorrent.googlecode.com/files/chunks-3.2.tar.gz chunks 3.2] _*(see [PluginChunks Chunks] for more info)*_
-    * [http://rutorrent.googlecode.com/files/autotools-3.2.tar.gz autottols 3.2] _*(see [PluginAutotools AutoTools] for more info)*_
+    * [http://rutorrent.googlecode.com/files/autotools-3.2.tar.gz autottools 3.2] _*(see [PluginAutotools AutoTools] for more info)*_
     * [http://rutorrent.googlecode.com/files/_getdir-3.2.tar.gz _getdir 3.2] _*(see [Plugin_getdir _getdir] for more info)*_
     * [http://rutorrent.googlecode.com/files/httprpc-3.2.tar.gz httprpc 3.2] _*(see [PluginHTTPRPC httprpc] for more info)*_
     * [http://rutorrent.googlecode.com/files/cpuload-3.2.tar.gz cpuload 3.2] _*(see [PluginCpuload cpuload] for more info)*_
+    * [http://rutorrent.googlecode.com/files/theme-3.2.tar.gz theme 3.2] _*(see [PluginTheme theme] for more info)*_
+    * [http://rutorrent.googlecode.com/files/rssurlrewrite-3.2.tar.gz rssurlrewrite 3.2] _*(see [PluginRSSURLRewrite Rssurlrewrite] for more info)*_
+    * [http://rutorrent.googlecode.com/files/loginmgr-3.2.tar.gz loginmgr 3.2] _*(see [PluginLoginmgr Loginmgr] for more info)*_
+    * [http://rutorrent.googlecode.com/files/feeds-3.2.tar.gz feeds 3.2] _*(see [PluginFeeds Feeds] for more info)*_
+    * [http://rutorrent.googlecode.com/files/extsearch-3.2.tar.gz extsearch 3.2] _*(see [PluginExtsearch Extsearch] for more info)*_
