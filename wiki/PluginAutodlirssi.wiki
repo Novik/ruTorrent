@@ -57,6 +57,25 @@ urpmi perl-Archive-Zip perl-Net-SSLeay perl-HTML-Parser perl-XML-LibXML perl-Dig
 pacman -S perl-archive-zip perl-net-ssleay perl-html-parser perl-xml-libxml perl-digest-sha1 perl-json perl-json-xs perl-xml-libxslt
 }}}
 
+*Gentoo*
+{{{
+emerge dev-perl/Archive-Zip 
+emerge dev-perl/Net-SSLeay 
+emerge dev-perl/HTML-Parser 
+emerge dev-perl/libxml-perl 
+emerge dev-perl/Digest-SHA1 
+emerge dev-perl/JSON 
+emerge dev-perl/JSON-XS 
+emerge dev-perl/XML-LibXSLT
+}}}
+
+*_Note: On Gentoo, if any packages are masked, use ACCEPT_KEYWORDS to fix the issue...for instance, when i installed these packages, JSON and JSON-XS wouldn't install unless i used the following_*
+
+{{{
+ACCEPT_KEYWORDS="~amd64" emerge dev-perl/JSON 
+ACCEPT_KEYWORDS="~amd64 emerge dev-perl/JSON-XS 
+}}}
+
 *FreeBSD*
 {{{
 pkg_add -r p5-Archive-Zip p5-Net-SSLeay p5-HTML-Parser p5-XML-LibXML p5-Digest-SHA1 p5-JSON p5-JSON-XS p5-XML-LibXSLT
