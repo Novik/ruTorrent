@@ -73,8 +73,10 @@ emerge dev-perl/XML-LibXSLT
 
 {{{
 ACCEPT_KEYWORDS="~amd64" emerge dev-perl/JSON 
-ACCEPT_KEYWORDS="~amd64 emerge dev-perl/JSON-XS 
+ACCEPT_KEYWORDS="~amd64" emerge dev-perl/JSON-XS 
 }}}
+
+_Also, keep in mind that the keywords will be different based on your cpu architecture_ 
 
 *FreeBSD*
 {{{
