@@ -11,7 +11,8 @@ class RUTrackerEngine extends commonEngine
 		if( strpos($results, ">�� �������</td>")!==false )
 			break;
 		$res = preg_match_all('/<a class="gen f" href="tracker\.php\?f=\d+">(?P<cat>.*)<\/a><\/td>.*'.
-			'<a class="med tLink" href="\.\/viewtopic\.php\?t=(?P<id>\d+)"><b>(?P<name>.*)<\/b><\/a>.*'.
+//			'<a class="med tLink" href="\.\/viewtopic\.php\?t=(?P<id>\d+)"><b>(?P<name>.*)<\/b><\/a>.*'.
+			'<a class="med tLink bold" href="\.\/viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
 			'<u>(?P<size>.*)<\/u>\n\s*'.
 			'<a class="small tr-dl dl-stub" href="(?P<link>.*)">.*'.
 			'<td class="row4 seedmed"><b>(?P<seeds>.*)<\/b><\/td>\n\s*'.
