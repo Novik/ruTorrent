@@ -53,7 +53,6 @@ class SceneHDEngine extends commonEngine
 						$item["cat"] = $matches["cat"][$i];
 						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
-toLog($matches["size"][$i]);						
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["time"] = strtotime(self::removeTags(str_replace("<br>"," ",$matches["date"][$i])));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));

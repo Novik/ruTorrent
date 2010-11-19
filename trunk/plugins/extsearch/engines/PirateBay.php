@@ -26,7 +26,7 @@ class PirateBayEngine extends commonEngine
 		$maxPage = 10;
 		for($pg = 0; $pg<$maxPage; $pg++)
 		{
-			$cli = $this->fetch( Snoopy::linkencode($url.'/search/'.$what.'/'.$pg).'/7/'.$cat );
+			$cli = $this->fetch( Snoopy::linkencode($url.'/search/'.$what.'/'.$pg).'/7/'.$cat,false );
 			if($cli==false || !preg_match('/<\/span>&nbsp;Displaying hits from \d+ to \d+ \(approx (?P<cnt>\d+) found\)/siU',$cli->results, $matches))
 				break;
 			$maxPage = ceil(intval($matches["cnt"])/30);

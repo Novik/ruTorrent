@@ -357,7 +357,7 @@ class engineManager
 	public function action( $eng, $what, $cat = "all" )
 	{
 		$arr = array();
-		$what = urlencode($what);
+		$what = rawurlencode($what);
 		switch($eng)
 		{
 			case "public":

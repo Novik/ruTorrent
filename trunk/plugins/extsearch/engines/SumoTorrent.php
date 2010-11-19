@@ -58,21 +58,17 @@ class SumoTorrentEngine extends commonEngine
 				!preg_match('/Showing results from <b>\d+<\/b> to <b>\d+<\/b> \((?P<cnt>\d+) total\)<\/div>/siU',$cli->results, $matches))
 				break;
 			$maxPage = ceil(intval($matches["cnt"])/100);
+
 			$res = preg_match_all('/<td class="trow" align="center">(?P<date>.*)<\/td>.*'.
-				'<td .*>.*<a href="http:\/\/www.sumotorrent.com\/en\/cat_(?P<cat>\d+)\.html"'.
-				'.*<\/td>.*<td .*>.*<a href="http:\/\/www.sumotorrent.com\/en\/details\/(?P<desc>.*)".*">(?P<name>.*)<\/a>.*<\/td>.*'.
+				'<td .*>.*<a href="http:\/\/torrents.sumotorrent.com\/en\/cat_(?P<cat>\d+)\.html"'.
+				'.*<\/td>.*<td .*>.*<a href="http:\/\/torrents.sumotorrent.com\/en\/details\/(?P<desc>.*)".*">(?P<name>.*)<\/a>.*<\/td>.*'.
 				'<a href="http:\/\/torrents.sumotorrent.com\/download\/(?P<link>.*)".*<\/td>.*<td .*>(?P<size>.*)<\/td>.*'.
-				'<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["desc"])==count($matches["name"]) &&
-				count($matches["cat"])==count($matches["name"]) && 
-				count($matches["name"])==count($matches["date"]) &&
-				count($matches["date"])==count($matches["link"]) &&
-				count($matches["size"])==count($matches["link"]) &&
-				count($matches["size"])==count($matches["seeds"]) &&
-				count($matches["seeds"])==count($matches["leech"]) )
+				'<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>'.
+				'/siU', $cli->results, $matches);
+
+			if($res)
 			{
-				for($i=0; $i<count($matches["link"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
 					$link = $url."/download/".$matches["link"][$i];
 					if(!array_key_exists($link,$ret))
