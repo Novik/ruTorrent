@@ -24,14 +24,20 @@ class VertorEngine extends commonEngine
 			$cli = $this->fetch( $url.'/index.php?words='.$what.'&exclude=&cid='.$cat.'&orderby=a.seeds&type=1&asc=0&mod=search&search=&x=0&y=0&p='.$pg );
 			if($cli==false || (strpos($cli->results, '>Nothing found</td>')!==false))
 				break;
+			$result = $cli->results;
+			$pos = strpos($result, "<h2>Vertor search results</h2>");
+			if($pos!==false)
+				$result = substr($result,$pos);
 
-			$res = preg_match_all('/<td class="first" >.*<a href="(?P<link>.*)" rel="nofollow">.*<a href="(?P<desc>.*)">(?P<name>.*)<\/a>.*'.
-				'<a href="http:\/\/www\.vertor\.com\/index.php\?mod=browse&id=\d+">(?P<cat>.*)<\/a>.*'.
+			$res = preg_match_all('/<td class="first" >.*<a href="(?P<link>[^"]*)" rel="nofollow">.*<a href="(?P<desc>[^"]*)">(?P<name>.*)<\/a>.*'.
+				'<a href="\/cat\/[^"]*">(?P<cat>[^<]*)<\/a>.*'.
 				'<\/td>.*<td>(?P<date>.*)<\/td>.*'.
 				'<td>(?P<size>.*)<\/td>.*'.
 				'<td>.*<\/td>.*'.
-				'<td class="s">(?P<seeds>.*)<\/td>.*'.
-				'<td class="l">(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
+				'<td class="s">(?P<seeds>\d*)<\/td>.*'.
+				'<td class="l">(?P<leech>\d*)<\/td>'.
+				'/siU', $result, $matches);
+
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
@@ -40,7 +46,7 @@ class VertorEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["desc"] = self::removeTags($matches["desc"][$i]);
+						$item["desc"] = $url.self::removeTags($matches["desc"][$i]);
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize(trim($matches["size"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));

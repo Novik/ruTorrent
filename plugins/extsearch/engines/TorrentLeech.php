@@ -2,58 +2,76 @@
 
 class TorrentLeechEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.torrentleech.org|pass=XXX;uid=XXX" );
-	public $categories = array( 'all'=>'&cat=0', 'Anime/Cartoon' => "&cat=27", 'Appz' => "&cat=39&cat=22&cat=1&cat=32",
-		'Books' => "&cat=28", 'Documentaries' => "&cat=40", 'Episodes' => "&cat=33&cat=7",
-		'Games' => "&cat=4&cat=41&cat=21&cat=17&cat=45&cat=26&cat=36&cat=44&cat=24&cat=10",
-		'Movies' => "&cat=20&cat=43&cat=35&cat=38&cat=42&cat=19", 'Music' => "&cat=6",
-		'Nintendo DS' => "&cat=11", 'NonScene' => "&cat=47&cat=46&cat=48" );
+	public $defaults = array( "public"=>false, "page_size"=>100, "auth"=>1 );
+
+	public $categories = array( 'all'=>'', 
+		'Movies'=>'/categories/1,8,9,10,11,12,13,14,15,29',
+		'TV'=>'/categories/2,26,27',
+		'Games'=>'/categories/3,17,18,19,20,21,22,28,30',
+		'Music'=>'/categories/4,16,31',
+		'Books'=>'/categories/5',
+		'Applications'=>'/categories/6,23,24,25',
+		'Anime'=>'/categories/7',
+		);
+
+	protected static function getInnerCategory($cat)
+	{
+		$categories = array(
+			'1'=>'Movies','8'=>'Movies','9'=>'Movies','10'=>'Movies','11'=>'Movies','12'=>'Movies','13'=>'Movies','14'=>'Movies','15'=>'Movies','29'=>'Movies',
+			'2'=>'TV','26'=>'TV','27'=>'TV',
+			'3'=>'Games','17'=>'Games','18'=>'Games','19'=>'Games','20'=>'Games','21'=>'Games','22'=>'Games','28'=>'Games','30'=>'Games',
+			'4'=>'Music','16'=>'Music','31'=>'Music',
+			'5'=>'Books',
+			'6'=>'Applications','23'=>'Applications','24'=>'Applications','25'=>'Applications',
+			'7'=>'Anime' );
+		return(array_key_exists($cat,$categories) ? $categories[$cat] : '');
+	}
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://www.torrentleech.org';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'&cat=0', 'movies'=>'&cat=40&cat=20&cat=43&cat=35&cat=38&cat=42&cat=19&cat=47&cat=46&cat=48', 
-				'tv'=>'&cat=33&cat=7', 'music'=>'&cat=6', 'games'=>'&cat=4&cat=41&cat=21&cat=17&cat=45&cat=26&cat=36&cat=44&cat=24&cat=10', 
-				'anime'=>'&cat=27', 'software'=>'&cat=39&cat=22&cat=1&cat=32', 'books'=>'&cat=28' );
+			$categories = array( 'all'=>'', 'movies'=>'/categories/1,8,9,10,11,12,13,14,15,29', 
+				'tv'=>'/categories/2,26,27', 'music'=>'/categories/4,16,31', 'games'=>'/categories/3,17,18,19,20,21,22,28,30', 
+				'anime'=>'/categories/7', 'software'=>'/categories/6,23,24,25', 'books'=>'/categories/5' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
 			$cat = $categories['all'];
 		else
 			$cat = $categories[$cat];
-		for($pg = 0; $pg<10; $pg++)
+		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&order=seeddesc&page='.$pg.$cat );
-			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing Found!</h2>")!==false))
+			$cli = $this->fetch( Snoopy::linkencode($url.'/torrents/browse/index/query/'.$what.'/orderby/seeders/order/desc/page/'.$pg).$cat, false );
+                        if( ($cli==false) || 
+				(strpos($cli->results, "There are no results found, based on your search parameters")!==false) ||
+				(strpos($cli->results, ">Password")!==false))
 				break;
-			$res = preg_match_all('/<img border="0" src=.* alt="(?P<cat>.*)" \/><\/a>'.
 
-				'.*<a href="details.php\?id=(?P<id>\d+)&amp;hit=1".*>(?P<name>.*)<\/a><br><font.*>(?P<date>.*)<\/font>.*'.
-				'<td.*>.*href="download.php\/\d+\/(?P<tname>.*)">.*'.
-				'<td .*>.*<\/td>.*'.
-				'<td .*>(?P<size>.*)<\/td>'.
-				'.*<td .*>.*<\/td>.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["id"])==count($matches["cat"]) &&
-				count($matches["cat"])==count($matches["name"]) && 
-				count($matches["name"])==count($matches["size"]) &&
-				count($matches["size"])==count($matches["seeds"]) &&
-				count($matches["seeds"])==count($matches["date"]) &&
-				count($matches["seeds"])==count($matches["tname"]) &&
-				count($matches["date"])==count($matches["leech"]) )
+			$res = preg_match_all('`<td class="category"><a href="/torrents/browse/index/categories/(?P<cat>\d*)">.*'.
+	                        '<td class="name"><span class="title"><a href="/torrent/(?P<id>\d*)">(?P<name>.*)</a></span><br>.*'.
+				'Added in <b>[^<]*</b> on (?P<date>[^<]*)</td>.*'.
+				'<td class="quickdownload">.*</td>.*'.
+				'<td>.*</td>.*'.
+				'<td>(?P<size>[^<]*)</td>.*'.
+				'<td>.*</td>.*'.
+				'<td>(?P<seeds>.*)</td>.*'.
+				'<td>(?P<leech>.*)</td>'.
+				'`siU', $cli->results, $matches);
+
+			if($res)
 			{
-				for($i=0; $i<count($matches["id"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
-					$link = $url."/download.php/".$matches["id"][$i]."/".$matches["tname"][$i];
+					$link = $url."/download/".$matches["id"][$i].'/dummy';
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["desc"] = $url."/details.php?id=".$matches["id"][$i].'&hit=1';
+						$item["cat"] = self::getInnerCategory($matches["cat"][$i]);
+						$item["desc"] = $url."/torrent/".$matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
-						$item["size"] = self::formatSize(str_replace("<br>"," ",$matches["size"][$i]));
+						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));

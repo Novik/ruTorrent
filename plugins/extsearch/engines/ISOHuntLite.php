@@ -13,7 +13,11 @@ class ISOHuntLiteEngine extends commonEngine
 			$cli = $this->fetch( $url.'/js/json.php?rows=100&sort=seeds&start='.($pg*100+1).'&ihq='.$what );
 			if($cli!==false)
 			{
-				$res = preg_match_all('/\{"title":"(?P<name>.*)","link":"(?P<desc>.*)",.*,"enclosure_url":"(?P<link>.*)","length":"(?P<size>.*)",.*,"category":"(?P<cat>.*)",.*,"Seeds":"(?P<seeds>.*)","leechers":"(?P<leech>.*)",.*,"pubDate":"(?P<date>.*)"\}/siU', $cli->results, $matches);
+				$res = preg_match_all('/\{"title":"(?P<name>.*)","link":"(?P<desc>.*)",.*'.
+					',"enclosure_url":"(?P<link>.*)",'.
+					'"length":(?P<size>.*),.*'.
+					',"category":"(?P<cat>.*)",.*,"Seeds":(?P<seeds>.*),"leechers":(?P<leech>.*),.*,"pubDate":"(?P<date>.*)"\}'.
+					'/siU', $cli->results, $matches);
 				if($res)
 				{
 					for($i=0; $i<$res; $i++)
