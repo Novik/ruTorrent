@@ -53,7 +53,7 @@ function makeContent()
 		bottom : function() { return( $(window).height()-60 ); },
 		restrictX : true,
 		maskId : "dividerDrag",
-		onStart : function(e) { return(theWebUI.settings["webui.show_cats"]); },
+		onStart : function(e) { return(theWebUI.settings["webui.show_dets"]); },
 		onRun : function(e) { $(document.body).css( "cursor", "n-resize" ); },
 		onFinish : function(e) 
 		{
