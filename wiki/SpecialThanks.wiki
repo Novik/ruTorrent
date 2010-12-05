@@ -36,6 +36,7 @@ A really big thanks goes out to Brock for his amazing irc plugin.
 Special thanks are due to gyran for his really cool plugin which pauses the webui.
 
  * [PluginPause Pause]
+ * [PluginInstantSearch InstantSearch]
 
 == thezwallrus ==
 
@@ -60,7 +61,7 @@ And thanks are due to Ivan_83 for his hostname plugin.
 
 Special thanks go out to ScarS from the rutorrent forums for his 2 plugins:
 
- * [PluginInstantSearch InstantSearch]
+ * [PluginChat Chat]
  * [PluginLogoff Logoff]
 
 == Tranlation Shout outs ==
