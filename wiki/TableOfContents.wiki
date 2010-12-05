@@ -52,6 +52,9 @@
        * [PluginTaddLabel tadd-labels]
        * [PluginHostname HostName]
        * [PluginNFO NFO]
+       * [PluginChat Chat]
+       * [PluginLogoff Logoff]
+       * [PluginInstantSearch InstantSearch]
       * Depreciated Plugins
         * [PluginDarkPal Darkpal]
         * [PluginSearch Search]
