@@ -180,6 +180,9 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginTaddLabel tadd-labels] - plugin which makes labeling torrents easier
  # [PluginHostname HostName] - plugin which show host column for peers
  # [PluginNFO NFO] - plugin for displaying the content of the .nfo file
+ # [PluginChat Chat] - plugin adds a chatbox
+ # [PluginLogoff Logoff] - plugin allows you to switch users or logoff
+ # [PluginInstantSearch InstantSearch] - plugin allows you to search for running torrents, displaying results instantly
 == Depreciated Plugins == 
  # [PluginSearch search] - allows to redefine the list of search engines. *_replaced by [PluginExtsearch Extsearch]_*
  # [PluginDarkpal Darkpal] - a darker theme *_(replaced by [PluginTheme Theme]_*
