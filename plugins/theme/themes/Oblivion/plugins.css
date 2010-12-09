@@ -175,3 +175,11 @@ div#webuiRefresh:hover{
 
 #maillayout #letterform table tr td {background: #181818 }
 #maillayout #replyform table tr td {background: #181818 }
+
+div#chat {background-image: url(./images/chat.png);}
+div#chat:hover {background-image: url(./images/chat3.png);}
+div#tchat div.dlg-header {background-image: url(./images/chat2.png);}
+
+div#logoff {background-image: url(./images/logoff.png);}
+div#logoff:hover {background-image: url(./images/logoff3.png);}
+div#logoffDlg div.dlg-header {background-image: url(./images/logoff2.png);}
