@@ -18,7 +18,7 @@ function browserDetect()
 {
 	var ua = navigator.userAgent.toLowerCase();
 	this.isGecko = (ua.indexOf("gecko") !=- 1 && ua.indexOf("safari") ==- 1);
-	this.isAppleWebKit = (ua.indexOf("applewebkit") !=- 1);
+	this.isAppleWebKit = (ua.indexOf("webkit") !=- 1);
 	this.isKonqueror = (ua.indexOf("konqueror") !=- 1);
 	this.isSafari = (ua.indexOf("safari") !=- 1);
 	this.isOpera = (ua.indexOf("opera") !=- 1);
@@ -189,10 +189,16 @@ $.fn.extend({
 					});
 				}
 				else
+				{
+					if(browser.isMidori)
+						$(this).bind( "contextmenu",handler );
 					$(this).mousedown( handler );
+				}
 			}
 			else
 			{
+				if(browser.isMidori)
+					$(this).unbind( "contextmenu" );
 				$(this).unbind( "mousedown" );
 				if(aSpecialCase)
 					$(this).unbind( "mouseup" );
