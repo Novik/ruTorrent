@@ -18,6 +18,38 @@ http://sourceforge.net/projects/autodl-irssi/
 
 == Installation ==
 
+*Note*  There is a script now designed to make installation a much more simple processes. 
+
+
+
+=== Install script Method ===
+
+ *Ubuntu and Ubuntu clones:*
+
+{{{
+cd
+wget --no-check-certificate -O autodl-setup http://sourceforge.net/projects/autodl-irssi/files/autodl-setup/download
+sudo sh autodl-setup
+}}}
+
+
+ *Any other OS*
+
+Become root:
+
+{{{
+su -
+}}}
+
+Then:
+{{{
+wget --no-check-certificate -O autodl-setup http://sourceforge.net/projects/autodl-irssi/files/autodl-setup/download
+sh autodl-setup
+}}}
+
+
+=== Manual Install *_(old method)_*
+
 This plugin depends on irssi and several perl modules.  Check your distribution for info on installing irssi
 
 
