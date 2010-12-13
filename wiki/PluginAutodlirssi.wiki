@@ -48,12 +48,12 @@ sh autodl-setup
 }}}
 
 
-=== Manual Install *_(old method)_*
+=== Manual Install *_(old method)_* ===
 
 This plugin depends on irssi and several perl modules.  Check your distribution for info on installing irssi
 
 
-=== Perl modules ===
+==== Perl modules ====
 
 *Debian/Ubuntu*
 
@@ -127,7 +127,7 @@ cpan Archive::Zip Net::SSLeay HTML::Entities XML::LibXML Digest::SHA1 JSON JSON:
 }}}
 
 
-=== Installing autodl-irssi ===
+==== Installing autodl-irssi ====
 
 For the rtorrent plugin to work, you need to install the irssi script.  After installing the perl dependencies, login as your rtorrent user and do the following:
 
@@ -156,7 +156,7 @@ touch ~/.autodl/autodl.cfg
 }}}
 
 
-=== Install the rutorrent plugin ===
+==== Install the rutorrent plugin ====
 
 Installing the autodl-irssi-rutorrent plugin is like installing any other plugin
 
