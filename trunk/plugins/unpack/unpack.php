@@ -101,13 +101,13 @@ class rUnpack
         			$outPath.=addslash($label);
 	        	if($this->addName && ($name!=''))
 				$outPath.=addslash($name);
-			exec( 'sh '.escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
+			exec( 'sh -c '.escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
 				escapeshellarg($arh)." ".
 				escapeshellarg($basename)." ".
 				escapeshellarg($outPath)." ".
 				"/dev/null ".
 				"/dev/null ".
-				escapeshellarg($pathToUnzip) );
+				escapeshellarg($pathToUnzip)." &" );
 		}
 	}
 	static protected function formatPath( $taskNo )
