@@ -74,9 +74,7 @@ if( $is_ok )
 
 	if( $req->run() && !$req->fault )
 	{
-		if(!isset($theSettings))
-			$theSettings = rTorrentSettings::load();
-		$directory    = $theSettings->directory;
+		$directory    = rTorrentSettings::get()->directory;
 		$base_path    = trim( $req->val[0] );
 		$torrent_name = trim( $req->val[1] );
 		Debug( "get_directory    : ".$directory );

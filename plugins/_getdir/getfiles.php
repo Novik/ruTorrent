@@ -2,7 +2,7 @@
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
 
-$theSettings = rTorrentSettings::load();
+$theSettings = rTorrentSettings::get();
 $dh = false;
 $curFile = null;
 

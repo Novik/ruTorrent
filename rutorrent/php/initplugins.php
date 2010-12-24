@@ -105,8 +105,7 @@ if( count( $argv ) > 1 )
 require_once( "util.php" );
 require_once( "settings.php" );
 
-$theSettings = new rTorrentSettings();
-$theSettings->obtain();
+$theSettings = rTorrentSettings::get(true);
 if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 {
 	$permissions = parse_ini_file("../conf/plugins.ini",true);
@@ -143,8 +142,8 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 	{
 		if($plugin["php"] && !count(array_diff( $plugin["deps"], $names )))
 			require_once( $plugin["php"] );
+
 	}
 	$theSettings->store();
 }
-
 ?>

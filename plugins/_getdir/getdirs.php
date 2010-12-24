@@ -3,7 +3,7 @@ require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
 
 $dh = false;
-$theSettings = rTorrentSettings::load();
+$theSettings = rTorrentSettings::get();
 
 $btn_id = "'".$_REQUEST['btn']."'";
 $edit_id = "'".$_REQUEST['edit']."'";

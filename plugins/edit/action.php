@@ -59,8 +59,7 @@ if(isset($HTTP_RAW_POST_DATA))
 			new rXMLRPCCommand("d.get_complete",$hash),
 			) );
 		$throttle = null;
-		$theSettings = rTorrentSettings::load();
-		if($theSettings->isPluginRegistered("throttle"))
+		if(rTorrentSettings::get()->isPluginRegistered("throttle"))
 			$req->addCommand(new rXMLRPCCommand("d.get_throttle_name",$hash));
 		if($req->run() && !$req->fault)
 		{

@@ -60,8 +60,7 @@ class rUnpack
 	{
 		global $rootPath;
 
-		$theSettings = rTorrentSettings::load();
-		if($theSettings->isPluginRegistered('quotaspace'))
+		if(rTorrentSettings::get()->isPluginRegistered('quotaspace'))
 		{
 			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );
 			$qt = rQuota::load();
@@ -120,8 +119,7 @@ class rUnpack
 		global $rootPath;
 		$ret = false;
 
-		$theSettings = rTorrentSettings::load();
-		if($theSettings->isPluginRegistered('quotaspace'))
+		if(rTorrentSettings::get()->isPluginRegistered('quotaspace'))
 		{
 			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );
 			$qt = rQuota::load();

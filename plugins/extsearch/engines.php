@@ -231,14 +231,11 @@ class engineManager
 						$this->engines[$name]["limit"] = intval($oldEngines[$name]["limit"]);
 					}
 
-					global $theSettings;
-					if(!isset($theSettings))
-						$theSettings = rTorrentSettings::load();
-					if(!$theSettings->isPluginRegistered('cookies') && 
+					if(!rTorrentSettings::get()->isPluginRegistered('cookies') && 
 						$this->engines[$name]["enabled"] && 
 						!empty($this->engines[$name]["cookies"]))
 						$this->engines[$name]["enabled"] = 0;
-					if(!$theSettings->isPluginRegistered('loginmgr') && 
+					if(!rTorrentSettings::get()->isPluginRegistered('loginmgr') && 
 						$this->engines[$name]["enabled"] && 
 						$this->engines[$name]["auth"])
 						$this->engines[$name]["enabled"] = 0;
@@ -296,8 +293,7 @@ class engineManager
 		$cache->get($history);
 		if($withRSS)
 		{
-			$theSettings = rTorrentSettings::load();
-			if($theSettings->isPluginRegistered("rss"))
+			if(rTorrentSettings::get()->isPluginRegistered("rss"))
 			{
 				global $rootPath;
 				require_once( $rootPath.'/plugins/rss/rss.php');

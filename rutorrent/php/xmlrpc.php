@@ -229,10 +229,7 @@ class rXMLRPCRequest
 
 function getCmd($cmd)
 {
-	global $theSettings;
-	if(!isset($theSettings))
-		$theSettings = rTorrentSettings::load();
-	return($theSettings->getCommand($cmd));
+	return(rTorrentSettings::get()->getCommand($cmd));
 }
 
 ?>

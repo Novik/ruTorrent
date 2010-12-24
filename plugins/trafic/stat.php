@@ -1,6 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/util.php" );
+require_once( dirname(__FILE__).'/../../php/settings.php' );
 
 class rStat
 {
@@ -13,7 +14,7 @@ class rStat
 	public $yearUp = array(0,0,0,0,0,0,0,0,0,0,0,0);
 	public $yearDown = array(0,0,0,0,0,0,0,0,0,0,0,0);
 	public $yearHitTimes = array(0,0,0,0,0,0,0,0,0,0,0,0);
-	protected $fname = "";
+	public $fname = "";
 
 	public function rStat( $prefix )
 	{
@@ -85,6 +86,7 @@ class rStat
 		}
 		$this->yearUp[$ndx]+=$deltaUp;
 		$this->yearDown[$ndx]+=$deltaDown;
+		rTorrentSettings::get()->pushEvent( "TraficUpdated", array( "stat"=>&$this ) );
 	}
 	static protected function format( $arrUp, $arrDown, $arrLabel, $mode )
 	{
