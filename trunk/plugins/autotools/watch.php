@@ -42,9 +42,7 @@ if( $is_ok )
 // Ask info from rTorrent
 if( $is_ok )
 {
-	if(!isset($theSettings))
-		$theSettings = rTorrentSettings::load();
-	$directory = rtAddTailSlash( $theSettings->directory );
+	$directory = rtAddTailSlash( rTorrentSettings::get()->directory );
 	Debug( "get_directory    : ".$directory );
 	if( $directory == '' || $directory == '/' )
 		$is_ok = false;

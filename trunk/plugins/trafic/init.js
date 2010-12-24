@@ -371,7 +371,7 @@ plugin.onLangLoaded = function()
 		 	this.attachPageToTabs(
 				$('<div>').attr("id","traf").html(
 					"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
-						"<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>"+
+						(plugin.disableClearButton ? "" : "<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>")+
 						"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
 							"<option value='global' selected>"+theUILang.allTrackers+"</option>"+
 						"</select>"+

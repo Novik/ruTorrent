@@ -19,9 +19,10 @@ if(isset($_REQUEST['tracker']))
 if(isset($_REQUEST['mode']))
 {
 	$mode = $_REQUEST['mode'];
-	if($mode=='clear')
+	if($mode=='clear') 
 	{
-		@unlink(getSettingsPath().'/trafic/'.$storage);
+		if(!$disableClearButton)
+			@unlink(getSettingsPath().'/trafic/'.$storage);
 		if($_REQUEST['tracker']!="none")
 		{
 			$mode='day';
