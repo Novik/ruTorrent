@@ -13,5 +13,6 @@
  theUILang.ratioErase 		= "Уклонити";
  theUILang.ratioEraseData 	= "Remove data";
  theUILang.maxTime 		= "Time";
+ theUILang.ratioDefault		= "Default ratio group";
 
 thePlugins.get("ratio").langLoaded();

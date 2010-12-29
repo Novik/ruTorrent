@@ -13,5 +13,6 @@
  theUILang.ratioErase 		= "Verwijder";
  theUILang.ratioEraseData 		= "Verwijder data";
  theUILang.maxTime 			= "Tijd";
+ theUILang.ratioDefault		= "Default ratio group";
 
 thePlugins.get("ratio").langLoaded();
