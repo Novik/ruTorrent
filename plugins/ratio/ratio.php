@@ -14,6 +14,7 @@ class rRatio
 {
 	public $hash = "ratio.dat";
 	public $rat = array();
+	public $default = 0;
 
 	static public function load()
 	{
@@ -28,6 +29,7 @@ class rRatio
 		$this->rat = array();
 	        for($i=0; $i<MAX_RATIO; $i++)
 			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>20, "name"=>"ratio".$i, "time"=>-1 );
+		$this->default = 0;
 	}
 	public function getTimes()
 	{
@@ -96,7 +98,8 @@ class rRatio
 	}
 	public function isCorrect($no)
 	{
-		return( ($no<count($this->rat)) &&
+		return( ($no>=0) && 
+			($no<count($this->rat)) &&
 		        ($this->rat[$no]["name"]!=""));
 	}
 	public function correct()
@@ -130,9 +133,11 @@ class rRatio
 		$req1 = new rXMLRPCRequest(new rXMLRPCCommand("view_list"));
 		if($req1->run() && !$req1->fault)
 		{
+			$insCmd = getCmd('branch=');
 			$req = new rXMLRPCRequest();
 			for($i=0; $i<MAX_RATIO; $i++)
 			{
+				$insCmd .= (getCmd('d.views.has=').'rat_'.$i.',,');
 				$rat = $this->rat[$i];
 				if(!in_array("rat_".$i,$req1->val))
 					$req->addCommand(new rXMLRPCCommand("group.insert_persistent_view", array("", "rat_".$i)));
@@ -171,7 +176,14 @@ class rRatio
 					}
 				}
 			}
-			return(($req->getCommandsCount()==0) || ($req->run() && !$req->fault));
+
+			if($this->isCorrect($this->default-1))
+				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.getUser(), 
+					$insCmd.getCmd('view.set_visible=').'rat_'.($this->default-1))));
+			else
+				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.getUser(), getCmd('cat='))));
+
+			return($req->run() && !$req->fault);
 		}
 		return(false);
 	}
@@ -184,6 +196,7 @@ class rRatio
 	public function set()
 	{
 		$this->rat = array();
+		$this->default = 0;
 		for($i = 0; $i<MAX_RATIO; $i++)
 		{
 			$arr = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>20, "name"=>"", "time"=>-1 );
@@ -205,6 +218,8 @@ class rRatio
 			}
 			$this->rat[] = $arr;
 		}
+		if(isset($_REQUEST['default']))
+			$this->default = intval($_REQUEST['default']);
                 $this->store();
 		$this->flush();
 		$this->setHandlers();
@@ -221,7 +236,7 @@ class rRatio
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);
-		return($ret."];\ntheWebUI.maxRatio = ".MAX_RATIO.";\n");
+		return($ret."];\ntheWebUI.maxRatio = ".MAX_RATIO.";\ntheWebUI.defaultRatio = ".$this->default.";\n");
 	}
 }
 

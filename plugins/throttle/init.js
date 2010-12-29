@@ -84,6 +84,7 @@ if(plugin.enabled)
 					else
 						$('#thr_up'+i+',#thr_down'+i+',#thr_name'+i).val('');
 				}
+				$('#chDefault').val(theWebUI.defaultThrottle);
 			}
 			plugin.addAndShowSettings.call(theWebUI,arg);
 		}
@@ -97,7 +98,7 @@ if(plugin.enabled)
 					(theWebUI.throttles[i].name!=$('#thr_name'+i).val()))
 					return(true);
 			}
-			return(false);
+			return($('#chDefault').val()!=theWebUI.defaultThrottle);
 		}
 
 		plugin.setSettings = theWebUI.setSettings;
@@ -110,7 +111,7 @@ if(plugin.enabled)
 
 		rTorrentStub.prototype.setthrottleprm = function()
 		{
-			this.content = "dummy=1";
+			this.content = "default="+iv($('#chDefault').val());
 			for(var i=0; i<theWebUI.maxThrottle; i++)
 			{
 				var name = $.trim($('#thr_name'+i).val());
@@ -228,6 +229,10 @@ plugin.onLangLoaded = function()
 					"<td><input type='text' id='thr_down"+i+"' class='Textbox num' maxlength='6'/></td>"+
 				"</tr>";
 		s+="</table></div></fieldset>";
+		s+="<div class='aright'><label>"+theUILang.channelDefault+":</label><select id='chDefault'><option value='0'>"+theUILang.mnuUnlimited+"</option>";
+		for(var i=1; i<=theWebUI.maxThrottle; i++)
+			s+="<option value='"+i+"'>"+i+"</option>";
+		s+="</select></div>";
 		this.attachPageToOptions($("<div>").attr("id","st_throttle").html(s).get(0),theUILang.throttles);
 	}
 }
