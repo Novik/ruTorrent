@@ -290,11 +290,7 @@ function getProfilePath()
         {
         	$ret.=('/users/'.$user);
         	if(!is_dir($ret))
-        	{
-	        	mkdir($ret);
-        		mkdir($ret.'/settings',0777);
-        		mkdir($ret.'/torrents',0777);
-		}
+			makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents') );
 	}
 	return($ret);
 }
@@ -404,5 +400,16 @@ function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 	else
 		echo($content);
 }
+
+function makeDirectory( $dirs, $perms = 0777 )
+{
+	$oldMask = umask(0);
+	if(is_array($dirs))
+		foreach($dirs as $dir)
+			@mkdir($dir,$perms,true);
+	else
+		@mkdir($dirs,$perms,true);
+	@umask($oldMask);
+} 
 
 ?>

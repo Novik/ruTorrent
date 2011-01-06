@@ -2,8 +2,7 @@
 eval(getPluginConf('rss'));
 
 $st = getSettingsPath();
-@mkdir($st.'/rss');
-@mkdir($st.'/rss/cache');
+makeDirectory( array($st.'/rss',$st.'/rss/cache') );
 $needStart = isLocalMode() && $theSettings->linkExist;
 if($needStart)
 {

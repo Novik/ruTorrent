@@ -9,7 +9,7 @@ class rCache
 	{
 		$this->dir = getSettingsPath().$name;
 		if(!is_dir($this->dir))
-			mkdir($this->dir, 0777);
+			makeDirectory($this->dir);
 	}
 	public function set( $rss, $arg = null )
 	{
