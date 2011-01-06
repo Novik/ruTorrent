@@ -3,9 +3,7 @@ eval(getPluginConf('trafic'));
 require_once( '../plugins/trafic/ratios.php' );
 
 $st = getSettingsPath();
-@mkdir($st.'/trafic');
-@mkdir($st.'/trafic/trackers');
-@mkdir($st.'/trafic/torrents');
+makeDirectory( array( $st.'/trafic', $st.'/trafic/trackers', $st.'/trafic/torrents') );
 
 $tm = getdate();
 $startAt = mktime($tm["hours"],

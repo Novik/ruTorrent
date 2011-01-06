@@ -38,7 +38,7 @@ class rpcCache
         {
 		$this->dir = getSettingsPath()."/httprpc";
 		if(!is_dir($this->dir))
-			mkdir($this->dir, 0777);
+			makeDirectory($this->dir);
         }
 	
 	protected function store( $torrents = array() )
