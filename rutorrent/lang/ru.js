@@ -385,5 +385,6 @@
  peerSnub			: "Запретить отгрузку",
  peerDetails			: "Детали",
  peerUnsnub			: "Разрешить отгрузку",
- peerAddLabel			: "Введите IP/хост[:порт]"
+ peerAddLabel			: "Введите IP/хост[:порт]",
+ noTorrentList			: "Список закачек недоступен, так как связь с rtorrent не установлена."
  };

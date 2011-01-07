@@ -386,5 +386,6 @@
  peerSnub			: "Snuber",
  peerDetails			: "Détails",
  peerUnsnub			: "Désnuber",
- peerAddLabel			: "Entrer IP/Hostname[:port]"
+ peerAddLabel			: "Entrer IP/Hostname[:port]",
+ noTorrentList			: "Torrent list not yet available, connection to rtorrent not established."
 };

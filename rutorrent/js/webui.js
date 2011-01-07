@@ -416,6 +416,8 @@ var theWebUI =
 				}, "_plg_"+plugin.name);
 			});
 		}
+		if(!theWebUI.systemInfo.rTorrent.started)
+			$(theWebUI.getTable("trt").scp).text(theUILang.noTorrentList).show();
 		this.configured = true;
 	},
 
