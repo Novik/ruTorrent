@@ -26,7 +26,8 @@ div.stable-body table tbody tr.even:nth-child(2n+1) td{background: #181818 url(.
 
 .stable-active-header {border-color: threedface !important}
 .stable-separator-header {background: #181818;}
-.stable-scrollpos { background: #181818; color: #333333; display: visible;}
+.stable-scrollpos {background: #181818 url(./images/headers.png) repeat-x 0px -37px;height:17px;line-height:17px;border-bottom: 1px solid #333333;}
+.stable-scrollpos:nth-child(2n+1) {background: #181818 url(./images/headers.png) repeat-x 0px -64px;}
 
 .meter-value { float: left;border: 1px inset #1b1b1b; border-bottom: none; background: #96CE00 url(./images/headers.png) repeat-x 0px -138px;}
 .stable-body tr.selected span.meter-value {color:#fff;}
