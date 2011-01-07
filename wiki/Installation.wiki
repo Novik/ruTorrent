@@ -26,6 +26,10 @@ Brock has created an autoinstall script which installs rtorrent, rutorrent, all 
 
 http://forums.rutorrent.org/index.php?topic=608.0
 
+iwizzard has a created a script to install everything on ubuntu, see the following forum post:
+
+http://forums.rutorrent.org/index.php?topic=408.0
+
 
 
 == How to Upgrade ==
