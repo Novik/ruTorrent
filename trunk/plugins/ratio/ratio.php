@@ -22,13 +22,19 @@ class rRatio
 		$rt = new rRatio();
 		if(!$cache->get($rt))
 			$rt->fillArray();
+		else
+			$rt->pad();
 		return($rt);
+	}
+	public function pad()
+	{
+		for($i=count($this->rat); $i<MAX_RATIO; $i++)
+			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>20, "name"=>"ratio".$i, "time"=>-1 );
 	}
 	public function fillArray()
 	{
 		$this->rat = array();
-	        for($i=0; $i<MAX_RATIO; $i++)
-			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>20, "name"=>"ratio".$i, "time"=>-1 );
+		$this->pad();
 		$this->default = 0;
 	}
 	public function getTimes()
