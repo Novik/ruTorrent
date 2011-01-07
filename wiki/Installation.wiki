@@ -20,6 +20,14 @@ Rutorrent can be installed on most unix type operating systems.
   * [MainInstall Main Install]
   * [Plugins#Installation Plugins Install]
 
+=== Install Scripts ===
+
+Brock has created an autoinstall script which installs rtorrent, rutorrent, all plugins and the irc autodl plugin.  For more info see the following forum post:
+
+http://forums.rutorrent.org/index.php?topic=608.0
+
+
+
 == How to Upgrade ==
 
 Upgrading rutorrent isn't that difficult if you track the svn version and do so often, but from time to time, things change and require reseting config file. If you are upgrading from 2.x to 3.0 there are a couple guidelines/tips.
