@@ -1,0 +1,6 @@
+plugin.description: This plug-in will display media file information.
+plugin.author: AceP1983
+plugin.version: 3.2
+plugin.runlevel: 11
+rtorrent.remote: error
+web.external.error: mediainfo
