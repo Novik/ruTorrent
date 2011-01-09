@@ -1,3 +1,4 @@
+plugin.loadMainCSS();
 plugin.loadLang();
 
 if(plugin.enabled && plugin.canChangeMenu()) {
@@ -51,10 +52,8 @@ plugin.onLangLoaded = function()
 {
 	if(this.enabled)
 	{
-		theDialogManager.make( 'dlg_info', "MediaInfo", ''+
-	                        '<pre style=" line-height: 10px; width: 600px; height: 450px; '+
-	                        'overflow: auto; margin: 0px;" '+
-	                        'id="media_info">Fetching...</pre>');
+		theDialogManager.make( 'dlg_info', "MediaInfo","<div class='content' id='dlg_info-content'>"+
+	                        '<pre id="media_info">Fetching...</pre>'+"</div>",true);
 	}
 }
 
