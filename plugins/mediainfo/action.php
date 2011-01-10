@@ -1,5 +1,6 @@
 <?php
 require_once( '../../php/xmlrpc.php' );
+eval( getPluginConf( 'mediainfo' ) );
 
 function mediaInfo() {
         if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
@@ -18,7 +19,7 @@ function mediaInfo() {
                                                         if($req->success())
                                                                 $dir = $req->val[1];
                                                 }
-                                        return(shell_exec('mediainfo --Output=HTML "'.$dir."/".$filename.'"'));
+                                        return(shell_exec(getExternal("mediainfo").' --Output=HTML "'.$dir."/".$filename.'"'));
                                 }
         }
 return false;
