@@ -29,21 +29,13 @@ class TvTEngine extends commonEngine
 				break;
 			$res = preg_match_all('/<tr class="torrent_\d"><td class="table_categ_icon"><a.*onmouseover="return overlib\(\'(?P<cat>.*)\'\);".*<\/a><\/td><td class="table_name">.*'.
 				'<a href="\/details.php\?id=(?P<id>\d+)" class="torrent_name_link".*title="(?P<name>.*)">.*'.
-				'<td class="table_links"><a href="\/download.php\/(?P<tname>.*)".*'.
 				'<td class="table_added">(?P<date>.*)<\/td><td class="table_size">(?P<size>.*)<\/td>.*'.
 				'<td class="table_seeders">(?P<seeds>.*)<\/td><td class="table_leechers">(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["cat"])==count($matches["name"]) && 
-				count($matches["name"])==count($matches["id"]) &&
-				count($matches["name"])==count($matches["tname"]) &&
-				count($matches["name"])==count($matches["date"]) &&
-				count($matches["name"])==count($matches["size"]) &&
-				count($matches["name"])==count($matches["seeds"]) &&
-				count($matches["name"])==count($matches["leech"]) )
+			if($res)
 			{
-				for($i=0; $i<count($matches["id"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
-					$link = $url."/download.php/".$matches["tname"][$i];
+					$link = $url."/download.php?id=".$matches["id"][$i]."&type=torrent";
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
