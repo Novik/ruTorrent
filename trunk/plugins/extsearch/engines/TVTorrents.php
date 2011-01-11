@@ -2,7 +2,7 @@
 
 class TVTorrentsEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>20, "cookies"=>"tvtorrents.com|cookie_login=XXX;" );
+	public $defaults = array( "public"=>false, "page_size"=>20, "auth"=>1 );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
