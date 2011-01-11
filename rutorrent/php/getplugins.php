@@ -295,6 +295,8 @@ if($handle = opendir('../plugins'))
 						continue;
 					}
 					$extError = false;
+					if(count($info['web.external.error']) || count($info['rtorrent.php.error']) || count($info['rtorrent.php.warning']))
+						eval( getPluginConf( $file ) );
 					foreach( $info['web.external.error'] as $external )
 					{
 						if(findEXE($external)==false)
