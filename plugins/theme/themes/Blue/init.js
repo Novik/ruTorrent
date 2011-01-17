@@ -49,6 +49,13 @@ plugin.allDone = function()
 				plugin.fillRSSGroups.call(theWebUI);
 				plugin.correctCheckboxes();
 			}
+
+			plugin.trafDraw = theWebUI.trafGraph.draw;
+			theWebUI.trafGraph.draw = function()
+			{
+				plugin.trafDraw.call(this);
+				plugin.correctCheckboxes();
+			}
 		}
 
 	});
