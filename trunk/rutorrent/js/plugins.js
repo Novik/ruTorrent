@@ -330,7 +330,7 @@ rPlugin.prototype.addPaneToStatusbar = function(id,div,no)
         {
 		var row = $("#firstStatusRow").get(0);
 		var td = row.insertCell(iv(no));
-		$(td).attr("id",id).append( $(div) );
+		$(td).attr("id",id).addClass("statuscell").append( $(div) );
 	}
 	return(this);
 }

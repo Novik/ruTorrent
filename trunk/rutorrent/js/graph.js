@@ -49,6 +49,7 @@ rSpeedGraph.prototype.create = function( aOwner )
 	this.startSeconds = new Date().getTime()/1000;
 	var rule = getCSSRule("div.graph_tab");
 	this.gridColor = rule ? rule.style.color : "#545454";
+	this.backgroundColor = rule ? rule.style.borderColor : null;
 }
 
 var previousSpeedPoint = null;
@@ -88,6 +89,7 @@ rSpeedGraph.prototype.draw = function()
 				grid:
 				{
 					color: self.gridColor,
+					backgroundColor: self.backgroundColor,
 					hoverable: true
 				},
 				xaxis: 

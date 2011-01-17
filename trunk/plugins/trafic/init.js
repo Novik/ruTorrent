@@ -22,6 +22,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 		this.previousPoint = null;
 		var rule = getCSSRule("div.graph_tab");
 		this.gridColor = rule ? rule.style.color : "#545454";
+		this.backgroundColor = rule ? rule.style.borderColor : null;
 
 		this.checked = [ true, true, true, true ];
 		this.datasets = [ this.down, this.up, this.oldDown, this.oldUp ];
@@ -63,6 +64,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 				 	},
 					grid:
 					{
+						backgroundColor: self.backgroundColor,
 						color: self.gridColor,
 						hoverable: true
 					},
