@@ -147,12 +147,26 @@ $.event.fix = function(e)
 $.fn.extend({
 	mouseclick: function( handler )
 	{
-		var aSpecialCase = (browser.isOpera && !("oncontextmenu"in document.createElement("foo")));
+		var contextMenuPresent = ("oncontextmenu" in document.createElement("foo"));
 	        return( this.each( function()
 	        {
 	        	if($type(handler)=="function")
 	        	{
-				if(aSpecialCase)
+				if(contextMenuPresent)
+				{
+					$(this).bind( "contextmenu", function(e)
+					{
+						e.button = 2;
+                                                return(handler.apply(this,arguments));
+					});
+                                        $(this).mousedown(function(e)
+					{
+						if(e.button!=2)
+							return(handler.apply(this,arguments));
+					});
+				}
+				else
+				if(browser.isOpera)
 				{
 			        	$(this).mousedown(function(e)
 					{
@@ -189,19 +203,16 @@ $.fn.extend({
 					});
 				}
 				else
-				{
-					if(browser.isMidori)
-						$(this).bind( "contextmenu",handler );
 					$(this).mousedown( handler );
-				}
 			}
 			else
 			{
-				if(browser.isMidori)
+				if(contextMenuPresent)
 					$(this).unbind( "contextmenu" );
-				$(this).unbind( "mousedown" );
-				if(aSpecialCase)
+				else
+				if(browser.isOpera)
 					$(this).unbind( "mouseup" );
+				$(this).unbind( "mousedown" );
 			}
 		}));            	
 	}
