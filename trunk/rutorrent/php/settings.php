@@ -223,6 +223,10 @@ class rTorrentSettings
 	{
 	        return($this->getEventCommand('on_start','resumed',$args));
 	}
+	public function getOnHashdoneCommand($args)
+	{
+        	return($this->getEventCommand('on_hash_done','hash_done',$args));
+	}
 }
 
 ?>
