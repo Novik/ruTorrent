@@ -18,11 +18,14 @@ if(plugin.enabled)
 					plugin.fno = null;
 					plugin.mode = null;
 					var table = this.getTable("fls");
-					if(table.selCount == 1)
+					if((table.selCount == 1) && this.dID && (this.dID.length==40))
 					{
 			        		var fid = table.getFirstSelected();
 						if(this.settings["webui.fls.view"])
-							plugin.fno = fid.substr(43);
+						{
+							var arr = id.split('_f_');
+							plugin.fno = arr[1];
+						}
 						else
 							if(!this.dirs[this.dID].isDirectory(fid))
 								plugin.fno = fid.substr(3);
@@ -78,7 +81,7 @@ if(plugin.enabled)
 					}
 				}
 				theContextMenu.add( [theUILang.unpack+'...',  
-					(this.uID && (this.torrents[this.uID].done==1000) && (!checked || rarPresent || zipPresent)) ? 
+					(this.uID && (this.uID.length==40) && (this.torrents[this.uID].done==1000) && (!checked || rarPresent || zipPresent)) ? 
 					"theDialogManager.show('dlg_unpack')" : null] );
 			}
 		}

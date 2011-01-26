@@ -4,7 +4,7 @@ plugin.loadLang();
 theWebUI.EditDataDir = function()
 {
 	var id = theWebUI.getTable("trt").getFirstSelected();
-	if( id && this.torrents[id] )
+	if( id && (id.length==40) && this.torrents[id] )
 	{
 	        var base_path = $.trim(this.torrents[id].base_path)
 		if( !base_path.length ) // torrent is not open
@@ -50,9 +50,12 @@ if(plugin.canChangeMenu())
 		plugin.createMenu.call(this, e, id);
 		if(plugin.enabled && plugin.allStuffLoaded)
 		{
+			var table = this.getTable("trt");
+			
 			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
-				theContextMenu.add( el, [theUILang.DataDir + "...", "theWebUI.EditDataDir()"] );
+				theContextMenu.add( el, [theUILang.DataDir + "...", 
+					((table.selCount > 1) || (table.getFirstSelected().length==40)) ? "theWebUI.EditDataDir()" : null] );
 		}
 	}
 }
@@ -63,7 +66,7 @@ theWebUI.sendDataDir = function()
 	var sr = this.getTable("trt").rowSel;
 	for( var k in sr )
 	{
-		if( sr[k] )
+		if( sr[k] && (k.length==40))
 		{
 			this.DataDirID = k;
 			this.requestWithTimeout( "?action=setdatadir", [this.receiveDataDir, this], function()

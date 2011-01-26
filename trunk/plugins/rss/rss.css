@@ -60,3 +60,5 @@ div#dlgAddRSSGroup div.content {width: 302px; margin: 5px; padding: 5px; line-he
 #rssGroupSet { overflow: auto; width: 275px; height: 160px }
 
 div#CatList ul li.RSSGroup {background-image: url(../../images/tstatus.png); background-position: 4px -239px}
+
+#rsstimer { float: right; font-weight: normal; margin-right: -18px }

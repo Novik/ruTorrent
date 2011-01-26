@@ -124,6 +124,16 @@ class rTorrentSettings
 			$this->iVersion = 0;
 			for($i = 0; $i<count($parts); $i++)
 				$this->iVersion = ($this->iVersion<<8) + $parts[$i];
+
+			if($this->iVersion>0x806)
+			{
+                                $this->mostOfMethodsRenamed = true;
+				$this->aliases = array(
+					"d.set_peer_exchange" 		=> "d.peer_exchange.set",
+					"d.set_connection_seed"		=> "d.connection_seed.set",
+					);
+			}
+
                         $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 			if($req->run())
 			{
@@ -190,9 +200,9 @@ class rTorrentSettings
 		if($this->iVersion<0x804)
 			$cmd = new rXMLRPCCommand($cmd1);
 		else
-		if($this->mostOfMethodsRenamed)
-			$cmd = new rXMLRPCCommand('method.set_key','event.download.'.$cmd2);
-		else
+//		if($this->mostOfMethodsRenamed)
+//			$cmd = new rXMLRPCCommand('method.set_key','event.download.'.$cmd2);
+//		else
 			$cmd = new rXMLRPCCommand('system.method.set_key','event.download.'.$cmd2);
 		$cmd->addParameters($args);
 		return($cmd);

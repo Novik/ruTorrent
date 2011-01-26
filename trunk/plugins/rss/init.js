@@ -152,11 +152,29 @@ theWebUI.rssDblClick = function( obj )
 		window.open(theWebUI.rssItems[obj.id].guid,"_blank");
 }
 
+theWebUI.showRSSTimer = function( tm )
+{
+	$("#rsstimer").text( theConverter.time( tm ) ).attr( "row", tm );
+	if(plugin.rssShowInterval)
+		window.clearInterval( plugin.rssShowInterval );
+	plugin.rssShowInterval = window.setInterval( function()
+	{
+		var tm = $("#rsstimer").attr("row")-1;
+		if(!tm)
+		{
+			$("#rsstimer").text('*');
+			window.clearInterval( plugin.rssShowInterval );
+		}
+		$("#rsstimer").text( theConverter.time( tm ) ).attr( "row", tm );
+	}, 1000 );
+}
+
 theWebUI.getRSSIntervals = function( d )
 {
         theWebUI.loadRSS();
 	theWebUI.updateRSSInterval = d.interval*60000;	
 	theWebUI.updateRSSTimer = window.setTimeout("theWebUI.updateRSS()", d.next*1000);
+	theWebUI.showRSSTimer(d.next);
 }
 
 theWebUI.RSSMarkState = function( state )
@@ -508,6 +526,7 @@ theWebUI.updateRSS = function()
 		window.clearTimeout(theWebUI.updateRSSTimer);
 	theWebUI.loadRSS();
 	theWebUI.updateRSSTimer = window.setTimeout("theWebUI.updateRSS()", theWebUI.updateRSSInterval);
+	theWebUI.showRSSTimer( theWebUI.updateRSSInterval/1000 );
 }
 
 theWebUI.retryRSSRequest = function()
@@ -1352,6 +1371,7 @@ plugin.onLangLoaded = function()
 	plugin.addPaneToCategory("prss",theUILang.rssFeeds).
 		append( $("<ul></ul>").html('<li id="_rssAll_" class="RSS cat">'+theUILang.allFeeds+'&nbsp;(<span id="_rssAll_c">0</span>)</li>')).
 		append( $("<div>").html('<ul id="rssl"></ul>') );
+	$("#prss").append( $("<span></span>").attr("id", "rsstimer") );
 	$("#_rssAll_").mouseclick( theWebUI.rssLabelContextMenu );
 
 	theDialogManager.make( "dlgAddRSS", theUILang.addRSS,

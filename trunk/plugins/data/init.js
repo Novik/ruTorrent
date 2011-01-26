@@ -9,11 +9,12 @@ if(plugin.enabled)
 		var oldDblClick = this.getTable("fls").ondblclick;
 		this.getTable("fls").ondblclick = function(obj) 
 		{
-			if(plugin.enabled && (theWebUI.dID!=""))
+			if(plugin.enabled && (theWebUI.dID!="") && (theWebUI.dID.length==40))
 			{
 			        if(theWebUI.settings["webui.fls.view"])
 			        {
-			        	theWebUI.getData(theWebUI.dID,obj.id.substr(43));
+					var arr = obj.id.split('_f_');
+			        	theWebUI.getData(theWebUI.dID,arr[1]);
 			        	return(false);
 				}
 			        else
@@ -53,11 +54,14 @@ if(plugin.enabled)
 					{
 			        		var fid = table.getFirstSelected();
 						if(this.settings["webui.fls.view"])
-							fno = fid.substr(43);
+						{
+							var arr = fid.split('_f_');
+							fno = arr[1];
+						}
 						else
 							if(!this.dirs[this.dID].isDirectory(fid))
 								fno = fid.substr(3);
-						if((fno!=null) && (this.files[this.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles)
+						if( ((fno!=null) && (this.files[this.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles) || (theWebUI.dID.length>40))
 							fno = null;
 					}
 					theContextMenu.add( [theUILang.getData,  (fno==null) ? null : "theWebUI.getData('" + theWebUI.dID + "',"+fno+")"] );

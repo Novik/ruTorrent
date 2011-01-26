@@ -38,7 +38,7 @@ if(plugin.canChangeMenu())
 		{
 			var el = theContextMenu.get(theUILang.Properties);
 			if(el)
-				theContextMenu.add(el,[theUILang.EditTrackers, (this.getTable("trt").selCount == 1) ? "theWebUI.editTrackers('"+id+"')" : null]);
+				theContextMenu.add(el,[theUILang.EditTrackers, (this.getTable("trt").selCount == 1) && (theWebUI.dID.length==40) ? "theWebUI.editTrackers('"+id+"')" : null]);
 		}
 	}
 
@@ -48,7 +48,7 @@ if(plugin.canChangeMenu())
 		if(plugin.createTrackerMenu.call(theWebUI, e, id) && plugin.allStuffLoaded && plugin.enabled)
 		{
 			theContextMenu.add([CMENU_SEP]);
-			theContextMenu.add([theUILang.EditTrackers,"theWebUI.editTrackers('"+theWebUI.dID+"')"]);
+			theContextMenu.add([theUILang.EditTrackers,  (theWebUI.dID.length==40) ? "theWebUI.editTrackers('"+theWebUI.dID+"')" : null]);
 			return(true);
 		}
 		return(false);
