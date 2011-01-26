@@ -25,28 +25,34 @@ if(plugin.enabled && plugin.canChangeMenu()) {
 		});
 	}
 	plugin.createFileMenu = theWebUI.createFileMenu;
-	theWebUI.createFileMenu = function( e, id ) {
-		if(plugin.createFileMenu.call(this, e, id)) {
-			if(plugin.enabled) {
+	theWebUI.createFileMenu = function( e, id ) 
+	{
+		if(plugin.createFileMenu.call(this, e, id)) 
+		{
+			if(plugin.enabled) 
+			{
 				theContextMenu.add([CMENU_SEP]);
 				var fno = null;
 				var table = this.getTable("fls");
-				if(table.selCount == 1)
+				if((table.selCount == 1)  && (theWebUI.dID.length==40))
 				{
 					var fid = table.getFirstSelected();
 					if(this.settings["webui.fls.view"])
-						fno = fid.substr(43);
-						else
-						if(!this.dirs[this.dID].isDirectory(fid))
-							fno = fid.substr(3);
+					{
+						var arr = fid.split('_f_');
+						fno = arr[1];
 					}
-					theContextMenu.add( [theUILang.mediainfo,  (fno==null) ? null : "theWebUI.mediaInfo('" + theWebUI.dID + "',"+fno+")"] );
+					else
+					if(!this.dirs[this.dID].isDirectory(fid))
+						fno = fid.substr(3);
 				}
-				return(true);
+				theContextMenu.add( [theUILang.mediainfo,  (fno==null) ? null : "theWebUI.mediaInfo('" + theWebUI.dID + "',"+fno+")"] );
 			}
-			return(false);
+			return(true);
 		}
+		return(false);
 	}
+}
 
 plugin.onLangLoaded = function()
 {

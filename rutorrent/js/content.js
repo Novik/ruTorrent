@@ -624,6 +624,9 @@ function correctContent()
 		theRequestManager.aliases[""] = "";
 		$.extend(theRequestManager.aliases, 
 		{
+			"d.set_peer_exchange" 		: "d.peer_exchange.set",
+			"d.set_connection_seed"		: "d.connection_seed.set",
+/*
 			"d.get_base_filename" 		: "d.base_filename",
 			"d.get_base_path" 		: "d.base_path",
 			"d.get_bitfield" 		: "d.bitfield",
@@ -640,7 +643,6 @@ function correctContent()
 			"d.get_up_rate" 		: "d.up.rate",
 			"d.get_up_total" 		: "d.up.total",
 			"d.save_session" 		: "d.save_full_session",
-			"d.set_peer_exchange" 		: "d.peer_exchange.set",
 			"get_handshake_log" 		: "log.handshake",
 			"get_log.tracker" 		: "log.tracker",
 			"get_max_file_size" 		: "system.file.max_size",
@@ -682,6 +684,7 @@ function correctContent()
 			"system.method.list_keys" 	: "method.list_keys",
 			"system.method.set" 		: "method.set",
 			"system.method.set_key" 	: "method.set_key"
+*/
 		});
 	}
 	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);

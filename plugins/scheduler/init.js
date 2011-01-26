@@ -17,7 +17,7 @@ if(plugin.enabled && plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVe
 		var h = "";
 		var sr = theWebUI.getTable("trt").rowSel;
 		for(var k in sr) 
-			if(sr[k] == true)
+			if((sr[k] == true) && (k.length==40))
 			{
 				var state = theWebUI.torrents[k].sch_ignore ? '' : 1;
 				h += "&hash="+k+"&s="+state;
@@ -35,10 +35,15 @@ if(plugin.enabled && plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVe
 			if(table.selCount == 1)
 			{
 				var hash = table.getFirstSelected();
-				if(this.torrents[hash].sch_ignore)
-					theContextMenu.add( [CMENU_SEL, theUILang.shcIgnore, theWebUI.toggleSchIgnore] );
+				if(hash.length==40)
+				{
+					if(this.torrents[hash].sch_ignore)
+						theContextMenu.add( [CMENU_SEL, theUILang.shcIgnore, theWebUI.toggleSchIgnore] );
+					else
+						theContextMenu.add( [theUILang.shcIgnore, theWebUI.toggleSchIgnore] );
+				}
 				else
-					theContextMenu.add( [theUILang.shcIgnore, theWebUI.toggleSchIgnore] );
+					theContextMenu.add( [theUILang.shcIgnore, null] );
 			}
 			else
 				theContextMenu.add( [theUILang.shcIgnore, theWebUI.toggleSchIgnore] );

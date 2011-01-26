@@ -158,15 +158,21 @@ if(plugin.enabled)
 			{
 				var el = theContextMenu.get(theUILang.Priority);
 				var curNo = null;
-				if(this.getTable("trt").selCount==1)
-					curNo = theWebUI.getRatioData(id);
-				var down = [];
-				down.push([theUILang.mnuRatioUnlimited,(curNo==-1) ? null : "theWebUI.setRatio('-1')"]);
-				down.push([CMENU_SEP]);
-				for(var i=0; i<theWebUI.maxRatio; i++)
-					if(theWebUI.isCorrectRatio(i))
-						down.push([theWebUI.ratios[i].name,(i!=curNo) ? "theWebUI.setRatio('"+i+"')" : null]);
-				theContextMenu.add(el,[CMENU_CHILD, theUILang.mnuRatio, down]);
+				var table = this.getTable("trt");
+				if((table.selCount==1) && (table.getFirstSelected().length!=40))
+					theContextMenu.add(el,[theUILang.mnuRatio, null]);
+				else
+				{
+					if(table.selCount==1)
+						curNo = theWebUI.getRatioData(id);
+					var down = [];
+					down.push([theUILang.mnuRatioUnlimited,(curNo==-1) ? null : "theWebUI.setRatio('-1')"]);
+					down.push([CMENU_SEP]);
+					for(var i=0; i<theWebUI.maxRatio; i++)
+						if(theWebUI.isCorrectRatio(i))
+							down.push([theWebUI.ratios[i].name,(i!=curNo) ? "theWebUI.setRatio('"+i+"')" : null]);
+					theContextMenu.add(el,[CMENU_CHILD, theUILang.mnuRatio, down]);
+				}
 			}
 		}
 
@@ -175,7 +181,7 @@ if(plugin.enabled)
 			var sr = this.getTable("trt").rowSel;
 			var req = '';
 			for(var k in sr)
-		       		if(sr[k])
+		       		if(sr[k] && (k.length==40))
 					req += ("&hash=" + k + "&v="+ratio);
 			if(req.length>0)
 				this.request("?action=setratio"+req+"&list=1",[this.addTorrents, this]);

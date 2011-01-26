@@ -145,17 +145,23 @@ if(plugin.enabled)
 			{
 				var el = theContextMenu.get(theUILang.Priority);
 				var curNo = null;
-				if(this.getTable("trt").selCount==1)
-					curNo = theWebUI.getThrottleData(id);
-				var down = [];
-				down.push([theUILang.mnuUnlimited, (curNo==-1) ? null : "theWebUI.setThrottle('-1')"]);
-				down.push([CMENU_SEP]);
-				for(var i=0; i<theWebUI.maxThrottle; i++)
+				var table = this.getTable("trt");
+				if((table.selCount==1) && (table.getFirstSelected().length>40))
+					theContextMenu.add(el,[theUILang.mnuThrottle, null]);
+				else
 				{
-					if(theWebUI.isCorrectThrottle(i))
-						down.push([theWebUI.throttles[i].name,(i!=curNo) ? "theWebUI.setThrottle('"+i+"')" : null]);
+					if(table.selCount==1)
+						curNo = theWebUI.getThrottleData(id);
+					var down = [];
+					down.push([theUILang.mnuUnlimited, (curNo==-1) ? null : "theWebUI.setThrottle('-1')"]);
+					down.push([CMENU_SEP]);
+					for(var i=0; i<theWebUI.maxThrottle; i++)
+					{
+						if(theWebUI.isCorrectThrottle(i))
+							down.push([theWebUI.throttles[i].name,(i!=curNo) ? "theWebUI.setThrottle('"+i+"')" : null]);
+					}
+					theContextMenu.add(el,[CMENU_CHILD, theUILang.mnuThrottle, down]);
 				}
-				theContextMenu.add(el,[CMENU_CHILD, theUILang.mnuThrottle, down]);
 			}
 		}
 
@@ -164,7 +170,7 @@ if(plugin.enabled)
 			var sr = this.getTable("trt").rowSel;
 			var req = '';
 			for(var k in sr)
-	       			if(sr[k])
+	       			if(sr[k] && (k.length==40))
 					req += ("&hash=" + k + "&v="+throttle);
 			if(req.length>0)
 				this.request("?action=setthrottle"+req+"&list=1",[this.addTorrents, this]);

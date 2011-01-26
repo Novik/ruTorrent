@@ -818,7 +818,8 @@ var theWebUI =
 	{
 		if($type(id))
 		{
-	   		var ind = iv(id.substr(43));
+			var arr = id.split('_t_');
+	   		var ind = iv(arr[1]);
    			if(theWebUI.createTrackerMenu(e, ind))
 		   		theContextMenu.show();
 		}
@@ -866,12 +867,13 @@ var theWebUI =
 	   	var rowIDs = table.rowIDs.slice(0);
 		for(var i in rowIDs) 
 		{
-		        var hash = rowIDs[i].substr(0, 40);
+			var arr = rowIDs[i].split('_t_');
+			var hash = arr[0];
 			if(this.dID != hash) 
          			table.removeRow(rowIDs[i]);
          		else
          		{
-         			var no = rowIDs[i].substr(43);
+         			var no = arr[1];
 				if(!$type(this.trackers[hash][no]))
 	         			table.removeRow(rowIDs[i]);
 				else
@@ -931,7 +933,8 @@ var theWebUI =
    		{
       			if(sr[k]) 
       			{
-         			var i = iv(k.substr(43));
+				var arr = k.split('_t_');
+         			var i = iv(arr[1]);
          			if(this.trackers[id][i].enabled != swtch) 
          			{
             				str += "&f=" + i;
@@ -1053,7 +1056,10 @@ var theWebUI =
 		{
 	   		var p = -1;
 	   		if(theWebUI.settings["webui.fls.view"])
-		   		p = theWebUI.files[theWebUI.dID][id.substr(43)].priority;
+			{
+				var arr = id.split('_f_');
+		   		p = theWebUI.files[theWebUI.dID][iv(arr[1])].priority;
+			}
 			else
 				p = theWebUI.dirs[theWebUI.dID].getEntryPriority(id);
    			if(theWebUI.createFileMenu(e, p))
@@ -1120,7 +1126,8 @@ var theWebUI =
       			{
       				if(this.settings["webui.fls.view"])
       				{
-	         			var i = iv(k.substr(43));
+					var arr = k.split('_f_');
+	         			var i = iv(arr[1]);
         	 			if(this.files[id][i].priority != p) 
          				{
 						str += "&f=" + i;
