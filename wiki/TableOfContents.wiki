@@ -12,6 +12,7 @@
         * [WebSERVER#Cherokee_Specific_SCGI_Config Cherokee]
         * [WebSERVER#Nginx_SCGI_notes Nginx]
     * [Config]
+    * [RPCSecurity RCP/XMLRPC Security]
     * [Downloading]
       * [GetFromSVN Get From SVN]
       * [DownloadPage Tar Ball Download]
