@@ -18,7 +18,7 @@ If you are using a webserver for SCGI (apache's mod_scgi for instance)  be sure 
 
 === Rutorrent Plugins ===
 
-Another thing you can do is use the [PluginRPC RPC] or PluginHTTPRPC HttpRPC] plugins. 
+Another thing you can do is use the [PluginRPC RPC] or [PluginHTTPRPC HttpRPC] plugins. 
 
 _*Note:  If you use one of these plguins, do not set up SCGI via the webserver, if you do it defeats the purpose _*
 
