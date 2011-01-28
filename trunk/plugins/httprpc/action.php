@@ -353,6 +353,61 @@ switch($mode)
 	        	$result = $req->val;
 		break;
 	}
+	case "unsnub":
+	case "snub":
+	{
+		$hsh = $usr->switchByHash( $hash[0] );
+		$on = (($mode=="snub") ? 1 : 0);
+		$req = new rXMLRPCRequest();
+                foreach($vs as $v)
+			$req->addCommand( new rXMLRPCCommand("p.snubbed.set", array($hsh.":p".$v,$on)) );
+		if($req->success())
+	        	$result = $req->val;
+		break;
+	}
+	case "ban":
+	{
+		$hsh = $usr->switchByHash( $hash[0] );
+		$req = new rXMLRPCRequest();
+                foreach($vs as $v)
+		{
+			$req->addCommand( new rXMLRPCCommand("p.banned.set", array($hsh.":p".$v,1)) );
+			$req->addCommand( new rXMLRPCCommand("p.disconnect_delayed", $hsh.":p".$v) );
+		}
+		if($req->success())
+	        	$result = $req->val;
+		break;
+	}
+	case "kick":
+	{
+		$hsh = $usr->switchByHash( $hash[0] );
+		$req = new rXMLRPCRequest();
+                foreach($vs as $v)
+			$req->addCommand( new rXMLRPCCommand("p.disconnect", $hsh.":p".$v) );
+		if($req->success())
+	        	$result = $req->val;
+		break;
+	}
+	case "add_peer":
+	{
+		$hsh = $usr->switchByHash( $hash[0] );
+		$req = new rXMLRPCRequest(
+			new rXMLRPCCommand( "add_peer", array($hsh, $vs[0]) ) );
+		if($req->success())
+	        	$result = $req->val;
+		break;
+	}
+	case "getchunks":
+	{
+                $hsh = $usr->switchByHash( $hash[0] );
+		$req = new rXMLRPCRequest( array(
+			new rXMLRPCCommand( "d.get_bitfield", $hsh ),
+			new rXMLRPCCommand( "d.get_chunk_size", $hsh ),
+			new rXMLRPCCommand( "d.get_size_chunks", $hsh ) ));
+		if($req->success())
+	        	$result = array( "chunks"=>$req->val[0], "size"=>$req->val[1], "tsize"=>$req->val[2] );
+		break;
+	}
 	default:
 	{
 		if(isset($HTTP_RAW_POST_DATA) 
@@ -366,9 +421,6 @@ switch($mode)
 					$result = substr($result,$pos+4);
 				cachedEcho($result, "text/xml");
 			}
-			else
-				$result = null;
-
 		}
 		break;
 	}

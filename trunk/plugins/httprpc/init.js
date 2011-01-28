@@ -278,6 +278,51 @@ rTorrentStub.prototype.setdlrate = function()
 	this.getCommon("setdl");
 }
 
+plugin.origsnub = rTorrentStub.prototype.snub;
+rTorrentStub.prototype.snub = function()
+{
+	this.getCommon("snub");
+}
+
+plugin.origunsnub = rTorrentStub.prototype.unsnub;
+rTorrentStub.prototype.unsnub = function()
+{
+	this.getCommon("unsnub");
+}
+
+plugin.origban = rTorrentStub.prototype.ban;
+rTorrentStub.prototype.ban = function()
+{
+	this.getCommon("ban");
+}
+
+plugin.origkick = rTorrentStub.prototype.kick;
+rTorrentStub.prototype.kick = function()
+{
+	this.getCommon("kick");
+}
+
+plugin.origaddpeer = rTorrentStub.prototype.addpeer;
+rTorrentStub.prototype.addpeer = function()
+{
+	this.getCommon("add_peer");
+}
+
+plugin.origgetchunks = rTorrentStub.prototype.getchunks;
+rTorrentStub.prototype.getchunks = function() 
+{
+	this.hashes[0] = theWebUI.dID;
+        this.getCommon("getchunks");
+}
+
+plugin.origgetchunksResponse = rTorrentStub.prototype.getchunksResponse;
+rTorrentStub.prototype.getchunksResponse = function(data)
+{
+	if(this.dataType == "json")
+		return(data);
+	return(plugin.origgetchunksResponse.call(this,data));
+}
+
 plugin.origgetpropsResponse = rTorrentStub.prototype.getpropsResponse;
 rTorrentStub.prototype.getpropsResponse = function(values)
 {

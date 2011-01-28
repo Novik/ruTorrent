@@ -1999,7 +1999,7 @@ var theWebUI =
 	        	$("#bf").text(d.base_path);
 	        	$("#co").text(theConverter.date(iv(d.created)+theWebUI.deltaTime/1000));
 			$("#tu").text(	$type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
-	        	$("#hs").text(this.dID);
+	        	$("#hs").text(this.dID.substring(0,40));
 			$("#ts").text(d.msg);
 			var url = $.trim(d.comment);
 			if(!url.match(/<a href/i))

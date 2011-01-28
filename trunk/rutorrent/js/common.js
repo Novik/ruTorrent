@@ -537,10 +537,10 @@ var theFormatter =
 		switch(iv(no))
 		{
 			case 0:
-				ret = "no";
+				ret = theUILang.no;
 				break;
 			case 1:
-				ret = "yes";
+				ret = theUILang.yes;
 				break;
 		}
 		return(ret);
