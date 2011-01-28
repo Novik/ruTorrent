@@ -298,6 +298,7 @@ dxSTable.prototype.onRightClick = function(e)
 				theContextMenu.add(a);
 			}
 		}
+		theContextMenu.setNoHide();
 		theContextMenu.show(e.clientX,e.clientY);
 		return(false);
 	}

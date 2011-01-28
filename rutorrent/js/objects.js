@@ -212,7 +212,9 @@ var theDialogManager =
 			}
 			this.visible.push(id);
 		}
-		$('#'+id).css("z-index",++theDialogManager.maxZ).focus();
+		$('#'+id).css("z-index",++theDialogManager.maxZ);
+		if(!browser.isOpera)
+			$('#'+id).focus();
 	},
 	hideTopmost: function()
 	{
@@ -233,6 +235,7 @@ var CMENU_SEL = " 2";
 var theContextMenu = 
 {
 	mouse: { x: 0, y: 0 },
+	noHide: false,
 
         init: function()
 	{
@@ -240,7 +243,7 @@ var theContextMenu =
 		$(document).mousemove( function(e) { self.mouse.x = e.clientX; self.mouse.y = e.clientY; } );
 		$(document).mouseup( function(e)
 		{
-			var ele = e.target; 
+			var ele = $(e.target);
 			if(e.which == 3) 
 			{
 				if(!e.fromTextCtrl)
@@ -248,8 +251,18 @@ var theContextMenu =
 			}
 			else
 			{
-				if(ele.className!="top-menu-item")
-	   				window.setTimeout("theContextMenu.hide()", 50); 
+				if(!ele.hasClass("top-menu-item") &&
+					!ele.hasClass("exp") &&
+					!ele.hasClass("CMenu") &&
+					!(ele.hasClass("menu-cmd") && ele.hasClass("dis")) &&
+					!ele.hasClass("menuitem") &&
+					!ele.hasClass("menu-line"))
+				{
+					if(ele.hasClass("menu-cmd") && self.noHide)
+						ele.toggleClass("sel");
+					else
+		   				window.setTimeout("theContextMenu.hide()", 50); 
+				}
 			}
 		});
                 this.obj = $("<UL>").css( { position: "absolute" } ).addClass("CMenu");
@@ -292,7 +305,7 @@ var theContextMenu =
 			{
 				var li = $("<li>").addClass("menuitem");
 				if(val[0] == CMENU_SEP)
-					li.append($("<hr>"));
+					li.append($("<hr>").addClass("menu-line"));
 				else
 				if(val[0] == CMENU_CHILD)
 				{
@@ -307,18 +320,18 @@ var theContextMenu =
 				else
 			       	if(val[0] == CMENU_SEL) 
 		 		{
-		 	        	var a = $("<a></a>").addClass("sel").text(val[1]);
+		 	        	var a = $("<a></a>").addClass("sel menu-cmd").text(val[1]);
 			 	        switch($type(val[2]))
 			 	        {
 //			 	        	case "string": a.attr("href", "javascript:"+val[2] ); break;
 						case "string": a.attr("href","javascript://void();").click( function() { eval(val[2]) } ); break;
 						case "function": a.attr("href","javascript://void();").click(val[2]); break;
 					}
-					li.append(a);
+					li.append(a.focus( function() { this.blur(); } ));
 				}
 				else
 				{
-					var a = $("<a></a>").text(val[0]);
+					var a = $("<a></a>").addClass("menu-cmd").text(val[0]);
 					switch($type(val[1]))
 					{
 			 	        	case false: a.addClass("dis"); break;
@@ -326,7 +339,7 @@ var theContextMenu =
 						case "string": a.attr("href","javascript://void();").click( function() { eval(val[1]) } ); break;
 						case "function": a.attr("href","javascript://void();").click(val[1]); break;
 					}
-					li.append(a);
+					li.append(a.focus( function() { this.blur(); } ));
 				}
 				if(aft)
 					aft.after(li);
@@ -338,6 +351,10 @@ var theContextMenu =
 	clear: function()
 	{
 		this.obj.empty();
+	},
+	setNoHide: function()
+	{
+		this.noHide = true;
 	},
 	show: function(x,y)
 	{
@@ -356,6 +373,7 @@ var theContextMenu =
 	},
 	hide: function()
 	{
+		this.noHide = false;
 	        if(this.obj.is(":visible"))
 	        {
 			this.obj.hide(theDialogManager.divider);
