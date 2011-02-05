@@ -106,7 +106,7 @@ class rUnpack
 				escapeshellarg($outPath)." ".
 				"/dev/null ".
 				"/dev/null ".
-				escapeshellarg($pathToUnzip).' & "' );
+				escapeshellarg($pathToUnzip).' " > /dev/null 2>&1 &' );
 		}
 	}
 	static protected function formatPath( $taskNo )
