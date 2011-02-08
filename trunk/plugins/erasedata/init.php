@@ -8,6 +8,7 @@ $params = array(
 );
 if(isLocalMode())
 	$params[] = getCmd('branch=').getCmd('d.get_custom5').'=,"'.getCmd('execute').'={sh,'.$rootPath.'/plugins/erasedata/cleanup.sh,$'.getCmd('d.get_base_path').'=}"';
+//	$params[] = getCmd('branch=').getCmd('d.get_custom5').'=$'.getCmd('and').'=$'.getCmd('d.is_multi_file=').',"'.getCmd('execute').'={rm,-rfd,--,$'.getCmd('d.get_base_path').'=}"';
 $req = new rXMLRPCRequest();
 foreach( $params as $i=>$prm )
 	$req->addCommand($theSettings->getOnEraseCommand(array('erasedata'.$i.getUser(), $prm )));

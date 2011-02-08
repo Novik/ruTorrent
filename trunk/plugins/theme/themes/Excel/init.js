@@ -6,7 +6,6 @@ plugin.allDone = function()
 	$(".catpanel").prepend(
 		$("<img></img>").attr( { src: "plugins/theme/themes/Excel/images/pnl_open.png", hspace: 10 } ).
 			css( { "margin-left": -31, "margin-top": 2, "vertical-align": -3 } ) );
-	$(".tracker img").css( "margin-right", 26 );
 	$(".tabbar li:last-child a").after( $("<img></img>").attr( { src: $(".tabbar li:last-child").hasClass("selected") ? 
 		"plugins/theme/themes/Excel/images/tabbghfin.png" : 
 		"plugins/theme/themes/Excel/images/tabbgfin.png" } ).
