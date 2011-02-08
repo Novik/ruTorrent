@@ -9,7 +9,7 @@ class DemonoidEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.demonoid.com';
+		$url = 'http://www.demonoid.me';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'movies'=>'1', 'tv'=>'3', 'music'=>'2', 'games'=>'4', 'anime'=>'9', 'software'=>'5', 'pictures'=>'8', 'books'=>'11' );
 		else

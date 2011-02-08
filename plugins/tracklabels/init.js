@@ -1,3 +1,5 @@
+plugin.loadMainCSS();
+
 theWebUI.trackersLabels = new Object();
 theWebUI.actTrackersLbl = null;
 
@@ -133,7 +135,7 @@ theWebUI.rebuildTrackersLabels = function()
 	else
 	{
 		var table = this.getTable('trt');
-		trackersLabels = new Object();
+		var trackersLabels = new Object();
 		var counted = new Object();
 		for(var hash in this.trackers)
 		{
@@ -192,7 +194,7 @@ theWebUI.rebuildTrackersLabels = function()
 			        	mouseclick(theWebUI.trackersLabelContextMenu).addClass("cat tracker").attr("title",lbl+" ("+trackersLabels[lbl]+")");
 				var rule = getCSSRule("#i"+lbl);
 				if(!rule)
-					li.prepend( $("<img>").attr("src","http://"+lbl+"/favicon.ico").width(16).height(16).css({ "margin-right": 5, "float" : "left" }) ).css({ padding: "2px 4px"});
+					li.prepend( $("<img>").attr("src","http://"+lbl+"/favicon.ico").addClass("tfavicon") ).css({ padding: "2px 4px"});
 				ul.append(li);
 			}
 			if(lbl==theWebUI.actTrackersLbl)
