@@ -972,7 +972,7 @@ class rRSSManager
 		global $updateInterval;
 		$nextTouch = $updateInterval*60;
 		if($this->rssList->updatedAt)
-			$nextTouch = $nextTouch-(time()-$this->rssList->updatedAt)+15;
+			$nextTouch = $nextTouch-(time()-$this->rssList->updatedAt)+45;
 		return('{ "next": '.$nextTouch.', "interval": '.$updateInterval.' }');
 	}
 	public function get()

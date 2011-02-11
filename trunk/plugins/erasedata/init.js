@@ -21,7 +21,9 @@ if(plugin.enabled && plugin.canChangeMenu())
 			if( el )
 			{
 				var _c0 = [];
-				_c0.push( [theUILang.Delete_data,"theWebUI.removeWithData()"] );
+				_c0.push( [theUILang.Delete_data,
+					(this.getTable("trt").selCount>1) ||
+					this.isTorrentCommandEnabled("remove",id) ? "theWebUI.removeWithData()" : null] );
 				theContextMenu.add( el, [CMENU_CHILD, theUILang.Remove_and, _c0] );
 			}
 		}
