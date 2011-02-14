@@ -356,23 +356,21 @@ switch($mode)
 	case "unsnub":
 	case "snub":
 	{
-		$hsh = $usr->switchByHash( $hash[0] );
 		$on = (($mode=="snub") ? 1 : 0);
 		$req = new rXMLRPCRequest();
                 foreach($vs as $v)
-			$req->addCommand( new rXMLRPCCommand("p.snubbed.set", array($hsh.":p".$v,$on)) );
+			$req->addCommand( new rXMLRPCCommand("p.snubbed.set", array($hash[0].":p".$v,$on)) );
 		if($req->success())
 	        	$result = $req->val;
 		break;
 	}
 	case "ban":
 	{
-		$hsh = $usr->switchByHash( $hash[0] );
 		$req = new rXMLRPCRequest();
                 foreach($vs as $v)
 		{
-			$req->addCommand( new rXMLRPCCommand("p.banned.set", array($hsh.":p".$v,1)) );
-			$req->addCommand( new rXMLRPCCommand("p.disconnect_delayed", $hsh.":p".$v) );
+			$req->addCommand( new rXMLRPCCommand("p.banned.set", array($hash[0].":p".$v,1)) );
+			$req->addCommand( new rXMLRPCCommand("p.disconnect_delayed", $hash[0].":p".$v) );
 		}
 		if($req->success())
 	        	$result = $req->val;
@@ -380,30 +378,27 @@ switch($mode)
 	}
 	case "kick":
 	{
-		$hsh = $usr->switchByHash( $hash[0] );
 		$req = new rXMLRPCRequest();
                 foreach($vs as $v)
-			$req->addCommand( new rXMLRPCCommand("p.disconnect", $hsh.":p".$v) );
+			$req->addCommand( new rXMLRPCCommand("p.disconnect", $hash[0].":p".$v) );
 		if($req->success())
 	        	$result = $req->val;
 		break;
 	}
 	case "add_peer":
 	{
-		$hsh = $usr->switchByHash( $hash[0] );
 		$req = new rXMLRPCRequest(
-			new rXMLRPCCommand( "add_peer", array($hsh, $vs[0]) ) );
+			new rXMLRPCCommand( "add_peer", array($hash[0], $vs[0]) ) );
 		if($req->success())
 	        	$result = $req->val;
 		break;
 	}
 	case "getchunks":
 	{
-                $hsh = $usr->switchByHash( $hash[0] );
 		$req = new rXMLRPCRequest( array(
-			new rXMLRPCCommand( "d.get_bitfield", $hsh ),
-			new rXMLRPCCommand( "d.get_chunk_size", $hsh ),
-			new rXMLRPCCommand( "d.get_size_chunks", $hsh ) ));
+			new rXMLRPCCommand( "d.get_bitfield", $hash[0] ),
+			new rXMLRPCCommand( "d.get_chunk_size", $hash[0] ),
+			new rXMLRPCCommand( "d.get_size_chunks", $hash[0] ) ));
 		if($req->success())
 	        	$result = array( "chunks"=>$req->val[0], "size"=>$req->val[1], "tsize"=>$req->val[2] );
 		break;
