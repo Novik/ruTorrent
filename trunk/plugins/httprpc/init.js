@@ -114,6 +114,7 @@ rTorrentStub.prototype.listResponse = function(data)
 			} catch(e) { torrent.comment = ''; }
 			torrent.free_diskspace = values[31];
 			torrent.private = values[32];
+			torrent.multi_file = iv(values[33]);
 			torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
 			torrent.peers = torrent.peers_actual + " (" + torrent.peers_all + ")";
 			$.each( theRequestManager.trt.handlers, function(i,handler)
