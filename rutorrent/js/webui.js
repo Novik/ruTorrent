@@ -1093,7 +1093,7 @@ var theWebUI =
 	   		        _bf.push([CMENU_SEP]);
    			        _bf.push([theUILang.Dont_download, (p == 0) ? null : "theWebUI.setPriority('" + id + "',0)"]);
 	      		}
-	      	if(_bf.length && this.isTorrentCommandEnabled('flspriority',this.dID) )
+	      	if(_bf.length && this.isTorrentCommandEnabled('setprio',this.dID) )
 	      		theContextMenu.add([CMENU_CHILD, theUILang.Priority, _bf]);
 		else
 			theContextMenu.add([theUILang.Priority]);
@@ -1220,8 +1220,8 @@ var theWebUI =
       		}
       		if(_bf.length>0)
 	   		_bf.push([CMENU_SEP]);
-   		_bf.push([theUILang.New_label, (table.selCount > 1) || this.isTorrentCommandEnabled("newlabel",id) ? "theWebUI.newLabel()" : null]);
-   		_bf.push([theUILang.Remove_label, (table.selCount > 1) || this.isTorrentCommandEnabled("removelabel",id) ? "theWebUI.removeLabel()" : null]);
+   		_bf.push([theUILang.New_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.newLabel()" : null]);
+   		_bf.push([theUILang.Remove_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.removeLabel()" : null]);
    		theContextMenu.add([CMENU_CHILD, theUILang.Labels, _bf]);
    		theContextMenu.add([CMENU_SEP]);
    		var _c0 = [];
@@ -1245,7 +1245,7 @@ var theWebUI =
    		theContextMenu.add([theUILang.Remove, (table.selCount > 1) || this.isTorrentCommandEnabled("remove",id) ? "theWebUI.remove()" : null]);
    		theContextMenu.add([CMENU_SEP]);
    		theContextMenu.add([theUILang.Details, "theWebUI.showDetails('" + id + "')"]);
-   		if((table.selCount > 1) || !this.isTorrentCommandEnabled("props",id))
+   		if((table.selCount > 1) || !this.isTorrentCommandEnabled("setprops",id))
       			theContextMenu.add([theUILang.Properties]);
    		else 
       			theContextMenu.add([theUILang.Properties, "theWebUI.showProperties('" + id + "')"]);
@@ -1309,6 +1309,9 @@ var theWebUI =
 	getHashes: function(act) 
 	{
 		var h = "";
+		var pos = act.indexOf('&');
+		if(pos>=0)
+			act = act.substring(0,pos);
 		var sr = this.getTable("trt").rowSel;
 		for(var k in sr) 
 			if((sr[k] == true) && this.isTorrentCommandEnabled(act,k))
@@ -1401,7 +1404,7 @@ var theWebUI =
 			tul += iv(torrent.ul);
 			var sInfo = theWebUI.getStatusIcon(torrent.state, torrent.done);
 			torrent.status = sInfo[1];
-			var lbl = theWebUI.getLabels(hash, torrent.label, torrent.done, torrent.dl, torrent.ul, torrent.state);
+			var lbl = theWebUI.getLabels(hash, torrent);
 			if(!$type(theWebUI.torrents[hash]))
 			{
 				theWebUI.labels[hash] = lbl;
@@ -1722,10 +1725,11 @@ var theWebUI =
 		}
    	},
 
-	getLabels : function(id, lbl, completed, dls, uls, status)
+	getLabels : function(id, torrent)
 	{
 		if(!$type(this.labels[id]))
 			this.labels[id] = "";
+		var lbl = torrent.label;
 		if(lbl == "")
       		{
 			lbl += "-_-_-nlb-_-_-";
@@ -1736,7 +1740,7 @@ var theWebUI =
 			if(this.labels[id].indexOf("-_-_-nlb-_-_-") >- 1)
 				this.labels["-_-_-nlb-_-_-"]--;
 		lbl = "-_-_-" + lbl + "-_-_-";
-		if(completed < 1000)
+		if(torrent.done < 1000)
       		{
 			lbl += "-_-_-dls-_-_-";
 			if(this.labels[id].indexOf("-_-_-dls-_-_-") ==- 1)
@@ -1752,7 +1756,7 @@ var theWebUI =
 			if(this.labels[id].indexOf("-_-_-dls-_-_-") >- 1)
 				this.labels["-_-_-dls-_-_-"]--;
          	}
-		if((dls >= 1024) || (uls >= 1024))
+		if((torrent.dl >= 1024) || (torrent.ul >= 1024))
 		{
 			lbl += "-_-_-act-_-_-";
 			if(this.labels[id].indexOf("-_-_-act-_-_-") ==- 1)
@@ -1768,7 +1772,7 @@ var theWebUI =
 			if(this.labels[id].indexOf("-_-_-act-_-_-") >- 1)
 				this.labels["-_-_-act-_-_-"]--;
 		}
-		if(status & dStatus.error)
+		if(torrent.status & dStatus.error)
 		{
 			lbl += "-_-_-err-_-_-";
 			if(this.labels[id].indexOf("-_-_-err-_-_-") ==- 1)
