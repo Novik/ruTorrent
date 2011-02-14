@@ -25,6 +25,13 @@
 	$scgi_port = 5000;
 	$scgi_host = "127.0.0.1";
 
+	// For web->rtorrent link through unix domain socket 
+	// (scgi_local in rtorrent conf file), change variables 
+	// above to something like this:
+	//
+	// $scgi_port = 0;
+	// $scgi_host = "unix:///tmp/rpc.socket";
+
 	$XMLRPCMountPoint = "/RPC2";		// DO NOT DELETE THIS LINE!!! DO NOT COMMENT THIS LINE!!!
 
 	$pathToExternals = array(
@@ -35,11 +42,9 @@
 		"stat"	=> '',			// Something like /usr/bin/stat. If empty, will be found in PATH.
 	);
 
-	// For web->rtorrent link through unix domain socket 
-	// (scgi_local in rtorrent conf file), change variables 
-	// above to something like this:
-	//
-	// $scgi_port = 0;
-	// $scgi_host = "unix:///tmp/rpc.socket";
+	$localhosts = array( 			// list of local interfaces
+		"127.0.0.1", 
+		"localhost",
+	);
 
 ?>

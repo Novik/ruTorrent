@@ -165,7 +165,8 @@ function isLocalMode()
 {
 	global $scgi_host;
 	global $scgi_port;
-	return(($scgi_host == "127.0.0.1") || ($scgi_host == "localhost") || ($scgi_port == 0));
+	global $localhosts;
+	return(($scgi_port == 0) || in_array($scgi_host,$localhosts));
 }
 
 function isUserHavePermissionPrim($uid,$gids,$file,$flags)
