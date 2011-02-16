@@ -22,6 +22,11 @@ if($conf)
 	require_once($conf);
 require_once( 'lfs.php' );
 
+if(!isset($profileMask))
+	$profileMask = 0777;
+if(!isset($localhosts) || !count($localhosts))
+	$localhosts = array( "127.0.0.1", "localhost" );
+
 function stripSlashesFromArray(&$arr)
 {
         if(is_array($arr))
