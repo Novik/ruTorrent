@@ -244,9 +244,9 @@ if($handle = opendir('../plugins'))
 				}
 	        	        $up = getUploadsPath();
 	        	        $st = getSettingsPath();
-				@chmod($up,0777);
-				@chmod($st,0777);
-				@chmod('./test.sh',0755);
+				@chmod($up,$profileMask);
+				@chmod($st,$profileMask);
+				@chmod('./test.sh',$profileMask & 0755);
 	        		if(!@file_exists($up.'/.') || !is_readable($up) || !is_writable($up))
 					$jResult.="log(theUILang.badUploadsPath+' (".$up.")');";
 	        		if(!@file_exists($st.'/.') || !is_readable($st) || !is_writable($st))
@@ -322,7 +322,7 @@ if($handle = opendir('../plugins'))
 						foreach( $info['rtorrent.script.error'] as $external )
 						{
 						       	$fname = $rootPath.'/plugins/'.$file.'/'.$external;
-							@chmod($fname,0755);
+							@chmod($fname,$profileMask & 0755);
 							if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0005))
 							{
 								$jResult.="log('".$file.": '+theUILang.rTorrentBadScriptPath+' ('+'".$fname."'+').');";
@@ -334,7 +334,7 @@ if($handle = opendir('../plugins'))
 						foreach( $info['rtorrent.php.error'] as $external )
 						{
 					       		$fname = $rootPath.'/plugins/'.$file.'/'.$external;
-							@chmod($fname,0644);
+							@chmod($fname,$profileMask & 0644);
 							if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0004))
 							{
 								$jResult.="log('".$file.": '+theUILang.rTorrentBadPHPScriptPath+' ('+'".$fname."'+').');";

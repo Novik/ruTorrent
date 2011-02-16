@@ -60,6 +60,7 @@ class commonEngine
 	}
 	public function getTorrent( $url )
 	{
+		global $profileMask;
 		$cli = $this->fetch( $url );
 		if($cli)
 		{
@@ -72,7 +73,7 @@ class commonEngine
 			{
 				@fwrite($f,$cli->results,strlen($cli->results));
 				fclose($f);
-				@chmod($name,0666);
+				@chmod($name,$profileMask & 0666);
 				return($name);
 			}
 		}

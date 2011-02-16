@@ -63,7 +63,7 @@ else
 	}
 if($success)
 {
-	@chmod($uploaded_file,0666);
+	@chmod($uploaded_file,$profileMask & 0666);
 	$uploaded_file = realpath($uploaded_file);
 	if(rTorrent::sendTorrent($uploaded_file,
 		!isset($_REQUEST['torrents_start_stopped']),

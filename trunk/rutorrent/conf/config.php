@@ -47,4 +47,8 @@
 		"localhost",
 	);
 
+	$profilePath = '../share';		// Path to users profiles
+	$profileMask = 0777;			// Mask for files and directory creation in users profiles. 
+						// Both web-server and rtorrent users must have read-write access to its.
+
 ?>

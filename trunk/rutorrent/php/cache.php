@@ -13,6 +13,7 @@ class rCache
 	}
 	public function set( $rss, $arg = null )
 	{
+		global $profileMask;
 		$name = $this->getName($rss);
 		if(isset($rss->modified) &&
 			method_exists($rss,"merge") &&
@@ -29,7 +30,7 @@ class rCache
 		{
 		        fwrite( $fp, serialize( $rss ) );
         		fclose( $fp );
-			@chmod($name,0777);
+			@chmod($name,$profileMask & 0666);
 	        	return(true);
         	}
 	        return(false);
