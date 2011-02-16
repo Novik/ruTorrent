@@ -43,7 +43,7 @@
 					fputcsv($file,$tmp);
 				}
 				fclose($file);
-				@chmod($dir.'last.csv',0777);
+				@chmod($dir.'last.csv',$profileMask & 0666);
 			}
 			if($needUpdate)
 			{

@@ -78,13 +78,13 @@ if( count( $argv ) > 1 )
 			if($resumed = rTorrent::fastResume($torrent,$path_edit))
 				$torrent = $resumed;
 			$torrent->save($fname);
-			@chmod(fname,0666);
+			@chmod(fname,$profileMask & 0666);
 			rTorrent::sendTorrent($fname, true, true, $path_edit, null, true, isLocalMode() );
         	}
         	else
        		{
 			$torrent->save($fname);
-			@chmod(fname,0666);
+			@chmod(fname,$profileMask & 0666);
 		}
 		file_put_contents( "/tmp/".getUser().$taskNo."/out", end(explode('/',$fname)));
 		exit(0);

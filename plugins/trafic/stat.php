@@ -35,6 +35,7 @@ class rStat
 	}
 	public function flush()
 	{
+		global $profileMask;
 		if($file=@fopen($this->fname,"w"))
 		{
 			fputcsv($file,$this->hourUp);
@@ -47,7 +48,7 @@ class rStat
 			fputcsv($file,$this->yearDown);
 			fputcsv($file,$this->yearHitTimes);
 			fclose($file);
-			@chmod($this->fname,0777);
+			@chmod($this->fname,$profileMask & 0666);
 		}
 	}
 	public function correct($deltaUp,$deltaDown)

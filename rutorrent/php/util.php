@@ -284,8 +284,9 @@ function getUser()
 
 function getProfilePath()
 {
-	global $rootPath;
-        $ret = $rootPath.'/share';
+	global $profilePath;
+
+	$ret = fullpath(isset($profilePath) ? $profilePath : '../share', dirname(__FILE__));
         $user = getUser();
         if($user!='')
         {
@@ -402,8 +403,11 @@ function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 		echo($content);
 }
 
-function makeDirectory( $dirs, $perms = 0777 )
+function makeDirectory( $dirs, $perms = null )
 {
+	global $profileMask;
+	if(is_null($perms))
+		$perms = isset($profileMask) ? $profileMask : 0777;
 	$oldMask = umask(0);
 	if(is_array($dirs))
 		foreach($dirs as $dir)

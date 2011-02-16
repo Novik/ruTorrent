@@ -54,6 +54,7 @@ class rRSS
 
 	public function getTorrent( $href )
 	{
+		global $profileMask;
 		$cli = self::fetchURL(Snoopy::linkencode($href),$this->cookies);
 		if($cli && $cli->status>=200 && $cli->status<300)
 		{
@@ -66,7 +67,7 @@ class rRSS
 			{
 				@fwrite($f,$cli->results,strlen($cli->results));
 				fclose($f);
-				@chmod($name,0666);
+				@chmod($name,$profileMask & 0666);
 				return($name);
 			}
 		}
