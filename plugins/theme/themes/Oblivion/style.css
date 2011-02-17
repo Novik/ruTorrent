@@ -100,7 +100,7 @@ div#gcont table td.Header {background: transparent url(./images/status_icons.png
 div#gcont table tr {background: #181818 url(./images/headers.png) repeat-x 0px -93px;font-family: inherit;color:#D4D6C9}
 div#gcont table tr td{background: #181818 url(./images/headers.png) repeat-x 0px -38px;}
 div#gcont table {font-family:inherit;}
-div.graph_tab {background-color: #181818;font-family: inherit;}
+div.graph_tab {color:#FFF;border-color: #000;background-color: #181818}
 div.table_tab {background-color: #181818;font-family: inherit;}
 
 div#modalbg {background-color: #181818;}

@@ -625,7 +625,7 @@ function correctContent()
 		$.extend(theRequestManager.aliases, 
 		{
 			"d.set_peer_exchange" 		: "d.peer_exchange.set",
-			"d.set_connection_seed"		: "d.connection_seed.set",
+			"d.set_connection_seed"		: "d.connection_seed.set"
 /*
 			"d.get_base_filename" 		: "d.base_filename",
 			"d.get_base_path" 		: "d.base_path",
