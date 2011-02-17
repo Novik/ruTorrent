@@ -11,7 +11,6 @@ class TVTorrentsEngine extends commonEngine
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/loggedin/search.do?search='.$what.'&page='.$pg );
-
 			if( ($cli==false) || (strpos($cli->results, "No torrents found.")!==false) 
 				|| (strpos($cli->results, 'Password:<br>')!==false))
 				break;
@@ -22,10 +21,17 @@ class TVTorrentsEngine extends commonEngine
 				'`siU', $cli->results, $matches);
 			if($res)
 			{
+				$digest = '';
+				$hash = '';
+				if(preg_match("`digest='(?P<digest>[0-9a-z]{40})';.*hash='(?P<hash>[0-9a-z]{40})';`siU",$cli->results,$auth))
+				{
+					$digest = $auth['digest'];
+					$hash = $auth['hash'];
+				}
 				for($i=0; $i<$res; $i++)
 				{
 					$id = self::removeTags($matches["id"][$i]);
-					$link = 'http://torrent.tvtorrents.com/FetchTorrentServlet?info_hash='.$id.'&digest=1f74d41f505ed61970a162172f2f1a8761e729a8&hash=51dd08a64cf345582ba3ed316c40c798ebf4aeaa';
+					$link = 'http://torrent.tvtorrents.com/FetchTorrentServlet?info_hash='.$id.'&digest='.$digest.'&hash='.$hash;
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
