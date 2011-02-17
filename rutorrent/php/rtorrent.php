@@ -105,6 +105,8 @@ class rTorrent
 				{
 					if(isset($torrent->{'libtorrent_resume'}))
 						unset($torrent->{'libtorrent_resume'});
+					if(isset($torrent->{'rtorrent'}))
+						unset($torrent->{'rtorrent'});
 					return($torrent);
 				}
 			}
