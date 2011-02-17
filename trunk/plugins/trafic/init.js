@@ -115,8 +115,8 @@ if(plugin.enabled && plugin.canChangeTabs())
 					}
 				);
 
-				$('.legendColorBox').before("<td class='legendCheckBox'><input type='checkbox'></td>");
-				$.each($('.legendCheckBox input'),function(ndx,element)
+				$('#'+self.owner.attr('id')+' .legendColorBox').before("<td class='legendCheckBox'><input type='checkbox'></td>");
+				$.each($('#'+self.owner.attr('id')+' .legendCheckBox input'),function(ndx,element)
 				{
 					$(element).click( function() 
 					{

@@ -33,4 +33,3 @@ div.stable-body table tbody tr.even:nth-child(2n+1) td{background: #181818 url(.
 .stable-body tr.selected span.meter-value {color:#fff;}
 .meter-text { line-height:16px; position: relative; text-align: left; float: left; width: 0px; height: 0px; overflow: visible; left: 40%; font-size: 11px; font-family:inherit; z-index: 1;text-shadow:0px 0px 2px #000; }
 
-

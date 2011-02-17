@@ -130,6 +130,9 @@ div.op50l select {padding: 0}
 div.algnright {text-align: right; clear: right}
 .ie div.op50l {clear: none}
 .ie div.algnright {clear: none}
+.ie9 div.op50l {clear: left}
+.ie9 div.algnright {clear: right}
+
 .lm ul {width: 100%; margin: 0; padding: 0; list-style-position: inside; list-style: none}
 .lm li {margin: 0 5px; padding: 0 12px; line-height: 16px !important; background: transparent url(../images/bul.gif) no-repeat scroll left center}
 .lm ul.child {margin: 0 0 0 5px; display: none}
