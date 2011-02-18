@@ -52,6 +52,7 @@ sh autodl-setup
 
 This plugin depends on irssi and several perl modules.  Check your distribution for info on installing irssi
 
+*This method works, but be sure to check http://sourceforge.net/projects/autodl-irssi/files/ for the latest version and modify these instructions accordingly.*
 
 ==== Perl modules ====
 
