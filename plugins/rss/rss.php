@@ -52,6 +52,17 @@ class rRSS
 		}
 	}
 
+	public function getMaskedURL()
+	{
+		$ret = $this->srcURL;
+		if(preg_match("`^(?P<sheme>[^:]*)://.*@(?P<url>.*)$`i",$ret,$matches))
+			$ret = $matches["sheme"]."://".$matches["url"];
+		$pos = strpos($ret,':COOKIE:');
+		if($pos!==false)
+			$ret = substr($ret,0,$pos);
+		return($ret);
+	}
+
 	public function getTorrent( $href )
 	{
 		global $profileMask;
@@ -933,7 +944,7 @@ class rRSSManager
 						$this->saveHistory();
 					}
 					else
-						$this->rssList->addError( "theUILang.cantFetchRSS", $rss->srcURL );
+						$this->rssList->addError( "theUILang.cantFetchRSS", $rss->getMaskedURL() );
 				}
 			}
 			else
@@ -958,7 +969,7 @@ class rRSSManager
 				if($rss->fetch() && $this->cache->set($rss))
 					$this->checkFilters($rss,$filters);
 				else
-					$this->rssList->addError( "theUILang.cantFetchRSS", $rss->srcURL );
+					$this->rssList->addError( "theUILang.cantFetchRSS", $rss->getMaskedURL() );
 			}
 		}
 		if(!$manual)
@@ -1139,10 +1150,10 @@ class rRSSManager
 				$this->saveHistory();
 			}
 			else
-				$this->rssList->addError( "theUILang.cantFetchRSS", $rssURL );
+				$this->rssList->addError( "theUILang.cantFetchRSS", $rss->getMaskedURL() );
 		}
 		else
-			$this->rssList->addError( "theUILang.rssAlreadyExist", $rssURL );
+			$this->rssList->addError( "theUILang.rssAlreadyExist", $rss->getMaskedURL() );
 	}
 	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $ratio, $needFlush = true )
 	{

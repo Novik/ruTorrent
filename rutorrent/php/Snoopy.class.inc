@@ -572,7 +572,7 @@ class Snoopy
 		if(!empty($body))	
 			$headers .= "Content-length: ".strlen($body)."\r\n";
 		if(!empty($this->user) || !empty($this->pass))	
-			$headers .= "Authorization: BASIC ".base64_encode($this->user.":".$this->pass)."\r\n";
+			$headers .= "Authorization: Basic ".base64_encode($this->user.":".$this->pass)."\r\n";
 
 		$headers .= "\r\n";
 		
@@ -757,7 +757,7 @@ class Snoopy
 		if(!empty($body))	
 			$headers[] = "Content-length: ".strlen($body);
 		if(!empty($this->user) || !empty($this->pass))	
-			$headers[] = "Authorization: BASIC ".base64_encode($this->user.":".$this->pass);
+			$headers[] = "Authorization: Basic ".base64_encode($this->user.":".$this->pass);
 
 		$cmdline_params = '';			
 		for($curr_header = 0; $curr_header < count($headers); $curr_header++) {
