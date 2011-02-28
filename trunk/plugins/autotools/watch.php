@@ -65,7 +65,7 @@ if( $is_ok )
 		// ( If we want to add same torrent again )
 		if( $is_ok && ( !is_writeable( $torrent_file ) || !touch( $torrent_file ) ) )
 		{
-			Debug( "no access to ".$torrent_path );
+			Debug( "no access to ".$torrent_file );
 			$is_ok = false;
 		}
 
