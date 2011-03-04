@@ -270,13 +270,13 @@ function getPluginConf($plugin)
 	global $rootPath;
 	$conf = $rootPath.'/plugins/'.$plugin.'/conf.php';
 	if(is_file($conf) && is_readable($conf))
-		$ret.='require_once("'.$conf.'");';
+		$ret.='require("'.$conf.'");';
 	$user = getUser();
 	if($user!='')
 	{
 		$conf = $rootPath.'/conf/users/'.$user.'/plugins/'.$plugin.'/conf.php';
 		if(is_file($conf) && is_readable($conf))
-			$ret.='require_once("'.$conf.'");';
+			$ret.='require("'.$conf.'");';
 	}
 	return($ret);
 }
