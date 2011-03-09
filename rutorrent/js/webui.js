@@ -295,6 +295,11 @@ var theWebUI =
 			$(document).keydown(keyEvent);
 	},
 
+	updateServerTime: function()
+	{
+		$('#servertime').text(theConverter.date( (new Date().getTime()-theWebUI.deltaTime)/1000, true ));
+	},
+
 	getPlugins: function()
 	{
 		this.request("?action=getplugins", null, false);
@@ -308,6 +313,8 @@ var theWebUI =
 			});
 		}
 		correctContent();
+		this.updateServerTime();
+		window.setInterval( this.updateServerTime, 1000 );
 	},
 
 	getUISettings: function()
