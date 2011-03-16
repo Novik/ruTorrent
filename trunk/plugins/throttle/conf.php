@@ -1,6 +1,6 @@
 <?php
 // configuration parameters
 
-define('MAX_THROTTLE', 10, true);
+@define('MAX_THROTTLE', 10, true);
 
 ?>

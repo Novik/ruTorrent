@@ -4,12 +4,12 @@ require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( $rootPath.'/php/cache.php');
 eval(getPluginConf('scheduler'));
 
-define('SCH_FAST', 0);
-define('SCH_STOP', 1);
-define('SCH_SEEDONLY', 2);
-define('SCH_RESTRICT1', 3);
-define('SCH_RESTRICT2', 4);
-define('SCH_RESTRICT3', 5);
+@define('SCH_FAST', 0);
+@define('SCH_STOP', 1);
+@define('SCH_SEEDONLY', 2);
+@define('SCH_RESTRICT1', 3);
+@define('SCH_RESTRICT2', 4);
+@define('SCH_RESTRICT3', 5);
 
 class rScheduler
 {

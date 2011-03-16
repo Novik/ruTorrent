@@ -1,8 +1,8 @@
 <?php
 
-define("MAX_CACHE", 	16);
-define("SIZEOF_HASH", 	40);
-define("SIZEOF_MD5", 	32);
+@define("MAX_CACHE", 	16);
+@define("SIZEOF_HASH", 	40);
+@define("SIZEOF_MD5", 	32);
 
 require_once( dirname(__FILE__)."/../../php/util.php" );
 

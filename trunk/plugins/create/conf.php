@@ -1,7 +1,7 @@
 <?php
 	// configuration parameters
 
-	define('MAX_CONSOLE_SIZE',25,true);
+	@define('MAX_CONSOLE_SIZE',25,true);
 
 	$useExternal = false;			// Valid choices:
 						// false - use internal realization (may be too slow for large files)

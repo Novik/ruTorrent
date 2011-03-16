@@ -1220,7 +1220,11 @@ rTorrentStub.prototype.rssmarkstate = function()
 {
 	this.content = "mode=mark&state="+this.ss[0];
 	for( var i=0; i<theWebUI.rssArray.length; i++)
-		this.content+=("&url="+encodeURIComponent(theWebUI.rssArray[i]));
+	{
+		var href = theWebUI.rssArray[i];
+		this.content+=("&url="+encodeURIComponent(href));
+		this.content+=("&time="+theWebUI.rssItems[href].time);
+	}
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
 	this.dataType = "json";
