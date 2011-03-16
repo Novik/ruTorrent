@@ -275,14 +275,18 @@ switch($cmd)
 		if(isset($HTTP_RAW_POST_DATA) && isset($_REQUEST['state']))
 		{
 			$urls = array();
+			$times = array();
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
 			foreach($vars as $var)
 			{
 				$parts = explode("=",$var);
 				if($parts[0]=="url")
 					$urls[] = rawurldecode($parts[1]);
+				else
+				if($parts[0]=="time")
+					$times[] = $parts[1];
 			}
-			$mngr->setHistoryState( $urls, $_REQUEST['state'] );
+			$mngr->setHistoryState( $urls, $times, $_REQUEST['state'] );
 		}
 		break;
 	}

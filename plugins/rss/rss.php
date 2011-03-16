@@ -16,7 +16,7 @@ class rRSS
 	public $lastModified = null;
 	public $etag = null;
 	public $encoding = null;
-	public $version = 1;
+	public $version = 0;
 	private $channeltags = array('title', 'link', 'lastBuildDate');
 	private $itemtags = array('title', 'link', 'pubDate', 'enclosure', 'guid', 'source', 'description', 'dc:date');
 	private $atomtags = array('title', 'updated');
@@ -24,6 +24,7 @@ class rRSS
 
 	public function rRSS( $url = null )
 	{
+		$this->version = 1;
 		if($url)
 		{
 			$pos = strpos($url,':COOKIE:');
@@ -85,6 +86,11 @@ class rRSS
 		return(false);
 	}
 
+	public function getItemTimestamp( $href )
+	{
+		return( array_key_exists($href,$this->items) ? $this->items[$href]["timestamp"] : 0 );
+	}
+
 	public function getContents($label,$auto,$enabled,$history)
 	{
 		$ret = '{ "label": '.self::quoteInvalidURI($label).', "auto": '.$auto.', "enabled": '.$enabled.', "hash": "'.$this->hash.'", "url": '.self::quoteInvalidURI($this->srcURL).', "items": [';
@@ -104,7 +110,7 @@ class rRSS
 		return($ret.'] }');
 	}
 
-	public function fetch()
+	public function fetch( $history )
 	{
 		$headers = array();
 		if($this->etag) 
@@ -217,7 +223,11 @@ class rRSS
 								$item['timestamp'] = 0;
 						}
 						if(!empty($href))
-							$this->items[self::removeTegs( $href )] = $item;
+						{
+							$href = self::removeTegs( $href );
+							$this->items[$href] = $item;
+							$history->correct($href,$item['timestamp']);
+						}
 					}
 				}
 			}
@@ -279,7 +289,10 @@ class rRSS
 						if(!array_key_exists('timestamp',$item))
 							$item['timestamp'] = 0;
 						if(!empty($href))
+						{
 							$this->items[$href] = $item;
+							$history->correct($href,$item['timestamp']);
+						}
 					}
 				}
 			}
@@ -358,33 +371,39 @@ class rRSSHistory
 {
 	public $hash = "history";
 	public $lst = array();
-	public $cnt = array();
 	public $filtersTime = array();
 	public $changed = false;
-	protected $version = 1;
+	public $version = 0;
 
-	public function add( $url, $hash )
+	public function rRSSHistory()
 	{
+		$this->version = 2;
+	}
+
+	public function add( $url, $hash, $timestamp )
+	{
+		$cnt = 0;
+		if(array_key_exists($url,$this->lst))
+			$cnt = ($this->lst[$url]["time"]==$timestamp) ? $this->lst[$url]["cnt"] : 0;
+		$this->lst[$url] = array( "hash"=>$hash, "time"=>$timestamp, "cnt"=>$cnt );
 		if($hash=='Failed')
-		{
-			if(array_key_exists($url,$this->cnt))
-				$this->cnt[$url] = $this->cnt[$url]+1;
-			else
-				$this->cnt[$url] = 1;
-		}
-		$this->lst[$url] = $hash;
+			$this->lst[$url]["cnt"] = $cnt+1;
 		$this->changed = true;
+	}
+        public function correct( $url, $timestamp )
+	{
+		if( array_key_exists($url,$this->lst) && 
+			($this->lst[$url]["time"]!=$timestamp) )
+		{
+			unset($this->lst[$url]);
+			$this->changed = true;			
+		}
 	}
 	public function del( $href )
 	{
 		if(array_key_exists($href,$this->lst))
 		{
 			unset($this->lst[$href]);
-			$this->changed = true;
-		}
-		if(array_key_exists($href,$this->cnt))
-		{
-			unset($this->cnt[$href]);
 			$this->changed = true;
 		}
 	}
@@ -394,28 +413,27 @@ class rRSSHistory
 	}
 	public function getCounter( $url )
 	{
-		if(array_key_exists($url,$this->cnt))
-			return($this->cnt[$url]);
-		return(1);
+		if(array_key_exists($url,$this->lst))
+			return($this->lst[$url]["cnt"]);
+		return(0);
 	}
 	public function wasLoaded( $url )
 	{
 		$ret = false;
 		if(array_key_exists($url,$this->lst))
-			$ret = ($this->lst[$url]!=='Failed') || ($this->getCounter( $url )>=HISTORY_MAX_TRY);
+			$ret = ($this->lst[$url]["hash"]!=='Failed') || ($this->getCounter( $url )>HISTORY_MAX_TRY);
 		return($ret);
 	}
 	public function getHash( $url )
 	{
 		if(array_key_exists($url,$this->lst))
-			return($this->lst[$url]);
+			return($this->lst[$url]["hash"]);
 		return("");
 	}
 	public function clear()
 	{
 	        $this->changed = (count($this->lst)>0);
 		$this->lst = array();
-		$this->cnt = array();
 	}
 	public function isOverflow()
 	{
@@ -834,12 +852,12 @@ class rRSSManager
 		$this->history->clear();
                 $this->saveHistory();
 	}
-	public function setHistoryState( $urls, $state )
+	public function setHistoryState( $urls, $times, $state )
 	{
-		foreach( $urls as $url )
+		foreach( $urls as $ndx=>$url )
 		{
 			if($state)
-				$this->history->add($url,'Loaded');
+				$this->history->add($url,'Loaded',$times[$ndx]);
 			else
 				$this->history->del($url);
 		}
@@ -938,7 +956,7 @@ class rRSSManager
 				$info = $this->rssList->lst[$item];
 	                        if($this->cache->get($rss) && $info['enabled'])
 				{
-					if($rss->fetch() && $this->cache->set($rss))
+					if($rss->fetch($this->history) && $this->cache->set($rss))
 					{
 						$this->checkFilters($rss,$filters);
 						$this->saveHistory();
@@ -966,7 +984,7 @@ class rRSSManager
 			$rss->hash = $hash;
 			if($this->cache->get($rss) && $info['enabled'])
 			{
-				if($rss->fetch() && $this->cache->set($rss))
+				if($rss->fetch($this->history) && $this->cache->set($rss))
 					$this->checkFilters($rss,$filters);
 				else
 					$this->rssList->addError( "theUILang.cantFetchRSS", $rss->getMaskedURL() );
@@ -995,8 +1013,11 @@ class rRSSManager
 		{
 			$rss = new rRSS(array_key_exists('url',$info) ? $info['url'] : null);
 			$rss->hash = $hash;
-			if(!$this->cache->get($rss) && !empty($rss->srcURL) && $rss->fetch())
+			if(!$this->cache->get($rss) && !empty($rss->srcURL) && $rss->fetch($this->history))
+			{
 				$this->cache->set($rss);
+				$this->saveHistory();
+			}
 			if(!empty($rss->srcURL))
 			{
 				$ret.=$rss->getContents($info['label'],$info['auto'],$info['enabled'],$this->history);
@@ -1133,7 +1154,7 @@ class rRSSManager
 		$rss = new rRSS($rssURL);
 		if(!$this->rssList->isExist($rss))
 		{
-			if($rss->fetch() && $this->cache->set($rss))
+			if($rss->fetch($this->history) && $this->cache->set($rss))
 			{
 			        if($rssLabel)
 			        	$rssLabel = trim($rssLabel);
@@ -1176,7 +1197,7 @@ class rRSSManager
 		}
 		if($ret===false)
 			$this->rssList->addError( "theUILang.rssCantLoadTorrent", $url );
-		$this->history->add($url,$thash);
+		$this->history->add($url,$thash,$rss->getItemTimestamp( $url ));
 		if($needFlush)
 			$this->saveHistory();
 	}

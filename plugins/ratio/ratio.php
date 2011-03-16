@@ -5,10 +5,10 @@ require_once( $rootPath.'/php/cache.php');
 require_once( $rootPath.'/php/settings.php');
 eval(getPluginConf('ratio'));
 
-define('RAT_STOP',0);
-define('RAT_STOP_AND_REMOVE',1);
-define('RAT_ERASE',2);
-define('RAT_ERASEDATA',3);
+@define('RAT_STOP',0);
+@define('RAT_STOP_AND_REMOVE',1);
+@define('RAT_ERASE',2);
+@define('RAT_ERASEDATA',3);
 
 class rRatio
 {
