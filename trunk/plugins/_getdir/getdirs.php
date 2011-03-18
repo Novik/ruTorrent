@@ -45,7 +45,7 @@ if($dh)
 			( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0007))
 			)
 		{
-			$files[$file] = $path;
+			$files[$file." "] = $path;
 		}
         }
         closedir($dh);
@@ -131,6 +131,7 @@ function menuDblClickAndExit(obj)
 <?php
 foreach($files as $key=>$data)
 {
+	$key = trim($key);
 	if($key==='.')
 		echo "<tr><td code='".rawurlencode($data)."' id='root' class='rmenuitemselected' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClickAndExit(this); return false;'>";
 	else

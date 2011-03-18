@@ -287,12 +287,13 @@ function getUser()
 	return( (!$forbidUserSettings && isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) ? strtolower($_SERVER['REMOTE_USER']) : '' );
 }
 
-function getProfilePath()
+function getProfilePath( $user = null )
 {
 	global $profilePath;
 
 	$ret = fullpath(isset($profilePath) ? $profilePath : '../share', dirname(__FILE__));
-        $user = getUser();
+	if(is_null($user))
+	        $user = getUser();
         if($user!='')
         {
         	$ret.=('/users/'.$user);
@@ -302,14 +303,14 @@ function getProfilePath()
 	return($ret);
 }
 
-function getSettingsPath()
+function getSettingsPath( $user = null )
 {
-	return( getProfilePath().'/settings' );
+	return( getProfilePath($user).'/settings' );
 }
 
-function getUploadsPath()
+function getUploadsPath( $user = null )
 {
-	return( getProfilePath().'/torrents' );
+	return( getProfilePath($user).'/torrents' );
 }
 
 function getUniqueFilename($fname)

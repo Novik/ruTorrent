@@ -1407,8 +1407,11 @@ var theWebUI =
 		var tArray = [];
 		$.each(data.torrents,function(hash,torrent)
 		{
-			tdl += iv(torrent.dl);
-			tul += iv(torrent.ul);
+			if(hash.length==40)
+			{
+				tdl += iv(torrent.dl);
+				tul += iv(torrent.ul);
+			}
 			var sInfo = theWebUI.getStatusIcon(torrent.state, torrent.done);
 			torrent.status = sInfo[1];
 			var lbl = theWebUI.getLabels(hash, torrent);

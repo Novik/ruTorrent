@@ -6,6 +6,10 @@ $theSettings = rTorrentSettings::get();
 $dh = false;
 $curFile = null;
 
+$btn_id = "'".$_REQUEST['btn']."'";
+$edit_id = "'".$_REQUEST['edit']."'";
+$frame_id = "'".$_REQUEST['frame']."'";
+
 if(isset($_REQUEST['dir']))
 {
 	$dir = rawurldecode($_REQUEST['dir']);
@@ -58,7 +62,7 @@ if($dh)
 			if(LFS::is_file($path) && is_readable($path)
 				&& ( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0004))
 				)
-				$files[$file] = $path;
+				$files[$file." "] = $path;
 		}
         }
         closedir($dh);
@@ -124,7 +128,7 @@ function menuClick(obj)
 	var code = obj.getAttribute('code');
 	if(code && doc)
 	{
-		var el = doc.getElementById('path_edit');
+		var el = doc.getElementById(<?php echo $edit_id;?>);
 		el.value = decodeURIComponent(code);
 	}
 }
@@ -132,15 +136,19 @@ function menuClick(obj)
 function menuDblClick(obj)
 {
 	menuClick(obj);
-	location.search = "?dir="+obj.getAttribute('code')+ "&time=" + (new Date()).getTime();
+	location.search = "?dir="+obj.getAttribute('code')+ 
+		"&btn=" + <?php echo $btn_id;?> +
+		"&edit=" + <?php echo $edit_id;?> +
+		"&frame=" + <?php echo $frame_id;?> +
+		"&time=" + (new Date()).getTime();
 }
 
 function hideFrame()
 {
 	window.frameElement.style.visibility = "hidden";
 	window.frameElement.style.display = "none";
-	var edit = doc.getElementById("path_edit");
-	var btn = doc.getElementById("browse_path");
+	var edit = doc.getElementById(<?php echo $edit_id;?>);
+	var btn = doc.getElementById(<?php echo $btn_id;?>);
 	btn.value = "...";
 	edit.readOnly = false;
 }
