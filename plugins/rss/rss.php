@@ -223,11 +223,7 @@ class rRSS
 								$item['timestamp'] = 0;
 						}
 						if(!empty($href))
-						{
-							$href = self::removeTegs( $href );
-							$this->items[$href] = $item;
-							$history->correct($href,$item['timestamp']);
-						}
+							$this->items[self::removeTegs( $href )] = $item;
 					}
 				}
 			}
@@ -289,14 +285,13 @@ class rRSS
 						if(!array_key_exists('timestamp',$item))
 							$item['timestamp'] = 0;
 						if(!empty($href))
-						{
 							$this->items[$href] = $item;
-							$history->correct($href,$item['timestamp']);
-						}
 					}
 				}
 			}
 			rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
+			foreach( $this->items as $href=>$item )
+				$history->correct($href,$item['timestamp']);
 			return(true);
 		}
 		return(false);
