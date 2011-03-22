@@ -315,23 +315,27 @@ function getUploadsPath( $user = null )
 
 function getUniqueFilename($fname)
 {
-	while(file_exists($fname))
+	global $overwriteUploadedTorrents;	
+	if(!$overwriteUploadedTorrents)
 	{
-		$ext = '';
-		$pos = strrpos($fname,'.');
-		if($pos!==false) 
+		while(file_exists($fname))
 		{
-			$ext = substr($fname,$pos);
-			$fname = substr($fname,0,$pos);
+			$ext = '';
+			$pos = strrpos($fname,'.');
+			if($pos!==false) 
+			{
+				$ext = substr($fname,$pos);
+				$fname = substr($fname,0,$pos);
+			}
+			$pos = preg_match('/.*\((?P<no>\d+)\)$/',$fname,$matches);
+			$no = 1;
+			if($pos)
+			{		
+				$no = intval($matches["no"])+1;
+				$fname = substr($fname,0,strrpos($fname,'('));
+			}
+			$fname = $fname.'('.$no.')'.$ext;
 		}
-		$pos = preg_match('/.*\((?P<no>\d+)\)$/',$fname,$matches);
-		$no = 1;
-		if($pos)
-		{		
-			$no = intval($matches["no"])+1;
-			$fname = substr($fname,0,strrpos($fname,'('));
-		}
-		$fname = $fname.'('.$no.')'.$ext;
 	}
 	return($fname);
 }

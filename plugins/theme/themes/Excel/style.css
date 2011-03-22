@@ -34,5 +34,3 @@ div.dlg-header { background: #D9E8FB url(../../images/blank.gif) no-repeat scrol
 .tabbar li.selected:first-child a { background: transparent url(./images/tabbgfh.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; top: 3px }
 .tabbar li.selected a { background: transparent url(./images/tabbgh.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; top: 3px; }
 .tabbar li.selected+li a { background: url(./images/tabbgfhn.png) no-repeat 0 0 }
-
-

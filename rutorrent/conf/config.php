@@ -17,7 +17,9 @@
 
 	$do_diagnostic = true;
 	$log_file = '/tmp/errors.log';		// path to log file (comment or make empty to disable logging)
-	$saveUploadedTorrents = true;
+
+	$saveUploadedTorrents = true;		// Save uploaded torrents into profile/torrents directory or not
+	$overwriteUploadedTorrents = false;     // Overwrite existing uploaded torrents into profile/torrents directory or make unique name
 
 	$topDirectory = '/';			// Upper available directory. Absolute path with trail slash.
 	$forbidUserSettings = false;
