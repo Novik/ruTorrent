@@ -78,11 +78,11 @@
 			
 			/* Ttying to find "our" label */
 			var label = false;
-			if ($ch.attr('id'))
-			{
-				label = $('label[for='+$ch.attr('id')+']');
-				if (!label.length) label = false;
-			}
+//			if ($ch.attr('id'))
+//			{
+//				label = $('label[for='+$ch.attr('id')+']');
+//				if (!label.length) label = false;
+//			}
 			if (!label)
 			{
 				/* Trying to utilize "closest()" from jQuery 1.3+ */

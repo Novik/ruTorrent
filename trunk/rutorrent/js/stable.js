@@ -231,12 +231,12 @@ dxSTable.prototype.create = function(ele, styles, aName)
 
 dxSTable.prototype.toggleColumn = function(i)
 {
-	$(this.tBodyCols[i]).toggle();
-	$(this.tHeadCols[i]).toggle();;
 	this.colsdata[i].enabled = !this.colsdata[i].enabled;
+	$(this.tBodyCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
+	$(this.tHeadCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
 	if(!browser.isIE7x)
 	        for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
-			$(this.tBody.tb.childNodes[D].childNodes[i]).toggle();
+			$(this.tBody.tb.childNodes[D].childNodes[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
 	if(this.colsdata[i].enabled)
 	{
 		$(this.tBodyCols[i]).width( this.colsdata[i].width );

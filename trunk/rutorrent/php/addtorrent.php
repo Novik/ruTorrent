@@ -2,7 +2,6 @@
 
 require_once( 'Snoopy.class.inc');
 require_once( 'rtorrent.php' );
-
 set_time_limit(0);
 
 $uploaded_file = '';
