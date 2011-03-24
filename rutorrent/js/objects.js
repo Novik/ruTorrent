@@ -170,7 +170,7 @@ var theDialogManager =
 	      	if($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
 	        	this.items[id].beforeShow(id);
 		this.center(id);
-		obj.show(obj.data("modal") ? 0 : this.divider,callback); 
+		obj.show(obj.data("modal") ? null : this.divider,callback); 
         	if($type(this.items[id]) && ($type(this.items[id].afterShow)=="function"))
 	        	this.items[id].afterShow(id);
 		this.bringToTop(id);
