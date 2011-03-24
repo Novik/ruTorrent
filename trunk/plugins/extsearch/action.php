@@ -24,7 +24,7 @@ if(isset($_REQUEST['mode']))
 		}
 		case "get":
 		{
-			cachedEcho($em->action( $_REQUEST['eng'], $_REQUEST['what'], $_REQUEST['cat'] ),"application/json");
+			cachedEcho(json_encode($em->action( $_REQUEST['eng'], $_REQUEST['what'], $_REQUEST['cat'] )),"application/json");
 			break;
 		}
 		case "loadtorrents":
@@ -74,13 +74,10 @@ if(isset($_REQUEST['mode']))
 						$ndx[] = $parts[1];
 				}
 				$status = $em->getTorrents( $engs, $urls, $isStart, $isAddPath, $dir, $lbl, $fast );
-				$ret = '{ "teg": "'.$teg.'", "data": [';
+				$ret = array( "teg"=>$teg, "data"=>array() );
 				for($i = 0; $i< count($status); $i++)
-					$ret .= '{ "hash" : "'.$status[$i].'", "ndx": '.$ndx[$i].' },';
-				$len = strlen($ret);
-				if($ret[$len-1]==',')
-					$ret = substr($ret,0,$len-1);
-				cachedEcho($ret.']}',"application/json");
+					$ret["data"][] = array( "hash"=>$status[$i], "ndx"=>$ndx[$i] );
+				cachedEcho(json_encode($ret),"application/json");
 			}
 			break;
 		}

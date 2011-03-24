@@ -21,7 +21,7 @@ theWebUI.storeRuleParams = function()
 		this.rules[no].replacement = $('#RLS_replacement').val();
 		this.rules[no].hrefAsSrc = $('#RLS_src').val();
 		this.rules[no].hrefAsDest = $('#RLS_dst').val();
-		this.rules[no].hash = $('#RLS_rss').val();
+		this.rules[no].rssHash = $('#RLS_rss').val();
 	}
 	return(no);
 }
@@ -41,7 +41,7 @@ theWebUI.selectRule = function( el )
 		$('#RLS_replacement').val(rle.replacement);
 		$('#RLS_src').val(rle.hrefAsSrc);
 		$('#RLS_dst').val(rle.hrefAsDest);
-		$('#RLS_rss').val(rle.hash);
+		$('#RLS_rss').val(rle.rssHash);
 	}
 }
 
@@ -86,7 +86,7 @@ theWebUI.addNewRule = function()
 {
 	var list = $("#rlslist");
 	theWebUI.maxRuleNo++;
-	var f = { name: theUILang.rssNewRule, enabled: 1, pattern: "|http://www.mininova.org/get/(\\d+)|i", replacement: "http://www.mininova.org/tor/${1}", hash: "", hrefAsSrc: 1, hrefAsDest: 0, no: theWebUI.maxRuleNo };
+	var f = { name: theUILang.rssNewRule, enabled: 1, pattern: "|http://www.mininova.org/get/(\\d+)|i", replacement: "http://www.mininova.org/tor/${1}", rssHash: "", hrefAsSrc: 1, hrefAsDest: 0, no: theWebUI.maxRuleNo };
 	var i = this.rules.length;
 	list.append( $("<li>").html("<input type='checkbox' id='_re"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectRule(this);\" id='_rn"+i+"'/>"));
 	this.rules.push(f);
@@ -130,7 +130,8 @@ theWebUI.checkCurrentRule = function()
 
 theWebUI.showRuleResults = function( d )
 {
-	$('#RLS_result').val(d.msg);
+	var msg = d.msg ? d.msg : theUILang.rssPatternError;
+	$('#RLS_result').val(msg);
 }
 
 theWebUI.setRules = function()
@@ -149,7 +150,7 @@ rTorrentStub.prototype.setrules = function()
 		var name = $("#_rn"+i).val();
 		this.content = this.content+"&name="+encodeURIComponent(name)+"&pattern="+encodeURIComponent(rle.pattern)+"&enabled="+enabled+
 		        "&replacement="+encodeURIComponent(rle.replacement)+
-			"&hash="+rle.hash+"&hrefAsSrc="+rle.hrefAsSrc+"&hrefAsDest="+rle.hrefAsDest+
+			"&hash="+rle.rssHash+"&hrefAsSrc="+rle.hrefAsSrc+"&hrefAsDest="+rle.hrefAsDest+
 			"&no="+rle.no;
 	}
 	this.contentType = "application/x-www-form-urlencoded";

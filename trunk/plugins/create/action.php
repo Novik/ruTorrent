@@ -46,7 +46,7 @@ if(isset($_REQUEST['cmd']))
 							$piece_size." ".
 							escapeshellarg(getUser())." &")));
 					if($req->success())
-						$ret = '{ "no": '.$taskNo.', "errors": [], "status": -1, "out": "" }';
+						$ret = array( "no"=>intval($taskNo), "errors"=>array(), "status"=>-1, "out"=>"" );
 				}
 				else
 					$error = 'theUILang.incorrectDirectory';
@@ -110,12 +110,13 @@ if(isset($_REQUEST['cmd']))
 						$req->run();
 						@unlink("/tmp/rutorrent-".getUser().$taskNo.".prm");
 					}
-					$ret = '{ "no": '.$taskNo.
-					        ', "status": '.$status.
-				        	', "pid": '.$pid.
-					        ', "out": '.quoteAndDeslashEachItem($out).
-						', "log": ['.implode(",", array_map('quoteAndDeslashEachItem', $log)).']'.
-						', "errors": ['.implode(",", array_map('quoteAndDeslashEachItem', $errors)).'] }';
+					$ret = array( 
+						"no"=>intval($taskNo),
+					        "status"=>$status,
+				        	"pid"=>intval($pid),
+					        "out"=>$out,
+						"log"=>$log,
+						"errors"=>$errors);
 				}
 			}
 			break;
@@ -133,7 +134,7 @@ if(isset($_REQUEST['cmd']))
 //						new rXMLRPCCommand( "execute", array(getExternal("pkill"),"-9","-P",$pid) ) );
 						new rXMLRPCCommand( "execute", array("sh","-c","kill -9 `".getExternal("pgrep")." -P ".$pid."`") ) );
 					if($req->success())
-						$ret = '{ "no": '.$taskNo.' }';	
+						$ret = array( "no"=>$taskNo );	
 					$req = new rXMLRPCRequest( 
 						new rXMLRPCCommand( "execute", array("rm","-fr",$dir) ) );
 					$req->run();
@@ -156,7 +157,7 @@ if(isset($_REQUEST['cmd']))
 }
 
 if(empty($ret))
-	$ret = '{ "no": 0, "errors": ['.$error.'], "status": -1, "out": "" }';
-cachedEcho($ret,"application/json");
+	$ret = array( "no"=>0, "errors"=>array($error), "status"=>-1, "out"=>"" );
+cachedEcho(json_encode($ret),"application/json");
 
 ?>

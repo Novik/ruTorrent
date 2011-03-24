@@ -2,8 +2,6 @@
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
 
-$ret = "{";
-
 if(isset($_REQUEST['mode']))
 {
 	$output = array();
@@ -21,7 +19,7 @@ if(isset($_REQUEST['mode']))
 				if( $val!='' )
 					$labels[$val] = true;
 			}
-			$output[] = '"labels": ['.implode(',',array_map("quoteAndDeslashEachItem",array_keys($labels))).']';
+			$output["labels"] = array_keys($labels);
 		}
 	}
 	if(in_array("dirlist",$modes))
@@ -68,7 +66,8 @@ if(isset($_REQUEST['mode']))
 			}
 		        closedir($dh);
 			sort($files,SORT_STRING);
-			$output[] = '"basedir": '.quoteAndDeslashEachItem(fullpath($dir)).', "dirlist": ['.implode(',',array_map("quoteAndDeslashEachItem",$files)).']';
+			$output["basedir"] = fullpath($dir);
+			$output["dirlist"] = $files;
 		}
         }
 	if(in_array("channels",$modes) && $theSettings->isPluginRegistered('throttle'))
@@ -78,7 +77,7 @@ if(isset($_REQUEST['mode']))
 		$tnames = array();
 		foreach( $trt->thr as $thr )
 			$tnames[] = $thr["name"];
-		$output[] = '"channels": ['.implode(',',array_map("quoteAndDeslashEachItem",$tnames)).']';
+		$output["channels"]  = $tnames;
 	}
 	if(in_array("ratios",$modes) && $theSettings->isPluginRegistered('ratio'))
 	{
@@ -87,11 +86,10 @@ if(isset($_REQUEST['mode']))
 		$rnames = array();
 		foreach( $rat->rat as $r )
 			$rnames[] = $r["name"];
-		$output[] = '"ratios": ['.implode(',',array_map("quoteAndDeslashEachItem",$rnames)).']';
+		$output["ratios"] = $rnames;
 	}
-	$ret.=implode(',',$output);
 }
 
-cachedEcho($ret."}","application/json");
+cachedEcho(json_encode($output),"application/json");
 
 ?>

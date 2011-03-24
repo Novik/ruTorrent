@@ -25,12 +25,6 @@ class rURLRewriteRule
 		$this->hrefAsSrc = $hrefAsSrc;
 		$this->hrefAsDest = $hrefAsDest;
 	}
-	public function getContents()
-	{
-		return('{ "name": '.quoteAndDeslashEachItem($this->name).', "enabled": '.$this->enabled.', "pattern": '.
-			quoteAndDeslashEachItem($this->pattern).', "replacement": '.quoteAndDeslashEachItem($this->replacement).
-			', "hash": '.quoteAndDeslashEachItem($this->rssHash).', "hrefAsSrc": '.$this->hrefAsSrc.', "hrefAsDest": '.$this->hrefAsDest.' }');
-	}
 	public function isApplicable( $rss, $groups )
 	{
 		return(($this->enabled==1) && 
@@ -127,13 +121,13 @@ class rURLRewriteRulesList
 				if($parts[0]=="enabled")
 				{
 					if($rule)
-						$rule->enabled = $parts[1];
+						$rule->enabled = intval($parts[1]);
 				}
 				else
 				if($parts[0]=="no")
 				{
 					if($rule)
-						$rule->no = $parts[1];
+						$rule->no = intval($parts[1]);
 				}
 				else
 				if($parts[0]=="hash")
@@ -145,13 +139,13 @@ class rURLRewriteRulesList
 				if($parts[0]=="hrefAsSrc")
 				{
 					if($rule)
-						$rule->hrefAsSrc = $parts[1];
+						$rule->hrefAsSrc = intval($parts[1]);
 				}
 				else
 				if($parts[0]=="hrefAsDest")
 				{
 					if($rule)
-						$rule->hrefAsDest = $parts[1];
+						$rule->hrefAsDest = intval($parts[1]);
 				}
   	                }
 			if($rule)
@@ -162,16 +156,7 @@ class rURLRewriteRulesList
 	}
 	public function getContents()
 	{
-		$ret = "[";
-		foreach( $this->lst as $item )
-		{
-			$ret.=$item->getContents();
-			$ret.=",";
-		}
-		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
-		return( $ret."]" );
+		return($this->lst);
 	}
 	public function apply( $rss, $groups, &$href, &$guid )
 	{
