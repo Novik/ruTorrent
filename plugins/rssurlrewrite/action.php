@@ -14,10 +14,7 @@ switch($cmd)
 			trim($_REQUEST['pattern']), trim($_REQUEST['replacement']) );
 		$href = trim($_REQUEST['test']);
 		$rslt = $rule->apply($href,$href);
-		if($rslt==false)
-			$val = '{ "msg": theUILang.rssPatternError }';
-		else
-			$val = '{ "msg": '.quoteAndDeslashEachItem($rslt).' }';
+		$val = array( "msg"=>$rslt );
 		break;
 	}
 	case "setrules":
@@ -30,6 +27,6 @@ switch($cmd)
 if(is_null($val))
 	$val = $mngr->getContents();
 
-cachedEcho($val,"application/json",true,false);
+cachedEcho(json_encode($val),"application/json",true);
 
 ?>

@@ -257,7 +257,7 @@ switch($cmd)
 	{
 	        if(isset($_REQUEST['no']))
 			$mngr->clearFilterTime( $_REQUEST['no'] );
-		$val = '{}';
+		$val = array();
 		break;
 	}
 	case "getdesc":
@@ -354,11 +354,9 @@ if($val===null)
 	$errorsReported = true;
 }
 if($dataType=="text/xml")
-	$content = '<?xml version="1.0" encoding="UTF-8"?><data><![CDATA['.$val.']]></data>';
+	cachedEcho('<?xml version="1.0" encoding="UTF-8"?><data><![CDATA['.$val.']]></data>',"text/xml",true,false);
 else
-	$content = $val;
-
-cachedEcho($content,$dataType,true,false);
+	cachedEcho(json_encode($val),$dataType,true,false);
 
 ob_flush();
 flush();

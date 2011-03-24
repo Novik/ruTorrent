@@ -302,10 +302,10 @@ class engineManager
 				$rssHistory = new rRSSHistory();
 				if($cache->get($rssHistory))
 				{
-					foreach($rssHistory->lst as $url=>$hash)
+					foreach($rssHistory->lst as $url=>$info)
 					{
-						if(strlen($hash)==40)
-							$history->add($url,$hash);
+						if(strlen($info["hash"])==40)
+							$history->add($url,$info["hash"]);
 					}
 				}
 			}
@@ -382,25 +382,20 @@ class engineManager
 		uasort($arr, create_function( '$a,$b', 'return( (intval($a["seeds"]) > intval($b["seeds"])) ? -1 : ((intval($a["seeds"]) < intval($b["seeds"])) ? 1 : 0) );'));
 		$cnt = 0;		
 		$history = self::loadHistory(true);
-                $ret = '{"eng": '.quoteAndDeslashEachItem($eng).', "cat": '.quoteAndDeslashEachItem($cat).', "data": [';
+
+		$ret = array( "eng"=>$eng, "cat"=>$cat, "data"=>array() );
+
 		foreach( $arr as $href=>$nfo )
 		{
-			$hash = $history->getHash( $href );
 			self::correctItem($nfo);
-			$item = '{ "time": '.$nfo["time"].', "cat": '.quoteAndDeslashEachItem($nfo["cat"]).', "size": '.$nfo["size"].
-				', "name": '.quoteAndDeslashEachItem($nfo["name"]).', "desc": '.quoteAndDeslashEachItem($nfo["desc"]).
-				', "src": '.quoteAndDeslashEachItem($nfo["src"]).', "link": '.quoteAndDeslashEachItem($href).
-				', "hash": '.quoteAndDeslashEachItem($hash).
-				', "seeds": '.$nfo["seeds"].', "peers": '.$nfo["peers"].' },';
-			$ret.=$item;
+			$nfo["link"] = $href;
+			$nfo["hash"] = $history->getHash( $href );
+			$ret["data"][] = $nfo;
 			$cnt++;
 			if($cnt>=$this->limit)
 				break;
 		}
-		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
-		return($ret.']}');
+		return($ret);
 	}
 
 	public function getTorrents( $engs, $urls, $isStart, $isAddPath, $directory, $label, $fast )

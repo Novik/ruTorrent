@@ -982,6 +982,7 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 		cache: stub.cache,
 		ifModified: stub.ifModified,
 		dataType: stub.dataType,
+		traditional: true,
 		global: true,
 
 		complete: function(XMLHttpRequest, textStatus)
@@ -1024,9 +1025,11 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 							onComplete(responseText);
 							break;
 						case "array":
+						{
 							onComplete[0].apply(onComplete[1], 
 								new Array(responseText, onComplete[2]));
 							break;
+						}
 					}
 				}
 			}

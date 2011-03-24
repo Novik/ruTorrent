@@ -87,16 +87,8 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	}
 }
 
-$ret = '{ "errors": [';
-foreach( $errors as $err )
-	$ret .= '{ "prm": "'.addslashes( $err['prm'] ).'", "desc": '.$err['desc'].' },';
-$len = strlen( $ret );
-if( $ret[$len - 1] == ',' )
-	$ret = substr( $ret, 0, $len - 1 );
-$ret .= "]}";
-
 Debug( "--- end ---" );
 
-cachedEcho($ret,"application/json");
+cachedEcho(json_encode(array( "errors"=>$errors )),"application/json");
 
 ?>

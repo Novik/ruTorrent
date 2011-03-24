@@ -6,12 +6,12 @@ require_once( '../../php/rtorrent.php' );
 ignore_user_abort(true);
 set_time_limit(0);
 $errors = array();
+$hash = null;
 if(!isset($HTTP_RAW_POST_DATA))
 	$HTTP_RAW_POST_DATA = file_get_contents("php://input");
 if(isset($HTTP_RAW_POST_DATA))
 {
 	$vars = explode('&', $HTTP_RAW_POST_DATA);
-	$hash = null;
 	$announce_list = array(); 
 	$trackers = array();
 	$comment = '';
@@ -117,17 +117,7 @@ if(isset($HTTP_RAW_POST_DATA))
 
 	}
 }
-$ret = '{ "errors": [';
-foreach($errors as $err)
-	$ret.='{ "prm": '.quoteAndDeslashEachItem($err['prm']).', "desc": '.$err['desc'].' },';
-$len = strlen($ret);
-if($ret[$len-1]==',')
-	$ret = substr($ret,0,$len-1);
-$ret.="]";
-if($hash)
-	$ret.=', hash: "'.$hash.'"';
-$ret.="}";
 
-cachedEcho($ret,"application/json");
+cachedEcho(json_encode(array( "errors"=>$errors, "hash"=>$hash )),"application/json");
 
 ?>

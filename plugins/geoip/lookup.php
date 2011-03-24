@@ -25,7 +25,7 @@
 				if(strlen($value))
 				{
 					$city = '';
-					$info = '{"ip": "'.$value.'", "info": {"country": "';
+
 					if($retrieveCountry)
 					{
 						$country = '';
@@ -49,21 +49,17 @@
 						$country = "un";
 					if(!empty($city))
                                                $country.=" (".$city.")";
-					$info.=$country;				
-					$info.='", "host": "';
 					$host = $value;
-					if($retrieveHost)
-					{
-						$host = gethostbyaddr($value);
-						if(empty($host) || (strlen($host)<2))
-							$host = $value;
-					}
-					$info.=$host;
-					$info.='" }}';
-					$ret[] = $info;
+                                        if($retrieveHost)
+                                        {
+                                                $host = gethostbyaddr($value);
+                                                if(empty($host) || (strlen($host)<2))
+                                                        $host = $value;
+                                        }
+					$ret[] = array( "ip"=>$value, "info"=>array( "country"=>$country, "host"=>$host ) );
 				}
 			}
 		}
 	}
-	cachedEcho('['.implode(',',$ret).']',"application/json");
+	cachedEcho(json_encode($ret),"application/json");
 ?>
