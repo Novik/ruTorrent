@@ -193,7 +193,7 @@ switch($mode)
 	{
 		$cmds = array(
 			"d.get_peer_exchange", "d.get_peers_max", "d.get_peers_min", "d.get_tracker_numwant", "d.get_uploads_max",
-			"d.is_private", "d.get_connection_current"
+			"d.is_private", "d.get_connection_seed"
 		        );
 		$req = new rXMLRPCRequest();
 		foreach( $cmds as $cmd )
