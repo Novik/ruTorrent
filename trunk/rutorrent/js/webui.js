@@ -142,7 +142,8 @@ var theWebUI =
 		"webui.speedlistdl":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
 		"webui.speedlistul":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
 		"webui.ignore_timeouts":	0,
-		"webui.retry_on_error":		120
+		"webui.retry_on_error":		120,
+		"webui.closed_panels":		{}
 	},
 	showFlags: 0,
 	total:
@@ -425,6 +426,10 @@ var theWebUI =
 		}
 		if(!theWebUI.systemInfo.rTorrent.started)
 			$(theWebUI.getTable("trt").scp).text(theUILang.noTorrentList).show();
+		$(".catpanel").each( function()
+		{
+			theWebUI.showPanel(this,!theWebUI.settings["webui.closed_panels"][this.id]);
+		});
 		this.configured = true;
 	},
 
@@ -2247,14 +2252,18 @@ var theWebUI =
 		theWebUI.save();
 	},
 
-	togglePanel: function(pnl)
+	showPanel: function(pnl,enable)
 	{
 		var cont = $('#'+pnl.id+"_cont");
-		cont.toggle();
-		if(cont.is(":visible"))
-			pnl.style.backgroundImage="url("+this.getTable("trt").paletteURL+"/images/pnl_open.gif)";
-		else
-			pnl.style.backgroundImage="url("+this.getTable("trt").paletteURL+"/images/pnl_close.gif)";
+		cont.toggle(enable);
+		theWebUI.settings["webui.closed_panels"][pnl.id] = !enable;
+		pnl.style.backgroundImage="url("+this.getTable("trt").paletteURL+(enable ? "/images/pnl_open.gif)" : "/images/pnl_close.gif)");
+	},
+
+	togglePanel: function(pnl)
+	{
+		theWebUI.showPanel(pnl,!$('#'+pnl.id+"_cont").is(":visible"));
+		theWebUI.save();
 	},
 
 	showAdd: function() 
