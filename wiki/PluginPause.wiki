@@ -24,7 +24,7 @@ Installing via svn is also an option.  Assuming your rutorrent root directory is
 {{{
 
 cd /var/www/rutorrent/plugins/
-svn co http://rutorrent-pausewebui.googlecode.com/svn/trunk/pausewebui
+svn co http://rutorrent-pausewebui.googlecode.com/svn/trunk/ pausewebui
 
 }}}
 
