@@ -51,7 +51,7 @@ if( $is_ok )
 // Scan for *.torrent files at $path_to_watch
 if( $is_ok )
 {
-	$files = rtScanFiles( $path_to_watch, "*.torrent", true ); // ignore case
+	$files = rtScanFiles( $path_to_watch, "/.*\.torrent$/i" ); // ignore case
 	foreach( $files as $file )
 	{
 		$torrent_file = $path_to_watch.$file; // don't use realpath() here !!!

@@ -249,7 +249,7 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 //------------------------------------------------------------------------------
 // Recursively scan files at $path directory
 //------------------------------------------------------------------------------
-function rtScanFiles( $path, $mask, $ignore_case = false, $subdir = '' )
+function rtScanFiles( $path, $mask, $subdir = '' )
 {
 	$path = rtAddTailSlash( $path );
 	if( $ignore_case )
@@ -268,10 +268,10 @@ function rtScanFiles( $path, $mask, $ignore_case = false, $subdir = '' )
 			if( is_dir( $path_to_item ) )
 			{
 				$ret = array_merge( $ret,
-					rtScanFiles( $path, $mask, $ignore_case, $subdir.$item ) );
+					rtScanFiles( $path, $mask, $subdir.$item ) );
 			}
 			elseif( rtIsFile( $path_to_item ) &&
-				fnmatch( $mask, $ignore_case ? strtolower( $item ) : $item ) )
+				preg_match( $mask, $item ) )
 			{
 				$ret[] = $subdir.$item;
 			}
