@@ -166,12 +166,16 @@ function toLog( $str )
 	}
 }
 
-function isLocalMode()
+function isLocalMode( $host = null, $port = null )
 {
 	global $scgi_host;
 	global $scgi_port;
 	global $localhosts;
-	return(($scgi_port == 0) || in_array($scgi_host,$localhosts));
+	if(is_null($port))
+		$port = $scgi_port;
+	if(is_null($host))
+		$host = $scgi_host;
+	return(($port == 0) || in_array($host,$localhosts));
 }
 
 function isUserHavePermissionPrim($uid,$gids,$file,$flags)
