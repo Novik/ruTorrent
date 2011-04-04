@@ -431,4 +431,44 @@ function makeDirectory( $dirs, $perms = null )
 	@umask($oldMask);
 } 
 
+function sendFile( $filename, $contentType = null, $nameToSent = null )
+{
+	$stat = @LFS::stat($filename);
+	if($stat && @LFS::is_file($filename) && @LFS::is_readable($filename))
+	{
+		$etag = sprintf('"%x-%x-%x"', $stat['ino'], $stat['size'], $stat['mtime'] * 1000000);
+		header('Cache-Control: ');
+		header('Expires: ');
+		header('Pragma: ');
+		if( 	(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) ||
+                       	(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $stat['mtime']))
+			header('HTTP/1.0 304 Not Modified');
+		else
+		{
+			header('Etag: '.$etag);
+			header('Last-Modified: ' . date('r', $stat['mtime']));
+			set_time_limit(0);
+			header('Accept-Ranges: bytes');
+			if(!ini_get("zlib.output_compression"))
+				header('Content-Length:' . $stat['size']);
+			header('Content-Type: '.(is_null($contentType) ? 'application/octet-stream' : $contentType));
+			if(is_null($nameToSent))
+				$nameToSent = end(explode('/',$filename));
+			if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
+				$nameToSent = rawurlencode($nameToSent);
+			header('Content-Disposition: attachment; filename="'.$nameToSent.'"');
+			header('Content-Transfer-Encoding: binary');
+			header('Content-Description: File Transfer');
+			header('HTTP/1.0 200 OK');
+			ob_end_flush();
+			if($stat['size'] >= 2147483647)
+				passthru('cat '.escapeshellarg($filename));
+			else
+				readfile($filename);
+			exit;
+		}
+	}
+	return(false);
+}
+
 ?>
