@@ -61,7 +61,9 @@ if(plugin.enabled)
 						else
 							if(!this.dirs[this.dID].isDirectory(fid))
 								fno = fid.substr(3);
-						if( ((fno!=null) && (this.files[this.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles) || (theWebUI.dID.length>40))
+						if( 
+//							((fno!=null) && (this.files[this.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles) || 
+							(theWebUI.dID.length>40))
 							fno = null;
 					}
 					theContextMenu.add( [theUILang.getData,  (fno==null) ? null : "theWebUI.getData('" + theWebUI.dID + "',"+fno+")"] );

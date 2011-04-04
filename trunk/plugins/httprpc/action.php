@@ -208,7 +208,7 @@ switch($mode)
 	{
 		$req = new rXMLRPCRequest();
 		foreach($vs as $ndx=>$value)
-			$req->addCommand( new rXMLRPCCommand( "t.set_enabled", array($hash[0], intval($value), intval($ss[$ndx])) ) );
+			$req->addCommand( new rXMLRPCCommand( "t.set_enabled", array($hash[0], intval($value), intval($ss[0])) ) );
 		if($req->success())
 	        	$result = $req->val;
 		break;

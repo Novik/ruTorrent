@@ -33,6 +33,11 @@ class LFS
 		return(@is_file($fname) || ((PHP_INT_SIZE<=4) && !@is_dir($fname) && @file_exists($fname) && self::test($fname,'f')));
 	}
 
+	static public function is_readable($fname)
+	{
+		return(@is_readable($fname) || ((PHP_INT_SIZE<=4) && @file_exists($fname) && self::test($fname,'r')));
+	}
+
 	static public function stat($fname)
 	{
 	        $ss = @stat($fname);
