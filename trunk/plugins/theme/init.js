@@ -16,6 +16,7 @@ if(theWebUI.theme)
 	plugin.config = theWebUI.config;
 	theWebUI.config = function(data)
 	{
+		this.getTable("trt").setPaletteByURL("plugins/theme/themes/"+theWebUI.theme);
 		plugin.config.call(this,data);
 		plugin.loadCSS("plugins");
 		thePlugins.waitLoad( "thePlugins.get('theme').allDone" );
