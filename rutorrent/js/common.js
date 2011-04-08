@@ -442,10 +442,45 @@ var theConverter =
 			var h = today.getHours();
 			var m = today.getMinutes();
 			var s = today.getSeconds();
+			var am = "";
+
+			if(iv(theWebUI.settings["webui.timeformat"]))
+			{
+				if(h>12)
+				{
+					h = h-12;
+					am = " PM";
+				}
+				else
+					am = " AM";
+			}
 			h = (h < 10) ? ("0" + h) : h;
 			m = (m < 10) ? ("0" + m) : m;
 			s = (s < 10) ? ("0" + s) : s;
-			return(timeOnly ? h+":"+m+":"+s : day+"."+month+"."+today.getFullYear()+" "+h+":"+m+":"+s);
+			var tm = h+":"+m+":"+s+am;
+			var dt = '';
+			if(!timeOnly)
+			{
+				switch(iv(theWebUI.settings["webui.dateformat"]))
+				{
+					case 1:
+					{
+						dt = today.getFullYear()+"-"+month+"-"+day+" ";
+						break;
+					}
+					case 2:
+					{
+						dt = month+"/"+day+"/"+today.getFullYear()+" ";
+						break;
+					}
+					default:
+					{
+						dt = day+"."+month+"."+today.getFullYear()+" ";
+						break;
+					}
+				}
+			}
+			return(dt+tm);
 		}
 		return('');
 	}
