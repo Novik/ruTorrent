@@ -388,5 +388,6 @@
  peerAddLabel			: "Enter IP/Hostname[:port]",
  noTorrentList			: "Torrent list not yet available, connection to rtorrent not established.",
  yes				: "yes",
- no				: "no"
+ no				: "no",
+ DateFormat			: "Date format"
 };

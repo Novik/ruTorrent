@@ -143,7 +143,9 @@ var theWebUI =
 		"webui.speedlistul":		"100,150,200,250,300,350,400,450,500,750,1000,1250",
 		"webui.ignore_timeouts":	0,
 		"webui.retry_on_error":		120,
-		"webui.closed_panels":		{}
+		"webui.closed_panels":		{},
+		"webui.timeformat":		0,
+		"webui.dateformat":		0
 	},
 	showFlags: 0,
 	total:

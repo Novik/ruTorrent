@@ -244,9 +244,6 @@ function makeContent()
 						theUILang.ReqTimeout+":&nbsp;<input type=\"text\" id=\"webui.reqtimeout\" class=\"TextboxShort\" value=\"5000\" />"+
 						theUILang.ms+
 					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.ignore_timeouts\" checked=\"true\" />"+
-						"<label for=\"webui.ignore_timeouts\">"+theUILang.dontShowTimeouts+"</label>"+
-					"</div>"+
 					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.show_cats\" checked=\"true\" />"+
 						"<label for=\"webui.show_cats\">"+theUILang.Show_cat_start+"</label>"+
 					"</div>"+
@@ -256,9 +253,25 @@ function makeContent()
 					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.needmessage\"/>"+
 						"<label for=\"webui.needmessage\">"+theUILang.GetTrackerMessage+"</label>"+
 					"</div>"+
+
+					"<div class=\"op50l algnright\">"+
+						"<label for=\"webui.dateformat\">"+theUILang.DateFormat+":</label>&nbsp;"+
+						"<select id=\"webui.dateformat\">"+
+							"<option value='0'>31.12.2011</option>"+
+							"<option value='1'>2011-12-31</option>"+
+							"<option value='2'>12/31/2011</option>"+
+						"</select>"+
+					"</div>"+
+
+					"<div class=\"op50l\">"+
+						"<label for=\"webui.ignore_timeouts\">"+"<input type=\"checkbox\" id=\"webui.ignore_timeouts\" checked=\"true\" />"+theUILang.dontShowTimeouts+"</label>"+
+					"</div>"+
+
 					"<div class=\"op50l algnright\"><input type=\"checkbox\" id=\"webui.effects\"/>"+
 						"<label for=\"webui.effects\">"+theUILang.UIEffects+"</label>"+
 					"</div>"+
+
+
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.fullrows\"  onchange=\"linked(this, 1, ['webui.no_delaying_draw']);\"/>"+
 						"<label for=\"webui.fullrows\">"+theUILang.fullTableRender+"</label>"+
 					"</div>"+
