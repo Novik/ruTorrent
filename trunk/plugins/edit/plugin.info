@@ -2,3 +2,4 @@ plugin.description: The plug-in allows user to edit the list of trackers and com
 plugin.author: Novik
 plugin.version: 3.2
 rtorrent.remote: error
+php.version: 5.2.0
