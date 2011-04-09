@@ -6,3 +6,4 @@ rtorrent.external.warning: curl
 rtorrent.external.error: php
 rtorrent.php.error: update.php,rss.php,conf.php
 web.external.warning: curl
+php.version: 5.2.0

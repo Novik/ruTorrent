@@ -2,3 +2,4 @@ plugin.description: The plug-in provides country information for peers.
 plugin.author: Zoltan Csala,Novik
 plugin.runlevel: 15
 plugin.version: 3.2
+php.version: 5.2.0
