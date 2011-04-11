@@ -163,10 +163,7 @@ class rURLRewriteRulesList
 		foreach( $this->lst as $item )
 		{
 			if($item->isApplicable( $rss, $groups ))
-			{
 				$item->apply( $href, $guid );
-				break;
-			}
 		}
 	}
 }
