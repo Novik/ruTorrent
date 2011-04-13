@@ -40,12 +40,12 @@ class ScCEngine extends commonEngine
 			$cat = $categories[$cat];
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/browse?&method=2search='.$what.'&sort=6&type=descC&page='.$pg.$cat );
+			$cli = $this->fetch( $url.'/browse?method=2&search='.$what.'&sort=6&type=descC&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false)
 				|| (strpos($cli->results, 'value="password"')!==false))
 				break;
 			$res = preg_match_all('`<td class="ttr_type"><a href=.*><img src="/pic/.* alt="(?P<cat>[^"]*)".*</td>.*'.
-				'<td class="ttr_name"><a href="details?id=(?P<id>\d+)"\s+title="(?P<name>[^"]*)".*</td>.*'.
+				'<td class="ttr_name"><a href="details\?id=(?P<id>\d+)"\s+title="(?P<name>[^"]*)".*</td>.*'.
 				'<td class="td_dl"><a href="download/(?P<link>[^"]*)">.*</td>.*'.
 				'<td class="ttr_size">(?P<size>.*)<.*</td>.*'.
 				'<td class="ttr_added">(?P<date>.*)</td>.*'.
