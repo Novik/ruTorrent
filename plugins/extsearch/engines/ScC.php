@@ -2,18 +2,36 @@
 
 class ScCEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"www.sceneaccess.org|pass=XXX;uid=XXX" );
-	public $categories = array( 'all'=>'&cat=0', 'Apps' => '&cat=1', 'DOX' => '&cat=14', 'Games' => "&cat=3&cat=5&cat=24&cat=20&cat=28&cat=6&cat=23",
-		'MiSC' => '&cat=21', 'Movies' => "&cat=8&cat=10&cat=22&cat=7", 'TV' => "&cat=27&cat=17&cat=11", 'XXX' => '&cat=12' );
+	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.sceneaccess.org|pass=XXX;uid=XXX" );
 
+	public $categories = array( 'all'=>'', 
+		'Movies/DVD-R'=>'&c8=1',
+		'Movies/x264'=>'&c22=1',
+		'Movies/XviD'=>'&c7=1',
+		'TV/DVD-R'=>'&c17=1',
+		'TV/DVDRip'=>'&c25=1',
+		'TV/x264'=>'&c27=1',
+		'TV/XviD'=>'&c11=1',
+		'Games/PC'=>'&c3=1',
+		'Games/PS3'=>'&c5=1',
+		'Games/PSP'=>'&c20=1',
+		'Games/WII'=>'&c28=1',
+		'Games/XBOX360'=>'&c23=1',
+		'APPS'=>'&c1=1',
+		'DOX'=>'&c14=1',
+		'MISC'=>'&c21=1' );
+
+	
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://www.sceneaccess.org';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'&cat=0', 'movies'=>'&cat=8&cat=10&cat=22&cat=7', 
-				'tv'=>'&cat=27&cat=17&cat=11', 'games'=>'&cat=3&cat=5&cat=24&cat=20&cat=28&cat=6&cat=23&cat=14', 
-				'software'=>'&cat=1' );
+			$categories = array( 
+				'all'=>'', 'movies'=>'&c8=1&c22=1&c7=1', 
+				'tv'=>'&c17=1&c25=1&c27=1&c11=1', 
+				'games'=>'&c3=1&c5=1&c20=1&c28=1', 
+				'software'=>'&c1=1' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
@@ -22,38 +40,30 @@ class ScCEngine extends commonEngine
 			$cat = $categories[$cat];
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&sort=seeders&d=DESC&page='.$pg.$cat );
-			
+			$cli = $this->fetch( $url.'/browse?&method=2search='.$what.'&sort=6&type=descC&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false)
-				|| (strpos($cli->results, '>Password:</td>')!==false))
+				|| (strpos($cli->results, 'value="password"')!==false))
 				break;
-			$res = preg_match_all('/<img border="0" src=.* alt="(?P<cat>.*)" \/><\/a>'.
-				'.*<a href="details.php\?id=(?P<id>\d+)&amp;hit=1".*>(?P<name>.*)<\/a>.*'.
-				'<td .*>.*<\/td>.*<\/td>.*'.
-				'<td .*>.*<\/td>.*'.
-				'<td .*>.*<\/td>.*'.
-				'<td .*>(?P<date>.*)<\/td>.*'.
-				'<td .*>(?P<size>.*)<\/td>'.
-				'.*<td .*>.*<\/td>.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["id"])==count($matches["cat"]) &&
-				count($matches["cat"])==count($matches["name"]) && 
-				count($matches["name"])==count($matches["size"]) &&
-				count($matches["size"])==count($matches["seeds"]) &&
-				count($matches["seeds"])==count($matches["date"]) &&
-				count($matches["date"])==count($matches["leech"]) )
+			$res = preg_match_all('`<td class="ttr_type"><a href=.*><img src="/pic/.* alt="(?P<cat>[^"]*)".*</td>.*'.
+				'<td class="ttr_name"><a href="details?id=(?P<id>\d+)"\s+title="(?P<name>[^"]*)".*</td>.*'.
+				'<td class="td_dl"><a href="download/(?P<link>[^"]*)">.*</td>.*'.
+				'<td class="ttr_size">(?P<size>.*)<.*</td>.*'.
+				'<td class="ttr_added">(?P<date>.*)</td>.*'.
+				'<td class="ttr_seeders">(?P<seeds>.*)</td>.*'.
+				'<td class="ttr_leechers">(?P<leech>.*)</td>'.
+				'`siU', $cli->results, $matches);
+			if($res)
 			{
-				for($i=0; $i<count($matches["id"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
-
-					$link = $url."/downloadbig.php?id=".$matches["id"][$i];
+					$link = $url."/download/".$matches["link"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["desc"] = $url."/details.php?id=".$matches["id"][$i].'&hit=1';
+						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
-						$item["size"] = self::formatSize(str_replace("<br>"," ",$matches["size"][$i]));
+						$item["size"] = self::formatSize(str_replace("<br />"," ",$matches["size"][$i]));
 						$item["time"] = strtotime(self::removeTags(str_replace("<br />"," ",$matches["date"][$i])));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
