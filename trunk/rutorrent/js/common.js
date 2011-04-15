@@ -1313,18 +1313,23 @@ function getCSSRule( selectorText )
 		return(crossrule);
 	}
 
-	selectorText = selectorText.toLowerCase()
+	var selectorText1 = selectorText.toLowerCase();
+	var selectorText2 = selectorText1.replace('.','\\.');
 	var ret = null;
 	for( var j=document.styleSheets.length-1; j>=0; j-- )
 	{
 		var rules = getRulesArray(j);
 		for( var i=0; rules && i<rules.length; i++ )
 		{
-			if(rules[i].selectorText && rules[i].selectorText.toLowerCase()==selectorText)
+			if(rules[i].selectorText)
 			{
-				ret = rules[i];
-				break;
-			}			
+				var lo = rules[i].selectorText.toLowerCase();
+				if((lo==selectorText1) || (lo==selectorText2))
+				{
+					ret = rules[i];
+					break;
+				}			
+			}
 		}
 	}
 	return(ret);
