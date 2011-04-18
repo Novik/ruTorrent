@@ -131,11 +131,12 @@ if(plugin.enabled && plugin.canChangeTabs())
 	rTraficGraph.prototype.resize = function( newWidth, newHeight )
 	{
 		if(newWidth)
-		this.owner.width(newWidth-8);
+			this.owner.width(newWidth-8);
 		if(newHeight)
 		{
 			newHeight-=(iv($$(this.owner.attr("id")+'_ctrl').style.height)+$("#tabbar").height());
-			this.owner.height(newHeight);
+			if(newHeight>0)
+				this.owner.height(newHeight);
 		}
 		this.draw();
 	}
