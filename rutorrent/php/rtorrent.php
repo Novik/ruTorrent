@@ -29,7 +29,7 @@ class rTorrent
 			$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
 			$cmd->addParameter(base64_encode($torrent->__toString()),"base64");
 			if(!is_object($fname) && (rTorrentSettings::get()->iVersion>=0x805))
-				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(end(explode('/',$fname))));
+				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(getFileName($fname)));
 				
 			if(!$saveTorrent && is_string($fname))
 				@unlink($fname);
