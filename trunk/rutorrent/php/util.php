@@ -431,6 +431,12 @@ function makeDirectory( $dirs, $perms = null )
 	@umask($oldMask);
 } 
 
+function getFileName($path)
+{
+	$arr = explode('/',$path);
+	return(end($arr));
+}
+
 function sendFile( $filename, $contentType = null, $nameToSent = null )
 {
 	$stat = @LFS::stat($filename);

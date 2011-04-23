@@ -91,7 +91,7 @@ if( count( $argv ) > 1 )
         	else
 			$torrent->save($fname);
 		@chmod($fname,$profileMask & 0666);
-		file_put_contents( "/tmp/".getUser().$taskNo."/out", end(explode('/',$fname)));
+		file_put_contents( "/tmp/".getUser().$taskNo."/out", getFileName($fname););
 		exit(0);
 	}
 	exit(1);
