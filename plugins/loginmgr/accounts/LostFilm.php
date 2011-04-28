@@ -1,0 +1,40 @@
+<?php
+
+class LostFilmAccount extends commonAccount
+{
+	protected function isOK($client)
+	{
+		return(strpos($client->results, '<input type="password"')===false);
+	}
+	protected function isOKPostFetch($client,$url,$method,$content_type,$body)
+	{
+		if(preg_match("`/details\.php\?id=(\d+)`si", $client->lastredirectaddr, $matches) &&
+			preg_match("`/download\.php\?id=".$matches[1]."&\S+\s*\sonMouseOver=\"setCookie\('dlt','([^']*)'`si", $client->results, $md5))
+		{
+			$client->cookies["dlt_2"] = $md5[1];
+			return($client->fetch($url,$method,$content_type,$body) && ($client->get_filename()!==false));
+		} 
+		return(true);
+	}
+	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body)
+	{                                                                   
+		if($client->fetch( "http://lostfilm.tv" ))
+		{
+			$client->setcookies();
+			$client->referer = "http://lostfilm.tv";
+        		if($client->fetch( "http://lostfilm.tv/useri.php","POST","application/x-www-form-urlencoded", 
+				"FormLogin=".rawurlencode($login)."&FormPassword=".rawurlencode($password).'&module=1&repage=user&act=login' ))
+			{
+				$client->setcookies();
+				return(true);
+			}
+		}
+		return(false);
+	}
+	public function test($url)
+	{
+		return(preg_match( "`http://lostfilm.tv/download.php`si", $url ));
+	}
+}
+
+?>

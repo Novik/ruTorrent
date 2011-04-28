@@ -69,25 +69,29 @@ abstract class commonAccount
 		return(true);
 	}
 
+	protected function isOKPostFetch($client,$url,$method,$content_type,$body)
+	{
+		return($this->isOK($client));
+	}
+
 	public function fetch( $client, $url, $login, $password, $method, $content_type, $body )
 	{
 		$data = privateData::load( $this->getName(), $client );
 		$ret = ( ($data->loaded && 
 				$this->updateCached($client,$url,$method,$content_type,$body) && 
-				$client->fetch($url,$method, $content_type, $body) &&
-				$this->isOK($client)) ||
+				$client->fetch($url,$method,$content_type,$body) &&
+				$this->isOKPostFetch($client,$url,$method,$content_type,$body)) ||
 			($this->login($client,$login,$password,$url,$method,$content_type,$body) && 
 				$client->status>=200 && 
 				$client->status<400 &&
 				$this->isOK($client) &&
-                                $client->fetch($url,$method, $content_type, $body) &&
-				$this->isOK($client) &&
+                                $client->fetch($url,$method,$content_type,$body) &&
+				$this->isOKPostFetch($client,$url,$method,$content_type,$body) &&
 				$data->store($client)) );
 		if(!$ret)
 			$data->remove();
 		return($ret);
 	}
-	
 }
 
 class accountManager

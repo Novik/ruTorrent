@@ -601,10 +601,11 @@ class Snoopy
 			      break;
 						
 			// if a header begins with Location: or URI:, set the redirect
-			if(preg_match("/^(Location:|URI:)/i",$currentHeader))
+			if(preg_match("/^(Location:|URI:|Refresh:)/i",$currentHeader))
 			{
 				// get URL portion of the redirect
-				preg_match("/^(Location:|URI:)\s+(.*)/i",chop($currentHeader),$matches);
+				if(!preg_match("/^(Location:|URI:)\s+(.*)/i",chop($currentHeader),$matches))
+					preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($currentHeader),$matches);
 				// look for :// in the Location header to see if hostname is included
 				if(!preg_match("|\:\/\/|",$matches[2]))
 				{
@@ -793,10 +794,11 @@ class Snoopy
 			{
 			
 				// if a header begins with Location: or URI:, set the redirect
-				if(preg_match("/^(Location: |URI: )/i",$result_headers[$currentHeader]))
+				if(preg_match("/^(Location: |URI: |Refresh :)/i",$result_headers[$currentHeader]))
 				{
 					// get URL portion of the redirect
-					preg_match("/^(Location: |URI:)(.*)/i",chop($result_headers[$currentHeader]),$matches);
+					if(!preg_match("/^(Location: |URI:)(.*)/i",chop($result_headers[$currentHeader]),$matches))
+						preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($result_headers[$currentHeader]),$matches);
 					// look for :// in the Location header to see if hostname is included
 					if(!preg_match("|\:\/\/|",$matches[2]))
 					{
