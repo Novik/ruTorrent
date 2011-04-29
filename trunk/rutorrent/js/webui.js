@@ -1789,7 +1789,7 @@ var theWebUI =
 			if(this.labels[id].indexOf("-_-_-act-_-_-") >- 1)
 				this.labels["-_-_-act-_-_-"]--;
 		}
-		if(torrent.status & dStatus.error)
+		if(torrent.state & dStatus.error)
 		{
 			lbl += "-_-_-err-_-_-";
 			if(this.labels[id].indexOf("-_-_-err-_-_-") ==- 1)
