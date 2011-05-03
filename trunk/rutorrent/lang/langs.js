@@ -59,7 +59,8 @@ var AvailableLanguages =
 	sk:'Slovenský',
 	es:'Español',
 	uk:'Український',
-	tr:'Türk'
+	tr:'Türk',
+	vi:'Vietnamese'
 };
 
 DefaultLanguage = 'en';
