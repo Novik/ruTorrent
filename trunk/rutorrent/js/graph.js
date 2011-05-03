@@ -50,6 +50,31 @@ rSpeedGraph.prototype.create = function( aOwner )
 	var rule = getCSSRule("div.graph_tab");
 	this.gridColor = rule ? rule.style.color : "#545454";
 	this.backgroundColor = rule ? rule.style.borderColor : null;
+
+	this.checked = [ true, true ];
+	this.datasets = [ this.up, this.down ];
+}
+
+rSpeedGraph.prototype.getData = function()
+{
+	var ret = new Array();		
+	for( var i in this.checked )
+	{
+		if(this.checked[i])
+			ret.push(this.datasets[i]);
+		else
+		{
+			var arr = cloneObject( this.datasets[i] );
+			arr.data = [];
+			ret.push(arr);
+		}
+	}
+	return(ret);
+}
+
+rSpeedGraph.prototype.getColors = function()
+{
+	return([ this.up.color, this.down.color ]);
 }
 
 var previousSpeedPoint = null;
@@ -76,12 +101,9 @@ rSpeedGraph.prototype.draw = function()
 				return( h+":"+m+":"+s );
 			}
 
-			$.plot(self.owner, [ self.up, self.down ],
+			$.plot(self.owner, self.getData(),
 			{ 
-				colors:
-				[
-				 	self.up.color, self.down.color
-				],
+				colors: self.getColors(),
 				lines:
 				{
 					show: true
@@ -94,6 +116,7 @@ rSpeedGraph.prototype.draw = function()
 				},
 				xaxis: 
 				{ 
+					min: (self.seconds-self.startSeconds>=self.maxSeconds) ? null : self.startSeconds,
 					max: (self.seconds-self.startSeconds>=self.maxSeconds) ? null : self.maxSeconds+self.startSeconds,
 					tickSize: 60,
 					tickFormatter: xTick
@@ -145,6 +168,16 @@ rSpeedGraph.prototype.draw = function()
 					}
 				}
 			);
+
+			$('#'+self.owner.attr('id')+' .legendColorBox').before("<td class='legendCheckBox'><input type='checkbox'></td>");
+			$.each($('#'+self.owner.attr('id')+' .legendCheckBox input'),function(ndx,element)
+			{
+				$(element).click( function() 
+				{
+					self.checked[ndx] = !self.checked[ndx];
+					self.draw();
+				}).attr("checked",self.checked[ndx]);
+			});
 
 		}
 	}

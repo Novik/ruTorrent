@@ -1414,11 +1414,8 @@ var theWebUI =
 		var tArray = [];
 		$.each(data.torrents,function(hash,torrent)
 		{
-			if(hash.length==40)
-			{
-				tdl += iv(torrent.dl);
-				tul += iv(torrent.ul);
-			}
+			tdl += iv(torrent.dl);
+			tul += iv(torrent.ul);
 			var sInfo = theWebUI.getStatusIcon(torrent.state, torrent.done);
 			torrent.status = sInfo[1];
 			var lbl = theWebUI.getLabels(hash, torrent);
@@ -1460,9 +1457,7 @@ var theWebUI =
 			torrent._updated = true;
 		});
 		$.extend(this.torrents,data.torrents);
-		theWebUI.speedGraph.addData(tul,tdl);
-		this.total.speedDL = tdl;
-		this.total.speedUL = tul;
+		this.setSpeedValues(tul,tdl);
 		var wasRemoved = false;
 		this.clearTegs();
 		$.each(this.torrents,function(hash,torrent)
@@ -1499,6 +1494,13 @@ var theWebUI =
 		this.loadTorrents();
 		this.getTotal();
 		data = null;
+	},
+
+	setSpeedValues: function(tul,tdl)
+	{
+		this.speedGraph.addData(tul,tdl);
+		this.total.speedDL = tdl;
+		this.total.speedUL = tul;
 	},
 
 	loadTorrents: function() 
