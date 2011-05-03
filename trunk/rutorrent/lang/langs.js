@@ -60,7 +60,7 @@ var AvailableLanguages =
 	es:'Español',
 	uk:'Український',
 	tr:'Türk',
-	vi:'Vietnamese'
+	vi:'Tiếng Việt'
 };
 
 DefaultLanguage = 'en';
