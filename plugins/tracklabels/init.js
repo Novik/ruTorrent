@@ -100,7 +100,7 @@ theWebUI.getTrackerName = function(announce)
 
 theWebUI.trackersLabelContextMenu = function(e)
 {
-        if(e.button==2)
+        if(e.which==3)
         {
 	        var table = theWebUI.getTable("trt");
 		table.clearSelection();

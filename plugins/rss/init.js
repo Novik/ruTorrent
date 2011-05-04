@@ -243,7 +243,7 @@ theWebUI.RSSManager = function()
 
 theWebUI.rssLabelContextMenu = function(e)
 {
-        if(e.button==2)
+        if(e.which==3)
         {
 		if(plugin.canChangeMenu())
 		{
@@ -479,7 +479,7 @@ theWebUI.rssSelect = function(e, id)
 	{
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
-		if((e.button == 2) && plugin.canChangeMenu())
+		if((e.which==3) && plugin.canChangeMenu())
 		{
 			theWebUI.createRSSMenu(e, id);
 			theContextMenu.show();

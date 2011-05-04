@@ -285,7 +285,7 @@ dxSTable.prototype.removeColumn = function(no)
 
 dxSTable.prototype.onRightClick = function(e)
 {
-        if(e.button==2)
+        if(e.which==3)
         {
 		theContextMenu.clear();
 		for(var i = 0; i<this.colsdata.length; i++)
@@ -527,7 +527,7 @@ dxSTable.ColumnMove.prototype =
 	{	
 		if(this.parent.cancelMove)
 			return;
-		if(e && e.button==2)
+		if(e && e.which==3)
 			return(true);
 		this.parent.isMoving = true;
 		var o = this.obj;
@@ -641,7 +641,7 @@ dxSTable.prototype.Sort = function(e)
 	}
 	else 
 	{
-		if(e.button==2)
+		if(e.which==3)
 			return(true);
 		col = (e.target) ? e.target : e.srcElement;
 	}
@@ -1104,7 +1104,7 @@ dxSTable.prototype.selectRow = function(e, row)
 {
         $(document).bind( browser.isOpera ? "keypress" : "keydown", this, this.keyEvents );
 	var id = row.id;
-	if(!((e.button == 2) && (this.rowSel[id] == true))) 
+	if(!((e.which==3) && (this.rowSel[id] == true))) 
 	{
 		if(e.shiftKey) 
 		{

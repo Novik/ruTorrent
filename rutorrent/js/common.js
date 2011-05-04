@@ -147,7 +147,7 @@ $.event.fix = function(e)
 $.fn.extend({
 	mouseclick: function( handler )
 	{
-		var contextMenuPresent = ("oncontextmenu" in document.createElement("foo"));
+		var contextMenuPresent = ("oncontextmenu" in document.createElement("foo")) || browser.isFirefox;
 	        return( this.each( function()
 	        {
 	        	if($type(handler)=="function")
@@ -156,12 +156,14 @@ $.fn.extend({
 				{
 					$(this).bind( "contextmenu", function(e)
 					{
+						e.which = 3;
 						e.button = 2;
+						e.shiftKey = false;	// for safari
                                                 return(handler.apply(this,arguments));
 					});
                                         $(this).mousedown(function(e)
 					{
-						if(e.button!=2)
+						if(e.which != 3)
 							return(handler.apply(this,arguments));
 					});
 				}
@@ -170,7 +172,7 @@ $.fn.extend({
 				{
 			        	$(this).mousedown(function(e)
 					{
-						if(e.button==2)
+						if(e.which==3)
 						{
 							if(e.target)
 							{
@@ -197,7 +199,7 @@ $.fn.extend({
 						{
 							c.remove();
 							$(this).data("btn",null);
-							if((e.button==2) &&! (/^input|textarea|a$/i).test(e.target.tagName))
+							if((e.which==3) &&! (/^input|textarea|a$/i).test(e.target.tagName))
 								return(false);
 						}
 					});

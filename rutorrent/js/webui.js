@@ -452,7 +452,7 @@ var theWebUI =
 
 	plgSelect: function(e, id) 
 	{
-		if($type(id) && (e.button == 2))
+		if($type(id) && (e.which==3))
 		{
 		        theContextMenu.clear();
 		        if(this.getTable("plg").selCount > 1) 
@@ -796,7 +796,7 @@ var theWebUI =
 
    	createPeerMenu : function(e, id)
 	{
-   		if(e.button != 2) 
+   		if(e.which!=3) 
       			return(false);
    		theContextMenu.clear();
 		theContextMenu.add([theUILang.peerAdd, 
@@ -911,7 +911,7 @@ var theWebUI =
 
    	createTrackerMenu : function(e, ind)
 	{
-   		if(e.button != 2) 
+   		if(e.which!=3) 
       			return(false);
    		theContextMenu.clear();
    		if(this.getTable("trk").selCount > 1) 
@@ -1087,7 +1087,7 @@ var theWebUI =
 
 	createFileMenu: function(e, p) 
 	{
-   		if(e.button != 2) 
+   		if(e.which!=3) 
       			return(false);
    		var id = this.dID;
    		theContextMenu.clear();
@@ -1191,7 +1191,7 @@ var theWebUI =
 			theWebUI.dID = "";
 			theWebUI.clearDetails();
 		}
-   		if(e.button == 2) 
+   		if(e.which==3) 
    		{
       			theWebUI.createMenu(e, id);
 			theContextMenu.show(e.clientX,e.clientY);
@@ -1657,7 +1657,7 @@ var theWebUI =
 
 	tegContextMenu: function(e)
 	{
-	        if(e.button==2)
+	        if(e.which==3)
 	        {
 		        var table = theWebUI.getTable("trt");
 			table.clearSelection();
@@ -1681,7 +1681,7 @@ var theWebUI =
 
 	labelContextMenu: function(e)
 	{
-	        if(e.button==2)
+	        if(e.which==3)
 	        {
 		        var table = theWebUI.getTable("trt");
 			table.clearSelection();
@@ -2090,7 +2090,7 @@ var theWebUI =
 
 	downRateMenu: function(e)
 	{
-	        if(e.button==2)
+	        if(e.which==3)
 	        {
 	                theContextMenu.clear();
 	                var speeds=theWebUI.settings["webui.speedlistdl"].split(",");
@@ -2114,7 +2114,7 @@ var theWebUI =
 
 	upRateMenu: function(e)
 	{
-	        if(e.button==2)
+	        if(e.which==3)
 	        {
 	                theContextMenu.clear();
 	                var speeds=theWebUI.settings["webui.speedlistul"].split(",");
