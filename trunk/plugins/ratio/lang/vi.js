@@ -1,6 +1,6 @@
-﻿
+ 
  theUILang.ratios			= "Các nhóm tỉ lệ";
- theUILang.ratio			= "Nhóm Tỉ Lệ";
+ theUILang.ratio			= "Nhóm tỉ Lệ";
  theUILang.mnuRatio		= "Đặt nhóm tỉ lệ";
  theUILang.mnuRatioUnlimited	= "Không giới hạn tỉ lệ";
  theUILang.ratioName 		= "Tên";
@@ -13,6 +13,6 @@
  theUILang.ratioErase 		= "Loại bỏ";
  theUILang.ratioEraseData 	= "Xóa dữ liệu";
  theUILang.maxTime 		= "T.Gian";
- theUILang.ratioDefault		= "Default ratio group";
+ theUILang.ratioDefault		= "Nhóm tỉ lệ mặc định";
 
 thePlugins.get("ratio").langLoaded();
