@@ -20,6 +20,7 @@ svn co http://rutorrent.googlecode.com/svn/trunk/plugins/PLUGIN_NAME
 
 Attention! Please install only those plug-ins you really need. The more plug-ins are installed - the longer load of the ruTorrent interface.
 
+*_(note: many plugins will require a commandline php installation to be set in rutorrent/conf/config.php (or rutorrent/conf/users/USERNAME/config.php).  Please check your distro for how to install. )_*
 === plugins.ini ===
 
 *_Some of the following information is also included in [Config#Limiting_Plugins_(plugins.ini) Config page]_*
