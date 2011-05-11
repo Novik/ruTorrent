@@ -1,7 +1,6 @@
 plugin.loadMainCSS();
 
 theWebUI.trackersLabels = new Object();
-theWebUI.actTrackersLbl = null;
 
 plugin.config = theWebUI.config;
 theWebUI.config = function(data)
@@ -30,6 +29,11 @@ theWebUI.filterByTracker = function(hash)
 		this.getTable("trt").hideRow(hash);
 }
 
+plugin.isActualLabel = function(lbl)
+{
+	return(theWebUI.actLbl && $($$(theWebUI.actLbl)).hasClass('tracker') && ('i'+lbl==theWebUI.actLbl));
+}
+
 theWebUI.isTrackerInActualLabel = function(hash)
 {
         var ret = false;
@@ -40,7 +44,7 @@ theWebUI.isTrackerInActualLabel = function(hash)
 			if(this.trackers[hash][i].group==0)
 			{
 				var tracker = theWebUI.getTrackerName( this.trackers[hash][i].name );
-				if(tracker && (('i'+tracker)==theWebUI.actLbl))
+				if(tracker && plugin.isActualLabel(tracker))
 				{
 					ret = true;
 					break;
@@ -49,21 +53,6 @@ theWebUI.isTrackerInActualLabel = function(hash)
 		}
 	}
 	return(ret);
-}
-
-plugin.switchLabel = theWebUI.switchLabel;
-theWebUI.switchLabel = function(el)
-{
-	if(plugin.enabled && theWebUI.actTrackersLbl && !theWebUI.actLbl)
-		theWebUI.actLbl = theWebUI.actTrackersLbl;
-	plugin.switchLabel.call(theWebUI,el);
-	if(plugin.enabled && theWebUI.actLbl && $($$(theWebUI.actLbl)).hasClass('tracker'))
-	{
-		theWebUI.actTrackersLbl = theWebUI.actLbl;
-		theWebUI.actLbl = null;
-	}
-	else
-		theWebUI.actTrackersLbl = null;
 }
 
 plugin.addTrackers = theWebUI.addTrackers;
@@ -197,7 +186,7 @@ theWebUI.rebuildTrackersLabels = function()
 					li.prepend( $("<img>").attr("src","http://"+lbl+"/favicon.ico").addClass("tfavicon") ).css({ padding: "2px 4px" });
 				ul.append(li);
 			}
-			if(lbl==theWebUI.actTrackersLbl)
+			if(plugin.isActualLabel(lbl))
 				li.addClass("sel");
 		}
 		var needSwitch = false;
@@ -205,11 +194,8 @@ theWebUI.rebuildTrackersLabels = function()
 			if(!(lbl in trackersLabels))
 			{
 				$($$('i'+lbl)).remove();
-				if(theWebUI.actTrackersLbl == 'i'+lbl)
-				{
+				if(plugin.isActualLabel(lbl))
 					needSwitch = true;
-					theWebUI.actTrackersLbl = null;
-				}       	
 			}
 		this.trackersLabels = trackersLabels;
 		if(needSwitch)
