@@ -3,8 +3,8 @@
 class SumoTorrentEngine extends commonEngine
 {
 	public $defaults = array( "public"=>true, "page_size"=>100 );
-	public $categories = array( 'all'=>'', 'Movies'=>'4', 'Music'=>'3', 'TV series'=>'9', 'Games'=>'2', 'Applications'=>'1', 
-		'Handheld'=>'6', 'Anime'=>'8', 'Non-English'=>'7', 'No Category'=>'10000', 'XXX'=>'10', 'Assorted'=>'5' );
+	public $categories = array( 'all'=>'', 'Movies'=>'&lngMainCat=4', 'Music'=>'&lngMainCat=3', 'TV series'=>'&lngMainCat=9', 'Games'=>'&lngMainCat=2', 'Applications'=>'&lngMainCat=1', 
+		'Handheld'=>'&lngMainCat=6', 'Anime'=>'&lngMainCat=8', 'Non-English'=>'&lngMainCat=7', 'No Category'=>'&lngMainCat=10000', 'XXX'=>'&lngMainCat=10', 'Assorted'=>'&lngMainCat=5' );
 
 	public function getTorrent( $url )
 	{
@@ -43,7 +43,9 @@ class SumoTorrentEngine extends commonEngine
 		$added = 0;
 		$url = 'http://torrents.sumotorrent.com';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'', 'movies'=>'4', 'tv'=>'9', 'music'=>'3', 'games'=>'2', 'anime'=>'8', 'software'=>'1', 'pictures'=>'5', 'books'=>'5' );
+			$categories = array( 'all'=>'', 'movies'=>'&lngMainCat=4', 'tv'=>'&lngMainCat=9', 'music'=>'&lngMainCat=3', 
+				'games'=>'&lngMainCat=2', 'anime'=>'&lngMainCat=8', 'software'=>'&lngMainCat=1', 
+				'pictures'=>'&lngMainCat=5', 'books'=>'&lngMainCat=5' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
@@ -52,9 +54,10 @@ class SumoTorrentEngine extends commonEngine
 			$cat = $categories[$cat];
 
 		$maxPage = 10;
+		$what = rawurlencode(self::fromUTF(rawurldecode($what),"ISO-8859-1"));
 		for($pg = 0; $pg<$maxPage; $pg++)
 		{
-			$cli = $this->fetch( $url.'/searchResult.php?search='.$what.'&lngMainCat='.$cat.'&start='.$pg.'&order=seeders&by=down' );
+			$cli = $this->fetch( $url.'/en/search/'.$what.'?order=seeders&by=down&start='.$pg.$cat );
 			if($cli==false || (strpos($cli->results, "<b>No torrents found</b>")!==false) ||
 				!preg_match('/Showing results from <b>\d+<\/b> to <b>\d+<\/b> \((?P<cnt>\d+) total\)<\/div>/siU',$cli->results, $matches))
 				break;
@@ -62,7 +65,7 @@ class SumoTorrentEngine extends commonEngine
 
 			$res = preg_match_all('/<td class="trow" align="center">(?P<date>.*)<\/td>.*'.
 				'<td .*>.*<a href="http:\/\/torrents.sumotorrent.com\/en\/cat_(?P<cat>\d+)\.html"'.
-				'.*<\/td>.*<td .*>.*<a href="http:\/\/torrents.sumotorrent.com\/en\/details\/(?P<desc>.*)".*">(?P<name>.*)<\/a>.*<\/td>.*'.
+				'.*<\/td>.*<td .*>.*<a title="(?P<name>[^"]*)" href="http:\/\/torrents.sumotorrent.com\/en\/details\/(?P<desc>[^"]*)".*'.
 				'<a href="http:\/\/torrents.sumotorrent.com\/download\/(?P<link>.*)".*<\/td>.*<td .*>(?P<size>.*)<\/td>.*'.
 				'<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>'.
 				'/siU', $cli->results, $matches);
