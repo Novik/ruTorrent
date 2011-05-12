@@ -25,7 +25,7 @@ if(plugin.enabled)
 				{
    					if((table.getIdByCol(i)=="ratiogroup") && arr[i])
    					{
-	   					var rat = arr[i].match(/rat_(\d{1,2})/);
+	   					var rat = arr[i].match(/rat_(\d+)/);
 						arr[i] = ( rat && (rat.length>1) && theWebUI.isCorrectRatio(rat[1]) ? theWebUI.ratios[rat[1]].name : "" );
 						break;
 					}

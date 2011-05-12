@@ -437,7 +437,7 @@ function getFileName($path)
 	return(end($arr));
 }
 
-function sendFile( $filename, $contentType = null, $nameToSent = null )
+function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit = true )
 {
 	$stat = @LFS::stat($filename);
 	if($stat && @LFS::is_file($filename) && @LFS::is_readable($filename))
@@ -471,7 +471,10 @@ function sendFile( $filename, $contentType = null, $nameToSent = null )
 				passthru('cat '.escapeshellarg($filename));
 			else
 				readfile($filename);
-			exit;
+			if($mustExit)
+				exit;
+			else
+				return(true);
 		}
 	}
 	return(false);
