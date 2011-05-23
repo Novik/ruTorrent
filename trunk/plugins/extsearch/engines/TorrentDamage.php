@@ -32,7 +32,7 @@ class TorrentDamageEngine extends commonEngine
 
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.$cat.'&order_by=s6&order_way=desc&disablegrouping=1&page='.$pg );			
+			$cli = $this->fetch( $url.'/torrents.php?torrentname='.$what.$cat.'&order_by=s6&order_way=desc&disablegrouping=1&page='.$pg );			
 			if( ($cli==false) || (strpos($cli->results, "<h3>No Results Found!</h3>")!==false) ||
 				(strpos($cli->results, ">Password<")!==false))
 				break;
