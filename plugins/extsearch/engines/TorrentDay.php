@@ -27,7 +27,7 @@ class TorrentDayEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) ||
 				(strpos($cli->results, "<h1>Not logged in!</h1>")!==false))
 				break;
-			$res = preg_match_all('/href="browse.php\?cat=\d+"><img border="0" src="\/pic\/.*" alt="(?P<cat>.*)".*'.
+			$res = preg_match_all('/href="browse.php\?cat=\d+"><img border="0".*'.
 				'<a href="details.php\?id=(?P<id>\d+)">(?P<name>.*)<\/a><br>Uploaded: (?P<date>.*)<\/td>.*'.
 				'<a class="index" href="download\.php\/\d+\/(?P<tname>.*)">.*<\/td><td class=.*<\/td>.*'.
 				'<td class=.*>(?P<size>.*)<\/td>.*'.
