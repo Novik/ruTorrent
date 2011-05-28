@@ -205,15 +205,12 @@ var theWebUI =
 			this.catchErrors(false);
 			this.getPlugins();
    			this.getUISettings();
-			if(this.configured)
-			{
-			        this.catchErrors(true);
-				this.assignEvents();
-				this.resize();
-				this.update();
-			}
-			else
-				this.msg(theUILang.PHPDoesnt_enabled);
+			if(!this.configured)
+				this.config({});
+		        this.catchErrors(true);
+			this.assignEvents();
+			this.resize();
+			this.update();
 		}
 		return(this.configured);
 	},
