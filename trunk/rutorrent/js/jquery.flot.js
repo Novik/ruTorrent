@@ -1153,7 +1153,7 @@
             
             
             addLabels(axes.yaxis, function (tick, axis) {
-                return '<div style="position:absolute;top:' + Math.round(plotOffset.top + axis.p2c(tick.v) - axis.labelHeight/2) + 'px;right:' + (plotOffset.right + plotWidth + margin) + 'px;width:' + axis.labelWidth + 'px;text-align:right" class="tickLabel">' + tick.label + "</div>";
+                return '<div style="position:absolute;top:' + iv(Math.round(plotOffset.top + axis.p2c(tick.v) - axis.labelHeight/2)) + 'px;right:' + (plotOffset.right + plotWidth + margin) + 'px;width:' + axis.labelWidth + 'px;text-align:right" class="tickLabel">' + tick.label + "</div>";
             });
             
             addLabels(axes.x2axis, function (tick, axis) {
@@ -1161,7 +1161,7 @@
             });
             
             addLabels(axes.y2axis, function (tick, axis) {
-                return '<div style="position:absolute;top:' + Math.round(plotOffset.top + axis.p2c(tick.v) - axis.labelHeight/2) + 'px;left:' + (plotOffset.left + plotWidth + margin) +'px;width:' + axis.labelWidth + 'px;text-align:left" class="tickLabel">' + tick.label + "</div>";
+                return '<div style="position:absolute;top:' + iv(Math.round(plotOffset.top + axis.p2c(tick.v) - axis.labelHeight/2)) + 'px;left:' + (plotOffset.left + plotWidth + margin) +'px;width:' + axis.labelWidth + 'px;text-align:left" class="tickLabel">' + tick.label + "</div>";
             });
 
             html.push('</div>');

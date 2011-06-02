@@ -84,6 +84,7 @@ var dxSTable = function()
 	this.prgEndColor = new RGBackground(".meter-value-end-color");
 	this.mni = 0;
 	this.mxi = 0;
+	this.maxViewRows = 100;
 }
 
 dxSTable.prototype.setPaletteByURL = function(url) 
@@ -146,7 +147,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		this.colsdata[i].width = iv(this.colsdata[i].width);
 		this.ids[i] = styles[i].id;
 
-		td = $("<td>").mousemove( function(e) 
+		td = $("<td>").bind( "mousemove touchstart", function(e) 
 		{
 			if(self.isResizing) 
 				return;
@@ -154,9 +155,10 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			this.lastMouseX = e.clientX;
 			var w = this.offsetWidth;
 			var i = parseInt(this.getAttribute("index"));
-			if(x <= 8) 
+			var delta = $.support.touchable ? 16 : 8;
+			if(x <= delta) 
 			{
-				if(i != 0) 
+				if(i!= 0) 
 				{
 					self.hotCell = i - 1;
 					this.style.cursor = "e-resize";
@@ -169,7 +171,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			}
 			else 
 			{
-				if(x >= w - 1) 
+				if(x >= w - delta) 
 				{
 					self.hotCell = i;
 					this.style.cursor = "e-resize";
@@ -185,9 +187,16 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			width(styles[this.colOrder[i]].width).
 			attr("index", i));
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
-		td.mouseclick( function(e) { self.onRightClick(e) } );
-		td.mousedown( function(e) { $(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents ) } );
-		td.mouseup( function(e) { self.Sort(e, this); } );		
+		td.mouseclick( 	function(e) 
+		{ 
+			self.onRightClick(e) 
+		}).mousedown( function(e) 
+		{ 
+			$(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents );
+		}).mouseup( function(e) 
+		{ 
+			self.Sort(e); 
+		});
 		this.tHeadCols[i] = td.get(0);
 		if(!this.colsdata[i].enabled)
   	                td.hide();
@@ -285,7 +294,7 @@ dxSTable.prototype.removeColumn = function(no)
 
 dxSTable.prototype.onRightClick = function(e)
 {
-        if(e.which==3)
+        if((e.which==3) && !this.isMoving)
         {
 		theContextMenu.clear();
 		for(var i = 0; i<this.colsdata.length; i++)
@@ -543,7 +552,7 @@ dxSTable.ColumnMove.prototype =
 		o.style.visibility = "visible";
 		var self = this;
 		$(document).bind("mousemove",self,self.drag);
-		$(document).bind("mouseup",self,self.end);
+		$(document).bind("mouseup touchend",self,self.end);
 		this.rx = $(this.parent.dHead).offset().left;
 		this.obj.style.cursor = "move";
 		return(false);
@@ -815,7 +824,7 @@ dxSTable.prototype.assignEvents = function()
 	this.scOdd = null;
 	this.isScrolling = false;
 	
-	this.dBody.onscroll = 
+	$(this.dBody).bind( "scroll",
 		function(e) 
 		{
 			self.dHead.scrollLeft = self.dBody.scrollLeft;
@@ -839,9 +848,9 @@ dxSTable.prototype.assignEvents = function()
 				        , 500);
 				self.scrollPos();
 			}
-		};
-	if(browser.isKonqueror)
-		this.dBody.addEventListener("scroll", this.dBody.onscroll, false);
+		});
+//	if(browser.isKonqueror)
+//		this.dBody.addEventListener("scroll", this.dBody.onscroll, false);
 	this.tHead.onmousedown = function(e) 
 		{
 			if(self.isResizing)
@@ -852,7 +861,7 @@ dxSTable.prototype.assignEvents = function()
 				self.cancelSort = true;
 				self.cancelMove = true;
                                 $(document).bind("mousemove",self,self.colDrag);
-                                $(document).bind("mouseup",self,self.colDragEnd);
+                                $(document).bind("mouseup touchend",self,self.colDragEnd);
 				self.rowCover.style.display = "block";
 				return(false);
          		}
@@ -922,7 +931,7 @@ dxSTable.prototype.colDragEnd = function(e)
 	self.colReszObj.style.height = 0;
 	self.colReszObj.style.visibility = "hidden";
 	self.resizeColumn();
-	if(self.tHead.isOutside) 
+	if(self.tHead.isOutside || $.support.touchable) 
 	{
 		self.cancelSort = false;
 		self.cancelMove = false;
@@ -971,7 +980,7 @@ function handleScroll()
 
 dxSTable.prototype.getMaxRows = function()
 {
-	return((this.maxRows || this.viewRows<100) ? 1000000 : Math.ceil(this.dBody.clientHeight / TR_HEIGHT));	
+	return((this.maxRows || this.viewRows<this.maxViewRows) ? 1000000 : Math.ceil(this.dBody.clientHeight / TR_HEIGHT));	
 }
 
 dxSTable.prototype.refreshRows = function( height, fromScroll ) 
