@@ -218,6 +218,7 @@ var theWebUI =
 	assignEvents: function()
 	{
 		window.onresize = theWebUI.resize;
+		window.onorientationchange = theWebUI.resize;
 		$(document).bind("dragstart",function(e) { return(false); } );
 		$(document).bind("selectstart",function(e) { return(e.fromTextCtrl); });
 		$(document).bind("contextmenu",function(e)

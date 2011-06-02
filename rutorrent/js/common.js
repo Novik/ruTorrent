@@ -147,7 +147,7 @@ $.event.fix = function(e)
 $.fn.extend({
 	mouseclick: function( handler )
 	{
-		var contextMenuPresent = ("oncontextmenu" in document.createElement("foo")) || browser.isFirefox;
+		var contextMenuPresent = ("oncontextmenu" in document.createElement("foo")) || browser.isFirefox || $.support.touchable;
 	        return( this.each( function()
 	        {
 	        	if($type(handler)=="function")
