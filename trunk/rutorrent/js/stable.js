@@ -190,13 +190,15 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		td.mouseclick( 	function(e) 
 		{ 
 			self.onRightClick(e) 
-		}).mousedown( function(e) 
-		{ 
-			$(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents );
 		}).mouseup( function(e) 
 		{ 
 			self.Sort(e); 
 		});
+		if(!$.support.touchable)
+			td.mousedown( function(e) 
+			{ 
+				$(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents );
+			})
 		this.tHeadCols[i] = td.get(0);
 		if(!this.colsdata[i].enabled)
   	                td.hide();
@@ -876,7 +878,8 @@ dxSTable.prototype.assignEvents = function()
 				self.cancelMove = false;
 			}
 		};
-	$(this.dCont).mousedown( function(e) { $(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents ) } );
+	if(!$.support.touchable)
+		$(this.dCont).mousedown( function(e) { $(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents ) } );
 }
 
 dxSTable.prototype.colDrag = function(e) 
@@ -1111,7 +1114,8 @@ dxSTable.prototype.keyEvents = function(e)
 
 dxSTable.prototype.selectRow = function(e, row) 
 {
-        $(document).bind( browser.isOpera ? "keypress" : "keydown", this, this.keyEvents );
+	if(!$.support.touchable)
+        	$(document).bind( browser.isOpera ? "keypress" : "keydown", this, this.keyEvents );
 	var id = row.id;
 	if(!((e.which==3) && (this.rowSel[id] == true))) 
 	{
@@ -1446,7 +1450,7 @@ dxSTable.prototype.refreshSelection = function()
 {
         if(this.created)
         {
-		var rows = this.tBody.tb.rows, l = rows.length, j = 0;
+		var rows = this.tBody.tb.rows, l = rows.length;
 		for(var i = 0; i < l; i++) 
 		{
 			if(this.rowSel[rows[i].id] == true) 
@@ -1456,9 +1460,8 @@ dxSTable.prototype.refreshSelection = function()
 				if(!this.colorEvenRows) 
 					rows[i].className = "even";
 				else 
-					rows[i].className = (j & 1) ? "odd" : "even";
+					rows[i].className = (i & 1) ? "odd" : "even";
 			}
-			j++;
       		}
 	}
 }

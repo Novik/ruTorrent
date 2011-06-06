@@ -1034,7 +1034,8 @@ var theBTClientVersion =
 	{
 	        "AG" : "Ares", "A~" : "Ares", "ES" : "Electric Sheep",
         	"HL" : "Halite", "LT" : "libtorrent (Rasterbar)", "lt" : "libTorrent (Rakshasa)",
-	        "MP" : "MooPolice", "TT" : "TuoTu", "qB" : "qBittorrent"
+	        "MP" : "MooPolice", "TT" : "TuoTu", "qB" : "qBittorrent",
+       		'MG' : "MediaGet"	// ?
 	},
 	azLikeClients2x2:
 	{
