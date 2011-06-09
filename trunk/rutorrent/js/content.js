@@ -581,7 +581,7 @@ function correctContent()
 	};
 
 	if(!$type(theWebUI.systemInfo))
-		theWebUI.systemInfo = { rTorrent: { version: '?', libVersion: '?', started: false } };
+		theWebUI.systemInfo = { rTorrent: { version: '?', libVersion: '?', started: false, iVersion: 0 } };
 
 	if(!theWebUI.systemInfo.rTorrent.started)
         	theWebUI.showFlags &= ~0xFFFF;
@@ -701,4 +701,18 @@ function correctContent()
 		});
 	}
 	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
+
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x808)
+	{
+		theRequestManager.addRequest("fls","f.prioritize_first=",function(hash, fls, value) 
+		{
+			if(value=='1')
+				fls.prioritize = 1;
+		});
+		theRequestManager.addRequest("fls","f.prioritize_last=",function(hash, fls, value) 
+		{
+			if(value=='1')
+				fls.prioritize = 2;
+		});
+	}
 }

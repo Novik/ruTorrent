@@ -136,7 +136,8 @@ switch($mode)
 	{
 		$result = makeMulticall(array(
 		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=", 
-			"t.get_scrape_incomplete=", "t.get_scrape_downloaded="
+			"t.get_scrape_incomplete=", "t.get_scrape_downloaded=",
+			"t.get_normal_interval=", "t.get_scrape_time_last="
 			),$hash[0],$add,'t');
 		break;
 	}

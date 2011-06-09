@@ -1,38 +1,7 @@
-﻿/*
- * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
- * NO COPYCATS of language update
- * 
- * == BEGIN LICENSE ==
- * 
- * Licensed under the terms of any of the following licenses at your
- * choice:
- * 
- *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
- * 
- *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
- * 
- *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
- * == END LICENSE ==
- * 
- * File Name: ru.js
- * 	Russian language file.
- * 
- * File Author:
- * 		Artem Lopata (mod-s@yandex.ru)
- */
- 
- var theUILang =
- {
- //all used
+﻿ 
+var theUILang =
+{
  kbs				: "kB/s",
- 
- 
- //Settings window
- 
  General			: "General",
  Downloads			: "Downloads",
  Connection			: "Connection",
@@ -40,122 +9,33 @@
  Queueing			: "Queueing",
  Scheduler			: "Scheduler",
  Advanced			: "Advanced",
- Disk_Cache			: "Disk Cache",
- Enable_Web_Interface : "Enable Web Interface",
- Authent			: "Authentication",
- Username			: "Username",
- Password			: "Password",
- Enable_Guest_acc	: "Enable Guest account with username",
- Connectivity		: "Connectivity",
- Alt_list_port		: "Alternative listening port (default is the bittorrent port)",
- Rest_access		: "Restrict access to the following IPs (Separate multiple entries with ,)",
- User_Interface		: "User Interface",
- Confirm_del_torr	: "Confirm when deleting torrents",
- Update_GUI_every	: "Update GUI every",
- ms					: "ms",
- Alt_list_bckgnd	: "Alternate list background colour",
- Show_speed			: "Show speed",
- Don_t				: "Don't",
- In_status_bar		: "In status bar",
- In_title_bar		: "In title bar",
- Show_cat_start		: "Show categories on startup",
- Show_det_start		: "Show details on startup",
- Restor_def			: "Restore to default",
- When_add_torrent	: "When adding torrents",
- Dnt_start_down_auto: "Don't start the download automatically",
+ User_Interface			: "User Interface",
+ Confirm_del_torr		: "Confirm when deleting torrents",
+ Update_GUI_every		: "Update GUI every",
+ ms				: "ms",
+ Alt_list_bckgnd		: "Alternate list background colour",
+ Show_cat_start			: "Show categories on startup",
+ Show_det_start			: "Show details on startup",
+ Dnt_start_down_auto		: "Don't start the download automatically",
  Other_sett			: "Other Settings",
- Append_ut_incompl	: "Append .!ut to incomplete files",
- Prealloc_all_files	: "Pre-allocate all files",
- Prev_stnd_w_act_con: "Prevent stand-by if there are active torrents",
- Listening_Port		: "Listening Port",
- Port_f_incom_conns	: "Port used for incoming connections",
- Random_Port		: "Random Port",
- Rnd_port_torr_start: "Randomize port each time rTorrent starts",
- En_UPnP_mapp		: "Enable UPnP port mapping",
- Add_torr_mustdie_f	: "Add rTorrent to Windows Firewall exceptions (Windows XP SP2 or later only)",
- Proxy_Server		: "Proxy Server",
+ Listening_Port			: "Listening Port",
+ Port_f_incom_conns		: "Port used for incoming connections",
+ Rnd_port_torr_start		: "Randomize port each time rTorrent starts",
  Type				: "Type",
- none				: "(none)",
- Proxy				: "Proxy",
- Port				: "Port",
- Use_proxy_4_p2p_con: "Use proxy server for peer-to-peer connections",
- Bandwidth_Limiting : "Bandwidth Limiting",
- Global_max_upl		: "Global maximum upload rate",
+ Bandwidth_Limiting 		: "Bandwidth Limiting",
+ Global_max_upl			: "Global maximum upload rate",
  unlimited			: "unlimited",
- Alt_down_r_downl	: "Alternate upload rate when not downloading",
- Glob_max_downl		: "Global maximum download rate",
- Num_of_conn		: "Number of Connections",
- Glob_max_conn		: "Global maximum number of connections",
- Max_conn_peer_torr	: "Maximum number of connected peers per torrent",
- Num_upl_slots		: "Number of upload slots per torrent",
- Extra_ulslots		: "Use additional upload slots if upload speed < 90%",
- Add_bittor_featrs	: "Additional BitTorrent Features",
+ Glob_max_downl			: "Global maximum download rate",
+ Add_bittor_featrs		: "Additional BitTorrent Features",
  En_DHT_ntw			: "Enable DHT Network",
- Ask_scrape			: "Ask tracker for scrape information",
- En_DHT_new_torrs	: "Enable DHT for new torrents",
  Peer_exch			: "Peer Exchange",
- Ip_report_track	: "IP/Hostname to report to tracker",
- Protocol_enc		: "Protocol Encryption",
- Outgoing			: "Outgoing",
+ Ip_report_track		: "IP/Hostname to report to tracker",
  Disabled			: "Disabled",
  Enabled			: "Enabled",
- Forced				: "Forced",
- All_inc_legacy_conn: "Allow incoming legacy connections",
- Queue_sett			: "Queue Settings",
- Max_n_act_torrs	: "Maximum number of active torrents (upload or download)",
- Max_num_act_downl	: "Maximum number of active downloads",
- Seed_while			: "Seed While [Default Values]",
- Ratio_is			: "Ratio is",
- or_time_is			: " % or seeding time is ",
- Ignore				: "(Ignore)",
- nin_min			: "90 minutes",
- two_h				: "2 hours",
- three_h			: "3 hours",
- four_h				: "4 hours",
- five_h				: "5 hours",
- six_h				: "6 hours",
- seven_h			: "7 hours",
- eight_h			: "8 hours",
- nine_h				: "9 hours",
- ten_h				: "10 hours",
- twelve_h			: "12 hours",
- sixteen_h			: "16 hours",
- twenty_h			: "20 hours",
- tw_four_h			: "24 hours",
- thirty_h			: "30 hours",
- thirty_six_h		: "36 hours",
- forty_eight_h		: "48 hours",
- sixty_h			: "60 hours",
- sev_two_h			: "72 hours",
- nin_six_h			: "96 hours",
- Seed_prior			: "Seeding tasks have higher priority than downloading tasks",
- When_torr_reach	: "When Torrent has reached the seeding goal",
- Limit_upl_rate		: "Limit the upload rate to [use 0 to stop torrent]",
- En_shedul			: "Enable Scheduler",
- Shed_sett			: "Scheduler Settings",
- Lim_upl_rate		: "Limited upload rate",
- Lim_dow_rate		: "Limited download rate",
- Dis_DHT_when_t_off	: "Disable DHT when turning off",
- Disc_cahe			: "Disk Cache",
- Disc_cahe_bla_bla	: "The disk cache is used to keep frequently accessed data in memory to reduce the number of reads and writes to the hard drive. rTorrent normally manages the cache automatically, but you may change its behaviour by modifying these settings.",
- Overwr_d_cahe_au	: "Overwrite automatic Cache Size and specify the size manually",
- MB					: "MB",
- Red_mem_usage		: "Reduce memory usage when cache is not needed",
- Adv_cache_sett		: "Advanced Cache Settings",
- En_cach_disc		: "Enable Caching of Disk Writes",
- Wr_out_ever_2_min	: "Write out untouched blocks every 2 minutes",
- Wr_immed			: "Write out finished pieces immediately",
- En_cah_disc_read	: "Enable Caching of Disk Reads",
- Turn_off_w_read	: "Turn off read caching if the upload speed is slow",
- Rem_old_from_cahe	: "Remove old blocks from cache",
- Increase_autom_cach: "Increase automatic cache size when cache thrashing",
  Advanced			: "Advanced",
- Advanced_label		: "Advanced Options [WARNING: Do not modify!]",
  Cancel				: "Cancel",
- uTorrent_settings	: "rTorrent Settings",
- 
-// Main window
- Doesnt_support		: "The ruTorrent does not support your browser.",
+ uTorrent_settings		: "rTorrent Settings",
+ Doesnt_support			: "The ruTorrent does not support your browser.",
  Name				: "Name",
  Status				: "Status",
  Size				: "Size",
@@ -163,8 +43,8 @@
  Downloaded			: "Downloaded",
  Uploaded			: "Uploaded",
  Ratio				: "Ratio",
- DL					: "DL",
- UL					: "UL",
+ DL				: "DL",
+ UL				: "UL",
  ETA				: "ETA",
  Label				: "Label",
  Peers				: "Peers",
@@ -174,71 +54,55 @@
  Priority			: "Priority",
  Download			: "Download",
  Upload				: "Upload",
- Not_torrent_file	: "The file has to be a torrent file.",
+ Not_torrent_file		: "The file has to be a torrent file.",
  Pausing			: "Pausing",
  Seeding			: "Seeding",
- Downloading		: "Downloading",
+ Downloading			: "Downloading",
  Checking			: "Checking",
  Error				: "Error",
  Queued				: "Queued",
  Finished			: "Completed",
  Stopped			: "Stopped",
- Request_timed_out	: "The request to rTorrent has timed out.",
- 
- Force_Start		: "Force Start",
+ Request_timed_out		: "The request to rTorrent has timed out.",
  Start				: "Start",
  Pause				: "Pause",
  Stop				: "Stop",
- Force_recheck		: "Force Re-check",
+ Force_recheck			: "Force Re-check",
  New_label			: "New Label...",
- Remove_label		: "Remove Label",
+ Remove_label			: "Remove Label",
  Labels				: "Labels",
  Remove				: "Remove",
- Delete_data		: "Delete Data",
+ Delete_data			: "Delete Data",
  Remove_and			: "Remove And",
  Details			: "Details...",
  Properties			: "Properties...",
- of					: "of", 		//this two creates line 
+ of				: "of", 		//this two creates line 
  connected			: "connected",	//  XX of YY connected
- High_priority		: "High",
- Normal_priority	: "Normal",
- Low_priority		: "Low",
- Dont_download		: "Don't Download",
- Shure_restore_UI	: "Are you sure that you want to restore the user interface?",
- Reloading			: "Reloading...",
- Name				: "Name",
- Date_				: "Date",
+ High_priority			: "High",
+ Normal_priority		: "Normal",
+ Low_priority			: "Low",
+ Dont_download			: "Don't Download",
  Files				: "Files",
  Logger				: "Logger",
- 
- s					: "s",    // part of "KB/s"
+ s				: "s",    // part of "KB/s"
  bytes				: "bytes",
- KB					: "KB",
- MB					: "MB",
- GB					: "GB",
- TB					: "TB",
- PB					: "PB",
- 
- // main WND s
+ KB				: "KB",
+ MB				: "MB",
+ GB				: "GB",
+ TB				: "TB",
+ PB				: "PB",
  Loading			: "Loading...",
- Torrent_file		: "Torrent file",
- Torrent_URL		: "Torrent URL",
- Cookies			: "Cookies",
- RSS_Downloader		: "RSS Downloader",
- Torrent_properties	: "Torrent Properties",
+ Torrent_file			: "Torrent file",
+ Torrent_URL			: "Torrent URL",
+ Torrent_properties		: "Torrent Properties",
  Trackers			: "Trackers",
- Max_down_rate		: "Maximum download rate",
- Max_upl_rate		: "Maximum upload rate",
- Bandwidth_sett		: "Bandwidth Settings",
- Number_ul_slots	: "Number of upload slots",
- Override_default	: "Override default settings",
- Initial_seed		: "Initial Seed",
- Enable_DHT			: "Enable DHT",
+ Bandwidth_sett			: "Bandwidth Settings",
+ Number_ul_slots		: "Number of upload slots",
  Peer_ex			: "Peer Exchange",
  About				: "About",
- Enter_label_prom	: "Enter the new label for the selected torrents",
- Remove_torrents	: "Remove Torrent(s)",
- Rem_torrents_prompt: "Do you really want to remove the selected torrent(s)?",
+ Enter_label_prom		: "Enter the new label for the selected torrents",
+ Remove_torrents		: "Remove Torrent(s)",
+ Rem_torrents_prompt		: "Do you really want to remove the selected torrent(s)?",
  All				: "All",
  Active				: "Active",
  Inactive			: "Inactive",
@@ -246,7 +110,7 @@
  Transfer			: "Transfer",
  Time_el			: "Time Elapsed",
  Remaining			: "Remaining",
- Share_ratio		: "Share Ratio",
+ Share_ratio			: "Share Ratio",
  Down_speed			: "Download Speed",
  Down_limit			: "Down Limit",
  Ul_speed			: "Upload Speed",
@@ -254,22 +118,15 @@
  Wasted				: "Wasted",
  Tracker			: "Tracker",
  Track_URL			: "Tracker URL",
- Track_status		: "Tracker Status",
- Update_in			: "Update In",
- DHT_status			: "DHT Status",
- Save_as			: "Save As",
- Tot_size			: "Total Size",
+ Track_status			: "Tracker Status",
  Created_on			: "Created On",
+ Save_as                        : "Save As",
  Comment			: "Comment",
- 
- 
- //buttons
  add_button			: "Add File",
  add_url			: "Add URL",
  ok				: "   OK   ",
  Cancel				: " Cancel ",
  no				: "   No   ",
- 
  mnu_add			: "Add Torrent",
  mnu_remove			: "Remove",
  mnu_start			: "Start",
@@ -279,16 +136,12 @@
  mnu_settings			: "Settings",
  mnu_search			: "Search",
  mnu_lang			: "Language",
- 
- //Other variables added by spide
  torrent_add			: "Add Torrent", /*Caption of torrent add box*/
  time_w				: "w ", /*for x weeks*/
  time_d				: "d ", /*for x days remaining*/
  time_h				: "h ", /*for x hours remaining*/
  time_m				: "m ", /*for x minutes remaining*/
  time_s				: "s ", /*for x seconds remaining*/
-
- //Novik's addition
  Base_directory    		: "Directory",
  Number_Peers_min		: "Minimum number of peers",
  Number_Peers_max		: "Maximum number of peers",
@@ -389,5 +242,12 @@
  noTorrentList			: "Torrent list not yet available, connection to rtorrent not established.",
  yes				: "yes",
  no				: "no",
- DateFormat			: "Date format"
- };
+ DateFormat			: "Date format",
+ DLStrategy			: "Download strategy",
+ prioritizeFirst		: "Leading chunk first",
+ prioritizeLast			: "Trailing chunk first",
+ prioritizeNormal		: "Normal",
+ updateTracker			: "Update trackers",
+ scrapeUpdate			: "Was updated",
+ trkInterval			: "Interval"
+};
