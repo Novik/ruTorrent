@@ -131,7 +131,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			break;
 		}
 	}
-
 	for(var i = 0, l = styles.length; i < l; i++) 
 	{
 		if(!$type(this.colOrder[i]))

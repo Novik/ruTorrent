@@ -715,4 +715,9 @@ function correctContent()
 				fls.prioritize = 2;
 		});
 	}
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x807)
+	{
+		$($$('fast_resume').nextSibling).remove();
+		$('#fast_resume').remove();
+	}
 }
