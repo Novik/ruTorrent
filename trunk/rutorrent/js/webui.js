@@ -78,8 +78,8 @@ var theWebUI =
 				{ text: theUILang.Seeds, 		width: "60px", 	id: "seeds",		type: TYPE_NUMBER },
 				{ text: theUILang.Peers, 		width: "60px", 	id: "peers",		type: TYPE_NUMBER },
 				{ text: theUILang.scrapeDownloaded,	width: "80px", 	id: "downloaded",	type: TYPE_NUMBER },
-				{ text: theUILang.scrapeUpdate,		width: "80px", 	id: "last",		type: TYPE_NUMBER },
-				{ text: theUILang.trkInterval,		width: "80px", 	id: "interval",		type: TYPE_NUMBER },
+				{ text: theUILang.scrapeUpdate,		width: "85px", 	id: "last",		type: TYPE_NUMBER },
+				{ text: theUILang.trkInterval,		width: "80px", 	id: "interval",		type: TYPE_NUMBER }
 			],
 
 			container:	"TrackerList",
@@ -192,6 +192,7 @@ var theWebUI =
 	delmode:	"remove",
 	tegs:		{},
 	lastTeg:	0,
+	deltaTime:	0,
 
 //
 // init

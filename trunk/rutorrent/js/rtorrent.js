@@ -1050,10 +1050,11 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 		{
 			if(theWebUI.deltaTime==0)
 			{
+				var diff = 0;
 				try {
-				var diff = new Date().getTime()-Date.parse(XMLHttpRequest.getResponseHeader("Date"));
-				} catch(e) { return; };
-				theWebUI.deltaTime = diff;
+				diff = new Date().getTime()-Date.parse(XMLHttpRequest.getResponseHeader("Date"));
+				} catch(e) { diff = 0; };
+				theWebUI.deltaTime = iv(diff);
 				stub = null;
 			}
 		},
