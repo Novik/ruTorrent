@@ -72,13 +72,16 @@ var theWebUI =
 			columns:
 			[
 				{ text: theUILang.Name,			width: "200px", id: "name",		type: TYPE_STRING },
-				{ text: theUILang.Type, 			width: "60px", 	id: "type",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
+				{ text: theUILang.Type, 		width: "60px", 	id: "type",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
 				{ text: theUILang.Enabled, 		width: "60px", 	id: "enabled",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
-				{ text: theUILang.Group, 			width: "60px", 	id: "group",		type: TYPE_NUMBER },
-				{ text: theUILang.Seeds, 			width: "60px", 	id: "seeds",		type: TYPE_NUMBER },
-				{ text: theUILang.Peers, 			width: "60px", 	id: "peers",		type: TYPE_NUMBER },
-				{ text: theUILang.scrapeDownloaded,	width: "80px", 	id: "downloaded",	type: TYPE_NUMBER }
+				{ text: theUILang.Group, 		width: "60px", 	id: "group",		type: TYPE_NUMBER },
+				{ text: theUILang.Seeds, 		width: "60px", 	id: "seeds",		type: TYPE_NUMBER },
+				{ text: theUILang.Peers, 		width: "60px", 	id: "peers",		type: TYPE_NUMBER },
+				{ text: theUILang.scrapeDownloaded,	width: "80px", 	id: "downloaded",	type: TYPE_NUMBER },
+				{ text: theUILang.scrapeUpdate,		width: "80px", 	id: "last",		type: TYPE_NUMBER },
+				{ text: theUILang.trkInterval,		width: "80px", 	id: "interval",		type: TYPE_NUMBER },
 			],
+
 			container:	"TrackerList",
 			format:		theFormatter.trackers,
 			onselect:	function(e,id) { theWebUI.trkSelect(e,id) }
@@ -876,6 +879,8 @@ var theWebUI =
 						table.setAttr(sId,trk[i].attr);
 	            			}
 					trk[i]._updated = true;
+	        	 		$('#'+sId+" > .stable-TrackerList-col-0").css( "font-weight", 
+			        	 	($type(theWebUI.torrents[hash]) && (i==theWebUI.torrents[hash].tracker_focus)) ? "bold" : "normal" );
         	 		}
         	 		return(false);
 			}
@@ -930,6 +935,11 @@ var theWebUI =
       				theContextMenu.add([theUILang.DisableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? "theWebUI.setTrackerState('" + this.dID + "',0)" : null]);
          		}
       		}
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x808)
+		{
+	   		theContextMenu.add([CMENU_SEP]);
+			theContextMenu.add([theUILang.updateTracker, this.isTorrentCommandEnabled("updateTracker",this.dID) ? "theWebUI.updateTracker()" : null]);
+		}
 		return(true);
    	},
 
@@ -1077,7 +1087,7 @@ var theWebUI =
 		   		p = theWebUI.files[theWebUI.dID][iv(arr[1])].priority;
 			}
 			else
-				p = theWebUI.dirs[theWebUI.dID].getEntryPriority(id);
+				p = theWebUI.dirs[theWebUI.dID].getEntry(id);
    			if(theWebUI.createFileMenu(e, p))
 				theContextMenu.show();
 		}
@@ -1090,7 +1100,8 @@ var theWebUI =
    		var id = this.dID;
    		theContextMenu.clear();
 		var _bf = [];
-		if(this.getTable("fls").selCount > 1) 
+		var table = this.getTable("fls");
+		if(table.selCount > 1) 
    		{
       			_bf.push([theUILang.High_priority, "theWebUI.setPriority('" + id + "',2)"]);
 			_bf.push([theUILang.Normal_priority, "theWebUI.setPriority('" + id + "',1)"]);
@@ -1100,15 +1111,39 @@ var theWebUI =
    		else 
 	   		if(p!=null)
    			{
-   			       	_bf.push([theUILang.High_priority, (p == 2) ? null : "theWebUI.setPriority('" + id + "',2)"]);
-	   	        	_bf.push([theUILang.Normal_priority, (p == 1) ? null : "theWebUI.setPriority('" + id + "',1)"]);
+   			       	_bf.push([theUILang.High_priority, (p.priority == 2) ? null : "theWebUI.setPriority('" + id + "',2)"]);
+	   	        	_bf.push([theUILang.Normal_priority, (p.priority == 1) ? null : "theWebUI.setPriority('" + id + "',1)"]);
 	   		        _bf.push([CMENU_SEP]);
-   			        _bf.push([theUILang.Dont_download, (p == 0) ? null : "theWebUI.setPriority('" + id + "',0)"]);
+   			        _bf.push([theUILang.Dont_download, (p.priority == 0) ? null : "theWebUI.setPriority('" + id + "',0)"]);
 	      		}
 	      	if(_bf.length && this.isTorrentCommandEnabled('setprio',this.dID) )
 	      		theContextMenu.add([CMENU_CHILD, theUILang.Priority, _bf]);
 		else
 			theContextMenu.add([theUILang.Priority]);
+
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x808)
+		{
+			_bf = [];
+			if(table.selCount > 1) 
+   			{
+				_bf.push([theUILang.prioritizeNormal, "theWebUI.setPrioritize('" + id + "',0)"]);
+				_bf.push([CMENU_SEP]);
+      				_bf.push([theUILang.prioritizeFirst, "theWebUI.setPrioritize('" + id + "',1)"]);
+				_bf.push([theUILang.prioritizeLast, "theWebUI.setPrioritize('" + id + "',2)"]);
+			}
+   			else 
+	   			if(p!=null)
+	   			{
+					_bf.push([theUILang.prioritizeNormal, !p.prioritize ? null : "theWebUI.setPrioritize('" + id + "',0)"]);
+					_bf.push([CMENU_SEP]);
+      					_bf.push([theUILang.prioritizeFirst, (p.prioritize == 1) ? null : "theWebUI.setPrioritize('" + id + "',1)"]);
+					_bf.push([theUILang.prioritizeLast, (p.prioritize == 2) ? null : "theWebUI.setPrioritize('" + id + "',2)"]);
+		      		}
+		      	if(_bf.length && this.isTorrentCommandEnabled('setprioritize',this.dID) )
+	      			theContextMenu.add([CMENU_CHILD, theUILang.DLStrategy, _bf]);
+			else
+				theContextMenu.add([theUILang.DLStrategy]);
+		}
 		var _bf1 = [];
 		if(this.settings["webui.fls.view"])
 		{
@@ -1133,7 +1168,7 @@ var theWebUI =
 		this.save();
 	},
 
-	getFileIds: function(id, p) 
+	getFileIds: function(id, p, property) 
 	{
    		var sr = this.getTable("fls").rowSel;
    		var str = "";
@@ -1146,7 +1181,7 @@ var theWebUI =
       				{
 					var arr = k.split('_f_');
 	         			var i = iv(arr[1]);
-        	 			if(this.files[id][i].priority != p) 
+        	 			if(!property || (this.files[id][i][property] != p))
          				{
 						str += "&f=" + i;
 	            				needSort = true;
@@ -1170,8 +1205,14 @@ var theWebUI =
 
 	setPriority: function(id, p) 
 	{
-   		var fls = this.getFileIds(id, p);
+   		var fls = this.getFileIds(id, p, "priority");
    		this.request("?action=setprio&hash=" + id + "&p=" + p + fls, [this.updateFiles, this]);
+   	},
+
+   	setPrioritize: function(id, p)
+	{
+   		var fls = this.getFileIds(id, p, null);
+   		this.request("?action=setprioritize&hash=" + id + "&p=" + p + fls, [this.updateFiles, this]);
    	},
 
 //
@@ -1221,6 +1262,8 @@ var theWebUI =
 				(this.torrents[id].private==0) && (theWebUI.systemInfo.rTorrent.iVersion>=0x804)) ? 
 				"theDialogManager.show('padd')"	: null]);
 		}
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x808)
+			theContextMenu.add([theUILang.updateTracker, this.isTorrentCommandEnabled("updateTracker",id) ? "theWebUI.updateTracker()" : null]);
    		theContextMenu.add([CMENU_SEP]);
    		var _bf = [];
    		for(var lbl in this.cLabels) 
@@ -1346,6 +1389,11 @@ var theWebUI =
    		this.perform("stop");
    	},
 
+   	updateTracker: function()
+	{	
+   		this.perform("updateTracker");
+   	},
+
 	remove: function()
 	{
 		var table = this.getTable("trt");
@@ -1437,9 +1485,10 @@ var theWebUI =
 					(oldTorrent.size!=torrent.size) ||
 					(oldTorrent.done!=torrent.done))
 					table.setIcon(hash, sInfo[0]);
-				if((oldTorrent.seeds!=torrent.seeds) || (oldTorrent.peers!=torrent.peers))
+//				if((oldTorrent.seeds!=torrent.seeds) || (oldTorrent.peers!=torrent.peers))
 				{
-				        if(theWebUI.dID == hash)
+				        if((theWebUI.dID == hash) &&
+				                (theWebUI.activeView=='TrackerList'))
 						theWebUI.getTrackers(hash);
 				}
 				if(oldTorrent.downloaded!=torrent.downloaded)

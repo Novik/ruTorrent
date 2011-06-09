@@ -28,7 +28,8 @@ var theRequestManager =
 		commands: 
 		[
 		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=", 
-			"t.get_scrape_incomplete=", "t.get_scrape_downloaded="
+			"t.get_scrape_incomplete=", "t.get_scrape_downloaded=",
+			"t.get_normal_interval=", "t.get_scrape_time_last="
 		],
 		handlers: []
 	},
@@ -353,6 +354,16 @@ rTorrentStub.prototype.stop = function()
 	}
 }
 
+rTorrentStub.prototype.updateTracker = function()
+{
+	for(var i=0; i<this.hashes.length; i++)
+	{
+		var cmd = new rXMLRPCCommand("d.tracker_announce");
+		cmd.addParameter("string",this.hashes[i]);
+		this.commands.push( cmd );
+	}
+}
+
 rTorrentStub.prototype.pause = function()
 {
 	for(var i=0; i<this.hashes.length; i++)
@@ -403,6 +414,49 @@ rTorrentStub.prototype.setprio = function()
 		cmd.addParameter("i4",this.vs[i]);
 		cmd.addParameter("i4",this.ss[0]);
 		this.commands.push( cmd );
+	}
+	cmd = new rXMLRPCCommand("d.update_priorities");
+	cmd.addParameter("string",this.hashes[0]);
+	this.commands.push( cmd );
+}
+
+rTorrentStub.prototype.setprioritize = function()
+{
+	for(var i=0; i<this.vs.length; i++)
+	{
+		switch(this.ss[0])
+		{
+			case '0':
+			{
+				var cmd = new rXMLRPCCommand( "f.prioritize_first.disable" );
+				cmd.addParameter("string",this.hashes[0]+":f"+this.vs[i]);
+				this.commands.push( cmd );
+				cmd = new rXMLRPCCommand( "f.prioritize_last.disable" );
+				cmd.addParameter("string",this.hashes[0]+":f"+this.vs[i]);
+				this.commands.push( cmd );
+				break;
+			}
+			case '1':
+			{
+				var cmd = new rXMLRPCCommand( "f.prioritize_first.enable" );
+				cmd.addParameter("string",this.hashes[0]+":f"+this.vs[i]);
+				this.commands.push( cmd );
+				cmd = new rXMLRPCCommand( "f.prioritize_last.disable" );
+				cmd.addParameter("string",this.hashes[0]+":f"+this.vs[i]);
+				this.commands.push( cmd );
+				break;
+			}
+			case '2':
+			{
+				var cmd = new rXMLRPCCommand( "f.prioritize_first.disable" );
+				cmd.addParameter("string",this.hashes[0]+":f"+this.vs[i]);
+				this.commands.push( cmd );
+				cmd = new rXMLRPCCommand( "f.prioritize_last.enable" );
+				cmd.addParameter("string",this.hashes[0]+":f"+this.vs[i]);
+				this.commands.push( cmd );
+				break;
+			}
+		}
 	}
 	cmd = new rXMLRPCCommand("d.update_priorities");
 	cmd.addParameter("string",this.hashes[0]);
@@ -630,6 +684,11 @@ rTorrentStub.prototype.setprioResponse = function(xml)
 	return(this.hashes[0]);
 }
 
+rTorrentStub.prototype.setprioritizeResponse = function(xml)
+{
+	return(this.hashes[0]);
+}
+
 rTorrentStub.prototype.getpropsResponse = function(xml)
 {
 	var datas = xml.getElementsByTagName('data');
@@ -814,6 +873,8 @@ rTorrentStub.prototype.gettrackersResponse = function(xml)
 		trk.seeds = this.getValue(values,4);
 		trk.peers = this.getValue(values,5);
 		trk.downloaded = this.getValue(values,6);
+		trk.interval = this.getValue(values,7);
+		trk.last = this.getValue(values,8);
 
 		$.each( theRequestManager.trk.handlers, function(i,handler)
 		{

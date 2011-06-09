@@ -652,6 +652,12 @@ var theFormatter =
       				case 'enabled' : 
       					arr[i] = theFormatter.yesNo(arr[i]);
       					break;
+      				case 'interval' : 
+	      				arr[i] = theConverter.time(arr[i]);
+      					break;
+      				case 'last' : 
+	      				arr[i] = iv(arr[i]) ? theConverter.time( $.now()/1000 - iv(arr[i]) - theWebUI.deltaTime/1000,true) : '';	
+      					break;
 	      		}
 		}
 		return(arr);
@@ -903,7 +909,7 @@ rDirectory.prototype.addFile = function(aData,no)
 		{
 			this.dirs[file.path] = {};
 			var up = splitName(file.path).path;
-			this.dirs[file.path]["_d_"+up] = { data: { name: "..", size: null, done: null, percent: null, priority: -2 }, icon: "Icon_Dir", link: up };
+			this.dirs[file.path]["_d_"+up] = { data: { name: "..", size: null, done: null, percent: null, priority: -2, prioritize: -2 }, icon: "Icon_Dir", link: up };
 		}
 		if(!fileAdded)
 		{
@@ -920,7 +926,7 @@ rDirectory.prototype.addFile = function(aData,no)
 		{
 			var sId = "_d_"+name;
 			if(!this.dirs[file.path][sId])
-				this.dirs[file.path][sId] = { data: { name: file.name, size: 0, done: 0, percent: 0.0, priority: -1 }, icon: "Icon_Dir", link: name };
+				this.dirs[file.path][sId] = { data: { name: file.name, size: 0, done: 0, percent: 0.0, priority: -1, prioritize: -1 }, icon: "Icon_Dir", link: name };
 		}
 		name = file.path;
 	} 
@@ -941,7 +947,7 @@ rDirectory.prototype.addFile = function(aData,no)
 rDirectory.prototype.updateDirs = function(name)
 {
 	var dir = this.dirs[name];
-	var allStat = { size: 0, done: 0, priority: -2 };
+	var allStat = { size: 0, done: 0, priority: -2, prioritize: -2 };
 	var stat;
 	for(var i in dir) 
 	{
@@ -954,6 +960,7 @@ rDirectory.prototype.updateDirs = function(name)
 				dir[i].data.done = stat.done;
 				dir[i].data.percent = ((dir[i].data.size > 0) ? theConverter.round((dir[i].data.done/dir[i].data.size)*100,1): "100.0");
 				dir[i].data.priority = stat.priority;
+				dir[i].data.prioritize = stat.prioritize;
 			}
 			else
 				stat = dir[i].data;
@@ -964,15 +971,20 @@ rDirectory.prototype.updateDirs = function(name)
 			else
 				if(allStat.priority!=stat.priority) 
 					allStat.priority = -1;
+			if(allStat.prioritize==-2)
+				allStat.prioritize = stat.prioritize;
+			else
+				if(allStat.prioritize!=stat.prioritize) 
+					allStat.prioritize = -1;
 		}
 	}
 	return(allStat);
 }
 
-rDirectory.prototype.getEntryPriority = function(k)
+rDirectory.prototype.getEntry = function(k)
 {
 	var entry = this.dirs[this.current][k];
-	return((entry.data.name=="..") ? null : entry.data.priority);
+	return((entry.data.name=="..") ? null : entry.data);
 }
 
 rDirectory.prototype.isDirectory = function(k)
@@ -981,7 +993,7 @@ rDirectory.prototype.isDirectory = function(k)
 	return(entry.link!=null);
 }
 
-rDirectory.prototype.getFilesIds = function(arr,current,k,prt)
+rDirectory.prototype.getFilesIds = function(arr,current,k,prt,property)
 {
 	var entry = this.dirs[current][k];
 	if(entry.data.name!="..")
@@ -989,10 +1001,10 @@ rDirectory.prototype.getFilesIds = function(arr,current,k,prt)
 		if(entry.link!=null)
 		{
 	        	for(var i in this.dirs[entry.link])
-				this.getFilesIds(arr,entry.link,i,prt);
+				this.getFilesIds(arr,entry.link,i,prt,property);
 		}
 		else
-			if(entry.data.priority!=prt)
+			if(!property || (entry.data[property]!=prt))
 				arr.push(k.substr(3));
 	}
 }
@@ -1007,6 +1019,8 @@ rDirectory.prototype.setDirectory = function(name)
 {
 	this.current = name;
 }
+
+// -FL10%FF%86-
 
 var theBTClientVersion = 
 {
@@ -1035,7 +1049,7 @@ var theBTClientVersion =
 	        "AG" : "Ares", "A~" : "Ares", "ES" : "Electric Sheep",
         	"HL" : "Halite", "LT" : "libtorrent (Rasterbar)", "lt" : "libTorrent (Rakshasa)",
 	        "MP" : "MooPolice", "TT" : "TuoTu", "qB" : "qBittorrent",
-       		'MG' : "MediaGet"	// ?
+       		'MG' : "MediaGet"	// ? -MG1Cr0-
 	},
 	azLikeClients2x2:
 	{

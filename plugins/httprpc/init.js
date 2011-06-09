@@ -497,6 +497,8 @@ rTorrentStub.prototype.gettrackersResponse = function(values)
 			trk.seeds = data[4];
 			trk.peers = data[5];
 			trk.downloaded = data[6];
+			trk.interval = data[7];
+			trk.last = data[8];
 
 			$.each( theRequestManager.trk.handlers, function(i,handler)
 			{
