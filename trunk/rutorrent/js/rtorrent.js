@@ -705,6 +705,7 @@ rTorrentStub.prototype.getpropsResponse = function(xml)
 		ulslots: this.getValue(values,9),
 		superseed: (this.getValue(values,13)=="initial_seed") ? 1 : 0
 	};
+	var self = this;
 	$.each( theRequestManager.prp.handlers, function(i,handler)
 	{
 	        if(handler)
@@ -719,6 +720,7 @@ rTorrentStub.prototype.gettotalResponse = function(xml)
 	var data = datas[0];
 	var values = data.getElementsByTagName('value');
 	var ret = { UL: this.getValue(values,1), DL: this.getValue(values,3), rateUL: this.getValue(values,5), rateDL: this.getValue(values,7) };
+	var self = this;
 	$.each( theRequestManager.ttl.handlers, function(i,handler)
 	{
 	        if(handler)
@@ -769,7 +771,7 @@ rTorrentStub.prototype.getsettingsResponse = function(xml)
 		ret[theRequestManager.stg.commands[cmd]] = v;
 		i+=2;
 	}
-
+	var self = this;
 	$.each( theRequestManager.stg.handlers, function(i,handler)
 	{
 	        if(handler)
@@ -785,6 +787,7 @@ rTorrentStub.prototype.getfilesResponse = function(xml)
 	var hash = this.hashes[0];
 	ret[hash] = [];
 	var datas = xml.getElementsByTagName('data');
+	var self = this;
 	for(var j=1;j<datas.length;j++)
 	{
 		var data = datas[j];
@@ -815,6 +818,7 @@ rTorrentStub.prototype.getpeersResponse = function(xml)
 {
 	var ret = {};
 	var datas = xml.getElementsByTagName('data');
+	var self = this;
 	for(var j=1;j<datas.length;j++)
 	{
 		var data = datas[j];
@@ -861,6 +865,7 @@ rTorrentStub.prototype.gettrackersResponse = function(xml)
 	var hash = this.hashes[0];
 	ret[hash] = [];
 	var datas = xml.getElementsByTagName('data');
+	var self = this;
 	for(var j=1;j<datas.length;j++)
 	{
 		var data = datas[j];

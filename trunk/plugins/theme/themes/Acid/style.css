@@ -11,6 +11,10 @@ ul.CMenu li { background: #272E36;}
 ul.CMenu li a.exp {background: transparent url(./images/menuexp.gif) no-repeat scroll 140px center; }
 ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat scroll 4px center}
 ul.CMenu li a:hover {background-color: #BDDBDB; color: #272E36;}
+
+ul.CMenu li a.dis {color: #333333}
+ul.CMenu li a.dis:hover {background-color: #181818; color: #333333}
+
 ul.CMenu li:hover ul li a {background-color: #272E36; color: #00FF00}
 ul.CMenu li:hover ul li a:hover {background-color: #BDDBDB; color: #272E36;}
 

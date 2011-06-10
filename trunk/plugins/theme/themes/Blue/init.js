@@ -57,7 +57,15 @@ plugin.allDone = function()
 				plugin.correctCheckboxes();
 			}
 		}
-
+		if(thePlugins.isInstalled('rssurlrewrite'))	
+		{
+			plugin.loadRules = theWebUI.loadRules;
+			theWebUI.loadRules = function( rle )
+			{
+				plugin.loadRules.call(theWebUI,rle);
+				plugin.correctCheckboxes();
+			}
+		}
 	});
 
 	$('.dlg-header').each( function()
