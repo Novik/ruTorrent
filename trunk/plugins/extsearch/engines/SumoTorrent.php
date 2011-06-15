@@ -62,10 +62,9 @@ class SumoTorrentEngine extends commonEngine
 				!preg_match('/Showing results from <b>\d+<\/b> to <b>\d+<\/b> \((?P<cnt>\d+) total\)<\/div>/siU',$cli->results, $matches))
 				break;
 			$maxPage = ceil(intval($matches["cnt"])/100);
-
 			$res = preg_match_all('/<td class="trow" align="center">(?P<date>.*)<\/td>.*'.
 				'<td .*>.*<a href="http:\/\/torrents.sumotorrent.com\/en\/cat_(?P<cat>\d+)\.html"'.
-				'.*<\/td>.*<td .*>.*<a title="(?P<name>[^"]*)" href="http:\/\/torrents.sumotorrent.com\/en\/details\/(?P<desc>[^"]*)".*'.
+				'.*<\/td>.*<td .*>.*<a.*href="http:\/\/torrents.sumotorrent.com\/en\/details\/(?P<desc>[^"]*)".*>(?P<name>.*)<\/a>.*'.
 				'<a href="http:\/\/torrents.sumotorrent.com\/download\/(?P<link>.*)".*<\/td>.*<td .*>(?P<size>.*)<\/td>.*'.
 				'<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>'.
 				'/siU', $cli->results, $matches);
