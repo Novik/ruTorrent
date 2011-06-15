@@ -100,7 +100,7 @@ theWebUI.switchRSSLabel = function(el)
 		table.scrollTo(0);
 	}
 	theWebUI.switchLayout(true);
-	table.refreshRows();
+	table.refreshRows($("#RSSList").height());
 }
 
 plugin.config = theWebUI.config;

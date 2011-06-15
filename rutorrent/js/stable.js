@@ -388,8 +388,8 @@ dxSTable.prototype.resizeColumn = function()
 				this.tBody.rows[0].cells[i].width=w;
 				needCallHandler = true;
 			}
-			for( var j=0; j<this.tBody.rows.length; j++ )
-				this.tBody.rows[j].cells[i].style.textAlign = c.style.textAlign;
+//			for( var j=0; j<this.tBody.rows.length; j++ )
+//				this.tBody.rows[j].cells[i].style.textAlign = c.style.textAlign;
 		}
 
 	}
@@ -1002,7 +1002,6 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 		mni = 0;
    	}
 	var mxi = mni + maxRows;
-
 	if((mni==this.mni && mxi==this.mxi) && fromScroll)
 		return;
 
@@ -1016,6 +1015,7 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 	this.tpad.style.height = ht + "px";
 	this.bpad.style.height = hb + "px";
 	var tb = this.tBody.tb, vr =- 1, i = 0, c = 0, obj = null;
+
 	for(i = 0; i < this.rows; i++) 
 	{
 		var id = this.rowIDs[i];
