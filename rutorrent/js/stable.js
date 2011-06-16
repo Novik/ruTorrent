@@ -6,7 +6,7 @@
  *			 (http://webfx.eae.net/dhtml/sortabletable/sortabletable.html)
  *	Copyright 2007, 2008 Carsten Niebuhr
  *			 (http://trac.utorrent.com/trac)
- *	Copyright 2009, 2010 Novik
+ *	Copyright 2009, 2011 Novik
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,12 @@ dxSTable.prototype.setPaletteByURL = function(url)
 	this.sortDescImage = url+"/images/desc.gif";
 	if(this.created)
 		this.Sort();
+}
+
+dxSTable.prototype.bindKeys = function()
+{
+	$(document).unbind( browser.isOpera ? "keypress" : "keydown", this.keyEvents );
+	$(document).bind( browser.isOpera ? "keypress" : "keydown", this, this.keyEvents );
 }
 
 dxSTable.prototype.create = function(ele, styles, aName)
@@ -194,10 +200,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			self.Sort(e); 
 		});
 		if(!$.support.touchable)
-			td.mousedown( function(e) 
-			{ 
-				$(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents );
-			})
+			td.mousedown( function(e) { self.bindKeys(); });
 		this.tHeadCols[i] = td.get(0);
 		if(!this.colsdata[i].enabled)
   	                td.hide();
@@ -878,7 +881,7 @@ dxSTable.prototype.assignEvents = function()
 			}
 		};
 	if(!$.support.touchable)
-		$(this.dCont).mousedown( function(e) { $(document).bind( browser.isOpera ? "keypress" : "keydown", self, self.keyEvents ) } );
+		$(this.dCont).mousedown( function(e) { self.bindKeys(); } );
 }
 
 dxSTable.prototype.colDrag = function(e) 
@@ -945,7 +948,6 @@ dxSTable.prototype.colDragEnd = function(e)
 dxSTable.prototype.scrollPos = function()
 {
 	this.scp.style.display = "block";
-   	var maxRows = this.getMaxRows();
 	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
 	var mxi = mni + Math.floor(this.dBody.clientHeight / TR_HEIGHT);
 	var mid = Math.floor(((mni + mxi) / 2));
@@ -982,7 +984,7 @@ function handleScroll()
 
 dxSTable.prototype.getMaxRows = function()
 {
-	return((this.maxRows || this.viewRows<this.maxViewRows) ? 1000000 : Math.ceil(this.dBody.clientHeight / TR_HEIGHT));	
+	return((this.maxRows || this.viewRows<this.maxViewRows) ? 1000000 : Math.ceil(Math.min(this.dBody.clientHeight,this.dCont.clientHeight) / TR_HEIGHT));	
 }
 
 dxSTable.prototype.refreshRows = function( height, fromScroll ) 
@@ -991,6 +993,7 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 	{
 		return;
    	}
+
    	var maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
 	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
 	if(mni + maxRows > this.viewRows) 
@@ -1114,7 +1117,7 @@ dxSTable.prototype.keyEvents = function(e)
 dxSTable.prototype.selectRow = function(e, row) 
 {
 	if(!$.support.touchable)
-        	$(document).bind( browser.isOpera ? "keypress" : "keydown", this, this.keyEvents );
+		this.bindKeys();
 	var id = row.id;
 	if(!((e.which==3) && (this.rowSel[id] == true))) 
 	{

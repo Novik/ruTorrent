@@ -84,13 +84,13 @@ theWebUI.switchRSSLabel = function(el)
 	}
 	table.clearSelection();
 	var lst = $("#List");
+	var rss = $("#RSSList");
 	if(lst.is(":visible"))
 	{
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
 		if((this.actLbl != "") && ($$(this.actLbl) != null))
 			$($$(theWebUI.actLbl)).removeClass("sel");
-		var rss = $("#RSSList");
 		plugin.correctCSS();
 		rss.css( { width: lst.width(), height: lst.height() } );
 		table.resize(lst.width(), lst.height());
@@ -100,7 +100,7 @@ theWebUI.switchRSSLabel = function(el)
 		table.scrollTo(0);
 	}
 	theWebUI.switchLayout(true);
-	table.refreshRows($("#RSSList").height());
+	table.refreshRows();
 }
 
 plugin.config = theWebUI.config;
