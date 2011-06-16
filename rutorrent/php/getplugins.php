@@ -46,6 +46,7 @@ function getPluginInfo( $name, $permissions )
 		'php.version.readable'=>'5.0.0',
 		'web.external.warning'=>array(),
 		'web.external.error'=>array(),
+		'plugin.help'=>'',
 		);
 	$fname = "../plugins/".$name."/plugin.info";
 	if(is_readable($fname))
@@ -60,6 +61,7 @@ function getPluginInfo( $name, $permissions )
 				$field = trim($fields[0]); 
 				switch($field)
 				{
+					case "plugin.help":
 					case "plugin.author":
 					case "plugin.description":
 					case "rtorrent.remote":
@@ -388,7 +390,7 @@ if($handle = opendir('../plugins'))
 			}
 
 			$jResult.="(function () { var plugin = new rPlugin( '".$plugin["name"]."',".$pInfo["plugin.version"].
-				",'".$pInfo["plugin.author"]."','".$pInfo["plugin.description"]."',".$pInfo["perms"]." );\n";
+				",'".$pInfo["plugin.author"]."','".$pInfo["plugin.description"]."',".$pInfo["perms"].",'".$pInfo["plugin.help"]."' );\n";
 			if($plugin["php"])
 				require_once( $plugin["php"] );
 			else

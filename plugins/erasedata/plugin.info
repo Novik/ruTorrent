@@ -3,3 +3,4 @@ plugin.author: dmrom
 plugin.version: 3.2
 rtorrent.remote: warning
 rtorrent.script.error: cleanup.sh
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginErasedata
