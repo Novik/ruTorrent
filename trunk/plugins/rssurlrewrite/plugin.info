@@ -4,3 +4,4 @@ plugin.runlevel: 12
 plugin.version: 3.2
 plugin.dependencies: rss
 php.version: 5.2.0
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRSSURLRewrite

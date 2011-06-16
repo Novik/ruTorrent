@@ -460,7 +460,15 @@ var theWebUI =
 		        if(this.getTable("plg").selCount > 1) 
 				theContextMenu.add([theUILang.plgShutdown, "theWebUI.plgShutdown()"]);
 			else
-				theContextMenu.add([theUILang.plgShutdown, thePlugins.isInstalled(id.substr(5)) ? "theWebUI.plgShutdown()" : null]);
+			{
+				var plugin = thePlugins.get(id.substr(5));
+				theContextMenu.add([theUILang.plgShutdown, plugin.enabled ? "theWebUI.plgShutdown()" : null]);
+				if(plugin.help)
+				{
+					theContextMenu.add([CMENU_SEP]); 
+					theContextMenu.add([theUILang.Help, "window.open('"+plugin.help+"', '_blank')" ]);	
+				}
+			}
 	   		theContextMenu.show();
 			return(true);
 		}

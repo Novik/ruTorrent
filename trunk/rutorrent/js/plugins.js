@@ -93,7 +93,7 @@ var thePlugins =
 	}
 };
 
-function rPlugin( name, version, author, descr, restictions )
+function rPlugin( name, version, author, descr, restictions, help )
 {
 	this.name = name;
 	this.path = "plugins/"+name+"/";
@@ -103,6 +103,7 @@ function rPlugin( name, version, author, descr, restictions )
 	this.allStuffLoaded = false;
 	this.enabled = true;
 	this.restictions = restictions;
+	this.help = help;
 	thePlugins.register(this);
 }
 

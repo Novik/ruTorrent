@@ -2,3 +2,4 @@ plugin.description: The plug-in provides cookies information.
 plugin.author: Novik
 plugin.version: 3.2
 rtorrent.need: 0
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginCookies

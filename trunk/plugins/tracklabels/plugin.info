@@ -2,3 +2,4 @@ plugin.description: The plug-in adds a set of labels on the category panel. Thes
 plugin.author: Novik
 plugin.runlevel: 11
 plugin.version: 3.2
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginTracklabels

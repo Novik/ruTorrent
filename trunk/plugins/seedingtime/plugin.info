@@ -3,3 +3,4 @@ plugin.author: Novik
 plugin.runlevel: 11.4
 plugin.version: 3.2
 rtorrent.version: 0.8.6
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginSeedingtime
