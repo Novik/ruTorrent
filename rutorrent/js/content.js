@@ -702,7 +702,7 @@ function correctContent()
 	}
 	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
 
-	if(theWebUI.systemInfo.rTorrent.iVersion>=0x808)
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
 	{
 		theRequestManager.addRequest("fls","f.prioritize_first=",function(hash, fls, value) 
 		{
