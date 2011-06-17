@@ -944,7 +944,7 @@ var theWebUI =
       				theContextMenu.add([theUILang.DisableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? "theWebUI.setTrackerState('" + this.dID + "',0)" : null]);
          		}
       		}
-		if(theWebUI.systemInfo.rTorrent.iVersion>=0x808)
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
 		{
 	   		theContextMenu.add([CMENU_SEP]);
 			theContextMenu.add([theUILang.updateTracker, this.isTorrentCommandEnabled("updateTracker",this.dID) ? "theWebUI.updateTracker()" : null]);
@@ -1130,7 +1130,7 @@ var theWebUI =
 		else
 			theContextMenu.add([theUILang.Priority]);
 
-		if(theWebUI.systemInfo.rTorrent.iVersion>=0x808)
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
 		{
 			_bf = [];
 			if(table.selCount > 1) 
@@ -1271,7 +1271,7 @@ var theWebUI =
 				(this.torrents[id].private==0) && (theWebUI.systemInfo.rTorrent.iVersion>=0x804)) ? 
 				"theDialogManager.show('padd')"	: null]);
 		}
-		if(theWebUI.systemInfo.rTorrent.iVersion>=0x808)
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
 			theContextMenu.add([theUILang.updateTracker, this.isTorrentCommandEnabled("updateTracker",id) ? "theWebUI.updateTracker()" : null]);
    		theContextMenu.add([CMENU_SEP]);
    		var _bf = [];

@@ -133,7 +133,13 @@ class rTorrentSettings
 					"d.set_connection_seed"		=> "d.connection_seed.set",
 					);
 			}
-
+			if($this->iVersion==0x808)
+			{
+				$req = new rXMLRPCRequest( new rXMLRPCCommand("file.prioritize_toc") );
+				$req->important = false;
+				if($req->success())
+					$this->iVersion=0x809;
+			}
                         $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 			if($req->run())
 			{
