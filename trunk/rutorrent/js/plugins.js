@@ -135,9 +135,9 @@ rPlugin.prototype.remove = function()
 rPlugin.prototype.showError = function(err) 
 {
 	if( this.allStuffLoaded )
-		log( err );
+		log( eval(err) );
 	else
-		setTimeout( 'thePlugins.get("'+this.name+'").showError(' + err + ')', 1000 );
+		setTimeout( 'thePlugins.get("'+this.name+'").showError("' + err + '")', 1000 );
 }
 
 rPlugin.prototype.langLoaded = function() 

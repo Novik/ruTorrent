@@ -158,6 +158,7 @@ $.fn.extend({
 					{
 						e.which = 3;
 						e.button = 2;
+						e.metaKey = false;	// for safari
 						e.shiftKey = false;	// for safari
                                                 return(handler.apply(this,arguments));
 					});
@@ -263,7 +264,8 @@ function linked(obj, _33, lst)
 
 function escapeHTML(str)
 {
-	return( $("<div>").text(str).html() );
+//	return( $("<div>").text(str).html() );
+	return( String(str).split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;') );
 }
 
 function askYesNo( title, content, funcYesName )
