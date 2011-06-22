@@ -44,11 +44,12 @@ class PlayTheNetEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, ">a retourné aucun résultat.</div>")!==false) ||
 				(strpos($cli->results, 'type="password"')!==false))
 				break;
-                        $res = preg_match_all('/<ul class=".*">.*<li class="categories_parent_cat.*"><a href="\?section=.*"><img src="themes\/images\/CAT\/.*" alt="(?P<cat>.*)" \/><\/a><\/li>.*'.
+                        $res = preg_match_all('/<ul\s* class=".*"\s*>.*<li class="categories_parent_cat.*><a href="\?section=.*"><img src="themes\/images\/CAT\/.*" alt="(?P<cat>.*)" \/><\/a><\/li>.*'.
 				'<li class="torrents_name.*"><a href="\?section=INFOS&amp;id=(?P<id>.*)">(?P<name>.*)<\/a><\/li>.*'.
 				'<li class="torrents_size.*">(?P<size>.*)<\/li>.*'.
 				'<li class="torrents_seeders.*">(?P<seeds>.*)<\/li>.*'.
-				'<li class="torrents_leechers.*">(?P<leech>.*)<\/li>.*<\/ul>/siU', $cli->results, $matches);
+				'<li class="torrents_leechers.*">(?P<leech>.*)<\/li>.*<\/ul>'.
+				'/siU', $cli->results, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
