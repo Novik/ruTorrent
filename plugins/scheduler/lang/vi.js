@@ -8,12 +8,12 @@
  theUILang.schUnlimited			= "Không giới hạn";
  theUILang.schLimited			= "Giới hạn";
  theUILang.schTurnOff			= "Tắt";
- theUILang.schSeedingOnly			= "Chỉ Seed";
+ theUILang.schSeedingOnly			= "Chỉ làm nguồn";
 
  theUILang.schUnlimitedDesc		= "Không giới hạn - Không thấy giới hạn tổng";
  theUILang.schLimitedDesc			= "Giới hạn - Giới hạn băng thông theo lịch người dùng";
  theUILang.schTurnOffDesc			= "Tắt - Dừng tất cả torrent";
- theUILang.schSeedingOnlyDesc		= "Chỉ Seed - Chỉ tải dữ liệu lên";
+ theUILang.schSeedingOnlyDesc		= "Chỉ làm nguồn - Chỉ tải dữ liệu lên";
 
  theUILang.schLimitedUL			= "Giới hạn Lên";
  theUILang.schLimitedDL			= "Giới hạn Xuống";

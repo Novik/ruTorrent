@@ -2,8 +2,8 @@
  theUILang.tegMenuLoad	= "Tải";
  theUILang.tegMenuOpen	= "Mở trong trình duyệt";
  theUILang.tegMenuDeleteItem = "Bỏ mục";
- theUILang.tegMenuDelete = "Bỏ tag";
- theUILang.tegRefresh	= "Làm mới tag";
+ theUILang.tegMenuDelete = "Bỏ thẻ";
+ theUILang.tegRefresh	= "Làm mới thẻ";
  theUILang.exsGlobal	= "Bào gồm mục 'Tất cả'";
  theUILang.exsLimit	= "Giới hạn kết quả";
  theUILang.exsEngines	= "Máy tìm kiếm";
