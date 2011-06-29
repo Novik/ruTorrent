@@ -1023,6 +1023,7 @@ rDirectory.prototype.setDirectory = function(name)
 }
 
 // -FL10%FF%86-
+// -SM1310-
 
 var theBTClientVersion = 
 {

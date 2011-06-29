@@ -55,7 +55,6 @@ class WorldInHDEngine extends commonEngine
 						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
 						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i]),"ISO-8859-1");
 						$item["size"] = self::formatSize($matches["size"][$i]);
-toLog($matches["date"][$i]);
 						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));

@@ -114,7 +114,7 @@ plugin.onLangLoaded = function()
 				"<input type='text' id='edit_datadir' class='TextboxLarge' maxlength='200'/>" +
 				"<input type='button' id='btn_datadir_browse' class='Button' value='...' />" +
 				"<div class='checkbox'>" +
-					"<input type='checkbox' id='move_datafiles'/>"+
+					"<input type='checkbox' checked id='move_datafiles'/>"+
 					"<label for='move_datafiles'>"+ theUILang.DataDirMove +"</label>"+
 				"</div>" +
 			"</fieldset>" +
