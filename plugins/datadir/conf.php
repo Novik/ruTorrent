@@ -8,6 +8,6 @@
 	$datadir_runmode="rtorrent";
 
 	// set "true" to enable debug output
-	$datadir_debug_enabled = false;
+	$datadir_debug_enabled = true;
 
 ?>
