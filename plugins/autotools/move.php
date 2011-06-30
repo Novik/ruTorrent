@@ -3,8 +3,8 @@
 if( !chdir( dirname( __FILE__) ) )
 	exit;
 
-if( count( $argv ) > 6 )
-	$_SERVER['REMOTE_USER'] = $argv[6];
+if( count( $argv ) > 5 )
+	$_SERVER['REMOTE_USER'] = $argv[5];
 
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
@@ -49,16 +49,19 @@ function moveTorrentFiles($torrent,$base_path,$base_file,$is_multy_file,$dest_pa
 	return($ret);
 }
 
-$session = $argv[1];
-$hash = $argv[2];
-$base_path = $argv[3];
-$base_name = $argv[4];
-$is_multi = $argv[5];
+Debug( "" );
+Debug( "--- begin ---" );
+
+$hash = $argv[1];
+$base_path = $argv[2];
+$base_name = $argv[3];
+$is_multi = $argv[4];
 $at = rAutoTools::load();
-if( $at->enable_move && !empty($session))
+if( $at->enable_move )
 {
 	$path_to_finished = trim( $at->path_to_finished );
-	if( $path_to_finished != '' )
+	$session  = rTorrentSettings::get()->session;
+	if( ($path_to_finished != '') && !empty($session) )
 	{
 		$path_to_finished = rtAddTailSlash( $path_to_finished );
 		$fname = rtAddTailSlash($session).$hash.".torrent";
@@ -130,5 +133,7 @@ if( $at->enable_move && !empty($session))
 		}
 	}
 }
+
+Debug( "--- end ---" );
 
 ?>
