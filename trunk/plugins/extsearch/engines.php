@@ -123,6 +123,8 @@ class commonEngine
 		else
 		if(function_exists('mb_convert_encoding'))
 		        $out = mb_convert_encoding($out, $encoding, 'UTF-8');
+		else
+		        $out = utf8_decode($out);
 		return($out);	
 	}
 	static public function toUTF($out,$encoding)
@@ -132,9 +134,15 @@ class commonEngine
 		else
 		if(function_exists('mb_convert_encoding'))
 		        $out = mb_convert_encoding($out, 'UTF-8', $encoding );
+		else
+		        $out = utf8_encode($out);
 		return($out);	
 	}
-	
+	static public function fromJSON($str)
+	{
+		$ret = json_decode('{ "foo": "'.$str.'" }');
+		return($ret ? $ret->foo : $str);
+	}
 }
 
 class rSearchHistory
@@ -348,6 +356,8 @@ class engineManager
 			$nfo["seeds"] = 0;
 		if(empty($nfo["peers"]))
 			$nfo["peers"] = 0;
+		if( isInvalidUTF8( $nfo["name"] ) )
+			$nfo["name"] = commonEngine::toUTF($nfo["name"],"ISO-8859-1");
 	}
 
 

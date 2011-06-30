@@ -27,7 +27,7 @@ class ISOHuntLiteEngine extends commonEngine
 							$item = $this->getNewEntry();
 							$item["cat"] = self::removeTags($matches["cat"][$i]);
 							$item["desc"] = str_replace("\\","",$matches["desc"][$i]);
-							$item["name"] = self::removeTags($matches["name"][$i]);
+							$item["name"] = self::fromJSON(self::removeTags($matches["name"][$i]));
 							$item["size"] = $matches["size"][$i];
 							$item["time"] = strtotime($matches["date"][$i]);
 							$item["seeds"] = intval($matches["seeds"][$i]);

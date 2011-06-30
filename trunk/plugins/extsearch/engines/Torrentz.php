@@ -62,10 +62,6 @@ class TorrentzEngine extends commonEngine
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["seeds"] = intval($matches["seeds"][$i]);
 						$item["peers"] = intval($matches["leech"][$i]);
-
-						if( isInvalidUTF8( $item["name"] ) )
-							$item["name"] = win2utf($item["name"]);
-
 						$tms = self::removeTags($matches["date"][$i]);
 						$tm = strptime($tms, '%a, %d %b %Y %T');
 						if($tm!==false)

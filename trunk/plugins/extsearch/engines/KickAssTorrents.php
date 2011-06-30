@@ -38,7 +38,7 @@ class KickAssTorrentsEngine extends commonEngine
 					{
 						$item = $this->getNewEntry();
 						$item["desc"] = $matches["desc"][$i];
-						$item["name"] = self::removeTags($matches["name"][$i]);
+						$item["name"] = self::fromJSON(self::removeTags($matches["name"][$i]));
 						$item["size"] = $matches["size"][$i];
 						$item["seeds"] = intval($matches["seeds"][$i]);
 						$item["peers"] = intval($matches["leech"][$i]);
