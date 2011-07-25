@@ -97,7 +97,7 @@ var theUILang =
  Pause				: "Пауза",
  Stop				: "Стоп",
  Force_recheck			: "Примус. перевірка",
- New_label			: "Нова мітка…",
+ New_label			: "Створити мітку…",
  Remove_label			: "Видалити мітку",
  Labels				: "Мітки",
  Remove				: "Видалити",
@@ -126,7 +126,7 @@ var theUILang =
  Torrent_properties		: "Властивості торента",
  Trackers			: "Трекери",
  Bandwidth_sett			: "Настройки обмежень",
- Number_ul_slots		: "К-ть слотів віддачі",
+ Number_ul_slots		: "Кількість слотів віддачі",
  Peer_ex			: "Обмін пірами",
  About				: "Про програму",
  Enter_label_prom		: "Введіть нову мітку для виділених торентів",
@@ -166,25 +166,25 @@ var theUILang =
  mnu_search			: "Пошук",
  mnu_lang			: "Мова",
  torrent_add			: "Додати торент", /*Caption of torrent add box*/
- time_w				: "т ", /*for x weeks*/
- time_d				: "д ", /*for x days remaining*/
- time_h				: "г ", /*for x hours remaining*/
- time_m				: "х ", /*for x minutes remaining*/
- time_s				: "с ", /*for x seconds remaining*/
+ time_w				: " тижн. ", /*for x weeks*/
+ time_d				: " дн. ", /*for x days remaining*/
+ time_h				: " год ", /*for x hours remaining*/
+ time_m				: " хв", /*for x minutes remaining*/
+ time_s				: " с ", /*for x seconds remaining*/
  Base_directory    		: "Каталог",
- Number_Peers_min		: "Мін. к-ть пірів",
- Number_Peers_max		: "Макс. к-ть пірів",
- Tracker_Numwant		: "Бажана к-ть пірів",
- Number_Peers_For_Seeds_min	: "Мін. к-ть пірів для роздавання",
- Number_Peers_For_Seeds_max	: "Макс. к-ті пірів для роздавання",
+ Number_Peers_min		: "Мін. кількість пірів",
+ Number_Peers_max		: "Макс. кількість пірів",
+ Tracker_Numwant		: "Бажана кількість пірів",
+ Number_Peers_For_Seeds_min	: "Мін. кількість пірів для роздавання",
+ Number_Peers_For_Seeds_max	: "Макс. кількісті пірів для роздавання",
  Enable_port_open		: "Відкривати порт для вихідного трафіка",
  dht_port			: "Порт UDP для DHT",
  Ather_Limiting			: "Інші обмеження",
- Number_dl_slots		: "К-ть слотів завантаження",
+ Number_dl_slots		: "Кількість слотів завантаження",
  Glob_max_memory		: "Макс. об’єм використовуваної пам’яті",
- Glob_max_files			: "Макс. к-ть відкритих файлів",
- Glob_max_http			: "Макс. к-ть відкритих з’єднань HTTP",
- Glob_max_sockets		: "Макс. к-ть відкритих сокетів",
+ Glob_max_files			: "Макс. кількість відкритих файлів",
+ Glob_max_http			: "Макс. кількість відкритих з’єднань HTTP",
+ Glob_max_sockets		: "Макс. кількість відкритих сокетів",
  Ather_sett			: "Інше",
  Directory_For_Dl		: "Каталог завантажень",
  Check_hash			: "Перевіряти дані після завантаження",
