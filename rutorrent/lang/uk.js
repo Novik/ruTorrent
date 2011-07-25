@@ -169,7 +169,7 @@ var theUILang =
  time_w				: " тижн. ", /*for x weeks*/
  time_d				: " дн. ", /*for x days remaining*/
  time_h				: " год ", /*for x hours remaining*/
- time_m				: " хв", /*for x minutes remaining*/
+ time_m				: " хв ", /*for x minutes remaining*/
  time_s				: " с ", /*for x seconds remaining*/
  Base_directory    		: "Каталог",
  Number_Peers_min		: "Мін. кількість пірів",
