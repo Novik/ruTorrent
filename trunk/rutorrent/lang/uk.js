@@ -279,5 +279,5 @@ var theUILang =
  updateTracker			: "Оновити трекери",
  scrapeUpdate			: "Оновлено",
  trkInterval			: "Інтервал",
- logAutoSwitch			: "Autoswitch to 'Log' tab"
+ logAutoSwitch			: "Автоперемикання на вкладку «Журнал»"
 };
