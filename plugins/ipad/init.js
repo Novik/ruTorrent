@@ -5,6 +5,8 @@ $.extend($.support,
 
 plugin.holdMouse = { x:0, y: 0 };
 plugin.curMouse = null;
+plugin.scrollInterval = 40;
+plugin.accel = 1.2;
 
 plugin.emulateRightClick = function()
 {
@@ -48,6 +50,7 @@ plugin.dispatchMouse = function(event,type)
 	mouseEvent.initMouseEvent(type, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY,
 		false, false, false, false, 0, null);
 	touch.target.dispatchEvent(mouseEvent);
+	touch.timeStamp = $.now();
 	return(touch);
 }
 
@@ -60,6 +63,7 @@ plugin.touchStart = function(event)
 {
 	if(event.changedTouches.length)
 	{
+		plugin.stopScroll();
 		if($(event.changedTouches[0].target).is("select"))
 			return;
 		var touch = plugin.dispatchMouse(event,"mousemove");
@@ -81,10 +85,39 @@ plugin.touchStart = function(event)
 				plugin.dispatchMouse(event,"dblclick");
 			}
 		}
-		plugin.curMouse = { x: touch.screenX, y: touch.screenY };
+		plugin.curMouse = { x: touch.screenX, y: touch.screenY, timeStamp: $.now() };
 	}
 	event.preventDefault();
 	return(false);
+}
+
+plugin.stopScroll = function()
+{
+	if(plugin.scrollTimeout)
+		window.clearTimeout(plugin.scrollTimeout);
+	plugin.scrollTimeout = null;
+}
+
+plugin.startScroll = function( prop, speed, target )
+{
+	plugin.speed = speed;
+	if((plugin.prop!=prop) || (plugin.target!=target))
+		plugin.stopScroll();
+	plugin.prop = prop;
+	plugin.target = target;
+	if(!plugin.scrollTimeout)
+		plugin.scrollTimeout = window.setTimeout( function() 
+		{
+			var pos = target[prop];
+			target[prop] -= plugin.speed*plugin.scrollInterval;
+			var scrollEvent = document.createEvent("HTMLEvents");
+			scrollEvent.initEvent( 'scroll', true, true )
+			target.dispatchEvent(scrollEvent);
+			if(pos!=target[prop])
+				plugin.scrollTimeout = window.setTimeout( arguments.callee, plugin.scrollInterval );
+			else
+				plugin.scrollTimeout = null;
+		}, 40);
 }
 
 plugin.touchMove = function(event)
@@ -97,8 +130,8 @@ plugin.touchMove = function(event)
 			plugin.cancelMouseUp = false;
 		if(plugin.curMouse)
 		{
-			var delta = { x:touch.screenX-plugin.curMouse.x, y:touch.screenY-plugin.curMouse.y };
-			if(delta.x || delta.y)
+			var delta = { x:touch.screenX-plugin.curMouse.x, y:touch.screenY-plugin.curMouse.y, tm: touch.timeStamp-plugin.curMouse.timeStamp };
+			if((delta.x || delta.y) && delta.tm)
 			{
 				var target = $(touch.target);
 				var mode = { x: true, y: true };
@@ -122,7 +155,19 @@ plugin.touchMove = function(event)
 				}
 				if(target.length)
 				{
+				        if(mode.x && mode.y)
+				        {
+				        	if(Math.abs(delta.x)>Math.abs(delta.y))
+				        		mode.y = false;
+						else
+				        		mode.x = false;
+				        }
 					target = target.get(0);
+					if(mode.x)
+						plugin.startScroll( "scrollLeft", delta.x/delta.tm*plugin.accel, target );
+					if(mode.y)
+						plugin.startScroll( "scrollTop", delta.y/delta.tm*plugin.accel, target );
+/*
 					if(mode.x)
 						target.scrollLeft = target.scrollLeft-delta.x;
 					if(mode.y)
@@ -130,10 +175,11 @@ plugin.touchMove = function(event)
 					var scrollEvent = document.createEvent("HTMLEvents");
 					scrollEvent.initEvent( 'scroll', true, true )
 					target.dispatchEvent(scrollEvent);
+*/
 				}
 			}
 		}
-		plugin.curMouse = { x: touch.screenX, y: touch.screenY };
+		plugin.curMouse = { x: touch.screenX, y: touch.screenY, timeStamp: $.now() };
 
 	}
 	event.preventDefault();
