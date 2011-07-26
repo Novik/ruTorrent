@@ -70,11 +70,29 @@ function quoteAndDeslashEachItem($item)
 	return('"'.addcslashes($item,"\\\'\"\n\r\t").'"'); 
 }
 
-function isInvalidUTF8($s)
-{
-	return(preg_match( '/^([\x00-\x7f]|[\xc0-\xdf][\x80-\xbf]|' .
-                '[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xf7][\x80-\xbf]{3})+$/', $s )!=1);
+define('_is_utf8_split',5000);
 
+function isInvalidUTF8($string)
+{
+	$len = strlen($string);
+	if($len > _is_utf8_split) 
+	{
+		for($i=0,$s=_is_utf8_split,$j=ceil($len/_is_utf8_split); $i < $j; $i++,$s+=_is_utf8_split) 
+			if(isInvalidUTF8(substr($string,$s,_is_utf8_split)))
+		                return(true);
+	        return(false);
+    	}
+    	else
+		return(preg_match('%^(?:'.
+			'[\x09\x0A\x0D\x20-\x7E]'.            	// ASCII
+			'| [\xC2-\xDF][\x80-\xBF]'.             // non-overlong 2-byte
+			'| \xE0[\xA0-\xBF][\x80-\xBF]'.         // excluding overlongs
+			'| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'.  // straight 3-byte
+			'| \xED[\x80-\x9F][\x80-\xBF]'.         // excluding surrogates
+			'| \xF0[\x90-\xBF][\x80-\xBF]{2}'.      // planes 1-3
+			'| [\xF1-\xF3][\x80-\xBF]{3}'.          // planes 4-15
+			'| \xF4[\x80-\x8F][\x80-\xBF]{2}'.      // plane 16
+			')*$%xs', $s)!=1);
 }
 
 function win2utf($str) 
