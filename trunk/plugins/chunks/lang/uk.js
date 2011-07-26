@@ -1,10 +1,10 @@
 ﻿
 
-theUILang.Chunks = "Chunks";
-theUILang.chunksNoChunksFound = "No chunks found!";
-theUILang.chunksRows = "row(s)";
-theUILang.chunksColumns = "column(s)";
-theUILang.chunksChunks = "chunk(s)";
-theUILang.chunksSize = "chunk size";
+theUILang.Chunks = "Частини";
+theUILang.chunksNoChunksFound = "Відомостей про частини немає.";
+theUILang.chunksRows = "рядки";
+theUILang.chunksColumns = "стовпці";
+theUILang.chunksChunks = "частини";
+theUILang.chunksSize = "розмір частини";
 
 thePlugins.get("chunks").langLoaded();
