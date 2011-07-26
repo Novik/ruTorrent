@@ -249,5 +249,6 @@ var theUILang =
  prioritizeNormal		: "Обычная",
  updateTracker			: "Обновить трекеры",
  scrapeUpdate			: "Был обновлен",
- trkInterval			: "Интервал"
+ trkInterval			: "Интервал",
+ logAutoSwitch			: "Автопереключение на закладку 'Лог'"
 };

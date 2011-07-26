@@ -278,5 +278,6 @@ var theUILang =
  prioritizeNormal		: "Звичайна",
  updateTracker			: "Оновити трекери",
  scrapeUpdate			: "Оновлено",
- trkInterval			: "Інтервал"
+ trkInterval			: "Інтервал",
+ logAutoSwitch			: "Autoswitch to 'Log' tab"
 };

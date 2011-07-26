@@ -148,7 +148,8 @@ var theWebUI =
 		"webui.retry_on_error":		120,
 		"webui.closed_panels":		{},
 		"webui.timeformat":		0,
-		"webui.dateformat":		0
+		"webui.dateformat":		0,
+		"webui.log_autoswitch":		1
 	},
 	showFlags: 0,
 	total:

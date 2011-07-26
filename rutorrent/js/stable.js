@@ -104,11 +104,11 @@ dxSTable.prototype.bindKeys = function()
 
 dxSTable.prototype.create = function(ele, styles, aName)
 {
+	if(!ele || this.created)
+		return;
 	var tr, td, cl, cg, div;
 	this.prefix = aName;
 	this.dCont = ele;
-	if(!this.dCont)
-		return;
 
 	this.dHead = $("<div>").addClass("stable-head").get(0);
 	this.dBody = $("<div>").addClass("stable-body").get(0);
@@ -1275,6 +1275,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 	var data = this.rowdata[sId].fmtdata;
 	var s = "";
 	var div;
+	var ret;
 	for(var i = 0; i < this.cols; i++) 
 	{
 		var ind = this.colOrder[i];
@@ -1285,7 +1286,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 		{
 			s+=" rawvalue='"+($type(cols[ind]) ? cols[ind] : "")+"'";
 		        span1 = "<span class='meter-text' style='overflow: visible'>"+escapeHTML(data[ind])+"</span>";
-		 	div = "<div class='meter-value' style='float: left; background-color: "+
+			div = "<div class='meter-value' style='float: left; background-color: "+
 		 		(new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(data[ind])).getColor()+
 				"; width: "+iv(data[ind])+"%"+
 				"; visibility: "+(iv(data[ind]) ? "visible" : "hidden")+
@@ -1303,10 +1304,13 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 		s+=div;
 		s+="</td>";
 	}
-	var ret = tr.append(s).get(0);
-	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-	for(var i = 0, l = _e.length; i < l; i++) 
-		ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
+	ret = tr.append(s).get(0);
+	if(!browser.isIE7x)
+	{
+		var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
+		for(var i = 0, l = _e.length; i < l; i++) 
+			ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
+	}
 	return(ret);
 }
 
