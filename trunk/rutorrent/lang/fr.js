@@ -295,5 +295,6 @@
  prioritizeNormal		: "Normal",
  updateTracker			: "Update trackers",
  scrapeUpdate			: "Was updated",
- trkInterval			: "Interval"
+ trkInterval			: "Interval",
+ logAutoSwitch			: "Autoswitch to 'Log' tab"
 };

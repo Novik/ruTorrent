@@ -876,7 +876,8 @@ function log(text,noTime,divClass)
 	{
 		obj.append( $("<div>").addClass(divClass).text(tm + " " + text).show() );
 		obj[0].scrollTop = obj[0].scrollHeight;
-		theTabs.show("lcont");
+		if(iv(theWebUI.settings["webui.log_autoswitch"]))
+			theTabs.show("lcont");
 	}
 }
 
