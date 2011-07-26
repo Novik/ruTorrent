@@ -252,8 +252,6 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 function rtScanFiles( $path, $mask, $subdir = '' )
 {
 	$path = rtAddTailSlash( $path );
-	if( $ignore_case )
-		$mask = strtolower( $mask );
 	if( $subdir != '' )
 		$subdir = rtAddTailSlash( $subdir );
 	$ret = array();
