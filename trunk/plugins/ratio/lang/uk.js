@@ -1,18 +1,18 @@
 ﻿
- theUILang.ratios			= "Ratio groups";
- theUILang.ratio			= "RatioGroup";
- theUILang.mnuRatio		= "Set ratio group";
- theUILang.mnuRatioUnlimited	= "No ratio";
- theUILang.ratioName 		= "Name";
- theUILang.minRatio 		= "Min";
- theUILang.maxRatio 		= "Max";
- theUILang.ratioUpload 		= "UL";
- theUILang.ratioAction 		= "Action";
- theUILang.ratioStop 		= "Stop";
- theUILang.ratioStopAndRemove 	= "Stop & Clear group";
- theUILang.ratioErase 		= "Remove";
- theUILang.ratioEraseData 	= "Remove data";
- theUILang.maxTime 		= "Time";
- theUILang.ratioDefault		= "Default ratio group";
+ theUILang.ratios			= "Групи коефіцієнтів";
+ theUILang.ratio			= "Група коефіцієнтів";
+ theUILang.mnuRatio		= "Установити коефіцієнт";
+ theUILang.mnuRatioUnlimited	= "Немає";
+ theUILang.ratioName 		= "Назва";
+ theUILang.minRatio 		= "Мін.";
+ theUILang.maxRatio 		= "Макс.";
+ theUILang.ratioUpload 		= "Вивант.";
+ theUILang.ratioAction 		= "Дія";
+ theUILang.ratioStop 		= "Зупинити";
+ theUILang.ratioStopAndRemove 	= "Зупинити й очистити";
+ theUILang.ratioErase 		= "Видалити";
+ theUILang.ratioEraseData	= "Видалити дані";
+ theUILang.maxTime 		= "Час";
+ theUILang.ratioDefault		= "Стандартна група коефіцієнтів";
 
 thePlugins.get("ratio").langLoaded();
