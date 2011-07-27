@@ -1,9 +1,9 @@
 ﻿
-theUILang.feedAll		= "All torrents";
-theUILang.feedCompleted		= "Completed torrents";
-theUILang.feedDownloading	= "Downloading torrents";
-theUILang.feedActive		= "Active torrents";
-theUILang.feedInactive		= "Inactive torrents";
-theUILang.feedError		= "Error torrents";
+theUILang.feedAll		= "Усі завантаження";
+theUILang.feedCompleted		= "Завершені завантаження";
+theUILang.feedDownloading	= "Незавершені завантаження";
+theUILang.feedActive		= "Активні завантаження";
+theUILang.feedInactive		= "Неактивні завантаження";
+theUILang.feedError		= "Завантаження з помилками";
 
 thePlugins.get("feeds").langLoaded();
