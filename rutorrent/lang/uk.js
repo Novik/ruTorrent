@@ -280,5 +280,5 @@ var theUILang =
  scrapeUpdate			: "Оновлено",
  trkInterval			: "Інтервал",
  logAutoSwitch			: "Автоперемикання на вкладку «Журнал»",
- phpParameterUnavailable	: "PHP directive register_argc_argv is set to Off. Change its value to On, otherwise some plugins won't work."
+ phpParameterUnavailable	: "Директиву інтерпретатора PHP register_argc_argv вимкнено (значення Off). Увімкніть її (значення On), інакше деякі плагіни не працюватимуть."
 };
