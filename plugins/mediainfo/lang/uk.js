@@ -1,6 +1,6 @@
-theUILang.mediainfo			= "MediaInfo..";
-theUILang.mediaError		= "Error";
-theUILang.badMediaData 		= "Unable to retreive details for this file";
-theUILang.MediaInfoNotFound = "MediaInfo plugin: web user can't access MediaInfo program.";
+theUILang.mediainfo			= "MediaInfo…";
+theUILang.mediaError		= "Помилка";
+theUILang.badMediaData 		= "Не вдалося отримати відомості про цей файл";
+theUILang.MediaInfoNotFound = "Плагін MediaInfo: програма MediaInfo не доступна користувачу веб-сервера.";
 
 thePlugins.get("mediainfo").langLoaded();
