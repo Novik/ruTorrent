@@ -1,5 +1,6 @@
 plugin.description: The plug-in allows user to edit the list of trackers and commentaries of the current torrent.
 plugin.author: Novik
-plugin.version: 3.2
+plugin.version: 3.3
 rtorrent.remote: error
 php.version: 5.2.0
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginEdit

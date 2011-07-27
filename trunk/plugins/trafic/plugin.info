@@ -1,6 +1,6 @@
 plugin.description: The plug-in is a subsystem for registration of the total (all trackers counted) rTorrent traffic.
 plugin.author: Novik
-plugin.version: 3.2
+plugin.version: 3.3
 plugin.runlevel: 11
 rtorrent.remote: error
 rtorrent.external.error: php

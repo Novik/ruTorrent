@@ -250,5 +250,6 @@ var theUILang =
  updateTracker			: "Обновить трекеры",
  scrapeUpdate			: "Был обновлен",
  trkInterval			: "Интервал",
- logAutoSwitch			: "Автопереключение на закладку 'Лог'"
+ logAutoSwitch			: "Автопереключение на закладку 'Лог'",
+ phpParameterUnavailable	: "Директива php register_argc_argv выставлена в Off. Измените ее значение на On, иначе некоторые плагины будут работать некорректно."
 };
