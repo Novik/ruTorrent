@@ -282,6 +282,7 @@ if($handle = opendir('../plugins'))
 			$phpVersion = substr($phpVersion,0,$pos);
 		$phpIVersion = explode('.',$phpVersion);
 		$phpIVersion = (intval($phpIVersion[0])<<16) + (intval($phpIVersion[1])<<8) + intval($phpIVersion[2]);
+		$phpRequired = false;
 		while(false !== ($file = readdir($handle)))
 		{
 			if($file != "." && $file != ".." && is_dir('../plugins/'.$file))
@@ -309,6 +310,9 @@ if($handle = opendir('../plugins'))
 							$jResult.="log('".$file.": '+theUILang.webExternalNotFoundError+' ('+'".$external."'+').');";
 							$extError = true;
 						}
+						else
+						if($external=='php')
+							$phpRequired = true;
 					}
 					if($extError)
 						continue;
@@ -320,7 +324,11 @@ if($handle = opendir('../plugins'))
 							continue;
 						}
                 				foreach( $info['rtorrent.external.error'] as $external )
+                				{
 							findRemoteEXE($external,"log('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').'); thePlugins.get('".$file."').disable();",$remoteRequests);
+							if($external=='php')
+								$phpRequired = true;
+						}
 						foreach( $info['rtorrent.script.error'] as $external )
 						{
 						       	$fname = $rootPath.'/plugins/'.$file.'/'.$external;
@@ -376,6 +384,12 @@ if($handle = opendir('../plugins'))
 				}
 			}
 		} 
+		if($phpRequired)
+		{
+			$val = strtoupper(ini_get("register_argc_argv"));
+			if( $val!=='' && $val!='ON' && $val!='1' && $val!='TRUE' )
+				$jResult.="log(theUILang.phpParameterUnavailable);";
+		}
 		usort($init,"pluginsSort");
 		foreach($init as $plugin)
 		{

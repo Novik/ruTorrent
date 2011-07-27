@@ -1,5 +1,5 @@
 plugin.description: The plug-in adds a set of labels on the category panel. These labels are created automatically on the basis of torrents' trackers.
 plugin.author: Novik
 plugin.runlevel: 11
-plugin.version: 3.2
+plugin.version: 3.3
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginTracklabels

@@ -295,5 +295,6 @@
  updateTracker			: "Update trackers",
  scrapeUpdate			: "Was updated",
  trkInterval			: "Interval",
- logAutoSwitch			: "Autoswitch to 'Log' tab"
+ logAutoSwitch			: "Autoswitch to 'Log' tab",
+ phpParameterUnavailable	: "PHP directive register_argc_argv is setted to Off. Change it's value to On, otherwise some plugins will'nt work."
 };

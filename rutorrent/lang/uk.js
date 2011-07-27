@@ -279,5 +279,6 @@ var theUILang =
  updateTracker			: "Оновити трекери",
  scrapeUpdate			: "Оновлено",
  trkInterval			: "Інтервал",
- logAutoSwitch			: "Автоперемикання на вкладку «Журнал»"
+ logAutoSwitch			: "Автоперемикання на вкладку «Журнал»",
+ phpParameterUnavailable	: "PHP directive register_argc_argv is setted to Off. Change it's value to On, otherwise some plugins will'nt work."
 };

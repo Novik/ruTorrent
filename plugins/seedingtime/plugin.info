@@ -1,6 +1,6 @@
 plugin.description: The plug-in adds the column 'Finished' to the torrents list. This column contains the time when download of the torrent was completed.
 plugin.author: Novik
 plugin.runlevel: 11.4
-plugin.version: 3.2
+plugin.version: 3.3
 rtorrent.version: 0.8.6
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginSeedingtime

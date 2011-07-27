@@ -1,7 +1,7 @@
 plugin.description: The plug-in allows to manage a ratio limits for groups of torrents.
 plugin.author: Novik
 plugin.runlevel: 11.3
-plugin.version: 3.2
+plugin.version: 3.3
 rtorrent.version: 0.8.6
 rtorrent.php.error: update.php,ratio.php,conf.php
 rtorrent.external.warning: php

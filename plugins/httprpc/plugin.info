@@ -1,6 +1,6 @@
 plugin.description: The plug-in is designed as a low-trafic replacement of the web server module mod_scgi and performs functions of the last.
 plugin.author: Novik
-plugin.version: 3.2
+plugin.version: 3.3
 plugin.runlevel: 13
 php.version: 5.2.0
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginHTTPRPC

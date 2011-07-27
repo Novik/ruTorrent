@@ -1,5 +1,5 @@
 plugin.description: The plug-in is intended for obtaining source .torrent file.
 plugin.author: Novik
-plugin.version: 3.2
+plugin.version: 3.3
 rtorrent.remote: error
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginSource

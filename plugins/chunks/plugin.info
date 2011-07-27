@@ -1,6 +1,6 @@
 plugin.description: The plug-in provides chunks information for opened torrents.
 plugin.author: Zoltan Csala
 plugin.runlevel: 11
-plugin.version: 3.2
+plugin.version: 3.3
 rtorrent.version: 0.8.5
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginChunks
