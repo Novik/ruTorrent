@@ -10,7 +10,7 @@ theWebUI.checkCreate = function()
 	else
 	{
 	        plugin.enableFormControls(false);
-		theWebUI.request("?action=startcreate",[plugin.start,plugin]);
+		theWebUI.requestWithoutTimeout("?action=startcreate",[plugin.start,plugin]);
 	}
 }
 
@@ -35,7 +35,7 @@ theWebUI.killTorrent = function()
 	}
 	plugin.pid = 0;
 	plugin.setConsoleControls();
-        theWebUI.request("?action=killcreate",[plugin.killed,plugin]);
+        theWebUI.requestWithoutTimeout("?action=killcreate",[plugin.killed,plugin]);
 }
 
 plugin.start = function(data)
@@ -57,7 +57,7 @@ plugin.start = function(data)
 
 plugin.update = function()
 {
-	theWebUI.request("?action=checkcreate",[plugin.check,plugin]);
+	theWebUI.requestWithoutTimeout("?action=checkcreate",[plugin.check,plugin]);
 }
 
 plugin.shutdownTask = function(maySave)
