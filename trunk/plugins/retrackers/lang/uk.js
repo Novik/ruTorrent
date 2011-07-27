@@ -1,7 +1,7 @@
 ﻿
  
- theUILang.retrackers		= "Retrackers";
- theUILang.dontAddToPrivate	= "Don't add retrackers to private torrents";
- theUILang.addToBegin		= "Add retrackers to the beginning of the trackers list";
+ theUILang.retrackers		= "Ретрекери";
+ theUILang.dontAddToPrivate	= "Не додавати ретрекери до приватних роздач";
+ theUILang.addToBegin		= "Додавати ретрекери на початок списку трекерів";
 
 thePlugins.get("retrackers").langLoaded();
