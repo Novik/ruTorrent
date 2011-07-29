@@ -1,0 +1,11 @@
+div#tedit {width: 405px; height: 250px}
+div#tedit div.dlg-header {background-image: url(../../images/settings.gif)}
+div#tedit div.content {width: 380px; padding: 10px}
+div#tedit textarea#etrackers {width: 230px; height: 120px; border: 1px solid #D0D0D0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: text; }
+
+div#tedit fieldset div {line-height: 16px}
+div#tedit fieldset div.props-spacer {width: 90%; float: left}
+div#tedit label {width: 120px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+
+div#tedit input {margin-top: 5px; margin-bottom: 5px;}
+div#tedit br {clear: left; line-height: 0}
