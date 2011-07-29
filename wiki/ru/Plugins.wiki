@@ -93,3 +93,6 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
  # [PluginTaddLabel tadd-labels] - плагин для работы с метками.
  # [PluginHostname HostName] - показывает для пира имя хоста вместо IP адреса.
  # [PluginNFO NFO] - реализует показ .nfo файла закачки.
+ # [PluginChat Chat] - добавляет чат для общения с другими пользователями.
+ # [PluginLogoff Logoff] - плагин позволяет менять текущего пользователя и разлогиниваться.
+ # [PluginInstantSearch InstantSearch] - при поиске среди локальных закачек результат будет показываться непосредственно по мере набора строки к поиску.
