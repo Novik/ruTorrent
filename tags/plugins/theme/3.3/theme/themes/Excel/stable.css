@@ -1,0 +1,8 @@
+.stable, div#List { border-color: #9eb6ce }
+.stable-head { border-style: none none none none; color: #000000; background: transparent url(./images/header.gif) repeat-x scroll center top }
+.stable-head table tr {background: transparent url(./images/header.gif) repeat-x scroll center top }
+.stable-head table tr td { border-color: #f8d79b #f2993c #f2993c #f8d79b }
+
+.stable-body table tr td { border-right: 1px solid #d0d7e5; border-bottom: 1px solid #d0d7e5 }
+.stable-body table tr.selected td {background: #cfdeef}
+.stable-body {background: #ffffff; color: #000000}
