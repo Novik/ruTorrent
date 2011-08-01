@@ -1,8 +1,23 @@
 ----
 == Version history ==
 ----
- * ==== Version 3.2 (16.11.2010 r1552 ) ====
-   # Added plugins [PluginTheme Theme], [PluginRSSURLRewrite RSSURLRewrite], [PluginLoginMgr LoginMgr] [PluginFeeds Feeds], [PluginExtsearch ExtSearch].
+
+ * ==== Version 3.3 (30.07.2011 r1731)==== 
+   # Added support for new rTorrent versions (0.8.8, 0.8.9)
+   # Added support for new versions of browsers (IE 9.0, Opera 11.0, Firefox 5.0, etc).
+   # Added some new UI options (time format etc).
+   # Added some new commands from new versions of rTorrent (add peer, manual trackers update, files download strategy).
+   # The kind of some the interface elements (tracker's list, speed graph, plugins list) is changed.
+   # Added plugin `iPad` for support the device with some name. (Now plugin has experimental status).
+   # Possibility to take out storage of profiles of users in any place on a server disk (and not just in an installation directory ruTorrent, as earlier) is added.
+   # Performance of the interface object 'table' is increased.
+   # The state of panels (collapsed\expanded) in the list of categories remains now on a server's.
+   # Diagnostic system is improved.
+   # Fixed a lot of bugs. 
+   # The code of the majority of plugis is changed. 
+
+ * ==== Version 3.2 (16.11.2010 r1552) ====
+  # Added plugins [PluginTheme Theme], [PluginRSSURLRewrite RSSURLRewrite], [PluginLoginMgr LoginMgr] [PluginFeeds Feeds], [PluginExtsearch ExtSearch].
   # Added support for rtorrent svn [http://libtorrent.rakshasa.no/browser?rev=1189 r1189] (Attention! Not for unstable version 0.8.7)
   # API rewritten to support plugins. 
   # Fixed a lot of errors.
@@ -10,7 +25,7 @@
 
 ----
 
- * ==== Version 3.1 (25.05.2010 r1167 )====
+ * ==== Version 3.1 (25.05.2010 r1167) ====
    # Added a directive to force single user mode  ($ forbidUserSettings).
    # Added support for compressed php pages via an external program (gzip).
    # Added support for browser's resource caching.
