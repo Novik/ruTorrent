@@ -10,7 +10,7 @@
  theUILang.PrivateTorrent		= "Приватний торент";
  theUILang.torrentCreate		= "Створити…";
  theUILang.BadTorrentData		= "Необхідно ввести дані в обов’язкові поля.";
- theUILang.createExternalNotFound 	= "Плагін create: зовнішня програма не доступна для веб-сервера";
+ theUILang.createExternalNotFound 	= "Плагін create: зовнішня програма недоступна для веб-сервера";
  theUILang.incorrectDirectory 		= "Неправильний каталог";
  theUILang.cantExecExternal 		= "Сталася помилка виконання зовнішньої програми";
  theUILang.createConsole		= "Консоль";
