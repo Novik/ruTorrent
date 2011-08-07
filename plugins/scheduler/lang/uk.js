@@ -1,22 +1,23 @@
 ﻿
- theUILang.scheduler			= "Scheduler";
- theUILang.schedulerOn			= "Enable Scheduler";
- theUILang.schedulerGraph			= "Scheduler Table";
- theUILang.schShortWeek			= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek			= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
 
- theUILang.schUnlimited			= "Unlimited";
- theUILang.schLimited			= "Limited";
- theUILang.schTurnOff			= "Turn off";
- theUILang.schSeedingOnly			= "Seeding only";
+ theUILang.scheduler			= "Розклад";
+ theUILang.schedulerOn			= "Увімкнути розклад";
+ theUILang.schedulerGraph			= "Графік розкладу";
+ theUILang.schShortWeek			= [ "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд" ];
+ theUILang.schFullWeek			= [ "Понеділок", "Вівторок", "Середа", "Четвер", "П’ятниця", "Субота", "Неділя" ];
 
- theUILang.schUnlimitedDesc		= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc			= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc			= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc		= "Seeding only - Only upload data";
+ theUILang.schUnlimited			= "Без обмежень";
+ theUILang.schLimited			= "Обмеження";
+ theUILang.schTurnOff			= "Зупинити";
+ theUILang.schSeedingOnly			= "Тільки роздача";
 
- theUILang.schLimitedUL			= "Limited UL";
- theUILang.schLimitedDL			= "Limited DL";
- theUILang.shcIgnore			= "Ignore scheduler";
+ theUILang.schUnlimitedDesc		= "Без обмежень — ніяких обмежень немає";
+ theUILang.schLimitedDesc			= "Обмеження — використовувати заплановане обмеження швидкості";
+ theUILang.schTurnOffDesc			= "Зупинити — зупинити всі торенти";
+ theUILang.schSeedingOnlyDesc		= "Тільки роздача — тільки роздавати";
+
+ theUILang.schLimitedUL			= "Обмеження роздавання";
+ theUILang.schLimitedDL			= "Обмеження завантаження";
+ theUILang.shcIgnore			= "Ігнорувати планувальник";
 
 thePlugins.get("scheduler").langLoaded();
