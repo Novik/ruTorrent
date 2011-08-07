@@ -1,10 +1,10 @@
 ﻿
  
- theUILang.throttles		= "Channels";
- theUILang.throttle		= "Channel";
- theUILang.mnuThrottle		= "Set channel";
- theUILang.mnuUnlimited		= "No channel";
- theUILang.channelName 		= "Name";
- theUILang.channelDefault	= "Default channel";
+ theUILang.throttle		= "Канал";
+ theUILang.throttles		= "Канали";
+ theUILang.mnuThrottle		= "Установити канал";
+ theUILang.mnuUnlimited		= "Немає";
+ theUILang.channelName 		= "Назва";
+ theUILang.channelDefault	= "Стандартний канал";
 
 thePlugins.get("throttle").langLoaded();
