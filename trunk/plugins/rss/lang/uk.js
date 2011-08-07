@@ -1,12 +1,12 @@
 ﻿
  
- theUILang.addRSS		= "Додати росилку";
+ theUILang.addRSS		= "Додати розсилку";
  theUILang.feedURL	= "URL-адреса";
  theUILang.alias		= "Мітка";
  theUILang.rssAuto	= "Автоматично завантажувати вміст";
  theUILang.allFeeds	= "Усі розсилки";
  theUILang.incorrectURL	= "Адресу розсилки задано неправильно.";
- theUILang.cantFetchRSS	= "Не вдалося завантажити росилку.";
+ theUILang.cantFetchRSS	= "Не вдалося завантажити розсилку.";
  theUILang.rssAlreadyExist	= "Розсилка вже існує.";
  theUILang.rssDontExist		= "Розсилки не існує.";
  theUILang.rssCantLoadTorrent	= "Не вдалося завантажити торент.";
@@ -17,7 +17,7 @@
  theUILang.rssMenuClearHistory	= "Очистити історію";
  theUILang.rssMenuAddToFilter	= "Додати в обране";
  theUILang.rssMenuManager	= "Менеджер розсилок";
- theUILang.rssMenuRefresh	= "Оновити росилку";
+ theUILang.rssMenuRefresh	= "Оновити розсилку";
  theUILang.rssMenuDisable	= "Вимкнути розсилку";
  theUILang.rssMenuEnable	= "Увімкнути розсилку";
  theUILang.rssMenuEdit	= "Редагувати розсилку";
