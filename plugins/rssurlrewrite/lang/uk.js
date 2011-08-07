@@ -1,21 +1,20 @@
-﻿
- theUILang.rssNewRule		= "New rule";
- theUILang.mnu_rssurlrewrite	= "Rules of URL replacement in RSS";
- theUILang.rssRulesManager	= "Rules manager";
- theUILang.rssAddRule		= "Add";
- theUILang.rssDelRule		= "Delete";
+﻿ theUILang.rssNewRule		= "Створити правило";
+ theUILang.mnu_rssurlrewrite	= "Правила замінювання URL-адреси в RSS";
+ theUILang.rssRulesManager	= "Менеджер правил";
+ theUILang.rssAddRule		= "Додати";
+ theUILang.rssDelRule		= "Видалити";
  theUILang.rssCheckRule		= "?";
- theUILang.rssRulesLegend	= "Rule settings";
- theUILang.rssSrcHref		= "If URL of torrent's load match pattern";
- theUILang.rssSrcGuid		= "If URL of torrent's description match pattern";
- theUILang.rssDstHref		= "then replace URL of torrent's load to";
- theUILang.rssDstGuid		= "then replace URL of torrent's description to";
- theUILang.rssRulesDebug	= "Rule debug";
- theUILang.rssTestString	= "Test";
- theUILang.rssTestResult	= "Result";
- theUILang.rssURLInfo		= "URL info";
- theUILang.rssURLGUID		= "Description URL";
- theUILang.rssURLHref           = "Load URL";
- theUILang.rssPatternError	= "Error in pattern string.";
+ theUILang.rssRulesLegend	= "Параметри правила";
+ theUILang.rssSrcHref		= "Якщо URL-адреса завантаження торента збігається з шаблоном";
+ theUILang.rssSrcGuid		= "Якщо URL-адреса опису торента збігається з шаблоном";
+ theUILang.rssDstHref		= "то замінити URL-адресу завантаження торента на";
+ theUILang.rssDstGuid		= "то замінити URL-адресу завантаження торента на";
+ theUILang.rssRulesDebug	= "Перевірка правила";
+ theUILang.rssTestString	= "Тест";
+ theUILang.rssTestResult	= "Результат";
+ theUILang.rssURLInfo		= "Інформація про URL-адресу";
+ theUILang.rssURLGUID		= "URL-адреса опису";
+ theUILang.rssURLHref           = "URL-адреса завантаження";
+ theUILang.rssPatternError	= "В оформленні виявлено помилку.";
  
 thePlugins.get("rssurlrewrite").langLoaded();
