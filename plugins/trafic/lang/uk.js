@@ -1,13 +1,13 @@
 ﻿
  
- theUILang.traf 		= "Traffic";
- theUILang.perDay		= "Per day";
- theUILang.perMonth 	= "Per month";
- theUILang.perYear 	= "Per year";
- theUILang.allTrackers	= "All trackers";
- theUILang.ClearButton	= "Clear";
- theUILang.ClearQuest 	= "Do you really want to clear statistics for selected tracker(s)?";
- theUILang.selectedTorrent	= "Selected torrent";
- theUILang.ratioDay	= "Ratio/day";
- theUILang.ratioWeek	= "Ratio/week";
- theUILang.ratioMonth	= "Ratio/month";
+ theUILang.traf 		= "Трафік";
+ theUILang.perDay		= "За добу";
+ theUILang.perMonth 	= "За місяць";
+ theUILang.perYear 	= "За рік";
+ theUILang.allTrackers	= "Усі трекери";
+ theUILang.ClearButton	= "Очистити";
+ theUILang.ClearQuest 	= "Справді очистити статистику для вибраних трекерів?";
+ theUILang.selectedTorrent	= "Вибраний торент";
+ theUILang.ratioDay	= "Коефіцієнт/день";
+ theUILang.ratioWeek	= "Коефіцієнт/тиждень";
+ theUILang.ratioMonth	= "Коефіцієнт/місяць";
