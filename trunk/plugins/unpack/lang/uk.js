@@ -1,17 +1,17 @@
 ﻿
- 
-theUILang.unpack		= "Unpack";
-theUILang.unpackPath		= "Unpack to (leave blank for torrent's current directory):";
-theUILang.processAll		= "Process all volumes";
-theUILang.unpackTaskFailed      = "Unpacking finished with errors";
-theUILang.unpackTaskOK		= "Unpacking finished successfully";
-theUILang.unpackTaskStarted	= "Unpacking started";
-theUILang.unzipNotFound		= "Unpack plugin: rTorrent's user can't access unzip program.";
-theUILang.unrarNotFound		= "Unpack plugin: rTorrent's user can't access unrar program.";
-theUILang.unpackEnabled		= "Enable autounpacking";
-theUILang.unpackTorrents	= "Add to path when unpacking torrent data:";
-theUILang.unpackAddLabel	= "Torrent's label";
-theUILang.unpackAddName		= "Torrent's name";
-theUILang.unpackNoFiles		= "No archives found in torrent data.";
+
+theUILang.unpack		= "Розпакувати";
+theUILang.unpackPath		= "Шлях (якщо не вказано — в каталог завантаження)";
+theUILang.processAll		= "Обробляти всі томи";
+theUILang.unpackTaskFailed      = "Розпакування завершено з помилками";
+theUILang.unpackTaskOK		= "Розпакування завершено успішно";
+theUILang.unpackTaskStarted	= "Розпакування почалося";
+theUILang.unzipNotFound		= "Плагін unpack: програма «unzip» недоступна користувачу rtorrent.";
+theUILang.unrarNotFound		= "Плагін unpack: програма «unrar» недоступна користувачу rtorrent.";
+theUILang.unpackEnabled		= "Дозволити авторозпакування";
+theUILang.unpackTorrents	= "Під час розпакування даних усього торента додавати до шляху";
+theUILang.unpackAddLabel	= "Мітку торента";
+theUILang.unpackAddName		= "Назву торента";
+theUILang.unpackNoFiles		= "Файлів архівів у даних торента немає.";
 
 thePlugins.get("unpack").langLoaded();
