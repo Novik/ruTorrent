@@ -1,6 +1,6 @@
 ﻿
 
-theUILang.unpack		= "Розпакувати";
+theUILang.unpack		= "Розпакування";
 theUILang.unpackPath		= "Шлях (якщо не вказано — в каталог завантаження)";
 theUILang.processAll		= "Обробляти всі томи";
 theUILang.unpackTaskFailed      = "Розпакування завершено з помилками";
