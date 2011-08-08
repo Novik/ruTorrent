@@ -272,5 +272,7 @@ plugin.onRemove = function()
 	theWebUI.getTable("trt").removeColumnById("ratiogroup");
 	if(thePlugins.isInstalled("rss"))
 		theWebUI.getTable("rss").removeColumnById("ratiogroup");
+	if(thePlugins.isInstalled("extsearch"))
+		theWebUI.getTable("teg").removeColumnById("ratiogroup");
 	theRequestManager.removeRequest( "trt", plugin.reqId );
 }
