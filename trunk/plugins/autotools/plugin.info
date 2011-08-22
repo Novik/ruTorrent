@@ -6,3 +6,4 @@ rtorrent.remote: error
 rtorrent.external.error: php
 rtorrent.php.error: move.php,label.php,watch.php,autotools.php,util_rt.php,conf.php
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginAutotools
+rtorrent.version: 0.8.6
