@@ -9,6 +9,7 @@ class rAutoTools
 	public $label_template = "{DIR}";
 	public $enable_move = 0;
 	public $path_to_finished = "";
+	public $fileop_type = "Move";
 	public $enable_watch = 0;
 	public $path_to_watch = "";
 	public $watch_start = 0;
@@ -36,6 +37,7 @@ class rAutoTools
 			$this->enable_label = 0;
 			$this->label_template = "{DIR}";
 			$this->enable_move = 0;
+			$this->fileop_type = "Move";
 			$this->path_to_finished = "";
 			$this->enable_watch = 0;
 			$this->path_to_watch = "";
@@ -56,6 +58,10 @@ class rAutoTools
 				else if( $parts[0] == "enable_move" )
 				{
 					$this->enable_move = $parts[1];
+				}
+				else if( $parts[0] == "fileop_type" )
+				{
+					$this->fileop_type = $parts[1];
 				}
 				else if( $parts[0] == "path_to_finished" )
 				{
@@ -98,6 +104,7 @@ class rAutoTools
 		$ret .= "EnableLabel: ".$this->enable_label;
 		$ret .= ", LabelTemplate: '".addslashes( $this->label_template )."'";
 		$ret .= ", EnableMove: ".$this->enable_move;
+		$ret .= ", FileOpType: '".$this->fileop_type."'";
 		$ret .= ", PathToFinished: '".addslashes( $this->path_to_finished )."'";
 		$ret .= ", EnableWatch: ".$this->enable_watch;
 		$ret .= ", PathToWatch: '".addslashes( $this->path_to_watch )."'";

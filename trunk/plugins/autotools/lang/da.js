@@ -11,5 +11,10 @@
  theUILang.autotoolsWatchStart		= "Start download automatically";
  theUILang.autotoolsNoPathToFinished	= "Autotools plugin: path to finished downloads is not set. " + s_PluginFail;
  theUILang.autotoolsNoPathToWatch		= "Autotools plugin: path to base watch directory is not set. " + s_PluginFail;
+ theUILang.autotoolsFileOpType 		= "Operation type";
+ theUILang.autotoolsFileOpMove		= "Move";
+ theUILang.autotoolsFileOpHardLink 	= "Hard link";
+ theUILang.autotoolsFileOpCopy		= "Copy";
+ theUILang.autotoolsFileOpSoftLink	= "Soft link";
 
 thePlugins.get("autotools").langLoaded();

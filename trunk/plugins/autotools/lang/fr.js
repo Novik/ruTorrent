@@ -19,5 +19,10 @@
  theUILang.autotoolsWatchStart          = "Démarrer le téléchargement automatiquement.";
  theUILang.autotoolsNoPathToFinished    = "Plug-in 'Autotools': le chemin vers le répertoire des torrents terminés n'est pas défini. " + s_PluginFail;
  theUILang.autotoolsNoPathToWatch               = "Plug-in 'Autotools': le chemin vers le répertoire à observer n'est pas défini. " + s_PluginFail;
+ theUILang.autotoolsFileOpType 		= "Operation type";
+ theUILang.autotoolsFileOpMove		= "Move";
+ theUILang.autotoolsFileOpHardLink 	= "Hard link";
+ theUILang.autotoolsFileOpCopy		= "Copy";
+ theUILang.autotoolsFileOpSoftLink	= "Soft link";
 
 thePlugins.get("autotools").langLoaded();

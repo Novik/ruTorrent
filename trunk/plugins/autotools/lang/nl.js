@@ -11,5 +11,10 @@
  theUILang.autotoolsWatchStart		= "Start download automatisch";
  theUILang.autotoolsNoPathToFinished	= "Autotools plugin: pad naar voltooide downloads folder is niet ingevuld. " + s_PluginFail;
  theUILang.autotoolsNoPathToWatch		= "Autotools plugin: pad naar watch folder is niet ingevuld. " + s_PluginFail;
+ theUILang.autotoolsFileOpType 		= "Operation type";
+ theUILang.autotoolsFileOpMove		= "Move";
+ theUILang.autotoolsFileOpHardLink 	= "Hard link";
+ theUILang.autotoolsFileOpCopy		= "Copy";
+ theUILang.autotoolsFileOpSoftLink	= "Soft link";
 
 thePlugins.get("autotools").langLoaded();
