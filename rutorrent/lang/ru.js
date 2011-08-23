@@ -251,5 +251,8 @@ var theUILang =
  scrapeUpdate			: "Был обновлен",
  trkInterval			: "Интервал",
  logAutoSwitch			: "Автопереключение на закладку 'Лог'",
- phpParameterUnavailable	: "Директива php register_argc_argv выставлена в Off. Измените ее значение на On, иначе некоторые плагины будут работать некорректно."
+ phpParameterUnavailable	: "Директива php register_argc_argv выставлена в Off. Измените ее значение на On, иначе некоторые плагины будут работать некорректно.",
+ addTorrentFailedURL		: "Ошибка добавления закачки. Невозможно получить файл по заданному URL.",
+ addTorrentFailedFile		: "Ошибка добавления закачки. Полученный контент не является корректным torrent файлом.",
+ addTorrentFailedDirectory	: "Ошибка добавления закачки. Задана некорректная директория."
 };

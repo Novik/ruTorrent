@@ -296,6 +296,9 @@
  scrapeUpdate			: "Was updated",
  trkInterval			: "Interval",
  logAutoSwitch			: "Autoswitch to 'Log' tab",
- phpParameterUnavailable	: "PHP directive register_argc_argv is set to Off. Change its value to On, otherwise some plugins won't work."
+ phpParameterUnavailable	: "PHP directive register_argc_argv is set to Off. Change its value to On, otherwise some plugins won't work.",
+ addTorrentFailedURL		: "Error: torrent wasn't passed to rTorrent. Can't retrieve URL.",
+ addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is a not valid torrent file.",
+ addTorrentFailedDirectory	: "Error: torrent wasn't passed to rTorrent. Incorrect downloads directory was specified."
  };
 

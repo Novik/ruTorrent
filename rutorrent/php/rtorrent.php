@@ -35,6 +35,8 @@ class rTorrent
 				@unlink($fname);
 			if($directory && (strlen($directory)>0))
 			{
+				if($directory=='~')
+					$directory = rTorrentSettings::get()->home.substr($directory,1);
 				if(strpos(addslash($directory),$topDirectory)!==0)
 					return(false);
 				$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
@@ -73,6 +75,8 @@ class rTorrent
 		$cmd->addParameter($magnet);
 		if($directory && (strlen($directory)>0))
 		{
+			if($directory=='~')
+				$directory = rTorrentSettings::get()->home.substr($directory,1);
 			if(strpos(addslash($directory),$topDirectory)!==0)
 				return(false);
 			$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
