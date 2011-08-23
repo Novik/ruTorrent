@@ -13,6 +13,9 @@ $frame_id = "'".$_REQUEST['frame']."'";
 if(isset($_REQUEST['dir']))
 {
 	$dir = rawurldecode($_REQUEST['dir']);
+	if($dir[0]=='~')
+		$dir = rTorrentSettings::get()->home.substr($dir,1);
+	$dir = fullpath($dir,rTorrentSettings::get()->home);
 	if(LFS::is_file($dir) && 
 		(($theSettings->uid<0) || 
 		isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0004)))
