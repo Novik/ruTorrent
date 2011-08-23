@@ -23,6 +23,7 @@ class rTorrentSettings
 	public $server = '';
 	public $portRange = '6890-6999';
 	public $idNotFound = false;
+	public $home = '';
 
 	static private $theSettings = null;
 
@@ -176,9 +177,10 @@ class rTorrentSettings
 						{
 							$this->uid = intval(trim($line[0]));
 							$this->gid = explode(' ',trim($line[1]));
+							$this->home = trim($line[2]);
 							if(!empty($this->directory) &&
 								($this->directory[0]=='~'))
-								$this->directory = trim($line[2]).substr($this->directory,1);	
+								$this->directory = $this->home.substr($this->directory,1);	
 							$req = new rXMLRPCRequest(new rXMLRPCCommand( "execute", array("rm",$randName) ));
 							$req->run();
 						}
