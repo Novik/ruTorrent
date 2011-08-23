@@ -12,6 +12,9 @@ $frame_id = "'".$_REQUEST['frame']."'";
 if(isset($_REQUEST['dir']))
 {
 	$dir = rawurldecode($_REQUEST['dir']);
+	if($dir[0]=='~')
+		$dir = rTorrentSettings::get()->home.substr($dir,1);
+	$dir = fullpath($dir,rTorrentSettings::get()->home);
 	$dh = @opendir($dir);
 	$dir = addslash($dir);
 
