@@ -11,5 +11,10 @@
  theUILang.autotoolsWatchStart		= "Автоматично починати завантаження";
  theUILang.autotoolsNoPathToFinished	= "Плагін autotools: каталог для завершених завантажень не задано. " + s_PluginFail;
  theUILang.autotoolsNoPathToWatch		= "Плагін autotools: базовий каталог для нових торентів не задано. " + s_PluginFail;
+ theUILang.autotoolsFileOpType 		= "Operation type";
+ theUILang.autotoolsFileOpMove		= "Move";
+ theUILang.autotoolsFileOpHardLink 	= "Hard link";
+ theUILang.autotoolsFileOpCopy		= "Copy";
+ theUILang.autotoolsFileOpSoftLink	= "Soft link";
 
 thePlugins.get("autotools").langLoaded();

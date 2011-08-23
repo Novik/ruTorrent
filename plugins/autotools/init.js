@@ -13,7 +13,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 			linked( $$('enable_label'), 0, ['label_template'] );
 			$$('enable_move').checked  = ( theWebUI.autotools.EnableMove  == 1 );
 			$$('path_to_finished').value = theWebUI.autotools.PathToFinished;
-			linked( $$('enable_move'), 0, ['path_to_finished', 'automove_browse_btn'] );
+			linked( $$('enable_move'), 0, ['path_to_finished', 'automove_browse_btn', 'fileop_type'] );
+			$$('fileop_type').value = theWebUI.autotools.FileOpType;
 			$$('enable_watch').checked  = ( theWebUI.autotools.EnableWatch  == 1 );
 			$$('path_to_watch').value = theWebUI.autotools.PathToWatch;
 			linked( $$('enable_watch'), 0, ['path_to_watch', 'autowatch_browse_btn', 'watch_start'] );
@@ -40,6 +41,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 			return true;
 		if( $$('path_to_watch').value != theWebUI.autotools.PathToWatch )
 			return true;
+		if( $$('fileop_type').value != theWebUI.autotools.FileOpType )
+			return true;
 		if( $$('watch_start').checked != ( theWebUI.autotools.WatchStart == 1 ) )
 			return true;
 		return false;
@@ -59,6 +62,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 			"&label_template=" + $$('label_template').value +
 			"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
 			"&path_to_finished=" + $$('path_to_finished').value +
+			"&fileop_type=" + $$('fileop_type').value +
 			"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
 			"&path_to_watch=" + $$('path_to_watch').value +
 			"&watch_start=" + ( $$('watch_start').checked  ? '1' : '0' );
@@ -86,50 +90,43 @@ plugin.onLangLoaded = function()
 					"<input type='text' id='label_template' class='TextboxNormal' maxlength='100' />"+
 				"</td>"+
 			"</tr>"+
-			"<tr />"+
 			"<tr>"+
-				"<td>"+
+				"<td colspan=2>"+
 					"<input type='checkbox' id='enable_move' checked='false' "+
-					"onchange='linked(this, 0, [\"path_to_finished\", \"automove_browse_btn\"]);' />"+
+					"onchange='linked(this, 0, [\"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"fileop_type\" ]);' />"+
 						"<label for='enable_move'>"+ theUILang.autotoolsEnableMove +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td id='ctrls_level2'>"+
+				"<td class='ctrls_level2' colspan=2>"+
 					"<label id='lbl_path_to_finished' for='path_to_finished' class='disabled' disabled='true'>"+
-					theUILang.autotoolsPathToFinished +":</label>"+
-				"</td>"+
-			"</tr>"+
-			"<tr>"+
-				"<td class='alr'>"+
+					theUILang.autotoolsPathToFinished +":</label><br>"+
 					"<input type='text' id='path_to_finished' class='TextboxLarge' maxlength='100' />"+
 					"<input type='button' id='automove_browse_btn' class='Button' value='...' />"+
+					"<br><label id='lbl_fileop_type' for='fileop_type' class='disabled' disabled='true'>"+theUILang.autotoolsFileOpType+":</label>"+
+ 					"<select id='fileop_type' class='disabled' disabled='true'>"+
+ 					"<option value='Move'>"+theUILang.autotoolsFileOpMove+"</option>"+
+ 					"<option value='HardLink'>"+theUILang.autotoolsFileOpHardLink+"</option>"+
+ 					"<option value='Copy'>"+theUILang.autotoolsFileOpCopy+"</option>"+
+ 					"<option value='SoftLink'>"+theUILang.autotoolsFileOpSoftLink+"</option>"+
+ 					"</select>"+
 				"</td>"+
 			"</tr>"+
-			"<tr />"+
 			"<tr>"+
-				"<td>"+
+				"<td colspan=2>"+
 					"<input type='checkbox' id='enable_watch' checked='false' "+
 					"onchange='linked(this, 0, [\"path_to_watch\", \"autowatch_browse_btn\",\"watch_start\"]);' />"+
 						"<label for='enable_watch'>"+ theUILang.autotoolsEnableWatch +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td id='ctrls_level2'>"+
+				"<td class='ctrls_level2' colspan=2>"+
 					"<label id='lbl_path_to_watch' for='path_to_watch' class='disabled' disabled='true'>"+
-					theUILang.autotoolsPathToWatch +":</label>"+
-				"</td>"+
-			"</tr>"+
-			"<tr>"+
-				"<td class='alr'>"+
-					"<input type='text' id='path_to_watch' class='TextboxLarge' maxlength='100' />"+
-					"<input type='button' id='autowatch_browse_btn' class='Button' value='...' />"+
-				"</td>"+
-			"</tr>"+
-			"<tr>"+
-				"<td id='ctrls_level2'>"+
-					"<input type='checkbox' id='watch_start' checked='false' disabled='true'/>"+
-					"<label id='lbl_watch_start' for='watch_start' class='disabled'>"+ theUILang.autotoolsWatchStart +"</label>"+
+					theUILang.autotoolsPathToWatch +":</label><br>"+
+				"<input type='text' id='path_to_watch' class='TextboxLarge' maxlength='100' />"+
+				"<input type='button' id='autowatch_browse_btn' class='Button' value='...' />"+
+				"<br><input type='checkbox' id='watch_start' checked='false' disabled='true'/>"+
+				"<label id='lbl_watch_start' for='watch_start' class='disabled'>"+ theUILang.autotoolsWatchStart +"</label>"+
 				"</td>"+
 			"</tr>"+
 			"</table>"+

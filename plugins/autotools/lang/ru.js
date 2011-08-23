@@ -11,5 +11,10 @@
  theUILang.autotoolsWatchStart		= "Начинать закачку автоматически";
  theUILang.autotoolsNoPathToFinished	= "Плагин autotools: не задан каталог для завершенных закачек. " + s_PluginFail;
  theUILang.autotoolsNoPathToWatch		= "Плагин autotools: не задан базовый каталог для новых торрентов. " + s_PluginFail;
+ theUILang.autotoolsFileOpType 		= "Тип операции";
+ theUILang.autotoolsFileOpMove		= "Переместить";
+ theUILang.autotoolsFileOpHardLink 	= "Жесткая ссылка";
+ theUILang.autotoolsFileOpCopy		= "Скопировать";
+ theUILang.autotoolsFileOpSoftLink	= "Мягкая ссылка";
 
 thePlugins.get("autotools").langLoaded();

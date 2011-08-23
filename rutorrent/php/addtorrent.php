@@ -89,7 +89,6 @@ if($success)
                 $success = false;
 	}
 }
-toLog($status);
 if($success)
 	$status = "Success";
 else

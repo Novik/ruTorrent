@@ -158,26 +158,8 @@ function rtMkDir( $dir, $mode = 0777 )
 //------------------------------------------------------------------------------
 function rtMoveFile( $src, $dst, $dbg = false )
 {
-	// Check if source file exists
-//	if( !rtIsFile( $src ) )
-//	{
-//		if( $dbg ) rtDbg( __FUNCTION__, "not a file (".$src.")" );
-//		return false;
-//	}
-
-	// Check if destination directory exists or can be created
-	if( !rtMkDir( dirname( $dst ), 0777 ) )
-	{
-		if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dst ) );
-		return false;
-	}
-
-	// Check if destination file directory exists or can be deleted
-	if( rtIsFile( $dst ) )
-		unlink( $dst );
-
-	//$atime = fileatime( $src );
-	//$mtime = filemtime( $src );
+	$atime = fileatime( $src );
+	$mtime = filemtime( $src );
 	if( !rename( $src, $dst ) )
 	{
 		if( $dbg ) rtDbg( __FUNCTION__, "from ".$src );
@@ -192,15 +174,15 @@ function rtMoveFile( $src, $dst, $dbg = false )
 			if( $dbg ) rtDbg( __FUNCTION__, "delete fail (".$src.")" );
 	}
 	// there are problems here, if run-user is not file owner
-	//touch( $dst_f, $atime, $mtime );
+	touch( $dst, $atime, $mtime );
 	return true;
 }
 
 //------------------------------------------------------------------------------
-// Move an array of files from $src directory to $dst directory
+// Make operation an array of files from $src directory to $dst directory
 // ( files in array are relative to $src directory )
 //------------------------------------------------------------------------------
-function rtMoveFiles( $files, $src, $dst, $dbg = false )
+function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 {
 	// Check if source and destination directories are valid
 	if( !is_array( $files ) || $src == '' || $dst == '' )
@@ -234,13 +216,44 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 		return false;
 	}
 
-	// Move files
-	if( $dbg ) rtDbg( __FUNCTION__, "from ".$src );
-	if( $dbg ) rtDbg( __FUNCTION__, "to   ".$dst );
 	foreach( $files as $file )
 	{
-		if( !rtMoveFile( $src.$file, $dst.$file, $dbg ) )
+		$source = $src.$file;
+		$dest = $dst.$file;
+
+		if( !rtMkDir( dirname( $dest ), 0777 ) )
+		{
+			if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dest ) );
 			return false;
+		}
+		if( rtIsFile( $dest ) )
+			unlink( $dest );
+		switch( $op )
+		{
+			case "HardLink":
+			{
+				if( link( $source, $dest ) )
+					break;
+			}
+			case "Copy":
+			{
+				if( !copy( $source, $dest ) )
+					return false;
+				break;
+			}
+			case "SoftLink":
+			{
+				if( !symlink( $source, $dest ) )
+					return false;
+				break;
+			}
+			default:
+			{
+				if( !rtMoveFile( $source, $dest, $dbg ) )
+					return false;
+				break;
+			}
+		}
 	}
 	if( $dbg ) rtDbg( __FUNCTION__, "finished" );
 	return true;
@@ -423,162 +436,6 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 		return false;
 	else
 		return $torrent->hash_info();
-}
-
-
-//------------------------------------------------------------------------------
-// Move torrent data of $hash torrent to new location at $dest_path
-//------------------------------------------------------------------------------
-function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
-{
-	if( $dbg ) rtDbg( __FUNCTION__, "hash        : ".$hash );
-	if( $dbg ) rtDbg( __FUNCTION__, "dest_path   : ".$dest_path );
-	if( $dbg ) rtDbg( __FUNCTION__, "move files  : ".($move_files ? "1" : "0") );
-
-	$is_ok         = true;
-	$is_open       = false;
-	$is_active     = false;
-	$is_multy_file = false;
-	$base_path     = '';
-	$base_file     = '';
-
-	if( $dest_path == '' )
-	{
-		$is_ok = false;
-	}
-	else {
-		$dest_path = rtAddTailSlash( $dest_path );
-	}
-
-	// Check if torrent is open or active
-	if( $is_ok )
-	{
-		$req = rtExec( array( "d.is_open", "d.is_active" ), $hash, $dbg );
-		if( $req )
-		{
-			$is_open   = ( $req->val[0] != 0 );
-			$is_active = ( $req->val[1] != 0 );
-			if( $dbg ) rtDbg( __FUNCTION__, "is_open=".$req->val[0].", is_active=".$req->val[1] );
-		}
-		else $is_ok = false;
-	}
-
-	// Open closed torrent to get d.get_base_path, d.get_base_filename
-	if( $is_ok && $move_files )
-	{
-		if( !$is_open )
-			$is_ok = rtExec( "d.open", $hash, $dbg );
-	}
-
-	// Ask info from rTorrent
-	if( $is_ok && $move_files )
-	{
-		$req = rtExec(
-			array( "d.get_base_path", "d.get_base_filename", "d.is_multi_file" ),
-			$hash, $dbg );
-		if( $req )
-		{
-			$is_multy_file = ( $req->val[2] != 0 );
-			$base_path     = trim( $req->val[0] );
-			$base_file     = trim( $req->val[1] );
-			if( $dbg ) rtDbg( __FUNCTION__, "d.get_base_path     : ".$base_path );
-			if( $dbg ) rtDbg( __FUNCTION__, "d.get_base_filename : ".$base_file );
-			if( $dbg ) rtDbg( __FUNCTION__, "d.is_multy_file     : ".$req->val[2] );
-		}
-		else $is_ok = false;
-	}
-
-	// Check if paths are valid
-	if( $is_ok && $move_files )
-	{
-		if( $base_path != '' && $base_file != '' )
-		{
-			// Make $base_path a really BASE path for downloading data
-			// (not including single file or subdir for multiple files).
-			// Add trailing slash, if none.
-			$base_path = rtRemoveTailSlash( $base_path );
-			$base_path = rtRemoveLastToken( $base_path, '/' );	// filename or dirname
-			$base_path = rtAddTailSlash( $base_path );
-		}
-		else {
-			if( $dbg ) rtDbg( __FUNCTION__, "base paths are empty" );
-			$is_ok = false;
-		}
-	}
-
-	// Get list of torrent data files
-	$torrent_files = array();
-	if( $is_ok && $move_files )
-	{
-		$req = rtExec( "f.multicall", array( $hash, "", "f.get_path=" ), $dbg );
-		if( $req )
-		{
-			$torrent_files = $req->val;
-			if( $dbg ) rtDbg( __FUNCTION__, "files in torrent    : ".count( $torrent_files ) );
-		}
-		else $is_ok = false;
-	}
-
-	// 1. Stop torrent if active (if not, then rTorrent can crash)
-	// 2. Close torrent anyway
-	if( $is_ok )
-	{
-		$cmd = array();
-		if( $is_active ) $cmd[] = "d.stop";
-		if( $is_open || $move_files ) $cmd[] = "d.close";
-		if( count( $cmd ) > 0 )
-			$is_ok = rtExec( $cmd, $hash, $dbg );
-	}
-
-	// Move torrent data files to new location
-	if( $is_ok && $move_files )
-	{
-		// Don't use "count( $torrent_files ) > 1" check (can be one file in a subdir)
-		if( $is_multy_file )
-			$sub_dir = rtAddTailSlash( $base_file );	// $base_file - is a directory
-		else
-			$sub_dir = '';					// $base_file - is really a file
-
-		if( $dbg ) rtDbg( __FUNCTION__, "from ".$base_path.$sub_dir );
-		if( $dbg ) rtDbg( __FUNCTION__, "to   ".$dest_path.$sub_dir );
-		if( $base_path.$sub_dir != $dest_path.$sub_dir && is_dir( $base_path.$sub_dir ) )
-		{
-			if( rtMoveFiles( $torrent_files, $base_path.$sub_dir, $dest_path.$sub_dir, $dbg ) )
-			{
-				// Recursively remove source dirs without files
-				if( $dbg ) rtDbg( __FUNCTION__, "clean ".$base_path.$sub_dir );
-				if( $sub_dir != '' )
-				{
-					rtRemoveDirectory( $base_path.$sub_dir, false );
-					if( $dbg && is_dir( $base_path.$sub_dir ) )
-						rtDbg( __FUNCTION__, "some files were not deleted" );
-				}
-			}
-			else $is_ok = false;
-		}
-	}
-
-	// Setup new directory for torrent (we need to stop it first)
-	if( $is_ok )
-	{
-		$is_ok = rtExec( "d.set_directory", array( $hash, $dest_path ), $dbg );
-	}
-
-	if( $is_ok )
-	{
-		// Start torrent if need
-		if( $is_active )
-			$is_ok = rtExec( array( "d.open", "d.start" ), $hash, $dbg );
-		// Open torrent if need
-		elseif( $is_open )
-			$is_ok = rtExec( "d.open", $hash, $dbg );
-		// Refresh torrent info after d.set_directory
-		else
-			$is_ok = rtExec( array( "d.open", "d.close" ), $hash, $dbg );
-	}
-
-	if( $dbg ) rtDbg( __FUNCTION__, "finished" );
-	return $is_ok;
 }
 
 
