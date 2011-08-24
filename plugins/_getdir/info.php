@@ -28,6 +28,7 @@ if(isset($_REQUEST['mode']))
 		if(isset($_REQUEST['basedir']))
 		{
 			$dir = rawurldecode($_REQUEST['basedir']);
+			$theSettings->correctDirectory($dir);
 			$dh = @opendir($dir);
 			$dir = addslash($dir);
 

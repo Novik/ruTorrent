@@ -235,6 +235,14 @@ class rTorrentSettings
 	{
         	return($this->getEventCommand('on_hash_done','hash_done',$args));
 	}
+	public function correctDirectory(&$dir)
+	{
+		global $topDirectory;
+		if(strlen($dir) && ($dir[0]=='~'))
+			$dir = $this->home.substr($dir,1);
+		$dir = fullpath($dir,$this->directory);
+		return(strpos($dir,$topDirectory)===0);
+	}
 }
 
 ?>

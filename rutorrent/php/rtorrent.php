@@ -8,7 +8,6 @@ class rTorrent
 {
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
 	{
-	        global $topDirectory;
 		$hash = false;
 		$torrent = is_object($fname) ? $fname : new Torrent($fname);
 		if(!$torrent->errors())
@@ -35,10 +34,7 @@ class rTorrent
 				@unlink($fname);
 			if($directory && (strlen($directory)>0))
 			{
-				if($directory=='~')
-					$directory = rTorrentSettings::get()->home.substr($directory,1);
-				$directory = fullpath($directory,rTorrentSettings::get()->home);
-				if(strpos(addslash($directory),$topDirectory)!==0)
+				if(!rTorrentSettings::get()->correctDirectory($directory))
 					return(false);
 				$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
 			}
@@ -71,15 +67,11 @@ class rTorrent
 	}
 	static public function sendMagnet($magnet, $isStart, $isAddPath, $directory, $label)
 	{
-	        global $topDirectory;
 		$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
 		$cmd->addParameter($magnet);
 		if($directory && (strlen($directory)>0))
 		{
-			if($directory=='~')
-				$directory = rTorrentSettings::get()->home.substr($directory,1);
-			$directory = fullpath($directory,rTorrentSettings::get()->home);
-			if(strpos(addslash($directory),$topDirectory)!==0)
+			if(!rTorrentSettings::get()->correctDirectory($directory))
 				return(false);
 			$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
 		}

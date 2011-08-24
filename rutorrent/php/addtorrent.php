@@ -17,10 +17,7 @@ $dir_edit = null;
 if(isset($_REQUEST['dir_edit']))
 {
 	$dir_edit = trim($_REQUEST['dir_edit']);
-	if($dir_edit[0]=='~')
-		$dir_edit = rTorrentSettings::get()->home.substr($dir_edit,1);
-	$dir_edit = fullpath($dir_edit,rTorrentSettings::get()->home);
-	if(strpos(addslash($dir_edit),$topDirectory)!==0)
+	if(!rTorrentSettings::get()->correctDirectory($dir_edit))
 		$status = "FailedDirectory";
 }
 if(is_null($status))

@@ -20,7 +20,7 @@ if(isset($_REQUEST['cmd']))
 		        	$path_edit = trim($_REQUEST['path_edit']);
 				if(is_dir($path_edit))
 					$path_edit = addslash($path_edit);
-				if(strpos($path_edit,$topDirectory)===0)
+		        	if(rTorrentSettings::get()->correctDirectory($path_edit))
 				{
 					$taskNo = time();
 					file_put_contents( "/tmp/rutorrent-".getUser().$taskNo.".prm", serialize( $_REQUEST ) );
