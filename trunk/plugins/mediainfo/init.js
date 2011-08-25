@@ -1,29 +1,12 @@
-plugin.loadMainCSS();
 plugin.loadLang();
 
-if(plugin.enabled && plugin.canChangeMenu()) {
-	theWebUI.mediaInfo = function( hash, no ) {
-		$("#media_info").html("Fetching...");
-		theDialogManager.show("dlg_info");
-
-		var AjaxReq = jQuery.ajax({
-			type: "GET",
-			timeout: theWebUI.settings["webui.reqtimeout"],
-			async : true,
-			cache: false,
-			data: "hash="+ hash +"&no="+ no,
-			url : "plugins/mediainfo/action.php",
-			success: function(data){
-				if (data == '') {
-					theDialogManager.hide("dlg_info");
-					askYesNo( theUILang.mediaError, theUILang.badMediaData, "" );
-					return;
-				}
-				$("#media_info").html(data);
-				theDialogManager.center("dlg_info");
-			}
-		});
+if(plugin.enabled && plugin.canChangeMenu()) 
+{
+	theWebUI.mediaInfo = function( hash, no ) 
+	{
+		theWebUI.startConsoleTask( "mediainfo", plugin, { "hash" : hash, "no" : no }, true );
 	}
+
 	plugin.createFileMenu = theWebUI.createFileMenu;
 	theWebUI.createFileMenu = function( e, id ) 
 	{
@@ -52,18 +35,4 @@ if(plugin.enabled && plugin.canChangeMenu()) {
 		}
 		return(false);
 	}
-}
-
-plugin.onLangLoaded = function()
-{
-	if(this.enabled)
-	{
-		theDialogManager.make( 'dlg_info', "MediaInfo","<div class='content' id='dlg_info-content'>"+
-	                        '<pre id="media_info">Fetching...</pre>'+"</div>",true);
-	}
-}
-
-plugin.onRemove = function()
-{
-	theDialogManager.hide("dlg_info");
 }
