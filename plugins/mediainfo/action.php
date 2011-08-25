@@ -1,27 +1,43 @@
 <?php
-require_once( '../../php/xmlrpc.php' );
+
+require_once( '../_task/task.php' );
 eval( getPluginConf( 'mediainfo' ) );
 
-function mediaInfo() {
-	if(isset($_REQUEST['hash']) && isset($_REQUEST['no'])) {
-    	$req = new rXMLRPCRequest( 
-			new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no']))) );
-	if($req->success())
+$ret = array( "status"=>255, "errors"=>array("Can't retrieve information") );
+
+if(isset($_REQUEST['hash']) && 
+	isset($_REQUEST['no']) &&
+	isset($_REQUEST['cmd']))
+{
+	switch($_REQUEST['cmd'])
 	{
-		$filename = $req->val[0];
-		if($filename=='')
+		case "mediainfo":
 		{
-			$req = new rXMLRPCRequest( array(
-				new rXMLRPCCommand( "d.open", $_REQUEST['hash'] ),
-				new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no'])) ),
-				new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ) );
+			$req = new rXMLRPCRequest( new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no']))) );
 			if($req->success())
-				$filename = $req->val[1];
+			{
+				$filename = $req->val[0];
+				if($filename=='')
+				{
+					$req = new rXMLRPCRequest( array(
+						new rXMLRPCCommand( "d.open", $_REQUEST['hash'] ),
+						new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no'])) ),
+						new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ) );
+					if($req->success())
+						$filename = $req->val[1];
+				}
+				if($filename!=='')
+				{
+					$commands = array();
+					$commands[] = getExternal("mediainfo")." ".escapeshellarg($req->val[0]);
+					$ret = rTask::start($commands,0);
+				}
+			}
+			break;
 		}
-        return(shell_exec(getExternal("mediainfo").' --Output=HTML "'.$filename.'"'));
-      }
 	}
-return false;
 }
-echo mediaInfo();
+
+cachedEcho(json_encode($ret),"application/json");
+
 ?>
