@@ -1,0 +1,7 @@
+plugin.description: This plug-in will display screenshots from video files.
+plugin.author: Novik
+plugin.version: 3.3
+rtorrent.remote: error
+web.external.error: ffmpeg
+plugin.dependencies: _task
+plugin.runlevel: 12
