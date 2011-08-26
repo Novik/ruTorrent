@@ -81,8 +81,8 @@ class rTask
 	static protected function clean( $dir )
 	{
 		@unlink($dir.'/pid');
-		@unlink($dir.'/status');
 		@unlink($dir.'/flags');
+		@unlink($dir.'/status');
 		@unlink($dir.'/errors');
 		@unlink($dir.'/log');
 		@unlink($dir.'/start.sh');
@@ -180,7 +180,7 @@ class rTask
 			if(is_null($flags))
 				$flags = intval(file_get_contents($dir.'/flags'));
 			$pid = trim(file_get_contents($dir.'/pid'));
-			self::run("kill -9 `".getExternal("pgrep")." -P ".$pid."`");
+			self::run("kill -9 ".$pid." ; kill -9 `".getExternal("pgrep")." -P ".$pid."`");
 			self::clean($dir);
 		}
 		return(true);
