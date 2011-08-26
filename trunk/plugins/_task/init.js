@@ -1,13 +1,18 @@
 plugin.loadLang();
 plugin.loadMainCSS();
 
-theWebUI.startConsoleTask = function( name, requester, parameters, noclose )
+theWebUI.startConsoleTask = function( taskName, requesterName, parameters, options )
 {
-	plugin.shutdown();
-	plugin.taskName = name;
-	plugin.requester = requester;
-	plugin.parameters = parameters;
-	plugin.noclose = noclose;
+	plugin.clearTimeout();
+	plugin.no = 0;
+	plugin.pid = 0;
+	plugin.status = -1;
+	plugin.tskcmderrors = 0;
+	plugin.tskcmdlog = 0;
+	plugin.taskName = taskName;
+	plugin.requesterName = requesterName;
+	plugin.parameters = parameters || {};
+	plugin.options = options || {};
 	plugin.start();
 }
 
@@ -17,19 +22,19 @@ plugin.start = function()
 	$('#tskcmderrors').empty();
 	theDialogManager.setModalState();
 	var req = '';
-	if(this.parameters)
-		for( var i in this.parameters )
-		     req+=('&v='+i+'&s='+encodeURIComponent(this.parameters[i]));
-	theWebUI.requestWithoutTimeout("?action=taskstart&hash="+this.taskName+"&hash="+this.requester.name+req,[this.onStart, this]);
+	for( var i in this.parameters )
+	     req+=('&v='+i+'&s='+encodeURIComponent(this.parameters[i]));
+	theWebUI.requestWithoutTimeout("?action=taskstart&hash="+this.taskName+"&hash="+this.requesterName+req,[this.onStart, this]);
 }
 
 plugin.shutdown = function()
 {
+	if($type(this.options.onShutdown)=="function")
+		this.options.onShutdown(this);
 	this.clearTimeout();
 	this.no = 0;
 	this.pid = 0;
 	this.status = -1;
-	this.requester = null;
 	this.tskcmderrors = 0;
 	this.tskcmdlog = 0;
 }
@@ -46,7 +51,7 @@ plugin.clearTimeout = function()
 plugin.onStart = function(data)
 {
         theDialogManager.clearModalState();
-	if(data.status || this.noclose)
+	if(data.status || this.options.noclose)
 	{
 	        $("#tskConsole-header").html(theUILang.tskCommand);
 	        theDialogManager.show("tskConsole");
@@ -72,11 +77,10 @@ plugin.check = function(data)
 	}
 	else
 	{
-		if($type(this.requester.taskOnFinished))
-			this.requester.taskOnFinished(this);
-		if(!this.status && !this.noclose)
+		if($type(this.options.onFinished)=="function")
+			this.options.onFinished(this);
+		if(!this.status && !this.options.noclose)
 			theDialogManager.hide("tskConsole");
-		this.shutdown();
 	}
 }
 
@@ -88,8 +92,8 @@ plugin.isActive = function()
 plugin.kill = function()
 {
 	theWebUI.requestWithoutTimeout("?action=taskkill&hash="+this.no);
-	if($type(this.requester.taskOnFinished))
-		this.requester.taskOnFinished(this);
+	if($type(this.options.onFinished)=="function")
+		this.options.onFinished(this);
 }
 
 plugin.setConsoleControls = function( errPresent )
@@ -121,7 +125,7 @@ plugin.fillConsole = function(id,arr)
         {
 		var s = ''
 		for(var i = 0; i<arr.length; i++)
-			s += $type(this.requester.taskOnShowLog) ? this.requester.taskOnShowLog(arr[i],id,i) : escapeHTML(arr[i])+'<br>';
+			s += ($type(this.options.onShowLog)=="function") ? this.options.onShowLog(this,arr[i],id,i) : escapeHTML(arr[i])+'<br>';
 		var crc = getCRC( s, 0 );
 		if(plugin[id]!=crc)
 		{
@@ -129,7 +133,7 @@ plugin.fillConsole = function(id,arr)
 			if(browser.isKonqueror)
 				s = '<br>'+s;
 			$('#'+id).html(s);
-			if(!this.noclose)
+			if(!this.options.noclose)
 				$('#'+id)[0].scrollTop = $('#'+id)[0].scrollHeight;
 		}
 		return(s!='');
