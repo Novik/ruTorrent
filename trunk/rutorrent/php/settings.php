@@ -241,7 +241,7 @@ class rTorrentSettings
 		if(strlen($dir) && ($dir[0]=='~'))
 			$dir = $this->home.substr($dir,1);
 		$dir = fullpath($dir,$this->directory);
-		return(strpos($dir,$topDirectory)===0);
+		return(strpos(addslash($dir),$topDirectory)===0);
 	}
 }
 

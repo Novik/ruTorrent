@@ -4,3 +4,4 @@ plugin.version: 3.3
 rtorrent.remote: error
 web.external.error: mediainfo
 plugin.dependencies: _task
+plugin.runlevel: 12

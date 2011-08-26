@@ -4,7 +4,7 @@ if(plugin.enabled && plugin.canChangeMenu())
 {
 	theWebUI.mediaInfo = function( hash, no ) 
 	{
-		theWebUI.startConsoleTask( "mediainfo", plugin, { "hash" : hash, "no" : no }, true );
+		theWebUI.startConsoleTask( "mediainfo", plugin.name, { "hash": hash, "no": no }, { noclose: true } );
 	}
 
 	plugin.createFileMenu = theWebUI.createFileMenu;
@@ -14,7 +14,7 @@ if(plugin.enabled && plugin.canChangeMenu())
 		{
 			if(plugin.enabled) 
 			{
-				theContextMenu.add([CMENU_SEP]);
+//				theContextMenu.add([CMENU_SEP]);
 				var fno = null;
 				var table = this.getTable("fls");
 				if((table.selCount == 1)  && (theWebUI.dID.length==40))
