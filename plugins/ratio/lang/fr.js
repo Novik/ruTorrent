@@ -22,6 +22,6 @@
  theUILang.ratioErase 		= "Efface";
  theUILang.ratioEraseData 	= "Supprime les données";
  theUILang.maxTime 		= "Temps";
- theUILang.ratioDefault		= "Default ratio group";
+ theUILang.ratioDefault		= "Groupe de ratio par défaut";
 
 thePlugins.get("ratio").langLoaded();

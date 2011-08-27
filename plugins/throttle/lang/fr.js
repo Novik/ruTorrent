@@ -14,6 +14,6 @@
  theUILang.mnuThrottle		= "Affecter une vitesse";
  theUILang.mnuUnlimited		= "Pas de restriction";
  theUILang.channelName 		= "Nom";
- theUILang.channelDefault	= "Default channel";
+ theUILang.channelDefault	= "Vitesse par défaut";
 
 thePlugins.get("throttle").langLoaded();
