@@ -38,7 +38,7 @@ At the time of the writting of this wiki, this plugin is being used for the foll
  * HDDream
  * RUTracker
  * WhatCD
- * Broadcasthe.net
+ * BTN
  * ILoveTorrents
  * PlayTheNet
  * TorrentDamage
