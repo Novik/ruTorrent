@@ -43,7 +43,7 @@ theWebUI.rDirBrowser.prototype.show = function()
 
 theWebUI.rDirBrowser.prototype.hide = function()
 {
-        if(this.frame.is(":visible"))
+        if(this.frame.css("visibility")!="hidden")
         {
 	        this.btn.val("...");
 		this.edit.attr( "read-only", false );
@@ -55,7 +55,7 @@ theWebUI.rDirBrowser.prototype.hide = function()
 
 theWebUI.rDirBrowser.prototype.toggle = function()
 {
-	return(this.frame.is(":visible") ? this.hide() : this.show());
+	return((this.frame.css("visibility")!="hidden") ? this.hide() : this.show());
 }
 
 plugin.onRemove = function()

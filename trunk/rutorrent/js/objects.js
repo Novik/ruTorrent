@@ -369,6 +369,14 @@ var theContextMenu =
 		if(y<0)
 			y = 0;
 		this.obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
+                $("ul.CMenu a.exp").hover( function() 
+                { 
+                	var submenu = $(this).next();
+                	if(submenu.offset().left + submenu.width() > $(window).width()) 
+	                	submenu.css( "left", -150 );
+                	if(submenu.offset().top + submenu.height() > $(window).height()) 
+	                	submenu.css( "top", -submenu.height()+20 );
+                });
                 this.obj.show(theDialogManager.divider);
 	},
 	hide: function()

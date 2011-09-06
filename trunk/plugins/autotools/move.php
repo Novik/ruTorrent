@@ -19,6 +19,8 @@ function Debug( $str )
 function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,$dest_path,$fileop_type)
 {
 	global $autodebug_enabled;
+	global $sleep_after_close;
+
 	$ret = false;
 	if( $is_multy_file )
 		$sub_dir = rtAddTailSlash( $base_file );	// $base_file - is a directory
@@ -42,7 +44,12 @@ function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,
 
 	if( $base_path != $dest_path && is_dir( $base_path ) )
 	{
-		
+
+		if($sleep_after_close)
+		{
+			Debug( "Sleep for ".$sleep_after_close." seconds" );
+			sleep($sleep_after_close);
+		}
 		if( rtOpFiles( $files, $base_path, $dest_path, $fileop_type, $autodebug_enabled ) )
 		{
 			if(($fileop_type=="Move") && ( $sub_dir != '' ))

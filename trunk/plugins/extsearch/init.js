@@ -57,20 +57,62 @@ theSearchEngines.show = function()
 		}
 		theContextMenu.add([CMENU_SEP]);
 
+		var public = [];
+		var private = [];
+		var publicPresent = false;
+		var privatePresent = false;
 		$.each(this.sites,function(ndx,val)
 		{
 			if(val.enabled)
 			{
-				if(theSearchEngines.current==ndx)
-					theContextMenu.add([CMENU_SEL, ndx, "theSearchEngines.set('"+ndx+"')"]);
+				if(val.public)
+					publicPresent = true;
 				else
-					theContextMenu.add([ndx, "theSearchEngines.set('"+ndx+"')"]);
+					privatePresent = true;
+				if(publicPresent && privatePresent)
+					return(false);
+			}
+		});
+
+		$.each(this.sites,function(ndx,val)
+		{
+			if(val.enabled)
+			{
+				if(publicPresent && privatePresent)
+				{
+				        if(val.public)
+				        {
+						if(theSearchEngines.current==ndx)
+							public.push([CMENU_SEL, ndx, "theSearchEngines.set('"+ndx+"')"]);
+						else
+							public.push([ndx, "theSearchEngines.set('"+ndx+"')"]);
+					}
+					else
+				        {
+						if(theSearchEngines.current==ndx)
+							private.push([CMENU_SEL, ndx, "theSearchEngines.set('"+ndx+"')"]);
+						else
+							private.push([ndx, "theSearchEngines.set('"+ndx+"')"]);
+					}
+				}
+				else
+				{
+					if(theSearchEngines.current==ndx)
+						theContextMenu.add([CMENU_SEL, ndx, "theSearchEngines.set('"+ndx+"')"]);
+					else
+						theContextMenu.add([ndx, "theSearchEngines.set('"+ndx+"')"]);
+				}
 			}
 			else
 				if(theSearchEngines.current==ndx)
 					theSearchEngines.current=-1;
 		});
-		theContextMenu.add([CMENU_SEP]);
+		if(public.length)
+			theContextMenu.add([CMENU_CHILD, theUILang.extPublic, public]);
+		if(private.length)
+			theContextMenu.add([CMENU_CHILD, theUILang.extPrivate, private]);
+		if(publicPresent || privatePresent)
+			theContextMenu.add([CMENU_SEP]);
 		if(theSearchEngines.current==-1)
 			theContextMenu.add([CMENU_SEL, theUILang.innerSearch, "theSearchEngines.set(-1)"]);
 		else
