@@ -1,7 +1,7 @@
 <?php
 
 if( !chdir( dirname( __FILE__) ) )
-	exit;
+	exit();
 
 if( count( $argv ) > 5 )
 	$_SERVER['REMOTE_USER'] = $argv[5];

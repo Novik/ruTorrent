@@ -41,3 +41,5 @@ rSpeedGraph.prototype.create = function( aOwner )
 	this.gridColor = "#034084";
 	this.backgroundColor = "#ffffff";
 }
+
+$('#CatList').css('overflow','hidden');

@@ -1,7 +1,7 @@
 <?php
 
 if( !chdir( dirname( __FILE__) ) )
-	exit;
+	exit();
 
 # Script arguments are:
 # 0: script name

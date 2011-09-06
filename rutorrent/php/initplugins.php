@@ -14,7 +14,7 @@ execute = {sh,-c,/usr/local/bin/php /usr/local/www/rt/php/initplugins.php user_n
  */
 
 if( !chdir( dirname( __FILE__ ) ) )
-        exit;
+        exit();
 
 function pluginsSort($a, $b)
 { 
@@ -97,7 +97,7 @@ function getPluginInfo( $name, $permissions )
 }
 
 if( !function_exists( 'preg_match_all' ) )
-	exit;
+	exit();
 
 if( count( $argv ) > 1 )
 	$_SERVER['REMOTE_USER'] = $argv[1];

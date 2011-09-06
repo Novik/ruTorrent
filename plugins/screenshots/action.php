@@ -66,11 +66,11 @@ if(isset($_REQUEST['cmd']))
 				{
 					sendFile( $randName, "application/x-tar",  $_REQUEST['file'].'.tar', false );
 					unlink($randName);
-					exit;
+					exit();
 				}
 			}
 			header('HTTP/1.0 404 Not Found');
-			exit;
+			exit();
 		}
 		case "ffmpeggetimage":
 		{
@@ -85,7 +85,7 @@ if(isset($_REQUEST['cmd']))
 			for($i=0; $i<$st->data['exfrmcount']; $i++)
 				@unlink( $dir.'/frame'.$i.($st->data['exformat'] ? '.png' : '.jpg') );
 			@rmdir($dir);
-			exit;
+			exit();
 		}
 		case "ffmpegset":
 		{

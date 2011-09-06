@@ -180,10 +180,8 @@ theWebUI.rebuildTrackersLabels = function()
 			{
 			        li = $('<li>').attr("id",'i'+lbl).
 			        	html(escapeHTML(lbl)+'&nbsp;(<span id="-'+lbl+'_c">'+trackersLabels[lbl]+'</span>)').
-			        	mouseclick(theWebUI.trackersLabelContextMenu).addClass("cat tracker").attr("title",lbl+" ("+trackersLabels[lbl]+")");
-				var rule = getCSSRule("#i"+lbl);
-				if(!rule)
-					li.prepend( $("<img>").attr("src","http://"+lbl+"/favicon.ico").addClass("tfavicon") ).css({ padding: "2px 4px" });
+			        	mouseclick(theWebUI.trackersLabelContextMenu).addClass("cat tracker").attr("title",lbl+" ("+trackersLabels[lbl]+")").
+					prepend( $("<img>").attr("src","plugins/tracklabels/action.php?tracker="+lbl).addClass("tfavicon") ).css({ padding: "2px 4px" });
 				ul.append(li);
 			}
 			if(plugin.isActualLabel(lbl))

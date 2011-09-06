@@ -489,11 +489,11 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 				passthru('cat '.escapeshellarg($filename));
 			else
 				readfile($filename);
-			if($mustExit)
-				exit;
-			else
-				return(true);
 		}
+		if($mustExit)
+			exit();
+		else
+			return(true);
 	}
 	return(false);
 }
