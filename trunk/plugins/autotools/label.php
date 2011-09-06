@@ -1,7 +1,7 @@
 <?php
 
 if( !chdir( dirname( __FILE__) ) )
-	exit;
+	exit();
 
 if( count( $argv ) > 1 )
 {
