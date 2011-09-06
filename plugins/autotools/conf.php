@@ -4,9 +4,9 @@
 	$autowatch_interval = 300;
 
 	// set "true" to enable debug output
-	$autodebug_enabled = true;
+	$autodebug_enabled = false;
 
 	// for automove, in seconds 
-	$sleep_after_close = 3;
+	$sleep_after_close = 0;
 
 ?>
