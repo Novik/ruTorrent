@@ -339,7 +339,7 @@ rPlugin.prototype.addPaneToCategory = function(id,name)
         {
 		$('#CatList').append(
 			$("<div>").addClass("catpanel").attr("id",id).text(name).click(function() { theWebUI.togglePanel(this); })).
-				append($("<div>").attr("id",id+"_cont"));
+				append($("<div>").attr("id",id+"_cont").addClass("catpanel_cont"));
 		theWebUI.showPanel($$(id),!theWebUI.settings["webui.closed_panels"][id]);
 	}
 	return($("#"+id+"_cont"));
