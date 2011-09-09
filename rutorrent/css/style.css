@@ -83,7 +83,7 @@ a {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #6
 table#maincont {margin: 5px 0 0 0}
 table#maincont td.uicell {vertical-align: top; padding: 0 }
 
-div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: auto}
+div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden}
 div#CatList ul {padding: 0; margin: 0; list-style: none; white-space: nowrap}
 div#CatList ul li {padding: 2px 25px; margin: 0; line-height: 14px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer; border: 1px solid #FFFFFF; background-repeat: no-repeat}
 div#CatList ul li.sel {background-color: #CFDEEF; border-color: #CFDEEF }

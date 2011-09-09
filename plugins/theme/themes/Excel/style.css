@@ -1,6 +1,7 @@
 html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollbar-base-color: #e3e9f0; scrollbar-track-color: #7797c1; }
 div#HDivider { width: 5px }
-div#CatList { border-top-style: none; border-color: #9EB6CE; background: transparent url(./images/cbg.png) repeat-y 0 0  }
+div#CatList { border-top-style: none; border-color: #9EB6CE; background: scroll transparent url(./images/cbg.png) repeat-y 0 0 }
+div#CatList ul { background: scroll transparent url(./images/cbg.png) repeat-y 0 0 }
 div#CatList ul li { border-top: 1px solid #d0d7e5; border-bottom: 1px solid transparent; padding-left: 46px }
 .catpanel { border: none; background: transparent url(./images/pbg.png) repeat-x 0 0; padding: 0px 32px; height: 20px }
 
