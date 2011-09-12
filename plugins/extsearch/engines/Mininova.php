@@ -35,7 +35,7 @@ class MininovaEngine extends commonEngine
 			{
 				for( $i=0; $i<count($items[2]); $i+=6)
 				{
-                                        if(preg_match( "/<a href=\"\/tor\/(?P<id>\d+)\">(?P<name>.*)<\/a>/si", $items[2][$i+2], $matches )==1)
+                                        if(preg_match( "`<a href=\"/tor/(?P<id>\d+)/[^\"]*\">(?P<name>.*)</a>`si", $items[2][$i+2], $matches )==1)
 					{
 						$link = $url."/get/".$matches["id"];
 						$itemsOnPage++;
