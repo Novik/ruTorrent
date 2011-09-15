@@ -1,0 +1,7 @@
+plugin.description: The plugin is intended for check of updated torrents on the rutracker.org tracker.
+plugin.author: Novik
+plugin.version: 3.3
+rtorrent.remote: error
+rtorrent.external.error: php
+plugin.dependencies: loginmgr
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRutracker_check
