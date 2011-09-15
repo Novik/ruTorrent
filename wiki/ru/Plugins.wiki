@@ -86,6 +86,7 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
  # [PluginCpuload Cpuload] - индикатор загрузки процессора.
  # [PluginTheme Theme] - смена стиля оформления ruTorrent.
  # [PluginFeeds Feeds] - доступ к текущим закачкам средствами RSS.
+ # [PluginRutracker_check Rutracker_check] - проверка обновления торрента на трекере rutracker.org.
 
 == Плагины прочих разработчиков ==
  # [PluginAutodlirssi Autodl-irssi] - irc бот для автоматизаци закачек.

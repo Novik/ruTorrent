@@ -46,6 +46,7 @@
       * [PluginData Data]
       * [PluginCpuload Cpuload]
       * [PluginFeeds Feeds]
+      * [PluginRutracker_check Rutracker_check]      
     * [HowToCreatePlugin Как написать плагин самому]
   * [Usage Использование]
   * [Versions История версий]
