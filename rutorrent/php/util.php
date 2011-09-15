@@ -70,6 +70,7 @@ function quoteAndDeslashEachItem($item)
 	return('"'.addcslashes($item,"\\\'\"\n\r\t").'"'); 
 }
 
+/*
 define('_is_utf8_split',5000);
 
 function isInvalidUTF8($string)
@@ -93,6 +94,12 @@ function isInvalidUTF8($string)
 			'| [\xF1-\xF3][\x80-\xBF]{3}'.          // planes 4-15
 			'| \xF4[\x80-\x8F][\x80-\xBF]{2}'.      // plane 16
 			')*$%xs', $string)!=1);
+}
+*/
+
+function isInvalidUTF8($string)
+{
+	return(!preg_match('/./u',$string));
 }
 
 function win2utf($str) 

@@ -355,12 +355,18 @@ var theWebUI =
 				table.obj.sIndex = iv(theWebUI.settings["webui."+ndx+".sindex"]);
 			if($type(theWebUI.settings["webui."+ndx+".rev"]))
 				table.obj.reverse = iv(theWebUI.settings["webui."+ndx+".rev"]);
+			if($type(theWebUI.settings["webui."+ndx+".sindex2"]))
+				table.obj.secIndex = iv(theWebUI.settings["webui."+ndx+".sindex2"]);
+			if($type(theWebUI.settings["webui."+ndx+".rev2"]))
+				table.obj.secRev = iv(theWebUI.settings["webui."+ndx+".rev2"]);
 			if($type(theWebUI.settings["webui."+ndx+".colorder"]))
 				table.obj.colOrder = theWebUI.settings["webui."+ndx+".colorder"];
 			table.obj.onsort = function()
 			{
-   				if( ((this.sIndex != theWebUI.settings["webui."+this.prefix+".sindex"]) || 
-		   			(this.reverse != theWebUI.settings["webui."+this.prefix+".rev"])) ) 
+   				if( (this.sIndex != theWebUI.settings["webui."+this.prefix+".sindex"]) || 
+		   			(this.reverse != theWebUI.settings["webui."+this.prefix+".rev"]) ||
+					(this.secIndex != theWebUI.settings["webui."+this.prefix+".sindex2"]) || 
+		   			(this.secRev != theWebUI.settings["webui."+this.prefix+".rev2"])) 
 		      			theWebUI.save();
 			}
 		});
@@ -709,6 +715,8 @@ var theWebUI =
 			theWebUI.settings["webui."+ndx+".colorder"] = table.obj.colOrder;
 			theWebUI.settings["webui."+ndx+".sindex"] = table.obj.sIndex;
 			theWebUI.settings["webui."+ndx+".rev"] = table.obj.reverse;
+			theWebUI.settings["webui."+ndx+".sindex2"] = table.obj.secIndex;
+			theWebUI.settings["webui."+ndx+".rev2"] = table.obj.secRev;
 		});
 	        var cookie = {};
 	        theWebUI.settings["webui.search"] = theSearchEngines.current;
@@ -1472,7 +1480,7 @@ var theWebUI =
 		{
 			tdl += iv(torrent.dl);
 			tul += iv(torrent.ul);
-			var sInfo = theWebUI.getStatusIcon(torrent.state, torrent.done);
+			var sInfo = theWebUI.getStatusIcon(torrent);
 			torrent.status = sInfo[1];
 			var lbl = theWebUI.getLabels(hash, torrent);
 			if(!$type(theWebUI.torrents[hash]))
@@ -1588,8 +1596,10 @@ var theWebUI =
 	        $.extend(this.total,d);
 	},
 
-	getStatusIcon: function(state, completed) 
+	getStatusIcon: function(torrent) 
 	{
+		var state = torrent.state;
+		var completed = torrent.done;
 		var icon = "", status = "";
 		if(state & dStatus.checking)
 		{
