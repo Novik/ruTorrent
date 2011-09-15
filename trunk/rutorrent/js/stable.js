@@ -759,7 +759,6 @@ dxSTable.prototype.sortAlphaNumeric = function(x, y)
 dxSTable.prototype.sortSecondary = function(x, y)
 {
 	var m = this.getValue(x.e, this.secIndex);
-log(m);
 	var n = this.getValue(y.e, this.secIndex);
 	if(this.secRev)
 	{
