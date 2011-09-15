@@ -290,6 +290,8 @@ dxSTable.prototype.removeColumn = function(no)
 		this.cols--;
 		if(this.sIndex == i)
 			this.sIndex = -1;
+		if(this.secIndex == i)
+			this.secIndex = 0;
 
 	        this.dHead.scrollLeft = this.dBody.scrollLeft;
         	this.calcSize().resizeColumn();
@@ -404,105 +406,128 @@ dxSTable.prototype.resizeColumn = function()
 	}
 }
 
-var moveColumn = function(_11, _12) {
-   var i, l, oParent, oCol, oBefore, aRows, a;
-   if(_11 == _12) {
-      return;
-      }
-   oCol = this.tHeadCols[_11];
-   oParent = oCol.parentNode;
-   if(_12 == this.cols) {
-      oParent.removeChild(oCol);
-      oParent.appendChild(oCol);
-      }
-   else {
-      oBefore = this.tHeadCols[_12];
-      oParent.removeChild(oCol);
-      oParent.insertBefore(oCol, oBefore);
-      }
-   oCol = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")[_11];
-   oParent = oCol.parentNode;
-   if(_12 == this.cols) {
-      oParent.removeChild(oCol);
-      oParent.appendChild(oCol);
-      }
-   else {
-      oBefore = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")[_12];
-      oParent.removeChild(oCol);
-      oParent.insertBefore(oCol, oBefore);
-      }
-   aRows = this.tBody.tb.rows;
-   l = aRows.length;
-   i = 0;
-   while(i < l) {
-      oCol = aRows[i].cells[_11];
-      oParent = aRows[i];
-      if(_12 == this.cols) {
-         oParent.removeChild(oCol);
-         oParent.appendChild(oCol);
-         }
-      else {
-         oBefore = aRows[i].cells[_12];
-         oParent.removeChild(oCol);
-         oParent.insertBefore(oCol, oBefore);
-         }
-      i++;
-      }
-   var aHC = new Array();
-   var aBC = new Array();
-   var aC = new Array();
-   var aO = new Array();
-   oCol = this.tHeadCols[_11];
-   var _18 = this.tBodyCols[_11];
-   for(i = 0; i < this.cols; i++) {
-      if(i == _11) {
-         continue;
-         }
-      if(i == _12) {
-         aHC.push(oCol);
-         aBC.push(_18);
-         aC.push(this.colsdata[_11]);
-         aO.push(this.colOrder[_11]);
-         }
-      aHC.push(this.tHeadCols[i]);
-      aBC.push(this.tBodyCols[i]);
-      aC.push(this.colsdata[i]);
-      aO.push(this.colOrder[i]);
-      }
-   if(_12 == this.cols) {
-      aHC.push(oCol);
-      aBC.push(_18);
-      aC.push(this.colsdata[_11]);
-      aO.push(this.colOrder[_11]);
-      }
-   this.tHeadCols = aHC.slice(0);
-   this.tBodyCols = aBC.slice(0);
-   this.colsdata = aC.slice(0);
-   this.colOrder = aO.slice(0);
-   for(i = 0; i < this.cols; i++) {
-      this.tHeadCols[i].setAttribute("index", i);
-      }
-   if((_12 == this.sIndex) && (_11 > _12)) {
-      this.sIndex = _12 + 1;
-      }
-   else {
-      if((_11 < _12) && (this.sIndex < _12) && (this.sIndex > _11)) {
-         this.sIndex--;
-         }
-      else {
-         if(_11 == this.sIndex) {
-            this.sIndex = _12;
-            if(_12 > _11) {
-               this.sIndex = _12 - 1;
-               }
-            }
-         }
-      }
-   this.cancelSort = false;
-   if($type(this.onmove) == "function") {
-      this.onmove();
-      }
-   }
+var moveColumn = function(_11, _12) 
+{
+	var i, l, oParent, oCol, oBefore, aRows, a;
+	if(_11 == _12)
+		return;
+	oCol = this.tHeadCols[_11];
+	oParent = oCol.parentNode;
+	if(_12 == this.cols) 
+	{
+		oParent.removeChild(oCol);
+		oParent.appendChild(oCol);
+	}
+	else 
+	{
+		oBefore = this.tHeadCols[_12];
+		oParent.removeChild(oCol);
+		oParent.insertBefore(oCol, oBefore);
+	}
+	oCol = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")[_11];
+	oParent = oCol.parentNode;
+	if(_12 == this.cols) 
+	{
+		oParent.removeChild(oCol);
+		oParent.appendChild(oCol);
+	}
+	else 
+	{
+		oBefore = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")[_12];
+		oParent.removeChild(oCol);
+		oParent.insertBefore(oCol, oBefore);
+	}
+	aRows = this.tBody.tb.rows;
+	l = aRows.length;
+	i = 0;
+	while(i < l) 
+	{
+		oCol = aRows[i].cells[_11];
+		oParent = aRows[i];
+		if(_12 == this.cols) 
+		{
+			oParent.removeChild(oCol);
+			oParent.appendChild(oCol);
+		}
+		else 
+		{
+			oBefore = aRows[i].cells[_12];
+			oParent.removeChild(oCol);
+			oParent.insertBefore(oCol, oBefore);
+		}
+		i++;
+	}
+	var aHC = new Array();
+	var aBC = new Array();
+	var aC = new Array();
+	var aO = new Array();
+	oCol = this.tHeadCols[_11];
+	var _18 = this.tBodyCols[_11];
+	for(i = 0; i < this.cols; i++) 
+	{
+		if(i == _11)
+			continue;
+		if(i == _12) 
+		{
+			aHC.push(oCol);
+			aBC.push(_18);
+			aC.push(this.colsdata[_11]);
+			aO.push(this.colOrder[_11]);
+		}
+		aHC.push(this.tHeadCols[i]);
+		aBC.push(this.tBodyCols[i]);
+		aC.push(this.colsdata[i]);
+		aO.push(this.colOrder[i]);
+	}
+	if(_12 == this.cols) 
+	{
+		aHC.push(oCol);
+		aBC.push(_18);
+		aC.push(this.colsdata[_11]);
+		aO.push(this.colOrder[_11]);
+	}
+	this.tHeadCols = aHC.slice(0);
+	this.tBodyCols = aBC.slice(0);
+	this.colsdata = aC.slice(0);
+	this.colOrder = aO.slice(0);
+	for(i = 0; i < this.cols; i++)
+		this.tHeadCols[i].setAttribute("index", i);
+	if((_12 == this.sIndex) && (_11 > _12))
+		this.sIndex = _12 + 1;
+	else 
+	{
+		if((_11 < _12) && (this.sIndex < _12) && (this.sIndex > _11))
+			this.sIndex--;
+		else
+		{
+			if(_11 == this.sIndex) 
+			{
+				this.sIndex = _12;
+				if(_12 > _11)
+					this.sIndex = _12 - 1;
+			}
+		}
+	}
+	if((_12 == this.secIndex) && (_11 > _12))
+		this.secIndex = _12 + 1;
+	else 
+	{
+		if((_11 < _12) && (this.secIndex < _12) && (this.secIndex > _11))
+			this.secIndex--;
+		else
+		{
+			if(_11 == this.secIndex) 
+			{
+				this.secIndex = _12;
+				if(_12 > _11)
+					this.secIndex = _12 - 1;
+			}
+		}
+	}
+	this.cancelSort = false;
+	if($type(this.onmove) == "function")
+		this.onmove();
+}
 
 dxSTable.ColumnMove = function(p)
 {
@@ -662,7 +687,7 @@ dxSTable.prototype.Sort = function(e)
 		col = col.parentNode;
 	}
 	var ind = parseInt(col.getAttribute("index"));
-	if(e && e.shiftKey)
+	if(e && e.shiftKey && (this.sIndex >- 1))
 	{
 		if(this.secIndex == ind) 
 			this.secRev = 1 - this.secRev;
@@ -733,15 +758,16 @@ dxSTable.prototype.sortAlphaNumeric = function(x, y)
 
 dxSTable.prototype.sortSecondary = function(x, y)
 {
-	var m = this.getValue(x.e, this.secIndex);
-	var n = this.getValue(y.e, this.secIndex);
+	var ndx = this.secIndex;
+	var m = this.getValue(x.e, ndx);
+	var n = this.getValue(y.e, ndx);
 	if(this.secRev)
 	{
 		var tmp = m;
 		m = n;
       		n = tmp;
 	}
-	var ret = this.colsdata[this.colOrder[this.secIndex]].type;
+	var ret = this.colsdata[this.colOrder[ndx]].type;
 	return( (ret==0) ? theSort.AlphaNumeric(m, n) : (ret==1) ? theSort.Numeric(m, n) : theSort.Default(m, n) );
 }
 

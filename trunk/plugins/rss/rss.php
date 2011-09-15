@@ -323,8 +323,8 @@ class rRSS
 			else
 			if($needTranslate)
 				$out[1] = self::removeTegs( $out[1] );
-//			if( isInvalidUTF8( $out[1] ) )
-//				$out[1] = win2utf($out[1]);
+			if( isInvalidUTF8( $out[1] ) )
+				$out[1] = win2utf($out[1]);
 			return(trim($out[1]));
 		}
 		else
