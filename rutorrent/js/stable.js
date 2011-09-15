@@ -758,17 +758,17 @@ dxSTable.prototype.sortAlphaNumeric = function(x, y)
 
 dxSTable.prototype.sortSecondary = function(x, y)
 {
-	var ndx = this.secIndex;
-	var m = this.getValue(x.e, ndx);
-	var n = this.getValue(y.e, ndx);
+	var m = this.getValue(x.e, this.secIndex);
+log(m);
+	var n = this.getValue(y.e, this.secIndex);
 	if(this.secRev)
 	{
 		var tmp = m;
 		m = n;
       		n = tmp;
 	}
-	var ret = this.colsdata[this.colOrder[ndx]].type;
-	return( (ret==0) ? theSort.AlphaNumeric(m, n) : (ret==1) ? theSort.Numeric(m, n) : theSort.Default(m, n) );
+	var ret = this.colsdata[this.secIndex].type;
+	return( (ret==0) ? theSort.AlphaNumeric(m, n) : ((ret==1) || (ret==4)) ? theSort.Numeric(m, n) : theSort.Default(m, n) );
 }
 
 var theSort = 
