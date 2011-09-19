@@ -2064,7 +2064,7 @@ var theWebUI =
    		this.dID = hash;
    		this.getFiles(hash);
  		this.getTrackers(hash);
-   		if(!noSwitch)
+   		if(!noSwitch && !theWebUI.settings["webui.show_dets"])
    		{
 			$("#tdetails").show();
       			theWebUI.settings["webui.show_dets"] = true;

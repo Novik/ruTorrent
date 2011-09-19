@@ -63,7 +63,7 @@ function fix_magic_quotes_gpc()
 }
 
 fix_magic_quotes_gpc();
-setlocale(LC_CTYPE, "UTF8", "en_US.UTF-8");
+setlocale(LC_CTYPE, "UTF8", "UTF-8", "en_US.UTF-8", "en_US.UTF8");
 
 function quoteAndDeslashEachItem($item)
 {

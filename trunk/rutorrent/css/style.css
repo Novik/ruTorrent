@@ -158,7 +158,7 @@ input.str {text-align: left; width: 130px}
 td label, div label {cursor: pointer}
 input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
-fieldset div {padding: 3px}
+fieldset div {padding: 2px}
 .ie7 fieldset div {padding: 0px}
 div input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
 legend {color: #000000; font-weight: bold}

@@ -4,4 +4,5 @@ plugin.version: 3.3
 rtorrent.remote: error
 rtorrent.external.error: php
 plugin.dependencies: loginmgr
+rtorrent.version: 0.8.5
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRutracker_check
