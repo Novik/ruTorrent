@@ -46,7 +46,7 @@
  ms					: "ms",
  Alt_list_bckgnd	: "Riveittäin vaihteleva taustaväri",
  Show_cat_start		: "Näytä ryhmat käynnistettäessä",
- Show_det_start		: "Nayta yksityiskohdat käynnistettäessä",
+ Show_det_start		: "Nayta yksityiskohdat käynnist.",
  Dnt_start_down_auto: "älä aloita latauksia automaattisesti",
  Other_sett			: "Muut asetukset",
  Listening_Port		: "Portti",

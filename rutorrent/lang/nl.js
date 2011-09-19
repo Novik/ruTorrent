@@ -45,7 +45,7 @@
  Update_GUI_every		: "Vernieuw GUI iedere",
  ms				: "ms",
  Alt_list_bckgnd		: "Andere achtergrond kleur voor lijst",
- Show_cat_start		: "Bij opstarten categorieën weergeven",
+ Show_cat_start		: "Bij opstarten categorieÃ«n weergeven",
  Show_det_start		: "Bij opstarten details weergeven",
  Dnt_start_down_auto		: "Download niet automatisch starten",
  Other_sett			: "Andere instellingen",
