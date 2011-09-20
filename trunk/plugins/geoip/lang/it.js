@@ -1,7 +1,7 @@
 ﻿
 // Contributed by art.spb, December 2009.
 
-theUILang.countryName = "Country";
+theUILang.countryName = "Paese";
 
 theUILang.country = new Array();
 
@@ -33,8 +33,8 @@ theUILang.country[ "bh" ] = "Bahrain";
 theUILang.country[ "bi" ] = "Burundi";
 theUILang.country[ "bj" ] = "Benin";
 theUILang.country[ "bm" ] = "Bermuda";
-theUILang.country[ "bn" ] = "Brunei Darussalam";
-theUILang.country[ "bo" ] = "Bolivia, Plurinational State of";
+theUILang.country[ "bn" ] = "Brunei";
+theUILang.country[ "bo" ] = "Bolivia";
 theUILang.country[ "br" ] = "Brazil";
 theUILang.country[ "bs" ] = "Bahamas";
 theUILang.country[ "bt" ] = "Bhutan";
@@ -44,10 +44,10 @@ theUILang.country[ "by" ] = "Belarus";
 theUILang.country[ "bz" ] = "Belize";
 
 theUILang.country[ "ca" ] = "Canada";
-theUILang.country[ "cc" ] = "Cocos (Keeling) Islands";
-theUILang.country[ "cd" ] = "Congo, the Democratic Republic of the";
+theUILang.country[ "cc" ] = "Cocos Islands";
+theUILang.country[ "cd" ] = "Congo-Kinshasa";
 theUILang.country[ "cf" ] = "Central African Republic";
-theUILang.country[ "cg" ] = "Congo";
+theUILang.country[ "cg" ] = "Congo-Brazzaville";
 theUILang.country[ "ch" ] = "Switzerland";
 theUILang.country[ "ci" ] = "Côte d'Ivoire";
 theUILang.country[ "ck" ] = "Cook Islands";
@@ -80,8 +80,8 @@ theUILang.country[ "eu" ] = "European Union";
 
 theUILang.country[ "fi" ] = "Finland";
 theUILang.country[ "fj" ] = "Fiji";
-theUILang.country[ "fk" ] = "Falkland Islands (Malvinas)";
-theUILang.country[ "fm" ] = "Micronesia, Federated States of";
+theUILang.country[ "fk" ] = "Falkland Islands";
+theUILang.country[ "fm" ] = "Micronesia";
 theUILang.country[ "fo" ] = "Faroe Islands";
 theUILang.country[ "fr" ] = "France";
 
@@ -119,7 +119,7 @@ theUILang.country[ "im" ] = "Isle of Man";
 theUILang.country[ "in" ] = "India";
 theUILang.country[ "io" ] = "British Indian Ocean Territory";
 theUILang.country[ "iq" ] = "Iraq";
-theUILang.country[ "ir" ] = "Iran, Islamic Republic of";
+theUILang.country[ "ir" ] = "Iran";
 theUILang.country[ "is" ] = "Iceland";
 theUILang.country[ "it" ] = "Italy";
 
@@ -134,13 +134,13 @@ theUILang.country[ "kh" ] = "Cambodia";
 theUILang.country[ "ki" ] = "Kiribati";
 theUILang.country[ "km" ] = "Comoros";
 theUILang.country[ "kn" ] = "Saint Kitts and Nevis";
-theUILang.country[ "kp" ] = "Korea, Democratic People's Republic of";
-theUILang.country[ "kr" ] = "Korea, Republic of";
+theUILang.country[ "kp" ] = "North Korea";
+theUILang.country[ "kr" ] = "South Korea";
 theUILang.country[ "kw" ] = "Kuwait";
 theUILang.country[ "ky" ] = "Cayman Islands";
 theUILang.country[ "kz" ] = "Kazakhstan";
 
-theUILang.country[ "la" ] = "Lao People's Democratic Republic";
+theUILang.country[ "la" ] = "Laos";
 theUILang.country[ "lb" ] = "Lebanon";
 theUILang.country[ "lc" ] = "Saint Lucia";
 theUILang.country[ "li" ] = "Liechtenstein";
@@ -150,15 +150,15 @@ theUILang.country[ "ls" ] = "Lesotho";
 theUILang.country[ "lt" ] = "Lithuania";
 theUILang.country[ "lu" ] = "Luxembourg";
 theUILang.country[ "lv" ] = "Latvia";
-theUILang.country[ "ly" ] = "Libyan Arab Jamahiriya";
+theUILang.country[ "ly" ] = "Libya";
 
 theUILang.country[ "ma" ] = "Morocco";
 theUILang.country[ "mc" ] = "Monaco";
-theUILang.country[ "md" ] = "Moldova, Republic of";
+theUILang.country[ "md" ] = "Moldova";
 theUILang.country[ "me" ] = "Montenegro";
 theUILang.country[ "mg" ] = "Madagascar";
 theUILang.country[ "mh" ] = "Marshall Islands";
-theUILang.country[ "mk" ] = "Macedonia, the former Yugoslav Republic of";
+theUILang.country[ "mk" ] = "Macedonia";
 theUILang.country[ "ml" ] = "Mali";
 theUILang.country[ "mm" ] = "Myanmar";
 theUILang.country[ "mn" ] = "Mongolia";
@@ -200,7 +200,7 @@ theUILang.country[ "pl" ] = "Poland";
 theUILang.country[ "pm" ] = "Saint Pierre and Miquelon";
 theUILang.country[ "pn" ] = "Pitcairn";
 theUILang.country[ "pr" ] = "Puerto Rico";
-theUILang.country[ "ps" ] = "Palestinian Territory, Occupied";
+theUILang.country[ "ps" ] = "Palestine";
 theUILang.country[ "pt" ] = "Portugal";
 theUILang.country[ "pw" ] = "Palau";
 theUILang.country[ "py" ] = "Paraguay";
@@ -210,7 +210,7 @@ theUILang.country[ "qa" ] = "Qatar";
 theUILang.country[ "re" ] = "Réunion";
 theUILang.country[ "ro" ] = "Romania";
 theUILang.country[ "rs" ] = "Serbia";
-theUILang.country[ "ru" ] = "Russian Federation";
+theUILang.country[ "ru" ] = "Russia";
 theUILang.country[ "rw" ] = "Rwanda";
 
 theUILang.country[ "sa" ] = "Saudi Arabia";
@@ -228,9 +228,10 @@ theUILang.country[ "sm" ] = "San Marino";
 theUILang.country[ "sn" ] = "Senegal";
 theUILang.country[ "so" ] = "Somalia";
 theUILang.country[ "sr" ] = "Suriname";
+theUILang.country[ "ss" ] = "South Sudan";
 theUILang.country[ "st" ] = "Sao Tome and Principe";
 theUILang.country[ "sv" ] = "El Salvador";
-theUILang.country[ "sy" ] = "Syrian Arab Republic";
+theUILang.country[ "sy" ] = "Syria";
 theUILang.country[ "sz" ] = "Swaziland";
 
 theUILang.country[ "tc" ] = "Turks and Caicos Islands";
@@ -248,8 +249,8 @@ theUILang.country[ "tr" ] = "Turkey";
 theUILang.country[ "tp" ] = "Portuguese Timor";
 theUILang.country[ "tt" ] = "Trinidad and Tobago";
 theUILang.country[ "tv" ] = "Tuvalu";
-theUILang.country[ "tw" ] = "Taiwan, Province of China";
-theUILang.country[ "tz" ] = "Tanzania, United Republic of";
+theUILang.country[ "tw" ] = "Taiwan";
+theUILang.country[ "tz" ] = "Tanzania";
 
 theUILang.country[ "ua" ] = "Ukraine";
 theUILang.country[ "ug" ] = "Uganda";
@@ -260,11 +261,11 @@ theUILang.country[ "us" ] = "United States";
 theUILang.country[ "uy" ] = "Uruguay";
 theUILang.country[ "uz" ] = "Uzbekistan";
 
-theUILang.country[ "va" ] = "Holy See (Vatican City State)";
+theUILang.country[ "va" ] = "Vatican";
 theUILang.country[ "vc" ] = "Saint Vincent and the Grenadines";
-theUILang.country[ "ve" ] = "Venezuela, Bolivarian Republic of";
-theUILang.country[ "vg" ] = "Virgin Islands, British";
-theUILang.country[ "vi" ] = "Virgin Islands, U.S.";
+theUILang.country[ "ve" ] = "Venezuela";
+theUILang.country[ "vg" ] = "British Virgin Islands";
+theUILang.country[ "vi" ] = "U.S. Virgin Islands";
 theUILang.country[ "vn" ] = "Viet Nam";
 theUILang.country[ "vu" ] = "Vanuatu";
 

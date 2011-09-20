@@ -228,6 +228,7 @@ theUILang.country[ "sm" ] = "San Marino";
 theUILang.country[ "sn" ] = "Senegal";
 theUILang.country[ "so" ] = "Somálsko";
 theUILang.country[ "sr" ] = "Surinam";
+theUILang.country[ "ss" ] = "Jižní Súdán";
 theUILang.country[ "st" ] = "Svatý Tomáš a Princův ostrov";
 theUILang.country[ "sv" ] = "Salvador";
 theUILang.country[ "sy" ] = "Sýrie";
