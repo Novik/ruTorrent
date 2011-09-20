@@ -229,6 +229,7 @@ theUILang.country[ "sm" ] = "Сан Марино";
 theUILang.country[ "sn" ] = "Сенегал";
 theUILang.country[ "so" ] = "Сомалија";
 theUILang.country[ "sr" ] = "Суринам";
+theUILang.country[ "ss" ] = "Јужни Судан";
 theUILang.country[ "st" ] = "Сао Томе и Принсипе";
 theUILang.country[ "sv" ] = "Салвадор";
 theUILang.country[ "sy" ] = "Сирија";
@@ -249,7 +250,7 @@ theUILang.country[ "tr" ] = "Турска";
 theUILang.country[ "tp" ] = "Португалски Тимор";
 theUILang.country[ "tt" ] = "Тринидад и Тобаго";
 theUILang.country[ "tv" ] = "Тувалу";
-theUILang.country[ "tw" ] = "Тајван, провинција Кине";
+theUILang.country[ "tw" ] = "Тајван";
 theUILang.country[ "tz" ] = "Танзанија";
 
 theUILang.country[ "ua" ] = "Украјина";

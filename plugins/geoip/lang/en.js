@@ -264,8 +264,8 @@ theUILang.country[ "uz" ] = "Uzbekistan";
 theUILang.country[ "va" ] = "Vatican";
 theUILang.country[ "vc" ] = "Saint Vincent and the Grenadines";
 theUILang.country[ "ve" ] = "Venezuela";
-theUILang.country[ "vg" ] = "Virgin Islands, British";
-theUILang.country[ "vi" ] = "Virgin Islands, U.S.";
+theUILang.country[ "vg" ] = "British Virgin Islands";
+theUILang.country[ "vi" ] = "U.S. Virgin Islands";
 theUILang.country[ "vn" ] = "Viet Nam";
 theUILang.country[ "vu" ] = "Vanuatu";
 
