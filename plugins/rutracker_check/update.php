@@ -13,15 +13,16 @@ $req =  new rXMLRPCRequest(
 			getCmd("d.get_hash="),
 			getCmd("d.get_custom=")."chk-state",
 			getCmd("d.get_custom=")."chk-time",
+			getCmd("d.get_custom=")."chk-stime",
 			getCmd("cat").'="$'.getCmd("t.multicall=").getCmd("d.get_hash=").",".getCmd("t.get_url")."=,".getCmd("cat=#").'"'
 		))
 	);
 if($req->success())
 {
-	for($i = 0; $i<count($req->val); $i+=4)
+	for($i = 0; $i<count($req->val); $i+=5)
 	{
-		if(strpos( $req->val[$i+3], ".rutracker.org/" )!==false)
-			if(!ruTrackerChecker::run($req->val[$i],$req->val[$i+1],$req->val[$i+2]))
+		if(strpos( $req->val[$i+4], ".rutracker.org/" )!==false)
+			if(!ruTrackerChecker::run($req->val[$i],$req->val[$i+1],$req->val[$i+2],$req->val[$i+3]))
 				break;
 	}
 }

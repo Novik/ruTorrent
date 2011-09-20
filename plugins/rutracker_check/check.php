@@ -21,34 +21,52 @@ class ruTrackerChecker
 			new rXMLRPCCommand( getCmd("d.set_custom"), array($hash, "chk-state", $state."")  ),
 			new rXMLRPCCommand( getCmd("d.set_custom"), array($hash, "chk-time", time()."") )
 			));
+		if($state == self::STE_UPTODATE)
+			$req->addCommand(new rXMLRPCCommand( getCmd("d.set_custom"), array($hash, "chk-stime", time()."") ));
 		return($req->success());
 	}
 
-	static protected function getState( $hash, &$state, &$time )
+	static protected function getState( $hash, &$state, &$time, &$successful_time )
 	{
 		$req = new rXMLRPCRequest( array(
 			new rXMLRPCCommand( getCmd("d.get_custom"), array($hash, "chk-state")  ),
-			new rXMLRPCCommand( getCmd("d.get_custom"), array($hash, "chk-time") )
+			new rXMLRPCCommand( getCmd("d.get_custom"), array($hash, "chk-time") ),
+			new rXMLRPCCommand( getCmd("d.get_custom"), array($hash, "chk-stime") )
 			));
 		if($req->success())
 		{
 			$state = intval($req->val[0]);
 			$time = intval($req->val[1]);
+			$successful_time = intval($req->val[2]);
 			return(true);
 		}
 		else
 		{
 			$state = self::STE_INPROGRESS;
 			$time = time();
+			$successful_time = 0;
 			return(false);
 		}
 	}
 
-	static public function run( $hash, $state = null, $time = null )
+	static public function makeClient( $url )
+	{
+		$client = new Snoopy();
+		$client->agent = HTTP_USER_AGENT;
+		$client->read_timeout = 5;
+		$client->_fp_timeout = 5;
+		$client->use_gzip = HTTP_USE_GZIP;
+		@$client->fetchComplex($url);
+		return($client);
+	}
+
+
+	static public function run( $hash, $state = null, $time = null, $successful_time = null )
 	{
 		global $saveUploadedTorrents;
+		date_default_timezone_set('Europe/Moscow');
 		if(is_null($state))
-			self::getState( $hash, $state, $time );
+			self::getState( $hash, $state, $time, $successful_time );
 		if(($state==self::STE_INPROGRESS) && ((time()-$time)>self::MAX_LOCK_TIME))
 			$state = 0;
 		if($state!=self::STE_INPROGRESS)
@@ -64,12 +82,22 @@ class ruTrackerChecker
 				{
                         		if( preg_match( '`^http://rutracker\.org/forum/viewtopic\.php\?t=(?P<id>\d+)$`',$torrent->comment(), $matches ) )
 					{
-						$client = new Snoopy();
-						$client->agent = HTTP_USER_AGENT;
-						$client->read_timeout = 5;
-						$client->_fp_timeout = 5;
-						$client->use_gzip = HTTP_USE_GZIP;
-						@$client->fetchComplex("http://dl.rutracker.org/forum/dl.php?t=".$matches["id"]);
+						$client = self::makeClient($torrent->comment());
+						if(($client->status==200) &&
+							preg_match( '`<span title="Зарегистрирован">\[ (?P<date>.*) \]</span>`',$client->results, $matches1 ))
+						{
+							$registered = strtotime( strtr($matches1["date"], array(
+								"Янв"=>"Jan", "Фев"=>"Feb", "Мар"=>"Mar", "Апр"=>"Apr",
+								"Май"=>"May", "Июн"=>"Jun", "Июл"=>"Jul", "Авг"=>"Aug",
+								"Сен"=>"Sep", "Окт"=>"Oct", "Нов"=>"Nov", "Дек"=>"Dec",
+								)) );
+							if($registered && ($registered < $successful_time))
+							{
+								self::setState( $hash, self::STE_UPTODATE );
+								return(true);
+							}
+						}
+						$client = self::makeClient("http://dl.rutracker.org/forum/dl.php?t=".$matches["id"]);
 						if($client->status==200)
 						{
 							$torrent = new Torrent( $client->results );
@@ -93,7 +121,8 @@ class ruTrackerChecker
 										$addition = array( 
 											getCmd("d.set_connection_seed=").$req->val[3],
 											getCmd("d.set_custom")."=chk-state,".self::STE_UPDATED, 
-											getCmd("d.set_custom")."=chk-time,".time() 
+											getCmd("d.set_custom")."=chk-time,".time(),
+											getCmd("d.set_custom")."=chk-stime,".time()
 											);
 										$isStart = (($req->val[4]!=0) && ($req->val[5]!=0) && ($req->val[6]!=0));
 										if(!empty($req->val[2]))
