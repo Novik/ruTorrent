@@ -263,7 +263,7 @@
  showScrollTables               : "Hiện nội dung bảng khi cuộn",
  idNotFound                     : "rTorrent's không thể truy cập chương trình 'id'. Một số tính năng sẽ không hoạt động.",
  gzipNotFound                   : "Máy chủ Web không thể truy cập chương trình 'gzip'. ruTorrent sẽ không hoạt động.",
- cantObtainUser                 : "ruTorrent không thể xác định UID hoặc người dùng rtorrent. Một số tính năng sẽ không hoạt động.",
+ cantObtainUser                 : "ruTorrent không thể xác định UID hoặc người dùng rTorrent. Một số tính năng sẽ không hoạt động.",
  retryOnErrorTitle              : "Nếu không kết nối được rTorrent, tự động thử lại sau",
  retryOnErrorList               : { 0: "Không thử lại", 30: "30 giây", 60: "1 phút", 120: "2 phút", 300: "5 phút", 900: "15 phút" },
  statNotFound                   : "rTorrent's không thể truy cập chương trình 'stat'. Một số tính năng sẽ không hoạt động.",
@@ -284,7 +284,7 @@
  peerDetails                    : "Chi tiết",
  peerUnsnub                     : "Trở lại",
  peerAddLabel                   : "Nhập IP/Tên máy[:cổng]",
- noTorrentList			: "Không có danh sách torrent, chưa xác lập kết nối đến rtorrent.",
+ noTorrentList			: "Không có danh sách torrent, chưa xác lập kết nối đến rTorrent.",
  yes				: "có",
  no				: "không",
  DateFormat			: "Định dạng ngày tháng",
@@ -298,6 +298,6 @@
  logAutoSwitch			: "Autoswitch to 'Log' tab",
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to Off. Change its value to On, otherwise some plugins won't work.",
  addTorrentFailedURL		: "Error: torrent wasn't passed to rTorrent. Can't retrieve URL.",
- addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is a not valid torrent file.",
+ addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is not a valid torrent file.",
  addTorrentFailedDirectory	: "Error: torrent wasn't passed to rTorrent. Incorrect downloads directory was specified."
  };

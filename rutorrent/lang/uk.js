@@ -247,7 +247,7 @@ var theUILang =
  showScrollTables		: "Показувати вміст таблиць під час прокручування",
  idNotFound			: "Програма «id» недоступна користувачу rTorrent. Деякі функції будуть недоступні.",
  gzipNotFound			: "Програма «gzip» недоступна веб-серверу. ruTorrent не працюватиме.",
- cantObtainUser			: "ruTorrent не вдалося визначити ідентифікатор користувача rtorrent. Деякі функції будуть недоступні.",
+ cantObtainUser			: "ruTorrent не вдалося визначити ідентифікатор користувача rTorrent. Деякі функції будуть недоступні.",
  retryOnErrorTitle		: "У разі виникнення помилки оновлення GUI повторювати запит через",
  retryOnErrorList		: { 0: "Не повторювати", 30: "30 секунд", 60: "1 хвилину", 120: "2 хвилини", 300: "5 хвилин", 900: "15 хвилин" },
  statNotFound			: "Програма «stat» недоступна користувачу rTorrent. Деякі функції будуть недоступні.",
@@ -283,6 +283,6 @@ var theUILang =
  phpParameterUnavailable	: "Директиву інтерпретатора PHP register_argc_argv вимкнено (значення Off). Увімкніть її (значення On), інакше деякі плагіни не працюватимуть.",
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to Off. Change its value to On, otherwise some plugins won't work.",
  addTorrentFailedURL		: "Error: torrent wasn't passed to rTorrent. Can't retrieve URL.",
- addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is a not valid torrent file.",
+ addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is not a valid torrent file.",
  addTorrentFailedDirectory	: "Error: torrent wasn't passed to rTorrent. Incorrect downloads directory was specified."
 };
