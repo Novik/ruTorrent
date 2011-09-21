@@ -114,7 +114,7 @@ class rAutoTools
 				getCmd('d.set_custom').'=x-dest,"$'.getCmd('execute_capture').
 				'={'.getPHP().','.$pathToAutoTools.'/move.php,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_base_path').'=,$'.
 				getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').'=,'.getUser().'}" ; '.
-				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd('d.get_custom').'=x-dest,,'.getCmd('d.set_directory_base').'=$'.getCmd('d.get_custom').'=x-dest
+				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd('d.get_custom').'=x-dest,,'.getCmd('d.set_directory_base').'=$'.getCmd('d.get_custom').'=x-dest'
 //				.' ; '.getCmd('d.start=')
 				));
 		else
