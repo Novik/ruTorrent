@@ -263,8 +263,8 @@
  showScrollTables		: "滚动时显示表内容",
  idNotFound			: "rTorrent's user can't access 'id' program. Some functionality will be unavailable.",
  gzipNotFound			: "Web-server can't access 'gzip' program. ruTorrent will not work.",
- cantObtainUser			: "ruTorrent can't detect the uid or rtorrent user. Some functionality will be unavailable.",
- retryOnErrorTitle		: "If rtorrent is not available try again after",
+ cantObtainUser			: "ruTorrent can't detect the uid or rTorrent user. Some functionality will be unavailable.",
+ retryOnErrorTitle		: "If rTorrent is not available try again after",
  retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },
  statNotFound			: "rTorrent's user can't access 'stat' program. Some functionality will be unavailable.",
  statNotFoundW			: "Web-server user can't access 'stat' program. Some functionality will be unavailable.",
@@ -284,7 +284,7 @@
  peerDetails			: "Details",
  peerUnsnub			: "Unsnub",
  peerAddLabel			: "Enter IP/Hostname[:port]",
- noTorrentList			: "Torrent list not yet available, connection to rtorrent not established.",
+ noTorrentList			: "Torrent list not yet available, connection to rTorrent not established.",
  yes				: "yes",
  no				: "no",
  DateFormat			: "Date format",
@@ -298,6 +298,6 @@
  logAutoSwitch			: "Autoswitch to 'Log' tab",
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to Off. Change its value to On, otherwise some plugins won't work.",
  addTorrentFailedURL		: "Error: torrent wasn't passed to rTorrent. Can't retrieve URL.",
- addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is a not valid torrent file.",
+ addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is not a valid torrent file.",
  addTorrentFailedDirectory	: "Error: torrent wasn't passed to rTorrent. Incorrect downloads directory was specified."
 };
