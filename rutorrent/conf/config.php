@@ -51,7 +51,7 @@
 
 	$profilePath = '../share';		// Path to users profiles
 	$profileMask = 0777;			// Mask for files and directory creation in users profiles. 
-						// Both web-server and rtorrent users must have read-write access to its.
-						// For example, if web-server and rtorrent users are in some group then value may be 0770
+						// Both Webserver and rtorrent users must have read-write access to its.
+						// For example, if Webserver and rtorrent users are in some group then value may be 0770
 
 ?>

@@ -10,7 +10,7 @@
  theUILang.PrivateTorrent		= "私有 Torrent";
  theUILang.torrentCreate		= "创建...";
  theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound 	= "Create plugin: Plugin will not work. Web-server can't access external program";
+ theUILang.createExternalNotFound 	= "Create plugin: Plugin will not work. Webserver user can't access external program";
  theUILang.incorrectDirectory 		= "Incorrect directory";
  theUILang.cantExecExternal 		= "Can't execute external program";
  theUILang.createConsole		= "控制台";
