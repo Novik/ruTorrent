@@ -263,7 +263,7 @@ function delslash( $str )
 function fullpath($path,$base = '')
 {
 	$root  = '';
-	if($path[0] == '/')
+	if(strlen($path) && ($path[0] == '/'))
         	$root = '/';
 	else
 		return(fullpath(addslash($base).$path,getcwd()));

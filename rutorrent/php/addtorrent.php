@@ -91,7 +91,6 @@ if($success)
 else
 	if(is_null($status))
 		$status = "Failed";
-toLog($status);
 header("HTTP/1.0 302 Moved Temporarily");
 header("Location: ".$_SERVER['PHP_SELF'].'?result='.$status);
 ?>
