@@ -1,18 +1,22 @@
 <?php
 
 require_once( 'xmlrpc.php' );
+eval(getPluginConf('erasedata'));
 
-$params = array(
-    getCmd('branch=').getCmd('d.get_custom5').'=,'.getCmd('d.open='),
-    getCmd('branch=').getCmd('d.get_custom5').'=,"'.getCmd('f.multicall').'=,\"'.getCmd('execute').'={rm,-rf,--,$'.getCmd('f.get_frozen_path').'=}\""'
-);
-if(isLocalMode())
-	$params[] = getCmd('branch=').getCmd('d.get_custom5').'=,"'.getCmd('execute').'={sh,'.$rootPath.'/plugins/erasedata/cleanup.sh,$'.getCmd('d.get_base_path').'=}"';
-//	$params[] = getCmd('branch=').getCmd('d.get_custom5').'=$'.getCmd('and').'=$'.getCmd('d.is_multi_file=').',"'.getCmd('execute').'={rm,-rfd,--,$'.getCmd('d.get_base_path').'=}"';
-$req = new rXMLRPCRequest();
-foreach( $params as $i=>$prm )
-	$req->addCommand($theSettings->getOnEraseCommand(array('erasedata'.$i.getUser(), $prm )));
-if($req->run() && !$req->fault)
+$listPath = getSettingsPath()."/erasedata";
+@makeDirectory($listPath);
+$thisDir = dirname(__FILE__);
+
+$req = new rXMLRPCRequest( array(
+	$theSettings->getOnEraseCommand(array('erasedata0'.getUser(),
+		getCmd('branch').'=$'.getCmd('not').'=$'.getCmd('d.get_custom5').'=,,$'.getCmd('cat').'=$'.getCmd('d.open').'=,'.
+			'"$'.getCmd('f.multicall').'=,\"'.getCmd('execute').'={'.$thisDir.'/cat.sh,'.$listPath.',$'.getCmd('system.pid').'=,$'.getCmd('f.get_frozen_path').'=}\"",'.
+			'"$'.getCmd('execute').'={'.$thisDir.'/fin.sh,'.$listPath.',$'.getCmd('system.pid').'=,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_base_path').'=,$'.getCmd('d.is_multi_file').'=}"'
+		)),
+	new rXMLRPCCommand('schedule', array( 'erasedata'.getUser(), '5', $garbageCheckInterval."", 
+		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($thisDir.'/update.php').' '.escapeshellarg(getUser()).' &}' ))
+	));
+if($req->success())
 	$theSettings->registerPlugin( "erasedata" );
 else
 	$jResult.="plugin.disable(); log('erasedata: '+theUILang.pluginCantStart);";

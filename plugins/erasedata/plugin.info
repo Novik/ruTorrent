@@ -1,6 +1,6 @@
-plugin.description: The plug-in allows to remove not only a .torrent file, but also its data.
-plugin.author: dmrom
+plugin.description: The plugin allows to remove not only a .torrent file, but also its data.
+plugin.author: Novik
 plugin.version: 3.3
-rtorrent.remote: warning
-rtorrent.script.error: cleanup.sh
+rtorrent.remote: error
+rtorrent.script.error: cat.sh,fin.sh
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginErasedata
