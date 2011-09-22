@@ -170,7 +170,7 @@ function testRemoteRequests($remoteRequests)
 	$ret = "";
 	foreach($remoteRequests as $exe=>$info)
 	{
-		$file = $info["path"].$exe.".founded";
+		$file = $info["path"].$exe.".found";
 		if(!is_file($file))
 		{
 			foreach($info["err"] as $err)
