@@ -16,10 +16,10 @@
 	@define('PHP_GZIP_LEVEL', 2, true);
 
 	$do_diagnostic = true;
-	$log_file = '/tmp/errors.log';		// path to log file (comment or make empty to disable logging)
+	$log_file = '/tmp/errors.log';		// path to log file (comment or leave blank to disable logging)
 
-	$saveUploadedTorrents = true;		// Save uploaded torrents into profile/torrents directory or not
-	$overwriteUploadedTorrents = false;     // Overwrite existing uploaded torrents into profile/torrents directory or make unique name
+	$saveUploadedTorrents = true;		// Save uploaded torrents to profile/torrents directory or not
+	$overwriteUploadedTorrents = false;     // Overwrite existing uploaded torrents in profile/torrents directory or make unique name
 
 	$topDirectory = '/';			// Upper available directory. Absolute path with trail slash.
 	$forbidUserSettings = false;
@@ -49,9 +49,9 @@
 		"localhost",
 	);
 
-	$profilePath = '../share';		// Path to users profiles
-	$profileMask = 0777;			// Mask for files and directory creation in users profiles. 
-						// Both Webserver and rtorrent users must have read-write access to its.
-						// For example, if Webserver and rtorrent users are in some group then value may be 0770
+	$profilePath = '../share';		// Path to user profiles
+	$profileMask = 0777;			// Mask for files and directory creation in user profiles.
+						// Both Webserver and rtorrent users must have read-write access to it.
+						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
 
 ?>
