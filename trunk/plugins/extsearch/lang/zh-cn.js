@@ -24,9 +24,9 @@
  theUILang.exsCookies	= "Cookies 格式";
  theUILang.extAllPublic = "所有公共";
  theUILang.extAllPrivate = "所有私有";
- theUILang.exsMustInstallCookies	= "You must install plugin 'Cookies' for work with this engine."; 
- theUILang.exsMustInstallLoginMgr	= "You must install plugin 'LoginMgr' for work with this engine.";
- theUILang.exsLoginMgr	= "Setup your account in plugin 'LoginMgr' for work with this engine.";
+ theUILang.exsMustInstallCookies	= "Plugin 'Cookies' is required to work with this engine.";
+ theUILang.exsMustInstallLoginMgr	= "Plugin 'LoginMgr' is required to work with this engine.";
+ theUILang.exsLoginMgr	= "Setup your account in plugin 'LoginMgr' to work with this engine.";
  theUILang.exsURLInfo		= "URL 信息";
  theUILang.exsURLGUID		= "描述 URL";
  theUILang.exsURLHref           = "载入 URL";

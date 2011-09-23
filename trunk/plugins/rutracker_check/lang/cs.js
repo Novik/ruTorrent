@@ -1,14 +1,14 @@
 ﻿
 theUILang.checkTorrent	= "Check for update";
-theUILang.chkHdr	= "Torrent's update"
-theUILang.checkedAt	= "Processed at";
+theUILang.chkHdr	= "Torrent update check"
+theUILang.checkedAt	= "Performed";
 theUILang.checkedResult	= "Result";
 theUILang.chkResults	= 
 	[
 		"In progress",
 		"Was updated",
 		"Up to date",
-		"May be deleted",
+		"Probably deleted",
 		"Can't reach tracker",
 		"Error",
 		"No need"
