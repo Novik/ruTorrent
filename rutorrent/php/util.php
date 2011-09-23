@@ -310,10 +310,15 @@ function getPluginConf($plugin)
 	return($ret);
 }
 
+function getLogin()
+{
+	return( (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) ? strtolower($_SERVER['REMOTE_USER']) : '' );
+}
+
 function getUser()
 {
         global $forbidUserSettings;
-	return( (!$forbidUserSettings && isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) ? strtolower($_SERVER['REMOTE_USER']) : '' );
+	return( !$forbidUserSettings ? getLogin() : '' );
 }
 
 function getProfilePath( $user = null )
