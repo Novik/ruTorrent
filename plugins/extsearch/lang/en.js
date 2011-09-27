@@ -24,11 +24,11 @@
  theUILang.exsCookies	= "Format of cookies";
  theUILang.extAllPublic = "All public";
  theUILang.extAllPrivate = "All private";
- theUILang.exsMustInstallCookies	= "Plugin 'Cookies' is required to work with this engine."; 
- theUILang.exsMustInstallLoginMgr	= "Plugin 'LoginMgr' is required to work with this engine.";
- theUILang.exsLoginMgr	= "Setup your account in plugin 'LoginMgr' to work with this engine.";
+ theUILang.exsMustInstallCookies	= "Cookies plugin is required to work with this engine."; 
+ theUILang.exsMustInstallLoginMgr	= "LoginMgr plugin is required to work with this engine.";
+ theUILang.exsLoginMgr	= "Setup your account in LoginMgr plugin to work with this engine.";
  theUILang.exsURLInfo		= "URL info";
  theUILang.exsURLGUID		= "Description URL";
- theUILang.exsURLHref           = "Load URL";
+ theUILang.exsURLHref           = "Download URL";
 
 thePlugins.get("extsearch").langLoaded();
