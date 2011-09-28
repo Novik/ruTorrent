@@ -282,7 +282,7 @@ var theUILang =
  logAutoSwitch			: "Автоперемикання на вкладку «Журнал»",
  phpParameterUnavailable	: "Директиву інтерпретатора PHP register_argc_argv вимкнено (значення Off). Увімкніть її (значення On), інакше деякі плагіни не працюватимуть.",
  phpParameterUnavailable	: "Директиву інтерпретатора PHP register_argc_argv вимкнено (значення Off). Увімкніть її (значення On), інакше деякі плагіни не працюватимуть.",
- addTorrentFailedURL		: "Сталася помилка. torrent-файл не передано до rTorrent. Не вдалося отримати URL-адресу.",
- addTorrentFailedFile		: "Сталася помилка. torrent-файл не передано до rTorrent. Отриманий вміст не є правильним torrent-файлом.",
- addTorrentFailedDirectory	: "Сталася помилка. torrent-файл не передано до rTorrent. Указано неправильний каталог для завантаження."
+ addTorrentFailedURL		: "Сталася помилка. Файл .torrent не передано до rTorrent. Не вдалося отримати URL-адресу.",
+ addTorrentFailedFile		: "Сталася помилка. Файл .torrent не передано до rTorrent. Отриманий вміст не є правильним torrent-файлом.",
+ addTorrentFailedDirectory	: "Сталася помилка. Файл .torrent не передано до rTorrent. Указано неправильний каталог для завантаження."
 };
