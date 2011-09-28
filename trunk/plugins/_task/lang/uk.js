@@ -1,7 +1,7 @@
 ﻿
-theUILang.tskCommand		= "Command is running..."
-theUILang.tskCommandDone	= "Command is done."
-theUILang.tskConsole		= "Console";
-theUILang.tskErrors		= "Diagnostics";
+theUILang.tskCommand		= "Триває виконання команди…"
+theUILang.tskCommandDone	= "Виконання команди завершено."
+theUILang.tskConsole		= "Консоль";
+theUILang.tskErrors		= "Діагностика";
 
 thePlugins.get("_task").langLoaded();
