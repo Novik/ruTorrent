@@ -1,13 +1,13 @@
 ﻿
-theUILang.exFFMPEG	= "Screenshots";
-theUILang.exFrameWidth = "Frame width";
-theUILang.exFramesCount = "Frames count";
-theUILang.exStartOffset = "Start frame offset";
-theUILang.exBetween = "Time between frames";
-theUILang.exSave = "Save";
-theUILang.exSaveAll = "Save all";
-theUILang.exScreenshot = "Screenshot";
-theUILang.exPlayInterval = "Slideshow interval";
-theUILang.exImageFormat	= "Image format";
+theUILang.exFFMPEG	= "Знімки екрана";
+theUILang.exFrameWidth = "Ширина кадра";
+theUILang.exFramesCount = "Кількість кадрів";
+theUILang.exStartOffset = "Початкове зміщення";
+theUILang.exBetween = "Час між кадрами";
+theUILang.exSave = "Зберегти";
+theUILang.exSaveAll = "Зберегти все";
+theUILang.exScreenshot = "Знімок екрана";
+theUILang.exPlayInterval = "Інтервал показу";
+theUILang.exImageFormat	= "Формат";
 
 thePlugins.get("screenshots").langLoaded();
