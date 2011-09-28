@@ -1,17 +1,17 @@
 ﻿
-theUILang.checkTorrent	= "Check for update";
-theUILang.chkHdr	= "Torrent update check"
-theUILang.checkedAt	= "Performed";
-theUILang.checkedResult	= "Result";
+theUILang.checkTorrent	= "Перевірити оновлення";
+theUILang.chkHdr	= "Перевірка оновлення torrent-файла"
+theUILang.checkedAt	= "Виконано";
+theUILang.checkedResult	= "Результат";
 theUILang.chkResults	= 
 	[
-		"In progress",
-		"Was updated",
-		"Up to date",
-		"Probably deleted",
-		"Can't reach tracker",
-		"Error",
-		"No need"
+		"Триває",
+		"Оновлено",
+		"Оновлення непотрібно",
+		"Імовірно, видалено",
+		"Сталася помилка доступу до трекера",
+		"Сталася помилка взаємодії з rTorrent",
+		"Немає необхідності"
 	];
 
 thePlugins.get("rutracker_check").langLoaded();
