@@ -293,7 +293,7 @@
  prioritizeLast			: "Trailing chunk first",
  prioritizeNormal		: "Normal",
  updateTracker			: "Update trackers",
- scrapeUpdate			: "Was updated",
+ scrapeUpdate			: "Last updated",
  trkInterval			: "Interval",
  logAutoSwitch			: "Autoswitch to 'Log' tab",
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to Off. Change its value to On, otherwise some plugins won't work.",

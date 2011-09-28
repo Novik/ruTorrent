@@ -1,7 +1,7 @@
 ﻿
 theUILang.checkTorrent	= "Check for update";
 theUILang.chkHdr	= "Torrent update check"
-theUILang.checkedAt	= "Performed";
+theUILang.checkedAt	= "Last checked";
 theUILang.checkedResult	= "Result";
 theUILang.chkResults	= 
 	[
