@@ -1,1 +1,1 @@
-theUILang.mediainfo	= "Media info";
+theUILang.mediainfo	= "Інформація про файл";
