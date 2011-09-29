@@ -218,6 +218,12 @@ $.fn.extend({
 				$(this).unbind( "mousedown" );
 			}
 		}));            	
+	},
+
+	enableSysMenu: function()
+	{
+		return(this.bind("contextmenu",function(e) { e.stopImmediatePropagation(); }).
+			bind("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
 	}
 });
 
@@ -807,6 +813,7 @@ var theTabs =
 			this.blur();
 		}));
    		this.show("gcont");
+   		$('#gcont,#lcont').enableSysMenu();
    	}, 
 	onShow : function(id)
 	{
@@ -864,7 +871,7 @@ var theTabs =
    	}
 };
 
-function log(text,noTime,divClass) 
+function log(text,noTime,divClass,force) 
 {
 	var tm = '';
 	if(!noTime)
@@ -876,12 +883,12 @@ function log(text,noTime,divClass)
 	{
 		obj.append( $("<div>").addClass(divClass).text(tm + " " + text).show() );
 		obj[0].scrollTop = obj[0].scrollHeight;
-		if(iv(theWebUI.settings["webui.log_autoswitch"]))
+		if(iv(theWebUI.settings["webui.log_autoswitch"]) || force)
 			theTabs.show("lcont");
 	}
 }
 
-function logHTML(text,divClass) 
+function logHTML(text,divClass,force) 
 {
 	var obj = $("#lcont");
 	if(!divClass)
@@ -890,7 +897,7 @@ function logHTML(text,divClass)
 	{
 		obj.append( $("<div>").addClass(divClass).html(text).show() );
 		obj[0].scrollTop = obj[0].scrollHeight;
-		if(iv(theWebUI.settings["webui.log_autoswitch"]))
+		if(iv(theWebUI.settings["webui.log_autoswitch"]) || force)
 			theTabs.show("lcont");
 	}
 }

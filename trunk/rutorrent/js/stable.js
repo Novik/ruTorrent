@@ -98,8 +98,8 @@ dxSTable.prototype.setPaletteByURL = function(url)
 
 dxSTable.prototype.bindKeys = function()
 {
-	$(document).unbind( browser.isOpera ? "keypress" : "keydown", this.keyEvents );
-	$(document).bind( browser.isOpera ? "keypress" : "keydown", this, this.keyEvents );
+	$(document).unbind( (browser.isOpera && browser.versionMinor<9.8) ? "keypress" : "keydown", this.keyEvents );
+	$(document).bind( (browser.isOpera && browser.versionMinor<9.8) ? "keypress" : "keydown", this, this.keyEvents );
 }
 
 dxSTable.prototype.create = function(ele, styles, aName)
