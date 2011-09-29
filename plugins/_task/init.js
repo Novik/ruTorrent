@@ -194,7 +194,5 @@ plugin.onLangLoaded = function()
 		if(!plugin.cHeight)
 			plugin.cHeight = $('#tskcmderrors').parent().height();
 	});
-	$(".tskconsole").
-		bind("contextmenu",function(e) { e.stopImmediatePropagation(); }).
-		bind("selectstart",function(e) { e.stopImmediatePropagation(); return(true); });
+	$(".tskconsole").enableSysMenu();
 }

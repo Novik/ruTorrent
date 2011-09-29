@@ -323,7 +323,6 @@ var theContextMenu =
 		 	        	var a = $("<a></a>").addClass("sel menu-cmd").text(val[1]);
 			 	        switch($type(val[2]))
 			 	        {
-//			 	        	case "string": a.attr("href", "javascript:"+val[2] ); break;
 						case "string": a.attr("href","javascript://void();").click( function() { eval(val[2]) } ); break;
 						case "function": a.attr("href","javascript://void();").click(val[2]); break;
 					}
@@ -331,15 +330,17 @@ var theContextMenu =
 				}
 				else
 				{
-					var a = $("<a></a>").addClass("menu-cmd").text(val[0]);
-					switch($type(val[1]))
+					if($type(val[0]))
 					{
-			 	        	case false: a.addClass("dis"); break;
-//		 		        	case "string": a.attr( "href", "javascript:"+val[1] ); break;
-						case "string": a.attr("href","javascript://void();").click( function() { eval(val[1]) } ); break;
-						case "function": a.attr("href","javascript://void();").click(val[1]); break;
+						var a = $("<a></a>").addClass("menu-cmd").text(val[0]);
+						switch($type(val[1]))
+						{
+				 	        	case false: a.addClass("dis"); break;
+							case "string": a.attr("href","javascript://void();").click( function() { eval(val[1]) } ); break;
+							case "function": a.attr("href","javascript://void();").click(val[1]); break;
+						}
+						li.append(a.focus( function() { this.blur(); } ));
 					}
-					li.append(a.focus( function() { this.blur(); } ));
 				}
 				if(aft)
 					aft.after(li);
