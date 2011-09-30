@@ -415,7 +415,7 @@ var theWebUI =
 				this.toggleDetails();
 		}
 		theDialogManager.setEffects( iv(this.settings["webui.effects"])*200 );
-		this.setStatusUpdate();
+//		this.setStatusUpdate();
 		$.each(this.tables, function(ndx,table)
 		{
 			table.obj.create($$(table.container), table.columns, ndx);
