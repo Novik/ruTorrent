@@ -8,7 +8,7 @@ if($useExternal!==false)
 		$jResult.="plugin.disable(); plugin.showError('theUILang.createExternalNotFound+\' (".$useExternal.").\'');";
 	else
 	{
-		if($useExternal === "transmissioncli")
+		if(($useExternal === "transmissioncli") || ($useExternal === "transmissioncreate"))
 			$jResult.="plugin.hidePieceSize = true;";
 		$theSettings->registerPlugin("create");
 	}
