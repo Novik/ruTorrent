@@ -25,13 +25,17 @@ class rCache
 				!$rss->merge($newInstance, $arg))
 				return(false);
 		}
-		$fp = @fopen( $name, 'w' );
-		if($fp)
+		$fp = fopen( $name.'.tmp', "a" );
+		if(flock( $fp, LOCK_EX ))
 		{
-		        fwrite( $fp, serialize( $rss ) );
+			ftruncate( $fp, 0 );
+	        	fwrite( $fp, serialize( $rss ) );
+	        	fflush( $fp );
+			flock( $fp, LOCK_UN );
         		fclose( $fp );
+       			rename( $name.'.tmp', $name );
 			@chmod($name,$profileMask & 0666);
-	        	return(true);
+        		return(true);
         	}
 	        return(false);
 	}
