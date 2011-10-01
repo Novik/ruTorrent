@@ -1,5 +1,6 @@
+﻿
 
  theUILang.seedingTime		= "Finished";
- theUILang.addTime			= "Toegevoegd";
+ theUILang.addTime		= "Toegevoegd";
 
 thePlugins.get("seedingtime").langLoaded();

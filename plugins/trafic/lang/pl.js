@@ -1,13 +1,13 @@
 ﻿
- 
+
  theUILang.traf 		= "Ruch";
  theUILang.perDay		= "Przez dzień";
- theUILang.perMonth 	= "Przez miesiąc";
- theUILang.perYear 	= "Przez rok";
- theUILang.allTrackers	= "Wszystkie trackery";
- theUILang.ClearButton	= "Wyczyść";
- theUILang.ClearQuest 	= "Czy na pewno chcesz wyczyścić statystyki dla tego trackera?";
+ theUILang.perMonth		= "Przez miesiąc";
+ theUILang.perYear		= "Przez rok";
+ theUILang.allTrackers		= "Wszystkie trackery";
+ theUILang.ClearButton		= "Wyczyść";
+ theUILang.ClearQuest		= "Czy na pewno chcesz wyczyścić statystyki dla tego trackera?";
  theUILang.selectedTorrent	= "Selected torrent";
- theUILang.ratioDay	= "Ratio/day";
- theUILang.ratioWeek	= "Ratio/week";
- theUILang.ratioMonth	= "Ratio/month";
+ theUILang.ratioDay		= "Ratio/day";
+ theUILang.ratioWeek		= "Ratio/week";
+ theUILang.ratioMonth		= "Ratio/month";

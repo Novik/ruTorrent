@@ -8,7 +8,7 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.seedingTime          = "Terminé";
- theUILang.addTime              = "Ajouté";
+ theUILang.seedingTime		= "Terminé";
+ theUILang.addTime		= "Ajouté";
 
 thePlugins.get("seedingtime").langLoaded();

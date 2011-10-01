@@ -40,27 +40,27 @@ function readLangCookie() {
 
 var AvailableLanguages =
 {
-	en:'English',
-	"zh-cn":'Chinese Simplified',
-	"zh-tw":'Chinese Traditional',
 	cs:'Český',
 	da:'Danske',
-	nl:'Nederlands',
-	fi:'Suomi',
+	de:'Deutsch',
+	en:'English',
+	es:'Español',
 	fr:'Français',
-	de:'German',
-	hu:'Magyar',
 	it:'Italiano',
 	lv:'Latvijas',
+	hu:'Magyar',
+	nl:'Nederlands',
 	pl:'Polski',
 	pt:'Português',
+	sk:'Slovenský',
+	fi:'Suomi',
+	vi:'Tiếng Việt',
+	tr:'Türk',
 	ru:'Русский',
 	sr:'Српски',
-	sk:'Slovenský',
-	es:'Español',
 	uk:'Українська',
-	tr:'Türk',
-	vi:'Tiếng Việt'
+	"zh-cn":'简体中文',
+	"zh-tw":'繁體中文'
 };
 
 DefaultLanguage = 'en';

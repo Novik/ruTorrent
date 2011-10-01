@@ -8,7 +8,7 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.getSource            = "Télécharger le .torrent";
- theUILang.cantFindTorrent      = "Le fichier source du torrent n'a pas été trouvé.";
+ theUILang.getSource		= "Télécharger le .torrent";
+ theUILang.cantFindTorrent	= "Le fichier source du torrent n'a pas été trouvé.";
 
 thePlugins.get("source").langLoaded();

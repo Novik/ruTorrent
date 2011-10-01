@@ -1,5 +1,5 @@
 ﻿
- 
+
  theUILang.cookiesDesc = "Ciasteczka (Format: adres|ciasteczko1;ciasteczko2...)";
  theUILang.cookiesName = "Ciasteczka";
 

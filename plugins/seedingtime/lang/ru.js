@@ -1,4 +1,5 @@
 ﻿
+
  theUILang.seedingTime		= "Завершен";
  theUILang.addTime		= "Добавлен";
 
