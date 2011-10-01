@@ -1,5 +1,6 @@
+﻿
 
- theUILang.themeStandard = "Standaard";
- theUILang.theme	 = "Lay-Out";
+ theUILang.themeStandard	= "Standard";
+ theUILang.theme		= "Theme";
 
 thePlugins.get("theme").langLoaded();

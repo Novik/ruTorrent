@@ -8,7 +8,7 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.themeStandard = "Standard";
- theUILang.theme         = "Thème";
+ theUILang.themeStandard	= "Standard";
+ theUILang.theme		= "Thème";
 
 thePlugins.get("theme").langLoaded();

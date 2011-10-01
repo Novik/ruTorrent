@@ -8,11 +8,11 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
-theUILang.Chunks = "Pièces";
-theUILang.chunksNoChunksFound = "Pas de pièces trouvés!";
-theUILang.chunksRows = "ligne(s)";
-theUILang.chunksColumns = "colonne(s)";
-theUILang.chunksChunks = "pièce(s)";
-theUILang.chunksSize = "taille d'une pièce";
+ theUILang.Chunks		= "Pièces";
+ theUILang.chunksNoChunksFound	= "Pas de pièces trouvés!";
+ theUILang.chunksRows		= "ligne(s)";
+ theUILang.chunksColumns	= "colonne(s)";
+ theUILang.chunksChunks 	= "pièce(s)";
+ theUILang.chunksSize		= "taille d'une pièce";
 
 thePlugins.get("chunks").langLoaded();

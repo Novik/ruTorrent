@@ -1,10 +1,11 @@
 ﻿
+
  theUILang.rssNewRule		= "New rule";
  theUILang.mnu_rssurlrewrite	= "Rules of URL replacement in RSS";
  theUILang.rssRulesManager	= "Rules manager";
  theUILang.rssAddRule		= "Add";
  theUILang.rssDelRule		= "Delete";
- theUILang.rssCheckRule		= "?";
+ theUILang.rssCheckRule 	= "?";
  theUILang.rssRulesLegend	= "Rule settings";
  theUILang.rssSrcHref		= "If URL of torrent download matches pattern";
  theUILang.rssSrcGuid		= "If URL of torrent description matches pattern";
@@ -15,7 +16,7 @@
  theUILang.rssTestResult	= "Result";
  theUILang.rssURLInfo		= "URL info";
  theUILang.rssURLGUID		= "Description URL";
- theUILang.rssURLHref           = "Download URL";
+ theUILang.rssURLHref		= "Download URL";
  theUILang.rssPatternError	= "Error in pattern string.";
- 
+
 thePlugins.get("rssurlrewrite").langLoaded();

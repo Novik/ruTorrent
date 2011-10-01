@@ -1,4 +1,5 @@
 ﻿
+
  theUILang.seedingTime		= "Завршено";
  theUILang.addTime		= "Added";
 

@@ -1,18 +1,19 @@
 ﻿
- theUILang.ratios			= "Группы ratio";
- theUILang.ratio			= "ГруппаRatio";
+
+ theUILang.ratios		= "Группы ratio";
+ theUILang.ratio		= "ГруппаRatio";
  theUILang.mnuRatio		= "Установить ratio";
  theUILang.mnuRatioUnlimited	= "Нет";
- theUILang.ratioName 		= "Имя";
- theUILang.minRatio 		= "Min";
- theUILang.maxRatio 		= "Max";
- theUILang.ratioUpload 		= "UL";
- theUILang.ratioAction 		= "Действие";
- theUILang.ratioStop 		= "Стоп";
- theUILang.ratioStopAndRemove 	= "Стоп & очистить";
- theUILang.ratioErase 		= "Удалить";
+ theUILang.ratioName		= "Имя";
+ theUILang.minRatio		= "Min";
+ theUILang.maxRatio		= "Max";
+ theUILang.ratioUpload		= "UL";
+ theUILang.ratioAction		= "Действие";
+ theUILang.ratioStop		= "Стоп";
+ theUILang.ratioStopAndRemove	= "Стоп & очистить";
+ theUILang.ratioErase		= "Удалить";
  theUILang.ratioEraseData	= "Удалить данные";
- theUILang.maxTime 		= "Время";
- theUILang.ratioDefault		= "Группа ratio по умолчанию";
+ theUILang.maxTime		= "Время";
+ theUILang.ratioDefault 	= "Группа ratio по умолчанию";
 
 thePlugins.get("ratio").langLoaded();

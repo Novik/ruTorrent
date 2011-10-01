@@ -1,9 +1,11 @@
-﻿ theUILang.rssNewRule		= "Створити правило";
+﻿
+
+ theUILang.rssNewRule		= "Створити правило";
  theUILang.mnu_rssurlrewrite	= "Правила замінювання URL-адреси в RSS";
  theUILang.rssRulesManager	= "Менеджер правил";
  theUILang.rssAddRule		= "Додати";
  theUILang.rssDelRule		= "Видалити";
- theUILang.rssCheckRule		= "?";
+ theUILang.rssCheckRule 	= "?";
  theUILang.rssRulesLegend	= "Параметри правила";
  theUILang.rssSrcHref		= "Якщо URL-адреса завантаження торента збігається з шаблоном";
  theUILang.rssSrcGuid		= "Якщо URL-адреса опису торента збігається з шаблоном";
@@ -14,7 +16,7 @@
  theUILang.rssTestResult	= "Результат";
  theUILang.rssURLInfo		= "Інформація про URL-адресу";
  theUILang.rssURLGUID		= "URL-адреса опису";
- theUILang.rssURLHref           = "URL-адреса завантаження";
+ theUILang.rssURLHref		= "URL-адреса завантаження";
  theUILang.rssPatternError	= "В оформленні виявлено помилку.";
- 
+
 thePlugins.get("rssurlrewrite").langLoaded();
