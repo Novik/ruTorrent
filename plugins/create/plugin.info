@@ -6,5 +6,5 @@ rtorrent.external.error: php
 rtorrent.external.warning: pgrep
 rtorrent.script.error: buildtorrent.sh,createtorrent.sh,inner.sh,mktorrent.sh,transmissioncli.sh
 rtorrent.php.error: correct.php,createtorrent.php,conf.php
-php.version: 5.2.0
+php.extensions.error: json
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginCreate

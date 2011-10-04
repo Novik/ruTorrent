@@ -281,7 +281,8 @@ rTorrentStub.prototype.doneplugins = function()
 {
 	this.mountPoint = theURLs.GetDonePluginsURL;
 	this.dataType = "script";
-	this.content = "dummy=1";
+	this.content = "cmd="+this.ss[0];
+	this.contentType = "application/x-www-form-urlencoded";
 	for(var i=0; i<this.hashes.length; i++)
 		this.content += ("&plg="+this.hashes[i]);
 }

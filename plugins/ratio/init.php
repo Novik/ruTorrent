@@ -5,6 +5,6 @@ $rat = rRatio::load();
 if(!$rat->obtain())
 	$jResult.="plugin.disable(); log('ratio: '+theUILang.pluginCantStart);";
 else
-	$theSettings->registerPlugin("ratio");
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 $jResult.=$rat->get();
 ?>

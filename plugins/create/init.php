@@ -1,6 +1,6 @@
 <?php
 
-eval(getPluginConf('create'));
+eval(getPluginConf($plugin["name"]));
 
 if($useExternal!==false)
 {
@@ -10,10 +10,10 @@ if($useExternal!==false)
 	{
 		if(($useExternal === "transmissioncli") || ($useExternal === "transmissioncreate"))
 			$jResult.="plugin.hidePieceSize = true;";
-		$theSettings->registerPlugin("create");
+		$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	}
 }
 else
-	$theSettings->registerPlugin("create");
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 
 ?>

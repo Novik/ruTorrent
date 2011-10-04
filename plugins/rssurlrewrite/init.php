@@ -1,6 +1,6 @@
 <?php
 
-$theSettings->registerEventHook("rssurlrewrite","RSSFetched");
-$theSettings->registerPlugin("rssurlrewrite");
+$theSettings->registerEventHook($plugin["name"],"RSSFetched");
+$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 
 ?>

@@ -3,5 +3,5 @@ plugin.author: Novik
 plugin.version: 3.3
 plugin.runlevel: 10.5
 rtorrent.need: 0
-php.version: 5.2.0
+php.extensions.error: json
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginExtsearch

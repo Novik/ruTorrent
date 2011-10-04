@@ -1,7 +1,7 @@
 <?php
 
 require_once( 'xmlrpc.php' );
-eval(getPluginConf('erasedata'));
+eval(getPluginConf($plugin["name"]));
 
 $listPath = getSettingsPath()."/erasedata";
 @makeDirectory($listPath);
@@ -16,7 +16,7 @@ $req = new rXMLRPCRequest( array(
 		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($thisDir.'/update.php').' '.escapeshellarg(getUser()).' &}' ))
 	));
 if($req->success())
-	$theSettings->registerPlugin( "erasedata" );
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else
 	$jResult.="plugin.disable(); log('erasedata: '+theUILang.pluginCantStart);";
 

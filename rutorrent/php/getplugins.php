@@ -38,12 +38,16 @@ function getPluginInfo( $name, $permissions )
 		'rtorrent.php.error'=>array(),
 		'rtorrent.version'=>0x802,
 		'rtorrent.version.readable'=>'0.8.2',
+		'plugin.may_be_shutdowned'=>1,
+		'plugin.may_be_launched'=>1,
 		'plugin.runlevel'=>10.0, 
 		'plugin.description'=>'', 
 		'plugin.author'=>'unknown',
 		'plugin.dependencies'=>array(),
 		'php.version'=>0x50000,
 		'php.version.readable'=>'5.0.0',
+		'php.extensions.warning'=>array(),
+		'php.extensions.error'=>array(),
 		'web.external.warning'=>array(),
 		'web.external.error'=>array(),
 		'plugin.help'=>'',
@@ -69,6 +73,8 @@ function getPluginInfo( $name, $permissions )
 						$info[$field] = $value;
 						break;
 					}
+                                        case "plugin.may_be_shutdowned":
+                                        case "plugin.may_be_launched":
                                         case "rtorrent.need":
 					{
 						$info[$field] = intval($value);
@@ -95,6 +101,8 @@ function getPluginInfo( $name, $permissions )
 					case "rtorrent.php.error":
 					case "web.external.warning":
 					case "web.external.error":
+					case "php.extensions.warning":
+					case "php.extensions.error":
 					{
 						$info[$field] = explode(',', $value);
 						break;
@@ -138,10 +146,16 @@ function getPluginInfo( $name, $permissions )
 				"canChangeColumns"	=> 0x0010,
 				"canChangeStatusBar"	=> 0x0020,
 				"canChangeCategory"	=> 0x0040,
+				"canBeShutdowned"	=> 0x0080,
+			/*	"canBeLaunched"		=> 0x0100, */
 				);
 			foreach($flags as $flagName=>$flagVal)
 				if(!getFlag($permissions,$name,$flagName))
 					$perms|=$flagVal;
+
+			if(!$info["plugin.may_be_shutdowned"])
+				$perms|=$flags["canBeShutdowned"];
+
 		}
 		$info["perms"] = $perms;
 	}
@@ -277,17 +291,45 @@ if($handle = opendir('../plugins'))
 		$permissions = parse_ini_file($plg,true);
 		$init = array();
 		$names = array();
+		$disabled = array();
 		$phpVersion = phpversion();
 		if( ($pos=strpos($phpVersion, '-'))!==false )
 			$phpVersion = substr($phpVersion,0,$pos);
 		$phpIVersion = explode('.',$phpVersion);
 		$phpIVersion = (intval($phpIVersion[0])<<16) + (intval($phpIVersion[1])<<8) + intval($phpIVersion[2]);
 		$phpRequired = false;
+
+		$userPermissions = array( "__hash__"=>"plugins.dat" );
+		$cache = new rCache();
+		$cache->get($userPermissions);
+
+		$cantBeShutdowned 	= 0x0080;
+		$canBeLaunched 		= 0x0100;
+
+		$loadedExtensions = array_map("strtolower",get_loaded_extensions());
+
 		while(false !== ($file = readdir($handle)))
 		{
 			if($file != "." && $file != ".." && is_dir('../plugins/'.$file))
 			{
+				if(!array_key_exists($file,$userPermissions))
+					$userPermissions[$file] = true;
 				$info = getPluginInfo( $file, $permissions );
+				if($info) 
+				{
+					if(     $info["plugin.may_be_launched"] && 
+						getFlag($permissions,$file,"enabled")=="user-defined")
+					{
+					        $info["perms"] |= $canBeLaunched;
+						if(!$userPermissions[$file])
+						{
+							$disabled[$file] = $info;
+							$info = false;
+						}
+					}
+					else
+						$info["perms"] |= $cantBeShutdowned;
+				}
 				if($info!==false)
 				{
 				        if(!$theSettings->linkExist && $info["rtorrent.need"])
@@ -298,6 +340,16 @@ if($handle = opendir('../plugins'))
 						continue;
 					}
 					$extError = false;
+
+					foreach( $info['php.extensions.error'] as $extension )
+						if(!in_array( $extension, $loadedExtensions ))
+						{
+							$jResult.="log('".$file.": '+theUILang.phpExtensionNotFoundError+' ('+'".$extension."'+').');";
+							$extError = true;
+						}
+					if($extError)
+						continue;
+
 					if(count($info['web.external.error']) || 
 						count($info['web.external.warning']) ||
 						count($info['rtorrent.external.error']) || 
@@ -372,6 +424,9 @@ if($handle = opendir('../plugins'))
 						foreach( $info['web.external.warning'] as $external )
 							if(findEXE($external)==false)
 								$jResult.="log('".$file.": '+theUILang.webExternalNotFoundWarning+' ('+'".$external."'+').');";
+						foreach( $info['php.extensions.warning'] as $extension )
+							if(!in_array( $extension, $loadedExtensions ))
+								$jResult.="log('".$file.": '+theUILang.phpExtensionNotFoundWarning+' ('+'".$extension."'+').');";
 					}
 					$js = "../plugins/".$file."/init.js";
 	                	        if(!is_readable($js))
@@ -408,13 +463,20 @@ if($handle = opendir('../plugins'))
 			if($plugin["php"])
 				require_once( $plugin["php"] );
 			else
-				$theSettings->registerPlugin($plugin["name"]);
+				$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 			if($plugin["js"])
 			{
 				$jResult.=file_get_contents($plugin["js"]);
 				$jResult.="\n";
 			}
 			$jResult.=$jEnd;
+			$jResult.="\n})();";
+		}
+		foreach($disabled as $name=>$pInfo)
+		{
+			$jResult.="(function () { var plugin = new rPlugin( '".$name."',".$pInfo["plugin.version"].
+				",'".$pInfo["plugin.author"]."','".$pInfo["plugin.description"]."',".$pInfo["perms"].",'".$pInfo["plugin.help"]."' );\n";
+			$jResult.="plugin.disable(); plugin.unlaunch(); ";
 			$jResult.="\n})();";
 		}
 		$jResult.=testRemoteRequests($remoteRequests);

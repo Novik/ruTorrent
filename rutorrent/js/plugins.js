@@ -54,7 +54,9 @@ var thePlugins =
 		cantChangeTabs:		0x0008,
 		cantChangeColumns:	0x0010,
 		cantChangeStatusBar:	0x0020,
-		cantChangeCategory:	0x0040
+		cantChangeCategory:	0x0040,
+		cantShutdown:		0x0080,
+		canBeLaunched:		0x0100
 	},
 
 	register: function(plg)
@@ -102,6 +104,7 @@ function rPlugin( name, version, author, descr, restictions, help )
 	this.author = (author==null) ? "unknown" : author;
 	this.allStuffLoaded = false;
 	this.enabled = true;
+	this.launched = true;
 	this.restictions = restictions;
 	this.help = help;
 	thePlugins.register(this);
@@ -121,6 +124,18 @@ rPlugin.prototype.enable = function()
 rPlugin.prototype.disable = function() 
 {
 	this.enabled = false;
+	return(this);
+}
+
+rPlugin.prototype.launch = function() 
+{
+	this.launched = true;
+	return(this);
+}
+
+rPlugin.prototype.unlaunch = function() 
+{
+	this.launched = false;
 	return(this);
 }
 
@@ -204,6 +219,16 @@ rPlugin.prototype.canChangeStatusBar = function()
 rPlugin.prototype.canChangeCategory = function()
 {
 	return(!(this.restictions & thePlugins.restictions.cantChangeCategory));
+}
+
+rPlugin.prototype.canShutdown = function()
+{
+	return(!(this.restictions & thePlugins.restictions.cantShutdown));
+}
+
+rPlugin.prototype.canBeLaunched = function()
+{
+	return(this.restictions & thePlugins.restictions.canBeLaunched);
 }
 
 rPlugin.prototype.attachPageToOptions = function(dlg,name)

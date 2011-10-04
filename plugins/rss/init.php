@@ -1,5 +1,5 @@
 <?php
-eval(getPluginConf('rss'));
+eval(getPluginConf($plugin["name"]));
 
 $st = getSettingsPath();
 makeDirectory( array($st.'/rss',$st.'/rss/cache') );
@@ -20,7 +20,7 @@ if($needStart)
 		require_once($rootPath.'/plugins/rss/rss.php');
 		$mngr = new rRSSManager();
 		$mngr->setStartTime($startAt);
-		$theSettings->registerPlugin("rss");
+		$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	}
 	else
 		$jResult .= "plugin.disable(); log('rss: '+theUILang.pluginCantStart);";

@@ -11,7 +11,7 @@ $req = new rXMLRPCRequest( array(
 		getCmd('d.get_custom').'=seedingtime,,"'.getCmd('d.set_custom').'=seedingtime,$'.getCmd('d.get_custom').'=addtime'.'"')),
 	));
 if($req->success())
-        $theSettings->registerPlugin("seedingtime");
+        $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else
         $jResult .= "plugin.disable(); log('seedingtime: '+theUILang.pluginCantStart);";
 

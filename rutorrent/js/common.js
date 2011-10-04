@@ -621,6 +621,23 @@ var theFormatter =
 		}
 		return(ret);
 	},
+	pluginLaunch: function(no)
+	{
+		var ret = "";
+		switch(iv(no))
+		{
+			case 0:
+				ret = theUILang.Disabled;
+				break;
+			case 1:
+				ret = theUILang.Enabled;
+				break;
+			case 2:
+				ret = theUILang.plgLocked;
+				break;
+		}
+		return(ret);
+	},
 	peers: function(table,arr)
 	{
 		for(var i in arr)
@@ -681,6 +698,9 @@ var theFormatter =
    			{
       				case 'status' : 
       					arr[i] = theFormatter.pluginStatus(arr[i]);
+	      				break;
+      				case 'launch' : 
+      					arr[i] = theFormatter.pluginLaunch(arr[i]);
 	      				break;
       				case 'version' : 
       					arr[i] = new Number(arr[i]).toFixed(2);

@@ -254,5 +254,9 @@ var theUILang =
  phpParameterUnavailable	: "Директива php register_argc_argv выставлена в Off. Измените ее значение на On, иначе некоторые плагины будут работать некорректно.",
  addTorrentFailedURL		: "Ошибка добавления закачки. Невозможно получить файл по заданному URL.",
  addTorrentFailedFile		: "Ошибка добавления закачки. Полученный контент не является корректным torrent файлом.",
- addTorrentFailedDirectory	: "Ошибка добавления закачки. Задана некорректная директория."
+ addTorrentFailedDirectory	: "Ошибка добавления закачки. Задана некорректная директория.",
+ plgLaunch			: "Запуск",
+ plgLocked			: "Фиксирован",
+ phpExtensionNotFoundWarning	: "Часть функциональности плагина будет недоступна. Расширение PHP должно быть установлено",
+ phpExtensionNotFoundError	: "Плагин не будет работать. Расширение PHP должно быть установлено"
 };

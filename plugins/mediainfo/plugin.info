@@ -5,3 +5,4 @@ rtorrent.remote: error
 rtorrent.external.error: mediainfo
 plugin.dependencies: _task
 plugin.runlevel: 12
+php.extensions.error: json

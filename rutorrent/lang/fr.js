@@ -281,5 +281,9 @@
  phpParameterUnavailable	: "La directive PHP 'register_argc_argv' est désactivée. Veuillez l'activer sinon certains plugins ne vont pas fonctionner.",
  addTorrentFailedURL		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Impossible de résoudre l'URL.",
  addTorrentFailedFile		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Le contenu récupéré n'est pas un fichier torrent.",
- addTorrentFailedDirectory	: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Le répertoire de téléchargement spécifié est incorrect."
+ addTorrentFailedDirectory	: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Le répertoire de téléchargement spécifié est incorrect.",
+ plgLaunch			: "Launch",
+ plgLocked			: "Locked",
+ phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
+ phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
 };

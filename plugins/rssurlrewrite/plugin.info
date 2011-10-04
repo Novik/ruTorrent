@@ -3,5 +3,5 @@ plugin.author: Novik
 plugin.runlevel: 12
 plugin.version: 3.3
 plugin.dependencies: rss
-php.version: 5.2.0
+php.extensions.error: json
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRSSURLRewrite

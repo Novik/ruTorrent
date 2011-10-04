@@ -59,7 +59,6 @@ class rUnpack
 	public function startSilentTask($basename,$label,$name)
 	{
 		global $rootPath;
-
 		if(rTorrentSettings::get()->isPluginRegistered('quotaspace'))
 		{
 			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );

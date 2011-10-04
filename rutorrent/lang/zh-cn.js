@@ -280,5 +280,9 @@
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to Off. Change its value to On, otherwise some plugins won't work.",
  addTorrentFailedURL		: "Error: torrent wasn't passed to rTorrent. Can't retrieve URL.",
  addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is not a valid torrent file.",
- addTorrentFailedDirectory	: "Error: torrent wasn't passed to rTorrent. Incorrect downloads directory was specified."
+ addTorrentFailedDirectory	: "Error: torrent wasn't passed to rTorrent. Incorrect downloads directory was specified.",
+ plgLaunch			: "Launch",
+ plgLocked			: "Locked",
+ phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
+ phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
 };
