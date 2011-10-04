@@ -1,5 +1,5 @@
 <?php
-eval(getPluginConf('trafic'));
+eval(getPluginConf($plugin["name"]));
 require_once( '../plugins/trafic/ratios.php' );
 
 $st = getSettingsPath();
@@ -16,7 +16,7 @@ $req = new rXMLRPCRequest( new rXMLRPCCommand("schedule",
 	array( "trafic".getUser(), $startAt."", $interval."", 
 		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($rootPath.'/plugins/trafic/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) ) );
 if($req->run() && !$req->fault)
-       	$theSettings->registerPlugin("trafic");
+       	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else
        	$jResult .= "plugin.disable(); log('trafic: '+theUILang.pluginCantStart);";
 $jResult .= "plugin.collectStatForTorrents = ".($collectStatForTorrents ? "true;" : "false;");

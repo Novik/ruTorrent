@@ -14,7 +14,7 @@ $req = new rXMLRPCRequest( new rXMLRPCCommand('schedule', array( "scheduler".get
 	getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($rootPath.'/plugins/scheduler/update.php').' '.escapeshellarg(getUser()).' & exit 0}' )) );
 if($req->run() && !$req->fault)
 {
-	$theSettings->registerPlugin("scheduler");
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	$jResult.=$schd->get();
 }
 else

@@ -283,5 +283,9 @@ var theUILang =
  phpParameterUnavailable	: "Директиву інтерпретатора PHP register_argc_argv вимкнено (значення Off). Увімкніть її (значення On), інакше деякі плагіни не працюватимуть.",
  addTorrentFailedURL		: "Сталася помилка. Файл .torrent не передано до rTorrent. Не вдалося отримати URL-адресу.",
  addTorrentFailedFile		: "Сталася помилка. Файл .torrent не передано до rTorrent. Отриманий вміст не є правильним torrent-файлом.",
- addTorrentFailedDirectory	: "Сталася помилка. Файл .torrent не передано до rTorrent. Указано неправильний каталог для завантаження."
+ addTorrentFailedDirectory	: "Сталася помилка. Файл .torrent не передано до rTorrent. Указано неправильний каталог для завантаження.",
+ plgLaunch			: "Launch",
+ plgLocked			: "Locked",
+ phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
+ phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
 };

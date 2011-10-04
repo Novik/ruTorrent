@@ -406,8 +406,7 @@ switch($mode)
 	}
 	default:
 	{
-		if(isset($HTTP_RAW_POST_DATA) 
-			&& !preg_match("/(execute|import)\s*=/i",$HTTP_RAW_POST_DATA))
+		if(isset($HTTP_RAW_POST_DATA))
 		{
 			$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA);
 			if(!empty($result))

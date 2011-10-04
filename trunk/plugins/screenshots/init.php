@@ -5,6 +5,7 @@ if(!$theSettings->isPluginRegistered("explorer"))
 
 $st = ffmpegSettings::load();
 $jResult.=("plugin.ffmpegSettings = ".json_encode($st->get()).";");
-$theSettings->registerPlugin("screenshots");
+
+$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 
 ?>

@@ -6,5 +6,5 @@ rtorrent.external.warning: curl
 rtorrent.external.error: php
 rtorrent.php.error: update.php,rss.php,conf.php
 web.external.warning: curl
-php.version: 5.2.0
+php.extensions.error: json
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRSS

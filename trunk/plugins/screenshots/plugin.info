@@ -5,3 +5,4 @@ rtorrent.remote: error
 web.external.error: ffmpeg
 plugin.dependencies: _task
 plugin.runlevel: 12
+php.extensions.error: json

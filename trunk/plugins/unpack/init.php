@@ -1,5 +1,6 @@
 <?php
-eval(getPluginConf('unpack'));
+
+eval(getPluginConf($plugin["name"]));
 require_once( 'unpack.php' );
 
 if($do_diagnostic)
@@ -21,7 +22,7 @@ if(USE_UNZIP || USE_UNRAR)
 		$jResult .= ("plugin.useUnrar = ".(USE_UNRAR ? "true;" : "false;"));
         	$up = rUnpack::load();
 		$jResult .= $up->get();
-	        $theSettings->registerPlugin("unpack");
+	        $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	}
 	else
 		$jResult .= "plugin.disable(); log('unpack: '+theUILang.pluginCantStart);";

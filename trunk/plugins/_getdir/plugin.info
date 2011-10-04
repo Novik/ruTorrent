@@ -3,4 +3,5 @@ plugin.author: dmrom
 plugin.runlevel: 1
 plugin.version: 3.3
 rtorrent.need: 0
+php.extensions.warning: json
 plugin.help: http://code.google.com/p/rutorrent/wiki/Plugin_getdir

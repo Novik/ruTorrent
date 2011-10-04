@@ -20,7 +20,7 @@ if($hth = opendir('../plugins/theme/themes'))
 }
 $jResult.=($themes.'];');
 
-$theSettings->registerPlugin("theme");
+$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 
 if($theme->isValid())
 {

@@ -21,7 +21,7 @@ if($at->setHandlers())
 				$jResult .= "plugin.showError('theUILang.autotoolsNoPathToWatch');";
 		}
 	}
-	$theSettings->registerPlugin("autotools");
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 }
 else
         $jResult .= "plugin.disable(); log('autotools: '+theUILang.pluginCantStart);";

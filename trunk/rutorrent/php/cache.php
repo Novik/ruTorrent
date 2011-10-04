@@ -15,7 +15,8 @@ class rCache
 	{
 		global $profileMask;
 		$name = $this->getName($rss);
-		if(isset($rss->modified) &&
+		if(     is_object($rss) &&
+			isset($rss->modified) &&
 			method_exists($rss,"merge") &&
 			($rss->modified < filemtime($name)))
 		{
@@ -46,17 +47,25 @@ class rCache
 		if($ret!==false)
 		{
 			$tmp = unserialize($ret);
-			if(($tmp!==false) && 
-				(!isset($rss->version) || 
-				(isset($rss->version) && !isset($tmp->version)) ||
-				(isset($tmp->version) && ($tmp->version==$rss->version))))
+			if(is_array($tmp))
 			{
-			        $rss = $tmp;
-				$rss->modified = filemtime($fname);
+			        $rss = $tmp;				
 				$ret = true;
 			}
 			else
-				$ret = false;
+			{
+				if(($tmp!==false) && 
+					(!isset($rss->version) || 
+					(isset($rss->version) && !isset($tmp->version)) ||
+					(isset($tmp->version) && ($tmp->version==$rss->version))))
+				{
+				        $rss = $tmp;
+					$rss->modified = filemtime($fname);
+					$ret = true;
+				}
+				else
+					$ret = false;
+			}
         	}
 		return($ret);
 	}
@@ -66,7 +75,7 @@ class rCache
 	}
 	protected function getName($rss)
 	{
-	        return($this->dir."/".$rss->hash);
+	        return($this->dir."/".(is_object($rss) ? $rss->hash : $rss['__hash__']));
 	}
 	public function getModified( $obj = null )
 	{

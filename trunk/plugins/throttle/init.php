@@ -5,7 +5,7 @@ $thr = rThrottle::load();
 if(!$thr->obtain())
 	$jResult.="plugin.disable(); log('throttle: '+theUILang.pluginCantStart);";
 else
-	$theSettings->registerPlugin("throttle");
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 $jResult.=$thr->get();
 
 ?>

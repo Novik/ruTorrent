@@ -118,6 +118,7 @@ var theWebUI =
 				{ text: theUILang.plgName,			width: "150px", id: "name",		type: TYPE_STRING },
 				{ text: theUILang.plgVersion,			width: "60px",	id: "version",		type: TYPE_NUMBER },
 				{ text: theUILang.plgStatus, 			width: "80px", 	id: "status",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
+				{ text: theUILang.plgLaunch,			width: "80px", 	id: "launch",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
 				{ text: theUILang.plgAuthor,			width: "80px", 	id: "author",		type: TYPE_STRING },
 				{ text: theUILang.plgDescr,			width: "500px",	id: "descr",		type: TYPE_STRING }
 			],
@@ -431,7 +432,8 @@ var theWebUI =
 					version: plugin.version,
 					author: plugin.author,
 					descr: plugin.descr,
-					status: plugin.enabled ? 1 : 0
+					status: plugin.enabled ? 1 : 0,
+					launch: plugin.launched ? (plugin.canBeLaunched() ? 1 : 2) : 0
 				}, "_plg_"+plugin.name);
 			});
 		}
@@ -465,11 +467,23 @@ var theWebUI =
 		{
 		        theContextMenu.clear();
 		        if(this.getTable("plg").selCount > 1) 
+		        {
 				theContextMenu.add([theUILang.plgShutdown, "theWebUI.plgShutdown()"]);
+				theContextMenu.add([CMENU_CHILD, theUILang.plgLaunch,
+					[
+						[theUILang.EnableTracker, "theWebUI.plgLaunch(true)"],
+						[theUILang.DisableTracker, "theWebUI.plgLaunch(false)"]
+					]]);
+			}
 			else
 			{
 				var plugin = thePlugins.get(id.substr(5));
-				theContextMenu.add([theUILang.plgShutdown, plugin.enabled ? "theWebUI.plgShutdown()" : null]);
+				theContextMenu.add([theUILang.plgShutdown, (plugin.enabled && plugin.canShutdown()) ? "theWebUI.plgShutdown()" : null]);
+				theContextMenu.add([CMENU_CHILD, theUILang.plgLaunch,
+					[
+						[theUILang.EnableTracker, !plugin.launched && plugin.canBeLaunched() ? "theWebUI.plgLaunch(true)" : null],
+						[theUILang.DisableTracker, plugin.launched && plugin.canBeLaunched() ? "theWebUI.plgLaunch(false)" : null]
+					]]);
 				if(plugin.help)
 				{
 					theContextMenu.add([CMENU_SEP]); 
@@ -491,13 +505,33 @@ var theWebUI =
    		{
       			if(sr[k]) 
       			{
-      				var plg = k.substr(5);
-      			        if(thePlugins.isInstalled(plg))
-            				str += "&hash=" + plg;
+      				var name = k.substr(5);
+	      			var plugin = thePlugins.get(name);
+      			        if(plugin.enabled && plugin.canShutdown())
+            				str += "&hash=" + name;
          		}
       		}
 		if(str.length>0)
-	      		this.request("?action=doneplugins" + str, [this.plgRefresh, this]);
+	      		this.request("?action=doneplugins&s=done" + str, [this.plgRefresh, this]);
+        },
+
+	plgLaunch : function(enable)
+	{
+		var table = this.getTable("plg");
+   		var sr = table.rowSel;
+   		var str = "";
+   		for(var k in sr) 
+   		{
+      			if(sr[k]) 
+      			{
+      				var name = k.substr(5);
+	      			var plugin = thePlugins.get(name);
+      			        if( (enable ^ plugin.launched) && plugin.canBeLaunched())
+            				str += "&hash=" + name;
+         		}
+      		}
+		if(str.length>0)
+	      		this.request("?action=doneplugins&s="+(enable ? "launch" : "unlaunch") + str, [this.plgRefresh, this]);
         },
 
         plgRefresh : function()
@@ -506,6 +540,7 @@ var theWebUI =
 		$.each( thePlugins.list, function(ndx,plugin) 
 		{
 			table.setValueById( "_plg_"+plugin.name, "status", plugin.enabled ? 1 : 0 );
+			table.setValueById( "_plg_"+plugin.name, "launch", plugin.launched ? (plugin.canBeLaunched() ? 1 : 2) : 0 );
 		});
         },
 

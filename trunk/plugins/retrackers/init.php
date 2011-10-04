@@ -9,7 +9,7 @@ $req = new rXMLRPCRequest( array(
 			getCmd('execute').'={sh,'.$rootPath.'/plugins/retrackers/run.sh'.','.getPHP().',$'.getCmd('d.get_hash').'=,'.getUser().'}\"" ; '.getCmd('d.set_custom3=')))));
 if($req->run() && !$req->fault)
 {
-	$theSettings->registerPlugin("retrackers");
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	$trks = rRetrackers::load();
 	$jResult.=$trks->get();
 }

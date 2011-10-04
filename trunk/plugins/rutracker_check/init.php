@@ -1,7 +1,7 @@
 <?php
 
 require_once( "xmlrpc.php" );
-eval( getPluginConf( 'rutracker_check' ) );
+eval( getPluginConf( $plugin["name"] ) );
 
 if($updateInterval)
 {
@@ -16,14 +16,14 @@ if($updateInterval)
 	$req = new rXMLRPCRequest( new rXMLRPCCommand('schedule', array( 'rutracker_check'.getUser(), $startAt."", $interval."", 
 		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' &}' )));
 	if($req->success())
-		$theSettings->registerPlugin("rutracker_check");
+		$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	else
 		$jResult .= "plugin.disable(); log('rutracker_check: '+theUILang.pluginCantStart);";
 }
 else
 {
 	require( 'done.php' );
-	$theSettings->registerPlugin("rutracker_check");
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 }
 
 ?>

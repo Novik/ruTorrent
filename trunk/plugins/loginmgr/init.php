@@ -1,6 +1,6 @@
 <?php
 
-$theSettings->registerPlugin("loginmgr");
+$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 
 require_once( "accounts.php" );
 

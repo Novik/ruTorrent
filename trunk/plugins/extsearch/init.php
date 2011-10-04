@@ -1,6 +1,6 @@
 <?php
 
-$theSettings->registerPlugin("extsearch");
+$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 
 require_once( "engines.php" );
 

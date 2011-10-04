@@ -2,5 +2,5 @@ plugin.description: The plug-in provides country information for peers.
 plugin.author: Zoltan Csala,Novik
 plugin.runlevel: 15
 plugin.version: 3.3
-php.version: 5.2.0
+php.extensions.error: json
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginGeoIP
