@@ -1,4 +1,4 @@
-﻿/*
+﻿/* 
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.cz
  * NO COPYCATS of language update
  * 
@@ -58,8 +58,6 @@
  Ip_report_track		: "IP/Hostname odesílané trackeru",
  Disabled			: "Zakázáno",
  Enabled			: "Povoleno",
- Advanced			: "Rozšířené",
- Cancel 			: "Zrušit",
  uTorrent_settings		: "rTorrent Nastavení",
  Doesnt_support 		: "ruTorrent nepodporuje Váš webový prohlížeč.",
  Name				: "Název",
@@ -76,7 +74,7 @@
  Peers				: "Peerů",
  Seeds				: "Seedů",
  Avail				: "Dostup.",
- Remaining			: "Zbývající čas",
+ Remaining			: "Zbývající",
  Priority			: "Priorita",
  Download			: "Download",
  Upload 			: "Upload",
@@ -135,7 +133,6 @@
  No_label			: "Bez kategorie",
  Transfer			: "Přenos",
  Time_el			: "Uplynulý čas",
- Remaining			: "Zbývá",
  Share_ratio			: "Ratio",
  Down_speed			: "Rychlost Down.",
  Down_limit			: "Limit Download",
@@ -150,9 +147,8 @@
  Comment			: "Komentář",
  add_button			: "Přidat soubor",
  add_url			: "Přidat URL",
- ok				: "   OK   ",
- Cancel 			: " Zrušit ",
- no				: "   Ne   ",
+ ok				: "OK",
+ Cancel 			: "Zrušit",
  mnu_add			: "Přidat torrent",
  mnu_remove			: "Odstranit",
  mnu_start			: "Start",

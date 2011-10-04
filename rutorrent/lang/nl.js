@@ -1,4 +1,4 @@
-/*
+﻿/* 
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
  * 
@@ -58,8 +58,6 @@
  Ip_report_track		: "Deze IP/Hostnaam aan tracker rapporteren",
  Disabled			: "Uitgeschakeld",
  Enabled			: "Ingeschakeld",
- Advanced			: "Geavanceerd",
- Cancel 			: "Annuleren",
  uTorrent_settings		: "rTorrent Instellingen",
  Doesnt_support 		: "ruTorrent ondersteund uw browser niet.",
  Name				: "Naam",
@@ -135,7 +133,6 @@
  No_label			: "Geen Etiket",
  Transfer			: "Dataverkeer",
  Time_el			: "Verstreken tijd",
- Remaining			: "Resterende tijd",
  Share_ratio			: "Verhouding",
  Down_speed			: "Download snelheid",
  Down_limit			: "Download limiet",
@@ -150,9 +147,8 @@
  Comment			: "Aantekening",
  add_button			: "Torrent toevoegen",
  add_url			: "Torrent toevoegen mbv URL",
- ok				: "   OK   ",
+ ok				: "OK",
  Cancel 			: "Annuleer",
- no				: "   Nee  ",
  mnu_add			: "Torrent toevoegen",
  mnu_remove			: "Verwijder",
  mnu_start			: "Start",
