@@ -42,13 +42,16 @@ if(isset($HTTP_RAW_POST_DATA))
 				}
 				case "launch":
 				{
-					$userPermissions[$parts[1]] = true;
-					$jResult.="thePlugins.get('".$parts[1]."').launch();";
+					if(is_null($perms) || ($perms & FLAG_CAN_CHANGE_LAUNCH))
+					{
+						$userPermissions[$parts[1]] = true;
+						$jResult.="thePlugins.get('".$parts[1]."').launch();";
+					}
 					break;
 				}
 				case "unlaunch":
 				{
-					if(!is_null($perms) && ($perms & FLAG_CAN_CHANGE_LAUNCH))
+					if(is_null($perms) || ($perms & FLAG_CAN_CHANGE_LAUNCH))
 					{
 						$userPermissions[$parts[1]] = false;
 						$jResult.="thePlugins.get('".$parts[1]."').unlaunch();";
