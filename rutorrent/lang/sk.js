@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.cz
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: sk.js
  * 	Slovak language file.
- * 
+ *
  * File Author:
  * 		AndzinSan
  */
@@ -32,8 +32,6 @@
  Downloads			: "Sťahovanie",
  Connection			: "Pripojenie",
  BitTorrent			: "BitTorrent",
- Queueing			: "V rade",
- Scheduler			: "Plánovač",
  Advanced			: "Rozšírené",
  User_Interface 		: "Užívateľske rozhranie",
  Confirm_del_torr		: "Potvrdiť odobratie torrentu",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Zobraziť kategórie po spusteni",
  Show_det_start 		: "Zobraziť detaily po spustení",
  Dnt_start_down_auto		: "Nespušťať sťahovanie automaticky",
- Other_sett			: "Ďalšie nastavenia",
  Listening_Port 		: "Naslúchací port",
  Port_f_incom_conns		: "Port použitý pre prichádzajúce spojenie",
  Rnd_port_torr_start		: "Náhodný port vždy pri štarte rTorrentu",
@@ -73,11 +70,8 @@
  Label				: "Kategoria",
  Peers				: "Peerov",
  Seeds				: "Seedov",
- Avail				: "Dostupnosť",
  Remaining			: "Zostáva",
  Priority			: "Priorita",
- Download			: "Download",
- Upload 			: "Upload",
  Not_torrent_file		: "Súbor musí byť torrent súbor.",
  Pausing			: "Pauza",
  Seeding			: "Seedujem",
@@ -100,15 +94,15 @@
  Remove_and			: "Odobrať úlohu a",
  Details			: "Detaily...",
  Properties			: "Vlastnosti...",
- of				: "z", 		//this two creates line 
- connected			: "pripojených",	//  XX of YY connected
+ of				: "z", //this two creates line 
+ connected			: "pripojených", //  XX of YY connected
  High_priority			: "Vysoká",
  Normal_priority		: "Normálna",
  Low_priority			: "Nízka",
  Dont_download			: "Nesťahovať",
  Files				: "Súbory",
  Logger 			: "Záznamy",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bajtov",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Uplynulý čas",
  Share_ratio			: "Ratio",
  Down_speed			: "Sťahovanie",
- Down_limit			: "Limit sťahovania",
  Ul_speed			: "Odosielania",
- Ul_limit			: "Limit odosielania",
  Wasted 			: "Zahodených",
  Tracker			: "Tracker",
  Track_URL			: "URL Trackeru",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",

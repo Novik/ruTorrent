@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * Nazwa pliku: pl.js
  * 	Polish language file.
- * 
+ *
  * Author:
  * 		Penknife (penknife1@gmail.com)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Pobieranie",
  Connection			: "Połączenie",
  BitTorrent			: "BitTorrent",
- Queueing			: "Kolejkowanie",
- Scheduler			: "Harmonogram",
  Advanced			: "Zaawansowane",
  User_Interface 		: "Interfejs użytkownika",
  Confirm_del_torr		: "Potwierdzaj usunięcie torrentów",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Pokaż kategorie na starcie",
  Show_det_start 		: "Pokaż szczegóły na starcie",
  Dnt_start_down_auto		: "Nie pobieraj automatycznie",
- Other_sett			: "Inne",
  Listening_Port 		: "Port nasłuchu",
  Port_f_incom_conns		: "Port połączeń przychodzących",
  Rnd_port_torr_start		: "Wybieraj losowo port rTorrent przy każdym starcie",
@@ -73,11 +70,8 @@
  Label				: "Etykieta",
  Peers				: "Peerów",
  Seeds				: "Seedów",
- Avail				: "Dost.",
  Remaining			: "Pozostało",
  Priority			: "Priorytet",
- Download			: "Download",
- Upload 			: "Upload",
  Not_torrent_file		: "Plik musi być plikem torrent.",
  Pausing			: "Pauza",
  Seeding			: "Udostępnianie",
@@ -100,15 +94,15 @@
  Remove_and			: "Usuń...",
  Details			: "Szczegóły...",
  Properties			: "Właściwości...",
- of				: "z", 		//this two creates line 
- connected			: "połączonych",	//  XX of YY connected
+ of				: "z", //this two creates line 
+ connected			: "połączonych", //  XX of YY connected
  High_priority			: "Wysoki",
  Normal_priority		: "Normalny",
  Low_priority			: "Niski",
  Dont_download			: "Nie Pobieraj",
  Files				: "Pliki",
  Logger 			: "Dziennik",
- s				: "s",    // part of "kB/s"
+ s				: "s", // part of "kB/s"
  bytes				: "bajtów",
  KB				: "kB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Upłyneło",
  Share_ratio			: "Ratio",
  Down_speed			: "Prędkość pobierania",
- Down_limit			: "Limit pobierania",
  Ul_speed			: "Prędkość wysyłania",
- Ul_limit			: "Limit wysyłania",
  Wasted 			: "Odrzucono",
  Tracker			: "Tracker",
  Track_URL			: "Adres Trackera",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Domyślne katalog pobierań",
  Check_hash			: "Sprawdzaj sumę kontrolą po pobraniu",
  Hash				: "Hash",
- IsOpen 			: "Otwarte",
  DisableTracker 		: "Wyłącz",
  EnableTracker			: "Włącz",
  ClientVersion			: "Klienty",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Czas odpowiedzi minął",
  GetTrackerMessage		: "Odbierz wiadomości z trackera",
  Help				: "Pomoc",
- PHPDoesnt_enabled		: "Twój serwer nie obsługuje PHP, popraw to i spróbuj ponownie",
  Speed				: "Szybkość",
  Dont_add_tname 		: "Nie dodawaj nazwy torrenta do ścieżki", 
  Free_Disk_Space		: "Wolna przestrzeń dyskowa",

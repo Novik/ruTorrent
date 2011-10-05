@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: fr.js
  * 	French language file.
- * 
+ *
  * File Author:
  * 	  Platoon21 (charlesprost@gmail.com) and Zempashi
  *    Nicobubulle (nicobubulle@gmail.com) for ruTorrent
@@ -33,8 +33,6 @@
  Downloads			: "Téléchargement",
  Connection			: "Connexion",
  BitTorrent			: "BitTorrent",
- Queueing			: "File d'attente",
- Scheduler			: "Planificateur",
  Advanced			: "Avancé",
  User_Interface 		: "Interface",
  Confirm_del_torr		: "Confirmer la suppression des torrents",
@@ -44,7 +42,6 @@
  Show_cat_start 		: "Afficher les catégories au démarrage",
  Show_det_start 		: "Afficher les détails au démarrage",
  Dnt_start_down_auto		: "Ne pas démarrer le télécharchement",
- Other_sett			: "Autres options",
  Listening_Port 		: "Port d'écoute",
  Port_f_incom_conns		: "Port utilisé pour les connexions entrantes",
  Rnd_port_torr_start		: "Sélection aléatoire du port à chaque fois que rTorrent démarre",
@@ -74,11 +71,8 @@
  Label				: "Étiquette",
  Peers				: "Clients",
  Seeds				: "Sources",
- Avail				: "Disponibilité",
  Remaining			: "Restant",
  Priority			: "Priorité",
- Download			: "Télécharger",
- Upload 			: "Envoyer",
  Not_torrent_file		: "Le fichier doit être un torrent",
  Pausing			: "Pause",
  Seeding			: "Envoi",
@@ -101,15 +95,15 @@
  Remove_and			: "Effacer et ",
  Details			: "Détails...",
  Properties			: "Propriétés...",
- of				: "de", 		//this two creates line 
- connected			: "connecté(s)",	//  XX of YY connected
+ of				: "de", //this two creates line
+ connected			: "connecté(s)", //  XX of YY connected
  High_priority			: "Haute",
  Normal_priority		: "Moyenne",
  Low_priority			: "Basse",
  Dont_download			: "Ne pas télécharger",
  Files				: "Fichiers",
  Logger 			: "Journal",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "octets",
  KB				: "Ko",
  MB				: "Mo",
@@ -136,9 +130,7 @@
  Time_el			: "Temps écoulé",
  Share_ratio			: "Ratio",
  Down_speed			: "Vitesse de réception",
- Down_limit			: "Limite de réception",
  Ul_speed			: "Vitesse d'émission",
- Ul_limit			: "Limite d'émission",
  Wasted 			: "Rejeté",
  Tracker			: "Tracker",
  Track_URL			: "URL du tracker",
@@ -183,7 +175,6 @@
  Directory_For_Dl		: "Répertoire par défaut pour les téléchargements",
  Check_hash			: "Vérifier le Hash après le téléchargement",
  Hash				: "Hash",
- IsOpen 			: "Ouvert",
  DisableTracker 		: "Désactivé",
  EnableTracker			: "Activé",
  ClientVersion			: "Client",
@@ -191,7 +182,6 @@
  ReqTimeout			: "Échec de la requête",
  GetTrackerMessage		: "Message reçu du tracker",
  Help				: "Aide",
- PHPDoesnt_enabled		: "Votre serveur web ne supporte pas PHP. Corriger ça et réessayer.",
  Speed				: "Vitesse",
  Dont_add_tname 		: "Ne pas ajouter le nom du torrent au répertoire", 
  Free_Disk_Space		: "Espace disponible",
@@ -282,4 +272,4 @@
  plgLocked			: "Locked",
  phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
  phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
-};
+ };

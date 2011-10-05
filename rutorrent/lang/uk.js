@@ -1,42 +1,40 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
- * File Name: ua.js
+ *
+ * File Name: uk.js
  * 	Ukrainian language file.
  *
  * File Author:
  * 		Oleksandr Natalenko (pfactum@gmail.com)
- * 
+ *
  * Initial Author:
  * 		Artem Lopata (mod-s@yandex.ru)
  */
 
-var theUILang =
-{
+ var theUILang =
+ {
  kbs				: "кб/с",
  General			: "Загальне",
  Downloads			: "Завантаження",
  Connection			: "З’єднання",
  BitTorrent			: "BitTorrent",
- Queueing			: "Послідовність",
- Scheduler			: "Розклад",
  Advanced			: "Додатково",
  User_Interface 		: "Корист. інтерфейс",
  Confirm_del_torr		: "Підтв. видалення торента",
@@ -46,7 +44,6 @@ var theUILang =
  Show_cat_start 		: "Показати категорії під час запуску",
  Show_det_start 		: "Показати деталі під час запуску",
  Dnt_start_down_auto		: "Не починати завантаження автоматично",
- Other_sett			: "Інші настройки",
  Listening_Port 		: "Порт",
  Port_f_incom_conns		: "Порт для вхідних з’єднань",
  Rnd_port_torr_start		: "Випадковий порт під час кожного запуску rTorrent",
@@ -76,11 +73,8 @@ var theUILang =
  Label				: "Мітка",
  Peers				: "Піри",
  Seeds				: "Сіди",
- Avail				: "Дост.",
  Remaining			: "Залишилось",
  Priority			: "Пріоритет",
- Download			: "Завантаження",
- Upload 			: "Вивантаження",
  Not_torrent_file		: "Файл повинен бути файлом .torrent.",
  Pausing			: "Пауза",
  Seeding			: "Роздача",
@@ -103,15 +97,15 @@ var theUILang =
  Remove_and			: "Видалити і",
  Details			: "Деталі…",
  Properties			: "Властивості…",
- of				: "із",			//this two creates line 
- connected			: "з’єднано",		//  XX of YY connected
+ of				: "із", //this two creates line 
+ connected			: "з’єднано", //  XX of YY connected
  High_priority			: "Високий",
  Normal_priority		: "Нормальний",
  Low_priority			: "Низький",
  Dont_download			: "Не завантажувати",
  Files				: "Файли",
  Logger 			: "Журнал",
- s				: "с",			// part of "KB/s"
+ s				: "с", // part of "KB/s"
  bytes				: "байт",
  KB				: "кб",
  MB				: "Мб",
@@ -138,9 +132,7 @@ var theUILang =
  Time_el			: "Часу минуло",
  Share_ratio			: "Коефіцієнт",
  Down_speed			: "Швидкість завантаження",
- Down_limit			: "Обмеж. завантаження",
  Ul_speed			: "Швидкість вивантаження",
- Ul_limit			: "Обмеж. вивантаження",
  Wasted 			: "Зайве",
  Tracker			: "Трекер",
  Track_URL			: "URL-адреса трекера",
@@ -185,7 +177,6 @@ var theUILang =
  Directory_For_Dl		: "Каталог завантажень",
  Check_hash			: "Перевіряти дані після завантаження",
  Hash				: "Хеш",
- IsOpen 			: "Відкритий",
  DisableTracker 		: "Вимкнути",
  EnableTracker			: "Увімкнути",
  ClientVersion			: "Клієнт",
@@ -193,7 +184,6 @@ var theUILang =
  ReqTimeout			: "Час очікування запита",
  GetTrackerMessage		: "Запитувати повідомлення трекера",
  Help				: "Довідка",
- PHPDoesnt_enabled		: "Веб-сервер не підтримує мову PHP.",
  Speed				: "Швидкість",
  Dont_add_tname 		: "Не додавати назву торента до шляху", 
  Free_Disk_Space		: "Вільно на диску",
@@ -284,4 +274,4 @@ var theUILang =
  plgLocked			: "Locked",
  phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
  phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
-};
+ };

@@ -6,8 +6,6 @@ var theUILang =
  Downloads			: "Downloads",
  Connection			: "Connection",
  BitTorrent			: "BitTorrent",
- Queueing			: "Queueing",
- Scheduler			: "Scheduler",
  Advanced			: "Advanced",
  User_Interface 		: "User Interface",
  Confirm_del_torr		: "Confirm when deleting torrents",
@@ -17,7 +15,6 @@ var theUILang =
  Show_cat_start 		: "Show categories on startup",
  Show_det_start 		: "Show details on startup",
  Dnt_start_down_auto		: "Don't start the download automatically",
- Other_sett			: "Other Settings",
  Listening_Port 		: "Listening Port",
  Port_f_incom_conns		: "Port used for incoming connections",
  Rnd_port_torr_start		: "Randomize port each time rTorrent starts",
@@ -47,11 +44,8 @@ var theUILang =
  Label				: "Label",
  Peers				: "Peers",
  Seeds				: "Seeds",
- Avail				: "Avail.",
  Remaining			: "Remaining",
  Priority			: "Priority",
- Download			: "Download",
- Upload 			: "Upload",
  Not_torrent_file		: "The file has to be a torrent file.",
  Pausing			: "Pausing",
  Seeding			: "Seeding",
@@ -74,15 +68,15 @@ var theUILang =
  Remove_and			: "Remove And",
  Details			: "Details...",
  Properties			: "Properties...",
- of				: "of", 		//this two creates line 
- connected			: "connected",	//  XX of YY connected
+ of				: "of", //this two creates line
+ connected			: "connected", //  XX of YY connected
  High_priority			: "High",
  Normal_priority		: "Normal",
  Low_priority			: "Low",
  Dont_download			: "Don't Download",
  Files				: "Files",
  Logger 			: "Logger",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -109,9 +103,7 @@ var theUILang =
  Time_el			: "Time Elapsed",
  Share_ratio			: "Share Ratio",
  Down_speed			: "Download Speed",
- Down_limit			: "Down Limit",
  Ul_speed			: "Upload Speed",
- Ul_limit			: "Up Limit",
  Wasted 			: "Wasted",
  Tracker			: "Tracker",
  Track_URL			: "Tracker URL",
@@ -156,7 +148,6 @@ var theUILang =
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -164,7 +155,6 @@ var theUILang =
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",
@@ -255,4 +245,4 @@ var theUILang =
  plgLocked			: "Locked",
  phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
  phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
-};
+ };

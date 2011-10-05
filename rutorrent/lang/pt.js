@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: br.js
  * 	Portuguese (Brazil) language file.
- * 
+ *
  * File Author:
  * 	 Oszy007 (oszy007@gmail.com)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Downloads",
  Connection			: "Conexão",
  BitTorrent			: "BitTorrent",
- Queueing			: "Fila",
- Scheduler			: "Agendador",
  Advanced			: "Avançado",
  User_Interface 		: "Interface do usuário",
  Confirm_del_torr		: "Confirmar quando excluir torrents",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Mostrar categorias quando iniciar",
  Show_det_start 		: "Mostrar detalhes quando iniciar",
  Dnt_start_down_auto		: "Não iniciar o download automaticamente",
- Other_sett			: "Outras Configurações",
  Listening_Port 		: "Porta de Escuta",
  Port_f_incom_conns		: "Porta usada para conexões de entrada",
  Rnd_port_torr_start		: "Alternar porta cada vez que o rTorrent iniciar",
@@ -73,11 +70,8 @@
  Label				: "Categoria",
  Peers				: "Peers",
  Seeds				: "Seeds",
- Avail				: "Disp.",
  Remaining			: "Faltando",
  Priority			: "Prioridade",
- Download			: "Baixar",
- Upload 			: "Enviar",
  Not_torrent_file		: "O arquivo deve ser um torrent válido.",
  Pausing			: "Pausado",
  Seeding			: "Enviando",
@@ -100,15 +94,15 @@
  Remove_and			: "Remover e",
  Details			: "Detalhes...",
  Properties			: "Propriedades...",
- of				: "de", 		//this two creates line 
- connected			: "conectado(s)",	//  XX of YY connected
+ of				: "de", //this two creates line 
+ connected			: "conectado(s)", //  XX of YY connected
  High_priority			: "Alta",
  Normal_priority		: "Normal",
  Low_priority			: "Baixa",
  Dont_download			: "Não Baixar",
  Files				: "Arquivos",
  Logger 			: "Registros",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Tempo Gasto",
  Share_ratio			: "Ratio",
  Down_speed			: "Vel. de Download",
- Down_limit			: "Limite Down",
  Ul_speed			: "Vel. de Upload",
- Ul_limit			: "Limite Up",
  Wasted 			: "Gasto",
  Tracker			: "Rastreador",
  Track_URL			: "URL",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",
@@ -282,4 +272,3 @@
  phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
  phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
  };
-

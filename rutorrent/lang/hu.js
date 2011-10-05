@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: hu.js
  * 	Hungarian language file.
- * 
+ *
  * File Author:
  * 		smici (smici@mail.datanet.hu)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Letöltések",
  Connection			: "Kapcsolat",
  BitTorrent			: "BitTorrent",
- Queueing			: "Sorbaállítás",
- Scheduler			: "Ütemező",
  Advanced			: "Egyéb",
  User_Interface 		: "Felhasználói felület",
  Confirm_del_torr		: "Torrent törlésének jóváhagyatása",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Kategóriák mutatása indításkor",
  Show_det_start 		: "Tulajdonságok mutatása indításkor",
  Dnt_start_down_auto		: "Ne induljon el automatikusan",
- Other_sett			: "További beállítások",
  Listening_Port 		: "Bejövő port",
  Port_f_incom_conns		: "Port a bejövő kapcsolatokhoz",
  Rnd_port_torr_start		: "Véletlen port µTorrent minden indításakor",
@@ -73,11 +70,8 @@
  Label				: "Cimke",
  Peers				: "Peer",
  Seeds				: "Seed",
- Avail				: "Elérhetőség",
  Remaining			: "Hátralévő",
  Priority			: "Prioritás",
- Download			: "Letöltés",
- Upload 			: "Feltöltés",
  Not_torrent_file		: "A file-nak torrent file-nak kell lennie.",
  Pausing			: "Felfüggesztve",
  Seeding			: "Feltölt",
@@ -100,15 +94,15 @@
  Remove_and			: "Eltávolítás és",
  Details			: "Részletek...",
  Properties			: "Tulajdonságok...",
- of				: " / ",		//this two creates line 
- connected			: "csatlakoztatott",	//  XX of YY connected
+ of				: " / ", //this two creates line 
+ connected			: "csatlakoztatott", //  XX of YY connected
  High_priority			: "Magas",
  Normal_priority		: "Normál",
  Low_priority			: "Alacsony",
  Dont_download			: "Kihagy",
  Files				: "File",
  Logger 			: "Napló",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Eltelt idő",
  Share_ratio			: "Arány",
  Down_speed			: "Letöltési sebesség",
- Down_limit			: "Le korlát",
  Ul_speed			: "Feltöltési sebesség",
- Ul_limit			: "Fel korlát",
  Wasted 			: "Kárbaveszett",
  Tracker			: "Tracker",
  Track_URL			: "Tracker URL",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",

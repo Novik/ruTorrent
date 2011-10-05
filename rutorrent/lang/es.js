@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: sp.js
  * 	Spanish language file.
- * 
+ *
  * File Author:
  * 		Carlos López (the_spide21@yahoo.com)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Descargas",
  Connection			: "Conexión",
  BitTorrent			: "BitTorrent",
- Queueing			: "En Cola",
- Scheduler			: "Planificador",
  Advanced			: "Avanzada",
  User_Interface 		: "Interfaz de usuario",
  Confirm_del_torr		: "Confirmar al borrar Torrent(s)",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Mostrar categorías al iniciar",
  Show_det_start 		: "Mostrar detalles al iniciar",
  Dnt_start_down_auto		: "No iniciar descarga automáticamente",
- Other_sett			: "Otras preferencias",
  Listening_Port 		: "Puerto escucha",
  Port_f_incom_conns		: "Puerto a usar para conexiones entrantes",
  Rnd_port_torr_start		: "Seleccionar un puerto aleatoreo cada vez que inicie rTorrent",
@@ -73,11 +70,8 @@
  Label				: "Etiqueta",
  Peers				: "Clientes",
  Seeds				: "Semillas",
- Avail				: "Disponibilidad",
  Remaining			: "Restante",
  Priority			: "Prioridad",
- Download			: "Descargar",
- Upload 			: "Subir",
  Not_torrent_file		: "El archivo debe ser un torrent válido.",
  Pausing			: "Pausando",
  Seeding			: "Compartiendo",
@@ -100,15 +94,15 @@
  Remove_and			: "Eliminar y ...",
  Details			: "Detalles...",
  Properties			: "Propiedades...",
- of				: "de", 		//this two creates line 
- connected			: "conectado(s)",	//  XX of YY connected
+ of				: "de", //this two creates line
+ connected			: "conectado(s)", //  XX of YY connected
  High_priority			: "Alta",
  Normal_priority		: "Normal",
  Low_priority			: "Baja",
  Dont_download			: "No descargar",
  Files				: "Archivos",
  Logger 			: "Registro",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Transcurrido",
  Share_ratio			: "Ratio",
  Down_speed			: "Vel. de bajada",
- Down_limit			: "Límite Des.",
  Ul_speed			: "Vel. de subida",
- Ul_limit			: "Límite Sub.",
  Wasted 			: "Desperdiciado",
  Tracker			: "Tracker",
  Track_URL			: "URL del Tracker",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",

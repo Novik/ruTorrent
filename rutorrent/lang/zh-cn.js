@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
- * File Name: cn.js
+ *
+ * File Name: zh-cn.js
  * 	Chinese Simplified language file.
- * 
+ *
  * File Author:
  * 		skevin (skevin@china.com)
  */
@@ -32,8 +32,6 @@
  Downloads			: "下载",
  Connection			: "连接",
  BitTorrent			: "任务",
- Queueing			: "队列",
- Scheduler			: "计划",
  Advanced			: "高级",
  User_Interface 		: "界面",
  Confirm_del_torr		: "删除 Torrent 时要求确认",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "启动时显示类别",
  Show_det_start 		: "启动时显示详情",
  Dnt_start_down_auto		: "不要自动开始下载",
- Other_sett			: "其他设置",
  Listening_Port 		: "监听端口",
  Port_f_incom_conns		: "传入连接所使用的端口",
  Rnd_port_torr_start		: "每次 rTorrent 启动时使用随机端口",
@@ -73,11 +70,8 @@
  Label				: "标签",
  Peers				: "用户数量",
  Seeds				: "种子数量",
- Avail				: "健康度",
  Remaining			: "剩余时间",
  Priority			: "优先级",
- Download			: "下载",
- Upload 			: "上传",
  Not_torrent_file		: "该文件不是有效的 torrent 文件.",
  Pausing			: "暂停中",
  Seeding			: "做种中",
@@ -100,15 +94,15 @@
  Remove_and			: "移除并",
  Details			: "详情...",
  Properties			: "属性...",
- of				: "的", 		//this two creates line 
- connected			: "已连接",	//  XX of YY connected
+ of				: "的", //this two creates line 
+ connected			: "已连接", //  XX of YY connected
  High_priority			: "较高优先级",
  Normal_priority		: "正常优先级",
  Low_priority			: "较低优先级",
  Dont_download			: "不要下载",
  Files				: "文件",
  Logger 			: "日志",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "已用时间",
  Share_ratio			: "分享比率",
  Down_speed			: "下载速度",
- Down_limit			: "下载限制",
  Ul_speed			: "上传速度",
- Ul_limit			: "上传限制",
  Wasted 			: "丢弃数据",
  Tracker			: "Tracker",
  Track_URL			: "Tracker 链接",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "默认下载目录",
  Check_hash			: "下载完成后检查 Hash",
  Hash				: "Hash",
- IsOpen 			: "打开",
  DisableTracker 		: "禁用",
  EnableTracker			: "启用",
  ClientVersion			: "客户端",
@@ -190,7 +181,6 @@
  ReqTimeout			: "请求超时",
  GetTrackerMessage		: "从 Tracker 接收信息",
  Help				: "帮助",
- PHPDoesnt_enabled		: "你的 Web 服务器不支持 PHP. 纠正并重试.",
  Speed				: "速度",
  Dont_add_tname 		: "不要添加 Torrent 的名称到目录", 
  Free_Disk_Space		: "可用磁盘空间",
@@ -281,4 +271,4 @@
  plgLocked			: "Locked",
  phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
  phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
-};
+ };

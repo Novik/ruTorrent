@@ -6,8 +6,6 @@ var theUILang =
  Downloads			: "Закачки",
  Connection			: "Соединение",
  BitTorrent			: "BitTorrent",
- Queueing			: "Очередность",
- Scheduler			: "Расписание",
  Advanced			: "Дополнительно",
  User_Interface 		: "Польз. интерфейс",
  Confirm_del_torr		: "Подтв. удаления торента",
@@ -17,7 +15,6 @@ var theUILang =
  Show_cat_start 		: "Показать категории при запуске",
  Show_det_start 		: "Показать детали при запуске",
  Dnt_start_down_auto		: "Не начинать закачку автоматически",
- Other_sett			: "Другие настройки",
  Listening_Port 		: "Порт",
  Port_f_incom_conns		: "Порт для входящих соединений",
  Rnd_port_torr_start		: "Случайный порт при каждом запуске rTorrent",
@@ -47,11 +44,8 @@ var theUILang =
  Label				: "Метка",
  Peers				: "Пиры",
  Seeds				: "Сиды",
- Avail				: "Дост.",
  Remaining			: "Осталось",
  Priority			: "Приоритет",
- Download			: "Скачивание",
- Upload 			: "Отдача",
  Not_torrent_file		: "Файл должен быть файлом .torrent.",
  Pausing			: "Пауза",
  Seeding			: "Сидирование",
@@ -74,15 +68,15 @@ var theUILang =
  Remove_and			: "Удалить и",
  Details			: "Детали...",
  Properties			: "Свойства...",
- of				: "из", 		//this two creates line 
- connected			: "соединено",	//  XX of YY connected
+ of				: "из", //this two creates line 
+ connected			: "соединено", //  XX of YY connected
  High_priority			: "Высокий",
  Normal_priority		: "Нормальный",
  Low_priority			: "Низкий",
  Dont_download			: "Не закачивать",
  Files				: "Файлы",
  Logger 			: "Лог",
- s				: "с",    // part of "KB/s"
+ s				: "с", // part of "KB/s"
  bytes				: "байт",
  KB				: "KБ",
  MB				: "MБ",
@@ -109,9 +103,7 @@ var theUILang =
  Time_el			: "Время прошло",
  Share_ratio			: "Ратио",
  Down_speed			: "Скорость скачивания",
- Down_limit			: "Огр. скачивания",
  Ul_speed			: "Скорость отдачи",
- Ul_limit			: "Огр. отдачи",
  Wasted 			: "Лишнее",
  Tracker			: "Трекер",
  Track_URL			: "URL трекера",
@@ -156,7 +148,6 @@ var theUILang =
  Directory_For_Dl		: "Директория для закачек",
  Check_hash			: "Проверять данные после закачки",
  Hash				: "Hash",
- IsOpen 			: "Открыт",
  DisableTracker 		: "Выключить",
  EnableTracker			: "Включить",
  ClientVersion			: "Клиент",
@@ -164,7 +155,6 @@ var theUILang =
  ReqTimeout			: "Таймаут запроса",
  GetTrackerMessage		: "Запрашивать сообщения трекера",
  Help				: "Помощь",
- PHPDoesnt_enabled		: "Ваш web сервер не поддерживает PHP.",
  Speed				: "Скорость",
  Dont_add_tname 		: "Не добавлять имя торрента к пути", 
  Free_Disk_Space		: "Свободно на диске",
@@ -255,4 +245,4 @@ var theUILang =
  plgLocked			: "Фиксирован",
  phpExtensionNotFoundWarning	: "Часть функциональности плагина будет недоступна. Расширение PHP должно быть установлено",
  phpExtensionNotFoundError	: "Плагин не будет работать. Расширение PHP должно быть установлено"
-};
+ };

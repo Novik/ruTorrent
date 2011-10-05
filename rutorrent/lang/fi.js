@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: fi.js
  * 	Finnish language file.
- * 
+ *
  * File Author:
  * 		Spike_B (mr.anon.91@hotmail.com)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Lataukset",
  Connection			: "Yhteydet",
  BitTorrent			: "BitTorrent",
- Queueing			: "Jonot",
- Scheduler			: "Ajastin",
  Advanced			: "Lisäasetukset",
  User_Interface 		: "Käyttöliittymä",
  Confirm_del_torr		: "Vahvista torrent-tiedoston poistaminen",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Näytä ryhmat käynnistettäessä",
  Show_det_start 		: "Nayta yksityiskohdat käynnist.",
  Dnt_start_down_auto		: "älä aloita latauksia automaattisesti",
- Other_sett			: "Muut asetukset",
  Listening_Port 		: "Portti",
  Port_f_incom_conns		: "Saapuville yhteyksille käytettävä portti",
  Rnd_port_torr_start		: "Satunnainen portti aina kun rTorrent käynnistyy",
@@ -73,11 +70,8 @@
  Label				: "Nimike",
  Peers				: "Lataajat",
  Seeds				: "Jakajat",
- Avail				: "Saatavilla",
  Remaining			: "Jäljellä",
  Priority			: "Tärkeysaste",
- Download			: "Lataus",
- Upload 			: "Lähetys",
  Not_torrent_file		: "Tiedoston täytyy olla torrent-tiedosto.",
  Pausing			: "Tauko",
  Seeding			: "Jakaa",
@@ -100,15 +94,15 @@
  Remove_and			: "Poista ja ...",
  Details			: "Yksityiskohdat.",
  Properties			: "Ominaisuudet",
- of				: "", 		//this two creates line 
- connected			: "yhdistetty",	//  XX of YY connected
+ of				: "", //this two creates line
+ connected			: "yhdistetty", //  XX of YY connected
  High_priority			: "Korkea",
  Normal_priority		: "Normaali",
  Low_priority			: "Alhainen",
  Dont_download			: "Älä lataa",
  Files				: "Tiedostot",
  Logger 			: "Loki",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "tavua",
  KB				: "Kt",
  MB				: "Mt",
@@ -135,9 +129,7 @@
  Time_el			: "Aikaa kulunut",
  Share_ratio			: "Jakosuhde",
  Down_speed			: "Latausnopeus",
- Down_limit			: "Latausraja",
  Ul_speed			: "Lähetysnopeus",
- Ul_limit			: "Lähetysraja",
  Wasted 			: "Hylätty",
  Tracker			: "Seurantapalvelin",
  Track_URL			: "Osoite",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",
