@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: it.js
  * 	Italian language file.
- * 
+ *
  * File Author:
  * 		Tibi Diego (ceres@divxmania.it)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Download",
  Connection			: "Connessioni",
  BitTorrent			: "BitTorrent",
- Queueing			: "Coda",
- Scheduler			: "Pianificatore",
  Advanced			: "Avanzate",
  User_Interface 		: "Interfaccia Utente",
  Confirm_del_torr		: "Conferma prima di cancellare",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Mostra categorie all'avvio",
  Show_det_start 		: "Mostra dettagli all'avvio",
  Dnt_start_down_auto		: "Non iniziare il download automaticamente",
- Other_sett			: "Altre impostazioni",
  Listening_Port 		: "Porta di ascolto",
  Port_f_incom_conns		: "Porta usata per le connessioni in ingresso",
  Rnd_port_torr_start		: "Selezione casuale della porta ad ogni avvio di rTorrent",
@@ -73,11 +70,8 @@
  Label				: "Etichetta",
  Peers				: "Peer",
  Seeds				: "Seed",
- Avail				: "Disp.",
  Remaining			: "Rimanenti",
  Priority			: "Priorità",
- Download			: "Download",
- Upload 			: "Upload",
  Not_torrent_file		: "Il file deve essere un torrent.",
  Pausing			: "In pausa",
  Seeding			: "In seed",
@@ -100,15 +94,15 @@
  Remove_and			: "Rimuovi e",
  Details			: "Dettagli...",
  Properties			: "Proprietà...",
- of				: "di",		//this two creates line 
- connected			: "connessi",	//  XX of YY connected
+ of				: "di", //this two creates line 
+ connected			: "connessi", //  XX of YY connected
  High_priority			: "Alta",
  Normal_priority		: "Normale",
  Low_priority			: "Bassa",
  Dont_download			: "Non scaricare",
  Files				: "File",
  Logger 			: "Eventi",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Tempo Trascorso",
  Share_ratio			: "Rapporto",
  Down_speed			: "Velocità DL",
- Down_limit			: "Limite DL",
  Ul_speed			: "Velocità UL",
- Ul_limit			: "Limite UL",
  Wasted 			: "Sprecati",
  Tracker			: "Tracker",
  Track_URL			: "URL Tracker",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",

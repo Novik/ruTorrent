@@ -1,26 +1,26 @@
-﻿/* 
+﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.cz
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE == 
- * 
+ *
  * File Name: cs.js
  * 	Czech language file.
- * 
+ *
  * File Author:
  * 	emc (emc@utorrent.cz)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Stahování",
  Connection			: "Připojení",
  BitTorrent			: "BitTorrent",
- Queueing			: "Fronta",
- Scheduler			: "Plánovač",
  Advanced			: "Rozšířené",
  User_Interface 		: "Rozhraní",
  Confirm_del_torr		: "Potvrzovat mazání torrentů",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Zobrazovat kategorie po spuštění",
  Show_det_start 		: "Zobrazit detaily po spuštění",
  Dnt_start_down_auto		: "Nespouštět stahování automaticky",
- Other_sett			: "Ostatní",
  Listening_Port 		: "Port pro naslouchání",
  Port_f_incom_conns		: "Port používaný pro příchozí spojení",
  Rnd_port_torr_start		: "Po spuštění rTorrent nastavit náhodný port",
@@ -73,11 +70,8 @@
  Label				: "Kategorie",
  Peers				: "Peerů",
  Seeds				: "Seedů",
- Avail				: "Dostup.",
  Remaining			: "Zbývající",
  Priority			: "Priorita",
- Download			: "Download",
- Upload 			: "Upload",
  Not_torrent_file		: "Tento soubor není torrent.",
  Pausing			: "Pozastaveno",
  Seeding			: "Seeduji",
@@ -135,9 +129,7 @@
  Time_el			: "Uplynulý čas",
  Share_ratio			: "Ratio",
  Down_speed			: "Rychlost Down.",
- Down_limit			: "Limit Download",
  Ul_speed			: "Rychlost Up.",
- Ul_limit			: "Limit Upload",
  Wasted 			: "Zahozeno",
  Tracker			: "Tracker",
  Track_URL			: "Tracker URL",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",

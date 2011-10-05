@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: da.js
  * 	Danish language file.
- * 
+ *
  * File Author:
  * 		Denhart (Denhart@Denhart.dk)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Downloads",
  Connection			: "Forbindelse",
  BitTorrent			: "BitTorrent",
- Queueing			: "Kø",
- Scheduler			: "Planlægger",
  Advanced			: "Avanceret",
  User_Interface 		: "Brugerflade",
  Confirm_del_torr		: "Bekræft når du sletter torrents",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Vis kategorier ved start",
  Show_det_start 		: "Vis details ved start",
  Dnt_start_down_auto		: "Start ikke overførslen automatisk",
- Other_sett			: "Andre indstillinger",
  Listening_Port 		: "Port",
  Port_f_incom_conns		: "Port til anvendes af indgående forbindelser",
  Rnd_port_torr_start		: "Tilfældig port hver gang rTorrent starter",
@@ -73,11 +70,8 @@
  Label				: "Etiket",
  Peers				: "Peers",
  Seeds				: "Seeds",
- Avail				: "Avail.",
  Remaining			: "Tilbage",
  Priority			: "Prioritet",
- Download			: "Download",
- Upload 			: "Upload",
  Not_torrent_file		: "Filen skal være en .torrent fil.",
  Pausing			: "Pausing",
  Seeding			: "Seeding",
@@ -100,15 +94,15 @@
  Remove_and			: "Fjern og",
  Details			: "Detaljer...",
  Properties			: "Egenskaber...",
- of				: "of", 		//this two creates line 
- connected			: "tilsluttet",	//  XX of YY connected
+ of				: "of", //this two creates line
+ connected			: "tilsluttet", //  XX of YY connected
  High_priority			: "Høj",
  Normal_priority		: "Normal",
  Low_priority			: "Lav",
  Dont_download			: "Stop Download",
  Files				: "Filer",
  Logger 			: "Logger",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Tid forløbet",
  Share_ratio			: "Delings Ratio",
  Down_speed			: "Download hastighed",
- Down_limit			: "Download grænse",
  Ul_speed			: "Upload hastighed",
- Ul_limit			: "Upload grænse",
  Wasted 			: "Spildt",
  Tracker			: "Tracker",
  Track_URL			: "Tracker URL",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",

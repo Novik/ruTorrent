@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: sr.js
  * 	Serbian language file.
- * 
+ *
  * File Author:
  * 		Zoltan Csala (zcsala021 at gmail dot com)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Низтовари",
  Connection			: "Веза",
  BitTorrent			: "BitTorrent",
- Queueing			: "Queueing",
- Scheduler			: "Scheduler",
  Advanced			: "Напредно",
  User_Interface 		: "Кориснички интерфејс",
  Confirm_del_torr		: "Confirm when deleting torrents",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Покажи категорије на почетку",
  Show_det_start 		: "Покажи детаље на почетку",
  Dnt_start_down_auto		: "Don't start the download automatically",
- Other_sett			: "Друга подешавања",
  Listening_Port 		: "Listening Port",
  Port_f_incom_conns		: "Port used for incoming connections",
  Rnd_port_torr_start		: "Randomize port each time rTorrent starts",
@@ -73,11 +70,8 @@
  Label				: "Ознака",
  Peers				: "Парњаци",
  Seeds				: "Сејачи",
- Avail				: "На расп.",
  Remaining			: "Преостало",
  Priority			: "Приоритет",
- Download			: "Низтовар",
- Upload 			: "Узтовар",
  Not_torrent_file		: "Датотека мора бити torrent датотека.",
  Pausing			: "Заустављено",
  Seeding			: "Сејање",
@@ -100,15 +94,15 @@
  Remove_and			: "Remove And",
  Details			: "Детаљи ...",
  Properties			: "Својства ...",
- of				: "од", 		//this two creates line 
- connected			: "повезано",	//  XX of YY connected
+ of				: "од", //this two creates line 
+ connected			: "повезано", //  XX of YY connected
  High_priority			: "Висок",
  Normal_priority		: "Нормалан",
  Low_priority			: "Низак",
  Dont_download			: "Немој да низтовараш",
  Files				: "Датотеке",
  Logger 			: "Дневник",
- s				: "с",    // part of "KB/s"
+ s				: "с", // part of "KB/s"
  bytes				: "бајтова",
  KB				: "КБ",
  MB				: "МБ",
@@ -135,9 +129,7 @@
  Time_el			: "Протекло време",
  Share_ratio			: "Однос дељења",
  Down_speed			: "Брзина низтовара",
- Down_limit			: "Down Limit",
  Ul_speed			: "Брзина узтовара",
- Ul_limit			: "Up Limit",
  Wasted 			: "Страћено",
  Tracker			: "Трекер",
  Track_URL			: "URL трекера",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Подразумевани директоријум за низтоваре",
  Check_hash			: "Провери хеш после низтовара",
  Hash				: "Хеш",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Клијент",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Помоћ",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Брзина",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Слободан простор на диску",

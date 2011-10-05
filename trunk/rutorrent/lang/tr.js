@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: tr.js
  * 	Turkish language file.
- * 
+ *
  * File Author:
  * 		Turgay Yıldıran (votkalivirgul@gmail)
  */
@@ -32,8 +32,6 @@
  Downloads			: "İndirilenler",
  Connection			: "Bağlantı",
  BitTorrent			: "BitTorrent",
- Queueing			: "Kuyruk Ayarları",
- Scheduler			: "Zamanlama Çizelgesi",
  Advanced			: "Gelişmiş",
  User_Interface 		: "Kullanıcı Arayüzü",
  Confirm_del_torr		: "Torrent(ler)i silerken uyar",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Açılışta kategorileri göster",
  Show_det_start 		: "Açılışta ayrıntıları göster",
  Dnt_start_down_auto		: "İndirmeyi otomatik başlatma",
- Other_sett			: "Diğer Ayarlar",
  Listening_Port 		: "Dinleme Portu",
  Port_f_incom_conns		: "Gelen bağlantılar için kullanılan port",
  Rnd_port_torr_start		: "rTorrent her açılışında rastgele port seç",
@@ -59,7 +56,7 @@
  Disabled			: "Devre dışı",
  Enabled			: "Etkin",
  uTorrent_settings		: "rTorrent Ayarları",
- Doesnt_support		: "ruTorrent tarayıcınızı desteklemiyor.",
+ Doesnt_support			: "ruTorrent tarayıcınızı desteklemiyor.",
  Name				: "Dosya İsmi",
  Status 			: "Durum",
  Size				: "Boyut",
@@ -73,11 +70,8 @@
  Label				: "Etiket",
  Peers				: "Eşler",
  Seeds				: "Ortaklar",
- Avail				: "Ulaşıl.",
  Remaining			: "Kalan",
  Priority			: "Öncelik",
- Download			: "Yükleme",
- Upload 			: "Gönderme",
  Not_torrent_file		: "Bu geçerli bir torrent dosyası değildir.",
  Pausing			: "Duraklatılıyor",
  Seeding			: "Ortalanıyor",
@@ -100,15 +94,15 @@
  Remove_and			: "Kaldır Ve",
  Details			: "Ayrıntılar...",
  Properties			: "Özellikler...",
- of				: "tanesine", 		//this two creates line 
- connected			: "içinden bağlı",	//  XX of YY connected
+ of				: "tanesine", //this two creates line 
+ connected			: "içinden bağlı", //  XX of YY connected
  High_priority			: "Yüksek",
  Normal_priority		: "Normal",
  Low_priority			: "Düşük",
  Dont_download			: "İndirme",
  Files				: "Dosyalar",
  Logger 			: "Rapor",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Geçen Süre",
  Share_ratio			: "Ratio Oranı",
  Down_speed			: "İndirme Hızı",
- Down_limit			: "İnd. Sınırı",
  Ul_speed			: "Yükleme Hızı",
- Ul_limit			: "Yük. Sınırı",
  Wasted 			: "Boşa Giden",
  Tracker			: "İzleyici",
  Track_URL			: "İzleyici URL",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Yüklemeler için varsayılan klasör",
  Check_hash			: "Yüklemeden sonra dosya doğrulaması yap",
  Hash				: "Doğrulama",
- IsOpen 			: "Açık",
  DisableTracker 		: "Devre dışı",
  EnableTracker			: "Etkin",
  ClientVersion			: "İstemci",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Talep zaman aşımı",
  GetTrackerMessage		: "İzleyiciden mesaj aldınız",
  Help				: "Yardım",
- PHPDoesnt_enabled		: "Web sunucunuz PHP desteği sağlamıyor. Bunu düzeltiniz ve tekrar deneyiniz.",
  Speed				: "Hız",
  Dont_add_tname 		: "Torrent ismiyle klasör ismi aynı olmasın",
  Free_Disk_Space		: "Boş disk alanı",

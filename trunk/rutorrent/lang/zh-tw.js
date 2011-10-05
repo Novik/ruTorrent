@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
- * File Name: ct.js
+ *
+ * File Name: zh-tw.js
  * 	Chinese Traditional language file.
- * 
+ *
  * File Author:
  * 		Eyes Blue (kingofeyesblue@yahoo.com.tw)
  */
@@ -32,8 +32,6 @@
  Downloads			: "下載",
  Connection			: "連線",
  BitTorrent			: "任務",
- Queueing			: "隊列",
- Scheduler			: "排程器",
  Advanced			: "進階",
  User_Interface 		: "使用者界面",
  Confirm_del_torr		: "刪除 Torrent 時要求確認",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "啟動時顯示類別",
  Show_det_start 		: "啟動時顯示詳細內容",
  Dnt_start_down_auto		: "不要自動開始下載",
- Other_sett			: "其他設定",
  Listening_Port 		: "連接埠設定",
  Port_f_incom_conns		: "本機連接埠",
  Rnd_port_torr_start		: "rTorrent 啟動時使用隨機連接埠",
@@ -73,11 +70,8 @@
  Label				: "標籤",
  Peers				: "用戶數量",
  Seeds				: "種子數量",
- Avail				: "健康度",
  Remaining			: "剩餘時間",
  Priority			: "優先等級",
- Download			: "下載",
- Upload 			: "上傳",
  Not_torrent_file		: "該檔案不是有效的 torrent 檔案",
  Pausing			: "暫停中",
  Seeding			: "做種中",
@@ -100,15 +94,15 @@
  Remove_and			: "移除並",
  Details			: "詳細內容...",
  Properties			: "屬性...",
- of				: "的", 		//this two creates line 
- connected			: "已連接",	//  XX of YY connected
+ of				: "的", //this two creates line 
+ connected			: "已連接", //  XX of YY connected
  High_priority			: "較高優先權",
  Normal_priority		: "正常優先權",
  Low_priority			: "較低優先權",
  Dont_download			: "不要下載",
  Files				: "文件",
  Logger 			: "紀錄",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "已用時間",
  Share_ratio			: "分享比率",
  Down_speed			: "下載速度",
- Down_limit			: "下載限制",
  Ul_speed			: "上傳速度",
- Ul_limit			: "上傳限制",
  Wasted 			: "丟棄數據",
  Tracker			: "Tracker",
  Track_URL			: "Tracker 連接",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "預設下載目錄",
  Check_hash			: "下載完成後使用 Hash 完整驗證所有檔案",
  Hash				: "Hash",
- IsOpen 			: "已開啟",
  DisableTracker 		: "停用",
  EnableTracker			: "啟用",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "判定逾時",
  GetTrackerMessage		: "從tracker接收使用者資訊",
  Help				: "Help",
- PHPDoesnt_enabled		: "您的網頁伺服器不支援PHP，請修正後再嘗試",
  Speed				: "速度",
  Dont_add_tname 		: "請勿將 torrent 名稱作為目錄名稱", 
  Free_Disk_Space		: "磁碟可用空間",

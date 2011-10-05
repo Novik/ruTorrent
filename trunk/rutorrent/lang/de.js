@@ -1,26 +1,26 @@
 ﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: de.js
  * 	German language file.
- * 
+ *
  * File Author:
  * 		schnurlos (utorrent@gmx.at)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Downloads",
  Connection			: "Verbindung",
  BitTorrent			: "BitTorrent",
- Queueing			: "Warteschlange",
- Scheduler			: "Zeitplan",
  Advanced			: "Erweitert",
  User_Interface 		: "Benutzer Interface",
  Confirm_del_torr		: "Löschen von Torrents bestätigen",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Zeige Gruppen beim Start",
  Show_det_start 		: "Zeige Details beim Start",
  Dnt_start_down_auto		: "Download nicht automatisch starten",
- Other_sett			: "Sonstige Einstellungen",
  Listening_Port 		: "Port für den Empfang",
  Port_f_incom_conns		: "Port für eingehende Verbindungen",
  Rnd_port_torr_start		: "Bei jedem Start ein anderer Port",
@@ -73,11 +70,8 @@
  Label				: "Gruppe",
  Peers				: "Peers",
  Seeds				: "Seeds",
- Avail				: "Verf.",
  Remaining			: "Rest",
  Priority			: "Priorität",
- Download			: "Download",
- Upload 			: "Upload",
  Not_torrent_file		: "Die Datei ist keine torrent-Datei.",
  Pausing			: "Angehalten",
  Seeding			: "Seeden",
@@ -100,15 +94,15 @@
  Remove_and			: "Entfernen und",
  Details			: "Details...",
  Properties			: "Eigenschaften...",
- of				: "von", 		//this two creates line 
- connected			: "verbundenen",	//  XX of YY connected
+ of				: "von", //this two creates line
+ connected			: "verbundenen", //  XX of YY connected
  High_priority			: "Höchste",
  Normal_priority		: "Normale",
  Low_priority			: "Niedrige",
  Dont_download			: "Nicht Laden",
  Files				: "Dateien",
  Logger 			: "Logger",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "Bytes",
  KB				: "kB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Laufzeit",
  Share_ratio			: "Share-Rate",
  Down_speed			: "Download-Rate",
- Down_limit			: "Down-Limit",
  Ul_speed			: "Upload-Rate",
- Ul_limit			: "Up-Limit",
  Wasted 			: "Unbrauchbar",
  Tracker			: "Tracker",
  Track_URL			: "Tracker URL",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Disable",
  EnableTracker			: "Enable",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Help",
- PHPDoesnt_enabled		: "Your Webserver does not support PHP. Correct this and try again.",
  Speed				: "Speed",
  Dont_add_tname 		: "Don't add torrent's name to path", 
  Free_Disk_Space		: "Free disk space",

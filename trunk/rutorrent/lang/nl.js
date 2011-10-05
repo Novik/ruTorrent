@@ -1,26 +1,26 @@
-﻿/* 
+﻿/*
  * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
  * NO COPYCATS of language update
- * 
+ *
  * == BEGIN LICENSE ==
- * 
+ *
  * Licensed under the terms of any of the following licenses at your
  * choice:
- * 
+ *
  *  - GNU General Public License Version 2 or later (the "GPL")
  *    http://www.gnu.org/licenses/gpl.html
- * 
+ *
  *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
  *    http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  *  - Mozilla Public License Version 1.1 or later (the "MPL")
  *    http://www.mozilla.org/MPL/MPL-1.1.html
- * 
+ *
  * == END LICENSE ==
- * 
+ *
  * File Name: nl.js
  * 	Dutch language file.
- * 
+ *
  * File Author:
  * 		Lord Alderaan (lordalderaan@gmail.com)
  */
@@ -32,8 +32,6 @@
  Downloads			: "Downloads",
  Connection			: "Verbinding",
  BitTorrent			: "BitTorrent",
- Queueing			: "Wachtrij",
- Scheduler			: "Planner",
  Advanced			: "Geavanceerd",
  User_Interface 		: "Interface-instellingen",
  Confirm_del_torr		: "Bevestiging bij verwijderen",
@@ -43,7 +41,6 @@
  Show_cat_start 		: "Bij opstarten categorieën weergeven",
  Show_det_start 		: "Bij opstarten details weergeven",
  Dnt_start_down_auto		: "Download niet automatisch starten",
- Other_sett			: "Andere instellingen",
  Listening_Port 		: "Inkomende poort",
  Port_f_incom_conns		: "Poort voor inkomende verbindingen",
  Rnd_port_torr_start		: "Kies willekeurige poort als rTorrent opstart",
@@ -73,11 +70,8 @@
  Label				: "Etiket",
  Peers				: "Peers",
  Seeds				: "Seeds",
- Avail				: "Beschikbaarheid",
  Remaining			: "Resterend",
  Priority			: "Prioriteit",
- Download			: "Download",
- Upload 			: "Upload",
  Not_torrent_file		: "Dit is geen torrent bestand.",
  Pausing			: "Gepauzeerd",
  Seeding			: "Seeden",
@@ -100,15 +94,15 @@
  Remove_and			: "Verwijder En",
  Details			: "Details...",
  Properties			: "Eigenschappen...",
- of				: "van", 		//this two creates line 
- connected			: "verbonden",	//  XX of YY connected
+ of				: "van", //this two creates line 
+ connected			: "verbonden", //  XX of YY connected
  High_priority			: "Hoge",
  Normal_priority		: "Normale",
  Low_priority			: "Lage",
  Dont_download			: "Niet Downloaden",
  Files				: "Bestanden",
  Logger 			: "Logboek",
- s				: "s",    // part of "KB/s"
+ s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",
  MB				: "MB",
@@ -135,9 +129,7 @@
  Time_el			: "Verstreken tijd",
  Share_ratio			: "Verhouding",
  Down_speed			: "Download snelheid",
- Down_limit			: "Download limiet",
  Ul_speed			: "Upload snelheid",
- Ul_limit			: "Upload limiet",
  Wasted 			: "Verloren",
  Tracker			: "Tracker",
  Track_URL			: "Tracker URL",
@@ -182,7 +174,6 @@
  Directory_For_Dl		: "Standaard folder voor downloads",
  Check_hash			: "Hash controle na download",
  Hash				: "Hash",
- IsOpen 			: "Open",
  DisableTracker 		: "Uitschakelen",
  EnableTracker			: "Inschakelen",
  ClientVersion			: "Client",
@@ -190,7 +181,6 @@
  ReqTimeout			: "Timeout Aanvraag",
  GetTrackerMessage		: "Ontvang tracker berichten",
  Help				: "Help",
- PHPDoesnt_enabled		: "Uw webserver ondersteund geen PHP. Corrigeer dit en probeer opnieuw.",
  Speed				: "Snelheid",
  Dont_add_tname 		: "Torrent naam niet toevoegen aan de download folder", 
  Free_Disk_Space		: "Vrije HDD ruimte",
