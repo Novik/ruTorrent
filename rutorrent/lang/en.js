@@ -242,7 +242,7 @@ var theUILang =
  addTorrentFailedFile		: "Error: torrent wasn't passed to rTorrent. The retrieved content is not a valid torrent file.",
  addTorrentFailedDirectory	: "Error: torrent wasn't passed to rTorrent. Incorrect downloads directory was specified.",
  plgLaunch			: "Launch",
- plgLocked			: "Locked",
+ plgLocked			: "Mandatory",
  phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
  phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
  };
