@@ -7,7 +7,7 @@ div#dlgLoadTorrents div.dlg-header {background-image: url(./images/world.gif)}
 .lf li input.TextboxFocus {background-color: #BDDBDB; color: #272E36;}
 .lf li input.TextboxNormal {background-color: #272E36; color: #BDDBDB;}
 
-.tskconsole, .exconsole, .console, .starterConsole {background: #272E36; font-weight: bold;}
+.tskconsole, .exconsole, .console, .starterConsole, #extlink_title {background: #272E36; font-weight: bold;}
 
 .tHeader {font-weight: bold;}
 .cCell {font-weight: bold; color: #272E36}
