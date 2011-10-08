@@ -268,8 +268,8 @@
  addTorrentFailedURL		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Impossible de résoudre l'URL.",
  addTorrentFailedFile		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Le contenu récupéré n'est pas un fichier torrent.",
  addTorrentFailedDirectory	: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Le répertoire de téléchargement spécifié est incorrect.",
- plgLaunch			: "Launch",
- plgLocked			: "Mandatory",
- phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
- phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed"
+ plgLaunch			: "Démarrage",
+ plgLocked			: "Bloqué",
+ phpExtensionNotFoundWarning	: "Certaines fonctionnalités ne seront pas disponibles. L'extension PHP doit être installée",
+ phpExtensionNotFoundError	: "Le plug-in ne fonctionnera pas. L'extension PHP doit être installée"
  };
