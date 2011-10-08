@@ -1,4 +1,4 @@
-plugin.description: The plug-in is intended for indicate incoming port status.
+plugin.description: This plugin adds an incoming port status indicator to the status bar.
 plugin.author: Novik
 plugin.version: 3.3
 rtorrent.need: 1

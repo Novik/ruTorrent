@@ -1,4 +1,4 @@
-plugin.description: The plug-in is designed as a low-trafic replacement of the web server module mod_scgi and performs functions of the last.
+plugin.description: This plugin is a low-traffic replacement for the mod_scgi webserver module.
 plugin.author: Novik
 plugin.version: 3.3
 plugin.runlevel: 13

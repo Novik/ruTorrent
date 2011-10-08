@@ -1,4 +1,4 @@
-plugin.description: The plug-in provides some possibilities on automation.
+plugin.description: This plugin provides some possibilities on automation.
 plugin.author: dmrom
 plugin.runlevel: 5
 plugin.version: 3.3

@@ -1,4 +1,4 @@
-plugin.description: The plug-in gives a convenient control over a limits of speed for groups of torrents.
+plugin.description: This plugin gives a convenient control over speed limits for groups of torrents.
 plugin.author: Novik
 plugin.runlevel: 11.2
 plugin.version: 3.3

@@ -1,4 +1,4 @@
-plugin.description: The plug-in is intended for manage accounts on private trackers.
+plugin.description: This plugin is used to login to torrent sites in cases where cookies fail.
 plugin.author: Novik
 plugin.runlevel: 0
 plugin.version: 3.3

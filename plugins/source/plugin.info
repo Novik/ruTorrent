@@ -1,4 +1,4 @@
-plugin.description: The plug-in is intended for obtaining source .torrent file.
+plugin.description: This plugin allows to copy the source .torrent file from the host to the local machine.
 plugin.author: Novik
 plugin.version: 3.3
 rtorrent.remote: error

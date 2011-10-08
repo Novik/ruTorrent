@@ -1,4 +1,4 @@
-plugin.description: The plug-in adds to status bar an indicator of available disk space.
+plugin.description: This plugin adds an easy to read disk meter to the status bar.
 plugin.author: Novik
 plugin.version: 3.3
 rtorrent.need: 0

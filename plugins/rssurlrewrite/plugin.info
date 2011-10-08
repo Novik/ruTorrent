@@ -1,4 +1,4 @@
-plugin.description: The plug-in is intended for url rewrite in RSS plugin.
+plugin.description: This plugin extends the functionality of the RSS plugin.
 plugin.author: Novik
 plugin.runlevel: 12
 plugin.version: 3.3

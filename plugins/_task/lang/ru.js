@@ -1,7 +1,7 @@
 ﻿
 
- theUILang.tskCommand		= "Выполнение команды..."
- theUILang.tskCommandDone	= "Команда выполнена."
+ theUILang.tskCommand		= "Выполнение команды...";
+ theUILang.tskCommandDone	= "Команда выполнена.";
  theUILang.tskConsole		= "Консоль";
  theUILang.tskErrors		= "Диагностика";
 

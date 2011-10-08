@@ -1,4 +1,4 @@
-plugin.description: You can enable the scheduler and click the cells to define any of six rTorrent behavior types at each particular hour of 168 week hours.
+plugin.description: This plugin allows to define any of six rTorrent behavior types at each particular hour of 168 week hours.
 plugin.author: Novik
 plugin.version: 3.3
 rtorrent.remote: error
