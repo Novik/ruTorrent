@@ -1,4 +1,4 @@
-plugin.description: This plug-in will display media file information.
+plugin.description: This plugin is intended to display media file information.
 plugin.author: Novik
 plugin.version: 3.3
 rtorrent.remote: error

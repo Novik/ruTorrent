@@ -1,4 +1,4 @@
-plugin.description: The plug-in is intended for external search of torrents.
+plugin.description: This plugin allows to search many popular torrent sites for content from within ruTorrent.
 plugin.author: Novik
 plugin.version: 3.3
 plugin.runlevel: 10.5

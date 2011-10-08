@@ -1,4 +1,4 @@
-plugin.description: The plug-in adds to status bar an indicator of cpu load.
+plugin.description: This plugin adds a CPU Load indicator to the status bar.
 plugin.author: Novik
 plugin.version: 3.3
 plugin.runlevel: 9

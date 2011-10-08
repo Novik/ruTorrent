@@ -1,4 +1,4 @@
- 
+﻿
 
  theUILang.ratios		= "Các nhóm tỉ lệ";
  theUILang.ratio		= "Nhóm tỉ Lệ";

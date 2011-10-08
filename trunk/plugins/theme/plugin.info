@@ -1,4 +1,4 @@
-plugin.description: Theme support for ruTorrent.
+plugin.description: This plugin allows to change the UI theme to one of several provided themes.
 plugin.author: Novik
 plugin.runlevel: 5
 plugin.version: 3.3

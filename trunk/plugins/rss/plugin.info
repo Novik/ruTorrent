@@ -1,4 +1,4 @@
-plugin.description: The plug-in is intended for work with RSS-feeds.
+plugin.description: This plugin is designed to fetch torrents via rss download links.
 plugin.author: Novik
 plugin.version: 3.3
 plugin.remote: warning

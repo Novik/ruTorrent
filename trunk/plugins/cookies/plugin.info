@@ -1,4 +1,4 @@
-plugin.description: The plug-in provides cookies information.
+plugin.description: This plugin provides cookies information for authentication on trackers.
 plugin.author: Novik
 plugin.version: 3.3
 rtorrent.need: 0
