@@ -1,7 +1,7 @@
 ﻿
 
- theUILang.tskCommand		= "Command is running...";
- theUILang.tskCommandDone	= "Command is done.";
+ theUILang.tskCommand		= "Running...";
+ theUILang.tskCommandDone	= "Done.";
  theUILang.tskConsole		= "Console";
  theUILang.tskErrors		= "Diagnostics";
 

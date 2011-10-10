@@ -9,7 +9,7 @@
  theUILang.exsLimit			= "Result limit";
  theUILang.exsEngines			= "Engines";
  theUILang.exsSearch			= "Search";
- theUILang.exsGlobalLimit		= "Common limitations";
+ theUILang.exsGlobalLimit		= "Common Limitations";
  theUILang.excat			= "Category";
  theUILang.excatall			= "All";
  theUILang.excatmovies			= "Movies";
@@ -23,8 +23,8 @@
  theUILang.extPrivate			= "Private";
  theUILang.extPublic			= "Public";
  theUILang.exsCookies			= "Format of cookies";
- theUILang.extAllPublic			= "All public";
- theUILang.extAllPrivate		= "All private";
+ theUILang.extAllPublic 		= "All Public";
+ theUILang.extAllPrivate		= "All Private";
  theUILang.exsMustInstallCookies	= "Cookies plugin is required to work with this engine.";
  theUILang.exsMustInstallLoginMgr	= "LoginMgr plugin is required to work with this engine.";
  theUILang.exsLoginMgr			= "Setup your account in LoginMgr plugin to work with this engine.";

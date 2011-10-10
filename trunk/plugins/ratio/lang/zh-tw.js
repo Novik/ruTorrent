@@ -1,9 +1,9 @@
 ﻿
 
- theUILang.ratios		= "Ratio groups";
+ theUILang.ratios		= "Ratio Groups";
  theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set ratio group";
- theUILang.mnuRatioUnlimited	= "No ratio";
+ theUILang.mnuRatio		= "Set Ratio Group";
+ theUILang.mnuRatioUnlimited	= "No Ratio";
  theUILang.ratioName		= "Name";
  theUILang.minRatio		= "Min";
  theUILang.maxRatio		= "Max";

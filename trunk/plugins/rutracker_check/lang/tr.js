@@ -1,8 +1,8 @@
 ﻿
 
- theUILang.checkTorrent 	= "Check for update";
- theUILang.chkHdr		= "Torrent update check";
- theUILang.checkedAt		= "Last checked";
+ theUILang.checkTorrent 	= "Check for Update";
+ theUILang.chkHdr		= "Torrent Update Check";
+ theUILang.checkedAt		= "Last Checked";
  theUILang.checkedResult	= "Result";
  theUILang.chkResults		= [
 				  "In progress",

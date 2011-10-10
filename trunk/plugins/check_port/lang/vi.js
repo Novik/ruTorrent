@@ -1,6 +1,6 @@
 ﻿
 
- theUILang.checkPort		= "Check port status";
+ theUILang.checkPort		= "Check Port Status";
  theUILang.portStatus		= [
  				  "Port status is unknown",
  				  "Port is closed",
