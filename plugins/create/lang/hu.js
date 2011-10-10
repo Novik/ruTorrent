@@ -1,6 +1,6 @@
 ﻿
 
- theUILang.mnu_create			= "Create torrent...";
+ theUILang.mnu_create			= "Create Torrent...";
  theUILang.CreateNewTorrent		= "Create New Torrent";
  theUILang.SelectSource 		= "Select Source";
  theUILang.TorrentProperties		= "Torrent Properties";

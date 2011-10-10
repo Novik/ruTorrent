@@ -1,1 +1,3 @@
-theUILang.mediainfo	= "Media info";
+﻿
+
+ theUILang.mediainfo		= "Media info";
