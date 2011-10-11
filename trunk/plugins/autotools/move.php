@@ -19,7 +19,6 @@ function Debug( $str )
 function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,$dest_path,$fileop_type)
 {
 	global $autodebug_enabled;
-	global $sleep_after_close;
 
 	$ret = false;
 	if( $is_multy_file )
@@ -44,12 +43,6 @@ function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,
 
 	if( $base_path != $dest_path && is_dir( $base_path ) )
 	{
-
-		if($sleep_after_close)
-		{
-			Debug( "Sleep for ".$sleep_after_close." seconds" );
-			sleep($sleep_after_close);
-		}
 		if( rtOpFiles( $files, $base_path, $dest_path, $fileop_type, $autodebug_enabled ) )
 		{
 			if(($fileop_type=="Move") && ( $sub_dir != '' ))
@@ -58,9 +51,9 @@ function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,
 				rtRemoveDirectory( $base_path, false );
 			}
 			$ret = true;
-			$base_path = $dest_path;
 		}
 	}
+	$base_path = $dest_path;
 	return($ret);
 }
 
@@ -92,7 +85,7 @@ if( $at->enable_move )
 				$base_path = rtRemoveLastToken( $base_path, '/' );	// filename or dirname
 				$base_path = rtAddTailSlash( $base_path );
 				$rel_path = rtGetRelativePath( $directory, $base_path );
-				if( $rel_path != '' )
+//				if( $rel_path != '' )
 				{
 					if( $rel_path == './' ) $rel_path = '';
 					$dest_path = rtAddTailSlash( $path_to_finished.$rel_path );
