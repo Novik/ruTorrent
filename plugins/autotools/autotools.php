@@ -109,12 +109,37 @@ class rAutoTools
 			$cmd = 	$theSettings->getOnInsertCommand(array('autolabel'.getUser(), getCmd('cat=')));
 		$req->addCommand($cmd);
 		if($this->enable_move && (trim($this->path_to_finished)!=''))
-			$cmd = 	$theSettings->getOnFinishedCommand(array('automove'.getUser(), 
-				getCmd('d.set_custom').'=x-dest,"$'.getCmd('execute_capture').
-				'={'.getPHP().','.$pathToAutoTools.'/move.php,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_base_path').'=,$'.
-				getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').'=,'.getUser().'}" ; '.
-				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd('d.get_custom').'=x-dest,,'.getCmd('d.set_directory_base').'=$'.getCmd('d.get_custom').'=x-dest'
-				));
+		{
+			if(rTorrentSettings::get()->iVersion<0x808)
+			{
+				$cmd = 	$theSettings->getOnFinishedCommand(array('automove'.getUser(), 
+						getCmd('d.set_custom').'=x-dest,"$'.getCmd('execute_capture').
+						'={'.getPHP().','.$pathToAutoTools.'/move.php,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_base_path').'=,$'.
+						getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').'=,'.getUser().'}" ; '.
+						getCmd('branch').'=$'.getCmd('not').'=$'.getCmd('d.get_custom').'=x-dest,,'.getCmd('d.set_directory_base').'=$'.getCmd('d.get_custom').'=x-dest'
+					));
+			}
+			else
+			{
+				if($this->fileop_type=="Move")
+				{
+					$cmd = 	$theSettings->getOnFinishedCommand(array('automove'.getUser(), 
+							getCmd('d.set_directory_base').'="$'.getCmd('execute_capture').
+							'={'.getPHP().','.$pathToAutoTools.'/check.php,$'.getCmd('d.get_base_path').'=,$'.
+							getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').'=,'.getUser().'}" ; '.
+							getCmd('execute').'={'.getPHP().','.$pathToAutoTools.'/move.php,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_base_path').'=,$'.
+							getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').'=,'.getUser().'}'
+						));
+				}
+				else
+				{
+					$cmd = 	$theSettings->getOnFinishedCommand(array('automove'.getUser(), 
+							getCmd('execute').'={'.getPHP().','.$pathToAutoTools.'/move.php,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_base_path').'=,$'.
+							getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').'=,'.getUser().'}'
+						));
+				}
+			}
+		}
 		else
 			$cmd = $theSettings->getOnFinishedCommand(array('automove'.getUser(), getCmd('cat=')));
 		$req->addCommand($cmd);

@@ -6,7 +6,4 @@
 	// set "true" to enable debug output
 	$autodebug_enabled = false;
 
-	// for automove, in seconds 
-	$sleep_after_close = 0;
-
 ?>
