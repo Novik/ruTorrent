@@ -227,9 +227,9 @@ $.fn.extend({
 	}
 });
 
-function addslashes(str)
+function addslashes(str) 
 {
-	return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\u0000/g, "\\0");
+	return( (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0').replace(/\u000A/g, '\\n').replace(/\u000D/g, '\\r') );
 }
 
 function iv(val) 
@@ -1494,7 +1494,7 @@ function json_encode(obj)
 		case "boolean":
 			return(obj ? "1" : "0");
 		case "string":
-			return('"'+obj+'"');
+			return('"'+addslashes(obj)+'"');
 		case "array":
 		{
 		        var s = '';
@@ -1520,3 +1520,4 @@ function json_encode(obj)
 	}
 	return("null");
 }
+
