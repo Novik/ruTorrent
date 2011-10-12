@@ -247,6 +247,11 @@ if($handle = opendir('../plugins'))
 				$jResult.="theWebUI.systemInfo.rTorrent.newMethodsSet = true;\n";
 	        	if($do_diagnostic)
 	        	{
+	        	        $up = getUploadsPath();
+	        	        $st = getSettingsPath();
+				@chmod($up,$profileMask);
+				@chmod($st,$profileMask);
+				@chmod('./test.sh',$profileMask & 0755);
 	        	        if(PHP_USE_GZIP && (findEXE('gzip')===false))
 	        	        {
 	        	        	@define('PHP_USE_GZIP', false);
@@ -258,11 +263,6 @@ if($handle = opendir('../plugins'))
 						$jResult.="log(theUILang.statNotFoundW);";
                                         findRemoteEXE('stat',"log(theUILang.statNotFound);",$remoteRequests);
 				}
-	        	        $up = getUploadsPath();
-	        	        $st = getSettingsPath();
-				@chmod($up,$profileMask);
-				@chmod($st,$profileMask);
-				@chmod('./test.sh',$profileMask & 0755);
 	        		if(!@file_exists($up.'/.') || !is_readable($up) || !is_writable($up))
 					$jResult.="log(theUILang.badUploadsPath+' (".$up.")');";
 	        		if(!@file_exists($st.'/.') || !is_readable($st) || !is_writable($st))
