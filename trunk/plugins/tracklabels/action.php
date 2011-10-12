@@ -11,7 +11,10 @@ if(isset($_REQUEST["tracker"]))
 	$tracker = rawurldecode($_REQUEST["tracker"]);
 	$name = dirname(__FILE__)."/trackers/".$tracker.".png";
 	if(is_readable($name))
+	{
 		sendFile( $name, "image/png" );
+		exit;
+	}
 	$name = getSettingsPath().'/trackers';
 	if(!is_dir($name))
 		makeDirectory($name);
@@ -31,7 +34,10 @@ if(isset($_REQUEST["tracker"]))
 			file_put_contents($name,$client->results);
 	}
 	if(is_readable($name))
+	{
 		sendFile( $name, "image/x-icon" ); 
+		exit;
+	}
 }
 
 header("HTTP/1.0 302 Moved Temporarily");

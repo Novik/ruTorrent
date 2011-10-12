@@ -503,7 +503,7 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 				readfile($filename);
 		}
 		if($mustExit)
-			exit();
+			exit(0);
 		else
 			return(true);
 	}

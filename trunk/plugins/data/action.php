@@ -21,6 +21,7 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 				$filename = $req->val[1];
 		}
 		sendFile($filename);
+		exit;
 	}
 }
 

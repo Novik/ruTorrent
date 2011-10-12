@@ -78,6 +78,7 @@ if(isset($_REQUEST['cmd']))
 			$ext = ($st->data['exformat'] ? '.png' : '.jpg');
 			$filename = $dir.'/frame'.$_REQUEST['fno'].$ext;
 			sendFile($filename, $st->data['exformat'] ? 'image/png' : 'image/jpeg', $_REQUEST['file']."-".str_pad($_REQUEST['fno']+1, 3, "0", STR_PAD_LEFT).$ext);
+			exit();
 		}
 		case "ffmpegclose":
 		{
@@ -89,11 +90,8 @@ if(isset($_REQUEST['cmd']))
 		}
 		case "ffmpegset":
 		{
-			return($st->set());
-		}
-		case "ffmpegget":
-		{
-			return($st->get());
+			$ret = $st->set();
+			break;
 		}
 	}
 }
