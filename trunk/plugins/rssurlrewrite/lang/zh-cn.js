@@ -9,8 +9,8 @@
  theUILang.rssRulesLegend	= "规则设置";
  theUILang.rssSrcHref		= "If URL of torrent download matches pattern";
  theUILang.rssSrcGuid		= "If URL of torrent description matches pattern";
- theUILang.rssDstHref		= "then replace URL of torrent download by";
- theUILang.rssDstGuid		= "then replace URL of torrent description by";
+ theUILang.rssDstHref		= "then replace URL of torrent download with";
+ theUILang.rssDstGuid		= "then replace URL of torrent description with";
  theUILang.rssRulesDebug	= "规则调试";
  theUILang.rssTestString	= "测试";
  theUILang.rssTestResult	= "结果";
