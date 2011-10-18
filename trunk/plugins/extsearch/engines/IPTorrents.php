@@ -3,10 +3,9 @@
 class IPTorrentsEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"on.iptorrents.com|pass=XXX;uid=XXX" );
-	public $categories = array( 'all'=>'l1;l2;l3;l4;l5;l6;l7;l8;l35;l36;l37;l38;l39;l40;l42;l43;l44;l45;l47;l48;l50;l54;l55;l58;l60;l62;l64;l65;l66;l67;l68;l69;l70;l71;',
-		'Anime'=>'l60;', 'Appz/misc'=>'l1;', 'AudioBook'=>'l64;', 'Books - Mags'=>'l35;', 'Games'=>'l2;l47;l43;l45;l39;l40;l67;l50;l42;l44;l71;',
-		'HD/X264'=>'l48;', 'iPod'=>'l62;l66;', 'Kids'=>'l54;', 'MAC'=>'l69;', 'Mobile'=>'l58;', 'Movies'=>'l6;l70;l38;l68;l7;l48;',
-		'Music'=>'l37;l3;', 'Pics/Wallpapers'=>'l36;', 'Sports'=>'l55;', 'TV'=>'l66;l4;l5;l65;', 'XXX'=>'l8;' );
+	public $categories = array( 'all'=>'l72;l73;l74;l75;l76;',
+		'Movies'=>'l72;', 'TV'=>'l73;', 'Games'=>'l74;', 'Music'=>'l75;', 'Books'=>'l35;', 'Anime'=>'l60;', 
+		'Appz/misc'=>'l1;', 'MAC'=>'l69;', 'Mobile'=>'l58;', 'Pics/Wallpapers'=>'l36;', 'Sports'=>'l55;', 'XXX'=>'l8;' );
 
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
@@ -14,8 +13,8 @@ class IPTorrentsEngine extends commonEngine
 		$added = 0;
 		$url = 'http://on.iptorrents.com';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'l1;l2;l3;l4;l5;l6;l7;l8;l35;l36;l37;l38;l39;l40;l42;l43;l44;l45;l47;l48;l50;l54;l55;l58;l60;l62;l64;l65;l66;l67;l68;l69;l70;l71;', 
-				'movies'=>'l6;l70;l38;l68;l7;l48;', 'tv'=>'l66;l4;l5;l65;', 'music'=>'l37;l3;', 'games'=>'l2;l47;l43;l45;l39;l40;l67;l50;l42;l44;l71;', 
+			$categories = array( 'all'=>'l72;l73;l74;l75;l76;', 
+				'movies'=>'l72;', 'tv'=>'l73;', 'music'=>'l75;', 'games'=>'l74;', 
 				'anime'=>'l60;', 'software'=>'l1;', 'pictures'=>'l36;', 'books'=>'l64;l35;' );
 		else
 			$categories = &$this->categories;
@@ -25,7 +24,7 @@ class IPTorrentsEngine extends commonEngine
 			$cat = $categories[$cat];
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/torrents/?'.$cat.'o=seeders;q=@title '.$what.';p='.$pg );
+			$cli = $this->fetch( $url.'/torrents/?'.$cat.'o=seeders;q=@title%20'.$what.';p='.$pg );
 			if( ($cli==false) || (strpos($cli->results, ">Nothing found!<")!==false) ||
 				(strpos($cli->results, ">Password:<")!==false))
 				break;
