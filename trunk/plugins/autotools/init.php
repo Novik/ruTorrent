@@ -11,12 +11,16 @@ if($at->setHandlers())
 		if( $at->enable_move )
 		{
 			$path_to_finished = trim( $at->path_to_finished );
+			if(!rTorrentSettings::get()->correctDirectory($path_to_finished))
+				$path_to_finished = '';
 			if( $path_to_finished == '' )
 				$jResult .= "plugin.showError('theUILang.autotoolsNoPathToFinished');";
 		}
 		if( $at->enable_watch )
 		{
 			$path_to_watch = trim( $at->path_to_watch );
+			if(!rTorrentSettings::get()->correctDirectory($path_to_watch))
+				$path_to_watch = '';
 			if( $path_to_watch == '' )
 				$jResult .= "plugin.showError('theUILang.autotoolsNoPathToWatch');";
 		}

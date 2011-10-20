@@ -32,7 +32,7 @@ class rUnpack
 		{
 			$vars = explode( '&', $HTTP_RAW_POST_DATA );
 			$this->enabled = 0;
-			$this->path_to_finished = "";
+			$this->path = "";
 			foreach( $vars as $var )
 			{
 				$parts = explode( "=", $var );
@@ -46,7 +46,11 @@ class rUnpack
 					$this->addName = $parts[1];
 				else
 				if( $parts[0] == "unpack_path" )
-					$this->path = rawurldecode($parts[1]);
+				{
+					$this->path = trim(rawurldecode($parts[1]));
+					if(($this->path != '') && !rTorrentSettings::get()->correctDirectory($this->path))	
+						$this->path = '';
+				}
 			}
 		}
 		$this->store();
@@ -70,6 +74,10 @@ class rUnpack
 		$pathToUnrar = getExternal("unrar");
 		$pathToUnzip = getExternal("unzip");
 		$outPath = $this->path;
+		
+		if(($outPath!='') && !rTorrentSettings::get()->correctDirectory($outPath))	
+			$outPath = '';
+		
 		$arh = $pathToUnrar;
 		if(is_dir($basename))
 		{
@@ -275,6 +283,21 @@ class rUnpack
 			$req->run();
 		}
 		return($ret);
+	}
+
+	public function setHandlers()
+	{
+		global $rootPath;
+		if($this->enabled)
+		{
+			$cmd =  rTorrentSettings::get()->getOnFinishedCommand( array('unpack'.getUser(), 
+					getCmd('execute').'={'.getPHP().','.$rootPath.'/plugins/unpack/update.php,$'.getCmd('d.get_directory').'=,$'.getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').
+					'=,$'.getCmd('d.get_custom1').'=,$'.getCmd('d.get_name').'=,'.getUser().'}'));
+		}
+		else
+			$cmd = rTorrentSettings::get()->getOnFinishedCommand(array('unpack'.getUser(), getCmd('cat=')));
+		$req = new rXMLRPCRequest( $cmd );
+		return($req->success());
 	}
 }
 
