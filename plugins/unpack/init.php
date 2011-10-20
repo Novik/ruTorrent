@@ -12,15 +12,11 @@ if($do_diagnostic)
 }
 if(USE_UNZIP || USE_UNRAR)
 {
-	$req = new rXMLRPCRequest( 
-		$theSettings->getOnFinishedCommand( array('unpack'.getUser(), 
-			getCmd('execute').'={'.getPHP().','.$rootPath.'/plugins/unpack/update.php,$'.getCmd('d.get_directory').'=,$'.getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').
-				'=,$'.getCmd('d.get_custom1').'=,$'.getCmd('d.get_name').'=,'.getUser().'}')));
-	if($req->run() && !$req->fault)
+	$up = rUnpack::load();
+	if($up->setHandlers())
 	{
 		$jResult .= ("plugin.useUnzip = ".(USE_UNZIP ? "true;" : "false;"));
 		$jResult .= ("plugin.useUnrar = ".(USE_UNRAR ? "true;" : "false;"));
-        	$up = rUnpack::load();
 		$jResult .= $up->get();
 	        $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	}

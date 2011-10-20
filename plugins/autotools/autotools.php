@@ -64,6 +64,8 @@ class rAutoTools
 				else if( $parts[0] == "path_to_finished" )
 				{
 					$this->path_to_finished = $parts[1];
+					if(!rTorrentSettings::get()->correctDirectory($this->path_to_finished))
+						$this->path_to_finished = '';
 				}
 				else if( $parts[0] == "enable_watch" )
 				{
@@ -72,6 +74,8 @@ class rAutoTools
 				else if( $parts[0] == "path_to_watch" )
 				{
 					$this->path_to_watch = $parts[1];
+					if(!rTorrentSettings::get()->correctDirectory($this->path_to_watch))
+						$this->path_to_watch = '';
 				}
 				else if( $parts[0] == "watch_start" )
 				{
