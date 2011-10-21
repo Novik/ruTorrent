@@ -6,11 +6,11 @@
  theUILang.checkedResult	= "Result";
  theUILang.chkResults		= [
 				  "In progress",
-				  "Was updated",
+				  "Updated",
 				  "Up to date",
 				  "Probably deleted",
-				  "Can't reach tracker",
-				  "Error",
+				  "Error accessing the tracker",
+				  "Error interacting with rTorrent",
 				  "No need"
 				  ];
 
