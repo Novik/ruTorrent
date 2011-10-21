@@ -3,7 +3,7 @@ require_once( dirname(__FILE__)."/../../php/settings.php" );
 require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc" );
 
 $ret = 0;
-$port = intval(rTorrentSettings::get()->portRange);
+$port = rTorrentSettings::get()->port;
 $client = new Snoopy();
 $client->agent = HTTP_USER_AGENT;
 $client->read_timeout = 5;

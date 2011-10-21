@@ -22,6 +22,7 @@ class rTorrentSettings
 	public $started = 0;
 	public $server = '';
 	public $portRange = '6890-6999';
+	public $port = '6890';
 	public $idNotFound = false;
 	public $home = '';
 
@@ -161,6 +162,16 @@ class rTorrentSettings
 					$this->libVersion = $req->val[2];
 					$this->server = $req->val[4];
 					$this->portRange = $req->val[5];
+					$this->port = intval($this->portRange);
+
+					if($this->iVersion>=0x809)
+					{
+						$req = new rXMLRPCRequest( new rXMLRPCCommand("network.listen.port") );
+						$req->important = false;
+						if($req->success())
+							$this->port = intval($req->val[0]);
+					}
+
 					if(isLocalMode())
 					{
 	                                        if(!empty($this->session))
