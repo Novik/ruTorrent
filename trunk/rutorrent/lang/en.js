@@ -135,7 +135,7 @@ var theUILang =
  Number_Peers_max		: "Maximum number of peers",
  Tracker_Numwant		: "Wished number of peers",
  Number_Peers_For_Seeds_min	: "Minimum number of peers for seeding",
- Number_Peers_For_Seeds_max	: "Maximum number of seeds for seeding",
+ Number_Peers_For_Seeds_max	: "Maximum number of peers for seeding",
  Enable_port_open		: "Open listening port",
  dht_port			: "UDP port to use for DHT",
  Ather_Limiting 		: "Other limitations",
