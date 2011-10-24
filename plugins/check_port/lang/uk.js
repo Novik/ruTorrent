@@ -1,10 +1,10 @@
 ﻿
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkPort		= "Перевірити стан порту";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Стан порту невідомий",
+ 				  "Порт закрито",
+ 				  "Порт відкрито"
  				  ];
 
 thePlugins.get("check_port").langLoaded();
