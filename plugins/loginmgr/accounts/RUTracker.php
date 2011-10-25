@@ -30,7 +30,7 @@ class ruTrackerAccount extends commonAccount
 		$id = $this->getDownloadId($url);
 		if($id===false)
 		{
-			$redirect = "/forum/index.php";
+			$redirect = $url;
 			$referer = "http://rutracker.org/forum/index.php";
 		}
 		else
