@@ -25,13 +25,15 @@ class ruTrackerAccount extends commonAccount
 			return($matches["id"]);
 		return(false);
 	}
-	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body)
-	{                                                                   
+	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
+	{
+		$is_result_fetched = false;
 		$id = $this->getDownloadId($url);
 		if($id===false)
 		{
 			$redirect = $url;
 			$referer = "http://rutracker.org/forum/index.php";
+			$is_result_fetched = true;
 		}
 		else
 		{
