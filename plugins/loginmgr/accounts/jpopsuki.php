@@ -6,8 +6,9 @@ class jpopsukiAccount extends commonAccount
 	{
 		return(strpos($client->results, '>Password')===false);
 	}
-	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body)
-	{                                                                   
+	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
+	{
+		$is_result_fetched = false;
 		if($client->fetch( "http://jpopsuki.eu/login.php" ))
 		{
                         $client->setcookies();

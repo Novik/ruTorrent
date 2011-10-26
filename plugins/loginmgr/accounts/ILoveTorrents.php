@@ -6,8 +6,9 @@ class ILoveTorrentsAccount extends commonAccount
 	{
 		return(strpos($client->results, '>Not logged in!<')===false);
 	}
-	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body)
-	{                                                                   
+	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
+	{
+		$is_result_fetched = false;
 		if($client->fetch( "http://www.ilovetorrents.com/login.php" ))
 		{
                         $client->setcookies();

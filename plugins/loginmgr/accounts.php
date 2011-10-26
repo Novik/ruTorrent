@@ -61,7 +61,7 @@ abstract class commonAccount
 	}
 
 	abstract protected function isOK($client);
-	abstract protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body);
+	abstract protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched);
 	abstract public function test($url);
 
 	protected function updateCached($client,&$url,&$method,&$content_type,&$body)
@@ -76,16 +76,17 @@ abstract class commonAccount
 
 	public function fetch( $client, $url, $login, $password, $method, $content_type, $body )
 	{
+	        $is_result_fetched = false;
 		$data = privateData::load( $this->getName(), $client );
 		$ret = ( ($data->loaded && 
 				$this->updateCached($client,$url,$method,$content_type,$body) && 
 				$client->fetch($url,$method,$content_type,$body) &&
 				$this->isOKPostFetch($client,$url,$method,$content_type,$body)) ||
-			($this->login($client,$login,$password,$url,$method,$content_type,$body) && 
+			($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) && 
 				$client->status>=200 && 
 				$client->status<400 &&
 				$this->isOK($client) &&
-                                $client->fetch($url,$method,$content_type,$body) &&
+                                ($is_result_fetched || $client->fetch($url,$method,$content_type,$body)) &&
 				$this->isOKPostFetch($client,$url,$method,$content_type,$body) &&
 				$data->store($client)) );
 		if(!$ret)

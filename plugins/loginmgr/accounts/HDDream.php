@@ -7,8 +7,9 @@ class HDDreamAccount extends commonAccount
 		return((strpos($client->results, '<input type="password" name="password" class="inputPassword"')===false) &&
 			(strpos($client->results, '<title>An error has occured! => IP:')===false));
 	}
-	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body)
+	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{                                                                   
+	        $is_result_fetched = false;
 		if($client->fetch( "http://hd-dream.net/login.php" ))
 		{
                         $client->setcookies();

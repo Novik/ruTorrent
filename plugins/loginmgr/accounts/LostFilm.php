@@ -16,8 +16,9 @@ class LostFilmAccount extends commonAccount
 		} 
 		return(true);
 	}
-	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body)
-	{                                                                   
+	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
+	{
+		$is_result_fetched = false;
 		if($client->fetch( "http://lostfilm.tv" ))
 		{
 			$client->setcookies();
