@@ -9,9 +9,9 @@ class GksEngine extends commonEngine
 		'TV VF' => '&cat=12', 'TV HD VOSTFR' => '&cat=13', 'TV HD VF' => '&cat=14',
 		'HD 720p' => '&cat=15', 'HD 1080p' => '&cat=16', 'Full BluRay' => '&cat=17',
 		'Divers' => '&cat=18', 'DVDR' => '&cat=19', 'DVDR Series' => '&cat=20', 'Anime' => '&cat=21',
-		'TV VO' => '&cat=22', 'Concerts' => '&cat=23', 'Journaux' => '&cat=24', 'Livres' => '&cat=25',
-		'Sport' => '&cat=28', 'PC Games' => '&cat=29', 'Nintendo DS' => '&cat=30', 'Wii' => '&cat=31',
-		'Xbox 360' => '&cat=32', 'PSP' => '&cat=34', 'PSX/PS2/PS3' => '&cat=38', '0day' => '&cat=39');
+		'TV VO' => '&cat=22', 'Concerts' => '&cat=23', 'eBooks' => '&cat=24', 'Sport' => '&cat=28', 
+		'PC Games' => '&cat=29', 'Nintendo DS' => '&cat=30', 'Wii' => '&cat=31',
+		'Xbox 360' => '&cat=32', 'PSP' => '&cat=34', 'PSX/PS2/PS3' => '&cat=38');
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -21,7 +21,7 @@ class GksEngine extends commonEngine
 			$categories = array( 'all'=>'&cat=0', 'movies'=>'&cat=5&cat=6&cat=15&cat=16&cat=17&cat=19', 
 				'tv'=>'&cat=7&cat=8&cat=9&cat=10&cat=11&cat=12&cat=13&cat=14&cat=20&cat=22&cat=23&cat=28', 'music'=>'&cat=6&cat=46&cat=29', 
 				'games'=>'&cat=29&cat=30&cat=31&cat=32&cat=34&cat=38', 
-				'anime'=>'&cat=21', 'software'=>'&cat=3&cat=4', 'books'=>'&cat=24&cat=25' );
+				'anime'=>'&cat=21', 'software'=>'&cat=3&cat=4', 'books'=>'&cat=24' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
@@ -30,19 +30,18 @@ class GksEngine extends commonEngine
 			$cat = $categories[$cat];
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/sphinx/?q='.$what.$cat.'&sort=seeds&order=desc&page='.$pg );
+			$cli = $this->fetch( $url.'/sphinx/?q='.$what.$cat.'&sort=id&order=desc&page='.$pg );
 			if( ($cli===false) || (strpos($cli->results, "Votre Recherche n'a retourn&eacute; aucun r&eacute;sultat.<br />")!==false)
 				|| (strpos($cli->results, '<h1>Wh0 Loves You ?</h1>')!==false))
 				break;
-			$res = preg_match_all('`<a href="/browse/\?cat=\d+">\n\s*<img src=.* alt="(?P<cat>[^"]*)".*'.
-				'<a title="(?P<name>.*)" href="(?P<desc>.*)">.*'.
-				'<strong>.*</strong></a>.*'.
-				'<td class="dl_torrent">.*'.
-				'<a href="(?P<tname>[^"]*)">.*'.
-				'<td class="size_torrent_\d">(?P<size>.*)</td>.*'.
-				'<td class="seed_torrent_\d">(?P<seeds>.*)</td>.*'.
-				'<td class="leech_torrent_\d">(?P<leech>.*)</td>'.
-				'`siU', $cli->results, $matches);
+			$res = preg_match_all('`<a class=".*" href="/browse/\?cat=.*">.*'.
+					'<!--<img src=".*" alt="(?P<cat>[^"]*)".*'.
+					'<a title="(?P<name>.*)" href="(?P<desc>.*)">.*'.
+					'<a href="(?P<tname>[^"]*)">.*'.
+					'<td class="size_torrent_\d">(?P<size>.*)</td>.*'.
+					'<td class="seed_torrent_\d">(?P<seeds>.*)</td>.*'.
+					'<td class="leech_torrent_\d">(?P<leech>.*)</td>'.
+					'`siU', $cli->results, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
