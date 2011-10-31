@@ -53,7 +53,8 @@ class Torrent
 				$meta = array_merge( $meta, $arr );
 		}
 		foreach( $meta as $key => $value )
-                	$this->{$key} = $value;
+			if($key[0]!="\x00")
+	                	$this->{$key} = $value;
 	        } catch(Exception $e)
         	{
         		$this->errors[] = $e;
