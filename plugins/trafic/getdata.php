@@ -1,5 +1,6 @@
 <?php
 require_once( 'stat.php' );
+eval(getPluginConf('trafic'));
 
 $val = "";
 $storage = "global.csv";
