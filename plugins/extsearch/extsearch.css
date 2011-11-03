@@ -14,6 +14,7 @@ div#tegLoadTorrents br {clear: left; line-height: 0}
 .Engineall { background-image: url(./images/search.png) }
 .Enginepublic { background-image: url(./images/public.png) }
 .Engineprivate { background-image: url(./images/private.png) }
+.bld { color: blue; font-weight: bold; }
 
 @media only screen and (orientation:portrait) 
 { 

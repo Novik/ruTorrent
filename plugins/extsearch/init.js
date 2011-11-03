@@ -651,8 +651,17 @@ if(plugin.enabled && plugin.canChangeOptions())
 				$('#'+ndx+'_limit').val(val.limit);
 				$('#'+ndx+'_global').change();
 				$('#'+ndx+'_enabled').change();
+
+			        if(val.enabled==1)
+					$('#opt_'+ndx).addClass('bld');
+				else
+					$('#opt_'+ndx).removeClass('bld');
+
 			});
+
 		}
+		$('#sel_public').change();
+		$('#sel_private').change();
 		plugin.andShowSettings.call(theWebUI,arg);
 	}
 
@@ -760,24 +769,28 @@ plugin.onLangLoaded = function()
 		"</fieldset>";
 	var contPublic = "";
 	var contPrivate = "";
+	var optPublic = "";
+	var optPrivate = "";
 	var styles = "";
 	var toDisable = [];
 	$.each(theSearchEngines.sites,function(ndx,val)
 	{
 		if(val.public)
+		{
 			contPublic +=
-				"<fieldset>"+
-					"<legend>"+ndx+"</legend>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
+				"<div id='cont_"+ndx+"' class='seng_public'>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' onchange=\"$('#opt_"+ndx+"').toggleClass('bld'); linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
 					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
 					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>"+
-				"</fieldset>";
+				"</div>";
+			optPublic +=
+				"<option value='"+ndx+"' id='opt_"+ndx+"'>"+ndx+"</option>";
+		}
 		else
 		{
 			contPrivate +=  
-				"<fieldset>"+
-					"<legend>"+ndx+"</legend>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' onchange=\"linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
+				"<div id='cont_"+ndx+"' class='seng_private'>"+
+					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' onchange=\"$('#opt_"+ndx+"').toggleClass('bld'); linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
 					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
 					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>";
 			if(val.cookies)
@@ -804,7 +817,9 @@ plugin.onLangLoaded = function()
 				}
 			}
 			contPrivate+=
-				"</fieldset>";
+				"</div>";
+			optPrivate +=
+				"<option value='"+ndx+"' id='opt_"+ndx+"'>"+ndx+"</option>";
 		}
 		styles +=
 			(".Engine"+ndx+" {background-image: url(./plugins/extsearch/images/"+ndx+".png); background-repeat: no-repeat}\n");
@@ -812,12 +827,18 @@ plugin.onLangLoaded = function()
 	if(contPublic.length)
 	{
 		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPublic+")</legend>";
+		s+="<select id='sel_public'>";
+		s+=optPublic;
+		s+="</select>";
 		s+=contPublic;
 		s+="</fieldset>";
 	}
 	if(contPrivate.length)
 	{
 		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPrivate+")</legend>";
+		s+="<select id='sel_private'>";
+		s+=optPrivate;
+		s+="</select>";
 		s+=contPrivate;
 		s+="</fieldset>";
 	}
@@ -829,6 +850,16 @@ plugin.onLangLoaded = function()
 		$('#'+toDisable[i]+'_enabled').attr("disabled",true).attr("checked",false);
 		$('#lbl_'+toDisable[i]+'_enabled').addClass("disabled");
 	}
+	$('#sel_public').change( function()
+	{
+		$(".seng_public").hide();
+		$('#cont_'+$(this).val()).show();
+	});
+	$('#sel_private').change( function()
+	{
+		$(".seng_private").hide();
+		$('#cont_'+$(this).val()).show();
+	});
 	var td = $$('rrow').insertCell(2);
 	s ="<select id='exscategory' title='"+theUILang.excat+"'></select>";
 	$(td).attr("id","exscat").html(s); 
