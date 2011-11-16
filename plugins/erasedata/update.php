@@ -47,7 +47,7 @@ function parseOneItem($item)
 		if($is_multi)
 		{
 			$dirs = array_unique($dirs);
-			usort( $dirs, create_function( '$a,$b', 'return strrpos($a,"/")-strrpos($b,"/");' ) );
+			usort( $dirs, create_function( '$a,$b', 'return strrpos($b,"/")-strrpos($a,"/");' ) );
 			foreach( $dirs as $dir )
 				if(@rmdir($dir))
 					eLog('Successfully delete dir '.$dir);
