@@ -305,6 +305,7 @@ if($handle = opendir('../plugins'))
 
 		$cantBeShutdowned 	= 0x0080;
 		$canBeLaunched 		= 0x0100;
+		$disabledByUser		= 0x8000;
 
 		$loadedExtensions = array_map("strtolower",get_loaded_extensions());
 
@@ -323,6 +324,7 @@ if($handle = opendir('../plugins'))
 					        $info["perms"] |= $canBeLaunched;
 						if(!$userPermissions[$file])
 						{
+							$info["perms"] |= $disabledByUser;
 							$disabled[$file] = $info;
 							$info = false;
 						}
@@ -333,10 +335,14 @@ if($handle = opendir('../plugins'))
 				if($info!==false)
 				{
 				        if(!$theSettings->linkExist && $info["rtorrent.need"])
+				        {
+					        $disabled[$file] = $info;
 						continue;
+					}
 					if($info['php.version']>$phpIVersion)
 					{
 						$jResult.="log('".$file.": '+theUILang.badPHPVersion+' '+'".$info['php.version.readable']."'+'.');";
+					        $disabled[$file] = $info;
 						continue;
 					}
 					$extError = false;
@@ -348,7 +354,10 @@ if($handle = opendir('../plugins'))
 							$extError = true;
 						}
 					if($extError)
+					{
+					        $disabled[$file] = $info;
 						continue;
+					}
 
 					if(count($info['web.external.error']) || 
 						count($info['web.external.warning']) ||
@@ -367,12 +376,16 @@ if($handle = opendir('../plugins'))
 							$phpRequired = true;
 					}
 					if($extError)
+					{
+					        $disabled[$file] = $info;
 						continue;
+					}
 					if($theSettings->linkExist)
 					{
 						if($info['rtorrent.version']>$theSettings->iVersion)
 						{
 							$jResult.="log('".$file.": '+theUILang.badrTorrentVersion+' '+'".$info['rtorrent.version.readable']."'+'.');";
+						        $disabled[$file] = $info;
 							continue;
 						}
                 				foreach( $info['rtorrent.external.error'] as $external )
@@ -392,7 +405,10 @@ if($handle = opendir('../plugins'))
 							}
 						}
 						if($extError)
+						{
+						        $disabled[$file] = $info;
 							continue;
+						}
 						foreach( $info['rtorrent.php.error'] as $external )
 						{
 					       		$fname = $rootPath.'/plugins/'.$file.'/'.$external;
@@ -404,12 +420,16 @@ if($handle = opendir('../plugins'))
 							}
 						}
 						if($extError)
+						{
+						        $disabled[$file] = $info;
 							continue;
+						}
 				        	if(!isLocalMode())
 					        {
 					        	if($info["rtorrent.remote"]=="error")
 							{
 								$jResult.="log('".$file.": '+theUILang.errMustBeInSomeHost);";
+							        $disabled[$file] = $info;
 								continue;
 							}
 				        		if($do_diagnostic && ($info["rtorrent.remote"]=="warning"))
@@ -476,7 +496,9 @@ if($handle = opendir('../plugins'))
 		{
 			$jResult.="(function () { var plugin = new rPlugin( '".$name."',".$pInfo["plugin.version"].
 				",'".$pInfo["plugin.author"]."','".$pInfo["plugin.description"]."',".$pInfo["perms"].",'".$pInfo["plugin.help"]."' );\n";
-			$jResult.="plugin.disable(); plugin.unlaunch(); ";
+			$jResult.="plugin.disable(); ";
+			if($pInfo["perms"] & $disabledByUser)
+				$jResult.="plugin.unlaunch(); ";
 			$jResult.="\n})();";
 		}
 		$jResult.=testRemoteRequests($remoteRequests);
