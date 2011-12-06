@@ -46,6 +46,7 @@ function injectCSSText(text)
 var thePlugins = 
 {
 	list: {},
+	topMenu: [],
 	restictions:  
 	{
 		cantChangeToolbar: 	0x0001,
@@ -92,7 +93,14 @@ var thePlugins =
 			eval( callback+'()' );
 		else
 			window.setTimeout( 'thePlugins.waitLoad("'+callback+'")', 500 );
+	},
+
+	registerTopMenu: function( plg, weight )
+	{
+		this.topMenu.push( { "name": plg.name, "weight": weight } );
+		this.topMenu.sort( function(a,b) { return(a.weight-b.weight); } );
 	}
+
 };
 
 function rPlugin( name, version, author, descr, restictions, help )
@@ -288,6 +296,17 @@ rPlugin.prototype.removePageFromTabs = function(id)
 	delete theTabs.tabs[id]; 
 	$('#'+id).remove();
 	$('#tab_'+id).remove();
+	return(this);
+}
+
+rPlugin.prototype.registerTopMenu = function(weight)
+{
+        if(this.canChangeToolbar())
+        {
+        	if( !$$("mnu_plugins") )
+        		this.addButtonToToolbar("plugins",theUILang.Plugins+"...","theWebUI.showPluginsMenu()","help");
+		thePlugins.registerTopMenu( this, weight );
+	}
 	return(this);
 }
 
