@@ -15,6 +15,7 @@ div#t div#rss {background: transparent url(./images/toolbar.png) no-repeat -240p
 div#t div#setting {background: transparent url(./images/toolbar.png) no-repeat -264px center}
 div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}
 div#t div#go {background: transparent url(./images/go.gif) no-repeat 0px center; }
+div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0px center}
 
 ul.CMenu li a:hover {background-color: #D9E8FB}
 ul.CMenu li:hover ul li a:hover {background-color: #D9E8FB}

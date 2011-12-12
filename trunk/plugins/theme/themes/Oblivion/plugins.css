@@ -130,8 +130,6 @@ div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header {background: #181818 url(./im
     color: red;
 }
 
-div#t div#rssurlrewrite {background: transparent url(./images/toolbar.png) no-repeat -217px 0px}
-div#t div#rssurlrewrite:hover {background: transparent url(./images/toolbar.png) no-repeat -217px -24px}
 div#dlgEditRules-header, div#dlgEditRules div.dlg-header {background: #181818 url(./images/dlg-rssurlrewrite.gif) no-repeat 0px 0px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
 
 #autodl-tb {

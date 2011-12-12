@@ -58,6 +58,7 @@ div#t div#rss {background: transparent url(./images/toolbar.png) no-repeat -241p
 div#t div#rss:hover {background: transparent url(./images/toolbar.png) no-repeat -241px -24px}
 div#t div#setting {background: transparent url(./images/toolbar.png) no-repeat -264px 0px}
 div#t div#setting:hover {background: transparent url(./images/toolbar.png) no-repeat -264px -24px}
+div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0px center}
 
 div#t div#help {background: transparent url(./images/toolbar.png) no-repeat -288px 0px}
 div#t div#help:hover {background: transparent url(./images/toolbar.png) no-repeat -288px -24px}
