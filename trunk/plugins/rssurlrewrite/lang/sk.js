@@ -1,7 +1,7 @@
 ﻿
 
  theUILang.rssNewRule		= "New rule";
- theUILang.mnu_rssurlrewrite	= "Rules of URL Replacement in RSS";
+ theUILang.mnu_rssurlrewrite	= "URL Replacement in RSS";
  theUILang.rssRulesManager	= "Rules Manager";
  theUILang.rssAddRule		= "Add";
  theUILang.rssDelRule		= "Delete";

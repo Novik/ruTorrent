@@ -1,7 +1,7 @@
 ﻿
 
  theUILang.rssNewRule		= "Nieuwe regel";
- theUILang.mnu_rssurlrewrite	= "Regels van vervangende URL in RSS";
+ theUILang.mnu_rssurlrewrite	= "Vervangende URL in RSS";
  theUILang.rssRulesManager	= "Regel manager";
  theUILang.rssAddRule		= "Toevoegen";
  theUILang.rssDelRule		= "Verwijderen";

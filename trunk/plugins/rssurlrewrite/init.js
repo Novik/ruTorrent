@@ -98,24 +98,27 @@ theWebUI.addNewRule = function()
 
 theWebUI.deleteCurrentRule = function()
 {
-	var no = parseInt(this.curRule.id.substr(3));
-	this.rules.splice(no,1);
-	$(this.curRule).parent().remove();
-	this.curRule = null;
-	if(this.rules.length)
-	{
-		for(var i=no+1; i<this.rules.length+1; i++)
+        if(this.curRule)
+        {
+		var no = parseInt(this.curRule.id.substr(3));
+		this.rules.splice(no,1);
+		$(this.curRule).parent().remove();
+		this.curRule = null;
+		if(this.rules.length)
 		{
-			$("#_rn"+i).attr("id", "_rn"+(i-1));
-			$("#_re"+i).attr("id", "_re"+(i-1));
+			for(var i=no+1; i<this.rules.length+1; i++)
+			{
+				$("#_rn"+i).attr("id", "_rn"+(i-1));
+				$("#_re"+i).attr("id", "_re"+(i-1));
+			}
+			if(no>=this.rules.length)
+				no = no - 1;
+			$("#_rn"+no).focus();	
 		}
-		if(no>=this.rules.length)
-			no = no - 1;
-		$("#_rn"+no).focus();	
-	}
-	else
-	{
-		$('#RLS_replacement,#RLS_pattern,#RLS_rss').val('');
+		else
+		{
+			$('#RLS_replacement,#RLS_pattern,#RLS_rss').val('');
+		}
 	}
 }
 
@@ -246,10 +249,15 @@ if(plugin.canChangeMenu())
 	}
 }
 
+plugin.createPluginMenu = function()
+{
+	if(this.enabled)
+		theContextMenu.add([theUILang.mnu_rssurlrewrite, "theWebUI.showRules()"]);		
+}
+
 plugin.onLangLoaded = function()
 {
-        this.addButtonToToolbar("rssurlrewrite",theUILang.mnu_rssurlrewrite,"theWebUI.showRules()","rss");
-
+	this.registerTopMenu(5);
 	theDialogManager.make( "dlgEditRules", theUILang.rssRulesManager,
 		"<div class='fxcaret'>"+
 			"<div class='lfc_rur'>"+
@@ -288,11 +296,9 @@ plugin.onLangLoaded = function()
 			"<input type='button' class='OK Button' value='"+theUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditRules\");theWebUI.setRules();return(false);'/>"+
 			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 		"</div>");
-	$("#gcont").append( $("<div>").attr("id","rsslayout").css( "display", "none" ));
 };
 
 plugin.onRemove = function()
 {
 	theDialogManager.hide("dlgEditRules");
-	this.removeButtonFromToolbar("rssurlrewrite");
 }

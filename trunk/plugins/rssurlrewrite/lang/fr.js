@@ -9,7 +9,7 @@
  */
 
  theUILang.rssNewRule		= "Nouvelle règle";
- theUILang.mnu_rssurlrewrite	= "Règles de remplacement des URL dans les flux RSS";
+ theUILang.mnu_rssurlrewrite	= "Remplacement des URL dans les flux RSS";
  theUILang.rssRulesManager	= "Administration des règles";
  theUILang.rssAddRule		= "Ajouter";
  theUILang.rssDelRule		= "Supprimer";
