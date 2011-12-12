@@ -1,0 +1,30 @@
+div#dlgEditRatioRules {width: 610px; height: 300px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
+div#dlgEditRatioRules div.dlg-header {background-image: url(../../images/settings.gif)}
+
+.lfc_rru {float: left; }
+.lf_rru {width: 245px; height: 200px; margin: 5px; margin-right: 0; padding: 5px; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
+.lf_rru ul {width: 100%; margin: 2px; padding: 0; list-style-position: inside; list-style: none; white-space: nowrap}
+.lf_rru li input { margin: 0 5px 0 0; padding: 4px; } 
+.lf_rru li {margin: 0 ; padding: 0}
+.lf_rru li input.TextboxFocus { width: 85%; background-color: #CFDEEF; }
+.lf_rru li input.TextboxNormal { width: 85%; background-color: #FFFFFF }
+.lf_rru li input { border: 0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: default; font-weight: bold; }
+
+div#exratio_buttons1 {padding-top: 5px; padding-left: 3px; width: 260px; text-align:center}
+
+.rf_rru fieldset {margin: 3px; }
+.rf_rru {float: right; margin: 4px; background-color: #FAFAFA}
+.rf_rru label {width: 75px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+.rf_rru br {clear: left; line-height: 0}
+.rf_rru select {width: 200px; margin: 3px; }
+.rf_rru input.TextboxLarge {margin: 3px; width: 300px;}
+.rf_rru input.Button {margin: 3px}
+#ratio_reason {width: 305px; margin: 3px; }
+
+#exratio_buttons1 input.Button {width: 57px}
+
+div#exratio_buttons2 {clear: both}
+
+
+
+
