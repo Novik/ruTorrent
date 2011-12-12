@@ -102,15 +102,19 @@ class rAutoTools
 	public function setHandlers()
 	{
 		global $autowatch_interval;
-		$req = new rXMLRPCRequest();
 		$theSettings = rTorrentSettings::get();
+		$req = new rXMLRPCRequest( 
+// old version fix
+			$theSettings->getOnInsertCommand(array('autolabel'.getUser(), getCmd('cat=')))
+			);
 		$pathToAutoTools = dirname(__FILE__);
+
 		if($this->enable_label)
-			$cmd = 	$theSettings->getOnInsertCommand(array('autolabel'.getUser(), 
+			$cmd = 	$theSettings->getOnInsertCommand(array('_autolabel'.getUser(), 
 				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd("d.get_custom1").'=,"'.
 				getCmd('execute').'={'.getPHP().','.$pathToAutoTools.'/label.php,$'.getCmd("d.get_hash").'=,'.getUser().'}"'));
 		else
-			$cmd = 	$theSettings->getOnInsertCommand(array('autolabel'.getUser(), getCmd('cat=')));
+			$cmd = 	$theSettings->getOnInsertCommand(array('_autolabel'.getUser(), getCmd('cat=')));
 		$req->addCommand($cmd);
 		if($this->enable_move && (trim($this->path_to_finished)!=''))
 		{
