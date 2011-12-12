@@ -235,7 +235,7 @@ plugin.onLangLoaded = function()
 					"<td><input type='text' id='thr_down"+i+"' class='Textbox num' maxlength='6'/></td>"+
 				"</tr>";
 		s+="</table></div></fieldset>";
-		s+="<div class='aright'><label>"+theUILang.channelDefault+":</label><select id='chDefault'><option value='0'>"+theUILang.mnuUnlimited+"</option>";
+		s+="<div class='aright'><label>"+theUILang.channelDefault+":</label><select id='chDefault'><option value='0'>"+theUILang.dontSet+"</option>";
 		for(var i=1; i<=theWebUI.maxThrottle; i++)
 			s+="<option value='"+i+"'>"+i+"</option>";
 		s+="</select></div>";
