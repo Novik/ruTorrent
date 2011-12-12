@@ -258,7 +258,7 @@ plugin.onLangLoaded = function()
 					"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option><option value='3'>"+theUILang.ratioEraseData+"</option></select></td>"+
 				"</tr>";
 		s+="</table></div></fieldset>";
-		s+="<div class='aright'><label>"+theUILang.ratioDefault+":</label><select id='ratDefault'><option value='0'>"+theUILang.mnuRatioUnlimited+"</option>";
+		s+="<div class='aright'><label>"+theUILang.ratioDefault+":</label><select id='ratDefault'><option value='0'>"+theUILang.dontSet+"</option>";
 		for(var i=1; i<=theWebUI.maxRatio; i++)
 			s+="<option value='"+i+"'>"+i+"</option>";
 		s+="</select></div>";
