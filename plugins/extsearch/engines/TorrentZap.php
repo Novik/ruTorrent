@@ -25,22 +25,27 @@ class TorrentZapEngine extends commonEngine
 			if($cli==false)
 				break;
 
-			$res = preg_match_all('/id="lb"><\/td><td.*>(?P<date>.*)<\/td>.*<a href="http:\/\/www\.torrentzap\.com\/torrent\/(?P<id>.*)\/.*>(?P<name>.*)<\/a>.*'.
-				'id="size1">(?P<size>.*)<\/span><\/td>.*id="seeds">(?P<seeds>.*)<\/td>.*id="leechs">(?P<leech>.*)<\/td>'.
-				'/siU', $cli->results, $matches );
+			$res = preg_match_all('`<td class="first">(?P<date>.*)</td>.*'.
+				'<a href="/torrent/(?P<desc>.*)" class="a1">(?P<name>.*)</a>.*'.
+				'<a href="/download/(?P<link>.*)".*'.
+				'<td>(?P<size>.*)</span></td>.*'.
+				'<td class="s">(?P<seeds>.*)</td><td class="l">(?P<leech>.*)</td>'.
+				'`siU', $cli->results, $matches );
+
 			if($res)
 			{
 				for( $i=0; $i<$res; $i++)
 				{
-					$link = $url."/download/dummy/".$matches["id"][$i];
+					$link = $url."/download/".$matches["link"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["desc"] = $url."/torrent/".$matches["id"][$i];
+						$item["desc"] = $url."/torrent/".$matches["desc"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize(str_replace('<span id="size">'," ",$matches["size"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
+						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 						$ret[$link] = $item;
 						$added++;
 						if($added>=$limit)

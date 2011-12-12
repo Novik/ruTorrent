@@ -6,6 +6,20 @@ class TorrentDownloadsEngine extends commonEngine
 	public $categories = array( 'all'=>'0', 'Anime'=>'1', 'Books'=>'2', 'Games'=>'3',
 		'Movies'=>'4', 'Music'=>'5', 'Software'=>'7', 'TV Shows'=>'8', 'Other'=>'9' );
 
+	protected static function getInnerCategory($cat)
+	{
+		$categories = array(
+			'1'=>'Anime', 
+			'2'=>'Books', 
+			'3'=>'Games',
+			'4'=>'Movies', 
+			'5'=>'Music', 
+			'7'=>'Software', 
+			'8'=>'TV Shows', 
+			'9'=>'Other');
+		return(array_key_exists($cat,$categories) ? $categories[$cat] : '');
+	}
+
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
@@ -24,7 +38,11 @@ class TorrentDownloadsEngine extends commonEngine
 			$cli = $this->fetch( $url.'/search/?page='.$pg.'&search='.$what.'&s_cat='.$cat.'&srt=seeds&order=desc' );
 			if( ($cli==false) || (strpos($cli->results, "</ul>No torrents</div>")!==false) )
 				break;
-			$res = preg_match_all('/<a href="http:\/\/www.torrentdownloads.net\/torrent\/(?P<id>.*)\/.*">(?P<name>.*)<\/a><\/li><li>(?P<size>.*)<\/li><li>(?P<seeds>.*)<\/li><li>(?P<leech>.*)<\/li>/siU', $cli->results, $matches );
+
+			$res = preg_match_all('`<img src="/templates/new/images/icons/menu_icon(?P<cat>\d+)\.png" alt=""><a href="http://www\.torrentdownloads\.net/torrent/(?P<id>.*)/.*">(?P<name>.*)</a>.*'.
+				'<span>(?P<leech>.*)</span><span>(?P<seeds>.*)</span><span>(?P<size>.*)</span>'.
+				'`siU', $cli->results, $matches );
+			
 			if($res)
 			{
 				for( $i=0; $i<$res; $i++)
@@ -34,6 +52,7 @@ class TorrentDownloadsEngine extends commonEngine
 					{
 						$item = $this->getNewEntry();
 						$item["desc"] = $url."/torrent/".$matches["id"][$i];
+						$item["cat"] = self::getInnerCategory($matches["cat"][$i]);
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
