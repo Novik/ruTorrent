@@ -79,7 +79,8 @@ var theWebUI =
 				{ text: theUILang.Peers, 		width: "60px", 	id: "peers",		type: TYPE_NUMBER },
 				{ text: theUILang.scrapeDownloaded,	width: "80px", 	id: "downloaded",	type: TYPE_NUMBER },
 				{ text: theUILang.scrapeUpdate,		width: "85px", 	id: "last",		type: TYPE_NUMBER },
-				{ text: theUILang.trkInterval,		width: "80px", 	id: "interval",		type: TYPE_NUMBER }
+				{ text: theUILang.trkInterval,		width: "80px", 	id: "interval",		type: TYPE_NUMBER },
+				{ text: theUILang.trkPrivate, 		width: "60px", 	id: "private",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT}
 			],
 
 			container:	"TrackerList",
@@ -895,6 +896,13 @@ var theWebUI =
 // trackers
 //
 
+	trkIsPrivate: function(url)
+	{
+		return(
+			(/(http|https:udp):\/\/[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,4})|)\/an.*\?.+=.+/i).test(url) ||
+			(/(http|https:udp):\/\/[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,4})|)\/.*[0-9a-f]{32}\/an/i).test(url) ? 1 : 0 );
+	},
+
    	trkSelect: function(e, id) 
 	{
 		if($type(id))
@@ -923,12 +931,12 @@ var theWebUI =
 	addTrackers: function(data) 
 	{
    		var table = this.getTable("trk");
-   		$.extend(this.trackers,data);
 		$.each(data,function(hash,trk)
 		{
-			if(theWebUI.dID == hash)
+			for(var i = 0; i < trk.length; i++)			
 			{
-				for(var i = 0; i < trk.length; i++)
+				trk[i].private = theWebUI.trkIsPrivate(trk[i].name);
+				if(theWebUI.dID == hash)
 				{
 					var sId = hash + "_t_" + i;
         	 			if(!$type(table.rowdata[sId]) )
@@ -944,9 +952,9 @@ var theWebUI =
 	        	 		$('#'+sId+" > .stable-TrackerList-col-0").css( "font-weight", 
 			        	 	($type(theWebUI.torrents[hash]) && (i==theWebUI.torrents[hash].tracker_focus)) ? "bold" : "normal" );
         	 		}
-        	 		return(false);
 			}
 	   	});
+   		$.extend(this.trackers,data);
 	   	var rowIDs = table.rowIDs.slice(0);
 		for(var i in rowIDs) 
 		{

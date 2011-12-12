@@ -675,6 +675,7 @@ var theFormatter =
       					arr[i] = theFormatter.trackerType(arr[i]);
 	      				break;
       				case 'enabled' : 
+      				case 'private' : 
       					arr[i] = theFormatter.yesNo(arr[i]);
       					break;
       				case 'interval' : 

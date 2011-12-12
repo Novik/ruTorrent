@@ -271,5 +271,7 @@
  plgLaunch			: "Démarrage",
  plgLocked			: "Bloqué",
  phpExtensionNotFoundWarning	: "Certaines fonctionnalités ne seront pas disponibles. L'extension PHP doit être installée",
- phpExtensionNotFoundError	: "Le plug-in ne fonctionnera pas. L'extension PHP doit être installée"
+ phpExtensionNotFoundError	: "Le plug-in ne fonctionnera pas. L'extension PHP doit être installée",
+ trkPrivate			: "Private",
+ dontSet			: "Don't set"
  };
