@@ -244,5 +244,7 @@ var theUILang =
  plgLaunch			: "Запуск",
  plgLocked			: "Обязателен",
  phpExtensionNotFoundWarning	: "Часть функциональности плагина будет недоступна. Расширение PHP должно быть установлено",
- phpExtensionNotFoundError	: "Плагин не будет работать. Расширение PHP должно быть установлено"
+ phpExtensionNotFoundError	: "Плагин не будет работать. Расширение PHP должно быть установлено",
+ trkPrivate			: "Частный",
+ dontSet			: "Не устанавливать"
  };

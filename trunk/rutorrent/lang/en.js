@@ -245,4 +245,6 @@ var theUILang =
  plgLocked			: "Mandatory",
  phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
  phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed",
+ trkPrivate			: "Private",
+ dontSet			: "Don't set"
  };
