@@ -240,9 +240,9 @@ function isUserHavePermission($uid,$gids,$file,$flags)
 	if(isUserHavePermissionPrim($uid,$gids,$file,$flags))
 	{
 		if(($flags & 0x0002) && !is_dir($file))
-			$flags = 0x0007;
+			$flags = 0x0003;
 		else
-			$flags = 0x0005;
+			$flags = 0x0001;
 		return(isUserHavePermissionPrim($uid,$gids,dirname($file),$flags));
 	}
 	return(false);
