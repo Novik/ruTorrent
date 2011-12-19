@@ -496,7 +496,8 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 			header('Content-Transfer-Encoding: binary');
 			header('Content-Description: File Transfer');
 			header('HTTP/1.0 200 OK');
-			ob_end_flush();
+			while(ob_get_level() > 0)
+    			    ob_end_flush();
 			if($stat['size'] >= 2147483647)
 				passthru('cat '.escapeshellarg($filename));
 			else
