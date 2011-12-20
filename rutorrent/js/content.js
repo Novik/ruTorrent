@@ -413,10 +413,6 @@ function makeContent()
 							"<td>"+theUILang.Glob_max_http+":</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"max_open_http\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
-						"<tr>"+
-							"<td>"+theUILang.Glob_max_sockets+":</td>"+
-							"<td class=\"alr\"><input type=\"text\" id=\"max_open_sockets\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
-						"</tr>"+				
 					"</table>"+
 				"</fieldset>"+
 			"</div>"+
@@ -642,65 +638,6 @@ function correctContent()
 		{
 			"d.set_peer_exchange" 		: "d.peer_exchange.set",
 			"d.set_connection_seed"		: "d.connection_seed.set"
-/*
-			"d.get_base_filename" 		: "d.base_filename",
-			"d.get_base_path" 		: "d.base_path",
-			"d.get_bitfield" 		: "d.bitfield",
-			"d.get_creation_date" 		: "d.creation_date",
-			"d.get_down_rate" 		: "d.down.rate",
-			"d.get_down_total" 		: "d.down.total",
-			"d.get_hash" 			: "d.hash",
-			"d.get_local_id" 		: "d.local_id",
-			"d.get_local_id_html" 		: "d.local_id_html",
-			"d.get_name" 			: "d.name",
-			"d.get_peer_exchange" 		: "d.peer_exchange",
-			"d.get_skip_rate" 		: "d.skip.rate",
-			"d.get_skip_total" 		: "d.skip.total",
-			"d.get_up_rate" 		: "d.up.rate",
-			"d.get_up_total" 		: "d.up.total",
-			"d.save_session" 		: "d.save_full_session",
-			"get_handshake_log" 		: "log.handshake",
-			"get_log.tracker" 		: "log.tracker",
-			"get_max_file_size" 		: "system.file.max_size",
-			"get_max_memory_usage" 		: "pieces.memory.max",
-			"get_memory_usage" 		: "pieces.memory.current",
-			"get_name" 			: "system.session_name",
-			"get_preload_min_size" 		: "pieces.preload.min_size",
-			"get_preload_required_rate" 	: "pieces.preload.min_rate",
-			"get_preload_type" 		: "pieces.preload.type",
-			"get_safe_free_diskspace" 	: "pieces.sync.safe_free_diskspace",
-			"get_safe_sync" 		: "pieces.sync.always_safe",
-			"get_session_lock"		: "system.session.use_lock",
-			"get_session_on_completion" 	: "system.session.on_completion",
-			"get_split_file_size" 		: "system.file.split_size",
-			"get_split_suffix" 		: "system.file.split_suffix",
-			"get_stats_not_preloaded" 	: "pieces.stats_not_preloaded",
-			"get_stats_preloaded" 		: "pieces.stats_preloaded",
-			"get_timeout_safe_sync" 	: "pieces.sync.timeout_safe",
-			"get_timeout_sync" 		: "pieces.sync.timeout",
-			"set_handshake_log" 		: "log.handshake.set",
-			"set_log.tracker" 		: "log.tracker.set",
-			"set_max_file_size"		: "system.file.max_size.set",
-			"set_max_memory_usage"		: "pieces.memory.max.set",
-			"set_name" 			: "system.session_name.set",
-			"set_preload_min_size" 		: "pieces.preload.min_size.set",
-			"set_preload_required_rate" 	: "pieces.preload.min_rate.set",
-			"set_preload_type" 		: "pieces.preload.type.set",
-			"set_safe_sync" 		: "pieces.sync.always_safe.set",
-			"set_session_lock" 		: "system.session.use_lock.set",
-			"set_session_on_completion" 	: "system.session.on_completion.set",
-			"set_split_file_size" 		: "system.file.split_size.set",
-			"set_split_suffix" 		: "system.file.split_suffix.set",
-			"set_timeout_safe_sync" 	: "pieces.sync.timeout_safe.set",
-			"set_timeout_sync" 		: "pieces.sync.timeout.set",
-			"system.method.erase" 		: "method.erase",
-			"system.method.get" 		: "method.get",
-			"system.method.has_key" 	: "method.has_key",
-			"system.method.insert" 		: "method.insert",
-			"system.method.list_keys" 	: "method.list_keys",
-			"system.method.set" 		: "method.set",
-			"system.method.set_key" 	: "method.set_key"
-*/
 		});
 	}
 	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
