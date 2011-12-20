@@ -321,8 +321,8 @@ plugin.onLangLoaded = function()
 					"<select id='ratio_reason'>"+
 						"<option value='0'>"+theUILang.ratLabelContain+"</option>"+
 						"<option value='1'>"+theUILang.ratTrackerContain+"</option>"+
-						"<option value='2'>"+theUILang.ratTrackerPublic+"</option>"+
-						"<option value='3'>"+theUILang.ratTrackerPrivate+"</option>"+
+						"<option value='3'>"+theUILang.ratTrackerPublic+"</option>"+
+						"<option value='2'>"+theUILang.ratTrackerPrivate+"</option>"+
 					"</select><br/>"+
 					"<input type='text' id='ratio_pattern' class='TextboxLarge'/><br/>"+
 				"</fieldset>"+
