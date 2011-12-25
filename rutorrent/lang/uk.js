@@ -274,6 +274,6 @@
  plgLocked			: "Обов’язковий",
  phpExtensionNotFoundWarning	: "Деякі функції будуть недоступні. Потрібно інсталювати розширення PHP",
  phpExtensionNotFoundError	: "Плагін не працюватиме. Потрібно інсталювати розширення PHP",
- trkPrivate			: "Private",
- dontSet			: "Don't set"
+ trkPrivate			: "Приватний",
+ dontSet			: "Не встановлювати"
  };
