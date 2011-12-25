@@ -1,19 +1,19 @@
 ﻿
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioRulesManager	= "Менеджер правил";
+ theUILang.mnu_ratiorule	= "Правила коефіцієнта";
+ theUILang.ratAddRule		= "Додати";
+ theUILang.ratDelRule		= "Видалити";
+ theUILang.ratUpRule		= "Вгору";
+ theUILang.ratDownRule		= "Вниз";
+ theUILang.ratioIfLegend	= "Якщо";
+ theUILang.ratLabelContain	= "Мітка завантаження міститьт";
+ theUILang.ratTrackerContain	= "Одна з URL-адрес трекерів містить";
+ theUILang.ratTrackerPublic	= "Усі трекери завантаження публічні";
+ theUILang.ratTrackerPrivate	= "Один із трекерів завантаження приватний";
+ theUILang.ratioThenLegend	= "То";
+ theUILang.setRatioTo		= "Установити коефіцієнт";
+ theUILang.setChannelTo 	= "Установити канал";
+ theUILang.ratioNewRule 	= "Нове правило";
 
 thePlugins.get("extratio").langLoaded();
