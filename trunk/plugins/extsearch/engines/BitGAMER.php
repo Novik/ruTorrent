@@ -8,7 +8,7 @@
 
 class BitGAMEREngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>30, "cookies"=>"www.bitgamer.com|pass=XXX;uid=XXX;" );
+	public $defaults = array( "public"=>false, "page_size"=>30, "cookies"=>"www.bitgamer.su|pass=XXX;uid=XXX;" );
 	public $categories = array( 'all'=>'', '(Adult Games)'=>'&c82=1', '(Burning/Ripping)'=>'&c80=1', '(Guides/DOX)'=>'&c81=1', '(Movies/TV/Video)'=>'&c83=1', '(Music)'=>'&c84=1', 'Android'=>'&c89=1', 'iPhone/iPod/iPad'=>'&c88=1', 'GBA'=>'&c77=1', 'DS'=>'&c78=1', 'Gamecube'=>'&c72=1', 'Wii'=>'&c74=1', 'PC-Linux'=>'&c87=1', 'PC-Mac'=>'&c86=1', 'PC-Windows'=>'&c79=1', 'PS2'=>'&c73=1', 'PS3'=>'&c75=1', 'PSP'=>'&c76=1', 'XBOX'=>'&c70=1', 'XBOX 360'=>'&c71=1' );
 
 
@@ -16,7 +16,7 @@ class BitGAMEREngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.bitgamer.com';
+		$url = 'https://www.bitgamer.su';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'tv'=>'&c83=1', 'music'=>'&c84=1', 
 				'games'=>'&c82=1&c89=1&c88=1&c77=1&c78=1&c72=1&c74=1&87=1&c86=1&c79=1&c73=1&c75=1&c76=1&c70=1&c71=1', 
@@ -31,7 +31,7 @@ class BitGAMEREngine extends commonEngine
 		{
 			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&searchtitle=1&sort=seeders&d=DESC&incldead=0&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h3>Nothing found!</h3>")!==false)
-				|| (strpos($cli->results, '<div class="loginframe">')!==false))
+				|| (strpos($cli->results, '<form id="loginform" method="post"')!==false))
 				break;
 			$res = preg_match_all("/<img class=.* border='0' src=.* alt='(?P<cat>.*)' \/><\/a>".
 				".*<a href='details.php\?id=(?P<id>\d+)&amp;hit=1'.*>(?P<name>.*)<\/a>.*".
