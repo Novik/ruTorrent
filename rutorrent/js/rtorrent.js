@@ -81,7 +81,7 @@ var theRequestManager =
 			"preload_required_rate", "preload_type", "proxy_address", "receive_buffer_size", "safe_sync",
 			"scgi_dont_route", "send_buffer_size", "session", "session_lock", "session_on_completion",
 			"split_file_size", "split_suffix", "timeout_safe_sync", "timeout_sync", "tracker_numwant",
-			"use_udp_trackers", "max_uploads_div"
+			"use_udp_trackers", "max_uploads_div", "get_max_open_sockets"
 		],
 		handlers: []
 	},
