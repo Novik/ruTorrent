@@ -9,7 +9,7 @@
 class BlackcatsGamesEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"www.blackcats-games.net|pass=XXX;uid=XXX;" );
-	public $categories = array( 'all'=>'&cat=0', 'Amiga'=>'&cat=49', 'Commodore 64'=>'&cat=52', 'Dreamcast'=>'&cat=7', 'DS'=>'&cat=8', 'Dox|Saves'=>'&cat=30', 'OST'=>'&cat=29', 'Gamecube'=>'&cat=5', 'GB|GBC|GBA'=>'&cat=50', 'Genesis|CD'=>'&cat=54', 'iPhone|iPod'=>'&cat=36', 'JTAG'=>'&cat=45', 'Linux'=>'&cat=38', 'Mac'=>'&cat=33', 'Mame'=>'&cat=56', 'Member Creations'=>'&cat=44', 'NES|SNES'=>'&cat=53', 'N64'=>'&cat=55', 'Other Roms'=>'&cat=11', 'PC'=>'&cat=1', 'Phone|PDA'=>'&cat=35', 'PS1'=>'&cat=6', 'PS2'=>'&cat=2', 'PS3'=>'&cat=24', 'PSP'=>'&cat=9', 'PSXPSP'=>'&cat=32', 'Saturn'=>'&cat=10', 'Spectrum'=>'&cat=51', 'Wii'=>'&cat=25', 'WiiVC'=>'&cat=39', 'WiiWare'=>'&cat=40', 'XBOX'=>'&cat=3', 'XBOX 360'=>'&cat=4', 'XBOXto360'=>'&cat=34' );
+	public $categories = array( 'all'=>'&cat=0', '3DS'=>'&cat=68', 'Android'=>'&cat=63', 'Audiobooks'=>'&cat=60', 'Console Apps'=>'&cat=66', 'Dreamcast'=>'&cat=7', 'DS'=>'&cat=8', 'Game-Dev'=>'&cat=69', 'Game-Dox|Saves'=>'&cat=30', 'Game-Mods'=>'&cat=64', 'Game-OST'=>'&cat=29', 'Gamecube'=>'&cat=5', 'iPhone|iPad'=>'&cat=36', 'JTAG'=>'&cat=45', 'Linux'=>'&cat=38', 'Mac'=>'&cat=33', 'Mame'=>'&cat=56', 'Member Creations'=>'&cat=44', 'NES|SNES'=>'&cat=53', 'Packs'=>'&cat=62', 'PC'=>'&cat=1', 'Phone|PDA'=>'&cat=35', 'PS1'=>'&cat=6', 'PS2'=>'&cat=2', 'PS3'=>'&cat=24', 'PSP'=>'&cat=9', 'PSXPSP'=>'&cat=32', 'Roms'=>'&cat=11', 'Saturn'=>'&cat=10', 'Tech Vids'=>'&cat=67', 'Wii'=>'&cat=25', 'WiiVC'=>'&cat=39', 'WiiWare'=>'&cat=40', 'XBOX'=>'&cat=3', 'XBOX 360'=>'&cat=4', 'XBOXto360'=>'&cat=34' );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -28,7 +28,7 @@ class BlackcatsGamesEngine extends commonEngine
 			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&incldead=0&blah=0&sort=7&type=desc&page='.$pg.$cat );
 			
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) ||
-				(strpos($cli->results, "<TITLE>Your Company Name</TITLE>")!==false))
+				(strpos($cli->results, 'Password: <')!==false))
 				break;
 			$res = preg_match_all('/<img border="0" src=.* alt="(?P<cat>.*)" \/><\/a>'.
 				'.*<td .*>.*href="details.php\?id=(?P<id>\d+)&amp;hit=1".*>(?P<name>.*)<\/a>.*<br\/>(?P<date>.*)<a href=.*>.*'.
