@@ -1,7 +1,7 @@
 plugin.loadLang();
 plugin.loadMainCSS();
 
-if(plugin.enabled && plugin.canChangeOptions())
+if(plugin.canChangeOptions())
 {
 	plugin.accaddAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 

@@ -1,6 +1,6 @@
 plugin.loadLang();
 
-if(plugin.enabled && plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVersion >= 0x805))
+if(plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVersion >= 0x805))
 {
 	plugin.config = theWebUI.config;
 	theWebUI.config = function(data)
@@ -80,7 +80,7 @@ if(plugin.enabled && plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVe
 	}
 }
 
-if(plugin.enabled && plugin.canChangeOptions())
+if(plugin.canChangeOptions())
 {
 	plugin.loadMainCSS();
 
@@ -222,7 +222,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 
 plugin.onLangLoaded = function() 
 {
-        if(this.enabled && this.canChangeOptions())
+        if(this.canChangeOptions())
         {
 		var s = 
 			"<div>"+

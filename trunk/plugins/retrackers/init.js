@@ -1,7 +1,7 @@
 plugin.loadMainCSS();
 plugin.loadLang();
 
-if(plugin.enabled && plugin.canChangeOptions())
+if(plugin.canChangeOptions())
 {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 
@@ -89,7 +89,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 
 plugin.onLangLoaded = function() 
 {
-	if(this.enabled && this.canChangeOptions())
+	if(this.canChangeOptions())
 	        this.attachPageToOptions(
 		        $("<div>").attr("id","st_retrackers").html(
 				"<fieldset>"+

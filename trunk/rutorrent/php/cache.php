@@ -11,6 +11,17 @@ class rCache
 		if(!is_dir($this->dir))
 			makeDirectory($this->dir);
 	}
+	public static function flock( $fp )
+	{
+		$i = 0;
+		while(!flock($fp, LOCK_EX | LOCK_NB))
+		{
+			usleep(round(rand(0, 100)*1000));
+			if(++$i>20)
+				return(false);
+		}
+		return(true);
+	}
 	public function set( $rss, $arg = null )
 	{
 		global $profileMask;
@@ -29,7 +40,7 @@ class rCache
 		$fp = fopen( $name.'.tmp', "a" );
 		if($fp!==false)
 		{
-			if(flock( $fp, LOCK_EX ))
+			if(self::flock( $fp ))
 			{
 				ftruncate( $fp, 0 );
 	        		fwrite( $fp, serialize( $rss ) );

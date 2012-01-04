@@ -1,6 +1,6 @@
 plugin.loadLang();
 
-if(plugin.enabled && plugin.canChangeOptions())
+if(plugin.canChangeOptions())
 {
 	plugin.loadMainCSS();
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
@@ -74,7 +74,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 
 plugin.onLangLoaded = function()
 {
-	if(this.enabled && this.canChangeOptions())
+	if(this.canChangeOptions())
 	{
 		this.attachPageToOptions( $("<div>").attr("id","st_autotools").html(
 		"<fieldset>"+

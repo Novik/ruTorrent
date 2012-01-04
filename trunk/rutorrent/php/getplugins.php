@@ -484,7 +484,7 @@ if($handle = opendir('../plugins'))
 				require_once( $plugin["php"] );
 			else
 				$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
-			if($plugin["js"])
+			if($plugin["js"] && $theSettings->isPluginRegistered($plugin["name"]))
 			{
 				$jResult.=file_get_contents($plugin["js"]);
 				$jResult.="\n";

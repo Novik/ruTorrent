@@ -79,7 +79,7 @@ class rRatioRulesList
 	public $hash = "ratiorules.dat";
         public $lst = array();
 
-	static public function load( $mngr = null )
+	static public function load()
 	{
 		$cache = new rCache();
 		$ar = new rRatioRulesList();
