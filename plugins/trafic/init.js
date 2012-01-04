@@ -1,7 +1,7 @@
 if(browser.isKonqueror && (browser.versionMajor<4))
 	plugin.disable();
 
-if(plugin.enabled && plugin.canChangeTabs())
+if(plugin.canChangeTabs())
 {
 
 	function rTraficGraph()
@@ -273,7 +273,7 @@ if(plugin.enabled && plugin.canChangeTabs())
 	}
 }
 
-if(plugin.enabled && plugin.canChangeColumns() && plugin.collectStatForTorrents)
+if(plugin.canChangeColumns() && plugin.collectStatForTorrents)
 {
 	plugin.config = theWebUI.config;
 	theWebUI.config = function(data)
@@ -367,40 +367,37 @@ if(plugin.enabled && plugin.canChangeColumns() && plugin.collectStatForTorrents)
 
 plugin.onLangLoaded = function()
 {
-	if(this.enabled)
+	if(this.canChangeTabs())
 	{
-		if(this.canChangeTabs())
+	 	this.attachPageToTabs(
+			$('<div>').attr("id","traf").html(
+				"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
+					(plugin.disableClearButton ? "" : "<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>")+
+					"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
+						"<option value='global' selected>"+theUILang.allTrackers+"</option>"+
+					"</select>"+
+					"<select name='traf_mode' id='traf_mode' onchange='theWebUI.reqForTraficGraph()'>"+
+						"<option value='day'>"+theUILang.perDay+"</option>"+
+						"<option value='month'>"+theUILang.perMonth+"</option>"+
+						"<option value='year'>"+theUILang.perYear+"</option>"+
+					"</select>"+
+				"</div><div id='traf_graph' class='graph_tab'></div>").get(0),theUILang.traf,"lcont");
+		theWebUI.trafGraph = new rTraficGraph();
+		theWebUI.trafGraph.create($("#traf_graph"));
+		plugin.onShow = theTabs.onShow;
+		theTabs.onShow = function(id)
 		{
-		 	this.attachPageToTabs(
-				$('<div>').attr("id","traf").html(
-					"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
-						(plugin.disableClearButton ? "" : "<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>")+
-						"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-							"<option value='global' selected>"+theUILang.allTrackers+"</option>"+
-						"</select>"+
-						"<select name='traf_mode' id='traf_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-							"<option value='day'>"+theUILang.perDay+"</option>"+
-							"<option value='month'>"+theUILang.perMonth+"</option>"+
-							"<option value='year'>"+theUILang.perYear+"</option>"+
-						"</select>"+
-					"</div><div id='traf_graph' class='graph_tab'></div>").get(0),theUILang.traf,"lcont");
-			theWebUI.trafGraph = new rTraficGraph();
-			theWebUI.trafGraph.create($("#traf_graph"));
-			plugin.onShow = theTabs.onShow;
-			theTabs.onShow = function(id)
+			if(id=="traf")
 			{
-				if(id=="traf")
-				{
-					if(theWebUI.activeView!="traf")
-						theWebUI.reqForTraficGraph();
-					else
-						theWebUI.trafGraph.resize();
-				}
+				if(theWebUI.activeView!="traf")
+					theWebUI.reqForTraficGraph();
 				else
-					plugin.onShow.call(this,id);
-			};
-        		theWebUI.resize();
-		}
+					theWebUI.trafGraph.resize();
+			}
+			else
+				plugin.onShow.call(this,id);
+		};
+       		theWebUI.resize();
 	}
 };
 

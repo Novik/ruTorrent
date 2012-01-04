@@ -1,6 +1,6 @@
 plugin.loadLang();
 
-if(plugin.enabled && plugin.canChangeMenu()) 
+if(plugin.canChangeMenu()) 
 {
 	theWebUI.mediaInfo = function( hash, no ) 
 	{

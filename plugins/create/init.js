@@ -181,85 +181,82 @@ plugin.setConsoleControls = function()
 
 plugin.onLangLoaded = function()
 {
-	if(this.enabled)
-	{
-		this.addButtonToToolbar("create",theUILang.mnu_create,"theWebUI.showCreate()","remove");
-		this.addSeparatorToToolbar("remove");
+	this.addButtonToToolbar("create",theUILang.mnu_create,"theWebUI.showCreate()","remove");
+	this.addSeparatorToToolbar("remove");
 
-		var pieceSize = 
-			"<label>"+theUILang.PieceSize+": </label>"+
-			"<select id='piece_size' name='piece_size'>"+
-				"<option value=\"32\">32"+theUILang.KB+"</option>"+
-				"<option value=\"64\">64"+theUILang.KB+"</option>"+
-				"<option value=\"128\">128"+theUILang.KB+"</option>"+
-				"<option value=\"256\" selected=\"selected\">256"+theUILang.KB+"</option>"+
-				"<option value=\"512\">512"+theUILang.KB+"</option>"+
-				"<option value=\"1024\">1"+theUILang.MB+"</option>"+
-				"<option value=\"2048\">2"+theUILang.MB+"</option>"+
-				"<option value=\"4096\">4"+theUILang.MB+"</option>"+
-				"<option value=\"8192\">8"+theUILang.MB+"</option>"+
-				"<option value=\"16384\">16"+theUILang.MB+"</option>"+
-				"</select>";
-		if(this.hidePieceSize)
-			pieceSize = "";	
-		theDialogManager.make("tcreate",theUILang.CreateNewTorrent,
-			"<div class='cont fxcaret'>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.SelectSource+"</legend>"+
-					"<input type='text' id='path_edit' name='path_edit' class='TextboxLarge' autocomplete='off'/>"+
-					"<input type=button value='...' id='browse_path' class='Button'><br/>"+
-				"</fieldset>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.TorrentProperties+"</legend>"+
-                               	               "<label>"+theUILang.Trackers+": </label>"+
-					"<textarea id='trackers' name='trackers'></textarea><br/>"+
-       	                               	       "<label>"+theUILang.Comment+": </label>"+
-                	               	"<input type='text' id='comment' name='comment' class='TextboxLarge'/><br/>"+
-					pieceSize+	
-				"</fieldset>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.Other+"</legend>"+
-					"<label id='nomargin'><input type='checkbox' name='start_seeding' id='start_seeding'/>"+theUILang.StartSeeding+"</label>"+
-					"<label id='nomargin'><input type='checkbox' name='private' id='private'/>"+theUILang.PrivateTorrent+"</label><br/>"+
-				"</fieldset>"+
-			"</div>"+
-			"<div class='aright buttons-list'><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>");
-		theDialogManager.make("tconsole",theUILang.CreateNewTorrent,
-			"<div class='fxcaret'>"+
-				"<form action='plugins/create/action.php' method='post' id='saveform' target='_blank'>"+
-					"<input type='hidden' id='createfile' name='tname'/>"+
-					"<input type='hidden' name='cmd' value='get'/>"+
-				"</form>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.createConsole+"</legend>"+
-					"<div class='console' id='createlog'></div>"+
-				"</fieldset>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.createErrors+"</legend>"+
-					"<div class='console' id='createerrors'></div>"+
-				"</fieldset>"+
-			"</div>"+
-			"<div class='aright buttons-list' id='create_btns'>"+
-				"<input type='button' id='torrentSave' value='"+theUILang.torrentSave+"' class='OK Button' onclick='theWebUI.saveTorrent()'/>"+
-				"<input type='button' id='torrentKill' value='"+theUILang.torrentKill+"' class='Button' onclick='theWebUI.killTorrent()'/>"+
-				"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
-			"</div>",true);
-		if(thePlugins.isInstalled("_getdir"))
+	var pieceSize = 
+		"<label>"+theUILang.PieceSize+": </label>"+
+		"<select id='piece_size' name='piece_size'>"+
+			"<option value=\"32\">32"+theUILang.KB+"</option>"+
+			"<option value=\"64\">64"+theUILang.KB+"</option>"+
+			"<option value=\"128\">128"+theUILang.KB+"</option>"+
+			"<option value=\"256\" selected=\"selected\">256"+theUILang.KB+"</option>"+
+			"<option value=\"512\">512"+theUILang.KB+"</option>"+
+			"<option value=\"1024\">1"+theUILang.MB+"</option>"+
+			"<option value=\"2048\">2"+theUILang.MB+"</option>"+
+			"<option value=\"4096\">4"+theUILang.MB+"</option>"+
+			"<option value=\"8192\">8"+theUILang.MB+"</option>"+
+			"<option value=\"16384\">16"+theUILang.MB+"</option>"+
+			"</select>";
+	if(this.hidePieceSize)
+		pieceSize = "";	
+	theDialogManager.make("tcreate",theUILang.CreateNewTorrent,
+		"<div class='cont fxcaret'>"+
+			"<fieldset>"+
+				"<legend>"+theUILang.SelectSource+"</legend>"+
+				"<input type='text' id='path_edit' name='path_edit' class='TextboxLarge' autocomplete='off'/>"+
+				"<input type=button value='...' id='browse_path' class='Button'><br/>"+
+			"</fieldset>"+
+			"<fieldset>"+
+				"<legend>"+theUILang.TorrentProperties+"</legend>"+
+                       	               "<label>"+theUILang.Trackers+": </label>"+
+				"<textarea id='trackers' name='trackers'></textarea><br/>"+
+                               	       "<label>"+theUILang.Comment+": </label>"+
+        	               	"<input type='text' id='comment' name='comment' class='TextboxLarge'/><br/>"+
+				pieceSize+	
+			"</fieldset>"+
+			"<fieldset>"+
+				"<legend>"+theUILang.Other+"</legend>"+
+				"<label id='nomargin'><input type='checkbox' name='start_seeding' id='start_seeding'/>"+theUILang.StartSeeding+"</label>"+
+				"<label id='nomargin'><input type='checkbox' name='private' id='private'/>"+theUILang.PrivateTorrent+"</label><br/>"+
+			"</fieldset>"+
+		"</div>"+
+		"<div class='aright buttons-list'><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>");
+	theDialogManager.make("tconsole",theUILang.CreateNewTorrent,
+		"<div class='fxcaret'>"+
+			"<form action='plugins/create/action.php' method='post' id='saveform' target='_blank'>"+
+				"<input type='hidden' id='createfile' name='tname'/>"+
+				"<input type='hidden' name='cmd' value='get'/>"+
+			"</form>"+
+			"<fieldset>"+
+				"<legend>"+theUILang.createConsole+"</legend>"+
+				"<div class='console' id='createlog'></div>"+
+			"</fieldset>"+
+			"<fieldset>"+
+				"<legend>"+theUILang.createErrors+"</legend>"+
+				"<div class='console' id='createerrors'></div>"+
+			"</fieldset>"+
+		"</div>"+
+		"<div class='aright buttons-list' id='create_btns'>"+
+			"<input type='button' id='torrentSave' value='"+theUILang.torrentSave+"' class='OK Button' onclick='theWebUI.saveTorrent()'/>"+
+			"<input type='button' id='torrentKill' value='"+theUILang.torrentKill+"' class='Button' onclick='theWebUI.killTorrent()'/>"+
+			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
+		"</div>",true);
+	if(thePlugins.isInstalled("_getdir"))
+	{
+		plugin.btn = new theWebUI.rDirBrowser( 'tcreate', 'path_edit', 'browse_path', null, true );
+		theDialogManager.setHandler('tcreate','afterHide',function()
 		{
-			plugin.btn = new theWebUI.rDirBrowser( 'tcreate', 'path_edit', 'browse_path', null, true );
-			theDialogManager.setHandler('tcreate','afterHide',function()
-			{
-				plugin.btn.hide();
-			});
-		}
-		else
-			$('#browse_path').remove();
-		theDialogManager.setHandler('tconsole','afterHide',function()
-		{
-			if(!plugin.pid || (plugin.status>=0))
-				plugin.task = 0;
+			plugin.btn.hide();
 		});
 	}
+	else
+		$('#browse_path').remove();
+	theDialogManager.setHandler('tconsole','afterHide',function()
+	{
+		if(!plugin.pid || (plugin.status>=0))
+			plugin.task = 0;
+	});
 };
 
 plugin.onRemove = function()

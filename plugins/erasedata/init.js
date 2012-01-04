@@ -1,4 +1,4 @@
-if(plugin.enabled && plugin.canChangeMenu())
+if(plugin.canChangeMenu())
 {
 	theWebUI.removeWithData = function()
 	{

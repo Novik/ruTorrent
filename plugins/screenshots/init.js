@@ -13,7 +13,7 @@ plugin.extensions = [
 	"mkv","ogm","mpg","mpv","m1v","m2v","mp2","qt","rmvb","dat","ts"
 	];
 
-if(plugin.enabled && plugin.canChangeOptions() && !explorerIsInstalled)
+if(plugin.canChangeOptions() && !explorerIsInstalled)
 {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 
