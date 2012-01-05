@@ -583,7 +583,7 @@ function correctContent()
 		theWebUI.systemInfo = { rTorrent: { version: '?', libVersion: '?', started: false, iVersion: 0 } };
 
 	if(!theWebUI.systemInfo.rTorrent.started)
-        	theWebUI.showFlags &= ~0xFFFF;
+        	theWebUI.showFlags &= ~0xFFEF;
 
 	if(!(theWebUI.showFlags & showEnum.showDownloadsPage))
 		rPlugin.prototype.removePageFromOptions("st_dl");
