@@ -1,6 +1,6 @@
 ﻿
 
- theUILang.getSource		= "Get .torrent";
- theUILang.cantFindTorrent	= "Source torrent file for this download not found.";
+ theUILang.getSource		= "Pobierz plik .torrent";
+ theUILang.cantFindTorrent	= "Plik .torrent nie znaleziony.";
 
 thePlugins.get("source").langLoaded();

@@ -1,10 +1,10 @@
 ﻿
 
- theUILang.Chunks		= "Chunks";
- theUILang.chunksNoChunksFound	= "No chunks found!";
- theUILang.chunksRows		= "row(s)";
- theUILang.chunksColumns	= "column(s)";
- theUILang.chunksChunks 	= "chunk(s)";
- theUILang.chunksSize		= "chunk size";
+ theUILang.Chunks		= "Kawałki(Chunks)";
+ theUILang.chunksNoChunksFound	= "Brak kawałków (chunks)!";
+ theUILang.chunksRows		= "wierszy";
+ theUILang.chunksColumns	= "kolumn";
+ theUILang.chunksChunks 	= "kawałków";
+ theUILang.chunksSize		= "rozmiar kawałka(chunk)";
 
 thePlugins.get("chunks").langLoaded();

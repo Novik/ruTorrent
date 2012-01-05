@@ -1,10 +1,10 @@
 ﻿
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkPort		= "Sprawdź status przekierowania Portu/Portów";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Port status nieznany",
+ 				  "Port zamknięty",
+ 				  "Port otwarty.OK"
  				  ];
 
 thePlugins.get("check_port").langLoaded();

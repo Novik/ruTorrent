@@ -1,8 +1,8 @@
 ﻿
 
- theUILang.tskCommand		= "Running...";
- theUILang.tskCommandDone	= "Done.";
- theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostics";
+ theUILang.tskCommand		= "Uruchomione...";
+ theUILang.tskCommandDone	= "Gotowe.";
+ theUILang.tskConsole		= "Konsola";
+ theUILang.tskErrors		= "Diagnostyka";
 
 thePlugins.get("_task").langLoaded();

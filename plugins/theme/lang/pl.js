@@ -1,6 +1,6 @@
 ﻿
 
  theUILang.themeStandard	= "Standard";
- theUILang.theme		= "Theme";
+ theUILang.theme		= "Kompozycja";
 
 thePlugins.get("theme").langLoaded();
