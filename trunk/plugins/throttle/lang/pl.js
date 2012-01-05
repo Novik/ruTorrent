@@ -5,6 +5,6 @@
  theUILang.mnuThrottle		= "Ustaw kanał";
  theUILang.mnuUnlimited 	= "Brak kanału";
  theUILang.channelName		= "Nazwa";
- theUILang.channelDefault	= "Default channel";
+ theUILang.channelDefault	= "Kanał domyślny";
 
 thePlugins.get("throttle").langLoaded();

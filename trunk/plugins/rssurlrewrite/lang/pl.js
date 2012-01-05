@@ -1,22 +1,22 @@
 ﻿
 
- theUILang.rssNewRule		= "New rule";
- theUILang.mnu_rssurlrewrite	= "URL Replacement in RSS";
- theUILang.rssRulesManager	= "Rules Manager";
- theUILang.rssAddRule		= "Add";
- theUILang.rssDelRule		= "Delete";
+ theUILang.rssNewRule		= "Nowa reguła";
+ theUILang.mnu_rssurlrewrite	= "Zastępstwo URLa w RSS";
+ theUILang.rssRulesManager	= "Menedżer reguł";
+ theUILang.rssAddRule		= "Dodaj";
+ theUILang.rssDelRule		= "Usuń";
  theUILang.rssCheckRule 	= "?";
- theUILang.rssRulesLegend	= "Rule Settings";
- theUILang.rssSrcHref		= "If URL of torrent download matches pattern";
- theUILang.rssSrcGuid		= "If URL of torrent description matches pattern";
- theUILang.rssDstHref		= "then replace URL of torrent download with";
- theUILang.rssDstGuid		= "then replace URL of torrent description with";
+ theUILang.rssRulesLegend	= "Ustawienia Reguł";
+ theUILang.rssSrcHref		= "Jeśli URL torrenta pokrywa się z maską";
+ theUILang.rssSrcGuid		= "Jeśli URL opisu torrenta pokrywa się z maską";
+ theUILang.rssDstHref		= "to zastąp URL z";
+ theUILang.rssDstGuid		= "to zastąp URL opisu z";
  theUILang.rssRulesDebug	= "Rule Debug";
  theUILang.rssTestString	= "Test";
- theUILang.rssTestResult	= "Result";
+ theUILang.rssTestResult	= "Wynik";
  theUILang.rssURLInfo		= "URL info";
- theUILang.rssURLGUID		= "Description URL";
+ theUILang.rssURLGUID		= "URL opisu";
  theUILang.rssURLHref		= "Download URL";
- theUILang.rssPatternError	= "Error in pattern string.";
+ theUILang.rssPatternError	= "Błąd w masce.";
 
 thePlugins.get("rssurlrewrite").langLoaded();

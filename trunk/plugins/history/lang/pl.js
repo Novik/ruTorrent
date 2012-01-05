@@ -3,16 +3,16 @@
  theUILang.historyDeletion	= "Deletion";
  theUILang.historyFinish	= "Finish";
  theUILang.hitoryLog		= "Log";
- theUILang.history		= "History";
+ theUILang.history		= "Historia";
  theUILang.historyLimit		= "Max items count";
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
- theUILang.hstDeletePrompt	= "Do you really want to delete the selected item(s)?";
- theUILang.hstDelete		= "Delete item(s)";
- theUILang.Added		= "Added";
- theUILang.Finished		= "Finished";
- theUILang.Deleted		= "Deleted";
- theUILang.Time			= "Time";
+ theUILang.seedingTime		= "Ukończone";
+ theUILang.addTime		= "Dodane";
+ theUILang.hstDeletePrompt	= "Czy napewno chcesz usunąć wybrane/ą pozycje?";
+ theUILang.hstDelete		= "Usuń pozycję";
+ theUILang.Added		= "Dodane";
+ theUILang.Finished		= "Ukończone";
+ theUILang.Deleted		= "Usunięte";
+ theUILang.Time			= "Czas";
  theUILang.Tracker		= "Tracker";
 
 thePlugins.get("history").langLoaded();

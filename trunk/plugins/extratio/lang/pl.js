@@ -1,19 +1,19 @@
 ﻿
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
+ theUILang.ratioRulesManager	= "Manager Reguł Ratio";
+ theUILang.mnu_ratiorule	= "Reguły Ratio";
+ theUILang.ratAddRule		= "Dodaj";
+ theUILang.ratDelRule		= "Usuń";
+ theUILang.ratUpRule		= "W górę";
+ theUILang.ratDownRule		= "W dół";
+ theUILang.ratioIfLegend	= "Jeżeli";
+ theUILang.ratLabelContain	= "Etykieta torrenta zawiera";
+ theUILang.ratTrackerContain	= "Jeden z trackerów zawiera w adresie";
+ theUILang.ratTrackerPublic	= "Wszystkie trackery są publiczne";
+ theUILang.ratTrackerPrivate	= "Jeden z trackerów jest prywatny";
+ theUILang.ratioThenLegend	= "Wtedy";
+ theUILang.setRatioTo		= "Ustaw ratio na";
  theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioNewRule 	= "Nowa reguła";
 
 thePlugins.get("extratio").langLoaded();

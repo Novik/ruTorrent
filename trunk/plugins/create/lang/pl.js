@@ -11,12 +11,12 @@
  theUILang.CreateAndSaveAs		= "Utwórz i zapisz jako...";
  theUILang.BadTorrentData		= "Musisz wypełnić wszystkie wymagane pola!";
  theUILang.createExternalNotFound	= "Wtyczka Utwórz Torrent:  Serwer nie ma dostępu do zewnętrznej aplikacji. Wtyczka nie będzie działać.";
- theUILang.incorrectDirectory		= "Incorrect directory";
- theUILang.cantExecExternal		= "Can't execute external program";
- theUILang.createConsole		= "Console";
- theUILang.createErrors 		= "Errors";
- theUILang.torrentSave			= "Save";
+ theUILang.incorrectDirectory		= "Niepoprawny folder";
+ theUILang.cantExecExternal		= "Nie można wykonać zewnętrznego programu";
+ theUILang.createConsole		= "Konsola";
+ theUILang.createErrors 		= "Błędy";
+ theUILang.torrentSave			= "Zapisz";
  theUILang.torrentKill			= "Stop";
- theUILang.torrentKilled		= "Process was stopped.";
+ theUILang.torrentKilled		= "Proces został zatrzymany.";
 
 thePlugins.get("create").langLoaded();

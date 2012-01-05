@@ -1,6 +1,6 @@
 ﻿
 
- theUILang.getData		= "Get File";
- theUILang.cantAccessData	= "Webserver user can't access the data of this torrent.";
+ theUILang.getData		= "Pobierz plik";
+ theUILang.cantAccessData	= "User Webservera nie ma dostępu do plików tego torrenta.";
 
 thePlugins.get("data").langLoaded();
