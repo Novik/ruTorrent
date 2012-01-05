@@ -4,11 +4,11 @@
  theUILang.historyFinish	= "Finish";
  theUILang.hitoryLog		= "Log";
  theUILang.history		= "History";
- theUILang.historyLimit		= "Max items count";
+ theUILang.historyLimit		= "Maximum number of records";
  theUILang.seedingTime		= "Finished";
  theUILang.addTime		= "Added";
- theUILang.hstDeletePrompt	= "Do you really want to delete the selected item(s)?";
- theUILang.hstDelete		= "Delete item(s)";
+ theUILang.hstDeletePrompt	= "Do you really want to delete the selected record(s)?";
+ theUILang.hstDelete		= "Delete record(s)";
  theUILang.Added		= "Added";
  theUILang.Finished		= "Finished";
  theUILang.Deleted		= "Deleted";

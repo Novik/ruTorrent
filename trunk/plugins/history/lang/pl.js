@@ -4,7 +4,7 @@
  theUILang.historyFinish	= "Finish";
  theUILang.hitoryLog		= "Log";
  theUILang.history		= "Historia";
- theUILang.historyLimit		= "Max items count";
+ theUILang.historyLimit		= "Maximum number of records";
  theUILang.seedingTime		= "Ukończone";
  theUILang.addTime		= "Dodane";
  theUILang.hstDeletePrompt	= "Czy napewno chcesz usunąć wybrane/ą pozycje?";
