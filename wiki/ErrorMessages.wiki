@@ -34,6 +34,7 @@
 
  The mentioned program is required for this plug-in working but is unavailable under web-server user's account. Or this program does not exist at all (and it should be installed), or the path to the program was not included in the environment variable PATH of web-server user (in this case PATH variable should be revised or the plug-in configuration file should be called, usually there is a way to define a path to the program).
  Another case if the program exists the system but web-server is executed in chroot environment and the program is unavailable to it.
+ This could happen also with various programs when rTorrent's user doesn't have write access to /path/to/rutorrent/share. (reported by  crockabiscuit)
 
  * *ххх plugin: rTorrent's user can't access php interpreter. Plug-in will not work.*
 
