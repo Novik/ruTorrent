@@ -256,7 +256,7 @@ if(plugin.canChangeTabs())
 	plugin.resizeBottom = theWebUI.resizeBottom;
 	theWebUI.resizeBottom = function( w, h )
 	{
-		plugin.resizeBottom( w, h );
+		plugin.resizeBottom.call(theWebUI,w,h);
         	if(w!==null)
 			w-=8;
 		if(h!==null)
