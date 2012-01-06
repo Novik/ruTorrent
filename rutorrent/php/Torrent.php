@@ -13,12 +13,12 @@ require_once( 'util.php' );
 
 class Torrent
 {
-	public $errors = array();
+	protected $errors = array();
 	protected $basedir = null;	
-	private $pointer = 0;
+	protected $pointer = 0;
 	private $data;
-	public $log_callback = null;
-	public $err_callback = null;
+	protected $log_callback = null;
+	protected $err_callback = null;
 
 	/** Read and decode torrent file/data OR build a torrent from source folder/file(s)
 	 * Supported signatures:
@@ -247,7 +247,8 @@ class Torrent
 		$integer = substr($this->data, $this->pointer, $delim_pos - $this->pointer);
 		if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
 			$this->notify_err('Bad integer');
-		$integer = abs(floatval($integer));
+//		$integer = abs(floatval($integer));
+		$integer = floatval($integer);
 		$this->pointer = $delim_pos + 1;
 		return($integer);
 	}
