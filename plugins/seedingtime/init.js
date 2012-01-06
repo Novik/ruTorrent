@@ -14,10 +14,10 @@ if(plugin.canChangeColumns())
 			{
 			        var s = table.getIdByCol(i);
 				if(s=="seedingtime")
-					arr[i] = arr[i] ? theConverter.time(new Date().getTime()/1000-(iv(arr[i])+theWebUI.deltaTime/1000),true) : "";
+					arr[i] = (arr[i]>3600*24*365) ? theConverter.time(new Date().getTime()/1000-(iv(arr[i])+theWebUI.deltaTime/1000),true) : "";
 				else
 				if(s=="addtime")
-					arr[i] = arr[i] ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : "";
+					arr[i] = (arr[i]>3600*24*365) ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : "";
 		        }
 			return(plugin.trtFormat(table,arr));
 		}

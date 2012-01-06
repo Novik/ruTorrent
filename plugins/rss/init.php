@@ -25,4 +25,6 @@ if($needStart)
 	else
 		$jResult .= "plugin.disable(); log('rss: '+theUILang.pluginCantStart);";
 }
+else
+	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 ?>
