@@ -1,9 +1,9 @@
 <?php
 
 $req = new rXMLRPCRequest( array(
-		$theSettings->getOnFinishedCommand(array("seedingtime".getUser(),getCmd('cat='))),
-		$theSettings->getOnInsertCommand(array("addtime".getUser(),getCmd('cat='))),
-		$theSettings->getOnHashdoneCommand(array("seedingtimecheck".getUser(),getCmd('cat=')))
+		rTorrentSettings::get()->getOnFinishedCommand(array("seedingtime".getUser(),getCmd('cat='))),
+		rTorrentSettings::get()->getOnInsertCommand(array("addtime".getUser(),getCmd('cat='))),
+		rTorrentSettings::get()->getOnHashdoneCommand(array("seedingtimecheck".getUser(),getCmd('cat=')))
 		));
 $req->run();
 

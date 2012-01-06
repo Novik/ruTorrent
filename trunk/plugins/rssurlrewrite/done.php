@@ -1,5 +1,5 @@
 <?php
 
-$theSettings->unregisterEventHook("rssurlrewrite","RSSFetched");
+rTorrentSettings::get()->unregisterEventHook("rssurlrewrite","RSSFetched");
 
 ?>
