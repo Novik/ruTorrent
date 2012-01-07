@@ -7,7 +7,10 @@
 		require_once( './history.php' );
 		$hst = rHistoryData::load();
 		$mgr = rHistory::load();
-		$tracker = strstr( $argv[10], '#', true );
+		$tracker = '';
+		$pos = strpos( $argv[10], '#' );
+		if($pos!==false)
+			$tracker = substr( $argv[10], 0, $pos );
 		$hst->add( array(
 			"action"=>intval($argv[1]),
 			"name"=>$argv[2], "size"=>floatval($argv[3]), "downloaded"=>floatval($argv[4]),
