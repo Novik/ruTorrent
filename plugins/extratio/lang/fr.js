@@ -8,8 +8,8 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.ratioRulesManager	= "Gestionnaire de rêgles";
- theUILang.mnu_ratiorule	= "Rêgle de ration";
+ theUILang.ratioRulesManager	= "Gestionnaire de règles";
+ theUILang.mnu_ratiorule	= "Règle de ratio";
  theUILang.ratAddRule		= "Ajout";
  theUILang.ratDelRule		= "Suppr.";
  theUILang.ratUpRule		= "Haut";
