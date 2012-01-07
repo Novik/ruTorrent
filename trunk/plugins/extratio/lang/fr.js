@@ -1,19 +1,27 @@
-﻿
+﻿/*
+ * PLUGIN EXTRATIO
+ *
+ * File Name: fr.js
+ * 	French language file.
+ *
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioRulesManager	= "Gestionnaire de rêgles";
+ theUILang.mnu_ratiorule	= "Rêgle de ration";
+ theUILang.ratAddRule		= "Ajout";
+ theUILang.ratDelRule		= "Suppr.";
+ theUILang.ratUpRule		= "Haut";
+ theUILang.ratDownRule		= "Bas";
+ theUILang.ratioIfLegend	= "Si";
+ theUILang.ratLabelContain	= "L'étiquette du torrent contient";
+ theUILang.ratTrackerContain	= "Une des URLs de tracker du torrent contient";
+ theUILang.ratTrackerPublic	= "Tous les trackers du torrent sont publics";
+ theUILang.ratTrackerPrivate	= "Une des trackers du torrent est privé";
+ theUILang.ratioThenLegend	= "Alors";
+ theUILang.setRatioTo		= "Groupe de ratio";
+ theUILang.setChannelTo 	= "Groupe de vitesse";
+ theUILang.ratioNewRule 	= "Nouvelle rêgle";
 
 thePlugins.get("extratio").langLoaded();

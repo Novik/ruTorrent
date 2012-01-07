@@ -1,4 +1,12 @@
-﻿
+﻿/*
+ * PLUGIN _TASK
+ *
+ * File Name: fr.js
+ * 	French language file.
+ *
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
 
  theUILang.tskCommand		= "Commande en cours...";
  theUILang.tskCommandDone	= "Commande terminée.";

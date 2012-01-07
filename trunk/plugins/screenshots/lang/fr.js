@@ -1,4 +1,12 @@
-﻿
+﻿/*
+ * PLUGIN SCREENSHOTS
+ *
+ * File Name: fr.js
+ *      French language file.
+ *
+ * File Author:
+ *    Nicobubulle (nicobubulle@gmail.com)
+ */
 
  theUILang.exFFMPEG		= "Screenshots";
  theUILang.exFrameWidth 	= "Taille de l'image";
