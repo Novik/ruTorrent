@@ -224,7 +224,7 @@ if(plugin.canChangeTabs())
 					name: item.name,
 					status: item.action,
 					size: item.size,
-					tracker: theWebUI.getTrackerName(item.tracker)
+					tracker: $type(item.tracker) ? theWebUI.getTrackerName(item.tracker) : ''
 				}, item.hash, (item.action==1) ? "Status_Down" : (item.action==2) ? "Status_Completed" : "Status_Error" );
 				updated = true;
 				if( item.action_time > plugin.mark )
