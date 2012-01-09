@@ -2,6 +2,8 @@
 
 class TVTorrentsAccount extends commonAccount
 {
+	public $url = "http://tvtorrents.com";
+
 	protected function isOK($client)
 	{
 		return(strpos($client->results, 'Password:<')===false);
@@ -9,11 +11,11 @@ class TVTorrentsAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
 		$is_result_fetched = false;
-		if($client->fetch( "http://tvtorrents.com" ))
+		if($client->fetch( $this->url ))
 		{
                         $client->setcookies();
-			$client->referer = "http://tvtorrents.com";
-        		if($client->fetch( "http://tvtorrents.com/login.do","POST","application/x-www-form-urlencoded", 
+			$client->referer = $this->url;
+        		if($client->fetch( $this->url."/login.do","POST","application/x-www-form-urlencoded", 
 				"username=".rawurlencode($login)."&password=".rawurlencode($password).'&posted=true' ))
 			{
 				$client->setcookies();
@@ -21,10 +23,6 @@ class TVTorrentsAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	public function test($url)
-	{
-		return(preg_match( "`http://tvtorrents.com/`si", $url ));
 	}
 }
 

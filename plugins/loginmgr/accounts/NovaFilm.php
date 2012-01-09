@@ -2,6 +2,8 @@
 
 class NovaFilmAccount extends commonAccount
 {
+	public $url = "http://novafilm.tv";
+
 	protected function isOK($client)
 	{
 		return(strpos($client->results, 'name="password')===false);
@@ -9,8 +11,8 @@ class NovaFilmAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
 		$is_result_fetched = false;
-		$client->referer = "http://novafilm.tv";
-       		if($client->fetch( "http://novafilm.tv/auth/login","POST","application/x-www-form-urlencoded", 
+		$client->referer = $this->url;
+       		if($client->fetch( $this->url."/auth/login","POST","application/x-www-form-urlencoded", 
 			"username=".rawurlencode($login)."&password=".rawurlencode($password) ))
 		{
 			$client->setcookies();
@@ -20,7 +22,7 @@ class NovaFilmAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "`http://novafilm.tv/download/`si", $url ));
+		return( stripos( $url, $this->url."/download/" )===0 );
 	}
 }
 

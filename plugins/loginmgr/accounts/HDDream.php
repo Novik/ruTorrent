@@ -2,6 +2,8 @@
 
 class HDDreamAccount extends commonAccount
 {
+	public $url = "http://hd-dream.net";
+
 	protected function isOK($client)
 	{
 		return((strpos($client->results, '<input type="password" name="password" class="inputPassword"')===false) &&
@@ -10,11 +12,11 @@ class HDDreamAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{                                                                   
 	        $is_result_fetched = false;
-		if($client->fetch( "http://hd-dream.net/login.php" ))
+		if($client->fetch( $this->url."/login.php" ))
 		{
                         $client->setcookies();
-			$client->referer = "http://hd-dream.net/login.php";
-        		if($client->fetch( "http://hd-dream.net/takelogin.php","POST","application/x-www-form-urlencoded", 
+			$client->referer = $this->url."/login.php";
+        		if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded", 
 				"logout=yes&username=".rawurlencode($login)."&password=".rawurlencode($password) ))
 			{
 				$client->setcookies();
@@ -22,10 +24,6 @@ class HDDreamAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	public function test($url)
-	{
-		return(preg_match( "/^http:\/\/hd-dream\.net\//si", $url ));
 	}
 }
 

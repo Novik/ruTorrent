@@ -1,8 +1,33 @@
 <?php
 require_once( 'cookies.php' );
 
-$cookies = new rCookies();
-$cookies->set();
-cachedEcho($cookies->get(),"application/javascript");
+$cmd = '';
+if(isset($_REQUEST['mode']))
+	$cmd = $_REQUEST['mode'];
+
+switch($cmd)
+{
+	case 'info':
+	{
+		$cookies = rCookies::load();
+		if(isset($_REQUEST['host']))
+			cachedEcho(json_encode($cookies->getCookiesForHost($_REQUEST['host'])),"application/json");
+		else
+			cachedEcho(json_encode($cookies->getInfo()),"application/json");
+	}
+	case 'add':
+	{
+		$cookies = rCookies::load();
+		if(isset($_REQUEST['host']))
+			$cookies->add($_REQUEST['host'],rawurldecode($_REQUEST['cookies']));
+        	cachedEcho(json_encode($cookies->getInfo()),"application/json");
+	}
+	default:
+	{
+		$cookies = new rCookies();
+		$cookies->set();
+		cachedEcho($cookies->get(),"application/javascript");
+	}
+}
 
 ?>

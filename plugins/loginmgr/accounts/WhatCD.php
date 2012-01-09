@@ -2,6 +2,8 @@
 
 class WhatCDAccount extends commonAccount
 {
+	public $url = "http://what.cd";
+
 	protected function isOK($client)
 	{
 		return(strpos($client->results, '<form id="loginform" method="post"')===false);
@@ -9,12 +11,12 @@ class WhatCDAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
 		$is_result_fetched = false;
-		if($client->fetch( "http://what.cd/login.php" ))
+		if($client->fetch( $this->url."/login.php" ))
 		{
                         $client->setcookies();
-			$client->referer = "http://what.cd/login.php";
+			$client->referer = $this->url."/login.php";
 
-        		if($client->fetch( "http://what.cd/login.php","POST","application/x-www-form-urlencoded", 
+        		if($client->fetch( $this->url."/login.php","POST","application/x-www-form-urlencoded", 
 				"username=".rawurlencode($login)."&password=".rawurlencode($password)."&keeplogged=1&login=Login" ))
 			{
 				$client->setcookies();
@@ -22,10 +24,6 @@ class WhatCDAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	public function test($url)
-	{
-		return(preg_match( "/^http:\/\/what\.cd\//si", $url ));
 	}
 }
 

@@ -2,6 +2,8 @@
 
 class ruTrackerAccount extends commonAccount
 {
+	public $url = "http://login.rutracker.org";
+
 	protected function isOK($client)
 	{
 		return(strpos( $client->results, ' name="login_password"' )==false);
@@ -40,7 +42,7 @@ class ruTrackerAccount extends commonAccount
 			$redirect = "http://rutracker.org/forum/viewtopic.php?t=".$id;
 			$referer = "http://rutracker.org/forum/viewtopic.php?t=".$id;
 		}
-		if($client->fetch( "http://login.rutracker.org/forum/login.php","POST","application/x-www-form-urlencoded", 
+		if($client->fetch( $this->url."/forum/login.php","POST","application/x-www-form-urlencoded", 
 			"redirect=".rawurlencode($redirect)."&login_username=".rawurlencode($login)."&login_password=".rawurlencode($password)."&login=%C2%F5%EE%E4" ))
 		{
 			$client->setcookies();
