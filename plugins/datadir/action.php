@@ -24,6 +24,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	$vars = explode( '&', $HTTP_RAW_POST_DATA );
 	$hash = null;
 	$datadir = "";
+	$move_addpath = "1";
 	$move_datafiles = "0";
 	foreach( $vars as $var )
 	{
@@ -36,6 +37,10 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		{
 			$datadir = trim( rawurldecode( $parts[1] ) );
 		}
+		else if($parts[0]=="move_addpath")
+		{
+			$move_addpath = trim( $parts[1] );
+		}
 		else if( $parts[0] == "move_datafiles" )
 		{
 			$move_datafiles = trim( $parts[1] );
@@ -44,11 +49,10 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 
 	Debug( "" );
 	Debug( "--- begin ---" );
-	if( $move_datafiles == '1' )
-		Debug( $datadir.", move files" );
-	else
-		Debug( $datadir.", don't move files" );
-	Debug( "run mode: \"".$datadir_runmode."\"" );
+	Debug( $datadir );
+	Debug( "run mode: \"".$datadir_runmode."\"".
+		", \"".($move_addpath   == '0' ? "don't " : "")."add path\"".
+		", \"".($move_datafiles == '0' ? "don't " : "")."move files\"" );
 
 	if( $hash && strlen( $datadir ) > 0 && $datadir_runmode == 'rtorrent' )
 	{
@@ -58,12 +62,15 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		Debug( "path to php : ".$php );
 		Debug( "hash        : ".$hash );
 		Debug( "data dir    : ".$datadir );
+		Debug( "add path    : ".$move_addpath );
 		Debug( "move files  : ".$move_datafiles );
 		$res = rtExec( "execute",
 			array( "sh",
 				"-c",
-				escapeshellarg($php)." ".escapeshellarg($script_dir."setdir.php")." ".
-					$hash." ".escapeshellarg($datadir)." ".$move_datafiles." ".escapeshellarg(getUser())." & exit 0",
+				escapeshellarg($php)." ".escapeshellarg($script_dir."setdir.php").
+					" ".$hash." ".escapeshellarg($datadir).
+					" ".$move_addpath." ".$move_datafiles.
+					" ".escapeshellarg(getUser())." & exit 0",
 			),
 			$datadir_debug_enabled );
 		if( !$res )
