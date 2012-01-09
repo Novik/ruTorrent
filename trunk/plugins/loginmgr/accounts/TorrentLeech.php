@@ -2,6 +2,8 @@
 
 class TorrentLeechAccount extends commonAccount
 {
+	public $url = "http://www.torrentleech.org";
+
 	protected function isOK($client)
 	{
 		return(strpos($client->results, '>Password')===false);
@@ -9,11 +11,11 @@ class TorrentLeechAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
 		$is_result_fetched = false;
-		if($client->fetch( "http://www.torrentleech.org" ))
+		if($client->fetch( $this->url ))
 		{
                         $client->setcookies();
-			$client->referer = "http://www.torrentleech.org";
-        		if($client->fetch( "http://www.torrentleech.org/user/account/login","POST","application/x-www-form-urlencoded", 
+			$client->referer = $this->url;
+        		if($client->fetch( $this->url."/user/account/login","POST","application/x-www-form-urlencoded", 
 				"username=".rawurlencode($login)."&password=".rawurlencode($password).'&login=submit' ))
 			{
 				$client->setcookies();
@@ -21,10 +23,6 @@ class TorrentLeechAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	public function test($url)
-	{
-		return(preg_match( "`http://www.torrentleech.org/`si", $url ));
 	}
 }
 

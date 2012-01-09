@@ -51,6 +51,8 @@ class privateData
 
 abstract class commonAccount
 {
+	public $url = 'http://abstract.com';
+
 	public function getName()
 	{
 		$className = get_class($this);
@@ -62,7 +64,11 @@ abstract class commonAccount
 
 	abstract protected function isOK($client);
 	abstract protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched);
-	abstract public function test($url);
+
+	public function test($url)
+	{
+		return( stripos($url,$this->url)===0 );
+	}
 
 	protected function updateCached($client,&$url,&$method,&$content_type,&$body)
 	{
@@ -191,6 +197,22 @@ class accountManager
 			return($object->fetch( $client, $url, $nfo["login"], $nfo["password"], $method, $content_type, $body ));
 		}		
 		return(false);
+	}
+
+	public function getInfo()
+	{
+		$ret = array();
+		foreach( $this->accounts as $name=>$nfo )		
+		{
+			require_once( $nfo["path"] );
+			$nfo["name"] = $name;
+			$object = new $nfo["object"]();
+			$nfo["url"] = $object->url;
+			unset($nfo["object"]);
+			unset($nfo["path"]);
+			$ret[] = $nfo;
+		}
+		return($ret);
 	}
 }
 

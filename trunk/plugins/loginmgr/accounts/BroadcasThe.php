@@ -2,6 +2,8 @@
 
 class BroadcasTheAccount extends commonAccount
 {
+	public $url = "http://broadcasthe.net";
+
 	protected function isOK($client)
 	{
 		return(strpos($client->results, '<form name="loginform" id="loginform" method="post"')===false);
@@ -9,12 +11,12 @@ class BroadcasTheAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{                                                                   
 	        $is_result_fetched = false;
-		if($client->fetch( "http://broadcasthe.net/login.php" ))
+		if($client->fetch( $this->url."/login.php" ))
 		{
                         $client->setcookies();
-			$client->referer = "http://broadcasthe.net/login.php";
+			$client->referer = $this->url."/login.php";
 
-        		if($client->fetch( "http://broadcasthe.net/login.php","POST","application/x-www-form-urlencoded", 
+        		if($client->fetch( $this->url."/login.php","POST","application/x-www-form-urlencoded", 
 				"username=".rawurlencode($login)."&password=".rawurlencode($password)."&keeplogged=1&login=Log+In%21" ))
 			{
 				$client->setcookies();
@@ -22,10 +24,6 @@ class BroadcasTheAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	public function test($url)
-	{
-		return(preg_match( "/^http:\/\/broadcasthe\.net\//si", $url ));
 	}
 }
 

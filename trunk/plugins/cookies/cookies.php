@@ -74,12 +74,38 @@ class rCookies
 			$ret = substr($ret,0,$len-1);
 		return($ret."];\n");
 	}
+
+	public function getInfo()
+	{
+		return($this->list);
+	}
 	public function getCookiesForHost($host)
 	{
 		$host = strtolower($host);
 		if(array_key_exists($host,$this->list))
 			return($this->list[$host]);
 		return(array());
+	}
+	public function add( $host, $values )
+	{
+		$cookies = array();
+		$tmp = explode(";",$values);
+		foreach($tmp as $item)
+		{
+			$tmp2 = explode("=",$item);
+			if(count($tmp2)>1)
+			{
+				$name = trim($tmp2[0]);
+				$val = trim($tmp2[1]);
+				if(($name!='') && ($val!=''))
+					$cookies[$name] = trim($val);
+			}
+		}
+		if(!empty($cookies))
+			$this->list[$host] = $cookies;
+		else
+			unset($this->list[$host]);
+		$this->store();
 	}
 }
 

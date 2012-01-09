@@ -2,6 +2,8 @@
 
 class WorldInHDAccount extends commonAccount
 {
+	public $url = "https://world-in-hd.net";
+
 	protected function isOK($client)
 	{
 		return(strpos($client->results, 'type="password"')===false);
@@ -9,12 +11,12 @@ class WorldInHDAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{                                                                   
 	        $is_result_fetched = false;
-		if($client->fetch( "https://world-in-hd.net" ))
+		if($client->fetch( $this->url ))
 		{
                         $client->setcookies();
 			$client->cookies["ts_language"] = "english";
-			$client->referer = "https://world-in-hd.net";
-        		if($client->fetch( "https://world-in-hd.net/takelogin.php","POST","application/x-www-form-urlencoded", 
+			$client->referer = $this->url;
+        		if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded", 
 				"username=".rawurlencode($login)."&password=".rawurlencode($password) ))
 			{
 				$client->setcookies();
@@ -23,10 +25,6 @@ class WorldInHDAccount extends commonAccount
 			}
 		}
 		return(false);
-	}
-	public function test($url)
-	{
-		return(preg_match( "`https://world-in-hd.net`si", $url ));
 	}
 }
 

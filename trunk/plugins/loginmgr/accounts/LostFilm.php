@@ -2,6 +2,8 @@
 
 class LostFilmAccount extends commonAccount
 {
+	public $url = "http://lostfilm.tv";
+
 	protected function isOK($client)
 	{
 		return(strpos($client->results, '<input type="password"')===false);
@@ -19,11 +21,11 @@ class LostFilmAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
 		$is_result_fetched = false;
-		if($client->fetch( "http://lostfilm.tv" ))
+		if($client->fetch( $this->url ))
 		{
 			$client->setcookies();
-			$client->referer = "http://lostfilm.tv";
-        		if($client->fetch( "http://lostfilm.tv/useri.php","POST","application/x-www-form-urlencoded", 
+			$client->referer = $this->url;
+        		if($client->fetch( $this->url."/useri.php","POST","application/x-www-form-urlencoded", 
 				"FormLogin=".rawurlencode($login)."&FormPassword=".rawurlencode($password).'&module=1&repage=user&act=login' ))
 			{
 				$client->setcookies();
@@ -34,7 +36,7 @@ class LostFilmAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "`http://lostfilm.tv/download.php`si", $url ));
+		return( stripos( $url, $this->url."/download.php" )===0 );
 	}
 }
 

@@ -19,6 +19,11 @@ if(isset($_REQUEST['mode']))
 			cachedEcho($em->get(),"application/javascript");
 			break;
 		}
+		case "info":
+		{
+			cachedEcho(json_encode($em->getInfo()),"application/json");
+			break;			
+		}
 	}
 }
 ?>
