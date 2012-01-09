@@ -18,6 +18,8 @@ theWebUI.showDataDirDlg = function( d )
 {
 	$('#edit_datadir').val( $.trim(d.basepath).replace(/\/[^\/]+$/g, "") );
 	$('#btn_datadir_ok').attr("disabled",false);
+	$('#move_not_add_path').attr("checked",false);
+	$('#move_datafiles').attr("checked",false);
 	theDialogManager.show( "dlg_datadir" );
 }
 
@@ -99,6 +101,7 @@ rTorrentStub.prototype.setdatadir = function()
 	var id = theWebUI.DataDirID;
 	this.content = "hash=" + id +
 		"&datadir=" + encodeURIComponent( $('#edit_datadir').val() ) +
+		"&move_addpath=" + ( $$('move_not_add_path').checked  ? '0' : '1' ) +
 		"&move_datafiles=" + ( $$('move_datafiles').checked  ? '1' : '0' );
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/datadir/action.php";
@@ -108,11 +111,15 @@ rTorrentStub.prototype.setdatadir = function()
 plugin.onLangLoaded = function()
 {
 	theDialogManager.make( 'dlg_datadir', theUILang.datadirDlgCaption,
-		"<div class='cont fxcaret'>" +
+		"<div class='content fxcaret'>" +
 			"<fieldset>" +
 				"<label id='lbl_datadir' for='edit_datadir'>" + theUILang.DataDir + ": </label>" +
 				"<input type='text' id='edit_datadir' class='TextboxLarge' maxlength='200'/>" +
 				"<input type='button' id='btn_datadir_browse' class='Button' value='...' />" +
+				"<div class='checkbox'>" +
+					"<input type='checkbox' checked id='move_not_add_path'/>"+
+					"<label for='move_not_add_path'>"+ theUILang.Dont_add_tname +"</label>"+
+				"</div>" +
 				"<div class='checkbox'>" +
 					"<input type='checkbox' checked id='move_datafiles'/>"+
 					"<label for='move_datafiles'>"+ theUILang.DataDirMove +"</label>"+
@@ -123,7 +130,9 @@ plugin.onLangLoaded = function()
 			"<input type='button' value='" + theUILang.ok + "' class='OK Button' id='btn_datadir_ok'" +
 				" onclick='theWebUI.sendDataDir(); return(false);' />" +
 			"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
-		"</div>", true);
+		"</div><br/>" +
+		"<div />", 
+		true);
 	if(thePlugins.isInstalled("_getdir"))
 	{
 		var btn = new theWebUI.rDirBrowser( 'dlg_datadir', 'edit_datadir', 'btn_datadir_browse', 'frame_datadir_browse' );

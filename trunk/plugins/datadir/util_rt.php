@@ -158,26 +158,8 @@ function rtMkDir( $dir, $mode = 0777 )
 //------------------------------------------------------------------------------
 function rtMoveFile( $src, $dst, $dbg = false )
 {
-	// Check if source file exists
-//	if( !rtIsFile( $src ) )
-//	{
-//		if( $dbg ) rtDbg( __FUNCTION__, "not a file (".$src.")" );
-//		return false;
-//	}
-
-	// Check if destination directory exists or can be created
-	if( !rtMkDir( dirname( $dst ), 0777 ) )
-	{
-		if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dst ) );
-		return false;
-	}
-
-	// Check if destination file directory exists or can be deleted
-	if( rtIsFile( $dst ) )
-		unlink( $dst );
-
-	//$atime = fileatime( $src );
-	//$mtime = filemtime( $src );
+	$atime = fileatime( $src );
+	$mtime = filemtime( $src );
 	if( !rename( $src, $dst ) )
 	{
 		if( $dbg ) rtDbg( __FUNCTION__, "from ".$src );
@@ -192,15 +174,15 @@ function rtMoveFile( $src, $dst, $dbg = false )
 			if( $dbg ) rtDbg( __FUNCTION__, "delete fail (".$src.")" );
 	}
 	// there are problems here, if run-user is not file owner
-	//touch( $dst_f, $atime, $mtime );
+	touch( $dst, $atime, $mtime );
 	return true;
 }
 
 //------------------------------------------------------------------------------
-// Move an array of files from $src directory to $dst directory
+// Make operation an array of files from $src directory to $dst directory
 // ( files in array are relative to $src directory )
 //------------------------------------------------------------------------------
-function rtMoveFiles( $files, $src, $dst, $dbg = false )
+function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 {
 	// Check if source and destination directories are valid
 	if( !is_array( $files ) || $src == '' || $dst == '' )
@@ -234,13 +216,44 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 		return false;
 	}
 
-	// Move files
-	if( $dbg ) rtDbg( __FUNCTION__, "from ".$src );
-	if( $dbg ) rtDbg( __FUNCTION__, "to   ".$dst );
 	foreach( $files as $file )
 	{
-		if( !rtMoveFile( $src.$file, $dst.$file, $dbg ) )
+		$source = $src.$file;
+		$dest = $dst.$file;
+
+		if( !rtMkDir( dirname( $dest ), 0777 ) )
+		{
+			if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dest ) );
 			return false;
+		}
+		if( rtIsFile( $dest ) )
+			unlink( $dest );
+		switch( $op )
+		{
+			case "HardLink":
+			{
+				if( link( $source, $dest ) )
+					break;
+			}
+			case "Copy":
+			{
+				if( !copy( $source, $dest ) )
+					return false;
+				break;
+			}
+			case "SoftLink":
+			{
+				if( !symlink( $source, $dest ) )
+					return false;
+				break;
+			}
+			default:
+			{
+				if( !rtMoveFile( $source, $dest, $dbg ) )
+					return false;
+				break;
+			}
+		}
 	}
 	if( $dbg ) rtDbg( __FUNCTION__, "finished" );
 	return true;
@@ -249,11 +262,9 @@ function rtMoveFiles( $files, $src, $dst, $dbg = false )
 //------------------------------------------------------------------------------
 // Recursively scan files at $path directory
 //------------------------------------------------------------------------------
-function rtScanFiles( $path, $mask, $ignore_case = false, $subdir = '' )
+function rtScanFiles( $path, $mask, $subdir = '' )
 {
 	$path = rtAddTailSlash( $path );
-	if( $ignore_case )
-		$mask = strtolower( $mask );
 	if( $subdir != '' )
 		$subdir = rtAddTailSlash( $subdir );
 	$ret = array();
@@ -268,10 +279,10 @@ function rtScanFiles( $path, $mask, $ignore_case = false, $subdir = '' )
 			if( is_dir( $path_to_item ) )
 			{
 				$ret = array_merge( $ret,
-					rtScanFiles( $path, $mask, $ignore_case, $subdir.$item ) );
+					rtScanFiles( $path, $mask, $subdir.$item ) );
 			}
 			elseif( rtIsFile( $path_to_item ) &&
-				fnmatch( $mask, $ignore_case ? strtolower( $item ) : $item ) )
+				preg_match( $mask, $item ) )
 			{
 				$ret[] = $subdir.$item;
 			}
@@ -431,16 +442,18 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 //------------------------------------------------------------------------------
 // Move torrent data of $hash torrent to new location at $dest_path
 //------------------------------------------------------------------------------
-function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
+function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $dbg = false )
 {
 	if( $dbg ) rtDbg( __FUNCTION__, "hash        : ".$hash );
 	if( $dbg ) rtDbg( __FUNCTION__, "dest_path   : ".$dest_path );
+	if( $dbg ) rtDbg( __FUNCTION__, "add path    : ".($add_path ? "1" : "0") );
 	if( $dbg ) rtDbg( __FUNCTION__, "move files  : ".($move_files ? "1" : "0") );
 
 	$is_ok         = true;
 	$is_open       = false;
 	$is_active     = false;
 	$is_multy_file = false;
+	$base_name     = '';
 	$base_path     = '';
 	$base_file     = '';
 
@@ -476,16 +489,18 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 	if( $is_ok && $move_files )
 	{
 		$req = rtExec(
-			array( "d.get_base_path", "d.get_base_filename", "d.is_multi_file" ),
+			array( "d.get_name", "d.get_base_path", "d.get_base_filename", "d.is_multi_file" ),
 			$hash, $dbg );
 		if( $req )
 		{
-			$is_multy_file = ( $req->val[2] != 0 );
-			$base_path     = trim( $req->val[0] );
-			$base_file     = trim( $req->val[1] );
+			$is_multy_file = ( $req->val[3] != 0 );
+			$base_name     = trim( $req->val[0] );
+			$base_path     = trim( $req->val[1] );
+			$base_file     = trim( $req->val[2] );
+			if( $dbg ) rtDbg( __FUNCTION__, "d.get_name          : ".$base_name );
 			if( $dbg ) rtDbg( __FUNCTION__, "d.get_base_path     : ".$base_path );
 			if( $dbg ) rtDbg( __FUNCTION__, "d.get_base_filename : ".$base_file );
-			if( $dbg ) rtDbg( __FUNCTION__, "d.is_multy_file     : ".$req->val[2] );
+			if( $dbg ) rtDbg( __FUNCTION__, "d.is_multy_file     : ".$req->val[3] );
 		}
 		else $is_ok = false;
 	}
@@ -535,24 +550,32 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 	// Move torrent data files to new location
 	if( $is_ok && $move_files )
 	{
-		// Don't use "count( $torrent_files ) > 1" check (can be one file in a subdir)
+		$full_base_path = $base_path;
+		$full_dest_path = $dest_path;
+		// Don't use "count( $torrent_files ) > 1" check (there can be one file in a subdir)
 		if( $is_multy_file )
-			$sub_dir = rtAddTailSlash( $base_file );	// $base_file - is a directory
-		else
-			$sub_dir = '';					// $base_file - is really a file
-
-		if( $dbg ) rtDbg( __FUNCTION__, "from ".$base_path.$sub_dir );
-		if( $dbg ) rtDbg( __FUNCTION__, "to   ".$dest_path.$sub_dir );
-		if( $base_path.$sub_dir != $dest_path.$sub_dir && is_dir( $base_path.$sub_dir ) )
 		{
-			if( rtMoveFiles( $torrent_files, $base_path.$sub_dir, $dest_path.$sub_dir, $dbg ) )
+			// torrent is a directory
+			$full_base_path .= rtAddTailSlash( $base_file );	
+			$full_dest_path .= $add_path ? rtAddTailSlash( $base_name ) : "";
+		}
+		else {
+			// torrent is a single file
+		}
+
+		if( $dbg ) rtDbg( __FUNCTION__, "from ".$full_base_path );
+		if( $dbg ) rtDbg( __FUNCTION__, "to   ".$full_dest_path );
+		
+		if( $full_base_path != $full_dest_path && is_dir( $full_base_path ) )
+		{
+			if( rtOpFiles( $torrent_files, $full_base_path, $full_dest_path, "Move", $dbg ) )
 			{
 				// Recursively remove source dirs without files
-				if( $dbg ) rtDbg( __FUNCTION__, "clean ".$base_path.$sub_dir );
-				if( $sub_dir != '' )
+				if( $dbg ) rtDbg( __FUNCTION__, "clean ".$full_base_path );
+				if( $is_multy_file )
 				{
-					rtRemoveDirectory( $base_path.$sub_dir, false );
-					if( $dbg && is_dir( $base_path.$sub_dir ) )
+					rtRemoveDirectory( $full_base_path, false );
+					if( $dbg && is_dir( $full_base_path ) )
 						rtDbg( __FUNCTION__, "some files were not deleted" );
 				}
 			}
@@ -563,7 +586,9 @@ function rtSetDataDir( $hash, $dest_path, $move_files, $dbg = false )
 	// Setup new directory for torrent (we need to stop it first)
 	if( $is_ok )
 	{
-		$is_ok = rtExec( "d.set_directory", array( $hash, $dest_path ), $dbg );
+		$is_ok = $add_path ? 
+			rtExec( "d.set_directory",      array( $hash, $dest_path ), $dbg ) :
+			rtExec( "d.set_directory_base", array( $hash, $dest_path ), $dbg );
 	}
 
 	if( $is_ok )
