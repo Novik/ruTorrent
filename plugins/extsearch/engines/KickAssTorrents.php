@@ -27,7 +27,7 @@ class KickAssTorrentsEngine extends commonEngine
 
 			$res = preg_match_all('`href="http://torcache\.net/torrent/(?P<link>.*)".*<div class="torrentname">.*'.
 				'<a href="(?P<desc>.*)" class="bold">(?P<name>.*)</a>.*'.
-				'<span id="cat_\d+"><a href=".*">(?P<cat>.*)</a>.*'.
+				'<span id="cat_\d+"><a.*>(?P<cat>.*)</a>.*'.
 				'<td class="nobr">(?P<size>.*)</td>.*'.
 				'<td>.*</td>.*'.
 				'<td>(?P<date>.*)</td>.*'.
