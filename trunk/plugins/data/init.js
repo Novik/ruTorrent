@@ -79,7 +79,7 @@ plugin.onLangLoaded = function()
 	        $("#datahash").val('');
 	        $("#datano").val('');
 		var d = (this.contentDocument || this.contentWindow.document);
-		if(d.location.href != "about:blank")
+		if(d && (d.location.href != "about:blank"))
 			try { eval(d.body.innerHTML); } catch(e) {}
 	}));
 	$(document.body).append(

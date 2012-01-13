@@ -496,9 +496,20 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 			header('Content-Transfer-Encoding: binary');
 			header('Content-Description: File Transfer');
 			header('HTTP/1.0 200 OK');
-			while(ob_get_level() > 0)
-    			    ob_end_flush();
-			if($stat['size'] >= 2147483647)
+
+			if(ob_get_level()) 
+				while(@ob_end_clean());
+
+			$limit = ini_get("memory_limit");
+			if(empty($limit))
+				$limit = 2147483647;
+			else
+			{
+				$limit = $limit*1048576-memory_get_usage(true);
+				if(($limit>2147483647) || ($limit<0))
+					$limit = 2147483647;
+			}
+			if($stat['size'] >= $limit)
 				passthru('cat '.escapeshellarg($filename));
 			else
 				readfile($filename);

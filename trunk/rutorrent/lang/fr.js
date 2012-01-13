@@ -273,5 +273,7 @@
  phpExtensionNotFoundWarning	: "Certaines fonctionnalités ne seront pas disponibles. L'extension PHP doit être installée",
  phpExtensionNotFoundError	: "Le plug-in ne fonctionnera pas. L'extension PHP doit être installée",
  trkPrivate			: "Privé",
- dontSet			: "Sans"
+ dontSet			: "Sans",
+ webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
+ webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
  };

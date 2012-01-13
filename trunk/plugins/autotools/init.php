@@ -15,6 +15,12 @@ if($at->setHandlers())
 				$path_to_finished = '';
 			if( $path_to_finished == '' )
 				$jResult .= "plugin.showError('theUILang.autotoolsNoPathToFinished');";
+			else
+			{
+				$session = rTorrentSettings::get()->session;
+				if( !strlen($session) || !is_executable(addslash(rTorrentSettings::get()->session)))
+					$jResult .= "plugin.disable(); log('".$plugin["name"].": '+theUILang.webBadSessionWarning+' (".$session.").');";
+			}
 		}
 		if( $at->enable_watch )
 		{
