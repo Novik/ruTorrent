@@ -275,5 +275,7 @@
  phpExtensionNotFoundWarning	: "Деякі функції будуть недоступні. Потрібно інсталювати розширення PHP",
  phpExtensionNotFoundError	: "Плагін не працюватиме. Потрібно інсталювати розширення PHP",
  trkPrivate			: "Приватний",
- dontSet			: "Не встановлювати"
+ dontSet			: "Не встановлювати",
+ webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
+ webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
  };

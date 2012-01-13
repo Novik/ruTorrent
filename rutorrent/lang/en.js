@@ -246,5 +246,7 @@ var theUILang =
  phpExtensionNotFoundWarning	: "Some functionality will be unavailable. PHP extension must be installed",
  phpExtensionNotFoundError	: "Plugin will not work. PHP extension must be installed",
  trkPrivate			: "Private",
- dontSet			: "Don't set"
+ dontSet			: "Don't set",
+ webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
+ webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
  };

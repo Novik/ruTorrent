@@ -71,7 +71,7 @@ function makeContent()
 		$("#torrent_file").val("");
 		$("#add_button").attr("disabled",false);
 		var d = (this.contentDocument || this.contentWindow.document);
-		if(d.location.href != "about:blank")
+		if(d && (d.location.href != "about:blank"))
 			try { eval(d.body.innerHTML); } catch(e) {}
 	}));
 	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).load(function()
