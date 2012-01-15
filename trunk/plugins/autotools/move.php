@@ -111,23 +111,32 @@ if( $at->enable_move )
 							if( is_file( $mailto_file ) )
 							{
 								Debug( "\".mailto\" file   : ".$mailto_file );
+								$mail_to   = "";
+								$mail_cc   = ""; 
+								$mail_bcc  = "";
+								$mail_from = "";
+								$subject   = "";
 								$lines = file( $mailto_file );
 								while( count( $lines ) > 0 )
 								{
 									$params = explode( ":", $lines[0] );
 									if( count( $params ) < 2 )
 										break;
-									if( trim( $params[0] ) == "TO" ) $mail_to = trim( $params[1] );
+									if     ( trim( $params[0] ) == "TO"      ) $mail_to   = trim( $params[1] );
+									else if( trim( $params[0] ) == "CC"      ) $mail_cc   = trim( $params[1] );
+									else if( trim( $params[0] ) == "BCC"     ) $mail_bcc  = trim( $params[1] );
 									else if( trim( $params[0] ) == "FROM"    ) $mail_from = trim( $params[1] );
 									else if( trim( $params[0] ) == "SUBJECT" ) $subject   = trim( $params[1] );
 									else break;
 									array_shift( $lines );
 								}
-								if( $mail_to == '' )
+								if( $mail_to == "" )
 									Debug( "mail recepient is not set!" );
 								else 
 								{
 									Debug( "mail to          : ".$mail_to   );
+									Debug( "mail cc          : ".$mail_cc   );
+									Debug( "mail bcc         : ".$mail_bcc  );
 									Debug( "mail from        : ".$mail_from );
 									Debug( "mail subject     : ".$subject   );
 									$torrent_name = $torrent->name();
@@ -135,6 +144,10 @@ if( $at->enable_move )
 									$message = implode( '', $lines );
 									$message = str_replace( "{TORRENT}", $torrent_name, $message );
 									$headers  = "From: ".$mail_from."\r\n";
+									if( $mail_cc != "" )
+										$headers .= "CC: ".$mail_cc."\r\n";
+									if( $mail_bcc != "" )
+										$headers .= "BCC: ".$mail_bcc."\r\n";
 									$headers .= "Content-type: text/plain; charset=utf-8"."\r\n";
 									if( !mail( $mail_to, $subject, $message, $headers ) )
 										Debug( "mail() to \"".$mail_to."\" fail!" );
