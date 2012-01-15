@@ -1,5 +1,5 @@
 
-    Plug-in "autotools" version, 2010-05-26
+    Plug-in "autotools" version, 2012-02-15
 
     for rutorrent Webui (rtorrent web gui)
     (http://code.google.com/p/rutorrent)
@@ -81,9 +81,12 @@ This will make navigating the filesystem from the webgui much easier.
 After file transfer the plugin searches for file ".mailto" in directories, 
 from "/media/p2p/Video/Movie/ downto "/media/p2p/. If this file is found, 
 e-mail will be sent according to information from this file. 
+"CC:" and "BCC:" params are optional
 Sample file is (without "===" lines):
 ===========================================
-TO : user@domain.ru
+TO   : user@domain.ru
+CC   : cc_user@domain.ru
+BCC  : bcc_user@domain.ru
 FROM : Torrent Downloader<admin@domain.ru>
 SUBJECT : Torrent "{TORRENT}" is finished!
 Hello, User!
@@ -115,6 +118,10 @@ With this, you can create a system of watch directories to drop .torrent files i
 Version History:
 ----------------------------------------------------------------------------------------------
 
+    2012-02-15:
+    - "CC:" and "BCC:" options for .mailto
+    - Minor changes
+    
     2010-06-26:
     - Plugin was adapted for ruTorrent 3.1
     - Function AutoLabel can be configured by templates
