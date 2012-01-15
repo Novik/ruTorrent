@@ -16,10 +16,22 @@ theWebUI.EditDataDir = function()
 
 theWebUI.showDataDirDlg = function( d )
 {
+	var id = theWebUI.getTable("trt").getFirstSelected();
+	var is_done = false;
+	var is_multy = false;
+	if( id && (id.length==40) && this.torrents[id] )
+	{
+		is_done = $.trim(this.torrents[id].done) == 1000;
+		is_multy = $.trim(this.torrents[id].multi_file) != "0";
+	}
 	$('#edit_datadir').val( $.trim(d.basepath).replace(/\/[^\/]+$/g, "") );
 	$('#btn_datadir_ok').attr("disabled",false);
+	// can't ignore torrent's path if not multy
+	$('#move_not_add_path').attr("disabled",!is_multy);
 	$('#move_not_add_path').attr("checked",false);
 	$('#move_datafiles').attr("checked",false);
+	// can't "fast resume" torrent if not completed
+	$('#move_fastresume').attr("disabled",!is_done);
 	$('#move_fastresume').attr("checked",false);
 	theDialogManager.show( "dlg_datadir" );
 }
