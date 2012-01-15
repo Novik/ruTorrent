@@ -10,12 +10,14 @@ require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
 eval( getPluginConf( 'autotools' ) );
 
+//------------------------------------------------------------------------------
 function Debug( $str )
 {
 	global $autodebug_enabled;
 	if( $autodebug_enabled ) rtDbg( "AutoMove", $str );
 }
 
+//------------------------------------------------------------------------------
 function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,$dest_path,$fileop_type)
 {
 	global $autodebug_enabled;
@@ -57,13 +59,14 @@ function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,
 	return($ret);
 }
 
+//------------------------------------------------------------------------------
 Debug( "" );
 Debug( "--- begin ---" );
 
-$hash = $argv[1];
+$hash      = $argv[1];
 $base_path = $argv[2];
 $base_name = $argv[3];
-$is_multi = $argv[4];
+$is_multi  = $argv[4];
 $at = rAutoTools::load();
 if( $at->enable_move )
 {
@@ -84,8 +87,14 @@ if( $at->enable_move )
 				$base_path = rtRemoveTailSlash( $base_path );
 				$base_path = rtRemoveLastToken( $base_path, '/' );	// filename or dirname
 				$base_path = rtAddTailSlash( $base_path );
-				$rel_path = rtGetRelativePath( $directory, $base_path );
-//				if( $rel_path != '' )
+				$rel_path  = rtGetRelativePath( $directory, $base_path );
+				//------------------------------------------------------------------------------
+				// !! this is a feature !!
+				// ($rel_path == '') means, that $base_path is NOT a SUBDIR of $directory at all
+				// so, we have to skip all automove actions
+				// for example, if we don't want torrent to be automoved - we save it out of $directory subtree
+				//------------------------------------------------------------------------------
+				if( $rel_path != '' )
 				{
 					if( $rel_path == './' ) $rel_path = '';
 					$dest_path = rtAddTailSlash( $path_to_finished.$rel_path );
