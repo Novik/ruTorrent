@@ -20,6 +20,7 @@ theWebUI.showDataDirDlg = function( d )
 	$('#btn_datadir_ok').attr("disabled",false);
 	$('#move_not_add_path').attr("checked",false);
 	$('#move_datafiles').attr("checked",false);
+	$('#move_fastresume').attr("checked",false);
 	theDialogManager.show( "dlg_datadir" );
 }
 
@@ -102,7 +103,8 @@ rTorrentStub.prototype.setdatadir = function()
 	this.content = "hash=" + id +
 		"&datadir=" + encodeURIComponent( $('#edit_datadir').val() ) +
 		"&move_addpath=" + ( $$('move_not_add_path').checked  ? '0' : '1' ) +
-		"&move_datafiles=" + ( $$('move_datafiles').checked  ? '1' : '0' );
+		"&move_datafiles=" + ( $$('move_datafiles').checked  ? '1' : '0' ) +
+		"&move_fastresume=" + ( $$('move_fastresume').checked  ? '1' : '0' );
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/datadir/action.php";
 	this.dataType = "json";
@@ -123,6 +125,10 @@ plugin.onLangLoaded = function()
 				"<div class='checkbox'>" +
 					"<input type='checkbox' checked id='move_datafiles'/>"+
 					"<label for='move_datafiles'>"+ theUILang.DataDirMove +"</label>"+
+				"</div>" +
+				"<div class='checkbox'>" +
+					"<input type='checkbox' checked id='move_fastresume'/>"+
+					"<label for='move_fastresume'>"+ theUILang.doFastResume +"</label>"+
 				"</div>" +
 			"</fieldset>" +
 		"</div>"+

@@ -9,11 +9,13 @@ if( !chdir( dirname( __FILE__) ) )
 # 2: target datadir
 # 3: flag, "1" means "add torrent's path"
 # 4: flag, "1" means "move datafiles"
-# 5: username
-if( count( $argv ) > 5 )
-	$_SERVER['REMOTE_USER'] = $argv[5];
+# 5: flag, "1" means "fast resume"
+# 6: username
+if( count( $argv ) > 6 )
+	$_SERVER['REMOTE_USER'] = $argv[6];
 
 require_once( '../../php/xmlrpc.php' );
+require_once( './util_setdir.php' );
 require_once( './util_rt.php' );
 eval( getPluginConf( 'datadir' ) );
 
@@ -32,16 +34,17 @@ Debug( "--- begin ---" );
 $is_ok = true;
 umask( $datadir_umask );
 
-if( count( $argv ) < 5 )
+if( count( $argv ) < 6 )
 {
-	Debug( "called without arguments (at least 4 params wanted)" );
+	Debug( "called without arguments (at least 5 params wanted)" );
 	$is_ok = false;
 }
 else {
-	$hash           = trim( $argv[1] );
-	$datadir        = trim( $argv[2] );
-	$move_addpath   = trim( $argv[3] );
-	$move_datafiles = trim( $argv[4] );
+	$hash            = trim( $argv[1] );
+	$datadir         = trim( $argv[2] );
+	$move_addpath    = trim( $argv[3] );
+	$move_datafiles  = trim( $argv[4] );
+	$move_fastresume = trim( $argv[5] );
 }
 
 if( $is_ok && $hash && strlen( $datadir ) > 0 )
@@ -50,12 +53,15 @@ if( $is_ok && $hash && strlen( $datadir ) > 0 )
 	Debug( "data dir    : ".$datadir );
 	Debug( "add path    : ".$move_addpath );
 	Debug( "move files  : ".$move_datafiles );
+	Debug( "fast resume : ".$move_fastresume );
 
 	if( !rtMkDir( $datadir, 0777 ) )
 	{
 		Debug( "can't create ".$datadir );
 	}
-	elseif( !rtSetDataDir( $hash, $datadir, $move_addpath == '1', $move_datafiles == '1', $datadir_debug_enabled ) )
+	elseif( !rtSetDataDir( $hash, $datadir, 
+		$move_addpath == '1', $move_datafiles == '1', $move_fastresume == '1',
+		$datadir_debug_enabled ) )
 	{
 		Debug( "rtSetDataDir() fail!" );
 	}

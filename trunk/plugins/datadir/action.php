@@ -1,7 +1,8 @@
 <?php
 
-require_once( "../../php/util.php" );
-require_once( "../../php/xmlrpc.php" );
+require_once( '../../php/util.php' );
+require_once( '../../php/xmlrpc.php' );
+require_once( './util_setdir.php' );
 require_once( './util_rt.php' );
 eval( getPluginConf( 'datadir' ) );
 
@@ -26,6 +27,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	$datadir = "";
 	$move_addpath = "1";
 	$move_datafiles = "0";
+	$move_fastresume = "1";
 	foreach( $vars as $var )
 	{
 		$parts = explode( "=", $var );
@@ -45,14 +47,19 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		{
 			$move_datafiles = trim( $parts[1] );
 		}
+		else if( $parts[0] == "move_fastresume" )
+		{
+			$move_fastresume = trim( $parts[1] );
+		}
 	}
 
 	Debug( "" );
 	Debug( "--- begin ---" );
 	Debug( $datadir );
 	Debug( "run mode: \"".$datadir_runmode."\"".
-		", \"".($move_addpath   == '0' ? "don't " : "")."add path\"".
-		", \"".($move_datafiles == '0' ? "don't " : "")."move files\"" );
+		", \"".($move_addpath    == '0' ? "don't " : "")."add path\"".
+		", \"".($move_datafiles  == '0' ? "don't " : "")."move files\"".
+		", \"".($move_fastresume == '0' ? "don't " : "")."fast resume\"" );
 
 	if( $hash && strlen( $datadir ) > 0 && $datadir_runmode == 'rtorrent' )
 	{
@@ -64,12 +71,13 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		Debug( "data dir    : ".$datadir );
 		Debug( "add path    : ".$move_addpath );
 		Debug( "move files  : ".$move_datafiles );
+		Debug( "fast resume : ".$move_fastresume );
 		$res = rtExec( "execute",
 			array( "sh",
 				"-c",
 				escapeshellarg($php)." ".escapeshellarg($script_dir."setdir.php").
 					" ".$hash." ".escapeshellarg($datadir).
-					" ".$move_addpath." ".$move_datafiles.
+					" ".$move_addpath." ".$move_datafiles." ".$move_fastresume.
 					" ".escapeshellarg(getUser())." & exit 0",
 			),
 			$datadir_debug_enabled );
@@ -86,7 +94,9 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 			Debug( "can't create ".$datadir );
 			$errors[] = array( 'desc'=>"theUILang.datadirDirNotFound", 'prm'=>$datadir );
 		}
-		elseif( !rtSetDataDir( $hash, $datadir, $move_datafiles == '1', $datadir_debug_enabled ) )
+		elseif( !rtSetDataDir( $hash, $datadir, 
+			$move_addpath == '1', $move_datafiles == '1', $move_fastresume == '1',
+			$datadir_debug_enabled ) )
 		{
 			Debug( "rtSetDataDir() fail!" );
 			$errors[] = array( 'desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir );
