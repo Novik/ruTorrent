@@ -25,15 +25,16 @@ class KickAssTorrentsEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) )
 				break;
 
-			$res = preg_match_all('`href="http://torcache\.net/torrent/(?P<link>.*)".*<div class="torrentname">.*'.
-				'<a href="(?P<desc>.*)" class="bold">(?P<name>.*)</a>.*'.
-				'<span id="cat_\d+"><a.*>(?P<cat>.*)</a>.*'.
-				'<td class="nobr">(?P<size>.*)</td>.*'.
-				'<td>.*</td>.*'.
-				'<td>(?P<date>.*)</td>.*'.
+			$res = preg_match_all('`href="https://torcache\.net/torrent/(?P<link>.*)".*<div class="torrentname">.*'.
+				'<a href="(?P<desc>.*)" class=".*bold">(?P<name>.*)</a>.*'.
+				'<span id="cat_\d+"> <a.*>(?P<cat>.*)</a>.*'.
+				'<td class="nobr.*">(?P<size>.*)</td>.*'.
+				'<td.*>.*</td>.*'.
+				'<td.*>(?P<date>.*)</td>.*'.
 				'<td class=".*">(?P<seeds>.*)</td>.*'.
 				'<td class=".*">(?P<leech>.*)</td>'.
 				'`siU', $cli->results, $matches);
+
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
