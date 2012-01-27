@@ -52,10 +52,8 @@ class ruTrackerChecker
 	static public function makeClient( $url )
 	{
 		$client = new Snoopy();
-		$client->agent = HTTP_USER_AGENT;
 		$client->read_timeout = 5;
 		$client->_fp_timeout = 5;
-		$client->use_gzip = HTTP_USE_GZIP;
 		@$client->fetchComplex($url);
 		return($client);
 	}

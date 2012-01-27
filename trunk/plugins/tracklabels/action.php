@@ -25,10 +25,6 @@ if(isset($_REQUEST["tracker"]))
 	{
 		$url = Snoopy::linkencode("http://".$tracker."/favicon.ico");
 		$client = new Snoopy();
-		$client->agent = HTTP_USER_AGENT;
-		$client->read_timeout = HTTP_TIME_OUT;
-		$client->_fp_timeout = HTTP_TIME_OUT;
-		$client->use_gzip = HTTP_USE_GZIP;
 		@$client->fetchComplex($url);
 		if($client->status==200)
 			file_put_contents($name,$client->results);

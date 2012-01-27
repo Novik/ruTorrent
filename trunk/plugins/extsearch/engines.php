@@ -39,10 +39,8 @@ class commonEngine
 	{
 		global $HTTPTimeoutPerSite;
 		$client = new Snoopy();
-		$client->agent = HTTP_USER_AGENT;
 		$client->read_timeout = $HTTPTimeoutPerSite;
 		$client->_fp_timeout = $HTTPTimeoutPerSite;
-		$client->use_gzip = HTTP_USE_GZIP;
 		return($client);
 	}
 	public function fetch($url, $encode = 1, $method="GET", $content_type="", $body="")

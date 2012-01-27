@@ -105,6 +105,21 @@ class Snoopy
 	var $_isproxy		=	false;				// set if using a proxy server
 	var $_fp_timeout	=	30;					// timeout for socket connection
 
+	public function __construct()
+	{
+		global $httpIP;
+		if(@constant('HTTP_USER_AGENT')!==null)
+			$this->agent = @constant('HTTP_USER_AGENT');
+		if(@constant('HTTP_TIME_OUT')!==null)
+		{
+			$this->_fp_timeout = @constant('HTTP_TIME_OUT');
+			$this->read_timeout = @constant('HTTP_TIME_OUT');
+		}
+		$this->use_gzip = @constant('HTTP_USE_GZIP');
+		if(isset($httpIP))
+			$this->IP = $httpIP;
+	}
+
 /*======================================================================*\
 	Function:	fetch
 	Purpose:	fetch the contents of a web page

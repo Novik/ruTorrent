@@ -357,10 +357,6 @@ class rRSS
 	static protected function fetchURL($url, $cookies = null, $headers = null )
 	{
 		$client = new Snoopy();
-		$client->agent = HTTP_USER_AGENT;
-		$client->read_timeout = HTTP_TIME_OUT;
-		$client->_fp_timeout = HTTP_TIME_OUT;
-		$client->use_gzip = HTTP_USE_GZIP;
 		if(is_array($headers) && count($headers))
 			$client->rawheaders = $headers;
 		if(is_array($cookies) && count($cookies))
