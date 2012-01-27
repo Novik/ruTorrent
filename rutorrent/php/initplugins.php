@@ -216,6 +216,7 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 	$do_diagnostic = false;
 	$jResult = '';
 	$jEnd = '';
+	$pInfo = array( "perms" => 0x0100 );
 	foreach($init as $plugin)
 	{
 		if($plugin["php"] && !count(array_diff( $plugin["deps"], $names )))
