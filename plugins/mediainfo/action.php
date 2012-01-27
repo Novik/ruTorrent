@@ -29,7 +29,7 @@ if(isset($_REQUEST['hash']) &&
 				if($filename!=='')
 				{
 					$commands = array();
-					$commands[] = getExternal("mediainfo")." ".escapeshellarg($req->val[0]);
+					$commands[] = getExternal("mediainfo")." ".escapeshellarg($filename);
 					$ret = rTask::start($commands,0);
 				}
 			}

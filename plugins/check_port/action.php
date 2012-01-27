@@ -5,7 +5,6 @@ require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc" );
 $ret = 0;
 $port = rTorrentSettings::get()->port;
 $client = new Snoopy();
-$client->agent = HTTP_USER_AGENT;
 $client->read_timeout = 5;
 $client->_fp_timeout = 5;
 $client->use_gzip = HTTP_USE_GZIP;

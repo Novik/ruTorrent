@@ -47,10 +47,6 @@ if(is_null($status))
 			else
 			{
 				$cli = new Snoopy();
-				$cli->agent = HTTP_USER_AGENT;
-				$cli->read_timeout = HTTP_TIME_OUT;
-				$client->_fp_timeout = HTTP_TIME_OUT;
-				$cli->use_gzip = HTTP_USE_GZIP;
 				if(@$cli->fetchComplex(Snoopy::linkencode($url)) && $cli->status>=200 && $cli->status<300)
 				{
 				        $name = $cli->get_filename();
