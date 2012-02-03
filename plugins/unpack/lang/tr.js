@@ -8,7 +8,7 @@
  theUILang.unpackTaskStarted	= "Unpacking started";
  theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
  theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking";
+ theUILang.unpackEnabled	= "Enable autounpacking, if torrent's label match filter";
  theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
  theUILang.unpackAddLabel	= "Torrent Label";
  theUILang.unpackAddName	= "Torrent Name";

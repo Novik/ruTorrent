@@ -8,6 +8,7 @@ class rUnpack
 {
 	public $hash = "unpack.dat";
 	public $enabled = 0;
+	public $filter = '/.*/';
 	public $path = "";
 	public $addLabel = 0;
 	public $addName = 0;
@@ -45,6 +46,9 @@ class rUnpack
 				if( $parts[0] == "unpack_name" )
 					$this->addName = $parts[1];
 				else
+				if( $parts[0] == "unpack_filter" )
+					$this->filter = trim(rawurldecode($parts[1]));
+				else
 				if( $parts[0] == "unpack_path" )
 				{
 					$this->path = trim(rawurldecode($parts[1]));
@@ -58,7 +62,7 @@ class rUnpack
 	public function get()
 	{
 		return("theWebUI.unpackData = { enabled: ".$this->enabled.", path : '".addslashes( $this->path ).
-			"', addLabel: ".$this->addLabel.", addName: ".$this->addName." };\n");
+			"', filter : '".addslashes( $this->filter )."', addLabel: ".$this->addLabel.", addName: ".$this->addName." };\n");
 	}
 	public function startSilentTask($basename,$label,$name)
 	{

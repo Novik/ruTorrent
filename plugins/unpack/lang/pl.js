@@ -8,7 +8,7 @@
  theUILang.unpackTaskStarted	= "Rozpoczęto rozpakowywanie";
  theUILang.unzipNotFound	= "Unpack plugin: User rTorrenta nie ma dostępu do programu 'unzip'.";
  theUILang.unrarNotFound	= "Unpack plugin: User rTorrenta nie ma dostępu do programu 'unrar'.";
- theUILang.unpackEnabled	= "Włącz autorozpakowywanie";
+ theUILang.unpackEnabled	= "Enable autounpacking, if torrent's label match filter";
  theUILang.unpackTorrents	= "Dopisz do ścieżki podczas rozpakowywania";
  theUILang.unpackAddLabel	= "Etykieta Torrenta";
  theUILang.unpackAddName	= "Nazwa Torrenta";

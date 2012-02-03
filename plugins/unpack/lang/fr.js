@@ -16,7 +16,7 @@
  theUILang.unpackTaskStarted	= "Décompression commencée";
  theUILang.unzipNotFound	= "Plug-in 'Unpack': rTorrent ne peut pas accéder au programme 'unzip'.";
  theUILang.unrarNotFound	= "Plug-in 'Unpack': rTorrent ne peut pas accéder au programme 'unrar'.";
- theUILang.unpackEnabled	= "Activer la décompression automatique";
+ theUILang.unpackEnabled	= "Enable autounpacking, if torrent's label match filter";
  theUILang.unpackTorrents	= "Lors de la décompression d'un torrent, ajouter au nom du dossier";
  theUILang.unpackAddLabel	= "Étiquette du torrent";
  theUILang.unpackAddName	= "Nom du torrent";
