@@ -8,7 +8,7 @@
  theUILang.unpackTaskStarted	= "解压开始";
  theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
  theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking, if torrent's label match filter";
+ theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
  theUILang.unpackTorrents	= "当解压缩 Torrent 数据时添加路径:";
  theUILang.unpackAddLabel	= "Torrent 的标签";
  theUILang.unpackAddName	= "Torrent 的名称";
