@@ -8,7 +8,7 @@
  theUILang.unpackTaskStarted	= "Розпакування почалося";
  theUILang.unzipNotFound	= "Плагін unpack: програма «unzip» недоступна користувачу rTorrent.";
  theUILang.unrarNotFound	= "Плагін unpack: програма «unrar» недоступна користувачу rTorrent.";
- theUILang.unpackEnabled	= "Дозволити авторозпакування";
+ theUILang.unpackEnabled	= "Enable autounpacking, if torrent's label match filter";
  theUILang.unpackTorrents	= "Під час розпакування даних усього торента додавати до шляху";
  theUILang.unpackAddLabel	= "Мітку торента";
  theUILang.unpackAddName	= "Назву торента";

@@ -95,6 +95,7 @@ if(plugin.canChangeOptions())
 			$$('unpack_label').checked = ( theWebUI.unpackData.addLabel == 1 );
 			$$('unpack_name').checked = ( theWebUI.unpackData.addName == 1 );
 			$$('edit_unpack1').value = theWebUI.unpackData.path;
+			$$('edit_filter').value = theWebUI.unpackData.filter;
 			if(plugin.btn)
 				plugin.btn.hide();
 		}
@@ -106,7 +107,9 @@ if(plugin.canChangeOptions())
 		return(	($$('unpack_enabled').checked != ( theWebUI.unpackData.enabled == 1 )) ||
 			($$('unpack_label').checked != ( theWebUI.unpackData.addLabel == 1 )) ||
 			($$('unpack_name').checked != ( theWebUI.unpackData.addName == 1 )) ||
-			($$('edit_unpack1').value != theWebUI.unpackData.path) );
+			($$('edit_unpack1').value != theWebUI.unpackData.path) ||
+			($$('edit_filter').value != theWebUI.unpackData.filter)
+			);
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
@@ -122,6 +125,7 @@ if(plugin.canChangeOptions())
 		this.content = "cmd=set&unpack_enabled=" + ( $$('unpack_enabled').checked ? '1' : '0' ) +
 			"&unpack_name=" + ( $$('unpack_name').checked  ? '1' : '0' ) +
 			"&unpack_label=" + ( $$('unpack_label').checked  ? '1' : '0' ) +
+			"&unpack_filter=" + encodeURIComponent($$('edit_filter').value) +
 			"&unpack_path=" + encodeURIComponent($$('edit_unpack1').value);
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/unpack/action.php";
@@ -229,6 +233,7 @@ plugin.onLangLoaded = function()
 			"<label for=\"unpack_enabled\">"+
 				theUILang.unpackEnabled+
 			"</label>"+
+			"<input type='text' id='edit_filter' class='TextboxMid' maxlength='200'/>" +
 		"</div>"+
 		"<fieldset>"+
 			"<legend>"+theUILang.unpackPath+"</legend>"+

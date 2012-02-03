@@ -8,7 +8,7 @@
  theUILang.unpackTaskStarted	= "Bắt đầu giải nén";
  theUILang.unzipNotFound	= "Unpack plugin: rTorrent không thể truy cập chương trình unzip.";
  theUILang.unrarNotFound	= "Unpack plugin: rTorrent không thể truy cập chương trình unrar.";
- theUILang.unpackEnabled	= "Bật tính năng tự giải nén";
+ theUILang.unpackEnabled	= "Enable autounpacking, if torrent's label match filter";
  theUILang.unpackTorrents	= "Thêm vào đường dẫn khi giải nén dữ liệu torrent:";
  theUILang.unpackAddLabel	= "Nhãn Torrent";
  theUILang.unpackAddName	= "Tên Torrent";
