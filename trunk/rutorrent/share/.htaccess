@@ -1,1 +1,2 @@
 deny from all
+Options -Indexes
