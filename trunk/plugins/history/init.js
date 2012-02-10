@@ -102,7 +102,7 @@ if(plugin.canChangeTabs())
 				return(arr);
 			},
 			ondelete:	function() { this.historyRemove(); },
-	       	        onselect:	function(e,id) { this.historySelect(e,id) },
+	       	        onselect:	function(e,id) { this.historySelect(e,id) }
 		};
 		plugin.config.call(theWebUI,data);
 		plugin.renameHistoryStuff();
