@@ -631,6 +631,37 @@ function correctContent()
 		rPlugin.prototype.removeButtonFromToolbar("stop");
 		rPlugin.prototype.removeSeparatorFromToolbar("settings");
 	}
+	else
+	{
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
+		{
+			theRequestManager.addRequest("fls","f.prioritize_first=",function(hash, fls, value) 
+			{
+				if(value=='1')
+					fls.prioritize = 1;
+			});
+			theRequestManager.addRequest("fls","f.prioritize_last=",function(hash, fls, value) 
+			{
+				if(value=='1')
+					fls.prioritize = 2;
+			});
+		}
+		if(theWebUI.systemInfo.rTorrent.iVersion>=0x900)
+		{
+			$('#st_ao_h table tr:first').remove();
+			$('#st_ao_h table tr:first').remove();
+			$('#st_ao_h table tr:first').remove();
+			$.extend(theRequestManager.aliases, 
+			{
+				"get_hash_interval"		: "cat",
+				"get_hash_max_tries"		: "cat",
+				"get_hash_read_ahead"		: "cat",
+				"set_hash_interval"		: "cat",
+				"set_hash_max_tries"		: "cat",
+				"set_hash_read_ahead"		: "cat"
+			});
+		}
+	}
 	if(theWebUI.systemInfo.rTorrent.newMethodsSet)
 	{
 		theRequestManager.aliases[""] = "";
@@ -642,17 +673,5 @@ function correctContent()
 	}
 	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
 
-	if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
-	{
-		theRequestManager.addRequest("fls","f.prioritize_first=",function(hash, fls, value) 
-		{
-			if(value=='1')
-				fls.prioritize = 1;
-		});
-		theRequestManager.addRequest("fls","f.prioritize_last=",function(hash, fls, value) 
-		{
-			if(value=='1')
-				fls.prioritize = 2;
-		});
-	}
+
 }
