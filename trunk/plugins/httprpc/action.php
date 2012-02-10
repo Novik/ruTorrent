@@ -155,6 +155,8 @@ switch($mode)
 			"get_split_file_size", "get_split_suffix", "get_timeout_safe_sync", "get_timeout_sync", "get_tracker_numwant",
 			"get_use_udp_trackers", "get_max_uploads_div", "get_max_open_sockets"
 			);
+		if(rTorrentSettings::get()->iVersion>=0x900)
+			$cmds[5] = $cmds[6] = $cmds[7] = "cat";
 		$req = new rXMLRPCRequest( new rXMLRPCCommand( "dht_statistics" ) );
 		foreach( $cmds as $cmd )
 			$req->addCommand( new rXMLRPCCommand( $cmd ) );	
