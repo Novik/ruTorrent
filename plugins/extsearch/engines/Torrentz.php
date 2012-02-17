@@ -44,10 +44,12 @@ class TorrentzEngine extends commonEngine
 
 			// torrents
 			$res = preg_match_all('`<dl><dt.*><a href="/(?P<hash>[0-9a-fA-F]+?)">(?P<name>.+)</a> &#187; '.
-				'(?P<cat>.*)</dt><dd><span class="a"><span title="(?P<date>.*)">.*</span></span> '.
-				'<span class="s">(?P<size>.*)</span> <span class="u">(?P<seeds>.*)</span> '.
+				'(?P<cat>.*)</dt><dd><span class="v" style="color: #.*" title="(?P<verified_score>.*)">.</span>'.
+				'<span class="a"><span title="(?P<date>.*)">.*</span></span>'.
+				'<span class="s">(?P<size>.*)</span> <span class="u">(?P<seeds>.*)</span>'.
 				'<span class="d">(?P<leech>.*)</span></dd></dl>'.
 				'`siU', $cli->results, $matches);
+
 			if($res)
 			{
 				for($i=0; $i<count($matches["hash"]); $i++)
