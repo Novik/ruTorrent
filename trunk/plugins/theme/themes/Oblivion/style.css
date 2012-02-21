@@ -137,7 +137,7 @@ div#tdcont {background: #181818; border-top: none; border-right: 1px solid #0707
 
 /* DIALOGS */
 div#dlgProps textarea#prop-trackers {background: #222222; border: 1px solid #333333}
-div.dlg-window {background-color: #222222; color: #fff; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;font-family:inherit;	}
+div.dlg-window {background-color: #222222; color: #fff; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;	}
 div.dlg-header { background-color: #222222; border-bottom: 1px solid #333333}
 div#yesnoDlg div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -120px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
 div#stg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -72px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
