@@ -70,7 +70,13 @@ class rTorrent
 	        $hpos = stripos($magnet,'xt=urn:btih:');
 	        if($hpos!==false)
 	        {
-	        	$hash = base32decode(substr($magnet,$hpos+12,32));
+	        	$hpos+=12;
+	        	$fpos = stripos($magnet,'&',$hpos);
+			if($fpos===false)
+				$fpos = strlen($magnet);
+			$hash = strtoupper(substr($magnet,$hpos,$fpos-$hpos));
+                        if(strlen($hash)==32)
+		        	$hash = base32decode($hash);
 	        	if(strlen($hash)==40)
 	        	{
 				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );

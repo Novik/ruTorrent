@@ -60,7 +60,7 @@ class ruTrackerAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|)rutracker.org\/forum\//si", $url ));
+		return(preg_match( "/(\.|\/)rutracker.org\/forum\//si", $url ));
 	}
 }
 
