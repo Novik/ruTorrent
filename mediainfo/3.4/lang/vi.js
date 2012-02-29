@@ -1,0 +1,3 @@
+﻿
+
+ theUILang.mediainfo		= "Media Info";
