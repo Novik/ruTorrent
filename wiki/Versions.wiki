@@ -2,6 +2,17 @@
 == Version history ==
 ----
 
+ * ==== Version 3.4 (29.02.2012 r2014)==== 
+   # Added support for new rTorrent versions (0.9.0)
+   # Added plugins screenshots, rutracker_check, history, extratio, check_port and _task.
+   # Possibility to control of plugins loading is added. 
+   # Possibility to second sort of UI tabales is added (shift+LMB on the header of the corresponding column).
+   # The kind of some the interface elements is changed.
+   # Fixed a lot of bugs. 
+   # The code of the majority of plugis is changed. 
+
+----
+
  * ==== Version 3.3 (30.07.2011 r1731)==== 
    # Added support for new rTorrent versions (0.8.8, 0.8.9)
    # Added support for new versions of browsers (IE 9.0, Opera 11.0, Firefox 5.0, etc).
@@ -16,8 +27,10 @@
    # Fixed a lot of bugs. 
    # The code of the majority of plugis is changed. 
 
+----
+
  * ==== Version 3.2 (16.11.2010 r1552) ====
-  # Added plugins [PluginTheme Theme], [PluginRSSURLRewrite RSSURLRewrite], [PluginLoginMgr LoginMgr] [PluginFeeds Feeds], [PluginExtsearch ExtSearch].
+  # Added plugins [PluginTheme Theme], [PluginRSSURLRewrite RSSURLRewrite], [PluginLoginMgr LoginMgr], [PluginFeeds Feeds], [PluginExtsearch ExtSearch].
   # Added support for rtorrent svn [http://libtorrent.rakshasa.no/browser?rev=1189 r1189] (Attention! Not for unstable version 0.8.7)
   # API rewritten to support plugins. 
   # Fixed a lot of errors.
