@@ -1,6 +1,6 @@
 plugin.description: This plugin provides cookies information for authentication on trackers.
 plugin.author: Novik
-plugin.version: 3.3
+plugin.version: 3.4
 rtorrent.need: 0
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginCookies
 php.extensions.warning: json
