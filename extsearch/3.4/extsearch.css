@@ -1,0 +1,22 @@
+div#tegLoadTorrents #RSSBtn {width: 30px;}
+div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}
+div#tegLoadTorrents div.dlg-header {background-image: url(../../images/world.gif)}
+div#tegLoadTorrents div.content {margin: 5px; padding: 5px; line-height: 16px}
+div#tegLoadTorrents div.content input {margin-top: 0px}
+div#tegLoadTorrents label {width: 75px; display: block; float: left; margin-top: 0px; margin-bottom: 5px; margin-left: 5px; }
+div#tegLoadTorrents input, select {margin-top: 2px; margin-bottom: 2px;}
+div#tegLoadTorrents br {clear: left; line-height: 0}
+
+#st_extsearch { overflow: auto }
+#exscategory { margin-top: 6px; width: 100px }
+.teg { background-position: 4px; background-image: url(./images/local.png) }
+.exteg { background-position: 4px }
+.Engineall { background-image: url(./images/search.png) }
+.Enginepublic { background-image: url(./images/public.png) }
+.Engineprivate { background-image: url(./images/private.png) }
+.bld { color: blue; font-weight: bold; }
+
+@media only screen and (orientation:portrait) 
+{ 
+	#exscategory { width: 30px }
+}
