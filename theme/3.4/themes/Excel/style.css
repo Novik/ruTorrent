@@ -1,0 +1,37 @@
+html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollbar-base-color: #e3e9f0; scrollbar-track-color: #7797c1; }
+div#HDivider { width: 5px }
+div#CatList { border-top-style: none; border-color: #9EB6CE; background: scroll transparent url(./images/cbg.png) repeat-y 0 0 }
+div#CatList ul { background: scroll transparent url(./images/cbg.png) repeat-y 0 0 }
+div#CatList ul li { border-top: 1px solid #d0d7e5; border-bottom: 1px solid transparent; padding-left: 46px }
+.catpanel { border: none; background: transparent url(./images/pbg.png) repeat-x 0 0; padding: 0px 32px; height: 20px }
+
+div.table_tab { border: none }
+
+div#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
+.statuscell { border-color: #9EB6CE }
+
+div#t { background-color: #B5D5FB; border-bottom: 1px solid #9eb6ce }
+
+input[type="text"], input[type="password"], input[type="file"], select, textarea { background-color: #FFFFFF; border:1px solid #B5B8C8; }
+input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled], select[disabled], textarea[disabled] { border: 1px solid #C0C0C0; color: #C0C0C0}
+
+div#tdcont, div.tab, div#lcont { background-color: #d2e0f0; color: #034084 }
+div.graph_tab { background-color: #d2e0f0; color: #034084; border-color: #ffffff }
+div#gcont table td.Header { background-color: #e4edf6 }
+div#tdcont { border-color: #9EB6CE }
+div#tdetails { background-color: transparent }
+
+.stg_con { background-color: #FFFFFF }
+div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
+.lm li a.focus {background-color: #D9E8FB}
+
+div.dlg-window { color: #000000; border-color: #9EB6CE; background-color: #FFFFFF }
+div.dlg-header { background: #D9E8FB url(../../../../images/blank.gif) no-repeat scroll 4px center; border-color: #9EB6CE; color: #15428B; font-weight: bold}
+.tabbar { background: transparent url(./images/tabbarbg.png) repeat-x 0 0 }
+
+.tabbar li a { background: transparent url(./images/tabbg.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; color: #034084 }
+.tabbar li a:hover { border: none; opacity: 0.8 }
+.tabbar li:first-child a { background: transparent url(./images/tabbgf.png) no-repeat 0 0 }
+.tabbar li.selected:first-child a { background: transparent url(./images/tabbgfh.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; top: 3px }
+.tabbar li.selected a { background: transparent url(./images/tabbgh.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; top: 3px; }
+.tabbar li.selected+li a { background: url(./images/tabbgfhn.png) no-repeat 0 0 }
