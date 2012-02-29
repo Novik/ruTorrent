@@ -1,0 +1,93 @@
+html, body { background-color: #DFE8F6 }
+
+div#t {background: #181818 url(./images/header_bg.gif) repeat-x center center; border-bottom: 1px solid #333333;}
+
+div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
+div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}
+div#t div#remove {background: transparent url(./images/toolbar.png) no-repeat -72px center}
+div#t div#start {background: transparent url(./images/toolbar.png) no-repeat -96px center}
+div#t div#pause {background: transparent url(./images/toolbar.png) no-repeat -120px center}
+div#t div#stop {background: transparent url(./images/toolbar.png) no-repeat -144px center}
+div#t div#moveu {background: transparent url(./images/toolbar.png) no-repeat -168px center}
+div#t div#moved {background: transparent url(./images/toolbar.png) no-repeat -192px center}
+div#t div#search {background: transparent url(./images/toolbar.png) no-repeat -216px center}
+div#t div#rss {background: transparent url(./images/toolbar.png) no-repeat -240px center}
+div#t div#setting {background: transparent url(./images/toolbar.png) no-repeat -264px center}
+div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}
+div#t div#go {background: transparent url(./images/go.gif) no-repeat 0px center; }
+div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0px center}
+
+ul.CMenu li a:hover {background-color: #D9E8FB}
+ul.CMenu li:hover ul li a:hover {background-color: #D9E8FB}
+div#CatList ul li.sel {background-color: #D9E8FB; border-color: #D9E8FB }
+div#CatList { border-color: #99BBE8 }
+
+div#tdetails {background: transparent url(./images/tab-strip-bg.gif) repeat-x 0px center;} 
+
+.tabbar li a { border: 1px solid #8DB2E3; border-bottom: none; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B }
+.tabbar li a:hover {border-top: 1px solid #8DB2E3}
+.tabbar li.selected a { border-top: 2px solid #8DB2E3; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B; font-weight: bold}
+
+input.Button { background-image: url(./images/btn-sprite.gif); background-position: 0 -43px }
+
+input[type="text"], input[type="password"], input[type="file"], select, textarea { background: #FFFFFF url(./images/text-bg.gif) repeat-x 0 0; border:1px solid #B5B8C8; }
+input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled], select[disabled], textarea[disabled] { border: 1px solid #C0C0C0; background: #F0F0F0; color: #C0C0C0}
+
+.catpanel {background-color: #D9E8FB; color: #15428B; font-weight: bold; border: 1px solid #8DB2E3; background-image: url(./images/pnl_open.gif) }
+
+div#tdcont { background: #FFFFFF; border: 1px solid #99BBE8; }
+
+#StatusBar { border-color: #99BBE8; background-color: #FFFFFF; color: #000000; }
+.statuscell { border-color: #99BBE8;}
+.sthdr { color: #15428B; }
+
+ul.CMenu { border: 1px solid #718BB7; border-right: 1px solid #718BB7; border-bottom: 1px solid #718BB7; background: #F0F0F0; color: #222222}
+ul.CMenu li {background: #F0F0F0; color: #222222}
+ul.CMenu li a {background: #F0F0F0; color: #222222}
+
+ul.CMenu li a.exp {background: transparent url(./images/menu-parent.gif) no-repeat scroll 140px center; }
+
+ul.CMenu li a:hover {background-color: #D9E8FB; color: #222222}
+ul.CMenu li:hover ul li a { background-color: #F0F0F0; color: #222222}
+ul.CMenu li:hover ul li a:hover {background-color: #D9E8FB; color: #222222}
+
+ul.CMenu li.menuitem hr {background-color: #E0E0E0; color: #000000; border-bottom-width: 1px; border-bottom-color: #FFFFFF}
+
+ul.CMenu li a.dis {color: #808080}
+ul.CMenu li a.dis:hover {background-color: #F0F0F0; color: #808080}
+ul.CMenu li ul li a.dis {color: #808080}
+ul.CMenu li ul li a.dis:hover {background-color: #F0F0F0; color: #808080}
+
+div.dlg-window { color: #000000; border: 0 }
+div.dlg-header { background: #D9E8FB url(../../images/blank.gif) no-repeat scroll 4px center; border: 0; color: #15428B; font-weight: bold}
+
+.stg_con { background-color: #FFFFFF }
+div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
+.lm li a.focus {background-color: #D9E8FB}
+
+div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0px center;}
+
+.x-window-tl { background: url(./images/left-corners.png) no-repeat scroll 0 0 transparent; padding-left: 6px; margin: 0 }
+.x-window-tr { background: url(./images/right-corners.png) no-repeat scroll right 0 transparent; padding-right: 2px; margin: 0 }
+.x-window-tc { background: url(./images/top-bottom.png) repeat-x scroll 0 0 transparent; padding-right: 1px; overflow: hidden; margin: 0 }
+.x-window-ml { background: url(./images/left-right.png) repeat-y scroll 0 0 transparent; padding-left: 4px; margin: 0 }
+.x-window-mr { background: url(./images/left-right.png) repeat-y scroll right 0 transparent; padding-right: 6px; margin: 0 }
+.x-window-bl { background: url(./images/left-corners.png) no-repeat scroll 0 bottom transparent; padding-left: 6px; margin: 0 }
+.x-window-br { background: url(./images/right-corners.png) no-repeat scroll right bottom transparent; padding-right: 6px; margin: 0 }
+.x-window-bc { background: url(./images/top-bottom.png) repeat-x scroll 0 bottom transparent; margin: 0 }
+
+.buttons-list { padding-top: 5px; padding-bottom: 5px; margin: 0 }
+
+.x-shadow { overflow: hidden; position: absolute; display: none }
+.x-shadow * { overflow: hidden; clear: none; margin: 0; padding: 0; border: 0 none }
+.xsb, .xst  { height: 6px; width: 100% }
+.xstl { background: url(./images/shadow.png) no-repeat scroll 0 0 transparent; float: left; width: 6px; height: 6px }
+.xstc { background: url(./images/shadow.png) repeat-x scroll 0 -30px transparent; float: left; height: 6px }
+.xstr { background: url(./images/shadow.png) repeat-x scroll 0 -18px transparent; float: left; width: 6px; height: 6px }
+.xsc  { width: 100%; }
+.xsml { background: url(./images/shadow-lr.png) repeat-y scroll 0 0 transparent; float: left; width: 6px; height: 100% }
+.xsmc { background: url(./images/shadow-c.png) repeat scroll 0 0 transparent; float: left; height: 100% }
+.xsmr { background: url(./images/shadow-lr.png) repeat-y scroll -6px 0 transparent; float: left; width: 6px; height: 100% }
+.xsbl { background: url(./images/shadow.png) no-repeat scroll 0 -12px transparent; float: left; width: 6px; height: 6px }
+.xsbc { background: url(./images/shadow.png) repeat-x scroll 0 -36px transparent; float: left; height: 6px }
+.xsbr { background: url(./images/shadow.png) repeat-x scroll 0 -6px transparent; float: left; width: 6px; height: 6px }
