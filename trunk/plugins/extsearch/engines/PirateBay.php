@@ -31,13 +31,13 @@ class PirateBayEngine extends commonEngine
 				break;
 			$maxPage = ceil(intval($matches["cnt"])/30);
 			$res = preg_match_all('/<td class="vertTh"><a href="\/browse.*>(?P<cat>.*)<\/a><\/td>.*'.
-                                '<td><a href="\/torrent\/(?P<desc>.*)".*>(?P<name>.*)<\/a><\/td>.*'.
+                                '<td><a href="\/torrent\/(?P<desc>.*)".*>(?P<name>.*)<\/a>.*<\/td>.*'.
 				'<td>(?P<date>.*)<\/td>.*'.
-				'<td><nobr><a href="http:\/\/torrents.thepiratebay.org\/(?P<link>.*)".*<\/nobr><\/td>.*'.
+				'<td><nobr><a href="magnet:(?P<link>[^"]*)".*'.
 				'<td align="right">(?P<size>.*)<\/td>.*'.
 				'<td align="right">(?P<seeds>.*)<\/td>.*'.
-				'<td align="right">(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-
+				'<td align="right">(?P<leech>.*)<\/td>'.
+				'/siU', $cli->results, $matches);
 			if(($res!==false) && ($res>0) &&
 				count($matches["desc"])==count($matches["name"]) &&
 				count($matches["cat"])==count($matches["name"]) && 
@@ -49,7 +49,7 @@ class PirateBayEngine extends commonEngine
 			{
 				for($i=0; $i<count($matches["link"]); $i++)
 				{
-					$link = "http://torrents.thepiratebay.org/".$matches["link"][$i];
+					$link = "magnet:".$matches["link"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();

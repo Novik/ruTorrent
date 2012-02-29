@@ -415,7 +415,10 @@ class engineManager
 			$url = $urls[$i];
 			$success = false;
 			if(strpos($url,"magnet:")===0)
-				$success = rTorrent::sendMagnet($url, $isStart, $isAddPath, $directory, $label);
+			{
+				if($success = rTorrent::sendMagnet($url, $isStart, $isAddPath, $directory, $label))
+					$history->add($url,$success);
+			}
 			else
 			{
 				$object = $this->getObject($engs[$i]);
