@@ -1,0 +1,6 @@
+plugin.description: This plugin extends the functionality of the ratio plugin.
+plugin.author: Novik
+plugin.runlevel: 12
+plugin.version: 3.4
+plugin.dependencies: ratio,throttle
+php.extensions.error: json
