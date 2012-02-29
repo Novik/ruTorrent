@@ -4,7 +4,7 @@
 
  * ====Версия 3.4 (29.02.2012 r2014)==== 
    # Обеспечена совместимость с rTorrent версии 0.9.0
-   # Добавлены плагины screenshots, [PluginRutracker_check rutracker_check], history, extratio, check_port и _task.
+   # Добавлены плагины screenshots, [PluginRutracker_check rutracker_check], history, extratio, check_port и task.
    # Добавлена возможность управления загрузкой плагинов с интерфейса пользователя.
    # Добавлена возможность вторичной сортировки таблиц интерфейса (Shift+LMB по заголовку требуемого столбца).
    # Дополнен и переработан вид ряда интерфейсных элементов.
