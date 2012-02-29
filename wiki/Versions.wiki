@@ -4,7 +4,7 @@
 
  * ==== Version 3.4 (29.02.2012 r2014)==== 
    # Added support for new rTorrent versions (0.9.0)
-   # Added plugins screenshots, rutracker_check, history, extratio, check_port and `_task.
+   # Added plugins screenshots, rutracker_check, history, extratio, check_port and `_task`.
    # Possibility to control of plugins loading is added. 
    # Possibility to second sort of UI tabales is added (shift+LMB on the header of the corresponding column).
    # The kind of some the interface elements is changed.
