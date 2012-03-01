@@ -27,22 +27,18 @@ class WhatCDEngine extends commonEngine
 				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
 				break;
 
-			$res = preg_match_all('/<tr class="torrent">.*<div title="(?P<cat>.*)".*<\/div>.*\[<a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
+			$res = preg_match_all('/<tr class="torrent">.*<div title="(?P<cat>.*)".*<\/div>.*'.
+				'\[ <a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
 				'<a href="torrents.php\?id=(?P<desc>\d+)".*">(?P<name>.*)<\/a>.*'.
-				'<td class="nobr"><span title="(?P<date>.*)">.*<\/span><\/td>.*'.
+				'<td class="nobr"><span class="time" title="(?P<date>.*)">.*<\/span><\/td>.*'.
 				'<td class="nobr">(?P<size>.*)<\/td>.*'.
-				'<td>.*<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["cat"])==count($matches["name"]) && 
-				count($matches["name"])==count($matches["link"]) &&
-				count($matches["name"])==count($matches["desc"]) &&
-				count($matches["name"])==count($matches["date"]) &&
-				count($matches["name"])==count($matches["size"]) &&
-				count($matches["name"])==count($matches["seeds"]) &&
-				count($matches["name"])==count($matches["leech"]) )
+				'<td>.*<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>'.
+				'/siU', $cli->results, $matches);
+
+			if($res)
 			{
 				$itemsFound = true;
-				for($i=0; $i<count($matches["link"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
 					$link = $url."/torrents.php?".self::removeTags($matches["link"][$i]);
 					if(!array_key_exists($link,$ret))
@@ -66,29 +62,24 @@ class WhatCDEngine extends commonEngine
 			$res = preg_match_all('/<tr class="group">.*<td class="center">.*'.
 				'<div title="View" id="showimg_(?P<id>\d+)".*'.
 				'<td class="center cats_col">.*<div title="(?P<cat>.*)".*'.
-				'<td colspan="2">(?P<name>.*)<span/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["id"])==count($matches["name"]))
+				'<td colspan="2">(?P<name>.*)<span'.
+				'/siU', $cli->results, $matches);
+			if($res)
 			{
 				$groups = array();
-                                for($i=0; $i<count($matches["id"]); $i++)
-					$groups[intval($matches["id"][$i])] = array( "name" => self::removeTags($matches["name"][$i]), "cat" => self::removeTags($matches["cat"][$i]) );
-				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)">.*<td colspan="3">.*\[<a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
+                                for($i=0; $i<$res; $i++)
+					$groups[intval($matches["id"][$i])] = array( "name" => self::removeTags(trim($matches["name"][$i])), "cat" => self::removeTags($matches["cat"][$i]) );
+
+				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)[ "].*<td colspan="3">.*\[ <a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
 					'<a href="torrents.php\?id=(?P<desc>.*)">(?P<name>.*)<\/a>.*'.
 					'<td class="nobr"><span class="time" title="(?P<date>.*)">.*<\/span><\/td>.*'.
 					'<td class="nobr">(?P<size>.*)<\/td>.*'.
-					'<td>.*<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);					
-				if(($res!==false) && ($res>0) &&
-					count($matches["id"])==count($matches["link"]) && 
-					count($matches["link"])==count($matches["desc"]) &&
-					count($matches["desc"])==count($matches["name"]) &&
-					count($matches["name"])==count($matches["date"]) &&
-					count($matches["name"])==count($matches["size"]) &&
-					count($matches["name"])==count($matches["seeds"]) &&
-					count($matches["name"])==count($matches["leech"]))
+					'<td>.*<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>'.
+					'/siU', $cli->results, $matches);					
+				if($res)
 				{
 					$itemsFound = true;
-					for($i=0; $i<count($matches["link"]); $i++)
+					for($i=0; $i<$res; $i++)
 					{
 						$link = $url."/torrents.php?".self::removeTags($matches["link"][$i]);
 						if(!array_key_exists($link,$ret))
