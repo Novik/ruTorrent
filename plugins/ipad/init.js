@@ -64,7 +64,7 @@ plugin.touchStart = function(event)
 	if(event.changedTouches.length)
 	{
 		plugin.stopScroll();
-		if($(event.changedTouches[0].target).is("select"))
+		if($(event.changedTouches[0].target).is("select") || $(event.changedTouches[0].target).is("input"))
 			return;
 		var touch = plugin.dispatchMouse(event,"mousemove");
 		window.setTimeout( function() { plugin.dispatchMouse(event,"mousedown"); }, 0 );
