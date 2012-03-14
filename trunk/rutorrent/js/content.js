@@ -95,7 +95,7 @@ function makeContent()
 				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
 				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge"/><br/>'+
 				'<hr/>'+
-				'<label>'+theUILang.Torrent_file+':</label><input type="file" name="torrent_file" id="torrent_file" class="TextboxLarge"/><br/>'+
+				'<label>'+theUILang.Torrent_file+':</label><input type="file" name="torrent_file" id="torrent_file" accept="application/x-bittorrent" class="TextboxLarge"/><br/>'+
 				'<label>&nbsp;</label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
 			'</form>'+
 			'<hr/>'+
