@@ -68,9 +68,9 @@ $lock = $listPath.'/scheduler.lock';
 if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 {
 	touch($lock);
-	if($handle = opendir($listPath)) 
+       	$list = array();
+	if($handle = @opendir($listPath)) 
 	{
-        	$list = array();
 	        while(false !== ($file = readdir($handle)))
 		{
 			$fname = $listPath.'/'.$file;
