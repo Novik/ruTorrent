@@ -197,11 +197,6 @@ if(plugin.canChangeTabs())
 
 	plugin.onGetHistory = function(d)
 	{
-        	if(plugin.hstTimeout)
-        	{
-        		window.clearTimeout(plugin.hstTimeout);
-	        	plugin.hstTimeout = null;
-        	}
 		var updated = false;
 		var table = theWebUI.getTable("hst");
 		if($type(d))
@@ -237,7 +232,14 @@ if(plugin.canChangeTabs())
 			if(table.sIndex !=- 1)
 				table.Sort();
 		}
-		plugin.hstTimeout = window.setTimeout(plugin.historyRefresh,theWebUI.settings["webui.update_interval"]);
+		if(theWebUI.activeView=='history')
+			plugin.hstTimeout = window.setTimeout(plugin.historyRefresh,theWebUI.settings["webui.update_interval"]);
+		else
+        		if(plugin.hstTimeout)
+	        	{
+        			window.clearTimeout(plugin.hstTimeout);
+	        		plugin.hstTimeout = null;
+	        	}
 	}
 
 	plugin.onShow = theTabs.onShow;
@@ -247,7 +249,11 @@ if(plugin.canChangeTabs())
 		{
 			var table = theWebUI.getTable("hst");
 			if(table)
+			{
 				table.refreshRows();
+				if(!plugin.hstTimeout)
+					plugin.historyRefresh();
+			}
 		}
 		else
 			plugin.onShow.call(this,id);
