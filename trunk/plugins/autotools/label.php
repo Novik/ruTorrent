@@ -163,8 +163,8 @@ if( $is_ok &&
 if( $is_ok )
 {
 	Debug( "label           : \"".$label."\"" );
-	if( $label != "")
-		rtExec( "d.set_custom1", array( $hash, rawurlencode( $label ) ), $autodebug_enabled );
+	if( ($label != "") && rtExec( "d.set_custom1", array( $hash, rawurlencode( $label ) ), $autodebug_enabled ))
+		rTorrentSettings::get()->pushEvent( "LabelChanged", array( "hash"=>$hash, "label"=>$label ) );
 }
 
 Debug( "--- end ---" );

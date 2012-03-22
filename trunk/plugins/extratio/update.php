@@ -6,7 +6,7 @@
 			$_SERVER['REMOTE_USER'] = $argv[4];
 		require_once( './rules.php' );
 		$mngr = rRatioRulesList::load();
-		$rule = $mngr->getRule( rawurlencode($argv[2]), $argv[1] );
+		$rule = $mngr->getRule( rawurldecode($argv[2]), $argv[1] );
 		if($rule)
 		{
 			$val = $rule->{$argv[3]};
