@@ -35,11 +35,14 @@ plugin.init = function()
 				success : function(data)
 				{
 					plugin.setValue( data.total, data.free );
+				},
+				complete : function(jqXHR, textStatus)
+				{
+					plugin.diskTimeout = window.setTimeout(plugin.check,plugin.interval*1000);
 				}
 			});
 		};
 		plugin.check();
-		plugin.reqId = theRequestManager.addRequest( "ttl", null, plugin.check );
 		plugin.markLoaded();
 	}
 	else
@@ -49,7 +52,11 @@ plugin.init = function()
 plugin.onRemove = function()
 {
 	plugin.removePaneFromStatusbar("meter-disk-td");
-	theRequestManager.removeRequest( "ttl", plugin.reqId );
+	if(plugin.diskTimeout)
+	{
+		window.clearTimeout(plugin.diskTimeout);
+		plugin.diskTimeout = null;
+	}
 }
 
 plugin.init();
