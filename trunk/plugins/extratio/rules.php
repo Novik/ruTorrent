@@ -232,6 +232,7 @@ class rRatioRulesList
 		}
 		if($ratioRulesExist)
 		{
+			eval(getPluginConf('ratio'));
 			$insCmd = '';
 			for($i=0; $i<MAX_RATIO; $i++)
 				$insCmd .= (getCmd('d.views.has=').'rat_'.$i.',,');
