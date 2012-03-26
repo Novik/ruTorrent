@@ -38,7 +38,7 @@ class TorrentDamageEngine extends commonEngine
 				break;
 			$res = preg_match_all('`<img src="http://www\.torrent-damage\.net/static/common/caticons/[^"]*"\s*alt="(?P<cat>[^"]*)".*'.
 				'<a href="torrents\.php\?id=(?P<desc>\d*)" title="View Torrent">(?P<name>[^<]*)</a>.*'.
-				'<a id="download_torrent" href="torrents\.php\?action=download&amp;id=(?P<id>\d*)" title="Download">DL</a>.*'.
+				'<a id="download_torrent" href="torrents\.php\?action=ddl&amp;gid=.*.&amp;id=(?P<id>\d*)" title="Download">DL</a>.*'.
 				'Uploaded (?P<date>[^<]*)</em>.*'.
 				'<li class="torrent_size"><a href="torrents\.php[^>]*>(?P<size>[^<]*)</a></li>.*'.
 				'<li class="torrent_seeders"><a href="torrents\.php[^>]*>(?P<seeds>.*)</li>.*'.
@@ -48,7 +48,7 @@ class TorrentDamageEngine extends commonEngine
 			{
 				for($i=0; $i<$res; $i++)
 				{
-					$link = $url."/download/".self::removeTags($matches["id"][$i])."/some.torrent";
+					$link = $url.'/torrents.php?action=download&id='.self::removeTags($matches["id"][$i]);
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();

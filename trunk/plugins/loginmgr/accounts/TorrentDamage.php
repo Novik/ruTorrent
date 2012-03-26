@@ -16,7 +16,7 @@ class TorrentDamageAccount extends commonAccount
                         $client->setcookies();
 			$client->referer = $this->url."/login.php";
         		if($client->fetch( $this->url."/login.php","POST","application/x-www-form-urlencoded", 
-				"username=".rawurlencode($login)."&password=".rawurlencode($password).'&login=Log+In%21' ))
+				"username=".rawurlencode($login)."&password=".rawurlencode($password)."&login=Log In!" ))
 			{
 				$client->setcookies();
 				return(true);
