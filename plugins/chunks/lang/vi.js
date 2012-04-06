@@ -1,10 +1,11 @@
 ﻿
-
- theUILang.Chunks		= "Các khối";
- theUILang.chunksNoChunksFound	= "Không tìm thấy khối!";
- theUILang.chunksRows		= "hàng";
- theUILang.chunksColumns	= "cột";
- theUILang.chunksChunks 	= "khối";
- theUILang.chunksSize		= "kích thước khối";
+ theUILang.Chunks		= "Chunks";
+ theUILang.cAvail		= "Availability";
+ theUILang.cDownloaded		= "Downloaded";
+ theUILang.cMode		= "Mode";
+ theUILang.chunksCount		= "Chunks count";
+ theUILang.chunkSize		= "Chunk size";
+ theUILang.cLegend		= "Legend";
+ theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
 
 thePlugins.get("chunks").langLoaded();

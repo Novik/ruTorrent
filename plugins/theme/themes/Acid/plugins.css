@@ -10,7 +10,7 @@ div#dlgLoadTorrents div.dlg-header {background-image: url(./images/world.gif)}
 .tskconsole, .exconsole, .console, .starterConsole, #extlink_title {background: #272E36; font-weight: bold;}
 
 .tHeader {font-weight: bold;}
-.cCell {font-weight: bold; color: #272E36}
+.cCell {font-weight: bold; color: #272E36; border-color: #BDDBDB}
 
 .shieven {background: #272E36; }
 .shiodd {background: #323A46; }

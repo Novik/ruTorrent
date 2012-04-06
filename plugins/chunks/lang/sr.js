@@ -1,10 +1,11 @@
 ﻿
-
- theUILang.Chunks		= "Парчад";
- theUILang.chunksNoChunksFound	= "Нема парчади!";
- theUILang.chunksRows		= "врста";
- theUILang.chunksColumns	= "колона";
- theUILang.chunksChunks 	= "парчади";
- theUILang.chunksSize		= "величина парчета";
+ theUILang.Chunks		= "Chunks";
+ theUILang.cAvail		= "Availability";
+ theUILang.cDownloaded		= "Downloaded";
+ theUILang.cMode		= "Mode";
+ theUILang.chunksCount		= "Chunks count";
+ theUILang.chunkSize		= "Chunk size";
+ theUILang.cLegend		= "Legend";
+ theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
 
 thePlugins.get("chunks").langLoaded();

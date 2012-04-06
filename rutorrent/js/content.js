@@ -580,7 +580,7 @@ function correctContent()
 	};
 
 	if(!$type(theWebUI.systemInfo))
-		theWebUI.systemInfo = { rTorrent: { version: '?', libVersion: '?', started: false, iVersion: 0 } };
+		theWebUI.systemInfo = { rTorrent: { version: '?', libVersion: '?', started: false, iVersion: 0, apiVersion : 0 } };
 
 	if(!theWebUI.systemInfo.rTorrent.started)
         	theWebUI.showFlags &= ~0xFFEF;

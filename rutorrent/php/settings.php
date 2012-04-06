@@ -15,6 +15,7 @@ class rTorrentSettings
 	public $iVersion = null;
 	public $version;
 	public $libVersion;
+	public $apiVersion = 0;
 	public $plugins = array();
 	public $hooks = array();
 	public $mostOfMethodsRenamed = false;
@@ -142,6 +143,15 @@ class rTorrentSettings
 				if($req->success())
 					$this->iVersion=0x809;
 			}
+			$this->apiVersion = 0;
+			if($this->iVersion>=0x901)
+			{
+				$req = new rXMLRPCRequest( new rXMLRPCCommand("system.api_version") );
+				$req->important = false;
+				if($req->success())
+					$this->apiVersion = $req->val[0];
+			}
+
                         $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 			if($req->run())
 			{

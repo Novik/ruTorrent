@@ -110,7 +110,7 @@ class Torrent
 			case 'double':
 				return self::encode_integer( $mixed );
 			case 'object':
-				$mixed = (array) $mixed; //Bugfix by W-Shadow. Objects can't be ksort'ed anyway (see encode_array()).
+				$mixed = get_object_vars( $mixed );
 			case 'array':
 				return self::encode_array( $mixed );
 			default:

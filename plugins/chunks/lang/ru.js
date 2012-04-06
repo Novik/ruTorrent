@@ -1,10 +1,11 @@
 ﻿
-
  theUILang.Chunks		= "Части";
- theUILang.chunksNoChunksFound	= "Информации о частях нет.";
- theUILang.chunksRows		= "строки";
- theUILang.chunksColumns	= "колонки";
- theUILang.chunksChunks 	= "части";
- theUILang.chunksSize		= "размер части";
+ theUILang.cAvail		= "Доступность";
+ theUILang.cDownloaded		= "Наличие";
+ theUILang.cMode		= "Показывать";
+ theUILang.chunksCount		= "Кол-во частей";
+ theUILang.chunkSize		= "Размер части";
+ theUILang.cLegend		= "Легенда";
+ theUILang.cLegendVal		= [ "4 части на клетку", "1 часть на клетку" ];
 
 thePlugins.get("chunks").langLoaded();

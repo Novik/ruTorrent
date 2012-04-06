@@ -1,10 +1,11 @@
 ﻿
-
  theUILang.Chunks		= "Chunks";
- theUILang.chunksNoChunksFound	= "No chunks found!";
- theUILang.chunksRows		= "row(s)";
- theUILang.chunksColumns	= "column(s)";
- theUILang.chunksChunks 	= "chunk(s)";
- theUILang.chunksSize		= "chunk size";
+ theUILang.cAvail		= "Availability";
+ theUILang.cDownloaded		= "Downloaded";
+ theUILang.cMode		= "Mode";
+ theUILang.chunksCount		= "Chunks count";
+ theUILang.chunkSize		= "Chunk size";
+ theUILang.cLegend		= "Legend";
+ theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
 
 thePlugins.get("chunks").langLoaded();
