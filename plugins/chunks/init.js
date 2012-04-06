@@ -27,13 +27,12 @@ theWebUI.clearDetails = function()
 
 plugin.drawChunks = function( d ) 
 {
-	plugin.calcCellWidth();
-	if( $('#cTable').width() && plugin.cWidth && $type(d.chunks) && $type(d.seen) )
+	if( $('#cCont').get(0).clientWidth && ($type(d.chunks) || $type(d.seen)) )
 	{
 		var mode = iv($('#chunks_mode').val());
 		var cells = mode ? d.seen : d.chunks;
 		var cellsCount = mode ? d.seen.length / 2 : d.chunks.length;
-		var numCols = Math.round( $('#cTable').width() * 0.9 / plugin.cWidth );
+		var numCols = Math.floor( $('#cCont').get(0).clientWidth / 22 );
 		var numRows = Math.ceil( cellsCount / numCols );
 		var table = $('#cTable').get(0);
 		var mustInsert = (cellsCount!=plugin.cellsCount) || (numRows!=table.rows.length) || (numCols!=plugin.numCols);
@@ -83,16 +82,6 @@ plugin.drawChunks = function( d )
 	d = null;
 }
 
-plugin.calcCellWidth = function()
-{
-	if(!plugin.cWidth)
-	{
-		plugin.cWidth = $('#cDummy').width()*1.5;
-		if(plugin.cWidth)
-			$('#cDummy').remove();
-	}
-}
-
 plugin.clearChunks = function() 
 {
 	$('#cTable').empty();
@@ -101,7 +90,6 @@ plugin.clearChunks = function()
 	$('#cinfohdr').text( '' );
 	$('#cinfo').text( '' );
 	$('#clegend').text( '' );
-	plugin.calcCellWidth();
 }
 
 rTorrentStub.prototype.getchunks = function() 
@@ -168,8 +156,7 @@ plugin.onLangLoaded = function()
 					"</select>"+
 				"</td></tr></table>").after(
 			$("<div>").attr("id","cCont").append( 
-				$("<span>").attr("id","cDummy").text('W').after(
-				$("<table>").attr("id","cTable"))))).get(0), theUILang.Chunks,"lcont");
+				$("<table>").attr("id","cTable")))).get(0), theUILang.Chunks,"lcont");
 	if(theWebUI.systemInfo.rTorrent.apiVersion<4)
 		$('#cmode_cont').empty();
 }
