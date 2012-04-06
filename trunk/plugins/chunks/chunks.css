@@ -23,6 +23,7 @@
 	margin-left: auto;
 	margin-right: auto;
 	border-collapse: separate;
+	table-layout:fixed;
 }
 
 #cHeader
@@ -42,6 +43,7 @@
     text-align: center;
     padding-top: 1px;
     padding-bottom: 1px;
+    width: 16px;
 }
 
 .Cell0 {
