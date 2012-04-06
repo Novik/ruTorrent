@@ -640,7 +640,9 @@ rTorrentStub.prototype.getValue = function(values,i)
 		var el = value.childNodes[0];
 		while(!el.tagName)
 			el = el.childNodes[0];
-		ret = el.childNodes.length ? el.childNodes[0].data : "";
+		ret = $type(el.textContent) ? $.trim(el.textContent) : 
+			el.childNodes.length ? 
+			el.childNodes[0].data : "";
 	}
 	return((ret==null) ? "" : ret);
 }

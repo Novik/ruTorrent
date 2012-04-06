@@ -1,42 +1,51 @@
-#tEM {
-    padding: 0;
-    position: absolute;
-    visibility: hidden;
+#Chunks
+{
+	overflow: hidden;
 }
 
-#Chunks {
-    border: 1px solid #ccc;
-    width: 100%;
-    height: 98%;
-    margin-top: 0.2em;
-    font-family: fixed, Courier New, Lucidatypewriter, Andale Mono;
-    font-size: 80%;
-    overflow: auto;
+#cCont
+{
+	font-family: fixed;
+	font-size: 12px;
+	overflow: auto;
+	height: 100%
+} 
+
+#cDummy
+{
+	color: transparent;
 }
 
-.tChunks {
-    width: 100%;
-    empty-cells: hide;
-    margin-left: auto;
-    margin-right: auto;
-    border-collapse: separate;
+#cTable 
+{
+	width: 100%;
+	empty-cells: hide;
+	margin-left: auto;
+	margin-right: auto;
+	border-collapse: separate;
 }
 
-.tHeader {
-    font-size: 80%;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+#cHeader
+{
+	font-size: 11px; 
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+#cHeader .sthdr, #cHeader .stval
+{
+	width: 80px;
+	white-space: nowrap;
 }
 
 .cCell {
+    border: 1px solid;
     text-align: center;
-    padding-top: 0.3em;
-    padding-bottom: 0.3em;
+    padding-top: 1px;
+    padding-bottom: 1px;
 }
 
 .Cell0 {
-    background-color: #FFFDF0;
-    border: 1px dashed;
+    border: 1px dotted;
 }
 
 .Cell1 {
@@ -97,13 +106,4 @@
 
 .CellF {
     background-color: #C3988B;
-}
-
-#tCellNotSupported {
-    text-align: center;
-}
-
-#tRowNotSupported {
-    vertical-align: middle;
-    color: red;
 }

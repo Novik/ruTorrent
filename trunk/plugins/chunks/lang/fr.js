@@ -1,18 +1,11 @@
-﻿/*
- * PLUGIN CHUNKS
- *
- * File Name: fr.js
- * 	French language file.
- *
- * File Author:
- *    Nicobubulle (nicobubulle@gmail.com)
- */
-
- theUILang.Chunks		= "Pièces";
- theUILang.chunksNoChunksFound	= "Pas de pièces trouvés!";
- theUILang.chunksRows		= "ligne(s)";
- theUILang.chunksColumns	= "colonne(s)";
- theUILang.chunksChunks 	= "pièce(s)";
- theUILang.chunksSize		= "taille d'une pièce";
+﻿
+ theUILang.Chunks		= "Chunks";
+ theUILang.cAvail		= "Availability";
+ theUILang.cDownloaded		= "Downloaded";
+ theUILang.cMode		= "Mode";
+ theUILang.chunksCount		= "Chunks count";
+ theUILang.chunkSize		= "Chunk size";
+ theUILang.cLegend		= "Legend";
+ theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
 
 thePlugins.get("chunks").langLoaded();
