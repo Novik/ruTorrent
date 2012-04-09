@@ -91,7 +91,7 @@ class ruTrackerChecker
 								)) );
 							if($registered && ($registered < $successful_time))
 							{
-								self::setState( $hash, self::STE_UPTODATE );
+								self::setState( $hash, (strstr($client->results, "Скачать .torrent</a>")===false) ? self::STE_DELETED : self::STE_UPTODATE );
 								return(true);
 							}
 						}
