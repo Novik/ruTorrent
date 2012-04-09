@@ -359,7 +359,6 @@ if($handle = opendir('../plugins'))
 					        $disabled[$file] = $info;
 						continue;
 					}
-
 					if(count($info['web.external.error']) || 
 						count($info['web.external.warning']) ||
 						count($info['rtorrent.external.error']) || 
@@ -485,9 +484,16 @@ if($handle = opendir('../plugins'))
 				require_once( $plugin["php"] );
 			else
 				$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
-			if($plugin["js"] && $theSettings->isPluginRegistered($plugin["name"]))
+			if($plugin["js"])
 			{
-				$jResult.=file_get_contents($plugin["js"]);
+				$js = file_get_contents($plugin["js"]);
+				if($theSettings->isPluginRegistered($plugin["name"]))
+					$jResult.=$js;
+				else
+				{
+					if(strpos($js,"plugin.loadLang()")!==false)
+						$jResult.="plugin.loadLang();";
+				}
 				$jResult.="\n";
 			}
 			$jResult.=$jEnd;
