@@ -62,7 +62,7 @@ class ruTrackerChecker
 	static public function run( $hash, $state = null, $time = null, $successful_time = null )
 	{
 		global $saveUploadedTorrents;
-		date_default_timezone_set('Europe/Moscow');
+//		date_default_timezone_set('Europe/Moscow');
 		if(is_null($state))
 			self::getState( $hash, $state, $time, $successful_time );
 		if(($state==self::STE_INPROGRESS) && ((time()-$time)>self::MAX_LOCK_TIME))

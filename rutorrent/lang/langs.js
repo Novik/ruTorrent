@@ -45,6 +45,7 @@ var AvailableLanguages =
 	de:'Deutsch',
 	en:'English',
 	es:'Español',
+	el:'Ελληνικά',
 	fr:'Français',
 	it:'Italiano',
 	lv:'Latvijas',
