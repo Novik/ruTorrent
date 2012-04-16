@@ -4,6 +4,14 @@ class FrenchTorrentDBAccount extends commonAccount
 {
 	public $url = "http://www.frenchtorrentdb.com";
 
+	protected function isOKPostFetch($client,$url,$method,$content_type,$body)
+	{
+		if(	preg_match("`/\?section=DOWNLOAD`si", $url) &&
+			preg_match("`/\?section=INFOS`si", $client->lastredirectaddr) &&
+			preg_match('`<a class="dl_link" href="([^"]*)"`si', $client->results, $match))
+			return($client->fetch($this->url.$match[1]) && ($client->get_filename()!==false));
+		return(true);
+	}
 	protected function isOK($client)
 	{
 		return(strpos($client->results, '<input name="password" value="" type="password"')===false);
