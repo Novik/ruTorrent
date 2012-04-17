@@ -3,7 +3,7 @@
 // Corrected by zcsala021, January 2010.
 
 theUILang.peerComment 		= "Add comment";
-theUILang.peerCommentLabel	= "Enter new comment fo peer";
+theUILang.peerCommentLabel	= "Enter new comment for peer";
 theUILang.commentName		= "Comment";
 
 theUILang.countryName = "Држава";

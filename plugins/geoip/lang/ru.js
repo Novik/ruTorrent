@@ -2,7 +2,7 @@
 // Contributed by art.spb, December 2009.
 
 theUILang.peerComment 		= "Добавить комментарий";
-theUILang.peerCommentLabel	= "Ввидите комментарий";
+theUILang.peerCommentLabel	= "Введите комментарий";
 theUILang.commentName		= "Комментарий";
 
 theUILang.countryName = "Страна";
