@@ -1,6 +1,10 @@
 ﻿
 // Contributed by art.spb, December 2009.
 
+theUILang.peerComment 		= "Добавить комментарий";
+theUILang.peerCommentLabel	= "Ввидите комментарий";
+theUILang.commentName		= "Комментарий";
+
 theUILang.countryName = "Страна";
 
 theUILang.country = new Array();
