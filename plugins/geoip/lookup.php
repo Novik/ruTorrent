@@ -9,7 +9,7 @@
 	}
 
 	$retrieveCountry = ($retrieveCountry && function_exists("geoip_country_code_by_name"));
-
+	$retrieveComments = ($retrieveComments && function_exists("sqlite_open"));
 	$ret = array();
 	if(!isset($HTTP_RAW_POST_DATA))
 		$HTTP_RAW_POST_DATA = file_get_contents("php://input");
@@ -25,7 +25,6 @@
 				if(strlen($value))
 				{
 					$city = '';
-
 					if($retrieveCountry)
 					{
 						$country = '';
@@ -56,7 +55,14 @@
                                                 if(empty($host) || (strlen($host)<2))
                                                         $host = $value;
                                         }
-					$ret[] = array( "ip"=>$value, "info"=>array( "country"=>$country, "host"=>$host ) );
+                                        $comment = '';
+                                        if($retrieveComments)
+                                        {
+        					require_once( 'ip_db.php' );
+        					$db = new ipDB();
+        					$comment = $db->get($value);
+                                        }
+					$ret[] = array( "ip"=>$value, "info"=>array( "country"=>$country, "host"=>$host, "comment"=>$comment ) );
 				}
 			}
 		}

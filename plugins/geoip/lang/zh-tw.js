@@ -1,6 +1,10 @@
 ﻿
 // Contributed by art.spb, December 2009.
 
+theUILang.peerComment 		= "Add comment";
+theUILang.peerCommentLabel	= "Enter new comment fo peer";
+theUILang.commentName		= "Comment";
+
 theUILang.countryName = "國家";
 
 theUILang.country = new Array();

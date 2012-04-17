@@ -2,6 +2,10 @@
 // Contributed by art.spb, December 2009.
 // Corrected by zcsala021, January 2010.
 
+theUILang.peerComment 		= "Add comment";
+theUILang.peerCommentLabel	= "Enter new comment fo peer";
+theUILang.commentName		= "Comment";
+
 theUILang.countryName = "Држава";
 
 theUILang.country = new Array();
