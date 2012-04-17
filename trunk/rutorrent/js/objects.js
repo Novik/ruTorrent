@@ -88,20 +88,22 @@ var theDialogManager =
 	divider: 0,
 	modalState: false,
 
-	make: function( id, name, content, isModal )
+	make: function( id, name, content, isModal, noClose )
 	{
 		$(document.body).append($("<div>").attr("id",id).addClass("dlg-window").html(content).
 			prepend( $("<div>").attr("id",id+"-header").addClass("dlg-header").text(name) ).
 			prepend( $("<a></a>").addClass("dlg-close") ));
-		return(this.add(id,isModal));
+		return(this.add(id,isModal,noClose));
 	},
-        add: function( id, isModal )
+        add: function( id, isModal, noClose )
 	{
 	        var obj = $('#'+id);
 	        if(!isModal)
 		        isModal = false;
 		obj.css( { position: "absolute", display: "none", outline: "0px solid transparent" } ).
-	        	data("modal",isModal).find(".dlg-close").attr("href","javascript:theDialogManager.hide('"+id+"');");
+	        	data("modal",isModal).data("nokeyclose",noClose);
+	        if(!noClose)
+		        obj.find(".dlg-close").attr("href","javascript:theDialogManager.hide('"+id+"');");
 	        var self = this;
 		var checkForButtons = function me(val)
 		{
@@ -218,7 +220,7 @@ var theDialogManager =
 	},
 	hideTopmost: function()
 	{
-		if(this.visible.length)
+		if(this.visible.length && !$('#'+this.visible[this.visible.length-1]).data("nokeyclose"))
 		{
 			this.hide(this.visible.pop());
 			return(true);
