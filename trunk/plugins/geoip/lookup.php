@@ -24,7 +24,7 @@
 				$value = trim($parts[1]);
 				if(strlen($value))
 				{
-					$city = '';
+					$city = array();
 					if($retrieveCountry)
 					{
 						$country = '';
@@ -33,7 +33,9 @@
        					        	$country = @geoip_record_by_name( $value );
        					        	if(!empty($country))
 							{
-								$city = utf8_encode($country["city"]);
+								$c = utf8_encode($country["city"]);
+								if(!empty($c))
+									$city[] = $c;
        					        		$country = $country["country_code"];
 							}
 						}
@@ -42,12 +44,27 @@
 						if(!isValidCode($country))
 							$country = "un";
 						else
+						{
 							$country = strtolower($country);
+							$org = '';
+							if(geoip_db_avail(GEOIP_ORG_EDITION))
+							{
+								$org = utf8_encode(geoip_org_by_name($value));
+								if(!empty($org))
+									$city[] = $org;
+							}
+							if(geoip_db_avail(GEOIP_ISP_EDITION))
+							{
+								$c = utf8_encode(geoip_isp_by_name($value));
+								if(!empty($c) && ($c!=$org))
+									$city[] = $c;
+							}
+						}
                     			}
 					else
 						$country = "un";
 					if(!empty($city))
-                                               $country.=" (".$city.")";
+                                               $country.=" (".implode(', ',$city).")";
 					$host = $value;
                                         if($retrieveHost)
                                         {
