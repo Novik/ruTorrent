@@ -158,8 +158,7 @@ function rtMkDir( $dir, $mode = 0777 )
 //------------------------------------------------------------------------------
 function rtMoveFile( $src, $dst, $dbg = false )
 {
-	$atime = fileatime( $src );
-	$mtime = filemtime( $src );
+	$ss = LFS::stat($src);
 	if( !rename( $src, $dst ) )
 	{
 		if( $dbg ) rtDbg( __FUNCTION__, "from ".$src );
@@ -174,7 +173,8 @@ function rtMoveFile( $src, $dst, $dbg = false )
 			if( $dbg ) rtDbg( __FUNCTION__, "delete fail (".$src.")" );
 	}
 	// there are problems here, if run-user is not file owner
-	touch( $dst, $atime, $mtime );
+	if($ss!==false)
+		touch( $dst, $ss['mtime'], $ss['atime'] );
 	return true;
 }
 
