@@ -110,7 +110,7 @@ class Torrent
 			case 'double':
 				return self::encode_integer( $mixed );
 			case 'object':
-				$mixed = get_object_vars( $mixed );
+				$mixed = (array) $mixed;
 			case 'array':
 				return self::encode_array( $mixed );
 			default:
