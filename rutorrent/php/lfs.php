@@ -57,6 +57,12 @@ class LFS
 		return(($ss==false) ? false : floatval($ss["size"]));
 	}
 
+	static public function filemtime($fname)
+	{
+		$ss = self::stat($fname);
+		return(($ss==false) ? false : floatval($ss["mtime"]));
+	}
+
 }
 
 ?>
