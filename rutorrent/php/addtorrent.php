@@ -9,7 +9,12 @@ $success = false;
 $status = null;
 
 if(isset($_REQUEST['result']))
-	cachedEcho('log(theUILang.addTorrent'.$_REQUEST['result'].');',"text/html");
+{
+	if(isset($_REQUEST['json']))	
+		cachedEcho( '{ "result" : "'.$_REQUEST['result'].'" }',"application/json");
+	else
+		cachedEcho('log(theUILang.addTorrent'.$_REQUEST['result'].');',"text/html");
+}
 $label = null;
 if(isset($_REQUEST['label']))	
 	$label = trim($_REQUEST['label']);
@@ -17,7 +22,7 @@ $dir_edit = null;
 if(isset($_REQUEST['dir_edit']))
 {
 	$dir_edit = trim($_REQUEST['dir_edit']);
-	if(!rTorrentSettings::get()->correctDirectory($dir_edit))
+	if((strlen($dir_edit)>0) && !rTorrentSettings::get()->correctDirectory($dir_edit))
 		$status = "FailedDirectory";
 }
 if(is_null($status))
@@ -41,7 +46,10 @@ if(is_null($status))
 					!isset($_REQUEST['not_add_path']),
 					$dir_edit,$label);
 				header("HTTP/1.0 302 Moved Temporarily");
-				header("Location: ".$_SERVER['PHP_SELF'].'?result='.($success ? "Success" : "Failed") );
+				$location = "Location: ".$_SERVER['PHP_SELF'].'?result='.($success ? "Success" : "Failed");
+				if(isset($_REQUEST['json']))
+					$location.='&json=1';
+				header($location);
 				exit();
 			}
 			else
@@ -88,5 +96,8 @@ else
 	if(is_null($status))
 		$status = "Failed";
 header("HTTP/1.0 302 Moved Temporarily");
-header("Location: ".$_SERVER['PHP_SELF'].'?result='.$status);
+$location = "Location: ".$_SERVER['PHP_SELF'].'?result='.$status;
+if(isset($_REQUEST['json']))
+	$location.='&json=1';
+header($location);
 ?>
