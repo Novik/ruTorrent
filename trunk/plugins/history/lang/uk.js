@@ -1,18 +1,18 @@
 ﻿
- theUILang.historyAddition	= "Addition";
- theUILang.historyDeletion	= "Deletion";
- theUILang.historyFinish	= "Finish";
- theUILang.hitoryLog		= "Log";
- theUILang.history		= "History";
- theUILang.historyLimit		= "Maximum number of records";
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
- theUILang.hstDeletePrompt	= "Do you really want to delete the selected record(s)?";
- theUILang.hstDelete		= "Delete record(s)";
- theUILang.Added		= "Added";
- theUILang.Finished		= "Finished";
- theUILang.Deleted		= "Deleted";
- theUILang.Time			= "Time";
- theUILang.Tracker		= "Tracker";
+ theUILang.historyAddition	= "Додавання";
+ theUILang.historyDeletion	= "Видалення";
+ theUILang.historyFinish	= "Завершення";
+ theUILang.hitoryLog		= "Записувати";
+ theUILang.history		= "Історія";
+ theUILang.historyLimit		= "Максимальна кількість записів";
+ theUILang.seedingTime		= "Завершено";
+ theUILang.addTime		= "Додано";
+ theUILang.hstDeletePrompt	= "Справді видалити вибрані записи?";
+ theUILang.hstDelete		= "Видалити записи";
+ theUILang.Added		= "Додано";
+ theUILang.Finished		= "Завершено";
+ theUILang.Deleted		= "Видалено";
+ theUILang.Time			= "Час";
+ theUILang.Tracker		= "Трекер";
 
 thePlugins.get("history").langLoaded();
