@@ -276,6 +276,6 @@
  phpExtensionNotFoundError	: "Плагін не працюватиме. Потрібно інсталювати розширення PHP",
  trkPrivate			: "Приватний",
  dontSet			: "Не встановлювати",
- webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
- webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
+ webBadSessionError		: "Плагін не працюватиме. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent",
+ webBadSessionWarning		: "Деякі функції не будуть доступні. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent"
  };
