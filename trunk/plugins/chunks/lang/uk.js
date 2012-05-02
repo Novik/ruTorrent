@@ -1,11 +1,11 @@
 ﻿
- theUILang.Chunks		= "Chunks";
- theUILang.cAvail		= "Availability";
- theUILang.cDownloaded		= "Downloaded";
- theUILang.cMode		= "Mode";
- theUILang.chunksCount		= "Chunks count";
- theUILang.chunkSize		= "Chunk size";
- theUILang.cLegend		= "Legend";
- theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
+ theUILang.Chunks		= "Частини";
+ theUILang.cAvail		= "Доступність";
+ theUILang.cDownloaded		= "Наявність";
+ theUILang.cMode		= "Режим";
+ theUILang.chunksCount		= "Кількість частин";
+ theUILang.chunkSize		= "Розмір частини";
+ theUILang.cLegend		= "Легенда";
+ theUILang.cLegendVal		= [ "4 частини на комірку", "1 частина на комірку" ];
 
 thePlugins.get("chunks").langLoaded();
