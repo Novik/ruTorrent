@@ -1,9 +1,9 @@
 ﻿
 // Contributed by art.spb, December 2009.
 
-theUILang.peerComment 		= "Add comment";
-theUILang.peerCommentLabel	= "Enter new comment for peer";
-theUILang.commentName		= "Comment";
+theUILang.peerComment 		= "Додати коментар";
+theUILang.peerCommentLabel	= "Уведіть новий коментар для вузла";
+theUILang.commentName		= "Коментар";
 
 theUILang.countryName = "Країна";
 
