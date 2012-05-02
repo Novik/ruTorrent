@@ -1,7 +1,7 @@
 ﻿
 
  theUILang.checkTorrent 	= "Перевірити оновлення";
- theUILang.chkHdr		= "Перевірка оновлення torrent-файла";
+ theUILang.chkHdr		= "Перевірка оновлення torrent-файлу";
  theUILang.checkedAt		= "Виконано";
  theUILang.checkedResult	= "Результат";
  theUILang.chkResults		= [
