@@ -95,7 +95,7 @@ function makeContent()
 				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
 				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge"/><br/>'+
 				'<hr/>'+
-				'<label>'+theUILang.Torrent_file+':</label><input type="file" name="torrent_file" id="torrent_file" accept="application/x-bittorrent" class="TextboxLarge"/><br/>'+
+				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept="application/x-bittorrent" class="TextboxLarge"/><br/>'+
 				'<label>&nbsp;</label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
 			'</form>'+
 			'<hr/>'+
@@ -108,7 +108,8 @@ function makeContent()
 	{
 		$("#add_button").attr("disabled",false);
 	});
-	var input = $$('url');
+
+	input = $$('url');
 	input.onupdate = input.onkeyup = function() { $('#add_url').attr('disabled',$.trim(input.value)==''); };
 	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
