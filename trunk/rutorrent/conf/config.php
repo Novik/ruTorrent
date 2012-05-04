@@ -2,7 +2,7 @@
 	// configuration parameters
 
 	// for snoopy client
-	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; pl; rv:1.9) Gecko/2008052906 Firefox/3.0', true);
+	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0', true);
 	@define('HTTP_TIME_OUT', 30, true);	// in seconds
 	@define('HTTP_USE_GZIP', true, true);
 	$httpIP = null;				// IP string. Or null for any.

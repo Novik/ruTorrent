@@ -59,13 +59,17 @@ class rHistoryData
 class rHistory
 {
 	public $hash = "history.dat";
-	public $log = array( "addition"=>1, "finish"=>1, "deletion"=>1, "limit"=>300 );
+	public $log = array( "addition"=>1, "finish"=>1, "deletion"=>1, "limit"=>300, "autoclose"=>1, "closeinterval"=>5 );
 
 	static public function load()
 	{
 		$cache = new rCache();
 		$ar = new rHistory();
-		$cache->get($ar);
+		if($cache->get($ar) && !array_key_exists("autoclose",$ar->log))
+		{
+			$ar->log["autoclose"] = 1;
+			$ar->log["closeinterval"] = 5;
+		}
 		return($ar);
 	}
 	public function store()

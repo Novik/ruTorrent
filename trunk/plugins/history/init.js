@@ -3,6 +3,8 @@ plugin.loadLang();
 plugin.mark = 0;
 plugin.hstTimeout = null;
 
+plugin.actionNames = ['', '', '', ''];
+
 if(plugin.canChangeOptions())
 {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
@@ -13,7 +15,10 @@ if(plugin.canChangeOptions())
 			$$('history_addition').checked = ( theWebUI.history.addition != 0 );
 			$$('history_finish').checked = ( theWebUI.history.finish != 0 );
 			$$('history_deletion').checked = ( theWebUI.history.deletion != 0 );
+			$$('not_autoclose').checked = ( theWebUI.history.autoclose != 0 );
+			$('#not_closeinterval').val( theWebUI.history.closeinterval );
 			$('#history_limit').val( theWebUI.history.limit );
+			plugin.rebuildNotificationsPage();
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
@@ -23,6 +28,8 @@ if(plugin.canChangeOptions())
 		return(	($$('history_addition').checked != ( theWebUI.history.addition != 0 )) ||
 			($$('history_finish').checked != ( theWebUI.history.finish != 0 )) ||
 			($$('history_deletion').checked != ( theWebUI.history.deletion != 0 )) ||
+			($$('not_autoclose').checked != ( theWebUI.history.autoclose != 0 )) ||
+			($('#not_closeinterval').val() != theWebUI.history.closeinterval) ||
 			($('#history_limit').val() != theWebUI.history.limit));
 	}
 
@@ -39,6 +46,8 @@ if(plugin.canChangeOptions())
 		this.content = "cmd=set&addition=" + ( $$('history_addition').checked ? '1' : '0' ) +
 			"&deletion=" + ( $$('history_deletion').checked  ? '1' : '0' ) +
 			"&finish=" + ( $$('history_finish').checked  ? '1' : '0' ) +
+			"&closeinterval=" + $('#not_closeinterval').val() +
+			"&autoclose=" + ( $$('not_autoclose').checked  ? '1' : '0' ) +
 			"&limit=" + $('#history_limit').val();
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/history/action.php";
@@ -95,7 +104,7 @@ if(plugin.canChangeTabs())
 								arr[i] = (arr[i] ==- 1) ? "\u221e" : theConverter.round(arr[i] / 1000, 3);
 								break;
 							case 'status' :
-								arr[i] = (arr[i]==1) ? theUILang.Added : (arr[i]==2) ? theUILang.Finished : theUILang.Deleted;
+								arr[i] = plugin.actionNames[arr[i]];
 								break;
       						}
 				}
@@ -195,6 +204,24 @@ if(plugin.canChangeTabs())
 		}
 	}
 
+	plugin.showNotification = function(item)
+	{
+		var popup = window.webkitNotifications.createNotification('favicon.ico', plugin.actionNames[item.action], item.name);
+		popup.show();
+		if(theWebUI.history.autoclose)
+			window.setTimeout( function() 
+			{
+				popup.cancel();
+			}, theWebUI.history.closeinterval*1000 );
+	}
+
+	plugin.notificationStatus = { notSupported: 0, enabled: 1, disabled: 2, blocked: 3 };
+
+	plugin.isNotificationsSupported = function()
+	{
+		return(window.webkitNotifications ? (window.webkitNotifications.checkPermission()+1) : plugin.notificationStatus.notSupported);
+	}
+
 	plugin.onGetHistory = function(d)
 	{
 		var updated = false;
@@ -202,7 +229,7 @@ if(plugin.canChangeTabs())
 		if($type(d))
 		{
 			if(d.mode)
-				table.clearRows();		
+				table.clearRows();
 			for( var id in d.items )
 			{
 				var item = d.items[id];
@@ -224,6 +251,10 @@ if(plugin.canChangeTabs())
 				updated = true;
 				if( item.action_time > plugin.mark )
 					plugin.mark = item.action_time;
+				if(!d.mode && (plugin.isNotificationsSupported()==plugin.notificationStatus.enabled))
+				{
+	                        	plugin.showNotification(item);
+				}
 			}
 		}
 		if(updated)
@@ -232,7 +263,7 @@ if(plugin.canChangeTabs())
 			if(table.sIndex !=- 1)
 				table.Sort();
 		}
-		if(theWebUI.activeView=='history')
+		if((theWebUI.activeView=='history') || (plugin.isNotificationsSupported()==plugin.notificationStatus.enabled))
 			plugin.hstTimeout = window.setTimeout(plugin.historyRefresh,theWebUI.settings["webui.update_interval"]);
 		else
         		if(plugin.hstTimeout)
@@ -293,6 +324,26 @@ if(plugin.canChangeTabs())
 	}
 }       
 
+plugin.rebuildNotificationsPage = function()
+{
+	var state = plugin.isNotificationsSupported();
+	$('#notifTip').text(theUILang.notifTip[state]);
+	switch(state)
+	{
+		case plugin.notificationStatus.blocked:
+		case plugin.notificationStatus.notSupported: 
+		{
+			$('#notifPerms, #notifParam').remove();
+			break;
+		}
+		case plugin.notificationStatus.enabled: 
+		{
+			$('#notifPerms').remove();
+			break;
+		}
+	}
+}
+
 plugin.onLangLoaded = function()
 {
 	this.attachPageToOptions( $("<div>").attr("id","st_history").html(
@@ -301,7 +352,7 @@ plugin.onLangLoaded = function()
 			"<input type='text' maxlength=4 id='history_limit' class='TextboxShort'/>"+
 		"</div>" +
 		"<fieldset>"+
-			"<legend>"+theUILang.hitoryLog+"</legend>"+
+			"<legend>"+theUILang.historyLog+"</legend>"+
 			"<div class='checkbox'>" +
 				"<input type='checkbox' id='history_addition'/>"+
 				"<label for='history_addition'>"+ theUILang.historyAddition +"</label>"+
@@ -314,8 +365,28 @@ plugin.onLangLoaded = function()
 				"<input type='checkbox' id='history_finish'/>"+
 				"<label for='history_finish'>"+ theUILang.historyFinish +"</label>"+
 			"</div>" +
+		"</fieldset>"+
+		"<fieldset>"+
+			"<legend>"+theUILang.historyNotification+"</legend>"+
+			"<div id='notifTip'>" +
+			"</div>" +
+			"<input type='button' value='"+theUILang.enableNotifications+"' id='notifPerms'/>"+
+			"<div id='notifParam'>" +
+				"<input type='checkbox' id='not_autoclose' onchange=\"linked(this, 0, ['not_closeinterval']);\" />"+
+				"<label for='not_autoclose'>"+ theUILang.notifAutoClose +" </label>" +
+				"<input type='text' id='not_closeinterval' class='TextboxShort' maxlength='3'/>" + theUILang.s +
+			"</div>" +
 		"</fieldset>"
 		)[0], theUILang.history );
+	$('#notifPerms').click( function()
+	{
+		window.webkitNotifications.requestPermission(function() 
+		{ 
+			plugin.rebuildNotificationsPage();
+			plugin.historyRefresh();
+		});
+	});
+	plugin.actionNames = ['', theUILang.Added, theUILang.Finished, theUILang.Deleted];
 }
 
 plugin.onRemove = function()
