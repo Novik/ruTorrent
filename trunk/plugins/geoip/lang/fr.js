@@ -10,9 +10,9 @@
 
 // Contributed by art.spb, December 2009.
 
-theUILang.peerComment 		= "Add comment";
-theUILang.peerCommentLabel	= "Enter new comment for peer";
-theUILang.commentName		= "Comment";
+theUILang.peerComment 		= "Ajouter un commentaire";
+theUILang.peerCommentLabel	= "Entrer un nouveau commentaire pour le peer";
+theUILang.commentName		= "Commentaire";
 
 theUILang.countryName = "Pays";
 
