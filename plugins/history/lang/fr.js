@@ -23,15 +23,15 @@
  theUILang.Deleted		= "Supprimé";
  theUILang.Time			= "Heure";
  theUILang.Tracker		= "Tracker";
- theUILang.enableNotifications	= "Enable desktop notifications";
- theUILang.historyNotification  = "Desktop notifications";
- theUILang.notifAutoClose	= "Autoclose notifications after";
+ theUILang.enableNotifications	= "Activer les notifications du bureau";
+ theUILang.historyNotification  = "Notifications du bureau";
+ theUILang.notifAutoClose	= "Fermeture auto des notifications après";
  theUILang.notifTip		= 
  	[
- 		"Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 		"Votre navigateur ne supporte pas les notifications du bureau. Essayez un autre navigateur, par exemple, Google Chrome.",
  		"",
- 		"Your browser supports desktop notifications. Press button below to enable it.",
- 		"Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 		"Votre navigateur supporte les notifications du bureau. Pressez le bouton ci-dessous pour les activer.",
+ 		"Votre navigateur supporte les notifications du bureau, mais vous les avez désactivées pour ce site. Fermez cette boite de dialogue et utilisez les options de votre navigateur pour activer les notifications du bureau.",
 	];
 
 thePlugins.get("history").langLoaded();

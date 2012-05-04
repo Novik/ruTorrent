@@ -274,6 +274,6 @@
  phpExtensionNotFoundError	: "Le plug-in ne fonctionnera pas. L'extension PHP doit être installée",
  trkPrivate			: "Privé",
  dontSet			: "Sans",
- webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
- webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
+ webBadSessionError		: "Le plug-in ne fonctionnera pas. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
+ webBadSessionWarning		: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent."
  };
