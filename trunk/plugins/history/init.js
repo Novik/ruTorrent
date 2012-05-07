@@ -333,12 +333,12 @@ plugin.rebuildNotificationsPage = function()
 		case plugin.notificationStatus.blocked:
 		case plugin.notificationStatus.notSupported: 
 		{
-			$('#notifPerms, #notifParam').remove();
+			$('#notifPerms, #notifParam').hide();
 			break;
 		}
 		case plugin.notificationStatus.enabled: 
 		{
-			$('#notifPerms').remove();
+			$('#notifPerms').hide();
 			break;
 		}
 	}
