@@ -162,7 +162,6 @@ class rTask
 		}
 		else
 		{
-
 			$req = new rXMLRPCRequest( 
 				new rXMLRPCCommand( "execute_nothrow", array("sh","-c",$cmd) ) );
 			if($req->success() && count($req->val))

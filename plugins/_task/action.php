@@ -17,7 +17,6 @@ switch($_REQUEST['cmd'])
 		break;
 	}
 }
-
 cachedEcho(json_encode($ret),"application/json");
 
 ?>
