@@ -171,7 +171,7 @@ plugin.onLangLoaded = function()
 {
 	theDialogManager.make("tskConsole",theUILang.tskCommand,
 		"<div class='fxcaret'>"+
-			"<fieldset>"+
+			"<fieldset id='tskcmdlog_set'>"+
 				"<legend>"+theUILang.tskConsole+"</legend>"+
 				"<div class='tskconsole' id='tskcmdlog'></div>"+
 			"</fieldset>"+
