@@ -152,7 +152,8 @@ class rRSS
 				$this->encoding = null;
 			$this->channel = array();
 			$this->items = array();
-			if(preg_match("'<channel.*?>(.*?)</channel>'si", $cli->results, $out)==1)
+			if(preg_match("'<channel.*?>(.*?)</channel>'si", $cli->results, $out) || 
+				preg_match("'<channel.*?>(.*?)'si", $cli->results, $out))	// for damned lostfilm.tv with broken rss
 			{
 				foreach($this->channeltags as $channeltag)
 				{
