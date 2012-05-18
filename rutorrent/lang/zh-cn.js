@@ -64,8 +64,8 @@
  Downloaded			: "已下载",
  Uploaded			: "已上传",
  Ratio				: "分享率",
- DL				: "下载速度",
- UL				: "上传速度",
+ DL				: "下载量",
+ UL				: "上传量",
  ETA				: "剩余时间",
  Label				: "标签",
  Peers				: "用户数量",
@@ -151,11 +151,11 @@
  mnu_search			: "搜索",
  mnu_lang			: "选用语言",
  torrent_add			: "添加 Torrent", /*Caption of torrent add box*/
- time_w 			: "w ", /*for x weeks*/
- time_d 			: "d ", /*for x days remaining*/
- time_h 			: "h ", /*for x hours remaining*/
- time_m 			: "m ", /*for x minutes remaining*/
- time_s 			: "s ", /*for x seconds remaining*/
+ time_w 			: "周 ", /*for x weeks*/
+ time_d 			: "天 ", /*for x days remaining*/
+ time_h 			: "小时 ", /*for x hours remaining*/
+ time_m 			: "分钟 ", /*for x minutes remaining*/
+ time_s 			: "秒 ", /*for x seconds remaining*/
  Base_directory 		: "目录",
  Number_Peers_min		: "最小用户数",
  Number_Peers_max		: "最大用户数",
@@ -195,7 +195,7 @@
  AsTree 			: "为树状",
  Group				: "组",
  SuperSeed			: "超级种子",
- badTestPath			: "rTorrent user must have read/execute access to the file ./test.sh",
+ badTestPath			: "rTorrent 执行用户必须拥有 ./test.sh 文件的执行权限",
  badSettingsPath2		: "rTorrent user must have read/write/execute access to the settings directory.",
  scrapeDownloaded		: "已下载",
  Total				: "总计",
