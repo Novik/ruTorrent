@@ -263,7 +263,13 @@ class rTorrentSettings
 			$dir = $this->home.substr($dir,1);
 		$dir = fullpath($dir,$this->directory);
 		if($resolve_links)
-			$dir = realpath($dir);
+		{
+			$path = realpath($dir);
+			if(!$path)
+				$dir = addslash(realpath(dirname($dir))).basename($dir);
+			else
+				$dir = $path;	
+		}
 		return(strpos(addslash($dir),$topDirectory)===0);
 	}
 }
