@@ -14,15 +14,15 @@
  theUILang.Deleted		= "Видалено";
  theUILang.Time			= "Час";
  theUILang.Tracker		= "Трекер";
- theUILang.enableNotifications	= "Enable desktop notifications";
- theUILang.historyNotification  = "Desktop notifications";
- theUILang.notifAutoClose	= "Autoclose notifications after";
+ theUILang.enableNotifications	= "Увімкнути сповіщення на робочому столі";
+ theUILang.historyNotification  = "Сповіщення на робочому столі";
+ theUILang.notifAutoClose	= "Автоматично закривати сповіщення через";
  theUILang.notifTip		= 
  	[
- 		"Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 		"Ваш браузер не підтримує сповіщення на робочому столі. Спробуйте скористатися іншим браузером, наприклад, Google Chrome.",
  		"",
- 		"Your browser supports desktop notifications. Press button below to enable it.",
- 		"Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 		"Ваш браузер підтримує сповіщення на робочому столі. Натисніть кнопку нижче, щоб увімкнути їх.",
+ 		"Ваш браузер підтримує сповіщення на робочому столі, але їх вимкнено для цього сайту. Закрийте це діалогове вікно й увімкніть сповіщення на робочому столі в опціях браузера.",
 	];
 
 thePlugins.get("history").langLoaded();
