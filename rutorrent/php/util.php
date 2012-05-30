@@ -473,46 +473,83 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 	if($stat && @LFS::is_file($filename) && @LFS::is_readable($filename))
 	{
 		$etag = sprintf('"%x-%x-%x"', $stat['ino'], $stat['size'], $stat['mtime'] * 1000000);
-		header('Cache-Control: ');
-		header('Expires: ');
-		header('Pragma: ');
 		if( 	(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) ||
                        	(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $stat['mtime']))
 			header('HTTP/1.0 304 Not Modified');
 		else
 		{
-			header('Etag: '.$etag);
-			header('Last-Modified: ' . date('r', $stat['mtime']));
-			set_time_limit(0);
-			header('Accept-Ranges: bytes');
-			if(!ini_get("zlib.output_compression"))
-				header('Content-Length:' . $stat['size']);
 			header('Content-Type: '.(is_null($contentType) ? 'application/octet-stream' : $contentType));
 			if(is_null($nameToSent))
 				$nameToSent = end(explode('/',$filename));
 			if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 				$nameToSent = rawurlencode($nameToSent);
 			header('Content-Disposition: attachment; filename="'.$nameToSent.'"');
-			header('Content-Transfer-Encoding: binary');
-			header('Content-Description: File Transfer');
-			header('HTTP/1.0 200 OK');
 
-			if(ob_get_level()) 
-				while(@ob_end_clean());
-
-			$limit = ini_get("memory_limit");
-			if(empty($limit))
-				$limit = 2147483647;
+			if($mustExit &&
+				function_exists('apache_get_modules') && 
+				in_array('mod_xsendfile', apache_get_modules()))
+			{ 
+				header("X-Sendfile: ".$filename); 
+			}
 			else
 			{
-				$limit = $limit*1048576-memory_get_usage(true);
-				if(($limit>2147483647) || ($limit<0))
-					$limit = 2147483647;
+				header('Cache-Control: ');
+				header('Expires: ');
+				header('Pragma: ');
+				header('Etag: '.$etag);
+				header('Last-Modified: ' . date('r', $stat['mtime']));
+				set_time_limit(0);
+				header('Accept-Ranges: bytes');
+				header('Content-Transfer-Encoding: binary');
+				header('Content-Description: File Transfer');
+
+				if(ob_get_level()) 
+					while(@ob_end_clean());
+
+				$begin = 0;
+				$end = $stat['size'];
+				if(isset($_SERVER['HTTP_RANGE']))
+  				{ 
+  					if(preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches))
+    					{ 
+    						$begin=intval($matches[0]);
+						if(!empty($matches[1]))
+							$end=intval($matches[1]);
+					}
+				}
+				$size = $end - $begin;
+				if((PHP_INT_SIZE<=4) && ($size >= 2147483647))
+					passthru('cat '.escapeshellarg($filename));
+				else
+				{
+					if(!ini_get("zlib.output_compression"))
+						header('Content-Length:' . $size);
+					if($size != $stat['size'])
+					{
+						$f = @fopen($filename,'rb');
+						if($f===false)
+							header ("HTTP/1.0 505 Internal Server Error");
+						else
+						{
+							header('HTTP/1.0 206 Partial Content');
+							header("Content-Range: bytes ".$begin."-".$end."/".$stat['size']);
+							$cur = $begin;
+							fseek($f,$begin,0);
+							while( !feof($f) && ($cur<$end) && (connection_status()==0) )
+							{ 
+								print(fread($f,min(1024*16,$end-$cur)));
+								$cur+=1024*16;
+							}
+							fclose($f);
+						}
+					}
+					else
+					{
+						header('HTTP/1.0 200 OK');  
+						readfile($filename);
+					}
+				}
 			}
-			if($stat['size'] >= $limit)
-				passthru('cat '.escapeshellarg($filename));
-			else
-				readfile($filename);
 		}
 		if($mustExit)
 			exit(0);

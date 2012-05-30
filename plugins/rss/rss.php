@@ -220,10 +220,10 @@ class rRSS
 						if(!array_key_exists('timestamp',$item))
 						{
 // hack for iptorrents.com
-// Category: Movies/Non-English  Size: 707.38 MB Added: 2009-10-21 07:42:37
+// Category: Movies/Non-English  Size: 707.38 MB Uploaded: 2009-10-21 07:42:37
 							if(array_key_exists('description',$item) && 
 								(strlen($item['description'])<255) &&
-								(($pos = strpos($item['description'],'Added: '))!==false) &&
+								(($pos = strpos($item['description'],'Uploaded: '))!==false) &&
 								(($timestamp = strtotime(substr($item['description'],$pos+7)))!==-1))
 								$item['timestamp'] = $timestamp;
 							else
