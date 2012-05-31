@@ -224,7 +224,7 @@ class rRSS
 							if(array_key_exists('description',$item) && 
 								(strlen($item['description'])<255) &&
 								(($pos = strpos($item['description'],'Uploaded: '))!==false) &&
-								(($timestamp = strtotime(substr($item['description'],$pos+7)))!==-1))
+								(($timestamp = strtotime(substr($item['description'],$pos+10)))!==-1))
 								$item['timestamp'] = $timestamp;
 							else
 								$item['timestamp'] = 0;
