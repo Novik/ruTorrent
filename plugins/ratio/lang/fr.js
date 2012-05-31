@@ -23,5 +23,6 @@
  theUILang.ratioEraseData	= "Supprime les données";
  theUILang.maxTime		= "Temps";
  theUILang.ratioDefault 	= "Groupe de ratio par défaut";
+ theUILang.setThrottleTo	= "Set channel to";
 
 thePlugins.get("ratio").langLoaded();

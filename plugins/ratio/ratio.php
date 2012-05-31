@@ -9,6 +9,7 @@ eval(getPluginConf('ratio'));
 @define('RAT_STOP_AND_REMOVE',1);
 @define('RAT_ERASE',2);
 @define('RAT_ERASEDATA',3);
+@define('RAT_FIRSTTHROTTLE',10);
 
 class rRatio
 {
@@ -177,6 +178,13 @@ class rRatio
 						{
 							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command", 
 								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("d.set_custom5=")."1; ".getCmd("d.erase="))));
+							break;
+						}
+						default:
+						{
+							$thr = "thr_".($rat["action"]-RAT_FIRSTTHROTTLE);
+							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command", 
+								getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$thr.',$'.getCmd('d.start='))));
 							break;
 						}
 					}

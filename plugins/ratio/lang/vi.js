@@ -15,5 +15,6 @@
  theUILang.ratioEraseData	= "Xóa dữ liệu";
  theUILang.maxTime		= "T.Gian";
  theUILang.ratioDefault 	= "Nhóm tỉ lệ mặc định";
+ theUILang.setThrottleTo	= "Set channel to";
 
 thePlugins.get("ratio").langLoaded();
