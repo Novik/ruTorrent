@@ -8,6 +8,15 @@ plugin.allDone = function()
 	{
 		$('.ratio_time').remove();
 	}
+	if(thePlugins.isInstalled("throttle"))
+	{
+		for(var i=0; i<theWebUI.maxThrottle; i++)
+			if(theWebUI.isCorrectThrottle(i))
+			{
+				for(var j=0; j<theWebUI.maxRatio; j++)
+					$('#rat_action'+j).append("<option value='"+(i+10)+"'>"+theUILang.setThrottleTo+" "+theWebUI.throttles[i].name+"</option>");
+			}
+	}
 }
 
 plugin.config = theWebUI.config;
