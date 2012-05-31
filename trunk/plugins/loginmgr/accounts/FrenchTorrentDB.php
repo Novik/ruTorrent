@@ -10,7 +10,7 @@ class FrenchTorrentDBAccount extends commonAccount
 			preg_match("`/\?section=INFOS`si", $client->lastredirectaddr) &&
 			preg_match('`<a class="dl_link" href="([^"]*)"`si', $client->results, $match))
 			return($client->fetch($this->url.$match[1]) && ($client->get_filename()!==false));
-		return(true);
+		return($this->isOK($client));
 	}
 	protected function isOK($client)
 	{
