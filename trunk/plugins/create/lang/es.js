@@ -1,22 +1,22 @@
-ï»¿
 
- theUILang.mnu_create			= "Create Torrent...";
- theUILang.CreateNewTorrent		= "Create New Torrent";
- theUILang.SelectSource 		= "Select Source";
- theUILang.TorrentProperties		= "Torrent Properties";
- theUILang.PieceSize			= "Piece size";
- theUILang.Other			= "Other";
- theUILang.StartSeeding 		= "Start seeding";
- theUILang.PrivateTorrent		= "Private torrent";
- theUILang.torrentCreate		= "Create...";
- theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound	= "Create plugin: Plugin will not work. Webserver user can't access external program";
- theUILang.incorrectDirectory		= "Incorrect directory";
- theUILang.cantExecExternal		= "Can't execute external program";
- theUILang.createConsole		= "Console";
- theUILang.createErrors 		= "Errors";
- theUILang.torrentSave			= "Save";
- theUILang.torrentKill			= "Stop";
- theUILang.torrentKilled		= "Process was stopped.";
+
+ theUILang.mnu_create			= "Crear Torrent...";
+ theUILang.CreateNewTorrent		= "Crear Nuevo Torrent";
+ theUILang.SelectSource 		= "Seleccione origen";
+ theUILang.TorrentProperties		= "Propiedades del Torrent";
+ theUILang.PieceSize			= "Tamaño de pieza";
+ theUILang.Other			= "Otros";
+ theUILang.StartSeeding 		= "Comenzar a seedear";
+ theUILang.PrivateTorrent		= "Torrent privado";
+ theUILang.torrentCreate		= "Crear...";
+ theUILang.BadTorrentData		= "Debe llenar los campos requeridos!";
+ theUILang.createExternalNotFound	= "Create plugin: El Plugin no funcionará. el Webserver no puede acceder al programa externo";
+ theUILang.incorrectDirectory		= "Directorio incorrecto";
+ theUILang.cantExecExternal		= "No se puede ejecutar el programa externo";
+ theUILang.createConsole		= "Consola";
+ theUILang.createErrors 		= "Errores";
+ theUILang.torrentSave			= "Guardar";
+ theUILang.torrentKill			= "Cancelar";
+ theUILang.torrentKilled		= "El proceso fue detenido.";
 
 thePlugins.get("create").langLoaded();

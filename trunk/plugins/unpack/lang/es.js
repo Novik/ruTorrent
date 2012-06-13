@@ -1,17 +1,18 @@
-﻿
 
- theUILang.unpack		= "Unpack";
- theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";
- theUILang.processAll		= "Process all volumes";
- theUILang.unpackTaskFailed	= "Unpacking finished with errors";
- theUILang.unpackTaskOK 	= "Unpacking finished successfully";
- theUILang.unpackTaskStarted	= "Unpacking started";
- theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
- theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
- theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
- theUILang.unpackAddLabel	= "Torrent Label";
- theUILang.unpackAddName	= "Torrent Name";
- theUILang.unpackNoFiles	= "No archives found in torrent data.";
+
+theUILang.unpack		= "Descomprimir";
+theUILang.unpackPath		= "Descomprimir a (deje en blanco para la carpeta actual):";
+theUILang.processAll		= "Procesar todos los volumenes";
+theUILang.unpackTaskFailed      = "Finalizado con errores";
+theUILang.unpackTaskOK		= "Finalizado con exito";
+theUILang.unpackTaskStarted	= "Comenzando";
+theUILang.unzipNotFound		= "No se puede localizar unzip.";
+theUILang.unrarNotFound		= "No se puede localizar unrar.";
+theUILang.unpackEnabled		= "Descomprimir automaticamente";
+theUILang.unpackTorrents	= "Agregar a la ruta cuando se descomprima:";
+theUILang.unpackAddLabel	= "Etiqueta del Torrent";
+theUILang.unpackAddName		= "Nombre del Torrent";
+theUILang.unpackNoFiles		= "No se encontraron archivos.";
+
 
 thePlugins.get("unpack").langLoaded();

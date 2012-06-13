@@ -1,11 +1,11 @@
-ï»¿
- theUILang.Chunks		= "Chunks";
- theUILang.cAvail		= "Availability";
- theUILang.cDownloaded		= "Downloaded";
- theUILang.cMode		= "Mode";
- theUILang.chunksCount		= "Chunks count";
- theUILang.chunkSize		= "Chunk size";
- theUILang.cLegend		= "Legend";
- theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
+
+ theUILang.Chunks		= "Trozos";
+ theUILang.cAvail		= "Disponibilidad";
+ theUILang.cDownloaded		= "Descargados";
+ theUILang.cMode		= "Modo";
+ theUILang.chunksCount		= "Cuenta de trozos";
+ theUILang.chunkSize		= "Tamaño de trozos";
+ theUILang.cLegend		= "Leyenda";
+ theUILang.cLegendVal		= [ "4 trozos por celda", "1 trozo por celda" ];
 
 thePlugins.get("chunks").langLoaded();

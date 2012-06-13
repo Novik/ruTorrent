@@ -1,10 +1,10 @@
-ï»¿
 
- theUILang.EditTrackers 		= "Edit Torrent...";
- theUILang.EditTorrentProperties	= "Torrent Properties";
- theUILang.errorAddTorrent		= "Error adding torrent file";
- theUILang.errorWriteTorrent		= "Error writing torrent file";
- theUILang.errorReadTorrent		= "Error reading torrent file";
- theUILang.cantFindTorrent		= "Source torrent file for this download not found."
+
+ theUILang.EditTrackers 		= "Editar Torrent...";
+ theUILang.EditTorrentProperties	= "Propiedades del Torrent";
+ theUILang.errorAddTorrent		= "Error al agregar el torrent";
+ theUILang.errorWriteTorrent		= "Error al escribir el torrent";
+ theUILang.errorReadTorrent		= "Error al leer el torrent";
+ theUILang.cantFindTorrent		= "El torrent original no fué encontrado."
 
 thePlugins.get("edit").langLoaded();

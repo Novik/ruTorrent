@@ -1,23 +1,23 @@
 <?php
 
-$theUILang["all"]		= "All torrents";
-$theUILang["completed"] 	= "Completed torrents";
+$theUILang["all"]		= "Todos los torrents";
+$theUILang["completed"] 	= "Torrents completados";
 $theUILang["downloading"]	= "Downloading torrents";
-$theUILang["active"]		= "Active torrents";
-$theUILang["inactive"]		= "Inactive torrents";
-$theUILang["error"]		= "Error torrents";
-$theUILang["Transfer"]		= "Transfer";
-$theUILang["Size"]		= "Size";
-$theUILang["Remaining"] 	= "Remaining";
+$theUILang["active"]		= "Torrents activos";
+$theUILang["inactive"]		= "Torrents inactivos";
+$theUILang["error"]		= "Torrents con error";
+$theUILang["Transfer"]		= "Transferir";
+$theUILang["Size"]		= "Tamaño";
+$theUILang["Remaining"] 	= "Restantes";
 $theUILang["Share_ratio"]	= "Share Ratio";
-$theUILang["Downloaded"]	= "Downloaded"; 
-$theUILang["Down_speed"]	= "Download Speed";
-$theUILang["Uploaded"]		= "Uploaded";
-$theUILang["Ul_speed"]		= "Upload Speed";
+$theUILang["Downloaded"]	= "Descargado";
+$theUILang["Down_speed"]	= "Velocidad de descarga";
+$theUILang["Uploaded"]		= "Subido";
+$theUILang["Ul_speed"]		= "Velocidad de subida";
 $theUILang["Seeds"]		= "Seeds";
 $theUILang["Peers"]		= "Peers";
-$theUILang["Track_status"]	= "Tracker Status";
-$theUILang["Comment"]		= "Comment";
+$theUILang["Track_status"]	= "Estado del Tracker";
+$theUILang["Comment"]		= "Comentarios";
 $theUILang["s"] 		= "s";
 $theUILang["bytes"]		= "bytes";
 $theUILang["KB"]		= "KB";
