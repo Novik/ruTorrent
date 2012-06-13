@@ -1,10 +1,10 @@
-ï»¿
 
- theUILang.DataDir		= "Save to";
- theUILang.DataDirMove		= "Move data files";
- theUILang.datadirDlgCaption	= "Torrent Data Directory";
- theUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
- theUILang.datadirSetDirFail	= "DataDir plugin: Operation fail";
- theUILang.datadirPHPNotFound	= "DataDir plugin: rTorrent user can't access php interpreter. Plugin will not work.";
+
+ theUILang.DataDir		= "Guardar en";
+ theUILang.DataDirMove		= "Mover datos";
+ theUILang.datadirDlgCaption	= "Directorio de datos del Torrent";
+ theUILang.datadirDirNotFound	= "DataDir plugin: Directorio inválido";
+ theUILang.datadirSetDirFail	= "DataDir plugin: Operación fallida";
+ theUILang.datadirPHPNotFound	= "DataDir plugin: rTorrent no puede acceder al intérprete PHP. El Plugin no funcionará.";
 
 thePlugins.get("datadir").langLoaded();
