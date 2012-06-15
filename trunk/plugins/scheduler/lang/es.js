@@ -1,4 +1,4 @@
-
+ 
 
  theUILang.scheduler		= "Planificador";
  theUILang.schedulerOn		= "Habilitar Planificador";

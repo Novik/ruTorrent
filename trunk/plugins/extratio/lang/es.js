@@ -9,7 +9,7 @@
  theUILang.ratioIfLegend	= "Si";
  theUILang.ratLabelContain	= "Etiqueta contiene";
  theUILang.ratTrackerContain	= "Una de las URL de los trackers contiene";
- theUILang.ratTrackerPublic	= "Todos los trackers son públicos";
+ theUILang.ratTrackerPublic	= "Todos los trackers son pÃºblicos";
  theUILang.ratTrackerPrivate	= "Uno de los trackers es privado";
  theUILang.ratioThenLegend	= "Entonces";
  theUILang.setRatioTo		= "setear ratio a";

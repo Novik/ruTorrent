@@ -3,7 +3,7 @@
  theUILang.throttles		= "Velocidades";
  theUILang.throttle		= "Velocidad";
  theUILang.mnuThrottle		= "Asignar velocidad";
- theUILang.mnuUnlimited 	= "Sin restricción";
+ theUILang.mnuUnlimited 	= "Sin restricciÃ³n";
  theUILang.channelName		= "Nombre";
  theUILang.channelDefault	= "Velocidad por defecto";
 
