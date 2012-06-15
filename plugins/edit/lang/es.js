@@ -5,6 +5,6 @@
  theUILang.errorAddTorrent		= "Error al agregar el torrent";
  theUILang.errorWriteTorrent		= "Error al escribir el torrent";
  theUILang.errorReadTorrent		= "Error al leer el torrent";
- theUILang.cantFindTorrent		= "El torrent original no fué encontrado."
+ theUILang.cantFindTorrent		= "El torrent original no fuÃ© encontrado."
 
 thePlugins.get("edit").langLoaded();

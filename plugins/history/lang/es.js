@@ -4,7 +4,7 @@
  theUILang.historyFinish	= "Finalizado";
  theUILang.historyLog		= "Log";
  theUILang.history		= "Historial";
- theUILang.historyLimit		= "Número máximo de registros";
+ theUILang.historyLimit		= "NÃºmero mÃ¡ximo de registros";
  theUILang.seedingTime		= "Finalizado";
  theUILang.addTime		= "Agregado";
  theUILang.hstDeletePrompt	= "Realmente desea borrar los registros?";
@@ -21,7 +21,7 @@
  	[
  		"Su navegador no soporta notificaciones. Pruebe con uno diferente, por ejemplo, Google Chrome.",
  		"",
- 		"Su navegador soporta notificaciones. Presione el botón para habilitarlas.",
+ 		"Su navegador soporta notificaciones. Presione el botÃ³n para habilitarlas.",
  		"Su navegador soporta notificaciones, pero las ha deshabilitado. Cierre este cuadro y utilice las opciones del navegador para habilitarlas.",
 	];
 

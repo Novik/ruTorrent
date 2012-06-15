@@ -6,17 +6,17 @@
  theUILang.rssAddRule		= "Agregar";
  theUILang.rssDelRule		= "Borrar";
  theUILang.rssCheckRule 	= "?";
- theUILang.rssRulesLegend	= "Configuraci髇 de reglas";
- theUILang.rssSrcHref		= "Si la URL de descarga del torrent conicide con el patr髇";
- theUILang.rssSrcGuid		= "Si la URL de descripci髇 del torrent conicide con el patr髇";
+ theUILang.rssRulesLegend	= "Configuraci贸n de reglas";
+ theUILang.rssSrcHref		= "Si la URL de descarga del torrent conicide con el patr贸n";
+ theUILang.rssSrcGuid		= "Si la URL de descripci贸n del torrent conicide con el patr贸n";
  theUILang.rssDstHref		= "reemplazar la URL de descarga del torrent con";
- theUILang.rssDstGuid		= "reemplazar la URL de descripci髇 del torrent con";
+ theUILang.rssDstGuid		= "reemplazar la URL de descripci贸n del torrent con";
  theUILang.rssRulesDebug	= "Debug de reglas";
  theUILang.rssTestString	= "Test";
  theUILang.rssTestResult	= "Resultado";
  theUILang.rssURLInfo		= "URL de info";
- theUILang.rssURLGUID		= "URL de descripci髇";
+ theUILang.rssURLGUID		= "URL de descripci贸n";
  theUILang.rssURLHref		= "URL de descarga";
- theUILang.rssPatternError	= "Error en el patr髇.";
+ theUILang.rssPatternError	= "Error en el patr贸n.";
 
 thePlugins.get("rssurlrewrite").langLoaded();
