@@ -78,7 +78,7 @@ if( count( $argv ) > 1 )
 			if($resumed = rTorrent::fastResume($torrent,$path_edit))
 				$torrent = $resumed;
 			$torrent->save($fname);
-			rTorrent::sendTorrent($fname, true, true, $path_edit, null, true, isLocalMode() );
+			rTorrent::sendTorrent($torrent, true, true, $path_edit, null, true, isLocalMode() );
 			if($resumed)
 			{
 				if(isset($torrent->{'rtorrent'}))

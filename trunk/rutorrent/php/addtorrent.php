@@ -27,7 +27,7 @@ else
 	{
 		$dir_edit = trim($_REQUEST['dir_edit']);
 		if((strlen($dir_edit)>0) && !rTorrentSettings::get()->correctDirectory($dir_edit))
-			$uploaded_files = array( 'status' => "FailedDirectory" );
+			$uploaded_files = array( array( 'status' => "FailedDirectory" ) );
 	}
 	if(empty($uploaded_files))
 	{
@@ -53,7 +53,7 @@ else
 					$ufile.=".torrent";
 				$ufile = getUniqueFilename($ufile);
 				$ok = move_uploaded_file($file['tmp_name'],$ufile);
-				$uploaded_files[] = array( 'name'=>$file['name'], 'file'=>$ufile, 'status'=>($ok ? "Success" : "Failed"));
+				$uploaded_files[] = array( 'name'=>$file['name'], 'file'=>$ufile, 'status'=>($ok ? "Success" : "Failed") );
 			}
 		}
 		else
@@ -94,11 +94,9 @@ else
 			}
 		}
 	}
-
 	$location = "Location: ".$_SERVER['PHP_SELF'].'?';
 	if(empty($uploaded_files))
-		$uploaded_files = array( 'status' => "Failed" );
-
+		$uploaded_files = array( array( 'status' => "Failed" ) );
 	foreach($uploaded_files as &$file)
 	{
 		if( ($file['status']=='Success') && isset($file['file']) )
@@ -113,7 +111,7 @@ else
 			}
 			else
 			{
-				if(rTorrent::sendTorrent($file['file'],
+				if(rTorrent::sendTorrent($torrent,
 					!isset($_REQUEST['torrents_start_stopped']),
 					!isset($_REQUEST['not_add_path']),
 					$dir_edit,$label,$saveUploadedTorrents,isset($_REQUEST['fast_resume']))===false)

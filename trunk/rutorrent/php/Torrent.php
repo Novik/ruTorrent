@@ -19,6 +19,7 @@ class Torrent
 	private $data;
 	protected $log_callback = null;
 	protected $err_callback = null;
+	protected $filename = null;
 
 	/** Read and decode torrent file/data OR build a torrent from source folder/file(s)
 	 * Supported signatures:
@@ -94,6 +95,11 @@ class Torrent
 	public function errors() 
 	{
 		return(empty( $this->errors ) ? false : $this->errors);
+	}
+
+	public function getFileName() 
+	{
+		return($this->filename);
 	}
 
 	/**** Encode BitTorrent ****/
@@ -179,7 +185,13 @@ class Torrent
 
 	protected function decode( $string ) 
 	{
-		$this->data = is_file( $string ) ? file_get_contents( $string ) : $string;
+		if(is_file( $string ))
+		{
+			$this->data = file_get_contents( $string );
+			$this->filename = $string;
+		}
+		else
+			$this->data = $string;
 		$this->pointer = 0;
 		return($this->decode_data());
 	}
@@ -364,7 +376,8 @@ class Torrent
 	 */
 	public function save( $filename = null ) 
 	{
-        	return file_put_contents( is_null( $filename ) ? $this->info['name'] . '.torrent' : $filename, $this->__toString() );
+	        $this->filename = is_null( $filename ) ? $this->info['name'] . '.torrent' : $filename;
+        	return file_put_contents( $this->filename, $this->__toString() );
 	}
 
 	/** Send torrent file to client
