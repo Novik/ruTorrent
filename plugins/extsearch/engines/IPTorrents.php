@@ -28,11 +28,14 @@ class IPTorrentsEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, ">Nothing found!<")!==false) ||
 				(strpos($cli->results, ">Password:<")!==false))
 				break;
-			$res = preg_match_all('`<img class=".*" border="0" width="50" src=.* alt="(?P<cat>.*)" /></a>.*'.
-				'<a href="/details\.php\?id=(?P<id>\d+)">(?P<name>.*)</a>.*<td .*>.*</td>.*'.
-				'<td .*>.*href="/download\.php/\d+\/(?P<tname>.*)".*</a></td>.*'.
-				'<td .*>.*</td>.*<td .*>(?P<date>.*)</td>.*<td .*>(?P<size>.*)</td>.*'.
-				'<td .*>.*</td>.*<td .*>(?P<seeds>.*)</td>.*<td .*>(?P<leech>.*)</td>'.
+
+			$res = preg_match_all('`<img class=".*" width="50" src=.* alt="(?P<cat>.*)"></a>.*'.
+				' href="/details\.php\?id=(?P<id>\d+)">(?P<name>.*)</a>.*'.
+				't_ctime">(?P<date>.*)</div>.*'.
+				'<td .*>.*href="/download\.php/\d+\/(?P<tname>.*)".*</a></td>'.
+				'<td .*>.*</td><td .*>(?P<size>.*)</td><td .*>.*</td>'.
+				'<td class="ac t_seeders">(?P<seeds>.*)</td>'.
+				'<td class="ac t_leechers">(?P<leech>.*)</td>'.
 				'`siU', $cli->results, $matches);
 			if($res)
 			{

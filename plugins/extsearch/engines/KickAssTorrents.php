@@ -24,8 +24,7 @@ class KickAssTorrentsEngine extends commonEngine
 			$cli = $this->fetch( $url.'/usearch/'.$what.'/'.$pg.'/?categories[]='.$cat.'&field=seeders&sorder=desc' );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) )
 				break;
-
-			$res = preg_match_all('`href="http(?P<site>[a-z\.\:/]+)/torrent/(?P<link>.*)".*<div class="torrentname">.*'.
+			$res = preg_match_all('`href="magnet:(?P<link>.*)".*<div class="torrentname">.*'.
 				'<a href="(?P<desc>.*)" class=".*bold">(?P<name>.*)</a>.*'.
 				'<span id="cat_\d+"> <a.*>(?P<cat>.*)</a>.*'.
 				'<td class="nobr.*">(?P<size>.*)</td>.*'.
@@ -39,7 +38,7 @@ class KickAssTorrentsEngine extends commonEngine
 			{
 				for($i=0; $i<$res; $i++)
 				{
-					$link = "http".$matches["site"][$i]."/torrent/".$matches["link"][$i];
+					$link = "magnet:".$matches["link"][$i];
 					if(!array_key_exists($link,$ret) && intval($matches["seeds"][$i]))
 					{
 						$item = $this->getNewEntry();

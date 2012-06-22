@@ -21,13 +21,13 @@ class TorrentZapEngine extends commonEngine
 
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/search.php?type=2&q='.$what.'&sort=seeds&pg='.$pg.'&cats='.$cat );
+			$cli = $this->fetch( $url.'/search.php?type=&q='.$what.'&sort=seeds&pg='.$pg.'&cats='.$cat );
 			if($cli==false)
 				break;
 
 			$res = preg_match_all('`<td class="first">(?P<date>.*)</td>.*'.
-				'<a href="/torrent/(?P<desc>.*)" class="a1">(?P<name>.*)</a>.*'.
-				'<a href="/download/(?P<link>.*)".*'.
+				'<a href="/torrent/(?P<desc>.*)">(?P<name>.*)</a>.*'.
+				'&url=(?P<link>.*)".*'.
 				'<td>(?P<size>.*)</span></td>.*'.
 				'<td class="s">(?P<seeds>.*)</td><td class="l">(?P<leech>.*)</td>'.
 				'`siU', $cli->results, $matches );
@@ -36,7 +36,7 @@ class TorrentZapEngine extends commonEngine
 			{
 				for( $i=0; $i<$res; $i++)
 				{
-					$link = $url."/download/".$matches["link"][$i];
+					$link = $matches["link"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
