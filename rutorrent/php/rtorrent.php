@@ -6,6 +6,8 @@ require_once( 'Torrent.php' );
 
 class rTorrent
 {
+	const RTORRENT_PACKET_LIMIT = 1572864;
+
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
 	{
 		$hash = false;
@@ -25,13 +27,23 @@ class rTorrent
 				if(isset($torrent->{'rtorrent'}))
 					unset($torrent->{'rtorrent'});
 			}
-			$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
-			$cmd->addParameter(base64_encode($torrent->__toString()),"base64");
-			if(!is_object($fname) && (rTorrentSettings::get()->iVersion>=0x805))
-				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(getFileName($fname)));
-				
-			if(!$saveTorrent && is_string($fname))
-				@unlink($fname);
+			$raw_value = base64_encode($torrent->__toString());
+			$filename = is_object($fname) ? $torrent->getFileName() : $fname;
+			if((strlen($raw_value)<self::RTORRENT_PACKET_LIMIT) || is_null($filename) || !isLocalMode())
+			{
+				$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
+				$cmd->addParameter($raw_value,"base64");
+				if(!is_null($filename) && !$saveTorrent)
+					@unlink($filename);
+			}
+			else
+			{
+				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
+				$cmd->addParameter($filename);
+			}
+			if(!is_null($filename) && (rTorrentSettings::get()->iVersion>=0x805))
+				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(getFileName($filename)));
+
 			if($directory && (strlen($directory)>0))
 			{
 				if(!rTorrentSettings::get()->correctDirectory($directory))

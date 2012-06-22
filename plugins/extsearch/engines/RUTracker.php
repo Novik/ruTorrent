@@ -9,7 +9,7 @@ class RUTrackerEngine extends commonEngine
 	protected function parseTList($results,&$added,&$ret,$limit)
 	{
 		if( strpos($results, ">Не найдено</td>")!==false )
-			break;
+			return(false);
 		$res = preg_match_all('/<a class="gen f" href="tracker\.php\?f=\d+">(?P<cat>.*)<\/a><\/td>.*'.
 			'<a class="med tLink bold" href="\.\/viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
 			'<u>(?P<size>.*)<\/u>\n\s*'.
