@@ -28,46 +28,61 @@
 {{{
 
 <?php
-        // configuration parameters
+	// configuration parameters
 
-        // for snoopy client
-        @define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; pl; rv:1.9) Gecko/2008052906 Firefox/3.0', true);
-        @define('HTTP_TIME_OUT', 30, true);     // in seconds
-        @define('HTTP_USE_GZIP', true, true);
+	// for snoopy client
+	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0', true);
+	@define('HTTP_TIME_OUT', 30, true);	// in seconds
+	@define('HTTP_USE_GZIP', true, true);
+	$httpIP = null;				// IP string. Or null for any.
 
-        @define('RPC_TIME_OUT', 5, true);       // in seconds
+	@define('RPC_TIME_OUT', 5, true);	// in seconds
 
-        @define('LOG_RPC_CALLS', false, true);
-        @define('LOG_RPC_FAULTS', true, true);
+	@define('LOG_RPC_CALLS', false, true);
+	@define('LOG_RPC_FAULTS', true, true);
 
-        // for php
-        @define('PHP_USE_GZIP', false, true);
-        @define('PHP_GZIP_LEVEL', 2, true);
+	// for php	
+	@define('PHP_USE_GZIP', false, true);
+	@define('PHP_GZIP_LEVEL', 2, true);
 
-        $do_diagnostic = true;
-        $log_file = '/tmp/errors.log';          // path to log file (comment or make empty to disable logging)
-        $saveUploadedTorrents = true;
+	$do_diagnostic = true;
+	$log_file = '/tmp/errors.log';		// path to log file (comment or leave blank to disable logging)
 
-        $topDirectory = '/';                    // Upper available directory. Absolute path with trail slash.
-        $forbidUserSettings = false;
+	$saveUploadedTorrents = true;		// Save uploaded torrents to profile/torrents directory or not
+	$overwriteUploadedTorrents = false;     // Overwrite existing uploaded torrents in profile/torrents directory or make unique name
 
-        $scgi_port = 5000;
-        $scgi_host = "127.0.0.1";
-        $XMLRPCMountPoint = "/RPC2";
+	$topDirectory = '/';			// Upper available directory. Absolute path with trail slash.
+	$forbidUserSettings = false;
 
-        $pathToExternals = array(
-                "php"   => '',                  // Something like /usr/bin/php. If empty, will be founded in PATH.
-                "curl"  => '',                  // Something like /usr/bin/curl. If empty, will be founded in PATH.
-                "gzip"  => '',                  // Something like /usr/bin/gzip. If empty, will be founded in PATH.
-                "id"    => '',                  // Something like /usr/bin/id. If empty, will be founded in PATH.
-        );
+	$scgi_port = 5000;
+	$scgi_host = "127.0.0.1";
 
-        // For web->rtorrent link through unix domain socket 
-        // (scgi_local in rtorrent conf file), change variables 
-        // above to something like this:
-        //
-        // $scgi_port = 0;
-        // $scgi_host = "unix:///tmp/rpc.socket";
+	// For web->rtorrent link through unix domain socket 
+	// (scgi_local in rtorrent conf file), change variables 
+	// above to something like this:
+	//
+	// $scgi_port = 0;
+	// $scgi_host = "unix:///tmp/rpc.socket";
+
+	$XMLRPCMountPoint = "/RPC2";		// DO NOT DELETE THIS LINE!!! DO NOT COMMENT THIS LINE!!!
+
+	$pathToExternals = array(
+		"php" 	=> '',			// Something like /usr/bin/php. If empty, will be found in PATH.
+		"curl"	=> '',			// Something like /usr/bin/curl. If empty, will be found in PATH.
+		"gzip"	=> '',			// Something like /usr/bin/gzip. If empty, will be found in PATH.
+		"id"	=> '',			// Something like /usr/bin/id. If empty, will be found in PATH.
+		"stat"	=> '',			// Something like /usr/bin/stat. If empty, will be found in PATH.
+	);
+
+	$localhosts = array( 			// list of local interfaces
+		"127.0.0.1", 
+		"localhost",
+	);
+
+	$profilePath = '../share';		// Path to user profiles
+	$profileMask = 0777;			// Mask for files and directory creation in user profiles.
+						// Both Webserver and rtorrent users must have read-write access to it.
+						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
 
 ?>
 }}}
@@ -100,6 +115,10 @@ SCGI порт. Должен соответствовать настройке в
 
 ==== Прочее ====
 
+ * $httpIP = null;
+
+IP адрес, который будет использован ruTorrent для доступа к http и https ресурсам, например, к RSS фидам.
+
  * `$forbidUserSettings = false;`
 
 Если `true`, то независимо от наличия/отсутствия внешней авторизации будет использоваться монопольный (однопользовательский) режим работы ruTorrent. 
@@ -120,6 +139,10 @@ SCGI порт. Должен соответствовать настройке в
 
 Если `true`, то все .torrent файлы, добавляемые пользователем через ruTorrent, будут сохраняться в директории `share/torrents` (или `share/users/USERNAME/torrents` для многопользовательской конфигурации). Если `false`, то все .torrent файлы будут удаляться с диска непосредственно после передачи их rTorrent.
 
+ * $overwriteUploadedTorrents = false;
+
+Если `true`, то при сохранении уже существующего .torrent файла он будет перезаписан. В противном случае для файла будет сконструировано уникальное имя. Имеет смысл только если `$saveUploadedTorrents` выставлено в `true`.
+
  * `$topDirectory = '/';`
 
 Директории выше данной не будут доступны пользователю ruTorrent. 
@@ -133,6 +156,15 @@ $pathToExternals = array(
  "id" => '', 
 }}}
 Элементы массива должны содержать полный путь к соответствующим программам. Если вместо пути указана пустая строка, то поиск внешней программы будет проводиться согласно переменной окружения `PATH` пользователей (веб-сервера или rtorrent, смотря кому в данный конкретный момент программа нужна).
+
+ * $profilePath = '../share';
+
+Путь к каталогу, в котором будут храниться данные пользователей. 
+
+ * $profileMask = 0777;
+
+Маска доступа для создаваемых пользовательских файлов и директорий. Пользователь веб-сервера и пользователь, под которым работает rTorrent должны иметь доступ на чтение/запись данных файлов. 
+Как следствие - если, например, эти пользователи находятся в одной группе, то разумно изменить данный параметр на 0770.
 
 Порочие настройки в данном файле трогать категорически не рекомендуется.
 
@@ -177,37 +209,46 @@ canChangeTorrentProperties = yes
 Файл предназначен для управления плагинами ruTorrent. Представляет из себя обычный ini файл и выглядит так:
 
 {{{
-;; Plugin's permissions. 
-;; If flag not founded in plugin section, it finded in section "default".
-;; If not founded in this section - it assumed as "yes". 
+;; Plugins' permissions.
+;; If flag is not found in plugin section, corresponding flag from "default" section is used.
+;; If flag is not found in "default" section, it is assumed to be "yes".
 ;;
-;; For setting individual plugin's permissions you must write something like that:
+;; For setting individual plugin permissions you must write something like that:
 ;;
 ;; [ratio]
-;; enabled = yes
+;; enabled = yes			;; also may be "user-defined", in this case user can control plugin's state from UI
 ;; canChangeToolbar = yes
 ;; canChangeMenu = yes
 ;; canChangeOptions = no
 ;; canChangeTabs = yes
 ;; canChangeColumns = yes
+;; canChangeStatusBar = yes
+;; canChangeCategory = yes
+;; canBeShutdowned = yes
 
 [default]
-enabled = yes
+enabled = user-defined
 canChangeToolbar = yes
 canChangeMenu = yes
 canChangeOptions = yes
 canChangeTabs = yes
 canChangeColumns = yes
+canChangeStatusBar = yes
+canChangeCategory = yes
+canBeShutdowned = yes
 }}}
 
 Каждая секция в файле (за исключением секции `default`) соответствует конкретному плагину. Если секции с именем плагина нет, то информация будет браться из секции с именем default.
 
- * `enabled` - будет ли плагин вообще использоваться.
+ * `enabled` - будет ли плагин вообще использоваться. Возможные значения - yes, no, user-defined. Последнее означает, что решение о загрузке/не загрузке плагина принимается пользователем и доступно с интерфейса ruTorrent (см. контекстное меню на закладке "Плагины").
  * `canChangeToolbar` - может ли плагин менять содержимое главного тулбара.
  * `canChangeMenu` - может ли плагин менять содержимое контекстного меню.
  * `canChangeOptions` - может ли плагин менять содержимое диалога настройки.
  * `canChangeTabs` - может ли плагин добавлять новые закладки на интерфейс.
  * `canChangeColumns` - может ли плагин изменять структуру отображаемых таблиц (например, списка закачек).
+ * `canChangeStatusBar` - может ли плагин изменять статус-бар ruTorrent.
+ * `canChangeCategory` - может ли плагин изменять панель категорий ruTorrent.
+ * `canBeShutdowned` - доступна ли для данного плагина на интерфейсе команда "Выгрузить".
 
 Пример:
 
