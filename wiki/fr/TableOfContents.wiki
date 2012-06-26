@@ -14,7 +14,7 @@
     * [Config Configuration]
     * [Downloading Téléchargement]
       * [GetFromSVN Depuis le dépôt SVN]
-      * [DownloadPage Depuis les archives]
+      * [http://code.google.com/p/rutorrent/downloads/list Depuis les archives]
     * [Plugins Les plugins]
       * Détails des plugins
         * [Plugin_getdir _getdir]

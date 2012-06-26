@@ -3,7 +3,7 @@
 ----
 ==  Tar Balls ==
 
-[DownloadPage Downloading page]
+[http://code.google.com/p/rutorrent/downloads/list Downloading page]
 
 == SVN ==
 

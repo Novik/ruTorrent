@@ -15,7 +15,7 @@
     * [RPCSecurity RCP/XMLRPC Security]
     * [Downloading]
       * [GetFromSVN Get From SVN]
-      * [DownloadPage Tar Ball Download]
+      * [http://code.google.com/p/rutorrent/downloads/list Tar Ball Download]
     * [Plugins]
       * Current plugins
         * [PluginRPC RPC]
