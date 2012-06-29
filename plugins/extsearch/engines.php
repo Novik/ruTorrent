@@ -11,7 +11,7 @@ class commonEngine
 	public $defaults = array( "public"=>true, "page_size"=>100 );
 	public $categories = array( 'All'=>'' );
 
-	public function action($what,$cat,$arr,$limit,$useGlobalCats)
+	public function action($what,$cat,&$arr,$limit,$useGlobalCats)
 	{
 	}
 	public function getSource()
