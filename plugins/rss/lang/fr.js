@@ -73,5 +73,6 @@
  theUILang.rssDeleteGroupPrompt 	= "Êtes-vous sûr de vouloir supprimer ce groupe?";
  theUILang.rssDeleteGroupContentsPrompt = "Êtes-vous sûr de vouloir supprimer ce groupe ainsi que tout son contenu?";
  theUILang.rssAllFiters 		= "Tous les filtres";
+ theUILang.rssUpdateInterval 		= "Update interval";
 
 thePlugins.get("rss").langLoaded();

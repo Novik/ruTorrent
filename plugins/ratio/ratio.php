@@ -95,12 +95,10 @@ class rRatio
 	public function setHandlers()
 	{
 		global $checkTimesInterval;
-		$interval = $checkTimesInterval*60;
 		$req =  new rXMLRPCRequest( $this->hasTimes() ? 
-			new rXMLRPCCommand("schedule", 			
-				array( "ratio".getUser(), "1", $interval."", 
-					getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}' )) :
-			new rXMLRPCCommand("schedule_remove", "ratio".getUser()) );	
+			rTorrentSettings::get()->getScheduleCommand("ratio",$checkTimesInterval,
+				getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) :
+			rTorrentSettings::get()->getRemoveScheduleCommand("ratio") );
 		return($req->success());
 	}
 	public function isCorrect($no)

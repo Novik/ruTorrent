@@ -20,8 +20,8 @@ else
 			$startAt = 0;
 		$interval = $updateInterval*60;
 
-		$req = new rXMLRPCRequest( new rXMLRPCCommand('schedule', array( 'rutracker_check'.getUser(), $startAt."", $interval."", 
-			getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' &}' )));
+		$req = new rXMLRPCRequest( $theSettings->getScheduleCommand('rutracker_check',$updateInterval,
+			getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' &}' ));
 		if($req->success())
 			$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 		else

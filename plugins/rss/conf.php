@@ -4,6 +4,6 @@
 @define('HISTORY_MAX_TRY', 3, true);
 @define('WAIT_AFTER_LOADING', 0, true);
 
-$updateInterval = 30;	// in minutes
+$minInterval = 2;	// in minutes
 
 ?>

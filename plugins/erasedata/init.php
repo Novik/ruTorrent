@@ -12,8 +12,8 @@ $req = new rXMLRPCRequest( array(
 		getCmd('d.open').'= ; '.getCmd('branch=').getCmd('d.get_custom5').'=,"'.getCmd('f.multicall').'=,\"'.getCmd('execute').'={'.$thisDir.'/cat.sh,'.$listPath.',$system.pid=,$'.getCmd('f.get_frozen_path').'=}\""')),
 	$theSettings->getOnEraseCommand(array('erasedata1'.getUser(),
 		getCmd('branch=').getCmd('d.get_custom5').'=,"'.getCmd('execute').'={'.$thisDir.'/fin.sh,'.$listPath.',$'.getCmd('system.pid').'=,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_base_path').'=,$'.getCmd('d.is_multi_file').'=}"')),
-	new rXMLRPCCommand('schedule', array( 'erasedata'.getUser(), '5', $garbageCheckInterval."", 
-		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($thisDir.'/update.php').' '.escapeshellarg(getUser()).' &}' ))
+	$theSettings->getAbsScheduleCommand("erasedata",$garbageCheckInterval,
+		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($thisDir.'/update.php').' '.escapeshellarg(getUser()).' &}' )
 	));
 if($req->success())
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);

@@ -768,12 +768,19 @@ class rRSSMetaList
 	}
 }
 
+class rRSSData
+{
+	public $hash = "data";
+	public $interval = 30;
+}
+
 class rRSSManager
 {
 	public $cache = null;
 	public $history = null;
 	public $rssList = null;
 	public $groups = null;
+	public $data = null;
 
 	public function rRSSManager()
 	{
@@ -785,6 +792,31 @@ class rRSSManager
 		$this->cache->get($this->history);
 		$this->groups = new rRSSGroupList();
 		$this->cache->get($this->groups);
+		$this->data = new rRSSData();
+		$this->cache->get($this->data);
+	}
+	public function setInterval($interval)
+	{
+		global $minInterval;
+		if(!isset($minInterval))
+			$minInterval = 2;
+		if($interval<$minInterval)
+			$interval = $minInterval;
+		$this->data->interval = $interval;
+		$this->cache->set($this->data);
+		$this->setHandlers();
+	}
+	public function setHandlers()
+	{
+	        $startAt = 0;
+		$req = new rXMLRPCRequest( rTorrentSettings::get()->getScheduleCommand("rss",$this->data->interval,
+			getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}', $startAt) );
+		if($req->success())
+		{
+			$this->setStartTime($startAt);
+			return(true);
+		}
+		return(false);
 	}
 	public function getModified($obj = null)
 	{
@@ -950,8 +982,7 @@ class rRSSManager
 	}
 	public function setStartTime( $startAt )
 	{
-		global $updateInterval;
-		$this->rssList->updatedAt = time()+($startAt-$updateInterval*60);
+		$this->rssList->updatedAt = time()+($startAt-$this->data->interval*60);
 		$this->saveState(false);
 	}
         public function update( $manual = false )
@@ -978,11 +1009,10 @@ class rRSSManager
 	}
 	public function getIntervals()
 	{
-		global $updateInterval;
-		$nextTouch = $updateInterval*60;
+		$nextTouch = $this->data->interval*60;
 		if($this->rssList->updatedAt)
 			$nextTouch = $nextTouch-(time()-$this->rssList->updatedAt)+45;
-		return(array( "next"=>$nextTouch, "interval"=>$updateInterval ));
+		return(array( "next"=>$nextTouch, "interval"=>$this->data->interval ));
 	}
 	public function get()
 	{

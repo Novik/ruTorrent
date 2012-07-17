@@ -16,6 +16,8 @@
 	@define('PHP_USE_GZIP', false, true);
 	@define('PHP_GZIP_LEVEL', 2, true);
 
+	$schedule_rand = 10;			// rand for schedulers start, +0..X seconds
+
 	$do_diagnostic = true;
 	$log_file = '/tmp/errors.log';		// path to log file (comment or leave blank to disable logging)
 

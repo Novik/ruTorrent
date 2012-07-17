@@ -1,6 +1,6 @@
 <?php
 
-$req = new rXMLRPCRequest( new rXMLRPCCommand("schedule_remove", "rss".getUser()) );
+$req = new rXMLRPCRequest( rTorrentSettings::get()->getRemoveScheduleCommand("rss") );
 $req->run();
 
 ?>

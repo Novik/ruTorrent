@@ -118,7 +118,7 @@ class rAutoTools
 		$req->addCommand($cmd);
 		if($this->enable_move && (trim($this->path_to_finished)!=''))
 		{
-			if(rTorrentSettings::get()->iVersion<0x808)
+			if($theSettings->iVersion<0x808)
 			{
 				$cmd = 	$theSettings->getOnFinishedCommand(array('automove'.getUser(), 
 						getCmd('d.set_custom').'=x-dest,"$'.getCmd('execute_capture').
@@ -152,10 +152,10 @@ class rAutoTools
 			$cmd = $theSettings->getOnFinishedCommand(array('automove'.getUser(), getCmd('cat=')));
 		$req->addCommand($cmd);
 		if($this->enable_watch && (trim($this->path_to_watch)!='')) 
-			$cmd = 	new rXMLRPCCommand('schedule', array( 'autowatch'.getUser(), '10', $autowatch_interval."", 
-				getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($pathToAutoTools.'/watch.php').' '.escapeshellarg(getUser()).' &}' ));
+			$cmd = 	$theSettings->getAbsScheduleCommand('autowatch',$autowatch_interval,
+				getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($pathToAutoTools.'/watch.php').' '.escapeshellarg(getUser()).' &}' );
 		else
-			$cmd = new rXMLRPCCommand('schedule_remove', 'autowatch'.getUser());
+			$cmd = $theSettings->getRemoveScheduleCommand('autowatch');
 		$req->addCommand($cmd);
 		return($req->success());
 	}

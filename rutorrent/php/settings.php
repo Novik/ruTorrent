@@ -256,6 +256,32 @@ class rTorrentSettings
 	{
         	return($this->getEventCommand('on_hash_done','hash_done',$args));
 	}
+	public function getAbsScheduleCommand($name,$interval,$cmd)	// $interval in seconds
+	{
+		global $schedule_rand;
+		if(!isset($schedule_rand))
+			$schedule_rand = 10;
+		$startAt = $interval+rand(0,$schedule_rand);
+		return( new rXMLRPCCommand("schedule", array( $name.getUser(), $startAt."", $interval."", $cmd )) );
+	}
+	public function getScheduleCommand($name,$interval,$cmd,&$startAt = null)	// $interval in minutes
+	{
+		global $schedule_rand;
+		if(!isset($schedule_rand))
+			$schedule_rand = 10;
+		$tm = getdate();
+		$startAt = mktime($tm["hours"],
+			((integer)($tm["minutes"]/$interval))*$interval+$interval,
+			0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0]+rand(0,$schedule_rand);
+		if($startAt<0)
+			$startAt = 0;
+		$interval = $interval*60;
+		return( new rXMLRPCCommand("schedule", array( $name.getUser(), $startAt."", $interval."", $cmd )) );
+	}
+	public function getRemoveScheduleCommand($name)
+	{
+		return(	new rXMLRPCCommand("schedule_remove", $name.getUser()) );	
+	}
 	public function correctDirectory(&$dir,$resolve_links = false)
 	{
 		global $topDirectory;
