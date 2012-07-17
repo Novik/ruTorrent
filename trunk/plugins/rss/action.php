@@ -13,6 +13,10 @@ $dataType="application/json";
 $mngr = new rRSSManager();
 switch($cmd)
 {
+	case "setinterval":
+	{
+		$mngr->setInterval($_REQUEST['interval']);
+	}
 	case "getintervals":
 	{
 		$val = $mngr->getIntervals();

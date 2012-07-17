@@ -65,5 +65,6 @@
  theUILang.rssDeleteGroupPrompt 	= "Bạn có thực sự muốn xóa các nhóm đã chọn?";
  theUILang.rssDeleteGroupContentsPrompt = "Bạn có thực sự muốn xóa các nhóm đã chọn và toạn bộ nội dung bên trong?";
  theUILang.rssAllFiters 		= "Tất cả bộ lọc";
+ theUILang.rssUpdateInterval 		= "Update interval";
 
 thePlugins.get("rss").langLoaded();

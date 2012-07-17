@@ -3,6 +3,32 @@ if(browser.isIE && browser.versionMajor < 8)
 	plugin.loadCSS("ie");
 plugin.loadLang();
 
+if(plugin.canChangeOptions())
+{
+	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
+	theWebUI.addAndShowSettings = function( arg )
+	{
+        	if(plugin.enabled)
+	        {
+		        $('#rss_interval').val(theWebUI.updateRSSInterval/60000);
+		}
+		plugin.addAndShowSettings.call(theWebUI,arg);
+	}
+
+	theWebUI.rssWasChanged = function()
+	{
+		return(	$('#rss_interval').val()!=theWebUI.updateRSSInterval/60000 );
+	}
+
+	plugin.setSettings = theWebUI.setSettings;
+	theWebUI.setSettings = function()
+	{
+		plugin.setSettings.call(this);
+		if( plugin.enabled && this.rssWasChanged() )
+			theWebUI.RSSSetInterval( $('#rss_interval').val() );
+	}
+}
+
 plugin.switchLabel = theWebUI.switchLabel;
 theWebUI.switchLabel = function(el)
 {
@@ -171,10 +197,17 @@ theWebUI.showRSSTimer = function( tm )
 
 theWebUI.getRSSIntervals = function( d )
 {
+	if(theWebUI.updateRSSTimer) 
+		window.clearTimeout(theWebUI.updateRSSTimer);
         theWebUI.loadRSS();
 	theWebUI.updateRSSInterval = d.interval*60000;	
 	theWebUI.updateRSSTimer = window.setTimeout("theWebUI.updateRSS()", d.next*1000);
 	theWebUI.showRSSTimer(d.next);
+}
+
+theWebUI.RSSSetInterval = function( interval )
+{
+	this.request("?action=setinterval&s="+interval,[this.getRSSIntervals, this]);
 }
 
 theWebUI.RSSMarkState = function( state )
@@ -1057,6 +1090,14 @@ rTorrentStub.prototype.getrssdetails = function()
 	this.cache = true;
 }
 
+rTorrentStub.prototype.setinterval = function()
+{
+	this.content = "mode=setinterval&interval="+this.ss[0];
+        this.contentType = "application/x-www-form-urlencoded";
+	this.mountPoint = "plugins/rss/action.php";
+	this.dataType = "json";
+}
+
 rTorrentStub.prototype.getrssdetailsResponse = function(xml)
 {
 	var datas = xml.getElementsByTagName('data');
@@ -1380,6 +1421,14 @@ plugin.onLangLoaded = function()
 	$("#prss").append( $("<span></span>").attr("id", "rsstimer") );
 	$("#_rssAll_").mouseclick( theWebUI.rssLabelContextMenu );
 
+	this.attachPageToOptions( $("<div>").attr("id","st_rss").html(
+		"<fieldset>"+
+			"<legend>"+theUILang.rssFeeds+"</legend>"+
+			"<label for='rss_interval'>"+ theUILang.rssUpdateInterval + ' (' + $.trim(theUILang.time_m) +")</label>"+
+			"<input type='text' maxlength=4 id='rss_interval' class='TextboxShort'/>"+
+		"</fieldset>"
+		)[0], theUILang.rssFeeds );
+	
 	theDialogManager.make( "dlgAddRSS", theUILang.addRSS,
 		"<div class='content'>"+
 			"<label>"+theUILang.feedURL+": </label>"+
@@ -1500,4 +1549,5 @@ plugin.onRemove = function()
 	theDialogManager.hide("dlgLoadTorrents");
 	theDialogManager.hide("dlgEditFilters");
 	this.removeButtonFromToolbar("rss");
+	plugin.removePageFromOptions("st_rss");
 }
