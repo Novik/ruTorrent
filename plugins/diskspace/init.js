@@ -1,4 +1,5 @@
-plugin.loadMainCSS()
+plugin.loadLang();
+plugin.loadMainCSS();
 
 plugin.setValue = function( full, free )
 {
@@ -9,6 +10,24 @@ plugin.setValue = function( full, free )
 		visibility: !percent ? "hidden" : "visible" } );
 	$("#meter-disk-text").text(percent+'%');
 	$("#meter-disk-td").attr("title", theConverter.bytes(free)+"/"+theConverter.bytes(full));
+
+	if($.noty && plugin.allStuffLoaded)
+	{
+		if((free<plugin.notifySpaceLimit) && !plugin.noty)
+			plugin.noty = $.noty(
+			{
+				text: theUILang.diskNotification, 
+				layout : 'bottomLeft',
+				type: 'error',
+				timeout : false,
+				closeOnSelfClick: false
+			});
+		if((free>plugin.notifySpaceLimit) && plugin.noty)
+		{
+			$.noty.close(plugin.noty);
+			plugin.noty = null;
+		}
+	}
 }
 
 plugin.init = function()
