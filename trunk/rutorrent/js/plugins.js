@@ -166,7 +166,7 @@ rPlugin.prototype.showError = function(err)
 rPlugin.prototype.langLoaded = function() 
 {
 	try {
-	if($type(this.onLangLoaded)=="function")
+	if(($type(this.onLangLoaded)=="function") && this.enabled)
 		this.onLangLoaded();
 	} catch(e) {}			// konqueror hack
 	this.markLoaded();
