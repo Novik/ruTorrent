@@ -153,7 +153,7 @@
  mnu_settings			: "Настройки",
  mnu_search			: "Пошук",
  mnu_lang			: "Мова",
- torrent_add			: "Додати торент", /*Caption of torrent add box*/
+ torrent_add			: "Додавання торента", /*Caption of torrent add box*/
  time_w 			: " тижн. ", /*for x weeks*/
  time_d 			: " дн. ", /*for x days remaining*/
  time_h 			: " год ", /*for x hours remaining*/
