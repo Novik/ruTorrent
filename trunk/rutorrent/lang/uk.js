@@ -114,7 +114,7 @@
  PB				: "Пб",
  Loading			: "Завантаження…",
  Torrent_file			: "Файл торента",
- Torrent_URL			: "URL-адреса торента",
+ Torrent_URL			: "URL торента",
  Torrent_properties		: "Властивості торента",
  Trackers			: "Трекери",
  Bandwidth_sett 		: "Настройки обмежень",
