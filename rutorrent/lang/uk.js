@@ -43,7 +43,7 @@
  Alt_list_bckgnd		: "Альтернативний колір списку",
  Show_cat_start 		: "Показати категорії під час запуску",
  Show_det_start 		: "Показати деталі під час запуску",
- Dnt_start_down_auto		: "Не починати завантаження автоматично",
+ Dnt_start_down_auto		: "Не завантажувати автоматично",
  Listening_Port 		: "Порт",
  Port_f_incom_conns		: "Порт для вхідних з’єднань",
  Rnd_port_torr_start		: "Випадковий порт під час кожного запуску rTorrent",
