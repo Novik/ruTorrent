@@ -112,7 +112,7 @@
  GB				: "Гб",
  TB				: "Тб",
  PB				: "Пб",
- Loading			: "Завантаження…",
+ Loading			: "Триває завантаження…",
  Torrent_file			: "Файл торента",
  Torrent_URL			: "URL торента",
  Torrent_properties		: "Властивості торента",
