@@ -141,7 +141,7 @@
  Save_as			: "Зберегти як",
  Comment			: "Коментар",
  add_button			: "Дод. файл",
- add_url			: "Дод. URL-адресу",
+ add_url			: "Дод. URL",
  ok				: "ОК",
  Cancel 			: "Скасувати",
  mnu_add			: "Додати торент",
