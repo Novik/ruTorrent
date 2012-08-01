@@ -499,6 +499,7 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 				header('Etag: '.$etag);
 				header('Last-Modified: ' . date('r', $stat['mtime']));
 				set_time_limit(0);
+				ignore_user_abort($mustExit);
 				header('Accept-Ranges: bytes');
 				header('Content-Transfer-Encoding: binary');
 				header('Content-Description: File Transfer');
@@ -535,7 +536,7 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 							header("Content-Range: bytes ".$begin."-".$end."/".$stat['size']);
 							$cur = $begin;
 							fseek($f,$begin,0);
-							while( !feof($f) && ($cur<$end) && (connection_status()==0) )
+							while( !feof($f) && ($cur<$end) && (connection_status()==0) && !connection_aborted() )
 							{ 
 								print(fread($f,min(1024*16,$end-$cur)));
 								$cur+=1024*16;
