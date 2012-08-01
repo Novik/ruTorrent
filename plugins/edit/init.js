@@ -79,7 +79,7 @@ theWebUI.receiveEdit = function(d)
 			var s = eval(d.errors[i].desc);
 			if(d.errors[i].prm)
 				s = s + " ("+d.errors[i].prm+")";
-			log(s);
+			noty(s,"error");
 		}
 }
 

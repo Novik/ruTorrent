@@ -924,6 +924,31 @@ function logHTML(text,divClass,force)
 	}
 }
 
+function noty(msg,status,noTime) 
+{
+	msg = escapeHTML(msg);
+	if($.noty)
+	{
+		$.noty(
+		{
+			text: msg, 
+			layout : 'bottomRight',
+			type: status
+		});
+	}
+	var obj = $("#lcont");
+	if(obj.length)
+	{
+		var tm = '';
+		if(!noTime)
+			tm = "[" + theConverter.date(new Date().getTime()/1000) + "]";
+		obj.append( $("<div>").addClass('std').text(tm + " " + msg).show() );
+		obj[0].scrollTop = obj[0].scrollHeight;
+		if(iv(theWebUI.settings["webui.log_autoswitch"]) && !$.noty)
+			theTabs.show("lcont");
+	}
+}
+
 function rDirectory()
 {
 	this.dirs = new Array();

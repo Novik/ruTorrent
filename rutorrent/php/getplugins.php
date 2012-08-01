@@ -226,7 +226,7 @@ if($handle = opendir('../plugins'))
 	@chmod('/tmp',0777);
 	if(!function_exists('preg_match_all'))
 	{
-		$jResult.="log(theUILang.PCRENotFound);";
+		$jResult.="noty(theUILang.PCRENotFound,'error');";
 		$jResult.="theWebUI.systemInfo.rTorrent = { started: false, iVersion : 0, version : '?', libVersion : '?' };\n";
 	}
 	else
@@ -235,13 +235,13 @@ if($handle = opendir('../plugins'))
 		$theSettings = rTorrentSettings::get(true);
 		if(!$theSettings->linkExist)
 		{
-			$jResult.="log(theUILang.badLinkTorTorrent);";
+			$jResult.="noty(theUILang.badLinkTorTorrent,'error');";
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: false, iVersion : 0, version : '?', libVersion : '?', apiVersion : 0 };\n";
 		}
 		else
 		{
 		        if($theSettings->idNotFound)
-				$jResult.="log(theUILang.idNotFound);";
+				$jResult.="noty(theUILang.idNotFound,'error');";
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, iVersion : ".$theSettings->iVersion.", version : '".
 				$theSettings->version."', libVersion : '".$theSettings->libVersion."', apiVersion : ".$theSettings->apiVersion." };\n";
 			if($theSettings->mostOfMethodsRenamed)
@@ -256,34 +256,34 @@ if($handle = opendir('../plugins'))
 	        	        if(PHP_USE_GZIP && (findEXE('gzip')===false))
 	        	        {
 	        	        	@define('PHP_USE_GZIP', false);
-	        	        	$jResult.="log(theUILang.gzipNotFound);";
+	        	        	$jResult.="noty(theUILang.gzipNotFound,'error');";
 	        	        }
 				if(PHP_INT_SIZE<=4)
 				{
 					if(findEXE('stat')===false)
-						$jResult.="log(theUILang.statNotFoundW);";
-                                        findRemoteEXE('stat',"log(theUILang.statNotFound);",$remoteRequests);
+						$jResult.="noty(theUILang.statNotFoundW,'error');";
+                                        findRemoteEXE('stat',"noty(theUILang.statNotFound,'error');",$remoteRequests);
 				}
 	        		if(!@file_exists($up.'/.') || !is_readable($up) || !is_writable($up))
-					$jResult.="log(theUILang.badUploadsPath+' (".$up.")');";
+					$jResult.="noty(theUILang.badUploadsPath+' (".$up.")','error');";
 	        		if(!@file_exists($st.'/.') || !is_readable($st) || !is_writable($st))
-        			        $jResult.="log(theUILang.badSettingsPath+' (".$st.")');";
+        			        $jResult.="noty(theUILang.badSettingsPath+' (".$st.")','error');";
 				if(isLocalMode() && !$theSettings->idNotFound)
 				{
 					if($theSettings->uid<0)
-						$jResult.="log(theUILang.cantObtainUser);";
+						$jResult.="noty(theUILang.cantObtainUser,'error');";
 					else
 					{
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$up,0x0007))
-							$jResult.="log(theUILang.badUploadsPath2+' (".$up.")');";
+							$jResult.="noty(theUILang.badUploadsPath2+' (".$up.")','error');";
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$st,0x0007))
-							$jResult.="log(theUILang.badSettingsPath2+' (".$st.")');";
+							$jResult.="noty(theUILang.badSettingsPath2+' (".$st.")','error');";
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,'./test.sh',0x0005))
-							$jResult.="log(theUILang.badTestPath+' (".realpath('./test.sh').")');";
+							$jResult.="noty(theUILang.badTestPath+' (".realpath('./test.sh').")','error');";
 					}
 				}
 				if($theSettings->badXMLRPCVersion)
-					$jResult.="log(theUILang.badXMLRPCVersion);";
+					$jResult.="noty(theUILang.badXMLRPCVersion,'error');";
 			}
 		}
 		$plg = getConfFile('plugins.ini');
@@ -342,7 +342,7 @@ if($handle = opendir('../plugins'))
 					}
 					if($info['php.version']>$phpIVersion)
 					{
-						$jResult.="log('".$file.": '+theUILang.badPHPVersion+' '+'".$info['php.version.readable']."'+'.');";
+						$jResult.="noty('".$file.": '+theUILang.badPHPVersion+' '+'".$info['php.version.readable']."'+'.','error');";
 					        $disabled[$file] = $info;
 						continue;
 					}
@@ -351,7 +351,7 @@ if($handle = opendir('../plugins'))
 					foreach( $info['php.extensions.error'] as $extension )
 						if(!in_array( $extension, $loadedExtensions ))
 						{
-							$jResult.="log('".$file.": '+theUILang.phpExtensionNotFoundError+' ('+'".$extension."'+').');";
+							$jResult.="noty('".$file.": '+theUILang.phpExtensionNotFoundError+' ('+'".$extension."'+').','error');";
 							$extError = true;
 						}
 					if($extError)
@@ -368,7 +368,7 @@ if($handle = opendir('../plugins'))
 					{
 						if(findEXE($external)==false)
 						{
-							$jResult.="log('".$file.": '+theUILang.webExternalNotFoundError+' ('+'".$external."'+').');";
+							$jResult.="noty('".$file.": '+theUILang.webExternalNotFoundError+' ('+'".$external."'+').','error');";
 							$extError = true;
 						}
 						else
@@ -384,13 +384,13 @@ if($handle = opendir('../plugins'))
 					{
 						if($info['rtorrent.version']>$theSettings->iVersion)
 						{
-							$jResult.="log('".$file.": '+theUILang.badrTorrentVersion+' '+'".$info['rtorrent.version.readable']."'+'.');";
+							$jResult.="noty('".$file.": '+theUILang.badrTorrentVersion+' '+'".$info['rtorrent.version.readable']."'+'.','error');";
 						        $disabled[$file] = $info;
 							continue;
 						}
                 				foreach( $info['rtorrent.external.error'] as $external )
                 				{
-							findRemoteEXE($external,"log('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').'); thePlugins.get('".$file."').disable();",$remoteRequests);
+							findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error'); thePlugins.get('".$file."').disable();",$remoteRequests);
 							if($external=='php')
 								$phpRequired = true;
 						}
@@ -400,7 +400,7 @@ if($handle = opendir('../plugins'))
 							@chmod($fname,$profileMask & 0755);
 							if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0005))
 							{
-								$jResult.="log('".$file.": '+theUILang.rTorrentBadScriptPath+' ('+'".$fname."'+').');";
+								$jResult.="noty('".$file.": '+theUILang.rTorrentBadScriptPath+' ('+'".$fname."'+').','error');";
 								$extError = true;
 							}
 						}
@@ -415,7 +415,7 @@ if($handle = opendir('../plugins'))
 							@chmod($fname,$profileMask & 0644);
 							if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0004))
 							{
-								$jResult.="log('".$file.": '+theUILang.rTorrentBadPHPScriptPath+' ('+'".$fname."'+').');";
+								$jResult.="noty('".$file.": '+theUILang.rTorrentBadPHPScriptPath+' ('+'".$fname."'+').','error');";
 								$extError = true;
 							}
 						}
@@ -428,25 +428,25 @@ if($handle = opendir('../plugins'))
 					        {
 					        	if($info["rtorrent.remote"]=="error")
 							{
-								$jResult.="log('".$file.": '+theUILang.errMustBeInSomeHost);";
+								$jResult.="noty('".$file.": '+theUILang.errMustBeInSomeHost,'error');";
 							        $disabled[$file] = $info;
 								continue;
 							}
 				        		if($do_diagnostic && ($info["rtorrent.remote"]=="warning"))
-								$jResult.="log('".$file.": '+theUILang.warnMustBeInSomeHost);";
+								$jResult.="noty('".$file.": '+theUILang.warnMustBeInSomeHost,'error');";
 					        }
 					}
 					if($do_diagnostic)
 					{
 						if($theSettings->linkExist)
 							foreach( $info['rtorrent.external.warning'] as $external )
-								findRemoteEXE($external,"log('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').');",$remoteRequests);
+								findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');",$remoteRequests);
 						foreach( $info['web.external.warning'] as $external )
 							if(findEXE($external)==false)
-								$jResult.="log('".$file.": '+theUILang.webExternalNotFoundWarning+' ('+'".$external."'+').');";
+								$jResult.="noty('".$file.": '+theUILang.webExternalNotFoundWarning+' ('+'".$external."'+').','error');";
 						foreach( $info['php.extensions.warning'] as $extension )
 							if(!in_array( $extension, $loadedExtensions ))
-								$jResult.="log('".$file.": '+theUILang.phpExtensionNotFoundWarning+' ('+'".$extension."'+').');";
+								$jResult.="noty('".$file.": '+theUILang.phpExtensionNotFoundWarning+' ('+'".$extension."'+').','error');";
 					}
 					$js = "../plugins/".$file."/init.js";
 	                	        if(!is_readable($js))
@@ -463,7 +463,7 @@ if($handle = opendir('../plugins'))
 		{
 			$val = strtoupper(ini_get("register_argc_argv"));
 			if( $val!=='' && $val!='ON' && $val!='1' && $val!='TRUE' )
-				$jResult.="log(theUILang.phpParameterUnavailable);";
+				$jResult.="noty(theUILang.phpParameterUnavailable,'error');";
 		}
 		usort($init,"pluginsSort");
 		foreach($init as $plugin)
@@ -474,7 +474,8 @@ if($handle = opendir('../plugins'))
 			$deps = array_diff( $pInfo["plugin.dependencies"], $names );
 			if(count($deps))
 			{
-				$jResult.="log('".$plugin["name"].": '+theUILang.dependenceError+' ".implode(",",$deps)."');";
+				$jResult.="noty('".$plugin["name"].": '+theUILang.dependenceError+' ".implode(",",$deps)."','error');";
+				$disabled[$plugin["name"]] = $pInfo;
 				continue;
 			}
 

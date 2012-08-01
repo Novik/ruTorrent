@@ -18,6 +18,6 @@ $req = new rXMLRPCRequest( array(
 if($req->success())
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else
-	$jResult.="plugin.disable(); log('erasedata: '+theUILang.pluginCantStart);";
+	$jResult.="plugin.disable(); noty('erasedata: '+theUILang.pluginCantStart,'error');";
 
 ?>

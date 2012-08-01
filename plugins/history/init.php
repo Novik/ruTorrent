@@ -9,5 +9,5 @@ if($mngr->setHandlers())
 	$jResult .= $mngr->get();
 }
 else
-	$jResult .= "plugin.disable(); log('history: '+theUILang.pluginCantStart);";
+	$jResult .= "plugin.disable(); noty('history: '+theUILang.pluginCantStart,'error');";
 ?>

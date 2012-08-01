@@ -145,10 +145,10 @@ theWebUI.startUnpackTask = function(info)
         {
 		plugin.tasks[info.no] = info;
 		plugin.tasks.length++;
-		log(theUILang.unpackTaskStarted+' ('+info.name+'=>'+info.out+')');
+		noty(theUILang.unpackTaskStarted+' ('+info.name+'=>'+info.out+')', "alert");
 	}
 	else
-		log((info.no<0) ? theUILang.unpackTaskFailed : theUILang.unpackNoFiles);
+		noty((info.no<0) ? theUILang.unpackTaskFailed : theUILang.unpackNoFiles, "error");
 }
 
 theWebUI.finishUnpackTask = function(task,info)
@@ -156,9 +156,9 @@ theWebUI.finishUnpackTask = function(task,info)
 	for( var i in info.errors )
 		try { log(info.errors[i],true,'mono'); } catch(e) {};
 	if(info.status==0)
-		log(theUILang.unpackTaskOK+' ('+task.name+'=>'+task.out+')');
+		noty(theUILang.unpackTaskOK+' ('+task.name+'=>'+task.out+')', "success");
 	else
-		log(theUILang.unpackTaskFailed+' ('+task.name+'=>'+task.out+')');
+		noty(theUILang.unpackTaskFailed+' ('+task.name+'=>'+task.out+')', "error");
 }
 
 theWebUI.checkUnpackTask = function(info)

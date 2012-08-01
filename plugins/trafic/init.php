@@ -9,7 +9,7 @@ $req = new rXMLRPCRequest( $theSettings->getScheduleCommand("trafic",$updateInte
 if($req->run() && !$req->fault)
        	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else
-       	$jResult .= "plugin.disable(); log('trafic: '+theUILang.pluginCantStart);";
+       	$jResult .= "plugin.disable(); noty('trafic: '+theUILang.pluginCantStart,'error');";
 $jResult .= "plugin.collectStatForTorrents = ".($collectStatForTorrents ? "true;" : "false;");
 $jResult .= "plugin.updateInterval = ".$updateInterval.";";
 $jResult .= "plugin.disableClearButton = ".($disableClearButton ? "true" : "false").";";

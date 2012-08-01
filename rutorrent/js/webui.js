@@ -2459,7 +2459,7 @@ var theWebUI =
 	   		window.onerror = function(msg, url, line) 
 			{
 			        theWebUI.show();
-				log("JS error: [" + url + " : " + line + "] " + msg);
+				noty("JS error: [" + url + " : " + line + "] " + msg,"error");
 				return true;
 			}
 		else
@@ -2475,14 +2475,14 @@ var theWebUI =
 	error: function(status,text) 
 	{
 		theWebUI.show();
-		log("Bad response from server: ("+status+") "+(text ? text : ""));
+		noty("Bad response from server: ("+status+") "+(text ? text : ""),"error");
 	},
 
 	timeout: function() 
 	{
 		theWebUI.show();
 		if(!theWebUI.settings["webui.ignore_timeouts"])
-			log(theUILang.Request_timed_out);
+			noty(theUILang.Request_timed_out,"alert");
 	}
 };
 

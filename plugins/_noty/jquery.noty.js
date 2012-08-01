@@ -214,7 +214,3 @@
 
 })(jQuery);
 
-//Helper
-function noty(options) {
-	return jQuery.noty(options); // returns an id
-}

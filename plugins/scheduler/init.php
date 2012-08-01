@@ -13,6 +13,6 @@ if($req->run() && !$req->fault)
 	$jResult.=$schd->get();
 }
 else
-	$jResult.="plugin.disable(); log('scheduler: '+theUILang.pluginCantStart);";
+	$jResult.="plugin.disable(); noty('scheduler: '+theUILang.pluginCantStart,'error');";
 
 ?>
