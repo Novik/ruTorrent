@@ -2,7 +2,7 @@
 require_once( '../../php/rtorrent.php' );
 
 if(isset($_REQUEST['result']))
-	cachedEcho('noty(theUILang.cantFindTorrent,'error');',"text/html");
+	cachedEcho('noty(theUILang.cantFindTorrent,"error");',"text/html");
 if(isset($_REQUEST['hash']))
 {
 	$torrent = rTorrent::getSource($_REQUEST['hash']);
