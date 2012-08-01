@@ -14,6 +14,6 @@ if($req->run() && !$req->fault)
 	$jResult.=$trks->get();
 }
 else
-	$jResult .= "plugin.disable(); log('retrackers: '+theUILang.pluginCantStart);";
+	$jResult .= "plugin.disable(); noty('retrackers: '+theUILang.pluginCantStart,'error');";
 
 ?>

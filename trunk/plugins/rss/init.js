@@ -742,7 +742,7 @@ theWebUI.showErrors = function(d)
 		s += eval(d.errors[i].desc);
 		if(d.errors[i].prm)
 			s = s + " ("+d.errors[i].prm+")";
-		log(s,true);
+		noty(s,"error",true);
 	}
 }
 

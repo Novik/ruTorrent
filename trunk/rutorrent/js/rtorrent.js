@@ -1033,7 +1033,7 @@ rTorrentStub.prototype.isError = function()
 rTorrentStub.prototype.logErrorMessages = function()
 {
 	for(var i in this.faultString)
-		log(this.faultString[i]);
+		noty(this.faultString[i],"error");
 }
 
 function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout) 

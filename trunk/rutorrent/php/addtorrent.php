@@ -12,7 +12,9 @@ if(isset($_REQUEST['result']))
 	{
 		$js = '';
 		foreach( $_REQUEST['result'] as $ndx=>$result )
-			$js.= ('log("'.(isset($_REQUEST['name'][$ndx]) ? $_REQUEST['name'][$ndx].' - ' : '').'"+theUILang.addTorrent'.$_REQUEST['result'][$ndx].');');
+			$js.= ('noty("'.(isset($_REQUEST['name'][$ndx]) ? $_REQUEST['name'][$ndx].' - ' : '').
+				'"+theUILang.addTorrent'.$_REQUEST['result'][$ndx].
+				',"'.($_REQUEST['result'][$ndx]=='Success' ? 'success' : 'error').'");');
 		cachedEcho($js,"text/html");
 	}
 }
@@ -72,7 +74,7 @@ else
 				else
 				{
 					$cli = new Snoopy();
-					if(@$cli->fetchComplex(Snoopy::linkencode($url)) && $cli->status>=200 && $cli->status<300)
+					if(@$cli->fetchComplex($url) && $cli->status>=200 && $cli->status<300)
 					{
 				        	$name = $cli->get_filename();
 					        if($name===false)

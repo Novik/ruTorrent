@@ -323,7 +323,7 @@ theWebUI.setTagsHash = function(d)
 		{
 			var item = plugin.tegs[d.teg].data[ d.data[i].ndx ];
 			item.hash = d.data[i].hash;
-			log( (item.hash ? theUILang.addTorrentSuccess : theUILang.addTorrentFailed) +" ("+item.name+')' );
+			noty( (item.hash ? theUILang.addTorrentSuccess : theUILang.addTorrentFailed) +" ("+item.name+')', (item.hash ? "success" : "error") );
 		} 
 		theWebUI.getTorrents("list=1");
 	}

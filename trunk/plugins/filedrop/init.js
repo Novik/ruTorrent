@@ -22,7 +22,7 @@ plugin.onLangLoaded = function()
 
 			uploadFinished: function(i, file, response, time) 
 			{
-				log(file.name+' : '+ theUILang['addTorrent'+response.result]);
+				noty(file.name+' : '+ theUILang['addTorrent'+response.result], (response.result==Success) ? "success" : "error");
 			},
 
 			beforeEach: function(file) 
@@ -37,17 +37,17 @@ plugin.onLangLoaded = function()
 					case 'BrowserNotSupported':
 					{
 						plugin.remove();
-						log(theUILang.doesntSupportHTML5);
+						noty(theUILang.doesntSupportHTML5,"error");
 						break;
 					}
 					case 'TooManyFiles':
 					{
-						log(theUILang.tooManyFiles+plugin.maxfiles);
+						noty(theUILang.tooManyFiles+plugin.maxfiles,"error");
 						break;
 					}
 					case 'FileTooLarge':
 					{
-						log(file.name+' '+theUILang.fileTooLarge+' '+plugin.maxfilesize+theUILang.MB);
+						noty(file.name+' '+theUILang.fileTooLarge+' '+plugin.maxfilesize+theUILang.MB,"error");
 						break;
 					}
 					default:

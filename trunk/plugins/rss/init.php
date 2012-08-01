@@ -13,7 +13,7 @@ if($needStart)
 		$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	}
 	else
-		$jResult .= "plugin.disable(); log('rss: '+theUILang.pluginCantStart);";
+		$jResult .= "plugin.disable(); noty('rss: '+theUILang.pluginCantStart,'error');";
 }
 else
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);

@@ -375,7 +375,6 @@ class Snoopy
 				else
 					$this->_redirectaddr = $matches[2];
 			}
-		
 			if(preg_match("|^HTTP/|",$currentHeader))
 			{
 		                if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$currentHeader, $status))

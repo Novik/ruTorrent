@@ -6,7 +6,7 @@ eval( getPluginConf( $plugin["name"] ) );
 $session = rTorrentSettings::get()->session;
 if( !strlen($session) || !is_executable(addslash(rTorrentSettings::get()->session)))
 {
-	$jResult .= "plugin.disable(); log('".$plugin["name"].": '+theUILang.webBadSessionError+' (".$session.").');";
+	$jResult .= "plugin.disable(); noty('".$plugin["name"].": '+theUILang.webBadSessionError+' (".$session.").','error');";
 }
 else
 {
@@ -17,7 +17,7 @@ else
 		if($req->success())
 			$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 		else
-			$jResult .= "plugin.disable(); log('rutracker_check: '+theUILang.pluginCantStart);";
+			$jResult .= "plugin.disable(); noty('rutracker_check: '+theUILang.pluginCantStart, 'error');";
 	}
 	else
 	{

@@ -13,6 +13,6 @@ $req = new rXMLRPCRequest( array(
 if($req->success())
         $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else
-        $jResult .= "plugin.disable(); log('seedingtime: '+theUILang.pluginCantStart);";
+        $jResult .= "plugin.disable(); noty('seedingtime: '+theUILang.pluginCantStart,'error');";
 
 ?>

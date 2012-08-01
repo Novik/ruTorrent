@@ -105,7 +105,7 @@ theWebUI.receiveDataDir = function( d )
 			var s = d.errors[i].desc;
 			if( d.errors[i].prm )
 				s += " (" + d.errors[i].prm + ")";
-			log( s );
+			noty( s, "error" );
 		}
 }
 

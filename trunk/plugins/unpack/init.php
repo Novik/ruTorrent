@@ -21,9 +21,9 @@ if(USE_UNZIP || USE_UNRAR)
 	        $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	}
 	else
-		$jResult .= "plugin.disable(); log('unpack: '+theUILang.pluginCantStart);";
+		$jResult .= "plugin.disable(); noty('unpack: '+theUILang.pluginCantStart,'error');";
 }
 else
-	$jResult .= "plugin.disable(); log('unpack: '+theUILang.pluginCantStart);";
+	$jResult .= "plugin.disable(); noty('unpack: '+theUILang.pluginCantStart,'error');";
 
 ?>

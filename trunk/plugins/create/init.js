@@ -43,7 +43,7 @@ plugin.start = function(data)
         plugin.enableFormControls(true);
 	plugin.shutdownTask();
 	if(data.errors.length)
-		log(data.errors[0]);
+		noty(data.errors[0],"error");
 	else
 	{
 		plugin.task = data.no;
