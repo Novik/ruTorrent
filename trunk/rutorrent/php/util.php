@@ -536,7 +536,7 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 							header("Content-Range: bytes ".$begin."-".$end."/".$stat['size']);
 							$cur = $begin;
 							fseek($f,$begin,0);
-							while( !feof($f) && ($cur<$end) && (connection_status()==0) && !connection_aborted() )
+							while( !feof($f) && ($cur<$end) && !connection_aborted() && (connection_status()==0) )
 							{ 
 								print(fread($f,min(1024*16,$end-$cur)));
 								$cur+=1024*16;
