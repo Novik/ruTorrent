@@ -9,7 +9,7 @@ class KickAssTorrentsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.kat.ph';
+		$url = 'http://kat.ph';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'movies'=>'movies', 'tv'=>'tv', 'music'=>'music', 'games'=>'games', 'anime'=>'anime', 'software'=>'applications', 'books'=>'books' );
 		else
@@ -26,14 +26,13 @@ class KickAssTorrentsEngine extends commonEngine
 				break;
 			$res = preg_match_all('`href="magnet:(?P<link>.*)".*<div class="torrentname">.*'.
 				'<a href="(?P<desc>.*)" class=".*bold">(?P<name>.*)</a>.*'.
-				'<span id="cat_\d+"> <a.*>(?P<cat>.*)</a>.*'.
+				'<span id="cat_\d+">(?P<cat>.*)</span>.*'.
 				'<td class="nobr.*">(?P<size>.*)</td>.*'.
 				'<td.*>.*</td>.*'.
 				'<td.*>(?P<date>.*)</td>.*'.
 				'<td class=".*">(?P<seeds>.*)</td>.*'.
 				'<td class=".*">(?P<leech>.*)</td>'.
 				'`siU', $cli->results, $matches);
-
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
