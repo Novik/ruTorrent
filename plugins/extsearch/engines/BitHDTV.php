@@ -1,7 +1,7 @@
 <?php
 
 /*
- *@author Matt Porter
+ *@author AceP1983
  *@version $Id$
 */
 
@@ -31,11 +31,12 @@ class BitHDTVEngine extends commonEngine
 				break;
 			$res = preg_match_all('/<img border="0" src=.* alt="(?P<cat>.*)" \/><\/a>'.
 				'.*<td.*>.*href="\/details.php\?id=(?P<id>\d+)".*>(?P<name>.*)<\/a>'.
-				'.*<a href="\/download.php\/\d+\/(?P<tname>.*)"><\/a>.*'.
+				'.*<a href="\/download.php\?\/\d+\/(?P<tname>.*)"><\/a>.*'.
 				'<td .*>.*<\/td>.*'.
 				'<td .*>.*<\/td>.*'.
 				'<td .*>(?P<date>.*)<\/td>'.
 				'.*<td .*>(?P<size>.*)<\/td>'.
+				'.*<td .*>.*<\/td>.*'.
 				'.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
 			if(($res!==false) && ($res>0) &&
 				count($matches["id"])==count($matches["cat"]) &&
