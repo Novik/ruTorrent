@@ -1,15 +1,15 @@
 <?php
 
 /*
- *@author Matt Porter
+ *@author AceP1983
  *@version $Id$
 */
 
 
 class BitGAMEREngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>30, "cookies"=>"www.bitgamer.su|pass=XXX;uid=XXX;" );
-	public $categories = array( 'all'=>'', '(Adult Games)'=>'&c82=1', '(Burning/Ripping)'=>'&c80=1', '(Guides/DOX)'=>'&c81=1', '(Movies/TV/Video)'=>'&c83=1', '(Music)'=>'&c84=1', 'Android'=>'&c89=1', 'iPhone/iPod/iPad'=>'&c88=1', 'GBA'=>'&c77=1', 'DS'=>'&c78=1', 'Gamecube'=>'&c72=1', 'Wii'=>'&c74=1', 'PC-Linux'=>'&c87=1', 'PC-Mac'=>'&c86=1', 'PC-Windows'=>'&c79=1', 'PS2'=>'&c73=1', 'PS3'=>'&c75=1', 'PSP'=>'&c76=1', 'XBOX'=>'&c70=1', 'XBOX 360'=>'&c71=1' );
+	public $defaults = array( "public"=>false, "page_size"=>30, "auth"=>1 );
+	public $categories = array( 'all'=>'', '(Burning/Ripping)'=>'&c80=1', '(Guides/DOX)'=>'&c81=1', '(Movies/TV/Video)'=>'&c83=1', '(Music)'=>'&c84=1', 'Android'=>'&c89=1', 'iPhone/iPod/iPad'=>'&c88=1', 'GBA'=>'&c77=1', '3DS'=>'&c90=1', 'DS'=>'&c78=1', 'Gamecube'=>'&c72=1', 'Wii'=>'&c74=1', 'PC-Linux'=>'&c87=1', 'PC-Mac'=>'&c86=1', 'PC-Windows'=>'&c79=1', 'PS2'=>'&c73=1', 'PS3'=>'&c75=1', 'PSP'=>'&c76=1', 'XBOX'=>'&c70=1', 'XBOX 360'=>'&c71=1' );
 
 
 
@@ -19,7 +19,7 @@ class BitGAMEREngine extends commonEngine
 		$url = 'https://www.bitgamer.su';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'tv'=>'&c83=1', 'music'=>'&c84=1', 
-				'games'=>'&c82=1&c89=1&c88=1&c77=1&c78=1&c72=1&c74=1&87=1&c86=1&c79=1&c73=1&c75=1&c76=1&c70=1&c71=1', 
+				'games'=>'&c90=1&c89=1&c88=1&c77=1&c78=1&c72=1&c74=1&87=1&c86=1&c79=1&c73=1&c75=1&c76=1&c70=1&c71=1', 
 				'software'=>'&c80=1', 'books'=>'&c81=1' );
 		else
 			$categories = &$this->categories;
