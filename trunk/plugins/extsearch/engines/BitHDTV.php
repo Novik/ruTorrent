@@ -49,7 +49,7 @@ class BitHDTVEngine extends commonEngine
 			{
 				for($i=0; $i<count($matches["id"]); $i++)
 				{
-					$link = $url."/download.php/".$matches["id"][$i]."/".$matches["tname"][$i];
+					$link = $url."/download.php?/".$matches["id"][$i]."/".$matches["tname"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
