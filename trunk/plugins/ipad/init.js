@@ -6,7 +6,7 @@ $.extend($.support,
 plugin.holdMouse = { x:0, y: 0 };
 plugin.curMouse = null;
 plugin.scrollInterval = 40;
-plugin.accel = 1.2;
+plugin.accel = 1.1;
 
 plugin.emulateRightClick = function()
 {
@@ -46,11 +46,14 @@ plugin.startHold = function(touch)
 plugin.dispatchMouse = function(event,type)
 {
 	var touch = event.changedTouches[0];
-	var mouseEvent = document.createEvent("MouseEvent");
-	mouseEvent.initMouseEvent(type, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY,
-		false, false, false, false, 0, null);
-	touch.target.dispatchEvent(mouseEvent);
 	touch.timeStamp = $.now();
+	window.setTimeout( function() 
+	{
+		var mouseEvent = document.createEvent("MouseEvent");
+		mouseEvent.initMouseEvent(type, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY,
+			false, false, false, false, 0, null);
+		touch.target.dispatchEvent(mouseEvent);
+	}, 0);
 	return(touch);
 }
 
@@ -66,8 +69,8 @@ plugin.touchStart = function(event)
 		plugin.stopScroll();
 		if($(event.changedTouches[0].target).is("select") || $(event.changedTouches[0].target).is("input"))
 			return;
-		var touch = plugin.dispatchMouse(event,"mousemove");
-		window.setTimeout( function() { plugin.dispatchMouse(event,"mousedown"); }, 0 );
+		plugin.dispatchMouse(event,"mousemove");
+		var touch = plugin.dispatchMouse(event,"mousedown");;
 		if(plugin.targetTimeout)
 			window.clearTimeout(plugin.targetTimeout);
 		if(!plugin.target || (plugin.target != touch.target))
@@ -163,6 +166,7 @@ plugin.touchMove = function(event)
 				        		mode.x = false;
 				        }
 					target = target.get(0);
+
 					if(mode.x)
 						plugin.startScroll( "scrollLeft", delta.x/delta.tm*plugin.accel, target );
 					if(mode.y)
