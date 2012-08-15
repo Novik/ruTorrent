@@ -499,7 +499,7 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 				header('Etag: '.$etag);
 				header('Last-Modified: ' . date('r', $stat['mtime']));
 				set_time_limit(0);
-				ignore_user_abort($mustExit);
+				ignore_user_abort(!$mustExit);
 				header('Accept-Ranges: bytes');
 				header('Content-Transfer-Encoding: binary');
 				header('Content-Description: File Transfer');
