@@ -22,7 +22,7 @@ plugin.onLangLoaded = function()
 
 			uploadFinished: function(i, file, response, time) 
 			{
-				noty(file.name+' : '+ theUILang['addTorrent'+response.result], (response.result==Success) ? "success" : "error");
+				noty(file.name+' : '+ theUILang['addTorrent'+response.result], (response.result=='Success') ? "success" : "error");
 			},
 
 			beforeEach: function(file) 
