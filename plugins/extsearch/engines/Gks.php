@@ -3,25 +3,49 @@
 class GksEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"gks.gs|uid=XXX;pw=XXX" );
-	public $categories = array( 'all'=>'&cat=0', 'Windows' => '&cat=3', 'Mac' => '&cat=4',
-		'DVDRip/BDRip' => '&cat=5', 'DVDRip/BDRip VOSTFR' => '&cat=6', 'Emissions TV' => '&cat=7',
-		'Docs' => '&cat=8', 'Docs HD' => '&cat=9', 'TV PACK' => '&cat=10', 'TV VOSTFR' => '&cat=11',
-		'TV VF' => '&cat=12', 'TV HD VOSTFR' => '&cat=13', 'TV HD VF' => '&cat=14',
-		'HD 720p' => '&cat=15', 'HD 1080p' => '&cat=16', 'Full BluRay' => '&cat=17',
-		'Divers' => '&cat=18', 'DVDR' => '&cat=19', 'DVDR Series' => '&cat=20', 'Anime' => '&cat=21',
-		'TV VO' => '&cat=22', 'Concerts' => '&cat=23', 'eBooks' => '&cat=24', 'Sport' => '&cat=28', 
-		'PC Games' => '&cat=29', 'Nintendo DS' => '&cat=30', 'Wii' => '&cat=31',
-		'Xbox 360' => '&cat=32', 'PSP' => '&cat=34', 'PSX/PS2/PS3' => '&cat=38');
+	public $categories = array( 
+		'all'=>'&category=0', 
+		'Windows' => '&category=3', 
+		'Mac' => '&category=4',
+		'DVDRip/BDRip' => '&category=5', 
+		'DVDRip/BDRip VOSTFR' => '&category=6', 
+		'Emissions TV' => '&category=7',
+		'Docs' => '&category=8', 
+		'Docs HD' => '&category=9', 
+		'TV PACK' => '&category=10', 
+		'TV VOSTFR' => '&category=11',
+		'TV VF' => '&category=12', 
+		'TV HD VOSTFR' => '&category=13', 
+		'TV HD VF' => '&category=14',
+		'HD 720p' => '&category=15', 
+		'HD 1080p' => '&category=16', 
+		'Full BluRay' => '&category=17',
+		'Divers' => '&category=18', 
+		'DVDR' => '&category=19', 
+		'DVDR Series' => '&category=20', 
+		'Anime' => '&category=21',
+		'TV VO' => '&category=22', 
+		'Concerts' => '&category=23', 
+		'eBooks' => '&category=24', 
+		'Sport' => '&category=28', 
+		'PC Games' => '&category=29', 
+		'Nintendo DS' => '&category=30', 
+		'Wii' => '&category=31',
+		'Xbox 360' => '&category=32', 
+		'PSP' => '&category=34', 
+		'PSX/PS2/PS3' => '&category=38',
+		'Flac' => '&category=39'
+	);
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'https://gks.gs';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'&cat=0', 'movies'=>'&cat=5&cat=6&cat=15&cat=16&cat=17&cat=19', 
-				'tv'=>'&cat=7&cat=8&cat=9&cat=10&cat=11&cat=12&cat=13&cat=14&cat=20&cat=22&cat=23&cat=28', 'music'=>'&cat=6&cat=46&cat=29', 
-				'games'=>'&cat=29&cat=30&cat=31&cat=32&cat=34&cat=38', 
-				'anime'=>'&cat=21', 'software'=>'&cat=3&cat=4', 'books'=>'&cat=24' );
+			$categories = array( 'all'=>'&category=0', 'movies'=>'&category=5&category=6&category=15&category=16&category=17&category=19', 
+				'tv'=>'&category=7&category=8&category=9&category=10&category=11&category=12&category=13&category=14&category=20&category=22&category=23&category=28', 'music'=>'&category=39', 
+				'games'=>'&category=29&category=30&category=31&category=32&category=34&category=38', 
+				'anime'=>'&category=21', 'software'=>'&category=3&category=4', 'books'=>'&category=24' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
@@ -35,7 +59,6 @@ class GksEngine extends commonEngine
 				|| (strpos($cli->results, '<h1>Wh0 Loves You ?</h1>')!==false))
 				break;
 			$res = preg_match_all('`<a class=".*" href="/browse/\?cat=.*">.*'.
-					'<!--<img src=".*" alt="(?P<cat>[^"]*)".*'.
 					'<a title="(?P<name>.*)" href="(?P<desc>.*)">.*'.
 					'<a href="(?P<tname>[^"]*)">.*'.
 					'<td class="size_torrent_\d">(?P<size>.*)</td>.*'.
@@ -50,7 +73,6 @@ class GksEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$item["desc"] = $url.$matches["desc"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize(trim(str_replace("o","B",$matches["size"][$i])));
