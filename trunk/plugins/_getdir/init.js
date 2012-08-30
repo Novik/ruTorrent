@@ -1,3 +1,5 @@
+plugin.loadMainCSS();
+
 theWebUI.rDirBrowser = function( dlg_id, edit_id, btn_id, frame_id, withFiles )
 {
 	this.edit = $('#'+edit_id);

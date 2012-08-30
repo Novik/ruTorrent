@@ -756,7 +756,7 @@ plugin.onLangLoaded = function()
 		true);
 	if(thePlugins.isInstalled("_getdir"))
 	{
-		$('#tegdir_edit').after($("<input type=button>").addClass("Button").width(30).attr("id","tegBtn").focus( function() { this.blur(); } ));
+		$('#tegdir_edit').after($("<input type=button>").addClass("Button").attr("id","tegBtn").focus( function() { this.blur(); } ));
 		var btn = new theWebUI.rDirBrowser( 'tegLoadTorrents', 'tegdir_edit', 'tegBtn' );
 		theDialogManager.setHandler('tegLoadTorrents','afterHide',function()
 		{

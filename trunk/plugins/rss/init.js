@@ -1518,13 +1518,13 @@ plugin.onLangLoaded = function()
 
 	if(thePlugins.isInstalled("_getdir"))
 	{
-		$('#RSSdir_edit').after($("<input type=button>").addClass("Button").width(30).attr("id","RSSBtn").focus( function() { this.blur(); } ));
+		$('#RSSdir_edit').after($("<input type=button>").addClass("Button").attr("id","RSSBtn").focus( function() { this.blur(); } ));
 		var btn = new theWebUI.rDirBrowser( 'dlgLoadTorrents', 'RSSdir_edit', 'RSSBtn' );
 		theDialogManager.setHandler('dlgLoadTorrents','afterHide',function()
 		{
 			btn.hide();
 		});
-		$('#FLTdir_edit').after($("<input type=button>").addClass("Button").width(30).attr("id","FLTBtn").focus( function() { this.blur(); } ));
+		$('#FLTdir_edit').after($("<input type=button>").addClass("Button").attr("id","FLTBtn").focus( function() { this.blur(); } ));
 		plugin.editFilersBtn = new theWebUI.rDirBrowser( 'dlgEditFilters', 'FLTdir_edit', 'FLTBtn' );
 	}
 
