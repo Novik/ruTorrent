@@ -10,6 +10,4 @@ div#dlg_datadir #edit_datadir {width: 290px}
 
 div#dlg_datadir br {clear: left; line-height: 0}
 
-#btn_datadir_browse {width:30px}
-
 div#dlg_datadir div.dlg-header {background-image: url(../../images/settings.gif)}

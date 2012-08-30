@@ -313,7 +313,7 @@ var theWebUI =
 		this.request("?action=getplugins", null, false);
 		if(thePlugins.isInstalled("_getdir"))
 		{
-			$('#dir_edit').after($("<input type=button>").addClass("Button").width(30).attr("id","dir_btn").focus( function() { this.blur(); } ));
+			$('#dir_edit').after($("<input type=button>").addClass("Button").attr("id","dir_btn").focus( function() { this.blur(); } ));
 			var btn = new this.rDirBrowser( 'tadd', 'dir_edit', 'dir_btn' );
 			theDialogManager.setHandler('tadd','afterHide',function()
 			{
