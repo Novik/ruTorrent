@@ -52,5 +52,3 @@ class ffmpegSettings
 		return($this->get());
 	}
 }
-
-?>

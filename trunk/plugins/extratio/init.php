@@ -10,4 +10,3 @@ if($mngr->setHandlers())
 }
 else
 	$jResult .= "plugin.disable(); noty('retrackers: '+theUILang.pluginCantStart,'error');";
-?>

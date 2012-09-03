@@ -591,5 +591,3 @@ function base32decode($input)
         }         
 	return( strtoupper(bin2hex($output)) );
 }
-
-?>

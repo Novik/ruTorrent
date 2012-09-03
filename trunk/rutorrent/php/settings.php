@@ -299,5 +299,3 @@ class rTorrentSettings
 		return(strpos(addslash($dir),$topDirectory)===0);
 	}
 }
-
-?>

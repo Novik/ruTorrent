@@ -60,5 +60,3 @@ class TorrentDayEngine extends commonEngine
 		}
 	}
 }
-
-?>

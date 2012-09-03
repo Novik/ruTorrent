@@ -9,5 +9,3 @@ if($em===false)
 	$em = new accountManager();
 $em->obtain();
 $jResult.=$em->get();
-
-?>

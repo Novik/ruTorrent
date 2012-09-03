@@ -69,5 +69,3 @@ class ABTorrentsEngine extends commonEngine
 		}
 	}
 }
-
-?>

@@ -39,5 +39,3 @@ if(isset($_REQUEST["tracker"]))
 header("HTTP/1.0 302 Moved Temporarily");
 header("Location: ".dirname($_SERVER['PHP_SELF']).'/trackers/unknown.png');
 exit();
-
-?>

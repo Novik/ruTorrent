@@ -14,5 +14,3 @@ $jResult .= "plugin.collectStatForTorrents = ".($collectStatForTorrents ? "true;
 $jResult .= "plugin.updateInterval = ".$updateInterval.";";
 $jResult .= "plugin.disableClearButton = ".($disableClearButton ? "true" : "false").";";
 $jResult .= getRatiosStat();
-
-?>

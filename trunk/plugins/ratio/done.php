@@ -5,5 +5,3 @@ $req = new rXMLRPCRequest( array(
 	rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.getUser(), getCmd('cat=')))
 	));
 $req->run();
-
-?>

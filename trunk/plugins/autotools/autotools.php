@@ -160,5 +160,3 @@ class rAutoTools
 		return($req->success());
 	}
 }
-
-?>

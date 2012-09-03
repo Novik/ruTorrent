@@ -65,4 +65,3 @@ class XThorEngine extends commonEngine
 		}
 	}
 }
-?>

@@ -7,4 +7,3 @@ if(!$rat->obtain())
 else
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 $jResult.=$rat->get();
-?>

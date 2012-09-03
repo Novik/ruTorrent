@@ -69,5 +69,3 @@ class SceneHDEngine extends commonEngine
 		}
 	}
 }
-
-?>

@@ -42,5 +42,3 @@ if(isset($_REQUEST['mode']))
 }
 
 cachedEcho($val,"application/json");
-
-?>

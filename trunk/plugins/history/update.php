@@ -19,4 +19,3 @@
 			"label"=>rawurldecode($argv[11]),
 			), $mgr->log["limit"] );
 	}
-?>

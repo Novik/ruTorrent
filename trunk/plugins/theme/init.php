@@ -28,5 +28,3 @@ if($theme->isValid())
 	if(is_readable($themeInit))
 		$jEnd.=file_get_contents($themeInit);
 }
-
-?>

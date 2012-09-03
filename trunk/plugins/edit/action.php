@@ -119,5 +119,3 @@ if(isset($HTTP_RAW_POST_DATA))
 }
 
 cachedEcho(json_encode(array( "errors"=>$errors, "hash"=>$hash )),"application/json");
-
-?>

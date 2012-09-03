@@ -259,5 +259,3 @@ class rRatioRulesList
 		return($req->success());
 	}
 }
-
-?>

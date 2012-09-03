@@ -53,5 +53,3 @@ class TorrentReactorEngine extends commonEngine
 		}
 	}
 }
-
-?>

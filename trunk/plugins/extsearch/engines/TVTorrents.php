@@ -53,5 +53,3 @@ class TVTorrentsEngine extends commonEngine
 		}
 	}
 }
-
-?>

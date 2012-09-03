@@ -25,5 +25,3 @@ class TorrentLeechAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

@@ -99,5 +99,3 @@ class FrenchTorrentDBEngine extends commonEngine
 		}
 	}
 }
-
-?>

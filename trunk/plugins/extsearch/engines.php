@@ -438,5 +438,3 @@ class engineManager
 		return($ret);
 	}
 }
-
-?>

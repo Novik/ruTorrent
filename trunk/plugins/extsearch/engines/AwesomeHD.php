@@ -89,5 +89,3 @@ class AwesomeHDEngine extends commonEngine
 		}
 	}
 }
-
-?>

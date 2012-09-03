@@ -88,5 +88,3 @@ if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 }
 else
 	eLog('Busy, wait for next time.');
-
-?>

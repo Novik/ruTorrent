@@ -88,5 +88,3 @@ class ISOHuntEngine extends commonEngine
 		}
 	}
 }
-
-?>

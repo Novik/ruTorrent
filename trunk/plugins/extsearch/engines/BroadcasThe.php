@@ -72,5 +72,3 @@ class BroadcasTheEngine extends commonEngine
 		}
 	}
 }
-
-?>

@@ -44,5 +44,3 @@ class rLock
 		return($lck);
 	}
 }
-
-?>

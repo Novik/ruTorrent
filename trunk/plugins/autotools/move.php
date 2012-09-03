@@ -167,5 +167,3 @@ if( $at->enable_move )
 }
 
 Debug( "--- end ---" );
-
-?>

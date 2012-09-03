@@ -37,5 +37,3 @@ class FrenchTorrentDBAccount extends commonAccount
 		return(preg_match( "/^http(s)?:\/\/www\.frenchtorrentdb\.com\//si", $url ));
 	}
 }
-
-?>

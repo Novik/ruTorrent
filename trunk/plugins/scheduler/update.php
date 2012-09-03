@@ -8,4 +8,3 @@ if(chdir($path))
 	$sch = rScheduler::load();
 	$sch->apply();
 }
-?>

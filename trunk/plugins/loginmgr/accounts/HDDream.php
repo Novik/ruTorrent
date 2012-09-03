@@ -26,5 +26,3 @@ class HDDreamAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

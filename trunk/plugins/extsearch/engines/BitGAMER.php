@@ -77,5 +77,3 @@ class BitGAMEREngine extends commonEngine
 		}
 	}
 }
-
-?>

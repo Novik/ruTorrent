@@ -71,5 +71,3 @@ class TorrentDamageEngine extends commonEngine
 		}
 	}
 }
-
-?>

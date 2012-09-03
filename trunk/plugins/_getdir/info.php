@@ -92,5 +92,3 @@ if(isset($_REQUEST['mode']))
 }
 
 cachedEcho(json_encode($output),"application/json");
-
-?>

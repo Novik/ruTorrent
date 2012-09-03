@@ -19,5 +19,3 @@ if($req->success())
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else
 	$jResult.="plugin.disable(); noty('erasedata: '+theUILang.pluginCantStart,'error');";
-
-?>

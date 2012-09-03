@@ -26,5 +26,3 @@ class WhatCDAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

@@ -33,5 +33,3 @@ class BitGamerAccount extends commonAccount
                 return(preg_match( "/^http(s)?:\/\/www\.bitgamer\.su\//si", $url ));
         }
 }
-
-?>

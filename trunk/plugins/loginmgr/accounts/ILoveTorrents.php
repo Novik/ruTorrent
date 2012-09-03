@@ -25,5 +25,3 @@ class ILoveTorrentsAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

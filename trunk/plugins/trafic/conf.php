@@ -6,4 +6,3 @@
 	$disableClearButton = false;
 
 	$storeDeletedTorrentsStatsDuring = 2592000;	// in seconds
-?>

@@ -74,5 +74,3 @@ class theBoxEngine extends commonEngine
 		}
 	}
 }
-
-?>

@@ -72,5 +72,3 @@ class BitHDTVEngine extends commonEngine
 		}
 	}
 }
-
-?>

@@ -90,5 +90,3 @@ class GksEngine extends commonEngine
 		}
 	}
 }
-
-?>

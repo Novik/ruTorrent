@@ -304,5 +304,3 @@ class rUnpack
 		return($req->success());
 	}
 }
-
-?>

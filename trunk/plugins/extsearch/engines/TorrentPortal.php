@@ -56,5 +56,3 @@ class TorrentPortalEngine extends commonEngine
 		}
 	}
 }
-
-?>

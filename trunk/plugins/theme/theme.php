@@ -43,7 +43,4 @@ class rTheme
 			$this->store();
 		}
 	}
-
 }
-
-?>

@@ -1265,6 +1265,3 @@ class rRSSManager
 		$this->saveHistory();
 	}
 }
-
-
-?>

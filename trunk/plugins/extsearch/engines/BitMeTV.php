@@ -74,5 +74,3 @@ class BitMeTVEngine extends commonEngine
 		}
 	}
 }
-
-?>

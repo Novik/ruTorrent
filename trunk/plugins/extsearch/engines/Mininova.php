@@ -62,5 +62,3 @@ class MininovaEngine extends commonEngine
 		}
 	}
 }
-
-?>

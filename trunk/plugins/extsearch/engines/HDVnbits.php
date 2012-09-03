@@ -72,5 +72,3 @@ class HDVnbitsEngine extends commonEngine
 		}
 	}
 }
-
-?>

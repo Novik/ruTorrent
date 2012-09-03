@@ -70,5 +70,3 @@ class MMATorrentsEngine extends commonEngine
 		}
 	}
 }
-
-?>

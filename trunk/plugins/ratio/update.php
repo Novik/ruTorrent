@@ -9,4 +9,3 @@
 		$rat = rRatio::load();
 		$rat->checkTimes();
 	}
-?>

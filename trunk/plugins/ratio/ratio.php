@@ -251,5 +251,3 @@ class rRatio
 		return($ret."];\ntheWebUI.maxRatio = ".MAX_RATIO.";\ntheWebUI.defaultRatio = ".$this->default.";\n");
 	}
 }
-
-?>

@@ -18,5 +18,3 @@ if( chdir( dirname( __FILE__) ) )
 		}
 	}
 }
-
-?>

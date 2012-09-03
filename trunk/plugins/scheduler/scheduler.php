@@ -181,5 +181,3 @@ class rScheduler
                 $this->store();
 	}
 }
-
-?>

@@ -79,5 +79,3 @@ class ScCEngine extends commonEngine
 		}
 	}
 }
-
-?>

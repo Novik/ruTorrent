@@ -170,5 +170,3 @@ if( $is_ok )
 Debug( "--- end ---" );
 
 rtSemUnlock( $AutoLabel_Sem );
-
-?>

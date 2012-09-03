@@ -73,5 +73,3 @@ class MMATrackerEngine extends commonEngine
 		}
 	}
 }
-
-?>

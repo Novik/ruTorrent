@@ -62,5 +62,3 @@ class FtNEngine extends commonEngine
 		}
 	}
 }
-
-?>

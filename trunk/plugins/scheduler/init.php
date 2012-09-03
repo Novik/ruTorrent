@@ -14,5 +14,3 @@ if($req->run() && !$req->fault)
 }
 else
 	$jResult.="plugin.disable(); noty('scheduler: '+theUILang.pluginCantStart,'error');";
-
-?>

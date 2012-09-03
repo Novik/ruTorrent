@@ -85,4 +85,3 @@
 		}
 	}
 	cachedEcho(json_encode($ret),"application/json");
-?>

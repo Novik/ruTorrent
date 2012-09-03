@@ -437,5 +437,3 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 	else
 		return $torrent->hash_info();
 }
-
-?>

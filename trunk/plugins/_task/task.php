@@ -185,5 +185,3 @@ class rTask
 		return(true);
 	}
 }
-
-?>

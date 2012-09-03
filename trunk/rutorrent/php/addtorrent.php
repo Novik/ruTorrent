@@ -132,5 +132,3 @@ else
 		$location.='json=1';
 	header($location);
 }
-
-?>

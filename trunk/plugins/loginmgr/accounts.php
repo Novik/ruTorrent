@@ -215,5 +215,3 @@ class accountManager
 		return($ret);
 	}
 }
-
-?>

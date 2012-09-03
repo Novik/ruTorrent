@@ -73,5 +73,3 @@ class RevTTEngine extends commonEngine
 		}
 	}
 }
-
-?>

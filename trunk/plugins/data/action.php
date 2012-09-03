@@ -32,4 +32,3 @@ else
 	header("HTTP/1.0 302 Moved Temporarily");
 	header("Location: ".$_SERVER['PHP_SELF'].'?result=0');
 }
-?>

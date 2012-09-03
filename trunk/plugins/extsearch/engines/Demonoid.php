@@ -74,4 +74,3 @@ class DemonoidEngine extends commonEngine
 		}
 	}
 }
-?>
