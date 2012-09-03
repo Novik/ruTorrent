@@ -10,5 +10,3 @@ class extratioHooks
 		$mngr->checkLabels( array($prm["hash"]) );
 	}
 }
-
-?>

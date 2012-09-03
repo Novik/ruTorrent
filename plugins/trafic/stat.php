@@ -142,5 +142,3 @@ class rStat
 		return($ret);
 	}
 }
-
-?>

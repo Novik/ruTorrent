@@ -14,4 +14,3 @@ if(chdir($path))
 		$lock->release();
 	}
 }
-?>

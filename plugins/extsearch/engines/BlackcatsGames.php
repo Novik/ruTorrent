@@ -71,5 +71,3 @@ class BlackcatsGamesEngine extends commonEngine
 		}
 	}
 }
-
-?>

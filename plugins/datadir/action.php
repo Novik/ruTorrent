@@ -107,5 +107,3 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 Debug( "--- end ---" );
 
 cachedEcho(json_encode(array( "errors"=>$errors )),"application/json");
-
-?>

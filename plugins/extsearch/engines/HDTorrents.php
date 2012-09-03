@@ -82,5 +82,3 @@ class HDTorrentsEngine extends commonEngine
 		}
 	}
 }
-
-?>

@@ -12,5 +12,3 @@
 						// "buildtorrent" - use program buildtorrent (see http://claudiusmaximus.goto10.org/cm/torrent.html)
 	$pathToCreatetorrent = '';		// Something like /bin/createtorrent, or /bin/transmissioncli. If empty, program will be found in PATH.
 	$pathToExternals["pgrep"] = '';		// Something like /usr/bin/pgrep. If empty, will be found in PATH.
-
-?>

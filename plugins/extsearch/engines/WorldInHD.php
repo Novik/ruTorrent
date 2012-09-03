@@ -70,4 +70,3 @@ class WorldInHDEngine extends commonEngine
 		}
 	}
 }
-?>

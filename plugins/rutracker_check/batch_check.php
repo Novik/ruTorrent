@@ -13,5 +13,3 @@ if(( count( $argv ) > 1 ) && chdir(dirname( __FILE__)))
 			ruTrackerChecker::run($hash);
 	unlink($argv[1]);
 }
-
-?>

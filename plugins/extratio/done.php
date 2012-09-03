@@ -6,5 +6,3 @@ $req = new rXMLRPCRequest(array(
 	));
 $req->run();
 rTorrentSettings::get()->unregisterEventHook("extratio","LabelChanged");
-
-?>

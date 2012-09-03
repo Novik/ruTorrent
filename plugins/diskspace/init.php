@@ -10,4 +10,3 @@ else
 	$jResult.="plugin.interval = ".$diskUpdateInterval."; plugin.notifySpaceLimit = ".($notifySpaceLimit*1024*1024).";";
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 }
-?>

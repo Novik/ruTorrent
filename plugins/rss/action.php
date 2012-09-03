@@ -378,5 +378,3 @@ else
 		$mngr->saveState(false);
 	}
 }
-
-?>

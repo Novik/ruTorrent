@@ -25,5 +25,3 @@ class jpopsukiAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

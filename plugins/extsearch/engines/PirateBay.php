@@ -101,5 +101,3 @@ class PirateBayEngine extends commonEngine
 		}
 	}
 }
-
-?>

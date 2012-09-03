@@ -45,5 +45,3 @@ class ISOHuntLiteEngine extends commonEngine
 		}
 	}
 }
-
-?>

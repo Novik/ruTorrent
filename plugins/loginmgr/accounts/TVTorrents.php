@@ -25,5 +25,3 @@ class TVTorrentsAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

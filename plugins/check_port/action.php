@@ -18,5 +18,3 @@ if($client->status==200)
 }
 
 cachedEcho('{ "port": '.$port.', "status": '.$ret.' }',"application/json");
-
-?>

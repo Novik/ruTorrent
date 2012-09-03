@@ -70,5 +70,3 @@ if( $is_ok && $hash && strlen( $datadir ) > 0 )
 Debug( "--- end ---" );
 
 rtSemUnlock( $DataDir_Sem );
-
-?>

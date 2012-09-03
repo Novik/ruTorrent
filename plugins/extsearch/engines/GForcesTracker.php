@@ -73,5 +73,3 @@ class GForcesTrackerEngine extends commonEngine
 		}
 	}
 }
-
-?>

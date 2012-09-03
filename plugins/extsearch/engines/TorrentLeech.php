@@ -87,5 +87,3 @@ class TorrentLeechEngine extends commonEngine
 		}
 	}
 }
-
-?>

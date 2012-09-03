@@ -604,5 +604,3 @@ class Snoopy
 		return($fp);
 	}
 }
-
-?>

@@ -16,5 +16,3 @@ if(isset($_REQUEST['v']))
        		rename( $name.'.tmp', $name );
 	}
 }
-
-?>

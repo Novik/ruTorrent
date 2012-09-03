@@ -26,5 +26,3 @@ class BroadcasTheAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

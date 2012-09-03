@@ -52,7 +52,4 @@ class rCPU
 		$arr = sys_getloadavg();
 		return( round(min($arr[0]*100/$this->count,100)) );
 	}
-
 }
-
-?>

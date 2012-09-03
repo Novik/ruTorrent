@@ -64,5 +64,3 @@ class VertorEngine extends commonEngine
 		}
 	}
 }
-
-?>

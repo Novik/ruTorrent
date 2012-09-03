@@ -20,5 +20,3 @@ if(isset($HTTP_RAW_POST_DATA)
 
 header("HTTP/1.0 500 Server Error");
 cachedEcho("Link to XMLRPC failed. May be, rTorrent is down?","text/html");
-
-?>

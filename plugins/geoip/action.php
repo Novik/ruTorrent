@@ -8,5 +8,3 @@ $db = new ipDB();
 $db->add($_REQUEST["ip"],$_REQUEST["comment"]);
 
 cachedEcho( json_encode( array( "ip"=>$_REQUEST["ip"], "comment"=>$_REQUEST["comment"] ) ), "application/json" );
-
-?>

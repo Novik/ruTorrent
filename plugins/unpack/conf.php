@@ -5,5 +5,3 @@
 
 $pathToExternals['unzip'] = '';		// Something like /usr/bin/unzip. If empty, will be found in PATH.
 $pathToExternals['unrar'] = '';		// Something like /usr/bin/unrar. If empty, will be found in PATH.
-
-?>

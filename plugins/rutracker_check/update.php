@@ -26,5 +26,3 @@ if($req->success())
 				break;
 	}
 }
-
-?>

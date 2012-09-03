@@ -35,5 +35,3 @@ if($at->setHandlers())
 }
 else
         $jResult .= "plugin.disable(); noty('autotools: '+theUILang.pluginCantStart,'error');";
-
-?>

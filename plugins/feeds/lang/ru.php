@@ -30,5 +30,3 @@ $theUILang["time_d"]		= "д ";
 $theUILang["time_h"]		= "ч ";
 $theUILang["time_m"]		= "м ";
 $theUILang["time_s"]		= "с ";
-
-?>

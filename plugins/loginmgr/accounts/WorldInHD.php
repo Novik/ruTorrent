@@ -27,5 +27,3 @@ class WorldInHDAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

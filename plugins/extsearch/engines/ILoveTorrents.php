@@ -70,5 +70,3 @@ class ILoveTorrentsEngine extends commonEngine
 		}
 	}
 }
-
-?>

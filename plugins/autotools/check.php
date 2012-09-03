@@ -50,5 +50,3 @@ if( $at->enable_move )
 }
 
 echo $argv[1];
-
-?>

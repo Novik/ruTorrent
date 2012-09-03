@@ -41,5 +41,3 @@ class LostFilmAccount extends commonAccount
 		return( stripos( $url, $this->url."/download.php" )===0 );
 	}
 }
-
-?>

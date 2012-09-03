@@ -159,5 +159,3 @@ if(isset($_REQUEST['cmd']))
 if(empty($ret))
 	$ret = array( "no"=>0, "errors"=>array($error), "status"=>-1, "out"=>"" );
 cachedEcho(json_encode($ret),"application/json");
-
-?>

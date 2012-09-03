@@ -108,5 +108,3 @@ class rCookies
 		$this->store();
 	}
 }
-
-?>

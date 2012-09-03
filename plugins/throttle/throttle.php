@@ -186,5 +186,3 @@ class rThrottle
 		return($ret."];\ntheWebUI.maxThrottle = ".MAX_THROTTLE.";\ntheWebUI.defaultThrottle = ".$this->default.";\n");
 	}
 }
-
-?>

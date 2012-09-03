@@ -14,5 +14,3 @@ if($req->success())
         $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else
         $jResult .= "plugin.disable(); noty('seedingtime: '+theUILang.pluginCantStart,'error');";
-
-?>

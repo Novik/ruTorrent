@@ -6,5 +6,3 @@ $req = new rXMLRPCRequest(array(
 	rTorrentSettings::get()->getOnEraseCommand(array('thistory'.getUser(), getCmd('cat=')))
 	));
 $req->run();
-
-?>

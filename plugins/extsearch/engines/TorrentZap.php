@@ -58,5 +58,3 @@ class TorrentZapEngine extends commonEngine
 		}
 	}
 }
-
-?>

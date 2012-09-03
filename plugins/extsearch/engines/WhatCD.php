@@ -111,5 +111,3 @@ class WhatCDEngine extends commonEngine
 		}
 	}
 }
-
-?>

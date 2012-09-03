@@ -79,5 +79,3 @@ class rRetrackers
 		return($ret."]};\n");
 	}
 }
-
-?>

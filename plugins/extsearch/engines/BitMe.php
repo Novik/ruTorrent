@@ -76,5 +76,3 @@ class BitMeEngine extends commonEngine
 		}
 	}
 }
-
-?>

@@ -60,5 +60,3 @@ class KickAssTorrentsEngine extends commonEngine
 		}
 	}
 }
-
-?>

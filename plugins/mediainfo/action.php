@@ -39,5 +39,3 @@ if(isset($_REQUEST['hash']) &&
 }
 
 cachedEcho(json_encode($ret),"application/json");
-
-?>

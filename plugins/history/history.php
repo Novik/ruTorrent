@@ -138,5 +138,3 @@ class rHistory
 		return($req->success());
 	}
 }
-
-?>

@@ -45,5 +45,3 @@ if(is_null($val))
 	$val = $mngr->getContents();
 
 cachedEcho(json_encode($val),"application/json",true);
-
-?>

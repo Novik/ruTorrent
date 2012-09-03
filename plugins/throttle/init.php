@@ -7,5 +7,3 @@ if(!$thr->obtain())
 else
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 $jResult.=$thr->get();
-
-?>

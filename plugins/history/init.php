@@ -10,4 +10,3 @@ if($mngr->setHandlers())
 }
 else
 	$jResult .= "plugin.disable(); noty('history: '+theUILang.pluginCantStart,'error');";
-?>

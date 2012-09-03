@@ -84,5 +84,3 @@ class PtPEngine extends commonEngine
 		}
 	}
 }
-
-?>

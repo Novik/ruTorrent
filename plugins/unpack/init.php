@@ -25,5 +25,3 @@ if(USE_UNZIP || USE_UNRAR)
 }
 else
 	$jResult .= "plugin.disable(); noty('unpack: '+theUILang.pluginCantStart,'error');";
-
-?>

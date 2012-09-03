@@ -83,4 +83,3 @@ if(isset($_REQUEST['mode']))
 		}
 	}
 }
-?>

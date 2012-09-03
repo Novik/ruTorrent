@@ -248,5 +248,3 @@ if($req->success())
 
 ob_clean();
 cachedEcho($ret."</channel></rss>","application/rss+xml",true);
-
-?>

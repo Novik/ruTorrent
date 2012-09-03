@@ -26,5 +26,3 @@ class FtNAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

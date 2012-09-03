@@ -7,5 +7,3 @@ $st = ffmpegSettings::load();
 $jResult.=("plugin.ffmpegSettings = ".json_encode($st->get()).";");
 
 $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
-
-?>

@@ -194,5 +194,3 @@ class rTorrent
 		return(false);
 	}
 }
-
-?>

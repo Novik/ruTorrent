@@ -62,7 +62,4 @@ class LFS
 		$ss = self::stat($fname);
 		return(($ss==false) ? false : floatval($ss["mtime"]));
 	}
-
 }
-
-?>

@@ -25,5 +25,3 @@ class TorrentDamageAccount extends commonAccount
 		return(false);
 	}
 }
-
-?>

@@ -25,5 +25,3 @@ class NovaFilmAccount extends commonAccount
 		return( stripos( $url, $this->url."/download/" )===0 );
 	}
 }
-
-?>

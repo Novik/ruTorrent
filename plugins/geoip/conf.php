@@ -4,4 +4,3 @@
 	$retrieveCountry = true;
 	$retrieveHost = false;
 	$retrieveComments = true;
-?>

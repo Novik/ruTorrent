@@ -29,5 +29,3 @@ switch($cmd)
 		cachedEcho($cookies->get(),"application/javascript");
 	}
 }
-
-?>

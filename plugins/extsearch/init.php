@@ -10,5 +10,3 @@ if($em===false)
 $em->obtain();
 $jResult.="plugin.sites = cloneObject(theSearchEngines.sites);";
 $jResult.=$em->get();
-
-?>

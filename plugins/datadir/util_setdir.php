@@ -272,6 +272,3 @@ function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $fast_resume, 
 	if( $dbg ) rtDbg( __FUNCTION__, "finished" );
 	return $is_ok;
 }
-
-
-?>

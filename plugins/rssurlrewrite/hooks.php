@@ -23,5 +23,3 @@ class rssurlrewriteHooks
 			$prm["rss"]->items = array_merge($prm["rss"]->items,$newHrefs);
 	}
 }
-
-?>

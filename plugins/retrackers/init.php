@@ -15,5 +15,3 @@ if($req->run() && !$req->fault)
 }
 else
 	$jResult .= "plugin.disable(); noty('retrackers: '+theUILang.pluginCantStart,'error');";
-
-?>

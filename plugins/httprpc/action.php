@@ -436,4 +436,3 @@ if(is_null($result))
 }
 else
 	cachedEcho(json_encode($result),"application/json");
-?>

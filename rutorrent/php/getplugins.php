@@ -516,4 +516,3 @@ if($handle = opendir('../plugins'))
 }
 
 cachedEcho($jResult,"application/javascript",true);
-?>

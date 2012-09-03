@@ -30,5 +30,3 @@ $theUILang["time_d"]		= "d ";
 $theUILang["time_h"]		= "h ";
 $theUILang["time_m"]		= "m ";
 $theUILang["time_s"]		= "s ";
-
-?>

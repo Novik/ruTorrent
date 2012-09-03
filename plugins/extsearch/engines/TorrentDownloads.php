@@ -71,5 +71,3 @@ class TorrentDownloadsEngine extends commonEngine
 		}
 	}
 }
-
-?>
