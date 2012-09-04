@@ -376,7 +376,8 @@ var theConverter =
 	{
 		if((noRound==null) && (tm >= 2419200))
 			return "\u221e";
-		var val = tm % (604800 * 52);
+//		var val = tm % (604800 * 52);
+		var val = tm;
 		var w = iv(val / 604800);
 		val = val % 604800;
 		var d = iv(val / 86400);
