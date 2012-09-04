@@ -1,7 +1,9 @@
 ﻿
 
  theUILang.retrackers		= "Retrackers";
- theUILang.dontAddToPrivate	= "Don't add retrackers to private torrents";
- theUILang.addToBegin		= "Add retrackers to the beginning of the trackers list";
+ theUILang.retrackersAdd	= "Add announces";
+ theUILang.retrackersDel	= "Remove announces";
+ theUILang.dontAddToPrivate	= "Don't touch private torrents";
+ theUILang.addToBegin		= "Add announces to the beginning of the trackers list";
 
 thePlugins.get("retrackers").langLoaded();

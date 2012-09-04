@@ -1,7 +1,9 @@
 ﻿
 
  theUILang.retrackers		= "Ретрекеры";
- theUILang.dontAddToPrivate	= "Не добавлять ретрекеры к частным раздачам";
- theUILang.addToBegin		= "Добавлять ретрекеры в начало списка трекеров";
+ theUILang.retrackersAdd	= "Добавить анонсы";
+ theUILang.retrackersDel	= "Удалить анонсы";
+ theUILang.dontAddToPrivate	= "Не модифицировать частные раздачи";
+ theUILang.addToBegin		= "Добавлять анонсы в начало списка";
 
 thePlugins.get("retrackers").langLoaded();

@@ -11,9 +11,9 @@ if(plugin.canChangeOptions())
 			$('#dont_private').attr("checked",(theWebUI.retrackers.dontAddPrivate==1));
 			$('#add_begin').attr("checked",(theWebUI.retrackers.addToBegin==1));
 			var s = '';
-			for(var i=0; i<theWebUI.retrackers.trackers.length; i++)
+			for(var i=0; i<theWebUI.retrackers.list.length; i++)
 			{
-				var grp = theWebUI.retrackers.trackers[i];
+				var grp = theWebUI.retrackers.list[i];
 				if(i>0)
 					s+='\r\n';
 				for(var j=0; j<grp.length; j++)
@@ -23,6 +23,13 @@ if(plugin.canChangeOptions())
 				}
 			}
 			$('#eretrackers').val(s);
+			s = '';
+			for(var i=0; i<theWebUI.retrackers.todelete.length; i++)
+			{
+				s+=theWebUI.retrackers.todelete[i];
+				s+='\r\n';
+			}
+			$('#dretrackers').val(s);
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
@@ -49,16 +56,29 @@ if(plugin.canChangeOptions())
 		}
 		if(curGroup.length)
 			groups.push(curGroup);
-		if(groups.length!=theWebUI.retrackers.trackers.length)
+		if(groups.length!=theWebUI.retrackers.list.length)
 			return(true);
 		for(var i = 0; i<groups.length; i++)	
 		{
-			if(groups[i].length!=theWebUI.retrackers.trackers[i].length)
+			if(groups[i].length!=theWebUI.retrackers.list[i].length)
 				return(true);
 			for(var j = 0; j<groups[i].length; j++)	
-				if(groups[i][j]!=theWebUI.retrackers.trackers[i][j])
+				if(groups[i][j]!=theWebUI.retrackers.list[i][j])
 					return(true);
 		}
+		arr = $('#dretrackers').val().split("\n");
+		var todelete = [];
+		for(var i=0; i<arr.length; i++)
+		{
+			var s = $.trim(arr[i]);
+			if(s.length)
+				todelete.push(s);
+		}
+		if(todelete.length!=theWebUI.retrackers.todelete.length)
+			return(true);
+		for(var i=0; i<theWebUI.retrackers.todelete.length; i++)
+			if(theWebUI.retrackers.todelete[i]!=todelete[i])
+				return(true);
 		return(false);
 	}
 
@@ -81,6 +101,13 @@ if(plugin.canChangeOptions())
 			if(s.toLowerCase()!='dht://')
 				this.content = 	this.content+"&tracker="+encodeURIComponent(s);
 		}
+		arr = $('#dretrackers').val().split("\n");
+		for(var i = 0; i<arr.length; i++)
+		{
+			var s = $.trim(arr[i]);
+			if(s.length)
+				this.content = 	this.content+"&todelete="+encodeURIComponent(s);
+		}
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/retrackers/action.php";
 		this.dataType = "script";
@@ -92,20 +119,27 @@ plugin.onLangLoaded = function()
 	if(this.canChangeOptions())
 	        this.attachPageToOptions(
 		        $("<div>").attr("id","st_retrackers").html(
+				"<div>"+		
+					"<input type='checkbox' id='dont_private' checked='true' />"+
+					"<label for='dont_private'>"+theUILang.dontAddToPrivate+"</label>"+
+				"</div>"+
 				"<fieldset>"+
-					"<legend>"+theUILang.retrackers+"</legend>"+
+					"<legend>"+theUILang.retrackersAdd+"</legend>"+
 					"<div class=\"op100l\">"+
-						"<textarea id='eretrackers'></textarea>"+
-					"</div>"+
-					"<div class=\"op100l\">"+		
-						"<input type='checkbox' id='dont_private' checked='true' />"+
-						"<label for='dont_private'>"+theUILang.dontAddToPrivate+"</label>"+
+						"<textarea id='eretrackers' class='retrackers'></textarea>"+
 					"</div>"+
 					"<div class=\"op100l\">"+		
 						"<input type='checkbox' id='add_begin' checked='false' />"+
 						"<label for='add_begin'>"+theUILang.addToBegin+"</label>"+
 					"</div>"+
-				"</fieldset>")[0],theUILang.retrackers);
+				"</fieldset>"+
+				"<fieldset>"+
+					"<legend>"+theUILang.retrackersDel+"</legend>"+
+					"<div class=\"op100l\">"+
+						"<textarea id='dretrackers' class='retrackers'></textarea>"+
+					"</div>"+
+				"</fieldset>"
+				)[0],theUILang.retrackers);
 }
 
 plugin.onRemove = function() 

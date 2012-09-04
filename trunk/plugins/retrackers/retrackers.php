@@ -5,6 +5,7 @@ class rRetrackers
 {
 	public $hash = "retrackers.dat";
 	public $list = array();
+	public $todelete = array();
 	public $dontAddPrivate = 1;
 	public $addToBegin = 0;
 
@@ -13,6 +14,8 @@ class rRetrackers
 		$cache = new rCache();
 		$rt = new rRetrackers();
 		$cache->get($rt);
+		if(!isset($rt->todelete))
+			$rt->todelete = array();
 		return($rt);
 	}
 	public function store()
@@ -28,6 +31,7 @@ class rRetrackers
 		{
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
 			$this->list = array(); 
+			$this->todelete = array();
 			$this->dontAddPrivate = 0;
 			$trackers = array();
 			foreach($vars as $var)
@@ -38,6 +42,9 @@ class rRetrackers
 				else
 				if($parts[0]=="add_begin")
 					$this->addToBegin = $parts[1];
+				else
+				if($parts[0]=="todelete")
+					$this->todelete[] = trim(rawurldecode($parts[1]));
 				else
 				if($parts[0]=="tracker")
 				{
@@ -61,21 +68,6 @@ class rRetrackers
 	}
 	public function get()
 	{
-		$ret = "theWebUI.retrackers = { dontAddPrivate: ".$this->dontAddPrivate.", addToBegin: ".$this->addToBegin.", trackers: [";
-		for($i=0; $i<count($this->list); $i++)
-		{
-  	                $grp = array_map(  'quoteAndDeslashEachItem',  $this->list[$i]);
-			$cnt = count($grp);
-			if($cnt)
-			{
-				$ret.="[";
-				$ret.= implode(",",$grp);
-				$ret.="],";
-			}
-		}
-		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
-		return($ret."]};\n");
+		return("theWebUI.retrackers = ".json_encode($this).";\n");
 	}
 }
