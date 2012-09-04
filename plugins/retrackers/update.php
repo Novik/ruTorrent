@@ -22,6 +22,25 @@ function clearTracker($addition,$tracker)
 	return($addition);
 }
 
+function deleteTrackers(&$lst,$todelete)
+{
+	$ret = false;
+	foreach( $lst as $kg=>$group )
+	{
+		foreach( $group as $kt=>$trk )
+		{
+			if(in_array($trk,$todelete))
+			{
+				unset($lst[$kg][$kt]);
+				if(!count($lst[$kg]))
+					unset($lst[$kg]);
+				$ret = true;
+			}
+		}
+	}
+	return($ret);
+}
+
 $processed = false;
 $trks = rRetrackers::load();
 if(count($argv)>1)
@@ -38,7 +57,7 @@ if(count($argv)>1)
 	if($req->success())
 	{
 		$isStart = ($req->val[1]!=0);
-		if(count($trks->list) && !($req->val[5] && $trks->dontAddPrivate))
+		if((count($trks->list) || count($trks->todelete)) && !($req->val[5] && $trks->dontAddPrivate))
 		{
 			$fname = $req->val[0].$hash.".torrent";
 			if(empty($req->val[0]) || !is_readable($fname))
@@ -57,14 +76,19 @@ if(count($argv)>1)
 					$lst = $torrent->announce_list();
 					if(!$lst)
 					{
-						if($torrent->announce())
-							$torrent->announce_list($trks->addToBegin ? array_merge($trks->list, array(array($torrent->announce()))) : 
-								array_merge(array(array($torrent->announce())),$trks->list));
-						else
+						if(count($trks->list))
 						{
-							$torrent->announce($trks->list[0][0]);
-							$torrent->announce_list($trks->list);
-						}
+							if($torrent->announce())
+								$torrent->announce_list($trks->addToBegin ? array_merge($trks->list, array(array($torrent->announce()))) : 
+									array_merge(array(array($torrent->announce())),$trks->list));
+							else
+							{
+								$torrent->announce($trks->list[0][0]);
+								$torrent->announce_list($trks->list);
+							}
+						} 
+						else
+							$needToProcessed = false;
 					}
 					else
 					{
@@ -75,8 +99,17 @@ if(count($argv)>1)
 						if(count($addition))
 							$torrent->announce_list($trks->addToBegin ? array_merge($addition,$lst) : array_merge($lst,$addition));
 						else
-							$needToProcessed = false;		
+							$needToProcessed = false;
 					}
+
+					$lst = $torrent->announce_list();
+					if($lst && count($trks->todelete))
+					{
+						$needToProcessed = deleteTrackers($lst,$trks->todelete);
+						if($needToProcessed)
+							$torrent->announce_list($lst);
+					}
+
 					if($needToProcessed)
 					{
 						if(isset($torrent->{'rtorrent'}))

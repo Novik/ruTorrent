@@ -8,8 +8,11 @@
  *    Nicobubulle (nicobubulle@gmail.com)
  */
 
+
  theUILang.retrackers		= "Retrackers";
- theUILang.dontAddToPrivate	= "Ne pas ajouter retrackers aux torrents privés";
- theUILang.addToBegin		= "Ajouter 'retrackers' au début de la liste des trackers";
+ theUILang.retrackersAdd	= "Add announces";
+ theUILang.retrackersDel	= "Remove announces";
+ theUILang.dontAddToPrivate	= "Don't touch private torrents";
+ theUILang.addToBegin		= "Add announces to the beginning of the trackers list";
 
 thePlugins.get("retrackers").langLoaded();
