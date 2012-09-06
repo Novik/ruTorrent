@@ -66,7 +66,7 @@
  theUILang.rssDeleteGroupContentsPrompt = "Bạn có thực sự muốn xóa các nhóm đã chọn và toạn bộ nội dung bên trong?";
  theUILang.rssAllFiters 		= "Tất cả bộ lọc";
  theUILang.rssUpdateInterval 		= "Update interval";
- theUILang.Directories			= "Derectories";
+ theUILang.Directories			= "Directories";
  theUILang.Labels			= "Labels";
 
 thePlugins.get("rss").langLoaded();
