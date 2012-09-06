@@ -66,5 +66,7 @@
  theUILang.rssDeleteGroupContentsPrompt = "Weet u zeker dat u de geslecteerde groep + inhoud wilt verwijderen?";
  theUILang.rssAllFiters 		= "Alle filters";
  theUILang.rssUpdateInterval 		= "Update interval";
+ theUILang.Directories			= "Derectories";
+ theUILang.Labels			= "Labels";
 
 thePlugins.get("rss").langLoaded();

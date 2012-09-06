@@ -490,6 +490,14 @@ class rRSSFilter
 	public $linkCheck = 0;
 	public $no = -1;
 	public $interval = -1;
+	public $matches = array();
+	private static $search = array
+	( 
+		null,
+		'${1}', '${2}', '${3}', '${4}', '${5}', '${6}', '${7}', '${8}', '${9}', '${10}',
+		'${11}', '${12}', '${13}', '${14}', '${15}', '${16}', '${17}', '${18}', '${19}', '${20}',
+		'${21}', '${22}', '${23}', '${24}', '${25}', '${26}', '${27}', '${28}', '${29}', '${30}',
+	);
 
 	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
 		$start = 0, $addPath = 1, $directory = null, $label = null, 
@@ -512,6 +520,7 @@ class rRSSFilter
 		$this->ratio = $ratio;
 		$this->no = $no;
 		$this->interval = $interval;
+		$this->matches = array();
 	}
 	public function isApplicable( $rss, $history, $groups )
 	{
@@ -521,10 +530,19 @@ class rRSSFilter
 			$history->mayBeApplied( $this->no, $this->interval )
 			);
 	}
+	public function getDirectory()
+	{
+		return(str_replace(self::$search,$this->matches,$this->directory));
+	}
+	public function getLabel()
+	{
+		return(str_replace(self::$search,$this->matches,$this->label));
+	}	
 	protected function isOK( $string )
 	{
+		$this->matches = array();
 		return(	(($this->pattern!='') || ($this->exclude!='')) &&
-			(($this->pattern=='') || (@preg_match($this->pattern.'u',$string)==1)) &&
+			(($this->pattern=='') || (@preg_match($this->pattern.'u',$string,$this->matches)==1)) &&
 			(($this->exclude=='') || (@preg_match($this->exclude.'u',$string)!=1)));
 	}
 	public function checkItem( $href, $rssItem )
@@ -893,7 +911,7 @@ class rRSSManager
 					rTorrentSettings::get()->pushEvent( "RSSAutoLoad", array( "rss"=>&$rss, "href"=>&$href, "item"=>&$item, "filter"=>&$filter ) );
 
 					$this->getTorrents( $rss, $href, 
-						$filter->start, $filter->addPath, $filter->directory, $filter->label, $filter->throttle, $filter->ratio, false );
+						$filter->start, $filter->addPath, $filter->getDirectory(), $filter->getLabel(), $filter->throttle, $filter->ratio, false );
 					if(WAIT_AFTER_LOADING)
 						sleep(WAIT_AFTER_LOADING);
 				}
@@ -911,7 +929,7 @@ class rRSSManager
 			{
 				if( $filter->checkItem($href, $item) )
 				{
-					$hrefs[] = $href;
+					$hrefs[$href] = array( 'label'=>$filter->getLabel(), 'dir'=>$filter->getDirectory() );
 				}
 			}
 		}
@@ -945,7 +963,13 @@ class rRSSManager
 				$hash = '';
 			}
 		}
-		return(array( "errors"=>$this->rssList->formatErrors(), "rss"=>$hash, "list"=>array_unique($hrefs)));
+		return(array
+		( 
+			"errors"=>$this->rssList->formatErrors(), 
+			"rss"=>$hash, 
+			"count"=>count($hrefs),
+			"list"=>$hrefs, 
+		));
 	}
 	public function updateRSSGroup($hash)
 	{
