@@ -1,10 +1,10 @@
 ﻿
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkPort		= "Έλεγχος κατάστασης θύρας";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Η κατάσταση της θύρας είναι άγνωστη",
+ 				  "Η θύρα είναι κλειστή",
+ 				  "Η θύρα είναι ανοικτή"
  				  ];
 
 thePlugins.get("check_port").langLoaded();
