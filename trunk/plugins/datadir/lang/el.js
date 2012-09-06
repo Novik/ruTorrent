@@ -1,10 +1,10 @@
 ﻿
 
- theUILang.DataDir		= "Save to";
- theUILang.DataDirMove		= "Move data files";
- theUILang.datadirDlgCaption	= "Torrent Data Directory";
- theUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
- theUILang.datadirSetDirFail	= "DataDir plugin: Operation fail";
- theUILang.datadirPHPNotFound	= "DataDir plugin: rTorrent user can't access php interpreter. Plugin will not work.";
+ theUILang.DataDir		= "Αποθήκευση στο";
+ theUILang.DataDirMove		= "Μετακίνηση αρχείων δεδομένων";
+ theUILang.datadirDlgCaption	= "Φάκελος δεδομένων torrent";
+ theUILang.datadirDirNotFound	= "Πρόσθετο DataDir: Μη έγκυρος φάκελος";
+ theUILang.datadirSetDirFail	= "Πρόσθετο DataDir: Η λειτουργία απέτυχε";
+ theUILang.datadirPHPNotFound	= "Πρόσθετο DataDir: Ο χρήστης του rTorrent δεν έχει πρόσβαση στον μεταφραστή της php. Το πρόσθετο δεν θα λειτουργεί.";
 
 thePlugins.get("datadir").langLoaded();

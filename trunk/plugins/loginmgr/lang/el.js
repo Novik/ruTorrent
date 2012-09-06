@@ -1,7 +1,7 @@
 ﻿
 
- theUILang.accLogin		= "Login";
- theUILang.accPassword		= "Password";
- theUILang.accAccounts		= "Accounts";
+ theUILang.accLogin		= "Όνομα Χρήστη";
+ theUILang.accPassword		= "Κωδικός Πρόσβασης";
+ theUILang.accAccounts		= "Λογαριασμοί";
 
 thePlugins.get("loginmgr").langLoaded();

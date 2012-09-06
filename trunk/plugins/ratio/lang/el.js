@@ -1,20 +1,20 @@
 ﻿
 
- theUILang.ratios		= "Ratio Groups";
- theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set Ratio Group";
- theUILang.mnuRatioUnlimited	= "No Ratio";
- theUILang.ratioName		= "Name";
- theUILang.minRatio		= "Min";
- theUILang.maxRatio		= "Max";
+ theUILang.ratios		= "Ομάδες αναλογίας";
+ theUILang.ratio		= "Ομάδα αναλογίας";
+ theUILang.mnuRatio		= "Ορισμός ομάδας αναλογίας";
+ theUILang.mnuRatioUnlimited	= "Χωρίς αναλογία";
+ theUILang.ratioName		= "Όνομα";
+ theUILang.minRatio		= "Ελάχ";
+ theUILang.maxRatio		= "Μέγ";
  theUILang.ratioUpload		= "UL";
- theUILang.ratioAction		= "Action";
- theUILang.ratioStop		= "Stop";
- theUILang.ratioStopAndRemove	= "Stop & Clear group";
- theUILang.ratioErase		= "Remove";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault 	= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.ratioAction		= "Ενέργεια";
+ theUILang.ratioStop		= "Διακοπή";
+ theUILang.ratioStopAndRemove	= "Διακοπή και εκκαθ. ομάδας";
+ theUILang.ratioErase		= "Αφαίρεση";
+ theUILang.ratioEraseData	= "Αφαίρεση δεδομένων";
+ theUILang.maxTime		= "Ημ/νία";
+ theUILang.ratioDefault 	= "Προεπιλεγμένο γκρουπ αναλογίας";
+ theUILang.setThrottleTo	= "Ορισμός καναλιού σε";
 
 thePlugins.get("ratio").langLoaded();

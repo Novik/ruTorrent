@@ -1,11 +1,11 @@
 ﻿
- theUILang.Chunks		= "Chunks";
- theUILang.cAvail		= "Availability";
- theUILang.cDownloaded		= "Downloaded";
- theUILang.cMode		= "Mode";
- theUILang.chunksCount		= "Chunks count";
- theUILang.chunkSize		= "Chunk size";
- theUILang.cLegend		= "Legend";
- theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
+ theUILang.Chunks		= "Κομμάτια";
+ theUILang.cAvail		= "Διαθεσιμότητα";
+ theUILang.cDownloaded		= "Ελήφθησαν";
+ theUILang.cMode		= "Κατάσταση λειτουργίας";
+ theUILang.chunksCount		= "Πλήθος Κομματιών";
+ theUILang.chunkSize		= "Μέγεθος Κομματιών";
+ theUILang.cLegend		= "Τίτλος";
+ theUILang.cLegendVal		= [ "4 κομμάτια ανά κελί", "1 κομμάτι ανά κελί" ];
 
 thePlugins.get("chunks").langLoaded();

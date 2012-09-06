@@ -1,17 +1,17 @@
 ﻿
 
- theUILang.checkTorrent 	= "Check for Update";
- theUILang.chkHdr		= "Torrent Update Check";
- theUILang.checkedAt		= "Last Checked";
- theUILang.checkedResult	= "Result";
+ theUILang.checkTorrent 	= "Έλεγχος για ενημέρωση";
+ theUILang.chkHdr		= "Έλεγχος ενημέρωσης Torrent";
+ theUILang.checkedAt		= "Τελευταίος έλεγχος";
+ theUILang.checkedResult	= "Αποτέλεσμα";
  theUILang.chkResults		= [
-				  "In progress",
-				  "Updated",
-				  "Up to date",
-				  "Probably deleted",
-				  "Error accessing the tracker",
-				  "Error interacting with rTorrent",
-				  "No need"
+				  "Σε διαδικασία",
+				  "Ενημερώθηκε",
+				  "Ενημερωμένο",
+				  "Μάλλον διαγράφηκε",
+				  "Σφάλμα πρόσβασης στον tracker",
+				  "Σφάλμα αλληλεπίδρασης με το rTorrent",
+				  "Δεν χρειάζεται"
 				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

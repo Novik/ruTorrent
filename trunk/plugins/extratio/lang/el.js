@@ -1,19 +1,19 @@
 ﻿
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioRulesManager	= "Διαχείριση Κανόνων";
+ theUILang.mnu_ratiorule	= "Κανόνες Αναλογίας";
+ theUILang.ratAddRule		= "Προσθήκη";
+ theUILang.ratDelRule		= "Διαγραφή";
+ theUILang.ratUpRule		= "Πάνω";
+ theUILang.ratDownRule		= "Κάτω";
+ theUILang.ratioIfLegend	= "Αν";
+ theUILang.ratLabelContain	= "Η ετικέτα του torrent περιέχει";
+ theUILang.ratTrackerContain	= "Ένα από τα URL των trackers του torrent περιέχει";
+ theUILang.ratTrackerPublic	= "Όλοι οι trackers του torrent είναι δημόσιοι";
+ theUILang.ratTrackerPrivate	= "Ένας από τους trackers του torrent είναι ιδιωτικός";
+ theUILang.ratioThenLegend	= "Τότε";
+ theUILang.setRatioTo		= "Όρισε την αναλογία σε";
+ theUILang.setChannelTo 	= "Όρισε τον περιοριστή σε";
+ theUILang.ratioNewRule 	= "Νέος κανόνας";
 
 thePlugins.get("extratio").langLoaded();

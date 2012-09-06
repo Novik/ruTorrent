@@ -1,22 +1,22 @@
 ﻿
 
- theUILang.mnu_create			= "Create Torrent...";
- theUILang.CreateNewTorrent		= "Create New Torrent";
- theUILang.SelectSource 		= "Select Source";
- theUILang.TorrentProperties		= "Torrent Properties";
- theUILang.PieceSize			= "Piece size";
- theUILang.Other			= "Other";
- theUILang.StartSeeding 		= "Start seeding";
- theUILang.PrivateTorrent		= "Private torrent";
- theUILang.torrentCreate		= "Create...";
- theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound	= "Create plugin: Plugin will not work. Webserver user can't access external program";
- theUILang.incorrectDirectory		= "Incorrect directory";
- theUILang.cantExecExternal		= "Can't execute external program";
- theUILang.createConsole		= "Console";
- theUILang.createErrors 		= "Errors";
- theUILang.torrentSave			= "Save";
- theUILang.torrentKill			= "Stop";
- theUILang.torrentKilled		= "Process was stopped.";
+ theUILang.mnu_create			= "Δημιουργία Torrent...";
+ theUILang.CreateNewTorrent		= "Δημιουργία Νέου Torrent";
+ theUILang.SelectSource 		= "Επιλογή πηγής";
+ theUILang.TorrentProperties		= "Ιδιότητες Torrent";
+ theUILang.PieceSize			= "Μέγεθος κομματιού";
+ theUILang.Other			= "Άλλο";
+ theUILang.StartSeeding 		= "Έναρξη αποστολής";
+ theUILang.PrivateTorrent		= "Ιδιωτικό torrent";
+ theUILang.torrentCreate		= "Δημιουργία...";
+ theUILang.BadTorrentData		= "Πρέπει να συμπληρώσετε όλα τα απαιτούμενα πεδία!";
+ theUILang.createExternalNotFound	= "Πρόσθετο Δημιουργία: Το πρόσθετο δεν θα λειτουργήσει. Ο χρήστης του διακομιστή Web δεν έχει πρόσβαση σε εξωτερικό πρόγραμμα";
+ theUILang.incorrectDirectory		= "Εσφαλμένος φάκελος";
+ theUILang.cantExecExternal		= "Δεν μπορεί να εκτελεστεί ένα εξωτερικό πρόγραμμα";
+ theUILang.createConsole		= "Κονσόλα";
+ theUILang.createErrors 		= "Σφάλματα";
+ theUILang.torrentSave			= "Αποθήκευση";
+ theUILang.torrentKill			= "Τερματισμός";
+ theUILang.torrentKilled		= "Η λειτουργία τερματίστηκε.";
 
 thePlugins.get("create").langLoaded();

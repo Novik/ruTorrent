@@ -1,28 +1,28 @@
 ﻿
- theUILang.historyAddition	= "Addition";
- theUILang.historyDeletion	= "Deletion";
- theUILang.historyFinish	= "Finish";
- theUILang.historyLog		= "Log";
- theUILang.history		= "History";
- theUILang.historyLimit		= "Maximum number of records";
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
- theUILang.hstDeletePrompt	= "Do you really want to delete the selected record(s)?";
- theUILang.hstDelete		= "Delete record(s)";
- theUILang.Added		= "Added";
- theUILang.Finished		= "Finished";
- theUILang.Deleted		= "Deleted";
- theUILang.Time			= "Time";
+ theUILang.historyAddition	= "Προσθήκη";
+ theUILang.historyDeletion	= "Διαγραφή";
+ theUILang.historyFinish	= "Ολοκλήρωση";
+ theUILang.historyLog		= "Καταγραφή";
+ theUILang.history		= "Ιστορικό";
+ theUILang.historyLimit		= "Μέγιστος αριθμός καταχωρήσεων";
+ theUILang.seedingTime		= "Ολοκληρώθηκε";
+ theUILang.addTime		= "Προστέθηκε";
+ theUILang.hstDeletePrompt	= "Θέλετε πραγματικά να διαγράψετε την/τις επιλεγμένη/ες καταχώρηση/καταχωρήσεις;";
+ theUILang.hstDelete		= "Διαγραφή καταχώρησης/καταχωρήσεων";
+ theUILang.Added		= "Προστέθηκε";
+ theUILang.Finished		= "Ολοκληρώθηκε";
+ theUILang.Deleted		= "Διαγράφηκε";
+ theUILang.Time			= "Ημ/νία - Ώρα";
  theUILang.Tracker		= "Tracker";
- theUILang.enableNotifications	= "Enable desktop notifications";
- theUILang.historyNotification  = "Desktop notifications";
- theUILang.notifAutoClose	= "Autoclose notifications after";
+ theUILang.enableNotifications	= "Ενργοποίηση ειδοποιήσεων επιφάνειας εργασίας";
+ theUILang.historyNotification  = "Ειδοποιήσεις επιφάνειας εργασίας";
+ theUILang.notifAutoClose	= "Αυτόματο κλείσιμο ειδοποιήσεων μετά από";
  theUILang.notifTip		= 
  	[
- 		"Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 		"Ο περιηγητής σας ίντερνετ δεν υποστηρίζει ειδοποιήσεις επιφάνειας εργασίας. Δοκιμάστε να χρησιμοποιήσετε άλλον περιηγητή, για παράδειγμα τον Google Chrome.",
  		"",
- 		"Your browser supports desktop notifications. Press button below to enable it.",
- 		"Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 		"Ο περιηγητής σας ίντερνετ υποστηρίζει ειδοποιήσεις επιφάνειας εργασίας. Πατήστε το παρακάτω κουμπί για να τις ενεργοποιήσετε.",
+ 		"Ο περιηγητής σας ίντερνετ υποστηρίζει ειδοποιήσεις επιφάνειας εργασίας, αλλά τις έχετε απενεργοποιήσει για αυτή την ιστοσελίδα. Κλείστε αυτό το παράθυρο διαλόγου και χρησιμοποιήστε τις ρυθμίσεις του περιηγητή για να ενεργοποιήσετε τις ειδοποιήσεις επιφάνειας εργασίας.",
 	];
 
 thePlugins.get("history").langLoaded();

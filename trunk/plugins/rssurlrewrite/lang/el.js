@@ -1,22 +1,22 @@
 ﻿
 
- theUILang.rssNewRule		= "New rule";
- theUILang.mnu_rssurlrewrite	= "URL Replacement in RSS";
- theUILang.rssRulesManager	= "Rules Manager";
- theUILang.rssAddRule		= "Add";
- theUILang.rssDelRule		= "Delete";
- theUILang.rssCheckRule 	= "?";
- theUILang.rssRulesLegend	= "Rule Settings";
- theUILang.rssSrcHref		= "If URL of torrent download matches pattern";
- theUILang.rssSrcGuid		= "If URL of torrent description matches pattern";
- theUILang.rssDstHref		= "then replace URL of torrent download with";
- theUILang.rssDstGuid		= "then replace URL of torrent description with";
- theUILang.rssRulesDebug	= "Rule Debug";
- theUILang.rssTestString	= "Test";
- theUILang.rssTestResult	= "Result";
- theUILang.rssURLInfo		= "URL info";
- theUILang.rssURLGUID		= "Description URL";
- theUILang.rssURLHref		= "Download URL";
- theUILang.rssPatternError	= "Error in pattern string.";
+ theUILang.rssNewRule		= "Νέος κανόνας";
+ theUILang.mnu_rssurlrewrite	= "Αντικατάσταση URL στα RSS";
+ theUILang.rssRulesManager	= "Διαχειριστής Κανόνων";
+ theUILang.rssAddRule		= "Προσθήκη";
+ theUILang.rssDelRule		= "Διαγραφή";
+ theUILang.rssCheckRule 	= "Δοκιμή";
+ theUILang.rssRulesLegend	= "Ρυθμίσεις κανόνα";
+ theUILang.rssSrcHref		= "Αν το URL του torrent που κατεβαίνει ταιριάζει με το πρότυπο ";
+ theUILang.rssSrcGuid		= "Αν το URL της περιγραφής του torrent ταιριάζει με το πρότυπο";
+ theUILang.rssDstHref		= "τότε αντικατέστησε το URL του torrent που κατεβαίνει με";
+ theUILang.rssDstGuid		= "τότε αντικατέστησε το URL της περιγραφής του torrent με";
+ theUILang.rssRulesDebug	= "Έλεγχος σφαλμάτων κανόνα";
+ theUILang.rssTestString	= "Δοκιμή";
+ theUILang.rssTestResult	= "Αποτέλεσμα";
+ theUILang.rssURLInfo		= "Πληροφορίες URL";
+ theUILang.rssURLGUID		= "Περιγραφή του URL";
+ theUILang.rssURLHref		= "Λήψη URL";
+ theUILang.rssPatternError	= "Σφάλμα στο κείμενο του προτύπου.";
 
 thePlugins.get("rssurlrewrite").langLoaded();
