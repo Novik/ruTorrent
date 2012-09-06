@@ -93,8 +93,8 @@ var theUILang =
  Peer_ex			: "Peer Exchange",
  About				: "Σχετικά",
  Enter_label_prom		: "Εισάγετε νέα ετικέτα για τα επιλεγμένα torrents",
- Remove_torrents		: "Διαγραφή του/των Torrent",
- Rem_torrents_prompt		: "Θέλετε πραγματικά να διαγράψετε το/τα επιλεγμένο/α torrent;",
+ Remove_torrents		: "Διαγραφή Torrent",
+ Rem_torrents_prompt		: "Θέλετε πραγματικά να διαγράψετε τα επιλεγμένα torrent;",
  All				: "Όλα",
  Active 			: "Ενεργά",
  Inactive			: "Ανενεργά",
@@ -108,11 +108,11 @@ var theUILang =
  Tracker			: "Tracker",
  Track_URL			: "URL του Tracker",
  Track_status			: "Κατάσταση του Tracker",
- Created_on			: "Δημιουργήθηκε στις",
+ Created_on			: "Δημιουργήθηκε",
  Save_as			: "Αποθήκευση ως",
  Comment			: "Σχόλιο",
- add_button			: "Προσθήκη αρχείου",
- add_url			: "ΠροσθήκηURL",
+ add_button			: "Προσθήκη",
+ add_url			: "Προσθ. URL",
  ok				: "OK",
  Cancel 			: "Άκυρο",
  mnu_add			: "Προσθήκη Torrent",
@@ -125,11 +125,11 @@ var theUILang =
  mnu_search			: "Αναζήτηση",
  mnu_lang			: "Γλώσσα",
  torrent_add			: "Προσθήκη Torrent", /*Caption of torrent add box*/
- time_w 			: "εβδ ", /*for x weeks*/
- time_d 			: "ημ ", /*for x days remaining*/
- time_h 			: "ω ", /*for x hours remaining*/
- time_m 			: "λ ", /*for x minutes remaining*/
- time_s 			: "δ ", /*for x seconds remaining*/
+ time_w 			: "εβδ. ", /*for x weeks*/
+ time_d 			: "ημ. ", /*for x days remaining*/
+ time_h 			: "ω. ", /*for x hours remaining*/
+ time_m 			: "λ. ", /*for x minutes remaining*/
+ time_s 			: "δευτ. ", /*for x seconds remaining*/
  Base_directory 		: "Φάκελος",
  Number_Peers_min		: "Ελάχιστος αριθμός peers",
  Number_Peers_max		: "Μέγιστος αριθμός peers",
