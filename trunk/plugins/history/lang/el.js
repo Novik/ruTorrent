@@ -14,7 +14,7 @@
  theUILang.Deleted		= "Διαγράφηκε";
  theUILang.Time			= "Ημ/νία - Ώρα";
  theUILang.Tracker		= "Tracker";
- theUILang.enableNotifications	= "Ενργοποίηση ειδοποιήσεων επιφάνειας εργασίας";
+ theUILang.enableNotifications	= "Ενεργοποίηση ειδοποιήσεων επιφάνειας εργασίας";
  theUILang.historyNotification  = "Ειδοποιήσεις επιφάνειας εργασίας";
  theUILang.notifAutoClose	= "Αυτόματο κλείσιμο ειδοποιήσεων μετά από";
  theUILang.notifTip		= 
