@@ -1,20 +1,20 @@
 ﻿
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "Το πρόσθετο δεν θα λειτουργήσει.";
 
- theUILang.autotools			= "Autotools";
- theUILang.autotoolsEnableLabel 	= "Enable \"AutoLabel\" feature, Template:";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" feature";
- theUILang.autotoolsPathToFinished	= "Path to finished downloads";
- theUILang.autotoolsEnableWatch 	= "Enable \"AutoWatch\" feature";
- theUILang.autotoolsPathToWatch 	= "Path to base watch directory";
- theUILang.autotoolsWatchStart		= "Start download automatically";
- theUILang.autotoolsNoPathToFinished	= "Autotools plugin: path to finished downloads is not set. " + s_PluginFail;
- theUILang.autotoolsNoPathToWatch	= "Autotools plugin: path to base watch directory is not set. " + s_PluginFail;
- theUILang.autotoolsFileOpType		= "Operation type";
- theUILang.autotoolsFileOpMove		= "Move";
- theUILang.autotoolsFileOpHardLink 	= "Hard link";
- theUILang.autotoolsFileOpCopy		= "Copy";
- theUILang.autotoolsFileOpSoftLink	= "Soft link";
+ theUILang.autotools			= "Αυτόματα Εργαλεία";
+ theUILang.autotoolsEnableLabel 	= "Ενεργοποίηση χαρακτηριστικού\"ΑυτόματηΕτικέτα\" , Πρότυπο:";
+ theUILang.autotoolsEnableMove		= "Ενεργοποίηση χαρακτηριστικού \"ΑυτόματηΜετακίνηση\"";
+ theUILang.autotoolsPathToFinished	= "Διαδρομή για το φάκελο ολοκληρωμένων λήψεων";
+ theUILang.autotoolsEnableWatch 	= "Ενεργοποίηση χαρακτηριστικού \"ΑυτόματηΠαρακολούθηση\"";
+ theUILang.autotoolsPathToWatch 	= "Διαδρομή για το βασικό φάκελο παρακολούθησης (watch)";
+ theUILang.autotoolsWatchStart		= "Αυτόματη έναρξη λήψης";
+ theUILang.autotoolsNoPathToFinished	= "Πρόσθετο Αυτόματα Εργαλεία: Η διαδρομή για το φάκελο ολοκληρωμένων λήψεων δεν έχει οριστεί. " + s_PluginFail;
+ theUILang.autotoolsNoPathToWatch	= "Πρόσθετο Αυτόματα Εργαλεία: Η διαδρομή για το βασικό φάκελο παρακολούθησης δεν έχει οριστεί. " + s_PluginFail;
+ theUILang.autotoolsFileOpType		= "Τύπος λειτουργίας";
+ theUILang.autotoolsFileOpMove		= "Μετακίνηση";
+ theUILang.autotoolsFileOpHardLink 	= "Συντόμευση αρχείου";
+ theUILang.autotoolsFileOpCopy		= "Αντιγραφή";
+ theUILang.autotoolsFileOpSoftLink	= "Συντόμευση ονόματος αρχείου";
 
 thePlugins.get("autotools").langLoaded();

@@ -1,8 +1,8 @@
 ﻿
 
- theUILang.tskCommand		= "Running...";
- theUILang.tskCommandDone	= "Done.";
- theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostics";
+ theUILang.tskCommand		= "Λειτουργεί...";
+ theUILang.tskCommandDone	= "Τελείωσε.";
+ theUILang.tskConsole		= "Κονσόλα";
+ theUILang.tskErrors		= "Διαγνωστικά";
 
 thePlugins.get("_task").langLoaded();
