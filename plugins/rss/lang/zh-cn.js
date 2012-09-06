@@ -66,7 +66,7 @@
  theUILang.rssDeleteGroupContentsPrompt = "你真的确定要删除选择组的所有内容吗?";
  theUILang.rssAllFiters 		= "All filters";
  theUILang.rssUpdateInterval 		= "Update interval";
- theUILang.Directories			= "Derectories";
+ theUILang.Directories			= "Directories";
  theUILang.Labels			= "Labels";
 
 thePlugins.get("rss").langLoaded();
