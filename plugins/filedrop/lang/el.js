@@ -1,6 +1,6 @@
 ﻿
-theUILang.doesntSupportHTML5 = "Plugin filedrop: Your browser does not support HTML5 file uploads. Plugin was disabled.";
-theUILang.tooManyFiles = "Plugin filedrop: Too many files. Must be <= ";
-theUILang.fileTooLarge = "is too large. Please upload files up to";
+theUILang.doesntSupportHTML5 = "Πρόσθετο filedrop: Ο περιηγητής σας ίντερνετ δεν υποστηρίζει αποστολές αρχείων με χρήση HTML5. Το πρόσθετο απενεργοποιήθηκε.";
+theUILang.tooManyFiles = "Πρόσθετο filedrop: Πάρα πολά αρχεία. Πρέπει να είναι <= ";
+theUILang.fileTooLarge = "είναι πολύ μεγάλο. Παρακαλώ κάντε αποστολή αρχείων μεγέθους μέχρι";
 
 thePlugins.get("filedrop").langLoaded();

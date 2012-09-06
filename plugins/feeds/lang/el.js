@@ -1,10 +1,10 @@
 ﻿
 
- theUILang.feedAll		= "All torrents";
- theUILang.feedCompleted	= "Completed torrents";
- theUILang.feedDownloading	= "Downloading torrents";
- theUILang.feedActive		= "Active torrents";
- theUILang.feedInactive 	= "Inactive torrents";
- theUILang.feedError		= "Error torrents";
+ theUILang.feedAll		= "Όλα τα torrents";
+ theUILang.feedCompleted	= "Ολοκληρωμένα torrents";
+ theUILang.feedDownloading	= "Torrents σε λήψη";
+ theUILang.feedActive		= "Ενεργά torrents";
+ theUILang.feedInactive 	= "Ανενεργά torrents";
+ theUILang.feedError		= "Torrents με σφάλμα";
 
 thePlugins.get("feeds").langLoaded();

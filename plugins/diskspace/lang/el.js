@@ -1,4 +1,4 @@
 ﻿
-theUILang.diskNotification = "Warning! The disk is full. Rtorrent may not run correctly, and no data will be downloaded until you free some disk space.";
+theUILang.diskNotification = "Προειδοποίηση! Ο δίσκος είναι πλήρης. Το rtorrent μπορεί να μην λειτουργεί σωστά, και δεν θα γίνεται λήψη δεδομένων μέχρι να ελευθερώσετε χώρο στο δίσκο.";
 
 thePlugins.get("diskspace").langLoaded();

@@ -1,11 +1,11 @@
 ﻿
 // Contributed by art.spb, December 2009.
 
-theUILang.peerComment 		= "Add comment";
-theUILang.peerCommentLabel	= "Enter new comment for peer";
-theUILang.commentName		= "Comment";
+theUILang.peerComment 		= "Προσθήκη σχολίου";
+theUILang.peerCommentLabel	= "Προσθήκη νέου σχολίου για τον peer";
+theUILang.commentName		= "Σχόλιο";
 
-theUILang.countryName = "χώρα";
+theUILang.countryName = "Χώρα";
 
 theUILang.country = new Array();
 

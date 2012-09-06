@@ -1,10 +1,10 @@
 ﻿
 
- theUILang.EditTrackers 		= "Edit Torrent...";
- theUILang.EditTorrentProperties	= "Torrent Properties";
- theUILang.errorAddTorrent		= "Error adding torrent file";
- theUILang.errorWriteTorrent		= "Error writing torrent file";
- theUILang.errorReadTorrent		= "Error reading torrent file";
- theUILang.cantFindTorrent		= "Source torrent file for this download not found."
+ theUILang.EditTrackers 		= "Επεξεργασία Torrent...";
+ theUILang.EditTorrentProperties	= "Ιδιότητες του Torrent";
+ theUILang.errorAddTorrent		= "Σφάλμα κατά την προσθήκη του αρχείου torrent";
+ theUILang.errorWriteTorrent		= "Σφάλμα κατά την εγγραφή στο αρχείο torrent";
+ theUILang.errorReadTorrent		= "Σφάλμα κατά την ανάγνωση από το αρχείο torrent";
+ theUILang.cantFindTorrent		= "Το πηγαίο αρχείο torrent για αυτή τη λήψη δεν βρέθηκε."
 
 thePlugins.get("edit").langLoaded();
