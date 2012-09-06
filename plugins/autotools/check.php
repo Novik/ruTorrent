@@ -12,6 +12,10 @@ require_once( "./autotools.php" );
 $base_path = $argv[1];
 $base_name = $argv[2];
 $is_multy = $argv[3];
+$base_path = rtRemoveTailSlash( $base_path );
+$base_path = rtRemoveLastToken( $base_path, '/' );	// filename or dirname
+$base_path = rtAddTailSlash( $base_path );
+$dest_path = $base_path;
 $at = rAutoTools::load();
 if( $at->enable_move )
 {
@@ -23,9 +27,6 @@ if( $at->enable_move )
 		if(!empty($directory))
 		{
 			$directory = rtAddTailSlash( $directory );
-			$base_path = rtRemoveTailSlash( $base_path );
-			$base_path = rtRemoveLastToken( $base_path, '/' );	// filename or dirname
-			$base_path = rtAddTailSlash( $base_path );
 			$rel_path = rtGetRelativePath( $directory, $base_path );
 			//------------------------------------------------------------------------------
 			// !! this is a feature !!
@@ -37,16 +38,14 @@ if( $at->enable_move )
 			{
 				if( $rel_path == './' ) $rel_path = '';
 				$dest_path = rtAddTailSlash( $path_to_finished.$rel_path );
-				if( $is_multy )
-					$sub_dir = rtAddTailSlash( $base_name );	// $base_file - is a directory
-				else
-					$sub_dir = '';					// $base_file - is really a file
-				$dest_path.=$sub_dir;
-				echo $dest_path;
-				exit(0);
 			}
 		}
 	}
 }
 
-echo $argv[1];
+if( $is_multy )
+	$sub_dir = rtAddTailSlash( $base_name );	// $base_file - is a directory
+else
+	$sub_dir = '';					// $base_file - is really a file
+$dest_path.=$sub_dir;
+echo $dest_path;
