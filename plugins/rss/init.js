@@ -1017,11 +1017,36 @@ theWebUI.showFilterResults = function( d )
 	var table = this.getTable("rss");
 	for(var k in table.rowSel)
 		table.rowSel[k] = false;
-	this.getTable("trt").selCount = d.list.length;
-	for(var i = 0; i<d.list.length; i++)
-		table.rowSel[d.list[i]] = true;
+	this.getTable("trt").selCount = d.count;
+	var labels = [];
+	var dirs = [];
+	for(var i in d.list)
+	{
+		table.rowSel[i] = true;
+		if(d.list[i].dir.length)
+		{
+			if(dirs.length<3)
+				dirs.push(d.list[i].dir);
+			else
+			if(dirs.length==3)
+				dirs.push('...');
+		}
+		if(d.list[i].label.length)
+		{
+			if(labels.length<3)
+				labels.push(d.list[i].label);
+			else
+			if(labels.length==3)
+				labels.push('...');
+		}			
+	}
 	table.refreshSelection();
-	alert(theUILang.foundedByFilter+" : "+d.list.length);
+	var s = theUILang.foundedByFilter+" : "+d.count;
+	if(labels.length)
+		s+=('\n'+theUILang.Labels+" : "+labels.join(", "));
+	if(dirs.length)
+		s+=('\n'+theUILang.Directories+" : "+dirs.join(", "));
+	alert(s);
 }
 
 theWebUI.setFilters = function()
@@ -1144,6 +1169,7 @@ rTorrentStub.prototype.checkfilter = function()
 	var no = theWebUI.storeFilterParams();
 	var flt = theWebUI.filters[no];
 	this.content = "mode=checkfilter&pattern="+encodeURIComponent(flt.pattern)+"&exclude="+encodeURIComponent(flt.exclude)+
+		"&label="+encodeURIComponent(flt.label)+"&directory="+encodeURIComponent(flt.dir)+
 		"&chktitle="+flt.chktitle+"&chklink="+flt.chklink+"&chkdesc="+flt.chkdesc;
 	if(flt.hash.length)
 		this.content = this.content+"&rss="+flt.hash;

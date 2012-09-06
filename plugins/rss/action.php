@@ -126,6 +126,9 @@ switch($cmd)
 		$checkTitle = 0;
 		$checkDesc = 0;
 		$checkLink = 0;
+		$label = '';
+		$dir = null;
+
 		if(isset($_REQUEST['rss']))
 			$hash = $_REQUEST['rss'];
 		if(isset($_REQUEST['pattern']))		
@@ -138,7 +141,11 @@ switch($cmd)
 			$checkDesc = $_REQUEST['chkdesc'];
 		if(isset($_REQUEST['chklink']))
 			$checkLink = $_REQUEST['chklink'];
-		$filter = new rRSSFilter( '', $pattern, $exclude, 1, '', 0, 1, null, '', $checkTitle, $checkDesc, $checkLink );
+		if(isset($_REQUEST['directory']))
+			$dir = $_REQUEST['directory'];
+		if(isset($_REQUEST['label']))
+			$label = $_REQUEST['label'];
+		$filter = new rRSSFilter( '', $pattern, $exclude, 1, '', 0, 1, $dir, $label, $checkTitle, $checkDesc, $checkLink );
         	$val = $mngr->testFilter($filter,$hash);
         	$errorsReported = true;
 		break;

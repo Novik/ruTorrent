@@ -43,11 +43,12 @@ class rTorrent
 			}
 			if(!is_null($filename) && (rTorrentSettings::get()->iVersion>=0x805))
 				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(getFileName($filename)));
-
+			$req = new rXMLRPCRequest();				
 			if($directory && (strlen($directory)>0))
 			{
 				if(!rTorrentSettings::get()->correctDirectory($directory))
 					return(false);
+				$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 				$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
 			}
 			$comment = $torrent->comment();
@@ -71,7 +72,7 @@ class rTorrent
 			if(is_array($addition))
 				foreach($addition as $key=>$prm)
 					$cmd->addParameter($prm,'string');
-			$req = new rXMLRPCRequest( $cmd );
+			$req->addCommand( $cmd );
 			if($req->run() && !$req->fault)
 				$hash = $torrent->hash_info();
 		}
@@ -91,6 +92,7 @@ class rTorrent
 		        	$hash = base32decode($hash);
 	        	if(strlen($hash)==40)
 	        	{
+				$req = new rXMLRPCRequest();
 				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
 				$cmd->addParameter($magnet);
 				if($directory && (strlen($directory)>0))
@@ -98,6 +100,7 @@ class rTorrent
 					if(!rTorrentSettings::get()->correctDirectory($directory))
 						return(false);
 					$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
+					$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 				}
 				if($label && (strlen($label)>0))
 				{
@@ -108,7 +111,7 @@ class rTorrent
 				if(is_array($addition))
 					foreach($addition as $key=>$prm)
 						$cmd->addParameter($prm,'string');
-				$req = new rXMLRPCRequest( $cmd );
+				$req->addCommand( $cmd );
 				if($req->success())
 					return($hash);
 			}

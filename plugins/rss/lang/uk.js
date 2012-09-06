@@ -66,5 +66,7 @@
  theUILang.rssDeleteGroupContentsPrompt = "Справді видалити вибрану групу з усім її вмістом?";
  theUILang.rssAllFiters 		= "Усі фільтри";
  theUILang.rssUpdateInterval 		= "Інтервал оновлення";
+ theUILang.Directories			= "Derectories";
+ theUILang.Labels			= "Labels";
 
 thePlugins.get("rss").langLoaded();
