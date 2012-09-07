@@ -3,7 +3,7 @@ var theUILang =
 {
  kbs				: "kB/s",
  General			: "Γενικά",
- Downloads			: "Μεταφορτώσεις",
+ Downloads			: "Λήψεις",
  Connection			: "Σύνδεση",
  BitTorrent			: "BitTorrent",
  Advanced			: "Προηγμένες",
