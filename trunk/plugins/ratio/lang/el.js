@@ -10,7 +10,7 @@
  theUILang.ratioUpload		= "UL";
  theUILang.ratioAction		= "Ενέργεια";
  theUILang.ratioStop		= "Διακοπή";
- theUILang.ratioStopAndRemove	= "Διακοπή & εκκαθ. ομάδας";
+ theUILang.ratioStopAndRemove	= "Διακ. & εκκαθ. ομάδας";
  theUILang.ratioErase		= "Αφαίρεση";
  theUILang.ratioEraseData	= "Αφαίρεση δεδομένων";
  theUILang.maxTime		= "Ημ/νία";
