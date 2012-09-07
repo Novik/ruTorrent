@@ -12,7 +12,7 @@
  theUILang.ratTrackerPublic	= "Όλοι οι trackers του torrent είναι δημόσιοι";
  theUILang.ratTrackerPrivate	= "Ένας από τους trackers του torrent είναι ιδιωτικός";
  theUILang.ratioThenLegend	= "Τότε";
- theUILang.setRatioTo		= "Όρισε αναλογία σε";
+ theUILang.setRatioTo		= "Όρισε την αναλογία σε";
  theUILang.setChannelTo 	= "Όρισε περιοριστή σε";
  theUILang.ratioNewRule 	= "Νέος κανόνας";
  
