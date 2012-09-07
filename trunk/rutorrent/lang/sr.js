@@ -27,6 +27,7 @@
 
  var theUILang =
  {
+ 
  kbs				: "kB/s",
  General			: "Опште",
  Downloads			: "Низтовари",
