@@ -1,12 +1,12 @@
 ﻿
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
+ theUILang.ratioRulesManager	= "Διαχείριση Κανόνων";
+ theUILang.mnu_ratiorule	= "Κανόνες Αναλογίας";
+ theUILang.ratAddRule		= "Προσθήκη";
+ theUILang.ratDelRule		= "Διαγραφή";
+ theUILang.ratUpRule		= "Πάνω";
+ theUILang.ratDownRule		= "Κάτω";
+ theUILang.ratioIfLegend	= "Αν";
  theUILang.ratLabelContain	= "Torrent Label contains";
  theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
  theUILang.ratTrackerPublic	= "All torrent's trackers are public";
