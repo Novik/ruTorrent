@@ -1,17 +1,17 @@
 ﻿
 
- theUILang.unpack		= "Unpack";
- theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";
+ theUILang.unpack		= "Εξαγωγή";
+ theUILang.unpackPath		= "Εξαγωγή στο (αφήστε το κενό για χρήση του τρέχοντος φακέλου του torrent)";
  theUILang.processAll		= "Process all volumes";
- theUILang.unpackTaskFailed	= "Unpacking finished with errors";
- theUILang.unpackTaskOK 	= "Unpacking finished successfully";
- theUILang.unpackTaskStarted	= "Unpacking started";
- theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
- theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
- theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
- theUILang.unpackAddLabel	= "Torrent Label";
- theUILang.unpackAddName	= "Torrent Name";
- theUILang.unpackNoFiles	= "No archives found in torrent data.";
+ theUILang.unpackTaskFailed	= "Η εξαγωγή τελείωσε με σφάλματα";
+ theUILang.unpackTaskOK 	= "Η εξαγωγή τελείωσε με επιτυχία";
+ theUILang.unpackTaskStarted	= "Η εξαγωγή ξεκίνησε";
+ theUILang.unzipNotFound	= "Πρόσθετο Εξαγωγή: Ο χρήστης του rTorrent δεν έχει πρόσβαση στο πρόγραμμα 'unzip'.";
+ theUILang.unrarNotFound	= "Πρόσθετο Εξαγωγή: Ο χρήστης του rTorrent δεν έχει πρόσβαση στο πρόγραμμα 'unrar'.";
+ theUILang.unpackEnabled	= "Ενεργοποίηση αυτόματης εξαγωγής εάν η ετικέτα του torrent ταιριάζει με το φίλτρο";
+ theUILang.unpackTorrents	= "Προσάρτηση στο όνομα της διαδρομής κατά την εξαγωγή των δεδομένων του Torrent";
+ theUILang.unpackAddLabel	= "Ετικέτα Torrent";
+ theUILang.unpackAddName	= "Όνομα Torrent";
+ theUILang.unpackNoFiles	= "Δεν βρέθηκαν συμπιεσμένα αρχεία προς εξαγωγή στα δεδομένα του torrent.";
 
 thePlugins.get("unpack").langLoaded();
