@@ -1,6 +1,6 @@
 ﻿
 
- theUILang.themeStandard	= "Standard";
- theUILang.theme		= "Theme";
+ theUILang.themeStandard	= "Προκαθορισμένο";
+ theUILang.theme		= "Θέμα";
 
 thePlugins.get("theme").langLoaded();

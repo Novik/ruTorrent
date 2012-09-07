@@ -1,13 +1,13 @@
 ﻿
 
- theUILang.traf 		= "Traffic";
- theUILang.perDay		= "Per day";
- theUILang.perMonth		= "Per month";
- theUILang.perYear		= "Per year";
- theUILang.allTrackers		= "All trackers";
- theUILang.ClearButton		= "Clear";
- theUILang.ClearQuest		= "Do you really want to clear statistics for selected tracker(s)?";
- theUILang.selectedTorrent	= "Selected torrent";
- theUILang.ratioDay		= "Ratio/day";
- theUILang.ratioWeek		= "Ratio/week";
- theUILang.ratioMonth		= "Ratio/month";
+ theUILang.traf 		= "Κίνηση";
+ theUILang.perDay		= "Ανά ημέρα";
+ theUILang.perMonth		= "Ανά μήνα";
+ theUILang.perYear		= "Ανά χρόνο";
+ theUILang.allTrackers		= "Όλοι οι trackers";
+ theUILang.ClearButton		= "Εκκαθάριση";
+ theUILang.ClearQuest		= "Θέλετε πραγματικά να κάνετε εκκαθάριση των στατιστικών για τους επιλεγμένους tracker;";
+ theUILang.selectedTorrent	= "Επιλεγμένο torrent";
+ theUILang.ratioDay		= "Αναλογία/ημέρα";
+ theUILang.ratioWeek		= "Αναλογία/εβδομάδα";
+ theUILang.ratioMonth		= "Αναλογία/μήνα";

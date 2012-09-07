@@ -1,6 +1,5 @@
 ﻿
 
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
-
+ theUILang.seedingTime		= "Ολοκληρώθηκε";
+ theUILang.addTime		= "Προστέθηκε";
 thePlugins.get("seedingtime").langLoaded();
