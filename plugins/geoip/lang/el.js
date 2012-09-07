@@ -2,7 +2,7 @@
 // Contributed by art.spb, December 2009.
 
 theUILang.peerComment 		= "Προσθήκη σχολίου";
-theUILang.peerCommentLabel	= "Προσθήκη νέου σχολίου για τον peer";
+theUILang.peerCommentLabel	= "Προσθήκη νέου σχολίου για τον χρήστη";
 theUILang.commentName		= "Σχόλιο";
 
 theUILang.countryName = "Χώρα";
