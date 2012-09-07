@@ -10,11 +10,11 @@
  theUILang.ratioUpload		= "UL";
  theUILang.ratioAction		= "Ενέργεια";
  theUILang.ratioStop		= "Διακοπή";
- theUILang.ratioStopAndRemove	= "Διακ. & εκκ. ομάδας";
+ theUILang.ratioStopAndRemove	= "Διακοπή & εκκαθ. ομάδας";
  theUILang.ratioErase		= "Αφαίρεση";
  theUILang.ratioEraseData	= "Αφαίρεση δεδομένων";
  theUILang.maxTime		= "Ημ/νία";
  theUILang.ratioDefault 	= "Προεπιλεγμένο γκρουπ αναλογίας";
- theUILang.setThrottleTo	= "Ορ. καν. σε";
+ theUILang.setThrottleTo	= "Οριμός καναλιού σε";
 
 thePlugins.get("ratio").langLoaded();
