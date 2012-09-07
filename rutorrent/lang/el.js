@@ -27,15 +27,15 @@
 
  var theUILang =
  {
- About_program				: "About program",
- Toggle_menu				: "Toggle menu",
- Toggle_details				: "Toggle details",
- Toggle_categories			: "Toggle categories",
- Add_new_torrent			: "Add new torrent",
+ About_program			: "About program",
+ Toggle_menu			: "Toggle menu",
+ Toggle_details			: "Toggle details",
+ Toggle_categories		: "Toggle categories",
+ Add_new_torrent		: "Add new torrent",
  Show_program_properties	: "Show program properties",
  Delete_current_torrent(s)	: "Delete current torrent(s)",	
- Select_all					: "Select all",
- Deselect_all				: "Deselect all",
+ Select_all				: "Select all",
+ Deselect_all			: "Deselect all",
  kbs				: "kB/s",
  General			: "Γενικά",
  Downloads			: "Λήψεις",
