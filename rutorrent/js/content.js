@@ -165,7 +165,7 @@ function makeContent()
 		'<div class="content">'+
 			'<center>'+
 				'<table width=100% border=0>'+
-					'<tr><td><strong>F1</strong></td><td>This screen</td></tr>'+
+					'<tr><td><strong>F1</strong></td><td>'+theUILang.This_screen+'</td></tr>'+
 					'<tr><td><strong><strong>Ctrl-F1</strong></td><td><a href="javascript://void();" onclick="theDialogManager.toggle(\'dlgAbout\'); return(false);">'+theUILang.About_program+'</a></td></tr>'+
 					'<tr><td><strong><strong>F4</strong></td><td><a href="javascript://void();" onclick="theWebUI.toggleMenu(); return(false);">'+theUILang.Toggle_menu+'</a></td></tr>'+
 					'<tr><td><strong><strong>F6</strong></td><td><a href="javascript://void();" onclick="theWebUI.toggleDetails(); return(false);">'+theUILang.Toggle_details+'</a></td></tr>'+
