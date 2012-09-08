@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Bandgenişliği Özellikleri",
  Number_ul_slots		: "Gönderme yuva sayısı",
  Peer_ex			: "Eş Değişimi",
- About				: "Hakkında",
  Enter_label_prom		: "Seçtiğiniz torrentler için yeni bir etiket giriniz",
  Remove_torrents		: "Torrent(ler)i Kaldır",
  Rem_torrents_prompt		: "Torrent(ler)i kaldırmak istediğinizden emin misiniz?",

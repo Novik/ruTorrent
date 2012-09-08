@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Sávszélesség beállítás",
  Number_ul_slots		: "Feltöltési szálak száma",
  Peer_ex			: "Peer csere",
- About				: "Névjegy",
  Enter_label_prom		: "Új cimke a kijelölt torrenthez",
  Remove_torrents		: "Torrent eltávolítása",
  Rem_torrents_prompt		: "Valóban el akarod távolítani a kijelölt torrente(ke)t?",

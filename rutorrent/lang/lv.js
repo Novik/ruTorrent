@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Līnijas iestatījumi",
  Number_ul_slots		: "Augšupielādes slotu skaits: [tukšs: pēc noklusējuma]",
  Peer_ex			: "Iesaistīto apmaiņa",
- About				: "Par",
  Enter_label_prom		: "Izveidojiet jaunu grupu izvēlētajiem torentiem",
  Remove_torrents		: "Izmest torentu(s)",
  Rem_torrents_prompt		: "Vai tiešām vēlaties dzēst atzīmēto torentu(s)?",

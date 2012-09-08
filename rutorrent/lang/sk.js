@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Nastavenia prenosu",
  Number_ul_slots		: "Počet odosielacích slotov:",
  Peer_ex			: "Povoliť Peer Exchange",
- About				: "O programe...",
  Enter_label_prom		: "Zadajte novú kategóriu pre vybrané torrenty",
  Remove_torrents		: "Odstrániť Torrent(y)",
  Rem_torrents_prompt		: "Naozaj chceš odstrániť vybrané torrenty?",

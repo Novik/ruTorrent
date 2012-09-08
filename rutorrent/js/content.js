@@ -178,7 +178,7 @@ function makeContent()
 				'</table>'+
 			'</center>'+
 		'</div>');
-	theDialogManager.make("dlgAbout",theUILang.About,
+	theDialogManager.make("dlgAbout",theUILang.About_program,
 		'<div class="content"> <strong>Developers</strong>:<br/><br/>'+
 			'&nbsp;&nbsp;&nbsp;Original &micro;Torrent WebUI:<br/>'+
 			'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Carsten Niebuhr (Directrix)<br/><br/>'+

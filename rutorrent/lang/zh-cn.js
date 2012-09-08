@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "带宽设置",
  Number_ul_slots		: "上传通道数",
  Peer_ex			: "用户交换",
- About				: "关于",
  Enter_label_prom		: "为选定的 Torrent 输入新的标签",
  Remove_torrents		: "移除 Torrent(s)",
  Rem_torrents_prompt		: "您确定要移除选定的 Torrent 吗?",

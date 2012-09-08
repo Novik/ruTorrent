@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Preferencias de Ancho de Banda",
  Number_ul_slots		: "Números de puestos de subida",
  Peer_ex			: "Intercambio de pares",
- About				: "Acerca de",
  Enter_label_prom		: "Introduzca la nueva etiqueta para los torrents seleccionados",
  Remove_torrents		: "Eliminar Torrent(s)",
  Rem_torrents_prompt		: "?Desea borrar los torrents seleccionados?",

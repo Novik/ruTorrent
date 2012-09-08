@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Rajoitukset",
  Number_ul_slots		: "Lähetyspaikkojen määrä",
  Peer_ex			: "Käyttäjien vaihto",
- About				: "Tietoa",
  Enter_label_prom		: "Anna uusi nimike valituille torrenteille",
  Remove_torrents		: "Poista Torrent(it)",
  Rem_torrents_prompt		: "Haluatko todella poistaa valitut torrentit?",

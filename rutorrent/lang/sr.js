@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Bandwidth Settings",
  Number_ul_slots		: "Number of upload slots",
  Peer_ex			: "Парњачка размена",
- About				: "О програму",
  Enter_label_prom		: "Enter the new label for the selected torrents",
  Remove_torrents		: "Remove Torrent(s)",
  Rem_torrents_prompt		: "Do you really want to remove the selected torrent(s)?",

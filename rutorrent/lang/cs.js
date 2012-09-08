@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Rychlostní limity",
  Number_ul_slots		: "Počet odesílacích slotů",
  Peer_ex			: "Peer Exchange",
- About				: "O WebUI",
  Enter_label_prom		: "Zadej novou kategorii pro vybrané torrenty",
  Remove_torrents		: "Odtranit torrent(y)",
  Rem_torrents_prompt		: "Opravdu si přejete odstranit vybrané torrenty?",
