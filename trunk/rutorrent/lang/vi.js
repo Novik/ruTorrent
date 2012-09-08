@@ -19,10 +19,10 @@
  * == END LICENSE ==
  *
  * File Name: vi.js
- *      Vietnamese language file.
+ * 	Vietnamese language file.
  *
  * File Author:
- *              Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ * 		Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
  var theUILang =
@@ -34,7 +34,7 @@
  Toggle_categories		: "Toggle categories",
  Add_new_torrent		: "Add new torrent",
  Show_program_properties	: "Show program properties",
- Delete_current_torrents	: "Delete current torrent(s)",	
+ Delete_current_torrents	: "Delete current torrent(s)",
  Select_all			: "Select all",
  Deselect_all			: "Deselect all",
  kbs				: "kB/s",

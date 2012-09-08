@@ -24,7 +24,7 @@
  * Author:
  * 		Penknife (penknife1@gmail.com)
  * Updates:
- *		Dare (piczok@gmail.com)
+ * 		Dare (piczok@gmail.com)
  */
 
  var theUILang =
@@ -36,7 +36,7 @@
  Toggle_categories		: "Toggle categories",
  Add_new_torrent		: "Add new torrent",
  Show_program_properties	: "Show program properties",
- Delete_current_torrents	: "Delete current torrent(s)",	
+ Delete_current_torrents	: "Delete current torrent(s)",
  Select_all			: "Select all",
  Deselect_all			: "Deselect all",
  kbs				: "kB/s",

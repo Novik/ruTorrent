@@ -8,7 +8,7 @@ var theUILang =
  Toggle_categories		: "Вкл./выкл. категории",
  Add_new_torrent		: "Добавить торрент",
  Show_program_properties	: "Настройки",
- Delete_current_torrents	: "Удалить торрент(ы)",	
+ Delete_current_torrents	: "Удалить торрент(ы)",
  Select_all			: "Выделить все",
  Deselect_all			: "Отмена выделения",
  kbs				: "кБ/с",
