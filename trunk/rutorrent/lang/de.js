@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Bandbreiten Einstellungen",
  Number_ul_slots		: "Anzahl Upload-Slots",
  Peer_ex			: "Peerlistentausch",
- About				: "über rTorrent...",
  Enter_label_prom		: "Neue Gruppe für markierte Torrents eingeben",
  Remove_torrents		: "Torrent(s) löschen",
  Rem_torrents_prompt		: "Möchtest Du den/die markierte(n) Torrent(s) wirklich löschen?",

@@ -129,7 +129,6 @@
  Bandwidth_sett 		: "Ustawienia łącza",
  Number_ul_slots		: "Liczba slotów wysyłania",
  Peer_ex			: "Wymiana peerów",
- About				: "O...",
  Enter_label_prom		: "Wprowadź etykietę dla wybranych torrentów",
  Remove_torrents		: "Usuń torrent(y)",
  Rem_torrents_prompt		: "Czy napewno chcesz usunąć wybrany torrent(y)?",

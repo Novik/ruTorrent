@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Ρυθμίσεις εύρους ζώνης",
  Number_ul_slots		: "Αριθμός slots για αποστολή",
  Peer_ex			: "Peer Exchange",
- About				: "Σχετικά",
  Enter_label_prom		: "Εισάγετε νέα ετικέτα για τα επιλεγμένα torrents",
  Remove_torrents		: "Διαγραφή Torrent",
  Rem_torrents_prompt		: "Θέλετε πραγματικά να διαγράψετε τα επιλεγμένα torrent;",

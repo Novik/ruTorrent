@@ -128,7 +128,6 @@
  Bandwidth_sett 		: "Paramètres de la bande passante",
  Number_ul_slots		: "Nombre de slots d'envoi",
  Peer_ex			: "Échange P2P",
- About				: "À propos de",
  Enter_label_prom		: "Entrer la nouvelle étiquette pour les torrents sélectionnés",
  Remove_torrents		: "Effacer le(s) torrent(s)",
  Rem_torrents_prompt		: "Voulez-vous vraiment effacer le(s) torrent(s) sélectionné(s) ?",

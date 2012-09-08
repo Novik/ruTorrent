@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Impostazioni di banda",
  Number_ul_slots		: "Numero di slot di Upload",
  Peer_ex			: "Abilita scambio peer",
- About				: "Informazioni su",
  Enter_label_prom		: "Inserisci la nuova etichetta per i torrent selezionati",
  Remove_torrents		: "Rimuovi torrent",
  Rem_torrents_prompt		: "Vuoi veramente rimuovere i torrent selezionati?",

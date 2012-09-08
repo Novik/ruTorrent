@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Båndbredde Indstillinger",
  Number_ul_slots		: "Antal upload slots: [blank: standard]",
  Peer_ex			: "Peer udveksling",
- About				: "Om",
  Enter_label_prom		: "Indtast den nye etiket for de udvalgte torrents",
  Remove_torrents		: "Fjern Torrent(s)",
  Rem_torrents_prompt		: "Vil du virkelig fjerne den valgte torrent(s)?",

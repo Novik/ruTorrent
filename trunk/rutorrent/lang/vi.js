@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Cài đặt băng thông",
  Number_ul_slots		: "Số khe tải lên",
  Peer_ex			: "Trao đổi ngang",
- About				: "Giới thiệu",
  Enter_label_prom		: "Nhập nhãn mới cho các Torrent đã chọn",
  Remove_torrents		: "Bỏ Torrent",
  Rem_torrents_prompt		: "Bạn thực sự muốn bỏ các torrent đã chọn?",

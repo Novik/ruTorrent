@@ -127,7 +127,6 @@
  Bandwidth_sett 		: "Bandbreedte opties",
  Number_ul_slots		: "Aantal uploadslots",
  Peer_ex			: "Peer Exchange",
- About				: "Over rTorrent",
  Enter_label_prom		: "Vul het nieuwe Etiket voor de geselecteerde torrents in",
  Remove_torrents		: "Verwijder Torrent(s)",
  Rem_torrents_prompt		: "Weet u zeker dat u de geselecteerde torrents wilt verwijderen?",
