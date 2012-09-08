@@ -27,7 +27,7 @@
 
  var theUILang =
  {
- This_screen			: "This screen",
+ This_screen			: "Αυτή η οθόνη",
  About_program			: "Σχετικά",
  Toggle_menu			: "Εναλλαγή μενού",
  Toggle_details			: "Εναλλαγή λεπτομερειών",
