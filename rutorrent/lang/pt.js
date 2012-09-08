@@ -18,11 +18,11 @@
  *
  * == END LICENSE ==
  *
- * File Name: br.js
- * 	Portuguese (Brazil) language file.
+ * File Name: pt.js
+ * 	Portuguese language file.
  *
  * File Author:
- * 	 Oszy007 (oszy007@gmail.com)
+ * 		 Oszy007 (oszy007@gmail.com)
  */
 
  var theUILang =
@@ -34,7 +34,7 @@
  Toggle_categories		: "Toggle categories",
  Add_new_torrent		: "Add new torrent",
  Show_program_properties	: "Show program properties",
- Delete_current_torrents	: "Delete current torrent(s)",	
+ Delete_current_torrents	: "Delete current torrent(s)",
  Select_all			: "Select all",
  Deselect_all			: "Deselect all",
  kbs				: "kB/s",

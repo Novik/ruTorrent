@@ -22,8 +22,8 @@
  * 	French language file.
  *
  * File Author:
- * 	  Platoon21 (charlesprost@gmail.com) and Zempashi
- *    Nicobubulle (nicobubulle@gmail.com) for ruTorrent
+ * 		Platoon21 (charlesprost@gmail.com) and Zempashi
+ * 		Nicobubulle (nicobubulle@gmail.com) for ruTorrent
  */
 
  var theUILang =
@@ -35,7 +35,7 @@
  Toggle_categories		: "Toggle categories",
  Add_new_torrent		: "Add new torrent",
  Show_program_properties	: "Show program properties",
- Delete_current_torrents	: "Delete current torrent(s)",	
+ Delete_current_torrents	: "Delete current torrent(s)",
  Select_all			: "Select all",
  Deselect_all			: "Deselect all",
  kbs				: "ko/s",

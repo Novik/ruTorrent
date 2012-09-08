@@ -34,7 +34,7 @@
  Toggle_categories		: "Εμφάνιση/Απόκρυψη κατηγοριών",
  Add_new_torrent		: "Προσθήκη torrent",
  Show_program_properties	: "Προβολή ρυθμίσεων",
- Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",	
+ Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",
  Select_all			: "Επιλογή όλων",
  Deselect_all			: "Αποεπιλογή όλων",
  kbs				: "kB/s",
