@@ -29,9 +29,9 @@
  {
  This_screen			: "Αυτή η οθόνη",
  About_program			: "Σχετικά",
- Toggle_menu			: "Εναλλαγή μενού",
- Toggle_details			: "Εναλλαγή λεπτομερειών",
- Toggle_categories		: "Εναλλαγή κατηγοριών",
+ Toggle_menu			: "Εμφάν./Απόκρ. μενού",
+ Toggle_details			: "Εμφάνιση/Απόκρυψη λεπτομερειών",
+ Toggle_categories		: "Εμφάν./Απόκρ. κατηγοριών",
  Add_new_torrent		: "Προσθήκη torrent",
  Show_program_properties	: "Προβολή ρυθμίσεων",
  Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",	
