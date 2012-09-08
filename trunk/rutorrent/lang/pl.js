@@ -29,6 +29,7 @@
 
  var theUILang =
  {
+ This_screen			: "This screen",
  About_program			: "About program",
  Toggle_menu			: "Toggle menu",
  Toggle_details			: "Toggle details",
