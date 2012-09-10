@@ -27,7 +27,7 @@
 
  var theUILang =
  {
- Num_No				: "Α/Α" // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Num_No				: "Α/Α", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Αυτή η οθόνη",
  About_program			: "Σχετικά",
  Toggle_menu			: "Εμφάνιση/Απόκρυψη μενού",
