@@ -242,7 +242,7 @@ plugin.onLangLoaded = function()
 			"<div id='st_ratio_h'>"+
 			"<table>"+
 				"<tr>"+
-					"<td><b>No</b></td>"+
+					"<td><b>"+theUILang.Num_No+"</b></td>"+
 					"<td align=center><b>"+theUILang.ratioName+"</b></td>"+
 					"<td align=center><b>"+theUILang.minRatio+",%</b></td>"+
 					"<td align=center><b>"+theUILang.maxRatio+",%</b></td>"+

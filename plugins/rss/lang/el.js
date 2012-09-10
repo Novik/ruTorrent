@@ -13,7 +13,7 @@
  theUILang.rssStatus			= "RSS";
  theUILang.rssStatusLoaded		= "Έχει ήδη φορτωθεί";
  theUILang.rssMenuLoad			= "Φόρτωση";
- theUILang.rssMenuOpen			= "Άνοιγμα στον περιηγητή";
+ theUILang.rssMenuOpen			= "Άνοιγμα στο πρόγραμμα περιήγησης";
  theUILang.rssMenuClearHistory		= "εκκαθάριση Ιστορικού";
  theUILang.rssMenuAddToFilter		= "Προσθήκη στα αγαπημένα";
  theUILang.rssMenuManager		= "Διαχειριστής RSS";
