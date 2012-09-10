@@ -1,7 +1,7 @@
 ﻿
 var theUILang =
 {
- Num_No				: "Νο" // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Num_No				: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Это окно",
  About_program			: "О программе",
  Toggle_menu			: "Вкл./выкл. меню",
