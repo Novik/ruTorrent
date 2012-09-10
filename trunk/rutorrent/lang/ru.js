@@ -4,9 +4,9 @@ var theUILang =
  Num_No				: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Это окно",
  About_program			: "О программе",
- Toggle_menu			: "Вкл./выкл. меню",
- Toggle_details			: "Вкл./выкл. детали",
- Toggle_categories		: "Вкл./выкл. категории",
+ Toggle_menu			: "Показать/скрыть меню",
+ Toggle_details			: "Показать/скрыть детали",
+ Toggle_categories		: "Показать/скрыть категории",
  Add_new_torrent		: "Добавить торрент",
  Show_program_properties	: "Настройки",
  Delete_current_torrents	: "Удалить торрент(ы)",
