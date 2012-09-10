@@ -14,7 +14,7 @@
  theUILang.ratioErase		= "Αφαίρεση";
  theUILang.ratioEraseData	= "Αφαίρεση δεδομένων";
  theUILang.maxTime		= "Ημ/νία";
- theUILang.ratioDefault 	= "Προεπιλεγμένο γκρουπ αναλογίας";
+ theUILang.ratioDefault 	= "Προεπιλεγμένη ομάδα αναλογίας";
  theUILang.setThrottleTo	= "Ορισμός καναλιού σε";
 
 thePlugins.get("ratio").langLoaded();
