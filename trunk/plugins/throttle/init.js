@@ -217,7 +217,7 @@ plugin.onLangLoaded = function()
 			"<div id='st_throttle_h'>"+
 			"<table>"+
 				"<tr>"+
-					"<td><b>No</b></td>"+
+					"<td><b>"+theUILang.Num_No+"</b></td>"+
 					"<td><b>"+theUILang.channelName+"</b></td>"+
 					"<td><b>"+theUILang.UL+" ("+theUILang.KB+"/"+theUILang.s+")</b></td>"+
 					"<td><b>"+theUILang.DL+" ("+theUILang.KB+"/"+theUILang.s+")</b></td>"+

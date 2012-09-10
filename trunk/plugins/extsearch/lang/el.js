@@ -1,7 +1,7 @@
 ﻿
 
  theUILang.tegMenuLoad			= "Φόρτωση";
- theUILang.tegMenuOpen			= "Άνοιγμα στον περιηγητή ίντερνετ";
+ theUILang.tegMenuOpen			= "Άνοιγμα στον πρόγραμμα περιήγησης";
  theUILang.tegMenuDeleteItem		= "Αφαίρεση αντικειμένου";
  theUILang.tegMenuDelete		= "Αφαίρεση ετικέτας";
  theUILang.tegRefresh			= "Ανανέωση Ετικέτας";
