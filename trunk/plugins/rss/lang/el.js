@@ -1,8 +1,8 @@
 ﻿
 
  theUILang.addRSS			= "Προσθήκη τροφοδοσίας RSS";
- theUILang.feedURL			= "URL της τροφοδοσίας ";
- theUILang.alias			= "Προσαρμοσμένο όνομα";
+ theUILang.feedURL			= "URL";
+ theUILang.alias			= "Προσαρμ. όνομα";
  theUILang.rssAuto			= "Αυτόματη λήψη αντικειμένων που δημοσιεύονται στην τροφοδοσία";
  theUILang.allFeeds			= "Όλες οι τροφοδοσίες";
  theUILang.incorrectURL 		= "Παρακαλώ ορίστε σωστό URL της τροφοδοσίας."
@@ -14,7 +14,7 @@
  theUILang.rssStatusLoaded		= "Έχει ήδη φορτωθεί";
  theUILang.rssMenuLoad			= "Φόρτωση";
  theUILang.rssMenuOpen			= "Άνοιγμα στο πρόγραμμα περιήγησης";
- theUILang.rssMenuClearHistory		= "εκκαθάριση Ιστορικού";
+ theUILang.rssMenuClearHistory		= "Εκκαθάριση Ιστορικού";
  theUILang.rssMenuAddToFilter		= "Προσθήκη στα αγαπημένα";
  theUILang.rssMenuManager		= "Διαχειριστής RSS";
  theUILang.rssMenuRefresh		= "Ανανέωση τροφοδοσίας";

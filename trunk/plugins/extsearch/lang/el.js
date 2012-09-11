@@ -1,10 +1,10 @@
 ﻿
 
  theUILang.tegMenuLoad			= "Φόρτωση";
- theUILang.tegMenuOpen			= "Άνοιγμα στον πρόγραμμα περιήγησης";
+ theUILang.tegMenuOpen			= "Άνοιγμα στο πρόγραμμα περιήγησης";
  theUILang.tegMenuDeleteItem		= "Αφαίρεση αντικειμένου";
  theUILang.tegMenuDelete		= "Αφαίρεση ετικέτας";
- theUILang.tegRefresh			= "Ανανέωση Ετικέτας";
+ theUILang.tegRefresh			= "Ανανέωση ετικέτας";
  theUILang.exsGlobal			= "Να συμπεριληφθεί στην κατηγορία 'Όλα'";
  theUILang.exsLimit			= "Όριο αποτελεσμάτων";
  theUILang.exsEngines			= "Μηχανές";
