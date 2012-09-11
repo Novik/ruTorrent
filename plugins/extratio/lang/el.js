@@ -2,8 +2,8 @@
 
  theUILang.ratioRulesManager	= "Διαχείριση Κανόνων";
  theUILang.mnu_ratiorule	= "Κανόνες Αναλογίας";
- theUILang.ratAddRule		= "Προσθήκη";
- theUILang.ratDelRule		= "Διαγραφή";
+ theUILang.ratAddRule		= "Προσθ.";
+ theUILang.ratDelRule		= "Διαγρ.";
  theUILang.ratUpRule		= "Πάνω";
  theUILang.ratDownRule		= "Κάτω";
  theUILang.ratioIfLegend	= "Αν";
