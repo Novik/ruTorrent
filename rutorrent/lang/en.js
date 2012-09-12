@@ -5,7 +5,7 @@ var theUILang =
  This_screen			: "This screen",
  About_program			: "About program",
  Toggle_menu			: "Toggle menu",
- Toggle_details			: "Toggle details",
+ Toggle_details 		: "Toggle details",
  Toggle_categories		: "Toggle categories",
  Add_new_torrent		: "Add new torrent",
  Show_program_properties	: "Show program properties",

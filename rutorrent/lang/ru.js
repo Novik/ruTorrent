@@ -5,7 +5,7 @@ var theUILang =
  This_screen			: "Это окно",
  About_program			: "О программе",
  Toggle_menu			: "Показать/скрыть меню",
- Toggle_details			: "Показать/скрыть детали",
+ Toggle_details 		: "Показать/скрыть детали",
  Toggle_categories		: "Показать/скрыть категории",
  Add_new_torrent		: "Добавить торрент",
  Show_program_properties	: "Настройки",
