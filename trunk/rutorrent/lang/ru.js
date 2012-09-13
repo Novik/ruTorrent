@@ -1,10 +1,10 @@
 ﻿
 var theUILang =
 {
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No				: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Developers			: "Разработчики",
+ Check_new_version		: "Проверка наличия новых версий",
+ here				: "здесь",
+ Num_No 			: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Это окно",
  About_program			: "О программе",
  Toggle_menu			: "Показать/скрыть меню",
@@ -43,7 +43,7 @@ var theUILang =
  Ip_report_track		: "IP/Hostname передаваемые трекеру",
  Disabled			: "Отключено",
  Enabled			: "Включено",
- uTorrent_settings		: "Настройки rTorrent",
+ uTorrent_settings		: "Настройки",
  Doesnt_support 		: "ruTorrent не поддерживает Ваш браузер.",
  Name				: "Имя",
  Status 			: "Статус",

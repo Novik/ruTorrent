@@ -31,7 +31,7 @@
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
- Num_No				: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Num_No 			: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "This screen",
  About_program			: "À propos du programme",
  Toggle_menu			: "Toggle menu",
@@ -70,7 +70,7 @@
  Ip_report_track		: "IP/Nom d'hôte à rapporter au Tracker",
  Disabled			: "Désactivé",
  Enabled			: "Activé",
- uTorrent_settings		: "Options de rTorrent",
+ uTorrent_settings		: "Options",
  Doesnt_support 		: "ruTorrent ne supporte pas votre navigateur.",
  Name				: "Nom",
  Status 			: "Statut",
