@@ -1,6 +1,7 @@
 ﻿
 var theUILang =
 {
+ Developers			: "Developers",
  Check_new_version			: "Check new version",
  here			: "here",
  Num_No				: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
