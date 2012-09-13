@@ -28,8 +28,8 @@
  var theUILang =
  {
  Developers			: "Ανάπτυξη λογισμικού",
- Check_new_version			: "Ελέγξτε για νέα έκδοση",
- here			: "εδώ",
+ Check_new_version		: "Ελέγξτε για νέα έκδοση",
+ here				: "εδώ",
  Num_No				: "Α/Α", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Αυτή η οθόνη",
  About_program			: "Σχετικά",
