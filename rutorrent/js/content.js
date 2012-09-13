@@ -179,13 +179,13 @@ function makeContent()
 			'</center>'+
 		'</div>');
 	theDialogManager.make("dlgAbout",theUILang.About_program,
-		'<div class="content"> <strong>Developers</strong>:<br/><br/>'+
+		'<div class="content"> <strong>'+theUILang.Developers+'</strong>:<br/><br/>'+
 			'&nbsp;&nbsp;&nbsp;Original &micro;Torrent WebUI:<br/>'+
 			'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Carsten Niebuhr (Directrix)<br/><br/>'+
 			'&nbsp;&nbsp;&nbsp;rTorrent adaptation (ruTorrent):<br/>'+
 			'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Moskalets Alexander (<a href="mailto:novik65@gmail.com">Novik</a>)<br/>'+
 			'<br/>'+
-			'<strong>Check new version&nbsp;<a href="http://rutorrent.googlecode.com" target=_blank>here</a></strong><br/>'+
+			'<strong>'+theUILang.Check_new_version+'&nbsp;<a href="http://rutorrent.googlecode.com" target=_blank>'+theUILang.here+'</a></strong><br/>'+
 			'<br/>'+
 			'<center><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U" target=_blank><img src="images/btn_donate.gif" border=0/></a></center>'+
 		'</div>');
