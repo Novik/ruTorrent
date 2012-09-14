@@ -10,8 +10,6 @@ var theUILang =
  Toggle_menu			: "Toggle menu",
  Toggle_details 		: "Toggle details",
  Toggle_categories		: "Toggle categories",
- Add_new_torrent		: "Add new torrent",
- Show_program_properties	: "Settings",
  Delete_current_torrents	: "Delete current torrent(s)",
  Select_all			: "Select all",
  Deselect_all			: "Deselect all",

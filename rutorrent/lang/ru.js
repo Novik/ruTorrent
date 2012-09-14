@@ -10,8 +10,6 @@ var theUILang =
  Toggle_menu			: "Показать/скрыть меню",
  Toggle_details 		: "Показать/скрыть детали",
  Toggle_categories		: "Показать/скрыть категории",
- Add_new_torrent		: "Добавить торрент",
- Show_program_properties	: "Настройки",
  Delete_current_torrents	: "Удалить торрент(ы)",
  Select_all			: "Выделить все",
  Deselect_all			: "Отмена выделения",
