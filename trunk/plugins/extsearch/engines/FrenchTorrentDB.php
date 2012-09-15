@@ -68,7 +68,7 @@ class FrenchTorrentDBEngine extends commonEngine
 				(strpos($cli->results, 'type="password"')!==false))
 				break;
             $res = preg_match_all('`<ul\s* class=".*"\s*>.*'.
-				'<li class="torrents_name.*"><a href="\?section=INFOS&amp;id=(?P<id>.*)\#FTD_MENU" title="(?P<name>.*)">.*<\/a><\/li>.*'.
+				'<li class="torrents_name.*"><a href="\/\?section=INFOS&amp;hash=(?P<id>.*)\#FTD_MENU" title="(?P<name>.*)">.*<\/a><\/li>.*'.
 				'<li class="torrents_size.*">(?P<size>.*)<\/li>.*'.
 				'<li class="torrents_seeders.*">(?P<seeds>.*)<\/li>.*'.
 				'<li class="torrents_leechers.*">(?P<leech>.*)<\/li>.*'.
@@ -82,7 +82,7 @@ class FrenchTorrentDBEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["desc"] = $url."/?section=INFOS&id=".$matches["id"][$i];
+						$item["desc"] = $url."/?section=INFOS&hash=".$matches["id"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
