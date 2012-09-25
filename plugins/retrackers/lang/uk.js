@@ -1,8 +1,8 @@
 ﻿
  theUILang.retrackers		= "Ретрекери";
- theUILang.retrackersAdd	= "Add announces";
- theUILang.retrackersDel	= "Remove announces";
- theUILang.dontAddToPrivate	= "Don't touch private torrents";
- theUILang.addToBegin		= "Add announces to the beginning of the trackers list";
+ theUILang.retrackersAdd	= "Додати анонси";
+ theUILang.retrackersDel	= "Видалити анонси";
+ theUILang.dontAddToPrivate	= "Не змінювати приватні торенти";
+ theUILang.addToBegin		= "Додавати анонси на початок списку трекерів";
 
 thePlugins.get("retrackers").langLoaded();
