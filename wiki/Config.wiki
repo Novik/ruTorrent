@@ -153,7 +153,7 @@ If true, all .torrent files added via webui will be saved in share/torrents _(or
 
  * `$topDirectory = '/';`
 
-Chroot directoy for user.  Users have no access to directories below the "Top" directory.  Also used by plugins like _getdir, diskspace ect. 
+Chroot directory for user.  Users have no access to directories below the "Top" directory.  Also used by plugins like _getdir, diskspace ect. 
 
 
  * `$forbidUserSettings = false;`
