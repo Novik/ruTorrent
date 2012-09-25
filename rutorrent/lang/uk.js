@@ -30,18 +30,18 @@
 
  var theUILang =
  {
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No 			: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "This screen",
- About_program			: "About ruTorrent",
- Toggle_menu			: "Toggle menu",
- Toggle_details 		: "Toggle details",
- Toggle_categories		: "Toggle categories",
- Delete_current_torrents	: "Delete current torrent(s)",
- Select_all			: "Select all",
- Deselect_all			: "Deselect all",
+ Developers			: "Розробники",
+ Check_new_version		: "Перевірка наявності нових версій",
+ here				: "тут",
+ Num_No 			: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "Це вікно",
+ About_program			: "Про ruTorrent",
+ Toggle_menu			: "Перемкнути меню",
+ Toggle_details 		: "Перемкнути деталі",
+ Toggle_categories		: "Перемкнути категорії",
+ Delete_current_torrents	: "Видлити поточні торенти",
+ Select_all			: "Вибрати все",
+ Deselect_all			: "Скасувати вибір",
  kbs				: "кб/с",
  General			: "Загальне",
  Downloads			: "Завантаження",
