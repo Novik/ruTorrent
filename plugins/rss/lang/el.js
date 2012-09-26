@@ -30,7 +30,7 @@
  theUILang.rssCheckFilter		= "Δοκιμή";
  theUILang.rssFiltersLegend		= "Ρυθμίσεις φίλτρων";
  theUILang.rssIncorrectFilter		= "Το φίλτρο είναι εσφαλμένο.";
- theUILang.foundedByFilter		= "Ταιριάζει";
+ theUILang.foundedByFilter		= "Ταιριάζουν";
  theUILang.rssExclude			= "Εξαίρεση";
  theUILang.rssStatusError		= "Σφάλμα φόρτωσης";
  theUILang.rssFeeds			= "Τροφοδοσίες";
@@ -38,8 +38,8 @@
  theUILang.rssCheckDescription		= "Έλεγχος πεδίου περιγραφής";
  theUILang.rssCheckLink 		= "Έλεγχος πεδίου συνδέσμου";
  theUILang.rssMinInterval		= "Χρονικό διάστημα";
- theUILang.rssIntervalAlways		= "(ταιριάζει πάντα)";
- theUILang.rssIntervalOnce		= "(ταιριάζει μια φορά)";
+ theUILang.rssIntervalAlways		= "(ταίριασμα πάντα)";
+ theUILang.rssIntervalOnce		= "(ταίριασμα μια φορά)";
  theUILang.rssInterval12h		= "12 ώρες";
  theUILang.rssInterval1d		= "1 ημέρα";
  theUILang.rssInterval2d		= "2 ημέρες";
