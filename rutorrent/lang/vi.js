@@ -1,28 +1,9 @@
 ﻿/*
- * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
- * NO COPYCATS of language update
- *
- * == BEGIN LICENSE ==
- *
- * Licensed under the terms of any of the following licenses at your
- * choice:
- *
- *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
- *
- *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
- *
- *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
- *
- * == END LICENSE ==
- *
  * File Name: vi.js
  * 	Vietnamese language file.
  *
  * File Author:
- * 		Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ * 	Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
  var theUILang =
@@ -30,7 +11,7 @@
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
- Num_No 			: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "This screen",
  About_program			: "About ruTorrent",
  Toggle_menu			: "Toggle menu",
@@ -67,7 +48,7 @@
  Ip_report_track		: "Địa chỉ IP/Tên máy báo về Máy theo dõi",
  Disabled			: "Vô hiệu",
  Enabled			: "Kích hoạt",
- uTorrent_settings		: "Cài đặt",
+ ruTorrent_settings		: "Cài đặt",
  Doesnt_support 		: "ruTorrent không hỗ trợ trình duyệt này.",
  Name				: "Tên",
  Status 			: "Trạng Thái",

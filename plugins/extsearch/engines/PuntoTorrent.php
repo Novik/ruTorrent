@@ -3,8 +3,8 @@
 class PuntoTorrentEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"xbt.puntotorrent.com|uid=XXX;pass=XXX" );
-	public $categories = array( 
-		'all'=>'&category=0', 		
+	public $categories = array(
+		'all'=>'&category=0',
 		'DVD/Animación'=>"&category=37",
 		'DVD/Deportes'=>"&category=38",
 		'DVD/Documentales'=>"&category=39",
@@ -81,7 +81,7 @@ class PuntoTorrentEngine extends commonEngine
 		'3D/Adulto XXX (+18) 3D'=>"&category=121",
 		'3D/Música 3D'=>"&category=122",
 		'GOLD'=>"&category=0&active=3",
-		'SILVER'=>"&category=0&active=4"	
+		'SILVER'=>"&category=0&active=4"
 	);
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
@@ -141,5 +141,3 @@ class PuntoTorrentEngine extends commonEngine
 		}
 	}
 }
-
-?>
