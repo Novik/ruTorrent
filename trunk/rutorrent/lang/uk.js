@@ -1,31 +1,12 @@
 ﻿/*
- * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
- * NO COPYCATS of language update
- *
- * == BEGIN LICENSE ==
- *
- * Licensed under the terms of any of the following licenses at your
- * choice:
- *
- *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
- *
- *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
- *
- *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
- *
- * == END LICENSE ==
- *
  * File Name: uk.js
  * 	Ukrainian language file.
  *
  * File Author:
- * 		Oleksandr Natalenko (pfactum@gmail.com)
+ * 	Oleksandr Natalenko (pfactum@gmail.com)
  *
  * Initial Author:
- * 		Artem Lopata (mod-s@yandex.ru)
+ * 	Artem Lopata (mod-s@yandex.ru)
  */
 
  var theUILang =
@@ -70,7 +51,7 @@
  Ip_report_track		: "IP/адреса вузла, які передаються трекеру",
  Disabled			: "Вимкнено",
  Enabled			: "Увімкнено",
- uTorrent_settings		: "Настройки",
+ ruTorrent_settings		: "Настройки",
  Doesnt_support 		: "ruTorrent не підтримує ваш браузер.",
  Name				: "Назва",
  Status 			: "Статус",

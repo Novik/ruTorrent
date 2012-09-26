@@ -1,10 +1,17 @@
-﻿
+﻿/*
+ * File Name: en.js
+ * 	English language file.
+ *
+ * Initial Author:
+ * 	Artem Lopata (mod-s@yandex.ru)
+ */
+
 var theUILang =
 {
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
- Num_No 			: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "This screen",
  About_program			: "About ruTorrent",
  Toggle_menu			: "Toggle menu",
@@ -41,7 +48,7 @@ var theUILang =
  Ip_report_track		: "IP/Hostname to report to tracker",
  Disabled			: "Disabled",
  Enabled			: "Enabled",
- uTorrent_settings		: "Settings",
+ ruTorrent_settings		: "Settings",
  Doesnt_support 		: "ruTorrent does not support your browser.",
  Name				: "Name",
  Status 			: "Status",
@@ -87,7 +94,7 @@ var theUILang =
  Low_priority			: "Low",
  Dont_download			: "Don't Download",
  Files				: "Files",
- Logger 			: "Logger",
+ Logger 			: "Log",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
  KB				: "KB",

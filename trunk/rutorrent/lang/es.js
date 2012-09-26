@@ -1,28 +1,9 @@
-/*
- * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
- * NO COPYCATS of language update
- *
- * == BEGIN LICENSE ==
- *
- * Licensed under the terms of any of the following licenses at your
- * choice:
- *
- *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
- *
- *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
- *
- *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
- *
- * == END LICENSE ==
- *
+﻿/*
  * File Name: sp.js
  * 	Spanish language file.
  *
- * File Author:
- * 		Carlos López (the_spide21@yahoo.com)
+ * Initial Author:
+ * 	Carlos López (the_spide21@yahoo.com)
  */
 
  var theUILang =
@@ -30,7 +11,7 @@
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
- Num_No 			: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "This screen",
  About_program			: "About ruTorrent",
  Toggle_menu			: "Toggle menu",
@@ -67,7 +48,7 @@
  Ip_report_track		: "IP/Nombre de Host a reportar al tracker",
  Disabled			: "Deshabilitado",
  Enabled			: "Activo",
- uTorrent_settings		: "Preferencias",
+ ruTorrent_settings		: "Preferencias",
  Doesnt_support 		: "La interfaz ruTorrent no es compatible con tu navegador.",
  Name				: "Nombre",
  Status 			: "Estado",

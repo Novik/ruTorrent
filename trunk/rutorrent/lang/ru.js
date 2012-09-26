@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * File Name: ru.js
+ * 	Russian language file.
+ *
+ * Initial Author:
+ * 	Artem Lopata (mod-s@yandex.ru)
+ */
+
 var theUILang =
 {
  Developers			: "Разработчики",
@@ -41,7 +48,7 @@ var theUILang =
  Ip_report_track		: "IP/Hostname передаваемые трекеру",
  Disabled			: "Отключено",
  Enabled			: "Включено",
- uTorrent_settings		: "Настройки",
+ ruTorrent_settings		: "Настройки",
  Doesnt_support 		: "ruTorrent не поддерживает Ваш браузер.",
  Name				: "Имя",
  Status 			: "Статус",

@@ -1,28 +1,9 @@
 ﻿/*
- * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
- * NO COPYCATS of language update
- *
- * == BEGIN LICENSE ==
- *
- * Licensed under the terms of any of the following licenses at your
- * choice:
- *
- *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
- *
- *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
- *
- *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
- *
- * == END LICENSE ==
- *
  * File Name: it.js
  * 	Italian language file.
  *
- * File Author:
- * 		Tibi Diego (ceres@divxmania.it)
+ * Initial Author:
+ * 	Tibi Diego (ceres@divxmania.it)
  */
 
  var theUILang =
@@ -30,7 +11,7 @@
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
- Num_No 			: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "This screen",
  About_program			: "About ruTorrent",
  Toggle_menu			: "Toggle menu",
@@ -67,7 +48,7 @@
  Ip_report_track		: "IP/Nome Host da riportare al tracker",
  Disabled			: "Disattivata",
  Enabled			: "Attivata",
- uTorrent_settings		: "Opzioni",
+ ruTorrent_settings		: "Opzioni",
  Doesnt_support 		: "L'interfaccia ruTorrent non supporta il tuo browser.",
  Name				: "Nome",
  Status 			: "Stato",

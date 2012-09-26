@@ -1,28 +1,9 @@
 ﻿/*
- * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
- * NO COPYCATS of language update
- *
- * == BEGIN LICENSE ==
- *
- * Licensed under the terms of any of the following licenses at your
- * choice:
- *
- *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
- *
- *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
- *
- *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
- *
- * == END LICENSE ==
- *
  * File Name: de.js
  * 	German language file.
  *
- * File Author:
- * 		schnurlos (utorrent@gmx.at)
+ * Initial Author:
+ * 	schnurlos (utorrent@gmx.at)
  */
 
  var theUILang =
@@ -30,7 +11,7 @@
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
- Num_No 			: "Νο", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ Num_No 			: "Nr.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "This screen",
  About_program			: "About ruTorrent",
  Toggle_menu			: "Toggle menu",
@@ -67,7 +48,7 @@
  Ip_report_track		: "IP/Hostname an den Tracker melden",
  Disabled			: "Deaktiviert",
  Enabled			: "Erlaubt",
- uTorrent_settings		: "Einstellungen",
+ ruTorrent_settings		: "Einstellungen",
  Doesnt_support 		: "Diese ruTorrent unterstützt deinen Browser nicht.",
  Name				: "Name",
  Status 			: "Status",
@@ -113,7 +94,7 @@
  Low_priority			: "Niedrige",
  Dont_download			: "Nicht Laden",
  Files				: "Dateien",
- Logger 			: "Logger",
+ Logger 			: "Log",
  s				: "s", // part of "KB/s"
  bytes				: "Bytes",
  KB				: "kB",

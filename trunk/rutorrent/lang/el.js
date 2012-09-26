@@ -1,28 +1,9 @@
 ﻿/*
- * WebUI - The WEB interface for uTorrent - http://www.utorrent.com
- * NO COPYCATS of language update
- *
- * == BEGIN LICENSE ==
- *
- * Licensed under the terms of any of the following licenses at your
- * choice:
- *
- *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
- *
- *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
- *
- *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
- *
- * == END LICENSE ==
- *
  * File Name: el.js
  * 	Greek language file.
  *
  * File Author:
- * 		Chris Kanatas (ckanatas@gmail.com)
+ * 	Chris Kanatas (ckanatas@gmail.com)
  */
 
  var theUILang =
@@ -67,7 +48,7 @@
  Ip_report_track		: "IP/όνομα διακομιστή για αναφορά στον tracker",
  Disabled			: "Απενεργοποιημένο",
  Enabled			: "Ενεργοποιημένο",
- uTorrent_settings		: "Ρυθμίσεις",
+ ruTorrent_settings		: "Ρυθμίσεις",
  Doesnt_support 		: "Το ruTorrent δεν υποστηρίζει το πρόγραμμα περιήγησής σας.",
  Name				: "Όνομα",
  Status 			: "Κατάσταση",
