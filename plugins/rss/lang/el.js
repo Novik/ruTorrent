@@ -39,7 +39,7 @@
  theUILang.rssCheckLink 		= "Έλεγχος πεδίου συνδέσμου";
  theUILang.rssMinInterval		= "Χρονικό διάστημα";
  theUILang.rssIntervalAlways		= "(ταιριάζει πάντα)";
- theUILang.rssIntervalOnce		= "(ταιριάζει μια φορα)";
+ theUILang.rssIntervalOnce		= "(ταιριάζει μια φορά)";
  theUILang.rssInterval12h		= "12 ώρες";
  theUILang.rssInterval1d		= "1 ημέρα";
  theUILang.rssInterval2d		= "2 ημέρες";
