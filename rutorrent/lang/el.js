@@ -162,7 +162,7 @@
  Glob_max_files 		: "Μέγιστος αριθμός ανοικτών αρχείων",
  Glob_max_http			: "Μέγιστος αριθμός ενεργών συνδέσεων http",
  Glob_max_sockets		: "Μέγιστος αριθμός ανοικτών sockets",
- Ather_sett			: "Άλλο",
+ Ather_sett			: "Άλλες",
  Directory_For_Dl		: "Προεπιλεγμένος φάκελος για λήψεις",
  Check_hash			: "Έλεγχος hash μετά τη λήψη",
  Hash				: "Hash",
