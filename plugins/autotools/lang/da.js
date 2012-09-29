@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN AUTOTOOLS
+ *
+ * Danish language file.
+ *
+ * Author: 
+ */
 
  var s_PluginFail			= "Plugin will not work.";
 

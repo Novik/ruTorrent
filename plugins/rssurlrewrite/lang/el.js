@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.rssNewRule		= "Νέος κανόνας";
  theUILang.mnu_rssurlrewrite	= "Αντικατάσταση URL στα RSS";

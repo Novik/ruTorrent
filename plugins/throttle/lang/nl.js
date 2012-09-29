@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.throttles		= "Beperkingen";
  theUILang.throttle		= "Snelheidsbeperking";

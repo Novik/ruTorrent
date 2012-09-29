@@ -340,7 +340,7 @@ function makeContent()
 					"</table>"+
 				"</fieldset>"+
 				"<fieldset>"+
-					"<legend>"+theUILang.Ather_sett+"</legend>"+
+					"<legend>"+theUILang.Other_sett+"</legend>"+
 					"<table>"+
 						"<tr>"+
 							"<td><input id=\"check_hash\" type=\"checkbox\"/>"+
@@ -392,7 +392,7 @@ function makeContent()
 					"</table>"+
 				"</fieldset>"+
 				"<fieldset>"+
-					"<legend>"+theUILang.Ather_Limiting+"</legend>"+
+					"<legend>"+theUILang.Other_Limiting+"</legend>"+
 					"<table>"+
 						"<tr>"+
 							"<td>"+theUILang.Number_ul_slots+":</td>"+

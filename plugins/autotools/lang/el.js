@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN AUTOTOOLS
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  var s_PluginFail			= "Το πρόσθετο δεν θα λειτουργήσει.";
 

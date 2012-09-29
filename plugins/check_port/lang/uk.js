@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CHECK_PORT
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.checkPort		= "Перевірити стан порту";
  theUILang.portStatus		= [

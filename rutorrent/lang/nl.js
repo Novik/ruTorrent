@@ -1,13 +1,13 @@
 ﻿/*
- * File Name: nl.js
- * 	Dutch language file.
+ * Dutch language file.
  *
- * Initial Author:
- * 	Lord Alderaan (lordalderaan@gmail.com)
+ * Initial Author: Lord Alderaan (lordalderaan@gmail.com)
+ *
+ * Author: rascalli (rascallim@gmail.com)
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -156,13 +156,13 @@
  Number_Peers_For_Seeds_max	: "Maximaal aantal seeds",
  Enable_port_open		: "Open poort",
  dht_port			: "UDP poort voor DHT",
- Ather_Limiting 		: "Overige Limieten",
+ Other_Limiting 		: "Overige Limieten",
  Number_dl_slots		: "Aantal download slots",
  Glob_max_memory		: "Maximaal geheugen gebruik",
  Glob_max_files 		: "Maximaal aantal open bestanden",
  Glob_max_http			: "Maximaal aantal open http connecties",
  Glob_max_sockets		: "Maximal aantal open sockets",
- Ather_sett			: "Andere Opties",
+ Other_sett			: "Andere Opties",
  Directory_For_Dl		: "Standaard folder voor downloads",
  Check_hash			: "Hash controle na download",
  Hash				: "Hash",
@@ -267,4 +267,4 @@
  dontSet			: "Don't set",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
- };
+};

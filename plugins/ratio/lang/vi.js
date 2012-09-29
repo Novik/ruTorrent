@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RATIO
+ *
+ * Vietnamese language file.
+ *
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ */
 
  theUILang.ratios		= "Các nhóm tỉ lệ";
  theUILang.ratio		= "Nhóm tỉ Lệ";

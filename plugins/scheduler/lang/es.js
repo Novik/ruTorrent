@@ -1,4 +1,10 @@
- 
+﻿/*
+ * PLUGIN SCHEDULER
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.scheduler		= "Planificador";
  theUILang.schedulerOn		= "Habilitar Planificador";

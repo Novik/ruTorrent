@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * PLUGIN CHUNKS
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
+
  theUILang.Chunks		= "Частини";
  theUILang.cAvail		= "Доступність";
  theUILang.cDownloaded		= "Наявність";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.tegMenuLoad			= "Φόρτωση";
  theUILang.tegMenuOpen			= "Άνοιγμα στο πρόγραμμα περιήγησης";

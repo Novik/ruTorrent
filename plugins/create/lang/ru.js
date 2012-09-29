@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.mnu_create			= "Новый торрент...";
  theUILang.CreateNewTorrent		= "Новый торрент";

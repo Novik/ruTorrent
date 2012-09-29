@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.throttle		= "Канал";
  theUILang.throttles		= "Каналы";

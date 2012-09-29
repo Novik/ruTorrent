@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN TRAFFIC
+ *
+ * Serbian language file.
+ *
+ * Author: Zoltan Csala (zcsala021 at gmail dot com)
+ */
 
  theUILang.traf 		= "Саобраћај";
  theUILang.perDay		= "Дневно";

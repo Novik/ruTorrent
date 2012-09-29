@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCHEDULER
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.scheduler		= "Harmonogram";
  theUILang.schedulerOn		= "Włącz Harmonogram";

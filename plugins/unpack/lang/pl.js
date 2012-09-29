@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN UNPACK
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.unpack		= "Rozpakuj";
  theUILang.unpackPath		= "Rozpakuj do (zostaw puste, aby rozpakować do bieżącego folderu)";

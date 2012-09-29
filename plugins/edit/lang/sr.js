@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Serbian language file.
+ *
+ * Author: Zoltan Csala (zcsala021 at gmail dot com)
+ */
 
  theUILang.EditTrackers 		= "Уреди торент ...";
  theUILang.EditTorrentProperties	= "Својства торента";
@@ -8,4 +14,3 @@
  theUILang.cantFindTorrent		= "Изворна торент-датотека за овај низтовар није нађена."
 
 thePlugins.get("edit").langLoaded();
-

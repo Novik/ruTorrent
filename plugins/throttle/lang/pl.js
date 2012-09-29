@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.throttles		= "Kanały";
  theUILang.throttle		= "Kanał";

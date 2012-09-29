@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTRATIO
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.ratioRulesManager	= "Διαχείριση Κανόνων";
  theUILang.mnu_ratiorule	= "Κανόνες Αναλογίας";
@@ -15,5 +21,5 @@
  theUILang.setRatioTo		= "Όρισε αναλογία σε";
  theUILang.setChannelTo 	= "Όρισε περιοριστή σε";
  theUILang.ratioNewRule 	= "Νέος κανόνας";
- 
+
 thePlugins.get("extratio").langLoaded();

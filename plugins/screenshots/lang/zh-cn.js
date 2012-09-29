@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCREENSHOTS
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.exFFMPEG		= "Screenshots";
  theUILang.exFrameWidth 	= "Frame width";

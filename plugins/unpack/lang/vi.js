@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN UNPACK
+ *
+ * Vietnamese language file.
+ *
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ */
 
  theUILang.unpack		= "Giải nén";
  theUILang.unpackPath		= "Giải nén vào (bỏ trống nếu muốn giải nén vào thư mục torrent hiện tại):";

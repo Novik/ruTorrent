@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Vietnamese language file.
+ *
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ */
 
  theUILang.tegMenuLoad			= "Tải";
  theUILang.tegMenuOpen			= "Mở trong trình duyệt";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Serbian language file.
+ *
+ * Author: 
+ */
 
  theUILang.tegMenuLoad			= "Load";
  theUILang.tegMenuOpen			= "Open in browser";

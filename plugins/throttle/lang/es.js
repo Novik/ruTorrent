@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.throttles		= "Velocidades";
  theUILang.throttle		= "Velocidad";

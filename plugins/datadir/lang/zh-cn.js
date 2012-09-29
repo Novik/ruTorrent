@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.DataDir		= "保存到";
  theUILang.DataDirMove		= "移动数据文件";

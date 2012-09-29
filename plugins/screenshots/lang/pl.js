@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCREENSHOTS
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.exFFMPEG		= "Zrzuty Ekranu";
  theUILang.exFrameWidth 	= "Szerokość ramki";

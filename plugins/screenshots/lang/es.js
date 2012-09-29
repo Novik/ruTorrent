@@ -1,3 +1,10 @@
+﻿/*
+ * PLUGIN SCREENSHOTS
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.exFFMPEG		= "Capturas";
  theUILang.exFrameWidth 	= "Ancho del Frame";

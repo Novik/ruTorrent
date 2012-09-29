@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTRATIO
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.ratioRulesManager	= "Manager Reguł Ratio";
  theUILang.mnu_ratiorule	= "Reguły Ratio";

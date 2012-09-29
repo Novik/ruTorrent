@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN TRAFFIC
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.traf 		= "Трафик";
  theUILang.perDay		= "За сутки";

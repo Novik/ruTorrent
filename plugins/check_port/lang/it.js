@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CHECK_PORT
+ *
+ * Italian language file.
+ *
+ * Author: 
+ */
 
  theUILang.checkPort		= "Check Port Status";
  theUILang.portStatus		= [

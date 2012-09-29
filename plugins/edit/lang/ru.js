@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.EditTrackers 		= "Редактировать...";
  theUILang.EditTorrentProperties	= "Настройка торрента";

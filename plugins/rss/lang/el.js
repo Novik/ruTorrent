@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSS
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.addRSS			= "Προσθήκη τροφοδοσίας RSS";
  theUILang.feedURL			= "URL";

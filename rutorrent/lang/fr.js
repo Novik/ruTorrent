@@ -1,16 +1,13 @@
 ﻿/*
- * File Name: fr.js
- * 	French language file.
+ * French language file.
  *
- * Initial Authors:
- * 	Platoon21 (charlesprost@gmail.com) and Zempashi
+ * Initial Authors: Platoon21 (charlesprost@gmail.com) and Zempashi
  *
- * File Author:
- * 	Nicobubulle (nicobubulle@gmail.com) for ruTorrent
+ * Author: Nicobubulle (nicobubulle@gmail.com) for ruTorrent
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -159,13 +156,13 @@
  Number_Peers_For_Seeds_max	: "Nombre maximum de sources",
  Enable_port_open		: "Ouvrir le port d'écoute",
  dht_port			: "Utiliser le port UDP pour DHT",
- Ather_Limiting 		: "Autres limitations",
+ Other_Limiting 		: "Autres limitations",
  Number_dl_slots		: "Nombre de slots de téléchargement",
  Glob_max_memory		: "Utilisation maximale de la mémoire",
  Glob_max_files 		: "Nombre maximum de fichiers ouverts",
  Glob_max_http			: "Nombre maximum de connexions HTTP ouvertes",
  Glob_max_sockets		: "Nombre maximum de sockets ouverts",
- Ather_sett			: "Autre",
+ Other_sett			: "Autre",
  Directory_For_Dl		: "Répertoire par défaut pour les téléchargements",
  Check_hash			: "Vérifier le Hash après le téléchargement",
  Hash				: "Hash",
@@ -270,4 +267,4 @@
  dontSet			: "Sans",
  webBadSessionError		: "Le plug-in ne fonctionnera pas. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
  webBadSessionWarning		: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent."
- };
+};

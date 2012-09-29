@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.EditTrackers 		= "Редагувати…";
  theUILang.EditTorrentProperties	= "Властивості торента";

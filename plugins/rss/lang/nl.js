@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSS
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.addRSS			= "Toevoegen RSS-feed";
  theUILang.feedURL			= "Feed URL";

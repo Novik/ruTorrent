@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN FEEDS
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.feedAll		= "Усі завантаження";
  theUILang.feedCompleted	= "Завершені завантаження";

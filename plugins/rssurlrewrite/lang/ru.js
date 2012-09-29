@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.rssNewRule		= "Новое правило";
  theUILang.mnu_rssurlrewrite	= "Замена URL в RSS";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN LoginMGR
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.accLogin		= "登录";
  theUILang.accPassword		= "密码";

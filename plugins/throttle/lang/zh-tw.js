@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Chinese Traditional language file.
+ *
+ * Author: 
+ */
 
  theUILang.throttles		= "Channels";
  theUILang.throttle		= "Channel";

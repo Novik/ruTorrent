@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.throttles		= "通道";
  theUILang.throttle		= "通道";

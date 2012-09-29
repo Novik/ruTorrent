@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN _TASK
+ *
+ * Dutch language file.
+ *
+ * Author: 
+ */
 
  theUILang.tskCommand		= "Running...";
  theUILang.tskCommandDone	= "Done.";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.DataDir		= "Zapisz do";
  theUILang.DataDirMove		= "Przenieś pliki danych";

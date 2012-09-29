@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.tegMenuLoad			= "Загрузить";
  theUILang.tegMenuOpen			= "Открыть в браузере";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Serbian language file.
+ *
+ * Author: Zoltan Csala (zcsala021 at gmail dot com)
+ */
 
  theUILang.throttles		= "Канали";
  theUILang.throttle		= "Канал";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN FEEDS
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.feedAll		= "Wszystkie torrenty";
  theUILang.feedCompleted	= "Kompletne torrenty";

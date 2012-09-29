@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSS
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.addRSS			= "添加 RSS 订阅";
  theUILang.feedURL			= "订阅 URL";

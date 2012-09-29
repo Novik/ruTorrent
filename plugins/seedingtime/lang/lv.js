@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SeedingTime
+ *
+ * Latvian language file.
+ *
+ * Author: 
+ */
 
  theUILang.seedingTime		= "Finished";
  theUILang.addTime		= "Added";

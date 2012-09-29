@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCHEDULER
+ *
+ * Portuguese language file.
+ *
+ * Author: 
+ */
 
  theUILang.scheduler		= "Scheduler";
  theUILang.schedulerOn		= "Enable scheduler";

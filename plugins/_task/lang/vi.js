@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN _TASK
+ *
+ * Vietnamese language file.
+ *
+ * Author: 
+ */
 
  theUILang.tskCommand		= "Running...";
  theUILang.tskCommandDone	= "Done.";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN AUTOTOOLS
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  var s_PluginFail			= "Плагін не працюватиме.";
 

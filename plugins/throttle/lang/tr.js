@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Turkish language file.
+ *
+ * Author: 
+ */
 
  theUILang.throttles		= "Channels";
  theUILang.throttle		= "Channel";

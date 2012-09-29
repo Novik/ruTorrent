@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Danish language file.
+ *
+ * Author: 
+ */
 
  theUILang.EditTrackers 		= "Edit Torrent...";
  theUILang.EditTorrentProperties	= "Torrent Properties";

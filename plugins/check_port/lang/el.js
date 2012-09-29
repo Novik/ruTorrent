@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CHECK_PORT
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.checkPort		= "Έλεγχος κατάστασης θύρας";
  theUILang.portStatus		= [

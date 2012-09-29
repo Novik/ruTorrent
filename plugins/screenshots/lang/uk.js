@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCREENSHOTS
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.exFFMPEG		= "Знімки екрана";
  theUILang.exFrameWidth 	= "Ширина кадра";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Serbian language file.
+ *
+ * Author: Zoltan Csala (zcsala021 at gmail dot com)
+ */
 
  theUILang.DataDir		= "Сними у";
  theUILang.DataDirMove		= "Move data files";

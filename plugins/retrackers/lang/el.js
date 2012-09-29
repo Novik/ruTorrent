@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RETRACKERS
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.retrackers		= "Retrackers";
  theUILang.retrackersAdd	= "Προσθήκη ανακοινώσεων";

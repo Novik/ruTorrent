@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.rssNewRule		= "Nowa reguła";
  theUILang.mnu_rssurlrewrite	= "Zastępstwo URLa w RSS";

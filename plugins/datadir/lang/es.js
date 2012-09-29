@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.DataDir		= "Guardar en";
  theUILang.DataDirMove		= "Mover datos";

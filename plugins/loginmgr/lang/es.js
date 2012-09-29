@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN LoginMGR
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.accLogin		= "Login";
  theUILang.accPassword		= "Password";

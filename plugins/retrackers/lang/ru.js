@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RETRACKERS
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.retrackers		= "Ретрекеры";
  theUILang.retrackersAdd	= "Добавить анонсы";

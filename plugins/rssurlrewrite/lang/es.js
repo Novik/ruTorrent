@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.rssNewRule		= "Nueva regla";
  theUILang.mnu_rssurlrewrite	= "URL de reemplazo en RSS";

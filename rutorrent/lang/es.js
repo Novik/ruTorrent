@@ -1,13 +1,13 @@
 ﻿/*
- * File Name: sp.js
- * 	Spanish language file.
+ * Spanish language file.
  *
- * Initial Author:
- * 	Carlos López (the_spide21@yahoo.com)
+ * Initial Author: Carlos López (the_spide21@yahoo.com)
+ *
+ * Author: 
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -156,13 +156,13 @@
  Number_Peers_For_Seeds_max	: "Número máximo de peers para seedear",
  Enable_port_open		: "Abrir puerto escucha",
  dht_port			: "Puerto UDP para usar con DHT",
- Ather_Limiting 		: "Otras limitaciones",
+ Other_Limiting 		: "Otras limitaciones",
  Number_dl_slots		: "Número de descargas",
  Glob_max_memory		: "Uso máximo de memoria",
  Glob_max_files 		: "Número máximo de archivos abiertos",
  Glob_max_http			: "Número máximo de conexiones http abiertas",
  Glob_max_sockets		: "Número máximo de sockets abiertos",
- Ather_sett			: "Otros",
+ Other_sett			: "Otros",
  Directory_For_Dl		: "Carpeta por defecto para descargas",
  Check_hash			: "Comprobar hash una vez finalizado",
  Hash				: "Hash",
@@ -267,4 +267,4 @@
  dontSet			: "No marcar",
  webBadSessionError		: "El Plugin no funcionará. El Webserver debe poder ejecutar dentro de la carpeta de sesión",
  webBadSessionWarning		: "Algunas funcionalidades no estarán disponibles. El Webserver debe poder ejecutar dentro de la carpeta de sesión"
- };
+};

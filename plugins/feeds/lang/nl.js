@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN FEEDS
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.feedAll		= "Alle Torrents";
  theUILang.feedCompleted	= "Voltooide Torrents";

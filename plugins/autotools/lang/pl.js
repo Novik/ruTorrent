@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN AUTOTOOLS
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  var s_PluginFail			= "Wtyczka nie będzie działać.";
 

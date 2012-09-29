@@ -1,9 +1,9 @@
 ﻿/*
- * File Name: ru.js
- * 	Russian language file.
+ * Russian language file.
  *
- * Initial Author:
- * 	Artem Lopata (mod-s@yandex.ru)
+ * Initial Author: Artem Lopata (mod-s@yandex.ru)
+ *
+ * Author: 
  */
 
 var theUILang =
@@ -156,13 +156,13 @@ var theUILang =
  Number_Peers_For_Seeds_max	: "Макс. кол-во пиров для отдачи",
  Enable_port_open		: "Открывать порт для исходящего трафика",
  dht_port			: "UDP порт для DHT",
- Ather_Limiting 		: "Прочие ограничения",
+ Other_Limiting 		: "Прочие ограничения",
  Number_dl_slots		: "Кол-во слотов закачки",
  Glob_max_memory		: "Макс. кол-во используемой памяти",
  Glob_max_files 		: "Макс. кол-во открытых файлов",
  Glob_max_http			: "Макс. кол-во открытых http соединений",
  Glob_max_sockets		: "Макс. кол-во открытых сокетов",
- Ather_sett			: "Прочее",
+ Other_sett			: "Прочее",
  Directory_For_Dl		: "Директория для закачек",
  Check_hash			: "Проверять данные после закачки",
  Hash				: "Hash",
@@ -267,4 +267,4 @@ var theUILang =
  dontSet			: "Не устанавливать",
  webBadSessionError		: "Плагин не будет работать. Веб сервер должен иметь доступ на выполнение к директории session rtorrent",
  webBadSessionWarning		: "Часть функциональности плагина будет недоступна. Веб сервер должен иметь доступ на выполнение к директории session rtorrent"
- };
+};

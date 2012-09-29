@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN AUTOTOOLS
+ *
+ * Latvian language file.
+ *
+ * Author: 
+ */
 
  var s_PluginFail			= "Plugin will not work.";
 

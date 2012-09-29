@@ -1,13 +1,11 @@
 ﻿/*
- * File Name: tr.js
- * 	Turkish language file.
+ * Turkish language file.
  *
- * File Author:
- * 	Turgay Yıldıran (votkalivirgul@gmail)
+ * Author: Turgay Yıldıran (votkalivirgul@gmail)
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -156,13 +154,13 @@
  Number_Peers_For_Seeds_max	: "En fazla ortak sayısı",
  Enable_port_open		: "Dinleme Portunu açın",
  dht_port			: "UDP portunu DHT için kullanın",
- Ather_Limiting 		: "Diğer sınırlandırmalar",
+ Other_Limiting 		: "Diğer sınırlandırmalar",
  Number_dl_slots		: "İndirme yuva sayısı",
  Glob_max_memory		: "En fazla hafıza kullanımı",
  Glob_max_files 		: "En fazla açık dosya sayısı", 
  Glob_max_http			: "En fazla açık http bağlantı sayısı",
  Glob_max_sockets		: "En fazla açık socket sayısı",
- Ather_sett			: "Diğer",
+ Other_sett			: "Diğer",
  Directory_For_Dl		: "Yüklemeler için varsayılan klasör",
  Check_hash			: "Yüklemeden sonra dosya doğrulaması yap",
  Hash				: "Doğrulama",
@@ -267,4 +265,4 @@
  dontSet			: "Don't set",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
- };
+};

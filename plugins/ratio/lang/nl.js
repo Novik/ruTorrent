@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RATIO
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.ratios		= "Ratio";
  theUILang.ratio		= "Ratio";

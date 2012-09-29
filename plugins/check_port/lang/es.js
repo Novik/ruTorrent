@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN CHECK_PORT
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.checkPort		= "Verificar estado del puerto";
  theUILang.portStatus		= [

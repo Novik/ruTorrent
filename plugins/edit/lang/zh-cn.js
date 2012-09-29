@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.EditTrackers 		= "编辑 Torrent...";
  theUILang.EditTorrentProperties	= "Torrent 属性";

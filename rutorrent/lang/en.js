@@ -1,9 +1,9 @@
 ﻿/*
- * File Name: en.js
- * 	English language file.
+ * English language file.
  *
- * Initial Author:
- * 	Artem Lopata (mod-s@yandex.ru)
+ * Initial Author: Artem Lopata (mod-s@yandex.ru)
+ *
+ * Author: 
  */
 
 var theUILang =
@@ -156,13 +156,13 @@ var theUILang =
  Number_Peers_For_Seeds_max	: "Maximum number of peers for seeding",
  Enable_port_open		: "Open listening port",
  dht_port			: "UDP port to use for DHT",
- Ather_Limiting 		: "Other limitations",
+ Other_Limiting 		: "Other Limitations",
  Number_dl_slots		: "Number of download slots",
  Glob_max_memory		: "Maximum memory usage",
  Glob_max_files 		: "Maximum number of open files",
  Glob_max_http			: "Maximum number of open http connections",
  Glob_max_sockets		: "Maximum number of open sockets",
- Ather_sett			: "Other",
+ Other_sett			: "Other",
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
  Hash				: "Hash",
@@ -267,4 +267,4 @@ var theUILang =
  dontSet			: "Don't set",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
- };
+};

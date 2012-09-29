@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.tegMenuLoad			= "Завантажити";
  theUILang.tegMenuOpen			= "Відкрити в браузері";

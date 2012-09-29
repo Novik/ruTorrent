@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 $theUILang["all"]		= "Όλα τα torrents";
 $theUILang["completed"] 	= "Ολοκληρωμένα torrents";

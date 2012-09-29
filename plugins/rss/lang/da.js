@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSS
+ *
+ * Danish language file.
+ *
+ * Author: 
+ */
 
  theUILang.addRSS			= "Add RSS Feed";
  theUILang.feedURL			= "Feed URL";

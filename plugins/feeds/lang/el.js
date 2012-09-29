@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN FEEDS
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.feedAll		= "Όλα τα torrents";
  theUILang.feedCompleted	= "Ολοκληρωμένα torrents";

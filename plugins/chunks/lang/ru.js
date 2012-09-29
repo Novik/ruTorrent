@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * PLUGIN CHUNKS
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
+
  theUILang.Chunks		= "Части";
  theUILang.cAvail		= "Доступность";
  theUILang.cDownloaded		= "Наличие";

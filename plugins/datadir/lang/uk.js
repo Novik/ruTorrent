@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.DataDir		= "Зберегти до";
  theUILang.DataDirMove		= "Перемістити файли даних";

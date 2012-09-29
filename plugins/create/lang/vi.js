@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Vietnamese language file.
+ *
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ */
 
  theUILang.mnu_create			= "Tạo torrent...";
  theUILang.CreateNewTorrent		= "Tạo Torrent mới";

@@ -1,13 +1,11 @@
 ﻿/*
- * File Name: sr.js
- * 	Serbian language file.
+ * Serbian language file.
  *
- * File Author:
- * 	Zoltan Csala (zcsala021 at gmail dot com)
+ * Author: Zoltan Csala (zcsala021 at gmail dot com)
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -156,13 +154,13 @@
  Number_Peers_For_Seeds_max	: "Maximum number of peers for seeding",
  Enable_port_open		: "Open listening port",
  dht_port			: "UDP port to use for DHT",
- Ather_Limiting 		: "Друга ограничења",
+ Other_Limiting 		: "Друга ограничења",
  Number_dl_slots		: "Number of download slots",
  Glob_max_memory		: "Максимална потрошња меморије",
  Glob_max_files 		: "Максималан број отворених датотека",
  Glob_max_http			: "Максималан број отворених НТТР веза",
  Glob_max_sockets		: "Maximum number of open sockets",
- Ather_sett			: "Друго",
+ Other_sett			: "Друго",
  Directory_For_Dl		: "Подразумевани директоријум за низтоваре",
  Check_hash			: "Провери хеш после низтовара",
  Hash				: "Хеш",
@@ -267,4 +265,4 @@
  dontSet			: "Don't set",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
- };
+};

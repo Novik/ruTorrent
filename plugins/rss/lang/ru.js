@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSS
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.addRSS			= "Добавить рассылку";
  theUILang.feedURL			= "URL";
