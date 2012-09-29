@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN AUTOTOOLS
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  var s_PluginFail			= "Плагин не будет работать.";
 

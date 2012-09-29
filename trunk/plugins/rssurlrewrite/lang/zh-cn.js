@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.rssNewRule		= "新建规则";
  theUILang.mnu_rssurlrewrite	= "替换 RSS 中 URL 的规则";

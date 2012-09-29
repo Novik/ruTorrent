@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN _TASK
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.tskCommand		= "Ejecutando...";
  theUILang.tskCommandDone	= "Listo.";

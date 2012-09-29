@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.tegMenuLoad			= "Załaduj";
  theUILang.tegMenuOpen			= "Otwórz w przeglądarce";

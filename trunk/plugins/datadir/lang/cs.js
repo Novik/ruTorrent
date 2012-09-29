@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Czech language file.
+ *
+ * Author: 
+ */
 
  theUILang.DataDir		= "Save to";
  theUILang.DataDirMove		= "Move data files";

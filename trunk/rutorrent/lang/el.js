@@ -1,13 +1,11 @@
 ﻿/*
- * File Name: el.js
- * 	Greek language file.
+ * Greek language file.
  *
- * File Author:
- * 	Chris Kanatas (ckanatas@gmail.com)
+ * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Ανάπτυξη λογισμικού",
  Check_new_version		: "Ελέγξτε για νέα έκδοση",
  here				: "εδώ",
@@ -156,13 +154,13 @@
  Number_Peers_For_Seeds_max	: "Μέγιστος αριθμός από χρήστες για διαμοιρασμό",
  Enable_port_open		: "Άνοιγμα θύρας επικοινωνίας",
  dht_port			: " Θύρα UDP για χρήση με DHT",
- Ather_Limiting 		: "Άλλοι περιορισμοί",
+ Other_Limiting 		: "Άλλοι περιορισμοί",
  Number_dl_slots		: "Αριθμός slots για λήψη",
  Glob_max_memory		: "Μέγιστη χρήση μνήμης",
  Glob_max_files 		: "Μέγιστος αριθμός ανοικτών αρχείων",
  Glob_max_http			: "Μέγιστος αριθμός ενεργών συνδέσεων http",
  Glob_max_sockets		: "Μέγιστος αριθμός ανοικτών sockets",
- Ather_sett			: "Άλλες",
+ Other_sett			: "Άλλες",
  Directory_For_Dl		: "Προεπιλεγμένος φάκελος για λήψεις",
  Check_hash			: "Έλεγχος hash μετά τη λήψη",
  Hash				: "Hash",
@@ -267,4 +265,4 @@
  dontSet			: "Να μην οριστεί",
  webBadSessionError		: "Το πρόσθετο δεν θα λειτουργήσει. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
  webBadSessionWarning		: "Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent"
- };
+};

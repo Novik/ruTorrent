@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN EXTRATIO
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.ratioRulesManager	= "Administrador de reglas";
  theUILang.mnu_ratiorule	= "Reglas de ratio";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RATIO
+ *
+ * Serbian language file.
+ *
+ * Author: Zoltan Csala (zcsala021 at gmail dot com)
+ */
 
  theUILang.ratios		= "Односне групе";
  theUILang.ratio		= "Односна група";
@@ -18,4 +24,3 @@
  theUILang.setThrottleTo	= "Set channel to";
 
 thePlugins.get("ratio").langLoaded();
-

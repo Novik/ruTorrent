@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.EditTrackers 		= "Editar Torrent...";
  theUILang.EditTorrentProperties	= "Propiedades del Torrent";

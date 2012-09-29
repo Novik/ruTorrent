@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Danish language file.
+ *
+ * Author: 
+ */
 
  theUILang.rssNewRule		= "New rule";
  theUILang.mnu_rssurlrewrite	= "URL Replacement in RSS";

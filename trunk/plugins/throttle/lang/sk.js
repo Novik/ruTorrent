@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THROTTLE
+ *
+ * Slovak language file.
+ *
+ * Author: 
+ */
 
  theUILang.throttles		= "Channels";
  theUILang.throttle		= "Channel";

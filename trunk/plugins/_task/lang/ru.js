@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN _TASK
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.tskCommand		= "Выполнение команды...";
  theUILang.tskCommandDone	= "Команда выполнена.";

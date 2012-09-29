@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RATIO
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.ratios		= "Групи коефіцієнтів";
  theUILang.ratio		= "Група коефіцієнтів";

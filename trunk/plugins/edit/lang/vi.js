@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Vietnamese language file.
+ *
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ */
 
  theUILang.EditTrackers 		= "Chỉnh sửa torrent...";
  theUILang.EditTorrentProperties	= "Các thuộc tính của Torrent";

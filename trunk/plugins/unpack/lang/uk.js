@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN UNPACK
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.unpack		= "Розпакування";
  theUILang.unpackPath		= "Шлях (якщо не вказано — в каталог завантаження)";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.DataDir		= "Сохранить в";
  theUILang.DataDirMove		= "Перенести файлы данных";

@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * PLUGIN CHUNKS
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
+
  theUILang.Chunks		= "Κομμάτια";
  theUILang.cAvail		= "Διαθεσιμότητα";
  theUILang.cDownloaded		= "Ελήφθησαν";

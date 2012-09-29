@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.mnu_create			= "Δημιουργία Torrent...";
  theUILang.CreateNewTorrent		= "Δημιουργία Νέου Torrent";

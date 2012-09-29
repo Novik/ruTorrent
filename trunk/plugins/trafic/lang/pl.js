@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN TRAFFIC
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.traf 		= "Ruch";
  theUILang.perDay		= "Przez dzień";

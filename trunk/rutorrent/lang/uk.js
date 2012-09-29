@@ -1,16 +1,13 @@
 ﻿/*
- * File Name: uk.js
- * 	Ukrainian language file.
+ * Ukrainian language file.
  *
- * File Author:
- * 	Oleksandr Natalenko (pfactum@gmail.com)
+ * Initial Author: Artem Lopata (mod-s@yandex.ru)
  *
- * Initial Author:
- * 	Artem Lopata (mod-s@yandex.ru)
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Розробники",
  Check_new_version		: "Перевірка наявності нових версій",
  here				: "тут",
@@ -159,13 +156,13 @@
  Number_Peers_For_Seeds_max	: "Макс. кількісті пірів для роздавання",
  Enable_port_open		: "Відкривати порт для вихідного трафіка",
  dht_port			: "Порт UDP для DHT",
- Ather_Limiting 		: "Інші обмеження",
+ Other_Limiting 		: "Інші обмеження",
  Number_dl_slots		: "Кількість слотів завантаження",
  Glob_max_memory		: "Макс. об’єм використовуваної пам’яті",
  Glob_max_files 		: "Макс. кількість відкритих файлів",
  Glob_max_http			: "Макс. кількість відкритих з’єднань HTTP",
  Glob_max_sockets		: "Макс. кількість відкритих сокетів",
- Ather_sett			: "Інше",
+ Other_sett			: "Інше",
  Directory_For_Dl		: "Каталог завантажень",
  Check_hash			: "Перевіряти дані після завантаження",
  Hash				: "Хеш",
@@ -270,4 +267,4 @@
  dontSet			: "Не встановлювати",
  webBadSessionError		: "Плагін не працюватиме. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent",
  webBadSessionWarning		: "Деякі функції не будуть доступні. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent"
- };
+};

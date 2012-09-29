@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Serbian language file.
+ *
+ * Author: Zoltan Csala (zcsala021 at gmail dot com)
+ */
 
  theUILang.mnu_create			= "Направи торент ...";
  theUILang.CreateNewTorrent		= "Направи нови торент";

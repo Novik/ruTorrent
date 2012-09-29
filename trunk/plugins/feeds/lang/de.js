@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN FEEDS
+ *
+ * German language file.
+ *
+ * Author: 
+ */
 
  theUILang.feedAll		= "All torrents";
  theUILang.feedCompleted	= "Completed torrents";

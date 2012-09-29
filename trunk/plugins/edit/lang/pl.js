@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.EditTrackers 		= "Edytuj torrent...";
  theUILang.EditTorrentProperties	= "Właściwości torrenta";

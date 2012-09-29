@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.mnu_create			= "创建 Torrent...";
  theUILang.CreateNewTorrent		= "创建新的 Torrent";

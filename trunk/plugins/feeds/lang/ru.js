@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN FEEDS
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.feedAll		= "Все закачки";
  theUILang.feedCompleted	= "Завершенные закачки";

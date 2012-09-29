@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.tegMenuLoad			= "载入";
  theUILang.tegMenuOpen			= "在浏览器中打开";

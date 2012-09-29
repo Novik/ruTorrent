@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN UNPACK
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.unpack		= "Uitpakken";
  theUILang.unpackPath		= "Uitpakken naar (laat blank voor huidige folder):";

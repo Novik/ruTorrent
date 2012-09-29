@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RATIO
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.ratios		= "Ομάδες αναλογίας";
  theUILang.ratio		= "Ομάδα αναλογίας";

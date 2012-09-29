@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTRATIO
+ *
+ * Ukrainian language file.
+ *
+ * Author: 
+ */
 
  theUILang.ratioRulesManager	= "Менеджер правил";
  theUILang.mnu_ratiorule	= "Правила коефіцієнта";

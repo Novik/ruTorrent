@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN UNPACK
+ *
+ * Czech language file.
+ *
+ * Author: 
+ */
 
  theUILang.unpack		= "Unpack";
  theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";

@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * PLUGIN CHUNKS
+ *
+ * Dutch language file.
+ *
+ * Author: 
+ */
+
  theUILang.Chunks		= "Chunks";
  theUILang.cAvail		= "Availability";
  theUILang.cDownloaded		= "Downloaded";

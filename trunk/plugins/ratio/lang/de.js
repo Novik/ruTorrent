@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RATIO
+ *
+ * German language file.
+ *
+ * Author: 
+ */
 
  theUILang.ratios		= "Ratio Groups";
  theUILang.ratio		= "RatioGroup";

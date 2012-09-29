@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCHEDULER
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.scheduler		= "Χρονοπρογραμματισμός";
  theUILang.schedulerOn		= "Ενεργοποίηση χρονοπρογραμματισμού";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.rssNewRule		= "Створити правило";
  theUILang.mnu_rssurlrewrite	= "Правила замінювання URL-адреси в RSS";

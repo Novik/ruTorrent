@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.mnu_create			= "Utwórz Torrent...";
  theUILang.CreateNewTorrent		= "Utwórz nowy plik Torrent";

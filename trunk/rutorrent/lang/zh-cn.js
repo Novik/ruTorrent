@@ -1,13 +1,13 @@
 ﻿/*
- * File Name: zh-cn.js
- * 	Chinese Simplified language file.
+ * Chinese Simplified language file.
  *
- * Initial Author:
- * 	skevin (skevin@china.com)
+ * Initial Author: skevin (skevin@china.com)
+ *
+ * Author: 
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -156,13 +156,13 @@
  Number_Peers_For_Seeds_max	: "最大种子数",
  Enable_port_open		: "打开监听端口",
  dht_port			: "DHT 使用的 UDP 端口",
- Ather_Limiting 		: "其他限制",
+ Other_Limiting 		: "其他限制",
  Number_dl_slots		: "下载通道数",
  Glob_max_memory		: "最大使用内存",
  Glob_max_files 		: "最大打开文件数",
  Glob_max_http			: "最大打开 HTTP 连接数",
  Glob_max_sockets		: "最大打开 Sockets 数",
- Ather_sett			: "其他",
+ Other_sett			: "其他",
  Directory_For_Dl		: "默认下载目录",
  Check_hash			: "下载完成后检查 Hash",
  Hash				: "Hash",
@@ -267,4 +267,4 @@
  dontSet			: "Don't set",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
- };
+};

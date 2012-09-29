@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN LoginMGR
+ *
+ * Ukrainian language file.
+ *
+ * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ */
 
  theUILang.accLogin		= "Логін";
  theUILang.accPassword		= "Пароль";

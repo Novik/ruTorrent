@@ -1,23 +1,20 @@
 ﻿/*
- * File Name: langs.js
- * 	Determine language file.
+ * Determine language file.
  *
- * Initial Author:
- * 	Artem Lopata (mod-s@yandex.ru)
+ * Initial Author: Artem Lopata (mod-s@yandex.ru)
  *
- * Description:
- * 	This script detects user language. If not in the list, then defaults to English.
+ * Description: This script detects user language. If not in the list, then defaults to English.
  *
  * Languages:
- * 	af:'Afrikaans', ar:'Arabic', bn:'Bengali/Bangla', bs:'Bosnian', bg:'Bulgarian',
- * 	"zh-cn":'Chinese Simplified', "zh-tw":'Chinese Traditional', hr:'Croatian',
- * 	cs:'Czech', da:'Danish', nl:'Dutch', en:'English', et:'Estonian', fo:'Faroese',
- * 	fi:'Finnish', fr:'French', de:'German', el:'Greek', he:'Hebrew', hi:'Hindi',
- * 	hu:'Hungarian', it:'Italian', ja:'Japanese', km:'Khmer', ko:'Korean', lv:'Latvian',
- * 	lt:'Lithuanian', ms:'Malay', mn:'Mongolian', no:'Norwegian', fa:'Persian',
- * 	pl:'Polish', pt:'Portuguese', ro:'Romanian',ru:'Russian', sr:'Serbian', sk:'Slovak',
- * 	sl:'Slovenian', es:'Spanish', sv:'Swedish', th:'Thai', tr:'Turkish', uk:'Ukrainian',
- * 	vi:'Vietnamese'
+ * af:'Afrikaans', ar:'Arabic', bn:'Bengali/Bangla', bs:'Bosnian', bg:'Bulgarian',
+ * "zh-cn":'Chinese Simplified', "zh-tw":'Chinese Traditional', hr:'Croatian',
+ * cs:'Czech', da:'Danish', nl:'Dutch', en:'English', et:'Estonian', fo:'Faroese',
+ * fi:'Finnish', fr:'French', de:'German', el:'Greek', he:'Hebrew', hi:'Hindi',
+ * hu:'Hungarian', it:'Italian', ja:'Japanese', km:'Khmer', ko:'Korean', lv:'Latvian',
+ * lt:'Lithuanian', ms:'Malay', mn:'Mongolian', no:'Norwegian', fa:'Persian',
+ * pl:'Polish', pt:'Portuguese', ro:'Romanian',ru:'Russian', sr:'Serbian', sk:'Slovak',
+ * sl:'Slovenian', es:'Spanish', sv:'Swedish', th:'Thai', tr:'Turkish', uk:'Ukrainian',
+ * vi:'Vietnamese'
  */
 
 function readLangCookie() {

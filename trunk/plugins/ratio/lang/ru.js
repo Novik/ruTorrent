@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RATIO
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.ratios		= "Группы ratio";
  theUILang.ratio		= "ГруппаRatio";

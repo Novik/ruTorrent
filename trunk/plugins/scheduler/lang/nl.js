@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCHEDULER
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.scheduler		= "Taakplanner";
  theUILang.schedulerOn		= "Taakplanner Aanzetten";

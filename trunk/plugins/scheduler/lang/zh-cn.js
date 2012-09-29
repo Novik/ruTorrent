@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCHEDULER
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.scheduler		= "调度";
  theUILang.schedulerOn		= "启用调度";

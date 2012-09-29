@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * PLUGIN CHUNKS
+ *
+ * Chinese Traditional language file.
+ *
+ * Author: 
+ */
+
  theUILang.Chunks		= "Chunks";
  theUILang.cAvail		= "Availability";
  theUILang.cDownloaded		= "Downloaded";

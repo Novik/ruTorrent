@@ -1,13 +1,11 @@
 ﻿/*
- * File Name: vi.js
- * 	Vietnamese language file.
+ * Vietnamese language file.
  *
- * File Author:
- * 	Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -156,13 +154,13 @@
  Number_Peers_For_Seeds_max	: "Số nguồn tối đa",
  Enable_port_open		: "Mở cổng",
  dht_port			: "Sử dụng cổng UDP cho DHT",
- Ather_Limiting 		: "Các giới hạn khác",
+ Other_Limiting 		: "Các giới hạn khác",
  Number_dl_slots		: "Số khe tải xuống",
  Glob_max_memory		: "Bộ nhớ sử dụng tối đa",
  Glob_max_files 		: "Số tập tin mở tối đa",
  Glob_max_http			: "Số kết nối HTTP tối đa",
  Glob_max_sockets		: "Số phiên kết nối tối đa",
- Ather_sett			: "Khác",
+ Other_sett			: "Khác",
  Directory_For_Dl		: "Thư mục mặc định khi tải về",
  Check_hash			: "Kiểm tra hash sau khi tải",
  Hash				: "Mã Hash",
@@ -267,4 +265,4 @@
  dontSet			: "Don't set",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
- };
+};

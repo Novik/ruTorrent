@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.DataDir		= "Αποθήκευση στο";
  theUILang.DataDirMove		= "Μετακίνηση αρχείων δεδομένων";

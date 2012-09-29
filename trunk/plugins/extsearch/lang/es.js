@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.tegMenuLoad			= "Cargar";
  theUILang.tegMenuOpen			= "Abrir en el navegador";

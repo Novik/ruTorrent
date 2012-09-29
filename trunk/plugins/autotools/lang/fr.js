@@ -1,11 +1,9 @@
 ﻿/*
  * PLUGIN AUTOTOOLS
  *
- * File Name: fr.js
- * 	French language file.
+ * French language file.
  *
- * File Author:
- *    Nicobubulle (nicobubulle@gmail.com)
+ * Author: Nicobubulle (nicobubulle@gmail.com)
  */
 
  var s_PluginFail			= "Le plug-in ne fonctionnera pas.";

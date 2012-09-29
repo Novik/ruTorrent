@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Vietnamese language file.
+ *
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ */
 
  theUILang.DataDir		= "Lưu vào";
  theUILang.DataDirMove		= "Di chuyển các tập tin dữ liệu";

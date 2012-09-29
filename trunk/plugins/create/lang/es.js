@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.mnu_create			= "Crear Torrent...";
  theUILang.CreateNewTorrent		= "Crear Nuevo Torrent";

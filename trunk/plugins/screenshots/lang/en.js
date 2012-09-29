@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCREENSHOTS
+ *
+ * English language file.
+ *
+ * Author: 
+ */
 
  theUILang.exFFMPEG		= "Screenshots";
  theUILang.exFrameWidth 	= "Frame width";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.EditTrackers 		= "Bewerk torrent ...";
  theUILang.EditTorrentProperties	= "Torrent Eigenschappen";

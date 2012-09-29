@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Vietnamese language file.
+ *
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
+ */
 
  theUILang.rssNewRule		= "Quy luật mới";
  theUILang.mnu_rssurlrewrite	= "Quy luật thay thế đường dẫn RSS";

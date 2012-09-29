@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN UNPACK
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.unpack		= "Εξαγωγή";
  theUILang.unpackPath		= "Εξαγωγή στο (αφήστε το κενό για χρήση του τρέχοντος φακέλου του torrent)";

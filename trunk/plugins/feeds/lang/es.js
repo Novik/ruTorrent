@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN FEEDS
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.feedAll		= "Todos los torrents";
  theUILang.feedCompleted	= "Torrents completados";

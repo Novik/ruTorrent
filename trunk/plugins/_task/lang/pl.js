@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN _TASK
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.tskCommand		= "Uruchomione...";
  theUILang.tskCommandDone	= "Gotowe.";

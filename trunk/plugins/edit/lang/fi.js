@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Finnish language file.
+ *
+ * Author: 
+ */
 
  theUILang.EditTrackers 		= "Edit Torrent...";
  theUILang.EditTorrentProperties	= "Torrent Properties";

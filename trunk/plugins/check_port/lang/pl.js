@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CHECK_PORT
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.checkPort		= "Sprawdź przekierowanie Portu/Portów";
  theUILang.portStatus		= [

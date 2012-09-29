@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Danish language file.
+ *
+ * Author: 
+ */
 
  theUILang.mnu_create			= "Create Torrent...";
  theUILang.CreateNewTorrent		= "Create New Torrent";

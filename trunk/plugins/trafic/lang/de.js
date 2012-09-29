@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * PLUGIN TRAFFIC
+ *
+ * German language file.
+ *
+ * Author: 
+ */
+
  theUILang.traf 	= "Traffic";
  theUILang.perDay	= "Pro Tag";
  theUILang.perMonth 	= "Pro Monat";

@@ -1,11 +1,9 @@
 ﻿/*
  * PLUGIN DATADIR
  *
- * File Name: fr.js
- * 	French language file.
+ * French language file.
  *
- * File Author:
- *    Nicobubulle (nicobubulle@gmail.com)
+ * Author: Nicobubulle (nicobubulle@gmail.com)
  */
 
  theUILang.DataDir		= "Enregistrer sous";

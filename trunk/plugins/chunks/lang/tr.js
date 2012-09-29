@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * PLUGIN CHUNKS
+ *
+ * Turkish language file.
+ *
+ * Author: 
+ */
+
  theUILang.Chunks		= "Chunks";
  theUILang.cAvail		= "Availability";
  theUILang.cDownloaded		= "Downloaded";

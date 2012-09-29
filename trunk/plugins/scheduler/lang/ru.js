@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCHEDULER
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.scheduler		= "Расписание";
  theUILang.schedulerOn		= "Включить расписание";

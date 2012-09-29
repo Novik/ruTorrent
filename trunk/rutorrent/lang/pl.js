@@ -1,16 +1,13 @@
 ﻿/*
- * File Name: pl.js
- * 	Polish language file.
+ * Polish language file.
  *
- * Initial Author:
- * 	Penknife (penknife1@gmail.com)
+ * Initial Author: Penknife (penknife1@gmail.com)
  *
- * Updates:
- * 	Dare (piczok@gmail.com)
+ * Author: Dare (piczok@gmail.com)
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -159,13 +156,13 @@
  Number_Peers_For_Seeds_max	: "Maksymalna liczba seedów",
  Enable_port_open		: "Otwórz port nasłuchujący",
  dht_port			: "Port UDP dla DHT",
- Ather_Limiting 		: "Inne ograniczenia",
+ Other_Limiting 		: "Inne ograniczenia",
  Number_dl_slots		: "Liczba slotów pobierań",
  Glob_max_memory		: "Maksymalne użycie pamięci",
  Glob_max_files 		: "Maksymalna liczba otwartych plików",
  Glob_max_http			: "Maksymalna liczba otwartych połączeń http",
  Glob_max_sockets		: "Maksymalna liczba otwartych gniazd",
- Ather_sett			: "Inne",
+ Other_sett			: "Inne",
  Directory_For_Dl		: "Domyślne katalog pobierań",
  Check_hash			: "Sprawdzaj sumę kontrolą po pobraniu",
  Hash				: "Hash",
@@ -270,4 +267,4 @@
  dontSet			: "Nie ustawiaj",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
- };
+};

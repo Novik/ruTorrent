@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN TRAFFIC
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.traf 		= "流量";
  theUILang.perDay		= "每天";

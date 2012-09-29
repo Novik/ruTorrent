@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN AUTOTOOLS
+ *
+ * Slovak language file.
+ *
+ * Author: 
+ */
 
  var s_PluginFail			= "Plugin will not work.";
 

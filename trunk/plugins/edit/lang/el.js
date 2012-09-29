@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EDIT
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.EditTrackers 		= "Επεξεργασία Torrent...";
  theUILang.EditTorrentProperties	= "Ιδιότητες του Torrent";

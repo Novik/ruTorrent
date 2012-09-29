@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSS
+ *
+ * Polish language file.
+ *
+ * Author: Dare (piczok@gmail.com)
+ */
 
  theUILang.addRSS			= "Dodaj podajnik RSS ";
  theUILang.feedURL			= "Adres URL podajnika";

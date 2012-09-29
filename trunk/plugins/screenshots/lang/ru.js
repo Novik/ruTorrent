@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCREENSHOTS
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.exFFMPEG		= "Скриншоты";
  theUILang.exFrameWidth 	= "Ширина фрейма";

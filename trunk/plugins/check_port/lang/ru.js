@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CHECK_PORT
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.checkPort		= "Проверить статус порта";
  theUILang.portStatus		= [

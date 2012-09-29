@@ -1,13 +1,11 @@
 ﻿/*
- * File Name: zh-tw.js
- * 	Chinese Traditional language file.
+ * Chinese Traditional language file.
  *
- * File Author:
- * 	Eyes Blue (kingofeyesblue@yahoo.com.tw)
+ * Author: Eyes Blue (kingofeyesblue@yahoo.com.tw)
  */
 
- var theUILang =
- {
+var theUILang =
+{
  Developers			: "Developers",
  Check_new_version		: "Check new version",
  here				: "here",
@@ -156,13 +154,13 @@
  Number_Peers_For_Seeds_max	: "作種時與其他使用者連線的最大數量",
  Enable_port_open		: "監聽連接埠",
  dht_port			: "DHT 使用的 UDP 連接埠",
- Ather_Limiting 		: "其他限制",
+ Other_Limiting 		: "其他限制",
  Number_dl_slots		: "最大下載連線數量",
  Glob_max_memory		: "整體最大記憶體可用量",
  Glob_max_files 		: "整體最大可開啟的檔案數量",
  Glob_max_http			: "整體最大 HTTP 連線數量",
  Glob_max_sockets		: "整體最大可開啟的 socket 數量",
- Ather_sett			: "其他設定",
+ Other_sett			: "其他設定",
  Directory_For_Dl		: "預設下載目錄",
  Check_hash			: "下載完成後使用 Hash 完整驗證所有檔案",
  Hash				: "Hash",
@@ -267,4 +265,4 @@
  dontSet			: "Don't set",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
- };
+};

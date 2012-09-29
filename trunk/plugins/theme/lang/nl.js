@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THEME
+ *
+ * Dutch language file.
+ *
+ * Author: 
+ */
 
  theUILang.themeStandard	= "Standard";
  theUILang.theme		= "Theme";

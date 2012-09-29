@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSS
+ *
+ * Chinese Traditional language file.
+ *
+ * Author:
+ */
 
  theUILang.addRSS			= "Add RSS Feed";
  theUILang.feedURL			= "Feed URL";

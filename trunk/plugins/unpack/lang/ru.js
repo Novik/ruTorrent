@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN UNPACK
+ *
+ * Russian language file.
+ *
+ * Author: 
+ */
 
  theUILang.unpack		= "Распаковать";
  theUILang.unpackPath		= "Путь (пусто - в директорию закачки)";

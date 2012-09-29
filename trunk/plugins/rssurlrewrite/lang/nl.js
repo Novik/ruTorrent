@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN RSSURLREWRITE
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.rssNewRule		= "Nieuwe regel";
  theUILang.mnu_rssurlrewrite	= "Vervangende URL in RSS";

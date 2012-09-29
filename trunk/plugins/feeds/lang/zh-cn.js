@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN FEEDS
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.feedAll		= "所有 torrents";
  theUILang.feedCompleted	= "已完成 torrents";

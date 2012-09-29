@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCREENSHOTS
+ *
+ * Greek language file.
+ *
+ * Author: Chris Kanatas (ckanatas@gmail.com)
+ */
 
  theUILang.exFFMPEG		= "Στιγμιότυπα";
  theUILang.exFrameWidth 	= "Πλάτος καρέ";

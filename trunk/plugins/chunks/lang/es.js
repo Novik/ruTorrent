@@ -1,3 +1,10 @@
+﻿/*
+ * PLUGIN CHUNKS
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.Chunks		= "Trozos";
  theUILang.cAvail		= "Disponibilidad";

@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN SCHEDULER
+ *
+ * Danish language file.
+ *
+ * Author: 
+ */
 
  theUILang.scheduler		= "Scheduler";
  theUILang.schedulerOn		= "Enable scheduler";

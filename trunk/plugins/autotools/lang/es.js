@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN AUTOTOOLS
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  var s_PluginFail			= "El Plugin no funcionará.";
 

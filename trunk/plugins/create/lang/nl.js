@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN CREATE
+ *
+ * Dutch language file.
+ *
+ * Author: rascalli (rascallim@gmail.com)
+ */
 
  theUILang.mnu_create			= "Maak torrent ...";
  theUILang.CreateNewTorrent		= "Maak Torrent";

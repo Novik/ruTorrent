@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTRATIO
+ *
+ * Slovak language file.
+ *
+ * Author: 
+ */
 
  theUILang.ratioRulesManager	= "Rules Manager";
  theUILang.mnu_ratiorule	= "Ratio Rules";

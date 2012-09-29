@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTSEARCH
+ *
+ * Slovak language file.
+ *
+ * Author: 
+ */
 
  theUILang.tegMenuLoad			= "Load";
  theUILang.tegMenuOpen			= "Open in browser";

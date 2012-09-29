@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN THEME
+ *
+ * Czech language file.
+ *
+ * Author: 
+ */
 
  theUILang.themeStandard	= "Standard";
  theUILang.theme		= "Theme";

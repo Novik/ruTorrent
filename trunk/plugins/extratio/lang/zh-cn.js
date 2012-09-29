@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN EXTRATIO
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.ratioRulesManager	= "Rules Manager";
  theUILang.mnu_ratiorule	= "Ratio Rules";

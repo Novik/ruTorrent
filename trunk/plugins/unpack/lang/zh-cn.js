@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN UNPACK
+ *
+ * Chinese Simplified language file.
+ *
+ * Author: 
+ */
 
  theUILang.unpack		= "解压缩";
  theUILang.unpackPath		= "解压到 (这里留空为 Torrents 目录)";

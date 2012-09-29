@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN TRAFFIC
+ *
+ * Slovak language file.
+ *
+ * Author: 
+ */
 
  theUILang.traf 		= "Traffic";
  theUILang.perDay		= "Per day";

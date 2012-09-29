@@ -1,4 +1,10 @@
-
+﻿/*
+ * PLUGIN RSS
+ *
+ * Spanish language file.
+ *
+ * Author: 
+ */
 
  theUILang.addRSS			= "Agregar RSS Feed";
  theUILang.feedURL			= "Feed URL";

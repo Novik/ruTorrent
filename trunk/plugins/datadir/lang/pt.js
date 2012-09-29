@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * PLUGIN DATADIR
+ *
+ * Portuguese language file.
+ *
+ * Author: 
+ */
 
  theUILang.DataDir		= "Save to";
  theUILang.DataDirMove		= "Move data files";
@@ -8,4 +14,3 @@
  theUILang.datadirPHPNotFound	= "DataDir plugin: rTorrent user can't access php interpreter. Plugin will not work.";
 
 thePlugins.get("datadir").langLoaded();
-
