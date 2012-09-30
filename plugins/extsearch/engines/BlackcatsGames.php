@@ -14,7 +14,7 @@ class BlackcatsGamesEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.blackcats-games.net';
+		$url = 'https://www.blackcats-games.net';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'&cat=0' );
 		else
@@ -31,7 +31,7 @@ class BlackcatsGamesEngine extends commonEngine
 				(strpos($cli->results, "<TITLE>Your Company Name</TITLE>")!==false))
 				break;
 			$res = preg_match_all('/<img border="0" src=.* alt="(?P<cat>.*)" \/><\/a>'.
-				'.*<td .*>.*href="details.php\?id=(?P<id>\d+)&amp;hit=1".*>(?P<name>.*)<\/a>.*<br\/>(?P<date>.*)<a href=download.php\/\d+\/(?P<tname>.*)>.*'.
+				'.*<td .*>.*href="details.php\?id=(?P<id>\d+)&amp;hit=1".*>.*<b>(?P<name>.*)<\/b>.*<br\/>(?P<date>.*)<br><a href=download.php\/\d+\/(?P<tname>.*)>.*'.
 				'<td .*>.*<\/td>'.
 				'.*<td .*>(?P<size>.*)<\/td>'.
 				'.*<td .*>.*<\/td>.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
