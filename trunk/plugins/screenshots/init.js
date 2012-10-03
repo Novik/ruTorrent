@@ -279,9 +279,9 @@ plugin.onLangLoaded = function()
 					"<tr><td><input type=\"checkbox\" id=\"exusewidth\" onchange=\"linked(this, 0, ['exfrmwidth']);\"/><label id='lbl_exfrmwidth' for='exfrmwidth' class='disabled'>"+
 						theUILang.exFrameWidth+'<label></td><td class="alr"><input type="text" id="exfrmwidth" class="TextboxShort" disabled=true/></td></tr>'+
 					"<tr><td>"+theUILang.exFramesCount+'</td><td class="alr"><input type="text" id="exfrmcount" class="TextboxShort"/></td></tr>'+
-					"<tr><td>"+theUILang.exStartOffset+','+theUILang.time_s+'</td><td class="alr"><input type="text" id="exfrmoffs" class="TextboxShort"/></td></tr>'+
-					"<tr><td>"+theUILang.exBetween+','+theUILang.time_s+'</td><td class="alr"><input type="text" id="exfrminterval" class="TextboxShort"/></td></tr>'+
-					"<tr><td>"+theUILang.exPlayInterval+','+theUILang.time_s+'</td><td class="alr"><input type="text" id="explayinterval" class="TextboxShort"/></td></tr>'+
+					"<tr><td>"+theUILang.exStartOffset+', '+theUILang.time_s+'</td><td class="alr"><input type="text" id="exfrmoffs" class="TextboxShort"/></td></tr>'+
+					"<tr><td>"+theUILang.exBetween+', '+theUILang.time_s+'</td><td class="alr"><input type="text" id="exfrminterval" class="TextboxShort"/></td></tr>'+
+					"<tr><td>"+theUILang.exPlayInterval+', '+theUILang.time_s+'</td><td class="alr"><input type="text" id="explayinterval" class="TextboxShort"/></td></tr>'+
 					"<tr><td>"+theUILang.exImageFormat+'</td><td class="alr"><select id="exformat" class="TextboxShort">'+
 						"<option value='0'>JPEG</option>"+
 						"<option value='1'>PNG</option>"+
