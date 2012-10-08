@@ -361,17 +361,18 @@ var theContextMenu =
 	},
 	show: function(x,y)
 	{
+		var obj = this.obj;
 		if(x==null)
 			x = this.mouse.x;
 		if(y==null)
 			y = this.mouse.y;
-		if(x + this.obj.width() > $(window).width()) 
-			x -= this.obj.width();
+		if(x + obj.width() > $(window).width()) 
+			x -= obj.width();
 		if(y + this.obj.height() > $(window).height()) 
-			y -= this.obj.height();
+			y -= obj.height();
 		if(y<0)
 			y = 0;
-		this.obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
+		obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
                 $("ul.CMenu a.exp").hover( function() 
                 { 
                 	var submenu = $(this).next();
@@ -380,7 +381,7 @@ var theContextMenu =
                 	if(submenu.offset().top + submenu.height() > $(window).height()) 
 	                	submenu.css( "top", -submenu.height()+20 );
                 });
-                this.obj.show(theDialogManager.divider);
+                obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
 	},
 	hide: function()
 	{
