@@ -167,7 +167,7 @@ var theUILang =
  DisableTracker 		: "Απενεργοποίηση",
  EnableTracker			: "Ενεργοποίηση",
  ClientVersion			: "Πρόγραμμα-πελάτης",
- Flags				: "Σημαίες",
+ Flags				: "Κατάσταση σύνδεσης",
  ReqTimeout			: "Λήξη αιτήματος",
  GetTrackerMessage		: "Λήψη μηνυμάτων από τον tracker",
  Help				: "Βοήθεια",
