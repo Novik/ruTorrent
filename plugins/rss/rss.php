@@ -75,7 +75,7 @@ class rRSS
 			$name = $cli->get_filename();
 			if($name===false)
 				$name = md5($href).".torrent";
-			$name = getUniqueFilename(getUploadsPath()."/".$name);
+			$name = getUniqueUploadedFilename(getUploadsPath()."/".$name);
 			$f = @fopen($name,"w");
 			if($f!==false)
 			{
