@@ -65,7 +65,7 @@ if( count( $argv ) > 1 )
 		}
 	        if(isset($request['private']))
 			$torrent->is_private(true);
-		$fname = getUniqueFilename(getUploadsPath()."/".$torrent->info['name'].'.torrent');
+		$fname = getUniqueUploadedFilename($torrent->info['name'].'.torrent');
 		if(isset($request['start_seeding']))
 		{
 			$path_edit = trim($request['path_edit']);

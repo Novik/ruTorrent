@@ -65,7 +65,7 @@ class commonEngine
 			$name = $cli->get_filename();
 			if($name===false)
 				$name = md5($url).".torrent";
-			$name = getUniqueFilename(getUploadsPath()."/".$name);
+			$name = getUniqueUploadedFilename($name);
 			$f = @fopen($name,"w");
 			if($f!==false)
 			{

@@ -50,10 +50,10 @@ else
 				$files[] = $_FILES['torrent_file'];
 			foreach( $files as $file )
 			{
-				$ufile = getUploadsPath().'/'.$file['name'];
+				$ufile = $file['name'];
 				if(pathinfo($ufile,PATHINFO_EXTENSION)!="torrent")
 					$ufile.=".torrent";
-				$ufile = getUniqueFilename($ufile);
+				$ufile = getUniqueUploadedFilename($ufile);
 				$ok = move_uploaded_file($file['tmp_name'],$ufile);
 				$uploaded_files[] = array( 'name'=>$file['name'], 'file'=>$ufile, 'status'=>($ok ? "Success" : "Failed") );
 			}
@@ -79,7 +79,7 @@ else
 				        	$name = $cli->get_filename();
 					        if($name===false)
 							$name = md5($url).".torrent";
-						$name = getUniqueFilename(getUploadsPath()."/".$name);
+						$name = getUniqueUploadedFilename($name);
 						$f = @fopen($name,"w");
 						if($f!==false)
 						{
