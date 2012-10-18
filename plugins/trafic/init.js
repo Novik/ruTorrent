@@ -1,6 +1,8 @@
 if(browser.isKonqueror && (browser.versionMajor<4))
 	plugin.disable();
 
+theWebUI.ratiosStat = {};
+
 if(plugin.canChangeTabs())
 {
 
