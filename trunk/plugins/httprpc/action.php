@@ -285,11 +285,9 @@ switch($mode)
 		{
 			$ret = makeMulticall($cmds,$h,$add,'t');
 			if($ret===false)
-			{
-				$result = null;
-				break;
-			}
-			$result[] = $ret;
+				$result[] = array();
+			else
+				$result[] = $ret;
 		}
 		break;
 	}
