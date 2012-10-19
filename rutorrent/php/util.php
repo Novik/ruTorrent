@@ -373,7 +373,7 @@ function getUniqueFilename($fname)
 function getUniqueUploadedFilename($fname)
 {
 	global $overwriteUploadedTorrents;	
-	$fname = getUploadsPath()."/".$name;
+	$fname = getUploadsPath()."/".$fname;
 	return( $overwriteUploadedTorrents ? $fname : getUniqueFilename($fname));
 }
 
