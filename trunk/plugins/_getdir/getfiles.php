@@ -53,14 +53,14 @@ if($dh)
 	        $path = fullpath($dir . $file);
 		if(($file=="..") && ($dir==$topDirectory))
 			continue;
-		if(is_dir($path) && is_readable($path) &&
+		if(is_dir($path) &&
 			(strpos(addslash($path),$topDirectory)===0) &&
 			( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0005))
 			)
 			$dirs['/'.$file] = $path;
 		else
 		{
-			if(LFS::is_file($path) && is_readable($path)
+			if(LFS::is_file($path)
 				&& ( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0004))
 				)
 				$files[$file." "] = $path;
