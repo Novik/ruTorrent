@@ -20,7 +20,7 @@ if(plugin.canChangeMenu())
 		        		var fid = table.getFirstSelected();
 					if(this.settings["webui.fls.view"])
 					{
-						var arr = id.split('_f_');
+						var arr = fid.split('_f_');
 						plugin.fno = arr[1];
 					}
 					else
