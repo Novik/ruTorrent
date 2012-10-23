@@ -1150,11 +1150,11 @@ var theWebUI =
 	{
 		if($type(id))
 		{
-	   		var p = -1;
+	   		var p = null;
 	   		if(theWebUI.settings["webui.fls.view"])
 			{
 				var arr = id.split('_f_');
-		   		p = theWebUI.files[theWebUI.dID][iv(arr[1])].priority;
+		   		p = theWebUI.files[theWebUI.dID][iv(arr[1])];
 			}
 			else
 				p = theWebUI.dirs[theWebUI.dID].getEntry(id);
