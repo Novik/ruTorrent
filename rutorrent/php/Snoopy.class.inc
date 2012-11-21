@@ -487,9 +487,12 @@ class Snoopy
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s"; 
-		exec(escapeshellarg(getExternal('curl'))." -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".$cmdline_params." ".escapeshellarg($url),$results,$return);
+//toLog(escapeshellarg(getExternal('curl'))." -g -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".$cmdline_params." ".escapeshellarg($url));
+		exec(escapeshellarg(getExternal('curl'))." -g -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".$cmdline_params." ".escapeshellarg($url),$results,$return);
+//toLog(print_r($results,1));
 		$this->_redirectaddr = false;
 		$this->headers = array();
+		$is_gzipped = false;
 		
 		if($return)
 			$this->error = "Error: cURL could not retrieve the document, error $return.";
@@ -526,8 +529,34 @@ class Snoopy
 					if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$this->response_code, $match))
 						$this->status= $match[1];
 				}
+				if (preg_match("/Content-Encoding: gzip/", $header) )
+					$is_gzipped = true;
 				$this->headers[] = $header;
 			}
+
+			// gunzip
+			if ( $is_gzipped ) 
+			{
+				if(function_exists("gzinflate"))
+				{
+					$results = substr($results, 10);
+					$results = gzinflate($results);
+				}
+				else
+				{
+					$randName = uniqid("/tmp/rutorrent-gz-");
+					file_put_contents($randName.".gz",$results);
+					exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
+					if(is_file($randName))
+					{
+						$results = file_get_contents($randName);
+						unlink($randName);
+					}
+					else				
+						unlink($randName.".gz");
+				}
+			}
+
 			$this->results = $results;
 		}
 		unlink("/tmp/$headerfile");
