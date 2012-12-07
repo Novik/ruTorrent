@@ -14,7 +14,7 @@ class ILoveTorrentsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.ilovetorrents.com';
+		$url = 'http://www.ilovetorrents.me';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'&cat=0', 'anime'=>'&cat=23', 'books'=>'&cat=24' );
 		else
@@ -32,8 +32,8 @@ class ILoveTorrentsEngine extends commonEngine
 				break;
 			$res = preg_match_all('`<tr>\n<td width=46 height=42 class=rowhead style=\'padding: 0px\'><a href="browse.php\?cat=[^"]*"><img border="0" src="/pic/[^"]*" alt="(?P<cat>[^"]*)" /></a></td>\n'.
 				'<td class=rowhead align=left><a href="details.php\?id=(?P<id>[^"]*)"><b>(?P<name>.*)</b></a><br>\n'.
-				'<td align=center><a href="download\.php/(?P<link>[^"]*)"><img src=http://www\.ilovetorrents\.com/pic/dl\.gif></a></td>\n'.
-				'<td align=center><a href=bookmarks\.php\?op=add&id=\d*><img style=border:none src=http://www\.ilovetorrents\.com/pic/bookmark\.gif></a></td>\n'.
+				'<td align=center><a href="download\.php/(?P<link>[^"]*)"><img src=http://www\.ilovetorrents\.me/pic/dl\.gif></a></td>\n'.
+				'<td align=center><a href=bookmarks\.php\?op=add&id=\d*><img style=border:none src=http://www\.ilovetorrents\.me/pic/bookmark\.gif></a></td>\n'.
 				'</td>\n<td class=rowhead align="right"><b><a href="details.php\?id=\d*&amp;hit=1&amp;filelist=1">\d*</a></b></td>\n'.
 				'<td class=rowhead align=center>.*</td>\n'.
 				'<td class=rowhead align=center><nobr>(?P<date>.*)</nobr></td>\n'.

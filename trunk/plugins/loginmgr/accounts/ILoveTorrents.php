@@ -2,7 +2,7 @@
 
 class ILoveTorrentsAccount extends commonAccount
 {
-	public $url = "http://www.ilovetorrents.com";
+	public $url = "http://www.ilovetorrents.me";
 
 	protected function isOK($client)
 	{
