@@ -1,0 +1,23 @@
+.stable {border: 1px solid; border-color: #333333 #181818 #181818 #333333}
+.stable-head { background: #181818; border-color: #181818 #333333 #333333 #181818;}
+.stable-head table tr {background: transparent url(./images/header.gif) repeat-x scroll center top}
+.stable-head table tr td { border-color: #181818 #333333 #333333 #181818; }
+.stable-head div.resz {border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center;}
+.stable-body {background: window; background-color: #181818; }
+.stable-body td {border-bottom: 1px solid #333333; }
+
+.stable-body {background: #181818}
+.stable-body tr.selected td {background: #888888; color:#111111}
+.stable-body tr.odd td {background: #333333}
+.stable-body tr.even td {background: #191919}
+.stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top; border: 1px solid #0099FF;}
+
+.stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top rgba(128,128,128,0.7); border: 1px solid #0099FF; }
+.gecko .stable-move-header {background: rgba(128,128,128,0.7); -moz-opacity: 0.7;}
+.ie .stable-move-header {background: rgba(128,128,128,0.7); filter:alpha(opacity=70)}
+.webkit .stable-move-header {background: rgba(128,128,128,0.7);}
+
+.stable-active-header {border-color: threedface !important}
+.stable-separator-header {background: #181818;}
+.stable-scrollpos { background: #181818; color: #333333; }
+
