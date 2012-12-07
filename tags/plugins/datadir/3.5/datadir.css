@@ -1,0 +1,13 @@
+div#dlg_datadir {width: 450px; height: 193px; overflow: visible}
+
+div#dlg_datadir fieldset div {line-height: 16px}
+div#dlg_datadir fieldset div.props-spacer {width: 90%; float: left}
+
+div#dlg_datadir label {width: 120px; vertical-align: middle; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+div#dlg_datadir input {vertical-align: middle; margin-top: 5px; margin-bottom: 5px;}
+
+div#dlg_datadir #edit_datadir {width: 290px}
+
+div#dlg_datadir br {clear: left; line-height: 0}
+
+div#dlg_datadir div.dlg-header {background-image: url(../../images/settings.gif)}
