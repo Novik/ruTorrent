@@ -1,0 +1,3 @@
+div#dlg_info {width: 600px; height: 450px}
+div#dlg_info div.dlg-header {background-image: url(./images/mediainfo16.png)}
+div#dlg_info div.content {width: 595px; height: 420px; padding: 2px; overflow: auto; line-height: 10px}
