@@ -2,20 +2,20 @@
 
 class IPTorrentsEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"on.iptorrents.com|pass=XXX;uid=XXX" );
-	public $categories = array( 'all'=>'l72;l73;l74;l75;l76;',
-		'Movies'=>'l72;', 'TV'=>'l73;', 'Games'=>'l74;', 'Music'=>'l75;', 'Books'=>'l35;', 'Anime'=>'l60;', 
-		'Appz/misc'=>'l1;', 'MAC'=>'l69;', 'Mobile'=>'l58;', 'Pics/Wallpapers'=>'l36;', 'Sports'=>'l55;', 'XXX'=>'l8;' );
+	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"www.iptorrents.com|pass=XXX;uid=XXX" );
+	public $categories = array( 'all'=>'&l72=1&l73=1&l74=1&l75=1&l76=1',
+		'Movies'=>'&l72=1', 'TV'=>'&l73=1', 'Games'=>'&l74=1', 'Music'=>'&l75=1', 'Books'=>'&l35=1', 'Anime'=>'&l60=1', 
+		'Appz/misc'=>'&l1=1', 'Mac'=>'&l69=1', 'Mobile'=>'&l58=1', 'Pics/Wallpapers'=>'&l36=1', 'Sports'=>'&l55=1', 'XXX'=>'&l8=1' );
 
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://on.iptorrents.com';
+		$url = 'http://www.iptorrents.com';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'l72;l73;l74;l75;l76;', 
-				'movies'=>'l72;', 'tv'=>'l73;', 'music'=>'l75;', 'games'=>'l74;', 
-				'anime'=>'l60;', 'software'=>'l1;', 'pictures'=>'l36;', 'books'=>'l64;l35;' );
+			$categories = array( 'all'=>'&l72=1&l73=1&l74=1&l75=1&l76=1', 
+				'movies'=>'&l72=1', 'tv'=>'&l73=1', 'music'=>'&l75=1', 'games'=>'&l74=1', 
+				'anime'=>'&l60=1', 'software'=>'&l1=1', 'pictures'=>'&l36=1', 'books'=>'&l35=1&l64=1' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
@@ -24,11 +24,11 @@ class IPTorrentsEngine extends commonEngine
 			$cat = $categories[$cat];
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/torrents/?'.$cat.'o=seeders;q=@title%20'.$what.';p='.$pg );
+			$cli = $this->fetch( $url.'/torrents/?'.$cat.'o=seeders;q='.$what.';qf=ti;p='.$pg );
 			if( ($cli==false) || (strpos($cli->results, ">Nothing found!<")!==false) ||
 				(strpos($cli->results, ">Password:<")!==false))
 				break;
-
+				
 			$res = preg_match_all('`<img class=".*" width="50" src=.* alt="(?P<cat>.*)"></a>.*'.
 				' href="/details\.php\?id=(?P<id>\d+)">(?P<name>.*)</a>.*'.
 				't_ctime">(?P<date>.*)</div>.*'.
@@ -39,7 +39,7 @@ class IPTorrentsEngine extends commonEngine
 				'`siU', $cli->results, $matches);
 			if($res)
 			{
-				for($i=0; $i<count($matches["id"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
 					$link = $url."/download.php/".$matches["id"][$i]."/".$matches["tname"][$i];
 					if(!array_key_exists($link,$ret))
