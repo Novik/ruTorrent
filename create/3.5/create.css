@@ -1,0 +1,20 @@
+div#tcreate {width: 405px; height: 350px}
+div#tcreate div.dlg-header {background-image: url(./images/create16.gif)}
+div#tcreate #path_edit {width: 305px}
+div#tcreate textarea#trackers {width: 230px; height: 70px; border: 1px solid #D0D0D0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: text}
+div#tcreate fieldset div {line-height: 16px}
+
+div#tcreate label {width: 120px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+div#tcreate label#nomargin { margin-top: 0px; margin-bottom: 0px; }
+div#tcreate input, select {margin-top: 5px; margin-bottom: 5px;}
+div#tcreate br {clear: left; line-height: 0}
+
+div#tcreate iframe {border-width: 1px; width:170px; height:200px; visibility:hidden; position:absolute; z-index:100;}
+
+#browse_path {width: 30px;}
+
+.console {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre; overflow: scroll; height: 130px; width: 460px}
+div#tconsole {width: 500px; height: 400px}
+div#tconsole div.dlg-header {background-image: url(./images/create16.gif)}
+div#tconsole fieldset div {line-height: 16px}
+div#create_btns {background: transparent url(./images/ajax-loader.gif) no-repeat 5px 7px; padding-top: 5px}
