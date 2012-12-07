@@ -1,0 +1,6 @@
+.lf_rru li input { margin: -10px 3px 0 0; padding: 0; } 
+.lf_rru li {margin: 0 0 0 -20px; padding: 0}
+.lf_rru li input.TextboxFocus { width: 80%; }
+.lf_rru li input.TextboxNormal { width: 80%; }
+.lf_rru ul {width: 90%; }
+
