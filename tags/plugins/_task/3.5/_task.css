@@ -1,0 +1,8 @@
+.tskconsole {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre; overflow: scroll; height: 198px; width: 580px; cursor: text}
+div#tskConsole {width: 620px; height: 536px}
+div#tskConsole fieldset div {line-height: 16px }
+div#tsk_btns {background: transparent url(./images/ajax-loader.gif) no-repeat 5px 7px; padding-top: 5px}
+div#tskConsole div.dlg-header {background-image: url(../../images/settings.gif)}
+
+.konqueror div#tskConsole { height: 546px }
+.chrome div#tskConsole fieldset {width: 585px}
