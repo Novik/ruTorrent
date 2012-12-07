@@ -1,0 +1,12 @@
+.scframe { position: relative; left: 0px; top: 0px; text-align: center; width: 100%; padding: 0; vertical-align: middle; }
+.scframe img { width: 100%; vertical-align: middle; }
+.scplay { display: none }
+
+#scfirst { width: 60px }
+#scprev { width: 60px }
+#scplay { width: 60px }
+#scnext { width: 60px }
+#sclast { width: 60px }
+
+.scframe_cont { overflow: auto; background-color: black }
+#st_screenshots { overflow: auto }
