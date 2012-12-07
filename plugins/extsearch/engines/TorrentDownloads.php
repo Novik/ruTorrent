@@ -23,7 +23,7 @@ class TorrentDownloadsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.torrentdownloads.net';
+		$url = 'http://www.torrentdownloads.me';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'books'=>'2' );
 		else
@@ -39,7 +39,7 @@ class TorrentDownloadsEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "</ul>No torrents</div>")!==false) )
 				break;
 
-			$res = preg_match_all('`<img src="/templates/new/images/icons/menu_icon(?P<cat>\d+)\.png" alt=""><a href="http://www\.torrentdownloads\.net/torrent/(?P<id>.*)/.*">(?P<name>.*)</a>.*'.
+			$res = preg_match_all('`<img src="/templates/new/images/icons/menu_icon(?P<cat>\d+)\.png" alt=""><a href="http://www\.torrentdownloads\.me/torrent/(?P<id>.*)/.*">(?P<name>.*)</a>.*'.
 				'<span>(?P<leech>.*)</span><span>(?P<seeds>.*)</span><span>(?P<size>.*)</span>'.
 				'`siU', $cli->results, $matches );
 			

@@ -41,10 +41,9 @@ class TorrentzEngine extends commonEngine
 				else
 					$maxPage = $matches["maxpage"];
 			}
-
 			// torrents
 			$res = preg_match_all('`<dl><dt.*><a href="/(?P<hash>[0-9a-fA-F]+?)">(?P<name>.+)</a> &#187; '.
-				'(?P<cat>.*)</dt><dd><span class="v" style="color: #.*" title="(?P<verified_score>.*)">.</span>'.
+				'(?P<cat>.*)</dt><dd>.*'.
 				'<span class="a"><span title="(?P<date>.*)">.*</span></span>'.
 				'<span class="s">(?P<size>.*)</span> <span class="u">(?P<seeds>.*)</span>'.
 				'<span class="d">(?P<leech>.*)</span></dd></dl>'.
@@ -52,7 +51,7 @@ class TorrentzEngine extends commonEngine
 
 			if($res)
 			{
-				for($i=0; $i<count($matches["hash"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
 					$link = "http://zoink.it/torrent/".strtoupper($matches["hash"][$i]).".torrent";
 					if(!array_key_exists($link,$ret))

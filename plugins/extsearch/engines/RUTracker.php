@@ -10,14 +10,16 @@ class RUTrackerEngine extends commonEngine
 	{
 		if( strpos($results, ">Не найдено</td>")!==false )
 			return(false);
-		$res = preg_match_all('/<a class="gen f" href="tracker\.php\?f=\d+">(?P<cat>.*)<\/a><\/td>.*'.
-			'<a class="med tLink bold" href="\.\/viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
+
+		$res = preg_match_all('/<a class="gen f" href="tracker\.php\?f=\d+">(?P<cat>.*)<\/a><\/div><\/td>.*'.
+			'<a.* class="med tLink hl-tags bold" href="\.\/viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
 			'<u>(?P<size>.*)<\/u>\n\s*'.
 			'<a class="small tr-dl dl-stub" href="(?P<link>.*)">.*'.
 			'<td class="row4 seedmed"><b>(?P<seeds>.*)<\/b><\/td>\n\s*'.
 			'<td class="row4 leechmed" title=".*"><b>(?P<leech>.*)<\/b><\/td>.*'.
 			'<u>(?P<date>.*)<\/u>'.
 			'/siU', $results, $matches);
+
 		if($res)
 		{
 			for($i=0; $i<$res; $i++)

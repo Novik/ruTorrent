@@ -24,15 +24,9 @@ class TorrentPortalEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<b>No Torrents Found</b>")!==false) )
 				break;
 			$res = preg_match_all('/<a href="\/download\/(?P<link>.*)">.*<a href="torrents.php\\?cat=\d{1,2}">(?P<cat>.*)<\/a>.*<a href="\/details\/(?P<desc>.*)".*<b>(?P<name>.*)<\/b><\/a><\/td><td .*>.*<\/td><td .*>(?P<size>.*)<\/td><td .*>(?P<seeds>.*)<\/td><td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["link"])==count($matches["cat"]) &&
-				count($matches["link"])==count($matches["desc"]) &&
-				count($matches["cat"])==count($matches["name"]) && 
-				count($matches["name"])==count($matches["size"]) &&
-				count($matches["size"])==count($matches["seeds"]) &&
-				count($matches["seeds"])==count($matches["leech"]) )
+			if($res)
 			{
-				for($i=0; $i<count($matches["link"]); $i++)
+				for($i=0; $i<$res; $i++)
 				{
 					$link = $url."/download/".$matches["link"][$i];
 					if(!array_key_exists($link,$ret))
