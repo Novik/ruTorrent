@@ -1,0 +1,15 @@
+div#dlg_unpack {width: 325px; height: 150px; overflow: visible}
+
+div#dlg_unpack fieldset div {line-height: 16px}
+
+div#dlg_unpack label {width: 120px; vertical-align: middle; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+div#dlg_unpack input {vertical-align: middle; margin-top: 5px; margin-bottom: 5px;}
+
+div#dlg_unpack br {clear: left; line-height: 0}
+
+#btn_unpack {width:30px}
+#btn_unpack1 {width:30px}
+
+div#dlg_unpack div.dlg-header {background-image: url(../../images/settings.gif)}
+
+div#st_unpack { display: none }
