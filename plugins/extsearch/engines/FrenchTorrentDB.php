@@ -68,7 +68,7 @@ class FrenchTorrentDBEngine extends commonEngine
 				(strpos($cli->results, 'type="password"')!==false))
 				break;
             $res = preg_match_all('`<ul\s* class=".*"\s*>.*'.
-				'<li class="torrents_name.*"><a href="\/\?section=INFOS&amp;hash=(?P<id>.*)\#FTD_MENU" title="(?P<name>.*)">.*<\/a><\/li>.*'.
+				'<li class="torrents_name.*"><a href="\/\?section=INFOS&amp;hash=(?P<id>.*)\#FTD_MENU".*title="(?P<name>.*)">.*<\/a><\/li>.*'.
 				'<li class="torrents_size.*">(?P<size>.*)<\/li>.*'.
 				'<li class="torrents_seeders.*">(?P<seeds>.*)<\/li>.*'.
 				'<li class="torrents_leechers.*">(?P<leech>.*)<\/li>.*'.
