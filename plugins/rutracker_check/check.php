@@ -82,12 +82,12 @@ class ruTrackerChecker
 					{
 						$client = self::makeClient($torrent->comment());
 						if(($client->status==200) &&
-							preg_match( '`<span title="Зарегистрирован">\[ (?P<date>.*) \]</span>`',$client->results, $matches1 ))
+							preg_match( '`<span title="Когда зарегистрирован">\[ (?P<date>.*) \]</span>`',$client->results, $matches1 ))
 						{
 							$registered = strtotime( strtr($matches1["date"], array(
 								"Янв"=>"Jan", "Фев"=>"Feb", "Мар"=>"Mar", "Апр"=>"Apr",
 								"Май"=>"May", "Июн"=>"Jun", "Июл"=>"Jul", "Авг"=>"Aug",
-								"Сен"=>"Sep", "Окт"=>"Oct", "Нов"=>"Nov", "Дек"=>"Dec",
+								"Сен"=>"Sep", "Окт"=>"Oct", "Ноя"=>"Nov", "Дек"=>"Dec",
 								)) );
 							if($registered && ($registered < $successful_time))
 							{
