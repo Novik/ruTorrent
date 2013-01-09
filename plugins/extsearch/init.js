@@ -188,9 +188,9 @@ rTorrentStub.prototype.extsearch = function()
 rTorrentStub.prototype.loadtegtorrents = function()
 {
 	this.content = "mode=loadtorrents";
-	if($("#tegtorrents_start_stopped").attr("checked"))
+	if($("#tegtorrents_start_stopped").prop("checked"))
 		this.content += '&torrents_start_stopped=1';
-	if($("#tegnot_add_path").attr("checked"))
+	if($("#tegnot_add_path").prop("checked"))
 		this.content += '&not_add_path=1';
 	var dir = $.trim($("#tegdir_edit").val());
 	if(dir.length)
@@ -198,7 +198,7 @@ rTorrentStub.prototype.loadtegtorrents = function()
 	var lbl = $.trim($("#teglabel").val());
 	if(lbl.length)
 		this.content += '&label='+encodeURIComponent(lbl);
-	if($("#tegfast_resume").attr("checked"))
+	if($("#tegfast_resume").prop("checked"))
 		this.content += 'fast_resume=1&';
 	for(var i = 0; i<plugin.tegArray.length; i++)
 	{
@@ -672,8 +672,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 		var ret = false;
 		$.each(theSearchEngines.sites,function(ndx,val)
 		{
-			if( 	(($('#'+ndx+'_enabled').attr("checked") ? 1 : 0) ^ val.enabled) ||
-				(($('#'+ndx+'_global').attr("checked") ? 1 : 0) ^ val.global) ||
+			if( 	(($('#'+ndx+'_enabled').prop("checked") ? 1 : 0) ^ val.enabled) ||
+				(($('#'+ndx+'_global').prop("checked") ? 1 : 0) ^ val.global) ||
 				iv($('#'+ndx+'_limit').val())!=val.limit )
 			{
 				ret = true;
@@ -696,8 +696,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 		var req = "mode=set&limit="+$('#exs_limit').val();
 		$.each(theSearchEngines.sites,function(ndx,val)
 		{
-			req += ('&'+ndx+'_enabled='+($('#'+ndx+'_enabled').attr("checked") ? 1 : 0)+
-				'&'+ndx+'_global='+($('#'+ndx+'_global').attr("checked") ? 1 : 0)+
+			req += ('&'+ndx+'_enabled='+($('#'+ndx+'_enabled').prop("checked") ? 1 : 0)+
+				'&'+ndx+'_global='+($('#'+ndx+'_global').prop("checked") ? 1 : 0)+
 				'&'+ndx+'_limit='+$('#'+ndx+'_limit').val());
 		});
 		this.content = req;

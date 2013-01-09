@@ -131,9 +131,9 @@ rTorrentStub.prototype.startcreate = function()
 		"&trackers="+encodeURIComponent(trk);
 	if($("#piece_size").length)
 		this.content+=("&piece_size="+$("#piece_size").val());
-	if($("#private").attr("checked"))
+	if($("#private").prop("checked"))
 		this.content+=("&private=1");
-	if($("#start_seeding").attr("checked"))
+	if($("#start_seeding").prop("checked"))
 		this.content+=("&start_seeding=1");
         this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/create/action.php";

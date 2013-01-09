@@ -626,7 +626,7 @@ var theWebUI =
 			if(o)
 			{
 				o = $(o);
-				var nv = o.is("input:checkbox") ? (o.attr('checked') ? 1 : 0) : o.val();
+				var nv = o.is("input:checkbox") ? (o.prop('checked') ? 1 : 0) : o.val();
 				switch(i)
 				{
 				        case "max_memory_usage":

@@ -217,7 +217,7 @@ rTorrentStub.prototype.setratiorules = function()
 	for(var i=0; i<plugin.rules.length; i++)
 	{
 		var rle = plugin.rules[i];
-		var enabled = $("#_rre"+i).attr("checked") ? 1 : 0;
+		var enabled = $("#_rre"+i).prop("checked") ? 1 : 0;
 		var name = $("#_rrn"+i).val();
 		this.content = this.content+"&name="+encodeURIComponent(name)+"&pattern="+encodeURIComponent(rle.pattern)+"&enabled="+enabled+
 		        "&reason="+rle.reason+

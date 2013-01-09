@@ -7,6 +7,8 @@
 
 class BitGamerAccount extends commonAccount
 {
+	public $url = "https://bitgamer.su";
+
         protected function isOK($client)
         {
                 return(strpos($client->results, '<form id="loginform" method="post"')===false);
@@ -14,12 +16,12 @@ class BitGamerAccount extends commonAccount
         protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
         {
                 $is_result_fetched = false;
-                if($client->fetch( "https://bitgamer.su/login.php" ))
+                if($client->fetch( $this->url."/login.php" ))
                 {
                         $client->setcookies();
-                        $client->referer = "https://bitgamer.su/login.php";
+                        $client->referer = $this->url."/login.php";
 
-                        if($client->fetch( "https://bitgamer.su/login.php","POST","application/x-www-form-urlencoded",
+                        if($client->fetch( $this->url."/login.php","POST","application/x-www-form-urlencoded",
                                 "username=".rawurlencode($login)."&password=".rawurlencode($password)."&returnto=&submit=Login" ))
                         {
                                 $client->setcookies();
