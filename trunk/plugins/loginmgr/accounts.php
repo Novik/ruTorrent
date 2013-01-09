@@ -47,6 +47,13 @@ class privateData
 		$cache = new rCache('/accounts');
 		return($cache->set($this));
 	}
+
+	static public function getModified($owner)
+	{
+		$rt = new privateData($owner);
+		$cache = new rCache('/accounts');
+		return($cache->getModified($rt));
+	}
 }
 
 abstract class commonAccount
@@ -99,6 +106,22 @@ abstract class commonAccount
 			$data->remove();
 		return($ret);
 	}
+
+	public function check( $client, $login, $password, $auto )
+	{
+		$modified = privateData::getModified($this->getName());
+		if( ($modified===false) || ((time()-$modified)>=$auto))
+		{
+			$data = privateData::load( $this->getName() );
+			if($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) && 
+				$client->status>=200 && 
+				$client->status<400 &&
+				$this->isOK($client))
+				$data->store($client);
+			else
+				$data->remove();
+		}
+	}
 }
 
 class accountManager
@@ -130,12 +153,14 @@ class accountManager
 				if(is_file($dir.'/'.$file))
 				{
 					$name = basename($file,".php");
-					$this->accounts[$name] = array( "name"=>$name, "path"=>fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0 );
+					$this->accounts[$name] = array( "name"=>$name, "path"=>fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 );
 					if(array_key_exists($name,$oldAccounts) && array_key_exists("login",$oldAccounts[$name]))
 					{
 						$this->accounts[$name]["login"] = $oldAccounts[$name]["login"];
 						$this->accounts[$name]["password"] = $oldAccounts[$name]["password"];
 						$this->accounts[$name]["enabled"] = $oldAccounts[$name]["enabled"];
+						if(array_key_exists("auto",$oldAccounts[$name]))
+							$this->accounts[$name]["auto"] = $oldAccounts[$name]["auto"];
 					}
 				}
 			} 
@@ -143,13 +168,14 @@ class accountManager
 	        }
 		ksort($this->accounts);
 		$this->store();
+		$this->setHandlers();
 	}
 
 	public function get()
 	{
                 $ret = "theWebUI.theAccounts = {";
 		foreach( $this->accounts as $name=>$nfo )
-			$ret.="'".$name."': { login: ".quoteAndDeslashEachItem($nfo["login"]).", password: ".quoteAndDeslashEachItem($nfo["password"]).", enabled: ".$nfo["enabled"]." },";
+			$ret.="'".$name."': { login: ".quoteAndDeslashEachItem($nfo["login"]).", password: ".quoteAndDeslashEachItem($nfo["password"]).", enabled: ".$nfo["enabled"].", auto: ".$nfo["auto"]." },";
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);
@@ -166,12 +192,15 @@ class accountManager
 				$this->accounts[$name]["login"] = $_REQUEST[$name."_login"];
 			if(isset($_REQUEST[$name."_password"]))
 				$this->accounts[$name]["password"] = $_REQUEST[$name."_password"];
+			if(isset($_REQUEST[$name."_auto"]))
+				$this->accounts[$name]["auto"] = intval($_REQUEST[$name."_auto"]);
 			$data = new privateData( $name );
 			$data->remove();
 		}
 		$this->store();
+		$this->setHandlers();
 	}
-
+	
 	public function getAccount( $url )
 	{
 		foreach( $this->accounts as $name=>$nfo )		
@@ -213,5 +242,38 @@ class accountManager
 			$ret[] = $nfo;
 		}
 		return($ret);
+	}
+
+	public function hasAuto()
+	{
+		foreach( $this->accounts as $name=>$nfo )		
+			if($nfo["enabled"] && !empty($nfo["auto"]))
+				return(true);
+		return(false);
+	}
+
+	public function setHandlers()
+	{
+		if(rTorrentSettings::get()->linkExist)
+		{
+			$req =  new rXMLRPCRequest( $this->hasAuto() ? 
+				rTorrentSettings::get()->getScheduleCommand("loginmgr",1440,
+					getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) :
+				rTorrentSettings::get()->getRemoveScheduleCommand("loginmgr") );
+			$req->success();
+		}
+	}
+
+	public function checkAuto()
+	{
+		foreach( $this->accounts as $name=>$nfo )
+		{
+			if($nfo["enabled"] && !empty($nfo["auto"]))
+			{
+				require_once( $nfo["path"] );
+				$object = new $nfo["object"]();				
+				$object->check( new Snoopy(), $nfo["login"], $nfo["password"], $nfo["auto"] );
+			}
+		}
 	}
 }

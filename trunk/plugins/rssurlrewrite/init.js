@@ -149,7 +149,7 @@ rTorrentStub.prototype.setrules = function()
 	for(var i=0; i<theWebUI.rules.length; i++)
 	{
 		var rle = theWebUI.rules[i];
-		var enabled = $("#_re"+i).attr("checked") ? 1 : 0;
+		var enabled = $("#_re"+i).prop("checked") ? 1 : 0;
 		var name = $("#_rn"+i).val();
 		this.content = this.content+"&name="+encodeURIComponent(name)+"&pattern="+encodeURIComponent(rle.pattern)+"&enabled="+enabled+
 		        "&replacement="+encodeURIComponent(rle.replacement)+

@@ -27,7 +27,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 		{
 			if($('#'+name).is(":checkbox"))
 			{
-				if($('#'+name).attr('checked')!=val)
+				if($('#'+name).prop('checked')!=val)
 				{
 					ret = true;
 					return(false);
@@ -62,7 +62,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 		$.each( plugin.ffmpegSettings, function(name,val)
 		{
 			if($('#'+name).is(":checkbox"))
-				s+=("&"+name+"="+ ($('#'+name).attr('checked') ? 1 : 0) );
+				s+=("&"+name+"="+ ($('#'+name).prop('checked') ? 1 : 0) );
 			else
 				s+=("&"+name+"="+encodeURIComponent($.trim($('#'+name).val())));
 		});

@@ -832,12 +832,12 @@ theWebUI.storeFilterParams = function()
 		this.filters[no].exclude = $('#FLT_exclude').val();
 		this.filters[no].dir = $('#FLTdir_edit').val();
 
-		this.filters[no].add_path = $('#FLTnot_add_path').attr("checked") ? 0 : 1;
-		this.filters[no].start = $('#FLTtorrents_start_stopped').attr("checked") ? 0 : 1;
+		this.filters[no].add_path = $('#FLTnot_add_path').prop("checked") ? 0 : 1;
+		this.filters[no].start = $('#FLTtorrents_start_stopped').prop("checked") ? 0 : 1;
 		this.filters[no].label = $('#FLT_label').val();
-		this.filters[no].chktitle = $('#FLTchktitle').attr("checked") ? 1 : 0;
-		this.filters[no].chkdesc = $('#FLTchkdesc').attr("checked") ? 1 : 0;
-		this.filters[no].chklink = $('#FLTchklink').attr("checked") ? 1 : 0;
+		this.filters[no].chktitle = $('#FLTchktitle').prop("checked") ? 1 : 0;
+		this.filters[no].chkdesc = $('#FLTchkdesc').prop("checked") ? 1 : 0;
+		this.filters[no].chklink = $('#FLTchklink').prop("checked") ? 1 : 0;
 		this.filters[no].hash = $('#FLT_rss').val();
 		this.filters[no].interval = $('#FLT_interval').val();
 		this.filters[no].throttle = $('#FLT_throttle').val();
@@ -1145,7 +1145,7 @@ rTorrentStub.prototype.setfilters = function()
 	for(var i=0; i<theWebUI.filters.length; i++)
 	{
 		var flt = theWebUI.filters[i];
-		var enabled = $("#_fe"+i).attr("checked") ? 1 : 0;
+		var enabled = $("#_fe"+i).prop("checked") ? 1 : 0;
 		var name = $("#_fn"+i).val();
 		this.content = this.content+"&name="+encodeURIComponent(name)+"&pattern="+encodeURIComponent(flt.pattern)+"&enabled="+enabled+
 			"&chktitle="+flt.chktitle+
@@ -1190,7 +1190,7 @@ rTorrentStub.prototype.addrssgroup = function()
 {
 	this.content = "mode=addgroup&label="+encodeURIComponent( $('#rssGroupLabel').val() )+"&hash="+$("#rssGroupHash").val();
 	for(var lbl in theWebUI.rssLabels)
-		if($('#grp_'+lbl).attr('checked'))
+		if($('#grp_'+lbl).prop('checked'))
 			this.content += ('&rss='+lbl);
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
@@ -1218,9 +1218,9 @@ rTorrentStub.prototype.loadrss = function()
 rTorrentStub.prototype.loadrsstorrents = function()
 {
 	this.content = "mode=loadtorrents";
-	if($("#RSStorrents_start_stopped").attr("checked"))
+	if($("#RSStorrents_start_stopped").prop("checked"))
 		this.content = this.content + '&torrents_start_stopped=1';
-	if($("#RSSnot_add_path").attr("checked"))
+	if($("#RSSnot_add_path").prop("checked"))
 		this.content = this.content + '&not_add_path=1';
 	var dir = $.trim($("#RSSdir_edit").val());
 	if(dir.length)
