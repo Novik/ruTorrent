@@ -9,10 +9,10 @@
  theUILang.accLogin		= "Όνομα Χρήστη";
  theUILang.accPassword		= "Κωδικός Πρόσβασης";
  theUILang.accAccounts		= "Λογαριασμοί";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accAuto		= "Αυτόματη Σύνδεση";
+ theUILang.acAutoNone		= "Ποτέ";
+ theUILang.acAutoDay		= "Κάθε μέρα";
+ theUILang.acAutoWeek		= "Κάθε βδομάδα";
+ theUILang.acAutoMonth		= "Κάθε μήνα";
 
 thePlugins.get("loginmgr").langLoaded();
