@@ -181,22 +181,25 @@ if(plugin.canChangeTabs())
 	{
 		theWebUI.getTrackerName = function(announce)
 		{
-		        var domain = null;
-			var parts = announce.match(/^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/);
-			if(parts && (parts.length>6))
+		        var domain = '';
+			if(announce)
 			{
-				domain = parts[6];
-				if(!domain.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))
+				var parts = announce.match(/^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/);
+				if(parts && (parts.length>6))
 				{
-					parts = domain.split(".");
-					if(parts.length>2)
+					domain = parts[6];
+					if(!domain.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))
 					{
-						if($.inArray(parts[parts.length-2]+"", ["co", "com", "net", "org"])>=0 ||
-							$.inArray(parts[parts.length-1]+"", ["uk"])>=0)
-							parts = parts.slice(parts.length-3);
-						else
-							parts = parts.slice(parts.length-2);
-						domain = parts.join(".");
+						parts = domain.split(".");
+						if(parts.length>2)
+						{
+							if($.inArray(parts[parts.length-2]+"", ["co", "com", "net", "org"])>=0 ||
+								$.inArray(parts[parts.length-1]+"", ["uk"])>=0)
+								parts = parts.slice(parts.length-3);
+							else
+								parts = parts.slice(parts.length-2);
+							domain = parts.join(".");
+						}
 					}
 				}
 			}
@@ -246,7 +249,7 @@ if(plugin.canChangeTabs())
 					name: item.name,
 					status: item.action,
 					size: item.size,
-					tracker: $type(item.tracker) ? theWebUI.getTrackerName(item.tracker) : ''
+					tracker: theWebUI.getTrackerName(item.tracker)
 				}, item.hash, (item.action==1) ? "Status_Down" : (item.action==2) ? "Status_Completed" : "Status_Error" );
 				updated = true;
 				if( item.action_time > plugin.mark )

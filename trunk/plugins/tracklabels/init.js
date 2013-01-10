@@ -63,28 +63,34 @@ theWebUI.addTrackers = function(data)
 		theWebUI.rebuildTrackersLabels();
 }
 
-theWebUI.getTrackerName = function(announce)
+if(!$type(theWebUI.getTrackerName))
 {
-        var domain = null;
-	var parts = announce.match(/^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/);
-	if(parts && (parts.length>6))
+	theWebUI.getTrackerName = function(announce)
 	{
-		domain = parts[6];
-		if(!domain.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))
+	        var domain = '';
+		if(announce)
 		{
-			parts = domain.split(".");
-			if(parts.length>2)
+			var parts = announce.match(/^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/);
+			if(parts && (parts.length>6))
 			{
-				if($.inArray(parts[parts.length-2]+"", ["co", "com", "net", "org"])>=0 ||
-					$.inArray(parts[parts.length-1]+"", ["uk"])>=0)
-					parts = parts.slice(parts.length-3);
-				else
-					parts = parts.slice(parts.length-2);
-				domain = parts.join(".");
+				domain = parts[6];
+				if(!domain.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))
+				{
+					parts = domain.split(".");
+					if(parts.length>2)
+					{
+						if($.inArray(parts[parts.length-2]+"", ["co", "com", "net", "org"])>=0 ||
+							$.inArray(parts[parts.length-1]+"", ["uk"])>=0)
+							parts = parts.slice(parts.length-3);
+						else
+							parts = parts.slice(parts.length-2);
+						domain = parts.join(".");
+					}
+				}
 			}
 		}
+		return(domain);
 	}
-	return(domain);
 }
 
 theWebUI.trackersLabelContextMenu = function(e)
