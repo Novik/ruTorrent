@@ -28,7 +28,7 @@ http://forums.rutorrent.org/index.php?topic=608.0
 
 EDIT @ 10 Jan 2013
 
-The above forum post is not available anymore, but there is currently an autodl-setup script available in sourceforge:
+The above forum post is not available anymore, but there is currently an autodl-setup script available in sourceforge. Use at your own risk, though:
 
 http://sourceforge.net/projects/autodl-irssi/files/
 
