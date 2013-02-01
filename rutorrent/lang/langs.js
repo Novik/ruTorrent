@@ -54,36 +54,31 @@ var AvailableLanguages =
 	"zh-tw":'繁體中文'
 };
 
-DefaultLanguage = 'en';
-
 function GetActiveLanguage()
 {
+	var DefaultLanguage = 'en';
 	var LC = readLangCookie();
-	if (LC != null)
+	if(LC != null)
 		return LC;
 	var A;
-	if (navigator.userLanguage)
-		A=navigator.userLanguage.toLowerCase();
+	if(navigator.userLanguage)
+		A = navigator.userLanguage.toLowerCase();
 	else
-		if (navigator.language)
-			A=navigator.language.toLowerCase();
-		else
-		{
-			return FCKConfig.DefaultLanguage;
-		}
-	if (A.length>=5)
+		if(navigator.language)
+			A = navigator.language.toLowerCase();
+	if(A.length >= 5)
 	{
-		A=A.substr(0,5);
+		A = A.substr(0,5);
+		if(AvailableLanguages[A])
+			return A;
+	}
+	if(A.length >= 2)
+	{
+		A = A.substr(0,2);
 		if (AvailableLanguages[A])
 			return A;
 	}
-	if (A.length>=2)
-	{
-		A=A.substr(0,2);
-		if (AvailableLanguages[A])
-			return A;
-	}
-	return DefaultLanguage;
+	return(DefaultLanguage);
 }
 
 function SetActiveLanguage(lang)
