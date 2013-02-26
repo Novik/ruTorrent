@@ -2,7 +2,7 @@
 
 class HDVnbitsEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"all.hdvnbits.org|c_secure_pass=XXX;c_secure_uid=XXX;c_secure_login=XXX;" );
+	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"hdvnbits.org|c_secure_pass=XXX;c_secure_uid=XXX;c_secure_login=XXX;" );
 	public $categories = array(
 		'all'=>'0','Game'=>'1','Movie'=>'2','TV'=>'3','Software'=>'4','Music'=>'5','Misc'=>'6',
 		);
@@ -19,7 +19,7 @@ class HDVnbitsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://all.hdvnbits.org';
+		$url = 'http://hdvnbits.org';
 
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'movies'=>'2', 'tv'=>'3', 'music'=>'5', 'games'=>'1', 'software'=>'4' );
@@ -40,7 +40,7 @@ class HDVnbitsEngine extends commonEngine
 				$result = substr($result,$first);
 
 			$res = preg_match_all('`<a href="/torrents.php\?sltSubCategory=(?P<cat>\d*)"><img src=.*</a></td>.*'.
-				'<table class="torrentname" width="100%"><tr><td class="embedded"><a class=" " title="(?P<name>[^"]*)"  href="(?P<desc>[^"]*)".*'.
+				'<table class="torrentname" width="100%"><tr><td class="embedded"><a class="" title="(?P<name>[^"]*)"  href="(?P<desc>[^"]*)".*'.
 				'<a href="/download.php\?id=(?P<id>\d*)".*'.
 				'</tr></table></td>.*</td><td class="rowfollow nowrap">(?P<date>.*)</td><td class="rowfollow">(?P<size>.*)</td><td class="rowfollow" align="center">(?P<seeds>.*)</td>.*'.
 				'<td class="rowfollow">(?P<leech>.*)</td>'.
