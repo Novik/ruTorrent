@@ -36,14 +36,17 @@ class BroadcasTheEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h2>Your search was way too l33t, try dumbing it down a bit.</h2>")!==false)
 				|| (strpos($cli->results, '<form name="loginform" id="loginform" method="post"')!==false))
 				break;
-			$res = preg_match_all('/<tr class="torrent">.*<td class="center"><img src=".*" alt="(?P<cat>.*)".*<\/td>.*'.
+
+			$res = preg_match_all('/<tr class="torrent">.*<img src=".*" alt="(?P<cat>.*)".*<\/td>.*'.
 				'<a href="torrents.php\?action=download(?P<link>.*)" title="Download">.*'.
-                		'<a href="series.php\?id=.*>(?P<name1>.*)<\/a> - <a href="torrents.php\?id=(?P<desc>.*)" title="View Torrent">(?P<name2>.*)<\/a><br \/>.*'.
-		             	'<b>Added:<\/b>(?P<date>.*)<\/div>.*'.
+                		'<a href="series.php\?id=.*>(?P<name1>.*)<\/a> - <a href="torrents.php\?id=(?P<desc>.*)" title="View Torrent" >(?P<name2>.*)<\/a><br \/>.*'.
+		             	'<b>Added:<\/b>(?P<date>.*)(- <|<\/d).*'.
 				'<td>.*<\/td>.*'.
 				'<td class="nobr">(?P<size>.*)<\/td>.*'.
+				'<td>.*<\/td>.*'.
 				'<td>(?P<seeds>.*)<\/td>.*'.
-				'<td>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
+				'<td>(?P<leech>.*)<\/td>.'.
+				'/siU', $cli->results, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
@@ -58,8 +61,8 @@ class BroadcasTheEngine extends commonEngine
 						$item["name"] = self::removeTags($matches["name1"][$i]." - ".$matches["name2"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["time"] = strtotime(trim(self::removeTags($matches["date"][$i])));
-						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
-						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
+						$item["seeds"] = intval(self::removeTags(str_replace(",","",$matches["seeds"][$i])));
+						$item["peers"] = intval(self::removeTags(str_replace(",","",$matches["leech"][$i])));
 						$ret[$link] = $item;
 						$added++;
 						if($added>=$limit)
