@@ -47,7 +47,7 @@ class HDTsEngine extends commonEngine
 		$added = 0;
 		$url = 'https://hdts.ru';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'&action=basic' );
+			$categories = array( 'all'=>'&category[]=0' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
