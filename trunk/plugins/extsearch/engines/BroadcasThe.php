@@ -69,6 +69,7 @@ class BroadcasTheEngine extends commonEngine
 							return;
 					}
 				}
+				sleep(1);
 			}
 			else
 				break;
