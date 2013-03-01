@@ -30,6 +30,7 @@ class BroadcasTheEngine extends commonEngine
 			$cat = $categories['all'];
 		else
 			$cat = $categories[$cat];
+		$sleepTime = 1;
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.'&artistname='.$what.$cat.'&searchtags=&tags_type=0&order_by=s6&order_way=desc&page='.$pg );
@@ -37,18 +38,31 @@ class BroadcasTheEngine extends commonEngine
 				|| (strpos($cli->results, '<form name="loginform" id="loginform" method="post"')!==false))
 				break;
 
-			$res = preg_match_all('/<tr class="torrent">.*<img src=".*" alt="(?P<cat>.*)".*<\/td>.*'.
-				'<a href="torrents.php\?action=download(?P<link>.*)" title="Download">.*'.
-                		'<a href="series.php\?id=.*>(?P<name1>.*)<\/a> - <a href="torrents.php\?id=(?P<desc>.*)" title="View Torrent" >(?P<name2>.*)<\/a><br \/>.*'.
-		             	'<b>Added:<\/b>(?P<date>.*)(- <|<\/d).*'.
-				'<td>.*<\/td>.*'.
-				'<td class="nobr">(?P<size>.*)<\/td>.*'.
-				'<td>.*<\/td>.*'.
-				'<td>(?P<seeds>.*)<\/td>.*'.
-				'<td>(?P<leech>.*)<\/td>.'.
-				'/siU', $cli->results, $matches);
+			if(strpos($cli->results, '>Browse quota exceeded<')!==false)
+			{
+				$sleepTime = $sleepTime*1.5;
+				if( $sleepTime > 5 )
+					break;
+				sleep( intval($sleepTime) );
+				$pg--;
+				continue;
+			}
+			else
+				$sleepTime = 1;
+
+			$res = preg_match_all('`<tr class="torrent">.*<img src="[^"]*" alt="(?P<cat>[^"]*)".*</td>.*'.
+				'<a href="torrents.php\?action=download(?P<link>[^"]*)" title="Download">.*'.
+                		'<a href="series.php\?id=\d+" title="View Series" >(?P<name1>[^<]*)</a> - <a href="torrents.php\?id=(?P<desc>[^"]*)" title="View Torrent" >(?P<name2>[^<]*)</a><br />.*'.
+		             	'<b>Added:</b>(?P<date>.*)(\- <b>Pre|</div>).*'.
+				'<td>.*</td>.*'.
+				'<td class="nobr">(?P<size>[^<]*)</td>.*'.
+				'<td>.*</td>.*'.
+				'<td>(?P<seeds>[^<]*)</td>.*'.
+				'<td>(?P<leech>[^<]*)</td>.'.
+				'`siU', $cli->results, $matches);
 			if($res)
 			{
+
 				for($i=0; $i<$res; $i++)
 				{
 
@@ -61,6 +75,8 @@ class BroadcasTheEngine extends commonEngine
 						$item["name"] = self::removeTags($matches["name1"][$i]." - ".$matches["name2"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["time"] = strtotime(trim(self::removeTags($matches["date"][$i])));
+						if(empty($item["time"]))
+							$item["time"] = time();
 						$item["seeds"] = intval(self::removeTags(str_replace(",","",$matches["seeds"][$i])));
 						$item["peers"] = intval(self::removeTags(str_replace(",","",$matches["leech"][$i])));
 						$ret[$link] = $item;
@@ -69,7 +85,6 @@ class BroadcasTheEngine extends commonEngine
 							return;
 					}
 				}
-				sleep(1);
 			}
 			else
 				break;
