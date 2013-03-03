@@ -25,4 +25,8 @@ class BroadcasTheAccount extends commonAccount
 		}
 		return(false);
 	}
+        public function test($url)
+        {
+                return(preg_match( "`^http(s)?://broadcasthe.net`si", $url ));
+        }
 }
