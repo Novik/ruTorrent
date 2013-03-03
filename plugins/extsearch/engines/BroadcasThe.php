@@ -34,7 +34,7 @@ class BroadcasTheEngine extends commonEngine
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.'&artistname='.$what.$cat.'&searchtags=&tags_type=0&order_by=s6&order_way=desc&page='.$pg );
-			if( ($cli==false) || (strpos($cli->results, "<h2>Your search was way too l33t, try dumbing it down a bit.</h2>")!==false)
+			if( ($cli==false) || (strpos($cli->results, "No search results")!==false)
 				|| (strpos($cli->results, '<form name="loginform" id="loginform" method="post"')!==false))
 				break;
 
@@ -49,11 +49,11 @@ class BroadcasTheEngine extends commonEngine
 			}
 			else
 				$sleepTime = 1;
-
 			$res = preg_match_all('`<tr class="torrent">.*<img src="[^"]*" alt="(?P<cat>[^"]*)".*</td>.*'.
 				'<a href="torrents.php\?action=download(?P<link>[^"]*)" title="Download">.*'.
-                		'<a href="series.php\?id=\d+" title="View Series" >(?P<name1>[^<]*)</a> - <a href="torrents.php\?id=(?P<desc>[^"]*)" title="View Torrent" >(?P<name2>[^<]*)</a><br />.*'.
+                		'<a href="torrents.php\?id=(?P<desc>[^"]*)" title="View Torrent".*'.
 		             	'<b>Added:</b>(?P<date>.*)(\- <b>Pre|</div>).*'.
+				'<b>Release Name</b>: <span title="(?P<name>[^"]*)" style.*'.
 				'<td>.*</td>.*'.
 				'<td class="nobr">(?P<size>[^<]*)</td>.*'.
 				'<td>.*</td>.*'.
@@ -62,7 +62,6 @@ class BroadcasTheEngine extends commonEngine
 				'`siU', $cli->results, $matches);
 			if($res)
 			{
-
 				for($i=0; $i<$res; $i++)
 				{
 
@@ -72,7 +71,7 @@ class BroadcasTheEngine extends commonEngine
 						$item = $this->getNewEntry();
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$item["desc"] = $url."/torrents.php?id=".self::removeTags($matches["desc"][$i]);
-						$item["name"] = self::removeTags($matches["name1"][$i]." - ".$matches["name2"][$i]);
+						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["time"] = strtotime(trim(self::removeTags($matches["date"][$i])));
 						if(empty($item["time"]))
