@@ -3,8 +3,15 @@
 class PtPEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"passthepopcorn.me|session=XXX" );
-	public $categories = array( 'all'=>'', 'Movies'=>'&filter_cat[1]=1', 'Musicals'=>'&filter_cat[2]=1', 'Standup Comedy'=>'&filter_cat[3]=1', 
-		'Concerts'=>'&filter_cat[4]=1' );
+	public $categories = array
+	( 
+		'all'=>'', 
+		'Feature Film'=>'&filter_cat[1]=1', 
+		'Short Film'=>'&filter_cat[2]=1', 
+		'Miniseries'=>'&filter_cat[3]=1', 
+		'Stand-up Comedy'=>'&filter_cat[4]=1', 
+		'Concert'=>'&filter_cat[5]=1' ,
+	);
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -22,39 +29,35 @@ class PtPEngine extends commonEngine
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$itemsFound = false;
-			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.$cat.'&order_by=seeders&order_way=desc&page='.$pg );			
+			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.$cat.'&order_by=seeders&grouping=1&page='.$pg );			
 			if( ($cli==false) || (strpos($cli->results, "<h2>Your search did not match anything.</h2>")!==false) ||
 				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
 				break;
-			$res = preg_match_all('/<tr class="group">.*<td class="center">.*'.
-				'<div title="View" id="showimg_(?P<id>\d+)".*'.
-				'<td colspan="2">(?P<name>.*)<span/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["id"])==count($matches["name"]))
+		
+			$res = preg_match_all('`<tr class="group">.*'.
+				'<td class="small" id="large_groupid_(?P<id>\d+)".*'.
+				'title="View Torrent">(?P<name>.*)<span'.
+				'`siU', $cli->results, $matches);
+
+			if($res)
 			{
 				$groups = array();
-                                for($i=0; $i<count($matches["id"]); $i++)
+                                for($i=0; $i<$res; $i++)
 					$groups[intval($matches["id"][$i])] = self::removeTags($matches["name"][$i]);
 
-				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)">'.
-					'.*<td colspan="4">.*'.
-					'\[<a href="torrents\.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
-					'<a href="torrents\.php\?id=(?P<desc>.*)">(?P<name>.*)<\/a>.*'.
-					'<td class="nobr"><span title="(?P<date>.*)">.*<\/span><\/td>.*'.
-					'<td class="nobr">(?P<size>.*)<\/td>.*'.
-					'<td.*>.*<\/td>.*<td.*>(?P<seeds>.*)<\/td>.*'.
-					'<td.*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
-				if(($res!==false) && ($res>0) &&
-					count($matches["id"])==count($matches["link"]) && 
-					count($matches["link"])==count($matches["desc"]) &&
-					count($matches["desc"])==count($matches["name"]) &&
-					count($matches["name"])==count($matches["date"]) &&
-					count($matches["name"])==count($matches["size"]) &&
-					count($matches["name"])==count($matches["seeds"]) &&
-					count($matches["name"])==count($matches["leech"]))
+				$res = preg_match_all('`<tr class="group_torrent groupid_(?P<id>\d+)[ "].*'.
+					'\[<a href="torrents\.php\?(?P<link>.*)" title="Download">DL</a>.*'.
+					'<a href="torrents\.php\?id=(?P<desc>.*)">(?P<name>.*)</a>.*'.
+					'<td class="nobr"><span class="time" title="(?P<date>.*)">.*</span></td>.*'.
+					'<td class="nobr">(?P<size>.*)</td>.*'.
+					'<td.*>.*</td>.*<td.*>(?P<seeds>.*)</td>.*'.
+					'<td.*>(?P<leech>.*)</td>'.
+					'`siU', $cli->results, $matches);
+
+				if($res)
 				{
 					$itemsFound = true;
-					for($i=0; $i<count($matches["link"]); $i++)
+					for($i=0; $i<$res; $i++)
 					{
 						$link = $url."/torrents.php?".self::removeTags($matches["link"][$i]);
 						if(!array_key_exists($link,$ret))
