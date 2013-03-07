@@ -91,6 +91,7 @@ div#CatList ul li.disRSS {background-image: url(./images/status_icons.png); }
 .stable-icon {background-image: url(./images/status_icons.png); }
 .Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
+.Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 div#plabel_cont ul li {background-image: url(./images/status_icons.png);background-position: 4px -303px;}
 div#flabel_cont ul li {background-image: url(./images/status_icons.png);background-position: 4px -352px;}
 
