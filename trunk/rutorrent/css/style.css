@@ -239,6 +239,7 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 
 .Icon_File {background: transparent url(../images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(../images/dir.gif) no-repeat left center}
+.Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
 
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
 textarea { overflow: auto; }

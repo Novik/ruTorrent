@@ -57,6 +57,7 @@ div#CatList ul li.disRSS {background-image: url(./images/tstatus.png); }
 .stable-icon {background-image: url(./images/tstatus.png); }
 .Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
+.Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
 div.tab {background: #181818}
 div#lcont {background: #181818}

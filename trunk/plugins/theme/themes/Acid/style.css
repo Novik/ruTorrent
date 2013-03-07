@@ -101,6 +101,7 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 
 .Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
+.Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
 .catpanel { background: url(./images/pnl_open.gif) 2px no-repeat; background-color: #1e2124; color: #00ff00; font-weight: bold;}
 
