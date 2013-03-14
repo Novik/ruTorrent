@@ -95,6 +95,7 @@ function menuClick(obj)
 	{
 		var el = ownerDocument.getElementById(<?php echo $edit_id;?>);
 		el.value = decodeURIComponent(code);
+		el.focus();
 	}
 }
 
