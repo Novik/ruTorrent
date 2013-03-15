@@ -102,7 +102,7 @@ theWebUI.receiveDataDir = function( d )
 	else
 		for( var i = 0; i < d.errors.length; i++ )
 		{
-			var s = d.errors[i].desc;
+			var s = eval(d.errors[i].desc);
 			if( d.errors[i].prm )
 				s += " (" + d.errors[i].prm + ")";
 			noty( s, "error" );
