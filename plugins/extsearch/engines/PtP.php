@@ -82,6 +82,41 @@ class PtPEngine extends commonEngine
 					}
 				}
 			}
+			else
+			{
+				$res = preg_match_all('`<a href="torrents\.php\?(?P<link>[^"]*)" title="Download">DL</a>.*'.
+					'<a href="torrents\.php\?id=(?P<desc>.*)" title="Permalink">.*'.
+					'\); return false;">(?P<name>.*)</a>.*'.
+					'<td class="nobr">(?P<size>.*)</td>.*'.
+					'<td.*>.*</td>.*<td.*>(?P<seeds>.*)</td>.*'.
+					'<td.*>(?P<leech>.*)</td>.*'.
+                                        '<span class="time" title="(?P<date>.*)">'.
+					'`siU', $cli->results, $matches);
+				if($res)
+				{
+					$title = '';
+					if( preg_match( '`<title>(?P<title>.*)::`',$cli->results, $matches1 ) )
+						$title = $matches1["title"];
+					for($i=0; $i<$res; $i++)
+					{
+						$link = $url."/torrents.php?".self::removeTags($matches["link"][$i]);
+						if(!array_key_exists($link,$ret))
+						{
+							$item = $this->getNewEntry();
+							$item["desc"] = $url."/torrents.php?id=".self::removeTags($matches["desc"][$i]);
+							$item["size"] = self::formatSize($matches["size"][$i]);
+							$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
+							$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
+							$item["name"] = self::removeTags($title.' '.$matches["name"][$i]);
+							$ret[$link] = $item;
+							$added++;
+							if($added>=$limit)
+								return;
+						}
+					}
+				}
+			}
+
 			if(!$itemsFound)
 				break;
 		}
