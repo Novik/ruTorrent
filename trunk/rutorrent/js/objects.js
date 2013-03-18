@@ -127,7 +127,7 @@ var theDialogManager =
 				self.bringToTop(this.id);
 		}).attr("tabindex","0").keypress( function (e)
 		{
-			if((e.keyCode==13) && !(e.target && e.target.tagName && (/^textarea$/i).test(e.target.tagName)))
+			if((e.keyCode==13) && !(e.target && e.target.tagName && (/^textarea$/i).test(e.target.tagName)) && !$('#'+id+' .OK').prop('disabled'))
 				$('#'+id+' .OK').click();
 		});
 
