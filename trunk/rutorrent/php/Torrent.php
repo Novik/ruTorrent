@@ -435,8 +435,8 @@ class Torrent
 			return(false);
         	}
 		$pieces = '';
-		while( ! feof( $handle ) )
-			$pieces .= self::pack( fread( $handle, $piece_length ) );
+		while( $piece = fread( $handle, $piece_length ) )
+			$pieces .= self::pack( $piece );
 		fclose( $handle );
 		return(array(
             		'length'        => filesize( $file ),
