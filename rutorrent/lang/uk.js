@@ -8,18 +8,6 @@
 
 var theUILang =
 {
- Developers			: "Розробники",
- Check_new_version		: "Перевірка наявності нових версій",
- here				: "тут",
- Num_No 			: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "Це вікно",
- About_program			: "Про ruTorrent",
- Toggle_menu			: "Перемкнути меню",
- Toggle_details 		: "Перемкнути деталі",
- Toggle_categories		: "Перемкнути категорії",
- Delete_current_torrents	: "Видлити поточні торенти",
- Select_all			: "Вибрати все",
- Deselect_all			: "Скасувати вибір",
  kbs				: "кб/с",
  General			: "Загальне",
  Downloads			: "Завантаження",
@@ -161,7 +149,6 @@ var theUILang =
  Glob_max_memory		: "Макс. об’єм використовуваної пам’яті",
  Glob_max_files 		: "Макс. кількість відкритих файлів",
  Glob_max_http			: "Макс. кількість відкритих з’єднань HTTP",
- Glob_max_sockets		: "Макс. кількість відкритих сокетів",
  Other_sett			: "Інше",
  Directory_For_Dl		: "Каталог завантажень",
  Check_hash			: "Перевіряти дані після завантаження",
@@ -266,5 +253,17 @@ var theUILang =
  trkPrivate			: "Приватний",
  dontSet			: "Не встановлювати",
  webBadSessionError		: "Плагін не працюватиме. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent",
- webBadSessionWarning		: "Деякі функції не будуть доступні. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent"
+ webBadSessionWarning		: "Деякі функції не будуть доступні. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent",
+ Developers			: "Розробники",
+ Check_new_version		: "Перевірка наявності нових версій",
+ here				: "тут",
+ Num_No 			: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "Це вікно",
+ About_program			: "Про ruTorrent",
+ Toggle_menu			: "Перемкнути меню",
+ Toggle_details 		: "Перемкнути деталі",
+ Toggle_categories		: "Перемкнути категорії",
+ Delete_current_torrents	: "Видлити поточні торенти",
+ Select_all			: "Вибрати все",
+ Deselect_all			: "Скасувати вибір"
 };
