@@ -13,7 +13,7 @@
  theUILang.chkResults		= [
  				  "In progress",
  				  "Updated",
- 				  "Up to date",
+ 				  "No update required",
  				  "Probably deleted",
  				  "Error accessing the tracker",
  				  "Error interacting with rTorrent",

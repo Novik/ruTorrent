@@ -6,18 +6,6 @@
 
 var theUILang =
 {
- Developers			: "Ανάπτυξη λογισμικού",
- Check_new_version		: "Ελέγξτε για νέα έκδοση",
- here				: "εδώ",
- Num_No 			: "Α/Α", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "Αυτή η οθόνη",
- About_program			: "Σχετικά",
- Toggle_menu			: "Εμφάνιση/Απόκρυψη μενού",
- Toggle_details 		: "Εμφάνιση/Απόκρυψη λεπτομερειών",
- Toggle_categories		: "Εμφάνιση/Απόκρυψη κατηγοριών",
- Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",
- Select_all			: "Επιλογή όλων",
- Deselect_all			: "Αποεπιλογή όλων",
  kbs				: "kB/s",
  General			: "Γενικά",
  Downloads			: "Λήψεις",
@@ -159,7 +147,6 @@ var theUILang =
  Glob_max_memory		: "Μέγιστη χρήση μνήμης",
  Glob_max_files 		: "Μέγιστος αριθμός ανοικτών αρχείων",
  Glob_max_http			: "Μέγιστος αριθμός ενεργών συνδέσεων http",
- Glob_max_sockets		: "Μέγιστος αριθμός ανοικτών sockets",
  Other_sett			: "Άλλες",
  Directory_For_Dl		: "Προεπιλεγμένος φάκελος για λήψεις",
  Check_hash			: "Έλεγχος hash μετά τη λήψη",
@@ -264,5 +251,17 @@ var theUILang =
  trkPrivate			: "Ιδιωτικό",
  dontSet			: "Να μην οριστεί",
  webBadSessionError		: "Το πρόσθετο δεν θα λειτουργήσει. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
- webBadSessionWarning		: "Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent"
+ webBadSessionWarning		: "Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
+ Developers			: "Ανάπτυξη λογισμικού",
+ Check_new_version		: "Ελέγξτε για νέα έκδοση",
+ here				: "εδώ",
+ Num_No 			: "Α/Α", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "Αυτή η οθόνη",
+ About_program			: "Σχετικά",
+ Toggle_menu			: "Εμφάνιση/Απόκρυψη μενού",
+ Toggle_details 		: "Εμφάνιση/Απόκρυψη λεπτομερειών",
+ Toggle_categories		: "Εμφάνιση/Απόκρυψη κατηγοριών",
+ Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",
+ Select_all			: "Επιλογή όλων",
+ Deselect_all			: "Αποεπιλογή όλων"
 };

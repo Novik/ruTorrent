@@ -8,18 +8,6 @@
 
 var theUILang =
 {
- Developers			: "Разработчики",
- Check_new_version		: "Проверка наличия новых версий",
- here				: "здесь",
- Num_No 			: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "Это окно",
- About_program			: "О программе",
- Toggle_menu			: "Показать/скрыть меню",
- Toggle_details 		: "Показать/скрыть детали",
- Toggle_categories		: "Показать/скрыть категории",
- Delete_current_torrents	: "Удалить торрент(ы)",
- Select_all			: "Выделить все",
- Deselect_all			: "Отмена выделения",
  kbs				: "кБ/с",
  General			: "Общее",
  Downloads			: "Закачки",
@@ -161,7 +149,6 @@ var theUILang =
  Glob_max_memory		: "Макс. кол-во используемой памяти",
  Glob_max_files 		: "Макс. кол-во открытых файлов",
  Glob_max_http			: "Макс. кол-во открытых http соединений",
- Glob_max_sockets		: "Макс. кол-во открытых сокетов",
  Other_sett			: "Прочее",
  Directory_For_Dl		: "Директория для закачек",
  Check_hash			: "Проверять данные после закачки",
@@ -266,5 +253,17 @@ var theUILang =
  trkPrivate			: "Частный",
  dontSet			: "Не устанавливать",
  webBadSessionError		: "Плагин не будет работать. Веб сервер должен иметь доступ на выполнение к директории session rtorrent",
- webBadSessionWarning		: "Часть функциональности плагина будет недоступна. Веб сервер должен иметь доступ на выполнение к директории session rtorrent"
+ webBadSessionWarning		: "Часть функциональности плагина будет недоступна. Веб сервер должен иметь доступ на выполнение к директории session rtorrent",
+ Developers			: "Разработчики",
+ Check_new_version		: "Проверка наличия новых версий",
+ here				: "здесь",
+ Num_No 			: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "Это окно",
+ About_program			: "О программе",
+ Toggle_menu			: "Показать/скрыть меню",
+ Toggle_details 		: "Показать/скрыть детали",
+ Toggle_categories		: "Показать/скрыть категории",
+ Delete_current_torrents	: "Удалить торрент(ы)",
+ Select_all			: "Выделить все",
+ Deselect_all			: "Отмена выделения"
 };

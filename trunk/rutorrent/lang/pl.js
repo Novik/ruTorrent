@@ -8,18 +8,6 @@
 
 var theUILang =
 {
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "This screen",
- About_program			: "About ruTorrent",
- Toggle_menu			: "Toggle menu",
- Toggle_details 		: "Toggle details",
- Toggle_categories		: "Toggle categories",
- Delete_current_torrents	: "Delete current torrent(s)",
- Select_all			: "Select all",
- Deselect_all			: "Deselect all",
  kbs				: "kB/s",
  General			: "Główne",
  Downloads			: "Pobieranie",
@@ -161,7 +149,6 @@ var theUILang =
  Glob_max_memory		: "Maksymalne użycie pamięci",
  Glob_max_files 		: "Maksymalna liczba otwartych plików",
  Glob_max_http			: "Maksymalna liczba otwartych połączeń http",
- Glob_max_sockets		: "Maksymalna liczba otwartych gniazd",
  Other_sett			: "Inne",
  Directory_For_Dl		: "Domyślne katalog pobierań",
  Check_hash			: "Sprawdzaj sumę kontrolą po pobraniu",
@@ -266,5 +253,17 @@ var theUILang =
  trkPrivate			: "Prywatny",
  dontSet			: "Nie ustawiaj",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
- webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
+ webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory",
+ Developers			: "Developers",
+ Check_new_version		: "Check new version",
+ here				: "here",
+ Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "This screen",
+ About_program			: "About ruTorrent",
+ Toggle_menu			: "Toggle menu",
+ Toggle_details 		: "Toggle details",
+ Toggle_categories		: "Toggle categories",
+ Delete_current_torrents	: "Delete current torrent(s)",
+ Select_all			: "Select all",
+ Deselect_all			: "Deselect all"
 };

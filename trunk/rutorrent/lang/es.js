@@ -8,20 +8,6 @@
 
 var theUILang =
 {
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "This screen",
- About_program			: "About ruTorrent",
- Toggle_menu			: "Toggle menu",
- Toggle_details 		: "Toggle details",
- Toggle_categories		: "Toggle categories",
- Delete_current_torrents	: "Delete current torrent(s)",
- Select_all			: "Select all",
- Deselect_all			: "Deselect all",
- kbs				: "kB/s",
- General			: "General",
  Downloads			: "Descargas",
  Connection			: "Conexión",
  BitTorrent			: "BitTorrent",
@@ -161,7 +147,6 @@ var theUILang =
  Glob_max_memory		: "Uso máximo de memoria",
  Glob_max_files 		: "Número máximo de archivos abiertos",
  Glob_max_http			: "Número máximo de conexiones http abiertas",
- Glob_max_sockets		: "Número máximo de sockets abiertos",
  Other_sett			: "Otros",
  Directory_For_Dl		: "Carpeta por defecto para descargas",
  Check_hash			: "Comprobar hash una vez finalizado",
@@ -266,5 +251,19 @@ var theUILang =
  trkPrivate			: "Privado",
  dontSet			: "No marcar",
  webBadSessionError		: "El Plugin no funcionará. El Webserver debe poder ejecutar dentro de la carpeta de sesión",
- webBadSessionWarning		: "Algunas funcionalidades no estarán disponibles. El Webserver debe poder ejecutar dentro de la carpeta de sesión"
+ webBadSessionWarning		: "Algunas funcionalidades no estarán disponibles. El Webserver debe poder ejecutar dentro de la carpeta de sesión",
+ Developers			: "Developers",
+ Check_new_version		: "Check new version",
+ here				: "here",
+ Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "This screen",
+ About_program			: "About ruTorrent",
+ Toggle_menu			: "Toggle menu",
+ Toggle_details 		: "Toggle details",
+ Toggle_categories		: "Toggle categories",
+ Delete_current_torrents	: "Delete current torrent(s)",
+ Select_all			: "Select all",
+ Deselect_all			: "Deselect all",
+ kbs				: "kB/s",
+ General			: "General"
 };

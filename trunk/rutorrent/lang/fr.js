@@ -8,18 +8,6 @@
 
 var theUILang =
 {
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "This screen",
- About_program			: "À propos du programme",
- Toggle_menu			: "Toggle menu",
- Toggle_details 		: "Toggle details",
- Toggle_categories		: "Toggle categories",
- Delete_current_torrents	: "Supprimer le(s) torrent(s) actuel(s)",
- Select_all			: "Sélectionner tout",
- Deselect_all			: "Désélectionner tout",
  kbs				: "ko/s",
  General			: "Général",
  Downloads			: "Téléchargement",
@@ -161,7 +149,6 @@ var theUILang =
  Glob_max_memory		: "Utilisation maximale de la mémoire",
  Glob_max_files 		: "Nombre maximum de fichiers ouverts",
  Glob_max_http			: "Nombre maximum de connexions HTTP ouvertes",
- Glob_max_sockets		: "Nombre maximum de sockets ouverts",
  Other_sett			: "Autre",
  Directory_For_Dl		: "Répertoire par défaut pour les téléchargements",
  Check_hash			: "Vérifier le Hash après le téléchargement",
@@ -266,5 +253,17 @@ var theUILang =
  trkPrivate			: "Privé",
  dontSet			: "Sans",
  webBadSessionError		: "Le plug-in ne fonctionnera pas. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
- webBadSessionWarning		: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent."
+ webBadSessionWarning		: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
+ Developers			: "Developers",
+ Check_new_version		: "Check new version",
+ here				: "here",
+ Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "This screen",
+ About_program			: "À propos du programme",
+ Toggle_menu			: "Toggle menu",
+ Toggle_details 		: "Toggle details",
+ Toggle_categories		: "Toggle categories",
+ Delete_current_torrents	: "Supprimer le(s) torrent(s) actuel(s)",
+ Select_all			: "Sélectionner tout",
+ Deselect_all			: "Désélectionner tout"
 };

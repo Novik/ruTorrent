@@ -8,18 +8,6 @@
 
 var theUILang =
 {
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "This screen",
- About_program			: "About ruTorrent",
- Toggle_menu			: "Toggle menu",
- Toggle_details 		: "Toggle details",
- Toggle_categories		: "Toggle categories",
- Delete_current_torrents	: "Delete current torrent(s)",
- Select_all			: "Select all",
- Deselect_all			: "Deselect all",
  kbs				: "kB/s",
  General			: "Hlavné",
  Downloads			: "Sťahovanie",
@@ -161,7 +149,6 @@ var theUILang =
  Glob_max_memory		: "Maximum memory usage",
  Glob_max_files 		: "Maximum number of open files",
  Glob_max_http			: "Maximum number of open http connections",
- Glob_max_sockets		: "Maximum number of open sockets",
  Other_sett			: "Other",
  Directory_For_Dl		: "Default directory for downloads",
  Check_hash			: "Check hash after download",
@@ -266,5 +253,17 @@ var theUILang =
  trkPrivate			: "Private",
  dontSet			: "Don't set",
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
- webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory"
+ webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory",
+ Developers			: "Developers",
+ Check_new_version		: "Check new version",
+ here				: "here",
+ Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "This screen",
+ About_program			: "About ruTorrent",
+ Toggle_menu			: "Toggle menu",
+ Toggle_details 		: "Toggle details",
+ Toggle_categories		: "Toggle categories",
+ Delete_current_torrents	: "Delete current torrent(s)",
+ Select_all			: "Select all",
+ Deselect_all			: "Deselect all"
 };
