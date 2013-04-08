@@ -82,6 +82,7 @@
 					$req->setParseByTypes();
 					if($req->run() && !$req->fault)
 					{
+						$checkedDomains = array();
 						$lastGroup = 65535;
 						for($i = 0; $i<count($req->strings); $i++)
 						{
@@ -101,13 +102,17 @@
 											$domain = $tmp;
 									}
 								}
-                                                                if(array_key_exists($domain,$trackers))
+								if(!array_key_exists($domain,$checkedDomains))
 								{
-									$trackers[$domain][0]+=$needTorrents[$key][0];
-									$trackers[$domain][1]+=$needTorrents[$key][1];
+	                                                                if(array_key_exists($domain,$trackers))
+									{
+										$trackers[$domain][0]+=$needTorrents[$key][0];
+										$trackers[$domain][1]+=$needTorrents[$key][1];
+									}
+									else
+										$trackers[$domain] = $needTorrents[$key];
+									$checkedDomains[$domain] = true;
 								}
-								else
-									$trackers[$domain] = $needTorrents[$key];
 							}
 						}
 					}
