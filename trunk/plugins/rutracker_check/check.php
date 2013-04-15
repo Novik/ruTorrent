@@ -49,12 +49,12 @@ class ruTrackerChecker
 		}
 	}
 
-	static public function makeClient( $url )
+	static public function makeClient( $url, $method="GET", $content_type="", $body="" )
 	{
 		$client = new Snoopy();
 		$client->read_timeout = 5;
 		$client->_fp_timeout = 5;
-		@$client->fetchComplex($url);
+		@$client->fetchComplex($url,$method,$content_type,$body);
 		return($client);
 	}
 
@@ -62,7 +62,6 @@ class ruTrackerChecker
 	static public function run( $hash, $state = null, $time = null, $successful_time = null )
 	{
 		global $saveUploadedTorrents;
-//		date_default_timezone_set('Europe/Moscow');
 		if(is_null($state))
 			self::getState( $hash, $state, $time, $successful_time );
 		if(($state==self::STE_INPROGRESS) && ((time()-$time)>self::MAX_LOCK_TIME))
@@ -82,17 +81,22 @@ class ruTrackerChecker
 					{
 						$client = self::makeClient($torrent->comment());
 						if(($client->status==200) &&
-							preg_match( '`<span title="Когда зарегистрирован">\[ (?P<date>.*) \]</span>`',$client->results, $matches1 ))
+							preg_match( "`ajax.form_token\s*=\s*'(?P<form_token>[^']+)';.*topic_id\s*:\s*(?P<topic_id>\d+),.*t_hash\s*:\s*'(?P<t_hash>[^']+)'`s",$client->results, $matches1 ))
 						{
-							$registered = strtotime( strtr($matches1["date"], array(
-								"Янв"=>"Jan", "Фев"=>"Feb", "Мар"=>"Mar", "Апр"=>"Apr",
-								"Май"=>"May", "Июн"=>"Jun", "Июл"=>"Jul", "Авг"=>"Aug",
-								"Сен"=>"Sep", "Окт"=>"Oct", "Ноя"=>"Nov", "Дек"=>"Dec",
-								)) );
-							if($registered && ($registered < $successful_time))
+
+							$client = self::makeClient("http://rutracker.org/forum/ajax.php","POST","application/x-www-form-urlencoded; charset=UTF-8",
+								"action=get_info_hash".
+                                                                "&topic_id=".$matches1["topic_id"].
+								"&t_hash=".$matches1["t_hash"].
+								"&form_token=".$matches1["form_token"]);
+							if($client->status==200)
 							{
-								self::setState( $hash, (strstr($client->results, "Скачать .torrent</a>")===false) ? self::STE_DELETED : self::STE_UPTODATE );
-								return(true);
+								$ret = json_decode($client->results,true);
+								if($ret && array_key_exists("ih_hex",$ret) && (strtoupper($ret["ih_hex"])==$hash))
+								{
+									self::setState( $hash,  self::STE_UPTODATE );
+									return(true);
+								}
 							}
 						}
 						$client = self::makeClient("http://dl.rutracker.org/forum/dl.php?t=".$matches["id"]);
