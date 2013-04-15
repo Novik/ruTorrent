@@ -380,6 +380,8 @@ var theContextMenu =
 	                	submenu.css( "left", -150 );
                 	if(submenu.offset().top + submenu.height() > $(window).height()) 
 	                	submenu.css( "top", -submenu.height()+20 );
+	                if(submenu.offset().top<0)
+				submenu.css( "top", -submenu.height()+20-submenu.offset().top );
                 });
                 obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
 	},
