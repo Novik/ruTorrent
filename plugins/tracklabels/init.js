@@ -9,6 +9,13 @@ theWebUI.config = function(data)
 	{
 		theWebUI.tables.trt.columns.push({ text: theUILang.Tracker, width: '100px', id: 'tracker', type: TYPE_STRING});
 		plugin.config.call(this,data);
+		plugin.reqId = theRequestManager.addRequest("trk", null, function(hash,tracker,value)
+		{
+			var domain = theWebUI.getTrackerName( tracker.name );
+			tracker.icon = "trk"+domain.replace(/\./g, "_");
+			if(!getCSSRule("."+tracker.icon))
+				injectCSSText( "."+tracker.icon+" {background-image: url(./plugins/tracklabels/action.php?tracker="+domain+"); background-repeat: no-repeat}\n" );
+		});
 	}
 }
 
@@ -115,12 +122,26 @@ theWebUI.trackersLabelContextMenu = function(e)
 	return(false);
 }
 
+plugin.updateLabalsImages = function()
+{
+	$('#plabel_cont ul li').each( function()
+	{
+		var lbl = this.id.replace(/[-_]/g, "");
+		if(!$$("lbl_"+lbl))
+			$(this).prepend( $("<img>").attr("id","lbl_"+lbl).attr("src","plugins/tracklabels/action.php?label="+lbl).addClass("tfavicon") ).css({ padding: "2px 4px" });
+	});
+}
+
 plugin.updateLabels = theWebUI.updateLabels;
 theWebUI.updateLabels = function(wasRemoved)
 {
 	plugin.updateLabels.call(theWebUI,wasRemoved);
-	if(plugin.enabled && wasRemoved)
-		theWebUI.rebuildTrackersLabels();
+	if(plugin.enabled)
+	{
+		if(wasRemoved)
+			theWebUI.rebuildTrackersLabels();
+		plugin.updateLabalsImages();
+	}
 }
 
 theWebUI.rebuildTrackersLabels = function()
@@ -223,6 +244,7 @@ plugin.onRemove = function()
 		theWebUI.getTable("trt").removeColumnById("tracker");
 		if(thePlugins.isInstalled("rss"))
 			theWebUI.getTable("rss").removeColumnById("tracker");
+		theRequestManager.removeRequest(plugin.reqId);
 	}
 }
 
