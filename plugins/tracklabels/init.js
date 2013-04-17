@@ -126,7 +126,7 @@ plugin.updateLabalsImages = function()
 {
 	$('#plabel_cont ul li').each( function()
 	{
-		var lbl = this.id.replace(/[-_]/g, "");
+		var lbl = this.id.substr(5,this.id.length-10);
 		if(!$$("lbl_"+lbl))
 			$(this).prepend( $("<img>").attr("id","lbl_"+lbl).attr("src","plugins/tracklabels/action.php?label="+lbl).addClass("tfavicon") ).css({ padding: "2px 4px" });
 	});
