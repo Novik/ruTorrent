@@ -52,12 +52,14 @@ if(count($argv)>1)
 		new rXMLRPCCommand("d.get_tied_to_file",$hash),
 		new rXMLRPCCommand("d.get_custom1",$hash),
 		new rXMLRPCCommand("d.get_directory_base",$hash),
-		new rXMLRPCCommand("d.is_private",$hash)
+		new rXMLRPCCommand("d.is_private",$hash),
+		new rXMLRPCCommand("d.get_name",$hash),
 		) );
 	if($req->success())
 	{
 		$isStart = ($req->val[1]!=0);
-		if((count($trks->list) || count($trks->todelete)) && !($req->val[5] && $trks->dontAddPrivate))
+		if((count($trks->list) || count($trks->todelete)) && !($req->val[5] && $trks->dontAddPrivate) &&
+			($req->val[6]!=$hash.".meta"))
 		{
 			$fname = $req->val[0].$hash.".torrent";
 			if(empty($req->val[0]) || !is_readable($fname))
@@ -119,7 +121,7 @@ if(count($argv)>1)
 						{
 							$label = rawurldecode($req->val[3]);
 							rTorrent::sendTorrent($torrent, $isStart, false, $req->val[4], $label, false, false, false,
-							        array(getCmd("d.set_custom3")."=1") );
+							        array( getCmd("d.set_custom3")."=1") ) );
 							$processed = true;
 						}
 					}
