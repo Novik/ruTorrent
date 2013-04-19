@@ -21,7 +21,7 @@ class BroadcasTheEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://broadcasthe.net';
+		$url = 'https://broadcasthe.net';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'&action=basic' );
 		else
@@ -33,7 +33,7 @@ class BroadcasTheEngine extends commonEngine
 		$sleepTime = 1;
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.'&artistname='.$what.$cat.'&searchtags=&tags_type=0&order_by=s6&order_way=desc&page='.$pg );
+			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.'&releasename='.$what.$cat.'&searchtags=&tags_type=0&order_by=s6&order_way=desc&page='.$pg );
 			if( ($cli==false) || (strpos($cli->results, "No search results")!==false)
 				|| (strpos($cli->results, '<form name="loginform" id="loginform" method="post"')!==false))
 				break;
