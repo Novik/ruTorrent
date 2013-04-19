@@ -142,7 +142,8 @@ $.event.fix = function(e)
 {
 	e = $.event.inheritedfix(e);
 	e.fromTextCtrl = (e.target && e.target.tagName && (/^input|textarea|a$/i).test(e.target.tagName));
-	e.metaKey = e.ctrlKey;
+	if(!e.metaKey)
+		e.metaKey = e.ctrlKey;
 	return(e);
 }
 $.fn.extend(
