@@ -161,9 +161,9 @@ class rTorrent
 	        	if($req->success())
 	        		$base=$req->val[0];
 	        }
-	        $base = addslash($base);
-	        if($psize && ($base!=''))
+	        if($psize && rTorrentSettings::get()->correctDirectory($base))
 	        {
+		        $base = addslash($base);
 	                $tsize = 0.0;
 			if(isset($info['files']))
 			{
