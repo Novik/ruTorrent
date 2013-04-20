@@ -28,6 +28,14 @@ if(isset($HTTP_RAW_POST_DATA))
 			$perms = $theSettings->getPluginData($parts[1]);
 			switch($cmd)
 			{
+				case "unlaunch":
+				{
+					if(is_null($perms) || ($perms & FLAG_CAN_CHANGE_LAUNCH))
+					{
+						$userPermissions[$parts[1]] = false;
+						$jResult.="thePlugins.get('".$parts[1]."').unlaunch();";
+					}
+				}
 				case "done":
 				{
 					if(!is_null($perms) && !($perms & FLAG_CANT_SHUTDOWN))
@@ -49,15 +57,7 @@ if(isset($HTTP_RAW_POST_DATA))
 					}
 					break;
 				}
-				case "unlaunch":
-				{
-					if(is_null($perms) || ($perms & FLAG_CAN_CHANGE_LAUNCH))
-					{
-						$userPermissions[$parts[1]] = false;
-						$jResult.="thePlugins.get('".$parts[1]."').unlaunch();";
-					}
-					break;
-				}
+
 			}
 		}
 	}
