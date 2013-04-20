@@ -121,7 +121,7 @@ if(count($argv)>1)
 						{
 							$label = rawurldecode($req->val[3]);
 							rTorrent::sendTorrent($torrent, $isStart, false, $req->val[4], $label, false, false, false,
-							        array( getCmd("d.set_custom3")."=1") ) );
+							        array(getCmd("d.set_custom3")."=1") );
 							$processed = true;
 						}
 					}
