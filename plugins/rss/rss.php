@@ -297,11 +297,29 @@ class rRSS
 				}
 			}
 			rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
-			foreach( $this->items as $href=>$item )
-				$history->correct($href,$item['timestamp']);
+			if(!$this->hasIncorrectTimes())
+				foreach( $this->items as $href=>$item )
+					$history->correct($href,$item['timestamp']);
 			return(true);
 		}
 		return(false);
+	}
+	
+	protected function hasIncorrectTimes()
+	{
+		global $feedsWithIncorrectTimes;
+		$ret = false;
+		$uparts = @parse_url($this->url);
+		$host = $uparts['host'];
+		foreach( $feedsWithIncorrectTimes as $url )
+		{
+			if( stripos($host,$url)!==false )
+			{
+				$ret = true;
+				break;
+			}
+		}
+		return($ret);
 	}
 
 	static public function removeTegs( $s )

@@ -5,3 +5,8 @@
 @define('WAIT_AFTER_LOADING', 0, true);
 
 $minInterval = 2;	// in minutes
+
+$feedsWithIncorrectTimes = array
+(
+	"torrentday.",	// substring of hostname
+);
