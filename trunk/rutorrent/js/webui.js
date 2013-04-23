@@ -196,6 +196,7 @@ var theWebUI =
 	tegs:		{},
 	lastTeg:	0,
 	deltaTime:	0,
+	serverDeltaTime:0,
 
 //
 // init
@@ -305,7 +306,7 @@ var theWebUI =
 
 	updateServerTime: function()
 	{
-		$('#servertime').text(theConverter.date( (new Date().getTime()-theWebUI.deltaTime)/1000, true ));
+		$('#servertime').text(theConverter.date( (new Date().getTime()-theWebUI.serverDeltaTime)/1000, true ));
 	},
 
 	getPlugins: function()
