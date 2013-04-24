@@ -152,18 +152,18 @@ class rTask
 	static public function run( $cmd, $flags = 0 )
 	{
 		$ret = -1;
-		$cmd.=" > /dev/null 2>&1";
+		$params = " >/dev/null 2>&1";
 		if(!($flags & self::FLG_WAIT))
-			$cmd.=" &";
+			$params.=" &";
 		if($flags & self::FLG_RUN_AS_WEB)
-		{
-			$output = array();
-			exec('sh '.$cmd, $output, $ret);
-		}
+			exec('sh '.$cmd.$params, $output, $ret);
 		else
 		{
 			$req = new rXMLRPCRequest( 
-				new rXMLRPCCommand( "execute_nothrow", array("sh","-c",$cmd) ) );
+				(rTorrentSettings::get()->iVersion>=0x900) ?	// buggy in a lesser version
+					new rXMLRPCCommand( "execute.nothrow.bg", array("","sh",$cmd) ) :
+					new rXMLRPCCommand( "execute_nothrow", array("sh","-c",$cmd.$params) )
+				);
 			if($req->success() && count($req->val))
 				$ret = intval($req->val[0]);
 		}
