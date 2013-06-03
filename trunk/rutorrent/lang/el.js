@@ -263,5 +263,6 @@ var theUILang =
  Toggle_categories		: "Εμφάνιση/Απόκρυψη κατηγοριών",
  Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",
  Select_all			: "Επιλογή όλων",
- Deselect_all			: "Αποεπιλογή όλων"
+ Deselect_all			: "Αποεπιλογή όλων",
+ showSpeedInTitle		: "Show speed in the title"
 };

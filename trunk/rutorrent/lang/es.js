@@ -265,5 +265,6 @@ var theUILang =
  Select_all			: "Select all",
  Deselect_all			: "Deselect all",
  kbs				: "kB/s",
- General			: "General"
+ General			: "General",
+ showSpeedInTitle		: "Show speed in the title"
 };

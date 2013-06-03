@@ -151,6 +151,7 @@ var theWebUI =
 		"webui.closed_panels":		{},
 		"webui.timeformat":		0,
 		"webui.dateformat":		0,
+		"webui.speedintitle":		0,
 		"webui.log_autoswitch":		1
 	},
 	showFlags: 0,
@@ -450,7 +451,6 @@ var theWebUI =
 
 	setStatusUpdate: function()
 	{
-		document.title = "ruTorrent v" + this.version;
 		if(this.sTimer)
 		{
 			window.clearInterval(this.sTimer);
@@ -2190,10 +2190,23 @@ var theWebUI =
 	updateStatus: function()
 	{
 	        var self = theWebUI;
-	        $("#stup_speed").text(theConverter.speed(self.total.speedUL));
+		var ul = theConverter.speed(self.total.speedUL);
+		var dl = theConverter.speed(self.total.speedDL);
+		var newTitle = '';
+		if(theWebUI.settings["webui.speedintitle"])
+		{	
+			if(ul.length)
+				newTitle+=('↑ '+ul+' ');
+			if(dl.length)
+				newTitle+=('↓ '+dl+' ');
+		}
+		newTitle+="ruTorrent v"+self.version;
+		if(document.title!=newTitle)
+			document.title = newTitle;
+	        $("#stup_speed").text(ul);
 	        $("#stup_limit").text((self.total.rateUL>0 && self.total.rateUL<100*1024*1024) ? theConverter.speed(self.total.rateUL) : theUILang.no);
 	        $("#stup_total").text(theConverter.bytes(self.total.UL));
-	        $("#stdown_speed").text(theConverter.speed(self.total.speedDL));
+	        $("#stdown_speed").text(dl);
 	        $("#stdown_limit").text((self.total.rateDL>0 && self.total.rateDL<100*1024*1024) ? theConverter.speed(self.total.rateDL) : theUILang.no);
 	        $("#stdown_total").text(theConverter.bytes(self.total.DL));
 	},

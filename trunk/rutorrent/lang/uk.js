@@ -265,5 +265,6 @@ var theUILang =
  Toggle_categories		: "Перемкнути категорії",
  Delete_current_torrents	: "Видлити поточні торенти",
  Select_all			: "Вибрати все",
- Deselect_all			: "Скасувати вибір"
+ Deselect_all			: "Скасувати вибір",
+ showSpeedInTitle		: "Show speed in the title"
 };

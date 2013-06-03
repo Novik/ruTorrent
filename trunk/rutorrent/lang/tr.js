@@ -263,5 +263,6 @@ var theUILang =
  Toggle_categories		: "Toggle categories",
  Delete_current_torrents	: "Delete current torrent(s)",
  Select_all			: "Select all",
- Deselect_all			: "Deselect all"
+ Deselect_all			: "Deselect all",
+ showSpeedInTitle		: "Show speed in the title"
 };

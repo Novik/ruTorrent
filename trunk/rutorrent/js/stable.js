@@ -1381,7 +1381,7 @@ dxSTable.prototype.clearRows = function()
 		}
 		this.rows = 0;
 		this.viewRows = 0;
-
+		this.selCount = 0;		
 		this.rowSel = new Array(0);
 		this.rowdata = new Array(0);
 		this.rowIDs = new Array(0);
