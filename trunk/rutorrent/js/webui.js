@@ -2196,9 +2196,9 @@ var theWebUI =
 		if(theWebUI.settings["webui.speedintitle"])
 		{	
 			if(ul.length)
-				newTitle+=('↑ '+ul+' ');
+				newTitle+=('↑'+ul+' ');
 			if(dl.length)
-				newTitle+=('↓ '+dl+' ');
+				newTitle+=('↓'+dl+' ');
 		}
 		newTitle+="ruTorrent v"+self.version;
 		if(document.title!=newTitle)
