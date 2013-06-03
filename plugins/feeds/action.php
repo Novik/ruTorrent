@@ -221,7 +221,7 @@ if($req->success())
 		}
 		$items[] = $item;
 	}
-	usort( $items, create_function( '$a,$b', 'return( (intval($a["pubDate"]) > intval($b["pubDate"])) ? -1 : ((intval($a["pubDate"]) < intval($b["pubDate"])) ? 1 : strcmp($b["title"],$b["title"])) );'));
+	usort( $items, create_function( '$a,$b', 'return( (intval($a["pubDate"]) > intval($b["pubDate"])) ? -1 : ((intval($a["pubDate"]) < intval($b["pubDate"])) ? 1 : strcmp($a["title"],$b["title"])) );'));
 	foreach( $items as $item )
 	{
 		$ret.="\r\n<item>";
