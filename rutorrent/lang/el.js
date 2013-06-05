@@ -264,5 +264,5 @@ var theUILang =
  Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",
  Select_all			: "Επιλογή όλων",
  Deselect_all			: "Αποεπιλογή όλων",
- showSpeedInTitle		: "Show speed in the title"
+ showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο"
 };
