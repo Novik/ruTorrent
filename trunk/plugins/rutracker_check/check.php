@@ -84,7 +84,7 @@ class ruTrackerChecker
 							preg_match( "`ajax.form_token\s*=\s*'(?P<form_token>[^']+)';.*topic_id\s*:\s*(?P<topic_id>\d+),\s*t_hash\s*:\s*'(?P<t_hash>[^']+)'`s",$client->results, $matches1 ))
 						{
 							$client->setcookies();
-							$client->fetchComplex("http://rutracker.org/forum/ajax.php","POST","application/x-www-form-urlencoded; charset=UTF-8",
+							$client->fetch("http://rutracker.org/forum/ajax.php","POST","application/x-www-form-urlencoded; charset=UTF-8",
 								"action=get_info_hash".
                                                                 "&topic_id=".$matches1["topic_id"].
 								"&t_hash=".$matches1["t_hash"].
