@@ -9,7 +9,7 @@ class WhatCDEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://what.cd';
+		$url = 'https://what.cd';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'music'=>'&filter_cat[1]=1', 'software'=>'&filter_cat[2]=1', 'books'=>'&filter_cat[3]=1' );
 		else
