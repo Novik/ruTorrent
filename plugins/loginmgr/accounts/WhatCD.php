@@ -2,14 +2,15 @@
 
 class WhatCDAccount extends commonAccount
 {
-	public $url = "http://what.cd";
+	public $url = "https://what.cd";
 
 	protected function isOK($client)
 	{
-		return(strpos($client->results, '<form id="loginform" method="post"')===false);
+		return(strpos($client->results, '<form class="auth_form" name="login" id="loginform"')===false);
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
+
 		$is_result_fetched = false;
 		if($client->fetch( $this->url."/login.php" ))
 		{
