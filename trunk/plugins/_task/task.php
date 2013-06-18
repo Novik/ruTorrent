@@ -13,6 +13,7 @@ class rTask
 	const FLG_DEFAULT	= 0x000A;
 	const FLG_NO_ERR	= 0x0010;
 	const FLG_RUN_AS_WEB	= 0x0020;
+	const FLG_RUN_AS_CMD	= 0x0040;
 
 	static public function formatPath( $taskNo )
 	{
@@ -156,11 +157,15 @@ class rTask
 		if(!($flags & self::FLG_WAIT))
 			$params.=" &";
 		if($flags & self::FLG_RUN_AS_WEB)
+		{
+			if(self::FLG_RUN_AS_CMD)
+				$cmd = '-c "'.$cmd.'"';
 			exec('sh '.$cmd.$params, $output, $ret);
+		}
 		else
 		{
 			$req = new rXMLRPCRequest( 
-				(rTorrentSettings::get()->iVersion>=0x900) ?	// buggy in a lesser version
+				((rTorrentSettings::get()->iVersion>=0x900) && !($flags & self::FLG_WAIT)) ?
 					new rXMLRPCCommand( "execute.nothrow.bg", array("","sh",$cmd) ) :
 					new rXMLRPCCommand( "execute_nothrow", array("sh","-c",$cmd.$params) )
 				);
@@ -179,7 +184,7 @@ class rTask
 			if(is_null($flags))
 				$flags = intval(file_get_contents($dir.'/flags'));
 			$pid = trim(file_get_contents($dir.'/pid'));
-			self::run("kill -9 ".$pid." ; kill -9 `".getExternal("pgrep")." -P ".$pid."`");
+			self::run("kill -9 ".$pid." ; kill -9 `".getExternal("pgrep")." -P ".$pid."`", ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
 			self::clean($dir);
 		}
 		return(true);
