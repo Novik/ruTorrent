@@ -266,5 +266,5 @@ var theUILang =
  Delete_current_torrents	: "Supprimer le(s) torrent(s) actuel(s)",
  Select_all			: "Sélectionner tout",
  Deselect_all			: "Désélectionner tout",
- showSpeedInTitle		: "Show speed in the title"
+ showSpeedInTitle		: "Vitesse de transfert dans la barre de titre"
 };
