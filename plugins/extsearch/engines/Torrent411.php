@@ -33,16 +33,17 @@ class Torrent411Engine extends commonEngine
 		for($pg = 0; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/torrents/search/?search='.$what.'&order=seeders&type=desc&page='.$pg.$cat );
-			if( ($cli==false) || (strpos($cli->results, ">Aucun Résultat Aucun<")!==false))
+			if( ($cli==false) || (strpos($cli->results, ">Aucun Rï¿½sultat Aucun<")!==false))
 				break;
 
 			$res = preg_match_all('`<img src="/images/categories.png" alt="(?P<cat>.*)".*'.
-				'<a href="http://www\.t411\.me/torrents/(?P<link>.*)" title="(?P<name>.*)">.*'.
+				'<a href=".*www\.t411\.me/torrents/(?P<link>.*)" title="(?P<name>.*)">.*'.
 				'<dl>.*<dt>.*</dt>.*<dd>(?P<date>.*)</dd>.*'.
 				'<a href="/torrents/nfo/\?id=(?P<id>.*)".*'.
 				'<td.*>.*</td>.*<td.*>.*</td>.*<td.*>(?P<size>.*)</td>.*<td.*>.*</td>.*'.
 				'<td.*>(?P<seeds>.*)</td>.*<td.*>(?P<leech>.*)</td>'.
 				'`siU', $cli->results, $matches);
+
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
