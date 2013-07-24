@@ -43,6 +43,7 @@ var AvailableLanguages =
 	pl:'Polski',
 	pt:'Português',
 	sk:'Slovenský',
+	sv:'Svenska',
 	fi:'Suomi',
 	vi:'Tiếng Việt',
 	tr:'Türk',
