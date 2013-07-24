@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN UNPACK
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

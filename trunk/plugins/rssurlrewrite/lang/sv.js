@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN RSSURLREWRITE
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

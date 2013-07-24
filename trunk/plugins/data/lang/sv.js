@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN DATA
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

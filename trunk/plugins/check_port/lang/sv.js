@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN CHECK_PORT
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN EDIT
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

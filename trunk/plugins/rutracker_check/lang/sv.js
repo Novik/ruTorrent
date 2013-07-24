@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN RUTRACKER_CHECK
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

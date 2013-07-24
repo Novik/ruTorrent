@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN DATADIR
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */
