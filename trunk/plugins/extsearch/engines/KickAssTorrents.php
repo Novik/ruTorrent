@@ -9,7 +9,7 @@ class KickAssTorrentsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://kat.ph';
+		$url = 'http://kickass.to';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'movies'=>'movies', 'tv'=>'tv', 'music'=>'music', 'games'=>'games', 'anime'=>'anime', 'software'=>'applications', 'books'=>'books' );
 		else
