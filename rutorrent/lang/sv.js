@@ -1,8 +1,6 @@
 ﻿/*
  * Swedish language file.
  *
- * Initial Author: Artem Lopata (mod-s@yandex.ru)
- *
  * Author: Magnus Holm (holmen@brasse.se)
  */
 

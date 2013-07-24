@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN MEDIAINFO
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

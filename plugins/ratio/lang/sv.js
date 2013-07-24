@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN RATIO
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN RSS
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

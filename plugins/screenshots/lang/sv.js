@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN SCREENSHOTS
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

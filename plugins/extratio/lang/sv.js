@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN EXTRATIO
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

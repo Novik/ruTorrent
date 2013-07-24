@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN SCHEDULER
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

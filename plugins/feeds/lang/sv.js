@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN FEEDS
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

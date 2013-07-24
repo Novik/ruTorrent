@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN AUTOTOOLS
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

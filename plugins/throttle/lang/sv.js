@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN THROTTLE
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */

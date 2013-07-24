@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN RETRACKERS
  *
- * English language file.
+ * Swedish language file.
  *
  * Author: 
  */
