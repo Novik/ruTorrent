@@ -3,14 +3,14 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.EditTrackers 		= "Edit Torrent...";
- theUILang.EditTorrentProperties	= "Torrent Properties";
- theUILang.errorAddTorrent		= "Error adding torrent file";
- theUILang.errorWriteTorrent		= "Error writing torrent file";
- theUILang.errorReadTorrent		= "Error reading torrent file";
- theUILang.cantFindTorrent		= "Source torrent file for this download not found."
+ theUILang.EditTrackers 		= "Redigera torrent...";
+ theUILang.EditTorrentProperties	= "Torrentegenskaper";
+ theUILang.errorAddTorrent		= "Fel när torrentfilen lades till";
+ theUILang.errorWriteTorrent		= "Fel vid skrivning till torrentfil";
+ theUILang.errorReadTorrent		= "Fel vid läsning av torrentfil";
+ theUILang.cantFindTorrent		= "Källfil (.torrent) för denna nedladdning kunde inte hittas.."
 
 thePlugins.get("edit").langLoaded();

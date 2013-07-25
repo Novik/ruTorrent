@@ -3,24 +3,24 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "Insticksprogrammet kommer inte att fungera.";
 
- theUILang.autotools			= "Autotools";
- theUILang.autotoolsEnableLabel 	= "Enable \"AutoLabel\" feature, Template:";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" feature";
- theUILang.autotoolsPathToFinished	= "Path to finished downloads";
- theUILang.autotoolsEnableWatch 	= "Enable \"AutoWatch\" feature";
- theUILang.autotoolsPathToWatch 	= "Path to base watch directory";
- theUILang.autotoolsWatchStart		= "Start download automatically";
- theUILang.autotoolsNoPathToFinished	= "Autotools plugin: path to finished downloads is not set. " + s_PluginFail;
- theUILang.autotoolsNoPathToWatch	= "Autotools plugin: path to base watch directory is not set. " + s_PluginFail;
- theUILang.autotoolsFileOpType		= "Operation type";
- theUILang.autotoolsFileOpMove		= "Move";
- theUILang.autotoolsFileOpHardLink 	= "Hard link";
- theUILang.autotoolsFileOpCopy		= "Copy";
- theUILang.autotoolsFileOpSoftLink	= "Soft link";
+ theUILang.autotools			= "Automatiseringsverktyg";
+ theUILang.autotoolsEnableLabel 	= "Aktivera \"Automatisk etikett\"-funktion, Mall:";
+ theUILang.autotoolsEnableMove		= "Aktivera \"Flytta automatiskt\"-funktion";
+ theUILang.autotoolsPathToFinished	= "Sökväg till färdiga nedladdningar";
+ theUILang.autotoolsEnableWatch 	= "Aktivera \"Automatisk övervakning\"-funktion";
+ theUILang.autotoolsPathToWatch 	= "Sökväg till övervakad mapp";
+ theUILang.autotoolsWatchStart		= "Starta nedladdning automatiskt";
+ theUILang.autotoolsNoPathToFinished	= "Insticksprogram, Automatiseringsverktyg: ej angett sökväg till färdiga nedladdningar." + s_PluginFail;
+ theUILang.autotoolsNoPathToWatch	= "Insticksprogram, Automatiseringsverktyg: ej angett söhväg till övervakad match. " + s_PluginFail;
+ theUILang.autotoolsFileOpType		= "Operationstyp";
+ theUILang.autotoolsFileOpMove		= "Flytta";
+ theUILang.autotoolsFileOpHardLink 	= "Hård länk";
+ theUILang.autotoolsFileOpCopy		= "Kopiera";
+ theUILang.autotoolsFileOpSoftLink	= "Mjuk länk";
 
 thePlugins.get("autotools").langLoaded();

@@ -3,14 +3,14 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.feedAll		= "All torrents";
- theUILang.feedCompleted	= "Completed torrents";
- theUILang.feedDownloading	= "Downloading torrents";
- theUILang.feedActive		= "Active torrents";
- theUILang.feedInactive 	= "Inactive torrents";
- theUILang.feedError		= "Error torrents";
+ theUILang.feedAll		= "Alla torrenter";
+ theUILang.feedCompleted	= "Färdiga torrenter";
+ theUILang.feedDownloading	= "Nedladdande torrenter";
+ theUILang.feedActive		= "Aktiva torrenter";
+ theUILang.feedInactive 	= "Inaktiva torrenter";
+ theUILang.feedError		= "Fel-torrenter";
 
 thePlugins.get("feeds").langLoaded();

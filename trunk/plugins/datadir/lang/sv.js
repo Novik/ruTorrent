@@ -3,14 +3,14 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.DataDir		= "Save to";
- theUILang.DataDirMove		= "Move data files";
- theUILang.datadirDlgCaption	= "Torrent Data Directory";
- theUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
- theUILang.datadirSetDirFail	= "DataDir plugin: Operation fail";
- theUILang.datadirPHPNotFound	= "DataDir plugin: rTorrent user can't access php interpreter. Plugin will not work.";
+ theUILang.DataDir		= "Spara till";
+ theUILang.DataDirMove		= "Flytta filer";
+ theUILang.datadirDlgCaption	= "Torrentdatakatalog";
+ theUILang.datadirDirNotFound	= "DataDir insticksprogram: Felaktig katalog";
+ theUILang.datadirSetDirFail	= "DataDir insticksprogram: Opreationen misslyckades";
+ theUILang.datadirPHPNotFound	= "DataDir insticksprogram: rTorrent-användaren har inte åtkomst till php-tolk. Insticksprogrammet kommer inte att fungera.";
 
 thePlugins.get("datadir").langLoaded();

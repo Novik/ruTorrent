@@ -3,12 +3,12 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.tskCommand		= "Running...";
- theUILang.tskCommandDone	= "Done.";
- theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostics";
+ theUILang.tskCommand		= "Körs...";
+ theUILang.tskCommandDone	= "Färdig.";
+ theUILang.tskConsole		= "Konsoll";
+ theUILang.tskErrors		= "Diagnostik";
 
 thePlugins.get("_task").langLoaded();

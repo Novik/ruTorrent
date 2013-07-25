@@ -3,10 +3,10 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.getData		= "Get File";
- theUILang.cantAccessData	= "Webserver user can't access the data of this torrent.";
+ theUILang.getData		= "Hämta fil";
+ theUILang.cantAccessData	= "Webbserveranvändaren har inte åtkomst till data för denna torrent.";
 
 thePlugins.get("data").langLoaded();

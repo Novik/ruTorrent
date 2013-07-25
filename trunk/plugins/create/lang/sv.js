@@ -3,26 +3,26 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.mnu_create			= "Create Torrent...";
- theUILang.CreateNewTorrent		= "Create New Torrent";
- theUILang.SelectSource 		= "Select Source";
- theUILang.TorrentProperties		= "Torrent Properties";
- theUILang.PieceSize			= "Piece size";
- theUILang.Other			= "Other";
- theUILang.StartSeeding 		= "Start seeding";
- theUILang.PrivateTorrent		= "Private torrent";
- theUILang.torrentCreate		= "Create...";
- theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound	= "Create plugin: Plugin will not work. Webserver user can't access external program";
- theUILang.incorrectDirectory		= "Incorrect directory";
- theUILang.cantExecExternal		= "Can't execute external program";
- theUILang.createConsole		= "Console";
- theUILang.createErrors 		= "Errors";
- theUILang.torrentSave			= "Save";
- theUILang.torrentKill			= "Stop";
- theUILang.torrentKilled		= "Process was stopped.";
+ theUILang.mnu_create			= "Skapa torrent...";
+ theUILang.CreateNewTorrent		= "Skapa ny torrent";
+ theUILang.SelectSource 		= "Välj källa";
+ theUILang.TorrentProperties		= "Torrentegenskaper";
+ theUILang.PieceSize			= "Storlek på delar";
+ theUILang.Other			= "Övrigt";
+ theUILang.StartSeeding 		= "Starta seedning";
+ theUILang.PrivateTorrent		= "Privat torrent";
+ theUILang.torrentCreate		= "Skapa...";
+ theUILang.BadTorrentData		= "Du måste fylla i alla obligatoriska fält!";
+ theUILang.createExternalNotFound	= "Skapa insticksprogram: Insticksprogrammet kommer inte att fungera. Webbservern har inte åtkomst till externt program.";
+ theUILang.incorrectDirectory		= "Felaktig katalog";
+ theUILang.cantExecExternal		= "Kan inte exekvera externt program";
+ theUILang.createConsole		= "Konsoll";
+ theUILang.createErrors 		= "Fel";
+ theUILang.torrentSave			= "Spara";
+ theUILang.torrentKill			= "Stoppa";
+ theUILang.torrentKilled		= "Processen stoppades.";
 
 thePlugins.get("create").langLoaded();

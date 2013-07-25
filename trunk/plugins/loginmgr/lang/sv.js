@@ -3,16 +3,16 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.accLogin		= "Login";
- theUILang.accPassword		= "Password";
- theUILang.accAccounts		= "Accounts";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accLogin		= "Inloggning";
+ theUILang.accPassword		= "Lösenord";
+ theUILang.accAccounts		= "Konton";
+ theUILang.accAuto		= "Automatisk inloggning";
+ theUILang.acAutoNone		= "Ingen";
+ theUILang.acAutoDay		= "Varje dag";
+ theUILang.acAutoWeek		= "Varje vecka";
+ theUILang.acAutoMonth		= "Varje månad";
 
 thePlugins.get("loginmgr").langLoaded();

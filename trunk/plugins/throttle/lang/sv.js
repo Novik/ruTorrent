@@ -3,14 +3,14 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.throttles		= "Channels";
- theUILang.throttle		= "Channel";
- theUILang.mnuThrottle		= "Set Channel";
- theUILang.mnuUnlimited 	= "No Channel";
- theUILang.channelName		= "Name";
- theUILang.channelDefault	= "Default channel";
+ theUILang.throttles		= "Kanaler";
+ theUILang.throttle		= "Kanal";
+ theUILang.mnuThrottle		= "Ange kanal";
+ theUILang.mnuUnlimited 	= "Ingen kanal";
+ theUILang.channelName		= "Namn";
+ theUILang.channelDefault	= "Standardkanal";
 
 thePlugins.get("throttle").langLoaded();

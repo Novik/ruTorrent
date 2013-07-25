@@ -3,39 +3,39 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.tegMenuLoad			= "Load";
- theUILang.tegMenuOpen			= "Open in browser";
- theUILang.tegMenuDeleteItem		= "Remove item";
- theUILang.tegMenuDelete		= "Remove tag";
- theUILang.tegRefresh			= "Refresh tag";
- theUILang.exsGlobal			= "Include into 'All' category";
- theUILang.exsLimit			= "Result limit";
- theUILang.exsEngines			= "Engines";
- theUILang.exsSearch			= "Search";
- theUILang.exsGlobalLimit		= "Common Limitations";
- theUILang.excat			= "Category";
- theUILang.excatall			= "All";
- theUILang.excatmovies			= "Movies";
+ theUILang.tegMenuLoad			= "Ladda";
+ theUILang.tegMenuOpen			= "Öppna i webbläsare";
+ theUILang.tegMenuDeleteItem		= "Ta bort objekt";
+ theUILang.tegMenuDelete		= "Ta bort tagg";
+ theUILang.tegRefresh			= "Uppdater tagg";
+ theUILang.exsGlobal			= "Lägg till i kategorin 'Alla'";
+ theUILang.exsLimit			= "Resultatgräns";
+ theUILang.exsEngines			= "Sökmotorer";
+ theUILang.exsSearch			= "Sök";
+ theUILang.exsGlobalLimit		= "Vanliga begränsningar";
+ theUILang.excat			= "Kategori";
+ theUILang.excatall			= "Alla";
+ theUILang.excatmovies			= "Filmer";
  theUILang.excattv			= "TV";
- theUILang.excatmusic			= "Music";
- theUILang.excatgames			= "Games";
+ theUILang.excatmusic			= "Musik";
+ theUILang.excatgames			= "Spel";
  theUILang.excatanime			= "Anime";
- theUILang.excatsoftware		= "Software";
- theUILang.excatpictures		= "Pictures";
- theUILang.excatbooks			= "Books";
- theUILang.extPrivate			= "Private";
- theUILang.extPublic			= "Public";
- theUILang.exsCookies			= "Format of cookies";
- theUILang.extAllPublic 		= "All Public";
- theUILang.extAllPrivate		= "All Private";
- theUILang.exsMustInstallCookies	= "Cookies plugin is required to work with this engine.";
- theUILang.exsMustInstallLoginMgr	= "LoginMgr plugin is required to work with this engine.";
- theUILang.exsLoginMgr			= "Setup your account in LoginMgr plugin to work with this engine.";
- theUILang.exsURLInfo			= "URL info";
- theUILang.exsURLGUID			= "Description URL";
- theUILang.exsURLHref			= "Download URL";
+ theUILang.excatsoftware		= "Mjukvara";
+ theUILang.excatpictures		= "Bilder";
+ theUILang.excatbooks			= "Böcker";
+ theUILang.extPrivate			= "Privat";
+ theUILang.extPublic			= "Offentlig";
+ theUILang.exsCookies			= "Cookieformat";
+ theUILang.extAllPublic 		= "Alla offentliga";
+ theUILang.extAllPrivate		= "Alla Privata";
+ theUILang.exsMustInstallCookies	= "Cookies-insticksprogram krävs för att denna sökmotor ska fungera.";
+ theUILang.exsMustInstallLoginMgr	= "LoginMgr-insticksprogram krävs för att denna sökmotor ska fungera.";
+ theUILang.exsLoginMgr			= "Ange dina kontoinställningar i LoginMgr-insticksprogrammet för att denna sökmotor ska fungera.";
+ theUILang.exsURLInfo			= "URL-information";
+ theUILang.exsURLGUID			= "Beskrivnings-URL";
+ theUILang.exsURLHref			= "Nedladdnings-URL";
 
 thePlugins.get("extsearch").langLoaded();

@@ -3,7 +3,7 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.mediainfo		= "Media Info";
+ theUILang.mediainfo		= "Mediainformation";
