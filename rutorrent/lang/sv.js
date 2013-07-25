@@ -134,7 +134,7 @@ var theUILang =
  time_h 			: "t ", /*for x hours remaining*/
  time_m 			: "m ", /*for x minutes remaining*/
  time_s 			: "s ", /*for x seconds remaining*/
- Base_directory 		: "Mapp",
+ Base_directory 		: "Katalog",
  Number_Peers_min		: "Minsta antal peers",
  Number_Peers_max		: "Högsta antal peers",
  Tracker_Numwant		: "Önskat antal peers",
