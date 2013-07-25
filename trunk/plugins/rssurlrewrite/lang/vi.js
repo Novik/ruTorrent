@@ -7,7 +7,7 @@
  */
 
  theUILang.rssNewRule		= "Quy luật mới";
- theUILang.mnu_rssurlrewrite	= "Quy luật thay thế đường dẫn RSS";
+ theUILang.mnu_rssurlrewrite	= "Quy luật thay đổi RSS";
  theUILang.rssRulesManager	= "Quản lý Quy luật";
  theUILang.rssAddRule		= "Thêm";
  theUILang.rssDelRule		= "Xóa";

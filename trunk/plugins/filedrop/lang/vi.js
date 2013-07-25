@@ -6,8 +6,8 @@
  * Author: 
  */
 
- theUILang.doesntSupportHTML5	= "Plugin filedrop: Your browser does not support HTML5 file uploads. Plugin was disabled.";
- theUILang.tooManyFiles 	= "Plugin filedrop: Too many files. Must be <= ";
- theUILang.fileTooLarge 	= "is too large. Please upload files up to";
+ theUILang.doesntSupportHTML5	= "Gói bổ sung filedrop: Trình duyệt của bạn không hỗ trợ tính năng tải lên của HTML5. Gói bổ sung không chạy.";
+ theUILang.tooManyFiles 	= "Gói bổ sung filedrop: Quá nhiều tập tin. Số tập tin phải <= ";
+ theUILang.fileTooLarge 	= "quá lớn. Vui lòng tải lên tối đa";
 
 thePlugins.get("filedrop").langLoaded();
