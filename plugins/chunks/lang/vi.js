@@ -6,13 +6,13 @@
  * Author: 
  */
 
- theUILang.Chunks		= "Chunks";
- theUILang.cAvail		= "Availability";
- theUILang.cDownloaded		= "Downloaded";
- theUILang.cMode		= "Mode";
- theUILang.chunksCount		= "Chunks count";
- theUILang.chunkSize		= "Chunk size";
- theUILang.cLegend		= "Legend";
- theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
+ theUILang.Chunks		= "Các khối";
+ theUILang.cAvail		= "Khả dụng";
+ theUILang.cDownloaded		= "Đã tải";
+ theUILang.cMode		= "Chế độ";
+ theUILang.chunksCount		= "Số khối";
+ theUILang.chunkSize		= "Kích thước khối";
+ theUILang.cLegend		= "Chú thích";
+ theUILang.cLegendVal		= [ "Mỗi ô 4 khối", "Mỗi ô 1 khối" ];
 
 thePlugins.get("chunks").langLoaded();

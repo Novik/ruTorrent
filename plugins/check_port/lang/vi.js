@@ -6,11 +6,11 @@
  * Author: 
  */
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkPort		= "Kiểm tra trạng thái cổng";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Không rõ tình trạng cổng",
+ 				  "Cổng bị đóng",
+ 				  "Cổng đang mở"
  				  ];
 
 thePlugins.get("check_port").langLoaded();

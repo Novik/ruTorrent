@@ -6,20 +6,20 @@
  * Author: 
  */
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioRulesManager	= "Quản lý quy luật";
+ theUILang.mnu_ratiorule	= "Quy luật Tỉ lệ";
+ theUILang.ratAddRule		= "Thêm";
+ theUILang.ratDelRule		= "Xóa";
+ theUILang.ratUpRule		= "Lên";
+ theUILang.ratDownRule		= "Xuống";
+ theUILang.ratioIfLegend	= "Nếu";
+ theUILang.ratLabelContain	= "Nhãn phân loại Torrent có chứa";
+ theUILang.ratTrackerContain	= "Địa chỉ máy theo dõi torrent có chứa";
+ theUILang.ratTrackerPublic	= "Tất cả máy theo dõi torrent đều là công cộng";
+ theUILang.ratTrackerPrivate	= "Một trong số máy theo dõi torrent là riêng tư";
+ theUILang.ratioThenLegend	= "Thì";
+ theUILang.setRatioTo		= "Đặt tỉ lệ là";
+ theUILang.setChannelTo 	= "Đặt băng thông là";
+ theUILang.ratioNewRule 	= "Thêm quy luật mới";
 
 thePlugins.get("extratio").langLoaded();

@@ -9,10 +9,10 @@
  theUILang.accLogin		= "Tên đăng nhập";
  theUILang.accPassword		= "Mật khẩu";
  theUILang.accAccounts		= "Tài khoản";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accAuto		= "Tự đăng nhập";
+ theUILang.acAutoNone		= "Không";
+ theUILang.acAutoDay		= "Hàng ngày";
+ theUILang.acAutoWeek		= "Hàng tuần";
+ theUILang.acAutoMonth		= "Hàng tháng";
 
 thePlugins.get("loginmgr").langLoaded();
