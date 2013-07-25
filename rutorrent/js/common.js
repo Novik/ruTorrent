@@ -348,7 +348,7 @@ var theURLs =
 	GetSettingsURL		: "php/getsettings.php",
 	GetPluginsURL		: "php/getplugins.php",
 	GetDonePluginsURL	: "php/doneplugins.php",
-	RIPEURL			: "http://www.db.ripe.net/whois?alt_database=ALL&form_type=advanced&searchtext="
+	RIPEURL			: "https://apps.db.ripe.net/search/query.html?searchtext="
 };
 
 var theOptionsSwitcher =
