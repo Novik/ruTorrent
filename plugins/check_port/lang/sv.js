@@ -3,14 +3,14 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkPort		= "Kontrollera portstatus";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Portstatus okänd",
+ 				  "Port är stängd",
+ 				  "Port är öppen",
  				  ];
 
 thePlugins.get("check_port").langLoaded();

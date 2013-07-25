@@ -3,32 +3,32 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.historyAddition	= "Addition";
- theUILang.historyDeletion	= "Deletion";
- theUILang.historyFinish	= "Finish";
- theUILang.historyLog		= "Log";
- theUILang.history		= "History";
- theUILang.historyLimit 	= "Maximum number of records";
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
- theUILang.hstDeletePrompt	= "Do you really want to delete the selected record(s)?";
- theUILang.hstDelete		= "Delete record(s)";
- theUILang.Added		= "Added";
- theUILang.Finished		= "Finished";
- theUILang.Deleted		= "Deleted";
- theUILang.Time 		= "Time";
+ theUILang.historyAddition	= "Tillägg";
+ theUILang.historyDeletion	= "Radering";
+ theUILang.historyFinish	= "Slutföring";
+ theUILang.historyLog		= "Logg";
+ theUILang.history		= "Historia";
+ theUILang.historyLimit 	= "Högst antal uppgifter";
+ theUILang.seedingTime		= "Slutförd";
+ theUILang.addTime		= "Tillagd";
+ theUILang.hstDeletePrompt	= "Vill du verkligen ta bort markerad(e) uppgift(er)?";
+ theUILang.hstDelete		= "Ta bort uppgift(er)";
+ theUILang.Added		= "Tillagd";
+ theUILang.Finished		= "Slutförd";
+ theUILang.Deleted		= "Borttagen";
+ theUILang.Time 		= "Tid";
  theUILang.Tracker		= "Tracker";
- theUILang.enableNotifications	= "Enable desktop notifications";
- theUILang.historyNotification	= "Desktop Notifications";
- theUILang.notifAutoClose	= "Autoclose notifications after";
+ theUILang.enableNotifications	= "Aktivera skrivbordsnotiser";
+ theUILang.historyNotification	= "Skrivbordsnotiser";
+ theUILang.notifAutoClose	= "Stäng skrivbordsnotiser automatiskt efter";
  theUILang.notifTip		= [
- 				  "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 				  "Din webbläsare stöder inte skrivbordsnotiser. Försök med en annan webbläsare. T.ex. Google Chrome.",
  				  "",
- 				  "Your browser supports desktop notifications. Press button below to enable it.",
- 				  "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 				  "Din webbläsare stöder skrivbordsnotiser. Tryck på knappen nedan för att aktivera.",
+ 				  "Din webbläsare stöder skrivbordsnotiser men de är inaktiverade för denna webbplats. Stäng denna dialog och aktivera skrivbordsnotiser i dina webbläsarinställningar.","
  				  ];
 
 thePlugins.get("history").langLoaded();

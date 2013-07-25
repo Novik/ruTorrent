@@ -3,11 +3,11 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.doesntSupportHTML5	= "Plugin filedrop: Your browser does not support HTML5 file uploads. Plugin was disabled.";
- theUILang.tooManyFiles 	= "Plugin filedrop: Too many files. Must be <= ";
- theUILang.fileTooLarge 	= "is too large. Please upload files up to";
+ theUILang.doesntSupportHTML5	= "Insticksprogram, filedrop: Din webbläsare stöder inte filuppladdningar med HTML5. Insticksprogrammet inaktiverades.";
+ theUILang.tooManyFiles 	= "Insticksprogram, filedrop: För många filer. Skall vara <= ";
+ theUILang.fileTooLarge 	= "är för stor. Var god ladda upp filer under";
 
 thePlugins.get("filedrop").langLoaded();

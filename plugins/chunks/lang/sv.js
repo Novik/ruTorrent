@@ -7,7 +7,7 @@
  */
 
  theUILang.Chunks		= "Bitar";
- theUILang.cAvail		= "Tillgänglighet";
+ theUILang.cAvail		= "Tillgängligt";
  theUILang.cDownloaded		= "Nedladdat";
  theUILang.cMode		= "Läge";
  theUILang.chunksCount		= "Antal bitar";

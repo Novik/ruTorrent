@@ -3,10 +3,10 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.getSource		= "Get .torrent";
- theUILang.cantFindTorrent	= "Source torrent file for this download not found.";
+ theUILang.getSource		= "Hämta torrentfil";
+ theUILang.cantFindTorrent	= "Torrentfilen för denna nedladdning kunde inte hittas.";
 
 thePlugins.get("source").langLoaded();

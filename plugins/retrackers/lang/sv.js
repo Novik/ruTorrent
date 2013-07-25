@@ -3,13 +3,13 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
  theUILang.retrackers		= "Retrackers";
- theUILang.retrackersAdd	= "Add Announces";
- theUILang.retrackersDel	= "Remove Announces";
- theUILang.dontAddToPrivate	= "Don't touch private torrents";
- theUILang.addToBegin		= "Add announces to the beginning of the trackers list";
+ theUILang.retrackersAdd	= "Lägg till meddelanden";
+ theUILang.retrackersDel	= "Ta bort meddelanden";
+ theUILang.dontAddToPrivate	= "Påverka ej privata torrents";
+ theUILang.addToBegin		= "Lägg till meddelanden i början av listan med trackers.";
 
 thePlugins.get("retrackers").langLoaded();

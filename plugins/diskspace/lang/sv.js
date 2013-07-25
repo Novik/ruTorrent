@@ -3,9 +3,9 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.diskNotification = "Warning! The disk is full. rTorrent may not run correctly, and no data will be downloaded until you free some disk space.";
+ theUILang.diskNotification = "Varning! Disken är full. rTorrent kan inte köras korrekt och ingen data kommer att laddas ner förrän du frigör diskutrymme.";
 
 thePlugins.get("diskspace").langLoaded();

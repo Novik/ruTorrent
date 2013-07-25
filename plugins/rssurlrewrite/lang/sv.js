@@ -3,26 +3,26 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.rssNewRule		= "New rule";
- theUILang.mnu_rssurlrewrite	= "URL Replacement in RSS";
- theUILang.rssRulesManager	= "Rules Manager";
- theUILang.rssAddRule		= "Add";
- theUILang.rssDelRule		= "Delete";
+ theUILang.rssNewRule		= "Ny regel";
+ theUILang.mnu_rssurlrewrite	= "URL-ersättare i RSS";
+ theUILang.rssRulesManager	= "Regelhanterare";
+ theUILang.rssAddRule		= "Lägg till";
+ theUILang.rssDelRule		= "Ta bort";
  theUILang.rssCheckRule 	= "?";
- theUILang.rssRulesLegend	= "Rule Settings";
- theUILang.rssSrcHref		= "If URL of torrent download matches pattern";
- theUILang.rssSrcGuid		= "If URL of torrent description matches pattern";
- theUILang.rssDstHref		= "then replace URL of torrent download with";
- theUILang.rssDstGuid		= "then replace URL of torrent description with";
- theUILang.rssRulesDebug	= "Rule Debug";
+ theUILang.rssRulesLegend	= "Regelinställningar";
+ theUILang.rssSrcHref		= "Om URL för torrentnedladdning passar mönster";
+ theUILang.rssSrcGuid		= "Om URL i torrentbeskrivning passar mönster";
+ theUILang.rssDstHref		= "ändra URL för torrentnedladdning till";
+ theUILang.rssDstGuid		= "ändra URL i torrentbeskrivning till";
+ theUILang.rssRulesDebug	= "Felsökningsregel";
  theUILang.rssTestString	= "Test";
- theUILang.rssTestResult	= "Result";
- theUILang.rssURLInfo		= "URL info";
- theUILang.rssURLGUID		= "Description URL";
- theUILang.rssURLHref		= "Download URL";
- theUILang.rssPatternError	= "Error in pattern string.";
+ theUILang.rssTestResult	= "Resultat";
+ theUILang.rssURLInfo		= "URL-info";
+ theUILang.rssURLGUID		= "Beskrivnings-URL";
+ theUILang.rssURLHref		= "Nedladdnings-URL";
+ theUILang.rssPatternError	= "Fel i mönstersträng.";
 
 thePlugins.get("rssurlrewrite").langLoaded();

@@ -3,21 +3,21 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.checkTorrent 	= "Check for Update";
- theUILang.chkHdr		= "Torrent Update Check";
- theUILang.checkedAt		= "Last Checked";
- theUILang.checkedResult	= "Result";
+ theUILang.checkTorrent 	= "Sök efter uppdateringar";
+ theUILang.chkHdr		= "Torrent-uppdateringskontroll";
+ theUILang.checkedAt		= "Senaste sökning";
+ theUILang.checkedResult	= "Resultat";
  theUILang.chkResults		= [
- 				  "In progress",
- 				  "Updated",
- 				  "No update required",
- 				  "Probably deleted",
- 				  "Error accessing the tracker",
- 				  "Error interacting with rTorrent",
- 				  "No need"
+ 				  "Pågår",
+ 				  "Updaterad",
+ 				  "Ingen uppdatering behövs",
+ 				  "Förmodligen borttagen",
+ 				  "Fel, uppstigning tracker",
+ 				  "Fel vid interaktivitet med rTorrent",
+ 				  "Behövs inte"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

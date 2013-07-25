@@ -3,24 +3,24 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.scheduler		= "Scheduler";
- theUILang.schedulerOn		= "Enable scheduler";
- theUILang.schedulerGraph	= "Scheduler Table";
- theUILang.schShortWeek 	= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek		= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
- theUILang.schUnlimited 	= "Unlimited";
- theUILang.schLimited		= "Limited";
- theUILang.schTurnOff		= "Turn off";
- theUILang.schSeedingOnly	= "Seeding only";
- theUILang.schUnlimitedDesc	= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc	= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc	= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc	= "Seeding only - Only upload data";
- theUILang.schLimitedUL 	= "Limited UL";
- theUILang.schLimitedDL 	= "Limited DL";
- theUILang.shcIgnore		= "Ignore Scheduler";
+ theUILang.scheduler		= "Schemaläggare";
+ theUILang.schedulerOn		= "Aktivera schemaläggare";
+ theUILang.schedulerGraph	= "Tabell, schemaläggare";
+ theUILang.schShortWeek 	= [ "Mån", "Tis", "Ons", "Tor", "Fre", "Lör", "Sön" ];
+ theUILang.schFullWeek		= [ "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag", "Söndag" ];
+ theUILang.schUnlimited 	= "Obegränsad";
+ theUILang.schLimited		= "Begränsad";
+ theUILang.schTurnOff		= "Stäng av";
+ theUILang.schSeedingOnly	= "Endast seeding";
+ theUILang.schUnlimitedDesc	= "Obegränsad - Global gräns frånvarande";
+ theUILang.schLimitedDesc	= "Begränsad- Använder schemaspecifik bandbreddsbegränsning";
+ theUILang.schTurnOffDesc	= "Stäng av - Stoppar alla torrenter";
+ theUILang.schSeedingOnlyDesc	= "Endast seeding - Endast uppladdning";
+ theUILang.schLimitedUL 	= "Begränsad UL";
+ theUILang.schLimitedDL 	= "Begränsad NL";
+ theUILang.shcIgnore		= "Ignorera schemaläggare";
 
 thePlugins.get("scheduler").langLoaded();

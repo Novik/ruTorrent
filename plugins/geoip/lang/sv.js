@@ -5,13 +5,13 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.peerComment 		= "Add comment";
- theUILang.peerCommentLabel	= "Enter new comment for peer";
- theUILang.commentName		= "Comment";
- theUILang.countryName		= "Country";
+ theUILang.peerComment 		= "Lägg till kommentar";
+ theUILang.peerCommentLabel	= "Ange ny kommentar för peer";
+ theUILang.commentName		= "Kommentar";
+ theUILang.countryName		= "Land";
 
  theUILang.country = new Array();
  theUILang.country[ "ad" ] = "Andorra";

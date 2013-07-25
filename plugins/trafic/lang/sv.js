@@ -3,17 +3,17 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.traf 		= "Traffic";
- theUILang.perDay		= "Per day";
- theUILang.perMonth		= "Per month";
- theUILang.perYear		= "Per year";
- theUILang.allTrackers		= "All trackers";
- theUILang.ClearButton		= "Clear";
- theUILang.ClearQuest		= "Do you really want to clear statistics for selected tracker(s)?";
- theUILang.selectedTorrent	= "Selected torrent";
- theUILang.ratioDay		= "Ratio/day";
- theUILang.ratioWeek		= "Ratio/week";
- theUILang.ratioMonth		= "Ratio/month";
+ theUILang.traf 		= "Trafik";
+ theUILang.perDay		= "Per dag";
+ theUILang.perMonth		= "Per månad";
+ theUILang.perYear		= "Per år";
+ theUILang.allTrackers		= "Alla trackers";
+ theUILang.ClearButton		= "Töm";
+ theUILang.ClearQuest		= "Vill du verkligen tömma statestik för markerad(e) tracker(s)?"; 
+ theUILang.selectedTorrent	= "Markerad torrent";
+ theUILang.ratioDay		= "Ratio/dag";
+ theUILang.ratioWeek		= "Ratio/vecka";
+ theUILang.ratioMonth		= "Ratio/månad";

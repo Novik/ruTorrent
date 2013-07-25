@@ -3,24 +3,24 @@
  *
  * Swedish language file.
  *
- * Author: 
+ * Author: Magnus Holm (holmen@brasse.se) 
  */
 
- theUILang.ratios		= "Ratio Groups";
- theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set Ratio Group";
- theUILang.mnuRatioUnlimited	= "No Ratio";
- theUILang.ratioName		= "Name";
+ theUILang.ratios		= "Ratiogrupper";
+ theUILang.ratio		= "Ratiogrupp";
+ theUILang.mnuRatio		= "Ange ratiogrupp";
+ theUILang.mnuRatioUnlimited	= "Ingen ratio";
+ theUILang.ratioName		= "Namn";
  theUILang.minRatio		= "Min";
  theUILang.maxRatio		= "Max";
  theUILang.ratioUpload		= "UL";
- theUILang.ratioAction		= "Action";
- theUILang.ratioStop		= "Stop";
- theUILang.ratioStopAndRemove	= "Stop & Clear group";
- theUILang.ratioErase		= "Remove";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault 	= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.ratioAction		= "Åtgärd";
+ theUILang.ratioStop		= "Stoppa";
+ theUILang.ratioStopAndRemove	= "Stoppa och töm grupp";
+ theUILang.ratioErase		= "Ta bort";
+ theUILang.ratioEraseData	= "Radera data";
+ theUILang.maxTime		= "Tid";
+ theUILang.ratioDefault 	= "Standard ratiogrupp";
+ theUILang.setThrottleTo	= "Sätt kanal till";
 
 thePlugins.get("ratio").langLoaded();
