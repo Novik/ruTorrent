@@ -9,7 +9,7 @@ class FenopyEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://fenopy.eu';
+		$url = 'http://unblockfenopy.eu';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'movies'=>'3', 'tv'=>'78', 'music'=>'1', 'games'=>'4', 'anime'=>'5', 'software'=>'6', 'pictures'=>'72', 'books'=>'7' );
 		else

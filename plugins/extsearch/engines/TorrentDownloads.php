@@ -38,11 +38,11 @@ class TorrentDownloadsEngine extends commonEngine
 			$cli = $this->fetch( $url.'/search/?page='.$pg.'&search='.$what.'&s_cat='.$cat.'&srt=seeds&order=desc' );
 			if( ($cli==false) || (strpos($cli->results, "</ul>No torrents</div>")!==false) )
 				break;
-
-			$res = preg_match_all('`<img src="/templates/new/images/icons/menu_icon(?P<cat>\d+)\.png" alt=""><a href="http://www\.torrentdownloads\.me/torrent/(?P<id>.*)/.*">(?P<name>.*)</a>.*'.
+		
+			$res = preg_match_all('`<img src="/templates/new/images/icons/menu_icon(?P<cat>\d+)\.png" alt="">'.
+				'<a href="/torrent/(?P<id>.*)/.*"[^>]*>(?P<name>.*)</a>.*'.
 				'<span>(?P<leech>.*)</span><span>(?P<seeds>.*)</span><span>(?P<size>.*)</span>'.
 				'`siU', $cli->results, $matches );
-			
 			if($res)
 			{
 				for( $i=0; $i<$res; $i++)

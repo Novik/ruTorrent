@@ -21,12 +21,18 @@ class TorrentReactorEngine extends commonEngine
 
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/ts.php?search=&words='.$what.'&cid='.$cat.'&type=1&orderby=a.seeds&asc=0&skip='.($pg*35) );
-			if($cli==false || (strpos($cli->results, '<td colspan="8" bgcolor="#ffffff">No results.')!==false))
+
+			$cli = $this->fetch( $url.'/torrent-search/'.$what.'/'.($pg*35).'?type=all&period=none&categories='.$cat.'&sort=seeders.desc&ajax=torrent-list' );
+
+			if($cli==false)
 				break;
-			$res = preg_match_all('/<tr class="torrent_.*">.*<a rel="nofollow" href="(?P<link>[^"]*torrentreactor.net\/download.php\?[^"]*)">.*'.
-				'<a href="\/torrents\/(?P<desc>.*)">(?P<name>.*)<\/a><\/td>.*<td>(?P<size>.*)<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>.*'.
-				'<td><a title=".*">(?P<cat>.*)<\/a><\/td>/siU', $cli->results, $matches);
+			$res = preg_match_all('`<td class="title"><a href="(?P<desc>[^"]*)">(?P<name>.*)</a>'.
+				'<a class="btn-sprited btn-down" href="(?P<link>[^"]*)".*'.
+				'<td class="size">(?P<size>.*)</td>'.
+				'<td class="seeders">(?P<seeds>.*)</td>'.
+				'<td class="leechers">(?P<leech>.*)</td>'.
+				'<td class="category">(?P<cat>.*)</td>'.
+				'`siU', $cli->results, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
@@ -35,7 +41,7 @@ class TorrentReactorEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["desc"] = $url."/torrents/".$matches["desc"][$i];
+						$item["desc"] = $url.$matches["desc"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize(trim($matches["size"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
