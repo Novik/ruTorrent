@@ -12,7 +12,7 @@ if(isset($_REQUEST['result']))
 	{
 		$js = '';
 		foreach( $_REQUEST['result'] as $ndx=>$result )
-			$js.= ('noty("'.(isset($_REQUEST['name'][$ndx]) ? $_REQUEST['name'][$ndx].' - ' : '').
+			$js.= ('noty("'.(isset($_REQUEST['name'][$ndx]) ? addslashes(rawurldecode($_REQUEST['name'][$ndx])).' - ' : '').
 				'"+theUILang.addTorrent'.$_REQUEST['result'][$ndx].
 				',"'.($_REQUEST['result'][$ndx]=='Success' ? 'success' : 'error').'");');
 		cachedEcho($js,"text/html");
@@ -125,7 +125,7 @@ else
 		}
 		$location.=('result[]='.$file['status'].'&');
 		if( isset($file['name']) )
-			$location.=('name[]='.$file['name'].'&');
+			$location.=('name[]='.rawurlencode($file['name']).'&');
 	}
 	header("HTTP/1.0 302 Moved Temporarily");
 	if(isset($_REQUEST['json']))

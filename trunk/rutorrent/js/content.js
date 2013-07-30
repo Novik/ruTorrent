@@ -72,14 +72,16 @@ function makeContent()
 		$("#add_button").attr("disabled",false);
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d && (d.location.href != "about:blank"))
-			try { eval(d.body.innerHTML); } catch(e) {}
+		{
+			try { var txt = d.body.textContent ? d.body.textContent : d.body.innerText; eval(txt); } catch(e) {}
+		}
 	}));
 	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).load(function()
 	{
 		$("#url").val("");
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d.location.href != "about:blank")
-			try { eval(d.body.innerHTML); } catch(e) {}
+			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));
 	theDialogManager.make("padd",theUILang.peerAdd,
 		'<div class="content fxcaret">'+theUILang.peerAddLabel+'<br><input type="text" id="peerIP" class="Textbox" value="my.friend.addr:6881"/></div>'+

@@ -80,7 +80,7 @@ plugin.onLangLoaded = function()
 	        $("#datano").val('');
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d && (d.location.href != "about:blank"))
-			try { eval(d.body.innerHTML); } catch(e) {}
+			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));
 	$(document.body).append(
 		$('<form action="plugins/data/action.php" id="getdata" method="get" target="datafrm">'+

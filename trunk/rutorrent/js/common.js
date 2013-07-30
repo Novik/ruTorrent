@@ -947,12 +947,11 @@ function logHTML(text,divClass,force)
 
 function noty(msg,status,noTime) 
 {
-	msg = escapeHTML(msg);
 	if($.noty)
 	{
 		$.noty(
 		{
-			text: msg, 
+			text: escapeHTML(msg), 
 			layout : 'bottomRight',
 			type: status
 		});
