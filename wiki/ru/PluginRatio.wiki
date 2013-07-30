@@ -1,5 +1,5 @@
 ----
-=Плагин throttle=
+=Плагин ratio=
 ----
 
 <wiki:TOC />
