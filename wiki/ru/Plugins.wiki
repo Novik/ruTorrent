@@ -31,17 +31,17 @@
 В [Config#%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F_%D0%B8_%D0%BE%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7 многопользовательской конфигурации] имеется возможность настроить каждый плагин индивидуально для каждого пользователя. Для этого следует создать директорию `rutorrent/conf/users/USERNAME/plugins/plugin-name`, 
 скопировать в нее файл конфигурации плагина - `conf.php` - и отредактировать его по месту. Под `USERNAME` здесь понимается имя, с которым авторизовался пользователь, под `plugin-name` - имя плагина.
 
-Например, в Вашей системе имеются пользователи `dick` и `tom`, и Вы хотите, чтобы интервал обновления рассылок в плагине [PluginRSS RSS] для каждого из этих пользователей был свой. 
+Например, в Вашей системе имеются пользователи `dick` и `tom`, и каждый из них хочет использовать определенную утилиту для создания торрента в плагине [PluginCreate Create]. 
 Примерная последовательность команд такова:
 
 {{{
-mkdir -p /var/www/rutorrent/conf/users/tom/plugins/rss
-mkdir -p /var/www/rutorrent/conf/users/dick/plugins/rss
-cp /var/www/rutorrent/plugins/rss/conf.php /var/www/rutorrent/conf/users/tom/plugins/rss
-cp /var/www/rutorrent/plugins/rss/conf.php /var/www/rutorrent/conf/users/dick/plugins/rss
+mkdir -p /var/www/rutorrent/conf/users/tom/plugins/create
+mkdir -p /var/www/rutorrent/conf/users/dick/plugins/create
+cp /var/www/rutorrent/plugins/create/conf.php /var/www/rutorrent/conf/users/tom/plugins/create
+cp /var/www/rutorrent/plugins/create/conf.php /var/www/rutorrent/conf/users/dick/plugins/create
 }}}
 
-после чего изменяем значение переменной `$updateInterval` в `tom/plugins/rss/conf.php` и `dick/plugins/rss/conf.php` соответственно.
+после чего изменяем значение переменной `$useExternal` в `tom/plugins/create/conf.php` и `dick/plugins/create/conf.php` соответственно.
 
 *Замечание:* некоторые плагины не имеют файла конфигурации, к ним данная техника неприменима.
 
@@ -98,3 +98,4 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
  # [PluginChat Chat] - добавляет чат для общения с другими пользователями.
  # [PluginLogoff Logoff] - плагин позволяет менять текущего пользователя и разлогиниваться.
  # [PluginInstantSearch InstantSearch] - при поиске среди локальных закачек результат будет показываться непосредственно по мере набора строки к поиску.
+ # [https://github.com/zebraxxl/rutorrentMobile rutorrentMobile] - мобильная версия ruTorrent.

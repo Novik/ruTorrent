@@ -19,14 +19,14 @@ svn co http://rutorrent.googlecode.com/svn/trunk/rutorrent
 
 Если у Вас уже есть копия версии с svn, и Вы желаете ее обновить, то последовательность команд должна быть следующая:
 {{{
-cd /var/www/rutorrent
+cd www-root/rutorrent
 svn up
 }}}
 
 Если по каким-то причинам Вы хотите получить не последнюю версию, а промежуточную, то Вы должны добавить к команде флаг `-r revision_number`. Где `revision_number` - номер версии.
 Например, для получения версии 870 Вы должны написать что-то вроде:
 {{{
-cd /var/www/rutorrent
+cd www-root/rutorrent
 svn up -r 870
 }}}
 
@@ -40,7 +40,7 @@ svn co http://rutorrent.googlecode.com/svn/trunk/plugins/plugin-name
 
 Где `plugin-name` - имя плагина. Пример, для плагина [PluginRPC RPC]:
 {{{
-cd /var/www/rutorrent/plugins
+cd www-root/rutorrent/plugins
 svn co http://rutorrent.googlecode.com/svn/trunk/plugins/rpc
 }}}
 
@@ -50,13 +50,13 @@ svn co http://rutorrent.googlecode.com/svn/trunk/plugins/rpc
 
 Процедура очень похожа на обновление собственно ruTorrent:
 {{{
-cd /var/www/rutorrent/plugins/plugin-name
+cd www-root/rutorrent/plugins/plugin-name
 svn up
 }}}
 
 Либо Вы можете обновить одной командой все существующие плагины:
 {{{
-cd /var/www/rutorrent/plugins
+cd www-root/rutorrent/plugins
 svn up *
 }}}
 
