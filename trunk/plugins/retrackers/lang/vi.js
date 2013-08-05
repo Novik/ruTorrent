@@ -7,9 +7,9 @@
  */
 
  theUILang.retrackers		= "Đổi máy theo dõi";
- theUILang.retrackersAdd	= "Add Announces";
- theUILang.retrackersDel	= "Remove Announces";
- theUILang.dontAddToPrivate	= "Don't touch private torrents";
- theUILang.addToBegin		= "Add announces to the beginning of the trackers list";
+ theUILang.retrackersAdd	= "Thêm thông báo";
+ theUILang.retrackersDel	= "Bỏ thông báo";
+ theUILang.dontAddToPrivate	= "Không áp dụng với torrent riêng tư";
+ theUILang.addToBegin		= "Thêm thông báo từ đầu danh sách máy theo dõi";
 
 thePlugins.get("retrackers").langLoaded();

@@ -6,18 +6,18 @@
  * Author: 
  */
 
- theUILang.checkTorrent 	= "Check for Update";
- theUILang.chkHdr		= "Torrent Update Check";
- theUILang.checkedAt		= "Last Checked";
- theUILang.checkedResult	= "Result";
+ theUILang.checkTorrent 	= "Kiểm tra xem có cập nhật";
+ theUILang.chkHdr		= "Kiểm tra cập nhật Torrent";
+ theUILang.checkedAt		= "Lần kiểm tra cuối";
+ theUILang.checkedResult	= "Kết quả";
  theUILang.chkResults		= [
- 				  "In progress",
- 				  "Updated",
- 				  "No update required",
- 				  "Probably deleted",
- 				  "Error accessing the tracker",
- 				  "Error interacting with rTorrent",
- 				  "No need"
+ 				  "Đang thực hiện",
+ 				  "Cập nhật",
+ 				  "Không yêu cầu cập nhật",
+ 				  "Có thể đã xóa",
+ 				  "Lỗi truy cập máy theo dỗi",
+ 				  "Lỗi giao tiếp với rTorrent",
+ 				  "Không cần thiết"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

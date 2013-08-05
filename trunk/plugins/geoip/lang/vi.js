@@ -8,16 +8,16 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
- theUILang.peerCommentLabel	= "Enter new comment for peer";
- theUILang.commentName		= "Comment";
+ theUILang.peerComment 		= "Thêm ghi chú";
+ theUILang.peerCommentLabel	= "Điền ghi chú mới cho địa chỉ";
+ theUILang.commentName		= "Ghi chú";
  theUILang.countryName		= "Quốc Gia";
 
  theUILang.country = new Array();
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Các tiểu Vương Quốc Ả Rập Thống Nhất";
  theUILang.country[ "af" ] = "Afghanistan";
- theUILang.country[ "ag" ] = "Antigua and Barbuda";
+ theUILang.country[ "ag" ] = "Antigua và Barbuda";
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albania";
  theUILang.country[ "am" ] = "Armenia";
@@ -29,9 +29,9 @@
  theUILang.country[ "at" ] = "Áo";
  theUILang.country[ "au" ] = "Úc";
  theUILang.country[ "aw" ] = "Aruba";
- theUILang.country[ "ax" ] = "Åland Islands";
+ theUILang.country[ "ax" ] = "Quần đảo Åland";
  theUILang.country[ "az" ] = "Azerbaijan";
- theUILang.country[ "ba" ] = "Bosnia and Herzegovina";
+ theUILang.country[ "ba" ] = "Bosnia và Herzegovina";
  theUILang.country[ "bb" ] = "Barbados";
  theUILang.country[ "bd" ] = "Bangladesh";
  theUILang.country[ "be" ] = "Bỉ";
@@ -126,7 +126,7 @@
  theUILang.country[ "je" ] = "Jersey";
  theUILang.country[ "jm" ] = "Jamaica";
  theUILang.country[ "jo" ] = "Jordan";
- theUILang.country[ "jp" ] = "Nhật";
+ theUILang.country[ "jp" ] = "Nhật Bản";
  theUILang.country[ "ke" ] = "Kenya";
  theUILang.country[ "kg" ] = "Kyrgyzstan";
  theUILang.country[ "kh" ] = "Cambodia";
@@ -231,7 +231,7 @@
  theUILang.country[ "th" ] = "Thái Lan";
  theUILang.country[ "tj" ] = "Tajikistan";
  theUILang.country[ "tk" ] = "Tokelau";
- theUILang.country[ "tl" ] = "Timor-Leste";
+ theUILang.country[ "tl" ] = "Đông-Timor";
  theUILang.country[ "tm" ] = "Turkmenistan";
  theUILang.country[ "tn" ] = "Tunisia";
  theUILang.country[ "to" ] = "Tonga";
