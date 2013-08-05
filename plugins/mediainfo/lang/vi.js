@@ -6,4 +6,4 @@
  * Author: 
  */
 
- theUILang.mediainfo		= "Media Info";
+ theUILang.mediainfo		= "Thông tin định dạng";
