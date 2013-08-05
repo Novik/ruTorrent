@@ -3,7 +3,7 @@
  *
  * Vietnamese language file.
  *
- * Author: 
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
  theUILang.ratioRulesManager	= "Quản lý quy luật";

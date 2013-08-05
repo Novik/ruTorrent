@@ -3,7 +3,7 @@
  *
  * Vietnamese language file.
  *
- * Author: 
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
  theUILang.doesntSupportHTML5	= "Gói bổ sung filedrop: Trình duyệt của bạn không hỗ trợ tính năng tải lên của HTML5. Gói bổ sung không chạy.";

@@ -5,7 +5,7 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Author: 
+ * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
  theUILang.peerComment 		= "Thêm ghi chú";
