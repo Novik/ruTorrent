@@ -54,7 +54,7 @@ var theUILang =
  Not_torrent_file		: "Το αρχείο πρέπει να είναι τύπου .torrent.",
  Pausing			: "Γίνεται παύση",
  Seeding			: "Διαμοιρασμός",
- Downloading			: "Γίνεται λήψη",
+ Downloading			: "Σε λήψη",
  Checking			: "Γίνεται έλεγχος",
  Error				: "Σφάλμα",
  Queued 			: "Σε αναμονή",
