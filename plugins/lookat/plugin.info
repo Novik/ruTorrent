@@ -1,0 +1,4 @@
+plugin.description: This plugin is intended for looking torrent's name in the extaernal sources.
+plugin.author: Novik
+plugin.version: 3.5
+php.extensions.warning: json
