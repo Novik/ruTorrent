@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.lookAtDesc = "Look at (Format: name|url)";
- theUILang.lookAt = "Look at";
+ theUILang.lookAtDesc = "Смотреть на (Формат: name|url)";
+ theUILang.lookAt = "Смотреть на";
 
 thePlugins.get("lookat").langLoaded();
