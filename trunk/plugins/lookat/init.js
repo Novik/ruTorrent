@@ -64,8 +64,8 @@ if(plugin.canChangeMenu())
 			{
 				var title = d.name;
 				var patt = new RegExp( plugin.partsToRemove, 'gi' );
-				title = title.replace( patt, '' ).replace( /[\.\[\]]/g, ' ' );;
-				var url = plugin.lookData[no].replace( '{title}', encodeURIComponent(title) );
+				title = title.replace( patt, '' );
+				var url = plugin.lookData[no].replace( '{title}', encodeURIComponent(title).replace(/(%20|\.|\[|\])/g,'+') );
 				window.open(url, "_blank");
 			}
 		}
