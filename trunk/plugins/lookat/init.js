@@ -21,9 +21,13 @@ if(plugin.canChangeOptions())
 		var arr = $('#lookat').val().split("\n");
 		var j = 0;
 		for(var i in plugin.lookData)
+		{
+			if(j>=arr.length)
+				return(true);
 			if( i+'|'+plugin.lookData[i] != $.trim(arr[j++]) )
 				return(true);
-		return(false);
+		}
+		return(j!=arr.length);
 	}
 
 	plugin.setlookat = function(data)
