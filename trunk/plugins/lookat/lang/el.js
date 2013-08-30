@@ -3,10 +3,10 @@
  *
  * Greek language file.
  *
- * Author: 
+ * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
- theUILang.lookAtDesc = "Look at (Format: name|url)";
- theUILang.lookAt = "Look at";
+ theUILang.lookAtDesc = "Εξέταση (Μορφή: όνομα|url)";
+ theUILang.lookAt = "Εξέταση";
 
 thePlugins.get("lookat").langLoaded();
