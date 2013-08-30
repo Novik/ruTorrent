@@ -7,6 +7,6 @@
  */
 
  theUILang.lookAtDesc = "Εύρεση στο (Μορφή: όνομα|url)";
- theUILang.lookAt = "Εύρεση";
+ theUILang.lookAt = "Εύρεση στο";
 
 thePlugins.get("lookat").langLoaded();
