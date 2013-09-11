@@ -875,6 +875,8 @@ var theTabs =
             				switch(n)
             				{
             					case "FileList":
+							if(theWebUI.dID!="")
+								theWebUI.updateFiles(theWebUI.dID);
 							prefix = "fls";
 							break;
                					case "TrackerList":
