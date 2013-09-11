@@ -1564,7 +1564,8 @@ var theWebUI =
 				}
 				if(oldTorrent.downloaded!=torrent.downloaded)
 				{
-				        if(theWebUI.dID == hash)
+				        if((theWebUI.dID == hash) &&
+				                (theWebUI.activeView=='FileList'))
 						theWebUI.updateFiles(hash);
 					else	
 						delete theWebUI.files[hash];
