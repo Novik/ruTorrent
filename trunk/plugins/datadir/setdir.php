@@ -32,7 +32,6 @@ Debug( "" );
 Debug( "--- begin ---" );
 
 $is_ok = true;
-umask( $datadir_umask );
 
 if( count( $argv ) < 6 )
 {

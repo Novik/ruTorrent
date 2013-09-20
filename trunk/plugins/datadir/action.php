@@ -15,7 +15,6 @@ function Debug( $str )
 ignore_user_abort( true );
 set_time_limit( 0 );
 
-umask( $datadir_umask );
 $errors = array();
 
 if( !isset( $HTTP_RAW_POST_DATA ) )
@@ -56,12 +55,12 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	Debug( "" );
 	Debug( "--- begin ---" );
 	Debug( $datadir );
-	Debug( "run mode: \"".$datadir_runmode."\"".
-		", \"".($move_addpath    == '0' ? "don't " : "")."add path\"".
+	Debug( 
+		"\"".($move_addpath    == '0' ? "don't " : "")."add path\"".
 		", \"".($move_datafiles  == '0' ? "don't " : "")."move files\"".
 		", \"".($move_fastresume == '0' ? "don't " : "")."fast resume\"" );
 
-	if( $hash && strlen( $datadir ) > 0 && $datadir_runmode == 'rtorrent' )
+	if( $hash && strlen( $datadir ) > 0 )
 	{
 		$script_dir = rtAddTailSlash( dirname( __FILE__ ) );
 		$php = getPHP();
@@ -84,22 +83,6 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		if( !$res )
 		{
 			$errors[] = array('desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir);
-		}
-	}
-
-	if( $hash && strlen( $datadir ) > 0 && $datadir_runmode == 'webserver' )
-	{
-		if( !rtMkDir( $datadir, 0777 ) )
-		{
-			Debug( "can't create ".$datadir );
-			$errors[] = array( 'desc'=>"theUILang.datadirDirNotFound", 'prm'=>$datadir );
-		}
-		elseif( !rtSetDataDir( $hash, $datadir, 
-			$move_addpath == '1', $move_datafiles == '1', $move_fastresume == '1',
-			$datadir_debug_enabled ) )
-		{
-			Debug( "rtSetDataDir() fail!" );
-			$errors[] = array( 'desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir );
 		}
 	}
 }
