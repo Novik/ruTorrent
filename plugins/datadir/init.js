@@ -29,10 +29,10 @@ theWebUI.showDataDirDlg = function( d )
 	// can't ignore torrent's path if not multy
 	$('#move_not_add_path').attr("disabled",!is_multy);
 	$('#move_not_add_path').attr("checked",false);
-	$('#move_datafiles').attr("checked",false);
+	$('#move_datafiles').attr("checked",true);
 	// can't "fast resume" torrent if not completed
 	$('#move_fastresume').attr("disabled",!is_done);
-	$('#move_fastresume').attr("checked",false);
+	$('#move_fastresume').attr("checked",is_done);
 	theDialogManager.show( "dlg_datadir" );
 }
 

@@ -145,7 +145,7 @@ function rtMkDir( $dir, $mode = 0777 )
 	if( !is_dir( $dir ) )
 	{
 		// recursive mkdir() only after PHP_5.0
-		makeDirectory( $dir, $mode );
+		mkdir( $dir, $mode, true );
 		//system( 'mkdir -p "'.$dst_dir.'"' );
 		if( !is_dir( $dir ) )
 			return false;

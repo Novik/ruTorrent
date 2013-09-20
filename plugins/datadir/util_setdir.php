@@ -216,28 +216,37 @@ function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $fast_resume, 
 					if( $dbg ) rtDbg( __FUNCTION__, "fail to create Torrent object" );
 					$fast_resume = false;
 				}
-				else {
-					if( !rtExec( "d.erase", $hash, $dbg ) )
+				else 
+				{
+					$is_ok = $add_path ? 
+						rtExec( "d.set_directory",      array( $hash, $dest_path ), $dbg ) :
+						rtExec( "d.set_directory_base", array( $hash, $dest_path ), $dbg );	// for erasedata plugin
+
+                                        if( $is_ok )
 					{
-						if( $dbg ) rtDbg( __FUNCTION__, "fail to erase old torrent" );
-						$fast_resume = false;
-					}
-					else {
-						if( !rTorrent::sendTorrent(
-							$torrent,	// $fname or $torrent
-							true, 		// $isStart
-							$add_path, 	// $isAddPath
-							$dest_path, 	// $directory
-							$label,		// $label
-							true, 		// $saveTorrent
-							true, 		// $isFast
-							false,		// $isNew
-							$addition	// $addition
-							) )		
+						if( !rtExec( "d.erase", $hash, $dbg ) )
 						{
-							if( $dbg ) rtDbg( __FUNCTION__, "fail to add new torrent" );
+							if( $dbg ) rtDbg( __FUNCTION__, "fail to erase old torrent" );
 							$fast_resume = false;
-							$is_ok = false;
+						}
+						else 
+						{
+							if( !rTorrent::sendTorrent(
+								$torrent,	// $fname or $torrent
+								true, 		// $isStart
+								$add_path, 	// $isAddPath
+								$dest_path, 	// $directory
+								$label,		// $label
+								true, 		// $saveTorrent
+								true, 		// $isFast
+								false,		// $isNew
+								$addition	// $addition
+								) )		
+							{
+								if( $dbg ) rtDbg( __FUNCTION__, "fail to add new torrent" );
+								$fast_resume = false;
+								$is_ok = false;
+							}
 						}
 					}
 				}
