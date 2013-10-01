@@ -22,7 +22,7 @@ It's recommended that you use a newer version of [http://xmlrpc-c.sourceforge.ne
 For example, the svn version.
 
 {{{
-svn co http://xmlrpc-c.svn.sourceforge.net/svnroot/xmlrpc-c/advanced xmlrpc-c
+svn co http://svn.code.sf.net/p/xmlrpc-c/code/advanced xmlrpc-c
 cd xmlrpc-c
 ./configure
 make
