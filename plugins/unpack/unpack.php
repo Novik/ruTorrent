@@ -87,7 +87,7 @@ class rUnpack
 		{
 			$postfix = "_dir";
 			$mode = ((USE_UNRAR && USE_UNZIP) ? "all" : (USE_UNZIP ? "zip" : "rar"));
-			if(empty($outPath))
+			if($outPath=='')
 				$outPath = $basename;
 			$basename = addslash($basename);
 		}
@@ -99,7 +99,7 @@ class rUnpack
 			else
 			if(USE_UNZIP && (preg_match("'.*\.zip$'si", $basename)==1))
 				$zipPresent = true;
-			if(empty($outPath))
+			if($outPath=='')
 				$outPath = dirname($basename);
 			$mode = ($zipPresent ? 'zip' : ($rarPresent ? 'rar' : null));
 		        $pathToUnzip = "";
@@ -138,6 +138,9 @@ class rUnpack
 				return(false);
 		}
 
+		if(($outPath!='') && !rTorrentSettings::get()->correctDirectory($outPath))	
+			$outPath = '';
+
 		if(!is_null($fileno) && !is_null($mode))
 	        {
 			$req = new rXMLRPCRequest( 
@@ -154,9 +157,11 @@ class rUnpack
 					if($req->success())
 						$filename = $req->val[1];
 				}
-				if(empty($outPath))
+
+				if($outPath=='')
 					$outPath = dirname($filename);
-				if(LFS::is_file($filename) && !empty($outPath))
+
+				if(LFS::is_file($filename) && ($outPath!=''))
 				{
 				        $taskNo = time();
 				        $dir = self::formatPath($taskNo);
@@ -225,14 +230,14 @@ class rUnpack
 						if(is_dir($basename))
 						{
 							$postfix = "_dir";
-							if(empty($outPath))
+							if($outPath=='')
 								$outPath = $basename;
 							$basename = addslash($basename);
 						}
 						else
 						{
 							$postfix = "_file";
-							if(empty($outPath))
+							if($outPath=='')
 								$outPath = dirname($basename);
 		        				$pathToUnzip = "";
 						}
