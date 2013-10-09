@@ -9,7 +9,7 @@ class ExtraTorrentEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://extratorrent.com';
+		$url = 'http://extratorrent.cc';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'pictures'=>'6', 'books'=>'2' );
 		else
