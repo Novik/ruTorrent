@@ -35,8 +35,12 @@ class rRatioRule
 		$trks = explode( '#', $trackers );
 		foreach( $trks as $trk )
 		{
-			if(preg_match( '`^(http|https|udp)://[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,5})|).*/an.*\?.+=.+`i', $trk ) ||
-				preg_match( '`^(http|https|udp)://[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,5})|)/.*[0-9a-z]{8,32}/an`i', $trk ))
+			$ret = null;
+			rTorrentSettings::get()->pushEvent( "CheckTracker", array( "announce"=>$trk, "result"=>&$ret ) );
+			if( $ret ||
+				(is_null($ret) &&
+					(preg_match( '`^(http|https|udp)://[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,5})|).*/an.*\?.+=.+`i', $trk ) ||
+					preg_match( '`^(http|https|udp)://[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,5})|)/.*[0-9a-z]{8,32}/an`i', $trk ))) )
 				return(true);
 		}
 		return(false);
