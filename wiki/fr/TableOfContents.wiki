@@ -47,7 +47,6 @@
         * [PluginTracklabels Track Labels]
         * [PluginTrafic Trafic]
         * [PluginUnpack Unpack]
-      * [HowToCreatePlugin Comment créer un plugin]
   * [Usage Utilisation]
   * [ErrorMessages Messages d'erreur]
   * [FuturePlans A venir]

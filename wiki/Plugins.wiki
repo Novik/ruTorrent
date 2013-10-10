@@ -5,7 +5,7 @@
 
 <wiki:toc />
 
-ruTorrent is designed with a robust plugin system.  The reason for this is to allow users to customize the behavior of the WebUI, and exlude the parts they do not need [HowToCreatePlugin And even add something we missed, without modifying a ruTorrent code]
+ruTorrent is designed with a robust plugin system.  The reason for this is to allow users to customize the behavior of the WebUI, and exlude the parts they do not need.
 
 == Installation ==
 
@@ -134,7 +134,7 @@ execute = {sh,-c,/usr/bin/php /var/www/rutorrent/php/initplugins.php tom &}
 }}}
 
 
-
+*
 == Uninstallation ==
 
  # remove the plugin directory, for example, to remove the rpc plugin you might do this:
@@ -175,6 +175,19 @@ rm -r /var/www/rutorrent/plugins/rpc/
  # [PluginTheme Theme]  - adds several themes and the ability to choose which one to use from the settings menu.
  # [PluginLoginMgr Loginmgr] - This plugin is used for sites where cookies fail, to help support [PluginRSS RSS] and [PluginExtsearch] Extsearch
  # [PluginRSSURLRewrite Rssurlrewrite] - This plugin is used to rewrite http links for rss using regular expressions
+ # [PluginFeeds Feeds]
+ # [PluginRutracker_check Rutracker_check]
+ # [PluginLookAt LookAt]
+ # [PluginScreenshots Screenshots]
+ # [PluginCheckPort Check_Port]
+ # [PluginMediainfo Mediainfo]
+ # [PluginHistory History]
+ # [PluginIPad IPad]
+ # [PluginFileDrop FileDrop]
+ # [PluginExtRatio ExtRatio]
+ # [Plugin_noty _noty]
+ # [Plugin_task _task]
+
 == 3rd Party Plugins ==
  # [PluginAutodlirssi Autodl-irssi] - irc bot for auto downloading.
  # [PluginPause Pause] -- plugin to pause the ui
