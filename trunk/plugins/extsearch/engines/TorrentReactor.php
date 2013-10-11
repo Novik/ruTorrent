@@ -23,11 +23,10 @@ class TorrentReactorEngine extends commonEngine
 		{
 
 			$cli = $this->fetch( $url.'/torrent-search/'.$what.'/'.($pg*35).'?type=all&period=none&categories='.$cat.'&sort=seeders.desc&ajax=torrent-list' );
-
 			if($cli==false)
 				break;
-			$res = preg_match_all('`<td class="title"><a href="(?P<desc>[^"]*)">(?P<name>.*)</a>'.
-				'<a class="btn-sprited btn-down" href="(?P<link>[^"]*)".*'.
+			$res = preg_match_all('`<td class="title"><a href="(?P<desc>[^"]*)">(?P<name>.*)</a>.*'.
+				'class="btn-sprited btn-down" href="(?P<link>[^"]*)".*'.
 				'<td class="size">(?P<size>.*)</td>'.
 				'<td class="seeders">(?P<seeds>.*)</td>'.
 				'<td class="leechers">(?P<leech>.*)</td>'.

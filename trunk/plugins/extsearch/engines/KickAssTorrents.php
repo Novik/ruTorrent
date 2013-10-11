@@ -3,15 +3,15 @@
 class KickAssTorrentsEngine extends commonEngine
 {
 	public $defaults = array( "public"=>true, "page_size"=>25 );
-	public $categories = array( 'all'=>'', 'Anime'=>'anime', 'Applications'=>'applications', 'Books'=>'books', 'Games'=>'games', 'Movies'=>'movies', 
-		'Music'=>'music', 'Other'=>'other', 'TV'=>'tv', 'XXX'=>'xxx' );
+	public $categories = array( 'all'=>'', 'Anime'=>' category:anime', 'Applications'=>' category:applications', 'Books'=>' category:books', 'Games'=>' category:games', 'Movies'=>' category:movies', 
+		'Music'=>' category:music', 'Other'=>' category:other', 'TV'=>' category:tv', 'XXX'=>' category:xxx' );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
 		$url = 'http://kickass.to';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'', 'movies'=>'movies', 'tv'=>'tv', 'music'=>'music', 'games'=>'games', 'anime'=>'anime', 'software'=>'applications', 'books'=>'books' );
+			$categories = array( 'all'=>'', 'movies'=>' category:movies', 'tv'=>' category:tv', 'music'=>' category:music', 'games'=>' category:games', 'anime'=>' category:anime', 'software'=>' category:applications', 'books'=>' category:books' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
@@ -21,7 +21,7 @@ class KickAssTorrentsEngine extends commonEngine
 
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/usearch/'.$what.'/'.$pg.'/?categories[]='.$cat.'&field=seeders&sorder=desc' );
+			$cli = $this->fetch( $url.'/usearch/'.$what.$cat.'/'.$pg.'/?field=seeders&sorder=desc' );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) )
 				break;
 			$res = preg_match_all('`href="magnet:(?P<link>.*)".*<div class="torrentname">.*'.

@@ -23,7 +23,10 @@ class TorrentPortalEngine extends commonEngine
 			$cli = $this->fetch( $url.'/torrents-search.php?search='.$what.'&cat='.$cat.'&sort=seeders&d=desc&type=and&hidedead=on&page='.$pg );
 			if( ($cli==false) || (strpos($cli->results, "<b>No Torrents Found</b>")!==false) )
 				break;
-			$res = preg_match_all('/<a href="\/download\/(?P<link>.*)">.*<a href="torrents.php\\?cat=\d{1,2}">(?P<cat>.*)<\/a>.*<a href="\/details\/(?P<desc>.*)".*<b>(?P<name>.*)<\/b><\/a><\/td><td .*>.*<\/td><td .*>(?P<size>.*)<\/td><td .*>(?P<seeds>.*)<\/td><td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
+			$res = preg_match_all('/<a href="\/download\/(?P<link>.*)">.*'.
+				'<a href="\/browse\/[^"]*">(?P<cat>.*)<\/a>.*'.
+				'<a href="\/details\/(?P<desc>.*)".*<b>(?P<name>.*)<\/b><\/a><\/td>'.
+				'<td .*>.*<\/td><td .*>(?P<size>.*)<\/td><td .*>(?P<seeds>.*)<\/td><td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
