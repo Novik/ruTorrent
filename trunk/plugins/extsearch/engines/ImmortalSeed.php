@@ -14,7 +14,7 @@ class ImmortalSeedEngine extends commonEngine
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
-		$url = 'https://immortalseed.com';
+		$url = 'https://immortalseed.tv';
 		$added = 0;
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'music'=>'30', 'anime'=>'32', 'software'=>'23', 'pictures'=>'31', 'books'=>'22' );
