@@ -21,6 +21,7 @@ class VertorEngine extends commonEngine
 
 		for($pg = 0; $pg<10; $pg++)
 		{
+			
 			$cli = $this->fetch( $url.'/index.php?words='.$what.'&exclude=&cid='.$cat.'&type=1&orderby=a.seeds&asc=0&mod=search&search=&Submit=Search&p='.$pg );
 			if($cli==false || (strpos($cli->results, '>Nothing found</td>')!==false))
 				break;
@@ -28,9 +29,9 @@ class VertorEngine extends commonEngine
 			$pos = strpos($result, "<h2>Vertor search results</h2>");
 			if($pos!==false)
 				$result = substr($result,$pos);
-			$res = preg_match_all('`<td class="first" >.*<a title="View information[^"]*" href="(?P<desc>[^"]*)">(?P<name>.*)</a>'.
+
+			$res = preg_match_all('`<td class="first" >.*<a title="View information[^"]*" href="/torrents/(?P<id>\d*)/(?P<desc>[^"]*)">(?P<name>.*)</a>'.
 				'<span class="quick">In&nbsp;<a href="/cat/[^"]*">(?P<cat>[^<]*)</a>.*'.
-				'<a rel="nofollow" href="http://www.vertor.com/index.php\?mod=download&amp;id=(?P<id>\d*)">.*'.
 				'</td>.*<td>(?P<date>.*)</td>.*'.
 				'<td>(?P<size>.*)</td>.*'.
 				'<td>.*</td>.*'.
@@ -45,7 +46,7 @@ class VertorEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["desc"] = $url.self::removeTags($matches["desc"][$i]);
+						$item["desc"] = $url.'/torrents/'.$matches["id"][$i].'/'.self::removeTags($matches["desc"][$i]);
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize(trim($matches["size"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));

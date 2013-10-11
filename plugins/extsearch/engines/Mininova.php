@@ -15,27 +15,26 @@ class MininovaEngine extends commonEngine
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
-			$cat = $categories['all'];
-		else
-			$cat = $categories[$cat];
+			$cat = 'all';
 
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$itemsOnPage = 0;
-			$cli = $this->fetch( $url.'/search/'.$what.'/'.$cat.'/seeds/'.$pg );
+			$cli = $this->fetch( $url.'/search/'.$what.'/'.$categories[$cat].'/seeds/'.$pg );
 			if( ($cli==false) || (strpos($cli->results, "<h1>No results for")!==false) )
 				break;
 			$result = $cli->results;
-			$first = strpos($result, "<table>");
 			$last = strpos($result, "</table>");
-			if(($first!==false) && ($last!==false))
-				$result = substr($result,$first,$last);
+			if($last!==false)
+				$result = substr($result,$last);
 			$res = preg_match_all("'<td(| .*?)>(.*?)</td>'si", $result, $items);
-			if(($res!==false) && ($res>0))
+			$delta = (($cat=='all') ? 6 : 5);
+			$offs = (($cat=='all') ? 2 : 1);
+			if($res)
 			{
-				for( $i=0; $i<count($items[2]); $i+=6)
+				for( $i=0; $i<$res; $i+=$delta)
 				{
-                                        if(preg_match( "`<a href=\"/tor/(?P<id>\d+)[^\"]*\">(?P<name>.*)</a>`si", $items[2][$i+2], $matches )==1)
+					if(preg_match( "`<a href=\"/tor/(?P<id>\d+)[^\"]*\">(?P<name>.*)</a>`si", $items[2][$i+$offs], $matches )==1)
 					{
 						$link = $url."/get/".$matches["id"];
 						$itemsOnPage++;
@@ -43,12 +42,22 @@ class MininovaEngine extends commonEngine
 						{
 							$item = $this->getNewEntry();
 							$item["time"] = strtotime(self::removeTags($items[2][$i]));
-							$item["cat"] = self::removeTags($items[2][$i+1]);
 							$item["desc"] = $url."/tor/".$matches["id"];
 							$item["name"] = self::removeTags($matches["name"]);
-							$item["size"] = self::formatSize($items[2][$i+3]);
-							$item["seeds"] = intval(self::removeTags($items[2][$i+4]));
-							$item["peers"] = intval(self::removeTags($items[2][$i+5]));
+							if($cat=='all')
+							{
+								$item["cat"] = self::removeTags($items[2][$i+1]);
+								$item["size"] = self::formatSize($items[2][$i+3]);
+								$item["seeds"] = intval(self::removeTags($items[2][$i+4]));
+								$item["peers"] = intval(self::removeTags($items[2][$i+5]));
+							}
+							else
+							{
+								$item["cat"] = $cat;
+								$item["size"] = self::formatSize($items[2][$i+2]);
+								$item["seeds"] = intval(self::removeTags($items[2][$i+3]));
+								$item["peers"] = intval(self::removeTags($items[2][$i+4]));								
+							}
 							$ret[$link] = $item;
 							$added++;
 							if($added>=$limit)
