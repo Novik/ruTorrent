@@ -122,7 +122,7 @@ class rUnpack
 	}
 	static protected function formatPath( $taskNo )
 	{
-		return('/tmp/rutorrent-'.getUser().$taskNo."." );
+		return(getTempDirectory().'rutorrent-unpck-'.getUser().$taskNo."." );
 	}
 
 	public function startTask( $hash, $outPath, $mode = null, $fileno = null, $all = false )

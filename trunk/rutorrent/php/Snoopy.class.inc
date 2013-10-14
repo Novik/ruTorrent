@@ -407,7 +407,7 @@ class Snoopy
 			}
 			else
 			{
-				$randName = uniqid("/tmp/rutorrent-gz-");
+				$randName = uniqid(getTempDirectory()."rutorrent-gz-");
 				file_put_contents($randName.".gz",$results);
 				exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 				if(is_file($randName))
@@ -482,14 +482,12 @@ class Snoopy
 		if($this->_isproxy)
 			$cmdline_params .= " --proxy ".$this->proxy_host.":".$this->proxy_port;
 		
-		$headerfile = uniqid(time());
-		$contfile = uniqid(time());
+		$headerfile = uniqid(getTempDirectory()."rutorrent-https-hdr-");
+		$contfile = uniqid(getTempDirectory()."rutorrent-https-bdy-");
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s"; 
-//toLog(escapeshellarg(getExternal('curl'))." -g -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".$cmdline_params." ".escapeshellarg($url));
-		exec(escapeshellarg(getExternal('curl'))." -g -D \"/tmp/$headerfile\" -o \"/tmp/$contfile\"".$cmdline_params." ".escapeshellarg($url),$results,$return);
-//toLog(print_r($results,1));
+		exec(escapeshellarg(getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		$this->_redirectaddr = false;
 		$this->headers = array();
 		$is_gzipped = false;
@@ -498,8 +496,8 @@ class Snoopy
 			$this->error = "Error: cURL could not retrieve the document, error $return.";
 		else
 		{
-			$results = file_get_contents("/tmp/$contfile");
-			$result_headers = file("/tmp/$headerfile");
+			$results = file_get_contents($contfile);
+			$result_headers = file($headerfile);
 			foreach($result_headers as $header)
 			{
 				// if a header begins with Location: or URI:, set the redirect
@@ -544,7 +542,7 @@ class Snoopy
 				}
 				else
 				{
-					$randName = uniqid("/tmp/rutorrent-gz-");
+					$randName = uniqid(getTempDirectory()."tmp/rutorrent-gz-");
 					file_put_contents($randName.".gz",$results);
 					exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 					if(is_file($randName))
@@ -559,8 +557,8 @@ class Snoopy
 
 			$this->results = $results;
 		}
-		unlink("/tmp/$headerfile");
-		unlink("/tmp/$contfile");
+		unlink($headerfile);
+		unlink($contfile);
 		return(!$return);
 	}
 

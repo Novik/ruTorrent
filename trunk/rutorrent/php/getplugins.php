@@ -223,7 +223,11 @@ if($handle = opendir('../plugins'))
 {
 	ignore_user_abort(true);
 	set_time_limit(0);
-	@chmod('/tmp',0777);
+	makeDirectory(getTempDirectory());
+
+	if(!@file_exists($tempDirectory.'/.') || !is_readable($tempDirectory) || !is_writable($tempDirectory))
+		$jResult.="noty(theUILang.badTempPath+' (".$tempDirectory.")','error');";	
+
 	if(!function_exists('preg_match_all'))
 	{
 		$jResult.="noty(theUILang.PCRENotFound,'error');";
@@ -274,6 +278,8 @@ if($handle = opendir('../plugins'))
 						$jResult.="noty(theUILang.cantObtainUser,'error');";
 					else
 					{
+						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$tempDirectory,0x0007))
+							$jResult.="noty(theUILang.badTempPath2+' (".$tempDirectory.")','error');";
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$up,0x0007))
 							$jResult.="noty(theUILang.badUploadsPath2+' (".$up.")','error');";
 						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$st,0x0007))

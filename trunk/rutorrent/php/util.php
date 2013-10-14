@@ -480,7 +480,7 @@ function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 			{
 				$gzip = getExternal('gzip');
 				header('Content-Encoding: '.$encoding); 
-				$randName = uniqid("/tmp/rutorrent-ans-");
+				$randName = uniqid(getTempDirectory()."rutorrent-ans-");
 				file_put_contents($randName,$content);
 				passthru( $gzip." -".PHP_GZIP_LEVEL." -c < ".$randName );
 				unlink($randName);
@@ -503,9 +503,9 @@ function makeDirectory( $dirs, $perms = null )
 	$oldMask = umask(0);
 	if(is_array($dirs))
 		foreach($dirs as $dir)
-			@mkdir($dir,$perms,true);
+			(file_exists($dir.'/.') && @chmod($dir,$perms)) || @mkdir($dir,$perms,true);
 	else
-		@mkdir($dirs,$perms,true);
+		(file_exists($dirs.'/.') && @chmod($dirs,$perms)) || @mkdir($dirs,$perms,true);
 	@umask($oldMask);
 } 
 
@@ -638,4 +638,30 @@ function base32decode($input)
 		$output .= chr(($buffer >> ($bitsLeft - 3)) & 0xFF);
         }         
 	return( strtoupper(bin2hex($output)) );
+}
+
+function getTempDirectory() 
+{
+	global $tempDirectory;
+	if(empty($tempDirectory))
+	{
+		$directories = array();
+		if(ini_get('upload_tmp_dir')) 
+			$directories[] = ini_get('upload_tmp_dir');
+		if(function_exists('sys_get_temp_dir'))
+			$directories[] = sys_get_temp_dir();
+		$directories[] = '/tmp';
+		foreach ($directories as $directory) 
+		{
+			if(is_dir($directory) && is_writable($directory)) 
+			{
+				$tempDirectory = $directory;
+				break;
+			}
+		}
+		if(empty($tempDirectory))
+			$tempDirectory = getProfilePath().'/tmp';
+		$tempDirectory = addslash( $tempDirectory );
+	}
+	return($tempDirectory);
 }

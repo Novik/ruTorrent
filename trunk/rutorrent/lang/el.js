@@ -264,5 +264,7 @@ var theUILang =
  Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",
  Select_all			: "Επιλογή όλων",
  Deselect_all			: "Αποεπιλογή όλων",
- showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο"
+ showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",
+ badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
+ badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
 };

@@ -16,7 +16,7 @@ if( count( $argv ) > 1 )
 	}
 
 	$taskNo = $argv[1];
-	$fname = "/tmp/rutorrent-".getUser().$taskNo.".prm";
+	$fname = getTempDirectory()."rutorrent-".getUser().$taskNo.".prm";
 	if(is_file($fname) && is_readable($fname))
 	{
 		$request = unserialize(file_get_contents( $fname ));
@@ -91,7 +91,7 @@ if( count( $argv ) > 1 )
         	else
 			$torrent->save($fname);
 		@chmod($fname,$profileMask & 0666);
-		file_put_contents( "/tmp/".getUser().$taskNo."/out", getFileName($fname));
+		file_put_contents( getTempDirectory().getUser().$taskNo."/out", getFileName($fname));
 		exit(0);
 	}
 	exit(1);

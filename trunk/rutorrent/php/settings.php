@@ -190,11 +190,10 @@ class rTorrentSettings
 							if($this->started===false)
 								$this->started = 0;
 						}
-						$randName = uniqid("/tmp/rutorrent-stats-".rand());
 						$id = getExternal('id');
 						$req = new rXMLRPCRequest(
-        						new rXMLRPCCommand("execute",array("sh","-c",$id." -u > ".$randName." ; ".$id." -G >> ".$randName." ; echo ~ >> ".$randName." ; chmod 0644 ".$randName)));
-						if($req->run() && !$req->fault && (($line=file($randName))!==false) && (count($line)>2))
+        						new rXMLRPCCommand("execute_capture",array("sh","-c",$id." -u ; ".$id." -G ; echo ~ ")));
+						if($req->run() && !$req->fault && (($line=explode("\n",$req->val[0]))!==false) && (count($line)>2))
 						{
 							$this->uid = intval(trim($line[0]));
 							$this->gid = explode(' ',trim($line[1]));
@@ -202,8 +201,6 @@ class rTorrentSettings
 							if(!empty($this->directory) &&
 								($this->directory[0]=='~'))
 								$this->directory = $this->home.substr($this->directory,1);	
-							$req = new rXMLRPCRequest(new rXMLRPCCommand( "execute", array("rm",$randName) ));
-							$req->run();
 						}
 						else
 							$this->idNotFound = true;

@@ -264,5 +264,7 @@ var theUILang =
  Delete_current_torrents	: "Ta bort aktuell(a) torrent(er)",
  Select_all			: "Markera alla",
  Deselect_all			: "Avmarkera alla",
- showSpeedInTitle		: "Visa hastighet i titel"
+ showSpeedInTitle		: "Visa hastighet i titel",
+ badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
+ badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
 };

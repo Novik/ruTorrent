@@ -266,5 +266,7 @@ var theUILang =
  Delete_current_torrents	: "Supprimer le(s) torrent(s) actuel(s)",
  Select_all			: "Sélectionner tout",
  Deselect_all			: "Désélectionner tout",
- showSpeedInTitle		: "Vitesse de transfert dans la barre de titre"
+ showSpeedInTitle		: "Vitesse de transfert dans la barre de titre",
+ badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
+ badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
 };
