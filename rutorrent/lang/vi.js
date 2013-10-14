@@ -264,5 +264,7 @@ var theUILang =
  Delete_current_torrents	: "Xóa torrent hiện tại",
  Select_all			: "Chọn tất cả",
  Deselect_all			: "Bỏ chọn tất cả",
- showSpeedInTitle		: "Hiển thị tốc độ ở tiêu đề"
+ showSpeedInTitle		: "Hiển thị tốc độ ở tiêu đề",
+ badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
+ badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
 };

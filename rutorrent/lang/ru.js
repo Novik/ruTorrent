@@ -266,5 +266,7 @@ var theUILang =
  Delete_current_torrents	: "Удалить торрент(ы)",
  Select_all			: "Выделить все",
  Deselect_all			: "Отмена выделения",
- showSpeedInTitle		: "Скорость в заголовке"
+ showSpeedInTitle		: "Скорость в заголовке",
+ badTempPath 			: "Веб сервер не имеет доступа к директории tmp на чтение/запись/выполнение. ruTorrent не будет работать.",
+ badTempPath2			: "rTorrent должен иметь доступ на чтение/выполнение к директории tmp. ruTorrent не будет работать."
 };

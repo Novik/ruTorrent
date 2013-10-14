@@ -23,8 +23,9 @@ if(isset($_REQUEST['cmd']))
 		        	if(rTorrentSettings::get()->correctDirectory($path_edit))
 				{
 					$taskNo = time();
-					file_put_contents( "/tmp/rutorrent-".getUser().$taskNo.".prm", serialize( $_REQUEST ) );
-					chmod("/tmp/rutorrent-".getUser().$taskNo.".prm",0644);
+					$randName = getTempDirectory()."rutorrent-".getUser().$taskNo.".prm";
+					file_put_contents( $randName, serialize( $_REQUEST ) );
+					chmod($randName,0644);
 					$piece_size = 262144;
 					if(isset($_REQUEST['piece_size']))
 						$piece_size = $_REQUEST['piece_size']*1024;
@@ -44,7 +45,8 @@ if(isset($_REQUEST['cmd']))
 							escapeshellarg($pathToCreatetorrent)." ".
 							escapeshellarg($path_edit)." ".
 							$piece_size." ".
-							escapeshellarg(getUser())." &")));
+							escapeshellarg(getUser())." ".
+							escapeshellarg(getTempDirectory())." &")));
 					if($req->success())
 						$ret = array( "no"=>intval($taskNo), "errors"=>array(), "status"=>-1, "out"=>"" );
 				}
@@ -58,7 +60,7 @@ if(isset($_REQUEST['cmd']))
 		        if(isset($_REQUEST['no']))
 		        {
 		        	$taskNo = $_REQUEST['no'];
-				$dir = '/tmp/'.getUser().$taskNo;
+				$dir = getTempDirectory().getUser().$taskNo;
 				if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 				{
 					$pid = trim(file_get_contents($dir.'/pid'));
@@ -108,7 +110,7 @@ if(isset($_REQUEST['cmd']))
 						$req = new rXMLRPCRequest( 
 							new rXMLRPCCommand( "execute", array("rm","-fr",$dir) ) );
 						$req->run();
-						@unlink("/tmp/rutorrent-".getUser().$taskNo.".prm");
+						@unlink(getTempDirectory()."rutorrent-".getUser().$taskNo.".prm");
 					}
 					$ret = array( 
 						"no"=>intval($taskNo),
@@ -126,7 +128,7 @@ if(isset($_REQUEST['cmd']))
 		        if(isset($_REQUEST['no']))
 		        {
 		        	$taskNo = $_REQUEST['no'];
-				$dir = '/tmp/'.getUser().$taskNo;
+				$dir = getTempDirectory().getUser().$taskNo;
 				if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 				{
 					$pid = trim(file_get_contents($dir.'/pid'));
@@ -138,7 +140,7 @@ if(isset($_REQUEST['cmd']))
 					$req = new rXMLRPCRequest( 
 						new rXMLRPCCommand( "execute", array("rm","-fr",$dir) ) );
 					$req->run();
-					@unlink("/tmp/rutorrent-".getUser().$taskNo.".prm");
+					@unlink(getTempDirectory()."rutorrent-".getUser().$taskNo.".prm");
 				}
 			}
 			break;

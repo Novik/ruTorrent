@@ -17,7 +17,7 @@ class rTask
 
 	static public function formatPath( $taskNo )
 	{
-		return('/tmp/rutorrent-tsk-'.getUser().$taskNo );
+		return(getTempDirectory().'rutorrent-tsk-'.getUser().$taskNo );
 	}
 
 	static public function start( $commands, $flags = self::FLG_DEFAULT )
@@ -26,7 +26,7 @@ class rTask
 	        $dir = self::formatPath($taskNo);
 	        if(count($commands))
 	        {
-			makeDirectory($dir,0777);
+			makeDirectory($dir);
 			if(($sh = fopen($dir."/start.sh","w"))!==false)
 		        {
 				fputs($sh,'#!/bin/sh'."\n");

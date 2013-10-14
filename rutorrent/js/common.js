@@ -762,11 +762,8 @@ var theSearchEngines =
 	sites:
 	[
 		{ name: 'Mininova', 		url: 'http://www.mininova.org/search/?utorrent&search=' },
-		{ name: 'HQTtracker.ru', 	url: 'http://hqtracker.ru/browse.php?cat=0&search_in=1&search=' },
 		{ name: 'The Pirate Bay', 	url: 'http://thepiratebay.org/search.php?q=' },
-		{ name: 'INTERFILM', 		url: 'http://interfilm.nu/movie/?do=search&str=' },
 		{ name: 'IsoHunt', 		url: 'http://isohunt.com/torrents.php?ext=&op=and&ihq=' },
-		{ name: 'VideoTracker.ru', 	url: 'http://videotracker.ru/browse.php?cat=0&search_in=1&search=' },
 		{ name: '', 			url: '' },
 		{ name: 'Google', 		url: 'http://google.com/search?q=' }
 	],
