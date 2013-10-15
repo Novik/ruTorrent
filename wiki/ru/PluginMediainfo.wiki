@@ -1,7 +1,19 @@
 ----
-= Plugin Mediainfo =
+=Plugin Mediainfo=
 ----
 
-<wiki:toc />
+== Описание ==
 
-*Under construction*
+Плагин добавляет в контекстное меню файлов закачки пункт "Информация о файле": 
+
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginMediainfo/menu.png]
+
+Воспользовавшись данным пунктом Вы можете посмотреть дополнительную информацию о выбранном файле:
+
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginMediainfo/result.png]
+
+== Дополнительная настройка плагина ==
+
+Производится в файле plugins/mediainfo/conf.php. 
+
+ * `$pathToExternals['mediainfo']` - Абсолютный путь к утилите mediainfo.
