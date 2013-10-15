@@ -86,6 +86,8 @@
 						// Both Webserver and rtorrent users must have read-write access to it.
 						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
 
+	$tempDirectory = null;			// Temp directory. Absolute path with trail slash. If null, then autodetect will be used.
+
 }}}
 
 ==== Связь с rTorrent ====
@@ -166,6 +168,14 @@ $pathToExternals = array(
 
 Маска доступа для создаваемых пользовательских файлов и директорий. Пользователь веб-сервера и пользователь, под которым работает rTorrent должны иметь доступ на чтение/запись данных файлов. 
 Как следствие - если, например, эти пользователи находятся в одной группе, то разумно изменить данный параметр на 0770.
+
+ * $tempDirectory = null;
+
+Директория, которая будет использована для создания временных файлов. Должна быть доступна на чтение/запись/выполнение как для веб-сервера, так и для rTorrent. По умолчанию (т.е. null) ruTorrent последовательно проверит значения
+ # `upload_tmp_dir` из php.ini
+ # значение, которое возвращает функция php `sys_get_temp_dir`
+ # /tmp
+и выберет первую подходящую (т.е. существующую и доступную по записи) директорию из этого списка.
 
 Порочие настройки в данном файле трогать категорически не рекомендуется.
 
