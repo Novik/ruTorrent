@@ -2,6 +2,15 @@
 = Plugin History =
 ----
 
-<wiki:toc />
+== Описание ==
 
-*Under construction*
+Плагин добавляет новую закладку с таблицей "История": 
+
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginHistory/result.png]
+
+В которой протоколируются разнообразные действия с закачками.
+После установки плагина в настройках ruTorrent появляется соответствующий раздел: 
+
+[http://rutorrent.googlecode.com/svn/wiki/ru/images/PluginHistory/settings.png]
+
+Где Вы можете указать, что именно протоколировать, а так же включить поддержку уведомлений на рабочем столе (в настоящий момент - только для Google Chrome). 
