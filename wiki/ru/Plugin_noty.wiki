@@ -1,5 +1,5 @@
 ----
-= Plugin _noty =
+= Plugin `_noty` =
 ----
 
 == Описание ==
