@@ -1,0 +1,5 @@
+plugin.description: This plugin is intended for looking torrent's name in the external sources.
+plugin.author: Novik
+plugin.version: 3.6
+php.extensions.warning: json
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginLookAt
