@@ -1,0 +1,106 @@
+#Chunks
+{
+	overflow: hidden;
+}
+
+#cCont
+{
+	font-family: fixed;
+	font-size: 12px;
+	overflow: auto;
+	height: 100%
+} 
+
+#cTable 
+{
+	width: 100%;
+	empty-cells: hide;
+	margin-left: auto;
+	margin-right: auto;
+	border-collapse: separate;
+	table-layout:fixed;
+}
+
+#cHeader
+{
+	font-size: 11px; 
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+#cHeader .sthdr, #cHeader .stval
+{
+	width: 80px;
+	white-space: nowrap;
+}
+
+.cCell {
+    border: 1px solid;
+    text-align: center;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    width: 16px;
+}
+
+.Cell0 {
+    border: 1px dotted;
+}
+
+.Cell1 {
+    background-color: #FFFDF0;
+}
+
+.Cell2 {
+    background-color: #FFFAD8;
+}
+
+.Cell3 {
+    background-color: #FFF5B2;
+}
+
+.Cell4 {
+    background-color: #FFF5B2;
+}
+
+.Cell5 {
+    background-color: #FFF08A;
+}
+
+.Cell6 {
+    background-color: #FFEA63;
+}
+
+.Cell7 {
+    background-color: #FFEA63;
+}
+
+.Cell8 {
+    background-color: #F5DC69;
+}
+
+.Cell9 {
+    background-color: #EED46E;
+}
+
+.CellA {
+    background-color: #EED46E;
+}
+
+.CellB {
+    background-color: #DEBD7A;
+}
+
+.CellC {
+    background-color: #CDA684;
+}
+
+.CellD {
+    background-color: #CDA684;
+}
+
+.CellE {
+    background-color: #C3988B;
+}
+
+.CellF {
+    background-color: #C3988B;
+}
