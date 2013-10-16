@@ -1,0 +1,6 @@
+plugin.description: This plugin adds a CPU Load indicator to the bottom bar.
+plugin.author: Novik
+plugin.version: 3.6
+plugin.runlevel: 9
+rtorrent.need: 0
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginCpuload
