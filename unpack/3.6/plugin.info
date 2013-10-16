@@ -1,0 +1,10 @@
+plugin.description: This plugin is designed to manually or automatically unrar/unzip torrent data.
+plugin.author: Novik
+plugin.version: 3.6
+plugin.runlevel: 11
+rtorrent.remote: error
+rtorrent.script.error: unall_dir.sh,unrar_dir.sh,unrar_file.sh,unzip_dir.sh,unzip_file.sh
+rtorrent.external.error: php
+rtorrent.php.error: update.php,unpack.php,conf.php
+php.extensions.error: json
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginUnpack
