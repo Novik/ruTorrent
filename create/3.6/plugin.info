@@ -1,0 +1,10 @@
+plugin.description: This plugin allows for the creation of new .torrent files.
+plugin.author: Novik
+plugin.version: 3.6
+rtorrent.remote: error
+rtorrent.external.error: php
+rtorrent.external.warning: pgrep
+rtorrent.script.error: buildtorrent.sh,createtorrent.sh,inner.sh,mktorrent.sh,transmissioncli.sh
+rtorrent.php.error: correct.php,createtorrent.php,conf.php
+php.extensions.error: json
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginCreate
