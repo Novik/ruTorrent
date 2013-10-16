@@ -3,7 +3,7 @@
 ----
 ==  Tar Balls ==
 
-[http://code.google.com/p/rutorrent/downloads/list Downloading page]
+[https://bintray.com/novik65/generic/ruTorrent Downloading page]
 
 == SVN ==
 

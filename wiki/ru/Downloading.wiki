@@ -3,5 +3,5 @@
 ----
 
  * [GetFromSVN из SVN]
- * [http://code.google.com/p/rutorrent/downloads/list Архивом]
+ * [https://bintray.com/novik65/generic/ruTorrent Архивом]
 
