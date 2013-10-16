@@ -1,0 +1,8 @@
+plugin.description: This plugin extends the functionality of the ratio plugin.
+plugin.author: Novik
+plugin.runlevel: 12
+plugin.version: 3.6
+plugin.dependencies: ratio,throttle
+php.extensions.error: json
+rtorrent.version: 0.8.6
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginExtRatio
