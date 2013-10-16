@@ -1,0 +1,6 @@
+plugin.description: This plugin adds the columns 'Finished' and 'Added' to the torrents list.
+plugin.author: Novik
+plugin.runlevel: 11.4
+plugin.version: 3.6
+rtorrent.version: 0.8.6
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginSeedingtime
