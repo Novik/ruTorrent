@@ -1,0 +1,5 @@
+#port-holder { width: 0px; height: 19px; line-height: 19px; margin-left: 24px; }
+
+#StatusBar table tr td.pstatus0 { background: url(./images/yellow.png) 5px no-repeat; }
+#StatusBar table tr td.pstatus1 { background: url(./images/red.png) 5px no-repeat; }
+#StatusBar table tr td.pstatus2 { background: url(./images/green.png) 5px no-repeat; }
