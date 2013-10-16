@@ -1,0 +1,7 @@
+plugin.description: This plugin provides the notification functionality for other plugins.
+plugin.author: Novik
+plugin.version: 3.6
+rtorrent.need: 0
+plugin.may_be_shutdowned: 0
+plugin.runlevel: 1
+plugin.help: http://code.google.com/p/rutorrent/wiki/Plugin_noty
