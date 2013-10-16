@@ -1,0 +1,280 @@
+* { -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,1.0); }
+html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%; }
+form{margin:0;}
+div#preload {width: 0px; height: 0px; display: none; background-image: url(../images/toolbar.png); background-image: url(../images/tstatus.png); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/close.png); background-image: url(../images/file.gif); background-image: url(../images/dir.gif); background-image: url(../images/pnl_open.gif); background-image: url(../images/pnl_close.gif)}
+div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; background: #FFFFFF}
+div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
+div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none; opacity: 0.5; background-color: #CCCCCC;}
+.konqueror div#modalbg { background: none; }
+.ie div#modalbg { filter:alpha(opacity=50); }
+
+div.aright {text-align: right}
+div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
+div.fxcaret {overflow: auto}
+div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; font-weight: bold; border-bottom: 1px solid #909090}
+a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(../images/close.png) no-repeat scroll left center; float: right; border: 0}
+a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(../images/close.png) no-repeat scroll -14px center; float: right; border: 0}
+a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../images/close.png) no-repeat scroll -28px center; float: right; border: 0}
+
+div#sc {width: 150px; right: 57px; top: 40px; position: absolute; display: none; border: 1px solid #808080; background-color: #E0E0E0; z-index: 100}
+div#sc ul {margin: 0; padding: 0; list-style: none}
+div#sc ul li {margin: 0; padding: 0}
+div#sc li div {line-height: 14px; padding: 4px; font-weight: bold; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif}
+div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
+ul.CMenu {width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
+ul.CMenu li {float: left; margin-right: 1px; position: relative; width: 150px; background: #FFFFFF}
+ul.CMenu li a {display: block}
+ul.CMenu li a.dis {color: #C0C0C0}
+ul.CMenu li a.dis:hover {background-color: #FFFFFF; color: #C0C0C0}
+ul.CMenu li a {line-height: 16px; padding: 3px 4px 3px 16px; font-weight: normal}
+ul.CMenu li hr {width: 90%; border-top: 1px solid #D0D0D0; height: 0px; margin-top: 2px; margin-bottom: 2px; }
+.ie ul.CMenu li hr { line-height:1px; font-size:1px; margin: 0 }
+ul.CMenu li a.exp {background: transparent url(../images/menuexp.gif) no-repeat scroll 140px center; }
+ul.CMenu li a.sel {background: transparent url(../images/menusel.gif) no-repeat scroll 4px center}
+ul.CMenu li a:hover {background-color: #CFDEEF; color: #000000}
+
+ul.CMenu li:hover ul {display: block; position: absolute; top: 0; left: 146px; width:150px;}
+ul.CMenu li:hover ul li ul {display: none;}
+ul.CMenu li:hover ul li a {display: block; background-color: #FFFFFF; color: #000000}
+ul.CMenu li:hover ul li a:hover {background-color: #CFDEEF; color: #000000}
+ul.CMenu li:hover ul.left {left: -150px}
+ul.CMenu li ul li a.dis {color: #C0C0C0}
+ul.CMenu li ul li a.dis:hover {background-color: #FFFFFF; color: #C0C0C0}
+
+span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
+#sel {width: 0px; height: 0px; position: absolute; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
+
+div#t {width: 100%; height: 36px; background: #F0F0F0 url(../images/t_bg.png) repeat-x center center; line-height: 36px; border-bottom: 1px solid #D0D0D0; white-space: nowrap}
+div#t a {float: left; margin: 3px 0 0 5px; padding: 3px}
+div#t a:hover {background: transparent url(../images/tb_bg.gif) no-repeat scroll center center}
+div#t a:active {padding: 4px 2px 2px 4px}
+div#t div {width: 24px; height: 24px; float: left; cursor: pointer}
+div#t div.TB_Separator {width: 1px; height: 22px; margin: 7px 0 0 5px; padding: 0; border: 0; background-color: #A0A0A0}
+
+div#t div#add {background: transparent url(../images/toolbar.png) no-repeat -24px center}
+div#t div#create {background: transparent url(../images/toolbar.png) no-repeat -48px center}
+div#t div#remove {background: transparent url(../images/toolbar.png) no-repeat -72px center}
+div#t div#start {background: transparent url(../images/toolbar.png) no-repeat -96px center}
+div#t div#pause {background: transparent url(../images/toolbar.png) no-repeat -120px center}
+div#t div#stop {background: transparent url(../images/toolbar.png) no-repeat -144px center}
+div#t div#moveu {background: transparent url(../images/toolbar.png) no-repeat -168px center}
+div#t div#moved {background: transparent url(../images/toolbar.png) no-repeat -192px center}
+div#t div#search {background: transparent url(../images/toolbar.png) no-repeat -216px center}
+div#t div#rss {background: transparent url(../images/toolbar.png) no-repeat -240px center}
+div#t div#setting {background: transparent url(../images/toolbar.png) no-repeat -264px center}
+
+div#t div#help {background: transparent url(../images/quest.gif) no-repeat 0px center}
+div#t div#plugins {background: transparent url(../images/plugin.png) no-repeat 0px center}
+
+#rc { float: right; }
+#go {background: transparent url(../images/go.gif) no-repeat 0px center; }
+#query { margin-top: 4px; }
+div#t a#mnu_go {margin: 3px 0 0 0; padding: 3px}
+div#t #ind {margin-top: 2px; background: transparent url(../images/ajax-loader.gif) no-repeat 0px center; width: 32px; margin-right: 2px; line-height: 26px; cursor: default; }
+
+input.Textbox, input.Button, select {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px}
+Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 50px}
+Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 110px}
+Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 220px}
+Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 30px}
+input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0;}
+
+select {margin-top: 5px}
+a {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #686868}
+table#maincont {margin: 5px 0 0 0}
+table#maincont td.uicell {vertical-align: top; padding: 0 }
+
+div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden}
+div#CatList ul {padding: 0; margin: 0; list-style: none; white-space: nowrap}
+div#CatList ul li {padding: 2px 25px; margin: 0; line-height: 14px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer; border: 1px solid #FFFFFF; background-repeat: no-repeat}
+div#CatList ul li.sel {background-color: #CFDEEF; border-color: #CFDEEF }
+#-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(../images/tstatus.png)}
+#-_-_-all-_-_- {background-position: 4px -174px;}
+#-_-_-dls-_-_- {background-position: 4px 2px;}
+#-_-_-com-_-_- {background-position: 4px -14px;}
+#-_-_-act-_-_- {background-position: 4px -158px;}
+#-_-_-iac-_-_- {background-position: 4px -30px;}
+#-_-_-err-_-_- {background-position: 4px -94px;}
+div#CatList ul li.RSS {background-image: url(../images/tstatus.png); background-position: 4px -206px}
+div#CatList ul li.disRSS {background-image: url(../images/tstatus.png); background-position: 4px -190px}
+
+.stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
+.Status_Down {background-position: 0px 0px}
+.Status_Up {background-position: 0px -16px}
+.Status_Incompleted {background-position: 0px -32px}
+.Status_Paused {background-position: 0px -48px}
+.Status_Error_Down {background-position: 0px -64px}
+.Status_Error_Up {background-position: 0px -80px}
+.Status_Error {background-position: 0px -96px}
+.Status_Completed {background-position: 0px -112px}
+.Status_Queued_Down {background-position: 0px -128px}
+.Status_Queued_Up {background-position: 0px -144px}
+.Status_Up_Down {background-position: 0px -160px}
+.Status_Checking {background-position: 0px -176px}
+.Status_RSS {background-position: 0px -208px}
+
+div#HDivider, div#VDivider { font-size: 0; }
+div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize; }
+div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
+div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
+
+div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
+div#stg_c {overflow: hidden}
+div#stg-header { background-image: url(../images/settings.gif); }
+
+div#stg .lm {width: 120px; height: 353px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
+.ie div#stg .lm {width: 125px; position: static;}
+.ie9 div#stg .lm {position: static}
+.ie div#stg {width: 605px;}
+div.op100l {width: 400px; float: left}
+div.op50l {width: 200px; float: left; clear: left}
+div.op50l select {padding: 0}
+div.algnright {text-align: right; clear: right}
+.ie div.op50l {clear: none}
+.ie div.algnright {clear: none}
+.ie9 div.op50l {clear: left}
+.ie9 div.algnright {clear: right}
+
+.lm ul {width: 100%; margin: 0; padding: 0; list-style-position: inside; list-style: none}
+.lm li {margin: 0 5px; padding: 0 12px; line-height: 16px !important; background: transparent url(../images/bul.gif) no-repeat scroll left center}
+.lm ul.child {margin: 0 0 0 5px; display: none}
+.lm ul.child li {margin: 0 0 0 9px}
+.lm li.first {background: transparent url(../images/bul_f.gif) no-repeat scroll left bottom}
+.lm li.last {background: transparent url(../images/bul_l.gif) no-repeat scroll left top}
+.lm li div.toggle {width: 10px; height: 10px; background: transparent url(../images/exp.gif) no-repeat scroll center center; float: left; margin: 3px 0 0 -16px; cursor: pointer}
+.lm li a {color: #000000; padding: 1px 2px}
+.lm li a.focus {background-color: #E0E0E0}
+.ie .lm li a {margin: 0 0 0 -5px; padding: 0}
+.stg_con {float: right; position: relative; width: 450px; height: 340px; margin: 4px; background-color: #FAFAFA}
+.ie9 .stg_con {position: static}
+fieldset {margin: 4px}
+* > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px; -webkit-border-radius:6px; border-radius:6px;}
+.stg_con table {width: 100%}
+.stg_con td {font-weight: normal; height: 19px}
+.stg_con td.alr {text-align: right}
+.stg_con td input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
+.stg_con select {margin: 1px 4px; font-size: 11px; padding: 1px 4px}
+input.num {text-align: right; width: 50px}
+input.str {text-align: left; width: 130px}
+td label, div label {cursor: pointer}
+input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
+td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
+fieldset div {padding: 2px}
+.ie7 fieldset div {padding: 0px}
+div input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
+legend {color: #000000; font-weight: bold}
+div.indent {padding-left: 16px}
+#st_gl {display: block}
+#st_dl, #st_con, #st_bt, #st_que, #st_sch, #st_ao, #st_dc {display: none}
+#st_btns {float: right; position: relative; width: 450px; height: 20px; padding: 3px; text-align: right; }
+#st_btns input {margin-left: 5px}
+a {text-decoration: none}
+#st_ao_h {width: 420px; height: 270px; overflow: auto; }
+#st_ao_h table {width: 400px}
+select.cols {border: 1px solid #808080; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; padding: 2px; width: 120px}
+div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
+div#tdetails {height: 50%; padding: 0 5px 0 0; background-color: #F5F5F5}
+div#tdetails a.h {margin: 0}
+div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 0 2px 0 2px; overflow: hidden }
+
+div.tab { height:100%; background: #F5F5F5; overflow: auto }
+div#lcont {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; line-height: 11px; background: #FFFFFF}
+div#lcont div.mono {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre}
+div#lcont div.std {padding: 2px}
+
+div#gcont table {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; line-height: 10px}
+div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
+
+div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div.graph_tab {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; line-height: 11px; color: #545454}
+
+div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div#List {border: 1px solid #A0A0A0;}
+
+div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif}
+
+.tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
+.tabbar li {margin: 0; padding: 0; display: inline; white-space: nowrap;}
+.tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
+.tabbar li a:hover {border-top: 2px solid #FFC73C}
+.tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
+div#dlgLabel {width: 250px; height: 140px}
+div#dlgLabel div.dlg-header {background-image: url(../images/label.gif)}
+div#dlgLabel div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
+div#dlgLabel div.content input {margin-top: 5px}
+#txtLabel {width: 200px}
+div#padd {width: 250px; height: 120px}
+div#padd div.dlg-header {background-image: url(../images/props.gif)}
+div#padd div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
+div#padd div.content input {margin-top: 5px}
+#peerIP {width: 200px}
+div#dlgAbout {width: 250px; height: 250px}
+div#dlgAbout div.dlg-header {background-image: url(../images/about.gif)}
+div#dlgAbout div.content {width: 230px; margin: 5px; padding: 5px}
+div#dlgHelp {width: 250px; height: 250px}
+div#dlgHelp div.dlg-header {background-image: url(../images/about.gif)}
+div#dlgHelp div.content {width: 230px; margin: 5px; padding: 5px}
+
+div#dlgProps {width: 395px; height: 215px}
+div#dlgProps div.dlg-header {background-image: url(../images/props.gif)}
+div#dlgProps div.content {width: 380px; margin-left: 5px; }
+div#dlgProps textarea#prop-trackers {width: 100%; height: 70px; background: #FFFFFF; border: 1px solid #D0D0D0}
+div#dlgProps fieldset {margin-bottom: 5px; }
+div#dlgProps fieldset div {line-height: 16px; }
+div#dlgProps fieldset div.props-spacer {width: 90%; float: left}
+input#prop-tracker_numwant {width: 60px; float: right}
+input#prop-ulslots {width: 60px; float: right}
+input#prop-peers_min {width: 60px; float: right}
+input#prop-peers_max {width: 60px; float: right}
+input#prop-seed_ratio {width: 40px}
+
+div#yesnoDlg {width: 280px; height: 100px}
+div#yesnoDlg div.dlg-header {background-image: url(../images/error.gif)}
+div#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 16px}
+div#yesnoDlg div.content input {margin-top: 5px}
+
+span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.gif) no-repeat center center; }
+.webkit div#msg {position: fixed;}
+.konqueror div#msg {position: fixed;}
+
+.Icon_File {background: transparent url(../images/file.gif) no-repeat left center}
+.Icon_Dir {background: transparent url(../images/dir.gif) no-repeat left center}
+.Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
+
+div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
+textarea { overflow: auto; }
+
+.catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }
+
+div#tadd-header {background-image: url(../images/world.gif)}
+div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto }
+div#tadd label {text-align: right; width: 75px; padding-right: 20px; float: left }
+div#tadd br {clear: left; line-height: 0}
+div#tadd input {margin-bottom: 1px}
+
+.konqueror div#tadd label { width: 80px; }
+.konqueror div#tadd { height: 290px; }
+.konqueror #st_con { height: 340px; overflow: auto; }
+
+#StatusBar { border-top: 1px solid #A0A0A0; background-color: #FFFFFF; margin-top: 4px; height: 24px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; color: #000000; white-space: nowrap; overflow: hidden;}
+#StatusBar table { line-height: 24px; }
+#st_up { background:url(../images/status_up.gif) 6px no-repeat; }
+#st_down { background:url(../images/status_down.gif) 6px no-repeat; }
+#st_up td:first-child .sthdr { margin-left: 25px }
+#st_down td:first-child .sthdr { margin-left: 25px }
+.statuscell {height: 20px; line-height: 20px; border-right: 1px solid #A0A0A0;}
+.sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
+.stval { padding-right: 3px; overflow: hidden; width: 65px; }
+.speedEdit { width: 320px }
+.statuscell td { padding: 0 }
+#st_system .sthdr { padding-left: 8px }
+
+.ie fieldset {padding: 5px}
+.buttons-list {  margin-bottom: 5px }
+#servertime { text-align: center }
+
+@media only screen and (orientation:portrait) 
+{ 
+	#go { display: none }
+	#query { width: 80px }
+}
