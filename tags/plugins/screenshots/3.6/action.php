@@ -1,0 +1,99 @@
+<?php
+
+require_once( '../_task/task.php' );
+require_once( 'ffmpeg.php' );
+eval( getPluginConf( 'screenshots' ) );
+
+$ret = array();
+if(isset($_REQUEST['cmd']))
+{
+	$st = ffmpegSettings::load();
+	switch($_REQUEST['cmd'])
+	{
+		case "ffmpeg":
+		{
+			if(isset($_REQUEST['hash']) && 
+				isset($_REQUEST['no']))
+			{
+				$req = new rXMLRPCRequest( new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no']))) );
+				if($req->success())
+				{
+					$filename = $req->val[0];
+					if($filename=='')
+					{
+						$req = new rXMLRPCRequest( array(
+							new rXMLRPCCommand( "d.open", $_REQUEST['hash'] ),
+							new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no'])) ),
+							new rXMLRPCCommand( "d.close", $_REQUEST['hash'] ) ) );
+						if($req->success())
+							$filename = $req->val[1];
+					}
+					if($filename!=='')
+					{
+						$commands = array();
+						$offs = $st->data['exfrmoffs'];
+						$useWidth = $st->data['exusewidth'];
+						for($i=0; $i<$st->data['exfrmcount']; $i++)
+						{
+							$name = '"${dir}"/frame'.$i.($st->data['exformat'] ? '.png' : '.jpg');
+							$commands[] = getExternal("ffmpeg").
+								' -ss '.$offs.
+								" -i ".escapeshellarg($filename).
+								' -y -vframes 1 -an '.
+								($useWidth ? '-vf "scale='.$st->data['exfrmwidth'].':-1"' : '').
+								' '.
+								$name;
+							$commands[] = '{';
+							$commands[] = '>'.$i;
+							$commands[] = '}';
+							$offs += $st->data['exfrminterval'];
+						}
+						$commands[] = 'chmod a+r "${dir}"/frame*.*';
+					}
+					$ret = rTask::start($commands, rTask::FLG_NO_ERR);
+				}
+			}
+			break;
+		}
+		case "ffmpeggetall":
+		{
+			$dir = rTask::formatPath( $_REQUEST['no'] );
+			if(@chdir( $dir ))
+			{
+				$randName = uniqid(getTempDirectory()."rutorrent-scrn-");
+				exec(escapeshellarg(getExternal('tar'))." -cf ".$randName." ./*.".($st->data['exformat'] ? 'png' : 'jpg'),$results,$return);
+				if(is_file($randName))
+				{
+					sendFile( $randName, "application/x-tar",  $_REQUEST['file'].'.tar', false );
+					unlink($randName);
+					exit();
+				}
+			}
+			header('HTTP/1.0 404 Not Found');
+			exit();
+		}
+		case "ffmpeggetimage":
+		{
+			$dir = rTask::formatPath( $_REQUEST['no'] );
+			$ext = ($st->data['exformat'] ? '.png' : '.jpg');
+			$filename = $dir.'/frame'.$_REQUEST['fno'].$ext;
+			sendFile($filename, $st->data['exformat'] ? 'image/png' : 'image/jpeg', $_REQUEST['file']."-".str_pad($_REQUEST['fno']+1, 3, "0", STR_PAD_LEFT).$ext);
+			exit();
+		}
+		case "ffmpegclose":
+		{
+			$dir = rTask::formatPath( $_REQUEST['no'] );
+			for($i=0; $i<$st->data['exfrmcount']; $i++)
+				@unlink( $dir.'/frame'.$i.($st->data['exformat'] ? '.png' : '.jpg') );
+			@rmdir($dir);
+			exit();
+		}
+		case "ffmpegset":
+		{
+			$ret = $st->set();
+			break;
+		}
+	}
+}
+
+cachedEcho(json_encode($ret),"application/json");
