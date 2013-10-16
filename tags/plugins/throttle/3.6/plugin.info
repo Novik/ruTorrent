@@ -1,0 +1,6 @@
+plugin.description: This plugin gives a convenient control over speed limits for groups of torrents.
+plugin.author: Novik
+plugin.runlevel: 11.2
+plugin.version: 3.6
+rtorrent.version: 0.8.4
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginThrottle
