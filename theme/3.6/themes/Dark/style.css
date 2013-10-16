@@ -1,0 +1,116 @@
+html, body {background-color: #181818; color: #999999; }
+div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/pnl_open.gif); background-image: url(./images/pnl_close.gif)}
+div#cover {background: #181818}
+div#msg {background: #181818; border-top: 1px solid #333333; border-bottom: 1px solid #333333}
+div#sc {border: 1px solid #333333; background-color: #181818}
+div#sc li.se_act div {background-color: #333333; color: #888888}
+div#lng {background-color:#181818; border:1px solid #333333}
+ul.CMenu {border: 1px solid #333333; border-right: 2px solid #333333; border-bottom: 2px solid #333333; background: #181818; }
+ul.CMenu li {background: #181818}
+ul.CMenu li a.dis {color: #333333}
+ul.CMenu li a.dis:hover {background-color: #181818; color: #333333}
+ul.CMenu li hr {border-top: 1px solid #333333}
+ul.CMenu li a.exp {background: transparent url(./images/menuexp.gif) no-repeat scroll 140px center; }
+ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat scroll 4px center}
+ul.CMenu li a:hover {background-color: #888888; color: #111111}
+
+ul.CMenu li:hover ul li a {background-color: #181818; color: #666666}
+ul.CMenu li:hover ul li a:hover {background-color: #888888; color: #111111}
+ul.CMenu li ul li a.dis {color: #333333}
+ul.CMenu li ul li a.dis:hover {background-color: #181818; color: #333333}
+
+#sel {border: 1px dotted #555555;}
+
+div#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #333333;}
+div#t a:hover {background: transparent url(./images/tb_bg.gif) no-repeat scroll center center}
+div#t div.TB_Separator {background-color: #333333}
+div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
+div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}
+div#t div#remove {background: transparent url(./images/toolbar.png) no-repeat -72px center}
+div#t div#start {background: transparent url(./images/toolbar.png) no-repeat -96px center}
+div#t div#pause {background: transparent url(./images/toolbar.png) no-repeat -120px center}
+div#t div#stop {background: transparent url(./images/toolbar.png) no-repeat -144px center}
+div#t div#moveu {background: transparent url(./images/toolbar.png) no-repeat -168px center}
+div#t div#moved {background: transparent url(./images/toolbar.png) no-repeat -192px center}
+div#t div#search {background: transparent url(./images/toolbar.png) no-repeat -216px center}
+div#t div#rss {background: transparent url(./images/toolbar.png) no-repeat -240px center}
+div#t div#setting {background: transparent url(./images/toolbar.png) no-repeat -264px center}
+
+div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}
+div#t div#go {background: transparent url(./images/toolbar.png) no-repeat -96px center}
+div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0px center}
+
+input.Textbox, input.Button, select {border: 1px solid #333333}
+Input.TextboxShort {border: 1px solid #333333}
+Input.TextboxMid {border: 1px solid #333333}
+Input.TextboxLarge {border: 1px solid #333333}
+Input.TextboxVShort {border: 1px solid #333333}
+input.Button {background-color: #999999}
+a {color: #686868}
+
+div#CatList {border: 1px solid #333333; background-color: #181818}
+div#CatList ul li {border-color: #181818}
+div#CatList ul li.sel {background-color: #888888; color:#111111; border-color: #888888 }
+#-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(./images/tstatus.png)}
+div#CatList ul li.RSS {background-image: url(./images/tstatus.png); }
+div#CatList ul li.disRSS {background-image: url(./images/tstatus.png); }
+.stable-icon {background-image: url(./images/tstatus.png); }
+.Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
+.Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
+.Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
+
+div.tab {background: #181818}
+div#lcont {background: #181818}
+div#gcont table td.Header {background: #181818}
+div.graph_tab {background-color: #181818}
+div.table_tab {background-color: #181818}
+div#List {border: 1px solid #333333;}
+
+div#modalbg {background-color: #181818;}
+
+div#List {border: 1px solid #333333; background-color: #181818}
+div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
+
+div#stg { background-color: #181818; color: #888888; border: 1px solid #333333}
+
+div#stg-header {background-color: #181818; border-bottom: 1px solid #333333}
+div#stg .lm {background-color: #181818; border: 1px solid #333333}
+
+.lm li {background: transparent url(./images/bul.gif) no-repeat scroll left center}
+.lm li.first {background: transparent url(./images/bul_f.gif) no-repeat scroll left bottom}
+.lm li.last {background: transparent url(./images/bul_l.gif) no-repeat scroll left top}
+.lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
+.lm li a {color: #888888}
+.lm li a.focus {background-color: #333333}
+.stg_con {background-color: #181818}
+* > fieldset {border: 1px solid #333333}
+input.disabled {background-color: #181818; color: #333333; border: 1px solid #333333}
+td.disabled, label.disabled, span.disabled, div.disabled {color: #333333}
+legend {color: #888888}
+select.cols {border: 1px solid #333333}
+div#dragmask {border: 1px dotted #333333}
+div#tdetails {background-color: #181818}
+div#tdcont {background: #181818; border: 1px solid #333333}
+
+div#tadd {background-color: #181818; border: 1px solid #333333}
+div#tadd-header {background-color: #181818; border-bottom: 1px solid #333333}
+.tabbar li a {border: 1px solid #333333; }
+.tabbar li a:hover {border-top: 2px solid #222222}
+.tabbar li.selected a {border-top: 2px solid #999999; background: #181818; color: #888888}
+
+div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333333}
+div.dlg-window {background-color: #181818; color: #888888; border: 1px solid #333333;}
+div.dlg-header { background-color: #181818; border-bottom: 1px solid #333333}
+
+div.tab {background-color: #181818}
+
+div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0px center;}
+
+span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; }
+
+.catpanel { background: url(./images/pnl_open.gif) 2px no-repeat; background-color: #111111; border-bottom: 1px solid #333333; border-top: 1px solid #333333;  }
+
+#StatusBar { border-top: 1px solid #333333; background-color: #181818; color: #888888 }
+#st_up { background:url(./images/status_up.gif) 6px no-repeat; }
+#st_down { background:url(./images/status_down.gif) 6px no-repeat; }
+.statuscell {border-right: 1px solid #333333;}

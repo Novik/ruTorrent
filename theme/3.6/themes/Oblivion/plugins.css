@@ -1,0 +1,143 @@
+.tskconsole, .exconsole, .console, .starterConsole {background: #333333}
+.cCell {color: black}
+#meter-disk-value, #qmeter-disk-value, #qmeter-band-value { float: left; border: 1px inset #1b1b1b; border-bottom: none; background: #96CE00 url(./images/headers.png) repeat-x 0px -138px;}
+#meter-disk-text, #qmeter-disk-text, #meter-band-text { color:#fff;text-shadow:0px 0px 2px #000;position: relative; text-align: left; float: left; width: 0px; height: 0px; overflow: visible; left: 40%; font-size: 11px; font-family:inherit; z-index: 1; }
+#meter-disk-holder, #qmeter-disk-holder, #meter-band-holder { width: 100px; height: 16px; line-height: 16px; border-right: none; padding-left: 25px;margin-left: 0px; background: url(./images/status_icons.png) no-repeat 3px -336px;
+}
+
+#meter-cpu-text { position: absolute; left: 65px; top: 0px;color:#fff;text-shadow:0px 0px 2px #000;font-size: 11px; font-family: inherit; }
+#meter-cpu-holder { width: 100px; height: 16px; line-height: 16px; border-right: none; margin-left: 0px;padding-left: 25px;background: url(./images/status_icons.png) no-repeat 3px -320px; }
+#meter-cpu-td {}
+
+div.graph_tab {color:#FFF;border-color: #000;}
+div#tcreate div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -24px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+div#dlgAddRSS {background-color: #222222; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;}
+div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -48px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+
+.lf li input.TextboxFocus { background-color: transparent; color: #009DDD }
+
+.cCell {
+    color:#333;
+}
+
+.Cell0 {
+    background-color: #FFFDF0;
+    border: 1px dotted #888888;
+}
+
+.Cell1 {
+    background-color: #7EB400;
+}
+
+.Cell2 {
+    background-color: #75A602;
+}
+
+.Cell3 {
+    background-color: #6D9A02;
+}
+
+.Cell4 {
+    background-color: #628C02;
+}
+
+.Cell5 {
+    background-color: #5B8101;
+}
+
+.Cell6 {
+    background-color: #527501;
+}
+
+.Cell7 {
+    background-color: #4A6801;
+}
+
+.Cell8 {
+    background-color: #435F01;
+}
+
+.Cell9 {
+    background-color: #3B5401;
+}
+
+.CellA {
+    background-color: #C1C3C3;
+}
+
+.CellB {
+    background-color: #999A9A;
+}
+
+.CellC {
+    background-color: #767776;
+}
+
+.CellD {
+    background-color: #6B6C6B;
+}
+
+.CellE {
+    background-color: #60605E;
+}
+
+.CellF {
+    background-color: #000;
+    color:#fff;
+}
+
+#tCellNotSupported {
+    text-align: center;
+}
+
+#tRowNotSupported {
+    vertical-align: middle;
+    color: red;
+}
+
+div#dlgEditRules-header, div#dlgEditRules div.dlg-header {background: #181818 url(./images/dlg-rssurlrewrite.gif) no-repeat 0px 0px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+
+#autodl-tb {
+	background: transparent url(./images/autodll-irc1.png) no-repeat center;
+}
+#autodl-tb:hover {
+	background: transparent url(./images/autodll-irc2.png) no-repeat center;
+}
+#autodl-multiselect-header {
+	background-image: url("./images/dlg-autodl-irc.gif");
+}
+
+.shieven {background: #191919; }
+.shiodd {background: #333333; }
+
+div#webuiUpdateToggle.pause {
+	background: transparent url(./images/pauseui.png) no-repeat;
+}
+div#webuiUpdateToggle.pause:hover {
+	background: transparent url(./images/pauseuih.png) no-repeat;
+}
+div#webuiUpdateToggle.resume {
+	background: transparent url(./images/playui.png) no-repeat;
+}
+div#webuiUpdateToggle.resume:hover {
+	background: transparent url(./images/playuih.png) no-repeat;
+}
+div#webuiRefresh {
+	background: transparent url(./images/refreshui.png) no-repeat;	
+}
+div#webuiRefresh:hover{
+	background: transparent url(./images/refreshuih.png) no-repeat;
+}
+
+#maillayout #letterform table tr td {background: #181818 }
+#maillayout #replyform table tr td {background: #181818 }
+
+div#chat {background-image: url(./images/chat.png);}
+div#chat:hover {background-image: url(./images/chat3.png);}
+div#tchat div.dlg-header {background-image: url(./images/chat2.png);}
+
+div#logoff {background-image: url(./images/logoff.png);}
+div#logoff:hover {background-image: url(./images/logoff3.png);}
+div#logoffDlg div.dlg-header {background-image: url(./images/logoff2.png);}
+
+.noty_alert, .noty_success { color: #000000; text-shadow: 0 -1px 0 #ffffff }
