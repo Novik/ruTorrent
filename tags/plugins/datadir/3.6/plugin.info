@@ -1,0 +1,6 @@
+plugin.description: This plugin is intended for moving torrent data files.
+plugin.author: dmrom
+plugin.version: 3.6
+rtorrent.remote: error
+php.extensions.error: json
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginDataDir
