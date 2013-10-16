@@ -1,0 +1,4 @@
+plugin.description: This plugin allows users to drag multiple torrents from desktop to the browser (FF > 3.6 & Chrome only).
+plugin.author: Novik
+plugin.version: 3.6
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginFileDrop
