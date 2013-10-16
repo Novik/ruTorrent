@@ -1,0 +1,7 @@
+plugin.description: This plugin extends the functionality of the RSS plugin.
+plugin.author: Novik
+plugin.runlevel: 12
+plugin.version: 3.6
+plugin.dependencies: rss
+php.extensions.error: json
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRSSURLRewrite
