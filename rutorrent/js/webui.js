@@ -6,7 +6,7 @@
 
 var theWebUI = 
 {
-        version: "3.5 (svn $Rev$)",
+        version: "3.6 (svn $Rev$)",
 	tables:
 	{
 		trt: 
