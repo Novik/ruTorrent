@@ -1,0 +1,4 @@
+#meter-disk-value { float: left; border: 1px inset #BBBBBB; border-bottom: none;}
+#meter-disk-text { position: relative; text-align: left; float: left; width: 0px; height: 0px; overflow: visible; left: 40%; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; z-index: 1; }
+#meter-disk-holder { width: 100px; height: 18px; line-height: 18px; margin-left: 25px; }
+#meter-disk-td { background: url(./images/disk.png) 5px no-repeat; }
