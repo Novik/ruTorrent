@@ -1,7 +1,7 @@
 ----
-= Plugin _task =
+= Plugin `_task` =
 ----
 
-<wiki:toc />
+== Описание ==
 
-*Under construction*
+Сервисный плагин. Реализует API для запука и мониторинга процессов на сервере. Используется в плагинах [PluginMediainfo Mediainfo], [PluginScreenshots Screenshots] и т.п.
