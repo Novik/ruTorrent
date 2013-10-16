@@ -1,0 +1,4 @@
+plugin.description: This plugin changes the format of values in columns 'Seeds' and 'Peers' in the torrents list.
+plugin.author: Novik
+plugin.version: 3.6
+plugin.help: http://code.google.com/p/rutorrent/wiki/PluginShow_peers_like_wtorrent
