@@ -107,8 +107,18 @@ switch($mode)
 			$theCache = new rpcCache();
 			$dTorrents = array();
 			$torrents = array();
-			for($i = 0; $i<count($req->val); $i+=$cnt)
-				$torrents[$req->val[$i]] = array_slice($req->val, $i+1, $cnt-1);
+
+			foreach($req->val as $index=>$value) 
+			{
+				if($index % $cnt == 0) 
+				{
+					$current_index = $value;
+					$torrents[$current_index] = array();
+				} 
+				else
+					$torrents[$current_index][] = $value;
+			}
+
 			$theCache->calcDifference( $cid, $torrents, $dTorrents );
 			$result = array( "t"=>$torrents, "cid"=>$cid );
 			if(count($dTorrents))
