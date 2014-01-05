@@ -1,7 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/cache.php" );
-eval(getPluginConf('cpu'));
+eval(getPluginConf('cpuload'));
 
 class rCPU
 {
