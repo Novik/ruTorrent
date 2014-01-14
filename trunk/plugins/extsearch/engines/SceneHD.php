@@ -25,17 +25,13 @@ class SceneHDEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h2>No torrents found!</h2>")!==false) ||
 				(strpos($cli->results, "<td>Password</td>")!==false))
 				break;
-			$res = preg_match_all('/<img border="0" src="\/pic\/cats\/.*" title="(?P<cat>.*)"><\/a><\/td>.*'.
-				'<a href="details\.php\?id=(?P<id>\d+)" title="(?P<name>.*)">.*'.
-				'<td.*>.*<\/td>.*'.
-				'<td.*>.*<\/td>.*'.
-				'<td.*>.*<\/td>.*'.
-				'<td.*>.*<\/td>.*'.				
-				'<td.*>(?P<size>.*)<\/td>.*'.
-				'<td.*>(?P<date>.*)<\/td>.*'.
-				'<td.*>(?P<seeds>.*)<\/td>.*'.
-				'<td.*>(?P<leech>.*)<\/td>.*'.
-				'<td.*>.*<\/td>.*<\/tr>/siU', $cli->results, $matches);
+			$res = preg_match_all('`<img border="0" src="[^"]*" title="(?P<cat>[^"]*)"><\/a><\/td>.*'.
+				'<a class="(?P<stat>[^"]*)" href="details\.php\?id=(?P<id>\d+)" title="(?P<name>[^"]*)">.*<\/td>.*'.
+				'<nobr>(?P<size>[^<]*)<br>.*'.
+				'<td.*>(?P<date>.*\d+)<\/td>.*'.	
+				'<span.*>(?P<seeds>.*\d++)<\/span>.*'.
+				'\/.\n.*<span.*>(?P<leech>\d++)'.
+				'`siU', $cli->results, $matches);
 			if(($res!==false) && ($res>0) &&
 				count($matches["cat"])==count($matches["id"]) &&
 				count($matches["id"])==count($matches["name"]) && 
