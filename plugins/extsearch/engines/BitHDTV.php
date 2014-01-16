@@ -8,7 +8,7 @@
 
 class BitHDTVEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"www.bit-hdtv.com|h_su=XXX;h_sp=XXX;h_sl=XXX;" );
+	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
 	public $categories = array( 'all'=>'&cat=0', 'Anime'=>'&cat=1', 'Blu-ray'=>'&cat=2', 'Demo'=>'&cat=3', 'Doc'=>'&cat=4', 'HQ-Audio'=>'&cat=6', 'Movies'=>'&cat=7', 'Music Videos'=>'&cat=8', 'Other'=>'&cat=9', 'HD-DVD'=>'&cat=5', 'TV'=>'&cat=10', 'TV/Season'=>'&cat=12', 'XXX'=>'&cat=11' );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
@@ -27,7 +27,7 @@ class BitHDTVEngine extends commonEngine
 		{
 			$cli = $this->fetch( $url.'/torrents.php?search='.$what.'&sort=7&type=desc&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h2>No match!</h2>")!==false) 
-				|| (strpos($cli->results, '>Password:</td>')!==false))
+				|| (strpos($cli->results, '>Password:<')!==false))
 				break;
 			$res = preg_match_all('/<img border="0" src=.* alt="(?P<cat>.*)" \/><\/a>'.
 				'.*<td.*>.*href="\/details.php\?id=(?P<id>\d+)".*>(?P<name>.*)<\/a>'.
