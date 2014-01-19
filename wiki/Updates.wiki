@@ -5,7 +5,7 @@ Google decided to [http://code.google.com/p/support/issues/detail?id=24324 disab
 
 = Recent Commits to trunk =
 
-<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/com1.xml" up_projectName="rutorrent" width="800" height="100"/> 
+<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/kom1.xml" up_projectName="rutorrent" width="800" height="100"/> 
 
 = Updates to All Issues (including closed/fixed issues) =
 
