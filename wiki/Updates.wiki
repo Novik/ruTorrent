@@ -5,13 +5,13 @@ Google decided to [http://code.google.com/p/support/issues/detail?id=24324 disab
 
 = Recent Commits to trunk =
 
-<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/com1.xml" up_projectName="pychess" width="800" height="100"/> 
+<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/com1.xml" up_projectName="rutorrent" width="800" height="100"/> 
 
 = Updates to All Issues (including closed/fixed issues) =
 
-<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/gc23.xml" up_projectName="pychess" width="800" height="250"/> 
+<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/gc23.xml" up_projectName="rutorrent" width="800" height="250"/> 
 
 = Detailed Updates to Open Issues =
-<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/t6.xml" up_projectName="pychess" width="800" height="250"/> 
+<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/t6.xml" up_projectName="rutorrent" width="800" height="250"/> 
 
 This page is based on the code from http://code.google.com/p/bullet/wiki/Updates, with bugfixes.
