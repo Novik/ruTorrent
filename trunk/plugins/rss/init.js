@@ -132,16 +132,17 @@ theWebUI.switchRSSLabel = function(el)
 plugin.config = theWebUI.config;
 theWebUI.config = function(data)
 {
-	this.rssLabels = new Object();
-	this.rssItems = new Object();
-	this.rssGroups = new Object();
+	this.rssLabels = {};
+	this.rssItems = {};
+	this.rssGroups = {};
 	this.actRSSLbl = null;
 	this.updateRSSTimer = null;
 	this.updateRSSInterval = 5*60*1000;
 	this.rssUpdateInProgress = false;
 	this.rssID = "";
 	this.cssCorrected = false;
-	this.rssArray = new Array();
+	this.rssArray = [];
+	this.filters = [];	
 	$("#List").after($("<div>").attr("id","RSSList").css("display","none"));
 	this.tables["rss"] =  
 	{
@@ -169,7 +170,7 @@ theWebUI.rssDblClick = function( obj )
 {
 	if($type(theWebUI.torrents[theWebUI.rssItems[obj.id].hash]))
 	{
-		var tmp = new Object();
+		var tmp = {};
                 tmp.id = theWebUI.rssItems[obj.id].hash
         	theWebUI.getTable("trt").ondblclick( tmp );
         	delete tmp;
@@ -438,8 +439,8 @@ theWebUI.RSSAddToFilter = function()
 
 theWebUI.createRSSMenu = function(e, id) 
 {
-	var trtArray = new Array();
-	this.rssArray = new Array();
+	var trtArray = [];
+	this.rssArray = [];
 	var sr = this.getTable("rss").rowSel;
 	for(var k in sr) 
 	{
@@ -489,7 +490,7 @@ theWebUI.createRSSMenu = function(e, id)
 theWebUI.rssSelect = function(e, id)
 {
 	var sr = theWebUI.getTable("rss").rowSel;
-	var trtArray = new Array();
+	var trtArray = [];
 	for(var k in sr) 
 	{
 		if(sr[k] == true)
@@ -670,7 +671,7 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 		}
 	this.rssGroups = rssGroups;
 
-	var keys = new Array();
+	var keys = [];
 	for(var lbl in rssLabels)
 		keys.push(lbl);
 	keys.sort( function(a,b) {  return((rssLabels[a].name>rssLabels[b].name) ? 1 : (rssLabels[a].name<rssLabels[b].name) ? -1 : 0); } );
@@ -755,7 +756,7 @@ theWebUI.addRSSItems = function(d)
 		var updated = false;
 		this.rssUpdateInProgress = true;
 		this.showErrors(d);
-		var rssLabels = new Object();
+		var rssLabels = {};
 		var table = this.getTable("rss");
 		for( var i=0; i<d.list.length; i++)
 		{
@@ -892,7 +893,7 @@ theWebUI.loadFiltersWithAdditions = function( flt )
 		return(ret+"$/");
 	}
 
-	var additions = new Array();
+	var additions = [];
 	for(var i = 0; i<this.rssArray.length; i++)
 	{
 		var s = this.rssItems[this.rssArray[i]].title;
