@@ -4,7 +4,7 @@ require_once( "xmlrpc.php" );
 eval( getPluginConf( $plugin["name"] ) );
 
 $session = rTorrentSettings::get()->session;
-if( !strlen($session) || !@file_exists(addslash(rTorrentSettings::get()->session).'.') )
+if( !strlen($session) || !@file_exists(addslash($session).'.') )
 {
 	$jResult .= "plugin.disable(); noty('".$plugin["name"].": '+theUILang.webBadSessionError+' (".$session.").','error');";
 }
