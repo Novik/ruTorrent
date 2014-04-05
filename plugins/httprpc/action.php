@@ -316,8 +316,13 @@ switch($mode)
 				$cmd = new rXMLRPCCommand('set_'.substr($ss[$ndx],1),$v);
 			$req->addCommand($cmd);
 		}
-		if($req->success())
-	        	$result = $req->val;
+		if($req->getCommandsCount())
+		{
+			if($req->success())
+		        	$result = $req->val;
+        	}
+        	else
+	        	$result = array();
 		break;
 	}
 	case "setprops":	/**/
