@@ -308,6 +308,8 @@ switch($mode)
 		{
 			if($ss[$ndx][0]=='n')
 				$v = floatval($v);
+			if( ($ss[$ndx]=="sdirectory") && !rTorrentSettings::get()->correctDirectory($v) )
+				continue;
 			if($ss[$ndx]=="ndht")
 				$cmd = new rXMLRPCCommand('dht',(($v==0) ? "disable" : "auto"));
 			else
