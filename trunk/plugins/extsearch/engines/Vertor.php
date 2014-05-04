@@ -22,22 +22,23 @@ class VertorEngine extends commonEngine
 		for($pg = 0; $pg<10; $pg++)
 		{
 			
-			$cli = $this->fetch( $url.'/index.php?words='.$what.'&exclude=&cid='.$cat.'&type=1&orderby=a.seeds&asc=0&mod=search&search=&Submit=Search&p='.$pg );
+			$cli = $this->fetch( $url.'/torrent-search/?words='.$what.'&cid='.$cat.'&type=1&exclude=&hash=&new=0&orderby=a.seeds&asc=0&p='.$pg );
 			if($cli==false || (strpos($cli->results, '>Nothing found</td>')!==false))
 				break;
 			$result = $cli->results;
 			$pos = strpos($result, "<h2>Vertor search results</h2>");
 			if($pos!==false)
 				$result = substr($result,$pos);
-
+				
 			$res = preg_match_all('`<td class="first" >.*<a title="View information[^"]*" href="/torrents/(?P<id>\d*)/(?P<desc>[^"]*)">(?P<name>.*)</a>'.
-				'<span class="quick">In&nbsp;<a href="/cat/[^"]*">(?P<cat>[^<]*)</a>.*'.
+				'<span class="quick">In&nbsp;(?P<cat>[^<]*)</span>.*'.
 				'</td>.*<td>(?P<date>.*)</td>.*'.
 				'<td>(?P<size>.*)</td>.*'.
 				'<td>.*</td>.*'.
 				'<td class="s">(?P<seeds>\d*)</td>.*'.
 				'<td class="l">(?P<leech>\d*)</td>'.
 				'`siU', $result, $matches);
+
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)

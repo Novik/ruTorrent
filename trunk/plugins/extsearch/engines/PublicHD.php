@@ -45,13 +45,12 @@ class PublicHDEngine extends commonEngine
 
 			$res = preg_match_all('`<td align="center".*<img src="[^"]*images/categories/[^"]*" border="0"  alt="(?P<cat>[^"]*)".*'.
 				'<a href="index.php\?page=torrent-details&amp;id=(?P<id>[^"]*)" title="View details: [^"]*">(?P<name>.*)</a>.*'.
-				'href="download\.php(?P<link>[^"]*)">.*'.
+				'download\.php(?P<link>[^"]*)">.*'.
 				'<td align="center" class="header" width="85">(?P<date>.*)</td>.*'.
 				'<td align="center" class="header" width="30">(?P<seeds>.*)</td>.*'.
 				'<td align="center" class="header" width="30">(?P<leech>.*)</td>.*'.
 				'<td align="center" class="header" width="55"><b>(?P<size>.*)</b></td>'.
 				'`siU', $cli->results, $matches);
-
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
