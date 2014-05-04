@@ -25,7 +25,7 @@ class KickAssTorrentsEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) )
 				break;
 			$res = preg_match_all('`href="magnet:(?P<link>.*)".*<div class="torrentname">.*'.
-				'<a href="(?P<desc>.*)" class=".*bold">(?P<name>.*)</a>.*'.
+				'<a href="(?P<desc>.*)" class="cellMainLink">(?P<name>.*)</a>.*'.
 				'<span id="cat_\d+">(?P<cat>.*)</span>.*'.
 				'<td class="nobr.*">(?P<size>.*)</td>.*'.
 				'<td.*>.*</td>.*'.
