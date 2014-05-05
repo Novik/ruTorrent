@@ -53,7 +53,7 @@ class TorrentzEngine extends commonEngine
 			{
 				for($i=0; $i<$res; $i++)
 				{
-					$link = "http://zoink.it/torrent/".strtoupper($matches["hash"][$i]).".torrent";
+					$link = "http://torcache.net/torrent/".strtoupper($matches["hash"][$i]).".torrent";
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
