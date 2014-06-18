@@ -14,6 +14,8 @@ class rTask
 	const FLG_NO_ERR	= 0x0010;
 	const FLG_RUN_AS_WEB	= 0x0020;
 	const FLG_RUN_AS_CMD	= 0x0040;
+	const FLG_STRIP_ERRS	= 0x0080;
+	const FLG_NO_LOG	= 0x0100;
 
 	static public function formatPath( $taskNo )
 	{
@@ -48,10 +50,13 @@ class rTask
 					if($cmd=='{')
 						fputs($sh,'if [ $last -eq 0 ] ; then '."\n");
 					else
-					if($cmd=='}')				
+					if($cmd=='}')
 						fputs($sh,'fi'."\n");
 					else
-					if($cmd[0]=='>')				
+					if($cmd=='!{')
+						fputs($sh,'if [ $last -ne 0 ] ; then '."\n");
+					else
+					if($cmd[0]=='>')
 						fputs($sh,'echo "'.substr($cmd,1).'" >> "${dir}"/log'."\n");
 					else
 					{
@@ -59,6 +64,9 @@ class rTask
 							fputs($sh,'echo "'.$cmd.'" >> "${dir}"/log'."\n");
                                 	        if($flags & self::FLG_NO_ERR)
 							fputs($sh,$cmd.' >> "${dir}"/log'."\n");
+						else
+        	                                if($flags & self::FLG_NO_LOG)
+							fputs($sh,$cmd.' >> "${dir}"/errors 2>> "${dir}"/errors'."\n");
 						else
 							fputs($sh,$cmd.' 2>> "${dir}"/'.$err.' >> "${dir}"/log'."\n");
 						fputs($sh,'if [ $? -ne 0 ] ; then '."\n\t".'last=1'."\n".'fi'."\n");
@@ -76,7 +84,7 @@ class rTask
 			}
 			self::clean($dir);
 		}
-		return(array( "no"=>$taskNo, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array("Can't start operation") ));
+		return(array( "no"=>$taskNo, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array(count($commands) ? "Can't start operation" : "Incorrect target directory") ));
 	}
 
 	static protected function clean( $dir )
@@ -143,7 +151,7 @@ class rTask
 					$ret["status"] = intval($status);
 			}
 			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS));
-			self::processLog($dir, 'errors', $ret, false);
+			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS));
 			if($ret["status"]>=0)
 				self::clean($dir);
 		}
