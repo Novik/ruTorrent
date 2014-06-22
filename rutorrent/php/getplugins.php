@@ -223,7 +223,9 @@ if($handle = opendir('../plugins'))
 {
 	ignore_user_abort(true);
 	set_time_limit(0);
-	makeDirectory(getTempDirectory());
+	$tmp = getTempDirectory();
+	if($tmp!='/tmp')
+		makeDirectory($tmp);
 
 	if(!@file_exists($tempDirectory.'/.') || !is_readable($tempDirectory) || !is_writable($tempDirectory))
 		$jResult.="noty(theUILang.badTempPath+' (".$tempDirectory.")','error');";	

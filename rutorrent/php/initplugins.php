@@ -124,7 +124,9 @@ if( count( $argv ) > 1 )
 require_once( "util.php" );
 require_once( "settings.php" );
 
-makeDirectory(getTempDirectory());
+$tmp = getTempDirectory();
+if($tmp!='/tmp')
+	makeDirectory($tmp);
 
 $theSettings = rTorrentSettings::get(true);
 if( $theSettings->linkExist && ($handle = opendir('../plugins')))
