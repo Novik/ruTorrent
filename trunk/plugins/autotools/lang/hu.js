@@ -3,24 +3,24 @@
  *
  * Hungarian language file.
  *
- * Author: 
+ * Author: Tiby08
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "A bővitmény nem működik.";
 
- theUILang.autotools			= "Autotools";
- theUILang.autotoolsEnableLabel 	= "Enable \"AutoLabel\" feature, Template:";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" feature";
- theUILang.autotoolsPathToFinished	= "Path to finished downloads";
- theUILang.autotoolsEnableWatch 	= "Enable \"AutoWatch\" feature";
- theUILang.autotoolsPathToWatch 	= "Path to base watch directory";
- theUILang.autotoolsWatchStart		= "Start download automatically";
- theUILang.autotoolsNoPathToFinished	= "Autotools plugin: path to finished downloads is not set. " + s_PluginFail;
- theUILang.autotoolsNoPathToWatch	= "Autotools plugin: path to base watch directory is not set. " + s_PluginFail;
- theUILang.autotoolsFileOpType		= "Operation type";
- theUILang.autotoolsFileOpMove		= "Move";
+ theUILang.autotools			= "Auto Beállítás";
+ theUILang.autotoolsEnableLabel 	= "Engedélyezi az \"Auto címkézés\" funkciót, sablon:";
+ theUILang.autotoolsEnableMove		= "Engedélyezi az \"Auto áthelyezés\" funkciót";
+ theUILang.autotoolsPathToFinished	= "Befejezett letöltési elérési út";
+ theUILang.autotoolsEnableWatch 	= "Engedélyezi az \"AutoWatch\" funkciót";
+ theUILang.autotoolsPathToWatch 	= "Watch mappa elérési út";
+ theUILang.autotoolsWatchStart		= "Letöltés indítása automatikusan";
+ theUILang.autotoolsNoPathToFinished	= "Auto Beállítás bővítmény: a letöltési mappa nincs beállítva " + s_PluginFail;
+ theUILang.autotoolsNoPathToWatch	= "Auto Beállítás bővítmény: a watch mappa nincs beállítva " + s_PluginFail;
+ theUILang.autotoolsFileOpType		= "Művelet típusa";
+ theUILang.autotoolsFileOpMove		= "Áthelyezés";
  theUILang.autotoolsFileOpHardLink 	= "Hard link";
- theUILang.autotoolsFileOpCopy		= "Copy";
+ theUILang.autotoolsFileOpCopy		= "Másolás";
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
 
 thePlugins.get("autotools").langLoaded();
