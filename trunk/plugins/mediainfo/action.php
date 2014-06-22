@@ -51,7 +51,14 @@ if(isset($_REQUEST['hash']) &&
 						$flags = "--Inform=file://".escapeshellarg($randName);
 					}
 					$commands[] = getExternal("mediainfo")." ".$flags." ".escapeshellarg($filename);
-					$ret = rTask::start($commands, rTask::FLG_WAIT);
+					$ret = (new rTask( array
+					( 
+						'arg'=>call_user_func('end',explode('/',$filename)),					
+						'requester'=>'mediainfo',
+						'name'=>'mediainfo', 
+						'hash'=>$_REQUEST['hash'], 
+						'no'=>$_REQUEST['no'] 
+					) ))->start($commands, rTask::FLG_WAIT);
 					if(!empty($randName))
 						unlink($randName);					
 				}
