@@ -509,6 +509,18 @@ function makeDirectory( $dirs, $perms = null )
 	@umask($oldMask);
 } 
 
+function deleteDirectory( $dir )
+{
+	$dir = addslash($dir);
+	$files = array_diff(scandir($dir), array('.','..'));
+	foreach($files as $file) 
+	{
+		$path = $dir.$file;
+		is_dir($path) ? deleteDirectory($path) : unlink($path);
+    	}
+	return(rmdir($dir));
+}
+
 function getFileName($path)
 {
 	$arr = explode('/',$path);

@@ -81,7 +81,7 @@ var thePlugins =
 		for( var i in this.list )
 		{
 			var plg = this.list[i];
-			if(plg.enabled && ($type(plg.onLangLoaded)=="function") && !plg.allStuffLoaded)
+			if(plg.enabled && ($type(plg["onLangLoaded"])=="function") && !plg.allStuffLoaded)
 				return(false);
 		}
 		return(true);
@@ -149,7 +149,7 @@ rPlugin.prototype.unlaunch = function()
 
 rPlugin.prototype.remove = function() 
 {
-	if($type(this.onRemove)=="function")
+	if($type(this["onRemove"])=="function")
 		this.onRemove();
 	this.disable();
 	return(this);
@@ -166,7 +166,7 @@ rPlugin.prototype.showError = function(err)
 rPlugin.prototype.langLoaded = function() 
 {
 	try {
-	if(($type(this.onLangLoaded)=="function") && this.enabled)
+	if(($type(this["onLangLoaded"])=="function") && this.enabled)
 		this.onLangLoaded();
 	} catch(e) {}			// konqueror hack
 	this.markLoaded();
