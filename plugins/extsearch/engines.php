@@ -91,23 +91,23 @@ class commonEngine
 			{
 				case "tib":
 				case "tb":
-				case "òá":				
-				case "ÒÁ":
+				case "ï¿½ï¿½":				
+				case "ï¿½ï¿½":
 					$val*=1024;
 				case "gib":
 				case "gb":
-				case "ÃÁ":
-				case "ãá":
+				case "ï¿½ï¿½":
+				case "ï¿½ï¿½":
 					$val*=1024;
 				case "mib":
 				case "mb":
-				case "ÌÁ":
-				case "ìá":
+				case "ï¿½ï¿½":
+				case "ï¿½ï¿½":
 					$val*=1024;	
 				case "kib":
 				case "kb":
-				case "êá":
-				case "ÊÁ":
+				case "ï¿½ï¿½":
+				case "ï¿½ï¿½":
 					$val*=1024;	
 			}
 			return($val);
@@ -353,7 +353,7 @@ class engineManager
 		if(empty($nfo["time"]))
 			$nfo["time"] = 0;
 		if(empty($nfo["size"]))
-			$nfo["time"] = 0;
+			$nfo["size"] = 0;
 		if(empty($nfo["seeds"]))
 			$nfo["seeds"] = 0;
 		if(empty($nfo["peers"]))
@@ -396,7 +396,6 @@ class engineManager
 		$history = self::loadHistory(true);
 
 		$ret = array( "eng"=>$eng, "cat"=>$cat, "data"=>array() );
-
 		foreach( $arr as $href=>$nfo )
 		{
 			self::correctItem($nfo);
