@@ -3,21 +3,21 @@
  *
  * Hungarian language file.
  *
- * Author: 
+ * Author: Tiby08
  */
 
- theUILang.unpack		= "Unpack";
- theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";
- theUILang.processAll		= "Process all volumes";
- theUILang.unpackTaskFailed	= "Unpacking finished with errors";
- theUILang.unpackTaskOK 	= "Unpacking finished successfully";
- theUILang.unpackTaskStarted	= "Unpacking started";
- theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
- theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
- theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
- theUILang.unpackAddLabel	= "Torrent Label";
- theUILang.unpackAddName	= "Torrent Name";
- theUILang.unpackNoFiles	= "No archives found in torrent data.";
+ theUILang.unpack		= "Kicsomagolás";
+ theUILang.unpackPath		= "Csomagolja ki ide(Hagyja üresen ha a torrent könyvtárába szeretné)";
+ theUILang.processAll		= "Folyamat minden mennyiségben";
+ theUILang.unpackTaskFailed	= "Kicsomagolás befejezési hiba";
+ theUILang.unpackTaskOK 	= "Kicsomagolás sikeresen befejezve";
+ theUILang.unpackTaskStarted	= "Kicsomagolás elindúlt";
+ theUILang.unzipNotFound	= "Csomagolás bővitmény: rTorrent felhasználó nem fér hozzá az 'unzip' programhoz.";
+ theUILang.unrarNotFound	= "Csomagolás bővitmény: rTorrent felhasználó nem fér hozzá az 'unrar' programhoz.";
+ theUILang.unpackEnabled	= "Engedélyezi az auto kicsomagolást ha a címke";
+ theUILang.unpackTorrents	= "Elérési út hozzáfűzéee a kicsomagolás után a torrent adatokhoz";
+ theUILang.unpackAddLabel	= "Torrent címke";
+ theUILang.unpackAddName	= "Torrent név";
+ theUILang.unpackNoFiles	= "Nem található archívuma torrent adatban";
 
 thePlugins.get("unpack").langLoaded();
