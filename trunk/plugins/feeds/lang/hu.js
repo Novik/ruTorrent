@@ -3,14 +3,14 @@
  *
  * Hungarian language file.
  *
- * Author: 
+ * Author: Tiby08
  */
 
- theUILang.feedAll		= "All torrents";
- theUILang.feedCompleted	= "Completed torrents";
- theUILang.feedDownloading	= "Downloading torrents";
- theUILang.feedActive		= "Active torrents";
- theUILang.feedInactive 	= "Inactive torrents";
- theUILang.feedError		= "Error torrents";
+ theUILang.feedAll		= "Összes torrent";
+ theUILang.feedCompleted	= "Befejezett torrentek";
+ theUILang.feedDownloading	= "Letöltött torrentek";
+ theUILang.feedActive		= "Aktív torrentek";
+ theUILang.feedInactive 	= "Inaktív torrentek";
+ theUILang.feedError		= "Hibás torrentek";
 
 thePlugins.get("feeds").langLoaded();
