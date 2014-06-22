@@ -3,26 +3,26 @@
  *
  * Hungarian language file.
  *
- * Author: 
+ * Author: Tiby08
  */
 
- theUILang.mnu_create			= "Create Torrent...";
- theUILang.CreateNewTorrent		= "Create New Torrent";
- theUILang.SelectSource 		= "Select Source";
- theUILang.TorrentProperties		= "Torrent Properties";
- theUILang.PieceSize			= "Piece size";
- theUILang.Other			= "Other";
- theUILang.StartSeeding 		= "Start seeding";
- theUILang.PrivateTorrent		= "Private torrent";
- theUILang.torrentCreate		= "Create...";
- theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound	= "Create plugin: Plugin will not work. Webserver user can't access external program";
- theUILang.incorrectDirectory		= "Incorrect directory";
- theUILang.cantExecExternal		= "Can't execute external program";
- theUILang.createConsole		= "Console";
- theUILang.createErrors 		= "Errors";
- theUILang.torrentSave			= "Save";
- theUILang.torrentKill			= "Stop";
- theUILang.torrentKilled		= "Process was stopped.";
+ theUILang.mnu_create			= "Torrent létrehozása...";
+ theUILang.CreateNewTorrent		= "Új torrent létrehozása";
+ theUILang.SelectSource 		= "Forrás kiválasztása";
+ theUILang.TorrentProperties		= "Torrent tulajdonságok";
+ theUILang.PieceSize			= "Szeletméret";
+ theUILang.Other			= "Egyéb";
+ theUILang.StartSeeding 		= "Seedelés indítása";
+ theUILang.PrivateTorrent		= "Magán torrent";
+ theUILang.torrentCreate		= "Létrehozás...";
+ theUILang.BadTorrentData		= "Az összes szükséges mezőt ki kell tölteni!";
+ theUILang.createExternalNotFound	= "Torrent létrehozás bővitmény: Bővitmény nem fog működni! Webserver felhasználó nem fér hozzá a programhoz";
+ theUILang.incorrectDirectory		= "Helytelen könyvtár";
+ theUILang.cantExecExternal		= "Nem lehet végrehajtani a külső programmal";
+ theUILang.createConsole		= "Konsole";
+ theUILang.createErrors 		= "Hiba";
+ theUILang.torrentSave			= "Mentés";
+ theUILang.torrentKill			= "Megállít";
+ theUILang.torrentKilled		= "Folyamat leállt.";
 
 thePlugins.get("create").langLoaded();
