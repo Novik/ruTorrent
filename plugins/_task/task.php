@@ -17,15 +17,27 @@ class rTask
 	const FLG_STRIP_ERRS	= 0x0080;
 	const FLG_NO_LOG	= 0x0100;
 
-	static public function formatPath( $taskNo )
+	public $params = array();
+	public $id = 0;
+
+	public function __construct( $params, $taskNo = null )
 	{
-		return(getTempDirectory().'rutorrent-tsk-'.getUser().$taskNo );
+		$this->params = $params;
+		$this->id = $taskNo;
+		if(empty($this->id))
+			$this->id = uniqid( time(), true );
 	}
 
-	static public function start( $commands, $flags = self::FLG_DEFAULT )
+	static public function formatPath( $taskNo )
 	{
-	        $taskNo = time();
-	        $dir = self::formatPath($taskNo);
+		return( getSettingsPath().'/tasks/'.$taskNo );
+	}
+
+	public function start( $commands, $flags = self::FLG_DEFAULT )
+	{
+		if(!rTorrentSettings::get()->linkExist)
+			$flags|=self::FLG_RUN_AS_WEB;
+	        $dir = self::formatPath($this->id);
 	        if(count($commands))
 	        {
 			makeDirectory($dir);
@@ -77,25 +89,20 @@ class rTask
 				@chmod($dir."/start.sh",0755);
 				if(!self::run($dir."/start.sh",$flags))
 				{
+					file_put_contents( $dir."/params", serialize($this->params) );
 					if(!($flags & self::FLG_WAIT))
 						sleep(1);
-					return(self::check($taskNo,$flags));
+					return(self::check($this->id,$flags));
 				}
 			}
 			self::clean($dir);
 		}
-		return(array( "no"=>$taskNo, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array(count($commands) ? "Can't start operation" : "Incorrect target directory") ));
+		return(array( "no"=>$this->id, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array(count($commands) ? "Can't start operation" : "Incorrect target directory") ));
 	}
 
 	static protected function clean( $dir )
 	{
-		@unlink($dir.'/pid');
-		@unlink($dir.'/flags');
-		@unlink($dir.'/status');
-		@unlink($dir.'/errors');
-		@unlink($dir.'/log');
-		@unlink($dir.'/start.sh');
-		@rmdir($dir);
+		@deleteDirectory( $dir );
 	}
 
 	static protected function processLog( $dir, $logName, &$ret, $stripConsole )
@@ -135,10 +142,10 @@ class rTask
 		}		
 	}
 
-	static public function check( $taskNo, $flags = null )
+	static public function check( $taskNo, $flags = null, $loadParams = false )
 	{
 		$dir = self::formatPath($taskNo);
-		$ret = array( "no"=>$taskNo, "pid"=>0, "status"=>-1, "log"=>array(), "errors"=>array() );
+		$ret = array( "no"=>$taskNo, "pid"=>0, "status"=>-1, "log"=>array(), "errors"=>array(), "params"=>null, "start"=>filemtime($dir.'/pid'), "finish"=>0 );
 		if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 		{
 			if(is_null($flags))
@@ -148,12 +155,17 @@ class rTask
 			{
 				$status = trim(file_get_contents($dir.'/status'));
 				if(strlen($status))
+				{
 					$ret["status"] = intval($status);
+					$ret["finish"] = filemtime($dir.'/status');
+				}					
 			}
+			if($loadParams && is_file($dir.'/params') && is_readable($dir.'/params'))
+				$ret["params"] = unserialize(file_get_contents($dir.'/params'));
 			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS));
 			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS));
-			if($ret["status"]>=0)
-				self::clean($dir);
+//			if($ret["status"]>=0)
+//				self::clean($dir);
 		}
 		return($ret);
 	}
@@ -189,12 +201,65 @@ class rTask
 		$ret = array( "no"=>$taskNo, "pid"=>0, "status"=>-1, "log"=>array(), "errors"=>array() );
 		if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 		{
-			if(is_null($flags))
-				$flags = intval(file_get_contents($dir.'/flags'));
-			$pid = trim(file_get_contents($dir.'/pid'));
-			self::run("kill -9 ".$pid." ; kill -9 `".getExternal("pgrep")." -P ".$pid."`", ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
+			if(is_file($dir.'/status') && is_readable($dir.'/status'))
+			{
+				$status = trim(file_get_contents($dir.'/status'));
+				if(strlen($status))
+					$ret["status"] = intval($status);
+			}
+			if($ret["status"]<0)
+			{
+				if(is_null($flags))
+					$flags = intval(file_get_contents($dir.'/flags'));
+				$pid = trim(file_get_contents($dir.'/pid'));
+				self::run("kill -9 ".$pid." ; kill -9 `".getExternal("pgrep")." -P ".$pid."`", ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
+			}				
 			self::clean($dir);
 		}
 		return(true);
+	}
+}
+
+class rTaskManager
+{
+	static public function obtain()
+	{
+		$tasks = array();
+		$dir = getSettingsPath().'/tasks/';
+		if( $handle = opendir($dir) )
+		{
+			while(false !== ($file = readdir($handle)))
+			{
+				if($file != "." && $file != ".." && is_dir($dir.$file))
+				{
+					$tasks[$file] = rTask::check( $file, null, true );
+					$tasks[$file]["name"] = $tasks[$file]["params"]["name"];
+					$tasks[$file]["requester"] = $tasks[$file]["params"]["requester"];
+					unset($tasks[$file]["params"]["name"]);
+					unset($tasks[$file]["params"]["requester"]);
+				}
+			} 
+			closedir($handle);		
+	        }
+	        return($tasks);
+	}
+
+	static public function remove( $list )
+	{
+		$tasks = array();
+		$dir = getSettingsPath().'/tasks/';
+		if( $handle = opendir($dir) )
+		{
+			while(false !== ($file = readdir($handle)))
+			{
+				if($file != "." && $file != ".." && is_dir($dir.$file) && in_array($file,$list))
+					$tasks[] = $file;
+			} 
+			closedir($handle);
+			foreach( $tasks as $id )
+				rTask::kill( $id );
+			$tasks = rTaskManager::obtain();
+	        }
+	        return($tasks);
 	}
 }
