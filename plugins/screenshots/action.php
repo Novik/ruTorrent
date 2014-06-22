@@ -50,7 +50,14 @@ if(isset($_REQUEST['cmd']))
 						}
 						$commands[] = 'chmod a+r "${dir}"/frame*.*';
 					}
-					$ret = rTask::start($commands, rTask::FLG_NO_ERR);
+					$ret = (new rTask( array
+					( 
+						'arg'=>call_user_func('end',explode('/',$filename)),
+						'requester'=>'screenshots',
+						'name'=>'ffmpeg', 
+						'hash'=>$_REQUEST['hash'], 
+						'no'=>$_REQUEST['no'] 
+					) ))->start($commands, rTask::FLG_NO_ERR);
 				}
 			}
 			break;
@@ -78,14 +85,6 @@ if(isset($_REQUEST['cmd']))
 			$ext = ($st->data['exformat'] ? '.png' : '.jpg');
 			$filename = $dir.'/frame'.$_REQUEST['fno'].$ext;
 			sendFile($filename, $st->data['exformat'] ? 'image/png' : 'image/jpeg', $_REQUEST['file']."-".str_pad($_REQUEST['fno']+1, 3, "0", STR_PAD_LEFT).$ext);
-			exit();
-		}
-		case "ffmpegclose":
-		{
-			$dir = rTask::formatPath( $_REQUEST['no'] );
-			for($i=0; $i<$st->data['exfrmcount']; $i++)
-				@unlink( $dir.'/frame'.$i.($st->data['exformat'] ? '.png' : '.jpg') );
-			@rmdir($dir);
 			exit();
 		}
 		case "ffmpegset":
