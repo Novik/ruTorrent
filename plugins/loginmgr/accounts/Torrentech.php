@@ -1,6 +1,6 @@
 <?php
 
-class TorrentTechAccount extends commonAccount
+class TorrentechAccount extends commonAccount
 {
 	public $url = "http://www.torrentech.org";
 
