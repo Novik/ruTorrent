@@ -3,4 +3,5 @@ plugin.author: dmrom
 plugin.version: 3.6
 rtorrent.remote: error
 php.extensions.error: json
+rtorrent.external.error: php
 plugin.help: http://code.google.com/p/rutorrent/wiki/PluginDataDir

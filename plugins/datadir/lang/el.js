@@ -11,6 +11,5 @@
  theUILang.datadirDlgCaption	= "Φάκελος δεδομένων torrent";
  theUILang.datadirDirNotFound	= "Πρόσθετο DataDir: Μη έγκυρος φάκελος";
  theUILang.datadirSetDirFail	= "Πρόσθετο DataDir: Η λειτουργία απέτυχε";
- theUILang.datadirPHPNotFound	= "Πρόσθετο DataDir: Ο χρήστης του rTorrent δεν έχει πρόσβαση στον μεταφραστή της php. Το πρόσθετο δεν θα λειτουργήσει.";
 
 thePlugins.get("datadir").langLoaded();
