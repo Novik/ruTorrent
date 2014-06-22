@@ -11,6 +11,5 @@
  theUILang.datadirDlgCaption	= "Настройка каталогу даних";
  theUILang.datadirDirNotFound	= "Плагін DataDir: неприпустимий каталог";
  theUILang.datadirSetDirFail	= "Плагін DataDir: операцію не виконано";
- theUILang.datadirPHPNotFound	= "Плагін DataDir: користувачу rTorrent недоступний інтерпретатор PHP. Плагін не працюватиме.";
 
 thePlugins.get("datadir").langLoaded();

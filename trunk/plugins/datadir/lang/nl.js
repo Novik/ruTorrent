@@ -11,6 +11,5 @@
  theUILang.datadirDlgCaption	= "Torrent data map";
  theUILang.datadirDirNotFound	= "DataDir plugin: Ongeldige map";
  theUILang.datadirSetDirFail	= "DataDir plugin: Operatie mislukt";
- theUILang.datadirPHPNotFound	= "DataDir plugin: rTorrent gebruiker heeft geen toegang tot de PHP-interpreter. De plugin zal niet werken.";
 
 thePlugins.get("datadir").langLoaded();
