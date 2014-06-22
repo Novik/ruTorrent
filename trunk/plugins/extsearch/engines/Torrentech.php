@@ -1,6 +1,6 @@
 <?php
 
-class TorrentTechEngine extends commonEngine
+class TorrentechEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>25, "auth"=>1 );
 
@@ -13,10 +13,11 @@ class TorrentTechEngine extends commonEngine
 			$cli = $this->fetch( $url.'/index.php?forums=all&act=search&CODE=01&search_in=titles&result_type=topics&torrents-only=1&keywords='.$what.'&st='.($pg*25) );
 			if($cli==false || (strpos($cli->results, ' type="password"')!==false)) 
 				break;
+
 			$res = preg_match_all("`preview_it\((?P<id>\d+), event\)' onmouseout='preview_hide\(\)'>(?P<name>.*)</a>.*".
 				'<span class="desc">(?P<subname>.*)<.*'.
-				'<td align="center" class="row1" nowrap="nowrap" style="border-left: 1px solid #000;"><span .*>(?P<seeds>.*)</span> &middot; (?P<leech>.*) &middot.*'.
-				'<td class="row1"><span class="desc">(?P<date>.*)<'.
+				'<td align="center" class=".*" nowrap="nowrap".*><span .*>(?P<seeds>.*)</span> &middot; (?P<leech>.*) &middot.*'.
+				'<td class="row1"><span class="(desc|lastaction)">(?P<date>.*)<'.
 				'`siU', $cli->results, $matches);
 			if($res)
 			{
