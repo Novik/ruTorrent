@@ -121,7 +121,7 @@ class rUnpack
 				escapeshellarg($pathToUnzip);
 			if($cleanupAutoTasks)
 				$commands[] = 'rm -r "${dir}"';	
-			(new rTask( array
+			$task = new rTask( array
 			( 
 				'arg'=>call_user_func('end',explode('/',delslash($basename))),
 				'requester'=>'unpack',
@@ -130,7 +130,8 @@ class rUnpack
 				'dir'=>$outPath, 
 				'mode'=>null, 
 				'no'=>null
-			) ))->start($commands, 0);
+			) );
+			$ret = $task->start($commands, 0);
 		}
 	}
 
@@ -189,7 +190,8 @@ class rUnpack
 					escapeshellarg($filename)." ".
 					escapeshellarg(addslash($outPath));
 				$taskArgs['arg'] = call_user_func('end',explode('/',$filename));
-				$ret = (new rTask( $taskArgs ))->start($commands, 0);
+				$task = new rTask( $taskArgs );
+				$ret = $task->start($commands, 0);
 			}
 		}
 		else
@@ -259,7 +261,8 @@ class rUnpack
 							escapeshellarg($outPath)." ".
 							escapeshellarg($pathToUnzip);
 						$taskArgs['arg'] = call_user_func('end',explode('/',delslash($basename)));
-						$ret = (new rTask( $taskArgs ))->start($commands, 0);	
+						$task = new rTask( $taskArgs );
+						$ret = $task->start($commands, 0);	
 					}
 				}
 			}
