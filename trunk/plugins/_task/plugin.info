@@ -4,4 +4,5 @@ plugin.version: 3.6
 php.extensions.error: json
 rtorrent.external.warning: pgrep
 rtorrent.remote: error
+rtorrent.need: 0
 plugin.help: http://code.google.com/p/rutorrent/wiki/Plugin_task

@@ -3,7 +3,7 @@ require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 
 class rTask
 {
-	const MAX_CONSOLE_SIZE = 25;
+	const MAX_CONSOLE_SIZE = 80;
 	const MAX_ARG_LENGTH = 2048;
 
 	const FLG_WAIT		= 0x0001;
@@ -112,7 +112,7 @@ class rTask
 			$lines = file($dir.'/'.$logName);
 			foreach( $lines as $line )
 			{
-				if($stripConsole)
+//				if($stripConsole)
 				{
 					$pos = strrpos($line,"\r");
 					if($pos!==false)
