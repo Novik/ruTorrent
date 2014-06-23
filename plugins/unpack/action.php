@@ -17,39 +17,10 @@ if(isset($_REQUEST['cmd']))
 			cachedEcho($up->get(),"application/javascript");
 			break;
 		}
-		case "start":
+		case "unpack":
 		{
-			if(isset($_REQUEST['hash']) && isset($_REQUEST['dir']))
-			{
-		        	$up = rUnpack::load();
-				$ret = $up->startTask( $_REQUEST['hash'], rawurldecode($_REQUEST['dir']), 
-				        isset($_REQUEST['mode']) ? $_REQUEST['mode'] : null, 
-					isset($_REQUEST['no']) ? $_REQUEST['no'] : null,
-					isset($_REQUEST['all']) );
-			}
-			if(empty($ret))
-				$ret = array( "no"=>-1 );
-  	                break;
-
-		}
-		case "check":
-		{
-			if(!isset($HTTP_RAW_POST_DATA))
-				$HTTP_RAW_POST_DATA = file_get_contents("php://input");
-			if(isset($HTTP_RAW_POST_DATA))
-			{
-				$vars = explode('&', $HTTP_RAW_POST_DATA);
-				foreach($vars as $var)
-				{
-					$parts = explode("=",$var);
-					if($parts[0]=="no")
-					{
-						$chk = rUnpack::checkTask( trim($parts[1]) );
-						if($chk)
-							$ret[] = $chk;
-					}
-				}
-			}
+			$up = new rUnpack();
+			$ret = $up->startTask( $_REQUEST['hash'], $_REQUEST['dir'], $_REQUEST['mode'], $_REQUEST['no'] );
 			break;
 		}
 	}
