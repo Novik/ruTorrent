@@ -226,7 +226,7 @@ class rTaskManager
 	{
 		$tasks = array();
 		$dir = getSettingsPath().'/tasks/';
-		if( $handle = opendir($dir) )
+		if( $handle = @opendir($dir) )
 		{
 			while(false !== ($file = readdir($handle)))
 			{
@@ -248,7 +248,7 @@ class rTaskManager
 	{
 		$tasks = array();
 		$dir = getSettingsPath().'/tasks/';
-		if( $handle = opendir($dir) )
+		if( $handle = @opendir($dir) )
 		{
 			while(false !== ($file = readdir($handle)))
 			{
