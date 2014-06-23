@@ -1,6 +1,6 @@
 <?php
 
-require_once( '../_task/task.php' );
+require_once( dirname(__FILE__).'/../_task/task.php' );
 eval( getPluginConf( 'mediainfo' ) );
 
 class mediainfoSettings
@@ -51,14 +51,15 @@ if(isset($_REQUEST['hash']) &&
 						$flags = "--Inform=file://".escapeshellarg($randName);
 					}
 					$commands[] = getExternal("mediainfo")." ".$flags." ".escapeshellarg($filename);
-					$ret = (new rTask( array
+					$task = new rTask( array
 					( 
 						'arg'=>call_user_func('end',explode('/',$filename)),					
 						'requester'=>'mediainfo',
 						'name'=>'mediainfo', 
 						'hash'=>$_REQUEST['hash'], 
 						'no'=>$_REQUEST['no'] 
-					) ))->start($commands, rTask::FLG_WAIT);
+					) );
+					$ret = $task->start($commands, rTask::FLG_WAIT);
 					if(!empty($randName))
 						unlink($randName);					
 				}
