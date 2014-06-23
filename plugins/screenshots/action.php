@@ -1,6 +1,6 @@
 <?php
 
-require_once( '../_task/task.php' );
+require_once( dirname(__FILE__).'/../_task/task.php' );
 require_once( 'ffmpeg.php' );
 eval( getPluginConf( 'screenshots' ) );
 
@@ -50,14 +50,15 @@ if(isset($_REQUEST['cmd']))
 						}
 						$commands[] = 'chmod a+r "${dir}"/frame*.*';
 					}
-					$ret = (new rTask( array
+					$task = new rTask( array
 					( 
 						'arg'=>call_user_func('end',explode('/',$filename)),
 						'requester'=>'screenshots',
 						'name'=>'ffmpeg', 
 						'hash'=>$_REQUEST['hash'], 
 						'no'=>$_REQUEST['no'] 
-					) ))->start($commands, rTask::FLG_NO_ERR);
+					));
+					$ret = $task->start($commands, rTask::FLG_NO_ERR);
 				}
 			}
 			break;
