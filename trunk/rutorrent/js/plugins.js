@@ -325,7 +325,7 @@ rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 			targetBtn.parentNode.insertBefore(newBtn,targetBtn);	
 		else
 		{
-			targetBtn = $$("mnu_remove");
+			targetBtn = $$("mnu_settings");
 			targetBtn.parentNode.appendChild(newBtn);
 		}
 	}
@@ -348,7 +348,7 @@ rPlugin.prototype.addSeparatorToToolbar = function(idBefore)
 			targetBtn.parentNode.insertBefore(sep,targetBtn);	
 		else
 		{
-	        	targetBtn = $$("mnu_remove");
+	        	targetBtn = $$("mnu_settings");
 			targetBtn.parentNode.appendChild(sep);
 		}
 	}
