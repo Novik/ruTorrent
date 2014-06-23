@@ -321,8 +321,11 @@ if(plugin.canChangeTabs())
 			}
 		};
 		plugin.tasksConfig.call(theWebUI,data);	
-		$('li#tab_tasks').hide();		
-		$(theWebUI.tables["tasks"].container).hide();
+		if(!plugin.showTabAlways)
+		{
+			$('li#tab_tasks').hide();		
+			$(theWebUI.tables["tasks"].container).hide();
+		}			
 		plugin.renameTasksStuff();
 	}	
 }
@@ -510,7 +513,9 @@ plugin.onGetTasks = function(d)
 				table.Sort();
 		}
 	}
-	if( ((theWebUI.activeView=='tasks') || plugin.foreground.no) && plugin.running )
+	if( ((theWebUI.activeView=='tasks') || plugin.foreground.no) 
+		&& plugin.running 
+		)
 		plugin.backTimeout = window.setTimeout(plugin.refreshTasks,theWebUI.settings["webui.update_interval"]);
 	else
        		plugin.clearBackTimeout();
