@@ -1,8 +1,6 @@
 plugin.loadLang();
 plugin.loadMainCSS();
 
-plugin.tasks = { length: 0 };
-
 if(plugin.canChangeMenu())
 {
 	plugin.createFileMenu = theWebUI.createFileMenu;
@@ -136,78 +134,16 @@ if(plugin.canChangeOptions())
 theWebUI.unpack = function()
 {
 	theDialogManager.hide('dlg_unpack');
-	this.request("?action=unpack",[theWebUI.startUnpackTask,this]);
-}
-
-theWebUI.startUnpackTask = function(info)
-{
-        if(info.no>0)
+        theWebUI.startConsoleTask( "unpack", plugin.name, 
+        { 
+        	hash: theWebUI.uID, 
+        	dir: $('#edit_unpack').val(),
+        	mode: plugin.mode || '',
+        	no: plugin.fno || ''
+        },
         {
-		plugin.tasks[info.no] = info;
-		plugin.tasks.length++;
-		noty(theUILang.unpackTaskStarted+' ('+info.name+'=>'+info.out+')', "alert");
-	}
-	else
-		noty((info.no<0) ? theUILang.unpackTaskFailed : theUILang.unpackNoFiles, "error");
-}
-
-theWebUI.finishUnpackTask = function(task,info)
-{
-	for( var i in info.errors )
-		try { log(info.errors[i],true,'mono'); } catch(e) {};
-	if(info.status==0)
-		noty(theUILang.unpackTaskOK+' ('+task.name+'=>'+task.out+')', "success");
-	else
-		noty(theUILang.unpackTaskFailed+' ('+task.name+'=>'+task.out+')', "error");
-}
-
-theWebUI.checkUnpackTask = function(info)
-{
-	for( var i in info )
-	{
-	        var task = plugin.tasks[info[i].no];
-		if($type(task))
-		{
-			this.finishUnpackTask(task,info[i]);
-			delete plugin.tasks[info[i].no];
-			plugin.tasks.length--;
-		}
-	}
-}
-
-plugin.checkTasks = function()
-{
-	if(plugin.enabled)
-	{
-	        if(plugin.tasks.length)
-			theWebUI.request("?action=checkunpack",[theWebUI.checkUnpackTask,theWebUI]);
-	}
-	else
-		if(plugin.interval)
-			window.clearInterval(plugin.interval);
-}
-
-rTorrentStub.prototype.checkunpack = function()
-{
-        this.content = "cmd=check";
-	for(var i in plugin.tasks)
-		if(i!="length")
-			this.content+=("&no="+i);
-        this.contentType = "application/x-www-form-urlencoded";
-	this.mountPoint = "plugins/unpack/action.php";
-	this.dataType = "json";
-}
-
-rTorrentStub.prototype.unpack = function()
-{
-	this.content = "cmd=start&hash="+theWebUI.uID+"&dir="+encodeURIComponent($('#edit_unpack').val());
-	if(plugin.mode!==null)
-		this.content+=("&mode="+plugin.mode);
-	if(plugin.fno!==null)
-		this.content+=("&no="+plugin.fno);
-        this.contentType = "application/x-www-form-urlencoded";
-	this.mountPoint = "plugins/unpack/action.php";
-	this.dataType = "json";
+        	noclose: true
+        });
 }
 
 plugin.onLangLoaded = function()
@@ -274,6 +210,4 @@ plugin.onRemove = function()
 {
 	theDialogManager.hide("dlg_unpack");
 	plugin.removePageFromOptions("st_unpack");
-	if(plugin.interval)
-		window.clearInterval(plugin.interval);
 }
