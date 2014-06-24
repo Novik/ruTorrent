@@ -18,7 +18,6 @@ class rTorrentSettings
 	public $apiVersion = 0;
 	public $plugins = array();
 	public $hooks = array();
-	public $mostOfMethodsRenamed = false;
 	public $aliases = array();
 	public $started = 0;
 	public $server = '';
@@ -130,10 +129,9 @@ class rTorrentSettings
 
 			if($this->iVersion>0x806)
 			{
-                                $this->mostOfMethodsRenamed = true;
 				$this->aliases = array(
-					"d.set_peer_exchange" 		=> "d.peer_exchange.set",
-					"d.set_connection_seed"		=> "d.connection_seed.set",
+					"d.set_peer_exchange" 		=> array( "name"=>"d.peer_exchange.set", "prm"=>0 ),
+					"d.set_connection_seed"		=> array( "name"=>"d.connection_seed.set", "prm"=>0 ),
 					);
 			}
 			if($this->iVersion==0x808)
@@ -143,6 +141,11 @@ class rTorrentSettings
 				if($req->success())
 					$this->iVersion=0x809;
 			}
+			if($this->iVersion>=0x904)
+			{
+				require_once( 'methods-0.9.4.php' );
+			}
+			
 			$this->apiVersion = 0;
 			if($this->iVersion>=0x901)
 			{
@@ -165,7 +168,7 @@ class rTorrentSettings
 					new rXMLRPCCommand("get_name"),
 					new rXMLRPCCommand("get_port_range"),
 					) );
-				if($req->run() && !$req->fault)
+				if($req->success())
 				{
 					$this->directory = $req->val[0];
   		        	        $this->session = $req->val[1];
@@ -219,16 +222,13 @@ class rTorrentSettings
 			$cmd = substr($cmd,0,-1);
 			$add = '=';
 		}
-		return(array_key_exists($cmd,$this->aliases) ? $this->aliases[$cmd].$add : $cmd.$add);		
+		return(array_key_exists($cmd,$this->aliases) ? $this->aliases[$cmd]["name"].$add : $cmd.$add);		
 	}
 	public function getEventCommand($cmd1,$cmd2,$args)
 	{
 		if($this->iVersion<0x804)
 			$cmd = new rXMLRPCCommand($cmd1);
 		else
-//		if($this->mostOfMethodsRenamed)
-//			$cmd = new rXMLRPCCommand('method.set_key','event.download.'.$cmd2);
-//		else
 			$cmd = new rXMLRPCCommand('system.method.set_key','event.download.'.$cmd2);
 		$cmd->addParameters($args);
 		return($cmd);
@@ -294,5 +294,36 @@ class rTorrentSettings
 				$dir = $path;	
 		}
 		return(strpos(addslash($dir),$topDirectory)===0);
+	}
+	public function patchDeprecatedCommand( $cmd, $name )
+	{
+		if(array_key_exists($name,$this->aliases) && $this->aliases[$name]["prm"])
+			$cmd->addParameter("");
+	}
+	public function patchDeprecatedRequest($commands)
+	{
+		if($this->iVersion>=0x904)
+		{
+			foreach($commands as $cmd)
+			{
+				$prefix = '';
+				if(strpos($cmd->command, 't.') === 0)
+					$prefix = ':t';
+				else
+				if(strpos($cmd->command, 'p.') === 0)
+					$prefix = ':p';
+				else
+				if(strpos($cmd->command, 'f.') === 0)
+					$prefix = ':f';
+				if(!empty($prefix) && 
+					(count($cmd->params)>1) && 
+					(substr($cmd->command, -10) !== '.multicall') &&
+					(strpos($cmd->params[0]->value, ':') === false) )
+				{
+					$cmd->params[0]->value = $cmd->params[0]->value.$prefix.$cmd->params[1]->value;
+					array_splice( $cmd->params, 1, 1 );
+				}
+			}
+		}
 	}
 }

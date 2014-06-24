@@ -114,9 +114,38 @@ var theRequestManager =
 				cmd = cmd.substr(0,cmd.length-1);
 				add = '=';
 			}
-			return(this.aliases[cmd] ? this.aliases[cmd]+add : cmd+add);
+			return(this.aliases[cmd] ? this.aliases[cmd].name+add : cmd+add);
 		}			
 		return( this.map(this[cmd].commands[no]) );
+	},
+	patchCommand: function( cmd, name )
+	{
+		if(this.aliases[name] && this.aliases[name].prm)
+			cmd.addParameter("string","");
+	},
+	patchRequest: function( commands )
+	{
+		for( var i in commands )
+		{
+			var cmd = commands[i];
+			var prefix = '';
+			if(cmd.command.indexOf('t.') === 0)
+				prefix = ':t';
+			else
+			if(cmd.command.indexOf('p.') === 0)
+				prefix = ':p';
+			else
+			if(cmd.command.indexOf('f.') === 0)
+				prefix = ':f';
+			if(prefix && 
+				(cmd.params.length>1) && 
+				(cmd.command.indexOf('.multicall')<0) &&
+				(cmd.params[0].value.indexOf(':') < 0))
+			{
+				cmd.params[0].value = cmd.params[0].value+prefix+cmd.params[1].value;
+				cmd.params.splice( 1, 1 );
+			}
+		}
 	}
 };
 
@@ -126,6 +155,7 @@ function rXMLRPCCommand( cmd )
 {
 	this.command = theRequestManager.map(cmd);
 	this.params = new Array();
+	theRequestManager.patchCommand( this, cmd );
 }
 
 rXMLRPCCommand.prototype.addParameter = function(aType,aValue)
@@ -596,6 +626,7 @@ rTorrentStub.prototype.addpeer = function()
 
 rTorrentStub.prototype.makeMultiCall = function()
 {
+	theRequestManager.patchRequest( this.commands );
 	this.content = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>';
 	if(this.commands.length==1)
 	{

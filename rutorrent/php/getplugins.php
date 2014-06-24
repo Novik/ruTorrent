@@ -250,8 +250,6 @@ if($handle = opendir('../plugins'))
 				$jResult.="noty(theUILang.idNotFound,'error');";
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, iVersion : ".$theSettings->iVersion.", version : '".
 				$theSettings->version."', libVersion : '".$theSettings->libVersion."', apiVersion : ".$theSettings->apiVersion." };\n";
-			if($theSettings->mostOfMethodsRenamed)
-				$jResult.="theWebUI.systemInfo.rTorrent.newMethodsSet = true;\n";
 	        	if($do_diagnostic)
 	        	{
 	        	        $up = getUploadsPath();

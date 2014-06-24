@@ -27,6 +27,7 @@ class rXMLRPCCommand
 	{
 		$this->command = getCmd($cmd);
 		$this->params = array();
+		rTorrentSettings::get()->patchDeprecatedCommand($this,$cmd);
 		if($args!==null) 
 		{
 		        if(is_array($args))
@@ -128,6 +129,7 @@ class rXMLRPCRequest
 
 	protected function makeCall()
 	{
+	        rTorrentSettings::get()->patchDeprecatedRequest($this->commands);
 		$this->fault = false;
 		$this->content = "";
 		$cnt = count($this->commands);
