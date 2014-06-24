@@ -11,8 +11,8 @@
  theUILang.tskConsole		= "Κονσόλα";
  theUILang.tskErrors		= "Διαγνωστικά";
  theUILang.tskBackground	= "Απόκρυψη";
- theUILang.tskStart		= "Ξεκίνησε";
- theUILang.tskFinish		= "Ολοκληρώθηκε";
+ theUILang.tskStart		= "Εκκίνηση";
+ theUILang.tskFinish		= "Ολοκλήρωση";
  theUILang.tskElapsed		= "Χρόνος που πέρασε";
  theUILang.tskPlugin		= "Πρόσθετο";
  theUILang.tskDeletePrompt	= "Θέλετε σίγουρα να σβήσετε την/τις επιλεγμένη/ες εργασία/ες;";
