@@ -23,5 +23,6 @@
  theUILang.tskRefresh		= "Ανανέωση";
  theUILang.tskRunning		= "Εκτελείται";
  theUILang.tskArg		= "Παράμετρος";
+ theUILang.tskTasks		= "Tasks"; 
  
 thePlugins.get("_task").langLoaded();
