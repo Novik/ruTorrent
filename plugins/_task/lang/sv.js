@@ -22,5 +22,6 @@
  theUILang.tskRefresh		= "Refresh";
  theUILang.tskRunning		= "Running";
  theUILang.tskArg		= "Parameter";
+ theUILang.tskTasks		= "Tasks"; 
  
 thePlugins.get("_task").langLoaded();

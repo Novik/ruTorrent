@@ -157,7 +157,8 @@ plugin.isInBackground = function()
 plugin.kill = function()
 {
 	theWebUI.requestWithoutTimeout("?action=taskkill&hash="+this.foreground.no);
-	plugin.callNotification("Finished");
+	if(this.foreground.status<0)
+		plugin.callNotification("Finished");
 }
 
 plugin.setConsoleControls = function( errPresent )

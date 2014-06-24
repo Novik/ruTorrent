@@ -22,5 +22,6 @@
  theUILang.tskRefresh		= "Обновить"; 
  theUILang.tskRunning		= "Выполняется";  
  theUILang.tskArg		= "Параметр"; 
+ theUILang.tskTasks		= "Задачи"; 
 
 thePlugins.get("_task").langLoaded();
