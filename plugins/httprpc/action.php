@@ -100,14 +100,13 @@ switch($mode)
 		$cmd->addParameters( array_map("getCmd", $cmds) );
 		foreach( $add as $prm )
 			$cmd->addParameter($prm);
-		$cnt = count($cmd->params)-1;
+		$cnt = count($cmds)+count($add);
 		$req = new rXMLRPCRequest($cmd);
 		if($req->success())
 		{
 			$theCache = new rpcCache();
 			$dTorrents = array();
 			$torrents = array();
-
 			foreach($req->val as $index=>$value) 
 			{
 				if($index % $cnt == 0) 
