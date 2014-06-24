@@ -1,7 +1,7 @@
 <?php
 
 $this->aliases = array_merge($this->aliases,array(
-"create_link"		=>	array( "name"=>"d.create_link", "prm"=>1 ),
+"create_link"		=>	array( "name"=>"d.create_link", "prm"=>0 ),
 "d.get_base_filename"	=>	array( "name"=>"d.base_filename", "prm"=>0 ),
 "d.get_base_path"	=>	array( "name"=>"d.base_path", "prm"=>0 ),
 "d.get_bitfield"	=>	array( "name"=>"d.bitfield", "prm"=>0 ),
@@ -68,24 +68,24 @@ $this->aliases = array_merge($this->aliases,array(
 "d.get_up_total"	=>	array( "name"=>"d.up.total", "prm"=>0 ),
 "d.get_uploads_max"	=>	array( "name"=>"d.uploads_max", "prm"=>0 ),
 "d.multicall"		=>	array( "name"=>"d.multicall2", "prm"=>1 ),
-"d.set_connection_current"	=>	array( "name"=>"d.connection_current.set", "prm"=>1 ),
+"d.set_connection_current"	=>	array( "name"=>"d.connection_current.set", "prm"=>0 ),
 "d.set_custom"		=>	array( "name"=>"d.custom.set", "prm"=>0 ),
 "d.set_custom1"		=>	array( "name"=>"d.custom1.set", "prm"=>0 ),
 "d.set_custom2"		=>	array( "name"=>"d.custom2.set", "prm"=>0 ),
 "d.set_custom3"		=>	array( "name"=>"d.custom3.set", "prm"=>0 ),
 "d.set_custom4"		=>	array( "name"=>"d.custom4.set", "prm"=>0 ),
 "d.set_custom5"		=>	array( "name"=>"d.custom5.set", "prm"=>0 ),
-"d.set_directory"	=>	array( "name"=>"d.directory.set", "prm"=>1 ),
-"d.set_directory_base"	=>	array( "name"=>"d.directory_base.set", "prm"=>1 ),
-"d.set_hashing_failed"	=>	array( "name"=>"d.hashing_failed.set", "prm"=>1 ),
-"d.set_ignore_commands"	=>	array( "name"=>"d.ignore_commands.set", "prm"=>1 ),
-"d.set_max_file_size"	=>	array( "name"=>"d.max_file_size.set", "prm"=>1 ),
-"d.set_message"		=>	array( "name"=>"d.message.set", "prm"=>1 ),
+"d.set_directory"	=>	array( "name"=>"d.directory.set", "prm"=>0 ),
+"d.set_directory_base"	=>	array( "name"=>"d.directory_base.set", "prm"=>0 ),
+"d.set_hashing_failed"	=>	array( "name"=>"d.hashing_failed.set", "prm"=>0 ),
+"d.set_ignore_commands"	=>	array( "name"=>"d.ignore_commands.set", "prm"=>0 ),
+"d.set_max_file_size"	=>	array( "name"=>"d.max_file_size.set", "prm"=>0 ),
+"d.set_message"		=>	array( "name"=>"d.message.set", "prm"=>0 ),
 "d.set_peers_max"	=>	array( "name"=>"d.peers_max.set", "prm"=>0 ),
 "d.set_peers_min"	=>	array( "name"=>"d.peers_min.set", "prm"=>0 ),
 "d.set_priority"	=>	array( "name"=>"d.priority.set", "prm"=>0 ),
 "d.set_throttle_name"	=>	array( "name"=>"d.throttle_name.set", "prm"=>0 ),
-"d.set_tied_to_file"	=>	array( "name"=>"d.tied_to_file.set", "prm"=>1 ),
+"d.set_tied_to_file"	=>	array( "name"=>"d.tied_to_file.set", "prm"=>0 ),
 "d.set_tracker_numwant"	=>	array( "name"=>"d.tracker_numwant.set", "prm"=>0 ),
 "d.set_uploads_max"	=>	array( "name"=>"d.uploads_max.set", "prm"=>0 ),
 "execute_capture"	=>	array( "name"=>"execute.capture", "prm"=>1 ),
@@ -161,8 +161,8 @@ $this->aliases = array_merge($this->aliases,array(
 "get_stats_preloaded"	=>	array( "name"=>"pieces.stats_preloaded", "prm"=>0 ),
 "get_throttle_down_max"	=>	array( "name"=>"throttle.down.max", "prm"=>0 ),
 "get_throttle_down_rate"	=>	array( "name"=>"throttle.down.rate", "prm"=>0 ),
-"get_throttle_up_max"	=>	array( "name"=>"throttle.up.max", "prm"=>1 ),
-"get_throttle_up_rate"	=>	array( "name"=>"throttle.up.rate", "prm"=>1 ),
+"get_throttle_up_max"	=>	array( "name"=>"throttle.up.max", "prm"=>1 ),				// ?
+"get_throttle_up_rate"	=>	array( "name"=>"throttle.up.rate", "prm"=>1 ),				// ?
 "get_timeout_safe_sync"	=>	array( "name"=>"pieces.sync.timeout_safe", "prm"=>0 ),
 "get_timeout_sync"	=>	array( "name"=>"pieces.sync.timeout", "prm"=>0 ),
 "get_tracker_numwant"	=>	array( "name"=>"trackers.numwant", "prm"=>0 ),
@@ -198,10 +198,10 @@ $this->aliases = array_merge($this->aliases,array(
 "session_save"		=>	array( "name"=>"session.save", "prm"=>0 ),
 "set_bind"		=>	array( "name"=>"network.bind_address.set", "prm"=>1 ),
 "set_check_hash"	=>	array( "name"=>"pieces.hash.on_completion.set", "prm"=>1 ),
-"set_connection_leech"	=>	array( "name"=>"protocol.connection.leech.set", "prm"=>1 ),
-"set_connection_seed"	=>	array( "name"=>"protocol.connection.seed.set", "prm"=>1 ),
+"set_connection_leech"	=>	array( "name"=>"protocol.connection.leech.set", "prm"=>1 ),		// ?
+"set_connection_seed"	=>	array( "name"=>"protocol.connection.seed.set", "prm"=>1 ),		// ?
 "set_dht_port"		=>	array( "name"=>"dht.port.set", "prm"=>1 ),
-"set_dht_throttle"	=>	array( "name"=>"dht.throttle.name.set", "prm"=>1 ),
+"set_dht_throttle"	=>	array( "name"=>"dht.throttle.name.set", "prm"=>1 ),			// ?
 "set_directory"		=>	array( "name"=>"directory.default.set", "prm"=>1 ),
 "set_download_rate"	=>	array( "name"=>"throttle.global_down.max_rate.set", "prm"=>1 ),
 "set_http_cacert"	=>	array( "name"=>"network.http.cacert.set", "prm"=>1 ),
@@ -221,7 +221,7 @@ $this->aliases = array_merge($this->aliases,array(
 "set_max_uploads_global"	=>	array( "name"=>"throttle.max_uploads.global.set", "prm"=>1 ),
 "set_min_peers"		=>	array( "name"=>"throttle.min_peers.normal.set", "prm"=>1 ),
 "set_min_peers_seed"	=>	array( "name"=>"throttle.min_peers.seed.set", "prm"=>1 ),
-"set_name"		=>	array( "name"=>"session.name.set", "prm"=>1 ),
+"set_name"		=>	array( "name"=>"session.name.set", "prm"=>1 ),				// ?
 "set_peer_exchange"	=>	array( "name"=>"protocol.pex.set", "prm"=>1 ),
 "set_port_open"		=>	array( "name"=>"network.port_open.set", "prm"=>1 ),
 "set_port_random"	=>	array( "name"=>"network.port_random.set", "prm"=>1 ),
@@ -244,10 +244,10 @@ $this->aliases = array_merge($this->aliases,array(
 "set_tracker_numwant"	=>	array( "name"=>"trackers.numwant.set", "prm"=>1 ),
 "set_upload_rate"	=>	array( "name"=>"throttle.global_up.max_rate.set", "prm"=>1 ),
 "set_use_udp_trackers"	=>	array( "name"=>"trackers.use_udp.set", "prm"=>1 ),
-"set_xmlrpc_dialect"	=>	array( "name"=>"network.xmlrpc.dialect.set", "prm"=>1 ),
+"set_xmlrpc_dialect"	=>	array( "name"=>"network.xmlrpc.dialect.set", "prm"=>1 ),		// ?
 "set_xmlrpc_size_limit"	=>	array( "name"=>"network.xmlrpc.size_limit.set", "prm"=>1 ),
 "system.file_allocate"	=>	array( "name"=>"system.file.allocate", "prm"=>0 ),
-"system.file_allocate.set"	=>	array( "name"=>"system.file.allocate.set", "prm"=>1 ),
+"system.file_allocate.set"	=>	array( "name"=>"system.file.allocate.set", "prm"=>1 ),		// ?
 "system.method.erase"	=>	array( "name"=>"method.erase", "prm"=>1 ),
 "system.method.get"	=>	array( "name"=>"method.get", "prm"=>1 ),
 "system.method.has_key"	=>	array( "name"=>"method.has_key", "prm"=>1 ),
@@ -266,24 +266,24 @@ $this->aliases = array_merge($this->aliases,array(
 "t.get_type"		=>	array( "name"=>"t.type", "prm"=>0 ),
 "t.get_url"		=>	array( "name"=>"t.url", "prm"=>0 ),
 "t.set_enabled"		=>	array( "name"=>"t.is_enabled.set", "prm"=>0 ),
-"throttle_down"		=>	array( "name"=>"throttle.down", "prm"=>1 ),
-"throttle_ip"		=>	array( "name"=>"throttle.ip", "prm"=>1 ),
-"throttle_up"		=>	array( "name"=>"throttle.up", "prm"=>1 ),
+"throttle_down"		=>	array( "name"=>"throttle.down", "prm"=>1 ),				// ?
+"throttle_ip"		=>	array( "name"=>"throttle.ip", "prm"=>1 ),				// ?
+"throttle_up"		=>	array( "name"=>"throttle.up", "prm"=>1 ),				// ?
 "tracker_numwant"	=>	array( "name"=>"trackers.numwant", "prm"=>0 ),
 "use_udp_trackers"	=>	array( "name"=>"trackers.use_udp.set", "prm"=>1 ),
-"view_add"		=>	array( "name"=>"view.add", "prm"=>1 ),
-"view_filter"		=>	array( "name"=>"view.filter", "prm"=>1 ),
-"view_filter_on"	=>	array( "name"=>"view.filter_on", "prm"=>1 ),
+"view_add"		=>	array( "name"=>"view.add", "prm"=>1 ),					// ?
+"view_filter"		=>	array( "name"=>"view.filter", "prm"=>1 ),				// ?
+"view_filter_on"	=>	array( "name"=>"view.filter_on", "prm"=>1 ),				// ?
 "view_list"		=>	array( "name"=>"view.list", "prm"=>0 ),
-"view_set"		=>	array( "name"=>"view.set", "prm"=>1 ),
-"view_sort"		=>	array( "name"=>"view.sort", "prm"=>1 ),
-"view_sort_current"	=>	array( "name"=>"view.sort_current", "prm"=>1 ),
-"view_sort_new"		=>	array( "name"=>"view.sort_new", "prm"=>1 ),
-"xmlrpc_dialect"	=>	array( "name"=>"network.xmlrpc.dialect.set", "prm"=>1 ),
+"view_set"		=>	array( "name"=>"view.set", "prm"=>1 ),					// ?
+"view_sort"		=>	array( "name"=>"view.sort", "prm"=>1 ),					// ?
+"view_sort_current"	=>	array( "name"=>"view.sort_current", "prm"=>1 ),				// ?
+"view_sort_new"		=>	array( "name"=>"view.sort_new", "prm"=>1 ),				// ?
+"xmlrpc_dialect"	=>	array( "name"=>"network.xmlrpc.dialect.set", "prm"=>1 ),		// ?	
 "xmlrpc_size_limit"	=>	array( "name"=>"network.xmlrpc.size_limit.set", "prm"=>1 ),
-"delete_link"		=>	array( "name"=>"d.delete_link", "prm"=>1 ),
+"delete_link"		=>	array( "name"=>"d.delete_link", "prm"=>0 ),
 "delete_tied"		=>	array( "name"=>"d.delete_tied", "prm"=>0 ),
-"dht_add_node"		=>	array( "name"=>"dht.add_node", "prm"=>1 ),
+"dht_add_node"		=>	array( "name"=>"dht.add_node", "prm"=>1 ),				// ?
 "dht_statistics"	=>	array( "name"=>"dht.statistics", "prm"=>0 ),
 "load"			=>	array( "name"=>"load.normal", "prm"=>1 ),
 ));
