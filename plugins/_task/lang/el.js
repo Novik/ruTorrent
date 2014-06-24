@@ -5,7 +5,8 @@
  *
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
-
+ 
+  theUILang.tskTasks		= "Εργασίες"
  theUILang.tskCommand		= "Λειτουργεί...";
  theUILang.tskCommandDone	= "Τελείωσε.";
  theUILang.tskConsole		= "Κονσόλα";
