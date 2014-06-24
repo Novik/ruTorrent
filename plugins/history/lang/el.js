@@ -6,6 +6,7 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
+ theUILang.tskTasks			= "Εργασίες"
  theUILang.historyAddition	= "Προσθήκη";
  theUILang.historyDeletion	= "Διαγραφή";
  theUILang.historyFinish	= "Ολοκλήρωση";
