@@ -1,20 +1,78 @@
 <?php
-require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
-require_once( dirname(__FILE__)."/../../php/Torrent.php" );
+
+require_once( dirname(__FILE__).'/../_task/task.php' );
+require_once( dirname(__FILE__).'/../../php/Torrent.php' );
+require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
 eval( getPluginConf( 'create' ) );
 
-ignore_user_abort(true);
-set_time_limit(0);
+class recentTrackers
+{
+	public $hash = "rtrackers.dat";
+	public $list = array();
 
+	static public function load()
+	{
+		$cache = new rCache();
+		$rt = new recentTrackers();
+		$cache->get($rt);
+		return($rt);
+	}
+	public function store()
+	{
+		$cache = new rCache();
+		$this->strip();
+		return($cache->set($this));
+	}
+	public function get()
+	{
+		$ret = array();
+		foreach( $this->list as $ann )
+			$ret[self::getTrackerDomain($ann)] = $ann;
+		return($ret);
+	}
+	public function strip()
+	{
+		global $recentTrackersMaxCount;
+		$this->list = array_values( array_unique($this->list) );
+		$cnt = count($this->list)-$recentTrackersMaxCount;
+		if($cnt>0)
+			array_splice($this->list,0,$cnt);
+	}
+	static public function getTrackerDomain($announce)
+	{
+		$domain = parse_url($announce,PHP_URL_HOST);
+		if(preg_match("/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/",$domain)!=1)
+		{
+			$parts = explode('.',$domain);
+			$cnt = count($parts);
+			if($cnt>2)
+			{
+				if(in_array( $parts[$cnt-2], array( "co", "com", "net", "org" ) ) ||
+					in_array( $parts[$cnt-1], array( "uk" ) ))
+					$parts = array_slice($parts, $cnt-3);
+				else
+					$parts = array_slice($parts, $cnt-2);
+				$domain = implode('.',$parts);
+			}
+		}
+		return($domain);
+	}
+}
+
+$ret = array();
 if(isset($_REQUEST['cmd']))
 {
-	$error = '';
-	$cmd = $_REQUEST['cmd'];
-	switch($cmd)
+	switch($_REQUEST['cmd'])
 	{
-		case "start":
+		case "rtget":
 		{
-		        $error = 'theUILang.cantExecExternal';
+			$rt = recentTrackers::load();
+			$ret = $rt->get();
+			break;
+		}
+		case "create":
+		{
+			$error = 'theUILang.cantExecExternal';
 		        if(isset($_REQUEST['path_edit']))
 		        {
 		        	$path_edit = trim($_REQUEST['path_edit']);
@@ -22,10 +80,33 @@ if(isset($_REQUEST['cmd']))
 					$path_edit = addslash($path_edit);
 		        	if(rTorrentSettings::get()->correctDirectory($path_edit))
 				{
-					$taskNo = time();
-					$randName = getTempDirectory()."rutorrent-".getUser().$taskNo.".prm";
-					file_put_contents( $randName, serialize( $_REQUEST ) );
-					chmod($randName,0644);
+					$rt = recentTrackers::load();
+					$trackers = array(); 
+					$announce_list = '';
+					if(isset($_REQUEST['trackers']))
+					{
+						$arr = explode("\r",$_REQUEST['trackers']);
+						foreach( $arr as $key => $value )
+						{
+							$value = trim($value);
+							if(strlen($value))
+							{
+								$trackers[] = $value;
+								$rt->list[] = $value;
+                                                        }
+                                                        else
+							{
+								if(count($trackers)>0)
+								{
+									$announce_list .= (' -a '.escapeshellarg(implode(',',$trackers)));
+									$trackers = array();
+								}
+							}
+						}
+					}
+					$rt->store();
+					if(count($trackers)>0)
+						$announce_list .= (' -a '.escapeshellarg(implode(',',$trackers)));
 					$piece_size = 262144;
 					if(isset($_REQUEST['piece_size']))
 						$piece_size = $_REQUEST['piece_size']*1024;
@@ -36,128 +117,51 @@ if(isset($_REQUEST['cmd']))
 					else
 					if($useExternal===false)
 						$useExternal = "inner";
-					$req = new rXMLRPCRequest( 
-						new rXMLRPCCommand( "execute", array(
-	        	        			"sh", "-c",
-						        escapeshellarg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
-							$taskNo." ".
-							escapeshellarg(getPHP())." ".
-							escapeshellarg($pathToCreatetorrent)." ".
-							escapeshellarg($path_edit)." ".
-							$piece_size." ".
-							escapeshellarg(getUser())." ".
-							escapeshellarg(getTempDirectory())." &")));
-					if($req->success())
-						$ret = array( "no"=>intval($taskNo), "errors"=>array(), "status"=>-1, "out"=>"" );
+					$taskNo = uniqid( time(), true );
+					$task = new rTask( array
+					( 
+						'arg'=>call_user_func('end',explode('/',$path_edit)),
+						'requester'=>'create',
+						'name'=>'create', 
+						'path_edit'=>$_REQUEST['path_edit'],
+						'trackers'=>$_REQUEST['trackers'],
+						'comment'=>$_REQUEST['comment'],
+						'start_seeding'=>$_REQUEST['start_seeding'],
+						'piece_size'=>$_REQUEST['piece_size'],
+						'private'=>$_REQUEST['private']
+					), $taskNo );
+					$commands = array();
+					$commands[] = escapeshellarg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
+						$taskNo." ".
+						escapeshellarg(getPHP())." ".
+						escapeshellarg($pathToCreatetorrent)." ".
+						escapeshellarg($path_edit)." ".
+						$piece_size." ".
+						escapeshellarg(getUser())." ".
+						escapeshellarg(rTask::formatPath($taskNo));
+					$commands[] = '{';
+					$commands[] = 'chmod a+r "${dir}"/result.torrent';
+					$commands[] = '}';						
+					$ret = $task->start($commands, 0);
+					break;
 				}
 				else
-					$error = 'theUILang.incorrectDirectory';
+					$error = 'theUILang.incorrectDirectory';				
 			}
+			$ret = array( "no"=>-1, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array($error) );
 			break;
 		}
-		case "check":
+		case "getfile":
 		{
-		        if(isset($_REQUEST['no']))
-		        {
-		        	$taskNo = $_REQUEST['no'];
-				$dir = getTempDirectory().getUser().$taskNo;
-				if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
-				{
-					$pid = trim(file_get_contents($dir.'/pid'));
-					$status = -1;
-					if(is_file($dir.'/status') && is_readable($dir.'/status'))
-						$status = trim(file_get_contents($dir.'/status'));
-					$log=array();
-					if(is_file($dir.'/log') && is_readable($dir.'/log'))
-					{
-						$lines = file($dir.'/log');
-						foreach( $lines as $line )
-						{
-							$pos = strrpos($line,"\r");
-							if($pos!==false)
-							{
-								$line = rtrim(substr($line,$pos+1));
-								if(strlen($line)==0)
-									continue;
-							}
-							if(strrpos($line,chr(8))!==false)
-							{
-								$len = strlen($line);
-								$res = array();
-								for($i=0; $i<$len; $i++)
-								{
-									if($line[$i]==chr(8))
-										array_pop($res);
-									else
-										$res[] = $line[$i];
-								}
-								$line = implode('',$res);
-							}
-							$log[] = rtrim($line);
-						}
-					}
-					if(count($log)>MAX_CONSOLE_SIZE)
-						array_splice($log,0,count($log)-MAX_CONSOLE_SIZE);
-
-					$errors=array();
-					if(is_file($dir.'/errors') && is_readable($dir.'/errors'))
-						$errors = array_map('trim', file($dir.'/errors'));
-					$out = '';
-					if(is_file($dir.'/out') && is_readable($dir.'/out'))
-						$out = trim(file_get_contents($dir.'/out'));
-					if($status>=0)
-					{
-						$req = new rXMLRPCRequest( 
-							new rXMLRPCCommand( "execute", array("rm","-fr",$dir) ) );
-						$req->run();
-						@unlink(getTempDirectory()."rutorrent-".getUser().$taskNo.".prm");
-					}
-					$ret = array( 
-						"no"=>intval($taskNo),
-					        "status"=>$status,
-				        	"pid"=>intval($pid),
-					        "out"=>$out,
-						"log"=>$log,
-						"errors"=>$errors);
-				}
-			}
-			break;
-		}
-		case "kill":
-		{
-		        if(isset($_REQUEST['no']))
-		        {
-		        	$taskNo = $_REQUEST['no'];
-				$dir = getTempDirectory().getUser().$taskNo;
-				if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
-				{
-					$pid = trim(file_get_contents($dir.'/pid'));
-					$req = new rXMLRPCRequest( 
-//						new rXMLRPCCommand( "execute", array(getExternal("pkill"),"-9","-P",$pid) ) );
-						new rXMLRPCCommand( "execute", array("sh","-c","kill -9 `".getExternal("pgrep")." -P ".$pid."`") ) );
-					if($req->success())
-						$ret = array( "no"=>$taskNo );	
-					$req = new rXMLRPCRequest( 
-						new rXMLRPCCommand( "execute", array("rm","-fr",$dir) ) );
-					$req->run();
-					@unlink(getTempDirectory()."rutorrent-".getUser().$taskNo.".prm");
-				}
-			}
-			break;
-		}
-		case "get":
-		{
-			if(isset($_REQUEST['tname']))
-			{
-				$torrent = new Torrent( getUploadsPath()."/".$_REQUEST['tname'] );
-				if( !$torrent->errors() )
-					$torrent->send();
-			}
-			exit("Can't send torrent file.");
+			$dir = rTask::formatPath( $_REQUEST['no'] );
+			$torrent = new Torrent( $dir."/result.torrent" );
+			if( !$torrent->errors() )
+				$torrent->send();
+			else
+				header('HTTP/1.0 404 Not Found');
+			exit();
 		}
 	}
 }
 
-if(empty($ret))
-	$ret = array( "no"=>0, "errors"=>array($error), "status"=>-1, "out"=>"" );
 cachedEcho(json_encode($ret),"application/json");

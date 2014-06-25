@@ -8,24 +8,18 @@
 # $6 - user
 # $7 - tmp
 
-dir="{$7}${6}${1}"
-mkdir "${dir}"
-chmod a+rx "${dir}"
-echo $$ > "${dir}/pid"
-chmod a+r "${dir}/pid"
-"${3}" -l ${5} -a dummy "${4}" "${dir}/temp.torrent" 2> "${dir}/errors" > "${dir}/log"
+"${3}" -l ${5} -a dummy "${4}" "${7}/temp.torrent"
 last=$? 
-chmod a+r "${dir}/*"
+chmod a+r "${7}/temp.torrent"
 if [ $last -le 1 ] ; then
-	echo 'Try to correct torrent file...' >> "${dir}/log"
+	echo 'Try to correct torrent file...'
 	cd "$(dirname $0)"
-	"${2}" ./correct.php ${1} "${6}" >> "${dir}/errors"
+	"${2}" ./correct.php ${1} "${6}"
 	last=$?
 	if [ $last -eq 0 ] ; then
-		echo 'Done.' >> "${dir}/log"
+		echo 'Done.'
 	else
-		echo 'Error.' >> "${dir}/log"
+		echo 'Error.'
 	fi
 fi
-echo $last > "${dir}/status"
-chmod a+r "${dir}/status"
+exit $last
