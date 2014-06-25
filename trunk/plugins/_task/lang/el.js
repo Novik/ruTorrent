@@ -6,7 +6,6 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
  
-  theUILang.tskTasks		= "Εργασίες"
  theUILang.tskCommand		= "Λειτουργεί...";
  theUILang.tskCommandDone	= "Τελείωσε.";
  theUILang.tskConsole		= "Κονσόλα";
@@ -23,6 +22,6 @@
  theUILang.tskRefresh		= "Ανανέωση";
  theUILang.tskRunning		= "Εκτελείται";
  theUILang.tskArg		= "Παράμετρος";
- theUILang.tskTasks		= "Tasks"; 
+ theUILang.tskTasks		= "Εργασίες"; 
  
 thePlugins.get("_task").langLoaded();
