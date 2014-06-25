@@ -6,26 +6,20 @@
 # $4 - path
 # $5 - piecesize
 # $6 - user
-# $7 - tmp
+# $7 - dir
 
-dir="${7}${6}${1}"
-mkdir "${dir}"
-chmod a+rx "${dir}"
-echo $$ > "${dir}/pid"
-chmod a+r "${dir}/pid"
-"${3}" -v -l ${5} -a dummy -o "${dir}/temp.torrent" "${4}" 2> "${dir}/errors" > "${dir}/log"
+"${3}" -v -l ${5} -a dummy -o "${7}/temp.torrent" "${4}"
 last=$? 
-chmod a+r "${dir}/*"
+chmod a+r "${7}/temp.torrent"
 if [ $last -eq 0 ] ; then
-	echo 'Try to correct torrent file...' >> "${dir}/log"
+	echo 'Try to correct torrent file...'
 	cd "$(dirname $0)"
-	"${2}" ./correct.php ${1} "${6}" >> "${dir}/errors"
+	"${2}" ./correct.php ${1} "${6}"
 	last=$?
 	if [ $last -eq 0 ] ; then
-		echo 'Done.' >> "${dir}/log"
+		echo 'Done.'
 	else
-		echo 'Error.' >> "${dir}/log"
+		echo 'Error.'
 	fi
 fi
-echo $last > "${dir}/status"
-chmod a+r "${dir}/status"
+exit $last

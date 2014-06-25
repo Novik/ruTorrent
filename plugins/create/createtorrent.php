@@ -4,9 +4,10 @@ if( count( $argv ) > 2 )
 	$_SERVER['REMOTE_USER'] = $argv[2];
 if( count( $argv ) > 1 )
 {
-	require_once( '../../php/xmlrpc.php' );
-	require_once( '../../php/Torrent.php' );
-	require_once( '../../php/rtorrent.php' );
+	require_once( dirname(__FILE__).'/../../php/xmlrpc.php' );
+	require_once( dirname(__FILE__).'/../../php/Torrent.php' );
+	require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
+	require_once( dirname(__FILE__).'/../_task/task.php' );
 	eval(getPluginConf('create'));
 	
 	if(function_exists('ini_set'))
@@ -16,7 +17,7 @@ if( count( $argv ) > 1 )
 	}
 
 	$taskNo = $argv[1];
-	$fname = getTempDirectory()."rutorrent-".getUser().$taskNo.".prm";
+	$fname = rTask::formatPath($taskNo).'/params';
 	if(is_file($fname) && is_readable($fname))
 	{
 		$request = unserialize(file_get_contents( $fname ));
@@ -49,8 +50,8 @@ if( count( $argv ) > 1 )
 			$announce_list[] = $trackers;
 		$path_edit = trim($request['path_edit']);
 		$piece_size = $request['piece_size'];
-		$callback_log = create_function('$msg', '$fp=fopen("php://stderr","w"); fputs($fp, $msg."\n"); fclose($fp);' );
-		$callback_err = create_function('$msg', '$fp=fopen("php://stdout","w"); fputs($fp, $msg."\n"); fclose($fp);' );
+		$callback_log = create_function('$msg', '$fp=fopen("php://stdout","w"); fputs($fp, $msg."\n"); fclose($fp);' );
+		$callback_err = create_function('$msg', '$fp=fopen("php://stderr","w"); fputs($fp, $msg."\n"); fclose($fp);' );
 
 		if(count($announce_list)>0)
 		{
@@ -69,29 +70,25 @@ if( count( $argv ) > 1 )
 		}
 	        if(isset($request['private']))
 			$torrent->is_private(true);
-		$fname = getUniqueUploadedFilename($torrent->info['name'].'.torrent');
-		if(isset($request['start_seeding']))
+		$fname = rTask::formatPath($taskNo).'/result.torrent';
+		$torrent->save($fname);
+
+		if($request['start_seeding'])
 		{
+			$fname = getUniqueUploadedFilename($torrent->info['name'].'.torrent');
+			$path_edit = trim($request['path_edit']);
 			if(is_dir($path_edit))
 				$path_edit = addslash($path_edit);
-        		$path_edit = dirname($path_edit);
-			if($resumed = rTorrent::fastResume($torrent,$path_edit))
-				$torrent = $resumed;
-			$torrent->save($fname);
-			rTorrent::sendTorrent($torrent, true, true, $path_edit, null, true, isLocalMode() );
-			if($resumed)
+	        	if(rTorrentSettings::get()->correctDirectory($path_edit))
 			{
-				if(isset($torrent->{'rtorrent'}))
-					unset($torrent->{'rtorrent'});
-				if(isset($torrent->{'libtorrent_resume'}))
-					unset($torrent->{'libtorrent_resume'});
+        			$path_edit = dirname($path_edit);
+				if($resumed = rTorrent::fastResume($torrent,$path_edit))
+					$torrent = $resumed;
 				$torrent->save($fname);
+				rTorrent::sendTorrent($torrent, true, true, $path_edit, null, true, isLocalMode() );
+				@chmod($fname,$profileMask & 0666);
 			}
-        	}
-        	else
-			$torrent->save($fname);
-		@chmod($fname,$profileMask & 0666);
-		file_put_contents( getTempDirectory().getUser().$taskNo."/out", getFileName($fname));
+		}
 		exit(0);
 	}
 	exit(1);
