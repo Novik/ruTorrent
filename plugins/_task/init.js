@@ -48,7 +48,7 @@ plugin.clear = function()
 	this.foreground.tskcmdlog = 0;
 }
 
-plugin.callNotification = function( type, data )
+plugin.callNotification = function( type, data, status )
 {
 //console.log(type);
 //console.log(JSON.stringify(data || this.foreground));
@@ -56,7 +56,7 @@ plugin.callNotification = function( type, data )
 	type = "onTask"+type;
 	var requester = thePlugins.get(this.foreground.requester);
 	if(requester && $type(requester[type])=="function")
-		ret = requester[type](data || this.foreground);
+		ret = requester[type](data || this.foreground, status || false);
 	return(ret);		
 }
 
@@ -494,6 +494,9 @@ plugin.onGetTasks = function(d)
 			}
 			if(item.status<0)
 				plugin.running++;
+			else
+				if(plugin.background[id] && (plugin.background[id].status<0))
+					plugin.callNotification("Finished",item,true);
 		}
                	for( var id in plugin.background )
 		{
