@@ -148,62 +148,68 @@ theWebUI.unpack = function()
 
 plugin.onLangLoaded = function()
 {
-	theDialogManager.make( 'dlg_unpack', theUILang.unpack,
-		"<div class='cont fxcaret'>" +
-			"<fieldset>" +
-				"<div>" + theUILang.unpackPath + "</div>" +
-				"<input type='text' id='edit_unpack' class='TextboxLarge' maxlength='200'/>" +
-				"<input type='button' id='btn_unpack' class='Button' value='...' />" +
-			"</fieldset>" +
-		"</div>"+
-		"<div class='aright buttons-list'>" +
-			"<input type='button' value='" + theUILang.ok + "' class='OK Button' " +
-				" onclick='theWebUI.unpack(); return(false);' />" +
-			"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
-		"</div>", true);
-
-	plugin.interval = window.setInterval( plugin.checkTasks, 3000 );
-	this.attachPageToOptions( $("<div>").attr("id","st_unpack").html(
-		"<div>"+
-			"<input id=\"unpack_enabled\" type=\"checkbox\"/>"+
-			"<label for=\"unpack_enabled\">"+
-				theUILang.unpackEnabled+
-			"</label>"+
-			"<input type='text' id='edit_filter' class='TextboxMid' maxlength='200'/>" +
-		"</div>"+
-		"<fieldset>"+
-			"<legend>"+theUILang.unpackPath+"</legend>"+
-			"<input type='text' id='edit_unpack1' class='TextboxLarge' maxlength='200'/>" +
-			"<input type='button' id='btn_unpack1' class='Button' value='...' />" +
-		"</fieldset>"+
-		"<fieldset>"+
-			"<legend>"+theUILang.unpackTorrents+"</legend>"+
-			"<div class='checkbox'>" +
-				"<input type='checkbox' id='unpack_label'/>"+
-				"<label for='unpack_label'>"+ theUILang.unpackAddLabel +"</label>"+
-			"</div>" +
-			"<div class='checkbox'>" +
-				"<input type='checkbox' id='unpack_name'/>"+
-				"<label for='unpack_name'>"+ theUILang.unpackAddName +"</label>"+
-			"</div>"+
-		"</fieldset>"
-		)[0], theUILang.unpack );
-	$$('edit_unpack').value = theWebUI.unpackData.path;
-	if(thePlugins.isInstalled("_getdir"))
-	{
-		var btn = new theWebUI.rDirBrowser( 'dlg_unpack', 'edit_unpack', 'btn_unpack' );
-		theDialogManager.setHandler('dlg_unpack','afterHide',function()
-		{
-			btn.hide();
-		});
-		if(this.canChangeOptions())
-			this.btn = new theWebUI.rDirBrowser( 'st_unpack', 'edit_unpack1', 'btn_unpack1' );
-	}
+	var plg = thePlugins.get("_task");
+	if(!plg.allStuffLoaded)
+		setTimeout(arguments.callee,1000);
 	else
 	{
-		$('#btn_unpack').remove();
-		$('#btn_unpack1').remove();
-	}
+		theDialogManager.make( 'dlg_unpack', theUILang.unpack,
+			"<div class='cont fxcaret'>" +
+				"<fieldset>" +
+					"<div>" + theUILang.unpackPath + "</div>" +
+					"<input type='text' id='edit_unpack' class='TextboxLarge' maxlength='200'/>" +
+					"<input type='button' id='btn_unpack' class='Button' value='...' />" +
+				"</fieldset>" +
+			"</div>"+
+			"<div class='aright buttons-list'>" +
+				"<input type='button' value='" + theUILang.ok + "' class='OK Button' " +
+					" onclick='theWebUI.unpack(); return(false);' />" +
+				"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
+			"</div>", true);
+
+		plugin.interval = window.setInterval( plugin.checkTasks, 3000 );
+		plugin.attachPageToOptions( $("<div>").attr("id","st_unpack").html(
+			"<div>"+
+				"<input id=\"unpack_enabled\" type=\"checkbox\"/>"+
+				"<label for=\"unpack_enabled\">"+
+					theUILang.unpackEnabled+
+				"</label>"+
+				"<input type='text' id='edit_filter' class='TextboxMid' maxlength='200'/>" +
+			"</div>"+
+			"<fieldset>"+
+				"<legend>"+theUILang.unpackPath+"</legend>"+
+				"<input type='text' id='edit_unpack1' class='TextboxLarge' maxlength='200'/>" +
+				"<input type='button' id='btn_unpack1' class='Button' value='...' />" +
+			"</fieldset>"+
+			"<fieldset>"+
+				"<legend>"+theUILang.unpackTorrents+"</legend>"+
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='unpack_label'/>"+
+					"<label for='unpack_label'>"+ theUILang.unpackAddLabel +"</label>"+
+				"</div>" +
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='unpack_name'/>"+
+					"<label for='unpack_name'>"+ theUILang.unpackAddName +"</label>"+
+				"</div>"+
+			"</fieldset>"
+			)[0], theUILang.unpack );
+		$$('edit_unpack').value = theWebUI.unpackData.path;
+		if(thePlugins.isInstalled("_getdir"))
+		{
+			var btn = new theWebUI.rDirBrowser( 'dlg_unpack', 'edit_unpack', 'btn_unpack' );
+			theDialogManager.setHandler('dlg_unpack','afterHide',function()
+			{
+				btn.hide();
+			});
+			if(plugin.canChangeOptions())
+				plugin.btn = new theWebUI.rDirBrowser( 'st_unpack', 'edit_unpack1', 'btn_unpack1' );
+		}
+		else
+		{
+			$('#btn_unpack').remove();
+			$('#btn_unpack1').remove();
+		}
+	}		
 }
 
 plugin.onRemove = function()
