@@ -149,15 +149,18 @@ if(plugin.canChangeMenu())
 		return(escapeHTML(line)+'<br>');
 	}
 	
-	plugin.onTaskFinished = function(task)
+	plugin.onTaskFinished = function(task,onBackground)
 	{
-	        if($('.scframe').length)
+		if(!onBackground)
 		{
-			$('.scframe').hide();
-			$('#scframe0').show();
-		}
-		$("#sctaskno").val(task.no);
-		plugin.setPlayControls();
+		        if($('.scframe').length)
+			{
+				$('.scframe').hide();
+				$('#scframe0').show();
+			}
+			$("#sctaskno").val(task.no);
+			plugin.setPlayControls();
+		}			
 	}
 
 	plugin.onTaskHideInterface = function(task)
