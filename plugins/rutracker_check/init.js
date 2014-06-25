@@ -32,13 +32,13 @@ if(plugin.canChangeMenu())
 plugin.config = theWebUI.config;
 theWebUI.config = function(data)
 {
-	plugin.reqId1 = theRequestManager.addRequest("trt", "d.get_custom=chk-state",function(hash,torrent,value)
+	plugin.reqId1 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"chk-state",function(hash,torrent,value)
 	{
 		torrent.chkstate = value;
 		if(torrent.chkstate==4)	// STE_DELETED
 			torrent.state |= dStatus.error;
 	});
-	plugin.reqId2 = theRequestManager.addRequest("trt", "d.get_custom=chk-time",function(hash,torrent,value)
+	plugin.reqId2 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"chk-time",function(hash,torrent,value)
 	{
 		torrent.chktime = value;
 	});
