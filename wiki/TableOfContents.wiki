@@ -78,4 +78,4 @@
 ----
 [https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif]
 
-<wiki:gadget border="0" url="http://stefansundin.com/stuff/flattr/google-project-hosting.xml" width="55" height="62" up_uid="rutorrent" up_title="rutorrent" up_desc="yet another reorient web" up_tags="rtorrent,rutorrent" up_url="http://code.google.com/p/rutorrent/" />
+<wiki:gadget border="0" url="https://gist.githubusercontent.com/stefansundin/8195226/raw/flattr-gadget.xml" width="55" height="62" up_uid="rutorrent" up_title="rutorrent" up_desc="yet another reorient web" up_tags="rtorrent,rutorrent" up_url="http://code.google.com/p/rutorrent/" />
