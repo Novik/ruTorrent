@@ -139,7 +139,7 @@ plugin.onLangLoaded = function()
 			"<div class='aright buttons-list'><input type='button' id='recentTrackers' value='Recent trackers...' class='Button menuitem' onclick='theWebUI.showRecentTrackers()'/><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='OK Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",true);		
 		$(document.body).append($("<iframe name='xcreatefrm'/>").css({visibility: "hidden"}).attr( { name: "xcreatefrm", id: "xcreatefrm" } ).width(0).height(0));
 		$(document.body).append(
-			$('<form action="plugins/xcreate/action.php" id="xgetfile" method="post" target="xcreatefrm">'+
+			$('<form action="plugins/create/action.php" id="xgetfile" method="post" target="xcreatefrm">'+
 				'<input type="hidden" name="cmd" value="getfile">'+
 				'<input type="hidden" name="no" id="xtaskno" value="0">'+
 			'</form>').width(0).height(0));
