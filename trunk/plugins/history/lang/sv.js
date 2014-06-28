@@ -24,11 +24,11 @@
  theUILang.enableNotifications	= "Aktivera skrivbordsnotiser";
  theUILang.historyNotification	= "Skrivbordsnotiser";
  theUILang.notifAutoClose	= "Stäng skrivbordsnotiser automatiskt efter";
- theUILang.notifTip		= [
- 				  "Din webbläsare stöder inte skrivbordsnotiser. Försök med en annan webbläsare. T.ex. Google Chrome.",
- 				  "",
- 				  "Din webbläsare stöder skrivbordsnotiser. Tryck på knappen nedan för att aktivera.",
- 				  "Din webbläsare stöder skrivbordsnotiser men de är inaktiverade för denna webbplats. Stäng denna dialog och aktivera skrivbordsnotiser i dina webbläsarinställningar.",
- 				  ];
+ theUILang.notifTip		= {
+ 				  false: "Din webbläsare stöder inte skrivbordsnotiser. Försök med en annan webbläsare. T.ex. Google Chrome.",
+ 				  "granted": "",
+ 				  "default": "Din webbläsare stöder skrivbordsnotiser. Tryck på knappen nedan för att aktivera.",
+ 				  "denied": "Din webbläsare stöder skrivbordsnotiser men de är inaktiverade för denna webbplats. Stäng denna dialog och aktivera skrivbordsnotiser i dina webbläsarinställningar.",
+ 				  };
 
 thePlugins.get("history").langLoaded();

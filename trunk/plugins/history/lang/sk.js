@@ -24,11 +24,11 @@
  theUILang.enableNotifications	= "Enable desktop notifications";
  theUILang.historyNotification	= "Desktop Notifications";
  theUILang.notifAutoClose	= "Autoclose notifications after";
- theUILang.notifTip		= [
- 				  "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
- 				  "",
- 				  "Your browser supports desktop notifications. Press button below to enable it.",
- 				  "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
- 				  ];
+ theUILang.notifTip		= {
+ 				  false: "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 				  "granted": "",
+ 				  "default": "Your browser supports desktop notifications. Press button below to enable it.",
+ 				  "denied": "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 				  };
 
 thePlugins.get("history").langLoaded();
