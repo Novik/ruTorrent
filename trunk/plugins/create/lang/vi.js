@@ -24,5 +24,6 @@
  theUILang.torrentSave			= "Lưu";
  theUILang.torrentKill			= "Dừng";
  theUILang.torrentKilled		= "Quá trình tạo torrent đã ngừng lại.";
+ theUILang.recentTrackers		= "Recent trackers"; 
 
 thePlugins.get("create").langLoaded();

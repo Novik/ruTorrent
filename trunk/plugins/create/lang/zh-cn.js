@@ -24,5 +24,6 @@
  theUILang.torrentSave			= "保持";
  theUILang.torrentKill			= "停止";
  theUILang.torrentKilled		= "进程已停止.";
+ theUILang.recentTrackers		= "Recent trackers"; 
 
 thePlugins.get("create").langLoaded();

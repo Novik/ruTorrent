@@ -136,7 +136,7 @@ plugin.onLangLoaded = function()
 					"<label class='nomargin'><input type='checkbox' name='private' id='private'/>"+theUILang.PrivateTorrent+"</label><br/>"+
 				"</fieldset>"+
 			"</div>"+
-			"<div class='aright buttons-list'><input type='button' id='recentTrackers' value='Recent trackers...' class='Button menuitem' onclick='theWebUI.showRecentTrackers()'/><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='OK Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",true);		
+			"<div class='aright buttons-list'><input type='button' id='recentTrackers' value='"+theUILang.recentTrackers+"...' class='Button menuitem' onclick='theWebUI.showRecentTrackers()'/><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='OK Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",true);		
 		$(document.body).append($("<iframe name='xcreatefrm'/>").css({visibility: "hidden"}).attr( { name: "xcreatefrm", id: "xcreatefrm" } ).width(0).height(0));
 		$(document.body).append(
 			$('<form action="plugins/create/action.php" id="xgetfile" method="post" target="xcreatefrm">'+
