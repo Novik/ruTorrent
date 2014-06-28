@@ -24,5 +24,6 @@
  theUILang.torrentSave			= "Mentés";
  theUILang.torrentKill			= "Megállít";
  theUILang.torrentKilled		= "Folyamat leállt.";
+ theUILang.recentTrackers		= "Recent trackers"; 
 
 thePlugins.get("create").langLoaded();
