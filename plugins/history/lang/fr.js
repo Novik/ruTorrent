@@ -24,11 +24,11 @@
  theUILang.enableNotifications	= "Activer les notifications du bureau";
  theUILang.historyNotification	= "Notifications du bureau";
  theUILang.notifAutoClose	= "Fermeture auto des notifications après";
- theUILang.notifTip		= [
- 				  "Votre navigateur ne supporte pas les notifications du bureau. Essayez un autre navigateur, par exemple, Google Chrome.",
- 				  "",
- 				  "Votre navigateur supporte les notifications du bureau. Pressez le bouton ci-dessous pour les activer.",
- 				  "Votre navigateur supporte les notifications du bureau, mais vous les avez désactivées pour ce site. Fermez cette boite de dialogue et utilisez les options de votre navigateur pour activer les notifications du bureau.",
- 				  ];
+ theUILang.notifTip		= {
+ 				  false: "Votre navigateur ne supporte pas les notifications du bureau. Essayez un autre navigateur, par exemple, Google Chrome.",
+ 				  "granted": "",
+ 				  "default": "Votre navigateur supporte les notifications du bureau. Pressez le bouton ci-dessous pour les activer.",
+ 				  "denied": "Votre navigateur supporte les notifications du bureau, mais vous les avez désactivées pour ce site. Fermez cette boite de dialogue et utilisez les options de votre navigateur pour activer les notifications du bureau.",
+ 				  };
 
 thePlugins.get("history").langLoaded();

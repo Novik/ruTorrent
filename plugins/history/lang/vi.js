@@ -24,11 +24,11 @@
  theUILang.enableNotifications	= "Kích hoạt thông báo trên màn hình";
  theUILang.historyNotification	= "Màn hình thông báo";
  theUILang.notifAutoClose	= "Tự đóng thông báo sau";
- theUILang.notifTip		= [
- 				  "Trình duyệt của bạn không hỗ trợ tính năng thông báo trên màn hình. Hãy thử một trình duyệt khác, chẳn hạn như Google Chrome.",
- 				  "",
- 				  "Trình duyệt của bạn hỗ trợ tính năng thông báo trên màn hình. Bấm nút ở dưới để kích hoạt.",
- 				  "Trình duyệt của bạn hỗ trợ tính năng thông báo trên màn hình, nhưng đã bị vô hiệu hóa ở trang này. Hãy đóng cửa sổ này và vào Tùy chọn của trình duyệt để bật tính năng thông báo trên màn hình.",
- 				  ];
+ theUILang.notifTip		= {
+ 				  false: "Trình duyệt của bạn không hỗ trợ tính năng thông báo trên màn hình. Hãy thử một trình duyệt khác, chẳn hạn như Google Chrome.",
+ 				  "granted": "",
+ 				  "default": "Trình duyệt của bạn hỗ trợ tính năng thông báo trên màn hình. Bấm nút ở dưới để kích hoạt.",
+ 				  "denied": "Trình duyệt của bạn hỗ trợ tính năng thông báo trên màn hình, nhưng đã bị vô hiệu hóa ở trang này. Hãy đóng cửa sổ này và vào Tùy chọn của trình duyệt để bật tính năng thông báo trên màn hình.",
+ 				  };
 
 thePlugins.get("history").langLoaded();
