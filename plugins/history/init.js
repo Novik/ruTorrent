@@ -1,9 +1,48 @@
 plugin.loadLang();
-
 plugin.mark = 0;
 plugin.hstTimeout = null;
 
 plugin.actionNames = ['', '', '', ''];
+
+plugin.showNotification = function(item)
+{
+	if(plugin.allStuffLoaded)
+	{
+		var notification = notify.createNotification( plugin.actionNames[item.action], { body: item.name, icon: { x16: 'images/favicon.ico', x32: 'images/favicon-32x32.png' } } );
+		setTimeout(function () 
+		{
+               		notification.close();
+                }, theWebUI.history.closeinterval*1000);
+	}	                
+}
+
+plugin.isNotificationsSupported = function()
+{
+	return( (plugin.allStuffLoaded && !notify.isSupported) ? false : notify.permissionLevel() );
+}
+
+plugin.rebuildNotificationsPage = function()
+{
+	if(plugin.allStuffLoaded)
+	{
+		var state = plugin.isNotificationsSupported();
+		$('#notifTip').text(theUILang.notifTip[state ]);
+		switch(state)
+		{
+			case notify.PERMISSION_DENIED:
+			case false: 
+			{
+				$('#notifPerms, #notifParam').hide();
+				break;
+			}
+			case notify.PERMISSION_GRANTED: 
+			{
+				$('#notifPerms').hide();
+				break;
+			}
+		}
+	}		
+}
 
 if(plugin.canChangeOptions())
 {
@@ -207,20 +246,6 @@ if(plugin.canChangeTabs())
 		}
 	}
 
-	plugin.showNotification = function(item)
-	{
-		var notification = notify.createNotification( plugin.actionNames[item.action], { body: item.name, icon: { x16: 'images/favicon.ico', x32: 'images/favicon-32x32.png' } } );
-		setTimeout(function () 
-		{
-                	notification.close();
-                }, theWebUI.history.closeinterval*1000);
-	}
-
-	plugin.isNotificationsSupported = function()
-	{
-		return( notify.isSupported ? notify.permissionLevel() : false );
-	}
-
 	plugin.onGetHistory = function(d)
 	{
 		var updated = false;
@@ -250,7 +275,7 @@ if(plugin.canChangeTabs())
 				updated = true;
 				if( item.action_time > plugin.mark )
 					plugin.mark = item.action_time;
-				if(!d.mode && (plugin.isNotificationsSupported()===notify.PERMISSION_GRANTED))
+				if(!d.mode && plugin.allStuffLoaded && (plugin.isNotificationsSupported()===notify.PERMISSION_GRANTED))
 				{
 	                        	plugin.showNotification(item);
 				}
@@ -262,7 +287,7 @@ if(plugin.canChangeTabs())
 			if(table.sIndex !=- 1)
 				table.Sort();
 		}
-		if((theWebUI.activeView=='history') || (plugin.isNotificationsSupported()===notify.PERMISSION_GRANTED))
+		if((theWebUI.activeView=='history') || (plugin.allStuffLoaded && (plugin.isNotificationsSupported()===notify.PERMISSION_GRANTED)))
 			plugin.hstTimeout = window.setTimeout(plugin.historyRefresh,theWebUI.settings["webui.update_interval"]);
 		else
         		if(plugin.hstTimeout)
@@ -323,26 +348,6 @@ if(plugin.canChangeTabs())
 	}
 }       
 
-plugin.rebuildNotificationsPage = function()
-{
-	var state = plugin.isNotificationsSupported();
-	$('#notifTip').text(theUILang.notifTip[state ]);
-	switch(state)
-	{
-		case notify.PERMISSION_DENIED:
-		case false: 
-		{
-			$('#notifPerms, #notifParam').hide();
-			break;
-		}
-		case notify.PERMISSION_GRANTED: 
-		{
-			$('#notifPerms').hide();
-			break;
-		}
-	}
-}
-
 plugin.onLangLoaded = function()
 {
 	injectScript(plugin.path+"/desktop-notify.js",function()
@@ -388,10 +393,17 @@ plugin.onLangLoaded = function()
 			});
 		});
 		plugin.actionNames = ['', theUILang.Added, theUILang.Finished, theUILang.Deleted];
+		plugin.markLoaded();
 	});		
 }
 
 plugin.onRemove = function()
 {
 	plugin.removePageFromOptions("st_history");
+}
+
+plugin.langLoaded = function() 
+{
+	if(plugin.enabled)
+		plugin.onLangLoaded();
 }
