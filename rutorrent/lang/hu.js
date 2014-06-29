@@ -3,7 +3,7 @@
  *
  * Initial Author: smici (smici@mail.datanet.hu)
  *
- * Author: 
+ * Author: Tiby08
  */
 
 var theUILang =

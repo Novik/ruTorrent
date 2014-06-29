@@ -1,4 +1,4 @@
-plugin.description: This plugin is intended for looking torrent's name in the external sources.
+plugin.description: This plugin allows to search for torrent name in external sources.
 plugin.author: Novik
 plugin.version: 3.6
 php.extensions.warning: json
