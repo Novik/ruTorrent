@@ -224,7 +224,7 @@ if($handle = opendir('../plugins'))
 	ignore_user_abort(true);
 	set_time_limit(0);
 	$tmp = getTempDirectory();
-	if($tmp!='/tmp')
+	if($tmp!='/tmp/')
 		makeDirectory($tmp);
 
 	if(!@file_exists($tempDirectory.'/.') || !is_readable($tempDirectory) || !is_writable($tempDirectory))

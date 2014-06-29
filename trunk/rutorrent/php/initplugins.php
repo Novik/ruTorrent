@@ -125,7 +125,7 @@ require_once( "util.php" );
 require_once( "settings.php" );
 
 $tmp = getTempDirectory();
-if($tmp!='/tmp')
+if($tmp!='/tmp/')
 	makeDirectory($tmp);
 
 $theSettings = rTorrentSettings::get(true);
