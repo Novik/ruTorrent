@@ -1,17 +1,16 @@
 #summary Recent Commits and Updated Issues
 #labels Featured
 
-Google decided to [http://code.google.com/p/support/issues/detail?id=24324 disable the Updates/Activity tab] so here is a temporary replacement using Wiki gadgets.
+= Details =
 
-= Recent Commits to trunk =
+== Changes ==
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/changes/gcChanges.xml" up_projectName="rutorrent" border="1"/>
 
-<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/kom1.xml" up_projectName="rutorrent" width="800" height="100"/> 
+== Issue Tracker ==
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/issuetracker/gcIssueTracker.xml" up_projectName="rutorrent" border="0"/>
 
-= Updates to All Issues (including closed/fixed issues) =
+== Issue Updates ==
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/issueupdates/gcIssueUpdates.xml" up_projectName="rutorrent" border="0"/>
 
-<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/gc23.xml" up_projectName="rutorrent" width="800" height="250"/> 
-
-= Detailed Updates to Open Issues =
-<wiki:gadget url="http://pychess.googlecode.com/hg-history/tip/code.google.com/t6.xml" up_projectName="rutorrent" width="800" height="250"/> 
-
-This page is based on the code from http://code.google.com/p/bullet/wiki/Updates, with bugfixes.
+== Wiki ==
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/wiki/gcWiki.xml" up_projectName="rutorrent" border="0"/>
