@@ -4,13 +4,13 @@
 = Details =
 
 == Changes ==
-<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/changes/gcChanges.xml" up_projectName="rutorrent" border="1"/>
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/test/changes/gcChanges.xml" up_projectName="rutorrent" border="1"/>
 
 == Issue Tracker ==
-<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/issuetracker/gcIssueTracker.xml" up_projectName="rutorrent" border="0"/>
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/test/issuetracker/gcIssueTracker.xml" up_projectName="rutorrent" border="1"/>
 
 == Issue Updates ==
-<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/issueupdates/gcIssueUpdates.xml" up_projectName="rutorrent" border="0"/>
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/test/issueupdates/gcIssueUpdates.xml" up_projectName="rutorrent" border="1"/>
 
 == Wiki ==
-<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/wiki/gcWiki.xml" up_projectName="rutorrent" border="0"/>
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/test/wiki/gcWiki.xml" up_projectName="rutorrent" border="1"/>
