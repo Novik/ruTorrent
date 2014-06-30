@@ -14,7 +14,7 @@ class BitHDTVEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.bit-hdtv.com';
+		$url = 'https://www.bit-hdtv.com';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'&cat=0' );
 		else
@@ -38,6 +38,7 @@ class BitHDTVEngine extends commonEngine
 				'.*<td .*>(?P<size>.*)<\/td>'.
 				'.*<td .*>.*<\/td>.*'.
 				'.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
+
 			if(($res!==false) && ($res>0) &&
 				count($matches["id"])==count($matches["cat"]) &&
 				count($matches["cat"])==count($matches["name"]) && 
