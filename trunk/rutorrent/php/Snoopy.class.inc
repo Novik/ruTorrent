@@ -501,11 +501,12 @@ class Snoopy
 			foreach($result_headers as $header)
 			{
 				// if a header begins with Location: or URI:, set the redirect
-				if(preg_match("/^(Location: |URI: |Refresh :)/i",$header))
+				if(preg_match("/^(Location:|URI:|Refresh:)/i",$header))
 				{
 					// get URL portion of the redirect
 					if(!preg_match("/^(Location: |URI:)(.*)/i",chop($header),$matches))
 						preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($header),$matches);
+
 					// look for :// in the Location header to see if hostname is included
 					if(!preg_match("|\:\/\/|",$matches[2]))
 					{
@@ -531,7 +532,6 @@ class Snoopy
 					$is_gzipped = true;
 				$this->headers[] = $header;
 			}
-
 			// gunzip
 			if ( $is_gzipped ) 
 			{
