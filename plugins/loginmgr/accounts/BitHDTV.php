@@ -2,7 +2,7 @@
 
 class BitHDTVAccount extends commonAccount
 {
-	public $url = "http://www.bit-hdtv.com";
+	public $url = "https://www.bit-hdtv.com";
 
 	protected function isOK($client)
 	{
