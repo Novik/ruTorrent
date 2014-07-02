@@ -60,7 +60,7 @@ function makeMulticall($cmds,$hash,$add,$prefix)
 	$cmd->addParameters( array_map("getCmd", $cmds) );
 	foreach( $add as $prm )
 		$cmd->addParameter($prm);
-	$cnt = count($cmd->params)-2;
+	$cnt = count($cmds)+count($add);
 	$req = new rXMLRPCRequest($cmd);
 	if($req->success())
 	{
