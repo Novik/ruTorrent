@@ -50,8 +50,8 @@ plugin.clear = function()
 
 plugin.callNotification = function( type, data, status )
 {
-//console.log(type);
-//console.log(JSON.stringify(data || this.foreground));
+console.log(type);
+console.log(JSON.stringify(data || this.foreground));
 	var ret = null;
 	type = "onTask"+type;
 	var requester = thePlugins.get(this.foreground.requester);
@@ -73,7 +73,8 @@ plugin.fromBackground = function( no )
 
 plugin.toBackground = function()
 {
-	plugin.background[ plugin.foreground.no ] = cloneObject( this.foreground );
+       	if(!plugin.isInBackground())
+		plugin.background[ plugin.foreground.no ] = cloneObject( this.foreground );
 	plugin.callNotification("HideInterface");	
 	plugin.clear();			
 	theDialogManager.hide('tskConsole');	
@@ -163,17 +164,8 @@ plugin.kill = function()
 
 plugin.setConsoleControls = function( errPresent )
 {
-	if(plugin.isInBackground())
-	{
-		$('#tskBackground').hide();
-		$('#tskRemove').show();
-	}		
-	else
-	{
-		$('#tskRemove').hide();
-		$('#tskBackground').show();
+	if(!plugin.isInBackground())
 		$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );
-	}
 	if(plugin.foreground.status>=0)
 	{
 		$('#tsk_btns').css( "background", "none" );
@@ -509,7 +501,8 @@ plugin.onGetTasks = function(d)
 		plugin.background = d;
 		if(updated)
 		{
-			$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );		
+			if(!plugin.isInBackground())
+				$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );		
 			$('li#tab_tasks').show();
 			$(theWebUI.tables["tasks"].container).show();
 			table.refreshRows();
@@ -539,7 +532,6 @@ plugin.onLangLoaded = function()
 			"</fieldset>"+
 		"</div>"+
 		"<div class='aright buttons-list' id='tsk_btns'>"+
-			"<input type='button' id='tskRemove' class='Button' value='"+theUILang.tskRemove+"'/>"+
 			"<input type='button' id='tskBackground' class='Button' value='"+theUILang.tskBackground+"'/>"+
 			"<input type='button' id='tskCancel' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 		"</div>",true);
@@ -550,10 +542,7 @@ plugin.onLangLoaded = function()
 			if(!plugin.isInBackground())
 				plugin.shutdown();
 			else
-			{
-				plugin.callNotification("HideInterface");
-				plugin.clear();
-			}				
+				theWebUI.getTable('tasks').tasksRemovePrim();
 		}
 	});
 	theDialogManager.setHandler('tskConsole','afterShow',function()
@@ -562,9 +551,5 @@ plugin.onLangLoaded = function()
 			plugin.cHeight = $('#tskcmderrors').parent().height();
 	});
 	$('#tskBackground').click( plugin.toBackground );
-	$('#tskRemove').click( function()
-	{
-		theWebUI.getTable('tasks').tasksRemovePrim();
-	});
 	$(".tskconsole").enableSysMenu();
 }
