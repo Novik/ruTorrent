@@ -41,12 +41,11 @@ if(isset($_REQUEST['hash']) &&
 				if($filename!=='')
 				{
 					$commands = array();
-					$randName = '';
 					$flags = '';
 					$st = mediainfoSettings::load();
 					if($st && !empty($st->data["mediainfousetemplate"]))
 					{
-						$randName = uniqid(getTempDirectory()."rutorrent-opts-");
+						$randName = $task->makeDirectory()."/opts";
 						file_put_contents( $randName, $st->data["mediainfotemplate"] );
 						$flags = "--Inform=file://".escapeshellarg($randName);
 					}
@@ -60,8 +59,6 @@ if(isset($_REQUEST['hash']) &&
 						'no'=>$_REQUEST['no'] 
 					) );
 					$ret = $task->start($commands, rTask::FLG_WAIT);
-					if(!empty($randName))
-						unlink($randName);					
 				}
 			}
 			break;
