@@ -33,14 +33,20 @@ class rTask
 		return( getSettingsPath().'/tasks/'.$taskNo );
 	}
 
+	public function makeDirectory()
+	{
+		$dir = self::formatPath($this->id);
+		makeDirectory($dir);		
+		return($dir);
+	}
+
 	public function start( $commands, $flags = self::FLG_DEFAULT )
 	{
 		if(!rTorrentSettings::get()->linkExist)
 			$flags|=self::FLG_RUN_AS_WEB;
-	        $dir = self::formatPath($this->id);
 	        if(count($commands))
 	        {
-			makeDirectory($dir);
+			$dir = $this->makeDirectory();
 			if(($sh = fopen($dir."/start.sh","w"))!==false)
 		        {
 				fputs($sh,'#!/bin/sh'."\n");
@@ -142,7 +148,7 @@ class rTask
 		}		
 	}
 
-	static public function check( $taskNo, $flags = null, $loadParams = false )
+	static public function check( $taskNo, $flags = null )
 	{
 		$dir = self::formatPath($taskNo);
 		$ret = array( "no"=>$taskNo, "pid"=>0, "status"=>-1, "log"=>array(), "errors"=>array(), "params"=>null, "start"=>filemtime($dir.'/pid'), "finish"=>0 );
@@ -160,7 +166,7 @@ class rTask
 					$ret["finish"] = filemtime($dir.'/status');
 				}					
 			}
-			if($loadParams && is_file($dir.'/params') && is_readable($dir.'/params'))
+			if(is_file($dir.'/params') && is_readable($dir.'/params'))
 				$ret["params"] = unserialize(file_get_contents($dir.'/params'));
 			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS));
 			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS));
@@ -232,7 +238,7 @@ class rTaskManager
 			{
 				if($file != "." && $file != ".." && is_dir($dir.$file))
 				{
-					$tasks[$file] = rTask::check( $file, null, true );
+					$tasks[$file] = rTask::check( $file );
 					$tasks[$file]["name"] = $tasks[$file]["params"]["name"];
 					$tasks[$file]["requester"] = $tasks[$file]["params"]["requester"];
 					unset($tasks[$file]["params"]["name"]);

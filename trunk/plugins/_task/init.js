@@ -21,11 +21,33 @@ theWebUI.startConsoleTask = function( taskName, requesterName, parameters, optio
 		tskcmderrors: 0,	// errors crc
 		tskcmdlog: 0,		// log crc
 		requester: requesterName,
-		parameters: parameters,
+		params: parameters,
 		options: options || {}
 	};
 	plugin.start();
 }
+
+theWebUI.getConsoleTask = function()
+{
+	return(plugin.foreground);
+}
+
+theWebUI.setConsoleTaskState = function( options )
+{
+	for( var name in options )
+	{
+		switch(name)
+		{
+			case 'showerrors':
+			{
+				plugin.setConsoleControls(options[name]);
+				break;
+			}
+		}
+	}
+}
+
+//			
 
 plugin.start = function()
 {
@@ -33,8 +55,33 @@ plugin.start = function()
 	$('#tskcmderrors').empty();
 	theDialogManager.setModalState();
 	var req = '';
-	for( var i in this.foreground.parameters )
-	     req+=('&v='+i+'&s='+encodeURIComponent(this.foreground.parameters[i]));
+	for( var i in this.foreground.params )
+	{
+		var parameter = this.foreground.params[i];
+		switch($type(parameter))
+		{
+			case "array":
+			{
+				for( var k in parameter )
+					req+=('&v='+i+'[]&s='+encodeURIComponent(parameter[k]));
+				break;					
+			}
+			case "object":
+			{
+				for( var property in  parameter )
+				{
+					if( parameter.hasOwnProperty(property) )
+						req+=('&v='+i+'['+property+']&s='+encodeURIComponent(parameter[property]));
+				}						
+				break;					
+			}			
+			default:
+			{
+				req+=('&v='+i+'&s='+encodeURIComponent(parameter));
+				break;
+			}
+		}							
+	}
 	theWebUI.requestWithoutTimeout("?action=taskstart&hash="+this.foreground.name+"&hash="+this.foreground.requester+req,[this.onStart, this]);
 }
 
@@ -84,8 +131,8 @@ plugin.toBackground = function()
 plugin.shutdown = function()
 {
 	this.kill();		
-	plugin.callNotification("HideInterface");
-	plugin.callNotification("Shutdown");
+	this.callNotification("HideInterface");
+	this.callNotification("Shutdown");
 	this.clear();
 }
 
@@ -114,11 +161,19 @@ plugin.onStart = function(data)
 	{
 		if(!this.isInBackground())
 			plugin.refreshTasks();
-		plugin.callNotification("ShowInterface",data);	
+		plugin.callNotification("ShowInterface",$.extend(this.foreground,data));	
 	        $("#tskConsole-header").html(theUILang.tskCommand);
 	        theDialogManager.show("tskConsole");
 		this.check(data);
 	}
+	else
+		if(!data.status)
+		{
+			this.foreground.no = data.no;
+			this.kill();		
+			this.callNotification("Shutdown");
+			this.clear();
+		}			
 }
 
 plugin.check = function(data)
@@ -132,7 +187,7 @@ plugin.check = function(data)
 	if(this.foreground.status<0)
 	{
 		var self = this;
-		this.foreTimeout = window.setTimeout( function() 
+		this.foreTimeout = setTimeout( function() 
 		{
 			theWebUI.requestWithoutTimeout("?action=taskcheck&hash="+self.foreground.no,[self.check,self]);
 		},1000);
@@ -164,8 +219,7 @@ plugin.kill = function()
 
 plugin.setConsoleControls = function( errPresent )
 {
-	if(!plugin.isInBackground())
-		$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );
+	$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );
 	if(plugin.foreground.status>=0)
 	{
 		$('#tsk_btns').css( "background", "none" );
@@ -351,6 +405,7 @@ plugin.renameTasksStuff = function()
 
 plugin.refreshTasks = function()
 {
+	plugin.clearBackTimeout();
 	theWebUI.requestWithoutTimeout("?action=tasklist",[plugin.onGetTasks,plugin]);	
 }
 
@@ -409,8 +464,7 @@ theTabs.onShow = function(id)
 		if(table)
 		{
 			table.refreshRows();
-			if(!plugin.backTimeout)
-				plugin.refreshTasks();
+			plugin.refreshTasks();
 		}
 	}
 	else
@@ -438,7 +492,7 @@ theWebUI.resizeBottom = function( w, h )
 
 plugin.canDetachTask = function()
 {
-	return((plugin.running<plugin.maxConcurentTasks) || (plugin.foreground.status>=0));
+	return( (((plugin.running<plugin.maxConcurentTasks) || (plugin.foreground.status>=0)) && (plugin.foreground.pid>0)) || plugin.isInBackground() );
 }
 
 plugin.onGetTasks = function(d)
@@ -502,7 +556,7 @@ plugin.onGetTasks = function(d)
 		if(updated)
 		{
 			if(!plugin.isInBackground())
-				$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );		
+				$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );
 			$('li#tab_tasks').show();
 			$(theWebUI.tables["tasks"].container).show();
 			table.refreshRows();
@@ -510,12 +564,8 @@ plugin.onGetTasks = function(d)
 				table.Sort();
 		}
 	}
-	if( ((theWebUI.activeView=='tasks') || plugin.foreground.no) 
-		&& plugin.running 
-		)
-		plugin.backTimeout = window.setTimeout(plugin.refreshTasks,theWebUI.settings["webui.update_interval"]);
-	else
-       		plugin.clearBackTimeout();
+	if( ((theWebUI.activeView=='tasks') || plugin.foreground.no) && plugin.running )
+		plugin.backTimeout = setTimeout(plugin.refreshTasks,theWebUI.settings["webui.update_interval"]);
 }
 
 plugin.onLangLoaded = function()
