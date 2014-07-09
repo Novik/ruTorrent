@@ -34,7 +34,7 @@ class Torrent411Engine extends commonEngine
                         $cli = $this->fetch( $url.'/torrents/search/?search='.$what.$cat.'&order=seeders&type=desc&page='.$pg );
 			if( ($cli==false) || (strpos($cli->results, ">Aucun R�sultat Aucun<")!==false))
 				break;                        
-                        $res = preg_match_all('`<img src="/images/categories.png" alt="(?P<cat>.*)".*'.
+			$res = preg_match_all('`<i class="categories-icons category-spline-(?P<cat>.*)".*'.
                                 '<a href="(?P<desc>.*)" title="(?P<name>.*)">.*'.
                                 '<dl>.*<dt>.*</dt>.*<dd>(?P<date>.*)</dd>.*'.
                                 '<a href="/torrents/nfo/\?id=(?P<id>.*)".*'.
