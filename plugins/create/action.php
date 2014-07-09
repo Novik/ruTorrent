@@ -117,7 +117,6 @@ if(isset($_REQUEST['cmd']))
 					else
 					if($useExternal===false)
 						$useExternal = "inner";
-					$taskNo = uniqid( time(), true );
 					$task = new rTask( array
 					( 
 						'arg'=>call_user_func('end',explode('/',$path_edit)),
@@ -129,16 +128,16 @@ if(isset($_REQUEST['cmd']))
 						'start_seeding'=>$_REQUEST['start_seeding'],
 						'piece_size'=>$_REQUEST['piece_size'],
 						'private'=>$_REQUEST['private']
-					), $taskNo );
+					) );
 					$commands = array();
 					$commands[] = escapeshellarg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
-						$taskNo." ".
+						$task->id." ".
 						escapeshellarg(getPHP())." ".
 						escapeshellarg($pathToCreatetorrent)." ".
 						escapeshellarg($path_edit)." ".
 						$piece_size." ".
 						escapeshellarg(getUser())." ".
-						escapeshellarg(rTask::formatPath($taskNo));
+						escapeshellarg(rTask::formatPath($task->id));
 					$commands[] = '{';
 					$commands[] = 'chmod a+r "${dir}"/result.torrent';
 					$commands[] = '}';						
