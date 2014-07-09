@@ -106,7 +106,7 @@ class rTask
 		return(array( "no"=>$this->id, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array(count($commands) ? "Can't start operation" : "Incorrect target directory") ));
 	}
 
-	static protected function clean( $dir )
+	static public function clean( $dir )
 	{
 		@deleteDirectory( $dir );
 	}
@@ -151,7 +151,7 @@ class rTask
 	static public function check( $taskNo, $flags = null )
 	{
 		$dir = self::formatPath($taskNo);
-		$ret = array( "no"=>$taskNo, "pid"=>0, "status"=>-1, "log"=>array(), "errors"=>array(), "params"=>null, "start"=>filemtime($dir.'/pid'), "finish"=>0 );
+		$ret = array( "no"=>$taskNo, "pid"=>0, "status"=>-1, "log"=>array(), "errors"=>array(), "params"=>null, "start"=>@filemtime($dir.'/pid'), "finish"=>0 );
 		if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 		{
 			if(is_null($flags))
@@ -170,8 +170,6 @@ class rTask
 				$ret["params"] = unserialize(file_get_contents($dir.'/params'));
 			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS));
 			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS));
-//			if($ret["status"]>=0)
-//				self::clean($dir);
 		}
 		return($ret);
 	}
@@ -249,6 +247,24 @@ class rTaskManager
 	        }
 	        return($tasks);
 	}
+	
+	static public function isPIDExists( $pid )
+	{
+toLog($pid);	
+toLog(function_exists( 'posix_getpgid' ) ? (posix_getpgid($pid)!==false) : file_exists( '/proc/'.$pid ));
+		return( function_exists( 'posix_getpgid' ) ? (posix_getpgid($pid)!==false) : file_exists( '/proc/'.$pid ) );
+	}
+
+	static public function cleanup()
+	{
+		$tasks = self::obtain();
+toLog(print_r($tasks,1));
+		foreach( $tasks as $id=>$task )
+		{
+			if( ($task["status"]<0) && (!$task["pid"] || !self::isPIDExists($task["pid"])) )
+				rTask::clean(rTask::formatPath($id));
+		}
+	}
 
 	static public function remove( $list )
 	{
@@ -264,7 +280,7 @@ class rTaskManager
 			closedir($handle);
 			foreach( $tasks as $id )
 				rTask::kill( $id );
-			$tasks = rTaskManager::obtain();
+			$tasks = self::obtain();
 	        }
 	        return($tasks);
 	}
