@@ -24,5 +24,6 @@
  theUILang.rssURLGUID		= "URL описания";
  theUILang.rssURLHref		= "URL загрузки";
  theUILang.rssPatternError	= "Ошибка в оформлении шаблона.";
+ theUILang.rssStatus		= "Рассылка"; 
 
 thePlugins.get("rssurlrewrite").langLoaded();

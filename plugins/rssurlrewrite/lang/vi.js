@@ -24,5 +24,6 @@
  theUILang.rssURLGUID		= "Mô tả URL";
  theUILang.rssURLHref		= "Tải URL";
  theUILang.rssPatternError	= "Lỗi trong chuỗi mẫu";
+ theUILang.rssStatus		= "RSS"; 
 
 thePlugins.get("rssurlrewrite").langLoaded();

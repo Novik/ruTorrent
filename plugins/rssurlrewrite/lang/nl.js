@@ -24,5 +24,6 @@
  theUILang.rssURLGUID		= "URL-omschrijving";
  theUILang.rssURLHref		= "Laad URL";
  theUILang.rssPatternError	= "Fout in patroon string.";
+ theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

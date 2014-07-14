@@ -24,5 +24,6 @@
  theUILang.rssURLGUID		= "描述 URL";
  theUILang.rssURLHref		= "载入 URL";
  theUILang.rssPatternError	= "模式串中有错误.";
+ theUILang.rssStatus		= "RSS"; 
 
 thePlugins.get("rssurlrewrite").langLoaded();

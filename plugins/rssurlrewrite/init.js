@@ -66,7 +66,7 @@ theWebUI.loadRules = function( rle )
 		list.append( $("<li>").html("<input type='checkbox' id='_re"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectRule(this);\" id='_rn"+i+"'/>"));
 		$("#_rn"+i).val(f.name);
 		if(f.enabled)
-			$("#_re"+i).attr("checked",true);
+			$("#_re"+i).prop("checked",true);
 	}
 	for(var i=0; i<this.rules.length; i++)
 	{
@@ -92,7 +92,7 @@ theWebUI.addNewRule = function()
 	this.rules.push(f);
 	$("#_rn"+i).val( f.name );
 	if(f.enabled)
-		$("#_re"+i).attr("checked",true);
+		$("#_re"+i).prop("checked",true);
 	$("#_rn"+i).focus();
 }
 
@@ -108,8 +108,8 @@ theWebUI.deleteCurrentRule = function()
 		{
 			for(var i=no+1; i<this.rules.length+1; i++)
 			{
-				$("#_rn"+i).attr("id", "_rn"+(i-1));
-				$("#_re"+i).attr("id", "_re"+(i-1));
+				$("#_rn"+i).prop("id", "_rn"+(i-1));
+				$("#_re"+i).prop("id", "_re"+(i-1));
 			}
 			if(no>=this.rules.length)
 				no = no - 1;

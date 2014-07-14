@@ -24,5 +24,6 @@
  theUILang.rssURLGUID		= "URL-адреса опису";
  theUILang.rssURLHref		= "URL-адреса завантаження";
  theUILang.rssPatternError	= "В оформленні виявлено помилку.";
+ theUILang.rssStatus		= "Розсилка"; 
 
 thePlugins.get("rssurlrewrite").langLoaded();
