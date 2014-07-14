@@ -21,7 +21,7 @@ plugin.tabsShow = theTabs.show;
 theTabs.show = function(id)
 {
 	plugin.tabsShow.call(this,id);
-	$(".tabbar img").attr( { src: $(".tabbar li:last-child").hasClass("selected") ? 
+	$(".tabbar img").prop( { src: $(".tabbar li:last-child").hasClass("selected") ? 
 		"plugins/theme/themes/Excel/images/tabbghfin.png" : 
 		"plugins/theme/themes/Excel/images/tabbgfin.png" } );
 }
@@ -31,7 +31,7 @@ theWebUI.showPanel = function(pnl,enable)
 	var cont = $('#'+pnl.id+"_cont");
 	cont.toggle(enable);
 	theWebUI.settings["webui.closed_panels"][pnl.id] = !enable;
-	$('#'+pnl.id+" img").attr("src",enable ? "plugins/theme/themes/Excel/images/pnl_open.png" : "plugins/theme/themes/Excel/images/pnl_close.png");
+	$('#'+pnl.id+" img").prop("src",enable ? "plugins/theme/themes/Excel/images/pnl_open.png" : "plugins/theme/themes/Excel/images/pnl_close.png");
 },
 
 plugin.speedCreate = rSpeedGraph.prototype.create;
