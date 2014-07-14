@@ -65,7 +65,7 @@ rLoadGraph.prototype.draw = function( percent )
 					noTicks: true
 		  		}
 			});
-			self.owner.append( $("<div>").attr("id","meter-cpu-text").css({top: 0}).text(percent+'%') ).attr("title", percent+'%');
+			self.owner.append( $("<div>").attr("id","meter-cpu-text").css({top: 0}).text(percent+'%') ).prop("title", percent+'%');
 		}
 	}
 	);
