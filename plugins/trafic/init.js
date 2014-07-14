@@ -94,8 +94,8 @@ if(plugin.canChangeTabs())
 					}).appendTo("body").fadeIn(200);
 				}
 
-				self.owner.unbind("plothover");
-				self.owner.bind("plothover", 
+				self.owner.off("plothover");
+				self.owner.on("plothover", 
 					function (event, pos, item) 
 					{ 
 						if(item)
@@ -124,7 +124,7 @@ if(plugin.canChangeTabs())
 					{
 						self.checked[ndx] = !self.checked[ndx];
 						self.draw();
-					}).attr("checked",self.checked[ndx]);
+					}).prop("checked",self.checked[ndx]);
 				});
 			}
 		});
