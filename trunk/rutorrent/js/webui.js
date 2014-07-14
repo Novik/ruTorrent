@@ -228,9 +228,9 @@ var theWebUI =
 	{
 		window.onresize = theWebUI.resize;
 		window.onorientationchange = theWebUI.resize;
-		$(document).bind("dragstart",function(e) { return(false); } );
-		$(document).bind("selectstart",function(e) { return(e.fromTextCtrl); });
-		$(document).bind("contextmenu",function(e)
+		$(document).on("dragstart",function(e) { return(false); } );
+		$(document).on("selectstart",function(e) { return(e.fromTextCtrl); });
+		$(document).on("contextmenu",function(e)
 		{
 			if(e.fromTextCtrl)
 				theContextMenu.hide();
@@ -593,7 +593,7 @@ var theWebUI =
 			{
 				o = $(o);
 				if(o.is("input:checkbox"))
-					o.attr('checked',(v!=0));
+					o.prop('checked',(v!=0));
 				else
 				{
 					switch(i)
@@ -1753,7 +1753,7 @@ var theWebUI =
 		if(counter.text()!=teg.cnt)
 		{
 			counter.text(teg.cnt);
-			$("#"+id).attr("title",teg.val+" ("+teg.cnt+")");
+			$("#"+id).prop("title",teg.val+" ("+teg.cnt+")");
 		}
 	},
 
@@ -1990,7 +1990,7 @@ var theWebUI =
 			if(counter.text()!=teg.cnt)
 			{
 				counter.text(teg.cnt);
-				$("#"+id).attr("title",teg.val+" ("+teg.cnt+")");
+				$("#"+id).prop("title",teg.val+" ("+teg.cnt+")");
 			}
 		}
 	},
@@ -2063,26 +2063,26 @@ var theWebUI =
    		$("#prop-tracker_numwant").val( props.tracker_numwant );
    		if(props.pex ==- 1) 
 		{
-   		        $("#prop-pex").attr("checked",false).attr("disabled",true);
+   		        $("#prop-pex").prop("checked",false).prop("disabled",true);
 			$("#lbl_prop-pex").addClass("disabled");
 		}
    		else 
    		{
-   			$("#prop-pex").attr("checked",(props.pex==1)).attr("disabled",false).removeClass("disabled");
+   			$("#prop-pex").prop("checked",(props.pex==1)).prop("disabled",false).removeClass("disabled");
 			$("#lbl_prop-pex").removeClass("disabled");
 		}
 		o = $$("prop-superseed");
 		if(this.torrents[this.pID].done==1000)
 		{
-		        $("#prop-superseed").attr("disabled",false);
+		        $("#prop-superseed").prop("disabled",false);
       			$("#lbl_prop-superseed").removeClass("disabled");
 		}
 		else
 		{
-		        $("#prop-superseed").attr("disabled",true);
+		        $("#prop-superseed").prop("disabled",true);
       			$("#lbl_prop-superseed").addClass("disabled");
      		}
-     		$("#prop-superseed").attr("checked",(props.superseed==1));
+     		$("#prop-superseed").prop("checked",(props.superseed==1));
    		theDialogManager.show("dlgProps");
    	},
 

@@ -157,7 +157,7 @@ $.fn.extend(
 	        	{
 				if(contextMenuPresent)
 				{
-					$(this).bind( "contextmenu", function(e)
+					$(this).on( "contextmenu", function(e)
 					{
 						e.which = 3;
 						e.button = 2;
@@ -214,18 +214,18 @@ $.fn.extend(
 			else
 			{
 				if(contextMenuPresent)
-					$(this).unbind( "contextmenu" );
+					$(this).off( "contextmenu" );
 				else
 				if(browser.isOpera)
-					$(this).unbind( "mouseup" );
-				$(this).unbind( "mousedown" );
+					$(this).off( "mouseup" );
+				$(this).off( "mousedown" );
 			}
 		}));            	
 	},
 
 	enableSysMenu: function()
 	{
-		return(this.bind("contextmenu",function(e) { e.stopImmediatePropagation(); }).
+		return(this.on("contextmenu",function(e) { e.stopImmediatePropagation(); }).
 			bind("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
 	},
 
@@ -299,7 +299,7 @@ function askYesNo( title, content, funcYesName )
 {
 	$("#yesnoDlg-header").html(title);
 	$("#yesnoDlg-content").html(content);
-	$("#yesnoOK").unbind('click');
+	$("#yesnoOK").off('click');
 	$("#yesnoOK").click( function() { eval(funcYesName); theDialogManager.hide("yesnoDlg"); return(false); });
 	theDialogManager.show("yesnoDlg");
 }
@@ -1106,7 +1106,7 @@ var theBTClientVersion =
 	{
 		"AR" : "Ares", "AT" : "Artemis", "AV" : "Avicora",
 		"BG" : "BTGetit", "BM" : "BitMagnet", "BP" : "BitTorrent Pro (Azureus + Spyware)",
-		"BX" : "BittorrentX", "bk" : "BitKitten (libtorrent)", "BS" : "BTSlave",
+		"bk" : "BitKitten (libtorrent)", "BS" : "BTSlave",
 		"BW" : "BitWombat", "BX" : "BittorrentX", "EB" : "EBit",
 		"DE" : "Deluge", "DP" : "Propogate Data Client", "FC" : "FileCroc",
 		"FT" : "FoxTorrent/RedSwoosh", "GR" : "GetRight", "HN" : "Hydranode",
@@ -1120,14 +1120,15 @@ var theBTClientVersion =
 		"WY" : "Wyzo", "XL" : "Xunlei",
 		"XT" : "XanTorrent", "ZT" : "Zip Torrent", 
 		'GS' : "GSTorrent", 'KG' : "KGet", 'ST' : "SymTorrent", 
-		'BE' : "BitTorrent SDK"
+		'BE' : "BitTorrent SDK", "TB" : "Torch"
 	 },
 	azLikeClients3:
 	{
 	        "AG" : "Ares", "A~" : "Ares", "ES" : "Electric Sheep",
         	"HL" : "Halite", "LT" : "libtorrent (Rasterbar)", "lt" : "libTorrent (Rakshasa)",
 	        "MP" : "MooPolice", "TT" : "TuoTu", "qB" : "qBittorrent",
-       		'MG' : "MediaGet"	// ? -MG1Cr0-
+       		'MG' : "MediaGet",	// ? -MG1Cr0-
+       		"IL" : "iLivid" 
 	},
 	azLikeClients2x2:
 	{
@@ -1138,7 +1139,8 @@ var theBTClientVersion =
 		'UM' : "uTorrent for Mac", 'UT' : "uTorrent", 'TR' : "Transmission",
 		'AZ' : "Azureus", 'KT' : "KTorrent", "BF" : "BitFlu",
 	        'LW' : "LimeWire", "BB" : "BitBuddy", "BR" : "BitRocket",
-		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant"
+		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant",
+		"SK" : "Spark"
 	},
 	shLikeClients:
 	{

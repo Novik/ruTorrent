@@ -1146,17 +1146,22 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 
 $(document).ready(function() 
 {
-	$('#ind').ajaxStart( function()
+	var timer = null;
+
+	$(document).ajaxStart( function()
 	{
-		this.timer = window.setTimeout("$('#ind').css( { visibility: 'visible' } )", 500);
+		timer = window.setTimeout( function()
+		{
+			$('#ind').css( { visibility: 'visible' } )
+		}, 500);
 	});
-	$('#ind').ajaxStop( function()
+	$(document).ajaxStop( function()
 	{
-	        if(this.timer)
+	        if(timer)
         	{
-        		window.clearTimeout(this.timer);
-	        	this.timer = null;
+        		window.clearTimeout(timer);
+	        	timer = null;
 		}
-		$(this).css( { visibility: "hidden" } );
+		$('#ind').css( { visibility: "hidden" } );
 	});
 });
