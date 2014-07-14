@@ -168,7 +168,7 @@ theSearchEngines.run = function()
 			        theWebUI.setTeg(s);
 			else
 			{		
-				$("#query").attr("readonly",true);
+				$("#query").prop("readonly",true);
 				theWebUI.requestWithoutTimeout("?action=extsearch&s="+theSearchEngines.current+"&v="+encodeURIComponent(s)+"&v="+encodeURIComponent($("#exscategory").val()),[theWebUI.setExtSearchTag, theWebUI]);
 			}
 		}
@@ -294,7 +294,7 @@ plugin.correctCounter = function(id,count)
 					count++;
 		}
 		$("#"+id+"-c").text(count);
-		$("#"+id).attr("title",plugin.tegs[id].val+" ("+count+")");
+		$("#"+id).prop("title",plugin.tegs[id].val+" ("+count+")");
 	}
 }
 
@@ -536,8 +536,7 @@ theWebUI.tegRefresh = function()
 	if($type(plugin.tegs[theWebUI.actLbl]))
 	{
 		var item = plugin.tegs[theWebUI.actLbl];
-		$("#query").val(item.what);
-		$("#query").attr("readonly",true);
+		$("#query").val(item.what).prop("readonly",true);
 		theWebUI.requestWithoutTimeout("?action=extsearch&s="+item.eng+"&v="+encodeURIComponent(item.what)+"&v="+encodeURIComponent(item.cat),[theWebUI.setExtSearchTag, theWebUI]);
 	}
 }
@@ -646,11 +645,9 @@ if(plugin.enabled && plugin.canChangeOptions())
 			$('#exs_limit').val(theSearchEngines.globalLimit);
 			$.each(theSearchEngines.sites,function(ndx,val)
 			{
-				$('#'+ndx+'_enabled').attr("checked", (val.enabled==1));
-				$('#'+ndx+'_global').attr("checked", (val.global==1));
+				$('#'+ndx+'_enabled').prop("checked", (val.enabled==1)).change();
+				$('#'+ndx+'_global').prop("checked", (val.global==1)).change();
 				$('#'+ndx+'_limit').val(val.limit);
-				$('#'+ndx+'_global').change();
-				$('#'+ndx+'_enabled').change();
 
 			        if(val.enabled==1)
 					$('#opt_'+ndx).addClass('bld');
@@ -728,7 +725,7 @@ plugin.refreshCategories = function()
 		for( var i=0; i<theSearchEngines.sites[theSearchEngines.current].cats.length; i++)
 			$('#exscategory').append("<option value='"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"'>"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"</option>");
 	}
-	$("#exscategory").attr("disabled",(theSearchEngines.current == -1));
+	$("#exscategory").prop("disabled",(theSearchEngines.current == -1));
 }
 
 plugin.shutdownOldVersion = function()
@@ -847,7 +844,7 @@ plugin.onLangLoaded = function()
 	this.attachPageToOptions($("<div>").attr("id","st_extsearch").html(s)[0],theUILang.exsSearch);
 	for( var i in toDisable )
 	{
-		$('#'+toDisable[i]+'_enabled').attr("disabled",true).attr("checked",false);
+		$('#'+toDisable[i]+'_enabled').prop("disabled",true).prop("checked",false);
 		$('#lbl_'+toDisable[i]+'_enabled').addClass("disabled");
 	}
 	$('#sel_public').change( function()
@@ -862,7 +859,7 @@ plugin.onLangLoaded = function()
 	});
 	var td = $$('rrow').insertCell(2);
 	s ="<select id='exscategory' title='"+theUILang.excat+"'></select>";
-	$(td).attr("id","exscat").html(s); 
+	$(td).prop("id","exscat").html(s); 
 	plugin.markLoaded();
 	theSearchEngines.checkForIncorrectCurrent(true);
 	if(thePlugins.isInstalled('search'))

@@ -28,7 +28,7 @@ class Torrent411Engine extends commonEngine
                         $cat = $categories['all'];
                 else
                         $cat = $categories[$cat];
-                $what = rawurlencode(self::fromUTF(rawurldecode($what),"ISO-8859-1"));
+                $what = urlencode(self::fromUTF(rawurldecode($what),"ISO-8859-1"));
                 for($pg = 0; $pg<11; $pg++)
                 {
                         $cli = $this->fetch( $url.'/torrents/search/?search='.$what.$cat.'&order=seeders&type=desc&page='.$pg );
