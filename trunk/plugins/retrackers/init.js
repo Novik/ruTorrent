@@ -8,8 +8,8 @@ if(plugin.canChangeOptions())
 	{
 	        if(plugin.enabled)
 	        {
-			$('#dont_private').attr("checked",(theWebUI.retrackers.dontAddPrivate==1));
-			$('#add_begin').attr("checked",(theWebUI.retrackers.addToBegin==1));
+			$('#dont_private').prop("checked",(theWebUI.retrackers.dontAddPrivate==1));
+			$('#add_begin').prop("checked",(theWebUI.retrackers.addToBegin==1));
 			var s = '';
 			for(var i=0; i<theWebUI.retrackers.list.length; i++)
 			{
