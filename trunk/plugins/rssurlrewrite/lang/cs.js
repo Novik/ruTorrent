@@ -24,5 +24,6 @@
  theUILang.rssURLGUID		= "Description URL";
  theUILang.rssURLHref		= "Download URL";
  theUILang.rssPatternError	= "Error in pattern string.";
+ theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

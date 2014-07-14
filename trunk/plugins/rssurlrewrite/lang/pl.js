@@ -24,5 +24,6 @@
  theUILang.rssURLGUID		= "URL opisu";
  theUILang.rssURLHref		= "Download URL";
  theUILang.rssPatternError	= "Błąd w masce.";
+ theUILang.rssStatus		= "RSS"; 
 
 thePlugins.get("rssurlrewrite").langLoaded();

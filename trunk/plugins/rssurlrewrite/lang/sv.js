@@ -24,5 +24,6 @@
  theUILang.rssURLGUID		= "Beskrivnings-URL";
  theUILang.rssURLHref		= "Nedladdnings-URL";
  theUILang.rssPatternError	= "Fel i mönstersträng.";
+ theUILang.rssStatus		= "RSS"; 
 
 thePlugins.get("rssurlrewrite").langLoaded();
