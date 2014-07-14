@@ -9,7 +9,7 @@ plugin.update = function()
 
 plugin.getPortStatus = function(d)
 {
-	$("#port-td").attr("title",d.port+": "+theUILang.portStatus[d.status]).get(0).className = "statuscell pstatus"+d.status;
+	$("#port-td").prop("title",d.port+": "+theUILang.portStatus[d.status]).get(0).className = "statuscell pstatus"+d.status;
 }
 
 rTorrentStub.prototype.portcheck = function()
