@@ -25,14 +25,12 @@ theWebUI.showDataDirDlg = function( d )
 		is_multy = $.trim(this.torrents[id].multi_file) != "0";
 	}
 	$('#edit_datadir').val( $.trim(d.basepath).replace(/\/[^\/]+$/g, "") );
-	$('#btn_datadir_ok').attr("disabled",false);
+	$('#btn_datadir_ok').prop("disabled",false);
 	// can't ignore torrent's path if not multy
-	$('#move_not_add_path').attr("disabled",!is_multy);
-	$('#move_not_add_path').attr("checked",false);
-	$('#move_datafiles').attr("checked",true);
+	$('#move_not_add_path').prop("disabled",!is_multy).prop("checked",false);
+	$('#move_datafiles').prop("checked",true);
 	// can't "fast resume" torrent if not completed
-	$('#move_fastresume').attr("disabled",!is_done);
-	$('#move_fastresume').attr("checked",is_done);
+	$('#move_fastresume').prop("disabled",!is_done).prop("checked",is_done);
 	theDialogManager.show( "dlg_datadir" );
 }
 
@@ -77,7 +75,7 @@ if(plugin.canChangeMenu())
 
 theWebUI.sendDataDir = function()
 {
-	$('#btn_datadir_ok').attr("disabled",true);
+	$('#btn_datadir_ok').prop("disabled",true);
 	var sr = this.getTable("trt").rowSel;
 	for( var k in sr )
 	{
@@ -87,7 +85,7 @@ theWebUI.sendDataDir = function()
 			this.requestWithTimeout( "?action=setdatadir", [this.receiveDataDir, this], function()
 			{
 				theWebUI.timeout();
-				$('#btn_datadir_ok').attr("disabled",false);
+				$('#btn_datadir_ok').prop("disabled",false);
 			});
 		}
 	}
@@ -96,7 +94,7 @@ theWebUI.sendDataDir = function()
 
 theWebUI.receiveDataDir = function( d )
 {
-	$('#btn_datadir_ok').attr("disabled",false);
+	$('#btn_datadir_ok').prop("disabled",false);
 	if( !d.errors.length )
 		theDialogManager.hide( 'dlg_datadir' );
 	else
