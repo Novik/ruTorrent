@@ -24,7 +24,7 @@ theWebUI.editTrackers = function(id)
 	}
 	$('#etrackers').val($.trim(s));
 	$('#ecomment').val($.trim(this.torrents[id].comment));
-	$('#editok').attr("disabled",false);
+	$('#editok').prop("disabled",false);
 	theDialogManager.show("tedit");
 }
 
@@ -57,17 +57,17 @@ if(plugin.canChangeMenu())
 
 theWebUI.sendEdit = function() 
 {
-	$('#editok').attr("disabled",true);
+	$('#editok').prop("disabled",true);
 	this.requestWithTimeout("?action=edittorrent",[this.receiveEdit, this], function()
 	{
 		theWebUI.timeout();
-		$('#editok').attr("disabled",true);
+		$('#editok').prop("disabled",true);
 	});
 }
 
 theWebUI.receiveEdit = function(d)
 {
-	$('#editok').attr("disabled",false);
+	$('#editok').prop("disabled",false);
 	if(!d.errors.length)
 	{
 		window.setTimeout( function() { theWebUI.getTrackers(d.hash) }, 1000 );
