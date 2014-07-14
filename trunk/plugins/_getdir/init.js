@@ -8,8 +8,8 @@ theWebUI.rDirBrowser = function( dlg_id, edit_id, btn_id, frame_id, withFiles )
 	if(!frame_id)
 		frame_id = edit_id+"_frame";
 	var self = this;
-	this.btn.val("...").bind( "click", function() { return(self.toggle()); } ).addClass("browseButton");
-	this.edit.attr("autocomplete", "off").bind( browser.isIE ? "focusin" : "focus", function() { return(self.hide()); } ).addClass("browseEdit");
+	this.btn.val("...").on( "click", function() { return(self.toggle()); } ).addClass("browseButton");
+	this.edit.prop("autocomplete", "off").on( browser.isIE ? "focusin" : "focus", function() { return(self.hide()); } ).addClass("browseEdit");
 	this.frame = $("<iframe>").attr( {id: frame_id, src: ""} ).css({position: "absolute", width: 0, visibility: "hidden"}).addClass("browseFrame");
 	this.dlg_id = dlg_id;
 	$('#'+dlg_id).append( this.frame );
@@ -26,7 +26,7 @@ theWebUI.rDirBrowser.prototype.show = function()
 		y += parent.offsetTop;
 		parent = parent.offsetParent;
 	}
-        this.frame.attr("src","plugins/_getdir/"+this.scriptName+".php?dir="+ encodeURIComponent(this.edit.val()) +
+        this.frame.prop("src","plugins/_getdir/"+this.scriptName+".php?dir="+ encodeURIComponent(this.edit.val()) +
 		"&btn=" + this.btn.attr("id") +
 		"&edit=" + this.edit.attr("id") +
 		"&frame=" + this.frame.attr("id") +
@@ -39,7 +39,7 @@ theWebUI.rDirBrowser.prototype.show = function()
 		}).show();
 	this.btn.val("X");
 	theDialogManager.bringToTop(this.frame.attr("id"));
-	this.edit.attr( "read-only", true );
+	this.edit.prop( "read-only", true );
 	return(false);
 }
 
@@ -48,7 +48,7 @@ theWebUI.rDirBrowser.prototype.hide = function()
         if(this.frame.css("visibility")!="hidden")
         {
 	        this.btn.val("...");
-		this.edit.attr( "read-only", false );
+		this.edit.prop( "read-only", false );
 		this.frame.css( { visibility: "hidden" } );
 		this.frame.hide().css( {width: 0} );	
 	}
@@ -64,5 +64,5 @@ plugin.onRemove = function()
 {
 	$(".browseButton").remove();
 	$(".browseFrame").remove();
-	$(".browseEdit").attr("autocomplete", "on").unbind( browser.isIE ? "focusin" : "focus" );
+	$(".browseEdit").prop("autocomplete", "on").off( browser.isIE ? "focusin" : "focus" );
 }
