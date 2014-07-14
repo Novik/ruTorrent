@@ -181,18 +181,18 @@ theWebUI.rssDblClick = function( obj )
 
 theWebUI.showRSSTimer = function( tm )
 {
-	$("#rsstimer").text( theConverter.time( tm ) ).attr( "row", tm );
+	$("#rsstimer").text( theConverter.time( tm ) ).prop( "row", tm );
 	if(plugin.rssShowInterval)
 		window.clearInterval( plugin.rssShowInterval );
 	plugin.rssShowInterval = window.setInterval( function()
 	{
-		var tm = $("#rsstimer").attr("row")-1;
+		var tm = $("#rsstimer").prop("row")-1;
 		if(!tm)
 		{
 			$("#rsstimer").text('*');
 			window.clearInterval( plugin.rssShowInterval );
 		}
-		$("#rsstimer").text( theConverter.time( tm ) ).attr( "row", tm );
+		$("#rsstimer").text( theConverter.time( tm ) ).prop( "row", tm );
 	}, 1000 );
 }
 
@@ -314,7 +314,7 @@ theWebUI.RSSEditGroup = function()
 	theWebUI.fillRSSGroups();
 	var grp = theWebUI.rssGroups[this.actRSSLbl];
 	for(var i=0; i<grp.lst.length; i++)
-		$('#grp_'+grp.lst[i]).attr('checked',true);
+		$('#grp_'+grp.lst[i]).prop('checked',true);
 	$("#rssGroupLabel").val(grp.name);
 	$("#dlgAddRSSGroup-header").html(theUILang.editRSSGroup);
 	$("#rssGroupHash").val(this.actRSSLbl);
@@ -678,7 +678,7 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 
 	var allCnt = propsCount(this.rssItems);
 	$("#_rssAll_c").text(allCnt);
-	$("#_rssAll_").attr("title",theUILang.allFeeds+" ("+allCnt+")");
+	$("#_rssAll_").prop("title",theUILang.allFeeds+" ("+allCnt+")");
 
 	for(var i=0; i<keys.length; i++) 
 	{
@@ -862,11 +862,11 @@ theWebUI.selectFilter = function( el )
 		$('#FLT_body').val(flt.pattern);
 		$('#FLT_exclude').val(flt.exclude);
 		$('#FLTdir_edit').val(flt.dir);
-		$('#FLTnot_add_path').attr("checked",(flt.add_path==0));
-		$('#FLTtorrents_start_stopped').attr("checked",(flt.start==0));
-		$('#FLTchktitle').attr("checked",(flt.chktitle==1));
-		$('#FLTchkdesc').attr("checked",(flt.chkdesc==1));
-		$('#FLTchklink').attr("checked",(flt.chklink==1));
+		$('#FLTnot_add_path').prop("checked",(flt.add_path==0));
+		$('#FLTtorrents_start_stopped').prop("checked",(flt.start==0));
+		$('#FLTchktitle').prop("checked",(flt.chktitle==1));
+		$('#FLTchkdesc').prop("checked",(flt.chkdesc==1));
+		$('#FLTchklink').prop("checked",(flt.chklink==1));
 		$('#FLT_label').val(flt.label);
 		$('#FLT_rss').val(flt.hash);
 		$('#FLT_interval').val(flt.interval);
@@ -945,7 +945,7 @@ theWebUI.loadFilters = function( flt, additions )
 		list.append( $("<li>").html("<input type='checkbox' id='_fe"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectFilter(this);\" id='_fn"+i+"'/>"));
 		$("#_fn"+i).val(f.name);
 		if(f.enabled)
-			$("#_fe"+i).attr("checked",true);
+			$("#_fe"+i).prop("checked",true);
 	}
 	for(var i=0; i<this.filters.length; i++)
 	{
@@ -970,7 +970,7 @@ theWebUI.addNewFilter = function()
 	this.filters.push(f);
 	$("#_fn"+i).val( f.name );
 	if(f.enabled)
-		$("#_fe"+i).attr("checked",true);
+		$("#_fe"+i).prop("checked",true);
 	$("#_fn"+i).focus();
 }
 
@@ -984,8 +984,8 @@ theWebUI.deleteCurrentFilter = function()
 	{
 		for(var i=no+1; i<this.filters.length+1; i++)
 		{
-			$("#_fn"+i).attr("id", "_fn"+(i-1));
-			$("#_fe"+i).attr("id", "_fe"+(i-1));
+			$("#_fn"+i).prop("id", "_fn"+(i-1));
+			$("#_fe"+i).prop("id", "_fe"+(i-1));
 		}
 		if(no>=this.filters.length)
 			no = no - 1;
@@ -996,8 +996,8 @@ theWebUI.deleteCurrentFilter = function()
 		if(plugin.editFilersBtn)
 			plugin.editFilersBtn.hide();
 		$('#FLT_body,#FLT_exclude,#FLTdir_edit,#FLT_label,#FLT_rss,#FLT_throttle,#FLT_ratio').val('');
-		$('#FLTnot_add_path,#FLTchkdesc,#FLTchklink,#FLTtorrents_start_stopped').attr("checked",false);
-		$('#FLTchktitle').attr("checked",true);
+		$('#FLTnot_add_path,#FLTchkdesc,#FLTchklink,#FLTtorrents_start_stopped').prop("checked",false);
+		$('#FLTchktitle').prop("checked",true);
 		$('#FLT_interval').val(-1);
 	}
 }
