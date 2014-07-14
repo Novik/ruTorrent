@@ -10,7 +10,7 @@ if(plugin.canChangeOptions())
 		{
 			$.each( theWebUI.theAccounts, function(name,val)
 			{
-				$('#'+name+'_lmenabled').attr("checked", (val.enabled==1));
+				$('#'+name+'_lmenabled').prop("checked", (val.enabled==1));
 				$('#'+name+'_lmlogin').val(val.login);
 				$('#'+name+'_lmauto').val(val.auto);
 				$('#'+name+'_lmpassword').val(val.password);
