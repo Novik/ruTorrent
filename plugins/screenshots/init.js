@@ -12,7 +12,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 			$.each( plugin.ffmpegSettings, function(name,val)
 			{
 				if($('#'+name).is(":checkbox"))
-					$('#'+name).attr('checked', val!=0).change();
+					$('#'+name).prop('checked', val!=0).change();
 				else
 					$('#'+name).val(val);
 			});
@@ -184,32 +184,32 @@ if(plugin.canChangeMenu())
 			$("#scplay").val(plugin.playTimer ? "▀" : "►")
 			if((current==0) || plugin.playTimer)
 			{
-				$("#scfirst,#scprev").attr("disabled",true);
+				$("#scfirst,#scprev").prop("disabled",true);
 				$("#scfirst,#scprev").addClass("disabled");
 			}
 			else
 			{
-				$("#scfirst,#scprev").attr("disabled",false);
+				$("#scfirst,#scprev").prop("disabled",false);
 				$("#scfirst,#scprev").removeClass("disabled");
 			}
 			if((current==$('.scframe').length-1) || plugin.playTimer)
 			{
-				$("#sclast,#scnext").attr("disabled",true);
+				$("#sclast,#scnext").prop("disabled",true);
 				$("#sclast,#scnext").addClass("disabled");
 			}
 			else
 			{
-				$("#sclast,#scnext").attr("disabled",false);
+				$("#sclast,#scnext").prop("disabled",false);
 				$("#sclast,#scnext").removeClass("disabled");
 			}
 			if($('.scframe').length==1)
 			{
-				$("#scplay,#scsaveall").attr("disabled",true);
+				$("#scplay,#scsaveall").prop("disabled",true);
 				$("#scplay,#scsaveall").addClass("disabled");
 			}
 			else
 			{
-				$("#scplay,#scsaveall").attr("disabled",false);
+				$("#scplay,#scsaveall").prop("disabled",false);
 				$("#scplay,#scsaveall").removeClass("disabled");
 			}
 		}
