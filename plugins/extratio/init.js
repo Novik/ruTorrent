@@ -77,7 +77,7 @@ plugin.loadRules = function( rle )
 		list.append( $("<li>").html("<input type='checkbox' id='_rre"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectRatioRule(this);\" id='_rrn"+i+"'/>"));
 		$("#_rrn"+i).val(f.name);
 		if(f.enabled)
-			$("#_rre"+i).attr("checked",true);
+			$("#_rre"+i).prop("checked",true);
 	}
 	for(var i=0; i<plugin.rules.length; i++)
 	{
@@ -172,7 +172,7 @@ theWebUI.addNewRatioRule = function()
 	plugin.rules.push(f);
 	$("#_rrn"+i).val( f.name );
 	if(f.enabled)
-		$("#_rre"+i).attr("checked",true);
+		$("#_rre"+i).prop("checked",true);
 	$("#_rrn"+i).focus();
 	plugin.setButtonsState();
 }
@@ -189,8 +189,8 @@ theWebUI.deleteCurrentRatioRule = function()
 		{
 			for(var i=no+1; i<plugin.rules.length+1; i++)
 			{
-				$("#_rrn"+i).attr("id", "_rrn"+(i-1));
-				$("#_rre"+i).attr("id", "_rre"+(i-1));
+				$("#_rrn"+i).prop("id", "_rrn"+(i-1));
+				$("#_rre"+i).prop("id", "_rre"+(i-1));
 			}
 			if(no>=plugin.rules.length)
 				no = no - 1;
