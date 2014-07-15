@@ -43,6 +43,7 @@ rLoadGraph.prototype.draw = function( percent )
 				points: { lineWidth: 0, radius: 0 },
 				grid:
 				{
+					show: false,
 					borderWidth: 0,
 					labelMargin: 0
 				},
