@@ -250,15 +250,12 @@ class rTaskManager
 	
 	static public function isPIDExists( $pid )
 	{
-toLog($pid);	
-toLog(function_exists( 'posix_getpgid' ) ? (posix_getpgid($pid)!==false) : file_exists( '/proc/'.$pid ));
 		return( function_exists( 'posix_getpgid' ) ? (posix_getpgid($pid)!==false) : file_exists( '/proc/'.$pid ) );
 	}
 
 	static public function cleanup()
 	{
 		$tasks = self::obtain();
-toLog(print_r($tasks,1));
 		foreach( $tasks as $id=>$task )
 		{
 			if( ($task["status"]<0) && (!$task["pid"] || !self::isPIDExists($task["pid"])) )
