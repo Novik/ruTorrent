@@ -154,7 +154,7 @@ plugin.onLangLoaded = function()
 						"<option value='0' selected>"+theUILang.cDownloaded+"</option>"+
 						"<option value='1'>"+theUILang.cAvail+"</option>"+
 					"</select>"+
-				"</td></tr></table>").after(
+				"</td></tr></table>").append(
 			$("<div>").attr("id","cCont").append( 
 				$("<table>").attr("id","cTable")))).get(0), theUILang.Chunks,"lcont");
 	if(theWebUI.systemInfo.rTorrent.apiVersion<4)
