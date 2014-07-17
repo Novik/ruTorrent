@@ -167,7 +167,6 @@ plugin.onLangLoaded = function()
 				"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
 			"</div>", true);
 
-		plugin.interval = window.setInterval( plugin.checkTasks, 3000 );
 		plugin.attachPageToOptions( $("<div>").attr("id","st_unpack").html(
 			"<div>"+
 				"<input id=\"unpack_enabled\" type=\"checkbox\"/>"+
