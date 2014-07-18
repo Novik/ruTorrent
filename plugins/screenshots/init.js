@@ -1,6 +1,8 @@
-plugin.loadMainCSS();
-plugin.playTimer = null;
 var explorerIsInstalled = thePlugins.isInstalled("explorer");
+
+plugin.loadMainCSS();
+plugin.loadLang();
+plugin.playTimer = null;
 
 if(plugin.canChangeOptions() && !explorerIsInstalled)
 {
@@ -338,12 +340,4 @@ plugin.onRemove = function()
 {
 	if(!explorerIsInstalled)
 		this.removePageFromOptions("st_screenshots");
-}
-
-if(explorerIsInstalled)
-{
-	plugin.onLangLoaded();
-	plugin.markLoaded();
-}
-else
-	plugin.loadLang();
+}	
