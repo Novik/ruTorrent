@@ -1,6 +1,7 @@
 plugin.loadMainCSS();
 
-theWebUI.trackersLabels = new Object();
+theWebUI.trackersLabels = {};
+plugin.injectedStyles = {};
 
 plugin.config = theWebUI.config;
 theWebUI.config = function(data)
@@ -13,8 +14,11 @@ theWebUI.config = function(data)
 		{
 			var domain = theWebUI.getTrackerName( tracker.name );
 			tracker.icon = "trk"+domain.replace(/\./g, "_");
-			if(!getCSSRule("."+tracker.icon))
+			if(!plugin.injectedStyles[tracker.icon])
+			{
+				plugin.injectedStyles[tracker.icon] = true;
 				injectCSSText( "."+tracker.icon+" {background-image: url(./plugins/tracklabels/action.php?tracker="+domain+"); background-repeat: no-repeat}\n" );
+			}
 		});
 	}
 }
