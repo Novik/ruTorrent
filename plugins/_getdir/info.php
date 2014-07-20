@@ -20,6 +20,7 @@ if(isset($_REQUEST['mode']))
 					$labels[$val] = true;
 			}
 			$output["labels"] = array_keys($labels);
+			natcasesort($output["labels"]);
 		}
 	}
 	if(in_array("dirlist",$modes))
@@ -66,7 +67,7 @@ if(isset($_REQUEST['mode']))
 				}
 			}
 		        closedir($dh);
-			sort($files,SORT_STRING);
+			sort($files,SORT_LOCALE_STRING);
 			$output["basedir"] = fullpath($dir);
 			$output["dirlist"] = $files;
 		}
