@@ -67,8 +67,8 @@ if($dh)
 		}
         }
         closedir($dh);
-	ksort($files,SORT_STRING);
-	ksort($dirs,SORT_STRING);
+	ksort($files,SORT_LOCALE_STRING);
+	ksort($dirs,SORT_LOCALE_STRING);
 	$files = array_merge($dirs,$files);
 }
 ?>
