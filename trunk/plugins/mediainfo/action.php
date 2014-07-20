@@ -43,13 +43,6 @@ if(isset($_REQUEST['hash']) &&
 					$commands = array();
 					$flags = '';
 					$st = mediainfoSettings::load();
-					if($st && !empty($st->data["mediainfousetemplate"]))
-					{
-						$randName = $task->makeDirectory()."/opts";
-						file_put_contents( $randName, $st->data["mediainfotemplate"] );
-						$flags = "--Inform=file://".escapeshellarg($randName);
-					}
-					$commands[] = getExternal("mediainfo")." ".$flags." ".escapeshellarg($filename);
 					$task = new rTask( array
 					( 
 						'arg'=>call_user_func('end',explode('/',$filename)),					
@@ -57,7 +50,14 @@ if(isset($_REQUEST['hash']) &&
 						'name'=>'mediainfo', 
 						'hash'=>$_REQUEST['hash'], 
 						'no'=>$_REQUEST['no'] 
-					) );
+					) );					
+					if($st && !empty($st->data["mediainfousetemplate"]))
+					{
+						$randName = $task->makeDirectory()."/opts";
+						file_put_contents( $randName, $st->data["mediainfotemplate"] );
+						$flags = "--Inform=file://".escapeshellarg($randName);
+					}
+					$commands[] = getExternal("mediainfo")." ".$flags." ".escapeshellarg($filename);
 					$ret = $task->start($commands, rTask::FLG_WAIT);
 				}
 			}
