@@ -162,6 +162,7 @@ plugin.onLangLoaded = function()
 		{
 			$('#xcsave').hide();
 		});
+		plugin.markLoaded();		
 	}
 };
 
@@ -169,4 +170,10 @@ plugin.onRemove = function()
 {
 	plugin.removeSeparatorFromToolbar("remove");
 	plugin.removeButtonFromToolbar("create");
+}
+
+plugin.langLoaded = function() 
+{
+	if(plugin.enabled)
+		plugin.onLangLoaded();
 }
