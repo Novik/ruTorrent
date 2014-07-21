@@ -190,7 +190,11 @@ theWebUI.rebuildTrackersLabels = function()
 			}
 		}
 		if(plugin.canChangeColumns())
-			table.Sort();
+		{
+			table.refreshRows();
+			if(table.sIndex !=- 1)
+				table.Sort();		
+		}
 		var ul = $("#torrl");
 
 		var keys = new Array();
