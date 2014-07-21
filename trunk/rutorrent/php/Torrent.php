@@ -183,7 +183,7 @@ class Torrent
 
 	/**** Decode BitTorrent ****/
 
-	protected function decode( $string ) 
+	public function decode( $string ) 
 	{
 		if(is_file( $string ))
 		{
