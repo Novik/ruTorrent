@@ -9,7 +9,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) 
 	{
-		if(plugin.enabled)
+		if(plugin.enabled && plugin.allStuffLoaded)
 		{
 			$.each( plugin.ffmpegSettings, function(name,val)
 			{
@@ -25,23 +25,26 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 	plugin.ffmpegWasChanged = function() 
 	{
 		var ret = false;
-		$.each( plugin.ffmpegSettings, function(name,val)
+		if( plugin.allStuffLoaded )
 		{
-			if($('#'+name).is(":checkbox"))
+			$.each( plugin.ffmpegSettings, function(name,val)
 			{
-				if($('#'+name).prop('checked')!=val)
+				if($('#'+name).is(":checkbox"))
+				{
+					if($('#'+name).prop('checked')!=val)
+					{       	
+						ret = true;
+						return(false);
+					}
+				}
+				else
+				if($('#'+name).val()!=val)
 				{
 					ret = true;
 					return(false);
 				}
-			}
-			else
-			if($('#'+name).val()!=val)
-			{
-				ret = true;
-				return(false);
-			}
-		});
+			});
+		}
 		return(ret);
 	}
 
@@ -82,7 +85,7 @@ if(plugin.canChangeMenu())
 	{
 		if(plugin.createFileMenu.call(this, e, id)) 
 		{
-			if(plugin.enabled) 
+			if(plugin.enabled && plugin.allStuffLoaded) 
 			{
 				var fno = null;
 				var table = this.getTable("fls");
@@ -333,6 +336,7 @@ plugin.onLangLoaded = function()
 			$("#scimgcmd").val("ffmpeggetall");
 			$('#scgetimg').submit();
 		});
+		plugin.markLoaded();
 	}
 }
 
@@ -340,4 +344,10 @@ plugin.onRemove = function()
 {
 	if(!explorerIsInstalled)
 		this.removePageFromOptions("st_screenshots");
-}	
+}
+
+plugin.langLoaded = function() 
+{
+	if(plugin.enabled)
+		plugin.onLangLoaded();
+}
