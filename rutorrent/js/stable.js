@@ -1616,36 +1616,37 @@ dxSTable.prototype.setValueById = function(row, id, val)
 
 dxSTable.prototype.setValue = function(row, col, val)
 {
-	if(col>=0)
+	if((col>=0) && this.rowdata[row])
 	{
 		this.rowdata[row].data[col] = val;
 		var r = $$(row);
-		if(r == null)
-			return(false);
 		var rawvalue = val;
-		arr = {};
+		arr = [];
 		arr[col] = val;
 		val = this.format(this,arr)[col];
 
 		if(this.rowdata[row].fmtdata[col] != val)
 		{
 			this.rowdata[row].fmtdata[col] = val;
-        		var c = this.getColOrder(col);
-			var td = r.cells[c];
-
-			if(this.colsdata[c].type==TYPE_PROGRESS)
-			{
-				$(td).attr("rawvalue",rawvalue);
-				td.lastChild.style.width = iv(val)+"%";
-				td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
-				if(!iv(val))
-					$(td.lastChild).css({visibility: "hidden"});
+        		if(r)
+        		{
+	        		var c = this.getColOrder(col);
+				var td = r.cells[c];
+			
+				if(this.colsdata[c].type==TYPE_PROGRESS)
+				{
+					$(td).attr("rawvalue",rawvalue);
+					td.lastChild.style.width = iv(val)+"%";
+					td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
+					if(!iv(val))
+						$(td.lastChild).css({visibility: "hidden"});
+					else
+						$(td.lastChild).css({visibility: "visible"});
+					td.firstChild.innerHTML = escapeHTML(val);
+				}
 				else
-					$(td.lastChild).css({visibility: "visible"});
-				td.firstChild.innerHTML = escapeHTML(val);
-			}
-			else
-				td.lastChild.innerHTML = escapeHTML(val);
+					td.lastChild.innerHTML = escapeHTML(val);
+			}					
 			return(true);
 		}
 	}
