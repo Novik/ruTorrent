@@ -87,13 +87,13 @@ if(plugin.canChangeOptions())
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function( arg )
 	{
-        	if(plugin.enabled)
+        	if(plugin.enabled && plugin.allStuffLoaded)
 	        {
-			$$('unpack_enabled').checked = ( theWebUI.unpackData.enabled == 1 );
-			$$('unpack_label').checked = ( theWebUI.unpackData.addLabel == 1 );
-			$$('unpack_name').checked = ( theWebUI.unpackData.addName == 1 );
-			$$('edit_unpack1').value = theWebUI.unpackData.path;
-			$$('edit_filter').value = theWebUI.unpackData.filter;
+			$('#unpack_enabled').prop('checked',(theWebUI.unpackData.enabled == 1));
+			$('#unpack_label').prop('checked',(theWebUI.unpackData.addLabel == 1));
+			$('#unpack_name').prop('checked',(theWebUI.unpackData.addName == 1));
+			$('#edit_unpack1').val( theWebUI.unpackData.path );
+			$('#edit_filter').val( theWebUI.unpackData.filter );
 			if(plugin.btn)
 				plugin.btn.hide();
 		}
@@ -102,11 +102,12 @@ if(plugin.canChangeOptions())
 
 	theWebUI.unpackWasChanged = function()
 	{
-		return(	($$('unpack_enabled').checked != ( theWebUI.unpackData.enabled == 1 )) ||
-			($$('unpack_label').checked != ( theWebUI.unpackData.addLabel == 1 )) ||
-			($$('unpack_name').checked != ( theWebUI.unpackData.addName == 1 )) ||
-			($$('edit_unpack1').value != theWebUI.unpackData.path) ||
-			($$('edit_filter').value != theWebUI.unpackData.filter)
+		return(	plugin.allStuffLoaded &&
+			(($('#unpack_enabled').prop('checked') != (theWebUI.unpackData.enabled == 1 )) ||
+			($('#unpack_label').prop('checked') != ( theWebUI.unpackData.addLabel == 1 )) ||
+			($('#unpack_name').prop('checked') != ( theWebUI.unpackData.addName == 1 )) ||
+			($('#edit_unpack1').val() != theWebUI.unpackData.path) ||
+			($('#edit_filter').val() != theWebUI.unpackData.filter))
 			);
 	}
 
@@ -120,11 +121,11 @@ if(plugin.canChangeOptions())
 
 	rTorrentStub.prototype.setunpack = function()
 	{
-		this.content = "cmd=set&unpack_enabled=" + ( $$('unpack_enabled').checked ? '1' : '0' ) +
-			"&unpack_name=" + ( $$('unpack_name').checked  ? '1' : '0' ) +
-			"&unpack_label=" + ( $$('unpack_label').checked  ? '1' : '0' ) +
-			"&unpack_filter=" + encodeURIComponent($$('edit_filter').value) +
-			"&unpack_path=" + encodeURIComponent($$('edit_unpack1').value);
+		this.content = "cmd=set&unpack_enabled=" + ( $('#unpack_enabled').prop('checked') ? '1' : '0' ) +
+			"&unpack_name=" + ( $('#unpack_name').prop('checked')  ? '1' : '0' ) +
+			"&unpack_label=" + ( $('#unpack_label').prop('checked')  ? '1' : '0' ) +
+			"&unpack_filter=" + encodeURIComponent($('#edit_filter').val()) +
+			"&unpack_path=" + encodeURIComponent($('#edit_unpack1').val());
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/unpack/action.php";
 		this.dataType = "script";
@@ -192,7 +193,7 @@ plugin.onLangLoaded = function()
 				"</div>"+
 			"</fieldset>"
 			)[0], theUILang.unpack );
-		$$('edit_unpack').value = theWebUI.unpackData.path;
+		$('#edit_unpack').val( theWebUI.unpackData.path );
 		if(thePlugins.isInstalled("_getdir"))
 		{
 			var btn = new theWebUI.rDirBrowser( 'dlg_unpack', 'edit_unpack', 'btn_unpack' );
@@ -208,6 +209,7 @@ plugin.onLangLoaded = function()
 			$('#btn_unpack').remove();
 			$('#btn_unpack1').remove();
 		}
+		plugin.markLoaded();
 	}		
 }
 
@@ -215,4 +217,10 @@ plugin.onRemove = function()
 {
 	theDialogManager.hide("dlg_unpack");
 	plugin.removePageFromOptions("st_unpack");
+}
+
+plugin.langLoaded = function() 
+{
+	if(plugin.enabled)
+		plugin.onLangLoaded();
 }
