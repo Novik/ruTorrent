@@ -231,6 +231,8 @@ rTorrentStub.prototype.setlabel = function()
 plugin.origtrkall = rTorrentStub.prototype.getalltrackers;
 rTorrentStub.prototype.getalltrackers = function()
 {
+	if( this.hashes.length > 50 )
+		this.hashes = [];
 	this.getCommon("trkall");
 	if(plugin.enabled)
 		for(var i=theRequestManager.trk.count; i<theRequestManager.trk.commands.length; i++)
@@ -519,12 +521,10 @@ rTorrentStub.prototype.getalltrackersResponse = function(values)
         if(this.dataType == "json")
         {
 		var ret = {};
-		for( var i=0; i<this.hashes.length; i++)
+		for( var hash in values )
 		{
-			var hash = this.hashes[i];
 			ret[hash] = [];
-			var torrent = values[i];
-
+			var torrent = values[hash];
 			for(var j=0; j<torrent.length; j++)
 			{
 				var data = torrent[j];
@@ -536,16 +536,16 @@ rTorrentStub.prototype.getalltrackersResponse = function(values)
 				trk.seeds = data[4];
 				trk.peers = data[5];
 				trk.downloaded = data[6];
-
+			
 				$.each( theRequestManager.trk.handlers, function(i,handler)
 				{
-	        		        if(handler)
+        			        if(handler)
 						handler.response( hash, trk, (handler.ndx===null) ? null : data[handler.ndx] );
 				});
-
+	
 				ret[hash].push(trk);
 			}
-		}
+		}		
 		return(ret);
 	}
 	return(plugin.origgetalltrackersResponse.call(this,values));

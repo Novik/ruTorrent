@@ -289,14 +289,44 @@ switch($mode)
 		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=", 
 			"t.get_scrape_incomplete=", "t.get_scrape_downloaded="
 		        );
-		$result = array();		
-		foreach($hash as $ndx=>$h)
+		$result = array();
+		if(empty($hash))
 		{
-			$ret = makeMulticall($cmds,$h,$add,'t');
-			if($ret===false)
-				$result[] = array();
-			else
-				$result[] = $ret;
+			$prm = getCmd("cat").'="$'.getCmd("t.multicall=").getCmd("d.get_hash=").",";
+			foreach( $cmds as $tcmd )
+				$prm.=getCmd($tcmd).','.getCmd("cat=#").',';
+			foreach( $add as $tcmd )
+				$prm.=getCmd($tcmd).','.getCmd("cat=#").',';
+			$prm = substr($prm, 0, -1).'"';
+			$cnt = count($cmds)+count($add);
+			$req = new rXMLRPCRequest();
+			$req->addCommand( new rXMLRPCCommand( "d.multicall", array
+			( 
+				"main",
+				getCmd("d.get_hash="),
+				$prm
+			) ) );						
+	       		if($req->success())
+			{
+				for( $i = 0; $i< count($req->val); $i+=2 )
+				{
+					$tracker = explode( '#', $req->val[$i+1] );
+					if(!empty($tracker))
+						unset( $tracker[ count($tracker)-1 ] );
+					$result[ $req->val[$i] ] = array_chunk( $tracker, $cnt );
+				}
+			}									
+		}
+		else
+		{
+			foreach($hash as $ndx=>$h)
+			{
+				$ret = makeMulticall($cmds,$h,$add,'t');
+				if($ret===false)
+					$result[$h] = array();				
+				else
+					$result[$h] = $ret;
+			}
 		}
 		break;
 	}
