@@ -443,11 +443,13 @@ dxSTable.prototype.tasksSelect = function(e,id)
 	{
 		theContextMenu.clear();
 		if(this.selCount)
-			id = this.getFirstSelected().substr(6);
-		theContextMenu.add([theUILang.tskActivate, this.selCount==1 ? function() 
 		{
-			plugin.fromBackground( id );
-		} : null ]);
+			id = this.getFirstSelected().substr(6);
+			theContextMenu.add([theUILang.tskActivate, this.selCount==1 ? function() 
+			{
+				plugin.fromBackground( id );
+			} : null ]);
+		}			
 		theContextMenu.add([theUILang.tskRemove, this.selCount ? "theWebUI.getTable('tasks').tasksRemove()" : null ]); 
 		theContextMenu.add([CMENU_SEP]);
 		theContextMenu.add([theUILang.tskRefresh, plugin.refreshTasks]);
