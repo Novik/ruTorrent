@@ -130,7 +130,8 @@ class Torrent
 	 */
 	static private function encode_string( $string ) 
 	{
-        	return(strlen( $string ) . ':' . $string);
+		$len = strlen( $string );
+        	return($len ? $len . ':' . $string : '');
 	}
 
 	/** Encode torrent integer
@@ -518,7 +519,7 @@ class Torrent
 		$len = strlen($this->basedir);
 		if(($len>1) && ($this->basedir[$len-1]=='/'))
 			$this->basedir = substr($this->basedir,0,-1);
-		return($this->files( self::scandir( $dir ), $piece_length ));
+		return($this->files( self::scandir( $this->basedir ), $piece_length ));
     	}
 
 	/** Set torrent creator and creation date
