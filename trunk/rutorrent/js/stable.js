@@ -1044,7 +1044,7 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 		obj = $$(id);
 		if(!r.enabled) 
 		{
-			if(obj != null) 
+			if( (obj != null) && (obj.parentNode == tb) )
 			{
 				tb.removeChild(obj);
 			}
@@ -1055,7 +1055,7 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 		{
 			if(!$type(tb.rows[c])) 
 			{
-				if(obj != null) 
+				if( (obj != null) && (obj.parentNode == tb) )
 				{
 					tb.removeChild(obj);
             			}
@@ -1069,7 +1069,7 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 			{
 				if(tb.rows[c].id != id) 
 				{
-					if(obj != null) 
+					if( (obj != null) && (obj.parentNode == tb) )
 					{
 						tb.removeChild(obj);
                				}
@@ -1084,7 +1084,7 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
       		}
 		else 
 		{
-			if(obj != null) 
+			if( (obj != null) && (obj.parentNode == tb) )
 			{
 				tb.removeChild(obj);
 			}
@@ -1633,19 +1633,22 @@ dxSTable.prototype.setValue = function(row, col, val)
 	        		var c = this.getColOrder(col);
 				var td = r.cells[c];
 			
-				if(this.colsdata[c].type==TYPE_PROGRESS)
-				{
-					$(td).attr("rawvalue",rawvalue);
-					td.lastChild.style.width = iv(val)+"%";
-					td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
-					if(!iv(val))
-						$(td.lastChild).css({visibility: "hidden"});
+			        if(td)
+			        {
+					if(this.colsdata[c].type==TYPE_PROGRESS)
+					{
+						$(td).attr("rawvalue",rawvalue);
+						td.lastChild.style.width = iv(val)+"%";
+						td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
+						if(!iv(val))
+							$(td.lastChild).css({visibility: "hidden"});
+						else
+							$(td.lastChild).css({visibility: "visible"});
+						td.firstChild.innerHTML = escapeHTML(val);
+					}
 					else
-						$(td.lastChild).css({visibility: "visible"});
-					td.firstChild.innerHTML = escapeHTML(val);
+						td.lastChild.innerHTML = escapeHTML(val);
 				}
-				else
-					td.lastChild.innerHTML = escapeHTML(val);
 			}					
 			return(true);
 		}
