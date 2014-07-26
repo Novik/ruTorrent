@@ -130,8 +130,7 @@ class Torrent
 	 */
 	static private function encode_string( $string ) 
 	{
-		$len = strlen( $string );
-        	return($len ? $len . ':' . $string : '');
+        	return(strlen( $string ) . ':' . $string);
 	}
 
 	/** Encode torrent integer
