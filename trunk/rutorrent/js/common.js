@@ -1412,7 +1412,6 @@ function getCSSRule( selectorText )
 
 	var selectorText1 = selectorText.toLowerCase();
 	var selectorText2 = selectorText1.replace('.','\\.');
-	var ret = null;
 	for( var j=document.styleSheets.length-1; j>=0; j-- )
 	{
 		var rules = getRulesArray(j);
@@ -1422,14 +1421,11 @@ function getCSSRule( selectorText )
 			{
 				var lo = rules[i].selectorText.toLowerCase();
 				if((lo==selectorText1) || (lo==selectorText2))
-				{
-					ret = rules[i];
-					break;
-				}			
+					return(rules[i]);
 			}
 		}
 	}
-	return(ret);
+	return(null);
 }
 
 function RGBackground( selector )
