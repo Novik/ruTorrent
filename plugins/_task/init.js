@@ -566,8 +566,11 @@ plugin.onGetTasks = function(d)
 				table.Sort();
 		}
 	}
-	if( ((theWebUI.activeView=='tasks') || plugin.foreground.no) && plugin.running )
+	if( ((theWebUI.activeView=='tasks')  && plugin.running ) || plugin.foreground.no ) 
+	{
+		plugin.clearBackTimeout();
 		plugin.backTimeout = setTimeout(plugin.refreshTasks,theWebUI.settings["webui.update_interval"]);
+	}		
 }
 
 plugin.onLangLoaded = function()
