@@ -254,19 +254,19 @@ var theUILang =
  dontSet			: "Sans",
  webBadSessionError		: "Le plug-in ne fonctionnera pas. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
  webBadSessionWarning		: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "This screen",
+ Developers			: "Développeurs",
+ Check_new_version		: "Vérifier une nouvelle version",
+ here				: "ici",
+ Num_No 			: "N°", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
+ This_screen			: "Cette fenêtre",
  About_program			: "À propos du programme",
- Toggle_menu			: "Toggle menu",
- Toggle_details 		: "Toggle details",
- Toggle_categories		: "Toggle categories",
+ Toggle_menu			: "Basculer l'affichage du menu",
+ Toggle_details 		: "Basculer l'affichage des details",
+ Toggle_categories		: "Basculer l'affichage des categories",
  Delete_current_torrents	: "Supprimer le(s) torrent(s) actuel(s)",
  Select_all			: "Sélectionner tout",
  Deselect_all			: "Désélectionner tout",
  showSpeedInTitle		: "Vitesse de transfert dans la barre de titre",
- badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ badTempPath 			: "Le serveur web n'a pas accès en lecture/ecriture/éxécution au répertoire tmp. ruTorrent ne marchera pas.",
+ badTempPath2			: "L'utilisateur rTorrent n'a pas accès en lecture/ecriture/éxécution au répertoire tmp. ruTorrent ne marchera pas."
 };
