@@ -14,7 +14,7 @@ class rLook
 		{
 			$rt->list["YouTube"] = "http://www.youtube.com/results?search_query={title}";
 			$rt->list["MetaCritic"] = "http://www.metacritic.com/search/all/{title}/results";
-			$rt->list["IMDb"] = "http://www.imdb.com/search/title?title={title}";
+			$rt->list["IMDb"] = "http://www.imdb.com/find?q={title}&s=all";
 			$rt->list["Google"] = "https://www.google.com/search?q={title}";
 			$rt->list["TMDb"] = "http://www.themoviedb.org/search?query={title}";
 			$rt->list["TheTVDb"] = "http://thetvdb.com/?string={title}&searchseriesid=&tab=listseries&function=Search";
