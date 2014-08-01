@@ -111,7 +111,7 @@ function makeContent()
 		$("#add_button").attr("disabled",false);
 	});
 
-	input = $$('url');
+	var input = $$('url');
 	input.onupdate = input.onkeyup = function() { $('#add_url').attr('disabled',$.trim(input.value)==''); };
 	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)

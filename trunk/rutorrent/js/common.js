@@ -490,7 +490,7 @@ var theConverter =
 			m = (m < 10) ? ("0" + m) : m;
 			s = (s < 10) ? ("0" + s) : s;
 			var tm = h+":"+m+":"+s+am;
-			var dt = '';
+			dt = '';
 			if(!timeOnly)
 			{
 				switch(iv(theWebUI.settings["webui.dateformat"]))
