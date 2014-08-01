@@ -132,9 +132,9 @@ class Torrent411Engine extends commonEngine
         $what = rawurlencode(self::fromUTF(rawurldecode($what), "ISO-8859-1"));
         for ($pg = 0; $pg < 11; $pg++) {
             if ($what === '%2A')
-                $search = $url . '/torrents/search/?search=' . $cat . '&order=seeders&type=desc&page=' . $pg;
+                $search = $url . '/torrents/search/?search=' . $cat . '&order=added&type=desc&page=' . $pg;
             else
-                $search = $url . '/torrents/search/?search=' . $what . $cat . '&order=seeders&type=desc&page=' . $pg;
+                $search = $url . '/torrents/search/?search=' . $what . $cat . '&order=added&type=desc&page=' . $pg;
             $cli = $this->fetch($search);
             if (($cli == false) || (strpos($cli->results, ">Aucun R�sultat Aucun<") !== false))
                 break;
