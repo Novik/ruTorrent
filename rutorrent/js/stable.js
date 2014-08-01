@@ -1346,7 +1346,6 @@ dxSTable.prototype.removeRow = function(sId)
 	{
 		var obj = this.tBody.tb.removeChild($$(sId));
 		$(obj).off();
-		delete obj;
 	} catch(ex) {}
 	delete this.rowSel[sId];
 	delete this.rowdata[sId];
@@ -1372,7 +1371,6 @@ dxSTable.prototype.clearRows = function()
 		{ 
 			var obj = tb.removeChild(tb.firstChild); 
 			$(obj).off();
-			delete obj; 
 		}
 		this.rows = 0;
 		this.viewRows = 0;
@@ -1621,7 +1619,7 @@ dxSTable.prototype.setValue = function(row, col, val)
 		this.rowdata[row].data[col] = val;
 		var r = $$(row);
 		var rawvalue = val;
-		arr = [];
+		var arr = [];
 		arr[col] = val;
 		val = this.format(this,arr)[col];
 
