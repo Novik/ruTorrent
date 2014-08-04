@@ -22,21 +22,9 @@ Rutorrent can be installed on most unix type operating systems.
 
 === Install Scripts ===
 
-Brock has created an autoinstall script which installs rtorrent, rutorrent, all plugins and the irc autodl plugin.  For more info see the following forum post:
-
-http://forums.rutorrent.org/index.php?topic=608.0
-
-EDIT @ 10 Jan 2013
-
-The above forum post is not available anymore, but there is currently an autodl-setup script available in sourceforge. Use at your own risk, though:
+Currently an autodl-setup script available in sourceforge. Use at your own risk, though:
 
 http://sourceforge.net/projects/autodl-irssi/files/
-
-iwizzard has a created a script to install everything on ubuntu, see the following forum post:
-
-http://forums.rutorrent.org/index.php?topic=408.0
-
-
 
 == How to Upgrade ==
 
