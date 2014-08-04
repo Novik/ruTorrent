@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 class CPasBienEngine extends commonEngine
 {
@@ -7,7 +7,7 @@ class CPasBienEngine extends commonEngine
     public $categories = array(
 		'Tout' => '',
 		'Films' => 'films/',
-		'Séries' => 'series/',
+		'SГ©ries' => 'series/',
 		'Musique' => 'musique/',
 		'Ebook' => 'ebook/',
 		'Logiciels' => 'logiciels/',
@@ -37,7 +37,7 @@ class CPasBienEngine extends commonEngine
 		$what = str_replace (' ', '+', $what);
         for ($pg = 0; $pg < 11; $pg++) {
             $cli = $this->fetch($url . '/recherche/' . $cat . $what . '/page-' . $pg);
-            if (($cli == false) || (strpos($cli->results, "Pas de torrents disponibles correspondant à votre recherche") !== false))
+            if (($cli == false) || (strpos($cli->results, "Pas de torrents disponibles correspondant Г  votre recherche") !== false))
                 break;
             $res = preg_match_all(	
 				'`<tr class="color\d">.*<td class="torrent-aff">.*'.
