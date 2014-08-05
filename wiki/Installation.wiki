@@ -22,7 +22,7 @@ Rutorrent can be installed on most unix type operating systems.
 
 === Install Scripts ===
 
-Currently an autodl-setup script available in sourceforge. Use at your own risk, though:
+Currently an autodl-setup script is available in sourceforge. Use at your own risk, though:
 
 http://sourceforge.net/projects/autodl-irssi/files/
 
