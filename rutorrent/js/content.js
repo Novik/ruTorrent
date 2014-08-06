@@ -69,7 +69,7 @@ function makeContent()
 	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).load(function()
 	{
 		$("#torrent_file").val("");
-		$("#add_button").attr("disabled",false);
+		$("#add_button").prop("disabled",false);
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d && (d.location.href != "about:blank"))
 		{
@@ -108,20 +108,20 @@ function makeContent()
 		'</div>');
 	theDialogManager.setHandler('tadd','beforeShow',function()
 	{
-		$("#add_button").attr("disabled",false);
+		$("#add_button").prop("disabled",false);
 	});
 
 	var input = $$('url');
-	input.onupdate = input.onkeyup = function() { $('#add_url').attr('disabled',$.trim(input.value)==''); };
+	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',$.trim(input.value)==''); };
 	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
 	{
 		var s = theURLs.AddTorrentURL+"?";
-		if($("#torrents_start_stopped").attr("checked"))
+		if($("#torrents_start_stopped").prop("checked"))
 			s += 'torrents_start_stopped=1&';
-		if($("#fast_resume").attr("checked"))
+		if($("#fast_resume").prop("checked"))
 			s += 'fast_resume=1&';
-		if($("#not_add_path").attr("checked"))
+		if($("#not_add_path").prop("checked"))
 			s += 'not_add_path=1&';
 		var dir = $.trim($("#dir_edit").val());
 		if(dir.length)
@@ -139,12 +139,12 @@ function makeContent()
 			alert(theUILang.Not_torrent_file);
 	   		return(false);
    		}
-		$("#add_button").attr("disabled",true);
+		$("#add_button").prop("disabled",true);
 		return(makeAddRequest(this));
 	});
 	$("#addtorrenturl").submit(function()
 	{
-	   	$("#add_url").attr("disabled",true);
+	   	$("#add_url").prop("disabled",true);
 	   	return(makeAddRequest(this));
 	});
 	theDialogManager.make("dlgProps",theUILang.Torrent_properties,
@@ -610,10 +610,10 @@ function correctContent()
 		$("#st_down").mouseclick(null);
 	if(!(theWebUI.showFlags & showEnum.canChangeTorrentProperties))
 	{
-		$("#prop-ulslots").attr("disabled","true");
-		$("#prop-peers_min").attr("disabled","true");
-		$("#prop-peers_max").attr("disabled","true");
-		$("#prop-tracker_numwant").attr("disabled","true");
+		$("#prop-ulslots").prop("disabled",true);
+		$("#prop-peers_min").prop("disabled",true);
+		$("#prop-peers_max").prop("disabled",true);
+		$("#prop-tracker_numwant").prop("disabled",true);
 		$("#prop-pex").remove();
 		$("#lbl_prop-pex").remove();
 		$("#prop-superseed").remove();

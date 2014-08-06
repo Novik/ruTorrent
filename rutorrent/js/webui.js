@@ -607,8 +607,7 @@ var theWebUI =
 					}
 					o.val(v);
 				}
-      				if($type(o.attr("onchange"))=="function")
-        	 			o.get(0).onchange.apply(o.get(0));
+				o.change();
 			}
 		});
 		if($type(this.settings["webui.search"]))

@@ -285,12 +285,26 @@ class Snoopy
 		return($ret);
 	}
 
+	function get_header( $name )
+	{
+		foreach( $this->headers as $i=>$header )
+			if(preg_match_all("/^$name:\s*(.*)/i",$header,$matches))
+				return( $matches[1][0] );
+		return(false);
+	}	
+
 	function get_filename()
 	{
-		foreach( $this->headers as $i=>$header)
+		foreach( $this->headers as $i=>$header )
 			if(preg_match_all("/^Content-Disposition:.*(\s|;)filename=\"(.*)\.torrent\"/i",$header,$matches) && (count($matches)>2))
 				return( str_replace( '/', '_', $matches[2][0].".torrent" ) );
 		return(false);	
+	}
+
+	function get_modified()
+	{
+		$value = $this->get_header( 'Last-Modified' );
+		return( $value ? strtotime($value) : false );
 	}
 
 	function _httprequest($url,$fp,$URI,$http_method,$content_type="",$body="")
