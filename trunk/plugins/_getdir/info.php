@@ -82,7 +82,7 @@ if(isset($_REQUEST['mode']))
 				}
 			}
 		        closedir($dh);
-			usort($files,compareEntries);
+			usort($files,"compareEntries");
 			$output["basedir"] = fullpath($dir);
 			$output["dirlist"] = $files;
 		}
