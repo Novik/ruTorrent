@@ -82,8 +82,8 @@ if($dh)
 		}
         }
         closedir($dh);
-        uksort($files,compareEntries);
-        uksort($dirs,compareEntries);
+        uksort($files,"compareEntries");
+        uksort($dirs,"compareEntries");
 	$files = array_merge($dirs,$files);
 }
 ?>
