@@ -359,7 +359,7 @@ dxSTable.prototype.calcSize = function()
 				{
 					continue;
 				}
-				if((browser.isAppleWebKit && (browser.versionMajor<537)) || browser.isKonqueror)
+				if((browser.isChrome && (browser.versionMajor<537)) || browser.isKonqueror || browser.isSafari)
 					_9a+=4;
 				if(_9a>8)
 					this.tHeadCols[i].style.width = (_9a - 4) + "px";
