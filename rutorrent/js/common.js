@@ -20,13 +20,13 @@ function browserDetect()
 	this.isGecko = (ua.indexOf("gecko") !=- 1 && ua.indexOf("safari") ==- 1);
 	this.isAppleWebKit = (ua.indexOf("webkit") !=- 1);
 	this.isKonqueror = (ua.indexOf("konqueror") !=- 1);
-	this.isSafari = (ua.indexOf("safari") !=- 1);
 	this.isOpera = (ua.indexOf("opera") !=- 1);
 	this.isIE = (ua.indexOf("msie") !=- 1 && !this.isOpera && (ua.indexOf("webtv") ==- 1));
 	this.isMozilla = (this.isGecko && ua.indexOf("gecko/") + 14 == ua.length);
 	this.isFirefox = (ua.indexOf("firefox/") !=- 1);
 	this.isChrome = (ua.indexOf("chrome/") !=- 1);
 	this.isMidori = (ua.indexOf("midori/") !=- 1);
+	this.isSafari = (ua.indexOf("safari") !=- 1) && !this.isChrome;
 	this.versionMinor = parseFloat(navigator.appVersion);
 	if(this.isGecko && !this.isMozilla && !this.isKonqueror)
 		this.versionMinor = parseFloat(ua.substring(ua.indexOf("/", ua.indexOf("gecko/") + 6) + 1));
@@ -40,7 +40,7 @@ function browserDetect()
 	if(this.isKonqueror)
 		this.versionMinor = parseFloat(ua.substring(ua.indexOf("konqueror/") + 10));
 	else
-	if(this.isSafari)
+	if(this.isSafari || this.isChrome)
 		this.versionMinor = parseFloat(ua.substring(ua.lastIndexOf("safari/") + 7));
 	else
 	if(this.isOpera)
