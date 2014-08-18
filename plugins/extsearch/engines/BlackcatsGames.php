@@ -9,7 +9,7 @@
 class BlackcatsGamesEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $categories = array( 'all'=>'&cat=0', '3DS'=>'&cat=68', 'Android'=>'&cat=63', 'Audiobooks'=>'&cat=60', 'Console Apps'=>'&cat=66', 'Dreamcast'=>'&cat=7', 'DS'=>'&cat=8', 'Game-Dev'=>'&cat=69', 'Game-Dox|Saves'=>'&cat=30', 'Game-Mods'=>'&cat=64', 'Game-OST'=>'&cat=29', 'Gamecube'=>'&cat=5', 'iPhone|iPad'=>'&cat=36', 'JTAG|RGH'=>'&cat=45', 'Linux'=>'&cat=38', 'Mac'=>'&cat=33', 'Mame'=>'&cat=56', 'Member Creations'=>'&cat=44', 'NES|SNES'=>'&cat=53', 'Packs'=>'&cat=62', 'PC'=>'&cat=1', 'Phone|PDA'=>'&cat=35', 'PS1'=>'&cat=6', 'PS2'=>'&cat=2', 'PS3'=>'&cat=24', 'PSN'=>'&cat=70', 'PSP'=>'&cat=9', 'PSXPSP'=>'&cat=32', 'Roms'=>'&cat=11', 'Saturn'=>'&cat=10', 'Tech Vids'=>'&cat=67', 'Wii'=>'&cat=25', 'WiiVC'=>'&cat=39', 'WiiWare'=>'&cat=40', 'XBOX'=>'&cat=3', 'XBOX 360'=>'&cat=4', 'XBOXto360'=>'&cat=34' );
+	public $categories = array( 'all'=>'&cat=0', '3DS'=>'&cat=68', 'Android'=>'&cat=63', 'Audiobooks'=>'&cat=60', 'Console Apps'=>'&cat=66', 'Dreamcast'=>'&cat=7', 'DS'=>'&cat=8', 'Game-Dev'=>'&cat=69', 'Game-Dox|Saves'=>'&cat=30', 'Game-Mods'=>'&cat=64', 'Game-OST'=>'&cat=29', 'Gamecube'=>'&cat=5', 'iPhone|iPad'=>'&cat=36', 'JTAG|RGH'=>'&cat=45', 'Linux'=>'&cat=38', 'Mac'=>'&cat=33', 'Mame'=>'&cat=56', 'Member Creations'=>'&cat=44', 'NES|SNES'=>'&cat=53', 'Packs'=>'&cat=62', 'PC'=>'&cat=1', 'Phone|PDA'=>'&cat=35', 'PS1'=>'&cat=6', 'PS2'=>'&cat=2', 'PS3'=>'&cat=24', 'PS4'=>'&cat=75', 'PSN'=>'&cat=70', 'PSP'=>'&cat=9', 'PSXPSP'=>'&cat=32', 'Roms'=>'&cat=11', 'Saturn'=>'&cat=10', 'Tech Vids'=>'&cat=67', 'Wii'=>'&cat=25', 'WiiU'=>'&cat=72', 'WiiVC'=>'&cat=39', 'WiiWare'=>'&cat=40', 'XBOX'=>'&cat=3', 'XBOX 360'=>'&cat=4', 'XBOX One'=>'&cat=74', 'XBOXto360'=>'&cat=34' );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -31,7 +31,7 @@ class BlackcatsGamesEngine extends commonEngine
 				(strpos($cli->results, '<input class="post" type="password" name="password"')!==false))
 				break;
 			$res = preg_match_all('/<img border="0" src=.* alt="(?P<cat>.*)" \/><\/a>'.
-				'.*<td .*>.*href="details.php\?id=(?P<id>\d+)&amp;hit=1".*>.*<b>(?P<name>.*)<\/b>.*<br\/>(?P<date>.*)<br><a href=download.php\/\d+\/(?P<tname>.*)>.*'.
+				'.*<td .*>.*href="details.php\?id=(?P<id>\d+)&amp;hit=1".*>.*<b>(?P<name>.*)<\/b>.*<br\/>(?P<date>.*)<a href=download.php\/\d+\/(?P<tname>.*)>.*'.
 				'<td .*>.*<\/td>'.
 				'.*<td .*>(?P<size>.*)<\/td>'.
 				'.*<td .*>.*<\/td>.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>/siU', $cli->results, $matches);
