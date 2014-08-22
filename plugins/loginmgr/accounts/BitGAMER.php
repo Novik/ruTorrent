@@ -2,7 +2,6 @@
 
 /*
  *@author AceP1983
- *@version $Id$
 */
 
 class BitGamerAccount extends commonAccount

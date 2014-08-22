@@ -1,7 +1,6 @@
 /*
  *      Speed graph.
  *
- *	$Id$
  */
 
 function clearElement(target)

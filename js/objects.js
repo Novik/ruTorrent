@@ -1,7 +1,6 @@
 /*
  *      Common UI objects.
  *
- *	$Id$
  */
 
 // Drag & Drop object 

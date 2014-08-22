@@ -1,12 +1,11 @@
 /*
  *      Main object.
  *
- *	$Id$
  */
 
 var theWebUI = 
 {
-        version: "3.6 (svn $Rev$)",
+        version: "3.6",
 	tables:
 	{
 		trt: 

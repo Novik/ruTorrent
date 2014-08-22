@@ -20,7 +20,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *	$Id$
 */
 
 var TYPE_STRING = 0;

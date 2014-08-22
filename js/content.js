@@ -1,7 +1,6 @@
 /*
  *      UI content.
  *
- *	$Id$
  */
 
 function makeContent()

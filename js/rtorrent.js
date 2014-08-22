@@ -1,7 +1,6 @@
 /*
  *      Link to rTorrent.
  *
- *	$Id$
  */
 
 var dStatus = { started : 1, paused : 2, checking : 4, hashing : 8, error : 16 };

@@ -2,7 +2,6 @@
 
 /*
  *@author Matt Porter
- *@version $Id$
 */
 
 

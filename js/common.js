@@ -1,7 +1,6 @@
 /*
  *      Misc objects.
  *
- *	$Id$
  */
 
 function $$(id)
