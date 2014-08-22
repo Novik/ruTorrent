@@ -13,12 +13,12 @@ Main features
 Screenshots
 -----------
 
-![https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr1_big.jpg](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr1_small.jpg)
-![https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr2_big.jpg](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr2_small.jpg)
-![https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr3_big.jpg](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr3_small.jpg)
+<a href="https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr1_big.jpg">![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr1_small.jpg)</a>
+<a href="https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr2_big.jpg">![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr2_small.jpg)</a>
+<a href="https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr3_big.jpg">![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr3_small.jpg)</a>
 
 [Details](https://github.com/Novik/ruTorrent/wiki)
 -----------
 <br/>
 
-![https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U](https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif)
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U">![Donate!](https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif)</a>
