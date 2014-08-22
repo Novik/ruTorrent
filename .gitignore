@@ -1,0 +1,7 @@
+conf/users/*
+share/users/*
+share/torrents/*
+share/settings/*
+plugins/xirvik
+.htpasswd
+
