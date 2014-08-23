@@ -13,9 +13,9 @@ Main features
 Screenshots
 -----------
 
-<a href="https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr1_big.jpg">![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr1_small.jpg)</a>
-<a href="https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr2_big.jpg">![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr2_small.jpg)</a>
-<a href="https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr3_big.jpg">![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr3_small.jpg)</a>
+[![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr1_small.jpg)](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr1_big.jpg)
+[![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr2_small.jpg)](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr2_big.jpg)
+[![](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr3_small.jpg)](https://raw.githubusercontent.com/Novik/ruTorrent/gh-pages/images/scr3_big.jpg)
 
 [Details](https://github.com/Novik/ruTorrent/wiki)
 -----------
