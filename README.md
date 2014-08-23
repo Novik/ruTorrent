@@ -17,6 +17,12 @@ Screenshots
 [![](https://github.com/Novik/ruTorrent/wiki/images/scr2_small.jpg)](https://github.com/Novik/ruTorrent/wiki/images/scr2_big.jpg)
 [![](https://github.com/Novik/ruTorrent/wiki/images/scr3_small.jpg)](https://github.com/Novik/ruTorrent/wiki/images/scr3_big.jpg)
 
+Download
+--------
+
+ * [GitHub, development version](https://github.com/Novik/ruTorrent/tarball/master)
+ * [Archive, stable version](https://bintray.com/novik65/generic/ruTorrent)
+
 [Details](https://github.com/Novik/ruTorrent/wiki)
 -----------
 <br/>
