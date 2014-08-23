@@ -5,4 +5,4 @@ plugin.version: 3.6
 rtorrent.version: 0.8.6
 rtorrent.php.error: update.php,ratio.php,conf.php
 rtorrent.external.warning: php
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRatio
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginRatio

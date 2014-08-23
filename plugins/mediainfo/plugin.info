@@ -6,4 +6,4 @@ rtorrent.external.error: mediainfo
 plugin.dependencies: _task
 plugin.runlevel: 12
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginMediainfo
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginMediainfo

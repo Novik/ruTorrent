@@ -3,4 +3,4 @@ plugin.author: Novik
 plugin.runlevel: 11.2
 plugin.version: 3.6
 rtorrent.version: 0.8.4
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginThrottle
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginThrottle

@@ -7,4 +7,4 @@ rtorrent.external.error: php
 rtorrent.php.error: update.php,rss.php,conf.php
 web.external.warning: curl
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRSS
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginRSS

@@ -6,4 +6,4 @@ rtorrent.remote: error
 rtorrent.external.error: php
 rtorrent.php.error: update.php,history.php
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginHistory
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginHistory

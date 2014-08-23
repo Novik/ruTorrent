@@ -3,4 +3,4 @@ plugin.author: Novik
 plugin.runlevel: 5
 plugin.version: 3.6
 rtorrent.need: 0
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginTheme
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginTheme

@@ -2,7 +2,7 @@
     Плагин "datadir", версия 1.2
 
     к WebUI для rTorrent (ruTorrent)
-    (http://code.google.com/p/rutorrent)
+    (https://github.com/Novik/ruTorrent)
 
     Автор плагина: Романовский Дмитрий (dmrom)
 

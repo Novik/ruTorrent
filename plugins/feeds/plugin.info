@@ -2,4 +2,4 @@ plugin.description: This plugin is intended for making RSS feeds with informatio
 plugin.author: Novik
 plugin.version: 3.6
 rtorrent.need: 1
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginFeeds
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginFeeds

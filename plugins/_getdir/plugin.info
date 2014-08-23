@@ -4,4 +4,4 @@ plugin.runlevel: 1
 plugin.version: 3.6
 rtorrent.need: 0
 php.extensions.warning: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/Plugin_getdir
+plugin.help: https://github.com/Novik/ruTorrent/wiki/Plugin_getdir

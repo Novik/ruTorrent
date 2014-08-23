@@ -2,5 +2,5 @@ plugin.description: This plugin provides cookies information for authentication 
 plugin.author: Novik
 plugin.version: 3.6
 rtorrent.need: 0
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginCookies
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginCookies
 php.extensions.warning: json

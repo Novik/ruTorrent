@@ -3,4 +3,4 @@ plugin.author: Zoltan Csala,Novik
 plugin.runlevel: 15
 plugin.version: 3.6
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginGeoIP
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginGeoIP

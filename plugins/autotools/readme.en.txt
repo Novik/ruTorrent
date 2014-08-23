@@ -2,7 +2,7 @@
     Plug-in "autotools" version, 2012-02-15
 
     for rutorrent Webui (rtorrent web gui)
-    (http://code.google.com/p/rutorrent)
+    (https://github.com/Novik/ruTorrent)
 
 
     Plugin Author: Dmitry Romanovsky (dmrom)

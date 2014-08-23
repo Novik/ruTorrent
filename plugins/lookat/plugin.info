@@ -2,4 +2,4 @@ plugin.description: This plugin allows to search for torrent name in external so
 plugin.author: Novik
 plugin.version: 3.6
 php.extensions.warning: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginLookAt
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginLookAt

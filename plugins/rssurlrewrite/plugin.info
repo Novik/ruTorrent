@@ -4,4 +4,4 @@ plugin.runlevel: 12
 plugin.version: 3.6
 plugin.dependencies: rss
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginRSSURLRewrite
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginRSSURLRewrite

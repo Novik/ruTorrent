@@ -8,4 +8,4 @@ rtorrent.external.error: php
 rtorrent.script.error: buildtorrent.sh,createtorrent.sh,inner.sh,mktorrent.sh,transmissioncli.sh
 rtorrent.php.error: correct.php,createtorrent.php,conf.php
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginCreate
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginCreate

@@ -5,4 +5,4 @@ php.extensions.error: json
 rtorrent.external.warning: pgrep
 rtorrent.remote: error
 rtorrent.need: 0
-plugin.help: http://code.google.com/p/rutorrent/wiki/Plugin_task
+plugin.help: https://github.com/Novik/ruTorrent/wiki/Plugin_task

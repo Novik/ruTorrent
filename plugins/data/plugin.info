@@ -2,4 +2,4 @@ plugin.description: This plugin allows to copy torrent data files from the host 
 plugin.author: Novik
 plugin.version: 3.6
 rtorrent.remote: error
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginData
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginData

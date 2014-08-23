@@ -4,4 +4,4 @@ plugin.version: 3.6
 plugin.runlevel: 13
 plugin.may_be_shutdowned: 0
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginHTTPRPC
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginHTTPRPC

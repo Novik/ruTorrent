@@ -4,4 +4,4 @@ plugin.version: 3.6
 plugin.runlevel: 10.5
 rtorrent.need: 0
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginExtsearch
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginExtsearch

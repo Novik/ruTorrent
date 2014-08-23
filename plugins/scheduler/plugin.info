@@ -4,4 +4,4 @@ plugin.version: 3.6
 rtorrent.remote: error
 rtorrent.external.error: php
 rtorrent.php.error: update.php,scheduler.php,conf.php
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginScheduler
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginScheduler

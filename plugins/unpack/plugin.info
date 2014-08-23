@@ -8,4 +8,4 @@ rtorrent.script.error: unall_dir.sh,unrar_dir.sh,unrar_file.sh,unzip_dir.sh,unzi
 rtorrent.external.error: php
 rtorrent.php.error: update.php,unpack.php,conf.php
 php.extensions.error: json
-plugin.help: http://code.google.com/p/rutorrent/wiki/PluginUnpack
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginUnpack

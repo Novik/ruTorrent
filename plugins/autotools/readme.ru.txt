@@ -2,7 +2,7 @@
     Плагин "autotools", версия от 2012-02-15
 
     к WebUI для rTorrent (ruTorrent)
-    (http://code.google.com/p/rutorrent)
+    (https://github.com/Novik/ruTorrent)
 
     Автор плагина: Романовский Дмитрий (dmrom)
 
