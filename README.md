@@ -20,8 +20,8 @@ Screenshots
 Download
 --------
 
- * [GitHub, development version](https://github.com/Novik/ruTorrent/tarball/master)
- * [Archive, stable version](https://bintray.com/novik65/generic/ruTorrent)
+ * [Development version](https://github.com/Novik/ruTorrent/tarball/master)
+ * [Stable version](https://bintray.com/novik65/generic/ruTorrent)
 
 [Details](https://github.com/Novik/ruTorrent/wiki)
 -----------
