@@ -2,7 +2,7 @@
 
 class RevTTEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.revolutiontt.net|pass=XXX;uid=XXX" );
+	public $defaults = array( "public"=>false, "page_size"=>25, "auth"=>1 );
 	public $categories = array( 'all'=>'&cat=0', 'Anime' => '&cat=23', 'Appz' => "&cat=22&cat=1",
 		'E-Book' => '&cat=36', 'Games' => "&cat=4&cat=21&cat=17&cat=16&cat=40&cat=39",
 		'Handheld' => "&cat=35&cat=34", 'Mac' => '&cat=2', 'Movies' => "&cat=20&cat=44&cat=3&cat=10&cat=19",
@@ -13,7 +13,7 @@ class RevTTEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.revolutiontt.net';
+		$url = 'https://revolutiontt.me';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'&cat=0', 'movies'=>'&cat=20&cat=44&cat=3&cat=10&cat=19', 
 				'tv'=>'&cat=43&cat=45&cat=42&cat=7', 'music'=>'&cat=6&cat=46&cat=29', 
@@ -29,12 +29,11 @@ class RevTTEngine extends commonEngine
 		{
 			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&titleonly=1&sort=7&type=desc&page='.$pg.$cat );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing Found!</h2>")!==false)
-				|| (strpos($cli->results, '>Login</font>')!==false))
+				|| (strpos($cli->results, '>Login</title>')!==false))
 				break;
 			$res = preg_match_all('/<img border="0" src=.* alt="(?P<cat>.*)" \/><\/a>'.
 				'.*<a href="details.php\?id=(?P<id>\d+)&amp;hit=1".*>(?P<name>.*)<\/a>.*'.
 				'<td.*>.*href="download.php\/\d+\/(?P<tname>.*)">.*'.
-				'<td .*>.*<\/td>.*'.
 				'<td .*>.*<\/td>.*'.
 				'<td .*>(?P<date>.*)<\/td>.*'.
 				'<td .*>(?P<size>.*)<\/td>'.
