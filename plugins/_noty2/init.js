@@ -8,13 +8,20 @@
 (function($) {
   if ('Notification' in window) {
     $.noty = function(options) {
+      function showNotification() {
+        var notification = new Notification('rutorrent', options);
+
+        // Close the notification in Chrome after 3s
+        setTimeout(notification.cancel, 3000);
+      }
+
       options.icon = 'favicon.ico';
       options.body = options.text ? options.text : options;
 
       if (Notification.permission === 'granted' ||
           (('webkitNotifications' in window &&
             window.webkitNotifications.checkPermission() === 0))) {
-        new Notification('rutorrent', options);
+        showNotification();
       } else if (Notification.permission !== 'denied') {
         Notification.requestPermission(function(permission) {
           if (!('permission' in Notification)) { // for Chrome
@@ -22,7 +29,7 @@
           }
 
           if (permission === 'granted') {
-            new Notification('rutorrent', options);
+            showNotification();
           }
         });
       }
