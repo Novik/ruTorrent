@@ -1,0 +1,7 @@
+plugin.description: This plugin provides the notification functionality for other plugins.
+plugin.author: davorb
+plugin.version: 2
+rtorrent.need: 0
+plugin.may_be_shutdowned: 0
+plugin.runlevel: 1
+plugin.help: https://github.com/davorb/_notify2
