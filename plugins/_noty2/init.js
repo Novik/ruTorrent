@@ -10,9 +10,8 @@
     $.noty = function(options) {
       function showNotification() {
         var notification = new Notification('rutorrent', options);
-
         // Close the notification in Chrome after 3s
-        setTimeout(notification.cancel, 3000);
+        setTimeout(notification.close, 3000);
       }
 
       options.icon = 'favicon.ico';
