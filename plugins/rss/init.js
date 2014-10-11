@@ -852,6 +852,7 @@ theWebUI.selectFilter = function( el )
 {
 	if(this.curFilter!=el)
 	{
+		this.setDisableControls(false);
 		if(this.curFilter)
 			this.curFilter.className = 'TextboxNormal';
 		this.storeFilterParams();
@@ -875,6 +876,23 @@ theWebUI.selectFilter = function( el )
 		if(plugin.editFilersBtn)
 			plugin.editFilersBtn.hide();
 	}
+}
+
+theWebUI.setDisableControls = function( val )
+{
+	$('#FLT_body').prop('disabled', val);
+	$('#FLT_exclude').prop('disabled', val);
+	$('#FLTdir_edit').prop('disabled', val);
+	$('#FLTnot_add_path').prop('disabled', val);
+	$('#FLTtorrents_start_stopped').prop('disabled', val);
+	$('#FLTchktitle').prop('disabled', val);
+	$('#FLTchkdesc').prop('disabled', val);
+	$('#FLTchklink').prop('disabled', val);
+	$('#FLT_label').prop('disabled', val);
+	$('#FLT_rss').prop('disabled', val);
+	$('#FLT_interval').prop('disabled', val);
+	$('#FLT_throttle').prop('disabled', val);
+	$('#FLT_ratio').prop('disabled', val);
 }
 
 theWebUI.loadFiltersWithAdditions = function( flt )
@@ -957,7 +975,12 @@ theWebUI.loadFilters = function( flt, additions )
 		}
 	}
 	theDialogManager.show("dlgEditFilters");
-	$("#_fn0").focus();
+	var elem = $("#_fn0");
+	if (elem.length) {
+		elem.focus()
+	} else {
+		this.setDisableControls(true);
+	}
 }
 
 theWebUI.addNewFilter = function()
@@ -976,6 +999,8 @@ theWebUI.addNewFilter = function()
 
 theWebUI.deleteCurrentFilter = function()
 {
+	if (this.curFilter === null)
+		return;
 	var no = parseInt(this.curFilter.id.substr(3));
 	this.filters.splice(no,1);
 	$(this.curFilter).parent().remove();
@@ -993,6 +1018,7 @@ theWebUI.deleteCurrentFilter = function()
 	}
 	else
 	{
+		this.setDisableControls(true);
 		if(plugin.editFilersBtn)
 			plugin.editFilersBtn.hide();
 		$('#FLT_body,#FLT_exclude,#FLTdir_edit,#FLT_label,#FLT_rss,#FLT_throttle,#FLT_ratio').val('');
