@@ -976,6 +976,8 @@ theWebUI.addNewFilter = function()
 
 theWebUI.deleteCurrentFilter = function()
 {
+	if (this.curFilter === null)
+		return;
 	var no = parseInt(this.curFilter.id.substr(3));
 	this.filters.splice(no,1);
 	$(this.curFilter).parent().remove();
