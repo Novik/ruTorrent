@@ -265,6 +265,6 @@ var theUILang =
  Select_all			: "Επιλογή όλων",
  Deselect_all			: "Αποεπιλογή όλων",
  showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",
- badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ badTempPath 			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
+ badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει."
 };
