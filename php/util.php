@@ -529,6 +529,7 @@ function getFileName($path)
 
 function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit = true )
 {
+	global $canUseXSendFile;
 	$stat = @LFS::stat($filename);
 	if($stat && @LFS::is_file($filename) && @LFS::is_readable($filename))
 	{
@@ -544,8 +545,9 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 			if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 				$nameToSent = rawurlencode($nameToSent);
 			header('Content-Disposition: attachment; filename="'.$nameToSent.'"');
-
+	
 			if($mustExit &&
+				$canUseXSendFile &&
 				function_exists('apache_get_modules') && 
 				in_array('mod_xsendfile', apache_get_modules()))
 			{ 
