@@ -94,7 +94,7 @@ function makeContent()
 				'<label>&nbsp;</label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+theUILang.Dont_add_tname+'<br/>'+
 				'<label>&nbsp;</label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+theUILang.Dnt_start_down_auto+'<br/>'+
 				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
-				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"><option>'+theUILang.No_label+'</option><option>'+theUILang.newLabel+'</option></select><br/>'+
+				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
 				'<hr/>'+
 				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept="application/x-bittorrent" class="TextboxLarge"/><br/>'+
 				'<label>&nbsp;</label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
@@ -105,30 +105,38 @@ function makeContent()
 				'<label>&nbsp;</label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button" disabled="true"/>'+
 			'</form>'+
 		'</div>');
+
+	$("#tadd_label_select").change( function(e)
+	{
+		var index = this.selectedIndex;
+		switch (index) 
+		{
+			case 1:
+			{
+				$(this).hide();
+				$("#tadd_label").show();
+			}
+			case 0:
+			{
+				$("#tadd_label").val("");
+				break;
+			}				
+			default:
+			{
+				$("#tadd_label").val(this.options[index].value);
+				break;
+			}
+		}			
+	});
+
 	theDialogManager.setHandler('tadd','beforeShow',function()
 	{
-		var select = $("#tadd_label_select");
-		select.show();
 		$("#tadd_label").hide();
-		select[0].selectedIndex = 0;
-		select[0].onchange = function (event) {
-			var index = select[0].selectedIndex;
-			switch (index) {
-				case 1:
-					select.hide();
-					$("#tadd_label").show();
-					// fallthrough
-				case 0:
-					$("#tadd_label").val("");
-					break;
-				default:
-					$("#tadd_label").val(select[0].options[index].value);
-					break;
-			}
-		};
-		for (var lbl in theWebUI.cLabels) {
-			select.append("<option>"+lbl+"</option>");
-		}
+		$("#tadd_label_select").empty()
+			.append('<option selected>'+theUILang.No_label+'</option>')
+			.append('<option>'+theUILang.newLabel+'</option>').show();
+		for (var lbl in theWebUI.cLabels)
+			$("#tadd_label_select").append("<option>"+lbl+"</option>");
 		$("#add_button").prop("disabled",false);
 	});
 

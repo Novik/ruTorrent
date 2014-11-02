@@ -161,7 +161,7 @@ input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
 fieldset div {padding: 2px}
 .ie7 fieldset div {padding: 0px}
-div input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
+div input, div select {margin: 0 4px; font-size: 11px; padding: 1px 4px}
 legend {color: #000000; font-weight: bold}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
@@ -251,6 +251,7 @@ div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; p
 div#tadd label {text-align: right; width: 75px; padding-right: 20px; float: left }
 div#tadd br {clear: left; line-height: 0}
 div#tadd input {margin-bottom: 1px}
+div#tadd select { width: 220px }
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
