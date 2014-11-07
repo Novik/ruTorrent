@@ -1,9 +1,10 @@
-﻿/*
+/*
  * Polish language file.
  *
  * Initial Author: Penknife (penknife1@gmail.com)
  *
- * Author: Dare (piczok@gmail.com)
+ * Author: Dare (piczok@gmail.com) 
+ * Author: Kolor (kolor@superseedbox.co.uk)
  */
 
 var theUILang =
@@ -252,21 +253,21 @@ var theUILang =
  phpExtensionNotFoundError	: "Plugin nie zadziała. Rozszerzenie PHP musi zostać zainstalowane",
  trkPrivate			: "Prywatny",
  dontSet			: "Nie ustawiaj",
- webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
- webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory",
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "This screen",
- About_program			: "About ruTorrent",
- Toggle_menu			: "Toggle menu",
- Toggle_details 		: "Toggle details",
- Toggle_categories		: "Toggle categories",
- Delete_current_torrents	: "Delete current torrent(s)",
- Select_all			: "Select all",
- Deselect_all			: "Deselect all",
- showSpeedInTitle		: "Show speed in the title",
- badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ webBadSessionError		: "Plugin nie zadziała. Użytkownik webservera musi mieć dostęp do katalogu sesji rtorrent ",
+ webBadSessionWarning		: "Niektóre funkcje będą niedostępne. Użytkownik webservera musi mieć dostęp do katalogu sesji rtorrent",
+ Developers			: "Deweloperzy",
+ Check_new_version		: "Sprawdz nową wersję",
+ here				: "Tutaj",
+ Num_No 			: "Nr", 
+ This_screen			: "Ten ekran",
+ About_program			: "O ruTorrent",
+ Toggle_menu			: "Menu przełączania",
+ Toggle_details 		: "Szczegóły przełączania",
+ Toggle_categories		: "Kategorie przełączania",
+ Delete_current_torrents	: "Usuń obecne torrenty",
+ Select_all			: "Wybierz wszystkie",
+ Deselect_all			: "Odznacz wszystkie",
+ showSpeedInTitle		: "Pokaż prędkość w tytule",
+ badTempPath 			: "Użytkownik webservera nie ma czytelnego/pisanego/wykonalnego dostępu do katalogu. ruTorrent nie zadziała",
+ badTempPath2			: "Użytkownik rTorrent nie ma czytelnego/pisanego/wykonalnego dostępu do katalogu. ruTorrent nie zadziała."
 };
