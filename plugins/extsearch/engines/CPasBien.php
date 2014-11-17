@@ -7,7 +7,7 @@ class CPasBienEngine extends commonEngine
     public $categories = array(
 		'Tout' => '',
 		'Films' => 'films/',
-		'SГ©ries' => 'series/',
+		'Séries' => 'series/',
 		'Musique' => 'musique/',
 		'Ebook' => 'ebook/',
 		'Logiciels' => 'logiciels/',
@@ -37,7 +37,7 @@ class CPasBienEngine extends commonEngine
 		$what = str_replace (' ', '+', $what);
         for ($pg = 0; $pg < 11; $pg++) {
             $cli = $this->fetch($url . '/recherche/' . $cat . $what . '/page-' . $pg);
-            if (($cli == false) || (strpos($cli->results, "Pas de torrents disponibles correspondant Г  votre recherche") !== false))
+            if (($cli == false) || (strpos($cli->results, "Pas de torrents disponibles correspondant à votre recherche") !== false))
                 break;
             $res = preg_match_all(	
                 	           '`<a href="http:\/\/www\.cpasbien\.pe\/dl-torrent\/(?P<desc1>[^\/]*)\/(?P<desc2>[^\/]*)\/(?P<id>[^\/]*).html"'.
