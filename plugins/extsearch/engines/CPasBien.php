@@ -47,7 +47,7 @@ class CPasBienEngine extends commonEngine
 				'`siU', $cli->results, $matches);
             if ($res) {
                 for ($i = 0; $i < $res; $i++) {
-                    $link                = $url . "/download-torrent/" . $matches["id"][$i] . '.torrent';
+                    $link                = $url . "/_torrents/" . $matches["id"][$i] . '.torrent';
                     if (!array_key_exists($link, $ret)) {
                         $item          = $this->getNewEntry();
                         $item["desc"]  = $url . "/dl-torrent/" . $matches["desc1"][$i] . "/" . $matches["desc2"][$i] . "/" . $matches["id"][$i] . ".html";
