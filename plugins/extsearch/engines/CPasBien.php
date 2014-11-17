@@ -40,11 +40,12 @@ class CPasBienEngine extends commonEngine
             if (($cli == false) || (strpos($cli->results, "Pas de torrents disponibles correspondant Г  votre recherche") !== false))
                 break;
             $res = preg_match_all(	
-				'`<tr class="color\d">.*<td class="torrent-aff">.*'.
-				'<a class="lien-rechercher" href="http:\/\/www\.cpasbien\.pe\/dl-torrent\/(?P<desc1>[^\/]*)\/(?P<desc2>[^\/]*)\/(?P<id>[^\/]*).html" title="(?P<cat1>.*)<br\/>(?P<cat2>.*)<br\/>(?P<date>.*)"> '.
-				'<img src=".*"\/> (?P<name>.*)<\/a>.*<\/td>.*<td class=".*">(?P<size>.*)<\/td>.*<span .*>(?P<seeds>\d+)<\/span>'.
-				'<\/td>.*gif"\/>(?P<leech>.*)<\/td>'.
-				'`siU', $cli->results, $matches);
+                	           '`<a href="http:\/\/www\.cpasbien\.pe\/dl-torrent\/(?P<desc1>[^\/]*)\/(?P<desc2>[^\/]*)\/(?P<id>[^\/]*).html"'.
+                               ' title="(?P<cat1>.*)<br>(?P<cat2>.*) - (?P<date>.*)" class="titre">(?P<name>.*)</a>'.
+                               '<div class="poid">(?P<size>.*)</div>.*'.
+                               '<span .*>(?P<seeds>\d+)<\/span>.*'.
+                               '<div class="down">(?P<leech>.*)<\/div>'.
+                               '`siU', $cli->results, $matches);
             if ($res) {
                 for ($i = 0; $i < $res; $i++) {
                     $link                = $url . "/_torrents/" . $matches["id"][$i] . '.torrent';
