@@ -9,10 +9,10 @@
  theUILang.accLogin		= "Login";
  theUILang.accPassword		= "Hasło";
  theUILang.accAccounts		= "Konta";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accAuto		= "Autologowanie";
+ theUILang.acAutoNone		= "Wcale";
+ theUILang.acAutoDay		= "Co dzień";
+ theUILang.acAutoWeek		= "Co tydzień";
+ theUILang.acAutoMonth		= "Co miesiąc";
 
 thePlugins.get("loginmgr").langLoaded();
