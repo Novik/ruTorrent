@@ -9,10 +9,10 @@
  theUILang.accLogin		= "Логін";
  theUILang.accPassword		= "Пароль";
  theUILang.accAccounts		= "Облікові записи";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accAuto		= "Автологін";
+ theUILang.acAutoNone		= "Ніколи";
+ theUILang.acAutoDay		= "Щодня";
+ theUILang.acAutoWeek		= "Щотижня";
+ theUILang.acAutoMonth		= "Щомісяця";
 
 thePlugins.get("loginmgr").langLoaded();
