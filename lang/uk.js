@@ -3,7 +3,7 @@
  *
  * Initial Author: Artem Lopata (mod-s@yandex.ru)
  *
- * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
 var theUILang =
