@@ -3,7 +3,7 @@
  *
  * Ukrainian language file.
  *
- * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
  theUILang.throttle		= "Канал";

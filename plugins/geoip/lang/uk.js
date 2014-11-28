@@ -5,7 +5,7 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
  theUILang.peerComment 		= "Додати коментар";

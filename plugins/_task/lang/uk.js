@@ -3,25 +3,25 @@
  *
  * Ukrainian language file.
  *
- * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
  theUILang.tskCommand		= "Триває виконання команди...";
  theUILang.tskCommandDone	= "Виконання команди завершено.";
  theUILang.tskConsole		= "Консоль";
  theUILang.tskErrors		= "Діагностика";
- theUILang.tskBackground	= "Hide"; 
- theUILang.tskStart		= "Started";
- theUILang.tskFinish		= "Finished";
- theUILang.tskElapsed		= "Elapsed"; 
- theUILang.tskPlugin		= "Plugin";
- theUILang.tskDeletePrompt	= "Do you really want to delete the selected task(s)?";
- theUILang.tskDelete		= "Delete tasks(s)"; 
- theUILang.tskActivate		= "Activate";
- theUILang.tskRemove		= "Remove";
- theUILang.tskRefresh		= "Refresh";
- theUILang.tskRunning		= "Running";
- theUILang.tskArg		= "Parameter";
- theUILang.tskTasks		= "Tasks";     
+ theUILang.tskBackground	= "Приховати"; 
+ theUILang.tskStart		= "Початок";
+ theUILang.tskFinish		= "Завершення";
+ theUILang.tskElapsed		= "Минуло"; 
+ theUILang.tskPlugin		= "Плагін";
+ theUILang.tskDeletePrompt	= "Справді видалити вибрані задачі?";
+ theUILang.tskDelete		= "Видалення задач"; 
+ theUILang.tskActivate		= "Активувати";
+ theUILang.tskRemove		= "Видалити";
+ theUILang.tskRefresh		= "Оновити";
+ theUILang.tskRunning		= "Виконується";
+ theUILang.tskArg		= "Параметр";
+ theUILang.tskTasks		= "Задачі";     
 
 thePlugins.get("_task").langLoaded();

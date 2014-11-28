@@ -3,10 +3,10 @@
  *
  * Ukrainian language file.
  *
- * Author: 
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
- theUILang.lookAtDesc = "Find at (Format: name|url)";
- theUILang.lookAt = "Find at";
+ theUILang.lookAtDesc = "Дивитися на (Формат: name|url)";
+ theUILang.lookAt = "Дивитися на";
 
 thePlugins.get("lookat").langLoaded();
