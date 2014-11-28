@@ -266,7 +266,7 @@ var theUILang =
  Delete_current_torrents	: "Видлити поточні торенти",
  Select_all			: "Вибрати все",
  Deselect_all			: "Скасувати вибір",
- showSpeedInTitle		: "Show speed in the title",
- badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ showSpeedInTitle		: "Показувати швидкість у заголовку",
+ badTempPath 			: "Веб-сервер не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
+ badTempPath2			: "rTorrent не має повного доступу до каталогу tmp. ruTorrent не зможе працювати."
 };
