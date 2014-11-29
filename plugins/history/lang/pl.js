@@ -21,14 +21,14 @@
  theUILang.Deleted		= "Usunięte";
  theUILang.Time 		= "Czas";
  theUILang.Tracker		= "Tracker";
- theUILang.enableNotifications	= "Enable desktop notifications";
- theUILang.historyNotification	= "Desktop Notifications";
- theUILang.notifAutoClose	= "Autoclose notifications after";
+ theUILang.enableNotifications	= "Włącz powiadomienia";
+ theUILang.historyNotification	= "Powiadomienia";
+ theUILang.notifAutoClose	= "Samoczynnie zamknij powiadomienia po";
  theUILang.notifTip		= {
- 				  false: "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 				  false: "Twoja przeglądarka nie obsługuje powiadomień. Spróbuj skorzystaj z innej przeglądarki, na przykład Google Chrome",
  				  "granted": "",
- 				  "default": "Your browser supports desktop notifications. Press button below to enable it.",
- 				  "denied": "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
- 				  }; 				  
+ 				  "default": "Twoja przeglądarka obsługuje powiadomienia. Naciśnij przycisk poniżej, aby je włączyć",
+ 				  "denied": "Twoja przeglądarka obsługuje powiadomienia, ale wyłaczyłeś je dla tej strony. Zamknij to okno dialogowe i skorzystaj z opcji przeglądarki, aby uruchomić powiadomienia.",
+ 				  };
 
 thePlugins.get("history").langLoaded();
