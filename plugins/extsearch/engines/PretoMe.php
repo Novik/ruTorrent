@@ -2,7 +2,7 @@
 
 class PretoMeEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"preto.me|pass=XXX;uid=XXX" );
+	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"pretome.info|pass=XXX;uid=XXX" );
 
 	public $categories = array( 'all'=>'', 'Applications'=>'&cat[]=22', 'Ebooks'=>'&cat[]=27', 'Games'=>'&cat[]=4',
 		'Miscellaneous'=>'&cat[]=31', 'Movies'=>'&cat[]=19', 'Music'=>'&cat[]=6',
@@ -11,7 +11,7 @@ class PretoMeEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'https://preto.me';
+		$url = 'https://pretome.info';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'movies'=>'&cat[]=19', 'tv'=>'&cat[]=7', 'music'=>'&cat[]=6', 'games'=>'&cat[]=4', 'software'=>'&cat[]=22', 'books'=>'&cat[]=27' );
 		else
@@ -27,7 +27,7 @@ class PretoMeEngine extends commonEngine
 				(strpos($cli->results, '<input type="password" name="password"')!==false))
 				break;
 
-			$res = preg_match_all('/<img src="https:\/\/preto\.me\/pic\/icons\/.*" title="(?P<cat>.*)".*\/><\/a>.*'.
+			$res = preg_match_all('/<img src="https:\/\/pretome\.info\/pic\/icons\/.*" title="(?P<cat>.*)".*\/><\/a>.*'.
 				'href="details.php\?id=(?P<id>\d+)" title="(?P<name>.*)">.*'.
 				'<td class="row3" style="text-align: center;"><a href="download\.php\/\d+\/(?P<tname>.*)">.*'.
 				'<td class="row3" style="text-align: center;"><a href="details\.php\?id=\d+&files#files">.*'.
