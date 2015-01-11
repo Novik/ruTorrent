@@ -48,7 +48,7 @@ plugin.init = function()
 				timeout: theWebUI.settings["webui.reqtimeout"],
 			        async : true,
 			        cache: false,
-				url : "plugins/diskspace/action.php",
+				url : "plugins/diskspace/action.php?p="+plugin.folderToScan,
 				dataType : "json",
 				cache: false,
 				success : function(data)
