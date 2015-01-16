@@ -173,12 +173,12 @@ rPlugin.prototype.langLoaded = function()
 	this.markLoaded();
 }
 
-rPlugin.prototype.loadLangPrim = function(lang,sendNotify)
+rPlugin.prototype.loadLangPrim = function(lang,template,sendNotify)
 {
 	var self = this;
 	$.ajax(
 	{
-		url: this.path+"lang/"+lang+".js",
+		url: template.replace('{lang}',lang), // this is because plugin.path may be changed during call 
 		dataType: "script",
 		cache: true
 	}).done( function()
@@ -188,13 +188,13 @@ rPlugin.prototype.loadLangPrim = function(lang,sendNotify)
 	{
 		(lang=='en') ? 
 			console.error( "Plugin '"+self.name+"': localization for '"+lang+"' not found." ) :
-			self.loadlangPrim('en',sendNotify);
+			self.loadLangPrim('en',template,sendNotify);
 	});
 }
 
 rPlugin.prototype.loadLang = function(sendNotify)
 {
-	this.loadLangPrim(GetActiveLanguage(),sendNotify);
+	this.loadLangPrim(GetActiveLanguage(),this.path+"lang/{lang}.js",sendNotify);
 	return(this);
 }
 
