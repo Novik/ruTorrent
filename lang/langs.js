@@ -40,6 +40,7 @@ var AvailableLanguages =
 	lv:'Latvijas',
 	hu:'Magyar',
 	nl:'Nederlands',
+  no:'Norsk',
 	pl:'Polski',
 	pt:'Português',
 	sk:'Slovenský',
