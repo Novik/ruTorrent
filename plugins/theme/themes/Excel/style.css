@@ -29,7 +29,7 @@ div.dlg-window { color: #000000; border-color: #9EB6CE; background-color: #FFFFF
 div.dlg-header { background: #D9E8FB url(../../../../images/blank.gif) no-repeat scroll 4px center; border-color: #9EB6CE; color: #15428B; font-weight: bold}
 .tabbar { background: transparent url(./images/tabbarbg.png) repeat-x 0 0 }
 
-.tabbar li a { background: transparent url(./images/tabbg.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; color: #034084 }
+.tabbar li a { background: transparent url(./images/tabbg.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; -webkit-border-top-left-radius:0px; -webkit-border-top-right-radius:0px; border-top-right-radius:0px; border-top-left-radius:0px; color: #034084 }
 .tabbar li a:hover { border: none; opacity: 0.8 }
 .tabbar li:first-child a { background: transparent url(./images/tabbgf.png) no-repeat 0 0 }
 .tabbar li.selected:first-child a { background: transparent url(./images/tabbgfh.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; top: 3px }
