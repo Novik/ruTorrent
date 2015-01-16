@@ -68,8 +68,10 @@ if( count( $argv ) > 1 )
 			if(strlen($comment))
 				$torrent->comment($comment);
 		}
-	        if(isset($request['private']))
+	        if($request['private'])
+		{
 			$torrent->is_private(true);
+		}
 		$fname = rTask::formatPath($taskNo).'/result.torrent';
 		$torrent->save($fname);
 
