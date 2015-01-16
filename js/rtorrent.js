@@ -599,7 +599,7 @@ rTorrentStub.prototype.ban = function()
 		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
                 cmd.addParameter("i4",1);
 		this.commands.push( cmd );
-		cmd = new rXMLRPCCommand("p.disconnect_delayed");
+		cmd = new rXMLRPCCommand("p.disconnect");
 		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
 		this.commands.push( cmd );
 	}

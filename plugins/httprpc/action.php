@@ -417,7 +417,7 @@ switch($mode)
                 foreach($vs as $v)
 		{
 			$req->addCommand( new rXMLRPCCommand("p.banned.set", array($hash[0].":p".$v,1)) );
-			$req->addCommand( new rXMLRPCCommand("p.disconnect_delayed", $hash[0].":p".$v) );
+			$req->addCommand( new rXMLRPCCommand("p.disconnect", $hash[0].":p".$v) );
 		}
 		if($req->success())
 	        	$result = $req->val;
