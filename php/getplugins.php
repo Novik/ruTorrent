@@ -171,8 +171,8 @@ function findRemoteEXE( $exe, $err, &$remoteRequests )
 		global $pathToExternals;
 		$add = '';
 		if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-			$add = " ".escapeshellarg($pathToExternals[$exe]);
-		$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", "/bin/sh ".escapeshellarg(addslash($path)."test.sh")." ".$exe." ".escapeshellarg($st).$add)));
+		  $add = $pathToExternals[$exe];
+		$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", addslash($path)."test.sh", $exe, $st, $add)));
 		$req->run();
 		$remoteRequests[$exe] = array( "path"=>$st, "err"=>array() );
 	}
