@@ -2,7 +2,7 @@
 
 class ScCEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.sceneaccess.org|pass=XXX;uid=XXX" );
+	public $defaults = array( "public"=>false, "page_size"=>25, "cookies"=>"www.sceneaccess.eu|pass=XXX;uid=XXX" );
 
 	public $categories = array( 'all'=>'', 
 		'Movies/DVD-R'=>'&c8=1',
@@ -25,7 +25,7 @@ class ScCEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.sceneaccess.org';
+		$url = 'https://www.sceneaccess.eu';
 		if($useGlobalCats)
 			$categories = array( 
 				'all'=>'', 'movies'=>'&c8=1&c22=1&c7=1', 
