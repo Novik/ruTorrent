@@ -75,11 +75,11 @@ class rTask
 						fputs($sh,'if [ $last -ne 0 ] ; then '."\n");
 					else
 					if($cmd[0]=='>')
-						fputs($sh,'echo "'.substr($cmd,1).'" >> "${dir}"/log'."\n");
+						fputs($sh,'echo '.escapeshellarg(substr($cmd,1)).' >> "${dir}"/log'."\n");
 					else
 					{
 						if($flags & self::FLG_ECHO_CMD)
-							fputs($sh,'echo "'.$cmd.'" >> "${dir}"/log'."\n");
+							fputs($sh,'echo '.escapeshellarg($cmd).' >> "${dir}"/log'."\n");
                                 	        if($flags & self::FLG_NO_ERR)
 							fputs($sh,$cmd.' >> "${dir}"/log'."\n");
 						else
