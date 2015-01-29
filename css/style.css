@@ -274,6 +274,8 @@ div#tadd select { width: 220px }
 .buttons-list {  margin-bottom: 5px }
 #servertime { text-align: center }
 
+#bf {white-space:pre}
+
 @media only screen and (orientation:portrait) 
 { 
 	#go { display: none }
