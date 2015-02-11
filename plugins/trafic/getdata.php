@@ -65,10 +65,7 @@ if(isset($_REQUEST['mode']))
 			$ret = $val;
 		else			
 		{
-error_log(print_r($ret["up"],1));
-error_log(print_r($val["up"],1));
 			$ret["up"] = array_map("sum", $val["up"], $ret["up"]);
-error_log(print_r($ret["up"],1));			
 			$ret["down"] = array_map("sum", $val["down"], $ret["down"]);
 		}
 	}
