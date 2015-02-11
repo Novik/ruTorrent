@@ -67,6 +67,7 @@ if(isset($_REQUEST['mode']))
 		{
 			$ret["up"] = array_map("sum", $val["up"], $ret["up"]);
 			$ret["down"] = array_map("sum", $val["down"], $ret["down"]);
+			$ret["labels"] = array_map("max", $val["labels"], $ret["labels"]);
 		}
 	}
 }
