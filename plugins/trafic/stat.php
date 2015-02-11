@@ -111,20 +111,41 @@ class rStat
 			}
 		}
 		sort($files,SORT_STRING);
-		$files = array_map(  'quoteAndDeslashEachItem', $files);
-		return( implode(",",$files)."]}" );
+		return( $files );
 	}
         public function getDay()
 	{
-		return(self::format($this->hourUp,$this->hourDown,$this->hourHitTimes,'day').self::getTrackers());
+		return(array
+		(
+			"up" 		=> $this->hourUp,
+			"down" 		=> $this->hourDown,
+			"labels" 	=> $this->hourHitTimes,
+			"mode" 		=> 'day',
+			"trackers" 	=> self::getTrackers()
+		));
+
 	}
         public function getMonth()
 	{
-		return(self::format($this->monthUp,$this->monthDown,$this->monthHitTimes,'month').self::getTrackers());
+		return(array
+		(
+			"up" 		=> $this->monthUp,
+			"down" 		=> $this->monthDown,
+			"labels"	=> $this->monthHitTimes,
+			"mode"	 	=> 'month',
+			"trackers"	=> self::getTrackers()
+		));	
 	}
         public function getYear()
 	{
-		return(self::format($this->yearUp,$this->yearDown,$this->yearHitTimes,'year').self::getTrackers());
+		return(array
+		(
+			"up" 		=> $this->yearUp,
+			"down"		=> $this->yearDown,
+			"labels"	=> $this->yearHitTimes,
+			"mode"		=> 'month',
+			"trackers"	=> self::getTrackers()
+		));	
 	}
 	public function getRatios( $time )
 	{

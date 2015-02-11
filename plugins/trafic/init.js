@@ -242,22 +242,25 @@ if(plugin.canChangeTabs())
 
 	theWebUI.showTrafic = function(d)
 	{
-		var s = $('#tracker_mode').val();
-		$('#tracker_mode option').remove();
-		var tMode = plugin.collectStatForTorrents ? "<option value='none'>"+theUILang.selectedTorrent+"</option>" : "";
-		$('#tracker_mode').append(tMode+"<option value='global' selected>"+theUILang.allTrackers+"</option>");
-		for(var i=0; i<d.trackers.length; i++)
-			$('#tracker_mode').append("<option value='"+d.trackers[i]+"'>"+d.trackers[i]+"</option>");
-		$('#tracker_mode').val(s);
-		if(s!=$('#tracker_mode').val())
-			$('#tracker_mode').val('global');
-		$('#traf_mode').val(d.mode);
-		this.trafGraph.setData(d);
+		if( $type(d) )
+		{
+			var s = $('#tracker_mode').val();
+			$('#tracker_mode option').remove();
+			var tMode = plugin.collectStatForTorrents ? "<option value='none'>"+theUILang.selectedTorrent+"</option>" : "";
+			$('#tracker_mode').append(tMode+"<option value='global' selected>"+theUILang.allTrackers+"</option>");
+			for(var i=0; i<d.trackers.length; i++)
+				$('#tracker_mode').append("<option value='"+d.trackers[i]+"'>"+d.trackers[i]+"</option>");
+			$('#tracker_mode').val(s);
+			if(s!=$('#tracker_mode').val())
+				$('#tracker_mode').val('global');
+			$('#traf_mode').val(d.mode);
+			this.trafGraph.setData(d);
+		}			
 	}
 
 	rTorrentStub.prototype.gettrafic = function()
 	{
-		this.content = "mode="+this.vs[0]+"&tracker="+this.ss[0]+"&hash="+theWebUI.dID;
+		this.content = "mode="+this.vs[0]+"&tracker="+this.ss[0]+theWebUI.getHashes('');
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/trafic/getdata.php";
 		this.dataType = "json";
@@ -265,13 +268,13 @@ if(plugin.canChangeTabs())
 
 	if(plugin.collectStatForTorrents)
 	{
-		plugin.showDetails = theWebUI.showDetails;
-		theWebUI.showDetails = function(hash, noSwitch)
+		plugin.trtSelect = theWebUI.trtSelect;
+		theWebUI.trtSelect = function(e, id) 
 		{
-			plugin.showDetails.call(this,hash,noSwitch);
+			plugin.trtSelect.call(this,e,id);
 			if( (this.activeView == 'traf') && ($('#tracker_mode').val()=='none'))
 				theWebUI.reqForTraficGraph();
-		}
+	   	}
 	}
 }
 

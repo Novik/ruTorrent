@@ -7,3 +7,4 @@ rtorrent.external.error: php
 rtorrent.php.error: update.php,stat.php,conf.php
 php.version: 5.1.0
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginTrafic
+php.extensions.error: json

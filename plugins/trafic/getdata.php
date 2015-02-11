@@ -2,19 +2,37 @@
 require_once( 'stat.php' );
 eval(getPluginConf('trafic'));
 
-$val = "";
-$storage = "global.csv";
+$ret = null;
+$storages = array( "global.csv" );
 
 if(isset($_REQUEST['tracker']))
 {
 	if($_REQUEST['tracker']=="none")
 	{
-		if(isset($_REQUEST['hash']))
-			$storage = "torrents/".$_REQUEST['hash'].".csv";		
-	}		
+		if(!isset($HTTP_RAW_POST_DATA))
+			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
+		$tstorages = array();
+		if(isset($HTTP_RAW_POST_DATA))
+		{
+			$vars = explode('&', $HTTP_RAW_POST_DATA);
+			foreach($vars as $var)
+			{
+				$parts = explode("=",$var);
+				if($parts[0]=="hash")
+					$tstorages[] = 'torrents/'.$parts[1].".csv";
+			}
+		}	
+		if( count($tstorages) )
+			$storages = $tstorages;
+	}
 	else
 		if($_REQUEST['tracker']!="global")
-			$storage = "trackers/".$_REQUEST['tracker'].".csv";
+			$storages = array( "trackers/".$_REQUEST['tracker'].".csv" );
+}
+
+function sum($e1, $e2)
+{
+	return($e1+$e2);
 }
 
 if(isset($_REQUEST['mode']))
@@ -23,22 +41,38 @@ if(isset($_REQUEST['mode']))
 	if($mode=='clear') 
 	{
 		if(!$disableClearButton)
+		foreach( $storages as $storage )
 			@unlink(getSettingsPath().'/trafic/'.$storage);
 		if($_REQUEST['tracker']!="none")
 		{
 			$mode='day';
-			$storage = "global.csv";
+			$storages = array( "global.csv" );
 		}
 	}
-	$st = new rStat($storage);
-	if($mode=='day')
-		$val = $st->getDay();
-	else
-	if($mode=='month')
-		$val = $st->getMonth();
-	else
-	if($mode=='year')
-		$val = $st->getYear();
+	$ret = array();
+	foreach( $storages as $storage )
+	{
+		$st = new rStat($storage);
+		if($mode=='day')
+			$val = $st->getDay();
+		else
+		if($mode=='month')
+			$val = $st->getMonth();
+		else
+		if($mode=='year')
+			$val = $st->getYear();
+		if(empty($ret))
+			$ret = $val;
+		else			
+		{
+error_log(print_r($ret["up"],1));
+error_log(print_r($val["up"],1));
+			$ret["up"] = array_map("sum", $val["up"], $ret["up"]);
+error_log(print_r($ret["up"],1));			
+			$ret["down"] = array_map("sum", $val["down"], $ret["down"]);
+		}
+	}
 }
 
-cachedEcho($val,"application/json");
+cachedEcho(json_encode($ret),"application/json");
+                	
