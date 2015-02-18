@@ -510,7 +510,7 @@ class Snoopy
 			$this->error = "Error: cURL could not retrieve the document, error $return.";
 		else
 		{
-			$results = file_get_contents($contfile);
+			$results = @file_get_contents($contfile);
 			$result_headers = file($headerfile);
 			foreach($result_headers as $header)
 			{
@@ -571,8 +571,8 @@ class Snoopy
 
 			$this->results = $results;
 		}
-		unlink($headerfile);
-		unlink($contfile);
+		@unlink($headerfile);
+		@unlink($contfile);
 		return(!$return);
 	}
 

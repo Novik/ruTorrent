@@ -36,20 +36,28 @@ class rStat
 	public function flush()
 	{
 		global $profileMask;
-		if($file=@fopen($this->fname,"w"))
+		$randName = uniqid(getTempDirectory()."rutorrent-trafic-");
+		if($file=@fopen($randName,"w"))
 		{
-			fputcsv($file,$this->hourUp);
-			fputcsv($file,$this->hourDown);
-			fputcsv($file,$this->hourHitTimes);
-			fputcsv($file,$this->monthUp);
-			fputcsv($file,$this->monthDown);
-			fputcsv($file,$this->monthHitTimes);
-			fputcsv($file,$this->yearUp);
-			fputcsv($file,$this->yearDown);
-			fputcsv($file,$this->yearHitTimes);
-			fclose($file);
-			@chmod($this->fname,$profileMask & 0666);
+			if( (fputcsv($file,$this->hourUp)!==false) &&
+				(fputcsv($file,$this->hourDown)!==false) &&
+				(fputcsv($file,$this->hourHitTimes)!==false) &&
+				(fputcsv($file,$this->monthUp)!==false) &&
+				(fputcsv($file,$this->monthDown)!==false) &&
+				(fputcsv($file,$this->monthHitTimes)!==false) &&
+				(fputcsv($file,$this->yearUp)!==false) &&
+				(fputcsv($file,$this->yearDown)!==false) &&
+				(fputcsv($file,$this->yearHitTimes)!==false))
+			{				
+				fclose($file);
+				rename( $randName, $this->fname );
+				@chmod($this->fname,$profileMask & 0666);
+				return(true);
+			}
+			else
+				unlink($randName);
 		}
+		return(false);
 	}
 	public function correct($deltaUp,$deltaDown)
 	{

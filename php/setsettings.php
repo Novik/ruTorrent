@@ -11,10 +11,19 @@ if(isset($_REQUEST['v']))
 		if(flock( $fp, LOCK_EX ))
 		{
 			ftruncate( $fp, 0 );
-			fputs( $fp, $_REQUEST['v'] );
-        		fflush( $fp );
-			flock( $fp, LOCK_UN );
-       			rename( $name.'.tmp', $name );
+			if( fputs( $fp, $_REQUEST['v'] ) !== false )
+			{
+	        		fflush( $fp );
+				flock( $fp, LOCK_UN );
+       				rename( $name.'.tmp', $name );
+			}
+			else
+			{
+				flock( $fp, LOCK_UN );
+				fclose( $fp );
+				unlink( $name.'.tmp' );
+				return;
+			}       				
 		}
                	fclose( $fp );
 	}
