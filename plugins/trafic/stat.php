@@ -49,13 +49,15 @@ class rStat
 				(fputcsv($file,$this->yearDown)!==false) &&
 				(fputcsv($file,$this->yearHitTimes)!==false))
 			{				
-				fclose($file);
-				rename( $randName, $this->fname );
-				@chmod($this->fname,$profileMask & 0666);
-				return(true);
+				if( fclose($file)!==false )
+				{
+					rename( $randName, $this->fname );
+					@chmod($this->fname,$profileMask & 0666);
+					return(true);
+				}
 			}
-			else
-				unlink($randName);
+			fclose($file);
+			unlink($randName);			
 		}
 		return(false);
 	}

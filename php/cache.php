@@ -43,14 +43,18 @@ class rCache
 			if(self::flock( $fp ))
 			{
 				ftruncate( $fp, 0 );
-	        		if( fwrite( $fp, serialize( $rss ) ) !== false )
+				$str = serialize( $rss );
+	        		if((fwrite( $fp, $str ) == strlen($str)) && fflush( $fp ))
 	        		{
-			        	fflush( $fp );
 					flock( $fp, LOCK_UN );
-        				fclose( $fp );
-       					rename( $name.'.tmp', $name );
-					@chmod($name,$profileMask & 0666);
-	        			return(true);
+        				if(fclose( $fp ) !== false)
+        				{
+	       					rename( $name.'.tmp', $name );
+						@chmod($name,$profileMask & 0666);
+	        				return(true);
+					}
+					else
+						unlink( $name.'.tmp' );
 				}
 				else
 				{

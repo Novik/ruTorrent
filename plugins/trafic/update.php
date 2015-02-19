@@ -47,11 +47,15 @@
 							break;
 					}
 				}					
-				if($ok !== false )
+				if($ok !== false)
 				{
-					fclose($file);
-					rename($randName,$dir.'last.csv');
-					@chmod($dir.'last.csv',$profileMask & 0666);
+					if( fclose($file) !== false )
+					{
+						rename($randName,$dir.'last.csv');
+						@chmod($dir.'last.csv',$profileMask & 0666);
+					}
+					else
+						unlink($randName);
 				}
 				else
 					unlink($randName);
