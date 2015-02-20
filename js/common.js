@@ -1135,7 +1135,7 @@ var theBTClientVersion =
 	},
 	azLikeClientsSpec:
 	{
-		'UM' : "uTorrent for Mac", 'UT' : "uTorrent", 'TR' : "Transmission",
+		'UM' : "uTorrent for Mac", 'UT' : "uTorrent", 'BT' : "BitTorrent", 'TR' : "Transmission",
 		'AZ' : "Azureus", 'KT' : "KTorrent", "BF" : "BitFlu",
 	        'LW' : "LimeWire", "BB" : "BitBuddy", "BR" : "BitRocket",
 		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant",
@@ -1183,6 +1183,7 @@ var theBTClientVersion =
 					case 'LW':
 						ret = cli;
 						break;
+					case 'BT':
 					case 'UT':
 					case 'UM':
 						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5)+getMnemonicEnd(str.charAt(6));
@@ -1285,6 +1286,9 @@ var theBTClientVersion =
 			else
 			if(str.match(/^-FG\d\d\d\d/))
 				ret = "FlashGet "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
+			else
+			if(str.match(/^-FX/))
+				ret = "Freebox Révolution (v6)";
 			else
 			if(str.match(/^-SP\d\d\d/))
 				ret = "BitSpirit "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5);
