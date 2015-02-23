@@ -18,7 +18,7 @@ function parseOneItem($item)
 	eLog('*** Parse item '.$item);
 	$lines = file($item,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 	$cnt = count($lines);
-	if($cnt>2)
+	if($cnt>3)
 	{
 		$dirs = array();
 		$force_delete = intval($lines[$cnt-1]) == 2;
@@ -27,7 +27,8 @@ function parseOneItem($item)
 		unset($lines[$cnt-3]);
 		unset($lines[$cnt-2]);
 		unset($lines[$cnt-1]);
-		if( !$force_delete || !$is_multi ){
+		if( !$force_delete || !$is_multi )
+		{
 			foreach( $lines as $file )
 			{
 				if(@unlink($file))
@@ -50,12 +51,15 @@ function parseOneItem($item)
 		}
 		if($is_multi)
 		{
-			if($force_delete){
+			if($force_delete)
+			{
 				if(@deleteDir($base_path))
 					eLog('Successfully forced delete dir '.$base_path);
 				else
-					eLog('FAIL force delete dir '.$base_path);			}
-			else{
+					eLog('FAIL force delete dir '.$base_path);
+			}
+			else
+			{
 				$dirs = array_unique($dirs);
 				usort( $dirs, create_function( '$a,$b', 'return strrpos($b,"/")-strrpos($a,"/");' ) );
 				foreach( $dirs as $dir )
@@ -101,11 +105,8 @@ else
 	eLog('Busy, wait for next time.');
 
 
-function deleteDir($path) {
-	if (empty($path)) {
-		return false;
-	}
-	return is_file($path) ?
-					@unlink($path) :
-					array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path);
+function deleteDir($path) 
+{
+	return( empty($path) ? false :
+		(is_file($path) ? @unlink($path) : array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path)) );
 }
