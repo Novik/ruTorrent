@@ -21,42 +21,53 @@ function parseOneItem($item)
 	if($cnt>2)
 	{
 		$dirs = array();
-		$is_multi = intval($lines[$cnt-1]);
-		$base_path = $lines[$cnt-2];
+		$force_delete = intval($lines[$cnt-1]) == 2;
+		$is_multi = intval($lines[$cnt-2]);
+		$base_path = $lines[$cnt-3];
+		unset($lines[$cnt-3]);
 		unset($lines[$cnt-2]);
 		unset($lines[$cnt-1]);
-		foreach( $lines as $file )
-		{
-			if(@unlink($file))
-				eLog('Successfully delete file '.$file);
-			else
-				eLog('FAIL Delete file '.$file);
-			if($is_multi)
+		if( !$force_delete || !$is_multi ){
+			foreach( $lines as $file )
 			{
-				$dir = $base_path;
-				$file = substr($file, strlen($base_path)+1);
-				$pieces = explode('/', $file);
-				for( $i=0; $i<count($pieces)-1; $i++)
+				if(@unlink($file))
+					eLog('Successfully delete file '.$file);
+				else
+					eLog('FAIL Delete file '.$file);
+				if($is_multi)
 				{
-					$dir.='/';
-					$dir.=$pieces[$i];
-					$dirs[] = $dir;
+					$dir = $base_path;
+					$file = substr($file, strlen($base_path)+1);
+					$pieces = explode('/', $file);
+					for( $i=0; $i<count($pieces)-1; $i++)
+					{
+						$dir.='/';
+						$dir.=$pieces[$i];
+						$dirs[] = $dir;
+					}
 				}
 			}
 		}
 		if($is_multi)
 		{
-			$dirs = array_unique($dirs);
-			usort( $dirs, create_function( '$a,$b', 'return strrpos($b,"/")-strrpos($a,"/");' ) );
-			foreach( $dirs as $dir )
-				if(@rmdir($dir))
-					eLog('Successfully delete dir '.$dir);
+			if($force_delete){
+				if(@deleteDir($base_path))
+					eLog('Successfully forced delete dir '.$base_path);
 				else
-					eLog('FAIL delete dir '.$dir);
-			if(@rmdir($base_path))
-				eLog('Successfully delete dir '.$base_path);
-			else
-				eLog('FAIL delete dir '.$base_path);
+					eLog('FAIL force delete dir '.$base_path);			}
+			else{
+				$dirs = array_unique($dirs);
+				usort( $dirs, create_function( '$a,$b', 'return strrpos($b,"/")-strrpos($a,"/");' ) );
+				foreach( $dirs as $dir )
+					if(@rmdir($dir))
+						eLog('Successfully delete dir '.$dir);
+					else
+						eLog('FAIL delete dir '.$dir);
+				if(@rmdir($base_path))
+					eLog('Successfully delete dir '.$base_path);
+				else
+					eLog('FAIL delete dir '.$base_path);
+			}
 		}
 	}
 }
@@ -69,7 +80,7 @@ if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 {
 	touch($lock);
        	$list = array();
-	if($handle = @opendir($listPath)) 
+	if($handle = @opendir($listPath))
 	{
 	        while(false !== ($file = readdir($handle)))
 		{
@@ -88,3 +99,13 @@ if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 }
 else
 	eLog('Busy, wait for next time.');
+
+
+function deleteDir($path) {
+	if (empty($path)) {
+		return false;
+	}
+	return is_file($path) ?
+					@unlink($path) :
+					array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path);
+}

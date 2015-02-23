@@ -1,7 +1,8 @@
 if(plugin.canChangeMenu())
 {
-	theWebUI.removeWithData = function()
+	theWebUI.removeWithData = function(force)
 	{
+		plugin.force_delete = force;
 		if( theWebUI.settings["webui.confirm_when_deleting"] )
 		{
 			this.delmode = "removewithdata";
@@ -23,7 +24,10 @@ if(plugin.canChangeMenu())
 				var _c0 = [];
 				_c0.push( [theUILang.Delete_data,
 					(this.getTable("trt").selCount>1) ||
-					this.isTorrentCommandEnabled("remove",id) ? "theWebUI.removeWithData()" : null] );
+					this.isTorrentCommandEnabled("remove",id) ? "theWebUI.removeWithData(false)" : null] );
+				_c0.push( [theUILang.Delete_data + ' (' + theUILang.All + ')',
+					(this.getTable("trt").selCount>1) ||
+					this.isTorrentCommandEnabled("remove",id) ? "theWebUI.removeWithData(true)" : null] );
 				theContextMenu.add( el, [CMENU_CHILD, theUILang.Remove_and, _c0] );
 			}
 		}
@@ -35,7 +39,7 @@ if(plugin.canChangeMenu())
 		{
 			var cmd = new rXMLRPCCommand( "d.set_custom5" );
 			cmd.addParameter( "string", this.hashes[i] );
-			cmd.addParameter( "string", "1" );
+			cmd.addParameter( "string", (plugin.force_delete ? "2" : "1") );
 			this.commands.push( cmd );
 			cmd = new rXMLRPCCommand( "d.delete_tied" );
 			cmd.addParameter( "string", this.hashes[i] );
@@ -45,4 +49,5 @@ if(plugin.canChangeMenu())
 			this.commands.push( cmd );
 		}
 	}
+
 }
