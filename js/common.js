@@ -1131,7 +1131,7 @@ var theBTClientVersion =
 	},
 	azLikeClients2x2:
 	{
-	        "AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent"
+	        "AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent", "FX" : "Freebox BitTorrent"
 	},
 	azLikeClientsSpec:
 	{
@@ -1286,9 +1286,6 @@ var theBTClientVersion =
 			else
 			if(str.match(/^-FG\d\d\d\d/))
 				ret = "FlashGet "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
-			else
-			if(str.match(/^-FX/))
-				ret = "Freebox Révolution (v6)";
 			else
 			if(str.match(/^-SP\d\d\d/))
 				ret = "BitSpirit "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5);
