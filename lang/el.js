@@ -24,7 +24,7 @@ var theUILang =
  Port_f_incom_conns		: "Θύρα που θα χρησιμοποιείται για εισερχόμενες συνδέσεις",
  Rnd_port_torr_start		: "Tυχαία εναλλαγή θύρας κάθε φορά που ξεκινά το rTorrent",
  Type				: "Τύπος",
- Bandwidth_Limiting		: "Περιορισμός εύρους ζώνης	",
+ Bandwidth_Limiting		: "Περιορισμός εύρους ζώνης",
  Global_max_upl 		: "Καθολική μέγιστη ταχύτητα αποστολής",
  unlimited			: "Απεριόριστο",
  Glob_max_downl 		: "Καθολική μέγιστη ταχύτητα λήψης",
