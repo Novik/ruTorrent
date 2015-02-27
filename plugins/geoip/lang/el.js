@@ -155,7 +155,7 @@
  theUILang.country[ "me" ] = "Μαυροβούνιο";
  theUILang.country[ "mg" ] = "Μαδαγασκάρη";
  theUILang.country[ "mh" ] = "Νήσοι Μάρσαλ";
- theUILang.country[ "mk" ] = "Δημοκρατία της Μακεδονίας";
+ theUILang.country[ "mk" ] = "πρώην Γιουγκοσλαβική Δημοκρατία της Μακεδονίας";
  theUILang.country[ "ml" ] = "Μάλι";
  theUILang.country[ "mm" ] = "Μιανμάρ";
  theUILang.country[ "mn" ] = "Μογγολία";
@@ -220,11 +220,11 @@
  theUILang.country[ "so" ] = "Σομαλία";
  theUILang.country[ "sr" ] = "Σουρινάμ";
  theUILang.country[ "ss" ] = "Νότιο Σουδάν";
- theUILang.country[ "st" ] = "Άγιος Θωμάς και Πρίγκιπας";
+ theUILang.country[ "st" ] = "Σάο Τομέ και Πρίνσιπε";
  theUILang.country[ "sv" ] = "Ελ Σαλβαδόρ";
  theUILang.country[ "sy" ] = "Συρία";
  theUILang.country[ "sz" ] = "Ζουαζιλάνδη";
- theUILang.country[ "tc" ] = "Τερκ και Κάικος";
+ theUILang.country[ "tc" ] = "Τερκς και Κέικος";
  theUILang.country[ "td" ] = "Τσαντ";
  theUILang.country[ "tf" ] = "Γαλλικά Νότια Εδάφη";
  theUILang.country[ "tg" ] = "Τόγκο";
