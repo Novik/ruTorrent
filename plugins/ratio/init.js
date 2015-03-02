@@ -259,7 +259,7 @@ plugin.onLangLoaded = function()
 				"<td><input type='text' id='rat_max"+i+"' class='Textbox num1'/></td>"+
 				"<td><input type='text' id='rat_upload"+i+"' class='Textbox num1' maxlength='6'/></td>"+
 				"<td class='ratio_time'><input type='text' id='rat_time"+i+"' class='Textbox num1' maxlength='6'/></td>"+
-				"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option><option value='3'>"+theUILang.ratioEraseData+"</option></select></td>"+
+				"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option><option value='3'>"+theUILang.ratioEraseData+"</option><option value='4'>"+theUILang.ratioEraseData+" ("+theUILang.All+")</option></select></td>"+
 			"</tr>";
 	s+="</table></div></fieldset>";
 	s+="<div class='aright'><label>"+theUILang.ratioDefault+":</label><select id='ratDefault'><option value='0'>"+theUILang.dontSet+"</option>";
