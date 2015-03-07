@@ -21,7 +21,7 @@ var theUILang =
  Alt_list_bckgnd		: "Couleurs alternées pour la liste",
  Show_cat_start 		: "Afficher les catégories au démarrage",
  Show_det_start 		: "Afficher les détails au démarrage",
- Dnt_start_down_auto		: "Ne pas démarrer le télécharchement",
+ Dnt_start_down_auto		: "Ne pas démarrer le téléchargement",
  Listening_Port 		: "Port d'écoute",
  Port_f_incom_conns		: "Port utilisé pour les connexions entrantes",
  Rnd_port_torr_start		: "Sélection aléatoire du port à chaque fois que rTorrent démarre",
