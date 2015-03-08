@@ -649,7 +649,8 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 		else
 		{
 			li = $("<li>").attr("id",lbl).
-				html( escapeHTML(rssGroups[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssGroups[lbl].cnt+'</span>)');
+				html( escapeHTML(rssGroups[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssGroups[lbl].cnt+'</span>)').
+				mouseclick( this.rssLabelContextMenu );
 			ul.append(li);
 		}
 		li.attr("title",rssGroups[lbl].name+" ("+rssGroups[lbl].cnt+")");
@@ -657,7 +658,6 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 			li[0].className = (rssGroups[lbl].enabled==1) ?  "sel RSSGroup cat" : "sel disRSS cat";
 		else
 			li[0].className = (rssGroups[lbl].enabled==1) ?  "RSSGroup cat" : "disRSS cat";
-		li.mouseclick( this.rssLabelContextMenu );
 	}
 	for(var lbl in this.rssGroups)
 		if(!(lbl in rssGroups))
@@ -692,7 +692,8 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 		else
 		{
 			li = $("<li>").attr("id",lbl).
-				html( escapeHTML(rssLabels[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssLabels[lbl].cnt+'</span>)');
+				html( escapeHTML(rssLabels[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssLabels[lbl].cnt+'</span>)').
+				mouseclick( this.rssLabelContextMenu );
 			ul.append(li);
 		}
 		li.attr("title",rssLabels[lbl].name+" ("+rssLabels[lbl].cnt+")");
@@ -700,7 +701,6 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 			li[0].className = (rssLabels[lbl].enabled==1) ?  "sel RSS cat" : "sel disRSS cat";
 		else
 			li[0].className = (rssLabels[lbl].enabled==1) ?  "RSS cat" : "disRSS cat";
-		li.mouseclick( this.rssLabelContextMenu );
 	}
 	for(var lbl in this.rssLabels)
 		if(!(lbl in rssLabels))
