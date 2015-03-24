@@ -208,3 +208,6 @@ span#ra {color:#F70000;}
 span#us,span#ul {color:#AACF27;}
 span.det {color:#fff;}
 
+.meter-value-start-color { background-color: #E05400 }
+.meter-value-end-color { background-color: #8FBC00 }
+::-webkit-scrollbar {width:12px;height:12px;padding:0px;margin:0px;}
