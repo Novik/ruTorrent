@@ -296,11 +296,14 @@ class rRSS
 					}
 				}
 			}
-			rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
-			if(!$this->hasIncorrectTimes())
-				foreach( $this->items as $href=>$item )
-					$history->correct($href,$item['timestamp']);
-			return(true);
+			if( !empty($this->items) )
+			{
+				rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
+				if(!$this->hasIncorrectTimes())
+					foreach( $this->items as $href=>$item )
+						$history->correct($href,$item['timestamp']);
+				return(true);
+			}				
 		}
 		return(false);
 	}
