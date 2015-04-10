@@ -24,9 +24,6 @@ class MininovaEngine extends commonEngine
 			if( ($cli==false) || (strpos($cli->results, "<h1>No results for")!==false) )
 				break;
 			$result = $cli->results;
-			$last = strpos($result, "</table>");
-			if($last!==false)
-				$result = substr($result,$last);
 			$res = preg_match_all("'<td(| .*?)>(.*?)</td>'si", $result, $items);
 			$delta = (($cat=='all') ? 6 : 5);
 			$offs = (($cat=='all') ? 2 : 1);

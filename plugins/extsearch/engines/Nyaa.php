@@ -97,7 +97,6 @@ class NyaaEngine extends commonEngine
 						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i]),"utf-8");
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 
 						#Sometimes, number of peers/seeds are not given and the message "Status unknown" is showed instead.
 						#We already handle it in the regexp above and also here.
