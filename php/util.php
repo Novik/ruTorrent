@@ -26,6 +26,8 @@ if(!isset($profileMask))
 	$profileMask = 0777;
 if(!isset($localhosts) || !count($localhosts))
 	$localhosts = array( "127.0.0.1", "localhost" );
+if(!isset($locale))	
+	$locale = "UTF8";
 
 function stripSlashesFromArray(&$arr)
 {
@@ -63,7 +65,7 @@ function fix_magic_quotes_gpc()
 }
 
 fix_magic_quotes_gpc();
-setlocale(LC_CTYPE, "UTF8", "UTF-8", "en_US.UTF-8", "en_US.UTF8");
+setlocale(LC_CTYPE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
 
 function quoteAndDeslashEachItem($item)
 {
