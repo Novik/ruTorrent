@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Công cụ tự động";
  theUILang.autotoolsEnableLabel 	= "Kích hoạt tính năng \"Tự đánh nhãn\", Mẫu:";
- theUILang.autotoolsEnableMove		= "Kích hoạt tính năng \"Tự di chuyển\"";
+ theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsPathToFinished	= "Đường dẫn lưu torrent tải xong";
  theUILang.autotoolsEnableWatch 	= "Kích hoạt tính năng \"Tự theo dõi\"";
  theUILang.autotoolsPathToWatch 	= "Theo dõi đường dẫn";

@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Автоматизація";
  theUILang.autotoolsEnableLabel 	= "Увімкнути функцію «АвтоМітки», Шаблон:";
- theUILang.autotoolsEnableMove		= "Увімкнути функцію «АвтоПереміщення»";
+ theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsPathToFinished	= "Каталог для завершених завантажень";
  theUILang.autotoolsEnableWatch 	= "Увімкнути функцію «АвтоДодавання»";
  theUILang.autotoolsPathToWatch 	= "Каталог для пошуку нових торентів";

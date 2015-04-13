@@ -48,7 +48,11 @@ class rUnpack
 					$this->addName = $parts[1];
 				else
 				if( $parts[0] == "unpack_filter" )
+				{
 					$this->filter = trim(rawurldecode($parts[1]));
+					if(@preg_match($this->filter, null) === false)
+						$this->filter = "/.*/";					
+				}
 				else
 				if( $parts[0] == "unpack_path" )
 				{
@@ -277,7 +281,7 @@ class rUnpack
 		{
 			$cmd =  rTorrentSettings::get()->getOnFinishedCommand( array('unpack'.getUser(), 
 					getCmd('execute').'={'.getPHP().','.$rootPath.'/plugins/unpack/update.php,$'.getCmd('d.get_directory').'=,$'.getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').
-					'=,$'.getCmd('d.get_custom1').'=,$'.getCmd('d.get_name').'=,'.getCmd('d.get_hash').'=,'.getUser().'}'));
+					'=,$'.getCmd('d.get_custom1').'=,$'.getCmd('d.get_name').'=,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_custom').'=x-dest,'.getUser().'}'));
 		}
 		else
 			$cmd = rTorrentSettings::get()->getOnFinishedCommand(array('unpack'.getUser(), getCmd('cat=')));

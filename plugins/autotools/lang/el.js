@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Αυτόματα Εργαλεία";
  theUILang.autotoolsEnableLabel 	= "Ενεργοποίηση χαρακτηριστικού\"ΑυτόματηΕτικέτα\" , Πρότυπο:";
- theUILang.autotoolsEnableMove		= "Ενεργοποίηση χαρακτηριστικού \"ΑυτόματηΜετακίνηση\"";
+ theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsPathToFinished	= "Διαδρομή για το φάκελο ολοκληρωμένων λήψεων";
  theUILang.autotoolsEnableWatch 	= "Ενεργοποίηση χαρακτηριστικού \"ΑυτόματηΠαρακολούθηση\"";
  theUILang.autotoolsPathToWatch 	= "Διαδρομή για το βασικό φάκελο παρακολούθησης (watch)";

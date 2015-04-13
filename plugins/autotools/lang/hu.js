@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Auto Beállítás";
  theUILang.autotoolsEnableLabel 	= "Engedélyezi az \"Auto címkézés\" funkciót, sablon:";
- theUILang.autotoolsEnableMove		= "Engedélyezi az \"Auto áthelyezés\" funkciót";
+ theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsPathToFinished	= "Befejezett letöltési elérési út";
  theUILang.autotoolsEnableWatch 	= "Engedélyezi az \"AutoWatch\" funkciót";
  theUILang.autotoolsPathToWatch 	= "Watch mappa elérési út";

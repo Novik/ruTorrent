@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Автоматизация";
  theUILang.autotoolsEnableLabel 	= "Включить функцию \"АвтоМетки\", Шаблон:";
- theUILang.autotoolsEnableMove		= "Включить функцию \"АвтоПеремещение\"";
+ theUILang.autotoolsEnableMove		= "Включить \"АвтоПеремещение\", если метка торрента соответствует";
  theUILang.autotoolsPathToFinished	= "Каталог для завершенных закачек";
  theUILang.autotoolsEnableWatch 	= "Включить функцию \"АвтоДобавление\"";
  theUILang.autotoolsPathToWatch 	= "Каталог для поиска новых торрентов";

@@ -13,7 +13,7 @@ if(plugin.canChangeOptions())
 			linked( $$('enable_label'), 0, ['label_template'] );
 			$$('enable_move').checked  = ( theWebUI.autotools.EnableMove  == 1 );
 			$$('path_to_finished').value = theWebUI.autotools.PathToFinished;
-			linked( $$('enable_move'), 0, ['path_to_finished', 'automove_browse_btn', 'fileop_type'] );
+			linked( $$('enable_move'), 0, ['automove_filter', 'path_to_finished', 'automove_browse_btn', 'fileop_type'] );
 			$$('fileop_type').value = theWebUI.autotools.FileOpType;
 			$$('enable_watch').checked  = ( theWebUI.autotools.EnableWatch  == 1 );
 			$$('path_to_watch').value = theWebUI.autotools.PathToWatch;
@@ -23,6 +23,7 @@ if(plugin.canChangeOptions())
 				plugin.DirBrowser1.hide();
 			if(plugin.DirBrowser2)
 				plugin.DirBrowser2.hide();
+			$$('automove_filter').value = theWebUI.autotools.MoveFilter;
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
@@ -45,6 +46,8 @@ if(plugin.canChangeOptions())
 			return true;
 		if( $$('watch_start').checked != ( theWebUI.autotools.WatchStart == 1 ) )
 			return true;
+		if( $$('automove_filter').value != theWebUI.autotools.MoveFilter )
+			return true;			
 		return false;
 	}
 
@@ -65,6 +68,7 @@ if(plugin.canChangeOptions())
 			"&fileop_type=" + $$('fileop_type').value +
 			"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
 			"&path_to_watch=" + $$('path_to_watch').value +
+			"&automove_filter=" + $$('automove_filter').value +			
 			"&watch_start=" + ( $$('watch_start').checked  ? '1' : '0' );
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/autotools/action.php";
@@ -91,10 +95,13 @@ plugin.onLangLoaded = function()
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td colspan=2>"+
+				"<td>"+
 					"<input type='checkbox' id='enable_move' checked='false' "+
-					"onchange='linked(this, 0, [\"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"fileop_type\" ]);' />"+
+					"onchange='linked(this, 0, [\"automove_filter\", \"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"fileop_type\" ]);' />"+
 						"<label for='enable_move'>"+ theUILang.autotoolsEnableMove +"</label>"+
+				"</td>"+
+				"<td class='alr'>"+
+					"<input type='text' id='automove_filter' class='TextboxNormal' maxlength='200'/>" +				
 				"</td>"+
 			"</tr>"+
 			"<tr>"+

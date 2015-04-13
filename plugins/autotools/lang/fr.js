@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Autotools";
  theUILang.autotoolsEnableLabel 	= "Activer la fonctionnalité 'AutoLabel'. Masque:";
- theUILang.autotoolsEnableMove		= "Activer la fonctionnalité 'AutoMove'.";
+ theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsPathToFinished	= "Chemin vers le répertoire des torrents terminés";
  theUILang.autotoolsEnableWatch 	= "Activer la fonctionnalité 'AutoWatch'.";
  theUILang.autotoolsPathToWatch 	= "Chemin vers le répertoire à observer";
