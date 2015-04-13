@@ -268,5 +268,6 @@ var theUILang =
  General			: "General",
  showSpeedInTitle		: "Mostrar velocidad en el título",
  badTempPath 			: "El usuario del servidor web no tiene permisos de lectura/escritura/ejecución al directorio tmp. ruTorrent no funcionará.",
- badTempPath2			: "El usuario de rTorrent debe tener permisos de lectura/escritura/ejecución al directorio tmp. ruTorrent no funcionará."
+ badTempPath2			: "El usuario de rTorrent debe tener permisos de lectura/escritura/ejecución al directorio tmp. ruTorrent no funcionará.",
+ doRandomizeHash		: "Randomize info hashes for cross-seeding"
 };

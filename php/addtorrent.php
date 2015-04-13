@@ -113,6 +113,8 @@ else
 			}
 			else
 			{
+				if(isset($_REQUEST['randomize_hash']))
+					$torrent->info['unique'] = uniqid("rutorrent-",true);
 				if(rTorrent::sendTorrent($torrent,
 					!isset($_REQUEST['torrents_start_stopped']),
 					!isset($_REQUEST['not_add_path']),

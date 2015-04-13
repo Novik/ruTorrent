@@ -268,5 +268,6 @@ var theUILang =
  Deselect_all			: "Скасувати вибір",
  showSpeedInTitle		: "Показувати швидкість у заголовку",
  badTempPath 			: "Веб-сервер не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
- badTempPath2			: "rTorrent не має повного доступу до каталогу tmp. ruTorrent не зможе працювати."
+ badTempPath2			: "rTorrent не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
+ doRandomizeHash		: "Randomize info hashes for cross-seeding"
 };

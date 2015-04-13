@@ -266,5 +266,6 @@ var theUILang =
  Deselect_all			: "Avmarkera alla",
  showSpeedInTitle		: "Visa hastighet i titel",
  badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work.",
+ doRandomizeHash		: "Randomize info hashes for cross-seeding"
 };

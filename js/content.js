@@ -94,6 +94,7 @@ function makeContent()
 				'<label>&nbsp;</label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+theUILang.Dont_add_tname+'<br/>'+
 				'<label>&nbsp;</label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+theUILang.Dnt_start_down_auto+'<br/>'+
 				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
+				'<label>&nbsp;</label><input type="checkbox" name="randomize_hash" id="randomize_hash"/>'+theUILang.doRandomizeHash+'<br/>'+
 				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
 				'<hr/>'+
 				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept="application/x-bittorrent" class="TextboxLarge"/><br/>'+
@@ -152,6 +153,8 @@ function makeContent()
 			s += 'fast_resume=1&';
 		if($("#not_add_path").prop("checked"))
 			s += 'not_add_path=1&';
+		if($("#randomize_hash").prop("checked"))
+			s += 'randomize_hash=1&';
 		var dir = $.trim($("#dir_edit").val());
 		if(dir.length)
 			s += ('dir_edit='+encodeURIComponent(dir)+'&');

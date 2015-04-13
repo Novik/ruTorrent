@@ -266,5 +266,6 @@ var theUILang =
  Deselect_all			: "Αποεπιλογή όλων",
  showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",
  badTempPath 			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
- badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει."
+ badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
+ doRandomizeHash		: "Randomize info hashes for cross-seeding"
 };
