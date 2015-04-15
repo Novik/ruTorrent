@@ -681,3 +681,13 @@ function getTempDirectory()
 	}
 	return($tempDirectory);
 }
+
+function iclamp( $val, $min = 0, $max = PHP_INT_MAX )
+{
+	$val = intval($val);
+	if( $val < $min )
+		$val = $min;
+	if( $val > $max )
+		$val = $max;
+	return( $val );
+}

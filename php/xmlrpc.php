@@ -59,7 +59,7 @@ class rXMLRPCCommand
 
 	static protected function getPrmType( $prm )
 	{
-		if(is_int($prm))
+		if(is_int($prm) && ($prm>=-2147483648) && ($prm<=2147483647))
 			return('i4');
 		if(is_double($prm))
 			return('i8');
