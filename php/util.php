@@ -682,12 +682,19 @@ function getTempDirectory()
 	return($tempDirectory);
 }
 
-function iclamp( $val, $min = 0, $max = PHP_INT_MAX )
+@ini_set('precision',16);
+@define('PHP_INT_MIN', ~PHP_INT_MAX);
+@define('XMLRPC_MAX_I4', 2147483647);
+@define('XMLRPC_MIN_I4', ~XMLRPC_MIN_I4);
+@define('XMLRPC_MIN_I8', -9.999999999999999E+15);
+@define('XMLRPC_MAX_I8', 9.999999999999999E+15);
+
+function iclamp( $val, $min = 0, $max = XMLRPC_MAX_I8 )
 {
-	$val = intval($val);
+	$val = floatval($val);	
 	if( $val < $min )
 		$val = $min;
 	if( $val > $max )
 		$val = $max;
-	return( $val );
+	return( ((PHP_INT_SIZE>4) || ( ($val>=PHP_INT_MIN) && ($val<=PHP_INT_MAX) )) ? intval($val) : $val );
 }

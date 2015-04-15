@@ -59,9 +59,9 @@ class rXMLRPCCommand
 
 	static protected function getPrmType( $prm )
 	{
-		if(is_int($prm) && ($prm>=-2147483648) && ($prm<=2147483647))
+		if(is_int($prm) && ($prm>=XMLRPC_MIN_I4) && ($prm<=XMLRPC_MAX_I4))
 			return('i4');
-		if(is_double($prm))
+		if(is_float($prm))
 			return('i8');
 		return('string');
 	}
