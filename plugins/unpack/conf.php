@@ -7,3 +7,4 @@ $pathToExternals['unzip'] = '';		// Something like /usr/bin/unzip. If empty, wil
 $pathToExternals['unrar'] = '';		// Something like /usr/bin/unrar. If empty, will be found in PATH.
 
 $cleanupAutoTasks = false;		// Remove autounpack tasks parameters after finish, otherwise will be shown in the 'Tasks' tab
+$deleteAutoArchives = false;	// Delete archive files after successful auto unpack. Do not enable if you are seeding from the complete directory.

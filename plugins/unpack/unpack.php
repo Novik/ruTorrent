@@ -73,6 +73,7 @@ class rUnpack
 	{
 		global $rootPath;
 		global $cleanupAutoTasks;
+		global $deleteAutoArchives;
 		if(rTorrentSettings::get()->isPluginRegistered('quotaspace'))
 		{
 			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );
@@ -107,7 +108,6 @@ class rUnpack
 			if($outPath=='')
 				$outPath = dirname($basename);
 			$mode = ($zipPresent ? 'zip' : ($rarPresent ? 'rar' : null));
-		        $pathToUnzip = "";
 		}
 		if($mode)
 		{
@@ -122,7 +122,8 @@ class rUnpack
 				escapeshellarg($arh)." ".
 				escapeshellarg($basename)." ".
 				escapeshellarg($outPath)." ".
-				escapeshellarg($pathToUnzip);
+				escapeshellarg($pathToUnzip)." ".
+				escapeshellarg(var_export($deleteAutoArchives, true));
 			if($cleanupAutoTasks)
 				$commands[] = 'rm -r "${dir}"';	
 			$task = new rTask( array
