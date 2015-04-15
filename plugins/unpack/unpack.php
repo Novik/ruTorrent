@@ -88,7 +88,6 @@ class rUnpack
 		if(($outPath!='') && !rTorrentSettings::get()->correctDirectory($outPath))	
 			$outPath = '';
 		
-		$arh = $pathToUnrar;
 		if(is_dir($basename))
 		{
 			$postfix = "_dir";
@@ -112,6 +111,7 @@ class rUnpack
 		}
 		if($mode)
 		{
+			$arh = (($mode == "zip") ? $pathToUnzip : $pathToUnrar);
 			$outPath = addslash($outPath);
         		if($this->addLabel && ($label!=''))
         			$outPath.=addslash($label);
