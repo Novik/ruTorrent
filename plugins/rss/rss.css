@@ -38,9 +38,9 @@ div#dlgEditFilters div.dlg-header {background-image: url(./images/rss.gif)}
 .lf li input.TextboxNormal { width: 85%; background-color: #FFFFFF }
 .lf li input { border: 0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: default; font-weight: bold; }
 div#FLTchk_buttons {padding-top: 5px; width: 260px; text-align:center}
-.rf fieldset {margin: 3px; height: 265px}
+.rf fieldset {margin: auto; height: 265px}
 .rf {float: right; width: 400px; height: 285px; margin: 4px; background-color: #FAFAFA}
-.rf label {width: 75px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
+.rf label {width: 75px; display: inline-block; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 .rf br {clear: left; line-height: 0}
 .rf select {width: 273px; margin-left: 5px; margin-bottom: 3px; }
 .rf input.TextboxLarge {margin: 3px; width: 273px;}

@@ -187,7 +187,7 @@ rPlugin.prototype.loadLangPrim = function(lang,template,sendNotify)
 	}).fail( function()
 	{
 		(lang=='en') ? 
-			console.error( "Plugin '"+self.name+"': localization for '"+lang+"' not found." ) :
+			(!window.console || console.error( "Plugin '"+self.name+"': localization for '"+lang+"' not found." )) :
 			self.loadLangPrim('en',template,sendNotify);
 	});
 }
