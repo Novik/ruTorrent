@@ -3,8 +3,8 @@
 if( !chdir( dirname( __FILE__) ) )
 	exit();
 
-if( count( $argv ) > 5 )
-	$_SERVER['REMOTE_USER'] = $argv[5];
+if( count( $argv ) > 6 )
+	$_SERVER['REMOTE_USER'] = $argv[6];
 
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
@@ -13,6 +13,7 @@ $base_path = $argv[1];
 $base_name = $argv[2];
 $is_multy = $argv[3];
 $label	   = rawurldecode($argv[4]);
+$name = $argv[5];
 
 $base_path = rtRemoveTailSlash( $base_path );
 $base_path = rtRemoveLastToken( $base_path, '/' );	// filename or dirname
@@ -40,6 +41,10 @@ if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
 			{
 				if( $rel_path == './' ) $rel_path = '';
 				$dest_path = rtAddTailSlash( $path_to_finished.$rel_path );
+				if($at->addLabel && ($label!=''))
+	        			$dest_path.=addslash($label);
+		        	if($at->addName && ($name!=''))
+					$dest_path.=addslash($name);
 			}
 		}
 	}

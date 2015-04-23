@@ -22,5 +22,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Жесткая ссылка";
  theUILang.autotoolsFileOpCopy		= "Скопировать";
  theUILang.autotoolsFileOpSoftLink	= "Мягкая ссылка";
+ theUILang.autotoolsAddLabel		= "Добавлять к пути метку торрента";
+ theUILang.autotoolsAddName		= "Добавлять к пути имя торрента";
 
 thePlugins.get("autotools").langLoaded();

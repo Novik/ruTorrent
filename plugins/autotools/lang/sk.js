@@ -22,5 +22,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Hard link";
  theUILang.autotoolsFileOpCopy		= "Copy";
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
+ theUILang.autotoolsAddLabel		= "Add torrent's label to path";
+ theUILang.autotoolsAddName		= "Add torrent's name to path";
 
 thePlugins.get("autotools").langLoaded();

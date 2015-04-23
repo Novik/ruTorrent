@@ -1110,8 +1110,10 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 			if(($type(onError) == "function"))
 			{
 			        var status = "Status unavailable";
-			        var response = "Responce unavailable";
-				try { status = XMLHttpRequest.status; response = XMLHttpRequest.responseText; } catch(e) {};
+			        var response = "Response unavailable";
+				try { status = XMLHttpRequest.status; response = XMLHttpRequest.responseText; } catch(e) {};				
+				if( stub.dataType=="script" )
+					response = errorThrown;
 				onError(status+" ["+textStatus+","+stub.action+"]",response);
 			}
 		},

@@ -22,5 +22,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Enlace fijo";
  theUILang.autotoolsFileOpCopy		= "Copiar";
  theUILang.autotoolsFileOpSoftLink	= "Enlace simbólico";
+ theUILang.autotoolsAddLabel		= "Add torrent's label to path";
+ theUILang.autotoolsAddName		= "Add torrent's name to path";  
 
 thePlugins.get("autotools").langLoaded();
