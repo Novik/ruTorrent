@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Autotools";
  theUILang.autotoolsEnableLabel 	= "Activer la fonctionnalité 'AutoLabel'. Masque:";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
+ theUILang.autotoolsEnableMove		= "Activer la fonctionnalité 'AutoMove' si le label du torrent correspond au filtre";
  theUILang.autotoolsPathToFinished	= "Chemin vers le répertoire des torrents terminés";
  theUILang.autotoolsEnableWatch 	= "Activer la fonctionnalité 'AutoWatch'.";
  theUILang.autotoolsPathToWatch 	= "Chemin vers le répertoire à observer";
@@ -22,7 +22,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Lien dur";
  theUILang.autotoolsFileOpCopy		= "Copier";
  theUILang.autotoolsFileOpSoftLink	= "Lien symbolique";
- theUILang.autotoolsAddLabel		= "Add torrent's label to path";
- theUILang.autotoolsAddName		= "Add torrent's name to path";  
+ theUILang.autotoolsAddLabel		= "Ajouter le label du torrent au chemin";
+ theUILang.autotoolsAddName		= "Ajouter le nom du torrent au chemin";
 
 thePlugins.get("autotools").langLoaded();
