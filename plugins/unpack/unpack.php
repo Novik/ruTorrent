@@ -81,6 +81,12 @@ class rUnpack
 			if(!$qt->check())
 				return;
 		}
+		if(rTorrentSettings::get()->isPluginRegistered('autotools'))
+		{
+			require_once( dirname(__FILE__)."/../autotools/autotools.php" );
+			$at = rAutoTools::load();
+			$performArchiveDeletion = ($deleteAutoArchives && $at->enable_move && ($at->fileop_type != 'Move'));
+		}
 
 		$pathToUnrar = getExternal("unrar");
 		$pathToUnzip = getExternal("unzip");
@@ -123,7 +129,7 @@ class rUnpack
 				escapeshellarg($basename)." ".
 				escapeshellarg($outPath)." ".
 				escapeshellarg($pathToUnzip)." ".
-				escapeshellarg(var_export($deleteAutoArchives, true));
+				escapeshellarg(var_export($performArchiveDeletion, true));
 			if($cleanupAutoTasks)
 				$commands[] = 'rm -r "${dir}"';	
 			$task = new rTask( array
