@@ -267,5 +267,6 @@ var theUILang =
  showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",
  badTempPath 			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
- doRandomizeHash		: "Δημιουργία τυχαίων info hashes για cross-seeding" //Needs further review in the future...
+ doRandomizeHash		: "Δημιουργία τυχαίων info hashes για cross-seeding", //Needs further review in the future...
+ Recreate_files			: "Queue files recreation"
 };

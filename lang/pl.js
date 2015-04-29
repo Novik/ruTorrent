@@ -270,5 +270,6 @@ var theUILang =
  showSpeedInTitle		: "Pokaż prędkość w tytule",
  badTempPath 			: "Użytkownik webservera nie ma czytelnego/pisanego/wykonalnego dostępu do katalogu. ruTorrent nie zadziała",
  badTempPath2			: "Użytkownik rTorrent nie ma czytelnego/pisanego/wykonalnego dostępu do katalogu. ruTorrent nie zadziała.",
- doRandomizeHash		: "Randomize info hashes for cross-seeding"
+ doRandomizeHash		: "Randomize info hashes for cross-seeding",
+ Recreate_files			: "Queue files recreation"
 };

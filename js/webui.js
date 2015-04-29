@@ -1331,6 +1331,7 @@ var theWebUI =
 				(this.torrents[id].private==0) && (theWebUI.systemInfo.rTorrent.iVersion>=0x804)) ? 
 				"theDialogManager.show('padd')"	: null]);
 		}
+		theContextMenu.add([theUILang.Recreate_files, this.isTorrentCommandEnabled("recreate",id) ? "theWebUI.recreate()" : null]);
 		if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
 			theContextMenu.add([theUILang.updateTracker, this.isTorrentCommandEnabled("updateTracker",id) ? "theWebUI.updateTracker()" : null]);
    		theContextMenu.add([CMENU_SEP]);
@@ -1487,6 +1488,11 @@ var theWebUI =
 	recheck: function()
 	{	
 		this.perform("recheck");
+   	},
+
+   	recreate: function()
+	{	
+		this.perform("createqueued");
    	},
 
 	getTorrents: function(qs)

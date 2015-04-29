@@ -267,5 +267,6 @@ var theUILang =
  showSpeedInTitle		: "Hiển thị tốc độ ở tiêu đề",
  badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
  badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work.",
- doRandomizeHash		: "Randomize info hashes for cross-seeding"
+ doRandomizeHash		: "Randomize info hashes for cross-seeding",
+ Recreate_files			: "Queue files recreation"
 };

@@ -269,5 +269,6 @@ var theUILang =
  showSpeedInTitle		: "Geschwindigkeit in Titel anzeig",
  badTempPath 			: "Webserver Benutzer hat nicht read/write/execute Berechtigungen auf das tmp Verzeichnis. ruTorrent wird nicht funktionieren.",
  badTempPath2			: "rTorrent Benutzer muss have read/execute Berechtigungen auf das tmp Verzeichnis haben. ruTorrent wird nicht funktionieren.",
- doRandomizeHash		: "Randomize info hashes for cross-seeding"
+ doRandomizeHash		: "Randomize info hashes for cross-seeding",
+ Recreate_files			: "Queue files recreation"
 };

@@ -269,5 +269,6 @@ var theUILang =
  showSpeedInTitle		: "Скорость в заголовке",
  badTempPath 			: "Веб сервер не имеет доступа к директории tmp на чтение/запись/выполнение. ruTorrent не будет работать.",
  badTempPath2			: "rTorrent должен иметь доступ на чтение/выполнение к директории tmp. ruTorrent не будет работать.",
- doRandomizeHash		: "Сделать hash уникальным"
+ doRandomizeHash		: "Сделать hash уникальным",
+ Recreate_files			: "Queue files recreation"
 };

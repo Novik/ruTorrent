@@ -269,5 +269,6 @@ var theUILang =
  showSpeedInTitle               : "Vis hastighet i tittelen",
  badTempPath                    : "Webserver-bruker har ikke lese/skrive/kjøre tilgang til tmp mappen. ruTorrent vil ikke fungere.",
  badTempPath2                   : "rTorrent-bruker har ikke lese/kjøre tilgang til tmp mappen. ruTorrent vil ikke fungere.",
- doRandomizeHash		: "Randomize info hashes for cross-seeding"
+ doRandomizeHash		: "Randomize info hashes for cross-seeding",
+ Recreate_files			: "Queue files recreation"
 };

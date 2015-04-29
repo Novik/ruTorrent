@@ -623,6 +623,20 @@ rTorrentStub.prototype.addpeer = function()
 	this.commands.push( cmd );
 }
 
+rTorrentStub.prototype.createqueued = function()
+{
+	for(var i=0; i<this.hashes.length; i++)
+	{
+		var cmd = new rXMLRPCCommand("f.multicall");
+		cmd.addParameter("string",this.hashes[i]);
+		cmd.addParameter("string","");
+		cmd.addParameter("string",theRequestManager.map("f.set_create_queued=")+'0');
+		cmd.addParameter("string",theRequestManager.map("f.set_resize_queued=")+'0');
+		this.commands.push( cmd );
+	}
+
+}
+
 rTorrentStub.prototype.makeMultiCall = function()
 {
 	theRequestManager.patchRequest( this.commands );
