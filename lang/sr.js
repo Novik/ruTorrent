@@ -155,6 +155,8 @@ var theUILang =
  EnableTracker			: "Enable",
  ClientVersion			: "Клијент",
  Flags				: "Ознаке",
+ PeerDL				: "Peer DL",
+ PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Request timeout",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Помоћ",

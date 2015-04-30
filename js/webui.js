@@ -13,19 +13,19 @@ var theWebUI =
 			obj: new dxSTable(),
 			columns:
 			[
-				{ text: theUILang.Name, 			width: "200px", id: "name",		type: TYPE_STRING }, 
+				{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING }, 
 		      		{ text: theUILang.Status, 		width: "100px",	id: "status",		type: TYPE_STRING },
-		   		{ text: theUILang.Size, 			width: "60px",	id: "size", 		type: TYPE_NUMBER },
-	   			{ text: theUILang.Done, 			width: "100px",	id: "done",		type: TYPE_PROGRESS },
+		   		{ text: theUILang.Size, 		width: "60px",	id: "size", 		type: TYPE_NUMBER },
+	   			{ text: theUILang.Done, 		width: "100px",	id: "done",		type: TYPE_PROGRESS },
 				{ text: theUILang.Downloaded, 		width: "100px",	id: "downloaded",	type: TYPE_NUMBER },
 				{ text: theUILang.Uploaded, 		width: "100px",	id: "uploaded",		type: TYPE_NUMBER },
-				{ text: theUILang.Ratio, 			width: "60px",	id: "ratio",		type: TYPE_NUMBER },
+				{ text: theUILang.Ratio, 		width: "60px",	id: "ratio",		type: TYPE_NUMBER },
 				{ text: theUILang.DL, 			width: "60px", 	id: "dl",		type: TYPE_NUMBER },
 				{ text: theUILang.UL, 			width: "60px", 	id: "ul",		type: TYPE_NUMBER },
 				{ text: theUILang.ETA, 			width: "60px", 	id: "eta",		type: TYPE_NUMBER },
-				{ text: theUILang.Label, 			width: "60px", 	id: "label",		type: TYPE_STRING },
-				{ text: theUILang.Peers, 			width: "60px", 	id: "peers",		type: TYPE_NUMBER },
-				{ text: theUILang.Seeds, 			width: "60px", 	id: "seeds",		type: TYPE_NUMBER },
+				{ text: theUILang.Label, 		width: "60px", 	id: "label",		type: TYPE_STRING },
+				{ text: theUILang.Peers, 		width: "60px", 	id: "peers",		type: TYPE_NUMBER },
+				{ text: theUILang.Seeds, 		width: "60px", 	id: "seeds",		type: TYPE_NUMBER },
 				{ text: theUILang.Priority, 		width: "80px", 	id: "priority",		type: TYPE_NUMBER },
 				{ text: theUILang.Created_on,		width: "100px", id: "created",		type: TYPE_NUMBER },
 				{ text: theUILang.Remaining, 		width: "90px", 	id: "remaining",	type: TYPE_NUMBER }
@@ -41,9 +41,9 @@ var theWebUI =
 			obj: new dxSTable(),
 			columns:
 			[
-				{ text: theUILang.Name, 			width: "200px",	id: "name",		type: TYPE_STRING },
-				{ text: theUILang.Size, 			width: "60px", 	id: "size",		type: TYPE_NUMBER,	"align" : ALIGN_RIGHT},
-				{ text: theUILang.Done, 			width: "100px", 	id: "done",		type: TYPE_NUMBER },
+				{ text: theUILang.Name, 		width: "200px",	id: "name",		type: TYPE_STRING },
+				{ text: theUILang.Size, 		width: "60px", 	id: "size",		type: TYPE_NUMBER,	"align" : ALIGN_RIGHT},
+				{ text: theUILang.Done, 		width: "100px", id: "done",		type: TYPE_NUMBER },
 				{ text: "%", 				width: "100px",	id: "percent",		type: TYPE_PROGRESS },
 				{ text: theUILang.Priority, 		width: "80px", 	id: "priority",		type: TYPE_NUMBER }
 			],
@@ -91,14 +91,16 @@ var theWebUI =
 			obj: new dxSTable(),
 			columns:
 			[
-				{ text: "IP", 			width: "100px", id: "name",		type: TYPE_STRING },
-				{ text: theUILang.ClientVersion,		width: "120px", id: "version",		type: TYPE_STRING },
-				{ text: theUILang.Flags, 			width: "60px", 	id: "flags",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
-				{ text: theUILang.Done, 			width: "100px", 	id: "done",		type: TYPE_PROGRESS },
+				{ text: "IP", 				width: "100px", id: "name",		type: TYPE_STRING },
+				{ text: theUILang.ClientVersion,	width: "120px", id: "version",		type: TYPE_STRING },
+				{ text: theUILang.Flags, 		width: "60px", 	id: "flags",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
+				{ text: theUILang.Done, 		width: "100px", id: "done",		type: TYPE_PROGRESS },
 				{ text: theUILang.Downloaded, 		width: "100px", id: "downloaded",	type: TYPE_NUMBER },
 				{ text: theUILang.Uploaded, 		width: "100px", id: "uploaded",		type: TYPE_NUMBER },
 				{ text: theUILang.DL, 			width: "60px", 	id: "dl",		type: TYPE_NUMBER },
-				{ text: theUILang.UL, 			width: "60px", 	id: "ul",		type: TYPE_NUMBER }
+				{ text: theUILang.UL, 			width: "60px", 	id: "ul",		type: TYPE_NUMBER },
+                                { text: theUILang.PeerDL, 		width: "60px", 	id: "peerdl",		type: TYPE_NUMBER },
+                                { text: theUILang.PeerDownloaded, 	width: "100px", id: "peerdownloaded",	type: TYPE_NUMBER }
 			],
 			container:	"PeerList",
 			format:		theFormatter.peers,
@@ -115,12 +117,12 @@ var theWebUI =
 			obj: new dxSTable(),
 			columns:
 			[
-				{ text: theUILang.plgName,			width: "150px", id: "name",		type: TYPE_STRING },
-				{ text: theUILang.plgVersion,			width: "60px",	id: "version",		type: TYPE_NUMBER },
-				{ text: theUILang.plgStatus, 			width: "80px", 	id: "status",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
-				{ text: theUILang.plgLaunch,			width: "80px", 	id: "launch",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
-				{ text: theUILang.plgAuthor,			width: "80px", 	id: "author",		type: TYPE_STRING },
-				{ text: theUILang.plgDescr,			width: "500px",	id: "descr",		type: TYPE_STRING }
+				{ text: theUILang.plgName,		width: "150px", id: "name",		type: TYPE_STRING },
+				{ text: theUILang.plgVersion,		width: "60px",	id: "version",		type: TYPE_NUMBER },
+				{ text: theUILang.plgStatus, 		width: "80px", 	id: "status",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
+				{ text: theUILang.plgLaunch,		width: "80px", 	id: "launch",		type: TYPE_STRING, 	"align" : ALIGN_RIGHT},
+				{ text: theUILang.plgAuthor,		width: "80px", 	id: "author",		type: TYPE_STRING },
+				{ text: theUILang.plgDescr,		width: "500px",	id: "descr",		type: TYPE_STRING }
 			],
 			container:	"PluginList",
 			format:		theFormatter.plugins,

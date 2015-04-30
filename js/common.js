@@ -668,15 +668,17 @@ var theFormatter =
 			else
    			switch(table.getIdByCol(i)) 
    			{
-      				case 'done' : 
+      				case 'done' :
       					arr[i] = arr[i]+"%";
 	      				break;
 				case 'downloaded' :
 				case 'uploaded' :
+        			case 'peerdownloaded' :
       					arr[i] = theConverter.bytes(arr[i]);
       					break;
-	      			case 'dl' : 
-      				case 'ul' : 
+	      			case 'dl' :
+      				case 'ul' :
+        			case 'peerdl' :
 					arr[i] = theConverter.speed(arr[i]);
       					break;
 	      		}

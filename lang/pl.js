@@ -158,6 +158,8 @@ var theUILang =
  EnableTracker			: "Włącz",
  ClientVersion			: "Klienty",
  Flags				: "Flagi",
+ PeerDL				: "Peer DL",
+ PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Czas odpowiedzi minął",
  GetTrackerMessage		: "Odbierz wiadomości z trackera",
  Help				: "Pomoc",
