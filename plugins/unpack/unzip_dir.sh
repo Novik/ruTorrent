@@ -3,6 +3,7 @@
 # $1 - unzip
 # $2 - input directory with tail slash
 # $3 - output directory with tail slash
+# $5 - delete archives after auto unpack
 
 ret=0
 
@@ -31,5 +32,8 @@ process_directory "$1" "$2" "$3"
 
 ret=$?
 [ $ret -le 1 ] && echo 'All OK'
+if [ $ret -le 1 ] && [ "$5" = 'true' ] ; then
+	find "$2" \( -name '*.zip' -o -name '*.ziP' -o -name '*.zIp' -o -name '*.zIP' -o -name '*.Zip' -o -name '*.ZiP' -o -name '*.ZIp' -o -name '*.ZIP' \) -exec rm {} +
+fi
 
 exit $ret
