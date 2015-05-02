@@ -137,7 +137,7 @@ switch($mode)
 		$result = makeMulticall(array(
 			"p.get_id=", "p.get_address=", "p.get_client_version=", "p.is_incoming=", "p.is_encrypted=",
 			"p.is_snubbed=", "p.get_completed_percent=", "p.get_down_total=", "p.get_up_total=", "p.get_down_rate=",
-			"p.get_up_rate=", "p.get_id_html="
+			"p.get_up_rate=", "p.get_id_html=", "p.get_peer_rate=", "p.get_peer_total="
 			),$hash[0],$add,'p');
 		break;
 	}

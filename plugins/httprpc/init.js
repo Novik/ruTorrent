@@ -461,11 +461,14 @@ rTorrentStub.prototype.getpeersResponse = function(values)
 				peer.flags+='S';
 				peer.snubbed = 1;
 			}
-			peer.done = iv(data[6]);	//	get_completed_percent
-			peer.downloaded = iv(data[7]);	//	p.get_down_total
-			peer.uploaded = iv(data[8]);	//	p.get_up_total
-			peer.dl = iv(data[9]);		//	p.get_down_rate
-			peer.ul = iv(data[10]);		//	p.get_up_rate
+			peer.done = iv(data[6]);		//	get_completed_percent
+			peer.downloaded = iv(data[7]);		//	p.get_down_total
+			peer.uploaded = iv(data[8]);		//	p.get_up_total
+			peer.dl = iv(data[9]);			//	p.get_down_rate
+			peer.ul = iv(data[10]);			//	p.get_up_rate
+			peer.peerdl = iv(data[12]);		//	p.get_peer_rate
+			peer.peerdownloaded = iv(data[13]);	//	p.get_peer_total			
+
 			var id = data[0];
 
 			$.each( theRequestManager.prs.handlers, function(i,handler)

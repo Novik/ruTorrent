@@ -46,7 +46,7 @@ var theRequestManager =
 		[ 
 			"p.get_id=", "p.get_address=", "p.get_client_version=", "p.is_incoming=", "p.is_encrypted=",
 			"p.is_snubbed=", "p.get_completed_percent=", "p.get_down_total=", "p.get_up_total=", "p.get_down_rate=",
-			"p.get_up_rate=", "p.get_peer_rate=", "p.get_peer_total=", "p.get_id_html="
+			"p.get_up_rate=", "p.get_id_html=", "p.get_peer_rate=", "p.get_peer_total="
 		],
 		handlers: []
 	},
@@ -874,7 +874,7 @@ rTorrentStub.prototype.getpeersResponse = function(xml)
 		peer.name = this.getValue(values,1);
 		peer.ip = peer.name;
 		var cv = this.getValue(values,2);
-		var mycv = theBTClientVersion.get(this.getValue(values,13));
+		var mycv = theBTClientVersion.get(this.getValue(values,11));
 		if((mycv.indexOf("Unknown")>=0) && (cv.indexOf("Unknown")<0))
 			mycv = cv;
 		peer.version = mycv;
@@ -894,8 +894,8 @@ rTorrentStub.prototype.getpeersResponse = function(xml)
 		peer.uploaded = this.getValue(values,8);	//	p.get_up_total
 		peer.dl = this.getValue(values,9);		//	p.get_down_rate
 		peer.ul = this.getValue(values,10);		//	p.get_up_rate
-		peer.peerdl = this.getValue(values,11);		//	p.get_peer_rate
-		peer.peerdownloaded = this.getValue(values,12);	//	p.get_peer_total
+		peer.peerdl = this.getValue(values,12);		//	p.get_peer_rate
+		peer.peerdownloaded = this.getValue(values,13);	//	p.get_peer_total
 		var id = this.getValue(values,0);
 		$.each( theRequestManager.prs.handlers, function(i,handler)
 		{
