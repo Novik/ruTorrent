@@ -82,11 +82,16 @@ plugin.onLangLoaded = function()
 		if(d && (d.location.href != "about:blank"))
 			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));
+	var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
 	$(document.body).append(
-		$('<form action="plugins/data/action.php" id="getdata" method="get" target="datafrm">'+
-			'<input type="hidden" name="hash" id="datahash" value="">'+
-			'<input type="hidden" name="no" id="datano" value="">'+
-		'</form>').width(0).height(0));
+           $('<form action="plugins/data/action.php" id="getdata" method="get" '+
+		   				(function () {
+							   if(iOS) {return 'target="_blank">';}
+							   else {return 'target="datafrm">';}
+						   }) +
+                        '<input type="hidden" name="hash" id="datahash" value="">'+
+                        '<input type="hidden" name="no" id="datano" value="">'+
+                '</form>').width(0).height(0));
 }
 
 plugin.onRemove = function()
