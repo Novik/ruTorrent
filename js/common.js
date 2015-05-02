@@ -16,6 +16,7 @@ function $type(obj)
 function browserDetect()
 {
 	var ua = navigator.userAgent.toLowerCase();
+	this.isiOS =  /(iPad|iPhone|iPod)/.test(navigator.userAgent);
 	this.isGecko = (ua.indexOf("gecko") !=- 1 && ua.indexOf("safari") ==- 1);
 	this.isAppleWebKit = (ua.indexOf("webkit") !=- 1);
 	this.isKonqueror = (ua.indexOf("konqueror") !=- 1);

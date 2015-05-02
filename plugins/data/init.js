@@ -83,7 +83,7 @@ plugin.onLangLoaded = function()
 			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));
 	$(document.body).append(
-		$('<form action="plugins/data/action.php" id="getdata" method="get" target="datafrm">'+
+		$('<form action="plugins/data/action.php" id="getdata" method="get" target='+(browser.isiOS ? '"_blank"' : '"datafrm"')+'>'+
 			'<input type="hidden" name="hash" id="datahash" value="">'+
 			'<input type="hidden" name="no" id="datano" value="">'+
 		'</form>').width(0).height(0));
