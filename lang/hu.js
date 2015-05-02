@@ -157,6 +157,8 @@ var theUILang =
  EnableTracker			: "Engedélyezve",
  ClientVersion			: "Kliens",
  Flags				: "Jelzők",
+ PeerDL				: "Peer DL",
+ PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Kérési idő",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Segítség",

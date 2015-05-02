@@ -155,6 +155,8 @@ var theUILang =
  EnableTracker			: "Ενεργοποίηση",
  ClientVersion			: "Πρόγραμμα-πελάτης",
  Flags				: "Κατάσταση σύνδεσης",
+ PeerDL				: "Peer DL",
+ PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Λήξη αιτήματος",
  GetTrackerMessage		: "Λήψη μηνυμάτων από τον tracker",
  Help				: "Βοήθεια",
