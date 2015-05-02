@@ -155,6 +155,8 @@ var theUILang =
  EnableTracker			: "啟用",
  ClientVersion			: "Client",
  Flags				: "Flags",
+ PeerDL				: "Peer DL",
+ PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "判定逾時",
  GetTrackerMessage		: "從tracker接收使用者資訊",
  Help				: "Help",

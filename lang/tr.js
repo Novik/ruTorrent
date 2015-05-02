@@ -155,6 +155,8 @@ var theUILang =
  EnableTracker			: "Etkin",
  ClientVersion			: "İstemci",
  Flags				: "Bayrak",
+ PeerDL				: "Peer DL",
+ PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Talep zaman aşımı",
  GetTrackerMessage		: "İzleyiciden mesaj aldınız",
  Help				: "Yardım",

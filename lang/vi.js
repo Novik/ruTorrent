@@ -155,6 +155,8 @@ var theUILang =
  EnableTracker			: "Bật",
  ClientVersion			: "Chương trình",
  Flags				: "Cờ",
+ PeerDL				: "Peer DL",
+ PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Thời gian chờ",
  GetTrackerMessage		: "Nhận thông điệp từ Máy theo dõi",
  Help				: "Giúp đỡ",

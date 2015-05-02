@@ -157,6 +157,8 @@ var theUILang =
  EnableTracker			: "Увімкнути",
  ClientVersion			: "Клієнт",
  Flags				: "Прапори",
+ PeerDL				: "Peer DL",
+ PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Час очікування запита",
  GetTrackerMessage		: "Запитувати повідомлення трекера",
  Help				: "Довідка",
