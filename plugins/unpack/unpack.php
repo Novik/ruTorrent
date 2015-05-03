@@ -111,11 +111,13 @@ class rUnpack
 				{
 					if($downloadname === $basename)
 					{
-						if( $unpack_debug_enabled ) toLog("Unpack: No move operation enabled. Not deleting files.");
+						if( $unpack_debug_enabled ) 
+							toLog("Unpack: No move operation enabled. Not deleting files.");
 					}
 					else if (!file_exists($downloadname))
 					{
-						if( $unpack_debug_enabled ) toLog("Unpack: Move operation enabled. Not deleting files.");
+						if( $unpack_debug_enabled ) 
+							toLog("Unpack: Move operation enabled. Not deleting files.");
 					}
 					else
 					{
@@ -124,19 +126,29 @@ class rUnpack
 							$filePath = $fileName->getPathname();
 							if (is_link($filePath))
 							{
-								if( $unpack_debug_enabled ) toLog("Unpack: SoftLink operation enabled. Deleting " . $filePath);
+								if( $unpack_debug_enabled ) 
+									toLog("Unpack: SoftLink operation enabled. Deleting " . $filePath);
 								$filesToDelete .= $filePath . ";";
 							}
-							else if (stat($filePath)['nlink'] > 1)
+							else 
 							{
-								if( $unpack_debug_enabled ) toLog("Unpack: HardLink operation enabled. Deleting " . $filePath);
-								$filesToDelete .= $filePath . ";";
-							}
-							else
-							{
-								if( $unpack_debug_enabled ) toLog("Unpack: Copy operation enabled. Deleting " . $filePath);
-								$filesToDelete .= $filePath . ";";
-							}
+								$stat = LFS::stat($filePath);
+								if($stat)
+								{
+									if($stat['nlink'] > 1)
+									{
+								    		if( $unpack_debug_enabled ) 
+								    			toLog("Unpack: HardLink operation enabled. Deleting " . $filePath);
+								    		$filesToDelete .= $filePath . ";";
+								    	}
+    								    	else
+								    	{
+										if( $unpack_debug_enabled ) 
+											toLog("Unpack: Copy operation enabled. Deleting " . $filePath);
+									    	$filesToDelete .= $filePath . ";";
+									}
+								}
+							}    
 						}
 					}
 				}
@@ -148,11 +160,13 @@ class rUnpack
 				{
 					if($downloadname === $basename)
 					{
-						if( $unpack_debug_enabled ) toLog("Unpack: No move operation enabled. Not deleting files.");
+						if( $unpack_debug_enabled ) 
+							toLog("Unpack: No move operation enabled. Not deleting files.");
 					}
 					else if (!file_exists($downloadname))
 					{
-						if( $unpack_debug_enabled ) toLog("Unpack: Move operation enabled. Not deleting files.");
+						if( $unpack_debug_enabled ) 
+							toLog("Unpack: Move operation enabled. Not deleting files.");
 					}
 					else
 					{
@@ -161,24 +175,33 @@ class rUnpack
 							$filePath = $fileName->getPathname();
 							if (is_link($filePath))
 							{
-								if( $unpack_debug_enabled ) toLog("Unpack: SoftLink operation enabled. Deleting " . $filePath);
+								if( $unpack_debug_enabled ) 
+									toLog("Unpack: SoftLink operation enabled. Deleting " . $filePath);
 								$filesToDelete .= $filePath . ";";
 							}
-							else if (stat($filePath)['nlink'] > 1)
-							{
-								if( $unpack_debug_enabled ) toLog("Unpack: HardLink operation enabled. Deleting " . $filePath);
-								$filesToDelete .= $filePath . ";";
-							}
-							else
-							{
-								if( $unpack_debug_enabled ) toLog("Unpack: Copy operation enabled. Deleting " . $filePath);
-								$filesToDelete .= $filePath . ";";
+							else 
+							{ 
+								$stat = LFS::stat($filePath);
+								if($stat)
+								{
+									if($stat['nlink'] > 1)
+									{
+										if( $unpack_debug_enabled ) 
+											toLog("Unpack: HardLink operation enabled. Deleting " . $filePath);
+										$filesToDelete .= $filePath . ";";
+								    	}
+									else
+									{
+										if( $unpack_debug_enabled ) 
+											toLog("Unpack: Copy operation enabled. Deleting " . $filePath);
+										$filesToDelete .= $filePath . ";";
+									}
+								}									
 							}
 						}
 					}
 				}
 			}
-			
 			$mode = (($rarPresent && $zipPresent) ? "all" : ($zipPresent ? "zip" : ($rarPresent ? "rar" : null)));
 		}
 		else
@@ -191,29 +214,41 @@ class rUnpack
 				{
 					if($downloadname === $basename)
 					{
-						if( $unpack_debug_enabled ) toLog("Unpack: No move operation enabled. Not deleting files.");
+						if( $unpack_debug_enabled ) 
+							toLog("Unpack: No move operation enabled. Not deleting files.");
 					}
 					else if (!file_exists($downloadname))
 					{
-						if( $unpack_debug_enabled ) toLog("Unpack: Move operation enabled. Not deleting files.");
+						if( $unpack_debug_enabled ) 
+							toLog("Unpack: Move operation enabled. Not deleting files.");
 					}
 					else
 					{
 						if (is_link($basename))
 						{
-							if( $unpack_debug_enabled ) toLog("Unpack: SoftLink operation enabled. Deleting " . $basename);
+							if( $unpack_debug_enabled ) 
+								toLog("Unpack: SoftLink operation enabled. Deleting " . $basename);
 							$filesToDelete .= $basename;
 						}
-						else if (stat($basename)['nlink'] > 1)
+						else 
 						{
-							if( $unpack_debug_enabled ) toLog("Unpack: HardLink operation enabled. Deleting " . $basename);
-							$filesToDelete .= $basename;
-						}
-						else
-						{
-							if( $unpack_debug_enabled ) toLog("Unpack: Copy operation enabled. Deleting " . $basename);
-							$filesToDelete .= $basename;
-						}
+							$stat = LFS::stat($basename);
+							if($stat)
+							{
+								if($stat['nlink'] > 1)
+								{
+									if( $unpack_debug_enabled ) 
+										toLog("Unpack: HardLink operation enabled. Deleting " . $basename);
+									$filesToDelete .= $basename;
+								}
+								else
+								{
+									if( $unpack_debug_enabled ) 
+										toLog("Unpack: Copy operation enabled. Deleting " . $basename);
+									$filesToDelete .= $basename;
+								}
+							}								
+						}							
 					}
 				}
 			}
@@ -225,28 +260,40 @@ class rUnpack
 				{
 					if($downloadname === $basename)
 					{
-						if( $unpack_debug_enabled ) toLog("Unpack: No move operation enabled. Not deleting files.");
+						if( $unpack_debug_enabled ) 
+							toLog("Unpack: No move operation enabled. Not deleting files.");
 					}
-					else if (!file_exists($downloadname))
+					else if(!file_exists($downloadname))
 					{
-						if( $unpack_debug_enabled ) toLog("Unpack: Move operation enabled. Not deleting files.");
+						if( $unpack_debug_enabled ) 
+							toLog("Unpack: Move operation enabled. Not deleting files.");
 					}
 					else
 					{
-						if (is_link($basename))
+						if(is_link($basename))
 						{
-							if( $unpack_debug_enabled ) toLog("Unpack: SoftLink operation enabled. Deleting " . $basename);
+							if( $unpack_debug_enabled ) 
+								toLog("Unpack: SoftLink operation enabled. Deleting " . $basename);
 							$filesToDelete .= $basename;
 						}
-						else if (stat($basename)['nlink'] > 1)
+						else 
 						{
-							if( $unpack_debug_enabled ) toLog("Unpack: HardLink operation enabled. Deleting " . $basename);
-							$filesToDelete .= $basename;
-						}
-						else
-						{
-							if( $unpack_debug_enabled ) toLog("Unpack: Copy operation enabled. Deleting " . $basename);
-							$filesToDelete .= $basename;
+							$stat = LFS::stat($basename);
+							if($stat)
+							{
+								if($stat['nlink'] > 1)
+								{
+									if( $unpack_debug_enabled ) 
+										toLog("Unpack: HardLink operation enabled. Deleting " . $basename);
+									$filesToDelete .= $basename;
+								}
+								else
+								{
+									if( $unpack_debug_enabled ) 
+										toLog("Unpack: Copy operation enabled. Deleting " . $basename);
+									$filesToDelete .= $basename;
+								}
+							}
 						}
 					}
 				}
