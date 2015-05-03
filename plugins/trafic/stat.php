@@ -153,7 +153,7 @@ class rStat
 			"up" 		=> $this->yearUp,
 			"down"		=> $this->yearDown,
 			"labels"	=> $this->yearHitTimes,
-			"mode"		=> 'month',
+			"mode"		=> 'year',
 			"trackers"	=> self::getTrackers()
 		));	
 	}
