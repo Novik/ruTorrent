@@ -104,9 +104,15 @@ if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 else
 	eLog('Busy, wait for next time.');
 
-
-function deleteDir($path) 
+function deleteDir($dir)
 {
-	return( empty($path) ? false :
-		(is_file($path) ? @unlink($path) : array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path)) );
+	if(empty($dir))
+		return(false);
+	$files = array_diff(scandir($dir), array('.','..'));
+	foreach($files as $file)
+	{
+		$path = $dir.'/'.$file;
+		(is_dir($path)) ? deleteDir($path) : @unlink($path);
+	}
+	return(@rmdir($dir));
 }
