@@ -445,6 +445,12 @@ class Torrent
             		'pieces'        => $pieces
         		));
     	}
+    	
+    	private static function sortNames($a,$b)
+    	{
+		$ret = substr_count($b,DIRECTORY_SEPARATOR)-substr_count($a,DIRECTORY_SEPARATOR);
+		return( ($ret==0) ? strcoll($a, $b) : $ret );
+    	}
 
 	/** Build torrent info from files
 	 * @param array file list
@@ -455,8 +461,8 @@ class Torrent
 	{
 		if(!$this->basedir)
         		$files  = array_map( 'realpath', $files );
-		sort( $files );
-		usort( $files, create_function( '$a,$b', 'return strrpos($a,DIRECTORY_SEPARATOR)-strrpos($b,DIRECTORY_SEPARATOR);' ) );
+
+		usort( $files, array($this,'sortNames') );
 
 		if($this->basedir)
 			$path   = explode( DIRECTORY_SEPARATOR, $this->basedir );
