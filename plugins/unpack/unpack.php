@@ -69,10 +69,12 @@ class rUnpack
 		return("theWebUI.unpackData = { enabled: ".$this->enabled.", path : '".addslashes( $this->path ).
 			"', filter : '".addslashes( $this->filter )."', addLabel: ".$this->addLabel.", addName: ".$this->addName." };\n");
 	}
-	public function startSilentTask($basename,$label,$name,$hash)
+	public function startSilentTask($basename,$downloadname,$label,$name,$hash)
 	{
 		global $rootPath;
 		global $cleanupAutoTasks;
+		global $deleteAutoArchives;
+		global $unpack_debug_enabled;
 		if(rTorrentSettings::get()->isPluginRegistered('quotaspace'))
 		{
 			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );
@@ -91,23 +93,167 @@ class rUnpack
 		if(is_dir($basename))
 		{
 			$postfix = "_dir";
-			$mode = ((USE_UNRAR && USE_UNZIP) ? "all" : (USE_UNZIP ? "zip" : "rar"));
 			if($outPath=='')
 				$outPath = $basename;
 			$basename = addslash($basename);
+			
+			$filesToDelete = "";
+			$downloadname = addslash($downloadname);
+			$Directory = new RecursiveDirectoryIterator($basename);
+			$Iterator = new RecursiveIteratorIterator($Directory);
+			$rarRegex = new RegexIterator($Iterator, '/.*\.(rar|r\d\d|\d\d\d)$/si');
+			$zipRegex = new RegexIterator($Iterator, '/.*\.zip$/si');
+			
+			if(USE_UNRAR && (sizeof(iterator_to_array($rarRegex)) > 0))
+			{
+				$rarPresent = true;
+				if($deleteAutoArchives)
+				{
+					if($downloadname === $basename)
+					{
+						if( $unpack_debug_enabled ) toLog("Unpack: No move operation enabled. Not deleting files.");
+					}
+					else if (!file_exists($downloadname))
+					{
+						if( $unpack_debug_enabled ) toLog("Unpack: Move operation enabled. Not deleting files.");
+					}
+					else
+					{
+						foreach ($rarRegex as $fileName)
+						{
+							$filePath = $fileName->getPathname();
+							if (is_link($filePath))
+							{
+								if( $unpack_debug_enabled ) toLog("Unpack: SoftLink operation enabled. Deleting " . $filePath);
+								$filesToDelete .= $filePath . ";";
+							}
+							else if (stat($filePath)['nlink'] > 1)
+							{
+								if( $unpack_debug_enabled ) toLog("Unpack: HardLink operation enabled. Deleting " . $filePath);
+								$filesToDelete .= $filePath . ";";
+							}
+							else
+							{
+								if( $unpack_debug_enabled ) toLog("Unpack: Copy operation enabled. Deleting " . $filePath);
+								$filesToDelete .= $filePath . ";";
+							}
+						}
+					}
+				}
+			}
+			if(USE_UNZIP && (sizeof(iterator_to_array($zipRegex)) > 0))
+			{
+				$zipPresent = true;
+				if($deleteAutoArchives)
+				{
+					if($downloadname === $basename)
+					{
+						if( $unpack_debug_enabled ) toLog("Unpack: No move operation enabled. Not deleting files.");
+					}
+					else if (!file_exists($downloadname))
+					{
+						if( $unpack_debug_enabled ) toLog("Unpack: Move operation enabled. Not deleting files.");
+					}
+					else
+					{
+						foreach ($zipRegex as $fileName)
+						{
+							$filePath = $fileName->getPathname();
+							if (is_link($filePath))
+							{
+								if( $unpack_debug_enabled ) toLog("Unpack: SoftLink operation enabled. Deleting " . $filePath);
+								$filesToDelete .= $filePath . ";";
+							}
+							else if (stat($filePath)['nlink'] > 1)
+							{
+								if( $unpack_debug_enabled ) toLog("Unpack: HardLink operation enabled. Deleting " . $filePath);
+								$filesToDelete .= $filePath . ";";
+							}
+							else
+							{
+								if( $unpack_debug_enabled ) toLog("Unpack: Copy operation enabled. Deleting " . $filePath);
+								$filesToDelete .= $filePath . ";";
+							}
+						}
+					}
+				}
+			}
+			
+			$mode = (($rarPresent && $zipPresent) ? "all" : ($zipPresent ? "zip" : ($rarPresent ? "rar" : null)));
 		}
 		else
 		{
 			$postfix = "_file";
 			if(USE_UNRAR && (preg_match("'.*\.(rar|r\d\d|\d\d\d)$'si", $basename)==1))
+			{
 				$rarPresent = true;
+				if($deleteAutoArchives)
+				{
+					if($downloadname === $basename)
+					{
+						if( $unpack_debug_enabled ) toLog("Unpack: No move operation enabled. Not deleting files.");
+					}
+					else if (!file_exists($downloadname))
+					{
+						if( $unpack_debug_enabled ) toLog("Unpack: Move operation enabled. Not deleting files.");
+					}
+					else
+					{
+						if (is_link($basename))
+						{
+							if( $unpack_debug_enabled ) toLog("Unpack: SoftLink operation enabled. Deleting " . $basename);
+							$filesToDelete .= $basename;
+						}
+						else if (stat($basename)['nlink'] > 1)
+						{
+							if( $unpack_debug_enabled ) toLog("Unpack: HardLink operation enabled. Deleting " . $basename);
+							$filesToDelete .= $basename;
+						}
+						else
+						{
+							if( $unpack_debug_enabled ) toLog("Unpack: Copy operation enabled. Deleting " . $basename);
+							$filesToDelete .= $basename;
+						}
+					}
+				}
+			}
 			else
 			if(USE_UNZIP && (preg_match("'.*\.zip$'si", $basename)==1))
+			{
 				$zipPresent = true;
+				if($deleteAutoArchives)
+				{
+					if($downloadname === $basename)
+					{
+						if( $unpack_debug_enabled ) toLog("Unpack: No move operation enabled. Not deleting files.");
+					}
+					else if (!file_exists($downloadname))
+					{
+						if( $unpack_debug_enabled ) toLog("Unpack: Move operation enabled. Not deleting files.");
+					}
+					else
+					{
+						if (is_link($basename))
+						{
+							if( $unpack_debug_enabled ) toLog("Unpack: SoftLink operation enabled. Deleting " . $basename);
+							$filesToDelete .= $basename;
+						}
+						else if (stat($basename)['nlink'] > 1)
+						{
+							if( $unpack_debug_enabled ) toLog("Unpack: HardLink operation enabled. Deleting " . $basename);
+							$filesToDelete .= $basename;
+						}
+						else
+						{
+							if( $unpack_debug_enabled ) toLog("Unpack: Copy operation enabled. Deleting " . $basename);
+							$filesToDelete .= $basename;
+						}
+					}
+				}
+			}
 			if($outPath=='')
 				$outPath = dirname($basename);
 			$mode = ($zipPresent ? 'zip' : ($rarPresent ? 'rar' : null));
-		        $pathToUnzip = "";
 		}
 		if($mode)
 		{
@@ -122,7 +268,8 @@ class rUnpack
 				escapeshellarg($arh)." ".
 				escapeshellarg($basename)." ".
 				escapeshellarg($outPath)." ".
-				escapeshellarg($pathToUnzip);
+				escapeshellarg($pathToUnzip)." ".
+				escapeshellarg($filesToDelete);
 			if($cleanupAutoTasks)
 				$commands[] = 'rm -r "${dir}"';	
 			$task = new rTask( array

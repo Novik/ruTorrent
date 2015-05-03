@@ -3,6 +3,7 @@
 # $1 - unrar
 # $2 - input directory with tail slash
 # $3 - output directory with tail slash
+# $5 - archive files to delete
 
 ret=0
 
@@ -23,3 +24,14 @@ process_directory()
 }
 
 process_directory "$1" "$2" "$3"
+
+ret=$?
+if [ $ret -le 1 ] && [ "$5" != '' ] ; then
+	OIFS=$IFS
+	IFS=';'
+	for file in "$5"
+	do
+		rm $file
+	done
+	IFS=$OIFS
+fi
