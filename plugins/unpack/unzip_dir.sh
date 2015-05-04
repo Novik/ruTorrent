@@ -4,6 +4,7 @@
 # $2 - input directory with tail slash
 # $3 - output directory with tail slash
 # $5 - archive files to delete
+# $6 - unpack temp dir
 
 ret=0
 
@@ -28,7 +29,14 @@ process_directory()
 	return $ret
 }
 
-process_directory "$1" "$2" "$3"
+if [ "$6" != '' ] ; then
+	mkdir -p "$6"
+	process_directory "$1" "$2" "$6"
+	ret=$?
+else
+	process_directory "$1" "$2" "$3"
+	ret=$?
+fi
 
 ret=$?
 [ $ret -le 1 ] && echo 'All OK'
@@ -41,5 +49,12 @@ if [ $ret -le 1 ] && [ "$5" != '' ] ; then
 	done
 	IFS=$OIFS
 fi
+
+if [ "$6" != '' ] ; then
+	mkdir -p "$3"
+	mv "$6"* "$3"
+	rm -r "$6"
+fi
+
 
 exit $ret
