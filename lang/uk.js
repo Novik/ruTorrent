@@ -272,5 +272,6 @@ var theUILang =
  badTempPath 			: "Веб-сервер не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
  badTempPath2			: "rTorrent не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files			: "Queue files recreation"
+ Recreate_files			: "Queue files recreation",
+ Address			: "Address"
 };

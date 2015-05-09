@@ -270,5 +270,6 @@ var theUILang =
  badTempPath 			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  doRandomizeHash		: "Δημιουργία τυχαίων info hashes για cross-seeding", //Needs further review in the future...
- Recreate_files			: "Δρομολόγηση επαναδημιουργίας αρχείων"
+ Recreate_files			: "Δρομολόγηση επαναδημιουργίας αρχείων",
+ Address			: "Address"
 };

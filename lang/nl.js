@@ -272,5 +272,6 @@ var theUILang =
  badTempPath 			: "Webserver-gebruiker heeft geen lees-, schrijf of uitvoerrechten op de tmp-map. ruTorrent zal niet functioneren.",
  badTempPath2			: "rTorrent-gebruiker moet lees- en uitvoerrechten hebben op de tmp-map. ruTorrent zal niet functioneren.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files			: "Queue files recreation"
+ Recreate_files			: "Queue files recreation",
+ Address			: "Address"
 };

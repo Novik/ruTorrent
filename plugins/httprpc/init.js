@@ -468,6 +468,7 @@ rTorrentStub.prototype.getpeersResponse = function(values)
 			peer.ul = iv(data[10]);			//	p.get_up_rate
 			peer.peerdl = iv(data[12]);		//	p.get_peer_rate
 			peer.peerdownloaded = iv(data[13]);	//	p.get_peer_total			
+			peer.port = iv(data[14]);		//	p.get_port
 
 			var id = data[0];
 

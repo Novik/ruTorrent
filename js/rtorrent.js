@@ -46,7 +46,7 @@ var theRequestManager =
 		[ 
 			"p.get_id=", "p.get_address=", "p.get_client_version=", "p.is_incoming=", "p.is_encrypted=",
 			"p.is_snubbed=", "p.get_completed_percent=", "p.get_down_total=", "p.get_up_total=", "p.get_down_rate=",
-			"p.get_up_rate=", "p.get_id_html=", "p.get_peer_rate=", "p.get_peer_total="
+			"p.get_up_rate=", "p.get_id_html=", "p.get_peer_rate=", "p.get_peer_total=", "p.get_port="
 		],
 		handlers: []
 	},
@@ -896,6 +896,7 @@ rTorrentStub.prototype.getpeersResponse = function(xml)
 		peer.ul = this.getValue(values,10);		//	p.get_up_rate
 		peer.peerdl = this.getValue(values,12);		//	p.get_peer_rate
 		peer.peerdownloaded = this.getValue(values,13);	//	p.get_peer_total
+		peer.port = this.getValue(values,14);		//	p.get_port
 		var id = this.getValue(values,0);
 		$.each( theRequestManager.prs.handlers, function(i,handler)
 		{
