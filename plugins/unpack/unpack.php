@@ -74,6 +74,7 @@ class rUnpack
 		global $rootPath;
 		global $cleanupAutoTasks;
 		global $deleteAutoArchives;
+		global $unpackToTemp;
 		global $unpack_debug_enabled;
 		if(rTorrentSettings::get()->isPluginRegistered('quotaspace'))
 		{
@@ -310,13 +311,23 @@ class rUnpack
         			$outPath.=addslash($label);
 	        	if($this->addName && ($name!=''))
 				$outPath.=addslash($name);
-
+				if($unpackToTemp)
+				{
+					$randTempDirectory = addslash(uniqid(getTempDirectory()."archive-"));
+					if( $unpack_debug_enabled ) 
+						toLog("Unpack: Unpack to temp enabled. Unpacking to " . $randTempDirectory);
+				}
+				else
+				{
+					$randTempDirectory = "";
+				}
 	        	$commands[] = escapeshellarg($rootPath.'/plugins/unpack/un'.$mode.$postfix.'.sh')." ".
 				escapeshellarg($arh)." ".
 				escapeshellarg($basename)." ".
 				escapeshellarg($outPath)." ".
 				escapeshellarg($pathToUnzip)." ".
-				escapeshellarg($filesToDelete);
+				escapeshellarg($filesToDelete)." ".
+				escapeshellarg($randTempDirectory);
 			if($cleanupAutoTasks)
 				$commands[] = 'rm -r "${dir}"';	
 			$task = new rTask( array
