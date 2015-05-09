@@ -512,6 +512,7 @@ function makeDirectory( $dirs, $perms = null )
 	@umask($oldMask);
 } 
 
+// [fixme] hidden files doesn't processed
 function deleteDirectory( $dir )
 {
 	$dir = addslash($dir);

@@ -72,7 +72,7 @@ if($dh)
 			(strpos(addslash($path),$topDirectory)===0) &&
 			( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0005))
 			)
-			$dirs['/'.$file] = $path;
+			$dirs['/'.$file] = addslash($path);
 		else
 		{
 			if(LFS::is_file($path)
