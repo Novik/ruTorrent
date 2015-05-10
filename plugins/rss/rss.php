@@ -303,11 +303,15 @@ class rRSS
 					foreach( $this->items as $href=>$item )
 						$history->correct($href,$item['timestamp']);
 				return(true);
-			}				
+			}
+			else if( simplexml_load_string(file_get_contents($this->srcURL)) )
+			{
+				return(true);
+			}
 		}
 		return(false);
 	}
-	
+
 	protected function hasIncorrectTimes()
 	{
 		global $feedsWithIncorrectTimes;
