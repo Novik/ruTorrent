@@ -17,6 +17,7 @@ class rRSS
 	public $etag = null;
 	public $encoding = null;
 	public $version = 0;
+	private $isValid=false;
 	private $channeltags = array('title', 'link', 'lastBuildDate');
 	private $itemtags = array('title', 'link', 'pubDate', 'enclosure', 'guid', 'source', 'description', 'dc:date');
 	private $atomtags = array('title', 'updated');
@@ -155,6 +156,7 @@ class rRSS
 			if(preg_match("'<channel.*?>(.*?)</channel>'si", $cli->results, $out) || 
 				preg_match("'<channel.*?>(.*?)'si", $cli->results, $out))	// for damned lostfilm.tv with broken rss
 			{
+				$this->isValid=true; //We have a RSS feed here.
 				foreach($this->channeltags as $channeltag)
 				{
 					$temp = $this->search("'<$channeltag.*?>(.*?)</$channeltag>'si", $out[1], ($channeltag=='title'));
@@ -243,7 +245,14 @@ class rRSS
 				{
 					$temp = $this->search("'<$atomtag.*?>(.*?)</$atomtag>'si", $cli->results, ($atomtag=='title'));
 					if($temp!='')
+					{
 						$this->channel[$atomtag] = $temp;
+					}
+				}
+				$validID = $this->search("'<id.*?>(.*?)</id>'si", $cli->results); //If we find an "id" tag, which is mandatory in Atom feed, we assume that it's a valid feed.
+				if($validID!='')
+				{
+					$this->isValid = true;
 				}
 				if( array_key_exists('updated',$this->channel) &&
 				        (($timestamp = strtotime($this->channel['updated'])) !==-1))
@@ -303,7 +312,9 @@ class rRSS
 					foreach( $this->items as $href=>$item )
 						$history->correct($href,$item['timestamp']);
 				return(true);
-			}				
+			}
+			else if ($this->isValid)
+                		return true;
 		}
 		return(false);
 	}
