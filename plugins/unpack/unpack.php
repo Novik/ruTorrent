@@ -86,6 +86,8 @@ class rUnpack
 
 		$pathToUnrar = getExternal("unrar");
 		$pathToUnzip = getExternal("unzip");
+		$zipPresent = false;
+		$rarPresent = false;		
 		$outPath = $this->path;
 		
 		if(($outPath!='') && !rTorrentSettings::get()->correctDirectory($outPath))	
