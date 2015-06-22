@@ -1,8 +1,8 @@
 <?php
-
 class TorrentechEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>25, "auth"=>1 );
+
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -15,15 +15,21 @@ class TorrentechEngine extends commonEngine
 				break;
 
 			$res = preg_match_all("`preview_it\((?P<id>\d+), event\)' onmouseout='preview_hide\(\)'>(?P<name>.*)</a>.*".
-				'<span class="desc">(?P<subname>.*)<.*'.
-				'<td align="center" class=".*" nowrap="nowrap".*><span .*>(?P<seeds>.*)</span> &middot; (?P<leech>.*) &middot.*'.
-				'<td class="row1"><span class="(desc|lastaction)">(?P<date>.*)<'.
-				'`siU', $cli->results, $matches);
+					        '<span class="desc">(?P<subname>.*)<.*'.
+					        '<td align="center" class=".*" nowrap="nowrap".*><span .*>(?P<seeds>.*)</span> &middot; (?P<leech>.*) &middot.*'.
+					        '<td class="row1"><span class="(desc|lastaction)">(?P<date>.*)<'.
+					        '`siU', $cli->results, $matches);
 			if($res)
 			{
+
+				$myhash = '';
+				if( preg_match( "`hash'>(?P<authkey>.*)</div>`",$cli->results, $matches1 ) )
+					$myhash = $matches1["authkey"];
+
 				for($i=0; $i<$res; $i++)
 				{
-					$link = $url."/index.php?act=attach&code=showtopic&tid=".$matches["id"][$i];
+					$link = $url."/index.php?act=attach&type=post&passkey=".$myhash."&id=".$matches["id"][$i].".torrent";
+
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
