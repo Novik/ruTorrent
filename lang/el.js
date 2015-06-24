@@ -155,8 +155,8 @@ var theUILang =
  EnableTracker			: "Ενεργοποίηση",
  ClientVersion			: "Πρόγραμμα-πελάτης",
  Flags				: "Κατάσταση σύνδεσης",
- PeerDL				: "Peer DL",
- PeerDownloaded			: "Peer Downloaded",
+ PeerDL				: "DL χρήστη",
+ PeerDownloaded			: "Ο χρήστης έλαβε",
  ReqTimeout			: "Λήξη αιτήματος",
  GetTrackerMessage		: "Λήψη μηνυμάτων από τον tracker",
  Help				: "Βοήθεια",
@@ -271,5 +271,5 @@ var theUILang =
  badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  doRandomizeHash		: "Δημιουργία τυχαίων info hashes για cross-seeding", //Needs further review in the future...
  Recreate_files			: "Δρομολόγηση επαναδημιουργίας αρχείων",
- Address			: "Address"
+ Address			: "Διεύθυνση"
 };
