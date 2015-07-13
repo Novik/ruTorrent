@@ -27,13 +27,14 @@ class WhatCDEngine extends commonEngine
 				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
 				break;
 
-			$res = preg_match_all('/<tr class="torrent">.*<div title="(?P<cat>.*)".*<\/div>.*'.
-				'\[ <a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
+			$res = preg_match_all('/<td class="center cats_col">.*<div title="(?P<cat>.*)".*'.
+				'\[ <a href="torrents.php\?(?P<link>.*)" class="tooltip" title="Download">DL<\/a>.*'.
 				'<a href="torrents.php\?id=(?P<desc>\d+)".*">(?P<name>.*)<\/a>.*'.
-				'<td class="nobr"><span class="time" title="(?P<date>.*)">.*<\/span><\/td>.*'.
-				'<td class="nobr">(?P<size>.*)<\/td>.*'.
-				'<td>.*<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>'.
+				'<td class="nobr"><span class="time tooltip" title="(?P<date>.*)">.*<\/span><\/td>.*'.
+				'<td class="number_column nobr">(?P<size>.*)<\/td>.*'.
+				'<td class="number_column">.*<\/td>.*<td class="number_column">(?P<seeds>.*)<\/td>.*<td class="number_column">(?P<leech>.*)<\/td>'.
 				'/siU', $cli->results, $matches);
+
 
 			if($res)
 			{
@@ -70,11 +71,11 @@ class WhatCDEngine extends commonEngine
                                 for($i=0; $i<$res; $i++)
 					$groups[intval($matches["id"][$i])] = array( "name" => self::removeTags(trim($matches["name"][$i])), "cat" => self::removeTags($matches["cat"][$i]) );
 
-				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)[ "].*<td colspan="3">.*\[ <a href="torrents.php\?(?P<link>.*)" title="Download">DL<\/a>.*'.
+				$res = preg_match_all('/<tr class="group_torrent groupid_(?P<id>\d+)[ "].*<td colspan="3">.*\[ <a href="torrents.php\?(?P<link>.*)" class ="tooptip" title="Download">DL<\/a>.*'.
 					'<a href="torrents.php\?id=(?P<desc>.*)">(?P<name>.*)<\/a>.*'.
-					'<td class="nobr"><span class="time" title="(?P<date>.*)">.*<\/span><\/td>.*'.
-					'<td class="nobr">(?P<size>.*)<\/td>.*'.
-					'<td>.*<\/td>.*<td>(?P<seeds>.*)<\/td>.*<td>(?P<leech>.*)<\/td>'.
+					'<td class="nobr"><span class="time tooltip" title="(?P<date>.*)">.*<\/span><\/td>.*'.
+					'<td class="number_column nobr">(?P<size>.*)<\/td>.*'.
+					'<td class="number_column">.*<\/td>.*<td class="number_column">(?P<seeds>.*)<\/td>.*<td class="number_column">(?P<leech>.*)<\/td>'.
 					'/siU', $cli->results, $matches);					
 				if($res)
 				{
