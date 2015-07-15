@@ -109,29 +109,29 @@ class KinozalTVEngine extends commonEngine
 				)
 				break;
 
-			$res = preg_match_all('|<tr><td><a href=/browse\.php\?c=(?P<cat>.*)><img border=0.*'.
-				'<a href="/details.php\?id=(?P<id>\d+)">(?P<name>.*)</a><td align=center>.*</a></td>.*'.
-				'<td align=center><small><nobr>(?P<date>.*)</nobr></td>.*'.
-				'<td align=center><small>(?P<size>.*)</td>.*'.
-				'<td align=center><small>\d+</td>.*'.
-				'<td align=center><small>(?P<seeds>.*)</td>.*'.
-				'<td align=center><small>(?P<leech>.*)</td>|siU', $cli->results, $matches);
+			$res = preg_match_all('|<tr class=bg><td class="bt"><img src=.* onclick="cat(?P<cat>.*);".*'.
+				'<a href="/details.php\?id=(?P<id>\d+)".*>(?P<name>.*)</a>.*'.
+				'<td class=.*>\d+</td>.*'.
+				'<td class=.*>(?P<size>.*)</td>.*'.
+				'<td class=.*>(?P<leech>.*)</td>.*'.
+				'<td class=.*>(?P<seeds>.*)</td>.*'.
+				'<td class=.*>(?P<date>.*)</td>|siU', $cli->results, $matches);
 				
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
 				{
-					$link = $url."/download.php/".$matches["id"][$i]."/name.torrent";
+					$link = $url."/download.php?id=".$matches["id"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
 						$item["cat"] = self::getInnerCategory($matches["cat"][$i]);
 						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
 						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i],"CP1251"),"CP1251");
-						$item["size"] = self::formatSize(str_replace("<br>"," ",$matches["size"][$i]));
+						$item["size"] = self::formatSize(self::toUTF(str_replace("<br>"," ",$matches["size"][$i]), "CP1251"));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
-						$item["time"] = self::formatTime(self::removeTags(str_replace("<br>â ", "",$matches["date"][$i])));
+						$item["time"] = self::formatTime(self::removeTags(str_replace("â ", "",$matches["date"][$i])));
 						$ret[$link] = $item;
 						$added++;
 						if($added>=$limit)

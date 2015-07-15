@@ -21,7 +21,8 @@ if($req->success())
 {
 	for($i = 0; $i<count($req->val); $i+=5)
 	{
-		if(strpos( $req->val[$i+4], ".rutracker.org/" )!==false)
+		if(strpos( $req->val[$i+4], ".rutracker.org/" )!==false ||
+		   strpos( $req->val[$i+4], ".kinozal.tv/" )!==false)
 			if(!ruTrackerChecker::run($req->val[$i],$req->val[$i+1],$req->val[$i+2],$req->val[$i+3]))
 				break;
 	}
