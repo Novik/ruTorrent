@@ -31,7 +31,7 @@ function readLangCookie() {
 var AvailableLanguages =
 {
 	cs:'Český',
-	da:'Danske',
+	da:'Dansk',
 	de:'Deutsch',
 	en:'English',
 	es:'Español',
