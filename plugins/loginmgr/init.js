@@ -75,7 +75,7 @@ plugin.onLangLoaded = function()
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmlogin' for='"+name+"_lmlogin' class='disabled'>"+theUILang.accLogin+":</label></td>"+
-					"<td class=\"alr\"><input type='text' id='"+name+"_lmlogin' class='TextboxLarge' maxlength='32' disabled='true' /></td>"+
+					"<td class=\"alr\"><input type='text' id='"+name+"_lmlogin' class='TextboxLarge' disabled='true' /></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmpassword' for='"+name+"_lmpassword' class='disabled'>"+theUILang.accPassword+":</label></td>"+
@@ -83,7 +83,7 @@ plugin.onLangLoaded = function()
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmauto' for='"+name+"_lmauto' class='disabled'>"+theUILang.accAuto+":</label></td>"+
-					"<td class=\"alr\"><select id='"+name+"_lmauto' class='TextboxLarge' maxlength='32' disabled='true'>"+
+					"<td class=\"alr\"><select id='"+name+"_lmauto' class='TextboxLarge' disabled='true'>"+
 						"<option value='0'>"+theUILang.acAutoNone+"</option>"+
 						"<option value='86400'>"+theUILang.acAutoDay+"</option>"+
 						"<option value='604800'>"+theUILang.acAutoWeek+"</option>"+
