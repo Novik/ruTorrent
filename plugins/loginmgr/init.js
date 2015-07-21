@@ -79,7 +79,7 @@ plugin.onLangLoaded = function()
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmpassword' for='"+name+"_lmpassword' class='disabled'>"+theUILang.accPassword+":</label></td>"+
-					"<td class=\"alr\"><input type='password' id='"+name+"_lmpassword' class='TextboxLarge' maxlength='32' disabled='true' /></td>"+
+					"<td class=\"alr\"><input type='password' id='"+name+"_lmpassword' class='TextboxLarge' disabled='true' /></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmauto' for='"+name+"_lmauto' class='disabled'>"+theUILang.accAuto+":</label></td>"+
