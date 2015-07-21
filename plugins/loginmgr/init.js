@@ -79,11 +79,11 @@ plugin.onLangLoaded = function()
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmpassword' for='"+name+"_lmpassword' class='disabled'>"+theUILang.accPassword+":</label></td>"+
-					"<td class=\"alr\"><input type='password' id='"+name+"_lmpassword' class='TextboxLarge' maxlength='32' disabled='true' /></td>"+
+					"<td class=\"alr\"><input type='password' id='"+name+"_lmpassword' class='TextboxLarge' maxlength='64' disabled='true' /></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmauto' for='"+name+"_lmauto' class='disabled'>"+theUILang.accAuto+":</label></td>"+
-					"<td class=\"alr\"><select id='"+name+"_lmauto' class='TextboxLarge' maxlength='32' disabled='true'>"+
+					"<td class=\"alr\"><select id='"+name+"_lmauto' class='TextboxLarge' maxlength='64' disabled='true'>"+
 						"<option value='0'>"+theUILang.acAutoNone+"</option>"+
 						"<option value='86400'>"+theUILang.acAutoDay+"</option>"+
 						"<option value='604800'>"+theUILang.acAutoWeek+"</option>"+
