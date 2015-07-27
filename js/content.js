@@ -166,7 +166,7 @@ function makeContent()
 	}
 	$("#addtorrent").submit(function()
 	{
-		if(!$("#torrent_file").val().match(".torrent")) 
+		if(!$("#torrent_file").val().match(/\.torrent$/i)) 
 		{
 			alert(theUILang.Not_torrent_file);
 	   		return(false);
