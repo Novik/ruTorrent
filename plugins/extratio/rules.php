@@ -156,7 +156,7 @@ class rRatioRulesList
   	                }
 			if($rule)
 				$this->add($rule);
-//			usort($this->lst, create_function( '$a,$b', 'return($a->no - $b->no);'));
+			usort($this->lst, create_function( '$a,$b', 'return($a->no - $b->no);'));
 			$this->store();
 			$this->setHandlers();
 		}
