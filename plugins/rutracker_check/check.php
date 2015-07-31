@@ -77,8 +77,11 @@ class ruTrackerChecker
 				$torrent = new Torrent( $fname );
 				if( !$torrent->errors() )
 				{
-                        		if( preg_match( '`^http://rutracker\.org/forum/viewtopic\.php\?t=(?P<id>\d+)$`',$torrent->comment(), $matches ) )
+                        		if( preg_match( '`^http://(?P<tracker>rutracker)\.org/forum/viewtopic\.php\?t=(?P<id>\d+)$`',$torrent->comment(), $matches ) ||
+					    preg_match( '`^http://(?P<tracker>kinozal)\.tv/details\.php\?id=(?P<id>\d+)$`',$torrent->comment(), $matches ))
 					{
+					    if ($matches["tracker"] == "rutracker")
+					    {
 						$client = self::makeClient($torrent->comment());
 						if(($client->status==200) &&
 							preg_match( "`ajax.form_token\s*=\s*'(?P<form_token>[^']+)';.*topic_id\s*:\s*(?P<topic_id>\d+),\s*t_hash\s*:\s*'(?P<t_hash>[^']+)'`s",$client->results, $matches1 ))
@@ -101,6 +104,27 @@ class ruTrackerChecker
 						}
 						$client->setcookies();
 						$client->fetchComplex("http://dl.rutracker.org/forum/dl.php?t=".$matches["id"]);
+					    }
+					    else if ($matches["tracker"] == "kinozal")
+					    {
+						$client = self::makeClient("http://kinozal.tv/get_srv_details.php?action=2&id=".$matches["id"]);
+						if($client->status==200 &&
+						    preg_match('`<li>.*(?P<hash>[0-9A-Fa-f]{40})</li>`', $client->results, $matches1))
+						{
+						    if((strtoupper($matches1["hash"])==$hash))
+						    {
+							self::setState( $hash,  self::STE_UPTODATE );
+							return(true);
+						    }
+						}
+						$client->setcookies();
+						$client->fetchComplex("http://dl.kinozal.tv/download.php?id=".$matches["id"]);
+					    }
+					    else
+					    {
+						self::setState($hash, self::STE_NOT_NEED);
+						return(true);
+					    }
 						if($client->status==200)
 						{
 							$torrent = new Torrent( $client->results );
