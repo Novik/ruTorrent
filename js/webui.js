@@ -2180,7 +2180,7 @@ var theWebUI =
 					url = prefix+"<a href='"+url+"' target=_blank>"+url+"</a>"+postfix;
 				}
 			}
-			$("#cmt").html(url);
+			$("#cmt").html( strip_tags(url,'<a><b><strong>') );
 			$("#dsk").text((d.free_diskspace=='0') ? '' : theConverter.bytes(d.free_diskspace,2));
 	   		this.updatePeers();
 		}
