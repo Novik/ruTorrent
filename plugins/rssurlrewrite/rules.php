@@ -14,7 +14,7 @@ class rURLRewriteRule
 	public $hrefAsSrc;
 	public $hrefAsDest;
 
-	public function	rURLRewriteRule( $name, $pattern = '', $replacement = '', $enabled = 0, $rssHash = '', 
+	public function	__construct( $name, $pattern = '', $replacement = '', $enabled = 0, $rssHash = '', 
 		$hrefAsSrc = 0, $hrefAsDest = 0 )
 	{
 		$this->name = $name;

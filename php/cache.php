@@ -5,7 +5,7 @@ class rCache
 {
 	protected $dir;
 
-	public function rCache( $name = '' )
+	public function __construct( $name = '' )
 	{
 		$this->dir = getSettingsPath().$name;
 		if(!is_dir($this->dir))

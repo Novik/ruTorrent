@@ -20,7 +20,7 @@ class rRatioRule
 	public $ratio;
 	public $channel;
 
-	public function	rRatioRule( $name, $reason = RR_LABEL_CONTAIN, $pattern = '', $enabled = 0, $no = 0, $ratio = '', $channel = '' )
+	public function	__construct( $name, $reason = RR_LABEL_CONTAIN, $pattern = '', $enabled = 0, $no = 0, $ratio = '', $channel = '' )
 	{
 		$this->name = $name;
 		$this->reason = $reason;

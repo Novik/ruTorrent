@@ -34,7 +34,7 @@ class rpcCache
 
 	protected $dir;
         
-        public function rpcCache()
+        public function __construct()
         {
 		$this->dir = getSettingsPath()."/httprpc";
 		if(!is_dir($this->dir))

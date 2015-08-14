@@ -23,7 +23,7 @@ class rRSS
 	private $atomtags = array('title', 'updated');
 	private $entrytags = array('title', 'link', 'updated', 'content', 'summary');
 
-	public function rRSS( $url = null )
+	public function __construct( $url = null )
 	{
 		$this->version = 1;
 		if($url)
@@ -407,7 +407,7 @@ class rRSSHistory
 	public $changed = false;
 	public $version = 0;
 
-	public function rRSSHistory()
+	public function __construct()
 	{
 		$this->version = 2;
 	}
@@ -531,7 +531,7 @@ class rRSSFilter
 		'${21}', '${22}', '${23}', '${24}', '${25}', '${26}', '${27}', '${28}', '${29}', '${30}',
 	);
 
-	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
+	public function	__construct( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
 		$start = 0, $addPath = 1, $directory = null, $label = null, 
 		$titleCheck = 1, $descCheck = 0, $linkCheck = 0,
 		$throttle = null, $ratio = null, $no = -1, $interval = -1 )
@@ -659,7 +659,7 @@ class rRSSGroup
 	public $hash;
 	public $lst = array();
 
-	public function	rRSSGroup( $name, $hash = null )
+	public function	__construct( $name, $hash = null )
 	{
 		$this->name = $name;
 		if(is_null($hash))
@@ -832,7 +832,7 @@ class rRSSManager
 	public $groups = null;
 	public $data = null;
 
-	public function rRSSManager()
+	public function __construct()
 	{
 		$this->cache  = new rCache( '/rss/cache' );
 		$this->rssList = new rRSSMetaList();
