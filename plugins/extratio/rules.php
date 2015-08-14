@@ -39,7 +39,9 @@ class rRatioRule
 			rTorrentSettings::get()->pushEvent( "CheckTracker", array( "announce"=>$trk, "result"=>&$ret ) );
 			if( $ret ||
 				(is_null($ret) &&
-					(preg_match( '`^(http|https|udp)://[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,5})|).*/an.*\?.+=.+`i', $trk ) ||
+					(preg_match( '`^(http|https|udp)://(?:[0-9]{1,3}\.){3}[0-9]{1,3}((:(\d){2,5})|).*/an.*\?.+=.+`i', $trk ) ||
+					preg_match( '`^(http|https|udp)://(?:[0-9]{1,3}\.){3}[0-9]{1,3}((:(\d){2,5})|)/.*[0-9a-z]{8,32}/an`i', $trk ) ||
+					preg_match( '`^(http|https|udp)://[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,5})|).*/an.*\?.+=.+`i', $trk ) ||
 					preg_match( '`^(http|https|udp)://[a-z0-9-\.]+\.[a-z]{2,4}((:(\d){2,5})|)/.*[0-9a-z]{8,32}/an`i', $trk ))) )
 				return(true);
 		}
