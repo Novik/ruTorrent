@@ -6,16 +6,16 @@
  * Author: 
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "Το πρόσθετο δεν θα λειτουργήσει.";
 
  theUILang.xmpp				= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Recipient:";
- theUILang.xmppMessage			= "Message:";
- theUILang.xmppJabberPasswd		= "Password:";
- theUILang.xmppAdvancedSettings		= "Advanced:";
- theUILang.xmppJabberHost		= "Host:";
- theUILang.xmppJabberPort		= "Port";
- theUILang.xmppUseEncryption		= "Use encryption";
+ theUILang.xmppJabberFor 		= "Παραλήπτης:";
+ theUILang.xmppMessage			= "Μήνυμα:";
+ theUILang.xmppJabberPasswd		= "Κωδικός:";
+ theUILang.xmppAdvancedSettings		= "Προηγμένες:";
+ theUILang.xmppJabberHost		= "Διακομιστής:";
+ theUILang.xmppJabberPort		= "Θύρα";
+ theUILang.xmppUseEncryption		= "Χρήση κρυπτογράφησης";
 
 thePlugins.get("xmpp").langLoaded();
