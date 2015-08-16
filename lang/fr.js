@@ -257,7 +257,7 @@ var theUILang =
  webBadSessionError		: "Le plug-in ne fonctionnera pas. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
  webBadSessionWarning		: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
  Developers			: "Développeurs",
- Check_new_version		: "Vérifier une nouvelle version",
+ Check_new_version		: "Recherche d'une nouvelle version...",
  here				: "ici",
  Num_No 			: "N°", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Cette fenêtre",
