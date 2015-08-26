@@ -74,7 +74,7 @@ var theUILang =
  Details			: "Λεπτομέρειες...",
  Properties			: "Ιδιότητες...",
  of				: "από", //this two creates line
- connected			: "συνδεμένοι", //  XX of YY connected
+ connected			: "συνδεδεμένοι", //  XX of YY connected
  High_priority			: "Υψηλή",
  Normal_priority		: "Κανονική",
  Low_priority			: "Χαμηλή",
@@ -255,7 +255,7 @@ var theUILang =
  webBadSessionError		: "Το πρόσθετο δεν θα λειτουργήσει. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
  webBadSessionWarning		: "Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
  Developers			: "Ανάπτυξη λογισμικού",
- Check_new_version		: "Ελέγξτε για νέα έκδοση",
+ Check_new_version		: "Έλεγχος για νέα έκδοση",
  here				: "εδώ",
  Num_No 			: "Α/Α", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Αυτή η οθόνη",
