@@ -16,7 +16,7 @@ class rStat
 	public $yearHitTimes = array(0,0,0,0,0,0,0,0,0,0,0,0);
 	public $fname = "";
 
-	public function rStat( $prefix )
+	public function __construct( $prefix )
 	{
 		$this->fname = getSettingsPath().'/trafic/'.$prefix;
 		if($file=@fopen($this->fname,"r"))

@@ -28,7 +28,7 @@ class privateData
 		return($rt);
 	}
 
-	public function privateData( $owner )
+	public function __construct( $owner )
 	{
 		$this->hash = $owner.".dat";
 		$this->loaded = false;

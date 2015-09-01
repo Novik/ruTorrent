@@ -8,7 +8,7 @@ class rXMLRPCParam
 	public $type;
 	public $value;
 
-	public function rXMLRPCParam( $aType, $aValue )
+	public function __construct( $aType, $aValue )
 	{
 		$this->type = $aType;
 		if(($this->type=="i8") || ($this->type=="i4"))
@@ -23,7 +23,7 @@ class rXMLRPCCommand
 	public $command;
 	public $params;
 
-	public function rXMLRPCCommand( $cmd, $args = null )
+	public function __construct( $cmd, $args = null )
 	{
 		$this->command = getCmd($cmd);
 		$this->params = array();
@@ -78,7 +78,7 @@ class rXMLRPCRequest
 	public $parseByTypes = false;
 	public $important = true;
 
-	public function rXMLRPCRequest( $cmds = null )
+	public function __construct( $cmds = null )
 	{
 		if($cmds)
 		{
