@@ -8,7 +8,7 @@ set_time_limit(0);
 
 if(isset($_REQUEST["label"]))
 {
-	$label = strtolower(rawurldecode($_REQUEST["label"]));
+	$label = mb_strtolower(rawurldecode($_REQUEST["label"]), 'utf-8');
 	$name = getSettingsPath().'/labels';
 	if(!is_dir($name))
 		makeDirectory($name);
