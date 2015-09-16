@@ -16,6 +16,7 @@ class rTask
 	const FLG_RUN_AS_CMD	= 0x0040;
 	const FLG_STRIP_ERRS	= 0x0080;
 	const FLG_NO_LOG	= 0x0100;
+	const FLG_REMOVE_ASCII	= 0x0200;	
 
 	public $params = array();
 	public $id = 0;
@@ -111,7 +112,15 @@ class rTask
 		@deleteDirectory( $dir );
 	}
 
-	static protected function processLog( $dir, $logName, &$ret, $stripConsole )
+	static protected function removeASCII( $subject )
+	{
+		$subject = preg_replace('/\x1b(\[|\(|\))[;?0-9]*[0-9A-Za-z]/', "",$subject);
+		$subject = preg_replace('/\x1b(\[|\(|\))[;?0-9]*[0-9A-Za-z]/', "",$subject);
+		$subject = preg_replace('/[\x03|\x1a]/', "", $subject);  
+		return($subject);
+	}		
+
+	static protected function processLog( $dir, $logName, &$ret, $stripConsole, $removeASCII )
 	{
 		if(is_file($dir.'/'.$logName) && is_readable($dir.'/'.$logName))
 		{
@@ -141,6 +150,8 @@ class rTask
 						$line = implode('',$res);
 					}
 				}
+				if($removeASCII)
+					$line = self::removeASCII( $line );
 				$ret[$logName][] = rtrim($line);
 			}
 			if($stripConsole && (count($ret[$logName])>self::MAX_CONSOLE_SIZE))
@@ -168,8 +179,8 @@ class rTask
 			}
 			if(is_file($dir.'/params') && is_readable($dir.'/params'))
 				$ret["params"] = unserialize(file_get_contents($dir.'/params'));
-			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS));
-			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS));
+			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS), ($flags & self::FLG_REMOVE_ASCII));
+			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS), ($flags & self::FLG_REMOVE_ASCII));
 		}
 		return($ret);
 	}
