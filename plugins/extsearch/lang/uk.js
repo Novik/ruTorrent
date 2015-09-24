@@ -31,9 +31,9 @@
  theUILang.exsCookies			= "Формат файлів cookie";
  theUILang.extAllPublic 		= "Усі відкриті";
  theUILang.extAllPrivate		= "Усі закриті";
- theUILang.exsMustInstallCookies	= "Щоб ця служба працювала, необхідно інсталювати плагін Cookies."; 
- theUILang.exsMustInstallLoginMgr	= "Щоб ця служба працювала, необхідно інсталювати плагін LoginMgr."; 
- theUILang.exsLoginMgr			= "Щоб ця служба працювала правильно, введіть дані облікового запису у плагіні LoginMgr."; 
+ theUILang.exsMustInstallCookies	= "Щоб ця служба працювала, необхідно інсталювати плагін Cookies.";
+ theUILang.exsMustInstallLoginMgr	= "Щоб ця служба працювала, необхідно інсталювати плагін LoginMgr.";
+ theUILang.exsLoginMgr			= "Щоб ця служба працювала правильно, введіть дані облікового запису у плагіні LoginMgr.";
  theUILang.exsURLInfo			= "Відомості про URL-адресу";
  theUILang.exsURLGUID			= "URL-адреса опису";
  theUILang.exsURLHref			= "URL-адреса завантаження";

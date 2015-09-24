@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Автоматизація";
  theUILang.autotoolsEnableLabel 	= "Увімкнути функцію «АвтоМітки», Шаблон:";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
+ theUILang.autotoolsEnableMove		= "Увімкнути \"АвтоПереміщення\", якщо мітка торента відповідає фільтру";
  theUILang.autotoolsPathToFinished	= "Каталог для завершених завантажень";
  theUILang.autotoolsEnableWatch 	= "Увімкнути функцію «АвтоДодавання»";
  theUILang.autotoolsPathToWatch 	= "Каталог для пошуку нових торентів";
@@ -22,7 +22,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Жорстке посилання";
  theUILang.autotoolsFileOpCopy		= "Скопіювати";
  theUILang.autotoolsFileOpSoftLink	= "Символьне посилання";
- theUILang.autotoolsAddLabel		= "Add torrent's label to path";
- theUILang.autotoolsAddName		= "Add torrent's name to path";  
+ theUILang.autotoolsAddLabel		= "Додавати мітку торента до шляху";
+ theUILang.autotoolsAddName		= "Додавати назву торента до шляху";
 
 thePlugins.get("autotools").langLoaded();
