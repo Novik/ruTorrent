@@ -1,21 +1,21 @@
 ﻿/*
  * PLUGIN XMPP
  *
- * English language file.
+ * Ukrainian language file.
  *
- * Author: 
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "Плагін не працюватиме.";
 
  theUILang.xmpp				= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Recipient:";
- theUILang.xmppMessage			= "Message:";
- theUILang.xmppJabberPasswd		= "Password:";
- theUILang.xmppAdvancedSettings		= "Advanced:";
- theUILang.xmppJabberHost		= "Host:";
- theUILang.xmppJabberPort		= "Port";
- theUILang.xmppUseEncryption		= "Use encryption";
+ theUILang.xmppJabberFor 		= "Одержувач:";
+ theUILang.xmppMessage			= "Повідомлення:";
+ theUILang.xmppJabberPasswd		= "Пароль:";
+ theUILang.xmppAdvancedSettings		= "Додатково:";
+ theUILang.xmppJabberHost		= "Сервер:";
+ theUILang.xmppJabberPort		= "Порт";
+ theUILang.xmppUseEncryption		= "Використовувати шифрування";
 
 thePlugins.get("xmpp").langLoaded();

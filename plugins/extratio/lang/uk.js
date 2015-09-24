@@ -3,7 +3,7 @@
  *
  * Ukrainian language file.
  *
- * Author: 
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
  theUILang.ratioRulesManager	= "Менеджер правил";
@@ -13,7 +13,7 @@
  theUILang.ratUpRule		= "Вгору";
  theUILang.ratDownRule		= "Вниз";
  theUILang.ratioIfLegend	= "Якщо";
- theUILang.ratLabelContain	= "Мітка завантаження міститьт";
+ theUILang.ratLabelContain	= "Мітка завантаження містить";
  theUILang.ratTrackerContain	= "Одна з URL-адрес трекерів містить";
  theUILang.ratTrackerPublic	= "Усі трекери завантаження публічні";
  theUILang.ratTrackerPrivate	= "Один із трекерів завантаження приватний";

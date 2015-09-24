@@ -75,7 +75,7 @@ var theUILang =
  Remove_and			: "Видалити і",
  Details			: "Деталі…",
  Properties			: "Властивості…",
- of				: "із", //this two creates line 
+ of				: "із", //this two creates line
  connected			: "з’єднано", //  XX of YY connected
  High_priority			: "Високий",
  Normal_priority		: "Нормальний",
@@ -163,7 +163,7 @@ var theUILang =
  GetTrackerMessage		: "Запитувати повідомлення трекера",
  Help				: "Довідка",
  Speed				: "Швидкість",
- Dont_add_tname 		: "Не додавати назву торента до шляху", 
+ Dont_add_tname 		: "Не додавати назву торента до шляху",
  Free_Disk_Space		: "Вільно на диску",
  badXMLRPCVersion		: "rTorrent скомпільовано з некоректною версією бібліотеки xmlrpc-c, без підтримки 8-розрядних цілих. Версія бібліотеки повинна бути >= 1.11. Деякі функції будуть недоступні.",
  badLinkTorTorrent		: "Немає зв’язку із rTorrent. Перевірте, чи його запущено. Переконайтеся, що параметри $scgi_port і $scgi_host у файлі config.php збігаються зі значенням змінної scgi_port у файлі конфігурації rTorrent.",
@@ -271,7 +271,7 @@ var theUILang =
  showSpeedInTitle		: "Показувати швидкість у заголовку",
  badTempPath 			: "Веб-сервер не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
  badTempPath2			: "rTorrent не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
- doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files			: "Queue files recreation",
- Address			: "Address"
+ doRandomizeHash		: "Зробити хеш унікальним",
+ Recreate_files			: "Виконати повторне створення файлів у черзі",
+ Address			: "Адреса"
 };
