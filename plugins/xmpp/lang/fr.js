@@ -6,16 +6,16 @@
  * Author: 
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "Le plug-in ne fonctionnera pas.";
 
  theUILang.xmpp				= "XMPP";
- theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Recipient:";
- theUILang.xmppMessage			= "Message:";
- theUILang.xmppJabberPasswd		= "Password:";
- theUILang.xmppAdvancedSettings		= "Advanced:";
- theUILang.xmppJabberHost		= "Host:";
- theUILang.xmppJabberPort		= "Port";
- theUILang.xmppUseEncryption		= "Use encryption";
+ theUILang.xmppJabberJID 		= "JID :";
+ theUILang.xmppJabberFor 		= "Destinataire :";
+ theUILang.xmppMessage			= "Message :";
+ theUILang.xmppJabberPasswd		= "Mot de passe :";
+ theUILang.xmppAdvancedSettings		= "Paramètres avancés :";
+ theUILang.xmppJabberHost		= "Hôte ";
+ theUILang.xmppJabberPort		= "Port ";
+ theUILang.xmppUseEncryption		= "Utiliser le chiffrement";
 
 thePlugins.get("xmpp").langLoaded();
