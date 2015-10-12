@@ -30,5 +30,7 @@
  				  "default": "Ваш браузер підтримує сповіщення на робочому столі. Натисніть кнопку нижче, щоб увімкнути їх.",
  				  "denied": "Ваш браузер підтримує сповіщення на робочому столі, але їх вимкнено для цього сайту. Закрийте це діалогове вікно й увімкніть сповіщення на робочому столі в опціях браузера.",
  				  };
+ theUILang.pushbulletNotification = "PushBullet notifications";
+ theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
 
 thePlugins.get("history").langLoaded();

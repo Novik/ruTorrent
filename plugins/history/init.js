@@ -57,6 +57,15 @@ if(plugin.canChangeOptions())
 			$$('not_autoclose').checked = ( theWebUI.history.autoclose != 0 );
 			$('#not_closeinterval').val( theWebUI.history.closeinterval );
 			$('#history_limit').val( theWebUI.history.limit );
+			$('#pushbullet_key').val( theWebUI.history.pushbullet_key );
+			$$('pushbullet_enabled').checked = ( theWebUI.history.pushbullet_enabled != 0 );			
+			$$('pushbullet_addition').checked = ( theWebUI.history.pushbullet_addition != 0 );
+			$$('pushbullet_finish').checked = ( theWebUI.history.pushbullet_finish != 0 );
+			$$('pushbullet_deletion').checked = ( theWebUI.history.pushbullet_deletion != 0 );
+
+			$('#not_autoclose').change();
+			$('#pushbullet_enabled').change();
+
 			plugin.rebuildNotificationsPage();
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
@@ -69,7 +78,12 @@ if(plugin.canChangeOptions())
 			($$('history_deletion').checked != ( theWebUI.history.deletion != 0 )) ||
 			($$('not_autoclose').checked != ( theWebUI.history.autoclose != 0 )) ||
 			($('#not_closeinterval').val() != theWebUI.history.closeinterval) ||
-			($('#history_limit').val() != theWebUI.history.limit));
+			($('#history_limit').val() != theWebUI.history.limit) ||
+			($$('pushbullet_enabled').checked != ( theWebUI.history.pushbullet_enabled != 0 )) ||
+			($$('pushbullet_addition').checked != ( theWebUI.history.pushbullet_addition != 0 )) ||
+			($$('pushbullet_finish').checked != ( theWebUI.history.pushbullet_finish != 0 )) ||
+			($$('pushbullet_deletion').checked != ( theWebUI.history.pushbullet_deletion != 0 )) ||
+			($('#pushbullet_key').val() != theWebUI.history.pushbullet_key));
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
@@ -87,7 +101,13 @@ if(plugin.canChangeOptions())
 			"&finish=" + ( $$('history_finish').checked  ? '1' : '0' ) +
 			"&closeinterval=" + $('#not_closeinterval').val() +
 			"&autoclose=" + ( $$('not_autoclose').checked  ? '1' : '0' ) +
-			"&limit=" + $('#history_limit').val();
+			"&limit=" + $('#history_limit').val() +
+			"&pushbullet_addition=" + ( $$('pushbullet_addition').checked ? '1' : '0' ) +
+			"&pushbullet_deletion=" + ( $$('pushbullet_deletion').checked  ? '1' : '0' ) +
+			"&pushbullet_finish=" + ( $$('pushbullet_finish').checked  ? '1' : '0' ) +
+			"&pushbullet_enabled=" + ( $$('pushbullet_enabled').checked  ? '1' : '0' ) +			
+			"&pushbullet_key=" + $('#pushbullet_key').val();
+
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/history/action.php";
 		this.dataType = "script";
@@ -379,8 +399,29 @@ plugin.onLangLoaded = function()
 				"<input type='button' value='"+theUILang.enableNotifications+"' id='notifPerms'/>"+
 				"<div id='notifParam'>" +
 					"<input type='checkbox' id='not_autoclose' onchange=\"linked(this, 0, ['not_closeinterval']);\" />"+
-					"<label for='not_autoclose'>"+ theUILang.notifAutoClose +" </label>" +
-					"<input type='text' id='not_closeinterval' class='TextboxShort' maxlength='3'/>" + theUILang.s +
+					"<label for='not_closeinterval' id='lbl_not_closeinterval' class='disabled'>"+ theUILang.notifAutoClose +" </label>" +
+					"<input type='text' id='not_closeinterval' class='TextboxShort' maxlength='3' disabled='true'/>" + theUILang.s +
+				"</div>" +
+			"</fieldset>"+
+			"<fieldset>"+
+				"<legend><a href='https://www.pushbullet.com/' target='_blank'>"+theUILang.pushbulletNotification+"</a></legend>"+
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='pushbullet_enabled' onchange=\"linked(this, 0, ['pushbullet_key','pushbullet_addition','pushbullet_deletion','pushbullet_finish']);\"/>"+
+					"<label for='pushbullet_enabled'>"+ theUILang.Enabled +"</label>"+
+				"</div>" +				
+				"<label for='pushbullet_key' id='lbl_pushbullet_key' class='disabled'>"+ theUILang.pushbulletKey +"</label>"+
+				"<input type='text' id='pushbullet_key' class='TextboxLarge' disabled='true' />"+
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='pushbullet_addition' disabled='true' />"+
+					"<label for='pushbullet_addition' id='lbl_pushbullet_addition' class='disabled'>"+ theUILang.historyAddition +"</label>"+
+				"</div>" +
+				"<div class='checkbox'>" +
+					"<input type='checkbox' class='disabled' id='pushbullet_deletion' disabled='true' />"+
+					"<label for='pushbullet_deletion' id='lbl_pushbullet_deletion' class='disabled'>"+ theUILang.historyDeletion +"</label>"+
+				"</div>" +
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='pushbullet_finish' disabled='true' />"+
+					"<label for='pushbullet_finish' id='lbl_pushbullet_finish' class='disabled'>"+ theUILang.historyFinish +"</label>"+
 				"</div>" +
 			"</fieldset>"
 			)[0], theUILang.history );

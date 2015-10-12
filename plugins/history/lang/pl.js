@@ -30,5 +30,7 @@
  				  "default": "Twoja przeglądarka obsługuje powiadomienia. Naciśnij przycisk poniżej, aby je włączyć",
  				  "denied": "Twoja przeglądarka obsługuje powiadomienia, ale wyłaczyłeś je dla tej strony. Zamknij to okno dialogowe i skorzystaj z opcji przeglądarki, aby uruchomić powiadomienia.",
  				  };
+ theUILang.pushbulletNotification = "PushBullet notifications";
+ theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
 
 thePlugins.get("history").langLoaded();
