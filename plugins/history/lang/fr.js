@@ -31,6 +31,8 @@
  				  "denied": "Votre navigateur supporte les notifications du bureau, mais vous les avez désactivées pour ce site. Fermez cette boite de dialogue et utilisez les options de votre navigateur pour activer les notifications du bureau.",
  				  };
  theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
+ theUILang.pushbulletKey	= "PushBullet Access Token";
+ theUILang.turnNotifyOn		= "Turn notifications on";
+ theUILang.turnNotifyOff	= "Turn notifications off";   				  
 
 thePlugins.get("history").langLoaded();

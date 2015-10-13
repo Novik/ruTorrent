@@ -31,6 +31,8 @@
  				  "denied": "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
  				  };
  theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
+ theUILang.pushbulletKey	= "PushBullet Access Token";
+ theUILang.turnNotifyOn		= "Turn notifications on";
+ theUILang.turnNotifyOff	= "Turn notifications off";   				  
 
 thePlugins.get("history").langLoaded();

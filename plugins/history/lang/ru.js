@@ -31,6 +31,8 @@
  				  "denied": "Ваш браузер поддерживает уведомления. Но Вы запретили их показ для этого сайта. Закройте этот диалог, и разрешите уведомления в настройках браузера.",
  				  };
  theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
+ theUILang.pushbulletKey	= "PushBullet Access Token";
+ theUILang.turnNotifyOn		= "Turn notifications on";
+ theUILang.turnNotifyOff	= "Turn notifications off";   				  
 
 thePlugins.get("history").langLoaded();

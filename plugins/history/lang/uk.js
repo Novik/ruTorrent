@@ -31,6 +31,8 @@
  				  "denied": "Ваш браузер підтримує сповіщення на робочому столі, але їх вимкнено для цього сайту. Закрийте це діалогове вікно й увімкніть сповіщення на робочому столі в опціях браузера.",
  				  };
  theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
+ theUILang.pushbulletKey	= "PushBullet Access Token";
+ theUILang.turnNotifyOn		= "Turn notifications on";
+ theUILang.turnNotifyOff	= "Turn notifications off";   				  
 
 thePlugins.get("history").langLoaded();

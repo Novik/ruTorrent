@@ -31,6 +31,8 @@
  				  "denied": "Din webbläsare stöder skrivbordsnotiser men de är inaktiverade för denna webbplats. Stäng denna dialog och aktivera skrivbordsnotiser i dina webbläsarinställningar.",
  				  };
  theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
+ theUILang.pushbulletKey	= "PushBullet Access Token";
+ theUILang.turnNotifyOn		= "Turn notifications on";
+ theUILang.turnNotifyOff	= "Turn notifications off";   				  
 
 thePlugins.get("history").langLoaded();

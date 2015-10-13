@@ -31,6 +31,8 @@
  				  "denied": "Su navegador soporta notificaciones, pero las ha deshabilitado. Cierre este cuadro y utilice las opciones del navegador para habilitarlas.",
  				  };
  theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
+ theUILang.pushbulletKey	= "PushBullet Access Token";
+ theUILang.turnNotifyOn		= "Turn notifications on";
+ theUILang.turnNotifyOff	= "Turn notifications off";   				  
 
 thePlugins.get("history").langLoaded();

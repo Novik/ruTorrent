@@ -31,6 +31,8 @@
  				  "denied": "Twoja przeglądarka obsługuje powiadomienia, ale wyłaczyłeś je dla tej strony. Zamknij to okno dialogowe i skorzystaj z opcji przeglądarki, aby uruchomić powiadomienia.",
  				  };
  theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token"; 				  
+ theUILang.pushbulletKey	= "PushBullet Access Token";
+ theUILang.turnNotifyOn		= "Turn notifications on";
+ theUILang.turnNotifyOff	= "Turn notifications off";   				  
 
 thePlugins.get("history").langLoaded();
