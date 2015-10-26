@@ -30,9 +30,9 @@
  				  "default": "Twoja przeglądarka obsługuje powiadomienia. Naciśnij przycisk poniżej, aby je włączyć",
  				  "denied": "Twoja przeglądarka obsługuje powiadomienia, ale wyłaczyłeś je dla tej strony. Zamknij to okno dialogowe i skorzystaj z opcji przeglądarki, aby uruchomić powiadomienia.",
  				  };
- theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token";
- theUILang.turnNotifyOn		= "Turn notifications on";
- theUILang.turnNotifyOff	= "Turn notifications off";   				  
+ theUILang.pushbulletNotification = "powiadomienia PushBullet";
+ theUILang.pushbulletKey	= "Dostep do klucza PushBullet";
+ theUILang.turnNotifyOn		= "Wlacz powiadomienia";
+ theUILang.turnNotifyOff	= "Wylacz powiadomienia";   				  
 
 thePlugins.get("history").langLoaded();
