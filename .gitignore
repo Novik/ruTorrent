@@ -27,3 +27,5 @@ plugins/plimits
 plugins/localnews
 plugins/hints
 plugins/dmca
+.idea/*
+*.iml
