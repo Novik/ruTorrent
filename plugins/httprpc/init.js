@@ -24,8 +24,8 @@ rTorrentStub.prototype.listResponse = function(data)
 {
         if(this.dataType == "json")
         {
-	        var ret = { labels: {}, torrents: {} };
-        	theRequestManager.cid = data.cid;
+			var ret = { labels: {}, labels_size: {}, torrents: {} };
+			theRequestManager.cid = data.cid;
 		if(data.d)
 			$.each( data.d, function( ndx, hash )
 			{
@@ -88,9 +88,15 @@ rTorrentStub.prototype.listResponse = function(data)
 			if(torrent.label.length>0)
 			{
 				if(!$type(ret.labels[torrent.label]))
+				{
 					ret.labels[torrent.label] = 1;
+					ret.labels_size[torrent.label] = parseInt(torrent.size);
+				}
 				else
+				{
 					ret.labels[torrent.label]++;
+					ret.labels_size[torrent.label] = parseInt(ret.labels_size[torrent.label]) + parseInt(torrent.size);
+				}
 			}
 
 			var get_peers_not_connected = iv(values[16]);
