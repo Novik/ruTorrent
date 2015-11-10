@@ -153,7 +153,8 @@ var theWebUI =
 		"webui.timeformat":		0,
 		"webui.dateformat":		0,
 		"webui.speedintitle":		0,
-		"webui.log_autoswitch":		1
+		"webui.log_autoswitch":		1,
+		"webui.show_labelsize":		1
 	},
 	showFlags: 0,
 	total:
@@ -1843,14 +1844,15 @@ var theWebUI =
 		for(var i=0; i<keys.length; i++) 
 		{
 			var lbl = keys[i];
-			this.labels["-_-_-" + lbl + "-_-_-"] = c[lbl] + " ; " + theConverter.bytes(s[lbl], 2);
+			var lblSize = this.settings["webui.show_labelsize"] ? " ; " + theConverter.bytes(s[lbl], 2) : "";
+			this.labels["-_-_-" + lbl + "-_-_-"] = c[lbl] + lblSize;
 			this.cLabels[lbl] = 1;
 			temp["-_-_-" + lbl + "-_-_-"] = true;
 			if(!$$("-_-_-" + lbl + "-_-_-")) 
 			{
 				p.append( $("<LI>").
 					attr("id","-_-_-" + lbl + "-_-_-").
-					html(escapeHTML(lbl) + "&nbsp;(<span id=\"-_-_-" + lbl + "-_-_-c\">" + c[lbl] + " ; " + theConverter.bytes(s[lbl], 2) + "</span>)").
+					html(escapeHTML(lbl) + "&nbsp;(<span id=\"-_-_-" + lbl + "-_-_-c\">" + c[lbl] + lblSize + "</span>)").
 					mouseclick(theWebUI.labelContextMenu).addClass("cat") );
 			}
 		}

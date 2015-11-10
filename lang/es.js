@@ -242,6 +242,7 @@ var theUILang =
  scrapeUpdate			: "Actualizado",
  trkInterval			: "Intervalo",
  logAutoSwitch			: "Autoswitch to 'Log' tab",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "La directiva PHP register_argc_argv figura como OFF. Cámbiela a ON, de otra manera algunos plugins no funcionarán.",
  addTorrentFailedURL		: "Fallo al agregar torrent. No se encuentra la URL.",
  addTorrentFailedFile		: "Fallo al agregar torrent. El contenido no es un torrent válido.",

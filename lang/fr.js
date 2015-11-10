@@ -244,6 +244,7 @@ var theUILang =
  scrapeUpdate			: "A été mis à jour",
  trkInterval			: "Intervalle",
  logAutoSwitch			: "Mise au premier automatique de l'onglet 'Log'",
+ showLabelSize			: "Afficher la taille des étiquettes",
  phpParameterUnavailable	: "La directive PHP 'register_argc_argv' est désactivée. Veuillez l'activer sinon certains plugins ne vont pas fonctionner.",
  addTorrentFailedURL		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Impossible de résoudre l'URL.",
  addTorrentFailedFile		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Le contenu récupéré n'est pas un fichier torrent.",

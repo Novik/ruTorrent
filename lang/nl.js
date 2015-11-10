@@ -244,6 +244,7 @@ var theUILang =
  scrapeUpdate			: "Laatst geupdate",
  trkInterval			: "Interval",
  logAutoSwitch			: "Autoswitch to 'Log' tab",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "PHP-instelling 'register_argc_argv' staat op OFF, waardoor sommige plugins niet kunnen functioneren. Wijzig de instelling naar ON.",
  addTorrentFailedURL		: "Fout bij toevoegen torrent: kan URL niet ophalen.",
  addTorrentFailedFile		: "Fout bij toevoegen torrent: opgehaalde informatie is geen geldig torrent-bestand.",

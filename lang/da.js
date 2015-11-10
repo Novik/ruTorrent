@@ -244,6 +244,7 @@ var theUILang =
  scrapeUpdate			: "Sidst Opdateret",
  trkInterval			: "Interval",
  logAutoSwitch			: "Autoswitch til 'Log' fanen",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "PHP directive register_argc_argv er sat til OFF. Skift til ON, ellers vil nogle plugins ikke virke korrekt.",
  addTorrentFailedURL		: "Kunne ikke tilføje torrent. Kan ikke forbine til URL.",
  addTorrentFailedFile		: "Kunne ikke tilføje torrent. Den modtagende fil er ikke en valid torrent fil.",

@@ -242,6 +242,7 @@ var theUILang =
  scrapeUpdate			: "Cập nhật lần cuối",
  trkInterval			: "mỗi",
  logAutoSwitch			: "Tự chuyển qua thẻ 'Nhật ký'",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to OFF. Change to ON, otherwise some plugins won't work correctly.",
  addTorrentFailedURL		: "Không thêm torrent được. Không thể tải được URL.",
  addTorrentFailedFile		: "Không thêm torrent được. Nội dung tải về không phải là tập tin torrent.",
