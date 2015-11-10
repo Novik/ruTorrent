@@ -1617,7 +1617,7 @@ var theWebUI =
 			}
 		});
 		this.getAllTrackers(tArray);
-		this.loadLabels(data.labels);
+		this.loadLabels(data.labels, data.labels_size);
 		this.updateLabels(wasRemoved);
 		this.loadTorrents();
 		this.getTotal();
@@ -1831,26 +1831,26 @@ var theWebUI =
 		return(false);
 	},
 
-	loadLabels: function(d) 
+	loadLabels: function(c, s) 
 	{
 		var p = $("#lbll");
 		var temp = new Array();
 		var keys = new Array();
-		for(var lbl in d)
+		for(var lbl in c)
 			keys.push(lbl);
 		keys.sort();
 
 		for(var i=0; i<keys.length; i++) 
 		{
 			var lbl = keys[i];
-			this.labels["-_-_-" + lbl + "-_-_-"] = d[lbl];
+			this.labels["-_-_-" + lbl + "-_-_-"] = c[lbl] + " ; " + theConverter.bytes(s[lbl], 2);
 			this.cLabels[lbl] = 1;
 			temp["-_-_-" + lbl + "-_-_-"] = true;
 			if(!$$("-_-_-" + lbl + "-_-_-")) 
 			{
 				p.append( $("<LI>").
 					attr("id","-_-_-" + lbl + "-_-_-").
-					html(escapeHTML(lbl) + "&nbsp;(<span id=\"-_-_-" + lbl + "-_-_-c\">" + d[lbl] + "</span>)").
+					html(escapeHTML(lbl) + "&nbsp;(<span id=\"-_-_-" + lbl + "-_-_-c\">" + c[lbl] + " ; " + theConverter.bytes(s[lbl], 2) + "</span>)").
 					mouseclick(theWebUI.labelContextMenu).addClass("cat") );
 			}
 		}
