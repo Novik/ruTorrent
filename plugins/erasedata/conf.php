@@ -4,3 +4,4 @@
 	$garbageCheckInterval = 15;
 
 	$erasedebug_enabled = false;
+	$erasetest_enabled = false;
