@@ -1836,7 +1836,7 @@ var theWebUI =
 		var p = $("#lbll");
 		var temp = new Array();
 		var keys = new Array();
-		for(var lbl in d)
+		for(var lbl in c)
 			keys.push(lbl);
 		keys.sort();
 
