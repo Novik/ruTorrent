@@ -982,9 +982,10 @@ rTorrentStub.prototype.getalltrackersResponse = function(xml)
 
 rTorrentStub.prototype.listResponse = function(xml)
 {
-        var ret = {};
-        ret.torrents = {};
-        ret.labels = {};
+	var ret = {};
+	ret.torrents = {};
+	ret.labels = {};
+	ret.labels_size = {};
 	var datas = xml.getElementsByTagName('data');
 	var self = this;
 	for(var j=1;j<datas.length;j++)
@@ -1033,9 +1034,15 @@ rTorrentStub.prototype.listResponse = function(xml)
 		if(torrent.label.length>0)
 		{
 			if(!$type(ret.labels[torrent.label]))
+			{
 				ret.labels[torrent.label] = 1;
+				ret.labels_size[torrent.label] = parseInt(torrent.size);
+			}
 			else
+			{
 				ret.labels[torrent.label]++;
+				ret.labels_size[torrent.label] = parseInt(ret.labels_size[torrent.label]) + parseInt(torrent.size);
+			}
 		}
 		var get_peers_not_connected = parseInt(this.getValue(values,17));
 		var get_peers_connected = parseInt(this.getValue(values,18));

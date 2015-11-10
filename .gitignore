@@ -1,3 +1,11 @@
+# Eclipse
+.settings
+.settings/*
+.buildpath
+.project
+.jsdtscope
+
+# ruTorrent
 conf/users/*
 share/users/*
 share/torrents/*
