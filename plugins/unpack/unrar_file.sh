@@ -14,13 +14,12 @@ else
 	ret=$?
 fi
 
-ret=$?
-if [ $ret -le 1 ] && [ "$5" != '' ] ; then
+if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
 	rm "$5"
 fi
 
 if [ "$6" != '' ] ; then
 	mkdir -p "$3"
 	mv "$6"* "$3"
-	rm -r "$6"
+	[ $? -eq 0 ] && rm -r "$6"
 fi
