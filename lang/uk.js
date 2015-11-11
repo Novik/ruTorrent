@@ -244,6 +244,7 @@ var theUILang =
  scrapeUpdate			: "Оновлено",
  trkInterval			: "Інтервал",
  logAutoSwitch			: "Автоперемикання на вкладку «Журнал»",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "Директиву інтерпретатора PHP register_argc_argv вимкнено (значення Off). Увімкніть її (значення On), інакше деякі плагіни не працюватимуть.",
  addTorrentFailedURL		: "Сталася помилка. Файл .torrent не передано до rTorrent. Не вдалося отримати URL-адресу.",
  addTorrentFailedFile		: "Сталася помилка. Файл .torrent не передано до rTorrent. Отриманий вміст не є правильним torrent-файлом.",

@@ -245,6 +245,7 @@ var theUILang =
  scrapeUpdate			: "Ostatnio aktualizowany",
  trkInterval			: "Interwał",
  logAutoSwitch			: "Automatycznie przejdź do zakładki 'Log'",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "Ustawienie PHP 'register_argc_argv' jest wyłączone! Poproś administratora o zmianę, inaczej niektóre wtyczki nie będą poprawnie działać.",
  addTorrentFailedURL		: "Dodawanie torrenta - niepowodzenie! Nie udało się pobrać URL.",
  addTorrentFailedFile		: "Dodawanie torrenta - niepowodzenie! Pobrana zawartość nie jest poprawnym plikiem torrent.",

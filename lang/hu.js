@@ -244,6 +244,7 @@ var theUILang =
  scrapeUpdate			: "Utolsó frissítés",
  trkInterval			: "Intervallum",
  logAutoSwitch			: "Automatikus váltás a 'Log' fülre",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to OFF. Change to ON, otherwise some plugins won't work correctly.",
  addTorrentFailedURL		: "Failed to add torrent. Can't retrieve URL.",
  addTorrentFailedFile		: "A torrentet nem sikerült hozzáadni! Nem érvényes torrent fájl.",
