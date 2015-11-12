@@ -242,7 +242,7 @@ var theUILang =
  scrapeUpdate			: "Τελευταία ενημέρωση",
  trkInterval			: "Διάστημα",
  logAutoSwitch			: "Αυτόματη μετάβαση στην καρτέλα 'Καταγραφέας'",
- showLabelSize			: "Show label size",
+ showLabelSize			: "Προβολή μεγέθους στην ετικέτα",
  phpParameterUnavailable	: "Η οδηγία register_argc_argv της PHP είναι ορισμένη στο OFF. Αλλάξτε τη σε ON, αλλιώς κάποια πρόσθετα δεν θα λειτουργούν σωστά.",
  addTorrentFailedURL		: "Αποτυχία προσθήκης αρχείου torrent. Αδυναμία ανάκτησης URL.",
  addTorrentFailedFile		: "Αποτυχία προσθήκης αρχείου torrent. Το ανακτημένο περιεχόμενο δεν είναι έγκυρο αρχείο torrent.",

@@ -30,9 +30,9 @@
  				  "default": "Το πρόγραμμα περιήγησης που χρησιμοποιείτε, υποστηρίζει ειδοποιήσεις επιφάνειας εργασίας. Πατήστε το παρακάτω κουμπί για να τις ενεργοποιήσετε.",
  				  "denied": "Το πρόγραμμα περιήγησης που χρησιμοποιείτε υποστηρίζει ειδοποιήσεις επιφάνειας εργασίας, αλλά τις έχετε απενεργοποιήσει για αυτή την ιστοσελίδα. Κλείστε αυτό το παράθυρο διαλόγου και χρησιμοποιήστε τις ρυθμίσεις του περιηγητή σας για να ενεργοποιήσετε τις ειδοποιήσεις επιφάνειας εργασίας.",
  				  };
- theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token";
- theUILang.turnNotifyOn		= "Turn notifications on";
- theUILang.turnNotifyOff	= "Turn notifications off";   				  
+ theUILang.pushbulletNotification = "Ειδοποιήσεις PushBullet";
+ theUILang.pushbulletKey	= "Πιστοποίηση πρόσβασης PushBullet";
+ theUILang.turnNotifyOn		= "Ενεργοποίηση ειδοποιήσεων";
+ theUILang.turnNotifyOff	= "Απενεργοποίηση ειδοποιήσεων";   				  
 
 thePlugins.get("history").langLoaded();
