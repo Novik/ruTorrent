@@ -3,27 +3,27 @@
 class CPasBienEngine extends commonEngine
 {
     public $defaults = array("public" => true, "page_size" => 30);
-    
+
     public $categories = array(
-		'Tout' => '',
-		'Films' => 'films/',
-		'Séries' => 'series/',
-		'Musique' => 'musique/',
-		'Ebook' => 'ebook/',
-		'Logiciels' => 'logiciels/',
-		'Jeux PC' => 'jeux-pc/',
-		'Jeux Consoles' => 'jeux-consoles/',
-	);
-    
+        'Tout' => '',
+        'Films' => 'films/',
+        'Séries' => 'series/',
+        'Musique' => 'musique/',
+        'Ebook' => 'ebook/',
+        'Logiciels' => 'logiciels/',
+        'Jeux PC' => 'jeux-pc/',
+        'Jeux Consoles' => 'jeux-consoles/',
+    );
+
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
         $added = 0;
-        $url   = 'http://www.cpasbien.pw';
+        $url   = 'http://www.cpasbien.io';
         if ($useGlobalCats)
             $categories = array(
                 'all' => '',
                 'movies' => 'films/',
-				'series' => 'series/',
+                'series' => 'series/',
                 'music' => 'musique/',
                 'software' => 'logiciels/',
                 'books' => 'ebook/'
@@ -34,13 +34,13 @@ class CPasBienEngine extends commonEngine
             $cat = $categories['all'];
         else
             $cat = $categories[$cat];
-		$what = str_replace (' ', '+', $what);
+        $what = str_replace (' ', '+', $what);
         for ($pg = 0; $pg < 11; $pg++) {
             $cli = $this->fetch($url . '/recherche/' . $cat . $what . '/page-' . $pg);
             if (($cli == false) || (strpos($cli->results, "Pas de torrents disponibles correspondant à votre recherche") !== false))
                 break;
-            $res = preg_match_all(	
-                	           '`<a href="http:\/\/www\.cpasbien\.pw\/dl-torrent\/(?P<desc1>[^\/]*)\/(?P<desc2>[^\/]*)\/(?P<id>[^\/]*).html"'.
+            $res = preg_match_all(
+                               '`<a href="http:\/\/www\.cpasbien\.io\/dl-torrent\/(?P<desc1>[^\/]*)\/(?P<desc2>[^\/]*)\/(?P<id>[^\/]*).html"'.
                                ' title="(?P<cat1>.*)<br>(?P<cat2>.*) - (?P<date>.*)" class="titre">(?P<name>.*)</a>'.
                                '<div class="poid">(?P<size>.*)</div>.*'.
                                '<span .*>(?P<seeds>\d+)<\/span>.*'.
@@ -53,7 +53,7 @@ class CPasBienEngine extends commonEngine
                         $item          = $this->getNewEntry();
                         $item["desc"]  = $url . "/dl-torrent/" . $matches["desc1"][$i] . "/" . $matches["desc2"][$i] . "/" . $matches["id"][$i] . ".html";
                         $item["name"]  = self::removeTags($matches["name"][$i]);
-						$item["size"] = self::formatSize(trim(str_replace("o","B",$matches["size"][$i])));
+                        $item["size"] = self::formatSize(trim(str_replace("o","B",$matches["size"][$i])));
                         $item["cat"]   = $matches["cat1"][$i] . ' > ' . $matches["cat2"][$i];
                         $item["time"]  = strtotime(self::removeTags(str_replace ('/', '-', $matches["date"][$i]))) + 1;
                         $item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
