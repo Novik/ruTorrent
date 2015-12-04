@@ -17,14 +17,14 @@ else
 	ret=$?
 fi
 
-[ $ret -le 1 ] && echo 'All OK'
-if [ $ret -le 1 ] && [ "$5" != '' ] ; then
+[ $ret -eq 0 ] && echo 'All OK'
+if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
 	rm "$5"
 fi
 
 if [ "$6" != '' ] ; then
 	mv "$6"* "$3"
-	rm -r "$6"
+	[ $? -eq 0 ] && rm -r "$6"
 fi
 
 exit $ret

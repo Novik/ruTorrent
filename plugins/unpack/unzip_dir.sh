@@ -15,7 +15,7 @@ process_directory()
 	        	mkdir -p "$3"
 			"$1" -o "${fn}" -d "$3"
 			last=$?
-			[ $last -gt 1 ] && ret=$last
+			[ $last -ge 1 ] && ret=$last
 		fi
 	done
 	for fn in "$2"* ; do
@@ -23,14 +23,13 @@ process_directory()
 			name=$(basename "${fn}")
 			process_directory "$1" "${fn}/" "$3${name}/"
 			last=$?
-			[ $last -gt 1 ] && ret=$last
+			[ $last -ge 1 ] && ret=$last
 		fi
 	done
 	return $ret
 }
 
 if [ "$6" != '' ] ; then
-	mkdir -p "$6"
 	process_directory "$1" "$2" "$6"
 	ret=$?
 else
@@ -38,9 +37,8 @@ else
 	ret=$?
 fi
 
-ret=$?
-[ $ret -le 1 ] && echo 'All OK'
-if [ $ret -le 1 ] && [ "$5" != '' ] ; then
+[ $ret -eq 0 ] && echo 'All OK'
+if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
 	OIFS=$IFS
 	IFS=';'
 	for file in "$5"
@@ -53,7 +51,7 @@ fi
 if [ "$6" != '' ] ; then
 	mkdir -p "$3"
 	mv "$6"* "$3"
-	rm -r "$6"
+	[ $? -eq 0 ] && rm -r "$6"
 fi
 
 
