@@ -1491,7 +1491,6 @@ RGBackground.prototype.getColor = function()
         if(g.length == 1) g = '0' + g;
         if(b.length == 1) b = '0' + b;
         return('#' + r + g + b);
-	return(this);
 }
 
 RGBackground.prototype.setGradient = function(beginColor,endColor,percent)
