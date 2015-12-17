@@ -180,6 +180,7 @@ plugin.check = function(data)
         this.foreground.no = data.no;
         this.foreground.pid = data.pid;
 	this.foreground.status = data.status;
+	this.foreground.params = data.params;
 	this.fillConsole('tskcmdlog',data.log);
 	this.setConsoleControls( this.fillConsole('tskcmderrors',data.errors) );
 	if(this.foreground.status<0)
