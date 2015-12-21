@@ -19,15 +19,15 @@ $req =  new rXMLRPCRequest(
 	);
 if($req->success())
 {
-	$can_break = false;
 	for($i = 0; $i<count($req->val); $i+=5)
 	{
-		foreach(ruTrackerChecker::supportedTrackers() as $tracker) {
-			if (strpos($req->val[$i + 4], $tracker) !== false)
-				if (!ruTrackerChecker::run($req->val[$i], $req->val[$i + 1], $req->val[$i + 2], $req->val[$i + 3]))
-					$can_break = true;
-					break;
+		foreach(ruTrackerChecker::supportedTrackers() as $tracker) 
+		{
+			if(strpos($req->val[$i + 4], $tracker) !== false)
+			{
+				ruTrackerChecker::run($req->val[$i], $req->val[$i + 1], $req->val[$i + 2], $req->val[$i + 3]);
+				break;
+			}
 		}
-		if ($can_break) break;
 	}
 }
