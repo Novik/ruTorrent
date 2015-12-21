@@ -23,7 +23,9 @@ if [ $ret -eq 0 ] && [ "$5" != '' ] ; then
 fi
 
 if [ "$6" != '' ] ; then
-	mv "$6"* "$3"
+	cd "$6"
+	find . -type d -exec mkdir -p "${3}"/\{} \;
+	find . -type f -exec mv -f \{} "${3}"/\{} \;
 	[ $? -eq 0 ] && rm -r "$6"
 fi
 
