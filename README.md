@@ -2,6 +2,8 @@
 
 ruTorrent is a front-end for the popular Bittorrent client [rtorrent](http://rakshasa.github.io/rtorrent).
 
+This project is released under the GPLv3 license, for more details, take a look at the LICENSE.md file in the source.
+
 ##Main features
 
 * Lightweight server side, so it can be installed on old and low-end servers and even on some SOHO routers
