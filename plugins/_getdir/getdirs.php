@@ -1,6 +1,7 @@
 <?php
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
+eval(getPluginConf("_getdir"));
 
 $dh = false;
 $theSettings = rTorrentSettings::get();
@@ -33,7 +34,8 @@ if(isset($_REQUEST['dir']) && strlen($_REQUEST['dir']))
 
 	if( $dh &&
 		((strpos($dir,$topDirectory)!==0) ||
-		(($theSettings->uid>=0) &&
+		(($theSettings->uid>=0) && 
+		$checkUserPermissions &&
 		!isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0007))))
 	{
 		closedir($dh);
@@ -58,7 +60,7 @@ if($dh)
 			continue;
 		if(is_dir($path) &&
 			(strpos(addslash($path),$topDirectory)===0) &&
-			( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0007))
+			( $theSettings->uid<0 || (!$checkUserPermissions || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0007)) )
 			)
 		{
 			$files[$file." "] = addslash($path);
