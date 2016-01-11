@@ -545,7 +545,7 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 		{
 			header('Content-Type: '.(is_null($contentType) ? 'application/octet-stream' : $contentType));
 			if(is_null($nameToSent))
-				$nameToSent = end(explode('/',$filename));
+				$nameToSent = getFileName($filename);
 			if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 				$nameToSent = rawurlencode($nameToSent);
 			header('Content-Disposition: attachment; filename="'.$nameToSent.'"');
