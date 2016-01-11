@@ -124,7 +124,7 @@ class rRSS
 			$headers['If-None-Match'] = trim($this->etag);
 		if($this->lastModified)
 	                $headers['If-Last-Modified'] = trim($this->lastModified);
-		$cli = self::fetchURL($this->url,null,$headers);
+		$cli = self::fetchURL($this->url,$this->cookies,$headers);
 		if($cli->status==304)
 			return(true);
 		$this->etag = null;
