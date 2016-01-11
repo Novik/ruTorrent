@@ -17,7 +17,7 @@ class KinozalCheckImpl
             }
             $client->setcookies();
             $client->fetchComplex("http://dl.kinozal.tv/download.php?id=".$matches["id"]);
-            if ($client->status !== 200) return (($client->status < 0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED);
+            if ($client->status != 200) return (($client->status < 0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED);
             return ruTrackerChecker::createTorrent($client->results, $hash);
         }
         return ruTrackerChecker::STE_NOT_NEED;
