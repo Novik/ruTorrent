@@ -126,14 +126,11 @@ class rXmpp
 	{
 		$theSettings = rTorrentSettings::get();
 		$pathToXmpp = dirname(__FILE__);
-		$req = new rXMLRPCRequest( 
-// old version fix
-			$theSettings->getOnInsertCommand(array('xmpp'.getUser(), getCmd('cat=')))
-		);
+		$req = new rXMLRPCRequest();
 		if ( $this->message !== '' && isset($this->jabberServer) && isset($this->jabberLogin) && isset($this->jabberPasswd) && isset($this->jabberFor))
 		{
 		    $cmd = $theSettings->getOnFinishedCommand(array('xmpp'.getUser(), 
-			    getCmd('execute').'={'.getPHP().','.$pathToXmpp.'/notify.php,"$'.getCmd('d.name').'=","'.getUser().'"}'
+			    getCmd('execute.nothrow.bg').'={'.getPHP().','.$pathToXmpp.'/notify.php,"$'.getCmd('d.name').'=","'.getUser().'"}'
 			    ));
 		}
 		else
