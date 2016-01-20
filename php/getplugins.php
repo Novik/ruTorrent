@@ -210,10 +210,14 @@ $settingsFlags = array(
 	"canChangeULRate"	=> 0x0020,
 	"canChangeDLRate"	=> 0x0040,
 	"canChangeTorrentProperties"	=> 0x0080,
+	"canAddTorrentsWithoutPath"	=> 0x0100,
+	"canAddTorrentsWithoutStarting"	=> 0x0200,
+	"canAddTorrentsWithResume"	=> 0x0400,	
+	"canAddTorrentsWithRandomizeHash"	=> 0x0800,	
 );
 $perms = 0;
 foreach($settingsFlags as $flagName=>$flagVal)
-	if(array_key_exists($flagName,$permissions) && $permissions[$flagName])
+	if(!array_key_exists($flagName,$permissions) || $permissions[$flagName])
 		$perms|=$flagVal;
 $jResult .= "theWebUI.showFlags = ".$perms.";\n";
 $jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";
