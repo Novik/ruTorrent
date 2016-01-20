@@ -59,6 +59,6 @@
 
 	$tempDirectory = null;			// Temp directory. Absolute path with trail slash. If null, then autodetect will be used.
 
-	$canUseXSendFile = true;		// Use X-Sendfile feature if it exist
+	$canUseXSendFile = false;		// If true then tse X-Sendfile feature if it exist
 
 	$locale = "UTF8";
