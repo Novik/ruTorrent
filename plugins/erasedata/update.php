@@ -15,13 +15,14 @@ function eLog( $str )
 
 function parseOneItem($item)
 {
+	global $enableForceDeletion;
 	eLog('*** Parse item '.$item);
 	$lines = file($item,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 	$cnt = count($lines);
 	if($cnt>3)
 	{
 		$dirs = array();
-		$force_delete = intval($lines[$cnt-1]) == 2;
+		$force_delete = (intval($lines[$cnt-1]) == 2) && $enableForceDeletion;
 		$is_multi = intval($lines[$cnt-2]);
 		$base_path = $lines[$cnt-3];
 		unset($lines[$cnt-3]);

@@ -228,7 +228,7 @@ input#prop-peers_min {width: 60px; float: right}
 input#prop-peers_max {width: 60px; float: right}
 input#prop-seed_ratio {width: 40px}
 
-div#yesnoDlg {width: 280px; height: 100px}
+div#yesnoDlg {width: 280px; height: auto; min-height: 100px}
 div#yesnoDlg div.dlg-header {background-image: url(../images/error.gif)}
 div#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 16px}
 div#yesnoDlg div.content input {margin-top: 5px}

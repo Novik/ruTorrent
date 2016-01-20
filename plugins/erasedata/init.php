@@ -16,6 +16,9 @@ $req = new rXMLRPCRequest( array(
 		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($thisDir.'/update.php').' '.escapeshellarg(getUser()).' &}' )
 	));
 if($req->success())
+{
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
+	$jResult.="plugin.enableForceDeletion = ".($enableForceDeletion ? 1 : 0).";";
+}
 else
 	$jResult.="plugin.disable(); noty('erasedata: '+theUILang.pluginCantStart,'error');";
