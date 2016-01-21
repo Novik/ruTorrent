@@ -8,7 +8,7 @@ if(plugin.canChangeMenu())
 		if( theWebUI.settings["webui.confirm_when_deleting"] )
 		{
 			this.delmode = "removewithdata";
-			askYesNo( theUILang.Remove_torrents, theUILang.Rem_torrents_with_path_prompt, "theWebUI.doRemove()" );
+			askYesNo( theUILang.Remove_torrents, (plugin.force_delete && plugin.enableForceDeletion ? theUILang.Rem_torrents_with_path_prompt : theUILang.Rem_torrents_content_prompt), "theWebUI.doRemove()" );
 		}
 		else
 			theWebUI.perform( "removewithdata" );
