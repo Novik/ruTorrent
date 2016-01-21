@@ -23,7 +23,7 @@ if($req->success())
 	{
 		foreach(ruTrackerChecker::supportedTrackers() as $tracker) 
 		{
-			if(preg_match($tracker,$req->val[$i + 4]) !== false)
+			if(preg_match($tracker,$req->val[$i + 4]))
 			{
 				ruTrackerChecker::run($req->val[$i], $req->val[$i + 1], $req->val[$i + 2], $req->val[$i + 3]);
 				break;
