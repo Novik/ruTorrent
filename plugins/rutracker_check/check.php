@@ -20,6 +20,7 @@ class ruTrackerChecker
 	const MAX_LOCK_TIME		= 900;	// 15 min
 	
 	private static $TRACKERS = array();
+	private static $ANNOUNCES = array();	
 
 	static public function registerTracker($commentFiler, $announceFilter, $handler)
 	{
