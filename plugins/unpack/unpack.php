@@ -400,7 +400,7 @@ class rUnpack
 					escapeshellarg($arh)." ".
 					escapeshellarg($filename)." ".
 					escapeshellarg(addslash($outPath));
-				$taskArgs['arg'] = call_user_func('end',explode('/',$filename));
+				$taskArgs['arg'] = call_user_func('getFileName',$filename);
 				$task = new rTask( $taskArgs );
 				$ret = $task->start($commands, 0);
 			}
