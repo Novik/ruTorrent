@@ -52,4 +52,4 @@ class AniDUBCheckImpl{
     }
 }
 
-ruTrackerChecker::registerTracker("tr.anidub.com", "AniDUBCheckImpl::download_torrent");
+ruTrackerChecker::registerTracker("/tr\.anidub\.com/", "/tr\.anidub\.com/", "AniDUBCheckImpl::download_torrent");

@@ -25,4 +25,4 @@ class KinozalCheckImpl
 }
 
 
-ruTrackerChecker::registerTracker("kinozal.tv", "KinozalCheckImpl::download_torrent");
+ruTrackerChecker::registerTracker("/kinozal\.tv/", "/kinozal\.tv|torrent4me\.com/", "KinozalCheckImpl::download_torrent");

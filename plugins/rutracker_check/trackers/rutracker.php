@@ -25,4 +25,4 @@ class RuTrackerCheckImpl
 }
 
 
-ruTrackerChecker::registerTracker("rutracker.", "RuTrackerCheckImpl::download_torrent");
+ruTrackerChecker::registerTracker("/rutracker\./", "/rutracker\./", "RuTrackerCheckImpl::download_torrent");
