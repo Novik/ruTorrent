@@ -24,3 +24,5 @@ if [ "$6" != '' ] ; then
 	find . -type f -exec mv -f \{} "${3}"/\{} \;
 	[ $? -eq 0 ] && rm -r "$6"
 fi
+
+exit $ret
