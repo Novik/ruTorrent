@@ -12,13 +12,13 @@ process_directory()
 {
 	"$1" x -ai -c- -kb -o+ -p- -y -v -- "$2." "$3"
 	last=$?
-	[ $last -ge 1 ] && ret=$last
+	[ $last -ge 1 ] && [ $last -ne 10 ] && ret=$last
 	for fn in "$2"* ; do
 		if [ -d "${fn}" ] && [ ! -L "${fn}" ] ; then
 			name=$(basename "${fn}")
 			process_directory "$1" "${fn}/" "$3${name}/"
 			last=$?
-			[ $last -ge 1 ] && ret=$last
+			[ $last -ge 1 ] && [ $last -ne 10 ] && ret=$last
 		fi
 	done
 	return $ret
@@ -49,3 +49,4 @@ if [ "$6" != '' ] ; then
 	[ $? -eq 0 ] && rm -r "$6"
 fi
 
+exit $ret
