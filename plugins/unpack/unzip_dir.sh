@@ -55,5 +55,4 @@ if [ "$6" != '' ] ; then
 	[ $? -eq 0 ] && rm -r "$6"
 fi
 
-
 exit $ret
