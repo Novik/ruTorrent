@@ -11,7 +11,7 @@ class RUTrackerEngine extends commonEngine
 		if( strpos($results, ">Не найдено</td>")!==false )
 			return(false);
 		$res = preg_match_all('/<a class="gen f" href="tracker\.php\?f=\d+">(?P<cat>.*)<\/a><\/div><\/td>.*'.
-			'<a.* class="med tLink hl-tags bold" href="\.\/viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
+			'<a.* class="med tLink hl-tags bold" href="viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
 			'<u>(?P<size>.*)<\/u>\n\s*'.
 			'<a class="small tr-dl dl-stub" href="(?P<link>.*)">.*'.
 			'<td class="row4 nowrap"><u>(?P<seeds>.*)<\/u>.*<\/td>\n\s*'.
