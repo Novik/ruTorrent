@@ -12,14 +12,14 @@
  theUILang.ratDelRule		= "삭제";
  theUILang.ratUpRule		= "위";
  theUILang.ratDownRule		= "아래";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioIfLegend	= "만약";
+ theUILang.ratLabelContain	= "토렌트 라벨이 다음 포함: ";
+ theUILang.ratTrackerContain	= "트래커 URL이 다음 포함: ";
+ theUILang.ratTrackerPublic	= "모든 트래커가 공개 트래커인 경우";
+ theUILang.ratTrackerPrivate	= "하나 이상의 트래커가 비공개 트래커인 경우";
+ theUILang.ratioThenLegend	= "그렇다면";
+ theUILang.setRatioTo		= "다음 비율로 설정: ";
+ theUILang.setChannelTo 	= "다음 채널로 설정: ";
+ theUILang.ratioNewRule 	= "새 규칙";
 
 thePlugins.get("extratio").langLoaded();
