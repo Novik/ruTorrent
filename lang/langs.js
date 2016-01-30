@@ -39,6 +39,7 @@ var AvailableLanguages =
 	it:'Italiano',
 	lv:'Latvijas',
 	hu:'Magyar',
+    ko:'한국어',
 	nl:'Nederlands',
   no:'Norsk',
 	pl:'Polski',
