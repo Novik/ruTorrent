@@ -129,14 +129,14 @@ class Torrent411Engine extends commonEngine
             $cat = $categories['all'];
         else
             $cat = $categories[$cat];
-        $what = rawurlencode(self::fromUTF(rawurldecode($what), "ISO-8859-1"));
+        $what = rawurlencode(rawurldecode($what));
         for ($pg = 0; $pg < 11; $pg++) {
             if ($what === '%2A')
                 $search = $url . '/torrents/search/?search=' . $cat . '&order=added&type=desc&page=' . $pg;
             else
                 $search = $url . '/torrents/search/?search=' . $what . $cat . '&order=added&type=desc&page=' . $pg;
             $cli = $this->fetch($search);
-            if (($cli == false) || (strpos($cli->results, ">Aucun R�sultat Aucun<") !== false))
+            if (($cli == false) || (strpos($cli->results, ">Aucun Résultat Aucun<") !== false))
                 break;
             $res = preg_match_all(	
 				'`<a href="/torrents/search/\?subcat=(?P<catid>\d+)">.*'.
@@ -152,7 +152,7 @@ class Torrent411Engine extends commonEngine
                     if (!array_key_exists($link, $ret)) {
                         $item          = $this->getNewEntry();
                         $item["desc"]  = "https:" . $matches["desc"][$i];
-                        $item["name"]  = self::toUTF(self::removeTags($matches["name"][$i]), "ISO-8859-1");
+                        $item["name"]  = self::removeTags($matches["name"][$i]);
                         $item["size"]  = self::formatSize($matches["size"][$i]);
                         $item["cat"]   = $catid[$matches["catid"][$i]];
                         $item["time"]  = strtotime(self::removeTags($matches["date"][$i]));
