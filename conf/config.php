@@ -48,7 +48,7 @@
 	);
 
 	$localhosts = array( 			// list of local interfaces
-		"127.0.0.1", 
+		"127.0.0.1",
 		"localhost",
 	);
 
