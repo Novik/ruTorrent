@@ -154,21 +154,24 @@ function makeContent()
 	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
 	{
-		var s = theURLs.AddTorrentURL+"?";
+		var s = theURLs.AddTorrentURL;
+		var req = []
 		if($("#torrents_start_stopped").prop("checked"))
-			s += 'torrents_start_stopped=1&';
+			req.push('torrents_start_stopped=1');
 		if($("#fast_resume").prop("checked"))
-			s += 'fast_resume=1&';
+			req.push('fast_resume=1');
 		if($("#not_add_path").prop("checked"))
-			s += 'not_add_path=1&';
+			req.push('not_add_path=1');
 		if($("#randomize_hash").prop("checked"))
-			s += 'randomize_hash=1&';
+			req.push('randomize_hash=1');
 		var dir = $.trim($("#dir_edit").val());
 		if(dir.length)
-			s += ('dir_edit='+encodeURIComponent(dir)+'&');
+			req.push('dir_edit='+encodeURIComponent(dir));
 		var lbl = $.trim($("#tadd_label").val());
 		if(lbl.length)
-			s += ('label='+encodeURIComponent(lbl));
+			req.push('label='+encodeURIComponent(lbl));
+		if(req.length)
+			s+=('?'+req.join('&'));
 		frm.action = s;
 		return(true);
 	}
