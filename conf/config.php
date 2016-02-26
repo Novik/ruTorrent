@@ -12,7 +12,7 @@
 	@define('LOG_RPC_CALLS', false, true);
 	@define('LOG_RPC_FAULTS', true, true);
 
-	// for php	
+	// for php
 	@define('PHP_USE_GZIP', false, true);
 	@define('PHP_GZIP_LEVEL', 2, true);
 
@@ -48,7 +48,7 @@
 	);
 
 	$localhosts = array( 			// list of local interfaces
-		"127.0.0.1", 
+		"127.0.0.1",
 		"localhost",
 	);
 
@@ -59,6 +59,6 @@
 
 	$tempDirectory = null;			// Temp directory. Absolute path with trail slash. If null, then autodetect will be used.
 
-	$canUseXSendFile = false;		// If true then tse X-Sendfile feature if it exist
+	$canUseXSendFile = false;		// If true then use X-Sendfile feature if it exist
 
 	$locale = "UTF8";
