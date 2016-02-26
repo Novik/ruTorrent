@@ -10,7 +10,7 @@ class KinozalCheckImpl
             if($client->status==200 &&
                 preg_match('`<li>.*(?P<hash>[0-9A-Fa-f]{40})</li>`', $client->results, $matches1))
             {
-                if((strtoupper($matches1["hash"])==$hash))
+                if(strtoupper($matches1["hash"])==$hash)
                 {
                     return  ruTrackerChecker::STE_UPTODATE;
                 }

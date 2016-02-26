@@ -26,6 +26,6 @@ class KinozalTVAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)kinozal.tv\/download.php/si", $url ));
+		return(preg_match( "/(\.|\/)kinozal.tv\//si", $url ));
 	}	
 }
