@@ -18,7 +18,7 @@ class CPasBienEngine extends commonEngine
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
         $added = 0;
-        $url   = 'http://www.cpasbien.io';
+        $url   = 'http://www.cpasbien.cm';
         if ($useGlobalCats)
             $categories = array(
                 'all' => '',
