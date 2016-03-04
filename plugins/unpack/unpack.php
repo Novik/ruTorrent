@@ -63,6 +63,7 @@ class rUnpack
 			}
 		}
 		$this->store();
+		$this->setHandlers();
 	}
 	public function get()
 	{
