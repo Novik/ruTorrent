@@ -12,14 +12,14 @@ if(isset($_REQUEST['cmd']))
 	{
 		case "set":
 		{
-			$up = new rUnpack();
+			$up = rUnpack::load();
 			$up->set();
 			cachedEcho($up->get(),"application/javascript");
 			break;
 		}
 		case "unpack":
 		{
-			$up = new rUnpack();
+			$up = rUnpack::load();
 			$ret = $up->startTask( $_REQUEST['hash'], $_REQUEST['dir'], $_REQUEST['mode'], $_REQUEST['no'] );
 			break;
 		}
