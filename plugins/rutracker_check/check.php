@@ -6,6 +6,7 @@ require_once( "../../php/rtorrent.php" );
 require_once( "trackers/rutracker.php" );
 require_once( "trackers/anidub.php" );
 require_once( "trackers/kinozal.php" );
+require_once( "trackers/nnmclub.php" );
 
 class ruTrackerChecker
 {
