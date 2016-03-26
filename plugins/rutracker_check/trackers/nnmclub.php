@@ -21,4 +21,4 @@ class NNMClubCheckImpl
     }
 }
 
-ruTrackerChecker::registerTracker("/nnmclub\./", "/nnm-club\./", "NNMClubCheckImpl::download_torrent");
+ruTrackerChecker::registerTracker("/(nnm-club|nnmclub)\./", "/nnm-club\./", "NNMClubCheckImpl::download_torrent");
