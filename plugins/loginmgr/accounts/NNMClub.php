@@ -2,11 +2,11 @@
 
 class NNMClubAccount extends commonAccount
 {
-	public $url = "http://nnm-club.me";
+	public $url = "http://nnmclub.to";
 
 	protected function isOK($client)
 	{
-		return( (strpos( $client->results, ' class="mainmenu">Âõîä</a>' )===false) &&
+		return( (strpos( $client->results, ' class="mainmenu">Ã‚ÃµÃ®Ã¤</a>' )===false) &&
 			 (strpos( $client->results, "document.cookie='_ddn_" )===false) );
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
@@ -27,6 +27,6 @@ class NNMClubAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)nnm-club.(ru|me)\/forum\//si", $url ) && !preg_match( "/(\.|\/)nnm-club.(ru|me)\/forum\/login.php/si", $url ));
+		return(preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to)\/forum\//si", $url ) && !preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to)\/forum\/login.php/si", $url ));
 	}
 }
