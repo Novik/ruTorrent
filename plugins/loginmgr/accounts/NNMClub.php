@@ -27,6 +27,6 @@ class NNMClubAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)nnmclub.to\/forum\//si", $url ) && !preg_match( "/(\.|\/)nnmclub.to\/forum\/login.php/si", $url ));
+		return(preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to)\/forum\//si", $url ) && !preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to)\/forum\/login.php/si", $url ));
 	}
 }
