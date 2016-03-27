@@ -8,7 +8,7 @@ class NNMClubEngine extends commonEngine
 
 	protected function parseTList($results,&$added,&$ret,$limit)
 	{
-		if( strpos($results, ">ГЌГҐ Г­Г Г©Г¤ГҐГ­Г®</td>")!==false )
+		if( strpos($results, ">Не найдено</td>")!==false )
 			return(false);
 		$res = preg_match_all('/<a class="gen" href="tracker\.php\?f=\d+&nm=[^"]*">(?P<cat>.*)<\/a><\/td>.*'.
 			'class="genmed topictitle" href="viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.

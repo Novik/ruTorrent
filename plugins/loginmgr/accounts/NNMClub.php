@@ -6,7 +6,7 @@ class NNMClubAccount extends commonAccount
 
 	protected function isOK($client)
 	{
-		return( (strpos( $client->results, ' class="mainmenu">Ã‚ÃµÃ®Ã¤</a>' )===false) &&
+		return( (strpos( $client->results, ' class="mainmenu">Âõîä</a>' )===false) &&
 			 (strpos( $client->results, "document.cookie='_ddn_" )===false) );
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
