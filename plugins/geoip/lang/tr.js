@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Ülke";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension Adası";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Birleşik Arap Emirlikleri";
  theUILang.country[ "af" ] = "Afganistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivya";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brezilya";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bhutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Kosta Rika";
  theUILang.country[ "cu" ] = "Küba";
  theUILang.country[ "cv" ] = "Cape Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Christmas Adası";
  theUILang.country[ "cy" ] = "Kıbrıs";
  theUILang.country[ "cz" ] = "Çek Cumhuriyeti";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Surinam";
  theUILang.country[ "ss" ] = "Güney Sudan";
  theUILang.country[ "st" ] = "Sao Tome ve Principe";
+ theUILang.country[ "su" ] = "Rusya";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Suriye";
  theUILang.country[ "sz" ] = "Svaziland";
  theUILang.country[ "tc" ] = "Turks ve Caicos Adaları";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunus";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Türkiye";
- theUILang.country[ "tp" ] = "Portekizce Timor";
  theUILang.country[ "tt" ] = "Trinidad ve Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Tayvan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukrayna";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Birleşik Krallık";
- theUILang.country[ "um" ] = "Amerika Birleşik Devletleri Küçük Dış Adaları";
  theUILang.country[ "un" ] = "Bilinmeyen";
  theUILang.country[ "us" ] = "Amerika Birleşik Devletleri";
  theUILang.country[ "uy" ] = "Uruguay";

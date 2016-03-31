@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Land";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "De Forenede Arabiske Emirater";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brasilien";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bhutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Cuba";
  theUILang.country[ "cv" ] = "Kap Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Christmas Island";
  theUILang.country[ "cy" ] = "Cypern";
  theUILang.country[ "cz" ] = "Tjekkiet";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Surinam";
  theUILang.country[ "ss" ] = "Sydsudan";
  theUILang.country[ "st" ] = "Sao Tome og Principe";
+ theUILang.country[ "su" ] = "Rusland";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syrien";
  theUILang.country[ "sz" ] = "Swaziland";
  theUILang.country[ "tc" ] = "Turks-og Caicosøerne";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunesien";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Tyrkiet";
- theUILang.country[ "tp" ] = "Portugisisk Timor";
  theUILang.country[ "tt" ] = "Trinidad og Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukraine";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Det Forenede Kongerige";
- theUILang.country[ "um" ] = "De Mindre Amerikanske Oversøiske Øer";
  theUILang.country[ "un" ] = "Ukendt";
  theUILang.country[ "us" ] = "USA";
  theUILang.country[ "uy" ] = "Uruguay";

@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Kraj";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Wyspa Wniebowstąpienia";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Zjednoczone Emiraty Arabskie";
  theUILang.country[ "af" ] = "Afganistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brazylii";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bhutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Kuba";
  theUILang.country[ "cv" ] = "Cape Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Christmas Island";
  theUILang.country[ "cy" ] = "Cypr";
  theUILang.country[ "cz" ] = "Republika Czeska";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Surinam";
  theUILang.country[ "ss" ] = "Południowego Sudan";
  theUILang.country[ "st" ] = "Sao Tome i Principe";
+ theUILang.country[ "su" ] = "Rosja";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syria";
  theUILang.country[ "sz" ] = "Suazi";
  theUILang.country[ "tc" ] = "Wyspy Turks i Caicos";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunezja";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turcja";
- theUILang.country[ "tp" ] = "portugalski Timor";
  theUILang.country[ "tt" ] = "Trynidad i Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Tajwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukraina";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Wielka Brytania";
- theUILang.country[ "um" ] = "Wielka Dalekie Wyspy Mniejsze Stanów";
  theUILang.country[ "un" ] = "Nieznany";
  theUILang.country[ "us" ] = "Stany Zjednoczone";
  theUILang.country[ "uy" ] = "Urugwaj";

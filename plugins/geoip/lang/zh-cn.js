@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "国家";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "阿森松岛";
  theUILang.country[ "ad" ] = "安道尔";
  theUILang.country[ "ae" ] = "阿拉伯联合酋长国";
  theUILang.country[ "af" ] = "阿富汗";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "百慕大";
  theUILang.country[ "bn" ] = "文莱";
  theUILang.country[ "bo" ] = "玻利维亚";
+ theUILang.country[ "bq" ] = "博内尔";
  theUILang.country[ "br" ] = "巴西";
  theUILang.country[ "bs" ] = "巴哈马";
  theUILang.country[ "bt" ] = "不丹";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "哥斯达黎加";
  theUILang.country[ "cu" ] = "古巴";
  theUILang.country[ "cv" ] = "佛得角";
+ theUILang.country[ "cw" ] = "库拉索";
  theUILang.country[ "cx" ] = "圣诞岛";
  theUILang.country[ "cy" ] = "塞浦路斯";
  theUILang.country[ "cz" ] = "捷克共和国";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "苏里南";
  theUILang.country[ "ss" ] = "苏丹南部";
  theUILang.country[ "st" ] = "圣多美和普林西比";
+ theUILang.country[ "su" ] = "俄罗斯";
  theUILang.country[ "sv" ] = "萨尔瓦多";
+ theUILang.country[ "sx" ] = "圣马丁岛";
  theUILang.country[ "sy" ] = "叙利亚";
  theUILang.country[ "sz" ] = "斯威士兰";
  theUILang.country[ "tc" ] = "特克斯和凯科斯群岛";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "突尼斯";
  theUILang.country[ "to" ] = "汤加";
  theUILang.country[ "tr" ] = "土耳其";
- theUILang.country[ "tp" ] = "葡属帝汶";
  theUILang.country[ "tt" ] = "特立尼达和多巴哥";
  theUILang.country[ "tv" ] = "图瓦卢";
  theUILang.country[ "tw" ] = "台湾";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "乌克兰";
  theUILang.country[ "ug" ] = "乌干达";
  theUILang.country[ "uk" ] = "英国";
- theUILang.country[ "um" ] = "美国本土外小岛屿";
  theUILang.country[ "un" ] = "未知";
  theUILang.country[ "us" ] = "美国";
  theUILang.country[ "uy" ] = "乌拉圭";

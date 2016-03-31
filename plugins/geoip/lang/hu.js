@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Ország";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension-sziget";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Egyesült Arab Emirátusok";
  theUILang.country[ "af" ] = "Afganisztán";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolívia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brazília";
  theUILang.country[ "bs" ] = "Bahamák";
  theUILang.country[ "bt" ] = "Bhután";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Kuba";
  theUILang.country[ "cv" ] = "Cape Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Karácsony-sziget";
  theUILang.country[ "cy" ] = "Ciprus";
  theUILang.country[ "cz" ] = "Cseh Köztársaság";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Dél-Szudán";
  theUILang.country[ "st" ] = "Sao Tomé és Príncipe";
+ theUILang.country[ "su" ] = "Oroszország";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Szíria";
  theUILang.country[ "sz" ] = "Szváziföld";
  theUILang.country[ "tc" ] = "Turks-és Caicos-szigetek";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunézia";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Törökország";
- theUILang.country[ "tp" ] = "Portugál-Timor";
  theUILang.country[ "tt" ] = "Trinidad és Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Tajvan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukrajna";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Egyesült Királyság";
- theUILang.country[ "um" ] = "Egyesült Államok külső szigetei";
  theUILang.country[ "un" ] = "Ismeretlen";
  theUILang.country[ "us" ] = "Egyesült Államok";
  theUILang.country[ "uy" ] = "Uruguay";

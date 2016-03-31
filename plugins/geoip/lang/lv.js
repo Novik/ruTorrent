@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Valsts";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Debesbraukšanas sala";
  theUILang.country[ "ad" ] = "Andora";
  theUILang.country[ "ae" ] = "Apvienotie Arābu Emirāti";
  theUILang.country[ "af" ] = "Afganistānā";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Bruneja";
  theUILang.country[ "bo" ] = "Bolīvija";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brazīlija";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Butāna";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Kostarika";
  theUILang.country[ "cu" ] = "Kuba";
  theUILang.country[ "cv" ] = "Kaboverde";
+ theUILang.country[ "cw" ] = "Kirasao";
  theUILang.country[ "cx" ] = "Ziemassvētku Island";
  theUILang.country[ "cy" ] = "Kipra";
  theUILang.country[ "cz" ] = "Čehijas Republika";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Surinama";
  theUILang.country[ "ss" ] = "Dienvidsudānā";
  theUILang.country[ "st" ] = "Santome un Prinsipi";
+ theUILang.country[ "su" ] = "Krievija";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sintmārtena";
  theUILang.country[ "sy" ] = "Sīrija";
  theUILang.country[ "sz" ] = "Svazilenda";
  theUILang.country[ "tc" ] = "Terkasas un Kaikosas salas";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunisija";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turcija", 
- theUILang.country[ "tp" ] = "Portugāļu Timora";
  theUILang.country[ "tt" ] = "Trinidāda un Tobāgo";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taivāna";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukraina";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Apvienotā Karaliste";
- theUILang.country[ "um" ] = "ASV Mazās Aizjūras salas";
  theUILang.country[ "un" ] = "Nezināms";
  theUILang.country[ "us" ] = "Savienotās Valstis";
  theUILang.country[ "uy" ] = "Urugvaja";

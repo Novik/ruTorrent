@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Paese";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Isola di Ascensione";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Emirati Arabi Uniti";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brasile";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bhutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Cuba";
  theUILang.country[ "cv" ] = "Capo Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Isola di Natale";
  theUILang.country[ "cy" ] = "Cipro";
  theUILang.country[ "cz" ] = "Repubblica Ceca";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Sud Sudan";
  theUILang.country[ "st" ] = "Sao Tome e Principe";
+ theUILang.country[ "su" ] = "Russia";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Siria";
  theUILang.country[ "sz" ] = "Swaziland";
  theUILang.country[ "tc" ] = "Isole Turks e Caicos";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunisia";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turchia";
- theUILang.country[ "tp" ] = "portoghese di Timor";
  theUILang.country[ "tt" ] = "Trinidad e Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ucraina";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Regno Unito";
- theUILang.country[ "um" ] = "Stati Uniti Isole Minori";
  theUILang.country[ "un" ] = "Sconosciuto";
  theUILang.country[ "us" ] = "Stati Uniti";
  theUILang.country[ "uy" ] = "Uruguay";
