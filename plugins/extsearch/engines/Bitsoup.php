@@ -5,12 +5,12 @@ class BitsoupEngine extends commonEngine {
     public $defaults = array(
         'public' => false,
         'page_size' => 50,
-        'cookies' => 'www.bitsoup.org|PHPSESSID=xxxxx;__cfduid=yyyyy;uid=nnnnnn;pass=zzzzzzz;'
+        'cookies' => 'www.bitsoup.me|PHPSESSID=xxxxx;__cfduid=yyyyy;uid=nnnnnn;pass=zzzzzzz;'
     );
 
     public $categories = array('all'=>'0', 'Anime' => '23', 'Appz/Misc' => '22', 'Appz/PC ISO' => '1', 'Audiobooks' => '5', 'Ebooks' => '24', 'Games/PC ISO' => '4', 'Games/PC Rips' => '21', 'Games/PS3' => '38', 'Games/Wii' => '35', 'Games/Xbox360' => '12', 'Mac' => '2', 'Mobile Apps' => '26', 'Movies/3D' => '17', 'Movies/BluRay' => '80', 'Movies/DVD-R' => '20', 'Movies/HD/x264' => '41', 'Movies/Packs' => '27', 'Movies/XviD' => '19', 'Music Videos' => '29', 'Music/Albums' => '6', 'Other/MISC' => '28', 'PSP/Handheld' => '30', 'TV-HDx264' => '42', 'TV-Packs' => '45', 'TV-SDx264' => '49', 'TV-XVID' => '7', 'XXX' => '9', 'XXX/0DAY' => '990');
 
-    public $url = 'https://www.bitsoup.org';
+    public $url = 'https://www.bitsoup.me';
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats) {
         $category = (!$useGlobalCats && $cat && array_key_exists($cat, $this->categories)) ? $this->categories[$cat] : $this->categories['all'];
