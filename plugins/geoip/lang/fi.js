@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Maa";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Arabiemiirikunnat";
  theUILang.country[ "af" ] = "Afganistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brasilia";
  theUILang.country[ "bs" ] = "Bahama";
  theUILang.country[ "bt" ] = "Bhutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Kuuba";
  theUILang.country[ "cv" ] = "Kap Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Joulusaari";
  theUILang.country[ "cy" ] = "Kypros";
  theUILang.country[ "cz" ] = "Tsekki";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Etelä-Sudan";
  theUILang.country[ "st" ] = "Sao Tome ja Principe";
+ theUILang.country[ "su" ] = "Venäjä";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syyria";
  theUILang.country[ "sz" ] = "Swazimaa";
  theUILang.country[ "tc" ] = "Turks-ja Caicossaaret";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunisia";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turkki";
- theUILang.country[ "tp" ] = "Portugalin Timor";
  theUILang.country[ "tt" ] = "Trinidad ja Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukraina";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Yhdistynyt kuningaskunta";
- theUILang.country[ "um" ] = "Yhdysvaltain pienet erillissaaret";
  theUILang.country[ "un" ] = "Tuntematon";
  theUILang.country[ "us" ] = "Yhdysvallat";
  theUILang.country[ "uy" ] = "Uruguay";

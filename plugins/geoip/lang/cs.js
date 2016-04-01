@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Země";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Spojené arabské emiráty";
  theUILang.country[ "af" ] = "Afghánistán";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermudy";
  theUILang.country[ "bn" ] = "Brunej";
  theUILang.country[ "bo" ] = "Bolívie";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brazílie";
  theUILang.country[ "bs" ] = "Bahamy";
  theUILang.country[ "bt" ] = "Bhútán";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Kostarika";
  theUILang.country[ "cu" ] = "Kuba";
  theUILang.country[ "cv" ] = "Kapverdy";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Vánoční ostrov";
  theUILang.country[ "cy" ] = "Kypr";
  theUILang.country[ "cz" ] = "Česko";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Surinam";
  theUILang.country[ "ss" ] = "Jižní Súdán";
  theUILang.country[ "st" ] = "Svatý Tomáš a Princův ostrov";
+ theUILang.country[ "su" ] = "Rusko";
  theUILang.country[ "sv" ] = "Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Sýrie";
  theUILang.country[ "sz" ] = "Svazijsko";
  theUILang.country[ "tc" ] = "Turks a Caicos";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunisko";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turecko";
- theUILang.country[ "tp" ] = "Portugalsky Timor";
  theUILang.country[ "tt" ] = "Trinidad a Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Tchaj-wan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukrajina";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Spojené království";
- theUILang.country[ "um" ] = "Menší odlehlé ostrovy USA";
  theUILang.country[ "un" ] = "Neznámý";
  theUILang.country[ "us" ] = "Spojené státy americké";
  theUILang.country[ "uy" ] = "Uruguay";

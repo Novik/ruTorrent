@@ -8,12 +8,13 @@
  * Author: Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.peerComment 		= "Ajouter un commentaire";
+ theUILang.peerComment		= "Ajouter un commentaire";
  theUILang.peerCommentLabel	= "Entrer un nouveau commentaire pour le peer";
  theUILang.commentName		= "Commentaire";
  theUILang.countryName		= "Pays";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Île de l'Ascension";
  theUILang.country[ "ad" ] = "Andorre";
  theUILang.country[ "ae" ] = "Émirats arabes unis";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermudes";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "La Bolivie";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brésil";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bhoutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Cuba";
  theUILang.country[ "cv" ] = "Cap-Vert";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Christmas Island";
  theUILang.country[ "cy" ] = "Chypre";
  theUILang.country[ "cz" ] = "République tchèque";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Soudan du Sud";
  theUILang.country[ "st" ] = "Sao Tomé et Principe";
+ theUILang.country[ "su" ] = "La Russie";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Saint-Martin";
  theUILang.country[ "sy" ] = "La Syrie";
  theUILang.country[ "sz" ] = "Swaziland";
  theUILang.country[ "tc" ] = "Îles Turques et Caïques";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunisie";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turquie";
- theUILang.country[ "tp" ] = "Timor portugais";
  theUILang.country[ "tt" ] = "Trinité-et-Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukraine";
  theUILang.country[ "ug" ] = "Ouganda";
  theUILang.country[ "uk" ] = "Royaume-Uni";
- theUILang.country[ "um" ] = "États-Unis Îles mineures éloignées";
  theUILang.country[ "un" ] = "Inconnu";
  theUILang.country[ "us" ] = "États-Unis";
  theUILang.country[ "uy" ] = "Uruguay";

@@ -8,12 +8,13 @@
  * Author: rascalli (rascallim@gmail.com)
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Land";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Verenigde Arabische Emiraten";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brazilie";
  theUILang.country[ "bs" ] = "Bahama's";
  theUILang.country[ "bt" ] = "Bhutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Cuba";
  theUILang.country[ "cv" ] = "Kaapverdie";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Christmas Island";
  theUILang.country[ "cy" ] = "Cyprus";
  theUILang.country[ "cz" ] = "Tsjechie";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Zuid-Soedan";
  theUILang.country[ "st" ] = "Sao Tome en Principe";
+ theUILang.country[ "su" ] = "Rusland";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syrië";
  theUILang.country[ "sz" ] = "Swaziland";
  theUILang.country[ "tc" ] = "Turks-en Caicoseilanden";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunesie";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turkije";
- theUILang.country[ "tp" ] = "Portugees Timor";
  theUILang.country[ "tt" ] = "Trinidad en Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Oekraine";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Verenigd Koninkrijk";
- theUILang.country[ "um" ] = "Verenigde Staten Kleine afgelegen eilanden";
  theUILang.country[ "un" ] = "Onbekend";
  theUILang.country[ "us" ] = "Verenigde Staten";
  theUILang.country[ "uy" ] = "Uruguay";

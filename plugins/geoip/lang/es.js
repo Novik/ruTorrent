@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Agregar comentario";
+ theUILang.peerComment		= "Agregar comentario";
  theUILang.peerCommentLabel	= "Ingrese comentario para el peer";
  theUILang.commentName		= "Comentario";
  theUILang.countryName		= "País";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Isla Ascensión";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Emiratos Árabes Unidos";
  theUILang.country[ "af" ] = "Afganistán";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brasil";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bután";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Cuba";
  theUILang.country[ "cv" ] = "Cabo Verde";
+ theUILang.country[ "cw" ] = "Curazao";
  theUILang.country[ "cx" ] = "Isla de Navidad";
  theUILang.country[ "cy" ] = "Chipre";
  theUILang.country[ "cz" ] = "República Checa";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "el sur de Sudán";
  theUILang.country[ "st" ] = "Santo Tomé y Príncipe";
+ theUILang.country[ "su" ] = "Rusia";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Siria";
  theUILang.country[ "sz" ] = "Suazilandia";
  theUILang.country[ "tc" ] = "Islas Turcas y Caicos";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Túnez";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turquía";
- theUILang.country[ "tp" ] = "Timor portugués";
  theUILang.country[ "tt" ] = "Trinidad y Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ucrania";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Reino Unido";
- theUILang.country[ "um" ] = "Estados Unidos Islas menores alejadas";
  theUILang.country[ "un" ] = "Desconocido";
  theUILang.country[ "us" ] = "Estados Unidos";
  theUILang.country[ "uy" ] = "Uruguay";

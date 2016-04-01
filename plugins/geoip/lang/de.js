@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Land";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Vereinigte Arabische Emirate";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivien";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brasilien";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bhutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Kuba";
  theUILang.country[ "cv" ] = "Cape Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Christmas Island";
  theUILang.country[ "cy" ] = "Zypern";
  theUILang.country[ "cz" ] = "Tschechische Republik";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Süd-Sudan";
  theUILang.country[ "st" ] = "Sao Tome und Principe";
+ theUILang.country[ "su" ] = "Russland";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syrien";
  theUILang.country[ "sz" ] = "Swaziland";
  theUILang.country[ "tc" ] = "Turks and Caicos Islands";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunesien";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Türkei";
- theUILang.country[ "tp" ] = "Portugiesisch-Timor";
  theUILang.country[ "tt" ] = "Trinidad und Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukraine";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Vereinigtes Königreich";
- theUILang.country[ "um" ] = "United States Minor Outlying Islands";
  theUILang.country[ "un" ] = "Unbekannt";
  theUILang.country[ "us" ] = "Vereinigte Staaten";
  theUILang.country[ "uy" ] = "Uruguay";

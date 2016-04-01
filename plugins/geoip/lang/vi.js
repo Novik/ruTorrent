@@ -8,12 +8,13 @@
  * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
- theUILang.peerComment 		= "Thêm ghi chú";
+ theUILang.peerComment		= "Thêm ghi chú";
  theUILang.peerCommentLabel	= "Điền ghi chú mới cho địa chỉ";
  theUILang.commentName		= "Ghi chú";
  theUILang.countryName		= "Quốc Gia";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Đảo Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Các tiểu Vương Quốc Ả Rập Thống Nhất";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brazil";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bhutan";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Cuba";
  theUILang.country[ "cv" ] = "Cape Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Đảo Christmas";
  theUILang.country[ "cy" ] = "Cyprus";
  theUILang.country[ "cz" ] = "Cộng hòa Séc";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Nam Sudan";
  theUILang.country[ "st" ] = "Sao Tome and Principe";
+ theUILang.country[ "su" ] = "Nga";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syria";
  theUILang.country[ "sz" ] = "Swaziland";
  theUILang.country[ "tc" ] = "Quần đảo Turks và Caicos";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunisia";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Thổ Nhĩ Kỳ";
- theUILang.country[ "tp" ] = "Timor (Bồ Đào Nha)";
  theUILang.country[ "tt" ] = "Trinidad and Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Đài Loan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukraine";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Vương Quốc Anh";
- theUILang.country[ "um" ] = "Quần đảo xa (Hoa Kỳ)";
  theUILang.country[ "un" ] = "Không rõ";
  theUILang.country[ "us" ] = "Hoa Kỳ";
  theUILang.country[ "uy" ] = "Uruguay";
