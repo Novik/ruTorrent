@@ -8,7 +8,7 @@
 
  var s_PluginFail			= "Плагін не працюватиме.";
 
- theUILang.xmpp				= "XMPP";
+ theUILang.xmpp 			= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
  theUILang.xmppJabberFor 		= "Одержувач:";
  theUILang.xmppMessage			= "Повідомлення:";

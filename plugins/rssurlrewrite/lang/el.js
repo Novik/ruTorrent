@@ -24,6 +24,6 @@
  theUILang.rssURLGUID		= "Περιγραφή του URL";
  theUILang.rssURLHref		= "Λήψη URL";
  theUILang.rssPatternError	= "Σφάλμα στο κείμενο του προτύπου.";
- theUILang.rssStatus		= "RSS"; 
+ theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

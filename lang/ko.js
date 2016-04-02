@@ -1,8 +1,6 @@
 ﻿/*
  * Korean language file.
  *
- * Initial Author: Artem Lopata (mod-s@yandex.ru) for English
- *
  * Author: Limerainne (limerainne@gmail.com)
  */
 
@@ -270,9 +268,9 @@ var theUILang =
  Select_all			: "모두 선택",
  Deselect_all			: "모두 선택 해제",
  showSpeedInTitle		: "제목에 속도 표시",
- badTempPath 			: "웹서버 사용자가 tmp 디렉토리에 읽기/쓰기/실행 권한을 갖고 있지 않습니다. ruTorrent가 동작할 수 없습니다.",
+ badTempPath			: "웹서버 사용자가 tmp 디렉토리에 읽기/쓰기/실행 권한을 갖고 있지 않습니다. ruTorrent가 동작할 수 없습니다.",
  badTempPath2			: "rTorrent 사용자가 반드시 tmp 디렉토리에 읽기/실행 권한을 가져야 합니다. ruTorrent가 동작할 수 없습니다.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files			: "Queue files recreation",
+ Recreate_files 		: "Queue files recreation",
  Address			: "주소"
 };

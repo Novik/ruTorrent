@@ -32,7 +32,7 @@
  				  };
  theUILang.pushbulletNotification = "PushBullet notifications";
  theUILang.pushbulletKey	= "PushBullet Access Token";
- theUILang.turnNotifyOn		= "Turn notifications on";
- theUILang.turnNotifyOff	= "Turn notifications off";   				  
+ theUILang.turnNotifyOn 	= "Turn notifications on";
+ theUILang.turnNotifyOff	= "Turn notifications off";
 
 thePlugins.get("history").langLoaded();

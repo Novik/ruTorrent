@@ -3,7 +3,7 @@
  *
  * Swedish language file.
  *
- * Author: Magnus Holm (holmen@brasse.se) 
+ * Author: Magnus Holm (holmen@brasse.se)
  */
 
  var s_PluginFail			= "Insticksprogrammet kommer inte att fungera.";
@@ -23,6 +23,6 @@
  theUILang.autotoolsFileOpCopy		= "Kopiera";
  theUILang.autotoolsFileOpSoftLink	= "Mjuk länk";
  theUILang.autotoolsAddLabel		= "Add torrent's label to path";
- theUILang.autotoolsAddName		= "Add torrent's name to path";  
+ theUILang.autotoolsAddName		= "Add torrent's name to path";
 
 thePlugins.get("autotools").langLoaded();

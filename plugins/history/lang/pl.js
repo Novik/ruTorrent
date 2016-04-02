@@ -32,7 +32,7 @@
  				  };
  theUILang.pushbulletNotification = "powiadomienia PushBullet";
  theUILang.pushbulletKey	= "Dostep do klucza PushBullet";
- theUILang.turnNotifyOn		= "Wlacz powiadomienia";
- theUILang.turnNotifyOff	= "Wylacz powiadomienia";   				  
+ theUILang.turnNotifyOn 	= "Wlacz powiadomienia";
+ theUILang.turnNotifyOff	= "Wylacz powiadomienia";
 
 thePlugins.get("history").langLoaded();

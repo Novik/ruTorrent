@@ -31,7 +31,7 @@
  theUILang.exsCookies			= "Opmaak van cookies";
  theUILang.extAllPublic 		= "Alle open trackers";
  theUILang.extAllPrivate		= "Alle prive trackers (private)";
- theUILang.exsMustInstallCookies	= "De plugin : COOKIES dient geinstalleerd te zijn voor deze zoekmachine."; 
+ theUILang.exsMustInstallCookies	= "De plugin : COOKIES dient geinstalleerd te zijn voor deze zoekmachine.";
  theUILang.exsMustInstallLoginMgr	= "De plugin : LOGINMGR dient geinstalleerd te zijn voor deze zoekmachine";
  theUILang.exsLoginMgr			= "Zet je account op in LOGINMGR om deze zoekmachine te gebruiken.";
  theUILang.exsURLInfo			= "URL info";
