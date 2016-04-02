@@ -23,6 +23,6 @@
  theUILang.autotoolsFileOpCopy		= "Αντιγραφή";
  theUILang.autotoolsFileOpSoftLink	= "Συντόμευση ονόματος αρχείου";
  theUILang.autotoolsAddLabel		= "Προσθήκη της ετικέτας του torrent στη διαδρομή";
- theUILang.autotoolsAddName		= "Προσθήκη του ονόματος του torrent στη διαδρομή";  
+ theUILang.autotoolsAddName		= "Προσθήκη του ονόματος του torrent στη διαδρομή";
 
 thePlugins.get("autotools").langLoaded();

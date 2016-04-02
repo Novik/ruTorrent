@@ -24,6 +24,6 @@
  theUILang.torrentSave			= "Enregistrer";
  theUILang.torrentKill			= "Stop";
  theUILang.torrentKilled		= "Le processus a été interrompu.";
- theUILang.recentTrackers		= "Trackers récents"; 
+ theUILang.recentTrackers		= "Trackers récents";
 
 thePlugins.get("create").langLoaded();

@@ -1,14 +1,14 @@
 ﻿/*
  * PLUGIN XMPP
  *
- * English language file.
+ * Greek language file.
  *
- * Author: 
+ * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
  var s_PluginFail			= "Το πρόσθετο δεν θα λειτουργήσει.";
 
- theUILang.xmpp				= "XMPP";
+ theUILang.xmpp 			= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
  theUILang.xmppJabberFor 		= "Παραλήπτης:";
  theUILang.xmppMessage			= "Μήνυμα:";

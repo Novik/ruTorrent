@@ -23,6 +23,6 @@
  theUILang.autotoolsFileOpCopy		= "복사";
  theUILang.autotoolsFileOpSoftLink	= "소프트 링크";
  theUILang.autotoolsAddLabel		= "토렌트 라벨을 경로에 덧붙임";
- theUILang.autotoolsAddName		= "토렌트 이름을 경로에 덧붙임"; 
+ theUILang.autotoolsAddName		= "토렌트 이름을 경로에 덧붙임";
 
 thePlugins.get("autotools").langLoaded();

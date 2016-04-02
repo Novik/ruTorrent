@@ -32,7 +32,7 @@
  				  };
  theUILang.pushbulletNotification = "Ειδοποιήσεις PushBullet";
  theUILang.pushbulletKey	= "Πιστοποίηση πρόσβασης PushBullet";
- theUILang.turnNotifyOn		= "Ενεργοποίηση ειδοποιήσεων";
- theUILang.turnNotifyOff	= "Απενεργοποίηση ειδοποιήσεων";   				  
+ theUILang.turnNotifyOn 	= "Ενεργοποίηση ειδοποιήσεων";
+ theUILang.turnNotifyOff	= "Απενεργοποίηση ειδοποιήσεων";
 
 thePlugins.get("history").langLoaded();

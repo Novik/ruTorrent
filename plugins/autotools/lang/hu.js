@@ -23,6 +23,6 @@
  theUILang.autotoolsFileOpCopy		= "Másolás";
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
  theUILang.autotoolsAddLabel		= "Add torrent's label to path";
- theUILang.autotoolsAddName		= "Add torrent's name to path";  
+ theUILang.autotoolsAddName		= "Add torrent's name to path";
 
 thePlugins.get("autotools").langLoaded();

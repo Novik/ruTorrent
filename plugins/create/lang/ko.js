@@ -24,6 +24,6 @@
  theUILang.torrentSave			= "저장";
  theUILang.torrentKill			= "중지";
  theUILang.torrentKilled		= "프로세스가 중지되었습니다.";
- theUILang.recentTrackers		= "최근 트래커"; 
+ theUILang.recentTrackers		= "최근 트래커";
 
 thePlugins.get("create").langLoaded();

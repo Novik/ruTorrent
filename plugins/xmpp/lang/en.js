@@ -8,7 +8,7 @@
 
  var s_PluginFail			= "Plugin will not work.";
 
- theUILang.xmpp				= "XMPP";
+ theUILang.xmpp 			= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
  theUILang.xmppJabberFor 		= "Recipient:";
  theUILang.xmppMessage			= "Message:";

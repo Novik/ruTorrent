@@ -31,7 +31,7 @@
  theUILang.exsCookies			= "Định dạng cookies";
  theUILang.extAllPublic 		= "Toàn bộ công cộng";
  theUILang.extAllPrivate		= "Toàn bộ riêng tư";
- theUILang.exsMustInstallCookies	= "Bạn phải cài đặt thành phần 'Cookies' để máy làm việc."; 
+ theUILang.exsMustInstallCookies	= "Bạn phải cài đặt thành phần 'Cookies' để máy làm việc.";
  theUILang.exsMustInstallLoginMgr	= "Bạn phải cài đặt thành phần 'LoginMgr' để máy làm việc.";
  theUILang.exsLoginMgr			= "Cài đặt các Tài khoản của bạn tại thành phần 'LoginMgr' để máy làm việc.";
  theUILang.exsURLInfo			= "Thông tin địa chỉ";
