@@ -155,8 +155,6 @@ var theUILang =
  EnableTracker			: "Aktiver",
  ClientVersion			: "Klient",
  Flags				: "Flagg",
- PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded",
  ReqTimeout			: "Forespørsel utgått",
  GetTrackerMessage		: "Motta meldinger fra tracker",
  Help				: "Hjelp",
@@ -272,5 +270,7 @@ var theUILang =
  badTempPath2			: "rTorrent-bruker har ikke lese/kjøre tilgang til tmp mappen. ruTorrent vil ikke fungere.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
  Recreate_files 		: "Queue files recreation",
- Address			: "Address"
+ Address			: "Address",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };

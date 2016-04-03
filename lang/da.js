@@ -157,8 +157,6 @@ var theUILang =
  EnableTracker			: "Slå til",
  ClientVersion			: "Klient",
  Flags				: "Flag",
- PeerDL				: "Peer DL",
- PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Forespørgsels timeout",
  GetTrackerMessage		: "Modtag beskeder fra tracker",
  Help				: "Hjælp",
@@ -273,6 +271,8 @@ var theUILang =
  badTempPath 			: "Webserverens bruger har ikke read/write/execute adgang til tmp mappen. ruTorrent virker derfor ikke.",
  badTempPath2			: "rTorrent brugeren skal have read/execute adgang til tmp mappen. ruTorrent virker derfor ikke.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files			: "Queue files recreation",
- Address			: "Adresse"
+ Recreate_files 		: "Queue files recreation",
+ Address			: "Adresse",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };

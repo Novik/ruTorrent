@@ -157,8 +157,6 @@ var theUILang =
  EnableTracker			: "Включить",
  ClientVersion			: "Клиент",
  Flags				: "Флаги",
- PeerDL				: "Peer DL",
- PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Таймаут запроса",
  GetTrackerMessage		: "Запрашивать сообщения трекера",
  Help				: "Помощь",
@@ -274,5 +272,7 @@ var theUILang =
  badTempPath2			: "rTorrent должен иметь доступ на чтение/выполнение к директории tmp. ruTorrent не будет работать.",
  doRandomizeHash		: "Сделать hash уникальным",
  Recreate_files 		: "Воссоздать файлы торрента",
- Address			: "Адрес"
+ Address			: "Адрес",
+ PeerDL 			: "Скорость пира",
+ PeerDownloaded 		: "Скачано пиром"
 };

@@ -158,8 +158,6 @@ var theUILang =
  EnableTracker			: "Włącz",
  ClientVersion			: "Klienty",
  Flags				: "Flagi",
- PeerDL				: "Peer DL",
- PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Czas odpowiedzi minął",
  GetTrackerMessage		: "Odbierz wiadomości z trackera",
  Help				: "Pomoc",
@@ -274,6 +272,8 @@ var theUILang =
  badTempPath 			: "Użytkownik webservera nie ma czytelnego/pisanego/wykonalnego dostępu do katalogu. ruTorrent nie zadziała",
  badTempPath2			: "Użytkownik rTorrent nie ma czytelnego/pisanego/wykonalnego dostępu do katalogu. ruTorrent nie zadziała.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files			: "Queue files recreation",
- Address			: "Address"
+ Recreate_files 		: "Queue files recreation",
+ Address			: "Address",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };
