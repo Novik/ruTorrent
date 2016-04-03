@@ -91,6 +91,8 @@ class NyaaEngine extends commonEngine
 			if ($res) {
 				for ($i = 0; $i < $res; $i++) {
 					$link = self::removeTags($matches['link'][$i]);
+					if (strpos($link, '//') === 0)
+						$link = 'http:' . $link;
 					if (!array_key_exists($link, $ret)) {
 						$item = $this->getNewEntry();
 						$item["desc"] = self::removeTags($matches["desc"][$i]);
