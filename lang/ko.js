@@ -155,8 +155,6 @@ var theUILang =
  EnableTracker			: "사용",
  ClientVersion			: "클라이언트",
  Flags				: "플래그",
- PeerDL				: "피어 DL",
- PeerDownloaded			: "피어 다운로드함",
  ReqTimeout			: "요청 시간 초과",
  GetTrackerMessage		: "트래커로부터 메시지 받기",  /* Receive messages from tracker */
  Help				: "도움말",
@@ -272,5 +270,7 @@ var theUILang =
  badTempPath2			: "rTorrent 사용자가 반드시 tmp 디렉토리에 읽기/실행 권한을 가져야 합니다. ruTorrent가 동작할 수 없습니다.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
  Recreate_files 		: "Queue files recreation",
- Address			: "주소"
+ Address			: "주소",
+ PeerDL 			: "피어 DL",
+ PeerDownloaded 		: "피어 다운로드함"
 };
