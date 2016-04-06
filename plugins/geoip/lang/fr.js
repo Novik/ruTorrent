@@ -154,7 +154,7 @@
  theUILang.country[ "ly" ] = "Libye";
  theUILang.country[ "ma" ] = "Maroc";
  theUILang.country[ "mc" ] = "Monaco";
- theUILang.country[ "md" ] = " Moldavie";
+ theUILang.country[ "md" ] = "Moldavie";
  theUILang.country[ "me" ] = "Monténégro";
  theUILang.country[ "mg" ] = "Madagascar";
  theUILang.country[ "mh" ] = "Îles Marshall";
@@ -236,7 +236,7 @@
  theUILang.country[ "th" ] = "Thaïlande";
  theUILang.country[ "tj" ] = "Tadjikistan";
  theUILang.country[ "tk" ] = "Tokélaou";
- theUILang.country[ "tl" ] = "Timor-Leste";
+ theUILang.country[ "tl" ] = "Timor oriental";
  theUILang.country[ "tm" ] = "Turkménistan";
  theUILang.country[ "tn" ] = "Tunisie";
  theUILang.country[ "to" ] = "Tonga";

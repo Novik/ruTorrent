@@ -54,9 +54,9 @@
  theUILang.country[ "bz" ] = "Belize";
  theUILang.country[ "ca" ] = "Kanada";
  theUILang.country[ "cc" ] = "Kokosové ostrovy";
- theUILang.country[ "cd" ] = "Demokratická republika Kongo";
+ theUILang.country[ "cd" ] = "Kongo-Kinshasa";
  theUILang.country[ "cf" ] = "Středoafrická republika";
- theUILang.country[ "cg" ] = "Kongo";
+ theUILang.country[ "cg" ] = "Kongo-Brazzaville";
  theUILang.country[ "ch" ] = "Švýcarsko";
  theUILang.country[ "ci" ] = "Pobřeží slonoviny";
  theUILang.country[ "ck" ] = "Cookovy ostrovy";
@@ -87,7 +87,7 @@
  theUILang.country[ "eu" ] = "Evropská unie";
  theUILang.country[ "fi" ] = "Finsko";
  theUILang.country[ "fj" ] = "Fidži";
- theUILang.country[ "fk" ] = "Falklandy (Malvíny)";
+ theUILang.country[ "fk" ] = "Falklandy";
  theUILang.country[ "fm" ] = "Mikronésie";
  theUILang.country[ "fo" ] = "Faerské ostrovy";
  theUILang.country[ "fr" ] = "Francie";
@@ -197,7 +197,7 @@
  theUILang.country[ "pm" ] = "Saint-Pierre a Miquelon";
  theUILang.country[ "pn" ] = "Pitcairnovy ostrovy";
  theUILang.country[ "pr" ] = "Portoriko";
- theUILang.country[ "ps" ] = "Palestinská autonomie";
+ theUILang.country[ "ps" ] = "Palestina";
  theUILang.country[ "pt" ] = "Portugalsko";
  theUILang.country[ "pw" ] = "Palau";
  theUILang.country[ "py" ] = "Paraguay";

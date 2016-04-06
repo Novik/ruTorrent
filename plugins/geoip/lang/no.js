@@ -78,7 +78,7 @@
  theUILang.country[ "do" ] = "Den dominikanske republikk";
  theUILang.country[ "dz" ] = "Algerie";
  theUILang.country[ "ec" ] = "Ecuador";
- theUILang.country[ "ee" ] = "Estonia";
+ theUILang.country[ "ee" ] = "Estland";
  theUILang.country[ "eg" ] = "Egypt";
  theUILang.country[ "eh" ] = "Vest-Sahara";
  theUILang.country[ "er" ] = "Eritrea";
@@ -88,7 +88,7 @@
  theUILang.country[ "fi" ] = "Finland";
  theUILang.country[ "fj" ] = "Fiji";
  theUILang.country[ "fk" ] = "Falklandsøyene";
- theUILang.country[ "fm" ] = "Micronesia";
+ theUILang.country[ "fm" ] = "Mikronesia";
  theUILang.country[ "fo" ] = "Færøyene";
  theUILang.country[ "fr" ] = "Frankrike";
  theUILang.country[ "ga" ] = "Gabon";
@@ -110,7 +110,7 @@
  theUILang.country[ "gu" ] = "Guam";
  theUILang.country[ "gw" ] = "Guinea-Bissau";
  theUILang.country[ "gy" ] = "Guyana";
- theUILang.country[ "hk" ] = "Hong Kong";
+ theUILang.country[ "hk" ] = "Hongkong";
  theUILang.country[ "hm" ] = "Heard- og McDonaldøyene";
  theUILang.country[ "hn" ] = "Honduras";
  theUILang.country[ "hr" ] = "Kroatia";
@@ -213,7 +213,7 @@
  theUILang.country[ "sd" ] = "Sudan";
  theUILang.country[ "se" ] = "Sverige";
  theUILang.country[ "sg" ] = "Singapore";
- theUILang.country[ "sh" ] = "Saint Helena";
+ theUILang.country[ "sh" ] = "St. Helena";
  theUILang.country[ "si" ] = "Slovenia";
  theUILang.country[ "sj" ] = "Svalbard og Jan Mayen";
  theUILang.country[ "sk" ] = "Slovakia";

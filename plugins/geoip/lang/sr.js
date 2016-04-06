@@ -51,7 +51,7 @@
  theUILang.country[ "bv" ] = "Буве";
  theUILang.country[ "bw" ] = "Боцвана";
  theUILang.country[ "by" ] = "Белорусија";
- theUILang.country[ "bz" ] = "Белиз";
+ theUILang.country[ "bz" ] = "Белизе";
  theUILang.country[ "ca" ] = "Канада";
  theUILang.country[ "cc" ] = "Кокосова Острва";
  theUILang.country[ "cd" ] = "Конго-Киншаса";
@@ -68,13 +68,13 @@
  theUILang.country[ "cu" ] = "Куба";
  theUILang.country[ "cv" ] = "Зеленортска Острва";
  theUILang.country[ "cw" ] = "Курасао";
- theUILang.country[ "cx" ] = "Ускршње Острво";
+ theUILang.country[ "cx" ] = "Божићно Острво";
  theUILang.country[ "cy" ] = "Кипар";
  theUILang.country[ "cz" ] = "Чешка";
  theUILang.country[ "de" ] = "Немачка";
  theUILang.country[ "dj" ] = "Џибути";
  theUILang.country[ "dk" ] = "Данска";
- theUILang.country[ "dm" ] = "Доминикана";
+ theUILang.country[ "dm" ] = "Доминика";
  theUILang.country[ "do" ] = "Доминиканска Република";
  theUILang.country[ "dz" ] = "Алжир";
  theUILang.country[ "ec" ] = "Еквадор";
@@ -109,7 +109,7 @@
  theUILang.country[ "gt" ] = "Гватемала";
  theUILang.country[ "gu" ] = "Гуам";
  theUILang.country[ "gw" ] = "Гвинеја-Бисао";
- theUILang.country[ "gy" ] = "Гајана";
+ theUILang.country[ "gy" ] = "Гвајана";
  theUILang.country[ "hk" ] = "Хонг Конг";
  theUILang.country[ "hm" ] = "Острва Херд и Макдоналд";
  theUILang.country[ "hn" ] = "Хондурас";
@@ -158,7 +158,7 @@
  theUILang.country[ "me" ] = "Црна Гора";
  theUILang.country[ "mg" ] = "Мадагаскар";
  theUILang.country[ "mh" ] = "Маршалска Острва";
- theUILang.country[ "mk" ] = "Б.Ј.Р. Македонија";
+ theUILang.country[ "mk" ] = "Македонија";
  theUILang.country[ "ml" ] = "Мали";
  theUILang.country[ "mm" ] = "Мјанмар";
  theUILang.country[ "mn" ] = "Монголија";
@@ -209,7 +209,7 @@
  theUILang.country[ "rw" ] = "Руанда";
  theUILang.country[ "sa" ] = "Саудијска Арабија";
  theUILang.country[ "sb" ] = "Соломонска Острва";
- theUILang.country[ "sc" ] = "Сејшелска Острва";
+ theUILang.country[ "sc" ] = "Сејшели";
  theUILang.country[ "sd" ] = "Судан";
  theUILang.country[ "se" ] = "Шведска";
  theUILang.country[ "sg" ] = "Сингапур";
@@ -253,7 +253,7 @@
  theUILang.country[ "uy" ] = "Уругвај";
  theUILang.country[ "uz" ] = "Узбекистан";
  theUILang.country[ "va" ] = "Ватикан";
- theUILang.country[ "vc" ] = "Св. Винсент и Гренадини";
+ theUILang.country[ "vc" ] = "Сент Винсент и Гренадини";
  theUILang.country[ "ve" ] = "Венецуела";
  theUILang.country[ "vg" ] = "Британска Девичанска Острва";
  theUILang.country[ "vi" ] = "Америчка Девичанска Острва";

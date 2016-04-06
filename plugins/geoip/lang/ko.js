@@ -54,7 +54,7 @@
  theUILang.country[ "bz" ] = "벨리즈";
  theUILang.country[ "ca" ] = "캐나다";
  theUILang.country[ "cc" ] = "코코스 제도";
- theUILang.country[ "cd" ] = "콩고 - 킨 샤사";
+ theUILang.country[ "cd" ] = "콩고 - 킨샤사";
  theUILang.country[ "cf" ] = "중앙 아프리카 공화국";
  theUILang.country[ "cg" ] = "콩고 - 브라자빌";
  theUILang.country[ "ch" ] = "스위스";
@@ -136,8 +136,8 @@
  theUILang.country[ "ki" ] = "키리바시";
  theUILang.country[ "km" ] = "코모로";
  theUILang.country[ "kn" ] = "세인트 키츠 네비스";
- theUILang.country[ "kp" ] = "북한";
- theUILang.country[ "kr" ] = "한국";
+ theUILang.country[ "kp" ] = "북한은";
+ theUILang.country[ "kr" ] = "대한민국";
  theUILang.country[ "kw" ] = "쿠웨이트";
  theUILang.country[ "ky" ] = "케이맨 제도";
  theUILang.country[ "kz" ] = "카자흐스탄";
@@ -235,7 +235,7 @@
  theUILang.country[ "tg" ] = "토고";
  theUILang.country[ "th" ] = "태국";
  theUILang.country[ "tj" ] = "타지키스탄";
- theUILang.country[ "tk" ] = "라우";
+ theUILang.country[ "tk" ] = "토켈라우";
  theUILang.country[ "tl" ] = "동 티모르";
  theUILang.country[ "tm" ] = "투르크메니스탄";
  theUILang.country[ "tn" ] = "튀니지";
