@@ -50,7 +50,7 @@
  theUILang.country[ "bt" ] = "Bhutan";
  theUILang.country[ "bv" ] = "Bouvet'nsaari";
  theUILang.country[ "bw" ] = "Botswana";
- theUILang.country[ "by" ] = "Valko";
+ theUILang.country[ "by" ] = "Valko-Venäjä";
  theUILang.country[ "bz" ] = "Belize";
  theUILang.country[ "ca" ] = "Kanada";
  theUILang.country[ "cc" ] = "Kookossaaret";
@@ -110,8 +110,8 @@
  theUILang.country[ "gu" ] = "Guam";
  theUILang.country[ "gw" ] = "Guinea-Bissau";
  theUILang.country[ "gy" ] = "Guyana";
- theUILang.country[ "hk" ] = "Hong Kong";
- theUILang.country[ "hm" ] = "Heard ja McDonald Islands";
+ theUILang.country[ "hk" ] = "Hongkong";
+ theUILang.country[ "hm" ] = "Heard ja McDonaldinsaaret";
  theUILang.country[ "hn" ] = "Hondurasin";
  theUILang.country[ "hr" ] = "Kroatia";
  theUILang.country[ "ht" ] = "Haiti";
@@ -119,7 +119,7 @@
  theUILang.country[ "id" ] = "Indonesia";
  theUILang.country[ "ie" ] = "Irlanti";
  theUILang.country[ "il" ] = "Israel";
- theUILang.country[ "im" ] = "Isle of Man";
+ theUILang.country[ "im" ] = "Mansaari";
  theUILang.country[ "in" ] = "Intia";
  theUILang.country[ "io" ] = "Brittiläinen Intian valtameren alue";
  theUILang.country[ "iq" ] = "Irak";
@@ -128,7 +128,7 @@
  theUILang.country[ "it" ] = "Italia";
  theUILang.country[ "je" ] = "Jersey";
  theUILang.country[ "jm" ] = "Jamaica";
- theUILang.country[ "jo" ] = "Jordan";
+ theUILang.country[ "jo" ] = "Jordania";
  theUILang.country[ "jp" ] = "Japani";
  theUILang.country[ "ke" ] = "Kenia";
  theUILang.country[ "kg" ] = "Kirgisia";
@@ -215,7 +215,7 @@
  theUILang.country[ "sg" ] = "Singapore";
  theUILang.country[ "sh" ] = "Saint Helena";
  theUILang.country[ "si" ] = "Slovenia";
- theUILang.country[ "sj" ] = "Svalbard ja Jan Mayen";
+ theUILang.country[ "sj" ] = "Huippuvuoret ja Jan Mayen";
  theUILang.country[ "sk" ] = "Slovakia";
  theUILang.country[ "sl" ] = "Sierra Leonen";
  theUILang.country[ "sm" ] = "San Marino";
@@ -263,7 +263,7 @@
  theUILang.country[ "ws" ] = "Samoa";
  theUILang.country[ "ye" ] = "Jemen";
  theUILang.country[ "yt" ] = "Mayotte";
- theUILang.country[ "za" ] = "SouthAfrica";
+ theUILang.country[ "za" ] = "Etelä-Afrikka";
  theUILang.country[ "zm" ] = "Sambiassa";
  theUILang.country[ "zw" ] = "Zimbabwe";
 

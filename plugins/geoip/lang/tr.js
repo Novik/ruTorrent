@@ -46,7 +46,7 @@
  theUILang.country[ "bo" ] = "Bolivya";
  theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brezilya";
- theUILang.country[ "bs" ] = "Bahamas";
+ theUILang.country[ "bs" ] = "Bahamalar";
  theUILang.country[ "bt" ] = "Bhutan";
  theUILang.country[ "bv" ] = "Bouvet Adası";
  theUILang.country[ "bw" ] = "Botsvana";
@@ -66,7 +66,7 @@
  theUILang.country[ "co" ] = "Kolombiya";
  theUILang.country[ "cr" ] = "Kosta Rika";
  theUILang.country[ "cu" ] = "Küba";
- theUILang.country[ "cv" ] = "Cape Verde";
+ theUILang.country[ "cv" ] = "Yeşil Burun Adaları";
  theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Christmas Adası";
  theUILang.country[ "cy" ] = "Kıbrıs";
@@ -94,7 +94,7 @@
  theUILang.country[ "ga" ] = "Gabon";
  theUILang.country[ "gb" ] = "Birleşik Krallık";
  theUILang.country[ "gd" ] = "Grenada";
- theUILang.country[ "ge" ] = "Georgia";
+ theUILang.country[ "ge" ] = "Gürcistan";
  theUILang.country[ "gf" ] = "Fransız Guyanası";
  theUILang.country[ "gg" ] = "Guernsey";
  theUILang.country[ "gh" ] = "Gana";
@@ -119,7 +119,7 @@
  theUILang.country[ "id" ] = "Endonezya";
  theUILang.country[ "ie" ] = "İrlanda";
  theUILang.country[ "il" ] = "İsrail";
- theUILang.country[ "im" ] = "Isle of Man";
+ theUILang.country[ "im" ] = "Man Adası";
  theUILang.country[ "in" ] = "Hindistan";
  theUILang.country[ "io" ] = "İngiliz Hint Okyanusu Toprakları";
  theUILang.country[ "iq" ] = "Irak";
@@ -162,7 +162,7 @@
  theUILang.country[ "ml" ] = "Mali";
  theUILang.country[ "mm" ] = "Myanmar";
  theUILang.country[ "mn" ] = "Moğolistan";
- theUILang.country[ "mo" ] = "Macao";
+ theUILang.country[ "mo" ] = "Mação";
  theUILang.country[ "mp" ] = "Kuzey Mariana Adaları";
  theUILang.country[ "mq" ] = "Martinik";
  theUILang.country[ "mr" ] = "Moritanya";
@@ -195,8 +195,8 @@
  theUILang.country[ "pk" ] = "Pakistan";
  theUILang.country[ "pl" ] = "Polonya";
  theUILang.country[ "pm" ] = "Saint Pierre ve Miquelon";
- theUILang.country[ "pn" ] = "Pitcairn";
- theUILang.country[ "pr" ] = "Puerto Rico";
+ theUILang.country[ "pn" ] = "Pitcairn Adaları";
+ theUILang.country[ "pr" ] = "Porto Riko";
  theUILang.country[ "ps" ] = "Filistin";
  theUILang.country[ "pt" ] = "Portekiz";
  theUILang.country[ "pw" ] = "Palau";
@@ -257,7 +257,7 @@
  theUILang.country[ "ve" ] = "Venezuela";
  theUILang.country[ "vg" ] = "İngiliz Virgin Adaları";
  theUILang.country[ "vi" ] = "ABD Virgin Adaları";
- theUILang.country[ "vn" ] = "Viet Nam";
+ theUILang.country[ "vn" ] = "Vietnam";
  theUILang.country[ "vu" ] = "Vanuatu";
  theUILang.country[ "wf" ] = "Wallis ve Futuna";
  theUILang.country[ "ws" ] = "Samoa";
