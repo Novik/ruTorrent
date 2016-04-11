@@ -2,7 +2,7 @@
 
 class KinozalTVEngine extends commonEngine
 {
-       	public $defaults = array( "public"=>false, "page_size"=>40, "cookies"=>"kinozal.tv|uid=XXX;pass=XXX;" );
+       	public $defaults = array( "public"=>false, "page_size"=>40, "cookies"=>"kinozal.me|uid=XXX;pass=XXX;" );
        	
 	public $categories = array( 'all'=>'0', 
 		'Кино - Сериал'=>'5',
@@ -90,7 +90,7 @@ class KinozalTVEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://kinozal.tv';
+		$url = 'http://kinozal.me';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'tv'=>'5', 'games'=>'23', 'anime'=>'20', 'software'=>'32', 'pictures'=>'40', 'books'=>'41' );
 		else
