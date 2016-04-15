@@ -14,18 +14,17 @@ if(isset($_REQUEST['v']))
 			$str = $_REQUEST['v'];
 			if( (fputs( $fp, $str ) == strlen($str)) && fflush( $fp ) )
 			{
-	        		
 				flock( $fp, LOCK_UN );
 				if( fclose( $fp ) !== false )
-	       				rename( $name.'.tmp', $name );
+	       				@rename( $name.'.tmp', $name );
 				else	       				
-					unlink( $name.'.tmp' );
+					@unlink( $name.'.tmp' );
 			}
 			else
 			{
 				flock( $fp, LOCK_UN );
 				fclose( $fp );
-				unlink( $name.'.tmp' );
+				@unlink( $name.'.tmp' );
 			}
 		}
 		else
