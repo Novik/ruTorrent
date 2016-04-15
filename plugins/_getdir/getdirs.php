@@ -63,7 +63,7 @@ if($dh)
 			( $theSettings->uid<0 || (!$checkUserPermissions || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0007)) )
 			)
 		{
-			$files[$file." "] = addslash($path);
+			$files[$file.""] = addslash($path);
 		}
         }
         closedir($dh);
