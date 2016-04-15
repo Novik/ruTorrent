@@ -16,8 +16,10 @@ if(isset($_REQUEST['v']))
 			{
 	        		
 				flock( $fp, LOCK_UN );
-				if( fclose( $fp ) !== false )
-	       				rename( $name.'.tmp', $name );
+				if( fclose( $fp ) !== false ){
+					if (file_exists ($name.'.tmp'))
+	       					rename( $name.'.tmp', $name );
+				}
 				else	       				
 					unlink( $name.'.tmp' );
 			}
