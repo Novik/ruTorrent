@@ -273,6 +273,6 @@ var theUILang =
  doRandomizeHash		: "Зробити хеш унікальним",
  Recreate_files 		: "Виконати повторне створення файлів у черзі",
  Address			: "Адреса",
- PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded"
+ PeerDL 			: "Швидкість піра",
+ PeerDownloaded 		: "Завантажено піром"
 };
