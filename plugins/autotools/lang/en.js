@@ -12,6 +12,7 @@
  theUILang.autotoolsEnableLabel 	= "Enable \"AutoLabel\" feature, Template:";
  theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsPathToFinished	= "Path to finished downloads";
+ theUILang.autotoolsSkipMoveForFiles	= "Skip Move if torrent contains this file";
  theUILang.autotoolsEnableWatch 	= "Enable \"AutoWatch\" feature";
  theUILang.autotoolsPathToWatch 	= "Path to base watch directory";
  theUILang.autotoolsWatchStart		= "Start download automatically";
