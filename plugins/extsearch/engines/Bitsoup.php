@@ -157,32 +157,32 @@ class BitsoupEngine_Parser {
     }
 
     static function anything($key = null) {
-        return '(?P<' . static::generateKeyIfNeeded($key) . '>.*)';
+        return '(?P<' . self::generateKeyIfNeeded($key) . '>.*)';
     }
 
     static function tr($content) {
-        return static::oTR . $content . static::cTR;
+        return self::oTR . $content . self::cTR;
     }
 
     static function td($content) {
-        return static::oTD . $content . static::cTD;
+        return self::oTD . $content . self::cTD;
     }
 
     static function href($content, $key = null) {
-        $href = str_replace('<HREF>', '<' . static::generateKeyIfNeeded($key) . '>', static::HREF);
-        return static::oA . $href . static::oAc . $content . static::cA;
+        $href = str_replace('<HREF>', '<' . self::generateKeyIfNeeded($key) . '>', self::HREF);
+        return self::oA . $href . self::oAc . $content . self::cA;
     }
 
     static function a($content) {
-        return static::oA . static::oAc . $content . static::cA;
+        return self::oA . self::oAc . $content . self::cA;
     }
 
     static function bold($content) {
-        return static::oB . $content . static::cB;
+        return self::oB . $content . self::cB;
     }
 
     static function font($content) {
-        return static::oFONT . $content . static::cFONT;
+        return self::oFONT . $content . self::cFONT;
     }
 
     static function string($key) {
@@ -190,11 +190,11 @@ class BitsoupEngine_Parser {
     }
 
     static function img($content = '') {
-        return static::oIMG . $content . static::cIMG;
+        return self::oIMG . $content . self::cIMG;
     }
 
     static function nobr($content) {
-        return static::oNOBR . $content . static::cNOBR;
+        return self::oNOBR . $content . self::cNOBR;
     }
 
     static function logicalOr($content1, $content2) {
