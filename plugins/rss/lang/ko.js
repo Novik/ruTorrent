@@ -51,6 +51,7 @@
  theUILang.rssInterval2d		= "2 일";
  theUILang.rssInterval3d		= "3 일";
  theUILang.rssInterval4d		= "4 일";
+ theUILang.rssInterval6d		= "6 일";
  theUILang.rssInterval1w		= "1 주";
  theUILang.rssInterval2w		= "2 주";
  theUILang.rssInterval3w		= "3 주";

@@ -51,6 +51,7 @@
  theUILang.rssInterval2d		= "2 dni";
  theUILang.rssInterval3d		= "3 dni";
  theUILang.rssInterval4d		= "4 dni";
+ theUILang.rssInterval6d		= "6 dni";
  theUILang.rssInterval1w		= "1 tydzień";
  theUILang.rssInterval2w		= "2 tygodnie";
  theUILang.rssInterval3w		= "3 tygodnie";
