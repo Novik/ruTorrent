@@ -51,6 +51,7 @@
  theUILang.rssInterval2d		= "2 dagar";
  theUILang.rssInterval3d		= "3 dagar";
  theUILang.rssInterval4d		= "4 dagar";
+ theUILang.rssInterval6d		= "6 dagar";
  theUILang.rssInterval1w		= "1 vecka";
  theUILang.rssInterval2w		= "2 veckor";
  theUILang.rssInterval3w		= "3 veckor";

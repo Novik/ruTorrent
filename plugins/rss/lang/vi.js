@@ -51,6 +51,7 @@
  theUILang.rssInterval2d		= "2 ngày";
  theUILang.rssInterval3d		= "3 ngày";
  theUILang.rssInterval4d		= "4 ngày";
+ theUILang.rssInterval6d		= "6 ngày";
  theUILang.rssInterval1w		= "1 tuần";
  theUILang.rssInterval2w		= "2 tuần";
  theUILang.rssInterval3w		= "3 tuần";

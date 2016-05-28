@@ -1553,6 +1553,7 @@ plugin.onLangLoaded = function()
 					        "<option value='48'>"+theUILang.rssInterval2d+"</option>"+
 					        "<option value='72'>"+theUILang.rssInterval3d+"</option>"+
 					        "<option value='96'>"+theUILang.rssInterval4d+"</option>"+
+						"<option value='144'>"+theUILang.rssInterval6d+"</option>"+
 					        "<option value='168'>"+theUILang.rssInterval1w+"</option>"+
 					        "<option value='336'>"+theUILang.rssInterval2w+"</option>"+
 					        "<option value='504'>"+theUILang.rssInterval3w+"</option>"+
