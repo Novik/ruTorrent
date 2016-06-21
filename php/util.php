@@ -687,7 +687,7 @@ function getTempDirectory()
 @ini_set('precision',16);
 @define('PHP_INT_MIN', ~PHP_INT_MAX);
 @define('XMLRPC_MAX_I4', 2147483647);
-@define('XMLRPC_MIN_I4', ~XMLRPC_MIN_I4);
+@define('XMLRPC_MIN_I4', ~XMLRPC_MAX_I4);
 @define('XMLRPC_MIN_I8', -9.999999999999999E+15);
 @define('XMLRPC_MAX_I8', 9.999999999999999E+15);
 
