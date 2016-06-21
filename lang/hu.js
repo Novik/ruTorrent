@@ -24,7 +24,7 @@ var theUILang =
  Dnt_start_down_auto		: "Ne induljon el automatikusan",
  Listening_Port 		: "Bejövő port",
  Port_f_incom_conns		: "Port a bejövő kapcsolatokhoz",
- Rnd_port_torr_start		: "Véletlen port µTorrent minden indításakor",
+ Rnd_port_torr_start		: "Véletlen port rTorrent minden indításakor",
  Type				: "Típus",
  Bandwidth_Limiting		: "Sávszélesség korlátozás",
  Global_max_upl 		: "Maximum feltöltési seb",
@@ -157,8 +157,6 @@ var theUILang =
  EnableTracker			: "Engedélyezve",
  ClientVersion			: "Kliens",
  Flags				: "Jelzők",
- PeerDL				: "Peer DL",
- PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Kérési idő",
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Segítség",
@@ -273,6 +271,8 @@ var theUILang =
  badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
  badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files			: "Queue files recreation",
- Address			: "Address"
+ Recreate_files 		: "Queue files recreation",
+ Address			: "Address",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };

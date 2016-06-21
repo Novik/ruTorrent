@@ -8,7 +8,7 @@
 
  var s_PluginFail			= "플러그인이 동작하지 않습니다.";
 
- theUILang.xmpp				= "XMPP";
+ theUILang.xmpp 			= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
  theUILang.xmppJabberFor 		= "수신:";
  theUILang.xmppMessage			= "메시지:";

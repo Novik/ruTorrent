@@ -155,8 +155,6 @@ var theUILang =
  EnableTracker			: "Etkin",
  ClientVersion			: "İstemci",
  Flags				: "Bayrak",
- PeerDL				: "Peer DL",
- PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Talep zaman aşımı",
  GetTrackerMessage		: "İzleyiciden mesaj aldınız",
  Help				: "Yardım",
@@ -271,6 +269,8 @@ var theUILang =
  badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
  badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files			: "Queue files recreation",
- Address			: "Address"
+ Recreate_files 		: "Queue files recreation",
+ Address			: "Address",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };

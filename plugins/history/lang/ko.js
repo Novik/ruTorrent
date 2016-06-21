@@ -32,7 +32,7 @@
  				  };
  theUILang.pushbulletNotification = "PushBullet 알림";
  theUILang.pushbulletKey	= "PushBullet 접근 토큰";
- theUILang.turnNotifyOn		= "알림 켜기";
- theUILang.turnNotifyOff	= "알림 끄기"; 
+ theUILang.turnNotifyOn 	= "알림 켜기";
+ theUILang.turnNotifyOff	= "알림 끄기";
 
 thePlugins.get("history").langLoaded();

@@ -157,8 +157,6 @@ var theUILang =
  EnableTracker			: "Увімкнути",
  ClientVersion			: "Клієнт",
  Flags				: "Прапори",
- PeerDL				: "Peer DL",
- PeerDownloaded			: "Peer Downloaded",
  ReqTimeout			: "Час очікування запита",
  GetTrackerMessage		: "Запитувати повідомлення трекера",
  Help				: "Довідка",
@@ -273,6 +271,8 @@ var theUILang =
  badTempPath 			: "Веб-сервер не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
  badTempPath2			: "rTorrent не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
  doRandomizeHash		: "Зробити хеш унікальним",
- Recreate_files			: "Виконати повторне створення файлів у черзі",
- Address			: "Адреса"
+ Recreate_files 		: "Виконати повторне створення файлів у черзі",
+ Address			: "Адреса",
+ PeerDL 			: "Швидкість піра",
+ PeerDownloaded 		: "Завантажено піром"
 };

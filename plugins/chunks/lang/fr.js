@@ -11,8 +11,8 @@
  theUILang.cDownloaded		= "Téléchargé";
  theUILang.cMode		= "Mode";
  theUILang.chunksCount		= "Nombre de pièces";
- theUILang.chunkSize		= "Taile d'un pièce";
- theUILang.cLegend		= "Legende";
+ theUILang.chunkSize		= "Taille d'une pièce";
+ theUILang.cLegend		= "Légende";
  theUILang.cLegendVal		= [ "4 pièces par cellule", "1 pièce par cellule" ];
 
 thePlugins.get("chunks").langLoaded();

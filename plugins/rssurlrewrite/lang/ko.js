@@ -24,6 +24,6 @@
  theUILang.rssURLGUID		= "설명 URL";
  theUILang.rssURLHref		= "다운로드 URL";
  theUILang.rssPatternError	= "패턴 문자열에 오류가 있습니다.";
- theUILang.rssStatus		= "RSS"; 
+ theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

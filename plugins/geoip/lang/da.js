@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Land";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "De Forenede Arabiske Emirater";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -43,21 +44,22 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brasilien";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bhutan";
- theUILang.country[ "bv" ] = "Bouvet Island";
+ theUILang.country[ "bv" ] = "Bouvetøen";
  theUILang.country[ "bw" ] = "Botswana";
  theUILang.country[ "by" ] = "Hviderusland";
  theUILang.country[ "bz" ] = "Belize";
  theUILang.country[ "ca" ] = "Canada";
- theUILang.country[ "cc" ] = "Cocos Islands";
+ theUILang.country[ "cc" ] = "Cocosøerne";
  theUILang.country[ "cd" ] = "Congo-Kinshasa";
  theUILang.country[ "cf" ] = "Den Centralafrikanske Republik";
  theUILang.country[ "cg" ] = "Congo-Brazzaville";
  theUILang.country[ "ch" ] = "Schweiz";
- theUILang.country[ "ci" ] = "Côte d'Ivoire";
- theUILang.country[ "ck" ] = "Cook Islands";
+ theUILang.country[ "ci" ] = "Elfenbenskysten";
+ theUILang.country[ "ck" ] = "Cookøerne";
  theUILang.country[ "cl" ] = "Chile";
  theUILang.country[ "cm" ] = "Cameroun";
  theUILang.country[ "cn" ] = "Kina";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Cuba";
  theUILang.country[ "cv" ] = "Kap Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Christmas Island";
  theUILang.country[ "cy" ] = "Cypern";
  theUILang.country[ "cz" ] = "Tjekkiet";
@@ -75,7 +78,7 @@
  theUILang.country[ "do" ] = "Dominikanske Republik";
  theUILang.country[ "dz" ] = "Algeriet";
  theUILang.country[ "ec" ] = "Ecuador";
- theUILang.country[ "ee" ] = "Estonia";
+ theUILang.country[ "ee" ] = "Estland";
  theUILang.country[ "eg" ] = "Ægypten";
  theUILang.country[ "eh" ] = "Vestsahara";
  theUILang.country[ "er" ] = "Eritrea";
@@ -89,7 +92,7 @@
  theUILang.country[ "fo" ] = "Færøerne";
  theUILang.country[ "fr" ] = "Frankrig";
  theUILang.country[ "ga" ] = "Gabon";
- theUILang.country[ "gb" ] = "Det Forenede Kongerige";
+ theUILang.country[ "gb" ] = "Storbritannien";
  theUILang.country[ "gd" ] = "Grenada";
  theUILang.country[ "ge" ] = "Georgien";
  theUILang.country[ "gf" ] = "Fransk Guyana";
@@ -102,12 +105,12 @@
  theUILang.country[ "gp" ] = "Guadeloupe";
  theUILang.country[ "gq" ] = "Equatorial Guinea";
  theUILang.country[ "gr" ] = "Grækenland";
- theUILang.country[ "gs" ] = "Sydgeorgien og Sydsandwichøerne";
+ theUILang.country[ "gs" ] = "South Georgia og De Sydlige Sandwichøer";
  theUILang.country[ "gt" ] = "Guatemala";
  theUILang.country[ "gu" ] = "Guam";
  theUILang.country[ "gw" ] = "Guinea-Bissau";
  theUILang.country[ "gy" ] = "Guyana";
- theUILang.country[ "hk" ] = "Hong Kong";
+ theUILang.country[ "hk" ] = "Hongkong";
  theUILang.country[ "hm" ] = "Heard-og McDonald-øerne";
  theUILang.country[ "hn" ] = "Honduras";
  theUILang.country[ "hr" ] = "Kroatien";
@@ -118,7 +121,7 @@
  theUILang.country[ "il" ] = "Israel";
  theUILang.country[ "im" ] = "Isle of Man";
  theUILang.country[ "in" ] = "Indien";
- theUILang.country[ "io" ] = "British Indian Ocean Territory";
+ theUILang.country[ "io" ] = "Det Britiske Territorium i Det Indiske Ocean";
  theUILang.country[ "iq" ] = "Irak";
  theUILang.country[ "ir" ] = "Iran";
  theUILang.country[ "is" ] = "Island";
@@ -128,7 +131,7 @@
  theUILang.country[ "jo" ] = "Jordan";
  theUILang.country[ "jp" ] = "Japan";
  theUILang.country[ "ke" ] = "Kenya";
- theUILang.country[ "kg" ] = "Kirgistan";
+ theUILang.country[ "kg" ] = "Kirgisistan";
  theUILang.country[ "kh" ] = "Cambodja";
  theUILang.country[ "ki" ] = "Kiribati";
  theUILang.country[ "km" ] = "Comorerne";
@@ -136,7 +139,7 @@
  theUILang.country[ "kp" ] = "Nordkorea";
  theUILang.country[ "kr" ] = "Sydkorea";
  theUILang.country[ "kw" ] = "Kuwait";
- theUILang.country[ "ky" ] = "Cayman Islands";
+ theUILang.country[ "ky" ] = "Caymanøerne";
  theUILang.country[ "kz" ] = "Kasakhstan";
  theUILang.country[ "la" ] = "Laos";
  theUILang.country[ "lb" ] = "Libanon";
@@ -153,7 +156,7 @@
  theUILang.country[ "mc" ] = "Monaco";
  theUILang.country[ "md" ] = "Moldova";
  theUILang.country[ "me" ] = "Montenegro";
- theUILang.country[ "mg" ] = "Madagascar";
+ theUILang.country[ "mg" ] = "Madagaskar";
  theUILang.country[ "mh" ] = "Marshalløerne";
  theUILang.country[ "mk" ] = "Makedonien";
  theUILang.country[ "ml" ] = "Mali";
@@ -210,7 +213,7 @@
  theUILang.country[ "sd" ] = "Sudan";
  theUILang.country[ "se" ] = "Sverige";
  theUILang.country[ "sg" ] = "Singapore";
- theUILang.country[ "sh" ] = "Saint Helena";
+ theUILang.country[ "sh" ] = "Sankt Helena";
  theUILang.country[ "si" ] = "Slovenien";
  theUILang.country[ "sj" ] = "Svalbard og Jan Mayen";
  theUILang.country[ "sk" ] = "Slovakiet";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Surinam";
  theUILang.country[ "ss" ] = "Sydsudan";
  theUILang.country[ "st" ] = "Sao Tome og Principe";
+ theUILang.country[ "su" ] = "Rusland";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syrien";
  theUILang.country[ "sz" ] = "Swaziland";
  theUILang.country[ "tc" ] = "Turks-og Caicosøerne";
@@ -231,32 +236,30 @@
  theUILang.country[ "th" ] = "Thailand";
  theUILang.country[ "tj" ] = "Tadsjikistan";
  theUILang.country[ "tk" ] = "Tokelau";
- theUILang.country[ "tl" ] = "Timor-Leste";
+ theUILang.country[ "tl" ] = "Østtimor";
  theUILang.country[ "tm" ] = "Turkmenistan";
  theUILang.country[ "tn" ] = "Tunesien";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Tyrkiet";
- theUILang.country[ "tp" ] = "Portugisisk Timor";
  theUILang.country[ "tt" ] = "Trinidad og Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
  theUILang.country[ "tz" ] = "Tanzania";
  theUILang.country[ "ua" ] = "Ukraine";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "Det Forenede Kongerige";
- theUILang.country[ "um" ] = "De Mindre Amerikanske Oversøiske Øer";
+ theUILang.country[ "uk" ] = "Storbritannien";
  theUILang.country[ "un" ] = "Ukendt";
  theUILang.country[ "us" ] = "USA";
  theUILang.country[ "uy" ] = "Uruguay";
  theUILang.country[ "uz" ] = "Usbekistan";
- theUILang.country[ "va" ] = "Vatikanet";
+ theUILang.country[ "va" ] = "Vatikanstaten";
  theUILang.country[ "vc" ] = "Saint Vincent og Grenadinerne";
  theUILang.country[ "ve" ] = "Venezuela";
  theUILang.country[ "vg" ] = "Britiske Jomfruøer";
  theUILang.country[ "vi" ] = "Amerikanske Jomfruøer";
  theUILang.country[ "vn" ] = "Viet Nam";
  theUILang.country[ "vu" ] = "Vanuatu";
- theUILang.country[ "wf" ] = "Wallis-og Futuna";
+ theUILang.country[ "wf" ] = "Wallis og Futuna";
  theUILang.country[ "ws" ] = "Samoa";
  theUILang.country[ "ye" ] = "Yemen";
  theUILang.country[ "yt" ] = "Mayotte";

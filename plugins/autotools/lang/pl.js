@@ -23,6 +23,6 @@
  theUILang.autotoolsFileOpCopy		= "Kopia";
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
  theUILang.autotoolsAddLabel		= "Dodaj funkcje torrentu do sciezki";
- theUILang.autotoolsAddName		= "Dodaj nazwe torrentu do sciezki";  
+ theUILang.autotoolsAddName		= "Dodaj nazwe torrentu do sciezki";
 
 thePlugins.get("autotools").langLoaded();

@@ -51,6 +51,7 @@
  theUILang.rssInterval2d		= "2 ημέρες";
  theUILang.rssInterval3d		= "3 ημέρες";
  theUILang.rssInterval4d		= "4 ημέρες";
+ theUILang.rssInterval6d		= "6 ημέρες";
  theUILang.rssInterval1w		= "1 εβδομάδα";
  theUILang.rssInterval2w		= "2 εβδομάδες";
  theUILang.rssInterval3w		= "3 εβδομάδες";

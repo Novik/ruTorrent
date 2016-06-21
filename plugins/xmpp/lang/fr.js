@@ -1,14 +1,14 @@
 ﻿/*
  * PLUGIN XMPP
  *
- * English language file.
+ * French language file.
  *
  * Author: 
  */
 
  var s_PluginFail			= "Le plug-in ne fonctionnera pas.";
 
- theUILang.xmpp				= "XMPP";
+ theUILang.xmpp 			= "XMPP";
  theUILang.xmppJabberJID 		= "JID :";
  theUILang.xmppJabberFor 		= "Destinataire :";
  theUILang.xmppMessage			= "Message :";

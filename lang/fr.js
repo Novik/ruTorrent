@@ -157,8 +157,6 @@ var theUILang =
  EnableTracker			: "Activé",
  ClientVersion			: "Client",
  Flags				: "Flags",
- PeerDL				: "R. Client",
- PeerDownloaded			: "Reçu Client",
  ReqTimeout			: "Échec de la requête",
  GetTrackerMessage		: "Message reçu du tracker",
  Help				: "Aide",
@@ -273,6 +271,8 @@ var theUILang =
  badTempPath 			: "Le serveur web n'a pas accès en lecture/ecriture/éxécution au répertoire tmp. ruTorrent ne marchera pas.",
  badTempPath2			: "L'utilisateur rTorrent n'a pas accès en lecture/ecriture/éxécution au répertoire tmp. ruTorrent ne marchera pas.",
  doRandomizeHash		: "Info hash aléatoire pour faire du 'cross-seeding'",
- Recreate_files			: "Recréation des fichiers",
- Address			: "Adresse"
+ Recreate_files 		: "Recréation des fichiers",
+ Address			: "Adresse",
+ PeerDL 			: "R. Client",
+ PeerDownloaded 		: "Reçu Client"
 };

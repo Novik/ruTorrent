@@ -8,12 +8,13 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
- theUILang.peerComment 		= "Προσθήκη σχολίου";
+ theUILang.peerComment		= "Προσθήκη σχολίου";
  theUILang.peerCommentLabel	= "Προσθήκη νέου σχολίου για τον χρήστη";
  theUILang.commentName		= "Σχόλιο";
  theUILang.countryName		= "Χώρα";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Νήσος Αναλήψεως";
  theUILang.country[ "ad" ] = "Ανδόρρα";
  theUILang.country[ "ae" ] = "Ηνωμένα Αραβικά Εμιράτα";
  theUILang.country[ "af" ] = "Αφγανιστάν";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Βερμούδες";
  theUILang.country[ "bn" ] = "Μπρουνέι";
  theUILang.country[ "bo" ] = "Βολιβία";
+ theUILang.country[ "bq" ] = "Μποναίρ";
  theUILang.country[ "br" ] = "Βραζιλία";
  theUILang.country[ "bs" ] = "Μπαχάμες";
  theUILang.country[ "bt" ] = "Μπουτάν";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Κόστα Ρίκα";
  theUILang.country[ "cu" ] = "Η Κούβα";
  theUILang.country[ "cv" ] = "Πράσινο Ακρωτήριο";
+ theUILang.country[ "cw" ] = "Κουρασάο";
  theUILang.country[ "cx" ] = "Νήσος των Χριστουγέννων";
  theUILang.country[ "cy" ] = "Κύπρος";
  theUILang.country[ "cz" ] = "Τσεχική Δημοκρατία";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Σουρινάμ";
  theUILang.country[ "ss" ] = "Νότιο Σουδάν";
  theUILang.country[ "st" ] = "Σάο Τομέ και Πρίνσιπε";
+ theUILang.country[ "su" ] = "Ρωσία";
  theUILang.country[ "sv" ] = "Ελ Σαλβαδόρ";
+ theUILang.country[ "sx" ] = " Άγιος Μαρτίνος";
  theUILang.country[ "sy" ] = "Συρία";
  theUILang.country[ "sz" ] = "Ζουαζιλάνδη";
  theUILang.country[ "tc" ] = "Τερκς και Κέικος";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Τυνησία";
  theUILang.country[ "to" ] = "Τόνγκα";
  theUILang.country[ "tr" ] = "Τουρκία";
- theUILang.country[ "tp" ] = "Πορτογαλικό Τιμόρ";
  theUILang.country[ "tt" ] = "Τρινιντάντ και Τομπάγκο";
  theUILang.country[ "tv" ] = "Τουβαλού";
  theUILang.country[ "tw" ] = "Ταϊβάν";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ουκρανία";
  theUILang.country[ "ug" ] = "Ουγκάντα";
  theUILang.country[ "uk" ] = "Ηνωμένο Βασίλειο";
- theUILang.country[ "um" ] = "Απομακρυσμένες Νησίδες των Ηνωμένων Πολιτειών";
  theUILang.country[ "un" ] = "Άγνωστο";
  theUILang.country[ "us" ] = "Ηνωμένες Πολιτείες Αμερικής";
  theUILang.country[ "uy" ] = "Ουρουγουάη";

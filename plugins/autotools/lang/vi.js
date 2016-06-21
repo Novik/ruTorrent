@@ -23,6 +23,6 @@
  theUILang.autotoolsFileOpCopy		= "Sao chép";
  theUILang.autotoolsFileOpSoftLink	= "Liên kết mềm";
  theUILang.autotoolsAddLabel		= "Add torrent's label to path";
- theUILang.autotoolsAddName		= "Add torrent's name to path";  
+ theUILang.autotoolsAddName		= "Add torrent's name to path";
 
 thePlugins.get("autotools").langLoaded();

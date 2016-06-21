@@ -8,12 +8,13 @@
  * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
- theUILang.peerComment 		= "Додати коментар";
+ theUILang.peerComment		= "Додати коментар";
  theUILang.peerCommentLabel	= "Уведіть новий коментар для вузла";
  theUILang.commentName		= "Коментар";
  theUILang.countryName		= "Країна";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Острів Вознесіння";
  theUILang.country[ "ad" ] = "Андорра";
  theUILang.country[ "ae" ] = "ОАЕ";
  theUILang.country[ "af" ] = "Афганістан";
@@ -43,6 +44,7 @@
  theUILang.country[ "bm" ] = "Бермудт";
  theUILang.country[ "bn" ] = "Бруней";
  theUILang.country[ "bo" ] = "Болівія";
+ theUILang.country[ "bq" ] = "Бонайре";
  theUILang.country[ "br" ] = "Бразилія";
  theUILang.country[ "bs" ] = "Багами";
  theUILang.country[ "bt" ] = "Бутан";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Коста-Рика";
  theUILang.country[ "cu" ] = "Куба";
  theUILang.country[ "cv" ] = "Кабо-Верде";
+ theUILang.country[ "cw" ] = "Кюрасао";
  theUILang.country[ "cx" ] = "Острів Різдва";
  theUILang.country[ "cy" ] = "Кіпр";
  theUILang.country[ "cz" ] = "Чехія";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Суринам";
  theUILang.country[ "ss" ] = "Південний Судан";
  theUILang.country[ "st" ] = "Сан-Томе і Принсіпі";
+ theUILang.country[ "su" ] = "Росія";
  theUILang.country[ "sv" ] = "Сальвадор";
+ theUILang.country[ "sx" ] = "Сінт-Мартен";
  theUILang.country[ "sy" ] = "Сирія";
  theUILang.country[ "sz" ] = "Свазіленд";
  theUILang.country[ "tc" ] = "Теркс і Кайкос";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Туніс";
  theUILang.country[ "to" ] = "Тонга";
  theUILang.country[ "tr" ] = "Туреччина";
- theUILang.country[ "tp" ] = "Португальський Тимор";
  theUILang.country[ "tt" ] = "Тринідад і Тобаго";
  theUILang.country[ "tv" ] = "Тувалу";
  theUILang.country[ "tw" ] = "Тайвань";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Україна";
  theUILang.country[ "ug" ] = "Уганда";
  theUILang.country[ "uk" ] = "Великобританія";
- theUILang.country[ "um" ] = "Зовнішні малі острови (США)";
  theUILang.country[ "un" ] = "Невідомо";
  theUILang.country[ "us" ] = "США";
  theUILang.country[ "uy" ] = "Уругвай";
