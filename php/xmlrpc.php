@@ -90,7 +90,7 @@ class rXMLRPCRequest
 		}
 	}
 
-	public static function send( $data )
+	public static function send( $data, $trusted = true )
 	{
 		if(LOG_RPC_CALLS)
 			toLog($data);
@@ -103,7 +103,7 @@ class rXMLRPCRequest
 			$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, RPC_TIME_OUT);
 			if($socket) 
 			{
-				$reqheader =  "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0";
+				$reqheader =  "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0".($trusted ? "" : "UNTRUSTED_CONNECTION\x0"."1\x0");
 				$tosend = strlen($reqheader).":{$reqheader},{$data}";
 				@fwrite($socket,$tosend,strlen($tosend));
 				$result = '';
@@ -166,7 +166,7 @@ class rXMLRPCRequest
 		$this->commands[] = $cmd;
 	}
 
-	public function run()
+	public function run($trused = true)
 	{
 	        $ret = false;
 		$this->i8s = array();
@@ -174,7 +174,7 @@ class rXMLRPCRequest
 		$this->val = array();
 		if($this->makeCall())
 		{
-			$answer = self::send($this->content);
+			$answer = self::send($this->content,$trused);
 			if(!empty($answer))
 			{
 				if($this->parseByTypes)
@@ -223,9 +223,9 @@ class rXMLRPCRequest
 		return($ret);
 	}
 
-	public function success()
+	public function success($trused = true)
 	{
-		return($this->run() && !$this->fault);
+		return($this->run($trused) && !$this->fault);
 	}
 }
 
