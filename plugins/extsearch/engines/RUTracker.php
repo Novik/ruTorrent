@@ -33,6 +33,9 @@ class RUTrackerEngine extends commonEngine
 					$item["time"] = floatval($matches["date"][$i]);
 					$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 					$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
+					if (substr($link, 0, 2) === 'dl') {
+						$link = 'http://rutracker.cr/forum/'.$link;
+					}
 					$ret[$link] = $item;
 					$added++;
 					if($added>=$limit)
