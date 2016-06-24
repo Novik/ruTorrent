@@ -166,7 +166,7 @@ class rXMLRPCRequest
 		$this->commands[] = $cmd;
 	}
 
-	public function run($trused = true)
+	public function run($trusted = true)
 	{
 	        $ret = false;
 		$this->i8s = array();
@@ -174,7 +174,7 @@ class rXMLRPCRequest
 		$this->val = array();
 		if($this->makeCall())
 		{
-			$answer = self::send($this->content,$trused);
+			$answer = self::send($this->content,$trusted);
 			if(!empty($answer))
 			{
 				if($this->parseByTypes)
@@ -223,9 +223,9 @@ class rXMLRPCRequest
 		return($ret);
 	}
 
-	public function success($trused = true)
+	public function success($trusted = true)
 	{
-		return($this->run($trused) && !$this->fault);
+		return($this->run($trusted) && !$this->fault);
 	}
 }
 
