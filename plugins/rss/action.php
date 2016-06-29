@@ -367,7 +367,7 @@ if($val===null)
 if($dataType=="text/xml")
 	cachedEcho('<?xml version="1.0" encoding="UTF-8"?><data><![CDATA['.$val.']]></data>',"text/xml",true,false);
 else
-	cachedEcho(json_encode($val),$dataType,true,false);
+	cachedEcho(safe_json_encode($val),$dataType,true,false);
 
 ob_flush();
 flush();

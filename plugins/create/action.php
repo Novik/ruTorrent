@@ -163,4 +163,4 @@ if(isset($_REQUEST['cmd']))
 	}
 }
 
-cachedEcho(json_encode($ret),"application/json");
+cachedEcho(safe_json_encode($ret),"application/json");

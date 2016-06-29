@@ -121,7 +121,7 @@ class rHistory
 	}
 	public function get()
 	{
-		return("theWebUI.history = ".json_encode($this->log).";");
+		return("theWebUI.history = ".safe_json_encode($this->log).";");
 	}
 	public function setHandlers()
 	{
@@ -223,7 +223,7 @@ class rHistory
 		$body = str_replace( $fields, $values, $section['body'] );
 		$client = new Snoopy();
 		$client->user = $this->log["pushbullet_key"];
-		$client->fetch($pushBulletEndpoint,"POST","application/json", json_encode(array
+		$client->fetch($pushBulletEndpoint,"POST","application/json", safe_json_encode(array
 		(
 			'type'=>'note',
 			'title'=>$title,

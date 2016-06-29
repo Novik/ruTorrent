@@ -24,7 +24,7 @@ if(isset($_REQUEST['mode']))
 		}
 		case "get":
 		{
-			cachedEcho(json_encode($em->action( $_REQUEST['eng'], $_REQUEST['what'], $_REQUEST['cat'] )),"application/json");
+			cachedEcho(safe_json_encode($em->action( $_REQUEST['eng'], $_REQUEST['what'], $_REQUEST['cat'] )),"application/json");
 			break;
 		}
 		case "loadtorrents":
@@ -77,7 +77,7 @@ if(isset($_REQUEST['mode']))
 				$ret = array( "teg"=>$teg, "data"=>array() );
 				for($i = 0; $i< count($status); $i++)
 					$ret["data"][] = array( "hash"=>$status[$i], "ndx"=>$ndx[$i] );
-				cachedEcho(json_encode($ret),"application/json");
+				cachedEcho(safe_json_encode($ret),"application/json");
 			}
 			break;
 		}

@@ -479,4 +479,4 @@ if(is_null($result))
 	cachedEcho( (isset($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. May be, rTorrent is down?","text/html");
 }
 else
-	cachedEcho(json_encode($result),"application/json");
+	cachedEcho(safe_json_encode($result),"application/json");

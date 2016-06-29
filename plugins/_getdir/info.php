@@ -109,4 +109,4 @@ if(isset($_REQUEST['mode']))
 	}
 }
 
-cachedEcho(json_encode($output),"application/json");
+cachedEcho(safe_json_encode($output),"application/json");

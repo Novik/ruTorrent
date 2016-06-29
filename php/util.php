@@ -218,6 +218,28 @@ function mix2utf($str, $inv = '_')
 	return($str);
 }
 
+
+function utf8ize($mixed) 
+{
+	if(is_array($mixed) || is_object($mixed)) 
+	{
+        	foreach($mixed as $key => $value) 
+        	{
+            		$mixed[$key] = utf8ize($value);
+        	}
+    	} 
+    	else 
+	    	if(is_string($mixed)) 
+		       	$mixed = mix2utf($mixed);
+	return($mixed);
+}
+
+function safe_json_encode($value)
+{
+	$encoded = json_encode($value);
+	return(json_last_error()==JSON_ERROR_NONE ? $encoded : json_encode(utf8ize($value)));
+}
+
 function toLog( $str )
 {
 	global $log_file;
