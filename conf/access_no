@@ -17,4 +17,7 @@ canChangeDLRate = no
 
 [dialogs]
 canChangeTorrentProperties = no
-
+canAddTorrentsWithoutPath = no
+canAddTorrentsWithoutStarting = no
+canAddTorrentsWithResume = no
+canAddTorrentsWithRandomizeHash = no
