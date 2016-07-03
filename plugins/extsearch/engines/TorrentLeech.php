@@ -6,7 +6,7 @@ class TorrentLeechEngine extends commonEngine
 
 	public $categories = array( 'all'=>'', 
 		'Movies'=>'/categories/1,8,9,10,11,12,13,14,15,29',
-		'TV'=>'/categories/2,26,27',
+		'TV'=>'/categories/2,26,27,32',
 		'Games'=>'/categories/3,17,18,19,20,21,22,28,30',
 		'Music'=>'/categories/4,16,31',
 		'Books'=>'/categories/5',
@@ -18,7 +18,7 @@ class TorrentLeechEngine extends commonEngine
 	{
 		$categories = array(
 			'1'=>'Movies','8'=>'Movies','9'=>'Movies','10'=>'Movies','11'=>'Movies','12'=>'Movies','13'=>'Movies','14'=>'Movies','15'=>'Movies','29'=>'Movies',
-			'2'=>'TV','26'=>'TV','27'=>'TV',
+			'2'=>'TV','26'=>'TV','27'=>'TV','32'=>'TV',
 			'3'=>'Games','17'=>'Games','18'=>'Games','19'=>'Games','20'=>'Games','21'=>'Games','22'=>'Games','28'=>'Games','30'=>'Games',
 			'4'=>'Music','16'=>'Music','31'=>'Music',
 			'5'=>'Books',
@@ -30,7 +30,7 @@ class TorrentLeechEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.torrentleech.org';
+		$url = 'https://www.torrentleech.org';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'movies'=>'/categories/1,8,9,10,11,12,13,14,15,29', 
 				'tv'=>'/categories/2,26,27', 'music'=>'/categories/4,16,31', 'games'=>'/categories/3,17,18,19,20,21,22,28,30', 
@@ -48,17 +48,14 @@ class TorrentLeechEngine extends commonEngine
 				(strpos($cli->results, "There are no results found, based on your search parameters")!==false) ||
 				(strpos($cli->results, ">Password")!==false))
 				break;
-
 			$res = preg_match_all('`<td class="category"><a href="/torrents/browse/index/categories/(?P<cat>\d*)">.*'.
-	                        '<td class="name"><span class="title"><a href="/torrent/(?P<id>\d*)">(?P<name>.*)</a></span><br>.*'.
-				'Added in <b>[^<]*</b> on (?P<date>[^<]*)</td>.*'.
-				'<td class="quickdownload">.*</td>.*'.
-				'<td>.*</td>.*'.
-				'<td>(?P<size>[^<]*)</td>.*'.
-				'<td>.*</td>.*'.
-				'<td>(?P<seeds>.*)</td>.*'.
-				'<td>(?P<leech>.*)</td>'.
-				'`siU', $cli->results, $matches);
+					'<td class="name"><span class="title"><a href="/torrent/(?P<id>\d*)">(?P<name>.*)</a></span>.*Added in <b>.*</b>\son\s+(?P<date>\S+ \S+ ).*</td>.*'.
+					'<td class="quickdownload">.*</td>.*'.
+					'<td>.*</td>.*'.
+					'<td>(?P<size>[^<]*)</td>.*'.
+					'<td class="seeders">(?P<seeds>.*)</td>.*'.
+					'<td class="leechers">(?P<leech>.*)</td>'.
+					'`siU', $cli->results, $matches);
 
 			if($res)
 			{
