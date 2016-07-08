@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Általános",
  Downloads			: "Letöltések",
  Connection			: "Kapcsolat",
@@ -85,11 +84,11 @@ var theUILang =
  Logger 			: "Napló",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Betöltés...",
  Torrent_file			: "Torrent fájl",
  Torrent_URL			: "Torrent URL",

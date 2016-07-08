@@ -433,11 +433,11 @@ function makeContent()
 					"<legend>"+theUILang.Bandwidth_Limiting+"</legend>"+
 					"<table>"+
 						"<tr>"+
-							"<td>"+theUILang.Global_max_upl+" ("+theUILang.kbs+"): [0: "+theUILang.unlimited+"]</td>"+
+							"<td>"+theUILang.Global_max_upl+" ("+theUILang.KB + "/" + theUILang.s+"): [0: "+theUILang.unlimited+"]</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"upload_rate\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 						"<tr>"+
-							"<td>"+theUILang.Glob_max_downl+" ("+theUILang.kbs+"): [0: "+theUILang.unlimited+"]</td>"+
+							"<td>"+theUILang.Glob_max_downl+" ("+theUILang.KB + "/" + theUILang.s+"): [0: "+theUILang.unlimited+"]</td>"+
 							"<td class=\"alr\"><input type=\"text\" id=\"download_rate\" class=\"Textbox num\" maxlength=\"6\" /></td>"+
 						"</tr>"+
 					"</table>"+

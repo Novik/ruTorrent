@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Algemeen",
  Downloads			: "Downloads",
  Connection			: "Verbinding",
@@ -85,11 +84,11 @@ var theUILang =
  Logger 			: "Logboek",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Bezig met laden...",
  Torrent_file			: "Torrentbestand",
  Torrent_URL			: "Torrent-URL",

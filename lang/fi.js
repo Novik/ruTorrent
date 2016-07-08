@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "kt/s",
  General			: "Yleiset",
  Downloads			: "Lataukset",
  Connection			: "Yhteydet",

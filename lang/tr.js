@@ -6,7 +6,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Genel",
  Downloads			: "İndirilenler",
  Connection			: "Bağlantı",
@@ -83,11 +82,11 @@ var theUILang =
  Logger 			: "Rapor",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Bekleyiniz...",
  Torrent_file			: "Torrent dosyası",
  Torrent_URL			: "Torrent URL",

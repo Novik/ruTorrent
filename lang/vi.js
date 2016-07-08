@@ -6,7 +6,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Tổng quan",
  Downloads			: "Tải xuống",
  Connection			: "Kết nối",
@@ -83,11 +82,11 @@ var theUILang =
  Logger 			: "Nhật ký",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Đang tải...",
  Torrent_file			: "Tập tin Torrent",
  Torrent_URL			: "Torrent URL",

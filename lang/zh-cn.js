@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "常规",
  Downloads			: "下载",
  Connection			: "连接",
@@ -85,11 +84,11 @@ var theUILang =
  Logger 			: "日志",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "加载中...",
  Torrent_file			: "Torrent 文件",
  Torrent_URL			: "Torrent 链接",

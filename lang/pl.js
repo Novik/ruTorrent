@@ -9,7 +9,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Główne",
  Downloads			: "Pobieranie",
  Connection			: "Połączenie",
@@ -86,11 +85,11 @@ var theUILang =
  Logger 			: "Dziennik",
  s				: "s", // part of "kB/s"
  bytes				: "bajtów",
- KB				: "kB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Wczytywanie...",
  Torrent_file			: "Plik Torrent",
  Torrent_URL			: "Adres pliku Torrent",

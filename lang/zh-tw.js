@@ -6,7 +6,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "一般",
  Downloads			: "下載",
  Connection			: "連線",
@@ -83,11 +82,11 @@ var theUILang =
  Logger 			: "紀錄",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "載入中...",
  Torrent_file			: "Torrent 檔案",
  Torrent_URL			: "Torrent 網址",

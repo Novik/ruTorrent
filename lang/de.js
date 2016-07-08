@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Allgemein",
  Downloads			: "Downloads",
  Connection			: "Verbindung",
@@ -85,11 +84,11 @@ var theUILang =
  Logger 			: "Log",
  s				: "s", // part of "KB/s"
  bytes				: "Bytes",
- KB				: "kB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Lade rTorrent WebUI in Deutsch...",
  Torrent_file			: "Torrent Datei",
  Torrent_URL			: "Torrent URL",

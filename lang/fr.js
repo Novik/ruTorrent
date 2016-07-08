@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "ko/s",
  General			: "Général",
  Downloads			: "Téléchargement",
  Connection			: "Connexion",

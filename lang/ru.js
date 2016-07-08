@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "кБ/с",
  General			: "Общее",
  Downloads			: "Закачки",
  Connection			: "Соединение",
