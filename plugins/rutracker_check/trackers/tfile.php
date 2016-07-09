@@ -10,7 +10,7 @@ class TfileCheckImpl
             if (strtoupper($matches["hash"])==$hash) {
                 return  ruTrackerChecker::STE_UPTODATE;
             }
-            if (preg_match('`\"download.php\?id=(?P<id>\d+)\"`', $client->results, $matches)) {
+            if (preg_match('`\"download.php\?id=(?P<id>\d+)`', $client->results, $matches)) {
                 $client->setcookies();
                 $client->fetchComplex("http://tfile.co/forum/download.php?id=".$matches["id"]);
                 if ($client->status != 200) return (($client->status < 0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED);
