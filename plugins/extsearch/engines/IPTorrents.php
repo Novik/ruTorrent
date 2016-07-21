@@ -25,7 +25,7 @@ class IPTorrentsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.iptorrents.com';
+		$url = 'https://www.iptorrents.com';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 
 				'movies'=>'&l72=1', 'tv'=>'&l73=1', 'music'=>'&l75=1', 'games'=>'&l74=1', 

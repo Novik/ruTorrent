@@ -6,7 +6,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Allmänt",
  Downloads			: "Nedladdningar",
  Connection			: "Anslutning",
@@ -83,11 +82,11 @@ var theUILang =
  Logger 			: "Logg",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Laddar...",
  Torrent_file			: "Torrent-fil",
  Torrent_URL			: "Torrent-address",
@@ -240,6 +239,7 @@ var theUILang =
  scrapeUpdate			: "Senaste uppdatering",
  trkInterval			: "Intervall",
  logAutoSwitch			: "Byt automatiskt till 'Logg'flik",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "PHP-direktivet register_argc_argv är inställt på OFF. Byt till ON, annars kommer några insticksprogram inte fungera korrekt.",
  addTorrentFailedURL		: "Det gick inte att lägga till torrent. Kan inte hämta webbadress.",
  addTorrentFailedFile		: "Det gick inte att lägga till torrent. Hämtat innehåll är inte en giltig torrentfil.",
@@ -260,11 +260,16 @@ var theUILang =
  About_program			: "Om ruTorrent",
  Toggle_menu			: "Visa/dölj meny",
  Toggle_details 		: "Visa/dölj detaljer",
- Toggle_categories		: "Visa/dölj ketegorier",
+ Toggle_categories		: "Visa/dölj kategorier",
  Delete_current_torrents	: "Ta bort aktuell(a) torrent(er)",
  Select_all			: "Markera alla",
  Deselect_all			: "Avmarkera alla",
  showSpeedInTitle		: "Visa hastighet i titel",
  badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work.",
+ doRandomizeHash		: "Randomize info hashes for cross-seeding",
+ Recreate_files 		: "Queue files recreation",
+ Address			: "Address",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };

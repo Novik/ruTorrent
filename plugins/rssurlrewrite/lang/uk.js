@@ -3,7 +3,7 @@
  *
  * Ukrainian language file.
  *
- * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
  theUILang.rssNewRule		= "Створити правило";
@@ -24,6 +24,6 @@
  theUILang.rssURLGUID		= "URL-адреса опису";
  theUILang.rssURLHref		= "URL-адреса завантаження";
  theUILang.rssPatternError	= "В оформленні виявлено помилку.";
- theUILang.rssStatus		= "Розсилка"; 
+ theUILang.rssStatus		= "Розсилка";
 
 thePlugins.get("rssurlrewrite").langLoaded();

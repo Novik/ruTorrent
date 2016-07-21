@@ -13,7 +13,7 @@
  theUILang.allTrackers		= "Alle trackers";
  theUILang.ClearButton		= "Reset";
  theUILang.ClearQuest		= "Weet u zeker dat u de data voor de geslecteerde trackers wilt resetten ?";
- theUILang.selectedTorrent	= "Geselecteerde torrent";
+ theUILang.selectedTorrent	= "Geselecteerde torrent(s)";
  theUILang.ratioDay		= "Ratio/dag";
  theUILang.ratioWeek		= "Ratio/week";
  theUILang.ratioMonth		= "Ratio/maand";

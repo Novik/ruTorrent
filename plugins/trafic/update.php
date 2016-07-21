@@ -33,17 +33,32 @@
 			for($i = 0; $i<count($req->strings); $i++)
 				$nowTorrents[$req->strings[$i]] = array_slice($req->i8s,($i+1)*2,2);
 			ksort($nowTorrents);
-			if($file=@fopen($dir.'last.csv',"w"))
+
+			$randName = uniqid(getTempDirectory()."rutorrent-trafic-");
+			if($file=@fopen($randName,"w"))
 			{
-				fputcsv($file,$now);
-				foreach($nowTorrents as $key=>$data)
+				if( ($ok = fputcsv($file,$now))!==false )
 				{
-					$tmp = $data;
-					array_unshift($tmp, $key);
-					fputcsv($file,$tmp);
+					foreach($nowTorrents as $key=>$data)
+					{
+						$tmp = $data;
+						array_unshift($tmp, $key);
+						if( ($ok = fputcsv($file,$tmp))===false )
+							break;
+					}
+				}					
+				if($ok !== false)
+				{
+					if( fclose($file) !== false )
+					{
+						rename($randName,$dir.'last.csv');
+						@chmod($dir.'last.csv',$profileMask & 0666);
+					}
+					else
+						unlink($randName);
 				}
-				fclose($file);
-				@chmod($dir.'last.csv',$profileMask & 0666);
+				else
+					unlink($randName);
 			}
 			if($needUpdate)
 			{

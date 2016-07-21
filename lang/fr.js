@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "ko/s",
  General			: "Général",
  Downloads			: "Téléchargement",
  Connection			: "Connexion",
@@ -16,12 +15,12 @@ var theUILang =
  Advanced			: "Avancé",
  User_Interface 		: "Interface",
  Confirm_del_torr		: "Confirmer la suppression des torrents",
- Update_GUI_every		: "Fréq. des MAJ de l'UI",
+ Update_GUI_every		: "Fréq. des MàJ de l'UI",
  ms				: "ms",
  Alt_list_bckgnd		: "Couleurs alternées pour la liste",
  Show_cat_start 		: "Afficher les catégories au démarrage",
  Show_det_start 		: "Afficher les détails au démarrage",
- Dnt_start_down_auto		: "Ne pas démarrer le télécharchement",
+ Dnt_start_down_auto		: "Ne pas démarrer le téléchargement",
  Listening_Port 		: "Port d'écoute",
  Port_f_incom_conns		: "Port utilisé pour les connexions entrantes",
  Rnd_port_torr_start		: "Sélection aléatoire du port à chaque fois que rTorrent démarre",
@@ -238,10 +237,11 @@ var theUILang =
  prioritizeFirst		: "Commencer par le début",
  prioritizeLast 		: "Commencer par la fin",
  prioritizeNormal		: "Normal",
- updateTracker			: "MAJ du tracker",
+ updateTracker			: "MàJ du tracker",
  scrapeUpdate			: "A été mis à jour",
  trkInterval			: "Intervalle",
  logAutoSwitch			: "Mise au premier automatique de l'onglet 'Log'",
+ showLabelSize			: "Afficher la taille des étiquettes",
  phpParameterUnavailable	: "La directive PHP 'register_argc_argv' est désactivée. Veuillez l'activer sinon certains plugins ne vont pas fonctionner.",
  addTorrentFailedURL		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Impossible de résoudre l'URL.",
  addTorrentFailedFile		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Le contenu récupéré n'est pas un fichier torrent.",
@@ -254,8 +254,8 @@ var theUILang =
  dontSet			: "Sans",
  webBadSessionError		: "Le plug-in ne fonctionnera pas. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
  webBadSessionWarning		: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
- Developers			: "Développeurs",
- Check_new_version		: "Vérifier une nouvelle version",
+ Developers			: "Développeurs ",
+ Check_new_version		: "Recherche d'une nouvelle version...",
  here				: "ici",
  Num_No 			: "N°", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Cette fenêtre",
@@ -268,5 +268,10 @@ var theUILang =
  Deselect_all			: "Désélectionner tout",
  showSpeedInTitle		: "Vitesse de transfert dans la barre de titre",
  badTempPath 			: "Le serveur web n'a pas accès en lecture/ecriture/éxécution au répertoire tmp. ruTorrent ne marchera pas.",
- badTempPath2			: "L'utilisateur rTorrent n'a pas accès en lecture/ecriture/éxécution au répertoire tmp. ruTorrent ne marchera pas."
+ badTempPath2			: "L'utilisateur rTorrent n'a pas accès en lecture/ecriture/éxécution au répertoire tmp. ruTorrent ne marchera pas.",
+ doRandomizeHash		: "Info hash aléatoire pour faire du 'cross-seeding'",
+ Recreate_files 		: "Recréation des fichiers",
+ Address			: "Adresse",
+ PeerDL 			: "R. Client",
+ PeerDownloaded 		: "Reçu Client"
 };

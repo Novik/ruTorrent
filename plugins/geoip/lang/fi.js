@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Add comment";
+ theUILang.peerComment		= "Add comment";
  theUILang.peerCommentLabel	= "Enter new comment for peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Maa";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Arabiemiirikunnat";
  theUILang.country[ "af" ] = "Afganistan";
@@ -43,12 +44,13 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brasilia";
  theUILang.country[ "bs" ] = "Bahama";
  theUILang.country[ "bt" ] = "Bhutan";
  theUILang.country[ "bv" ] = "Bouvet'nsaari";
  theUILang.country[ "bw" ] = "Botswana";
- theUILang.country[ "by" ] = "Valko";
+ theUILang.country[ "by" ] = "Valko-Venäjä";
  theUILang.country[ "bz" ] = "Belize";
  theUILang.country[ "ca" ] = "Kanada";
  theUILang.country[ "cc" ] = "Kookossaaret";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Kuuba";
  theUILang.country[ "cv" ] = "Kap Verde";
+ theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Joulusaari";
  theUILang.country[ "cy" ] = "Kypros";
  theUILang.country[ "cz" ] = "Tsekki";
@@ -107,8 +110,8 @@
  theUILang.country[ "gu" ] = "Guam";
  theUILang.country[ "gw" ] = "Guinea-Bissau";
  theUILang.country[ "gy" ] = "Guyana";
- theUILang.country[ "hk" ] = "Hong Kong";
- theUILang.country[ "hm" ] = "Heard ja McDonald Islands";
+ theUILang.country[ "hk" ] = "Hongkong";
+ theUILang.country[ "hm" ] = "Heard ja McDonaldinsaaret";
  theUILang.country[ "hn" ] = "Hondurasin";
  theUILang.country[ "hr" ] = "Kroatia";
  theUILang.country[ "ht" ] = "Haiti";
@@ -116,7 +119,7 @@
  theUILang.country[ "id" ] = "Indonesia";
  theUILang.country[ "ie" ] = "Irlanti";
  theUILang.country[ "il" ] = "Israel";
- theUILang.country[ "im" ] = "Isle of Man";
+ theUILang.country[ "im" ] = "Mansaari";
  theUILang.country[ "in" ] = "Intia";
  theUILang.country[ "io" ] = "Brittiläinen Intian valtameren alue";
  theUILang.country[ "iq" ] = "Irak";
@@ -125,7 +128,7 @@
  theUILang.country[ "it" ] = "Italia";
  theUILang.country[ "je" ] = "Jersey";
  theUILang.country[ "jm" ] = "Jamaica";
- theUILang.country[ "jo" ] = "Jordan";
+ theUILang.country[ "jo" ] = "Jordania";
  theUILang.country[ "jp" ] = "Japani";
  theUILang.country[ "ke" ] = "Kenia";
  theUILang.country[ "kg" ] = "Kirgisia";
@@ -212,7 +215,7 @@
  theUILang.country[ "sg" ] = "Singapore";
  theUILang.country[ "sh" ] = "Saint Helena";
  theUILang.country[ "si" ] = "Slovenia";
- theUILang.country[ "sj" ] = "Svalbard ja Jan Mayen";
+ theUILang.country[ "sj" ] = "Huippuvuoret ja Jan Mayen";
  theUILang.country[ "sk" ] = "Slovakia";
  theUILang.country[ "sl" ] = "Sierra Leonen";
  theUILang.country[ "sm" ] = "San Marino";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Etelä-Sudan";
  theUILang.country[ "st" ] = "Sao Tome ja Principe";
+ theUILang.country[ "su" ] = "Venäjä";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syyria";
  theUILang.country[ "sz" ] = "Swazimaa";
  theUILang.country[ "tc" ] = "Turks-ja Caicossaaret";
@@ -236,7 +241,6 @@
  theUILang.country[ "tn" ] = "Tunisia";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turkki";
- theUILang.country[ "tp" ] = "Portugalin Timor";
  theUILang.country[ "tt" ] = "Trinidad ja Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ukraina";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Yhdistynyt kuningaskunta";
- theUILang.country[ "um" ] = "Yhdysvaltain pienet erillissaaret";
  theUILang.country[ "un" ] = "Tuntematon";
  theUILang.country[ "us" ] = "Yhdysvallat";
  theUILang.country[ "uy" ] = "Uruguay";
@@ -260,7 +263,7 @@
  theUILang.country[ "ws" ] = "Samoa";
  theUILang.country[ "ye" ] = "Jemen";
  theUILang.country[ "yt" ] = "Mayotte";
- theUILang.country[ "za" ] = "SouthAfrica";
+ theUILang.country[ "za" ] = "Etelä-Afrikka";
  theUILang.country[ "zm" ] = "Sambiassa";
  theUILang.country[ "zw" ] = "Zimbabwe";
 

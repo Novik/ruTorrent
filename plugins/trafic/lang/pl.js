@@ -13,7 +13,7 @@
  theUILang.allTrackers		= "Wszystkie trackery";
  theUILang.ClearButton		= "Wyczyść";
  theUILang.ClearQuest		= "Czy na pewno chcesz wyczyścić statystyki dla tego trackera?";
- theUILang.selectedTorrent	= "Wybrany torrent";
- theUILang.ratioDay		= "Ratio/day";
- theUILang.ratioWeek		= "Ratio/week";
- theUILang.ratioMonth		= "Ratio/month";
+ theUILang.selectedTorrent	= "Wybrany torrent(y)";
+ theUILang.ratioDay		= "Ratio/dzień";
+ theUILang.ratioWeek		= "Ratio/tydzień";
+ theUILang.ratioMonth		= "Ratio/miesiąc";

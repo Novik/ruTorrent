@@ -94,6 +94,7 @@ if(plugin.canChangeOptions())
 			$('#unpack_name').prop('checked',(theWebUI.unpackData.addName == 1));
 			$('#edit_unpack1').val( theWebUI.unpackData.path );
 			$('#edit_filter').val( theWebUI.unpackData.filter );
+			linked( $$('unpack_enabled'), 0, ['edit_filter'] );
 			if(plugin.btn)
 				plugin.btn.hide();
 		}
@@ -170,7 +171,8 @@ plugin.onLangLoaded = function()
 
 		plugin.attachPageToOptions( $("<div>").attr("id","st_unpack").html(
 			"<div>"+
-				"<input id=\"unpack_enabled\" type=\"checkbox\"/>"+
+				"<input id=\"unpack_enabled\" type=\"checkbox\""+
+					" onchange='linked(this, 0, [\"edit_filter\"]);' />"+
 				"<label for=\"unpack_enabled\">"+
 					theUILang.unpackEnabled+
 				"</label>"+

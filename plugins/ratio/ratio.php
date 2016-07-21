@@ -9,6 +9,7 @@ eval(getPluginConf('ratio'));
 @define('RAT_STOP_AND_REMOVE',1);
 @define('RAT_ERASE',2);
 @define('RAT_ERASEDATA',3);
+@define('RAT_ERASEDATAALL',4);
 @define('RAT_FIRSTTHROTTLE',10);
 
 class rRatio
@@ -29,6 +30,13 @@ class rRatio
 	}
 	public function pad()
 	{
+	        for($i=0; $i<count($this->rat); $i++)
+	        {
+	        	$rat = &$this->rat[$i];
+	        	$rat["min"] = iclamp($rat["min"]);
+	        	$rat["max"] = iclamp($rat["max"]);
+	        	$rat["upload"] = iclamp($rat["upload"],0,8796093022207);
+	        }
 		for($i=count($this->rat); $i<MAX_RATIO; $i++)
 			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>20, "name"=>"ratio".$i, "time"=>-1 );
 	}
@@ -178,6 +186,12 @@ class rRatio
 								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("d.set_custom5=")."1; ".getCmd("d.erase="))));
 							break;
 						}
+						case RAT_ERASEDATAALL:
+						{
+							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
+								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("d.set_custom5=")."2; ".getCmd("d.erase="))));
+							break;
+						}
 						default:
 						{
 							$thr = "thr_".($rat["action"]-RAT_FIRSTTHROTTLE);
@@ -215,11 +229,11 @@ class rRatio
 			if(isset($_REQUEST['rat_action'.$i]))
 				$arr["action"] = intval($_REQUEST['rat_action'.$i]);
 			if(isset($_REQUEST['rat_min'.$i]))
-			        $arr["min"] = intval($_REQUEST['rat_min'.$i]);
+			        $arr["min"] = iclamp($_REQUEST['rat_min'.$i]);
 			if(isset($_REQUEST['rat_max'.$i]))
-			        $arr["max"] = intval($_REQUEST['rat_max'.$i]);
+			        $arr["max"] = iclamp($_REQUEST['rat_max'.$i]);
 			if(isset($_REQUEST['rat_upload'.$i]))
-			        $arr["upload"] = intval($_REQUEST['rat_upload'.$i]);
+			        $arr["upload"] = iclamp($_REQUEST['rat_upload'.$i],0,8796093022207);
 			if(isset($_REQUEST['rat_time'.$i]))
 			        $arr["time"] = (is_numeric($_REQUEST['rat_time'.$i]) ? floatval($_REQUEST['rat_time'.$i]) : -1);
 			if(isset($_REQUEST['rat_name'.$i]))

@@ -5,7 +5,7 @@ class rCache
 {
 	protected $dir;
 
-	public function rCache( $name = '' )
+	public function __construct( $name = '' )
 	{
 		$this->dir = getSettingsPath().$name;
 		if(!is_dir($this->dir))
@@ -43,13 +43,25 @@ class rCache
 			if(self::flock( $fp ))
 			{
 				ftruncate( $fp, 0 );
-	        		fwrite( $fp, serialize( $rss ) );
-		        	fflush( $fp );
-				flock( $fp, LOCK_UN );
-        			fclose( $fp );
-       				rename( $name.'.tmp', $name );
-				@chmod($name,$profileMask & 0666);
-        			return(true);
+				$str = serialize( $rss );
+	        		if((fwrite( $fp, $str ) == strlen($str)) && fflush( $fp ))
+	        		{
+					flock( $fp, LOCK_UN );
+        				if(fclose( $fp ) !== false)
+        				{
+	       					rename( $name.'.tmp', $name );
+						@chmod($name,$profileMask & 0666);
+	        				return(true);
+					}
+					else
+						unlink( $name.'.tmp' );
+				}
+				else
+				{
+					flock( $fp, LOCK_UN );
+        				fclose( $fp );
+        				unlink( $name.'.tmp' );
+				}	        			
 	        	}
 	        	else
 		        	fclose( $fp );

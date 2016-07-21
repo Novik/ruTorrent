@@ -8,17 +8,19 @@ set_time_limit(0);
 
 if(isset($_REQUEST["label"]))
 {
-	$label = strtolower(rawurldecode($_REQUEST["label"]));
-	$name = dirname(__FILE__)."/labels/".$label.".png";
+	$label = function_exists('mb_strtolower') 
+		? mb_strtolower(rawurldecode($_REQUEST["label"]), 'utf-8') 
+		: strtolower(rawurldecode($_REQUEST["label"]));
+	$name = getSettingsPath().'/labels';
+	if(!is_dir($name))
+		makeDirectory($name);
+	$name.=('/'.$label.".png");
 	if(is_readable($name))
 	{
 		sendFile( $name, "image/png" );
 		exit;
 	}
-	$name = getSettingsPath().'/labels';
-	if(!is_dir($name))
-		makeDirectory($name);
-	$name.=('/'.$label.".png");
+	$name = dirname(__FILE__)."/labels/".$label.".png";
 	if(is_readable($name))
 	{
 		sendFile( $name, "image/png" );

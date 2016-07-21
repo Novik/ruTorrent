@@ -3,7 +3,7 @@
  *
  * Ukrainian language file.
  *
- * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
  theUILang.doesntSupportHTML5	= "Плагін filedrop: ваш браузер не підтримує вивантаження файлів за допомогою HTML5. Плагін вимкнено.";

@@ -34,7 +34,7 @@ class rpcCache
 
 	protected $dir;
         
-        public function rpcCache()
+        public function __construct()
         {
 		$this->dir = getSettingsPath()."/httprpc";
 		if(!is_dir($this->dir))
@@ -48,7 +48,8 @@ class rpcCache
 		if($result!==false)
 		{
 			$cid = crc32($result);
-			file_put_contents($this->dir.'/'.dechex($cid),$result);
+			if(file_put_contents($this->dir.'/'.dechex($cid),$result)!=strlen($result))
+				@unlink($this->dir.'/'.dechex($cid));
 		}
 		$this->strip();
 		return($cid);
@@ -61,7 +62,11 @@ class rpcCache
 		{
 			$ret = @file_get_contents($this->dir.'/'.dechex($cid));
 			if($ret!==false)
+			{
 				$torrents = unserialize($ret);
+				if($torrents===false)
+					$torrents = array();
+			}
 		}
 		return($torrents);
 	}

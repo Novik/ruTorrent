@@ -1,3 +1,11 @@
+# Eclipse
+.settings
+.settings/*
+.buildpath
+.project
+.jsdtscope
+
+# ruTorrent
 conf/users/*
 share/users/*
 share/torrents/*
@@ -27,3 +35,5 @@ plugins/plimits
 plugins/localnews
 plugins/hints
 plugins/dmca
+.idea/*
+*.iml

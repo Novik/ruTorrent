@@ -1,14 +1,14 @@
-﻿/*
+/*
  * Polish language file.
  *
  * Initial Author: Penknife (penknife1@gmail.com)
  *
- * Author: Dare (piczok@gmail.com)
+ * Author: Dare (piczok@gmail.com) 
+ * Author: Kolor (kolor@superseedbox.co.uk)
  */
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Główne",
  Downloads			: "Pobieranie",
  Connection			: "Połączenie",
@@ -85,11 +85,11 @@ var theUILang =
  Logger 			: "Dziennik",
  s				: "s", // part of "kB/s"
  bytes				: "bajtów",
- KB				: "kB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Wczytywanie...",
  Torrent_file			: "Plik Torrent",
  Torrent_URL			: "Adres pliku Torrent",
@@ -242,6 +242,7 @@ var theUILang =
  scrapeUpdate			: "Ostatnio aktualizowany",
  trkInterval			: "Interwał",
  logAutoSwitch			: "Automatycznie przejdź do zakładki 'Log'",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "Ustawienie PHP 'register_argc_argv' jest wyłączone! Poproś administratora o zmianę, inaczej niektóre wtyczki nie będą poprawnie działać.",
  addTorrentFailedURL		: "Dodawanie torrenta - niepowodzenie! Nie udało się pobrać URL.",
  addTorrentFailedFile		: "Dodawanie torrenta - niepowodzenie! Pobrana zawartość nie jest poprawnym plikiem torrent.",
@@ -252,21 +253,26 @@ var theUILang =
  phpExtensionNotFoundError	: "Plugin nie zadziała. Rozszerzenie PHP musi zostać zainstalowane",
  trkPrivate			: "Prywatny",
  dontSet			: "Nie ustawiaj",
- webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
- webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory",
- Developers			: "Developers",
- Check_new_version		: "Check new version",
- here				: "here",
- Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "This screen",
- About_program			: "About ruTorrent",
- Toggle_menu			: "Toggle menu",
- Toggle_details 		: "Toggle details",
- Toggle_categories		: "Toggle categories",
- Delete_current_torrents	: "Delete current torrent(s)",
- Select_all			: "Select all",
- Deselect_all			: "Deselect all",
- showSpeedInTitle		: "Show speed in the title",
- badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ webBadSessionError		: "Plugin nie zadziała. Użytkownik webservera musi mieć dostęp do katalogu sesji rtorrent ",
+ webBadSessionWarning		: "Niektóre funkcje będą niedostępne. Użytkownik webservera musi mieć dostęp do katalogu sesji rtorrent",
+ Developers			: "Deweloperzy",
+ Check_new_version		: "Sprawdz nową wersję",
+ here				: "Tutaj",
+ Num_No 			: "Nr", 
+ This_screen			: "Ten ekran",
+ About_program			: "O ruTorrent",
+ Toggle_menu			: "Menu przełączania",
+ Toggle_details 		: "Szczegóły przełączania",
+ Toggle_categories		: "Kategorie przełączania",
+ Delete_current_torrents	: "Usuń obecne torrenty",
+ Select_all			: "Wybierz wszystkie",
+ Deselect_all			: "Odznacz wszystkie",
+ showSpeedInTitle		: "Pokaż prędkość w tytule",
+ badTempPath 			: "Użytkownik webservera nie ma czytelnego/pisanego/wykonalnego dostępu do katalogu. ruTorrent nie zadziała",
+ badTempPath2			: "Użytkownik rTorrent nie ma czytelnego/pisanego/wykonalnego dostępu do katalogu. ruTorrent nie zadziała.",
+ doRandomizeHash		: "Randomize info hashes for cross-seeding",
+ Recreate_files 		: "Queue files recreation",
+ Address			: "Address",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };

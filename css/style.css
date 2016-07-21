@@ -118,11 +118,11 @@ div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize;
 div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
 div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
 
-div#stg {width: 600px; height: 400px; position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
+div#stg {width: 600px; height: 460px; position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
 div#stg_c {overflow: hidden}
 div#stg-header { background-image: url(../images/settings.gif); }
 
-div#stg .lm {width: 120px; height: 353px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
+div#stg .lm {width: 120px; height: 413px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
 .ie div#stg .lm {width: 125px; position: static;}
 .ie9 div#stg .lm {position: static}
 .ie div#stg {width: 605px;}
@@ -145,7 +145,7 @@ div.algnright {text-align: right; clear: right}
 .lm li a {color: #000000; padding: 1px 2px}
 .lm li a.focus {background-color: #E0E0E0}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
-.stg_con {float: right; position: relative; width: 450px; height: 340px; margin: 4px; background-color: #FAFAFA}
+.stg_con {float: right; position: relative; width: 450px; height: 400px; margin: 4px; background-color: #FAFAFA}
 .ie9 .stg_con {position: static}
 fieldset {margin: 4px}
 * > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px; -webkit-border-radius:6px; border-radius:6px;}
@@ -161,7 +161,7 @@ input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
 fieldset div {padding: 2px}
 .ie7 fieldset div {padding: 0px}
-div input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
+div input, div select {margin: 0 4px; font-size: 11px; padding: 1px 4px}
 legend {color: #000000; font-weight: bold}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
@@ -195,7 +195,7 @@ div.cont {padding: 6px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, 
 
 .tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
 .tabbar li {margin: 0; padding: 0; display: inline; white-space: nowrap;}
-.tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; vertical-align: top}
+.tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; border-top-right-radius:5px; border-top-left-radius:5px; vertical-align: top; cursor: pointer}
 .tabbar li a:hover {border-top: 2px solid #FFC73C}
 .tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
 div#dlgLabel {width: 250px; height: 140px}
@@ -228,7 +228,7 @@ input#prop-peers_min {width: 60px; float: right}
 input#prop-peers_max {width: 60px; float: right}
 input#prop-seed_ratio {width: 40px}
 
-div#yesnoDlg {width: 280px; height: 100px}
+div#yesnoDlg {width: 280px; height: auto; min-height: 100px}
 div#yesnoDlg div.dlg-header {background-image: url(../images/error.gif)}
 div#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 16px}
 div#yesnoDlg div.content input {margin-top: 5px}
@@ -247,10 +247,11 @@ textarea { overflow: auto; }
 .catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }
 
 div#tadd-header {background-image: url(../images/world.gif)}
-div#tadd {display: none; width: 380px; height: 260px; left: 100px; top: 100px; position: absolute; margin: 0 auto }
+div#tadd {display: none; width: 380px; height: 290px; left: 100px; top: 100px; position: absolute; margin: 0 auto }
 div#tadd label {text-align: right; width: 75px; padding-right: 20px; float: left }
 div#tadd br {clear: left; line-height: 0}
 div#tadd input {margin-bottom: 1px}
+div#tadd select { width: 220px }
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
@@ -272,6 +273,8 @@ div#tadd input {margin-bottom: 1px}
 .ie fieldset {padding: 5px}
 .buttons-list {  margin-bottom: 5px }
 #servertime { text-align: center }
+
+#bf {white-space:pre}
 
 @media only screen and (orientation:portrait) 
 { 

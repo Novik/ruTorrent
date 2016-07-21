@@ -97,8 +97,6 @@ plugin.clear = function()
 
 plugin.callNotification = function( type, data, status )
 {
-console.log(type);
-console.log(JSON.stringify(data || this.foreground));
 	var ret = null;
 	type = "onTask"+type;
 	var requester = thePlugins.get(this.foreground.requester);
@@ -182,6 +180,7 @@ plugin.check = function(data)
         this.foreground.no = data.no;
         this.foreground.pid = data.pid;
 	this.foreground.status = data.status;
+	this.foreground.params = data.params;
 	this.fillConsole('tskcmdlog',data.log);
 	this.setConsoleControls( this.fillConsole('tskcmderrors',data.errors) );
 	if(this.foreground.status<0)
@@ -494,7 +493,9 @@ theWebUI.resizeBottom = function( w, h )
 
 plugin.canDetachTask = function()
 {
-	return( (((plugin.running<plugin.maxConcurentTasks) || (plugin.foreground.status>=0)) && (plugin.foreground.pid>0)) || plugin.isInBackground() );
+	return( !(plugin.foreground.options && plugin.foreground.options.nohide) &&
+		((((plugin.running<plugin.maxConcurentTasks) || (plugin.foreground.status>=0)) && (plugin.foreground.pid>0)) 
+			|| plugin.isInBackground()) );
 }
 
 plugin.onGetTasks = function(d)

@@ -12,7 +12,7 @@ if(isset($_REQUEST['result']))
 	{
 		$js = '';
 		foreach( $_REQUEST['result'] as $ndx=>$result )
-			$js.= ('noty("'.(isset($_REQUEST['name'][$ndx]) ? addslashes(rawurldecode($_REQUEST['name'][$ndx])).' - ' : '').
+			$js.= ('noty("'.(isset($_REQUEST['name'][$ndx]) ? addslashes(rawurldecode(htmlspecialchars($_REQUEST['name'][$ndx]))).' - ' : '').
 				'"+theUILang.addTorrent'.$_REQUEST['result'][$ndx].
 				',"'.($_REQUEST['result'][$ndx]=='Success' ? 'success' : 'error').'");');
 		cachedEcho($js,"text/html");
@@ -113,6 +113,8 @@ else
 			}
 			else
 			{
+				if(isset($_REQUEST['randomize_hash']))
+					$torrent->info['unique'] = uniqid("rutorrent-",true);
 				if(rTorrent::sendTorrent($torrent,
 					!isset($_REQUEST['torrents_start_stopped']),
 					!isset($_REQUEST['not_add_path']),

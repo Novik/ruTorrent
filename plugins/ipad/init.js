@@ -138,6 +138,7 @@ plugin.touchMove = function(event)
 			{
 				var target = $(touch.target);
 				var mode = { x: true, y: true };
+				try {
 				while(target.length)
 				{
 					if(target.css("overflow")=="auto")
@@ -156,6 +157,7 @@ plugin.touchMove = function(event)
 					}
                         	        target = target.parent();
 				}
+				} catch(e) {}
 				if(target.length)
 				{
 				        if(mode.x && mode.y)

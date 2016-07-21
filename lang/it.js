@@ -8,7 +8,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Generale",
  Downloads			: "Download",
  Connection			: "Connessioni",
@@ -85,11 +84,11 @@ var theUILang =
  Logger 			: "Eventi",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Apertura...",
  Torrent_file			: "File Torrent",
  Torrent_URL			: "URL Torrent",
@@ -242,6 +241,7 @@ var theUILang =
  scrapeUpdate			: "Last Updated",
  trkInterval			: "Interval",
  logAutoSwitch			: "Autoswitch to 'Log' tab",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to OFF. Change to ON, otherwise some plugins won't work correctly.",
  addTorrentFailedURL		: "Failed to add torrent. Can't retrieve URL.",
  addTorrentFailedFile		: "Failed to add torrent. The retrieved content is not a valid torrent file.",
@@ -268,5 +268,10 @@ var theUILang =
  Deselect_all			: "Deselect all",
  showSpeedInTitle		: "Show speed in the title",
  badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work.",
+ doRandomizeHash		: "Randomize info hashes for cross-seeding",
+ Recreate_files 		: "Queue files recreation",
+ Address			: "Address",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };

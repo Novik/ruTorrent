@@ -16,6 +16,7 @@ class rTask
 	const FLG_RUN_AS_CMD	= 0x0040;
 	const FLG_STRIP_ERRS	= 0x0080;
 	const FLG_NO_LOG	= 0x0100;
+	const FLG_REMOVE_ASCII	= 0x0200;	
 
 	public $params = array();
 	public $id = 0;
@@ -75,11 +76,11 @@ class rTask
 						fputs($sh,'if [ $last -ne 0 ] ; then '."\n");
 					else
 					if($cmd[0]=='>')
-						fputs($sh,'echo "'.substr($cmd,1).'" >> "${dir}"/log'."\n");
+						fputs($sh,'echo '.escapeshellarg(substr($cmd,1)).' >> "${dir}"/log'."\n");
 					else
 					{
 						if($flags & self::FLG_ECHO_CMD)
-							fputs($sh,'echo "'.$cmd.'" >> "${dir}"/log'."\n");
+							fputs($sh,'echo '.escapeshellarg($cmd).' >> "${dir}"/log'."\n");
                                 	        if($flags & self::FLG_NO_ERR)
 							fputs($sh,$cmd.' >> "${dir}"/log'."\n");
 						else
@@ -111,11 +112,47 @@ class rTask
 		@deleteDirectory( $dir );
 	}
 
-	static protected function processLog( $dir, $logName, &$ret, $stripConsole )
+	static protected function removeASCII( $subject )
+	{
+		$subject = preg_replace('/\x1b(\[|\(|\))[;?0-9]*[0-9A-Za-z]/', "",$subject);
+		$subject = preg_replace('/\x1b(\[|\(|\))[;?0-9]*[0-9A-Za-z]/', "",$subject);
+		$subject = preg_replace('/[\x03|\x1a]/', "", $subject);  
+		return($subject);
+	}
+
+	static protected function tail($filename, $lines = 128, $buffer = 16384)
+	{
+		$sz = filesize($filename);
+		if( $sz < 0xFFFF )
+			return( file($filename) );
+		else
+		{
+			 $f = fopen($filename, "rb");
+			fseek($f, -1, SEEK_END);
+			if(fread($f, 1) != "\n") $lines -= 1;
+
+			$output = '';
+			$chunk = '';
+
+			while(ftell($f) > 0 && ($lines >= 0))
+    			{
+				$seek = min(ftell($f), $buffer);
+				fseek($f, -$seek, SEEK_CUR);
+			        $output = ($chunk = fread($f, $seek)).$output;
+			        fseek($f, -mb_strlen($chunk, '8bit'), SEEK_CUR);
+			        $lines -= substr_count($chunk, "\n");
+    			}
+			fclose($f);
+
+			return( explode("\n", $output) );
+		}	
+	}
+
+	static protected function processLog( $dir, $logName, &$ret, $stripConsole, $removeASCII )
 	{
 		if(is_file($dir.'/'.$logName) && is_readable($dir.'/'.$logName))
 		{
-			$lines = file($dir.'/'.$logName);
+			$lines = self::tail($dir.'/'.$logName);
 			foreach( $lines as $line )
 			{
 //				if($stripConsole)
@@ -141,6 +178,8 @@ class rTask
 						$line = implode('',$res);
 					}
 				}
+				if($removeASCII)
+					$line = self::removeASCII( $line );
 				$ret[$logName][] = rtrim($line);
 			}
 			if($stripConsole && (count($ret[$logName])>self::MAX_CONSOLE_SIZE))
@@ -168,8 +207,8 @@ class rTask
 			}
 			if(is_file($dir.'/params') && is_readable($dir.'/params'))
 				$ret["params"] = unserialize(file_get_contents($dir.'/params'));
-			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS));
-			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS));
+			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS), ($flags & self::FLG_REMOVE_ASCII));
+			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS), ($flags & self::FLG_REMOVE_ASCII));
 		}
 		return($ret);
 	}
@@ -216,7 +255,7 @@ class rTask
 				if(is_null($flags))
 					$flags = intval(file_get_contents($dir.'/flags'));
 				$pid = trim(file_get_contents($dir.'/pid'));
-				self::run("kill -9 ".$pid." ; kill -9 `".getExternal("pgrep")." -P ".$pid."`", ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
+				self::run("kill -9 `".getExternal("pgrep")." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
 			}				
 			self::clean($dir);
 		}

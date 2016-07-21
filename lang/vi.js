@@ -6,7 +6,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Tổng quan",
  Downloads			: "Tải xuống",
  Connection			: "Kết nối",
@@ -83,11 +82,11 @@ var theUILang =
  Logger 			: "Nhật ký",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Đang tải...",
  Torrent_file			: "Tập tin Torrent",
  Torrent_URL			: "Torrent URL",
@@ -240,6 +239,7 @@ var theUILang =
  scrapeUpdate			: "Cập nhật lần cuối",
  trkInterval			: "mỗi",
  logAutoSwitch			: "Tự chuyển qua thẻ 'Nhật ký'",
+ showLabelSize			: "Show label size",
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to OFF. Change to ON, otherwise some plugins won't work correctly.",
  addTorrentFailedURL		: "Không thêm torrent được. Không thể tải được URL.",
  addTorrentFailedFile		: "Không thêm torrent được. Nội dung tải về không phải là tập tin torrent.",
@@ -266,5 +266,10 @@ var theUILang =
  Deselect_all			: "Bỏ chọn tất cả",
  showSpeedInTitle		: "Hiển thị tốc độ ở tiêu đề",
  badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work.",
+ doRandomizeHash		: "Randomize info hashes for cross-seeding",
+ Recreate_files 		: "Queue files recreation",
+ Address			: "Address",
+ PeerDL 			: "Peer DL",
+ PeerDownloaded 		: "Peer Downloaded"
 };

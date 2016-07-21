@@ -72,7 +72,7 @@ if(isset($_REQUEST['cmd']))
 		}
 		case "create":
 		{
-			$error = 'theUILang.cantExecExternal';
+			$error = "Invalid parameters";
 		        if(isset($_REQUEST['path_edit']))
 		        {
 		        	$path_edit = trim($_REQUEST['path_edit']);
@@ -119,7 +119,7 @@ if(isset($_REQUEST['cmd']))
 						$useExternal = "inner";
 					$task = new rTask( array
 					( 
-						'arg'=>call_user_func('end',explode('/',$path_edit)),
+						'arg'=>call_user_func('getFileName',$path_edit),
 						'requester'=>'create',
 						'name'=>'create', 
 						'path_edit'=>$_REQUEST['path_edit'],
@@ -145,7 +145,7 @@ if(isset($_REQUEST['cmd']))
 					break;
 				}
 				else
-					$error = 'theUILang.incorrectDirectory';				
+					$error = 'Incorrect directory ('.mb_substr($path_edit,mb_strlen($topDirectory)-1).')';
 			}
 			$ret = array( "no"=>-1, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array($error) );
 			break;
@@ -163,4 +163,4 @@ if(isset($_REQUEST['cmd']))
 	}
 }
 
-cachedEcho(json_encode($ret),"application/json");
+cachedEcho(safe_json_encode($ret),"application/json");

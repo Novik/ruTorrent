@@ -169,10 +169,10 @@ function findRemoteEXE( $exe, $err, &$remoteRequests )
 	{
 		$path=realpath(dirname('.'));
 		global $pathToExternals;
-		$add = '';
+		$cmd = array( "sh", addslash($path)."test.sh", $exe, $st );
 		if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-			$add = " ".escapeshellarg($pathToExternals[$exe]);
-		$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", array( "sh", "-c", escapeshellarg(addslash($path)."test.sh")." ".$exe." ".escapeshellarg($st).$add)));
+			$cmd[] = $pathToExternals[$exe];
+		$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", $cmd));
 		$req->run();
 		$remoteRequests[$exe] = array( "path"=>$st, "err"=>array() );
 	}
@@ -210,10 +210,14 @@ $settingsFlags = array(
 	"canChangeULRate"	=> 0x0020,
 	"canChangeDLRate"	=> 0x0040,
 	"canChangeTorrentProperties"	=> 0x0080,
+	"canAddTorrentsWithoutPath"	=> 0x0100,
+	"canAddTorrentsWithoutStarting"	=> 0x0200,
+	"canAddTorrentsWithResume"	=> 0x0400,	
+	"canAddTorrentsWithRandomizeHash"	=> 0x0800,	
 );
 $perms = 0;
 foreach($settingsFlags as $flagName=>$flagVal)
-	if(array_key_exists($flagName,$permissions) && $permissions[$flagName])
+	if(!array_key_exists($flagName,$permissions) || $permissions[$flagName])
 		$perms|=$flagVal;
 $jResult .= "theWebUI.showFlags = ".$perms.";\n";
 $jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";

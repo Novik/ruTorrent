@@ -21,7 +21,7 @@ if(isset($_REQUEST['mode']))
 		}
 		case "info":
 		{
-			cachedEcho(json_encode($em->getInfo()),"application/json");
+			cachedEcho(safe_json_encode($em->getInfo()),"application/json");
 			break;			
 		}
 	}

@@ -51,6 +51,7 @@
  theUILang.rssInterval2d		= "2 дня";
  theUILang.rssInterval3d		= "3 дня";
  theUILang.rssInterval4d		= "4 дня";
+ theUILang.rssInterval6d		= "6 дней";
  theUILang.rssInterval1w		= "1 неделя";
  theUILang.rssInterval2w		= "2 недели";
  theUILang.rssInterval3w		= "3 недели";

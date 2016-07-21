@@ -57,6 +57,15 @@ if(plugin.canChangeOptions())
 			$$('not_autoclose').checked = ( theWebUI.history.autoclose != 0 );
 			$('#not_closeinterval').val( theWebUI.history.closeinterval );
 			$('#history_limit').val( theWebUI.history.limit );
+			$('#pushbullet_key').val( theWebUI.history.pushbullet_key );
+			$$('pushbullet_enabled').checked = ( theWebUI.history.pushbullet_enabled != 0 );			
+			$$('pushbullet_addition').checked = ( theWebUI.history.pushbullet_addition != 0 );
+			$$('pushbullet_finish').checked = ( theWebUI.history.pushbullet_finish != 0 );
+			$$('pushbullet_deletion').checked = ( theWebUI.history.pushbullet_deletion != 0 );
+
+			$('#not_autoclose').change();
+			$('#pushbullet_enabled').change();
+
 			plugin.rebuildNotificationsPage();
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
@@ -69,7 +78,12 @@ if(plugin.canChangeOptions())
 			($$('history_deletion').checked != ( theWebUI.history.deletion != 0 )) ||
 			($$('not_autoclose').checked != ( theWebUI.history.autoclose != 0 )) ||
 			($('#not_closeinterval').val() != theWebUI.history.closeinterval) ||
-			($('#history_limit').val() != theWebUI.history.limit));
+			($('#history_limit').val() != theWebUI.history.limit) ||
+			($$('pushbullet_enabled').checked != ( theWebUI.history.pushbullet_enabled != 0 )) ||
+			($$('pushbullet_addition').checked != ( theWebUI.history.pushbullet_addition != 0 )) ||
+			($$('pushbullet_finish').checked != ( theWebUI.history.pushbullet_finish != 0 )) ||
+			($$('pushbullet_deletion').checked != ( theWebUI.history.pushbullet_deletion != 0 )) ||
+			($('#pushbullet_key').val() != theWebUI.history.pushbullet_key));
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
@@ -87,73 +101,119 @@ if(plugin.canChangeOptions())
 			"&finish=" + ( $$('history_finish').checked  ? '1' : '0' ) +
 			"&closeinterval=" + $('#not_closeinterval').val() +
 			"&autoclose=" + ( $$('not_autoclose').checked  ? '1' : '0' ) +
-			"&limit=" + $('#history_limit').val();
+			"&limit=" + $('#history_limit').val() +
+			"&pushbullet_addition=" + ( $$('pushbullet_addition').checked ? '1' : '0' ) +
+			"&pushbullet_deletion=" + ( $$('pushbullet_deletion').checked  ? '1' : '0' ) +
+			"&pushbullet_finish=" + ( $$('pushbullet_finish').checked  ? '1' : '0' ) +
+			"&pushbullet_enabled=" + ( $$('pushbullet_enabled').checked  ? '1' : '0' ) +			
+			"&pushbullet_key=" + $('#pushbullet_key').val();
+
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/history/action.php";
 		this.dataType = "script";
 	}
 }
 
-if(plugin.canChangeTabs())
+if(plugin.canChangeTabs() || plugin.canChangeColumns())
 {
 	plugin.config = theWebUI.config;
 	theWebUI.config = function(data)
 	{
-        	plugin.attachPageToTabs($('<div>').attr("id","history").addClass("table_tab stable").get(0),"History","lcont");
-		theWebUI.tables["hst"] =  
+		if(plugin.canChangeTabs())
 		{
-	        	obj:		new dxSTable(),
-			container:	"history",
-			columns:	
-			[
-				{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING }, 
-		      		{ text: theUILang.Status, 		width: "100px",	id: "status",		type: TYPE_STRING },
-				{ text: 'Time',	 			width: "100px", id: "time",		type: TYPE_NUMBER }, 
-		   		{ text: theUILang.Size, 		width: "60px",	id: "size", 		type: TYPE_NUMBER },
-				{ text: theUILang.Downloaded, 		width: "100px",	id: "downloaded",	type: TYPE_NUMBER },
-				{ text: theUILang.Uploaded, 		width: "100px",	id: "uploaded",		type: TYPE_NUMBER },
-				{ text: theUILang.Ratio, 		width: "60px",	id: "ratio",		type: TYPE_NUMBER },
-				{ text: theUILang.Label, 		width: "60px", 	id: "label",		type: TYPE_STRING },
-				{ text: theUILang.Created_on,		width: "100px", id: "created",		type: TYPE_NUMBER },
-				{ text: 'SeedingTime', 			width: '100px', id: 'seedingtime', 	type: TYPE_NUMBER },
-				{ text: 'AddTime', 			width: '100px', id: 'addtime', 		type: TYPE_NUMBER },
-				{ text: 'Tracker', 			width: '100px', id: 'tracker', 		type: TYPE_STRING }
-			],
-			format:	function(table,arr)
+	        	plugin.attachPageToTabs($('<div>').attr("id","history").addClass("table_tab stable").get(0),"History","lcont");
+			theWebUI.tables["hst"] =  
+			{
+	        		obj:		new dxSTable(),
+				container:	"history",
+				columns:	
+				[
+					{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING }, 
+		      			{ text: theUILang.Status, 		width: "100px",	id: "status",		type: TYPE_STRING },
+					{ text: 'Time',	 			width: "100px", id: "time",		type: TYPE_NUMBER }, 
+			   		{ text: theUILang.Size, 		width: "60px",	id: "size", 		type: TYPE_NUMBER },
+					{ text: theUILang.Downloaded, 		width: "100px",	id: "downloaded",	type: TYPE_NUMBER },
+					{ text: theUILang.Uploaded, 		width: "100px",	id: "uploaded",		type: TYPE_NUMBER },
+					{ text: theUILang.Ratio, 		width: "60px",	id: "ratio",		type: TYPE_NUMBER },
+					{ text: theUILang.Label, 		width: "60px", 	id: "label",		type: TYPE_STRING },
+					{ text: theUILang.Created_on,		width: "100px", id: "created",		type: TYPE_NUMBER },
+					{ text: 'SeedingTime', 			width: '100px', id: 'seedingtime', 	type: TYPE_NUMBER },
+					{ text: 'AddTime', 			width: '100px', id: 'addtime', 		type: TYPE_NUMBER },
+					{ text: 'Tracker', 			width: '100px', id: 'tracker', 		type: TYPE_STRING }
+				],
+				format:	function(table,arr)
+				{
+					for(var i in arr)
+					{
+						if(arr[i]==null)
+							arr[i] = '';
+						else
+							switch(table.getIdByCol(i)) 
+							{
+								case "seedingtime" :
+								case "time":
+								case "addtime":
+								case 'created' : 
+									arr[i] = arr[i] ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : '';
+									break;
+								case 'downloaded' :
+								case 'uploaded' :
+								case 'size' :
+	      								arr[i] = theConverter.bytes(arr[i]);
+									break;
+								case 'ratio' : 
+									arr[i] = (arr[i] ==- 1) ? "\u221e" : theConverter.round(arr[i] / 1000, 3);
+									break;
+								case 'status' :
+									arr[i] = plugin.actionNames[arr[i]];
+									break;
+      							}
+					}
+					return(arr);
+				},
+				ondelete:	function() { this.historyRemove(); },
+	       	        	onselect:	function(e,id) { this.historySelect(e,id) }
+			};
+		}
+
+		if(plugin.canChangeColumns())
+		{
+			this.tables.trt.columns.push({text: 'PushBullet', width: '100px', id: 'pushbullet', type: TYPE_NUMBER});
+			plugin.trtFormat = this.tables.trt.format;
+			this.tables.trt.format = function(table,arr)
 			{
 				for(var i in arr)
 				{
-					if(arr[i]==null)
-						arr[i] = '';
-					else
-						switch(table.getIdByCol(i)) 
+				        var s = table.getIdByCol(i);
+					if(s=="pushbullet")
+					{
+						switch(iv(arr[i]))
 						{
-							case "seedingtime" :
-							case "time":
-							case "addtime":
-							case 'created' : 
-								arr[i] = arr[i] ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : '';
+							case 1:
+								arr[i] = theUILang.no;
 								break;
-							case 'downloaded' :
-							case 'uploaded' :
-							case 'size' :
-	      							arr[i] = theConverter.bytes(arr[i]);
+							case 0:
+								arr[i] = theUILang.yes;
 								break;
-							case 'ratio' : 
-								arr[i] = (arr[i] ==- 1) ? "\u221e" : theConverter.round(arr[i] / 1000, 3);
-								break;
-							case 'status' :
-								arr[i] = plugin.actionNames[arr[i]];
-								break;
-      						}
-				}
-				return(arr);
-			},
-			ondelete:	function() { this.historyRemove(); },
-	       	        onselect:	function(e,id) { this.historySelect(e,id) }
-		};
+						}
+					}
+		        	}
+				return(plugin.trtFormat(table,arr));
+			}
+		}
+
 		plugin.config.call(theWebUI,data);
-		plugin.renameHistoryStuff();
+
+		if(plugin.canChangeColumns())
+		{
+			plugin.reqId1 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"x-pushbullet",function(hash,torrent,value)
+			{
+				torrent.pushbullet = value;
+			});
+		}			
+
+		if(plugin.canChangeTabs())		
+			plugin.renameHistoryStuff();
 	}
 
 	plugin.renameHistoryStuff = function()
@@ -346,7 +406,57 @@ if(plugin.canChangeTabs())
 			}
 		}
 	}
-}       
+}
+
+if(plugin.canChangeMenu())
+{
+	rTorrentStub.prototype.setpushbullet = function()
+	{
+		for( var i = 0; i < this.hashes.length; i++ )
+		{
+			var cmd = new rXMLRPCCommand( "d.set_custom" );
+			cmd.addParameter( "string", this.hashes[i] );
+			cmd.addParameter( "string", 'x-pushbullet' );
+			cmd.addParameter( "string", this.vs[i] );
+			this.commands.push( cmd );
+		}
+	}
+
+	theWebUI.setPushbullet = function(val)
+	{
+		theWebUI.perform('setpushbullet&v='+val);
+	}
+
+	plugin.createMenu = theWebUI.createMenu;
+	theWebUI.createMenu = function( e, id )
+	{
+		plugin.createMenu.call(this, e, id);
+		if(plugin.enabled && plugin.allStuffLoaded && theWebUI.history.pushbullet_enabled)
+		{
+			var table = this.getTable("trt");
+			var el = theContextMenu.get(theUILang.peerAdd);
+			if( el )
+			{
+				if(table.selCount==1) 
+				{			
+					theContextMenu.add(el,[CMENU_CHILD, 'Pushbullet', 
+					[
+						[ theUILang.turnNotifyOn, theWebUI.torrents[id].pushbullet ? "theWebUI.setPushbullet('')" : null ],
+					 	[ theUILang.turnNotifyOff, theWebUI.torrents[id].pushbullet ? null : "theWebUI.setPushbullet('1')" ]
+					]]);
+				}
+				else
+				{
+					theContextMenu.add(el,[CMENU_CHILD, 'Pushbullet', 
+					[
+						[ theUILang.turnNotifyOn, "theWebUI.setPushbullet('1')" ],
+					 	[ theUILang.turnNotifyOff, "theWebUI.setPushbullet('')" ]
+					]]);
+				}
+                        }
+		}
+	}	
+}
 
 plugin.onLangLoaded = function()
 {
@@ -379,8 +489,29 @@ plugin.onLangLoaded = function()
 				"<input type='button' value='"+theUILang.enableNotifications+"' id='notifPerms'/>"+
 				"<div id='notifParam'>" +
 					"<input type='checkbox' id='not_autoclose' onchange=\"linked(this, 0, ['not_closeinterval']);\" />"+
-					"<label for='not_autoclose'>"+ theUILang.notifAutoClose +" </label>" +
-					"<input type='text' id='not_closeinterval' class='TextboxShort' maxlength='3'/>" + theUILang.s +
+					"<label for='not_closeinterval' id='lbl_not_closeinterval' class='disabled'>"+ theUILang.notifAutoClose +" </label>" +
+					"<input type='text' id='not_closeinterval' class='TextboxShort' maxlength='3' disabled='true'/>" + theUILang.s +
+				"</div>" +
+			"</fieldset>"+
+			"<fieldset>"+
+				"<legend><a href='https://www.pushbullet.com/' target='_blank'>"+theUILang.pushbulletNotification+"</a></legend>"+
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='pushbullet_enabled' onchange=\"linked(this, 0, ['pushbullet_key','pushbullet_addition','pushbullet_deletion','pushbullet_finish']);\"/>"+
+					"<label for='pushbullet_enabled'>"+ theUILang.Enabled +"</label>"+
+				"</div>" +				
+				"<label for='pushbullet_key' id='lbl_pushbullet_key' class='disabled'>"+ theUILang.pushbulletKey +"</label>"+
+				"<input type='text' id='pushbullet_key' class='TextboxLarge' disabled='true' />"+
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='pushbullet_addition' disabled='true' />"+
+					"<label for='pushbullet_addition' id='lbl_pushbullet_addition' class='disabled'>"+ theUILang.historyAddition +"</label>"+
+				"</div>" +
+				"<div class='checkbox'>" +
+					"<input type='checkbox' class='disabled' id='pushbullet_deletion' disabled='true' />"+
+					"<label for='pushbullet_deletion' id='lbl_pushbullet_deletion' class='disabled'>"+ theUILang.historyDeletion +"</label>"+
+				"</div>" +
+				"<div class='checkbox'>" +
+					"<input type='checkbox' id='pushbullet_finish' disabled='true' />"+
+					"<label for='pushbullet_finish' id='lbl_pushbullet_finish' class='disabled'>"+ theUILang.historyFinish +"</label>"+
 				"</div>" +
 			"</fieldset>"
 			)[0], theUILang.history );
@@ -400,6 +531,8 @@ plugin.onLangLoaded = function()
 plugin.onRemove = function()
 {
 	plugin.removePageFromOptions("st_history");
+	theWebUI.getTable("trt").removeColumnById("pushbullet");	
+	theRequestManager.removeRequest( "trt", plugin.reqId1 );	
 }
 
 plugin.langLoaded = function() 

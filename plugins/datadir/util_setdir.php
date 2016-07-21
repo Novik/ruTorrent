@@ -103,7 +103,7 @@ function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $fast_resume, 
 	$torrent_files = array();
 	if( $is_ok && $move_files )
 	{
-		$req = rtExec( "f.multicall", array( $hash, "", "f.get_path=" ), $dbg );
+		$req = rtExec( "f.multicall", array( $hash, "", getCmd("f.get_path=") ), $dbg );
 		if( !$req )
 			$is_ok = false;
 		else {

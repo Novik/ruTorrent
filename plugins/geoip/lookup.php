@@ -151,5 +151,5 @@
 			fclose($dns);
 		}
 	}
-	cachedEcho(json_encode($ret),"application/json");
+	cachedEcho(safe_json_encode($ret),"application/json");
 	

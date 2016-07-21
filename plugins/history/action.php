@@ -16,7 +16,7 @@ if(isset($_REQUEST['cmd']))
 		case "get":
 		{
 			$up = rHistoryData::load();
-			cachedEcho(json_encode($up->get($_REQUEST['mark'])),"application/json");
+			cachedEcho(safe_json_encode($up->get($_REQUEST['mark'])),"application/json");
   	                break;
 		}
 		case "delete":
@@ -35,7 +35,7 @@ if(isset($_REQUEST['cmd']))
   	                	}
 				$up->delete( $hashes );
 			}
-			cachedEcho(json_encode($up->get(0)),"application/json");
+			cachedEcho(safe_json_encode($up->get(0)),"application/json");
   	                break;
 		}
 	}

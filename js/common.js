@@ -16,6 +16,7 @@ function $type(obj)
 function browserDetect()
 {
 	var ua = navigator.userAgent.toLowerCase();
+	this.isiOS =  /(iPad|iPhone|iPod)/.test(navigator.userAgent);
 	this.isGecko = (ua.indexOf("gecko") !=- 1 && ua.indexOf("safari") ==- 1);
 	this.isAppleWebKit = (ua.indexOf("webkit") !=- 1);
 	this.isKonqueror = (ua.indexOf("konqueror") !=- 1);
@@ -668,15 +669,17 @@ var theFormatter =
 			else
    			switch(table.getIdByCol(i)) 
    			{
-      				case 'done' : 
+      				case 'done' :
       					arr[i] = arr[i]+"%";
 	      				break;
 				case 'downloaded' :
 				case 'uploaded' :
+        			case 'peerdownloaded' :
       					arr[i] = theConverter.bytes(arr[i]);
       					break;
-	      			case 'dl' : 
-      				case 'ul' : 
+	      			case 'dl' :
+      				case 'ul' :
+        			case 'peerdl' :
 					arr[i] = theConverter.speed(arr[i]);
       					break;
 	      		}
@@ -1131,11 +1134,11 @@ var theBTClientVersion =
 	},
 	azLikeClients2x2:
 	{
-	        "AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent"
+	        "AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent", "FX" : "Freebox BitTorrent"
 	},
 	azLikeClientsSpec:
 	{
-		'UM' : "uTorrent for Mac", 'UT' : "uTorrent", 'TR' : "Transmission",
+		'UM' : "uTorrent for Mac", 'UT' : "uTorrent", 'BT' : "BitTorrent", 'TR' : "Transmission",
 		'AZ' : "Azureus", 'KT' : "KTorrent", "BF" : "BitFlu",
 	        'LW' : "LimeWire", "BB" : "BitBuddy", "BR" : "BitRocket",
 		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant",
@@ -1183,6 +1186,7 @@ var theBTClientVersion =
 					case 'LW':
 						ret = cli;
 						break;
+					case 'BT':
 					case 'UT':
 					case 'UM':
 						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5)+getMnemonicEnd(str.charAt(6));
@@ -1487,7 +1491,6 @@ RGBackground.prototype.getColor = function()
         if(g.length == 1) g = '0' + g;
         if(b.length == 1) b = '0' + b;
         return('#' + r + g + b);
-	return(this);
 }
 
 RGBackground.prototype.setGradient = function(beginColor,endColor,percent)
@@ -1564,3 +1567,16 @@ function json_encode(obj)
 	return("null");
 }
 
+function strip_tags(input, allowed) 
+{
+	allowed = (((allowed || '') + '')
+      		.toLowerCase()
+		.match(/<[a-z][a-z0-9]*>/g) || [])
+		.join('');
+	var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+		commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+	return input.replace(commentsAndPhpTags, '').replace(tags, function($0, $1) 
+	{
+		return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+    	});
+}

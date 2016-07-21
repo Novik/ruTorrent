@@ -16,7 +16,7 @@ class rStat
 	public $yearHitTimes = array(0,0,0,0,0,0,0,0,0,0,0,0);
 	public $fname = "";
 
-	public function rStat( $prefix )
+	public function __construct( $prefix )
 	{
 		$this->fname = getSettingsPath().'/trafic/'.$prefix;
 		if($file=@fopen($this->fname,"r"))
@@ -36,20 +36,30 @@ class rStat
 	public function flush()
 	{
 		global $profileMask;
-		if($file=@fopen($this->fname,"w"))
+		$randName = uniqid(getTempDirectory()."rutorrent-trafic-");
+		if($file=@fopen($randName,"w"))
 		{
-			fputcsv($file,$this->hourUp);
-			fputcsv($file,$this->hourDown);
-			fputcsv($file,$this->hourHitTimes);
-			fputcsv($file,$this->monthUp);
-			fputcsv($file,$this->monthDown);
-			fputcsv($file,$this->monthHitTimes);
-			fputcsv($file,$this->yearUp);
-			fputcsv($file,$this->yearDown);
-			fputcsv($file,$this->yearHitTimes);
+			if( (fputcsv($file,$this->hourUp)!==false) &&
+				(fputcsv($file,$this->hourDown)!==false) &&
+				(fputcsv($file,$this->hourHitTimes)!==false) &&
+				(fputcsv($file,$this->monthUp)!==false) &&
+				(fputcsv($file,$this->monthDown)!==false) &&
+				(fputcsv($file,$this->monthHitTimes)!==false) &&
+				(fputcsv($file,$this->yearUp)!==false) &&
+				(fputcsv($file,$this->yearDown)!==false) &&
+				(fputcsv($file,$this->yearHitTimes)!==false))
+			{				
+				if( fclose($file)!==false )
+				{
+					rename( $randName, $this->fname );
+					@chmod($this->fname,$profileMask & 0666);
+					return(true);
+				}
+			}
 			fclose($file);
-			@chmod($this->fname,$profileMask & 0666);
+			unlink($randName);			
 		}
+		return(false);
 	}
 	public function correct($deltaUp,$deltaDown)
 	{
@@ -111,20 +121,41 @@ class rStat
 			}
 		}
 		sort($files,SORT_STRING);
-		$files = array_map(  'quoteAndDeslashEachItem', $files);
-		return( implode(",",$files)."]}" );
+		return( $files );
 	}
         public function getDay()
 	{
-		return(self::format($this->hourUp,$this->hourDown,$this->hourHitTimes,'day').self::getTrackers());
+		return(array
+		(
+			"up" 		=> $this->hourUp,
+			"down" 		=> $this->hourDown,
+			"labels" 	=> $this->hourHitTimes,
+			"mode" 		=> 'day',
+			"trackers" 	=> self::getTrackers()
+		));
+
 	}
         public function getMonth()
 	{
-		return(self::format($this->monthUp,$this->monthDown,$this->monthHitTimes,'month').self::getTrackers());
+		return(array
+		(
+			"up" 		=> $this->monthUp,
+			"down" 		=> $this->monthDown,
+			"labels"	=> $this->monthHitTimes,
+			"mode"	 	=> 'month',
+			"trackers"	=> self::getTrackers()
+		));	
 	}
         public function getYear()
 	{
-		return(self::format($this->yearUp,$this->yearDown,$this->yearHitTimes,'year').self::getTrackers());
+		return(array
+		(
+			"up" 		=> $this->yearUp,
+			"down"		=> $this->yearDown,
+			"labels"	=> $this->yearHitTimes,
+			"mode"		=> 'year',
+			"trackers"	=> self::getTrackers()
+		));	
 	}
 	public function getRatios( $time )
 	{

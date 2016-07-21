@@ -107,7 +107,7 @@ if( $is_ok && strpos( $label, "{TRACKER}" ) !== false )
 {
 	$req = new rXMLRPCRequest( array(
 		new rXMLRPCCommand( "t.multicall",
-			array( $hash, "", "t.is_enabled=", "t.get_type=", "t.get_group=", "t.get_url=" )
+			array( $hash, "", getCmd("t.is_enabled="), getCmd("t.get_type="), getCmd("t.get_group="), getCmd("t.get_url=") )
 		)
 	));
 	$req->setParseByTypes();

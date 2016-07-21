@@ -3,7 +3,7 @@
  *
  * Ukrainian language file.
  *
- * Author: Oleksandr Natalenko (pfactum@gmail.com)
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
  theUILang.mnu_create			= "Створити торент…";
@@ -24,6 +24,6 @@
  theUILang.torrentSave			= "Зберегти";
  theUILang.torrentKill			= "Зупинити";
  theUILang.torrentKilled		= "Процес зупинено.";
- theUILang.recentTrackers		= "Recent trackers"; 
+ theUILang.recentTrackers		= "Недавні трекери";
 
 thePlugins.get("create").langLoaded();

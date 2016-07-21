@@ -2,7 +2,7 @@
 
 class KinozalTVEngine extends commonEngine
 {
-       	public $defaults = array( "public"=>false, "page_size"=>40, "cookies"=>"kinozal.tv|uid=XXX;pass=XXX;" );
+       	public $defaults = array( "public"=>false, "page_size"=>40, "cookies"=>"kinozal.me|uid=XXX;pass=XXX;" );
        	
 	public $categories = array( 'all'=>'0', 
 		'Кино - Сериал'=>'5',
@@ -90,7 +90,7 @@ class KinozalTVEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://kinozal.tv';
+		$url = 'http://kinozal.me';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'tv'=>'5', 'games'=>'23', 'anime'=>'20', 'software'=>'32', 'pictures'=>'40', 'books'=>'41' );
 		else
@@ -109,19 +109,19 @@ class KinozalTVEngine extends commonEngine
 				)
 				break;
 
-			$res = preg_match_all('|<tr><td><a href=/browse\.php\?c=(?P<cat>.*)><img border=0.*'.
-				'<a href="/details.php\?id=(?P<id>\d+)">(?P<name>.*)</a><td align=center>.*</a></td>.*'.
-				'<td align=center><small><nobr>(?P<date>.*)</nobr></td>.*'.
-				'<td align=center><small>(?P<size>.*)</td>.*'.
-				'<td align=center><small>\d+</td>.*'.
-				'<td align=center><small>(?P<seeds>.*)</td>.*'.
-				'<td align=center><small>(?P<leech>.*)</td>|siU', $cli->results, $matches);
+			$res = preg_match_all('|<tr class=bg><td class="bt"><img src=.* onclick="cat(?P<cat>.*);".*'.
+				'<a href="/details.php\?id=(?P<id>\d+)".*>(?P<name>.*)</a>.*'.
+				'<td class=.*>\d+</td>.*'.
+				'<td class=.*>(?P<size>.*)</td>.*'.
+				'<td class=.*>(?P<leech>.*)</td>.*'.
+				'<td class=.*>(?P<seeds>.*)</td>.*'.
+				'<td class=.*>(?P<date>.*)</td>|siU', $cli->results, $matches);
 				
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
 				{
-					$link = $url."/download.php/".$matches["id"][$i]."/name.torrent";
+					$link = $url."/download.php?id=".$matches["id"][$i];
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
@@ -131,7 +131,7 @@ class KinozalTVEngine extends commonEngine
 						$item["size"] = self::formatSize(str_replace("<br>"," ",$matches["size"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
-						$item["time"] = self::formatTime(self::removeTags(str_replace("<br>� ", "",$matches["date"][$i])));
+						$item["time"] = self::formatTime(self::removeTags(str_replace("� ", "",$matches["date"][$i])));
 						$ret[$link] = $item;
 						$added++;
 						if($added>=$limit)

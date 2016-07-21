@@ -26,6 +26,8 @@ if(!isset($profileMask))
 	$profileMask = 0777;
 if(!isset($localhosts) || !count($localhosts))
 	$localhosts = array( "127.0.0.1", "localhost" );
+if(!isset($locale))	
+	$locale = "UTF8";
 
 function stripSlashesFromArray(&$arr)
 {
@@ -63,7 +65,8 @@ function fix_magic_quotes_gpc()
 }
 
 fix_magic_quotes_gpc();
-setlocale(LC_CTYPE, "UTF8", "UTF-8", "en_US.UTF-8", "en_US.UTF8");
+setlocale(LC_CTYPE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
+setlocale(LC_COLLATE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
 
 function quoteAndDeslashEachItem($item)
 {
@@ -213,6 +216,28 @@ function mix2utf($str, $inv = '_')
 		}
 	}
 	return($str);
+}
+
+
+function utf8ize($mixed) 
+{
+	if(is_array($mixed) || is_object($mixed)) 
+	{
+        	foreach($mixed as $key => $value) 
+        	{
+            		$mixed[$key] = utf8ize($value);
+        	}
+    	} 
+    	else 
+	    	if(is_string($mixed)) 
+		       	$mixed = mix2utf($mixed);
+	return($mixed);
+}
+
+function safe_json_encode($value)
+{
+	$encoded = json_encode($value);
+	return(json_last_error()==JSON_ERROR_NONE ? $encoded : json_encode(utf8ize($value)));
 }
 
 function toLog( $str )
@@ -449,7 +474,7 @@ function findEXE( $exe )
 
 function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 {
-	header("X-Server-Timestamp: ".strftime('%s'));
+	header("X-Server-Timestamp: ".time());
 	if($cacheable && isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD']=='GET'))
 	{
 		$etag = '"'.strtoupper(dechex(crc32($content))).'"';
@@ -509,6 +534,7 @@ function makeDirectory( $dirs, $perms = null )
 	@umask($oldMask);
 } 
 
+// [fixme] hidden files doesn't processed
 function deleteDirectory( $dir )
 {
 	$dir = addslash($dir);
@@ -529,6 +555,7 @@ function getFileName($path)
 
 function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit = true )
 {
+	global $canUseXSendFile;
 	$stat = @LFS::stat($filename);
 	if($stat && @LFS::is_file($filename) && @LFS::is_readable($filename))
 	{
@@ -540,12 +567,13 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
 		{
 			header('Content-Type: '.(is_null($contentType) ? 'application/octet-stream' : $contentType));
 			if(is_null($nameToSent))
-				$nameToSent = end(explode('/',$filename));
+				$nameToSent = getFileName($filename);
 			if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 				$nameToSent = rawurlencode($nameToSent);
 			header('Content-Disposition: attachment; filename="'.$nameToSent.'"');
-
+	
 			if($mustExit &&
+				$canUseXSendFile &&
 				function_exists('apache_get_modules') && 
 				in_array('mod_xsendfile', apache_get_modules()))
 			{ 
@@ -676,4 +704,21 @@ function getTempDirectory()
 		$tempDirectory = addslash( $tempDirectory );
 	}
 	return($tempDirectory);
+}
+
+@ini_set('precision',16);
+@define('PHP_INT_MIN', ~PHP_INT_MAX);
+@define('XMLRPC_MAX_I4', 2147483647);
+@define('XMLRPC_MIN_I4', ~XMLRPC_MAX_I4);
+@define('XMLRPC_MIN_I8', -9.999999999999999E+15);
+@define('XMLRPC_MAX_I8', 9.999999999999999E+15);
+
+function iclamp( $val, $min = 0, $max = XMLRPC_MAX_I8 )
+{
+	$val = floatval($val);	
+	if( $val < $min )
+		$val = $min;
+	if( $val > $max )
+		$val = $max;
+	return( ((PHP_INT_SIZE>4) || ( ($val>=PHP_INT_MIN) && ($val<=PHP_INT_MAX) )) ? intval($val) : $val );
 }

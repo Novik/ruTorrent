@@ -52,7 +52,7 @@ if(isset($_REQUEST['cmd']))
 					}
 					$task = new rTask( array
 					( 
-						'arg'=>call_user_func('end',explode('/',$filename)),
+						'arg'=>call_user_func('getFileName',$filename),
 						'requester'=>'screenshots',
 						'name'=>'ffmpeg', 
 						'hash'=>$_REQUEST['hash'], 
@@ -96,4 +96,4 @@ if(isset($_REQUEST['cmd']))
 	}
 }
 
-cachedEcho(json_encode($ret),"application/json");
+cachedEcho(safe_json_encode($ret),"application/json");

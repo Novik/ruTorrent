@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Autotools";
  theUILang.autotoolsEnableLabel 	= "Włącz funkcję \"AutoEtykieta\", Template: ";
- theUILang.autotoolsEnableMove		= "Włącz funkcję \"AutoPrzenoszenie\" ";
+ theUILang.autotoolsEnableMove		= "Wlacz \"AutoMove\" jezeli funkcja torrentu pasuje do funkcji";
  theUILang.autotoolsPathToFinished	= "Ścieżka dla ukończonych pobierań";
  theUILang.autotoolsEnableWatch 	= "Włącz funkcję \"AutoWatch\" ";
  theUILang.autotoolsPathToWatch 	= "Ścieżka do bazowego katalogu obserwowanego";
@@ -22,5 +22,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Hard link";
  theUILang.autotoolsFileOpCopy		= "Kopia";
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
+ theUILang.autotoolsAddLabel		= "Dodaj funkcje torrentu do sciezki";
+ theUILang.autotoolsAddName		= "Dodaj nazwe torrentu do sciezki";
 
 thePlugins.get("autotools").langLoaded();

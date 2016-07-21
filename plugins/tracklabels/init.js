@@ -17,7 +17,7 @@ theWebUI.config = function(data)
 			if(!plugin.injectedStyles[tracker.icon])
 			{
 				plugin.injectedStyles[tracker.icon] = true;
-				injectCSSText( "."+tracker.icon+" {background-image: url(./plugins/tracklabels/action.php?tracker="+domain+"); background-repeat: no-repeat}\n" );
+				injectCSSText( "."+tracker.icon+" {background-image: url(./plugins/tracklabels/action.php?tracker="+domain+"); background-repeat: no-repeat; background-size: 16px 16px; }\n" );
 			}
 		});
 	}

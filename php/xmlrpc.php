@@ -8,7 +8,7 @@ class rXMLRPCParam
 	public $type;
 	public $value;
 
-	public function rXMLRPCParam( $aType, $aValue )
+	public function __construct( $aType, $aValue )
 	{
 		$this->type = $aType;
 		if(($this->type=="i8") || ($this->type=="i4"))
@@ -23,7 +23,7 @@ class rXMLRPCCommand
 	public $command;
 	public $params;
 
-	public function rXMLRPCCommand( $cmd, $args = null )
+	public function __construct( $cmd, $args = null )
 	{
 		$this->command = getCmd($cmd);
 		$this->params = array();
@@ -59,9 +59,9 @@ class rXMLRPCCommand
 
 	static protected function getPrmType( $prm )
 	{
-		if(is_int($prm))
+		if(is_int($prm) && ($prm>=XMLRPC_MIN_I4) && ($prm<=XMLRPC_MAX_I4))
 			return('i4');
-		if(is_double($prm))
+		if(is_float($prm))
 			return('i8');
 		return('string');
 	}
@@ -78,7 +78,7 @@ class rXMLRPCRequest
 	public $parseByTypes = false;
 	public $important = true;
 
-	public function rXMLRPCRequest( $cmds = null )
+	public function __construct( $cmds = null )
 	{
 		if($cmds)
 		{
@@ -90,7 +90,7 @@ class rXMLRPCRequest
 		}
 	}
 
-	public static function send( $data )
+	public static function send( $data, $trusted = true )
 	{
 		if(LOG_RPC_CALLS)
 			toLog($data);
@@ -103,7 +103,7 @@ class rXMLRPCRequest
 			$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, RPC_TIME_OUT);
 			if($socket) 
 			{
-				$reqheader =  "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0";
+				$reqheader =  "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0".($trusted ? "" : "UNTRUSTED_CONNECTION\x0"."1\x0");
 				$tosend = strlen($reqheader).":{$reqheader},{$data}";
 				@fwrite($socket,$tosend,strlen($tosend));
 				$result = '';
@@ -166,7 +166,7 @@ class rXMLRPCRequest
 		$this->commands[] = $cmd;
 	}
 
-	public function run()
+	public function run($trusted = true)
 	{
 	        $ret = false;
 		$this->i8s = array();
@@ -174,7 +174,7 @@ class rXMLRPCRequest
 		$this->val = array();
 		if($this->makeCall())
 		{
-			$answer = self::send($this->content);
+			$answer = self::send($this->content,$trusted);
 			if(!empty($answer))
 			{
 				if($this->parseByTypes)
@@ -223,9 +223,9 @@ class rXMLRPCRequest
 		return($ret);
 	}
 
-	public function success()
+	public function success($trusted = true)
 	{
-		return($this->run() && !$this->fault);
+		return($this->run($trusted) && !$this->fault);
 	}
 }
 

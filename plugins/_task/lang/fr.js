@@ -16,7 +16,7 @@
  theUILang.tskElapsed		= "Écoulée";
  theUILang.tskPlugin		= "Plugin";
  theUILang.tskDeletePrompt	= "Voulez-vous vraiment supprimer la (les) tâche(s) sélectionnée(s) ?";
- theUILang.tskDelete		= "Supprimer une (des) tâche(s)"; 
+ theUILang.tskDelete		= "Supprimer une (des) tâche(s)";
  theUILang.tskActivate		= "Activer";
  theUILang.tskRemove		= "Supprimer";
  theUILang.tskRefresh		= "Actualiser";

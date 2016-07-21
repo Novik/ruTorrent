@@ -51,6 +51,7 @@
  theUILang.rssInterval2d		= "2 天";
  theUILang.rssInterval3d		= "3 天";
  theUILang.rssInterval4d		= "4 天";
+ theUILang.rssInterval6d		= "6 天";
  theUILang.rssInterval1w		= "1 周";
  theUILang.rssInterval2w		= "2 周";
  theUILang.rssInterval3w		= "3 周";

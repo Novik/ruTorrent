@@ -13,7 +13,7 @@
  theUILang.rssDelRule		= "Διαγραφή";
  theUILang.rssCheckRule 	= "Δοκιμή";
  theUILang.rssRulesLegend	= "Ρυθμίσεις κανόνα";
- theUILang.rssSrcHref		= "Αν το URL του torrent που κατεβαίνει ταιριάζει με το πρότυπο ";
+ theUILang.rssSrcHref		= "Αν το URL του torrent που κατεβαίνει ταιριάζει με το πρότυπο";
  theUILang.rssSrcGuid		= "Αν το URL της περιγραφής του torrent ταιριάζει με το πρότυπο";
  theUILang.rssDstHref		= "τότε αντικατέστησε το URL του torrent που κατεβαίνει με";
  theUILang.rssDstGuid		= "τότε αντικατέστησε το URL της περιγραφής του torrent με";
@@ -24,6 +24,6 @@
  theUILang.rssURLGUID		= "Περιγραφή του URL";
  theUILang.rssURLHref		= "Λήψη URL";
  theUILang.rssPatternError	= "Σφάλμα στο κείμενο του προτύπου.";
- theUILang.rssStatus		= "RSS"; 
+ theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

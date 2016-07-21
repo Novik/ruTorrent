@@ -3,8 +3,8 @@
 if( !chdir( dirname( __FILE__) ) )
 	exit();
 
-if( count( $argv ) > 5 )
-	$_SERVER['REMOTE_USER'] = $argv[5];
+if( count( $argv ) > 7 )
+	$_SERVER['REMOTE_USER'] = $argv[7];
 
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
@@ -67,8 +67,11 @@ $hash      = $argv[1];
 $base_path = $argv[2];
 $base_name = $argv[3];
 $is_multi  = $argv[4];
+$label	   = rawurldecode($argv[5]);
+$name	   = $argv[6];
 $at = rAutoTools::load();
-if( $at->enable_move )
+
+if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
 {
 	$path_to_finished = trim( $at->path_to_finished );
 	$fileop_type = $at->fileop_type;
@@ -98,9 +101,13 @@ if( $at->enable_move )
 				{
 					if( $rel_path == './' ) $rel_path = '';
 					$dest_path = rtAddTailSlash( $path_to_finished.$rel_path );
+					if($at->addLabel && ($label!=''))
+		        			$dest_path.=addslash($label);
+			        	if($at->addName && ($name!=''))
+						$dest_path.=addslash($name);					
 					if(operationOnTorrentFiles($torrent,$base_path,$base_name,$is_multi,$dest_path,$fileop_type))
 					{
-						if($fileop_type=="Move")
+//						if($fileop_type=="Move")
 							echo $base_path;
 						$path = rtRemoveTailSlash( $dest_path );
 						$path_to_finished = rtRemoveTailSlash( $path_to_finished );

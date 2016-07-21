@@ -649,7 +649,8 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 		else
 		{
 			li = $("<li>").attr("id",lbl).
-				html( escapeHTML(rssGroups[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssGroups[lbl].cnt+'</span>)');
+				html( escapeHTML(rssGroups[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssGroups[lbl].cnt+'</span>)').
+				mouseclick( this.rssLabelContextMenu );
 			ul.append(li);
 		}
 		li.attr("title",rssGroups[lbl].name+" ("+rssGroups[lbl].cnt+")");
@@ -657,7 +658,6 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 			li[0].className = (rssGroups[lbl].enabled==1) ?  "sel RSSGroup cat" : "sel disRSS cat";
 		else
 			li[0].className = (rssGroups[lbl].enabled==1) ?  "RSSGroup cat" : "disRSS cat";
-		li.mouseclick( this.rssLabelContextMenu );
 	}
 	for(var lbl in this.rssGroups)
 		if(!(lbl in rssGroups))
@@ -692,7 +692,8 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 		else
 		{
 			li = $("<li>").attr("id",lbl).
-				html( escapeHTML(rssLabels[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssLabels[lbl].cnt+'</span>)');
+				html( escapeHTML(rssLabels[lbl].name)+'&nbsp;(<span id="'+lbl+'_c">'+rssLabels[lbl].cnt+'</span>)').
+				mouseclick( this.rssLabelContextMenu );
 			ul.append(li);
 		}
 		li.attr("title",rssLabels[lbl].name+" ("+rssLabels[lbl].cnt+")");
@@ -700,7 +701,6 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 			li[0].className = (rssLabels[lbl].enabled==1) ?  "sel RSS cat" : "sel disRSS cat";
 		else
 			li[0].className = (rssLabels[lbl].enabled==1) ?  "RSS cat" : "disRSS cat";
-		li.mouseclick( this.rssLabelContextMenu );
 	}
 	for(var lbl in this.rssLabels)
 		if(!(lbl in rssLabels))
@@ -852,6 +852,7 @@ theWebUI.selectFilter = function( el )
 {
 	if(this.curFilter!=el)
 	{
+		this.setDisableControls(false);
 		if(this.curFilter)
 			this.curFilter.className = 'TextboxNormal';
 		this.storeFilterParams();
@@ -875,6 +876,23 @@ theWebUI.selectFilter = function( el )
 		if(plugin.editFilersBtn)
 			plugin.editFilersBtn.hide();
 	}
+}
+
+theWebUI.setDisableControls = function( val )
+{
+	$('#FLT_body').prop('disabled', val);
+	$('#FLT_exclude').prop('disabled', val);
+	$('#FLTdir_edit').prop('disabled', val);
+	$('#FLTnot_add_path').prop('disabled', val);
+	$('#FLTtorrents_start_stopped').prop('disabled', val);
+	$('#FLTchktitle').prop('disabled', val);
+	$('#FLTchkdesc').prop('disabled', val);
+	$('#FLTchklink').prop('disabled', val);
+	$('#FLT_label').prop('disabled', val);
+	$('#FLT_rss').prop('disabled', val);
+	$('#FLT_interval').prop('disabled', val);
+	$('#FLT_throttle').prop('disabled', val);
+	$('#FLT_ratio').prop('disabled', val);
 }
 
 theWebUI.loadFiltersWithAdditions = function( flt )
@@ -957,7 +975,12 @@ theWebUI.loadFilters = function( flt, additions )
 		}
 	}
 	theDialogManager.show("dlgEditFilters");
-	$("#_fn0").focus();
+	var elem = $("#_fn0");
+	if (elem.length) {
+		elem.focus()
+	} else {
+		this.setDisableControls(true);
+	}
 }
 
 theWebUI.addNewFilter = function()
@@ -976,6 +999,8 @@ theWebUI.addNewFilter = function()
 
 theWebUI.deleteCurrentFilter = function()
 {
+	if (this.curFilter === null)
+		return;
 	var no = parseInt(this.curFilter.id.substr(3));
 	this.filters.splice(no,1);
 	$(this.curFilter).parent().remove();
@@ -993,6 +1018,7 @@ theWebUI.deleteCurrentFilter = function()
 	}
 	else
 	{
+		this.setDisableControls(true);
 		if(plugin.editFilersBtn)
 			plugin.editFilersBtn.hide();
 		$('#FLT_body,#FLT_exclude,#FLTdir_edit,#FLT_label,#FLT_rss,#FLT_throttle,#FLT_ratio').val('');
@@ -1527,6 +1553,7 @@ plugin.onLangLoaded = function()
 					        "<option value='48'>"+theUILang.rssInterval2d+"</option>"+
 					        "<option value='72'>"+theUILang.rssInterval3d+"</option>"+
 					        "<option value='96'>"+theUILang.rssInterval4d+"</option>"+
+						"<option value='144'>"+theUILang.rssInterval6d+"</option>"+
 					        "<option value='168'>"+theUILang.rssInterval1w+"</option>"+
 					        "<option value='336'>"+theUILang.rssInterval2w+"</option>"+
 					        "<option value='504'>"+theUILang.rssInterval3w+"</option>"+

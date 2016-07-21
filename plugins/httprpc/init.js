@@ -24,8 +24,8 @@ rTorrentStub.prototype.listResponse = function(data)
 {
         if(this.dataType == "json")
         {
-	        var ret = { labels: {}, torrents: {} };
-        	theRequestManager.cid = data.cid;
+			var ret = { labels: {}, labels_size: {}, torrents: {} };
+			theRequestManager.cid = data.cid;
 		if(data.d)
 			$.each( data.d, function( ndx, hash )
 			{
@@ -88,9 +88,15 @@ rTorrentStub.prototype.listResponse = function(data)
 			if(torrent.label.length>0)
 			{
 				if(!$type(ret.labels[torrent.label]))
+				{
 					ret.labels[torrent.label] = 1;
+					ret.labels_size[torrent.label] = parseInt(torrent.size);
+				}
 				else
+				{
 					ret.labels[torrent.label]++;
+					ret.labels_size[torrent.label] = parseInt(ret.labels_size[torrent.label]) + parseInt(torrent.size);
+				}
 			}
 
 			var get_peers_not_connected = iv(values[16]);
@@ -461,11 +467,15 @@ rTorrentStub.prototype.getpeersResponse = function(values)
 				peer.flags+='S';
 				peer.snubbed = 1;
 			}
-			peer.done = iv(data[6]);	//	get_completed_percent
-			peer.downloaded = iv(data[7]);	//	p.get_down_total
-			peer.uploaded = iv(data[8]);	//	p.get_up_total
-			peer.dl = iv(data[9]);		//	p.get_down_rate
-			peer.ul = iv(data[10]);		//	p.get_up_rate
+			peer.done = iv(data[6]);		//	get_completed_percent
+			peer.downloaded = iv(data[7]);		//	p.get_down_total
+			peer.uploaded = iv(data[8]);		//	p.get_up_total
+			peer.dl = iv(data[9]);			//	p.get_down_rate
+			peer.ul = iv(data[10]);			//	p.get_up_rate
+			peer.peerdl = iv(data[12]);		//	p.get_peer_rate
+			peer.peerdownloaded = iv(data[13]);	//	p.get_peer_total			
+			peer.port = iv(data[14]);		//	p.get_port
+
 			var id = data[0];
 
 			$.each( theRequestManager.prs.handlers, function(i,handler)

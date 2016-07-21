@@ -17,12 +17,13 @@ class rRSS
 	public $etag = null;
 	public $encoding = null;
 	public $version = 0;
+	private $isValid=false;
 	private $channeltags = array('title', 'link', 'lastBuildDate');
 	private $itemtags = array('title', 'link', 'pubDate', 'enclosure', 'guid', 'source', 'description', 'dc:date');
 	private $atomtags = array('title', 'updated');
 	private $entrytags = array('title', 'link', 'updated', 'content', 'summary');
 
-	public function rRSS( $url = null )
+	public function __construct( $url = null )
 	{
 		$this->version = 1;
 		if($url)
@@ -123,7 +124,7 @@ class rRSS
 			$headers['If-None-Match'] = trim($this->etag);
 		if($this->lastModified)
 	                $headers['If-Last-Modified'] = trim($this->lastModified);
-		$cli = self::fetchURL($this->url,null,$headers);
+		$cli = self::fetchURL($this->url,$this->cookies,$headers);
 		if($cli->status==304)
 			return(true);
 		$this->etag = null;
@@ -155,6 +156,7 @@ class rRSS
 			if(preg_match("'<channel.*?>(.*?)</channel>'si", $cli->results, $out) || 
 				preg_match("'<channel.*?>(.*?)'si", $cli->results, $out))	// for damned lostfilm.tv with broken rss
 			{
+				$this->isValid=true; //We have a RSS feed here.
 				foreach($this->channeltags as $channeltag)
 				{
 					$temp = $this->search("'<$channeltag.*?>(.*?)</$channeltag>'si", $out[1], ($channeltag=='title'));
@@ -243,7 +245,14 @@ class rRSS
 				{
 					$temp = $this->search("'<$atomtag.*?>(.*?)</$atomtag>'si", $cli->results, ($atomtag=='title'));
 					if($temp!='')
+					{
 						$this->channel[$atomtag] = $temp;
+					}
+				}
+				$validID = $this->search("'<id.*?>(.*?)</id>'si", $cli->results); //If we find an "id" tag, which is mandatory in Atom feed, we assume that it's a valid feed.
+				if($validID!='')
+				{
+					$this->isValid = true;
 				}
 				if( array_key_exists('updated',$this->channel) &&
 				        (($timestamp = strtotime($this->channel['updated'])) !==-1))
@@ -296,11 +305,16 @@ class rRSS
 					}
 				}
 			}
-			rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
-			if(!$this->hasIncorrectTimes())
-				foreach( $this->items as $href=>$item )
-					$history->correct($href,$item['timestamp']);
-			return(true);
+			if( !empty($this->items) )
+			{
+				rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
+				if(!$this->hasIncorrectTimes())
+					foreach( $this->items as $href=>$item )
+						$history->correct($href,$item['timestamp']);
+				return(true);
+			}
+			else if ($this->isValid)
+                		return true;
 		}
 		return(false);
 	}
@@ -393,7 +407,7 @@ class rRSSHistory
 	public $changed = false;
 	public $version = 0;
 
-	public function rRSSHistory()
+	public function __construct()
 	{
 		$this->version = 2;
 	}
@@ -517,7 +531,7 @@ class rRSSFilter
 		'${21}', '${22}', '${23}', '${24}', '${25}', '${26}', '${27}', '${28}', '${29}', '${30}',
 	);
 
-	public function	rRSSFilter( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
+	public function	__construct( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
 		$start = 0, $addPath = 1, $directory = null, $label = null, 
 		$titleCheck = 1, $descCheck = 0, $linkCheck = 0,
 		$throttle = null, $ratio = null, $no = -1, $interval = -1 )
@@ -645,7 +659,7 @@ class rRSSGroup
 	public $hash;
 	public $lst = array();
 
-	public function	rRSSGroup( $name, $hash = null )
+	public function	__construct( $name, $hash = null )
 	{
 		$this->name = $name;
 		if(is_null($hash))
@@ -818,7 +832,7 @@ class rRSSManager
 	public $groups = null;
 	public $data = null;
 
-	public function rRSSManager()
+	public function __construct()
 	{
 		$this->cache  = new rCache( '/rss/cache' );
 		$this->rssList = new rRSSMetaList();

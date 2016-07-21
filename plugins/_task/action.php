@@ -18,6 +18,7 @@ switch($_REQUEST['cmd'])
 	}
 	case "list":
 	{
+		set_time_limit(0);
 		$ret = rTaskManager::obtain();
 		break;		
 	}
@@ -44,4 +45,4 @@ switch($_REQUEST['cmd'])
 		break;		
 	}	
 }
-cachedEcho(json_encode($ret),"application/json");
+cachedEcho(safe_json_encode($ret),"application/json");

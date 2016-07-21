@@ -3,7 +3,7 @@
  *
  * Swedish language file.
  *
- * Author: Magnus Holm (holmen@brasse.se) 
+ * Author: Magnus Holm (holmen@brasse.se)
  */
 
  theUILang.tskCommand		= "Körs...";
@@ -16,12 +16,12 @@
  theUILang.tskElapsed		= "Elapsed";
  theUILang.tskPlugin		= "Plugin";
  theUILang.tskDeletePrompt	= "Do you really want to delete the selected task(s)?";
- theUILang.tskDelete		= "Delete tasks(s)"; 
+ theUILang.tskDelete		= "Delete tasks(s)";
  theUILang.tskActivate		= "Activate";
  theUILang.tskRemove		= "Remove";
  theUILang.tskRefresh		= "Refresh";
  theUILang.tskRunning		= "Running";
  theUILang.tskArg		= "Parameter";
- theUILang.tskTasks		= "Tasks"; 
- 
+ theUILang.tskTasks		= "Tasks";
+
 thePlugins.get("_task").langLoaded();

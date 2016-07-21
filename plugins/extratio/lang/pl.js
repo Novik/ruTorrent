@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "Jeden z trackerów jest prywatny";
  theUILang.ratioThenLegend	= "Wtedy";
  theUILang.setRatioTo		= "Ustaw ratio na";
- theUILang.setChannelTo 	= "Set throttle to";
+ theUILang.setChannelTo 	= "Ustaw throttle na";
  theUILang.ratioNewRule 	= "Nowa reguła";
 
 thePlugins.get("extratio").langLoaded();

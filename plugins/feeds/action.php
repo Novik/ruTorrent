@@ -101,16 +101,17 @@ function formatItemDescription($torrent)
 		$desc.='<strong>'.$theUILang["Peers"].": </strong>".$torrent["peers"]."<br>";
 	$desc.="</fieldset>";
 	if(!empty($torrent["mesage"]))
-		$desc.='<fieldset><legend>'.$theUILang["Track_status"].'</legend>'.htmlentities($torrent["mesage"],ENT_COMPAT,"UTF-8").'</fieldset>';
+		$desc.='<fieldset><legend>'.$theUILang["Track_status"].'</legend>'.htmlspecialchars($torrent["mesage"],ENT_COMPAT,"UTF-8").'</fieldset>';
 	if(!empty($torrent["comment"]))
-		$desc.='<fieldset><legend>'.$theUILang["Comment"].'</legend>'.htmlentities($torrent["comment"],ENT_COMPAT,"UTF-8").'</fieldset>';
+		$desc.='<fieldset><legend>'.$theUILang["Comment"].'</legend>'.htmlspecialchars($torrent["comment"],ENT_COMPAT,"UTF-8").'</fieldset>';
 	return($desc);
 }
 
 $mode = (isset($_REQUEST['mode'])) ? $_REQUEST['mode'] : 'all';
 $url = (empty($_SERVER['HTTPS']) ? "http" : "https")."://".$_SERVER['HTTP_HOST'].str_replace('/plugins/feeds/action.php','/',$_SERVER['PHP_SELF']);
 $server = explode(':',rTorrentSettings::get()->server);
-$ret = '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><description>*** rTorrent '.
+$ret = '<?xml version="1.0" encoding="UTF-8"?>'.
+	'<rss version="2.0"><channel><description>*** rTorrent '.
 	rTorrentSettings::get()->version.'/'.rTorrentSettings::get()->libVersion." - ".$server[0].' ***</description><link>'.
 	$url.'</link><title>'.$server[0].': '.$theUILang[$mode].'</title>'.
 	'<image><url>'.$url.'images/logo.png</url><link>'.$url.'</link><title>ruTorrent</title></image>';
@@ -240,7 +241,7 @@ if($req->success())
 			if($key=="description")
 				$ret.="\r\n\t<description><![CDATA[".$val.']]></description>';
 			else
-				$ret.="\r\n\t<".$key.'>'.htmlentities($val,ENT_COMPAT,"UTF-8").'</'.$key.'>';
+				$ret.="\r\n\t<".$key.'>'.htmlspecialchars($val,ENT_COMPAT,"UTF-8").'</'.$key.'>';
 		}
 		$ret.="\r\n</item>";
 	}

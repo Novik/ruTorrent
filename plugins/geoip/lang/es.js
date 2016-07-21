@@ -8,12 +8,13 @@
  * Author: 
  */
 
- theUILang.peerComment 		= "Agregar comentario";
+ theUILang.peerComment		= "Agregar comentario";
  theUILang.peerCommentLabel	= "Ingrese comentario para el peer";
  theUILang.commentName		= "Comentario";
  theUILang.countryName		= "País";
 
  theUILang.country = new Array();
+ theUILang.country[ "ac" ] = "Isla Ascensión";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Emiratos Árabes Unidos";
  theUILang.country[ "af" ] = "Afganistán";
@@ -43,10 +44,11 @@
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
+ theUILang.country[ "bq" ] = "Bonaire";
  theUILang.country[ "br" ] = "Brasil";
  theUILang.country[ "bs" ] = "Bahamas";
  theUILang.country[ "bt" ] = "Bután";
- theUILang.country[ "bv" ] = "Bouvet Island";
+ theUILang.country[ "bv" ] = "Isla Bouvet";
  theUILang.country[ "bw" ] = "Botswana";
  theUILang.country[ "by" ] = "Bielorrusia";
  theUILang.country[ "bz" ] = "Belice";
@@ -56,7 +58,7 @@
  theUILang.country[ "cf" ] = "República Centroafricana";
  theUILang.country[ "cg" ] = "Congo-Brazzaville";
  theUILang.country[ "ch" ] = "Suiza";
- theUILang.country[ "ci" ] = "Côte d'Ivoire";
+ theUILang.country[ "ci" ] = "Costa de Marfil";
  theUILang.country[ "ck" ] = "Islas Cook";
  theUILang.country[ "cl" ] = "Chile";
  theUILang.country[ "cm" ] = "Camerún";
@@ -65,6 +67,7 @@
  theUILang.country[ "cr" ] = "Costa Rica";
  theUILang.country[ "cu" ] = "Cuba";
  theUILang.country[ "cv" ] = "Cabo Verde";
+ theUILang.country[ "cw" ] = "Curazao";
  theUILang.country[ "cx" ] = "Isla de Navidad";
  theUILang.country[ "cy" ] = "Chipre";
  theUILang.country[ "cz" ] = "República Checa";
@@ -125,7 +128,7 @@
  theUILang.country[ "it" ] = "Italia";
  theUILang.country[ "je" ] = "Jersey";
  theUILang.country[ "jm" ] = "Jamaica";
- theUILang.country[ "jo" ] = "Jordan";
+ theUILang.country[ "jo" ] = "Jordania";
  theUILang.country[ "jp" ] = "Japón";
  theUILang.country[ "ke" ] = "Kenia";
  theUILang.country[ "kg" ] = "Kirguistán";
@@ -151,7 +154,7 @@
  theUILang.country[ "ly" ] = "Libia";
  theUILang.country[ "ma" ] = "Marruecos";
  theUILang.country[ "mc" ] = "Monaco";
- theUILang.country[ "md" ] = "Moldova";
+ theUILang.country[ "md" ] = "Moldavia";
  theUILang.country[ "me" ] = "Montenegro";
  theUILang.country[ "mg" ] = "Madagascar";
  theUILang.country[ "mh" ] = "Islas Marshall";
@@ -174,7 +177,7 @@
  theUILang.country[ "na" ] = "Namibia";
  theUILang.country[ "nc" ] = "Nueva Caledonia";
  theUILang.country[ "ne" ] = "Níger";
- theUILang.country[ "nf" ] = "Norfolk Island";
+ theUILang.country[ "nf" ] = "Isla Norfolk";
  theUILang.country[ "ng" ] = "Nigeria";
  theUILang.country[ "ni" ] = "Nicaragua";
  theUILang.country[ "nl" ] = "Países Bajos";
@@ -192,7 +195,7 @@
  theUILang.country[ "pk" ] = "Pakistán";
  theUILang.country[ "pl" ] = "Polonia";
  theUILang.country[ "pm" ] = "San Pedro y Miquelón";
- theUILang.country[ "pn" ] = "Pitcairn";
+ theUILang.country[ "pn" ] = "Islas Pitcairn";
  theUILang.country[ "pr" ] = "Puerto Rico";
  theUILang.country[ "ps" ] = "Palestina";
  theUILang.country[ "pt" ] = "Portugal";
@@ -221,7 +224,9 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "el sur de Sudán";
  theUILang.country[ "st" ] = "Santo Tomé y Príncipe";
+ theUILang.country[ "su" ] = "Rusia";
  theUILang.country[ "sv" ] = "El Salvador";
+ theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Siria";
  theUILang.country[ "sz" ] = "Suazilandia";
  theUILang.country[ "tc" ] = "Islas Turcas y Caicos";
@@ -231,12 +236,11 @@
  theUILang.country[ "th" ] = "Tailandia";
  theUILang.country[ "tj" ] = "Tayikistán";
  theUILang.country[ "tk" ] = "Tokelau";
- theUILang.country[ "tl" ] = "Timor-Leste";
+ theUILang.country[ "tl" ] = "Timor Oriental";
  theUILang.country[ "tm" ] = "Turkmenistán";
  theUILang.country[ "tn" ] = "Túnez";
  theUILang.country[ "to" ] = "Tonga";
  theUILang.country[ "tr" ] = "Turquía";
- theUILang.country[ "tp" ] = "Timor portugués";
  theUILang.country[ "tt" ] = "Trinidad y Tobago";
  theUILang.country[ "tv" ] = "Tuvalu";
  theUILang.country[ "tw" ] = "Taiwan";
@@ -244,7 +248,6 @@
  theUILang.country[ "ua" ] = "Ucrania";
  theUILang.country[ "ug" ] = "Uganda";
  theUILang.country[ "uk" ] = "Reino Unido";
- theUILang.country[ "um" ] = "Estados Unidos Islas menores alejadas";
  theUILang.country[ "un" ] = "Desconocido";
  theUILang.country[ "us" ] = "Estados Unidos";
  theUILang.country[ "uy" ] = "Uruguay";

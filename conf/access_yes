@@ -1,0 +1,23 @@
+;; 1
+;; ruTorrent permissions.
+;; All flags are assumed to be yes by default.
+
+[settings]
+showDownloadsPage = yes
+showConnectionPage = yes
+showBittorentPage = yes
+showAdvancedPage = yes
+
+[tabs]
+showPluginsTab = yes
+
+[statusbar]
+canChangeULRate = yes
+canChangeDLRate = yes
+
+[dialogs]
+canChangeTorrentProperties = yes
+canAddTorrentsWithoutPath = yes
+canAddTorrentsWithoutStarting = yes
+canAddTorrentsWithResume = yes
+canAddTorrentsWithRandomizeHash = yes

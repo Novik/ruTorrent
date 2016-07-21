@@ -1,3 +1,5 @@
+// this function is obsolete
+
 function injectScript(fname,initFunc) 
 {
 	var h = document.getElementsByTagName("head").item(0);
@@ -13,7 +15,6 @@ function injectScript(fname,initFunc)
 		else
 			s.onload = initFunc;
 	}
-//	fname = fname + "?time=" + (new Date()).getTime();
 	if(s.setAttribute)
 		s.setAttribute('src', fname);
 	else
@@ -172,13 +173,28 @@ rPlugin.prototype.langLoaded = function()
 	this.markLoaded();
 }
 
-rPlugin.prototype.loadLang = function(sendNotify)
+rPlugin.prototype.loadLangPrim = function(lang,template,sendNotify)
 {
 	var self = this;
-	injectScript(this.path+"lang/"+GetActiveLanguage()+".js",sendNotify ? function()
+	$.ajax(
 	{
-		self.langLoaded();
-	} : null);
+		url: template.replace('{lang}',lang), // this is because plugin.path may be changed during call 
+		dataType: "script",
+		cache: true
+	}).done( function()
+	{
+		!sendNotify || self.langLoaded();
+	}).fail( function()
+	{
+		(lang=='en') ? 
+			(!window.console || console.error( "Plugin '"+self.name+"': localization for '"+lang+"' not found." )) :
+			self.loadLangPrim('en',template,sendNotify);
+	});
+}
+
+rPlugin.prototype.loadLang = function(sendNotify)
+{
+	this.loadLangPrim(GetActiveLanguage(),this.path+"lang/{lang}.js",sendNotify);
 	return(this);
 }
 

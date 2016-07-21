@@ -46,7 +46,7 @@ var theRequestManager =
 		[ 
 			"p.get_id=", "p.get_address=", "p.get_client_version=", "p.is_incoming=", "p.is_encrypted=",
 			"p.is_snubbed=", "p.get_completed_percent=", "p.get_down_total=", "p.get_up_total=", "p.get_down_rate=",
-			"p.get_up_rate=", "p.get_id_html="
+			"p.get_up_rate=", "p.get_id_html=", "p.get_peer_rate=", "p.get_peer_total=", "p.get_port="
 		],
 		handlers: []
 	},
@@ -599,7 +599,7 @@ rTorrentStub.prototype.ban = function()
 		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
                 cmd.addParameter("i4",1);
 		this.commands.push( cmd );
-		cmd = new rXMLRPCCommand("p.disconnect_delayed");
+		cmd = new rXMLRPCCommand("p.disconnect");
 		cmd.addParameter("string",this.hashes[0]+":p"+this.vs[i]);
 		this.commands.push( cmd );
 	}
@@ -621,6 +621,20 @@ rTorrentStub.prototype.addpeer = function()
 	cmd.addParameter("string",this.hashes[0]);
 	cmd.addParameter("string",decodeURIComponent(this.vs[0]));
 	this.commands.push( cmd );
+}
+
+rTorrentStub.prototype.createqueued = function()
+{
+	for(var i=0; i<this.hashes.length; i++)
+	{
+		var cmd = new rXMLRPCCommand("f.multicall");
+		cmd.addParameter("string",this.hashes[i]);
+		cmd.addParameter("string","");
+		cmd.addParameter("string",theRequestManager.map("f.set_create_queued=")+'0');
+		cmd.addParameter("string",theRequestManager.map("f.set_resize_queued=")+'0');
+		this.commands.push( cmd );
+	}
+
 }
 
 rTorrentStub.prototype.makeMultiCall = function()
@@ -880,6 +894,9 @@ rTorrentStub.prototype.getpeersResponse = function(xml)
 		peer.uploaded = this.getValue(values,8);	//	p.get_up_total
 		peer.dl = this.getValue(values,9);		//	p.get_down_rate
 		peer.ul = this.getValue(values,10);		//	p.get_up_rate
+		peer.peerdl = this.getValue(values,12);		//	p.get_peer_rate
+		peer.peerdownloaded = this.getValue(values,13);	//	p.get_peer_total
+		peer.port = this.getValue(values,14);		//	p.get_port
 		var id = this.getValue(values,0);
 		$.each( theRequestManager.prs.handlers, function(i,handler)
 		{
@@ -965,9 +982,10 @@ rTorrentStub.prototype.getalltrackersResponse = function(xml)
 
 rTorrentStub.prototype.listResponse = function(xml)
 {
-        var ret = {};
-        ret.torrents = {};
-        ret.labels = {};
+	var ret = {};
+	ret.torrents = {};
+	ret.labels = {};
+	ret.labels_size = {};
 	var datas = xml.getElementsByTagName('data');
 	var self = this;
 	for(var j=1;j<datas.length;j++)
@@ -1016,9 +1034,15 @@ rTorrentStub.prototype.listResponse = function(xml)
 		if(torrent.label.length>0)
 		{
 			if(!$type(ret.labels[torrent.label]))
+			{
 				ret.labels[torrent.label] = 1;
+				ret.labels_size[torrent.label] = parseInt(torrent.size);
+			}
 			else
+			{
 				ret.labels[torrent.label]++;
+				ret.labels_size[torrent.label] = parseInt(ret.labels_size[torrent.label]) + parseInt(torrent.size);
+			}
 		}
 		var get_peers_not_connected = parseInt(this.getValue(values,17));
 		var get_peers_connected = parseInt(this.getValue(values,18));
@@ -1110,8 +1134,10 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 			if(($type(onError) == "function"))
 			{
 			        var status = "Status unavailable";
-			        var response = "Responce unavailable";
-				try { status = XMLHttpRequest.status; response = XMLHttpRequest.responseText; } catch(e) {};
+			        var response = "Response unavailable";
+				try { status = XMLHttpRequest.status; response = XMLHttpRequest.responseText; } catch(e) {};				
+				if( stub.dataType=="script" )
+					response = errorThrown;
 				onError(status+" ["+textStatus+","+stub.action+"]",response);
 			}
 		},

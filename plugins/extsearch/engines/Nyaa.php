@@ -91,13 +91,14 @@ class NyaaEngine extends commonEngine
 			if ($res) {
 				for ($i = 0; $i < $res; $i++) {
 					$link = self::removeTags($matches['link'][$i]);
+					if (strpos($link, '//') === 0)
+						$link = 'http:' . $link;
 					if (!array_key_exists($link, $ret)) {
 						$item = $this->getNewEntry();
 						$item["desc"] = self::removeTags($matches["desc"][$i]);
 						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i]),"utf-8");
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 
 						#Sometimes, number of peers/seeds are not given and the message "Status unknown" is showed instead.
 						#We already handle it in the regexp above and also here.

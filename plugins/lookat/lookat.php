@@ -57,6 +57,6 @@ class rLook
 	}
 	public function get()
 	{
-		return(json_encode($this->list));
+		return(safe_json_encode($this->list));
 	}
 }

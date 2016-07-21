@@ -6,7 +6,6 @@
 
 var theUILang =
 {
- kbs				: "kB/s",
  General			: "Γενικά",
  Downloads			: "Λήψεις",
  Connection			: "Σύνδεση",
@@ -24,7 +23,7 @@ var theUILang =
  Port_f_incom_conns		: "Θύρα που θα χρησιμοποιείται για εισερχόμενες συνδέσεις",
  Rnd_port_torr_start		: "Tυχαία εναλλαγή θύρας κάθε φορά που ξεκινά το rTorrent",
  Type				: "Τύπος",
- Bandwidth_Limiting		: "Περιορισμός εύρους ζώνης	",
+ Bandwidth_Limiting		: "Περιορισμός εύρους ζώνης",
  Global_max_upl 		: "Καθολική μέγιστη ταχύτητα αποστολής",
  unlimited			: "Απεριόριστο",
  Glob_max_downl 		: "Καθολική μέγιστη ταχύτητα λήψης",
@@ -74,7 +73,7 @@ var theUILang =
  Details			: "Λεπτομέρειες...",
  Properties			: "Ιδιότητες...",
  of				: "από", //this two creates line
- connected			: "συνδεμένοι", //  XX of YY connected
+ connected			: "συνδεδεμένοι", //  XX of YY connected
  High_priority			: "Υψηλή",
  Normal_priority		: "Κανονική",
  Low_priority			: "Χαμηλή",
@@ -83,11 +82,11 @@ var theUILang =
  Logger 			: "Καταγραφέας",
  s				: "s", // part of "KB/s"
  bytes				: "bytes",
- KB				: "KB",
- MB				: "MB",
- GB				: "GB",
- TB				: "TB",
- PB				: "PB",
+ KB				: "KiB",
+ MB				: "MiB",
+ GB				: "GiB",
+ TB				: "TiB",
+ PB				: "PiB",
  Loading			: "Φόρτωση...",
  Torrent_file			: "Αρχείο Torrent",
  Torrent_URL			: "URL του Torrent",
@@ -240,6 +239,7 @@ var theUILang =
  scrapeUpdate			: "Τελευταία ενημέρωση",
  trkInterval			: "Διάστημα",
  logAutoSwitch			: "Αυτόματη μετάβαση στην καρτέλα 'Καταγραφέας'",
+ showLabelSize			: "Προβολή συνολικού μεγέθους ανά ετικέτα",
  phpParameterUnavailable	: "Η οδηγία register_argc_argv της PHP είναι ορισμένη στο OFF. Αλλάξτε τη σε ON, αλλιώς κάποια πρόσθετα δεν θα λειτουργούν σωστά.",
  addTorrentFailedURL		: "Αποτυχία προσθήκης αρχείου torrent. Αδυναμία ανάκτησης URL.",
  addTorrentFailedFile		: "Αποτυχία προσθήκης αρχείου torrent. Το ανακτημένο περιεχόμενο δεν είναι έγκυρο αρχείο torrent.",
@@ -253,7 +253,7 @@ var theUILang =
  webBadSessionError		: "Το πρόσθετο δεν θα λειτουργήσει. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
  webBadSessionWarning		: "Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
  Developers			: "Ανάπτυξη λογισμικού",
- Check_new_version		: "Ελέγξτε για νέα έκδοση",
+ Check_new_version		: "Έλεγχος για νέα έκδοση",
  here				: "εδώ",
  Num_No 			: "Α/Α", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
  This_screen			: "Αυτή η οθόνη",
@@ -265,6 +265,11 @@ var theUILang =
  Select_all			: "Επιλογή όλων",
  Deselect_all			: "Αποεπιλογή όλων",
  showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",
- badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
- badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work."
+ badTempPath 			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
+ badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα  για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
+ doRandomizeHash		: "Δημιουργία τυχαίων info hashes για cross-seeding", //Needs further review in the future...
+ Recreate_files 		: "Δρομολόγηση επαναδημιουργίας αρχείων",
+ Address			: "Διεύθυνση",
+ PeerDL 			: "DL χρήστη",
+ PeerDownloaded 		: "Ο χρήστης έλαβε"
 };

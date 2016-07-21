@@ -145,7 +145,6 @@ plugin.onLangLoaded = function()
 			'</form>').width(0).height(0));
 		$("#xcsave").click( function()
 		{
-			$("#xtaskno").val();
 			$('#xgetfile').submit();
 		});
 		if(thePlugins.isInstalled("_getdir"))

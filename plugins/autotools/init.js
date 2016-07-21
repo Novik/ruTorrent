@@ -13,7 +13,7 @@ if(plugin.canChangeOptions())
 			linked( $$('enable_label'), 0, ['label_template'] );
 			$$('enable_move').checked  = ( theWebUI.autotools.EnableMove  == 1 );
 			$$('path_to_finished').value = theWebUI.autotools.PathToFinished;
-			linked( $$('enable_move'), 0, ['path_to_finished', 'automove_browse_btn', 'fileop_type'] );
+			linked( $$('enable_move'), 0, ['automove_filter', 'path_to_finished', 'automove_browse_btn', 'fileop_type', 'auto_add_label', 'auto_add_name'] );
 			$$('fileop_type').value = theWebUI.autotools.FileOpType;
 			$$('enable_watch').checked  = ( theWebUI.autotools.EnableWatch  == 1 );
 			$$('path_to_watch').value = theWebUI.autotools.PathToWatch;
@@ -23,6 +23,9 @@ if(plugin.canChangeOptions())
 				plugin.DirBrowser1.hide();
 			if(plugin.DirBrowser2)
 				plugin.DirBrowser2.hide();
+			$$('automove_filter').value = theWebUI.autotools.MoveFilter;
+			$$('auto_add_label').checked = ( theWebUI.autotools.AddLabel == 1 );
+			$$('auto_add_name').checked = ( theWebUI.autotools.AddName == 1 );			
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
@@ -45,6 +48,12 @@ if(plugin.canChangeOptions())
 			return true;
 		if( $$('watch_start').checked != ( theWebUI.autotools.WatchStart == 1 ) )
 			return true;
+		if( $$('automove_filter').value != theWebUI.autotools.MoveFilter )
+			return true;
+		if( $$('auto_add_label').checked != ( theWebUI.autotools.AddLabel == 1 ) )
+			return true;
+		if( $$('auto_add_name').checked != ( theWebUI.autotools.AddName == 1 ) )
+			return true;
 		return false;
 	}
 
@@ -64,7 +73,10 @@ if(plugin.canChangeOptions())
 			"&path_to_finished=" + $$('path_to_finished').value +
 			"&fileop_type=" + $$('fileop_type').value +
 			"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
+			"&add_label=" + ( $$('auto_add_label').checked  ? '1' : '0' ) +
+			"&add_name=" + ( $$('auto_add_name').checked  ? '1' : '0' ) +
 			"&path_to_watch=" + $$('path_to_watch').value +
+			"&automove_filter=" + $$('automove_filter').value +			
 			"&watch_start=" + ( $$('watch_start').checked  ? '1' : '0' );
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/autotools/action.php";
@@ -91,10 +103,13 @@ plugin.onLangLoaded = function()
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td colspan=2>"+
+				"<td>"+
 					"<input type='checkbox' id='enable_move' checked='false' "+
-					"onchange='linked(this, 0, [\"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"fileop_type\" ]);' />"+
+					"onchange='linked(this, 0, [\"automove_filter\", \"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"auto_add_label\", \"auto_add_name\" ]);' />"+
 						"<label for='enable_move'>"+ theUILang.autotoolsEnableMove +"</label>"+
+				"</td>"+
+				"<td class='alr'>"+
+					"<input type='text' id='automove_filter' class='TextboxNormal' maxlength='200'/>" +				
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
@@ -110,6 +125,14 @@ plugin.onLangLoaded = function()
  					"<option value='Copy'>"+theUILang.autotoolsFileOpCopy+"</option>"+
  					"<option value='SoftLink'>"+theUILang.autotoolsFileOpSoftLink+"</option>"+
  					"</select>"+
+					"<div class='checkbox'>" +
+						"<input type='checkbox' id='auto_add_label'/>"+
+						"<label id='lbl_auto_add_label' for='auto_add_label'>"+ theUILang.autotoolsAddLabel +"</label>"+
+					"</div>" +
+					"<div class='checkbox'>" +
+						"<input type='checkbox' id='auto_add_name'/>"+
+						"<label id='lbl_auto_add_name' for='auto_add_name'>"+ theUILang.autotoolsAddName +"</label>"+
+					"</div>"+
 				"</td>"+
 			"</tr>"+
 			"<tr>"+

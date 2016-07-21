@@ -3,10 +3,10 @@
  *
  * Polish language file.
  *
- * Author: 
+ * Author:
  */
 
- theUILang.lookAtDesc = "Find at (Format: name|url)";
- theUILang.lookAt = "Find at";
+ theUILang.lookAtDesc = "Znajdź w (Format: nazwa|url)";
+ theUILang.lookAt = "Znajdź w";
 
 thePlugins.get("lookat").langLoaded();
