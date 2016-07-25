@@ -37,6 +37,7 @@ if(isset($_REQUEST['mode']))
 			}
 			$output["labels"] = array_keys($labels);
 			natcasesort($output["labels"]);
+			$output["labels"] = array_values($output["labels"]);
 		}
 	}
 	if(in_array("dirlist",$modes))
