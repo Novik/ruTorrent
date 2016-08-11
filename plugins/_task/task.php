@@ -265,6 +265,8 @@ class rTask
 
 class rTaskManager
 {
+	const MAX_TASK_COUNT = 100;
+
 	static public function obtain()
 	{
 		$tasks = array();
@@ -284,6 +286,7 @@ class rTaskManager
 			} 
 			closedir($handle);		
 	        }
+	        krsort($tasks);
 	        return($tasks);
 	}
 	
@@ -294,11 +297,17 @@ class rTaskManager
 
 	static public function cleanup()
 	{
+		$counter = 0;
 		$tasks = self::obtain();
 		foreach( $tasks as $id=>$task )
 		{
-			if( ($task["status"]<0) && (!$task["pid"] || !self::isPIDExists($task["pid"])) )
+			$invalid = ($task["status"]<0);
+			$finished_with_error = ($task["status"]>0);
+			$in_progress = !$finished_with_error && $task["pid"] && self::isPIDExists($task["pid"]);
+			if( $invalid ||	(!$finished_with_error && !$in_progress && ($counter>=self::MAX_TASK_COUNT)) )
 				rTask::clean(rTask::formatPath($id));
+			else
+				$counter++;
 		}
 	}
 
