@@ -52,6 +52,7 @@ var theUILang =
  Seeds				: "Devēji",
  Remaining			: "Atlicis",
  Priority			: "Prioritāte",
+ Save_path			: "Save path",
  Not_torrent_file		: "Failam ir jābūt .torrent failam.",
  Pausing			: "Nopauzēts",
  Seeding			: "Dod",

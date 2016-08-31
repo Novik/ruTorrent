@@ -52,6 +52,7 @@ var theUILang =
  Seeds				: "Jakajat",
  Remaining			: "Jäljellä",
  Priority			: "Tärkeysaste",
+ Save_path			: "Save path",
  Not_torrent_file		: "Tiedoston täytyy olla torrent-tiedosto.",
  Pausing			: "Tauko",
  Seeding			: "Jakaa",

@@ -52,6 +52,7 @@ var theUILang =
  Seeds				: "Seedov",
  Remaining			: "Zostáva",
  Priority			: "Priorita",
+ Save_path			: "Save path",
  Not_torrent_file		: "Súbor musí byť torrent súbor.",
  Pausing			: "Pauza",
  Seeding			: "Seedujem",

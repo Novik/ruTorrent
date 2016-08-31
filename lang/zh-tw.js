@@ -50,6 +50,7 @@ var theUILang =
  Seeds				: "種子數量",
  Remaining			: "剩餘時間",
  Priority			: "優先等級",
+ Save_path			: "Save path",
  Not_torrent_file		: "該檔案不是有效的 torrent 檔案",
  Pausing			: "暫停中",
  Seeding			: "做種中",

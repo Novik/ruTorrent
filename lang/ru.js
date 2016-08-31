@@ -52,6 +52,7 @@ var theUILang =
  Seeds				: "Сиды",
  Remaining			: "Осталось",
  Priority			: "Приоритет",
+ Save_path			: "Save path",
  Not_torrent_file		: "Файл должен быть файлом .torrent.",
  Pausing			: "Пауза",
  Seeding			: "Сидирование",

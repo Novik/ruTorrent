@@ -50,6 +50,7 @@ var theUILang =
  Seeds				: "Διαμοιράζουν",
  Remaining			: "Απομένουν",
  Priority			: "Προτεραιότητα",
+ Save_path			: "Save path",
  Not_torrent_file		: "Το αρχείο πρέπει να είναι τύπου .torrent.",
  Pausing			: "Γίνεται παύση",
  Seeding			: "Διαμοιρασμός",

@@ -50,6 +50,7 @@ var theUILang =
  Seeds				: "Сејачи",
  Remaining			: "Преостало",
  Priority			: "Приоритет",
+ Save_path			: "Save path",
  Not_torrent_file		: "Датотека мора бити torrent датотека.",
  Pausing			: "Заустављено",
  Seeding			: "Сејање",
