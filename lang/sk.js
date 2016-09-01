@@ -52,7 +52,6 @@ var theUILang =
  Seeds				: "Seedov",
  Remaining			: "Zostáva",
  Priority			: "Priorita",
- Save_path			: "Save path",
  Not_torrent_file		: "Súbor musí byť torrent súbor.",
  Pausing			: "Pauza",
  Seeding			: "Seedujem",
@@ -274,5 +273,6 @@ var theUILang =
  Recreate_files 		: "Queue files recreation",
  Address			: "Address",
  PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded"
+ PeerDownloaded 		: "Peer Downloaded",
+ Save_path			: "Save path"
 };
