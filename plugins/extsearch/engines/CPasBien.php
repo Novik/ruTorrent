@@ -37,11 +37,6 @@ class CPasBienEngine extends commonEngine
         $what = str_replace (' ', '+', $what);
         for ($pg = 0; $pg < 11; $pg++) {
             $cli = $this->fetch($url . '/recherche/' . $cat . $what . '/page-' . $pg);
-            //
-            ob_start();
-            var_dump($cli->results);
-            file_put_contents('/home/seedbox/rutorrent/logs/log.txt', ob_get_clean());
-            //
             if (($cli == false) || (strpos($cli->results, "Pas de torrents disponibles correspondant à votre recherche") !== false))
                 break;
             $res = preg_match_all(
