@@ -52,6 +52,7 @@ var theUILang =
  Seeds				: "Seed",
  Remaining			: "Hátralévő",
  Priority			: "Prioritás",
+ Save_path			: "Save path",
  Not_torrent_file		: "A fájlnak .torrent fájlnak kell lennie.",
  Pausing			: "Felfüggesztve",
  Seeding			: "Feltölt",

@@ -50,6 +50,7 @@ var theUILang =
  Seeds				: "시드",
  Remaining			: "남은 시간",
  Priority			: "우선 순위",
+ Save_path			: "Save path",
  Not_torrent_file		: "반드시 .torrent 파일이어야 합니다.",
  Pausing			: "일시정지 중",
  Seeding			: "시딩 중",

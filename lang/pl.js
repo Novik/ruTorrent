@@ -53,6 +53,7 @@ var theUILang =
  Seeds				: "Seedów",
  Remaining			: "Pozostało",
  Priority			: "Priorytet",
+ Save_path			: "Save path",
  Not_torrent_file		: "Plik musi być plikem torrent.",
  Pausing			: "Pauza",
  Seeding			: "Udostępnianie",

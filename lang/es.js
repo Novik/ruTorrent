@@ -51,6 +51,7 @@ var theUILang =
  Seeds				: "Semillas",
  Remaining			: "Restante",
  Priority			: "Prioridad",
+ Save_path			: "Save path",
  Not_torrent_file		: "El archivo debe ser un torrent válido.",
  Pausing			: "Pausando",
  Seeding			: "Compartiendo",

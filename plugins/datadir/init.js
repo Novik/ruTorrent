@@ -6,11 +6,11 @@ theWebUI.EditDataDir = function()
 	var id = theWebUI.getTable("trt").getFirstSelected();
 	if( id && (id.length==40) && this.torrents[id] )
 	{
-	        var base_path = $.trim(this.torrents[id].base_path)
-		if( !base_path.length ) // torrent is not open
-			this.request( "?action=getbasepath&hash=" + id, [this.showDataDirDlg, this] );
+	        var save_path = $.trim(this.torrents[id].save_path)
+		if( !save_path.length ) // torrent is not open
+			this.request( "?action=getsavepath&hash=" + id, [this.showDataDirDlg, this] );
 		else
-			theWebUI.showDataDirDlg( { hash: id, basepath: base_path } );
+			theWebUI.showDataDirDlg( { hash: id, savepath: save_path } );
 	}
 }
 
@@ -24,7 +24,7 @@ theWebUI.showDataDirDlg = function( d )
 		is_done = $.trim(this.torrents[id].done) == 1000;
 		is_multy = $.trim(this.torrents[id].multi_file) != "0";
 	}
-	$('#edit_datadir').val( $.trim(d.basepath).replace(/\/[^\/]+$/g, "") );
+	$('#edit_datadir').val( $.trim(d.savepath) );
 	$('#btn_datadir_ok').prop("disabled",false);
 	// can't ignore torrent's path if not multy
 	$('#move_not_add_path').prop("disabled",!is_multy).prop("checked",false);
@@ -34,12 +34,12 @@ theWebUI.showDataDirDlg = function( d )
 	theDialogManager.show( "dlg_datadir" );
 }
 
-rTorrentStub.prototype.getbasepath = function()
+rTorrentStub.prototype.getsavepath = function()
 {
 	var cmd = new rXMLRPCCommand( "d.open" );
 	cmd.addParameter( "string", this.hashes[0] );
 	this.commands.push( cmd );
-	cmd = new rXMLRPCCommand( "d.get_base_path" );
+	cmd = new rXMLRPCCommand( "d.get_save_path" );
 	cmd.addParameter( "string", this.hashes[0] );
 	this.commands.push( cmd );
 	cmd = new rXMLRPCCommand( "d.close" );
@@ -47,12 +47,12 @@ rTorrentStub.prototype.getbasepath = function()
 	this.commands.push( cmd );
 }
 
-rTorrentStub.prototype.getbasepathResponse = function( xml )
+rTorrentStub.prototype.getsavepathResponse = function( xml )
 {
 	var datas = xml.getElementsByTagName( 'data' );
 	var data = datas[0];
 	var values = data.getElementsByTagName( 'value' );
-	return( { hash: this.hashes[0], basepath: this.getValue( values, 3 ) } );
+	return( { hash: this.hashes[0], savepath: this.getValue( values, 3 ) } );
 }
 
 if(plugin.canChangeMenu())

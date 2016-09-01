@@ -50,6 +50,7 @@ var theUILang =
  Seeds				: "Seeds",
  Remaining			: "Gjenstående",
  Priority			: "Prioritet",
+ Save_path			: "Save path",
  Not_torrent_file		: "Filen må være en .torrent fil.",
  Pausing			: "Pause",
  Seeding			: "Seeder",
