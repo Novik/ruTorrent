@@ -52,7 +52,6 @@ var theUILang =
  Seeds				: "Jakajat",
  Remaining			: "Jäljellä",
  Priority			: "Tärkeysaste",
- Save_path			: "Save path",
  Not_torrent_file		: "Tiedoston täytyy olla torrent-tiedosto.",
  Pausing			: "Tauko",
  Seeding			: "Jakaa",
@@ -274,5 +273,6 @@ var theUILang =
  Recreate_files			: "Queue files recreation",
  Address			: "Address",
  PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded"
+ PeerDownloaded 		: "Peer Downloaded",
+ Save_path			: "Save path"
 };

@@ -50,7 +50,6 @@ var theUILang =
  Seeds				: "Máy nguồn",
  Remaining			: "Còn lại",
  Priority			: "Ưu tiên",
- Save_path			: "Save path",
  Not_torrent_file		: "Tập tin phải là tập tin torrent.",
  Pausing			: "Đang tạm dừng",
  Seeding			: "Đang làm nguồn",
@@ -272,5 +271,6 @@ var theUILang =
  Recreate_files 		: "Queue files recreation",
  Address			: "Address",
  PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded"
+ PeerDownloaded 		: "Peer Downloaded",
+ Save_path			: "Save path"
 };

@@ -52,7 +52,6 @@ var theUILang =
  Seeds				: "Сиды",
  Remaining			: "Осталось",
  Priority			: "Приоритет",
- Save_path			: "Save path",
  Not_torrent_file		: "Файл должен быть файлом .torrent.",
  Pausing			: "Пауза",
  Seeding			: "Сидирование",
@@ -274,5 +273,6 @@ var theUILang =
  Recreate_files 		: "Воссоздать файлы торрента",
  Address			: "Адрес",
  PeerDL 			: "Скорость пира",
- PeerDownloaded 		: "Скачано пиром"
+ PeerDownloaded 		: "Скачано пиром",
+ Save_path			: "Сохранено в"
 };

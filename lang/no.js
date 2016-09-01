@@ -50,7 +50,6 @@ var theUILang =
  Seeds				: "Seeds",
  Remaining			: "Gjenstående",
  Priority			: "Prioritet",
- Save_path			: "Save path",
  Not_torrent_file		: "Filen må være en .torrent fil.",
  Pausing			: "Pause",
  Seeding			: "Seeder",
@@ -272,5 +271,6 @@ var theUILang =
  Recreate_files 		: "Queue files recreation",
  Address			: "Address",
  PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded"
+ PeerDownloaded 		: "Peer Downloaded",
+ Save_path			: "Save path"
 };

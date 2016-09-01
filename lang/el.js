@@ -50,7 +50,6 @@ var theUILang =
  Seeds				: "Διαμοιράζουν",
  Remaining			: "Απομένουν",
  Priority			: "Προτεραιότητα",
- Save_path			: "Save path",
  Not_torrent_file		: "Το αρχείο πρέπει να είναι τύπου .torrent.",
  Pausing			: "Γίνεται παύση",
  Seeding			: "Διαμοιρασμός",
@@ -272,5 +271,6 @@ var theUILang =
  Recreate_files 		: "Δρομολόγηση επαναδημιουργίας αρχείων",
  Address			: "Διεύθυνση",
  PeerDL 			: "DL χρήστη",
- PeerDownloaded 		: "Ο χρήστης έλαβε"
+ PeerDownloaded 		: "Ο χρήστης έλαβε",
+ Save_path			: "Save path"
 };

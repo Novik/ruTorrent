@@ -52,7 +52,6 @@ var theUILang =
  Seeds				: "种子数量",
  Remaining			: "剩余时间",
  Priority			: "优先级",
- Save_path			: "Save path",
  Not_torrent_file		: "该文件不是有效的 torrent 文件.",
  Pausing			: "暂停中",
  Seeding			: "做种中",
@@ -274,5 +273,6 @@ var theUILang =
  Recreate_files 		: "Queue files recreation",
  Address			: "Address",
  PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded"
+ PeerDownloaded 		: "Peer Downloaded",
+ Save_path			: "Save path"
 };

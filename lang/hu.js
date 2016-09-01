@@ -52,7 +52,6 @@ var theUILang =
  Seeds				: "Seed",
  Remaining			: "Hátralévő",
  Priority			: "Prioritás",
- Save_path			: "Save path",
  Not_torrent_file		: "A fájlnak .torrent fájlnak kell lennie.",
  Pausing			: "Felfüggesztve",
  Seeding			: "Feltölt",
@@ -274,5 +273,6 @@ var theUILang =
  Recreate_files 		: "Queue files recreation",
  Address			: "Address",
  PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded"
+ PeerDownloaded 		: "Peer Downloaded",
+ Save_path			: "Save path"
 };

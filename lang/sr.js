@@ -50,7 +50,6 @@ var theUILang =
  Seeds				: "Сејачи",
  Remaining			: "Преостало",
  Priority			: "Приоритет",
- Save_path			: "Save path",
  Not_torrent_file		: "Датотека мора бити torrent датотека.",
  Pausing			: "Заустављено",
  Seeding			: "Сејање",
@@ -272,5 +271,6 @@ var theUILang =
  Recreate_files 		: "Queue files recreation",
  Address			: "Address",
  PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded"
+ PeerDownloaded 		: "Peer Downloaded",
+ Save_path			: "Save path"
 };
