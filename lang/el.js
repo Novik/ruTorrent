@@ -272,5 +272,5 @@ var theUILang =
  Address			: "Διεύθυνση",
  PeerDL 			: "DL χρήστη",
  PeerDownloaded 		: "Ο χρήστης έλαβε",
- Save_path			: "Save path"
+ Save_path			: "Τοποθεσία αποθήκευσης"
 };
