@@ -118,11 +118,11 @@ div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize;
 div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
 div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
 
-div#stg {width: 600px; height: 460px; position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
+div#stg {width: 600px; height: 560px; position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
 div#stg_c {overflow: hidden}
 div#stg-header { background-image: url(../images/settings.gif); }
 
-div#stg .lm {width: 120px; height: 413px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
+div#stg .lm {width: 120px; height: 487px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
 .ie div#stg .lm {width: 125px; position: static;}
 .ie9 div#stg .lm {position: static}
 .ie div#stg {width: 605px;}
@@ -145,7 +145,7 @@ div.algnright {text-align: right; clear: right}
 .lm li a {color: #000000; padding: 1px 2px}
 .lm li a.focus {background-color: #E0E0E0}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
-.stg_con {float: right; position: relative; width: 450px; height: 400px; margin: 4px; background-color: #FAFAFA}
+.stg_con {float: right; position: relative; width: 450px; height: 500px; margin: 4px; background-color: #FAFAFA}
 .ie9 .stg_con {position: static}
 fieldset {margin: 4px}
 * > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px; -webkit-border-radius:6px; border-radius:6px;}
