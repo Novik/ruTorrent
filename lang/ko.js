@@ -271,5 +271,6 @@ var theUILang =
  Recreate_files 		: "Queue files recreation",
  Address			: "주소",
  PeerDL 			: "피어 DL",
- PeerDownloaded 		: "피어 다운로드함"
+ PeerDownloaded 		: "피어 다운로드함",
+ Save_path			: "Save path"
 };

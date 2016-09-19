@@ -273,5 +273,6 @@ var theUILang =
  Recreate_files 		: "Воссоздать файлы торрента",
  Address			: "Адрес",
  PeerDL 			: "Скорость пира",
- PeerDownloaded 		: "Скачано пиром"
+ PeerDownloaded 		: "Скачано пиром",
+ Save_path			: "Сохранено в"
 };

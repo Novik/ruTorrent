@@ -40,7 +40,7 @@ class CPasBienEngine extends commonEngine
             if (($cli == false) || (strpos($cli->results, "Pas de torrents disponibles correspondant à votre recherche") !== false))
                 break;
             $res = preg_match_all(
-                               '`<a href="http:\/\/www\.cpasbien\.io\/dl-torrent\/(?P<desc1>[^\/]*)\/(?P<desc2>[^\/]*)\/(?P<id>[^\/]*).html"'.
+                               '`<a href="http:\/\/www\.cpasbien\.cm\/dl-torrent\/(?P<desc1>[^\/]*)\/(?P<desc2>[^\/]*)\/(?P<id>[^\/]*).html"'.
                                ' title="(?P<cat1>.*)<br>(?P<cat2>.*) - (?P<date>.*)" class="titre">(?P<name>.*)</a>'.
                                '<div class="poid">(?P<size>.*)</div>.*'.
                                '<span .*>(?P<seeds>\d+)<\/span>.*'.

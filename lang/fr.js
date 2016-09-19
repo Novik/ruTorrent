@@ -84,11 +84,11 @@ var theUILang =
  Logger 			: "Journal",
  s				: "s", // part of "KB/s"
  bytes				: "octets",
- KB				: "Ko",
- MB				: "Mo",
- GB				: "Go",
- TB				: "To",
- PB				: "Po",
+ KB				: "Kio",
+ MB				: "Mio",
+ GB				: "Gio",
+ TB				: "Tio",
+ PB				: "Pio",
  Loading			: "Chargement...",
  Torrent_file			: "Fichier torrent",
  Torrent_URL			: "URL du torrent",
@@ -273,5 +273,6 @@ var theUILang =
  Recreate_files 		: "Recréation des fichiers",
  Address			: "Adresse",
  PeerDL 			: "R. Client",
- PeerDownloaded 		: "Reçu Client"
+ PeerDownloaded 		: "Reçu Client",
+ Save_path			: "Chemin"
 };

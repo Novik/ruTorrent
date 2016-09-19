@@ -273,5 +273,6 @@ var theUILang =
  Recreate_files 		: "Queue files recreation",
  Address			: "Endereço",
  PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Download do Peer"
+ PeerDownloaded 		: "Download do Peer",
+ Save_path			: "Save path"
 };

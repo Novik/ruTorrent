@@ -111,6 +111,11 @@ rTorrentStub.prototype.listResponse = function(data)
 			torrent.state_changed = values[21];
 			torrent.skip_total = values[22];
 			torrent.base_path = values[25];
+			if (torrent.base_path.substring((torrent.base_path.lastIndexOf('/'))+1) === torrent.name) {
+				torrent.save_path = torrent.base_path.substring(0,torrent.base_path.lastIndexOf('/'));
+			} else {
+				torrent.save_path = torrent.base_path;
+			}
 			torrent.created = values[26];
 			torrent.tracker_focus = values[27];
 			try {

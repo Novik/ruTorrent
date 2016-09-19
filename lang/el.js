@@ -271,5 +271,6 @@ var theUILang =
  Recreate_files 		: "Δρομολόγηση επαναδημιουργίας αρχείων",
  Address			: "Διεύθυνση",
  PeerDL 			: "DL χρήστη",
- PeerDownloaded 		: "Ο χρήστης έλαβε"
+ PeerDownloaded 		: "Ο χρήστης έλαβε",
+ Save_path			: "Τοποθεσία αποθήκευσης"
 };
