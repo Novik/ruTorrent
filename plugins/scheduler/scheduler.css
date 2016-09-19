@@ -1,5 +1,5 @@
 #st_scheduler {display: none;}
-#st_scheduler_h {width: 450px; height: 90px; overflow: auto}
+#st_scheduler_h {width: 450px; height: 300px; overflow: auto}
 
 #sch_graph {width: 415px; border: 0; border-collapse:collapse; table-layout: fixed; margin-left: 10px}
 #sch_graph td {height: 16px; padding: 0; white-space: nowrap; }
