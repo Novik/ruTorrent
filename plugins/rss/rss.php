@@ -872,6 +872,25 @@ class rRSSManager
 	{
 		return($this->cache->getModified($obj));
 	}
+	protected function changeFiltersHash($oldHash,$newHash)
+	{
+error_log("From ".$oldHash." to ".$newHash);
+		$flts = new rRSSFilterList();
+                $this->cache->get($flts);
+		$changed = false;
+		foreach($flts->lst as $filter)
+		{
+error_log($filter->rssHash);
+			if($filter->rssHash==$oldHash)
+			{
+error_log("!!!");
+				$filter->rssHash = $newHash;
+				$changed = true;
+			}
+		}
+		if($changed)
+			$this->cache->set($flts);
+	}
         public function loadFilters()
 	{
 		$flts = new rRSSFilterList();
@@ -1184,7 +1203,9 @@ class rRSSManager
 		$rssOld->hash = $hash;
 		$rssLabel = trim($rssLabel);
 		if(!$this->rssList->isExist($rssOld))
+		{
 			return($this->add($rssURL, $rssLabel, $rssAuto, 1));
+		}
 		else
 		{
 			$rssNew = new rRSS($rssURL);
@@ -1198,6 +1219,7 @@ class rRSSManager
 			{
 				$enabled = $this->rssList->getEnabled($rssOld);
 				$this->remove($hash);
+				$this->changeFiltersHash($hash,$rssNew->hash);
 				$this->add($rssURL, $rssLabel, $rssAuto, $enabled);
 			}
 		}
