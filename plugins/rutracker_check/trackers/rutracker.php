@@ -4,7 +4,7 @@ class RuTrackerCheckImpl
 {
     static public function download_torrent($url, $hash, $old_torrent)
     {
-        if (preg_match('`^http://rutracker\.(org|cr|net)/forum/viewtopic\.php\?t=(?P<id>\d+)$`', $url, $matches)) {
+        if (preg_match('`^https?://rutracker\.(org|cr|net)/forum/viewtopic\.php\?t=(?P<id>\d+)$`', $url, $matches)) {
             $topic_id = $matches["id"];
             $req_url = "http://api.rutracker.cr/v1/get_tor_hash?by=topic_id&val=" . $topic_id;
             $client = ruTrackerChecker::makeClient($req_url);
