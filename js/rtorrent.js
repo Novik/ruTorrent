@@ -1056,11 +1056,9 @@ rTorrentStub.prototype.listResponse = function(xml)
 		torrent.state_changed = this.getValue(values,22);
 		torrent.skip_total = this.getValue(values,23);
 		torrent.base_path = this.getValue(values,26);
-		if(torrent.base_path.substring((torrent.base_path.lastIndexOf('/'))+1) === torrent.name) {
-			torrent.save_path = torrent.base_path.substring(0,torrent.base_path.lastIndexOf("/"));
-		} else {
-			torrent.save_path = torrent.base_path;
-		}
+		var pos = torrent.base_path.lastIndexOf('/');
+		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ? 
+			torrent.base_path.substring(0,pos) : torrent.base_path;
 		torrent.created = this.getValue(values,27);
 		torrent.tracker_focus = this.getValue(values,28);
 		try {
