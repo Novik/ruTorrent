@@ -39,7 +39,7 @@ rTorrentStub.prototype.getsavepath = function()
 	var cmd = new rXMLRPCCommand( "d.open" );
 	cmd.addParameter( "string", this.hashes[0] );
 	this.commands.push( cmd );
-	cmd = new rXMLRPCCommand( "d.get_save_path" );
+	cmd = new rXMLRPCCommand( "d.get_base_path" );
 	cmd.addParameter( "string", this.hashes[0] );
 	this.commands.push( cmd );
 	cmd = new rXMLRPCCommand( "d.close" );
@@ -52,7 +52,17 @@ rTorrentStub.prototype.getsavepathResponse = function( xml )
 	var datas = xml.getElementsByTagName( 'data' );
 	var data = datas[0];
 	var values = data.getElementsByTagName( 'value' );
-	return( { hash: this.hashes[0], savepath: this.getValue( values, 3 ) } );
+	var torrent = theWebUI.torrents[this.hashes[0]];
+	var save_path = '';
+	if(torrent)
+	{
+		torrent.base_path = this.getValue( values, 3 );
+		var pos = torrent.base_path.lastIndexOf('/');
+		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ? 
+			torrent.base_path.substring(0,pos) : torrent.base_path;
+		save_path = torrent.save_path;
+	}
+	return( { hash: this.hashes[0], savepath: save_path } );
 }
 
 if(plugin.canChangeMenu())
