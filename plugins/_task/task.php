@@ -286,10 +286,15 @@ class rTaskManager
 			} 
 			closedir($handle);		
 	        }
-	        krsort($tasks);
+	        uasort($tasks,array('self', 'sortByStarted'));
 	        return($tasks);
 	}
 	
+	static public function sortByStarted($a,$b)
+	{
+		return( $a['start'] > $b['start'] ? -1 : ($a['start'] < $b['start'] ? 1 : 0) );
+	}
+
 	static public function isPIDExists( $pid )
 	{
 		return( function_exists( 'posix_getpgid' ) ? (posix_getpgid($pid)!==false) : file_exists( '/proc/'.$pid ) );
