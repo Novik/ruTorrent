@@ -306,10 +306,9 @@ class rTaskManager
 		$tasks = self::obtain();
 		foreach( $tasks as $id=>$task )
 		{
-			$invalid = ($task["status"]<0);
 			$finished_with_error = ($task["status"]>0);
 			$in_progress = !$finished_with_error && $task["pid"] && self::isPIDExists($task["pid"]);
-			if( $invalid ||	(!$finished_with_error && !$in_progress && ($counter>=self::MAX_TASK_COUNT)) )
+			if( !$finished_with_error && !$in_progress && ($counter>=self::MAX_TASK_COUNT) )
 				rTask::clean(rTask::formatPath($id));
 			else
 				$counter++;
