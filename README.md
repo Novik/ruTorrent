@@ -27,4 +27,4 @@ This project is released under the GPLv3 license, for more details, take a look 
   * After setting up the webserver `ruTorrent` itself needs to be configured. Instructions can be found in various articles in the [wiki](https://github.com/Novik/ruTorrent/wiki).
 <br/>
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U">![Donate!](https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif)</a>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6GTTAQWCGBMVA">![Donate!](https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif)</a>
