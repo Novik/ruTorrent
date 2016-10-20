@@ -51,7 +51,7 @@
  theUILang.rssInterval2d		= "2 дні";
  theUILang.rssInterval3d		= "3 дні";
  theUILang.rssInterval4d		= "4 дні";
- theUILang.rssInterval6d		= "6 дні";
+ theUILang.rssInterval6d		= "6 днів";
  theUILang.rssInterval1w		= "1 тиждень";
  theUILang.rssInterval2w		= "2 тижні";
  theUILang.rssInterval3w		= "3 тижні";
