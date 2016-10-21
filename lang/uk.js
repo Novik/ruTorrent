@@ -274,5 +274,5 @@ var theUILang =
  Address			: "Адреса",
  PeerDL 			: "Швидкість піра",
  PeerDownloaded 		: "Завантажено піром",
- Save_path			: "Save path"
+ Save_path			: "Збережено у"
 };
