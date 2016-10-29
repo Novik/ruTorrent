@@ -21,6 +21,6 @@
  theUILang.schSeedingOnlyDesc	= "Tylko wysyłanie danych";
  theUILang.schLimitedUL 	= "Limit wysyłania";
  theUILang.schLimitedDL 	= "Limit pobierania:";
- theUILang.shcIgnore		= "Ignoruj scheduler";
+ theUILang.shcIgnore		= "Ignoruj planistę";
 
 thePlugins.get("scheduler").langLoaded();
