@@ -7,7 +7,7 @@ This project is released under the GPLv3 license, for more details, take a look 
 ##Main features
 
 * Lightweight server side, so it can be installed on old and low-end servers and even on some SOHO routers
-* Extensible - there are several plugins and everybody can create his own one
+* Extensible - there are several plugins and everybody can create their own one
 * Nice look ;) 
 
 ##Screenshots
