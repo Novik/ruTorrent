@@ -240,6 +240,10 @@ function makeContent()
 		'<div class="aright buttons-list"><input type="button" class="OK Button" value="'+theUILang.ok+'" onclick="theWebUI.createLabel();theDialogManager.hide(\'dlgLabel\');return(false);" />'+
 			'<input type="button" class="Cancel Button" value="'+theUILang.Cancel+'"/></div>',
 		true);
+	theDialogManager.setHandler('dlgLabel','afterShow',function()
+	{
+		setTimeout(function(){$("#txtLabel").off('focus').on('focus',function() { $(this).select(); } ).focus();}, 0);
+	});
 	theDialogManager.make("yesnoDlg","",
 		'<div class="content" id="yesnoDlg-content"></div>'+
 		'<div id="yesnoDlg-buttons" class="aright buttons-list"><input type="button" class="OK Button" value="'+theUILang.ok+'" id="yesnoOK">'+
