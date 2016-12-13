@@ -454,7 +454,7 @@ class Snoopy
 		if(!empty($this->agent))
 			$headers[] = "User-Agent: ".$this->agent;
 		if(!empty($this->host) && !isset($this->rawheaders['Host']))
-			$headers[] = "Host: ".$this->hosts.($this->port == 443 ? "" : ":".$this->port);
+			$headers[] = "Host: ".$this->host.($this->port == 443 ? "" : ":".$this->port);
 		if(!empty($this->accept))
 			$headers[] = "Accept: ".$this->accept;
 		if(!empty($this->referer))
