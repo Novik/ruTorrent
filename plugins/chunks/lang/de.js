@@ -3,16 +3,16 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.Chunks		= "Chunks";
- theUILang.cAvail		= "Availability";
- theUILang.cDownloaded		= "Downloaded";
- theUILang.cMode		= "Mode";
- theUILang.chunksCount		= "Chunks count";
- theUILang.chunkSize		= "Chunk size";
- theUILang.cLegend		= "Legend";
- theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
+ theUILang.Chunks		= "Teile";
+ theUILang.cAvail		= "Verfügbarkeit";
+ theUILang.cDownloaded		= "Heruntergeladen";
+ theUILang.cMode		= "Modus";
+ theUILang.chunksCount		= "Anzahl Teile";
+ theUILang.chunkSize		= "Teil größe";
+ theUILang.cLegend		= "Legende";
+ theUILang.cLegendVal		= [ "4 Teile pro Zelle", "1 Teil pro Zelle" ];
 
 thePlugins.get("chunks").langLoaded();

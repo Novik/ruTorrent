@@ -3,10 +3,10 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
  theUILang.themeStandard	= "Standard";
- theUILang.theme		= "Theme";
+ theUILang.theme		= "Thema";
 
 thePlugins.get("theme").langLoaded();

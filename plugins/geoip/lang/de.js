@@ -5,12 +5,14 @@
  *
  * Initial Author: art.spb, December 2009.
  *
+ * Updatet by : Dario Rugani (kontakt@rugani.de)
+ *
  * Author: 
  */
 
- theUILang.peerComment		= "Add comment";
- theUILang.peerCommentLabel	= "Enter new comment for peer";
- theUILang.commentName		= "Comment";
+ theUILang.peerComment		= "Kommentar hinzufügen";
+ theUILang.peerCommentLabel	= "Gebe einen Kommentar für den Peer ein";
+ theUILang.commentName		= "Kommentar";
  theUILang.countryName		= "Land";
 
  theUILang.country = new Array();

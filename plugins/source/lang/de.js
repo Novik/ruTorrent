@@ -3,10 +3,10 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.getSource		= "Get .torrent";
- theUILang.cantFindTorrent	= "Source torrent file for this download not found.";
+ theUILang.getSource		= "Hole .torrent";
+ theUILang.cantFindTorrent	= "Quell Torrent-Datei für diesen Download nicht gefunden.";
 
 thePlugins.get("source").langLoaded();

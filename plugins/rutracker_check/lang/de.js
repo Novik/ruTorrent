@@ -3,21 +3,21 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.checkTorrent 	= "Check for Update";
- theUILang.chkHdr		= "Torrent Update Check";
- theUILang.checkedAt		= "Last Checked";
- theUILang.checkedResult	= "Result";
+ theUILang.checkTorrent 	= "Auf Update prüfen";
+ theUILang.chkHdr		= "Torrent auf Update prüfen";
+ theUILang.checkedAt		= "Letzte Prüfung";
+ theUILang.checkedResult	= "Resultat";
  theUILang.chkResults		= [
- 				  "In progress",
- 				  "Updated",
- 				  "No update required",
- 				  "Probably deleted",
- 				  "Error accessing the tracker",
- 				  "Error interacting with rTorrent",
- 				  "No need"
+ 				  "In Bearbeitung",
+ 				  "Aktualisiert",
+ 				  "Kein Update nötig",
+ 				  "Wahrscheinlich gelöscht",
+ 				  "Fehler beim Zugriff auf Tracker",
+ 				  "Fehler beim Interagieren mit rTorrent",
+ 				  "Nicht nötig"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

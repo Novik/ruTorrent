@@ -3,9 +3,9 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.diskNotification = "Warning! The disk is full. rTorrent may not run correctly, and no data will be downloaded until you free some disk space.";
+ theUILang.diskNotification = "Warnung! Die Festplatte ist voll. Es könnte sein, dass rTorrent nicht ordnungsgemäß funktioniert und es werden keine Daten heruntergeladen, bis Speicherplatz freigeben wird.";
 
 thePlugins.get("diskspace").langLoaded();

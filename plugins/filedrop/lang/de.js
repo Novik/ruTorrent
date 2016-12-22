@@ -3,11 +3,11 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.doesntSupportHTML5	= "Plugin filedrop: Your browser does not support HTML5 file uploads. Plugin was disabled.";
- theUILang.tooManyFiles 	= "Plugin filedrop: Too many files. Must be <= ";
- theUILang.fileTooLarge 	= "is too large. Please upload files up to";
+ theUILang.doesntSupportHTML5	= "Plugin filedrop: Ihr Browser unterstützt keine HTML5-Uploads. Plugin wurde deaktiviert.";
+ theUILang.tooManyFiles 	= "Plugin filedrop: Zu viele Dateien. Maximal <= ";
+ theUILang.fileTooLarge 	= "ist zu groß. Bitte lade Dateien bis zu";
 
 thePlugins.get("filedrop").langLoaded();

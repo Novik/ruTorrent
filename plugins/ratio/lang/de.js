@@ -3,24 +3,24 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.ratios		= "Ratio Groups";
- theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set Ratio Group";
- theUILang.mnuRatioUnlimited	= "No Ratio";
+ theUILang.ratios		= "Ratio Gruppen";
+ theUILang.ratio		= "Ratio Gruppe";
+ theUILang.mnuRatio		= "Setze Ratio Gruppe";
+ theUILang.mnuRatioUnlimited	= "Keine Ratio";
  theUILang.ratioName		= "Name";
- theUILang.minRatio		= "Min";
- theUILang.maxRatio		= "Max";
+ theUILang.minRatio		= "Min.";
+ theUILang.maxRatio		= "Max.";
  theUILang.ratioUpload		= "UL";
- theUILang.ratioAction		= "Action";
+ theUILang.ratioAction		= "Aktion";
  theUILang.ratioStop		= "Stop";
- theUILang.ratioStopAndRemove	= "Stop & Clear group";
- theUILang.ratioErase		= "Remove";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault 	= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.ratioStopAndRemove	= "Stop & Gruppe entfernen";
+ theUILang.ratioErase		= "Entfernen";
+ theUILang.ratioEraseData	= "Daten löschen";
+ theUILang.maxTime		= "Zeit";
+ theUILang.ratioDefault 	= "Stadart Ratio Gruppe";
+ theUILang.setThrottleTo	= "Ändere Channel zu";
 
 thePlugins.get("ratio").langLoaded();

@@ -3,10 +3,10 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.getData		= "Get File";
- theUILang.cantAccessData	= "Webserver user can't access the data of this torrent.";
+ theUILang.getData		= "Herunterladen";
+ theUILang.cantAccessData	= "Webserver-Benutzer kann nicht auf die Daten dieses Torrents zugreifen.";
 
 thePlugins.get("data").langLoaded();
