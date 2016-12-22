@@ -3,13 +3,13 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
  theUILang.retrackers		= "Retrackers";
- theUILang.retrackersAdd	= "Add Announces";
- theUILang.retrackersDel	= "Remove Announces";
- theUILang.dontAddToPrivate	= "Don't touch private torrents";
- theUILang.addToBegin		= "Add announces to the beginning of the trackers list";
+ theUILang.retrackersAdd	= "Announces hinzufügen";
+ theUILang.retrackersDel	= "Announces löschen";
+ theUILang.dontAddToPrivate	= "Private Torrents ausschließen";
+ theUILang.addToBegin		= "Announces zum Anfang der Trackers-Liste hinzufügen";
 
 thePlugins.get("retrackers").langLoaded();

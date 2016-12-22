@@ -3,15 +3,15 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.unpack		= "Unpack";
- theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";
- theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
- theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
- theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
+ theUILang.unpack		= "Entpacken";
+ theUILang.unpackPath		= "Entpacken nach (Leer lassen für das aktuelle Verzeichniss des Torrents)";
+ theUILang.unzipNotFound	= "Unpack Plugin: rTorrent Benutzer kann nicht auf 'unzip' Programm zugreifen.";
+ theUILang.unrarNotFound	= "Unpack Plugin: rTorrent Benutzer kann nicht auf 'unrar' Programm zugreifen.";
+ theUILang.unpackEnabled	= "Aktivieren Sie automatisches Entpacken, wenn das Label vom Torrent mit dem Filter übereinstimmt";
+ theUILang.unpackTorrents	= "Anhängen an Pfadname beim Auspacken von Torrentdaten";
  theUILang.unpackAddLabel	= "Torrent Label";
  theUILang.unpackAddName	= "Torrent Name";
 

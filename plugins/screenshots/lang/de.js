@@ -3,18 +3,18 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
  theUILang.exFFMPEG		= "Screenshots";
- theUILang.exFrameWidth 	= "Frame width";
- theUILang.exFramesCount	= "Frames count";
- theUILang.exStartOffset	= "Start frame offset";
- theUILang.exBetween		= "Time between frames";
- theUILang.exSave		= "Save";
- theUILang.exSaveAll		= "Save all";
+ theUILang.exFrameWidth 	= "Bild breite";
+ theUILang.exFramesCount	= "Bild anzahl";
+ theUILang.exStartOffset	= "Startbildversatz";
+ theUILang.exBetween		= "Zeit zwischen Bildern";
+ theUILang.exSave		= "Speichern";
+ theUILang.exSaveAll		= "Alle speichern";
  theUILang.exScreenshot 	= "Screenshot";
- theUILang.exPlayInterval	= "Slideshow interval";
- theUILang.exImageFormat	= "Image format";
+ theUILang.exPlayInterval	= "Diashow-Intervall";
+ theUILang.exImageFormat	= "Bildformat";
 
 thePlugins.get("screenshots").langLoaded();

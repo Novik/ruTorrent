@@ -3,7 +3,7 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
  theUILang.traf 	= "Traffic";
@@ -12,8 +12,8 @@
  theUILang.perYear 	= "Pro Jahr";
  theUILang.allTrackers	= "Alle Tracker";
  theUILang.ClearButton	= "Löschen";
- theUILang.ClearQuest 	= "Willst du die Statistik des ausgewählten Trackers wirklich löschen?";
- theUILang.selectedTorrent	= "Ausgewählter Torrent(s)";
- theUILang.ratioDay	= "Ratio/tag";
- theUILang.ratioWeek	= "Ratio/woche";
- theUILang.ratioMonth	= "Ratio/monat";
+ theUILang.ClearQuest 	= "Statistik des ausgewählten Trackers wirklich löschen?";
+ theUILang.selectedTorrent	= "Ausgewählte(r) Torrent(s)";
+ theUILang.ratioDay	= "Ratio/Tag";
+ theUILang.ratioWeek	= "Ratio/Woche";
+ theUILang.ratioMonth	= "Ratio/Monat";

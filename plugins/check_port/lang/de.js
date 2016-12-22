@@ -3,14 +3,14 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkPort		= "Portstatus überprüfen";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Portstatus ist unbekannt",
+ 				  "Port ist geschlossen",
+ 				  "Port ist offen"
  				  ];
 
 thePlugins.get("check_port").langLoaded();

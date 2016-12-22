@@ -3,13 +3,13 @@
  *
  * German language file.
  *
- * Author: 
+ * Author:  Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.DataDir		= "Save to";
- theUILang.DataDirMove		= "Move data files";
- theUILang.datadirDlgCaption	= "Torrent Data Directory";
- theUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
- theUILang.datadirSetDirFail	= "DataDir plugin: Operation fail";
+ theUILang.DataDir		= "Speichern unter";
+ theUILang.DataDirMove		= "Verschiebe Daten";
+ theUILang.datadirDlgCaption	= "Torrent Daten Verzeichnis";
+ theUILang.datadirDirNotFound	= "DataDir plugin: Ungültiges Verzeichnis";
+ theUILang.datadirSetDirFail	= "DataDir plugin: Operation fehlgeschlagen";
 
 thePlugins.get("datadir").langLoaded();

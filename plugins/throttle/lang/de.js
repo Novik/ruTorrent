@@ -3,14 +3,14 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
  theUILang.throttles		= "Channels";
  theUILang.throttle		= "Channel";
- theUILang.mnuThrottle		= "Set Channel";
- theUILang.mnuUnlimited 	= "No Channel";
+ theUILang.mnuThrottle		= "Channel setzen";
+ theUILang.mnuUnlimited 	= "Kein Channel";
  theUILang.channelName		= "Name";
- theUILang.channelDefault	= "Default channel";
+ theUILang.channelDefault	= "Standard Channel";
 
 thePlugins.get("throttle").langLoaded();

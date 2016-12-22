@@ -3,24 +3,24 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.tskCommand		= "Running...";
- theUILang.tskCommandDone	= "Done.";
- theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostics";
- theUILang.tskBackground	= "Hide";
- theUILang.tskStart		= "Started";
- theUILang.tskFinish		= "Finished";
- theUILang.tskElapsed		= "Elapsed";
+ theUILang.tskCommand		= "Läuft...";
+ theUILang.tskCommandDone	= "Fertig.";
+ theUILang.tskConsole		= "Konsole";
+ theUILang.tskErrors		= "Diagnose";
+ theUILang.tskBackground	= "Verstecken";
+ theUILang.tskStart		= "Gestartet";
+ theUILang.tskFinish		= "Fertiggestellt";
+ theUILang.tskElapsed		= "Verstrichen";
  theUILang.tskPlugin		= "Plugin";
- theUILang.tskDeletePrompt	= "Do you really want to delete the selected task(s)?";
- theUILang.tskDelete		= "Delete tasks(s)";
- theUILang.tskActivate		= "Activate";
- theUILang.tskRemove		= "Remove";
- theUILang.tskRefresh		= "Refresh";
- theUILang.tskRunning		= "Running";
+ theUILang.tskDeletePrompt	= "Die/Den ausgewählten Task(s) wirklich löschen?";
+ theUILang.tskDelete		= "Task(s) löschen";
+ theUILang.tskActivate		= "Aktivieren";
+ theUILang.tskRemove		= "Entfernen";
+ theUILang.tskRefresh		= "Aktualisieren";
+ theUILang.tskRunning		= "Läuft";
  theUILang.tskArg		= "Parameter";
  theUILang.tskTasks		= "Tasks";
 

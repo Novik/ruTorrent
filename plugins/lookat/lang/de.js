@@ -3,10 +3,10 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.lookAtDesc = "Find at (Format: name|url)";
- theUILang.lookAt = "Find at";
+ theUILang.lookAtDesc = "Finde bei (Format: Name|URL)";
+ theUILang.lookAt = "Finde bei";
 
 thePlugins.get("lookat").langLoaded();

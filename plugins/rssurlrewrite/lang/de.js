@@ -3,27 +3,27 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.rssNewRule		= "New rule";
- theUILang.mnu_rssurlrewrite	= "URL Replacement in RSS";
- theUILang.rssRulesManager	= "Rules Manager";
- theUILang.rssAddRule		= "Add";
- theUILang.rssDelRule		= "Delete";
+ theUILang.rssNewRule		= "Neue Regel";
+ theUILang.mnu_rssurlrewrite	= "URL-Austausch in RSS";
+ theUILang.rssRulesManager	= "Regel-Manager";
+ theUILang.rssAddRule		= "Hinzufügen";
+ theUILang.rssDelRule		= "Löschen";
  theUILang.rssCheckRule 	= "?";
- theUILang.rssRulesLegend	= "Rule Settings";
- theUILang.rssSrcHref		= "If URL of torrent download matches pattern";
- theUILang.rssSrcGuid		= "If URL of torrent description matches pattern";
- theUILang.rssDstHref		= "then replace URL of torrent download with";
- theUILang.rssDstGuid		= "then replace URL of torrent description with";
- theUILang.rssRulesDebug	= "Rule Debug";
+ theUILang.rssRulesLegend	= "Regeleinstellungen";
+ theUILang.rssSrcHref		= "Wenn URL des Torrent-Downloads mit Muster übereinstimmt";
+ theUILang.rssSrcGuid		= "Wenn die URL der Torrent-Beschreibung mit Muster übereinstimmt";
+ theUILang.rssDstHref		= "Dann ersetze die URL des Torrent-Downloads mit";
+ theUILang.rssDstGuid		= "Dann ersetze die URL der Torrentbeschreibung mit";
+ theUILang.rssRulesDebug	= "Regel testen";
  theUILang.rssTestString	= "Test";
- theUILang.rssTestResult	= "Result";
- theUILang.rssURLInfo		= "URL info";
- theUILang.rssURLGUID		= "Description URL";
+ theUILang.rssTestResult	= "Ergebniss";
+ theUILang.rssURLInfo		= "URL-Info";
+ theUILang.rssURLGUID		= "Beschreibung URL";
  theUILang.rssURLHref		= "Download URL";
- theUILang.rssPatternError	= "Error in pattern string.";
+ theUILang.rssPatternError	= "Fehler im Muster";
  theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

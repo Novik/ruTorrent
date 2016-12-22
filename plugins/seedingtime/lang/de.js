@@ -3,10 +3,10 @@
  *
  * German language file.
  *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
+ theUILang.seedingTime		= "Fertig";
+ theUILang.addTime		= "Hinzugefügt";
 
 thePlugins.get("seedingtime").langLoaded();
