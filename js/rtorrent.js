@@ -3,6 +3,16 @@
  *
  */
 
+/**
+ * @typedef {Object} StatusMask
+ * @property {number} started
+ * @property {number} paused
+ * @property {number} checking
+ * @property {number} hashing
+ * @property {number} error
+ */
+
+/** @type {StatusMask} */
 var dStatus = { started : 1, paused : 2, checking : 4, hashing : 8, error : 16 };
 
 var theRequestManager = 
@@ -980,8 +990,67 @@ rTorrentStub.prototype.getalltrackersResponse = function(xml)
 	return(ret);
 }
 
+/**
+ * @typedef {Object} Torrent
+ * @property {boolean} updated
+ * @property {string} addtime - timestamp - number with quotes (e.g.: "123")
+ * @property {string} base_path
+ * @property {number} chkstate - rutracker_check plugin. See @ruTrackerChecker
+ * @property {number} chktime
+ * @property {string} comment
+ * @property {string} created - timestamp - number with quotes (e.g.: "123")
+ * @property {number} dl
+ * @property {number} done - percentage based on 1000 (1 = 0.1%, 1000 = 100%)
+ * @property {number} downloaded
+ * @property {number} eta
+ * @property {string} free_diskspace - number with quotes (e.g.: "123")
+ * @property {string} label
+ * @property {string} msg
+ * @property {number} multi_file
+ * @property {string} name
+ * @property {string} peers (format: "0 (0)")
+ * @property {string} peers_actual - number with quotes (e.g.: "123")
+ * @property {number} peers_all
+ * @property {string} priority - number with quotes (e.g.: "123")
+ * @property {string} private - number with quotes (e.g.: "123")
+ * @property {number} ratio
+ * @property {number} ratioday
+ * @property {string} ratiogroup
+ * @property {number} ratiomonth
+ * @property {number} ratioweek
+ * @property {string} remaining - number with quotes (e.g.: "123")
+ * @property {number} sch_ignore
+ * @property {string} seedingtime - number with quotes (e.g.: "123")
+ * @property {string} seeds (format "0 (0)")
+ * @property {number} seeds_actual
+ * @property {number} seeds_all
+ * @property {string} size - number with quotes (e.g.: "123")
+ * @property {string} skip_total - number with quotes (e.g.: "123")
+ * @property {number} state - mask
+ * @property {string} state_changed - number with quotes (e.g.: "123")
+ * @property {string} status (e.g. "Seeding")
+ * @property {string} throttle
+ * @property {string} tracker
+ * @property {string} tracker_focus
+ * @property {number} ul
+ * @property {number} uploaded
+ */
+
+
+/**
+ * @typedef {Object} ListResponseType
+ * @property {Object.<string, Torrent>} torrents
+ * @property {Object.<string, number>} labels - count of labels
+ * @property {Object.<string, number>} labels_size - cumulative size of torrents by label
+ */
+
+/**
+ * @param {Object} xml
+ * @returns {ListResponseType}
+ */
 rTorrentStub.prototype.listResponse = function(xml)
 {
+	/** @type {ListResponseType} */
 	var ret = {};
 	ret.torrents = {};
 	ret.labels = {};
