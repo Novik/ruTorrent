@@ -296,7 +296,7 @@ rTorrentStub.prototype.list = function()
 
 rTorrentStub.prototype.setuisettings = function()
 {
-	this.content = "v="+this.vs[0];
+	this.content = "v="+encodeURIComponent(this.vs[0]);
 	this.mountPoint = theURLs.SetSettingsURL;
 	this.contentType = "application/x-www-form-urlencoded";
 	this.dataType = "text";
@@ -320,10 +320,10 @@ rTorrentStub.prototype.doneplugins = function()
 {
 	this.mountPoint = theURLs.GetDonePluginsURL;
 	this.dataType = "script";
-	this.content = "cmd="+this.ss[0];
+	this.content = "cmd="+encodeURIComponent(this.ss[0]);
 	this.contentType = "application/x-www-form-urlencoded";
 	for(var i=0; i<this.hashes.length; i++)
-		this.content += ("&plg="+this.hashes[i]);
+		this.content += ("&plg="+encodeURIComponent(this.hashes[i]));
 }
 
 rTorrentStub.prototype.recheck = function()
