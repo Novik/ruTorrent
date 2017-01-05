@@ -2,7 +2,7 @@
 
 class KinozalTVEngine extends commonEngine
 {
-       	public $defaults = array( "public"=>false, "page_size"=>40, "cookies"=>"kinozal.me|uid=XXX;pass=XXX;" );
+       	public $defaults = array( "public"=>false, "page_size"=>40, "cookies"=>"kinozal-tv.appspot.com|uid=XXX;pass=XXX;" );
        	
 	public $categories = array( 'all'=>'0', 
 		'Кино - Сериал'=>'5',
@@ -90,7 +90,7 @@ class KinozalTVEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://kinozal.me';
+		$url = 'https://kinozal-tv.appspot.com';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'tv'=>'5', 'games'=>'23', 'anime'=>'20', 'software'=>'32', 'pictures'=>'40', 'books'=>'41' );
 		else
@@ -110,13 +110,12 @@ class KinozalTVEngine extends commonEngine
 				break;
 
 			$res = preg_match_all('|<tr class=bg><td class="bt"><img src=.* onclick="cat(?P<cat>.*);".*'.
-				'<a href="/details.php\?id=(?P<id>\d+)".*>(?P<name>.*)</a>.*'.
+				'<a href="/details.php\?.*id=(?P<id>\d+)".*>(?P<name>.*)</a>.*'.
 				'<td class=.*>\d+</td>.*'.
 				'<td class=.*>(?P<size>.*)</td>.*'.
 				'<td class=.*>(?P<leech>.*)</td>.*'.
 				'<td class=.*>(?P<seeds>.*)</td>.*'.
 				'<td class=.*>(?P<date>.*)</td>|siU', $cli->results, $matches);
-				
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
