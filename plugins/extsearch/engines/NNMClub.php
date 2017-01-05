@@ -3,7 +3,7 @@
 class NNMClubEngine extends commonEngine
 {
        	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $url = 'http://nnmclub.to';
+	public $url = 'https://nnmclub.to';
 	public $categories = array( 'all'=>"&f[]=-1" );
 
 	protected function parseTList($results,&$added,&$ret,$limit)

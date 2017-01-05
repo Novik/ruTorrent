@@ -15,7 +15,7 @@ class RuTrackerCheckImpl
                 return ruTrackerChecker::STE_UPTODATE;
                 }
             $client->setcookies();
-            $client->fetchComplex("http://dl.rutracker.cr/forum/dl.php?t=" . $topic_id);
+            $client->fetchComplex("https://rutracker.cr/forum/dl.php?t=" . $topic_id);
             if ($client->status != 200) return (($client->status < 0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED);
             return ruTrackerChecker::createTorrent($client->results, $hash);
         }
