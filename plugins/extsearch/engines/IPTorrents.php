@@ -2,9 +2,9 @@
 
 class IPTorrentsEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"www.iptorrents.com|pass=XXX;uid=XXX" );
+	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"iptorrents.com|pass=XXX;uid=XXX" );
 	public $categories = array( 'all'=>'',
-		'Movies'=>'&l72=1', 'TV'=>'&l73=1', 'Games'=>'&l74=1', 'Music'=>'&l75=1', 'Miscellaneous'=>'&l76=1', 'XXX'=>'&l88=1' );
+		'Movies'=>'&72=', 'TV'=>'&73=', 'Games'=>'&74=', 'Music'=>'&75=', 'Miscellaneous'=>'&76=', 'XXX'=>'&88=' );
 
 	protected static $seconds = array
 	(
@@ -25,10 +25,10 @@ class IPTorrentsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'https://www.iptorrents.com';
+		$url = 'https://iptorrents.com';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 
-				'movies'=>'&l72=1', 'tv'=>'&l73=1', 'music'=>'&l75=1', 'games'=>'&l74=1', 
+				'movies'=>'&72=', 'tv'=>'&73=', 'music'=>'&75=', 'games'=>'&l74=1', 
 				'anime'=>'&l60=1', 'software'=>'&l1=1&l86=1', 'pictures'=>'&l36=1', 'books'=>'&l35=1&l64=1' );
 		else
 			$categories = &$this->categories;
@@ -38,7 +38,7 @@ class IPTorrentsEngine extends commonEngine
 			$cat = $categories[$cat];
 		for($pg = 1; $pg<11; $pg++)
 		{
-			$cli = $this->fetch( $url.'/torrents/?'.$cat.'o=seeders;q='.$what.';qf=ti;p='.$pg );
+			$cli = $this->fetch( $url.'/torrents/?'.$cat.'o=seeders;q='.$what.';p='.$pg.';qf=#torrents' );
 			if( ($cli==false) || (strpos($cli->results, ">Nothing found!<")!==false) ||
 				(strpos($cli->results, ">Password:<")!==false))
 				break;
@@ -47,10 +47,10 @@ class IPTorrentsEngine extends commonEngine
 				'<img class=".*" width="\d+" height="\d+" src=".*" alt="(?P<cat>.*)"></a>.*'.
 				' href="/details\.php\?id=(?P<id>\d+)">(?P<name>.*)</a>.*'.
 				't_ctime">(.* \| )?(?P<ago>[0-9\.]+) (?P<unit>(minutes|hours|days|weeks|months|years)) ago( by .*|)</div>.*'.
-				'<td .*>.*href="/download\.php/\d+\/(?P<tname>.*)".*</a></td>'.
-				'<td .*>.*</td><td .*>(?P<size>.*)</td><td .*>.*</td>'.
-				'<td class="ac t_seeders">(?P<seeds>.*)</td>'.
-				'<td class="ac t_leechers">(?P<leech>.*)</td>'.				
+				'<td .*>.*href="/download\.php/\d+\/(?P<tname>.*)".*</a>.*'. //</td>'.
+				'<td .*>.*<td .*>(?P<size>.*)<td .*>.*'.
+				'<td class="ac t_seeders">(?P<seeds>.*)'.
+				'<td class="ac t_leechers">(?P<leech>.*)'.
 				'`siU', $cli->results, $matches);
 
 			if($res)
