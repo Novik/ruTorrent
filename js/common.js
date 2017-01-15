@@ -1130,7 +1130,7 @@ var theBTClientVersion =
         	"HL" : "Halite", "LT" : "libtorrent (Rasterbar)", "lt" : "libTorrent (Rakshasa)",
 	        "MP" : "MooPolice", "TT" : "TuoTu", "qB" : "qBittorrent",
        		'MG' : "MediaGet",	// ? -MG1Cr0-
-       		"IL" : "iLivid" 
+       		"IL" : "iLivid", "TL" : "Tribler"
 	},
 	azLikeClients2x2:
 	{
