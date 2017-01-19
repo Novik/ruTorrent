@@ -1,42 +1,78 @@
 plugin.loadMainCSS();
 plugin.loadLang();
 
+plugin.getTorrentEditables = function(id)
+{
+	var trk = theWebUI.trackers[id];
+	var s = "";
+	if(trk.length)
+	{
+		var lastGroup = trk[0].group;
+		for(var i=0; i<trk.length; i++)
+		{
+		        if(trk[i].name!="dht://")
+	        	{
+				if(lastGroup != trk[i].group)
+				{
+					s+='\r\n';
+					lastGroup = trk[i].group;
+				}
+				s+=trk[i].name;
+				s+='\r\n';
+			}
+		}
+	}
+	return( 
+	{ 
+		trackers: $.trim(s), 
+		comment: $.trim(theWebUI.torrents[id].comment),
+		private: theWebUI.torrents[id].private,
+		set_trackers: true,
+		set_comment: true
+	});
+}
+
 theWebUI.editTrackers = function(id)
 {
-	if(id)
-	{	
-		var trk = this.trackers[id];
-		var s = "";
-		if(trk.length)
+	var editable = null;
+	if(!id)
+	{
+		var sr = this.getTable("trt").rowSel;
+		for(var k in sr) 
 		{
-			var lastGroup = trk[0].group;
-			for(var i=0; i<trk.length; i++)
+			if((sr[k] == true) && this.isTorrentCommandEnabled("edittorrent",k))
 			{
-			        if(trk[i].name!="dht://")
-		        	{
-					if(lastGroup != trk[i].group)
+				var e = plugin.getTorrentEditables(k);
+				if(!editable)
+					editable = e;
+				else
+				{
+					if(e.trackers!=editable.trackers)
 					{
-						s+='\r\n';
-						lastGroup = trk[i].group;
+						editable.trackers = '';
+						editable.set_trackers = false;
 					}
-					s+=trk[i].name;
-					s+='\r\n';
+					if(e.comment!=editable.comment)
+					{
+						editable.comment = '';
+						editable.set_comment = false;
+					}
+					if(!editable.set_trackers && !editable.set_comment)
+					{
+						break;
+					}
 				}
 			}
 		}
-		$('#etrackers').val($.trim(s));
-		$('#ecomment').val($.trim(this.torrents[id].comment));
-		$('#eset_trackers, #eset_comment').prop('checked',true);
-		$('#eset_private').prop('checked',false);
-		$('#eprivate').val(this.torrents[id].private);
 	}
 	else
-	{
-		$('#etrackers').val('');
-		$('#ecomment').val('');
-		$('#eprivate').val('0');
-		$('input[type="checkbox"]').prop('checked',false);
-	}		
+		editable = plugin.getTorrentEditables(id);
+	$('#etrackers').val(editable.trackers);
+	$('#ecomment').val(editable.comment);
+	$('#eset_trackers').prop('checked',editable.set_trackers);
+	$('#eset_comment').prop('checked',editable.set_comment);
+	$('#eset_private').prop('checked',false);
+	$('#eprivate').val(editable.private);
 	$('#editok').prop("disabled",false);
 	theDialogManager.show("tedit");
 }
