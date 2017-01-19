@@ -81,7 +81,7 @@ var theRequestManager =
 	{
 		commands:
 		[
-			"bind", "check_hash", "dht_port", "directory", "download_rate", 
+			"check_hash", "bind", "dht_port", "directory", "download_rate", 
 			"hash_interval", "hash_max_tries", "hash_read_ahead", "http_cacert", "http_capath",
 			"http_proxy", "ip", "max_downloads_div", "max_downloads_global", "max_file_size",
 			"max_memory_usage", "max_open_files", "max_open_http", "max_peers", "max_peers_seed",
@@ -792,7 +792,6 @@ rTorrentStub.prototype.getsettingsResponse = function(xml)
 	var data = datas[0];
 	var values = data.getElementsByTagName('value');
 	var ret = {};
-
 	var i = 5;
 	var dht_active = this.getValue(values,2);
 	var dht = this.getValue(values,3);
