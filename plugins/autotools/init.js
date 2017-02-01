@@ -109,7 +109,7 @@ plugin.onLangLoaded = function()
 			"<tr>"+
 				"<td>"+
 					"<input type='checkbox' id='enable_move' checked='false' "+
-					"onchange='linked(this, 0, [\"automove_filter\", \"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"auto_add_label\", \"auto_add_name\" ]);' />"+
+					"onchange='linked(this, 0, [\"automove_filter\", \"skip_move_for_files\", \"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"auto_add_label\", \"auto_add_name\" ]);' />"+
 						"<label for='enable_move'>"+ theUILang.autotoolsEnableMove +"</label>"+
 				"</td>"+
 				"<td class='alr'>"+
@@ -117,10 +117,17 @@ plugin.onLangLoaded = function()
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
-				"<td class='ctrls_level2' colspan=2>"+
+				"<td>"+
 					"<label id='lbl_skip_move_for_files' for='skip_move_for_files' class='disabled' disabled='true'>"+
-					theUILang.autotoolsSkipMoveForFiles + ":</label><br>"+
+					theUILang.autotoolsSkipMoveForFiles + "</label><br>"+
+				"</td>"+
+				"<td class='alr'>"+
 					"<input type='text' id='skip_move_for_files' class='TextBoxLarge' maxlength='30' />"+
+				"</td>"+
+
+			"</tr>"+
+			"<tr>"+
+				"<td class='ctrls_level2' colspan=2>"+
 					"<br><label id='lbl_path_to_finished' for='path_to_finished' class='disabled' disabled='true'>"+
 					theUILang.autotoolsPathToFinished +":</label><br>"+
 					"<input type='text' id='path_to_finished' class='TextboxLarge' maxlength='100' />"+

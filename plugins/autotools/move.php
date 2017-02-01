@@ -21,17 +21,14 @@ function Debug( $str )
 //------------------------------------------------------------------------------
 function skip_move($files) {
     global $at;
-    $filters = array_map(trim, explode(';',$at->skip_move_for_files));
-    foreach($filters as $filter) {
-        Debug("using filter:".$filter);
-        foreach($files as $file) {
-            if (fnmatch($filter, $file,FNM_CASEFOLD)) {
-                Debug("File:".$file . ". matches filter:" . $filter);
-                return true;
-            }
-        }
+    $filter = $at->skip_move_for_files;
+    Debug("using filter:".$filter);
+    foreach($files as $file) {
+       if ( preg_match($filter.'u',$file)==1) {
+           return true;
+	}
     }
-    Debug("filters:" . implode(";",$filters) . "did not match any files in" . implode("|",$files) .".end");
+    Debug("filter: " . $filter . " did not match any files in" . implode(" | ",$files) .". end");
     return false;
 }
 

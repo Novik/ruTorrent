@@ -49,7 +49,7 @@ class rAutoTools
 			$this->enable_move = 0;
 			$this->fileop_type = "Move";
 			$this->path_to_finished = "";
-			$this->skip_move_for_files= "*.rar; *.zip";
+			$this->skip_move_for_files= "/\.rar|\.zip/";
 			$this->enable_watch = 0;
 			$this->path_to_watch = "";
 			$this->watch_start = 0;
@@ -126,7 +126,7 @@ class rAutoTools
 		$ret .= ", EnableMove: ".$this->enable_move;
 		$ret .= ", FileOpType: '".$this->fileop_type."'";
 		$ret .= ", PathToFinished: '".addslashes( $this->path_to_finished )."'";
-		$ret .= ", SkipMoveForFiles: '" . $this->skip_move_for_files . "'";
+		$ret .= ", SkipMoveForFiles: '" . addslashes( $this->skip_move_for_files ). "'";
 		$ret .= ", EnableWatch: ".$this->enable_watch;
 		$ret .= ", PathToWatch: '".addslashes( $this->path_to_watch )."'";
 		$ret .= ", MoveFilter: '".addslashes( $this->automove_filter )."'";		
