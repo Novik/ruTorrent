@@ -10,6 +10,7 @@ class rAutoTools
 	public $label_template = "{DIR}";
 	public $enable_move = 0;
 	public $path_to_finished = "";
+	public $skip_move_for_files = "";
 	public $fileop_type = "Move";
 	public $enable_watch = 0;
 	public $path_to_watch = "";
@@ -48,6 +49,7 @@ class rAutoTools
 			$this->enable_move = 0;
 			$this->fileop_type = "Move";
 			$this->path_to_finished = "";
+			$this->skip_move_for_files= "/\.rar|\.zip/";
 			$this->enable_watch = 0;
 			$this->path_to_watch = "";
 			$this->watch_start = 0;
@@ -85,6 +87,10 @@ class rAutoTools
 					if(!rTorrentSettings::get()->correctDirectory($this->path_to_finished))
 						$this->path_to_finished = '';
 				}
+				else if( $parts[0] == "skip_move_for_files" )
+				{
+					$this->skip_move_for_files = $parts[1];
+				}
 				else if( $parts[0] == "enable_watch" )
 				{
 					$this->enable_watch = $parts[1];
@@ -120,6 +126,7 @@ class rAutoTools
 		$ret .= ", EnableMove: ".$this->enable_move;
 		$ret .= ", FileOpType: '".$this->fileop_type."'";
 		$ret .= ", PathToFinished: '".addslashes( $this->path_to_finished )."'";
+		$ret .= ", SkipMoveForFiles: '" . addslashes( $this->skip_move_for_files ). "'";
 		$ret .= ", EnableWatch: ".$this->enable_watch;
 		$ret .= ", PathToWatch: '".addslashes( $this->path_to_watch )."'";
 		$ret .= ", MoveFilter: '".addslashes( $this->automove_filter )."'";		

@@ -17,6 +17,21 @@ function Debug( $str )
 	if( $autodebug_enabled ) rtDbg( "AutoMove", $str );
 }
 
+
+//------------------------------------------------------------------------------
+function skip_move($files) {
+    global $at;
+    $filter = $at->skip_move_for_files;
+    Debug("using filter:".$filter);
+    foreach($files as $file) {
+       if ( preg_match($filter.'u',$file)==1) {
+           return true;
+	}
+    }
+    Debug("filter: " . $filter . " did not match any files in" . implode(" | ",$files) .". end");
+    return false;
+}
+
 //------------------------------------------------------------------------------
 function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,$dest_path,$fileop_type)
 {
@@ -42,6 +57,11 @@ function operationOnTorrentFiles($torrent,&$base_path,$base_file,$is_multy_file,
 			$files[] = implode('/',$file['path']);
 	else
 		$files[] = $info['name'];
+
+    if (skip_move($files)){
+        $ret = false;
+        return ($ret);
+    }
 
 	if( $base_path != $dest_path && is_dir( $base_path ) )
 	{

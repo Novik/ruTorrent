@@ -13,7 +13,8 @@ if(plugin.canChangeOptions())
 			linked( $$('enable_label'), 0, ['label_template'] );
 			$$('enable_move').checked  = ( theWebUI.autotools.EnableMove  == 1 );
 			$$('path_to_finished').value = theWebUI.autotools.PathToFinished;
-			linked( $$('enable_move'), 0, ['automove_filter', 'path_to_finished', 'automove_browse_btn', 'fileop_type', 'auto_add_label', 'auto_add_name'] );
+			$$('skip_move_for_files').value = theWebUI.autotools.SkipMoveForFiles;
+			linked( $$('enable_move'), 0, ['automove_filter', 'path_to_finished', 'skip_move_for_files', 'automove_browse_btn', 'fileop_type', 'auto_add_label', 'auto_add_name'] );
 			$$('fileop_type').value = theWebUI.autotools.FileOpType;
 			$$('enable_watch').checked  = ( theWebUI.autotools.EnableWatch  == 1 );
 			$$('path_to_watch').value = theWebUI.autotools.PathToWatch;
@@ -39,6 +40,8 @@ if(plugin.canChangeOptions())
 		if( $$('enable_move').checked  != ( theWebUI.autotools.EnableMove  == 1 ) )
 			return true;
 		if( $$('path_to_finished').value != theWebUI.autotools.PathToFinished )
+			return true;
+		if( $$('skip_move_for_files').value != theWebUI.autotools.SkipMoveForFiles )
 			return true;
 		if( $$('enable_watch').checked  != ( theWebUI.autotools.EnableWatch  == 1 ) )
 			return true;
@@ -71,6 +74,7 @@ if(plugin.canChangeOptions())
 			"&label_template=" + $$('label_template').value +
 			"&enable_move=" + ( $$('enable_move').checked  ? '1' : '0' ) +
 			"&path_to_finished=" + $$('path_to_finished').value +
+			"&skip_move_for_files=" + $$('skip_move_for_files').value +
 			"&fileop_type=" + $$('fileop_type').value +
 			"&enable_watch=" + ( $$('enable_watch').checked  ? '1' : '0' ) +
 			"&add_label=" + ( $$('auto_add_label').checked  ? '1' : '0' ) +
@@ -105,7 +109,7 @@ plugin.onLangLoaded = function()
 			"<tr>"+
 				"<td>"+
 					"<input type='checkbox' id='enable_move' checked='false' "+
-					"onchange='linked(this, 0, [\"automove_filter\", \"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"auto_add_label\", \"auto_add_name\" ]);' />"+
+					"onchange='linked(this, 0, [\"automove_filter\", \"skip_move_for_files\", \"path_to_finished\", \"automove_browse_btn\", \"fileop_type\", \"auto_add_label\", \"auto_add_name\" ]);' />"+
 						"<label for='enable_move'>"+ theUILang.autotoolsEnableMove +"</label>"+
 				"</td>"+
 				"<td class='alr'>"+
@@ -113,8 +117,18 @@ plugin.onLangLoaded = function()
 				"</td>"+
 			"</tr>"+
 			"<tr>"+
+				"<td>"+
+					"<label id='lbl_skip_move_for_files' for='skip_move_for_files' class='disabled' disabled='true'>"+
+					theUILang.autotoolsSkipMoveForFiles + "</label><br>"+
+				"</td>"+
+				"<td class='alr'>"+
+					"<input type='text' id='skip_move_for_files' class='TextBoxLarge' maxlength='30' />"+
+				"</td>"+
+
+			"</tr>"+
+			"<tr>"+
 				"<td class='ctrls_level2' colspan=2>"+
-					"<label id='lbl_path_to_finished' for='path_to_finished' class='disabled' disabled='true'>"+
+					"<br><label id='lbl_path_to_finished' for='path_to_finished' class='disabled' disabled='true'>"+
 					theUILang.autotoolsPathToFinished +":</label><br>"+
 					"<input type='text' id='path_to_finished' class='TextboxLarge' maxlength='100' />"+
 					"<input type='button' id='automove_browse_btn' class='Button' value='...' />"+
