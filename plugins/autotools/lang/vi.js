@@ -24,5 +24,6 @@
  theUILang.autotoolsFileOpSoftLink	= "Liên kết mềm";
  theUILang.autotoolsAddLabel		= "Add torrent's label to path";
  theUILang.autotoolsAddName		= "Add torrent's name to path";
+ theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
 
 thePlugins.get("autotools").langLoaded();

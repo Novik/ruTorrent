@@ -24,5 +24,6 @@
  theUILang.autotoolsFileOpSoftLink	= "Συντόμευση ονόματος αρχείου";
  theUILang.autotoolsAddLabel		= "Προσθήκη της ετικέτας του torrent στη διαδρομή";
  theUILang.autotoolsAddName		= "Προσθήκη του ονόματος του torrent στη διαδρομή";
+ theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
 
 thePlugins.get("autotools").langLoaded();

@@ -24,5 +24,6 @@
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
  theUILang.autotoolsAddLabel		= "Dodaj funkcje torrentu do sciezki";
  theUILang.autotoolsAddName		= "Dodaj nazwe torrentu do sciezki";
+ theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
 
 thePlugins.get("autotools").langLoaded();

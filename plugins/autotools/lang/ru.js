@@ -24,5 +24,6 @@
  theUILang.autotoolsFileOpSoftLink	= "Мягкая ссылка";
  theUILang.autotoolsAddLabel		= "Добавлять к пути метку торрента";
  theUILang.autotoolsAddName		= "Добавлять к пути имя торрента";
+ theUILang.autotoolsSkipMoveForFiles	= "Не перемещать торренты, которые содержат файлы, совпадающие с шаблоном";
 
 thePlugins.get("autotools").langLoaded();

@@ -24,5 +24,6 @@
  theUILang.autotoolsFileOpSoftLink	= "Lien symbolique";
  theUILang.autotoolsAddLabel		= "Ajouter le label du torrent au chemin";
  theUILang.autotoolsAddName		= "Ajouter le nom du torrent au chemin";
+ theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
 
 thePlugins.get("autotools").langLoaded();
