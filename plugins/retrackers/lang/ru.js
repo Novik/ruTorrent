@@ -7,9 +7,9 @@
  */
 
  theUILang.retrackers		= "Ретрекеры";
- theUILang.retrackersAdd	= "Добавить анонсы";
- theUILang.retrackersDel	= "Удалить анонсы";
+ theUILang.retrackersAdd	= "Добавить анонсеры";
+ theUILang.retrackersDel	= "Удалить анонсеры";
  theUILang.dontAddToPrivate	= "Не модифицировать частные раздачи";
- theUILang.addToBegin		= "Добавлять анонсы в начало списка";
+ theUILang.addToBegin		= "Добавлять анонсеры в начало списка";
 
 thePlugins.get("retrackers").langLoaded();

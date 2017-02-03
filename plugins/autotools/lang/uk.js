@@ -24,5 +24,6 @@
  theUILang.autotoolsFileOpSoftLink	= "Символьне посилання";
  theUILang.autotoolsAddLabel		= "Додавати мітку торента до шляху";
  theUILang.autotoolsAddName		= "Додавати назву торента до шляху";
+ theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
 
 thePlugins.get("autotools").langLoaded();
