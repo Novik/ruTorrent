@@ -10,7 +10,6 @@
 
  theUILang.autotools			= "Công cụ tự động";
  theUILang.autotoolsEnableLabel 	= "Kích hoạt tính năng \"Tự đánh nhãn\", Mẫu:";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsPathToFinished	= "Đường dẫn lưu torrent tải xong";
  theUILang.autotoolsEnableWatch 	= "Kích hoạt tính năng \"Tự theo dõi\"";
  theUILang.autotoolsPathToWatch 	= "Theo dõi đường dẫn";
@@ -24,6 +23,7 @@
  theUILang.autotoolsFileOpSoftLink	= "Liên kết mềm";
  theUILang.autotoolsAddLabel		= "Add torrent's label to path";
  theUILang.autotoolsAddName		= "Add torrent's name to path";
+ theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
 
 thePlugins.get("autotools").langLoaded();

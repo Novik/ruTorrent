@@ -10,7 +10,6 @@
 
  theUILang.autotools			= "Auto Beállítás";
  theUILang.autotoolsEnableLabel 	= "Engedélyezi az \"Auto címkézés\" funkciót, sablon:";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsPathToFinished	= "Befejezett letöltési elérési út";
  theUILang.autotoolsEnableWatch 	= "Engedélyezi az \"AutoWatch\" funkciót";
  theUILang.autotoolsPathToWatch 	= "Watch mappa elérési út";
@@ -24,6 +23,7 @@
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
  theUILang.autotoolsAddLabel		= "Add torrent's label to path";
  theUILang.autotoolsAddName		= "Add torrent's name to path";
+ theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
  theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
 
 thePlugins.get("autotools").langLoaded();

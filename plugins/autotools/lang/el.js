@@ -10,7 +10,6 @@
 
  theUILang.autotools			= "Αυτόματα Εργαλεία";
  theUILang.autotoolsEnableLabel 	= "Ενεργοποίηση χαρακτηριστικού\"ΑυτόματηΕτικέτα\" , Πρότυπο:";
- theUILang.autotoolsEnableMove		= "Ενεργοποίηση \"ΑυτόματηΜετακίνηση\" αν η ετικέτα του torrent ταιράζει με το φίλτρο";
  theUILang.autotoolsPathToFinished	= "Διαδρομή για το φάκελο ολοκληρωμένων λήψεων";
  theUILang.autotoolsEnableWatch 	= "Ενεργοποίηση χαρακτηριστικού \"ΑυτόματηΠαρακολούθηση\"";
  theUILang.autotoolsPathToWatch 	= "Διαδρομή για το βασικό φάκελο παρακολούθησης (watch)";
@@ -24,6 +23,7 @@
  theUILang.autotoolsFileOpSoftLink	= "Συντόμευση ονόματος αρχείου";
  theUILang.autotoolsAddLabel		= "Προσθήκη της ετικέτας του torrent στη διαδρομή";
  theUILang.autotoolsAddName		= "Προσθήκη του ονόματος του torrent στη διαδρομή";
+ theUILang.autotoolsEnableMove		= "Ενεργοποίηση \"ΑυτόματηΜετακίνηση\" αν η ετικέτα του torrent ταιράζει με το φίλτρο";
  theUILang.autotoolsSkipMoveForFiles	= "Παράλειψη των torrent που περιέχουν αρχεία που ταιριάζουν στο υπόδειγμα";
 
 thePlugins.get("autotools").langLoaded();
