@@ -10,7 +10,6 @@
 
  theUILang.autotools			= "Autotools";
  theUILang.autotoolsEnableLabel 	= "\"AutoLabel\" 기능 동작, 형식: ";
- theUILang.autotoolsEnableMove		= "\"AutoMove\" 기능 동작, 만약 토렌트 라벨이 다음 필터와 일치할 경우: ";
  theUILang.autotoolsPathToFinished	= "다운로드 완료시 사용할 경로";
  theUILang.autotoolsEnableWatch 	= "\"AutoWatch\" 기능 동작";
  theUILang.autotoolsPathToWatch 	= "감시할 디렉토리 경로";
@@ -24,6 +23,7 @@
  theUILang.autotoolsFileOpSoftLink	= "소프트 링크";
  theUILang.autotoolsAddLabel		= "토렌트 라벨을 경로에 덧붙임";
  theUILang.autotoolsAddName		= "토렌트 이름을 경로에 덧붙임";
+ theUILang.autotoolsEnableMove		= "\"AutoMove\" 기능 동작, 만약 토렌트 라벨이 다음 필터와 일치할 경우: ";
  theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
 
 thePlugins.get("autotools").langLoaded();
