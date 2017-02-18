@@ -102,8 +102,8 @@ function makeContent()
 				'</div>'+
 				'<div id="randomize_hash_option">'+
 				'<input type="checkbox" name="randomize_hash" id="randomize_hash"/><label for="randomize_hash">'+theUILang.doRandomizeHash+'</label>'+
-				'</div>'+
-				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
+				'</div><br/>'+
+				'<label for="tadd_label" style="float:left;">'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
 				'<hr/>'+
 				'<label for="torrent_file">'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept="application/x-bittorrent" class="TextboxLarge"/>'+
 				'<input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" />'+
