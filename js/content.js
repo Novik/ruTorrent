@@ -90,28 +90,28 @@ function makeContent()
 	theDialogManager.make("tadd",theUILang.torrent_add,
 		'<div class="cont fxcaret">'+
 			'<form action="addtorrent.php" id="addtorrent" method="post" enctype="multipart/form-data" target="uploadfrm">'+
-				'<label>'+theUILang.Base_directory+':</label><input type="text" id="dir_edit" name="dir_edit" class="TextboxLarge"/><br/>'+
-				'<span id="not_add_path_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+theUILang.Dont_add_tname+'<br/>'+
-				'</span>'+
-				'<span id="torrents_start_stopped_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+theUILang.Dnt_start_down_auto+'<br/>'+
-				'</span>'+
-				'<span id="fast_resume_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
-				'</span>'+
-				'<span id="randomize_hash_option">'+				
-				'<label>&nbsp;</label><input type="checkbox" name="randomize_hash" id="randomize_hash"/>'+theUILang.doRandomizeHash+'<br/>'+
-				'</span>'+				
+				'<label for="dir_edit">'+theUILang.Base_directory+':</label><input type="text" id="dir_edit" name="dir_edit" class="TextboxLarge"/>'+
+				'<div id="not_add_path_option">'+
+				'<input type="checkbox" name="not_add_path" id="not_add_path"/><label for="not_add_path">'+theUILang.Dont_add_tname+'</label>'+
+				'</div>'+
+				'<div id="torrents_start_stopped_option">'+
+				'<input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/><label for="torrents_start_stopped">'+theUILang.Dnt_start_down_auto+'</label>'+
+				'</div>'+
+				'<div id="fast_resume_option">'+
+				'<input type="checkbox" name="fast_resume" id="fast_resume"/><label for="fast_resume">&nbsp;'+theUILang.doFastResume+'</label>'+
+				'</div>'+
+				'<div id="randomize_hash_option">'+
+				'<input type="checkbox" name="randomize_hash" id="randomize_hash"/><label for="randomize_hash">'+theUILang.doRandomizeHash+'</label>'+
+				'</div>'+
 				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
 				'<hr/>'+
-				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept="application/x-bittorrent" class="TextboxLarge"/><br/>'+
-				'<label>&nbsp;</label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
+				'<label for="torrent_file">'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept="application/x-bittorrent" class="TextboxLarge"/>'+
+				'<input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" />'+
 			'</form>'+
 			'<hr/>'+
 			'<form action="addtorrent.php" id="addtorrenturl" method="post" target="uploadfrmurl">'+
-				'<label>'+theUILang.Torrent_URL+':</label><input type="text" id="url" name="url" class="TextboxLarge"/><br/>'+
-				'<label>&nbsp;</label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button" disabled="true"/>'+
+				'<label for="url">'+theUILang.Torrent_URL+':</label><input type="text" id="url" name="url" class="TextboxLarge"/>'+
+				'<input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button" disabled="true"/>'+
 			'</form>'+
 		'</div>');
 
