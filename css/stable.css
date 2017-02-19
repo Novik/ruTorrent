@@ -3,7 +3,7 @@
 .stable-head {position: absolute; background: #F5F5F5; overflow: hidden; -moz-user-select: none; border: 1px solid; border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF; border-bottom: 0; z-index: 10}
 .stable-head table {table-layout: fixed; width: 0}
 .stable-head table tr {background: transparent url(../images/header.gif) repeat-x scroll center top}
-.stable-head table tr td {height: 14px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; border: 1px solid; border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF; background: transparent url(../images/blank.gif) no-repeat scroll right center; line-height: 14px; overflow: hidden; white-space: nowrap; vertical-align: top}
+.stable-head table tr td {height: 14px; font-size: 11px; border: 1px solid; border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF; background: transparent url(../images/blank.gif) no-repeat scroll right center; line-height: 14px; overflow: hidden; white-space: nowrap; vertical-align: top}
 .stable-head td div {padding: 0 12px 0 4px}
 .stable-head div.resz {border: 1px solid #FF0000; width: 5px; height: 14px; padding: 0 !important; float: right; background: transparent url(../images/s.gif) no-repeat scroll left center; cursor: e-resize}
 .stable-body {background: window; overflow: auto}
@@ -13,7 +13,7 @@
 .stable-icon {width: 16px; height: 16px; margin-right: -6px; margin: 0 5px; padding: 0 !important; float: left}
 .ie .stable-icon {}
 .stable-lpad {width: 5px; height: 16px; margin: 0; padding: 0; float: left; }
-.stable-body td div {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: hidden; height: 16px !important;}
+.stable-body td div {font-size: 11px; overflow: hidden; height: 16px !important;}
 .konqueror .stable-body td div { margin: 0 0px 0 0px !important }
 .stable-body td div { margin: 0 2px 0 2px !important}
 .ie .stable-body td, .ie .stable-body td div {zoom: 1 !important; height: 16px !important; line-height: 16px !important; vertical-align: top; float: none; white-space: nowrap !important}
@@ -29,13 +29,13 @@
 .stable-active-header {border-color: threedface !important}
 .stable-separator-header {position: absolute; top: 0px; left: 0px; font: menu; height: 1em; width: 1px; overflow: hidden; background: #0099FF; padding: 3px 0px}
 .stable-virtpad {width: 10px; height: 0px}
-.stable-scrollpos {width: 80%; height: 16px; left: 10%; top: 50%; position: absolute; padding: 0 5px; margin-top: -8px; background: #FFFFFF; color: #AAAAAA; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; font-weight: bold; text-align: center; overflow: hidden; display: none; white-space: nowrap}
+.stable-scrollpos {width: 80%; height: 16px; left: 10%; top: 50%; position: absolute; padding: 0 5px; margin-top: -8px; background: #FFFFFF; color: #AAAAAA; font-size: 11px; font-weight: bold; text-align: center; overflow: hidden; display: none; white-space: nowrap}
 .stable-resize-header {	position: absolute; background-color: #A0A0A0; width: 1px; top: 0px; font: menu; -moz-user-select: none; visibility: hidden; overflow: hidden; z-index: 100; }
 
 .stable-head .rowcover { position: absolute; left: 0; top: 0; height: 20px; width: 1000px; background: transparent; display: none; }
 
 .meter-value { float: left; background-color: #99D699; border: 1px inset #BBBBBB; border-bottom: none;}
-.meter-text { position: relative; text-align: center; float: left; width: 100%; height: 0px; overflow: visible; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; z-index: 1; }
+.meter-text { position: relative; text-align: center; float: left; width: 100%; height: 0px; overflow: visible; font-size: 11px; z-index: 1; }
 
 .meter-value-start-color { background-color: #FFFF00 }
 .meter-value-end-color { background-color: #99D699 }
