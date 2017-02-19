@@ -208,7 +208,6 @@ function makeContent()
 		true);
 	theDialogManager.make("dlgHelp",theUILang.Help,
 		'<div class="content">'+
-			'<center>'+
 				'<table width=100% border=0>'+
 					'<tr><td><strong>F1</strong></td><td>'+theUILang.This_screen+'</td></tr>'+
 					'<tr><td><strong><strong>Ctrl-F1</strong></td><td><a href="javascript://void();" onclick="theDialogManager.toggle(\'dlgAbout\'); return(false);">'+theUILang.About_program+'</a></td></tr>'+
@@ -221,7 +220,6 @@ function makeContent()
 					'<tr><td><strong><strong>Ctrl-A</strong></td><td>'+theUILang.Select_all+'</td></tr>'+
 					'<tr><td><strong><strong>Ctrl-Z</strong></td><td>'+theUILang.Deselect_all+'</td></tr>'+
 				'</table>'+
-			'</center>'+
 		'</div>');
 	theDialogManager.make("dlgAbout","ruTorrent v"+theWebUI.version,
 		'<div class="content"> <strong>'+theUILang.Developers+'</strong>:<br/><br/>'+
