@@ -74,8 +74,8 @@ var theUILang =
  Remove_and			: "移除并",
  Details			: "详情...",
  Properties			: "属性...",
- of				: "已连接, ", //this two creates line 
- connected			: "总共", //  XX of YY connected
+ of				: " 个已连接, 共 ", //this two creates line 
+ connected			: " 个", //  XX of YY connected
  High_priority			: "较高优先级",
  Normal_priority		: "正常优先级",
  Low_priority			: "较低优先级",
@@ -106,7 +106,7 @@ var theUILang =
  No_label			: "其他",
  Transfer			: "传输",
  Time_el			: "已用时间",
- Share_ratio			: "分享比率",
+ Share_ratio			: "分享率",
  Down_speed			: "下载速度",
  Ul_speed			: "上传速度",
  Wasted 			: "丢弃数据",
