@@ -6,13 +6,13 @@
  * Author: 
  */
 
- theUILang.Chunks		= "Chunks";
- theUILang.cAvail		= "Availability";
- theUILang.cDownloaded		= "Downloaded";
- theUILang.cMode		= "Mode";
- theUILang.chunksCount		= "Chunks count";
- theUILang.chunkSize		= "Chunk size";
- theUILang.cLegend		= "Legend";
- theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
+ theUILang.Chunks		= "块区块";
+ theUILang.cAvail		= "可用性";
+ theUILang.cDownloaded		= "已下载";
+ theUILang.cMode		= "模式";
+ theUILang.chunksCount		= "区块数目";
+ theUILang.chunkSize		= "区块大小";
+ theUILang.cLegend		= "合计方式";
+ theUILang.cLegendVal		= [ "每格4区块", "每格1区块" ];
 
 thePlugins.get("chunks").langLoaded();
