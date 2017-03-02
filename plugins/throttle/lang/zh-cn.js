@@ -11,6 +11,6 @@
  theUILang.mnuThrottle		= "设置通道";
  theUILang.mnuUnlimited 	= "无通道";
  theUILang.channelName		= "名称";
- theUILang.channelDefault	= "Default channel";
+ theUILang.channelDefault	= "默认通道";
 
 thePlugins.get("throttle").langLoaded();
