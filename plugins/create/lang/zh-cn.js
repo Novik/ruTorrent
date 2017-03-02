@@ -15,15 +15,15 @@
  theUILang.StartSeeding 		= "开始做种";
  theUILang.PrivateTorrent		= "私有 Torrent";
  theUILang.torrentCreate		= "创建...";
- theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound	= "Create plugin: Plugin will not work. Webserver user can't access external program";
- theUILang.incorrectDirectory		= "Incorrect directory";
- theUILang.cantExecExternal		= "Can't execute external program";
+ theUILang.BadTorrentData		= "你必须填写要求的字段!";
+ theUILang.createExternalNotFound	= "Create 插件: 插件将不会工作. 网页服务器执行用户不能访问外部程序";
+ theUILang.incorrectDirectory		= "不正确的文件夹";
+ theUILang.cantExecExternal		= "不能执行外部程序";
  theUILang.createConsole		= "控制台";
  theUILang.createErrors 		= "错误";
  theUILang.torrentSave			= "保持";
  theUILang.torrentKill			= "停止";
  theUILang.torrentKilled		= "进程已停止.";
- theUILang.recentTrackers		= "Recent trackers";
+ theUILang.recentTrackers		= "最近的 trackers";
 
 thePlugins.get("create").langLoaded();
