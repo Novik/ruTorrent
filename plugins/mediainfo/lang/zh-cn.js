@@ -6,4 +6,4 @@
  * Author: 
  */
 
- theUILang.mediainfo		= "Media Info";
+ theUILang.mediainfo		= "媒体信息";
