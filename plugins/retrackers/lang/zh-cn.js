@@ -7,9 +7,9 @@
  */
 
  theUILang.retrackers		= "Retrackers";
- theUILang.retrackersAdd	= "Add Announce URLs";
- theUILang.retrackersDel	= "Remove Announce URLs";
- theUILang.dontAddToPrivate	= "Don't touch private torrents";
- theUILang.addToBegin		= "Add announce URLs to the beginning of the trackers list";
+ theUILang.retrackersAdd	= "增加 Announce URLs";
+ theUILang.retrackersDel	= "移除 Announce URLs";
+ theUILang.dontAddToPrivate	= "不要修改私有的 torrents";
+ theUILang.addToBegin		= "将 announce URLs 添加到 trackers 列表的开头";
 
 thePlugins.get("retrackers").langLoaded();
