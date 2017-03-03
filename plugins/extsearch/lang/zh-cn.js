@@ -31,9 +31,9 @@
  theUILang.exsCookies			= "Cookies 格式";
  theUILang.extAllPublic 		= "所有公共";
  theUILang.extAllPrivate		= "所有私有";
- theUILang.exsMustInstallCookies	= "Cookies plugin is required to work with this engine.";
- theUILang.exsMustInstallLoginMgr	= "LoginMgr plugin is required to work with this engine.";
- theUILang.exsLoginMgr			= "Setup your account in LoginMgr plugin to work with this engine.";
+ theUILang.exsMustInstallCookies	= "这个引擎需要 Cookies 插件来工作.";
+ theUILang.exsMustInstallLoginMgr	= "这个引擎需要 LoginMgr(帐号管理) 插件来工作.";
+ theUILang.exsLoginMgr			= "使用这个引擎前请先在 LoginMgr (帐号管理) 插件中设置你的账户.";
  theUILang.exsURLInfo			= "URL 信息";
  theUILang.exsURLGUID			= "描述 URL";
  theUILang.exsURLHref			= "载入 URL";
