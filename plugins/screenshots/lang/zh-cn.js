@@ -6,15 +6,15 @@
  * Author: 
  */
 
- theUILang.exFFMPEG		= "Screenshots";
- theUILang.exFrameWidth 	= "Frame width";
- theUILang.exFramesCount	= "Frames count";
- theUILang.exStartOffset	= "Start frame offset";
- theUILang.exBetween		= "Time between frames";
- theUILang.exSave		= "Save";
- theUILang.exSaveAll		= "Save all";
- theUILang.exScreenshot 	= "Screenshot";
- theUILang.exPlayInterval	= "Slideshow interval";
- theUILang.exImageFormat	= "Image format";
+ theUILang.exFFMPEG		= "截图";
+ theUILang.exFrameWidth 	= "帧宽度";
+ theUILang.exFramesCount	= "帧数量";
+ theUILang.exStartOffset	= "起始帧偏移量";
+ theUILang.exBetween		= "两帧之间的时间";
+ theUILang.exSave		= "保存";
+ theUILang.exSaveAll		= "全部保存";
+ theUILang.exScreenshot 	= "截图";
+ theUILang.exPlayInterval	= "幻灯片间隔";
+ theUILang.exImageFormat	= "图片格式";
 
 thePlugins.get("screenshots").langLoaded();

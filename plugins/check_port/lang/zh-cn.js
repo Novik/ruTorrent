@@ -6,11 +6,11 @@
  * Author: 
  */
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkPort		= "检查端口状态";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "端口状态未知",
+ 				  "端口是关闭的",
+ 				  "端口是开放的"
  				  ];
 
 thePlugins.get("check_port").langLoaded();

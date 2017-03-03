@@ -6,22 +6,22 @@
  * Author: 
  */
 
- theUILang.tskCommand		= "Running...";
- theUILang.tskCommandDone	= "Done.";
- theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostics";
- theUILang.tskBackground	= "Hide";
- theUILang.tskStart		= "Started";
- theUILang.tskFinish		= "Finished";
- theUILang.tskElapsed		= "Elapsed";
- theUILang.tskPlugin		= "Plugin";
- theUILang.tskDeletePrompt	= "Do you really want to delete the selected task(s)?";
- theUILang.tskDelete		= "Delete tasks(s)";
- theUILang.tskActivate		= "Activate";
- theUILang.tskRemove		= "Remove";
- theUILang.tskRefresh		= "Refresh";
- theUILang.tskRunning		= "Running";
- theUILang.tskArg		= "Parameter";
- theUILang.tskTasks		= "Tasks";
+ theUILang.tskCommand		= "运行中...";
+ theUILang.tskCommandDone	= "已完成.";
+ theUILang.tskConsole		= "控制台";
+ theUILang.tskErrors		= "诊断";
+ theUILang.tskBackground	= "隐藏";
+ theUILang.tskStart		= "已开始";
+ theUILang.tskFinish		= "已完成";
+ theUILang.tskElapsed		= "已用时间";
+ theUILang.tskPlugin		= "插件";
+ theUILang.tskDeletePrompt	= "你真的要删除选中的任务吗?";
+ theUILang.tskDelete		= "删除任务";
+ theUILang.tskActivate		= "激活";
+ theUILang.tskRemove		= "移除";
+ theUILang.tskRefresh		= "刷新";
+ theUILang.tskRunning		= "运行中";
+ theUILang.tskArg		= "参数";
+ theUILang.tskTasks		= "任务";
 
 thePlugins.get("_task").langLoaded();

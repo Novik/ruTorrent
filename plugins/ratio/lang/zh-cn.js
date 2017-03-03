@@ -18,9 +18,9 @@
  theUILang.ratioStop		= "停止";
  theUILang.ratioStopAndRemove	= "停止 & 清除设置";
  theUILang.ratioErase		= "移除";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault 	= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.ratioEraseData	= "移除数据";
+ theUILang.maxTime		= "时间";
+ theUILang.ratioDefault 	= "默认分享率组";
+ theUILang.setThrottleTo	= "将通道设为";
 
 thePlugins.get("ratio").langLoaded();

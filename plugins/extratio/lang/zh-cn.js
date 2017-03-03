@@ -6,20 +6,20 @@
  * Author: 
  */
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioRulesManager	= "规则管理器";
+ theUILang.mnu_ratiorule	= "分享率规则";
+ theUILang.ratAddRule		= "添加";
+ theUILang.ratDelRule		= "删除";
+ theUILang.ratUpRule		= "上升";
+ theUILang.ratDownRule		= "下降";
+ theUILang.ratioIfLegend	= "如果";
+ theUILang.ratLabelContain	= "Torrent 标签中含有";
+ theUILang.ratTrackerContain	= "Torrent 的某个 tracker 地址含有";
+ theUILang.ratTrackerPublic	= "所有 torrent 的  trackers 是公开的";
+ theUILang.ratTrackerPrivate	= "Torrent的某个  trackers 是私有的";
+ theUILang.ratioThenLegend	= "然后";
+ theUILang.setRatioTo		= "把分享率设为";
+ theUILang.setChannelTo 	= "把限制设为";
+ theUILang.ratioNewRule 	= "新规则";
 
 thePlugins.get("extratio").langLoaded();

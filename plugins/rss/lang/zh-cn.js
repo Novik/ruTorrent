@@ -71,9 +71,9 @@
  theUILang.rssMenuGroupContentsDelete	= "删除内容";
  theUILang.rssDeleteGroupPrompt 	= "你真的确定要删除选择的组吗?";
  theUILang.rssDeleteGroupContentsPrompt = "你真的确定要删除选择组的所有内容吗?";
- theUILang.rssAllFiters 		= "All filters";
- theUILang.rssUpdateInterval 		= "Update interval";
- theUILang.Directories			= "Directories";
- theUILang.Labels			= "Labels";
+ theUILang.rssAllFiters 		= "增加过滤器";
+ theUILang.rssUpdateInterval 		= "更新间隔";
+ theUILang.Directories			= "文件夹";
+ theUILang.Labels			= "标签";
 
 thePlugins.get("rss").langLoaded();
