@@ -8,9 +8,9 @@
  * Author: 
  */
 
- theUILang.peerComment		= "Add comment";
- theUILang.peerCommentLabel	= "Enter new comment for peer";
- theUILang.commentName		= "Comment";
+ theUILang.peerComment		= "添加注释";
+ theUILang.peerCommentLabel	= "为这个 peer 添加新注释";
+ theUILang.commentName		= "注释";
  theUILang.countryName		= "国家";
 
  theUILang.country = new Array();
