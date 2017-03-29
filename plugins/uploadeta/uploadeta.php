@@ -1,6 +1,6 @@
 <?php
 /* We use cache to store and retrieve variables for us */
-require_once( "../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/cache.php" );
 
 class rUploadeta
 {
