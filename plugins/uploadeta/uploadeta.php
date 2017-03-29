@@ -1,6 +1,6 @@
 <?php
 /* We use cache to store and retrieve variables for us */
-require_once( "../../rutorrent/php/cache.php" );
+require_once( "../php/cache.php" );
 
 class rUploadeta
 {
