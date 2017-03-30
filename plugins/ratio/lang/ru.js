@@ -7,7 +7,7 @@
  */
 
  theUILang.ratios		= "Группы ratio";
- theUILang.ratio		= "ГруппаRatio";
+ theUILang.ratio		= "Группа Ratio";
  theUILang.mnuRatio		= "Установить ratio";
  theUILang.mnuRatioUnlimited	= "Нет";
  theUILang.ratioName		= "Имя";
