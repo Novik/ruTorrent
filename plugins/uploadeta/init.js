@@ -1,37 +1,54 @@
+plugin.loadLang();
 
-if(plugin.canChangeColumns())
-{
-	/* Add the columns to the torrent list */
-	theWebUI.tables.trt.columns.push({text: "UL target", width: "60px", id: "upload_target", type: TYPE_NUMBER});
-	theWebUI.tables.trt.columns.push({text: "UL remaining", width: "60px", id: "upload_remaining", type: TYPE_NUMBER});
-	theWebUI.tables.trt.columns.push({text: "UL ETA", width: "60px", id: "upload_eta", type: TYPE_NUMBER});
+if(plugin.canChangeColumns()) {
+	plugin.config = theWebUI.config;
+	theWebUI.config = function(data) {
+		/* Add the columns to the torrent list */
+		theWebUI.tables.trt.columns.push({text: "UL target", width: "100px", id: "upload_target", type: TYPE_NUMBER});
+		theWebUI.tables.trt.columns.push({text: "UL remaining", width: "100px", id: "upload_remaining", type: TYPE_NUMBER});
+		theWebUI.tables.trt.columns.push({text: "UL ETA", width: "100px", id: "upload_eta", type: TYPE_NUMBER});
 
-	/* Use the formatter to add data to the columns */
-	plugin.trtFormat = theWebUI.tables.trt.format;
-	theWebUI.tables.trt.format = function(table, arr) {
-		for(var i in arr) {
-			switch(table.getIdByCol(i)){
-				case "upload_target":
-					plugin.upload_target = parseInt(arr[2]) * (theWebUI.uploadtarget/100);
-					arr[i] = theConverter.bytes(plugin.upload_target, 2);
-					break;
-				case "upload_remaining":
-					plugin.upload_remaining = plugin.upload_target - arr[5];
-					arr[i] = theConverter.bytes(plugin.upload_remaining, 2);
-					break;
-				case "upload_eta":
-					arr[i] = (arr[8]>0) ? theConverter.time(Math.floor(plugin.upload_remaining/arr[8])) : "\u221e";
-					break;
+		/* Use the formatter to add data to the columns */
+		plugin.trtFormat = theWebUI.tables.trt.format;
+		theWebUI.tables.trt.format = function(table, arr) {
+			for(var i in arr) {
+				switch(table.getIdByCol(i)){
+					case "upload_target":
+						plugin.upload_target = parseInt(arr[2]) * (theWebUI.uploadtarget/100);
+						arr[i] = theConverter.bytes(plugin.upload_target, 2);
+						break;
+					case "upload_remaining":
+						plugin.upload_remaining = plugin.upload_target - arr[5];
+						arr[i] = theConverter.bytes(plugin.upload_remaining, 2);
+						break;
+					case "upload_eta":
+						arr[i] = (arr[8]>0) ? theConverter.time(Math.floor(plugin.upload_remaining/arr[8])) : "\u221e";
+						break;
+				}
 			}
+			return(plugin.trtFormat(table, arr));
 		}
-		return(plugin.trtFormat(table, arr));
+		plugin.config.call(this,data);
+		plugin.trtRenameColumn();
 	}
 }
 
+plugin.trtRenameColumn = function() {
+	if(plugin.allStuffLoaded) {
+		theWebUI.getTable("trt").renameColumnById("upload_target",theUILang.ULtarget);
+		theWebUI.getTable("trt").renameColumnById("upload_remaining",theUILang.ULremaining);
+		theWebUI.getTable("trt").renameColumnById("upload_eta",theUILang.ULETA);
+	}
+	else
+		setTimeout(arguments.callee,1000);
+}
+
 /* Create option page */
-var input = "<fieldset><legend>Upload target</legend><div><input id='uploadtarget' type='text' size=1/>%</div></fieldset>";
-var description = "<div>This plugin only will show the amount of data and time that is left to an upload ratio target. It will not automatically remove a torrent for you. Look at ratio.min.set in your rtorrent configuration file to remove a torrent when a upload target has been reached.</div>";
-rPlugin.prototype.attachPageToOptions($("<div>").attr("id","st_uploadeta").html(input + description)[0], 'Upload ETA');
+plugin.onLangLoaded = function() {
+var input = "<fieldset><legend>"+theUILang.uploadtarget+"</legend><div><input id='uploadtarget' type='text' size=1/>%</div></fieldset>";
+var description = "<div>"+theUILang.ULdescription+"</div>";
+this.attachPageToOptions($("<div>").attr("id","st_uploadeta").html(input + description)[0], theUILang.uploadeta);
+}
 
 /* Field shoud be numbers only */
 $('#uploadtarget').keypress(function(event){
