@@ -480,7 +480,7 @@ class Snoopy
 		if(!empty($this->user) || !empty($this->pass))	
 			$headers[] = "Authorization: Basic ".base64_encode($this->user.":".$this->pass);
 
-		$cmdline_params = '';
+		$cmdline_params = '-0';
 		foreach( $headers as $header )
 			$cmdline_params .= " -H ".escapeshellarg($header);
 			  	                         
