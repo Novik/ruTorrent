@@ -224,6 +224,10 @@ var theWebUI =
 			this.resize();
 			this.update();
 		}
+		
+		var url = window.location.href.substr(0,window.location.href.lastIndexOf("/"));
+		navigator.registerProtocolHandler("magnet", url + "/php/addtorrent.php?url=%s", "RuTorrent");
+
 		return(this.configured);
 	},
 
