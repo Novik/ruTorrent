@@ -10,6 +10,8 @@ require_once( "trackers/nnmclub.php" );
 require_once( "trackers/tapocheknet.php" );
 require_once( "trackers/tfile.php" );
 
+eval( getPluginConf( 'rutracker_check' ) );
+
 class ruTrackerChecker
 {
 	const STE_INPROGRESS		= 1;
@@ -132,9 +134,14 @@ class ruTrackerChecker
 
 	static public function makeClient( $url, $method="GET", $content_type="", $body="" )
 	{
+		global $proxy_host;
+		global $proxy_port;
+		global $HTTPTimeoutPerSite;
 		$client = new Snoopy();
-		$client->read_timeout = 5;
-		$client->_fp_timeout = 5;
+		$client->proxy_host = $proxy_host;
+		$client->proxy_port = $proxy_port;
+		$client->read_timeout = $HTTPTimeoutPerSite;
+		$client->_fp_timeout = $HTTPTimeoutPerSite;
 		@$client->fetchComplex($url,$method,$content_type,$body);
 		return($client);
 	}

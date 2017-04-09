@@ -389,7 +389,11 @@ class rRSS
 
 	static protected function fetchURL($url, $cookies = null, $headers = null )
 	{
+		global $proxy_host;
+		global $proxy_port;
 		$client = new Snoopy();
+		$client->proxy_host = $proxy_host;
+		$client->proxy_port = $proxy_port;
 		if(is_array($headers) && count($headers))
 			$client->rawheaders = $headers;
 		if(is_array($cookies) && count($cookies))

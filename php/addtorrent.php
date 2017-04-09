@@ -73,7 +73,11 @@ else
 				}
 				else
 				{
+					global $proxy_host;
+					global $proxy_port;
 					$cli = new Snoopy();
+					$cli->proxy_host = $proxy_host;
+					$cli->proxy_port = $proxy_port;
 					if(@$cli->fetchComplex($url) && $cli->status>=200 && $cli->status<300)
 					{
 				        	$name = $cli->get_filename();
