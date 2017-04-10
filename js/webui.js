@@ -225,8 +225,14 @@ var theWebUI =
 			this.update();
 		}
 		
-		var url = window.location.href.substr(0,window.location.href.lastIndexOf("/"));
-		navigator.registerProtocolHandler("magnet", url + "/php/addtorrent.php?url=%s", "RuTorrent");
+		if(typeof navigator.registerProtocolHandler == 'function'){
+			var url = window.location.href.substr(0,window.location.href.lastIndexOf("/")) + "/php/addtorrent.php?url=%s";
+			if((typeof navigator.isProtocolHandlerRegistered != 'function') ||
+					!navigator.isProtocolHandlerRegistered('magnet', url)
+			){
+				navigator.registerProtocolHandler("magnet", url, "RuTorrent");
+			}
+		}
 
 		return(this.configured);
 	},
