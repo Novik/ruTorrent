@@ -249,9 +249,12 @@ textarea { overflow: auto; }
 
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; width: 380px; height: 290px; left: 100px; top: 100px; position: absolute; margin: 0 auto }
-div#tadd label {text-align: right; width: 75px; padding-right: 20px; float: left }
+div#tadd label {min-width: 75px; padding-right: 20px;display:inline-block;}
+div#tadd form div {margin-left:95px;}
+div#tadd form div label{display:inline;padding-right: 0px;}
 div#tadd br {clear: left; line-height: 0}
 div#tadd input {margin-bottom: 1px}
+div#tadd input[type="submit"] {margin-left:99px;}
 div#tadd select { width: 220px }
 
 .konqueror div#tadd label { width: 80px; }
