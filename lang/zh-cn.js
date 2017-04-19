@@ -274,5 +274,6 @@ var theUILang =
  Address			: "地址",
  PeerDL 			: "Peer 下载速度",
  PeerDownloaded 		: "Peer 已下载",
- Save_path			: "保存路径"
+ Save_path			: "保存路径",
+ registerMagnet			: "Try to register magnet protocol handler at start"
 };

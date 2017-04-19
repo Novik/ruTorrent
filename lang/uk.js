@@ -274,5 +274,6 @@ var theUILang =
  Address			: "Адреса",
  PeerDL 			: "Швидкість піра",
  PeerDownloaded 		: "Завантажено піром",
- Save_path			: "Збережено у"
+ Save_path			: "Збережено у",
+ registerMagnet			: "Try to register magnet protocol handler at start"
 };

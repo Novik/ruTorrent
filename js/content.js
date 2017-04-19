@@ -335,6 +335,9 @@ function makeContent()
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_labelsize\"/>"+
 						"<label for=\"webui.show_labelsize\" id=\"lbl_webui.show_labelsize\" >"+theUILang.showLabelSize+"</label>"+
 					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.register_magnet\"/>"+
+						"<label for=\"webui.register_magnet\" id=\"lbl_webui.register_magnet\" >"+theUILang.registerMagnet+"</label>"+
+					"</div>"+
 					"<div class=\"op100l\">"+
 						"<label for=\"webui.retry_on_error\">"+theUILang.retryOnErrorTitle+":</label>&nbsp;"+
 						"<select id=\"webui.retry_on_error\">"+

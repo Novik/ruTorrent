@@ -275,5 +275,6 @@ var theUILang =
  Address			: "Adres",
  PeerDL 			: "Peer DL",
  PeerDownloaded 		: "Peer pobrał",
- Save_path			: "Ścieżka zapisu"
+ Save_path			: "Ścieżka zapisu",
+ registerMagnet			: "Try to register magnet protocol handler at start"
 };

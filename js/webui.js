@@ -155,7 +155,8 @@ var theWebUI =
 		"webui.dateformat":		0,
 		"webui.speedintitle":		0,
 		"webui.log_autoswitch":		1,
-		"webui.show_labelsize":		1
+		"webui.show_labelsize":		1,
+		"webui.register_magnet":	0
 	},
 	showFlags: 0,
 	total:
@@ -223,15 +224,6 @@ var theWebUI =
 			this.assignEvents();
 			this.resize();
 			this.update();
-		}
-		
-		if(typeof navigator.registerProtocolHandler == 'function'){
-			var url = window.location.href.substr(0,window.location.href.lastIndexOf("/")) + "/php/addtorrent.php?url=%s";
-			if((typeof navigator.isProtocolHandlerRegistered != 'function') ||
-					!navigator.isProtocolHandlerRegistered('magnet', url)
-			){
-				navigator.registerProtocolHandler("magnet", url, "RuTorrent");
-			}
 		}
 
 		return(this.configured);
@@ -459,7 +451,29 @@ var theWebUI =
 		{
 			theWebUI.showPanel(this,!theWebUI.settings["webui.closed_panels"][this.id]);
 		});
+
+		this.registerMagnetHandler();
+
 		this.configured = true;
+	},
+
+	registerMagnetHandler: function()
+	{
+		if(typeof navigator.registerProtocolHandler == 'function')
+		{
+			var url = window.location.href.substr(0,window.location.href.lastIndexOf("/")) + "/php/addtorrent.php?url=%s";
+			if( ((typeof navigator.isProtocolHandlerRegistered != 'function') ||
+				!navigator.isProtocolHandlerRegistered('magnet', url)) &&
+				theWebUI.settings["webui.register_magnet"])
+			{
+				navigator.registerProtocolHandler("magnet", url, "RuTorrent");
+			}
+		}
+		else
+		{
+			$($$('webui.register_magnet')).attr('disabled',true);
+			$($$('lbl_webui.register_magnet')).addClass('disabled');
+		}
 	},
 
 	setStatusUpdate: function()
@@ -684,6 +698,11 @@ var theWebUI =
 							case "webui.lang":
 							{
 								SetActiveLanguage(nv);
+								reply = theWebUI.reload;
+								break;
+							}
+							case "webui.register_magnet":
+							{
 								reply = theWebUI.reload;
 								break;
 							}

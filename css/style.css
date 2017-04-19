@@ -123,7 +123,7 @@ div#stg {width: 600px; height: 560px; position: absolute; left: 0px; top: 50px; 
 div#stg_c {overflow: hidden}
 div#stg-header { background-image: url(../images/settings.gif); }
 
-div#stg .lm {width: 120px; height: 487px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
+div#stg .lm {width: 120px; height: 511px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
 .ie div#stg .lm {width: 125px; position: static;}
 .ie9 div#stg .lm {position: static}
 .ie div#stg {width: 605px;}

@@ -272,5 +272,6 @@ var theUILang =
  Address			: "주소",
  PeerDL 			: "피어 DL",
  PeerDownloaded 		: "피어 다운로드함",
- Save_path			: "Save path"
+ Save_path			: "Save path",
+ registerMagnet			: "Try to register magnet protocol handler at start"
 };

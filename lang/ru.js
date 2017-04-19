@@ -274,5 +274,6 @@ var theUILang =
  Address			: "Адрес",
  PeerDL 			: "Скорость пира",
  PeerDownloaded 		: "Скачано пиром",
- Save_path			: "Сохранено в"
+ Save_path			: "Сохранено в",
+ registerMagnet			: "Регистрировать magnet протокол на старте"
 };
