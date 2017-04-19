@@ -275,5 +275,5 @@ var theUILang =
  PeerDL 			: "R. Client",
  PeerDownloaded 		: "Reçu Client",
  Save_path			: "Chemin",
- registerMagnet			: "Try to register magnet protocol handler at start"
+ registerMagnet			: "Essayer d'enregistrer la gestion du protocole magnet au démarrage"
 };
