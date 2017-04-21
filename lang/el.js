@@ -273,5 +273,5 @@ var theUILang =
  PeerDL 			: "DL χρήστη",
  PeerDownloaded 		: "Ο χρήστης έλαβε",
  Save_path			: "Τοποθεσία αποθήκευσης",
- registerMagnet			: "Try to register magnet protocol handler at start"
+ registerMagnet			: "Προσπάθεια καταχώρησης του πρωτόκολλου magnet κατά την εκκίνηση"
 };

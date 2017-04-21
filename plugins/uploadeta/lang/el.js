@@ -6,11 +6,11 @@
  * Author: 
  */
 
- theUILang.uploadeta		= "Upload ETA";
- theUILang.uploadtarget		= "Upload Target";
- theUILang.ULtarget		= "UL Target";
- theUILang.ULremaining		= "UL Remaining";
+ theUILang.uploadeta		= "ETA Αποστολής";
+ theUILang.uploadtarget		= "Προορισμός Αποστολής";
+ theUILang.ULtarget		= "Προορισμός UL";
+ theUILang.ULremaining		= "Εναπομείναν UL";
  theUILang.ULETA		= "UL ETA";
- theUILang.ULdescription	= "This plugin only will show the amount of data and time that is left to an upload ratio target. It will not automatically remove a torrent for you. Look at 'ratio.min.set' in your rTorrent configuration file to remove a torrent when a upload target has been reached.";
+ theUILang.ULdescription	= "Αυτό το πρόσθετο δείχνει μόνο το μέγεθος των δεδομένων και το χρόνο που απομένει μέχρι να ολοκληρωθεί η αναλογία αποστολής που έχετε θέσει. Δεν αφαιρεί αυτόματα το torrent όταν επιτευκτεί η αναλογία. Ελέγξτε την παράμετρο 'ratio.min.set' στο αρχείο παραμετροποίησης του rTorrent σας αν θέλετε να σβήνεται το torrent όταν επιτευκτεί η αναλογία που έχετε θέσει.";
 
 thePlugins.get("uploadeta").langLoaded();
