@@ -217,16 +217,7 @@ var theWebUI =
 		{
 			this.catchErrors(false);
 			this.getPlugins();
-   			this.getUISettings();
-			if(!this.configured)
-				this.config({});
-		        this.catchErrors(true);
-			this.assignEvents();
-			this.resize();
-			this.update();
 		}
-
-		return(this.configured);
 	},
 
 	assignEvents: function()
@@ -317,7 +308,11 @@ var theWebUI =
 
 	getPlugins: function()
 	{
-		this.request("?action=getplugins", null, false);
+		this.request("?action=getplugins", [this.getUISettings, this]);
+	},
+
+	getUISettings: function()
+	{
 		if(thePlugins.isInstalled("_getdir"))
 		{
 			$('#dir_edit').after($("<input type=button>").addClass("Button").attr("id","dir_btn").focus( function() { this.blur(); } ));
@@ -330,11 +325,16 @@ var theWebUI =
 		correctContent();
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
+		this.request("?action=getuisettings", [this.initFinish, this]);
 	},
 
-	getUISettings: function()
+	initFinish: function(data)
 	{
-		this.request("?action=getuisettings", [this.config, this], false);
+		this.config(data);
+	        this.catchErrors(true);
+		this.assignEvents();
+		this.resize();
+		this.update();		
 	},
 
 	config: function(data)
@@ -453,7 +453,6 @@ var theWebUI =
 		});
 
 		this.registerMagnetHandler();
-
 		this.configured = true;
 	},
 

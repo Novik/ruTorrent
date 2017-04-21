@@ -78,6 +78,7 @@ class rTorrent
 		}
 		return($hash);
 	}
+
 	static public function sendMagnet($magnet, $isStart, $isAddPath, $directory, $label, $addition = null)
 	{
 	        $hpos = stripos($magnet,'xt=urn:btih:');
@@ -118,6 +119,7 @@ class rTorrent
 		}
 		return(false);
 	}
+
 	static public function getSource($hash)
 	{
 		$req = new rXMLRPCRequest( array(		
