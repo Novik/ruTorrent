@@ -26,14 +26,13 @@ class ExtraTorrentEngine extends commonEngine
 			if(($cli==false) || (strpos($cli->results, "<i>No torrents</i>")!==false))
 				break;
 
-			$res = preg_match_all('`<tr class="tl.*"><td><a href="/torrent_download/.*" title="Download .*">'.
+			$res = preg_match_all('`<tr class="tl.*"><td><a href="/download/.*" title="Download .*">'.
 				'<img src=".*/></a></td><td>'.
 				'<a href="/category/.*" title="Browse (?P<cat>.*)">.*'.
 				'<a href="/torrent/(?P<id>\d*)/[^#]*">(?P<name>.*)</a><span class="c_tor"> in .*'.
 				'</td><td>(?P<size>.*)</td><td class="s.">(?P<seeds>.*)</td>'.
 				'<td class="l.">(?P<leech>.*)</td>'.
 				'`siU', $cli->results, $matches );
-
 			if($res)
 			{
 				for( $i=0; $i<$res; $i++)
