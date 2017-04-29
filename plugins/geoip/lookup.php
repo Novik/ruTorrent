@@ -1,6 +1,7 @@
 <?php
 	set_time_limit(0);
 	require_once( '../../php/util.php' );
+	require_once( "sqlite.php" );
 	eval( getPluginConf( 'geoip' ) );
 
 	function isValidCode( $country )
@@ -9,7 +10,7 @@
 	}
 
 	$retrieveCountry = ($retrieveCountry && function_exists("geoip_country_code_by_name"));
-	$retrieveComments = ($retrieveComments && function_exists("sqlite_open"));
+	$retrieveComments = ($retrieveComments && sqlite_exists());
 	$ret = array();
 	$dns = null;
 	if(!isset($HTTP_RAW_POST_DATA))
