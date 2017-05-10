@@ -2,7 +2,7 @@
 
 class Torrent411Engine extends commonEngine
 {
-    public $defaults = array("public" => false, "page_size" => 50, "cookies" => "www.t411.ai|uid=XXX;pass=XXX;authKey=XXX");
+    public $defaults = array("public" => false, "page_size" => 50, "cookies" => "www.t411.al|uid=XXX;pass=XXX;authKey=XXX");
     
     public $categories = array(
 		'Tout' => '',
@@ -121,7 +121,7 @@ class Torrent411Engine extends commonEngine
 			'632' => 'xXx > Vidéo'
         );
         $added = 0;
-        $url   = 'https://www.t411.ai';
+        $url   = 'https://www.t411.al';
         if ($useGlobalCats)
             $categories = array(
                 'all' => '',
