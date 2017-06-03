@@ -2,6 +2,9 @@
 	// configuration parameters
 
 	// for snoopy client
+	$proxy_host = "";			// proxy IP address
+	$proxy_port = "";			// proxy port
+
 	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0', true);
 	@define('HTTP_TIME_OUT', 30, true);	// in seconds
 	@define('HTTP_USE_GZIP', true, true);

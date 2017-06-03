@@ -46,8 +46,12 @@ if(isset($_REQUEST["tracker"]))
 		$name.='.ico';
 		if(!is_readable($name))
 		{
+			global $proxy_host;
+			global $proxy_port;
 			$url = Snoopy::linkencode("http://".$tracker."/favicon.ico");
 			$client = new Snoopy();
+			$client->proxy_host = $proxy_host;
+			$client->proxy_port = $proxy_port;
 			@$client->fetchComplex($url);
 			if($client->status==200)
 				file_put_contents($name,$client->results);

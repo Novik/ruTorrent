@@ -37,8 +37,12 @@ class commonEngine
 	}
 	public function makeClient($url)
 	{
+		global $proxy_host;
+		global $proxy_port;
 		global $HTTPTimeoutPerSite;
 		$client = new Snoopy();
+		$client->proxy_host = $proxy_host;
+		$client->proxy_port = $proxy_port;
 		$client->read_timeout = $HTTPTimeoutPerSite;
 		$client->_fp_timeout = $HTTPTimeoutPerSite;
 		return($client);

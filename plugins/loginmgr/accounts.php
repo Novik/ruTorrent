@@ -271,8 +271,13 @@ class accountManager
 			if($nfo["enabled"] && !empty($nfo["auto"]))
 			{
 				require_once( $nfo["path"] );
-				$object = new $nfo["object"]();				
-				$object->check( new Snoopy(), $nfo["login"], $nfo["password"], $nfo["auto"] );
+				global $proxy_host;
+				global $proxy_port;
+				$client = new Snoopy();
+				$client->proxy_host = $proxy_host;
+				$client->proxy_port = $proxy_port;
+				$object = new $nfo["object"]();
+				$object->check( $client, $nfo["login"], $nfo["password"], $nfo["auto"] );
 			}
 		}
 	}
