@@ -2301,10 +2301,10 @@ var theWebUI =
 		if(document.title!=newTitle)
 			document.title = newTitle;
 	        $("#stup_speed").text(ul);
-	        $("#stup_limit").text((self.total.rateUL>0 && self.total.rateUL<100*1024*1024) ? theConverter.speed(self.total.rateUL) : theUILang.no);
+	        $("#stup_limit").text((self.total.rateUL>0 && self.total.rateUL<1000*1024*1024) ? theConverter.speed(self.total.rateUL) : theUILang.no);
 	        $("#stup_total").text(theConverter.bytes(self.total.UL));
 	        $("#stdown_speed").text(dl);
-	        $("#stdown_limit").text((self.total.rateDL>0 && self.total.rateDL<100*1024*1024) ? theConverter.speed(self.total.rateDL) : theUILang.no);
+	        $("#stdown_limit").text((self.total.rateDL>0 && self.total.rateDL<1000*1024*1024) ? theConverter.speed(self.total.rateDL) : theUILang.no);
 	        $("#stdown_total").text(theConverter.bytes(self.total.DL));
 	},
 
