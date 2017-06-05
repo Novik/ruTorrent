@@ -1,33 +1,19 @@
 <?php
 
-class NyaaEngine extends commonEngine
+class NyaaSukebeEngine extends commonEngine
 {
 	public $defaults = array( "public"=>true, "page_size"=>30 );
 	public $categories = array(
 		'All categories'=>'0_0',
-		'> Anime'=>'1_0',
-		'-- Anime Music Video'=>'1_32',
-		'-- English-translated Anime'=>'1_37',
-		'-- Non-English-translated Anime'=>'1_38',
-		'-- Raw Anime'=>'1_11',
-		'> Audio'=>'3_0',
-		'-- Lossless Audio'=>'3_14',
-		'-- Lossy Audio'=>'3_15',
-		'> Literature'=>'2_0',
-		'-- English-translated Literature'=>'2_12',
-		'-- Non-English-translated Literature'=>'2_39',
-		'-- Raw Literature'=>'2_13',
-		'> Live Action'=>'5_0',
-		'-- English-translated Live Action'=>'5_19',
-		'-- Live Action Promotional Video'=>'5_22',
-		'-- Non-English-translated Live Action'=>'5_21',
-		'-- Raw Live Action'=>'5_20',
-		'> Pictures'=>'4_0',
-		'-- Graphics'=>'4_18',
-		'-- Photos'=>'4_17',
-		'> Software'=>'6_0',
-		'-- Applications'=>'6_23',
-		'-- Games'=>'6_24',
+		'> Art'=>'7_0',
+		'-- Anime'=>'7_25',
+		'-- Doujinshi'=>'7_33',
+		'-- Games'=>'7_27',
+		'-- Manga'=>'7_26',
+		'-- Pictures'=>'7_28',
+		'> Reallife'=>'8_0',
+		'-- Photobooks & Pictures'=>'8_31',
+		'-- Videos'=>'8_30',
 		 );
 
 	public function makeClient($url)
@@ -38,15 +24,13 @@ class NyaaEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.nyaa.se';
+		$url = 'http://sukebei.nyaa.se';
 
 		if($useGlobalCats)
 			$categories = array(
 			'all' => '0_0',
-			'movies' => '1_0',
-			'music' => '3_0',
-			'software' => '6_0',
-			'books' => '2_0'
+			'art' => '7_0',
+			'reallife' => '8_0',
 			);
 		else
 			$categories = &$this->categories;
