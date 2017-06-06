@@ -46,8 +46,7 @@ class rTorrent
 			$req = new rXMLRPCRequest();				
 			if($directory && (strlen($directory)>0))
 			{
-				if(!rTorrentSettings::get()->correctDirectory($directory))
-					return(false);
+				rTorrentSettings::get()->correctDirectory($directory);
 				$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 				$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
 			}
