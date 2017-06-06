@@ -300,7 +300,12 @@ function askYesNo( title, content, funcYesName )
 	$("#yesnoDlg-header").html(title);
 	$("#yesnoDlg-content").html(content);
 	$("#yesnoOK").off('click');
-	$("#yesnoOK").click( function() { eval(funcYesName); theDialogManager.hide("yesnoDlg"); return(false); });
+	$("#yesnoOK").click( function() 
+	{ 
+		typeof(funcYesName)==="function" ? funcYesName() : eval(funcYesName); 
+		theDialogManager.hide("yesnoDlg"); 
+		return(false); 
+	});
 	theDialogManager.show("yesnoDlg");
 }
 
