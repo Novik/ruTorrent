@@ -78,13 +78,6 @@ if( $is_ok )
 
 		if( $is_ok )
 		{
-//			$hash = rtAddTorrent(
-//				$torrent_file,			// path to .torrent file
-//				$auto_start,			// start it or not
-//				$dest_path,			// directory for torrent's data
-//				null,				// label is emply
-//				$autodebug_enabled
-//			);
 			$hash = rTorrent::sendTorrent(
 				$torrent_file,			// path to .torrent file
 				$auto_start,			// start it or not
@@ -96,7 +89,7 @@ if( $is_ok )
 			);
 			if( $hash === false )
 			{
-				Debug( "rtAddTorrent() fail" );
+				Debug( "addition of torrent fail" );
 				$is_ok = false;
 			}
 			else {
