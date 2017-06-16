@@ -27,14 +27,14 @@ class RUTrackerEngine extends commonEngine
 				{
 					$item = $this->getNewEntry();
 					$item["cat"] = self::toUTF(self::removeTags($matches["cat"][$i],"CP1251"),"CP1251");
-					$item["desc"] = "https://rutracker.cr/forum/viewtopic.php?t=".$matches["id"][$i];
+					$item["desc"] = "https://rutracker.nl/forum/viewtopic.php?t=".$matches["id"][$i];
 					$item["name"] = self::toUTF(self::removeTags($matches["name"][$i],"CP1251"),"CP1251");
 					$item["size"] = floatval($matches["size"][$i]);
 					$item["time"] = floatval($matches["date"][$i]);
 					$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 					$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 					if (substr($link, 0, 2) === 'dl') {
-						$link = 'https://rutracker.cr/forum/'.$link;
+						$link = 'https://rutracker.nl/forum/'.$link;
 					}
 					$ret[$link] = $item;
 					$added++;
@@ -51,7 +51,7 @@ class RUTrackerEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'https://rutracker.cr';
+		$url = 'https://rutracker.nl';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'&f[]=-1', 
 				'games'=>'&f[]=5&f[]=635&f[]=139&f[]=959&f[]=127&f[]=53&f[]=1008&f[]=51&f[]=961&f[]=962&f[]=54&f[]=55&f[]=52&f[]=900&f[]=246&f[]=278&f[]=128&f[]=2115&f[]=2116&f[]=2117&f[]=2118&f[]=2119&f[]=50&f[]=2142&f[]=2143&f[]=2145&f[]=2146&f[]=637&f[]=642&f[]=643&f[]=644&f[]=645&f[]=646&f[]=647&f[]=649&f[]=1098&f[]=650&f[]=548&f[]=129&f[]=908&f[]=357&f[]=510&f[]=887&f[]=1116&f[]=973&f[]=773&f[]=774&f[]=968&f[]=546', 
