@@ -23,6 +23,7 @@ class rTorrentSettings
 	public $server = '';
 	public $portRange = '6890-6999';
 	public $port = '6890';
+	public $bind = '0.0.0.0';
 	public $idNotFound = false;
 	public $home = '';
 
@@ -209,6 +210,7 @@ class rTorrentSettings
 					new rXMLRPCCommand("set_xmlrpc_size_limit",67108863),
 					new rXMLRPCCommand("get_name"),
 					new rXMLRPCCommand("get_port_range"),
+					new rXMLRPCCommand("get_bind"),
 					) );
 				if($req->success())
 				{
@@ -218,6 +220,7 @@ class rTorrentSettings
 					$this->server = $req->val[4];
 					$this->portRange = $req->val[5];
 					$this->port = intval($this->portRange);
+					$this->bind = $req->val[6];
 
 					if($this->iVersion>=0x809)
 					{
