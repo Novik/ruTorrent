@@ -16,7 +16,7 @@
         }, 3000);
       }
 
-      options.icon = 'favicon.ico';
+      options.icon = 'images/favicon.ico';
       options.body = options.text ? options.text : options;
 
       if (Notification.permission === 'granted' ||
