@@ -83,7 +83,7 @@ var dxSTable = function()
 	this.prgEndColor = new RGBackground(".meter-value-end-color");
 	this.mni = 0;
 	this.mxi = 0;
-	this.maxViewRows = 100;
+	this.maxViewRows = 1000;
 }
 
 dxSTable.prototype.setPaletteByURL = function(url) 
