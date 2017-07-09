@@ -78,7 +78,7 @@ function browserDetect()
 }
 var browser = new browserDetect();
 
-$(document).ready(function() 
+$(document).ready(function()
 {
 	var i = document.createElement('p');
 	i.style.width = '100%';
@@ -115,7 +115,7 @@ if(browser.isKonqueror)
 			var tarea = this[0];
 			if(tarea.lastChild)
 				tarea.removeChild(tarea.lastChild);
-			tarea.appendChild(document.createTextNode(value)); 
+			tarea.appendChild(document.createTextNode(value));
 			return(this);
 		}
 		else
@@ -220,7 +220,7 @@ $.fn.extend(
 					$(this).off( "mouseup" );
 				$(this).off( "mousedown" );
 			}
-		}));            	
+		}));
 	},
 
 	enableSysMenu: function()
@@ -231,12 +231,12 @@ $.fn.extend(
 
 	setCursorPosition: function(pos)
 	{
-		if($(this).get(0).setSelectionRange) 
+		if($(this).get(0).setSelectionRange)
 		{
 			$(this).get(0).setSelectionRange(pos, pos);
-		} 
-		else 
-			if($(this).get(0).createTextRange) 
+		}
+		else
+			if($(this).get(0).createTextRange)
 			{
 				var range = $(this).get(0).createTextRange();
 				range.collapse(true);
@@ -248,42 +248,42 @@ $.fn.extend(
 	}
 });
 
-function addslashes(str) 
+function addslashes(str)
 {
 	return( (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0').replace(/\u000A/g, '\\n').replace(/\u000D/g, '\\r') );
 }
 
-function iv(val) 
+function iv(val)
 {
 	var v = (val==null) ? 0 : parseInt(val + "");
 	return(isNaN(v) ? 0 : v);
 }
 
-function ir(val) 
+function ir(val)
 {
 	var v = (val==null) ? 0 : parseFloat(val + "");
 	return(isNaN(v) ? 0 : v);
 }
 
-function linked(obj, _33, lst) 
+function linked(obj, _33, lst)
 {
 	var tn = obj.tagName.toLowerCase();
-	if((tn == "input") && (obj.type == "checkbox")) 
+	if((tn == "input") && (obj.type == "checkbox"))
 		var d = _33 ? obj.checked : !obj.checked;
-	else 
-		if(tn == "select") 
+	else
+		if(tn == "select")
 		{
 			var v = obj.options[obj.selectedIndex].value;
 			var d = (v == _33) ? true : false;
 		}
-	for(var i = 0; i < lst.length; i++) 
+	for(var i = 0; i < lst.length; i++)
 	{
 		var o = $$(lst[i]);
-		if(o) 
+		if(o)
 		{
 			o.disabled = d;
 			o = $$("lbl_" + lst[i]);
-			if(o) 
+			if(o)
 				o.className = (d) ? "disabled" : "";
 		}
    	}
@@ -300,11 +300,11 @@ function askYesNo( title, content, funcYesName )
 	$("#yesnoDlg-header").html(title);
 	$("#yesnoDlg-content").html(content);
 	$("#yesnoOK").off('click');
-	$("#yesnoOK").click( function() 
-	{ 
-		typeof(funcYesName)==="function" ? funcYesName() : eval(funcYesName); 
-		theDialogManager.hide("yesnoDlg"); 
-		return(false); 
+	$("#yesnoOK").click( function()
+	{
+		typeof(funcYesName)==="function" ? funcYesName() : eval(funcYesName);
+		theDialogManager.hide("yesnoDlg");
+		return(false);
 	});
 	theDialogManager.show("yesnoDlg");
 }
@@ -370,7 +370,7 @@ var theOptionsSwitcher =
 	}
 };
 
-var theConverter = 
+var theConverter =
 {
 	round: function(num, p)
 	{
@@ -414,7 +414,7 @@ var theConverter =
 		var v = 0;
 		var ret = "";
 		if(w > 0)
-		{	
+		{
 			ret = w + theUILang.time_w;
 			v++;
 		}
@@ -429,7 +429,7 @@ var theConverter =
 	      		v++;
 		}
 		if((m > 0) && (v < 2))
-		{	
+		{
 			ret += m + theUILang.time_m;
 			v++;
 		}
@@ -523,7 +523,7 @@ var theConverter =
 	}
 };
 
-var theFormatter = 
+var theFormatter =
 {
 	torrents: function(table,arr)
 	{
@@ -534,36 +534,36 @@ var theFormatter =
 			else
    			switch(iv(i))
 			{
-				case 3: 
+				case 3:
 					arr[i] = (arr[i] / 10) + "%";
 					break;
 				case 2:
-				case 4: 
-				case 5: 
-				case 15: 
+				case 4:
+				case 5:
+				case 15:
 					arr[i] = theConverter.bytes(arr[i], 2);
 					break;
-				case 6: 
+				case 6:
 					arr[i] = (arr[i] ==- 1) ? "\u221e" : theConverter.round(arr[i] / 1000, 3);
 					break;
-				case 7: 
-				case 8: 
+				case 7:
+				case 8:
 					arr[i] = theConverter.speed(arr[i]);
 					break;
-				case 9: 
+				case 9:
 					arr[i] = (arr[i] <=- 1) ? "\u221e" : theConverter.time(arr[i]);
 					break;
-				case 13: 
+				case 13:
 					arr[i] = theFormatter.tPriority(arr[i]);
 					break;
-				case 14: 
+				case 14:
 					arr[i] = theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000);
 					break;
 			}
 		}
 		return(arr);
 	},
-	tPriority: function(no) 
+	tPriority: function(no)
 	{
 		var ret = "";
 		switch(iv(no))
@@ -571,7 +571,7 @@ var theFormatter =
 			case 0:
 				ret = theUILang.Dont_download;
 				break;
-			case 1: 
+			case 1:
 				ret = theUILang.Low_priority;
 				break;
 			case 2:
@@ -672,7 +672,7 @@ var theFormatter =
 			if(arr[i]==null)
 				arr[i] = '';
 			else
-   			switch(table.getIdByCol(i)) 
+   			switch(table.getIdByCol(i))
    			{
       				case 'done' :
       					arr[i] = arr[i]+"%";
@@ -700,18 +700,18 @@ var theFormatter =
 			else
 		        switch(table.getIdByCol(i))
    			{
-      				case 'type' : 
+      				case 'type' :
       					arr[i] = theFormatter.trackerType(arr[i]);
 	      				break;
-      				case 'enabled' : 
+      				case 'enabled' :
       				case 'private' : 
       					arr[i] = theFormatter.yesNo(arr[i]);
       					break;
-      				case 'interval' : 
+      				case 'interval' :
 	      				arr[i] = theConverter.time(arr[i]);
       					break;
-      				case 'last' : 
-	      				arr[i] = iv(arr[i]) ? theConverter.time( $.now()/1000 - iv(arr[i]) - theWebUI.deltaTime/1000,true) : '';	
+      				case 'last' :
+	      				arr[i] = iv(arr[i]) ? theConverter.time( $.now()/1000 - iv(arr[i]) - theWebUI.deltaTime/1000,true) : '';
       					break;
 	      		}
 		}
@@ -726,13 +726,13 @@ var theFormatter =
 			else
 		        switch(table.getIdByCol(i))
    			{
-      				case 'status' : 
+      				case 'status' :
       					arr[i] = theFormatter.pluginStatus(arr[i]);
 	      				break;
-      				case 'launch' : 
+      				case 'launch' :
       					arr[i] = theFormatter.pluginLaunch(arr[i]);
 	      				break;
-      				case 'version' : 
+      				case 'version' :
       					arr[i] = new Number(arr[i]).toFixed(2);
 	      				break;
 	      		}
@@ -748,14 +748,14 @@ var theFormatter =
 			else
    			switch(table.getIdByCol(i))
    			{
-      				case 'size' : 
-      				case 'done' : 
+      				case 'size' :
+      				case 'done' :
       					arr[i] = theConverter.bytes(arr[i], 2);
       					break;
-	      			case 'percent' : 
+	      			case 'percent' :
       					arr[i] = arr[i] + "%";
       					break;
-	      			case 'priority' : 
+	      			case 'priority' :
       					arr[i] = theFormatter.fPriority(arr[i]);
       					break;
 	      		}
@@ -763,8 +763,8 @@ var theFormatter =
 		return(arr);
 	}
 };
-                    
-var theSearchEngines = 
+
+var theSearchEngines =
 {
 	sites:
 	[
@@ -828,20 +828,20 @@ Timer.prototype.stop = function()
 	this.interval = (new Date()).getTime() - this.initial;
 };
 
-var theTabs = 
+var theTabs =
 {
-	tabs: 
+	tabs:
 	{
-   		gcont : theUILang.General, 
-   		FileList : theUILang.Files, 
-   		TrackerList : theUILang.Trackers, 
+   		gcont : theUILang.General,
+   		FileList : theUILang.Files,
+   		TrackerList : theUILang.Trackers,
    		PeerList : theUILang.Peers,
    		Speed : theUILang.Speed,
    		PluginList : theUILang.Plugins,
    		lcont : theUILang.Logger
-   	}, 
+   	},
 
-   	init: function() 
+   	init: function()
    	{
 		if(browser.isKonqueror && (browser.versionMajor<4))
 		{
@@ -849,7 +849,7 @@ var theTabs =
 			$("#Speed").remove();
 		}
    		var s = "";
-   		for(var n in this.tabs) 
+   		for(var n in this.tabs)
       			s += "<li id=\"tab_" + n + "\"><a href=\"javascript://void();\" onmousedown=\"theTabs.show('" + n + "'); return(false);\" onfocus=\"this.blur();\">" + this.tabs[n] + "</a></li>";
 		$("#tabbar").html(s);
 		$("#tab_lcont").append( $("<input type='button'>").attr("id","clear_log").addClass('Button').val(theUILang.ClearButton).hide().click( function()
@@ -861,18 +861,18 @@ var theTabs =
 		}));
    		this.show("gcont");
    		$('#gcont,#lcont').enableSysMenu();
-   	}, 
+   	},
 	onShow : function(id)
 	{
 	},
-   	show : function(id) 
+   	show : function(id)
 	{
    		var p = null, l = null;
-   		for(var n in this.tabs) 
+   		for(var n in this.tabs)
    		{
-      			if((l = $("#tab_" + n)).length && (p = $('#'+n)).length) 
+      			if((l = $("#tab_" + n)).length && (p = $('#'+n)).length)
       			{
-         			if(n == id) 
+         			if(n == id)
          			{
             				p.show();
             				var prefix = null;
@@ -896,7 +896,7 @@ var theTabs =
 							break;
                					case "Speed":
                						theWebUI.setActiveView(id);
-               						theWebUI.speedGraph.resize(); 
+               						theWebUI.speedGraph.resize();
                						break;
 						default:
 							this.onShow(n);
@@ -908,7 +908,7 @@ var theTabs =
 	            			if(n=="lcont")
 		            			$("#clear_log").css("display","inline");
             			}
-         			else 
+         			else
          			{
             				p.hide();
             				l.removeClass("selected").css("z-index",0);
@@ -920,7 +920,7 @@ var theTabs =
    	}
 };
 
-function log(text,noTime,divClass,force) 
+function log(text,noTime,divClass,force)
 {
 	var tm = '';
 	if(!noTime)
@@ -937,7 +937,7 @@ function log(text,noTime,divClass,force)
 	}
 }
 
-function logHTML(text,divClass,force) 
+function logHTML(text,divClass,force)
 {
 	var obj = $("#lcont");
 	if(!divClass)
@@ -951,13 +951,13 @@ function logHTML(text,divClass,force)
 	}
 }
 
-function noty(msg,status,noTime) 
+function noty(msg,status,noTime)
 {
 	if($.noty)
 	{
 		$.noty(
 		{
-			text: escapeHTML(msg), 
+			text: escapeHTML(msg),
 			layout : 'bottomRight',
 			type: status
 		});
@@ -1013,7 +1013,7 @@ rDirectory.prototype.addFile = function(aData,no)
 				this.dirs[file.path][sId] = { data: { name: file.name, size: 0, done: 0, percent: 0.0, priority: -1, prioritize: -1 }, icon: "Icon_Dir", link: name };
 		}
 		name = file.path;
-	} 
+	}
 
 	function splitName(name)
 	{
@@ -1033,7 +1033,7 @@ rDirectory.prototype.updateDirs = function(name)
 	var dir = this.dirs[name];
 	var allStat = { size: 0, done: 0, priority: -2, prioritize: -2 };
 	var stat;
-	for(var i in dir) 
+	for(var i in dir)
 	{
 		if(dir[i].data.name!="..")
 		{
@@ -1053,12 +1053,12 @@ rDirectory.prototype.updateDirs = function(name)
 			if(allStat.priority==-2)
 				allStat.priority = stat.priority;
 			else
-				if(allStat.priority!=stat.priority) 
+				if(allStat.priority!=stat.priority)
 					allStat.priority = -1;
 			if(allStat.prioritize==-2)
 				allStat.prioritize = stat.prioritize;
 			else
-				if(allStat.prioritize!=stat.prioritize) 
+				if(allStat.prioritize!=stat.prioritize)
 					allStat.prioritize = -1;
 		}
 	}
@@ -1107,9 +1107,9 @@ rDirectory.prototype.setDirectory = function(name)
 // -FL10%FF%86-
 // -SM1310-
 
-var theBTClientVersion = 
+var theBTClientVersion =
 {
-	azLikeClients4:   
+	azLikeClients4:
 	{
 		"AR" : "Ares", "AT" : "Artemis", "AV" : "Avicora",
 		"BG" : "BTGetit", "BM" : "BitMagnet", "BP" : "BitTorrent Pro (Azureus + Spyware)",
@@ -1125,9 +1125,10 @@ var theBTClientVersion =
 		"S~" : "Shareaza beta", "st" : "SharkTorrent", "TN" : "Torrent .NET",
 		"TS" : "TorrentStorm", "UL" : "uLeecher!", "VG" : "Vagaa",
 		"WY" : "Wyzo", "XL" : "Xunlei",
-		"XT" : "XanTorrent", "ZT" : "Zip Torrent", 
-		'GS' : "GSTorrent", 'KG' : "KGet", 'ST' : "SymTorrent", 
-		'BE' : "BitTorrent SDK", "TB" : "Torch"
+		"XT" : "XanTorrent", "ZT" : "Zip Torrent",
+		'GS' : "GSTorrent", 'KG' : "KGet", 'ST' : "SymTorrent",
+		'BE' : "BitTorrent SDK", "TB" : "Torch",
+		"FL" : "Flud", "ZO" : "Zona"
 	 },
 	azLikeClients3:
 	{
@@ -1147,11 +1148,11 @@ var theBTClientVersion =
 		'AZ' : "Azureus", 'KT' : "KTorrent", "BF" : "BitFlu",
 	        'LW' : "LimeWire", "BB" : "BitBuddy", "BR" : "BitRocket",
 		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant",
-		"SK" : "Spark"
+		"SK" : "Spark", "tT" : "tTorrent"
 	},
 	shLikeClients:
 	{
-		'O' : "Osprey ", 'Q' : "BTQueue", 
+		'O' : "Osprey ", 'Q' : "BTQueue",
         	'A' : "ABC", 'R' : "Tribler", 'S' : "Shad0w",
 	        'T': "BitTornado", 'U': "UPnP NAT Bit Torrent"
 	},
@@ -1161,6 +1162,14 @@ var theBTClientVersion =
 		function shChar( ch )
 		{
 			var codes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-";
+			var loc = codes.indexOf(ch);
+			if(loc<0) loc = 0;
+			return(String(loc));
+		}
+
+		function shChar2( ch )
+		{
+			var codes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-";
 			var loc = codes.indexOf(ch);
 			if(loc<0) loc = 0;
 			return(String(loc));
@@ -1240,10 +1249,13 @@ var theBTClientVersion =
 					case 'LP':
                                                 ret = cli+" "+parseInt(str.substr(3,1),10)+"."+parseInt(str.substr(5,2),10);
 						break;
+					case 'tT':
+						ret = cli+" "+shChar2(str.charAt(3))+"."+shChar2(str.charAt(4))+"."+shChar2(str.charAt(5))+"."+shChar2(str.charAt(6));
+						break;
 					default:
 						var ch = str.charAt(6);
 						ret = cli+" "+str.charAt(3)+"."+parseInt(str.substr(4,2),10);
-						if((ch=='Z') || (ch=='X')) 
+						if((ch=='Z') || (ch=='X'))
 							ret+='+';
 						break;
 				}
@@ -1280,10 +1292,10 @@ var theBTClientVersion =
 		        else
 			if(str.match(/^-BOW/))
 			{
-				if( str.substr(4,4)=="A0B" ) 
+				if( str.substr(4,4)=="A0B" )
 	    				ret = "Bits on Wheels 1.0.5";
 				else
-				if( str.substr(4,4)=="A0C" ) 
+				if( str.substr(4,4)=="A0C" )
 		    			ret = "Bits on Wheels 1.0.6";
 				else
 					ret = "Bits on Wheels "+str.charAt(4)+"."+str.charAt(5)+"."+str.charAt(6);
@@ -1291,6 +1303,9 @@ var theBTClientVersion =
 			else
 			if(str.match(/^AZ2500BT/))
 				ret = "BitTyrant (Azureus Mod)";
+			else
+			if(str.match(/^-BT/))
+				ret = "BitTorrent "+str.charAt(3)+"."+parseInt(str.substr(4,2),10)+"."+parseInt(str.substr(6,2),10)+getMnemonicEnd(str.charAt(8));
 			else
 			if(str.match(/^-FG\d\d\d\d/))
 				ret = "FlashGet "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
@@ -1446,7 +1461,7 @@ function RGBackground( selector )
 		if(rule)
 			var cs = rule.style.backgroundColor;
 		else
-			cs = selector;	
+			cs = selector;
 		if(cs.charAt(0) == '#')
        			cs = cs.substr(1);
 		cs = cs.replace(/ /g,'').toLowerCase();
@@ -1572,7 +1587,7 @@ function json_encode(obj)
 	return("null");
 }
 
-function strip_tags(input, allowed) 
+function strip_tags(input, allowed)
 {
 	allowed = (((allowed || '') + '')
       		.toLowerCase()
@@ -1580,7 +1595,7 @@ function strip_tags(input, allowed)
 		.join('');
 	var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
 		commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
-	return input.replace(commentsAndPhpTags, '').replace(tags, function($0, $1) 
+	return input.replace(commentsAndPhpTags, '').replace(tags, function($0, $1)
 	{
 		return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
     	});
