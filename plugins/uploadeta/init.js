@@ -45,7 +45,7 @@ plugin.trtRenameColumn = function() {
 
 /* Create option page */
 plugin.onLangLoaded = function() {
-var input = "<fieldset><legend>"+theUILang.uploadtarget+"</legend><div><input id='uploadtarget' type='text' size=1/>%</div></fieldset>";
+var input = "<fieldset><legend>"+theUILang.uploadtarget+"</legend><div><input id='uploadtarget' type='text' size=2/>%</div></fieldset>";
 var description = "<div>"+theUILang.ULdescription+"</div>";
 this.attachPageToOptions($("<div>").attr("id","st_uploadeta").html(input + description)[0], theUILang.uploadeta);
 }
