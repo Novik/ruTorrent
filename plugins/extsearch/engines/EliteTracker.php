@@ -18,12 +18,13 @@ class EliteTrackerEngine extends commonEngine
 			$cat = $categories['all'];
 		else
 			$cat = $categories[$cat];
-		for($pg = 0; $pg<10; $pg++)
+		for($pg = 1; $pg<10; $pg++)
 		{
 			$cli = $this->fetch( $url.'/browse.php?include_dead_torrents=no&keywords='.$what.'&search_type=t_name&category='.$cat.'&sort=seeders&order=DESC&page='.$pg );
 			if( ($cli==false) || (strpos($cli->results, "<b>Aucun Resultat</b>")!==false) ||
 				(strpos($cli->results, '<form method="post" action="takelogin.php">')!==false))
 				break;
+
 			$res = preg_match_all('/<td align="center" style=".*" class="unsortable2">.*'.
 				'<a href=".*\.ts"><img src=".*\/images\/.*" border="0" alt="(?P<cat>.*)".*'.
 				'<a href="https:\/\/elite-tracker\.net\/(?P<name>.*)-s-(?P<id>\d+)\.ts">.*'.
