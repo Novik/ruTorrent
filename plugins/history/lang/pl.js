@@ -7,32 +7,32 @@
  */
 
  theUILang.historyAddition	= "Dodanie";
- theUILang.historyDeletion	= "Skreślenie";
- theUILang.historyFinish	= "Zakończ";
- theUILang.historyLog		= "Log";
+ theUILang.historyDeletion	= "Usunięcie";
+ theUILang.historyFinish	= "Ukończenie";
+ theUILang.historyLog		= "Zapisz w historii";
  theUILang.history		= "Historia";
- theUILang.historyLimit 	= "Maksymalna liczba zapisów";
- theUILang.seedingTime		= "Ukończone";
- theUILang.addTime		= "Dodane";
- theUILang.hstDeletePrompt	= "Czy napewno chcesz usunąć wybrane/ą pozycje?";
- theUILang.hstDelete		= "Usuń pozycję";
- theUILang.Added		= "Dodane";
- theUILang.Finished		= "Ukończone";
- theUILang.Deleted		= "Usunięte";
- theUILang.Time 		= "Czas";
+ theUILang.historyLimit 	= "Maksymalna liczba wpisów";
+ theUILang.seedingTime		= "Ukończono";
+ theUILang.addTime		= "Dodano";
+ theUILang.hstDeletePrompt	= "Czy na pewno chcesz usunąć wybrane wpisy?";
+ theUILang.hstDelete		= "Usuń wpis";
+ theUILang.Added		= "Dodano";
+ theUILang.Finished		= "Ukończono";
+ theUILang.Deleted		= "Usunięto";
+ theUILang.Time 		= "Kiedy";
  theUILang.Tracker		= "Tracker";
  theUILang.enableNotifications	= "Włącz powiadomienia";
- theUILang.historyNotification	= "Powiadomienia";
+ theUILang.historyNotification	= "Powiadomienia na pulpicie";
  theUILang.notifAutoClose	= "Samoczynnie zamknij powiadomienia po";
  theUILang.notifTip		= {
- 				  false: "Twoja przeglądarka nie obsługuje powiadomień. Spróbuj skorzystaj z innej przeglądarki, na przykład Google Chrome",
+ 				  false: "Twoja przeglądarka nie obsługuje powiadomień. Spróbuj użyć innej, na przykład Google Chrome.",
  				  "granted": "",
- 				  "default": "Twoja przeglądarka obsługuje powiadomienia. Naciśnij przycisk poniżej, aby je włączyć",
- 				  "denied": "Twoja przeglądarka obsługuje powiadomienia, ale wyłaczyłeś je dla tej strony. Zamknij to okno dialogowe i skorzystaj z opcji przeglądarki, aby uruchomić powiadomienia.",
+ 				  "default": "Twoja przeglądarka obsługuje powiadomienia. Naciśnij przycisk, aby je włączyć.",
+ 				  "denied": "Twoja przeglądarka obsługuje powiadomienia, ale wyłączyłeś je dla tej strony. Zamknij to okno i skorzystaj z opcji przeglądarki, aby włączyć powiadomienia.",
  				  };
- theUILang.pushbulletNotification = "powiadomienia PushBullet";
- theUILang.pushbulletKey	= "Dostep do klucza PushBullet";
- theUILang.turnNotifyOn 	= "Wlacz powiadomienia";
- theUILang.turnNotifyOff	= "Wylacz powiadomienia";
+ theUILang.pushbulletNotification = "Powiadomienia PushBullet";
+ theUILang.pushbulletKey	= "PushBullet Access Token";
+ theUILang.turnNotifyOn 	= "Włącz powiadomienia";
+ theUILang.turnNotifyOff	= "Wyłącz powiadomienia";
 
 thePlugins.get("history").langLoaded();

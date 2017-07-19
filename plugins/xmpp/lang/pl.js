@@ -6,11 +6,10 @@
  * Author: 
  */
 
- var s_PluginFail			= "Wtyczka nie będzie działać";
+ var s_PluginFail			= "Wtyczka nie będzie działać.";
 
  theUILang.xmpp 			= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Recipient:";
  theUILang.xmppJabberFor 		= "Odbiora:";
  theUILang.xmppMessage			= "Wiadomość:";
  theUILang.xmppJabberPasswd		= "Hasło:";

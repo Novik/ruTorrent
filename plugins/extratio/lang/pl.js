@@ -6,8 +6,8 @@
  * Author: Dare (piczok@gmail.com)
  */
 
- theUILang.ratioRulesManager	= "Manager Reguł Ratio";
- theUILang.mnu_ratiorule	= "Reguły Ratio";
+ theUILang.ratioRulesManager	= "Menedżer ratio";
+ theUILang.mnu_ratiorule	= "Reguły ratio";
  theUILang.ratAddRule		= "Dodaj";
  theUILang.ratDelRule		= "Usuń";
  theUILang.ratUpRule		= "W górę";
@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "Jeden z trackerów jest prywatny";
  theUILang.ratioThenLegend	= "Wtedy";
  theUILang.setRatioTo		= "Ustaw ratio na";
- theUILang.setChannelTo 	= "Ustaw throttle na";
+ theUILang.setChannelTo 	= "Ustaw limit na";
  theUILang.ratioNewRule 	= "Nowa reguła";
 
 thePlugins.get("extratio").langLoaded();

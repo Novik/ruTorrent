@@ -14,10 +14,10 @@
  theUILang.tskStart		= "Rozpoczęty";
  theUILang.tskFinish		= "Zakończony";
  theUILang.tskElapsed		= "Upłynęło";
- theUILang.tskPlugin		= "Plugin";
- theUILang.tskDeletePrompt	= "Czy na pewno chcesz usunać zaznaczone zadanie(a)?";
- theUILang.tskDelete		= "Usuń zadania(e)";
- theUILang.tskActivate		= "Aktywuj";
+ theUILang.tskPlugin		= "Wtyczka";
+ theUILang.tskDeletePrompt	= "Czy na pewno chcesz usunąć wybrane zadania?";
+ theUILang.tskDelete		= "Usuń zadanie";
+ theUILang.tskActivate		= "Pokaż";
  theUILang.tskRemove		= "Usuń";
  theUILang.tskRefresh		= "Odśwież";
  theUILang.tskRunning		= "Uruchomiony";

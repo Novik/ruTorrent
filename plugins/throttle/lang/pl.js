@@ -6,11 +6,11 @@
  * Author: Dare (piczok@gmail.com)
  */
 
- theUILang.throttles		= "Kanały";
- theUILang.throttle		= "Kanał";
- theUILang.mnuThrottle		= "Ustaw kanał";
- theUILang.mnuUnlimited 	= "Brak kanału";
+ theUILang.throttles		= "Limity";
+ theUILang.throttle		= "Limit";
+ theUILang.mnuThrottle		= "Ustaw limit";
+ theUILang.mnuUnlimited 	= "Brak limitu";
  theUILang.channelName		= "Nazwa";
- theUILang.channelDefault	= "Kanał domyślny";
+ theUILang.channelDefault	= "Domyślny limit";
 
 thePlugins.get("throttle").langLoaded();

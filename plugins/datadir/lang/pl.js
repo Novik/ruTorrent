@@ -6,10 +6,10 @@
  * Author: Dare (piczok@gmail.com)
  */
 
- theUILang.DataDir		= "Zapisz do";
- theUILang.DataDirMove		= "Przenieś pliki danych";
- theUILang.datadirDlgCaption	= "Katalog danych Torrent";
- theUILang.datadirDirNotFound	= "Wtyczka DataDir: Niepoprawny katalog";
- theUILang.datadirSetDirFail	= "Wtyczka DataDir: Operacja się nie udała";
+ theUILang.DataDir		= "Przenieś do";
+ theUILang.DataDirMove		= "Przenieś dane";
+ theUILang.datadirDlgCaption	= "Katalog danych torrenta";
+ theUILang.datadirDirNotFound	= "Wtyczka datadir: Nieprawidłowy katalog";
+ theUILang.datadirSetDirFail	= "Wtyczka datadir: Operacja nie powiodła się";
 
 thePlugins.get("datadir").langLoaded();

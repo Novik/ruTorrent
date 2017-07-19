@@ -7,23 +7,23 @@
  */
 
  theUILang.rssNewRule		= "Nowa reguła";
- theUILang.mnu_rssurlrewrite	= "Zastępstwo URLa w RSS";
- theUILang.rssRulesManager	= "Menedżer reguł";
+ theUILang.mnu_rssurlrewrite	= "Adresy RSS";
+ theUILang.rssRulesManager	= "Menedżer adresów RSS";
  theUILang.rssAddRule		= "Dodaj";
  theUILang.rssDelRule		= "Usuń";
  theUILang.rssCheckRule 	= "?";
- theUILang.rssRulesLegend	= "Ustawienia Reguł";
- theUILang.rssSrcHref		= "Jeśli URL torrenta pokrywa się z maską";
- theUILang.rssSrcGuid		= "Jeśli URL opisu torrenta pokrywa się z maską";
- theUILang.rssDstHref		= "to zastąp URL z";
- theUILang.rssDstGuid		= "to zastąp URL opisu z";
- theUILang.rssRulesDebug	= "Rule Debug";
+ theUILang.rssRulesLegend	= "Ustawienia reguły";
+ theUILang.rssSrcHref		= "Jeśli adres pobierania torrenta pasuje do wzorca";
+ theUILang.rssSrcGuid		= "Jeśli adres opisu torrenta pasuje do wzorca";
+ theUILang.rssDstHref		= "wtedy zastąp adres pobierania tym";
+ theUILang.rssDstGuid		= "wtedy zastąp adres opisu tym";
+ theUILang.rssRulesDebug	= "Sprawdź regułę";
  theUILang.rssTestString	= "Test";
  theUILang.rssTestResult	= "Wynik";
- theUILang.rssURLInfo		= "URL info";
- theUILang.rssURLGUID		= "URL opisu";
- theUILang.rssURLHref		= "Download URL";
- theUILang.rssPatternError	= "Błąd w masce.";
+ theUILang.rssURLInfo		= "Adresy";
+ theUILang.rssURLGUID		= "Adres opisu torrenta";
+ theUILang.rssURLHref		= "Adres pobierania torrenta";
+ theUILang.rssPatternError	= "Błędny wzorzec";
  theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

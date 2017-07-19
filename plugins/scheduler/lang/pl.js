@@ -7,20 +7,20 @@
  */
 
  theUILang.scheduler		= "Harmonogram";
- theUILang.schedulerOn		= "Włącz Harmonogram";
- theUILang.schedulerGraph	= "Tablica harmonogramu";
- theUILang.schShortWeek 	= [ "pon.", "wt.", "śr.", "czw.", "pt.", "sob.", "ndz." ];
- theUILang.schFullWeek		= [ "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota", "niedziela" ];
+ theUILang.schedulerOn		= "Włącz harmonogram";
+ theUILang.schedulerGraph	= "Tabela harmonogramu";
+ theUILang.schShortWeek 	= [ "Pon.", "Wt.", "Śr.", "Czw.", "Pt.", "Sob.", "Ndz." ];
+ theUILang.schFullWeek		= [ "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela" ];
  theUILang.schUnlimited 	= "Nielimitowany";
  theUILang.schLimited		= "Limit ";
  theUILang.schTurnOff		= "Wyłącz";
- theUILang.schSeedingOnly	= "Tylko wysyłanie";
- theUILang.schUnlimitedDesc	= "Nielimitowany - Ogólny limit nie istnieje";
- theUILang.schLimitedDesc	= "Limitowany - Użyty Harmonogram do ograniczenia transferu";
- theUILang.schTurnOffDesc	= "Wyłącz - Zatrzymuje wszystkie torrenty";
- theUILang.schSeedingOnlyDesc	= "Tylko wysyłanie danych";
- theUILang.schLimitedUL 	= "Limit wysyłania";
- theUILang.schLimitedDL 	= "Limit pobierania:";
- theUILang.shcIgnore		= "Ignoruj planistę";
+ theUILang.schSeedingOnly	= "Wysyłanie";
+ theUILang.schUnlimitedDesc	= "Nielimitowany - ogólny limit nie istnieje";
+ theUILang.schLimitedDesc	= "Limitowany - ogranicza transfer używając limutu ";
+ theUILang.schTurnOffDesc	= "Wyłącz - zatrzymuje wszystkie torrenty";
+ theUILang.schSeedingOnlyDesc	= "Wysyłanie - tylko udostępnianie danych";
+ theUILang.schLimitedUL 	= "Wysyłanie";
+ theUILang.schLimitedDL 	= "Pobieranie";
+ theUILang.shcIgnore		= "Pomiń harmonogram";
 
 thePlugins.get("scheduler").langLoaded();
