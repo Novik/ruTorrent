@@ -1,7 +1,7 @@
 <?php
 
 $theUILang["all"]		= "Wszystkie torrenty";
-$theUILang["completed"] 	= "Zakończone torrenty";
+$theUILang["completed"] 	= "Ukończone torrenty";
 $theUILang["downloading"]	= "Pobierane torrenty";
 $theUILang["active"]		= "Aktywne torrenty";
 $theUILang["inactive"]		= "Nieaktywne torrenty";
@@ -14,8 +14,8 @@ $theUILang["Downloaded"]	= "Pobrano";
 $theUILang["Down_speed"]	= "Prędkość pobierania";
 $theUILang["Uploaded"]		= "Wysłano";
 $theUILang["Ul_speed"]		= "Prędkość wysyłania";
-$theUILang["Seeds"]		= "Seedów";
-$theUILang["Peers"]		= "Peerów";
+$theUILang["Seeds"]		= "Seedy";
+$theUILang["Peers"]		= "Peery";
 $theUILang["Track_status"]	= "Status trackera";
 $theUILang["Comment"]		= "Komentarz";
 $theUILang["s"] 		= "s";

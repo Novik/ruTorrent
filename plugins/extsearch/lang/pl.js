@@ -6,20 +6,20 @@
  * Author: Dare (piczok@gmail.com)
  */
 
- theUILang.tegMenuLoad			= "Załaduj";
+ theUILang.tegMenuLoad			= "Pobierz";
  theUILang.tegMenuOpen			= "Otwórz w przeglądarce";
  theUILang.tegMenuDeleteItem		= "Usuń";
- theUILang.tegMenuDelete		= "Usuń tag";
- theUILang.tegRefresh			= "Odśwież tag";
- theUILang.exsGlobal			= "Dołącz do kategorii 'Wszystko'";
+ theUILang.tegMenuDelete		= "Usuń znacznik";
+ theUILang.tegRefresh			= "Odśwież znacznik";
+ theUILang.exsGlobal			= "Dołącz do kategorii 'Wszystkie'";
  theUILang.exsLimit			= "Limit wyników";
- theUILang.exsEngines			= "Silniki";
+ theUILang.exsEngines			= "Wyszukiwarki";
  theUILang.exsSearch			= "Szukaj";
- theUILang.exsGlobalLimit		= "Najczęstsze Limitacje";
+ theUILang.exsGlobalLimit		= "Wspólne ograniczenia";
  theUILang.excat			= "Kategoria";
  theUILang.excatall			= "Wszystko";
  theUILang.excatmovies			= "Filmy";
- theUILang.excattv			= "TV/Seriale";
+ theUILang.excattv			= "TV";
  theUILang.excatmusic			= "Muzyka";
  theUILang.excatgames			= "Gry";
  theUILang.excatanime			= "Anime";
@@ -29,13 +29,13 @@
  theUILang.extPrivate			= "Prywatne";
  theUILang.extPublic			= "Publiczne";
  theUILang.exsCookies			= "Format ciasteczek";
- theUILang.extAllPublic 		= "Wszystko Publiczne";
- theUILang.extAllPrivate		= "Wszystko Prywatne";
- theUILang.exsMustInstallCookies	= "Plugin 'Cookies' jest wymagany do współpracy z tym silnikiem.";
- theUILang.exsMustInstallLoginMgr	= "Plugin 'LoginMgr' jest wymagany do współpracy z tym silnikiem.";
- theUILang.exsLoginMgr			= "Skonfiguruj konto w pluginie 'LoginMgr' by współpracować z tym silnikiem.";
- theUILang.exsURLInfo			= "URL info";
- theUILang.exsURLGUID			= "URL opisu";
- theUILang.exsURLHref			= "URL do pobrania";
+ theUILang.extAllPublic 		= "Wszystkie publiczne";
+ theUILang.extAllPrivate		= "Wszystkie prywatne";
+ theUILang.exsMustInstallCookies	= "Wtyczka 'cookies' jest wymagana jeśli chcesz użyć tej wyszukiwarki.";
+ theUILang.exsMustInstallLoginMgr	= "Wtyczka 'loginmgr' jest wymagana jeśli chcesz użyć tej wyszukiwarki.";
+ theUILang.exsLoginMgr			= "Skonfiguruj konto we wtyczce 'loginmgr' jeśli chcesz użyć tej wyszukiwarki.";
+ theUILang.exsURLInfo			= "Adresy";
+ theUILang.exsURLGUID			= "Adres opisu torrenta";
+ theUILang.exsURLHref			= "Adres pobierania torrenta";
 
 thePlugins.get("extsearch").langLoaded();
