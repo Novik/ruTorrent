@@ -3,7 +3,7 @@
 class EliteTrackerEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>30, "auth"=>1 );
-	public $categories = array( 'all'=>'', "Animations/Animes" => "27", "Application" => "74", "Documentaires" => "38", "Ebooks" => "34",
+	public $categories = array( 'Tout'=>'', "Animations/Animes" => "27", "Application" => "74", "Documentaires" => "38", "Ebooks" => "34",
 				"Films" => "7", "HD" => "48", "Jeux Vidéo" => "15", "Musiques" => "23", "Séries" => "30", "Spectacles/Émissions" => "47", "Sport" => "35", "XXX" => "37" );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
@@ -44,7 +44,7 @@ class EliteTrackerEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["cat"] = self::removeTags($matches["cat"][$i]);
+						$item["cat"] = self::removeTags(str_replace("."," ",$matches["cat"][$i]));
 						$item["desc"] = $url."/".$matches["name"][$i]."-s-".$matches["id"][$i].".ts";
 						$item["name"] = $name;
 						$item["size"] = self::formatSize(trim(str_replace("<br>"," ",$matches["size"][$i])));
