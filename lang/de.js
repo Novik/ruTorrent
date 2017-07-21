@@ -43,7 +43,7 @@ var theUILang =
  Size				: "Grösse",
  Done				: "Fertig",
  Downloaded			: "Geladen",
- Uploaded			: "Upgeloadet",
+ Uploaded			: "Hochgeladen",
  Ratio				: "Rate",
  DL				: "DL",
  UL				: "UL",
