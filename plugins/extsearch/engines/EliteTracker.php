@@ -29,8 +29,7 @@ class EliteTrackerEngine extends commonEngine
 				'<a href=".*\.ts"><img src=".*\/images\/.*" border="0" alt="(?P<cat>.*)".*'.
 				'<a href="https:\/\/elite-tracker\.net\/(?P<name>.*)-s-(?P<id>\d+)\.ts">.*'.
 				'<\/span>(?P<date>.*)<\/div>.*'.
-				'<a href="(?P<link>.*)">.*'.
-				'<td align="center" class="unsortable2">(?P<size>.*)<\/td>.*'.
+				'<\/a>.*<td align="center" class="unsortable2">(?P<size>.*)<\/td>.*'.
 				'<span .*>.*<a href=".*>(?P<seeds>.*)<\/a>.*'.
 				'<a href=".*>(?P<leech>.*)<\/a>'.
 				'/siU', $cli->results, $matches);
@@ -40,7 +39,7 @@ class EliteTrackerEngine extends commonEngine
 				for($i = 0; $i < $res; $i++)
 				{
 					$name = str_replace("_"," ",$matches["name"][$i]);
-					$link = $matches["link"][$i];
+					$link = $url."/download.php?id=".$matches["id"][$i]."&type=ssl";
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
