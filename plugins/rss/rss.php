@@ -178,7 +178,7 @@ class rRSS
 						foreach($this->itemtags as $itemtag)
 						{
 							if($itemtag=='enclosure')
-								$temp = $this->search("'<enclosure.*url\s*=\s*[\"|\'](.*?)[\"|\'].*>'si", $rssItem);
+								$temp = $this->search("'<enclosure.*?url\s*=\s*[\"|\'](.*?)[\"|\'].*>'si", $rssItem);
 							else
 							if($itemtag=='source')
 								$temp = $this->search("'<source\s*url\s*=\s*[\"|\'](.*?)[\"|\'].*>.*</source>'si", $rssItem);
