@@ -2,6 +2,7 @@
  * Norwegian language file.
  *
  * Author: xerc (iamxerc@gmail.com)
+ * Updated by: nirosa (nirosax@gmail.com)
  */
 
 var theUILang =
@@ -267,11 +268,11 @@ var theUILang =
  showSpeedInTitle		: "Vis hastighet i tittelen",
  badTempPath			: "Webserver-bruker har ikke lese/skrive/kjøre tilgang til tmp mappen. ruTorrent vil ikke fungere.",
  badTempPath2			: "rTorrent-bruker har ikke lese/kjøre tilgang til tmp mappen. ruTorrent vil ikke fungere.",
- doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files 		: "Queue files recreation",
- Address			: "Address",
- PeerDL 			: "Peer DL",
- PeerDownloaded 		: "Peer Downloaded",
- Save_path			: "Save path",
- registerMagnet			: "Try to register magnet protocol handler at start"
+ doRandomizeHash		: "Tilfeldiggjør info-hasher for cross-seeding",
+ Recreate_files 		: "Lag filer på nytt",
+ Address			: "Adresse",
+ PeerDL 			: "Peer Nedl.",
+ PeerDownloaded 		: "Peer Nedlastet",
+ Save_path			: "Lagringsmappe",
+ registerMagnet			: "Prøv å registrere magnetprotokoll-håndterer på oppstart"
 };
