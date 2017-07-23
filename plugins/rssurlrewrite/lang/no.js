@@ -3,27 +3,27 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.rssNewRule		= "New rule";
- theUILang.mnu_rssurlrewrite	= "URL Replacement in RSS";
- theUILang.rssRulesManager	= "Rules Manager";
- theUILang.rssAddRule		= "Add";
- theUILang.rssDelRule		= "Delete";
+ theUILang.rssNewRule		= "Ny regel";
+ theUILang.mnu_rssurlrewrite	= "Lenkeerstatning i RSS";
+ theUILang.rssRulesManager	= "Regelbehandling";
+ theUILang.rssAddRule		= "Legg til";
+ theUILang.rssDelRule		= "Slett";
  theUILang.rssCheckRule 	= "?";
- theUILang.rssRulesLegend	= "Rule Settings";
- theUILang.rssSrcHref		= "If URL of torrent download matches pattern";
- theUILang.rssSrcGuid		= "If URL of torrent description matches pattern";
- theUILang.rssDstHref		= "then replace URL of torrent download with";
- theUILang.rssDstGuid		= "then replace URL of torrent description with";
- theUILang.rssRulesDebug	= "Rule Debug";
+ theUILang.rssRulesLegend	= "Regelinstillinger";
+ theUILang.rssSrcHref		= "Hvis lenke for torrentnedlasting matcher med mønster";
+ theUILang.rssSrcGuid		= "Hvis lenke for torrentbeskrivelse matcher med mønster";
+ theUILang.rssDstHref		= "så erstatt lenken for torrentnedlasting med";
+ theUILang.rssDstGuid		= "så erstatt lenken for torrentbeskrivelsen med";
+ theUILang.rssRulesDebug	= "Regelfeilsøking";
  theUILang.rssTestString	= "Test";
- theUILang.rssTestResult	= "Result";
- theUILang.rssURLInfo		= "URL info";
- theUILang.rssURLGUID		= "Description URL";
- theUILang.rssURLHref		= "Download URL";
- theUILang.rssPatternError	= "Error in pattern string.";
+ theUILang.rssTestResult	= "Resultat";
+ theUILang.rssURLInfo		= "Lenkeinfo";
+ theUILang.rssURLGUID		= "Beskrivelselenke";
+ theUILang.rssURLHref		= "Nedlastingslenke";
+ theUILang.rssPatternError	= "Feil i mønsterstreng.";
  theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

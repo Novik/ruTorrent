@@ -3,14 +3,14 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkPort		= "Sjekk Portstatus";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Portstatus er ukjent",
+ 				  "Port er lukket",
+ 				  "Port er åpen"
  				  ];
 
 thePlugins.get("check_port").langLoaded();

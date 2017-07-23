@@ -3,39 +3,39 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.tegMenuLoad			= "Load";
- theUILang.tegMenuOpen			= "Open in browser";
- theUILang.tegMenuDeleteItem		= "Remove item";
- theUILang.tegMenuDelete		= "Remove tag";
- theUILang.tegRefresh			= "Refresh tag";
- theUILang.exsGlobal			= "Include into 'All' category";
- theUILang.exsLimit			= "Result limit";
- theUILang.exsEngines			= "Engines";
- theUILang.exsSearch			= "Search";
- theUILang.exsGlobalLimit		= "Common Limitations";
- theUILang.excat			= "Category";
- theUILang.excatall			= "All";
- theUILang.excatmovies			= "Movies";
+ theUILang.tegMenuLoad			= "Laste";
+ theUILang.tegMenuOpen			= "Åpne i nettleser";
+ theUILang.tegMenuDeleteItem		= "Fjern gjenstand";
+ theUILang.tegMenuDelete		= "Fjern taggen";
+ theUILang.tegRefresh			= "Oppdater taggen";
+ theUILang.exsGlobal			= "Legg til i 'Alle' kategorien";
+ theUILang.exsLimit			= "Resultatgrense";
+ theUILang.exsEngines			= "Søkemotorer";
+ theUILang.exsSearch			= "Søk";
+ theUILang.exsGlobalLimit		= "Vanlige begrensninger";
+ theUILang.excat			= "Kategori";
+ theUILang.excatall			= "Alle";
+ theUILang.excatmovies			= "Filmer";
  theUILang.excattv			= "TV";
- theUILang.excatmusic			= "Music";
- theUILang.excatgames			= "Games";
+ theUILang.excatmusic			= "Musikk";
+ theUILang.excatgames			= "Spill";
  theUILang.excatanime			= "Anime";
- theUILang.excatsoftware		= "Software";
- theUILang.excatpictures		= "Pictures";
- theUILang.excatbooks			= "Books";
- theUILang.extPrivate			= "Private";
- theUILang.extPublic			= "Public";
- theUILang.exsCookies			= "Format of cookies";
- theUILang.extAllPublic 		= "All Public";
- theUILang.extAllPrivate		= "All Private";
- theUILang.exsMustInstallCookies	= "Cookies plugin is required to work with this engine.";
- theUILang.exsMustInstallLoginMgr	= "LoginMgr plugin is required to work with this engine.";
- theUILang.exsLoginMgr			= "Setup your account in LoginMgr plugin to work with this engine.";
- theUILang.exsURLInfo			= "URL info";
- theUILang.exsURLGUID			= "Description URL";
- theUILang.exsURLHref			= "Download URL";
+ theUILang.excatsoftware		= "Programvare";
+ theUILang.excatpictures		= "Bilder";
+ theUILang.excatbooks			= "Bøker";
+ theUILang.extPrivate			= "Privat";
+ theUILang.extPublic			= "Offentlig";
+ theUILang.exsCookies			= "Cookieformat";
+ theUILang.extAllPublic 		= "Alle Offentlige";
+ theUILang.extAllPrivate		= "Alle Private";
+ theUILang.exsMustInstallCookies	= "Cookies-pluginen kreves for at denne søkemotoren skal fungere.";
+ theUILang.exsMustInstallLoginMgr	= "LoginMgr-pluginen kreves for at denne søkemotoren skal fungere.";
+ theUILang.exsLoginMgr			= "Sett opp kontoen din i LoginMgr-pluginen for at denne søkemotoren skal fungere.";
+ theUILang.exsURLInfo			= "Lenkeinformasjon";
+ theUILang.exsURLGUID			= "Beskrivelseslenke";
+ theUILang.exsURLHref			= "Nedlastingslenke";
 
 thePlugins.get("extsearch").langLoaded();

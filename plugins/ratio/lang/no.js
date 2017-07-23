@@ -3,24 +3,24 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.ratios		= "Ratio Groups";
- theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set Ratio Group";
- theUILang.mnuRatioUnlimited	= "No Ratio";
- theUILang.ratioName		= "Name";
+ theUILang.ratios		= "Ratiogrupper";
+ theUILang.ratio		= "Ratiogruppe";
+ theUILang.mnuRatio		= "Angi Ratiogruppe";
+ theUILang.mnuRatioUnlimited	= "Ingen Ratio";
+ theUILang.ratioName		= "Navn";
  theUILang.minRatio		= "Min";
- theUILang.maxRatio		= "Max";
- theUILang.ratioUpload		= "UL";
- theUILang.ratioAction		= "Action";
- theUILang.ratioStop		= "Stop";
- theUILang.ratioStopAndRemove	= "Stop & Clear group";
- theUILang.ratioErase		= "Remove";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault 	= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.maxRatio		= "Maks";
+ theUILang.ratioUpload		= "Oppl.";
+ theUILang.ratioAction		= "Handling";
+ theUILang.ratioStop		= "Stopp";
+ theUILang.ratioStopAndRemove	= "Stopp og fjern gruppe";
+ theUILang.ratioErase		= "Fjern";
+ theUILang.ratioEraseData	= "Fjern data";
+ theUILang.maxTime		= "Tid";
+ theUILang.ratioDefault 	= "Standard ratiogruppe";
+ theUILang.setThrottleTo	= "Sett kanal til";
 
 thePlugins.get("ratio").langLoaded();

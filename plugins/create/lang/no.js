@@ -3,27 +3,27 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.mnu_create			= "Create Torrent...";
- theUILang.CreateNewTorrent		= "Create New Torrent";
- theUILang.SelectSource 		= "Select Source";
- theUILang.TorrentProperties		= "Torrent Properties";
- theUILang.PieceSize			= "Piece size";
- theUILang.Other			= "Other";
+ theUILang.mnu_create			= "Lag Torrent...";
+ theUILang.CreateNewTorrent		= "Lag Ny Torrent";
+ theUILang.SelectSource 		= "Velg Kilde";
+ theUILang.TorrentProperties		= "Torrentegenskaper";
+ theUILang.PieceSize			= "Delstørrelse";
+ theUILang.Other			= "Annet";
  theUILang.StartSeeding 		= "Start seeding";
- theUILang.PrivateTorrent		= "Private torrent";
- theUILang.torrentCreate		= "Create...";
- theUILang.BadTorrentData		= "You must fill all required fields!";
- theUILang.createExternalNotFound	= "Create plugin: Plugin will not work. Webserver user can't access external program";
- theUILang.incorrectDirectory		= "Incorrect directory";
- theUILang.cantExecExternal		= "Can't execute external program";
- theUILang.createConsole		= "Console";
- theUILang.createErrors 		= "Errors";
- theUILang.torrentSave			= "Save";
- theUILang.torrentKill			= "Stop";
- theUILang.torrentKilled		= "Process was stopped.";
- theUILang.recentTrackers		= "Recent trackers";
+ theUILang.PrivateTorrent		= "Privat torrent";
+ theUILang.torrentCreate		= "Lag...";
+ theUILang.BadTorrentData		= "Du må fylle ut alle påkrevde felt!";
+ theUILang.createExternalNotFound	= "Create plugin: Plugin vil ikke funke. Webserverbrukeren får ikke tilgang til eksternt program";
+ theUILang.incorrectDirectory		= "Ugyldig mappe";
+ theUILang.cantExecExternal		= "Kan ikke kjøre eksternt program";
+ theUILang.createConsole		= "Konsoll";
+ theUILang.createErrors 		= "Feilmeldinger";
+ theUILang.torrentSave			= "Lagre";
+ theUILang.torrentKill			= "Stopp";
+ theUILang.torrentKilled		= "Prosessen ble stoppet.";
+ theUILang.recentTrackers		= "Siste trackere";
 
 thePlugins.get("create").langLoaded();

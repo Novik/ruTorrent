@@ -3,10 +3,10 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.getData		= "Get File";
- theUILang.cantAccessData	= "Webserver user can't access the data of this torrent.";
+ theUILang.getData		= "Hent Fil";
+ theUILang.cantAccessData	= "Webserverbrukeren har ikke tilgang til dataen til denne torrenten.";
 
 thePlugins.get("data").langLoaded();

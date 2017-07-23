@@ -3,16 +3,16 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.accLogin		= "Login";
- theUILang.accPassword		= "Password";
- theUILang.accAccounts		= "Accounts";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accLogin		= "Logg inn";
+ theUILang.accPassword		= "Passord";
+ theUILang.accAccounts		= "Kontoer";
+ theUILang.accAuto		= "Automatisk innlogging";
+ theUILang.acAutoNone		= "Ingen";
+ theUILang.acAutoDay		= "Hver dag";
+ theUILang.acAutoWeek		= "Hver uke";
+ theUILang.acAutoMonth		= "Hver måned";
 
 thePlugins.get("loginmgr").langLoaded();

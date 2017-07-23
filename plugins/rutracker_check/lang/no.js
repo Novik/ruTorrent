@@ -3,21 +3,21 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.checkTorrent 	= "Check for Update";
- theUILang.chkHdr		= "Torrent Update Check";
- theUILang.checkedAt		= "Last Checked";
- theUILang.checkedResult	= "Result";
+ theUILang.checkTorrent 	= "Søk etter oppdateringer";
+ theUILang.chkHdr		= "Torrent-oppdateringssjekk";
+ theUILang.checkedAt		= "Sist sjekket";
+ theUILang.checkedResult	= "Resultat";
  theUILang.chkResults		= [
- 				  "In progress",
- 				  "Updated",
- 				  "No update required",
- 				  "Probably deleted",
- 				  "Error accessing the tracker",
- 				  "Error interacting with rTorrent",
- 				  "No need"
+ 				  "Pågår",
+ 				  "Oppdatert",
+ 				  "Ingen oppdatering nødvendig",
+ 				  "Sannsynligvis slettet",
+ 				  "Tilgangsfeil med trackeren oppstod",
+ 				  "Kommunikasjonsfeil med rTorrent oppstod",
+ 				  "Ikke nødvendig"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

@@ -3,14 +3,14 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.feedAll		= "All torrents";
- theUILang.feedCompleted	= "Completed torrents";
- theUILang.feedDownloading	= "Downloading torrents";
- theUILang.feedActive		= "Active torrents";
- theUILang.feedInactive 	= "Inactive torrents";
- theUILang.feedError		= "Error torrents";
+ theUILang.feedAll		= "Alle torrenter";
+ theUILang.feedCompleted	= "Fullførte torrenter";
+ theUILang.feedDownloading	= "Nedlastende torrenter";
+ theUILang.feedActive		= "Aktive torrenter";
+ theUILang.feedInactive 	= "Inaktive torrenter";
+ theUILang.feedError		= "Feil-torrenter";
 
 thePlugins.get("feeds").langLoaded();

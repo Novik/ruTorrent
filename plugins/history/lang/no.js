@@ -3,36 +3,36 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.historyAddition	= "Addition";
- theUILang.historyDeletion	= "Deletion";
- theUILang.historyFinish	= "Finish";
- theUILang.historyLog		= "Log";
- theUILang.history		= "History";
- theUILang.historyLimit 	= "Maximum number of records";
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
- theUILang.hstDeletePrompt	= "Do you really want to delete the selected record(s)?";
- theUILang.hstDelete		= "Delete record(s)";
- theUILang.Added		= "Added";
- theUILang.Finished		= "Finished";
- theUILang.Deleted		= "Deleted";
- theUILang.Time 		= "Time";
+ theUILang.historyAddition	= "Tilsetting";
+ theUILang.historyDeletion	= "Sletting";
+ theUILang.historyFinish	= "Fullføring";
+ theUILang.historyLog		= "Logg";
+ theUILang.history		= "Historie";
+ theUILang.historyLimit 	= "Maksimalt antall poster";
+ theUILang.seedingTime		= "Fullført";
+ theUILang.addTime		= "Lagt til";
+ theUILang.hstDeletePrompt	= "Vil du virkelig slette den valgte post(en)?";
+ theUILang.hstDelete		= "Slett post(er)";
+ theUILang.Added		= "Lagt til";
+ theUILang.Finished		= "Fullført";
+ theUILang.Deleted		= "Slettet";
+ theUILang.Time 		= "Tid";
  theUILang.Tracker		= "Tracker";
- theUILang.enableNotifications	= "Enable desktop notifications";
- theUILang.historyNotification	= "Desktop Notifications";
- theUILang.notifAutoClose	= "Autoclose notifications after";
+ theUILang.enableNotifications	= "Aktiver skrivebordsvarslinger";
+ theUILang.historyNotification	= "Skrivebordsvarslinger";
+ theUILang.notifAutoClose	= "Lukk notifikasjoner automatisk etter";
  theUILang.notifTip		= {
- 				  false: "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 				  false: "Din nettleser støtter ikke skrivebordsvarslinger. Prøv å bruke en annen nettleser, for eksempel Google Chrome.",
  				  "granted": "",
- 				  "default": "Your browser supports desktop notifications. Press button below to enable it.",
- 				  "denied": "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 				  "default": "Din nettleser støtter skrivebordsvarslinger. Trykk på knappen nedenfor for å aktivere de.",
+ 				  "denied": "Din nettleser støtter skrivebordsvarslinger, men du har deaktivert de for dette nettstedet. Lukk denne dialogen og aktiver skrivebordsvarslinger i dine nettleserinstillinger.",
  				  };
- theUILang.pushbulletNotification = "PushBullet notifications";
- theUILang.pushbulletKey	= "PushBullet Access Token";
- theUILang.turnNotifyOn 	= "Turn notifications on";
- theUILang.turnNotifyOff	= "Turn notifications off";
+ theUILang.pushbulletNotification = "PushBullet-notifikasjoner";
+ theUILang.pushbulletKey	= "PushBullet-tilgangstoken";
+ theUILang.turnNotifyOn 	= "Skru notifikasjoner på";
+ theUILang.turnNotifyOff	= "Skru notifikasjoner av";
 
 thePlugins.get("history").langLoaded();
