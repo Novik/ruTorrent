@@ -3,10 +3,10 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
+ theUILang.seedingTime		= "Ferdig";
+ theUILang.addTime		= "Lagt til";
 
 thePlugins.get("seedingtime").langLoaded();

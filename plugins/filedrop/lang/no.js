@@ -3,11 +3,11 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.doesntSupportHTML5	= "Plugin filedrop: Your browser does not support HTML5 file uploads. Plugin was disabled.";
- theUILang.tooManyFiles 	= "Plugin filedrop: Too many files. Must be <= ";
- theUILang.fileTooLarge 	= "is too large. Please upload files up to";
+ theUILang.doesntSupportHTML5	= "Plugin filedrop: Din nettleser støtter ikke HTML5 filopplastinger. Pluginen har blitt deaktivert.";
+ theUILang.tooManyFiles 	= "Plugin filedrop: For mange filer. Må være <= ";
+ theUILang.fileTooLarge 	= "er for stor. Vennligst last opp filer opp til";
 
 thePlugins.get("filedrop").langLoaded();

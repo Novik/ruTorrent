@@ -3,9 +3,9 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.diskNotification = "Warning! The disk is full. rTorrent may not run correctly, and no data will be downloaded until you free some disk space.";
+ theUILang.diskNotification = "Advarsel! Disken er full. rTorrent kommer kanskje ikke til å kjøre riktig, og ingen data lastes ned til du frigjør litt diskplass.";
 
 thePlugins.get("diskspace").langLoaded();

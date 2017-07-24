@@ -3,7 +3,7 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.mediainfo		= "Media Info";
+ theUILang.mediainfo		= "Medieinformasjon";

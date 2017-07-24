@@ -3,16 +3,16 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.unpack		= "Unpack";
- theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";
- theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
- theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
- theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
- theUILang.unpackAddLabel	= "Torrent Label";
- theUILang.unpackAddName	= "Torrent Name";
+ theUILang.unpack		= "Pakk ut";
+ theUILang.unpackPath		= "Pakk ut til (la stå tom for torrentens nåværende mappe)";
+ theUILang.unzipNotFound	= "Unpack plugin: rTorrent-brukeren får ikke tilgang til 'unzip'-programmet.";
+ theUILang.unrarNotFound	= "Unpack plugin: rTorrent-brukeren får ikke tilgang til 'unrar'-programmet.";
+ theUILang.unpackEnabled	= "Aktiver automatisk utpakking hvis torrentens etikett matcher filter";
+ theUILang.unpackTorrents	= "Tilføy til filstinavnet ved utpakking av torrentdata";
+ theUILang.unpackAddLabel	= "Torrentetikett";
+ theUILang.unpackAddName	= "Torrentnavn";
 
 thePlugins.get("unpack").langLoaded();

@@ -3,14 +3,14 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.throttles		= "Channels";
- theUILang.throttle		= "Channel";
- theUILang.mnuThrottle		= "Set Channel";
- theUILang.mnuUnlimited 	= "No Channel";
- theUILang.channelName		= "Name";
- theUILang.channelDefault	= "Default channel";
+ theUILang.throttles		= "Kanaler";
+ theUILang.throttle		= "Kanal";
+ theUILang.mnuThrottle		= "Angi Kanal";
+ theUILang.mnuUnlimited 	= "Ingen Kanal";
+ theUILang.channelName		= "Navn";
+ theUILang.channelDefault	= "Standard Kanal";
 
 thePlugins.get("throttle").langLoaded();

@@ -5,12 +5,12 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.peerComment		= "Add comment";
- theUILang.peerCommentLabel	= "Enter new comment for peer";
- theUILang.commentName		= "Comment";
+ theUILang.peerComment		= "Legg til kommentar";
+ theUILang.peerCommentLabel	= "Skriv inn ny kommentar for peer";
+ theUILang.commentName		= "Kommentar";
  theUILang.countryName		= "Land";
 
  theUILang.country = new Array();

@@ -3,19 +3,19 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "Pluginen vil ikke fungere.";
 
  theUILang.xmpp 			= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Recipient:";
- theUILang.xmppMessage			= "Message:";
- theUILang.xmppJabberPasswd		= "Password:";
- theUILang.xmppAdvancedSettings		= "Advanced:";
- theUILang.xmppJabberHost		= "Host:";
+ theUILang.xmppJabberFor 		= "Mottaker:";
+ theUILang.xmppMessage			= "Melding:";
+ theUILang.xmppJabberPasswd		= "Passord:";
+ theUILang.xmppAdvancedSettings		= "Avansert:";
+ theUILang.xmppJabberHost		= "Vert:";
  theUILang.xmppJabberPort		= "Port";
- theUILang.xmppUseEncryption		= "Use encryption";
+ theUILang.xmppUseEncryption		= "Bruk enkryptering";
 
 thePlugins.get("xmpp").langLoaded();

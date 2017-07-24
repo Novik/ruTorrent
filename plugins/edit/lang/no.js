@@ -3,14 +3,14 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.EditTrackers 		= "Edit Torrent...";
- theUILang.EditTorrentProperties	= "Torrent Properties";
- theUILang.errorAddTorrent		= "Error adding torrent file";
- theUILang.errorWriteTorrent		= "Error writing torrent file";
- theUILang.errorReadTorrent		= "Error reading torrent file";
- theUILang.cantFindTorrent		= "Source torrent file for this download not found."
+ theUILang.EditTrackers 		= "Rediger Torrent...";
+ theUILang.EditTorrentProperties	= "Torrentegenskaper";
+ theUILang.errorAddTorrent		= "Feil oppstod med å legge til torrentfil";
+ theUILang.errorWriteTorrent		= "Feil oppstod med å skrive til torrentfil";
+ theUILang.errorReadTorrent		= "Feil oppstod med å lese fra torrentfil";
+ theUILang.cantFindTorrent		= "Kilde-torrentfil for denne nedlastingen ble ikke funnet."
 
 thePlugins.get("edit").langLoaded();

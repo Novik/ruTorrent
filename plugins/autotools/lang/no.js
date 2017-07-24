@@ -3,27 +3,27 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "Pluginen vil ikke fungere.";
 
- theUILang.autotools			= "Autotools";
- theUILang.autotoolsEnableLabel 	= "Enable \"AutoLabel\" feature, Template:";
- theUILang.autotoolsPathToFinished	= "Path to finished downloads";
- theUILang.autotoolsEnableWatch 	= "Enable \"AutoWatch\" feature";
- theUILang.autotoolsPathToWatch 	= "Path to base watch directory";
- theUILang.autotoolsWatchStart		= "Start download automatically";
- theUILang.autotoolsNoPathToFinished	= "Autotools plugin: path to finished downloads is not set. " + s_PluginFail;
- theUILang.autotoolsNoPathToWatch	= "Autotools plugin: path to base watch directory is not set. " + s_PluginFail;
- theUILang.autotoolsFileOpType		= "Operation type";
- theUILang.autotoolsFileOpMove		= "Move";
- theUILang.autotoolsFileOpHardLink 	= "Hard link";
- theUILang.autotoolsFileOpCopy		= "Copy";
- theUILang.autotoolsFileOpSoftLink	= "Soft link";
- theUILang.autotoolsAddLabel		= "Add torrent's label to path";
- theUILang.autotoolsAddName		= "Add torrent's name to path";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
- theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
+ theUILang.autotools			= "Auto-verktøy";
+ theUILang.autotoolsEnableLabel 	= "Aktiver \"AutoLabel\" funksjonen, Mal:";
+ theUILang.autotoolsPathToFinished	= "Mappe for ferdige nedlastinger.";
+ theUILang.autotoolsEnableWatch 	= "Aktiver \"AutoWatch\" funksjonen";
+ theUILang.autotoolsPathToWatch 	= "Lyttermappe";
+ theUILang.autotoolsWatchStart		= "Start nedlasting automatisk";
+ theUILang.autotoolsNoPathToFinished	= "Autotools plugin: mappen for ferdige nedlastinger er ikke satt. " + s_PluginFail;
+ theUILang.autotoolsNoPathToWatch	= "Autotools plugin: lyttermappen er ikke satt. " + s_PluginFail;
+ theUILang.autotoolsFileOpType		= "Operasjonstype";
+ theUILang.autotoolsFileOpMove		= "Flytt";
+ theUILang.autotoolsFileOpHardLink 	= "Hard lenke";
+ theUILang.autotoolsFileOpCopy		= "Kopier";
+ theUILang.autotoolsFileOpSoftLink	= "Myk lenke";
+ theUILang.autotoolsAddLabel		= "Legg til torrentens etikett til mappe";
+ theUILang.autotoolsAddName		= "Legg til torrentens navn til mappe";
+ theUILang.autotoolsEnableMove		= "Aktiver \"AutoMove\" hvis torrentens etikett matcher filteret";
+ theUILang.autotoolsSkipMoveForFiles	= "Hopp over torrenter som inneholder filer som matcher med mønsteret";
 
 thePlugins.get("autotools").langLoaded();

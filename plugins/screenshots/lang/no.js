@@ -3,18 +3,18 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.exFFMPEG		= "Screenshots";
- theUILang.exFrameWidth 	= "Frame width";
- theUILang.exFramesCount	= "Frames count";
- theUILang.exStartOffset	= "Start frame offset";
- theUILang.exBetween		= "Time between frames";
- theUILang.exSave		= "Save";
- theUILang.exSaveAll		= "Save all";
- theUILang.exScreenshot 	= "Screenshot";
- theUILang.exPlayInterval	= "Slideshow interval";
- theUILang.exImageFormat	= "Image format";
+ theUILang.exFFMPEG		= "Skjermbilder";
+ theUILang.exFrameWidth 	= "Rammebredde";
+ theUILang.exFramesCount	= "Rammeantal";
+ theUILang.exStartOffset	= "Start rammeforskyvning";
+ theUILang.exBetween		= "Tid mellom rammer";
+ theUILang.exSave		= "Lagre";
+ theUILang.exSaveAll		= "Lagre alle";
+ theUILang.exScreenshot 	= "Skjermbilde";
+ theUILang.exPlayInterval	= "Lysbildeintervall";
+ theUILang.exImageFormat	= "Bildeformat";
 
 thePlugins.get("screenshots").langLoaded();

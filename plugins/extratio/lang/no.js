@@ -3,23 +3,23 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioRulesManager	= "Regelbehandling";
+ theUILang.mnu_ratiorule	= "Ratioregler";
+ theUILang.ratAddRule		= "Legg til";
+ theUILang.ratDelRule		= "Slett";
+ theUILang.ratUpRule		= "Opp";
+ theUILang.ratDownRule		= "Ned";
+ theUILang.ratioIfLegend	= "Hvis";
+ theUILang.ratLabelContain	= "Torrentetikett inneholder";
+ theUILang.ratTrackerContain	= "En av torrentens tracker-lenker inneholder";
+ theUILang.ratTrackerPublic	= "Alle torrentens trackere er offentlige";
+ theUILang.ratTrackerPrivate	= "En av torrentens trackere er privat";
+ theUILang.ratioThenLegend	= "Så";
+ theUILang.setRatioTo		= "Sett ratio til";
+ theUILang.setChannelTo 	= "Sett regulering til";
+ theUILang.ratioNewRule 	= "Ny regel";
 
 thePlugins.get("extratio").langLoaded();

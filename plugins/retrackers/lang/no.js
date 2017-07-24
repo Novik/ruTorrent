@@ -3,13 +3,13 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
  theUILang.retrackers		= "Retrackers";
- theUILang.retrackersAdd	= "Add Announce URLs";
- theUILang.retrackersDel	= "Remove Announce URLs";
- theUILang.dontAddToPrivate	= "Don't touch private torrents";
- theUILang.addToBegin		= "Add announce URLs to the beginning of the trackers list";
+ theUILang.retrackersAdd	= "Legg til Announce-lenker";
+ theUILang.retrackersDel	= "Fjern Announce-lenker";
+ theUILang.dontAddToPrivate	= "Ikke rør private torrenter";
+ theUILang.addToBegin		= "Legg til announce-lenker til begynnelsen av listen med trackere";
 
 thePlugins.get("retrackers").langLoaded();

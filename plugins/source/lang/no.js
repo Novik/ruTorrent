@@ -3,10 +3,10 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.getSource		= "Get .torrent";
- theUILang.cantFindTorrent	= "Source torrent file for this download not found.";
+ theUILang.getSource		= "Hent .torrent-fil";
+ theUILang.cantFindTorrent	= "Torrentfilen for denne nedlastingen ble ikke funnet.";
 
 thePlugins.get("source").langLoaded();
