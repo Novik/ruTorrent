@@ -6,7 +6,14 @@ class YggTorrentEngine extends commonEngine
     const SCHEME = 'https://';
     const PAGE_SIZE = 15;
 
-    const CATEGORY_MAPPING = array(
+    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, "cookies" => self::URL . "|ci_session=XXX");
+
+    // No search filters for now
+    public $categories = array(
+        'Tout' => '',
+    );
+    
+    private $category_mapping = array(
         'filmvidéo' => 'Vidéos',
         'série-tv' => 'Séries',
         'animation-série' => 'Animation',
@@ -14,14 +21,7 @@ class YggTorrentEngine extends commonEngine
         'emission-tv' => 'Emission TV',
         'vidéo-clips' => 'Clip Vidéo',
         'bds' => 'Bande dessinée'
-    );
-
-    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, "cookies" => self::URL . "|ci_session=XXX");
-
-    // No search filters for now
-    public $categories = array(
-        'Tout' => '',
-    );
+    );    
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
@@ -79,11 +79,11 @@ class YggTorrentEngine extends commonEngine
             }
         }
     }
-
+ 
     private function getPrettyCategoryName($input)
     {
-        if (array_key_exists($input, self::CATEGORY_MAPPING)) {
-            return self::CATEGORY_MAPPING[$input];
+        if (array_key_exists($input, $this->category_mapping)) {
+            return $this->category_mapping[$input];
         } else {
             return ucwords($input);
         }
