@@ -41,7 +41,7 @@ require_once( 'settings.php' );
 class Snoopy
 {
 	/**** Public variables ****/
-	
+
 	/* user definable vars */
 
 	var $host		=	"www.php.net";		// host name we are connecting to
@@ -58,15 +58,15 @@ class Snoopy
 	var $maxredirs		=	5;			// http redirection depth maximum. 0 = disallow
 	var $lastredirectaddr	=	"";			// contains address of last redirected address
 	var $passcookies	=	true;			// pass set cookies back through redirects
-	
+
 	var $user		=	"";			// user for http authentication
 	var $pass		=	"";			// password for http authentication
-	
+
 	// http accept types
-	var $accept			=	"image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */*";
-	
+	var $accept		=	"image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */*";
+
 	var $results		=	"";			// where the content is put
-		
+
 	var $error		=	"";			// error messages sent here
 	var $response_code	=	"";			// response code returned from server
 	var $headers		=	array();		// headers returned from server sent here
@@ -75,20 +75,20 @@ class Snoopy
 
 	var $timed_out		=	false;			// if a read operation timed out
 	var $status		=	0;			// http request status
-	
+
 	// send Accept-encoding: gzip?
-	var $use_gzip		= 	true;	
-	var $IP			= 	null;
-	
+	var $use_gzip		=	true;	
+	var $IP			=	null;
+
 	/**** Private variables ****/	
-	
+
 	var $_maxlinelen	=	4096;			// max line length (headers)
-	
+
 	var $_httpversion	=	"HTTP/1.0";		// default http request version
-	var $_mime_boundary	=   	"";			// MIME boundary for multipart/form-data submit type
+	var $_mime_boundary	=	"";			// MIME boundary for multipart/form-data submit type
 	var $_redirectaddr	=	false;			// will be set if page fetched is a redirect
 	var $_redirectdepth	=	0;			// increments on an http redirect
-	
+
 	var $_isproxy		=	false;			// set if using a proxy server
 	var $_fp_timeout	=	30;			// timeout for socket connection
 
@@ -365,10 +365,10 @@ class Snoopy
 				$this->status=-100;
 				return false;
 			}
-				
+
 			if(preg_match("/^\r?\n$/", $currentHeader))
 			      break;
-						
+
 			// if a header begins with Location: or URI:, set the redirect
 			if(preg_match("/^(Location:|URI:|Refresh:)/i",$currentHeader))
 			{
@@ -394,13 +394,13 @@ class Snoopy
 		                if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$currentHeader, $status))
 				{
 					$this->status= $status[1];
-                		}				
+				}				
 				$this->response_code = $currentHeader;
 			}
-			
+
 			if (preg_match("/Content-Encoding: gzip/", $currentHeader) )
 				$is_gzipped = true;
-			
+
 			$this->headers[] = $currentHeader;
 		}
 
@@ -433,13 +433,13 @@ class Snoopy
 					unlink($randName.".gz");
 			}
 		}
-		
+
 		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 		{
 			$this->status=-100;
 			return false;
 		}
-	
+
 		$this->results = $results;
 //toLog($this->results);		
 		return true;
@@ -483,10 +483,10 @@ class Snoopy
 		$cmdline_params = '';
 		foreach( $headers as $header )
 			$cmdline_params .= " -H ".escapeshellarg($header);
-			  	                         
+
 		if(!empty($body))
 			$cmdline_params .= " -d ".escapeshellarg($body);
-		
+
 		if($this->read_timeout > 0)
 			$cmdline_params .= " -m ".$this->read_timeout;
 
@@ -495,17 +495,17 @@ class Snoopy
 
 		if($this->_isproxy)
 			$cmdline_params .= " --proxy ".$this->proxy_host.":".$this->proxy_port;
-		
+
 		$headerfile = uniqid(getTempDirectory()."rutorrent-https-hdr-");
 		$contfile = uniqid(getTempDirectory()."rutorrent-https-bdy-");
-		
+
 		# accept self-signed certs
 		$cmdline_params .= " -k -s"; 
 		exec(escapeshellarg(getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		$this->_redirectaddr = false;
 		$this->headers = array();
 		$is_gzipped = false;
-		
+
 		if($return)
 			$this->error = "Error: cURL could not retrieve the document, error $return.";
 		else
@@ -624,8 +624,15 @@ class Snoopy
 			$context = stream_context_create($opts);
 			$fp = stream_socket_client("tcp://".$host.":".$port, $errno, $errstr, $this->_fp_timeout, STREAM_CLIENT_CONNECT, $context); 
 		}
-		else
+		else if(checkdnsrr($host,"A"))
+		{
 			$fp = fsockopen($host,$port,$errno,$errstr,$this->_fp_timeout);
+		}
+		else
+		{
+			$this->status=-100;
+			return false;
+		}
 		if(!$fp)
 		{
 			// socket connection failed
