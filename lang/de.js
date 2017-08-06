@@ -112,6 +112,7 @@ var theUILang =
  Ul_speed			: "Upload-Rate",
  Wasted 			: "Unbrauchbar",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Tracker URL",
  Track_status			: "Tracker Status",
  Created_on			: "Erstellt am",

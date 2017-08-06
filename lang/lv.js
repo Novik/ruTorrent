@@ -111,6 +111,7 @@ var theUILang =
  Ul_speed			: "Augšupiel. ātrums",
  Wasted 			: "Izniekoti",
  Tracker			: "Trakeris",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Trakera adrese",
  Track_status			: "Trakera statuss",
  Created_on			: "Izveidots",

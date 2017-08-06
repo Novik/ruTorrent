@@ -111,6 +111,7 @@ var theUILang =
  Ul_speed			: "Vitesse d'émission",
  Wasted 			: "Rejeté",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Statut",
  Track_URL			: "URL du tracker",
  Track_status			: "Statut",
  Save_as			: "Répertoire",

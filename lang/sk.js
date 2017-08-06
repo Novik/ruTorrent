@@ -111,6 +111,7 @@ var theUILang =
  Ul_speed			: "Odosielania",
  Wasted 			: "Zahodených",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "URL Trackeru",
  Track_status			: "Stav Trackeru",
  Save_as			: "Uložiť ako",

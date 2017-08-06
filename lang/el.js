@@ -109,6 +109,7 @@ var theUILang =
  Ul_speed			: "Ταχύτητα αποστολής",
  Wasted 			: "Σπαταλημένα",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "URL του Tracker",
  Track_status			: "Κατάσταση του Tracker",
  Created_on			: "Δημιουργήθηκε",

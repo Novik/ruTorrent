@@ -111,6 +111,7 @@ var theUILang =
  Ul_speed			: "Feltöltési sebesség",
  Wasted 			: "Kárbaveszett",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Tracker URL",
  Track_status			: "Tracker állapot",
  Created_on			: "Létrehozva",

@@ -109,6 +109,7 @@ var theUILang =
  Ul_speed			: "上傳速度",
  Wasted 			: "丟棄數據",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Tracker 連接",
  Track_status			: "Tracker 狀態",
  Save_as			: "檔案儲存位置",

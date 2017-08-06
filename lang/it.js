@@ -111,6 +111,7 @@ var theUILang =
  Ul_speed			: "Velocità UL",
  Wasted 			: "Sprecati",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "URL Tracker",
  Track_status			: "Stato del Tracker",
  Created_on			: "Creato il",

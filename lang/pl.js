@@ -112,6 +112,7 @@ var theUILang =
  Ul_speed			: "Prędkość wysyłania",
  Wasted 			: "Odrzucono",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Adres trackera",
  Track_status			: "Status trackera",
  Created_on			: "Utworzono",

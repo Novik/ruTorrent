@@ -29,7 +29,8 @@ var theWebUI =
 				{ text: theUILang.Priority, 		width: "80px", 	id: "priority",		type: TYPE_NUMBER },
 				{ text: theUILang.Created_on,		width: "100px", id: "created",		type: TYPE_NUMBER },
 				{ text: theUILang.Remaining, 		width: "90px", 	id: "remaining",	type: TYPE_NUMBER },
-				{ text: theUILang.Save_path,		width: "200px", id: "save_path",	type: TYPE_STRING }
+				{ text: theUILang.Save_path,		width: "200px", id: "save_path",	type: TYPE_STRING },
+				{ text: theUILang.Tracker_status,	width: "200px", id: "msg",		type: TYPE_STRING }
 			],
 			container:	"List",
 			format:		theFormatter.torrents,
