@@ -34,6 +34,7 @@ var theUILang =
  Disabled			: "Vô hiệu",
  Enabled			: "Kích hoạt",
  ruTorrent_settings		: "Cài đặt",
+ Welcome_message		: "WebUI started.",
  Doesnt_support 		: "ruTorrent không hỗ trợ trình duyệt này.",
  Name				: "Tên",
  Status 			: "Trạng Thái",

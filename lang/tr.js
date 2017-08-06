@@ -34,6 +34,7 @@ var theUILang =
  Disabled			: "Devre dışı",
  Enabled			: "Etkin",
  ruTorrent_settings		: "Ayarları",
+ Welcome_message		: "WebUI started.",
  Doesnt_support 		: "ruTorrent tarayıcınızı desteklemiyor.",
  Name				: "Dosya İsmi",
  Status 			: "Durum",

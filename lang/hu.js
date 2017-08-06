@@ -36,6 +36,7 @@ var theUILang =
  Disabled			: "Tiltva",
  Enabled			: "Engedve",
  ruTorrent_settings		: "Beállítások",
+ Welcome_message		: "WebUI started.",
  Doesnt_support 		: "A ruTorrent nem támogatja az ön böngészőjét.",
  Name				: "Név",
  Status 			: "Állapot",

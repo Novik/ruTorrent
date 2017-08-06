@@ -37,6 +37,7 @@ var theUILang =
  Disabled			: "Deaktiviert",
  Enabled			: "Erlaubt",
  ruTorrent_settings		: "Einstellungen",
+ Welcome_message		: "WebUI started.",
  Doesnt_support 		: "Diese ruTorrent unterstützt deinen Browser nicht.",
  Name				: "Name",
  Status 			: "Status",
