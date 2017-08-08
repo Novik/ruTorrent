@@ -110,6 +110,7 @@ var theUILang =
  Ul_speed			: "Yükleme Hızı",
  Wasted 			: "Boşa Giden",
  Tracker			: "İzleyici",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "İzleyici URL",
  Track_status			: "İzleyici Durumu",
  Save_as			: "Kaydedilen Yer",

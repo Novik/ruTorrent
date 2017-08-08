@@ -110,6 +110,7 @@ var theUILang =
  Ul_speed			: "Uppladdningshastighet",
  Wasted 			: "Skrotat",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Tracker-address",
  Track_status			: "Tracker-status",
  Created_on			: "Skapad",

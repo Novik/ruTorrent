@@ -110,6 +110,7 @@ var theUILang =
  Ul_speed			: "Tốc độ tải lên",
  Wasted 			: "Lãng phí",
  Tracker			: "Máy theo dõi",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Địa chỉ Máy theo dõi",
  Track_status			: "Trình trạng Máy theo dõi",
  Save_as			: "Lưu vào",

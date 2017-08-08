@@ -112,6 +112,7 @@ var theUILang =
  Ul_speed			: "Lähetysnopeus",
  Wasted 			: "Hylätty",
  Tracker			: "Seurantapalvelin",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Osoite",
  Track_status			: "Tila",
  Created_on			: "Luotu",

@@ -112,6 +112,7 @@ var theUILang =
  Ul_speed			: "Vel. de Upload",
  Wasted 			: "Gasto",
  Tracker			: "Rastreador",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "URL",
  Track_status			: "Status",
  Save_as			: "Salvar Como",

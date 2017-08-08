@@ -111,6 +111,7 @@ var theUILang =
  Ul_speed			: "Opplastingshastighet",
  Wasted 			: "Bortkastet",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Tracker lenke",
  Track_status			: "Tracker Status",
  Created_on			: "Laget den",

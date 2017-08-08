@@ -112,6 +112,7 @@ var theUILang =
  Ul_speed			: "Швидкість вивантаження",
  Wasted 			: "Зайве",
  Tracker			: "Трекер",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "URL-адреса трекера",
  Track_status			: "Статус трекера",
  Created_on			: "Створено",

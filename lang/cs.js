@@ -112,6 +112,7 @@ var theUILang =
  Ul_speed			: "Rychlost Up.",
  Wasted 			: "Zahozeno",
  Tracker			: "Tracker",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "Tracker URL",
  Track_status			: "Stav trackeru",
  Save_as			: "Uložit jako",

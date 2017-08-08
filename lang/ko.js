@@ -110,6 +110,7 @@ var theUILang =
  Ul_speed			: "업로드 속도",
  Wasted 			: "버림",
  Tracker			: "트래커",
+ Tracker_status			: "Tracker - Status",
  Track_URL			: "트래커 URL",
  Track_status			: "트래커 상태",
  Created_on			: "생성 시간",
