@@ -34,6 +34,7 @@ var theUILang =
  Disabled			: "禁用",
  Enabled			: "啟用",
  ruTorrent_settings		: "設定",
+ Welcome_message		: "WebUI started.",
  Doesnt_support 		: "這個 ruTorrent 不支援您使用的瀏覽器",
  Name				: "名稱",
  Status 			: "狀態",

@@ -34,6 +34,7 @@ var theUILang =
  Disabled			: "해제",
  Enabled			: "사용",
  ruTorrent_settings		: "설정",
+ Welcome_message		: "WebUI started.",
  Doesnt_support 		: "ruTorrent는 본 브라우저를 지원하지 않습니다.",
  Name				: "이름",
  Status 			: "상태",
