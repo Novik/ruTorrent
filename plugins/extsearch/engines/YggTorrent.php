@@ -12,7 +12,23 @@ class YggTorrentEngine extends commonEngine
     public $categories = array(
         'Tout' => '',
     );
-    
+
+    protected static $seconds = array
+    (
+        'seconde'	=>1,
+        'minute'	=>60,
+        'heure'		=>3600,
+        'jour'		=>86400,
+        'mois'		=>2592000,
+        'an'		=>31536000
+    );
+
+    protected static function getTime( $now, $ago, $unit )
+    {
+        $delta = (array_key_exists($unit,self::$seconds) ? self::$seconds[$unit] : 0);
+        return( $now-($ago*$delta) );
+    }
+
     private $category_mapping = array(
         'filmvidéo' => 'Vidéos',
         'série-tv' => 'Séries',
@@ -21,7 +37,7 @@ class YggTorrentEngine extends commonEngine
         'emission-tv' => 'Emission TV',
         'vidéo-clips' => 'Clip Vidéo',
         'bds' => 'Bande dessinée'
-    );    
+    );
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
@@ -37,13 +53,14 @@ class YggTorrentEngine extends commonEngine
 
             $res = preg_match_all(
                 '`<tr>.*<a class="torrent-name" href="(?P<desc>.*)">(?P<name>.*)</a>' .
-                '.*<a.*/download_torrent\?id=(?P<id>.*)">.*<td><i.*>.*</i>(?P<date>.*)</td>.*<td>(?P<size>.*)</td>' .
+                '.*<a.*/download_torrent\?id=(?P<id>.*)">.*<td><i.*>.*</i>.*(?P<ago>\d+) (?P<unit>(seconde|minute|heure|jour|mois|an)).*</td>.*<td>(?P<size>.*)</td>' .
                 '.*<td.*>(?P<seeder>.*)</td.*>.*<td.*>(?P<leecher>.*)</td.*>.*</tr>`siU',
                 $cli->results,
                 $matches
             );
 
             if ($res) {
+                $now = time();
                 for ($i = 0; $i < $res; $i++) {
                     $link = self::SCHEME . self::URL . "/engine/download_torrent?id=" . $matches["id"][$i];
                     if (!array_key_exists($link, $ret)) {
@@ -63,7 +80,7 @@ class YggTorrentEngine extends commonEngine
                         }
 
                         // We only have the time since the upload, so let's try to convert that...
-                        $item["time"] = strtotime(self::removeTags($this->getStrToTimeCompatibleDate($matches["date"][$i])));
+                        $item["time"] = self::getTime( $now, $matches["ago"][$i], $matches["unit"][$i] );
 
                         $item["seeds"] = intval(self::removeTags($matches["seeder"][$i]));
                         $item["peers"] = intval(self::removeTags($matches["leecher"][$i]));
@@ -79,7 +96,7 @@ class YggTorrentEngine extends commonEngine
             }
         }
     }
- 
+
     private function getPrettyCategoryName($input)
     {
         if (array_key_exists($input, $this->category_mapping)) {
@@ -87,17 +104,5 @@ class YggTorrentEngine extends commonEngine
         } else {
             return ucwords($input);
         }
-    }
-
-    private function getStrToTimeCompatibleDate($input)
-    {
-        $date = preg_split("/il y a /", $input)[1];
-        $date = preg_replace("/(\d+) seconde.*/", "-$1 second", $date);
-        $date = preg_replace("/(\d+) heure.*/", "-$1 hour", $date);
-        $date = preg_replace("/(\d+) minute.*/", "-$1 minute", $date);
-        $date = preg_replace("/(\d+) jour.*/", "-$1 day", $date);
-        $date = preg_replace("/(\d+) mois.*/", "-$1 month", $date);
-
-        return $date;
     }
 }
