@@ -8,8 +8,8 @@ set_time_limit(0);
 
 if(isset($_REQUEST["label"]))
 {
-	$label = function_exists('mb_strtolower') 
-		? mb_strtolower(rawurldecode($_REQUEST["label"]), 'utf-8') 
+	$label = function_exists('mb_strtolower')
+		? mb_strtolower(rawurldecode($_REQUEST["label"]), 'utf-8')
 		: strtolower(rawurldecode($_REQUEST["label"]));
 	$name = getSettingsPath().'/labels';
 	if(!is_dir($name))
@@ -26,7 +26,8 @@ if(isset($_REQUEST["label"]))
 		sendFile( $name, "image/png" );
 		exit;
 	}
-}	
+}
+
 if(isset($_REQUEST["tracker"]))
 {
 	$tracker = rawurldecode($_REQUEST["tracker"]);
@@ -54,12 +55,12 @@ if(isset($_REQUEST["tracker"]))
 		}
 		if(is_readable($name))
 		{
-			sendFile( $name, "image/x-icon" ); 
+			sendFile( $name, "image/x-icon" );
 			exit;
 		}
 	}
 }
 
 header("HTTP/1.0 302 Moved Temporarily");
-header("Location: ".dirname($_SERVER['PHP_SELF']).'/trackers/unknown.png');
+header("Location: ./trackers/unknown.png");
 exit();
