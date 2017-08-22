@@ -178,10 +178,10 @@ div#tdetails {height: 50%; padding: 0 5px 0 0; background-color: #F5F5F5}
 div#tdetails a.h {margin: 0}
 div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 0 2px 0 2px; overflow: hidden }
 
-div.tab { height:100%; background: #F5F5F5; overflow: auto }
-div#lcont {font-size: 11px;  line-height: 11px; background: #FFFFFF}
+div.tab {height: 100%; background: #F5F5F5; overflow: auto}
+div#lcont {font-size: 11px; line-height: 11px; background: #FFFFFF}
 div#lcont div.mono {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre}
-div#lcont div.std {padding: 2px}
+div#lcont div.std {padding: 2px; white-space: nowrap}
 
 div#gcont table {font-size: 11px;  line-height: 10px}
 div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
