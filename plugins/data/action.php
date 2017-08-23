@@ -30,5 +30,5 @@ if(isset($_REQUEST['readable']))
 else
 {
 	header("HTTP/1.0 302 Moved Temporarily");
-	header("Location: ".$_SERVER['PHP_SELF'].'?result=0');
+	header("Location: action.php?result=0");
 }
