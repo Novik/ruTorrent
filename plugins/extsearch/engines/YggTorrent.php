@@ -2,11 +2,10 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const URL = 'yggtorrent.com';
-    const SCHEME = 'https://';
+    const URL = 'https://yggtorrent.com';
     const PAGE_SIZE = 15;
 
-    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, "cookies" => self::URL . "|ci_session=XXX");
+    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, "cookies" => "yggtorrent.com|ci_session=XXX");
 
     // No search filters for now
     public $categories = array(
@@ -45,7 +44,7 @@ class YggTorrentEngine extends commonEngine
         $what = rawurlencode(rawurldecode($what));
 
         for ($pg = 0; $pg < (self::PAGE_SIZE * 9); $pg += self::PAGE_SIZE) {
-            $search = self::SCHEME . self::URL . '/engine/search?q=' . $what . '&page=' . $pg;
+            $search = self::URL . '/engine/search?q=' . $what . '&page=' . $pg;
             $cli = $this->fetch($search);
             if (($cli == false) || (strpos($cli->results, "download_torrent") === false)) {
                 break;
@@ -62,7 +61,7 @@ class YggTorrentEngine extends commonEngine
             if ($res) {
                 $now = time();
                 for ($i = 0; $i < $res; $i++) {
-                    $link = self::SCHEME . self::URL . "/engine/download_torrent?id=" . $matches["id"][$i];
+                    $link = self::URL . "/engine/download_torrent?id=" . $matches["id"][$i];
                     if (!array_key_exists($link, $ret)) {
                         $item = $this->getNewEntry();
                         $item["desc"] = $matches["desc"][$i];
