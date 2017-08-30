@@ -7,13 +7,13 @@ $port = rTorrentSettings::get()->port;
 $client = new Snoopy();
 $client->read_timeout = 15;
 $client->use_gzip = HTTP_USE_GZIP;
-@$client->fetch("http://www.canyouseeme.org","POST","application/x-www-form-urlencoded","port=".$port."&submit=Check+Your+Port");
+@$client->fetch("https://portchecker.co/check", "POST", "application/x-www-form-urlencoded", "port=".$port."&submit=Check");
 if($client->status==200)
 {
-	if(strpos($client->results,">Error:<")!==false)
+	if(strpos($client->results,">closed<")!==false)
 		$ret = 1;
 	else
-	if(strpos($client->results,">Success:<")!==false)
+	if(strpos($client->results,">open<")!==false)
 		$ret = 2;
 }
 
