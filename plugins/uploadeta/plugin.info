@@ -4,4 +4,4 @@ plugin.version: 1.0
 plugin.runlevel: 14
 rtorrent.remote: error
 php.extensions.error: json
-plugin.help: https://www.windkracht8.com
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginUploadETA
