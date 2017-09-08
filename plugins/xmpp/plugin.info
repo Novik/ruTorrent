@@ -5,5 +5,5 @@ plugin.version: 0.1
 rtorrent.remote: error
 rtorrent.external.error: php
 rtorrent.php.error: xmpp.php
-plugin.help: -
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginXMPP
 rtorrent.version: 0.9.0
