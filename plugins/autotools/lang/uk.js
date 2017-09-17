@@ -24,6 +24,6 @@
  theUILang.autotoolsAddLabel		= "Додавати мітку торента до шляху";
  theUILang.autotoolsAddName		= "Додавати назву торента до шляху";
  theUILang.autotoolsEnableMove		= "Увімкнути \"АвтоПереміщення\", якщо мітка торента відповідає фільтру";
- theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
+ theUILang.autotoolsSkipMoveForFiles	= "Пропускати торенти, які містять файли, що збігаються із шаблоном";
 
 thePlugins.get("autotools").langLoaded();
