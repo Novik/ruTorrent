@@ -297,7 +297,7 @@ class Snoopy
 	{
 		foreach( $this->headers as $i=>$header )
 			if(preg_match_all("/^Content-Disposition:.*(\s|;)filename=\"(.*)\.torrent\"/i",$header,$matches) && (count($matches)>2))
-				return( str_replace( '/', '_', $matches[2][0].".torrent" ) );
+				return( str_replace( '/', '_', rawurldecode($matches[2][0]).".torrent" ) );
 		return(false);	
 	}
 

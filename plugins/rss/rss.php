@@ -78,6 +78,11 @@ class rRSS
 				$name = md5($href).".torrent";
 			$name = getUniqueUploadedFilename($name);
 			$f = @fopen($name,"w");
+			if($f===false)
+			{
+				$name = getUniqueUploadedFilename(md5($href).".torrent");
+				$f = @fopen($name,"w");
+			}
 			if($f!==false)
 			{
 				@fwrite($f,$cli->results,strlen($cli->results));
