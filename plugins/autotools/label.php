@@ -120,7 +120,7 @@ if( $is_ok && strpos( $label, "{TRACKER}" ) !== false )
 				continue;
 			$lbl_tracker = parse_url( $req->strings[$i], PHP_URL_HOST );
 			// if tracker is not an IP address, then
-			if( preg_match( "/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/", $domain ) != 1 )
+			if( preg_match( "/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/", $lbl_tracker ) != 1 )
 			{
 				// get 2-nd level domain only
 				$pos = strpos( $lbl_tracker, '.' );
