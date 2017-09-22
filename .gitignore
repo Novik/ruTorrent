@@ -35,5 +35,6 @@ plugins/plimits
 plugins/localnews
 plugins/hints
 plugins/dmca
+plugins/autodl-irssi
 .idea/*
 *.iml
