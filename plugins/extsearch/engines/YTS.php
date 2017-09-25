@@ -1,5 +1,5 @@
 <?php
-class YTSagEngine extends commonEngine
+class YTSEngine extends commonEngine
 {
     //This is for YTS.ag / yify movies. So categorie is just Video. No need to any categories.
 	public $defaults = array( "public"=>true, "page_size"=>75 );
