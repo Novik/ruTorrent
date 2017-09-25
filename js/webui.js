@@ -308,7 +308,7 @@ var theWebUI =
 
 	getPlugins: function()
 	{
-		this.request("?action=getplugins", [this.getUISettings, this]);
+		this.requestWithoutTimeout("?action=getplugins", [this.getUISettings, this]);
 	},
 
 	getUISettings: function()
@@ -325,7 +325,7 @@ var theWebUI =
 		correctContent();
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
-		this.request("?action=getuisettings", [this.initFinish, this]);
+		this.requestWithoutTimeout("?action=getuisettings", [this.initFinish, this]);
 	},
 
 	initFinish: function(data)
