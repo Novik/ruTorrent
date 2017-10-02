@@ -176,22 +176,26 @@ class Torrent411Engine extends commonEngine
 					// Rquires "hash-info" - not "torrent id" - of the torrent
 					// Not available in torrents search page
 					$name = self::removeTags(trim($matches["name"][$i]));
-					$id = explode("/",$matches["desc"][$i])[2];
-					$link = $url."/telecharger-torrent/".$id."/".$name.".torrent";
-					if(!array_key_exists($link,$ret))
+					$arr = explode("/",$matches["desc"][$i]);
+					if(count($arr)>2)
 					{
-						$item = $this->getNewEntry();
-						$item["cat"] = $this->getCategoryName($matches["catid"][$i]);
-						$item["desc"] = $url.$matches["desc"][$i];
-						$item["name"] = $name;
-						$item["size"] = self::formatSize($matches["size"][$i]);
-						$item["time"] = self::getTime( $now, $matches["ago"][$i], $matches["unit"][$i] );
-						$item["seeds"] = intval(self::removeTags($matches["seeder"][$i]));
-						$item["peers"] = intval(self::removeTags($matches["leecher"][$i]));
-						$ret[$link] = $item;
-						$added++;
-						if($added>=$limit)
-							return;
+						$id = $arr[2];
+						$link = $url."/telecharger-torrent/".$id."/".$name.".torrent";
+						if(!array_key_exists($link,$ret))
+						{
+							$item = $this->getNewEntry();
+							$item["cat"] = $this->getCategoryName($matches["catid"][$i]);
+							$item["desc"] = $url.$matches["desc"][$i];
+							$item["name"] = $name;
+							$item["size"] = self::formatSize($matches["size"][$i]);
+							$item["time"] = self::getTime( $now, $matches["ago"][$i], $matches["unit"][$i] );
+							$item["seeds"] = intval(self::removeTags($matches["seeder"][$i]));
+								$item["peers"] = intval(self::removeTags($matches["leecher"][$i]));
+							$ret[$link] = $item;
+							$added++;
+							if($added>=$limit)
+								return;
+						}
 					}
 				}
 			}
