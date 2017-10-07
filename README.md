@@ -19,7 +19,7 @@ This project is released under the GPLv3 license, for more details, take a look 
 ## Download
 
  * [Development version](https://github.com/Novik/ruTorrent/tarball/master)
- * [Stable version](https://bintray.com/novik65/generic/ruTorrent)
+ * [Stable version](https://github.com/Novik/ruTorrent/releases)
 
 ## Getting started
 
