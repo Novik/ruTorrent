@@ -69,7 +69,7 @@ function sqlite_query1($dbhandle, $query, &$error_msg)
 	$result = '';
 	if (PHP_VERSION_ID < 50400)
 	{
-		$res = sqlite_unbuffered_query($dbhandle, $query, SQLITE_ASSOC, $error_msg) 
+		$res = sqlite_unbuffered_query($dbhandle, $query, SQLITE_ASSOC, $error_msg);
 		if($res!==false)
 			$result = strval(sqlite_fetch_single($res));
 	}

@@ -187,6 +187,7 @@ class rRatioRulesList
 		}
 		if($req->getCommandsCount() && $req->success())
 		{
+toLog(print_r($req->val,1));
 			$out = new rXMLRPCRequest();
 			foreach( $hashes as $ndx=>$hash )
 			{
