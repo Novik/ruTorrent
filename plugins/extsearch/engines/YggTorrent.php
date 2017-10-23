@@ -5,7 +5,7 @@ class YggTorrentEngine extends commonEngine
     const URL = 'https://yggtorrent.com';
     const PAGE_SIZE = 15;
 
-    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, "cookies" => "yggtorrent.com|ci_session=XXX");
+    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, 'auth' => 1);
 
     // No search filters for now
     public $categories = array(
@@ -71,7 +71,7 @@ class YggTorrentEngine extends commonEngine
                         $item["size"] = self::formatSize(preg_replace('/([0-9.]+)(\w+)/', '$1 $2', $matches["size"][$i]));
 
                         // To be able to display categories, we need to parse them directly from the torrent URL
-                        $cat = preg_match_all('`https://yggtorrent.com/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
+                        $cat = preg_match_all('`' . self::URL . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
                         if ($cat) {
                             $cat1 = $this->getPrettyCategoryName($catRes['cat1'][0]);
                             $cat2 = $this->getPrettyCategoryName($catRes['cat2'][0]);
