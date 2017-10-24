@@ -83,7 +83,7 @@ var dxSTable = function()
 	this.prgEndColor = new RGBackground(".meter-value-end-color");
 	this.mni = 0;
 	this.mxi = 0;
-	this.maxViewRows = 100;
+	this.maxViewRows = 5;
 }
 
 dxSTable.prototype.setPaletteByURL = function(url) 
@@ -386,7 +386,7 @@ dxSTable.prototype.resizeColumn = function()
 			(browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) &&
 			this.tBody.rows.length>0)
 		{
-			if((this.tBody.rows[0].cells[i].width!=w) && (w>=4))
+			if(this.tBody.rows[0].cells[i].width && (this.tBody.rows[0].cells[i].width!=w) && (w>=4))
 			{
 				this.tBody.rows[0].cells[i].width=w;
 				needCallHandler = true;
