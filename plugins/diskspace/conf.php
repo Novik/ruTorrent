@@ -2,10 +2,5 @@
 
 $diskUpdateInterval = 10;	// in seconds
 $notifySpaceLimit = 512;	// in Mb
-
-// If we run locally && we the download directory seems to exists
-if ( isLocalMode() && rTorrentSettings::get()->linkExist && file_exists(rTorrentSettings::get()->directory) ) {
-  $partitionDirectory = rTorrentSettings::get()->directory; // Then we can show the disk space of the download directory
-} else {
-  $partitionDirectory = &$topDirectory; // Else, we show $topDirectory by default as fallback
-}
+$partitionDirectory = null;	// if null, then we will check rtorrent download directory (or $topDirectory if rtorrent is unavailable)
+				// otherwise, set this to the absolute path for checked partition. 
