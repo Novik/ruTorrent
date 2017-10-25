@@ -3,9 +3,10 @@
 class YggTorrentEngine extends commonEngine
 {
     const URL = 'https://yggtorrent.com';
-    const PAGE_SIZE = 15;
+    const MAX_PAGE = 10;
+    const PAGE_SIZE = 25;
 
-    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, "cookies" => "yggtorrent.com|ci_session=XXX");
+    public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, 'auth' => 1);
 
     // No search filters for now
     public $categories = array(
@@ -43,11 +44,35 @@ class YggTorrentEngine extends commonEngine
         $added = 0;
         $what = rawurlencode(rawurldecode($what));
 
-        for ($pg = 0; $pg < (self::PAGE_SIZE * 9); $pg += self::PAGE_SIZE) {
-            $search = self::URL . '/engine/search?q=' . $what . '&page=' . $pg;
-            $cli = $this->fetch($search);
-            if (($cli == false) || (strpos($cli->results, "download_torrent") === false)) {
-                break;
+        // Initial search to retrieve the page count
+        $search = self::URL . '/engine/search?q=' . $what;
+        $cli = $this->fetch($search);
+
+        // Check if we have results
+        if (($cli == false) || (strpos($cli->results, "download_torrent") === false)) {
+            return;
+        }
+
+        // Check if there is only one page
+        if (strpos($cli->results, '<ul class="pagination">') === false) {
+            $maxPage = 1;
+        } else {
+            // Retrieve the page count
+            $nbRet = preg_match_all('`data-ci-pagination-page="(?P<page>\d+)"`', $cli->results, $retPage);
+            if ($nbRet) {
+                $nbPage = max($retPage['page']);
+                $maxPage = $nbPage < self::MAX_PAGE ? $nbPage : self::MAX_PAGE;
+            } else {
+                return;
+            }
+        }
+
+        for ($page = 1; $page <= $maxPage; $page++) {
+            // We already have results for the first page
+            if ($page !== 1) {
+                $pg = ($page - 1) * self::PAGE_SIZE;
+                $search = self::URL . '/engine/search?q=' . $what . '&page=' . $pg;
+                $cli = $this->fetch($search);
             }
 
             $res = preg_match_all(
@@ -71,7 +96,7 @@ class YggTorrentEngine extends commonEngine
                         $item["size"] = self::formatSize(preg_replace('/([0-9.]+)(\w+)/', '$1 $2', $matches["size"][$i]));
 
                         // To be able to display categories, we need to parse them directly from the torrent URL
-                        $cat = preg_match_all('`https://yggtorrent.com/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
+                        $cat = preg_match_all('`' . self::URL . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
                         if ($cat) {
                             $cat1 = $this->getPrettyCategoryName($catRes['cat1'][0]);
                             $cat2 = $this->getPrettyCategoryName($catRes['cat2'][0]);
