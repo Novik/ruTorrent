@@ -2,15 +2,7 @@
 
 function sqlite_exists()
 {
-	if (PHP_VERSION_ID < 50400)
-	{
-		$result = function_exists("sqlite_open");
-	}
-	else
-	{
-		$result = class_exists("SQLite3");
-	}
-	return $result;
+	return( (PHP_VERSION_ID < 50400) ? function_exists("sqlite_open") : class_exists("SQLite3") );
 }
 
 function sqlite_open1($filename, $mode = 0666, &$error_msg)
@@ -89,13 +81,11 @@ function sqlite_query1($dbhandle, $query, &$error_msg)
 
 function sqlite_escape_string1($item)
 {
-	if (PHP_VERSION_ID < 50400)
-	{
-		$result = sqlite_escape_string($item);
-	}
-	else
-	{
-		$result = SQLite3::escapeString($item);
-	}
-	return $result;
+	return( (PHP_VERSION_ID < 50400) ? sqlite_escape_string($item) : SQLite3::escapeString($item) );
 }
+
+function sqlite_db_name()
+{
+	return( (PHP_VERSION_ID < 50400) ? "peers.dat" : "peers3.dat" );
+}
+
