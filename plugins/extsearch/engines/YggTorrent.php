@@ -137,7 +137,8 @@ class YggTorrentEngine extends commonEngine
 
             $res = preg_match_all(
                 '`<tr>.*<a class="torrent-name" href="(?P<desc>.*)">(?P<name>.*)</a>' .
-                '.*<a.*/download_torrent\?id=(?P<id>.*)">.*<td><i.*>.*</i>.*(?P<ago>\d+) (?P<unit>(seconde|minute|heure|jour|mois|an)).*</td>.*<td>(?P<size>.*)</td>' .
+                '.*<a.*/download_torrent\?id=(?P<id>.*)">.*dans <i><a>(?P<subcat>.*)</a>' .
+                '.*<td><i.*>.*</i>.*(?P<ago>\d+) (?P<unit>(seconde|minute|heure|jour|mois|an)).*</td>.*<td>(?P<size>.*)</td>' .
                 '.*<td.*>(?P<seeder>.*)</td.*>.*<td.*>(?P<leecher>.*)</td.*>.*</tr>`siU',
                 $cli->results,
                 $matches
@@ -159,7 +160,7 @@ class YggTorrentEngine extends commonEngine
                         $cat = preg_match_all('`' . self::URL . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
                         if ($cat) {
                             $cat1 = $this->getPrettyCategoryName($catRes['cat1'][0]);
-                            $cat2 = $this->getPrettyCategoryName($catRes['cat2'][0]);
+                            $cat2 = $matches['subcat'][$i];
                             $item["cat"] = $cat1 . ' > ' . $cat2;
                         }
 
