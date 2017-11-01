@@ -8,9 +8,60 @@ class YggTorrentEngine extends commonEngine
 
     public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, 'auth' => 1);
 
-    // No search filters for now
     public $categories = array(
         'Tout' => '',
+        '|--Film/Vidéo' => '&category=2145',
+        '|--F--Animation' => '&subcategory=2178',
+        '|--F--Animation Série' => '&subcategory=2179',
+        '|--F--Concert' => '&subcategory=2180',
+        '|--F--Documentaire' => '&subcategory=2181',
+        '|--F--Emission TV' => '&subcategory=2182',
+        '|--F--Film' => '&subcategory=2183',
+        '|--F--Série TV' => '&subcategory=2184',
+        '|--F--Spectacle' => '&subcategory=2185',
+        '|--F--Sport' => '&subcategory=2186',
+        '|--F--Vidéo-clips' => '&subcategory=2187',
+        '|--Audio' => '&category=2139',
+        '|--A--Karaoké' => '&subcategory=2147',
+        '|--A--Musique' => '&subcategory=2148',
+        '|--A--Podcast Radio' => '&subcategory=2150',
+        '|--A--Samples' => '&subcategory=2149',
+        '|--Application' => '&category=2144',
+        '|--A--Autre' => '&subcategory=2177',
+        '|--A--Formation' => '&subcategory=2176',
+        '|--A--Linux' => '&subcategory=2171',
+        '|--A--MacOS' => '&subcategory=2172',
+        '|--A--Smartphone' => '&subcategory=2174',
+        '|--A--Tablette' => '&subcategory=2175',
+        '|--A--Windows' => '&subcategory=2173',
+        '|--Jeu-vidéo' => '&category=2142',
+        '|--J--Autre' => '&subcategory=2167',
+        '|--J--Linux' => '&subcategory=2159',
+        '|--J--MacOS' => '&subcategory=2160',
+        '|--J--Microsoft' => '&subcategory=2162',
+        '|--J--Nintendo' => '&subcategory=2163',
+        '|--J--Smartphone' => '&subcategory=2165',
+        '|--J--Sony' => '&subcategory=2164',
+        '|--J--Tablette' => '&subcategory=2166',
+        '|--J--Windows' => '&subcategory=2161',
+        '|--eBook' => '&category=2140',
+        '|--E--Audio' => '&subcategory=2151',
+        '|--E--Bds' => '&subcategory=2152',
+        '|--E--Comics' => '&subcategory=2153',
+        '|--E--Livres' => '&subcategory=2154',
+        '|--E--Mangas' => '&subcategory=2155',
+        '|--E--Presse' => '&subcategory=2156',
+        '|--Emulation' => '&category=2141',
+        '|--E--Emulateurs' => '&subcategory=2157',
+        '|--E--Roms' => '&subcategory=2158',
+        '|--GPS' => '&category=2143',
+        '|--G--Applications' => '&subcategory=2168',
+        '|--G--Cartes' => '&subcategory=2169',
+        '|--G--Divers' => '&subcategory=2170',
+        '|--XXX' => '&category=2188',
+        '|--X--Films' => '&subcategory=2189',
+        '|--X--Hentai' => '&subcategory=2190',
+        '|--X--Images' => '&subcategory=2191',
     );
 
     protected static $seconds = array
@@ -30,22 +81,31 @@ class YggTorrentEngine extends commonEngine
     }
 
     private $category_mapping = array(
-        'filmvidéo' => 'Vidéos',
-        'série-tv' => 'Séries',
-        'animation-série' => 'Animation',
+        'filmvidéo' => 'Film/Vidéos',
         'jeu-vidéo' => 'Jeux',
-        'emission-tv' => 'Emission TV',
-        'vidéo-clips' => 'Clip Vidéo',
-        'bds' => 'Bande dessinée'
     );
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
+        if($useGlobalCats) {
+            $categories = array('all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&subcategory=2178", 'software' => "&category=2144", 'books' => "&category=2140");
+            $defaultCat = 'all';
+        } else {
+            $categories = &$this->categories;
+            $defaultCat = 'Tout';
+        }
+
+        if(!array_key_exists($cat,$categories)) {
+            $cat = $categories[$defaultCat];
+        } else {
+            $cat = $categories[$cat];
+        }
+
         $added = 0;
         $what = rawurlencode(rawurldecode($what));
 
         // Initial search to retrieve the page count
-        $search = self::URL . '/engine/search?q=' . $what;
+        $search = self::URL . '/engine/search?q=' . $what . $cat;
         $cli = $this->fetch($search);
 
         // Check if we have results
@@ -71,7 +131,7 @@ class YggTorrentEngine extends commonEngine
             // We already have results for the first page
             if ($page !== 1) {
                 $pg = ($page - 1) * self::PAGE_SIZE;
-                $search = self::URL . '/engine/search?q=' . $what . '&page=' . $pg;
+                $search = self::URL . '/engine/search?q=' . $what . '&page=' . $pg . $cat;
                 $cli = $this->fetch($search);
             }
 
