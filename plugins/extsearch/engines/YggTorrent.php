@@ -96,16 +96,16 @@ class YggTorrentEngine extends commonEngine
         }
 
         if(!array_key_exists($cat,$categories)) {
-            $cat = $categories[$defaultCat];
+            $catParameters = $categories[$defaultCat];
         } else {
-            $cat = $categories[$cat];
+            $catParameters = $categories[$cat];
         }
 
         $added = 0;
         $what = rawurlencode(rawurldecode($what));
 
         // Initial search to retrieve the page count
-        $search = self::URL . '/engine/search?q=' . $what . $cat;
+        $search = self::URL . '/engine/search?q=' . $what . $catParameters;
         $cli = $this->fetch($search);
 
         // Check if we have results
@@ -131,7 +131,7 @@ class YggTorrentEngine extends commonEngine
             // We already have results for the first page
             if ($page !== 1) {
                 $pg = ($page - 1) * self::PAGE_SIZE;
-                $search = self::URL . '/engine/search?q=' . $what . '&page=' . $pg . $cat;
+                $search = self::URL . '/engine/search?q=' . $what . '&page=' . $pg . $catParameters;
                 $cli = $this->fetch($search);
             }
 
