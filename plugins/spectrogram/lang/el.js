@@ -6,7 +6,7 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
- theUILang.exsox		= "Spectrogram";
- theUILang.exSave		= "Save";
+ theUILang.exsox		= "Φασματογράφημα";
+ theUILang.exSave		= "Αποθήκευση";
 
 thePlugins.get("spectrogram").langLoaded();
