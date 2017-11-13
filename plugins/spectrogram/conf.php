@@ -1,6 +1,6 @@
 <?php
 
-$pathToExternals['sox'] = '/usr/local/bin/sox';		// Something like /usr/bin/sox. If empty, will be found in PATH.
+$pathToExternals['sox'] = '';		// Something like /usr/bin/sox. If empty, will be found in PATH.
 
 $extensions = array
 (
