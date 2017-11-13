@@ -1,0 +1,5 @@
+.soxframe { position: relative; left: 0px; top: 0px; text-align: center; width: 100%; padding: 0; vertical-align: middle; }
+.soxframe img { height: 100%; vertical-align: middle; }
+.soxplay { display: none }
+
+.soxframe_cont { overflow: auto; background-color: black }

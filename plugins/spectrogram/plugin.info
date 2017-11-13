@@ -1,0 +1,8 @@
+plugin.description: This plugin is intended to show spectrogram of audio files.
+plugin.author: Novik
+plugin.version: 3.8
+rtorrent.remote: error
+rtorrent.external.error: sox
+plugin.dependencies: _task
+plugin.runlevel: 12
+php.extensions.error: json

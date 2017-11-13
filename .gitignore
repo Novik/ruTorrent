@@ -16,7 +16,6 @@ plugins/shoutbox
 plugins/backup
 plugins/news
 plugins/_xgetdir
-plugins/spectrogram
 plugins/xcreate
 plugins/explorer
 plugins/multirpc
