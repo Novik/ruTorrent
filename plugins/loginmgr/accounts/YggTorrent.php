@@ -8,7 +8,7 @@ class YggTorrentAccount extends commonAccount
     {
         return (
             strpos($client->results, 'Ces identifiants sont invalides') === false
-            && strpos($client->results, 'Vous devez vous connecter pour télécharger un torrent') === false
+            && $client->results !== 'Vous devez vous connecter pour télécharger un torrent'
             && strpos($client->results, '<li><a href="https://yggtorrent.com/user/login">Connexion</a></li>') === false
         );
     }
@@ -16,11 +16,11 @@ class YggTorrentAccount extends commonAccount
     protected function login($client, $login, $password, &$url, &$method, &$content_type, &$body, &$is_result_fetched)
     {
         $is_result_fetched = false;
-        if ($client->fetch($this->url)) {
+        if ($client->fetch($url)) {
             $client->setcookies();
-            $client->referer = $this->url;
+            $client->referer = $url;
             if ($client->fetch($this->url . "/user/login", "POST", "application/x-www-form-urlencoded",
-                "id=" . rawurlencode($login) . "&pass=" . rawurlencode($password))) {
+                "id=" . rawurlencode($login) . "&pass=" . rawurlencode($password) . '&submit=')) {
                 $client->setcookies();
                 return (true);
             }
