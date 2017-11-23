@@ -2,7 +2,7 @@
 
 class ruTrackerAccount extends commonAccount
 {
-	public $url = "https://rutracker.nl";
+	public $url = "https://rutracker.net";
 
 	protected function isOK($client)
 	{
@@ -13,7 +13,7 @@ class ruTrackerAccount extends commonAccount
 		$id = $this->getDownloadId($url);
                 if($id!==false)
 		{
-			$client->referer = "https://rutracker.nl/forum/viewtopic.php?t=".$id;	
+			$client->referer = "https://rutracker.net/forum/viewtopic.php?t=".$id;	
 			$client->cookies["bb_dl"]=$id;
 			$method = "POST";
 			$content_type = "application/x-www-form-urlencoded";
@@ -34,13 +34,13 @@ class ruTrackerAccount extends commonAccount
 		if($id===false)
 		{
 			$redirect = $url;
-			$referer = "https://rutracker.nl/forum/index.php";
+			$referer = "https://rutracker.net/forum/index.php";
 			$is_result_fetched = true;
 		}
 		else
 		{
-			$redirect = "https://rutracker.nl/forum/viewtopic.php?t=".$id;
-			$referer = "https://rutracker.nl/forum/viewtopic.php?t=".$id;
+			$redirect = "https://rutracker.net/forum/viewtopic.php?t=".$id;
+			$referer = "https://rutracker.net/forum/viewtopic.php?t=".$id;
 		}
 		if($client->fetch( $this->url."/forum/login.php","POST","application/x-www-form-urlencoded", 
 			"redirect=".rawurlencode($redirect)."&login_username=".rawurlencode($login)."&login_password=".rawurlencode($password)."&login=%C2%F5%EE%E4" ))
