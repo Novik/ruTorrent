@@ -2,7 +2,7 @@
 
 class NNMClubAccount extends commonAccount
 {
-	public $url = "https://nnm-club.name";
+	public $url = "https://nnm-club.tv";
 
 	protected function isOK($client)
 	{
@@ -27,6 +27,6 @@ class NNMClubAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to|name)\/forum\//si", $url ) && !preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to|name)\/forum\/login.php/si", $url ));
+		return(preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to|name|tv)\/forum\//si", $url ) && !preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to|name|tv)\/forum\/login.php/si", $url ));
 	}
 }
