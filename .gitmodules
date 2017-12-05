@@ -1,0 +1,3 @@
+[submodule "plugins/theme/themes/DarkBetter"]
+	path = plugins/theme/themes/DarkBetter
+	url = https://github.com/chocolatkey/DarkBetter
