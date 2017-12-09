@@ -1,9 +1,10 @@
+
 <?php
 
 class NNMClubEngine extends commonEngine
 {
        	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $url = 'https://nnm-club.tv';
+	public $url = 'https://nnm-club.name';
 	public $categories = array( 'all'=>"&f[]=-1" );
 
 	protected function parseTList($results,&$added,&$ret,$limit)

@@ -4,7 +4,7 @@ class KinozalCheckImpl
 {
     static public function download_torrent($url, $hash, $old_torrent)
     {
-        if (preg_match('`^http://kinozal\.(tv|me)/details\.php\?id=(?P<id>\d+)$`', $url, $matches)) {
+        if (preg_match('`^https?://kinozal\.(tv|me|guru)/details\.php\?id=(?P<id>\d+)$`', $url, $matches)) {
             $client = ruTrackerChecker::makeClient("https://kinozal-tv.appspot.com/get_srv_details.php?action=2&id=".$matches["id"]);
             if ($client->status != 200) return ruTrackerChecker::STE_CANT_REACH_TRACKER;
             if (preg_match('`<li>.*(?P<hash>[0-9A-Fa-f]{40})</li>`', $client->results, $matches1)) {

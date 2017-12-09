@@ -26,6 +26,6 @@ class KinozalTVAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)(kinozal|kinozal-tv.appspot).(tv|me|com)\//si", $url ));
+		return(preg_match( "/(\.|\/)(kinozal|kinozal-tv.appspot).(tv|me|guru|com)\//si", $url ));
 	}	
 }
