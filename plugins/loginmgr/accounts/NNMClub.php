@@ -2,7 +2,7 @@
 
 class NNMClubAccount extends commonAccount
 {
-	public $url = "https://nnm-club.tv";
+	public $url = "https://nnm-club.name";
 
 	protected function isOK($client)
 	{
