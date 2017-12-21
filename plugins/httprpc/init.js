@@ -24,8 +24,8 @@ rTorrentStub.prototype.listResponse = function(data)
 {
         if(this.dataType == "json")
         {
-			var ret = { labels: {}, labels_size: {}, torrents: {} };
-			theRequestManager.cid = data.cid;
+		var ret = { labels: {}, labels_size: {}, torrents: {} };
+		theRequestManager.cid = data.cid;
 		if(data.d)
 			$.each( data.d, function( ndx, hash )
 			{

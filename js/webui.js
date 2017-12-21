@@ -1652,6 +1652,9 @@ var theWebUI =
 			if(!torrent._updated)
 			{
         			delete theWebUI.torrents[hash];
+        			delete theWebUI.files[hash];
+        			delete theWebUI.dirs[hash];
+        			delete theWebUI.peers[hash];
 				if(theWebUI.labels[hash].indexOf("-_-_-nlb-_-_-") >- 1) 
 					theWebUI.labels["-_-_-nlb-_-_-"]--;
 	        	 	if(theWebUI.labels[hash].indexOf("-_-_-com-_-_-") >- 1) 
@@ -2249,7 +2252,7 @@ var theWebUI =
 			$("#wa").text(theConverter.bytes(d.skip_total,2));
 	        	$("#bf").text(d.base_path);
 	        	$("#co").text(theConverter.date(iv(d.created)+theWebUI.deltaTime/1000));
-			$("#tu").text(	$type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
+			$("#tu").text($type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
 	        	$("#hs").text(this.dID.substring(0,40));
 			$("#ts").text(d.msg);
 			var url = $.trim(d.comment);
