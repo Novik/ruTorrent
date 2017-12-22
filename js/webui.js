@@ -2033,7 +2033,7 @@ var theWebUI =
    		for(var k in sr) 
    		{
       			if(sr[k] && (this.torrents[k].label != lbl))
-      				req += ("&hash=" + k + "&s=label&v=" + encodeURIComponent(lbl));
+      				req += ("&hash=" + k + "&s=label&v=" + lbl);
 		}
 		if(req.length>0)
 			this.request("?action=setlabel"+req+"&list=1",[this.addTorrents, this]);
@@ -2070,7 +2070,7 @@ var theWebUI =
 			for(var k in sr) 
 			{
       				if(sr[k] && (this.torrents[k].label != lbl))
-	         			req+=("&hash=" + k + "&s=label&v=" + encodeURIComponent(lbl));
+	         			req+=("&hash=" + k + "&s=label&v=" + lbl);
 	         	}
 			if(req.length>0)
 				this.request("?action=setlabel"+req+"&list=1",[this.addTorrents, this]);
