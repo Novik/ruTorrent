@@ -2,9 +2,9 @@
 
 class TorrentDayEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"www.torrentday.com|pass=XXX;uid=XXX;" );
+    public $defaults = array( "public"=>false, "page_size"=>35, "cookies"=>"www.torrentday.com|pass=XXX;uid=XXX;" );
 
-	public $categories = array( 'all'=>'',
+    public $categories = array( 'all'=>'',
         #misc
         '|--Misc' => '&c29=1&c28=1&c42=1&c20=1&c30=1&c47=1&c43=1',
         '|--|--Anime' => '&c29=1',
@@ -61,7 +61,8 @@ class TorrentDayEngine extends commonEngine
         '|--|--XXX/Packs' => '&c15=1'
     );
 
-    public function getPattern() {
+    public function getPattern()
+    {
         return '/<tr class="browse">.*href="browse.php\?cat=(?P<cat>\d+).*"><img border="0".*'.
             '<td class="torrentNameInfo".*class=\'torrentName\' href=\'details.php\?id=(?P<id>\d+)\'>(?P<name>.*)<\/a>.*<\/div>'.
             '.*<span class="ulInfo">(?P<date>.*)<\/span><td class="dlLinksInfo".*' .
@@ -73,11 +74,11 @@ class TorrentDayEngine extends commonEngine
 
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
-	{
-		$added = 0;
-		$url = 'https://www.torrentday.com';
-		if($useGlobalCats) {
-		    error_log("torrentday: use global cats: " . $cat);
+    {
+        $added = 0;
+        $url = 'https://www.torrentday.com';
+        if ($useGlobalCats) {
+            error_log("torrentday: use global cats: " . $cat);
             $categories = array(
                 'all' => '',
                 'movies' =>
@@ -120,69 +121,68 @@ class TorrentDayEngine extends commonEngine
 
             );
         } else {
-		    error_log("torrentday uses local category " . $cat);
-			$categories = &$this->categories;
+            error_log("torrentday uses local category " . $cat);
+            $categories = &$this->categories;
         }
 
-		if(!array_key_exists($cat,$categories)) {
-			$cat = $categories['all'];
+        if (!array_key_exists($cat, $categories)) {
+            $cat = $categories['all'];
         } else {
-		    $cat = $categories[$cat];
+            $cat = $categories[$cat];
         }
-		for($pg = 0; $pg<10; $pg++)
-		{
+        for ($pg = 0; $pg<10; $pg++) {
             $finalUrl = $url . '/browse.php?search=' . $what . '&sort=6&type=desc&page=' . $pg . $cat;
             $cli = $this->fetch($finalUrl);
-			if( ($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) ||
-				(strpos($cli->results, "<h1>Not logged in!</h1>")!==false))
-				break;
+            if (($cli==false) || (strpos($cli->results, "<h2>Nothing found!</h2>")!==false) ||
+                (strpos($cli->results, "<h1>Not logged in!</h1>")!==false)) {
+                break;
+            }
 
-			$data = $cli->results;
+            $data = $cli->results;
 
-			$res = preg_match_all($this->getPattern(), $data, $matches);
-			if($res)
-			{
-				for($i=0; $i<$res; $i++)
-				{
-					$link = $url."/download.php/".$matches["id"][$i]."/".$matches["tname"][$i];
-					// check if the link already exists in the search results
-					if(!array_key_exists($link,$ret))
-					{
-						$item = $this->getNewEntry();
-						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["desc"] = $url."/details.php?id=".$matches["id"][$i];
-						$item["name"] = self::removeTags($matches["name"][$i]);
-						$item["size"] = self::formatSize(str_replace("<br>"," ",$matches["size"][$i]));
+            $res = preg_match_all($this->getPattern(), $data, $matches);
+            if ($res) {
+                for ($i=0; $i<$res; $i++) {
+                    $link = $url."/download.php/".$matches["id"][$i]."/".$matches["tname"][$i];
+                    // check if the link already exists in the search results
+                    if (!array_key_exists($link, $ret)) {
+                        $item = $this->getNewEntry();
+                        $item["cat"] = self::removeTags($matches["cat"][$i]);
+                        $item["desc"] = $url."/details.php?id=".$matches["id"][$i];
+                        $item["name"] = self::removeTags($matches["name"][$i]);
+                        $item["size"] = self::formatSize(str_replace("<br>", " ", $matches["size"][$i]));
                         $clearDate = self::clearDate(self::removeTags($matches["date"][$i]));
                         $item["time"] = strtotime($clearDate);
-						error_log("torrentday date match: " . $clearDate);
-						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
-						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
+                        error_log("torrentday date match: " . $clearDate);
+                        $item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
+                        $item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 
-						// only add torrent if its still alive
-						if($item["seeds"] > 0 || $item["peers"] > 0) {
+                        // only add torrent if its still alive
+                        if ($item["seeds"] > 0 || $item["peers"] > 0) {
                             $ret[$link] = $item;
                             $added++;
-                            if($added>=$limit)
+                            if ($added>=$limit) {
                                 return;
+                            }
                         }
-					}
-				}
-			}
-			else
-				break;
-		}
-	}
+                    }
+                }
+            } else {
+                break;
+            }
+        }
+    }
 
-	function clearDate($inputDate) {
+    public function clearDate($inputDate)
+    {
         $result = $inputDate;
         // removes potential content before the date starts (at the moment, this is mainly 720p, 1080p, etc.)
         do {
             $pipePosition = strpos($result, '|');
-            if($pipePosition !== FALSE) {
+            if ($pipePosition !== false) {
                 $result = trim(substr($result, $pipePosition+1));
             }
-        } while($pipePosition !== FALSE);
+        } while ($pipePosition !== false);
         return $result;
     }
 }

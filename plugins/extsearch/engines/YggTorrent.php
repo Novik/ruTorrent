@@ -64,8 +64,7 @@ class YggTorrentEngine extends commonEngine
         '|--X--Images' => '&subcategory=2191',
     );
 
-    protected static $seconds = array
-    (
+    protected static $seconds = array(
         'seconde'	=>1,
         'minute'	=>60,
         'heure'		=>3600,
@@ -74,10 +73,10 @@ class YggTorrentEngine extends commonEngine
         'an'		=>31536000
     );
 
-    protected static function getTime( $now, $ago, $unit )
+    protected static function getTime($now, $ago, $unit)
     {
-        $delta = (array_key_exists($unit,self::$seconds) ? self::$seconds[$unit] : 0);
-        return( $now-($ago*$delta) );
+        $delta = (array_key_exists($unit, self::$seconds) ? self::$seconds[$unit] : 0);
+        return($now-($ago*$delta));
     }
 
     private $category_mapping = array(
@@ -87,7 +86,7 @@ class YggTorrentEngine extends commonEngine
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
-        if($useGlobalCats) {
+        if ($useGlobalCats) {
             $categories = array('all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&subcategory=2178", 'software' => "&category=2144", 'books' => "&category=2140");
             $defaultCat = 'all';
         } else {
@@ -95,7 +94,7 @@ class YggTorrentEngine extends commonEngine
             $defaultCat = 'Tout';
         }
 
-        if(!array_key_exists($cat,$categories)) {
+        if (!array_key_exists($cat, $categories)) {
             $catParameters = $categories[$defaultCat];
         } else {
             $catParameters = $categories[$cat];
@@ -165,7 +164,7 @@ class YggTorrentEngine extends commonEngine
                         }
 
                         // We only have the time since the upload, so let's try to convert that...
-                        $item["time"] = self::getTime( $now, $matches["ago"][$i], $matches["unit"][$i] );
+                        $item["time"] = self::getTime($now, $matches["ago"][$i], $matches["unit"][$i]);
 
                         $item["seeds"] = intval(self::removeTags($matches["seeder"][$i]));
                         $item["peers"] = intval(self::removeTags($matches["leecher"][$i]));

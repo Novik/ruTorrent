@@ -1,7 +1,7 @@
 <?php
 
-class BitsoupEngine extends commonEngine {
-
+class BitsoupEngine extends commonEngine
+{
     public $defaults = array(
         'public' => false,
         'page_size' => 50,
@@ -12,7 +12,8 @@ class BitsoupEngine extends commonEngine {
 
     public $url = 'https://www.bitsoup.me';
 
-    public function action($what, $cat, &$ret, $limit, $useGlobalCats) {
+    public function action($what, $cat, &$ret, $limit, $useGlobalCats)
+    {
         $category = (!$useGlobalCats && $cat && array_key_exists($cat, $this->categories)) ? $this->categories[$cat] : $this->categories['all'];
         $searchUrl = $this->url . '/browse.php?search=' . $what . '&page=0&cat=' . $category;
         $cli = $this->fetch($searchUrl, false);
@@ -24,7 +25,7 @@ class BitsoupEngine extends commonEngine {
             $this->sendSimpleResult('noresults', 'No results could be parsed from Bitsoup', $ret);
             return;
         }
-        list ($totalRowCount, $rows) = $this->countRows($cli->results);
+        list($totalRowCount, $rows) = $this->countRows($cli->results);
         if ($totalRowCount === null) {
             $this->sendSimpleResult('noresults', 'Result table could not be parsed from Bitsoup', $ret);
             return;
@@ -33,7 +34,7 @@ class BitsoupEngine extends commonEngine {
             $this->sendSimpleResult('noresults', 'No results found', $ret);
             return;
         }
-        list ($rowsParsed, $unMatchedRows) = $this->processResults($rows, $ret);
+        list($rowsParsed, $unMatchedRows) = $this->processResults($rows, $ret);
         if ($rowsParsed === null) {
             $this->sendSimpleResult('noresults', 'No results could be parsed from Bitsoup', $ret);
             return;
@@ -43,7 +44,8 @@ class BitsoupEngine extends commonEngine {
         }
     }
 
-    private function countRows($results) {
+    private function countRows($results)
+    {
         if (!preg_match_all(BitsoupEngine_Parser::getResultTablePattern(), $results, $matches)) {
             return array(null, null);
         }
@@ -54,7 +56,8 @@ class BitsoupEngine extends commonEngine {
         return array(count($matches['row']), $matches['row']);
     }
 
-    private function processResults(array $rows, &$ret) {
+    private function processResults(array $rows, &$ret)
+    {
         $matched = 0;
         $unMatchedRows = array();
         foreach ($rows as $row) {
@@ -74,7 +77,10 @@ class BitsoupEngine extends commonEngine {
                       ($matches['sizeUnit'][0] == 'GB' ? 1024*1024*1024 : (
                       ($matches['sizeUnit'][0] == 'TB' ? 1024*1024*1024 : (
                       1
-                    ))))))));
+                    ))
+                      ))
+                      ))
+                    ));
             $item['seeds'] = (int) $matches['seeders'][0] > 0 ? (int) $matches['seeders'][0] : 0;
             $item['peers'] = (int) $matches['leechers'][0] > 0 ? (int) $matches['leechers'][0] : 0;
             $item['time'] = strtotime($matches['date'][0] . ' ' . $matches['time'][0]);
@@ -84,7 +90,8 @@ class BitsoupEngine extends commonEngine {
         return array($matched, $unMatchedRows);
     }
 
-    private function sendSimpleResult($cat, $name, &$ret, $desc = null) {
+    private function sendSimpleResult($cat, $name, &$ret, $desc = null)
+    {
         $item = $this->getNewEntry();
         $item['cat'] = $cat;
         $item['name'] = $name;
@@ -95,7 +102,8 @@ class BitsoupEngine extends commonEngine {
         $ret[$cat] = $item;
     }
 
-    private function getDataUrlForUnmatchedRows(array $unMatchedRows) {
+    private function getDataUrlForUnmatchedRows(array $unMatchedRows)
+    {
         if (!$unMatchedRows) {
             return null;
         }
@@ -114,7 +122,8 @@ class BitsoupEngine extends commonEngine {
 }
 
 
-class BitsoupEngine_Parser {
+class BitsoupEngine_Parser
+{
     const oTR = '<tr\s*>\s*';
     const cTR = '<\s*\/tr\s*>\s*';
     const oTD = '<td\s+(?:[^>]*)>\s*';
@@ -151,61 +160,75 @@ class BitsoupEngine_Parser {
     const NO_LEECHERS = '(?P<noleechers>[0]{1})\s*';
 
 
-    static function generateKeyIfNeeded($dest) {
+    public static function generateKeyIfNeeded($dest)
+    {
         static $c = 0;
         return $dest === null ? 'key' . ++$c : $dest;
     }
 
-    static function anything($key = null) {
+    public static function anything($key = null)
+    {
         return '(?P<' . self::generateKeyIfNeeded($key) . '>.*)';
     }
 
-    static function tr($content) {
+    public static function tr($content)
+    {
         return self::oTR . $content . self::cTR;
     }
 
-    static function td($content) {
+    public static function td($content)
+    {
         return self::oTD . $content . self::cTD;
     }
 
-    static function href($content, $key = null) {
+    public static function href($content, $key = null)
+    {
         $href = str_replace('<HREF>', '<' . self::generateKeyIfNeeded($key) . '>', self::HREF);
         return self::oA . $href . self::oAc . $content . self::cA;
     }
 
-    static function a($content) {
+    public static function a($content)
+    {
         return self::oA . self::oAc . $content . self::cA;
     }
 
-    static function bold($content) {
+    public static function bold($content)
+    {
         return self::oB . $content . self::cB;
     }
 
-    static function font($content) {
+    public static function font($content)
+    {
         return self::oFONT . $content . self::cFONT;
     }
 
-    static function string($key) {
+    public static function string($key)
+    {
         return '(?P<' . $key . '>[^<]+)';
     }
 
-    static function img($content = '') {
+    public static function img($content = '')
+    {
         return self::oIMG . $content . self::cIMG;
     }
 
-    static function nobr($content) {
+    public static function nobr($content)
+    {
         return self::oNOBR . $content . self::cNOBR;
     }
 
-    static function logicalOr($content1, $content2) {
+    public static function logicalOr($content1, $content2)
+    {
         return '(?:' . $content1 . '|' . $content2 . ')';
     }
 
-    static function getResultRowPattern() {
+    public static function getResultRowPattern()
+    {
         return '/' . BitsoupEngine_Parser::tr(BitsoupEngine_Parser::anything('row')) . '/siU';
     }
 
-    static function getResultTablePattern() {
+    public static function getResultTablePattern()
+    {
         return '/' .
             BitsoupEngine_Parser::oRESULTS_TABLE .
                 BitsoupEngine_Parser::anything('table') .
@@ -213,7 +236,8 @@ class BitsoupEngine_Parser {
         '/siU';
     }
 
-    static function getResultPattern() {
+    public static function getResultPattern()
+    {
         return '/' .
             BitsoupEngine_Parser::td(
                 BitsoupEngine_Parser::href(

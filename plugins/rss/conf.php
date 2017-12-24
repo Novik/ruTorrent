@@ -6,7 +6,6 @@
 
 $minInterval = 2;	// in minutes
 
-$feedsWithIncorrectTimes = array
-(
-	"torrentday.",	// substring of hostname
+$feedsWithIncorrectTimes = array(
+    "torrentday.",	// substring of hostname
 );

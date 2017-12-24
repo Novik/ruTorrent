@@ -1,6 +1,6 @@
 <?php
-require_once( '../../php/util.php' );
-require_once( '../../php/settings.php' );
+require_once('../../php/util.php');
+require_once('../../php/settings.php');
 eval(getPluginConf("_getdir"));
 
 $theSettings = rTorrentSettings::get();
@@ -11,83 +11,82 @@ $btn_id = "'".$_REQUEST['btn']."'";
 $edit_id = "'".$_REQUEST['edit']."'";
 $frame_id = "'".$_REQUEST['frame']."'";
 
-function compareEntries( $a, $b )
+function compareEntries($a, $b)
 {
-	if($a=='/.')
-		return( -1 );
-	if($b=='/.')
-		return( 1 );
-	if($a=='/..')
-		return( -1 );
-	if($b=='/..')
-		return( 1 );
-	return( function_exists("mb_strtolower") ? 
-		strcmp(mb_strtolower($a), mb_strtolower($b)) :
-		strcmp(strtolower($a), strtolower($b)) );
+    if ($a=='/.') {
+        return(-1);
+    }
+    if ($b=='/.') {
+        return(1);
+    }
+    if ($a=='/..') {
+        return(-1);
+    }
+    if ($b=='/..') {
+        return(1);
+    }
+    return(function_exists("mb_strtolower") ?
+        strcmp(mb_strtolower($a), mb_strtolower($b)) :
+        strcmp(strtolower($a), strtolower($b)));
 }
 
-if(isset($_REQUEST['dir']) && strlen($_REQUEST['dir']))
-{
-	$dir = rawurldecode($_REQUEST['dir']);
-	rTorrentSettings::get()->correctDirectory($dir);
-	if(LFS::is_file($dir) && 
-		(($theSettings->uid<0) || 
-		!$checkUserPermissions ||
-		isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0004)))
-	{
-		$curFile = basename($dir);
-		$dir = dirname($dir);
-	}
-	if(is_dir($dir))
-	{
-		$dh = @opendir($dir);
-		$dir = addslash($dir);
-		if( $dh && 
-			((strpos($dir,$topDirectory)!==0) ||
-			(($theSettings->uid>=0) && 
-			$checkUserPermissions &&
-			!isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0005))))
-		{
-			closedir($dh);
-			$dh = false;
-		}
-	}
+if (isset($_REQUEST['dir']) && strlen($_REQUEST['dir'])) {
+    $dir = rawurldecode($_REQUEST['dir']);
+    rTorrentSettings::get()->correctDirectory($dir);
+    if (LFS::is_file($dir) &&
+        (($theSettings->uid<0) ||
+        !$checkUserPermissions ||
+        isUserHavePermission($theSettings->uid, $theSettings->gid, $dir, 0x0004))) {
+        $curFile = basename($dir);
+        $dir = dirname($dir);
+    }
+    if (is_dir($dir)) {
+        $dh = @opendir($dir);
+        $dir = addslash($dir);
+        if ($dh &&
+            ((strpos($dir, $topDirectory)!==0) ||
+            (($theSettings->uid>=0) &&
+            $checkUserPermissions &&
+            !isUserHavePermission($theSettings->uid, $theSettings->gid, $dir, 0x0005)))) {
+            closedir($dh);
+            $dh = false;
+        }
+    }
 }
-if(!$dh)
-{
-	$curFile = null;
-	$dir = isLocalMode() ? $theSettings->directory : $topDirectory;
-	if(strpos(addslash($dir),$topDirectory)!==0)
-		$dir = $topDirectory;
-	$dh = @opendir($dir);
+if (!$dh) {
+    $curFile = null;
+    $dir = isLocalMode() ? $theSettings->directory : $topDirectory;
+    if (strpos(addslash($dir), $topDirectory)!==0) {
+        $dir = $topDirectory;
+    }
+    $dh = @opendir($dir);
 }
 $files = array();
 $dirs = array();
-if($dh)
-{
-	$dir = addslash($dir);
-	while(false !== ($file = readdir($dh)))
-        {
-	        $path = fullpath($dir . $file);
-		if(($file=="..") && ($dir==$topDirectory))
-			continue;
-		if(is_dir($path) &&
-			(strpos(addslash($path),$topDirectory)===0) &&
-			( $theSettings->uid<0 || !$checkUserPermissions || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0005) )
-			)
-			$dirs['/'.$file] = addslash($path);
-		else
-		{
-			if(LFS::is_file($path)
-				&& ( $theSettings->uid<0 || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0004))
-				)
-				$files[$file." "] = $path;
-		}
+if ($dh) {
+    $dir = addslash($dir);
+    while (false !== ($file = readdir($dh))) {
+        $path = fullpath($dir . $file);
+        if (($file=="..") && ($dir==$topDirectory)) {
+            continue;
         }
-        closedir($dh);
-        uksort($files,"compareEntries");
-        uksort($dirs,"compareEntries");
-	$files = array_merge($dirs,$files);
+        if (is_dir($path) &&
+            (strpos(addslash($path), $topDirectory)===0) &&
+            ($theSettings->uid<0 || !$checkUserPermissions || isUserHavePermission($theSettings->uid, $theSettings->gid, $path, 0x0005))
+            ) {
+            $dirs['/'.$file] = addslash($path);
+        } else {
+            if (LFS::is_file($path)
+                && ($theSettings->uid<0 || isUserHavePermission($theSettings->uid, $theSettings->gid, $path, 0x0004))
+                ) {
+                $files[$file." "] = $path;
+            }
+        }
+    }
+    closedir($dh);
+    uksort($files, "compareEntries");
+    uksort($dirs, "compareEntries");
+    $files = array_merge($dirs, $files);
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -141,9 +140,10 @@ function init()
 {
 	doc = window.frameElement.ownerDocument;
 <?php
-	if(!$curFile)
-		$curFile = "/.";
-	echo "var el=document.getElementById('".bin2hex($curFile)."');";
+    if (!$curFile) {
+        $curFile = "/.";
+    }
+    echo "var el=document.getElementById('".bin2hex($curFile)."');";
 ?>
 	document.documentElement.scrollTop = el.offsetTop;
 	menuClick(el);
@@ -202,32 +202,27 @@ function menuDblClickAndExit(obj)
 
 <table class='rmenuobj' cellpadding=0 cellspacing=0 width=100%>
 <?php
-function ordutf8($s, $offset) 
+function ordutf8($s, $offset)
 {
-	if(function_exists("mb_convert_encoding"))
-	{
-		list(, $ret) = unpack('N', mb_convert_encoding(mb_strtolower(mb_substr($s,$offset,1)), 'UCS-4BE', 'UTF-8'));
-	}
-	else
-	{
-		$ret = ord( strtolower($s[$offset]) );
-	}
-	return($ret);
+    if (function_exists("mb_convert_encoding")) {
+        list(, $ret) = unpack('N', mb_convert_encoding(mb_strtolower(mb_substr($s, $offset, 1)), 'UCS-4BE', 'UTF-8'));
+    } else {
+        $ret = ord(strtolower($s[$offset]));
+    }
+    return($ret);
 }
 
-foreach($files as $key=>$data)
-{
-	$chr = ordutf8($key,0);
-	if(($key=='/.') || ($key[0]!='/'))
-		echo "<tr><td code='".rawurlencode($data)."' id='".bin2hex($key)."' name='i".$chr."' class='rmenuitem' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClickAndExit(this); return false;'>";
-	else
-	{
-		$chr = ordutf8($key,1);
-		echo "<tr><td code='".rawurlencode($data)."' id='".bin2hex($key)."' name='i".$chr."' class='rmenuitem' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClick(this); return false;'>";
-	}		
-	echo "&nbsp;&nbsp;";
-	echo $key;
-	echo "</td></tr>";
+foreach ($files as $key=>$data) {
+    $chr = ordutf8($key, 0);
+    if (($key=='/.') || ($key[0]!='/')) {
+        echo "<tr><td code='".rawurlencode($data)."' id='".bin2hex($key)."' name='i".$chr."' class='rmenuitem' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClickAndExit(this); return false;'>";
+    } else {
+        $chr = ordutf8($key, 1);
+        echo "<tr><td code='".rawurlencode($data)."' id='".bin2hex($key)."' name='i".$chr."' class='rmenuitem' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClick(this); return false;'>";
+    }
+    echo "&nbsp;&nbsp;";
+    echo $key;
+    echo "</td></tr>";
 }
 ?>
 </table>

@@ -1,2 +1,2 @@
 <?php
-	$checkUserPermissions 	= true;	
+    $checkUserPermissions 	= true;
