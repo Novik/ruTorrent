@@ -335,7 +335,20 @@ class Torrent
         	return(is_null( $name ) ?
 			isset( $this->info['name'] ) ? $this->info['name'] : null :
 			$this->touch( $this->info['name'] = (string) $name ));
-	}
+    }
+
+    /** Getter and setter of the source
+     * @param null|string source (optional, if omitted it's a getter)
+     * @return string|null source or null if not set
+     */
+    public function source( $source = null )
+    {
+        if (is_null($source)) {
+            return isset($this->info["source"]) ? $this->info["source"] : null;
+        } else {
+            $this->touch($this->info['source'] = (string)$source);
+        }
+    }
 
 	/** Getter and setter of private flag
 	 * @param null|boolean is private or not (optional, if omitted it's a getter)
