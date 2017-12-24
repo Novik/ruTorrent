@@ -62,6 +62,10 @@ if( count( $argv ) > 1 )
 		else
                	        $torrent = new Torrent($path_edit,array(),$piece_size,$callback_log,$callback_err);
 
+        if (isset($request['source']) && strlen($request['source']) !== 0) {
+            $torrent->source(trim($request['source']));
+        }
+
 		if(isset($request['comment']))
 		{
 			$comment = trim($request['comment']);
