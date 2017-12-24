@@ -1,9 +1,9 @@
 <?php
 eval(getPluginConf($plugin["name"]));
-require_once( dirname(__FILE__)."/task.php" );
+require_once(dirname(__FILE__)."/task.php");
 
 rTaskManager::cleanup();
-$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
+$theSettings->registerPlugin($plugin["name"], $pInfo["perms"]);
 
 $jResult .= "plugin.maxConcurentTasks = ".$maxConcurentTasks.";";
 $jResult .= "plugin.showTabAlways = ".$showTabAlways.";";

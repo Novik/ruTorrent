@@ -1,6 +1,6 @@
 <?php
 
-$this->aliases = array_merge($this->aliases,array(
+$this->aliases = array_merge($this->aliases, array(
 "create_link"		=>	array( "name"=>"d.create_link", "prm"=>0 ),
 "d.get_base_filename"	=>	array( "name"=>"d.base_filename", "prm"=>0 ),
 "d.get_base_path"	=>	array( "name"=>"d.base_path", "prm"=>0 ),
@@ -279,7 +279,7 @@ $this->aliases = array_merge($this->aliases,array(
 "view_sort"		=>	array( "name"=>"view.sort", "prm"=>1 ),					// ?
 "view_sort_current"	=>	array( "name"=>"view.sort_current", "prm"=>1 ),				// ?
 "view_sort_new"		=>	array( "name"=>"view.sort_new", "prm"=>1 ),				// ?
-"xmlrpc_dialect"	=>	array( "name"=>"network.xmlrpc.dialect.set", "prm"=>1 ),		// ?	
+"xmlrpc_dialect"	=>	array( "name"=>"network.xmlrpc.dialect.set", "prm"=>1 ),		// ?
 "xmlrpc_size_limit"	=>	array( "name"=>"network.xmlrpc.size_limit.set", "prm"=>1 ),
 "delete_link"		=>	array( "name"=>"d.delete_link", "prm"=>0 ),
 "delete_tied"		=>	array( "name"=>"d.delete_tied", "prm"=>0 ),
