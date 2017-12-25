@@ -18,6 +18,7 @@ theWebUI.checkCreate = function()
 		"trackers" : trk,
 		"path_edit" : $.trim($("#path_edit").val()), 
 		"comment" : $.trim($("#comment").val()),
+		"source" : $.trim($("#source").val()),
 		"private" : $('#private').prop('checked') ? 1 : 0,
 		"start_seeding" : $('#start_seeding').prop('checked') ? 1 : 0		
 	},
@@ -128,6 +129,8 @@ plugin.onLangLoaded = function()
 					"<textarea id='trackers' name='trackers'></textarea><br/>"+
         	                       	       "<label>"+theUILang.Comment+": </label>"+
         		               	"<input type='text' id='comment' name='comment' class='TextboxLarge'/><br/>"+
+        	                       	       "<label>" + theUILang.source + ": </label>"+
+        		               	"<input type='text' id='source' name='source' class='TextboxLarge'/><br/>"+
 					pieceSize+	
 				"</fieldset>"+
 				"<fieldset>"+

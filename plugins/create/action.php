@@ -125,6 +125,7 @@ if(isset($_REQUEST['cmd']))
 						'path_edit'=>$_REQUEST['path_edit'],
 						'trackers'=>$_REQUEST['trackers'],
 						'comment'=>$_REQUEST['comment'],
+						'source'=>$_REQUEST['source'],
 						'start_seeding'=>$_REQUEST['start_seeding'],
 						'piece_size'=>$_REQUEST['piece_size'],
 						'private'=>$_REQUEST['private']
