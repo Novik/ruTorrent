@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "Направи нови торент";
  theUILang.SelectSource 		= "Избор извора";
  theUILang.TorrentProperties		= "Сво?ства торента";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "Величина парчета";
  theUILang.Other			= "Друго";
  theUILang.StartSeeding 		= "Почетак се?а?а";

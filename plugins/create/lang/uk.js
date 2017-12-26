@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "Створення нового торента";
  theUILang.SelectSource 		= "Вибір джерела";
  theUILang.TorrentProperties		= "Властивості торента";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "Розмір частини";
  theUILang.Other			= "Інше";
  theUILang.StartSeeding 		= "Почати роздачу";

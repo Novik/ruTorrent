@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "Maak Torrent";
  theUILang.SelectSource 		= "Selecteer Folder/Bestand";
  theUILang.TorrentProperties		= "Torrent Eigenschappen";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "Stuk Grote";
  theUILang.Other			= "Diverse";
  theUILang.StartSeeding 		= "Start uploaden";

@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "Új torrent létrehozása";
  theUILang.SelectSource 		= "Forrás kiválasztása";
  theUILang.TorrentProperties		= "Torrent tulajdonságok";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "Szeletméret";
  theUILang.Other			= "Egyéb";
  theUILang.StartSeeding 		= "Seedelés indítása";

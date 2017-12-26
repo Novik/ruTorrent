@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "Δημιουργία Νέου Torrent";
  theUILang.SelectSource 		= "Επιλογή πηγής";
  theUILang.TorrentProperties		= "Ιδιότητες Torrent";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "Μέγεθος κομματιού";
  theUILang.Other			= "Άλλο";
  theUILang.StartSeeding 		= "Έναρξη αποστολής";

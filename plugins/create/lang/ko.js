@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "새 토렌트 생성";
  theUILang.SelectSource 		= "원본 선택";
  theUILang.TorrentProperties		= "토렌트 속성";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "조각 크기";
  theUILang.Other			= "기타";
  theUILang.StartSeeding 		= "시딩 시작";

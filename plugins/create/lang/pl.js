@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "Utwórz nowy plik torrent";
  theUILang.SelectSource 		= "Wybierz źródło";
  theUILang.TorrentProperties		= "Właściwości torrenta";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "Rozmiar części";
  theUILang.Other			= "Inne";
  theUILang.StartSeeding 		= "Udostępnij";
