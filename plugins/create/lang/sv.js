@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "Skapa ny torrent";
  theUILang.SelectSource 		= "Välj källa";
  theUILang.TorrentProperties		= "Torrentegenskaper";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "Storlek på delar";
  theUILang.Other			= "Övrigt";
  theUILang.StartSeeding 		= "Starta seedning";

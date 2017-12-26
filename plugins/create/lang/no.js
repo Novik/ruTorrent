@@ -10,6 +10,7 @@
  theUILang.CreateNewTorrent		= "Lag Ny Torrent";
  theUILang.SelectSource 		= "Velg Kilde";
  theUILang.TorrentProperties		= "Torrentegenskaper";
+ theUILang.source			= "Source";
  theUILang.PieceSize			= "Delstørrelse";
  theUILang.Other			= "Annet";
  theUILang.StartSeeding 		= "Start seeding";
