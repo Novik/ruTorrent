@@ -1,4 +1,4 @@
-div#tcreate {width: 405px; height: 360px}
+div#tcreate {min-width: 405px; min-height: 385px}
 div#tcreate div.dlg-header {background-image: url(./images/create16.gif)}
 div#tcreate #path_edit {width: 305px}
 div#tcreate textarea#trackers {width: 230px; height: 70px; border: 1px solid #D0D0D0; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; cursor: text}
