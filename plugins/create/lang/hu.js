@@ -10,7 +10,6 @@
  theUILang.CreateNewTorrent		= "Új torrent létrehozása";
  theUILang.SelectSource 		= "Forrás kiválasztása";
  theUILang.TorrentProperties		= "Torrent tulajdonságok";
- theUILang.source			= "Source";
  theUILang.PieceSize			= "Szeletméret";
  theUILang.Other			= "Egyéb";
  theUILang.StartSeeding 		= "Seedelés indítása";
@@ -26,5 +25,6 @@
  theUILang.torrentKill			= "Megállít";
  theUILang.torrentKilled		= "Folyamat leállt.";
  theUILang.recentTrackers		= "Recent trackers";
+ theUILang.source			= "Source";
 
 thePlugins.get("create").langLoaded();

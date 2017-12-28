@@ -10,7 +10,6 @@
  theUILang.CreateNewTorrent		= "Lag Ny Torrent";
  theUILang.SelectSource 		= "Velg Kilde";
  theUILang.TorrentProperties		= "Torrentegenskaper";
- theUILang.source			= "Source";
  theUILang.PieceSize			= "Delstørrelse";
  theUILang.Other			= "Annet";
  theUILang.StartSeeding 		= "Start seeding";
@@ -26,5 +25,6 @@
  theUILang.torrentKill			= "Stopp";
  theUILang.torrentKilled		= "Prosessen ble stoppet.";
  theUILang.recentTrackers		= "Siste trackere";
+ theUILang.source			= "Source";
 
 thePlugins.get("create").langLoaded();

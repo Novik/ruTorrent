@@ -10,7 +10,6 @@
  theUILang.CreateNewTorrent		= "Δημιουργία Νέου Torrent";
  theUILang.SelectSource 		= "Επιλογή πηγής";
  theUILang.TorrentProperties		= "Ιδιότητες Torrent";
- theUILang.source			= "Πηγή";
  theUILang.PieceSize			= "Μέγεθος κομματιού";
  theUILang.Other			= "Άλλο";
  theUILang.StartSeeding 		= "Έναρξη αποστολής";
@@ -26,5 +25,6 @@
  theUILang.torrentKill			= "Τερματισμός";
  theUILang.torrentKilled		= "Η λειτουργία τερματίστηκε.";
  theUILang.recentTrackers		= "Πρόσφατοι trackers";
+ theUILang.source			= "Πηγή";
 
 thePlugins.get("create").langLoaded();

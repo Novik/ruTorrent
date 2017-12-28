@@ -10,7 +10,6 @@
  theUILang.CreateNewTorrent		= "创建新的 Torrent";
  theUILang.SelectSource 		= "选择源";
  theUILang.TorrentProperties		= "Torrent 属性";
- theUILang.source			= "Source";
  theUILang.PieceSize			= "块尺寸";
  theUILang.Other			= "其它";
  theUILang.StartSeeding 		= "开始做种";
@@ -26,5 +25,6 @@
  theUILang.torrentKill			= "停止";
  theUILang.torrentKilled		= "进程已停止.";
  theUILang.recentTrackers		= "最近的 trackers";
+ theUILang.source			= "Source";
 
 thePlugins.get("create").langLoaded();

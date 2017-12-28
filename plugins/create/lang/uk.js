@@ -10,7 +10,6 @@
  theUILang.CreateNewTorrent		= "Створення нового торента";
  theUILang.SelectSource 		= "Вибір джерела";
  theUILang.TorrentProperties		= "Властивості торента";
- theUILang.source			= "Source";
  theUILang.PieceSize			= "Розмір частини";
  theUILang.Other			= "Інше";
  theUILang.StartSeeding 		= "Почати роздачу";
@@ -26,5 +25,6 @@
  theUILang.torrentKill			= "Зупинити";
  theUILang.torrentKilled		= "Процес зупинено.";
  theUILang.recentTrackers		= "Недавні трекери";
+ theUILang.source			= "Source";
 
 thePlugins.get("create").langLoaded();

@@ -10,7 +10,6 @@
  theUILang.CreateNewTorrent		= "새 토렌트 생성";
  theUILang.SelectSource 		= "원본 선택";
  theUILang.TorrentProperties		= "토렌트 속성";
- theUILang.source			= "Source";
  theUILang.PieceSize			= "조각 크기";
  theUILang.Other			= "기타";
  theUILang.StartSeeding 		= "시딩 시작";
@@ -26,5 +25,6 @@
  theUILang.torrentKill			= "중지";
  theUILang.torrentKilled		= "프로세스가 중지되었습니다.";
  theUILang.recentTrackers		= "최근 트래커";
+ theUILang.source			= "Source";
 
 thePlugins.get("create").langLoaded();
