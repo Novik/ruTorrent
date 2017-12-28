@@ -10,7 +10,6 @@
  theUILang.CreateNewTorrent		= "Crea nuovo torrent";
  theUILang.SelectSource 		= "Seleziona la sorgente";
  theUILang.TorrentProperties		= "Proprità torrent";
- theUILang.source			= "Source";
  theUILang.PieceSize			= "Dimensioni parte";
  theUILang.Other			= "Altro";
  theUILang.StartSeeding 		= "Comincia il seeding";
@@ -26,5 +25,6 @@
  theUILang.torrentKill			= "Stop";
  theUILang.torrentKilled		= "Il processo è stato arrestato.";
  theUILang.recentTrackers		= "Trackers recenti";
+ theUILang.source			= "Source";
 
 thePlugins.get("create").langLoaded();

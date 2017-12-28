@@ -10,7 +10,6 @@
  theUILang.CreateNewTorrent		= "Tạo Torrent mới";
  theUILang.SelectSource 		= "Chọn nguồn";
  theUILang.TorrentProperties		= "Các thuộc tính Torrent";
- theUILang.source			= "Source";
  theUILang.PieceSize			= "Kích thước mảnh";
  theUILang.Other			= "Khác";
  theUILang.StartSeeding 		= "Chia sẻ ngay";
@@ -26,5 +25,6 @@
  theUILang.torrentKill			= "Dừng";
  theUILang.torrentKilled		= "Quá trình tạo torrent đã ngừng lại.";
  theUILang.recentTrackers		= "Recent trackers";
+ theUILang.source			= "Source";
 
 thePlugins.get("create").langLoaded();
