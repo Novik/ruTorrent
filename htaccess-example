@@ -1,0 +1,6 @@
+# If you are running Apache, you can rename this file to .htaccess and generate a .htpasswd to enable authentication
+# See https://httpd.apache.org/docs/2.4/howto/auth.html for more information
+AuthType Basic
+AuthName "rutorrent"
+AuthUserFile  "/var/www/ruTorrent/.htpasswd"
+require valid-user
