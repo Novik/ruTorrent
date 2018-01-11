@@ -1,5 +1,5 @@
 ﻿/*
- * PLUGIN SCREENSHOTS
+ * PLUGIN SPECTROGRAM
  *
  * Turkish language file.
  *
