@@ -546,6 +546,7 @@ dxSTable.ColumnMove.prototype =
 	indexnew :- 1, 
 	mid : 0, 
 	uid : 0, 
+	ignoreNextMove : false,
 
 	init : function(o, _1b, _1c, _1d) 
 	{      
@@ -578,6 +579,7 @@ dxSTable.ColumnMove.prototype =
 		o.lastMouseX = e.clientX;
 		o.style.visibility = "visible";
 		var self = this;
+		self.ignoreNextMove = true;
 		$(document).on("mousemove",self,self.drag);
 		$(document).on("mouseup touchend",self,self.end);
 		this.rx = $(this.parent.dHead).offset().left;
@@ -587,6 +589,11 @@ dxSTable.ColumnMove.prototype =
 	drag : function(e) 
 	{
 		var self = e.data;
+		if(self.ignoreNextMove)
+		{
+			self.ignoreNextMove = false;
+			return;
+		}
 		self.parent.cancelSort = true;
 		var o = self.obj, l = parseInt(o.style.left), ex = e.clientX, i = 0, c = self.parent.cols;
 		if(!self.added) 
