@@ -2,7 +2,7 @@
 
 class TfileAccount extends commonAccount
 {
-	public $url = "http://tfile-video.cc";
+	public $url = "http://tfile-video.org";
 
 	protected function isOK($client)
 	{
