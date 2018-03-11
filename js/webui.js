@@ -2397,7 +2397,7 @@ var theWebUI =
 		if(h!==null)
         	{
 			$("#tdetails").height( h );
-			h-=($("#tabbar").height());
+			h-=($("#tabbar").outerHeight());
 			$("#tdcont").height( h );
 			h-=2;
         	}

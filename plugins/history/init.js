@@ -382,7 +382,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 			w-=8;
 		if(h!==null)
         	{
-			h-=($("#tabbar").height());
+			h-=($("#tabbar").outerHeight());
 			h-=2;
         	}
         	if(theWebUI.configured)
