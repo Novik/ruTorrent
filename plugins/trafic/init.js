@@ -136,7 +136,7 @@ if(plugin.canChangeTabs())
 			this.owner.width(newWidth-8);
 		if(newHeight)
 		{
-			newHeight-=(iv($$(this.owner.attr("id")+'_ctrl').style.height)+$("#tabbar").height());
+			newHeight-=(iv($$(this.owner.attr("id")+'_ctrl').style.height)+$("#tabbar").outerHeight());
 			if(newHeight>0)
 				this.owner.height(newHeight);
 		}
