@@ -125,7 +125,7 @@
  theUILang.country[ "iq" ] = "伊拉克";
  theUILang.country[ "ir" ] = "伊朗";
  theUILang.country[ "is" ] = "冰岛";
- theUILang.country[ "it" ] = "意大利制造";
+ theUILang.country[ "it" ] = "意大利";
  theUILang.country[ "je" ] = "新泽西";
  theUILang.country[ "jm" ] = "牙买加";
  theUILang.country[ "jo" ] = "乔丹";
