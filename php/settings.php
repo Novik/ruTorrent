@@ -155,6 +155,17 @@ class rTorrentSettings
 					$this->apiVersion = $req->val[0];
 			}
 
+			if($this->apiVersion >= 10)
+			{
+				$this->aliases = array_merge($this->aliases,array
+				(
+					"get_port_open"	=> array( "name"=>"network.listen.is_open", "prm"=>0 ),
+					"get_port_random" => array( "name"=>"network.port.randomize", "prm"=>0 ),
+					"get_port_range" => array( "name"=>"network.port.range", "prm"=>0 ),
+					"network.listen.port" => array( "name"=>"network.port", "prm"=>0 ),
+				));
+			}
+
                         $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 			if($req->run())
 			{
