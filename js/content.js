@@ -1039,5 +1039,18 @@ function correctContent()
 			"load"			:	{ name: "load.normal", prm: 1 }
 		});
 	}
+	if(theWebUI.systemInfo.rTorrent.apiVersion>=10)	
+	{
+		$.extend(theRequestManager.aliases, 
+		{
+			"get_port_open"		: { name: "network.listen.is_open", prm: 0 },
+			"get_port_random" 	: { name: "network.port.randomize", prm: 0 },
+			"get_port_range" 	: { name: "network.port.range", prm: 0 },
+			"set_port_open"		: { name: "network.listen.open", prm: 1 },
+			"set_port_random"	: { name: "network.port.randomize.set", prm: 1 },
+			"set_port_range"	: { name: "network.port.range.set", prm: 1 },
+			"network.listen.port" 	: { name: "network.port", prm: 0 }
+		});
+	}
 	$("#rtorrentv").text(theWebUI.systemInfo.rTorrent.version+"/"+theWebUI.systemInfo.rTorrent.libVersion);
 }
