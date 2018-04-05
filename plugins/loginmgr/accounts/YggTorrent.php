@@ -2,14 +2,14 @@
 
 class YggTorrentAccount extends commonAccount
 {
-    public $url = "https://yggtorrent.com";
+    public $url = "https://yggtorrent.is";
 
     protected function isOK($client)
     {
         return (
-            strpos($client->results, 'Ces identifiants sont invalides') === false
+            $client->status == 200
             && $client->results !== 'Vous devez vous connecter pour télécharger un torrent'
-            && strpos($client->results, '<li><a href="https://yggtorrent.com/user/login">Connexion</a></li>') === false
+            && strpos($client->results, "S'identifier</a>") === false
         );
     }
 

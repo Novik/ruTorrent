@@ -2,93 +2,76 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const URL = 'https://yggtorrent.com';
+    const URL = 'https://yggtorrent.is';
     const MAX_PAGE = 10;
-    const PAGE_SIZE = 25;
+    const PAGE_SIZE = 50;
 
     public $defaults = array("public" => false, "page_size" => self::PAGE_SIZE, 'auth' => 1);
 
     public $categories = array(
         'Tout' => '',
         '|--Film/Vidéo' => '&category=2145',
-        '|--F--Animation' => '&subcategory=2178',
-        '|--F--Animation Série' => '&subcategory=2179',
-        '|--F--Concert' => '&subcategory=2180',
-        '|--F--Documentaire' => '&subcategory=2181',
-        '|--F--Emission TV' => '&subcategory=2182',
-        '|--F--Film' => '&subcategory=2183',
-        '|--F--Série TV' => '&subcategory=2184',
-        '|--F--Spectacle' => '&subcategory=2185',
-        '|--F--Sport' => '&subcategory=2186',
-        '|--F--Vidéo-clips' => '&subcategory=2187',
+        '|--F--Animation' => '&sub_category=2178',
+        '|--F--Animation Série' => '&sub_category=2179',
+        '|--F--Concert' => '&sub_category=2180',
+        '|--F--Documentaire' => '&sub_category=2181',
+        '|--F--Emission TV' => '&sub_category=2182',
+        '|--F--Film' => '&sub_category=2183',
+        '|--F--Série TV' => '&sub_category=2184',
+        '|--F--Spectacle' => '&sub_category=2185',
+        '|--F--Sport' => '&sub_category=2186',
+        '|--F--Vidéo-clips' => '&sub_category=2187',
         '|--Audio' => '&category=2139',
-        '|--A--Karaoké' => '&subcategory=2147',
-        '|--A--Musique' => '&subcategory=2148',
-        '|--A--Podcast Radio' => '&subcategory=2150',
-        '|--A--Samples' => '&subcategory=2149',
+        '|--A--Karaoké' => '&sub_category=2147',
+        '|--A--Musique' => '&sub_category=2148',
+        '|--A--Podcast Radio' => '&sub_category=2150',
+        '|--A--Samples' => '&sub_category=2149',
         '|--Application' => '&category=2144',
-        '|--A--Autre' => '&subcategory=2177',
-        '|--A--Formation' => '&subcategory=2176',
-        '|--A--Linux' => '&subcategory=2171',
-        '|--A--MacOS' => '&subcategory=2172',
-        '|--A--Smartphone' => '&subcategory=2174',
-        '|--A--Tablette' => '&subcategory=2175',
-        '|--A--Windows' => '&subcategory=2173',
+        '|--A--Autre' => '&sub_category=2177',
+        '|--A--Formation' => '&sub_category=2176',
+        '|--A--Linux' => '&sub_category=2171',
+        '|--A--MacOS' => '&sub_category=2172',
+        '|--A--Smartphone' => '&sub_category=2174',
+        '|--A--Tablette' => '&sub_category=2175',
+        '|--A--Windows' => '&sub_category=2173',
         '|--Jeu-vidéo' => '&category=2142',
-        '|--J--Autre' => '&subcategory=2167',
-        '|--J--Linux' => '&subcategory=2159',
-        '|--J--MacOS' => '&subcategory=2160',
-        '|--J--Microsoft' => '&subcategory=2162',
-        '|--J--Nintendo' => '&subcategory=2163',
-        '|--J--Smartphone' => '&subcategory=2165',
-        '|--J--Sony' => '&subcategory=2164',
-        '|--J--Tablette' => '&subcategory=2166',
-        '|--J--Windows' => '&subcategory=2161',
+        '|--J--Autre' => '&sub_category=2167',
+        '|--J--Linux' => '&sub_category=2159',
+        '|--J--MacOS' => '&sub_category=2160',
+        '|--J--Microsoft' => '&sub_category=2162',
+        '|--J--Nintendo' => '&sub_category=2163',
+        '|--J--Smartphone' => '&sub_category=2165',
+        '|--J--Sony' => '&sub_category=2164',
+        '|--J--Tablette' => '&sub_category=2166',
+        '|--J--Windows' => '&sub_category=2161',
         '|--eBook' => '&category=2140',
-        '|--E--Audio' => '&subcategory=2151',
-        '|--E--Bds' => '&subcategory=2152',
-        '|--E--Comics' => '&subcategory=2153',
-        '|--E--Livres' => '&subcategory=2154',
-        '|--E--Mangas' => '&subcategory=2155',
-        '|--E--Presse' => '&subcategory=2156',
+        '|--E--Audio' => '&sub_category=2151',
+        '|--E--Bds' => '&sub_category=2152',
+        '|--E--Comics' => '&sub_category=2153',
+        '|--E--Livres' => '&sub_category=2154',
+        '|--E--Mangas' => '&sub_category=2155',
+        '|--E--Presse' => '&sub_category=2156',
         '|--Emulation' => '&category=2141',
-        '|--E--Emulateurs' => '&subcategory=2157',
-        '|--E--Roms' => '&subcategory=2158',
+        '|--E--Emulateurs' => '&sub_category=2157',
+        '|--E--Roms' => '&sub_category=2158',
         '|--GPS' => '&category=2143',
-        '|--G--Applications' => '&subcategory=2168',
-        '|--G--Cartes' => '&subcategory=2169',
-        '|--G--Divers' => '&subcategory=2170',
+        '|--G--Applications' => '&sub_category=2168',
+        '|--G--Cartes' => '&sub_category=2169',
+        '|--G--Divers' => '&sub_category=2170',
         '|--XXX' => '&category=2188',
-        '|--X--Films' => '&subcategory=2189',
-        '|--X--Hentai' => '&subcategory=2190',
-        '|--X--Images' => '&subcategory=2191',
+        '|--X--Films' => '&sub_category=2189',
+        '|--X--Hentai' => '&sub_category=2190',
+        '|--X--Images' => '&sub_category=2191',
     );
-
-    protected static $seconds = array
-    (
-        'seconde'	=>1,
-        'minute'	=>60,
-        'heure'		=>3600,
-        'jour'		=>86400,
-        'mois'		=>2592000,
-        'an'		=>31536000
-    );
-
-    protected static function getTime( $now, $ago, $unit )
-    {
-        $delta = (array_key_exists($unit,self::$seconds) ? self::$seconds[$unit] : 0);
-        return( $now-($ago*$delta) );
-    }
 
     private $category_mapping = array(
-        'filmvidéo' => 'Film/Vidéos',
-        'jeu-vidéo' => 'Jeux',
+        'filmvidéo' => 'Film/Vidéos'
     );
 
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
         if($useGlobalCats) {
-            $categories = array('all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&subcategory=2178", 'software' => "&category=2144", 'books' => "&category=2140");
+            $categories = array('all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&sub_category=2178", 'software' => "&category=2144", 'books' => "&category=2140");
             $defaultCat = 'all';
         } else {
             $categories = &$this->categories;
@@ -105,47 +88,44 @@ class YggTorrentEngine extends commonEngine
         $what = rawurlencode(rawurldecode($what));
 
         // Initial search to retrieve the page count
-        $search = self::URL . '/engine/search?q=' . $what . $catParameters;
+        $search = self::URL . '/engine/search/?name=' . $what . $catParameters . '&do=search';
         $cli = $this->fetch($search);
 
         // Check if we have results
-        if (($cli == false) || (strpos($cli->results, "download_torrent") === false)) {
+        if (($cli == false) || (strpos($cli->results, "Aucun résultat !") !== false)) {
             return;
         }
 
+        $nbRet = preg_match_all('`>(?P<results>\d+) résultats trouvés`', $cli->results, $retPage);
+        $nbResults = $retPage['results'][0];
         // Check if there is only one page
-        if (strpos($cli->results, '<ul class="pagination">') === false) {
+        if (!$nbRet) {
+            return;
+        } else if ($nbResults <= self::PAGE_SIZE) {
             $maxPage = 1;
         } else {
             // Retrieve the page count
-            $nbRet = preg_match_all('`data-ci-pagination-page="(?P<page>\d+)"`', $cli->results, $retPage);
-            if ($nbRet) {
-                $nbPage = max($retPage['page']);
-                $maxPage = $nbPage < self::MAX_PAGE ? $nbPage : self::MAX_PAGE;
-            } else {
-                return;
-            }
+            $nbPage = ceil($nbResults / self::PAGE_SIZE);
+            $maxPage = $nbPage < self::MAX_PAGE ? $nbPage : self::MAX_PAGE;
         }
 
         for ($page = 1; $page <= $maxPage; $page++) {
             // We already have results for the first page
             if ($page !== 1) {
                 $pg = ($page - 1) * self::PAGE_SIZE;
-                $search = self::URL . '/engine/search?q=' . $what . '&page=' . $pg . $catParameters;
+                $search = self::URL . '/engine/search/?name=' . $what . '&page=' . $pg . $catParameters . '&do=search';
                 $cli = $this->fetch($search);
             }
 
             $res = preg_match_all(
-                '`<tr>.*<a class="torrent-name" href="(?P<desc>.*)">(?P<name>.*)</a>' .
-                '.*<a.*/download_torrent\?id=(?P<id>.*)">.*dans <i><a>(?P<subcat>.*)</a>' .
-                '.*<td><i.*>.*</i>.*(?P<ago>\d+) (?P<unit>(seconde|minute|heure|jour|mois|an)).*</td>.*<td>(?P<size>.*)</td>' .
-                '.*<td.*>(?P<seeder>.*)</td.*>.*<td.*>(?P<leecher>.*)</td.*>.*</tr>`siU',
+                '`<tr>(.*)<a href=".*url_builder.*</a>.*<a href="(?P<desc>http.*/torrent/.*)">(?P<name>.*)>.*' .
+                '<a target="(?P<id>.*)".*>.*<div class="hidden">(?P<timestamp>.*)</div>.*<td>(?P<size>.*)</td>' .
+                '.*<td>(?P<completed>.*)</td>.*<td>(?P<seeder>.*)</td>.*<td>(?P<leecher>.*)</td>.*</tr>`siU',
                 $cli->results,
                 $matches
             );
 
             if ($res) {
-                $now = time();
                 for ($i = 0; $i < $res; $i++) {
                     $link = self::URL . "/engine/download_torrent?id=" . $matches["id"][$i];
                     if (!array_key_exists($link, $ret)) {
@@ -160,12 +140,12 @@ class YggTorrentEngine extends commonEngine
                         $cat = preg_match_all('`' . self::URL . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
                         if ($cat) {
                             $cat1 = $this->getPrettyCategoryName($catRes['cat1'][0]);
-                            $cat2 = $matches['subcat'][$i];
+                            $cat2 = $this->getPrettyCategoryName($catRes['cat2'][0]);
                             $item["cat"] = $cat1 . ' > ' . $cat2;
                         }
 
                         // We only have the time since the upload, so let's try to convert that...
-                        $item["time"] = self::getTime( $now, $matches["ago"][$i], $matches["unit"][$i] );
+                        $item["time"] = $matches["timestamp"][$i];
 
                         $item["seeds"] = intval(self::removeTags($matches["seeder"][$i]));
                         $item["peers"] = intval(self::removeTags($matches["leecher"][$i]));
@@ -187,7 +167,7 @@ class YggTorrentEngine extends commonEngine
         if (array_key_exists($input, $this->category_mapping)) {
             return $this->category_mapping[$input];
         } else {
-            return ucwords($input);
+            return ucwords(str_replace('-', ' ', $input));
         }
     }
 }
