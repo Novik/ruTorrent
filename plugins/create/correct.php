@@ -68,6 +68,12 @@ if( count( $argv ) > 1 )
 		{
 			$torrent->is_private(true);
 		}
+		if(isset($request['source']))
+		{
+			$source = trim($request['source']);
+			if(strlen($source))
+				$torrent->source($source);
+		}
 		$fname = rTask::formatPath($taskNo)."/result.torrent";
 		$torrent->save($fname);
 
