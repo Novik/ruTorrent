@@ -219,7 +219,7 @@ theWebUI.RSSMarkState = function( state )
 theWebUI.RSSOpen = function()
 {
 	for(var i = 0; i<this.rssArray.length; i++)
-		window.open(this.rssItems[this.rssArray[i]].guid,"_blank");
+		window.open(this.rssArray[i],"_blank");
 }
 
 theWebUI.RSSLoad = function()
