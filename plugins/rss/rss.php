@@ -177,7 +177,7 @@ class rRSS
 				$ret = preg_match_all("'<item(| .*?)>(.*?)</item>'si", $cli->results, $items);
 				if(($ret!==false) && ($ret>0))
 				{
-					foreach($items[2] as $rssItem)
+					foreach($items as $rssItem)
 					{
 						$item = array();
 						foreach($this->itemtags as $itemtag)
