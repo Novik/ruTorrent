@@ -57,10 +57,7 @@ class RARbgTorrentAPIEngine extends commonEngine
 			else
 				$categories = &$this->categories;
 
-			if(!array_key_exists($cat,$categories))
-				$cat = $categories['all'];
-			else
-				$cat = $categories[$cat];
+			$cat = (!array_key_exists($cat,$categories)) ? $categories['all'] : $categories[$cat];
 
         		$cli = $this->fetch( "https://torrentapi.org/pubapi_v2.php?app_id=ruTorrent_extsearch&token=$token&format=json_extended&mode=search&search_string=$what&category=$cat" );
 			if( $cli && ($obj = json_decode($cli->results)) && property_exists($obj,"torrent_results") )
