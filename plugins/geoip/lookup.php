@@ -10,6 +10,7 @@
 	}
 
 	$retrieveCountry = ($retrieveCountry && function_exists("geoip_country_code_by_name"));
+	$retrieveCountryIPv6 = ($retrieveCountry && function_exists("geoip_country_code_by_name_v6"));
 	$retrieveComments = ($retrieveComments && sqlite_exists());
 	$ret = array();
 	$dns = null;
@@ -49,6 +50,8 @@
 						}
 						if(!isValidCode($country) )
 							$country = @geoip_country_code_by_name( $value );
+						if(!isValidCode($country) && substr($value, 0, 1) == '[' && $retrieveCountryIPv6)
+							$country = @geoip_country_code_by_name_v6( substr($value, 1, -1) );
 						if(!isValidCode($country))
 							$country = "un";
 						else
