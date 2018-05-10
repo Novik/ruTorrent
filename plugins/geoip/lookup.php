@@ -92,7 +92,7 @@
 						} 
 						else 
 						{
-                                                	$host = gethostbyaddr($value);
+                                                	$host = gethostbyaddr(preg_replace('/^\[?(.+?)\]?$/', '$1', $value));
 	                                                if(empty($host) || (strlen($host)<2))
         	                                                $host = $value;
 						}
