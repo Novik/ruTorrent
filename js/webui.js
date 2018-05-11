@@ -109,7 +109,7 @@ var theWebUI =
 			ondblclick:	function(obj) 
 			{ 
 				if(obj.id && theWebUI.peers[obj.id])
-					window.open(theURLs.RIPEURL + theWebUI.peers[obj.id].ip, "_blank");
+					window.open(theURLs.RIPEURL + theWebUI.peers[obj.id].ip.replace(/^\[?(.+?)\]?$/, '$1'), "_blank");
 				return(false);
 			}
 		},
