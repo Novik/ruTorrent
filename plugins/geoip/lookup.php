@@ -21,7 +21,7 @@
 		if($dnsResolver && $retrieveHost)
 		{
 			$dns = fsockopen("udp://".$dnsResolver, 53);
-			$randbase = rand(0, 256) * 256;
+			$randbase = rand(0, 32000);
 			$idx = 0;
 		}
 		$vars = explode('&', $HTTP_RAW_POST_DATA);
