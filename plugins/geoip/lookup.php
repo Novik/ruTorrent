@@ -83,9 +83,18 @@
 						{
 							$pkt = pack("n", $randbase + $idx) . "\1\0\0\1\0\0\0\0\0\0";
 							$ipmap[$value] = $idx++;
-							foreach (array_reverse(explode(".", $value)) as $part)
-								$pkt .= chr(strlen($part)) . $part;
-							$pkt .= "\7in-addr\4arpa\0\0\x0C\0\1";
+							if (substr($value, 0, 1) == '[')
+							{
+								$a = '';
+								foreach(str_split(inet_pton(substr($value, 1, -1))) as $char) $a .= str_pad(dechex(ord($char)), 2, '0', STR_PAD_LEFT);
+								$pkt .= "\1" . implode("\1", str_split(strrev($a))) . "\3ip6\4arpa\0\0\x0C\0\1";
+							}
+							else
+							{
+								foreach (array_reverse(explode(".", $value)) as $part)
+									$pkt .= chr(strlen($part)) . $part;
+								$pkt .= "\7in-addr\4arpa\0\0\x0C\0\1";
+							}
 							fwrite($dns, $pkt);
 							fflush($dns);
 							$host = $value;
