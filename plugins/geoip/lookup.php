@@ -115,6 +115,7 @@
 			{
 				$pos = 12;
 				$ip = array();
+				$id = ord($buf[0]) * 256 + ord($buf[1]) - $randbase;
 				while($count = ord($buf[$pos++])) 
 				{
 					if(count($ip) < 4)
@@ -149,7 +150,7 @@
 				if($host) 
 				{
 					$host = implode(".", $host);
-					$ret[$ipmap[$ip]]["info"]["host"] = $host;
+					$ret[$id]["info"]["host"] = $host;
 				}
 			}
 			fclose($dns);
