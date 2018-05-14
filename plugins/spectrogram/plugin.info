@@ -6,3 +6,4 @@ rtorrent.external.error: sox
 plugin.dependencies: _task
 plugin.runlevel: 12
 php.extensions.error: json
+plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginSpectrogram

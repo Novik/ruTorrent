@@ -768,9 +768,7 @@ var theSearchEngines =
 {
 	sites:
 	[
-		{ name: 'Mininova', 		url: 'http://www.mininova.org/search/?utorrent&search=' },
 		{ name: 'The Pirate Bay', 	url: 'http://thepiratebay.org/search.php?q=' },
-		{ name: 'IsoHunt', 		url: 'http://isohunt.com/torrents.php?ext=&op=and&ihq=' },
 		{ name: '', 			url: '' },
 		{ name: 'Google', 		url: 'http://google.com/search?q=' }
 	],
