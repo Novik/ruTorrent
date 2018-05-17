@@ -3,36 +3,39 @@ plugin.loadLang();
 if(plugin.canChangeColumns()) {
 	plugin.config = theWebUI.config;
 	theWebUI.config = function(data) {
-		/* Add the columns to the torrent list */
+		// Add the columns to the torrent list
 		theWebUI.tables.trt.columns.push({text: "UL target", width: "100px", id: "upload_target", type: TYPE_NUMBER});
 		theWebUI.tables.trt.columns.push({text: "UL remaining", width: "100px", id: "upload_remaining", type: TYPE_NUMBER});
 		theWebUI.tables.trt.columns.push({text: "UL ETA", width: "100px", id: "upload_eta", type: TYPE_NUMBER});
 
-		/* Use the formatter to add data to the columns */
-		plugin.trtFormat = theWebUI.tables.trt.format;
+		// Format the data
+		plugin.webui_tables_trt_format = theWebUI.tables.trt.format;
 		theWebUI.tables.trt.format = function(table, arr) {
 			for(var i in arr) {
 				switch(table.getIdByCol(i)){
 					case "upload_target":
-						plugin.upload_target = parseInt(arr[2]) * (theWebUI.uploadtarget/100);
-						arr[i] = theConverter.bytes(plugin.upload_target, 2);
+						arr[i] = theConverter.bytes(arr[i], 2);
 						break;
 					case "upload_remaining":
-						plugin.upload_remaining = plugin.upload_target - arr[5];
-						if (plugin.upload_remaining<=0)
-							arr[i] = theConverter.bytes(0, 2);
-						else
-							arr[i] = theConverter.bytes(plugin.upload_remaining, 2);
+						arr[i] = theConverter.bytes(arr[i], 2);
 						break;
 					case "upload_eta":
-						if (plugin.upload_remaining<=0)
-							arr[i] = "";
-						else
-							arr[i] = (arr[8]>0) ? theConverter.time(Math.floor(plugin.upload_remaining/arr[8])) : "\u221e";
+						arr[i] = (arr[i]>0) ? theConverter.time(arr[i]) : "\u221e";
 						break;
 				}
 			}
-			return(plugin.trtFormat(table, arr));
+			return(plugin.webui_tables_trt_format(table, arr));
+		}
+
+		// Add the data to the torrent
+		theWebUI.webui_addTorrents = theWebUI.addTorrents;
+		theWebUI.addTorrents = function(data){
+			$.each(data.torrents, function(hash, torrent){
+				torrent.upload_target = parseInt(torrent.size) * (theWebUI.uploadtarget/100);
+				torrent.upload_remaining = torrent.upload_target - torrent.uploaded;
+				torrent.upload_eta = Math.floor(torrent.upload_remaining/torrent.ul);
+			});
+			theWebUI.webui_addTorrents(data);
 		}
 		plugin.config.call(this,data);
 		plugin.trtRenameColumn();
@@ -51,9 +54,9 @@ plugin.trtRenameColumn = function() {
 
 /* Create option page */
 plugin.onLangLoaded = function() {
-var input = "<fieldset><legend>"+theUILang.uploadtarget+"</legend><div><input id='uploadtarget' type='text' size='2' onkeypress='return isNumberKey(event);'/>%</div></fieldset>";
-var description = "<div>"+theUILang.ULdescription+"</div>";
-this.attachPageToOptions($("<div>").attr("id","st_uploadeta").html(input + description)[0], theUILang.uploadeta);
+	var input = "<fieldset><legend>"+theUILang.uploadtarget+"</legend><div><input id='uploadtarget' type='text' size='2' onkeypress='return isNumberKey(event);'/>%</div></fieldset>";
+	var description = "<div>"+theUILang.ULdescription+"</div>";
+	this.attachPageToOptions($("<div>").attr("id","st_uploadeta").html(input + description)[0], theUILang.uploadeta);
 }
 
 /* Field shoud be numbers only */
