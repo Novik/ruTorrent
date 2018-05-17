@@ -1,6 +1,6 @@
 plugin.description: Add upload target and ETA columns to torrent list
 plugin.author: W8
-plugin.version: 1.0
+plugin.version: 1.1
 plugin.runlevel: 14
 rtorrent.remote: error
 php.extensions.error: json
