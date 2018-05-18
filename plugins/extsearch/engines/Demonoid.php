@@ -9,15 +9,18 @@ class DemonoidEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.demonoid.me';
+		$url = 'http://www.demonoid.pw';
+
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'movies'=>'1', 'tv'=>'3', 'music'=>'2', 'games'=>'4', 'anime'=>'9', 'software'=>'5', 'pictures'=>'8', 'books'=>'11' );
 		else
 			$categories = &$this->categories;
+
 		if(!array_key_exists($cat,$categories))
 			$cat = $categories['all'];
 		else
 			$cat = $categories[$cat];
+
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/files/?subcategory=All&quality=All&seeded=0&external=2&uid=0&sort=S&query='.$what.'&category='.$cat.'&page='.$pg );
