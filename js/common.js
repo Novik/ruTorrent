@@ -1146,13 +1146,13 @@ var theBTClientVersion =
 		'AZ' : "Azureus", 'KT' : "KTorrent", "BF" : "BitFlu",
 	        'LW' : "LimeWire", "BB" : "BitBuddy", "BR" : "BitRocket",
 		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant",
-		"SK" : "Spark", "tT" : "tTorrent"
+		"SK" : "Spark", "tT" : "tTorrent", "FD" : "Free Download Manager"
 	},
 	shLikeClients:
 	{
 		'O' : "Osprey ", 'Q' : "BTQueue",
         	'A' : "ABC", 'R' : "Tribler", 'S' : "Shad0w",
-	        'T': "BitTornado", 'U': "UPnP NAT Bit Torrent"
+	        'T' : "BitTornado", 'U': "UPnP NAT Bit Torrent"
 	},
 	get: function( origStr )
 	{
@@ -1168,6 +1168,14 @@ var theBTClientVersion =
 		function shChar2( ch )
 		{
 			var codes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-";
+			var loc = codes.indexOf(ch);
+			if(loc<0) loc = 0;
+			return(String(loc));
+		}
+
+		function shChar3( ch )
+		{
+			var codes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz";
 			var loc = codes.indexOf(ch);
 			if(loc<0) loc = 0;
 			return(String(loc));
@@ -1199,9 +1207,11 @@ var theBTClientVersion =
 						ret = cli;
 						break;
 					case 'BT':
+						ret = cli+" "+shChar2(str.charAt(3))+"."+shChar2(str.charAt(4))+"."+shChar2(str.charAt(5))+getMnemonicEnd(str.charAt(6));
+						break;
 					case 'UT':
 					case 'UM':
-						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5)+getMnemonicEnd(str.charAt(6));
+						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+"."+shChar(str.charAt(5))+getMnemonicEnd(str.charAt(6));
 						break;
 					case 'TR':
 						if(str.substr(3,2)=='00')
@@ -1245,10 +1255,13 @@ var theBTClientVersion =
 						ret = cli+" "+shChar(str.charAt(3))+"."+shChar(str.charAt(4))+" ("+parseInt(str.substr(5,2),10)+")";
 						break;
 					case 'LP':
-                                                ret = cli+" "+parseInt(str.substr(3,1),10)+"."+parseInt(str.substr(5,2),10);
+						ret = cli+" "+parseInt(str.substr(3,1),10)+"."+parseInt(str.substr(5,2),10);
 						break;
 					case 'tT':
 						ret = cli+" "+shChar2(str.charAt(3))+"."+shChar2(str.charAt(4))+"."+shChar2(str.charAt(5))+"."+shChar2(str.charAt(6));
+						break;
+					case 'FD':
+						ret = cli+" "+shChar3(str.charAt(3))+"."+shChar3(str.charAt(4))+"."+shChar3(str.charAt(5));
 						break;
 					default:
 						var ch = str.charAt(6);
@@ -1304,6 +1317,9 @@ var theBTClientVersion =
 			else
 			if(str.match(/^-BT/))
 				ret = "BitTorrent "+str.charAt(3)+"."+parseInt(str.substr(4,2),10)+"."+parseInt(str.substr(6,2),10)+getMnemonicEnd(str.charAt(8));
+			else
+			if(str.match(/^-UT/))
+				ret = "uTorrent "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5);
 			else
 			if(str.match(/^-FG\d\d\d\d/))
 				ret = "FlashGet "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
@@ -1379,6 +1395,9 @@ var theBTClientVersion =
 			else
 			if(str.match(/^-WT-/))
 				ret = "BitLet "+str.charAt(4)+"."+str.charAt(5)+"."+str.charAt(6)+"."+str.charAt(7);
+			else
+			if(str.match(/^T?IX/))
+				ret = "Tixati "+str.charAt(4)+"."+str.charAt(5)+str.charAt(6);
 			else
 			{
 				var mod = null;
