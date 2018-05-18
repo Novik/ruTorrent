@@ -17,7 +17,7 @@ if(plugin.canChangeColumns()) {
 						arr[i] = theConverter.bytes(arr[i], 2);
 						break;
 					case "upload_remaining":
-						arr[i] = theConverter.bytes(arr[i], 2);
+						arr[i] = (arr[i]>0) ? theConverter.bytes(arr[i], 2) : theConverter.bytes(0, 2);
 						break;
 					case "upload_eta":
 						arr[i] = (arr[i]>0) ? theConverter.time(arr[i]) : "\u221e";
