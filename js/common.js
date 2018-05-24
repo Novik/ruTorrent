@@ -704,7 +704,7 @@ var theFormatter =
       					arr[i] = theFormatter.trackerType(arr[i]);
 	      				break;
       				case 'enabled' :
-      				case 'private' : 
+      				case 'private' :
       					arr[i] = theFormatter.yesNo(arr[i]);
       					break;
       				case 'interval' :
@@ -1102,7 +1102,6 @@ rDirectory.prototype.setDirectory = function(name)
 	this.current = name;
 }
 
-// -FL10%FF%86-
 // -SM1310-
 
 var theBTClientVersion =
@@ -1115,13 +1114,13 @@ var theBTClientVersion =
 		"BW" : "BitWombat", "BX" : "BittorrentX", "EB" : "EBit",
 		"DE" : "Deluge", "DP" : "Propogate Data Client", "FC" : "FileCroc",
 		"FT" : "FoxTorrent/RedSwoosh", "GR" : "GetRight", "HN" : "Hydranode",
-		"LC" : "LeechCraft", "LH" : "LH-ABC", "NX" : "Net Transport",
+		"JS" : "justseed.it", "LC" : "LeechCraft", "LH" : "LH-ABC", "NX" : "Net Transport",
 		"MO" : "MonoTorrent", "MR" : "Miro", "MT" : "Moonlight",
 		"OT" : "OmegaTorrent", "PD" : "Pando", "QD" : "QQDownload",
 		"RS" : "Rufus", "RT" : "Retriever", "RZ" : "RezTorrent",
 		"SD" : "Xunlei", "SS" : "SwarmScope", "SZ" : "Shareaza",
 		"S~" : "Shareaza beta", "st" : "SharkTorrent", "TN" : "Torrent .NET",
-		"TS" : "TorrentStorm", "UL" : "uLeecher!", "VG" : "Vagaa",
+		"TS" : "TorrentStorm", "UL" : "uLeecher!", "UW" : "uTorrent Web", "VG" : "Vagaa",
 		"WY" : "Wyzo", "XL" : "Xunlei",
 		"XT" : "XanTorrent", "ZT" : "Zip Torrent",
 		'GS' : "GSTorrent", 'KG' : "KGet", 'ST' : "SymTorrent",
@@ -1366,6 +1365,9 @@ var theBTClientVersion =
 			if(str.match(/^AP/))
 				ret = "AllPeers "+str.substr(2,4);
 			else
+			if(str.match(/^-BL\d\d\d\d\d\d/))
+				ret = "BitCometLite";
+			else
 			if(str.match(/^DNA\d\d\d\d\d\d/))
 				ret = "BitTorrent DNA "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10)+"."+parseInt(str.substr(7,2),10);
 			else
@@ -1396,7 +1398,7 @@ var theBTClientVersion =
 			if(str.match(/^-WT-/))
 				ret = "BitLet "+str.charAt(4)+"."+str.charAt(5)+"."+str.charAt(6)+"."+str.charAt(7);
 			else
-			if(str.match(/^T?IX/))
+			if(str.match(/^-?TI?X/))
 				ret = "Tixati "+str.charAt(4)+"."+str.charAt(5)+str.charAt(6);
 			else
 			{
@@ -1443,7 +1445,7 @@ function getCSSRule( selectorText )
 		try {
 		if(document.styleSheets[i].cssRules)
 			crossrule=document.styleSheets[i].cssRules;
-		else 
+		else
 			if(document.styleSheets[i].rules)
 				crossrule=document.styleSheets[i].rules;
 		} catch(e) {}
