@@ -6,7 +6,7 @@ if(plugin.canChangeColumns())
 	theWebUI.config = function(data)
 	{
 		this.tables.trt.columns.push({text: 'SeedingTime', width: '100px', id: 'seedingtime', type: TYPE_NUMBER});
-		this.tables.trt.columns.push({text: 'AddTime', width: '100px', id: 'addtime', type: TYPE_NUMBER});
+		this.tables.trt.columns.push({text: 'AddTime', width: '110px', id: 'addtime', type: TYPE_NUMBER});
 		plugin.trtFormat = this.tables.trt.format;
 		this.tables.trt.format = function(table,arr)
 		{

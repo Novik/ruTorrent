@@ -24,7 +24,7 @@ theWebUI.config = function(data)
 {
 	if(plugin.canChangeColumns())
 	{
-		theWebUI.tables.trt.columns.push({ text: 'RatioGroup', width: '60px', id: 'ratiogroup', type: TYPE_STRING});
+		theWebUI.tables.trt.columns.push({ text: 'RatioGroup', width: '80px', id: 'ratiogroup', type: TYPE_STRING});
 		plugin.trtFormat = this.tables.trt.format;
 		theWebUI.tables.trt.format = function(table,arr)
 		{
