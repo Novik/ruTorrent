@@ -66,7 +66,7 @@ theWebUI.config = function(data)
 	{
 		if(plugin.retrieveCountry)
 		{
-			this.tables.prs.columns.unshift({text : 'Country', width : '60px', id: 'country', type : TYPE_STRING});
+			this.tables.prs.columns.unshift({text : 'Country', width : '120px', id: 'country', type : TYPE_STRING});
 			plugin.prsFormat = this.tables.prs.format;
 			theWebUI.tables.prs.format = function(table,arr)
 			{

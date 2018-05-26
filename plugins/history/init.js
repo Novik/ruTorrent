@@ -130,15 +130,15 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 				[
 					{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING }, 
 		      			{ text: theUILang.Status, 		width: "100px",	id: "status",		type: TYPE_STRING },
-					{ text: 'Time',	 			width: "100px", id: "time",		type: TYPE_NUMBER }, 
+					{ text: 'Time',	 			width: "110px", id: "time",		type: TYPE_NUMBER }, 
 			   		{ text: theUILang.Size, 		width: "60px",	id: "size", 		type: TYPE_NUMBER },
 					{ text: theUILang.Downloaded, 		width: "100px",	id: "downloaded",	type: TYPE_NUMBER },
 					{ text: theUILang.Uploaded, 		width: "100px",	id: "uploaded",		type: TYPE_NUMBER },
 					{ text: theUILang.Ratio, 		width: "60px",	id: "ratio",		type: TYPE_NUMBER },
 					{ text: theUILang.Label, 		width: "60px", 	id: "label",		type: TYPE_STRING },
-					{ text: theUILang.Created_on,		width: "100px", id: "created",		type: TYPE_NUMBER },
-					{ text: 'SeedingTime', 			width: '100px', id: 'seedingtime', 	type: TYPE_NUMBER },
-					{ text: 'AddTime', 			width: '100px', id: 'addtime', 		type: TYPE_NUMBER },
+					{ text: theUILang.Created_on,		width: "110px", id: "created",		type: TYPE_NUMBER },
+					{ text: 'SeedingTime', 			width: '110px', id: 'seedingtime', 	type: TYPE_NUMBER },
+					{ text: 'AddTime', 			width: '110px', id: 'addtime', 		type: TYPE_NUMBER },
 					{ text: 'Tracker', 			width: '100px', id: 'tracker', 		type: TYPE_STRING }
 				],
 				format:	function(table,arr)
@@ -178,7 +178,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 
 		if(plugin.canChangeColumns())
 		{
-			this.tables.trt.columns.push({text: 'PushBullet', width: '100px', id: 'pushbullet', type: TYPE_NUMBER});
+			this.tables.trt.columns.push({text: 'PushBullet', width: '80px', id: 'pushbullet', type: TYPE_NUMBER});
 			plugin.trtFormat = this.tables.trt.format;
 			this.tables.trt.format = function(table,arr)
 			{
