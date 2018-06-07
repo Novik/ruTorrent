@@ -879,16 +879,13 @@ class rRSSManager
 	}
 	protected function changeFiltersHash($oldHash,$newHash)
 	{
-error_log("From ".$oldHash." to ".$newHash);
 		$flts = new rRSSFilterList();
                 $this->cache->get($flts);
 		$changed = false;
 		foreach($flts->lst as $filter)
 		{
-error_log($filter->rssHash);
 			if($filter->rssHash==$oldHash)
 			{
-error_log("!!!");
 				$filter->rssHash = $newHash;
 				$changed = true;
 			}

@@ -65,17 +65,17 @@ class rScheduler
 			}
 		}
 		if(isset($_REQUEST['UL0']))
-			$this->UL[0] = $_REQUEST['UL0'];
+			$this->UL[0] = intval($_REQUEST['UL0']);
 		if(isset($_REQUEST['DL0']))
-			$this->DL[0] = $_REQUEST['DL0'];
+			$this->DL[0] = intval($_REQUEST['DL0']);
 		if(isset($_REQUEST['UL1']))
-			$this->UL[1] = $_REQUEST['UL1'];
+			$this->UL[1] = intval($_REQUEST['UL1']);
 		if(isset($_REQUEST['DL1']))
-			$this->DL[1] = $_REQUEST['DL1'];
+			$this->DL[1] = intval($_REQUEST['DL1']);
 		if(isset($_REQUEST['UL2']))
-			$this->UL[2] = $_REQUEST['UL2'];
+			$this->UL[2] = intval($_REQUEST['UL2']);
 		if(isset($_REQUEST['DL2']))
-			$this->DL[2] = $_REQUEST['DL2'];
+			$this->DL[2] = intval($_REQUEST['DL2']);
 		if(isset($_REQUEST['enabled']))
 			$this->enabled = $_REQUEST['enabled'];
                 $this->apply();
