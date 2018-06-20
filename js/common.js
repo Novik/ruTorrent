@@ -1570,42 +1570,6 @@ function getCRC( str, crc )
 	return(crc);
 }
 
-function json_encode(obj)
-{
-	switch($type(obj))
-	{
-		case "number":
-			return(String(obj));
-		case "boolean":
-			return(obj ? "1" : "0");
-		case "string":
-			return('"'+addslashes(obj)+'"');
-		case "array":
-		{
-		        var s = '';
-		        $.each(obj,function(key,item)
-		        {
-		                if(s.length)
-                			s+=",";
-		        	s += json_encode(item);
-		        });
-			return("["+s+"]");
-		}
-		case "object":
-		{
-		        var s = '';
-		        $.each(obj,function(key,item)
-		        {
-		                if(s.length)
-                			s+=",";
-		        	s += ('"'+key+'":'+json_encode(item));
-		        });
-			return("{"+s+"}");
-		}
-	}
-	return("null");
-}
-
 function strip_tags(input, allowed)
 {
 	allowed = (((allowed || '') + '')

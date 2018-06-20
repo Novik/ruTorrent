@@ -801,7 +801,7 @@ var theWebUI =
 			if((/^webui\./).test(i))
 				cookie[i] = v;
 		});
-		theWebUI.request("?action=setuisettings&v=" + json_encode(cookie),reply);
+		theWebUI.request("?action=setuisettings&v=" + JSON.stringify(cookie),reply);
 	},
 
 //
@@ -1552,7 +1552,7 @@ var theWebUI =
 			{	 
 				theWebUI.systemInfo.rTorrent.started = false;
 	   			theWebUI.error(status,text); 
-				if(theWebUI.settings["webui.retry_on_error"]!=0)
+				if(theWebUI.settings["webui.retry_on_error"])
 					theWebUI.setInterval( iv(theWebUI.settings["webui.retry_on_error"])*1000 );
 		   	});
    	},
