@@ -1323,10 +1323,10 @@ var theWebUI =
 // torrents
 //
 
-	trtSelect: function(e, id) 
+	trtSelect: function(e, id)
 	{
 		var table = theWebUI.getTable("trt");
-      		var hash = table.getFirstSelected();
+		var hash = table.getFirstSelected();
 		if((table.selCount==1) && hash)
 			theWebUI.showDetails(hash, true);
 		else
@@ -1334,12 +1334,32 @@ var theWebUI =
 			theWebUI.dID = "";
 			theWebUI.clearDetails();
 		}
-   		if(e.which==3) 
-   		{
-      			theWebUI.createMenu(e, id);
+		if(e.which==3)
+		{
+			theWebUI.trtSelectCheck();
+			theWebUI.createMenu(e, id);
 			theContextMenu.show(e.clientX,e.clientY);
-      		}
-   	},
+		}
+	},
+
+	trtSelectCheck: function()
+	{
+		var table = this.getTable("trt");
+		var sr = table.rowSel;
+		var tc = document.getElementById("List");
+		var rc = tc.getElementsByClassName("selected");
+		var rcArray = [];
+		for(var j in rc)
+		{
+			if(rc[j].id)
+				rcArray.push(rc[j].id);
+		}
+		for(var k in sr)
+		{
+			if(rcArray.indexOf(k) ==- 1)
+				sr[k] = false;
+		}
+	},
 
    	createMenu: function(e, id) 
 	{
