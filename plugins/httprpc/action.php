@@ -166,6 +166,12 @@ switch($mode)
 			);
 		if(rTorrentSettings::get()->iVersion>=0x900)
 			$cmds[5] = $cmds[6] = $cmds[7] = "cat";
+		if(rTorrentSettings::get()->apiVersion>=10)
+		{
+			$cmds[25] = "network.listen.is_open";
+			$cmds[27] = "network.port.randomize";
+			$cmds[28] = "network.port.range";
+		}
 		$req = new rXMLRPCRequest( new rXMLRPCCommand( "dht_statistics" ) );
 		foreach( $cmds as $cmd )
 			$req->addCommand( new rXMLRPCCommand( $cmd ) );	
