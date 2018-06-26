@@ -1341,6 +1341,14 @@ var theWebUI =
       		}
    	},
 
+	trtDeselect: function()
+	{
+		var table = this.getTable("trt");
+		var sr = table.rowSel;
+		for(var k in sr)
+			sr[k] = false;
+	},
+
    	createMenu: function(e, id) 
 	{
    		var table = this.getTable("trt");
@@ -1487,21 +1495,25 @@ var theWebUI =
 	start: function()
 	{	
 		this.perform("start");
+		theWebUI.trtDeselect();
 	},
 
 	pause: function()
 	{	
    		this.perform("pause");
+		theWebUI.trtDeselect();
    	},
 
 	stop: function()
 	{	
    		this.perform("stop");
+		theWebUI.trtDeselect();
    	},
 
    	updateTracker: function()
 	{	
    		this.perform("updateTracker");
+		theWebUI.trtDeselect();
    	},
 
 	remove: function()
@@ -1528,11 +1540,13 @@ var theWebUI =
 	recheck: function()
 	{	
 		this.perform("recheck");
+		theWebUI.trtDeselect();
    	},
 
    	recreate: function()
 	{	
 		this.perform("createqueued");
+		theWebUI.trtDeselect();
    	},
 
 	getTorrents: function(qs)
