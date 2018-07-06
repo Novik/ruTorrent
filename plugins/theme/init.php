@@ -5,18 +5,12 @@ $theme = rTheme::load();
 $jResult.=$theme->get();
 
 $themes = "plugin.themes = [";
-if($hth = opendir('../plugins/theme/themes')) 
+foreach(glob("../plugins/theme/themes/*",GLOB_ONLYDIR) as $path)
 {
-	while(false !== ($file = readdir($hth)))
-	{
-		if($file[0] != "." && is_dir('../plugins/theme/themes/'.$file))
-		{
-			if($themes != "plugin.themes = [")
-				$themes.=',';
-			$themes.=("'".$file."'");
-		}
-	}
-	closedir($hth);
+	if($themes != "plugin.themes = [")
+		$themes.=',';
+	$name = basename($path);
+	$themes.=("'".$name."'");
 }
 $jResult.=($themes.'];');
 
