@@ -2,7 +2,7 @@
 
 class TfileAccount extends commonAccount
 {
-	public $url = "http://www1.tfiles.cc";
+	public $url = "http://tfile-home.org";
 
 	protected function isOK($client)
 	{
