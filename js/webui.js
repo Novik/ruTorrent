@@ -1384,17 +1384,16 @@ var theWebUI =
 			theContextMenu.add([theUILang.updateTracker, this.isTorrentCommandEnabled("updateTracker",id) ? "theWebUI.updateTracker()" : null]);
    		theContextMenu.add([CMENU_SEP]);
    		var _bf = [];
-   		for(var lbl in this.cLabels) 
+		_bf.push([theUILang.New_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.newLabel()" : null]);
+   		_bf.push([theUILang.Remove_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.removeLabel()" : null]);
+   		_bf.push([CMENU_SEP]);
+		for(var lbl in this.cLabels) 
    		{
       			if((table.selCount == 1) && (this.torrents[id].label == lbl))
          			_bf.push([CMENU_SEL, lbl+" "]);
       			else 
          			_bf.push([lbl+" ", (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.setLabel('" + addslashes(lbl) + "')" : null]);
       		}
-      		if(_bf.length>0)
-	   		_bf.push([CMENU_SEP]);
-   		_bf.push([theUILang.New_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.newLabel()" : null]);
-   		_bf.push([theUILang.Remove_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.removeLabel()" : null]);
    		theContextMenu.add([CMENU_CHILD, theUILang.Labels, _bf]);
    		theContextMenu.add([CMENU_SEP]);
    		var _c0 = [];
