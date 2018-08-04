@@ -104,7 +104,15 @@ class rTask
 			}
 			self::clean($dir);
 		}
-		return(array( "no"=>$this->id, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array(count($commands) ? "Can't start operation" : "Incorrect target directory") ));
+		return(array
+		( 
+			"no"=>$this->id, 
+			"pid"=>0, 
+			"status"=>255, 
+			"log"=>array(), 
+			"params"=>array(), 
+			"errors"=>array(count($commands) ? "Can't start operation" : "Incorrect target directory") 
+		));
 	}
 
 	static public function clean( $dir )
@@ -190,7 +198,17 @@ class rTask
 	static public function check( $taskNo, $flags = null )
 	{
 		$dir = self::formatPath($taskNo);
-		$ret = array( "no"=>$taskNo, "pid"=>0, "status"=>-1, "log"=>array(), "errors"=>array(), "params"=>null, "start"=>@filemtime($dir.'/pid'), "finish"=>0 );
+		$ret = array
+		( 
+			"no"=>$taskNo, 
+			"pid"=>0, 
+			"status"=>-1, 
+			"log"=>array(), 
+			"errors"=>array(), 
+			"params"=>array(), 
+			"start"=>@filemtime($dir.'/pid'), 
+			"finish"=>0 
+		);
 		if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 		{
 			if(is_null($flags))
@@ -241,7 +259,15 @@ class rTask
 	static public function kill( $taskNo, $flags = null )
 	{
 		$dir = self::formatPath($taskNo);
-		$ret = array( "no"=>$taskNo, "pid"=>0, "status"=>-1, "log"=>array(), "errors"=>array() );
+		$ret = array
+		( 
+			"no"=>$taskNo, 
+			"pid"=>0, 
+			"status"=>-1, 
+			"log"=>array(), 
+			"params"=>array(), 
+			"errors"=>array() 
+		);
 		if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 		{
 			if(is_file($dir.'/status') && is_readable($dir.'/status'))
