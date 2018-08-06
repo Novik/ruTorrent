@@ -13,6 +13,11 @@ function eLog( $str )
 		toLog( "erasedata: ".$str );
 }
 
+function sortByLevel( $a, $b )
+{
+	return( strrpos($b,"/")-strrpos($a,"/") );
+}
+
 function parseOneItem($item)
 {
 	global $enableForceDeletion;
@@ -62,7 +67,7 @@ function parseOneItem($item)
 			else
 			{
 				$dirs = array_unique($dirs);
-				usort( $dirs, create_function( '$a,$b', 'return strrpos($b,"/")-strrpos($a,"/");' ) );
+				usort( $dirs, "sortByLevel" );
 				foreach( $dirs as $dir )
 					if(@rmdir($dir))
 						eLog('Successfully delete dir '.$dir);

@@ -29,12 +29,16 @@ class rHistoryData
 			unset($this->data[$hash]);
 		$this->store();
 	}
+	static protected function sortByActionTime( $a, $b )
+	{
+		return($b["action_time"]-$a["action_time"]);
+	}
 	public function add( $e, $limit )
 	{
 		$e["action_time"] = time();
 		$e["hash"] = md5(serialize($e));
 		$this->data[$e["hash"]] = $e;
-		uasort($this->data, create_function( '$a,$b', 'return $b["action_time"]-$a["action_time"];' ));
+		uasort($this->data, array(__CLASS__,"sortByActionTime"));
 		$count = count($this->data);
 		if($limit<3)
 			$limit = 500;

@@ -87,6 +87,10 @@ class rURLRewriteRulesList
 	{
 		$this->lst[] = $filter;
 	}
+	protected static function sortByName( $a, $b )
+	{
+		return(strcmp($a->name, $b->name));
+	}
         public function set()
 	{
 		if(!isset($HTTP_RAW_POST_DATA))
@@ -150,7 +154,7 @@ class rURLRewriteRulesList
   	                }
 			if($rule)
 				$this->lst[] = $rule;
-			usort($this->lst, create_function( '$a,$b', 'return(strcmp($a->name, $b->name));'));
+			usort($this->lst, array(__CLASS__,"sortByName"));
 			$this->store();
 		}
 	}

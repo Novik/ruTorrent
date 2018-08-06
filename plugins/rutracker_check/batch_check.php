@@ -11,5 +11,5 @@ if(( count( $argv ) > 1 ) && chdir(dirname( __FILE__)))
 	if(is_array($hashes))
 		foreach( $hashes as $hash )
 			ruTrackerChecker::run($hash);
-	unlink($argv[1]);
+	@unlink($argv[1]);
 }

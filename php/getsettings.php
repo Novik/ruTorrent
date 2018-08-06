@@ -4,7 +4,7 @@ require_once( 'util.php' );
 
 $s = '{}';
 $fname = getSettingsPath()."/uisettings.json";
-$fo = fopen($fname, 'r');
+$fo = @fopen($fname, 'r');
 if($fo!==false)
 {
 	if(flock($fo, LOCK_SH))

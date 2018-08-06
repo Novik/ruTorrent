@@ -41,13 +41,13 @@ function sqlite_exec1($dbhandle, $query, &$error_msg)
 {
 	if (PHP_VERSION_ID < 50400)
 	{
-		sqlite_exec($dbhandle, $query, $error_msg);
+		@sqlite_exec($dbhandle, $query, $error_msg);
 	}
 	else
 	{
 		try
 		{
-			$dbhandle->exec($query);
+			@$dbhandle->exec($query);
 		}
 		catch (Exception $exception)
 		{

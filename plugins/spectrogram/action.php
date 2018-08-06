@@ -43,7 +43,7 @@ if(isset($_REQUEST['cmd']))
 					}
 					$task = new rTask( array
 					( 
-					        'arg'=>call_user_func('end',explode('/',$filename)),
+					        'arg' => getFileName($filename),
 						'requester'=>'spectrogram',
 						'name'=>'sox', 
 						'hash'=>$_REQUEST['hash'], 

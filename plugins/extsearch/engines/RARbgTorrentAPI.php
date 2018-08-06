@@ -31,10 +31,8 @@ class RARbgTorrentAPIEngine extends commonEngine
 
 	public function get_token()
 	{
-        	$tokenurl='https://torrentapi.org/pubapi_v2.php?app_id=ruTorrent_extsearch&get_token=get_token';
-		$json = file_get_contents($tokenurl);
-		$obj = json_decode($json);
-		return( $obj && property_exists($obj,'token') ? $obj->token : false );
+		$cli = $this->fetch('https://torrentapi.org/pubapi_v2.php?app_id=ruTorrent_extsearch&get_token=get_token');
+		return( $cli && ($obj = json_decode($cli->results)) && property_exists($obj,'token') ? $obj->token : false );
     	}
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
@@ -43,7 +41,6 @@ class RARbgTorrentAPIEngine extends commonEngine
 		if( $token!==false )
 		{
 			$added = 0;
-
 			if($useGlobalCats)
 				$categories = array
 				( 
@@ -61,7 +58,6 @@ class RARbgTorrentAPIEngine extends commonEngine
 				$cat = $categories['all'];
 			else
 				$cat = $categories[$cat];
-
         		$cli = $this->fetch( "https://torrentapi.org/pubapi_v2.php?app_id=ruTorrent_extsearch&token=$token&format=json_extended&mode=search&search_string=$what&category=$cat" );
 			if( $cli && ($obj = json_decode($cli->results)) && property_exists($obj,"torrent_results") )
 			{

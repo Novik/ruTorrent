@@ -16,6 +16,20 @@ if( count( $argv ) > 1 )
 		ini_set('log_errors',false);
 	}
 
+	function log_stdout( $msg )
+	{
+		$fp=fopen("php://stdout","w"); 
+		fputs($fp, $msg."\n"); 
+		fclose($fp);
+	}
+
+	function log_stderr( $msg )
+	{
+		$fp=fopen("php://stderr","w"); 
+		fputs($fp, $msg."\n"); 
+		fclose($fp);
+	}
+
 	$taskNo = $argv[1];
 	$fname = rTask::formatPath($taskNo).'/params';
 	if(is_file($fname) && is_readable($fname))
@@ -50,8 +64,8 @@ if( count( $argv ) > 1 )
 			$announce_list[] = $trackers;
 		$path_edit = trim($request['path_edit']);
 		$piece_size = $request['piece_size'];
-		$callback_log = create_function('$msg', '$fp=fopen("php://stdout","w"); fputs($fp, $msg."\n"); fclose($fp);' );
-		$callback_err = create_function('$msg', '$fp=fopen("php://stderr","w"); fputs($fp, $msg."\n"); fclose($fp);' );
+		$callback_log = "log_stdout";
+		$callback_err = "log_stderr";
 
 		if(count($announce_list)>0)
 		{

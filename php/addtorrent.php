@@ -108,7 +108,7 @@ else
 			$torrent = new Torrent($file['file']);
 			if($torrent->errors())
 			{
-				unlink($file['file']);
+				@unlink($file['file']);
 				$file['status'] = "FailedFile";
 			}
 			else
@@ -120,7 +120,7 @@ else
 					!isset($_REQUEST['not_add_path']),
 					$dir_edit,$label,$saveUploadedTorrents,isset($_REQUEST['fast_resume']))===false)
 				{
-					unlink($file['file']);
+					@unlink($file['file']);
 					$file['status'] = "Failed";
 				}
 			}

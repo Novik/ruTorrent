@@ -119,7 +119,7 @@ if(isset($_REQUEST['cmd']))
 						$useExternal = "inner";
 					$task = new rTask( array
 					( 
-						'arg'=>call_user_func('getFileName',$path_edit),
+						'arg' => getFileName($path_edit),
 						'requester'=>'create',
 						'name'=>'create', 
 						'path_edit'=>$_REQUEST['path_edit'],

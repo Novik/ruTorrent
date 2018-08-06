@@ -645,9 +645,13 @@ class rRSSFilterList
 	{
 		$this->lst[] = $filter;
 	}
+	protected static function sortByName( $a, $b )
+	{
+		return(strcmp($a->name, $b->name));
+	}
 	public function sort()
 	{
-		usort($this->lst, create_function( '$a,$b', 'return(strcmp($a->name, $b->name));'));
+		usort($this->lst, array(__CLASS__,"sortByName"));
 	}
 	public function getContents()
 	{
@@ -700,9 +704,13 @@ class rRSSGroupList
 	{
 		$this->lst[$grp->hash] = $grp;
 	}
+	protected static function sortByName( $a, $b )
+	{
+		return(strcmp($a->name, $b->name));
+	}
 	public function sort()
 	{
-		uasort($this->lst, create_function( '$a,$b', 'return(strcmp($a->name, $b->name));'));
+		uasort($this->lst, array(__CLASS__,"sortByName"));
 	}
 	public function getContents()
 	{

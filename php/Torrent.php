@@ -64,19 +64,17 @@ class Torrent
 
 	protected function notify_log( $msg )
 	{
-		if(function_exists($this->log_callback))
+		if(is_callable($this->log_callback))
 		{
-			$f = $this->log_callback;
-			$f($msg);
+			call_user_func($this->log_callback,$msg);
 		}
 	}
 
 	protected function notify_err( $msg )
 	{
-		if(function_exists($this->err_callback))
+		if(is_callable($this->err_callback))
 		{
-			$f = $this->err_callback;
-			$f($msg);
+			call_user_func($this->err_callback,$msg);
 		}
 		$this->errors[] = new Exception($msg);
 	}
