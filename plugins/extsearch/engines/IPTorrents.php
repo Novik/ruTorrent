@@ -48,7 +48,7 @@ class IPTorrentsEngine extends commonEngine
             $table = $doc->getElementById('torrents');
 
             if ($table) {
-                foreach ($doc->getElementById('torrents')->getElementsByTagName('tr') as $tr) {
+                foreach ($table->getElementsByTagName('tr') as $tr) {
                     if (!$skipped_first) {
                         $skipped_first = true;
                         continue;
