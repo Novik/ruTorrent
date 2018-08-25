@@ -45,34 +45,43 @@ class IPTorrentsEngine extends commonEngine
             @$doc->loadHTML($cli->results);
 
             $skipped_first = false;
-            foreach ($doc->getElementById('torrents')->getElementsByTagName('tr') as $tr) {
-                if (!$skipped_first) {
-                    $skipped_first = true;
-                    continue;
+            $table = $doc->getElementById('torrents');
+
+            if ($table) {
+                foreach ($doc->getElementById('torrents')->getElementsByTagName('tr') as $tr) {
+                    if (!$skipped_first) {
+                        $skipped_first = true;
+                        continue;
+                    }
+
+                    $tds = $tr->getElementsByTagName('td');
+                    if (count($tds) !== 9) continue; //bail if table rows isn't as expected
+
+                    try {
+                        preg_match(
+                            '/\/download.php\/([0-9]+)\/.+.torrent/',
+                            $tds[3]->getElementsByTagName('a')[0]->getAttribute('href'),
+                            $id_matches
+                        );
+
+                        preg_match('/\| (.*) (minutes|hours|days|weeks|months|years) ago/',
+                            $tds[1]->textContent,
+                            $ago_matches
+                        );
+
+                        $item = $this->getNewEntry();
+                        $item["cat"] = $tds[0]->getElementsByTagName('img')[0]->getAttribute('alt');
+                        $item["desc"] = $url . $tds[3]->getElementsByTagName('a')[0]->getAttribute('href');
+                        $item["name"] = self::removeTags($tds[1]->getElementsByTagName('a')[0]->textContent);
+                        $item["size"] = self::formatSize($tds[5]->textContent);
+                        $item["time"] = self::getTime($now, $ago_matches[1], $ago_matches[2]);
+                        $item["seeds"] = intval($tds[7]->textContent);
+                        $item["peers"] = intval($tds[8]->textContent);
+                        $ret[$item['desc']] = $item;
+                    } catch (Exception $e) {
+                        //table row wasn't in the correct format
+                    }
                 }
-
-                $tds = $tr->getElementsByTagName('td');
-
-                preg_match(
-                    '/\/download.php\/([0-9]+)\/.+.torrent/',
-                    $tds[3]->getElementsByTagName('a')[0]->getAttribute('href'),
-                    $id_matches
-                );
-
-                preg_match('/\| (.*) (minutes|hours|days|weeks|months|years) ago/',
-                    $tds[1]->textContent,
-                    $ago_matches
-                );
-
-                $item = $this->getNewEntry();
-                $item["cat"] = $tds[0]->getElementsByTagName('img')[0]->getAttribute('alt');
-                $item["desc"] = $url . $tds[3]->getElementsByTagName('a')[0]->getAttribute('href');
-                $item["name"] = self::removeTags($tds[1]->getElementsByTagName('a')[0]->textContent);
-                $item["size"] = self::formatSize($tds[5]->textContent);
-                $item["time"] = self::getTime($now, $ago_matches[1], $ago_matches[2]);
-                $item["seeds"] = intval($tds[7]->textContent);
-                $item["peers"] = intval($tds[8]->textContent);
-                $ret[$item['desc']] = $item;
             }
         }
     }
