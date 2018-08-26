@@ -58,12 +58,6 @@ class IPTorrentsEngine extends commonEngine
                     if (count($tds) !== 9) continue; //bail if table rows isn't as expected
 
                     try {
-                        preg_match(
-                            '/\/download.php\/([0-9]+)\/.+.torrent/',
-                            $tds[3]->getElementsByTagName('a')[0]->getAttribute('href'),
-                            $id_matches
-                        );
-
                         preg_match('/\| (.*) (minutes|hours|days|weeks|months|years) ago/',
                             $tds[1]->textContent,
                             $ago_matches
