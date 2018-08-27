@@ -55,7 +55,7 @@ class IPTorrentsEngine extends commonEngine
                     }
 
                     $tds = $tr->getElementsByTagName('td');
-                    if (count($tds) !== 9) continue; //bail if table rows isn't as expected
+                    if ($tds->length !== 9) continue; //bail if table rows isn't as expected
 
                     try {
                         preg_match('/\| (.*) (minutes|hours|days|weeks|months|years) ago/',
