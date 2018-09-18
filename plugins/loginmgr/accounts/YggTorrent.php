@@ -2,7 +2,7 @@
 
 class YggTorrentAccount extends commonAccount
 {
-    public $url = "https://www.yggtorrent.is";
+    public $url = "https://www.yggtorrent.to";
 
     protected function isOK($client)
     {
