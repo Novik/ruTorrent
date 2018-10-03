@@ -119,6 +119,7 @@ class rStat
 					$files[] = basename($path, ".csv");
 				}
 			}
+			closedir($dh);
 		}
 		sort($files,SORT_STRING);
 		return( $files );
