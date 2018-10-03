@@ -32,7 +32,7 @@ class RARbgTorrentAPIEngine extends commonEngine
  	const MIN_INTERVAL = 3;
  	const MAX_TRIES = 3;
 
- 	protected $lasRequestTime = 0;
+ 	protected $lastRequestTime = 0;
 
  	public function fetch($url, $encode = 1, $method="GET", $content_type="", $body="")
  	{
@@ -41,10 +41,10 @@ class RARbgTorrentAPIEngine extends commonEngine
 			$url = Snoopy::linkencode($url);
 		for( $i=0; $i<self::MAX_TRIES; $i++ )
 		{
-			$delta = max( self::MIN_INTERVAL - (time() - $this->lasRequestTime), 0 );
+			$delta = max( self::MIN_INTERVAL - (time() - $this->lastRequestTime), 0 );
 			sleep( $delta );
 
-			$this->lasRequestTime = time();
+			$this->lastRequestTime = time();
 			$client->fetchComplex($url, $method, $content_type, $body);
 			if($client->status>=200 && $client->status<300)
 			{
