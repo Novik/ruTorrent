@@ -29,6 +29,38 @@ class RARbgTorrentAPIEngine extends commonEngine
  		"Software/PC ISO"=>"33"
  	);
 
+ 	const MIN_INTERVAL = 3;
+ 	const MAX_TRIES = 3;
+
+ 	protected $lasRequestTime = 0;
+
+ 	public function fetch($url, $encode = 1, $method="GET", $content_type="", $body="")
+ 	{
+		$client = $this->makeClient($url);
+		if($encode)
+			$url = Snoopy::linkencode($url);
+		for( $i=0; $i<self::MAX_TRIES; $i++ )
+		{
+			$delta = max( self::MIN_INTERVAL - (time() - $this->lasRequestTime), 0 );
+			sleep( $delta );
+
+			$this->lasRequestTime = time();
+			$client->fetchComplex($url, $method, $content_type, $body);
+			if($client->status>=200 && $client->status<300)
+			{
+				ini_set( "pcre.backtrack_limit", max(strlen($client->results),100000) );
+				return($client);
+			}
+			if( $client->status==429 )
+			{
+				sleep(self::MIN_INTERVAL+i);
+				continue;
+			}
+			break;
+		}
+		return(false);
+ 	}
+
 	public function get_token()
 	{
 		$cli = $this->fetch('https://torrentapi.org/pubapi_v2.php?app_id=ruTorrent_extsearch&get_token=get_token');
@@ -58,7 +90,7 @@ class RARbgTorrentAPIEngine extends commonEngine
 				$cat = $categories['all'];
 			else
 				$cat = $categories[$cat];
-        		$cli = $this->fetch( "https://torrentapi.org/pubapi_v2.php?app_id=ruTorrent_extsearch&token=$token&format=json_extended&mode=search&search_string=$what&category=$cat" );
+        		$cli = $this->fetch( "https://torrentapi.org/pubapi_v2.php?app_id=ruTorrent_extsearch&token=$token&format=json_extended&mode=search&search_string=$what&category=$cat&limit=100&sort=seeders" );
 			if( $cli && ($obj = json_decode($cli->results)) && property_exists($obj,"torrent_results") )
 			{
 				$torrent_count = count($obj->torrent_results);
@@ -74,6 +106,7 @@ class RARbgTorrentAPIEngine extends commonEngine
 				                $item["size"] = $torrent->size;
 				                $item["seeds"] = $torrent->seeders;
 				                $item["peers"] = $torrent->leechers;
+				                $item["time"] = strtotime($torrent->pubdate);
 				                $ret[$torrent->download] = $item;
 				                $added++;
 						if ($added >= $limit)
