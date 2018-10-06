@@ -118,7 +118,7 @@ class YggTorrentEngine extends commonEngine
             }
 
             $res = preg_match_all(
-                '`<tr>(.*)<a href=".*url_builder.*</a>.*<a href="(?P<desc>http.*/torrent/.*)">(?P<name>.*)>.*' .
+                '`<tr>(.*)<a id="torrent_name" href=".*url_builder.*</a>.*<a href="(?P<desc>http.*/torrent/.*)">(?P<name>.*)>.*' .
                 '<a target="(?P<id>.*)".*>.*<div class="hidden">(?P<timestamp>.*)</div>.*<td>(?P<size>.*)</td>' .
                 '.*<td>(?P<completed>.*)</td>.*<td>(?P<seeder>.*)</td>.*<td>(?P<leecher>.*)</td>.*</tr>`siU',
                 $cli->results,
