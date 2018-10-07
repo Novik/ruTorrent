@@ -28,7 +28,7 @@ class RedactedEngine extends commonEngine
 				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
 				break;
 
-			$res = preg_match_all('/\[ <a href="torrents\.php\?(?P<link>.*)".*>DL<\/a>.*'.
+			$res = preg_match_all('/<tr class="torrent">.*<a href="torrents\.php\?(?P<link>.*)".*>DL<\/a>.*'.
 				'<\/span>(?P<artist>.*)<a href="torrents\.php\?id=(?P<desc>\d+)\&.*>(?P<title>.*)<div class="torrent_info">(?P<cat>.*)<\/div>.*'.
 				'<td class="nobr"><span .* title="(?P<date>.*)">.*<\/span>.*<td .*>(?P<size>.*)<\/td>.*'.
 				'<td .*>.*<\/td>.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>'.
