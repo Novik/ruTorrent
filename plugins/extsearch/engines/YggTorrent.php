@@ -118,9 +118,14 @@ class YggTorrentEngine extends commonEngine
             }
 
             $res = preg_match_all(
-                '`<tr>(.*)<a id="torrent_name" href=".*url_builder.*</a>.*<a href="(?P<desc>http.*/torrent/.*)">(?P<name>.*)>.*' .
-                '<a target="(?P<id>.*)".*>.*<div class="hidden">(?P<timestamp>.*)</div>.*<td>(?P<size>.*)</td>' .
-                '.*<td>(?P<completed>.*)</td>.*<td>(?P<seeder>.*)</td>.*<td>(?P<leecher>.*)</td>.*</tr>`siU',
+                '`<td><div class="hidden">.*<a id="torrent_name" href="(?P<desc>.*)">(?P<name>.*)</td>.*'.
+                '<a target="(?P<id>.*)".*'.
+                '<div class="hidden">(?P<timestamp>.*)</div>.*'.
+                '<td>(?P<size>.*)</td>.*'.
+                '<td>(?P<completed>.*)</td>.*'.
+                '<td>(?P<seeder>.*)</td>.*'.
+                '<td>(?P<leecher>.*)</td>'.
+                '`siU',
                 $cli->results,
                 $matches
             );
@@ -131,7 +136,9 @@ class YggTorrentEngine extends commonEngine
                     if (!array_key_exists($link, $ret)) {
                         $item = $this->getNewEntry();
                         $item["desc"] = $matches["desc"][$i];
-                        $item["name"] = self::removeTags($matches["name"][$i]);
+                        $name = self::removeTags($matches["name"][$i]);
+                        // Remove useless space before some torrents names to have best name sort
+                        $item["name"] = trim($name);
 
                         // The parsed size has the format XX.XXGB, we need to add a space to help a bit the formatSize method
                         $item["size"] = self::formatSize(preg_replace('/([0-9.]+)(\w+)/', '$1 $2', $matches["size"][$i]));
