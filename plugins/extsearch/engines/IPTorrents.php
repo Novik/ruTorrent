@@ -58,7 +58,7 @@ class IPTorrentsEngine extends commonEngine
                     if ($tds->length !== 9) continue; //bail if table rows isn't as expected
 
                     try {
-                        preg_match('/\| (.*) (minutes|hours|days|weeks|months|years) ago/',
+                        preg_match('/.*(\d+\.\d) (minutes|hours|days|weeks|months|years) ago/',
                             $tds[1]->textContent,
                             $ago_matches
                         );
