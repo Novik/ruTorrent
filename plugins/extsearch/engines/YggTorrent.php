@@ -131,7 +131,9 @@ class YggTorrentEngine extends commonEngine
                     if (!array_key_exists($link, $ret)) {
                         $item = $this->getNewEntry();
                         $item["desc"] = $matches["desc"][$i];
-                        $item["name"] = self::removeTags($matches["name"][$i]);
+                        $name = self::removeTags($matches["name"][$i]);
+                        // Remove useless space before some torrents names to have best name sort
+                        $item["name"] = trim($name);
 
                         // The parsed size has the format XX.XXGB, we need to add a space to help a bit the formatSize method
                         $item["size"] = self::formatSize(preg_replace('/([0-9.]+)(\w+)/', '$1 $2', $matches["size"][$i]));
