@@ -131,8 +131,11 @@ class YggTorrentEngine extends commonEngine
             );
 
             if ($res) {
+                // Get current URL
+                preg_match('`.+?(?=/torrent)`', $matches["desc"][0], $url);
+
                 for ($i = 0; $i < $res; $i++) {
-                    $link = self::URL . "/engine/download_torrent?id=" . $matches["id"][$i];
+                    $link = $url[0] . "/engine/download_torrent?id=" . $matches["id"][$i];
                     if (!array_key_exists($link, $ret)) {
                         $item = $this->getNewEntry();
                         $item["desc"] = $matches["desc"][$i];
@@ -144,7 +147,7 @@ class YggTorrentEngine extends commonEngine
                         $item["size"] = self::formatSize(preg_replace('/([0-9.]+)(\w+)/', '$1 $2', $matches["size"][$i]));
 
                         // To be able to display categories, we need to parse them directly from the torrent URL
-                        $cat = preg_match_all('`' . self::URL . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
+                        $cat = preg_match_all('`' . $url[0] . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
                         if ($cat) {
                             $cat1 = $this->getPrettyCategoryName($catRes['cat1'][0]);
                             $cat2 = $this->getPrettyCategoryName($catRes['cat2'][0]);
