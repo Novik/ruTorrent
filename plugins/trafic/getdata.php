@@ -21,7 +21,7 @@ if(isset($_REQUEST['tracker']))
 				if($parts[0]=="hash")
 					$tstorages[] = 'torrents/'.$parts[1].".csv";
 			}
-		}	
+		}
 		if( count($tstorages) )
 			$storages = $tstorages;
 	}
@@ -38,16 +38,14 @@ function sum($e1, $e2)
 if(isset($_REQUEST['mode']))
 {
 	$mode = $_REQUEST['mode'];
-	if($mode=='clear') 
+	if($mode=='clear')
 	{
 		if(!$disableClearButton)
-		foreach( $storages as $storage )
-			@unlink(getSettingsPath().'/trafic/'.$storage);
+			foreach( $storages as $storage )
+				@unlink(getSettingsPath().'/trafic/'.$storage);
 		if($_REQUEST['tracker']!="none")
-		{
-			$mode='day';
 			$storages = array( "global.csv" );
-		}
+		$mode = 'day';
 	}
 	$ret = array();
 	foreach( $storages as $storage )
@@ -63,7 +61,7 @@ if(isset($_REQUEST['mode']))
 			$val = $st->getYear();
 		if(empty($ret))
 			$ret = $val;
-		else			
+		else
 		{
 			$ret["up"] = array_map("sum", $val["up"], $ret["up"]);
 			$ret["down"] = array_map("sum", $val["down"], $ret["down"]);
@@ -73,4 +71,3 @@ if(isset($_REQUEST['mode']))
 }
 
 cachedEcho(safe_json_encode($ret),"application/json");
-                	
