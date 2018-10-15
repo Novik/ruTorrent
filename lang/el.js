@@ -188,7 +188,7 @@ var theUILang =
  plgLoaded			: "Φορτώθηκε",
  plgDisabled			: "Δεν έχει φορτωθεί",
  plgVersion			: "'Εκδοση",
- plgAuthor			: "Συγγραφέας",
+ plgAuthor			: "Δημιουργός",
  plgDescr			: "Περιγραφή",
  mnu_go 			: "Πάμε",
  pluginCantStart		: "Το πρόσθετο απέτυχε να εκκινηθεί.",
