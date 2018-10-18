@@ -64,14 +64,18 @@ class IPTorrentsEngine extends commonEngine
                         );
 
                         $item = $this->getNewEntry();
+
+                        $link = $url . $tds[3]->getElementsByTagName('a')[0]->getAttribute('href');
+
                         $item["cat"] = $tds[0]->getElementsByTagName('img')[0]->getAttribute('alt');
-                        $item["desc"] = $url . $tds[3]->getElementsByTagName('a')[0]->getAttribute('href');
+                        $item["desc"] = $url . $tds[1]->getElementsByTagName('a')[0]->getAttribute('href');
                         $item["name"] = self::removeTags($tds[1]->getElementsByTagName('a')[0]->textContent);
                         $item["size"] = self::formatSize($tds[5]->textContent);
                         $item["time"] = self::getTime($now, $ago_matches[1], $ago_matches[2]);
                         $item["seeds"] = intval($tds[7]->textContent);
                         $item["peers"] = intval($tds[8]->textContent);
-                        $ret[$item['desc']] = $item;
+
+                        $ret[$link] = $item;
                     } catch (Exception $e) {
                         //table row wasn't in the correct format
                     }
