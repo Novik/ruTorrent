@@ -19,7 +19,7 @@ div#dlgEditRSS input, select {margin-top: 5px; margin-bottom: 5px;}
 div#dlgEditRSS br {clear: left; line-height: 0}
 
 div#dlgLoadTorrents #RSSBtn {width: 30px;}
-div#dlgLoadTorrents {width: 380px; height: 170px; overflow: visible}
+div#dlgLoadTorrents {width: 400px; height: 200px; overflow: visible}
 div#dlgLoadTorrents div.dlg-header {background-image: url(../../images/world.gif)}
 div#dlgLoadTorrents div.content {margin: 5px; padding: 5px; line-height: 16px}
 div#dlgLoadTorrents div.content input {margin-top: 0px}

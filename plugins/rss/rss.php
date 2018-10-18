@@ -520,6 +520,8 @@ class rRSSFilter
 	public $addPath;
 	public $directory = null;
 	public $label = null;
+	public $fast;
+	public $randomHash;
 	public $throttle = null;
 	public $ratio = null;
 	public $titleCheck = 1; 
@@ -536,8 +538,8 @@ class rRSSFilter
 		'${21}', '${22}', '${23}', '${24}', '${25}', '${26}', '${27}', '${28}', '${29}', '${30}',
 	);
 
-	public function	__construct( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
-		$start = 0, $addPath = 1, $directory = null, $label = null, 
+	public function	__construct( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '',
+		$start = 0, $addPath = 1, $directory = null, $label = null, $fast = 0, $randomHash = 0,
 		$titleCheck = 1, $descCheck = 0, $linkCheck = 0,
 		$throttle = null, $ratio = null, $no = -1, $interval = -1 )
 	{
@@ -550,6 +552,8 @@ class rRSSFilter
 		$this->addPath = $addPath;
 		$this->directory = $directory;
 		$this->label = $label;
+		$this->fast = $fast;
+		$this->randomHash = $randomHash;
 		$this->titleCheck = $titleCheck;
 		$this->descCheck = $descCheck;
 		$this->linkCheck = $linkCheck;
@@ -626,6 +630,8 @@ class rRSSFilter
 				"hash"=>$this->rssHash,
 				"start"=>intval($this->start),
 				"add_path"=>intval($this->addPath),
+				"fast"=>intval($this->fast),
+				"random_hash"=>intval($this->randomHash),
 				"chktitle"=>intval($this->titleCheck),
 				"chkdesc"=>intval($this->descCheck),
 				"chklink"=>intval($this->linkCheck),
@@ -972,7 +978,7 @@ class rRSSManager
 					rTorrentSettings::get()->pushEvent( "RSSAutoLoad", array( "rss"=>&$rss, "href"=>&$href, "item"=>&$item, "filter"=>&$filter ) );
 
 					$this->getTorrents( $rss, $href, 
-						$filter->start, $filter->addPath, $filter->getDirectory(), $filter->getLabel(), $filter->throttle, $filter->ratio, false );
+						$filter->start, $filter->addPath, $filter->getDirectory(), $filter->getLabel(), $filter->fast, $filter->randomHash, $filter->throttle, $filter->ratio, false );
 					if(WAIT_AFTER_LOADING)
 						sleep(WAIT_AFTER_LOADING);
 				}
@@ -1269,10 +1275,11 @@ class rRSSManager
 		else
 			$this->rssList->addError( "theUILang.rssAlreadyExist", $rss->getMaskedURL() );
 	}
-	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $ratio, $needFlush = true )
+	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $isFast, $isRandomHash, $throttle, $ratio, $needFlush = true )
 	{
 		$thash = 'Failed';
-		$ret = $rss->getTorrent( $url );
+		$ret = $rss->getTorrent( $url, $rss );
+		$ret = new Torrent($ret);
 		if($ret!==false)
 		{
 			$addition = array();
@@ -1280,10 +1287,12 @@ class rRSSManager
 				$addition[] = getCmd("d.set_throttle_name=").$throttle;
 			if(!empty($ratio))
 				$addition[] = getCmd("view.set_visible=").$ratio;
+			if(($isRandomHash) && (strpos($url,"magnet:")===false))
+				$ret->info['unique'] = uniqid("rutorrent-",true);
 			global $saveUploadedTorrents;
-			$thash = ($ret==='magnet') ?
+			$thash = (strpos($url,"magnet:")===0) ?
 				rTorrent::sendMagnet($url, $isStart, $isAddPath, $directory, $label, $addition) :
-				rTorrent::sendTorrent($ret, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, false, true, $addition);
+				rTorrent::sendTorrent($ret, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, $isFast, true, $addition);
 			if($thash===false)
 			{
 				$thash = 'Failed';

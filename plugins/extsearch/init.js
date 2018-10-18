@@ -199,7 +199,9 @@ rTorrentStub.prototype.loadtegtorrents = function()
 	if(lbl.length)
 		this.content += '&label='+encodeURIComponent(lbl);
 	if($("#tegfast_resume").prop("checked"))
-		this.content += 'fast_resume=1&';
+		this.content += '&fast_resume=1';
+	if($("#tegrandomize_hash").prop("checked"))
+		this.content += '&randomize_hash=1';
 	for(var i = 0; i<plugin.tegArray.length; i++)
 	{
 		var item = plugin.tegArray[i];
@@ -746,7 +748,8 @@ plugin.onLangLoaded = function()
 			"<label>"+theUILang.Base_directory+":</label><input type='text' id='tegdir_edit' class='TextboxLarge'/><br/>"+
 			"<label></label><input type='checkbox' id='tegnot_add_path'/>"+theUILang.Dont_add_tname+"<br/>"+
 			"<label></label><input type='checkbox' id='tegtorrents_start_stopped'/>"+theUILang.Dnt_start_down_auto+"<br/>"+
-			'<label></label><input type="checkbox" id="tegfast_resume"/>'+theUILang.doFastResume+'<br/>'+
+			"<label></label><input type='checkbox' id='tegfast_resume'/>"+theUILang.doFastResume+"<br/>"+
+			"<label></label><input type='checkbox' id='tegrandomize_hash'/>"+theUILang.doRandomizeHash+"<br/>"+
 			"<label>"+theUILang.Label+":</label><input type='text' id='teglabel' class='TextboxLarge'/>"+
 		"</div>"+
 		"<div id='buttons' class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"tegLoadTorrents\");theWebUI.tegLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",

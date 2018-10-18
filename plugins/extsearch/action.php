@@ -36,9 +36,10 @@ if(isset($_REQUEST['mode']))
 				$vars = explode('&', $HTTP_RAW_POST_DATA);
 				$lbl = null;
 				$dir = null;
-				$isStart = true; 
+				$isStart = true;
 				$isAddPath = true;
-				$fast = false;
+				$isFast = false;
+				$isRandomHash = false;
 				$urls = array();
 				$engs = array();
 				$ndx = array();
@@ -59,7 +60,10 @@ if(isset($_REQUEST['mode']))
 						$lbl = rawurldecode($parts[1]);
 					else
 					if($parts[0]=="fast_resume")
-						$fast = $parts[1];
+						$isFast = true;
+					else
+					if($parts[0]=="randomize_hash")
+						$isRandomHash = true;
 					else
 					if($parts[0]=="teg")
 						$teg = $parts[1];
@@ -73,7 +77,7 @@ if(isset($_REQUEST['mode']))
 					if($parts[0]=="ndx")
 						$ndx[] = $parts[1];
 				}
-				$status = $em->getTorrents( $engs, $urls, $isStart, $isAddPath, $dir, $lbl, $fast );
+				$status = $em->getTorrents( $engs, $urls, $isStart, $isAddPath, $dir, $lbl, $isFast, $isRandomHash );
 				$ret = array( "teg"=>$teg, "data"=>array() );
 				for($i = 0; $i< count($status); $i++)
 					$ret["data"][] = array( "hash"=>$status[$i], "ndx"=>$ndx[$i] );

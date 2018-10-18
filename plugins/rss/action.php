@@ -227,6 +227,16 @@ switch($cmd)
 					if($flt)
 						$flt->addPath = $parts[1];
 				}
+				if($parts[0]=="fast")
+				{
+					if($flt)
+						$flt->fast = $parts[1];
+				}
+				if($parts[0]=="randomHash")
+				{
+					if($flt)
+						$flt->randomHash = $parts[1];
+				}
 				else
 				if($parts[0]=="dir")
 				{
@@ -311,8 +321,10 @@ switch($cmd)
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
 			$lbl = null;
 			$dir = null;
-			$isStart = true; 
+			$isStart = true;
 			$isAddPath = true;
+			$isFast = false;
+			$isRandomHash = false;
 			$curRSS = null;
 			$rssArray = array();
 			foreach($vars as $var)
@@ -323,6 +335,12 @@ switch($cmd)
 				else
 				if($parts[0]=="not_add_path")
 					$isAddPath = false;
+				else
+				if($parts[0]=="fast_resume")
+					$isFast = true;
+				else
+				if($parts[0]=="randomize_hash")
+					$isRandomHash = true;
 				else
 				if($parts[0]=="dir_edit")
 					$dir = rawurldecode($parts[1]);
@@ -348,7 +366,7 @@ switch($cmd)
 				{
 					foreach($urls as $url)
 					{
-						$mngr->getTorrents( $rss, $url, $isStart, $isAddPath, $dir, $lbl, null, null, false );
+						$mngr->getTorrents( $rss, $url, $isStart, $isAddPath, $dir, $lbl, $isFast, $isRandomHash, null, null, false );
 						if(WAIT_AFTER_LOADING)
 							sleep(WAIT_AFTER_LOADING);
 					}

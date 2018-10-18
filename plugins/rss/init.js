@@ -835,6 +835,8 @@ theWebUI.storeFilterParams = function()
 
 		this.filters[no].add_path = $('#FLTnot_add_path').prop("checked") ? 0 : 1;
 		this.filters[no].start = $('#FLTtorrents_start_stopped').prop("checked") ? 0 : 1;
+		this.filters[no].fast = $('#FLTfast_resume').prop("checked") ? 1 : 0;
+		this.filters[no].random_hash = $('#FLTrandomize_hash').prop("checked") ? 1 : 0;
 		this.filters[no].label = $('#FLT_label').val();
 		this.filters[no].chktitle = $('#FLTchktitle').prop("checked") ? 1 : 0;
 		this.filters[no].chkdesc = $('#FLTchkdesc').prop("checked") ? 1 : 0;
@@ -865,6 +867,8 @@ theWebUI.selectFilter = function( el )
 		$('#FLTdir_edit').val(flt.dir);
 		$('#FLTnot_add_path').prop("checked",(flt.add_path==0));
 		$('#FLTtorrents_start_stopped').prop("checked",(flt.start==0));
+		$('#FLTfast_resume').prop("checked",(flt.fast==1));
+		$('#FLTrandomize_hash').prop("checked",(flt.random_hash==1));
 		$('#FLTchktitle').prop("checked",(flt.chktitle==1));
 		$('#FLTchkdesc').prop("checked",(flt.chkdesc==1));
 		$('#FLTchklink').prop("checked",(flt.chklink==1));
@@ -885,6 +889,8 @@ theWebUI.setDisableControls = function( val )
 	$('#FLTdir_edit').prop('disabled', val);
 	$('#FLTnot_add_path').prop('disabled', val);
 	$('#FLTtorrents_start_stopped').prop('disabled', val);
+	$('#FLTfast_resume').prop('disabled', val);
+	$('#FLTrandomize_hash').prop('disabled', val);
 	$('#FLTchktitle').prop('disabled', val);
 	$('#FLTchkdesc').prop('disabled', val);
 	$('#FLTchklink').prop('disabled', val);
@@ -916,7 +922,7 @@ theWebUI.loadFiltersWithAdditions = function( flt )
 	{
 		var s = this.rssItems[this.rssArray[i]].title;
 		additions.push( { name: s, enabled: 1, 
-			pattern: makePatternString(s), exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: -1 } );
+			pattern: makePatternString(s), exclude: "", label: "", hash: "", start: 1, add_path: 1, fast: 0, random_hash: 0, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: -1 } );
 	}
 	this.loadFilters( flt, additions );
 }
@@ -987,7 +993,7 @@ theWebUI.addNewFilter = function()
 {
 	var list = $("#fltlist");
 	theWebUI.maxFilterNo++;
-	var f = { name: theUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: theWebUI.maxFilterNo };
+	var f = { name: theUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, fast: 0, random_hash: 0, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: theWebUI.maxFilterNo };
 	var i = this.filters.length;
 	list.append( $("<li>").html("<input type='checkbox' id='_fe"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectFilter(this);\" id='_fn"+i+"'/>"));
 	this.filters.push(f);
@@ -1022,7 +1028,7 @@ theWebUI.deleteCurrentFilter = function()
 		if(plugin.editFilersBtn)
 			plugin.editFilersBtn.hide();
 		$('#FLT_body,#FLT_exclude,#FLTdir_edit,#FLT_label,#FLT_rss,#FLT_throttle,#FLT_ratio').val('');
-		$('#FLTnot_add_path,#FLTchkdesc,#FLTchklink,#FLTtorrents_start_stopped').prop("checked",false);
+		$('#FLTnot_add_path,#FLTchkdesc,#FLTchklink,#FLTtorrents_start_stopped,#FLTfast_resume,#FLTrandomize_hash').prop("checked",false);
 		$('#FLTchktitle').prop("checked",true);
 		$('#FLT_interval').val(-1);
 	}
@@ -1179,7 +1185,7 @@ rTorrentStub.prototype.setfilters = function()
 			"&chklink="+flt.chklink+
 			"&chkdesc="+flt.chkdesc+
 		        "&exclude="+encodeURIComponent(flt.exclude)+
-			"&hash="+flt.hash+"&start="+flt.start+"&addPath="+flt.add_path+
+			"&hash="+flt.hash+"&start="+flt.start+"&addPath="+flt.add_path+"&fast="+flt.fast+"&randomHash="+flt.random_hash+
 			"&dir="+encodeURIComponent(flt.dir)+"&label="+encodeURIComponent(flt.label)+"&interval="+flt.interval+"&no="+flt.no;
 		if($type(flt.throttle))
 			this.content+=("&throttle="+flt.throttle);
@@ -1255,6 +1261,10 @@ rTorrentStub.prototype.loadrsstorrents = function()
 	var lbl = $.trim($("#RSS_label").val());
 	if(lbl.length)
 		this.content = this.content + '&label='+encodeURIComponent(lbl);
+	if($("#RSSfast_resume").prop("checked"))
+		this.content = this.content + '&fast_resume=1';
+	if($("#RSSrandomize_hash").prop("checked"))
+		this.content = this.content + '&randomize_hash=1';
 	for(var i = 0; i<theWebUI.rssArray.length; i++)
 	{
 		var item = theWebUI.rssItems[theWebUI.rssArray[i]];
@@ -1517,6 +1527,8 @@ plugin.onLangLoaded = function()
 			"<label>"+theUILang.Base_directory+":</label><input type='text' id='RSSdir_edit' class='TextboxLarge'/><br/>"+
 			"<label></label><input type='checkbox' id='RSSnot_add_path'/>"+theUILang.Dont_add_tname+"<br/>"+
 			"<label></label><input type='checkbox' id='RSStorrents_start_stopped'/>"+theUILang.Dnt_start_down_auto+"<br/>"+
+			"<label></label><input type='checkbox' id='RSSfast_resume'/>"+theUILang.doFastResume+"<br/>"+
+			"<label></label><input type='checkbox' id='RSSrandomize_hash'/>"+theUILang.doRandomizeHash+"<br/>"+
 			"<label>"+theUILang.Label+":</label><input type='text' id='RSS_label' class='TextboxLarge'/>"+
 		"</div>"+
 		"<div id='buttons' class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"dlgLoadTorrents\");theWebUI.RSSLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
@@ -1545,6 +1557,8 @@ plugin.onLangLoaded = function()
 					"<label>"+theUILang.Base_directory+":</label><input type='text' id='FLTdir_edit' class='TextboxLarge'/><br/>"+
 					"<label></label><input type='checkbox' class='chk' id='FLTnot_add_path'/>"+theUILang.Dont_add_tname+"<br/>"+
 					"<label></label><input type='checkbox' class='chk' id='FLTtorrents_start_stopped'/>"+theUILang.Dnt_start_down_auto+"<br/>"+
+					"<label></label><input type='checkbox' class='chk' id='FLTfast_resume'/>"+theUILang.doFastResume+"<br/>"+
+					"<label></label><input type='checkbox' class='chk' id='FLTrandomize_hash'/>"+theUILang.doRandomizeHash+"<br/>"+
 					"<label>"+theUILang.rssMinInterval+":</label><select id='FLT_interval'>"+
 					        "<option value='-1'>"+theUILang.rssIntervalAlways+"</option>"+
 					        "<option value='0'>"+theUILang.rssIntervalOnce+"</option>"+

@@ -417,7 +417,7 @@ class engineManager
 		return($ret);
 	}
 
-	public function getTorrents( $engs, $urls, $isStart, $isAddPath, $directory, $label, $fast )
+	public function getTorrents( $engs, $urls, $isStart, $isAddPath, $directory, $label, $isFast, $isRandomHash )
 	{
 		$ret = array();
 		$history = self::loadHistory();
@@ -434,10 +434,13 @@ class engineManager
 			{
 				$object = $this->getObject($engs[$i]);
         			$torrent = $object->getTorrent( $url, $object );
+				$torrent = new Torrent($torrent);
 				if($torrent!==false)
-				{	
+				{
+					if($isRandomHash)
+						$torrent->info['unique'] = uniqid("rutorrent-",true);
 					global $saveUploadedTorrents;
-					if(($success = rTorrent::sendTorrent($torrent, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, $fast))===false)
+					if(($success = rTorrent::sendTorrent($torrent, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, $isFast))===false)
 						@unlink($torrent);
 					else
 						$history->add($url,$success);

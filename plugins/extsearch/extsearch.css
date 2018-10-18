@@ -1,5 +1,5 @@
 div#tegLoadTorrents #RSSBtn {width: 30px;}
-div#tegLoadTorrents {width: 380px; height: 180px; overflow: visible}
+div#tegLoadTorrents {width: 400px; height: 200px; overflow: visible}
 div#tegLoadTorrents div.dlg-header {background-image: url(../../images/world.gif)}
 div#tegLoadTorrents div.content {margin: 5px; padding: 5px; line-height: 16px}
 div#tegLoadTorrents div.content input {margin-top: 0px}
