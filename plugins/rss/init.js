@@ -168,15 +168,7 @@ plugin.start = function()
 
 theWebUI.rssDblClick = function( obj )
 {
-	if($type(theWebUI.torrents[theWebUI.rssItems[obj.id].hash]))
-	{
-		var tmp = {};
-                tmp.id = theWebUI.rssItems[obj.id].hash
-        	theWebUI.getTable("trt").ondblclick( tmp );
-        	delete tmp;
-	}
-	else
-		window.open(theWebUI.rssItems[obj.id].guid,"_blank");
+	window.open(theWebUI.rssItems[obj.id].guid,"_blank");
 }
 
 theWebUI.showRSSTimer = function( tm )
@@ -437,24 +429,26 @@ theWebUI.RSSAddToFilter = function()
 	theWebUI.request("?action=getfilters",[this.loadFiltersWithAdditions, this]);
 }
 
-theWebUI.createRSSMenu = function(e, id) 
+theWebUI.createRSSMenu = function(e, id)
 {
 	var trtArray = [];
+	var rssArray = [];
 	this.rssArray = [];
 	var sr = this.getTable("rss").rowSel;
-	for(var k in sr) 
+	for(var k in sr)
 	{
 		if(sr[k] == true)
 		{
 			var hash = this.rssItems[k].hash;
 			if(hash && $type(theWebUI.torrents[hash]))
-				trtArray.push(hash);
+				trtArray.push(k);
 			else
-				this.rssArray.push(k);
+				rssArray.push(k);
+			this.rssArray.push(k);
 		}
 	}
 	theContextMenu.clear();
-	if(this.rssArray.length)
+	if(!trtArray.length && rssArray.length)
 	{
 	        if(plugin.canChangeMenu())
 	        {
@@ -471,27 +465,24 @@ theWebUI.createRSSMenu = function(e, id)
 	else
 	if(trtArray.length)
 	{
-	        var table = this.getTable("trt");
-		for(var k in table.rowSel)
-			table.rowSel[k] = false;
-		table.selCount = trtArray.length;
-		for(var i = 0; i<trtArray.length; i++)
-			table.rowSel[trtArray[i]] = true;
-		table.refreshSelection();
-		this.dID = trtArray[0];
-		theWebUI.createMenu(e, trtArray[0]);
-		theContextMenu.add([CMENU_SEP]);
-		theWebUI.createRSSMenuPrim();
+		if(plugin.canChangeMenu())
+		{
+			theContextMenu.add([ theUILang.rssMenuLoad, null]);
+			theContextMenu.add([ theUILang.rssMenuOpen, "theWebUI.RSSOpen()"]);
+			theContextMenu.add([ theUILang.rssMenuAddToFilter, "theWebUI.RSSAddToFilter()"]);
+			theContextMenu.add([CMENU_SEP]);
+			theWebUI.createRSSMenuPrim();
+		}
+		else
+			theContextMenu.hide();
 	}
-	else
-		theWebUI.createRSSMenuPrim();
 }
 
 theWebUI.rssSelect = function(e, id)
 {
 	var sr = theWebUI.getTable("rss").rowSel;
 	var trtArray = [];
-	for(var k in sr) 
+	for(var k in sr)
 	{
 		if(sr[k] == true)
 		{
@@ -501,26 +492,21 @@ theWebUI.rssSelect = function(e, id)
 		}
 	}
 	var table = theWebUI.getTable("trt");
-	for(var k in table.rowSel)
-		table.rowSel[k] = false;
-	table.selCount = trtArray.length;
-	for(var i = 0; i<trtArray.length; i++)
-		table.rowSel[trtArray[i]] = true;
 	table.refreshSelection();
 	if(id && $type(theWebUI.torrents[theWebUI.rssItems[id].hash]))
-		theWebUI.trtSelect(e, theWebUI.rssItems[id].hash);
+		theWebUI.showDetails(theWebUI.rssItems[id].hash, true);
 	else
 	{
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
-		if((e.which==3) && plugin.canChangeMenu())
-		{
-			theWebUI.createRSSMenu(e, id);
-			theContextMenu.show();
-		}
-		else
-			theContextMenu.hide();
 	}
+	if((e.which==3) && plugin.canChangeMenu())
+	{
+		theWebUI.createRSSMenu(e, id);
+		theContextMenu.show();
+	}
+	else
+		theContextMenu.hide();
 	theWebUI.switchLayout(!(id && $type(theWebUI.torrents[theWebUI.rssItems[id].hash])),id);
 }
 
