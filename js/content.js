@@ -19,9 +19,9 @@ function makeContent()
 	$("#mnu_go").attr("title",theUILang.mnu_go);
 	$("#mnu_help").attr("title",theUILang.mnu_help+"...");
 
-	$("#query").keydown( function(e) 
+	$("#query").keydown( function(e)
 	{
-		if(e.keyCode == 13) 
+		if(e.keyCode == 13)
 			theSearchEngines.run();
 	});
 
@@ -33,11 +33,11 @@ function makeContent()
 		maskId : "dividerDrag",
 		onStart : function(e) { return(theWebUI.settings["webui.show_cats"]); },
 		onRun : function(e) { $(document.body).css( "cursor", "e-resize" ); },
-		onFinish : function(e) 
+		onFinish : function(e)
 		{
 		        var self = e.data;
 			var w = self.mask.offset().left-2;
-			theWebUI.resizeLeft(w,null);	
+			theWebUI.resizeLeft(w,null);
 			w = $(window).width()-w-11;
 			theWebUI.resizeTop(w,null);
       		        theWebUI.resizeBottom(w,null);
@@ -54,7 +54,7 @@ function makeContent()
 		maskId : "dividerDrag",
 		onStart : function(e) { return(theWebUI.settings["webui.show_dets"]); },
 		onRun : function(e) { $(document.body).css( "cursor", "n-resize" ); },
-		onFinish : function(e) 
+		onFinish : function(e)
 		{
 		        var self = e.data;
 		        var offs = self.mask.offset();
@@ -100,9 +100,9 @@ function makeContent()
 				'<span id="fast_resume_option">'+
 				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
 				'</span>'+
-				'<span id="randomize_hash_option">'+				
+				'<span id="randomize_hash_option">'+
 				'<label>&nbsp;</label><input type="checkbox" name="randomize_hash" id="randomize_hash"/>'+theUILang.doRandomizeHash+'<br/>'+
-				'</span>'+				
+				'</span>'+
 				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
 				'<hr/>'+
 				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept=".torrent,application/x-bittorrent" class="TextboxLarge"/><br/>'+
@@ -118,7 +118,7 @@ function makeContent()
 	$("#tadd_label_select").change( function(e)
 	{
 		var index = this.selectedIndex;
-		switch (index) 
+		switch (index)
 		{
 			case 1:
 			{
@@ -129,13 +129,13 @@ function makeContent()
 			{
 				$("#tadd_label").val("");
 				break;
-			}				
+			}
 			default:
 			{
 				$("#tadd_label").val(this.options[index].value);
 				break;
 			}
-		}			
+		}
 	});
 
 	theDialogManager.setHandler('tadd','beforeShow',function()
@@ -147,6 +147,7 @@ function makeContent()
 		for (var lbl in theWebUI.cLabels)
 			$("#tadd_label_select").append("<option>"+lbl+"</option>");
 		$("#add_button").prop("disabled",false);
+		$("#tadd_label_select").change();
 	});
 
 	var input = $$('url');
@@ -177,7 +178,7 @@ function makeContent()
 	}
 	$("#addtorrent").submit(function()
 	{
-		if(!$("#torrent_file").val().match(/\.torrent$/i)) 
+		if(!$("#torrent_file").val().match(/\.torrent$/i))
 		{
 			alert(theUILang.Not_torrent_file);
 	   		return(false);
@@ -324,7 +325,7 @@ function makeContent()
 
 					"<div class=\"op50l algnright\"><input type=\"checkbox\" id=\"webui.speedintitle\"/>"+
 						"<label for=\"webui.speedintitle\">"+theUILang.showSpeedInTitle+"</label>"+
-					"</div>"+					
+					"</div>"+
 
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.no_delaying_draw\"/>"+
 						"<label for=\"webui.no_delaying_draw\" id=\"lbl_webui.no_delaying_draw\" >"+theUILang.showScrollTables+"</label>"+
@@ -624,7 +625,7 @@ function makeContent()
 
 function correctContent()
 {
-	var showEnum = 
+	var showEnum =
 	{
 		showDownloadsPage:	0x0001,
 		showConnectionPage:	0x0002,
@@ -674,7 +675,7 @@ function correctContent()
 		$("#prop-superseed").remove();
 		$("#lbl_prop-superseed").remove();
 		$("#dlgProps .OK").remove();
-        }		
+        }
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithoutPath))
 	{
 		$("#addtorrent #not_add_path_option").remove();
@@ -682,15 +683,15 @@ function correctContent()
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithoutStarting))
 	{
 		$("#addtorrent #torrents_start_stopped_option").remove();
-	}	
+	}
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithResume))
 	{
 		$("#addtorrent #fast_resume_option").remove();
-	}		
+	}
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithRandomizeHash))
 	{
 		$("#addtorrent #randomize_hash_option").remove();
-	}	
+	}
 	if(!theWebUI.systemInfo.rTorrent.started)
 	{
 		rPlugin.prototype.removePageFromTabs("TrackerList");
@@ -712,12 +713,12 @@ function correctContent()
 	{
 		if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
 		{
-			theRequestManager.addRequest("fls","f.prioritize_first=",function(hash, fls, value) 
+			theRequestManager.addRequest("fls","f.prioritize_first=",function(hash, fls, value)
 			{
 				if(value=='1')
 					fls.prioritize = 1;
 			});
-			theRequestManager.addRequest("fls","f.prioritize_last=",function(hash, fls, value) 
+			theRequestManager.addRequest("fls","f.prioritize_last=",function(hash, fls, value)
 			{
 				if(value=='1')
 					fls.prioritize = 2;
@@ -728,7 +729,7 @@ function correctContent()
 			$('#st_ao_h table tr:first').remove();
 			$('#st_ao_h table tr:first').remove();
 			$('#st_ao_h table tr:first').remove();
-			$.extend(theRequestManager.aliases, 
+			$.extend(theRequestManager.aliases,
 			{
 				"get_hash_interval"		: { name: "cat", prm: 0 },
 				"get_hash_max_tries"		: { name: "cat", prm: 0 },
@@ -742,15 +743,15 @@ function correctContent()
 	if(theWebUI.systemInfo.rTorrent.iVersion>=0x806)
 	{
 		theRequestManager.aliases[""] = { name: "", prm: 0 };
-		$.extend(theRequestManager.aliases, 
+		$.extend(theRequestManager.aliases,
 		{
 			"d.set_peer_exchange" 		: { name: "d.peer_exchange.set", prm: 0 },
 			"d.set_connection_seed"		: { name: "d.connection_seed.set", prm: 0 }
 		});
 	}
-	if(theWebUI.systemInfo.rTorrent.iVersion>=0x904)	
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x904)
 	{
-		$.extend(theRequestManager.aliases, 
+		$.extend(theRequestManager.aliases,
 		{
 			"create_link"		:	{ name: "d.create_link", prm: 0 },
 			"d.get_base_filename"	:	{ name: "d.base_filename", prm: 0 },
@@ -1039,9 +1040,9 @@ function correctContent()
 			"load"			:	{ name: "load.normal", prm: 1 }
 		});
 	}
-	if(theWebUI.systemInfo.rTorrent.apiVersion>=10)	
+	if(theWebUI.systemInfo.rTorrent.apiVersion>=10)
 	{
-		$.extend(theRequestManager.aliases, 
+		$.extend(theRequestManager.aliases,
 		{
 			"get_port_open"		: { name: "network.listen.is_open", prm: 0 },
 			"get_port_random" 	: { name: "network.port.randomize", prm: 0 },
