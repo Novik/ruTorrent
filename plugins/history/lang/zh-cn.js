@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN HISTORY
  *
  * Chinese Simplified language file.
@@ -6,33 +6,33 @@
  * Author: 
  */
 
- theUILang.historyAddition	= "Addition";
- theUILang.historyDeletion	= "Deletion";
- theUILang.historyFinish	= "Finish";
- theUILang.historyLog		= "Log";
- theUILang.history		= "History";
- theUILang.historyLimit 	= "Maximum number of records";
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
- theUILang.hstDeletePrompt	= "Do you really want to delete the selected record(s)?";
- theUILang.hstDelete		= "Delete record(s)";
- theUILang.Added		= "Added";
- theUILang.Finished		= "Finished";
- theUILang.Deleted		= "Deleted";
- theUILang.Time 		= "Time";
+ theUILang.historyAddition	= "添加";
+ theUILang.historyDeletion	= "删除";
+ theUILang.historyFinish	= "完成";
+ theUILang.historyLog		= "日志";
+ theUILang.history		= "历史记录";
+ theUILang.historyLimit 	= "最大记录数目";
+ theUILang.seedingTime		= "已完成";
+ theUILang.addTime		= "添加日期";
+ theUILang.hstDeletePrompt	= "你真的想删除选中的记录吗?";
+ theUILang.hstDelete		= "删除记录";
+ theUILang.Added		= "添加";
+ theUILang.Finished		= "完成";
+ theUILang.Deleted		= "删除";
+ theUILang.Time 		= "时间";
  theUILang.Tracker		= "Tracker";
- theUILang.enableNotifications	= "Enable desktop notifications";
- theUILang.historyNotification	= "Desktop Notifications";
- theUILang.notifAutoClose	= "Autoclose notifications after";
+ theUILang.enableNotifications	= "启用桌面通知";
+ theUILang.historyNotification	= "桌面通知";
+ theUILang.notifAutoClose	= "在此之后自动关闭";
  theUILang.notifTip		= {
- 				  false: "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 				  false: "你的浏览器不支持桌面通知. 请尝试使用别的浏览器, 例如, Google Chrome.",
  				  "granted": "",
- 				  "default": "Your browser supports desktop notifications. Press button below to enable it.",
- 				  "denied": "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 				  "default": "你的浏览器支持桌面通知. 点击下面的按钮以启用.",
+ 				  "denied": "你的浏览器支持桌面通知, 但是你没有给此网站授权. 关闭此对话框并在浏览器设置内启用.",
  				  };
- theUILang.pushbulletNotification = "PushBullet notifications";
+ theUILang.pushbulletNotification = "PushBullet 通知";
  theUILang.pushbulletKey	= "PushBullet Access Token";
- theUILang.turnNotifyOn 	= "Turn notifications on";
- theUILang.turnNotifyOff	= "Turn notifications off";
+ theUILang.turnNotifyOn 	= "启用通知";
+ theUILang.turnNotifyOff	= "关闭通知";
 
 thePlugins.get("history").langLoaded();
