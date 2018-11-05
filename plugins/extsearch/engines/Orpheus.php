@@ -1,6 +1,6 @@
 <?php
 
-class APOLLOEngine extends commonEngine
+class OrpheusEngine extends commonEngine
 {
 
 	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
@@ -10,7 +10,7 @@ class APOLLOEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'https://apollo.rip';
+		$url = 'https://orpheus.network';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'music'=>'&filter_cat[1]=1', 'software'=>'&filter_cat[2]=1', 'books'=>'&filter_cat[3]=1&filter_cat[4]=1&filter_cat[6]=1&filter_cat[7]=1' );
 		else
@@ -28,11 +28,11 @@ class APOLLOEngine extends commonEngine
 				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
 				break;
 
-			$res = preg_match_all('/\[ <a href="torrents\.php\?(?P<link>.*)".*>DL<\/a>.*'.
-				'<\/span>(?P<artist>.*)<a href="torrents\.php\?id=(?P<desc>\d+)\&.*>(?P<title>.*)<div class="torrent_info">(?P<cat>.*)<\/div>.*'.
-				'<td class="nobr"><span .* title="(?P<date>.*)">.*<\/span>.*<td .*>(?P<size>.*)<\/td>.*'.
-				'<td .*>.*<\/td>.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>'.
-				'/siU', $cli->results, $matches);
+			$res = preg_match_all('`\[ <a href="torrents\.php\?(?P<link>.*)".*>DL</a>.*'.
+				'</span>(?P<artist>.*)<a href="torrents\.php\?id=(?P<desc>\d+)&.*>(?P<title>.*)<div class="torrent_info">(?P<cat>.*)</div>.*'.
+				'<td class="td_time nobr"><span .* title="(?P<date>.*)">.*</span>.*'.
+				'<td .*>(?P<size>.*)</td>.*<td .*>.*</td>.*<td .*>(?P<seeds>.*)</td>.*<td .*>(?P<leech>.*)</td>'.
+				'`siU', $cli->results, $matches);
 
 			if($res)
 			{
@@ -45,7 +45,7 @@ class APOLLOEngine extends commonEngine
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$item["desc"] = $url."/torrents.php?id=".$matches["desc"][$i];
 						$item["name"] = self::removeTags($matches["artist"][$i].$matches["title"][$i]);
-						$item["size"] = self::formatSize($matches["size"][$i]);
+						$item["size"] = self::formatSize(str_replace(",","",$matches["size"][$i]));
 						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));

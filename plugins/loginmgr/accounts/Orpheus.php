@@ -1,12 +1,12 @@
 <?php
 
-class APOLLOAccount extends commonAccount
+class OrpheusAccount extends commonAccount
 {
-	public $url = "https://apollo.rip";
+	public $url = "https://orpheus.network";
 
 	protected function isOK($client)
 	{
-		return(strpos($client->results, '<form id="loginform" method="post"')===false);
+		return(strpos($client->results, '<form class="auth_form" name="login" id="loginform"')===false);
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
