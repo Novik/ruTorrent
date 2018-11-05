@@ -45,7 +45,7 @@ class RedactedEngine extends commonEngine
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$item["desc"] = $url."/torrents.php?id=".$matches["desc"][$i];
 						$item["name"] = self::removeTags($matches["artist"][$i].$matches["title"][$i]);
-						$item["size"] = self::formatSize($matches["size"][$i]);
+						$item["size"] = self::formatSize(str_replace(",","",$matches["size"][$i]));
 						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
