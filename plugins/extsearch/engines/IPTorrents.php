@@ -15,6 +15,14 @@ class IPTorrentsEngine extends commonEngine
         'years'   => 31536000,
     ];
 
+    protected static function disableEntityLoader()
+    {
+        if( function_exists('libxml_disable_entity_loader') )
+        {
+            libxml_disable_entity_loader( true );
+        }
+    }
+
     protected static function getTime($now, $ago, $unit)
     {
         $delta = (array_key_exists($unit, self::$seconds) ? self::$seconds[$unit] : 0);
@@ -35,6 +43,7 @@ class IPTorrentsEngine extends commonEngine
             $cat = $categories['all'];
         else
             $cat = $categories[$cat];
+        self::disableEntityLoader();
         for ($pg = 1; $pg < 11; $pg++) {
             $cli = $this->fetch($url . '/t?' . $cat . ';o=seeders;q=' . $what . ';p=' . $pg);
             if (($cli == false) || (strpos($cli->results, ">No Torrents Found!<") !== false) ||
