@@ -840,6 +840,7 @@ function correctContent()
 			"d.set_tied_to_file"	:	{ name: "d.tied_to_file.set", prm: 0 },
 			"d.set_tracker_numwant"	:	{ name: "d.tracker_numwant.set", prm: 0 },
 			"d.set_uploads_max"	:	{ name: "d.uploads_max.set", prm: 0 },
+			"execute"		:	{ name: "execute2", prm: 1 },
 			"execute_capture"	:	{ name: "execute.capture", prm: 1 },
 			"execute_capture_nothrow"	:	{ name: "execute.capture_nothrow", prm: 1 },
 			"execute_nothrow"	:	{ name: "execute.nothrow", prm: 1 },

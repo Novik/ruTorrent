@@ -88,6 +88,7 @@ $this->aliases = array_merge($this->aliases,array(
 "d.set_tied_to_file"	=>	array( "name"=>"d.tied_to_file.set", "prm"=>0 ),
 "d.set_tracker_numwant"	=>	array( "name"=>"d.tracker_numwant.set", "prm"=>0 ),
 "d.set_uploads_max"	=>	array( "name"=>"d.uploads_max.set", "prm"=>0 ),
+"execute"		=>	array( "name"=>"execute2", "prm"=>1 ),
 "execute_capture"	=>	array( "name"=>"execute.capture", "prm"=>1 ),
 "execute_capture_nothrow"	=>	array( "name"=>"execute.capture_nothrow", "prm"=>1 ),
 "execute_nothrow"	=>	array( "name"=>"execute.nothrow", "prm"=>1 ),
