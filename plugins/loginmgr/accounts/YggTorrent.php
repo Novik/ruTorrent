@@ -2,8 +2,6 @@
 
 class YggTorrentAccount extends commonAccount
 {
-    public $url = "https://yggtorrent.to";
-
     protected function isOK($client)
     {
         return (
@@ -13,16 +11,23 @@ class YggTorrentAccount extends commonAccount
         );
     }
 
+    public function test($url)
+    {
+    	return( preg_match( '/https:\/\/.*\.yggtorrent\..*\/engine\/download_torrent\?id=/', $url ) === 1 );
+    }
+
     protected function login($client, $login, $password, &$url, &$method, &$content_type, &$body, &$is_result_fetched)
     {
         $is_result_fetched = false;
         if ($client->fetch($url)) {
             $client->setcookies();
             $client->referer = $url;
-            if ($client->fetch($this->url . "/user/login", "POST", "application/x-www-form-urlencoded",
-                "id=" . rawurlencode($login) . "&pass=" . rawurlencode($password) . '&submit=')) {
+            if( ($domain = parse_url($url, PHP_URL_HOST)) &&
+                $client->fetch("https://".$domain."/user/login", "POST", "application/x-www-form-urlencoded",
+		    "id=" . rawurlencode($login) . "&pass=" . rawurlencode($password) . '&submit=') )
+	    {
                 $client->setcookies();
-                return (true);
+                return(true);
             }
         }
         return (false);

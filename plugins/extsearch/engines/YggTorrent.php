@@ -97,11 +97,13 @@ class YggTorrentEngine extends commonEngine
         }
 
         $nbRet = preg_match_all('`>(?P<results>\d+) résultats trouvés`', $cli->results, $retPage);
+	if (!$nbRet) 
+	{
+            return;
+        }
         $nbResults = $retPage['results'][0];
         // Check if there is only one page
-        if (!$nbRet) {
-            return;
-        } else if ($nbResults <= self::PAGE_SIZE) {
+        if ($nbResults <= self::PAGE_SIZE) {
             $maxPage = 1;
         } else {
             // Retrieve the page count
