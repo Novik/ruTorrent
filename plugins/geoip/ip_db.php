@@ -54,7 +54,7 @@ class ipDB
 		$comment = self::trunc($comment);
 		$ip = "'".sqlite_escape_string1($ip)."'";
 		if( $comment=='' )
-			sqlite_exec($this->handle, "delete from comments where ip=".$ip,
+			sqlite_exec1($this->handle, "delete from comments where ip=".$ip,
 				$this->error);
 		else
 		{
