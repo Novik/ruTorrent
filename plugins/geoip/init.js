@@ -226,5 +226,5 @@ plugin.onRemove = function()
         if(plugin.retrieveCountry)
 		theWebUI.getTable("prs").removeColumnById("country");
         if(plugin.retrieveComments)
-		theWebUI.getTable("prs").removeColumnById("country");
+		theWebUI.getTable("prs").removeColumnById("comment");
 }
