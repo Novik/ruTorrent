@@ -170,15 +170,16 @@ if(plugin.canChangeMenu() && plugin.retrieveComments)
 	plugin.createPeerMenu = theWebUI.createPeerMenu;
    	theWebUI.createPeerMenu = function(e, id)
 	{
-		if(plugin.createPeerMenu.call(theWebUI,e,id))
+		if(plugin.createPeerMenu.call(theWebUI, e, id))
 		{
-			var el = theContextMenu.get( theUILang.peerAdd );
-			if(el)
+			if(plugin.enabled && plugin.allStuffLoaded)
 			{
-				theContextMenu.add(el,[theUILang.peerComment+'...', 
-					this.isTorrentCommandEnabled('commentpeer',this.dID) && (theWebUI.getTable("prs").selCount==1) ? "theDialogManager.show('cadd')" : null]);
-				return(true);
+				var el = theContextMenu.get(theUILang.peerAdd);
+				if(el)
+					theContextMenu.add(el, [theUILang.peerComment+'...',
+						(this.isTorrentCommandEnabled('commentpeer',theWebUI.dID) && (theWebUI.getTable("prs").selCount==1)) ? "theDialogManager.show('cadd')" : null]);
 			}
+			return(true);
 		}
 		return(false);
    	}
