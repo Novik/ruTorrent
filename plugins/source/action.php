@@ -3,13 +3,13 @@ require_once( '../../php/rtorrent.php' );
 
 if(isset($_REQUEST['result']))
 	cachedEcho('noty(theUILang.cantFindTorrent,"error");',"text/html");
-if(isset($_REQUEST['hash']))
+if(isset($_POST['hash']))
 {
-	$query = urldecode($_REQUEST['hash']);
+	$query = urldecode($_POST['hash']);
 	$hashes = explode(" ", $query);
 	if(count($hashes) == 1)
 	{
-		$torrent = rTorrent::getSource($_REQUEST['hash']);
+		$torrent = rTorrent::getSource($_POST['hash']);
 		if($torrent)
 			$torrent->send();
 	}
