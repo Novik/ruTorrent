@@ -43,7 +43,7 @@ plugin.onLangLoaded = function()
 			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));
 	$(document.body).append(
-		$('<form action="plugins/source/action.php" id="getsource" method="get" target="srcfrm">'+
+		$('<form action="plugins/source/action.php" id="getsource" method="post" target="srcfrm">'+
 			'<input type="hidden" name="hash" id="srchash" value="">'+
 		'</form>').width(0).height(0));
 }
