@@ -1,7 +1,7 @@
 <?php
 class KATEngine extends commonEngine
 {
-	public $defaults = array( "public"=>true, "page_size"=>500 );
+	public $defaults = array( "public"=>true, "page_size"=>150 );
 	public $url = 'https://katcr.co';
 	public $categories = array(
 		'all'=>'',
@@ -42,8 +42,8 @@ class KATEngine extends commonEngine
 
 	public function get_cookie()
 	{
-		$gck = $this->fetch( $this->url . '/new/' );
-		return($gck && isset($gck['KATSSESS_ID70AT']) ? $gck : false);
+		$gck = $this->fetch( $this->url . '/katsearch/page/1/' );
+		return($gck ? $gck : false);
     	}
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
@@ -61,13 +61,19 @@ class KATEngine extends commonEngine
 			else
 				$cat = $categories[$cat];
 
-			// Website uses 1 page to display torrents (500 results max.)
-			// Use the custom search query (beta)
-				$cli = $this->fetch( $this->url . '/advanced-usearch/', "POST", $cookie,
-					"application/x-www-form-urlencoded", 'category=' . $cat . '&orderby=seeds-desc&search=' . $what );
+			// Website uses 1 page to display torrents
 
-			if( ($cli == false) || (strpos($cli->results, "<div class=\"torrents_table__torrent_name\">") === false) )
+			// Use custom-search query (beta) - 500 results max.
+			//	$cli = $this->fetch( $this->url . '/advanced-usearch/', "POST", $cookie,
+			//		"application/x-www-form-urlencoded", 'category=' . $cat . '&orderby=seeds-desc&search=' . $what );
+
+			// Use standard search because custom-search is temp disabled - 150 results max.
+				$cli = $this->fetch( $this->url . '/katsearch/page/1/' . $what, "GET", $cookie );
+
+			if( ($cli == false) || (strpos($cli->results, "<div class=\"torrents_table__torrent_name\">") === false)
+				|| (strpos($cli->results, "loading........") !== false) )
 				return;
+
 			$res = preg_match_all(
 				'`<a class="torrents_table__torrent_title" href="(?P<desc>.*)">(?P<name>.*)</a>.*'.
 				'<a href=".*/category/.*>(?P<cat1>.*)</a>.*<a .*>(?P<cat2>.*)</a>.*'.
@@ -85,7 +91,8 @@ class KATEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["desc"] = $matches["desc"][$i];
+						// $item["desc"] = $matches["desc"][$i];
+						$item["desc"] = $this->url.$matches["desc"][$i];
 						$item["cat"] = self::removeTags($matches["cat1"][$i].' > '.$matches["cat2"][$i]);
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize(str_replace(",","",$matches["size"][$i]));
