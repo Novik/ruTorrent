@@ -13,7 +13,7 @@ class YggTorrentAccount extends commonAccount
 
     public function test($url)
     {
-    	return( preg_match( '/https:\/\/.*\.yggtorrent\..*\/engine\/download_torrent\?id=/', $url ) === 1 );
+    	return( preg_match( '/https:\/\/(.*\.)?ygg.*\..*\/engine\/download_torrent\?id=/', $url ) === 1 );
     }
 
     protected function login($client, $login, $password, &$url, &$method, &$content_type, &$body, &$is_result_fetched)
