@@ -131,7 +131,10 @@ if($tmp!='/tmp/')
 $theSettings = rTorrentSettings::get(true);
 if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 {
-	$permissions = parse_ini_file("../conf/plugins.ini",true);
+	$plg = getConfFile('plugins.ini');
+	if(!$plg)
+		$plg = "../conf/plugins.ini";
+	$permissions = parse_ini_file($plg,true);
 	$init = array();
 	$names = array();
 	$phpVersion = phpversion();
