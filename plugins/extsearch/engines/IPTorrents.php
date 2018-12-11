@@ -64,7 +64,7 @@ class IPTorrentsEngine extends commonEngine
                     }
 
                     $tds = $tr->getElementsByTagName('td');
-                    if ($tds->length !== 9) continue; //bail if table rows isn't as expected
+                    if (($tds->length < 9) && ($tds->length > 10)) continue; //bail if table rows isn't as expected
 
                     try {
                         preg_match('/.*(\d+\.\d) (minutes|hours|days|weeks|months|years) ago/',
@@ -81,8 +81,8 @@ class IPTorrentsEngine extends commonEngine
                         $item["name"] = self::removeTags($tds[1]->getElementsByTagName('a')[0]->textContent);
                         $item["size"] = self::formatSize($tds[5]->textContent);
                         $item["time"] = self::getTime($now, $ago_matches[1], $ago_matches[2]);
-                        $item["seeds"] = intval($tds[7]->textContent);
-                        $item["peers"] = intval($tds[8]->textContent);
+                        $item["seeds"] = ($tds->length === 9) ? intval($tds[7]->textContent) : intval($tds[8]->textContent);
+                        $item["peers"] = ($tds->length === 9) ? intval($tds[8]->textContent) : intval($tds[9]->textContent);
 
                         $ret[$link] = $item;
                     } catch (Exception $e) {
