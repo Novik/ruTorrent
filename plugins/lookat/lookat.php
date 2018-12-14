@@ -12,12 +12,12 @@ class rLook
 		$rt = new rLook();
 		if(!$cache->get($rt))
 		{
-			$rt->list["YouTube"] = "http://www.youtube.com/results?search_query={title}";
-			$rt->list["MetaCritic"] = "http://www.metacritic.com/search/all/{title}/results";
-			$rt->list["IMDb"] = "http://www.imdb.com/find?q={title}&s=all";
 			$rt->list["Google"] = "https://www.google.com/search?q={title}";
-			$rt->list["TMDb"] = "http://www.themoviedb.org/search?query={title}";
-			$rt->list["TheTVDb"] = "http://thetvdb.com/?string={title}&searchseriesid=&tab=listseries&function=Search";
+			$rt->list["IMDb"] = "https://www.imdb.com/find?ref_=nv_home&q={title}";
+			$rt->list["MetaCritic"] = "https://www.metacritic.com/search/all/{title}/results";
+			$rt->list["TMDb"] = "https://www.themoviedb.org/search?query={title}";
+			$rt->list["TheTVDb"] = "https://www.thetvdb.com/search?q={title}";
+			$rt->list["YouTube"] = "https://www.youtube.com/results?search_query={title}";
 		}
 		return($rt);
 	}
