@@ -1,6 +1,20 @@
 <?php
 
-$partsToRemove = "([\.-](1080p|720p|x264|WEBDL|WebRip|VHSRip|CamRip|TS|DVDSCR|BluRay|BRRip|BDRemux|".
-	"TC|TVRip|SATRip|DVDRip|HDTVRip|BDRip|DVD5|DVD9|MP3|HDRip|".
-	"MP4|WEB-DL|Web-Rip|VHS-Rip|Cam-Rip|DVD-SCR|TV-Rip|Blu-Ray|BR-Rip|HD-Rip|BD-Remux|SCR|".
-	"SAT-Rip|DVD-Rip|HDTV-Rip|BD-Rip|DVD-5|DVD-9|HDTV|MULTi8|GoG|XviD|EXTENDED|BLURAY|BLU-RAY|DTS|DD5.1)|-[^-]+$)";
+$partsToRemove = "([\.-](8bit|10bit|480p|720p|1080p|".
+	"1080i|2160p|\dDiSC|AAC(.?2.0)?|AC3(.?2.0)?|AHDTV|".
+	"AMZN|Atmos(.?5.1|.?7.1)?|AVC|BD-?Remux|BD-?Rip|".
+	"BD5|BD9|BDr|Blu-?Ray|BLURAYRiP|BOXSET|BR-?Rip|".
+	"Cam-?Rip|COMPLETE|CUSTOM|DDP?(.?2.0|.?5.1|.?7.1)?|".
+	"DiR.?FiX|DiRECTORS.CUT|DISC.?\d|DivX|DL|DOKU|DSR|".
+	"DTS(-HD)?(.MA)?(.?2.0|.?5.1|.?7.1)?|DUAL|DUBBED|".
+	"DVD(-?5|-?9|-?Rip|-?SCR)?|DVDR|DVDScreener|DVTV|".
+	"EXTENDED(.CUT)?|FS|GoG|H.?264|HD-?Rip|HDDVD(-?Rip)?|".
+	"HDR|HDTV(-?Rip)?|HEVC|HR|iMAGESET|iNT|iNTERNAL|LD|".
+	"LiMiTED|LPCM(.?1.0|.?2.0|.?5.1)?|MBluRay|MD|MDVDR|".
+	"MP3|MP4|MPEG-?2|MULTi\d{0,2}|MULTISUBS|NF|NFO.?FIX|".
+	"NTSC|OGG|PAL|PDTV|PPV|PROOF.?FIX|PROPER|R\d|READ.?NFO|".
+	"REMASTERED|REMUX|REPACK|RERiP|RETAiL|SAMPLE.?FiX|SAT-?Rip|".
+	"SCR|SCREENER|SDR|STV|SUBBED|SVCD|TC|TELECINE|TELESYNC|".
+	"THEATRiCAL(.CUT)?|TrueHD(.?5.1|.?7.1)?|TS|TV-?Rip|UHD|".
+	"UNRATED|VC-?1|VHS-?Rip|WEB(-?DL|-?Rip)?|WebHD|WMV|WS|".
+	"x264|x265|XviD|XXX)\b|-[^-]+$)";
