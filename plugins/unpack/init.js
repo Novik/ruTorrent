@@ -35,6 +35,9 @@ if(plugin.canChangeMenu())
 						if(plugin.useUnzip && (/.*\.zip$/i).test(this.files[this.dID][plugin.fno].name))
 							plugin.mode = 'zip';
 						else
+						if(plugin.use7z && (/.*\.7z$/i).test(this.files[this.dID][plugin.fno].name))
+							plugin.mode = '7z';
+						else
 							plugin.fno=null;
 					}
 				}
@@ -60,6 +63,7 @@ if(plugin.canChangeMenu())
 			plugin.mode = null;
 		        var rarPresent = false;
 		        var zipPresent = false;
+			var un7zPresent = false;
 		        var checked = false;
 		        this.uID = ((this.getTable("trt").selCount == 1) && !(thePlugins.isInstalled("quotaspace") && theWebUI.quotaAlreadyWarn)) ? (id || this.dID) : null;
 			if(this.uID && (this.torrents[this.uID].done==1000) && $type(this.files[this.uID]))
@@ -72,11 +76,14 @@ if(plugin.canChangeMenu())
 					else
 					if(plugin.useUnzip && (/.*\.zip$/i).test(file.name))
 						zipPresent = true;
+					else
+					if(plugin.use7z && (/.*\.7z$/i).test(file.name))
+						un7zPresent = true;
 					checked = true;
 				}
 			}
 			theContextMenu.add( [theUILang.unpack+'...',  
-				(this.uID && (this.uID.length==40) && (this.torrents[this.uID].done==1000) && (!checked || rarPresent || zipPresent)) ? 
+				(this.uID && (this.uID.length==40) && (this.torrents[this.uID].done==1000) && (!checked || rarPresent || zipPresent || un7zPresent)) ? 
 				"theDialogManager.show('dlg_unpack')" : null] );
 		}
 	}

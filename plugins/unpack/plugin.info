@@ -1,4 +1,4 @@
-plugin.description: This plugin is designed to manually or automatically unrar/unzip torrent data.
+plugin.description: This plugin is designed to manually or automatically unrar/unzip/7z torrent data.
 plugin.author: Novik
 plugin.version: 3.8
 plugin.runlevel: 11
