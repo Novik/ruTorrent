@@ -16,7 +16,7 @@
  theUILang.schTurnOff		= "Wyłącz";
  theUILang.schSeedingOnly	= "Wysyłanie";
  theUILang.schUnlimitedDesc	= "Nielimitowany - ogólny limit nie istnieje";
- theUILang.schLimitedDesc	= "Limitowany - ogranicza transfer używając limutu ";
+ theUILang.schLimitedDesc	= "Limitowany - ogranicza transfer używając limitu ";
  theUILang.schTurnOffDesc	= "Wyłącz - zatrzymuje wszystkie torrenty";
  theUILang.schSeedingOnlyDesc	= "Wysyłanie - tylko udostępnianie danych";
  theUILang.schLimitedUL 	= "Wysyłanie";
