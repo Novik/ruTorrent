@@ -812,12 +812,18 @@ var theSort =
 	},
 	PeersTotal: function(x, y)
 	{
-		return r = ir(x.match(this.peers_total_re)[1]) - ir(y.match(this.peers_total_re)[1]);
+		return( this.Numeric( this.PeerValue(x,this.peers_total_re), this.PeerValue(y,this.peers_total_re) ) );
 	},
 	PeersConnected: function(x, y)
 	{
-		return r = ir(x.match(this.peers_connected_re)[1]) - ir(y.match(this.peers_connected_re)[1]);
+		return( this.Numeric( this.PeerValue(x,this.peers_connected_re), this.PeerValue(y,this.peers_connected_re) ) );
 	},
+	PeerValue: function(x,pcre)
+	{
+		var val = ((x || '')+"").match(pcre);
+		return( val ? val[1] : 0 );
+	},
+
 	peers_total_re: /\((\d+)\)$/,
 	peers_connected_re: /^(\d+)/,
 };
