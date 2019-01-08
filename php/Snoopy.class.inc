@@ -421,7 +421,7 @@ class Snoopy
 			}
 			else
 			{
-				$randName = uniqid(getTempDirectory()."rutorrent-gz-");
+				$randName = getTempFilename('answer');
 				file_put_contents($randName.".gz",$results);
 				exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 				if(is_file($randName))
@@ -429,8 +429,10 @@ class Snoopy
 					$results = file_get_contents($randName);
 					unlink($randName);
 				}
-				else				
+				else
+				{
 					unlink($randName.".gz");
+				}
 			}
 		}
 		
@@ -496,8 +498,8 @@ class Snoopy
 		if($this->_isproxy)
 			$cmdline_params .= " --proxy ".$this->proxy_host.":".$this->proxy_port;
 		
-		$headerfile = uniqid(getTempDirectory()."rutorrent-https-hdr-");
-		$contfile = uniqid(getTempDirectory()."rutorrent-https-bdy-");
+		$headerfile = getTempFilename('https-header');
+		$contfile = getTempFilename('https-body');
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s"; 
@@ -556,7 +558,7 @@ class Snoopy
 				}
 				else
 				{
-					$randName = uniqid(getTempDirectory()."tmp/rutorrent-gz-");
+					$randName = getTempFilename('answer');
 					file_put_contents($randName.".gz",$results);
 					exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 					if(is_file($randName))
@@ -564,8 +566,10 @@ class Snoopy
 						$results = file_get_contents($randName);
 						unlink($randName);
 					}
-					else				
+					else
+					{
 						unlink($randName.".gz");
+					}
 				}
 			}
 

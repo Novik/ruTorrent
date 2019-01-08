@@ -45,8 +45,8 @@ if(isset($_POST['hash']))
 			set_time_limit(0);
 
 			$fn = 1;
-			$zipname = uniqid("torrents-".getUser()."-").".zip";
-			$zippath = getTempDirectory().$zipname;
+			$zippath = getTempFilename('source','zip');
+
 			$zip = new ZipArchive;
 			$zip->open($zippath, ZipArchive::CREATE);
 			foreach(array_combine($filepaths, $files) as $filepath => $file)
@@ -58,7 +58,7 @@ if(isset($_POST['hash']))
 			}
 			$zip->close();
 
-			if(sendFile($zippath, "application/zip", $zipname, false))
+			if(sendFile($zippath, "application/zip", null, false))
 				unlink($zippath);
 
 			exit();

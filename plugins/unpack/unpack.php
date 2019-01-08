@@ -316,7 +316,7 @@ class rUnpack
 				$outPath.=addslash($name);
 			if($unpackToTemp)
 			{
-				$randTempDirectory = addslash(uniqid(getTempDirectory()."archive-"));
+				$randTempDirectory = addslash( getTempFilename('unpack') );
 				if( $unpack_debug_enabled ) 
 					toLog("Unpack: Unpack to temp enabled. Unpacking to " . $randTempDirectory);
 			}

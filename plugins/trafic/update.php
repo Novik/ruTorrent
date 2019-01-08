@@ -34,7 +34,7 @@
 				$nowTorrents[$req->strings[$i]] = array_slice($req->i8s,($i+1)*2,2);
 			ksort($nowTorrents);
 
-			$randName = uniqid(getTempDirectory()."rutorrent-trafic-");
+			$randName = getTempFilename('trafic');
 			if($file=@fopen($randName,"w"))
 			{
 				if( ($ok = fputcsv($file,$now))!==false )

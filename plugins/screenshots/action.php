@@ -68,7 +68,7 @@ if(isset($_REQUEST['cmd']))
 			$dir = rTask::formatPath( $_REQUEST['no'] );
 			if(@chdir( $dir ))
 			{
-				$randName = uniqid(getTempDirectory()."rutorrent-scrn-");
+				$randName = getTempFilename('screenshots-detail');
 				exec(escapeshellarg(getExternal('tar'))." -cf ".$randName." *.".($st->data['exformat'] ? 'png' : 'jpg'),$results,$return);
 				if(is_file($randName))
 				{

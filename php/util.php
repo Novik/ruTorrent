@@ -452,6 +452,21 @@ function getUniqueUploadedFilename($fname)
 	return( $overwriteUploadedTorrents ? $fname : getUniqueFilename($fname));
 }
 
+function getTempFilename($purpose = '', $extension = null)
+{
+	do
+	{
+		$fname = uniqid(getTempDirectory().implode( '-', array_filter(array
+		(
+			"rutorrent",
+			$purpose,
+			getLogin(),
+			getmypid()
+		))),true).( is_null($extension) ? '' : ".$extension" );
+	} while(file_exists($fname));	// this is no guarantee, of course...
+	return($fname);
+}
+
 function getExternal($exe)
 {
 	global $pathToExternals;
@@ -511,7 +526,7 @@ function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 			{
 				$gzip = getExternal('gzip');
 				header('Content-Encoding: '.$encoding); 
-				$randName = uniqid(getTempDirectory()."rutorrent-ans-");
+				$randName = getTempFilename('answer');
 				file_put_contents($randName,$content);
 				passthru( $gzip." -".PHP_GZIP_LEVEL." -c < ".$randName );
 				unlink($randName);

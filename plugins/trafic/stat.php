@@ -36,7 +36,7 @@ class rStat
 	public function flush()
 	{
 		global $profileMask;
-		$randName = uniqid(getTempDirectory()."rutorrent-trafic-");
+		$randName = getTempFilename('trafic');
 		if($file=@fopen($randName,"w"))
 		{
 			if( (fputcsv($file,$this->hourUp)!==false) &&
