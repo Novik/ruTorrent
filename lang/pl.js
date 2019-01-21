@@ -276,5 +276,6 @@ var theUILang =
  PeerDL 			: "Peer prędkość",
  PeerDownloaded 		: "Peer pobrał",
  Save_path			: "Ścieżka zapisu",
- registerMagnet			: "Próbuj dodać obsługę linków magnet przy stacie"
+ registerMagnet			: "Próbuj dodać obsługę linków magnet przy stacie",
+ linkTorTorrentRestored		: "Connection to rTorrent established."
 };

@@ -1599,7 +1599,11 @@ var theWebUI =
 	 */
 	addTorrents: function(data)
 	{
-		theWebUI.systemInfo.rTorrent.started = true;
+		if(!theWebUI.systemInfo.rTorrent.started)
+		{
+			noty(theUILang.linkTorTorrentRestored,'success');
+			theWebUI.systemInfo.rTorrent.started = true;			
+		}
    		var table = this.getTable("trt");
    		var tul = 0;
 		var tdl = 0;

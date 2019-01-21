@@ -275,5 +275,6 @@ var theUILang =
  PeerDL 			: "Швидкість піра",
  PeerDownloaded 		: "Завантажено піром",
  Save_path			: "Збережено у",
- registerMagnet			: "Реєструвати протокол magnet під час запуску"
+ registerMagnet			: "Реєструвати протокол magnet під час запуску",
+ linkTorTorrentRestored		: "Connection to rTorrent established."
 };

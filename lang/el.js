@@ -273,5 +273,6 @@ var theUILang =
  PeerDL 			: "DL χρήστη",
  PeerDownloaded 		: "Ο χρήστης έλαβε",
  Save_path			: "Τοποθεσία αποθήκευσης",
- registerMagnet			: "Προσπάθεια καταχώρησης του πρωτόκολλου magnet κατά την εκκίνηση"
+ registerMagnet			: "Προσπάθεια καταχώρησης του πρωτόκολλου magnet κατά την εκκίνηση",
+ linkTorTorrentRestored		: "Connection to rTorrent established."
 };

@@ -275,5 +275,6 @@ var theUILang =
  PeerDL 			: "Peer 下载速度",
  PeerDownloaded 		: "Peer 已下载",
  Save_path			: "保存路径",
- registerMagnet			: "尝试在启动时注册磁力链协议"
+ registerMagnet			: "尝试在启动时注册磁力链协议",
+ linkTorTorrentRestored		: "Connection to rTorrent established."
 };

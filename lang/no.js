@@ -274,5 +274,6 @@ var theUILang =
  PeerDL 			: "Peer Nedl.",
  PeerDownloaded 		: "Peer Nedlastet",
  Save_path			: "Lagringsmappe",
- registerMagnet			: "Prøv å registrere magnetprotokoll-håndterer på oppstart"
+ registerMagnet			: "Prøv å registrere magnetprotokoll-håndterer på oppstart",
+ linkTorTorrentRestored		: "Connection to rTorrent established."
 };

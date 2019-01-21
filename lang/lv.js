@@ -275,5 +275,6 @@ var theUILang =
  PeerDL 			: "Peer DL",
  PeerDownloaded 		: "Peer Downloaded",
  Save_path			: "Save path",
- registerMagnet			: "Try to register magnet protocol handler at start"
+ registerMagnet			: "Try to register magnet protocol handler at start",
+ linkTorTorrentRestored		: "Connection to rTorrent established."
 };
