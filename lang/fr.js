@@ -276,5 +276,5 @@ var theUILang =
  PeerDownloaded 		: "Reçu Client",
  Save_path			: "Chemin",
  registerMagnet			: "Essayer d'enregistrer la gestion du protocole magnet au démarrage",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connexion à rTorrent établie."
 };
