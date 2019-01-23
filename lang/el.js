@@ -274,5 +274,5 @@ var theUILang =
  PeerDownloaded 		: "Ο χρήστης έλαβε",
  Save_path			: "Τοποθεσία αποθήκευσης",
  registerMagnet			: "Προσπάθεια καταχώρησης του πρωτόκολλου magnet κατά την εκκίνηση",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Η επικοινωνία με το rTorrent επιτεύχθηκε."
 };
