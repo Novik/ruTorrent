@@ -2,7 +2,7 @@
 
 class TfileAccount extends commonAccount
 {
-	public $url = "http://www.tfile2.cc";
+	public $url = "http://megatfile.cc";
 
 	protected function isOK($client)
 	{
@@ -26,6 +26,6 @@ class TfileAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)(tfile|tfile1|tfile2).(me|cc)\/forum\//si", $url ));
+		return(preg_match( "/(\.|\/)megatfile.cc\/forum\//si", $url ));
 	}
 }
