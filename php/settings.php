@@ -64,7 +64,7 @@ class rTorrentSettings
 		else
 			$this->hooks[$ename][] = $plugin;
 	}
-	public function unregisterEventHook( $plugin, $ename )
+	protected function unregisterEventHookPrim( $plugin, $ename )
 	{
 		for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
 		{
@@ -75,7 +75,22 @@ class rTorrentSettings
 					unset($this->hooks[$ename]);
 				break;
 			}
+		}		
+	}
+	public function unregisterEventHook( $plugin, $ename )
+	{
+		if(is_array($ename))
+		{
+			foreach( $ename as $name )
+			{
+				$this->unregisterEventHookPrim( $plugin, $name );
+			}
 		}
+		else
+		{
+			$this->unregisterEventHookPrim( $plugin, $ename );
+		}
+		$this->store();
 	}
 	public function pushEvent( $ename, $prm )
 	{

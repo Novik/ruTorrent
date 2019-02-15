@@ -92,11 +92,16 @@ class rTask
 					}
 				}
 				fputs($sh,'echo $last > "${dir}"/status'."\n");
+				fputs($sh,getPHP().' '.escapeshellarg(dirname(__FILE__).'/notify.php').' '.
+					'$last "${dir}" '.
+					escapeshellarg(getUser()).' '.
+					'> /dev/null 2>> /dev/null &'."\n");
 				fclose($sh);
 				@chmod($dir."/start.sh",0755);
+				file_put_contents( $dir."/params", serialize($this->params) );
+				rTorrentSettings::get()->pushEvent( 'TaskStart', $this->params );
 				if(!self::run($dir."/start.sh",$flags))
 				{
-					file_put_contents( $dir."/params", serialize($this->params) );
 					if(!($flags & self::FLG_WAIT))
 						sleep(1);
 					return(self::check($this->id,$flags));
@@ -126,6 +131,18 @@ class rTask
 		$subject = preg_replace('/\x1b(\[|\(|\))[;?0-9]*[0-9A-Za-z]/', "",$subject);
 		$subject = preg_replace('/[\x03|\x1a]/', "", $subject);  
 		return($subject);
+	}
+
+	static public function notify( $dir, $subject )
+	{
+		if(is_file($dir.'/params') && is_readable($dir.'/params'))
+		{
+			$params = unserialize(file_get_contents($dir.'/params'));
+			if( is_array($params) )
+			{
+				rTorrentSettings::get()->pushEvent( $subject, $params );
+			}
+		}
 	}
 
 	static protected function tail($filename, $lines = 128, $buffer = 16384)
@@ -282,7 +299,8 @@ class rTask
 					$flags = intval(file_get_contents($dir.'/flags'));
 				$pid = trim(file_get_contents($dir.'/pid'));
 				self::run("kill -9 `".getExternal("pgrep")." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
-			}				
+				self::notify($dir,"TaskKill");
+			}
 			self::clean($dir);
 		}
 		return(true);

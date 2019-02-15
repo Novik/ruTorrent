@@ -2,6 +2,7 @@ plugin.description: This plugin provides the possibility of running various scri
 plugin.author: Novik
 plugin.version: 3.8
 php.extensions.error: json
+rtorrent.external.error: php
 rtorrent.external.warning: pgrep
 rtorrent.remote: error
 rtorrent.need: 0
