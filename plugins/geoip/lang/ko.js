@@ -158,7 +158,7 @@
  theUILang.country[ "me" ] = "몬테네그로";
  theUILang.country[ "mg" ] = "마다가스카르";
  theUILang.country[ "mh" ] = "마샬 군도";
- theUILang.country[ "mk" ] = "마케도니아";
+ theUILang.country[ "mk" ] = "북마케도니아";
  theUILang.country[ "ml" ] = "말리";
  theUILang.country[ "mm" ] = "미얀마";
  theUILang.country[ "mn" ] = "몽골";
