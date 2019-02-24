@@ -158,7 +158,7 @@
  theUILang.country[ "me" ] = "Montenegro";
  theUILang.country[ "mg" ] = "Madagaskar";
  theUILang.country[ "mh" ] = "Marshallinsaaret";
- theUILang.country[ "mk" ] = "Makedonia";
+ theUILang.country[ "mk" ] = "Pohjois-Makedonia";
  theUILang.country[ "ml" ] = "Mali";
  theUILang.country[ "mm" ] = "Myanmar";
  theUILang.country[ "mn" ] = "Mongolia";

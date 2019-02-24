@@ -158,7 +158,7 @@
  theUILang.country[ "me" ] = "Μαυροβούνιο";
  theUILang.country[ "mg" ] = "Μαδαγασκάρη";
  theUILang.country[ "mh" ] = "Νήσοι Μάρσαλ";
- theUILang.country[ "mk" ] = "πρώην Γιουγκοσλαβική Δημοκρατία της Μακεδονίας";
+ theUILang.country[ "mk" ] = "Βόρεια Μακεδονία";
  theUILang.country[ "ml" ] = "Μάλι";
  theUILang.country[ "mm" ] = "Μιανμάρ";
  theUILang.country[ "mn" ] = "Μογγολία";

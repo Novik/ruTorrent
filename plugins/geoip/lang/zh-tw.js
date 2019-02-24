@@ -158,7 +158,7 @@
  theUILang.country[ "me" ] = "黑山";
  theUILang.country[ "mg" ] = "馬達加斯加";
  theUILang.country[ "mh" ] = "馬紹爾群島";
- theUILang.country[ "mk" ] = "馬其頓共和國";
+ theUILang.country[ "mk" ] = "北馬其頓";
  theUILang.country[ "ml" ] = "瑪麗";
  theUILang.country[ "mm" ] = "緬甸";
  theUILang.country[ "mn" ] = "蒙";
