@@ -179,28 +179,32 @@ class rXMLRPCRequest
 			{
 				if($this->parseByTypes)
 				{
-					if((preg_match_all("|<value><string>(.*)</string></value>|Us",$answer,$this->strings)!==false) &&
-						count($this->strings)>1 &&
+					if((preg_match_all("|<value><string>(.*)</string></value>|Us",$answer,$strings)!==false) &&
+						count($strings)>1 &&
 						(preg_match_all("|<value><i.>(.*)</i.></value>|Us",$answer,$this->i8s)!==false) &&
 						count($this->i8s)>1)
 					{
-						$this->strings = str_replace("\\","\\\\",$this->strings[1]);
-						$this->strings = str_replace("\"","\\\"",$this->strings);
-						foreach($this->strings as &$string) 
-							$string = html_entity_decode($string,ENT_COMPAT,"UTF-8");
+						foreach($strings[1] as $str) 
+						{
+							$this->strings[] = html_entity_decode(
+								str_replace( array("\\","\""), array("\\\\","\\\""), $str ),
+	 							ENT_COMPAT,"UTF-8");
+						}
 						$this->i8s = $this->i8s[1];
 						$ret = true;
 					}
 				}
 				else
 				{
-					if((preg_match_all("/<value>(<string>|<i.>)(.*)(<\/string>|<\/i.>)<\/value>/Us",$answer,$this->val)!==false) &&
-						count($this->val)>2)
+					if((preg_match_all("/<value>(<string>|<i.>)(.*)(<\/string>|<\/i.>)<\/value>/Us",$answer,$response)!==false) &&
+						count($response)>2)
 					{
-						$this->val = str_replace("\\","\\\\",$this->val[2]);
-						$this->val = str_replace("\"","\\\"",$this->val);
-						foreach($this->val as &$string) 
-							$string = html_entity_decode($string,ENT_COMPAT,"UTF-8");
+						foreach($response[2] as $str) 
+						{
+							$this->val[] = html_entity_decode(
+								str_replace( array("\\","\""), array("\\\\","\\\""), $str ),
+	 							ENT_COMPAT,"UTF-8");
+						}
 						$ret = true;
 					}
 				}
