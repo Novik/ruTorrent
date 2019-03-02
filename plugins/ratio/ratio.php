@@ -156,10 +156,10 @@ class rRatio
 					$req->addCommand(new rXMLRPCCommand("group.insert_persistent_view", array("", "rat_".$i)));
 				if($this->isCorrect($i))
 				{
-					$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.enable",array("")));
-					$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.min.set",$rat["min"]));
-					$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.max.set",$rat["max"]));
-					$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.upload.set",floatval($rat["upload"]*1024*1024)));
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.enable',array("")) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.min.set',$rat["min"]) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.max.set',$rat["max"]) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.upload.set',floatval($rat["upload"]*1024*1024)) );
 					switch($rat["action"])
 					{
 						case RAT_STOP:
