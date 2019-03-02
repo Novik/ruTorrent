@@ -14,7 +14,6 @@
  theUILang.countryName		= "Kraj";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Wyspa Wniebowstąpienia";
  theUILang.country[ "ad" ] = "Andora";
  theUILang.country[ "ae" ] = "Zjednoczone Emiraty Arabskie";
  theUILang.country[ "af" ] = "Afganistan";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albania";
  theUILang.country[ "am" ] = "Armenia";
- theUILang.country[ "an" ] = "Antyle Holenderskie";
  theUILang.country[ "ao" ] = "Angola";
  theUILang.country[ "aq" ] = "Antarktyda";
  theUILang.country[ "ar" ] = "Argentyna";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "Bahrajn";
  theUILang.country[ "bi" ] = "Burundi";
  theUILang.country[ "bj" ] = "Benin";
+ theUILang.country[ "bl" ] = "Saint-Barthélemy";
  theUILang.country[ "bm" ] = "Bermudy";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Boliwia";
@@ -156,6 +155,7 @@
  theUILang.country[ "mc" ] = "Monako";
  theUILang.country[ "md" ] = "Mołdawia";
  theUILang.country[ "me" ] = "Czarnogóra";
+ theUILang.country[ "mf" ] = "Saint-Martin";
  theUILang.country[ "mg" ] = "Madagaskar";
  theUILang.country[ "mh" ] = "Wyspy Marshalla";
  theUILang.country[ "mk" ] = "Macedonia Północna";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "Surinam";
  theUILang.country[ "ss" ] = "Sudan Południowy";
  theUILang.country[ "st" ] = "Wyspy Świętego Tomasza i Książęca";
- theUILang.country[ "su" ] = "Rosja";
  theUILang.country[ "sv" ] = "Salwador";
  theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syria";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tanzania";
  theUILang.country[ "ua" ] = "Ukraina";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "Wielka Brytania";
+ theUILang.country[ "um" ] = "Dalekie Wyspy Mniejsze Stanów Zjednoczonych";
  theUILang.country[ "un" ] = "Nieznany";
  theUILang.country[ "us" ] = "Stany Zjednoczone";
  theUILang.country[ "uy" ] = "Urugwaj";

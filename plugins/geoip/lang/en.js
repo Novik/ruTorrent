@@ -14,7 +14,6 @@
  theUILang.countryName		= "Country";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Ascension Island";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "United Arab Emirates";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albania";
  theUILang.country[ "am" ] = "Armenia";
- theUILang.country[ "an" ] = "Netherlands Antilles";
  theUILang.country[ "ao" ] = "Angola";
  theUILang.country[ "aq" ] = "Antarctica";
  theUILang.country[ "ar" ] = "Argentina";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "Bahrain";
  theUILang.country[ "bi" ] = "Burundi";
  theUILang.country[ "bj" ] = "Benin";
+ theUILang.country[ "bl" ] = "Saint Barthélemy";
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
@@ -156,6 +155,7 @@
  theUILang.country[ "mc" ] = "Monaco";
  theUILang.country[ "md" ] = "Moldova";
  theUILang.country[ "me" ] = "Montenegro";
+ theUILang.country[ "mf" ] = "Saint Martin";
  theUILang.country[ "mg" ] = "Madagascar";
  theUILang.country[ "mh" ] = "Marshall Islands";
  theUILang.country[ "mk" ] = "North Macedonia";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "South Sudan";
  theUILang.country[ "st" ] = "Sao Tome and Principe";
- theUILang.country[ "su" ] = "Russia";
  theUILang.country[ "sv" ] = "El Salvador";
  theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syria";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tanzania";
  theUILang.country[ "ua" ] = "Ukraine";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "United Kingdom";
+ theUILang.country[ "um" ] = "U.S. Minor Outlying Islands";
  theUILang.country[ "un" ] = "Unknown";
  theUILang.country[ "us" ] = "United States";
  theUILang.country[ "uy" ] = "Uruguay";
