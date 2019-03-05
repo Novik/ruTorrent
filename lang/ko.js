@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Korean language file.
  *
  * Author: Limerainne (limerainne@gmail.com)
@@ -34,7 +34,7 @@ var theUILang =
  Disabled			: "해제",
  Enabled			: "사용",
  ruTorrent_settings		: "설정",
- Doesnt_support 		: "ruTorrent는 본 브라우저를 지원하지 않습니다.",
+ Doesnt_support 		: "ruTorrent는 이 브라우저를 지원하지 않습니다.",
  Name				: "이름",
  Status 			: "상태",
  Size				: "크기",
@@ -161,7 +161,7 @@ var theUILang =
  Dont_add_tname 		: "토렌트 이름을 경로에 넣지 않음", 
  Free_Disk_Space		: "여유 디스크 공간",
  badXMLRPCVersion		: "rTorrent가 i8 지원이 없어 부적합한 XMLRPC-C 라이브러리 버전과 함께 컴파일되었습니다. (올바른 버전: >= 1.11) 일부 기능을 사용할 수 없습니다.",
- badLinkTorTorrent		: "rTorrent에 연결하지 못했습니다. Check if it is really running. Check $scgi_port and $scgi_host settings in config.php and scgi_port in rTorrent configuration file.",
+ badLinkTorTorrent		: "rTorrent에 연결하지 못했습니다. 정말 실행 중인지 확인하세요. config.php 파일의 $scgi_port 및 $scgi_host 설정값과 rTorrent 설정 파일의 scgi_port 설정값을 점검하세요.",
  badUploadsPath 		: "웹서버 사용자가 토렌트 디렉토리에 읽기/쓰기/실행 권한을 갖고 있지 않습니다. ruTorrent를 통해 토렌트를 추가하실 수 없습니다.",
  badSettingsPath		: "웹서버 사용자가 설정 디렉토리에 읽기/쓰기/실행 권한을 갖고 있지 않습니다. ruTorrent 설정을 저장할 수 없습니다.",
  mnu_help			: "도움말",
@@ -207,7 +207,7 @@ var theUILang =
  idNotFound			: "rTorrent 사용자가 'id' 프로그램에 접근할 수 없습니다. 일부 기능을 사용할 수 없습니다.",
  gzipNotFound			: "웹서버 사용자가 'gzip' 프로그램에 접근할 수 없습니다. ruTorrent가 동작할 수 없습니다.",
  cantObtainUser 		: "ruTorrent가 rTorrent 사용자의 UID를 얻을 수 없습니다. 일부 기능을 사용할 수 없습니다.",
- retryOnErrorTitle		: "rTorrent를 사용할 수 없는 경우 다음 이후 재시도",
+ retryOnErrorTitle		: "rTorrent를 사용할 수 없을 때 다음 시간 이후 재시도",
  retryOnErrorList		: { 0: "재시도하지 않음", 30: "30 초", 60: "1 분", 120: "2 분", 300: "5 분", 900: "15 분" },
  statNotFound			: "rTorrent 사용자가 'stat' 프로그램에 접근할 수 없습니다. 일부 기능을 사용할 수 없습니다.",
  statNotFoundW			: "웹서버 사용자가 'stat' 프로그램에 접근할 수 없습니다. 일부 기능을 사용할 수 없습니다.",
@@ -244,7 +244,7 @@ var theUILang =
  addTorrentFailedURL		: "토렌트를 추가하지 못했습니다. URL에 접근하지 못했습니다.",
  addTorrentFailedFile		: "토렌트를 추가하지 못했습니다. 올바른 토렌트 파일이 아닙니다.",
  addTorrentFailedDirectory	: "토렌트를 추가하지 못했습니다. 잘못된 다운로드 경로를 지정했습니다.",
- plgLaunch			: "동작",
+ plgLaunch			: "동작 중",
  plgLocked			: "필수",
  phpExtensionNotFoundWarning	: "일부 기능을 사용할 수 없습니다. PHP 확장이 설치되어 있어야 합니다",
  phpExtensionNotFoundError	: "플러그인이 동작하지 않습니다. PHP 확장이 설치되어 있어야 합니다",
@@ -254,9 +254,9 @@ var theUILang =
  webBadSessionWarning		: "일부 기능을 사용할 수 없습니다. 웹서버 사용자가 반드시 rTorrent 세션 디렉토리에 실행 권한을 가져야 합니다",
  Developers			: "개발자",
  Check_new_version		: "업데이트 확인",
- here				: "here",
+ here				: "여기",
  Num_No 			: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
- This_screen			: "본 화면",
+ This_screen			: "이 화면",
  About_program			: "ruTorrent 정보",
  Toggle_menu			: "메뉴 표시 전환",
  Toggle_details 		: "세부 정보 표시 전환",
@@ -267,12 +267,12 @@ var theUILang =
  showSpeedInTitle		: "제목에 속도 표시",
  badTempPath			: "웹서버 사용자가 tmp 디렉토리에 읽기/쓰기/실행 권한을 갖고 있지 않습니다. ruTorrent가 동작할 수 없습니다.",
  badTempPath2			: "rTorrent 사용자가 반드시 tmp 디렉토리에 읽기/실행 권한을 가져야 합니다. ruTorrent가 동작할 수 없습니다.",
- doRandomizeHash		: "Randomize info hashes for cross-seeding",
- Recreate_files 		: "Queue files recreation",
+ doRandomizeHash		: "Cross-seed를 위해 정보 해시값 임의로 재생성",
+ Recreate_files 		: "대기열 파일 재생성",
  Address			: "주소",
  PeerDL 			: "피어 DL",
- PeerDownloaded 		: "피어 다운로드함",
- Save_path			: "Save path",
- registerMagnet			: "Try to register magnet protocol handler at start",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ PeerDownloaded 		: "피어가 다운로드한 용량",
+ Save_path			: "경로 저장",
+ registerMagnet			: "시작 시 마그넷 프로토콜 연결 프로그램으로 등록 시도",
+ linkTorTorrentRestored		: "rTorrent에 연결되었습니다."
 };
