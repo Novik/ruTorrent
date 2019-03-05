@@ -5,7 +5,7 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Author: Limerainne (limerainne@gmail.com)
+ * Author: Limerainne (limerainne@gmail.com), Akash Gupta (akash.guptaa@gmail.com)
  */
 
  theUILang.peerComment		= "메모 추가";
