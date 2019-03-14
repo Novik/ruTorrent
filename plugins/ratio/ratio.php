@@ -104,7 +104,7 @@ class rRatio
 	{
 		global $checkTimesInterval;
 		$req =  new rXMLRPCRequest( $this->hasTimes() ? 
-			rTorrentSettings::get()->getScheduleCommand("ratio",$checkTimesInterval,
+			rTorrentSettings::get()->getAbsScheduleCommand("ratio",$checkTimesInterval,
 				getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) :
 			rTorrentSettings::get()->getRemoveScheduleCommand("ratio") );
 		return($req->success());
