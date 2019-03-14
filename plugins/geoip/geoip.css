@@ -1,5 +1,4 @@
 .geoip {background-repeat: no-repeat; background-position: center center; width: 22px; }
-.geoip_flag_ac {background-image: url( "flags/ac.gif" ); }
 .geoip_flag_ad {background-image: url( "flags/ad.gif" ); }
 .geoip_flag_ae {background-image: url( "flags/ae.gif" ); }
 .geoip_flag_af {background-image: url( "flags/af.gif" ); }
@@ -7,7 +6,6 @@
 .geoip_flag_ai {background-image: url( "flags/ai.gif" ); }
 .geoip_flag_al {background-image: url( "flags/al.gif" ); }
 .geoip_flag_am {background-image: url( "flags/am.gif" ); }
-.geoip_flag_an {background-image: url( "flags/an.gif" ); }
 .geoip_flag_ao {background-image: url( "flags/ao.gif" ); }
 .geoip_flag_aq {background-image: url( "flags/aq.gif" ); }
 .geoip_flag_ar {background-image: url( "flags/ar.gif" ); }
@@ -26,6 +24,7 @@
 .geoip_flag_bh {background-image: url( "flags/bh.gif" ); }
 .geoip_flag_bi {background-image: url( "flags/bi.gif" ); }
 .geoip_flag_bj {background-image: url( "flags/bj.gif" ); }
+.geoip_flag_bl {background-image: url( "flags/bl.gif" ); }
 .geoip_flag_bm {background-image: url( "flags/bm.gif" ); }
 .geoip_flag_bn {background-image: url( "flags/bn.gif" ); }
 .geoip_flag_bo {background-image: url( "flags/bo.gif" ); }
@@ -141,6 +140,7 @@
 .geoip_flag_mc {background-image: url( "flags/mc.gif" ); }
 .geoip_flag_md {background-image: url( "flags/md.gif" ); }
 .geoip_flag_me {background-image: url( "flags/me.gif" ); }
+.geoip_flag_mf {background-image: url( "flags/mf.gif" ); }
 .geoip_flag_mg {background-image: url( "flags/mg.gif" ); }
 .geoip_flag_mh {background-image: url( "flags/mh.gif" ); }
 .geoip_flag_mk {background-image: url( "flags/mk.gif" ); }
@@ -209,7 +209,6 @@
 .geoip_flag_sr {background-image: url( "flags/sr.gif" ); }
 .geoip_flag_ss {background-image: url( "flags/ss.gif" ); }
 .geoip_flag_st {background-image: url( "flags/st.gif" ); }
-.geoip_flag_su {background-image: url( "flags/su.gif" ); }
 .geoip_flag_sv {background-image: url( "flags/sv.gif" ); }
 .geoip_flag_sx {background-image: url( "flags/sx.gif" ); }
 .geoip_flag_sy {background-image: url( "flags/sy.gif" ); }
@@ -232,7 +231,7 @@
 .geoip_flag_tz {background-image: url( "flags/tz.gif" ); }
 .geoip_flag_ua {background-image: url( "flags/ua.gif" ); }
 .geoip_flag_ug {background-image: url( "flags/ug.gif" ); }
-.geoip_flag_uk {background-image: url( "flags/uk.gif" ); }
+.geoip_flag_um {background-image: url( "flags/um.gif" ); }
 .geoip_flag_un {background-image: url( "flags/un.gif" ); }
 .geoip_flag_us {background-image: url( "flags/us.gif" ); }
 .geoip_flag_uy {background-image: url( "flags/uy.gif" ); }
