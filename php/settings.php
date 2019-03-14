@@ -308,11 +308,6 @@ class rTorrentSettings
 		$startAt = $interval+rand(0,$schedule_rand);
 		return( new rXMLRPCCommand("schedule", array( $name.getUser(), $startAt."", $interval."", $cmd )) );
 	}
-	public function getRelScheduleCommand($name,$interval,$cmd)	// $interval in minutes
-	{
-		$interval = $interval*60;
-		return( new rXMLRPCCommand("schedule", array( $name.getUser(), $interval."", $interval."", $cmd )) );
-	}
 	public function getScheduleCommand($name,$interval,$cmd,&$startAt = null)	// $interval in minutes
 	{
 		global $schedule_rand;
