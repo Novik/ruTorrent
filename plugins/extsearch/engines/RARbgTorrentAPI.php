@@ -101,7 +101,7 @@ class RARbgTorrentAPIEngine extends commonEngine
 					{
 						$item = $this->getNewEntry();
 						$item["cat"] = $torrent->category;
-				                $item["desc"] = $torrent->info_page;
+				                $item["desc"] = $torrent->info_page.'&app_id=ruTorrent_extsearch';
 				                $item["name"] = $torrent->title;
 				                $item["size"] = $torrent->size;
 				                $item["seeds"] = $torrent->seeders;
