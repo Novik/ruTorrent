@@ -89,8 +89,8 @@ div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; o
 div#CatList ul {padding: 0; margin: 0; list-style: none; white-space: nowrap}
 div#CatList ul li {padding: 2px 25px; margin: 0; line-height: 14px; font-size: 11px;  cursor: pointer; border: 1px solid #FFFFFF; background-repeat: no-repeat}
 div#CatList ul li.sel {background-color: #CFDEEF; border-color: #CFDEEF }
-#-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(../images/tstatus.png)}
-#-_-_-all-_-_- {background-position: 4px -174px;}
+.-_-_-all-_-_-, #-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(../images/tstatus.png)}
+.-_-_-all-_-_-, #-_-_-all-_-_- {background-position: 4px -174px;}
 #-_-_-dls-_-_- {background-position: 4px 2px;}
 #-_-_-com-_-_- {background-position: 4px -14px;}
 #-_-_-act-_-_- {background-position: 4px -158px;}
@@ -274,6 +274,7 @@ div#tadd select { width: 220px }
 .ie fieldset {padding: 5px}
 .buttons-list {  margin-bottom: 5px }
 #servertime { text-align: center }
+#viewrows { text-align: center; }
 
 #bf {white-space:pre}
 

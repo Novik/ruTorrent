@@ -26,23 +26,20 @@ theWebUI.config = function(data)
 plugin.filterByLabel = theWebUI.filterByLabel;
 theWebUI.filterByLabel = function(hash)
 {
-	if(plugin.enabled && theWebUI.actLbl && $($$(theWebUI.actLbl)).hasClass('tracker'))
+	plugin.filterByLabel.call(theWebUI,hash);
+	if(plugin.enabled && theWebUI.actLbls["ptrackers_cont"] && $($$(theWebUI.actLbls["ptrackers_cont"])).hasClass('tracker'))
 		theWebUI.filterByTracker(hash);
-	else
-		plugin.filterByLabel.call(theWebUI,hash);
 }
 
 theWebUI.filterByTracker = function(hash)
 {
-        if(theWebUI.isTrackerInActualLabel(hash))
-		this.getTable("trt").unhideRow(hash);
-	else
+	if(!theWebUI.isTrackerInActualLabel(hash))
 		this.getTable("trt").hideRow(hash);
 }
 
 plugin.isActualLabel = function(lbl)
 {
-	return(theWebUI.actLbl && $($$(theWebUI.actLbl)).hasClass('tracker') && ('i'+lbl==theWebUI.actLbl));
+	return(theWebUI.actLbls["ptrackers_cont"] && $($$(theWebUI.actLbls["ptrackers_cont"])).hasClass('tracker') && ('i'+lbl==theWebUI.actLbls["ptrackers_cont"]));
 }
 
 theWebUI.isTrackerInActualLabel = function(hash)
@@ -247,7 +244,15 @@ theWebUI.initTrackersLabels = function()
 {
 	plugin.addPaneToCategory("ptrackers",theUILang.Trackers).
 		append($("<ul></ul>").attr("id","torrl"));
-        plugin.markLoaded();
+
+	var ul = $("#torrl");
+	var li = $('<li>').
+		addClass("-_-_-all-_-_- sel cat").
+		html(theUILang.All+' (<span class="-_-_-all-_-_-c">0</span>)</li>').
+		mouseclick(theWebUI.trackersLabelContextMenu);
+	ul.append(li);
+
+	plugin.markLoaded();
 };
 
 plugin.onRemove = function()

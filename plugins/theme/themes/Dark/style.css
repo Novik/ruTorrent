@@ -51,7 +51,7 @@ a {color: #686868}
 div#CatList {border: 1px solid #333333; background-color: #181818}
 div#CatList ul li {border-color: #181818}
 div#CatList ul li.sel {background-color: #888888; color:#111111; border-color: #888888 }
-#-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(./images/tstatus.png)}
+.-_-_-all-_-_-, #-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(./images/tstatus.png)}
 div#CatList ul li.RSS {background-image: url(./images/tstatus.png); }
 div#CatList ul li.disRSS {background-image: url(./images/tstatus.png); }
 .stable-icon {background-image: url(./images/tstatus.png); }
