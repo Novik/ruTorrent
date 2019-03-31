@@ -215,7 +215,7 @@ theWebUI.rebuildTrackersLabels = function()
 			if(lbl in this.trackersLabels)
 			{
 				li = $($$('i'+lbl));
-	                	li.children("span").text(trackersLabels[lbl]);
+	                	li.children("span").text(trackersLabels[lbl]+' ; '+theConverter.bytes(trackersSizes[lbl], 2));
 			}
 			else
 			{
