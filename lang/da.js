@@ -197,6 +197,7 @@ var theUILang =
  doFastResume			: "Hurtig genoptagelse",
  innerSearch			: "Lokale Torrents",
  removeTeg			: "Fjern tag",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent og rTorrent skal være installeret på den samme makine. Plugin kommer ikke til at virke.",
  warnMustBeInSomeHost		: "ruTorrent og rTorrent skal være installeret på den samme makine. Noget funktionalitet vil ikke være tilgængelig.",
  plgShutdown			: "Unload",

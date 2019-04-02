@@ -197,6 +197,7 @@ var theUILang =
  doFastResume			: "Démarrage rapide",
  innerSearch			: "Torrents locaux",
  removeTeg			: "Retirer tag",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent et rTorrent doivent être installés sur le même serveur. Le plug-in ne fonctionnera pas.",
  warnMustBeInSomeHost		: "ruTorrent et rTorrent doivent être installés sur le même serveur. Certaines fonctionnalités ne seront pas disponibles.",
  plgShutdown			: "Désactiver",

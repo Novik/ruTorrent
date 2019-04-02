@@ -196,6 +196,7 @@ var theUILang =
  doFastResume			: "Hurtig fortsettelse",
  innerSearch			: "Lokale torrents",
  removeTeg			: "Fjern tagg",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent og rTorrent må være installert på samme vert. Tilleggsmodul vil ikke fungere.",
  warnMustBeInSomeHost		: "ruTorrent og rTorrent må være installert på samme vert. Noe funksjonalitet vil ikke fungere.",
  plgShutdown			: "Fjern",

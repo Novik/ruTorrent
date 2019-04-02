@@ -1876,6 +1876,15 @@ var theWebUI =
 		this.switchLabel($$("-_-_-all-_-_-"));
 	},
 
+	removeAllTegs: function()
+	{
+		for (var id in this.tegs) {
+			delete this.tegs[id];
+			$($$(id)).remove();
+		}
+		this.switchLabel($$("-_-_-all-_-_-"));
+	},
+
 	tegContextMenu: function(e)
 	{
 	        if(e.which==3)
@@ -1893,6 +1902,7 @@ var theWebUI =
 			else
 				theContextMenu.clear();
 			theContextMenu.add([theUILang.removeTeg, "theWebUI.removeTeg('"+e.target.id+"');"]);
+			theContextMenu.add([theUILang.removeAllTegs, "theWebUI.removeAllTegs();"]);
 			theContextMenu.show(e.clientX,e.clientY);
 		}
 		else

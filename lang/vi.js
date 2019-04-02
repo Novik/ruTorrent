@@ -195,6 +195,7 @@ var theUILang =
  doFastResume			: "Khôi phục nhanh",
  innerSearch			: "Torrent nội bộ",
  removeTeg			: "Loại bỏ thẻ",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent và rTorrent phải được cài đặt trên cùng một máy. Thành phần bổ sung sẽ không hoạt động.",
  warnMustBeInSomeHost		: "ruTorrent và rTorrent phải được cài đặt trên cùng một máy. Một số tính năng sẽ không hoạt động.",
  plgShutdown			: "Tắt",

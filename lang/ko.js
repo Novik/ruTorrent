@@ -195,6 +195,7 @@ var theUILang =
  doFastResume			: "빠른 재시작", /* Fast resume */
  innerSearch			: "로컬 토렌트",
  removeTeg			: "태그 제거",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent와 rTorrent가 반드시 같은 호스트에 설치되어야 합니다. 플러그인이 동작하지 않습니다.",
  warnMustBeInSomeHost		: "ruTorrent와 rTorrent가 반드시 같은 호스트에 설치되어야 합니다. 일부 기능을 사용할 수 없습니다.",
  plgShutdown			: "내리기",

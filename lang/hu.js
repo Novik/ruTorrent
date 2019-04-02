@@ -197,6 +197,7 @@ var theUILang =
  doFastResume			: "Megynyitás seedelésre",
  innerSearch			: "Kliensben lévő torrentek",
  removeTeg			: "Címke törlése",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Plugin will not work.",
  warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
  plgShutdown			: "Nincs betöltve",
