@@ -197,6 +197,7 @@ var theUILang =
  doFastResume			: "Не проверять хеш на старте",
  innerSearch			: "Локальные закачки",
  removeTeg			: "Удалить тег",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "Для корректной работы плагина ruTorrent и rTorrent должны располагаться на одной машине. Плагин не будет работать.",
  warnMustBeInSomeHost		: "Для корректной работы плагина ruTorrent и rTorrent должны располагаться на одной машине. Часть функциональности будет недоступна.",
  plgShutdown			: "Выгрузить",

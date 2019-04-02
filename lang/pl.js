@@ -198,6 +198,7 @@ var theUILang =
  doFastResume			: "Szybkie wznawianie",
  innerSearch			: "Lokalne torrenty",
  removeTeg			: "Usuń znacznik",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent i rTorrent muszą być zainstalowane na tym samym hoście. Wtyczka nie będzie działać.",
  warnMustBeInSomeHost		: "ruTorrent i rTorrent muszą być zainstalowane na tym samym hoście. Niektóre funkcje będą niedostępne.",
  plgShutdown			: "Wyłącz",

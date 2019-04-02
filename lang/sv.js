@@ -195,6 +195,7 @@ var theUILang =
  doFastResume			: "Snabb återupptagning",
  innerSearch			: "Lokala torrenter",
  removeTeg			: "Ta bort tagg",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent och rTorrent måste vara installerade på samma värd. Insticksprogram kommer inte att fungera.",
  warnMustBeInSomeHost		: "ruTorrent och rTorrent måste vara installerade på samma värd. Vissa funktioner kommer att vara otillgängliga.",
  plgShutdown			: "Stoppa",

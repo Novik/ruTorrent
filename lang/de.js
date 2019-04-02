@@ -198,6 +198,7 @@ var theUILang =
  doFastResume			: "Schnelles wiederaufnehmen",
  innerSearch			: "Lokale Torrents",
  removeTeg			: "Tag entfernen",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent und rTorrent müssen auf dem gleichen Host installiert sein. Plugin wird nicht funktionieren.",
  warnMustBeInSomeHost		: "ruTorrent und rTorrent müssen auf dem gleichen Host installiert sein. Einige Funktionalitäten werde nicht zur Verfügung stehen.",
  plgShutdown			: "Abschalten",

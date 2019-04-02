@@ -197,6 +197,7 @@ var theUILang =
  doFastResume			: "快速恢复",
  innerSearch			: "本地 torrents",
  removeTeg			: "移除标签",
+ removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent 和 rTorrent 必须被安装在同一主机上. 插件将不会工作 .",
  warnMustBeInSomeHost		: "ruTorrent 和 rTorrent 必须被安装在同一主机上. 某些功能将不可用.",
  plgShutdown			: "关闭",
