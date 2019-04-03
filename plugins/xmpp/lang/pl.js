@@ -10,7 +10,7 @@
 
  theUILang.xmpp 			= "XMPP";
  theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Odbiora:";
+ theUILang.xmppJabberFor 		= "Odbiorca:";
  theUILang.xmppMessage			= "Wiadomość:";
  theUILang.xmppJabberPasswd		= "Hasło:";
  theUILang.xmppAdvancedSettings		= "Zaawansowane:";
