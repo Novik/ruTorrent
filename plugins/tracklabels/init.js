@@ -212,15 +212,16 @@ theWebUI.rebuildTrackersLabels = function()
 		{
 			var lbl = keys[i];
 			var li = null;
+			var lblSize = this.settings["webui.show_labelsize"] ? ' ; '+theConverter.bytes(trackersSizes[lbl], 2) : "";
 			if(lbl in this.trackersLabels)
 			{
 				li = $($$('i'+lbl));
-	                	li.children("span").text(trackersLabels[lbl]+' ; '+theConverter.bytes(trackersSizes[lbl], 2));
+	                	li.children("span").text(trackersLabels[lbl]+lblSize);
 			}
 			else
 			{
 			        li = $('<li>').attr("id",'i'+lbl).
-			        	html(escapeHTML(lbl)+'&nbsp;(<span id="-'+lbl+'_c">'+trackersLabels[lbl]+' ; '+theConverter.bytes(trackersSizes[lbl], 2)+'</span>)').
+			        	html(escapeHTML(lbl)+'&nbsp;(<span id="-'+lbl+'_c">'+trackersLabels[lbl]+lblSize+'</span>)').
 			        	mouseclick(theWebUI.trackersLabelContextMenu).addClass("cat tracker").attr("title",lbl+" ("+trackersLabels[lbl]+")").
 					prepend( $("<img>").attr("src","plugins/tracklabels/action.php?tracker="+lbl).addClass("tfavicon") ).css({ padding: "2px 4px" });
 				ul.append(li);
