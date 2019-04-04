@@ -195,7 +195,7 @@ var theUILang =
  doFastResume			: "Γρήγορη συνέχιση",
  innerSearch			: "Τοπικά αρχεία Torrents",
  removeTeg			: "Διαγραφή ετικέτας",
- removeAllTegs			: "Remove all tags",
+ removeAllTegs			: "Διαγραφή όλων των ετικετών",
  errMustBeInSomeHost		: "Το ruTorrent και το rTorrent πρέπει να είναι εγκατεστημένα στον ίδιο διακομιστή. Το πρόσθετο δεν θα λειτουργήσει.",
  warnMustBeInSomeHost		: "Το ruTorrent και το rTorrent πρέπει να είναι εγκατεστημένα στον ίδιο διακομιστή. Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες.",
  plgShutdown			: "Εκφόρτωση",
