@@ -999,6 +999,8 @@ function correctContent()
 			"set_use_udp_trackers"	:	{ name: "trackers.use_udp.set", prm: 1 },
 			"set_xmlrpc_dialect"	:	{ name: "network.xmlrpc.dialect.set", prm: 1 },
 			"set_xmlrpc_size_limit"	:	{ name: "network.xmlrpc.size_limit.set", prm: 1 },
+			"schedule"		:	{ name: "schedule2", prm: 1 },
+			"schedule_remove"	:	{ name: "schedule_remove2", prm: 1 },
 			"system.file_allocate"	:	{ name: "system.file.allocate", prm: 0 },
 			"system.file_allocate.set"	:	{ name: "system.file.allocate.set", prm: 1 },
 			"system.method.erase"	:	{ name: "method.erase", prm: 1 },
