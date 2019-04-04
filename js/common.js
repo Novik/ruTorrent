@@ -1123,10 +1123,10 @@ var theBTClientVersion =
 	 },
 	azLikeClients3:
 	{
-		"A~" : "Ares", "AG" : "Ares", "ES" : "Electric Sheep", "HL" : "Halite", "IL" : "iLivid",
-		"Lr" : "LibreTorrent", "lt" : "libTorrent (Rakshasa)", "LT" : "libtorrent (Rasterbar)",
-		"MG" : "MediaGet", "MP" : "MooPolice", "qB" : "qBittorrent", "SM" : "SoMud",
-		"TL" : "Tribler", "TT" : "TuoTu"
+		"A~" : "Ares", "AG" : "Ares", "ES" : "Electric Sheep", "FW" : "FrostWire", "HL" : "Halite",
+		"IL" : "iLivid", "Lr" : "LibreTorrent", "lt" : "libTorrent (Rakshasa)",
+		"LT" : "libtorrent (Rasterbar)", "MG" : "MediaGet", "MP" : "MooPolice", "qB" : "qBittorrent",
+		"SM" : "SoMud", "TL" : "Tribler", "TT" : "TuoTu"
 	},
 	azLikeClients2x2:
 	{
