@@ -2,7 +2,7 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const URL = 'https://yggtorrent.gg';
+    const URL = 'https://www2.yggtorrent.gg';
     const MAX_PAGE = 10;
     const PAGE_SIZE = 50;
 
@@ -173,7 +173,10 @@ class YggTorrentEngine extends commonEngine
             }
         }
     }
-
+    public function clearCloudflare($client)
+    {
+	    $cookies=shell_exec(echo -e "import cfscrape\ncfscrape.get_cookie_string($url,user_agent=$client->agent)" | python);
+    }
     private function getPrettyCategoryName($input)
     {
         if (array_key_exists($input, $this->category_mapping)) {
