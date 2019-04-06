@@ -2,7 +2,7 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const URL = 'https://yggtorrent.gg';
+    const URL = 'https://www2.yggtorrent.gg';
     const MAX_PAGE = 10;
     const PAGE_SIZE = 50;
 
@@ -92,13 +92,24 @@ class YggTorrentEngine extends commonEngine
         $cli = $this->fetch($search);
 
         // Check if we have results
-        if (($cli == false) || (strpos($cli->results, "Aucun résultat !") !== false)) {
+        if ($cli == false) {
+	    $item = $this->getNewEntry();
+	    $item["name"] = "Fetch Error";
+	    $ret[""] = $item;
+            return;
+	} else if (strpos($cli->results, "Aucun résultat !") !== false) {
+	    $item = $this->getNewEntry();
+	    $item["name"] = "No result found";
+	    $ret[""] = $item;
             return;
         }
 
         $nbRet = preg_match_all('`>(?P<results>\d+) résultats trouvés`', $cli->results, $retPage);
 	if (!$nbRet) 
 	{
+	    $item = $this->getNewEntry();
+	    $item["name"] = "No result found";
+	    $ret[""] = $item;
             return;
         }
         $nbResults = $retPage['results'][0];
@@ -173,7 +184,20 @@ class YggTorrentEngine extends commonEngine
             }
         }
     }
-
+    public function clearCloudflare($client,$url)
+    {
+	    if(rTorrentSettings::get()->isPluginRegistered('cloudflare')) {
+		    $cookies=shell_exec("echo -e \"import cfscrape\ntokens, user_agent = cfscrape.get_tokens($url,user_agent=$client->agent)\nprint(json.dumps(tokens))\" | python3");
+		    if (is_null($cookies)) {
+			    return;
+		    }
+		    $cookies=json_decode ($cookies);
+		    $client->cookies = array_merge($client->cookies,$cookies);
+		    return;
+	    } else {
+		 return;
+	    }
+    }
     private function getPrettyCategoryName($input)
     {
         if (array_key_exists($input, $this->category_mapping)) {

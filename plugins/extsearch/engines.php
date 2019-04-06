@@ -46,6 +46,7 @@ class commonEngine
 	public function fetch($url, $encode = 1, $method="GET", $content_type="", $body="")
 	{
 		$client = $this->makeClient($url);
+		$this->clearCloudflare($client,$url);
 		if($encode)
 			$url = Snoopy::linkencode($url);
 		$client->fetchComplex($url, $method, $content_type, $body);
@@ -55,6 +56,9 @@ class commonEngine
 			return($client);
 		}
 		return(false);
+	}
+	public function clearCloudflare($client,$url)
+	{
 	}
 	public function getTorrent( $url )
 	{
@@ -92,26 +96,26 @@ class commonEngine
 				case "tib":
 				case "tb":
 				case "to":
-				case "Ú·":
-				case "“¡":
+				case "√≤√°":
+				case "√í√Å":
 					$val*=1024;
 				case "gib":
 				case "gb":
 				case "go":
-				case "„·":
-				case "√¡":
+				case "√£√°":
+				case "√É√Å":
 					$val*=1024;
 				case "mib":
 				case "mb":
 				case "mo":
-				case "Ï·":
-				case "Ã¡":
+				case "√¨√°":
+				case "√å√Å":
 					$val*=1024;
 				case "kib":
 				case "kb":
 				case "ko":
-				case "Í·":
-				case " ¡":
+				case "√™√°":
+				case "√ä√Å":
 					$val*=1024;
 			}
 			return($val);
