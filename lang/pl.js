@@ -3,7 +3,7 @@
  *
  * Initial Author: Penknife (penknife1@gmail.com)
  *
- * Author: Dare (piczok@gmail.com) 
+ * Author: Dare (piczok@gmail.com)
  * Author: Kolor (kolor@superseedbox.co.uk)
  */
 
@@ -75,7 +75,7 @@ var theUILang =
  Remove_and			: "Usuń i...",
  Details			: "Szczegóły...",
  Properties			: "Właściwości...",
- of				: "z", //this two creates line 
+ of				: "z", //this two creates line
  connected			: "połączonych", //  XX of YY connected
  High_priority			: "Wysoki",
  Normal_priority		: "Normalny",
@@ -161,7 +161,7 @@ var theUILang =
  GetTrackerMessage		: "Odbieraj wiadomości z trackera",
  Help				: "Pomoc",
  Speed				: "Prędkość",
- Dont_add_tname 		: "Nie dodawaj nazwy torrenta do ścieżki", 
+ Dont_add_tname 		: "Nie dodawaj nazwy torrenta do ścieżki",
  Free_Disk_Space		: "Wolne miejsce na dysku",
  badXMLRPCVersion		: "rTorrent został skompilowany ze złą wersją biblioteki xmlrpc-c, bez wsparcia i8. Wersja musi być >= 1.11. Niektóre funkcje będą niedostępne.",
  badLinkTorTorrent		: "Brak połączenia z rTorrent. Sprawdź czy jest uruchomiony. Sprawdź ustawienia $scgi_port i $scgi_host w config.php oraz scgi_port w pliku konfiguracyjnym rTorrent.",
@@ -198,7 +198,6 @@ var theUILang =
  doFastResume			: "Szybkie wznawianie",
  innerSearch			: "Lokalne torrenty",
  removeTeg			: "Usuń znacznik",
- removeAllTegs			: "Usuń wszystkie znaczniki",
  errMustBeInSomeHost		: "ruTorrent i rTorrent muszą być zainstalowane na tym samym hoście. Wtyczka nie będzie działać.",
  warnMustBeInSomeHost		: "ruTorrent i rTorrent muszą być zainstalowane na tym samym hoście. Niektóre funkcje będą niedostępne.",
  plgShutdown			: "Wyłącz",
@@ -278,5 +277,6 @@ var theUILang =
  PeerDownloaded 		: "Peer pobrał",
  Save_path			: "Ścieżka zapisu",
  registerMagnet			: "Próbuj dodać obsługę linków magnet przy starcie",
- linkTorTorrentRestored		: "Nawiązano połączenie z rTorrent."
+ linkTorTorrentRestored		: "Nawiązano połączenie z rTorrent.",
+ removeAllTegs			: "Usuń wszystkie znaczniki"
 };

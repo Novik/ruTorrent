@@ -37,6 +37,6 @@
  theUILang.exsURLInfo			= "Info URL";
  theUILang.exsURLGUID			= "URL de la description";
  theUILang.exsURLHref			= "URL à charger";
- 
+
 
 thePlugins.get("extsearch").langLoaded();

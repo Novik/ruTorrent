@@ -159,7 +159,7 @@ var theUILang =
  GetTrackerMessage		: "Motta meldinger fra tracker",
  Help				: "Hjelp",
  Speed				: "Hastighet",
- Dont_add_tname 		: "Ikke legg til torrentnavn til filbane", 
+ Dont_add_tname 		: "Ikke legg til torrentnavn til filbane",
  Free_Disk_Space		: "Ledig diskplass",
  badXMLRPCVersion		: "rTorrent er kompilert med feil versjon av xmlrpc-c biblotek, uten i8 støtte. Noe funksjonalitet vil ikke være tilgjengelig.",
  badLinkTorTorrent		: "Ingen tilkobling til rTorrent. Sjekk at den virkelig kjører. Sjekk $scgi_port og $scgi_host innstillinger i config.php og scgi_port i rTorrent sin konfigurasjonfil.",
@@ -196,7 +196,6 @@ var theUILang =
  doFastResume			: "Hurtig fortsettelse",
  innerSearch			: "Lokale torrents",
  removeTeg			: "Fjern tagg",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent og rTorrent må være installert på samme vert. Tilleggsmodul vil ikke fungere.",
  warnMustBeInSomeHost		: "ruTorrent og rTorrent må være installert på samme vert. Noe funksjonalitet vil ikke fungere.",
  plgShutdown			: "Fjern",
@@ -276,5 +275,6 @@ var theUILang =
  PeerDownloaded 		: "Peer Nedlastet",
  Save_path			: "Lagringsmappe",
  registerMagnet			: "Prøv å registrere magnetprotokoll-håndterer på oppstart",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

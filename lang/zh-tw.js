@@ -72,7 +72,7 @@ var theUILang =
  Remove_and			: "移除並",
  Details			: "詳細內容...",
  Properties			: "屬性...",
- of				: "的", //this two creates line 
+ of				: "的", //this two creates line
  connected			: "已連接", //  XX of YY connected
  High_priority			: "較高優先權",
  Normal_priority		: "正常優先權",
@@ -158,7 +158,7 @@ var theUILang =
  GetTrackerMessage		: "從tracker接收使用者資訊",
  Help				: "Help",
  Speed				: "速度",
- Dont_add_tname 		: "請勿將 torrent 名稱作為目錄名稱", 
+ Dont_add_tname 		: "請勿將 torrent 名稱作為目錄名稱",
  Free_Disk_Space		: "磁碟可用空間",
  badXMLRPCVersion		: "rTorrent使用了錯誤的xmlrpc-c版本編譯, 該版本不含i8支援,版本必須大於或等於1.11版,某些功能將無法使用",
  badLinkTorTorrent		: "錯誤的rTorrent連結, 請檢查rTorrent是否已經正確執行, 請確認rTorrent設定檔與config.php中的 $scgi_port 與 $scgi_host 相符合",
@@ -195,7 +195,6 @@ var theUILang =
  doFastResume			: "Fast resume",
  innerSearch			: "Local Torrents",
  removeTeg			: "Remove tag",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Plugin will not work.",
  warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
  plgShutdown			: "Unload",
@@ -275,5 +274,6 @@ var theUILang =
  PeerDownloaded 		: "Peer Downloaded",
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

@@ -74,7 +74,7 @@ var theUILang =
  Remove_and			: "移除并",
  Details			: "详情...",
  Properties			: "属性...",
- of				: " 个已连接, 共 ", //this two creates line 
+ of				: " 个已连接, 共 ", //this two creates line
  connected			: " 个", //  XX of YY connected
  High_priority			: "较高优先级",
  Normal_priority		: "正常优先级",
@@ -160,7 +160,7 @@ var theUILang =
  GetTrackerMessage		: "从 Tracker 接收信息",
  Help				: "帮助",
  Speed				: "速度",
- Dont_add_tname 		: "不要添加 Torrent 的名称到目录", 
+ Dont_add_tname 		: "不要添加 Torrent 的名称到目录",
  Free_Disk_Space		: "可用磁盘空间",
  badXMLRPCVersion		: "rTorrent 编译时用的 xmlrpc-c 库版本有误, 此版本没有 i8 支持. 版本必须 >= 1.11. 某些功能将不可用.",
  badLinkTorTorrent		: "无法连接到 rTorrent. 检查它是否真正在运行.  检查 config.php 中的 $scgi_port 和 $scgi_host 设置, 以及 rTorrent 中的 scgi_port 设置.",
@@ -197,7 +197,6 @@ var theUILang =
  doFastResume			: "快速恢复",
  innerSearch			: "本地 torrents",
  removeTeg			: "移除标签",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent 和 rTorrent 必须被安装在同一主机上. 插件将不会工作 .",
  warnMustBeInSomeHost		: "ruTorrent 和 rTorrent 必须被安装在同一主机上. 某些功能将不可用.",
  plgShutdown			: "关闭",
@@ -277,5 +276,6 @@ var theUILang =
  PeerDownloaded 		: "Peer 已下载",
  Save_path			: "保存路径",
  registerMagnet			: "尝试在启动时注册磁力链协议",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

@@ -256,7 +256,7 @@
  theUILang.country[ "ve" ] = "Venezuela";
  theUILang.country[ "vg" ] = "Britské Panenské ostrovy";
  theUILang.country[ "vi" ] = "Americké Panenské ostrovy";
- theUILang.country[ "vn" ] = "Viet Nam";
+ theUILang.country[ "vn" ] = "Vietnam";
  theUILang.country[ "vu" ] = "Vanuatu";
  theUILang.country[ "wf" ] = "Wallis a Futuna";
  theUILang.country[ "ws" ] = "Samoa";
