@@ -1,7 +1,6 @@
 <?php
 eval(getPluginConf($plugin["name"]));
 
-$pathToExternals['python'] = '';	
 
 if ($do_diagnostic) {
   findRemoteEXE('python',"thePlugins.get('cloudflare').showError('theUILang.pythonNotFound');",$remoteRequests);
