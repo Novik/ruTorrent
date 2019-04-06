@@ -187,7 +187,7 @@ class YggTorrentEngine extends commonEngine
     public function clearCloudflare($client,$url)
     {
 	    if(rTorrentSettings::get()->isPluginRegistered('cloudflare')) {
-		    $cookies=shell_exec(echo -e "import cfscrape\ncfscrape.get_cookie_string($url,user_agent=$client->agent)" | python);
+		    $cookies=shell_exec("echo -e \"import cfscrape\ncfscrape.get_cookie_string($url,user_agent=$client->agent)\" | python");
 		    $client->cookies = array_merge($client->cookies,$cookies);
 	    } else {
 		 return;
