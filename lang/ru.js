@@ -74,7 +74,7 @@ var theUILang =
  Remove_and			: "Удалить и",
  Details			: "Детали...",
  Properties			: "Свойства...",
- of				: "из", //this two creates line 
+ of				: "из", //this two creates line
  connected			: "соединено", //  XX of YY connected
  High_priority			: "Высокий",
  Normal_priority		: "Нормальный",
@@ -160,7 +160,7 @@ var theUILang =
  GetTrackerMessage		: "Запрашивать сообщения трекера",
  Help				: "Помощь",
  Speed				: "Скорость",
- Dont_add_tname 		: "Не добавлять имя торрента к пути", 
+ Dont_add_tname 		: "Не добавлять имя торрента к пути",
  Free_Disk_Space		: "Свободно на диске",
  badXMLRPCVersion		: "rTorrent скомпилирован с некорректной версией библиотеки xmlrpc-c, без поддержки 8-байтовых целых. Версия библиотеки должна быть >= 1.11. Часть функциональности будет недоступна.",
  badLinkTorTorrent		: "Нет связи с rTorrent. Проверьте, запущен ли он. Проверьте, что параметры $scgi_port и $scgi_host в файле config.php совпадают со значением переменной scgi_port в файле конфигурации rTorrent.",
@@ -197,7 +197,6 @@ var theUILang =
  doFastResume			: "Не проверять хеш на старте",
  innerSearch			: "Локальные закачки",
  removeTeg			: "Удалить тег",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "Для корректной работы плагина ruTorrent и rTorrent должны располагаться на одной машине. Плагин не будет работать.",
  warnMustBeInSomeHost		: "Для корректной работы плагина ruTorrent и rTorrent должны располагаться на одной машине. Часть функциональности будет недоступна.",
  plgShutdown			: "Выгрузить",
@@ -277,5 +276,6 @@ var theUILang =
  PeerDownloaded 		: "Скачано пиром",
  Save_path			: "Сохранено в",
  registerMagnet			: "Регистрировать magnet протокол на старте",
- linkTorTorrentRestored		: "Связь с rTorrent восстановлена."
+ linkTorTorrentRestored		: "Связь с rTorrent восстановлена.",
+ removeAllTegs			: "Удалить все теги"
 };

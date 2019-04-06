@@ -5,7 +5,7 @@
  *
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
- 
+
  theUILang.tskCommand		= "Λειτουργεί...";
  theUILang.tskCommandDone	= "Τελείωσε.";
  theUILang.tskConsole		= "Κονσόλα";

@@ -197,7 +197,6 @@ var theUILang =
  doFastResume			: "Не перевіряти хеш під час запуску",
  innerSearch			: "Локальні завантаження",
  removeTeg			: "Видалити тег",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "Щоб плагін працював коректно, ruTorrent і rTorrent повинні розміщуватися на одному вузлі. Плагін не працюватиме.",
  warnMustBeInSomeHost		: "Щоб плагін працював коректно, ruTorrent і rTorrent повинні розміщуватися на одному вузлі. Деякі функції будуть недоступні.",
  plgShutdown			: "Вивантажити",
@@ -277,5 +276,6 @@ var theUILang =
  PeerDownloaded 		: "Завантажено піром",
  Save_path			: "Збережено у",
  registerMagnet			: "Реєструвати протокол magnet під час запуску",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

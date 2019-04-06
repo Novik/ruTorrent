@@ -74,7 +74,7 @@ var theUILang =
  Remove_and			: "Remover e",
  Details			: "Detalhes...",
  Properties			: "Propriedades...",
- of				: "de", //this two creates line 
+ of				: "de", //this two creates line
  connected			: "conectado(s)", //  XX of YY connected
  High_priority			: "Alta",
  Normal_priority		: "Normal",
@@ -160,7 +160,7 @@ var theUILang =
  GetTrackerMessage		: "Receber mensagens do tracker",
  Help				: "Ajuda",
  Speed				: "Velocidade",
- Dont_add_tname 		: "Não adicione o nome de torrent ao diretório", 
+ Dont_add_tname 		: "Não adicione o nome de torrent ao diretório",
  Free_Disk_Space		: "Espaço livre em disco",
  badXMLRPCVersion		: "rTorrent foi compilado com versão incorreta de biblioteca xmlrpc-c, sem suporte i8. Versão deve ser >= 1.11. Algumas funcionalidades não estarão disponíveis.",
  badLinkTorTorrent		: "Sem conexão com rTorrent. Verifique se ele está realmente sendo executado. Verifique as configurações $scgi_port e $scgi_host em config.php e scgi_port no arquivo de configuração rTorrent.",
@@ -197,7 +197,6 @@ var theUILang =
  doFastResume			: "Fast resume",
  innerSearch			: "Torrents locais",
  removeTeg			: "Remover tag",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent e rTorrent devem ser instalados no mesmo host. Plugin não irá funcionar.",
  warnMustBeInSomeHost		: "ruTorrent e rTorrent devem ser instalados no mesmo host. Algumas funcionalidades não estarão disponíveis.",
  plgShutdown			: "Descarregar",
@@ -277,5 +276,6 @@ var theUILang =
  PeerDownloaded 		: "Download do Peer",
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

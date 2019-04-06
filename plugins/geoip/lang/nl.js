@@ -256,7 +256,7 @@
  theUILang.country[ "ve" ] = "Venezuela";
  theUILang.country[ "vg" ] = "Britse Maagdeneilanden";
  theUILang.country[ "vi" ] = "Amerikaanse Maagdeneilanden";
- theUILang.country[ "vn" ] = "Viet Nam";
+ theUILang.country[ "vn" ] = "Vietnam";
  theUILang.country[ "vu" ] = "Vanuatu";
  theUILang.country[ "wf" ] = "Wallis en Futuna";
  theUILang.country[ "ws" ] = "Samoa";

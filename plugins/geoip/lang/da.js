@@ -256,7 +256,7 @@
  theUILang.country[ "ve" ] = "Venezuela";
  theUILang.country[ "vg" ] = "Britiske Jomfruøer";
  theUILang.country[ "vi" ] = "Amerikanske Jomfruøer";
- theUILang.country[ "vn" ] = "Viet Nam";
+ theUILang.country[ "vn" ] = "Vietnam";
  theUILang.country[ "vu" ] = "Vanuatu";
  theUILang.country[ "wf" ] = "Wallis og Futuna";
  theUILang.country[ "ws" ] = "Samoa";

@@ -61,7 +61,7 @@ var theUILang =
  Queued 			: "Wachtrij",
  Finished			: "Voltooid",
  Stopped			: "Gestopt",
- Request_timed_out		: "Er heeft een Timeout plaatsgevonden bij een verzoek naar rTorrent.", 
+ Request_timed_out		: "Er heeft een Timeout plaatsgevonden bij een verzoek naar rTorrent.",
  Start				: "Start",
  Pause				: "Pauzeer",
  Stop				: "Stop",
@@ -74,7 +74,7 @@ var theUILang =
  Remove_and			: "Verwijder En...",
  Details			: "Details...",
  Properties			: "Eigenschappen...",
- of				: "van", //this two creates line 
+ of				: "van", //this two creates line
  connected			: "verbonden", //  XX of YY connected
  High_priority			: "Hoog",
  Normal_priority		: "Normaal",
@@ -160,7 +160,7 @@ var theUILang =
  GetTrackerMessage		: "Ontvang trackerberichten",
  Help				: "Help",
  Speed				: "Snelheid",
- Dont_add_tname 		: "Torrentnaam niet toevoegen aan de downloadmap", 
+ Dont_add_tname 		: "Torrentnaam niet toevoegen aan de downloadmap",
  Free_Disk_Space		: "Vrije HDD-ruimte",
  badXMLRPCVersion		: "rTorrent is geinstalleerd met een verkeerde versie van xmlrpc-c library, namelijk die zonder i8-ondersteuning. Benodigde versie: >= 1.11. Sommige functionaliteiten zullen niet werken.",
  badLinkTorTorrent		: "Geen verbinding met rTorrent. Controler of rTorrent werkt. Controleer de instellingen voor $scgi_port en $scgi_host in config.php en de scgi_port in het rTorrent-configuratiebestand.",
@@ -197,7 +197,6 @@ var theUILang =
  doFastResume			: "Snelle Start",
  innerSearch			: "Lokale torrents",
  removeTeg			: "Verwijder tag",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent en rTorrent moeten op hetzelfde systeem geinstalleerd zijn. Plugin zal niet werken.",
  warnMustBeInSomeHost		: "ruTorrent en rTorrent moeten op hetzelfde systeem geinstalleerd zijn. Sommige functies zullen niet werken.",
  plgShutdown			: "Uitzetten",
@@ -277,5 +276,6 @@ var theUILang =
  PeerDownloaded 		: "Peer Downloaded",
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

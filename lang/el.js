@@ -158,7 +158,7 @@ var theUILang =
  GetTrackerMessage		: "Λήψη μηνυμάτων από τον tracker",
  Help				: "Βοήθεια",
  Speed				: "Ταχύτητα",
- Dont_add_tname 		: "Μην προσθέσεις το όνομα του torrent στη διαδρομή", 
+ Dont_add_tname 		: "Μην προσθέσεις το όνομα του torrent στη διαδρομή",
  Free_Disk_Space		: "Ελεύθερος χώρος στο δίσκο",
  badXMLRPCVersion		: " Το rTorrent δημιουργήθηκε με λάθος έκδοση της βιβλιοθήκης xmlrpc-c, χωρίς υποστήριξη i8. Η έκδοση πρέπει να είναι >= 1.11. Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες.",
  badLinkTorTorrent		: "Δεν υπάρχει σύνδεση με το rTorrent. Ελέγξτε αν όντως είναι ενεργό. Ελέγξτε τις ρυθμίσεις για $scgi_port και $scgi_host στο αρχείο config.php και τη ρύθμιση για scgi_port στο αρχείο παραμετροποίησης του rTorrent.",
@@ -195,7 +195,6 @@ var theUILang =
  doFastResume			: "Γρήγορη συνέχιση",
  innerSearch			: "Τοπικά αρχεία Torrents",
  removeTeg			: "Διαγραφή ετικέτας",
- removeAllTegs			: "Διαγραφή όλων των ετικετών",
  errMustBeInSomeHost		: "Το ruTorrent και το rTorrent πρέπει να είναι εγκατεστημένα στον ίδιο διακομιστή. Το πρόσθετο δεν θα λειτουργήσει.",
  warnMustBeInSomeHost		: "Το ruTorrent και το rTorrent πρέπει να είναι εγκατεστημένα στον ίδιο διακομιστή. Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες.",
  plgShutdown			: "Εκφόρτωση",
@@ -275,5 +274,6 @@ var theUILang =
  PeerDownloaded 		: "Ο χρήστης έλαβε",
  Save_path			: "Τοποθεσία αποθήκευσης",
  registerMagnet			: "Προσπάθεια καταχώρησης του πρωτόκολλου magnet κατά την εκκίνηση",
- linkTorTorrentRestored		: "Η επικοινωνία με το rTorrent επιτεύχθηκε."
+ linkTorTorrentRestored		: "Η επικοινωνία με το rTorrent επιτεύχθηκε.",
+ removeAllTegs			: "Διαγραφή όλων των ετικετών"
 };

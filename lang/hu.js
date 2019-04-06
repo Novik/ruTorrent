@@ -74,7 +74,7 @@ var theUILang =
  Remove_and			: "Eltávolítás és",
  Details			: "Részletek...",
  Properties			: "Tulajdonságok...",
- of				: " / ", //this two creates line 
+ of				: " / ", //this two creates line
  connected			: "Csatlakoztatott", //  XX of YY connected
  High_priority			: "Magas",
  Normal_priority		: "Normál",
@@ -160,7 +160,7 @@ var theUILang =
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Segítség",
  Speed				: "Sebesség",
- Dont_add_tname 		: "Ne adja hozzá a torrent nevének útját", 
+ Dont_add_tname 		: "Ne adja hozzá a torrent nevének útját",
  Free_Disk_Space		: "Szabad disk terület",
  badXMLRPCVersion		: "rTorrent is compiled with incorrect version of xmlrpc-c library, without i8 support. Version must be >= 1.11. Some functionality will be unavailable.",
  badLinkTorTorrent		: "Nem kapcsolódik az rtorrenthez! Kérlek ellenőrízd, hogy helyesen van-e megadva az $scgi_port és $scgi_host beállításait a config.php-ban!",
@@ -197,7 +197,6 @@ var theUILang =
  doFastResume			: "Megynyitás seedelésre",
  innerSearch			: "Kliensben lévő torrentek",
  removeTeg			: "Címke törlése",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Plugin will not work.",
  warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
  plgShutdown			: "Nincs betöltve",
@@ -267,7 +266,7 @@ var theUILang =
  Delete_current_torrents	: "Kiválasztott torrent(ek) törlése",
  Select_all			: "Összes kijelölés",
  Deselect_all			: "Kijelölés törlése",
- showSpeedInTitle		: "Sebesség megjelenítése a címben", 
+ showSpeedInTitle		: "Sebesség megjelenítése a címben",
  badTempPath 			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",
  badTempPath2			: "rTorrent user must have read/execute access to the tmp directory. ruTorrent will not work.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
@@ -277,5 +276,6 @@ var theUILang =
  PeerDownloaded 		: "Peer Downloaded",
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

@@ -195,7 +195,6 @@ var theUILang =
  doFastResume			: "Khôi phục nhanh",
  innerSearch			: "Torrent nội bộ",
  removeTeg			: "Loại bỏ thẻ",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent và rTorrent phải được cài đặt trên cùng một máy. Thành phần bổ sung sẽ không hoạt động.",
  warnMustBeInSomeHost		: "ruTorrent và rTorrent phải được cài đặt trên cùng một máy. Một số tính năng sẽ không hoạt động.",
  plgShutdown			: "Tắt",
@@ -275,5 +274,6 @@ var theUILang =
  PeerDownloaded 		: "Peer Downloaded",
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

@@ -158,7 +158,7 @@ var theUILang =
  GetTrackerMessage		: "트래커로부터 메시지 받기",  /* Receive messages from tracker */
  Help				: "도움말",
  Speed				: "속도",
- Dont_add_tname 		: "토렌트 이름을 경로에 넣지 않음", 
+ Dont_add_tname 		: "토렌트 이름을 경로에 넣지 않음",
  Free_Disk_Space		: "여유 디스크 공간",
  badXMLRPCVersion		: "rTorrent가 i8 지원이 없어 부적합한 XMLRPC-C 라이브러리 버전과 함께 컴파일되었습니다. (올바른 버전: >= 1.11) 일부 기능을 사용할 수 없습니다.",
  badLinkTorTorrent		: "rTorrent에 연결하지 못했습니다. 정말 실행 중인지 확인하세요. config.php 파일의 $scgi_port 및 $scgi_host 설정값과 rTorrent 설정 파일의 scgi_port 설정값을 점검하세요.",
@@ -195,7 +195,6 @@ var theUILang =
  doFastResume			: "빠른 재시작", /* Fast resume */
  innerSearch			: "로컬 토렌트",
  removeTeg			: "태그 제거",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent와 rTorrent가 반드시 같은 호스트에 설치되어야 합니다. 플러그인이 동작하지 않습니다.",
  warnMustBeInSomeHost		: "ruTorrent와 rTorrent가 반드시 같은 호스트에 설치되어야 합니다. 일부 기능을 사용할 수 없습니다.",
  plgShutdown			: "내리기",
@@ -275,5 +274,6 @@ var theUILang =
  PeerDownloaded 		: "피어가 다운로드한 용량",
  Save_path			: "경로 저장",
  registerMagnet			: "시작 시 마그넷 프로토콜 연결 프로그램으로 등록 시도",
- linkTorTorrentRestored		: "rTorrent에 연결되었습니다."
+ linkTorTorrentRestored		: "rTorrent에 연결되었습니다.",
+ removeAllTegs			: "Remove all tags"
 };

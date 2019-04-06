@@ -5,9 +5,7 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Updatet by : Dario Rugani (kontakt@rugani.de)
- *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
  theUILang.peerComment		= "Kommentar hinzufügen";

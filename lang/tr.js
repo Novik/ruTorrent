@@ -72,7 +72,7 @@ var theUILang =
  Remove_and			: "Kaldır Ve",
  Details			: "Ayrıntılar...",
  Properties			: "Özellikler...",
- of				: "tanesine", //this two creates line 
+ of				: "tanesine", //this two creates line
  connected			: "içinden bağlı", //  XX of YY connected
  High_priority			: "Yüksek",
  Normal_priority		: "Normal",
@@ -144,7 +144,7 @@ var theUILang =
  Other_Limiting 		: "Diğer sınırlandırmalar",
  Number_dl_slots		: "İndirme yuva sayısı",
  Glob_max_memory		: "En fazla hafıza kullanımı",
- Glob_max_files 		: "En fazla açık dosya sayısı", 
+ Glob_max_files 		: "En fazla açık dosya sayısı",
  Glob_max_http			: "En fazla açık http bağlantı sayısı",
  Other_sett			: "Diğer",
  Directory_For_Dl		: "Yüklemeler için varsayılan klasör",
@@ -195,7 +195,6 @@ var theUILang =
  doFastResume			: "Fast resume",
  innerSearch			: "Local Torrents",
  removeTeg			: "Remove tag",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Plugin will not work.",
  warnMustBeInSomeHost		: "ruTorrent and rTorrent must be installed on the same host. Some functionality will be unavailable.",
  plgShutdown			: "Unload",
@@ -275,5 +274,6 @@ var theUILang =
  PeerDownloaded 		: "Peer Downloaded",
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };

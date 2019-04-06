@@ -158,7 +158,7 @@ var theUILang =
  GetTrackerMessage		: "Motta meddelanden från tracker",
  Help				: "Hjälp",
  Speed				: "Hastighet",
- Dont_add_tname 		: "Lägg inte till torrent-namn till sökväg", 
+ Dont_add_tname 		: "Lägg inte till torrent-namn till sökväg",
  Free_Disk_Space		: "Ledigt utrymme",
  badXMLRPCVersion		: "rTorrent är kompilerad med fel version av xmlrpc-C-biblioteket, utan i8-stöd. Version måste vara > = 1.11. Vissa funktioner kommer att vara otillgängliga.",
  badLinkTorTorrent		: "Ingen anslutning till rTorrent. Kontrollera om det verkligen körs. Kontrollera $scgi_port- och $scgi_host-inställningarna i config.php och scgi_port i rTorrent's konfigurationsfil.",
@@ -195,7 +195,6 @@ var theUILang =
  doFastResume			: "Snabb återupptagning",
  innerSearch			: "Lokala torrenter",
  removeTeg			: "Ta bort tagg",
- removeAllTegs			: "Remove all tags",
  errMustBeInSomeHost		: "ruTorrent och rTorrent måste vara installerade på samma värd. Insticksprogram kommer inte att fungera.",
  warnMustBeInSomeHost		: "ruTorrent och rTorrent måste vara installerade på samma värd. Vissa funktioner kommer att vara otillgängliga.",
  plgShutdown			: "Stoppa",
@@ -275,5 +274,6 @@ var theUILang =
  PeerDownloaded 		: "Peer Downloaded",
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
- linkTorTorrentRestored		: "Connection to rTorrent established."
+ linkTorTorrentRestored		: "Connection to rTorrent established.",
+ removeAllTegs			: "Remove all tags"
 };
