@@ -1837,13 +1837,19 @@ var theWebUI =
 			this.tegs[id].cnt = 0;
 	},
 
+	matchTeg: function(teg, name)
+	{
+		var pattern = teg.val.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
+		return new RegExp(pattern.replace('*', '.+'), 'i').test(name);
+	},
+
 	updateTeg: function(id)
 	{
 		var teg = this.tegs[id];
-		var str = teg.val.toLowerCase();
+		var self = this;
 		$.each(this.torrents,function(hash,torrent)
 		{
-			if(torrent.name.toLowerCase().indexOf(str) >- 1)
+			if(self.matchTeg(teg, torrent.name))
 				teg.cnt++;
 		});
 		var counter = $("#"+id+"-c");
@@ -1859,11 +1865,10 @@ var theWebUI =
 	 */
 	updateTegs: function(torrent)
 	{
-	        var str = torrent.name.toLowerCase();
 		for( var id in this.tegs )
 		{
-		        var teg = this.tegs[id];
-			if(str.indexOf(teg.val.toLowerCase()) >- 1)
+			var teg = this.tegs[id];
+			if(this.matchTeg(teg, torrent.name))
 				teg.cnt++;
 		}
 	},
@@ -2147,18 +2152,17 @@ var theWebUI =
 	        var table = this.getTable("trt");
 	        if($($$(this.actLbl)).hasClass("teg"))
 	        {
-	                var teg = this.tegs[this.actLbl];
-	                if(teg)
-	                {
-	        		if(table.getValueById(sId, "name").toLowerCase().indexOf(teg.val.toLowerCase()) >- 1)
-					table.unhideRow(sId);
-				else 
-					table.hideRow(sId);
-			}
+				var teg = this.tegs[this.actLbl];
+				if(teg)
+				{
+	        		if(this.matchTeg(teg, table.getValueById(sId, "name")))
+						table.unhideRow(sId);
+					else 
+						table.hideRow(sId);
+				}
 	        }
-	        else
-			if(table.getAttr(sId, "label").indexOf(this.actLbl) >- 1)
-				table.unhideRow(sId);
+	        else if(table.getAttr(sId, "label").indexOf(this.actLbl) >- 1)
+					table.unhideRow(sId);
 			else 
 				table.hideRow(sId);
 	},
