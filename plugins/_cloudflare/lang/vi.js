@@ -1,6 +1,6 @@
 ﻿/* PLUGIN _CLOUDFLARE
  *
- * English language file.
+ * Vietnamese language file.
  *
  * Author: 
  */

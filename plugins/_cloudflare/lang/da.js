@@ -1,6 +1,6 @@
 ﻿/* PLUGIN _CLOUDFLARE
  *
- * English language file.
+ * Danish language file.
  *
  * Author: 
  */
