@@ -229,7 +229,14 @@ class Snoopy
 
 	public function fetch($URI,$method="GET",$content_type="",$body="")
 	{
-		rTorrentSettings::get()->pushEvent( "HostConnect", array( "client"=>&$this, "uri"=>&$URI, "method"=>&$method, "content_type"=>&$content_type, "body"=>&$body ) );
+		rTorrentSettings::get()->pushEvent( "HostConnect", array
+		( 
+			"client" => &$this, 
+			"uri" => &$URI, 
+			"method" => &$method, 
+			"content_type" => &$content_type, 
+			"body" => &$body 
+		) );
 		$parts = parse_url($URI);
 		$this->port = empty($parts["port"]) ? (($parts["scheme"]=="https") ? 443 : 80) : $parts["port"];
 		if(!empty($parts["user"]))
@@ -272,14 +279,25 @@ class Snoopy
 				break;
 			}
 		}		
-		if($ret && $this->_redirectaddr)
+		if($ret)
 		{
-			/* url was redirected, check if we've hit the max depth */
-			if($this->maxredirs > $this->_redirectdepth)
+			rTorrentSettings::get()->pushEvent( "URLFetched", array
+			( 
+				"client" => $this, 
+				"uri" => $URI, 
+				"method" => $method, 
+				"content_type" => $content_type, 
+				"body" => $body 
+			) );
+			if($this->_redirectaddr)
 			{
-				$this->_redirectdepth++;
-				$this->lastredirectaddr=$this->_redirectaddr;
-				$ret = $this->fetch($this->_redirectaddr);
+				/* url was redirected, check if we've hit the max depth */
+				if($this->maxredirs > $this->_redirectdepth)
+				{
+					$this->_redirectdepth++;
+					$this->lastredirectaddr=$this->_redirectaddr;
+					$ret = $this->fetch($this->_redirectaddr);
+				}
 			}
 		}
 		return($ret);

@@ -46,7 +46,6 @@ class commonEngine
 	public function fetch($url, $encode = 1, $method="GET", $content_type="", $body="")
 	{
 		$client = $this->makeClient($url);
-		$this->clearCloudflare($client,$url);
 		if($encode)
 			$url = Snoopy::linkencode($url);
 		$client->fetchComplex($url, $method, $content_type, $body);
@@ -56,9 +55,6 @@ class commonEngine
 			return($client);
 		}
 		return(false);
-	}
-	public function clearCloudflare($client,$url)
-	{
 	}
 	public function getTorrent( $url )
 	{
