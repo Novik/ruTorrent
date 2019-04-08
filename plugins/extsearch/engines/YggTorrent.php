@@ -90,7 +90,6 @@ class YggTorrentEngine extends commonEngine
         // Initial search to retrieve the page count
         $search = self::URL . '/engine/search/?name=' . $what . $catParameters . '&do=search';
         $cli = $this->fetch($search);
-
         // Check if we have results
         if ($cli == false) {
 	    $item = $this->getNewEntry();
@@ -184,20 +183,7 @@ class YggTorrentEngine extends commonEngine
             }
         }
     }
-    public function clearCloudflare($client,$url)
-    {
-	    if(rTorrentSettings::get()->isPluginRegistered('cloudflare')) {
-		    $cookies=shell_exec("echo -e \"import cfscrape\ntokens, user_agent = cfscrape.get_tokens($url,user_agent=$client->agent)\nprint(json.dumps(tokens))\" | python3");
-		    if (is_null($cookies)) {
-			    return;
-		    }
-		    $cookies=json_decode ($cookies);
-		    $client->cookies = array_merge($client->cookies,$cookies);
-		    return;
-	    } else {
-		 return;
-	    }
-    }
+
     private function getPrettyCategoryName($input)
     {
         if (array_key_exists($input, $this->category_mapping)) {

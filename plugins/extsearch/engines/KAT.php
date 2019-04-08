@@ -95,7 +95,7 @@ class KATEngine extends commonEngine
 						$item["desc"] = $this->url.$matches["desc"][$i];
 						$item["cat"] = self::removeTags($matches["cat1"][$i].' > '.$matches["cat2"][$i]);
 						$item["name"] = self::removeTags($matches["name"][$i]);
-						$item["size"] = self::formatSize(str_replace(",","",$matches["size"][$i]));
+						$item["size"] = self::formatSize(trim($matches["size"][$i]));
 						$item["time"] = strtotime($matches["date"][$i]);
 						$item["seeds"] = intval($matches["seeds"][$i]);
 						$item["peers"] = intval($matches["leech"][$i]);

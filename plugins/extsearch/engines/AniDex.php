@@ -28,12 +28,6 @@ class AniDexEngine extends commonEngine
 		'> Other'=>'16'
 		);
 
-	public function makeClient($url)
-	{
-		$client = parent::makeClient($url);
-		return($client);
-	}
-
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
@@ -62,12 +56,10 @@ class AniDexEngine extends commonEngine
 
 		for($offset = 0; $offset<=$maxOffset; $offset+=50)
 		{
-			$search = $url . '/?id=' . $cat . '&q=' . $what . '&s=seeders&o=desc&offset=' . $offset;
+			$search = $url . '/?page=search&id=' . $cat . '&q=' . $what . '&s=seeders&o=desc&offset=' . $offset;
 			$cli = $this->fetch($search);
-
 			if (($cli == false) || (strpos($cli->results, "No torrents.</div>") !== false))
 				break;
-
 			$res = preg_match_all('`<td class="text-center">.*<div .*>(?P<cat>.*)</div></a><img .* title=\'(?P<lang>.*)\' /></td>.*'.
 				'<a class="torrent" .* href="(?P<desc>.*)">.*<span .* title="(?P<name>.*)">.*</span>.*'.
 				'<td class="text-center"><a href="(?P<link>.*)">.*<td .*>.*</td>.*'.
