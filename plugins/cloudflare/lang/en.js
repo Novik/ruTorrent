@@ -5,8 +5,8 @@
  * Author: 
  */
 
- theUILang.cloudflare           = "Cloudflare Scrape";
- theUILang.pythonNotFound               = "Python Not Found";
- theUILang.cannotLoadCfscrape           = "CfScrape Module cant be loaded in Python";
+ theUILang.cloudflare		= "Cloudflare Scrape";
+ theUILang.pythonNotFound	= "Python not found";
+ theUILang.cannotLoadCfscrape	= "CfScrape module can't be loaded in Python";
 
 thePlugins.get("cloudflare").langLoaded();
