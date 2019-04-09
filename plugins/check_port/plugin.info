@@ -1,5 +1,5 @@
 plugin.description: This plugin adds an incoming port status indicator to the bottom bar.
 plugin.author: Novik
-plugin.version: 3.8
+plugin.version: 3.9
 rtorrent.need: 1
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginCheckPort
