@@ -6,13 +6,13 @@
  * Author: Zoltan Csala (zcsala021 at gmail dot com)
  */
 
- theUILang.mnu_create			= "Направи торент ...";
+ theUILang.mnu_create			= "Направи торент...";
  theUILang.CreateNewTorrent		= "Направи нови торент";
- theUILang.SelectSource 		= "Избор извора";
+ theUILang.SelectSource			= "Избор извора";
  theUILang.TorrentProperties		= "Сво?ства торента";
  theUILang.PieceSize			= "Величина парчета";
  theUILang.Other			= "Друго";
- theUILang.StartSeeding 		= "Почетак се?а?а";
+ theUILang.StartSeeding			= "Почетак се?а?а";
  theUILang.PrivateTorrent		= "Приватни торент";
  theUILang.torrentCreate		= "Направи...";
  theUILang.BadTorrentData		= "Морате попунити сва обавезна по?а!";
@@ -20,7 +20,7 @@
  theUILang.incorrectDirectory		= "Incorrect directory";
  theUILang.cantExecExternal		= "Can't execute external program";
  theUILang.createConsole		= "Console";
- theUILang.createErrors 		= "Errors";
+ theUILang.createErrors			= "Errors";
  theUILang.torrentSave			= "Save";
  theUILang.torrentKill			= "Stop";
  theUILang.torrentKilled		= "Process was stopped.";
