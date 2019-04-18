@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.checkTorrent 	= "Проверить обновление";
+ theUILang.checkTorrent		= "Проверить обновление";
  theUILang.chkHdr		= "Проверка обновления торрента";
  theUILang.checkedAt		= "Произведена";
  theUILang.checkedResult	= "Результат";

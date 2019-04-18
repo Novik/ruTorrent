@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.checkTorrent 	= "Check for Update";
+ theUILang.checkTorrent		= "Check for Update";
  theUILang.chkHdr		= "Torrent Update Check";
  theUILang.checkedAt		= "Last Checked";
  theUILang.checkedResult	= "Result";

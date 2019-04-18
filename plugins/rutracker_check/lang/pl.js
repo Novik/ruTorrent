@@ -6,7 +6,7 @@
  * Author: Dare (piczok@gmail.com)
  */
 
- theUILang.checkTorrent 	= "Sprawdź aktualizacje";
+ theUILang.checkTorrent		= "Sprawdź aktualizacje";
  theUILang.chkHdr		= "Sprawdź aktualizacje torrenta";
  theUILang.checkedAt		= "Ostatnio sprawdzane";
  theUILang.checkedResult	= "Wynik";
