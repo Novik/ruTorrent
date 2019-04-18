@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Regelhanterare";
  theUILang.rssAddRule		= "Lägg till";
  theUILang.rssDelRule		= "Ta bort";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Regelinställningar";
  theUILang.rssSrcHref		= "Om URL för torrentnedladdning passar mönster";
  theUILang.rssSrcGuid		= "Om URL i torrentbeskrivning passar mönster";

@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Менеджер правил";
  theUILang.rssAddRule		= "Додати";
  theUILang.rssDelRule		= "Видалити";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Параметри правила";
  theUILang.rssSrcHref		= "Якщо URL-адреса завантаження торента збігається з шаблоном";
  theUILang.rssSrcGuid		= "Якщо URL-адреса опису торента збігається з шаблоном";
