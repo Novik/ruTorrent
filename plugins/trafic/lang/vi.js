@@ -6,7 +6,7 @@
  * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
- theUILang.traf 		= "Lưu lượng";
+ theUILang.traf			= "Lưu lượng";
  theUILang.perDay		= "Trong ngày";
  theUILang.perMonth		= "Trong tháng";
  theUILang.perYear		= "Trong năm";

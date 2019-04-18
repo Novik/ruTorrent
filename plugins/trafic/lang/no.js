@@ -6,7 +6,7 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.traf 		= "Trafikk";
+ theUILang.traf			= "Trafikk";
  theUILang.perDay		= "Per dag";
  theUILang.perMonth		= "Per måned";
  theUILang.perYear		= "Per år";
