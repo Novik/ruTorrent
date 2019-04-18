@@ -6,7 +6,7 @@
  * Author: Zoltan Csala (zcsala021 at gmail dot com)
  */
 
- theUILang.EditTrackers 		= "Уреди торент ...";
+ theUILang.EditTrackers			= "Уреди торент...";
  theUILang.EditTorrentProperties	= "Својства торента";
  theUILang.errorAddTorrent		= "Грешка код додавања датотеке торенту";
  theUILang.errorWriteTorrent		= "Грешка код писања торент-датотеке";

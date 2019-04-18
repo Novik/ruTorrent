@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "Ta bort";
  theUILang.ratioEraseData	= "Radera data";
  theUILang.maxTime		= "Tid";
- theUILang.ratioDefault 	= "Standard ratiogrupp";
+ theUILang.ratioDefault		= "Standard ratiogrupp";
  theUILang.setThrottleTo	= "Sätt kanal till";
 
 thePlugins.get("ratio").langLoaded();

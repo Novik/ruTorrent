@@ -6,7 +6,7 @@
  * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
- theUILang.checkTorrent 	= "Kiểm tra xem có cập nhật";
+ theUILang.checkTorrent		= "Kiểm tra xem có cập nhật";
  theUILang.chkHdr		= "Kiểm tra cập nhật Torrent";
  theUILang.checkedAt		= "Lần kiểm tra cuối";
  theUILang.checkedResult	= "Kết quả";

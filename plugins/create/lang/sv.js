@@ -8,11 +8,11 @@
 
  theUILang.mnu_create			= "Skapa torrent...";
  theUILang.CreateNewTorrent		= "Skapa ny torrent";
- theUILang.SelectSource 		= "Välj källa";
+ theUILang.SelectSource			= "Välj källa";
  theUILang.TorrentProperties		= "Torrentegenskaper";
  theUILang.PieceSize			= "Storlek på delar";
  theUILang.Other			= "Övrigt";
- theUILang.StartSeeding 		= "Starta seedning";
+ theUILang.StartSeeding			= "Starta seedning";
  theUILang.PrivateTorrent		= "Privat torrent";
  theUILang.torrentCreate		= "Skapa...";
  theUILang.BadTorrentData		= "Du måste fylla i alla obligatoriska fält!";
@@ -20,7 +20,7 @@
  theUILang.incorrectDirectory		= "Felaktig katalog";
  theUILang.cantExecExternal		= "Kan inte exekvera externt program";
  theUILang.createConsole		= "Konsoll";
- theUILang.createErrors 		= "Fel";
+ theUILang.createErrors			= "Fel";
  theUILang.torrentSave			= "Spara";
  theUILang.torrentKill			= "Stoppa";
  theUILang.torrentKilled		= "Processen stoppades.";

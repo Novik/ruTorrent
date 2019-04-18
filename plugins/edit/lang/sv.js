@@ -6,7 +6,7 @@
  * Author: Magnus Holm (holmen@brasse.se)
  */
 
- theUILang.EditTrackers 		= "Redigera torrent...";
+ theUILang.EditTrackers			= "Redigera torrent...";
  theUILang.EditTorrentProperties	= "Torrentegenskaper";
  theUILang.errorAddTorrent		= "Fel när torrentfilen lades till";
  theUILang.errorWriteTorrent		= "Fel vid skrivning till torrentfil";

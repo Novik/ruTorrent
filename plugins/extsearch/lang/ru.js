@@ -25,11 +25,11 @@
  theUILang.excatanime			= "Анимэ";
  theUILang.excatsoftware		= "Софт";
  theUILang.excatpictures		= "Картинки";
- theUILang.excatbooks 			= "Книги";
+ theUILang.excatbooks			= "Книги";
  theUILang.extPrivate			= "Закрытые";
  theUILang.extPublic			= "Открытые";
  theUILang.exsCookies			= "Формат cookies";
- theUILang.extAllPublic 		= "Все открытые";
+ theUILang.extAllPublic			= "Все открытые";
  theUILang.extAllPrivate		= "Все закрытые";
  theUILang.exsMustInstallCookies	= "Вы должны установить плагин Cookies для работы этого движка.";
  theUILang.exsMustInstallLoginMgr	= "Вы должны установить плагин LoginMgr для работы этого движка.";

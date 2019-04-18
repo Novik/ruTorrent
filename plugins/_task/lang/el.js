@@ -23,5 +23,5 @@
  theUILang.tskRunning		= "Εκτελείται";
  theUILang.tskArg		= "Παράμετρος";
  theUILang.tskTasks		= "Εργασίες";
- 
+
 thePlugins.get("_task").langLoaded();

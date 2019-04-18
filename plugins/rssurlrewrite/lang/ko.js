@@ -11,10 +11,10 @@
  theUILang.rssRulesManager	= "규칙 관리자";
  theUILang.rssAddRule		= "추가";
  theUILang.rssDelRule		= "삭제";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "규칙 설정";
  theUILang.rssSrcHref		= "만약 토렌트 다운로드 URL이 패턴과 일치하면";
- theUILang.rssSrcGuid		= "만약 토렌트 설명  URL이 패턴과 일치하면";
+ theUILang.rssSrcGuid		= "만약 토렌트 설명 URL이 패턴과 일치하면";
  theUILang.rssDstHref		= "토렌트 다운로드 URL을 다음으로 교체";
  theUILang.rssDstGuid		= "토렌트 설명 URL을 다음으로 교체";
  theUILang.rssRulesDebug	= "규칙 디버그";

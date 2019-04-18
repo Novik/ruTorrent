@@ -3,7 +3,7 @@
  *
  * German language file.
  *
- * Author:  Dario Rugani (kontakt@rugani.de)
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
  theUILang.DataDir		= "Speichern unter";

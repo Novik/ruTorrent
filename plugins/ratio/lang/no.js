@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "Fjern";
  theUILang.ratioEraseData	= "Fjern data";
  theUILang.maxTime		= "Tid";
- theUILang.ratioDefault 	= "Standard ratiogruppe";
+ theUILang.ratioDefault		= "Standard ratiogruppe";
  theUILang.setThrottleTo	= "Sett kanal til";
 
 thePlugins.get("ratio").langLoaded();

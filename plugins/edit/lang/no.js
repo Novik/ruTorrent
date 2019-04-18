@@ -6,7 +6,7 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.EditTrackers 		= "Rediger Torrent...";
+ theUILang.EditTrackers			= "Rediger Torrent...";
  theUILang.EditTorrentProperties	= "Torrentegenskaper";
  theUILang.errorAddTorrent		= "Feil oppstod med å legge til torrentfil";
  theUILang.errorWriteTorrent		= "Feil oppstod med å skrive til torrentfil";

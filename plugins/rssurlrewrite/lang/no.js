@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Regelbehandling";
  theUILang.rssAddRule		= "Legg til";
  theUILang.rssDelRule		= "Slett";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Regelinstillinger";
  theUILang.rssSrcHref		= "Hvis lenke for torrentnedlasting matcher med mønster";
  theUILang.rssSrcGuid		= "Hvis lenke for torrentbeskrivelse matcher med mønster";

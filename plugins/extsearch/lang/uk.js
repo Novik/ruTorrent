@@ -25,11 +25,11 @@
  theUILang.excatanime			= "Аніме";
  theUILang.excatsoftware		= "Програми";
  theUILang.excatpictures		= "Малюнки";
- theUILang.excatbooks 			= "Книги";
+ theUILang.excatbooks			= "Книги";
  theUILang.extPrivate			= "Закриті";
  theUILang.extPublic			= "Відкриті";
  theUILang.exsCookies			= "Формат файлів cookie";
- theUILang.extAllPublic 		= "Усі відкриті";
+ theUILang.extAllPublic			= "Усі відкриті";
  theUILang.extAllPrivate		= "Усі закриті";
  theUILang.exsMustInstallCookies	= "Щоб ця служба працювала, необхідно інсталювати плагін Cookies.";
  theUILang.exsMustInstallLoginMgr	= "Щоб ця служба працювала, необхідно інсталювати плагін LoginMgr.";
