@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "Loại bỏ";
  theUILang.ratioEraseData	= "Xóa dữ liệu";
  theUILang.maxTime		= "T.Gian";
- theUILang.ratioDefault 	= "Nhóm tỉ lệ mặc định";
+ theUILang.ratioDefault		= "Nhóm tỉ lệ mặc định";
  theUILang.setThrottleTo	= "Đặt nhóm tỉ lệ thành";
 
 thePlugins.get("ratio").langLoaded();
