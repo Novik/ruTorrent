@@ -11,10 +11,10 @@
  theUILang.alias			= "Nazwa";
  theUILang.rssAuto			= "Automatycznie pobieraj elementy publikowane na kanale";
  theUILang.allFeeds			= "Wszystkie";
- theUILang.incorrectURL 		= "Proszę, podaj poprawny adres kanału."
- theUILang.cantFetchRSS 		= "Błąd wczytywania kanału.";
+ theUILang.incorrectURL			= "Proszę, podaj poprawny adres kanału.";
+ theUILang.cantFetchRSS			= "Błąd wczytywania kanału.";
  theUILang.rssAlreadyExist		= "Kanał już istnieje.";
- theUILang.rssDontExist 		= "Kanał nie istnieje.";
+ theUILang.rssDontExist			= "Kanał nie istnieje.";
  theUILang.rssCantLoadTorrent		= "Błąd pobierania torrenta.";
  theUILang.rssStatus			= "RSS";
  theUILang.rssStatusLoaded		= "Pobrany";
@@ -29,10 +29,10 @@
  theUILang.rssMenuEdit			= "Edytuj kanał";
  theUILang.rssMenuDelete		= "Usuń kanał";
  theUILang.rssDeletePrompt		= "Czy na pewno chcesz usunąć wybrany kanał?";
- theUILang.rssNewFilter 		= "Nowy filtr";
+ theUILang.rssNewFilter			= "Nowy filtr";
  theUILang.rssFilter			= "Filtr";
- theUILang.rssAddFilter 		= "Dodaj";
- theUILang.rssDelFilter 		= "Usuń";
+ theUILang.rssAddFilter			= "Dodaj";
+ theUILang.rssDelFilter			= "Usuń";
  theUILang.rssCheckFilter		= "?";
  theUILang.rssFiltersLegend		= "Ustawienia filtra";
  theUILang.rssIncorrectFilter		= "Filtr jest niepoprawny.";
@@ -42,7 +42,7 @@
  theUILang.rssFeeds			= "Kanały";
  theUILang.rssCheckTitle		= "Sprawdź pole title";
  theUILang.rssCheckDescription		= "Sprawdź pole description";
- theUILang.rssCheckLink 		= "Sprawdź pole link";
+ theUILang.rssCheckLink			= "Sprawdź pole link";
  theUILang.rssMinInterval		= "Sprawdzaj co";
  theUILang.rssIntervalAlways		= "(zawsze)";
  theUILang.rssIntervalOnce		= "(tylko raz)";
@@ -61,7 +61,7 @@
  theUILang.rssAsLoaded			= "Pobrany";
  theUILang.rssAsUnloaded		= "Nie pobrany";
  theUILang.addRSSGroup			= "Dodaj grupę";
- theUILang.editRSSGroup 		= "Edytuj grupę";
+ theUILang.editRSSGroup			= "Edytuj grupę";
  theUILang.addRSSGroupContent		= "Zawartość";
  theUILang.rssMenuGroupDisable		= "Wyłącz grupę";
  theUILang.rssMenuGroupRefresh		= "Odśwież grupę";
@@ -69,10 +69,10 @@
  theUILang.rssMenuGroupEdit		= "Edytuj grupę";
  theUILang.rssMenuGroupDelete		= "Usuń grupę";
  theUILang.rssMenuGroupContentsDelete	= "Usuń zawartość";
- theUILang.rssDeleteGroupPrompt 	= "Czy na pewno chcesz usunąć wybraną grupę?";
- theUILang.rssDeleteGroupContentsPrompt = "Czy na pewno chcesz usunąć wybraną grupę wraz z całą zawartością?";
- theUILang.rssAllFiters 		= "Wszystkie filtry";
- theUILang.rssUpdateInterval 		= "Aktualizuj co";
+ theUILang.rssDeleteGroupPrompt		= "Czy na pewno chcesz usunąć wybraną grupę?";
+ theUILang.rssDeleteGroupContentsPrompt	= "Czy na pewno chcesz usunąć wybraną grupę wraz z całą zawartością?";
+ theUILang.rssAllFiters			= "Wszystkie filtry";
+ theUILang.rssUpdateInterval		= "Aktualizuj co";
  theUILang.Directories			= "Katalogi";
  theUILang.Labels			= "Etykiety";
 

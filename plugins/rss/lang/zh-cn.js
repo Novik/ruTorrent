@@ -11,10 +11,10 @@
  theUILang.alias			= "自定义别名";
  theUILang.rssAuto			= "自动下载订阅中发布的项目";
  theUILang.allFeeds			= "所有订阅";
- theUILang.incorrectURL 		= "请指定正确的订阅 URL."
- theUILang.cantFetchRSS 		= "载入订阅时错误.";
+ theUILang.incorrectURL			= "请指定正确的订阅 URL.";
+ theUILang.cantFetchRSS			= "载入订阅时错误.";
  theUILang.rssAlreadyExist		= "订阅已经存在.";
- theUILang.rssDontExist 		= "订阅不存在.";
+ theUILang.rssDontExist			= "订阅不存在.";
  theUILang.rssCantLoadTorrent		= "载入 Torrent 时错误.";
  theUILang.rssStatus			= "RSS";
  theUILang.rssStatusLoaded		= "已载入";
@@ -29,10 +29,10 @@
  theUILang.rssMenuEdit			= "编辑订阅";
  theUILang.rssMenuDelete		= "删除订阅";
  theUILang.rssDeletePrompt		= "你确定要删除选择的订阅吗?";
- theUILang.rssNewFilter 		= "新建过滤器";
+ theUILang.rssNewFilter			= "新建过滤器";
  theUILang.rssFilter			= "过滤器";
- theUILang.rssAddFilter 		= "添加";
- theUILang.rssDelFilter 		= "删除";
+ theUILang.rssAddFilter			= "添加";
+ theUILang.rssDelFilter			= "删除";
  theUILang.rssCheckFilter		= "?";
  theUILang.rssFiltersLegend		= "过滤器设置";
  theUILang.rssIncorrectFilter		= "过滤器不正确.";
@@ -42,7 +42,7 @@
  theUILang.rssFeeds			= "订阅";
  theUILang.rssCheckTitle		= "检查标题字段";
  theUILang.rssCheckDescription		= "检查描述字段";
- theUILang.rssCheckLink 		= "检查链接字段";
+ theUILang.rssCheckLink			= "检查链接字段";
  theUILang.rssMinInterval		= "最小间隔";
  theUILang.rssIntervalAlways		= "(总是匹配)";
  theUILang.rssIntervalOnce		= "(匹配一次)";
@@ -61,7 +61,7 @@
  theUILang.rssAsLoaded			= "已载入";
  theUILang.rssAsUnloaded		= "已卸载";
  theUILang.addRSSGroup			= "添加 RSS 组";
- theUILang.editRSSGroup 		= "编辑 RSS 组";
+ theUILang.editRSSGroup			= "编辑 RSS 组";
  theUILang.addRSSGroupContent		= "内容";
  theUILang.rssMenuGroupDisable		= "禁用组";
  theUILang.rssMenuGroupRefresh		= "更新组";
@@ -69,10 +69,10 @@
  theUILang.rssMenuGroupEdit		= "编辑组";
  theUILang.rssMenuGroupDelete		= "删除组";
  theUILang.rssMenuGroupContentsDelete	= "删除内容";
- theUILang.rssDeleteGroupPrompt 	= "你真的确定要删除选择的组吗?";
- theUILang.rssDeleteGroupContentsPrompt = "你真的确定要删除选择组的所有内容吗?";
- theUILang.rssAllFiters 		= "增加过滤器";
- theUILang.rssUpdateInterval 		= "更新间隔";
+ theUILang.rssDeleteGroupPrompt		= "你真的确定要删除选择的组吗?";
+ theUILang.rssDeleteGroupContentsPrompt	= "你真的确定要删除选择组的所有内容吗?";
+ theUILang.rssAllFiters			= "增加过滤器";
+ theUILang.rssUpdateInterval		= "更新间隔";
  theUILang.Directories			= "文件夹";
  theUILang.Labels			= "标签";
 
