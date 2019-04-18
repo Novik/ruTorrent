@@ -3,8 +3,7 @@
  *
  * Polish language file.
  *
- * Initial author: dolohow
- * Author: mmalisz
+ * Author: dolohow, mmalisz
  */
 
  theUILang.Rem_torrents_content_prompt		= "Czy na pewno chcesz usunąć wybrane torrenty? UWAGA: Zostanie usunięta zawartość torrenta.";
