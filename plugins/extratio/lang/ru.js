@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "Один из трекеров закачки частный";
  theUILang.ratioThenLegend	= "То";
  theUILang.setRatioTo		= "Установить ratio";
- theUILang.setChannelTo 	= "Установить канал";
- theUILang.ratioNewRule 	= "Новое правило";
+ theUILang.setChannelTo		= "Установить канал";
+ theUILang.ratioNewRule		= "Новое правило";
 
 thePlugins.get("extratio").langLoaded();
