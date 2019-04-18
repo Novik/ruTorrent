@@ -9,7 +9,7 @@
  theUILang.throttles		= "Limity";
  theUILang.throttle		= "Limit";
  theUILang.mnuThrottle		= "Ustaw limit";
- theUILang.mnuUnlimited 	= "Brak limitu";
+ theUILang.mnuUnlimited		= "Brak limitu";
  theUILang.channelName		= "Nazwa";
  theUILang.channelDefault	= "Domyślny limit";
 

@@ -6,10 +6,10 @@
  * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
- theUILang.throttle		= "Канал";
  theUILang.throttles		= "Канали";
+ theUILang.throttle		= "Канал";
  theUILang.mnuThrottle		= "Установити канал";
- theUILang.mnuUnlimited 	= "Немає";
+ theUILang.mnuUnlimited		= "Немає";
  theUILang.channelName		= "Назва";
  theUILang.channelDefault	= "Стандартний канал";
 
