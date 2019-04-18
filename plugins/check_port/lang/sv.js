@@ -10,7 +10,7 @@
  theUILang.portStatus		= [
  				  "Portstatus okänd",
  				  "Port är stängd",
- 				  "Port är öppen",
+ 				  "Port är öppen"
  				  ];
 
 thePlugins.get("check_port").langLoaded();
