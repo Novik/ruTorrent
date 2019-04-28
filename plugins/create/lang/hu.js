@@ -16,7 +16,7 @@
  theUILang.PrivateTorrent		= "Magán torrent";
  theUILang.torrentCreate		= "Létrehozás...";
  theUILang.BadTorrentData		= "Az összes szükséges mezőt ki kell tölteni!";
- theUILang.createExternalNotFound	= "Torrent létrehozás bővitmény: Bővitmény nem fog működni! Webserver felhasználó nem fér hozzá a programhoz";
+ theUILang.createExternalNotFound	= "Torrent létrehozás bővitmény: Bővitmény nem fog működni. Webserver felhasználó nem fér hozzá a programhoz";
  theUILang.incorrectDirectory		= "Helytelen könyvtár";
  theUILang.cantExecExternal		= "Nem lehet végrehajtani a külső programmal";
  theUILang.createConsole		= "Konsole";
