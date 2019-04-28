@@ -10,7 +10,7 @@
 
  theUILang.autotools			= "Auto-verktøy";
  theUILang.autotoolsEnableLabel		= "Aktiver \"AutoLabel\" funksjonen, Mal:";
- theUILang.autotoolsPathToFinished	= "Mappe for ferdige nedlastinger.";
+ theUILang.autotoolsPathToFinished	= "Mappe for ferdige nedlastinger";
  theUILang.autotoolsEnableWatch		= "Aktiver \"AutoWatch\" funksjonen";
  theUILang.autotoolsPathToWatch		= "Lyttermappe";
  theUILang.autotoolsWatchStart		= "Start nedlasting automatisk";
