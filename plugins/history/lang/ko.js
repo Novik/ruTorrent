@@ -23,7 +23,7 @@
  theUILang.Tracker			= "트래커";
  theUILang.enableNotifications		= "데스크탑 알림 사용";
  theUILang.historyNotification		= "데스크탑 알림";
- theUILang.notifAutoClose		= "다음 시간 이후 알림 닫기:";
+ theUILang.notifAutoClose		= "다음 시간 이후 알림 닫기";
  theUILang.notifTip			= {
  					  false: "브라우저가 데스크탑 알림을 지원하지 않습니다. 다른 브라우저를 사용해 보세요, 예) 구글 크롬.",
  					  "granted": "",

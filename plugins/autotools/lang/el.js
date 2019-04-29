@@ -9,7 +9,7 @@
  var s_PluginFail			= "Το πρόσθετο δεν θα λειτουργήσει.";
 
  theUILang.autotools			= "Αυτόματα Εργαλεία";
- theUILang.autotoolsEnableLabel		= "Ενεργοποίηση χαρακτηριστικού\"ΑυτόματηΕτικέτα\", Πρότυπο:";
+ theUILang.autotoolsEnableLabel		= "Ενεργοποίηση χαρακτηριστικού \"ΑυτόματηΕτικέτα\", Πρότυπο:";
  theUILang.autotoolsPathToFinished	= "Διαδρομή για το φάκελο ολοκληρωμένων λήψεων";
  theUILang.autotoolsEnableWatch		= "Ενεργοποίηση χαρακτηριστικού \"ΑυτόματηΠαρακολούθηση\"";
  theUILang.autotoolsPathToWatch		= "Διαδρομή για το βασικό φάκελο παρακολούθησης (watch)";

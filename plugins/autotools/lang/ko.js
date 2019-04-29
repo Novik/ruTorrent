@@ -23,7 +23,7 @@
  theUILang.autotoolsFileOpSoftLink	= "소프트 링크";
  theUILang.autotoolsAddLabel		= "토렌트 라벨을 경로에 덧붙임";
  theUILang.autotoolsAddName		= "토렌트 이름을 경로에 덧붙임";
- theUILang.autotoolsEnableMove		= "\"AutoMove\" 기능 동작, 만약 토렌트 라벨이 다음 필터와 일치할 경우:";
+ theUILang.autotoolsEnableMove		= "\"AutoMove\" 기능 동작, 만약 토렌트 라벨이 다음 필터와 일치할 경우";
  theUILang.autotoolsSkipMoveForFiles	= "패턴과 일치하는 파일이 포함된 토렌트 건너뛰기";
 
 thePlugins.get("autotools").langLoaded();

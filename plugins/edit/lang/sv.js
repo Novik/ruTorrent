@@ -11,6 +11,6 @@
  theUILang.errorAddTorrent		= "Fel när torrentfilen lades till";
  theUILang.errorWriteTorrent		= "Fel vid skrivning till torrentfil";
  theUILang.errorReadTorrent		= "Fel vid läsning av torrentfil";
- theUILang.cantFindTorrent		= "Källfil (.torrent) för denna nedladdning kunde inte hittas.."
+ theUILang.cantFindTorrent		= "Källfil (.torrent) för denna nedladdning kunde inte hittas."
 
 thePlugins.get("edit").langLoaded();
