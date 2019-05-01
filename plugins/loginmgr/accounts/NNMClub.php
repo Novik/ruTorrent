@@ -2,7 +2,7 @@
 
 class NNMClubAccount extends commonAccount
 {
-	public $url = "https://nnm-club.me";
+	public $url = "https://nnmclub.to";
 
 	protected function isOK($client)
 	{
@@ -17,7 +17,7 @@ class NNMClubAccount extends commonAccount
 		{
 			$client->cookies = array_merge($client->cookies, array('_ddn_'.$matches["cname"]=>$matches["cvalue"]));
 		}
-		if($client->fetch( $this->url."/forum/login.php","POST","application/x-www-form-urlencoded", 
+		if($client->fetch( $this->url."/forum/login.php","POST","application/x-www-form-urlencoded",
 			"&username=".rawurlencode($login)."&password=".rawurlencode($password)."&autologin=on&login=%C2%F5%EE%E4" ))
 		{
 			$client->setcookies();
