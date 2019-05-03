@@ -8,7 +8,7 @@ class _cloudflareHooks
 
 	static public function OnURLFetched( $prm )
 	{
-		if(!self::$in_progress && 
+		if(!self::$in_progress &&
 			($prm['method']=='GET'))
 		{
 			self::$in_progress = true;
