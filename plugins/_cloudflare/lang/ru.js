@@ -5,6 +5,6 @@
  * Author: 
  */
 
- theUILang.cannotLoadCfscrape		= "Плагин _cloudflare: Python не может загрузить модуль CfScrape";
+ theUILang.cannotLoadCloudscraper		= "Плагин _cloudflare: Python не может загрузить модуль cloudscraper";
 
 thePlugins.get("_cloudflare").langLoaded();

@@ -15,9 +15,9 @@ class rCloudflare
 
 	protected function is_cloudflare_challenge()
 	{
-		return( ($this->client->status == 503 || $this->client->status == 429) && 
+		return( ($this->client->status == 503 || $this->client->status == 429) &&
 			(stripos( $this->client->get_header("Server"), "cloudflare" ) === 0) &&
-			$this->client->results && 
+			$this->client->results &&
 			(stripos( $this->client->results, "jschl_vc" ) !== false) &&
 			(stripos( $this->client->results, "jschl_answer" ) !== false) );
 	}
@@ -36,16 +36,16 @@ class rCloudflare
 			$url = '"'.addslashes($this->url).'"';
 			$agent = $this->client->agent ? '"'.addslashes($this->client->agent).'"' : 'None';
 			$proxies = '';
-			if($this->client->_isproxy) 	
+			if($this->client->_isproxy)
 			{
-				// Warning: Python will not work with 'https' proxies by normal way. 
+				// Warning: Python will not work with 'https' proxies by normal way.
 				$proxy = (empty($this->client->proxy_proto) ? '' : $this->client->proxy_proto.'://').$this->client->proxy_host.":".$this->client->proxy_port;
 				$proxies = ", proxies={\"http\": \"$proxy\", \"https\": \"$proxy\"}";
 			}
 			$code = escapeshellarg(getExternal('python'))." -c ".
 				escapeshellarg("import cloudscraper\nimport json\ntokens, user_agent = cloudscraper.get_tokens({$url}{$proxies})\nprint(json.dumps([tokens,user_agent]))");
 			$data = `{$code}`;
-			if($data && 
+			if($data &&
 				($data = json_decode($data,true)) &&
 				is_array($data) &&
 				count($data) > 1 &&
