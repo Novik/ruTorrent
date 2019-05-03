@@ -15,7 +15,7 @@ class rCloudflare
 
 	protected function is_cloudflare_challenge()
 	{
-		return( $this->client->status == 503 && 
+		return( ($this->client->status == 503 || $this->client->status == 429) && 
 			(stripos( $this->client->get_header("Server"), "cloudflare" ) === 0) &&
 			$this->client->results && 
 			(stripos( $this->client->results, "jschl_vc" ) !== false) &&
@@ -24,7 +24,7 @@ class rCloudflare
 
 	public static function is_module_present()
 	{
-		exec( escapeshellarg(getExternal('python'))." -c \"import cfscrape\" > /dev/null 2>&1", $output, $error_code);
+		exec( escapeshellarg(getExternal('python'))." -c \"import cloudscraper\" > /dev/null 2>&1", $output, $error_code);
 		return($error_code === 0);
 	}
 
@@ -35,16 +35,25 @@ class rCloudflare
 		{
 			$url = '"'.addslashes($this->url).'"';
 			$agent = $this->client->agent ? '"'.addslashes($this->client->agent).'"' : 'None';
+			$proxies = '';
+			if($this->client->_isproxy) 	
+			{
+				// Warning: Python will not work with 'https' proxies by normal way. 
+				$proxy = (empty($this->client->proxy_proto) ? '' : $this->client->proxy_proto.'://').$this->client->proxy_host.":".$this->client->proxy_port;
+				$proxies = ", proxies={\"http\": \"$proxy\", \"https\": \"$proxy\"}";
+			}
 			$code = escapeshellarg(getExternal('python'))." -c ".
-				escapeshellarg("import cfscrape\nimport json\ntokens, user_agent = cfscrape.get_tokens($url,user_agent=$agent)\nprint(json.dumps(tokens))");
-			$cookies = `{$code}`;
-			if($cookies && 
-				($cookies = json_decode($cookies,true)) &&
-				is_array($cookies) &&
-				!empty($cookies))
+				escapeshellarg("import cloudscraper\nimport json\ntokens, user_agent = cloudscraper.get_tokens({$url}{$proxies})\nprint(json.dumps([tokens,user_agent]))");
+			$data = `{$code}`;
+			if($data && 
+				($data = json_decode($data,true)) &&
+				is_array($data) &&
+				count($data) > 1 &&
+				!empty($data[0]))
 			{
 				$this->client->setcookies();
-				$this->client->cookies = array_merge($this->client->cookies,$cookies);
+				$this->client->cookies = array_merge($this->client->cookies,$data[0]);
+				$this->client->agent = $data[1];
 				$ret = true;
 			}
 		}

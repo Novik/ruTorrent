@@ -8,9 +8,9 @@
 	$httpIP = null;				// IP string. Or null for any.
 	$httpProxy = array
 	(
-		'use' 	=> true,
+		'use' 	=> false,
 		'proto'	=> 'http',		// 'http' or 'https'
-		'host'	=> '54.37.136.149',
+		'host'	=> 'PROXY_HOST_HERE',
 		'port'	=> 3128
 	);
 
