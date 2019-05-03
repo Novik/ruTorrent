@@ -34,7 +34,7 @@ class rCloudflare
 		if( $this->is_cloudflare_challenge() )
 		{
 			$url = '"'.addslashes($this->url).'"';
-			$agent = $client->agent ? '"'.addslashes($client->agent).'"' : 'None';
+			$agent = $this->client->agent ? '"'.addslashes($this->client->agent).'"' : 'None';
 			$code = escapeshellarg(getExternal('python'))." -c ".
 				escapeshellarg("import cfscrape\nimport json\ntokens, user_agent = cfscrape.get_tokens($url,user_agent=$agent)\nprint(json.dumps(tokens))");
 			$cookies = `{$code}`;
