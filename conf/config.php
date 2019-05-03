@@ -6,6 +6,13 @@
 	@define('HTTP_TIME_OUT', 30, true);	// in seconds
 	@define('HTTP_USE_GZIP', true, true);
 	$httpIP = null;				// IP string. Or null for any.
+	$httpProxy = array
+	(
+		'use' 	=> true,
+		'proto'	=> 'http',		// 'http' or 'https'
+		'host'	=> '54.37.136.149',
+		'port'	=> 3128
+	);
 
 	@define('RPC_TIME_OUT', 5, true);	// in seconds
 
