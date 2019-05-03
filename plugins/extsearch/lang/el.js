@@ -29,7 +29,7 @@
  theUILang.extPrivate			= "Ιδιωτικά";
  theUILang.extPublic			= "Δημόσια";
  theUILang.exsCookies			= "Μορφή των cookies";
- theUILang.extAllPublic 		= "Όλα δημόσια";
+ theUILang.extAllPublic			= "Όλα δημόσια";
  theUILang.extAllPrivate		= "Όλα ιδιωτικά";
  theUILang.exsMustInstallCookies	= "Το πρόσθετο των Cookies είναι απαραίτητο για να λειτουργήσει με αυτή τη μηχανή.";
  theUILang.exsMustInstallLoginMgr	= "Το πρόσθετο LoginMgr είναι απαραίτητο για να λειτουργήσει με αυτή τη μηχανή.";

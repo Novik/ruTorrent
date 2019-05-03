@@ -6,7 +6,7 @@
  * Author: Limerainne (limerainne@gmail.com)
  */
 
- theUILang.traf 		= "트래픽";
+ theUILang.traf			= "트래픽";
  theUILang.perDay		= "일별";
  theUILang.perMonth		= "월별";
  theUILang.perYear		= "년별";

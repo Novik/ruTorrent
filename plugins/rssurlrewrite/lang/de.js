@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Regel-Manager";
  theUILang.rssAddRule		= "Hinzufügen";
  theUILang.rssDelRule		= "Löschen";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Regeleinstellungen";
  theUILang.rssSrcHref		= "Wenn URL des Torrent-Downloads mit Muster übereinstimmt";
  theUILang.rssSrcGuid		= "Wenn die URL der Torrent-Beschreibung mit Muster übereinstimmt";
@@ -23,7 +23,7 @@
  theUILang.rssURLInfo		= "URL-Info";
  theUILang.rssURLGUID		= "Beschreibung URL";
  theUILang.rssURLHref		= "Download URL";
- theUILang.rssPatternError	= "Fehler im Muster";
+ theUILang.rssPatternError	= "Fehler im Muster.";
  theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

@@ -9,7 +9,7 @@
  theUILang.throttles		= "Channels";
  theUILang.throttle		= "Channel";
  theUILang.mnuThrottle		= "Channel setzen";
- theUILang.mnuUnlimited 	= "Kein Channel";
+ theUILang.mnuUnlimited		= "Kein Channel";
  theUILang.channelName		= "Name";
  theUILang.channelDefault	= "Standard Channel";
 

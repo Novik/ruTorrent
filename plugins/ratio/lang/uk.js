@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "Видалити";
  theUILang.ratioEraseData	= "Видалити дані";
  theUILang.maxTime		= "Час";
- theUILang.ratioDefault 	= "Стандартна група коефіцієнтів";
+ theUILang.ratioDefault		= "Стандартна група коефіцієнтів";
  theUILang.setThrottleTo	= "Установити канал";
 
 thePlugins.get("ratio").langLoaded();

@@ -6,7 +6,7 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
- theUILang.traf 		= "Κίνηση";
+ theUILang.traf			= "Κίνηση";
  theUILang.perDay		= "Ανά ημέρα";
  theUILang.perMonth		= "Ανά μήνα";
  theUILang.perYear		= "Ανά χρόνο";

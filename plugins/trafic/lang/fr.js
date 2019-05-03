@@ -6,7 +6,7 @@
  * Author: Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.traf 		= "Trafic";
+ theUILang.traf			= "Trafic";
  theUILang.perDay		= "Par Jour";
  theUILang.perMonth		= "Par mois";
  theUILang.perYear		= "Par an";

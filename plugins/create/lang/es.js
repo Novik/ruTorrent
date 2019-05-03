@@ -8,11 +8,11 @@
 
  theUILang.mnu_create			= "Crear Torrent...";
  theUILang.CreateNewTorrent		= "Crear Nuevo Torrent";
- theUILang.SelectSource 		= "Seleccione origen";
+ theUILang.SelectSource			= "Seleccione origen";
  theUILang.TorrentProperties		= "Propiedades del Torrent";
  theUILang.PieceSize			= "Tamaño de pieza";
  theUILang.Other			= "Otros";
- theUILang.StartSeeding 		= "Comenzar a seedear";
+ theUILang.StartSeeding			= "Comenzar a seedear";
  theUILang.PrivateTorrent		= "Torrent privado";
  theUILang.torrentCreate		= "Crear...";
  theUILang.BadTorrentData		= "Debe llenar los campos requeridos!";
@@ -20,7 +20,7 @@
  theUILang.incorrectDirectory		= "Directorio incorrecto";
  theUILang.cantExecExternal		= "No se puede ejecutar el programa externo";
  theUILang.createConsole		= "Consola";
- theUILang.createErrors 		= "Errores";
+ theUILang.createErrors			= "Errores";
  theUILang.torrentSave			= "Guardar";
  theUILang.torrentKill			= "Cancelar";
  theUILang.torrentKilled		= "El proceso fue detenido.";

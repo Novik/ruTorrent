@@ -11,10 +11,10 @@
  theUILang.alias			= "Προσαρμ. όνομα";
  theUILang.rssAuto			= "Αυτόματη λήψη αντικειμένων που δημοσιεύονται στην τροφοδοσία";
  theUILang.allFeeds			= "Όλες οι τροφοδοσίες";
- theUILang.incorrectURL 		= "Παρακαλώ ορίστε σωστό URL της τροφοδοσίας."
- theUILang.cantFetchRSS 		= "Σφάλμα φόρτωσης τροφοδοσίας.";
+ theUILang.incorrectURL			= "Παρακαλώ ορίστε σωστό URL της τροφοδοσίας.";
+ theUILang.cantFetchRSS			= "Σφάλμα φόρτωσης τροφοδοσίας.";
  theUILang.rssAlreadyExist		= "Η τροφοδοσία υπάρχει ήδη.";
- theUILang.rssDontExist 		= "Η τροφοδοσία δεν υπάρχει.";
+ theUILang.rssDontExist			= "Η τροφοδοσία δεν υπάρχει.";
  theUILang.rssCantLoadTorrent		= "Σφάλμα φόρτωσης torrent.";
  theUILang.rssStatus			= "RSS";
  theUILang.rssStatusLoaded		= "Έχει ήδη φορτωθεί";
@@ -29,10 +29,10 @@
  theUILang.rssMenuEdit			= "Επεξεργασία τροφοδοσίας";
  theUILang.rssMenuDelete		= "Διαγραφή τροφοδοσίας";
  theUILang.rssDeletePrompt		= "Θέλετε πραγματικά να διαγράψετε την επιλεγμένη τροφοδοσία;";
- theUILang.rssNewFilter 		= "Νέο φίλτρο";
+ theUILang.rssNewFilter			= "Νέο φίλτρο";
  theUILang.rssFilter			= "Φίλτρο";
- theUILang.rssAddFilter 		= "Προσθήκη";
- theUILang.rssDelFilter 		= "Διαγραφή";
+ theUILang.rssAddFilter			= "Προσθήκη";
+ theUILang.rssDelFilter			= "Διαγραφή";
  theUILang.rssCheckFilter		= "Δοκιμή";
  theUILang.rssFiltersLegend		= "Ρυθμίσεις φίλτρων";
  theUILang.rssIncorrectFilter		= "Το φίλτρο είναι εσφαλμένο.";
@@ -42,7 +42,7 @@
  theUILang.rssFeeds			= "Τροφοδοσίες";
  theUILang.rssCheckTitle		= "Έλεγχος πεδίου φίλτρου";
  theUILang.rssCheckDescription		= "Έλεγχος πεδίου περιγραφής";
- theUILang.rssCheckLink 		= "Έλεγχος πεδίου συνδέσμου";
+ theUILang.rssCheckLink			= "Έλεγχος πεδίου συνδέσμου";
  theUILang.rssMinInterval		= "Χρονικό διάστημα";
  theUILang.rssIntervalAlways		= "(ταίριασμα πάντα)";
  theUILang.rssIntervalOnce		= "(ταίριασμα μια φορά)";
@@ -61,7 +61,7 @@
  theUILang.rssAsLoaded			= "φορτωμένο";
  theUILang.rssAsUnloaded		= "μη φορτωμένο";
  theUILang.addRSSGroup			= "Προσθήκη ομάδας RSS";
- theUILang.editRSSGroup 		= "Επεξεργασία ομάδας RSS";
+ theUILang.editRSSGroup			= "Επεξεργασία ομάδας RSS";
  theUILang.addRSSGroupContent		= "Περιεχόμενο";
  theUILang.rssMenuGroupDisable		= "Απενεργοποίηση ομάδας";
  theUILang.rssMenuGroupRefresh		= "Ενημέρωση ομάδας";
@@ -69,10 +69,10 @@
  theUILang.rssMenuGroupEdit		= "Επεξεργασία ομάδας";
  theUILang.rssMenuGroupDelete		= "Διαγραφή ομάδας";
  theUILang.rssMenuGroupContentsDelete	= "Διαγραφή περιεχομένων";
- theUILang.rssDeleteGroupPrompt 	= "Θέλετε πραγματικά να διαγράψετε την επιλεγμένη ομάδα;";
- theUILang.rssDeleteGroupContentsPrompt = "Θέλετε πραγματικά να διαγράψετε την επιλεγμένη ομάδα με όλα τα περιεχόμενα;";
- theUILang.rssAllFiters 		= "Όλα τα φίλτρα";
- theUILang.rssUpdateInterval 		= "Μεσοδιάστημα ανανέωσης";
+ theUILang.rssDeleteGroupPrompt		= "Θέλετε πραγματικά να διαγράψετε την επιλεγμένη ομάδα;";
+ theUILang.rssDeleteGroupContentsPrompt	= "Θέλετε πραγματικά να διαγράψετε την επιλεγμένη ομάδα με όλα τα περιεχόμενα;";
+ theUILang.rssAllFiters			= "Όλα τα φίλτρα";
+ theUILang.rssUpdateInterval		= "Μεσοδιάστημα ανανέωσης";
  theUILang.Directories			= "Φάκελοι";
  theUILang.Labels			= "Ετικέτες";
 

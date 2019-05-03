@@ -11,10 +11,10 @@
  theUILang.alias			= "Egendefinert alias";
  theUILang.rssAuto			= "Automatisk last ned publiserte artikler i kanalen";
  theUILang.allFeeds			= "Alle Kanaler";
- theUILang.incorrectURL 		= "Vennligst angi gyldig kanal lenke."
- theUILang.cantFetchRSS 		= "Feil ved innlasting av kanal.";
+ theUILang.incorrectURL			= "Vennligst angi gyldig kanal lenke.";
+ theUILang.cantFetchRSS			= "Feil ved innlasting av kanal.";
  theUILang.rssAlreadyExist		= "Kanal eksisterer allerede.";
- theUILang.rssDontExist 		= "Kanal eksisterer ikke.";
+ theUILang.rssDontExist			= "Kanal eksisterer ikke.";
  theUILang.rssCantLoadTorrent		= "Feil ved innlasting av torrent.";
  theUILang.rssStatus			= "RSS";
  theUILang.rssStatusLoaded		= "Allerede innlastet";
@@ -29,10 +29,10 @@
  theUILang.rssMenuEdit			= "Rediger Kanal";
  theUILang.rssMenuDelete		= "Slett Kanal";
  theUILang.rssDeletePrompt		= "Vil du virkelig slette valgt kanal?";
- theUILang.rssNewFilter 		= "Nytt filter";
+ theUILang.rssNewFilter			= "Nytt filter";
  theUILang.rssFilter			= "Filter";
- theUILang.rssAddFilter 		= "Legg til";
- theUILang.rssDelFilter 		= "Slett";
+ theUILang.rssAddFilter			= "Legg til";
+ theUILang.rssDelFilter			= "Slett";
  theUILang.rssCheckFilter		= "?";
  theUILang.rssFiltersLegend		= "Filterinstillinger";
  theUILang.rssIncorrectFilter		= "Filter er ugyldig.";
@@ -42,7 +42,7 @@
  theUILang.rssFeeds			= "Kanalen";
  theUILang.rssCheckTitle		= "Kontroller tittelfeltet";
  theUILang.rssCheckDescription		= "Kontroller beskrivelsesfeltet";
- theUILang.rssCheckLink 		= "Kontroller lenkefeltet";
+ theUILang.rssCheckLink			= "Kontroller lenkefeltet";
  theUILang.rssMinInterval		= "Min intervall";
  theUILang.rssIntervalAlways		= "(match alltid)";
  theUILang.rssIntervalOnce		= "(match kun én gang)";
@@ -61,7 +61,7 @@
  theUILang.rssAsLoaded			= "Innlastet";
  theUILang.rssAsUnloaded		= "Utlastet";
  theUILang.addRSSGroup			= "Legg til RSS-gruppe";
- theUILang.editRSSGroup 		= "Rediger RSS-gruppe";
+ theUILang.editRSSGroup			= "Rediger RSS-gruppe";
  theUILang.addRSSGroupContent		= "Innhold";
  theUILang.rssMenuGroupDisable		= "Deaktiver Gruppe";
  theUILang.rssMenuGroupRefresh		= "Oppdater Gruppe";
@@ -69,10 +69,10 @@
  theUILang.rssMenuGroupEdit		= "Rediger Gruppe";
  theUILang.rssMenuGroupDelete		= "Slett Gruppe";
  theUILang.rssMenuGroupContentsDelete	= "Slett Innhold";
- theUILang.rssDeleteGroupPrompt 	= "Vil du virkelig slette valgt gruppe?";
- theUILang.rssDeleteGroupContentsPrompt = "Vil du virkelig slette valgt gruppe med all dens innhold?";
- theUILang.rssAllFiters 		= "Alle filtre";
- theUILang.rssUpdateInterval 		= "Oppdater intervall";
+ theUILang.rssDeleteGroupPrompt		= "Vil du virkelig slette valgt gruppe?";
+ theUILang.rssDeleteGroupContentsPrompt	= "Vil du virkelig slette valgt gruppe med all dens innhold?";
+ theUILang.rssAllFiters			= "Alle filtre";
+ theUILang.rssUpdateInterval		= "Oppdater intervall";
  theUILang.Directories			= "Mapper";
  theUILang.Labels			= "Etiketter";
 

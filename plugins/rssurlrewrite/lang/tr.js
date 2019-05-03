@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Rules Manager";
  theUILang.rssAddRule		= "Add";
  theUILang.rssDelRule		= "Delete";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Rule Settings";
  theUILang.rssSrcHref		= "If URL of torrent download matches pattern";
  theUILang.rssSrcGuid		= "If URL of torrent description matches pattern";

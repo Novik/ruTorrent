@@ -6,7 +6,7 @@
  * Author: Dario Rugani (kontakt@rugani.de)
  */
 
- theUILang.checkTorrent 	= "Auf Update prüfen";
+ theUILang.checkTorrent		= "Auf Update prüfen";
  theUILang.chkHdr		= "Torrent auf Update prüfen";
  theUILang.checkedAt		= "Letzte Prüfung";
  theUILang.checkedResult	= "Resultat";

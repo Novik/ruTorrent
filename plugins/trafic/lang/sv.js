@@ -6,7 +6,7 @@
  * Author: Magnus Holm (holmen@brasse.se)
  */
 
- theUILang.traf 		= "Trafik";
+ theUILang.traf			= "Trafik";
  theUILang.perDay		= "Per dag";
  theUILang.perMonth		= "Per månad";
  theUILang.perYear		= "Per år";

@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "Ένας από τους trackers του torrent είναι ιδιωτικός";
  theUILang.ratioThenLegend	= "Τότε";
  theUILang.setRatioTo		= "Όρισε αναλογία σε";
- theUILang.setChannelTo 	= "Όρισε περιοριστή σε";
- theUILang.ratioNewRule 	= "Νέος κανόνας";
+ theUILang.setChannelTo		= "Όρισε περιοριστή σε";
+ theUILang.ratioNewRule		= "Νέος κανόνας";
 
 thePlugins.get("extratio").langLoaded();

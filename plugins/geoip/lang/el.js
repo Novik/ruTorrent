@@ -225,7 +225,7 @@
  theUILang.country[ "ss" ] = "Νότιο Σουδάν";
  theUILang.country[ "st" ] = "Σάο Τομέ και Πρίνσιπε";
  theUILang.country[ "sv" ] = "Ελ Σαλβαδόρ";
- theUILang.country[ "sx" ] = " Άγιος Μαρτίνος";
+ theUILang.country[ "sx" ] = "Άγιος Μαρτίνος";
  theUILang.country[ "sy" ] = "Συρία";
  theUILang.country[ "sz" ] = "Ζουαζιλάνδη";
  theUILang.country[ "tc" ] = "Τερκς και Κέικος";

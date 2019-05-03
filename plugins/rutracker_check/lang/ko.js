@@ -6,7 +6,7 @@
  * Author: Limerainne (limerainne@gmail.com)
  */
 
- theUILang.checkTorrent 	= "업데이트 검사";
+ theUILang.checkTorrent		= "업데이트 검사";
  theUILang.chkHdr		= "토렌트 업데이트 검사";
  theUILang.checkedAt		= "마지막 검사";
  theUILang.checkedResult	= "결과";

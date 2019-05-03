@@ -29,7 +29,7 @@
  theUILang.extPrivate			= "Private";
  theUILang.extPublic			= "Public";
  theUILang.exsCookies			= "Format of cookies";
- theUILang.extAllPublic 		= "All Public";
+ theUILang.extAllPublic			= "All Public";
  theUILang.extAllPrivate		= "All Private";
  theUILang.exsMustInstallCookies	= "Cookies plugin is required to work with this engine.";
  theUILang.exsMustInstallLoginMgr	= "LoginMgr plugin is required to work with this engine.";

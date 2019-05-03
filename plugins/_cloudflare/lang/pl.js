@@ -5,6 +5,6 @@
  * Author: 
  */
 
- theUILang.cannotLoadCfscrape		= "_cloudflare plugin: CfScrape module can't be loaded in Python";
+ theUILang.cannotLoadCfscrape		= "Wtyczka _cloudflare: Nie można załadować w Pythonie modułu CfScrape";
 
 thePlugins.get("_cloudflare").langLoaded();

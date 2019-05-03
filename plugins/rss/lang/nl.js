@@ -11,10 +11,10 @@
  theUILang.alias			= "Naam RSS-Feed";
  theUILang.rssAuto			= "automatisch downloaden items gepubliceerd in feed";
  theUILang.allFeeds			= "Alle feeds";
- theUILang.incorrectURL 		= "Geeft u alstublieft de juiste URL";
- theUILang.cantFetchRSS 		= "Fout bij het laden van de feed.";
+ theUILang.incorrectURL			= "Geeft u alstublieft de juiste URL.";
+ theUILang.cantFetchRSS			= "Fout bij het laden van de feed.";
  theUILang.rssAlreadyExist		= "Feed bestaat reeds.";
- theUILang.rssDontExist 		= "Feed bestaat niet. ";
+ theUILang.rssDontExist			= "Feed bestaat niet.";
  theUILang.rssCantLoadTorrent		= "Fout bij het laden van de torrent.";
  theUILang.rssStatus			= "RSS";
  theUILang.rssStatusLoaded		= "Reeds geladen";
@@ -29,10 +29,10 @@
  theUILang.rssMenuEdit			= "Bewerk feed";
  theUILang.rssMenuDelete		= "Verwijder feed";
  theUILang.rssDeletePrompt		= "Wilt u werkelijk de geselecteerde feed verwijderen?";
- theUILang.rssNewFilter 		= "Nieuw filter";
+ theUILang.rssNewFilter			= "Nieuw filter";
  theUILang.rssFilter			= "Filter";
- theUILang.rssAddFilter 		= "Toevoegen";
- theUILang.rssDelFilter 		= "Verwijderen";
+ theUILang.rssAddFilter			= "Toevoegen";
+ theUILang.rssDelFilter			= "Verwijderen";
  theUILang.rssCheckFilter		= "?";
  theUILang.rssFiltersLegend		= "Filter instellingen";
  theUILang.rssIncorrectFilter		= "Filter is onjuist.";
@@ -42,7 +42,7 @@
  theUILang.rssFeeds			= "feeds";
  theUILang.rssCheckTitle		= "Controleer titel veld";
  theUILang.rssCheckDescription		= "Controleer het beschrijving veld";
- theUILang.rssCheckLink 		= "Controleer link veld";
+ theUILang.rssCheckLink			= "Controleer link veld";
  theUILang.rssMinInterval		= "Min interval";
  theUILang.rssIntervalAlways		= "(match altijd)";
  theUILang.rssIntervalOnce		= "(match slechts een keer)";
@@ -61,7 +61,7 @@
  theUILang.rssAsLoaded			= "Geladen";
  theUILang.rssAsUnloaded		= "Uitgeschakeld";
  theUILang.addRSSGroup			= "Toevoegen RSS groep";
- theUILang.editRSSGroup 		= "Bewerk RSS Groep";
+ theUILang.editRSSGroup			= "Bewerk RSS Groep";
  theUILang.addRSSGroupContent		= "Inhoud";
  theUILang.rssMenuGroupDisable		= "Uitzetten groep";
  theUILang.rssMenuGroupRefresh		= "Update groep";
@@ -69,10 +69,10 @@
  theUILang.rssMenuGroupEdit		= "Bewerk groep";
  theUILang.rssMenuGroupDelete		= "Verwijder groep";
  theUILang.rssMenuGroupContentsDelete	= "Verwijder Inhoud";
- theUILang.rssDeleteGroupPrompt 	= "Weet u zeker dat u de geslecteerde groep wilt verwijderen ?";
- theUILang.rssDeleteGroupContentsPrompt = "Weet u zeker dat u de geslecteerde groep + inhoud wilt verwijderen?";
- theUILang.rssAllFiters 		= "Alle filters";
- theUILang.rssUpdateInterval 		= "Update interval";
+ theUILang.rssDeleteGroupPrompt		= "Weet u zeker dat u de geslecteerde groep wilt verwijderen?";
+ theUILang.rssDeleteGroupContentsPrompt	= "Weet u zeker dat u de geslecteerde groep + inhoud wilt verwijderen?";
+ theUILang.rssAllFiters			= "Alle filters";
+ theUILang.rssUpdateInterval		= "Update interval";
  theUILang.Directories			= "Directories";
  theUILang.Labels			= "Labels";
 

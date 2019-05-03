@@ -29,7 +29,7 @@
  theUILang.extPrivate			= "비공개";
  theUILang.extPublic			= "공개";
  theUILang.exsCookies			= "쿠키 형식";
- theUILang.extAllPublic 		= "공개 전체";
+ theUILang.extAllPublic			= "공개 전체";
  theUILang.extAllPrivate		= "비공개 전체";
  theUILang.exsMustInstallCookies	= "이 검색엔진을 사용하려면 쿠키 플러그인이 필요합니다.";
  theUILang.exsMustInstallLoginMgr	= "이 검색엔진을 사용하려면 LoginMgr 플러그인이 필요합니다.";

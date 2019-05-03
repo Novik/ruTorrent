@@ -29,7 +29,7 @@
  theUILang.extPrivate			= "私有";
  theUILang.extPublic			= "公共";
  theUILang.exsCookies			= "Cookies 格式";
- theUILang.extAllPublic 		= "所有公共";
+ theUILang.extAllPublic			= "所有公共";
  theUILang.extAllPrivate		= "所有私有";
  theUILang.exsMustInstallCookies	= "这个引擎需要 Cookies 插件来工作.";
  theUILang.exsMustInstallLoginMgr	= "这个引擎需要 LoginMgr(帐号管理) 插件来工作.";
