@@ -30,7 +30,7 @@ theWebUI.showDataDirDlg = function( d )
 	$('#move_not_add_path').prop("disabled",!is_multy).prop("checked",false);
 	$('#move_datafiles').prop("checked",true);
 	// can't "fast resume" torrent if not completed
-	$('#move_fastresume').prop("disabled",!is_done).prop("checked",is_done);
+	$('#move_fastresume').prop("disabled",!is_done).prop("checked",false);
 	theDialogManager.show( "dlg_datadir" );
 }
 
