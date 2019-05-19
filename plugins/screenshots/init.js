@@ -269,7 +269,7 @@ plugin.onLangLoaded = function()
 					"<legend>"+theUILang.exFFMPEG+"</legend>"+
 					"<table>"+
 					"<tr><td><input type=\"checkbox\" id=\"exusewidth\" onchange=\"linked(this, 0, ['exfrmwidth']);\"/><label id='lbl_exfrmwidth' for='exfrmwidth' class='disabled'>"+
-						theUILang.exFrameWidth+'<label></td><td class="alr"><input type="text" id="exfrmwidth" class="TextboxShort" disabled=true/></td></tr>'+
+						theUILang.exFrameWidth+'</label></td><td class="alr"><input type="text" id="exfrmwidth" class="TextboxShort" disabled="true"/></td></tr>'+
 					"<tr><td>"+theUILang.exFramesCount+'</td><td class="alr"><input type="text" id="exfrmcount" class="TextboxShort"/></td></tr>'+
 					"<tr><td>"+theUILang.exStartOffset+', '+theUILang.time_s+'</td><td class="alr"><input type="text" id="exfrmoffs" class="TextboxShort"/></td></tr>'+
 					"<tr><td>"+theUILang.exBetween+', '+theUILang.time_s+'</td><td class="alr"><input type="text" id="exfrminterval" class="TextboxShort"/></td></tr>'+
