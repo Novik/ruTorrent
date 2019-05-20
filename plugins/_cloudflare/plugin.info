@@ -2,7 +2,7 @@ plugin.description: This plugin provides cloudflare scraping for websites protec
 plugin.author: Novik
 plugin.version: 3.9
 rtorrent.need: 0
-plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginCloudflare
+plugin.help: https://github.com/Novik/ruTorrent/wiki/Plugin_cloudflare
 php.extensions.error: json
 rtorrent.external.error: python
 web.external.error: python

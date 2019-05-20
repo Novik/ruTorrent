@@ -71,7 +71,7 @@ plugin.onLangLoaded = function()
 			"<legend>"+name+"</legend>"+
 			"<table>"+
 				"<tr>"+
-					"<td><input type='checkbox' id='"+name+"_lmenabled' onchange=\"linked(this, 0, ['"+name+"_lmlogin','"+name+"_lmpassword','"+name+"_lmauto']);\"/><label for='"+name+"_enabled' id='lbl_"+name+"_lmenabled'>"+theUILang.Enabled+"</label></td>"+
+					"<td><input type='checkbox' id='"+name+"_lmenabled' onchange=\"linked(this, 0, ['"+name+"_lmlogin','"+name+"_lmpassword','"+name+"_lmauto']);\"/><label for='"+name+"_lmenabled' id='lbl_"+name+"_lmenabled'>"+theUILang.Enabled+"</label></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmlogin' for='"+name+"_lmlogin' class='disabled'>"+theUILang.accLogin+":</label></td>"+
