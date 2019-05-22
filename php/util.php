@@ -549,9 +549,9 @@ function makeDirectory( $dirs, $perms = null )
 	$oldMask = umask(0);
 	if(is_array($dirs))
 		foreach($dirs as $dir)
-			(file_exists($dir.'/.') && @chmod($dir,$perms)) || @mkdir($dir,$perms,true);
+			(file_exists(addslash($dir).'.') && @chmod($dir,$perms)) || @mkdir($dir,$perms,true);
 	else
-		(file_exists($dirs.'/.') && @chmod($dirs,$perms)) || @mkdir($dirs,$perms,true);
+		(file_exists(addslash($dirs).'.') && @chmod($dirs,$perms)) || @mkdir($dirs,$perms,true);
 	@umask($oldMask);
 } 
 
