@@ -730,6 +730,7 @@ dxSTable.prototype.Sort = function(e)
 		case TYPE_PEERS :
 		case TYPE_SEEDS :
 			d.sort(function(x, y) { return self.sortPeers(x, y); });
+			break;
       		default : 
       			d.sort();
       			break;
@@ -767,6 +768,13 @@ dxSTable.prototype.sortAlphaNumeric = function(x, y)
 	return( (r == 0) ? this.sortSecondary(x, y) : r );
 }
 
+dxSTable.prototype.sortPeers = function(x, y)
+{
+	var r = theSort.PeersConnected(x.v, y.v);
+	r = ( (r == 0) ? theSort.PeersTotal(x.v, y.v) : r );
+	return( (r == 0) ? this.sortSecondary(x, y) : r );
+}
+
 dxSTable.prototype.sortSecondary = function(x, y)
 {
 	var m = this.getValue(x.e, this.secIndex);
@@ -779,13 +787,6 @@ dxSTable.prototype.sortSecondary = function(x, y)
 	}
 	var ret = this.colsdata[this.secIndex].type;
 	return( (ret==0) ? theSort.AlphaNumeric(m, n) : ((ret==1) || (ret==4)) ? theSort.Numeric(m, n) : theSort.Default(m, n) );
-}
-
-dxSTable.prototype.sortPeers = function(x, y)
-{
-	var r = theSort.PeersConnected(x.v, y.v);
-	r = ( (r == 0) ? theSort.PeersTotal(x.v, y.v) : r );
-	return( (r == 0) ? this.sortSecondary(x, y) : r );
 }
 
 var theSort = 
@@ -808,7 +809,7 @@ var theSort =
 		if(y==null) y = "";
 		var a = (x + "").toLowerCase();
 		var b = (y + "").toLowerCase();
-		return((a < b) ? -1 : (a > b) ? 1 : 0);
+		return(a.localeCompare(b));
 	},
 	PeersTotal: function(x, y)
 	{
