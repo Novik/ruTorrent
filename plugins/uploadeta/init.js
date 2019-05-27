@@ -47,6 +47,30 @@ plugin.trtRenameColumn = function() {
 		theWebUI.getTable("trt").renameColumnById("upload_target",theUILang.ULtarget);
 		theWebUI.getTable("trt").renameColumnById("upload_remaining",theUILang.ULremaining);
 		theWebUI.getTable("trt").renameColumnById("upload_eta",theUILang.ULETA);
+		if(thePlugins.isInstalled("rss"))
+			plugin.rssRenameColumn();
+		if(thePlugins.isInstalled("extsearch"))
+			plugin.tegRenameColumn();
+	}
+	else
+		setTimeout(arguments.callee,1000);
+}
+
+plugin.rssRenameColumn = function() {
+	if(theWebUI.getTable("rss").created) {
+		theWebUI.getTable("rss").renameColumnById("upload_target",theUILang.ULtarget);
+		theWebUI.getTable("rss").renameColumnById("upload_remaining",theUILang.ULremaining);
+		theWebUI.getTable("rss").renameColumnById("upload_eta",theUILang.ULETA);
+	}
+	else
+		setTimeout(arguments.callee,1000);
+}
+
+plugin.tegRenameColumn = function() {
+	if(theWebUI.getTable("teg").created) {
+		theWebUI.getTable("teg").renameColumnById("upload_target",theUILang.ULtarget);
+		theWebUI.getTable("teg").renameColumnById("upload_remaining",theUILang.ULremaining);
+		theWebUI.getTable("teg").renameColumnById("upload_eta",theUILang.ULETA);
 	}
 	else
 		setTimeout(arguments.callee,1000);
