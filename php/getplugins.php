@@ -220,7 +220,8 @@ foreach($settingsFlags as $flagName=>$flagVal)
 	if(!array_key_exists($flagName,$permissions) || $permissions[$flagName])
 		$perms|=$flagVal;
 $jResult .= "theWebUI.showFlags = ".$perms.";\n";
-$jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";
+if(isset($XMLRPCMountPoint))
+	$jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";
 $jResult.="theWebUI.systemInfo = {};\ntheWebUI.systemInfo.php = { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")." };\n";
 
 if($handle = opendir('../plugins')) 

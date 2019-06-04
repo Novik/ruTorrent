@@ -347,7 +347,7 @@ function propsCount(obj)
 
 var theURLs =
 {
-	XMLRPCMountPoint 	: "/RPC2",
+	XMLRPCMountPoint 	: "",
 	AddTorrentURL 		: "php/addtorrent.php",
 	SetSettingsURL		: "php/setsettings.php",
 	GetSettingsURL		: "php/getsettings.php",

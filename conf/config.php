@@ -44,7 +44,7 @@
 	// $scgi_port = 0;
 	// $scgi_host = "unix:///tmp/rpc.socket";
 
-	$XMLRPCMountPoint = "/RPC2";		// DO NOT DELETE THIS LINE!!! DO NOT COMMENT THIS LINE!!!
+	$XMLRPCMountPoint = "/RPC2";		// If you enable RPC plugin -OR- HTTPRPC plugin in "plugins.ini", you can delete or comment this line.
 
 	$pathToExternals = array(
 		"php" 	=> '',			// Something like /usr/bin/php. If empty, will be found in PATH.
