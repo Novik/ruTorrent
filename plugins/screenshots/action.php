@@ -58,7 +58,7 @@ if(isset($_REQUEST['cmd']))
 						'hash'=>$_REQUEST['hash'], 
 						'no'=>$_REQUEST['no'] 
 					));
-					$ret = $task->start($commands, rTask::FLG_NO_ERR);
+					$ret = $task->start($commands, rTask::FLG_NO_ERR | rTask::FLG_WAIT);
 				}
 			}
 			break;
