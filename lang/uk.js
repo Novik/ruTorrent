@@ -276,6 +276,6 @@ var theUILang =
  PeerDownloaded			: "Завантажено піром",
  Save_path			: "Збережено у",
  registerMagnet			: "Реєструвати протокол magnet під час запуску",
- linkTorTorrentRestored		: "Connection to rTorrent established.",
- removeAllTegs			: "Remove all tags"
+ linkTorTorrentRestored		: "Зʼєднання з rTorrent відновлене.",
+ removeAllTegs			: "Видалити всі теги"
 };
