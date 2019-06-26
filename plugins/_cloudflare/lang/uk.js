@@ -2,9 +2,9 @@
  *
  * Ukrainian language file.
  *
- * Author: 
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
- theUILang.cannotLoadCloudscraper		= "_cloudflare plugin: cloudscraper module can't be loaded in Python";
+ theUILang.cannotLoadCloudscraper		= "Плагін _cloudflare: Python не може завантажити модуль cloudscraper";
 
 thePlugins.get("_cloudflare").langLoaded();
