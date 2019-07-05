@@ -14,7 +14,7 @@ class ImmortalSeedEngine extends commonEngine
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
-		$url = 'https://immortalseed.tv';
+		$url = 'https://immortalseed.me';
 		$added = 0;
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'music'=>'30', 'anime'=>'32', 'software'=>'23', 'pictures'=>'31', 'books'=>'22' );
@@ -29,16 +29,14 @@ class ImmortalSeedEngine extends commonEngine
 			$cli = $this->fetch( $url.'/browse.php?include_dead_torrents=no&keywords='.$what.'&search_type=t_name&page='.$pg.'&category='.$cat );
 			if($cli==false || (strpos($cli->results, '<input type="password" name="password" class="inputPassword"')!==false)) 
 				break;
-
 			$res = preg_match_all('`<img src="'.$url.'/images/categories/.*" border="0" alt="(?P<cat>.*)".*'.
 				'<div style="text-align:left; margin-top: 5px">(?P<name>.*)</div>.*'.
 				'</span>\s*(?P<date>.*)\s*</div>.*'.
-				'<a href="'.$url.'/download\.php\?id=(?P<id>\d+)">.*'.
+				'<a href="'.$url.'/download\.php\?id=(?P<id>\d+)["&].*'.
 				'<td align="center" class="unsortable2">\s*(?P<size>.*)\s*</td>.*'.
 				'title="Seeders">(?P<seeds>.*)</a>.*'.
 				'title="Leechers">(?P<leech>.*)</a>'.
 				'`siU', $cli->results, $matches);
-
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
