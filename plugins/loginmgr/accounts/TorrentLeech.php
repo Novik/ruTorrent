@@ -2,7 +2,7 @@
 
 class TorrentLeechAccount extends commonAccount
 {
-	public $url = "http://www.torrentleech.org";
+	public $url = "https://www.torrentleech.org";
 
 	protected function isOK($client)
 	{
