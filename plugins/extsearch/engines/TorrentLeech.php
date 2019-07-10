@@ -7,7 +7,7 @@ class TorrentLeechEngine extends commonEngine
 	public $categories = array( 'all'=>'', 
 		'Movies'=>'/categories/8,9,11,37,43,14,12,13,47,15,29',
 		'TV'=>'/categories/26,32,27',
-		'Games'=>'/categories/17,42,18,19,40,20,21,39,22,27,30,58',
+		'Games'=>'/categories/17,42,18,19,40,20,21,39,22,28,30,48',
 		'Apps'=>'/categories/23,24,25,33',
 		'Education'=>'/categories/38',
 		'Animation'=>'/categories/34,35',
@@ -22,7 +22,7 @@ class TorrentLeechEngine extends commonEngine
 		(
 			'8'=>'Movies','9'=>'Movies','11'=>'Movies','37'=>'Movies','43'=>'Movies','12'=>'Movies','14'=>'Movies','13'=>'Movies','47'=>'Movies','15'=>'Movies','29'=>'Movies',
 			'26'=>'TV','27'=>'TV','32'=>'TV',
-			'17'=>'Games','42'=>'Games','18'=>'Games','19'=>'Games','40'=>'Games','20'=>'Games','21'=>'Games','39'=>'Games','22'=>'Games','27'=>'Games','30'=>'Games','58'=>'Games',
+			'17'=>'Games','42'=>'Games','18'=>'Games','19'=>'Games','40'=>'Games','20'=>'Games','21'=>'Games','39'=>'Games','22'=>'Games','28'=>'Games','30'=>'Games','48'=>'Games',
 			'33'=>'Apps','23'=>'Apps','24'=>'Apps','25'=>'Apps',
 			'38'=>'Education',
 			'34'=>'Animation','35'=>'Animation',
@@ -45,7 +45,7 @@ class TorrentLeechEngine extends commonEngine
 				'movies'=>'/categories/8,9,11,37,43,14,12,13,47,15,29,36', 
 				'tv'=>'/categories/26,27,32,44', 
 				'music'=>'/categories/16,31', 
-				'games'=>'/categories/17,42,18,19,40,20,21,39,22,27,30,58', 
+				'games'=>'/categories/17,42,18,19,40,20,21,39,22,28,30,48', 
 				'anime'=>'/categories/34', 
 				'software'=>'/categories/23,24,25,33', 
 				'books'=>'/categories/45,46' 
