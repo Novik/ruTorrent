@@ -127,18 +127,18 @@ class rTorrentSettings
 		$cache = new rCache();
 		return($cache->set($this));
 	}
-	static public function get( $create = false )
+	static public function get()
 	{
 		if(is_null(self::$theSettings))
 		{
 			self::$theSettings = new rTorrentSettings();
-			if($create)
-				self::$theSettings->obtain();
-			else
+			if(@file_get_contents(getSettingsPath().$name.'/'.self::$theSettings->hash))
 			{
 				$cache = new rCache();
 				$cache->get(self::$theSettings);
 			}
+			else
+				self::$theSettings->obtain();
 		}
 		return(self::$theSettings);
 	}

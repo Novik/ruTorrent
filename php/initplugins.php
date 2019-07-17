@@ -128,7 +128,7 @@ $tmp = getTempDirectory();
 if($tmp!='/tmp/')
 	makeDirectory($tmp);
 
-$theSettings = rTorrentSettings::get(true);
+$theSettings = rTorrentSettings::get();
 if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 {
 	$plg = getConfFile('plugins.ini');

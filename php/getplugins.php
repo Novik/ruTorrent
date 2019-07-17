@@ -242,7 +242,7 @@ if($handle = opendir('../plugins'))
 	else
 	{
 		$remoteRequests = array();
-		$theSettings = rTorrentSettings::get(true);
+		$theSettings = rTorrentSettings::get();
 		if(!$theSettings->linkExist)
 		{
 			$jResult.="noty(theUILang.badLinkTorTorrent,'error');";
