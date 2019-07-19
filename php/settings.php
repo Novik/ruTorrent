@@ -182,8 +182,7 @@ class rTorrentSettings
 				if($req->success())
 					$this->apiVersion = $req->val[0];
 			}
-
-			if($this->apiVersion >= 10)
+			if($this->apiVersion>=10 && $this->iVersion<0x908)
 			{
 				$this->aliases = array_merge($this->aliases,array
 				(
