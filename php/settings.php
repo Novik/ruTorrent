@@ -183,7 +183,7 @@ class rTorrentSettings
 					$this->apiVersion = $req->val[0];
 			}
 
-			if($this->apiVersion >= 10)
+			if($this->apiVersion >= 11)	// at current moment (2019.07.20) this is feature-bind branch of rtorrent
 			{
 				$this->aliases = array_merge($this->aliases,array
 				(

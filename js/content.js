@@ -1043,7 +1043,7 @@ function correctContent()
 			"load"			:	{ name: "load.normal", prm: 1 }
 		});
 	}
-	if(theWebUI.systemInfo.rTorrent.apiVersion>=10)
+	if(theWebUI.systemInfo.rTorrent.apiVersion>=11)	// at current moment (2019.07.20) this is feature-bind branch of rtorrent
 	{
 		$.extend(theRequestManager.aliases,
 		{
