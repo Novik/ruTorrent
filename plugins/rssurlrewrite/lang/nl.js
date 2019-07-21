@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Regel manager";
  theUILang.rssAddRule		= "Toevoegen";
  theUILang.rssDelRule		= "Verwijderen";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Regel instellingen";
  theUILang.rssSrcHref		= "Wanneer de URL gelijk is aan";
  theUILang.rssSrcGuid		= "Als de beschrijving van de torrent-URL's gelijk is aan";

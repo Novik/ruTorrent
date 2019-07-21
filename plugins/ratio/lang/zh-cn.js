@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "移除";
  theUILang.ratioEraseData	= "移除数据";
  theUILang.maxTime		= "时间";
- theUILang.ratioDefault 	= "默认分享率组";
+ theUILang.ratioDefault		= "默认分享率组";
  theUILang.setThrottleTo	= "将通道设为";
 
 thePlugins.get("ratio").langLoaded();

@@ -46,6 +46,7 @@ class Snoopy
 
 	var $host		=	"www.php.net";		// host name we are connecting to
 	var $port		=	80;			// port we are connecting to
+        var $proxy_proto	=       "http";			// http or https
 	var $proxy_host		=	"";			// proxy host to use
 	var $proxy_port		=	"";			// proxy port to use
 	var $agent		=	"Snoopy v1.0";		// agent we masquerade as
@@ -95,12 +96,19 @@ class Snoopy
 	public function __construct()
 	{
 		global $httpIP;
+		global $httpProxy;
 		if(@constant('HTTP_USER_AGENT')!==null)
 			$this->agent = @constant('HTTP_USER_AGENT');
 		if(@constant('HTTP_TIME_OUT')!==null)
 		{
 			$this->_fp_timeout = @constant('HTTP_TIME_OUT');
 			$this->read_timeout = @constant('HTTP_TIME_OUT');
+		}
+		if(is_array($httpProxy) && $httpProxy['use'])
+		{
+			$this->proxy_proto = $httpProxy['proto'];
+			$this->proxy_host = $httpProxy['host'];
+			$this->proxy_port = $httpProxy['port'];
 		}
 		$this->use_gzip = @constant('HTTP_USE_GZIP');
 		if(isset($httpIP))
@@ -229,7 +237,14 @@ class Snoopy
 
 	public function fetch($URI,$method="GET",$content_type="",$body="")
 	{
-		rTorrentSettings::get()->pushEvent( "HostConnect", array( "client"=>&$this, "uri"=>&$URI, "method"=>&$method, "content_type"=>&$content_type, "body"=>&$body ) );
+		rTorrentSettings::get()->pushEvent( "HostConnect", array
+		( 
+			"client" => &$this, 
+			"uri" => &$URI, 
+			"method" => &$method, 
+			"content_type" => &$content_type, 
+			"body" => &$body 
+		) );
 		$parts = parse_url($URI);
 		$this->port = empty($parts["port"]) ? (($parts["scheme"]=="https") ? 443 : 80) : $parts["port"];
 		if(!empty($parts["user"]))
@@ -247,17 +262,20 @@ class Snoopy
 			}
 			case "http":
 			{
-				if(($fp = $this->connect())!==false)
+				if($this->proxy_proto!='https')
 				{
-					$path = (isset($parts["path"]) ? $parts["path"] : "/").(isset($parts["query"]) ? "?".$parts["query"] : "");
-					$ret = ( $this->_isproxy ? 
-						$this->_httprequest($URI,$fp,$URI,$method,$content_type,$body) :
-						$this->_httprequest($path,$fp,$URI,$method,$content_type,$body) );
-					fclose($fp);
+					if(($fp = $this->connect())!==false)
+					{
+						$path = (isset($parts["path"]) ? $parts["path"] : "/").(isset($parts["query"]) ? "?".$parts["query"] : "");
+						$ret = ( $this->_isproxy ? 
+							$this->_httprequest($URI,$fp,$URI,$method,$content_type,$body) :
+							$this->_httprequest($path,$fp,$URI,$method,$content_type,$body) );
+						fclose($fp);
+					}
+					else
+						$ret = false;
+					break;
 				}
-				else
-					$ret = false;
-				break;
 			}
 			case "https":
 			{
@@ -272,14 +290,25 @@ class Snoopy
 				break;
 			}
 		}		
-		if($ret && $this->_redirectaddr)
+		if($ret)
 		{
-			/* url was redirected, check if we've hit the max depth */
-			if($this->maxredirs > $this->_redirectdepth)
+			rTorrentSettings::get()->pushEvent( "URLFetched", array
+			( 
+				"client" => $this, 
+				"uri" => $URI, 
+				"method" => $method, 
+				"content_type" => $content_type, 
+				"body" => $body 
+			) );
+			if($this->_redirectaddr)
 			{
-				$this->_redirectdepth++;
-				$this->lastredirectaddr=$this->_redirectaddr;
-				$ret = $this->fetch($this->_redirectaddr);
+				/* url was redirected, check if we've hit the max depth */
+				if($this->maxredirs > $this->_redirectdepth)
+				{
+					$this->_redirectdepth++;
+					$this->lastredirectaddr=$this->_redirectaddr;
+					$ret = $this->fetch($this->_redirectaddr);
+				}
 			}
 		}
 		return($ret);
@@ -421,7 +450,7 @@ class Snoopy
 			}
 			else
 			{
-				$randName = uniqid(getTempDirectory()."rutorrent-gz-");
+				$randName = getTempFilename('answer');
 				file_put_contents($randName.".gz",$results);
 				exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 				if(is_file($randName))
@@ -429,8 +458,10 @@ class Snoopy
 					$results = file_get_contents($randName);
 					unlink($randName);
 				}
-				else				
+				else
+				{
 					unlink($randName.".gz");
+				}
 			}
 		}
 		
@@ -494,18 +525,17 @@ class Snoopy
 			$cmdline_params .= " --interface ".$this->IP;
 
 		if($this->_isproxy)
-			$cmdline_params .= " --proxy ".$this->proxy_host.":".$this->proxy_port;
+			$cmdline_params .= " --proxy-insecure --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
 		
-		$headerfile = uniqid(getTempDirectory()."rutorrent-https-hdr-");
-		$contfile = uniqid(getTempDirectory()."rutorrent-https-bdy-");
+		$headerfile = getTempFilename('https-header');
+		$contfile = getTempFilename('https-body');
 		
 		# accept self-signed certs
-		$cmdline_params .= " -k -s"; 
+		$cmdline_params .= " -k -s "; 
 		exec(escapeshellarg(getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		$this->_redirectaddr = false;
 		$this->headers = array();
 		$is_gzipped = false;
-		
 		if($return)
 			$this->error = "Error: cURL could not retrieve the document, error $return.";
 		else
@@ -556,7 +586,7 @@ class Snoopy
 				}
 				else
 				{
-					$randName = uniqid(getTempDirectory()."tmp/rutorrent-gz-");
+					$randName = getTempFilename('answer');
 					file_put_contents($randName.".gz",$results);
 					exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 					if(is_file($randName))
@@ -564,8 +594,10 @@ class Snoopy
 						$results = file_get_contents($randName);
 						unlink($randName);
 					}
-					else				
+					else
+					{
 						unlink($randName.".gz");
+					}
 				}
 			}
 

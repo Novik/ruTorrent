@@ -111,11 +111,14 @@ if(plugin.canChangeMenu())
 	plugin.createTrackerMenu = theWebUI.createTrackerMenu;
 	theWebUI.createTrackerMenu = function(e, id) 
 	{
-		if(plugin.createTrackerMenu.call(theWebUI, e, id) && plugin.allStuffLoaded && plugin.enabled)
+		if(plugin.createTrackerMenu.call(theWebUI, e, id))
 		{
-			theContextMenu.add([CMENU_SEP]);
-			theContextMenu.add([theUILang.EditTrackers,  
-				this.isTorrentCommandEnabled("edittorrent",theWebUI.dID) ? "theWebUI.editTrackers('"+theWebUI.dID+"')" : null]);
+			if(plugin.enabled && plugin.allStuffLoaded)
+			{
+				theContextMenu.add([CMENU_SEP]);
+				theContextMenu.add([theUILang.EditTrackers,  
+					this.isTorrentCommandEnabled("edittorrent",theWebUI.dID) ? "theWebUI.editTrackers('"+theWebUI.dID+"')" : null]);
+			}
 			return(true);
 		}
 		return(false);

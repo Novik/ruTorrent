@@ -8,13 +8,13 @@
 
  var s_PluginFail			= "Плагін не працюватиме.";
 
- theUILang.xmpp 			= "XMPP";
- theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Одержувач:";
+ theUILang.xmpp				= "XMPP";
+ theUILang.xmppJabberJID		= "JID:";
+ theUILang.xmppJabberFor		= "Одержувач:";
  theUILang.xmppMessage			= "Повідомлення:";
  theUILang.xmppJabberPasswd		= "Пароль:";
  theUILang.xmppAdvancedSettings		= "Додатково:";
- theUILang.xmppJabberHost		= "Сервер:";
+ theUILang.xmppJabberHost		= "Сервер";
  theUILang.xmppJabberPort		= "Порт";
  theUILang.xmppUseEncryption		= "Використовувати шифрування";
 

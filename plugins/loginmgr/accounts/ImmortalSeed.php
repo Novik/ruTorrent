@@ -2,7 +2,7 @@
 
 class ImmortalSeedAccount extends commonAccount
 {
-	public $url = "https://immortalseed.tv";
+	public $url = "https://immortalseed.me";
 
 	protected function isOK($client)
 	{

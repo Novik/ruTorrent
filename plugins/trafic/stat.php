@@ -36,7 +36,7 @@ class rStat
 	public function flush()
 	{
 		global $profileMask;
-		$randName = uniqid(getTempDirectory()."rutorrent-trafic-");
+		$randName = getTempFilename('trafic');
 		if($file=@fopen($randName,"w"))
 		{
 			if( (fputcsv($file,$this->hourUp)!==false) &&
@@ -48,7 +48,7 @@ class rStat
 				(fputcsv($file,$this->yearUp)!==false) &&
 				(fputcsv($file,$this->yearDown)!==false) &&
 				(fputcsv($file,$this->yearHitTimes)!==false))
-			{				
+			{
 				if( fclose($file)!==false )
 				{
 					rename( $randName, $this->fname );
@@ -57,7 +57,7 @@ class rStat
 				}
 			}
 			fclose($file);
-			unlink($randName);			
+			unlink($randName);
 		}
 		return(false);
 	}
@@ -119,6 +119,7 @@ class rStat
 					$files[] = basename($path, ".csv");
 				}
 			}
+			closedir($dh);
 		}
 		sort($files,SORT_STRING);
 		return( $files );
@@ -144,7 +145,7 @@ class rStat
 			"labels"	=> $this->monthHitTimes,
 			"mode"	 	=> 'month',
 			"trackers"	=> self::getTrackers()
-		));	
+		));
 	}
         public function getYear()
 	{
@@ -155,7 +156,7 @@ class rStat
 			"labels"	=> $this->yearHitTimes,
 			"mode"		=> 'year',
 			"trackers"	=> self::getTrackers()
-		));	
+		));
 	}
 	public function getRatios( $time )
 	{

@@ -14,7 +14,6 @@
  theUILang.countryName		= "国家";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "阿森松岛";
  theUILang.country[ "ad" ] = "安道尔";
  theUILang.country[ "ae" ] = "阿拉伯联合酋长国";
  theUILang.country[ "af" ] = "阿富汗";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "安圭拉";
  theUILang.country[ "al" ] = "阿尔巴尼亚";
  theUILang.country[ "am" ] = "亚美尼亚";
- theUILang.country[ "an" ] = "荷属安的列斯群岛";
  theUILang.country[ "ao" ] = "安哥拉";
  theUILang.country[ "aq" ] = "南极";
  theUILang.country[ "ar" ] = "阿根廷";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "巴林";
  theUILang.country[ "bi" ] = "布隆迪";
  theUILang.country[ "bj" ] = "贝宁";
+ theUILang.country[ "bl" ] = "圣巴泰勒米";
  theUILang.country[ "bm" ] = "百慕大";
  theUILang.country[ "bn" ] = "文莱";
  theUILang.country[ "bo" ] = "玻利维亚";
@@ -156,9 +155,10 @@
  theUILang.country[ "mc" ] = "摩纳哥";
  theUILang.country[ "md" ] = "摩尔多瓦";
  theUILang.country[ "me" ] = "黑山";
+ theUILang.country[ "mf" ] = "圣马丁";
  theUILang.country[ "mg" ] = "马达加斯加";
  theUILang.country[ "mh" ] = "马绍尔群岛";
- theUILang.country[ "mk" ] = "马其顿共和国";
+ theUILang.country[ "mk" ] = "北马其顿";
  theUILang.country[ "ml" ] = "玛丽";
  theUILang.country[ "mm" ] = "缅甸";
  theUILang.country[ "mn" ] = "蒙";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "苏里南";
  theUILang.country[ "ss" ] = "苏丹南部";
  theUILang.country[ "st" ] = "圣多美和普林西比";
- theUILang.country[ "su" ] = "俄罗斯";
  theUILang.country[ "sv" ] = "萨尔瓦多";
  theUILang.country[ "sx" ] = "圣马丁岛";
  theUILang.country[ "sy" ] = "叙利亚";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "坦桑尼亚";
  theUILang.country[ "ua" ] = "乌克兰";
  theUILang.country[ "ug" ] = "乌干达";
- theUILang.country[ "uk" ] = "英国";
+ theUILang.country[ "um" ] = "美国本土外小岛屿";
  theUILang.country[ "un" ] = "未知";
  theUILang.country[ "us" ] = "美国";
  theUILang.country[ "uy" ] = "乌拉圭";

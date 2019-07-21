@@ -6,7 +6,7 @@
  * Author: Limerainne (limerainne@gmail.com)
  */
 
- theUILang.EditTrackers 		= "토렌트 편집...";
+ theUILang.EditTrackers			= "토렌트 편집...";
  theUILang.EditTorrentProperties	= "토렌트 속성";
  theUILang.errorAddTorrent		= "토렌트 파일 추가 실패";
  theUILang.errorWriteTorrent		= "토렌트 파일 쓰기 실패";

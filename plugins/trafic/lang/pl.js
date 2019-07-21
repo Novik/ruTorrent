@@ -6,7 +6,7 @@
  * Author: Dare (piczok@gmail.com)
  */
 
- theUILang.traf 		= "Ruch";
+ theUILang.traf			= "Ruch";
  theUILang.perDay		= "Przez dzień";
  theUILang.perMonth		= "Przez miesiąc";
  theUILang.perYear		= "Przez rok";

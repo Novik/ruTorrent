@@ -6,7 +6,7 @@
  * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
- theUILang.checkTorrent 	= "Перевірити оновлення";
+ theUILang.checkTorrent		= "Перевірити оновлення";
  theUILang.chkHdr		= "Перевірка оновлення torrent-файлу";
  theUILang.checkedAt		= "Виконано";
  theUILang.checkedResult	= "Результат";

@@ -6,7 +6,7 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
- theUILang.EditTrackers 		= "Επεξεργασία Torrent...";
+ theUILang.EditTrackers			= "Επεξεργασία Torrent...";
  theUILang.EditTorrentProperties	= "Ιδιότητες του Torrent";
  theUILang.errorAddTorrent		= "Σφάλμα κατά την προσθήκη του αρχείου torrent";
  theUILang.errorWriteTorrent		= "Σφάλμα κατά την εγγραφή στο αρχείο torrent";

@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "Verwijder";
  theUILang.ratioEraseData	= "Verwijder data";
  theUILang.maxTime		= "Tijd";
- theUILang.ratioDefault 	= "Default ratio group";
+ theUILang.ratioDefault		= "Default ratio group";
  theUILang.setThrottleTo	= "Set channel to";
 
 thePlugins.get("ratio").langLoaded();

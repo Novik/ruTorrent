@@ -6,7 +6,7 @@
  * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
- theUILang.traf 		= "Трафік";
+ theUILang.traf			= "Трафік";
  theUILang.perDay		= "За добу";
  theUILang.perMonth		= "За місяць";
  theUILang.perYear		= "За рік";

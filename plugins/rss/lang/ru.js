@@ -11,10 +11,10 @@
  theUILang.alias			= "Метка";
  theUILang.rssAuto			= "Автоматически загружать содержимое";
  theUILang.allFeeds			= "Все рассылки";
- theUILang.incorrectURL 		= "Адрес рассылки задан некорректно.";
- theUILang.cantFetchRSS 		= "Ошибка загрузки рассылки.";
+ theUILang.incorrectURL			= "Адрес рассылки задан некорректно.";
+ theUILang.cantFetchRSS			= "Ошибка загрузки рассылки.";
  theUILang.rssAlreadyExist		= "Рассылка уже существует.";
- theUILang.rssDontExist 		= "Рассылка не существует.";
+ theUILang.rssDontExist			= "Рассылка не существует.";
  theUILang.rssCantLoadTorrent		= "Ошибка загрузки торрента.";
  theUILang.rssStatus			= "Рассылка";
  theUILang.rssStatusLoaded		= "Был загружен";
@@ -29,10 +29,10 @@
  theUILang.rssMenuEdit			= "Правка рассылки";
  theUILang.rssMenuDelete		= "Удалить рассылку";
  theUILang.rssDeletePrompt		= "Вы действительно хотите удалить выбранную рассылку?";
- theUILang.rssNewFilter 		= "Новый фильтр";
+ theUILang.rssNewFilter			= "Новый фильтр";
  theUILang.rssFilter			= "Фильтр";
- theUILang.rssAddFilter 		= "Добавить";
- theUILang.rssDelFilter 		= "Удалить";
+ theUILang.rssAddFilter			= "Добавить";
+ theUILang.rssDelFilter			= "Удалить";
  theUILang.rssCheckFilter		= "?";
  theUILang.rssFiltersLegend		= "Настройки фильтров";
  theUILang.rssIncorrectFilter		= "Фильтр задан некорректно.";
@@ -42,7 +42,7 @@
  theUILang.rssFeeds			= "Рассылки";
  theUILang.rssCheckTitle		= "Искать в названии";
  theUILang.rssCheckDescription		= "Искать в описании";
- theUILang.rssCheckLink 		= "Искать в ссылке";
+ theUILang.rssCheckLink			= "Искать в ссылке";
  theUILang.rssMinInterval		= "Min интервал";
  theUILang.rssIntervalAlways		= "(всегда)";
  theUILang.rssIntervalOnce		= "(один раз)";
@@ -61,7 +61,7 @@
  theUILang.rssAsLoaded			= "загруженный";
  theUILang.rssAsUnloaded		= "не загруженный";
  theUILang.addRSSGroup			= "Добавить группу";
- theUILang.editRSSGroup 		= "Правка группы";
+ theUILang.editRSSGroup			= "Правка группы";
  theUILang.addRSSGroupContent		= "Содержимое";
  theUILang.rssMenuGroupDisable		= "Отключить группу";
  theUILang.rssMenuGroupRefresh		= "Обновить группу";
@@ -69,10 +69,10 @@
  theUILang.rssMenuGroupEdit		= "Правка группы";
  theUILang.rssMenuGroupDelete		= "Удалить группу";
  theUILang.rssMenuGroupContentsDelete	= "Удалить содержимое";
- theUILang.rssDeleteGroupPrompt 	= "Вы действительно хотите удалить выбранную группу?";
- theUILang.rssDeleteGroupContentsPrompt = "Вы действительно хотите удалить выбранную группу со всем ее содержимым?";
- theUILang.rssAllFiters 		= "Все фильтры";
- theUILang.rssUpdateInterval 		= "Интервал обновления";
+ theUILang.rssDeleteGroupPrompt		= "Вы действительно хотите удалить выбранную группу?";
+ theUILang.rssDeleteGroupContentsPrompt	= "Вы действительно хотите удалить выбранную группу со всем ее содержимым?";
+ theUILang.rssAllFiters			= "Все фильтры";
+ theUILang.rssUpdateInterval		= "Интервал обновления";
  theUILang.Directories			= "Директории";
  theUILang.Labels			= "Метки";
 

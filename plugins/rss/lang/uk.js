@@ -11,10 +11,10 @@
  theUILang.alias			= "Мітка";
  theUILang.rssAuto			= "Автоматично завантажувати вміст";
  theUILang.allFeeds			= "Усі розсилки";
- theUILang.incorrectURL 		= "Адресу розсилки задано неправильно.";
- theUILang.cantFetchRSS 		= "Не вдалося завантажити розсилку.";
+ theUILang.incorrectURL			= "Адресу розсилки задано неправильно.";
+ theUILang.cantFetchRSS			= "Не вдалося завантажити розсилку.";
  theUILang.rssAlreadyExist		= "Розсилка вже існує.";
- theUILang.rssDontExist 		= "Розсилки не існує.";
+ theUILang.rssDontExist			= "Розсилки не існує.";
  theUILang.rssCantLoadTorrent		= "Не вдалося завантажити торент.";
  theUILang.rssStatus			= "Розсилка";
  theUILang.rssStatusLoaded		= "Завантажено";
@@ -29,10 +29,10 @@
  theUILang.rssMenuEdit			= "Редагувати розсилку";
  theUILang.rssMenuDelete		= "Видалити розсилку";
  theUILang.rssDeletePrompt		= "Справді видалити вибрану розсилку?";
- theUILang.rssNewFilter 		= "Створити фільтр";
+ theUILang.rssNewFilter			= "Створити фільтр";
  theUILang.rssFilter			= "Фільтр";
- theUILang.rssAddFilter 		= "Додати";
- theUILang.rssDelFilter 		= "Видалити";
+ theUILang.rssAddFilter			= "Додати";
+ theUILang.rssDelFilter			= "Видалити";
  theUILang.rssCheckFilter		= "?";
  theUILang.rssFiltersLegend		= "Настройки фільтрів";
  theUILang.rssIncorrectFilter		= "Фільтр задано неправильно.";
@@ -42,7 +42,7 @@
  theUILang.rssFeeds			= "Розсилки";
  theUILang.rssCheckTitle		= "Шукати в назві";
  theUILang.rssCheckDescription		= "Шукати в описі";
- theUILang.rssCheckLink 		= "Шукати в посиланні";
+ theUILang.rssCheckLink			= "Шукати в посиланні";
  theUILang.rssMinInterval		= "Мін. інтервал";
  theUILang.rssIntervalAlways		= "(завжди)";
  theUILang.rssIntervalOnce		= "(один раз)";
@@ -61,7 +61,7 @@
  theUILang.rssAsLoaded			= "завантажений";
  theUILang.rssAsUnloaded		= "не завантажений";
  theUILang.addRSSGroup			= "Додати групу";
- theUILang.editRSSGroup 		= "Змінити групу";
+ theUILang.editRSSGroup			= "Змінити групу";
  theUILang.addRSSGroupContent		= "Вміст";
  theUILang.rssMenuGroupDisable		= "Вимкнути групу";
  theUILang.rssMenuGroupRefresh		= "Оновити групу";
@@ -69,10 +69,10 @@
  theUILang.rssMenuGroupEdit		= "Змінити групу";
  theUILang.rssMenuGroupDelete		= "Видалити групу";
  theUILang.rssMenuGroupContentsDelete	= "Видалити вміст";
- theUILang.rssDeleteGroupPrompt 	= "Справді видалити вибрану групу?";
- theUILang.rssDeleteGroupContentsPrompt = "Справді видалити вибрану групу з усім її вмістом?";
- theUILang.rssAllFiters 		= "Усі фільтри";
- theUILang.rssUpdateInterval 		= "Інтервал оновлення";
+ theUILang.rssDeleteGroupPrompt		= "Справді видалити вибрану групу?";
+ theUILang.rssDeleteGroupContentsPrompt	= "Справді видалити вибрану групу з усім її вмістом?";
+ theUILang.rssAllFiters			= "Усі фільтри";
+ theUILang.rssUpdateInterval		= "Інтервал оновлення";
  theUILang.Directories			= "Директорії";
  theUILang.Labels			= "Мітки";
 

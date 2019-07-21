@@ -88,6 +88,7 @@ $this->aliases = array_merge($this->aliases,array(
 "d.set_tied_to_file"	=>	array( "name"=>"d.tied_to_file.set", "prm"=>0 ),
 "d.set_tracker_numwant"	=>	array( "name"=>"d.tracker_numwant.set", "prm"=>0 ),
 "d.set_uploads_max"	=>	array( "name"=>"d.uploads_max.set", "prm"=>0 ),
+"execute"		=>	array( "name"=>"execute2", "prm"=>1 ),
 "execute_capture"	=>	array( "name"=>"execute.capture", "prm"=>1 ),
 "execute_capture_nothrow"	=>	array( "name"=>"execute.capture_nothrow", "prm"=>1 ),
 "execute_nothrow"	=>	array( "name"=>"execute.nothrow", "prm"=>1 ),
@@ -246,6 +247,8 @@ $this->aliases = array_merge($this->aliases,array(
 "set_use_udp_trackers"	=>	array( "name"=>"trackers.use_udp.set", "prm"=>1 ),
 "set_xmlrpc_dialect"	=>	array( "name"=>"network.xmlrpc.dialect.set", "prm"=>1 ),		// ?
 "set_xmlrpc_size_limit"	=>	array( "name"=>"network.xmlrpc.size_limit.set", "prm"=>1 ),
+"schedule"		=>	array( "name"=>"schedule2", "prm"=>1 ),
+"schedule_remove"	=>	array( "name"=>"schedule_remove2", "prm"=>1 ),
 "system.file_allocate"	=>	array( "name"=>"system.file.allocate", "prm"=>0 ),
 "system.file_allocate.set"	=>	array( "name"=>"system.file.allocate.set", "prm"=>1 ),		// ?
 "system.method.erase"	=>	array( "name"=>"method.erase", "prm"=>1 ),

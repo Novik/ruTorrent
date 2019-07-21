@@ -2,7 +2,7 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const URL = 'https://ww4.yggtorrent.is';
+    const URL = 'https://www2.yggtorrent.gg';
     const MAX_PAGE = 10;
     const PAGE_SIZE = 50;
 
@@ -90,18 +90,30 @@ class YggTorrentEngine extends commonEngine
         // Initial search to retrieve the page count
         $search = self::URL . '/engine/search/?name=' . $what . $catParameters . '&do=search';
         $cli = $this->fetch($search);
-
         // Check if we have results
-        if (($cli == false) || (strpos($cli->results, "Aucun résultat !") !== false)) {
+        if ($cli == false) {
+	    $item = $this->getNewEntry();
+	    $item["name"] = "Fetch Error";
+	    $ret[""] = $item;
+            return;
+	} else if (strpos($cli->results, "Aucun résultat !") !== false) {
+	    $item = $this->getNewEntry();
+	    $item["name"] = "No result found";
+	    $ret[""] = $item;
             return;
         }
 
         $nbRet = preg_match_all('`>(?P<results>\d+) résultats trouvés`', $cli->results, $retPage);
+	if (!$nbRet) 
+	{
+	    $item = $this->getNewEntry();
+	    $item["name"] = "No result found";
+	    $ret[""] = $item;
+            return;
+        }
         $nbResults = $retPage['results'][0];
         // Check if there is only one page
-        if (!$nbRet) {
-            return;
-        } else if ($nbResults <= self::PAGE_SIZE) {
+        if ($nbResults <= self::PAGE_SIZE) {
             $maxPage = 1;
         } else {
             // Retrieve the page count
@@ -118,26 +130,36 @@ class YggTorrentEngine extends commonEngine
             }
 
             $res = preg_match_all(
-                '`<tr>(.*)<a href=".*url_builder.*</a>.*<a href="(?P<desc>http.*/torrent/.*)">(?P<name>.*)>.*' .
-                '<a target="(?P<id>.*)".*>.*<div class="hidden">(?P<timestamp>.*)</div>.*<td>(?P<size>.*)</td>' .
-                '.*<td>(?P<completed>.*)</td>.*<td>(?P<seeder>.*)</td>.*<td>(?P<leecher>.*)</td>.*</tr>`siU',
+                '`<td><div class="hidden">.*<a id="torrent_name" href="(?P<desc>.*)">(?P<name>.*)</td>.*'.
+                '<a target="(?P<id>.*)".*'.
+                '<div class="hidden">(?P<timestamp>.*)</div>.*'.
+                '<td>(?P<size>.*)</td>.*'.
+                '<td>(?P<completed>.*)</td>.*'.
+                '<td>(?P<seeder>.*)</td>.*'.
+                '<td>(?P<leecher>.*)</td>'.
+                '`siU',
                 $cli->results,
                 $matches
             );
 
             if ($res) {
+                // Get current URL
+                preg_match('`.+?(?=/torrent)`', $matches["desc"][0], $url);
+
                 for ($i = 0; $i < $res; $i++) {
-                    $link = self::URL . "/engine/download_torrent?id=" . $matches["id"][$i];
+                    $link = $url[0] . "/engine/download_torrent?id=" . $matches["id"][$i];
                     if (!array_key_exists($link, $ret)) {
                         $item = $this->getNewEntry();
                         $item["desc"] = $matches["desc"][$i];
-                        $item["name"] = self::removeTags($matches["name"][$i]);
+                        $name = self::removeTags($matches["name"][$i]);
+                        // Remove useless space before some torrents names to have best name sort
+                        $item["name"] = trim($name);
 
                         // The parsed size has the format XX.XXGB, we need to add a space to help a bit the formatSize method
                         $item["size"] = self::formatSize(preg_replace('/([0-9.]+)(\w+)/', '$1 $2', $matches["size"][$i]));
 
                         // To be able to display categories, we need to parse them directly from the torrent URL
-                        $cat = preg_match_all('`' . self::URL . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
+                        $cat = preg_match_all('`' . $url[0] . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
                         if ($cat) {
                             $cat1 = $this->getPrettyCategoryName($catRes['cat1'][0]);
                             $cat2 = $this->getPrettyCategoryName($catRes['cat2'][0]);

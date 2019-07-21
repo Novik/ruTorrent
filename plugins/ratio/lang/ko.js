@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "제거";
  theUILang.ratioEraseData	= "데이터 제거";
  theUILang.maxTime		= "시간";
- theUILang.ratioDefault 	= "기본 비율 그룹";
+ theUILang.ratioDefault		= "기본 비율 그룹";
  theUILang.setThrottleTo	= "다음 채널로 설정";
 
 thePlugins.get("ratio").langLoaded();

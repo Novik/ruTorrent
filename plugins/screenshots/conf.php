@@ -1,6 +1,9 @@
 <?php
 
-$pathToExternals['ffmpeg'] = '';		// Something like /usr/bin/ffmpeg. If empty, will be found in PATH.
+if(empty($pathToExternals['ffmpeg']))	// May be path already defined?
+{
+	$pathToExternals['ffmpeg'] = '';// Something like /usr/bin/ffmpeg. If empty, will be found in PATH.
+}
 
 $extensions = array
 (

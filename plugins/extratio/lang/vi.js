@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "Một trong số máy theo dõi torrent là riêng tư";
  theUILang.ratioThenLegend	= "Thì";
  theUILang.setRatioTo		= "Đặt tỉ lệ là";
- theUILang.setChannelTo 	= "Đặt băng thông là";
- theUILang.ratioNewRule 	= "Thêm quy luật mới";
+ theUILang.setChannelTo		= "Đặt băng thông là";
+ theUILang.ratioNewRule		= "Thêm quy luật mới";
 
 thePlugins.get("extratio").langLoaded();

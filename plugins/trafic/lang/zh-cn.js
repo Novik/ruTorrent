@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.traf 		= "流量";
+ theUILang.traf			= "流量";
  theUILang.perDay		= "每天";
  theUILang.perMonth		= "每月";
  theUILang.perYear		= "每年";

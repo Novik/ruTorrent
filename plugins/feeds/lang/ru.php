@@ -1,16 +1,16 @@
 <?php
 
 $theUILang["all"]		= "Все закачки";
-$theUILang["completed"] 	= "Завершенные закачки";
+$theUILang["completed"]		= "Завершенные закачки";
 $theUILang["downloading"]	= "Загружаемые закачки";
 $theUILang["active"]		= "Активные закачки";
 $theUILang["inactive"]		= "Неактивные закачки";
 $theUILang["error"]		= "Закачки с ошибками";
 $theUILang["Transfer"]		= "Передача";
 $theUILang["Size"]		= "Размер";
-$theUILang["Remaining"] 	= "Осталось";
+$theUILang["Remaining"]		= "Осталось";
 $theUILang["Share_ratio"]	= "Ратио";
-$theUILang["Downloaded"]	= "Загружено"; 
+$theUILang["Downloaded"]	= "Загружено";
 $theUILang["Down_speed"]	= "Скорость скачивания";
 $theUILang["Uploaded"]		= "Отдано";
 $theUILang["Ul_speed"]		= "Скорость отдачи";
@@ -18,7 +18,7 @@ $theUILang["Seeds"]		= "Сиды";
 $theUILang["Peers"]		= "Пиры";
 $theUILang["Track_status"]	= "Статус трекера";
 $theUILang["Comment"]		= "Комментарий";
-$theUILang["s"] 		= "с";
+$theUILang["s"]			= "с";
 $theUILang["bytes"]		= "байт";
 $theUILang["KB"]		= "КБ";
 $theUILang["MB"]		= "МБ";

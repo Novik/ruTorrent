@@ -7,13 +7,13 @@
  */
 
  theUILang.exFFMPEG		= "Skjermbilder";
- theUILang.exFrameWidth 	= "Rammebredde";
+ theUILang.exFrameWidth		= "Rammebredde";
  theUILang.exFramesCount	= "Rammeantal";
  theUILang.exStartOffset	= "Start rammeforskyvning";
  theUILang.exBetween		= "Tid mellom rammer";
  theUILang.exSave		= "Lagre";
  theUILang.exSaveAll		= "Lagre alle";
- theUILang.exScreenshot 	= "Skjermbilde";
+ theUILang.exScreenshot		= "Skjermbilde";
  theUILang.exPlayInterval	= "Lysbildeintervall";
  theUILang.exImageFormat	= "Bildeformat";
 

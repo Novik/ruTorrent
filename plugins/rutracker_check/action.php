@@ -18,7 +18,7 @@ if(isset($HTTP_RAW_POST_DATA))
 	{
 		$fname = getTempDirectory().'rutorrent-prm-'.getUser().time();
 		file_put_contents( $fname, serialize( $ret ) );
-		shell_exec( getPHP()." -f ".escapeshellarg(dirname( __FILE__)."/batch_check.php")." ".escapeshellarg($fname)." ".getUser()." > /dev/null 2>&1 &" );
+		shell_exec( getPHP()." -f ".escapeshellarg(dirname( __FILE__)."/batch_check.php")." ".escapeshellarg($fname)." ".escapeshellarg(getUser())." > /dev/null 2>&1 &" );
 //		shell_exec( getPHP()." -f ".escapeshellarg(dirname( __FILE__)."/batch_check.php")." ".escapeshellarg($fname)." ".getUser()." > /tmp/1 2>/tmp/2 &" );
 	}
 }

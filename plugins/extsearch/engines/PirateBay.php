@@ -8,13 +8,12 @@ class PirateBayEngine extends commonEngine
 	public function makeClient($url)
 	{
 		$client = parent::makeClient($url);
-		$client->cookies = array("lw"=>"s");
 		return($client);
 	}
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://thepiratebay.org';
+		$url = 'https://thepiratebay.org';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'100,200,300,400,500,600', 'movies'=>'200', 'tv'=>'205', 'music'=>'100', 'games'=>'400', 'anime'=>'0', 'software'=>'300', 'pictures'=>'603', 'books'=>'601' );
 		else
@@ -26,26 +25,17 @@ class PirateBayEngine extends commonEngine
 		$maxPage = 10;
 		for($pg = 0; $pg<$maxPage; $pg++)
 		{
-			$cli = $this->fetch( Snoopy::linkencode($url.'/search/'.$what.'/'.$pg).'/7/'.$cat,false );
-			if($cli==false || !preg_match('/<\/span>&nbsp;Displaying hits from \d+ to \d+ \(approx (?P<cnt>\d+) found\)/siU',$cli->results, $matches))
+			$cli = $this->fetch( $url . '/search/' . $what . '/' . $pg . '/7/' . $cat );
+			if(($cli==false) || (strpos($cli->results, "</span>&nbsp;No hits.")!==false))
 				break;
-			$maxPage = ceil(intval($matches["cnt"])/30);
-			$res = preg_match_all('/<td class="vertTh"><a href="\/browse.*>(?P<cat>.*)<\/a><\/td>.*'.
-                                '<td><a href="\/torrent\/(?P<desc>.*)".*>(?P<name>.*)<\/a>.*<\/td>.*'.
-				'<td>(?P<date>.*)<\/td>.*'.
-				'<td><nobr><a href="magnet:(?P<link>[^"]*)".*'.
-				'<td align="right">(?P<size>.*)<\/td>.*'.
-				'<td align="right">(?P<seeds>.*)<\/td>.*'.
-				'<td align="right">(?P<leech>.*)<\/td>'.
-				'/siU', $cli->results, $matches);
-			if(($res!==false) && ($res>0) &&
-				count($matches["desc"])==count($matches["name"]) &&
-				count($matches["cat"])==count($matches["name"]) && 
-				count($matches["name"])==count($matches["date"]) &&
-				count($matches["date"])==count($matches["link"]) &&
-				count($matches["size"])==count($matches["link"]) &&
-				count($matches["size"])==count($matches["seeds"]) &&
-				count($matches["seeds"])==count($matches["leech"]) )
+			$res = preg_match_all('`<td class="vertTh">.*'.
+				'<a .*>(?P<cat>.*)</a>.*<a .*>(?P<subcat>.*)</a>.*'.
+				'<a href="(?P<desc>.*)" .*>(?P<name>.*)</a>.*'.
+				'<a href="magnet:(?P<link>[^"]*)" .*>.*<font .*>Uploaded (?P<date>.*), Size (?P<size>.*), .*</font>.*'.
+				'<td align="right">(?P<seeds>.*)</td>.*'.
+				'<td align="right">(?P<leech>.*)</td>'.
+				'`siU', $cli->results, $matches);
+			if($res)
 			{
 				for($i=0; $i<count($matches["link"]); $i++)
 				{
@@ -53,8 +43,8 @@ class PirateBayEngine extends commonEngine
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["desc"] = $url."/torrent/".$matches["desc"][$i];
+						$item["cat"] = self::removeTags($matches["cat"][$i].' > '.$matches["subcat"][$i]);
+						$item["desc"] = $url.$matches["desc"][$i];
 						$item["name"] = self::removeTags($matches["name"][$i]);
 						$item["size"] = self::formatSize($matches["size"][$i]);
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));

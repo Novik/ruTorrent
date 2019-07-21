@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "规则管理";
  theUILang.rssAddRule		= "添加";
  theUILang.rssDelRule		= "删除";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "规则设置";
  theUILang.rssSrcHref		= "如果 torrent 的下载 URL 符合表达式";
  theUILang.rssSrcGuid		= "如果 torrent 的描述 URL 符合表达式";

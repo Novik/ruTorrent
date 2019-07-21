@@ -5,9 +5,7 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Updatet by : Dario Rugani (kontakt@rugani.de)
- *
- * Author: 
+ * Author: Dario Rugani (kontakt@rugani.de)
  */
 
  theUILang.peerComment		= "Kommentar hinzufügen";
@@ -16,7 +14,6 @@
  theUILang.countryName		= "Land";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Vereinigte Arabische Emirate";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -24,7 +21,6 @@
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albanien";
  theUILang.country[ "am" ] = "Armenien";
- theUILang.country[ "an" ] = "Niederländische Antillen";
  theUILang.country[ "ao" ] = "Angola";
  theUILang.country[ "aq" ] = "Antarktika";
  theUILang.country[ "ar" ] = "Argentina";
@@ -43,6 +39,7 @@
  theUILang.country[ "bh" ] = "Bahrain";
  theUILang.country[ "bi" ] = "Burundi";
  theUILang.country[ "bj" ] = "Benin";
+ theUILang.country[ "bl" ] = "Saint-Barthélemy";
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivien";
@@ -158,9 +155,10 @@
  theUILang.country[ "mc" ] = "Monaco";
  theUILang.country[ "md" ] = "Moldawien";
  theUILang.country[ "me" ] = "Montenegro";
+ theUILang.country[ "mf" ] = "Saint-Martin";
  theUILang.country[ "mg" ] = "Madagaskar";
  theUILang.country[ "mh" ] = "Marshallinseln";
- theUILang.country[ "mk" ] = "Mazedonien";
+ theUILang.country[ "mk" ] = "Nordmazedonien";
  theUILang.country[ "ml" ] = "Mali";
  theUILang.country[ "mm" ] = "Myanmar";
  theUILang.country[ "mn" ] = "Mongolei";
@@ -226,7 +224,6 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Süd-Sudan";
  theUILang.country[ "st" ] = "Sao Tome und Principe";
- theUILang.country[ "su" ] = "Russland";
  theUILang.country[ "sv" ] = "El Salvador";
  theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syrien";
@@ -249,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tansania";
  theUILang.country[ "ua" ] = "Ukraine";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "Vereinigtes Königreich";
+ theUILang.country[ "um" ] = "Kleineren Amerikanischen Überseeinseln";
  theUILang.country[ "un" ] = "Unbekannt";
  theUILang.country[ "us" ] = "Vereinigte Staaten";
  theUILang.country[ "uy" ] = "Uruguay";

@@ -26,6 +26,9 @@ class rAutoTools
 		$cache->get( $at );
 		if( !property_exists( $at, "automove_filter" ) || (@preg_match($at->automove_filter, null) === false) )
 			$at->automove_filter = "/.*/";
+		if( !property_exists( $at, "skip_move_for_files" ) || 
+			(strlen($at->skip_move_for_files) && (@preg_match($at->skip_move_for_files."u", null) === false)) )
+			$at->skip_move_for_files = "/\.rar|\.zip/";
 		if( !property_exists( $at, "addName" ) )
 			$at->addName = 0;
 		if( !property_exists( $at, "addLabel" ) )
@@ -90,6 +93,8 @@ class rAutoTools
 				else if( $parts[0] == "skip_move_for_files" )
 				{
 					$this->skip_move_for_files = $parts[1];
+					if(strlen($this->skip_move_for_files) && (@preg_match($this->skip_move_for_files."u", null) === false))
+						$this->skip_move_for_files = "/\.rar|\.zip/";
 				}
 				else if( $parts[0] == "enable_watch" )
 				{

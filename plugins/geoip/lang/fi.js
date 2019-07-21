@@ -14,7 +14,6 @@
  theUILang.countryName		= "Maa";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Arabiemiirikunnat";
  theUILang.country[ "af" ] = "Afganistan";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albania";
  theUILang.country[ "am" ] = "Armenia";
- theUILang.country[ "an" ] = "Alankomaiden Antillit";
  theUILang.country[ "ao" ] = "Angola";
  theUILang.country[ "aq" ] = "Antarktis";
  theUILang.country[ "ar" ] = "Argentiina";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "Bahrain";
  theUILang.country[ "bi" ] = "Burundi";
  theUILang.country[ "bj" ] = "Benin";
+ theUILang.country[ "bl" ] = "Saint-Barthélemy";
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
@@ -156,9 +155,10 @@
  theUILang.country[ "mc" ] = "Monaco";
  theUILang.country[ "md" ] = "Moldova";
  theUILang.country[ "me" ] = "Montenegro";
+ theUILang.country[ "mf" ] = "Saint-Martin";
  theUILang.country[ "mg" ] = "Madagaskar";
  theUILang.country[ "mh" ] = "Marshallinsaaret";
- theUILang.country[ "mk" ] = "Makedonia";
+ theUILang.country[ "mk" ] = "Pohjois-Makedonia";
  theUILang.country[ "ml" ] = "Mali";
  theUILang.country[ "mm" ] = "Myanmar";
  theUILang.country[ "mn" ] = "Mongolia";
@@ -208,7 +208,7 @@
  theUILang.country[ "ru" ] = "Venäjä";
  theUILang.country[ "rw" ] = "Ruandan";
  theUILang.country[ "sa" ] = "Saudi-Arabiassa";
- theUILang.country[ "sb" ] = 'Salomonsaaret';
+ theUILang.country[ "sb" ] = "Salomonsaaret";
  theUILang.country[ "sc" ] = "Seychellit";
  theUILang.country[ "sd" ] = "Sudan";
  theUILang.country[ "se" ] = "Ruotsissa";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Etelä-Sudan";
  theUILang.country[ "st" ] = "Sao Tome ja Principe";
- theUILang.country[ "su" ] = "Venäjä";
  theUILang.country[ "sv" ] = "El Salvador";
  theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syyria";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tansania";
  theUILang.country[ "ua" ] = "Ukraina";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "Yhdistynyt kuningaskunta";
+ theUILang.country[ "um" ] = "Yhdysvaltain pienet erillissaaret";
  theUILang.country[ "un" ] = "Tuntematon";
  theUILang.country[ "us" ] = "Yhdysvallat";
  theUILang.country[ "uy" ] = "Uruguay";

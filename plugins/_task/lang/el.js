@@ -5,7 +5,7 @@
  *
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
- 
+
  theUILang.tskCommand		= "Λειτουργεί...";
  theUILang.tskCommandDone	= "Τελείωσε.";
  theUILang.tskConsole		= "Κονσόλα";
@@ -23,5 +23,5 @@
  theUILang.tskRunning		= "Εκτελείται";
  theUILang.tskArg		= "Παράμετρος";
  theUILang.tskTasks		= "Εργασίες";
- 
+
 thePlugins.get("_task").langLoaded();

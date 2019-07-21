@@ -23,7 +23,7 @@ class TorrentDownloadsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.torrentdownloads.me';
+		$url = 'https://www.torrentdownloads.me';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'0', 'movies'=>'4', 'tv'=>'8', 'music'=>'5', 'games'=>'3', 'anime'=>'1', 'software'=>'7', 'books'=>'2' );
 		else

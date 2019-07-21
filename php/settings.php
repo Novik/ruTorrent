@@ -28,7 +28,19 @@ class rTorrentSettings
 
 	static private $theSettings = null;
 
-	private function __construct( )
+	private $ratioCmds = array
+	(
+		"view",          
+		"view.set",
+		"ratio.min",
+		"ratio.min.set",
+		"ratio.max",
+		"ratio.max.set",
+		"ratio.upload",
+		"ratio.upload.set",
+	);
+
+	private function __construct()
     	{
 	}
 
@@ -64,7 +76,7 @@ class rTorrentSettings
 		else
 			$this->hooks[$ename][] = $plugin;
 	}
-	public function unregisterEventHook( $plugin, $ename )
+	protected function unregisterEventHookPrim( $plugin, $ename )
 	{
 		for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
 		{
@@ -75,7 +87,22 @@ class rTorrentSettings
 					unset($this->hooks[$ename]);
 				break;
 			}
+		}		
+	}
+	public function unregisterEventHook( $plugin, $ename )
+	{
+		if(is_array($ename))
+		{
+			foreach( $ename as $name )
+			{
+				$this->unregisterEventHookPrim( $plugin, $name );
+			}
 		}
+		else
+		{
+			$this->unregisterEventHookPrim( $plugin, $ename );
+		}
+		$this->store();
 	}
 	public function pushEvent( $ename, $prm )
 	{
@@ -129,10 +156,11 @@ class rTorrentSettings
 
 			if($this->iVersion>0x806)
 			{
-				$this->aliases = array(
+				$this->aliases = array
+				(
 					"d.set_peer_exchange" 		=> array( "name"=>"d.peer_exchange.set", "prm"=>0 ),
 					"d.set_connection_seed"		=> array( "name"=>"d.connection_seed.set", "prm"=>0 ),
-					);
+				);
 			}
 			if($this->iVersion==0x808)
 			{
@@ -155,7 +183,7 @@ class rTorrentSettings
 					$this->apiVersion = $req->val[0];
 			}
 
-			if($this->apiVersion >= 10)
+			if($this->apiVersion >= 11)	// at current moment (2019.07.20) this is feature-bind branch of rtorrent
 			{
 				$this->aliases = array_merge($this->aliases,array
 				(
@@ -238,6 +266,11 @@ class rTorrentSettings
 		}
 		return(array_key_exists($cmd,$this->aliases) ? $this->aliases[$cmd]["name"].$add : $cmd.$add);		
 	}
+	public function getRatioGroupCommand($ratio,$cmd,$args)
+	{
+		$prefix = ($this->iVersion >= 0x904) && in_array($cmd,$this->ratioCmds) ? "group2." : "group.";
+		return( new rXMLRPCCommand( $prefix.$ratio.".".$cmd, $args ) );
+	}
 	public function getEventCommand($cmd1,$cmd2,$args)
 	{
 		if($this->iVersion<0x804)
@@ -311,7 +344,8 @@ class rTorrentSettings
 	}
 	public function patchDeprecatedCommand( $cmd, $name )
 	{
-		if(array_key_exists($name,$this->aliases) && $this->aliases[$name]["prm"])
+		if((array_key_exists($name,$this->aliases) && $this->aliases[$name]["prm"]) || 
+			(($this->iVersion>=0x904) && (strpos($cmd->command,"group2.")===0)))
 			$cmd->addParameter("");
 	}
 	public function patchDeprecatedRequest($commands)

@@ -1102,56 +1102,48 @@ rDirectory.prototype.setDirectory = function(name)
 	this.current = name;
 }
 
-// -SM1310-
-
 var theBTClientVersion =
 {
 	azLikeClients4:
 	{
-		"AR" : "Ares", "AT" : "Artemis", "AV" : "Avicora",
-		"BG" : "BTGetit", "BM" : "BitMagnet", "BP" : "BitTorrent Pro (Azureus + Spyware)",
-		"bk" : "BitKitten (libtorrent)", "BS" : "BTSlave",
-		"BW" : "BitWombat", "BX" : "BittorrentX", "EB" : "EBit",
-		"DE" : "Deluge", "DP" : "Propogate Data Client", "FC" : "FileCroc",
-		"FT" : "FoxTorrent/RedSwoosh", "GR" : "GetRight", "HN" : "Hydranode",
-		"JS" : "justseed.it", "LC" : "LeechCraft", "LH" : "LH-ABC", "NX" : "Net Transport",
-		"MO" : "MonoTorrent", "MR" : "Miro", "MT" : "Moonlight",
-		"OT" : "OmegaTorrent", "PD" : "Pando", "QD" : "QQDownload",
-		"RS" : "Rufus", "RT" : "Retriever", "RZ" : "RezTorrent",
-		"SD" : "Xunlei", "SS" : "SwarmScope", "SZ" : "Shareaza",
-		"S~" : "Shareaza beta", "st" : "SharkTorrent", "TN" : "Torrent .NET",
-		"TS" : "TorrentStorm", "UL" : "uLeecher!", "UW" : "uTorrent Web", "VG" : "Vagaa",
-		"WY" : "Wyzo", "XL" : "Xunlei",
-		"XT" : "XanTorrent", "ZT" : "Zip Torrent",
-		'GS' : "GSTorrent", 'KG' : "KGet", 'ST' : "SymTorrent",
-		'BE' : "BitTorrent SDK", "TB" : "Torch",
-		"FL" : "Flud", "ZO" : "Zona"
+		"AR" : "Ares", "AT" : "Artemis", "AV" : "Avicora", "BE" : "BitTorrent SDK",
+		"BG" : "BTGetit", "BI" : "BiglyBT", "bk" : "BitKitten (libtorrent)",
+		"BM" : "BitMagnet", "BP" : "BitTorrent Pro (Azureus + Spyware)", "BS" : "BTSlave",
+		"BW" : "BitWombat", "BX" : "BittorrentX", "DE" : "Deluge", "DP" : "Propogate Data Client",
+		"EB" : "EBit", "FC" : "FileCroc", "FL" : "Flud", "FT" : "FoxTorrent/RedSwoosh",
+		"GR" : "GetRight", "GS" : "GSTorrent", "GT" : "go.torrent", "HN" : "Hydranode",
+		"JS" : "JSTorrent", "KG" : "KGet", "LC" : "LeechCraft", "LH" : "LH-ABC",
+		"MO" : "MonoTorrent", "MR" : "Miro", "MT" : "Moonlight", "NX" : "Net Transport",
+		"OS" : "OneSwarm", "OT" : "OmegaTorrent", "PD" : "Pando", "QD" : "QQDownload",
+		"RS" : "Rufus", "RT" : "Retriever", "RZ" : "RezTorrent", "SD" : "Xunlei",
+		"S~" : "Shareaza beta", "SS" : "SwarmScope", "st" : "SharkTorrent", "ST" : "SymTorrent",
+		"SZ" : "Shareaza", "TB" : "Torch", "TN" : "Torrent .NET", "TS" : "TorrentStorm",
+		"UL" : "uLeecher!", "UW" : "µTorrent Web", "VG" : "Vagaa", "WY" : "Wyzo",
+		"XF" : "Xfplay", "XL" : "Xunlei", "XT" : "XanTorrent", "ZO" : "Zona", "ZT" : "Zip Torrent"
 	 },
 	azLikeClients3:
 	{
-	        "AG" : "Ares", "A~" : "Ares", "ES" : "Electric Sheep",
-        	"HL" : "Halite", "LT" : "libtorrent (Rasterbar)", "lt" : "libTorrent (Rakshasa)",
-	        "MP" : "MooPolice", "TT" : "TuoTu", "qB" : "qBittorrent",
-       		'MG' : "MediaGet",	// ? -MG1Cr0-
-       		"IL" : "iLivid", "TL" : "Tribler"
+		"A~" : "Ares", "AG" : "Ares", "ES" : "Electric Sheep", "FW" : "FrostWire", "HL" : "Halite",
+		"IL" : "iLivid", "Lr" : "LibreTorrent", "lt" : "libTorrent (Rakshasa)",
+		"LT" : "libtorrent (Rasterbar)", "MG" : "MediaGet", "MP" : "MooPolice", "qB" : "qBittorrent",
+		"SM" : "SoMud", "TL" : "Tribler", "TT" : "TuoTu"
 	},
 	azLikeClients2x2:
 	{
-	        "AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent", "FX" : "Freebox BitTorrent"
+		"AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent", "FX" : "Freebox BitTorrent",
+		"WD" : "WebTorrent Desktop", "WW" : "WebTorrent"
 	},
 	azLikeClientsSpec:
 	{
-		'UM' : "uTorrent for Mac", 'UT' : "uTorrent", 'BT' : "BitTorrent", 'TR' : "Transmission",
-		'AZ' : "Azureus", 'KT' : "KTorrent", "BF" : "BitFlu",
-	        'LW' : "LimeWire", "BB" : "BitBuddy", "BR" : "BitRocket",
-		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant",
-		"SK" : "Spark", "tT" : "tTorrent", "FD" : "Free Download Manager"
+		"AZ" : "Azureus", "BB" : "BitBuddy", "BF" : "BitFlu", "BR" : "BitRocket", "BT" : "BitTorrent",
+		"cT" : "CuteTorrent", "CT" : "CTorrent", "FD" : "Free Download Manager", "KT" : "KTorrent",
+		"LP" : "Lphant", "LW" : "LimeWire", "PI" : "PicoTorrent", "SK" : "Spark", "TR" : "Transmission",
+		"tT" : "tTorrent", "UM" : "µTorrent for Mac", "UT" : "µTorrent", "XX" : "Xtorrent"
 	},
 	shLikeClients:
 	{
-		'O' : "Osprey ", 'Q' : "BTQueue",
-        	'A' : "ABC", 'R' : "Tribler", 'S' : "Shad0w",
-	        'T' : "BitTornado", 'U': "UPnP NAT Bit Torrent"
+		"A" : "ABC", "O" : "Osprey ", "Q" : "BTQueue", "R" : "Tribler", "S" : "Shad0w", 
+		"T" : "BitTornado", "U" : "UPnP NAT Bit Torrent"
 	},
 	get: function( origStr )
 	{
@@ -1174,7 +1166,7 @@ var theBTClientVersion =
 
 		function shChar3( ch )
 		{
-			var codes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz";
+			var codes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz";
 			var loc = codes.indexOf(ch);
 			if(loc<0) loc = 0;
 			return(String(loc));
@@ -1262,6 +1254,12 @@ var theBTClientVersion =
 					case 'FD':
 						ret = cli+" "+shChar3(str.charAt(3))+"."+shChar3(str.charAt(4))+"."+shChar3(str.charAt(5));
 						break;
+					case 'cT':
+						ret = cli+" "+shChar3(str.charAt(3))+"."+shChar3(str.charAt(4))+"."+shChar3(str.charAt(5))+"."+shChar3(str.charAt(6));
+						break;
+					case 'PI':
+						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+str.charAt(5)+"."+str.charAt(6);
+						break;
 					default:
 						var ch = str.charAt(6);
 						ret = cli+" "+str.charAt(3)+"."+parseInt(str.substr(4,2),10);
@@ -1318,7 +1316,7 @@ var theBTClientVersion =
 				ret = "BitTorrent "+str.charAt(3)+"."+parseInt(str.substr(4,2),10)+"."+parseInt(str.substr(6,2),10)+getMnemonicEnd(str.charAt(8));
 			else
 			if(str.match(/^-UT/))
-				ret = "uTorrent "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5);
+				ret = "µTorrent "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5);
 			else
 			if(str.match(/^-FG\d\d\d\d/))
 				ret = "FlashGet "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);

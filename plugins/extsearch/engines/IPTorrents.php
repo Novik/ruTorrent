@@ -15,6 +15,14 @@ class IPTorrentsEngine extends commonEngine
         'years'   => 31536000,
     ];
 
+    protected static function disableEntityLoader()
+    {
+        if( function_exists('libxml_disable_entity_loader') )
+        {
+            libxml_disable_entity_loader( true );
+        }
+    }
+
     protected static function getTime($now, $ago, $unit)
     {
         $delta = (array_key_exists($unit, self::$seconds) ? self::$seconds[$unit] : 0);
@@ -35,6 +43,7 @@ class IPTorrentsEngine extends commonEngine
             $cat = $categories['all'];
         else
             $cat = $categories[$cat];
+        self::disableEntityLoader();
         for ($pg = 1; $pg < 11; $pg++) {
             $cli = $this->fetch($url . '/t?' . $cat . ';o=seeders;q=' . $what . ';p=' . $pg);
             if (($cli == false) || (strpos($cli->results, ">No Torrents Found!<") !== false) ||
@@ -55,23 +64,27 @@ class IPTorrentsEngine extends commonEngine
                     }
 
                     $tds = $tr->getElementsByTagName('td');
-                    if ($tds->length !== 9) continue; //bail if table rows isn't as expected
+                    if (($tds->length < 9) && ($tds->length > 10)) continue; //bail if table rows isn't as expected
 
                     try {
-                        preg_match('/\| (.*) (minutes|hours|days|weeks|months|years) ago/',
+                        preg_match('/.*(\d+\.\d) (minutes|hours|days|weeks|months|years) ago/',
                             $tds[1]->textContent,
                             $ago_matches
                         );
 
                         $item = $this->getNewEntry();
+
+                        $link = $url . $tds[3]->getElementsByTagName('a')[0]->getAttribute('href');
+
                         $item["cat"] = $tds[0]->getElementsByTagName('img')[0]->getAttribute('alt');
-                        $item["desc"] = $url . $tds[3]->getElementsByTagName('a')[0]->getAttribute('href');
+                        $item["desc"] = $url . $tds[1]->getElementsByTagName('a')[0]->getAttribute('href');
                         $item["name"] = self::removeTags($tds[1]->getElementsByTagName('a')[0]->textContent);
                         $item["size"] = self::formatSize($tds[5]->textContent);
                         $item["time"] = self::getTime($now, $ago_matches[1], $ago_matches[2]);
-                        $item["seeds"] = intval($tds[7]->textContent);
-                        $item["peers"] = intval($tds[8]->textContent);
-                        $ret[$item['desc']] = $item;
+                        $item["seeds"] = ($tds->length === 9) ? intval($tds[7]->textContent) : intval($tds[8]->textContent);
+                        $item["peers"] = ($tds->length === 9) ? intval($tds[8]->textContent) : intval($tds[9]->textContent);
+
+                        $ret[$link] = $item;
                     } catch (Exception $e) {
                         //table row wasn't in the correct format
                     }

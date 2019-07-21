@@ -156,6 +156,7 @@ theWebUI.rebuildTrackersLabels = function()
 	{
 		var table = this.getTable('trt');
 		var trackersLabels = new Object();
+		var trackersSizes = new Object();
 		var counted = new Object();
 		for(var hash in this.trackers)
 		{
@@ -182,6 +183,11 @@ theWebUI.rebuildTrackersLabels = function()
 									trackersLabels[tracker]++;
 								else
 									trackersLabels[tracker] = 1;
+
+								if(!$type(trackersSizes[tracker]))
+									trackersSizes[tracker] = 0;
+								trackersSizes[tracker] += parseInt(this.torrents[hash].size);
+
 								counted[hash].push(tracker);
 							}
 						}
@@ -206,15 +212,16 @@ theWebUI.rebuildTrackersLabels = function()
 		{
 			var lbl = keys[i];
 			var li = null;
+			var lblSize = this.settings["webui.show_labelsize"] ? ' ; '+theConverter.bytes(trackersSizes[lbl], 2) : "";
 			if(lbl in this.trackersLabels)
 			{
 				li = $($$('i'+lbl));
-	                	li.children("span").text(trackersLabels[lbl]);
+	                	li.children("span").text(trackersLabels[lbl]+lblSize);
 			}
 			else
 			{
 			        li = $('<li>').attr("id",'i'+lbl).
-			        	html(escapeHTML(lbl)+'&nbsp;(<span id="-'+lbl+'_c">'+trackersLabels[lbl]+'</span>)').
+			        	html(escapeHTML(lbl)+'&nbsp;(<span id="-'+lbl+'_c">'+trackersLabels[lbl]+lblSize+'</span>)').
 			        	mouseclick(theWebUI.trackersLabelContextMenu).addClass("cat tracker").attr("title",lbl+" ("+trackersLabels[lbl]+")").
 					prepend( $("<img>").attr("src","plugins/tracklabels/action.php?tracker="+lbl).addClass("tfavicon") ).css({ padding: "2px 4px" });
 				ul.append(li);

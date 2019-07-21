@@ -14,7 +14,6 @@
  theUILang.countryName		= "País";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Ilha de Ascensão";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Emirados Árabes Unidos";
  theUILang.country[ "af" ] = "Afeganistão";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albânia";
  theUILang.country[ "am" ] = "Armenia";
- theUILang.country[ "an" ] = "Antilhas Holandesas";
  theUILang.country[ "ao" ] = "Angola";
  theUILang.country[ "aq" ] = "Antártida";
  theUILang.country[ "ar" ] = "Argentina";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "Bahrain";
  theUILang.country[ "bi" ] = "Burundi";
  theUILang.country[ "bj" ] = "Benin";
+ theUILang.country[ "bl" ] = "São Bartolomeu";
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolívia";
@@ -156,9 +155,10 @@
  theUILang.country[ "mc" ] = "Monaco";
  theUILang.country[ "md" ] = "Moldávia";
  theUILang.country[ "me" ] = "Montenegro";
+ theUILang.country[ "mf" ] = "São Martinho";
  theUILang.country[ "mg" ] = "Madagáscar";
  theUILang.country[ "mh" ] = "Ilhas Marshall";
- theUILang.country[ "mk" ] = "Macedónia";
+ theUILang.country[ "mk" ] = "Macedónia do Norte";
  theUILang.country[ "ml" ] = "Mali";
  theUILang.country[ "mm" ] = "Mianmar";
  theUILang.country[ "mn" ] = "Mongólia";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Sudão do Sul";
  theUILang.country[ "st" ] = "São Tomé e Príncipe";
- theUILang.country[ "su" ] = "Rússia";
  theUILang.country[ "sv" ] = "El Salvador";
  theUILang.country[ "sx" ] = "São Martinho";
  theUILang.country[ "sy" ] = "Síria";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tanzânia";
  theUILang.country[ "ua" ] = "Ucrânia";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "Reino Unido";
+ theUILang.country[ "um" ] = "Ilhas Menores Distantes dos Estados Unidos";
  theUILang.country[ "un" ] = "Desconhecido";
  theUILang.country[ "us" ] = "Estados Unidos";
  theUILang.country[ "uy" ] = "Uruguai";

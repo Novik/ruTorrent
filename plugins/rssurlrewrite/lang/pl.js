@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Menedżer adresów RSS";
  theUILang.rssAddRule		= "Dodaj";
  theUILang.rssDelRule		= "Usuń";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Ustawienia reguły";
  theUILang.rssSrcHref		= "Jeśli adres pobierania torrenta pasuje do wzorca";
  theUILang.rssSrcGuid		= "Jeśli adres opisu torrenta pasuje do wzorca";
@@ -23,7 +23,7 @@
  theUILang.rssURLInfo		= "Adresy";
  theUILang.rssURLGUID		= "Adres opisu torrenta";
  theUILang.rssURLHref		= "Adres pobierania torrenta";
- theUILang.rssPatternError	= "Błędny wzorzec";
+ theUILang.rssPatternError	= "Błędny wzorzec.";
  theUILang.rssStatus		= "RSS";
 
 thePlugins.get("rssurlrewrite").langLoaded();

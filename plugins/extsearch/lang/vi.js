@@ -29,7 +29,7 @@
  theUILang.extPrivate			= "Riêng tư";
  theUILang.extPublic			= "Công cộng";
  theUILang.exsCookies			= "Định dạng cookies";
- theUILang.extAllPublic 		= "Toàn bộ công cộng";
+ theUILang.extAllPublic			= "Toàn bộ công cộng";
  theUILang.extAllPrivate		= "Toàn bộ riêng tư";
  theUILang.exsMustInstallCookies	= "Bạn phải cài đặt thành phần 'Cookies' để máy làm việc.";
  theUILang.exsMustInstallLoginMgr	= "Bạn phải cài đặt thành phần 'LoginMgr' để máy làm việc.";

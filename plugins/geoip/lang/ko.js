@@ -5,7 +5,7 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Author: Limerainne (limerainne@gmail.com)
+ * Author: Limerainne (limerainne@gmail.com), Akash Gupta (akash.guptaa@gmail.com)
  */
 
  theUILang.peerComment		= "메모 추가";
@@ -14,7 +14,6 @@
  theUILang.countryName		= "국가";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "어센션 섬";
  theUILang.country[ "ad" ] = "안도라";
  theUILang.country[ "ae" ] = "아랍 에미리트";
  theUILang.country[ "af" ] = "아프가니스탄";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "앵귈라";
  theUILang.country[ "al" ] = "알바니아";
  theUILang.country[ "am" ] = "아르메니아";
- theUILang.country[ "an" ] = "네덜란드령 안틸레스";
  theUILang.country[ "ao" ] = "앙골라";
  theUILang.country[ "aq" ] = "남극";
  theUILang.country[ "ar" ] = "아르헨티나";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "바레인";
  theUILang.country[ "bi" ] = "부룬디";
  theUILang.country[ "bj" ] = "베냉";
+ theUILang.country[ "bl" ] = "생바르텔레미";
  theUILang.country[ "bm" ] = "버뮤다";
  theUILang.country[ "bn" ] = "브루나이";
  theUILang.country[ "bo" ] = "볼리비아";
@@ -156,9 +155,10 @@
  theUILang.country[ "mc" ] = "모나코";
  theUILang.country[ "md" ] = "몰도바";
  theUILang.country[ "me" ] = "몬테네그로";
+ theUILang.country[ "mf" ] = "생마르탱";
  theUILang.country[ "mg" ] = "마다가스카르";
  theUILang.country[ "mh" ] = "마샬 군도";
- theUILang.country[ "mk" ] = "마케도니아";
+ theUILang.country[ "mk" ] = "북마케도니아";
  theUILang.country[ "ml" ] = "말리";
  theUILang.country[ "mm" ] = "미얀마";
  theUILang.country[ "mn" ] = "몽골";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "수리남";
  theUILang.country[ "ss" ] = "남 수단";
  theUILang.country[ "st" ] = "상투메 프린시페";
- theUILang.country[ "su" ] = "러시아";
  theUILang.country[ "sv" ] = "엘살바도르";
  theUILang.country[ "sx" ] = "신트마르턴";
  theUILang.country[ "sy" ] = "시리아";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "탄자니아";
  theUILang.country[ "ua" ] = "우크라이나";
  theUILang.country[ "ug" ] = "우간다";
- theUILang.country[ "uk" ] = "영국";
+ theUILang.country[ "um" ] = "미국령 군소 제도";
  theUILang.country[ "un" ] = "알 수 없음";
  theUILang.country[ "us" ] = "미국";
  theUILang.country[ "uy" ] = "우루과이";

@@ -186,10 +186,10 @@ div#lcont div.std {padding: 2px}
 div#gcont table {font-size: 11px;  line-height: 10px}
 div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
 
-div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none;}
 div.graph_tab {font-size: 11px;  line-height: 11px; color: #545454}
 
-div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
 div#List {border: 1px solid #A0A0A0;}
 
 div.cont {padding: 6px; font-size: 11px;}
@@ -245,7 +245,7 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
 textarea { overflow: auto; }
 
-.catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px;  cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }
+.catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px;  cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
 
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; width: 380px; height: 290px; left: 100px; top: 100px; position: absolute; margin: 0 auto }

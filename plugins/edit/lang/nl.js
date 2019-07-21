@@ -6,7 +6,7 @@
  * Author: rascalli (rascallim@gmail.com)
  */
 
- theUILang.EditTrackers 		= "Bewerk torrent ...";
+ theUILang.EditTrackers			= "Bewerk torrent...";
  theUILang.EditTorrentProperties	= "Torrent Eigenschappen";
  theUILang.errorAddTorrent		= "Fout bij het toevoegen van het torrent-bestand";
  theUILang.errorWriteTorrent		= "Fout bij schrijven van het torrent bestand";

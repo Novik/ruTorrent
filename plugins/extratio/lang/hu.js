@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
  theUILang.ratioThenLegend	= "Then";
  theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.setChannelTo		= "Set throttle to";
+ theUILang.ratioNewRule		= "New rule";
 
 thePlugins.get("extratio").langLoaded();

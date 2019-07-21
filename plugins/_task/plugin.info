@@ -1,8 +1,9 @@
 plugin.description: This plugin provides the possibility of running various scripts on the host system.
 plugin.author: Novik
-plugin.version: 3.8
+plugin.version: 3.9
 php.extensions.error: json
-rtorrent.external.warning: pgrep
+rtorrent.external.error: php,pgrep
+web.external.error: php,pgrep
 rtorrent.remote: error
 rtorrent.need: 0
 plugin.help: https://github.com/Novik/ruTorrent/wiki/Plugin_task

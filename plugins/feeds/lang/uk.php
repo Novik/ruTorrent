@@ -1,14 +1,14 @@
 <?php
 
 $theUILang["all"]		= "Усі завантаження";
-$theUILang["completed"] 	= "Завершені завантаження";
+$theUILang["completed"]		= "Завершені завантаження";
 $theUILang["downloading"]	= "Незавершені завантаження";
 $theUILang["active"]		= "Активні завантаження";
 $theUILang["inactive"]		= "Неактивні завантаження";
 $theUILang["error"]		= "Завантаження з помилками";
 $theUILang["Transfer"]		= "Передавання";
 $theUILang["Size"]		= "Розмір";
-$theUILang["Remaining"] 	= "Залишилося";
+$theUILang["Remaining"]		= "Залишилося";
 $theUILang["Share_ratio"]	= "Коефіцієнт";
 $theUILang["Downloaded"]	= "Завантажено";
 $theUILang["Down_speed"]	= "Швидкість завантаження";
@@ -18,7 +18,7 @@ $theUILang["Seeds"]		= "Сіди";
 $theUILang["Peers"]		= "Піри";
 $theUILang["Track_status"]	= "Статус трекера";
 $theUILang["Comment"]		= "Коментар";
-$theUILang["s"] 		= "с";
+$theUILang["s"]			= "с";
 $theUILang["bytes"]		= "байт";
 $theUILang["KB"]		= "КiБ";
 $theUILang["MB"]		= "МiБ";

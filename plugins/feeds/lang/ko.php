@@ -1,0 +1,32 @@
+<?php
+
+$theUILang["all"]		= "모든 토렌트";
+$theUILang["completed"]		= "완료된 토렌트";
+$theUILang["downloading"]	= "다운로드 중인 토렌트";
+$theUILang["active"]		= "활성화된 토렌트";
+$theUILang["inactive"]		= "비활성화된 토렌트";
+$theUILang["error"]		= "오류 발생 토렌트";
+$theUILang["Transfer"]		= "전송";
+$theUILang["Size"]		= "크기";
+$theUILang["Remaining"]		= "남은 크기";
+$theUILang["Share_ratio"]	= "공유 비율";
+$theUILang["Downloaded"]	= "다운로드한 크기";
+$theUILang["Down_speed"]	= "다운로드 속도";
+$theUILang["Uploaded"]		= "업로드한 크기";
+$theUILang["Ul_speed"]		= "업로드 속도";
+$theUILang["Seeds"]		= "시드";
+$theUILang["Peers"]		= "피어";
+$theUILang["Track_status"]	= "트래커 상태";
+$theUILang["Comment"]		= "설명";
+$theUILang["s"]			= "s";
+$theUILang["bytes"]		= "bytes";
+$theUILang["KB"]		= "KiB";
+$theUILang["MB"]		= "MiB";
+$theUILang["GB"]		= "GiB";
+$theUILang["TB"]		= "TiB";
+$theUILang["PB"]		= "PiB";
+$theUILang["time_w"]		= "주 ";
+$theUILang["time_d"]		= "일 ";
+$theUILang["time_h"]		= "시 ";
+$theUILang["time_m"]		= "분 ";
+$theUILang["time_s"]		= "초 ";

@@ -3,10 +3,10 @@
  *
  * Swedish language file.
  *
- * Author: Magnus Holm (holmen@brasse.se) 
+ * Author: Magnus Holm (holmen@brasse.se)
  */
 
- theUILang.checkTorrent 	= "Sök efter uppdateringar";
+ theUILang.checkTorrent		= "Sök efter uppdateringar";
  theUILang.chkHdr		= "Torrent-uppdateringskontroll";
  theUILang.checkedAt		= "Senaste sökning";
  theUILang.checkedResult	= "Resultat";

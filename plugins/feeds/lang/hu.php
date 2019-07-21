@@ -1,16 +1,16 @@
 <?php
 
 $theUILang["all"]		= "Összes torrent";
-$theUILang["completed"] 	= "Befejezett torrentek";
+$theUILang["completed"]		= "Befejezett torrentek";
 $theUILang["downloading"]	= "Letöltött torrentek";
 $theUILang["active"]		= "Aktív torrentek";
 $theUILang["inactive"]		= "Inaktív torrentek";
 $theUILang["error"]		= "Hibás torrentek";
 $theUILang["Transfer"]		= "Transfer";
 $theUILang["Size"]		= "Méret";
-$theUILang["Remaining"] 	= "Hátralévő";
+$theUILang["Remaining"]		= "Hátralévő";
 $theUILang["Share_ratio"]	= "Megosztási arány";
-$theUILang["Downloaded"]	= "Letöltve"; 
+$theUILang["Downloaded"]	= "Letöltve";
 $theUILang["Down_speed"]	= "DL";
 $theUILang["Uploaded"]		= "Feltöltve";
 $theUILang["Ul_speed"]		= "UL";
@@ -18,7 +18,7 @@ $theUILang["Seeds"]		= "Seed";
 $theUILang["Peers"]		= "Peer";
 $theUILang["Track_status"]	= "Tracker Státusz";
 $theUILang["Comment"]		= "Megjegyzés";
-$theUILang["s"] 		= "s";
+$theUILang["s"]			= "s";
 $theUILang["bytes"]		= "bytes";
 $theUILang["KB"]		= "KiB";
 $theUILang["MB"]		= "MiB";

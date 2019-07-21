@@ -3,7 +3,7 @@
  *
  * Ukrainian language file.
  *
- * Author: Oleksandr Natalenko <oleksandr@natalenko.name>
+ * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
  theUILang.uploadeta		= "ETA вивантаження";

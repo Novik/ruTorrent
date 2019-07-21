@@ -263,11 +263,11 @@ plugin.onLangLoaded = function()
 			"<table>"+
 				"<tr>"+
 					"<td><label id='lbl_restrictedUL1' for='restrictedUL1' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedUL1' class='TextboxNum' maxlength='6' disabled=1/></td>"+
+					"<td class=\"alr\"><input type='text' id='restrictedUL1' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_restrictedDL1' for='restrictedDL1' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedDL1' class='TextboxNum' maxlength='6' disabled=1/></td>"+
+					"<td class=\"alr\"><input type='text' id='restrictedDL1' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
 				"</tr>"+
 			"</table>"+
 		   "</fieldset>"+
@@ -276,11 +276,11 @@ plugin.onLangLoaded = function()
 			"<table>"+
 				"<tr>"+
 					"<td><label id='lbl_restrictedUL2' for='restrictedUL2' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedUL2' class='TextboxNum' maxlength='6' disabled=1/></td>"+
+					"<td class=\"alr\"><input type='text' id='restrictedUL2' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_restrictedDL2' for='restrictedDL2' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedDL2' class='TextboxNum' maxlength='6' disabled=1/></td>"+
+					"<td class=\"alr\"><input type='text' id='restrictedDL2' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
 				"</tr>"+
 			"</table>"+
 		   "</fieldset>"+
@@ -289,11 +289,11 @@ plugin.onLangLoaded = function()
 			"<table>"+
 				"<tr>"+
 					"<td><label id='lbl_restrictedUL3' for='restrictedUL3' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedUL3' class='TextboxNum' maxlength='6' disabled=1/></td>"+
+					"<td class=\"alr\"><input type='text' id='restrictedUL3' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_restrictedDL3' for='restrictedDL3' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedDL3' class='TextboxNum' maxlength='6' disabled=1/></td>"+
+					"<td class=\"alr\"><input type='text' id='restrictedDL3' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
 				"</tr>"+
 			"</table>"+
 		   "</fieldset>";

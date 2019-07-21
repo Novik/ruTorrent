@@ -6,11 +6,11 @@
  * Author: 
  */
 
- theUILang.uploadeta		= "Upload ETA";
- theUILang.uploadtarget		= "Upload Target";
- theUILang.ULtarget		= "UL Target";
- theUILang.ULremaining		= "UL Remaining";
- theUILang.ULETA		= "UL ETA";
- theUILang.ULdescription	= "This plugin only will show the amount of data and time that is left to an upload ratio target. It will not automatically remove a torrent for you. Look at 'ratio.min.set' in your rTorrent configuration file to remove a torrent when a upload target has been reached.";
+ theUILang.uploadeta		= "Wyślij";
+ theUILang.uploadtarget		= "Wyślij docelowo";
+ theUILang.ULtarget		= "Wyślij/cel";
+ theUILang.ULremaining		= "Wyślij/pozostało";
+ theUILang.ULETA		= "Wyślij/szacowane";
+ theUILang.ULdescription	= "Ta wtyczka pokazuje jedynie ilość danych i czasu pozostałego do wyznaczonego celu udostępniania. Nie usunie dla Ciebie automatycznie torrenta. Sprawdź 'ratio.min.set' w pliku konfiguracyjnym rTorrent, aby usunąć torrent po osiągnięciu wyznaczonego celu.";
 
 thePlugins.get("uploadeta").langLoaded();

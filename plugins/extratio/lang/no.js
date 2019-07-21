@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "En av torrentens trackere er privat";
  theUILang.ratioThenLegend	= "Så";
  theUILang.setRatioTo		= "Sett ratio til";
- theUILang.setChannelTo 	= "Sett regulering til";
- theUILang.ratioNewRule 	= "Ny regel";
+ theUILang.setChannelTo		= "Sett regulering til";
+ theUILang.ratioNewRule		= "Ny regel";
 
 thePlugins.get("extratio").langLoaded();

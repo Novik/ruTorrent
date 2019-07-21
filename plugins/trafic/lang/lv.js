@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.traf 		= "Traffic";
+ theUILang.traf			= "Traffic";
  theUILang.perDay		= "Per day";
  theUILang.perMonth		= "Per month";
  theUILang.perYear		= "Per year";
