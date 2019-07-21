@@ -14,6 +14,17 @@ class commonEngine
 	public function action($what,$cat,&$arr,$limit,$useGlobalCats)
 	{
 	}
+	
+	public function getAccount($name)
+	{
+		$accounts = accountManager::load();
+		if (array_key_exists($name, $accounts->accounts)) {
+			return $accounts->accounts[$name];
+		} else {
+			return false;
+		}
+	}
+
 	public function getSource()
 	{
 		$className = get_class($this);
