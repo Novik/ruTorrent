@@ -1,0 +1,59 @@
+HostName Plugin for RUTorrent
+==========================
+
+The purpose of this plugin is to show hostnames of peers for selected torrent.
+Based on GeoIP plugin.
+
+Показывает имена хостов на вкладке с пирами.
+Основан на коде плагина GeoIP.
+
+
+
+Принцип работы
+--------------
+
+Запросы на преобразование имёт посылаются асинхронно на сервер rTorrent,
+преоборазованием занимается PHP скрипт.
+Используется внутренний кеш, реализованный на JS.
+Кеш хранится в памяти браузера и при обновлении страницы он обнуляется.
+
+
+Usage
+-----
+
+Unpack the plugin archive into rutorrent/plugins directory and refresh
+contents of your browser. If everything is OK, you should see a new
+column "HostName" next to "Name" in "Peers" tab.
+
+Распаковать в папку rutorrent/plugins и обновить страницу в браузере.
+Если всё прошло нормально появится ещё один столбец - "HostName" в вкладке "Peers".
+
+
+Settings
+--------
+
+[ init.js ]
+
+g_cache_size = 1024; /* Max count of cache items. */
+
+
+
+Change log
+----------
+
+1.0 (03.10.2010)
+- First release 
+
+3.9 (05.08.2019)
+- Total refactoring
+
+
+Contact
+-------
+
+Please send error reports and patches to: rozhuk.im@gmail.com
+
+
+Author: Rozhuk Ivan
+--------------------
+
