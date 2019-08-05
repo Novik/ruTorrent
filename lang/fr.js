@@ -228,7 +228,7 @@ var theUILang =
  peerSnub			: "Snuber",
  peerDetails			: "Détails",
  peerUnsnub			: "Désnuber",
- peerAddLabel			: "Entrer IP/Hostname[:port]",
+ peerAddLabel			: "Entrer IP/Nom d'hôte[:port]",
  noTorrentList			: "La liste des torrents n'est pas encore disponible, la connexion à rTorrent n'a pas été établie.",
  yes				: "oui",
  no				: "non",
