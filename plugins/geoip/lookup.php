@@ -6,7 +6,7 @@
 
 	function isValidCode( $country )
 	{
-		return( !empty($country) && (strlen($country)==2) && !ctype_digit($country[1]) );
+		return( !empty($country) && (strlen($country)==2) && !is_numeric($country[1]) );
 	}
 
 	$retrieveCountry = ($retrieveCountry && function_exists("geoip_country_code_by_name"));
