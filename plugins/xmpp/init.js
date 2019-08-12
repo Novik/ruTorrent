@@ -24,21 +24,37 @@ if(plugin.canChangeOptions())
 	theWebUI.xmppWasChanged = function()
 	{
 		if( $$('useEncryption').checked != ( theWebUI.xmpp.UseEncryption == 1 ) )
+		{
 			return true;
+		}
 		if( $$('jabberHost').value != theWebUI.xmpp.JabberHost )
+		{
 			return true;
+		}
 		if( $$('advancedSettings').checked  != ( theWebUI.xmpp.AdvansedSettings  == 1 ) )
+		{
 			return true;
+		}
 		if( $$('jabberPort').value != theWebUI.xmpp.JabberPort)
+		{
 			return true;
+		}
 		if( $$('jabberJid').value != theWebUI.xmpp.JabberJID )
+		{
 			return true;
+		}
 		if( $$('jabberFor').value != theWebUI.xmpp.JabberFor )
+		{
 			return true;
-		if( $$('message').value != theWebUI.xmpp.message )
+		}
+		if( $$('message').value != theWebUI.xmpp.Message )
+		{
 			return true;
+		}
 		if( $$('jabberPasswd').value != theWebUI.xmpp.JabberPasswd )
+		{
 			return true;
+		}
 		return false;
 	}
 
