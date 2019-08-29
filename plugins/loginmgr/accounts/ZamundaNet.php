@@ -1,12 +1,12 @@
 <?php
 
-class KinozalTVAccount extends commonAccount
+class ZamundaNetAccount extends commonAccount
 {
-	public $url = "https://kinozal.guru";
+	public $url = "https://zamunda.ch";
 
 	protected function isOK($client)
 	{
-		return(strpos($client->results, 'type="password" name="password"')===false);
+		return(strpos($client->results, '<input type="password"')===false);
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
@@ -14,7 +14,6 @@ class KinozalTVAccount extends commonAccount
 		if($client->fetch( $this->url ))
 		{
                         $client->setcookies();
-			$client->referer = $this->url;
         		if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded", 
 				"username=".rawurlencode($login)."&password=".rawurlencode($password) ))
 			{
@@ -26,6 +25,6 @@ class KinozalTVAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)kinozal\.(tv|me|guru)\//si", $url ));
+		return(preg_match( "/(\.|\/)zamunda\.(net|ch)\//si", $url ));
 	}	
 }

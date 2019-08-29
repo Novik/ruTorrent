@@ -21,7 +21,7 @@ class privateData
 			if($cache->get($rt))
 			{
 				$client->cookies = $rt->cookies;
-				$client->referer = $rt->referer;
+//				$client->referer = $rt->referer;
 				$rt->loaded = true;
 			}
 		}

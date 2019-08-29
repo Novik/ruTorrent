@@ -26,6 +26,6 @@ class TfileAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)megatfile.cc\/forum\//si", $url ));
+		return(preg_match( "/(\.|\/)megatfile\.cc\/forum\//si", $url ));
 	}
 }

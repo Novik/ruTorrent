@@ -26,6 +26,6 @@ class TapochekNetAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)tapochek.net\//si", $url ));
+		return(preg_match( "/(\.|\/)tapochek\.net\//si", $url ));
 	}
 }
