@@ -5,3 +5,5 @@
 
 .lf_rur li input.TextboxFocus { background: #CFDEEF }
 .lf_rur li input.TextboxNormal { background: #FAFAFA }
+
+#autodl-filters-left { margin-left: 3px; margin-right: 3px; }
