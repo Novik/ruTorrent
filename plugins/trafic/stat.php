@@ -21,16 +21,26 @@ class rStat
 		$this->fname = getSettingsPath().'/trafic/'.$prefix;
 		if($file=@fopen($this->fname,"r"))
 		{
-			$this->hourUp = fgetcsv($file);
-			$this->hourDown = fgetcsv($file);
-			$this->hourHitTimes = fgetcsv($file);
-			$this->monthUp = fgetcsv($file);
-			$this->monthDown = fgetcsv($file);
-			$this->monthHitTimes = fgetcsv($file);
-			$this->yearUp = fgetcsv($file);
-			$this->yearDown = fgetcsv($file);
-			$this->yearHitTimes = fgetcsv($file);
+			$hourUp = fgetcsv($file);
+			$hourDown = fgetcsv($file);
+			$hourHitTimes = fgetcsv($file);
+			$monthUp = fgetcsv($file);
+			$monthDown = fgetcsv($file);
+			$monthHitTimes = fgetcsv($file);
+			$yearUp = fgetcsv($file);
+			$yearDown = fgetcsv($file);
+			$yearHitTimes = fgetcsv($file);
 			fclose($file);
+
+			if ($hourUp) $this->hourUp = $hourUp;
+			if ($hourDown) $this->hourDown = $hourDown;
+			if ($hourHitTimes) $this->hourHitTimes = $hourHitTimes;
+			if ($monthUp) $this->monthUp = $monthUp;
+			if ($monthDown) $this->monthDown = $monthDown;
+			if ($monthHitTimes) $this->monthHitTimes = $monthHitTimes;
+			if ($yearUp) $this->yearUp = $yearUp;
+			if ($yearDown) $this->yearDown = $yearDown;
+			if ($yearHitTimes) $this->yearHitTimes = $yearHitTimes;
 		}
 	}
 	public function flush()
