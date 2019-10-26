@@ -1,4 +1,4 @@
-plugin.loadLang();
+plugin.loadLang(true);
 
 if(plugin.canChangeMenu()) 
 {
@@ -12,7 +12,7 @@ if(plugin.canChangeMenu())
 	{
 		if(plugin.createFileMenu.call(this, e, id)) 
 		{
-			if(plugin.enabled) 
+			if(plugin.enabled && plugin.allStuffLoaded) 
 			{
 //				theContextMenu.add([CMENU_SEP]);
 				var fno = null;
