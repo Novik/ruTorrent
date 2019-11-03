@@ -122,7 +122,7 @@ plugin.onLangLoaded = function()
 					theUILang.autotoolsSkipMoveForFiles + "</label><br>"+
 				"</td>"+
 				"<td class='alr'>"+
-					"<input type='text' id='skip_move_for_files' class='TextBoxLarge' maxlength='30' />"+
+					"<input type='text' id='skip_move_for_files' class='TextBoxLarge' maxlength='50' />"+
 				"</td>"+
 
 			"</tr>"+

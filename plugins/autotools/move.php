@@ -25,6 +25,7 @@ function skip_move($files) {
     Debug("using filter:".$filter);
     foreach($files as $file) {
        if ( preg_match($filter.'u',$file)==1) {
+	    Debug("filter matched on '".$file."', not moving:" .implode(" | ",$files));
            return true;
 	}
     }
