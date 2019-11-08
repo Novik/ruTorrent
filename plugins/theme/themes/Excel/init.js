@@ -12,9 +12,11 @@ plugin.allDone = function()
 	});
 	$(".tabbar li:last-child a").after( $("<img></img>").attr( { src: $(".tabbar li:last-child").hasClass("selected") ? 
 		"plugins/theme/themes/Excel/images/tabbghfin.png" : 
-		"plugins/theme/themes/Excel/images/tabbgfin.png" } ).
-		css( { "vertical-align": -3 } ) );
-	$(".tabbar li").css( { "vertical-align": -4 } );
+		"plugins/theme/themes/Excel/images/tabbgfin.png" } )
+//		.css( { "vertical-align": -3 } ) 
+	);
+//	$(".tabbar li").css( { "vertical-align": -4 } );
+	$("#clear_log").css( { "position": "relative", "bottom": 4 } );
 }
 
 plugin.tabsShow = theTabs.show;
