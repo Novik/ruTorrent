@@ -1136,9 +1136,11 @@ var theBTClientVersion =
 	azLikeClientsSpec:
 	{
 		"AZ" : "Azureus", "BB" : "BitBuddy", "BF" : "BitFlu", "BR" : "BitRocket", "BT" : "BitTorrent",
-		"cT" : "CuteTorrent", "CT" : "CTorrent", "FD" : "Free Download Manager", "KT" : "KTorrent",
-		"LP" : "Lphant", "LW" : "LimeWire", "PI" : "PicoTorrent", "SK" : "Spark", "TR" : "Transmission",
-		"tT" : "tTorrent", "UM" : "µTorrent for Mac", "UT" : "µTorrent", "XX" : "Xtorrent"
+		"cT" : "CuteTorrent", "CT" : "CTorrent", "FD" : "Free Download Manager",
+		"JT" : "Torrent Downloader (jTorrent)", "jT" : "Torrent Downloader (jTorrent)",
+		"KT" : "KTorrent", "LP" : "Lphant", "LW" : "LimeWire", "PI" : "PicoTorrent", "SK" : "Spark",
+		"TR" : "Transmission", "tT" : "tTorrent", "UM" : "µTorrent for Mac", "UT" : "µTorrent",
+		"XX" : "Xtorrent"
 	},
 	shLikeClients:
 	{
@@ -1259,6 +1261,10 @@ var theBTClientVersion =
 						break;
 					case 'PI':
 						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+str.charAt(5)+"."+str.charAt(6);
+						break;
+					case 'JT':
+					case 'jT':
+						ret = cli+" "+str.charAt(3)+"."+str.charAt(4);
 						break;
 					default:
 						var ch = str.charAt(6);
