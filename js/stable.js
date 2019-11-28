@@ -826,7 +826,7 @@ var theSort =
 	},
 
 	peers_total_re: /\((\d+)\)$/,
-	peers_connected_re: /^(\d+)/,
+	peers_connected_re: /^(\d+)/
 };
 
 dxSTable.prototype.init = function() 

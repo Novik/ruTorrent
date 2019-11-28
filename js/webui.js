@@ -189,8 +189,9 @@ var theWebUI =
 		"-_-_-nlb-_-_-":	0,
 		"-_-_-err-_-_-":	0
 	},
-	actLbls:	{
-		"pstate_cont": "",
+	actLbls:	
+	{
+		"pstate_cont": ""
 	},
 	cLabels:	{},
 	dID:		"",
@@ -2189,7 +2190,7 @@ var theWebUI =
 				var teg = this.tegs[actLbl];
 				if(teg)
 				{
-	        		if(!this.matchTeg(teg, table.getValueById(sId, "name")))
+					if(!this.matchTeg(teg, table.getValueById(sId, "name")))
 						showRow = false;
 				}
 			}
