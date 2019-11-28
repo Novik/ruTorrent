@@ -160,7 +160,6 @@ var theUILang =
  GetTrackerMessage		: "Запитувати повідомлення трекера",
  Help				: "Довідка",
  Speed				: "Швидкість",
- Displaying			: "Displaying",
  Dont_add_tname			: "Не додавати назву торента до шляху",
  Free_Disk_Space		: "Вільно на диску",
  badXMLRPCVersion		: "rTorrent скомпільовано з некоректною версією бібліотеки xmlrpc-c, без підтримки 8-розрядних цілих. Версія бібліотеки повинна бути >= 1.11. Деякі функції будуть недоступні.",
@@ -278,5 +277,6 @@ var theUILang =
  Save_path			: "Збережено у",
  registerMagnet			: "Реєструвати протокол magnet під час запуску",
  linkTorTorrentRestored		: "Зʼєднання з rTorrent відновлене.",
- removeAllTegs			: "Видалити всі теги"
+ removeAllTegs			: "Видалити всі теги",
+ Displaying			: "Displaying"
 };

@@ -160,7 +160,6 @@ var theUILang =
  GetTrackerMessage		: "Receive messages from tracker",
  Help				: "Segítség",
  Speed				: "Sebesség",
- Displaying			: "Displaying",
  Dont_add_tname			: "Ne adja hozzá a torrent nevének útját",
  Free_Disk_Space		: "Szabad disk terület",
  badXMLRPCVersion		: "rTorrent is compiled with incorrect version of xmlrpc-c library, without i8 support. Version must be >= 1.11. Some functionality will be unavailable.",
@@ -278,5 +277,6 @@ var theUILang =
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
- removeAllTegs			: "Remove all tags"
+ removeAllTegs			: "Remove all tags",
+ Displaying			: "Displaying"
 };

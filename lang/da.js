@@ -160,7 +160,6 @@ var theUILang =
  GetTrackerMessage		: "Modtag beskeder fra tracker",
  Help				: "Hjælp",
  Speed				: "Hastighed",
- Displaying			: "Displaying",
  Dont_add_tname			: "Tilføj ikke torrentens navn til stien",
  Free_Disk_Space		: "Ledig Disk Plads",
  badXMLRPCVersion		: "rTorrent er kompileret med en forkert version af xmlrpc-c biblioteket, som ikke har support for i8. Versionen skal være >= 1.11. Noget funktionalitet vil ikke være tilgængelig.",
@@ -278,5 +277,6 @@ var theUILang =
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
- removeAllTegs			: "Remove all tags"
+ removeAllTegs			: "Remove all tags",
+ Displaying			: "Displaying"
 };
