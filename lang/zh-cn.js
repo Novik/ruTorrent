@@ -160,7 +160,6 @@ var theUILang =
  GetTrackerMessage		: "从 Tracker 接收信息",
  Help				: "帮助",
  Speed				: "速度",
- Displaying			: "Displaying",
  Dont_add_tname			: "不要添加 Torrent 的名称到目录",
  Free_Disk_Space		: "可用磁盘空间",
  badXMLRPCVersion		: "rTorrent 编译时用的 xmlrpc-c 库版本有误, 此版本没有 i8 支持. 版本必须 >= 1.11. 某些功能将不可用.",
@@ -278,5 +277,6 @@ var theUILang =
  Save_path			: "保存路径",
  registerMagnet			: "尝试在启动时注册磁力链协议",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
- removeAllTegs			: "Remove all tags"
+ removeAllTegs			: "Remove all tags",
+ Displaying			: "Displaying"
 };

@@ -158,7 +158,6 @@ var theUILang =
  GetTrackerMessage		: "İzleyiciden mesaj aldınız",
  Help				: "Yardım",
  Speed				: "Hız",
- Displaying			: "Displaying",
  Dont_add_tname			: "Torrent ismiyle klasör ismi aynı olmasın",
  Free_Disk_Space		: "Boş disk alanı",
  badXMLRPCVersion		: "rTorrent, i8 desteği olmayan eski bir xmlrpc-c kütüphanesi versiyonuyla derlenmiş. Versiyon en az 1.11 olmalıdır. Bazı özellikler çalışmayacaktır.",
@@ -276,5 +275,6 @@ var theUILang =
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
- removeAllTegs			: "Remove all tags"
+ removeAllTegs			: "Remove all tags",
+ Displaying			: "Displaying"
 };

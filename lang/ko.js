@@ -158,7 +158,6 @@ var theUILang =
  GetTrackerMessage		: "트래커로부터 메시지 받기",
  Help				: "도움말",
  Speed				: "속도",
- Displaying			: "Displaying",
  Dont_add_tname			: "토렌트 이름을 경로에 넣지 않음",
  Free_Disk_Space		: "여유 디스크 공간",
  badXMLRPCVersion		: "rTorrent가 i8 지원이 없어 부적합한 XMLRPC-C 라이브러리 버전과 함께 컴파일되었습니다. (올바른 버전: >= 1.11) 일부 기능을 사용할 수 없습니다.",
@@ -276,5 +275,6 @@ var theUILang =
  Save_path			: "경로 저장",
  registerMagnet			: "시작 시 마그넷 프로토콜 연결 프로그램으로 등록 시도",
  linkTorTorrentRestored		: "rTorrent에 연결되었습니다.",
- removeAllTegs			: "Remove all tags"
+ removeAllTegs			: "Remove all tags",
+ Displaying			: "Displaying"
 };

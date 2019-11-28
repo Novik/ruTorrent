@@ -159,7 +159,6 @@ var theUILang =
  GetTrackerMessage		: "Motta meldinger fra tracker",
  Help				: "Hjelp",
  Speed				: "Hastighet",
- Displaying			: "Displaying",
  Dont_add_tname			: "Ikke legg til torrentnavn til filbane",
  Free_Disk_Space		: "Ledig diskplass",
  badXMLRPCVersion		: "rTorrent er kompilert med feil versjon av xmlrpc-c biblotek, uten i8 støtte. Noe funksjonalitet vil ikke være tilgjengelig.",
@@ -277,5 +276,6 @@ var theUILang =
  Save_path			: "Lagringsmappe",
  registerMagnet			: "Prøv å registrere magnetprotokoll-håndterer på oppstart",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
- removeAllTegs			: "Remove all tags"
+ removeAllTegs			: "Remove all tags",
+ Displaying			: "Displaying"
 };

@@ -160,7 +160,6 @@ var theUILang =
  GetTrackerMessage		: "Receber mensagens do tracker",
  Help				: "Ajuda",
  Speed				: "Velocidade",
- Displaying			: "Displaying",
  Dont_add_tname			: "Não adicione o nome de torrent ao diretório",
  Free_Disk_Space		: "Espaço livre em disco",
  badXMLRPCVersion		: "rTorrent foi compilado com versão incorreta de biblioteca xmlrpc-c, sem suporte i8. Versão deve ser >= 1.11. Algumas funcionalidades não estarão disponíveis.",
@@ -278,5 +277,6 @@ var theUILang =
  Save_path			: "Save path",
  registerMagnet			: "Try to register magnet protocol handler at start",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
- removeAllTegs			: "Remove all tags"
+ removeAllTegs			: "Remove all tags",
+ Displaying			: "Displaying"
 };
