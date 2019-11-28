@@ -158,6 +158,7 @@ var theUILang =
  GetTrackerMessage		: "Nhận thông điệp từ Máy theo dõi",
  Help				: "Giúp đỡ",
  Speed				: "Tốc độ",
+ Displaying			: "Displaying",
  Dont_add_tname			: "Không thêm tên torrent vào đường dẫn",
  Free_Disk_Space		: "Dung lượng đĩa trống",
  badXMLRPCVersion		: "rTorrent được biên dịch với thư viện xmlrpc-c không hỗ trợ i8. Phiên bản phải mới hơn 1.11. Một số tính năng sẽ không sử dụng được.",

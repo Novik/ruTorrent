@@ -95,8 +95,8 @@
 					<div id="CatList">
 						<div class="catpanel" id="pstate" onclick="theWebUI.togglePanel(this); return(false);"><script type="text/javascript"> document.write(theUILang.pnlState); </script></div>
 						<ul id="pstate_cont" class="catpanel_cont">
-							<li id="-_-_-all-_-_-" class="sel cat">
-								<script type="text/javascript"> document.write(theUILang.All); </script> (<span id="-_-_-all-_-_-c">0</span>)</li>
+							<li class="-_-_-all-_-_- sel cat">
+								<script type="text/javascript"> document.write(theUILang.All); </script> (<span class="-_-_-all-_-_-c">0</span>)</li>
 							<li id="-_-_-dls-_-_-" class="cat">
 								<script type="text/javascript"> document.write(theUILang.Downloading); </script> (<span id="-_-_-dls-_-_-c">0</span>)</li>
 							<li id="-_-_-com-_-_-" class="cat">
@@ -110,16 +110,20 @@
 						</ul>
 						<div class="catpanel" id="plabel" onclick="theWebUI.togglePanel(this); return(false);"><script type="text/javascript"> document.write(theUILang.Labels); </script></div>
 						<div class="catpanel_cont" id="plabel_cont">
-							<ul>
-							<li id="-_-_-nlb-_-_-" class="cat">
-								<script type="text/javascript"> document.write(theUILang.No_label); </script> (<span id="-_-_-nlb-_-_-c">0</span>)</li>
-							</ul>
+							<ul id="clabel_cont">
+								<li class="-_-_-all-_-_- sel cat">
+									<script type="text/javascript"> document.write(theUILang.All); </script> (<span class="-_-_-all-_-_-c">0</span>)</li>
+								<li id="-_-_-nlb-_-_-" class="cat">
+									<script type="text/javascript"> document.write(theUILang.No_label); </script> (<span id="-_-_-nlb-_-_-c">0</span>)</li>
+								</ul>
 							<ul id="lbll">
 							</ul>
 						</div>
 						<div class="catpanel" id="flabel" onclick="theWebUI.togglePanel(this); return(false);"><script type="text/javascript"> document.write(theUILang.mnu_search); </script></div>
 						<div class="catpanel_cont" id="flabel_cont">
 							<ul id="lblf">
+								<li class="-_-_-all-_-_- sel cat">
+									<script type="text/javascript"> document.write(theUILang.All); </script> (<span class="-_-_-all-_-_-c">0</span>)</li>
 							</ul>
 						</div>
 					</div>
@@ -243,6 +247,13 @@
 							        <table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
 							        	<tr>
 										<td><div class="sthdr">rTorrent:</div></td><td><div class="stval" id="rtorrentv"></div></td>
+									</tr>
+								</table>
+							</td>
+							<td class="statusCell">
+								<table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
+									<tr>
+										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Displaying); </script>:</div></td><td><div class="stval" id="viewrows"></div></td>
 									</tr>
 								</table>
 							</td>

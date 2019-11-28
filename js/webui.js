@@ -189,7 +189,9 @@ var theWebUI =
 		"-_-_-nlb-_-_-":	0,
 		"-_-_-err-_-_-":	0
 	},
-	actLbl:		"-_-_-all-_-_-",
+	actLbls:	{
+		"pstate_cont": "",
+	},
 	cLabels:	{},
 	dID:		"",
 	pID:		"",
@@ -1671,26 +1673,25 @@ var theWebUI =
 		{
 			if(!torrent._updated)
 			{
-        			delete theWebUI.torrents[hash];
-        			delete theWebUI.files[hash];
-        			delete theWebUI.dirs[hash];
-        			delete theWebUI.peers[hash];
-				if(theWebUI.labels[hash].indexOf("-_-_-nlb-_-_-") >- 1) 
+				delete theWebUI.torrents[hash];
+				delete theWebUI.files[hash];
+				delete theWebUI.dirs[hash];
+				delete theWebUI.peers[hash];
+				if(theWebUI.labels[hash].indexOf("-_-_-nlb-_-_-") >- 1)
 					theWebUI.labels["-_-_-nlb-_-_-"]--;
-	        	 	if(theWebUI.labels[hash].indexOf("-_-_-com-_-_-") >- 1) 
-            				theWebUI.labels["-_-_-com-_-_-"]--;
-	        	 	if(theWebUI.labels[hash].indexOf("-_-_-dls-_-_-") >- 1) 
-	        	    		theWebUI.labels["-_-_-dls-_-_-"]--;
-	         		if(theWebUI.labels[hash].indexOf("-_-_-act-_-_-") >- 1) 
-        		    		theWebUI.labels["-_-_-act-_-_-"]--;
-		         	if(theWebUI.labels[hash].indexOf("-_-_-iac-_-_-") >- 1) 
-            				theWebUI.labels["-_-_-iac-_-_-"]--;
-		         	if(theWebUI.labels[hash].indexOf("-_-_-err-_-_-") >- 1) 
-            				theWebUI.labels["-_-_-err-_-_-"]--;
-		         	theWebUI.labels["-_-_-all-_-_-"]--;
-        		 	delete theWebUI.labels[hash];
-	        	 	table.removeRow(hash);
-	        	 	wasRemoved = true;
+				if(theWebUI.labels[hash].indexOf("-_-_-com-_-_-") >- 1)
+						theWebUI.labels["-_-_-com-_-_-"]--;
+				if(theWebUI.labels[hash].indexOf("-_-_-dls-_-_-") >- 1)
+						theWebUI.labels["-_-_-dls-_-_-"]--;
+				if(theWebUI.labels[hash].indexOf("-_-_-act-_-_-") >- 1)
+						theWebUI.labels["-_-_-act-_-_-"]--;
+				if(theWebUI.labels[hash].indexOf("-_-_-iac-_-_-") >- 1)
+						theWebUI.labels["-_-_-iac-_-_-"]--;
+				if(theWebUI.labels[hash].indexOf("-_-_-err-_-_-") >- 1)
+						theWebUI.labels["-_-_-err-_-_-"]--;
+				delete theWebUI.labels[hash];
+				table.removeRow(hash);
+				wasRemoved = true;
 			}
 			else
 			{
@@ -1703,6 +1704,9 @@ var theWebUI =
 		this.updateLabels(wasRemoved);
 		this.loadTorrents();
 		this.getTotal();
+
+		$('#viewrows').text(table.viewRows + '/' + table.rows);
+
 		data = null;
 	},
 
@@ -1723,9 +1727,8 @@ var theWebUI =
 		}
 		else 
 		{
-			if(this.actLbl != "-_-_-all-_-_-") 
-				table.refreshRows();
-      		}
+			table.refreshRows();
+		}
 		table.Sort();
 		this.setInterval();
 		this.updateDetails();
@@ -1831,6 +1834,7 @@ var theWebUI =
 			$("#lblf").append( el );
 			this.tegs[tegIg] = { val: str, cnt: 0 };
 			this.updateTeg(tegIg);
+			this.resetLabels();
 			this.switchLabel(el[0]);
 		}
 	},
@@ -1881,8 +1885,7 @@ var theWebUI =
 	{
 		delete this.tegs[id];
 		$($$(id)).remove();
-		this.actLbl = "";
-		this.switchLabel($$("-_-_-all-_-_-"));
+		this.resetLabels();
 	},
 
 	removeAllTegs: function()
@@ -1891,7 +1894,7 @@ var theWebUI =
 			delete this.tegs[id];
 			$($$(id)).remove();
 		}
-		this.switchLabel($$("-_-_-all-_-_-"));
+		this.resetLabels();
 	},
 
 	tegContextMenu: function(e)
@@ -1973,20 +1976,19 @@ var theWebUI =
 		var actDeleted = false;
 		p.children().each(function(ndx,val)
 		{
-		        var id = val.id;
+			var id = val.id;
 			if(id && !$type(temp[id]))
 			{
 				$(val).remove();
 				delete theWebUI.labels[id];
 				delete theWebUI.cLabels[id.substr(5, id.length - 10)];
-				if(theWebUI.actLbl == id) 
+				if(theWebUI.actLbls["plabel_cont"] == id)
 					actDeleted = true;
 			}
 		});
 		if(actDeleted) 
 		{
-			this.actLbl = "";
-			this.switchLabel($$("-_-_-all-_-_-"));
+			this.switchLabel($("#plabel_cont .-_-_-all-_-_-").get(0))
 		}
    	},
 
@@ -2051,9 +2053,6 @@ var theWebUI =
 		else
   			if(this.labels[id].indexOf("-_-_-err-_-_-") >- 1)
 				this.labels["-_-_-err-_-_-"]--;
-		lbl += "-_-_-all-_-_-";
-		if(this.labels[id] == "")
-			this.labels["-_-_-all-_-_-"]++;
 		return(lbl);
 	},
 
@@ -2114,9 +2113,12 @@ var theWebUI =
 
 	updateLabels: function(wasRemoved)
 	{
+		$(".-_-_-all-_-_-c").text(Object.keys(this.torrents).length)
+
 		for(var k in this.labels)
 			if(k.substr(0, 5) == "-_-_-")
 				$($$(k+"c")).text(this.labels[k]);
+
 		for( var id in this.tegs )
 		{
 			var counter = $("#"+id+"-c");
@@ -2129,46 +2131,76 @@ var theWebUI =
 		}
 	},
 
+	resetLabels: function() {
+		var allLbls = $('.-_-_-all-_-_-');
+		for(var i = 0; i < allLbls.length; i++)
+			this.switchLabel(allLbls.get(i));
+	},
+
 	switchLabel: function(obj)
 	{
-		if(obj.id != this.actLbl)
+		var panelCont = $(obj).closest(".catpanel_cont");
+		var labelType = panelCont.attr('id')
+
+		// deselect extsearch tegs if we're clicking somewhere else
+		if (panelCont.attr("id") != "flabel_cont") {
+			if (this.actLbls["flabel_cont"] && $($$(this.actLbls["flabel_cont"])).hasClass("exteg")) {
+				this.switchLabel($("#flabel_cont .-_-_-all-_-_-").get(0))
+			}
+		}
+
+		if(this.actLbls[labelType] != obj.id)
 		{
-			if((this.actLbl != "") && $$(this.actLbl))
-				$($$(this.actLbl)).removeClass("sel");
+			panelCont.find(".sel").removeClass("sel");
 			$(obj).addClass("sel");
-			this.actLbl = obj.id;
+
+			this.actLbls[labelType] = obj.id;
+
 			var table = this.getTable("trt");
 			table.scrollTo(0);
 			for(var k in this.torrents)
 				this.filterByLabel(k);
 			table.clearSelection();
 			if(this.dID != "")
-      			{
+			{
 				this.dID = "";
 				this.clearDetails();
-      			}
-   			table.refreshRows();
-   		}
+			}
+			table.refreshRows();
+
+			$('#viewrows').text(table.viewRows + '/' + table.rows);
+		}
 	},
 
 	filterByLabel: function(sId)
 	{
-	        var table = this.getTable("trt");
-	        if($($$(this.actLbl)).hasClass("teg"))
-	        {
-				var teg = this.tegs[this.actLbl];
+		var table = this.getTable("trt");
+
+		var showRow = true;
+		for(var lblType in this.actLbls)
+		{
+			if (lblType != "plabel_cont" && lblType != "pstate_cont" && lblType != "flabel_cont")
+				continue;
+
+			var actLbl = this.actLbls[lblType];
+
+			if($($$(actLbl)).hasClass("teg"))
+			{
+				var teg = this.tegs[actLbl];
 				if(teg)
 				{
-	        		if(this.matchTeg(teg, table.getValueById(sId, "name")))
-						table.unhideRow(sId);
-					else 
-						table.hideRow(sId);
+	        		if(!this.matchTeg(teg, table.getValueById(sId, "name")))
+						showRow = false;
 				}
-	        }
-	        else if(table.getAttr(sId, "label").indexOf(this.actLbl) >- 1)
-					table.unhideRow(sId);
-			else 
-				table.hideRow(sId);
+			}
+			else if(table.getAttr(sId, "label").indexOf(actLbl) == -1)
+				showRow = false;
+		}
+
+		if(showRow)
+			table.unhideRow(sId);
+		else
+			table.hideRow(sId);
 	},
 
 //

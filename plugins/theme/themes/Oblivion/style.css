@@ -79,9 +79,9 @@ div#CatList ul li span {color:#D4D6C9}
 div#CatList ul li.sel span {color:#AACF27}
 div#CatList ul li {border-color: #212121;font-family: inherit;}
 div#CatList ul li.sel {background-color: transparent; color:#009DDD;text-shadow:0px -1px 0px #000;border:1px solid #212121; }
-#-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(./images/status_icons.png)}
+.-_-_-all-_-_-, #-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(./images/status_icons.png)}
 .catpanel { font-size:12px;font-family:inherit;padding: 2px 24px; height:25px; line-height:25px;background: url(./images/pnl_open.gif) 0px 0px no-repeat; background-color: #232323;   font-weight: bold;color:#DCDCDC;text-shadow: 0px -1px 0px #000;border-top:1px solid #333;   border-bottom: none;border-right: none;}
-#-_-_-all-_-_- {background-position: 4px -175px;}
+.-_-_-all-_-_-, #-_-_-all-_-_- {background-position: 4px -175px;}
 #-_-_-dls-_-_- {background-position: 4px 2px;}
 #-_-_-com-_-_- {background-position: 4px -15px;}
 #-_-_-act-_-_- {background-position: 4px -159px;}

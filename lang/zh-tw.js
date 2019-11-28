@@ -158,6 +158,7 @@ var theUILang =
  GetTrackerMessage		: "從tracker接收使用者資訊",
  Help				: "Help",
  Speed				: "速度",
+ Displaying			: "Displaying",
  Dont_add_tname			: "請勿將 torrent 名稱作為目錄名稱",
  Free_Disk_Space		: "磁碟可用空間",
  badXMLRPCVersion		: "rTorrent使用了錯誤的xmlrpc-c版本編譯, 該版本不含i8支援,版本必須大於或等於1.11版,某些功能將無法使用",

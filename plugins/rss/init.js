@@ -42,7 +42,6 @@ theWebUI.switchLabel = function(el)
 		if(theWebUI.actRSSLbl)
 			$$(theWebUI.actRSSLbl).className = theWebUI.isActiveRSSEnabled() ? "RSS cat" : "disRSS cat";
 		theWebUI.actRSSLbl = null;
-		theWebUI.actLbl = "";
 		$("#List").show();
 		lst.hide();
 		theWebUI.switchLayout(false);
@@ -115,8 +114,6 @@ theWebUI.switchRSSLabel = function(el)
 	{
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
-		if((this.actLbl != "") && ($$(this.actLbl) != null))
-			$($$(theWebUI.actLbl)).removeClass("sel");
 		plugin.correctCSS();
 		rss.css( { width: lst.width(), height: lst.height() } );
 		table.resize(lst.width(), lst.height());

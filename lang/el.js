@@ -158,6 +158,7 @@ var theUILang =
  GetTrackerMessage		: "Λήψη μηνυμάτων από τον tracker",
  Help				: "Βοήθεια",
  Speed				: "Ταχύτητα",
+ Displaying			: "Displaying",
  Dont_add_tname			: "Μην προσθέσεις το όνομα του torrent στη διαδρομή",
  Free_Disk_Space		: "Ελεύθερος χώρος στο δίσκο",
  badXMLRPCVersion		: "Το rTorrent δημιουργήθηκε με λάθος έκδοση της βιβλιοθήκης xmlrpc-c, χωρίς υποστήριξη i8. Η έκδοση πρέπει να είναι >= 1.11. Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες.",

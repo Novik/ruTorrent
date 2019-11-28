@@ -159,6 +159,7 @@ var theUILang =
  GetTrackerMessage		: "Motta meldinger fra tracker",
  Help				: "Hjelp",
  Speed				: "Hastighet",
+ Displaying			: "Displaying",
  Dont_add_tname			: "Ikke legg til torrentnavn til filbane",
  Free_Disk_Space		: "Ledig diskplass",
  badXMLRPCVersion		: "rTorrent er kompilert med feil versjon av xmlrpc-c biblotek, uten i8 støtte. Noe funksjonalitet vil ikke være tilgjengelig.",
