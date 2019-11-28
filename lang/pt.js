@@ -160,6 +160,7 @@ var theUILang =
  GetTrackerMessage		: "Receber mensagens do tracker",
  Help				: "Ajuda",
  Speed				: "Velocidade",
+ Displaying			: "Displaying",
  Dont_add_tname			: "Não adicione o nome de torrent ao diretório",
  Free_Disk_Space		: "Espaço livre em disco",
  badXMLRPCVersion		: "rTorrent foi compilado com versão incorreta de biblioteca xmlrpc-c, sem suporte i8. Versão deve ser >= 1.11. Algumas funcionalidades não estarão disponíveis.",

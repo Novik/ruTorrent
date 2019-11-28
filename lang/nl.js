@@ -160,6 +160,7 @@ var theUILang =
  GetTrackerMessage		: "Ontvang trackerberichten",
  Help				: "Help",
  Speed				: "Snelheid",
+ Displaying			: "Displaying",
  Dont_add_tname			: "Torrentnaam niet toevoegen aan de downloadmap",
  Free_Disk_Space		: "Vrije HDD-ruimte",
  badXMLRPCVersion		: "rTorrent is geinstalleerd met een verkeerde versie van xmlrpc-c library, namelijk die zonder i8-ondersteuning. Benodigde versie: >= 1.11. Sommige functionaliteiten zullen niet werken.",

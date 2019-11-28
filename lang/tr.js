@@ -158,6 +158,7 @@ var theUILang =
  GetTrackerMessage		: "İzleyiciden mesaj aldınız",
  Help				: "Yardım",
  Speed				: "Hız",
+ Displaying			: "Displaying",
  Dont_add_tname			: "Torrent ismiyle klasör ismi aynı olmasın",
  Free_Disk_Space		: "Boş disk alanı",
  badXMLRPCVersion		: "rTorrent, i8 desteği olmayan eski bir xmlrpc-c kütüphanesi versiyonuyla derlenmiş. Versiyon en az 1.11 olmalıdır. Bazı özellikler çalışmayacaktır.",

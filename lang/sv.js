@@ -158,6 +158,7 @@ var theUILang =
  GetTrackerMessage		: "Motta meddelanden från tracker",
  Help				: "Hjälp",
  Speed				: "Hastighet",
+ Displaying			: "Displaying",
  Dont_add_tname			: "Lägg inte till torrent-namn till sökväg",
  Free_Disk_Space		: "Ledigt utrymme",
  badXMLRPCVersion		: "rTorrent är kompilerad med fel version av xmlrpc-C-biblioteket, utan i8-stöd. Version måste vara >= 1.11. Vissa funktioner kommer att vara otillgängliga.",
