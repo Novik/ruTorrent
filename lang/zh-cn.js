@@ -278,5 +278,5 @@ var theUILang =
  registerMagnet			: "尝试在启动时注册磁力链协议",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
  removeAllTegs			: "Remove all tags",
- Displaying			: "Displaying"
+ Displaying			: "Torrent(s)"
 };

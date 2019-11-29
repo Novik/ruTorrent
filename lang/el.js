@@ -276,5 +276,5 @@ var theUILang =
  registerMagnet			: "Προσπάθεια καταχώρησης του πρωτόκολλου magnet κατά την εκκίνηση",
  linkTorTorrentRestored		: "Η επικοινωνία με το rTorrent επιτεύχθηκε.",
  removeAllTegs			: "Διαγραφή όλων των ετικετών",
- Displaying			: "Displaying"
+ Displaying			: "Torrent(s)"
 };
