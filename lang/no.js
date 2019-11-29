@@ -277,5 +277,5 @@ var theUILang =
  registerMagnet			: "Prøv å registrere magnetprotokoll-håndterer på oppstart",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
  removeAllTegs			: "Remove all tags",
- Displaying			: "Displaying"
+ Displaying			: "Torrent(s)"
 };

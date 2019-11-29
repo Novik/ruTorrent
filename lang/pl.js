@@ -279,5 +279,5 @@ var theUILang =
  registerMagnet			: "Próbuj dodać obsługę linków magnet przy starcie",
  linkTorTorrentRestored		: "Nawiązano połączenie z rTorrent.",
  removeAllTegs			: "Usuń wszystkie znaczniki",
- Displaying			: "Displaying"
+ Displaying			: "Torrent(s)"
 };

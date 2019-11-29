@@ -278,5 +278,5 @@ var theUILang =
  registerMagnet			: "Реєструвати протокол magnet під час запуску",
  linkTorTorrentRestored		: "Зʼєднання з rTorrent відновлене.",
  removeAllTegs			: "Видалити всі теги",
- Displaying			: "Displaying"
+ Displaying			: "Torrent(s)"
 };
