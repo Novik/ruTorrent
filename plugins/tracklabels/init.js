@@ -236,7 +236,7 @@ theWebUI.rebuildTrackersLabels = function()
 			}
 		this.trackersLabels = trackersLabels;
 		if(needSwitch)
-			theWebUI.switchLabel($$("-_-_-all-_-_-"));
+			theWebUI.resetLabels();
 	}
 }
 
@@ -258,7 +258,7 @@ theWebUI.initTrackersLabels = function()
 plugin.onRemove = function()
 {
 	plugin.removePaneFromCategory('ptrackers');
-	theWebUI.switchLabel($$("-_-_-all-_-_-"));
+	theWebUI.resetLabels();
 	if(plugin.canChangeColumns())
 	{
 		theWebUI.getTable("trt").removeColumnById("tracker");

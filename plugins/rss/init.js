@@ -1591,7 +1591,7 @@ plugin.onRemove = function()
         if(theWebUI.updateRSSTimer)
 	        window.clearTimeout(theWebUI.updateRSSTimer);
 	theWebUI.switchLayout(false);
-	theWebUI.switchLabel($$("-_-_-all-_-_-"));
+	theWebUI.resetLabels();
 	$("#RSSList").remove();
 	plugin.removePaneFromCategory("prss");
 	$("#rsslayout").remove();
