@@ -279,6 +279,10 @@ plugin.leaveTeg = function()
 {
 	$("#TegList").hide();
 	$("#List").show();
+	if(theWebUI.actLbls["flabel_cont"] && $($$(theWebUI.actLbls["flabel_cont"])).hasClass("exteg")) 
+	{
+		plugin.switchLabel($("#flabel_cont .-_-_-all-_-_-").get(0));
+	}
 }
 
 plugin.correctCounter = function(id,count)

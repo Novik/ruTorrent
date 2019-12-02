@@ -2143,13 +2143,6 @@ var theWebUI =
 		var panelCont = $(obj).closest(".catpanel_cont");
 		var labelType = panelCont.attr('id')
 
-		// deselect extsearch tegs if we're clicking somewhere else
-		if (panelCont.attr("id") != "flabel_cont") {
-			if (this.actLbls["flabel_cont"] && $($$(this.actLbls["flabel_cont"])).hasClass("exteg")) {
-				this.switchLabel($("#flabel_cont .-_-_-all-_-_-").get(0))
-			}
-		}
-
 		if(this.actLbls[labelType] != obj.id)
 		{
 			panelCont.find(".sel").removeClass("sel");
