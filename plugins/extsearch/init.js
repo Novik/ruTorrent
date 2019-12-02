@@ -871,7 +871,7 @@ plugin.onRemove = function()
 	theSearchEngines.sites = plugin.sites;
 	theSearchEngines.current = -1;
 	theWebUI.save();
-	theWebUI.switchLabel($$("-_-_-all-_-_-"));
+	theWebUI.switchLabel($("#flabel_cont .-_-_-all-_-_-").get(0));
 	for( var teg in plugin.tegs )
 		$("#"+teg).remove();
 	plugin.tegs = {};
