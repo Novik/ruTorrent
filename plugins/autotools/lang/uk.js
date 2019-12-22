@@ -21,6 +21,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Жорстке посилання";
  theUILang.autotoolsFileOpCopy		= "Скопіювати";
  theUILang.autotoolsFileOpSoftLink	= "Символьне посилання";
+ theUILang.autotoolsFileOpRelLink       = "Rel. link";
  theUILang.autotoolsAddLabel		= "Додавати мітку торента до шляху";
  theUILang.autotoolsAddName		= "Додавати назву торента до шляху";
  theUILang.autotoolsEnableMove		= "Увімкнути \"АвтоПереміщення\", якщо мітка торента відповідає фільтру";

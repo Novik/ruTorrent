@@ -21,6 +21,7 @@
  theUILang.autotoolsFileOpHardLink 	= "硬链接";
  theUILang.autotoolsFileOpCopy		= "复制";
  theUILang.autotoolsFileOpSoftLink	= "软链接";
+ theUILang.autotoolsFileOpRelLink       = "Rel. link";
  theUILang.autotoolsAddLabel		= "将 torrent 的标签添加到路径中";
  theUILang.autotoolsAddName		= "将 torrent 的名称添加到路径中";
  theUILang.autotoolsEnableMove		= "启用 \"自动移动\" 如果 torrent 的标签符合筛选器";

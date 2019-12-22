@@ -21,6 +21,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Hard lenke";
  theUILang.autotoolsFileOpCopy		= "Kopier";
  theUILang.autotoolsFileOpSoftLink	= "Myk lenke";
+ theUILang.autotoolsFileOpRelLink       = "Rel. link";
  theUILang.autotoolsAddLabel		= "Legg til torrentens etikett til mappe";
  theUILang.autotoolsAddName		= "Legg til torrentens navn til mappe";
  theUILang.autotoolsEnableMove		= "Aktiver \"AutoMove\" hvis torrentens etikett matcher filteret";

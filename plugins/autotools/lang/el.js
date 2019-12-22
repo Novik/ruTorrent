@@ -21,6 +21,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Συντόμευση αρχείου";
  theUILang.autotoolsFileOpCopy		= "Αντιγραφή";
  theUILang.autotoolsFileOpSoftLink	= "Συντόμευση ονόματος αρχείου";
+ theUILang.autotoolsFileOpRelLink       = "Rel. link";
  theUILang.autotoolsAddLabel		= "Προσθήκη της ετικέτας του torrent στη διαδρομή";
  theUILang.autotoolsAddName		= "Προσθήκη του ονόματος του torrent στη διαδρομή";
  theUILang.autotoolsEnableMove		= "Ενεργοποίηση \"ΑυτόματηΜετακίνηση\" αν η ετικέτα του torrent ταιράζει με το φίλτρο";

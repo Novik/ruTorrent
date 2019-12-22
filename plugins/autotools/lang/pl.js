@@ -21,6 +21,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Hard link";
  theUILang.autotoolsFileOpCopy		= "Kopiuj";
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
+ theUILang.autotoolsFileOpRelLink       = "Rel. link";
  theUILang.autotoolsAddLabel		= "Dodaj etykietę torrenta do ścieżki";
  theUILang.autotoolsAddName		= "Dodaj nazwę torrenta do ścieżki";
  theUILang.autotoolsEnableMove		= "AutoMove jeśli etykieta pasuje do wzorca";

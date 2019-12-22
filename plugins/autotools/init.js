@@ -138,6 +138,7 @@ plugin.onLangLoaded = function()
  					"<option value='HardLink'>"+theUILang.autotoolsFileOpHardLink+"</option>"+
  					"<option value='Copy'>"+theUILang.autotoolsFileOpCopy+"</option>"+
  					"<option value='SoftLink'>"+theUILang.autotoolsFileOpSoftLink+"</option>"+
+ 					"<option value='RelLink'>"+theUILang.autotoolsFileOpRelLink+"</option>"+
  					"</select>"+
 					"<div class='checkbox'>" +
 						"<input type='checkbox' id='auto_add_label'/>"+

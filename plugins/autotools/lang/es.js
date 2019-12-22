@@ -21,6 +21,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Enlace fijo";
  theUILang.autotoolsFileOpCopy		= "Copiar";
  theUILang.autotoolsFileOpSoftLink	= "Enlace simbólico";
+ theUILang.autotoolsFileOpRelLink       = "Rel. link";
  theUILang.autotoolsAddLabel		= "Add torrent's label to path";
  theUILang.autotoolsAddName		= "Add torrent's name to path";
  theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";

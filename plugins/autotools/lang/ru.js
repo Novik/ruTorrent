@@ -21,6 +21,7 @@
  theUILang.autotoolsFileOpHardLink 	= "Жесткая ссылка";
  theUILang.autotoolsFileOpCopy		= "Скопировать";
  theUILang.autotoolsFileOpSoftLink	= "Мягкая ссылка";
+ theUILang.autotoolsFileOpRelLink       = "Rel. link";
  theUILang.autotoolsAddLabel		= "Добавлять к пути метку торрента";
  theUILang.autotoolsAddName		= "Добавлять к пути имя торрента";
  theUILang.autotoolsEnableMove		= "Включить \"АвтоПеремещение\", если метка торрента соответствует";
