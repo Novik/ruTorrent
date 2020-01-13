@@ -52,6 +52,11 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		}
 	}
 
+	if(!rTorrentSettings::get()->correctDirectory($datadir))
+	{
+		$datadir = '';
+	}
+
 	Debug( "" );
 	Debug( "--- begin ---" );
 	Debug( $datadir );
@@ -59,6 +64,8 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		"\"".($move_addpath    == '0' ? "don't " : "")."add path\"".
 		", \"".($move_datafiles  == '0' ? "don't " : "")."move files\"".
 		", \"".($move_fastresume == '0' ? "don't " : "")."fast resume\"" );
+
+	$res = false;
 
 	if( $hash && strlen( $datadir ) > 0 )
 	{
@@ -80,10 +87,11 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 					" ".escapeshellarg(getUser())." & exit 0",
 			),
 			$datadir_debug_enabled );
-		if( !$res )
-		{
-			$errors[] = array('desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir);
-		}
+	}
+
+	if( !$res )
+	{
+		$errors[] = array('desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir);
 	}
 }
 
