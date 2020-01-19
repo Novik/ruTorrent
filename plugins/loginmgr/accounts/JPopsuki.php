@@ -1,8 +1,8 @@
 <?php
 
-class jpopsukiAccount extends commonAccount
+class JPopsukiAccount extends commonAccount
 {
-	public $url = "http://jpopsuki.eu";
+	public $url = "https://jpopsuki.eu";
 
 	protected function isOK($client)
 	{
@@ -13,9 +13,9 @@ class jpopsukiAccount extends commonAccount
 		$is_result_fetched = false;
 		if($client->fetch( $this->url."/login.php" ))
 		{
-                        $client->setcookies();
+			$client->setcookies();
 			$client->referer = $this->url."/login.php";
-        		if($client->fetch( $this->url."/login.php","POST","application/x-www-form-urlencoded", 
+			if($client->fetch( $this->url."/login.php","POST","application/x-www-form-urlencoded",
 				"username=".rawurlencode($login)."&password=".rawurlencode($password).'&login=Log+In%21' ))
 			{
 				$client->setcookies();
