@@ -278,5 +278,5 @@ var theUILang =
  registerMagnet			: "Try to register magnet protocol handler at start",
  linkTorTorrentRestored		: "Connection to rTorrent established.",
  removeAllTegs			: "Remove all tags",
- Displaying			: "Torrent(s)"
+ Torrents			: "Torrent(s)"
 };
