@@ -22,7 +22,7 @@ class YTSEngine extends commonEngine
 						$item = $this->getNewEntry();
 						$item["cat"] = 'Video';
 						$item["desc"] = $movie->url;
-						$item["name"] = $torrent->quality.": ".$movie->title;
+						$item["name"] = $torrent->quality . "." . $torrent->type . ": " .$movie->title_long;
 						$item["size"] = self::formatSize($torrent->size);
 						$item["seeds"] = $torrent->seeds;
 						$item["peers"] = $torrent->peers;
