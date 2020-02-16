@@ -115,7 +115,7 @@ var theUILang =
  Track_status			: "Tracker 状态",
  Created_on			: "创建于",
  Save_as			: "文件位置",
- Comment			: "制作说明",
+ Comment			: "注释",
  add_button			: "添加文件",
  add_url			: "添加链接",
  ok				: "OK",
