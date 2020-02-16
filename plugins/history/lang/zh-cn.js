@@ -25,10 +25,10 @@
  theUILang.historyNotification		= "桌面通知";
  theUILang.notifAutoClose		= "在此之后自动关闭";
  theUILang.notifTip			= {
- 					  false: "你的浏览器不支持桌面通知. 请尝试使用别的浏览器, 例如, Google Chrome.",
+ 					  false: "你的浏览器不支持桌面通知. 请尝试使用别的浏览器, 例如 Google Chrome.",
  					  "granted": "",
  					  "default": "你的浏览器支持桌面通知. 点击下面的按钮以启用.",
- 					  "denied": "你的浏览器支持桌面通知, 但是你没有给此网站授权. 关闭此对话框并在浏览器设置内启用.",
+ 					  "denied": "你的浏览器支持桌面通知, 但是你对此网站禁用了该功能. 关闭此对话框并在浏览器设置内启用.",
  					  };
  theUILang.pushbulletNotification	= "PushBullet 通知";
  theUILang.pushbulletKey		= "PushBullet Access Token";
