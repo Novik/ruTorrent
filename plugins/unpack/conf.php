@@ -16,4 +16,4 @@ $cleanupAutoTasks = false;		// Remove autounpack tasks parameters after finish, 
 $deleteAutoArchives = false;	// Delete archive files after successful auto unpack. Will not remove archives unless AutoMove is enabled and the operation type is not Move.
 $unpackToTemp = false;    // During auto upacking, the archive will be unpacked in the $tempDirectory defined in rutorrent/conf/config.php, and then will be moved from there to the final destination.
 
-$unpack_debug_enabled = false;		// set "true" to enable debug output
+$unpack_debug_enabled = false;		// true, false or 'dry-run'
