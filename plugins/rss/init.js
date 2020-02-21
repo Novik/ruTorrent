@@ -1034,7 +1034,7 @@ theWebUI.checkCurrentFilter = function()
 theWebUI.showFilterResults = function( d )
 {
 	this.showErrors(d);
-	if(d.rss.length)
+	if(d.rss && d.rss.length)
 		this.switchLabel($$(d.rss));
 	else
 		this.switchLabel($$('_rssAll_'));

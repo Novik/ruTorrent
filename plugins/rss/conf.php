@@ -10,3 +10,5 @@ $feedsWithIncorrectTimes = array
 (
 	"torrentday.",	// substring of hostname
 );
+
+$rss_debug_enabled = false;		// true, false or 'dry-run'
