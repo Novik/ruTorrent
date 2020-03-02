@@ -50,17 +50,20 @@ function stripSlashesFromArray(&$arr)
 
 function fix_magic_quotes_gpc() 
 {
-	if(function_exists('ini_set'))
+	if (version_compare(phpversion(), '5.4', '<'))
 	{
-		ini_set('magic_quotes_runtime', 0);
-		ini_set('magic_quotes_sybase', 0);
-	}
-	if(get_magic_quotes_gpc())
-	{
-		stripSlashesFromArray($_POST);
-		stripSlashesFromArray($_GET);
-		stripSlashesFromArray($_COOKIE);
-		stripSlashesFromArray($_REQUEST);
+		if(function_exists('ini_set'))
+		{
+			ini_set('magic_quotes_runtime', 0);
+			ini_set('magic_quotes_sybase', 0);
+		}
+		if(get_magic_quotes_gpc())
+		{
+			stripSlashesFromArray($_POST);
+			stripSlashesFromArray($_GET);
+			stripSlashesFromArray($_COOKIE);
+			stripSlashesFromArray($_REQUEST);
+		}
 	}
 }
 
