@@ -50,7 +50,7 @@ function stripSlashesFromArray(&$arr)
 
 function fix_magic_quotes_gpc() 
 {
-	if (version_compare(phpversion(), '5.4', '<'))
+	if(version_compare(phpversion(), '5.4', '<'))
 	{
 		if(function_exists('ini_set'))
 		{

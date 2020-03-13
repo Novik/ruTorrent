@@ -3,16 +3,16 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.unpack		= "Unpack";
- theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";
- theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
- theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
- theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
- theUILang.unpackAddLabel	= "Torrent Label";
- theUILang.unpackAddName	= "Torrent Name";
+ theUILang.unpack		= "Estrai";
+ theUILang.unpackPath		= "Estrai su (lascia in bianco per la cartella corrente del torrent)";
+ theUILang.unzipNotFound	= "Unpack plugin: l'utente che esegue rTorrent non può accedere al programma 'unzip'.";
+ theUILang.unrarNotFound	= "Unpack plugin: l'utente che esegue rTorrent non può accedere al programma 'unrar'.";
+ theUILang.unpackEnabled	= "Abilita estrazione automatica se l'etichetta del torrent soddisfa il filtro";
+ theUILang.unpackTorrents	= "Aggiungi al nome del percorso quando estrai i dati del Torrent";
+ theUILang.unpackAddLabel	= "Etichetta del torrent";
+ theUILang.unpackAddName	= "Nome del torrent";
 
 thePlugins.get("unpack").langLoaded();
