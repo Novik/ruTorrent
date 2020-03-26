@@ -6,7 +6,7 @@ $partsToRemove = "([\.-](8bit|10bit|480p|720p|1080p|1080i|2160p|\dDiSC|".
 	"Cam-?Rip|COMPLETE|CUSTOM|DDP?(.?\d.\d)?|DiR.?FiX|DiRECTORS.CUT|".
 	"DISC.?\d|DivX|DL|DOKU|DSR|DTS(.?HD)?(.?MA)?(.?X)?(.?\d.\d)?|".
 	"DUAL|DUBBED|DVD(-?5|-?9|-?Rip|-?SCR)?|DVDR|DVDScreener|DVTV|DXVA|".
-	"EXTENDED(.CUT)?|FLAC?(.?\d.\d)?|FS|GoG|H.?264|H.?265|HD-?Rip|".
+	"EXTENDED(.CUT)?|FLAC(.?\d.\d)?|FS|GoG|H.?264|H.?265|HD-?Rip|".
 	"HDDVD(-?Rip)?|HDR|HDTV(-?Rip)?|HEVC|HR|HULU|iMAGESET|iNT|iNTERNAL|".
 	"LD|LiMiTED|LPCM(.?\d.\d)?|MBluRay|MD|MDVDR|MP3|MP4|MPEG-?2|".
 	"MULTi\d{0,2}|MULTISUBS|NF|NFO.?FIX|NTSC|OGG|PAL|PDTV|PPV|".
