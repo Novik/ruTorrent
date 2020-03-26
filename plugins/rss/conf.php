@@ -8,7 +8,8 @@ $minInterval = 2;	// in minutes
 
 $feedsWithIncorrectTimes = array
 (
-	"torrentday.",	// substring of hostname
+	"iptorrents.",	// substring of hostname
+	"torrentday.",
 );
 
 $rss_debug_enabled = false;		// true, false or 'dry-run'
