@@ -3,10 +3,10 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.getData		= "Prendi File";
+ theUILang.getData		= "Ottieni File";
  theUILang.cantAccessData	= "L'utente che esegue il webserver non può accedere ai dati di questo torrent.";
 
 thePlugins.get("data").langLoaded();
