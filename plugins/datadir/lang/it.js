@@ -3,13 +3,13 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.DataDir		= "Save to";
- theUILang.DataDirMove		= "Move data files";
- theUILang.datadirDlgCaption	= "Torrent Data Directory";
- theUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
- theUILang.datadirSetDirFail	= "DataDir plugin: Operation fail";
+ theUILang.DataDir		= "Salva in";
+ theUILang.DataDirMove		= "Sposta i file dati";
+ theUILang.datadirDlgCaption	= "Cartella dati del torrent";
+ theUILang.datadirDirNotFound	= "DataDir plugin: Cartella non valida";
+ theUILang.datadirSetDirFail	= "DataDir plugin: Operazione fallita";
 
 thePlugins.get("datadir").langLoaded();
