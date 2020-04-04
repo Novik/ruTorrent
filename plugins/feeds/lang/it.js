@@ -3,7 +3,7 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
  theUILang.feedAll		= "Tutti i torrent";
