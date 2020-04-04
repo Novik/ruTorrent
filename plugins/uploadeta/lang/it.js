@@ -3,14 +3,14 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.uploadeta		= "Upload ETA";
- theUILang.uploadtarget		= "Upload Target";
- theUILang.ULtarget		= "UL Target";
- theUILang.ULremaining		= "UL Remaining";
- theUILang.ULETA		= "UL ETA";
- theUILang.ULdescription	= "This plugin only will show the amount of data and time that is left to an upload ratio target. It will not automatically remove a torrent for you. Look at 'ratio.min.set' in your rTorrent configuration file to remove a torrent when a upload target has been reached.";
+ theUILang.uploadeta		= "ETA Upload";
+ theUILang.uploadtarget		= "Obiettivo Upload";
+ theUILang.ULtarget		= "Obiettivo UL";
+ theUILang.ULremaining		= "UL Rimanente";
+ theUILang.ULETA		= "ETA UL";
+ theUILang.ULdescription	= "Questo plugin mostrerà solo l'ammontare di dati e il tempo mancante a raggiungere un obiettivo di ratio. Non rimuoverà automaticamente il torrent per te. Vedi in 'ratio.min.set' nel tuo file di configurazione rTorrent per rimuovere un torrent quando un obiettivo di upload viene raggiunto.";
 
 thePlugins.get("uploadeta").langLoaded();

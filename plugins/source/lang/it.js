@@ -3,10 +3,10 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.getSource		= "Get .torrent";
- theUILang.cantFindTorrent	= "Source torrent file for this download not found.";
+ theUILang.getSource		= "Ottieni .torrent";
+ theUILang.cantFindTorrent	= "File torrent di origine non trovato per questo download.";
 
 thePlugins.get("source").langLoaded();

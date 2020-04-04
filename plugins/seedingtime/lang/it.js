@@ -3,10 +3,10 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
+ theUILang.seedingTime		= "Finito";
+ theUILang.addTime		= "Aggiunto";
 
 thePlugins.get("seedingtime").langLoaded();

@@ -3,39 +3,39 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.tegMenuLoad			= "Load";
- theUILang.tegMenuOpen			= "Open in browser";
- theUILang.tegMenuDeleteItem		= "Remove item";
- theUILang.tegMenuDelete		= "Remove tag";
- theUILang.tegRefresh			= "Refresh tag";
- theUILang.exsGlobal			= "Include into 'All' category";
- theUILang.exsLimit			= "Result limit";
- theUILang.exsEngines			= "Engines";
- theUILang.exsSearch			= "Search";
- theUILang.exsGlobalLimit		= "Common Limitations";
- theUILang.excat			= "Category";
- theUILang.excatall			= "All";
- theUILang.excatmovies			= "Movies";
+ theUILang.tegMenuLoad			= "Carica";
+ theUILang.tegMenuOpen			= "Apri nel browser";
+ theUILang.tegMenuDeleteItem		= "Rimuovi oggetto";
+ theUILang.tegMenuDelete		= "Rimuovi tag";
+ theUILang.tegRefresh			= "Aggiorna tag";
+ theUILang.exsGlobal			= "Includi nella categoria 'Tutte'";
+ theUILang.exsLimit			= "Limite risultati";
+ theUILang.exsEngines			= "Motori";
+ theUILang.exsSearch			= "Cerca";
+ theUILang.exsGlobalLimit		= "Limiti comuni";
+ theUILang.excat			= "Categoria";
+ theUILang.excatall			= "Tutto";
+ theUILang.excatmovies			= "Film";
  theUILang.excattv			= "TV";
- theUILang.excatmusic			= "Music";
- theUILang.excatgames			= "Games";
+ theUILang.excatmusic			= "Musica";
+ theUILang.excatgames			= "Giochi";
  theUILang.excatanime			= "Anime";
- theUILang.excatsoftware		= "Software";
- theUILang.excatpictures		= "Pictures";
- theUILang.excatbooks			= "Books";
- theUILang.extPrivate			= "Private";
- theUILang.extPublic			= "Public";
- theUILang.exsCookies			= "Format of cookies";
- theUILang.extAllPublic			= "All Public";
- theUILang.extAllPrivate		= "All Private";
- theUILang.exsMustInstallCookies	= "Cookies plugin is required to work with this engine.";
- theUILang.exsMustInstallLoginMgr	= "LoginMgr plugin is required to work with this engine.";
- theUILang.exsLoginMgr			= "Setup your account in LoginMgr plugin to work with this engine.";
+ theUILang.excatsoftware		= "Programmi";
+ theUILang.excatpictures		= "Immagini";
+ theUILang.excatbooks			= "Libri";
+ theUILang.extPrivate			= "Privato";
+ theUILang.extPublic			= "Pubblico";
+ theUILang.exsCookies			= "Formato dei cookie";
+ theUILang.extAllPublic			= "Tutto Pubblico";
+ theUILang.extAllPrivate		= "Tutto Privato";
+ theUILang.exsMustInstallCookies	= "Il plugin dei Cookie è richiesto per far funzionare questo motore di ricerca.";
+ theUILang.exsMustInstallLoginMgr	= "Il plugin LoginMgr è richiesto per far funzionare questo motore di ricerca.";
+ theUILang.exsLoginMgr			= "Configura il tuo account in LoginMgr per far funzionare questo motore di ricerca.";
  theUILang.exsURLInfo			= "URL info";
- theUILang.exsURLGUID			= "Description URL";
+ theUILang.exsURLGUID			= "Descrizione URL";
  theUILang.exsURLHref			= "Download URL";
 
 thePlugins.get("extsearch").langLoaded();
