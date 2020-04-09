@@ -172,6 +172,10 @@ theSearchEngines.run = function()
 				theWebUI.requestWithoutTimeout("?action=extsearch&s="+theSearchEngines.current+"&v="+encodeURIComponent(s)+"&v="+encodeURIComponent($("#exscategory").val()),[theWebUI.setExtSearchTag, theWebUI]);
 			}
 		}
+		else
+		{
+			theWebUI.resetLabels();
+		}
 	}
 	else
 		plugin.sitesRun.call(theSearchEngines);
