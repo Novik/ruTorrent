@@ -96,7 +96,7 @@ else
 			}
 		}
 	}
-	$location = "Location: addtorrent.php?";
+	$location = "Location: //".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'])."/addtorrent.php?";
 	if(empty($uploaded_files))
 		$uploaded_files = array( array( 'status' => "Failed" ) );
 	foreach($uploaded_files as &$file)
