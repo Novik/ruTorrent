@@ -4,19 +4,18 @@
  *@author AceP1983, Novik
 */
 
-
 class BitHDTVEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"www.bit-hdtv.com|h_sl=XXX;h_sp=XXX;h_su=XXX" );
 	public $categories = array
-	( 
-		'all'=>'&cat=0', 
-		'Movies'=>'&cat=7', 
-		'TV'=>'&cat=10', 
-		'TV/Season'=>'&cat=12', 
+	(
+		'All'=>'&cat=0',
+		'Movies'=>'&cat=7',
+		'TV'=>'&cat=10',
+		'TV/Season'=>'&cat=12',
 		'XXX'=>'&cat=11',
-		'Music Videos'=>'&cat=8', 
-		'Audio Tracks'=>'&cat=6', 
+		'Music Videos'=>'&cat=8',
+		'Audio Tracks'=>'&cat=6',
 		'Other'=>'&cat=9',
 	);
 
@@ -27,7 +26,7 @@ class BitHDTVEngine extends commonEngine
 		if($useGlobalCats)
 		{
 			$categories = array
-			( 
+			(
 				'all'=>'&cat=0',
 				'movies'=>'&cat=7',
 				'tv'=>'&cat=10',
@@ -43,21 +42,22 @@ class BitHDTVEngine extends commonEngine
 		for($pg = 0; $pg<10; $pg++)
 		{
 			$cli = $this->fetch( $url.'/torrents.php?search='.$what.'&sort=7&type=desc&options=0&seeded=1&page='.$pg.$cat );
-			if( ($cli==false) || (strpos($cli->results, "<h2>No match!</h2>")!==false) 
+			if( ($cli==false) || (strpos($cli->results, "<h2>No match!</h2>")!==false)
 				|| (strpos($cli->results, '>Password:<')!==false))
 				break;
-			$res = preg_match_all('/<img border="0" src=.* alt=\'(?P<cat>.*)\'.*'.
-				'\/details.php\?id=(?P<id>\d+)\'".*>(?P<name>.*)<\/a>.*'.
-				'<td .*>.*<\/td>.*'.
-				'<td .*>.*<\/td>.*'.
-				'<td .*>(?P<date>.*)<\/td>'.
-				'.*<td .*>(?P<size>.*)<\/td>'.
-				'.*<td .*>.*<\/td>.*'.
-				'.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>'.
-				'/siU', $cli->results, $matches);
+			$res = preg_match_all('`<a href="torrents\.php\?cat=.*" alt=\'(?P<cat>.*)\' >.*</a></td>.*'.
+				'<td .*><a title="(?P<name>.*)" href=\'.*id=(?P<id>\d+)\'">.*</td>.*'.
+				'<td .*>.*</td>.*'.
+				'<td .*>.*</td>.*'.
+				'<td .*>(?P<date>.*)</td>.*'.
+				'<td .*>(?P<size>.*)</td>.*'.
+				'<td .*>.*</td>.*'.
+				'<td .*>(?P<seeds>.*)</td>.*'.
+				'<td .*>(?P<leech>.*)</td>'.
+				'`siU', $cli->results, $matches);
 			if(($res!==false) && ($res>0) &&
 				count($matches["id"])==count($matches["cat"]) &&
-				count($matches["cat"])==count($matches["name"]) && 
+				count($matches["cat"])==count($matches["name"]) &&
 				count($matches["name"])==count($matches["size"]) &&
 				count($matches["size"])==count($matches["seeds"]) &&
 				count($matches["seeds"])==count($matches["date"]) &&
