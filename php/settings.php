@@ -69,13 +69,40 @@ class rTorrentSettings
 		return(array_key_exists($plugin,$this->plugins));
 	}
 
-	public function registerEventHook( $plugin, $ename )
+	public function registerEventHook( $plugin, $ename, $level = 10, $save = false )
 	{
+		$subject = array
+		(
+			"name" => $plugin,
+			"level" => $level,
+		);
+
+		$sort = function ($a,$b) 
+		{ 
+			$lvl1 = (float) $a["level"];
+			$lvl2 = (float) $b["level"];
+			return( $lvl1 > $lvl2 ? 1 : 
+				($lvl1 < $lvl2 ? -1 : strcmp($a["name"], $b["name"]) ));
+		};
+
 		if(is_array($ename))
+		{
 			foreach( $ename as $name )
-				$this->hooks[$name][] = $plugin;
+			{
+				$this->hooks[$name][] = $subject;
+				usort( $this->hooks[$name], $sort );
+			}
+		}
 		else
-			$this->hooks[$ename][] = $plugin;
+		{
+			$this->hooks[$ename][] = $subject;
+			usort( $this->hooks[$ename], $sort );
+		}
+		// hooks with lesser level runs first
+		if( $save )
+		{
+			$this->store();
+		}
 	}
 	protected function unregisterEventHookPrim( $plugin, $ename )
 	{
@@ -84,13 +111,15 @@ class rTorrentSettings
 			if($this->hooks[$ename][$i] == $plugin)
 			{
 				unset($this->hooks[$ename][$i]);
-				if( count($this->hooks[$ename])==0 )
+				if( empty($this->hooks[$ename]) )
+				{
 					unset($this->hooks[$ename]);
+				}
 				break;
 			}
 		}		
 	}
-	public function unregisterEventHook( $plugin, $ename )
+	public function unregisterEventHook( $plugin, $ename, $save = true )
 	{
 		if(is_array($ename))
 		{
@@ -103,24 +132,31 @@ class rTorrentSettings
 		{
 			$this->unregisterEventHookPrim( $plugin, $ename );
 		}
-		$this->store();
+		if( $save )
+		{
+			$this->store();
+		}
 	}
 	public function pushEvent( $ename, $prm )
 	{
 		if( array_key_exists($ename,$this->hooks))
-			for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
+		{
+			$prm = array($prm);
+			foreach( $this->hooks[$ename] as $hook )
 			{
-				$pname = $this->hooks[$ename][$i];
-				$file = dirname(__FILE__).'/../plugins/'.$pname.'/hooks.php';
+				$file = dirname(__FILE__).'/../plugins/'.$hook['name'].'/hooks.php';
 				if(is_file($file))
 				{
 					require_once( $file );
-					$func = $pname.'Hooks::On'.$ename;
+					$func = $hook['name'].'Hooks::On'.$ename;
 					if(is_callable( $func ) && 
-						(call_user_func_array($func,array($prm))==true))
+						(call_user_func_array($func,$prm)==true))
+					{
 						break;
+					}
 				}
 			}
+		}
 	}
 
 	public function store()
