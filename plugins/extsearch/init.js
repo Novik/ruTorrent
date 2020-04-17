@@ -361,6 +361,7 @@ theWebUI.tegItemRemove = function()
 		plugin.tegs[theWebUI.actLbls["flabel_cont"]].data[plugin.tegArray[i].ndx].deleted = true;
 		table.removeRow( theWebUI.actLbls["flabel_cont"]+"$"+plugin.tegArray[i].ndx );
 	}
+	table.correctSelection();
 	plugin.correctCounter(theWebUI.actLbls["flabel_cont"],null);
 	table.refreshRows();
 }

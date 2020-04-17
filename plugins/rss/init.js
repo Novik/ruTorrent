@@ -804,6 +804,7 @@ theWebUI.addRSSItems = function(d)
 				theWebUI.rssItems[item.href] = item;
 			}
 		}
+		var deleted = false;
 		for(var href in this.rssItems)
 		{
 			if(!plugin.getFirstRSS(this.rssItems[href]))
@@ -811,10 +812,17 @@ theWebUI.addRSSItems = function(d)
 				updated = true;
 				delete this.rssItems[href];
 				table.removeRow(href);
+				deleted = true;
 			}
 		}
 		if(updated)
+		{
+			if(deleted)
+			{
+				table.correctSelection();
+			}
 			table.Sort();
+		}
 		this.updateRSSLabels(rssLabels,d.groups);
 		this.rssUpdateInProgress = false;
 	}

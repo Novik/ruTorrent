@@ -1529,6 +1529,18 @@ dxSTable.prototype.clearSelection = function()
 	this.refreshSelection();
 }
 
+dxSTable.prototype.correctSelection = function()
+{
+	this.selCount = 0;
+	for(var k in this.rowSel) 
+	{
+		if(this.rowdata[k].enabled && this.rowSel[k])
+		{
+			this.selCount++;
+		}
+	}
+}
+
 dxSTable.prototype.fillSelection = function() 
 {
 	this.selCount = 0;

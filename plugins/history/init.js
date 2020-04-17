@@ -261,9 +261,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 				req+=("&hash=" + k);
 		}
 		if(req.length)
-		{
 			theWebUI.request("?action=hst"+cmd+req,[plugin.onGetHistory, plugin]);
-		}
 	}
 
 	rTorrentStub.prototype.hstdelete = function()
@@ -348,7 +346,9 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 				table.Sort();
 		}
 		if((theWebUI.activeView=='history') || (plugin.allStuffLoaded && (plugin.isNotificationsSupported()===notify.PERMISSION_GRANTED)))
+		{
 			plugin.hstTimeout = window.setTimeout(plugin.historyRefresh,theWebUI.settings["webui.update_interval"]);
+		}
 		else
         		if(plugin.hstTimeout)
 	        	{
