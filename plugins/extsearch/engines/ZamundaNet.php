@@ -85,7 +85,7 @@ class ZamundaNetEngine extends commonEngine
 						$item["size"] = self::formatSize($size);
 						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
-						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
+						$item["peers"] = intval(self::removeTags($matches["peers"][$i]));
 						$added++;
 						if(($item["seeds"] == 0) || ($added>=$limit))
 						{
@@ -93,6 +93,10 @@ class ZamundaNetEngine extends commonEngine
 						}
 						$ret[$link] = $item;
 					}
+				}
+				if(strpos($cli->results, ' class="gotonext">')===false)
+				{
+					break;
 				}
 			}
 			else
