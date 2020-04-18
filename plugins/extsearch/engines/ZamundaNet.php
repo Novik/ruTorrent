@@ -37,9 +37,9 @@ class ZamundaNetEngine extends commonEngine
 				'tv'=>'&c7=1&c33=1',
 				'music'=>'&c6=1&c29=1&c30=1&c34=1&c51=1',
 				'games'=>'&c4=1&c12=1&c17=1&c21=1&c39=1&c40=1&c54=1',
-				'anime'=>'&c25',
+				'anime'=>'&c25=1',
 				'software'=>'&c1=1&c22=1&c38=1',
-				'books'=>'&c32'
+				'books'=>'&c32=1'
 			);
 		}
 		else
