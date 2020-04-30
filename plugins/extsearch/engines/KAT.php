@@ -87,7 +87,7 @@ class KATEngine extends commonEngine
 			{
 				for( $i=0; $i<$res; $i++)
 				{
-					$link = "magnet:".$matches["link"][$i];
+					$link = "magnet:". htmlspecialchars_decode($matches["link"][$i]);
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
