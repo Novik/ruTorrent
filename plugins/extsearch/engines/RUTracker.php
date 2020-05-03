@@ -8,15 +8,14 @@ class RUTrackerEngine extends commonEngine
 
 	protected function parseTList($results,&$added,&$ret,$limit)
 	{
-		if( strpos($results, ">Не найдено</td>")!==false )
+		if( strpos($results, "class=\"f-name\"")===false )
 			return(false);
-		$res = preg_match_all('/<div class="f-name"><a class="gen f ts-text" href="tracker\.php\?f=\d+">(?P<cat>.*)<\/a>.*'.
-			'<a.* class="med tLink ts-text hl-tags bold" href="viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
-			'<td class="row4 small nowrap tor-size" data-ts_text="(?P<size>.*)">.*'.
-			'<a class="small tr-dl dl-stub" href="(?P<link>.*)">.*'.
-			'<td class="row4 nowrap" data-ts_text="(?P<seeds>.*)">.*'.
-			'<td class="row4 leechmed bold" title=".*">(?P<leech>.*)<.*'.
-			'<td class="row4 small nowrap" style="padding: 1px 3px 2px;" data-ts_text="(?P<date>.*)">.*'.
+		$res = preg_match_all('/<div class="f-name".*'.
+			'href="tracker\.php\?f=\d+">(?P<cat>.*)<\/a>.*'.
+			'href="viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
+			'dl-stub" href="(?P<link>.*)">(?P<size>.*)<.*'.
+			'seedmed.*>(?P<seeds>.*)<.*'.
+			'leechmed.*>(?P<leech>.*)<'.
 			'/siU', $results, $matches);
 		if($res)
 		{
@@ -29,8 +28,8 @@ class RUTrackerEngine extends commonEngine
 					$item["cat"] = self::toUTF(self::removeTags($matches["cat"][$i],"CP1251"),"CP1251");
 					$item["desc"] = "https://rutracker.org/forum/viewtopic.php?t=".$matches["id"][$i];
 					$item["name"] = self::toUTF(self::removeTags($matches["name"][$i],"CP1251"),"CP1251");
-					$item["size"] = floatval($matches["size"][$i]);
-					$item["time"] = floatval($matches["date"][$i]);
+					$item["size"] = self::formatSize(trim($matches["size"][$i]));
+					//$item["time"] = floatval($matches["date"][$i]);
 					$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 					$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 					if (substr($link, 0, 2) === 'dl') {
