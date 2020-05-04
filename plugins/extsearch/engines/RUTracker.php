@@ -16,6 +16,7 @@ class RUTrackerEngine extends commonEngine
 			'dl-stub" href="(?P<link>.*)">(?P<size>.*)<.*'.
 			'seedmed.*>(?P<seeds>.*)<.*'.
 			'leechmed.*>(?P<leech>.*)<'.
+			' data-ts_text="(?P<date>.*)">'.
 			'/siU', $results, $matches);
 		if($res)
 		{
@@ -29,7 +30,7 @@ class RUTrackerEngine extends commonEngine
 					$item["desc"] = "https://rutracker.org/forum/viewtopic.php?t=".$matches["id"][$i];
 					$item["name"] = self::toUTF(self::removeTags($matches["name"][$i],"CP1251"),"CP1251");
 					$item["size"] = self::formatSize(trim($matches["size"][$i]));
-					//$item["time"] = floatval($matches["date"][$i]);
+					$item["time"] = floatval($matches["date"][$i]);
 					$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 					$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 					if (substr($link, 0, 2) === 'dl') {
