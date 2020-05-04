@@ -210,6 +210,11 @@ class rHistory
 			'{name}', '{label}', '{size}', '{downloaded}', '{uploaded}', '{ratio}',
 			'{creation}', '{added}', '{finished}', '{tracker}',
 		);
+		if( !is_null(rTorrentSettings::get()->tz) )
+		{
+			$tz = date_default_timezone_get();
+			date_default_timezone_set(rTorrentSettings::get()->tz);
+		}
 		$values = array
 		(
 			$data['name'], 
@@ -223,6 +228,10 @@ class rHistory
 			strftime('%c',$data['finished']),
 			$data['tracker'],
 		);
+		if( !is_null(rTorrentSettings::get()->tz) )
+		{
+			date_default_timezone_set($tz);
+		}
 		$title = str_replace( $fields, $values, $section['title'] );
 		$body = str_replace( $fields, $values, $section['body'] );
 		$client = new Snoopy();

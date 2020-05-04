@@ -26,6 +26,7 @@ class rTorrentSettings
 	public $bind = '0.0.0.0';
 	public $idNotFound = false;
 	public $home = '';
+	public $tz = null;
 
 	static private $theSettings = null;
 
@@ -43,6 +44,10 @@ class rTorrentSettings
 
 	private function __construct()
     	{
+    		if( array_key_exists("browser_timezone",$_COOKIE) )
+    		{
+			$this->tz = $_COOKIE["browser_timezone"];
+		}
 	}
 
 	private function __clone()
