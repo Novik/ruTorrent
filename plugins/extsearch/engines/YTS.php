@@ -2,12 +2,18 @@
 class YTSEngine extends commonEngine
 {
 	public $defaults = array( "public"=>true, "page_size"=>75 );
-	public $categories = array( 'all'=>'' );
+	public $categories = array(
+    "All" => "All",
+    "720p" => "720p",
+    "1080p" => "1080p",
+    "2160p" => "2160p",
+    "3D" => "3D",
+  );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
         	$added = 0;
-       		$cli = $this->fetch( 'https://yts.ag/api/v2/list_movies.json?query_term='.$what );
+       		$cli = $this->fetch( 'https://yts.mx/api/v2/list_movies.json?query_term='.$what.'&quality='.$cat );
 		if( $cli && ($obj = json_decode($cli->results)) && property_exists($obj,"data") )
 		{
 			for( $i=0; $i<$obj->data->movie_count; $i++ )
