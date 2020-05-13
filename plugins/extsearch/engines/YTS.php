@@ -7,7 +7,7 @@ class YTSEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
         	$added = 0;
-       		$cli = $this->fetch( 'https://yts.ag/api/v2/list_movies.json?query_term='.$what );
+       		$cli = $this->fetch( 'https://yts.mx/api/v2/list_movies.json?query_term='.$what );
 		if( $cli && ($obj = json_decode($cli->results)) && property_exists($obj,"data") )
 		{
 			for( $i=0; $i<$obj->data->movie_count; $i++ )
