@@ -36,14 +36,20 @@ class rCloudflare
 			$url = '"'.addslashes($this->url).'"';
 			$agent = $this->client->agent ? '"'.addslashes($this->client->agent).'"' : 'None';
 			$proxies = '';
+			$recaptcha = '';
+			global $cloudscraper_recaptcha;
 			if($this->client->_isproxy)
 			{
 				// Warning: Python will not work with 'https' proxies by normal way.
 				$proxy = (empty($this->client->proxy_proto) ? '' : $this->client->proxy_proto.'://').$this->client->proxy_host.":".$this->client->proxy_port;
 				$proxies = ", proxies={\"http\": \"$proxy\", \"https\": \"$proxy\"}";
 			}
+			if(isset($cloudscraper_recaptcha))
+			{
+				$recaptcha = ",recaptcha={\"provider\": \"$cloudscraper_recaptcha[provider]\",\"api_key\": \"$cloudscraper_recaptcha[api_key]\",\"username\": \"$cloudscraper_recaptcha[username]\",\"password\": \"$cloudscraper_recaptcha[password]\"},delay=15";
+			}
 			$code = escapeshellarg(getExternal('python'))." -c ".
-				escapeshellarg("import cloudscraper\nimport json\ntokens, user_agent = cloudscraper.get_tokens({$url}{$proxies})\nprint(json.dumps([tokens,user_agent]))");
+				escapeshellarg("import cloudscraper\nimport json\ntokens, user_agent = cloudscraper.get_tokens({$url}{$proxies}{$recaptcha})\nprint(json.dumps([tokens,user_agent]))");
 			$data = `{$code}`;
 			if($data &&
 				($data = json_decode($data,true)) &&
