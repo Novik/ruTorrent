@@ -69,3 +69,13 @@
 	$canUseXSendFile = false;		// If true then use X-Sendfile feature if it exist
 
 	$locale = "UTF8";
+
+	//For using recaptcha solver plugin with cloudscaper. Needed fields in https://github.com/VeNoMouS/cloudscraper
+        //Need python library: python_anticaptcha
+	//
+        //$cloudscraper_recaptcha = array(
+        // "provider" => "",
+        // "api_key" => "",
+        // "username" => "",
+        // "password" => ""
+        // );
