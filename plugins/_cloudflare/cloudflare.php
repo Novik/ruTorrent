@@ -30,6 +30,9 @@ class rCloudflare
 
 	public function process()
 	{
+		global $recaptcha_solving_enabled;
+		global $cloudscraper_recaptcha;
+
 		$ret = false;
 		if( $this->is_cloudflare_challenge() )
 		{
