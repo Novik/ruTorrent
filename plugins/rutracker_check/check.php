@@ -9,6 +9,7 @@ require_once( "trackers/kinozal.php" );
 require_once( "trackers/nnmclub.php" );
 require_once( "trackers/tapocheknet.php" );
 require_once( "trackers/tfile.php" );
+require_once( "trackers/toloka.php" );
 
 class ruTrackerChecker
 {
