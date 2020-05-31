@@ -27,6 +27,7 @@ class rTorrentSettings
 	public $idNotFound = false;
 	public $home = '';
 	public $tz = null;
+	public $ip = '0.0.0.0';
 
 	static private $theSettings = null;
 
@@ -252,6 +253,7 @@ class rTorrentSettings
 					new rXMLRPCCommand("get_name"),
 					new rXMLRPCCommand("get_port_range"),
 					new rXMLRPCCommand("get_bind"),
+					new rXMLRPCCommand("get_ip"),
 					) );
 				if($req->success())
 				{
@@ -262,6 +264,7 @@ class rTorrentSettings
 					$this->portRange = $req->val[5];
 					$this->port = intval($this->portRange);
 					$this->bind = $req->val[6];
+					$this->ip = $req->val[7];
 
 					if($this->iVersion>=0x809)
 					{

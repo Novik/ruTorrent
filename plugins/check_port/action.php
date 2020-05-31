@@ -4,6 +4,7 @@ require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc" );
 
 $port = rTorrentSettings::get()->port;
 $bind = rTorrentSettings::get()->bind;
+$ip_glob = rTorrentSettings::get()->ip;
 
 function get_ip()
 {
@@ -45,6 +46,8 @@ function check_port($ip,$port)
 
 if(!empty($bind) && $bind != '0.0.0.0')
 	check_port($bind,$port);
+elseif (!empty($ip_glob) && $ip_glob != '0.0.0.0')
+	check_port($ip_glob,$port);
 else
 {
 	session_start();
