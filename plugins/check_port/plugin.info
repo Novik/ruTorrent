@@ -2,4 +2,6 @@ plugin.description: This plugin adds an incoming port status indicator to the bo
 plugin.author: Novik
 plugin.version: 3.9
 rtorrent.need: 1
+rtorrent.php.error: conf.php
+php.extensions.error: json
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginCheckPort

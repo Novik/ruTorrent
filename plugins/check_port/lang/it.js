@@ -6,6 +6,7 @@
  * Author: Gianni
  */
 
+ theUILang.checkWebsiteNotFound = "Check_port plugin: Plugin will not work. Invalid configuration";
  theUILang.checkPort		= "Controlla stato porta";
  theUILang.portStatus		= [
  				  "Stato della porta sconosciuto",
