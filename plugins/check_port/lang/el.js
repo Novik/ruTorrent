@@ -6,6 +6,7 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
+ theUILang.checkWebsiteNotFound = "Check_port plugin: Plugin will not work. Invalid configuration";
  theUILang.checkPort		= "Έλεγχος κατάστασης θύρας";
  theUILang.portStatus		= [
  				  "Η κατάσταση της θύρας είναι άγνωστη",
