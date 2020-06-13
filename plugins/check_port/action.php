@@ -69,7 +69,7 @@ function check_port($ip,$port,$checker,$closed,$open)
 }
 
 if(!empty($ip_glob) && $ip_glob != '0.0.0.0')
-	check_port($ip_glob,$port);
+	check_port($ip_glob,$port,$checker,$closed,$open);
 else
 {
 	session_start();
