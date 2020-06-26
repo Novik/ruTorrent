@@ -189,7 +189,7 @@ plugin.check = function(data)
 		this.foreTimeout = setTimeout( function() 
 		{
 			theWebUI.requestWithoutTimeout("?action=taskcheck&hash="+self.foreground.no,[self.check,self]);
-		},1000);
+		}, theWebUI.settings["webui.update_interval"]);
 	}
 	else
 	{
