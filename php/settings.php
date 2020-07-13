@@ -112,18 +112,21 @@ class rTorrentSettings
 	}
 	protected function unregisterEventHookPrim( $plugin, $ename )
 	{
-		for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
-		{
-			if($this->hooks[$ename][$i] == $plugin)
+	        if( array_key_exists($ename, $this->hooks) )
+	        {
+			for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
 			{
-				unset($this->hooks[$ename][$i]);
-				if( empty($this->hooks[$ename]) )
+				if($this->hooks[$ename][$i] == $plugin)
 				{
-					unset($this->hooks[$ename]);
+					unset($this->hooks[$ename][$i]);
+					if( empty($this->hooks[$ename]) )
+					{
+						unset($this->hooks[$ename]);
+					}
+					break;
 				}
-				break;
 			}
-		}		
+		}
 	}
 	public function unregisterEventHook( $plugin, $ename, $save = true )
 	{
