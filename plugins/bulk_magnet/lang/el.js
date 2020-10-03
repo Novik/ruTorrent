@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.bulkCopy		= "Copy";
- theUILang.Magnet		= "Magnet link";
+ theUILang.bulkCopy		= "Αντιγραφή";
+ theUILang.Magnet		= "Σύνδεσμος Magnet";
 
 thePlugins.get("bulk_magnet").langLoaded();
