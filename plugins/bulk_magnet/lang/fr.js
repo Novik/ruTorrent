@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.bulkCopy		= "Copy";
- theUILang.Magnet		= "Magnet link";
+ theUILang.bulkCopy		= "Copier";
+ theUILang.Magnet		= "Lien magnet";
 
 thePlugins.get("bulk_magnet").langLoaded();
