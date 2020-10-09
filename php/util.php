@@ -28,6 +28,7 @@ if(!isset($localhosts) || !count($localhosts))
 	$localhosts = array( "127.0.0.1", "localhost" );
 if(!isset($locale))	
 	$locale = "UTF8";
+getProfilePath();	// for creation profile, if it is absent
 
 function stripSlashesFromArray(&$arr)
 {
@@ -410,7 +411,7 @@ function getProfilePath( $user = null )
         {
         	$ret.=('/users/'.$user);
         	if(!is_dir($ret))
-			makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents') );
+			makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents',$ret.'/tmp') );
 	}
 	return($ret);
 }
