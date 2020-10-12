@@ -39,6 +39,7 @@
 		padding: 0px;
 		list-style: none;
 		width: 300px;
+		word-break: break-word;
 	}
 	ul.noty_cont li {
 		position: relative;
@@ -47,7 +48,7 @@
 		list-style: none;
 		padding: 0px;
 		margin: 10px 0 0 0;
-		width: 300px; /* Fix for: http://bugs.jquery.com/ticket/2278 */
+		width: 100%;
 	}
 	ul.noty_cont.noty_layout_topLeft {left:20px; top:20px;}
 	ul.noty_cont.noty_layout_topRight {right:40px; top:20px;}
