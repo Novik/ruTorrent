@@ -1,0 +1,4 @@
+div#dlgBulkAdd {width: 395px}
+div#dlgBulkAdd div.dlg-header {background-image: url(../../images/world.gif)}
+div#dlgBulkAdd .container {padding: 5px; margin-bottom: 10px;}
+div#dlgBulkAdd textarea {box-sizing: border-box; width: 100%; height: 200px; padding: 5px; white-space: nowrap} 

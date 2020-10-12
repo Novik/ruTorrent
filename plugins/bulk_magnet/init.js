@@ -1,3 +1,4 @@
+plugin.loadMainCSS();
 plugin.loadLang();
 
 if(plugin.canChangeMenu())
@@ -109,4 +110,87 @@ if(plugin.canChangeMenu())
 			]] );
 		}
 	}
+}
+
+plugin.showBulkAdd = function()
+{
+	theDialogManager.show("dlgBulkAdd");
+}
+
+plugin.createPluginMenu = function()
+{
+	if(this.enabled)
+	{
+		theContextMenu.add([theUILang.bulkAdd, plugin.showBulkAdd]);		
+	}
+}
+
+plugin.bulkAdd = function()
+{
+	theWebUI.request("?action=bulkadd",[plugin.wasAdded, plugin]);	
+}
+
+rTorrentStub.prototype.bulkadd = function()
+{
+	this.content = '';
+	var arr = $('#bulkadd').val().split("\n");
+	for(var i = 0; i<arr.length; i++)
+	{
+		var s = $.trim(arr[i]);
+		if(s != '')
+		{
+			this.content = 	this.content+"&torrent="+encodeURIComponent(s);
+		}
+	}
+	this.contentType = "application/x-www-form-urlencoded";
+	this.mountPoint = "plugins/bulk_magnet/action.php";
+	this.dataType = "json";
+}
+
+plugin.wasAdded = function(data)
+{
+	if(data['error'])
+	{
+		noty( theUILang.addTorrentFailed + " ("+data['error']+')', "error" );
+	}
+	if(data['success'])
+	{
+		noty( theUILang.addTorrentSuccess + " ("+data['success']+')', "success" );
+		theWebUI.getTorrents("list=1");
+	}
+}
+
+plugin.onLangLoaded = function()
+{
+	this.registerTopMenu(9);
+	theDialogManager.make( "dlgBulkAdd", theUILang.bulkAdd,
+		"<div class='container'>"+
+			"<textarea id='bulkadd'></textarea>"+
+			theUILang.bulkAddDescription+
+		"</div>"+
+		"<div class='aright buttons-list'>"+
+			"<input type='button' class='OK Button' disabled='disabled' value='"+theUILang.ok+"'/>"+
+			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
+		"</div>");
+	var text = $$('bulkadd');
+	theDialogManager.setHandler('dlgBulkAdd','beforeShow',function()
+	{
+		text.value = '';
+	});
+	$('#dlgBulkAdd .OK').on('click', function()
+	{
+		theDialogManager.hide("dlgBulkAdd");
+		plugin.bulkAdd();
+		return(false);
+	});
+	text.onupdate = text.onkeyup = function() 
+	{ 
+		$('#dlgBulkAdd .OK').prop('disabled',$.trim(text.value)==''); 
+	};
+	text.onpaste = function() { setTimeout( text.onupdate, 10 ) };
+};
+
+plugin.onRemove = function()
+{
+	theDialogManager.hide("dlgBulkAdd");
 }
