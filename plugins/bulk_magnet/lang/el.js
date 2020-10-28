@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN SOURCE
  *
- * English language file.
+ * Greek language file.
  *
  * Author: 
  */

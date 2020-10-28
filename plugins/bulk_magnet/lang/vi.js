@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN SOURCE
  *
- * English language file.
+ * Vietnamese language file.
  *
  * Author: 
  */

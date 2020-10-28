@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN SOURCE
  *
- * English language file.
+ * Spanish language file.
  *
  * Author: 
  */

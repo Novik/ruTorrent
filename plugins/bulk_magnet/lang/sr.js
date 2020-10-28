@@ -1,7 +1,7 @@
 ﻿/*
  * PLUGIN SOURCE
  *
- * English language file.
+ * Serbian language file.
  *
  * Author: 
  */
