@@ -1,5 +1,5 @@
 ﻿/*
- * PLUGIN SOURCE
+ * PLUGIN BULK_MAGNET
  *
  * Finnish language file.
  *
