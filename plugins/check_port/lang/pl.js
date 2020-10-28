@@ -6,7 +6,7 @@
  * Author: Dare (piczok@gmail.com)
  */
 
- theUILang.checkWebsiteNotFound = "Check_port plugin: Plugin will not work. Invalid configuration";
+ theUILang.checkWebsiteNotFound = "Wtyczka check_port: Wtyczka nie działa. Nieprawidłowa konfiguracja.";
  theUILang.checkPort		= "Sprawdź stan portu";
  theUILang.portStatus		= [
  				  "Stan portu nieznany",
