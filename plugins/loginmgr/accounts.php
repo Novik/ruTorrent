@@ -77,6 +77,11 @@ abstract class commonAccount
 		return( stripos($url,$this->url)===0 );
 	}
 
+	protected function loadData( $client = null )
+	{
+		 return(privateData::load( $this->getName(), $client ));
+	}
+
 	protected function updateCached($client,&$url,&$method,&$content_type,&$body)
 	{
 		return(true);
@@ -90,13 +95,13 @@ abstract class commonAccount
 	public function fetch( $client, $url, $login, $password, $method, $content_type, $body )
 	{
 	        $is_result_fetched = false;
-		$data = privateData::load( $this->getName(), $client );
-		$ret = ( ($data->loaded && 
-				$this->updateCached($client,$url,$method,$content_type,$body) && 
+		$data = $this->loadData($client);
+		$ret = ( ($data->loaded &&
+				$this->updateCached($client,$url,$method,$content_type,$body) &&
 				$client->fetch($url,$method,$content_type,$body) &&
 				$this->isOKPostFetch($client,$url,$method,$content_type,$body)) ||
-			($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) && 
-				$client->status>=200 && 
+			($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) &&
+				$client->status>=200 &&
 				$client->status<400 &&
 				$this->isOK($client) &&
                                 ($is_result_fetched || $client->fetch($url,$method,$content_type,$body)) &&
@@ -112,9 +117,9 @@ abstract class commonAccount
 		$modified = privateData::getModified($this->getName());
 		if( ($modified===false) || ((time()-$modified)>=$auto))
 		{
-			$data = privateData::load( $this->getName() );
-			if($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) && 
-				$client->status>=200 && 
+			$data = $this->loadData();
+			if($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) &&
+				$client->status>=200 &&
 				$client->status<400 &&
 				$this->isOK($client))
 				$data->store($client);
@@ -163,8 +168,8 @@ class accountManager
 							$this->accounts[$name]["auto"] = $oldAccounts[$name]["auto"];
 					}
 				}
-			} 
-			closedir($handle);		
+			}
+			closedir($handle);
 	        }
 		ksort($this->accounts);
 		$this->store();
@@ -200,10 +205,10 @@ class accountManager
 		$this->store();
 		$this->setHandlers();
 	}
-	
+
 	public function getAccount( $url )
 	{
-		foreach( $this->accounts as $name=>$nfo )		
+		foreach( $this->accounts as $name=>$nfo )
 		{
 			if($nfo["enabled"])
 			{
@@ -224,14 +229,14 @@ class accountManager
 			require_once( $nfo["path"] );
 			$object = new $nfo["object"]();
 			return($object->fetch( $client, $url, $nfo["login"], $nfo["password"], $method, $content_type, $body ));
-		}		
+		}
 		return(false);
 	}
 
 	public function getInfo()
 	{
 		$ret = array();
-		foreach( $this->accounts as $name=>$nfo )		
+		foreach( $this->accounts as $name=>$nfo )
 		{
 			require_once( $nfo["path"] );
 			$nfo["name"] = $name;
@@ -246,7 +251,7 @@ class accountManager
 
 	public function hasAuto()
 	{
-		foreach( $this->accounts as $name=>$nfo )		
+		foreach( $this->accounts as $name=>$nfo )
 			if($nfo["enabled"] && !empty($nfo["auto"]))
 				return(true);
 		return(false);
@@ -256,7 +261,7 @@ class accountManager
 	{
 		if(rTorrentSettings::get()->linkExist)
 		{
-			$req =  new rXMLRPCRequest( $this->hasAuto() ? 
+			$req =  new rXMLRPCRequest( $this->hasAuto() ?
 				rTorrentSettings::get()->getAbsScheduleCommand("loginmgr",86400,
 					getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) :
 				rTorrentSettings::get()->getRemoveScheduleCommand("loginmgr") );
@@ -271,7 +276,7 @@ class accountManager
 			if($nfo["enabled"] && !empty($nfo["auto"]))
 			{
 				require_once( $nfo["path"] );
-				$object = new $nfo["object"]();				
+				$object = new $nfo["object"]();
 				$object->check( new Snoopy(), $nfo["login"], $nfo["password"], $nfo["auto"] );
 			}
 		}
