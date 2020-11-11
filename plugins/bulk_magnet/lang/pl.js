@@ -1,14 +1,14 @@
 ﻿/*
- * PLUGIN SOURCE
+ * PLUGIN BULK_MAGNET
  *
- * English language file.
+ * Polish language file.
  *
  * Author: 
  */
 
- theUILang.bulkCopy		= "Copy";
+ theUILang.bulkCopy		= "Kopiuj";
  theUILang.Magnet		= "Magnet link";
- theUILang.bulkAdd		= "Bulk loading"; 
- theUILang.bulkAddDescription	= "One link per line (HTTP, magnet-link or hash)";
+ theUILang.bulkAdd		= "Dodaj zbiorczo"; 
+ theUILang.bulkAddDescription	= "Jeden link na linię (HTTP, magnet lub hash)";
 
 thePlugins.get("bulk_magnet").langLoaded();

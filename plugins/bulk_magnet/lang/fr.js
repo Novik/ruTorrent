@@ -1,14 +1,14 @@
 ﻿/*
- * PLUGIN SOURCE
+ * PLUGIN BULK_MAGNET
  *
- * English language file.
+ * French language file.
  *
  * Author: 
  */
 
  theUILang.bulkCopy		= "Copier";
  theUILang.Magnet		= "Lien magnet";
- theUILang.bulkAdd		= "Bulk loading"; 
- theUILang.bulkAddDescription	= "One link per line (HTTP, magnet-link or hash)";
+ theUILang.bulkAdd		= "Importer des torrents par lot";
+ theUILang.bulkAddDescription	= "Un lien par ligne ( HTTP, magnet ou hash )";
 
 thePlugins.get("bulk_magnet").langLoaded();
