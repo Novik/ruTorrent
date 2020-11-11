@@ -15,7 +15,7 @@ class RUTrackerEngine extends commonEngine
 			'href="viewtopic\.php\?t=(?P<id>\d+)">(?P<name>.*)<\/a>.*'.
 			'dl-stub" href="(?P<link>.*)">(?P<size>.*)<.*'.
 			'seedmed.*>(?P<seeds>.*)<.*'.
-			'leechmed.*>(?P<leech>.*)<'.
+			'leechmed.*>(?P<leech>.*)<.*'.
 			' data-ts_text="(?P<date>.*)">'.
 			'/siU', $results, $matches);
 		if($res)
