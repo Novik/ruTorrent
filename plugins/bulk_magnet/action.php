@@ -57,6 +57,9 @@ function parseValue( $value )
 	return($ret);
 }
 
+ignore_user_abort( true );
+set_time_limit( 0 );
+
 $result = array
 ( 
 	'error' => 0,
