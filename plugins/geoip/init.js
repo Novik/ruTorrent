@@ -178,9 +178,13 @@ if(plugin.canChangeMenu() && plugin.retrieveComments)
 			if(plugin.enabled && plugin.allStuffLoaded)
 			{
 				var el = theContextMenu.get(theUILang.peerAdd);
-				if(el)
+				var selCount = theWebUI.getTable("prs").selCount;
+				if(el && selCount)
+				{
 					theContextMenu.add(el, [theUILang.peerComment+'...',
-						(this.isTorrentCommandEnabled('commentpeer',theWebUI.dID) && (theWebUI.getTable("prs").selCount==1)) ? "theDialogManager.show('cadd')" : null]);
+						(this.isTorrentCommandEnabled('commentpeer',theWebUI.dID) && (selCount==1)) ? 
+							"theDialogManager.show('cadd')" : null]);
+				}
 			}
 			return(true);
 		}

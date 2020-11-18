@@ -455,6 +455,17 @@ var theWebUI =
 			theWebUI.showPanel(this,!theWebUI.settings["webui.closed_panels"][this.id]);
 		});
 
+		// user must be able add peer when peers are empty
+		$("#PeerList .stable-body").mouseclick( function(e)
+		{
+			if(e.which==3)
+			{
+				theWebUI.prsSelect(e,null);
+				return(true);
+			}	
+			return(false);
+		});
+
 		this.registerMagnetHandler();
 		this.configured = true;
 	},
@@ -863,7 +874,7 @@ var theWebUI =
 
 	prsSelect: function(e, id) 
 	{
-		if($type(id) && theWebUI.createPeerMenu(e, id))
+		if(theWebUI.createPeerMenu(e, id))
 	   		theContextMenu.show();
    	},
 
@@ -895,37 +906,44 @@ var theWebUI =
 
    	createPeerMenu : function(e, id)
 	{
-   		if(e.which!=3) 
-      			return(false);
-   		theContextMenu.clear();
-   		if(this.dID && $type(this.torrents[this.dID]))
-   		{
-			theContextMenu.add([theUILang.peerAdd, 
-				(this.torrents[this.dID].private==0) && 
-				this.isTorrentCommandEnabled('addpeer',this.dID) &&
-				(theWebUI.systemInfo.rTorrent.iVersion>=0x804) ? 
-				"theDialogManager.show('padd')"	: null]);
-			if(theWebUI.systemInfo.rTorrent.iVersion>=0x807)
-			{
-				theContextMenu.add([theUILang.peerBan, this.isTorrentCommandEnabled('ban',this.dID) ? "theWebUI.setPeerState('ban')" : null]);
-				theContextMenu.add([theUILang.peerKick, this.isTorrentCommandEnabled('kick',this.dID) ? "theWebUI.setPeerState('kick')" : null]);
-		   		if(this.getTable("prs").selCount > 1) 
-   				{
-					theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
-					theContextMenu.add([theUILang.peerUnsnub, this.isTorrentCommandEnabled('unsnub',this.dID) ? "theWebUI.setPeerState('unsnub')" : null]);
-				}
-				else
-                		{
-      					if(!this.peers[id].snubbed) 
-      						theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
-					else
+   		var ret = false;
+   		if(e.which == 3) 
+		{
+	   		theContextMenu.clear();
+			var selCount = theWebUI.getTable("prs").selCount;
+	   		if(this.dID && $type(this.torrents[this.dID]))
+   			{
+				theContextMenu.add([theUILang.peerAdd, 
+					(this.torrents[this.dID].private==0) && 
+					this.isTorrentCommandEnabled('addpeer',this.dID) &&
+					(theWebUI.systemInfo.rTorrent.iVersion>=0x804) ? 
+					"theDialogManager.show('padd')"	: null]);
+				ret = true;
+				if(selCount && theWebUI.systemInfo.rTorrent.iVersion>=0x807)
+				{
+					theContextMenu.add([theUILang.peerBan, this.isTorrentCommandEnabled('ban',this.dID) ? "theWebUI.setPeerState('ban')" : null]);
+					theContextMenu.add([theUILang.peerKick, this.isTorrentCommandEnabled('kick',this.dID) ? "theWebUI.setPeerState('kick')" : null]);
+		   			if(selCount > 1) 
+	   				{
+						theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
 						theContextMenu.add([theUILang.peerUnsnub, this.isTorrentCommandEnabled('unsnub',this.dID) ? "theWebUI.setPeerState('unsnub')" : null]);
-      				}
+					}
+					else
+	                		{
+      						if(!this.peers[id].snubbed) 
+      							theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
+						else
+							theContextMenu.add([theUILang.peerUnsnub, this.isTorrentCommandEnabled('unsnub',this.dID) ? "theWebUI.setPeerState('unsnub')" : null]);
+	      				}
+		        	        theContextMenu.add([CMENU_SEP]); 
+				}
 			}
-	                theContextMenu.add([CMENU_SEP]); 
+			if(selCount)
+			{
+				theContextMenu.add([theUILang.peerDetails, (selCount > 1) ? null : "theWebUI.getTable('prs').ondblclick({ id: '"+id+"'})"]); 
+			}
 		}
-		theContextMenu.add([theUILang.peerDetails, (this.getTable("prs").selCount > 1) ? null : "theWebUI.getTable('prs').ondblclick({ id: '"+id+"'})"]); 
-		return(true);
+		return(ret);
    	},
 
 //
