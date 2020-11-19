@@ -44,18 +44,22 @@ function check_port($ip,$port,$checker,$closed,$open)
 {
 	global $useWebsite;
 
-	if($useWebsite=="yougetsignal")
-		$parse = "remoteAddress=".$ip."&portNumber=".$port;
-	if($useWebsite=="portchecker")
-		$parse = "target_ip=".$ip."&port=".$port;
-
-	$ret = 0;
-
 	$client = new Snoopy();
 	$client->proxy_host = "";
 
-	@$client->fetch($checker, "POST", "application/x-www-form-urlencoded", $parse);
+	if($useWebsite=="yougetsignal")
+		$parse = "remoteAddress=".$ip."&portNumber=".$port;
+	if($useWebsite=="portchecker")
+	{
+		@$client->fetch($checker);
+		$client->setcookies();
+		$parse = "target_ip=".$ip."&port=".$port;
+		if(preg_match('/ name="_csrf" value="(?P<csrf>.*)"/', $client->results, $match))
+			$parse.=("&_csrf=".$match["csrf"]);
+	}
 
+	$ret = 0;
+	@$client->fetch($checker, "POST", "application/x-www-form-urlencoded", $parse);
 	if($client->status==200)
 	{
 		if(strpos($client->results,$closed)!==false)
