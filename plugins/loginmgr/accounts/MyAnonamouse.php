@@ -19,8 +19,17 @@ class MyAnonamouseAccount extends commonAccount
                 {
                         $client->setcookies();
                         $client->referer = $this->url;
-                        if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded",
-                                "email=".rawurlencode($login)."&password=".rawurlencode($password) ))
+			$parameters = "email=".rawurlencode($login)."&password=".rawurlencode($password);
+
+                        if(preg_match('/ name="d" value="(?P<d>[^"]*)"/', $client->results, $match))
+                        {
+				$parameters.=("&d=".$match["d"]);
+			}
+                        if(preg_match('/ name="s" value="(?P<s>[^"]*)"/', $client->results, $match))
+                        {
+				$parameters.=("&s=".$match["s"]);
+			}
+                        if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded", $parameters ))
                         {
                                 $client->setcookies();
                                 return(true);
