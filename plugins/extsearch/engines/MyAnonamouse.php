@@ -34,16 +34,18 @@ class MyAnonamouseEngine extends commonEngine
 
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/tor/js/loadSearch.php?tor[text]='.$what.
+			$cli = $this->fetch( $url.'/tor/js/loadSearch2.php?tor[text]='.$what.
 				'&tor[srchIn]=0&tor[fullTextType]=old&tor[author]=&tor[series]=&tor[narrator]=&tor[searchType]=active&tor[searchIn]=torrents&tor[browseFlags][]=16&tor[hash]=&tor[sortType]=seedersDesc'.
 				$cat.'&tor[startNumber]='.($pg*20) );
 			if( ($cli==false) || (strpos($cli->results, "<h3>Sorry, nothing found with your specified search</h3>")!==false) ||
 				(strpos($cli->results, '<input type="password"')!==false))
 				break;
-        		$res = preg_match_all('`<td><a class="title" href="(?P<desc>[^"]*)">(?P<name>[^>]*)</a>[^\n]*</td>\s*'.
+
+        		$res = preg_match_all(
+        			'`<td><a class="torTitle" href="(?P<desc>[^"]*)">(?P<name>[^>]*)</a>.*'.
 	        		'<td><a class="directDownload" href="(?P<link>[^"]*)" id="dlLink\d+" title="Direct Download" alt="Direct Download"> </a><a id="torBookmark\d+" title="bookmark" role="button">Bookmark</a>\s*</td>\s*'.
-        			'<td><a href="/t/[^<]*</a><br />\[(?P<size>[^\]]*)\]</td>\s*'.
-                	        '<td>(?P<date>[^<]*)<br />[^\n]*</td>\s*'.
+        			'</a><br />\[(?P<size>[^\]]*)\]</td>\s*'.
+	              	        '<td>(?P<date>[^<]*)<br />[^\n]*</td>\s*'.
 	                      	'<td><p>(?P<seeds>[^<]*)</p><p>(?P<leech>[^<]*)</p>[^\n]*</td>\s*</tr>'.
 	                        '`siU', $cli->results, $matches);
 			if($res)

@@ -23,16 +23,16 @@ class MyAnonamouseAccount extends commonAccount
 
                         if(preg_match('/ name="d" value="(?P<d>[^"]*)"/', $client->results, $match))
                         {
-				$parameters.=("&d=".$match["d"]);
+				$parameters.=("&d=".rawurlencode($match["d"]));
 			}
                         if(preg_match('/ name="s" value="(?P<s>[^"]*)"/', $client->results, $match))
                         {
-				$parameters.=("&s=".$match["s"]);
+				$parameters.=("&s=".rawurlencode($match["s"]));
 			}
                         if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded", $parameters ))
                         {
                                 $client->setcookies();
-                                return(true);
+                                return(!empty($client->cookies));
                         }
                 }
                 return(false);

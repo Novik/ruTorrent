@@ -535,9 +535,14 @@ class Snoopy
 		exec(escapeshellarg(getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		$this->_redirectaddr = false;
 		$this->headers = array();
+		$this->status = $return;
+		$this->response_code = "";
+		$this->results = "";
 		$is_gzipped = false;
 		if($return)
+		{
 			$this->error = "Error: cURL could not retrieve the document, error $return.";
+		}
 		else
 		{
 			$results = @file_get_contents($contfile);
