@@ -32,36 +32,31 @@ class MyAnonamouseEngine extends commonEngine
 		else
 			$cat = $categories[$cat];
 
+		$PER_PAGE_ENTRIES = 100;
+
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/tor/js/loadSearch2.php?tor[text]='.$what.
-				'&tor[srchIn]=0&tor[fullTextType]=old&tor[author]=&tor[series]=&tor[narrator]=&tor[searchType]=active&tor[searchIn]=torrents&tor[browseFlags][]=16&tor[hash]=&tor[sortType]=seedersDesc'.
-				$cat.'&tor[startNumber]='.($pg*20) );
-			if( ($cli==false) || (strpos($cli->results, "<h3>Sorry, nothing found with your specified search</h3>")!==false) ||
-				(strpos($cli->results, '<input type="password"')!==false))
+			$cli = $this->fetch( $url.'/tor/js/loadSearchJSONbasic.php?tor[text]='.$what.
+				'&dlLink&tor[searchIn]=torrents&tor[sortType]=seedersDesc&tor[searchType]=all&tor[searchIn]=torrents&perpage='.$PER_PAGE_ENTRIES.
+				$cat.'&tor[startNumber]='.($pg*$PER_PAGE_ENTRIES) );
+			if( !$cli )
 				break;
-
-        		$res = preg_match_all(
-        			'`<td><a class="torTitle" href="(?P<desc>[^"]*)">(?P<name>[^>]*)</a>.*'.
-	        		'<td><a class="directDownload" href="(?P<link>[^"]*)" id="dlLink\d+" title="Direct Download" alt="Direct Download"> </a><a id="torBookmark\d+" title="bookmark" role="button">Bookmark</a>\s*</td>\s*'.
-        			'</a><br />\[(?P<size>[^\]]*)\]</td>\s*'.
-	              	        '<td>(?P<date>[^<]*)<br />[^\n]*</td>\s*'.
-	                      	'<td><p>(?P<seeds>[^<]*)</p><p>(?P<leech>[^<]*)</p>[^\n]*</td>\s*</tr>'.
-	                        '`siU', $cli->results, $matches);
-			if($res)
+        		$res = json_decode( $cli->results );
+			if($res && property_exists($res,"data") && count($res->data))
 			{
-				for($i=0; $i<$res; $i++)
+				foreach($res->data as $torrent)
 				{
-					$link = $url.$matches["link"][$i];
+					$link = $url.'/tor/download.php/'.$torrent->dl;
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
-						$item["desc"] = $url.$matches["desc"][$i];
-						$item["name"] = self::removeTags($matches["name"][$i]);
-						$item["size"] = self::formatSize($matches["size"][$i]);
-						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
-						$item["seeds"] = intval(trim(self::removeTags($matches["seeds"][$i])));
-						$item["peers"] = intval(trim(self::removeTags($matches["leech"][$i])));
+						$item["desc"] = $url.'/t/'.$torrent->id;
+						$item["name"] = $torrent->title;
+						$item["size"] = self::formatSize($torrent->size);
+						$item["time"] = strtotime($torrent->added);
+						$item["seeds"] = $torrent->seeders;
+						$item["peers"] = $torrent->leechers;
+						$item["cat"] = $torrent->catname;
 						$ret[$link] = $item;
 						$added++;
 						if($added>=$limit)

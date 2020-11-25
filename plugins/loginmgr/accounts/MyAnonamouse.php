@@ -10,7 +10,7 @@ class MyAnonamouseAccount extends commonAccount
 
 	protected function isOK($client)
 	{
-		return(strpos($client->results, '<input type="password"')===false);
+		return(($client->status!=403) && (strpos($client->results, '<input type="password"')===false));
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
         {
