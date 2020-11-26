@@ -4,11 +4,11 @@ plugin.loadLang();
 if(plugin.canChangeMenu())
 {
 	plugin.createFileMenu = theWebUI.createFileMenu;
-	theWebUI.createFileMenu = function( e, id ) 
+	theWebUI.createFileMenu = function( e, id )
 	{
-		if(plugin.createFileMenu.call(this, e, id)) 
+		if(plugin.createFileMenu.call(this, e, id))
 		{
-			if(plugin.enabled && plugin.allStuffLoaded) 
+			if(plugin.enabled && plugin.allStuffLoaded)
 			{
 				var fno = null;
 				var table = this.getTable("fls");
@@ -44,12 +44,12 @@ if(plugin.canChangeMenu())
 
 	theWebUI.filesox = function(hash,no)
 	{
-	        this.startConsoleTask( "sox", plugin.name, 
-	        	{ "hash" : hash, "no" : no }, 
+	        this.startConsoleTask( "sox", plugin.name,
+	        	{ "hash" : hash, "no" : no },
 	        	{ noclose: true } );
 	}
 
-	plugin.onTaskShowLog = function(task,line,id,ndx) 
+	plugin.onTaskShowLog = function(task,line,id,ndx)
 	{
 		if(id=='tskcmdlog')
 		{
@@ -73,7 +73,7 @@ if(plugin.canChangeMenu())
 				$('#tskcmdlog').empty();
 				$('#tskcmdlog').append("<div class='soxframe' id='soxframe'><img src='plugins/spectrogram/action.php?cmd=soxgetimage&no="+task.no+
 					"&file="+encodeURIComponent($('#soximgfile').val())+"' /></div>");
-				$('#soxframe img').load(function() 
+				$('#soxframe img').load(function()
 				{
 					plugin.setConsoleSize(this);
 				});
@@ -81,12 +81,12 @@ if(plugin.canChangeMenu())
 			}
 			else
 				$('.soxplay').hide();
-		}				
+		}
 	}
 
 	plugin.onTaskShowInterface = function(task)
 	{
-		plugin.gotImage = false;	
+		plugin.gotImage = false;
 		plugin.saveConsoleSize();
 	}
 
@@ -107,10 +107,10 @@ if(plugin.canChangeMenu())
 		else
 			plugin.setConsoleSize(null);
 	}
-	
+
 	plugin.setConsoleSize = function(img)
 	{
-		if(plugin.consoleWidth && 
+		if(plugin.consoleWidth &&
 			plugin.deltaWidth)
 		{
 			if(img)
@@ -153,7 +153,7 @@ plugin.onLangLoaded = function()
 	}
 }
 
-plugin.langLoaded = function() 
+plugin.langLoaded = function()
 {
 	if(plugin.enabled)
 		plugin.onLangLoaded();
