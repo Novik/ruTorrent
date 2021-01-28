@@ -26,5 +26,6 @@
  theUILang.torrentKilled		= "Η λειτουργία τερματίστηκε.";
  theUILang.recentTrackers		= "Πρόσφατοι trackers";
  theUILang.source			= "Πηγή";
+ theUILang.HybridTorrent        = "Hybrid torrent";
 
 thePlugins.get("create").langLoaded();

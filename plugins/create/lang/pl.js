@@ -25,6 +25,7 @@
  theUILang.torrentKill			= "Stop";
  theUILang.torrentKilled		= "Proces został zatrzymany.";
  theUILang.recentTrackers		= "Ostatnie trackery";
- theUILang.source			= "Źródło";
+ theUILang.source			    = "Źródło";
+ theUILang.HybridTorrent        = "Hybrid torrent";
 
 thePlugins.get("create").langLoaded();

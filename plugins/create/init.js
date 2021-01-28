@@ -20,7 +20,8 @@ theWebUI.checkCreate = function()
 		"comment" : $.trim($("#comment").val()),
 		"source" : $.trim($("#source").val()),
 		"private" : $('#private').prop('checked') ? 1 : 0,
-		"start_seeding" : $('#start_seeding').prop('checked') ? 1 : 0		
+		"start_seeding" : $('#start_seeding').prop('checked') ? 1 : 0,
+		"hybrid" : $('#hybrid').prop('checked') ? 1 : 0,
 	},
 	{
 	       	noclose: true
@@ -116,6 +117,13 @@ plugin.onLangLoaded = function()
 		if(plugin.hidePieceSize)
 			pieceSize = "";	
 
+		var hybridTorrent = 
+				"<label for='hybrid' id='lbl_hybrid' class='nomargin'>"+
+				"<input type='checkbox' name='hybrid' id='hybrid'/>"+theUILang.HybridTorrent+"</label>";
+			
+		if(plugin.hideHybrid)
+			hybridTorrent = "";	
+
 		theDialogManager.make("tcreate",theUILang.CreateNewTorrent,
 			"<div class='cont fxcaret'>"+
 				"<fieldset>"+
@@ -136,7 +144,8 @@ plugin.onLangLoaded = function()
 				"<fieldset>"+
 					"<legend>"+theUILang.Other+"</legend>"+
 					"<label for='start_seeding' id='lbl_start_seeding' class='nomargin'><input type='checkbox' name='start_seeding' id='start_seeding'/>"+theUILang.StartSeeding+"</label>"+
-					"<label class='nomargin'><input type='checkbox' name='private' id='private'/>"+theUILang.PrivateTorrent+"</label><br/>"+
+					"<label class='nomargin'><input type='checkbox' name='private' id='private'/>"+theUILang.PrivateTorrent+"</label>"+
+					hybridTorrent+"<br/>"+
 				"</fieldset>"+
 			"</div>"+
 			"<div class='aright buttons-list'><input type='button' id='recentTrackers' value='"+theUILang.recentTrackers+"...' class='Button menuitem' onclick='theWebUI.showRecentTrackers()'/><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='OK Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",true);		
