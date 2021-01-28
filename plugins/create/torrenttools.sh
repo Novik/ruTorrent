@@ -2,16 +2,25 @@
 #
 # $1 - taskNo
 # $2 - php
-# $3 - createtorrent
+# $3 - torrenttools
 # $4 - path
 # $5 - piecesize
 # $6 - user
-# $7 - tmp
+# $7 - dir
+# $8 - hybrid
 
-"${3}" -l ${5} -a dummy "${4}" "${7}/temp.torrent"
+if [ ${8} ] ; then
+	protocol="hybrid"
+else
+	protocol="v1"
+fi
+
+"${3}" create -l ${5} -o "${7}/temp.torrent" --protocol "${protocol}" "${4}"
+
 last=$? 
 chmod a+r "${7}/temp.torrent"
-if [ $last -le 1 ] ; then
+
+if [ $last -eq 0 ] ; then
 	echo 'Try to correct torrent file...'
 	cd "$(dirname $0)"
 	"${2}" ./correct.php ${1} "${6}"
