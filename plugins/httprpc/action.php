@@ -458,7 +458,7 @@ switch($mode)
 	}
 	default:
 	{
-		if(isset($HTTP_RAW_POST_DATA))
+		if(isset($HTTP_RAW_POST_DATA) && strpos(preg_replace('/\s+/S', '', $HTTP_RAW_POST_DATA), "execute") === false)
 		{
 			$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA,false);
 			if(!empty($result))
