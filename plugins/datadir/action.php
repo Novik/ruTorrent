@@ -33,6 +33,10 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		if( $parts[0] == "hash" )
 		{
 			$hash = trim( $parts[1] );
+			if( !ctype_xdigit($hash) )
+			{
+				$hash = null;
+			}
 		}
 		else if( $parts[0] == "datadir" )
 		{
@@ -40,15 +44,15 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		}
 		else if($parts[0]=="move_addpath")
 		{
-			$move_addpath = trim( $parts[1] );
+			$move_addpath = intval( $parts[1] );
 		}
 		else if( $parts[0] == "move_datafiles" )
 		{
-			$move_datafiles = trim( $parts[1] );
+			$move_datafiles = intval( $parts[1] );
 		}
 		else if( $parts[0] == "move_fastresume" )
 		{
-			$move_fastresume = trim( $parts[1] );
+			$move_fastresume = intval( $parts[1] );
 		}
 	}
 
