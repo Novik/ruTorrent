@@ -7,7 +7,7 @@ plugin.playTimer = null;
 if(plugin.canChangeOptions() && !explorerIsInstalled)
 {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
-	theWebUI.addAndShowSettings = function(arg) 
+	theWebUI.addAndShowSettings = function(arg)
 	{
 		if(plugin.enabled && plugin.allStuffLoaded)
 		{
@@ -22,7 +22,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
-	plugin.ffmpegWasChanged = function() 
+	plugin.ffmpegWasChanged = function()
 	{
 		var ret = false;
 		if( plugin.allStuffLoaded )
@@ -32,7 +32,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 				if($('#'+name).is(":checkbox"))
 				{
 					if($('#'+name).prop('checked')!=val)
-					{       	
+					{
 						ret = true;
 						return(false);
 					}
@@ -54,7 +54,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
-	theWebUI.setSettings = function() 
+	theWebUI.setSettings = function()
 	{
 		plugin.setSettings.call(this);
 		if(plugin.enabled && plugin.ffmpegWasChanged())
@@ -81,11 +81,11 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 if(plugin.canChangeMenu())
 {
 	plugin.createFileMenu = theWebUI.createFileMenu;
-	theWebUI.createFileMenu = function( e, id ) 
+	theWebUI.createFileMenu = function( e, id )
 	{
-		if(plugin.createFileMenu.call(this, e, id)) 
+		if(plugin.createFileMenu.call(this, e, id))
 		{
-			if(plugin.enabled && plugin.allStuffLoaded) 
+			if(plugin.enabled && plugin.allStuffLoaded)
 			{
 				var fno = null;
 				var table = this.getTable("fls");
@@ -121,18 +121,18 @@ if(plugin.canChangeMenu())
 
 	theWebUI.fileFFMPEG = function(hash,no)
 	{
-	        this.startConsoleTask( "ffmpeg", plugin.name, 
-	        	{ "hash" : hash, "no" : no }, 
+	        this.startConsoleTask( "ffmpeg", plugin.name,
+	        	{ "hash" : hash, "no" : no },
 	        	{ noclose: true });
 	}
 
 	plugin.onTaskShowInterface = function(task)
 	{
 	        $('.scplay').hide();
-	        $('#tskcmdlog').addClass('scframe_cont');	
+	        $('#tskcmdlog').addClass('scframe_cont');
 	}
 
-	plugin.onTaskShowLog = function(task,line,id,ndx) 
+	plugin.onTaskShowLog = function(task,line,id,ndx)
 	{
 		if(id=='tskcmdlog')
 		{
@@ -144,7 +144,7 @@ if(plugin.canChangeMenu())
 					$('.scframe').hide();
 				$('#'+id).append("<div class='scframe' id='scframe"+ndx+"'><img src='plugins/screenshots/action.php?cmd=ffmpeggetimage&no="+task.no+
 					"&fno="+line+"&file="+encodeURIComponent($('#scimgfile').val())+"' /></div>");
-				$('#scframe'+ndx+' img').load(function() 
+				$('#scframe'+ndx+' img').load(function()
 				{
 					plugin.centerFrame(ndx);
 				});
@@ -153,7 +153,7 @@ if(plugin.canChangeMenu())
 		}
 		return(escapeHTML(line)+'<br>');
 	}
-	
+
 	plugin.onTaskFinished = function(task,onBackground)
 	{
 		if(!onBackground)
@@ -165,7 +165,7 @@ if(plugin.canChangeMenu())
 			}
 			$("#sctaskno").val(task.no);
 			plugin.setPlayControls();
-		}			
+		}
 	}
 
 	plugin.onTaskHideInterface = function(task)
@@ -176,7 +176,7 @@ if(plugin.canChangeMenu())
 		{
 			window.clearInterval(plugin.playTimer);
 			plugin.playTimer = null;
-		}	
+		}
 	}
 
 	plugin.setPlayControls = function()
@@ -346,7 +346,7 @@ plugin.onRemove = function()
 		this.removePageFromOptions("st_screenshots");
 }
 
-plugin.langLoaded = function() 
+plugin.langLoaded = function()
 {
 	if(plugin.enabled)
 		plugin.onLangLoaded();

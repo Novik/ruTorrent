@@ -115,6 +115,10 @@ if(isset($_REQUEST['cmd']))
 					if($useExternal=="mktorrent")
 						$piece_size = log($piece_size,2);
 					else
+
+					if(isset($_REQUEST['hybrid']))
+						$hybrid = TRUE;
+					
 					if($useExternal===false)
 						$useExternal = "inner";
 					$task = new rTask( array
@@ -128,17 +132,21 @@ if(isset($_REQUEST['cmd']))
 						'source'=>$_REQUEST['source'],
 						'start_seeding'=>$_REQUEST['start_seeding'],
 						'piece_size'=>$_REQUEST['piece_size'],
-						'private'=>$_REQUEST['private']
+						'private'=>$_REQUEST['private'],
+						'hybrid'=>$_REQUEST['hybrid'],
 					) );
 					$commands = array();
+
 					$commands[] = escapeshellarg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
-						$task->id." ".
-						escapeshellarg(getPHP())." ".
-						escapeshellarg($pathToCreatetorrent)." ".
-						escapeshellarg($path_edit)." ".
-						$piece_size." ".
-						escapeshellarg(getUser())." ".
-						escapeshellarg(rTask::formatPath($task->id));
+					$task->id." ".
+					escapeshellarg(getPHP())." ".
+					escapeshellarg($pathToCreatetorrent)." ".
+					escapeshellarg($path_edit)." ".
+					$piece_size." ".
+					escapeshellarg(getUser())." ".
+					escapeshellarg(rTask::formatPath($task->id))." ".
+					escapeshellarg($hybrid);
+					
 					$commands[] = '{';
 					$commands[] = 'chmod a+r "${dir}"/result.torrent';
 					$commands[] = '}';						
