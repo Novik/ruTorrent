@@ -1,35 +1,5 @@
 <?php
 
-if(function_exists('ini_set'))
-{
-	ini_set('display_errors',false);
-	ini_set('log_errors',true);
-}
-
-if(!isset($_SERVER['REMOTE_USER']))
-{
-	if(isset($_SERVER['PHP_AUTH_USER']))
-		$_SERVER['REMOTE_USER'] = $_SERVER['PHP_AUTH_USER'];
-	else
-	if(isset($_SERVER['REDIRECT_REMOTE_USER']))
-		$_SERVER['REMOTE_USER'] = $_SERVER['REDIRECT_REMOTE_USER'];
-}
-
-$rootPath = realpath(dirname(__FILE__)."/..");
-require_once( $rootPath.'/conf/config.php' );
-$conf = getConfFile('config.php');
-if($conf)
-	require_once($conf);
-require_once( 'lfs.php' );
-
-if(!isset($profileMask))
-	$profileMask = 0777;
-if(!isset($localhosts) || !count($localhosts))
-	$localhosts = array( "127.0.0.1", "localhost" );
-if(!isset($locale))	
-	$locale = "UTF8";
-getProfilePath();	// for creation profile, if it is absent
-
 function stripSlashesFromArray(&$arr)
 {
         if(is_array($arr))
@@ -69,8 +39,6 @@ function fix_magic_quotes_gpc()
 }
 
 fix_magic_quotes_gpc();
-setlocale(LC_CTYPE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
-setlocale(LC_COLLATE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
 
 function quoteAndDeslashEachItem($item)
 {
@@ -221,7 +189,6 @@ function mix2utf($str, $inv = '_')
 	}
 	return($str);
 }
-
 
 function utf8ize($mixed) 
 {
@@ -747,3 +714,89 @@ function iclamp( $val, $min = 0, $max = XMLRPC_MAX_I8 )
 		$val = $max;
 	return( ((PHP_INT_SIZE>4) || ( ($val>=PHP_INT_MIN) && ($val<=PHP_INT_MAX) )) ? intval($val) : $val );
 }
+
+function makeCSRFCheck()
+{
+	global $enabledOrigins;
+	global $enableCSRFCheck;
+
+	if($enableCSRFCheck && 
+		isset($_SERVER['REQUEST_METHOD']) && 
+		($_SERVER['REQUEST_METHOD'] != "GET"))
+	{
+		if(!isset($enabledOrigins))
+			$enabledOrigins = array();
+		if(isset($_SERVER['HTTP_X_FORWARDED_HOST']))
+			$enabledOrigins[] = strtok($_SERVER['HTTP_X_FORWARDED_HOST'], ':');
+		if(isset($_SERVER['HTTP_HOST']))
+			$enabledOrigins[] = strtok($_SERVER['HTTP_HOST'], ':');
+		if(isset($_SERVER['HTTP_ORIGIN']))
+		{
+			if($_SERVER['HTTP_ORIGIN'] == "null") # privacy-sensitive context
+			{
+				return;
+			}
+			$host = parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST);
+			if(in_array($host,$enabledOrigins))
+			{
+				return;
+			}
+		}
+		if(isset($_SERVER['HTTP_REFERER']))
+		{
+			$host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+			if(in_array($host,$enabledOrigins))
+			{
+				return;
+			}
+		}
+		header('HTTP/1.0 403 Forbidden', true, 403);
+		die('Forbidden');
+	}
+}
+
+function disableUnsupportedMethods()
+{
+	if( isset($_SERVER['REQUEST_METHOD']) && 
+		($_SERVER['REQUEST_METHOD']!='GET') && 
+		($_SERVER['REQUEST_METHOD']!='POST') )
+	{
+		header('HTTP/1.0 405 Method Not Allowed', true, 405);
+		die('Method Not Allowed');
+	}
+}
+
+if(function_exists('ini_set'))
+{
+	ini_set('display_errors',false);
+	ini_set('log_errors',true);
+}
+
+if(!isset($_SERVER['REMOTE_USER']))
+{
+	if(isset($_SERVER['PHP_AUTH_USER']))
+		$_SERVER['REMOTE_USER'] = $_SERVER['PHP_AUTH_USER'];
+	else
+	if(isset($_SERVER['REDIRECT_REMOTE_USER']))
+		$_SERVER['REMOTE_USER'] = $_SERVER['REDIRECT_REMOTE_USER'];
+}
+
+$rootPath = realpath(dirname(__FILE__)."/..");
+require_once( $rootPath.'/conf/config.php' );
+$conf = getConfFile('config.php');
+if($conf)
+	require_once($conf);
+require_once( 'lfs.php' );
+
+if(!isset($profileMask))
+	$profileMask = 0777;
+if(!isset($localhosts) || !count($localhosts))
+	$localhosts = array( "127.0.0.1", "localhost" );
+if(!isset($locale))	
+	$locale = "UTF8";
+setlocale(LC_CTYPE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
+setlocale(LC_COLLATE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
+
+getProfilePath();	// for creation profile, if it is absent
+disableUnsupportedMethods();
+makeCSRFCheck();
