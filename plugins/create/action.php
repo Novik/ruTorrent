@@ -26,7 +26,7 @@ class recentTrackers
 	public function delete($trk)
 	{
 		$cache = new rCache();
-		$this->list = array_diff($this->list,$trk);
+		$this->list = $trk;
 		return($cache->set($this));
 	}
 	public function get()
@@ -101,7 +101,9 @@ if(isset($_REQUEST['cmd']))
 					if(strlen($value))
 						$trk[] = $value;
 				}
-				$ret = $rt->delete($trk);
+				$newList = array_diff($rt->list,$trk);
+				if( $newList !== $rt->list )
+					$ret = $rt->delete($newList);
 			}
 			break;
 		}
