@@ -19,23 +19,26 @@ class YTSEngine extends commonEngine
 			for( $i=0; $i<$obj->data->movie_count; $i++ )
 			{
 				$movie = $obj->data->movies[$i];
-				$torrent_count = count($movie->torrents);
-				for( $j=0; $j<$torrent_count; $j++ )
+				if( is_object($movie) && isset($movie->torrents) )
 				{
-					$torrent = $movie->torrents[$j];
-					if(!array_key_exists($torrent->url, $ret))
+					$torrent_count = count($movie->torrents);
+					for( $j=0; $j<$torrent_count; $j++ )
 					{
-						$item = $this->getNewEntry();
-						$item["cat"] = 'Video';
-						$item["desc"] = $movie->url;
-						$item["name"] = $torrent->quality . "." . $torrent->type . ": " .$movie->title_long;
-						$item["size"] = self::formatSize($torrent->size);
-						$item["seeds"] = $torrent->seeds;
-						$item["peers"] = $torrent->peers;
-						$ret[$torrent->url] = $item;
-						$added++;
-						if($added >= $limit)
-							return;
+						$torrent = $movie->torrents[$j];
+						if(is_object($torrent) && isset($torrent->url) && !array_key_exists($torrent->url, $ret))
+						{
+							$item = $this->getNewEntry();
+							$item["cat"] = 'Video';
+							$item["desc"] = $movie->url;
+							$item["name"] = $torrent->quality . "." . $torrent->type . ": " .$movie->title_long;
+							$item["size"] = self::formatSize($torrent->size);
+							$item["seeds"] = $torrent->seeds;
+							$item["peers"] = $torrent->peers;
+							$ret[$torrent->url] = $item;
+							$added++;
+							if($added >= $limit)
+								return;
+						}
 					}
 				}
 			}

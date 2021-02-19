@@ -229,8 +229,8 @@ class rTask
 		if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 		{
 			if(is_null($flags))
-				$flags = intval(file_get_contents($dir.'/flags'));
-			$ret["pid"] = intval(trim(file_get_contents($dir.'/pid')));
+				$flags = intval(@file_get_contents($dir.'/flags'));
+			$ret["pid"] = intval(trim(@file_get_contents($dir.'/pid')));
 			if(is_file($dir.'/status') && is_readable($dir.'/status'))
 			{
 				$status = trim(file_get_contents($dir.'/status'));
@@ -322,10 +322,24 @@ class rTaskManager
 				if($file != "." && $file != ".." && is_dir($dir.$file))
 				{
 					$tasks[$file] = rTask::check( $file );
-					$tasks[$file]["name"] = $tasks[$file]["params"]["name"];
-					$tasks[$file]["requester"] = $tasks[$file]["params"]["requester"];
-					unset($tasks[$file]["params"]["name"]);
-					unset($tasks[$file]["params"]["requester"]);
+					if( isset($tasks[$file]["params"]["name"]) )
+					{
+						$tasks[$file]["name"] = $tasks[$file]["params"]["name"];
+						unset($tasks[$file]["params"]["name"]);
+					}
+					else
+					{
+						$tasks[$file]["name"] = 'Unknown';
+					}
+					if( isset($tasks[$file]["params"]["requester"]) )
+					{
+						$tasks[$file]["requester"] = $tasks[$file]["params"]["requester"];
+        					unset($tasks[$file]["params"]["requester"]);
+					}
+					else
+					{
+						$tasks[$file]["requester"] = 'Unknown';
+					}
 				}
 			} 
 			closedir($handle);		

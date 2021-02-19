@@ -53,7 +53,7 @@ class RARbgTorrentAPIEngine extends commonEngine
 			}
 			if( $client->status==429 )
 			{
-				sleep(self::MIN_INTERVAL+i);
+				sleep(self::MIN_INTERVAL+$i);
 				continue;
 			}
 			break;

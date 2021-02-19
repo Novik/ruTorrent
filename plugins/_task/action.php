@@ -36,7 +36,7 @@ switch($_REQUEST['cmd'])
 				if($parts[0]=="no")
 				{
 					$value = trim(rawurldecode($parts[1]));
-					if(strlen($value) && intval($value))
+					if(strlen($value))
 						$list[] = $value;
 				}
 			}

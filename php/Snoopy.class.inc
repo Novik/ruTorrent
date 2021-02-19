@@ -237,6 +237,11 @@ class Snoopy
 
 	public function fetch($URI,$method="GET",$content_type="",$body="")
 	{
+		$parts = parse_url($URI);
+		if( !is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]) )
+		{
+			return(false);
+		}
 		rTorrentSettings::get()->pushEvent( "HostConnect", array
 		( 
 			"client" => &$this, 
@@ -245,7 +250,6 @@ class Snoopy
 			"content_type" => &$content_type, 
 			"body" => &$body 
 		) );
-		$parts = parse_url($URI);
 		$this->port = empty($parts["port"]) ? (($parts["scheme"]=="https") ? 443 : 80) : $parts["port"];
 		if(!empty($parts["user"]))
 			$this->user = $parts["user"];

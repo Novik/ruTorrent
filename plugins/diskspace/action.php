@@ -15,4 +15,14 @@
 			$partitionDirectory = &$topDirectory; // Else, we show $topDirectory by default as fallback
 		}
 	}
-	cachedEcho('{ "total": '.disk_total_space($partitionDirectory).', "free": '.disk_free_space($partitionDirectory).' }',"application/json");
+	$ret = array
+	(
+		"total" => 0,
+		"free" => 0
+	);
+	if( is_dir($partitionDirectory) )
+	{
+		$ret["total"] = disk_total_space($partitionDirectory);
+		$ret["free"] = disk_free_space($partitionDirectory);
+	}
+	cachedEcho(safe_json_encode($ret),"application/json");

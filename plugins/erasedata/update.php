@@ -85,6 +85,7 @@ function parseOneItem($item)
 define('MAX_DURATION_OF_CHECK',3600);
 
 $listPath = getSettingsPath()."/erasedata";
+@makeDirectory($listPath);
 $lock = $listPath.'/scheduler.lock';
 if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 {
