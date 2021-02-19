@@ -26,6 +26,7 @@
  theUILang.torrentKilled		= "Η λειτουργία τερματίστηκε.";
  theUILang.recentTrackers		= "Πρόσφατοι trackers";
  theUILang.source			= "Πηγή";
- theUILang.HybridTorrent                = "Υβριδικό τόρεντ";
+ theUILang.HybridTorrent		= "Υβριδικό τόρεντ";
+ theUILang.deleteFromRecentTrackers	= "> Delete";
 
 thePlugins.get("create").langLoaded();

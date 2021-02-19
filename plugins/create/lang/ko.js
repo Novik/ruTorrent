@@ -26,6 +26,7 @@
  theUILang.torrentKilled		= "프로세스가 중지되었습니다.";
  theUILang.recentTrackers		= "최근 트래커";
  theUILang.source			    = "원본";
- theUILang.HybridTorrent        = "Hybrid torrent";
+ theUILang.HybridTorrent		= "Hybrid torrent";
+ theUILang.deleteFromRecentTrackers	= "> Delete";
 
 thePlugins.get("create").langLoaded();
