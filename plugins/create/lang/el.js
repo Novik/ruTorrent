@@ -27,6 +27,6 @@
  theUILang.recentTrackers		= "Πρόσφατοι trackers";
  theUILang.source			= "Πηγή";
  theUILang.HybridTorrent		= "Υβριδικό τόρεντ";
- theUILang.deleteFromRecentTrackers	= "> Delete";
+ theUILang.deleteFromRecentTrackers	= "> Διαγραφή";
 
 thePlugins.get("create").langLoaded();
