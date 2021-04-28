@@ -67,6 +67,17 @@ class rXMLRPCCommand
 	}
 }
 
+function preg_match_map($pattern, $text, $mapfunc)
+{
+	$offset = 0;
+	while(preg_match($pattern, $text, $match, PREG_OFFSET_CAPTURE, $offset)===1)
+	{
+		$mapfunc($match);
+		$offset = $match[0][1] + strlen($match[0][0]);
+	}
+	return $offset > 0;
+}
+
 class rXMLRPCRequest
 {
 	protected $commands = array();
@@ -127,37 +138,45 @@ class rXMLRPCRequest
 		return(count($this->commands));
 	}
 
-	protected function makeCall()
+	protected function makeNextCall()
 	{
-	        rTorrentSettings::get()->patchDeprecatedRequest($this->commands);
+		$commands = array_slice($this->commands, $this->commandOffset);
 		$this->fault = false;
 		$this->content = "";
-		$cnt = count($this->commands);
+		$cnt = count($commands);
 		if($cnt>0)
 		{
 			$this->content = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>';
 			if($cnt==1)
 			{
-				$cmd = $this->commands[0];
+				$cmd = $commands[0];
 	        		$this->content .= "{$cmd->command}</methodName><params>\r\n";
 	        		foreach($cmd->params as &$prm)
 	        			$this->content .= "<param><value><{$prm->type}>{$prm->value}</{$prm->type}></value></param>\r\n";
 		        }
 			else
 			{
+				$maxContentSize = rTorrentSettings::get()->maxContentSize();
 				$this->content .= "system.multicall</methodName><params><param><value><array><data>";
-				foreach($this->commands as &$cmd)
+				foreach($commands as $i => $cmd)
 				{
-					$this->content .= "\r\n<value><struct><member><name>methodName</name><value><string>".
+					$cmdContent = "\r\n<value><struct><member><name>methodName</name><value><string>".
 						"{$cmd->command}</string></value></member><member><name>params</name><value><array><data>";
 					foreach($cmd->params as &$prm)
-						$this->content .= "\r\n<value><{$prm->type}>{$prm->value}</{$prm->type}></value>";
-					$this->content .= "\r\n</data></array></value></member></struct></value>";
+						$cmdContent .= "\r\n<value><{$prm->type}>{$prm->value}</{$prm->type}></value>";
+					$cmdContent .= "\r\n</data></array></value></member></struct></value>";
+					if($i > 0 and strlen($this->content) + strlen($cmdContent) + 35 + 22 > $maxContentSize)
+					{
+						$cnt = $i;
+						break;
+					}
+					$this->content .= $cmdContent;
 				}
 				$this->content .= "\r\n</data></array></value></param>";
 			}
 			$this->content .= "</params></methodCall>";
 		}
+		$this->commandOffset += $cnt;
 		return($cnt>0);
 	}
 
@@ -166,47 +185,41 @@ class rXMLRPCRequest
 		$this->commands[] = $cmd;
 	}
 
+
 	public function run($trusted = true)
 	{
-	        $ret = false;
+		$ret = false;
 		$this->i8s = array();
 		$this->strings = array();
 		$this->val = array();
-		if($this->makeCall())
+		$this->commandOffset = 0;
+		rTorrentSettings::get()->patchDeprecatedRequest($this->commands);
+		while($this->makeNextCall())
 		{
 			$answer = self::send($this->content,$trusted);
 			if(!empty($answer))
 			{
 				if($this->parseByTypes)
 				{
-					if((preg_match_all("|<value><string>(.*)</string></value>|Us",$answer,$strings)!==false) &&
-						count($strings)>1 &&
-						(preg_match_all("|<value><i.>(.*)</i.></value>|Us",$answer,$this->i8s)!==false) &&
-						count($this->i8s)>1)
+					$ret = preg_match_map("|<value><string>(.*)</string></value>|Us", $answer, function ($match)
 					{
-						foreach($strings[1] as $str) 
-						{
-							$this->strings[] = html_entity_decode(
-								str_replace( array("\\","\""), array("\\\\","\\\""), $str ),
-	 							ENT_COMPAT,"UTF-8");
-						}
-						$this->i8s = $this->i8s[1];
-						$ret = true;
-					}
+						$this->strings[] = html_entity_decode(
+							str_replace( array("\\","\""), array("\\\\","\\\""), $match[1][0] ),
+							ENT_COMPAT,"UTF-8");
+					});
+					$ret = $ret && preg_match_map("|<value><i.>(.*)</i.></value>|Us", $answer, function ($match)
+					{
+						$this->i8s[] = $match[1][0];
+					});
 				}
 				else
 				{
-					if((preg_match_all("/<value>(<string>|<i.>)(.*)(<\/string>|<\/i.>)<\/value>/Us",$answer,$response)!==false) &&
-						count($response)>2)
+					$ret = preg_match_map("/<value>(<string>|<i.>)(.*)(<\/string>|<\/i.>)<\/value>/Us", $answer, function ($match)
 					{
-						foreach($response[2] as $str) 
-						{
-							$this->val[] = html_entity_decode(
-								str_replace( array("\\","\""), array("\\\\","\\\""), $str ),
-	 							ENT_COMPAT,"UTF-8");
-						}
-						$ret = true;
-					}
+						$this->val[] = html_entity_decode(
+							str_replace( array("\\","\""), array("\\\\","\\\""), $match[2][0] ),
+							ENT_COMPAT,"UTF-8");
+					});
 				}
 				if($ret)
 				{
@@ -218,9 +231,10 @@ class rXMLRPCRequest
 							toLog($this->content);
 							toLog($answer);
 						}
+						break;
 					}
-				}
-			}
+				} else break;
+			} else break;
 		}
 		$this->content = "";
 		$this->commands = array();

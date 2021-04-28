@@ -398,6 +398,13 @@ class rTorrentSettings
 			(($this->iVersion>=0x904) && (strpos($cmd->command,"group2.")===0)))
 			$cmd->addParameter("");
 	}
+	public function maxContentSize()
+	{
+		if($this->apiVersion>=11) {
+			return 2 << 23;
+		}
+		return 2 << 20;
+	}
 	public function patchDeprecatedRequest($commands)
 	{
 		if($this->iVersion>=0x904)
