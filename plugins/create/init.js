@@ -142,6 +142,8 @@ plugin.onLangLoaded = function()
 				"<option value=\"4096\">4"+theUILang.MB+"</option>"+
 				"<option value=\"8192\">8"+theUILang.MB+"</option>"+
 				"<option value=\"16384\">16"+theUILang.MB+"</option>"+
+				"<option value=\"32768\">32"+theUILang.MB+"</option>"+
+				"<option value=\"65536\">64"+theUILang.MB+"</option>"+
 				"</select>";
 		if(plugin.hidePieceSize)
 			pieceSize = "";
