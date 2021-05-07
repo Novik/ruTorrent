@@ -54,8 +54,8 @@ function check_port($ip,$port,$checker,$closed,$open)
 		@$client->fetch($checker);
 		$client->setcookies();
 		$parse = "target_ip=".$ip."&port=".$port;
-		if(preg_match('/ name="_csrf" value="(?P<csrf>[^"])"/', $client->results, $match))
-			$parse.=("&_csrf=".$match["csrf"]);
+		if(preg_match('/name="_csrf" value="(?P<csrf>[^"]+)/', $client->results, $match))
+			$parse .= "&_csrf=".$match["csrf"];
 	}
 
 	$ret = 0;
