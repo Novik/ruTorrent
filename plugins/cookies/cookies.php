@@ -35,7 +35,7 @@ class rCookies
 					if(strlen($value))
 					{
 						$tmp = explode("|",$value);
-						if(count($tmp>1) && (trim($tmp[1])!=''))
+						if((count($tmp)>1) && (trim($tmp[1])!=''))
 						{
 							$cookies = array();
 							$tmp1 = explode(";",$tmp[1]);
