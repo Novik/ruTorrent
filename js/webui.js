@@ -168,6 +168,7 @@ var theWebUI =
 		"webui.show_statelabelsize":	0,
 		"webui.show_label_path_tree":	1,
 		"webui.show_empty_path_labels":	0,
+		"webui.show_open_status":	1,
 		"webui.register_magnet":	0,
 		...(() => {
 			const defaults = {};
@@ -191,6 +192,12 @@ var theWebUI =
 		speedUL: 	0,
 		DL: 		0,
 		UL: 		0
+	},
+	stopen:
+	{
+		http: 	-1,
+		sock: 	-1,
+		fd: 	-1,
 	},
 	sTimer: 	null,
 	updTimer: 	null,
@@ -1816,9 +1823,12 @@ var theWebUI =
 		this.updateTegs(Object.values(this.tegs));
 		this.updateTegLabels(Object.keys(this.tegs));
 		this.loadTorrents();
-		this.getTotal();
 
 		this.updateViewRows(table)
+
+		this.getTotal();
+		if (this.settings['webui.show_open_status'])
+			this.getOpenStatus();
 
 		// Cleanup memory leaks
 		tArray = null;
@@ -1876,6 +1886,16 @@ var theWebUI =
    	addTotal: function( d )
 	{
 	        $.extend(this.total,d);
+	},
+
+	getOpenStatus: function()
+	{
+		this.request("?action=getopen", [this.addOpenStatus, this]);
+	},
+
+	addOpenStatus: function(stopen)
+	{
+		Object.assign(this.stopen, stopen);
 	},
 
 	/**
@@ -2577,6 +2597,19 @@ var theWebUI =
 	        $("#stdown_speed").text(dl);
 	        $("#stdown_limit").text((self.total.rateDL>0 && self.total.rateDL<327625*1024) ? theConverter.speed(self.total.rateDL) : theUILang.no);
 	        $("#stdown_total").text(theConverter.bytes(self.total.DL));
+
+		if (self.settings['webui.show_open_status']) {
+			for (const opnType of ['http', 'sock', 'fd']) {
+				const ele = $($$('stopen_'+opnType+'_count'));
+				if (self.stopen[opnType] > -1)
+					ele.text(self.stopen[opnType] + ' ' + opnType).show();
+				else
+					ele.hide()
+			}
+			$("#st_fd").show();
+		} else {
+			$("#st_fd").hide();
+		}
 	},
 
 	setDLRate: function(spd)

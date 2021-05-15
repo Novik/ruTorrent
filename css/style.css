@@ -290,6 +290,8 @@ div#tadd select { width: 220px }
 .optionColumn input[type=number],.optionColumn select { padding: 1px; margin: 0.1em 0.5em; width: 6em; }
 .optionColumn div { padding-left: 0; }
 .statuscell td { padding: 0 }
+#st_fd .sthdr { padding-left: 8px; }
+#st_fd .stval { text-align: center; width: 4.3em; }
 #st_system .sthdr { padding-left: 8px }
 
 .ie fieldset {padding: 5px}

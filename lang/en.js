@@ -251,6 +251,7 @@ var theUILang =
  scrapeUpdate			: "Last Updated",
  trkInterval			: "Interval",
  logAutoSwitch			: "Autoswitch to 'Log' tab",
+ showOpenStatus		: "Show open status in status bar",
  showStateLabelSize		: "Show state size",
  showLabelSize			: "Show label size",
  showSearchLabelSize		: "Show search size",

@@ -497,6 +497,7 @@ function makeContent()
 							['webui.labelsize_rightalign', theUILang.labelSizeRightAlign],
 							['webui.show_label_path_tree', theUILang.showCustomLabelTree],
 							['webui.show_empty_path_labels', theUILang.showEmptyPathLabel],
+							['webui.show_open_status', theUILang.showOpenStatus],
 						].map(([id, label]) =>
 						$('<div>').append(
 							$('<input>').attr({ type: 'checkbox', id, checked: 'true' }),
