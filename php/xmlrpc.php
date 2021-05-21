@@ -103,7 +103,7 @@ class rXMLRPCRequest
 			$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, RPC_TIME_OUT);
 			if($socket) 
 			{
-				$reqheader =  "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0".($trusted ? "" : "UNTRUSTED_CONNECTION\x0"."1\x0");
+				$reqheader = "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0UNTRUSTED_CONNECTION\x0".($trusted ? "0" : "1")."\x0";
 				$tosend = strlen($reqheader).":{$reqheader},{$data}";
 				@fwrite($socket,$tosend,strlen($tosend));
 				$result = '';
