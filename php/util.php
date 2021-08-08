@@ -593,9 +593,9 @@ function sendFile( $filename, $contentType = null, $nameToSent = null, $mustExit
   				{ 
   					if(preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches))
     					{ 
-    						$begin=intval($matches[0]);
-						if(!empty($matches[1]))
-							$end=intval($matches[1]);
+    						$begin=intval($matches[1]);
+						if(!empty($matches[2]))
+							$end=intval($matches[2]);
 					}
 				}
 				$size = $end - $begin;
