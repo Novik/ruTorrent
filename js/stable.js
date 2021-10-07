@@ -786,7 +786,8 @@ dxSTable.prototype.sortSecondary = function(x, y)
       		n = tmp;
 	}
 	var ret = this.colsdata[this.secIndex].type;
-	return( (ret==0) ? theSort.AlphaNumeric(m, n) : ((ret==1) || (ret==4)) ? theSort.Numeric(m, n) : theSort.Default(m, n) );
+	var order = (ret==0) ? theSort.AlphaNumeric(m, n) : ((ret==1) || (ret==4)) ? theSort.Numeric(m, n) : theSort.Default(m, n);
+	return( order !== 0 ? order : theSort.Default(x.key, y.key) );
 }
 
 var theSort = 
