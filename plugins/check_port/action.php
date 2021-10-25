@@ -24,7 +24,7 @@ if($useWebsite=="portchecker")
 	$open = ">open<";
 }
 else
-	cachedEcho('{ "port": '.$port.', "status": 0 }',"application/json");
+	cachedEcho('{ "ip": "", "port": '.$port.', "status": 0 }',"application/json");
 
 function get_ip($url,$ipMatch)
 {
@@ -69,7 +69,7 @@ function check_port($ip,$port,$checker,$closed,$open)
 			$ret = 2;
 	}
 
-	cachedEcho('{ "port": '.$port.', "status": '.$ret.' }',"application/json");
+	cachedEcho('{ "ip": "'.$ip.'", "port": '.$port.', "status": '.$ret.' }',"application/json");
 }
 
 if(!empty($ip_glob) && $ip_glob != '0.0.0.0')
@@ -87,6 +87,6 @@ else
 		if(isset($_SESSION['ip']))
 			check_port($_SESSION['ip'],$port,$checker,$closed,$open);
 		else
-			cachedEcho('{ "port": '.$port.', "status": 0 }',"application/json");
+			cachedEcho('{ "ip: "?.?.?.?","port": '.$port.', "status": 0 }',"application/json");
 	}
 }

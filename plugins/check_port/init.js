@@ -15,7 +15,8 @@ plugin.update = function()
 
 plugin.getPortStatus = function(d)
 {
-	$("#port-td").prop("title",d.port+": "+theUILang.portStatus[d.status]).get(0).className = "statuscell pstatus"+d.status;
+	$("#port-td").prop("title",d.ip+":"+d.port+": "+theUILang.portStatus[d.status]).get(0).className = "statuscell pstatus"+d.status;
+	$("#port-ip-text").text(d.ip+':'+d.port);
 }
 
 rTorrentStub.prototype.initportcheck = function()
@@ -45,7 +46,8 @@ plugin.createPortMenu = function(e)
 
 plugin.onLangLoaded = function()
 {
-	plugin.addPaneToStatusbar("port-td",$("<div>").attr("id","port-holder").get(0),2);
+	plugin.addPaneToStatusbar("port-td",$("<div>").attr("id","port-holder")
+		.append( $("<span></span>").attr("id","port-ip-text").css({overflow: "visible"}) ).get(0),2);
 	if(plugin.canChangeMenu())
 		$("#port-td").addClass("pstatus0").mouseclick( plugin.createPortMenu );
 	plugin.init();
