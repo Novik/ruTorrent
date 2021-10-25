@@ -1,4 +1,5 @@
-#port-holder { width: 0px; height: 19px; line-height: 19px; margin-left: 24px; }
+#port-holder { height: 19px; line-height: 19px; margin-left: 24px; }
+#port-ip-text { font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif }
 
 #StatusBar table tr td.pstatus0 { background: url(./images/yellow.png) 5px no-repeat; }
 #StatusBar table tr td.pstatus1 { background: url(./images/red.png) 5px no-repeat; }
