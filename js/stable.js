@@ -86,6 +86,7 @@ var dxSTable = function()
 	this.mni = 0;
 	this.mxi = 0;
 	this.maxViewRows = 100;
+	this.trHeight = TR_HEIGHT;
 }
 
 dxSTable.prototype.setPaletteByURL = function(url) 
@@ -1271,7 +1272,7 @@ dxSTable.prototype.selectRow = function(e, row)
 	return(false);
 }
 
-dxSTable.prototype.addRowById = function(ids, sId, icon, attr)
+dxSTable.prototype.addRowById = function(ids, sId, icon, attr, mRows)
 {
         var cols = [];
         for(var i=0; i<this.cols; i++)
@@ -1282,10 +1283,10 @@ dxSTable.prototype.addRowById = function(ids, sId, icon, attr)
 		if(no>=0)
 			cols[no] = ids[i];
 	}
-	this.addRow(cols, sId, icon, attr);
+	this.addRow(cols, sId, icon, attr, mRows);
 }
 
-dxSTable.prototype.addRow = function(cols, sId, icon, attr) 
+dxSTable.prototype.addRow = function(cols, sId, icon, attr, mRows) 
 {
 	if(cols.length != this.cols) 
 		return;
@@ -1297,7 +1298,7 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	this.rowdata[sId] = {"data" : cols, "icon" : icon, "attr" : attr, "enabled" : true, fmtdata: this.format(this,cols.slice(0))};
 	this.rowSel[sId] = false;
 	this.rowIDs.push(sId);
-	var maxRows = this.getMaxRows();
+	var maxRows = mRows ? mRows : this.getMaxRows();
 	if(this.viewRows < maxRows) 
 		this.tBody.tb.appendChild(this.createRow(cols, sId, icon, attr));
 	this.rows++;

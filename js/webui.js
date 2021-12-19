@@ -1633,6 +1633,7 @@ var theWebUI =
    		var tul = 0;
 		var tdl = 0;
 		var tArray = [];
+		var tMaxRows = Math.ceil(Math.min(table.dBody.clientHeight,table.dCont.clientHeight) / table.trHeight);
 		$.each(data.torrents,
 		/**
 		 * @param {string} hash - torrent hash
@@ -1648,7 +1649,7 @@ var theWebUI =
 			if(!$type(theWebUI.torrents[hash]))
 			{
 				theWebUI.labels[hash] = lbl;
-				table.addRowById(torrent, hash, sInfo[0], {label : lbl});
+				table.addRowById(torrent, hash, sInfo[0], {label : lbl}, tMaxRows);
 				tArray.push(hash);
 				theWebUI.filterByLabel(hash);
 			}
