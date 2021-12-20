@@ -20,7 +20,7 @@
 	@define('LOG_RPC_FAULTS', true, true);
 
 	// for php
-	@define('PHP_USE_GZIP', false, true);
+	@define('PHP_USE_GZIP', false, false);
 	@define('PHP_GZIP_LEVEL', 2, true);
 
 	$schedule_rand = 10;			// rand for schedulers start, +0..X seconds
