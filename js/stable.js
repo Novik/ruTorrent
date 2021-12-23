@@ -1308,17 +1308,17 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr, fast = false)
 		this.rows++;
 		this.viewRows++;
 		if(this.viewRows > maxRows) 
-			this.bpad.style.height = ((this.viewRows - maxRows) * TR_HEIGHT) + "px";		
+			this.bpad.style.height = ((this.viewRows - maxRows) * TR_HEIGHT) + "px";
+
+		var self = this;
+		if((this.sIndex !=- 1) && !this.noSort)
+			this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
 	}
 	else
 	{
 		this.rows++;
-		this.viewRows++;		
+		this.viewRows++;
 	}
-	
-	var self = this;
-	if((this.sIndex !=- 1) && !this.noSort)
-		this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
 }
 
 dxSTable.prototype.createRow = function(cols, sId, icon, attr) 
