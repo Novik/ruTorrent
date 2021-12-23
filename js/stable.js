@@ -1272,7 +1272,7 @@ dxSTable.prototype.selectRow = function(e, row)
 	return(false);
 }
 
-dxSTable.prototype.addRowById = function(ids, sId, icon, attr)
+dxSTable.prototype.addRowById = function(ids, sId, icon, attr, fast = false)
 {
         var cols = [];
         for(var i=0; i<this.cols; i++)
@@ -1283,10 +1283,10 @@ dxSTable.prototype.addRowById = function(ids, sId, icon, attr)
 		if(no>=0)
 			cols[no] = ids[i];
 	}
-	this.addRow(cols, sId, icon, attr);
+	this.addRow(cols, sId, icon, attr, fast);
 }
 
-dxSTable.prototype.addRow = function(cols, sId, icon, attr) 
+dxSTable.prototype.addRow = function(cols, sId, icon, attr, fast = false) 
 {
 	if(cols.length != this.cols) 
 		return;
@@ -1298,16 +1298,28 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	this.rowdata[sId] = {"data" : cols, "icon" : icon, "attr" : attr, "enabled" : true, fmtdata: this.format(this,cols.slice(0))};
 	this.rowSel[sId] = false;
 	this.rowIDs.push(sId);
-	var maxRows = this.getMaxRows();
-	if(this.viewRows < maxRows) 
-		this.tBody.tb.appendChild(this.createRow(cols, sId, icon, attr));
-	this.rows++;
-	this.viewRows++;
-	if(this.viewRows > maxRows) 
-		this.bpad.style.height = ((this.viewRows - maxRows) * TR_HEIGHT) + "px";
-	var self = this;
-	if((this.sIndex !=- 1) && !this.noSort)
-		this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
+	
+	// When adding hundreds or thousands of rows at once, it's faster to skip a few steps
+	// This is safe as long as we call dxSTable.prototype.refreshRows() when we're done
+	if (!fast)
+	{
+		var maxRows = this.getMaxRows();
+		if(this.viewRows < maxRows)
+			this.tBody.tb.appendChild(this.createRow(cols, sId, icon, attr));
+		this.rows++;
+		this.viewRows++;
+		if(this.viewRows > maxRows) 
+			this.bpad.style.height = ((this.viewRows - maxRows) * TR_HEIGHT) + "px";
+
+		var self = this;
+		if((this.sIndex !=- 1) && !this.noSort)
+			this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
+	}
+	else
+	{
+		this.rows++;
+		this.viewRows++;
+	}
 }
 
 dxSTable.prototype.createRow = function(cols, sId, icon, attr) 
