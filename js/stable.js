@@ -86,7 +86,6 @@ var dxSTable = function()
 	this.mni = 0;
 	this.mxi = 0;
 	this.maxViewRows = 100;
-	this.trHeight = TR_HEIGHT;
 }
 
 dxSTable.prototype.setPaletteByURL = function(url) 
