@@ -160,7 +160,7 @@ theSearchEngines.run = function()
 {
 	if(plugin.enabled)
 	{
-		var s = String.prototype.trim($("#query").val());
+		var s = $("#query").val().trim();
 		if(s.length)
 		{
 			this.checkForIncorrectCurrent(false);
@@ -196,10 +196,10 @@ rTorrentStub.prototype.loadtegtorrents = function()
 		this.content += '&torrents_start_stopped=1';
 	if($("#tegnot_add_path").prop("checked"))
 		this.content += '&not_add_path=1';
-	var dir = String.prototype.trim($("#tegdir_edit").val());
+	var dir = $("#tegdir_edit").val().trim();
 	if(dir.length)
 		this.content += ('&dir_edit='+encodeURIComponent(dir));
-	var lbl = String.prototype.trim($("#teglabel").val());
+	var lbl = $("#teglabel").val().trim();
 	if(lbl.length)
 		this.content += '&label='+encodeURIComponent(lbl);
 	if($("#tegfast_resume").prop("checked"))
@@ -470,7 +470,7 @@ plugin.extTegContextMenu = function(e)
 theWebUI.setExtSearchTag = function( d )
 {
 	$("#query").removeAttr("readonly");
-	var what = String.prototype.trim($("#query").val());
+	var what = $("#query").val().trim();
 	var str = theSearchEngines.getEngName(d.eng)+"/"+($type(theUILang["excat"+d.cat]) ? theUILang["excat"+d.cat] : d.cat)+": "+what;
 	for( var id in plugin.tegs )
 		if(plugin.tegs[id].val==str)

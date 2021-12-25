@@ -151,7 +151,7 @@ function makeContent()
 	});
 
 	var input = $$('url');
-	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',String.prototype.trim(input.value)==''); };
+	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',input.value.trim()==''); };
 	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
 	{
@@ -165,10 +165,10 @@ function makeContent()
 			req.push('not_add_path=1');
 		if($("#randomize_hash").prop("checked"))
 			req.push('randomize_hash=1');
-		var dir = String.prototype.trim($("#dir_edit").val());
+		var dir = $("#dir_edit").val().trim();
 		if(dir.length)
 			req.push('dir_edit='+encodeURIComponent(dir));
-		var lbl = String.prototype.trim($("#tadd_label").val());
+		var lbl = $("#tadd_label").val().trim();
 		if(lbl.length)
 			req.push('label='+encodeURIComponent(lbl));
 		if(req.length)

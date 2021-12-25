@@ -1836,7 +1836,7 @@ var theWebUI =
 
 	setTeg: function(str)
 	{
-		str = String.prototype.trim(str);
+		str = str.trim();
 		if(str!="")
 		{
 			for( var id in this.tegs )
@@ -2118,7 +2118,7 @@ var theWebUI =
 
 	createLabel: function() 
 	{
-   		var lbl = String.prototype.trim($("#txtLabel").val());
+   		var lbl = $("#txtLabel").val().trim();
 		lbl = lbl.replace(/\"/g, "'");
    		if(lbl != "") 
 		{
@@ -2337,7 +2337,7 @@ var theWebUI =
 			$("#tu").text($type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
 	        	$("#hs").text(this.dID.substring(0,40));
 			$("#ts").text(d.msg);
-			var url = String.prototype.trim(d.comment);
+			var url = d.comment.trim();
 			if(!url.match(/<a href/i))
 			{
 				var start = url.indexOf("http://");

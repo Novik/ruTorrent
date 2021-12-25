@@ -69,7 +69,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 			if($('#'+name).is(":checkbox"))
 				s+=("&"+name+"="+ ($('#'+name).prop('checked') ? 1 : 0) );
 			else
-				s+=("&"+name+"="+encodeURIComponent(String.prototype.trim($('#'+name).val())));
+				s+=("&"+name+"="+encodeURIComponent($('#'+name).val()).trim());
 		});
 		this.content = "cmd=ffmpegset"+s;
 	        this.contentType = "application/x-www-form-urlencoded";
