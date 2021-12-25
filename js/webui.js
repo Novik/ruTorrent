@@ -298,10 +298,8 @@ var theWebUI =
 				}
 			}
 		};
-		if(browser.isOpera)
-			$(document).keypress(keyEvent);
-		else
-			$(document).keydown(keyEvent);
+		
+		$(document).on( browser.isOpera ? 'keypress' : 'keydown', keyEvent);
 	},
 
 	updateServerTime: function()
@@ -318,7 +316,7 @@ var theWebUI =
 	{
 		if(thePlugins.isInstalled("_getdir"))
 		{
-			$('#dir_edit').after($("<input type=button>").addClass("Button").attr("id","dir_btn").focus( function() { this.blur(); } ));
+			$('#dir_edit').after($("<input type=button>").addClass("Button").attr("id","dir_btn").on('focus', function() { this.blur(); } ));
 			var btn = new this.rDirBrowser( 'tadd', 'dir_edit', 'dir_btn' );
 			theDialogManager.setHandler('tadd','afterHide',function()
 			{

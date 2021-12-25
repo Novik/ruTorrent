@@ -107,9 +107,9 @@ var theDialogManager =
 		var checkForButtons = function me(val)
 		{
 			if(val.hasClass("Cancel"))
-				val.click( function() { theDialogManager.hide(id); } );
+				val.on('click', function() { theDialogManager.hide(id); } );
 			if(val.hasClass("Button"))
-				$(val).focus( function() { this.blur(); } );
+				$(val).on('focus', function() { this.blur(); } );
 			val.children().each( function(ndx,val) { me($(val)) } );
 		};
 		checkForButtons(obj);
@@ -120,11 +120,11 @@ var theDialogManager =
 			var c = $(obj).offset();
 			return((obj.scrollHeight > obj.clientHeight) && (x>obj.clientWidth+c.left));
 		};
-		obj.mousedown( function(e) 
+		obj.on('mousedown', function(e) 
 		{
 			if( (!browser.isOpera || !inScrollBarArea(e.target,e.clientX,e.clientY)) && !theDialogManager.modalState )
 				self.bringToTop(this.id);
-		}).attr("tabindex","0").keypress( function (e)
+		}).attr("tabindex","0").on('keypress', function (e)
 		{
 			if((e.keyCode==13) && !(e.target && e.target.tagName && (/^textarea$/i).test(e.target.tagName)) && !$('#'+id+' .OK').prop('disabled'))
 				$('#'+id+' .OK').click();
@@ -241,8 +241,8 @@ var theContextMenu =
         init: function()
 	{
 		var self = this;
-		$(document).mousemove( function(e) { self.mouse.x = e.clientX; self.mouse.y = e.clientY; } );
-		$(document).mouseup( function(e)
+		$(document).on('mousemove', function(e) { self.mouse.x = e.clientX; self.mouse.y = e.clientY; } );
+		$(document).on('mouseup', function(e)
 		{
 			var ele = $(e.target);
 			if(e.which == 3) 

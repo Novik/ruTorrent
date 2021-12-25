@@ -1317,7 +1317,7 @@ Licensed under the MIT license.
             octx = overlay.context;
 
             // define which element we're listening for events on
-            eventHolder = $(overlay.element).unbind();
+            eventHolder = $(overlay.element).off();
 
             // If we're re-using a plot object, shut down the old one
 
@@ -1335,7 +1335,7 @@ Licensed under the MIT license.
         function bindEvents() {
             // bind events
             if (options.grid.hoverable) {
-                eventHolder.mousemove(onMouseMove);
+                eventHolder.on('mousemove', onMouseMove);
 
                 // Use bind, rather than .mouseleave, because we officially
                 // still support jQuery 1.2.6, which doesn't define a shortcut
@@ -1343,11 +1343,11 @@ Licensed under the MIT license.
                 // was fixed somewhere around 1.3.x.  We can return to using
                 // .mouseleave when we drop support for 1.2.6.
 
-                eventHolder.bind("mouseleave", onMouseLeave);
+                eventHolder.on("mouseleave", onMouseLeave);
             }
 
             if (options.grid.clickable)
-                eventHolder.click(onClick);
+                eventHolder.on('click', onClick);
 
             executeHooks(hooks.bindEvents, [eventHolder]);
         }
@@ -1356,9 +1356,9 @@ Licensed under the MIT license.
             if (redrawTimeout)
                 clearTimeout(redrawTimeout);
 
-            eventHolder.unbind("mousemove", onMouseMove);
-            eventHolder.unbind("mouseleave", onMouseLeave);
-            eventHolder.unbind("click", onClick);
+            eventHolder.off("mousemove", onMouseMove);
+            eventHolder.off("mouseleave", onMouseLeave);
+            eventHolder.off("click", onClick);
 
             executeHooks(hooks.shutdown, [eventHolder]);
         }
@@ -1581,7 +1581,7 @@ Licensed under the MIT license.
             // If the grid is visible, add its border width to the offset
 
             for (var a in plotOffset) {
-                if(typeof(options.grid.borderWidth) == "object") {
+                if(typeof options.grid.borderWidth == "object") {
                     plotOffset[a] += showGrid ? options.grid.borderWidth[a] : 0;
                 }
                 else {
@@ -1778,7 +1778,7 @@ Licensed under the MIT license.
                 };
             }
 
-            if ($.isFunction(opts.tickFormatter))
+            if (typeof opts.tickFormatter === "function")
                 axis.tickFormatter = function (v, axis) { return "" + opts.tickFormatter(v, axis); };
 
             if (opts.alignTicksWithAxis != null) {
@@ -1825,7 +1825,7 @@ Licensed under the MIT license.
             if (oticks == null || (typeof oticks == "number" && oticks > 0))
                 ticks = axis.tickGenerator(axis);
             else if (oticks) {
-                if ($.isFunction(oticks))
+                if (typeof oticks === "function")
                     // generate the ticks
                     ticks = oticks(axis);
                 else
@@ -1949,7 +1949,7 @@ Licensed under the MIT license.
             // draw markings
             var markings = options.grid.markings;
             if (markings) {
-                if ($.isFunction(markings)) {
+                if (typeof markings === "function") {
                     axes = plot.getAxes();
                     // xmin etc. is backwards compatibility, to be
                     // removed in the future
@@ -2742,7 +2742,7 @@ Licensed under the MIT license.
             // Sort the legend using either the default or a custom comparator
 
             if (options.legend.sorted) {
-                if ($.isFunction(options.legend.sorted)) {
+                if (typeof options.legend.sorted === "function") {
                     entries.sort(options.legend.sorted);
                 } else if (options.legend.sorted == "reverse") {
                 	entries.reverse();

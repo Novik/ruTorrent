@@ -193,15 +193,15 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			width(styles[this.colOrder[i]].width).
 			attr("index", i));
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
-		td.mouseclick( 	function(e) 
+		td.on('mouseclick',	function(e) 
 		{ 
 			self.onRightClick(e);
-		}).mouseup( function(e) 
+		}).on('mouseup', function(e) 
 		{ 
 			self.Sort(e);
 		});
 		if(!$.support.touchable)
-			td.mousedown( function(e) { self.bindKeys(); });
+			td.on('mousedown', function(e) { self.bindKeys(); });
 		this.tHeadCols[i] = td.get(0);
 		if(!this.colsdata[i].enabled)
   	                td.hide();
@@ -232,7 +232,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.dCont.appendChild(this.scp);
 	this.dCont.style.position = "relative";
 	this.init();
-	$(window).unload(function() { self.clearRows(); });
+	$(window).on('unload', function() { self.clearRows(); });
 	this.calcSize().resizeColumn();
 
 	this.colReszObj = $("<div>").addClass("stable-resize-header").get(0);
@@ -553,7 +553,7 @@ dxSTable.ColumnMove.prototype =
 	init : function(o, _1b, _1c, _1d) 
 	{      
 		var self = this;      
-		$(o).mousedown( function(e)
+		$(o).on('mousedown', function(e)
 		{
 			if(self.parent.hotCell >- 1)
 				return;
@@ -937,7 +937,7 @@ dxSTable.prototype.assignEvents = function()
 			}
 		};
 	if(!$.support.touchable)
-		$(this.dCont).mousedown( function(e) { self.bindKeys(); } );
+		$(this.dCont).on('mousedown', function(e) { self.bindKeys(); } );
 }
 
 dxSTable.prototype.colDrag = function(e) 
@@ -1333,10 +1333,10 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 	if(this.colorEvenRows) 
 		tr.addClass( (this.rows & 1) ? "odd" : "even" );
 
-	tr.mouseclick( function(e) { return(self.selectRow(e, this)); });
+	tr.on('mouseclick', function(e) { return(self.selectRow(e, this)); });
 
 	if($type(this.ondblclick) == "function") 
-		tr.dblclick( function(e) { return(self.ondblclick(this)); });
+		tr.on('dblclick', function(e) { return(self.ondblclick(this)); } );
 
 	for(var k in attr) 
 		tr.attr(k, attr[k]);

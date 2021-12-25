@@ -19,7 +19,7 @@ function makeContent()
 	$("#mnu_go").attr("title",theUILang.mnu_go);
 	$("#mnu_help").attr("title",theUILang.mnu_help+"...");
 
-	$("#query").keydown( function(e)
+	$("#query").on('keydown', function(e)
 	{
 		if(e.keyCode == 13)
 			theSearchEngines.run();
@@ -65,7 +65,7 @@ function makeContent()
 		}
 	});
 
-	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).load(function()
+	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function()
 	{
 		$("#torrent_file").val("");
 		$("#add_button").prop("disabled",false);
@@ -75,7 +75,7 @@ function makeContent()
 			try { var txt = d.body.textContent ? d.body.textContent : d.body.innerText; eval(txt); } catch(e) {}
 		}
 	}));
-	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).load(function()
+	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function()
 	{
 		$("#url").val("");
 		var d = (this.contentDocument || this.contentWindow.document);
@@ -115,7 +115,7 @@ function makeContent()
 			'</form>'+
 		'</div>');
 
-	$("#tadd_label_select").change( function(e)
+	$("#tadd_label_select").on('change', function(e)
 	{
 		var index = this.selectedIndex;
 		switch (index)
@@ -176,7 +176,7 @@ function makeContent()
 		frm.action = s;
 		return(true);
 	}
-	$("#addtorrent").submit(function()
+	$("#addtorrent").on('submit', function()
 	{
 		if(!$("#torrent_file").val().match(/\.torrent$/i))
 		{
@@ -186,7 +186,7 @@ function makeContent()
 		$("#add_button").prop("disabled",true);
 		return(makeAddRequest(this));
 	});
-	$("#addtorrenturl").submit(function()
+	$("#addtorrenturl").on('submit', function()
 	{
 	   	$("#add_url").prop("disabled",true);
 	   	return(makeAddRequest(this));
