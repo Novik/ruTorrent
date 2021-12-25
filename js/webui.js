@@ -454,7 +454,7 @@ var theWebUI =
 		});
 
 		// user must be able add peer when peers are empty
-		$("#PeerList .stable-body").mouseclick( function(e)
+		$("#PeerList .stable-body").on('mousedown', function(e)
 		{
 			if(e.which==3)
 			{

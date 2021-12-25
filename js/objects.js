@@ -127,7 +127,7 @@ var theDialogManager =
 		}).attr("tabindex","0").on('keypress', function (e)
 		{
 			if((e.keyCode==13) && !(e.target && e.target.tagName && (/^textarea$/i).test(e.target.tagName)) && !$('#'+id+' .OK').prop('disabled'))
-				$('#'+id+' .OK').click();
+				$('#'+id+' .OK').trigger('click');
 		});
 
 //		this.center(id);
@@ -324,8 +324,8 @@ var theContextMenu =
 		 	        	var a = $("<a></a>").addClass("sel menu-cmd").text(val[1]);
 			 	        switch($type(val[2]))
 			 	        {
-						case "string": a.attr("href","javascript://void();").click( function() { eval(val[2]) } ); break;
-						case "function": a.attr("href","javascript://void();").click(val[2]); break;
+						case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[2]) } ); break;
+						case "function": a.attr("href","javascript://void();").trigger('click', val[2]); break;
 					}
 					li.append(a.on('focus', function() { this.blur(); } ));
 				}
@@ -337,8 +337,8 @@ var theContextMenu =
 						switch($type(val[1]))
 						{
 				 	        	case false: a.addClass("dis"); break;
-							case "string": a.attr("href","javascript://void();").click( function() { eval(val[1]) } ); break;
-							case "function": a.attr("href","javascript://void();").click(val[1]); break;
+							case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[1]) } ); break;
+							case "function": a.attr("href","javascript://void();").trigger('click', val[1]); break;
 						}
 						li.append(a.on('focus', function() { this.blur(); } ));
 					}
@@ -372,7 +372,7 @@ var theContextMenu =
 		if(y<0)
 			y = 0;
 		obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
-                $("ul.CMenu a.exp").hover( function() 
+                $("ul.CMenu a.exp").on('hover', function()
                 { 
                 	var submenu = $(this).next();
                 	if(submenu.offset().left + submenu.width() > $(window).width()) 
