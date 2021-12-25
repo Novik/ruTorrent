@@ -153,7 +153,7 @@ $.fn.extend(
 		var contextMenuPresent = ("oncontextmenu" in document.createElement("foo")) || browser.isFirefox || $.support.touchable;
 	        return( this.each( function()
 	        {
-	        	if(typeof handler === "function")
+	        	if($type(handler)=="function")
 	        	{
 				if(contextMenuPresent)
 				{

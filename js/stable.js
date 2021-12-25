@@ -193,7 +193,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			width(styles[this.colOrder[i]].width).
 			attr("index", i));
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
-		td.on('mousedown', function(e)
+		td.mouseclick(function(e)
 		{ 
 			self.onRightClick(e);
 		}).on('mouseup', function(e) 
@@ -1336,7 +1336,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 	if(this.colorEvenRows) 
 		tr.addClass( (this.rows & 1) ? "odd" : "even" );
 
-	tr.on('click', function(e) { return(self.selectRow(e, this)); });
+	tr.mouseclick(function(e) { return(self.selectRow(e, this)); });
 
 	if($type(this.ondblclick) == "function") 
 		tr.on('dblclick', function(e) { return(self.ondblclick(this)); } );

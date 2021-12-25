@@ -5,9 +5,9 @@
 
 function makeContent()
 {
-	$(".cat").on('click', theWebUI.labelContextMenu);
-	$("#st_up").on('click', theWebUI.upRateMenu);
-	$("#st_down").on('click', theWebUI.downRateMenu);
+	$(".cat").mouseclick(theWebUI.labelContextMenu);
+	$("#st_up").mouseclick(theWebUI.upRateMenu);
+	$("#st_down").mouseclick(theWebUI.downRateMenu);
 
 	$("#mnu_add").attr("title",theUILang.mnu_add+"...");
 	$("#mnu_remove").attr("title",theUILang.mnu_remove);
