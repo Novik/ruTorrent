@@ -926,14 +926,14 @@ var theWebUI =
 						theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
 						theContextMenu.add([theUILang.peerUnsnub, this.isTorrentCommandEnabled('unsnub',this.dID) ? "theWebUI.setPeerState('unsnub')" : null]);
 					}
-					else
-	                		{
-      						if(!this.peers[id].snubbed) 
-      							theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
+					else if (this.peers[id])
+	                {
+      					if(!this.peers[id].snubbed) 
+      						theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
 						else
 							theContextMenu.add([theUILang.peerUnsnub, this.isTorrentCommandEnabled('unsnub',this.dID) ? "theWebUI.setPeerState('unsnub')" : null]);
-	      				}
-		        	        theContextMenu.add([CMENU_SEP]); 
+	      			}
+		        	theContextMenu.add([CMENU_SEP]);
 				}
 			}
 			if(selCount)

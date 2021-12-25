@@ -372,6 +372,9 @@ dxSTable.prototype.calcSize = function()
 
 dxSTable.prototype.resizeColumn = function() 
 {
+	if (this.tBody == null)
+		return;
+	
 	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
 	var needCallHandler = false;
 	var w = 0, c;
@@ -1793,6 +1796,9 @@ dxSTable.prototype.getFirstSelected = function()
 
 dxSTable.prototype.scrollTo = function(value) 
 {
+	if (this.dBody == null)
+		return null;
+	
 	var old = this.dBody.scrollTop;
 	this.dBody.scrollTop = value;
 	return(old);
