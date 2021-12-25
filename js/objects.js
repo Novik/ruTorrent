@@ -215,7 +215,7 @@ var theDialogManager =
 		}
 		$('#'+id).css("z-index",++theDialogManager.maxZ);
 		if(!browser.isOpera)
-			$('#'+id).focus();
+			$('#'+id).trigger('focus');
 	},
 	hideTopmost: function()
 	{
@@ -327,7 +327,7 @@ var theContextMenu =
 						case "string": a.attr("href","javascript://void();").click( function() { eval(val[2]) } ); break;
 						case "function": a.attr("href","javascript://void();").click(val[2]); break;
 					}
-					li.append(a.focus( function() { this.blur(); } ));
+					li.append(a.on('focus', function() { this.blur(); } ));
 				}
 				else
 				{
@@ -340,7 +340,7 @@ var theContextMenu =
 							case "string": a.attr("href","javascript://void();").click( function() { eval(val[1]) } ); break;
 							case "function": a.attr("href","javascript://void();").click(val[1]); break;
 						}
-						li.append(a.focus( function() { this.blur(); } ));
+						li.append(a.on('focus', function() { this.blur(); } ));
 					}
 				}
 				if(aft)

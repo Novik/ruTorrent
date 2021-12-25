@@ -82,7 +82,7 @@ rTorrentStub.prototype.listResponse = function(data)
 			var get_chunk_size = iv(values[13]);
 			torrent.eta = (torrent.dl>0) ? Math.floor((get_size_chunks-get_completed_chunks)*get_chunk_size/torrent.dl) : -1;
 			try {
-			torrent.label = $.trim(decodeURIComponent(values[14]));
+			torrent.label = String.prototype.trim(decodeURIComponent(values[14]));
 			} catch(e) { torrent.label = ''; }
 
 			if(torrent.label.length>0)

@@ -151,7 +151,7 @@ function makeContent()
 	});
 
 	var input = $$('url');
-	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',$.trim(input.value)==''); };
+	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',String.prototype.trim(input.value)==''); };
 	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
 	{
@@ -165,10 +165,10 @@ function makeContent()
 			req.push('not_add_path=1');
 		if($("#randomize_hash").prop("checked"))
 			req.push('randomize_hash=1');
-		var dir = $.trim($("#dir_edit").val());
+		var dir = String.prototype.trim($("#dir_edit").val());
 		if(dir.length)
 			req.push('dir_edit='+encodeURIComponent(dir));
-		var lbl = $.trim($("#tadd_label").val());
+		var lbl = String.prototype.trim($("#tadd_label").val());
 		if(lbl.length)
 			req.push('label='+encodeURIComponent(lbl));
 		if(req.length)
@@ -241,7 +241,11 @@ function makeContent()
 		true);
 	theDialogManager.setHandler('dlgLabel','afterShow',function()
 	{
-		setTimeout(function(){$("#txtLabel").off('focus').on('focus',function() { $(this).select(); } ).focus();}, 0);
+		setTimeout(function(){
+			$("#txtLabel").off('focus').on('focus',function() { 
+				$(this).select(); 
+			}).trigger('focus');		
+		}, 0);
 	});
 	theDialogManager.make("yesnoDlg","",
 		'<div class="content" id="yesnoDlg-content"></div>'+
