@@ -112,7 +112,7 @@ if(plugin.canChangeOptions())
 		this.content = "default="+iv($('#chDefault').val());
 		for(var i=0; i<theWebUI.maxThrottle; i++)
 		{
-			var name = $.trim($('#thr_name'+i).val());
+			var name = String.prototype.trim($('#thr_name'+i).val());
 			var up = iv($('#thr_up'+i).val());
 			var down = iv($('#thr_down'+i).val());
         		if(name.length)

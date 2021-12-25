@@ -645,7 +645,7 @@ var theWebUI =
 					}
 					o.val(v);
 				}
-				o.change();
+				o.trigger('change');
 			}
 		});
 		if($type(this.settings["webui.search"]))
@@ -1836,7 +1836,7 @@ var theWebUI =
 
 	setTeg: function(str)
 	{
-		str = $.trim(str);
+		str = String.prototype.trim(str);
 		if(str!="")
 		{
 			for( var id in this.tegs )
@@ -2118,7 +2118,7 @@ var theWebUI =
 
 	createLabel: function() 
 	{
-   		var lbl = $.trim($("#txtLabel").val());
+   		var lbl = String.prototype.trim($("#txtLabel").val());
 		lbl = lbl.replace(/\"/g, "'");
    		if(lbl != "") 
 		{
@@ -2337,7 +2337,7 @@ var theWebUI =
 			$("#tu").text($type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
 	        	$("#hs").text(this.dID.substring(0,40));
 			$("#ts").text(d.msg);
-			var url = $.trim(d.comment);
+			var url = String.prototype.trim(d.comment);
 			if(!url.match(/<a href/i))
 			{
 				var start = url.indexOf("http://");

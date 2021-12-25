@@ -694,7 +694,7 @@ rTorrentStub.prototype.getValue = function(values,i)
 		var el = value.childNodes[0];
 		while(!el.tagName)
 			el = el.childNodes[0];
-		ret = $type(el.textContent) ? $.trim(el.textContent) : 
+		ret = $type(el.textContent) ? String.prototype.trim(el.textContent) : 
 			el.childNodes.length ? 
 			el.childNodes[0].data : "";
 	}
@@ -1097,7 +1097,7 @@ rTorrentStub.prototype.listResponse = function(xml)
 		var get_chunk_size = parseInt(this.getValue(values,14));
 		torrent.eta = (torrent.dl>0) ? Math.floor((get_size_chunks-get_completed_chunks)*get_chunk_size/torrent.dl) : -1;
 		try {
-		torrent.label = $.trim(decodeURIComponent(this.getValue(values,15)));
+		torrent.label = String.prototype.trim(decodeURIComponent(this.getValue(values,15)));
 		} catch(e) { torrent.label = ''; }
 		if(torrent.label.length>0)
 		{

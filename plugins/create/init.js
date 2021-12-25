@@ -11,14 +11,14 @@ theWebUI.checkCreate = function()
        	var arr = $('#trackers').val().split("\n");
 	var trk = '';
 	for( var i in arr )
-		trk+=($.trim(arr[i])+'\r');
+		trk+=(String.prototype.trim(arr[i])+'\r');
         this.startConsoleTask( "create", plugin.name,
 	{
 		"piece_size" : $('#piece_size').val(),
 		"trackers" : trk,
-		"path_edit" : $.trim($("#path_edit").val()),
-		"comment" : $.trim($("#comment").val()),
-		"source" : $.trim($("#source").val()),
+		"path_edit" : String.prototype.trim($("#path_edit").val()),
+		"comment" : String.prototype.trim($("#comment").val()),
+		"source" : String.prototype.trim($("#source").val()),
 		"private" : $('#private').prop('checked') ? 1 : 0,
 		"start_seeding" : $('#start_seeding').prop('checked') ? 1 : 0,
 		"hybrid" : $('#hybrid').prop('checked') ? 1 : 0
@@ -57,7 +57,7 @@ rTorrentStub.prototype.rtdelete = function()
 
 theWebUI.showCreate = function()
 {
-	if( $("#trackers").val().trim().length < 1 )
+	if( $("#trackers").val().String.prototype.trim().length < 1 )
 		$("#deleteFromRecentTrackers").addClass("disabled");
 	else
 		$("#deleteFromRecentTrackers").removeClass("disabled");
@@ -85,7 +85,7 @@ theWebUI.addTrackerToBox = function(ann)
 	if(val.length)
 		val+='\r\n';
 	$('#trackers').val( val+ann );
-	$('#trackers').focus();
+	$('#trackers').trigger('focus');
 }
 
 theWebUI.showRecentTrackers = function()
@@ -110,7 +110,7 @@ theWebUI.deleteFromRecentTrackers = function()
 	$('#trackers').val('');
 	var trk = '';
 	for( var i in arr )
-		trk+=($.trim(arr[i])+'\r');
+		trk+=(String.prototype.trim(arr[i])+'\r');
 	plugin.deleteFromRecentTrackers = trk;
 	theWebUI.request('?action=rtdelete');
 	theWebUI.request('?action=rtget',[plugin.getRecentTrackers, plugin]);
@@ -186,7 +186,7 @@ plugin.onLangLoaded = function()
 				'<input type="hidden" name="cmd" value="getfile">'+
 				'<input type="hidden" name="no" id="xtaskno" value="0">'+
 			'</form>').width(0).height(0));
-		$("#xcsave").click( function()
+		$("#xcsave").on('click', function()
 		{
 			$('#xgetfile').submit();
 		});
