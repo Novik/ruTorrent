@@ -1200,9 +1200,9 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 	
 	request.fail(function(jqXHR, textStatus, errorThrown)
 	{
-		if((textStatus=="timeout") && (typeof onTimeout === "function"))
+		if((textStatus=="timeout") && ($type(onTimeout) == "function"))
 			onTimeout();
-		else if(typeof onError === "function")
+		else if($type(onError) == "function")
 		{
 			var status = "Status unavailable";
 			var response = "Response unavailable";
