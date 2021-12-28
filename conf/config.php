@@ -22,9 +22,21 @@
 	// for php
 	@define('PHP_USE_GZIP', false, false);
 	@define('PHP_GZIP_LEVEL', 2, true);
+	
 
-	$schedule_rand = 10;			// rand for schedulers start, +0..X seconds
-
+class RTorrentConfig
+{	
+	public $schedule_rand = 10;	// rand for schedulers start, +0..X seconds
+	
+	public $pathToExternals = array(
+		"php" 	=> '',			// Something like /usr/bin/php. If empty, will be found in PATH.
+		"curl"	=> '',			// Something like /usr/bin/curl. If empty, will be found in PATH.
+		"gzip"	=> '',			// Something like /usr/bin/gzip. If empty, will be found in PATH.
+		"id"	=> '',			// Something like /usr/bin/id. If empty, will be found in PATH.
+		"stat"	=> '',			// Something like /usr/bin/stat. If empty, will be found in PATH.
+	);	
+}
+	
 	$do_diagnostic = true;
 	$log_file = '/tmp/errors.log';		// path to log file (comment or leave blank to disable logging)
 
@@ -45,14 +57,6 @@
 	// $scgi_host = "unix:///tmp/rpc.socket";
 
 	$XMLRPCMountPoint = "/RPC2";		// DO NOT DELETE THIS LINE!!! DO NOT COMMENT THIS LINE!!!
-
-	$pathToExternals = array(
-		"php" 	=> '',			// Something like /usr/bin/php. If empty, will be found in PATH.
-		"curl"	=> '',			// Something like /usr/bin/curl. If empty, will be found in PATH.
-		"gzip"	=> '',			// Something like /usr/bin/gzip. If empty, will be found in PATH.
-		"id"	=> '',			// Something like /usr/bin/id. If empty, will be found in PATH.
-		"stat"	=> '',			// Something like /usr/bin/stat. If empty, will be found in PATH.
-	);
 
 	$localhosts = array( 			// list of local interfaces
 		"127.0.0.1",

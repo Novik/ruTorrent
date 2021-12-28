@@ -92,6 +92,12 @@ class Snoopy
 
 	var $_isproxy		=	false;			// set if using a proxy server
 	var $_fp_timeout	=	30;			// timeout for socket connection
+	
+	/**** Path Varriables ***/
+	
+	var $_externalPath  = null;			// ExternalPath class for finding programs
+	var $_gzipPath 		= "";			// Path to gzip program
+	var $_curlPath		= "";			// Path to curl program
 
 	public function __construct()
 	{
@@ -113,6 +119,10 @@ class Snoopy
 		$this->use_gzip = @constant('HTTP_USE_GZIP');
 		if(isset($httpIP))
 			$this->IP = $httpIP;
+		
+		$this->_externalPath = ExternalPath::load();
+		$this->_gzipPath = $this->_externalPath->getExternalPathEx('gzip');
+		$this->_curlPath = $this->_externalPath->getExternalPathEx('curl');
 	}
 
 	static public function linkencode($p_url)
@@ -456,7 +466,7 @@ class Snoopy
 			{
 				$randName = getTempFilename('answer');
 				file_put_contents($randName.".gz",$results);
-				exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
+				exec(escapeshellarg($this->_gzipPath)." -d ".$randName.".gz",$results,$return);
 				if(is_file($randName))
 				{
 					$results = file_get_contents($randName);
@@ -536,7 +546,7 @@ class Snoopy
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s "; 
-		exec(escapeshellarg(getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
+		exec(escapeshellarg($this->_curlPath)." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		$this->_redirectaddr = false;
 		$this->headers = array();
 		$this->status = $return;
@@ -597,7 +607,7 @@ class Snoopy
 				{
 					$randName = getTempFilename('answer');
 					file_put_contents($randName.".gz",$results);
-					exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
+					exec(escapeshellarg($this->_gzipPath)." -d ".$randName.".gz",$results,$return);
 					if(is_file($randName))
 					{
 						$results = file_get_contents($randName);

@@ -21,7 +21,7 @@ $req = new rXMLRPCRequest( array(
 				getCmd('d.is_multi_file').'=,$'.
 				getCmd('d.get_custom5').'=}"')),
 	$theSettings->getAbsScheduleCommand("erasedata",$garbageCheckInterval,
-		getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($thisDir.'/update.php').' '.escapeshellarg(getUser()).' &}' )
+		getCmd('execute').'={sh,-c,'.escapeshellarg($ep->getPHP()).' '.escapeshellarg($thisDir.'/update.php').' '.escapeshellarg(getUser()).' &}' )
 	) );
 if($req->success())
 {

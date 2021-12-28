@@ -74,7 +74,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	if( $hash && strlen( $datadir ) > 0 )
 	{
 		$script_dir = rtAddTailSlash( dirname( __FILE__ ) );
-		$php = getPHP();
+		$php = ExternalPath::load()->getPHP();
 		Debug( "script dir  : ".$script_dir );
 		Debug( "path to php : ".$php );
 		Debug( "hash        : ".$hash );
