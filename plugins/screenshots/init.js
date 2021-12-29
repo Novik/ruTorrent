@@ -14,7 +14,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 			$.each( plugin.ffmpegSettings, function(name,val)
 			{
 				if($('#'+name).is(":checkbox"))
-					$('#'+name).prop('checked', val!=0).change();
+					$('#'+name).prop('checked', val!=0).trigger('change');
 				else
 					$('#'+name).val(val);
 			});
@@ -69,7 +69,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 			if($('#'+name).is(":checkbox"))
 				s+=("&"+name+"="+ ($('#'+name).prop('checked') ? 1 : 0) );
 			else
-				s+=("&"+name+"="+encodeURIComponent($.trim($('#'+name).val())));
+				s+=("&"+name+"="+encodeURIComponent($('#'+name).val()).trim());
 		});
 		this.content = "cmd=ffmpegset"+s;
 	        this.contentType = "application/x-www-form-urlencoded";
@@ -144,7 +144,7 @@ if(plugin.canChangeMenu())
 					$('.scframe').hide();
 				$('#'+id).append("<div class='scframe' id='scframe"+ndx+"'><img src='plugins/screenshots/action.php?cmd=ffmpeggetimage&no="+task.no+
 					"&fno="+line+"&file="+encodeURIComponent($('#scimgfile').val())+"' /></div>");
-				$('#scframe'+ndx+' img').load(function()
+				$('#scframe'+ndx+' img').on('load', function()
 				{
 					plugin.centerFrame(ndx);
 				});
@@ -290,20 +290,20 @@ plugin.onLangLoaded = function()
 			"<input type='button' class='Button scplay' id='scsave' value='"+theUILang.exSave+"'>"+
 			"<input type='button' class='Button scplay' id='scsaveall' value='"+theUILang.exSaveAll+"'>"
 			 );
-		$("#scfirst").click( function()
+		$("#scfirst").on('click', function()
 		{
 			plugin.setCurrentFrame(0);
 		});
-		$("#sclast").click( function()
+		$("#sclast").on('click', function()
 		{
 			plugin.setCurrentFrame($('.scframe').length-1);
 		});
-		$("#scprev").click( function()
+		$("#scprev").on('click', function()
 		{
 			plugin.setCurrentFrame( plugin.getCurrentFrame()-1 );
 		});
-		$("#scnext").click( plugin.setNextFrame );
-		$("#scplay").click( function()
+		$("#scnext").on('click', plugin.setNextFrame );
+		$("#scplay").on('click', function()
 		{
 		        if(plugin.playTimer)
 			{
@@ -325,13 +325,13 @@ plugin.onLangLoaded = function()
 				'<input type="hidden" name="fno" id="scimgno" value="0">'+
 				'<input type="hidden" name="file" id="scimgfile" value="frame">'+
 			'</form>').width(0).height(0));
-		$("#scsave").click( function()
+		$("#scsave").on('click', function()
 		{
 			$("#scimgno").val(plugin.getCurrentFrame());
 			$("#scimgcmd").val("ffmpeggetimage");
 			$('#scgetimg').submit();
 		});
-		$("#scsaveall").click( function()
+		$("#scsaveall").on('click', function()
 		{
 			$("#scimgcmd").val("ffmpeggetall");
 			$('#scgetimg').submit();

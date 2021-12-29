@@ -335,7 +335,7 @@ rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 		newBtn.href='javascript://void();';
 		newBtn.title=name;
 		newBtn.innerHTML='<div class="top-menu-item" id="'+id+'" onclick="'+onclick+';return(false);"></div>';
-		$(newBtn).addClass('top-menu-item').focus( function(e) { this.blur(); } );
+		$(newBtn).addClass('top-menu-item').on('focus', function(e) { this.blur(); } );
 		var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;	
 		if(targetBtn)
 			targetBtn.parentNode.insertBefore(newBtn,targetBtn);	
@@ -398,7 +398,7 @@ rPlugin.prototype.addPaneToCategory = function(id,name)
         if(this.canChangeCategory())
         {
 		$('#CatList').append(
-			$("<div>").addClass("catpanel").attr("id",id).text(name).click(function() { theWebUI.togglePanel(this); })).
+			$("<div>").addClass("catpanel").attr("id",id).text(name).on('click', function() { theWebUI.togglePanel(this); })).
 				append($("<div>").attr("id",id+"_cont").addClass("catpanel_cont"));
 		theWebUI.showPanel($$(id),!theWebUI.settings["webui.closed_panels"][id]);
 	}
