@@ -305,7 +305,9 @@ rTorrentStub.prototype.setuisettings = function()
 rTorrentStub.prototype.getuisettings = function()
 {
 	this.mountPoint = theURLs.GetSettingsURL;
-	this.dataType = "json";
+	this.dataType = "text";
+	this.contentType = "text/plain";
+	this.method = 'GET';
 }
 
 rTorrentStub.prototype.getplugins = function()
