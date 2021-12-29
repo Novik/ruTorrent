@@ -130,9 +130,10 @@ class rHistory
 	public function setHandlers()
 	{
 		global $rootPath;
+		$php = ExternalPath::load()->getPHP();
 		if($this->log["addition"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_addition"]))
 		{
-			$addCmd = getCmd('execute.nothrow.bg').'={'.getPHP().','.$rootPath.'/plugins/history/update.php'.',1,$'.
+			$addCmd = getCmd('execute.nothrow.bg').'={'.$php.','.$rootPath.'/plugins/history/update.php'.',1,$'.
 				getCmd('d.get_name').'=,$'.getCmd('d.get_size_bytes').'=,$'.getCmd('d.get_bytes_done').'=,$'.
 				getCmd('d.get_up_total').'=,$'.getCmd('d.get_ratio').'=,$'.getCmd('d.get_creation_date').'=,$'.
 				getCmd('d.get_custom').'=addtime,$'.getCmd('d.get_custom').'=seedingtime'.
@@ -143,7 +144,7 @@ class rHistory
 		else
 			$addCmd = getCmd('cat=');
 		if($this->log["finish"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_finish"]))
-			$finCmd = getCmd('execute.nothrow.bg').'={'.getPHP().','.$rootPath.'/plugins/history/update.php'.',2,$'.
+			$finCmd = getCmd('execute.nothrow.bg').'={'.$php.','.$rootPath.'/plugins/history/update.php'.',2,$'.
 				getCmd('d.get_name').'=,$'.getCmd('d.get_size_bytes').'=,$'.getCmd('d.get_bytes_done').'=,$'.
 				getCmd('d.get_up_total').'=,$'.getCmd('d.get_ratio').'=,$'.getCmd('d.get_creation_date').'=,$'.
 				getCmd('d.get_custom').'=addtime,$'.getCmd('d.get_custom').'=seedingtime'.
@@ -153,7 +154,7 @@ class rHistory
 		else
 			$finCmd = getCmd('cat=');
 		if($this->log["deletion"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_deletion"]))
-			$delCmd = getCmd('execute.nothrow.bg').'={'.getPHP().','.$rootPath.'/plugins/history/update.php'.',3,$'.
+			$delCmd = getCmd('execute.nothrow.bg').'={'.$php.','.$rootPath.'/plugins/history/update.php'.',3,$'.
 				getCmd('d.get_name').'=,$'.getCmd('d.get_size_bytes').'=,$'.getCmd('d.get_bytes_done').'=,$'.
 				getCmd('d.get_up_total').'=,$'.getCmd('d.get_ratio').'=,$'.getCmd('d.get_creation_date').'=,$'.
 				getCmd('d.get_custom').'=addtime,$'.getCmd('d.get_custom').'=seedingtime'.

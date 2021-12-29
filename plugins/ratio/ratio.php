@@ -103,9 +103,10 @@ class rRatio
 	public function setHandlers()
 	{
 		global $checkTimesInterval;
+		$php = ExternalPath::load()->getPHP();
 		$req =  new rXMLRPCRequest( $this->hasTimes() ? 
 			rTorrentSettings::get()->getAbsScheduleCommand("ratio",$checkTimesInterval*60,
-				getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' &}' ) :
+				getCmd('execute').'={sh,-c,'.escapeshellarg($php).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' &}' ) :
 			rTorrentSettings::get()->getRemoveScheduleCommand("ratio") );
 		return($req->success());
 	}

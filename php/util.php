@@ -1,4 +1,5 @@
 <?php
+require_once( 'ExternalPath.php' );
 
 function stripSlashesFromArray(&$arr)
 {
@@ -464,32 +465,6 @@ function getTempFilename($purpose = '', $extension = null)
 	return($fname);
 }
 
-function getExternal($exe)
-{
-	global $pathToExternals;
-	return( (isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe])) ? $pathToExternals[$exe] : $exe );
-}
-
-function getPHP()
-{
-	return( getExternal("php") );
-}
-
-function findEXE( $exe )
-{
-	global $pathToExternals;
-	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-		return(is_executable($pathToExternals[$exe]) ? $pathToExternals[$exe] : false);
-	$path = explode(":", getenv('PATH'));
-	foreach($path as $tryThis)
-	{
-		$fname = $tryThis . '/' . $exe;
-		if(is_executable($fname))
-			return($fname);
-	}
-	return(false);
-}
-
 function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 {
 	header("X-Server-Timestamp: ".time());
@@ -521,7 +496,7 @@ function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 		        	$encoding = 'gzip'; 
 			if($encoding && ($len>=2048))
 			{
-				$gzip = getExternal('gzip');
+				$gzip = ExternalPath::load()->getExternalPathEx('gzip');
 				header('Content-Encoding: '.$encoding); 
 				$randName = getTempFilename('answer');
 				file_put_contents($randName,$content);

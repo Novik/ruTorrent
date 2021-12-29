@@ -2,6 +2,7 @@
 
 require_once( "util.php" );
 require_once( "settings.php" );
+require_once( "RemoteRequests.php" );
 
 function pluginsSort($a, $b)
 { 
@@ -162,40 +163,6 @@ function getPluginInfo( $name, $permissions )
 	return(array_key_exists("plugin.version",$info) ? $info : false);
 }
 
-function findRemoteEXE( $exe, $err, &$remoteRequests )
-{
-	$st = getSettingsPath().'/'.rand();
-	if(!array_key_exists($exe,$remoteRequests))
-	{
-		$path=realpath(dirname('.'));
-		global $pathToExternals;
-		$cmd = array( "sh", addslash($path)."test.sh", $exe, $st );
-		if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-			$cmd[] = $pathToExternals[$exe];
-		$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", $cmd));
-		$req->run();
-		$remoteRequests[$exe] = array( "path"=>$st, "err"=>array() );
-	}
-	$remoteRequests[$exe]["err"][] = $err;
-}
-
-function testRemoteRequests($remoteRequests)
-{
-	$ret = "";
-	foreach($remoteRequests as $exe=>$info)
-	{
-		$file = $info["path"].$exe.".found";
-		if(!is_file($file))
-		{
-			foreach($info["err"] as $err)
-				$ret.=$err;
-		}
-		else
-			@unlink($file);
-	}
-	return($ret);
-}
-
 $jResult = "theWebUI.deltaTime = 0;\n";
 $access = getConfFile('access.ini');
 if(!$access)
@@ -241,7 +208,8 @@ if($handle = opendir('../plugins'))
 	}
 	else
 	{
-		$remoteRequests = array();
+		$ep = ExternalPath::load();
+		$remoteRequests = new RemoteRequests($ep);
 		$theSettings = rTorrentSettings::get(true);
 		if(!$theSettings->linkExist)
 		{
@@ -261,16 +229,16 @@ if($handle = opendir('../plugins'))
 				@chmod($up,$profileMask);
 				@chmod($st,$profileMask);
 				@chmod('./test.sh',$profileMask & 0755);
-	        	        if(PHP_USE_GZIP && (findEXE('gzip')===false))
+	        	        if(PHP_USE_GZIP && ($ep->fetchExternalPath('gzip')===false))
 	        	        {
 	        	        	@define('PHP_USE_GZIP', false);
 	        	        	$jResult.="noty(theUILang.gzipNotFound,'error');";
 	        	        }
 				if(PHP_INT_SIZE<=4)
 				{
-					if(findEXE('stat')===false)
+					if($ep->fetchExternalPath('stat')===false)
 						$jResult.="noty(theUILang.statNotFoundW,'error');";
-                                        findRemoteEXE('stat',"noty(theUILang.statNotFound,'error');",$remoteRequests);
+                                        $remoteRequests->findRemoteEXE('stat',"noty(theUILang.statNotFound,'error');");
 				}
 	        		if(!@file_exists($up.'/.') || !is_readable($up) || !is_writable($up))
 					$jResult.="noty(theUILang.badUploadsPath+' (".$up.")','error');";
@@ -376,7 +344,7 @@ if($handle = opendir('../plugins'))
 						eval( getPluginConf( $file ) );
 					foreach( $info['web.external.error'] as $external )
 					{
-						if(findEXE($external)==false)
+						if($ep->fetchExternalPath($external)===false)
 						{
 							$jResult.="noty('".$file.": '+theUILang.webExternalNotFoundError+' ('+'".$external."'+').','error');";
 							$extError = true;
@@ -400,7 +368,7 @@ if($handle = opendir('../plugins'))
 						}
                 				foreach( $info['rtorrent.external.error'] as $external )
                 				{
-							findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error'); thePlugins.get('".$file."').disable();",$remoteRequests);
+							$remoteRequests->findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error'); thePlugins.get('".$file."').disable();");
 							if($external=='php')
 								$phpRequired = true;
 						}
@@ -450,9 +418,9 @@ if($handle = opendir('../plugins'))
 					{
 						if($theSettings->linkExist)
 							foreach( $info['rtorrent.external.warning'] as $external )
-								findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');",$remoteRequests);
+								$remoteRequests->findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');");
 						foreach( $info['web.external.warning'] as $external )
-							if(findEXE($external)==false)
+							if($ep->fetchExternalPath($external)==false)
 								$jResult.="noty('".$file.": '+theUILang.webExternalNotFoundWarning+' ('+'".$external."'+').','error');";
 						foreach( $info['php.extensions.warning'] as $extension )
 							if(!in_array( $extension, $loadedExtensions ))
@@ -519,7 +487,7 @@ if($handle = opendir('../plugins'))
 				$jResult.="plugin.unlaunch(); ";
 			$jResult.="\n})();";
 		}
-		$jResult.=testRemoteRequests($remoteRequests);
+		$jResult.=$remoteRequests->getJResultErrorString();
 		$theSettings->store();
 	}
 	closedir($handle);
