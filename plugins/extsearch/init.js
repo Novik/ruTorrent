@@ -160,7 +160,7 @@ theSearchEngines.run = function()
 {
 	if(plugin.enabled)
 	{
-		var s = $.trim($("#query").val());
+		var s = $("#query").val().trim();
 		if(s.length)
 		{
 			this.checkForIncorrectCurrent(false);
@@ -196,10 +196,10 @@ rTorrentStub.prototype.loadtegtorrents = function()
 		this.content += '&torrents_start_stopped=1';
 	if($("#tegnot_add_path").prop("checked"))
 		this.content += '&not_add_path=1';
-	var dir = $.trim($("#tegdir_edit").val());
+	var dir = $("#tegdir_edit").val().trim();
 	if(dir.length)
 		this.content += ('&dir_edit='+encodeURIComponent(dir));
-	var lbl = $.trim($("#teglabel").val());
+	var lbl = $("#teglabel").val().trim();
 	if(lbl.length)
 		this.content += '&label='+encodeURIComponent(lbl);
 	if($("#tegfast_resume").prop("checked"))
@@ -470,7 +470,7 @@ plugin.extTegContextMenu = function(e)
 theWebUI.setExtSearchTag = function( d )
 {
 	$("#query").removeAttr("readonly");
-	var what = $.trim($("#query").val());
+	var what = $("#query").val().trim();
 	var str = theSearchEngines.getEngName(d.eng)+"/"+($type(theUILang["excat"+d.cat]) ? theUILang["excat"+d.cat] : d.cat)+": "+what;
 	for( var id in plugin.tegs )
 		if(plugin.tegs[id].val==str)
@@ -654,8 +654,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 			$('#exs_limit').val(theSearchEngines.globalLimit);
 			$.each(theSearchEngines.sites,function(ndx,val)
 			{
-				$('#'+ndx+'_enabled').prop("checked", (val.enabled==1)).change();
-				$('#'+ndx+'_global').prop("checked", (val.global==1)).change();
+				$('#'+ndx+'_enabled').prop("checked", (val.enabled==1)).trigger('change');
+				$('#'+ndx+'_global').prop("checked", (val.global==1)).trigger('change');
 				$('#'+ndx+'_limit').val(val.limit);
 
 			        if(val.enabled==1)
@@ -666,8 +666,8 @@ if(plugin.enabled && plugin.canChangeOptions())
 			});
 
 		}
-		$('#sel_public').change();
-		$('#sel_private').change();
+		$('#sel_public').trigger('change');
+		$('#sel_private').trigger('change');
 		plugin.andShowSettings.call(theWebUI,arg);
 	}
 
@@ -762,7 +762,7 @@ plugin.onLangLoaded = function()
 		true);
 	if(thePlugins.isInstalled("_getdir"))
 	{
-		$('#tegdir_edit').after($("<input type=button>").addClass("Button").attr("id","tegBtn").focus( function() { this.blur(); } ));
+		$('#tegdir_edit').after($("<input type=button>").addClass("Button").attr("id","tegBtn").on('focus', function() { this.blur(); } ));
 		var btn = new theWebUI.rDirBrowser( 'tegLoadTorrents', 'tegdir_edit', 'tegBtn' );
 		theDialogManager.setHandler('tegLoadTorrents','afterHide',function()
 		{
@@ -856,12 +856,12 @@ plugin.onLangLoaded = function()
 		$('#'+toDisable[i]+'_enabled').prop("disabled",true).prop("checked",false);
 		$('#lbl_'+toDisable[i]+'_enabled').addClass("disabled");
 	}
-	$('#sel_public').change( function()
+	$('#sel_public').on('change', function()
 	{
 		$(".seng_public").hide();
 		$('#cont_'+$(this).val()).show();
 	});
-	$('#sel_private').change( function()
+	$('#sel_private').on('change', function()
 	{
 		$(".seng_private").hide();
 		$('#cont_'+$(this).val()).show();

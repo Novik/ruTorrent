@@ -198,12 +198,16 @@ rSpeedGraph.prototype.resize = function( newWidth, newHeight )
 rSpeedGraph.prototype.addData = function( upSpeed, downSpeed )
 {
 	this.seconds = new Date().getTime()/1000;
-	this.up.data.push([this.seconds,upSpeed]);
-	this.down.data.push([this.seconds,downSpeed]);
-	while((this.down.data[this.down.data.length-1][0]-this.down.data[0][0])>this.maxSeconds)
+	
+	if (this.up && this.down)
 	{
-		this.down.data.shift(); 
-		this.up.data.shift();
-	}		
-	this.draw();
+		this.up.data.push([this.seconds,upSpeed]);
+		this.down.data.push([this.seconds,downSpeed]);
+		while((this.down.data[this.down.data.length-1][0]-this.down.data[0][0])>this.maxSeconds)
+		{
+			this.down.data.shift(); 
+			this.up.data.shift();
+		}		
+		this.draw();
+	}
 }

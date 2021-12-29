@@ -694,7 +694,7 @@ rTorrentStub.prototype.getValue = function(values,i)
 		var el = value.childNodes[0];
 		while(!el.tagName)
 			el = el.childNodes[0];
-		ret = $type(el.textContent) ? $.trim(el.textContent) : 
+		ret = $type(el.textContent) ? el.textContent.trim() :
 			el.childNodes.length ? 
 			el.childNodes[0].data : "";
 	}
@@ -1097,7 +1097,7 @@ rTorrentStub.prototype.listResponse = function(xml)
 		var get_chunk_size = parseInt(this.getValue(values,14));
 		torrent.eta = (torrent.dl>0) ? Math.floor((get_size_chunks-get_completed_chunks)*get_chunk_size/torrent.dl) : -1;
 		try {
-		torrent.label = $.trim(decodeURIComponent(this.getValue(values,15)));
+		torrent.label = decodeURIComponent(this.getValue(values,15)).trim();
 		} catch(e) { torrent.label = ''; }
 		if(torrent.label.length>0)
 		{
@@ -1163,8 +1163,8 @@ rTorrentStub.prototype.logErrorMessages = function()
 
 function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout) 
 {
-        var stub = new rTorrentStub(URI);
-	$.ajax(
+	var stub = new rTorrentStub(URI);
+	var request = $.ajax(
 	{
 		type: stub.method,
 		url: stub.mountPoint,
@@ -1177,63 +1177,61 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 		ifModified: stub.ifModified,
 		dataType: stub.dataType,
 		traditional: true,
-		global: true,
-
-		complete: function(XMLHttpRequest, textStatus)
+		global: true
+	});
+	
+	request.always(function(data, textStatus, errorThrown) 
+	{
+		if(theWebUI.deltaTime==0)
 		{
-			if(theWebUI.deltaTime==0)
-			{
-				var diff = 0;
-				try {
-				diff = new Date().getTime()-Date.parse(XMLHttpRequest.getResponseHeader("Date"));
-				} catch(e) { diff = 0; };
-				theWebUI.deltaTime = iv(diff);
-			}
-			if(theWebUI.serverDeltaTime==0)
-			{
-				var timestamp = XMLHttpRequest.getResponseHeader("X-Server-Timestamp");
-				if(timestamp != null)
-					theWebUI.serverDeltaTime = new Date().getTime()-iv(timestamp)*1000;
-			}
-			stub = null;
-		},
-		error: function(XMLHttpRequest, textStatus, errorThrown)
+			var diff = 0;
+			try {
+				diff = new Date().getTime()-Date.parse(request.getResponseHeader("Date"));
+			} catch(e) { diff = 0; };
+			theWebUI.deltaTime = iv(diff);
+		}
+		if(theWebUI.serverDeltaTime==0)
 		{
-			if((textStatus=="timeout") && ($type(onTimeout) == "function"))
-				onTimeout();
-			else
-			if(($type(onError) == "function"))
-			{
-			        var status = "Status unavailable";
-			        var response = "Response unavailable";
-				try { status = XMLHttpRequest.status; response = XMLHttpRequest.responseText; } catch(e) {};				
-				if( stub.dataType=="script" )
-					response = errorThrown;
-				onError(status+" ["+textStatus+","+stub.action+"]",response);
-			}
-		},
-		success: function(data, textStatus)
+			var timestamp = request.getResponseHeader("X-Server-Timestamp");
+			if(timestamp != null)
+				theWebUI.serverDeltaTime = new Date().getTime()-iv(timestamp)*1000;
+		}
+	});
+	
+	request.fail(function(jqXHR, textStatus, errorThrown)
+	{
+		if((textStatus=="timeout") && ($type(onTimeout) == "function"))
+			onTimeout();
+		else if($type(onError) == "function")
 		{
-			var responseText = stub.getResponse(data);
-			stub.logErrorMessages();
-			if(stub.listRequired)
-				Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
-			else
-	            	{
-	            		if(!stub.isError())
-	            		{
-	            			switch($type(onComplete))
-	            			{
-						case "function":
-							onComplete(responseText);
-							break;
-						case "array":
-						{
-							onComplete[0].apply(onComplete[1], 
-								new Array(responseText, onComplete[2]));
-							break;
-						}
-					}
+			var status = "Status unavailable";
+			var response = "Response unavailable";
+			try { status = jqXHR.status; response = jqXHR.responseText; } catch(e) {};				
+			if( stub.dataType=="script" )
+				response = errorThrown;
+			onError(status+" ["+textStatus+","+stub.action+"]",response);
+		}
+	});
+	
+	request.done(function(data, textStatus, jqXHR)
+	{
+		var responseText = stub.getResponse(data);
+		stub.logErrorMessages();
+		if(stub.listRequired)
+			Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
+		else if(!stub.isError())
+	    {
+			switch($type(onComplete))
+			{
+				case "function":
+				{
+					onComplete(responseText);
+					break;
+				}				
+				case "array":
+				{
+					onComplete[0].apply(onComplete[1], new Array(responseText, onComplete[2]));
+					break;
 				}
 			}
 		}

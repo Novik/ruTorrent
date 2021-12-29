@@ -44,7 +44,7 @@ if(plugin.canChangeOptions())
 	        var groups = new Array();
 		for(var i = 0; i<arr.length; i++)
 		{
-			var s = $.trim(arr[i]);
+			var s = arr[i].trim();
 			if(s.length)
 				curGroup.push(s);
 			else
@@ -70,7 +70,7 @@ if(plugin.canChangeOptions())
 		var todelete = [];
 		for(var i=0; i<arr.length; i++)
 		{
-			var s = $.trim(arr[i]);
+			var s = arr[i].trim();
 			if(s.length)
 				todelete.push(s);
 		}
@@ -97,14 +97,14 @@ if(plugin.canChangeOptions())
 		var arr = $('#eretrackers').val().split("\n");
 		for(var i = 0; i<arr.length; i++)
 		{
-			var s = $.trim(arr[i]);
+			var s = arr[i].trim();
 			if(s.toLowerCase()!='dht://')
 				this.content = 	this.content+"&tracker="+encodeURIComponent(s);
 		}
 		arr = $('#dretrackers').val().split("\n");
 		for(var i = 0; i<arr.length; i++)
 		{
-			var s = $.trim(arr[i]);
+			var s = arr[i].trim();
 			if(s.length)
 				this.content = 	this.content+"&todelete="+encodeURIComponent(s);
 		}
