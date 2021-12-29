@@ -393,27 +393,6 @@ function getUploadsPath( $user = null )
 	return( getProfilePath($user).'/torrents' );
 }
 
-function getWebUIJsonFile()
-{
-	global $profilePath;
-	
-	// Resolve the profile file path, so we're not dealing with "../" etc.
-	$ret = realpath(isset($profilePath) ? $profilePath : '../share');
-	
-	// Get the path of the ruTorrent parent folder and remove it from the file path
-	$ruTorrent = dirname(dirname(dirname( __FILE__ )));
-	$ret = str_replace($ruTorrent, '', $ret);
-	
-	$user = getUser();
-	if($user!='')
-	{
-		$ret.=('/users/'.$user);
-		if(!is_dir($ret))
-			makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents',$ret.'/tmp') );
-	}		
-	return $ret.'/settings';
-}
-
 function getUniqueFilename($fname)
 {
 	while(file_exists($fname))

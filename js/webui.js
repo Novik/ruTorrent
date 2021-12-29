@@ -312,7 +312,7 @@ var theWebUI =
 
 	getPlugins: function()
 	{
-		this.requestWithoutTimeout("?action=getuisettings", [this.receiveJsonFilePath, this], true);
+		this.requestWithoutTimeout("?action=getuisettings", [this.addSettings, this], true);
 		this.requestWithoutTimeout("?action=getplugins", [this.getUISettings, this]);
 	},
 
@@ -331,11 +331,6 @@ var theWebUI =
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
 		this.initFinish();
-	},
-	
-	receiveJsonFilePath: function(path)
-	{
-		$.getJSON(path, this.addSettings.bind(this));
 	},
 
 	initFinish: function()
