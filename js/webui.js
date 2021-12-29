@@ -171,6 +171,7 @@ var theWebUI =
 	sTimer: 	null,
 	updTimer: 	null,
 	configured:	false,
+	jsonLoaded: false,
 	firstLoad:	true,
 	interval:	-1,
 	torrents:	{},
@@ -657,6 +658,8 @@ var theWebUI =
 		});
 		if($type(this.settings["webui.search"]))
 			theSearchEngines.set(this.settings["webui.search"],true);
+		
+		this.jsonLoaded = true;
    	},
 
 	setSettings: function() 
@@ -794,7 +797,7 @@ var theWebUI =
 
         save: function(reply) 
 	{
-	        if(!theWebUI.configured)
+	        if(!theWebUI.configured || !theWebUI.jsonLoaded)
 			return;
 	        $.each(theWebUI.tables, function(ndx,table)	
 		{
