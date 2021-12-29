@@ -311,6 +311,7 @@ var theWebUI =
 
 	getPlugins: function()
 	{
+		this.requestWithoutTimeout("?action=getuisettings", [this.receiveJsonFilePath, this], true);
 		this.requestWithoutTimeout("?action=getplugins", [this.getUISettings, this]);
 	},
 
@@ -328,21 +329,25 @@ var theWebUI =
 		correctContent();
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
-		this.requestWithoutTimeout("?action=getuisettings", [this.initFinish, this]);
+		this.initFinish();
+	},
+	
+	receiveJsonFilePath: function(path)
+	{
+		$.getJSON(path, this.addSettings.bind(this));
 	},
 
-	initFinish: function(data)
+	initFinish: function()
 	{
-		this.config(data);
-	        this.catchErrors(true);
+		this.config();
+		this.catchErrors(true);
 		this.assignEvents();
 		this.resize();
 		this.update();		
 	},
 
-	config: function(data)
+	config: function()
 	{
-		this.addSettings(data);
 		$.each(this.tables, function(ndx,table)
 		{
 		        var width = theWebUI.settings["webui."+ndx+".colwidth"];
@@ -774,7 +779,7 @@ var theWebUI =
 		else
 		{
 			if(this.systemInfo.rTorrent.started)
-		   		this.request("?action=getsettings", [this.addAndShowSettings, this], true);
+				this.request("?action=getsettings", [this.addAndShowSettings, this], true);
 			else
 				this.addAndShowSettings();
 		}
