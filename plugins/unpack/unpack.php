@@ -434,7 +434,7 @@ class rUnpack
 		return($ret);
 	}
 
-	public function setHandlers($php)
+	public function setHandlers()
 	{
 		global $rootPath;
 		if($this->enabled)

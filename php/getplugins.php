@@ -368,7 +368,7 @@ if($handle = opendir('../plugins'))
 						}
                 				foreach( $info['rtorrent.external.error'] as $external )
                 				{
-							$remoteRequests->findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error'); thePlugins.get('".$file."').disable();");
+							//$remoteRequests->findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error'); thePlugins.get('".$file."').disable();");
 							if($external=='php')
 								$phpRequired = true;
 						}

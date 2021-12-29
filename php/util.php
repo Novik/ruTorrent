@@ -397,10 +397,10 @@ function getUploadsPath( $user = null )
 function getWebUIJsonFile()
 {
 	global $profilePath;
-	$ret.= isset($profilePath) ? $profilePath : '../share';
+	$ret = isset($profilePath) ? $profilePath : '../share';
 	$ret = str_replace('..', '', $ret);
 	
-	if(is_null($user))
+	if(!isset($user) || is_null($user))
 		$user = getUser();
 
 	if($user!='')
