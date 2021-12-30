@@ -221,7 +221,7 @@ var theWebUI =
 		else
 		{
 			this.catchErrors(false);
-			this.retrieveUISettings()
+			this.getUISettings();
 			this.getPlugins();
 		}
 	},
@@ -315,7 +315,7 @@ var theWebUI =
 		this.requestWithoutTimeout("?action=getplugins", [this.loadPlugins, this]);
 	},
 	
-	retrieveUISettings: function()
+	getUISettings: function()
 	{
 		this.requestWithoutTimeout("?action=getuisettings", [this.addSettings, this], true);
 	},
