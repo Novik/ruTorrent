@@ -171,6 +171,7 @@ var theWebUI =
 	sTimer: 	null,
 	updTimer: 	null,
 	configured:	false,
+	jsonLoaded: false,
 	firstLoad:	true,
 	interval:	-1,
 	torrents:	{},
@@ -309,7 +310,7 @@ var theWebUI =
 
 	getPlugins: function()
 	{
-		this.requestWithoutTimeout("?action=getuisettings", [this.receiveJsonFilePath, this], true);
+		this.requestWithoutTimeout("?action=getuisettings", [this.addSettings, this], true);
 		this.requestWithoutTimeout("?action=getplugins", [this.getUISettings, this]);
 	},
 
@@ -328,11 +329,6 @@ var theWebUI =
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
 		this.initFinish();
-	},
-	
-	receiveJsonFilePath: function(path)
-	{
-		$.getJSON(path, this.addSettings.bind(this));
 	},
 
 	initFinish: function()
@@ -655,6 +651,8 @@ var theWebUI =
 		});
 		if($type(this.settings["webui.search"]))
 			theSearchEngines.set(this.settings["webui.search"],true);
+		
+		this.jsonLoaded = true;
    	},
 
 	setSettings: function() 
@@ -792,7 +790,7 @@ var theWebUI =
 
         save: function(reply) 
 	{
-	        if(!theWebUI.configured)
+	        if(!theWebUI.configured || !theWebUI.jsonLoaded)
 			return;
 	        $.each(theWebUI.tables, function(ndx,table)	
 		{

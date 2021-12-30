@@ -1,7 +1,7 @@
 <?php
 
-require_once( 'util.php' );
+require_once( 'WebUISettings.php' );
 
-$fname = getWebUIJsonFile()."/uisettings.json";
-@chmod($fname, 0777);
-cachedEcho($fname, "text/plain", true);
+$settings = WebUISettings::load();
+$json = $settings->get();
+cachedEcho($json,"application/json",true);
