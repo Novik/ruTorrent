@@ -4,12 +4,12 @@ theWebUI.trackersLabels = {};
 plugin.injectedStyles = {};
 
 plugin.config = theWebUI.config;
-theWebUI.config = function(data)
+theWebUI.config = function()
 {
 	if(plugin.canChangeColumns())
 	{
 		theWebUI.tables.trt.columns.push({ text: theUILang.Tracker, width: '100px', id: 'tracker', type: TYPE_STRING});
-		plugin.config.call(this,data);
+		plugin.config.call(this);
 		plugin.reqId = theRequestManager.addRequest("trk", null, function(hash,tracker,value)
 		{
 			var domain = theWebUI.getTrackerName( tracker.name );

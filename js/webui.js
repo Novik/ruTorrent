@@ -171,6 +171,7 @@ var theWebUI =
 	sTimer: 	null,
 	updTimer: 	null,
 	configured:	false,
+	jsonLoaded:	false,
 	firstLoad:	true,
 	interval:	-1,
 	torrents:	{},
@@ -219,6 +220,7 @@ var theWebUI =
 		else
 		{
 			this.catchErrors(false);
+			this.retrieveUISettings()
 			this.getPlugins();
 		}
 	},
@@ -311,6 +313,11 @@ var theWebUI =
 	{
 		this.requestWithoutTimeout("?action=getplugins", [this.getUISettings, this]);
 	},
+	
+	retrieveUISettings: function()
+	{
+		this.requestWithoutTimeout("?action=getuisettings", [this.addSettings, this], true);
+	},
 
 	getUISettings: function()
 	{
@@ -326,21 +333,19 @@ var theWebUI =
 		correctContent();
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
-		this.requestWithoutTimeout("?action=getuisettings", [this.initFinish, this]);
 	},
 
-	initFinish: function(data)
+	initFinish: function()
 	{
-		this.config(data);
+		this.config();
 	        this.catchErrors(true);
 		this.assignEvents();
 		this.resize();
 		this.update();		
 	},
 
-	config: function(data)
+	config: function()
 	{
-		this.addSettings(data);
 		$.each(this.tables, function(ndx,table)
 		{
 		        var width = theWebUI.settings["webui."+ndx+".colwidth"];
@@ -650,6 +655,8 @@ var theWebUI =
 		});
 		if($type(this.settings["webui.search"]))
 			theSearchEngines.set(this.settings["webui.search"],true);
+		
+		this.jsonLoaded = true;
    	},
 
 	setSettings: function() 
@@ -787,7 +794,7 @@ var theWebUI =
 
         save: function(reply) 
 	{
-	        if(!theWebUI.configured)
+	        if(!theWebUI.configured || !theWebUI.jsonLoaded)
 			return;
 	        $.each(theWebUI.tables, function(ndx,table)	
 		{

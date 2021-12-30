@@ -15,11 +15,11 @@ if(theWebUI.theme)
 	}
 
 	plugin.config = theWebUI.config;
-	theWebUI.config = function(data)
+	theWebUI.config = function()
 	{
 		this.getTable("trt").setPaletteByURL("plugins/theme/themes/"+theWebUI.theme);
 		plugin.loadCSS("plugins");
-		plugin.config.call(this,data);
+		plugin.config.call(this);
 		thePlugins.waitLoad( "thePlugins.get('theme').allDone" );
 	}
 }
