@@ -7,28 +7,35 @@ ignore_user_abort(true);
 set_time_limit(0);
 
 if(isset($_REQUEST["label"]))
-{
-	$label = function_exists('mb_strtolower')
-		? mb_strtolower(rawurldecode($_REQUEST["label"]), 'utf-8')
-		: strtolower(rawurldecode($_REQUEST["label"]));
-	$name = getSettingsPath().'/labels';
-	if(!is_dir($name))
-		makeDirectory($name);
-	$name.=('/'.$label.".png");
-	if(is_readable($name))
-	{
-		sendFile( $name, "image/png" );
-		exit;
-	}
-	$name = dirname(__FILE__)."/labels/".$label.".png";
-	if(is_readable($name))
-	{
-		sendFile( $name, "image/png" );
-		exit;
+{	
+	$request = rawurldecode($_REQUEST["label"]);
+	$cookie = str_replace(' ', '', $request);
+	if (!isset($_COOKIE[$cookie]))
+	{	
+		$label = function_exists('mb_strtolower')
+			? mb_strtolower($request, 'utf-8')
+			: strtolower($request);
+		$name = getSettingsPath().'/labels';
+		if(!is_dir($name))
+			makeDirectory($name);
+		$name.=('/'.$label.".png");
+		if(is_readable($name))
+		{
+			sendFile( $name, "image/png" );
+			exit;
+		}
+		$name = dirname(__FILE__)."/labels/".$label.".png";
+		if(is_readable($name))
+		{
+			sendFile( $name, "image/png" );
+			exit;
+		}
+		
+		// set a cookie for 30 days to speed up label img requests
+		setcookie($cookie, '1', time() + 86400 * 30);
 	}
 }
-
-if(isset($_REQUEST["tracker"]))
+elseif(isset($_REQUEST["tracker"]) && !isset($_COOKIE[$_REQUEST["tracker"]]))
 {
 	$tracker = rawurldecode($_REQUEST["tracker"]);
 	$name = dirname(__FILE__)."/trackers/".$tracker.".png";
@@ -59,8 +66,12 @@ if(isset($_REQUEST["tracker"]))
 			exit;
 		}
 	}
+	
+	// set a cookie for 30 days to speed up tracker img requests
+	setcookie($_REQUEST["tracker"], '1', time() + 86400 * 30);
 }
 
-header("HTTP/1.0 302 Moved Temporarily");
-header("Location: ./trackers/unknown.png");
+$name = dirname(__FILE__)."/trackers/unknown.png";
+sendFile($name, "image/png");
+
 exit();

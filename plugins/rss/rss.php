@@ -871,9 +871,10 @@ class rRSSManager
 	}
 	public function setHandlers()
 	{
-	        $startAt = 0;
+	    $php = ExternalPath::load()->getPHP();
+		$startAt = 0;
 		$req = new rXMLRPCRequest( rTorrentSettings::get()->getScheduleCommand("rss",$this->data->interval,
-			getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}', $startAt) );
+			getCmd('execute').'={sh,-c,'.escapeshellarg($php).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}', $startAt) );
 		if($req->success())
 		{
 			$this->setStartTime($startAt);

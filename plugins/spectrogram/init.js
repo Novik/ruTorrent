@@ -73,7 +73,7 @@ if(plugin.canChangeMenu())
 				$('#tskcmdlog').empty();
 				$('#tskcmdlog').append("<div class='soxframe' id='soxframe'><img src='plugins/spectrogram/action.php?cmd=soxgetimage&no="+task.no+
 					"&file="+encodeURIComponent($('#soximgfile').val())+"' /></div>");
-				$('#soxframe img').load(function()
+				$('#soxframe img').on('load', function()
 				{
 					plugin.setConsoleSize(this);
 				});
@@ -144,7 +144,7 @@ plugin.onLangLoaded = function()
 				'<input type="hidden" name="no" id="soxtaskno" value="0">'+
 				'<input type="hidden" name="file" id="soximgfile" value="frame">'+
 			'</form>').width(0).height(0));
-		$("#soxsave").click( function()
+		$("#soxsave").on('click', function()
 		{
 			$("#soximgcmd").val("soxgetimage");
 			$('#soxgetimg').submit();

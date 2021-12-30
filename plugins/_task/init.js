@@ -612,6 +612,6 @@ plugin.onLangLoaded = function()
 		if(!plugin.cHeight)
 			plugin.cHeight = $('#tskcmderrors').parent().height();
 	});
-	$('#tskBackground').click( plugin.toBackground );
+	$('#tskBackground').on('click', plugin.toBackground );
 	$(".tskconsole").enableSysMenu();
 }

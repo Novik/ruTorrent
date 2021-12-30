@@ -11,7 +11,7 @@ if(plugin.canChangeOptions())
 			var s = '';
 			for(var i in plugin.lookData)
 				s+=(i+'|'+plugin.lookData[i]+'\r\n');
-			$('#lookat').val($.trim(s));
+			$('#lookat').val(s.trim());
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
@@ -24,7 +24,7 @@ if(plugin.canChangeOptions())
 		{
 			if(j>=arr.length)
 				return(true);
-			if( i+'|'+plugin.lookData[i] != $.trim(arr[j++]) )
+			if( i+'|'+plugin.lookData[i] != arr[j++].trim() )
 				return(true);
 		}
 		return(j!=arr.length);

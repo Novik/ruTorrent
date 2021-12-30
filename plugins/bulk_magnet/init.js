@@ -136,7 +136,7 @@ rTorrentStub.prototype.bulkadd = function()
 	var arr = $('#bulkadd').val().split("\n");
 	for(var i = 0; i<arr.length; i++)
 	{
-		var s = $.trim(arr[i]);
+		var s = arr[i].trim();
 		if(s != '')
 		{
 			this.content = 	this.content+"&torrent="+encodeURIComponent(s);
@@ -185,7 +185,7 @@ plugin.onLangLoaded = function()
 	});
 	text.onupdate = text.onkeyup = function() 
 	{ 
-		$('#dlgBulkAdd .OK').prop('disabled',$.trim(text.value)==''); 
+		$('#dlgBulkAdd .OK').prop('disabled', text.value.trim()==''); 
 	};
 	text.onpaste = function() { setTimeout( text.onupdate, 10 ) };
 };

@@ -63,8 +63,8 @@ if(plugin.canChangeOptions())
 			$$('pushbullet_finish').checked = ( theWebUI.history.pushbullet_finish != 0 );
 			$$('pushbullet_deletion').checked = ( theWebUI.history.pushbullet_deletion != 0 );
 
-			$('#not_autoclose').change();
-			$('#pushbullet_enabled').change();
+			$('#not_autoclose').trigger('change');
+			$('#pushbullet_enabled').trigger('change');
 
 			plugin.rebuildNotificationsPage();
 		}
@@ -515,7 +515,7 @@ plugin.onLangLoaded = function()
 				"</div>" +
 			"</fieldset>"
 			)[0], theUILang.history );
-		$('#notifPerms').click( function()
+		$('#notifPerms').on('click', function()
 		{
 			notify.requestPermission(function() 
 			{ 

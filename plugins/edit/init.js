@@ -24,8 +24,8 @@ plugin.getTorrentEditables = function(id)
 	}
 	return( 
 	{ 
-		trackers: $.trim(s), 
-		comment: $.trim(theWebUI.torrents[id].comment),
+		trackers: s.trim(), 
+		comment: theWebUI.torrents[id].comment.trim(),
 		private: theWebUI.torrents[id].private,
 		set_trackers: true,
 		set_comment: true

@@ -165,7 +165,7 @@ $.fn.extend(
 						e.shiftKey = false;	// for safari
                                                 return(handler.apply(this,arguments));
 					});
-                                        $(this).mousedown(function(e)
+                                        $(this).on('mousedown', function(e)
 					{
 						if(e.which != 3)
 							return(handler.apply(this,arguments));
@@ -174,7 +174,7 @@ $.fn.extend(
 				else
 				if(browser.isOpera)
 				{
-			        	$(this).mousedown(function(e)
+			        	$(this).on('mousedown', function(e)
 					{
 						if(e.which==3)
 						{
@@ -196,7 +196,7 @@ $.fn.extend(
 						}
 						return(handler.apply(this,arguments));
 					});
-					$(this).mouseup(function(e)
+					$(this).on('mouseup', function(e)
 					{
 						var c = $(this).data("btn");
 						if(c)
@@ -209,7 +209,7 @@ $.fn.extend(
 					});
 				}
 				else
-					$(this).mousedown( handler );
+					$(this).on('mousedown', handler );
 			}
 			else
 			{
@@ -226,7 +226,7 @@ $.fn.extend(
 	enableSysMenu: function()
 	{
 		return(this.on("contextmenu",function(e) { e.stopImmediatePropagation(); }).
-			bind("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
+			on("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
 	},
 
 	setCursorPosition: function(pos)
@@ -300,7 +300,7 @@ function askYesNo( title, content, funcYesName )
 	$("#yesnoDlg-header").html(title);
 	$("#yesnoDlg-content").html(content);
 	$("#yesnoOK").off('click');
-	$("#yesnoOK").click( function()
+	$("#yesnoOK").on('click', function()
 	{
 		typeof(funcYesName)==="function" ? funcYesName() : eval(funcYesName);
 		theDialogManager.hide("yesnoDlg");
@@ -850,10 +850,10 @@ var theTabs =
    		for(var n in this.tabs)
       			s += "<li id=\"tab_" + n + "\"><a href=\"javascript://void();\" onmousedown=\"theTabs.show('" + n + "'); return(false);\" onfocus=\"this.blur();\">" + this.tabs[n] + "</a></li>";
 		$("#tabbar").html(s);
-		$("#tab_lcont").append( $("<input type='button'>").attr("id","clear_log").addClass('Button').val(theUILang.ClearButton).hide().click( function()
+		$("#tab_lcont").append( $("<input type='button'>").attr("id","clear_log").addClass('Button').val(theUILang.ClearButton).hide().on('click', function()
 		{
 			$("#lcont").empty();
-		}).focus( function()
+		}).on('focus', function()
 		{
 			this.blur();
 		}));
