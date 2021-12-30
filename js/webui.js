@@ -314,7 +314,7 @@ var theWebUI =
 	{
 		this.requestWithoutTimeout("?action=getplugins", [this.loadPlugins, this]);
 	},
-	
+
 	getUISettings: function()
 	{
 		this.requestWithoutTimeout("?action=getuisettings", [this.addSettings, this], true);
