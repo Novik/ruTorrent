@@ -333,6 +333,7 @@ var theWebUI =
 		correctContent();
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
+		this.initFinish();
 	},
 
 	initFinish: function()
