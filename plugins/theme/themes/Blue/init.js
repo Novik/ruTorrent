@@ -121,7 +121,7 @@ plugin.allDone = function()
 		{
 			$(this).css( { "border-color": "#7eadd9" } );
 		});
-		$(this).on('blur',( function()
+		$(this).on('blur', function()
 		{
 			$(this).css( { "border-color": "#b5b8c8" } );
 		});
