@@ -807,7 +807,7 @@ var theWebUI =
 
         save: function(reply) 
 	{
-	        if(!theWebUI.configured || !theWebUI.jsonLoaded)
+	        if(!theWebUI.configured)
 			return;
 	        $.each(theWebUI.tables, function(ndx,table)	
 		{
