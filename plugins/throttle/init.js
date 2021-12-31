@@ -2,7 +2,7 @@ plugin.loadLang();
 plugin.loadMainCSS();
 
 plugin.config = theWebUI.config;
-theWebUI.config = function(data)
+theWebUI.config = function()
 {
 	if(plugin.canChangeColumns())
 	{
@@ -26,7 +26,7 @@ theWebUI.config = function(data)
 	{
 		torrent.throttle = value;
 	});
-	plugin.config.call(this,data);
+	plugin.config.call(this);
 	if(plugin.canChangeColumns())
 		plugin.trtRenameColumn();
 }

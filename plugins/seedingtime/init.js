@@ -3,7 +3,7 @@ plugin.loadLang();
 if(plugin.canChangeColumns())
 {
 	plugin.config = theWebUI.config;
-	theWebUI.config = function(data)
+	theWebUI.config = function()
 	{
 		this.tables.trt.columns.push({text: 'SeedingTime', width: '100px', id: 'seedingtime', type: TYPE_NUMBER});
 		this.tables.trt.columns.push({text: 'AddTime', width: '110px', id: 'addtime', type: TYPE_NUMBER});
@@ -21,7 +21,7 @@ if(plugin.canChangeColumns())
 		        }
 			return(plugin.trtFormat(table,arr));
 		}
-		plugin.config.call(this,data);
+		plugin.config.call(this);
 		plugin.reqId1 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"seedingtime",function(hash,torrent,value)
 		{
 			torrent.seedingtime = value;

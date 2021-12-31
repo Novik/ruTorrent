@@ -171,6 +171,8 @@ var theWebUI =
 	sTimer: 	null,
 	updTimer: 	null,
 	configured:	false,
+	jsonLoaded:	false,
+	pluginsLoaded: false,
 	firstLoad:	true,
 	interval:	-1,
 	torrents:	{},
@@ -219,6 +221,7 @@ var theWebUI =
 		else
 		{
 			this.catchErrors(false);
+			this.getUISettings();
 			this.getPlugins();
 		}
 	},
@@ -309,10 +312,15 @@ var theWebUI =
 
 	getPlugins: function()
 	{
-		this.requestWithoutTimeout("?action=getplugins", [this.getUISettings, this]);
+		this.requestWithoutTimeout("?action=getplugins", [this.loadPlugins, this]);
 	},
 
 	getUISettings: function()
+	{
+		this.requestWithoutTimeout("?action=getuisettings", [this.addSettings, this], true);
+	},
+
+	loadPlugins: function()
 	{
 		if(thePlugins.isInstalled("_getdir"))
 		{
@@ -326,21 +334,29 @@ var theWebUI =
 		correctContent();
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
-		this.requestWithoutTimeout("?action=getuisettings", [this.initFinish, this]);
+		
+		// Mark plugins as done loading. Initialize UI if JSON file is loaded
+		this.pluginsLoaded = true;
+		this.initFinish();
 	},
 
-	initFinish: function(data)
+	initFinish: function()
 	{
-		this.config(data);
-	        this.catchErrors(true);
-		this.assignEvents();
-		this.resize();
-		this.update();		
+		// Loading JSON settings and plugins are done in an asynchronous fashion
+		// We must wait until both of these are completed before preceding
+		// Otherwise, the WebUI and plugins will not initialize properly
+		if (this.jsonLoaded && this.pluginsLoaded)
+		{
+			this.config();
+			this.catchErrors(true);
+			this.assignEvents();
+			this.resize();
+			this.update();	
+		}
 	},
 
-	config: function(data)
+	config: function()
 	{
-		this.addSettings(data);
 		$.each(this.tables, function(ndx,table)
 		{
 		        var width = theWebUI.settings["webui."+ndx+".colwidth"];
@@ -650,6 +666,10 @@ var theWebUI =
 		});
 		if($type(this.settings["webui.search"]))
 			theSearchEngines.set(this.settings["webui.search"],true);
+		
+		// Mark JSON file as done loaded. Initialize UI if plugins are loaded
+		this.jsonLoaded = true;
+		this.initFinish();
    	},
 
 	setSettings: function() 

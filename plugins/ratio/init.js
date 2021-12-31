@@ -20,7 +20,7 @@ plugin.allDone = function()
 }
 
 plugin.config = theWebUI.config;
-theWebUI.config = function(data)
+theWebUI.config = function()
 {
 	if(plugin.canChangeColumns())
 	{
@@ -40,7 +40,7 @@ theWebUI.config = function(data)
 			return(plugin.trtFormat(table,arr));
 		};
 	}
-	plugin.config.call(this,data);
+	plugin.config.call(this);
 	plugin.reqId = theRequestManager.addRequest("trt", theRequestManager.map("cat=")+'$'+theRequestManager.map("d.views="),function(hash,torrent,value)
 	{
 		torrent.ratiogroup = value;

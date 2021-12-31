@@ -117,7 +117,7 @@ if(plugin.canChangeOptions())
 if(plugin.canChangeTabs() || plugin.canChangeColumns())
 {
 	plugin.config = theWebUI.config;
-	theWebUI.config = function(data)
+	theWebUI.config = function()
 	{
 		if(plugin.canChangeTabs())
 		{
@@ -202,7 +202,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 			}
 		}
 
-		plugin.config.call(theWebUI,data);
+		plugin.config.call(theWebUI);
 
 		if(plugin.canChangeColumns())
 		{
