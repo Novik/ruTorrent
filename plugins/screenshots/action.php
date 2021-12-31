@@ -1,6 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__).'/../_task/task.php' );
+require_once( dirname(__FILE__)."/../../php/ExternalPath.php");
 require_once( 'ffmpeg.php' );
 eval( getPluginConf( 'screenshots' ) );
 
@@ -8,6 +9,7 @@ $ret = array();
 if(isset($_REQUEST['cmd']))
 {
 	$st = ffmpegSettings::load();
+	$external = ExternalPath::load();
 	switch($_REQUEST['cmd'])
 	{
 		case "ffmpeg":
@@ -36,7 +38,7 @@ if(isset($_REQUEST['cmd']))
 						for($i=0; $i<$st->data['exfrmcount']; $i++)
 						{
 							$name = '"${dir}"/frame'.$i.($st->data['exformat'] ? '.png' : '.jpg');
-							$commands[] = getExternal("ffmpeg").
+							$commands[] = $external->getExternalPathEx("ffmpeg").
 								' -ss '.$offs.
 								" -i ".escapeshellarg($filename).
 								' -y -vframes 1 -an '.
@@ -69,7 +71,7 @@ if(isset($_REQUEST['cmd']))
 			if(@chdir( $dir ))
 			{
 				$randName = getTempFilename('screenshots-detail');
-				exec(escapeshellarg(getExternal('tar'))." -cf ".$randName." *.".($st->data['exformat'] ? 'png' : 'jpg'),$results,$return);
+				exec(escapeshellarg($external->getExternalPathEx('tar'))." -cf ".$randName." *.".($st->data['exformat'] ? 'png' : 'jpg'),$results,$return);
 				if(is_file($randName))
 				{
 					sendFile( $randName, "application/x-tar",  $_REQUEST['file'].'.tar', false );

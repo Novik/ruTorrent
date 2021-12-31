@@ -334,7 +334,6 @@ var theWebUI =
 		correctContent();
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
-		
 		// Mark plugins as done loading. Initialize UI if JSON file is loaded
 		this.pluginsLoaded = true;
 		this.initFinish();
@@ -792,7 +791,7 @@ var theWebUI =
 		else
 		{
 			if(this.systemInfo.rTorrent.started)
-		   		this.request("?action=getsettings", [this.addAndShowSettings, this], true);
+				this.request("?action=getsettings", [this.addAndShowSettings, this], true);
 			else
 				this.addAndShowSettings();
 		}
@@ -807,7 +806,7 @@ var theWebUI =
 
         save: function(reply) 
 	{
-	        if(!theWebUI.configured)
+	        if(!theWebUI.configured || !theWebUI.jsonLoaded)
 			return;
 	        $.each(theWebUI.tables, function(ndx,table)	
 		{

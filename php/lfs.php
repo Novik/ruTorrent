@@ -1,5 +1,7 @@
 <?php
 
+require_once( 'ExternalPath.php' );
+
 class LFS
 {
 	static public function test($fname,$flag)
@@ -12,7 +14,8 @@ class LFS
 	static protected function statPrim($fname)
 	{
 		$out = array();
-		$st = explode(':',@exec( getExternal('stat').' -Lc%d:%i:%f:%h:%u:%g:%s:%X:%Y:%Z:%B:%b '.escapeshellarg( $fname ), $out, $ret ));
+		$stat = ExternalPath::load()->getExternalPathEx('stat');
+		$st = explode(':',@exec( $stat.' -Lc%d:%i:%f:%h:%u:%g:%s:%X:%Y:%Z:%B:%b '.escapeshellarg( $fname ), $out, $ret ));
 		return(($ret == 0) ? array( 
 		        "dev"	=>	intval($st[0]),
 			"ino"	=>	intval($st[1]),

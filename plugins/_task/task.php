@@ -1,5 +1,6 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
+require_once( dirname(__FILE__)."/../../php/ExternalPath.php" );
 
 class rTask
 {
@@ -92,7 +93,8 @@ class rTask
 					}
 				}
 				fputs($sh,'echo $last > "${dir}"/status'."\n");
-				fputs($sh,getPHP().' '.escapeshellarg(dirname(__FILE__).'/notify.php').' '.
+				$php = ExternalPath::load()->getPHP();
+				fputs($sh,$php.' '.escapeshellarg(dirname(__FILE__).'/notify.php').' '.
 					'$last "${dir}" '.
 					escapeshellarg(getUser()).' '.
 					'> /dev/null 2>> /dev/null &'."\n");
@@ -298,7 +300,9 @@ class rTask
 				if(is_null($flags))
 					$flags = intval(file_get_contents($dir.'/flags'));
 				$pid = trim(file_get_contents($dir.'/pid'));
-				self::run("kill -9 `".getExternal("pgrep")." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
+				
+				$pgrep = ExternalPath::load()->getExternalPathEx("pgrep");
+				self::run("kill -9 `".$pgrep." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
 				self::notify($dir,"TaskKill");
 			}
 			self::clean($dir);

@@ -5,7 +5,7 @@ require_once( '../plugins/trafic/ratios.php' );
 $st = getSettingsPath();
 makeDirectory( array( $st.'/trafic', $st.'/trafic/trackers', $st.'/trafic/torrents') );
 $req = new rXMLRPCRequest( $theSettings->getScheduleCommand("trafic",$updateInterval,
-	getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg($rootPath.'/plugins/trafic/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) );
+	getCmd('execute').'={sh,-c,'.escapeshellarg($ep->getPHP()).' '.escapeshellarg($rootPath.'/plugins/trafic/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) );
 if($req->run() && !$req->fault)
        	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 else

@@ -170,10 +170,10 @@ if(isset($_REQUEST['cmd']))
 						'hybrid'=>$_REQUEST['hybrid']
 					) );
 					$commands = array();
-
+					$php = ExternalPath::load()->getPHP();
 					$commands[] = escapeshellarg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
 					$task->id." ".
-					escapeshellarg(getPHP())." ".
+					escapeshellarg($php)." ".
 					escapeshellarg($pathToCreatetorrent)." ".
 					escapeshellarg($path_edit)." ".
 					$piece_size." ".

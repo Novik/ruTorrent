@@ -7,7 +7,7 @@ class WebUISettings
 	public $hash = "WebUISettings.dat";	
 	private $jsonString = "{}";
 
-	public static function load()
+  public static function load()
 	{
 		$cache = new rCache();
 		$settings = new WebUISettings();
@@ -25,7 +25,7 @@ class WebUISettings
 	{
 		return $this->jsonString;
 	}
-
+  
 	public function set($json)
 	{
 		if ($this->jsonString !== $json)
