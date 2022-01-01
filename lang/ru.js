@@ -213,7 +213,6 @@ var theUILang =
  retryOnErrorList		: { 0: "Не повторять", 30: "30 секунд", 60: "1 минуту", 120: "2 минуты", 300: "5 минут", 900: "15 минут" },
  statNotFound			: "Пользователю rTorrent не доступна программа 'stat'. Часть функциональности будет недоступна.",
  statNotFoundW			: "Веб сервер не имеет доступа к программе 'stat'. Часть функциональности будет недоступна.",
- whichNotFound			: "Webserver user can't access 'which' program. Some functionality will be unavailable.",
  badrTorrentVersion		: "Плагин требует для работы версию rTorrent >=",
  badPHPVersion			: "Плагин требует для работы версию PHP >=",
  rTorrentExternalNotFoundError	: "Плагин не будет работать. Пользователю rTorrent не доступна внешняя программа",

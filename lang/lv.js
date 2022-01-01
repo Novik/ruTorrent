@@ -213,7 +213,6 @@ var theUILang =
  retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },
  statNotFound			: "rTorrent user can't access 'stat' program. Some functionality will be unavailable.",
  statNotFoundW			: "Webserver user can't access 'stat' program. Some functionality will be unavailable.",
- whichNotFound			: "Webserver user can't access 'which' program. Some functionality will be unavailable.", 
  badrTorrentVersion		: "Plugin requires rTorrent version >=",
  badPHPVersion			: "Plugin requires PHP version >=",
  rTorrentExternalNotFoundError	: "Plugin will not work. rTorrent user can't access external program",

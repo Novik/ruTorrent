@@ -211,7 +211,6 @@ var theUILang =
  retryOnErrorList		: { 0: "Không thử lại", 30: "30 giây", 60: "1 phút", 120: "2 phút", 300: "5 phút", 900: "15 phút" },
  statNotFound			: "rTorrent's không thể truy cập chương trình 'stat'. Một số tính năng sẽ không hoạt động.",
  statNotFoundW			: "Máy chủ Web không thể truy cập chương trình 'stat'. Một số tính năng sẽ không hoạt động.",
- whichNotFound			: "Webserver user can't access 'which' program. Some functionality will be unavailable.", 
  badrTorrentVersion		: "Phiên bản rTorrent không hỗ trợ thành phần bổ sung này. Thành phần này sẽ không hoạt động. Phiên bản rTorrent tối thiếu là",
  badPHPVersion			: "Phiên bản PHP không hỗ trợ thành phần bổ sung này. Thành phần này sẽ không hoạt động. Phiên bản PHP tối thiếu là",
  rTorrentExternalNotFoundError	: "Thành phần bổ sung sẽ không hoạt động. rTorrent không thể truy cập chương trình mở rộng",

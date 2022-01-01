@@ -256,9 +256,6 @@ if($handle = opendir('../plugins'))
 				$theSettings->version."', libVersion : '".$theSettings->libVersion."', apiVersion : ".$theSettings->apiVersion." };\n";
 	        	if($do_diagnostic)
 	        	{
-					if (findEXE('which')=== false)
-						$jResult.="noty(theUILang.whichNotFound,'error');";
-
 	        	        $up = getUploadsPath();
 	        	        $st = getSettingsPath();
 				@chmod($up,$profileMask);
