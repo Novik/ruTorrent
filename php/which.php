@@ -5,24 +5,6 @@ class WhichCache
 {
 	public $hash = "which.dat";
 	private $filePath = array();
-	private static $instance = null;
-	
-	private function __construct($diagnostic)
-	{
-		$cache = new rCache();
-		$cache->get($this);
-		
-		if($diagnostic)
-			$this->pruneCache();
-	}
-	
-	public static function load($diagnostic)
-	{
-		if(is_null(self::$instance))
-			self::$instance = new WhichCache($diagnostic);
-		
-		return(self::$instance);
-	}
 	
 	public function getFilePath($exe)
 	{
@@ -30,7 +12,7 @@ class WhichCache
 		{
 			if($this->setFilePath($exe))
 			{
-				$this->store($exe);
+				$this->store();
 				return($this->filePath[$exe]);
 			}
 			return false;
@@ -38,10 +20,10 @@ class WhichCache
 		return($this->filePath[$exe]);
 	}
 	
-	private function store($exe)
+	private function store()
 	{
 		$cache = new rCache();
-		$cache->set(self::$instance);
+		$cache->set($this);
 	}
 	
 	private function isFilePathSet($exe)
@@ -67,12 +49,29 @@ class WhichCache
 	}
 }
 
+class WhichInstance
+{
+	public static function load($diagnostic)
+	{
+		$cache = new rCache();
+		$which = new WhichCache();
+		$cache->get($which);
+		
+		if($diagnostic)
+			$which->pruneCache();
+		
+		return($which);
+	}
+}
+
 function findEXE( $exe )
 {
 	global $pathToExternals;
 	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
 		return(is_executable($pathToExternals[$exe]) ? $pathToExternals[$exe] : false);
 	
-	global $do_diagnostic;
-	return(WhichCache::load($do_diagnostic)->getFilePath($exe));
+	global $whichCache;
+	return($whichCache->getFilePath($exe));
 }
+
+$whichCache = WhichInstance::load($do_diagnostic);
