@@ -208,6 +208,8 @@ var theUILang =
  showScrollTables		: "Показывать содержимое таблиц при скроллировании",
  idNotFound			: "Пользователю rTorrent не доступна программа 'id'. Часть функциональности будет недоступна.",
  gzipNotFound			: "Веб сервер не имеет доступа к программе 'gzip'. ruTorrent не будет работать.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "ruTorrent не может определить UID пользователя rTorrent. Часть функциональности будет недоступна.",
  retryOnErrorTitle		: "При ошибке обновления GUI повторять запрос через",
  retryOnErrorList		: { 0: "Не повторять", 30: "30 секунд", 60: "1 минуту", 120: "2 минуты", 300: "5 минут", 900: "15 минут" },

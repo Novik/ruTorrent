@@ -206,6 +206,8 @@ var theUILang =
  showScrollTables		: "Προβολή των περιεχομένων του πίνακα κατά την κύλιση",
  idNotFound			: "Ο χρήστης του rTorrent δεν έχει πρόσβαση στο πρόγραμμα 'id'. Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες.",
  gzipNotFound			: "Ο χρήστης του διακομιστή Web δεν έχει πρόσβαση στο πρόγραμμα 'gzip'. Το ruTorrent δεν θα λειτουργήσει.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "Το ruTorrent δεν μπορεί να καθορίσει το UID του χρήστη rTorrent. Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες.",
  retryOnErrorTitle		: "Αν το rTorrent δεν είναι διαθέσιμο, προσπάθεια πάλι σε",
  retryOnErrorList		: { 0: "Όχι ξανά", 30: "30 δευτ.", 60: "1 λεπτό", 120: "2 λεπτά", 300: "5 λεπτά", 900: "15 λεπτά" },

@@ -207,6 +207,8 @@ var theUILang =
  showScrollTables		: "Vis tabellinnhold under scrolling",
  idNotFound			: "rTorrent-bruker kan ikke kjøre 'id'. Noe funksjonalitet vil ikke være tilgjengelig.",
  gzipNotFound			: "Webserver-bruker kan ikke kjøre 'gzip'. ruTorrent vil ikke fungere.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "ruTorrent kan ikke fastslå UID av rTorrent-bruker. Noe funksjonalitet vil ikke være tilgjengelig.",
  retryOnErrorTitle		: "Hvis rTorrent ikke er tilgjengelig, prøv igjen etter",
  retryOnErrorList		: { 0: "Ikke prøv igjen", 30: "30 sekunder", 60: "1 minutt", 120: "2 minutter", 300: "5 minutter", 900: "15 minutter" },

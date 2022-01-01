@@ -206,6 +206,8 @@ var theUILang =
  showScrollTables		: "스크롤하는 동안 표 내용 표시",
  idNotFound			: "rTorrent 사용자가 'id' 프로그램에 접근할 수 없습니다. 일부 기능을 사용할 수 없습니다.",
  gzipNotFound			: "웹서버 사용자가 'gzip' 프로그램에 접근할 수 없습니다. ruTorrent가 동작할 수 없습니다.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "ruTorrent가 rTorrent 사용자의 UID를 얻을 수 없습니다. 일부 기능을 사용할 수 없습니다.",
  retryOnErrorTitle		: "rTorrent를 사용할 수 없을 때 다음 시간 이후 재시도",
  retryOnErrorList		: { 0: "재시도하지 않음", 30: "30 초", 60: "1 분", 120: "2 분", 300: "5 분", 900: "15 분" },

@@ -208,6 +208,8 @@ var theUILang =
  showScrollTables		: "Mostrar o conteúdo das tabelas durante a rolagem",
  idNotFound			: "Usuário do rTorrent não pode acessar a 'id' do programa. Algumas funcionalidades não estarão disponíveis.",
  gzipNotFound			: "Usuário do servidor não pode acessar o programa 'gzip'. uTorrent não vai funcionar.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "ruTorrent não pode determinar o UID do usuário rTorrent. Algumas funcionalidades não estarão disponíveis.",
  retryOnErrorTitle		: "Se Torrent não está disponível tente novamente depois",
  retryOnErrorList		: { 0: "Não tente novamente", 30: "30 seg", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },

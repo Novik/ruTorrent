@@ -208,6 +208,8 @@ var theUILang =
  showScrollTables		: "Show table contents while scrolling",
  idNotFound			: "rTorrent user can't access 'id' program. Some functionality will be unavailable.",
  gzipNotFound			: "Webserver user can't access 'gzip' program. ruTorrent will not work.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "ruTorrent cannot determine the UID of rTorrent user. Some functionality will be unavailable.",
  retryOnErrorTitle		: "If rTorrent is not available try again after",
  retryOnErrorList		: { 0: "Don't try again", 30: "30 sec", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },

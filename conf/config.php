@@ -52,6 +52,7 @@
 		"gzip"	=> '',			// Something like /usr/bin/gzip. If empty, will be found in PATH.
 		"id"	=> '',			// Something like /usr/bin/id. If empty, will be found in PATH.
 		"stat"	=> '',			// Something like /usr/bin/stat. If empty, will be found in PATH.
+		"perl" 	=> '', 			// Something like /usr/bin/perl. If empty, will be found in PATH.
 	);
 
 	$localhosts = array( 			// list of local interfaces

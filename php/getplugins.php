@@ -179,6 +179,21 @@ function findRemoteEXE( $exe, $err, &$remoteRequests )
 	$remoteRequests[$exe]["err"][] = $err;
 }
 
+function fixRemoteBashScript()
+{
+	// Fixes: "bash: ./test.sh: /bin/sh^M: bad interpreter"
+	// Replaces "dos" (Windows) with "unix" (Linux) line ending on test.sh
+	$path=realpath(dirname('.'));
+	$perl = getExternal('perl');
+	
+	// Orginal command: perl -pi -e 's/\r\n/\n/g' [file_name]
+	// When sending an XMLRPC command, the escape character for "\" is "\\"
+	// Each argument must also be seperated in an array, with it's own string
+	$cmd = array( $perl, "-pi", "-e", "s/\\r\\n/\\n/g", addslash($path)."test.sh" );
+	$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", $cmd));
+	$req->run();
+}
+
 function testRemoteRequests($remoteRequests)
 {
 	$ret = "";
@@ -261,6 +276,11 @@ if($handle = opendir('../plugins'))
 				@chmod($up,$profileMask);
 				@chmod($st,$profileMask);
 				@chmod('./test.sh',$profileMask & 0755);
+				
+					// Before we remotely look for executables, try to fix the bash script if broken
+					fixRemoteBashScript(); // Check for 'perl' package AFTER trying to fix the bash script
+					findRemoteEXE('perl',"noty(theUILang.perlNotFound,'error'); noty(theUILang.perlDependency,'error');",$remoteRequests);
+		
 	        	        if(PHP_USE_GZIP && (findEXE('gzip')===false))
 	        	        {
 	        	        	@define('PHP_USE_GZIP', false);

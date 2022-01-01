@@ -208,6 +208,8 @@ var theUILang =
  showScrollTables		: "滚动时显示表格内容",
  idNotFound			: "rTorrent 运行用户无法访问 'id' 程序. 某些功能将不可用.",
  gzipNotFound			: "网页服务器 执行用户无法访问 'gzip' 程序. ruTorrent 将不会工作.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "ruTorrent 不能确定 rTorrent 运行用户的 UID. 某些功能将不可用.",
  retryOnErrorTitle		: "如果 rTorrent 不可用则在这个时间后重试",
  retryOnErrorList		: { 0: "不重试", 30: "30 秒", 60: "1 分钟", 120: "2 分钟", 300: "5 分钟", 900: "15 分钟" },

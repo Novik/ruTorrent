@@ -206,6 +206,8 @@ var theUILang =
  showScrollTables		: "Hiện nội dung bảng khi cuộn",
  idNotFound			: "rTorrent's không thể truy cập chương trình 'id'. Một số tính năng sẽ không hoạt động.",
  gzipNotFound			: "Máy chủ Web không thể truy cập chương trình 'gzip'. ruTorrent sẽ không hoạt động.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "ruTorrent không thể xác định UID hoặc người dùng rTorrent. Một số tính năng sẽ không hoạt động.",
  retryOnErrorTitle		: "Nếu không kết nối được rTorrent, tự động thử lại sau",
  retryOnErrorList		: { 0: "Không thử lại", 30: "30 giây", 60: "1 phút", 120: "2 phút", 300: "5 phút", 900: "15 phút" },

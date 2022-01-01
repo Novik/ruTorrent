@@ -206,6 +206,8 @@ var theUILang =
  showScrollTables		: "Visa tabellinnehåll under skrollning",
  idNotFound			: "rTorrent-användaren kan inte komma åt 'id'. Vissa funktioner kommer att vara otillgängliga.",
  gzipNotFound			: "Webbserveranvändaren kan inte komma åt 'gzip'. ruTorrent kommer inte att fungera.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  cantObtainUser			: "ruTorrent kan inte fastställa användar-id för rTorrent-användare. Vissa funktioner kommer att vara otillgängliga.",
  retryOnErrorTitle		: "Om rTorrent är inte tillgängligt försök igen efter",
  retryOnErrorList		: { 0: "Försök inte igen", 30: "30 sek", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },

@@ -209,6 +209,8 @@ var theUILang =
  idNotFound			: "rTorrent user can't access 'id' program. Some functionality will be unavailable.",
  gzipNotFound			: "Webserver user can't access 'gzip' program. ruTorrent will not work.",
  cantObtainUser			: "ruTorrent cannot determine the UID of rTorrent user. Some functionality will be unavailable.",
+ perlNotFound			: "rTorrent user can't access 'perl' program. ruTorrent will not work.",
+ perlDependency			: "Please install 'perl' package first. It may resolve other plugin errors.",
  retryOnErrorTitle		: "Ha az rtorrent nem elérhető, próbálkozz később újra:",
  retryOnErrorList		: { 0: "Ne próbálja újra", 30: "30 másodperc", 60: "1 perc", 120: "2 perc", 300: "5 perc", 900: "15 perc" },
  statNotFound			: "rTorrent user can't access 'stat' program. Some functionality will be unavailable.",
