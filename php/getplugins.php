@@ -257,7 +257,7 @@ if($handle = opendir('../plugins'))
 	        	if($do_diagnostic)
 	        	{
 					if (findEXE('which')=== false)
-						$jResult.="noty(theUILang.whichNotFound,'error'); noty(theUILang.whichDependency,'error');";
+						$jResult.="noty(theUILang.whichNotFound,'error');";
 
 	        	        $up = getUploadsPath();
 	        	        $st = getSettingsPath();
