@@ -449,21 +449,6 @@ function getPHP()
 	return( getExternal("php") );
 }
 
-function findEXE( $exe )
-{
-	global $pathToExternals;
-	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
-		return(is_executable($pathToExternals[$exe]) ? $pathToExternals[$exe] : false);
-	$path = explode(":", getenv('PATH'));
-	foreach($path as $tryThis)
-	{
-		$fname = $tryThis . '/' . $exe;
-		if(is_executable($fname))
-			return($fname);
-	}
-	return(false);
-}
-
 function cachedEcho( $content, $type = null, $cacheable = false, $exit = true )
 {
 	header("X-Server-Timestamp: ".time());

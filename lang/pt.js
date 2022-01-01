@@ -213,6 +213,8 @@ var theUILang =
  retryOnErrorList		: { 0: "Não tente novamente", 30: "30 seg", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },
  statNotFound			: "Usuário rTorrent não pode acessar ao programa 'start'. Algumas funcionalidades não estarão disponíveis.",
  statNotFoundW			: "Usuário do servidor não pode acessar ao programa 'start'. Algumas funcionalidades não estarão disponíveis.",
+ whichNotFound			: "Webserver user can't access 'which' program. ruTorrent will not work.",
+ whichDependency		:  "Please install 'which' package first. It may resolve other plugin errors.", 
  badrTorrentVersion		: "Plugin necessita da versão do rTorrent >=",
  badPHPVersion			: "Plugin necessita da versão do PHP >=",
  rTorrentExternalNotFoundError	: "Plugin não irá funcionar. Usuário do rTorrent não pode acessar programa externo",

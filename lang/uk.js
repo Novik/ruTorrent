@@ -213,6 +213,8 @@ var theUILang =
  retryOnErrorList		: { 0: "Не повторювати", 30: "30 секунд", 60: "1 хвилину", 120: "2 хвилини", 300: "5 хвилин", 900: "15 хвилин" },
  statNotFound			: "Програма «stat» недоступна користувачу rTorrent. Деякі функції будуть недоступні.",
  statNotFoundW			: "Програма «stat» недоступна веб-серверу. Деякі функції будуть недоступні.",
+ whichNotFound			: "Webserver user can't access 'which' program. ruTorrent will not work.",
+ whichDependency		:  "Please install 'which' package first. It may resolve other plugin errors.", 
  badrTorrentVersion		: "Для роботи плагіна необхідна версія програми rTorrent >=",
  badPHPVersion			: "Для роботи плагіна необхідна версія інтерпретатора PHP >=",
  rTorrentExternalNotFoundError	: "Зовнішня програма недоступна користувачу rTorrent. Плагін не працюватиме.",

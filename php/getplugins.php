@@ -1,6 +1,6 @@
 <?php
 
-require_once( "util.php" );
+require_once( 'which.php' );
 require_once( "settings.php" );
 
 function pluginsSort($a, $b)
@@ -256,6 +256,9 @@ if($handle = opendir('../plugins'))
 				$theSettings->version."', libVersion : '".$theSettings->libVersion."', apiVersion : ".$theSettings->apiVersion." };\n";
 	        	if($do_diagnostic)
 	        	{
+					if (findEXE('which')=== false)
+						$jResult.="noty(theUILang.whichNotFound,'error'); noty(theUILang.whichDependency,'error');";
+
 	        	        $up = getUploadsPath();
 	        	        $st = getSettingsPath();
 				@chmod($up,$profileMask);

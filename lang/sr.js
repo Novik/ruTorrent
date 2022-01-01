@@ -215,6 +215,8 @@ var theUILang =
  badPHPVersion			: "Plugin requires PHP version >=",
  rTorrentExternalNotFoundError	: "Plugin will not work. rTorrent user can't access external program",
  rTorrentExternalNotFoundWarning: "Some functionality will be unavailable. rTorrent user can't access external program",
+ whichNotFound			: "Webserver user can't access 'which' program. ruTorrent will not work.",
+ whichDependency		:  "Please install 'which' package first. It may resolve other plugin errors.", 
  webExternalNotFoundError	: "Plugin will not work. Webserver user can't access external program",
  webExternalNotFoundWarning	: "Some functionality will be unavailable. Webserver user can't access external program",
  rTorrentBadScriptPath		: "Plugin will not work. rTorrent user must have read/execute access to the file",

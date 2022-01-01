@@ -211,6 +211,8 @@ var theUILang =
  retryOnErrorList		: { 0: "재시도하지 않음", 30: "30 초", 60: "1 분", 120: "2 분", 300: "5 분", 900: "15 분" },
  statNotFound			: "rTorrent 사용자가 'stat' 프로그램에 접근할 수 없습니다. 일부 기능을 사용할 수 없습니다.",
  statNotFoundW			: "웹서버 사용자가 'stat' 프로그램에 접근할 수 없습니다. 일부 기능을 사용할 수 없습니다.",
+ whichNotFound			: "Webserver user can't access 'which' program. ruTorrent will not work.",
+ whichDependency		:  "Please install 'which' package first. It may resolve other plugin errors.", 
  badrTorrentVersion		: "플러그인이 다음 rTorrent 버전을 필요로 합니다: >=",
  badPHPVersion			: "플러그인이 다음 PHP 버전을 필요로 합니다: >=",
  rTorrentExternalNotFoundError	: "플러그인이 동작하지 않습니다. rTorrent 사용자가 외부 프로그램에 접근할 수 없습니다",

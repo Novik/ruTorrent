@@ -211,6 +211,8 @@ var theUILang =
  retryOnErrorList		: { 0: "Försök inte igen", 30: "30 sek", 60: "1 min", 120: "2 min", 300: "5 min", 900: "15 min" },
  statNotFound			: "rTorrent-användaren kan inte komma åt 'stat'. Vissa funktioner kommer att vara otillgängliga.",
  statNotFoundW			: "Webbserveranvändaren kan inte komm åt 'stat'. Vissa funktioner kommer att vara otillgängliga.",
+ whichNotFound			: "Webserver user can't access 'which' program. ruTorrent will not work.",
+ whichDependency		:  "Please install 'which' package first. It may resolve other plugin errors.", 
  badrTorrentVersion		: "Insticksprogram kräver rTorrent-version >=",
  badPHPVersion			: "Insticksprogram kräver PHP-version >=",
  rTorrentExternalNotFoundError	: "Insticksprogrammet kommer inte att fungera. rTorrent-användaren kan inte komma åt externt program",
