@@ -7,12 +7,6 @@ class WhichCache
 	public $changed = false;
 	private $filePath = array();
 	
-	public function __construct($diagnostic)
-	{
-		if($diagnostic)
-			$this->pruneCache();		
-	}
-	
 	public function getFilePath($exe)
 	{
 		if(!$this->isFilePathSet($exe))
@@ -37,7 +31,7 @@ class WhichCache
 		return($this->changed);
 	}
 	
-	private function pruneCache()
+	public function pruneCache()
 	{
 		foreach ($this->filePath as $key => $value)
 		{
@@ -60,8 +54,10 @@ class WhichInstance
 		if (!self::initialized())
 		{
 			self::$cache = new rCache();
-			self::$instance = new WhichCache($diagnostic);
+			self::$instance = new WhichCache();
 			self::$cache->get(self::$instance);
+			if ($diagnostic)
+				self::$instance->pruneCache();
 		}
 		return(self::$instance);
 	}
