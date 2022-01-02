@@ -121,7 +121,7 @@ if( !function_exists( 'preg_match_all' ) )
 if( count( $argv ) > 1 )
 	$_SERVER['REMOTE_USER'] = $argv[1];
 
-require_once( "util.php" );
+require_once( "which.php" );
 require_once( "settings.php" );
 
 $tmp = getTempDirectory();
@@ -231,4 +231,5 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 
 	}
 	$theSettings->store();
+	WhichInstance::save();
 }
