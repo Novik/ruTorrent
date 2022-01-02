@@ -8,7 +8,7 @@ if( count( $argv ) > 1 )
 	require_once( dirname(__FILE__).'/../../php/Torrent.php' );
 	require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
 	require_once( dirname(__FILE__).'/../_task/task.php' );	
-	eval(getPluginConf('create'));
+	eval(FileUtil::getPluginConf('create'));
 	
 	if(function_exists('ini_set'))
 	{
@@ -79,17 +79,17 @@ if( count( $argv ) > 1 )
 
 		if($request['start_seeding'])
 		{
-			$fname = getUniqueUploadedFilename($torrent->info['name'].'.torrent');
+			$fname = FileUtil::getUniqueUploadedFilename($torrent->info['name'].'.torrent');
 			$path_edit = trim($request['path_edit']);
 			if(is_dir($path_edit))
-				$path_edit = addslash($path_edit);
+				$path_edit = FileUtil::addslash($path_edit);
 	        	if(rTorrentSettings::get()->correctDirectory($path_edit))
 			{
         			$path_edit = dirname($path_edit);
 				if($resumed = rTorrent::fastResume($torrent,$path_edit))
 					$torrent = $resumed;
 				$torrent->save($fname);
-				rTorrent::sendTorrent($torrent, true, true, $path_edit, null, true, isLocalMode() );
+				rTorrent::sendTorrent($torrent, true, true, $path_edit, null, true, User::isLocalMode() );
 				@chmod($fname,$profileMask & 0666);
 			}
 		}

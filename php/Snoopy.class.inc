@@ -38,7 +38,7 @@ http://snoopy.sourceforge.com
 require_once( 'util.php' );
 require_once( 'settings.php' );
 
-class Snoopy
+class Snoopy extends ruTorrentConfig
 {
 	/**** Public variables ****/
 
@@ -95,8 +95,6 @@ class Snoopy
 
 	public function __construct()
 	{
-		global $httpIP;
-		global $httpProxy;
 		if(@constant('HTTP_USER_AGENT')!==null)
 			$this->agent = @constant('HTTP_USER_AGENT');
 		if(@constant('HTTP_TIME_OUT')!==null)
@@ -104,15 +102,15 @@ class Snoopy
 			$this->_fp_timeout = @constant('HTTP_TIME_OUT');
 			$this->read_timeout = @constant('HTTP_TIME_OUT');
 		}
-		if(is_array($httpProxy) && $httpProxy['use'])
+		if(is_array($this->httpProxy) && $this->httpProxy['use'])
 		{
-			$this->proxy_proto = $httpProxy['proto'];
-			$this->proxy_host = $httpProxy['host'];
-			$this->proxy_port = $httpProxy['port'];
+			$this->proxy_proto = $this->httpProxy['proto'];
+			$this->proxy_host = $this->httpProxy['host'];
+			$this->proxy_port = $this->httpProxy['port'];
 		}
 		$this->use_gzip = @constant('HTTP_USE_GZIP');
-		if(isset($httpIP))
-			$this->IP = $httpIP;
+		if(isset($this->httpIP))
+			$this->IP = $this->httpIP;
 	}
 
 	static public function linkencode($p_url)
@@ -454,9 +452,9 @@ class Snoopy
 			}
 			else
 			{
-				$randName = getTempFilename('answer');
+				$randName = FileUtil::getTempFilename('answer');
 				file_put_contents($randName.".gz",$results);
-				exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
+				exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 				if(is_file($randName))
 				{
 					$results = file_get_contents($randName);
@@ -531,12 +529,12 @@ class Snoopy
 		if($this->_isproxy)
 			$cmdline_params .= " --proxy-insecure --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
 		
-		$headerfile = getTempFilename('https-header');
-		$contfile = getTempFilename('https-body');
+		$headerfile = FileUtil::getTempFilename('https-header');
+		$contfile = FileUtil::getTempFilename('https-body');
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s "; 
-		exec(escapeshellarg(getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
+		exec(escapeshellarg(Utility::getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		$this->_redirectaddr = false;
 		$this->headers = array();
 		$this->status = $return;
@@ -595,9 +593,9 @@ class Snoopy
 				}
 				else
 				{
-					$randName = getTempFilename('answer');
+					$randName = FileUtil::getTempFilename('answer');
 					file_put_contents($randName.".gz",$results);
-					exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
+					exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 					if(is_file($randName))
 					{
 						$results = file_get_contents($randName);

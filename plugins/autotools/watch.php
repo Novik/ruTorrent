@@ -9,7 +9,7 @@ if( count( $argv ) > 1 )
 require_once( "../../php/rtorrent.php" );
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
-eval( getPluginConf( 'autotools' ) );
+eval( FileUtil::getPluginConf( 'autotools' ) );
 
 function Debug( $str )
 {

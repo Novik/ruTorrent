@@ -164,12 +164,12 @@ function getPluginInfo( $name, $permissions )
 
 function findRemoteEXE( $exe, $err, &$remoteRequests )
 {
-	$st = getSettingsPath().'/'.rand();
+	$st = FileUtil::getSettingsPath().'/'.rand();
 	if(!array_key_exists($exe,$remoteRequests))
 	{
 		$path=realpath(dirname('.'));
 		global $pathToExternals;
-		$cmd = array( "sh", addslash($path)."test.sh", $exe, $st );
+		$cmd = array( "sh", FileUtil::addslash($path)."test.sh", $exe, $st );
 		if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
 			$cmd[] = $pathToExternals[$exe];
 		$req = new rXMLRPCRequest(new rXMLRPCCommand("execute", $cmd));
@@ -197,7 +197,7 @@ function testRemoteRequests($remoteRequests)
 }
 
 $jResult = "theWebUI.deltaTime = 0;\n";
-$access = getConfFile('access.ini');
+$access = FileUtil::getConfFile('access.ini');
 if(!$access)
 	$access = "../conf/access.ini";
 $permissions = parse_ini_file($access);
@@ -227,9 +227,9 @@ if($handle = opendir('../plugins'))
 {
 	ignore_user_abort(true);
 	set_time_limit(0);
-	$tmp = getTempDirectory();
+	$tmp = FileUtil::getTempDirectory();
 	if($tmp!='/tmp/')
-		makeDirectory($tmp);
+		FileUtil::makeDirectory($tmp);
 
 	if(!@file_exists($tempDirectory.'/.') || !is_readable($tempDirectory) || !is_writable($tempDirectory))
 		$jResult.="noty(theUILang.badTempPath+' (".$tempDirectory.")','error');";	
@@ -256,8 +256,8 @@ if($handle = opendir('../plugins'))
 				$theSettings->version."', libVersion : '".$theSettings->libVersion."', apiVersion : ".$theSettings->apiVersion." };\n";
 	        	if($do_diagnostic)
 	        	{
-	        	        $up = getUploadsPath();
-	        	        $st = getSettingsPath();
+	        	        $up = FileUtil::getUploadsPath();
+	        	        $st = FileUtil::getSettingsPath();
 				@chmod($up,$profileMask);
 				@chmod($st,$profileMask);
 				@chmod('./test.sh',$profileMask & 0755);
@@ -276,19 +276,19 @@ if($handle = opendir('../plugins'))
 					$jResult.="noty(theUILang.badUploadsPath+' (".$up.")','error');";
 	        		if(!@file_exists($st.'/.') || !is_readable($st) || !is_writable($st))
         			        $jResult.="noty(theUILang.badSettingsPath+' (".$st.")','error');";
-				if(isLocalMode() && !$theSettings->idNotFound)
+				if(User::isLocalMode() && !$theSettings->idNotFound)
 				{
 					if($theSettings->uid<0)
 						$jResult.="noty(theUILang.cantObtainUser,'error');";
 					else
 					{
-						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$tempDirectory,0x0007))
+						if(!Permission::doesUserHave($theSettings->uid,$theSettings->gid,$tempDirectory,0x0007))
 							$jResult.="noty(theUILang.badTempPath2+' (".$tempDirectory.")','error');";
-						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$up,0x0007))
+						if(!Permission::doesUserHave($theSettings->uid,$theSettings->gid,$up,0x0007))
 							$jResult.="noty(theUILang.badUploadsPath2+' (".$up.")','error');";
-						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$st,0x0007))
+						if(!Permission::doesUserHave($theSettings->uid,$theSettings->gid,$st,0x0007))
 							$jResult.="noty(theUILang.badSettingsPath2+' (".$st.")','error');";
-						if(!isUserHavePermission($theSettings->uid,$theSettings->gid,'./test.sh',0x0005))
+						if(!Permission::doesUserHave($theSettings->uid,$theSettings->gid,'./test.sh',0x0005))
 							$jResult.="noty(theUILang.badTestPath+' (".realpath('./test.sh').")','error');";
 					}
 				}
@@ -296,7 +296,7 @@ if($handle = opendir('../plugins'))
 					$jResult.="noty(theUILang.badXMLRPCVersion,'error');";
 			}
 		}
-		$plg = getConfFile('plugins.ini');
+		$plg = FileUtil::getConfFile('plugins.ini');
 		if(!$plg)
 			$plg = "../conf/plugins.ini";
 		$permissions = parse_ini_file($plg,true);
@@ -373,7 +373,7 @@ if($handle = opendir('../plugins'))
 						count($info['web.external.warning']) ||
 						count($info['rtorrent.external.error']) || 
 						count($info['rtorrent.external.warning']))
-						eval( getPluginConf( $file ) );
+						eval( FileUtil::getPluginConf( $file ) );
 					foreach( $info['web.external.error'] as $external )
 					{
 						if(findEXE($external)==false)
@@ -408,7 +408,7 @@ if($handle = opendir('../plugins'))
 						{
 						       	$fname = $rootPath.'/plugins/'.$file.'/'.$external;
 							@chmod($fname,$profileMask & 0755);
-							if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0005))
+							if(!Permission::doesUserHave($theSettings->uid,$theSettings->gid,$fname,0x0005))
 							{
 								$jResult.="noty('".$file.": '+theUILang.rTorrentBadScriptPath+' ('+'".$fname."'+').','error');";
 								$extError = true;
@@ -423,7 +423,7 @@ if($handle = opendir('../plugins'))
 						{
 					       		$fname = $rootPath.'/plugins/'.$file.'/'.$external;
 							@chmod($fname,$profileMask & 0644);
-							if(!isUserHavePermission($theSettings->uid,$theSettings->gid,$fname,0x0004))
+							if(!Permission::doesUserHave($theSettings->uid,$theSettings->gid,$fname,0x0004))
 							{
 								$jResult.="noty('".$file.": '+theUILang.rTorrentBadPHPScriptPath+' ('+'".$fname."'+').','error');";
 								$extError = true;
@@ -434,7 +434,7 @@ if($handle = opendir('../plugins'))
 						        $disabled[$file] = $info;
 							continue;
 						}
-				        	if(!isLocalMode())
+				        	if(!User::isLocalMode())
 					        {
 					        	if($info["rtorrent.remote"]=="error")
 							{
@@ -526,4 +526,4 @@ if($handle = opendir('../plugins'))
 	closedir($handle);
 }
 
-cachedEcho($jResult,"application/javascript",true);
+CachedEcho::send($jResult,"application/javascript",true);

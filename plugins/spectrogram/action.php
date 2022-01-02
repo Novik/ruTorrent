@@ -1,7 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__).'/../_task/task.php' );
-eval( getPluginConf( 'spectrogram' ) );
+eval( FileUtil::getPluginConf( 'spectrogram' ) );
 
 $ret = array();
 if(isset($_REQUEST['cmd']))
@@ -31,7 +31,7 @@ if(isset($_REQUEST['cmd']))
 						$mediafile = basename($filename);
 						$commands = array();
 						$name = '"${dir}"/frame.png';
-						$commands[] = getExternal("sox").
+						$commands[] = Utility::getExternal("sox").
 								" ".escapeshellarg($filename)." ".
 								implode( " ", array_map( "escapeshellarg", explode(" ",$arguments) ) ).
 								' -t '.escapeshellarg($mediafile).' -o '.
@@ -43,7 +43,7 @@ if(isset($_REQUEST['cmd']))
 					}
 					$task = new rTask( array
 					( 
-					        'arg' => getFileName($filename),
+					        'arg' => FileUtil::getFileName($filename),
 						'requester'=>'spectrogram',
 						'name'=>'sox', 
 						'hash'=>$_REQUEST['hash'], 
@@ -58,10 +58,10 @@ if(isset($_REQUEST['cmd']))
 		{
 			$dir = rTask::formatPath( $_REQUEST['no'] );
 			$filename = $dir.'/frame.png';
-			sendFile($filename, 'image/png', $_REQUEST['file'].".png");
+			SendFile::send($filename, 'image/png', $_REQUEST['file'].".png");
 			exit();
 		}
 	}
 }
 
-cachedEcho(safe_json_encode($ret),"application/json");
+CachedEcho::send(JSON::safeEncode($ret),"application/json");

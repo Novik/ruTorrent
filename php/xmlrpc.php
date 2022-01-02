@@ -18,7 +18,7 @@ class rXMLRPCParam
 	}
 }
 
-class rXMLRPCCommand 
+class rXMLRPCCommand
 {
 	public $command;
 	public $params;
@@ -93,7 +93,7 @@ class rXMLRPCRequest
 	public static function send( $data, $trusted = true )
 	{
 		if(LOG_RPC_CALLS)
-			toLog($data);
+			FileUtil::toLog($data);
 		global $scgi_host;
 		global $scgi_port;
 		$result = false;
@@ -113,7 +113,7 @@ class rXMLRPCRequest
 			}
 		}
 		if(LOG_RPC_CALLS)
-			toLog($result);
+			FileUtil::toLog($result);
 		return($result);
 	}
 
@@ -215,8 +215,8 @@ class rXMLRPCRequest
 						$this->fault = true;	
 						if(LOG_RPC_FAULTS && $this->important)
 						{
-							toLog($this->content);
-							toLog($answer);
+							FileUtil::toLog($this->content);
+							FileUtil::toLog($answer);
 						}
 					}
 				}

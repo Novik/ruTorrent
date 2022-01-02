@@ -1,12 +1,12 @@
 <?php
 	require_once( '../../php/util.php' );
 	require_once( '../../php/settings.php' );
-	eval( getPluginConf( 'diskspace' ) );
+	eval( FileUtil::getPluginConf( 'diskspace' ) );
 
 	if( is_null($partitionDirectory) )
 	{
 		// If we run locally && we the download directory seems to exists
-		if ( isLocalMode() && rTorrentSettings::get()->linkExist && file_exists(rTorrentSettings::get()->directory) ) 
+		if ( User::isLocalMode() && rTorrentSettings::get()->linkExist && file_exists(rTorrentSettings::get()->directory) ) 
 		{
 			$partitionDirectory = rTorrentSettings::get()->directory; // Then we can show the disk space of the download directory
 		} 
@@ -25,4 +25,4 @@
 		$ret["total"] = disk_total_space($partitionDirectory);
 		$ret["free"] = disk_free_space($partitionDirectory);
 	}
-	cachedEcho(safe_json_encode($ret),"application/json");
+	CachedEcho::send(JSON::safeEncode($ret),"application/json");

@@ -68,6 +68,6 @@ class rRetrackers
 	}
 	public function get()
 	{
-		return("theWebUI.retrackers = ".safe_json_encode($this).";\n");
+		return("theWebUI.retrackers = ".JSON::safeEncode($this).";\n");
 	}
 }

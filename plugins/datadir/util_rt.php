@@ -9,11 +9,11 @@ require_once( "../../php/Torrent.php" );
 function rtDbg( $prefix, $str )
 {
 	if( !$str )
-		toLog( "" );
+		FileUtil::toLog( "" );
 	elseif( $prefix && strlen( $prefix ) > 0 )
-		toLog( $prefix.": ".$str );
+		FileUtil::toLog( $prefix.": ".$str );
 	else
-		toLog( $str );
+		FileUtil::toLog( $str );
 }
 
 
@@ -396,8 +396,8 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 	$comment = $torrent->comment();
 	if( $comment && strlen( $comment ) > 0 )
 	{
-		if( isInvalidUTF8( $comment ) )
-			$comment = win2utf($comment);
+		if( UTF::isInvalidUTF8( $comment ) )
+			$comment = UTF::win2utf($comment);
 		if( strlen( $comment ) > 0 )
 		{
 			$comment = rtMakeStrParam( "d.set_custom2=VRS24mrker".rawurlencode( $comment ) );

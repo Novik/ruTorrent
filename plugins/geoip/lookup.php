@@ -2,7 +2,7 @@
 	set_time_limit(0);
 	require_once( '../../php/util.php' );
 	require_once( "sqlite.php" );
-	eval( getPluginConf( 'geoip' ) );
+	eval( FileUtil::getPluginConf( 'geoip' ) );
 
 	function isValidCode( $country )
 	{
@@ -165,5 +165,5 @@
 			fclose($dns);
 		}
 	}
-	cachedEcho(safe_json_encode($ret),"application/json");
+	CachedEcho::send(JSON::safeEncode($ret),"application/json");
 	

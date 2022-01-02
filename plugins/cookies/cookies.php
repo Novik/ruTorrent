@@ -67,7 +67,7 @@ class rCookies
 			$c = '';
 			foreach($cookies as $name=>$value)
 				$c.=($name."=".$value.";");
-			$ret.="{ host: ".quoteAndDeslashEachItem($host).", cookies: '".addslashes($c)."' },";
+			$ret.="{ host: ".Utility::quoteAndDeslashEachItem($host).", cookies: '".addslashes($c)."' },";
 		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')

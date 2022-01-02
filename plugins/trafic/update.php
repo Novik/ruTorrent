@@ -6,7 +6,7 @@
 			$_SERVER['REMOTE_USER'] = $argv[1];
 		require_once( dirname(__FILE__).'/../../php/xmlrpc.php' );
 		require_once( 'stat.php' );
-		eval(getPluginConf('trafic'));
+		eval(FileUtil::getPluginConf('trafic'));
 		
 		$req = new rXMLRPCRequest( array(
 			new rXMLRPCCommand("get_up_total"),
@@ -15,7 +15,7 @@
 		$req->setParseByTypes();
 		if($req->run() && !$req->fault)
 		{
-		        $dir = getSettingsPath().'/trafic/';
+		        $dir = FileUtil::getSettingsPath().'/trafic/';
 			$was = array(0,0,0);
 			$wasTorrents = array();
 			if($file=@fopen($dir.'last.csv',"r"))
@@ -34,7 +34,7 @@
 				$nowTorrents[$req->strings[$i]] = array_slice($req->i8s,($i+1)*2,2);
 			ksort($nowTorrents);
 
-			$randName = getTempFilename('trafic');
+			$randName = FileUtil::getTempFilename('trafic');
 			if($file=@fopen($randName,"w"))
 			{
 				if( ($ok = fputcsv($file,$now))!==false )

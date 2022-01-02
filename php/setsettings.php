@@ -4,7 +4,7 @@ require_once( 'util.php' );
 
 if(isset($_REQUEST['v']))
 {
-	$name = getSettingsPath()."/uisettings.json";
+	$name = FileUtil::getSettingsPath()."/uisettings.json";
 	$fp = fopen( $name.'.tmp', "a" );
 	if($fp!==false)
 	{

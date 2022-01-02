@@ -11,19 +11,19 @@ if(isset($_REQUEST["label"]))
 	$label = function_exists('mb_strtolower')
 		? mb_strtolower(rawurldecode($_REQUEST["label"]), 'utf-8')
 		: strtolower(rawurldecode($_REQUEST["label"]));
-	$name = getSettingsPath().'/labels';
+	$name = FileUtil::getSettingsPath().'/labels';
 	if(!is_dir($name))
-		makeDirectory($name);
+		FileUtil::makeDirectory($name);
 	$name.=('/'.$label.".png");
 	if(is_readable($name))
 	{
-		sendFile( $name, "image/png" );
+		SendFile::send( $name, "image/png" );
 		exit;
 	}
 	$name = dirname(__FILE__)."/labels/".$label.".png";
 	if(is_readable($name))
 	{
-		sendFile( $name, "image/png" );
+		SendFile::send( $name, "image/png" );
 		exit;
 	}
 }
@@ -34,12 +34,12 @@ if(isset($_REQUEST["tracker"]))
 	$name = dirname(__FILE__)."/trackers/".$tracker.".png";
 	if(is_readable($name))
 	{
-		sendFile( $name, "image/png" );
+		SendFile::send( $name, "image/png" );
 		exit;
 	}
-	$name = getSettingsPath().'/trackers';
+	$name = FileUtil::getSettingsPath().'/trackers';
 	if(!is_dir($name))
-		makeDirectory($name);
+		FileUtil::makeDirectory($name);
 	$name.='/';
 	if(strlen($tracker))
 	{
@@ -55,7 +55,7 @@ if(isset($_REQUEST["tracker"]))
 		}
 		if(is_readable($name))
 		{
-			sendFile( $name, "image/x-icon" );
+			SendFile::send( $name, "image/x-icon" );
 			exit;
 		}
 	}

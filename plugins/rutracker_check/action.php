@@ -16,11 +16,11 @@ if(isset($HTTP_RAW_POST_DATA))
 	}
 	if(count($ret))
 	{
-		$fname = getTempDirectory().'rutorrent-prm-'.getUser().time();
+		$fname = FileUtil::getTempDirectory().'rutorrent-prm-'.User::getUser().time();
 		file_put_contents( $fname, serialize( $ret ) );
-		shell_exec( getPHP()." -f ".escapeshellarg(dirname( __FILE__)."/batch_check.php")." ".escapeshellarg($fname)." ".escapeshellarg(getUser())." > /dev/null 2>&1 &" );
-//		shell_exec( getPHP()." -f ".escapeshellarg(dirname( __FILE__)."/batch_check.php")." ".escapeshellarg($fname)." ".getUser()." > /tmp/1 2>/tmp/2 &" );
+		shell_exec( Utility::getPHP()." -f ".escapeshellarg(dirname( __FILE__)."/batch_check.php")." ".escapeshellarg($fname)." ".escapeshellarg(User::getUser())." > /dev/null 2>&1 &" );
+//		shell_exec( Utility::getPHP()." -f ".escapeshellarg(dirname( __FILE__)."/batch_check.php")." ".escapeshellarg($fname)." ".getUser()." > /tmp/1 2>/tmp/2 &" );
 	}
 }
 
-cachedEcho('{}',"application/json");
+CachedEcho::send('{}',"application/json");

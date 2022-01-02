@@ -17,7 +17,7 @@ if( count( $argv ) > 6 )
 require_once( '../../php/xmlrpc.php' );
 require_once( './util_setdir.php' );
 require_once( './util_rt.php' );
-eval( getPluginConf( 'datadir' ) );
+eval( FileUtil::getPluginConf( 'datadir' ) );
 
 $DataDir_Sem = rtSemGet( fileinode( __FILE__ ) );
 rtSemLock( $DataDir_Sem );

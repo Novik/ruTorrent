@@ -1,9 +1,9 @@
 <?php
-eval(getPluginConf($plugin["name"]));
+eval(FileUtil::getPluginConf($plugin["name"]));
 
-$st = getSettingsPath();
-makeDirectory( array($st.'/rss',$st.'/rss/cache') );
-$needStart = isLocalMode() && $theSettings->linkExist;
+$st = FileUtil::getSettingsPath();
+FileUtil::makeDirectory( array($st.'/rss',$st.'/rss/cache') );
+$needStart = User::isLocalMode() && $theSettings->linkExist;
 if($needStart)
 {
 	require_once($rootPath.'/plugins/rss/rss.php');
