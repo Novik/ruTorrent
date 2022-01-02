@@ -633,7 +633,8 @@ var theWebUI =
 				}
          		}
 		});
-		newSettings["webui.lang"] = GetActiveLanguage();
+		if ($type(newSettings["webui.lang"]))
+			newSettings["webui.lang"] = GetActiveLanguage();
 		$.extend(this.settings,newSettings);
    		this.loadSettings();
    	},
