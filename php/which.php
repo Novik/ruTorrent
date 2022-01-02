@@ -32,9 +32,9 @@ class WhichCache
 	
 	private function setFilePath($exe)
 	{
-		$this->changed = true;
 		$this->filePath[$exe] = exec('command -v '.$exe);
-		return(is_executable($this->filePath[$exe]));
+		$this->changed = is_executable($this->filePath[$exe]);
+		return($this->changed);
 	}
 	
 	private function pruneCache()
@@ -44,6 +44,7 @@ class WhichCache
 			if(!is_executable($value))
 			{
 				unset($this->filePath[$key]);
+				$this->changed = true;
 			}
 		}
 	}
@@ -56,24 +57,27 @@ class WhichInstance
 	
 	public static function load($diagnostic)
 	{
-		if (is_null(self::$cache))
-			self::$cache = new rCache();
-		
-		if (is_null(self::$instance))
+		if (!self::initialized())
 		{
+			self::$cache = new rCache();
 			self::$instance = new WhichCache($diagnostic);
 			self::$cache->get(self::$instance);
-		}		
+		}
 		return(self::$instance);
 	}
 	
 	public static function save()
 	{
-		if (self::$instance->changed)
+		if (self::initialized() && self::$instance->changed)
 		{
 			self::$instance->changed = false;
 			self::$cache->set(self::$instance);
 		}
+	}
+	
+	private static function initialized()
+	{
+		return (!is_null(self::$instance) && !is_null(self::$cache));
 	}
 }
 
