@@ -231,4 +231,5 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 
 	}
 	$theSettings->store();
+	WhichInstance::save();
 }

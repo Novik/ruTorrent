@@ -521,6 +521,7 @@ if($handle = opendir('../plugins'))
 		}
 		$jResult.=testRemoteRequests($remoteRequests);
 		$theSettings->store();
+		WhichInstance::save();
 	}
 	closedir($handle);
 }
