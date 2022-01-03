@@ -5,6 +5,8 @@ require_once( 'user.php' );
 
 class FileUtil extends ruTorrentConfig
 {
+	private static $profilePathInstance = null;
+	
 	public static function getFileName($path)
 	{
 		$arr = explode('/',$path);
@@ -45,16 +47,20 @@ class FileUtil extends ruTorrentConfig
 	
 	public static function getProfilePath( $user = null )
 	{
-		$ret = self::fullpath(!is_null(self::profilePath) ? self::profilePath : '../share', dirname(__FILE__));
-		if(is_null($user))
-			$user = User::getUser();
-		if($user!='')
-		{
-			$ret.=('/users/'.$user);
-			if(!is_dir($ret))
-				self::makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents',$ret.'/tmp') );
+		if (is_null(self::$profilePathInstance))
+		{		
+			$ret = self::fullpath(!is_null(self::profilePath) ? self::profilePath : '../../share', dirname(__FILE__));
+			if(is_null($user))
+				$user = User::getUser();
+			if($user!='')
+			{
+				$ret.=('/users/'.$user);
+				if(!is_dir($ret))
+					self::makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents',$ret.'/tmp') );
+			}
+			self::$profilePathInstance = $ret;
 		}
-		return($ret);
+		return(self::$profilePathInstance);
 	}
 	
 	public static function getSettingsPath( $user = null )

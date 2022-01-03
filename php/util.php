@@ -9,7 +9,17 @@ spl_autoload_register(function ($class) {
     require_once 'utility/'. strtolower($class). '.php';
 });
 
-Utility::fix_magic_quotes_gpc();
+// Fixes quotations if php verison is less than 5.4
+// Only include these methods if applicable
+if(version_compare(phpversion(), '5.4', '<'))
+	require_once ( 'utility/phpversionfix.php');
+
+// Only allow "POST" or "GET" request methods
+// Exit script and send 405 if anther method is tried
+Requests::disableUnsupportedMethods();
+
+// For "Cross-Site Request Forgery" checks if enabled
+Requests::makeCSRFCheck();
 
 @ini_set('precision',16);
 @define('XMLRPC_MAX_I4', 2147483647);
@@ -43,6 +53,3 @@ if(!isset($locale))
 	$locale = "UTF8";
 setlocale(LC_CTYPE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
 setlocale(LC_COLLATE, $locale, "UTF-8", "en_US.UTF-8", "en_US.UTF8");
-
-Utility::disableUnsupportedMethods();
-Utility::makeCSRFCheck();
