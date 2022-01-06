@@ -3,7 +3,7 @@
 require_once( 'xmlrpc.php' );
 require_once( 'cache.php');
 
-class rTorrentSettings extends ruTorrentConfig
+class rTorrentSettings
 {
 	public $hash = "rtorrent.dat";
 	public $linkExist = false;
@@ -352,19 +352,21 @@ class rTorrentSettings extends ruTorrentConfig
 	}
 	public function getAbsScheduleCommand($name,$interval,$cmd)	// $interval in seconds
 	{
-		if(!isset($this->schedule_rand))
-			$this->schedule_rand = 10;
-		$startAt = $interval+rand(0,$this->schedule_rand);
+		global $schedule_rand;
+		if(!isset($schedule_rand))
+			$schedule_rand = 10;
+		$startAt = $interval+rand(0,$schedule_rand);
 		return( new rXMLRPCCommand("schedule", array( $name.User::getUser(), $startAt."", $interval."", $cmd )) );
 	}
 	public function getScheduleCommand($name,$interval,$cmd,&$startAt = null)	// $interval in minutes
 	{
-		if(!isset($this->schedule_rand))
-			$this->schedule_rand = 10;
+		global $schedule_rand;
+		if(!isset($schedule_rand))
+			$schedule_rand = 10;
 		$tm = getdate();
 		$startAt = mktime($tm["hours"],
 			((integer)($tm["minutes"]/$interval))*$interval+$interval,
-			0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0]+rand(0,$this->schedule_rand);
+			0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0]+rand(0,$schedule_rand);
 		if($startAt<0)
 			$startAt = 0;
 		$interval = $interval*60;

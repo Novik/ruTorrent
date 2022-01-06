@@ -3,7 +3,7 @@
 require_once( 'lfs.php' );
 require_once( 'user.php' );
 
-class FileUtil extends ruTorrentConfig
+class FileUtil
 {
 	private static $profilePathInstance = null;
 	
@@ -49,7 +49,8 @@ class FileUtil extends ruTorrentConfig
 	{
 		if (is_null(self::$profilePathInstance))
 		{		
-			$ret = self::fullpath(!is_null(self::profilePath) ? self::profilePath : '../../share', dirname(__FILE__));
+			global $profilePath;
+			$ret = self::fullpath(isset($profilePath) ? $profilePath : '../../share', dirname(__FILE__));
 			if(is_null($user))
 				$user = User::getUser();
 			if($user!='')
@@ -128,8 +129,9 @@ class FileUtil extends ruTorrentConfig
 
 	public static function getUniqueUploadedFilename($fname)
 	{
+		global $overwriteUploadedTorrents;
 		$fname = self::getUploadsPath()."/".$fname;
-		return( self::overwriteUploadedTorrents ? $fname : self::getUniqueFilename($fname));
+		return( $overwriteUploadedTorrents ? $fname : self::getUniqueFilename($fname));
 	}
 	
 	public static function getTempDirectory() 
@@ -203,15 +205,16 @@ class FileUtil extends ruTorrentConfig
 	
 	public static function toLog( $str )
 	{		
-		if( self::log_file && strlen( self::log_file ) > 0 )
+		global $log_file;
+		if( $log_file && strlen( $log_file ) > 0 )
 		{
 			// dmrom: set proper permissions (need if rtorrent user differs from www user)
-			if( !is_file( self::log_file ) )
+			if( !is_file( $log_file ) )
 			{
-				touch( self::log_file );
-				chmod( self::log_file, 0666 );
+				touch( $log_file );
+				chmod( $log_file, 0666 );
 			}
-			$w = fopen( self::log_file, "ab+" );
+			$w = fopen( $log_file, "ab+" );
 			if( $w )
 			{
 				fputs( $w, "[".strftime( "%d.%m.%y %H:%M:%S" )."] {$str}\n" );

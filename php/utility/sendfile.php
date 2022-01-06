@@ -2,7 +2,7 @@
 
 require_once( 'lfs.php' );
 
-class SendFile extends ruTorrentConfig
+class SendFile
 {
 	// Copy this function from FileUtil.php
 	// We don't need the whole class for one function
@@ -14,6 +14,7 @@ class SendFile extends ruTorrentConfig
 	
 	public static function send( $filename, $contentType = null, $nameToSent = null, $mustExit = true )
 	{
+		global $canUseXSendFile;
 		$stat = @LFS::stat($filename);
 		if($stat && @LFS::is_file($filename) && @LFS::is_readable($filename))
 		{
@@ -30,8 +31,7 @@ class SendFile extends ruTorrentConfig
 					$nameToSent = rawurlencode($nameToSent);
 				header('Content-Disposition: attachment; filename="'.$nameToSent.'"');
 		
-				if($mustExit &&
-					self::canUseXSendFile &&
+				if( $mustExit && $canUseXSendFile &&
 					function_exists('apache_get_modules') && 
 					in_array('mod_xsendfile', apache_get_modules()))
 				{ 

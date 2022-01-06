@@ -1,6 +1,6 @@
 <?php
 
-class Requests extends ruTorrentConfig
+class Requests
 {
 	public static function disableUnsupportedMethods()
 	{
@@ -15,7 +15,8 @@ class Requests extends ruTorrentConfig
 		
 	public static function makeCSRFCheck()
 	{				
-		if(self::enableCSRFCheck && 
+		global $enableCSRFCheck;
+		if($enableCSRFCheck && 
 			isset($_SERVER['REQUEST_METHOD']) && 
 			($_SERVER['REQUEST_METHOD'] != "GET"))
 		{

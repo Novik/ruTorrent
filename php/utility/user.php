@@ -1,6 +1,6 @@
 <?php
 
-class User extends ruTorrentConfig
+class User
 {	
 	private static $userLoginInstance = null;
 	private static $localModeInstance = null;
@@ -21,7 +21,8 @@ class User extends ruTorrentConfig
 
 	public static function getUser()
 	{
-		return( !self::forbidUserSettings ? self::getLogin() : '' );
+		global $forbidUserSettings;
+		return( !$forbidUserSettings ? self::getLogin() : '' );
 	}
 	
 	public static function isLocalMode( $host = null, $port = null )
