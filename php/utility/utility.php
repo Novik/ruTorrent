@@ -1,6 +1,6 @@
 <?php
 
-class Utility extends ruTorrentConfig
+class Utility
 {	
 	public static function quoteAndDeslashEachItem($item)
 	{
