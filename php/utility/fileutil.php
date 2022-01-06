@@ -48,29 +48,44 @@ class FileUtil
 	public static function getProfilePath()
 	{
 		if (is_null(self::$profilePathInstance))
-		{		
-			global $profilePath;
-			$ret = self::fullpath(isset($profilePath) ? $profilePath : '../../share', dirname(__FILE__));
-			$user = User::getUser();
-			if($user!='')
-			{
-				$ret.=('/users/'.$user);
-				if(!is_dir($ret))
-					self::makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents',$ret.'/tmp') );
-			}
-			self::$profilePathInstance = $ret;
-		}
+			self::$profilePathInstance = self::getProfilePathEx();
+
 		return(self::$profilePathInstance);
+	}
+	
+	public static function getProfilePathEx($user = null)
+	{
+		global $profilePath;
+		$ret = self::fullpath(isset($profilePath) ? $profilePath : '../../share', dirname(__FILE__));		
+		if(is_null($user))
+			$user = User::getUser();
+		if($user!='')
+		{
+			$ret.=('/users/'.$user);
+			if(!is_dir($ret))
+				self::makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents',$ret.'/tmp') );
+		}
+		return $ret;		
 	}
 	
 	public static function getSettingsPath()
 	{
-		return( self::getProfilePath($user).'/settings' );
+		return( self::getProfilePath().'/settings' );
+	}
+	
+	public static function getSettingsPathEx($user = null)
+	{
+		return( self::getProfilePathEx($user).'/settings' );	
 	}
 
 	public static function getUploadsPath()
 	{
-		return( self::getProfilePath($user).'/torrents' );
+		return( self::getProfilePath().'/torrents' );
+	}
+	
+	public static function getUploadsPathEx($user = null)
+	{
+		return( self::getProfilePathEx($user).'/torrents' );
 	}
 	
 	public static function getPluginConf($plugin)
