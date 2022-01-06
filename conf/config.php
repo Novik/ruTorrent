@@ -13,21 +13,21 @@
 		'host'	=> 'PROXY_HOST_HERE',
 		'port'	=> 3128
 	);
-	
+
 	@define('RPC_TIME_OUT', 5, true);	// in seconds
-	
+
 	@define('LOG_RPC_CALLS', false, true);
 	@define('LOG_RPC_FAULTS', true, true);
-	
+
 	// for php
 	@define('PHP_USE_GZIP', false, false);
 	@define('PHP_GZIP_LEVEL', 2, true);
-	
+
 	$schedule_rand = 10;			// rand for schedulers start, +0..X seconds
 
 	$do_diagnostic = true;
 	$log_file = '/tmp/errors.log';		// path to log file (comment or leave blank to disable logging)
-	
+
 	$saveUploadedTorrents = true;		// Save uploaded torrents to profile/torrents directory or not
 	$overwriteUploadedTorrents = false;     // Overwrite existing uploaded torrents in profile/torrents directory or make unique name
 
@@ -63,7 +63,7 @@
 	$profileMask = 0777;			// Mask for files and directory creation in user profiles.
 						// Both Webserver and rtorrent users must have read-write access to it.
 						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
-					
+
 	$tempDirectory = null;			// Temp directory. Absolute path with trail slash. If null, then autodetect will be used.
 
 	$canUseXSendFile = false;		// If true then use X-Sendfile feature if it exist
