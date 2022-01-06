@@ -45,14 +45,13 @@ class FileUtil
 		return($root.implode('/', $newpath));
 	}
 	
-	public static function getProfilePath( $user = null )
+	public static function getProfilePath()
 	{
 		if (is_null(self::$profilePathInstance))
 		{		
 			global $profilePath;
 			$ret = self::fullpath(isset($profilePath) ? $profilePath : '../../share', dirname(__FILE__));
-			if(is_null($user))
-				$user = User::getUser();
+			$user = User::getUser();
 			if($user!='')
 			{
 				$ret.=('/users/'.$user);
@@ -64,12 +63,12 @@ class FileUtil
 		return(self::$profilePathInstance);
 	}
 	
-	public static function getSettingsPath( $user = null )
+	public static function getSettingsPath()
 	{
 		return( self::getProfilePath($user).'/settings' );
 	}
 
-	public static function getUploadsPath( $user = null )
+	public static function getUploadsPath()
 	{
 		return( self::getProfilePath($user).'/torrents' );
 	}
