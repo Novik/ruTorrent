@@ -13,7 +13,7 @@ class ZooqleEngine extends commonEngine
                             "software"=>"Apps",
                             "books"=>"Books",
                             "other"=>"Other");
-	
+
 	protected function parseTList($results,&$added,&$ret,$limit)
 	{
 	    $xmlDoc = new DOMDocument();
@@ -52,8 +52,7 @@ class ZooqleEngine extends commonEngine
 			return false;
 		}
 	}
-	
-	
+
 	public function tracker_list()
 	{
 	    $tr_url="https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_best.txt";
@@ -75,27 +74,32 @@ class ZooqleEngine extends commonEngine
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
-        if($useGlobalCats)
+        	if($useGlobalCats)
 			$categories = array
-			( 
+			(
 				'all'=>'all',
-				'movies'=>'Movies', 
-				'tv'=>'TV', 
-				'music'=>'Music', 
+				'movies'=>'Movies',
+				'tv'=>'TV',
+				'music'=>'Music',
 				'games'=>'Games',
 				'software'=>'Apps',
 			 );
 		else
 			$categories = &$this->categories;
-			
+
 		if(!array_key_exists($cat,$categories))
 			$cat = $categories['all'];
 		else
 			$cat = $categories[$cat];
-		$url = 'http://zooqle.com/search?v=t&sd=d&fmt=rss&q='.$what.' category:'.$cat.'&pg=';
+		$added = 0;
+		$url = 'https://zooqle.com/search?v=t&sd=d&fmt=rss&q='.$what.' category:'.$cat.'&pg=';
 		$cli = $this->fetch($url."1");
-	    $xmlDoc = new DOMDocument();
-	    $this->parseTList($cli->results,$added,$ret,$limit);
+
+		if($cli==false)
+			return;
+
+		$xmlDoc = new DOMDocument();
+		$this->parseTList($cli->results,$added,$ret,$limit);
 		if(($cli!==false) && $xmlDoc->loadXML($cli->results))
 		{
 	        //$total= $xmlDoc->getElementsByTagName('totalResults')->item(0)->childNodes->item(0)->nodeValue;
@@ -107,10 +111,6 @@ class ZooqleEngine extends commonEngine
 				if(($cli==false) || !$this->parseTList($cli->results,$added,$ret,$limit))
 					break;
 			}
-			
 		}
-		
-
-		
 	}
 }

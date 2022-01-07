@@ -9,7 +9,7 @@ $ip_glob = rTorrentSettings::get()->ip;
 if($useWebsite=="yougetsignal")
 {
 	$url = "https://www.yougetsignal.com/tools/open-ports/";
-	$ipMatch = '/<p style="font-size: 1.4em;">(?P<ip>.*)</';
+	$ipMatch = '/<p style="font-size: 1.4em;">(?P<ip>[^<]+)/';
 	$checker = "https://ports.yougetsignal.com/check-port.php";
 	$closed = "closed";
 	$open = "open";
@@ -18,7 +18,7 @@ else
 if($useWebsite=="portchecker")
 {
 	$url = "https://portchecker.co/";
-	$ipMatch = '/data-ip="(?P<ip>.*)"/';
+	$ipMatch = '/data-ip="(?P<ip>[^"]+)/';
 	$checker = $url;
 	$closed = ">closed<";
 	$open = ">open<";
