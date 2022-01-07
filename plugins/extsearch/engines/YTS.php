@@ -18,7 +18,7 @@ class YTSEngine extends commonEngine
 		{
 			for( $i=0; $i<$obj->data->movie_count; $i++ )
 			{
-				$movie = $obj->data->movies[$i];
+				$movie = isset($obj->data->movies[$i]) ? $obj->data->movies[$i] : null;
 				if( is_object($movie) && isset($movie->torrents) )
 				{
 					$torrent_count = count($movie->torrents);
