@@ -1,5 +1,7 @@
 <?php
 
+require_once('utf.php');
+
 class JSON
 {	
 	public static function safeEncode($value)
