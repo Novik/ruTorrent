@@ -132,7 +132,9 @@ rTorrentStub.prototype.listResponse = function(data)
 					handler.response( hash, torrent, (handler.ndx===null) ? null : values[handler.ndx-1] );
 			});
 			ret.torrents[hash] = torrent;
+			torrent = null; // clean up memory leak
 		});
+		data = null; // clean up memory leak
 		return( ret );
 	}
 	return(plugin.origlistResponse.call(this,data));
