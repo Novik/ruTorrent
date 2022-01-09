@@ -277,7 +277,7 @@ class rTorrentSettings
 							$this->port = intval($req->val[0]);
 					}
 
-					if(isLocalMode())
+					if(User::isLocalMode())
 					{
 	                                        if(!empty($this->session))
 	                                        {
@@ -285,7 +285,7 @@ class rTorrentSettings
 							if($this->started===false)
 								$this->started = 0;
 						}
-						$id = getExternal('id');
+						$id = Utility::getExternal('id');
 						$req = new rXMLRPCRequest(
         						new rXMLRPCCommand("execute_capture",array("sh","-c",$id." -u ; ".$id." -G ; echo ~ ")));
 						if($req->run() && !$req->fault && (($line=explode("\n",$req->val[0]))!==false) && (count($line)>2))
@@ -356,7 +356,7 @@ class rTorrentSettings
 		if(!isset($schedule_rand))
 			$schedule_rand = 10;
 		$startAt = $interval+rand(0,$schedule_rand);
-		return( new rXMLRPCCommand("schedule", array( $name.getUser(), $startAt."", $interval."", $cmd )) );
+		return( new rXMLRPCCommand("schedule", array( $name.User::getUser(), $startAt."", $interval."", $cmd )) );
 	}
 	public function getScheduleCommand($name,$interval,$cmd,&$startAt = null)	// $interval in minutes
 	{
@@ -370,27 +370,27 @@ class rTorrentSettings
 		if($startAt<0)
 			$startAt = 0;
 		$interval = $interval*60;
-		return( new rXMLRPCCommand("schedule", array( $name.getUser(), $startAt."", $interval."", $cmd )) );
+		return( new rXMLRPCCommand("schedule", array( $name.User::getUser(), $startAt."", $interval."", $cmd )) );
 	}
 	public function getRemoveScheduleCommand($name)
 	{
-		return(	new rXMLRPCCommand("schedule_remove", $name.getUser()) );	
+		return(	new rXMLRPCCommand("schedule_remove", $name.User::getUser()) );	
 	}
 	public function correctDirectory(&$dir,$resolve_links = false)
 	{
 		global $topDirectory;
 		if(strlen($dir) && ($dir[0]=='~'))
 			$dir = $this->home.substr($dir,1);
-		$dir = fullpath($dir,$this->directory);
+		$dir = FileUtil::fullpath($dir,$this->directory);
 		if($resolve_links)
 		{
 			$path = realpath($dir);
 			if(!$path)
-				$dir = addslash(realpath(dirname($dir))).basename($dir);
+				$dir = FileUtil::addslash(realpath(dirname($dir))).basename($dir);
 			else
 				$dir = $path;	
 		}
-		return(strpos(addslash($dir),$topDirectory)===0);
+		return(strpos(FileUtil::addslash($dir),$topDirectory)===0);
 	}
 	public function patchDeprecatedCommand( $cmd, $name )
 	{

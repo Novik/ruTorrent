@@ -3,7 +3,7 @@
 require_once( 'util.php' );
 
 $s = '{}';
-$fname = getSettingsPath()."/uisettings.json";
+$fname = FileUtil::getSettingsPath()."/uisettings.json";
 $fo = @fopen($fname, 'r');
 if($fo!==false)
 {
@@ -17,4 +17,4 @@ if($fo!==false)
 	fclose($fo); 
 }
 
-cachedEcho($s,"application/json",true);
+CachedEcho::send($s,"application/json",true);

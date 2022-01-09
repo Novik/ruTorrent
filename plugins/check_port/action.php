@@ -1,7 +1,7 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/settings.php" );
 require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc" );
-eval( getPluginConf( 'check_port' ) );
+eval( FileUtil::getPluginConf( 'check_port' ) );
 
 $port = rTorrentSettings::get()->port;
 $ip_glob = rTorrentSettings::get()->ip;
@@ -26,9 +26,9 @@ if($useWebsite=="portchecker")
 else
 {
 	if(!empty($ip_glob) && $ip_glob != '0.0.0.0')
-		cachedEcho('{ "ip": "'.$ip_glob.'", "port": '.$port.', "status": 0 }',"application/json");
+		CachedEcho::send('{ "ip": "'.$ip_glob.'", "port": '.$port.', "status": 0 }',"application/json");
 	else
-		cachedEcho('{ "ip": "?.?.?.?", "port": '.$port.', "status": 0 }',"application/json");
+		CachedEcho::send('{ "ip": "?.?.?.?", "port": '.$port.', "status": 0 }',"application/json");
 }
 
 function get_ip($url,$ipMatch)
@@ -74,7 +74,7 @@ function check_port($ip,$port,$checker,$closed,$open)
 			$ret = 2;
 	}
 
-	cachedEcho('{ "ip": "'.$ip.'", "port": '.$port.', "status": '.$ret.' }',"application/json");
+	CachedEcho::send('{ "ip": "'.$ip.'", "port": '.$port.', "status": '.$ret.' }',"application/json");
 }
 
 if(!empty($ip_glob) && $ip_glob != '0.0.0.0')
@@ -92,6 +92,6 @@ else
 		if(isset($_SESSION['ip']))
 			check_port($_SESSION['ip'],$port,$checker,$closed,$open);
 		else
-			cachedEcho('{ "ip": "?.?.?.?", "port": '.$port.', "status": 0 }',"application/json");
+			CachedEcho::send('{ "ip": "?.?.?.?", "port": '.$port.', "status": 0 }',"application/json");
 	}
 }

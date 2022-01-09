@@ -3,7 +3,7 @@
 require_once( dirname(__FILE__).'/../../php/cache.php');
 require_once( dirname(__FILE__).'/../../php/Snoopy.class.inc');
 require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
-eval(getPluginConf('rss'));
+eval(FileUtil::getPluginConf('rss'));
 
 class rRSS
 {
@@ -76,11 +76,11 @@ class rRSS
 			$name = $cli->get_filename();
 			if($name===false)
 				$name = md5($href).".torrent";
-			$name = getUniqueUploadedFilename($name);
+			$name = FileUtil::getUniqueUploadedFilename($name);
 			$f = @fopen($name,"w");
 			if($f===false)
 			{
-				$name = getUniqueUploadedFilename(md5($href).".torrent");
+				$name = FileUtil::getUniqueUploadedFilename(md5($href).".torrent");
 				$f = @fopen($name,"w");
 			}
 			if($f!==false)
@@ -363,8 +363,8 @@ class rRSS
 			else
 			if($needTranslate)
 				$out[1] = self::removeTegs( $out[1] );
-			if( isInvalidUTF8( $out[1] ) )
-				$out[1] = win2utf($out[1]);
+			if( UTF::isInvalidUTF8( $out[1] ) )
+				$out[1] = UTF::win2utf($out[1]);
 			return(trim($out[1]));
 		}
 		else
@@ -381,7 +381,7 @@ class rRSS
                 if(function_exists('mb_convert_encoding'))
 			$out = mb_convert_encoding($out, 'UTF-8', $this->encoding );
 		else
-			$out = win2utf($out);
+			$out = UTF::win2utf($out);
 		return($out);
 	}
 
@@ -873,7 +873,7 @@ class rRSSManager
 	{
 	        $startAt = 0;
 		$req = new rXMLRPCRequest( rTorrentSettings::get()->getScheduleCommand("rss",$this->data->interval,
-			getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}', $startAt) );
+			getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(User::getUser()).' & exit 0}', $startAt) );
 		if($req->success())
 		{
 			$this->setStartTime($startAt);
@@ -1368,7 +1368,7 @@ class rRSSManager
 		global $rss_debug_enabled;
 		if( $rss_debug_enabled ) 
 		{
-			toLog("RSS: $msg");
+			FileUtil::toLog("RSS: $msg");
 		}
 	}
 

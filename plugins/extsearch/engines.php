@@ -4,7 +4,7 @@ require_once( dirname(__FILE__)."/../../php/util.php" );
 require_once( $rootPath.'/php/cache.php');
 require_once( $rootPath.'/php/settings.php');
 require_once( $rootPath.'/php/Snoopy.class.inc');
-eval( getPluginConf( 'extsearch' ) );
+eval( FileUtil::getPluginConf( 'extsearch' ) );
 
 class commonEngine
 {
@@ -65,7 +65,7 @@ class commonEngine
 			$name = $cli->get_filename();
 			if($name===false)
 				$name = md5($url).".torrent";
-			$name = getUniqueUploadedFilename($name);
+			$name = FileUtil::getUniqueUploadedFilename($name);
 			$f = @fopen($name,"w");
 			if($f!==false)
 			{
@@ -145,7 +145,7 @@ class commonEngine
 		if(function_exists('utf8_encode'))
 		        $out = utf8_encode($out);
 		else
-		        $out = win2utf($out);
+		        $out = UTF::win2utf($out);
 		return($out);	
 	}
 	static public function fromJSON($str)
@@ -191,7 +191,7 @@ class rSearchHistory
 	}
 	public function pack()
 	{
-		uasort($this->lst, "sortArrayTime");
+		uasort($this->lst, array("Utility", "sortArrayTime"));
 		$cnt = count($this->lst)/2;
 		$i=0;
 		foreach( $this->lst as $key=>$value )
@@ -233,7 +233,7 @@ class engineManager
 				if(is_file($dir.'/'.$file))
 				{
 					$name = basename($file,".php");
-					$this->engines[$name] = array( "name"=>$name, "path"=>fullpath($dir.'/'.$file), "object"=>$name."Engine", "enabled"=>true, "global"=>true, "limit"=>100 );
+					$this->engines[$name] = array( "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Engine", "enabled"=>true, "global"=>true, "limit"=>100 );
 					$obj = $this->getObject($name);
 					$this->engines[$name]["enabled"] = intval($obj->defaults["public"]);
 					$this->engines[$name]["public"] = intval($obj->defaults["public"]);
@@ -272,10 +272,10 @@ class engineManager
 		foreach( $this->engines as $name=>$nfo )
 		{
 			$ret.="'".$name."': { enabled: ".intval($nfo["enabled"]). ", global: ".intval($nfo["global"]).
-				", auth: ".intval($nfo["auth"]).", limit: ".$nfo["limit"].", public: ".intval($nfo["public"]). ", cookies: ".quoteAndDeslashEachItem($nfo["cookies"]).", cats: [";
+				", auth: ".intval($nfo["auth"]).", limit: ".$nfo["limit"].", public: ".intval($nfo["public"]). ", cookies: ".Utility::quoteAndDeslashEachItem($nfo["cookies"]).", cats: [";
 			foreach( $nfo["cats"] as $cat=>$prm )
 			{
-				$ret.=quoteAndDeslashEachItem($cat);
+				$ret.=Utility::quoteAndDeslashEachItem($cat);
 				$ret.=',';
 			}
 			$len = strlen($ret);
@@ -366,7 +366,7 @@ class engineManager
 			$nfo["seeds"] = 0;
 		if(empty($nfo["peers"]))
 			$nfo["peers"] = 0;
-		if( isInvalidUTF8( $nfo["name"] ) )
+		if( UTF::isInvalidUTF8( $nfo["name"] ) )
 			$nfo["name"] = commonEngine::toUTF($nfo["name"],"ISO-8859-1");
 	}
 

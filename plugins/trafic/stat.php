@@ -18,7 +18,7 @@ class rStat
 
 	public function __construct( $prefix )
 	{
-		$this->fname = getSettingsPath().'/trafic/'.$prefix;
+		$this->fname = FileUtil::getSettingsPath().'/trafic/'.$prefix;
 		if($file=@fopen($this->fname,"r"))
 		{
 			$hourUp = fgetcsv($file);
@@ -117,7 +117,7 @@ class rStat
 	static protected function getTrackers()
 	{
 		$files = array();
-		$dir = getSettingsPath().'/trafic/trackers';
+		$dir = FileUtil::getSettingsPath().'/trafic/trackers';
 		$dh = @opendir($dir);
 		if($dh)
 		{

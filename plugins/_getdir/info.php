@@ -1,7 +1,7 @@
 <?php
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
-eval(getPluginConf("_getdir"));
+eval(FileUtil::getPluginConf("_getdir"));
 
 function compareEntries( $a, $b )
 {
@@ -48,13 +48,13 @@ if(isset($_REQUEST['mode']))
 			$dir = rawurldecode($_REQUEST['basedir']);
 			$theSettings->correctDirectory($dir);
 			$dh = @opendir($dir);
-			$dir = addslash($dir);
+			$dir = FileUtil::addslash($dir);
 
 			if( $dh &&
 				((strpos($dir,$topDirectory)!==0) ||
 				(($theSettings->uid>=0) &&
 				$checkUserPermissions &&
-				!isUserHavePermission($theSettings->uid,$theSettings->gid,$dir,0x0007))))
+				!Permission::doesUserHave($theSettings->uid,$theSettings->gid,$dir,0x0007))))
 			{
 				closedir($dh);
 				$dh = false;
@@ -62,23 +62,23 @@ if(isset($_REQUEST['mode']))
 		}
 		if(!$dh)
 		{
-			$dir = isLocalMode() ? $theSettings->directory : $topDirectory;
-			if(strpos(addslash($dir),$topDirectory)!==0)
+			$dir = User::isLocalMode() ? $theSettings->directory : $topDirectory;
+			if(strpos(FileUtil::addslash($dir),$topDirectory)!==0)
 				$dir = $topDirectory;
 			$dh = @opendir($dir);
 		}
 		if($dh)
 		{
 			$files = array();
-			$dir = addslash($dir);
+			$dir = FileUtil::addslash($dir);
 			while(false !== ($file = readdir($dh)))
 		        {
-				$path = fullpath($dir . $file);
+				$path = FileUtil::fullpath($dir . $file);
 				if(($file=="..") && ($dir==$topDirectory))
 					continue;
 				if(is_dir($path) && is_readable($path) &&
-					(strpos(addslash($path),$topDirectory)===0) &&
-					( $theSettings->uid<0 || !$checkUserPermissions || isUserHavePermission($theSettings->uid,$theSettings->gid,$path,0x0007) )
+					(strpos(FileUtil::addslash($path),$topDirectory)===0) &&
+					( $theSettings->uid<0 || !$checkUserPermissions || Permission::doesUserHave($theSettings->uid,$theSettings->gid,$path,0x0007) )
 					)
 				{
 					$files[] = $file;
@@ -86,7 +86,7 @@ if(isset($_REQUEST['mode']))
 			}
 		        closedir($dh);
 			usort($files,"compareEntries");
-			$output["basedir"] = fullpath($dir);
+			$output["basedir"] = FileUtil::fullpath($dir);
 			$output["dirlist"] = $files;
 		}
         }
@@ -110,4 +110,4 @@ if(isset($_REQUEST['mode']))
 	}
 }
 
-cachedEcho(safe_json_encode($output),"application/json");
+CachedEcho::send(JSON::safeEncode($output),"application/json");

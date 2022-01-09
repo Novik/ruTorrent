@@ -7,7 +7,7 @@ set_time_limit(0);
 if(isset($_REQUEST['result']))
 {
 	if(isset($_REQUEST['json']))
-		cachedEcho( '{ "result" : "'.$_REQUEST['result'][0].'" }',"application/json");
+		CachedEcho::send( '{ "result" : "'.$_REQUEST['result'][0].'" }',"application/json");
 	else
 	{
 		$js = '';
@@ -15,7 +15,7 @@ if(isset($_REQUEST['result']))
 			$js.= ('noty("'.(isset($_REQUEST['name'][$ndx]) ? addslashes(rawurldecode(htmlspecialchars($_REQUEST['name'][$ndx]))).' - ' : '').
 				'"+theUILang.addTorrent'.$_REQUEST['result'][$ndx].
 				',"'.($_REQUEST['result'][$ndx]=='Success' ? 'success' : 'error').'");');
-		cachedEcho($js,"text/html");
+		CachedEcho::send($js,"text/html");
 	}
 }
 else
@@ -53,7 +53,7 @@ else
 				$ufile = $file['name'];
 				if(pathinfo($ufile,PATHINFO_EXTENSION)!="torrent")
 					$ufile.=".torrent";
-				$ufile = getUniqueUploadedFilename($ufile);
+				$ufile = FileUtil::getUniqueUploadedFilename($ufile);
 				$ok = move_uploaded_file($file['tmp_name'],$ufile);
 				$uploaded_files[] = array( 'name'=>$file['name'], 'file'=>$ufile, 'status'=>($ok ? "Success" : "Failed") );
 			}
@@ -79,7 +79,7 @@ else
 						$name = $cli->get_filename();
 						if($name===false)
 							$name = md5($url).".torrent";
-						$name = getUniqueUploadedFilename($name);
+						$name = FileUtil::getUniqueUploadedFilename($name);
 						$f = @fopen($name,"w");
 						if($f!==false)
 						{

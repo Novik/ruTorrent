@@ -12,13 +12,13 @@ if( count( $argv ) > 1 )
 
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
-eval( getPluginConf( 'autotools' ) );
+eval( FileUtil::getPluginConf( 'autotools' ) );
 
 // If we are not in background, run this script in background
 array_shift( $argv );
 if( !rtIsDaemon( $argv ) )
 {
-	rtDaemon( getPHP(), basename( __FILE__ ), $argv );
+	rtDaemon( Utility::getPHP(), basename( __FILE__ ), $argv );
 	// script was exited at the line above
 }
 

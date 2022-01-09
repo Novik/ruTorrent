@@ -10,13 +10,13 @@ if(isset($_REQUEST['cmd']))
 		{
 			$up = rHistory::load();
 			$up->set();
-			cachedEcho($up->get(),"application/javascript");
+			CachedEcho::send($up->get(),"application/javascript");
 			break;
 		}
 		case "get":
 		{
 			$up = rHistoryData::load();
-			cachedEcho(safe_json_encode($up->get($_REQUEST['mark'])),"application/json");
+			CachedEcho::send(JSON::safeEncode($up->get($_REQUEST['mark'])),"application/json");
   	                break;
 		}
 		case "delete":
@@ -35,7 +35,7 @@ if(isset($_REQUEST['cmd']))
   	                	}
 				$up->delete( $hashes );
 			}
-			cachedEcho(safe_json_encode($up->get(0)),"application/json");
+			CachedEcho::send(JSON::safeEncode($up->get(0)),"application/json");
   	                break;
 		}
 	}

@@ -129,12 +129,12 @@ class rXmpp
 		$req = new rXMLRPCRequest();
 		if ( $this->message !== '' && isset($this->jabberServer) && isset($this->jabberLogin) && isset($this->jabberPasswd) && isset($this->jabberFor))
 		{
-		    $cmd = $theSettings->getOnFinishedCommand(array('xmpp'.getUser(), 
-			    getCmd('execute.nothrow.bg').'={'.getPHP().','.$pathToXmpp.'/notify.php,"$'.getCmd('d.name').'=","'.getUser().'"}'
+		    $cmd = $theSettings->getOnFinishedCommand(array('xmpp'.User::getUser(), 
+			    getCmd('execute.nothrow.bg').'={'.Utility::getPHP().','.$pathToXmpp.'/notify.php,"$'.getCmd('d.name').'=","'.User::getUser().'"}'
 			    ));
 		}
 		else
-		    $cmd = $theSettings->getOnFinishedCommand(array('xmpp'.getUser(), getCmd('cat=')));
+		    $cmd = $theSettings->getOnFinishedCommand(array('xmpp'.User::getUser(), getCmd('cat=')));
 		$req->addCommand($cmd);
 		return($req->success());
 	}

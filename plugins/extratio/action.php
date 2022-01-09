@@ -44,4 +44,4 @@ switch($cmd)
 if(is_null($val))
 	$val = $mngr->getContents();
 
-cachedEcho(safe_json_encode($val),"application/json",true);
+CachedEcho::send(JSON::safeEncode($val),"application/json",true);
