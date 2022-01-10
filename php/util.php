@@ -9,7 +9,8 @@ spl_autoload_register(function ($class)
 {
 	// Remove namespaces from the classname string
 	// Important for compatibility with 3rd party plugins
-	$class = end(explode('\\',$class));
+	$arr = explode('\\',$class);
+	$class = end($arr);
 	
 	require_once 'utility/'. strtolower($class). '.php';
 });
