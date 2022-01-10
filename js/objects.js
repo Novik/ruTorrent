@@ -325,7 +325,7 @@ var theContextMenu =
 			 	        switch($type(val[2]))
 			 	        {
 						case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[2]) } ); break;
-						case "function": a.attr("href","javascript://void();").trigger('click', val[2]); break;
+						case "function": a.attr("href","javascript://void();").on('click', val[2]); break;
 					}
 					li.append(a.on('focus', function() { this.blur(); } ));
 				}
@@ -338,7 +338,7 @@ var theContextMenu =
 						{
 				 	        	case false: a.addClass("dis"); break;
 							case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[1]) } ); break;
-							case "function": a.attr("href","javascript://void();").trigger('click', val[1]); break;
+							case "function": a.attr("href","javascript://void();").on('click', val[1]); break;
 						}
 						li.append(a.on('focus', function() { this.blur(); } ));
 					}

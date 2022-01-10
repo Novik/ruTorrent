@@ -44,7 +44,7 @@ if(plugin.canChangeMenu())
 		return(ret);
 	}
 
-	copyProperty = function(type)
+	plugin.copyProperty = function(type)
 	{
 		var sr = theWebUI.getTable("trt").rowSel;
 		var result = '';
@@ -69,6 +69,21 @@ if(plugin.canChangeMenu())
 		copyToClipboard(result);
 	}
 
+        plugin.copyName = function()
+	{
+		plugin.copyProperty('name');
+	}
+
+	plugin.copyHash = function()
+	{
+		plugin.copyProperty('hash');
+	}
+
+	plugin.copyMagnet = function()
+	{
+		plugin.copyProperty('magnet');
+	}
+
 	plugin.createMenu = theWebUI.createMenu;
 	theWebUI.createMenu = function( e, id )
 	{
@@ -77,9 +92,9 @@ if(plugin.canChangeMenu())
 		{
 			theContextMenu.add([CMENU_CHILD, theUILang.bulkCopy,
 			[
-				[theUILang.Name, "copyProperty('name')"],
-				[theUILang.Hash, "copyProperty('hash')"],
-				[theUILang.Magnet, "copyProperty('magnet')"]
+				[theUILang.Name, plugin.copyName],
+				[theUILang.Hash, plugin.copyHash],
+				[theUILang.Magnet, plugin.copyMagnet]
 			]] );
 		}
 	}
