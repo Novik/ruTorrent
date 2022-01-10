@@ -61,7 +61,7 @@ ignore_user_abort( true );
 set_time_limit( 0 );
 
 $result = array
-( 
+(
 	'error' => 0,
 	'success' => 0,
 );
@@ -71,7 +71,7 @@ if(!isset($HTTP_RAW_POST_DATA))
 if(isset($HTTP_RAW_POST_DATA))
 {
 	$vars = explode('&', $HTTP_RAW_POST_DATA);
-	$torrents = array(); 
+	$torrents = array();
 	foreach($vars as $var)
 	{
 		$parts = explode("=",$var);

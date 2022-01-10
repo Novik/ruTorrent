@@ -3,18 +3,6 @@ plugin.loadLang();
 
 if(plugin.canChangeMenu())
 {
-	plugin.copyToClipboard = function(str)
-	{
-		var el = document.createElement("textarea");
-		document.body.appendChild(el); 
-		el.style.opacity=0; 
-		el.style.height="0px";
-		el.value = str;
-		el.select();
-		document.execCommand("copy");
-		document.body.removeChild(el);
-	}
-
 	plugin.getTorrentValue = function(k,type)
 	{
 		var ret = null;
@@ -22,8 +10,8 @@ if(plugin.canChangeMenu())
 		{
 			case 'hash':
 			{
-				ret = k;	
-				break;	
+				ret = k;
+				break;
 			}
 			case 'name':
 			{
@@ -31,7 +19,7 @@ if(plugin.canChangeMenu())
 				{
 					ret = theWebUI.torrents[k].name;
 				}
-				break;	
+				break;
 			}
 			case 'magnet':
 			{
@@ -50,13 +38,13 @@ if(plugin.canChangeMenu())
 						});
 					}
 				}
-				break;	
+				break;
 			}
 		}
 		return(ret);
 	}
 
-	plugin.copyProperty = function(type)
+	copyProperty = function(type)
 	{
 		var sr = theWebUI.getTable("trt").rowSel;
 		var result = '';
@@ -78,22 +66,7 @@ if(plugin.canChangeMenu())
 				}
 			}
 		}
-		plugin.copyToClipboard(result);
-	}
-
-	plugin.copyName = function()
-	{
-		plugin.copyProperty('name');
-	}
-
-	plugin.copyHash = function()
-	{
-		plugin.copyProperty('hash');
-	}
-
-	plugin.copyMagnet = function()
-	{
-		plugin.copyProperty('magnet');
+		copyToClipboard(result);
 	}
 
 	plugin.createMenu = theWebUI.createMenu;
@@ -102,11 +75,11 @@ if(plugin.canChangeMenu())
 		plugin.createMenu.call(this, e, id);
 		if(plugin.enabled)
 		{
-			theContextMenu.add([CMENU_CHILD, theUILang.bulkCopy, 
-			[ 
-				[theUILang.Name, plugin.copyName],
-				[theUILang.Hash, plugin.copyHash],
-				[theUILang.Magnet, plugin.copyMagnet]
+			theContextMenu.add([CMENU_CHILD, theUILang.bulkCopy,
+			[
+				[theUILang.Name, "copyProperty('name')"],
+				[theUILang.Hash, "copyProperty('hash')"],
+				[theUILang.Magnet, "copyProperty('magnet')"]
 			]] );
 		}
 	}
@@ -121,13 +94,13 @@ plugin.createPluginMenu = function()
 {
 	if(this.enabled)
 	{
-		theContextMenu.add([theUILang.bulkAdd, plugin.showBulkAdd]);		
+		theContextMenu.add([theUILang.bulkAdd, plugin.showBulkAdd]);
 	}
 }
 
 plugin.bulkAdd = function()
 {
-	theWebUI.request("?action=bulkadd",[plugin.wasAdded, plugin]);	
+	theWebUI.request("?action=bulkadd",[plugin.wasAdded, plugin]);
 }
 
 rTorrentStub.prototype.bulkadd = function()
@@ -183,9 +156,9 @@ plugin.onLangLoaded = function()
 		plugin.bulkAdd();
 		return(false);
 	});
-	text.onupdate = text.onkeyup = function() 
-	{ 
-		$('#dlgBulkAdd .OK').prop('disabled', text.value.trim()==''); 
+	text.onupdate = text.onkeyup = function()
+	{
+		$('#dlgBulkAdd .OK').prop('disabled', text.value.trim()=='');
 	};
 	text.onpaste = function() { setTimeout( text.onupdate, 10 ) };
 };

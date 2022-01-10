@@ -278,5 +278,7 @@ var theUILang =
  registerMagnet			: "Prova a registrare il protocollo magnet all'avvio",
  linkTorTorrentRestored		: "Connessione a rTorrent stabilita",
  removeAllTegs			: "Rimuovi tutti i tag",
- Torrents			: "Torrent"
+ Torrents			: "Torrent",
+ copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
+ copyToClipboardSuccess		: "Copied to clipboard successfully!"
 };
