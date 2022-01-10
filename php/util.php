@@ -5,8 +5,15 @@ $rootPath = realpath(dirname(__FILE__)."/..");
 require_once( $rootPath.'/conf/config.php' );
 
 // Automatically include only the used utility classes
-spl_autoload_register(function ($class) {
-    require_once 'utility/'. strtolower($class). '.php';
+spl_autoload_register(function ($class) 
+{
+	// Remove namespaces from the classname string
+	// Important for compatibility with 3rd party plugins
+	if (preg_match('@\\\\([\w]+)$@', $class, $matches)) {
+		$class = $matches[1];
+	}
+	
+	require_once 'utility/'. strtolower($class). '.php';
 });
 
 // Fixes quotations if php verison is less than 5.4
