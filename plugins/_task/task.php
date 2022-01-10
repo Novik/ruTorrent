@@ -92,7 +92,7 @@ class rTask
 					}
 				}
 				fputs($sh,'echo $last > "${dir}"/status'."\n");
-				fputs($sh,getPHP().' '.escapeshellarg(dirname(__FILE__).'/notify.php').' '.
+				fputs($sh,Utility::getPHP().' '.escapeshellarg(dirname(__FILE__).'/notify.php').' '.
 					'$last "${dir}" '.
 					escapeshellarg(User::getUser()).' '.
 					'> /dev/null 2>> /dev/null &'."\n");
