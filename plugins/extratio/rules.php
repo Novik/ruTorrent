@@ -250,13 +250,13 @@ class rRatioRulesList
 		}
 		if($ratioRulesExist)
 		{
-			eval(getPluginConf('ratio'));
+			eval(FileUtil::getPluginConf('ratio'));
 			$insCmd = '';
 			for($i=0; $i<MAX_RATIO; $i++)
 				$insCmd .= (getCmd('d.views.has=').'rat_'.$i.',,');
 			$ratCmd = 
                                 getCmd('d.set_custom').'=x-extratio1,"$'.getCmd('execute_capture').
-                                '={'.getPHP().','.$rootPath.'/plugins/extratio/update.php,\"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#\",$'.getCmd('d.get_custom1').'=,ratio,'.getUser().'}" ; '.
+                                '={'.Utility::getPHP().','.$rootPath.'/plugins/extratio/update.php,\"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#\",$'.getCmd('d.get_custom1').'=,ratio,'.User::getUser().'}" ; '.
                                 getCmd('branch').'=$'.getCmd('not').'=$'.getCmd('d.get_custom').'=x-extratio1,,'.$insCmd.
                                 getCmd('view.set_visible').'=$'.getCmd('d.get_custom').'=x-extratio1';
 		}
@@ -265,14 +265,14 @@ class rRatioRulesList
 		if($throttleRulesExist)
 			$thrCmd = 
                                 getCmd('d.set_custom').'=x-extratio2,"$'.getCmd('execute_capture').
-                                '={'.getPHP().','.$rootPath.'/plugins/extratio/update.php,\"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#\",$'.getCmd('d.get_custom1').'=,channel,'.getUser().'}" ; '.
+                                '={'.Utility::getPHP().','.$rootPath.'/plugins/extratio/update.php,\"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#\",$'.getCmd('d.get_custom1').'=,channel,'.User::getUser().'}" ; '.
                                 getCmd('branch').'=$'.getCmd('not').'=$'.getCmd('d.get_custom').'=x-extratio2,,'.
                                 getCmd('d.set_throttle_name').'=$'.getCmd('d.get_custom').'=x-extratio2';
 		else
 			$thrCmd = getCmd('cat=');
 		$req = new rXMLRPCRequest( array(
-			rTorrentSettings::get()->getOnInsertCommand( array('_exratio1'.getUser(), $ratCmd ) ),
-			rTorrentSettings::get()->getOnInsertCommand( array('_exratio2'.getUser(), $thrCmd ) ),
+			rTorrentSettings::get()->getOnInsertCommand( array('_exratio1'.User::getUser(), $ratCmd ) ),
+			rTorrentSettings::get()->getOnInsertCommand( array('_exratio2'.User::getUser(), $thrCmd ) ),
 			));
 		return($req->success());
 	}

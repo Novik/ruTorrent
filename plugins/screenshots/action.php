@@ -2,7 +2,7 @@
 
 require_once( dirname(__FILE__).'/../_task/task.php' );
 require_once( 'ffmpeg.php' );
-eval( getPluginConf( 'screenshots' ) );
+eval( FileUtil::getPluginConf( 'screenshots' ) );
 
 $ret = array();
 if(isset($_REQUEST['cmd']))
@@ -36,7 +36,7 @@ if(isset($_REQUEST['cmd']))
 						for($i=0; $i<$st->data['exfrmcount']; $i++)
 						{
 							$name = '"${dir}"/frame'.$i.($st->data['exformat'] ? '.png' : '.jpg');
-							$commands[] = getExternal("ffmpeg").
+							$commands[] = Utility::getExternal("ffmpeg").
 								' -ss '.$offs.
 								" -i ".escapeshellarg($filename).
 								' -y -vframes 1 -an '.
@@ -52,7 +52,7 @@ if(isset($_REQUEST['cmd']))
 					}
 					$task = new rTask( array
 					( 
-						'arg' => getFileName($filename),
+						'arg' => FileUtil::getFileName($filename),
 						'requester'=>'screenshots',
 						'name'=>'ffmpeg', 
 						'hash'=>$_REQUEST['hash'], 
@@ -68,11 +68,11 @@ if(isset($_REQUEST['cmd']))
 			$dir = rTask::formatPath( $_REQUEST['no'] );
 			if(@chdir( $dir ))
 			{
-				$randName = getTempFilename('screenshots-detail');
-				exec(escapeshellarg(getExternal('tar'))." -cf ".$randName." *.".($st->data['exformat'] ? 'png' : 'jpg'),$results,$return);
+				$randName = FileUtil::getTempFilename('screenshots-detail');
+				exec(escapeshellarg(Utility::getExternal('tar'))." -cf ".$randName." *.".($st->data['exformat'] ? 'png' : 'jpg'),$results,$return);
 				if(is_file($randName))
 				{
-					sendFile( $randName, "application/x-tar",  $_REQUEST['file'].'.tar', false );
+					SendFile::send( $randName, "application/x-tar",  $_REQUEST['file'].'.tar', false );
 					unlink($randName);
 					exit();
 				}
@@ -85,7 +85,7 @@ if(isset($_REQUEST['cmd']))
 			$dir = rTask::formatPath( $_REQUEST['no'] );
 			$ext = ($st->data['exformat'] ? '.png' : '.jpg');
 			$filename = $dir.'/frame'.$_REQUEST['fno'].$ext;
-			sendFile($filename, $st->data['exformat'] ? 'image/png' : 'image/jpeg', $_REQUEST['file']."-".str_pad($_REQUEST['fno']+1, 3, "0", STR_PAD_LEFT).$ext);
+			SendFile::send($filename, $st->data['exformat'] ? 'image/png' : 'image/jpeg', $_REQUEST['file']."-".str_pad($_REQUEST['fno']+1, 3, "0", STR_PAD_LEFT).$ext);
 			exit();
 		}
 		case "ffmpegset":
@@ -96,4 +96,4 @@ if(isset($_REQUEST['cmd']))
 	}
 }
 
-cachedEcho(safe_json_encode($ret),"application/json");
+CachedEcho::send(JSON::safeEncode($ret),"application/json");

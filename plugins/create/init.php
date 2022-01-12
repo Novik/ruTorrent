@@ -1,6 +1,6 @@
 <?php
 
-eval(getPluginConf($plugin["name"]));
+eval(FileUtil::getPluginConf($plugin["name"]));
 
 if($useExternal!==false)
 {

@@ -2,7 +2,7 @@
 
 require_once( "sqlite.php" );
 
-eval( getPluginConf( $plugin["name"] ) );
+eval( FileUtil::getPluginConf( $plugin["name"] ) );
 
 $retrieveCountry = ($retrieveCountry && function_exists("geoip_country_code_by_name"));
 $retrieveComments = ($retrieveComments && sqlite_exists());

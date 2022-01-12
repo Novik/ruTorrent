@@ -3,7 +3,7 @@
 require_once( dirname(__FILE__).'/../_task/task.php' );
 require_once( dirname(__FILE__).'/../../php/Torrent.php' );
 require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
-eval( getPluginConf( 'create' ) );
+eval( FileUtil::getPluginConf( 'create' ) );
 
 class recentTrackers
 {
@@ -114,7 +114,7 @@ if(isset($_REQUEST['cmd']))
 		        {
 		        	$path_edit = trim($_REQUEST['path_edit']);
 				if(is_dir($path_edit))
-					$path_edit = addslash($path_edit);
+					$path_edit = FileUtil::addslash($path_edit);
 		        	if(rTorrentSettings::get()->correctDirectory($path_edit))
 				{
 					$rt = recentTrackers::load();
@@ -157,7 +157,7 @@ if(isset($_REQUEST['cmd']))
 						$useExternal = "inner";
 					$task = new rTask( array
 					(
-						'arg' => getFileName($path_edit),
+						'arg' => FileUtil::getFileName($path_edit),
 						'requester'=>'create',
 						'name'=>'create',
 						'path_edit'=>$_REQUEST['path_edit'],
@@ -173,11 +173,11 @@ if(isset($_REQUEST['cmd']))
 
 					$commands[] = escapeshellarg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
 					$task->id." ".
-					escapeshellarg(getPHP())." ".
+					escapeshellarg(Utility::getPHP())." ".
 					escapeshellarg($pathToCreatetorrent)." ".
 					escapeshellarg($path_edit)." ".
 					$piece_size." ".
-					escapeshellarg(getUser())." ".
+					escapeshellarg(User::getUser())." ".
 					escapeshellarg(rTask::formatPath($task->id))." ".
 					escapeshellarg($hybrid);
 
@@ -206,4 +206,4 @@ if(isset($_REQUEST['cmd']))
 	}
 }
 
-cachedEcho(safe_json_encode($ret),"application/json");
+CachedEcho::send(JSON::safeEncode($ret),"application/json");

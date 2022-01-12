@@ -1,7 +1,7 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( $rootPath.'/php/cache.php');
-eval(getPluginConf('throttle'));
+eval(FileUtil::getPluginConf('throttle'));
 
 @define('MAX_SPEED', 327625*1024);
 // Can't be greater then 327625*1024 due to limitation in libtorrent ResourceManager::set_max_upload_unchoked function.
@@ -71,10 +71,10 @@ class rThrottle
 		}
 
 		if($this->isCorrect($this->default-1))
-			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.getUser(), 
+			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(), 
 				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd("d.get_throttle_name").'=,'.getCmd('d.set_throttle_name').'=thr_'.($this->default-1))));
 		else
-			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.getUser(), getCmd('cat='))));
+			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(), getCmd('cat='))));
 		return($req->run() && !$req->fault);
 	}
 	public function correct()
@@ -180,7 +180,7 @@ class rThrottle
 	{
 		$ret = "theWebUI.throttles = [";
 		foreach($this->thr as $item)
-			$ret.="{ up: ".$item["up"].", down: ".$item["down"].", name : ".quoteAndDeslashEachItem($item["name"])." },";
+			$ret.="{ up: ".$item["up"].", down: ".$item["down"].", name : ".Utility::quoteAndDeslashEachItem($item["name"])." },";
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);

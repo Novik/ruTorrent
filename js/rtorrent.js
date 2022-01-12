@@ -1181,26 +1181,10 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 		global: true
 	});
 	
-	request.always(function(data, textStatus, errorThrown) 
-	{
-		if(theWebUI.deltaTime==0)
-		{
-			var diff = 0;
-			try {
-				diff = new Date().getTime()-Date.parse(request.getResponseHeader("Date"));
-			} catch(e) { diff = 0; };
-			theWebUI.deltaTime = iv(diff);
-		}
-		if(theWebUI.serverDeltaTime==0)
-		{
-			var timestamp = request.getResponseHeader("X-Server-Timestamp");
-			if(timestamp != null)
-				theWebUI.serverDeltaTime = new Date().getTime()-iv(timestamp)*1000;
-		}
-	});
-	
 	request.fail(function(jqXHR, textStatus, errorThrown)
 	{
+		Ajax_UpdateTime(jqXHR);
+		
 		if((textStatus=="timeout") && ($type(onTimeout) == "function"))
 			onTimeout();
 		else if($type(onError) == "function")
@@ -1212,16 +1196,19 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 				response = errorThrown;
 			onError(status+" ["+textStatus+","+stub.action+"]",response);
 		}
+		stub = null; // Cleanup memory leak
 	});
 	
 	request.done(function(data, textStatus, jqXHR)
 	{
-		var responseText = stub.getResponse(data);
+		Ajax_UpdateTime(jqXHR);
+		
 		stub.logErrorMessages();
 		if(stub.listRequired)
 			Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
 		else if(!stub.isError())
 	    {
+			var responseText = stub.getResponse(data);
 			switch($type(onComplete))
 			{
 				case "function":
@@ -1235,8 +1222,35 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 					break;
 				}
 			}
+			responseText = null; // Cleanup memory leak
 		}
+		stub = null; // Cleanup memory leak
 	});
+	
+	// Nullify ajax request varriables to cleanup up memory leaks
+	request.onreadystatechange = null;
+	request.abort = null;
+	request = null;
+}
+
+function Ajax_UpdateTime(jqXHR)
+{
+	if(theWebUI.deltaTime==0)
+	{
+		var diff = 0;
+		try { diff = new Date().getTime()-Date.parse(jqXHR.getResponseHeader("Date")); } catch(e) { diff = 0; };
+		theWebUI.deltaTime = iv(diff);
+		diff = null; // Cleanup memory leak
+	}
+	
+	if(theWebUI.serverDeltaTime==0)
+	{
+		var timestamp = jqXHR.getResponseHeader("X-Server-Timestamp");
+		if(timestamp != null)
+			theWebUI.serverDeltaTime = new Date().getTime()-iv(timestamp)*1000;
+		timestamp = null; // Cleanup memory leak
+	}
+	jqXHR = null; // Cleanup memory leak
 }
 
 $(document).ready(function() 

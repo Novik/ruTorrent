@@ -31,13 +31,13 @@ class rTask
 
 	static public function formatPath( $taskNo )
 	{
-		return( getSettingsPath().'/tasks/'.$taskNo );
+		return( FileUtil::getSettingsPath().'/tasks/'.$taskNo );
 	}
 
 	public function makeDirectory()
 	{
 		$dir = self::formatPath($this->id);
-		makeDirectory($dir);		
+		FileUtil::makeDirectory($dir);
 		return($dir);
 	}
 
@@ -92,9 +92,9 @@ class rTask
 					}
 				}
 				fputs($sh,'echo $last > "${dir}"/status'."\n");
-				fputs($sh,getPHP().' '.escapeshellarg(dirname(__FILE__).'/notify.php').' '.
+				fputs($sh,Utility::getPHP().' '.escapeshellarg(dirname(__FILE__).'/notify.php').' '.
 					'$last "${dir}" '.
-					escapeshellarg(getUser()).' '.
+					escapeshellarg(User::getUser()).' '.
 					'> /dev/null 2>> /dev/null &'."\n");
 				fclose($sh);
 				@chmod($dir."/start.sh",0755);
@@ -122,7 +122,7 @@ class rTask
 
 	static public function clean( $dir )
 	{
-		@deleteDirectory( $dir );
+		@FileUtil::deleteDirectory( $dir );
 	}
 
 	static protected function removeASCII( $subject )
@@ -298,7 +298,7 @@ class rTask
 				if(is_null($flags))
 					$flags = intval(file_get_contents($dir.'/flags'));
 				$pid = trim(file_get_contents($dir.'/pid'));
-				self::run("kill -9 `".getExternal("pgrep")." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
+				self::run("kill -9 `".Utility::getExternal("pgrep")." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
 				self::notify($dir,"TaskKill");
 			}
 			self::clean($dir);
@@ -314,7 +314,7 @@ class rTaskManager
 	static public function obtain()
 	{
 		$tasks = array();
-		$dir = getSettingsPath().'/tasks/';
+		$dir = FileUtil::getSettingsPath().'/tasks/';
 		if( $handle = @opendir($dir) )
 		{
 			while(false !== ($file = readdir($handle)))
@@ -376,7 +376,7 @@ class rTaskManager
 	static public function remove( $list )
 	{
 		$tasks = array();
-		$dir = getSettingsPath().'/tasks/';
+		$dir = FileUtil::getSettingsPath().'/tasks/';
 		if( $handle = @opendir($dir) )
 		{
 			while(false !== ($file = readdir($handle)))

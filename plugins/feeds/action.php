@@ -1,7 +1,7 @@
 <?php
 require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
-eval( getPluginConf( 'feeds' ) );
+eval( FileUtil::getPluginConf( 'feeds' ) );
 
 $lang = (isset($_REQUEST['lang']) && 
 	preg_match('/^[A-Za-z]{2}(\-[A-Za-z]{2}|)$/', $_REQUEST['lang']) && 
@@ -255,4 +255,4 @@ if($req->success())
 }
 
 ob_clean();
-cachedEcho($ret."</channel></rss>","application/rss+xml",true);
+CachedEcho::send($ret."</channel></rss>","application/rss+xml",true);

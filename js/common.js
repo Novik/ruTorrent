@@ -973,6 +973,38 @@ function noty(msg,status,noTime)
 	}
 }
 
+function fallbackCopyToClipboard(text)
+{
+	var textarea = document.createElement("textarea");
+	textarea.textContent = text;
+	textarea.style.position = "fixed";
+	document.body.appendChild(textarea);
+	textarea.select();
+	try {
+		var success = document.execCommand("copy");
+		if(success)
+			noty( theUILang.copyToClipboardSuccess, "success" );
+	} catch (err) {
+		prompt(theUILang.copyToClipboardFailed, text);
+	} finally {
+		document.body.removeChild(textarea);
+	}
+}
+
+function copyToClipboard(text)
+{
+	if (!navigator.clipboard)
+	{
+		fallbackCopyToClipboard(text);
+		return;
+	}
+	navigator.clipboard.writeText(text).then(function() {
+		noty( theUILang.copyToClipboardSuccess, "success" );
+	}, function(err) {
+		fallbackCopyToClipboard(text);
+	});
+}
+
 function rDirectory()
 {
 	this.dirs = new Array();
@@ -1591,8 +1623,7 @@ function strip_tags(input, allowed)
 // Caveat: doesn't work with Internet Explorer.
 (function setBrowserTimezoneCookie()
 {
-	try 
-	{
+	try {
 		document.cookie = "browser_timezone="+Intl.DateTimeFormat().resolvedOptions().timeZone
 	} catch(e) {}
 }).apply();

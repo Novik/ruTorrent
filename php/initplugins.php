@@ -121,17 +121,17 @@ if( !function_exists( 'preg_match_all' ) )
 if( count( $argv ) > 1 )
 	$_SERVER['REMOTE_USER'] = $argv[1];
 
-require_once( "util.php" );
+require_once( "which.php" );
 require_once( "settings.php" );
 
-$tmp = getTempDirectory();
+$tmp = FileUtil:getTempDirectory();
 if($tmp!='/tmp/')
-	makeDirectory($tmp);
+	FileUtil::makeDirectory($tmp);
 
 $theSettings = rTorrentSettings::get(true);
 if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 {
-	$plg = getConfFile('plugins.ini');
+	$plg = FileUtil::getConfFile('plugins.ini');
 	if(!$plg)
 		$plg = "../conf/plugins.ini";
 	$permissions = parse_ini_file($plg,true);
@@ -166,7 +166,7 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 				($info['rtorrent.version']<=$theSettings->iVersion))
 			{
 				if(count($info['rtorrent.external.error']))
-					eval( getPluginConf( $file ) );
+					eval( FileUtil::getPluginConf( $file ) );
 				$extError = false;
 				foreach( $info['rtorrent.external.error'] as $external )
 				{
@@ -231,4 +231,5 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 
 	}
 	$theSettings->store();
+	WhichInstance::save();
 }

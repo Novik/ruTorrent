@@ -276,5 +276,7 @@ var theUILang =
  registerMagnet			: "Προσπάθεια καταχώρησης του πρωτόκολλου magnet κατά την εκκίνηση",
  linkTorTorrentRestored		: "Η επικοινωνία με το rTorrent επιτεύχθηκε.",
  removeAllTegs			: "Διαγραφή όλων των ετικετών",
- Torrents			: "Torrent(s)"
+ Torrents			: "Torrent(s)",
+ copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
+ copyToClipboardSuccess		: "Copied to clipboard successfully!"
 };

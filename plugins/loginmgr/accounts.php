@@ -3,7 +3,7 @@
 require_once( dirname(__FILE__)."/../../php/util.php" );
 require_once( $rootPath.'/php/cache.php');
 require_once( $rootPath.'/php/Snoopy.class.inc');
-eval( getPluginConf( 'loginmgr' ) );
+eval( FileUtil::getPluginConf( 'loginmgr' ) );
 
 class privateData
 {
@@ -158,7 +158,7 @@ class accountManager
 				if(is_file($dir.'/'.$file))
 				{
 					$name = basename($file,".php");
-					$this->accounts[$name] = array( "name"=>$name, "path"=>fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 );
+					$this->accounts[$name] = array( "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 );
 					if(array_key_exists($name,$oldAccounts) && array_key_exists("login",$oldAccounts[$name]))
 					{
 						$this->accounts[$name]["login"] = $oldAccounts[$name]["login"];
@@ -180,7 +180,7 @@ class accountManager
 	{
                 $ret = "theWebUI.theAccounts = {";
 		foreach( $this->accounts as $name=>$nfo )
-			$ret.="'".$name."': { login: ".quoteAndDeslashEachItem($nfo["login"]).", password: ".quoteAndDeslashEachItem($nfo["password"]).", enabled: ".$nfo["enabled"].", auto: ".$nfo["auto"]." },";
+			$ret.="'".$name."': { login: ".Utility::quoteAndDeslashEachItem($nfo["login"]).", password: ".Utility::quoteAndDeslashEachItem($nfo["password"]).", enabled: ".$nfo["enabled"].", auto: ".$nfo["auto"]." },";
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);
@@ -263,7 +263,7 @@ class accountManager
 		{
 			$req =  new rXMLRPCRequest( $this->hasAuto() ?
 				rTorrentSettings::get()->getAbsScheduleCommand("loginmgr",86400,
-					getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) :
+					getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(User::getUser()).' & exit 0}' ) :
 				rTorrentSettings::get()->getRemoveScheduleCommand("loginmgr") );
 			$req->success();
 		}

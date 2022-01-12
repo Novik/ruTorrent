@@ -12,11 +12,11 @@ function getTorrent( $url )
 		$name = $cli->get_filename();
 		if($name===false)
 			$name = md5($url).".torrent";
-		$name = getUniqueUploadedFilename($name);
+		$name = FileUtil::getUniqueUploadedFilename($name);
 		$f = @fopen($name,"w");
 		if($f===false)
 		{
-			$name = getUniqueUploadedFilename(md5($url).".torrent");
+			$name = FileUtil::getUniqueUploadedFilename(md5($url).".torrent");
 			$f = @fopen($name,"w");
 		}
 		if($f!==false)
@@ -61,7 +61,7 @@ ignore_user_abort( true );
 set_time_limit( 0 );
 
 $result = array
-( 
+(
 	'error' => 0,
 	'success' => 0,
 );
@@ -71,7 +71,7 @@ if(!isset($HTTP_RAW_POST_DATA))
 if(isset($HTTP_RAW_POST_DATA))
 {
 	$vars = explode('&', $HTTP_RAW_POST_DATA);
-	$torrents = array(); 
+	$torrents = array();
 	foreach($vars as $var)
 	{
 		$parts = explode("=",$var);
@@ -93,4 +93,4 @@ if(isset($HTTP_RAW_POST_DATA))
 	}
 }
 
-cachedEcho(safe_json_encode($result),"application/json",true);
+CachedEcho::send(JSON::safeEncode($result),"application/json",true);

@@ -19,12 +19,12 @@ if(isset($_REQUEST['mode']))
 		case "set":
 		{
 			$em->set();
-			cachedEcho($em->get(),"application/javascript");
+			CachedEcho::send($em->get(),"application/javascript");
 			break;
 		}
 		case "get":
 		{
-			cachedEcho(safe_json_encode($em->action( $_REQUEST['eng'], $_REQUEST['what'], $_REQUEST['cat'] )),"application/json");
+			CachedEcho::send(JSON::safeEncode($em->action( $_REQUEST['eng'], $_REQUEST['what'], $_REQUEST['cat'] )),"application/json");
 			break;
 		}
 		case "loadtorrents":
@@ -77,7 +77,7 @@ if(isset($_REQUEST['mode']))
 				$ret = array( "teg"=>$teg, "data"=>array() );
 				for($i = 0; $i< count($status); $i++)
 					$ret["data"][] = array( "hash"=>$status[$i], "ndx"=>$ndx[$i] );
-				cachedEcho(safe_json_encode($ret),"application/json");
+				CachedEcho::send(JSON::safeEncode($ret),"application/json");
 			}
 			break;
 		}

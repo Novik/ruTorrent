@@ -1,5 +1,5 @@
 <?php
-eval(getPluginConf($plugin["name"]));
+eval(FileUtil::getPluginConf($plugin["name"]));
 require_once( dirname(__FILE__)."/task.php" );
 
 rTaskManager::cleanup();

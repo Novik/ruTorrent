@@ -276,5 +276,7 @@ var theUILang =
  registerMagnet			: "시작 시 마그넷 프로토콜 연결 프로그램으로 등록 시도",
  linkTorTorrentRestored		: "rTorrent에 연결되었습니다.",
  removeAllTegs			: "Remove all tags",
- Torrents			: "Torrent(s)"
+ Torrents			: "Torrent(s)",
+ copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
+ copyToClipboardSuccess		: "Copied to clipboard successfully!"
 };

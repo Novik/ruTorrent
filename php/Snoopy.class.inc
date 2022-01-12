@@ -454,9 +454,9 @@ class Snoopy
 			}
 			else
 			{
-				$randName = getTempFilename('answer');
+				$randName = FileUtil::getTempFilename('answer');
 				file_put_contents($randName.".gz",$results);
-				exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
+				exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 				if(is_file($randName))
 				{
 					$results = file_get_contents($randName);
@@ -531,12 +531,12 @@ class Snoopy
 		if($this->_isproxy)
 			$cmdline_params .= " --proxy-insecure --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
 		
-		$headerfile = getTempFilename('https-header');
-		$contfile = getTempFilename('https-body');
+		$headerfile = FileUtil::getTempFilename('https-header');
+		$contfile = FileUtil::getTempFilename('https-body');
 		
 		# accept self-signed certs
 		$cmdline_params .= " -k -s "; 
-		exec(escapeshellarg(getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
+		exec(escapeshellarg(Utility::getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		$this->_redirectaddr = false;
 		$this->headers = array();
 		$this->status = $return;
@@ -595,9 +595,9 @@ class Snoopy
 				}
 				else
 				{
-					$randName = getTempFilename('answer');
+					$randName = FileUtil::getTempFilename('answer');
 					file_put_contents($randName.".gz",$results);
-					exec(escapeshellarg(getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
+					exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
 					if(is_file($randName))
 					{
 						$results = file_get_contents($randName);

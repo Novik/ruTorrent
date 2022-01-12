@@ -3,7 +3,7 @@
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( $rootPath.'/php/cache.php');
 require_once( $rootPath.'/php/settings.php');
-eval(getPluginConf('ratio'));
+eval(FileUtil::getPluginConf('ratio'));
 
 @define('RAT_STOP',0);
 @define('RAT_STOP_AND_REMOVE',1);
@@ -33,9 +33,9 @@ class rRatio
 	        for($i=0; $i<count($this->rat); $i++)
 	        {
 	        	$rat = &$this->rat[$i];
-	        	$rat["min"] = iclamp($rat["min"]);
-	        	$rat["max"] = iclamp($rat["max"]);
-	        	$rat["upload"] = iclamp($rat["upload"],0,8796093022207);
+	        	$rat["min"] = Math::iclamp($rat["min"]);
+	        	$rat["max"] = Math::iclamp($rat["max"]);
+	        	$rat["upload"] = Math::iclamp($rat["upload"],0,8796093022207);
 	        }
 		for($i=count($this->rat); $i<MAX_RATIO; $i++)
 			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>20, "name"=>"ratio".$i, "time"=>-1 );
@@ -105,7 +105,7 @@ class rRatio
 		global $checkTimesInterval;
 		$req =  new rXMLRPCRequest( $this->hasTimes() ? 
 			rTorrentSettings::get()->getAbsScheduleCommand("ratio",$checkTimesInterval*60,
-				getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' &}' ) :
+				getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(User::getUser()).' &}' ) :
 			rTorrentSettings::get()->getRemoveScheduleCommand("ratio") );
 		return($req->success());
 	}
@@ -204,10 +204,10 @@ class rRatio
 			}
 
 			if($this->isCorrect($this->default-1))
-				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.getUser(), 
+				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.User::getUser(), 
 					$insCmd.getCmd('view.set_visible=').'rat_'.($this->default-1))));
 			else
-				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.getUser(), getCmd('cat='))));
+				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.User::getUser(), getCmd('cat='))));
 
 			return($req->run() && !$req->fault);
 		}
@@ -257,7 +257,7 @@ class rRatio
 		{
 			$tm = (array_key_exists("time",$item) ? $item["time"] : -1);
 			$ret.="{ action: ".$item["action"].", min: ".$item["min"].", max: ".$item["max"].
-				", time: ".$tm.", upload: ".$item["upload"].", name : ".quoteAndDeslashEachItem($item["name"])." },";
+				", time: ".$tm.", upload: ".$item["upload"].", name : ".Utility::quoteAndDeslashEachItem($item["name"])." },";
 		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
