@@ -124,7 +124,7 @@ if( count( $argv ) > 1 )
 require_once( "which.php" );
 require_once( "settings.php" );
 
-$tmp = FileUtil:getTempDirectory();
+$tmp = FileUtil::getTempDirectory();
 if($tmp!='/tmp/')
 	FileUtil::makeDirectory($tmp);
 
