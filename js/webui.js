@@ -317,7 +317,7 @@ var theWebUI =
 
 	getUISettings: function()
 	{
-		this.requestWithoutTimeout("?action=getuisettings", [this.addSettings, this], true);
+		this.requestWithoutTimeout("?action=getuisettings", [this.initSettings, this], true);
 	},
 
 	loadPlugins: function()
@@ -613,6 +613,21 @@ var theWebUI =
 // settings
 //
 
+	initSettings: function(newSettings)
+	{
+		// If when receive an empty string for the webui settings,
+		// We must initialize "webui.lang", so it can be set
+		if (newSettings=="{}")
+			newSettings = {"webui.lang": ""};
+		
+		// Add webui settings for the first time
+		this.addSettings(newSettings);
+		
+		// Mark JSON file as loaded. Initialize UI if plugins are loaded
+		this.jsonLoaded = true;
+		this.initFinish();
+	},
+	
 	addSettings: function(newSettings)
 	{
 		$.each(newSettings, function(i,v)
@@ -633,8 +648,7 @@ var theWebUI =
 				}
          		}
 		});
-		if ($type(newSettings["webui.lang"]))
-			newSettings["webui.lang"] = GetActiveLanguage();
+		newSettings["webui.lang"] = GetActiveLanguage();
 		$.extend(this.settings,newSettings);
    		this.loadSettings();
    	},
@@ -667,10 +681,6 @@ var theWebUI =
 		});
 		if($type(this.settings["webui.search"]))
 			theSearchEngines.set(this.settings["webui.search"],true);
-		
-		// Mark JSON file as done loaded. Initialize UI if plugins are loaded
-		this.jsonLoaded = true;
-		this.initFinish();
    	},
 
 	setSettings: function()
