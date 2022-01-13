@@ -1228,8 +1228,6 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 	
 	// Nullify ajax request varriables to cleanup up memory leaks
 	request.onreadystatechange = null;
-	if (reqTimeout==-1)
-		request.abort = null;
 	request = null;
 }
 
