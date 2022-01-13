@@ -192,12 +192,6 @@ theWebUI.rebuildTrackersLabels = function()
 				}
 			}
 		}
-		if(plugin.canChangeColumns())
-		{
-			table.refreshRows();
-			if(table.sIndex !=- 1)
-				table.Sort();		
-		}
 		var ul = $("#torrl");
 
 		var keys = new Array();
@@ -237,6 +231,19 @@ theWebUI.rebuildTrackersLabels = function()
 		this.trackersLabels = trackersLabels;
 		if(needSwitch)
 			theWebUI.resetLabels();
+		
+		setTimeout(plugin.refreshTrackerRows, 0);
+	}
+}
+
+plugin.refreshTrackerRows = async function()
+{
+	if(plugin.canChangeColumns())
+	{
+		var table = theWebUI.getTable('trt');
+		table.refreshRows();
+		if(table.sIndex !=- 1)
+			table.Sort();
 	}
 }
 

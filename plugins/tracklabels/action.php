@@ -61,6 +61,5 @@ if(isset($_REQUEST["tracker"]))
 	}
 }
 
-header("HTTP/1.0 302 Moved Temporarily");
-header("Location: ./trackers/unknown.png");
-exit();
+// If we can't find an image, send a generic unknown image and cache for 30 days
+SendFile::sendCachedImage("./trackers/unknown.png", "image/png", "2592000");
