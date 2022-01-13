@@ -627,7 +627,7 @@ theWebUI.resizeTop = function( w, h )
 }
 
 plugin.config = theWebUI.config;
-theWebUI.config = function(data)
+theWebUI.config = function()
 {
 	$("#List").after($("<div>").attr("id","TegList").css("display","none"));
 	this.tables["teg"] =  
@@ -640,7 +640,7 @@ theWebUI.config = function(data)
 		ondblclick:	function(obj) { theWebUI.tegItemDblClick(obj); return(false); },
 		ondelete:	function() { theWebUI.tegItemRemove(); }
 	};
-	plugin.config.call(this,data);
+	plugin.config.call(this);
 	theSearchEngines.checkForIncorrectCurrent(true);
 }
 
