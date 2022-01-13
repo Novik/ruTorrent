@@ -123,7 +123,7 @@ theWebUI.trackersLabelContextMenu = function(e)
 	return(false);
 }
 
-plugin.updateLabelsImages = function()
+plugin.updateLabelsImages = async function()
 {
 	$('#plabel_cont ul li').each( function()
 	{
@@ -139,7 +139,7 @@ theWebUI.updateLabels = function(wasRemoved)
 	plugin.updateLabels.call(theWebUI,wasRemoved);
 	if(plugin.enabled)
 	{
-		if(wasRemoved)
+		if(wasRemoved && !theWebUI.firstLoad)
 			theWebUI.rebuildTrackersLabels();
 		plugin.updateLabelsImages();
 	}

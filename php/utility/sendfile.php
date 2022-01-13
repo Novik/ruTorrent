@@ -105,4 +105,13 @@ class SendFile
 		}
 		return(false);
 	}
+	
+	public static function sendCachedImage($location, $type, $duration)
+	{
+		header('Content-Type: '.$type);
+		header('Cache-Control: max-age='.$duration);
+		header('HTTP/1.0 200 OK');
+		readfile($location);
+		exit;
+	}
 }
