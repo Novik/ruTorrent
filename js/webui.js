@@ -615,9 +615,9 @@ var theWebUI =
 
 	initSettings: function(newSettings)
 	{
-		// If when receive an empty JSON string for the webui settings,
+		// If when receive an empty JSON object for the webui settings,
 		// We must initialize "webui.lang", so it can be set
-		if (newSettings=="{}")
+		if (JSON.stringify(newSettings)=="{}")
 			newSettings = {"webui.lang": ""};
 		
 		// Add webui settings for the first time
