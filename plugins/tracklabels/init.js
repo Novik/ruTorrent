@@ -141,7 +141,7 @@ theWebUI.updateLabels = function(wasRemoved)
 	{
 		if(wasRemoved)
 			theWebUI.rebuildTrackersLabels();
-		plugin.updateLabelsImages();
+		setTimeout(plugin.updateLabelsImages, 0);
 	}
 }
 
