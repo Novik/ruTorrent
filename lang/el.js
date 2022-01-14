@@ -277,6 +277,6 @@ var theUILang =
  linkTorTorrentRestored		: "Η επικοινωνία με το rTorrent επιτεύχθηκε.",
  removeAllTegs			: "Διαγραφή όλων των ετικετών",
  Torrents			: "Torrent(s)",
- copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
- copyToClipboardSuccess		: "Copied to clipboard successfully!"
+ copyToClipboardFailed		: "Η λειτουργία αντιγραφής δεν λειτουργεί στον περιηγητή σας.\nΠαρακαλώ αντιγράψτε αυτό το περιεχόμενο χειροκίνητα:\n\n",
+ copyToClipboardSuccess		: "Αντιγράφηκε με επιτυχία στο πρόχειρο!"
 };
