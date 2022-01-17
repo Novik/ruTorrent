@@ -128,7 +128,7 @@ if(plugin.canChangeOptions())
 
 	rTorrentStub.prototype.setratioprm = function()
 	{
-		this.content = "default="+$('#ratDefault').val();
+		this.content = "default="+iv($('#ratDefault').val());
 		for(var i=0; i<theWebUI.maxRatio; i++)
 		{
 			var name = $('#rat_name'+i).val().trim();

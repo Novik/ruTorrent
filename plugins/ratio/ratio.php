@@ -16,17 +16,34 @@ class rRatio
 {
 	public $hash = "ratio.dat";
 	public $rat = array();
-	public $default = 0.1;
+	public $default = 0;
+	private $version = 3.10;
 
 	static public function load()
 	{
 		$cache = new rCache();
 		$rt = new rRatio();
 		if(!$cache->get($rt))
+		{
 			$rt->fillArray();
+			$rt->version = 3.11;
+		}
+		elseif ($rt->version != 3.11)
+		{
+			$rt->migrate();
+			$rt->pad();
+			$rt->version = 3.11;
+		}
 		else
 			$rt->pad();
 		return($rt);
+	}
+	private function migrate()
+	{
+		for($i=0; $i<count($this->rat); $i++)
+		{
+			$this->rat[$i]["upload"] /= 1000;
+		}		
 	}
 	public function pad()
 	{
@@ -44,7 +61,7 @@ class rRatio
 	{
 		$this->rat = array();
 		$this->pad();
-		$this->default = 0.1;
+		$this->default = 0;
 	}
 	public function getTimes()
 	{
@@ -222,7 +239,7 @@ class rRatio
 	public function set()
 	{
 		$this->rat = array();
-		$this->default = 0.1;
+		$this->default = 0;
 		for($i = 0; $i<MAX_RATIO; $i++)
 		{
 			$arr = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>0.1, "name"=>"", "time"=>-1 );
