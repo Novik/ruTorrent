@@ -2673,7 +2673,7 @@ var theWebUI =
    		if($("#cover").is(":visible"))
 		{
 			$("#cover").hide();
-			theWebUI.resize();
+			setTimeout(theWebUI.resize, 0);
 			theTabs.show("lcont");
 		}
    	},
