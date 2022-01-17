@@ -42,7 +42,7 @@ class rRatio
 	{
 		for($i=0; $i<count($this->rat); $i++)
 		{
-			$this->rat[$i]["upload"] /= 1000;
+			$this->rat[$i]["upload"] /= 1024;
 		}		
 	}
 	public function pad()
