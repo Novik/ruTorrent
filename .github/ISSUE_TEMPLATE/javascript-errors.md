@@ -22,8 +22,10 @@ assignees: ''
 *JS error: [https://www.example.com/rutorrent/ : 1118] Uncaught ReferenceError: bobo is not defined*
 
 **Give us the stack trace**
+*Please note this feature is currently only supported on the master branch.*
+
 *In Google Chrome go to Options -> More tools -> Developer tools.*
-*Select the console tab at the top. Then click the "info" tab on the left.*
+*Select the "console" tab at the top. Then click the "info" tab on the left.*
 
 *Uncaught ReferenceError: bobo is not defined from ReferenceError: bobo is not defined
     at String.<anonymous> (<anonymous>:1118:4)
