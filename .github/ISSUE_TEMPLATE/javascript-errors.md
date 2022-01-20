@@ -12,7 +12,7 @@ assignees: ''
 *If upgrading to v4.0 or master, let us know you've copied everything except for the share folder.*
 
 **What were you trying to do?**
-*I was trying to change my theme to oblivion.*
+*Example: I was trying to change my theme to oblivion.*
 
 **Tell us about your environment**
 *Which ruTorrent release or master commit?*
