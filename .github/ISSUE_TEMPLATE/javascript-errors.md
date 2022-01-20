@@ -14,9 +14,12 @@ assignees: ''
 **What were you trying to do?**
 *I was trying to change my theme to oblivion.*
 
-**Tell us which release or master commit**
-*Release: v4.0-beta.1*
-*Master: fc9d1f0*
+**Tell us about your environment**
+*Which ruTorrent release or master commit?*
+*Release: v4.0-beta.1 OR Master: fc9d1f0*
+
+*Which web browser? What is the version?*
+*Example: Google Chrome version 97.0.4692.71*
 
 **Tell us the error message**
 *JS error: [https://www.example.com/rutorrent/ : 1118] Uncaught ReferenceError: bobo is not defined*
@@ -27,10 +30,10 @@ assignees: ''
 *In Google Chrome go to Options -> More tools -> Developer tools.*
 *Select the "console" tab at the top. Then click the "info" tab on the left.*
 
-*Uncaught ReferenceError: bobo is not defined from ReferenceError: bobo is not defined
-    at String.<anonymous> (<anonymous>:1118:4)
-    at Function.each (rutorrent/js/jquery.js:2:3003)
-    at rPlugin.plugin.allDone (<anonymous>:1111:4)
-    at eval (eval at waitLoad (rutorrent/js/plugins.js:94:4), <anonymous>:1:25)
-    at Object.waitLoad (rutorrent/js/plugins.js:94:4)
-    at <anonymous>:1:12*
+*Uncaught ReferenceError: bobo is not defined from ReferenceError: bobo is not defined*
+    *at String.<anonymous> (<anonymous>:1118:4)*
+    *at Function.each (rutorrent/js/jquery.js:2:3003)*
+    *at rPlugin.plugin.allDone (<anonymous>:1111:4)*
+    *at eval (eval at waitLoad (rutorrent/js/plugins.js:94:4), <anonymous>:1:25)*
+    *at Object.waitLoad (rutorrent/js/plugins.js:94:4)*
+    *at <anonymous>:1:12*
