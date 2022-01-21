@@ -1,0 +1,4 @@
+contact_links:
+  - name: Questions
+    url: "https://github.com/Novik/ruTorrent/discussions/categories/q-a"
+    about: "Please ask questions related to ruTorrent in the Discussions section"
