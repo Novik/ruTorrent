@@ -11,25 +11,32 @@ class rTorrent
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
 	{
 		$hash = false;
-		$torrent = is_object($fname) ? $fname : new Torrent($fname);
+		$mustSave = is_object($fname);
+		$torrent = $mustSave ? $fname : new Torrent($fname);
+
 		if(!$torrent->errors())
 		{
 			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
-				$torrent = $resume;
-			else
-				if($isNew)
-				{
-					if(isset($torrent->{'libtorrent_resume'}))
-						unset($torrent->{'libtorrent_resume'});
-				}			
-			if($isNew)
 			{
-				if(isset($torrent->{'rtorrent'}))
-					unset($torrent->{'rtorrent'});
+				$torrent = $resume;
+				$mustSave = true;
+			}
+			else
+			{
+				if($isNew && isset($torrent->{'libtorrent_resume'}))
+				{
+					unset($torrent->{'libtorrent_resume'});
+					$mustSave = true;
+				}
+			}
+			if($isNew && isset($torrent->{'rtorrent'}))
+			{
+				unset($torrent->{'rtorrent'});
+				$mustSave = true;
 			}
 			$raw_value = base64_encode($torrent->__toString());
 			$filename = is_object($fname) ? $torrent->getFileName() : $fname;
-			if((strlen($raw_value)<self::RTORRENT_PACKET_LIMIT) || is_null($filename) || !User::isLocalMode())
+			if(strlen($raw_value)<self::RTORRENT_PACKET_LIMIT)
 			{
 				$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
 				$cmd->addParameter($raw_value,"base64");
@@ -38,6 +45,23 @@ class rTorrent
 			}
 			else
 			{
+				if(!User::isLocalMode())
+				{
+					// we can't send torrent to the other host without FS sharing
+					return(false);
+				}
+				if(is_null($filename))
+				{
+					$filename = FileUtil::getTempFilename($torrent->name(), 'torrent');
+					$mustSave = true;
+				}
+				if($mustSave)
+				{
+					// because torrent may be changed in memory
+FileUtil::toLog( "$filename saved" );
+					$torrent->save($filename);
+				}
+FileUtil::toLog( "sent" );
 				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
 				$cmd->addParameter($filename);
 			}

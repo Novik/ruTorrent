@@ -387,7 +387,9 @@ class Torrent
 	 */
 	public function save( $filename = null ) 
 	{
-	        $this->filename = is_null( $filename ) ? $this->info['name'] . '.torrent' : $filename;
+	        $this->filename = is_null( $filename ) ? 
+	        	FileUtil::getTempFilename($this->info['name'], 'torrent') : 
+	        	$filename;
         	return file_put_contents( $this->filename, $this->__toString() );
 	}
 
