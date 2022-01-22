@@ -58,10 +58,8 @@ class rTorrent
 				if($mustSave)
 				{
 					// because torrent may be changed in memory
-FileUtil::toLog( "$filename saved" );
 					$torrent->save($filename);
 				}
-FileUtil::toLog( "sent" );
 				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
 				$cmd->addParameter($filename);
 			}
