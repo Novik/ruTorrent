@@ -361,9 +361,12 @@ if(plugin.canChangeColumns() && plugin.collectStatForTorrents)
 			var rStat = this.ratiosStat;
 			$.each(data.torrents, function(hash,torrent)
 			{
-				torrent.ratioday = rStat[hash][0]/torrent.size;
-				torrent.ratioweek = rStat[hash][1]/torrent.size;
-				torrent.ratiomonth = rStat[hash][2]/torrent.size;
+				if($type(rStat[hash]) && torrent.size)
+				{
+					torrent.ratioday = rStat[hash][0]/torrent.size;
+					torrent.ratioweek = rStat[hash][1]/torrent.size;
+					torrent.ratiomonth = rStat[hash][2]/torrent.size;
+				}
 			});
 			plugin.addTorrents.call(this, data);
 			rStat = null;
