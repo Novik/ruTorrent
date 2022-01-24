@@ -1,6 +1,7 @@
 <?php
 
-@define("MAX_CACHE", 	16);
+@define("MIN_CACHE",	8);
+@define("MAX_CACHE", 	10);
 @define("SIZEOF_HASH", 	40);
 @define("SIZEOF_MD5", 	32);
 
@@ -91,7 +92,7 @@ class rpcCache
 		        	{	
 					@unlink( $file );
 					$i++;
-					if($i>MAX_CACHE/2)
+					if($i>(MAX_CACHE-MIN_CACHE))
 						break;
 				}
 			}
