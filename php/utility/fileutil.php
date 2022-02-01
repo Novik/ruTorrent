@@ -231,7 +231,7 @@ class FileUtil
 			$w = fopen( $log_file, "ab+" );
 			if( $w )
 			{
-				fputs( $w, "[".strftime( "%d.%m.%y %H:%M:%S" )."] {$str}\n" );
+				fputs( $w, "[".date_create()->format('Y-m-d H:i:s')."] {$str}\n" );
 				fclose( $w );
 			}
 		}
