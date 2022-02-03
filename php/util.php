@@ -12,7 +12,7 @@ spl_autoload_register(function ($class)
 	$arr = explode('\\',$class);
 	$class = end($arr);
 	
-	require_once 'utility/'. strtolower($class). '.php';
+	include_once 'utility/'. strtolower($class). '.php';
 });
 
 // Fixes quotations if php verison is less than 5.4
