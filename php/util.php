@@ -11,12 +11,8 @@ spl_autoload_register(function ($class)
 	// Important for compatibility with 3rd party plugins
 	$arr = explode('\\',$class);
 	$class = end($arr);
-	$file = __DIR__.'/utility/'. strtolower($class). '.php';
-
-	if(file_exists($file))
-    {
-        require_once $file;
-    }
+	
+	@include_once 'utility/'. strtolower($class). '.php';
 });
 
 // Fixes quotations if php verison is less than 5.4
