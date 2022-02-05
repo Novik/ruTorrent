@@ -157,7 +157,7 @@ class rTorrentSettings
 				if(is_file($file))
 				{
 					require_once( $file );
-					$func = $hook['name'].'Hooks::On'.$ename;
+					$func = str_replace('-', '_', $hook['name']).'Hooks::On'.$ename;
 					if(is_callable( $func ) && 
 						(call_user_func_array($func,$prm)==true))
 					{
