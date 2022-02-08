@@ -1221,12 +1221,12 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 	    {
 			var responseText = stub.getResponse(data);
 			if (partialData) {
-				if (responseText instanceof Array) {
-					responseText = partialData.concat(responseText);
-				} else if (responseText instanceof Object) {
+				if (responseText instanceof Object && !(responseText instanceof XMLDocument)) {
+					// merge responses for this.hashes with previous partialData
 					Object.assign(responseText, partialData);
-				} else {
-					responseText = partialData + responseText;
+				} else if (responseText instanceof String) {
+					// keep responseText = this.allHashes[0]
+					responseText = partialData;
 				}
 			}
 			if (pending) {
