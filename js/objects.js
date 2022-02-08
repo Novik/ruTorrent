@@ -372,16 +372,23 @@ var theContextMenu =
 		if(y<0)
 			y = 0;
 		obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
-                $("ul.CMenu a.exp").on('hover', function()
-                { 
-                	var submenu = $(this).next();
-                	if(submenu.offset().left + submenu.width() > $(window).width()) 
-	                	submenu.css( "left", -150 );
-                	if(submenu.offset().top + submenu.height() > $(window).height()) 
-	                	submenu.css( "top", -submenu.height()+20 );
-	                if(submenu.offset().top<0)
-				submenu.css( "top", -submenu.height()+20-submenu.offset().top );
-                });
+		obj.children("li").hover( function() {
+			var submenu = $(this).children("ul");
+			if (submenu.length) {
+				if(submenu.offset().left + submenu.width() > $(window).width())
+					submenu.css( "left", -150 );
+				if(submenu.offset().top + submenu.height() > $(window).height())
+					submenu.css( "top", -submenu.height()+20 );
+				if(submenu.offset().top<0)
+					submenu.css( "top", -submenu.height()+20-submenu.offset().top );
+				if ($(window).height() < submenu.offset().top + submenu.height())
+					submenu.css( { "padding-right": 12, "max-height": $(window).height() - submenu.offset().top, overflow: "visible scroll" } );
+			}
+		}, function () {
+			var submenu = $(this).children("ul");
+			if (submenu.length)
+				submenu.css( { "padding-right": 0, "max-height": "none", overflow: "visible" } );
+		});
                 obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
 	},
 	hide: function()
