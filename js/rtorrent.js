@@ -221,8 +221,11 @@ function rTorrentStub( URI )
 	this.commands = new Array();
 	if(eval('typeof(this.'+this.action+') != "undefined"'))
 		eval("this."+this.action+"()");
+	this.commandOffset = 0;
+	this.allHashes = this.hashes;
+	theRequestManager.patchRequest( this.commands );
 	if(this.commands.length>0)
-		this.makeMultiCall();
+		this.makeNextMultiCall();
 }
 
 rTorrentStub.prototype.getfiles = function()
@@ -648,13 +651,12 @@ rTorrentStub.prototype.createqueued = function()
 
 }
 
-rTorrentStub.prototype.makeMultiCall = function()
+rTorrentStub.prototype.makeNextMultiCall = function()
 {
-	theRequestManager.patchRequest( this.commands );
 	this.content = '<?xml version="1.0" encoding="UTF-8"?><methodCall><methodName>';
-	if(this.commands.length==1)
+	if(this.commandOffset == this.commands.length - 1)
 	{
-		var cmd = this.commands[0];
+		var cmd = this.commands[this.commandOffset++];
 	        this.content+=(cmd.command+'</methodName><params>');
 	        for(var i=0; i<cmd.params.length; i++)
 	        {
@@ -666,19 +668,27 @@ rTorrentStub.prototype.makeMultiCall = function()
 	}
 	else
 	{
+		// fragmentation of xml command (Content-Length must be <2MB for rtorrent 0.9.8)
+		var maxContentSize = 2 << (20 + 3*(theWebUI.systemInfo.rTorrent.apiVersion>=11));
 		this.content+='system.multicall</methodName><params><param><value><array><data>';
-		for(var i=0; i<this.commands.length; i++)
+		this.hashes = [];
+		for(; this.commandOffset < this.commands.length; this.commandOffset++)
 		{
-			var cmd = this.commands[i];
-			this.content+=('<value><struct><member><name>methodName</name><value><string>'+
+			var cmd = this.commands[this.commandOffset];
+			var cmd_string=('<value><struct><member><name>methodName</name><value><string>'+
 				cmd.command+'</string></value></member><member><name>params</name><value><array><data>');
 			for(var j=0; j<cmd.params.length; j++)
 			{
 				var prm = cmd.params[j];
-				this.content += ('<value><'+prm.type+'>'+
+				cmd_string += ('<value><'+prm.type+'>'+
 					prm.value+'</'+prm.type+'></value>');
 			}
-			this.content+="</data></array></value></member></struct></value>";
+			cmd_string+="</data></array></value></member></struct></value>";
+			if (this.hashes.length > 0 && this.content.length + cmd_string.length + 31 + 22 > maxContentSize)
+				break;
+			this.content+=cmd_string;
+			this.hashes.push(this.allHashes[this.commandOffset])
+			cmd_string = null;
 			cmd = null;
 		}
 		this.content+='</data></array></value></param>';
@@ -1162,9 +1172,9 @@ rTorrentStub.prototype.logErrorMessages = function()
 		noty(this.faultString[i],"error");
 }
 
-function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout) 
+function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialData)
 {
-	var stub = new rTorrentStub(URI);
+	var stub = URI instanceof rTorrentStub ? URI : new rTorrentStub(URI);
 	var request = $.ajax(
 	{
 		type: stub.method,
@@ -1204,11 +1214,25 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 		Ajax_UpdateTime(jqXHR);
 		
 		stub.logErrorMessages();
-		if(stub.listRequired)
+		var pending = !stub.isError() && stub.commandOffset < stub.commands.length;
+		if(!pending && stub.listRequired)
 			Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
 		else if(!stub.isError())
 	    {
 			var responseText = stub.getResponse(data);
+			if (partialData) {
+				if (responseText instanceof Array) {
+					responseText = partialData.concat(responseText);
+				} else if (responseText instanceof Object) {
+					Object.assign(responseText, partialData);
+				} else {
+					responseText = partialData + responseText;
+				}
+			}
+			if (pending) {
+				stub.makeNextMultiCall();
+				Ajax(stub, isASync, onComplete, onTimeout, onError, reqTimeout, responseText);
+			} else {
 			switch($type(onComplete))
 			{
 				case "function":
@@ -1221,6 +1245,7 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout)
 					onComplete[0].apply(onComplete[1], new Array(responseText, onComplete[2]));
 					break;
 				}
+			}
 			}
 			responseText = null; // Cleanup memory leak
 		}
