@@ -381,7 +381,13 @@ var theContextMenu =
 					submenu.css( "top", -submenu.height()+20 );
 				if(submenu.offset().top<0)
 					submenu.css( "top", -submenu.height()+20-submenu.offset().top );
+				if ($(window).height() < submenu.offset().top + submenu.height())
+					submenu.css( { "padding-right": 12, "max-height": $(window).height() - submenu.offset().top, overflow: "visible scroll" } );
 			}
+		}, function () {
+			var submenu = $(this).children("ul");
+			if (submenu.length)
+				submenu.css( { "padding-right": 0, "max-height": "none", overflow: "visible" } );
 		});
                 obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
 	},
