@@ -1,7 +1,8 @@
 ﻿/*
  * Turkish language file.
  *
- * Author: Turgay Yıldıran (votkalivirgul@gmail)
+ * Author: Turgay Yıldıran (votkalivirgul@gmail.com)
+ *         Müslüm Barış Korkmazer (bkbabinco@gmail.com)
  */
 
 var theUILang =
