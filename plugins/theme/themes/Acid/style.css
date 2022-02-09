@@ -19,6 +19,8 @@ ul.CMenu li:hover ul li a {background-color: #272E36; color: #00FF00}
 ul.CMenu li:hover ul li a:hover {background-color: #BDDBDB; color: #272E36;}
 
 div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
+.graph_tab_legend { color: #FFF; background-color: #272E36; }
+.graph_tab_tooltip { color: #FFF; background-color: #272E36; border: 1px solid #BDDBDB; }
 
 div#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
 div#t a:hover {background: transparent url(./images/tb_bg.gif) no-repeat scroll center center}

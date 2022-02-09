@@ -22,9 +22,6 @@ if(plugin.canChangeTabs())
 
 		this.ticks = new Array();
 		this.previousPoint = null;
-		var rule = getCSSRule("div.graph_tab");
-		this.gridColor = rule ? rule.style.color : "#545454";
-		this.backgroundColor = rule ? rule.style.borderColor : null;
 
 		this.checked = [ true, true, true, true ];
 		this.datasets = [ this.down, this.up, this.oldDown, this.oldUp ];
@@ -50,6 +47,8 @@ if(plugin.canChangeTabs())
 	rTraficGraph.prototype.draw = function()
 	{
 		var self = this;
+		var gridSel = $('.graph_tab_grid');
+		var legendSel = $('.graph_tab_legend');
 		$(function() 
 		{
 			if(self.owner.height() && self.owner.width())
@@ -66,9 +65,16 @@ if(plugin.canChangeTabs())
 				 	},
 					grid:
 					{
-						backgroundColor: self.backgroundColor,
-						color: self.gridColor,
+						color: gridSel.css('color'),
+						backgroundColor: gridSel.css('background-color'),
+						borderWidth: parseInt(gridSel.css('border-width')),
+						borderColor: gridSel.css('border-color'),
 						hoverable: true
+					},
+					legend : {
+						color: legendSel.css('color'),
+						borderColor: legendSel.css('border-color'),
+						backgroundColor: legendSel.css('background-color'),
 					},
 				  	yaxis: 
 				  	{ 
@@ -78,19 +84,14 @@ if(plugin.canChangeTabs())
 				});
 				function showTooltip(x, y, contents)
 				{
-        				$('<div id="tooltip">' + contents + '</div>').css( {
-						position: 'absolute',
-						display: 'none',
-						top: y + 5,
-						left: x + 5,
-						border: '1px solid #fdd',
-						padding: '2px',
-						'background-color': '#fee',
-						'color': 'black',
-						'font-size': '11px',
-						'font-weight': 'bold',
-						'font-family': 'Tahoma, Arial, Helvetica, sans-serif',
-						opacity: 0.80
+					$('<div>').attr('id', 'tooltip')
+						.addClass('graph_tab_tooltip')
+						.text(contents)
+						.css( {
+							position: 'absolute',
+							display: 'none',
+							top: y + 5,
+							left: x + 5,
 					}).appendTo("body").fadeIn(200);
 				}
 

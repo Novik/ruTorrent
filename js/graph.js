@@ -46,9 +46,6 @@ rSpeedGraph.prototype.create = function( aOwner )
 	this.down = { label: theUILang.DL, data: [], color: "#1C8DFF" };
 	this.up = { label: theUILang.UL, data: [], color: "#009900" };
 	this.startSeconds = new Date().getTime()/1000;
-	var rule = getCSSRule("div.graph_tab");
-	this.gridColor = rule ? rule.style.color : "#545454";
-	this.backgroundColor = rule ? rule.style.borderColor : null;
 
 	this.checked = [ true, true ];
 	this.datasets = [ this.up, this.down ];
@@ -79,6 +76,8 @@ rSpeedGraph.prototype.getColors = function()
 var previousSpeedPoint = null;
 rSpeedGraph.prototype.draw = function()
 {
+	var gridSel = $('.graph_tab_grid');
+	var legendSel = $('.graph_tab_legend');
 	var self = this;
 	$(function() 
 	{
@@ -109,9 +108,16 @@ rSpeedGraph.prototype.draw = function()
 				},
 				grid:
 				{
-					color: self.gridColor,
-					backgroundColor: self.backgroundColor,
+					color: gridSel.css('color'),
+					backgroundColor: gridSel.css('background-color'),
+					borderWidth: parseInt(gridSel.css('border-width')),
+					borderColor: gridSel.css('border-color'),
 					hoverable: true
+				},
+				legend : {
+					color: legendSel.css('color'),
+					borderColor: legendSel.css('border-color'),
+					backgroundColor: legendSel.css('background-color'),
 				},
 				xaxis: 
 				{ 
@@ -130,19 +136,14 @@ rSpeedGraph.prototype.draw = function()
 
 			function showTooltip(x, y, contents)
 			{
-        			$('<div id="tooltip">' + contents + '</div>').css( {
-					position: 'absolute',
-					display: 'none',
-					top: y + 5,
-					left: x + 5,
-					border: '1px solid #fdd',
-					padding: '2px',
-					'background-color': '#fee',
-					'color': 'black',
-					'font-size': '11px',
-					'font-weight': 'bold',
-					'font-family': 'Tahoma, Arial, Helvetica, sans-serif',
-					opacity: 0.80
+				$('<div>').attr('id', 'tooltip')
+					.addClass('graph_tab_tooltip')
+					.text(contents)
+					.css( {
+						position: 'absolute',
+						display: 'none',
+						top: y + 5,
+						left: x + 5,
 				}).appendTo("body").fadeIn(200);
 			}
 
