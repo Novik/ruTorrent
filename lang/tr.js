@@ -277,7 +277,7 @@ var theUILang =
  registerMagnet : "Başlangıçta mıknatıs protokolü işleyicisini kaydetmeyi deneyin",
  linkTorTorrentRestored : "rTorrent ile bağlantı kuruldu.",
  removeAllTegs : "Tüm etiketleri kaldır",
- Torrentler: "Torrent(ler)",
+ Torrents: "Torrent(ler)",
  copyToClipboardFailed : "Tarayıcınızda kopyalama işlevi çalışmıyor.\nLütfen bu içeriği manuel olarak kopyalayın:\n\n",
  copyToClipboardSuccess : "Panoya başarıyla kopyalandı!"
 };
