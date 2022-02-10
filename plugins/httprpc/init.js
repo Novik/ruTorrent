@@ -68,7 +68,7 @@ rTorrentStub.prototype.listResponse = function(data)
 				state|=dStatus.error;
 			torrent.state = state;
 			torrent.name = values[4];
-			torrent.size = values[5];
+			torrent.size = iv(values[5]);
 			var get_completed_chunks = iv(values[6]);
 			var get_hashed_chunks = iv(values[24]);
 			var get_size_chunks = iv(values[7]);
@@ -84,20 +84,6 @@ rTorrentStub.prototype.listResponse = function(data)
 			try {
 			torrent.label = decodeURIComponent(values[14]).trim();
 			} catch(e) { torrent.label = ''; }
-
-			if(torrent.label.length>0)
-			{
-				if(!$type(ret.labels[torrent.label]))
-				{
-					ret.labels[torrent.label] = 1;
-					ret.labels_size[torrent.label] = parseInt(torrent.size);
-				}
-				else
-				{
-					ret.labels[torrent.label]++;
-					ret.labels_size[torrent.label] = parseInt(ret.labels_size[torrent.label]) + parseInt(torrent.size);
-				}
-			}
 
 			var get_peers_not_connected = iv(values[16]);
 			var get_peers_connected = iv(values[17]);

@@ -96,6 +96,7 @@ div#CatList ul li.sel {background-color: #CFDEEF; border-color: #CFDEEF }
 #-_-_-act-_-_- {background-position: 4px -158px;}
 #-_-_-iac-_-_- {background-position: 4px -30px;}
 #-_-_-err-_-_- {background-position: 4px -94px;}
+span.label-count,span.label-size { background-color: #F0F0F0; padding: 0.1em 0.3em 0.1em 0.3em; margin-left: 0.3em; border-radius: 0.8em; }
 div#CatList ul li.RSS {background-image: url(../images/tstatus.png); background-position: 4px -206px}
 div#CatList ul li.disRSS {background-image: url(../images/tstatus.png); background-position: 4px -190px}
 

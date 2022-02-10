@@ -156,6 +156,8 @@ var theWebUI =
 		"webui.speedintitle":		0,
 		"webui.log_autoswitch":		1,
 		"webui.show_labelsize":		1,
+		"webui.show_searchlabelsize":	0,
+		"webui.show_statelabelsize":	0,
 		"webui.register_magnet":	0
 	},
 	showFlags: 0,
@@ -183,19 +185,21 @@ var theWebUI =
 	peers:		{},
 	labels:
 	{
-		"-_-_-all-_-_-":	0,
-		"-_-_-dls-_-_-":	0,
-		"-_-_-com-_-_-":	0,
-		"-_-_-act-_-_-":	0,
-		"-_-_-iac-_-_-":	0,
-		"-_-_-nlb-_-_-":	0,
-		"-_-_-err-_-_-":	0
+		"-_-_-all-_-_-":	{ cnt: 0, size: 0 },
+		"-_-_-dls-_-_-":	{ cnt: 0, size: 0 },
+		"-_-_-com-_-_-":	{ cnt: 0, size: 0 },
+		"-_-_-act-_-_-":	{ cnt: 0, size: 0 },
+		"-_-_-iac-_-_-":	{ cnt: 0, size: 0 },
+		"-_-_-nlb-_-_-":	{ cnt: 0, size: 0 },
+		"-_-_-err-_-_-":	{ cnt: 0, size: 0 }
 	},
 	actLbls:
 	{
 		"pstate_cont": ""
 	},
 	cLabels:	{},
+	stateLabels: {},
+	staticLabels: ['dls','com','act','iac','nlb','err'],
 	dID:		"",
 	pID:		"",
 	speedGraph:	new rSpeedGraph(),
@@ -1638,14 +1642,11 @@ var theWebUI =
 	 * @property {StatusMask} state
 	 * @property {number} done - number between 0..1000
 	 * @property {number} size
-	 * @property {boolean} _updated
 	 */
 
 	/**
 	 * @param {Object} data
-	 * @param {Array.<WebUITorrent>} data.torrents
-	 * @param {Object.<string, number>} data.labels
-	 * @param {Object.<string, number>} data.labels_size
+	 * @param {Object.<string, WebUITorrent>} data.torrents
 	 */
 	addTorrents: function(data)
 	{
@@ -1709,45 +1710,47 @@ var theWebUI =
 				for( var prop in torrent)
 				        table.setValueById(hash, prop, torrent[prop]);
 			}
-			torrent._updated = true;
 		});
-		$.extend(this.torrents,data.torrents);
-		this.setSpeedValues(tul,tdl);
 		var wasRemoved = false;
-		this.clearTegs();
-		$.each(this.torrents,function(hash,torrent)
-		{
-			if(!torrent._updated)
-			{
-				delete theWebUI.torrents[hash];
+		for (var hash in this.torrents) {
+			// cleanup removed torrents
+			if (!(hash in data.torrents)) {
 				delete theWebUI.files[hash];
 				delete theWebUI.dirs[hash];
 				delete theWebUI.peers[hash];
-				if(theWebUI.labels[hash].indexOf("-_-_-nlb-_-_-") >- 1)
-					theWebUI.labels["-_-_-nlb-_-_-"]--;
-				if(theWebUI.labels[hash].indexOf("-_-_-com-_-_-") >- 1)
-						theWebUI.labels["-_-_-com-_-_-"]--;
-				if(theWebUI.labels[hash].indexOf("-_-_-dls-_-_-") >- 1)
-						theWebUI.labels["-_-_-dls-_-_-"]--;
-				if(theWebUI.labels[hash].indexOf("-_-_-act-_-_-") >- 1)
-						theWebUI.labels["-_-_-act-_-_-"]--;
-				if(theWebUI.labels[hash].indexOf("-_-_-iac-_-_-") >- 1)
-						theWebUI.labels["-_-_-iac-_-_-"]--;
-				if(theWebUI.labels[hash].indexOf("-_-_-err-_-_-") >- 1)
-						theWebUI.labels["-_-_-err-_-_-"]--;
 				delete theWebUI.labels[hash];
 				table.removeRow(hash);
 				wasRemoved = true;
 			}
-			else
-			{
-				torrent._updated = false;
-				theWebUI.updateTegs(torrent);
-			}
-		});
+		}
+		this.torrents = data.torrents;
+		this.setSpeedValues(tul,tdl);
 		this.getAllTrackers(tArray);
-		this.loadLabels(data.labels, data.labels_size);
+
+		// sum up label sizes
+		var labelCount = {};
+		var labelSize = {};
+		this.allLabelSize = 0;
+		for (var lbl of this.staticLabels) {
+			labelCount[lbl] = 0;
+			labelSize[lbl] = 0;
+		}
+
+		for (var hash in this.torrents) {
+			var t = this.torrents[hash];
+			for (var lbl of (this.stateLabels[hash]||[]).concat(t.label.length ? [t.label] : [])) {
+				labelCount[lbl] = (labelCount[lbl]||0) + 1;
+				labelSize[lbl] = (labelSize[lbl]||0) + t.size;
+			}
+			this.allLabelSize += t.size;
+		}
+
+		this.loadLabels(labelCount, labelSize);
+		// update state and custom labels
 		this.updateLabels(wasRemoved);
+		// update search labels (tegs)
+		this.updateTegs(Object.values(this.tegs));
+		this.updateTegLabels(Object.keys(this.tegs));
 		this.loadTorrents();
 		this.getTotal();
 
@@ -1757,6 +1760,13 @@ var theWebUI =
 		tArray = null;
 		table = null;
 		data = null;
+	},
+
+	updateAllFilterLabel: function(labelType, showSize) {
+		this.updateLabel(
+			'#' + labelType + ' .-_-_-all-_-_-',
+			Object.keys(this.torrents).length,
+			this.allLabelSize, showSize);
 	},
 
 	setSpeedValues: function(tul,tdl)
@@ -1875,14 +1885,13 @@ var theWebUI =
 					this.switchLabel($$(id));
 					return;
 				}
-			var tegIg = "teg_"+this.lastTeg;
+			var tegId = "teg_"+this.lastTeg;
 			this.lastTeg++;
-			var el = $("<LI>").attr("id",tegIg).addClass("teg").
-				html(escapeHTML(str) + "&nbsp;(<span id=\"" + tegIg + "-c\">0</span>)").attr("title",str+" (0)").
-				mouseclick(theWebUI.tegContextMenu).addClass("cat")
+			var el = this.createSelectableLabelElement(tegId, str, theWebUI.tegContextMenu).addClass('teg');
 			$("#lblf").append( el );
-			this.tegs[tegIg] = { val: str, cnt: 0 };
-			this.updateTeg(tegIg);
+			this.tegs[tegId] = { val: str };
+			this.updateTegs([this.tegs[tegId]]);
+			this.updateTegLabels([tegId]);
 			this.resetLabels();
 			this.switchLabel(el[0]);
 		}
@@ -1892,45 +1901,35 @@ var theWebUI =
 		}
 	},
 
-	clearTegs: function()
-	{
-		for( var id in this.tegs )
-			this.tegs[id].cnt = 0;
-	},
-
 	matchTeg: function(teg, name)
 	{
 		var pattern = teg.val.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
 		return new RegExp(pattern.replace('*', '.+'), 'i').test(name);
 	},
 
-	updateTeg: function(id)
+	updateTegs: function(tegObjs)
 	{
-		var teg = this.tegs[id];
-		var self = this;
-		$.each(this.torrents,function(hash,torrent)
-		{
-			if(self.matchTeg(teg, torrent.name))
-				teg.cnt++;
-		});
-		var counter = $("#"+id+"-c");
-		if(counter.text()!=teg.cnt)
-		{
-			counter.text(teg.cnt);
-			$("#"+id).prop("title",teg.val+" ("+teg.cnt+")");
+		for (var teg of tegObjs) {
+			teg.cnt = 0;
+			teg.size = 0;
+		}
+		for (var hash in this.torrents) {
+			var torrent = this.torrents[hash];
+			for (var teg of tegObjs) {
+				if(this.matchTeg(teg, torrent.name)) {
+					teg.cnt++;
+					teg.size += torrent.size;
+				}
+			}
 		}
 	},
 
-	/**
-	 * @param {WebUITorrent} torrent
-	 */
-	updateTegs: function(torrent)
+	updateTegLabels: function(tegIds)
 	{
-		for( var id in this.tegs )
+		for( var id of tegIds )
 		{
 			var teg = this.tegs[id];
-			if(this.matchTeg(teg, torrent.name))
-				teg.cnt++;
+			this.updateLabel($$(id), teg.cnt, teg.size, this.settings["webui.show_searchlabelsize"]);
 		}
 	},
 
@@ -1966,7 +1965,7 @@ var theWebUI =
 			}
 			else
 				theContextMenu.clear();
-			theContextMenu.add([theUILang.removeTeg, "theWebUI.removeTeg('"+e.target.id+"');"]);
+			theContextMenu.add([theUILang.removeTeg, "theWebUI.removeTeg('"+this.id+"');"]);
 			theContextMenu.add([theUILang.removeAllTegs, "theWebUI.removeAllTegs();"]);
 			theContextMenu.show(e.clientX,e.clientY);
 		}
@@ -2005,36 +2004,32 @@ var theWebUI =
 	loadLabels: function(c, s)
 	{
 		var p = $("#lbll");
-		var temp = new Array();
-		var keys = new Array();
-		for(var lbl in c)
-			keys.push(lbl);
-		keys.sort();
+		var lbls = Object.keys(c);
+		lbls.sort();
 
-		for(var i=0; i<keys.length; i++)
+		this.cLabels = {};
+		for(var lbl of lbls)
 		{
-			var lbl = keys[i];
-			var lblSize = this.settings["webui.show_labelsize"] ? " ; " + theConverter.bytes(s[lbl], 2) : "";
-			this.labels["-_-_-" + lbl + "-_-_-"] = c[lbl] + lblSize;
-			this.cLabels[lbl] = 1;
-			temp["-_-_-" + lbl + "-_-_-"] = true;
-			if(!$$("-_-_-" + lbl + "-_-_-"))
+			var id = "-_-_-" + lbl + "-_-_-";
+			if (!this.staticLabels.includes(lbl))
 			{
-				p.append( $("<LI>").
-					attr("id","-_-_-" + lbl + "-_-_-").
-					html(escapeHTML(lbl) + "&nbsp;(<span id=\"-_-_-" + lbl + "-_-_-c\">" + c[lbl] + lblSize + "</span>)").
-					mouseclick(theWebUI.labelContextMenu).addClass("cat") );
+				// use custom label
+				this.cLabels[lbl] = 1;
+				if(!$$(id))
+				{
+					p.append( this.createSelectableLabelElement(id, lbl, theWebUI.labelContextMenu));
+				}
 			}
+			this.labels[id] = { cnt: c[lbl], size: s[lbl] };
 		}
 		var actDeleted = false;
+		var pLabels = ['nlb'].concat(Object.keys(this.cLabels));
 		p.children().each(function(ndx,val)
 		{
 			var id = val.id;
-			if(id && !$type(temp[id]))
-			{
+			var lbl = (id&&id.substr(5, id.length - 10))||'nlb';
+			if (!pLabels.includes(lbl)) {
 				$(val).remove();
-				delete theWebUI.labels[id];
-				delete theWebUI.cLabels[id.substr(5, id.length - 10)];
 				if(theWebUI.actLbls["plabel_cont"] == id)
 					actDeleted = true;
 			}
@@ -2052,61 +2047,14 @@ var theWebUI =
 	 */
 	getLabels : function(id, torrent)
 	{
-		if(!$type(this.labels[id]))
-			this.labels[id] = "";
-		var lbl = torrent.label;
-		if(lbl == "")
-      		{
-			lbl += "-_-_-nlb-_-_-";
-			if(this.labels[id].indexOf("-_-_-nlb-_-_-") ==- 1)
-				this.labels["-_-_-nlb-_-_-"]++;
-		}
-		else
-			if(this.labels[id].indexOf("-_-_-nlb-_-_-") >- 1)
-				this.labels["-_-_-nlb-_-_-"]--;
-		lbl = "-_-_-" + lbl + "-_-_-";
-		if(torrent.done < 1000)
-      		{
-			lbl += "-_-_-dls-_-_-";
-			if(this.labels[id].indexOf("-_-_-dls-_-_-") ==- 1)
-				this.labels["-_-_-dls-_-_-"]++;
-			if(this.labels[id].indexOf("-_-_-com-_-_-") >- 1)
-				this.labels["-_-_-com-_-_-"]--;
-		}
-		else
-      		{
-			lbl += "-_-_-com-_-_-";
-			if(this.labels[id].indexOf("-_-_-com-_-_-") ==- 1)
-				this.labels["-_-_-com-_-_-"]++;
-			if(this.labels[id].indexOf("-_-_-dls-_-_-") >- 1)
-				this.labels["-_-_-dls-_-_-"]--;
-         	}
-		if((torrent.dl >= 1024) || (torrent.ul >= 1024))
-		{
-			lbl += "-_-_-act-_-_-";
-			if(this.labels[id].indexOf("-_-_-act-_-_-") ==- 1)
-				this.labels["-_-_-act-_-_-"]++;
-			if(this.labels[id].indexOf("-_-_-iac-_-_-") >- 1)
-				this.labels["-_-_-iac-_-_-"]--;
-		}
-		else
-		{
-			lbl += "-_-_-iac-_-_-";
-			if(this.labels[id].indexOf("-_-_-iac-_-_-") ==- 1)
-				this.labels["-_-_-iac-_-_-"]++;
-			if(this.labels[id].indexOf("-_-_-act-_-_-") >- 1)
-				this.labels["-_-_-act-_-_-"]--;
-		}
-		if(torrent.state & dStatus.error)
-		{
-			lbl += "-_-_-err-_-_-";
-			if(this.labels[id].indexOf("-_-_-err-_-_-") ==- 1)
-				this.labels["-_-_-err-_-_-"]++;
-		}
-		else
-  			if(this.labels[id].indexOf("-_-_-err-_-_-") >- 1)
-				this.labels["-_-_-err-_-_-"]--;
-		return(lbl);
+		this.stateLabels[id] = [
+			torrent.label.length ? '' : 'nlb',
+			torrent.done < 1000 ? 'dls' : 'com',
+			(torrent.dl >= 1024) || (torrent.ul >= 1024) ? 'act' : 'iac',
+			torrent.state & dStatus.error ? 'err' : '',
+		].filter(lbl => lbl.length);
+		return((torrent.label.length ? '-_-_-' + torrent.label + '-_-_-' : '') +
+			this.stateLabels[id].map(function (lbl) { return('-_-_-' + lbl + '-_-_-'); }).join(''));
 	},
 
 	/**
@@ -2164,24 +2112,49 @@ var theWebUI =
 		}
    	},
 
+	createSelectableLabelElement: function(id, text, onClick) {
+		return( $("<LI>").attr("id",id)
+		.append($('<span>').addClass('label-text').text(text))
+		.append($('<span>').addClass('label-count').text(0))
+		.append($('<span>').addClass('label-size'))
+		.attr("title",text+" (0)")
+		.mouseclick(onClick))
+		.addClass("cat");
+	},
+
+	updateLabel: function(label, count, size, showSize) {
+		var li = $(label);
+		var lblSize = theConverter.bytes(size, 2);
+		li.children('.label-count').text(count);
+		var txt = li.children('.label-text');
+		li.attr('title',
+			txt.contents().not(txt.children('script')).text() + 
+			' ('+ count + ( showSize ? ' ; '+ lblSize : '') +')');
+		var sizeSpan = li.children('.label-size');
+		sizeSpan.text(lblSize);
+		if (showSize)
+		{
+			sizeSpan.show();
+		} else {
+			sizeSpan.hide();
+		}
+	},
+
 	updateLabels: function(wasRemoved)
 	{
-		$(".-_-_-all-_-_-c").text(Object.keys(this.torrents).length)
+		this.updateAllFilterLabel('pstate_cont', this.settings["webui.show_statelabelsize"]);
+		this.updateAllFilterLabel('plabel_cont', this.settings["webui.show_labelsize"]);
+		this.updateAllFilterLabel('flabel_cont', this.settings["webui.show_searchlabelsize"]);
 
 		for(var k in this.labels)
-			if(k.substr(0, 5) == "-_-_-")
-				$($$(k+"c")).text(this.labels[k]);
-
-		for( var id in this.tegs )
-		{
-			var counter = $("#"+id+"-c");
-			var teg = this.tegs[id];
-			if(counter.text()!=teg.cnt)
-			{
-				counter.text(teg.cnt);
-				$("#"+id).prop("title",teg.val+" ("+teg.cnt+")");
+			if(k.substr(0, 5) == "-_-_-") {
+				var lbl = k.substr(5, k.length - 10);
+				this.updateLabel(
+					$$(k),
+					this.labels[k].cnt,
+					this.labels[k].size,
+					this.staticLabels.includes(lbl) && lbl != 'nlb' ? this.settings["webui.show_statelabelsize"] : this.settings["webui.show_labelsize"]);
 			}
-		}
 	},
 
 	resetLabels: function() {
