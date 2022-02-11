@@ -1094,7 +1094,7 @@ rTorrentStub.prototype.listResponse = function(xml)
 			state|=dStatus.error;
 		torrent.state = state;
 		torrent.name = this.getValue(values,5);
-		torrent.size = this.getValue(values,6);
+		torrent.size = iv(this.getValue(values,6));
 		var get_completed_chunks = parseInt(this.getValue(values,7));
 		var get_hashed_chunks = parseInt(this.getValue(values,25));
 		var get_size_chunks = parseInt(this.getValue(values,8));
@@ -1110,19 +1110,7 @@ rTorrentStub.prototype.listResponse = function(xml)
 		try {
 		torrent.label = decodeURIComponent(this.getValue(values,15)).trim();
 		} catch(e) { torrent.label = ''; }
-		if(torrent.label.length>0)
-		{
-			if(!$type(ret.labels[torrent.label]))
-			{
-				ret.labels[torrent.label] = 1;
-				ret.labels_size[torrent.label] = parseInt(torrent.size);
-			}
-			else
-			{
-				ret.labels[torrent.label]++;
-				ret.labels_size[torrent.label] = parseInt(ret.labels_size[torrent.label]) + parseInt(torrent.size);
-			}
-		}
+
 		var get_peers_not_connected = parseInt(this.getValue(values,17));
 		var get_peers_connected = parseInt(this.getValue(values,18));
 		var get_peers_all = get_peers_not_connected+get_peers_connected;

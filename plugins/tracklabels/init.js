@@ -141,6 +141,7 @@ theWebUI.updateLabels = function(wasRemoved)
 	{
 		if(wasRemoved)
 			theWebUI.rebuildTrackersLabels();
+		theWebUI.updateAllFilterLabel('torrl', this.settings["webui.show_labelsize"]);
 		plugin.updateLabelsImages();
 	}
 }
@@ -194,31 +195,21 @@ theWebUI.rebuildTrackersLabels = function()
 		}
 		var ul = $("#torrl");
 
-		var keys = new Array();
-		for(var lbl in trackersLabels)
-			keys.push(lbl);
-		keys.sort();
+		var lbls = Object.keys(trackersLabels);
+		lbls.sort();
 
-		for(var i=0; i<keys.length; i++) 
+		for(var lbl of lbls)
 		{
-			var lbl = keys[i];
-			var li = null;
-			var lblSize = this.settings["webui.show_labelsize"] ? ' ; '+theConverter.bytes(trackersSizes[lbl], 2) : "";
-			if(lbl in this.trackersLabels)
+			if(!(lbl in this.trackersLabels))
 			{
-				li = $($$('i'+lbl));
-	                	li.children("span").text(trackersLabels[lbl]+lblSize);
+				ul.append( theWebUI.createSelectableLabelElement('i'+lbl, lbl, theWebUI.trackersLabelContextMenu)
+					.addClass("tracker")
+					.prepend( $("<img>").attr("src","plugins/tracklabels/action.php?tracker="+lbl).addClass("tfavicon") )
+					.css({ padding: "2px 4px" }));
 			}
-			else
-			{
-			        li = $('<li>').attr("id",'i'+lbl).
-			        	html(escapeHTML(lbl)+'&nbsp;(<span id="-'+lbl+'_c">'+trackersLabels[lbl]+lblSize+'</span>)').
-			        	mouseclick(theWebUI.trackersLabelContextMenu).addClass("cat tracker").attr("title",lbl+" ("+trackersLabels[lbl]+")").
-					prepend( $("<img>").attr("src","plugins/tracklabels/action.php?tracker="+lbl).addClass("tfavicon") ).css({ padding: "2px 4px" });
-				ul.append(li);
-			}
+			theWebUI.updateLabel($$('i'+lbl), trackersLabels[lbl], trackersSizes[lbl], theWebUI.settings["webui.show_labelsize"]);
 			if(plugin.isActualLabel(lbl))
-				li.addClass("sel");
+				$($$('i'+lbl)).addClass("sel");
 		}
 		var needSwitch = false;
 		for(var lbl in this.trackersLabels)
@@ -253,11 +244,7 @@ theWebUI.initTrackersLabels = function()
 		append($("<ul></ul>").attr("id","torrl"));
 
 	var ul = $("#torrl");
-	var li = $('<li>').
-		addClass("-_-_-all-_-_- sel cat").
-		html(theUILang.All+' (<span class="-_-_-all-_-_-c">0</span>)</li>').
-		mouseclick(theWebUI.trackersLabelContextMenu);
-	ul.append(li);
+	ul.append(theWebUI.createSelectableLabelElement(undefined, theUILang.All, theWebUI.trackersLabelContextMenu).addClass('-_-_-all-_-_- sel'));
 
 	plugin.markLoaded();
 };

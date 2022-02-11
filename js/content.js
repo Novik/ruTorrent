@@ -337,8 +337,14 @@ function makeContent()
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.log_autoswitch\"/>"+
 						"<label for=\"webui.log_autoswitch\" id=\"lbl_webui.log_autoswitch\" >"+theUILang.logAutoSwitch+"</label>"+
 					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_statelabelsize\"/>"+
+						"<label for=\"webui.show_statelabelsize\" id=\"lbl_webui.show_statelabelsize\" >"+theUILang.showStateLabelSize+"</label>"+
+					"</div>"+
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_labelsize\"/>"+
 						"<label for=\"webui.show_labelsize\" id=\"lbl_webui.show_labelsize\" >"+theUILang.showLabelSize+"</label>"+
+					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_searchlabelsize\"/>"+
+						"<label for=\"webui.show_searchlabelsize\" id=\"lbl_webui.show_searchlabelsize\" >"+theUILang.showSearchLabelSize+"</label>"+
 					"</div>"+
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.register_magnet\"/>"+
 						"<label for=\"webui.register_magnet\" id=\"lbl_webui.register_magnet\" >"+theUILang.registerMagnet+"</label>"+
