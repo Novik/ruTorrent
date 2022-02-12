@@ -1,4 +1,3 @@
-plugin.loadMainCSS();
 
 theWebUI.trackersLabels = {};
 plugin.injectedStyles = {};
@@ -123,27 +122,31 @@ theWebUI.trackersLabelContextMenu = function(e)
 	return(false);
 }
 
-plugin.updateLabelsImages = function()
+plugin.updateLabel = theWebUI.updateLabel;
+theWebUI.updateLabel = function(label, ...args)
 {
-	$('#plabel_cont ul li').each( function()
+	plugin.updateLabel.call(this, label, ...args);
+	var icon = $(label).children('.label-icon');
+	var id = icon.parent().attr('id');
+	if (id && icon.parents('#plabel_cont')[0] && !icon.children('img')[0])
 	{
-		var lbl = this.id.substr(5,this.id.length-10);
-		if(!$$("lbl_"+lbl))
-			$(this).prepend( $("<img>").attr("id","lbl_"+lbl).attr("src","plugins/tracklabels/action.php?label="+lbl).addClass("tfavicon") ).css({ padding: "2px 4px" });
-	});
+		var lbl = theWebUI.idToLbl(id);
+		icon.append($("<img>")
+			.attr({ id: 'lbl_'+lbl, src: 'plugins/tracklabels/action.php?label='+lbl}))
+			.css({ background: 'none' });
+	}
 }
 
 plugin.updateLabels = theWebUI.updateLabels;
 theWebUI.updateLabels = function(wasRemoved)
 {
-	plugin.updateLabels.call(theWebUI,wasRemoved);
 	if(plugin.enabled)
 	{
 		if(wasRemoved)
 			theWebUI.rebuildTrackersLabels();
 		theWebUI.updateAllFilterLabel('torrl', this.settings["webui.show_labelsize"]);
-		plugin.updateLabelsImages();
 	}
+	plugin.updateLabels.call(theWebUI,wasRemoved);
 }
 
 theWebUI.rebuildTrackersLabels = function()
@@ -202,10 +205,11 @@ theWebUI.rebuildTrackersLabels = function()
 		{
 			if(!(lbl in this.trackersLabels))
 			{
-				ul.append( theWebUI.createSelectableLabelElement('i'+lbl, lbl, theWebUI.trackersLabelContextMenu)
-					.addClass("tracker")
-					.prepend( $("<img>").attr("src","plugins/tracklabels/action.php?tracker="+lbl).addClass("tfavicon") )
-					.css({ padding: "2px 4px" }));
+				ul.append(theWebUI.createSelectableLabelElement('i'+lbl, lbl, theWebUI.trackersLabelContextMenu)
+					.addClass("tracker"));
+				$($$('i'+lbl)).children('.label-icon')
+					.append($("<img>").attr("src","plugins/tracklabels/action.php?tracker="+lbl))
+					.css({ background: 'none' });
 			}
 			theWebUI.updateLabel($$('i'+lbl), trackersLabels[lbl], trackersSizes[lbl], theWebUI.settings["webui.show_labelsize"]);
 			if(plugin.isActualLabel(lbl))

@@ -346,6 +346,12 @@ function makeContent()
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_searchlabelsize\"/>"+
 						"<label for=\"webui.show_searchlabelsize\" id=\"lbl_webui.show_searchlabelsize\" >"+theUILang.showSearchLabelSize+"</label>"+
 					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_label_path_tree\"/>"+
+						"<label for=\"webui.show_label_path_tree\" id=\"lbl_webui.show_label_path_tree\" >"+theUILang.showCustomLabelTree+"</label>"+
+					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_empty_path_labels\"/>"+
+						"<label for=\"webui.show_empty_path_labels\" id=\"lbl_webui.show_empty_path_labels\" >"+theUILang.showEmptyPathLabel+"</label>"+
+					"</div>"+
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.register_magnet\"/>"+
 						"<label for=\"webui.register_magnet\" id=\"lbl_webui.register_magnet\" >"+theUILang.registerMagnet+"</label>"+
 					"</div>"+

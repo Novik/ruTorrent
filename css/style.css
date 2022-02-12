@@ -86,19 +86,24 @@ table#maincont {margin: 5px 0 0 0}
 table#maincont td.uicell {vertical-align: top; padding: 0 }
 
 div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden}
-div#CatList ul {padding: 0; margin: 0; list-style: none; white-space: nowrap}
-div#CatList ul li {padding: 2px 25px; margin: 0; line-height: 14px; font-size: 11px;  cursor: pointer; border: 1px solid #FFFFFF; background-repeat: no-repeat}
+div#CatList ul { margin: 0; padding: 0; list-style: none; white-space: nowrap}
+div#CatList ul li { display: flex; padding: 3px; flex-flow: row nowrap; align-items: center; height: 16px; font-size: 11px;  cursor: pointer; border: 0px solid #FFFFFF; overflow: hidden;}
 div#CatList ul li.sel {background-color: #CFDEEF; border-color: #CFDEEF }
-.-_-_-all-_-_-, #-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(../images/tstatus.png)}
-.-_-_-all-_-_-, #-_-_-all-_-_- {background-position: 4px -174px;}
-#-_-_-dls-_-_- {background-position: 4px 2px;}
-#-_-_-com-_-_- {background-position: 4px -14px;}
-#-_-_-act-_-_- {background-position: 4px -158px;}
-#-_-_-iac-_-_- {background-position: 4px -30px;}
-#-_-_-err-_-_- {background-position: 4px -94px;}
-span.label-count,span.label-size { background-color: #F0F0F0; padding: 0.1em 0.3em 0.1em 0.3em; margin-left: 0.3em; border-radius: 0.8em; }
-div#CatList ul li.RSS {background-image: url(../images/tstatus.png); background-position: 4px -206px}
-div#CatList ul li.disRSS {background-image: url(../images/tstatus.png); background-position: 4px -190px}
+div#CatList ul li div { margin-right: 0.5em; }
+div#CatList .label-prefix { flex: 0 0 auto; display: flex; flex-flow: row nowrap; opacity: 0.1; font-family: monospace; font-size: 19px; margin-left: -2px; margin-right: 2px; }
+div#CatList .label-prefix div { margin-right: 0px; width: 12px; }
+.label-icon { min-width: 16px; min-height: 16px; background-image: url(../images/tstatus.png); background-repeat: no-repeat; }
+.label-icon img { width: 16px; }
+.-_-_-all-_-_- .label-icon, #-_-_-all-_-_- .label-icon {background-position: 0px -176px;}
+#-_-_-dls-_-_- .label-icon {background-position: 0px 0px;}
+#-_-_-com-_-_- .label-icon {background-position: 0px -16px;}
+#-_-_-act-_-_- .label-icon {background-position: 0px -160px;}
+#-_-_-iac-_-_- .label-icon {background-position: 0px -32px;}
+#-_-_-err-_-_- .label-icon {background-position: 0px -96px;}
+.label-count,.label-size { background-color: #F0F0F0; padding: 0.1em 0.3em 0.1em 0.3em; border-radius: 0.8em; }
+div#CatList ul li.RSS .label-icon { background-position: 0px -208px}
+div#CatList ul li.disRSS .label-icon { background-position: 0px -192px}
+#flabel_cont li:not(.-_-_-all-_-_-) .label-icon { background-position: 0px -32px; }
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
 .Status_Down {background-position: 0px 0px}
