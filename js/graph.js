@@ -140,7 +140,6 @@ rSpeedGraph.prototype.draw = function()
 					.addClass('graph_tab_tooltip')
 					.text(contents)
 					.css( {
-						position: 'absolute',
 						display: 'none',
 						top: y + 5,
 						left: x + 5,

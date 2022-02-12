@@ -1754,7 +1754,7 @@ var theWebUI =
 		this.loadTorrents();
 		this.getTotal();
 
-		$('#viewrows').text(table.viewRows + '/' + table.rows);
+		this.updateViewRows(table)
 
 		// Cleanup memory leaks
 		tArray = null;
@@ -1767,6 +1767,17 @@ var theWebUI =
 			'#' + labelType + ' .-_-_-all-_-_-',
 			Object.keys(this.torrents).length,
 			this.allLabelSize, showSize);
+	},
+
+	updateViewRows: function(table)
+	{
+		var viewSize = 0;
+		for (var sId in table.rowdata) {
+			var s = iv(this.torrents[sId].size);
+			viewSize += s * (table.rowdata[sId].enabled);
+		}
+		$('#viewrows').text(table.viewRows + '/' + table.rows);
+		$('#viewrows_size').text(theConverter.bytes(viewSize, 2));
 	},
 
 	setSpeedValues: function(tul,tdl)
@@ -2187,7 +2198,7 @@ var theWebUI =
 			}
 			table.refreshRows();
 
-			$('#viewrows').text(table.viewRows + '/' + table.rows);
+			this.updateViewRows(table);
 		}
 	},
 
