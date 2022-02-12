@@ -51,9 +51,8 @@ a {color: #686868}
 div#CatList {border: 1px solid #333333; background-color: #181818}
 div#CatList ul li {border-color: #181818}
 div#CatList ul li.sel {background-color: #888888; color:#111111; border-color: #888888 }
-.-_-_-all-_-_-, #-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(./images/tstatus.png)}
-div#CatList ul li.RSS {background-image: url(./images/tstatus.png); }
-div#CatList ul li.disRSS {background-image: url(./images/tstatus.png); }
+div#CatList ul li.RSS .label-icon {background-image: url(./images/tstatus.png); }
+div#CatList ul li.disRSS .label-icon {background-image: url(./images/tstatus.png); }
 .stable-icon {background-image: url(./images/tstatus.png); }
 .Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
@@ -111,8 +110,8 @@ div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; }
 
 .catpanel { background: url(./images/pnl_open.gif) 2px no-repeat; background-color: #111111; border-bottom: 1px solid #333333; border-top: 1px solid #333333;  }
-span.label-count,span.label-size { background-color: #111111; }
-li.sel span.label-count,li.sel span.label-size { background-color: #999999; }
+.label-count,.label-size { background-color: #111111; }
+li.sel .label-count,li.sel .label-size { background-color: #999999; }
 
 #StatusBar { border-top: 1px solid #333333; background-color: #181818; color: #888888 }
 #st_up { background:url(./images/status_up.gif) 6px no-repeat; }

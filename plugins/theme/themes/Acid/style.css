@@ -44,15 +44,6 @@ input.Button { background: #D7D7D7 url(./images/h.gif) repeat-x center bottom; }
 div#CatList { background-color: #272E36; color: #BDDBDB;}
 div#CatList ul li { border: 1px solid #272E36; font-weight: bold; }
 div#CatList ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; color: #272E36;}
-.-_-_-all-_-_-, #-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(./images/tstatus.png)}
-.-_-_-all-_-_-, #-_-_-all-_-_- {background-position: 4px -174px;}
-#-_-_-dls-_-_- {background-position: 4px 2px;}
-#-_-_-com-_-_- {background-position: 4px -14px;}
-#-_-_-act-_-_- {background-position: 4px -158px;}
-#-_-_-iac-_-_- {background-position: 4px -30px;}
-#-_-_-err-_-_- {background-position: 4px -94px;}
-div#CatList ul li.RSS {background-image: url(./images/tstatus.png); }
-div#CatList ul li.disRSS {background-image: url(./images/tstatus.png); }
 
 .stable-icon {background-image: url(./images/tstatus.png); }
 
@@ -106,8 +97,8 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
 .catpanel { background: url(./images/pnl_open.gif) 2px no-repeat; background-color: #1e2124; color: #00ff00; font-weight: bold;}
-span.label-count,span.label-size { background-color: #1e2124; }
-li.sel span.label-count,li.sel span.label-size { background-color: #909090; }
+.label-count,.label-size { background-color: #1e2124; }
+li.sel .label-count,li.sel .label-size { background-color: #909090; }
 
 div#tadd-header {background-image: url(./images/world.gif); }
 div#tadd { background-color: #1e2124; border: 2px solid #909090; color: #BDDBDB;}

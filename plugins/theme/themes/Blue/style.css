@@ -34,8 +34,8 @@ input[type="text"], input[type="password"], input[type="file"], select, textarea
 input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled], select[disabled], textarea[disabled] { border: 1px solid #C0C0C0; background: #F0F0F0; color: #C0C0C0}
 
 .catpanel {background-color: #D9E8FB; color: #15428B; font-weight: bold; border: 1px solid #8DB2E3; background-image: url(./images/pnl_open.gif) }
-span.label-count,span.label-size { background-color: #D9E8FB; border-radius: 0.5em 0.5em 0 0; }
-li.sel span.label-count,li.sel span.label-size { background-color: #FFFFFF; }
+.label-count,.label-size { background-color: #D9E8FB; border-radius: 0.5em 0.5em 0 0; }
+li.sel .label-count,li.sel .label-size { background-color: #FFFFFF; }
 
 div#tdcont { background: #FFFFFF; border: 1px solid #99BBE8; }
 
