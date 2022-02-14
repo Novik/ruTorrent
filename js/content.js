@@ -274,6 +274,9 @@ function makeContent()
 					"<li id='hld_st_bt'><a id=\"mnu_st_bt\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_bt\'); return(false);\">"+
 						theUILang.BitTorrent+
 					"</a></li>"+
+					"<li  id='hld_st_fmt' ><a id=\"mnu_st_fmt\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_fmt\'); return(false);\">"+
+						theUILang.Format+
+					"</a></li>"+
 					"<li  id='hld_st_ao' class=\"last\"><a id=\"mnu_st_ao\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_ao\'); return(false);\">"+
 						theUILang.Advanced+
 					"</a></li>"+
@@ -306,16 +309,6 @@ function makeContent()
 					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.needmessage\"/>"+
 						"<label for=\"webui.needmessage\">"+theUILang.GetTrackerMessage+"</label>"+
 					"</div>"+
-
-					"<div class=\"op50l algnright\">"+
-						"<label for=\"webui.dateformat\">"+theUILang.DateFormat+":</label>&nbsp;"+
-						"<select id=\"webui.dateformat\">"+
-							"<option value='0'>31.12.2011</option>"+
-							"<option value='1'>2011-12-31</option>"+
-							"<option value='2'>12/31/2011</option>"+
-						"</select>"+
-					"</div>"+
-
 					"<div class=\"op50l\">"+
 						"<label for=\"webui.ignore_timeouts\">"+"<input type=\"checkbox\" id=\"webui.ignore_timeouts\" checked=\"true\" />"+theUILang.dontShowTimeouts+"</label>"+
 					"</div>"+
@@ -336,21 +329,6 @@ function makeContent()
 					"</div>"+
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.log_autoswitch\"/>"+
 						"<label for=\"webui.log_autoswitch\" id=\"lbl_webui.log_autoswitch\" >"+theUILang.logAutoSwitch+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_statelabelsize\"/>"+
-						"<label for=\"webui.show_statelabelsize\" id=\"lbl_webui.show_statelabelsize\" >"+theUILang.showStateLabelSize+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_labelsize\"/>"+
-						"<label for=\"webui.show_labelsize\" id=\"lbl_webui.show_labelsize\" >"+theUILang.showLabelSize+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_searchlabelsize\"/>"+
-						"<label for=\"webui.show_searchlabelsize\" id=\"lbl_webui.show_searchlabelsize\" >"+theUILang.showSearchLabelSize+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_label_path_tree\"/>"+
-						"<label for=\"webui.show_label_path_tree\" id=\"lbl_webui.show_label_path_tree\" >"+theUILang.showCustomLabelTree+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_empty_path_labels\"/>"+
-						"<label for=\"webui.show_empty_path_labels\" id=\"lbl_webui.show_empty_path_labels\" >"+theUILang.showEmptyPathLabel+"</label>"+
 					"</div>"+
 					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.register_magnet\"/>"+
 						"<label for=\"webui.register_magnet\" id=\"lbl_webui.register_magnet\" >"+theUILang.registerMagnet+"</label>"+
@@ -511,6 +489,58 @@ function makeContent()
 							"<td><input type=\"text\" id=\"ip\" class=\"Textbox str\" maxlength=\"50\" /></td>"+
 						"</tr>"+
 					"</table>"+
+				"</fieldset>"+
+			"</div>"+
+			"<div id=\"st_fmt\" class=\"stg_con\">"+
+				"<fieldset>"+
+					"<legend>"+theUILang.Format+"</legend>"+
+					"<div class=\"op50l\">"+
+						"<label for=\"webui.dateformat\">"+theUILang.DateFormat+":</label>&nbsp;"+
+						"<select id=\"webui.dateformat\">"+
+							"<option value='0'>31.12.2011</option>"+
+							"<option value='1'>2011-12-31</option>"+
+							"<option value='2'>12/31/2011</option>"+
+						"</select>"+
+					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_statelabelsize\"/>"+
+						"<label for=\"webui.show_statelabelsize\" id=\"lbl_webui.show_statelabelsize\" >"+theUILang.showStateLabelSize+"</label>"+
+					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_labelsize\"/>"+
+						"<label for=\"webui.show_labelsize\" id=\"lbl_webui.show_labelsize\" >"+theUILang.showLabelSize+"</label>"+
+					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_searchlabelsize\"/>"+
+						"<label for=\"webui.show_searchlabelsize\" id=\"lbl_webui.show_searchlabelsize\" >"+theUILang.showSearchLabelSize+"</label>"+
+					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_label_path_tree\"/>"+
+						"<label for=\"webui.show_label_path_tree\" id=\"lbl_webui.show_label_path_tree\" >"+theUILang.showCustomLabelTree+"</label>"+
+					"</div>"+
+					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_empty_path_labels\"/>"+
+						"<label for=\"webui.show_empty_path_labels\" id=\"lbl_webui.show_empty_path_labels\" >"+theUILang.showEmptyPathLabel+"</label>"+
+					"</div>"+
+				"</fieldset>"+
+				"<fieldset>"+
+					"<legend>"+theUILang.DecimalPlacesSizes+"</legend>"+
+					$('<table>').append(
+						$('<tr>').append(...[ '', 'Default', 'KB', 'MB', 'GB', 'TB', 'PB'].map((unit) =>
+							$('<th>').text(unit !== '' ? theUILang[unit] : ''))
+						),...Object.entries({
+							catlist: theUILang.CatListSizeDecimalPlaces,
+							table: theUILang.TableSizeDecimalPlaces,
+							details: theUILang.DetailsSizeDecimalPlaces,
+							other: theUILang.OtherSizeDecimalPlaces,
+						}).map(([context, name]) =>
+							$('<tr>').append(...
+								$('<th>').text(name),
+								...['default', 'kb', 'mb', 'gb', 'tb', 'pb'].map(unit =>
+									$('<td>').append(
+											$('<input>')
+												.attr({
+													type: 'number',
+													id: 'webui.size_decimal_places.' + context + '.' + unit,
+													maxlength: 1,
+													min: 0,
+												}).addClass('Textbox')
+					))))).addClass('decimalDigitEdit')[0].outerHTML+
 				"</fieldset>"+
 			"</div>"+
 			"<div id=\"st_ao\" class=\"stg_con\">"+

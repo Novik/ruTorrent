@@ -159,7 +159,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 								case 'downloaded' :
 								case 'uploaded' :
 								case 'size' :
-	      								arr[i] = theConverter.bytes(arr[i]);
+	      								arr[i] = theConverter.bytes(arr[i], 'table');
 									break;
 								case 'ratio' :
 									arr[i] = (arr[i] ==- 1) ? "\u221e" : theConverter.round(arr[i] / 1000, 3);
