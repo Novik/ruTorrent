@@ -1,0 +1,53 @@
+name: "Other Errors"
+description: "Report all other errors here"
+body:
+  - type: checkboxes
+    id: checklist_other_errors
+    attributes:
+      label: Please complete the following tasks.
+      description: Check off each box when completed.
+      options:
+        - label: Web browser cache cleared
+          required: true
+        - label: Copied everything if upgrading to v4.0 or master
+          required: true
+        - label: Web browser, ruTorrent and PHP version provided
+          required: true
+          
+  - type: textarea
+    attributes:
+      label: Tell us about your environment
+      description: |
+        Example of preferred formatting:
+        Web Browser: Google Chrome 97.0.4692.71
+        ruTorrent: v4.0-beta.1 OR Master: fc9d1f0
+        PHP: PHP 7.4.3
+      placeholder: |
+        Web Browser:
+        ruTorrent:
+        PHP: 
+    validations:
+      required: true
+      
+  - type: textarea
+    attributes:
+      label: Give us detailed steps to reproduce the error
+      description: If the error happens when you first load the page, tell us that.
+    validations:
+      required: true
+      
+  - type: textarea
+    attributes:
+      label: Tell us the error message
+      description: |
+        Bad response from server: (500 [error,getplugins]) Internal Server Error
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Provide the php error log contents (if applicable)
+      description: |
+        PHP Parse error:  syntax error, unexpected end of file in /var/www/rutorrent/plugins/theme/init.php on line 26
+    validations:
+      required: false
