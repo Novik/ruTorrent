@@ -761,6 +761,16 @@ var theFormatter =
 	      		}
 	   	}
 		return(arr);
+	},
+	treePrefix: function({hasNext, level})
+	{
+		const prefix = [];
+		for (let l = 1; l < level+1; l++) {
+			prefix.push(hasNext[l] ?
+				(l === level ? '├' : '│') :
+				(l === level ? '└' : ' '));
+		}
+		return prefix;
 	}
 };
 
