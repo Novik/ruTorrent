@@ -2219,14 +2219,12 @@ var theWebUI =
 	updateLabel: function(label, count, size, showSize, text, prefix, titleText) {
 		var li = $(label);
 		var pfx = li.children('.label-prefix');
-		if (!prefix || prefix === '') {
+		if (!prefix || !prefix.length) {
 			pfx.hide();
 		} else {
-			if (prefix !== pfx.text()) {
-				pfx.empty();
-				for (var c of prefix) {
-					pfx.append($('<div>').text(c));
-				}
+			pfx.empty();
+			for (var c of prefix) {
+				pfx.append($('<div>').text(c));
 			}
 			pfx.show();
 		}
