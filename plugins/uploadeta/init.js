@@ -14,10 +14,10 @@ if(plugin.canChangeColumns()) {
 			for(var i in arr) {
 				switch(table.getIdByCol(i)){
 					case "upload_target":
-						arr[i] = theConverter.bytes(arr[i], 2);
+						arr[i] = theConverter.bytes(arr[i], 'table');
 						break;
 					case "upload_remaining":
-						arr[i] = (arr[i]>0) ? theConverter.bytes(arr[i], 2) : theConverter.bytes(0, 2);
+						arr[i] = theConverter.bytes(arr[i]>0 ? arr[i] : 0, 'table');
 						break;
 					case "upload_eta":
 						arr[i] = (arr[i]>0) ? theConverter.time(arr[i]) : "\u221e";

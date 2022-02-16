@@ -437,10 +437,9 @@ var theConverter =
 			ret += val + theUILang.time_s;
 		return( ret.substring(0,ret.length-1) );
 	},
-	bytes: function(bt, p)
+	bytes: function(bt, context='other')
 	{
-		p = (p == null) ? 1 : p;
-		var a = new Array(theUILang.bytes, theUILang.KB, theUILang.MB, theUILang.GB, theUILang.TB, theUILang.PB);
+		var a = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
 		var ndx = 0;
 		if(bt == 0)
 			ndx = 1;
@@ -460,7 +459,7 @@ var theConverter =
             			}
 	         	}
 		}
-		return(this.round(bt, p) + " " + a[ndx]);
+		return(this.round(bt, theWebUI.sizeDecimalPlaces(context, a[ndx].toLowerCase())) + " " + theUILang[a[ndx]]);
 	},
 	speed: function(bt)
 	{
@@ -541,7 +540,7 @@ var theFormatter =
 				case 4:
 				case 5:
 				case 15:
-					arr[i] = theConverter.bytes(arr[i], 2);
+					arr[i] = theConverter.bytes(arr[i], 'table');
 					break;
 				case 6:
 					arr[i] = (arr[i] ==- 1) ? "\u221e" : theConverter.round(arr[i] / 1000, 3);
@@ -750,7 +749,7 @@ var theFormatter =
    			{
       				case 'size' :
       				case 'done' :
-      					arr[i] = theConverter.bytes(arr[i], 2);
+      					arr[i] = theConverter.bytes(arr[i], 'table');
       					break;
 	      			case 'percent' :
       					arr[i] = arr[i] + "%";

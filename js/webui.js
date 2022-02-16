@@ -160,7 +160,19 @@ var theWebUI =
 		"webui.show_statelabelsize":	0,
 		"webui.show_label_path_tree":	1,
 		"webui.show_empty_path_labels":	0,
-		"webui.register_magnet":	0
+		"webui.register_magnet":	0,
+		...(() => {
+			const defaults = {};
+			const units = ['default', 'kb', 'mb', 'gb', 'tb', 'pb'];
+			for(const [context, udef] of Object.entries({
+				catlist: [2, 0,1,1], table: [2], details: [2], other: [1]
+			})) {
+				for (let u = 0; u < units.length; u++) {
+					defaults['webui.size_decimal_places.' + context + '.' + units[u]] = udef[u] == null ? '' : udef[u].toString();
+				}
+			}
+			return defaults;
+		})(),
 	},
 	showFlags: 0,
 	total:
@@ -1782,7 +1794,7 @@ var theWebUI =
 			viewSize += s * (table.rowdata[sId].enabled);
 		}
 		$('#viewrows').text(table.viewRows + '/' + table.rows);
-		$('#viewrows_size').text(theConverter.bytes(viewSize, 2));
+		$('#viewrows_size').text(theConverter.bytes(viewSize, 'table'));
 	},
 
 	setSpeedValues: function(tul,tdl)
@@ -2193,8 +2205,15 @@ var theWebUI =
 		.append($('<div>').addClass('label-count').text(0))
 		.append($('<div>').addClass('label-size').hide())
 		.attr("title",text+" (0)")
-		.mouseclick(onClick))
-		.addClass("cat");
+		.mouseclick(onClick)
+		.addClass("cat"));
+	},
+
+
+	sizeDecimalPlaces: function(context, unit) {
+		let n = parseInt(this.settings['webui.size_decimal_places.'+context+'.'+unit]);
+		n = isNaN(n) ? parseInt(this.settings['webui.size_decimal_places.'+context+'.default']) : n;
+		return isNaN(n) ? (context === 'other' ? 0 : this.sizeDecimalPlaces('other', unit)) : n;
 	},
 
 	updateLabel: function(label, count, size, showSize, text, prefix, titleText) {
@@ -2214,7 +2233,7 @@ var theWebUI =
 		var txt = li.children('.label-text');
 		if (text)
 			txt.text(text);
-		var lblSize = theConverter.bytes(size, 2);
+		var lblSize = theConverter.bytes(size, 'catlist');
 		li.children('.label-count').text(count);
 		li.attr('title',
 			(titleText||text||txt.contents().not(txt.children('script')).text()) +
@@ -2423,8 +2442,8 @@ var theWebUI =
    		if((this.dID != "") && this.torrents[this.dID])
    		{
 	   		var d = this.torrents[this.dID];
-                        $("#dl").text(theConverter.bytes(d.downloaded,2));
-			$("#ul").text(theConverter.bytes(d.uploaded,2));
+                        $("#dl").text(theConverter.bytes(d.downloaded,'details'));
+			$("#ul").text(theConverter.bytes(d.uploaded,'details'));
 			$("#ra").html( (d.ratio ==- 1) ? "&#8734;" : theConverter.round(d.ratio/1000,3));
 			$("#us").text(theConverter.speed(d.ul));
 			$("#ds").text(theConverter.speed(d.dl));
@@ -2432,7 +2451,7 @@ var theWebUI =
 			$("#se").text(d.seeds_actual + " " + theUILang.of + " " + d.seeds_all + " " + theUILang.connected);
 			$("#pe").text(d.peers_actual + " " + theUILang.of + " " + d.peers_all + " " + theUILang.connected);
 			$("#et").text(theConverter.time(Math.floor((new Date().getTime()-theWebUI.deltaTime)/1000-iv(d.state_changed)),true));
-			$("#wa").text(theConverter.bytes(d.skip_total,2));
+			$("#wa").text(theConverter.bytes(d.skip_total, 'details'));
 	        	$("#bf").text(d.base_path);
 	        	$("#co").text(theConverter.date(iv(d.created)+theWebUI.deltaTime/1000));
 			$("#tu").text($type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
@@ -2456,7 +2475,7 @@ var theWebUI =
 				}
 			}
 			$("#cmt").html( strip_tags(url,'<a><b><strong>') );
-			$("#dsk").text((d.free_diskspace=='0') ? '' : theConverter.bytes(d.free_diskspace,2));
+			$("#dsk").text((d.free_diskspace=='0') ? '' : theConverter.bytes(d.free_diskspace,'details'));
 	   		this.updatePeers();
 		}
 	},

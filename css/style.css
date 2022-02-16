@@ -152,7 +152,7 @@ div.algnright {text-align: right; clear: right}
 .lm li a {color: #000000; padding: 1px 2px}
 .lm li a.focus {background-color: #E0E0E0}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
-.stg_con {float: right; position: relative; width: 450px; height: 500px; margin: 4px; background-color: #FAFAFA}
+.stg_con { display: none; float: right; position: relative; width: 450px; height: 500px; margin: 4px; background-color: #FAFAFA}
 .ie9 .stg_con {position: static}
 fieldset {margin: 4px}
 * > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px; -webkit-border-radius:6px; border-radius:6px;}
@@ -172,7 +172,7 @@ div input, div select {margin: 0 4px; font-size: 11px; padding: 1px 4px}
 legend {color: #000000; font-weight: bold}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
-#st_dl, #st_con, #st_bt, #st_que, #st_sch, #st_ao, #st_dc {display: none}
+#st_que, #st_sch, #st_dc {display: none}
 #st_btns {float: right; position: relative; width: 450px; height: 20px; padding: 3px; text-align: right; }
 #st_btns input {margin-left: 5px}
 a {text-decoration: none}
@@ -279,6 +279,9 @@ div#tadd select { width: 220px }
 .sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
 .stval { padding-right: 3px; overflow: hidden; width: 65px; }
 .speedEdit { width: 320px }
+.decimalDigitEdit input[type=number] { padding: 1px; margin: 0; width: 3em; }
+.decimalDigitEdit tr:first-child th { text-align: center; }
+.decimalDigitEdit tr th { text-align: left; }
 .statuscell td { padding: 0 }
 #st_system .sthdr { padding-left: 8px }
 
