@@ -282,6 +282,8 @@ var theUILang =
  Select_all			: "Zaznacz wszystkie",
  Deselect_all			: "Odznacz wszystkie",
  showSpeedInTitle		: "Pokaż prędkość w tytule",
+ speedGraphDuration		: "Duration of speed graph",
+ speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3200: "1 hr", 9600: "3 hrs"},
  badTempPath			: "Użytkownik serwera www nie ma uprawnień odczytu/zapisu/wykonywania w katalogu tymczasowym. ruTorrent nie będzie działać.",
  badTempPath2			: "Użytkownik rTorrent nie ma uprawnień odczytu/zapisu/wykonywania w katalogu tymczasowym. ruTorrent nie będzie działać.",
  doRandomizeHash		: "Losuj info hash (cross-seeding)",

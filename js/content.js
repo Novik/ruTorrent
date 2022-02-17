@@ -312,10 +312,16 @@ function makeContent()
 							['webui.reqtimeout', theUILang.ReqTimeout +':', theUILang.ms, 5000],
 						].map(([id, prefix, suffix, value]) =>
 							$('<div>').append(
-								$('<span>').css('margin-right', '0.5em').text(prefix),
+								$('<span>').text(prefix),
 								$('<input>').attr({type: 'number', id, value, min: 0 }),
-								$('<span>').css('margin-left', '0.5em').text(suffix),
-						)))[0].outerHTML+
+								$('<span>').text(suffix),
+						)),
+					$('<div>').append(
+						$('<label>').attr({ for: 'webui.speedgraph.max_seconds' }).text(theUILang.speedGraphDuration),
+						$('<select>').attr({ id: 'webui.speedgraph.max_seconds' }).append(
+							...Object.entries(theUILang.speedGraphDurationOptions).map(([value, text]) =>
+								$('<option>').attr({ value }).text(text)
+					))))[0].outerHTML+
 					"<div class=\"op100l\">"+
 						"<label for=\"webui.retry_on_error\">"+theUILang.retryOnErrorTitle+":</label>&nbsp;"+
 						"<select id=\"webui.retry_on_error\">"+

@@ -41,7 +41,7 @@ function rSpeedGraph()
 rSpeedGraph.prototype.create = function( aOwner )
 {
 	this.owner = aOwner;
-	this.maxSeconds = 600;
+	this.setMaxSeconds(theWebUI.settings['webui.speedgraph.max_seconds']);
 	this.seconds = -1;
 	this.down = { label: theUILang.DL, data: [], color: "#1C8DFF" };
 	this.up = { label: theUILang.UL, data: [], color: "#009900" };
@@ -49,6 +49,12 @@ rSpeedGraph.prototype.create = function( aOwner )
 
 	this.checked = [ true, true ];
 	this.datasets = [ this.up, this.down ];
+}
+
+rSpeedGraph.prototype.setMaxSeconds = function(maxSeconds)
+{
+	this.maxSeconds = Math.max(isNaN(maxSeconds) ? 600 : maxSeconds, 10);
+	this.tickSize = Math.max(Math.round(maxSeconds / 10), 1);
 }
 
 rSpeedGraph.prototype.getData = function()
