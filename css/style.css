@@ -284,7 +284,8 @@ div#tadd select { width: 220px }
 .decimalDigitEdit tr th { text-align: left; }
 .userInterfaceOptions {  height: 150px; }
 .optionColumn { display: flex; justify-content: space-between; flex-flow: column wrap; }
-.optionColumn input[type=number] { padding: 1px; margin: 0; width: 6em; }
+.optionColumn input[type=number],.optionColumn select { padding: 1px; margin: 0.1em 0.5em; width: 6em; }
+.optionColumn div { padding-left: 0; }
 .statuscell td { padding: 0 }
 #st_system .sthdr { padding-left: 8px }
 

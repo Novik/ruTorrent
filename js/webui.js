@@ -160,6 +160,7 @@ var theWebUI =
 		"webui.timeformat":		0,
 		"webui.dateformat":		0,
 		"webui.speedintitle":		0,
+		"webui.speedgraph.max_seconds": 600,
 		"webui.log_autoswitch":		1,
 		"webui.show_labelsize":		1,
 		"webui.show_searchlabelsize":	0,
@@ -814,6 +815,12 @@ var theWebUI =
 								theWebUI.settings["webui.update_interval"] = nv;
 								if(theWebUI.systemInfo.rTorrent.started)
 									theWebUI.resetInterval();
+								break;
+							}
+							case "webui.speedgraph.max_seconds":
+							{
+								theWebUI.speedGraph.setMaxSeconds(parseInt(theWebUI.settings['webui.speedgraph.max_seconds']))
+								theWebUI.speedGraph.draw();
 								break;
 							}
 						}
