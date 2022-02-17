@@ -282,6 +282,9 @@ div#tadd select { width: 220px }
 .decimalDigitEdit input[type=number] { padding: 1px; margin: 0; width: 3em; }
 .decimalDigitEdit tr:first-child th { text-align: center; }
 .decimalDigitEdit tr th { text-align: left; }
+.userInterfaceOptions {  height: 150px; }
+.optionColumn { display: flex; justify-content: space-between; flex-flow: column wrap; }
+.optionColumn input[type=number] { padding: 1px; margin: 0; width: 6em; }
 .statuscell td { padding: 0 }
 #st_system .sthdr { padding-left: 8px }
 
