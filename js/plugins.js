@@ -289,7 +289,12 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 		newLbl.innerHTML = "<a href=\"javascript://void();\" onmousedown=\"theTabs.show('"+dlg.id+"');\" onfocus=\"this.blur();\">" + name + "</a>";
 		if(!idBefore)
 			idBefore = "lcont";
-		$(dlg).hide();
+		if(theWebUI.activeView === dlg.id) {
+			$('#tdcont').children().hide();
+			$(dlg).show();
+		} else {
+			$(dlg).hide();
+		}
 		$$(idBefore).parentNode.insertBefore(dlg,$$(idBefore));
 		var beforeLbl = $$("tab_"+idBefore);
 		beforeLbl.parentNode.insertBefore(newLbl,beforeLbl);

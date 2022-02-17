@@ -459,6 +459,7 @@ var theWebUI =
 		const tab = theWebUI.settings['webui.selected_tab.keep'] ?
 					theWebUI.settings['webui.selected_tab.last'] : 'lcont';
 		theTabs.show(tab);
+		this.activeView = tab;
 
 		if(!this.settings["webui.show_cats"])
 			$("#CatList").hide();
