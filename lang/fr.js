@@ -281,6 +281,8 @@ var theUILang =
  Select_all			: "Sélectionner tout",
  Deselect_all			: "Désélectionner tout",
  showSpeedInTitle		: "Vitesse de transfert dans la barre de titre",
+ speedGraphDuration		: "Duration of speed graph",
+ speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3200: "1 hr", 9600: "3 hrs"},
  badTempPath			: "Le serveur web n'a pas accès en lecture/écriture/exécution au répertoire tmp. ruTorrent ne fonctionnera pas.",
  badTempPath2			: "L'utilisateur rTorrent n'a pas accès en lecture/écriture/exécution au répertoire tmp. ruTorrent ne fonctionnera pas.",
  doRandomizeHash		: "Info hash aléatoire pour faire du 'cross-seeding'",

@@ -281,6 +281,8 @@ var theUILang =
  Select_all			: "Выделить все",
  Deselect_all			: "Отмена выделения",
  showSpeedInTitle		: "Скорость в заголовке",
+ speedGraphDuration		: "Duration of speed graph",
+ speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3200: "1 hr", 9600: "3 hrs"},
  badTempPath			: "Веб сервер не имеет доступа к директории tmp на чтение/запись/выполнение. ruTorrent не будет работать.",
  badTempPath2			: "rTorrent должен иметь доступ на чтение/выполнение к директории tmp. ruTorrent не будет работать.",
  doRandomizeHash		: "Сделать hash уникальным",

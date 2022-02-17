@@ -281,6 +281,8 @@ var theUILang =
  Select_all			: "全选",
  Deselect_all			: "全不选",
  showSpeedInTitle		: "在标题中显示速度",
+ speedGraphDuration		: "Duration of speed graph",
+ speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3200: "1 hr", 9600: "3 hrs"},
  badTempPath			: "网页服务器运行用户对 tmp 文件夹没有 读/写/执行 权限. ruTorrent 将不会工作.",
  badTempPath2			: "rTorrent 运行用户必须对 tmp 文件夹有 读/执行 权限. ruTorrent 将不会工作.",
  doRandomizeHash		: "为辅种生成随机的 Info Hash",
