@@ -201,6 +201,7 @@ theWebUI.rebuildTrackersLabels = function()
 		var lbls = Object.keys(trackersLabels);
 		lbls.sort();
 
+		let actLabel = null;
 		for(var lbl of lbls)
 		{
 			if(!(lbl in this.trackersLabels))
@@ -212,9 +213,14 @@ theWebUI.rebuildTrackersLabels = function()
 					.css({ background: 'none' });
 			}
 			theWebUI.updateLabel($$('i'+lbl), trackersLabels[lbl], trackersSizes[lbl], theWebUI.settings["webui.show_labelsize"]);
-			if(plugin.isActualLabel(lbl))
-				$($$('i'+lbl)).addClass("sel");
+			if(plugin.isActualLabel(lbl)) {
+				$('#ptrackers_cont').find('.sel').removeClass('sel');
+				actLabel = $$('i'+lbl);
+				$(actLabel).addClass("sel");
+			}
 		}
+		if (actLabel)
+			theWebUI.filterTorrentTable();
 		var needSwitch = false;
 		for(var lbl in this.trackersLabels)
 			if(!(lbl in trackersLabels))
