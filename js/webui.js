@@ -889,13 +889,13 @@ var theWebUI =
 			theWebUI.settings["webui."+ndx+".rev2"] = table.obj.secRev;
 		});
 
-		this.settings['webui.selected_tab.last'] = this.activeView;
+		theWebUI.settings['webui.selected_tab.last'] = theWebUI.activeView;
 		const savedActLbls = {}
 		for (const labelType of ['pstate_cont', 'plabel_cont', 'flabel_cont', 'ptrackers_cont']) {
-			savedActLbls[labelType] = this.actLbls[labelType];
+			savedActLbls[labelType] = theWebUI.actLbls[labelType];
 		}
-		this.settings['webui.selected_labels.last'] = savedActLbls;
-		this.settings['webui.open_tegs.last'] = Object.values(this.tegs).map(t => t.val);
+		theWebUI.settings['webui.selected_labels.last'] = savedActLbls;
+		theWebUI.settings['webui.open_tegs.last'] = Object.values(theWebUI.tegs).map(t => t.val);
 		var cookie = {};
 		theWebUI.settings["webui.search"] = theSearchEngines.current;
 		for(const [i,v] of Object.entries(theWebUI.settings))
