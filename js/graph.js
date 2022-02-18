@@ -129,7 +129,7 @@ rSpeedGraph.prototype.draw = function()
 				{ 
 					min: (self.seconds-self.startSeconds>=self.maxSeconds) ? null : self.startSeconds,
 					max: (self.seconds-self.startSeconds>=self.maxSeconds) ? null : self.maxSeconds+self.startSeconds,
-					tickSize: 60,
+					tickSize: self.tickSize,
 					tickFormatter: xTick
 			 	},
 			  	yaxis: 
