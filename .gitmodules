@@ -1,3 +1,6 @@
 [submodule "plugins/theme/themes/DarkBetter"]
 	path = plugins/theme/themes/DarkBetter
 	url = https://github.com/chocolatkey/DarkBetter
+[submodule "plugins/theme/themes/MaterialDesign"]
+	path = plugins/theme/themes/MaterialDesign
+	url = https://github.com/TrimmingFool/ruTorrent-MaterialDesign
