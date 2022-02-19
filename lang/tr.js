@@ -254,6 +254,7 @@ var theUILang =
  showLabelSize			: "Etiket boyutunu göster",
  showSearchLabelSize		: "Show search size",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "PHP yönergesi register_argc_argv OFF olarak ayarlandı. ON olarak değiştirin, aksi halde bazı eklentiler düzgün çalışmayacaktır.",
  addTorrentFailedURL : "Torrent eklenemedi. URL alınamıyor.",

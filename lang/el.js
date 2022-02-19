@@ -253,6 +253,7 @@ var theUILang =
  showLabelSize			: "Προβολή συνολικού μεγέθους ανά ετικέτα",
  showSearchLabelSize		: "Προβολή μεγέθους στην αναζήτηση",
  showCustomLabelTree		: "Προβολή διαδρομής δένδρου ετικέτας",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Προβολή ετικετών χωρίς διαδρομή",
  phpParameterUnavailable	: "Η οδηγία register_argc_argv της PHP είναι ορισμένη στο OFF. Αλλάξτε τη σε ON, αλλιώς κάποια πρόσθετα δεν θα λειτουργούν σωστά.",
  addTorrentFailedURL		: "Αποτυχία προσθήκης αρχείου torrent. Αδυναμία ανάκτησης URL.",

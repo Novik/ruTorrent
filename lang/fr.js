@@ -255,6 +255,7 @@ var theUILang =
  showLabelSize			: "Afficher la taille dans 'Étiquettes' et 'Trackers'",
  showSearchLabelSize		: "Afficher la taille dans 'Rechercher'",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "La directive PHP 'register_argc_argv' est désactivée. Veuillez l'activer sinon certains plugins ne fonctionneront pas correctement.",
  addTorrentFailedURL		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Impossible de résoudre l'URL.",

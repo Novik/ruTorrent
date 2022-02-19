@@ -255,6 +255,7 @@ var theUILang =
  showLabelSize			: "Показывать размер файлов для меток",
  showSearchLabelSize		: "Show search size",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "Директива php register_argc_argv выставлена в Off. Измените ее значение на On, иначе некоторые плагины будут работать некорректно.",
  addTorrentFailedURL		: "Ошибка добавления закачки. Невозможно получить файл по заданному URL.",

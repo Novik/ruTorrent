@@ -256,6 +256,7 @@ var theUILang =
  showLabelSize			: "Pokaż rozmiar etykiety",
  showSearchLabelSize		: "Show search size",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "Ustawienie PHP register_argc_argv jest wyłączone. Włącz je, inaczej niektóre wtyczki nie będą działać poprawnie.",
  addTorrentFailedURL		: "Torrent nie został dodany. Nie można pobrać adresu.",

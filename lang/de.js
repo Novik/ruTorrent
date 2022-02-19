@@ -255,6 +255,7 @@ var theUILang =
  showLabelSize			: "Zeige Gruppengröße",
  showSearchLabelSize		: "Show search size",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "PHP Direktive register_argc_argv wurde auf OFF gesetzt. Ändere dies zu ON, andernfalls werden einige Plugins nicht richtig funktionieren.",
  addTorrentFailedURL		: "Fehler beim hinzufügen eines Torrent. URL kann nicht abgerufen werden.",

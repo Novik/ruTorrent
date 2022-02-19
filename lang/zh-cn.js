@@ -255,6 +255,7 @@ var theUILang =
  showLabelSize			: "显示标签尺寸",
  showSearchLabelSize		: "Show search size",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "PHP 参数 register_argc_argv 被设为 OFF. 把它切换到 ON, 否则某些插件会无法正常工作.",
  addTorrentFailedURL		: "添加 torrent 失败. 无法取回 URL.",

@@ -254,6 +254,7 @@ var theUILang =
  showLabelSize			: "Show label size",
  showSearchLabelSize		: "Show search size",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "PHP innstillingen register_argc_argv er satt til OFF. Sett denne til ON, ellers vil enkelte tilleggsmoduler ikke fungere som de skal.",
  addTorrentFailedURL		: "Fikk ikke til å legge til torrent. Kan ikke hente lenke.",

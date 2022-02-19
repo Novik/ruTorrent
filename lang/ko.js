@@ -253,6 +253,7 @@ var theUILang =
  showLabelSize			: "라벨 크기 표시",
  showSearchLabelSize		: "Show search size",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "PHP의 register_argc_argv directive가 OFF로 설정되어 있습니다. ON으로 바꾸지 않으면, 일부 플러그인이 올바르게 동작할 수 없습니다.",
  addTorrentFailedURL		: "토렌트를 추가하지 못했습니다. URL에 접근하지 못했습니다.",

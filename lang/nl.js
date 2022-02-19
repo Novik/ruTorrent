@@ -255,6 +255,7 @@ var theUILang =
  showLabelSize			: "Show label size",
  showSearchLabelSize		: "Show search size",
  showCustomLabelTree		: "Show label path tree",
+ labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
  phpParameterUnavailable	: "PHP-instelling 'register_argc_argv' staat op OFF, waardoor sommige plugins niet kunnen functioneren. Wijzig de instelling naar ON.",
  addTorrentFailedURL		: "Fout bij toevoegen torrent: kan URL niet ophalen.",
