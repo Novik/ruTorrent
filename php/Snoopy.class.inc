@@ -385,14 +385,12 @@ class Snoopy
 			socket_set_timeout($fp, $this->read_timeout);
 		$this->timed_out = false;
 		fwrite($fp,$headers.$body,strlen($headers.$body));
-//toLog($headers.$body);
 		$this->_redirectaddr = false;
 		$this->headers = array();
 		$is_gzipped = false;
 						
 		while($currentHeader = fgets($fp,$this->_maxlinelen))
 		{
-//toLog($currentHeader);
 			if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 			{
 				$this->status=-100;
@@ -476,7 +474,6 @@ class Snoopy
 		}
 
 		$this->results = $results;
-//toLog($this->results);		
 		return true;
 	}
 
@@ -484,7 +481,6 @@ class Snoopy
 	{
 		if($this->passcookies && $this->_redirectaddr)
 			$this->setcookies();
-
 		$headers = array();		
 		if(!empty($this->agent))
 			$headers[] = "User-Agent: ".$this->agent;
@@ -609,7 +605,6 @@ class Snoopy
 					}
 				}
 			}
-
 			$this->results = $results;
 		}
 		@unlink($headerfile);
