@@ -162,6 +162,7 @@ var theWebUI =
 		"webui.speedintitle":		0,
 		"webui.speedgraph.max_seconds": 600,
 		"webui.log_autoswitch":		1,
+		"webui.labelsize_rightalign":		0,
 		"webui.show_labelsize":		1,
 		"webui.show_searchlabelsize":	0,
 		"webui.show_statelabelsize":	0,
@@ -2294,6 +2295,10 @@ var theWebUI =
 		var sizeSpan = li.children('.label-size');
 		sizeSpan.text(lblSize);
 		if (size && showSize) {
+			if (theWebUI.settings['webui.labelsize_rightalign'])
+				sizeSpan.addClass('rightalign');
+			else
+				sizeSpan.removeClass('rightalign');
 			sizeSpan.show();
 		} else {
 			sizeSpan.hide();
