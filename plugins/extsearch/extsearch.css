@@ -9,7 +9,7 @@ div#tegLoadTorrents br {clear: left; line-height: 0}
 
 #st_extsearch { overflow: auto }
 #exscategory { margin-top: 6px; width: 100px }
-.teg { background-position: 4px; background-image: url(./images/local.png) }
+#flabel_cont li.teg .label-icon { background-position: 1px; background-image: url(./images/local.png) }
 .exteg { background-position: 4px }
 .Engineall { background-image: url(./images/search.png) }
 .Enginepublic { background-image: url(./images/public.png) }
