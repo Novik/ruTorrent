@@ -282,7 +282,8 @@ div#tadd select { width: 220px }
 .decimalDigitEdit input[type=number] { padding: 1px; margin: 0; width: 3em; }
 .decimalDigitEdit tr:first-child th { text-align: center; }
 .decimalDigitEdit tr th { text-align: left; }
-.userInterfaceOptions {  height: 150px; }
+.userInterfaceOptions {  max-height: 180px; }
+.userInterfaceOptions > div { max-width: 50% }
 .optionColumn { display: flex; justify-content: space-between; flex-flow: column wrap; }
 .optionColumn input[type=number],.optionColumn select { padding: 1px; margin: 0.1em 0.5em; width: 6em; }
 .optionColumn div { padding-left: 0; }
