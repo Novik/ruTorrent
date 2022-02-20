@@ -68,6 +68,14 @@ var theRequestManager =
 		],
 		handlers: []
 	},
+	opn:
+	{
+		commands:
+		[
+			"network.http.current_open", "network.open_sockets"
+		],
+		handlers: []
+	},
 	prp: 
 	{
 		commands: 
@@ -97,7 +105,7 @@ var theRequestManager =
 	init: function()
 	{
 	        var self = this;
-		$.each( ["trt","trk", "fls", "prs", "ttl", "prp", "stg"], function(ndx,cmd)
+		$.each( ["trt","trk", "fls", "prs", "ttl", "opn", "prp", "stg"], function(ndx,cmd)
 		{
 			self[cmd].count = self[cmd].commands.length;
 		});
@@ -108,6 +116,14 @@ var theRequestManager =
 		if(command)
 		        this[system].commands.push(command);
 	        return(this[system].handlers.length-1);
+	},
+	onResponse: function(reqType, values, ...args)
+	{
+		// call all handlers for the response type with response data
+		for (const handler of this[reqType].handlers) {
+			if (handler)
+				handler.response(...args, (handler.ndx===null) ? null : values[handler.ndx]);
+		}
 	},
 	removeRequest: function( system, id )
 	{
@@ -524,6 +540,15 @@ rTorrentStub.prototype.gettotal = function()
 		this.commands.push( new rXMLRPCCommand(theRequestManager.ttl.commands[i]) );
 }
 
+rTorrentStub.prototype.getopen = function()
+{
+	this.commands = this.commands.concat(
+		theRequestManager.opn.commands.map(cmd => new rXMLRPCCommand(cmd))
+	);
+	if (theWebUI.systemInfo.rTorrent.apiVersion >= 11)
+		this.commands.push(new rXMLRPCCommand('network.open_files'));
+}
+
 rTorrentStub.prototype.getprops = function()
 {
 	for(var i in theRequestManager.prp.commands)
@@ -747,6 +772,18 @@ rTorrentStub.prototype.getResponse = function(data)
 	return(ret);
 }
 
+rTorrentStub.prototype.getXMLValues = function(xml)
+{
+	const datas = xml.getElementsByTagName('data');
+	const data = datas[0];
+	const xmlValues = data.getElementsByTagName('value');
+	const values = [];
+	for (let i = 0; i < xmlValues.length; i++) {
+		values.push(this.getValue(xmlValues, i*2+1));
+	}
+	return values;
+}
+
 rTorrentStub.prototype.setprioResponse = function(xml)
 {
 	return(this.hashes[0]);
@@ -794,6 +831,17 @@ rTorrentStub.prototype.gettotalResponse = function(xml)
 	        if(handler)
 			handler.response( ret, (handler.ndx===null) ? null : self.getValue(values,handler.ndx*2+1) );
 	});
+	return( ret );
+}
+
+rTorrentStub.prototype.getopenResponse = function(xml)
+{
+	const values = this.getXMLValues(xml);
+	const ret = {
+		http: iv(values[0]), sock: iv(values[1]),
+		fd: this.commands.length < 3 ? -1 : iv(values[2])
+	};
+	theRequestManager.onResponse('opn', values, ret);
 	return( ret );
 }
 

@@ -254,6 +254,12 @@ rTorrentStub.prototype.gettotal = function()
         this.getCommon("ttl");
 }
 
+plugin.origopn = rTorrentStub.prototype.getopen;
+rTorrentStub.prototype.getopen = function()
+{
+	this.getCommon("opn");
+}
+
 plugin.origprp = rTorrentStub.prototype.getprops;
 rTorrentStub.prototype.getprops = function()
 {
@@ -363,6 +369,18 @@ rTorrentStub.prototype.gettotalResponse = function(values)
 		return( ret );
 	}
 	return(plugin.origgettotalResponse.call(this,values));
+}
+
+plugin.origgetopenResponse = rTorrentStub.prototype.getopenResponse;
+rTorrentStub.prototype.getopenResponse = function(values)
+{
+	if(this.dataType == "json")
+	{
+		const ret = { http: iv(values[0]), sock: iv(values[1]), fd: iv(values[2]) };
+		theRequestManager.onResponse('opn', values, ret);
+		return( ret );
+	}
+	return(plugin.origgetopenResponse.call(this,values));
 }
 
 plugin.origgetsettingsResponse = rTorrentStub.prototype.getsettingsResponse;

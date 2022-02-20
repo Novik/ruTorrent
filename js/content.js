@@ -483,29 +483,26 @@ function makeContent()
 			"<div id=\"st_fmt\" class=\"stg_con\">"+
 				"<fieldset>"+
 					"<legend>"+theUILang.Format+"</legend>"+
-					"<div class=\"op50l\">"+
-						"<label for=\"webui.dateformat\">"+theUILang.DateFormat+":</label>&nbsp;"+
-						"<select id=\"webui.dateformat\">"+
-							"<option value='0'>31.12.2011</option>"+
-							"<option value='1'>2011-12-31</option>"+
-							"<option value='2'>12/31/2011</option>"+
-						"</select>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_statelabelsize\"/>"+
-						"<label for=\"webui.show_statelabelsize\" id=\"lbl_webui.show_statelabelsize\" >"+theUILang.showStateLabelSize+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_labelsize\"/>"+
-						"<label for=\"webui.show_labelsize\" id=\"lbl_webui.show_labelsize\" >"+theUILang.showLabelSize+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_searchlabelsize\"/>"+
-						"<label for=\"webui.show_searchlabelsize\" id=\"lbl_webui.show_searchlabelsize\" >"+theUILang.showSearchLabelSize+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_label_path_tree\"/>"+
-						"<label for=\"webui.show_label_path_tree\" id=\"lbl_webui.show_label_path_tree\" >"+theUILang.showCustomLabelTree+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_empty_path_labels\"/>"+
-						"<label for=\"webui.show_empty_path_labels\" id=\"lbl_webui.show_empty_path_labels\" >"+theUILang.showEmptyPathLabel+"</label>"+
-					"</div>"+
+					$('<div>').addClass('optionColumn userInterfaceOptions').append(
+						$('<div>').append(
+							$('<label>').attr({ for: 'webui.dateformat' }).text(theUILang.DateFormat),
+							$('<select>').attr({ id: 'webui.dateformat' }).css({ width: '7em' }).append(
+								...Object.entries({0: '31.12.2011', 1: '2011-12-31', 2: '12/31/2011' }).map(([value, text]) =>
+									$('<option>').attr({ value }).text(text)
+						))),
+						...[
+							['webui.show_statelabelsize', theUILang.showStateLabelSize],
+							['webui.show_labelsize', theUILang.showLabelSize],
+							['webui.show_searchlabelsize', theUILang.showSearchLabelSize],
+							['webui.labelsize_rightalign', theUILang.labelSizeRightAlign],
+							['webui.show_label_path_tree', theUILang.showCustomLabelTree],
+							['webui.show_empty_path_labels', theUILang.showEmptyPathLabel],
+							['webui.show_open_status', theUILang.showOpenStatus],
+						].map(([id, label]) =>
+						$('<div>').append(
+							$('<input>').attr({ type: 'checkbox', id, checked: 'true' }),
+							$('<label>').attr({ for: id, id: 'lbl_'+id }).text(label)
+						)))[0].outerHTML +
 				"</fieldset>"+
 				"<fieldset>"+
 					"<legend>"+theUILang.DecimalPlacesSizes+"</legend>"+
