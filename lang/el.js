@@ -256,6 +256,7 @@ var theUILang =
  showCustomLabelTree		: "Προβολή διαδρομής δένδρου ετικέτας",
  labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Προβολή ετικετών χωρίς διαδρομή",
+ showLabelTextOverflow	: "Allow overflow of label text",
  showOpenStatus		: "Show open status in status bar",
  phpParameterUnavailable	: "Η οδηγία register_argc_argv της PHP είναι ορισμένη στο OFF. Αλλάξτε τη σε ON, αλλιώς κάποια πρόσθετα δεν θα λειτουργούν σωστά.",
  addTorrentFailedURL		: "Αποτυχία προσθήκης αρχείου torrent. Αδυναμία ανάκτησης URL.",

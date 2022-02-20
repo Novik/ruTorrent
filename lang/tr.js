@@ -257,6 +257,7 @@ var theUILang =
  showCustomLabelTree		: "Show label path tree",
  labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
+ showLabelTextOverflow	: "Allow overflow of label text",
  showOpenStatus		: "Show open status in status bar",
  phpParameterUnavailable	: "PHP yönergesi register_argc_argv OFF olarak ayarlandı. ON olarak değiştirin, aksi halde bazı eklentiler düzgün çalışmayacaktır.",
  addTorrentFailedURL : "Torrent eklenemedi. URL alınamıyor.",
