@@ -168,6 +168,7 @@ var theWebUI =
 		"webui.show_statelabelsize":	0,
 		"webui.show_label_path_tree":	1,
 		"webui.show_empty_path_labels":	0,
+		"webui.show_label_text_overflow": 0,
 		"webui.show_open_status":	1,
 		"webui.register_magnet":	0,
 		...(() => {
@@ -2314,15 +2315,10 @@ var theWebUI =
 			' ('+ count + ( showSize ? ' ; '+ lblSize : '') +')');
 		var sizeSpan = li.children('.label-size');
 		sizeSpan.text(lblSize);
-		if (size && showSize) {
-			if (theWebUI.settings['webui.labelsize_rightalign'])
-				sizeSpan.addClass('rightalign');
-			else
-				sizeSpan.removeClass('rightalign');
+		if (size && showSize)
 			sizeSpan.show();
-		} else {
+		else
 			sizeSpan.hide();
-		}
 	},
 
 	idToLbl: function(id) {
@@ -2331,6 +2327,15 @@ var theWebUI =
 
 	updateLabels: function(wasRemoved)
 	{
+		const catlist = $($$('CatList'));
+		if (theWebUI.settings['webui.labelsize_rightalign'])
+			catlist.addClass('rightalign-labelsize');
+		else
+			catlist.removeClass('rightalign-labelsize');
+		if (theWebUI.settings['webui.show_label_text_overflow'])
+			catlist.removeClass('hide-textoverflow');
+		else
+			catlist.addClass('hide-textoverflow');
 		this.updateAllFilterLabel('pstate_cont', this.settings["webui.show_statelabelsize"]);
 		this.updateAllFilterLabel('plabel_cont', this.settings["webui.show_labelsize"]);
 		this.updateAllFilterLabel('flabel_cont', this.settings["webui.show_searchlabelsize"]);

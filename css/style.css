@@ -101,8 +101,12 @@ div#CatList .label-prefix div { margin-right: 0px; width: 12px; }
 #-_-_-iac-_-_- .label-icon {background-position: 0px -32px;}
 #-_-_-err-_-_- .label-icon {background-position: 0px -96px;}
 .label-count,.label-size { background-color: #F0F0F0; padding: 0.1em 0.3em 0.1em 0.3em; border-radius: 0.8em; }
-.label-size.rightalign {
+#CatList.rightalign-labelsize .label-size {
 	margin-left: auto;
+}
+#CatList.hide-textoverflow .label-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 div#CatList ul li.RSS .label-icon { background-position: 0px -208px}
 div#CatList ul li.disRSS .label-icon { background-position: 0px -192px}

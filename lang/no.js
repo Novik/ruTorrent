@@ -257,6 +257,7 @@ var theUILang =
  showCustomLabelTree		: "Show label path tree",
  labelSizeRightAlign		: "Right align size in category list",
  showEmptyPathLabel		: "Show empty path labels",
+ showLabelTextOverflow	: "Allow overflow of label text",
  showOpenStatus		: "Show open status in status bar",
  phpParameterUnavailable	: "PHP innstillingen register_argc_argv er satt til OFF. Sett denne til ON, ellers vil enkelte tilleggsmoduler ikke fungere som de skal.",
  addTorrentFailedURL		: "Fikk ikke til å legge til torrent. Kan ikke hente lenke.",
