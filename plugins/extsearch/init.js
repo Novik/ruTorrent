@@ -301,8 +301,7 @@ plugin.correctCounter = function(id,count)
 				if(!data[i].deleted)			
 					count++;
 		}
-		$("#"+id+"-c").text(count);
-		$("#"+id).prop("title",plugin.tegs[id].val+" ("+count+")");
+		theWebUI.updateLabel($$(id), count); 
 	}
 }
 
@@ -481,9 +480,9 @@ theWebUI.setExtSearchTag = function( d )
 		}
 	var tegId = "extteg_"+plugin.lastTeg;
 	plugin.lastTeg++;
-	var el = $("<LI>").attr("id",tegId).addClass("exteg").addClass('Engine'+d.eng).attr("title",str+" (0)").
-		html(escapeHTML(str) + "&nbsp;(<span id=\"" + tegId + "-c\">0</span>)").
-		mouseclick(plugin.extTegContextMenu).addClass("cat")
+	var el = theWebUI.createSelectableLabelElement(tegId, str, plugin.extTegContextMenu)
+		.addClass('exteg');
+	el.find('.label-icon').addClass('Engine'+d.eng);
 	$("#lblf").append( el );
 	plugin.tegs[tegId] = { "val": str, "what": what, "cat": d.cat, "eng": d.eng, "data": d.data };
 	theWebUI.switchLabel(el[0]);
@@ -828,7 +827,7 @@ plugin.onLangLoaded = function()
 				"<option value='"+ndx+"' id='opt_"+ndx+"'>"+ndx+"</option>";
 		}
 		styles +=
-			(".Engine"+ndx+" {background-image: url(./plugins/extsearch/images/"+ndx+".png); background-repeat: no-repeat}\n");
+			(".Engine"+ndx+" {background-image: url(./plugins/extsearch/images/"+ndx+".png) !important; background-repeat: no-repeat}\n");
 	});
 	if(contPublic.length)
 	{

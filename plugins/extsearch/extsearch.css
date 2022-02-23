@@ -9,11 +9,10 @@ div#tegLoadTorrents br {clear: left; line-height: 0}
 
 #st_extsearch { overflow: auto }
 #exscategory { margin-top: 6px; width: 100px }
-#flabel_cont li.teg .label-icon { background-position: 1px; background-image: url(./images/local.png) }
-.exteg { background-position: 4px }
-.Engineall { background-image: url(./images/search.png) }
-.Enginepublic { background-image: url(./images/public.png) }
-.Engineprivate { background-image: url(./images/private.png) }
+#flabel_cont li.exteg:not(.-_-_-all-_-_-) .label-icon { background-position: 0px 0px; background-image: url(./images/local.png); }
+.Engineall { background-image: url(./images/search.png) !important; }
+.Enginepublic { background-image: url(./images/public.png) !important; }
+.Engineprivate { background-image: url(./images/private.png) !important; }
 .bld { color: blue; font-weight: bold; }
 
 @media only screen and (orientation:portrait) 
