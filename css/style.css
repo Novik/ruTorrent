@@ -108,8 +108,6 @@ div#CatList .label-prefix div { margin-right: 0px; width: 12px; }
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-div#CatList ul li.RSS .label-icon { background-position: 0px -208px}
-div#CatList ul li.disRSS .label-icon { background-position: 0px -192px}
 #flabel_cont li:not(.-_-_-all-_-_-) .label-icon { background-position: 0px -32px; }
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
