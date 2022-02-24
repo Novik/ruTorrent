@@ -258,6 +258,7 @@ var theUILang =
  showEmptyPathLabel		: "Show empty path labels",
  showLabelTextOverflow	: "Allow overflow of label text",
  showOpenStatus		: "Show open status in status bar",
+ requiresAtLeastRtorrent		: "Requires rTorrent >= {version}", // ... v0.9.7
  phpParameterUnavailable	: "PHP directive register_argc_argv is set to OFF. Change to ON, otherwise some plugins won't work correctly.",
  addTorrentFailedURL		: "Không thêm torrent được. Không thể tải được URL.",
  addTorrentFailedFile		: "Không thêm torrent được. Nội dung tải về không phải là tập tin torrent.",

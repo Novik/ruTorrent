@@ -260,6 +260,7 @@ var theUILang =
  showEmptyPathLabel		: "Show empty path labels",
  showLabelTextOverflow	: "Allow overflow of label text",
  showOpenStatus		: "Show open status in status bar",
+ requiresAtLeastRtorrent		: "Requires rTorrent >= {version}", // ... v0.9.7
  phpParameterUnavailable	: "Директиву інтерпретатора PHP register_argc_argv вимкнено (значення Off). Увімкніть її (значення On), інакше деякі плагіни не працюватимуть.",
  addTorrentFailedURL		: "Сталася помилка. Файл .torrent не передано до rTorrent. Не вдалося отримати URL-адресу.",
  addTorrentFailedFile		: "Сталася помилка. Файл .torrent не передано до rTorrent. Отриманий вміст не є правильним torrent-файлом.",

@@ -259,6 +259,7 @@ var theUILang =
  showEmptyPathLabel		: "Show empty path labels",
  showLabelTextOverflow	: "Allow overflow of label text",
  showOpenStatus		: "Show open status in status bar",
+ requiresAtLeastRtorrent		: "Requires rTorrent >= {version}", // ... v0.9.7
  phpParameterUnavailable	: "PHP yönergesi register_argc_argv OFF olarak ayarlandı. ON olarak değiştirin, aksi halde bazı eklentiler düzgün çalışmayacaktır.",
  addTorrentFailedURL : "Torrent eklenemedi. URL alınamıyor.",
  addTorrentFailedFile : "Torrent eklenemedi. Alınan içerik geçerli bir torrent dosyası değil.",
