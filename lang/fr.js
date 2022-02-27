@@ -260,6 +260,7 @@ var theUILang =
  showEmptyPathLabel		: "Show empty path labels",
  showLabelTextOverflow	: "Allow overflow of label text",
  showOpenStatus		: "Show open status in status bar",
+ requiresAtLeastRtorrent		: "Requires rTorrent >= {version}", // ... v0.9.7
  phpParameterUnavailable	: "La directive PHP 'register_argc_argv' est désactivée. Veuillez l'activer sinon certains plugins ne fonctionneront pas correctement.",
  addTorrentFailedURL		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Impossible de résoudre l'URL.",
  addTorrentFailedFile		: "Erreur: le torrent n'a pas pu être ajouté à rTorrent. Le contenu récupéré n'est pas un fichier torrent.",

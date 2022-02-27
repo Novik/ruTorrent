@@ -1076,6 +1076,11 @@ function correctContent()
 			"load"			:	{ name: "load.normal", prm: 1 }
 		});
 	}
+	if(theWebUI.systemInfo.rTorrent.iVersion < 0x907) {
+		const title = theUILang.requiresAtLeastRtorrent.replace('{version}', 'v0.9.7');
+		$($$('webui.show_open_status')).attr({ disabled: '', title });
+		$($$('lbl_webui.show_open_status')).attr({ title }).addClass('disabled');
+	}
 	if(theWebUI.systemInfo.rTorrent.apiVersion>=11)	// at current moment (2019.07.20) this is feature-bind branch of rtorrent
 	{
 		$.extend(theRequestManager.aliases,

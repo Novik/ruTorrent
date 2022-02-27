@@ -828,6 +828,7 @@ var theWebUI =
 							}
 							case "webui.speedgraph.max_seconds":
 							{
+								theWebUI.settings["webui.speedgraph.max_seconds"] = nv;
 								theWebUI.speedGraph.setMaxSeconds(parseInt(theWebUI.settings['webui.speedgraph.max_seconds']))
 								theWebUI.speedGraph.draw();
 								break;
@@ -1891,7 +1892,8 @@ var theWebUI =
 
 	getOpenStatus: function()
 	{
-		this.request("?action=getopen", [this.addOpenStatus, this]);
+		if (this.systemInfo.rTorrent.iVersion >= 0x907)
+			this.request("?action=getopen", [this.addOpenStatus, this]);
 	},
 
 	addOpenStatus: function(stopen)
@@ -2603,7 +2605,9 @@ var theWebUI =
 	        $("#stdown_limit").text((self.total.rateDL>0 && self.total.rateDL<327625*1024) ? theConverter.speed(self.total.rateDL) : theUILang.no);
 	        $("#stdown_total").text(theConverter.bytes(self.total.DL));
 
-		if (self.settings['webui.show_open_status']) {
+		if (self.settings['webui.show_open_status']
+			&& 'systemInfo' in self
+			&& self.systemInfo.rTorrent.iVersion >= 0x907) {
 			for (const opnType of ['http', 'sock', 'fd']) {
 				const ele = $($$('stopen_'+opnType+'_count'));
 				if (self.stopen[opnType] > -1)

@@ -59,6 +59,8 @@ div#FLT_buttons {clear: both}
 div#dlgAddRSSGroup div.content {width: 302px; margin: 5px; padding: 5px; line-height: 16px}
 #rssGroupSet { overflow: auto; width: 275px; height: 160px }
 
-div#CatList ul li.RSSGroup {background-image: url(../../images/tstatus.png); background-position: 4px -239px}
+#CatList li.RSS .label-icon { background-position: 0px -208px}
+#CatList li.disRSS .label-icon { background-position: 0px -192px}
+#CatList li.RSSGroup {background-image: url(../../images/tstatus.png); background-position: 0px -240px}
 
 #rsstimer { float: right; font-weight: normal; margin-right: -18px; }
