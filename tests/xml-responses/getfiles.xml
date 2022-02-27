@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+<params>
+<param><value><array><data>
+<value><array><data>
+<value><string>File 1</string></value>
+<value><i8>0</i8></value>
+<value><i8>512</i8></value>
+<value><i8>262144</i8></value>
+<value><i8>1</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+</data></array></value>
+<value><array><data>
+<value><string>File 2</string></value>
+<value><i8>256</i8></value>
+<value><i8>512</i8></value>
+<value><i8>262144</i8></value>
+<value><i8>2</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+</data></array></value>
+<value><array><data>
+<value><string>File 3</string></value>
+<value><i8>512</i8></value>
+<value><i8>512</i8></value>
+<value><i8>262144</i8></value>
+<value><i8>3</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+</data></array></value>
+</data></array></value></param>
+</params>
+</methodResponse>

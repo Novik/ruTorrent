@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+<params>
+<param><value><array><data>
+<value><array><data>
+<value><i8>1</i8></value>
+</data></array></value>
+<value><array><data>
+<value><i8>22</i8></value>
+</data></array></value>
+</data></array></value></param>
+</params>
+</methodResponse>
