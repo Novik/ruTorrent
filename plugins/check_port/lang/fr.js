@@ -6,7 +6,7 @@
  * Author: Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.checkWebsiteNotFound = "Plug-in 'Check_port' : Configuration invalide. Le plug-in ne fonctionnera pas.";
+ theUILang.checkWebsiteNotFound = "Plugin 'Check_port' : Configuration invalide. Le plugin ne fonctionnera pas.";
  theUILang.checkPort		= "Vérification du port";
  theUILang.portStatus		= [
  				  "Statut du port inconnu",

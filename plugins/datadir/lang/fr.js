@@ -9,7 +9,7 @@
  theUILang.DataDir		= "Chemin";
  theUILang.DataDirMove		= "Déplacer les fichiers";
  theUILang.datadirDlgCaption	= "Répertoire du torrent";
- theUILang.datadirDirNotFound	= "Plug-in 'DataDir': Répertoire invalide";
- theUILang.datadirSetDirFail	= "Plug-in 'DataDir': L'opération a échoué";
+ theUILang.datadirDirNotFound	= "Plugin 'DataDir' : Répertoire invalide";
+ theUILang.datadirSetDirFail	= "Plugin 'DataDir' : L'opération a échoué";
 
 thePlugins.get("datadir").langLoaded();

@@ -9,7 +9,7 @@
  */
 
  theUILang.peerComment		= "Ajouter un commentaire";
- theUILang.peerCommentLabel	= "Entrer un nouveau commentaire pour le peer";
+ theUILang.peerCommentLabel	= "Entrer un nouveau commentaire pour ce client";
  theUILang.commentName		= "Commentaire";
  theUILang.countryName		= "Pays";
 
@@ -76,13 +76,13 @@
  theUILang.country[ "dm" ] = "Dominique";
  theUILang.country[ "do" ] = "République Dominicaine";
  theUILang.country[ "dz" ] = "Algérie";
- theUILang.country[ "ec" ] = "Equateur";
+ theUILang.country[ "ec" ] = "Équateur";
  theUILang.country[ "ee" ] = "Estonie";
- theUILang.country[ "eg" ] = "Egypte";
+ theUILang.country[ "eg" ] = "Égypte";
  theUILang.country[ "eh" ] = "Sahara Occidental";
  theUILang.country[ "er" ] = "Érythrée";
  theUILang.country[ "es" ] = "Espagne";
- theUILang.country[ "et" ] = "Ethiopie";
+ theUILang.country[ "et" ] = "Éthiopie";
  theUILang.country[ "eu" ] = "Union Européenne";
  theUILang.country[ "fi" ] = "Finlande";
  theUILang.country[ "fj" ] = "Fidji";

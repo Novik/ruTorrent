@@ -6,7 +6,7 @@
  * Author: 
  */
 
- var s_PluginFail			= "Le plug-in ne fonctionnera pas.";
+ var s_PluginFail			= "Le plugin ne fonctionnera pas.";
 
  theUILang.xmpp				= "XMPP";
  theUILang.xmppJabberJID		= "JID :";
