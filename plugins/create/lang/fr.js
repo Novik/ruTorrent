@@ -16,7 +16,7 @@
  theUILang.PrivateTorrent		= "Tracker privé";
  theUILang.torrentCreate		= "Créer...";
  theUILang.BadTorrentData		= "Vous devez remplir tous les champs requis!";
- theUILang.createExternalNotFound	= "Plug-in 'Create' : Le serveur Web n'a pas accès au programme externe. Le plug-in ne fonctionnera pas.";
+ theUILang.createExternalNotFound	= "Plugin 'Create' : Le serveur Web n'a pas accès au programme externe. Le plugin ne fonctionnera pas.";
  theUILang.incorrectDirectory		= "Mauvais répertoire";
  theUILang.cantExecExternal		= "Ne peut pas exécuter le programme externe";
  theUILang.createConsole		= "Console";
