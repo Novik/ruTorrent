@@ -287,7 +287,7 @@ var theUILang =
  Deselect_all			: "Fravælg alle",
  showSpeedInTitle		: "Vis hastighed i titlen",
  speedGraphDuration		: "Duration of speed graph",
- speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3200: "1 hr", 9600: "3 hrs"},
+ speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Webserverens bruger har ikke read/write/execute adgang til tmp mappen. ruTorrent virker derfor ikke.",
  badTempPath2			: "rTorrent brugeren skal have read/execute adgang til tmp mappen. ruTorrent virker derfor ikke.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",

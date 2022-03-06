@@ -285,7 +285,7 @@ var theUILang =
  Deselect_all			: "모두 선택 해제",
  showSpeedInTitle		: "제목에 속도 표시",
  speedGraphDuration		: "Duration of speed graph",
- speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3200: "1 hr", 9600: "3 hrs"},
+ speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "웹서버 사용자가 tmp 디렉토리에 읽기/쓰기/실행 권한을 갖고 있지 않습니다. ruTorrent가 동작할 수 없습니다.",
  badTempPath2			: "rTorrent 사용자가 반드시 tmp 디렉토리에 읽기/실행 권한을 가져야 합니다. ruTorrent가 동작할 수 없습니다.",
  doRandomizeHash		: "Cross-seed를 위해 정보 해시값 임의로 재생성",

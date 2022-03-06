@@ -286,7 +286,7 @@ var theUILang =
  Deselect_all : "Tümünün seçimini kaldır",
  showSpeedInTitle : "Başlıkta hızı göster",
  speedGraphDuration		: "Duration of speed graph",
- speedGraphDurationOptions		: {600: "10 dk", 1800: "30 dk", 3200: "1 saat", 9600: "3 saat"},
+ speedGraphDurationOptions		: {600: "10 dk", 1800: "30 dk", 3600: "1 saat", 10800: "3 saat"},
  badTempPath : "Web sunucusu kullanıcısının tmp dizinine okuma/yazma/yürütme erişimi yok. ruTorrent çalışmayacak.",
  badTempPath2 : "rTorrent kullanıcısının tmp dizinine okuma/yürütme erişimi olmalıdır. ruTorrent çalışmayacak.",
  doRandomizeHash : "Çapraz seedleme için info hashleri rastgele düzenle",

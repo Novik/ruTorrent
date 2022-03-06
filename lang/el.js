@@ -285,7 +285,7 @@ var theUILang =
  Deselect_all			: "Αποεπιλογή όλων",
  showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",
  speedGraphDuration		: "Διάρκεια γραφήματος ταχύτητας",
- speedGraphDurationOptions		: {600: "10 λεπτά", 1800: "30 λεπτά", 3200: "1 ώρα", 9600: "3 ώρες"},
+ speedGraphDurationOptions		: {600: "10 λεπτά", 1800: "30 λεπτά", 3600: "1 ώρα", 10800: "3 ώρες"},
  badTempPath			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  doRandomizeHash		: "Δημιουργία τυχαίων info hashes για cross-seeding",

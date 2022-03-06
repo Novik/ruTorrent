@@ -287,7 +287,7 @@ var theUILang =
  Deselect_all			: "Desmarcar todos",
  showSpeedInTitle		: "Mostrar velocidade no título",
  speedGraphDuration		: "Duration of speed graph",
- speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3200: "1 hr", 9600: "3 hrs"},
+ speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Usuário do servidor não tem permissão de leitura/escrita/execução ao diretório tmp. ruTorrent não vai funcionar.",
  badTempPath2			: "Usuário do rTorrent deve ter permissão de leitura/execução ao diretório tmp. ruTorrent não vai funcionar.",
  doRandomizeHash		: "Randomizar informações de hashes para cross-seeding",
