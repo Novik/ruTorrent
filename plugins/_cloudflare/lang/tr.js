@@ -2,7 +2,7 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
  */
 
  theUILang.cannotLoadCloudscraper		= "_cloudflare eklentisi: Python, cloudscraper modülünü kullanamıyor";
