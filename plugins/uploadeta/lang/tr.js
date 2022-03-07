@@ -3,7 +3,7 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
  */
 
  theUILang.uploadeta		= "ETA Yükleme";
