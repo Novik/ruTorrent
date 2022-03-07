@@ -3,24 +3,24 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
  */
 
- theUILang.scheduler		= "Scheduler";
- theUILang.schedulerOn		= "Enable scheduler";
- theUILang.schedulerGraph	= "Scheduler Table";
- theUILang.schShortWeek		= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek		= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
- theUILang.schUnlimited		= "Unlimited";
- theUILang.schLimited		= "Limited";
- theUILang.schTurnOff		= "Turn off";
- theUILang.schSeedingOnly	= "Seeding only";
- theUILang.schUnlimitedDesc	= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc	= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc	= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc	= "Seeding only - Only upload data";
- theUILang.schLimitedUL		= "Limited UL";
- theUILang.schLimitedDL		= "Limited DL";
- theUILang.shcIgnore		= "Ignore Scheduler";
+ theUILang.scheduler		= "Zamanlayıcı";
+ theUILang.schedulerOn		= "Zamanlayıcı Etkinleştir";
+ theUILang.schedulerGraph	= "Zamanlayıcı Tablosu";
+ theUILang.schShortWeek		= [ "Pzt", "Salı", "Çar", "Per", "Cuma", "Ctesi", "Paz" ];
+ theUILang.schFullWeek		= [ "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar" ];
+ theUILang.schUnlimited		= "Sınırsız";
+ theUILang.schLimited		= "Sınırlı";
+ theUILang.schTurnOff		= "Kapalı";
+ theUILang.schSeedingOnly	= "Sadece Seed";
+ theUILang.schUnlimitedDesc	= "Sınırsız - Genel sınır yok";
+ theUILang.schLimitedDesc	= "Sınırlı - Zamanlayıcıya özel bant genişliği sınırını kullanır";
+ theUILang.schTurnOffDesc	= "Kapalı - Tüm torrentleri durdurur";
+ theUILang.schSeedingOnlyDesc	= "Sadece Seed - Yalnızca veri yükle";
+ theUILang.schLimitedUL		= "Sınırlı UL";
+ theUILang.schLimitedDL		= "Sınırlı DL";
+ theUILang.shcIgnore		= "Zamanlayıcıyı Yoksay";
 
 thePlugins.get("scheduler").langLoaded();
