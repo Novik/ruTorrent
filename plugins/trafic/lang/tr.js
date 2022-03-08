@@ -3,17 +3,17 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com) 
  */
 
- theUILang.traf			= "Traffic";
- theUILang.perDay		= "Per day";
- theUILang.perMonth		= "Per month";
- theUILang.perYear		= "Per year";
- theUILang.allTrackers		= "All trackers";
- theUILang.ClearButton		= "Clear";
- theUILang.ClearQuest		= "Do you really want to clear statistics for selected tracker(s)?";
- theUILang.selectedTorrent	= "Selected torrent(s)";
- theUILang.ratioDay		= "Ratio/day";
- theUILang.ratioWeek		= "Ratio/week";
- theUILang.ratioMonth		= "Ratio/month";
+ theUILang.traf			= "Trafik";
+ theUILang.perDay		= "Günlük";
+ theUILang.perMonth		= "Aylık";
+ theUILang.perYear		= "Yıllık";
+ theUILang.allTrackers		= "Bütün izleyiciler";
+ theUILang.ClearButton		= "Temizle";
+ theUILang.ClearQuest		= "Seçilen izleyici(ler) için istatistikleri gerçekten silmek istiyor musunuz?";
+ theUILang.selectedTorrent	= "Seçilen torrent(ler)";
+ theUILang.ratioDay		= "Ratio/gün";
+ theUILang.ratioWeek		= "Ratio/hafta";
+ theUILang.ratioMonth		= "Ratio/ay";
