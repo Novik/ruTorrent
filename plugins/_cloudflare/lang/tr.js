@@ -2,9 +2,9 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
  */
 
- theUILang.cannotLoadCloudscraper		= "_cloudflare plugin: cloudscraper module can't be loaded in Python";
+ theUILang.cannotLoadCloudscraper		= "_cloudflare eklentisi: Python, cloudscraper modülünü kullanamıyor";
 
 thePlugins.get("_cloudflare").langLoaded();
