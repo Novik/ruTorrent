@@ -3,12 +3,12 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Marco (marco.romanelli@protonmail.ch)
  */
 
- theUILang.bulkCopy		= "Copy";
- theUILang.Magnet		= "Magnet link";
- theUILang.bulkAdd		= "Bulk loading"; 
- theUILang.bulkAddDescription	= "One link per line (HTTP, magnet-link or hash)";
+ theUILang.bulkCopy		= "Copia";
+ theUILang.Magnet		= "Collegamento magnet";
+ theUILang.bulkAdd		= "Caricamento in serie"; 
+ theUILang.bulkAddDescription	= "Un collegamento per riga (HTTP, magnet o hash)";
 
 thePlugins.get("bulk_magnet").langLoaded();
