@@ -16,7 +16,7 @@
  theUILang.tskElapsed		= "Trascorso";
  theUILang.tskPlugin		= "Plugin";
  theUILang.tskDeletePrompt	= "Vuoi veramente rimuovere il comando(i) selezionato(i)?";
- theUILang.tskDelete		= "Rimuovi task";
+ theUILang.tskDelete		= "Rimuovi comando";
  theUILang.tskActivate		= "Attivare";
  theUILang.tskRemove		= "Rimuovere";
  theUILang.tskRefresh		= "Aggiornare";
