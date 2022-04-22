@@ -4,7 +4,7 @@
  * Initial Author: Tibi Diego (ceres@divxmania.it)
  *
  * Author: Gianni
- * Author: mromanelli (marco.romanelli@protonmail.ch)
+ * Author: Marco (marco.romanelli@protonmail.ch)
  */
 
 var theUILang =

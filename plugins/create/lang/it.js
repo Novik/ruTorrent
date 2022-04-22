@@ -3,7 +3,7 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Marco (marco.romanelli@protonmail.ch)
  */
 
  theUILang.mnu_create			= "Crea Torrent...";
@@ -16,8 +16,8 @@
  theUILang.PrivateTorrent		= "Torrent privato";
  theUILang.torrentCreate		= "Crea...";
  theUILang.BadTorrentData		= "Devi completare tutti i campi!";
- theUILang.createExternalNotFound	= "Create plugin: Il Plugin non funziona. L'utente non può accedere al programma esterno";
- theUILang.incorrectDirectory		= "Direcory errata";
+ theUILang.createExternalNotFound	= "Plugin 'Create': Il Plugin non funziona. L'utente non può accedere al programma esterno";
+ theUILang.incorrectDirectory		= "Cartella errata";
  theUILang.cantExecExternal		= "Non posso eseguire il programma esterno";
  theUILang.createConsole		= "Console";
  theUILang.createErrors			= "Errori";
@@ -25,8 +25,8 @@
  theUILang.torrentKill			= "Stop";
  theUILang.torrentKilled		= "Il processo è stato arrestato.";
  theUILang.recentTrackers		= "Tracker recenti";
- theUILang.source			= "Source";
- theUILang.HybridTorrent		= "Hybrid torrent";
- theUILang.deleteFromRecentTrackers	= "> Delete";
+ theUILang.source			= "Sorgente";
+ theUILang.HybridTorrent		= "Torrent ibrido";
+ theUILang.deleteFromRecentTrackers	= "> Cancella";
 
 thePlugins.get("create").langLoaded();
