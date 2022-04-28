@@ -1,6 +1,6 @@
 plugin.description: This plugin provides the possibility of running various scripts on the host system.
 plugin.author: Novik
-plugin.version: 3.10
+plugin.version: 4.0
 php.extensions.error: json
 rtorrent.external.error: php,pgrep
 web.external.error: php,pgrep

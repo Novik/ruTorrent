@@ -1,6 +1,6 @@
 plugin.description: This plugin is intended to show spectrogram of audio files.
 plugin.author: Novik
-plugin.version: 3.10
+plugin.version: 4.0
 rtorrent.remote: error
 rtorrent.external.error: sox
 plugin.dependencies: _task

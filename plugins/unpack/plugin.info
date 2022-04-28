@@ -1,6 +1,6 @@
 plugin.description: This plugin is designed to manually or automatically unrar/unzip torrent data.
 plugin.author: Novik
-plugin.version: 3.10
+plugin.version: 4.0
 plugin.runlevel: 11
 plugin.dependencies: _task
 rtorrent.remote: error

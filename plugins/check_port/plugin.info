@@ -1,6 +1,6 @@
 plugin.description: This plugin adds an incoming port status indicator to the bottom bar.
 plugin.author: Novik
-plugin.version: 3.10
+plugin.version: 4.0
 rtorrent.need: 1
 rtorrent.php.error: conf.php
 php.extensions.error: json

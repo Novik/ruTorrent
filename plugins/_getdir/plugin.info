@@ -1,7 +1,7 @@
 plugin.description: This plugin provides the possibility of comfortable navigation on a host file system.
 plugin.author: dmrom
 plugin.runlevel: 1
-plugin.version: 3.10
+plugin.version: 4.0
 rtorrent.need: 0
 php.extensions.warning: json
 plugin.help: https://github.com/Novik/ruTorrent/wiki/Plugin_getdir
