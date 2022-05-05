@@ -1,6 +1,22 @@
 name: "Bug report"
 description: "Create a report to help us improve"
 body:
+  - type: markdown
+    attributes:
+      value: |
+      #### Advisory 
+      - When upgrading ruTorrent you MUST clear your web browser cache.
+      - Please follow our four step procress before submitting an issue report.
+      
+      - Remember: Professionals still make mistakes. This template is here to help you.
+      - Many of our issue reports come from Web Developers who don't follow our template.
+            
+      #### Clear Cache using Google Chrome
+      - Step 1: Install Google Chrome.
+      - Step 2: Install [Clear Cache](https://chrome.google.com/webstore/detail/clear-cache/cppjkneekbjaeellbfkmgnhonkkjfpdn) extension.
+      - Step 3: [Go to Options](chrome-extension://cppjkneekbjaeellbfkmgnhonkkjfpdn/options.html). Scroll down. Change Time Period to Everything.
+      - Step 4: Left click on the Clear Cache button. Refresh the page.
+      
   - type: checkboxes
     id: checklist
     attributes:
