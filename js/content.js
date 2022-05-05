@@ -230,8 +230,6 @@ function makeContent()
 			'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Moskalets Alexander (<a href="mailto:novik65@gmail.com">Novik</a>)<br/>'+
 			'<br/>'+
 			'<strong>'+theUILang.Check_new_version+'&nbsp;<a href="https://github.com/Novik/ruTorrent" target=_blank>'+theUILang.here+'</a></strong><br/>'+
-			'<br/>'+
-			'<center><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U" target=_blank><img src="images/btn_donate.gif" border="0"/></a></center>'+
 		'</div>');
 	theDialogManager.make("dlgLabel",theUILang.enterLabel,
 		'<div class="content fxcaret">'+theUILang.Enter_label_prom+':<br/>'+
