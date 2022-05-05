@@ -14,8 +14,8 @@ body:
         #### Clear Cache using Google Chrome
         - Step 1: Install Google Chrome.
         - Step 2: Install [Clear Cache](https://chrome.google.com/webstore/detail/clear-cache/cppjkneekbjaeellbfkmgnhonkkjfpdn) extension.
-        - Step 3: [Go to Options](chrome-extension://cppjkneekbjaeellbfkmgnhonkkjfpdn/options.html). Scroll down. Change Time Period to Everything.
-        - Step 4: Left click on the Clear Cache button. Refresh the page.
+        - Step 3: Right click Clear Cache button. Go to Options. Scroll down. Change Time Period to Everything.
+        - Step 4: Left click Clear Cache button. Refresh the page.
       
   - type: checkboxes
     id: checklist
