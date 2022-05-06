@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "description": "ruTorrent javascript tests",
+  "name": "rutorrent-tests",
+  "devDependencies": {
+    "@babel/core": "7.17.5",
+    "@babel/preset-env": "7.16.11",
+    "babel-jest": "27.5.1",
+    "jest": "27.5.1"
+  },
+  "dependencies": {
+    "jquery": "3.6.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "testEnvironmentOptions": {
+      "resources": "usable",
+      "runScripts": "dangerously"
+    },
+    "verbose": true,
+    "silent": false
+  },
+  "repository": {
+    "type": "git",
+    "url": "../"
+  },
+  "keywords": [
+    "test",
+    "rutorrent"
+  ],
+  "target": "es6",
+  "module": "commonjs",
+  "author": "TrimmingFool",
+  "license": "GPL-3.0"
+}

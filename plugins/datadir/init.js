@@ -56,7 +56,7 @@ rTorrentStub.prototype.getsavepathResponse = function( xml )
 	var save_path = '';
 	if(torrent)
 	{
-		torrent.base_path = this.getValue( values, 3 );
+		torrent.base_path = this.getXMLValue( values, 3 );
 		var pos = torrent.base_path.lastIndexOf('/');
 		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ? 
 			torrent.base_path.substring(0,pos) : torrent.base_path;
