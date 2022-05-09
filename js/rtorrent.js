@@ -739,6 +739,12 @@ rTorrentStub.prototype.getXMLValue = function(values,i)
 	return((ret==null) ? "" : ret);
 }
 
+rTorrentStub.prototype.processAction = function(actionSuffix, data)
+{
+	const parseFunc = this.action+actionSuffix;
+	return parseFunc in this ? this[parseFunc](data) : data;
+}
+
 rTorrentStub.prototype.getResponse = function(data) 
 {
 	var ret = "";
@@ -764,17 +770,10 @@ rTorrentStub.prototype.getResponse = function(data)
 						this.faultString.push("XMLRPC Error: "+this.getXMLValue(values,0)+" ["+this.action+"]");
 					}
 		}
-		const parseFunc = this.action+'ParseXML';
-		if(parseFunc in this)
-			responseData = this[parseFunc](responseData);
+		responseData = this.processAction('ParseXML', responseData);
 	}
 	if(!this.isError())
-	{
-		if(this.action+'Response' in this)
-			ret = this[this.action+'Response'](responseData);
-		else
-			ret = responseData;
-	}
+		ret = this.processAction('Response', responseData);
 	return(ret);
 }
 
