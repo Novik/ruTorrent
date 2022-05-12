@@ -46,7 +46,8 @@ class rHistoryData
 		{
 			$keys = array_keys($this->data);
 			$values = array_values($this->data);
-			$this->data = array_combine(array_splice($keys,$count-1),array_splice($values,$count-1));
+			$offset = $limit / 2;
+			$this->data = array_combine(array_splice($keys,0,$offset),array_splice($values,0,$offset));
 		}
 		$this->store();
 	}
