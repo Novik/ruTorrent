@@ -9,17 +9,16 @@ $cmd = "get";
 if(isset($_REQUEST['mode']))
 	$cmd = $_REQUEST['mode'];
 $errorsReported = false;
-$dataType="application/json";
 $mngr = new rRSSManager();
 switch($cmd)
 {
-	case "setinterval":
+	case "setsettings":
 	{
-		$mngr->setInterval($_REQUEST['interval']);
+		$mngr->setSettings($_REQUEST['interval'], $_REQUEST['delayerrui']);
 	}
-	case "getintervals":
+	case "getsettings":
 	{
-		$val = $mngr->getIntervals();
+		$val = $mngr->getSettings();
 		break;
 	}
 	case "add":
@@ -273,9 +272,8 @@ switch($cmd)
 	}
 	case "getdesc":
 	{
-		$dataType="text/xml";
 		$val = '';
-	        if(isset($_REQUEST['rss']) && isset($_REQUEST['href']))
+		if(isset($_REQUEST['rss']) && isset($_REQUEST['href']))
 			$val = $mngr->getDescription($_REQUEST['rss'],$_REQUEST['href']);
 		break;
 	}
@@ -364,10 +362,7 @@ if($val===null)
 	$val = $mngr->get();
 	$errorsReported = true;
 }
-if($dataType=="text/xml")
-	CachedEcho::send('<?xml version="1.0" encoding="UTF-8"?><data><![CDATA['.$val.']]></data>',"text/xml",true,false);
-else
-	CachedEcho::send(JSON::safeEncode($val),$dataType,true,false);
+CachedEcho::send(JSON::safeEncode($val), "application/json",true,false);
 
 ob_flush();
 flush();
