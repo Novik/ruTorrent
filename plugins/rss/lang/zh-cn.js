@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "你真的确定要删除选择组的所有内容吗?";
  theUILang.rssAllFiters			= "增加过滤器";
  theUILang.rssUpdateInterval		= "更新间隔";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "文件夹";
  theUILang.Labels			= "标签";
 

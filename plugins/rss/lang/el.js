@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Θέλετε πραγματικά να διαγράψετε την επιλεγμένη ομάδα με όλα τα περιεχόμενα;";
  theUILang.rssAllFiters			= "Όλα τα φίλτρα";
  theUILang.rssUpdateInterval		= "Μεσοδιάστημα ανανέωσης";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Φάκελοι";
  theUILang.Labels			= "Ετικέτες";
 

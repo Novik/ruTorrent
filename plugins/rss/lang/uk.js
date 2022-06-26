@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Справді видалити вибрану групу з усім її вмістом?";
  theUILang.rssAllFiters			= "Усі фільтри";
  theUILang.rssUpdateInterval		= "Інтервал оновлення";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Директорії";
  theUILang.Labels			= "Мітки";
 
