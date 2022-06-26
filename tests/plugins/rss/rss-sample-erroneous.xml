@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Vexatious torrent channel©</title>
+        <link>https://onerous.me</link>
+        <description>RSS feed for solecistic torrent uploads</description>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 31 Dec 2021 12:00:00 +0000</lastBuildDate>
+        <ttl>60</ttl>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>Animal Feeding Class</generator>
+        <item>
+            <title>
+                <![CDATA[The best title]]>
+            </title>
+            <description>
+                <![CDATA[The best description]]>
+            </description>
+            <pubDate>Sat, 1 Jan 2022 12:00:00 +0000</pubDate>
+            <link>https://onerous.me/path/to/torrent?guid=ABCD&amp;torr</link>
+            <guid>https://onerous.me/path/to/torrent?guid=ABCD&amp;perm</guid>
+            <comments>The best comment</comments>
+            <category>best of the best</category>
+        </item>
+        <item>
+            <description>
+                <![CDATA[Hide the title]]>
+            </description>
+            <link>https://onerous.me/<i>no_tags_allowed</i>/path/to/torrent?guid=ABCE</link>
+            <guid>ABCE</guid>
+            <category>negligent omissions</category>
+            <dc:date>Sat, 1 Jan 2022 13:00:00 +0000</dc:date>
+        </item>
+        <item>
+            <!--
+            <link>https://onerous.me/comment</link>
+            commented link => item should not be added
+            -->
+            <description>
+                <![CDATA[Description only]]>
+            </description>
+        </item>
+        <item>
+            <title>
+                <![CDATA[Wonders of <pubDate>Sat, 1 Jan 2022 14:30:00 +0000</pubDate> wow]]>
+            </title>
+            <description>
+                <![CDATA[Read somewhere <link>https://cool.link</link> that rss feeds contain </channel> at the end :)]]>
+            </description>
+            <pubDate>Sat, 1 Jan 2022 14:00:00 +0000</pubDate>
+            <link>ABCF</link>
+            <guid>https://onerous.me/path/to/torrent?guid=ABCF</guid>
+            <category>vicious insertions</category>
+        </item>

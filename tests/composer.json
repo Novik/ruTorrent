@@ -1,0 +1,11 @@
+{
+  "name": "rutorrent/rutorrent-tests",
+  "description": "ruTorrent php tests",
+  "require": {
+    "phpunit/phpunit": "9.5.20"
+  },
+  "scripts": {
+    "test": "phpunit plugins",
+    "testVerbose": "@test -vvv"
+  }
+}

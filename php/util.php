@@ -15,10 +15,11 @@ spl_autoload_register(function ($class)
 	// Suppress include warnings if the user disables do_diagnostic
 	// For compatibility with 3rd party plugins which use autoloaders
 	global $do_diagnostic;
-	if($do_diagnostic)
-		include_once 'utility/'. strtolower($class). '.php';
-	else
-		@include_once 'utility/'. strtolower($class). '.php';
+	$file = __DIR__.'/utility/'. strtolower($class). '.php';
+	if(file_exists($file))
+		include_once $file;
+	else if($do_diagnostic)
+		error_log('Utility class not found by autoloader in file: '.$file);
 });
 
 // Fixes quotations if php verison is less than 5.4
