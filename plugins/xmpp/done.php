@@ -1,6 +1,6 @@
 <?php
 
 $req = new rXMLRPCRequest( array( 
-	rTorrentSettings::get()->getOnFinishedCommand(array('xmpp'.getUser(), getCmd('cat=')))
+	rTorrentSettings::get()->getOnFinishedCommand(array('xmpp'.User::getUser(), getCmd('cat=')))
 	));
 $req->run();
