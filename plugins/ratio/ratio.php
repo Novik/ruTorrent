@@ -17,7 +17,7 @@ class rRatio
 	public $hash = "ratio.dat";
 	public $rat = array();
 	public $default = 0;
-	private $version = 3.10;
+	private $version = 3;
 
 	static public function load()
 	{
@@ -26,13 +26,15 @@ class rRatio
 		if(!$cache->get($rt))
 		{
 			$rt->fillArray();
-			$rt->version = 3.11;
+			$rt->version = 4;
+			$cache->set($rt);
 		}
-		elseif ($rt->version != 3.11)
+		elseif ($rt->version != 4)
 		{
 			$rt->migrate();
 			$rt->pad();
-			$rt->version = 3.11;
+			$rt->version = 4;
+			$cache->set($rt);
 		}
 		else
 			$rt->pad();
