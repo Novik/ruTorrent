@@ -54,7 +54,7 @@ class rRatio
 	        	$rat = &$this->rat[$i];
 	        	$rat["min"] = Math::iclamp($rat["min"]);
 	        	$rat["max"] = Math::iclamp($rat["max"]);
-	        	$rat["upload"] = Math::fRoundClamp($rat["upload"]);
+	        	$rat["upload"] = $rat["upload"] == 0 ? 0 : Math::fRoundClamp($rat["upload"]);
 	        }
 		for($i=count($this->rat); $i<MAX_RATIO; $i++)
 			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>0.1, "name"=>"ratio".$i, "time"=>-1 );
@@ -252,7 +252,10 @@ class rRatio
 			if(isset($_REQUEST['rat_max'.$i]))
 			        $arr["max"] = Math::iclamp($_REQUEST['rat_max'.$i]);
 			if(isset($_REQUEST['rat_upload'.$i]))
-			        $arr["upload"] = Math::fRoundClamp($_REQUEST['rat_upload'.$i]);
+			{        
+					$upload = $_REQUEST['rat_upload'.$i];
+					$arr["upload"] = $upload == 0 ? 0 : Math::fRoundClamp($upload);
+			}
 			if(isset($_REQUEST['rat_time'.$i]))
 			        $arr["time"] = (is_numeric($_REQUEST['rat_time'.$i]) ? floatval($_REQUEST['rat_time'.$i]) : -1);
 			if(isset($_REQUEST['rat_name'.$i]))
