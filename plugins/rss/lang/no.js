@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Vil du virkelig slette valgt gruppe med all dens innhold?";
  theUILang.rssAllFiters			= "Alle filtre";
  theUILang.rssUpdateInterval		= "Oppdater intervall";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Mapper";
  theUILang.Labels			= "Etiketter";
 

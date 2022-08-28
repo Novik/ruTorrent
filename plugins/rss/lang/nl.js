@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Weet u zeker dat u de geslecteerde groep + inhoud wilt verwijderen?";
  theUILang.rssAllFiters			= "Alle filters";
  theUILang.rssUpdateInterval		= "Update interval";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Directories";
  theUILang.Labels			= "Labels";
 

@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Vill du verkligen ta bort markerad grupp och radera allt innehåll?";
  theUILang.rssAllFiters			= "Alla filter";
  theUILang.rssUpdateInterval		= "Uppdateringsintervall";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Mappar";
  theUILang.Labels			= "Etiketter";
 

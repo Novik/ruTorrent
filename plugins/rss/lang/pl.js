@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Czy na pewno chcesz usunąć wybraną grupę wraz z całą zawartością?";
  theUILang.rssAllFiters			= "Wszystkie filtry";
  theUILang.rssUpdateInterval		= "Aktualizuj co";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Katalogi";
  theUILang.Labels			= "Etykiety";
 

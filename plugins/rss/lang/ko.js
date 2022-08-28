@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "정말 선택한 그룹 및 모든 항목을 제거할까요?";
  theUILang.rssAllFiters			= "모든 필터";
  theUILang.rssUpdateInterval		= "업데이트 주기";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "디렉토리";
  theUILang.Labels			= "라벨";
 

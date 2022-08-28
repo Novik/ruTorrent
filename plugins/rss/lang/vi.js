@@ -73,6 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Bạn có thực sự muốn xóa các nhóm đã chọn và toạn bộ nội dung bên trong?";
  theUILang.rssAllFiters			= "Tất cả bộ lọc";
  theUILang.rssUpdateInterval		= "Cập nhật sau mỗi";
+ theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Các thư mục";
  theUILang.Labels			= "Các nhãn";
 
