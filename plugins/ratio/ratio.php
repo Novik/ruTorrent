@@ -253,8 +253,8 @@ class rRatio
 			        $arr["max"] = Math::iclamp($_REQUEST['rat_max'.$i]);
 			if(isset($_REQUEST['rat_upload'.$i]))
 			{        
-					$upload = $_REQUEST['rat_upload'.$i];
-					$arr["upload"] = $upload == 0 ? 0 : Math::fRoundClamp($upload);
+				$upload = $_REQUEST['rat_upload'.$i];
+				$arr["upload"] = $upload == 0 ? 0 : Math::fRoundClamp($upload);
 			}
 			if(isset($_REQUEST['rat_time'.$i]))
 			        $arr["time"] = (is_numeric($_REQUEST['rat_time'.$i]) ? floatval($_REQUEST['rat_time'.$i]) : -1);
