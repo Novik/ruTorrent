@@ -73,7 +73,7 @@
  theUILang.rssDeleteGroupContentsPrompt	= "Êtes-vous sûr de vouloir supprimer ce groupe ainsi que tout son contenu?";
  theUILang.rssAllFiters			= "Tous les filtres";
  theUILang.rssUpdateInterval		= "Intervalle de mise à jour";
- theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
+ theUILang.rssShowErrorsDelayed		= "Retarder les notifications d'erreurs RSS jusqu'a ce que l'onglet journal ou le flux RSS soit visible";
  theUILang.Directories			= "Annuaires";
  theUILang.Labels			= "Étiquettes";
 
