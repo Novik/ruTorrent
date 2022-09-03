@@ -8,8 +8,8 @@ npm test
 
 ## Test php
 ```shell
-./php-composer-install.sh
-php composer.phar test
+./php-composer.sh install
+./php-composer.sh test
 ```
 
 
