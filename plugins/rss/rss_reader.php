@@ -102,7 +102,9 @@ class RegexRSSReader
 				$text = trim($c['value']);
 			}
 			if ($this->encoding != 'utf-8') {
-				if (function_exists('mb_convert_encoding'))
+				if(function_exists('iconv'))
+					$text = iconv($this->encoding, 'UTF-8//TRANSLIT', $text);
+				elseif (function_exists('mb_convert_encoding'))
 					$text = mb_convert_encoding($text, 'UTF-8', $this->encoding);
 				else
 					$text = UTF::win2utf($text);

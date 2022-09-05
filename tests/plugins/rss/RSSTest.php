@@ -140,4 +140,37 @@ final class RSSTest extends TestCase
 			"hash" => ""
 		), $contents['items'][2]);
 	}
+	public function testRSS2(): void
+	{
+		$exp_url = 'https://example.jp/rss';
+		$rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
+			$this->assertEquals($exp_url, $url);
+			$this->assertEquals([], $cookies);
+			$this->assertEquals([], $headers);
+			$cliMock = new SnoopyMock();
+			$cliMock->results = file_get_contents(__DIR__ . '/rss-jp-sample.xml');
+			return $cliMock;
+		};
+		$rRSS = new rRSS($exp_url, $rssFetchURL);
+		$history = new rRSSHistory();
+		$succ = $rRSS->fetch($history);
+		var_dump($rRSS->items);
+		var_dump($rRSS->lastErrorMsgs);
+		$this->assertEquals(0, count($rRSS->lastErrorMsgs));
+		$this->assertTrue($succ);
+
+		$this->assertEquals('アニメ 放送©', $rRSS->channel['title']);
+		$this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
+		$contents =  $rRSS->getContents("label", "1", "1", $history);
+		$this->assertEquals(1, count($contents['items']));
+
+		$this->assertEquals(array(
+			"time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
+			"title" => '完璧な映画',
+			"href" => 'https://example.jp/path/to/torrent?guid=ABCD&torr',
+			"guid" => 'https://example.jp/path/to/torrent?guid=ABCD&perm',
+			"errcount" => 0,
+			"hash" => ""
+		), $contents['items'][0]);
+	}
 }
