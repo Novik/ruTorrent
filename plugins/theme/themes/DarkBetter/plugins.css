@@ -1,0 +1,282 @@
+.tskconsole, .exconsole, .console, .starterConsole {background: #333333}
+.cCell {color: black; border-color: #888888}
+
+.shieven {background: #333333}
+.shiodd {background: #191919}
+
+.Cell0 {border: 1px dotted #888888}
+
+#meter-disk-td {background: url(./images/disk.svg) no-repeat !important; background-size: 22px !important}
+#meter-cpu-td {background: url(./images/cpu.svg) no-repeat !important; background-size: 22px !important}
+
+div#dlg_unpack div.dlg-header, div#cadd div.dlg-header { background: transparent url(./images/edit.svg) no-repeat 2px center !important; background-size: 20px !important}
+
+#exscategory {margin-top: 4px}
+
+#port-holder {
+    height: 22px !important;
+    line-height: 22px !important;
+    margin-left: 22px !important;
+}
+
+/* labels */
+#lbl_nlb {content:url(./images/no_label.svg)}
+
+#-_-_-nlb-_-_- {padding: 2px 3px !important}
+
+/* autodl */
+#autodl-tb {background: transparent url(./images/autodl.svg) no-repeat center; background-size: 28px}
+
+/* geoip */
+.geoip {background-repeat: no-repeat; background-position: center center; width: 22px; background-size: 22px !important}
+.geoip_flag_ad {background-image: url( "./images/flags/ad.svg" )}
+.geoip_flag_ae {background-image: url( "./images/flags/ae.svg" )}
+.geoip_flag_af {background-image: url( "./images/flags/af.svg" )}
+.geoip_flag_ag {background-image: url( "./images/flags/ag.svg" )}
+.geoip_flag_ai {background-image: url( "./images/flags/ai.svg" )}
+.geoip_flag_al {background-image: url( "./images/flags/al.svg" )}
+.geoip_flag_am {background-image: url( "./images/flags/am.svg" )}
+.geoip_flag_ao {background-image: url( "./images/flags/ao.svg" )}
+.geoip_flag_aq {background-image: url( "./images/flags/aq.svg" )}
+.geoip_flag_ar {background-image: url( "./images/flags/ar.svg" )}
+.geoip_flag_as {background-image: url( "./images/flags/as.svg" )}
+.geoip_flag_at {background-image: url( "./images/flags/at.svg" )}
+.geoip_flag_au {background-image: url( "./images/flags/au.svg" )}
+.geoip_flag_aw {background-image: url( "./images/flags/aw.svg" )}
+.geoip_flag_ax {background-image: url( "./images/flags/ax.svg" )}
+.geoip_flag_az {background-image: url( "./images/flags/az.svg" )}
+.geoip_flag_ba {background-image: url( "./images/flags/ba.svg" )}
+.geoip_flag_bb {background-image: url( "./images/flags/bb.svg" )}
+.geoip_flag_bd {background-image: url( "./images/flags/bd.svg" )}
+.geoip_flag_be {background-image: url( "./images/flags/be.svg" )}
+.geoip_flag_bf {background-image: url( "./images/flags/bf.svg" )}
+.geoip_flag_bg {background-image: url( "./images/flags/bg.svg" )}
+.geoip_flag_bh {background-image: url( "./images/flags/bh.svg" )}
+.geoip_flag_bi {background-image: url( "./images/flags/bi.svg" )}
+.geoip_flag_bj {background-image: url( "./images/flags/bj.svg" )}
+.geoip_flag_bl {background-image: url( "./images/flags/bl.svg" )}
+.geoip_flag_bm {background-image: url( "./images/flags/bm.svg" )}
+.geoip_flag_bn {background-image: url( "./images/flags/bn.svg" )}
+.geoip_flag_bo {background-image: url( "./images/flags/bo.svg" )}
+.geoip_flag_bq {background-image: url( "./images/flags/bq.svg" )}
+.geoip_flag_br {background-image: url( "./images/flags/br.svg" )}
+.geoip_flag_bs {background-image: url( "./images/flags/bs.svg" )}
+.geoip_flag_bt {background-image: url( "./images/flags/bt.svg" )}
+.geoip_flag_bv {background-image: url( "./images/flags/bv.svg" )}
+.geoip_flag_bw {background-image: url( "./images/flags/bw.svg" )}
+.geoip_flag_by {background-image: url( "./images/flags/by.svg" )}
+.geoip_flag_bz {background-image: url( "./images/flags/bz.svg" )}
+.geoip_flag_ca {background-image: url( "./images/flags/ca.svg" )}
+.geoip_flag_cc {background-image: url( "./images/flags/cc.svg" )}
+.geoip_flag_cd {background-image: url( "./images/flags/cd.svg" )}
+.geoip_flag_cf {background-image: url( "./images/flags/cf.svg" )}
+.geoip_flag_cg {background-image: url( "./images/flags/cg.svg" )}
+.geoip_flag_ch {background-image: url( "./images/flags/ch.svg" )}
+.geoip_flag_ci {background-image: url( "./images/flags/ci.svg" )}
+.geoip_flag_ck {background-image: url( "./images/flags/ck.svg" )}
+.geoip_flag_cl {background-image: url( "./images/flags/cl.svg" )}
+.geoip_flag_cm {background-image: url( "./images/flags/cm.svg" )}
+.geoip_flag_cn {background-image: url( "./images/flags/cn.svg" )}
+.geoip_flag_co {background-image: url( "./images/flags/co.svg" )}
+.geoip_flag_cr {background-image: url( "./images/flags/cr.svg" )}
+.geoip_flag_cu {background-image: url( "./images/flags/cu.svg" )}
+.geoip_flag_cv {background-image: url( "./images/flags/cv.svg" )}
+.geoip_flag_cw {background-image: url( "./images/flags/cw.svg" )}
+.geoip_flag_cx {background-image: url( "./images/flags/cx.svg" )}
+.geoip_flag_cy {background-image: url( "./images/flags/cy.svg" )}
+.geoip_flag_cz {background-image: url( "./images/flags/cz.svg" )}
+.geoip_flag_de {background-image: url( "./images/flags/de.svg" )}
+.geoip_flag_dj {background-image: url( "./images/flags/dj.svg" )}
+.geoip_flag_dk {background-image: url( "./images/flags/dk.svg" )}
+.geoip_flag_dm {background-image: url( "./images/flags/dm.svg" )}
+.geoip_flag_do {background-image: url( "./images/flags/do.svg" )}
+.geoip_flag_dz {background-image: url( "./images/flags/dz.svg" )}
+.geoip_flag_ec {background-image: url( "./images/flags/ec.svg" )}
+.geoip_flag_ee {background-image: url( "./images/flags/ee.svg" )}
+.geoip_flag_eg {background-image: url( "./images/flags/eg.svg" )}
+.geoip_flag_eh {background-image: url( "./images/flags/eh.svg" )}
+.geoip_flag_er {background-image: url( "./images/flags/er.svg" )}
+.geoip_flag_es {background-image: url( "./images/flags/es.svg" )}
+.geoip_flag_et {background-image: url( "./images/flags/et.svg" )}
+.geoip_flag_eu {background-image: url( "./images/flags/eu.svg" )}
+.geoip_flag_fi {background-image: url( "./images/flags/fi.svg" )}
+.geoip_flag_fj {background-image: url( "./images/flags/fj.svg" )}
+.geoip_flag_fk {background-image: url( "./images/flags/fk.svg" )}
+.geoip_flag_fm {background-image: url( "./images/flags/fm.svg" )}
+.geoip_flag_fo {background-image: url( "./images/flags/fo.svg" )}
+.geoip_flag_fr {background-image: url( "./images/flags/fr.svg" )}
+.geoip_flag_ga {background-image: url( "./images/flags/ga.svg" )}
+.geoip_flag_gb {background-image: url( "./images/flags/gb.svg" )}
+.geoip_flag_gd {background-image: url( "./images/flags/gd.svg" )}
+.geoip_flag_ge {background-image: url( "./images/flags/ge.svg" )}
+.geoip_flag_gf {background-image: url( "./images/flags/gf.svg" )}
+.geoip_flag_gg {background-image: url( "./images/flags/gg.svg" )}
+.geoip_flag_gh {background-image: url( "./images/flags/gh.svg" )}
+.geoip_flag_gi {background-image: url( "./images/flags/gi.svg" )}
+.geoip_flag_gl {background-image: url( "./images/flags/gl.svg" )}
+.geoip_flag_gm {background-image: url( "./images/flags/gm.svg" )}
+.geoip_flag_gn {background-image: url( "./images/flags/gn.svg" )}
+.geoip_flag_gp {background-image: url( "./images/flags/gp.svg" )}
+.geoip_flag_gq {background-image: url( "./images/flags/gq.svg" )}
+.geoip_flag_gr {background-image: url( "./images/flags/gr.svg" )}
+.geoip_flag_gs {background-image: url( "./images/flags/gs.svg" )}
+.geoip_flag_gt {background-image: url( "./images/flags/gt.svg" )}
+.geoip_flag_gu {background-image: url( "./images/flags/gu.svg" )}
+.geoip_flag_gw {background-image: url( "./images/flags/gw.svg" )}
+.geoip_flag_gy {background-image: url( "./images/flags/gy.svg" )}
+.geoip_flag_hk {background-image: url( "./images/flags/hk.svg" )}
+.geoip_flag_hm {background-image: url( "./images/flags/hm.svg" )}
+.geoip_flag_hn {background-image: url( "./images/flags/hn.svg" )}
+.geoip_flag_hr {background-image: url( "./images/flags/hr.svg" )}
+.geoip_flag_ht {background-image: url( "./images/flags/ht.svg" )}
+.geoip_flag_hu {background-image: url( "./images/flags/hu.svg" )}
+.geoip_flag_id {background-image: url( "./images/flags/id.svg" )}
+.geoip_flag_ie {background-image: url( "./images/flags/ie.svg" )}
+.geoip_flag_il {background-image: url( "./images/flags/il.svg" )}
+.geoip_flag_im {background-image: url( "./images/flags/im.svg" )}
+.geoip_flag_in {background-image: url( "./images/flags/in.svg" )}
+.geoip_flag_io {background-image: url( "./images/flags/io.svg" )}
+.geoip_flag_iq {background-image: url( "./images/flags/iq.svg" )}
+.geoip_flag_ir {background-image: url( "./images/flags/ir.svg" )}
+.geoip_flag_is {background-image: url( "./images/flags/is.svg" )}
+.geoip_flag_it {background-image: url( "./images/flags/it.svg" )}
+.geoip_flag_je {background-image: url( "./images/flags/je.svg" )}
+.geoip_flag_jm {background-image: url( "./images/flags/jm.svg" )}
+.geoip_flag_jo {background-image: url( "./images/flags/jo.svg" )}
+.geoip_flag_jp {background-image: url( "./images/flags/jp.svg" )}
+.geoip_flag_ke {background-image: url( "./images/flags/ke.svg" )}
+.geoip_flag_kg {background-image: url( "./images/flags/kg.svg" )}
+.geoip_flag_kh {background-image: url( "./images/flags/kh.svg" )}
+.geoip_flag_ki {background-image: url( "./images/flags/ki.svg" )}
+.geoip_flag_km {background-image: url( "./images/flags/km.svg" )}
+.geoip_flag_kn {background-image: url( "./images/flags/kn.svg" )}
+.geoip_flag_kp {background-image: url( "./images/flags/kp.svg" )}
+.geoip_flag_kr {background-image: url( "./images/flags/kr.svg" )}
+.geoip_flag_kw {background-image: url( "./images/flags/kw.svg" )}
+.geoip_flag_ky {background-image: url( "./images/flags/ky.svg" )}
+.geoip_flag_kz {background-image: url( "./images/flags/kz.svg" )}
+.geoip_flag_la {background-image: url( "./images/flags/la.svg" )}
+.geoip_flag_lb {background-image: url( "./images/flags/lb.svg" )}
+.geoip_flag_lc {background-image: url( "./images/flags/lc.svg" )}
+.geoip_flag_li {background-image: url( "./images/flags/li.svg" )}
+.geoip_flag_lk {background-image: url( "./images/flags/lk.svg" )}
+.geoip_flag_lr {background-image: url( "./images/flags/lr.svg" )}
+.geoip_flag_ls {background-image: url( "./images/flags/ls.svg" )}
+.geoip_flag_lt {background-image: url( "./images/flags/lt.svg" )}
+.geoip_flag_lu {background-image: url( "./images/flags/lu.svg" )}
+.geoip_flag_lv {background-image: url( "./images/flags/lv.svg" )}
+.geoip_flag_ly {background-image: url( "./images/flags/ly.svg" )}
+.geoip_flag_ma {background-image: url( "./images/flags/ma.svg" )}
+.geoip_flag_mc {background-image: url( "./images/flags/mc.svg" )}
+.geoip_flag_md {background-image: url( "./images/flags/md.svg" )}
+.geoip_flag_me {background-image: url( "./images/flags/me.svg" )}
+.geoip_flag_mf {background-image: url( "./images/flags/mf.svg" )}
+.geoip_flag_mg {background-image: url( "./images/flags/mg.svg" )}
+.geoip_flag_mh {background-image: url( "./images/flags/mh.svg" )}
+.geoip_flag_mk {background-image: url( "./images/flags/mk.svg" )}
+.geoip_flag_ml {background-image: url( "./images/flags/ml.svg" )}
+.geoip_flag_mm {background-image: url( "./images/flags/mm.svg" )}
+.geoip_flag_mn {background-image: url( "./images/flags/mn.svg" )}
+.geoip_flag_mo {background-image: url( "./images/flags/mo.svg" )}
+.geoip_flag_mp {background-image: url( "./images/flags/mp.svg" )}
+.geoip_flag_mq {background-image: url( "./images/flags/mq.svg" )}
+.geoip_flag_mr {background-image: url( "./images/flags/mr.svg" )}
+.geoip_flag_ms {background-image: url( "./images/flags/ms.svg" )}
+.geoip_flag_mt {background-image: url( "./images/flags/mt.svg" )}
+.geoip_flag_mu {background-image: url( "./images/flags/mu.svg" )}
+.geoip_flag_mv {background-image: url( "./images/flags/mv.svg" )}
+.geoip_flag_mw {background-image: url( "./images/flags/mw.svg" )}
+.geoip_flag_mx {background-image: url( "./images/flags/mx.svg" )}
+.geoip_flag_my {background-image: url( "./images/flags/my.svg" )}
+.geoip_flag_mz {background-image: url( "./images/flags/mz.svg" )}
+.geoip_flag_na {background-image: url( "./images/flags/na.svg" )}
+.geoip_flag_nc {background-image: url( "./images/flags/nc.svg" )}
+.geoip_flag_ne {background-image: url( "./images/flags/ne.svg" )}
+.geoip_flag_nf {background-image: url( "./images/flags/nf.svg" )}
+.geoip_flag_ng {background-image: url( "./images/flags/ng.svg" )}
+.geoip_flag_ni {background-image: url( "./images/flags/ni.svg" )}
+.geoip_flag_nl {background-image: url( "./images/flags/nl.svg" )}
+.geoip_flag_no {background-image: url( "./images/flags/no.svg" )}
+.geoip_flag_np {background-image: url( "./images/flags/np.svg" )}
+.geoip_flag_nr {background-image: url( "./images/flags/nr.svg" )}
+.geoip_flag_nu {background-image: url( "./images/flags/nu.svg" )}
+.geoip_flag_nz {background-image: url( "./images/flags/nz.svg" )}
+.geoip_flag_om {background-image: url( "./images/flags/om.svg" )}
+.geoip_flag_pa {background-image: url( "./images/flags/pa.svg" )}
+.geoip_flag_pe {background-image: url( "./images/flags/pe.svg" )}
+.geoip_flag_pf {background-image: url( "./images/flags/pf.svg" )}
+.geoip_flag_pg {background-image: url( "./images/flags/pg.svg" )}
+.geoip_flag_ph {background-image: url( "./images/flags/ph.svg" )}
+.geoip_flag_pk {background-image: url( "./images/flags/pk.svg" )}
+.geoip_flag_pl {background-image: url( "./images/flags/pl.svg" )}
+.geoip_flag_pm {background-image: url( "./images/flags/pm.svg" )}
+.geoip_flag_pn {background-image: url( "./images/flags/pn.svg" )}
+.geoip_flag_pr {background-image: url( "./images/flags/pr.svg" )}
+.geoip_flag_ps {background-image: url( "./images/flags/ps.svg" )}
+.geoip_flag_pt {background-image: url( "./images/flags/pt.svg" )}
+.geoip_flag_pw {background-image: url( "./images/flags/pw.svg" )}
+.geoip_flag_py {background-image: url( "./images/flags/py.svg" )}
+.geoip_flag_qa {background-image: url( "./images/flags/qa.svg" )}
+.geoip_flag_re {background-image: url( "./images/flags/re.svg" )}
+.geoip_flag_ro {background-image: url( "./images/flags/ro.svg" )}
+.geoip_flag_rs {background-image: url( "./images/flags/rs.svg" )}
+.geoip_flag_ru {background-image: url( "./images/flags/ru.svg" )}
+.geoip_flag_rw {background-image: url( "./images/flags/rw.svg" )}
+.geoip_flag_sa {background-image: url( "./images/flags/sa.svg" )}
+.geoip_flag_sb {background-image: url( "./images/flags/sb.svg" )}
+.geoip_flag_sc {background-image: url( "./images/flags/sc.svg" )}
+.geoip_flag_sd {background-image: url( "./images/flags/sd.svg" )}
+.geoip_flag_se {background-image: url( "./images/flags/se.svg" )}
+.geoip_flag_sg {background-image: url( "./images/flags/sg.svg" )}
+.geoip_flag_sh {background-image: url( "./images/flags/sh.svg" )}
+.geoip_flag_si {background-image: url( "./images/flags/si.svg" )}
+.geoip_flag_sj {background-image: url( "./images/flags/sj.svg" )}
+.geoip_flag_sk {background-image: url( "./images/flags/sk.svg" )}
+.geoip_flag_sl {background-image: url( "./images/flags/sl.svg" )}
+.geoip_flag_sm {background-image: url( "./images/flags/sm.svg" )}
+.geoip_flag_sn {background-image: url( "./images/flags/sn.svg" )}
+.geoip_flag_so {background-image: url( "./images/flags/so.svg" )}
+.geoip_flag_sr {background-image: url( "./images/flags/sr.svg" )}
+.geoip_flag_ss {background-image: url( "./images/flags/ss.svg" )}
+.geoip_flag_st {background-image: url( "./images/flags/st.svg" )}
+.geoip_flag_sv {background-image: url( "./images/flags/sv.svg" )}
+.geoip_flag_sx {background-image: url( "./images/flags/sx.svg" )}
+.geoip_flag_sy {background-image: url( "./images/flags/sy.svg" )}
+.geoip_flag_sz {background-image: url( "./images/flags/sz.svg" )}
+.geoip_flag_tc {background-image: url( "./images/flags/tc.svg" )}
+.geoip_flag_td {background-image: url( "./images/flags/td.svg" )}
+.geoip_flag_tf {background-image: url( "./images/flags/tf.svg" )}
+.geoip_flag_tg {background-image: url( "./images/flags/tg.svg" )}
+.geoip_flag_th {background-image: url( "./images/flags/th.svg" )}
+.geoip_flag_tj {background-image: url( "./images/flags/tj.svg" )}
+.geoip_flag_tk {background-image: url( "./images/flags/tk.svg" )}
+.geoip_flag_tl {background-image: url( "./images/flags/tl.svg" )}
+.geoip_flag_tm {background-image: url( "./images/flags/tm.svg" )}
+.geoip_flag_tn {background-image: url( "./images/flags/tn.svg" )}
+.geoip_flag_to {background-image: url( "./images/flags/to.svg" )}
+.geoip_flag_tr {background-image: url( "./images/flags/tr.svg" )}
+.geoip_flag_tt {background-image: url( "./images/flags/tt.svg" )}
+.geoip_flag_tv {background-image: url( "./images/flags/tv.svg" )}
+.geoip_flag_tw {background-image: url( "./images/flags/tw.svg" )}
+.geoip_flag_tz {background-image: url( "./images/flags/tz.svg" )}
+.geoip_flag_ua {background-image: url( "./images/flags/ua.svg" )}
+.geoip_flag_ug {background-image: url( "./images/flags/ug.svg" )}
+.geoip_flag_um {background-image: url( "./images/flags/um.svg" )}
+.geoip_flag_un {background-image: url( "./images/flags/un.svg" )}
+.geoip_flag_us {background-image: url( "./images/flags/us.svg" )}
+.geoip_flag_uy {background-image: url( "./images/flags/uy.svg" )}
+.geoip_flag_uz {background-image: url( "./images/flags/uz.svg" )}
+.geoip_flag_va {background-image: url( "./images/flags/va.svg" )}
+.geoip_flag_vc {background-image: url( "./images/flags/vc.svg" )}
+.geoip_flag_ve {background-image: url( "./images/flags/ve.svg" )}
+.geoip_flag_vg {background-image: url( "./images/flags/vg.svg" )}
+.geoip_flag_vi {background-image: url( "./images/flags/vi.svg" )}
+.geoip_flag_vn {background-image: url( "./images/flags/vn.svg" )}
+.geoip_flag_vu {background-image: url( "./images/flags/vu.svg" )}
+.geoip_flag_wf {background-image: url( "./images/flags/wf.svg" )}
+.geoip_flag_ws {background-image: url( "./images/flags/ws.svg" )}
+.geoip_flag_ye {background-image: url( "./images/flags/ye.svg" )}
+.geoip_flag_yt {background-image: url( "./images/flags/yt.svg" )}
+.geoip_flag_za {background-image: url( "./images/flags/za.svg" )}
+.geoip_flag_zm {background-image: url( "./images/flags/zm.svg" )}
+.geoip_flag_zw {background-image: url( "./images/flags/zw.svg" )}
