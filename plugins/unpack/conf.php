@@ -1,7 +1,7 @@
 <?php
 
-@define('USE_UNZIP', true, true);
-@define('USE_UNRAR', true, true);
+@define('USE_UNZIP', true);
+@define('USE_UNRAR', true);
 
 if(empty($pathToExternals['unzip']))	// May be path already defined?
 {

@@ -2,9 +2,9 @@
 	// configuration parameters
 
 	// for snoopy client
-	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36', true);
-	@define('HTTP_TIME_OUT', 30, true);	// in seconds
-	@define('HTTP_USE_GZIP', true, true);
+	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36');
+	@define('HTTP_TIME_OUT', 30);	// in seconds
+	@define('HTTP_USE_GZIP', true);
 	$httpIP = null;				// IP string. Or null for any.
 	$httpProxy = array
 	(
@@ -14,14 +14,14 @@
 		'port'	=> 3128
 	);
 
-	@define('RPC_TIME_OUT', 5, true);	// in seconds
+	@define('RPC_TIME_OUT', 5);	// in seconds
 
-	@define('LOG_RPC_CALLS', false, true);
-	@define('LOG_RPC_FAULTS', true, true);
+	@define('LOG_RPC_CALLS', false);
+	@define('LOG_RPC_FAULTS', true);
 
 	// for php
-	@define('PHP_USE_GZIP', false, false);
-	@define('PHP_GZIP_LEVEL', 2, true);
+	@define('PHP_USE_GZIP', false);
+	@define('PHP_GZIP_LEVEL', 2);
 
 	$schedule_rand = 10;			// rand for schedulers start, +0..X seconds
 
