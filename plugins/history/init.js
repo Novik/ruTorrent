@@ -202,7 +202,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 			}
 		}
 
-		plugin.config.call(theWebUI);
+		plugin.config.call(this);
 
 		if(plugin.canChangeColumns())
 		{
