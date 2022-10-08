@@ -22,44 +22,23 @@ theWebUI.config = function()
 	}
 }
 
-plugin.filterByLabel = theWebUI.filterByLabel;
-theWebUI.filterByLabel = function(hash)
+plugin.isTorrentRowShown = theWebUI.isTorrentRowShown;
+theWebUI.isTorrentRowShown = function(table, hash)
 {
-	plugin.filterByLabel.call(theWebUI,hash);
-	if(plugin.enabled && theWebUI.actLbls["ptrackers_cont"] && $($$(theWebUI.actLbls["ptrackers_cont"])).hasClass('tracker'))
-		theWebUI.filterByTracker(hash);
+	return plugin.isTorrentRowShown.call(theWebUI, table, hash) && (
+		!plugin.enabled || !(theWebUI.actLbls['ptrackers_cont'] ?? []).length || (
+		// check if tracker of hash is selected
+		hash in this.trackers
+		&& this.trackers[hash]
+			.filter(t => Number(t.group) === 0)
+			.map(t => theWebUI.getTrackerName( t.name ))
+			.some(name => name && plugin.isActiveLabel(name))
+	));
 }
 
-theWebUI.filterByTracker = function(hash)
+plugin.isActiveLabel = function(lbl)
 {
-	if(!theWebUI.isTrackerInActualLabel(hash))
-		this.getTable("trt").hideRow(hash);
-}
-
-plugin.isActualLabel = function(lbl)
-{
-	return(theWebUI.actLbls["ptrackers_cont"] && $($$(theWebUI.actLbls["ptrackers_cont"])).hasClass('tracker') && ('i'+lbl==theWebUI.actLbls["ptrackers_cont"]));
-}
-
-theWebUI.isTrackerInActualLabel = function(hash)
-{
-        var ret = false;
-	if($type(this.torrents[hash]) && $type(this.trackers) && $type(this.trackers[hash]))
-	{
-		for( var i=0; i<this.trackers[hash].length; i++)
-		{
-			if(this.trackers[hash][i].group==0)
-			{
-				var tracker = theWebUI.getTrackerName( this.trackers[hash][i].name );
-				if(tracker && plugin.isActualLabel(tracker))
-				{
-					ret = true;
-					break;
-				}
-			}
-		}
-	}
-	return(ret);
+	return (theWebUI.actLbls['ptrackers_cont'] ?? []).includes('i'+lbl);
 }
 
 plugin.addTrackers = theWebUI.addTrackers;
@@ -100,26 +79,12 @@ if(!$type(theWebUI.getTrackerName))
 	}
 }
 
-theWebUI.trackersLabelContextMenu = function(e)
-{
-        if(e.which==3)
-        {
-	        var table = theWebUI.getTable("trt");
-		table.clearSelection();
-		theWebUI.switchLabel(this);
-		table.fillSelection();
-		var id = table.getFirstSelected();
-		if(id && plugin.canChangeMenu())
-		{
-			theWebUI.createMenu(null, id);
-			theContextMenu.show();
-		}
-		else
-			theContextMenu.hide();
+plugin.contextMenuEntries = theWebUI.contextMenuEntries;
+theWebUI.contextMenuEntries = function(labelType, el) {
+	if (labelType === 'ptrackers_cont') {
+		return plugin.canChangeMenu() ? [] : false;
 	}
-	else
-		theWebUI.switchLabel(this);
-	return(false);
+	return plugin.contextMenuEntries.call(theWebUI, labelType, el);
 }
 
 plugin.updateLabel = theWebUI.updateLabel;
@@ -206,14 +171,14 @@ theWebUI.rebuildTrackersLabels = function()
 		{
 			if(!(lbl in this.trackersLabels))
 			{
-				ul.append(theWebUI.createSelectableLabelElement('i'+lbl, lbl, theWebUI.trackersLabelContextMenu)
+				ul.append(theWebUI.createSelectableLabelElement('i'+lbl, lbl, theWebUI.labelContextMenu)
 					.addClass("tracker"));
 				$($$('i'+lbl)).children('.label-icon')
 					.append($("<img>").attr("src","plugins/tracklabels/action.php?tracker="+lbl))
 					.css({ background: 'none' });
 			}
 			theWebUI.updateLabel($$('i'+lbl), trackersLabels[lbl], trackersSizes[lbl], theWebUI.settings["webui.show_labelsize"]);
-			if(plugin.isActualLabel(lbl)) {
+			if(plugin.isActiveLabel(lbl)) {
 				const actLabel = $($$('i'+lbl));
 				if (!actLabel.hasClass('sel')) {
 					needTableFilter = true;
@@ -229,7 +194,7 @@ theWebUI.rebuildTrackersLabels = function()
 			if(!(lbl in trackersLabels))
 			{
 				$($$('i'+lbl)).remove();
-				if(plugin.isActualLabel(lbl))
+				if(plugin.isActiveLabel(lbl))
 					needSwitch = true;
 			}
 		this.trackersLabels = trackersLabels;
@@ -257,7 +222,7 @@ theWebUI.initTrackersLabels = function()
 		append($("<ul></ul>").attr("id","torrl"));
 
 	var ul = $("#torrl");
-	ul.append(theWebUI.createSelectableLabelElement(undefined, theUILang.All, theWebUI.trackersLabelContextMenu).addClass('-_-_-all-_-_- sel'));
+	ul.append(theWebUI.createSelectableLabelElement(undefined, theUILang.All, theWebUI.labelContextMenu).addClass('-_-_-all-_-_- sel'));
 
 	plugin.markLoaded();
 };
