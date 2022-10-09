@@ -47,7 +47,7 @@ var dxSTable = function()
 	this.viewRows = 0;
 	this.cols = 0;
 	this.colsdata = new Array();
-	this.stSel = null;
+	this.stSel = [];
 	this.format = function(r) { return r; };
 	this.sIndex =- 1;
 	this.reverse = 0;
@@ -1173,105 +1173,58 @@ dxSTable.prototype.selectRow = function(e, row)
 {
 	if(!$.support.touchable)
 		this.bindKeys();
-	var id = row.id;
-	if(!((e.which==3) && (this.rowSel[id] == true))) 
-	{
-		if(e.shiftKey) 
-		{
-			if(this.stSel == null) 
+
+	const targetId = row.id;
+	const rightClick = e.which === 3;
+	if (!(rightClick && this.rowSel[targetId])) {
+		const toggle = e.metaKey;
+		const range = e.shiftKey;
+		const oldSel = this.stSel ?? [];
+		const anchor = oldSel.length ? oldSel[oldSel.length-1] : null;
+		let selection = [];
+
+		if (range && anchor) {
+			// range selection
+			let behindAnchor = false;
+			let behindTarget = false;
+			for(let i = 0; i < this.rowIDs.length; i++)
 			{
-				this.stSel = id;
-				this.rowSel[id] = true;
-				this.selCount = 1;
-			}
-			else 
-			{
-				this.selCount = 0;
-				var _81 = false, passedCID = false, k = "";
-				for(var i = 0, l = this.rowIDs.length; i < l; i++) 
-				{
-					k = this.rowIDs[i];
-					this.rowSel[k] = false;
-					if((k == this.stSel) || _81) 
-					{
-						if(!passedCID) 
-						{
-							this.rowSel[k] = true;
-							this.selCount++;
-                     				}
-						else 
-						{
-							if((k == this.stSel) || (k == id)) 
-							{
-				                        	this.rowSel[k] = true;
-								this.selCount++;
-							}
-						}
-					}
-					else 
-					{
-						if((k == id) || passedCID) 
-						{
-							if(!_81) 
-							{
-								this.rowSel[k] = true;
-								this.selCount++;
-							}
-							else 
-							{
-								if((k == this.stSel) || (k == id)) 
-								{
-									this.rowSel[k] = true;
-									this.selCount++;
-                           					}
-                        				}
-                     				}
-                  			}
-					if(!this.rowdata[k].enabled && this.rowSel[k]) 
-					{
-						this.rowSel[k] = false;
-						this.selCount--;
-                  			}
-					if(k == this.stSel) 
-						_81 = true;
-					if(k == id) 
-						passedCID = true;
+				const id = this.rowIDs[i];
+				behindAnchor |= anchor === id;
+				behindTarget |= targetId === id;
+				if (
+					(behindAnchor || behindTarget)
+					&& !(toggle && this.rowSel[id])
+					&& this.rowdata[id].enabled
+				) {
+					selection.push(id);
+				}
+				if (behindAnchor && behindTarget) {
+					break;
 				}
 			}
+		} else {
+			selection = [targetId];
 		}
-		else 
-		{
-			if(e.metaKey) 
-			{
-				this.stSel = id;
-				this.rowSel[id] =!this.rowSel[id];
-				if(this.rowSel[id]) 
-					this.selCount++;
-				else 
-					this.selCount--;
-			}
-			else 
-			{
-				this.stSel = id;
-				this.selCount = 0;
-				for(var k in this.rowSel) 
-				{
-					if(k == id) 
-					{
-						this.rowSel[k] = true;
-						this.selCount++;
-					}
-					else 
-						this.rowSel[k] = false;
-				}
-			}
+
+		if (toggle) {
+			const selSet = new Set(selection);
+			// unselect ids if already selected
+			selection = oldSel.filter(id => !selSet.has(id)).concat(
+				selection.filter(id => !this.rowSel[id])
+			);
 		}
-		if(this.selCount == 0) 
-			this.stSel = null;
+		const fullSelSet = new Set(selection);
+		for (const id in this.rowSel) {
+			this.rowSel[id] = fullSelSet.has(id);
+		}
+		this.selCount = fullSelSet.size;
+		this.stSel = selection;
 		this.refreshSelection();
 	}
+
 	if($type(this.onselect) == "function") 
-		this.onselect(e, id);
+		this.onselect(e, targetId);
 	return(false);
 }
 
@@ -1542,6 +1495,7 @@ dxSTable.prototype.clearSelection = function()
 	for(var k in this.rowSel)
 		this.rowSel[k] = false;
 	this.selCount = 0;
+	this.stSel = [];
 	this.refreshSelection();
 }
 
@@ -1559,13 +1513,14 @@ dxSTable.prototype.correctSelection = function()
 
 dxSTable.prototype.fillSelection = function() 
 {
-	this.selCount = 0;
+	this.stSel = [];
 	for(var k in this.rowSel) 
 		if(this.rowdata[k].enabled)
 		{
 			this.rowSel[k] = true;
-			this.selCount++;
+			this.stSel.push(k);
 		}
+	this.selCount = this.stSel.length;
 	this.refreshSelection();
 }
 
