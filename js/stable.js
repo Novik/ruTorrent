@@ -1180,24 +1180,31 @@ dxSTable.prototype.selectRow = function(e, row)
 		const toggle = e.metaKey;
 		const range = e.shiftKey;
 		const oldSel = this.stSel ?? [];
-		const anchor = oldSel.length ? oldSel[oldSel.length-1] : null;
+		const anchor = oldSel.length ? oldSel[toggle ? oldSel.length-1 : 0] : null;
 		let selection = [];
 
-		if (range && anchor) {
+		if (range && anchor && anchor !== targetId) {
 			// range selection
 			let behindAnchor = false;
 			let behindTarget = false;
+			let reverse = false;
 			for(let i = 0; i < this.rowIDs.length; i++)
 			{
 				const id = this.rowIDs[i];
 				behindAnchor |= anchor === id;
 				behindTarget |= targetId === id;
+				reverse |= behindTarget && !behindAnchor;
+
 				if (
 					(behindAnchor || behindTarget)
 					&& !(toggle && this.rowSel[id])
 					&& this.rowdata[id].enabled
 				) {
-					selection.push(id);
+					if (reverse) {
+						selection.unshift(id);
+					} else {
+						selection.push(id);
+					}
 				}
 				if (behindAnchor && behindTarget) {
 					break;
