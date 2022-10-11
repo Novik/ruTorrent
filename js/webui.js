@@ -2205,8 +2205,15 @@ var theWebUI =
 		});
 
 		const actLbls = theWebUI.actLbls['plabel_cont'] ?? [];
-		// filter out removed labels (no re-filtering required)
-		theWebUI.actLbls['plabel_cont'] = actLbls.filter(labelId => pLabels.includes(theWebUI.idToLbl(labelId)));
+		const residualActLbls = actLbls.filter(labelId => pLabels.includes(theWebUI.idToLbl(labelId)));
+		const actDeleted = actLbls.length !== residualActLbls.length;
+		if (actDeleted)
+		{
+			// filter out removed labels (no re-filtering required)
+			theWebUI.actLbls['plabel_cont'] = residualActLbls;
+			// no theWebUI.switchLabel: to avoid switching away from other table views (extsearch, rss)
+			this.refreshLabelSelection('plabel_cont');
+		}
 	},
 
 	/**
