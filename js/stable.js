@@ -289,13 +289,19 @@ dxSTable.prototype.removeColumn = function(no)
 		this.tHeadCols.splice(i,1);
 
 		this.cols--;
+		for(let c = i; c < this.cols; c++)
+			this.tHeadCols[c].setAttribute("index", c);
 		if(this.sIndex == i)
 			this.sIndex = -1;
+		else if (this.sIndex > i)
+			this.sIndex--;
 		if(this.secIndex == i)
 			this.secIndex = 0;
+		else if (this.secIndex > i)
+			this.secIndex--;
 
-	        this.dHead.scrollLeft = this.dBody.scrollLeft;
-        	this.calcSize().resizeColumn();
+		this.dHead.scrollLeft = this.dBody.scrollLeft;
+		this.calcSize().resizeColumn();
 	}
 }
 
