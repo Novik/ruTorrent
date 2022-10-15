@@ -569,7 +569,7 @@ plugin.onGetTasks = function(d)
 			$('li#tab_tasks').show();
 			$(theWebUI.tables["tasks"].container).show();
 			table.refreshRows();
-			if(table.sIndex !=- 1)
+			if(table.sortId)
 				table.Sort();
 		}
 	}
