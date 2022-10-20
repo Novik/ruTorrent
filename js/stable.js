@@ -1546,40 +1546,43 @@ dxSTable.prototype.setValueById = function(row, id, val)
 
 dxSTable.prototype.setValue = function(row, col, val)
 {
-	if((col>=0) && this.rowdata[row])
+	const rdata = this.rowdata[row];
+	if((col>=0) && rdata)
 	{
-		this.rowdata[row].data[col] = val;
-		var r = $$(row);
-		var rawvalue = val;
-		var arr = [];
+		rdata.data[col] = val;
+		let arr = [];
 		arr[col] = val;
-		val = this.format(this,arr)[col];
+		const fmtVal = this.format(this,arr)[col];
+		const fmtdata = rdata.fmtdata;
 
-		if(this.rowdata[row].fmtdata[col] != val)
+		if(fmtdata[col] != fmtVal)
 		{
-			this.rowdata[row].fmtdata[col] = val;
-        		if(r)
-        		{
-	        		var c = this.getColOrder(col);
-				var td = r.cells[c];
+			fmtdata[col] = fmtVal;
+			const tr = $$(row);
+			if(tr)
+			{
+				const c = this.getColOrder(col);
+				const td = tr.cells[c];
 			
-			        if(td)
-			        {
+				if(td)
+				{
+					let textEl = td.lastChild;
 					if(this.colsdata[c].type==TYPE_PROGRESS)
 					{
-						$(td).attr("rawvalue",rawvalue);
-						td.lastChild.style.width = iv(val)+"%";
-						td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
-						if(!iv(val))
-							$(td.lastChild).css({visibility: "hidden"});
-						else
-							$(td.lastChild).css({visibility: "visible"});
-						td.firstChild.innerHTML = escapeHTML(val);
+						const nval = iv(fmtVal);
+						$(td).attr('rawvalue', val)
+						.children().last().css({
+							width: `${nval}%`,
+							backgroundColor: new RGBackground()
+								.setGradient(this.prgStartColor,this.prgEndColor,parseFloat(fmtVal))
+								.getColor(),
+							visibility: nval ? 'visible' : 'hidden'
+						});
+						textEl = td.firstChild;
 					}
-					else
-						td.lastChild.innerHTML = escapeHTML(val);
+					$(textEl).text(fmtVal);
 				}
-			}					
+			}
 			return(true);
 		}
 	}
