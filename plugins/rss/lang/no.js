@@ -6,15 +6,15 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.addRSS			= "Legg til RSS-kanal";
- theUILang.feedURL			= "Kanal-lenke";
+ theUILang.addRSS			= "Legg til RSS";
+ theUILang.feedURL			= "Feed-lenke";
  theUILang.alias			= "Egendefinert alias";
- theUILang.rssAuto			= "Automatisk last ned publiserte artikler i kanalen";
- theUILang.allFeeds			= "Alle kanaler";
- theUILang.incorrectURL			= "Vennligst angi gyldig kanal-lenke.";
- theUILang.cantFetchRSS			= "Feil ved innlasting av kanal.";
- theUILang.rssAlreadyExist		= "Kanal eksisterer allerede.";
- theUILang.rssDontExist			= "Kanal eksisterer ikke.";
+ theUILang.rssAuto			= "Automatisk last ned publiserte artikler i feeden";
+ theUILang.allFeeds			= "Alle feeder";
+ theUILang.incorrectURL			= "Vennligst angi gyldig feed-lenke.";
+ theUILang.cantFetchRSS			= "Feil ved innlasting av feed.";
+ theUILang.rssAlreadyExist		= "Feed eksisterer allerede.";
+ theUILang.rssDontExist			= "Feed eksisterer ikke.";
  theUILang.rssCantLoadTorrent		= "Feil ved innlasting av torrent.";
  theUILang.rssStatus			= "RSS";
  theUILang.rssStatusLoaded		= "Allerede lastet inn";
@@ -23,12 +23,12 @@
  theUILang.rssMenuClearHistory		= "Slett logg";
  theUILang.rssMenuAddToFilter		= "Legg til i favoritter";
  theUILang.rssMenuManager		= "RSS-behandling";
- theUILang.rssMenuRefresh		= "Oppdater kanal";
- theUILang.rssMenuDisable		= "Deaktiver kanal";
- theUILang.rssMenuEnable		= "Aktiver kanal";
- theUILang.rssMenuEdit			= "Rediger kanal";
- theUILang.rssMenuDelete		= "Slett kanal";
- theUILang.rssDeletePrompt		= "Vil du virkelig slette valgt kanal?";
+ theUILang.rssMenuRefresh		= "Oppdater feed";
+ theUILang.rssMenuDisable		= "Deaktiver feed";
+ theUILang.rssMenuEnable		= "Aktiver feed";
+ theUILang.rssMenuEdit			= "Rediger feed";
+ theUILang.rssMenuDelete		= "Slett feed";
+ theUILang.rssDeletePrompt		= "Vil du virkelig slette valgt feed?";
  theUILang.rssNewFilter			= "Nytt filter";
  theUILang.rssFilter			= "Filter";
  theUILang.rssAddFilter			= "Legg til";
@@ -36,10 +36,10 @@
  theUILang.rssCheckFilter		= "?";
  theUILang.rssFiltersLegend		= "Filterinstillinger";
  theUILang.rssIncorrectFilter		= "Filteret er ugyldig.";
- theUILang.foundedByFilter		= "Matcher";
+ theUILang.foundedByFilter		= "Samsvarer";
  theUILang.rssExclude			= "Ekskluder";
  theUILang.rssStatusError		= "Innlastingsfeil";
- theUILang.rssFeeds			= "Kanalen";
+ theUILang.rssFeeds			= "Feeder";
  theUILang.rssCheckTitle		= "Kontroller tittelfeltet";
  theUILang.rssCheckDescription		= "Kontroller beskrivelsesfeltet";
  theUILang.rssCheckLink			= "Kontroller lenkefeltet";
@@ -65,7 +65,7 @@
  theUILang.addRSSGroupContent		= "Innhold";
  theUILang.rssMenuGroupDisable		= "Deaktiver gruppe";
  theUILang.rssMenuGroupRefresh		= "Oppdater gruppe";
- theUILang.rssMenuGroupEnable		= "Aktiver gGruppe";
+ theUILang.rssMenuGroupEnable		= "Aktiver gruppe";
  theUILang.rssMenuGroupEdit		= "Rediger gruppe";
  theUILang.rssMenuGroupDelete		= "Slett gruppe";
  theUILang.rssMenuGroupContentsDelete	= "Slett innhold";
