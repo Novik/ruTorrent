@@ -8,7 +8,7 @@
 
  theUILang.exFFMPEG		= "Skjermbilder";
  theUILang.exFrameWidth		= "Rammebredde";
- theUILang.exFramesCount	= "Rammeantal";
+ theUILang.exFramesCount	= "Rammeantall";
  theUILang.exStartOffset	= "Start rammeforskyvning";
  theUILang.exBetween		= "Tid mellom rammer";
  theUILang.exSave		= "Lagre";

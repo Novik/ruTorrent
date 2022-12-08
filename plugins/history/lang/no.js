@@ -6,9 +6,9 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.historyAddition		= "Tilsetting";
- theUILang.historyDeletion		= "Sletting";
- theUILang.historyFinish		= "Fullføring";
+ theUILang.historyAddition		= "Lagt til";
+ theUILang.historyDeletion		= "Slettet";
+ theUILang.historyFinish		= "Fullført";
  theUILang.historyLog			= "Logg";
  theUILang.history			= "Historie";
  theUILang.historyLimit			= "Maksimalt antall poster";
@@ -23,16 +23,16 @@
  theUILang.Tracker			= "Tracker";
  theUILang.enableNotifications		= "Aktiver skrivebordsvarslinger";
  theUILang.historyNotification		= "Skrivebordsvarslinger";
- theUILang.notifAutoClose		= "Lukk notifikasjoner automatisk etter";
+ theUILang.notifAutoClose		= "Lukk varslinger automatisk etter";
  theUILang.notifTip			= {
  					  false: "Din nettleser støtter ikke skrivebordsvarslinger. Prøv å bruke en annen nettleser, for eksempel Google Chrome.",
  					  "granted": "",
  					  "default": "Din nettleser støtter skrivebordsvarslinger. Trykk på knappen nedenfor for å aktivere de.",
  					  "denied": "Din nettleser støtter skrivebordsvarslinger, men du har deaktivert de for dette nettstedet. Lukk denne dialogen og aktiver skrivebordsvarslinger i dine nettleserinstillinger.",
  					  };
- theUILang.pushbulletNotification	= "PushBullet-notifikasjoner";
+ theUILang.pushbulletNotification	= "PushBullet-varslinger";
  theUILang.pushbulletKey		= "PushBullet-tilgangstoken";
- theUILang.turnNotifyOn			= "Skru notifikasjoner på";
- theUILang.turnNotifyOff		= "Skru notifikasjoner av";
+ theUILang.turnNotifyOn			= "Skru varslinger på";
+ theUILang.turnNotifyOff		= "Skru varslinger av";
 
 thePlugins.get("history").langLoaded();

@@ -6,8 +6,8 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.doesntSupportHTML5	= "Plugin filedrop: Din nettleser støtter ikke HTML5 filopplastinger. Pluginen har blitt deaktivert.";
- theUILang.tooManyFiles		= "Plugin filedrop: For mange filer. Må være <= ";
- theUILang.fileTooLarge		= "er for stor. Vennligst last opp filer opp til";
+ theUILang.doesntSupportHTML5	= "filedrop-plugin: Din nettleser støtter ikke HTML5-filopplastinger. Plugin er deaktivert.";
+ theUILang.tooManyFiles		= "filedrop-plugin: For mange filer. Må være <= ";
+ theUILang.fileTooLarge		= "er for stor. Vennligst last opp filer til";
 
 thePlugins.get("filedrop").langLoaded();

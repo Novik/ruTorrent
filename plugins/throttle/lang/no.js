@@ -8,9 +8,9 @@
 
  theUILang.throttles		= "Kanaler";
  theUILang.throttle		= "Kanal";
- theUILang.mnuThrottle		= "Angi Kanal";
- theUILang.mnuUnlimited		= "Ingen Kanal";
+ theUILang.mnuThrottle		= "Angi kanal";
+ theUILang.mnuUnlimited		= "Ingen kanal";
  theUILang.channelName		= "Navn";
- theUILang.channelDefault	= "Standard Kanal";
+ theUILang.channelDefault	= "Standard-kanal";
 
 thePlugins.get("throttle").langLoaded();

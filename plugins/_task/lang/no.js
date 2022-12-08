@@ -15,7 +15,7 @@
  theUILang.tskFinish		= "Fullført";
  theUILang.tskElapsed		= "Forløpt";
  theUILang.tskPlugin		= "Plugin";
- theUILang.tskDeletePrompt	= "Vil du virkelig slette den valgte oppgaven(e)?";
+ theUILang.tskDeletePrompt	= "Vil du virkelig slette valgt oppgave(r)?";
  theUILang.tskDelete		= "Slett oppgave(r)";
  theUILang.tskActivate		= "Aktiver";
  theUILang.tskRemove		= "Fjern";
