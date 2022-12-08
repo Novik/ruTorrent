@@ -21,6 +21,6 @@
  theUILang.ratioEraseData	= "Fjern data";
  theUILang.maxTime		= "Tid";
  theUILang.ratioDefault		= "Standard ratiogruppe";
- theUILang.setThrottleTo	= "Sett kanal til";
+ theUILang.setThrottleTo	= "Sett begrensing til";
 
 thePlugins.get("ratio").langLoaded();
