@@ -16,6 +16,6 @@
  theUILang.xmppAdvancedSettings		= "Avansert:";
  theUILang.xmppJabberHost		= "Vert";
  theUILang.xmppJabberPort		= "Port";
- theUILang.xmppUseEncryption		= "Bruk enkryptering";
+ theUILang.xmppUseEncryption		= "Bruk kryptering";
 
 thePlugins.get("xmpp").langLoaded();

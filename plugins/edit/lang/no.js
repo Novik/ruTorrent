@@ -6,11 +6,11 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.EditTrackers			= "Rediger Torrent...";
+ theUILang.EditTrackers			= "Rediger torrent...";
  theUILang.EditTorrentProperties	= "Torrentegenskaper";
- theUILang.errorAddTorrent		= "Feil oppstod med å legge til torrentfil";
- theUILang.errorWriteTorrent		= "Feil oppstod med å skrive til torrentfil";
- theUILang.errorReadTorrent		= "Feil oppstod med å lese fra torrentfil";
+ theUILang.errorAddTorrent		= "Feil oppstod ved å legge til torrentfil";
+ theUILang.errorWriteTorrent		= "Feil oppstod ved å skrive til torrentfil";
+ theUILang.errorReadTorrent		= "Feil oppstod ved å lese fra torrentfil";
  theUILang.cantFindTorrent		= "Kilde-torrentfil for denne nedlastingen ble ikke funnet."
 
 thePlugins.get("edit").langLoaded();

@@ -6,7 +6,7 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.getData		= "Hent Fil";
- theUILang.cantAccessData	= "Webserverbrukeren har ikke tilgang til dataen til denne torrenten.";
+ theUILang.getData		= "Hent fil";
+ theUILang.cantAccessData	= "Webserver-brukeren har ikke tilgang til dataen til denne torrenten.";
 
 thePlugins.get("data").langLoaded();
