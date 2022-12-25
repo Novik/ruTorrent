@@ -2,7 +2,7 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const URL = 'https://www2.yggtorrent.si';
+    const URL = 'https://www6.yggtorrent.lol';
     const MAX_PAGE = 10;
     const PAGE_SIZE = 50;
 
