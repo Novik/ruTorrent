@@ -12,10 +12,10 @@ spl_autoload_register(function ($class)
 	$arr = explode('\\',$class);
 	$class = end($arr);
 	
-	// Suppress include warnings if the user disables do_diagnostic
+	// Suppress include warnings if the user disables al_diagnostic
 	// For compatibility with 3rd party plugins which use autoloaders
-	global $do_diagnostic;
-	if($do_diagnostic)
+	global $al_diagnostic;
+	if($al_diagnostic)
 		include_once 'utility/'. strtolower($class). '.php';
 	else
 		@include_once 'utility/'. strtolower($class). '.php';

@@ -25,7 +25,9 @@
 
 	$schedule_rand = 10;			// rand for schedulers start, +0..X seconds
 
-	$do_diagnostic = true;
+	$do_diagnostic = true;			// Diagnose ruTorrent. Recommended to keep enabled, unless otherwise required.
+	$al_diagnostic = true;			// Diagnose auto-loader. Set to "false" to make composer plugins work.
+	
 	$log_file = '/tmp/errors.log';		// path to log file (comment or leave blank to disable logging)
 
 	$saveUploadedTorrents = true;		// Save uploaded torrents to profile/torrents directory or not
