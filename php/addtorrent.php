@@ -31,7 +31,7 @@ else
 		if((strlen($dir_edit)>0) && !rTorrentSettings::get()->correctDirectory($dir_edit))
 			$uploaded_files = array( array( 'status' => "FailedDirectory" ) );
 	}
-	$addition = array();
+	$addition = null;
 	if(isset($_REQUEST['addition']) && is_array($_REQUEST['addition']))
 		$addition = $_REQUEST['addition'];
 	if(empty($uploaded_files))
