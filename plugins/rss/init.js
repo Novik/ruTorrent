@@ -1153,7 +1153,8 @@ rTorrentStub.prototype.setrsssettings = function()
 
 rTorrentStub.prototype.getrssdetailsResponse = function(data)
 {
-	$("#rsslayout").text(String(data).replace(/<br\s*\/?>(\s*\n)?/gi, "\n"));
+	const doc = new DOMParser().parseFromString(String(data), 'text/html');
+	$("#rsslayout").text(doc.body.textContent || '');
 	return(false);
 }
 
