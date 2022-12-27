@@ -123,8 +123,11 @@ function rssXpath($data)
 	if (extension_loaded('libxml')) {
 		$doc = new DOMDocument();
 		$doc->recover = true;
+		// note: as of php8 (libxml 2.9.0) entity substitution is disabled by default
+		if(PHP_VERSION_ID < 80000) {
+			libxml_disable_entity_loader(true);
+		}
 		libxml_use_internal_errors(true);
-		// note: as of libxml 2.9.0 entity substitution is disabled by default
 		$doc->loadXML(str_replace('xmlns=', 'ns=', $data), LIBXML_NOBLANKS | LIBXML_COMPACT);
 		$errs = [];
 		foreach (libxml_get_errors() as $error) {
