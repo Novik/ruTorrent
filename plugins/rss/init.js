@@ -1155,7 +1155,7 @@ rTorrentStub.prototype.getrssdetailsResponse = function(data)
 {
     	const doc = new DOMParser().parseFromString(String(data), 'text/html');
     	var s = new Sanitize(Sanitize.Config.RESTRICTED);
-    	$("#rsslayout").setHTML(s.clean_node(doc.body));
+    	$("#rsslayout").html(s.clean_node(doc.body));
     	return(false);
 }
 
