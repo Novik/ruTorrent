@@ -478,16 +478,15 @@ theWebUI.createMenu = function(e, id)
 
 theWebUI.createRSSMenu = function(e, id)
 {
-	const selectedHashes = Object.entries(this.getTable("rss").rowSel)
+	const [rssArray, trtArray] = Object.entries(this.getTable("rss").rowSel)
 	.filter(([_, sel]) => sel)
-	.map(([link,_]) => this.rssItems[link].hash);
-
-	const partition2 = (values, pred) => values.reduce((p0_p1, v) => {
-		p0_p1[pred(v) ? 0 : 1].push(v);
-		return p0_p1;
+	.map(([link,_]) => [link, this.rssItems[link].hash])
+	.reduce((rss_trt, [l,h]) => {
+		const isTorrent = h && h in theWebUI.torrents;
+		rss_trt[isTorrent ? 1 : 0].push(isTorrent ? h : l);
+		return rss_trt;
 	}, [[],[]]);
 
-	const [rssArray, trtArray] = partition2(selectedHashes, h => h && h in theWebUI.torrents);
 	this.rssArray = rssArray;
 
 	theContextMenu.clear();
