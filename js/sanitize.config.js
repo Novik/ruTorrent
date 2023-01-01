@@ -2,6 +2,8 @@ if(!Sanitize.Config) {
   Sanitize.Config = {}
 }
 
+Sanitize.Config.Levels = ['RESTRICTED', 'BASIC', 'RELAXED'];
+
 Sanitize.Config.RESTRICTED = {
   elements: [
      'a', 'b', 'blockquote', 'br', 'cite', 'code', 'dd', 'dl', 'dt', 'em',
@@ -10,10 +12,7 @@ Sanitize.Config.RESTRICTED = {
 }
 
 Sanitize.Config.BASIC = {
-  elements: [
-     'a', 'b', 'blockquote', 'br', 'cite', 'code', 'dd', 'dl', 'dt', 'em',
-     'i', 'li', 'ol', 'p', 'pre', 'q', 'small', 'strike', 'strong', 'sub',
-     'sup', 'u', 'ul'],
+  ...Sanitize.Config.RESTRICTED,
 
    attributes: {
      'a'         : ['href'],
@@ -22,7 +21,7 @@ Sanitize.Config.BASIC = {
    },
 
    add_attributes: {
-     'a': {'rel': 'nofollow'}
+     'a': {'rel': 'noreferrer noopener', 'target': '_blank' }
    },
 
    protocols: {
@@ -33,31 +32,32 @@ Sanitize.Config.BASIC = {
 }
 
 Sanitize.Config.RELAXED = {
+  ...Sanitize.Config.BASIC,
   elements: [
-    'a', 'b', 'blockquote', 'br', 'caption', 'cite', 'code', 'col',
-    'colgroup', 'dd', 'dl', 'dt', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'i', 'img', 'li', 'ol', 'p', 'pre', 'q', 'small', 'strike', 'strong',
-    'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'u',
-    'ul'],
+    ...Sanitize.Config.BASIC.elements,
+    'caption', 'col', 'colgroup', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'img', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul'],
 
   attributes: {
+    ...Sanitize.Config.BASIC.attributes,
     'a'         : ['href', 'title'],
-    'blockquote': ['cite'],
     'col'       : ['span', 'width'],
     'colgroup'  : ['span', 'width'],
     'img'       : ['align', 'alt', 'height', 'src', 'title', 'width'],
     'ol'        : ['start', 'type'],
-    'q'         : ['cite'],
     'table'     : ['summary', 'width'],
     'td'        : ['abbr', 'axis', 'colspan', 'rowspan', 'width'],
     'th'        : ['abbr', 'axis', 'colspan', 'rowspan', 'scope', 'width'],
     'ul'        : ['type']
   },
 
+   add_attributes: {
+    ...Sanitize.Config.BASIC.add_attributes,
+     'img': {'referrerpolicy': 'no-referrer' }
+   },
+
   protocols: {
-    'a'         : {'href': ['ftp', 'http', 'https', 'mailto', Sanitize.RELATIVE]},
-    'blockquote': {'cite': ['http', 'https', Sanitize.RELATIVE]},
+    ...Sanitize.Config.BASIC.protocols,
     'img'       : {'src' : ['http', 'https', Sanitize.RELATIVE]},
-    'q'         : {'cite': ['http', 'https', Sanitize.RELATIVE]}
   }
 }

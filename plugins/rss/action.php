@@ -14,7 +14,7 @@ switch($cmd)
 {
 	case "setsettings":
 	{
-		$mngr->setSettings($_REQUEST['interval'], $_REQUEST['delayerrui']);
+		$mngr->setSettings($_REQUEST['interval'], $_REQUEST['delayerrui'], $_REQUEST['relaxsanitization']);
 	}
 	case "getsettings":
 	{
