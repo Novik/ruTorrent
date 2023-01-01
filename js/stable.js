@@ -1512,8 +1512,7 @@ dxSTable.prototype.getColById = function(id)
 
 dxSTable.prototype.getColNoById = function(id)
 {
-	// legacy setting sort values sIndex, secIndex => integer id
-	return Number.isInteger(id) ? id : this.getColOrder(this.getColById(id));
+	return this.getColOrder(this.getColById(id));
 }
 
 dxSTable.prototype.getIdByCol = function(col)

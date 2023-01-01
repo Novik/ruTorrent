@@ -472,6 +472,13 @@ var theWebUI =
 		$.each(this.tables, function(ndx,table)
 		{
 			table.obj.create($$(table.container), table.columns, ndx);
+			// legacy support of numeric sortId, sortId2
+			for(const name of ['sortId', 'sortId2']) {
+				const col = Number.parseInt(table.obj[name]);
+				if(Number.isInteger(col)) {
+					table.obj[name] = table.obj.getIdByCol(col);
+				}
+			}
 		});
 		table = this.getTable("plg");
 		if(table)
