@@ -74,6 +74,8 @@
  theUILang.rssAllFiters			= "모든 필터";
  theUILang.rssUpdateInterval		= "업데이트 주기";
  theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
+ theUILang.rssSanitizationLevel		= "Show external RSS content";
+ theUILang.rssSanitizationLevels	= {RESTRICTED: "Restricted (no links or images)", BASIC: "Basic (no images)", RELAXED: "Relaxed"};
  theUILang.Directories			= "디렉토리";
  theUILang.Labels			= "라벨";
 

@@ -74,6 +74,8 @@
  theUILang.rssAllFiters			= "增加过滤器";
  theUILang.rssUpdateInterval		= "更新间隔";
  theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
+ theUILang.rssSanitizationLevel		= "Show external RSS content";
+ theUILang.rssSanitizationLevels	= {RESTRICTED: "Restricted (no links or images)", BASIC: "Basic (no images)", RELAXED: "Relaxed"};
  theUILang.Directories			= "文件夹";
  theUILang.Labels			= "标签";
 

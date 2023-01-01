@@ -74,6 +74,8 @@
  theUILang.rssAllFiters			= "Todos los filtros";
  theUILang.rssUpdateInterval		= "Update interval";
  theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
+ theUILang.rssSanitizationLevel		= "Show external RSS content";
+ theUILang.rssSanitizationLevels	= {RESTRICTED: "Restricted (no links or images)", BASIC: "Basic (no images)", RELAXED: "Relaxed"};
  theUILang.Directories			= "Directories";
  theUILang.Labels			= "Labels";
 

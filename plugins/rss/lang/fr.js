@@ -74,6 +74,8 @@
  theUILang.rssAllFiters			= "Tous les filtres";
  theUILang.rssUpdateInterval		= "Intervalle de mise à jour";
  theUILang.rssShowErrorsDelayed		= "Retarder les notifications d'erreurs RSS jusqu'a ce que l'onglet journal ou le flux RSS soit visible";
+ theUILang.rssSanitizationLevel		= "Show external RSS content";
+ theUILang.rssSanitizationLevels	= {RESTRICTED: "Restricted (no links or images)", BASIC: "Basic (no images)", RELAXED: "Relaxed"};
  theUILang.Directories			= "Annuaires";
  theUILang.Labels			= "Étiquettes";
 

@@ -74,6 +74,8 @@
  theUILang.rssAllFiters			= "Όλα τα φίλτρα";
  theUILang.rssUpdateInterval		= "Μεσοδιάστημα ανανέωσης";
  theUILang.rssShowErrorsDelayed		= "Καθυστέρηση της ειδοποίησης για σφάλματα RSS μέχρι η καρτέλα καταγραφής σφαλμάτων ή η τροφοδοσία RSS να είναι ορατά";
+ theUILang.rssSanitizationLevel		= "Show external RSS content";
+ theUILang.rssSanitizationLevels	= {RESTRICTED: "Restricted (no links or images)", BASIC: "Basic (no images)", RELAXED: "Relaxed"};
  theUILang.Directories			= "Φάκελοι";
  theUILang.Labels			= "Ετικέτες";
 

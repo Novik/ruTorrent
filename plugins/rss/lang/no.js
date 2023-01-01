@@ -74,6 +74,8 @@
  theUILang.rssAllFiters			= "Alle filtre";
  theUILang.rssUpdateInterval		= "Oppdateringsintervall";
  theUILang.rssShowErrorsDelayed		= "Utsett varsling om feil på RSS inntil logg eller RSS-feed er synlig";
+ theUILang.rssSanitizationLevel		= "Show external RSS content";
+ theUILang.rssSanitizationLevels	= {RESTRICTED: "Restricted (no links or images)", BASIC: "Basic (no images)", RELAXED: "Relaxed"};
  theUILang.Directories			= "Mapper";
  theUILang.Labels			= "Etiketter";
 
