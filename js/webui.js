@@ -412,58 +412,46 @@ var theWebUI =
 			table.obj.maxRows = iv(theWebUI.settings["webui.fullrows"]);
 			table.obj.noDelayingDraw = iv(theWebUI.settings["webui.no_delaying_draw"]);
 			if($type(theWebUI.settings["webui."+ndx+".sindex"]))
-				table.obj.sIndex = iv(theWebUI.settings["webui."+ndx+".sindex"]);
+				table.obj.sortId = theWebUI.settings["webui."+ndx+".sindex"];
 			if($type(theWebUI.settings["webui."+ndx+".rev"]))
 				table.obj.reverse = iv(theWebUI.settings["webui."+ndx+".rev"]);
 			if($type(theWebUI.settings["webui."+ndx+".sindex2"]))
-				table.obj.secIndex = iv(theWebUI.settings["webui."+ndx+".sindex2"]);
+				table.obj.sortId2 = theWebUI.settings["webui."+ndx+".sindex2"];
 			if($type(theWebUI.settings["webui."+ndx+".rev2"]))
 				table.obj.secRev = iv(theWebUI.settings["webui."+ndx+".rev2"]);
 			if($type(theWebUI.settings["webui."+ndx+".colorder"]))
 				table.obj.colOrder = theWebUI.settings["webui."+ndx+".colorder"];
 			table.obj.onsort = function()
 			{
-   				if( (this.sIndex != theWebUI.settings["webui."+this.prefix+".sindex"]) ||
-		   			(this.reverse != theWebUI.settings["webui."+this.prefix+".rev"]) ||
-					(this.secIndex != theWebUI.settings["webui."+this.prefix+".sindex2"]) ||
-		   			(this.secRev != theWebUI.settings["webui."+this.prefix+".rev2"]))
-		      			theWebUI.save();
+				if( (this.sortId != theWebUI.settings["webui."+this.prefix+".sindex"]) ||
+					(this.reverse != theWebUI.settings["webui."+this.prefix+".rev"]) ||
+					(this.sortId2 != theWebUI.settings["webui."+this.prefix+".sindex2"]) ||
+					(this.secRev != theWebUI.settings["webui."+this.prefix+".rev2"]))
+						theWebUI.save();
 			}
 		});
 		var table = this.getTable("fls");
-		table.oldFilesSortAlphaNumeric = table.sortAlphaNumeric;
-		table.sortAlphaNumeric = function(x, y)
+		table.oldGetSortFunc = table.getSortFunc;
+		table.getSortFunc = function(id, reverse, valMapping)
 		{
-			if(!theWebUI.settings["webui.fls.view"] && theWebUI.dID)
+			const oldSorter = this.oldGetSortFunc(id, reverse, valMapping);
+			const dID = theWebUI.dID;
+			let sorter = oldSorter;
+			if(!theWebUI.settings["webui.fls.view"] && dID && this.sortId === id)
 			{
-			        var dir = theWebUI.dirs[theWebUI.dID];
-			        var a = dir.dirs[dir.current][x.key];
-			        var b = dir.dirs[dir.current][y.key];
-		        	if((a.data.name=="..") ||
-				   ((a.link!=null) && (b.link==null)))
-					return(this.reverse ? 1 : -1);
-				if((b.data.name=="..") ||
-				   ((b.link!=null) && (a.link==null)))
-					return(this.reverse ? -1 : 1);
+				const dir = theWebUI.dirs[dID];
+				if (dir && dir.dirs) {
+					// sort dir and links to top
+					const curDir = dir.dirs[dir.current];
+					const fixedDirPos = (a,b) => (a.data.name=="..") || ((a.link!=null) && (b.link==null))
+					const dirSort = (x,y) => {
+						const [a,b] = [curDir[x], curDir[y]]
+						return fixedDirPos(a,b) ? -1 : (fixedDirPos(b,a) ? 1 : 0);
+					};
+					sorter = (x,y) => dirSort(x,y) || oldSorter(x,y)
+				}
 			}
-			return(this.oldFilesSortAlphaNumeric(x,y));
-		}
-		table.oldFilesSortNumeric = table.sortNumeric;
-		table.sortNumeric = function(x, y)
-		{
-			if(!theWebUI.settings["webui.fls.view"] && theWebUI.dID)
-			{
-			        var dir = theWebUI.dirs[theWebUI.dID];
-			        var a = dir.dirs[dir.current][x.key];
-			        var b = dir.dirs[dir.current][y.key];
-		        	if((a.data.name=="..") ||
-				   ((a.link!=null) && (b.link==null)))
-					return(this.reverse ? 1 : -1);
-				if((b.data.name=="..") ||
-				   ((b.link!=null) && (a.link==null)))
-					return(this.reverse ? -1 : 1);
-			}
-			return(this.oldFilesSortNumeric(x,y));
+			return sorter;
 		}
 		this.speedGraph.create($("#Speed"));
 		const tab = theWebUI.settings['webui.selected_tab.keep'] ?
@@ -484,6 +472,13 @@ var theWebUI =
 		$.each(this.tables, function(ndx,table)
 		{
 			table.obj.create($$(table.container), table.columns, ndx);
+			// legacy support of numeric sortId, sortId2
+			for(const name of ['sortId', 'sortId2']) {
+				const col = Number.parseInt(table.obj[name]);
+				if(Number.isInteger(col)) {
+					table.obj[name] = table.obj.getIdByCol(col);
+				}
+			}
 		});
 		table = this.getTable("plg");
 		if(table)
@@ -893,9 +888,9 @@ var theWebUI =
 			theWebUI.settings["webui."+ndx+".colwidth"] = width;
 			theWebUI.settings["webui."+ndx+".colenabled"] = enabled;
 			theWebUI.settings["webui."+ndx+".colorder"] = table.obj.colOrder;
-			theWebUI.settings["webui."+ndx+".sindex"] = table.obj.sIndex;
+			theWebUI.settings["webui."+ndx+".sindex"] = table.obj.sortId;
 			theWebUI.settings["webui."+ndx+".rev"] = table.obj.reverse;
-			theWebUI.settings["webui."+ndx+".sindex2"] = table.obj.secIndex;
+			theWebUI.settings["webui."+ndx+".sindex2"] = table.obj.sortId2;
 			theWebUI.settings["webui."+ndx+".rev2"] = table.obj.secRev;
 		});
 

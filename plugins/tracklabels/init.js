@@ -246,7 +246,7 @@ plugin.refreshTrackerRows = async function()
 	{
 		var table = theWebUI.getTable('trt');
 		table.refreshRows();
-		if(table.sIndex !=- 1)
+		if(table.sortId)
 			table.Sort();
 	}
 }

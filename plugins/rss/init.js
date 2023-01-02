@@ -583,7 +583,7 @@ theWebUI.loadTorrents = function(needSort)
 				updated = table.setIcon(href,"Status_RSS") || updated;
 			}
 		}
-		if(updated && (table.sIndex !=- 1))
+		if(updated && table.sortId)
 			table.Sort();
 	}
 }
