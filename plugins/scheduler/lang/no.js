@@ -7,7 +7,7 @@
  */
 
  theUILang.scheduler		= "Planlegger";
- theUILang.schedulerOn		= "Aktiver Planlegger";
+ theUILang.schedulerOn		= "Aktiver planlegger";
  theUILang.schedulerGraph	= "Planleggertabell";
  theUILang.schShortWeek		= [ "Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn" ];
  theUILang.schFullWeek		= [ "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag" ];
@@ -15,12 +15,12 @@
  theUILang.schLimited		= "Begrensset";
  theUILang.schTurnOff		= "Skru av";
  theUILang.schSeedingOnly	= "Kun seeding";
- theUILang.schUnlimitedDesc	= "Ubegrenset - Global grense er fraværende";
- theUILang.schLimitedDesc	= "Begrenset - Bruker planlegger-spesifikk båndbreddegrense";
- theUILang.schTurnOffDesc	= "Skru av - Stopper alle torrenter";
- theUILang.schSeedingOnlyDesc	= "Kun seeding - Kun dataopplasting";
- theUILang.schLimitedUL		= "Begrenset Oppl.";
- theUILang.schLimitedDL		= "Begrenset Nedl.";
- theUILang.shcIgnore		= "Ignorer Planlegger";
+ theUILang.schUnlimitedDesc	= "Ubegrenset - global grense er fraværende";
+ theUILang.schLimitedDesc	= "Begrenset - bruker planlegger-spesifikk båndbreddegrense";
+ theUILang.schTurnOffDesc	= "Skru av - stopper alle torrenter";
+ theUILang.schSeedingOnlyDesc	= "Kun seeding - kun dataopplasting";
+ theUILang.schLimitedUL		= "Begrenset oppl.";
+ theUILang.schLimitedDL		= "Begrenset nedl.";
+ theUILang.shcIgnore		= "Ignorer planlegger";
 
 thePlugins.get("scheduler").langLoaded();

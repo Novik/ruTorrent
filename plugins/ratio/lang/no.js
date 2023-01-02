@@ -8,8 +8,8 @@
 
  theUILang.ratios		= "Ratiogrupper";
  theUILang.ratio		= "Ratiogruppe";
- theUILang.mnuRatio		= "Angi Ratiogruppe";
- theUILang.mnuRatioUnlimited	= "Ingen Ratio";
+ theUILang.mnuRatio		= "Angi ratiogruppe";
+ theUILang.mnuRatioUnlimited	= "Ingen ratio";
  theUILang.ratioName		= "Navn";
  theUILang.minRatio		= "Min";
  theUILang.maxRatio		= "Maks";
@@ -21,6 +21,6 @@
  theUILang.ratioEraseData	= "Fjern data";
  theUILang.maxTime		= "Tid";
  theUILang.ratioDefault		= "Standard ratiogruppe";
- theUILang.setThrottleTo	= "Sett kanal til";
+ theUILang.setThrottleTo	= "Sett begrensing til";
 
 thePlugins.get("ratio").langLoaded();

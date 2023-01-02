@@ -49,9 +49,9 @@ var dxSTable = function()
 	this.colsdata = new Array();
 	this.stSel = null;
 	this.format = function(r) { return r; };
-	this.sIndex =- 1;
+	this.sortId = '';
 	this.reverse = 0;
-	this.secIndex = 0;
+	this.sortId2 = 'name';
 	this.secRev = 0;
 	this.tBody = null;
 	this.tHead = null;
@@ -107,7 +107,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 {
 	if(!ele || this.created)
 		return;
-	var tr, td, cl, cg, div;
+	let tr, td, cl, cg;
 	this.prefix = aName;
 	this.dCont = ele;
 
@@ -125,10 +125,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 
 	tr = $("<tr>");
 	this.tHead.tb.appendChild(tr.get(0));
-	var self = this, span;
-	var j = 0;
-	if(this.sIndex>=styles.length)
-		this.sIndex = -1;
+	const self = this;
 
 	for(var i in this.colOrder)
 	{
@@ -205,7 +202,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		this.tHeadCols[i] = td.get(0);
 		if(!this.colsdata[i].enabled)
   	                td.hide();
-		j++;
 	}
 	this.tBody = $("<table>").width(0).get(0);
 	this.tBody.cellSpacing = 0;
@@ -269,7 +265,7 @@ dxSTable.prototype.removeColumnById = function(id, name)
 
 dxSTable.prototype.removeColumn = function(no)
 {
-	i = this.getColOrder(no);
+	const i = this.getColOrder(no);
 	if(i>=0)
 	{
 		$(this.tHeadCols[i]).remove();
@@ -289,13 +285,17 @@ dxSTable.prototype.removeColumn = function(no)
 		this.tHeadCols.splice(i,1);
 
 		this.cols--;
-		if(this.sIndex == i)
-			this.sIndex = -1;
-		if(this.secIndex == i)
-			this.secIndex = 0;
+		for(let c = i; c < this.cols; c++)
+			this.tHeadCols[c].setAttribute("index", c);
+		if(this.getColNoById(this.sortId) === i)
+			this.sortId = '';
+		if(this.getColNoById(this.sortId2) === i) {
+			this.sortId2 = 'name';
+			this.secRev = 0;
+		}
 
-	        this.dHead.scrollLeft = this.dBody.scrollLeft;
-        	this.calcSize().resizeColumn();
+		this.dHead.scrollLeft = this.dBody.scrollLeft;
+		this.calcSize().resizeColumn();
 	}
 }
 
@@ -496,38 +496,6 @@ var moveColumn = function(_11, _12)
 	this.colOrder = aO.slice(0);
 	for(i = 0; i < this.cols; i++)
 		this.tHeadCols[i].setAttribute("index", i);
-	if((_12 == this.sIndex) && (_11 > _12))
-		this.sIndex = _12 + 1;
-	else 
-	{
-		if((_11 < _12) && (this.sIndex < _12) && (this.sIndex > _11))
-			this.sIndex--;
-		else
-		{
-			if(_11 == this.sIndex) 
-			{
-				this.sIndex = _12;
-				if(_12 > _11)
-					this.sIndex = _12 - 1;
-			}
-		}
-	}
-	if((_12 == this.secIndex) && (_11 > _12))
-		this.secIndex = _12 + 1;
-	else 
-	{
-		if((_11 < _12) && (this.secIndex < _12) && (this.secIndex > _11))
-			this.secIndex--;
-		else
-		{
-			if(_11 == this.secIndex) 
-			{
-				this.secIndex = _12;
-				if(_12 > _11)
-					this.secIndex = _12 - 1;
-			}
-		}
-	}
 	this.cancelSort = false;
 	if($type(this.onmove) == "function")
 		this.onmove();
@@ -675,81 +643,55 @@ dxSTable.prototype.Sort = function(e)
 	if(this.cancelSort) 
 		return(true);
 	this.isSorting = true;
-	var col = null;
-	var rev = true;
-	if(e == null) 
-	{
-		if(this.sIndex ==- 1) 
-		{
-		        this.calcSize().resizeHack();
-			return(true);
+	const primarySorting = Boolean(this.sortId);
+	const notSorting = e == null && !primarySorting;
+	if(notSorting || e?.which === 3) {
+		if(notSorting) {
+			this.calcSize().resizeHack();
 		}
-		rev = false;
-		col = this.tHead.tb.rows[0].cells[this.sIndex];
+		return(true);
 	}
-	else 
-	{
-		if(e.which==3)
-			return(true);
-		col = (e.target) ? e.target : e.srcElement;
-	}
-	if(col.tagName == "DIV") 
-	{
-		col = col.parentNode;
-	}
-	var ind = parseInt(col.getAttribute("index"));
-	if(e && e.shiftKey && (this.sIndex >- 1))
-	{
-		if(this.secIndex == ind) 
-			this.secRev = 1 - this.secRev;
-		else 
+	const oldCol = primarySorting ? this.tHeadCols[this.getColNoById(this.sortId)] : null;
+	const col = e ? e.delegateTarget : oldCol;
+	const sortIdCurrent = this.getIdByCol(this.colOrder[parseInt(col.getAttribute("index"))]) ?? '';
+	const toggleReverse = (oldId, oldRev) => (oldId === sortIdCurrent) ? 1 - oldRev : 0;
+	if (e) {
+		if (e.shiftKey && primarySorting) {
+			// do secondary sort
+			this.secRev = toggleReverse(this.sortId2, this.secRev);
+			this.sortId2 = sortIdCurrent;
+		} else {
+			// do primary sort
+			this.reverse = toggleReverse(this.sortId, this.reverse);
+			this.sortId = sortIdCurrent;
+			this.sortId2 = 'name';
 			this.secRev = 0;
-		this.secIndex = ind;
-		ind = this.sIndex;
-		rev = false;
-		col = this.tHead.tb.rows[0].cells[this.sIndex];
+		}
 	}
-	if(rev) 
-	        this.reverse = (this.sIndex == ind) ? 1 - this.reverse : 0;
-	if(this.sIndex >= 0) 
-	{
-		var td = this.tHead.tb.rows[0].cells[this.sIndex];
-		td.style.backgroundImage = "url("+this.paletteURL+"/images/blank.gif)";
+	if (this.sortId === sortIdCurrent) {
+		if (oldCol) {
+			oldCol.style.backgroundImage = "url("+this.paletteURL+"/images/blank.gif)";
+		}
+		col.style.backgroundImage = "url(" + (this.reverse ? this.sortAscImage : this.sortDescImage) + ")";
 	}
-	col.style.backgroundImage = "url(" + (this.reverse ? this.sortAscImage : this.sortDescImage) + ")";
-	this.sIndex = ind;
-	var d = this.getCache(ind);
-	var u = d.slice(0);
-	var self = this;
-	switch(this.colsdata[ind].type) 
-	{
-		case TYPE_STRING : 
-			d.sort(function(x, y) { return self.sortAlphaNumeric(x, y); });
-      			break;
-      		case TYPE_PROGRESS :
-      		case TYPE_NUMBER : 
-      			d.sort(function(x, y) { return self.sortNumeric(x, y); });
-      			break;
-		case TYPE_PEERS :
-		case TYPE_SEEDS :
-			d.sort(function(x, y) { return self.sortPeers(x, y); });
-			break;
-      		default : 
-      			d.sort();
-      			break;
-      	}
-   	if(this.reverse) 
-		d.reverse();
-	this.rowIDs = [];
-	var c = 0, i = 0;
-	while(i < this.rows) 
-	{
-		this.rowdata[d[i].key] = d[i].e;
-		this.rowIDs.push(d[i].key);
-      		i++;
-	}
-	this.clearCache(d);
-	this.clearCache(u);
+
+	const sortingValues = id => {
+		const no = this.getColById(id);
+			return Object.fromEntries(
+			Object.entries(this.rowdata)
+				.map(([k,v]) => [k, v.data[no]]
+			)
+		);
+	};
+
+	const primaryValues = sortingValues(this.sortId);
+	const primarySort = this.getSortFunc(this.sortId, this.reverse, x => primaryValues[x]);
+
+	const secondaryValues = sortingValues(this.sortId2);
+	const secondarySort = this.getSortFunc(this.sortId2, this.secRev, x => secondaryValues[x]);
+
+	this.rowIDs.sort((x,y) => primarySort(x,y) || secondarySort(x,y) || theSort.Default(x, y));
+
 	this.isSorting = false;
 	if(!this.isScrolling) 
 		this.refreshRows();
@@ -759,38 +701,26 @@ dxSTable.prototype.Sort = function(e)
 	return(false);
 }
 
-dxSTable.prototype.sortNumeric = function(x, y)
+dxSTable.prototype.getSorter = function(colType, valMapping)
 {
-	var r = theSort.Numeric(x.v, y.v);
-	return( (r == 0) ? this.sortSecondary(x, y) : r );
+	const peerSort = (x,y) => theSort.PeersConnected(x,y) || theSort.PeersTotal(x,y);
+	const sorter = {
+		[TYPE_STRING]: theSort.AlphaNumeric,
+		[TYPE_PROGRESS]: theSort.Numeric,
+		[TYPE_NUMBER]: theSort.Numeric,
+		[TYPE_PEERS]: peerSort,
+		[TYPE_SEEDS]: peerSort
+	}[colType];
+	return sorter ?
+		((x, y) => sorter(valMapping(x), valMapping(y)))
+		: ((_) => 0);
 }
 
-dxSTable.prototype.sortAlphaNumeric = function(x, y)
+dxSTable.prototype.getSortFunc = function(id, reverse, valMapping)
 {
-	var r = theSort.AlphaNumeric(x.v, y.v);
-	return( (r == 0) ? this.sortSecondary(x, y) : r );
-}
-
-dxSTable.prototype.sortPeers = function(x, y)
-{
-	var r = theSort.PeersConnected(x.v, y.v);
-	r = ( (r == 0) ? theSort.PeersTotal(x.v, y.v) : r );
-	return( (r == 0) ? this.sortSecondary(x, y) : r );
-}
-
-dxSTable.prototype.sortSecondary = function(x, y)
-{
-	var m = this.getValue(x.e, this.secIndex);
-	var n = this.getValue(y.e, this.secIndex);
-	if(this.secRev)
-	{
-		var tmp = m;
-		m = n;
-      		n = tmp;
-	}
-	var ret = this.colsdata[this.secIndex].type;
-	var order = (ret==0) ? theSort.AlphaNumeric(m, n) : ((ret==1) || (ret==4)) ? theSort.Numeric(m, n) : theSort.Default(m, n);
-	return( order !== 0 ? order : theSort.Default(x.key, y.key) );
+	const order = reverse ? -1 : 1;
+	const sorter = this.getSorter(this.colsdata[this.getColNoById(id)]?.type, valMapping);
+	return (x,y) => order * sorter(x, y);
 }
 
 var theSort = 
@@ -1315,7 +1245,7 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr, fast = false)
 			this.bpad.style.height = ((this.viewRows - maxRows) * TR_HEIGHT) + "px";
 
 		var self = this;
-		if((this.sIndex !=- 1) && !this.noSort)
+		if(this.sortId && !this.noSort)
 			this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
 	}
 	else
@@ -1569,43 +1499,20 @@ dxSTable.prototype.fillSelection = function()
 	this.refreshSelection();
 }
 
-dxSTable.prototype.getCache = function(col)
-{
-	var a = new Array(0);
-	if(this.tBody)
-	{
-		for(var k in this.rowdata)
-			a.push( {"key" : k, "v" : this.getValue(this.rowdata[k], col), "e" : this.rowdata[k]} );
-		this.rowdata = [];
-	}
-	return(a);
-}
-
-dxSTable.prototype.clearCache = function(a)
-{
-	var l = a.length;
-	for(var i = 0; i < l; i++)
-	{
-		a[i].v = null;
-		a[i].e = null;
-		a[i] = null;
-	}
-}
-
 dxSTable.prototype.getColOrder = function(col)
 {
-	for(var i = 0; i < this.cols; i++)
-		if(this.colOrder[i] == col)
-			return(i);
-	return(-1);
+	return this.colOrder.indexOf(col);
 }
+
 
 dxSTable.prototype.getColById = function(id)
 {
-        for(var i = 0; i < this.ids.length; i++)
-        	if(this.ids[i]==id)
-			return(i);
-	return(-1);
+	return this.ids.indexOf(id);
+}
+
+dxSTable.prototype.getColNoById = function(id)
+{
+	return this.getColOrder(this.getColById(id));
 }
 
 dxSTable.prototype.getIdByCol = function(col)

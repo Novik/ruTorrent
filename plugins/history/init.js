@@ -342,7 +342,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 		if(updated)
 		{
 			table.refreshRows();
-			if(table.sIndex !=- 1)
+			if(table.sortId)
 				table.Sort();
 		}
 		if((theWebUI.activeView=='history') || (plugin.allStuffLoaded && (plugin.isNotificationsSupported()===notify.PERMISSION_GRANTED)))

@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.exsox		= "Spectrogram";
- theUILang.exSave		= "Save";
+ theUILang.exsox		= "Spektrogram";
+ theUILang.exSave		= "Lagre";
 
 thePlugins.get("spectrogram").langLoaded();

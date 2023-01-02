@@ -6,7 +6,7 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.retrackers		= "Retrackers";
+ theUILang.retrackers		= "Retrackere";
  theUILang.retrackersAdd	= "Legg til Announce-lenker";
  theUILang.retrackersDel	= "Fjern Announce-lenker";
  theUILang.dontAddToPrivate	= "Ikke rør private torrenter";

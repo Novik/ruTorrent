@@ -92,4 +92,8 @@ function SetActiveLanguage(lang)
 	document.cookie = "Language="+ lang + expires +"; path=/";
 }
 
-document.write("<script type=\"text/javascript\" src=\"./lang/"+GetActiveLanguage()+".js\"></script>");
+{
+	const lang = GetActiveLanguage();
+	document.documentElement.setAttribute('lang', lang);
+	document.write(`<script type="text/javascript" src="./lang/${lang}.js"></script>`);
+}

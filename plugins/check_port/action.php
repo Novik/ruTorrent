@@ -19,7 +19,7 @@ if($useWebsite=="portchecker")
 {
 	$url = "https://portchecker.co/";
 	$ipMatch = '/data-ip="(?P<ip>[^"]+)/';
-	$checker = $url;
+	$checker = "https://portchecker.co/checking";
 	$closed = ">closed<";
 	$open = ">open<";
 }
