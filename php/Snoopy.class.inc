@@ -80,7 +80,7 @@ class Snoopy
 	// send Accept-encoding: gzip?
 	var $use_gzip		=	true;	
 	var $IP			=	null;
-	var $preferIpv4		=	false;
+	var $useIpv4		=	false;
 
 	/**** Private variables ****/	
 
@@ -525,7 +525,7 @@ class Snoopy
 		if(!is_null($this->IP))
 			$cmdline_params .= " --interface ".$this->IP;
 
-		if($this->preferIpv4)
+		if($this->useIpv4)
 			$cmdline_params .= " --ipv4";
 
 		if($this->_isproxy)
@@ -665,7 +665,7 @@ class Snoopy
 			{
 				$opts['socket']['bindto'] = $this->IP.':0';
 			}
-			elseif($this->preferIpv4)
+			elseif($this->useIpv4)
 			{
 				$opts['socket']['bindto'] = '0:0';
 			}
