@@ -658,17 +658,9 @@ class Snoopy
 			$port = $this->port;
 		}
 		$this->status = 0;
-		if(function_exists("stream_socket_client"))
+		if(function_exists("stream_socket_client") && !is_null($this->IP))
 		{
-			$opts = array('socket' => array());
-			if(!is_null($this->IP))
-			{
-				$opts['socket']['bindto'] = $this->IP.':0';
-			}
-			elseif($this->useIpv4)
-			{
-				$opts['socket']['bindto'] = '0:0';
-			}
+			$opts = array('socket' => array('bindto' => $this->IP.':0'));
 			$context = stream_context_create($opts);
 			$fp = stream_socket_client("tcp://".$host.":".$port, $errno, $errstr, $this->_fp_timeout, STREAM_CLIENT_CONNECT, $context); 
 		}
