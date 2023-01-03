@@ -6,4 +6,4 @@ $useWebsite = "yougetsignal";	// Valid choices:
 				// "yougetsignal" - use https://www.yougetsignal.com/tools/open-ports/
 				// "portchecker" - use https://portchecker.co/
 
-$useIpv4 = false;				// use ipv4 addresses when checking ports
+$useIpv4 = true;		// use ipv4 addresses when checking ports, unless website supports ipv6
