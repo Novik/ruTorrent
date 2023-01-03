@@ -80,6 +80,7 @@ class Snoopy
 	// send Accept-encoding: gzip?
 	var $use_gzip		=	true;	
 	var $IP			=	null;
+	var $useIpv4		=	false;
 
 	/**** Private variables ****/	
 
@@ -523,6 +524,9 @@ class Snoopy
 
 		if(!is_null($this->IP))
 			$cmdline_params .= " --interface ".$this->IP;
+
+		if($this->useIpv4)
+			$cmdline_params .= " --ipv4";
 
 		if($this->_isproxy)
 			$cmdline_params .= " --proxy-insecure --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
