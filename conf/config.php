@@ -47,6 +47,9 @@
 	// $scgi_host = "unix:///tmp/rpc.socket";
 
 	$XMLRPCMountPoint = "/RPC2";		// DO NOT DELETE THIS LINE!!! DO NOT COMMENT THIS LINE!!!
+	
+	$throttleMaxSpeed = 327625*1024;	// DO NOT EDIT THIS LINE!!! DO NOT COMMENT THIS LINE!!!
+	// Can't be greater then 327625*1024 due to limitation in libtorrent ResourceManager::set_max_upload_unchoked function.
 
 	$pathToExternals = array(
 		"php" 	=> '',			// Something like /usr/bin/php. If empty, will be found in PATH.

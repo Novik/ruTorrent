@@ -3,9 +3,6 @@ require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( $rootPath.'/php/cache.php');
 eval(FileUtil::getPluginConf('throttle'));
 
-@define('MAX_SPEED', 327625*1024);
-// Can't be greater then 327625*1024 due to limitation in libtorrent ResourceManager::set_max_upload_unchoked function.
-
 class rThrottle
 {
 	public $hash = "throttle.dat";
@@ -127,11 +124,12 @@ class rThrottle
 			new rXMLRPCCommand( "get_download_rate" ) ));
 		if($req->run() && !$req->fault)
 		{
+			global $throttleMaxSpeed;
 			$req1 = new rXMLRPCRequest();
 			if($req->val[0]==0)
-				$req1->addCommand(new rXMLRPCCommand( "set_upload_rate", MAX_SPEED ));
+				$req1->addCommand(new rXMLRPCCommand( "set_upload_rate", $throttleMaxSpeed ));
 			if($req->val[1]==0)
-				$req1->addCommand(new rXMLRPCCommand( "set_download_rate", MAX_SPEED ));
+				$req1->addCommand(new rXMLRPCCommand( "set_download_rate", $throttleMaxSpeed ));
 			if((($req->val[0]==0) || ($req->val[1]==0)) &&
 				(!$req1->run() || $req1->fault))
 				return(false);
