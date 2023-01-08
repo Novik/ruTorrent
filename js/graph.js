@@ -177,7 +177,7 @@ rSpeedGraph.prototype.draw = function()
 			$('#'+self.owner.attr('id')+' .legendColorBox').before("<td class='legendCheckBox'><input type='checkbox'></td>");
 			$.each($('#'+self.owner.attr('id')+' .legendCheckBox input'),function(ndx,element)
 			{
-				$(element).click( function() 
+				$(element).on('click', function() 
 				{
 					self.checked[ndx] = !self.checked[ndx];
 					self.draw();
