@@ -86,7 +86,7 @@
 					bclass = (button.type) ? button.type : 'gray';
 					$button = $('<button/>').addClass(bclass).html(button.text).appendTo($noty.find('.noty_buttons'))
 					.on('click', function() {
-						if ($.isFunction(button.click)) {
+						if (typeof button.click === "function") {
 							button.click.call($button, $noty);
 						}
 					});
