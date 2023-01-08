@@ -28,7 +28,8 @@ class CachedEcho
 			ini_set("zlib.output_compression",false);
 		if(!ini_get("zlib.output_compression"))
 		{
-				if(PHP_USE_GZIP && isset($_SERVER['HTTP_ACCEPT_ENCODING']))
+				global $phpUseGzip;
+				if($phpUseGzip && isset($_SERVER['HTTP_ACCEPT_ENCODING']))
 				{
 					if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false ) 
 						$encoding = 'x-gzip'; 
@@ -36,11 +37,12 @@ class CachedEcho
 						$encoding = 'gzip'; 
 				if($encoding && ($len>=2048))
 				{
+					global $phpGzipLevel;
 					$gzip = Utility::getExternal('gzip');
 					header('Content-Encoding: '.$encoding); 
 					$randName = FileUtil::getTempFilename('answer');
 					file_put_contents($randName,$content);
-					passthru( $gzip." -".PHP_GZIP_LEVEL." -c < ".$randName );
+					passthru( $gzip." -".$phpGzipLevel." -c < ".$randName );
 					unlink($randName);
 					return;
 				}

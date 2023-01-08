@@ -147,7 +147,7 @@ if(plugin.canChangeColumns())
 			table.oldFilesSortAlphaNumeric = table.sortAlphaNumeric;
 			table.sortAlphaNumeric = function(x, y) 
 			{
-				if(this.getIdByCol(this.sIndex)=="country")
+				if(this.sortId === "country")
 				{
 				        var newX = { key: x.key, v: x.v, e: x.e };
 			        	var newY = { key: y.key, v: y.v, e: y.e };

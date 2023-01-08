@@ -6,22 +6,12 @@
 # $5 - archive files to delete
 # $6 - unpack temp dir
 
-if [ "$(uname -a)" = "*raspberrypi*" ] ; then
-	if [ "$6" != '' ] ; then
-		"$1" -x "$2" "$6"
-		ret=$?
-	else
-		"$1" -x "$2" "$3"
-		ret=$?
-	fi
+if [ "$6" != '' ] ; then
+	"$1" x -ai -c- -kb -o+ -p- -y -v -- "$2" "$6"
+	ret=$?
 else
-	if [ "$6" != '' ] ; then
-		"$1" x -ai -c- -kb -o+ -p- -y -v -- "$2" "$6"
-		ret=$?
-	else
-		"$1" x -ai -c- -kb -o+ -p- -y -v -- "$2" "$3"
-		ret=$?
-	fi
+	"$1" x -ai -c- -kb -o+ -p- -y -v -- "$2" "$3"
+	ret=$?
 fi
 
 if [ $ret -eq 0 ] && [ "$5" != '' ] ; then

@@ -256,14 +256,15 @@ if($handle = opendir('../plugins'))
 				$theSettings->version."', libVersion : '".$theSettings->libVersion."', apiVersion : ".$theSettings->apiVersion." };\n";
 	        	if($do_diagnostic)
 	        	{
+	        	        global $phpUseGzip;
 	        	        $up = FileUtil::getUploadsPath();
 	        	        $st = FileUtil::getSettingsPath();
 				@chmod($up,$profileMask);
 				@chmod($st,$profileMask);
 				@chmod('./test.sh',$profileMask & 0755);
-	        	        if(PHP_USE_GZIP && (findEXE('gzip')===false))
+	        	        if($phpUseGzip && (findEXE('gzip')===false))
 	        	        {
-	        	        	@define('PHP_USE_GZIP', false);
+	        	        	$phpUseGzip = false;
 	        	        	$jResult.="noty(theUILang.gzipNotFound,'error');";
 	        	        }
 				if(PHP_INT_SIZE<=4)

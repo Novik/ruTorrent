@@ -33,8 +33,11 @@ else
 
 function get_ip($url,$ipMatch)
 {
+	global $useIpv4;
+
 	$client = new Snoopy();
 	$client->proxy_host = "";
+	$client->useIpv4 = $useIpv4;
 
 	@$client->fetch($url);
 
@@ -48,9 +51,11 @@ function get_ip($url,$ipMatch)
 function check_port($ip,$port,$checker,$closed,$open)
 {
 	global $useWebsite;
+	global $useIpv4;
 
 	$client = new Snoopy();
 	$client->proxy_host = "";
+	$client->useIpv4 = $useIpv4;
 
 	if($useWebsite=="yougetsignal")
 		$parse = "remoteAddress=".$ip."&portNumber=".$port;

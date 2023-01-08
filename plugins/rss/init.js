@@ -583,7 +583,7 @@ theWebUI.loadTorrents = function(needSort)
 				updated = table.setIcon(href,"Status_RSS") || updated;
 			}
 		}
-		if(updated && (table.sIndex !=- 1))
+		if(updated && table.sortId)
 			table.Sort();
 	}
 }
@@ -1153,9 +1153,12 @@ rTorrentStub.prototype.setrsssettings = function()
 
 rTorrentStub.prototype.getrssdetailsResponse = function(data)
 {
-	$("#rsslayout").text(String(data).replace(/<br\s*\/?>(\s*\n)?/gi, "\n"));
-	return(false);
+    	const doc = new DOMParser().parseFromString(String(data), 'text/html');
+    	var s = new Sanitize(Sanitize.Config.RESTRICTED);
+    	$("#rsslayout").html(s.clean_node(doc.body));
+    	return(false);
 }
+
 
 rTorrentStub.prototype.setfilters = function()
 {

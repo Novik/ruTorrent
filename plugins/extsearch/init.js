@@ -252,7 +252,7 @@ plugin.reloadData = function(id)
 				count++;
 			}
 		}
-		if(table.sIndex !=- 1)
+		if(table.sortId)
 			table.Sort();
 		plugin.correctCounter(id,count);
 		table.noSort = false;
@@ -534,7 +534,7 @@ theWebUI.loadTorrents = function(needSort)
 				}
 			}
 		}
-		if(updated && (table.sIndex !=- 1))
+		if(updated && table.sortId)
 			table.Sort();
 	}
 }

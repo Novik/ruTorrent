@@ -2,9 +2,9 @@
 	// configuration parameters
 
 	// for snoopy client
-	@define('HTTP_USER_AGENT', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36');
-	@define('HTTP_TIME_OUT', 30);	// in seconds
-	@define('HTTP_USE_GZIP', true);
+	$httpUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36';
+	$httpTimeOut = 30; // in seconds
+	$httpUseGzip = true;
 	$httpIP = null;				// IP string. Or null for any.
 	$httpProxy = array
 	(
@@ -14,14 +14,14 @@
 		'port'	=> 3128
 	);
 
-	@define('RPC_TIME_OUT', 5);	// in seconds
-
-	@define('LOG_RPC_CALLS', false);
-	@define('LOG_RPC_FAULTS', true);
+	// for xmlrpc actions
+	$rpcTimeOut = 5; // in seconds
+	$rpcLogCalls = false;
+	$rpcLogFaults = true;
 
 	// for php
-	@define('PHP_USE_GZIP', false);
-	@define('PHP_GZIP_LEVEL', 2);
+	$phpUseGzip = false;
+	$phpGzipLevel = 2;
 
 	$schedule_rand = 10;			// rand for schedulers start, +0..X seconds
 
@@ -47,6 +47,9 @@
 	// $scgi_host = "unix:///tmp/rpc.socket";
 
 	$XMLRPCMountPoint = "/RPC2";		// DO NOT DELETE THIS LINE!!! DO NOT COMMENT THIS LINE!!!
+	
+	$throttleMaxSpeed = 327625*1024;	// DO NOT EDIT THIS LINE!!! DO NOT COMMENT THIS LINE!!!
+	// Can't be greater then 327625*1024 due to limitation in libtorrent ResourceManager::set_max_upload_unchoked function.
 
 	$pathToExternals = array(
 		"php" 	=> '',			// Something like /usr/bin/php. If empty, will be found in PATH.

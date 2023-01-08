@@ -80,6 +80,7 @@ class Snoopy
 	// send Accept-encoding: gzip?
 	var $use_gzip		=	true;	
 	var $IP			=	null;
+	var $useIpv4		=	false;
 
 	/**** Private variables ****/	
 
@@ -97,12 +98,16 @@ class Snoopy
 	{
 		global $httpIP;
 		global $httpProxy;
-		if(@constant('HTTP_USER_AGENT')!==null)
-			$this->agent = @constant('HTTP_USER_AGENT');
-		if(@constant('HTTP_TIME_OUT')!==null)
+		global $httpUserAgent;
+		global $httpTimeOut;
+		global $httpUseGzip;
+		
+		if(isset($httpUserAgent))
+			$this->agent = $httpUserAgent;
+		if(isset($httpTimeOut))
 		{
-			$this->_fp_timeout = @constant('HTTP_TIME_OUT');
-			$this->read_timeout = @constant('HTTP_TIME_OUT');
+			$this->_fp_timeout = $httpTimeOut;
+			$this->read_timeout = $httpTimeOut;
 		}
 		if(is_array($httpProxy) && $httpProxy['use'])
 		{
@@ -110,7 +115,8 @@ class Snoopy
 			$this->proxy_host = $httpProxy['host'];
 			$this->proxy_port = $httpProxy['port'];
 		}
-		$this->use_gzip = @constant('HTTP_USE_GZIP');
+		if (isset($httpUseGzip))
+			$this->use_gzip = $httpUseGzip;
 		if(isset($httpIP))
 			$this->IP = $httpIP;
 	}
@@ -523,6 +529,9 @@ class Snoopy
 
 		if(!is_null($this->IP))
 			$cmdline_params .= " --interface ".$this->IP;
+
+		if($this->useIpv4)
+			$cmdline_params .= " --ipv4";
 
 		if($this->_isproxy)
 			$cmdline_params .= " --proxy-insecure --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
