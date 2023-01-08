@@ -33,7 +33,7 @@ theWebUI.getData = function( hash, no )
 {
 	$("#datahash").val(hash);
 	$("#datano").val(no);
-	$("#getdata").submit();
+	$("#getdata").trigger('submit');
 }
 
 if(plugin.canChangeMenu())
