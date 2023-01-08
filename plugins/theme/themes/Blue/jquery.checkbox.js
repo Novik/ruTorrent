@@ -68,10 +68,9 @@
 			/* Creating wrapper for checkbox and assigning "hover" event */
 			ch.wrapper = $('<span class="' + settings.cls + '"><span class="mark"><img src="' + settings.empty + '" /></span></span>');
 			ch.wrapperInner = ch.wrapper.children('span:eq(0)');
-			ch.wrapper.hover(
-				function(e) { ch.wrapperInner.addClass(settings.cls + '-hover');CB(e); },
-				function(e) { ch.wrapperInner.removeClass(settings.cls + '-hover');CB(e); }
-			);
+			ch.wrapper.
+				on('mouseenter', function(e) { ch.wrapperInner.addClass(settings.cls + '-hover');CB(e); }).
+				on('mouseleave', function(e) { ch.wrapperInner.removeClass(settings.cls + '-hover');CB(e); });
 			
 			/* Wrapping checkbox */
 			$ch.css({position: 'absolute', zIndex: -1, visibility: 'hidden'}).after(ch.wrapper);
@@ -92,19 +91,17 @@
 			/* Labe found, applying event hanlers */
 			if (label)
 			{
-				label.hover(
-					function(e) { ch.wrapper.trigger('mouseover', [e]); },
-					function(e) { ch.wrapper.trigger('mouseout', [e]); }
-				);
-				label.click(function(e) { $ch.trigger('click',[e]); CB(e); return false;});
+				label.on('mouseenter', function(e) { ch.wrapper.trigger('mouseover', [e]); }).
+					on('mouseleave', function(e) { ch.wrapper.trigger('mouseout', [e]); });
+				label.on('click', function(e) { $ch.trigger('click',[e]); CB(e); return false;});
 			}
-			ch.wrapper.click(function(e) { $ch.trigger('click',[e]); CB(e); return false;});
-			$ch.click(function(e) { CB(e); });
-			$ch.bind('disable', function() { ch.wrapperInner.addClass(settings.cls+'-disabled');}).bind('enable', function() { ch.wrapperInner.removeClass(settings.cls+'-disabled');});
-			$ch.bind('check', function() { ch.wrapper.addClass(settings.cls+'-checked' );}).bind('uncheck', function() { ch.wrapper.removeClass(settings.cls+'-checked' );});
+			ch.wrapper.on('click', function(e) { $ch.trigger('click',[e]); CB(e); return false;});
+			$ch.on('click', function(e) { CB(e); });
+			$ch.on('disable', function() { ch.wrapperInner.addClass(settings.cls+'-disabled');}).on('enable', function() { ch.wrapperInner.removeClass(settings.cls+'-disabled');});
+			$ch.on('check', function() { ch.wrapper.addClass(settings.cls+'-checked' );}).on('uncheck', function() { ch.wrapper.removeClass(settings.cls+'-checked' );});
 			
 			/* Disable image drag-n-drop for IE */
-			$('img', ch.wrapper).bind('dragstart', function () {return false;}).bind('mousedown', function () {return false;});
+			$('img', ch.wrapper).on('dragstart', function () {return false;}).on('mousedown', function () {return false;});
 			
 			/* Firefox antiselection hack */
 			if ( window.getSelection )
