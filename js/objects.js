@@ -372,7 +372,7 @@ var theContextMenu =
 		if(y<0)
 			y = 0;
 		obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
-		obj.children("li").hover( function() {
+		obj.children("li").on( 'mouseenter', function() {
 			var submenu = $(this).children("ul");
 			if (submenu.length) {
 				if(submenu.offset().left + submenu.width() > $(window).width())
@@ -384,7 +384,7 @@ var theContextMenu =
 				if ($(window).height() < submenu.offset().top + submenu.height())
 					submenu.css( { "padding-right": 12, "max-height": $(window).height() - submenu.offset().top, overflow: "visible scroll" } );
 			}
-		}, function () {
+		}).on( 'mouseleave', function () {
 			var submenu = $(this).children("ul");
 			if (submenu.length)
 				submenu.css( { "padding-right": 0, "max-height": "none", overflow: "visible" } );

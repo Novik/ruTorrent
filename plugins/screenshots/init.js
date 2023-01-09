@@ -329,12 +329,12 @@ plugin.onLangLoaded = function()
 		{
 			$("#scimgno").val(plugin.getCurrentFrame());
 			$("#scimgcmd").val("ffmpeggetimage");
-			$('#scgetimg').submit();
+			$('#scgetimg').trigger('submit');
 		});
 		$("#scsaveall").on('click', function()
 		{
 			$("#scimgcmd").val("ffmpeggetall");
-			$('#scgetimg').submit();
+			$('#scgetimg').trigger('submit');
 		});
 		plugin.markLoaded();
 	}

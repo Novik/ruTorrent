@@ -17,7 +17,7 @@ if(plugin.canChangeMenu())
 			}
 		}
 		$("#srchash").val(hash);
-		$("#getsource").submit();
+		$("#getsource").trigger('submit');
 	}
 
 	plugin.createMenu = theWebUI.createMenu;

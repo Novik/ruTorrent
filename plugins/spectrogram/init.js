@@ -147,7 +147,7 @@ plugin.onLangLoaded = function()
 		$("#soxsave").on('click', function()
 		{
 			$("#soximgcmd").val("soxgetimage");
-			$('#soxgetimg').submit();
+			$('#soxgetimg').trigger('submit');
 		});
 		plugin.markLoaded();
 	}

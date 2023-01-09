@@ -147,7 +147,7 @@ function makeContent()
 		for (var lbl in theWebUI.cLabels)
 			$("#tadd_label_select").append("<option>"+lbl+"</option>");
 		$("#add_button").prop("disabled",false);
-		$("#tadd_label_select").change();
+		$("#tadd_label_select").trigger('change');
 	});
 
 	var input = $$('url');

@@ -86,7 +86,7 @@
 					bclass = (button.type) ? button.type : 'gray';
 					$button = $('<button/>').addClass(bclass).html(button.text).appendTo($noty.find('.noty_buttons'))
 					.on('click', function() {
-						if ($.isFunction(button.click)) {
+						if (typeof button.click === "function") {
 							button.click.call($button, $noty);
 						}
 					});
@@ -127,14 +127,14 @@
 				if (options.modal) $('.noty_modal').fadeOut('fast', function() { $(this).remove(); });
 
 				$noty.clearQueue().stop().animate(
-						$noty.data('noty_options').animateClose,
-						$noty.data('noty_options').speed,
-						$noty.data('noty_options').easing,
-						$noty.data('noty_options').onClose)
+						options.animateClose,
+						options.speed,
+						options.easing,
+						options.onClose)
 				.promise().done(function() {
 
 					// Layout spesific cleaning
-					if ($.inArray($noty.data('noty_options').layout, $.noty.growls) > -1) {
+					if ($.inArray(options.layout, $.noty.growls) > -1) {
 						$noty.parent().remove();
 					} else {
 						$noty.remove();
