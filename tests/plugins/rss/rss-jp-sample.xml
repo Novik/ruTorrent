@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>アニメ 放送©</title>
+        <link>https://example.jp</link>
+        <description>黙れ</description>
+        <language>jp-JP</language>
+        <lastBuildDate>Fri, 31 Dec 2021 12:00:00 +0000</lastBuildDate>
+        <ttl>60</ttl>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>一二クラス</generator>
+        <item>
+            <title>
+                <![CDATA[完璧な映画]]>
+            </title>
+            <description>
+                <![CDATA[決して弱点がない]]>
+            </description>
+            <pubDate>Sat, 1 Jan 2022 12:00:00 +0000</pubDate>
+            <link>https://example.jp/path/to/torrent?guid=ABCD&amp;torr</link>
+            <guid>https://example.jp/path/to/torrent?guid=ABCD&amp;perm</guid>
+            <comments>間違いない</comments>
+            <category>オタク</category>
+        </item>
+    </channel>
+</rss>
