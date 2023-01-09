@@ -39,29 +39,32 @@ if(plugin.canChangeOptions())
 }
 
 plugin.switchLabel = theWebUI.switchLabel;
-theWebUI.switchLabel = function(el)
+theWebUI.switchLabel = function(labelType, targetId, toggle=false, range=false)
 {
-        var lst = $("#RSSList");
-	if(lst.is(":visible"))
-	{
-		theWebUI.getTable("trt").clearSelection();
-		theWebUI.dID = "";
-		theWebUI.clearDetails();
-		theWebUI.getTable("rss").clearSelection();
-		if(theWebUI.actRSSLbl)
-			$($$(theWebUI.actRSSLbl)).removeClass('sel');
-		theWebUI.actRSSLbl = null;
-		$("#List").show();
-		lst.hide();
-		theWebUI.switchLayout(false);
+	const rssList = $("#RSSList");
+	const list = $("#List");
+	if(labelType === 'prss_cont') {
+		theWebUI.switchRSSLabel($$(targetId));
+	} else {
+		list.show();
+		if(rssList.is(":visible"))
+		{
+			theWebUI.getTable("trt").clearSelection();
+			theWebUI.dID = "";
+			theWebUI.clearDetails();
+			theWebUI.getTable("rss").clearSelection();
+			if(theWebUI.actRSSLbl)
+				$($$(theWebUI.actRSSLbl)).removeClass('sel');
+			theWebUI.actRSSLbl = null;
+			rssList.hide();
+			theWebUI.switchLayout(false);
+		}
+		plugin.switchLabel.call(theWebUI, labelType, targetId, toggle, range);
 	}
-
-	if( $(el).hasClass('RSS') ||
-		$(el).hasClass('disRSS') ||
-		$(el).hasClass('RSSGroup'))
-		theWebUI.switchRSSLabel(el);
-
-	plugin.switchLabel.call(theWebUI,el);
+	// finally hide list if rsslist shown
+	if(rssList.is(":visible")) {
+		list.hide();
+	}
 }
 
 theWebUI.isActiveRSSEnabled = function()
@@ -309,28 +312,18 @@ theWebUI.RSSManager = function()
 	theWebUI.request("?action=getfilters",[this.loadFilters, this]);
 }
 
-theWebUI.rssLabelContextMenu = function(e)
-{
-        if(e.which==3)
-        {
-		if(plugin.canChangeMenu())
-		{
-			theWebUI.getTable("trt").clearSelection();
-			theWebUI.getTable("rss").clearSelection();
-			theWebUI.switchLabel(this);
-			theWebUI.getTable("rss").fillSelection();
-			theWebUI.createRSSMenu(null, null);
-			theContextMenu.show();
-		}
-		else
-		{
-			theContextMenu.hide();
-			theWebUI.switchLabel(this);
-		}
-	}
-	else
-		theWebUI.switchLabel(this);
-	return(false);
+plugin.contextMenuTable = theWebUI.contextMenuTable;
+theWebUI.contextMenuTable = function(labelType, el) {
+	return labelType === 'prss_cont' ? 
+		theWebUI.getTable('rss') 
+		: plugin.contextMenuTable.call(theWebUI, labelType, el);
+},
+
+plugin.contextMenuEntries = theWebUI.contextMenuEntries;
+theWebUI.contextMenuEntries = function(labelType, el) {
+	return labelType === 'prss_cont' ?
+		theWebUI.createRSSMenuPrim()
+		: plugin.contextMenuEntries.call(theWebUI, labelType, el);
 }
 
 theWebUI.fillRSSGroups = function()
@@ -408,62 +401,63 @@ theWebUI.RSSGroupDeleteContents = function()
 
 theWebUI.createRSSMenuPrim = function()
 {
-        if(plugin.canChangeMenu())
-        {
-		theContextMenu.add([ theUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"]);
-		theContextMenu.add([ theUILang.addRSS, "theDialogManager.toggle('dlgAddRSS')"]);
-		theContextMenu.add([ theUILang.addRSSGroup, "theWebUI.RSSAddGroup()"]);
-		theContextMenu.add([ theUILang.rssMenuManager, "theWebUI.RSSManager()"]);
-		if(theWebUI.actRSSLbl) 
+	theWebUI.getTable('trt').clearSelection();
+	theWebUI.dID = "";
+	theWebUI.clearDetails();
+	if(!plugin.canChangeMenu()) {
+		return false;
+	}
+	let entries = [];
+	entries = [
+		[ theUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"],
+		[ theUILang.addRSS, "theDialogManager.toggle('dlgAddRSS')"],
+		[ theUILang.addRSSGroup, "theWebUI.RSSAddGroup()"],
+		[ theUILang.rssMenuManager, "theWebUI.RSSManager()"]
+	];
+	if(theWebUI.actRSSLbl)
+	{
+		entries.push([CMENU_SEP]);
+		if(this.actRSSLbl == "_rssAll_")
 		{
-			theContextMenu.add([CMENU_SEP]);			
-			if(this.actRSSLbl == "_rssAll_")
+			entries = entries.concat([
+				[ theUILang.rssMenuDisable ],
+				[ theUILang.rssMenuEdit ],
+				[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"],
+				[ theUILang.rssMenuDelete ]
+			]);
+		}
+		else
+		{
+			if(this.isGroupSelected())
 			{
-				theContextMenu.add([ theUILang.rssMenuDisable ]);
-				theContextMenu.add([ theUILang.rssMenuEdit ]);
-				theContextMenu.add([ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]);
-				theContextMenu.add([ theUILang.rssMenuDelete ]);
+				entries = entries.concat(this.rssGroups[this.actRSSLbl].enabled==1 ? [
+					[ theUILang.rssMenuGroupDisable, "theWebUI.RSSGroupSetStatus(0)"],
+					[ theUILang.rssMenuGroupRefresh, "theWebUI.RSSGroupRefresh()"]
+				] : [
+					[ theUILang.rssMenuGroupEnable, (this.rssGroups[this.actRSSLbl].cnt==0) ? null : "theWebUI.RSSGroupSetStatus(1)"],
+					[ theUILang.rssMenuGroupRefresh ]
+				]).concat([
+					[ theUILang.rssMenuGroupEdit, "theWebUI.RSSEditGroup()"],
+					[ theUILang.rssMenuGroupDelete, "theWebUI.RSSGroupDelete()"],
+					[ theUILang.rssMenuGroupContentsDelete, "theWebUI.RSSGroupDeleteContents()"]
+				]);
 			}
 			else
 			{
-				if(this.isGroupSelected())
-				{
-					if(this.rssGroups[this.actRSSLbl].enabled==1)
-					{
-						theContextMenu.add([ theUILang.rssMenuGroupDisable, "theWebUI.RSSGroupSetStatus(0)"]);
-						theContextMenu.add([ theUILang.rssMenuGroupRefresh, "theWebUI.RSSGroupRefresh()"]);
-					}
-					else
-					{
-						theContextMenu.add([ theUILang.rssMenuGroupEnable, (this.rssGroups[this.actRSSLbl].cnt==0) ? null : "theWebUI.RSSGroupSetStatus(1)"]);
-						theContextMenu.add([ theUILang.rssMenuGroupRefresh ]);
-					}
-					theContextMenu.add([ theUILang.rssMenuGroupEdit, "theWebUI.RSSEditGroup()"]);
-					theContextMenu.add([ theUILang.rssMenuGroupDelete, "theWebUI.RSSGroupDelete()"]);
-					theContextMenu.add([ theUILang.rssMenuGroupContentsDelete, "theWebUI.RSSGroupDeleteContents()"]);
-				}
-				else
-				{
-					if(this.rssLabels[this.actRSSLbl].enabled==1)
-					{
-						theContextMenu.add([ theUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"]);
-						theContextMenu.add([ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]);
-					}
-					else
-					{
-						theContextMenu.add([ theUILang.rssMenuEnable, "theWebUI.RSSToggleStatus()"]);
-						theContextMenu.add([ theUILang.rssMenuRefresh ]);
-					}
-					theContextMenu.add([ theUILang.rssMenuEdit, "theWebUI.RSSEdit()"]);
-					theContextMenu.add([ theUILang.rssMenuDelete, "theWebUI.RSSDelete()"]);
-				}
+				entries = entries.concat(this.rssLabels[this.actRSSLbl].enabled==1 ? [
+					[ theUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"],
+					[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]
+				] : [
+					[ theUILang.rssMenuEnable, "theWebUI.RSSToggleStatus()"],
+					[ theUILang.rssMenuRefresh ]
+				]).concat([
+					[ theUILang.rssMenuEdit, "theWebUI.RSSEdit()"],
+					[ theUILang.rssMenuDelete, "theWebUI.RSSDelete()"]
+				]);
 			}
 		}
 	}
-	else
-		theContextMenu.hide();
-	theWebUI.dID = "";
-	theWebUI.clearDetails();
+	return entries;
 }
 
 theWebUI.RSSAddToFilter = function()
@@ -471,33 +465,39 @@ theWebUI.RSSAddToFilter = function()
 	theWebUI.request("?action=getfilters",[this.loadFiltersWithAdditions, this]);
 }
 
-theWebUI.createRSSMenu = function(e, id) 
+plugin.createMenu = theWebUI.createMenu;
+theWebUI.createMenu = function(e, id)
 {
-	var trtArray = [];
-	this.rssArray = [];
-	var sr = this.getTable("rss").rowSel;
-	for(var k in sr) 
-	{
-		if(sr[k] == true)
-		{
-			var hash = this.rssItems[k].hash;
-			if(hash && $type(theWebUI.torrents[hash]))
-				trtArray.push(hash);
-			else
-				this.rssArray.push(k);
-		}
+	if (id in this.rssItems) {
+		// context menu for rss item
+		theWebUI.createRSSMenu(e, id);
+	} else {
+		plugin.createMenu.call(theWebUI, e, id);
 	}
+}
+
+theWebUI.createRSSMenu = function(e, id)
+{
+	const [rssArray, trtArray] = Object.entries(this.getTable("rss").rowSel)
+	.filter(([_, sel]) => sel)
+	.map(([link,_]) => [link, this.rssItems[link].hash])
+	.reduce((rss_trt, [l,h]) => {
+		const isTorrent = h && h in theWebUI.torrents;
+		rss_trt[isTorrent ? 1 : 0].push(isTorrent ? h : l);
+		return rss_trt;
+	}, [[],[]]);
+
+	this.rssArray = rssArray;
+
 	theContextMenu.clear();
 	if(this.rssArray.length)
 	{
-	        if(plugin.canChangeMenu())
-	        {
+		if(plugin.canChangeMenu())
+		{
 			theContextMenu.add([ theUILang.rssMenuLoad, "theWebUI.RSSLoad()"]);
 			theContextMenu.add([ theUILang.rssMenuOpen, "theWebUI.RSSOpen()"]);
 			theContextMenu.add([ theUILang.rssMenuAddToFilter, "theWebUI.RSSAddToFilter()"]);
 			theContextMenu.add([CMENU_CHILD, theUILang.rssMarkAs, [ [ theUILang.rssAsLoaded, "theWebUI.RSSMarkState(1)"], [ theUILang.rssAsUnloaded, "theWebUI.RSSMarkState(0)"] ]]);
-			theContextMenu.add([CMENU_SEP]);
-			theWebUI.createRSSMenuPrim();
 		}
 		else
 			theContextMenu.hide();
@@ -505,7 +505,7 @@ theWebUI.createRSSMenu = function(e, id)
 	else
 	if(trtArray.length)
 	{
-	        var table = this.getTable("trt");
+		var table = this.getTable("trt");
 		for(var k in table.rowSel)
 			table.rowSel[k] = false;
 		table.selCount = trtArray.length;
@@ -514,11 +514,7 @@ theWebUI.createRSSMenu = function(e, id)
 		table.refreshSelection();
 		this.dID = trtArray[0];
 		theWebUI.createMenu(e, trtArray[0]);
-		theContextMenu.add([CMENU_SEP]);
-		theWebUI.createRSSMenuPrim();
 	}
-	else
-		theWebUI.createRSSMenuPrim();
 }
 
 theWebUI.rssSelect = function(e, id)
@@ -683,7 +679,7 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 		for( const [lbl, category] of labels ) {
 			let li = $($$(lbl));
 			if(li.length === 0) {
-				li = theWebUI.createSelectableLabelElement(lbl, category.name, theWebUI.rssLabelContextMenu);
+				li = theWebUI.createSelectableLabelElement(lbl, category.name, theWebUI.labelContextMenu);
 			}
 			li.addClass([rssClass, 'disRSS']);
 			li.removeClass(category.enabled == 1 ? 'disRSS' : rssClass);
@@ -700,9 +696,9 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 	const curRSSLbl = theWebUI.actRSSLbl;
 	theWebUI.actRSSLbl = null;
 	if (removedLbls.includes(curRSSLbl)) {
-		this.switchLabel($$("_rssAll_"));
+		this.switchLabel('prss_cont', '_rssAll_');
 	} else if(curRSSLbl) {
-		this.switchLabel($$(curRSSLbl));
+		this.switchLabel('prss_cont', curRSSLbl);
 	}
 }
 
@@ -1040,9 +1036,9 @@ theWebUI.showFilterResults = function( d )
 {
 	this.showErrors(d.errors);
 	if(d.rss && d.rss.length)
-		this.switchLabel($$(d.rss));
+		this.switchLabel('prss_cont', d.rss);
 	else
-		this.switchLabel($$('_rssAll_'));
+		this.switchLabel('prss_cont', '_rssAll_');
 	var table = this.getTable("rss");
 	for(var k in table.rowSel)
 		table.rowSel[k] = false;
@@ -1421,7 +1417,7 @@ plugin.onLangLoaded = function()
 				theWebUI.createSelectableLabelElement(
 					'_rssAll_',
 					theUILang.allFeeds,
-					theWebUI.rssLabelContextMenu
+					theWebUI.labelContextMenu
 				).addClass('RSS')
 		));
 	$("#prss").append( $("<span></span>").attr("id", "rsstimer") );
