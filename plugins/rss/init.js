@@ -1336,9 +1336,8 @@ theWebUI.mapBBCodeToHTML = function (htmlText) {
 		}
 		offset = match.index + match[0].length;
 	}
-	const rootNode = nodeStack[0];
-	rootNode.children.push(htmlText.substring(offset, htmlText.length));
-	const htmlContent = nodeToElement(rootNode).innerHTML;
+	nodeStack[nodeStack.length-1].children.push(htmlText.substring(offset, htmlText.length));
+	const htmlContent = nodeToElement(nodeStack[0]).innerHTML;
 
 	// Support for some emoticons from WhatCD/Gazelle (https://github.com/WhatCD/Gazelle/tree/master/static/common/smileys)
 	// :code: => utf8 emoticon (https://utf8-icons.com/subset/emoticons)

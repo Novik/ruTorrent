@@ -41,8 +41,17 @@ correctContent();
 document.body.appendChild($("<div>").attr("id", "rsslayout")[0]);
 
 describe("rss details", () => {
-  afterEach(() => {
+  beforeEach(() => {
     $("#rsslayout").text("");
+  });
+
+  it("should handle incomplete or faulty bbcode", () => {
+    expect(theWebUI.mapBBCodeToHTML("[i]ABC[/i]abc[b]CDE")).toEqual(
+      "<i>ABC</i>abc<b>CDE</b>"
+    );
+    expect(theWebUI.mapBBCodeToHTML("[i]ABC[/i]abc[b]CDE[/c]some")).toEqual(
+      "<i>ABC</i>abc<b>CDE[/c]some</b>"
+    );
   });
 
   it("should map emoticons to html", () => {
