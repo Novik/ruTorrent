@@ -12,13 +12,8 @@ theWebUI.config = function()
 		plugin.config.call(this);
 		plugin.reqId = theRequestManager.addRequest("trk", null, function(hash,tracker,value)
 		{
-			var domain = theWebUI.getTrackerName( tracker.name );
-			tracker.icon = "trk"+domain.replace(/\./g, "_");
-			if(!plugin.injectedStyles[tracker.icon])
-			{
-				plugin.injectedStyles[tracker.icon] = true;
-				injectCSSText( "."+tracker.icon+" {background-image: url(./plugins/tracklabels/action.php?tracker="+domain+"); background-repeat: no-repeat; background-size: 16px 16px; }\n" );
-			}
+			const domain = theWebUI.getTrackerName( tracker.name );
+			tracker.icon = domain ? {src: plugin.imageURI('tracker', domain)} : 'Status_Checking';
 		});
 	}
 }
