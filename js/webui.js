@@ -2108,7 +2108,18 @@ var theWebUI =
 	{
 		var p = $("#lbll");
 		var lbls = Object.keys(c);
-		lbls.sort();
+		lbls.sort((x,y) => {
+			const xPath = x.split('/');
+			const yPath = y.split('/');
+			const l = Math.min(xPath.length, yPath.length);
+			for (let i = 0; i < l; i++) {
+				const o = xPath[i].localeCompare(yPath[i]);
+				if (o) {
+					return o;
+				}
+			}
+			return xPath.length - yPath.length;
+		});
 
 		this.cLabels = {};
 		let prevCustomEle = null;
