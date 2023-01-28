@@ -241,6 +241,7 @@ if($handle = opendir('../plugins'))
 	}
 	else
 	{
+		global $localHostedMode;
 		$remoteRequests = array();
 		$theSettings = rTorrentSettings::get(true);
 		if(!$theSettings->linkExist)
@@ -271,7 +272,8 @@ if($handle = opendir('../plugins'))
 				{
 					if(findEXE('stat')===false)
 						$jResult.="noty(theUILang.statNotFoundW,'error');";
-                                        findRemoteEXE('stat',"noty(theUILang.statNotFound,'error');",$remoteRequests);
+					if(!$localHostedMode)
+                                        	findRemoteEXE('stat',"noty(theUILang.statNotFound,'error');",$remoteRequests);
 				}
 	        		if(!@file_exists($up.'/.') || !is_readable($up) || !is_writable($up))
 					$jResult.="noty(theUILang.badUploadsPath+' (".$up.")','error');";
@@ -401,7 +403,16 @@ if($handle = opendir('../plugins'))
 						}
                 				foreach( $info['rtorrent.external.error'] as $external )
                 				{
-							findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error'); thePlugins.get('".$file."').disable();",$remoteRequests);
+							if ($localHostedMode)
+							{
+								if (findEXE($external)==false)
+								{
+									$jResult.="noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error');";
+									$jResult.="thePlugins.get('".$file."').disable();";
+								}
+							}
+							else						
+								findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error'); thePlugins.get('".$file."').disable();",$remoteRequests);
 							if($external=='php')
 								$phpRequired = true;
 						}
@@ -450,8 +461,22 @@ if($handle = opendir('../plugins'))
 					if($do_diagnostic)
 					{
 						if($theSettings->linkExist)
+						{
 							foreach( $info['rtorrent.external.warning'] as $external )
-								findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');",$remoteRequests);
+							{
+								if ($localHostedMode)
+								{
+									if (findEXE($external)==false)
+									{
+										$jResult.="noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');";
+									}
+								}
+								else
+								{
+									findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');",$remoteRequests);
+								}
+							}
+						}
 						foreach( $info['web.external.warning'] as $external )
 							if(findEXE($external)==false)
 								$jResult.="noty('".$file.": '+theUILang.webExternalNotFoundWarning+' ('+'".$external."'+').','error');";

@@ -58,6 +58,8 @@
 		"id"	=> '',			// Something like /usr/bin/id. If empty, will be found in PATH.
 		"stat"	=> '',			// Something like /usr/bin/stat. If empty, will be found in PATH.
 	);
+	
+	$localHostedMode = false; 		// Set to true if rTorrent is hosted on the SAME machine as ruTorrent
 
 	$localhosts = array( 			// list of local interfaces
 		"127.0.0.1",
