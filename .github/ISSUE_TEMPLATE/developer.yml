@@ -1,0 +1,30 @@
+name: "Developer Feedback"
+description: "Advanced template for development professionals"
+body:
+  - type: textarea
+    attributes:
+      label: What would you like changed about the web client?
+      description: A clear and concise description of a problem or feature request.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the solution you'd like and propose possible alternatives.
+      description: Propose a solution and document possible alternatives.
+    validations:
+      required: true
+      
+  - type: textarea
+    attributes:
+      label: Provide information and resources about the environment hosting the web client.
+      description: Web Browser? PHP version? OS Version? Docker Image? Install Script?
+    validations:
+      required: true
+      
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Provide screenshots, stack traces, logs and developer resources etc.
+    validations:
+      required: false
