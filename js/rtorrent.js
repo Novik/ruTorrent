@@ -1272,7 +1272,6 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		Ajax_UpdateTime(jqXHR);
 		
 		stub.logErrorMessages();
-		var pending = !stub.isError() && stub.commandOffset < stub.commands.length;
 		if(!stub.isError()) {
 			var responseText = stub.getResponse(data);
 			if (partialData) {
@@ -1284,7 +1283,8 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 					responseText = partialData;
 				}
 			}
-			if (pending) {
+			// If the ajax call is pending
+			if (stub.commandOffset < stub.commands.length) {
 				stub.makeNextMultiCall();
 				Ajax(stub, isASync, onComplete, onTimeout, onError, reqTimeout, responseText);
 			} else {
