@@ -1273,10 +1273,7 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		
 		stub.logErrorMessages();
 		var pending = !stub.isError() && stub.commandOffset < stub.commands.length;
-		if(!pending && stub.listRequired)
-			Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
-		else if(!stub.isError())
-	    {
+		else if(!stub.isError()) {
 			var responseText = stub.getResponse(data);
 			if (partialData) {
 				if (responseText instanceof Object && !(responseText instanceof XMLDocument)) {
@@ -1291,19 +1288,20 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 				stub.makeNextMultiCall();
 				Ajax(stub, isASync, onComplete, onTimeout, onError, reqTimeout, responseText);
 			} else {
-			switch($type(onComplete))
-			{
-				case "function":
-				{
-					onComplete(responseText);
-					break;
-				}				
-				case "array":
-				{
-					onComplete[0].apply(onComplete[1], new Array(responseText, onComplete[2]));
-					break;
-				}
-			}
+				if(stub.listRequired) {
+					Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
+				} else {
+					switch($type(onComplete)) {
+						case "function": {
+							onComplete(responseText);
+							break;
+						}				
+						case "array": {
+							onComplete[0].apply(onComplete[1], new Array(responseText, onComplete[2]));
+							break;
+						}
+					}
+				}					
 			}
 			responseText = null; // Cleanup memory leak
 		}
