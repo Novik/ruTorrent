@@ -118,7 +118,7 @@ class FileUtil
 		return(false);
 	}
 	
-	private static function getUniqueFilename($fname)
+	public static function getUniqueFilename($fname)
 	{
 		while(file_exists($fname))
 		{
