@@ -93,7 +93,7 @@ div#CatList ul li div { margin-right: 0.5em; }
 div#CatList .label-prefix { flex: 0 0 auto; display: flex; flex-flow: row nowrap; opacity: 0.1; font-family: monospace; font-size: 19px; margin-left: -2px; margin-right: 2px; }
 div#CatList .label-prefix div { margin-right: 0px; width: 12px; }
 .label-icon { min-width: 16px; min-height: 16px; background-image: url(../images/tstatus.png); background-repeat: no-repeat; }
-.label-icon img { width: 16px; }
+.label-icon img { width: 16px; height: 16px; }
 .-_-_-all-_-_- .label-icon, #-_-_-all-_-_- .label-icon {background-position: 0px -176px;}
 #-_-_-dls-_-_- .label-icon {background-position: 0px 0px;}
 #-_-_-com-_-_- .label-icon {background-position: 0px -16px;}
