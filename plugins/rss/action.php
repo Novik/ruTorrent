@@ -362,7 +362,7 @@ if($val===null)
 	$val = $mngr->get();
 	$errorsReported = true;
 }
-CachedEcho::send(JSON::safeEncode($val), "application/json",true,false);
+CachedEcho::send(JSON::safeEncode($val), "application/json",false,false);
 
 ob_flush();
 flush();
