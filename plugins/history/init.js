@@ -131,7 +131,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 					{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING },
 		      			{ text: theUILang.Status, 		width: "100px",	id: "status",		type: TYPE_STRING },
 					{ text: 'Time',	 			width: "110px", id: "time",		type: TYPE_NUMBER },
-			   		{ text: theUILang.Size, 		width: "60px",	id: "size", 		type: TYPE_NUMBER },
+			   		{ text: theUILang.Size, 		width: "70px",	id: "size", 		type: TYPE_NUMBER },
 					{ text: theUILang.Downloaded, 		width: "100px",	id: "downloaded",	type: TYPE_NUMBER },
 					{ text: theUILang.Uploaded, 		width: "100px",	id: "uploaded",		type: TYPE_NUMBER },
 					{ text: theUILang.Ratio, 		width: "60px",	id: "ratio",		type: TYPE_NUMBER },
