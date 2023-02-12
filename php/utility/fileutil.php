@@ -236,4 +236,14 @@ class FileUtil
 			}
 		}
 	}
+	
+	public static function getMinFilePerms( $file, $chmod = 755 )
+	{
+		$code = fileperms($file);
+		
+		if($code!==false)
+			return((decoct($code) & 0777) >= $chmod);
+		
+		return false;
+	}
 }

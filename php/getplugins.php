@@ -270,9 +270,10 @@ if($handle = opendir('../plugins'))
 	        	        }
 				if(PHP_INT_SIZE<=4)
 				{
-					if(findEXE('stat')===false)
+					$statEXE = findEXE('stat');
+					if($statEXE===false)
 						$jResult.="noty(theUILang.statNotFoundW,'error');";
-					if(!$localHostedMode)
+					if(!$localHostedMode || $statEXE===false || !FileUtil::getMinFilePerms($statEXE))
                                         	findRemoteEXE('stat',"noty(theUILang.statNotFound,'error');",$remoteRequests);
 				}
 	        		if(!@file_exists($up.'/.') || !is_readable($up) || !is_writable($up))
@@ -401,18 +402,19 @@ if($handle = opendir('../plugins'))
 						        $disabled[$file] = $info;
 							continue;
 						}
-                				foreach( $info['rtorrent.external.error'] as $external )
-                				{
+						foreach( $info['rtorrent.external.error'] as $external )
+						{
+							$remoteStr="noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error');";
+							$remoteStr.="thePlugins.get('".$file."').disable();";
 							if ($localHostedMode)
 							{
-								if (findEXE($external)==false)
-								{
-									$jResult.="noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error');";
-									$jResult.="thePlugins.get('".$file."').disable();";
-								}
+								$externelEXE = findEXE($external);
+								if($externelEXE===false || !FileUtil::getMinFilePerms($externelEXE))
+									findRemoteEXE($external, $remoteStr, $remoteRequests);
 							}
-							else						
-								findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundError+' ('+'".$external."'+').','error'); thePlugins.get('".$file."').disable();",$remoteRequests);
+							else
+								findRemoteEXE($external, $remoteStr, $remoteRequests);
+
 							if($external=='php')
 								$phpRequired = true;
 						}
@@ -464,17 +466,15 @@ if($handle = opendir('../plugins'))
 						{
 							foreach( $info['rtorrent.external.warning'] as $external )
 							{
+								$remoteStr="noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');";
 								if ($localHostedMode)
 								{
-									if (findEXE($external)==false)
-									{
-										$jResult.="noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');";
-									}
+									$externelEXE = findEXE($external);
+									if($externelEXE===false || !FileUtil::getMinFilePerms($externelEXE))
+										findRemoteEXE($external, $remoteStr, $remoteRequests);
 								}
 								else
-								{
-									findRemoteEXE($external,"noty('".$file.": '+theUILang.rTorrentExternalNotFoundWarning+' ('+'".$external."'+').','error');",$remoteRequests);
-								}
+									findRemoteEXE($external, $remoteStr, $remoteRequests);
 							}
 						}
 						foreach( $info['web.external.warning'] as $external )
