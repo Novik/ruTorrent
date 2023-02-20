@@ -60,6 +60,7 @@
 	);
 
 	$localHostedMode = false;		// Set to true if rTorrent is hosted on the SAME machine as ruTorrent
+	$cachedPluginLoading = false;	// Set to true to enable rapid cached loading of ruTorrent plugins
 
 	$localhosts = array(			// list of local interfaces
 		"127.0.0.1",

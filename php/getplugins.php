@@ -552,7 +552,8 @@ if($handle = opendir('../plugins'))
 	closedir($handle);
 }
 
-if ($do_diagnostic)
-	CachedEcho::send($jResult,"application/javascript",false);
-else
+global $cachedPluginLoading;
+if ($cachedPluginLoading)
 	CachedEcho::send($jResult,"application/javascript",true);
+else
+	CachedEcho::send($jResult,"application/javascript",false);
