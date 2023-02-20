@@ -130,7 +130,7 @@ class YggTorrentEngine extends commonEngine
             }
 
             $res = preg_match_all(
-                '`<td><div class="hidden">.*<a id="torrent_name" href="(?P<desc>.*)">(?P<name>.*)</td>.*'.
+                '`<td>\s*<div class="hidden">.*<a id="torrent_name" href="(?P<desc>.*)">(?P<name>.*)\s*</td>.*'.
                 '<a target="(?P<id>.*)".*'.
                 '<div class="hidden">(?P<timestamp>.*)</div>.*'.
                 '<td>(?P<size>.*)</td>.*'.
