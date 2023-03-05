@@ -298,6 +298,9 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 		$$(idBefore).parentNode.insertBefore(dlg,$$(idBefore));
 		var beforeLbl = $$("tab_"+idBefore);
 		beforeLbl.parentNode.insertBefore(newLbl,beforeLbl);
+		if (theWebUI.activeView === dlg.id) {
+			setTimeout(() => theTabs.onShow(dlg.id));
+		}
 	}
 	return(this);
 }
