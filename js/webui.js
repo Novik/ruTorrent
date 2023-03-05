@@ -242,6 +242,8 @@ var theWebUI =
 	lastTeg:	0,
 	deltaTime:	0,
 	serverDeltaTime:0,
+	taskAddTorrents: null,
+	taskAddTorrentsAnimateHandleId: 0,
 
 //
 // init
@@ -1656,116 +1658,115 @@ var theWebUI =
 			noty(theUILang.linkTorTorrentRestored,'success');
 			theWebUI.systemInfo.rTorrent.started = true;
 		}
-   		var table = this.getTable("trt");
-   		var tul = 0;
-		var tdl = 0;
-		var tArray = [];
-		var firstLoad = this.firstLoad;
-		table.noRowRefresh = this.firstLoad;
-		table.cancelSort = this.firstLoad;
 
-		$.each(data.torrents,
-		/**
-		 * @param {string} hash - torrent hash
-		 * @param {WebUITorrent} torrent
-		 */
-		function(hash,torrent)
+		const table = this.getTable("trt");
+		const dataTorrents = data.torrents;
+		if (this.firstLoad)
 		{
-			tdl += iv(torrent.dl);
-			tul += iv(torrent.ul);
-			var sInfo = theWebUI.getStatusIcon(torrent);
-			torrent.status = sInfo[1];
-			var lbl = theWebUI.getLabels(hash, torrent);
-			if(!$type(theWebUI.torrents[hash]))
-			{
-				theWebUI.labels[hash] = lbl;
-				table.addRowById(torrent, hash, sInfo[0], {label : lbl}, firstLoad);
-				tArray.push(hash);
-				theWebUI.filterByLabel(hash);
-			}
-			else
-			{
-				var oldTorrent = theWebUI.torrents[hash];
-				if(lbl != theWebUI.labels[hash])
-				{
-					theWebUI.labels[hash] = lbl;
-					table.setAttr(hash, { label: lbl });
-					theWebUI.filterByLabel(hash);
-				}
-				if((oldTorrent.state!=torrent.state) ||
-					(oldTorrent.size!=torrent.size) ||
-					(oldTorrent.done!=torrent.done))
-					table.setIcon(hash, sInfo[0]);
-//				if((oldTorrent.seeds!=torrent.seeds) || (oldTorrent.peers!=torrent.peers))
-				{
-				        if((theWebUI.dID == hash) &&
-				                (theWebUI.activeView=='TrackerList'))
-						theWebUI.getTrackers(hash);
-				}
-				if(oldTorrent.downloaded!=torrent.downloaded)
-				{
-				        if((theWebUI.dID == hash) &&
-				                (theWebUI.activeView=='FileList'))
-						theWebUI.updateFiles(hash);
-					else
-						delete theWebUI.files[hash];
-				}
-				for( var prop in torrent)
-				        table.setValueById(hash, prop, torrent[prop]);
-			}
-		});
-		var wasRemoved = false;
-		for (var hash in this.torrents) {
-			// cleanup removed torrents
-			if (!(hash in data.torrents)) {
-				delete theWebUI.files[hash];
-				delete theWebUI.dirs[hash];
-				delete theWebUI.peers[hash];
-				delete theWebUI.labels[hash];
-				table.removeRow(hash);
-				wasRemoved = true;
-			}
-		}
-		this.torrents = data.torrents;
-		this.setSpeedValues(tul,tdl);
-		this.getAllTrackers(tArray);
-
-		// sum up label sizes
-		var labelCount = {};
-		var labelSize = {};
-		this.allLabelSize = 0;
-		for (var lbl of this.staticLabels) {
-			labelCount[lbl] = 0;
-			labelSize[lbl] = 0;
+			table.noRowRefresh = true;
+			table.cancelSort = true;
 		}
 
-		for (var hash in this.torrents) {
-			var t = this.torrents[hash];
-			for (var lbl of (this.stateLabels[hash]||[]).concat(t.label.length ? [t.label] : [])) {
-				labelCount[lbl] = (labelCount[lbl]||0) + 1;
-				labelSize[lbl] = (labelSize[lbl]||0) + t.size;
-			}
-			this.allLabelSize += t.size;
-		}
-
-		this.loadLabels(labelCount, labelSize);
-		// update state and custom labels
-		this.updateLabels(wasRemoved);
-		// update search labels (tegs)
-		this.updateTegs(Object.values(this.tegs));
-		this.updateTegLabels(Object.keys(this.tegs));
-		this.loadTorrents();
-
-		this.updateViewRows(table)
-
-		this.getTotal();
-		if (this.settings['webui.show_open_status'])
-			this.getOpenStatus();
-
-		// Cleanup memory leaks
-		tArray = null;
-		table = null;
 		data = null;
+
+		this.taskAddTorrents
+			.reset()
+			.map(Object.entries(dataTorrents), ([hash, torrent]) => {
+				const sInfo = this.getStatusIcon(torrent);
+				torrent.status = sInfo[1];
+				const lbl = this.getLabels(hash, torrent);
+				this.labels[hash] = lbl;
+				if (table.setRowById(torrent, hash, sInfo[0], {label: lbl}))
+					this.filterByLabel(hash);
+			})
+			.enqueueFunc(() => {
+				// accumulate torrent data (new, up/down speed and sizes)
+				const labelCount = Object.fromEntries(
+					this.staticLabels.map(lbl => [lbl, 0])
+				);
+				const labelSize = {...labelCount};
+				this.allLabelSize = 0;
+				let tdl = 0;
+				let tul = 0;
+				const newHashes = [];
+				for (const [hash, torrent] of Object.entries(dataTorrents)) {
+					tdl += iv(torrent.dl);
+					tul += iv(torrent.ul);
+					if (!(hash in this.torrents))
+						newHashes.push(hash);
+					for (const lbl of [...this.stateLabels[hash]||[], torrent.label].filter(l => l.length)) {
+						labelCount[lbl] = (labelCount[lbl]||0) + 1;
+						labelSize[lbl] = (labelSize[lbl]||0) + torrent.size;
+					}
+					this.allLabelSize += torrent.size;
+				}
+
+				// update details page
+				const detailsTorrent = dataTorrents[theWebUI.dID];
+				const oldDetailsTorrent = this.torrents[theWebUI.dID];
+				if(theWebUI.activeView === 'FileList' &&
+				   detailsTorrent &&
+				   detailsTorrent.downloaded !== oldDetailsTorrent?.downloaded)
+					theWebUI.updateFiles(theWebUI.dID);
+
+				if(theWebUI.activeView === 'TrackerList')
+					theWebUI.updateTrackers(theWebUI.dID);
+
+				if(theWebUI.activeView === 'PeerList')
+					theWebUI.updatePeers(theWebUI.dID);
+
+				// cleanup removed torrents
+				for (const hash in this.torrents) {
+					if (!(hash in dataTorrents)) {
+						delete theWebUI.files[hash];
+						delete theWebUI.dirs[hash];
+						delete theWebUI.peers[hash];
+						delete theWebUI.labels[hash];
+						table.removeRow(hash);
+					}
+				}
+				this.torrents = dataTorrents;
+				this.setSpeedValues(tul, tdl);
+				this.getAllTrackers(newHashes);
+
+				this.getTotal();
+				if (this.settings['webui.show_open_status'])
+					this.getOpenStatus();
+
+				// update search labels (tegs)
+				this.updateTegs(Object.values(this.tegs));
+
+				// set timeout for next update
+				this.setInterval();
+
+				if (this.taskAddTorrentsAnimateHandleId)
+					cancelAnimationFrame(this.taskAddTorrentsAnimateHandleId);
+				const nextAFrame = () => new Promise((resolve) =>
+					this.taskAddTorrentsAnimateHandleId = requestAnimationFrame(() => {
+						this.taskAddTorrentsAnimateHandleId = 0;
+						resolve();
+					}));
+				const domUpdates = async () => {
+					// update state, custom, and teg labels
+					await nextAFrame();
+					this.loadLabels(labelCount, labelSize);
+					this.updateLabels();
+					if (!this.firstLoad)
+						await nextAFrame();
+					this.updateTegLabels(Object.keys(this.tegs));
+					if (!this.firstLoad)
+						await nextAFrame();
+					this.updateViewRows(table);
+					this.loadTorrents();
+				};
+				domUpdates();
+			})
+			.run(this.firstLoad)
+			.catch(reason => {
+				if (reason !== 'reset') {
+					console.error(reason);
+				}
+			});
 	},
 
 	updateAllFilterLabel: function(labelType, showSize) {
@@ -2911,5 +2912,8 @@ $(document).ready(function()
 	makeContent();
 	theContextMenu.init();
 	theTabs.init();
-	theWebUI.init();
+	import('./backgroundtask.js').then(bgModule => {
+		theWebUI.taskAddTorrents = new bgModule.BackgroundTask();
+		theWebUI.init();
+	});
 });

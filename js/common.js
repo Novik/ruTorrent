@@ -1629,6 +1629,14 @@ function strip_tags(input, allowed)
     	});
 }
 
+if (!window.requestIdleCallback) {
+	// monkey patch requestIdleCallback (for Safari)
+	window.requestIdleCallback = function(func, _) {
+		return setTimeout(() => func({didTimeout: true, timeRemaining: () => 0}), 1);
+	};
+	window.cancelIdleCallback = clearTimeout;
+}
+
 // Caveat: doesn't work with Internet Explorer.
 (function setBrowserTimezoneCookie()
 {
