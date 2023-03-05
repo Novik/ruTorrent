@@ -710,7 +710,7 @@ var theFormatter =
 	      				arr[i] = theConverter.time(arr[i]);
       					break;
       				case 'last' :
-	      				arr[i] = iv(arr[i]) ? theConverter.time( $.now()/1000 - iv(arr[i]) - theWebUI.deltaTime/1000,true) : '';
+					arr[i] = arr[i] > 0 ? theConverter.time(arr[i], true) : '';
       					break;
 	      		}
 		}

@@ -914,54 +914,41 @@ var theWebUI =
 // peers
 //
 
-	updatePeers: function()
+	updatePeers: function(hash)
 	{
-		if(this.activeView=='PeerList')
-		{
-			if(this.dID != "")
-				this.request("?action=getpeers&hash="+this.dID,[this.addPeers, this]);
-			else
-				this.clearPeers();
-		}
+		if (this.dID && this.dID == hash)
+			this.getPeers(hash, true);
 	},
 
-	clearPeers: function()
+	getPeers: function(hash, isUpdate)
 	{
-		this.getTable("prs").clearRows();
-		for(var k in this.peers)
-      			delete this.peers[k];
-		this.peers = {};
+		if (!isUpdate)
+		{
+			const table = this.getTable("prs");
+			table.clearRows();
+			table.updateRows(this.peers[hash] || {});
+		}
+		this.request("?action=getpeers&hash=" + hash, [this.addPeers, this, hash]);
 	},
 
-	addPeers: function(data)
+	addPeers: function(data, hash)
 	{
-   		var table = this.getTable("prs");
-   		$.extend(this.peers,data);
-   		$.each(data,function(id,peer)
+		const table = this.getTable("prs");
+		for (const peer of Object.values(data))
 		{
-			peer.name = peer.name+':'+peer.port
-			if(!$type(table.rowdata[id]))
-				table.addRowById(peer, id, peer.icon, peer.attr);
-        		else
+			peer.name = peer.name+':'+peer.port;
+			peer.attr =
 			{
-				for(var i in peer)
-        	       			table.setValueById(id, i, peer[i]);
-				table.setIcon(id,peer.icon);
-				table.setAttr(id,peer.attr);
-			}
-			peer._updated = true;
-		});
-		for(var k in this.peers)
-		{
-			if(!this.peers[k]._updated)
-			{
-        			delete this.peers[k];
-	        	 	table.removeRow(k);
-	        	}
-			else
-				this.peers[k]._updated = false;
+				...peer.attr,
+				ip: peer.ip,
+				snubbed: peer.snubbed ? 'on' : 'off'
+			};
 		}
-		table.Sort();
+		this.peers[hash] = data;
+		if (this.dID == hash)
+			table.updateRows(this.peers[hash]);
+		else
+			table.clearRows();
 	},
 
 	prsSelect: function(e, id)
@@ -972,23 +959,17 @@ var theWebUI =
 
 	getPeerIds: function(cmd)
 	{
-   		var sr = this.getTable("prs").rowSel;
-   		var str = "";
-   		for(var k in sr)
-   		{
-			var enabled = ((cmd=='unsnub') && this.peers[k].snubbed) ||
-				((cmd=='snub') && !this.peers[k].snubbed) || ((cmd=='ban') || (cmd=='kick'));
-      			if((sr[k] == true) && enabled)
-				str += "&f=" + k;
-      		}
-   		return(str);
+		const table = this.getTable("prs");
+		const selected = table.getSelected();
+		const peerIds = ['kick', 'ban'].includes(cmd) ? selected : selected
+			.filter((row) => cmd === (table.getAttr(row, 'snubbed') == 'on' ? 'unsnub' : 'snub'));
+		return peerIds.map((sId) => `&f=${sId}`).join('');
    	},
 
 	getPeerIpQueryUrl: function(peerId)
 	{
-		return (peerId in this.peers)
-			? (theURLs.IPQUERYURL + this.peers[peerId].ip.replace(/^\[?(.+?)\]?$/, '$1'))
-			: '#';
+		const ip = this.getTable("prs").getAttr(peerId, 'ip');
+		return ip ? (theURLs.IPQUERYURL + ip.replace(/^\[?(.+?)\]?$/, '$1')) : '#';
 	},
 
 	addNewPeer: function()
@@ -1009,7 +990,8 @@ var theWebUI =
    		if(e.which == 3)
 		{
 	   		theContextMenu.clear();
-			var selCount = theWebUI.getTable("prs").selCount;
+			const table = theWebUI.getTable("prs");
+			const selCount = table.selCount;
 	   		if(this.dID && $type(this.torrents[this.dID]))
    			{
 				theContextMenu.add([theUILang.peerAdd,
@@ -1027,9 +1009,9 @@ var theWebUI =
 						theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
 						theContextMenu.add([theUILang.peerUnsnub, this.isTorrentCommandEnabled('unsnub',this.dID) ? "theWebUI.setPeerState('unsnub')" : null]);
 					}
-					else if (this.peers[id])
+					else if (id in table.rowdata)
 	                {
-      					if(!this.peers[id].snubbed)
+					if(table.getAttr(id, 'snubbed') != 'on')
       						theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? "theWebUI.setPeerState('snub')" : null]);
 						else
 							theContextMenu.add([theUILang.peerUnsnub, this.isTorrentCommandEnabled('unsnub',this.dID) ? "theWebUI.setPeerState('unsnub')" : null]);
@@ -1080,10 +1062,21 @@ var theWebUI =
 		}
    	},
 
-   	getTrackers: function(hash)
+	updateTrackers: function(hash)
 	{
-      		this.request("?action=gettrackers&hash=" + hash, [this.addTrackers, this]);
-   	},
+		if (this.dID && this.dID == hash)
+			this.getTrackers(hash, true);
+	},
+
+	getTrackers: function(hash, isUpdate)
+	{
+		if (!isUpdate) {
+			const table = this.getTable('trk');
+			table.clearRows();
+			table.updateRows(this.trackers[hash] || {});
+		}
+		this.request("?action=gettrackers&hash=" + hash, [this.addTrackers, this]);
+	},
 
 	getAllTrackers: function(arr)
 	{
@@ -1096,55 +1089,18 @@ var theWebUI =
 
 	addTrackers: function(data)
 	{
-   		var table = this.getTable("trk");
-		$.each(data,function(hash,trk)
-		{
-			for(var i = 0; i < trk.length; i++)
-			{
-				trk[i].private = theWebUI.trkIsPrivate(trk[i].name);
-				if(theWebUI.dID == hash)
-				{
-					var sId = hash + "_t_" + i;
-        	 			if(!$type(table.rowdata[sId]) )
-            					table.addRowById(trk[i], sId, trk[i].icon, trk[i].attr);
-        	 			else
-         				{
-            					for(var j in trk[i])
-        	       					table.setValueById(sId, j, trk[i][j]);
-						table.setIcon(sId,trk[i].icon);
-						table.setAttr(sId,trk[i].attr);
-	            			}
-					trk[i]._updated = true;
-        	 		}
+		const table = this.getTable("trk");
+		for (const [hash, trackers] of Object.entries(data)) {
+			for (const [i, trk] of Object.entries(trackers)) {
+				trk.private = this.trkIsPrivate(trk.name);
+				trk.last = iv(trk.last) ? $.now()/1000 - iv(trk.last) - theWebUI.deltaTime/1000 : -1;
+				trk.attr = { ...trk.attr, id: hash + "_t_" + i };
 			}
-	   	});
-   		$.extend(this.trackers,data);
-	   	var rowIDs = table.rowIDs.slice(0);
-		for(var i in rowIDs)
-		{
-			var arr = rowIDs[i].split('_t_');
-			var hash = arr[0];
-			if(this.dID != hash)
-         			table.removeRow(rowIDs[i]);
-         		else
-         		{
-         			var no = arr[1];
-				if(!$type(this.trackers[hash][no]))
-	         			table.removeRow(rowIDs[i]);
-				else
-         			if(!this.trackers[hash][no]._updated)
-         			{
-	         			table.removeRow(rowIDs[i]);
-	         			delete this.trackers[hash][no];
-		        	 	this.trackers[hash].splice(no,1);
-				}
-         			else
-	         			this.trackers[hash][no]._updated = false;
-			}
-      		}
-		table.Sort();
-      		this.updateDetails();
-   	},
+		}
+		Object.assign(this.trackers, data);
+		table.updateRows(this.trackers[this.dID] || {});
+		this.updateDetails();
+	},
 
    	createTrackerMenu : function(e, ind)
 	{
@@ -1191,7 +1147,6 @@ var theWebUI =
 		var table = this.getTable("trk");
    		var sr = table.rowSel;
    		var str = "";
-   		var needSort = false;
    		for(var k in sr)
    		{
       			if(sr[k])
@@ -1202,13 +1157,10 @@ var theWebUI =
          			{
             				str += "&f=" + i;
             				this.trackers[id][i].enabled = swtch;
-            				needSort = true;
             				table.setValueById(id + "_t_" + i, "enabled", swtch);
             			}
          		}
       		}
-      		if(needSort)
-			table.Sort();
    		return(str);
    	},
 
@@ -1218,11 +1170,8 @@ var theWebUI =
 
 	updateFiles: function(hash)
 	{
-	        if(this.dID == hash)
-	        {
+	        if(this.dID && this.dID == hash)
       			this.getFiles(hash, true);
-      			this.updateDetails();
-		}
    	},
 
 	redrawFiles: function(hash)
@@ -1237,15 +1186,7 @@ var theWebUI =
        				file.percent = (file.size > 0) ? theConverter.round((file.done/file.size)*100,1): "100.0";
          			if(this.settings["webui.fls.view"])
          			{
-					if(!$type(table.rowdata[sId]))
-        	          			table.addRowById(file, sId, file.icon, file.attr);
-            				else
-            				{
-	            				for(var j in file)
-               						table.setValueById(sId, j, file[j]);
-						table.setIcon(sId,file.icon);
-						table.setAttr(sId,file.attr);
-					}
+					table.setRowById(file, sId, file.icon, file.attr);
 				}
 				else
 				{
@@ -1261,41 +1202,23 @@ var theWebUI =
 				{
 					var entry = dir[i];
 					if(entry.link!=null)
-					{
-						if(!$type(table.rowdata[i]))
-						        table.addRowById(entry.data, i, entry.icon, {link : entry.link});
-						else
-	            					for(var j in entry.data)
-               							table.setValueById(i, j, entry.data[j]);
-					}
+						table.setRowById(entry.data, i, entry.icon, {link: entry.link});
 				}
 				for(var i in dir)
 				{
 					var entry = dir[i];
 					if(entry.link==null)
-					{
-						if(!$type(table.rowdata[i]))
-						        table.addRowById(entry.data, i, entry.icon, {link : null});
-						else
-	            					for(var j in entry.data)
-               							table.setValueById(i, j, entry.data[j]);
-					}
+						table.setRowById(entry.data, i, entry.icon, {link : null});
 				}
 			}
-			table.Sort();
-       	 	}
+		}
 	},
 
 	getFiles: function(hash, isUpdate)
 	{
 		var table = this.getTable("fls");
-   		if(!isUpdate)
-   		{
-      			table.dBody.scrollTop = 0;
-      			$(table.tpad).height(0);
-      			$(table.bpad).height(0);
-       			table.clearRows();
-      		}
+		if(!isUpdate)
+			table.clearRows();
    		if($type(this.files[hash]) && !isUpdate)
       			this.redrawFiles(hash);
    		else
@@ -1476,12 +1399,7 @@ var theWebUI =
 
 	trtDeselect: function()
 	{
-		var table = this.getTable("trt");
-		var sr = table.rowSel;
-		for(var k in sr)
-			sr[k] = false;
-		table.selCount = 0;
-		table.refreshRows();
+		this.getTable("trt").clearSelection();
 	},
 
    	createMenu: function(e, id)
@@ -1743,6 +1661,8 @@ var theWebUI =
 		var tdl = 0;
 		var tArray = [];
 		var firstLoad = this.firstLoad;
+		table.noRowRefresh = this.firstLoad;
+		table.cancelSort = this.firstLoad;
 
 		$.each(data.torrents,
 		/**
@@ -1857,11 +1777,9 @@ var theWebUI =
 
 	updateViewRows: function(table)
 	{
-		var viewSize = 0;
-		for (var sId in table.rowdata) {
-			var s = iv(this.torrents[sId].size);
-			viewSize += s * (table.rowdata[sId].enabled);
-		}
+		const viewSize = table
+			.getAllEnabledValuesById('size')
+			.reduce((total, size) => total + iv(size), 0);
 		$('#viewrows').text(table.viewRows + '/' + table.rows);
 		$('#viewrows_size').text(theConverter.bytes(viewSize, 'table'));
 	},
@@ -1875,18 +1793,14 @@ var theWebUI =
 
 	loadTorrents: function()
 	{
-		var table = this.getTable("trt");
+		const table = this.getTable("trt");
 		if(this.firstLoad)
 		{
+			table.cancelSort = false;
+			table.noRowRefresh = false;
 			this.firstLoad = false;
 			this.show();
 		}
-		else
-		{
-			table.refreshRows();
-			table.Sort();
-		}
-		this.setInterval();
 		this.updateDetails();
    	},
 
@@ -2477,7 +2391,6 @@ var theWebUI =
 			this.dID = "";
 			this.clearDetails();
 		}
-		table.refreshRows();
 
 		this.updateViewRows(table);
 	},
@@ -2585,6 +2498,7 @@ var theWebUI =
    		this.dID = hash;
    		this.getFiles(hash);
  		this.getTrackers(hash);
+		this.getPeers(hash);
    		if(!noSwitch && !theWebUI.settings["webui.show_dets"])
    		{
 			$("#tdetails").show();
@@ -2600,7 +2514,7 @@ var theWebUI =
 		$(".det").text("");
 		this.getTable("fls").clearRows();
 		this.getTable("trk").clearRows();
-		this.clearPeers();
+		this.getTable("prs").clearRows();
 	},
 
 	updateDetails: function()
@@ -2643,7 +2557,6 @@ var theWebUI =
 			}
 			$("#cmt").html( strip_tags(url,'<a><b><strong>') );
 			$("#dsk").text((d.free_diskspace=='0') ? '' : theConverter.bytes(d.free_diskspace,'details'));
-	   		this.updatePeers();
 		}
 	},
 
