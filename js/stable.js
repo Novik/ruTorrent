@@ -86,8 +86,19 @@ var dxSTable = function()
 	this.mxi = 0;
 	this.maxViewRows = 100;
 	this.pendingSync = {};
-	this.noRowRefresh = false;
-	this.syncDOMHandlerId = 0;
+	this.syncDOMHandlers = {
+		throttle: {
+			timeoutId: 0,
+			delayMs: 500
+		},
+		debounce: {
+			timeoutId: 0,
+			startTime: -1,
+			delayMs: 50
+		},
+		lazy: false,
+		reqAFrameId: 0
+	};
 }
 
 dxSTable.prototype.setPaletteByURL = function(url) 
@@ -1729,14 +1740,79 @@ dxSTable.prototype.syncDOM = function()
 
 dxSTable.prototype.syncDOMAsync = function()
 {
-
-	if (this.syncDOMHandlerId === 0)
+	const syncer = this.syncDOMHandlers;
+	const th = syncer.throttle;
+	const dh = syncer.debounce;
+	const stop = (handler) =>
 	{
-		this.syncDOMHandlerId = window.requestAnimationFrame(() => {
-			this.syncDOMHandlerId = 0;
-			this.syncDOM();
-		});
+		if (handler.timeoutId !== 0)
+		{
+			clearTimeout(handler.timeoutId);
+			handler.timeoutId = 0;
+		}
+	};
+	const reqAFrame = () =>
+	{
+		stop(th);
+		stop(dh);
+		dh.startTime = -1;
+		if (syncer.reqAFrameId === 0)
+		{
+			syncer.reqAFrameId = window.requestAnimationFrame(() => {
+				syncer.reqAFrameId = 0;
+				this.syncDOM();
+			});
+		}
+	};
+	const start = (handler, func, delayMs) =>
+	{
+		handler.timeoutId = setTimeout(() => {
+			handler.timeoutId = 0;
+			func();
+		}, delayMs);
+	};
+	if (this.pendingSync.scroll)
+	{
+		// immediately react to user scroll
+		reqAFrame();
 	}
+	else
+	{
+		// debounce other DOM updates
+		// if not lazy we immediately react to the first event
+		if (!syncer.lazy && dh.timeoutId === 0 && th.timeoutId === 0)
+			reqAFrame();
+		if (dh.timeoutId === 0)
+		{
+			// note that new Date().getTime() is much faster than clearTimeout()/setTimeout()
+			const updateDebounce = () =>
+			{
+				if (dh.startTime !== -1)
+				{
+					const remainingMs = dh.delayMs - (dh.startTime - new Date().getTime());
+					if (remainingMs > 0)
+						start(dh, updateDebounce, remainingMs);
+					else
+						reqAFrame()
+				}
+			};
+			dh.startTime = new Date().getTime();
+			updateDebounce();
+		}
+		if (th.timeoutId === 0)
+		{
+			// run throttled DOM update in case debounce takes too long to settle
+			start(th, reqAFrame, th.delayMs);
+		}
+	}
+	// update debounce startTime
+	if (dh.startTime !== -1)
+		dh.startTime = new Date().getTime();
+}
+
+dxSTable.prototype.setLazy = function(lazy)
+{
+	this.syncDOMHandlers.throttle.lazy = Boolean(lazy);
 }
 
 dxSTable.prototype.getIcon = function(row)

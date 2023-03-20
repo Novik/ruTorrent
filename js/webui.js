@@ -1660,13 +1660,10 @@ var theWebUI =
 		}
 
 		const table = this.getTable("trt");
-		const dataTorrents = data.torrents;
-		if (this.firstLoad)
-		{
-			table.noRowRefresh = true;
-			table.cancelSort = true;
-		}
+		// be lazy with DOM updates while adding torrents in the background
+		table.setLazy(true);
 
+		const dataTorrents = data.torrents;
 		data = null;
 
 		this.taskAddTorrents
@@ -1739,6 +1736,7 @@ var theWebUI =
 				// set timeout for next update
 				this.setInterval();
 
+				table.setLazy(false);
 				if (this.taskAddTorrentsAnimateHandleId)
 					cancelAnimationFrame(this.taskAddTorrentsAnimateHandleId);
 				const nextAFrame = () => new Promise((resolve) =>
@@ -1794,11 +1792,8 @@ var theWebUI =
 
 	loadTorrents: function()
 	{
-		const table = this.getTable("trt");
 		if(this.firstLoad)
 		{
-			table.cancelSort = false;
-			table.noRowRefresh = false;
 			this.firstLoad = false;
 			this.show();
 		}
