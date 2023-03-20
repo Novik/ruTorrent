@@ -84,7 +84,6 @@ var dxSTable = function()
 	this.prgEndColor = new RGBackground(".meter-value-end-color");
 	this.mni = 0;
 	this.mxi = 0;
-	this.maxViewRows = 100;
 	this.pendingSync = {};
 	this.syncDOMHandlers = {
 		throttle: {
@@ -992,97 +991,61 @@ dxSTable.prototype.scrollPos = function()
 
 dxSTable.prototype.getMaxRows = function()
 {
-	return((this.maxRows || this.viewRows<this.maxViewRows) ? 1000000 : Math.ceil(Math.min(this.dBody.clientHeight,this.dCont.clientHeight) / TR_HEIGHT));	
+	return this.maxRows
+		? this.viewRows
+		: Math.ceil(Math.min(this.dBody.clientHeight,this.dCont.clientHeight) / TR_HEIGHT);
 }
 
 dxSTable.prototype.refreshRows = function( height, fromScroll ) 
 {
-	if(this.isScrolling || !this.created) 
-	{
-		return;
-   	}
-
-   	var maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
-	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
-	if(mni + maxRows > this.viewRows) 
-	{
-		mni = this.viewRows - maxRows;
-	}
-	if(mni < 0) 
-	{
-		mni = 0;
-   	}
-	var mxi = mni + maxRows;
-	if((mni==this.mni && mxi==this.mxi) && fromScroll)
+	if (this.isScrolling || !this.created)
 		return;
 
-	this.cancelSort = true;
+	const maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
+	const topRow = Math.max(0, Math.min(this.viewRows - maxRows,
+		Math.floor(this.dBody.scrollTop / TR_HEIGHT)
+	));
+	const extra = this.noDelayingDraw ? 10 : 3;
+	const mni = Math.max(0, topRow - extra*2);
+	const mxi = Math.min(this.viewRows, topRow + maxRows + extra);
+	if (fromScroll && (mni==this.mni && mxi==this.mxi))
+		return;
+
 	this.mni = mni;
 	this.mxi = mxi;
-	var h = (this.viewRows - maxRows) * TR_HEIGHT;
-	var ht = (h<0) ? 0 : mni*TR_HEIGHT;
-	var hb = (h<0) ? 0 : h - ht;
-	this.tpad.style.height = ht + "px";
-	this.bpad.style.height = hb + "px";
-	var tb = this.tBody.tb, vr =- 1, i = 0, c = 0, obj = null;
-
-	for(i = 0; i < this.rows; i++) 
+	const tb = this.tBody.tb;
+	let vr = 0;
+	let c = 0;
+	for (let i = 0; i < this.rows; i++)
 	{
-		var id = this.rowIDs[i];
-		var r = this.rowdata[id];
-		if(!$type(r)) 
+		const id = this.rowIDs[i];
+		if (!(id in this.rowdata))
 			continue;
-		obj = $$(id);
-		if(!r.enabled) 
+		const r = this.rowdata[id];
+		vr += r.enabled;
+		if (!r.enabled || vr < mni || vr > mxi)
 		{
-			if( (obj != null) && (obj.parentNode == tb) )
-			{
+			const obj = $$(id);
+			// row is outside of view
+			if (obj !== null && obj.parentNode === tb)
 				tb.removeChild(obj);
-			}
 			continue;
 		}
-		vr++;
-		if((vr >= mni) && (vr <= mxi)) 
-		{
-			if(!$type(tb.rows[c])) 
-			{
-				if( (obj != null) && (obj.parentNode == tb) )
-				{
-					tb.removeChild(obj);
-            			}
-				else 
-				{
-					obj = this.createRow(r.data, id, r.icon, r.attr);
-				}
-				tb.appendChild(obj);
-         		}
-			else 
-			{
-				if(tb.rows[c].id != id) 
-				{
-					if( (obj != null) && (obj.parentNode == tb) )
-					{
-						tb.removeChild(obj);
-               				}
-					else 
-					{
-						obj = this.createRow(r.data, id, r.icon, r.attr);
-               				}
-					tb.insertBefore(obj, tb.rows[c]);
-            			}
-         		}
-			c++;
-      		}
-		else 
-		{
-			if( (obj != null) && (obj.parentNode == tb) )
-			{
-				tb.removeChild(obj);
-			}
-		}
-   	}
+		// row is inside of view
+		const currentRow = tb.rows[c++];
+		if (currentRow?.id === id)
+			// keep row
+			continue;
+		// move or create row
+		const obj = $$(id) ?? this.createRow(r.data, id, r.icon, r.attr);
+		if (currentRow)
+			tb.insertBefore(obj, currentRow);
+		else
+			tb.appendChild(obj);
+	}
+	this.tpad.style.height = (mni * TR_HEIGHT) + "px";
+	this.bpad.style.height = ((this.viewRows - mxi) * TR_HEIGHT) + "px";
 	this.refreshSelection();
-	this.cancelSort = false;
 	this.calcSize().resizeHack();
 }
 
