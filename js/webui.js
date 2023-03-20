@@ -214,7 +214,8 @@ var theWebUI =
 	trackers:	{},
 	props:		{},
 	peers:		{},
-	labels:
+	labels: {},
+	labelStats:
 	{
 		"-_-_-all-_-_-":	{ cnt: 0, size: 0 },
 		"-_-_-dls-_-_-":	{ cnt: 0, size: 0 },
@@ -1893,14 +1894,19 @@ var theWebUI =
 //
 
 	createTeg: function(str) {
-			const tegId = "teg_"+this.lastTeg;
-			this.lastTeg++;
-			const el = this.createSelectableLabelElement(tegId, str, theWebUI.labelContextMenu).addClass('teg');
-			$("#lblf").append( el );
-			this.tegs[tegId] = { val: str };
-			this.updateTegs([this.tegs[tegId]]);
-			this.updateTegLabels([tegId]);
-			return el;
+		const tegId = "teg_"+this.lastTeg;
+		this.lastTeg++;
+		const el = this.createSelectableLabelElement(tegId, str, theWebUI.labelContextMenu).addClass('teg');
+		$("#lblf").append( el );
+		this.tegs[tegId] = {
+			val: str,
+			pattern: new RegExp(str
+				.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&')
+				.replace('*', '.+'), 'i')
+		};
+		this.updateTegs([this.tegs[tegId]]);
+		this.updateTegLabels([tegId]);
+		return el;
 	},
 
 	setTeg: function(str)
@@ -1923,8 +1929,7 @@ var theWebUI =
 
 	matchTeg: function(teg, name)
 	{
-		var pattern = teg.val.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
-		return new RegExp(pattern.replace('*', '.+'), 'i').test(name);
+		return teg.pattern.test(name);
 	},
 
 	updateTegs: function(tegObjs)
@@ -2061,7 +2066,7 @@ var theWebUI =
 		for(var lbl of lbls)
 		{
 			var id = "-_-_-" + lbl + "-_-_-";
-			this.labels[id] = { cnt: c[lbl], size: s[lbl] };
+			this.labelStats[id] = { cnt: c[lbl], size: s[lbl] };
 			if (!this.staticLabels.includes(lbl))
 			{
 				// use custom label
@@ -2073,16 +2078,16 @@ var theWebUI =
 					if (this.settings['webui.show_empty_path_labels'])
 					{
 						// add empty non-leaf labels
-						if (!(cid in this.labels))
-							this.labels[cid] = { cnt: 0, size: 0 };
+						if (!(cid in this.labelStats))
+							this.labelStats[cid] = { cnt: 0, size: 0 };
 					}
-					else if (cid in this.labels && this.labels[cid].cnt === 0 && cid !== id)
+					else if (cid in this.labelStats && this.labelStats[cid].cnt === 0 && cid !== id)
 					{
 						// delete empty non-leaf labels
 						// (keep empty leaf labels since they can not be recovered with show_empty_path_labels = true)
-						delete this.labels[cid];
+						delete this.labelStats[cid];
 					}
-					if (!(clbl in this.cLabels) && cid in this.labels)
+					if (!(clbl in this.cLabels) && cid in this.labelStats)
 					{
 						this.cLabels[clbl] = {
 							path: path.slice(),
@@ -2241,31 +2246,35 @@ var theWebUI =
 	},
 
 	updateLabel: function(label, count, size, showSize, text, prefix, titleText) {
-		var li = $(label);
-		var pfx = li.children('.label-prefix');
-		if (!prefix || !prefix.length) {
-			pfx.hide();
-		} else {
-			pfx.empty();
-			for (var c of prefix) {
-				pfx.append($('<div>').text(c));
+		const li = $(label);
+		if (prefix !== li.attr('prefix')) {
+			li.attr('prefix', prefix);
+			const pfx = li.children('.label-prefix');
+			if (!prefix) {
+				pfx.hide();
+			} else {
+				pfx.empty();
+				for (const c of prefix) {
+					pfx.append($('<div>').text(c));
+				}
+				pfx.show();
 			}
-			pfx.show();
 		}
-		var txt = li.children('.label-text');
+		const txt = li.children('.label-text');
 		if (text)
 			txt.text(text);
-		var lblSize = theConverter.bytes(size, 'catlist');
-		li.children('.label-count').text(count);
-		li.attr('title',
-			(titleText||text||txt.contents().not(txt.children('script')).text()) +
-			' ('+ count + ( showSize ? ' ; '+ lblSize : '') +')');
-		var sizeSpan = li.children('.label-size');
-		sizeSpan.text(lblSize);
-		if (size && showSize)
-			sizeSpan.show();
-		else
-			sizeSpan.hide();
+		const lblSize = theConverter.bytes(size, 'catlist');
+		const title = (titleText||text||txt.contents().not(txt.children('script')).text()) +
+			' ('+ count + ( showSize ? ' ; '+ lblSize : '') +')';
+		if (title !== li.attr('title')) {
+			li.attr('title', title);
+			li.children('.label-count').text(count);
+			const sizeSpan = li.children('.label-size');
+			if (size && showSize) {
+				sizeSpan.text(lblSize);
+				sizeSpan.show();
+			} else sizeSpan.hide();
+		}
 	},
 
 	idToLbl: function(id) {
@@ -2287,21 +2296,21 @@ var theWebUI =
 		this.updateAllFilterLabel('plabel_cont', this.settings["webui.show_labelsize"]);
 		this.updateAllFilterLabel('flabel_cont', this.settings["webui.show_searchlabelsize"]);
 
-		for(var k in this.labels)
-			if(k.substr(0, 5) == "-_-_-") {
-				const lbl = this.idToLbl(k);
-				const customLabel = lbl in this.cLabels && lbl;
-				const showTree = customLabel && this.settings['webui.show_label_path_tree'];
-				this.updateLabel(
-					$$(k),
-					this.labels[k].cnt,
-					this.labels[k].size,
-					this.staticLabels.includes(lbl) && lbl != 'nlb' ? this.settings["webui.show_statelabelsize"] : this.settings["webui.show_labelsize"],
-					(showTree && this.cLabelText(lbl))||customLabel,
-					showTree && theFormatter.treePrefix(this.cLabels[lbl]),
-					customLabel,
-				);
-			}
+		for(const k in this.labelStats)
+		{
+			const lbl = this.idToLbl(k);
+			const customLabel = lbl in this.cLabels && lbl;
+			const showTree = customLabel && this.settings['webui.show_label_path_tree'];
+			this.updateLabel(
+				$$(k),
+				this.labelStats[k].cnt,
+				this.labelStats[k].size,
+				this.staticLabels.includes(lbl) && lbl != 'nlb' ? this.settings["webui.show_statelabelsize"] : this.settings["webui.show_labelsize"],
+				(showTree && this.cLabelText(lbl))||customLabel,
+				showTree && theFormatter.treePrefix(this.cLabels[lbl]),
+				customLabel,
+			);
+		}
 	},
 
 	resetLabels: function() {

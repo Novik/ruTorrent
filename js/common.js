@@ -769,7 +769,7 @@ var theFormatter =
 				(l === level ? '├' : '│') :
 				(l === level ? '└' : ' '));
 		}
-		return prefix;
+		return prefix.join('');
 	}
 };
 
