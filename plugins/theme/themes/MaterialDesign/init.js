@@ -5,6 +5,8 @@
  *  Author: Phlo
  */ 
 
+TR_HEIGHT = 22
+
 plugin.materialdesignAllDone = plugin.allDone;
 plugin.allDone = function()
 {
