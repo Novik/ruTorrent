@@ -1005,46 +1005,28 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 	const topRow = Math.max(0, Math.min(this.viewRows - maxRows,
 		Math.floor(this.dBody.scrollTop / TR_HEIGHT)
 	));
-	const extra = this.noDelayingDraw ? 10 : 3;
-	const mni = Math.max(0, topRow - extra*2);
-	const mxi = Math.min(this.viewRows, topRow + maxRows + extra);
+	const extra = this.noDelayingDraw ? 16 : 4;
+	const extraOffset = topRow % extra;
+	const mni = Math.max(0, topRow - extra - extraOffset);
+	const mxi = Math.min(this.viewRows, topRow + maxRows + 2*extra - extraOffset);
 	if (fromScroll && (mni==this.mni && mxi==this.mxi))
 		return;
 
 	this.mni = mni;
 	this.mxi = mxi;
-	const tb = this.tBody.tb;
-	let vr = 0;
-	let c = 0;
-	for (let i = 0; i < this.rows; i++)
-	{
-		const id = this.rowIDs[i];
-		if (!(id in this.rowdata))
-			continue;
+	const createRow = (id) => {
 		const r = this.rowdata[id];
-		vr += r.enabled;
-		if (!r.enabled || vr < mni || vr > mxi)
-		{
-			const obj = $$(id);
-			// row is outside of view
-			if (obj !== null && obj.parentNode === tb)
-				tb.removeChild(obj);
-			continue;
-		}
-		// row is inside of view
-		const currentRow = tb.rows[c++];
-		if (currentRow?.id === id)
-			// keep row
-			continue;
-		// move or create row
-		const obj = $$(id) ?? this.createRow(r.data, id, r.icon, r.attr);
-		if (currentRow)
-			tb.insertBefore(obj, currentRow);
-		else
-			tb.appendChild(obj);
-	}
+		return this.createRow(r.data, id, r.icon, r.attr);
+	};
+	const viewRows = this.rowIDs
+		.filter(id => this.rowdata[id]?.enabled)
+		.filter((_, index) => index >= mni && index <= mxi)
+		.map(id => $$(id) ?? createRow(id))
+
 	this.tpad.style.height = (mni * TR_HEIGHT) + "px";
+	this.tBody.tb.replaceChildren(...viewRows);
 	this.bpad.style.height = ((this.viewRows - mxi) * TR_HEIGHT) + "px";
+
 	this.refreshSelection();
 	this.calcSize().resizeHack();
 }
