@@ -30,6 +30,7 @@ function readLangCookie() {
 
 var AvailableLanguages =
 {
+	bn:'Bengali',
 	cs:'Český',
 	da:'Dansk',
 	de:'Deutsch',
