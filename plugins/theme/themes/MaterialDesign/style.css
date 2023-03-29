@@ -810,7 +810,6 @@ input.Button
 	border-radius:2px;
 	border:none;
 	color:#FFF;
-	cursor:pointer;
 	display:inline;
 	font-weight:700;
 	text-transform:uppercase;
@@ -821,7 +820,7 @@ input.Button
 	text-shadow:none
 }
 
-input.Button:hover,input.Button:focus
+input.Button:not([disabled]):hover,input.Button:not([disabled]):focus
 {
 	background:#1a77c9 none repeat scroll 0 0
 }
