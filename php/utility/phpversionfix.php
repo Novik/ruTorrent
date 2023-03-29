@@ -4,8 +4,8 @@ class phpVersionFix
 {	
 	private static function stripSlashesFromArray(&$arr)
 	{
-        if(is_array($arr))
-        {
+	        if(is_array($arr))
+        	{
 			foreach($arr as $k=>$v)
 			{
 				if(is_array($v))

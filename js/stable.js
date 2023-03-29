@@ -337,7 +337,7 @@ dxSTable.prototype.calcSize = function()
 	if(this.created && this.dCont.offsetWidth >= 4) 
 	{
 		this.dBody.style.width = this.dCont.offsetWidth - 2 + "px";
-		this.dBody.style.paddingTop = this.dHead.offsetHeight + "px";
+		this.dBody.style.marginTop = this.dHead.offsetHeight + "px";
 		this.tBody.style.width = this.tHead.offsetWidth + "px";
 		var h = this.dCont.clientHeight - this.dHead.offsetHeight;
 		if(h >= 0) 

@@ -118,7 +118,7 @@ class FileUtil
 		return(false);
 	}
 	
-	private static function getUniqueFilename($fname)
+	public static function getUniqueFilename($fname)
 	{
 		while(file_exists($fname))
 		{
@@ -235,5 +235,15 @@ class FileUtil
 				fclose( $w );
 			}
 		}
+	}
+	
+	public static function getMinFilePerms( $file, $chmod = 755 )
+	{
+		$code = fileperms($file);
+		
+		if($code!==false)
+			return((decoct($code) & 0777) >= $chmod);
+		
+		return false;
 	}
 }

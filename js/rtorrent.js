@@ -1272,11 +1272,7 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		Ajax_UpdateTime(jqXHR);
 		
 		stub.logErrorMessages();
-		var pending = !stub.isError() && stub.commandOffset < stub.commands.length;
-		if(!pending && stub.listRequired)
-			Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
-		else if(!stub.isError())
-	    {
+		if(!stub.isError()) {
 			var responseText = stub.getResponse(data);
 			if (partialData) {
 				if (responseText instanceof Object && !(responseText instanceof XMLDocument)) {
@@ -1287,23 +1283,25 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 					responseText = partialData;
 				}
 			}
-			if (pending) {
+			// If the ajax call is pending
+			if (stub.commandOffset < stub.commands.length) {
 				stub.makeNextMultiCall();
 				Ajax(stub, isASync, onComplete, onTimeout, onError, reqTimeout, responseText);
 			} else {
-			switch($type(onComplete))
-			{
-				case "function":
-				{
-					onComplete(responseText);
-					break;
-				}				
-				case "array":
-				{
-					onComplete[0].apply(onComplete[1], new Array(responseText, onComplete[2]));
-					break;
+				if(stub.listRequired) {
+					Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
+				} else {	
+					switch($type(onComplete)) {
+						case "function": {
+							onComplete(responseText);
+							break;
+						}				
+						case "array": {
+							onComplete[0].apply(onComplete[1], new Array(responseText, onComplete[2]));
+							break;
+						}	
+					}	
 				}
-			}
 			}
 			responseText = null; // Cleanup memory leak
 		}

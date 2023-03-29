@@ -4,7 +4,7 @@ require_once( 'cache.php' );
 class WhichCache
 {
 	public $hash = "which.dat";
-	public $changed = false;
+	public $changed = true;
 	private $filePath = array();
 	
 	public function getFilePath($exe)

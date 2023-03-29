@@ -153,7 +153,7 @@ class UTF
 		{
 				foreach($mixed as $key => $value) 
 				{
-						$mixed[$key] = self::utf8ize($value);
+					$mixed[$key] = self::utf8ize($value);
 				}
 			} 
 			else 

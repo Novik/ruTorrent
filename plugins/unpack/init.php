@@ -6,9 +6,23 @@ require_once( 'unpack.php' );
 if($do_diagnostic)
 {
 	if(USE_UNZIP)
-		findRemoteEXE('unzip',"thePlugins.get('unpack').showError('theUILang.unzipNotFound');",$remoteRequests);
+	{
+		$externelUnzip = $localHostedMode ? findEXE('unzip') : false;
+		if ($externelUnzip===false || !FileUtil::getMinFilePerms($externelUnzip))
+		{
+			$unzipErrorStr = "thePlugins.get('unpack').showError('theUILang.unzipNotFound');";
+			findRemoteEXE('unzip',$unzipErrorStr,$remoteRequests);
+		}
+	}
 	if(USE_UNRAR)
-		findRemoteEXE('unrar',"thePlugins.get('unpack').showError('theUILang.unrarNotFound');",$remoteRequests);
+	{
+		$externelUnrar = $localHostedMode ? findEXE('unrar') : false;
+		if ($externelUnrar===false || !FileUtil::getMinFilePerms($externelUnrar))
+		{
+			$unrarErrorStr = "thePlugins.get('unpack').showError('theUILang.unrarNotFound');";
+			findRemoteEXE('unrar',$unrarErrorStr,$remoteRequests);
+		}
+	}
 }
 if(USE_UNZIP || USE_UNRAR)
 {
