@@ -1096,8 +1096,6 @@ var theWebUI =
 						table.setAttr(sId,trk[i].attr);
 	            			}
 					trk[i]._updated = true;
-	        	 		$('#'+sId+" > .stable-TrackerList-col-0").css( "font-weight",
-			        	 	($type(theWebUI.torrents[hash]) && (i==theWebUI.torrents[hash].tracker_focus)) ? "bold" : "normal" );
         	 		}
 			}
 	   	});
@@ -2603,7 +2601,8 @@ var theWebUI =
 			$("#wa").text(theConverter.bytes(d.skip_total, 'details'));
 	        	$("#bf").text(d.base_path);
 	        	$("#co").text(theConverter.date(iv(d.created)+theWebUI.deltaTime/1000));
-			$("#tu").text($type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
+			const trackers = this.trackers[this.dID] ?? [];
+			$("#tu").text(trackers.length ? (trackers[0].name  + (trackers.length > 1 ? ` ${theUILang.of} ${d.tracker_size}` : '')) : `${d.tracker_size}`);
 	        	$("#hs").text(this.dID.substring(0,40));
 			$("#ts").text(d.msg);
 			var url = d.comment.trim();
