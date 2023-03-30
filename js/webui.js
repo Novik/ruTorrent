@@ -108,8 +108,9 @@ var theWebUI =
 			onselect:	function(e,id) { theWebUI.prsSelect(e,id) },
 			ondblclick:	function(obj)
 			{
-				if(obj.id && theWebUI.peers[obj.id])
-					window.open(theURLs.IPQUERYURL + theWebUI.peers[obj.id].ip.replace(/^\[?(.+?)\]?$/, '$1'), "_blank");
+				const queryUrl = theWebUI.getPeerIpQueryUrl(obj.id);
+				if (queryUrl !== '#')
+					window.open(queryUrl, "_blank");
 				return(false);
 			}
 		},
@@ -524,7 +525,7 @@ var theWebUI =
 		// user must be able add peer when peers are empty
 		$("#PeerList .stable-body").mouseclick(function(e)
 		{
-			if(e.which==3)
+			if(e.which==3 && $(e.target).hasClass('stable-body'))
 			{
 				theWebUI.prsSelect(e,null);
 				return(true);
@@ -983,6 +984,13 @@ var theWebUI =
    		return(str);
    	},
 
+	getPeerIpQueryUrl: function(peerId)
+	{
+		return (peerId in this.peers)
+			? (theURLs.IPQUERYURL + this.peers[peerId].ip.replace(/^\[?(.+?)\]?$/, '$1'))
+			: '#';
+	},
+
 	addNewPeer: function()
 	{
 		this.request("?action=addpeer&hash="+this.dID+"&f="+encodeURIComponent($("#peerIP").val()), [this.updatePeers,this]);
@@ -1029,9 +1037,20 @@ var theWebUI =
 		        	theContextMenu.add([CMENU_SEP]);
 				}
 			}
-			if(selCount)
+			if(selCount === 1)
 			{
-				theContextMenu.add([theUILang.peerDetails, (selCount > 1) ? null : "theWebUI.getTable('prs').ondblclick({ id: '"+id+"'})"]);
+				$(theContextMenu.obj)
+					.append(
+						$('<li>')
+						.addClass('menuitem')
+						.append(
+							$('<a>')
+							.addClass(['menu-cmd'])
+							.attr({
+								'rel': 'noreferrer noopener',
+								'target': '_blank',
+								'href': this.getPeerIpQueryUrl(id)})
+							.text(theUILang.peerDetails)));
 			}
 		}
 		return(ret);
