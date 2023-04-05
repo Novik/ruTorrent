@@ -6,7 +6,7 @@ class RuTrackerCheckImpl
     {
         if (preg_match('`^https?://rutracker\.(org|cr|net|nl)/forum/viewtopic\.php\?t=(?P<id>\d+)$`', $url, $matches)) {
             $topic_id = $matches["id"];
-            $req_url = "http://api.rutracker.org/v1/get_tor_hash?by=topic_id&val=" . $topic_id;
+            $req_url = "https://api.rutracker.cc/v1/get_tor_hash?by=topic_id&val=" . $topic_id;
             $client = ruTrackerChecker::makeClient($req_url);
             if ($client->status != 200) return ruTrackerChecker::STE_CANT_REACH_TRACKER;
             $ret = json_decode($client->results, true);
