@@ -430,9 +430,6 @@ div#CatList
 	border-left:none
 }
 
-
-
-
 div#CatList ul li
 {
 	color:#FFF;
@@ -1146,22 +1143,10 @@ div#lcont div.std:nth-child(2n+1)
 	font-family:Roboto
 }
 
-#StatusBar table tr td
-{
-	padding-right:5px;
-	border:none;
-	background:transparent url(./images/headers.png) no-repeat right -208px
+.statuscell td:not(:last-child) {
+	padding-right: 5px;
 }
 
-#StatusBar table tr td td
-{
-	background:none
-}
-
-#StatusBar table tr td:last-child
-{
-	border-top:red
-}
 
 #st_up
 {

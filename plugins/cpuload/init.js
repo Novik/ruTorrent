@@ -94,9 +94,7 @@ class rLoadGraph {
     const startSeconds = this.seconds - this.maxSeconds;
     this.load.data.splice(
       0,
-      this.load.data.findIndex(
-        ([_, sec]) => sec >= startSeconds
-      )
+      this.load.data.findIndex(([_, sec]) => sec >= startSeconds)
     );
     this.draw();
   }
@@ -121,8 +119,17 @@ plugin.init = function () {
     plugin.prgStartColor = new RGBackground("#99D699");
     plugin.prgEndColor = new RGBackground("#E69999");
     plugin.addPaneToStatusbar(
-      "meter-cpu-td",
-      $("<div>").attr("id", "meter-cpu-holder").get(0)
+      "meter-cpu-pane",
+      $("<table>")
+        .append(
+          $("<tbody>").append(
+            $("<tr>").append(
+              $("<td>").attr("id", "meter-cpu-td"),
+              $("<td>").append($("<div>").attr("id", "meter-cpu-holder"))
+            )
+          )
+        )
+        .get(0)
     );
     plugin.graph = new rLoadGraph();
     plugin.graph.create($("#meter-cpu-holder"));
@@ -133,7 +140,7 @@ plugin.init = function () {
 };
 
 plugin.onRemove = function () {
-  plugin.removePaneFromStatusbar("meter-cpu-td");
+  plugin.removePaneFromStatusbar("meter-cpu-pane");
   theRequestManager.removeRequest("ttl", plugin.reqId);
 };
 

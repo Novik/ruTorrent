@@ -1,3 +1,3 @@
 #meter-cpu-text { position: absolute; left: 40px; top: 0px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif }
-#meter-cpu-holder { width: 100px; height: 19px; line-height: 19px; margin-left: 25px; }
-#meter-cpu-td { background: url(./images/cpu.png) 5px no-repeat; }
+#meter-cpu-holder { width: 100px; height: 19px; line-height: 19px; }
+#meter-cpu-td { display: block; width: 16px; height: 16px; background: url(./images/cpu.png) 0px no-repeat; }
