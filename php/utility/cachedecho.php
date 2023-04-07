@@ -10,10 +10,11 @@ class CachedEcho
 		header("X-Server-Timestamp: ".time());
 		if($cacheable && isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD']=='GET'))
 		{
+			global $cacheExpireDuration;
 			$etag = '"'.strtoupper(dechex(crc32($content))).'"';
 			header('Expires: ');
 			header('Pragma: ');
-			header('Cache-Control: max-age=1440 ');
+			header('Cache-Control: max-age='.$cacheExpireDuration);
 			if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag)
 			{
 				header('HTTP/1.0 304 Not Modified');

@@ -60,7 +60,10 @@
 	);
 
 	$localHostedMode = false;		// Set to true if rTorrent is hosted on the SAME machine as ruTorrent
-	$cachedPluginLoading = false;	// Set to true to enable rapid cached loading of ruTorrent plugins
+	
+	$cachedPluginLoading = false;		// Set to true to enable rapid cached loading of ruTorrent plugins
+	$cacheExpireDuration = 1*60*24;		// Sets duration ruTorrent web browser cache is valid for in minutes 
+						// Default is one day which equals 1 day x 60 minutes x 24 hours
 
 	$localhosts = array(			// list of local interfaces
 		"127.0.0.1",
