@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN CREATE
  *
  * Hungarian language file.
@@ -19,14 +19,14 @@
  theUILang.createExternalNotFound	= "Torrent létrehozás bővitmény: Bővitmény nem fog működni. Webserver felhasználó nem fér hozzá a programhoz";
  theUILang.incorrectDirectory		= "Helytelen könyvtár";
  theUILang.cantExecExternal		= "Nem lehet végrehajtani a külső programmal";
- theUILang.createConsole		= "Konsole";
+ theUILang.createConsole		= "Konzol";
  theUILang.createErrors			= "Hiba";
  theUILang.torrentSave			= "Mentés";
  theUILang.torrentKill			= "Megállít";
  theUILang.torrentKilled		= "Folyamat leállt.";
- theUILang.recentTrackers		= "Recent trackers";
- theUILang.source			= "Source";
- theUILang.HybridTorrent		= "Hybrid torrent";
- theUILang.deleteFromRecentTrackers	= "> Delete";
+ theUILang.recentTrackers		= "Előző tracker(ek)";
+ theUILang.source			= "Forrás";
+ theUILang.HybridTorrent		= "Hibrid torrent";
+ theUILang.deleteFromRecentTrackers	= "> Törlés";
 
 thePlugins.get("create").langLoaded();

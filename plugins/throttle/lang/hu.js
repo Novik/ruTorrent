@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN THROTTLE
  *
  * Hungarian language file.
@@ -6,11 +6,11 @@
  * Author: 
  */
 
- theUILang.throttles		= "Channels";
- theUILang.throttle		= "Channel";
- theUILang.mnuThrottle		= "Set Channel";
- theUILang.mnuUnlimited		= "No Channel";
- theUILang.channelName		= "Name";
- theUILang.channelDefault	= "Default channel";
+ theUILang.throttles		= "Csatornák";
+ theUILang.throttle		= "Csatorna";
+ theUILang.mnuThrottle		= "Csatorna beállítása";
+ theUILang.mnuUnlimited		= "Nincs csatorna";
+ theUILang.channelName		= "Név";
+ theUILang.channelDefault	= "Alap csatorna";
 
 thePlugins.get("throttle").langLoaded();
