@@ -168,7 +168,7 @@ var theUILang =
  Dont_add_tname			: "Ne adja hozzá a torrent nevének útját",
  Free_Disk_Space		: "Szabad disk terület",
  badXMLRPCVersion		: "Az rTorrent az xmlrpc-c könyvtár helytelen verziójával van fordítva, i8 támogatás nélkül. A verziónak >= 1.11-nek kell lennie. Néhány funkció nem lesz elérhető.",
- badLinkTorTorrent		: "Nem kapcsolódik az rtorrenthez. Kérlek ellenőrízd, hogy helyesen van-e megadva az $scgi_port és $scgi_host beállításait a config.php-ban. Kérlek próbáld meg újraindítani a kliensed, belépés után az oldalon megteheted, segítség: https://bestbox.be/gyik",
+ badLinkTorTorrent		: "Nem kapcsolódik az rtorrenthez. Kérlek ellenőrízd, hogy helyesen van-e megadva az $scgi_port és $scgi_host beállításait a config.php-ban.",
  badUploadsPath			: "Websuerver felhasználó nem rendelkezik írási/olvasási joggal. Nem lehet torrentet hozzáadni.",
  badSettingsPath		: "Websuerver felhasználó nem rendelkezik írási/olvasási joggal. Nem lehet menteni a beállításokat.",
  mnu_help			: "Segítség",
