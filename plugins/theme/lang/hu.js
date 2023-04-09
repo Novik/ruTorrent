@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN THEME
  *
  * Hungarian language file.
@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.themeStandard	= "Standard";
- theUILang.theme		= "Theme";
+ theUILang.themeStandard	= "Alap";
+ theUILang.theme		= "Téma";
 
 thePlugins.get("theme").langLoaded();
