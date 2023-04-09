@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN SCHEDULER
  *
  * Hungarian language file.
@@ -6,21 +6,21 @@
  * Author: 
  */
 
- theUILang.scheduler		= "Scheduler";
- theUILang.schedulerOn		= "Enable scheduler";
- theUILang.schedulerGraph	= "Scheduler Table";
- theUILang.schShortWeek		= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek		= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
- theUILang.schUnlimited		= "Unlimited";
- theUILang.schLimited		= "Limited";
- theUILang.schTurnOff		= "Turn off";
- theUILang.schSeedingOnly	= "Seeding only";
- theUILang.schUnlimitedDesc	= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc	= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc	= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc	= "Seeding only - Only upload data";
- theUILang.schLimitedUL		= "Limited UL";
- theUILang.schLimitedDL		= "Limited DL";
- theUILang.shcIgnore		= "Ignore Scheduler";
+ theUILang.scheduler		= "Ütemtervező";
+ theUILang.schedulerOn		= "Ütemtervező engedélyezése";
+ theUILang.schedulerGraph	= "Ütemtervező táblázat";
+ theUILang.schShortWeek		= [ "Hét", "Kedd", "Sze", "Csü", "Pén", "Szo", "Vas" ];
+ theUILang.schFullWeek		= [ "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat", "Vasárnap" ];
+ theUILang.schUnlimited		= "Korlátlan";
+ theUILang.schLimited		= "Korlátozott";
+ theUILang.schTurnOff		= "Kapcsolja ki";
+ theUILang.schSeedingOnly	= "Csak seed";
+ theUILang.schUnlimitedDesc	= "Korlátlan - Globális korlát nincs";
+ theUILang.schLimitedDesc	= "Korlátozott - Az ütemező-specifikus sávszélesség-korlátozást használja.";
+ theUILang.schTurnOffDesc	= "Kikapcsolás - Leállítja az összes torrentet";
+ theUILang.schSeedingOnlyDesc	= "Csak seed - Csak adatok feltöltése";
+ theUILang.schLimitedUL		= "Korlátozott Fel";
+ theUILang.schLimitedDL		= "Korlátozott Le";
+ theUILang.shcIgnore		= "Figyelmen kívül hagyja az ütemezőt";
 
 thePlugins.get("scheduler").langLoaded();
