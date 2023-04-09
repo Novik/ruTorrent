@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN TRAFFIC
  *
  * Hungarian language file.
@@ -6,14 +6,14 @@
  * Author: 
  */
 
- theUILang.traf			= "Traffic";
- theUILang.perDay		= "Per day";
- theUILang.perMonth		= "Per month";
- theUILang.perYear		= "Per year";
- theUILang.allTrackers		= "All trackers";
- theUILang.ClearButton		= "Clear";
- theUILang.ClearQuest		= "Do you really want to clear statistics for selected tracker(s)?";
- theUILang.selectedTorrent	= "Selected torrent(s)";
- theUILang.ratioDay		= "Ratio/day";
- theUILang.ratioWeek		= "Ratio/week";
- theUILang.ratioMonth		= "Ratio/month";
+theUILang.traf 		= "Adatforgalom";
+theUILang.perDay		= "Naponta";
+theUILang.perMonth		= "Havonta";
+theUILang.perYear		= "Évente";
+theUILang.allTrackers		= "Összes tracker";
+theUILang.ClearButton		= "Törlés";
+theUILang.ClearQuest		= "Tényleg törölni szeretnéd a kiválasztott oldalak statisztikáját?";
+theUILang.selectedTorrent	= "Kiválasztott torrent(ek)";
+theUILang.ratioDay		= "Arány/nap";
+theUILang.ratioWeek		= "Arány/hét";
+theUILang.ratioMonth		= "Arány/hónap";
