@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN HISTORY
  *
  * Hungarian language file.
@@ -6,33 +6,33 @@
  * Author: 
  */
 
- theUILang.historyAddition		= "Addition";
- theUILang.historyDeletion		= "Deletion";
- theUILang.historyFinish		= "Finish";
+ theUILang.historyAddition		= "Hozzáadás";
+ theUILang.historyDeletion		= "Törlés";
+ theUILang.historyFinish		= "Befejezve";
  theUILang.historyLog			= "Log";
- theUILang.history			= "History";
- theUILang.historyLimit			= "Maximum number of records";
- theUILang.seedingTime			= "Finished";
- theUILang.addTime			= "Added";
- theUILang.hstDeletePrompt		= "Do you really want to delete the selected record(s)?";
- theUILang.hstDelete			= "Delete record(s)";
- theUILang.Added			= "Added";
- theUILang.Finished			= "Finished";
- theUILang.Deleted			= "Deleted";
- theUILang.Time				= "Time";
+ theUILang.history			= "Log";
+ theUILang.historyLimit			= "A bejegyzések maximális száma";
+ theUILang.seedingTime			= "Befejezve";
+ theUILang.addTime			= "Hozzáadva";
+ theUILang.hstDeletePrompt		= "Tényleg törölni szeretné a kiválasztott rekord(ok)at?";
+ theUILang.hstDelete			= "Rekord(ok) törlése";
+ theUILang.Added			= "Hozzáadva";
+ theUILang.Finished			= "Befejezett";
+ theUILang.Deleted			= "Törölt";
+ theUILang.Time				= "Idő";
  theUILang.Tracker			= "Tracker";
- theUILang.enableNotifications		= "Enable desktop notifications";
- theUILang.historyNotification		= "Desktop Notifications";
- theUILang.notifAutoClose		= "Autoclose notifications after";
+ theUILang.enableNotifications		= "Az asztali értesítések engedélyezése";
+ theUILang.historyNotification		= "Asztali értesítések";
+ theUILang.notifAutoClose		= "Értesítések automatikus bezárása";
  theUILang.notifTip			= {
- 					  false: "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 					  false: "A böngészője nem támogatja az asztali értesítéseket. Próbáljon meg egy másik böngészőt használni, például a Google Chrome-ot.",
  					  "granted": "",
- 					  "default": "Your browser supports desktop notifications. Press button below to enable it.",
- 					  "denied": "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 					  "default": "A böngésző támogatja az asztali értesítéseket. Nyomja meg az alábbi gombot az engedélyezéshez.",
+ 					  "denied": "A böngészője támogatja az asztali értesítéseket, de Ön letiltotta azt ezen a webhelyen. Zárja be ezt a párbeszédpanelt, és használja a böngésző beállításait az asztali értesítések engedélyezéséhez.",
  					  };
- theUILang.pushbulletNotification	= "PushBullet notifications";
- theUILang.pushbulletKey		= "PushBullet Access Token";
- theUILang.turnNotifyOn			= "Turn notifications on";
- theUILang.turnNotifyOff		= "Turn notifications off";
+ theUILang.pushbulletNotification	= "PushBullet értesítések";
+ theUILang.pushbulletKey		= "PushBullet hozzáférési token";
+ theUILang.turnNotifyOn			= "Értesítések bekapcsolása";
+ theUILang.turnNotifyOff		= "Értesítések kikapcsolása";
 
 thePlugins.get("history").langLoaded();
