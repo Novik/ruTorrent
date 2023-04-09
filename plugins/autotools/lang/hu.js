@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN AUTOTOOLS
  *
  * Hungarian language file.
@@ -21,9 +21,9 @@
  theUILang.autotoolsFileOpHardLink	= "Hard link";
  theUILang.autotoolsFileOpCopy		= "Másolás";
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
- theUILang.autotoolsAddLabel		= "Add torrent's label to path";
- theUILang.autotoolsAddName		= "Add torrent's name to path";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
- theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
+ theUILang.autotoolsAddLabel		= "A torrent címkéjének hozzáadása az elérési útvonalhoz";
+ theUILang.autotoolsAddName		= "A torrent nevének hozzáadása az elérési útvonalhoz";
+ theUILang.autotoolsEnableMove		= "Az \"AutoMove\" engedélyezése, ha a torrent címkéje megfelel a szűrőnek";
+ theUILang.autotoolsSkipMoveForFiles	= "A mintának megfelelő fájlokat tartalmazó torrentek kihagyása";
 
 thePlugins.get("autotools").langLoaded();
