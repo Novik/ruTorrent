@@ -27,6 +27,7 @@ if($req->success())
 {
 	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 	$jResult.="plugin.enableForceDeletion = ".($enableForceDeletion ? 1 : 0).";";
+	$jResult.="plugin.replaceRemoveTorrent = ".($replaceRemoveTorrent ? 1 : 0).";";
 }
 else
 	$jResult.="plugin.disable(); noty('erasedata: '+theUILang.pluginCantStart,'error');";
