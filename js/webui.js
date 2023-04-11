@@ -226,7 +226,8 @@ var theWebUI =
 	},
 	actLbls:
 	{
-		'pstate_cont': []
+		'pstate_cont': [],
+		'plabel_cont': []
 	},
 	cLabels:	{},
 	stateLabels: {},
@@ -2227,7 +2228,7 @@ var theWebUI =
 			}
 		});
 
-		const actLbls = theWebUI.actLbls['plabel_cont'] ?? [];
+		const actLbls = theWebUI.actLbls['plabel_cont'];
 		const residualActLbls = actLbls.filter(labelId => pLabels.includes(theWebUI.idToLbl(labelId)));
 		const actDeleted = actLbls.length !== residualActLbls.length;
 		if (actDeleted)
