@@ -79,6 +79,7 @@ Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; wid
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
 Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 30px}
 input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0; cursor: pointer }
+input.Button[disabled] { opacity: 0.3; cursor: default }
 
 select {margin-top: 5px}
 a {font-size: 11px;  color: #686868}

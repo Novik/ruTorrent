@@ -298,6 +298,9 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 		$$(idBefore).parentNode.insertBefore(dlg,$$(idBefore));
 		var beforeLbl = $$("tab_"+idBefore);
 		beforeLbl.parentNode.insertBefore(newLbl,beforeLbl);
+		if (theWebUI.activeView === dlg.id) {
+			setTimeout(() => theTabs.onShow(dlg.id));
+		}
 	}
 	return(this);
 }
@@ -398,13 +401,23 @@ rPlugin.prototype.removePaneFromStatusbar = function(id)
 	return(this);
 }
 
-rPlugin.prototype.addPaneToCategory = function(id,name)
+rPlugin.prototype.addPaneToCategory = function(id,name, afterId)
 {
-        if(this.canChangeCategory())
-        {
-		$('#CatList').append(
-			$("<div>").addClass("catpanel").attr("id",id).text(name).on('click', function() { theWebUI.togglePanel(this); })).
-				append($("<div>").attr("id",id+"_cont").addClass("catpanel_cont"));
+	if(this.canChangeCategory())
+	{
+		const catpanel = $("<div>")
+			.addClass("catpanel")
+			.attr("id",id)
+			.text(name)
+			.on('click', function() { theWebUI.togglePanel(this); });
+		const catcont = $("<div>")
+			.attr("id",id+"_cont")
+			.addClass("catpanel_cont");
+		if (afterId) {
+			$(`#${afterId}`).after(catpanel, catcont);
+		} else {
+			$('#CatList').append(catpanel, catcont);
+		}
 		theWebUI.showPanel($$(id),!theWebUI.settings["webui.closed_panels"][id]);
 	}
 	return($("#"+id+"_cont"));

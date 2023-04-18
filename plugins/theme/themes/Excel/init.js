@@ -34,12 +34,4 @@ theWebUI.showPanel = function(pnl,enable)
 	cont.toggle(enable);
 	theWebUI.settings["webui.closed_panels"][pnl.id] = !enable;
 	$('#'+pnl.id+" img").prop("src",enable ? "plugins/theme/themes/Excel/images/pnl_open.png" : "plugins/theme/themes/Excel/images/pnl_close.png");
-},
-
-plugin.speedCreate = rSpeedGraph.prototype.create;
-rSpeedGraph.prototype.create = function( aOwner )
-{
-	plugin.speedCreate.call(this,aOwner);
-	this.gridColor = "#034084";
-	this.backgroundColor = "#ffffff";
 }

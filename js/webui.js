@@ -5,7 +5,7 @@
 
 var theWebUI =
 {
-        version: "4.0.4",
+  version: "4.1",
 	tables:
 	{
 		trt:
@@ -108,8 +108,9 @@ var theWebUI =
 			onselect:	function(e,id) { theWebUI.prsSelect(e,id) },
 			ondblclick:	function(obj)
 			{
-				if(obj.id && theWebUI.peers[obj.id])
-					window.open(theURLs.IPQUERYURL + theWebUI.peers[obj.id].ip.replace(/^\[?(.+?)\]?$/, '$1'), "_blank");
+				const queryUrl = theWebUI.getPeerIpQueryUrl(obj.id);
+				if (queryUrl !== '#')
+					window.open(queryUrl, "_blank");
 				return(false);
 			}
 		},
@@ -225,7 +226,8 @@ var theWebUI =
 	},
 	actLbls:
 	{
-		"pstate_cont": ""
+		'pstate_cont': [],
+		'plabel_cont': []
 	},
 	cLabels:	{},
 	stateLabels: {},
@@ -526,7 +528,7 @@ var theWebUI =
 		// user must be able add peer when peers are empty
 		$("#PeerList .stable-body").mouseclick(function(e)
 		{
-			if(e.which==3)
+			if(e.which==3 && $(e.target).hasClass('stable-body'))
 			{
 				theWebUI.prsSelect(e,null);
 				return(true);
@@ -985,6 +987,13 @@ var theWebUI =
    		return(str);
    	},
 
+	getPeerIpQueryUrl: function(peerId)
+	{
+		return (peerId in this.peers)
+			? (theURLs.IPQUERYURL + this.peers[peerId].ip.replace(/^\[?(.+?)\]?$/, '$1'))
+			: '#';
+	},
+
 	addNewPeer: function()
 	{
 		this.request("?action=addpeer&hash="+this.dID+"&f="+encodeURIComponent($("#peerIP").val()), [this.updatePeers,this]);
@@ -1031,9 +1040,20 @@ var theWebUI =
 		        	theContextMenu.add([CMENU_SEP]);
 				}
 			}
-			if(selCount)
+			if(selCount === 1)
 			{
-				theContextMenu.add([theUILang.peerDetails, (selCount > 1) ? null : "theWebUI.getTable('prs').ondblclick({ id: '"+id+"'})"]);
+				$(theContextMenu.obj)
+					.append(
+						$('<li>')
+						.addClass('menuitem')
+						.append(
+							$('<a>')
+							.addClass(['menu-cmd'])
+							.attr({
+								'rel': 'noreferrer noopener',
+								'target': '_blank',
+								'href': this.getPeerIpQueryUrl(id)})
+							.text(theUILang.peerDetails)));
 			}
 		}
 		return(ret);
@@ -1098,8 +1118,6 @@ var theWebUI =
 						table.setAttr(sId,trk[i].attr);
 	            			}
 					trk[i]._updated = true;
-	        	 		$('#'+sId+" > .stable-TrackerList-col-0").css( "font-weight",
-			        	 	($type(theWebUI.torrents[hash]) && (i==theWebUI.torrents[hash].tracker_focus)) ? "bold" : "normal" );
         	 		}
 			}
 	   	});
@@ -1898,7 +1916,7 @@ var theWebUI =
 
 	/**
 	 * @typedef {array.<string>} StatusIcon
-	 * first element: icon name
+	 * first element: icon nameDevelop
 	 * second element: localized status
 	 */
 
@@ -2204,7 +2222,10 @@ var theWebUI =
 					actDeleted = true;
 			}
 		});
-		if(actDeleted)
+		const actLbls = theWebUI.actLbls['plabel_cont'];
+		const residualActLbls = actLbls.filter(labelId => pLabels.includes(theWebUI.idToLbl(labelId)));
+		const actDeleted = actLbls.length !== residualActLbls.length;
+		if (actDeleted)
 		{
 			this.switchLabel($("#plabel_cont .-_-_-all-_-_-").get(0))
 		}
@@ -2553,7 +2574,8 @@ var theWebUI =
 			$("#wa").text(theConverter.bytes(d.skip_total, 'details'));
 	        	$("#bf").text(d.base_path);
 	        	$("#co").text(theConverter.date(iv(d.created)+theWebUI.deltaTime/1000));
-			$("#tu").text($type(this.trackers[this.dID]) && $type(this.trackers[this.dID][d.tracker_focus]) ? this.trackers[this.dID][d.tracker_focus].name : '');
+			const trackers = this.trackers[this.dID] ?? [];
+			$("#tu").text(trackers.length ? (trackers[0].name  + (trackers.length > 1 ? ` ${theUILang.of} ${d.tracker_size}` : '')) : `${d.tracker_size}`);
 	        	$("#hs").text(this.dID.substring(0,40));
 			$("#ts").text(d.msg);
 			var url = d.comment.trim();

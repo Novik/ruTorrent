@@ -1,6 +1,6 @@
 plugin.description: This plugin allows to delete torrent data along with .torrent file.
 plugin.author: Novik
-plugin.version: 4.0
+plugin.version: 4.1
 rtorrent.remote: error
 rtorrent.script.error: fin.sh
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginErasedata

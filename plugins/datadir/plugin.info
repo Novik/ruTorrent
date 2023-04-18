@@ -1,6 +1,6 @@
 plugin.description: This plugin is intended for moving torrent data files.
 plugin.author: dmrom
-plugin.version: 4.0
+plugin.version: 4.1
 rtorrent.remote: error
 php.extensions.error: json
 rtorrent.external.error: php

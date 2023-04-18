@@ -29,7 +29,7 @@ var theRequestManager =
 			"d.get_up_total=", "d.get_ratio=", "d.get_up_rate=", "d.get_down_rate=", "d.get_chunk_size=",
 			"d.get_custom1=", "d.get_peers_accounted=", "d.get_peers_not_connected=", "d.get_peers_connected=", "d.get_peers_complete=",
 			"d.get_left_bytes=", "d.get_priority=", "d.get_state_changed=", "d.get_skip_total=", "d.get_hashing=",
-			"d.get_chunks_hashed=", "d.get_base_path=", "d.get_creation_date=", "d.get_tracker_focus=", "d.is_active=",
+			"d.get_chunks_hashed=", "d.get_base_path=", "d.get_creation_date=", "d.get_tracker_size=", "d.is_active=",
 			"d.get_message=", "d.get_custom2=", "d.get_free_diskspace=", "d.is_private=", "d.is_multi_file="
 		],
 		handlers: []
@@ -1085,7 +1085,7 @@ rTorrentStub.prototype.getalltrackersResponse = function(values)
  * @property {string} status (e.g. "Seeding")
  * @property {string} throttle
  * @property {string} tracker
- * @property {string} tracker_focus
+ * @property {string} tracker_size
  * @property {number} ul
  * @property {number} uploaded
  */
@@ -1200,7 +1200,7 @@ rTorrentStub.prototype.listResponse = function(data)
 		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ?
 			torrent.base_path.substring(0,pos) : torrent.base_path;
 		torrent.created = values[26];
-		torrent.tracker_focus = values[27];
+		torrent.tracker_size = values[27];
 		try {
 		torrent.comment = values[30];
 		if(torrent.comment.search("VRS24mrker")==0)

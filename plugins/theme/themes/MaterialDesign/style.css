@@ -177,21 +177,6 @@ ul.CMenu li ul li a.dis:hover
 	color:#333
 }
 
-div.stable-body table tbody tr.even:nth-child(2n+1) td
-{
-	background:#252525!important
-}
-
-.stable-body td
-{
-	border-bottom:1px solid #252525!important
-}
-
-.stable-body tr.odd td
-{
-	background:#2A2A2A!important
-}
-
 #tdetails
 {
 	overflow:hidden
@@ -430,15 +415,18 @@ div#CatList
 	border-left:none
 }
 
-
-
-
 div#CatList ul li
 {
 	color:#FFF;
 	border:none;
 	padding: 4px;
-	font-family:'Roboto'
+	font-family:'Roboto';
+	background-color: #1A2329;
+}
+
+div#CatList ul li:hover
+{
+	background-color: #161F25;
 }
 
 div#CatList .label-prefix
@@ -449,12 +437,17 @@ div#CatList .label-prefix
 
 div#CatList ul li.sel
 {
-	background-color:transparent;
+	background-color: #1A2329;
 	color:#009DDD;
 	text-shadow:0 -1px 0 #000;
 	border:none
 }
 
+
+div#CatList ul li.sel:hover
+{
+	background-color: #161F25;
+}
 div#CatList li.sel .label-prefix
 {
 	color:#FFF;
@@ -810,7 +803,6 @@ input.Button
 	border-radius:2px;
 	border:none;
 	color:#FFF;
-	cursor:pointer;
 	display:inline;
 	font-weight:700;
 	text-transform:uppercase;
@@ -821,7 +813,7 @@ input.Button
 	text-shadow:none
 }
 
-input.Button:hover,input.Button:focus
+input.Button:not([disabled]):hover,input.Button:not([disabled]):focus
 {
 	background:#1a77c9 none repeat scroll 0 0
 }
@@ -1147,22 +1139,10 @@ div#lcont div.std:nth-child(2n+1)
 	font-family:Roboto
 }
 
-#StatusBar table tr td
-{
-	padding-right:5px;
-	border:none;
-	background:transparent url(./images/headers.png) no-repeat right -208px
+.statuscell td:not(:last-child) {
+	padding-right: 5px;
 }
 
-#StatusBar table tr td td
-{
-	background:none
-}
-
-#StatusBar table tr td:last-child
-{
-	border-top:red
-}
 
 #st_up
 {
