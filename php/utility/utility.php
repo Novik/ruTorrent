@@ -22,4 +22,18 @@ class Utility
 	{
 		return( self::getExternal("php") );
 	}
+
+	public static function str_starts_with($a, $b)
+	{
+		return function_exists('str_starts_with')
+			? str_starts_with($a, $b)
+			: substr($a, 0, strlen($b)) === $b;
+	}
+
+	public static function str_ends_with($a, $b)
+	{
+		return function_exists('str_ends_with')
+			? str_ends_with($a, $b)
+			: empty($b) || substr($a, -strlen($b)) === $b;
+	}
 }
