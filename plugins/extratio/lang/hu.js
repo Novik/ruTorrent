@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN EXTRATIO
  *
  * Hungarian language file.
@@ -6,20 +6,20 @@
  * Author: 
  */
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo		= "Set throttle to";
- theUILang.ratioNewRule		= "New rule";
+theUILang.ratioRulesManager = "Szabálykezelő";
+theUILang.mnu_ratiorule    = "Arány szabályok";
+theUILang.ratAddRule       = "Hozzáadás";
+theUILang.ratDelRule       = "Törlés";
+theUILang.ratUpRule        = "Fel";
+theUILang.ratDownRule      = "Le";
+theUILang.ratioIfLegend    = "Ha";
+theUILang.ratLabelContain  = "Torrent címke tartalmazza";
+theUILang.ratTrackerContain    = "A torrent egyik tracker URL-je tartalmazza";
+theUILang.ratTrackerPublic = "A torrent tracker nyilvános(public)";
+theUILang.ratTrackerPrivate    = "A torrent tracker privát";
+theUILang.ratioThenLegend   = "Akkor";
+theUILang.setRatioTo       = "Állítsa be az arányt";
+theUILang.setChannelTo     = "Csatorna";
+theUILang.ratioNewRule     = "Új szabály";
 
 thePlugins.get("extratio").langLoaded();

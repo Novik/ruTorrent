@@ -6,7 +6,7 @@
 }
 
 #meter-cpu-text { color:#fff; text-shadow:0px 0px 2px #000; }
-#StatusBar table tr td#meter-cpu-td { background: url(./images/status_icons.png) no-repeat 3px -418px / 21px; }
+#StatusBar table tr td#meter-cpu-td { background: url(./images/status_icons.png) no-repeat 0px -418px / 21px; }
 
 div.graph_tab {color:#FFF;border-color: #000;}
 div#tcreate div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -24px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}

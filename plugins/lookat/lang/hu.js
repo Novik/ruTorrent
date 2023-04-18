@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN LookAt
  *
  * Hungarian language file.
@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.lookAtDesc		= "Find at (Format: name|url)";
- theUILang.lookAt		= "Find at";
+ theUILang.lookAtDesc		= "Keresés a (Formátum: név|url)";
+ theUILang.lookAt		= "Keresés a";
 
 thePlugins.get("lookat").langLoaded();

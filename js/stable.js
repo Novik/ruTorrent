@@ -1516,7 +1516,7 @@ dxSTable.prototype.progressStyle = function(val)
   return {
     float: 'left',
     width: `${nval}%`,
-    backgroundColor: new RGBackground()
+    'background-color': new RGBackground()
       .setGradient(this.prgStartColor, this.prgEndColor, parseFloat(val))
       .getColor(),
     visibility: nval ? 'visible' : 'hidden',

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PLUGIN RATIO
  *
  * Hungarian language file.
@@ -6,21 +6,21 @@
  * Author: 
  */
 
- theUILang.ratios		= "Ratio Groups";
- theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set Ratio Group";
- theUILang.mnuRatioUnlimited	= "No Ratio";
- theUILang.ratioName		= "Name";
+  theUILang.ratios		= "Arány csoportok";
+ theUILang.ratio		= "Arány csoportok";
+ theUILang.mnuRatio		= "Csoport kiválasztása";
+ theUILang.mnuRatioUnlimited	= "Nincs arány.";
+ theUILang.ratioName		= "Név";
  theUILang.minRatio		= "Min";
  theUILang.maxRatio		= "Max";
- theUILang.ratioUpload		= "UL";
- theUILang.ratioAction		= "Action";
+ theUILang.ratioUpload		= "Fel.";
+ theUILang.ratioAction		= "Feladat";
  theUILang.ratioStop		= "Stop";
- theUILang.ratioStopAndRemove	= "Stop & Clear group";
- theUILang.ratioErase		= "Remove";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault		= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.ratioStopAndRemove	= "Stop & Törölje a csoportból";
+ theUILang.ratioErase		= "Törlés";
+ theUILang.ratioEraseData	= "Adat és torrent törlése";
+ theUILang.maxTime		= "Idő";
+ theUILang.ratioDefault 	= "Alapértelmezett csoport";
+ theUILang.setThrottleTo	= "Csatorna beállítása: ";
 
 thePlugins.get("ratio").langLoaded();
