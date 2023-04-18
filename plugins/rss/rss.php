@@ -3,7 +3,19 @@
 require_once( dirname(__FILE__).'/../../php/cache.php');
 require_once( dirname(__FILE__).'/../../php/Snoopy.class.inc');
 require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
+require_once( dirname(__FILE__).'/rss_reader.php' );
 eval(FileUtil::getPluginConf('rss'));
+
+function rssFetchURL($url, $cookies = null, $headers = null )
+{
+	$client = new Snoopy();
+	if(is_array($headers) && count($headers))
+		$client->rawheaders = $headers;
+	if(is_array($cookies) && count($cookies))
+		$client->cookies = $cookies;
+	@$client->fetchComplex($url);
+	return $client;
+}
 
 class rRSS
 {
@@ -18,14 +30,11 @@ class rRSS
 	public $encoding = null;
 	public $version = 0;
 	public $lastErrorMsgs = [];
-	private $isValid=false;
-	private $channeltags = array('title', 'link', 'lastBuildDate');
-	private $itemtags = array('title', 'link', 'pubDate', 'enclosure', 'guid', 'source', 'description', 'dc:date');
-	private $atomtags = array('title', 'updated');
-	private $entrytags = array('title', 'link', 'updated', 'content', 'summary');
+	private $fetchURL = 'rssFetchURL';
 
-	public function __construct( $url = null )
+	public function __construct( $url = null, $fetchURL = 'rssFetchURL' )
 	{
+		$this->fetchURL = $fetchURL;
 		$this->version = 1;
 		if($url)
 		{
@@ -71,7 +80,7 @@ class rRSS
 		if(strpos($href,"magnet:")===0)
 			return("magnet");
 		global $profileMask;
-		$cli = self::fetchURL(Snoopy::linkencode($href),$this->cookies);
+		$cli = call_user_func($this->fetchURL, Snoopy::linkencode($href),$this->cookies);
 		if($cli && $cli->status>=200 && $cli->status<300)
 		{
 			$name = $cli->get_filename();
@@ -112,8 +121,8 @@ class rRSS
 		foreach($this->items as $href=>$item)
 		{
 			$ret["items"][] = array(
-				"time"=>($item['timestamp']>0) ? intval($item['timestamp']) : null,
-				"title"=>$item['title'],
+				"time"=>intval($item['timestamp']),
+				"title"=>empty($item['title']) ? '<No Title>' : $item['title'],
 				"href"=>self::quoteInvalidURI($href),
 				"guid"=>self::quoteInvalidURI($item['guid']),
 				"errcount"=>$history->getCounter($href),
@@ -125,13 +134,13 @@ class rRSS
 
 	public function fetch( $history )
 	{
-		$headers = array();
+		$headers = [];
 		$this->lastErrorMsgs = [];
-		if($this->etag) 
-			$headers['If-None-Match'] = trim($this->etag);
+		if($this->etag)
+			$headers['If-None-Match'] = $this->etag;
 		if($this->lastModified)
-	                $headers['If-Last-Modified'] = trim($this->lastModified);
-		$cli = self::fetchURL($this->url,$this->cookies,$headers);
+			$headers['If-Last-Modified'] = $this->lastModified;
+		$cli = call_user_func($this->fetchURL, $this->url, $this->cookies, $headers);
 		if($cli->status<200 || $cli->status>=300) {
 			if ($cli->status!==304) {
 				$this->lastErrorMsgs[] = $cli->status == -100 ? '[RSS-Timeout]' :
@@ -140,198 +149,130 @@ class rRSS
 			// true if feed not modified
 			return($cli->status===304);
 		}
+
+		// remember etag and lastModified
 		$this->etag = null;
 		$this->lastModified = null;
-		if($cli->status>=200 && $cli->status<300)
+		foreach($cli->headers as $header)
 		{
-			foreach($cli->headers as $h) 
-			{
-				$h = trim($h);
-				if(strpos($h, ": "))
-					list($name, $val) = explode(": ", $h, 2);
-				else
-				{
-					$name = $h;
-					$val = "";
-				}
-				if( $name == 'ETag' ) 
-					$this->etag = $val;
-				else				
-				if( $name == 'Last-Modified' )
-					$this->lastModified = $val;
+			$field = explode(': ', trim(strtolower($header)), 2);
+			$value = count($field) > 1 ? $field[1] : '';
+			switch($field[0]) {
+				case 'etag':
+					$this->etag = $value;
+					break;
+				case 'last-modified':
+					$this->lastModified = $value;
 			}
-			ini_set( "pcre.backtrack_limit", max(strlen($cli->results),100000) );
-			$this->encoding = strtolower($this->search("'encoding=[\'\"](.*?)[\'\"]'si", $cli->results));
-			if($this->encoding=='')
-				$this->encoding = null;
-			$this->channel = array();
-			$this->items = array();
-			if(preg_match("'<channel.*?>(.*?)</channel>'si", $cli->results, $out) || 
-				preg_match("'<channel.*?>(.*?)'si", $cli->results, $out))	// for damned lostfilm.tv with broken rss
-			{
-				$this->isValid=true; //We have a RSS feed here.
-				foreach($this->channeltags as $channeltag)
-				{
-					$temp = $this->search("'<$channeltag.*?>(.*?)</$channeltag>'si", $out[1], ($channeltag=='title'));
-					if($temp!='')
-						$this->channel[$channeltag] = $temp;
-				}
-				if( array_key_exists('lastBuildDate',$this->channel) &&
-				        (($timestamp = strtotime($this->channel['lastBuildDate'])) !==-1))
-					$this->channel['timestamp'] = $timestamp;
-				else
-					$this->channel['timestamp'] = 0;
-						
-				$ret = preg_match_all("'<item(| .*?)>(.*?)</item>'si", $cli->results, $items);
-				if(($ret!==false) && ($ret>0))
-				{
-					foreach($items[2] as $rssItem)
-					{
-						$item = array();
-						foreach($this->itemtags as $itemtag)
-						{
-							if($itemtag=='enclosure')
-								$temp = $this->search("'<enclosure.*url\s*=\s*[\"|\'](.*?)[\"|\'].*>'si", $rssItem);
-							else
-							if($itemtag=='source')
-								$temp = $this->search("'<source\s*url\s*=\s*[\"|\'](.*?)[\"|\'].*>.*</source>'si", $rssItem);
-							else
-							if($itemtag=='title')
-							{
-								$temp = $this->search("'<$itemtag.*?>(.*?)</$itemtag>'si", $rssItem, true);
-								$temp = preg_replace("/\s+/u"," ",$temp);
-							}
-							else
-								$temp = $this->search("'<$itemtag.*?>(.*?)</$itemtag>'si", $rssItem, false);
-							if($itemtag=='description')
-								$temp = html_entity_decode( $temp, ENT_QUOTES, "UTF-8" );
-							if($temp != '')
-							{
-								$item[$itemtag] = $temp;
-								if( (($itemtag=='pubDate') || ($itemtag=='dc:date')) &&
-									(($timestamp = strtotime($temp)) !==-1))
-									$item['timestamp'] = $timestamp;
-							}
-						}
-						$href = '';
-						if(array_key_exists('enclosure',$item))
-							$href = $item['enclosure'];
-						else
-						if(array_key_exists('link',$item))
-							$href = $item['link'];
-						else
-						if(array_key_exists('guid',$item))
-							$href = $item['guid'];
-						else
-						if(array_key_exists('source',$item))
-							$href = $item['source'];
-						$guid = $href;
-						if(array_key_exists('guid',$item) && preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $item['guid']))
-							$guid = $item['guid'];
-						else
-						if(array_key_exists('link',$item) && preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $item['link']))
-							$guid = $item['link'];
-						$item['guid'] = self::removeTegs( $guid );
-						if(!array_key_exists('timestamp',$item))
-						{
-// hack for iptorrents.com
-// Category: Movies/Non-English  Size: 707.38 MB Uploaded: 2009-10-21 07:42:37
-							if(array_key_exists('description',$item) && 
-								(strlen($item['description'])<255) &&
-								(($pos = strpos($item['description'],'Uploaded: '))!==false) &&
-								(($timestamp = strtotime(substr($item['description'],$pos+10)))!==-1))
-								$item['timestamp'] = $timestamp;
-							else
-								$item['timestamp'] = 0;
-						}
-						if(!empty($href))
-							$this->items[self::removeTegs( $href )] = $item;
-					}
-				}
-			}
-			else	// Atom 
-			{
-				$urlPrefix = '';
-				if(preg_match('#<feed.*\s+xml:base\s*=\s*[\"|\'](.*?)[\"|\'].*>#si', $cli->results, $items))
-					$urlPrefix = $items[1];
-				foreach($this->atomtags as $atomtag)
-				{
-					$temp = $this->search("'<$atomtag.*?>(.*?)</$atomtag>'si", $cli->results, ($atomtag=='title'));
-					if($temp!='')
-					{
-						$this->channel[$atomtag] = $temp;
-					}
-				}
-				$validID = $this->search("'<id.*?>(.*?)</id>'si", $cli->results); //If we find an "id" tag, which is mandatory in Atom feed, we assume that it's a valid feed.
-				if($validID!='')
-				{
-					$this->isValid = true;
-				}
-				if( array_key_exists('updated',$this->channel) &&
-				        (($timestamp = strtotime($this->channel['updated'])) !==-1))
-					$this->channel['timestamp'] = $timestamp;
-				else
-					$this->channel['timestamp'] = 0;
-				$ret = preg_match_all("'<entry(| .*?)>(.*?)</entry>'si", $cli->results, $items);
-				if(($ret!==false) && ($ret>0))
-				{
-					foreach($items[2] as $rssItem)
-					{
-						$item = array();
-						foreach($this->entrytags as $itemtag)
-						{
-							if($itemtag=='title')
-							{
-								$temp = $this->search("'<$itemtag.*?>(.*?)</$itemtag>'si", $rssItem, true);
-								$temp = preg_replace("/\s+/u"," ",$temp);
-							}
-							else
-							if($itemtag=='link')
-								$temp = $this->search("'<link.*\s+href\s*=\s*[\"|\'](.*?)[\"|\'].*>'si", $rssItem);
-							else
-								$temp = $this->search("'<$itemtag.*?>(.*?)</$itemtag>'si", $rssItem, false);
-							if(($itemtag=='content') || ($itemtag=='summary'))
-								$temp = html_entity_decode( $temp, ENT_QUOTES, "UTF-8" );
-							if($temp != '')
-							{
-								$item[$itemtag] = $temp;
-								if( ($itemtag=='updated') &&
-									(($timestamp = strtotime($temp)) !==-1))
-									$item['timestamp'] = $timestamp;
-							}
-						}
-						$href = '';
-						if(array_key_exists('link',$item))
-						{
-							$href = self::removeTegs( $urlPrefix.$item['link'] );
-							$item['guid'] = $href;
-						}
-						if(array_key_exists('content',$item))
-							$item['description'] = $item['content'];
-						else
-						if(array_key_exists('summary',$item))
-							$item['description'] = $item['summary'];
-						if(!array_key_exists('timestamp',$item))
-							$item['timestamp'] = 0;
-						if(!empty($href))
-							$this->items[$href] = $item;
-					}
-				}
-			}
-			if( !empty($this->items) )
-			{
-				rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
-				if(!$this->hasIncorrectTimes())
-					foreach( $this->items as $href=>$item )
-						$history->correct($href,$item['timestamp']);
-				return(true);
-			}
-			else if ($this->isValid)
-                		return true;
 		}
-		return(false);
+		// map data from Atom or RSS feeds
+		list($xText, $xIter, $errors) = rssXpath($cli->results);
+
+		$xFirst = function($path) use (&$xIter) {
+			foreach($xIter($path) as $i){
+				return $i;
+			}
+			return null;
+		};
+
+		// assign values to this
+		$this->items = [];
+		$this->channel = [];
+		if (($rss = $xFirst('/rss/channel|/channel')) !== null) {
+			$this->channel = [
+				'title'=>$xText('title', $rss),
+				'link'=>$xText('link', $rss),
+				'timestamp'=>strtotime($xText('lastBuildDate', $rss)),
+			];
+			if ($this->channel['timestamp'] === false) {
+				$this->channel['timestamp'] = 0;
+			}
+
+			foreach( $xIter('item', $rss) as $i) {
+				$item = [
+					'title'=>$xText('title', $i),
+					'timestamp'=>strtotime($xText(['pubDate', 'dc:date'], $i)),
+					'link'=> $xText(['enclosure/@url', 'link', 'guid', 'source/@url'], $i),
+					'guid'=> $xText('guid', $i),
+					'description'=> $xText('description', $i),
+				];
+				if($item['timestamp'] === false)
+				{
+					// hack for iptorrents.com
+					// Category: Movies/Non-English  Size: 707.38 MB Uploaded: 2009-10-21 07:42:37
+					if((strlen($item['description'])<255) &&
+						(($pos = strpos($item['description'],'Uploaded: '))!==false) &&
+						(($timestamp = strtotime(substr($item['description'],$pos+10)))!==-1))
+						$item['timestamp'] = $timestamp;
+					else
+						$item['timestamp'] = 0;
+				}
+				// expect permalink in guid and normal link in url
+				$httpLinkExpr = '|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i';
+				$validPermalink = preg_match($httpLinkExpr, $item['guid']);
+				if (preg_match($httpLinkExpr, $item['link']) ) {
+					if (!$validPermalink) {
+						$item['guid'] = $item['link'];
+					}
+				} elseif ($validPermalink) {
+						$item['link'] = $item['guid'];
+				}
+				$link = $item['link'];
+				if (!empty($link)) {
+					$this->items[$link] = $item;
+				}
+			}
+		} elseif (($atom = $xFirst('/feed')) !== null) {
+			$urlPrefix = $xText('@xml:base', $atom);
+			$this->channel = [
+				'title'=>$xText('title', $atom),
+				'link'=>$urlPrefix.$xText('link/@href', $atom),
+				'timestamp'=>strtotime($xText('updated', $atom)),
+			];
+			if ($this->channel['timestamp'] === false) {
+				$this->channel['timestamp'] = 0;
+			}
+			foreach( $xIter('entry', $atom) as $i) {
+				$description = [];
+				if (($summary = $xText('summary', $i)) != '') {
+					$description[] = $summary;
+				}
+				if (($content = $xText('content', $i)) != '') {
+					$description[] = "[Content]\n".$content;
+				}
+				$item = [
+					'title'=> $xText('title', $i),
+					'timestamp'=>strtotime($xText('updated', $i)) ?? false,
+					'link'=> $urlPrefix.$xText('link/@href', $i),
+					'description'=> join("\n\n", $description),
+				];
+				$item['guid'] = $item['link'];
+				// only add items with an url
+				$link = $item['link'];
+				if (!empty($link)) {
+					$this->items[$link] = $item;
+				}
+			}
+		} else {
+			$this->lastErrorMsgs[] = '<feed> or <rss><channel> not found!';
+			return(false);
+		}
+
+		$errs = $errors();
+		foreach ($errs as $error) {
+			$this->lastErrorMsgs[] = $error;
+		}
+
+		if( !empty($this->items) )
+		{
+			rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
+			if(!$this->hasIncorrectTimes())
+				foreach( $this->items as $url=>$item )
+					$history->correct($url, $item['timestamp']);
+		}
+		return(true);
 	}
-	
+
 	protected function hasIncorrectTimes()
 	{
 		global $feedsWithIncorrectTimes;
@@ -349,67 +290,11 @@ class rRSS
 		return($ret);
 	}
 
-	static public function removeTegs( $s )
-	{
-		$last = '';
-		while($s!=$last)
-		{
-			$last = $s;
-			$s = @html_entity_decode( strip_tags($s), ENT_QUOTES, "UTF-8" );
-		}
-		return($s);
-	}
-
-	protected function search($pattern, $subject, $needTranslate = false)
-	{
-		preg_match($pattern, $subject, $out);
-		if(isset($out[1]))
-		{
-			$out[1] = strtr($out[1], array('<![CDATA['=>'', ']]>'=>''));
-			if($this->encoding && $this->encoding!="utf-8")
-				$out[1] = $this->convert($out[1], $needTranslate);
-			else
-			if($needTranslate)
-				$out[1] = self::removeTegs( $out[1] );
-			if( UTF::isInvalidUTF8( $out[1] ) )
-				$out[1] = UTF::win2utf($out[1]);
-			return(trim($out[1]));
-		}
-		else
-			return('');
-	}
-
-	protected function convert($out,$needTranslate = false)
-	{
-		if($needTranslate)
-			$out = self::removeTegs( $out );
-		if(function_exists('iconv'))
-			$out = iconv($this->encoding, 'UTF-8//TRANSLIT', $out);
-		else
-                if(function_exists('mb_convert_encoding'))
-			$out = mb_convert_encoding($out, 'UTF-8', $this->encoding );
-		else
-			$out = UTF::win2utf($out);
-		return($out);
-	}
-
-
-
 	static protected function quoteInvalidURI($str)
 	{
 		return( preg_replace("/\s/u"," ",$str) );
 	}
 
-	static protected function fetchURL($url, $cookies = null, $headers = null )
-	{
-		$client = new Snoopy();
-		if(is_array($headers) && count($headers))
-			$client->rawheaders = $headers;
-		if(is_array($cookies) && count($cookies))
-			$client->cookies = $cookies;
-		@$client->fetchComplex($url);
-		return $client;
-	}
 }
 
 class rRSSHistory
@@ -599,8 +484,7 @@ class rRSSFilter
 		if(($this->descCheck == 1) && 
 			array_key_exists('description',$rssItem))
 		{
-			$temp = rRSS::removeTegs( $rssItem['description'] );
-			$temp = preg_replace("/\s+/u"," ",$temp);
+			$temp = preg_replace("/\s+/u"," ", $rssItem['description']);
 			if(!empty($content))
 				$content.=' ';
 			$content.=$temp;
@@ -1162,10 +1046,9 @@ class rRSSManager
 	{
 		$rss = new rRSS();
 		$rss->hash = $hash;
-		if($this->rssList->isExist($rss) && 
-			$this->cache->get($rss) && 
-			array_key_exists($href,$rss->items) &&
-			array_key_exists('description',$rss->items[$href]))
+		if($this->rssList->isExist($rss) &&
+			$this->cache->get($rss) &&
+			array_key_exists($href,$rss->items))
 			return($rss->items[$href]['description']);
 		return('');
 	}

@@ -53,6 +53,26 @@ div#FLT_buttons {clear: both}
 #FLTBtn {width: 30px}
 
 #rsslayout { border: 0; display: none; margin: 5px; white-space: pre-line; }
+#rsslayout div { max-width: 700px; }
+.bbcode-code { padding: 1em; border: 1px solid; }
+.bbcode-quote { display: block; padding-left: 1.6em; }
+.bbcode-size, .bbcode-size-normal { font-size: normal; }
+.bbcode-size-small { font-size: smaller; }
+.bbcode-size-large { font-size: larger; }
+.bbcode-color { color: inherit; }
+.bbcode-align-left { display: block; text-align: start; }
+.bbcode-align-right { display: block; text-align: end; }
+.bbcode-align-center { display: block; margin-left: auto; margin-right: auto; text-align: center; }
+.bbcode-font-times { font-family: 'Times New Roman', Times, serif; }
+.bbcode-font-courier { font-family: 'Courier New', Courier, monospace; }
+.bbcode-font-arial { font-family: Arial, Helvetica, sans-serif; }
+.bbcode-font-serif { font-family: serif; }
+.bbcode-font-sans { font-family: sans-serif; }
+.bbcode-font-fantasy { font-family: fantasy; }
+.bbcode-font-monospace { font-family: monospace, monospace; }
+.bbcode-font-caps { font-variant: small-caps; }
+#rsslayout .raw-details { font-size: smaller; float: right; padding: 0 0 0.5em 0.5em; max-width: 700px; }
+#rsslayout .raw-details summary { opacity: 0.5; text-align: right;}
 
 #dlgAddRSSGroup {width: 320px; height: 300px}
 #dlgAddRSSGroup div.dlg-header {background-image: url(./images/rss.gif)}

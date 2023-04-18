@@ -39,29 +39,32 @@ if(plugin.canChangeOptions())
 }
 
 plugin.switchLabel = theWebUI.switchLabel;
-theWebUI.switchLabel = function(el)
+theWebUI.switchLabel = function(labelType, targetId, toggle=false, range=false)
 {
-        var lst = $("#RSSList");
-	if(lst.is(":visible"))
-	{
-		theWebUI.getTable("trt").clearSelection();
-		theWebUI.dID = "";
-		theWebUI.clearDetails();
-		theWebUI.getTable("rss").clearSelection();
-		if(theWebUI.actRSSLbl)
-			$($$(theWebUI.actRSSLbl)).removeClass('sel');
-		theWebUI.actRSSLbl = null;
-		$("#List").show();
-		lst.hide();
-		theWebUI.switchLayout(false);
+	const rssList = $("#RSSList");
+	const list = $("#List");
+	if(labelType === 'prss_cont') {
+		theWebUI.switchRSSLabel($$(targetId));
+	} else {
+		list.show();
+		if(rssList.is(":visible"))
+		{
+			theWebUI.getTable("trt").clearSelection();
+			theWebUI.dID = "";
+			theWebUI.clearDetails();
+			theWebUI.getTable("rss").clearSelection();
+			if(theWebUI.actRSSLbl)
+				$($$(theWebUI.actRSSLbl)).removeClass('sel');
+			theWebUI.actRSSLbl = null;
+			rssList.hide();
+			theWebUI.switchLayout(false);
+		}
+		plugin.switchLabel.call(theWebUI, labelType, targetId, toggle, range);
 	}
-
-	if( $(el).hasClass('RSS') ||
-		$(el).hasClass('disRSS') ||
-		$(el).hasClass('RSSGroup'))
-		theWebUI.switchRSSLabel(el);
-
-	plugin.switchLabel.call(theWebUI,el);
+	// finally hide list if rsslist shown
+	if(rssList.is(":visible")) {
+		list.hide();
+	}
 }
 
 theWebUI.isActiveRSSEnabled = function()
@@ -309,28 +312,18 @@ theWebUI.RSSManager = function()
 	theWebUI.request("?action=getfilters",[this.loadFilters, this]);
 }
 
-theWebUI.rssLabelContextMenu = function(e)
-{
-        if(e.which==3)
-        {
-		if(plugin.canChangeMenu())
-		{
-			theWebUI.getTable("trt").clearSelection();
-			theWebUI.getTable("rss").clearSelection();
-			theWebUI.switchLabel(this);
-			theWebUI.getTable("rss").fillSelection();
-			theWebUI.createRSSMenu(null, null);
-			theContextMenu.show();
-		}
-		else
-		{
-			theContextMenu.hide();
-			theWebUI.switchLabel(this);
-		}
-	}
-	else
-		theWebUI.switchLabel(this);
-	return(false);
+plugin.contextMenuTable = theWebUI.contextMenuTable;
+theWebUI.contextMenuTable = function(labelType, el) {
+	return labelType === 'prss_cont' ? 
+		theWebUI.getTable('rss') 
+		: plugin.contextMenuTable.call(theWebUI, labelType, el);
+},
+
+plugin.contextMenuEntries = theWebUI.contextMenuEntries;
+theWebUI.contextMenuEntries = function(labelType, el) {
+	return labelType === 'prss_cont' ?
+		theWebUI.createRSSMenuPrim()
+		: plugin.contextMenuEntries.call(theWebUI, labelType, el);
 }
 
 theWebUI.fillRSSGroups = function()
@@ -408,62 +401,63 @@ theWebUI.RSSGroupDeleteContents = function()
 
 theWebUI.createRSSMenuPrim = function()
 {
-        if(plugin.canChangeMenu())
-        {
-		theContextMenu.add([ theUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"]);
-		theContextMenu.add([ theUILang.addRSS, "theDialogManager.toggle('dlgAddRSS')"]);
-		theContextMenu.add([ theUILang.addRSSGroup, "theWebUI.RSSAddGroup()"]);
-		theContextMenu.add([ theUILang.rssMenuManager, "theWebUI.RSSManager()"]);
-		if(theWebUI.actRSSLbl) 
+	theWebUI.getTable('trt').clearSelection();
+	theWebUI.dID = "";
+	theWebUI.clearDetails();
+	if(!plugin.canChangeMenu()) {
+		return false;
+	}
+	let entries = [];
+	entries = [
+		[ theUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"],
+		[ theUILang.addRSS, "theDialogManager.toggle('dlgAddRSS')"],
+		[ theUILang.addRSSGroup, "theWebUI.RSSAddGroup()"],
+		[ theUILang.rssMenuManager, "theWebUI.RSSManager()"]
+	];
+	if(theWebUI.actRSSLbl)
+	{
+		entries.push([CMENU_SEP]);
+		if(this.actRSSLbl == "_rssAll_")
 		{
-			theContextMenu.add([CMENU_SEP]);			
-			if(this.actRSSLbl == "_rssAll_")
+			entries = entries.concat([
+				[ theUILang.rssMenuDisable ],
+				[ theUILang.rssMenuEdit ],
+				[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"],
+				[ theUILang.rssMenuDelete ]
+			]);
+		}
+		else
+		{
+			if(this.isGroupSelected())
 			{
-				theContextMenu.add([ theUILang.rssMenuDisable ]);
-				theContextMenu.add([ theUILang.rssMenuEdit ]);
-				theContextMenu.add([ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]);
-				theContextMenu.add([ theUILang.rssMenuDelete ]);
+				entries = entries.concat(this.rssGroups[this.actRSSLbl].enabled==1 ? [
+					[ theUILang.rssMenuGroupDisable, "theWebUI.RSSGroupSetStatus(0)"],
+					[ theUILang.rssMenuGroupRefresh, "theWebUI.RSSGroupRefresh()"]
+				] : [
+					[ theUILang.rssMenuGroupEnable, (this.rssGroups[this.actRSSLbl].cnt==0) ? null : "theWebUI.RSSGroupSetStatus(1)"],
+					[ theUILang.rssMenuGroupRefresh ]
+				]).concat([
+					[ theUILang.rssMenuGroupEdit, "theWebUI.RSSEditGroup()"],
+					[ theUILang.rssMenuGroupDelete, "theWebUI.RSSGroupDelete()"],
+					[ theUILang.rssMenuGroupContentsDelete, "theWebUI.RSSGroupDeleteContents()"]
+				]);
 			}
 			else
 			{
-				if(this.isGroupSelected())
-				{
-					if(this.rssGroups[this.actRSSLbl].enabled==1)
-					{
-						theContextMenu.add([ theUILang.rssMenuGroupDisable, "theWebUI.RSSGroupSetStatus(0)"]);
-						theContextMenu.add([ theUILang.rssMenuGroupRefresh, "theWebUI.RSSGroupRefresh()"]);
-					}
-					else
-					{
-						theContextMenu.add([ theUILang.rssMenuGroupEnable, (this.rssGroups[this.actRSSLbl].cnt==0) ? null : "theWebUI.RSSGroupSetStatus(1)"]);
-						theContextMenu.add([ theUILang.rssMenuGroupRefresh ]);
-					}
-					theContextMenu.add([ theUILang.rssMenuGroupEdit, "theWebUI.RSSEditGroup()"]);
-					theContextMenu.add([ theUILang.rssMenuGroupDelete, "theWebUI.RSSGroupDelete()"]);
-					theContextMenu.add([ theUILang.rssMenuGroupContentsDelete, "theWebUI.RSSGroupDeleteContents()"]);
-				}
-				else
-				{
-					if(this.rssLabels[this.actRSSLbl].enabled==1)
-					{
-						theContextMenu.add([ theUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"]);
-						theContextMenu.add([ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]);
-					}
-					else
-					{
-						theContextMenu.add([ theUILang.rssMenuEnable, "theWebUI.RSSToggleStatus()"]);
-						theContextMenu.add([ theUILang.rssMenuRefresh ]);
-					}
-					theContextMenu.add([ theUILang.rssMenuEdit, "theWebUI.RSSEdit()"]);
-					theContextMenu.add([ theUILang.rssMenuDelete, "theWebUI.RSSDelete()"]);
-				}
+				entries = entries.concat(this.rssLabels[this.actRSSLbl].enabled==1 ? [
+					[ theUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"],
+					[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]
+				] : [
+					[ theUILang.rssMenuEnable, "theWebUI.RSSToggleStatus()"],
+					[ theUILang.rssMenuRefresh ]
+				]).concat([
+					[ theUILang.rssMenuEdit, "theWebUI.RSSEdit()"],
+					[ theUILang.rssMenuDelete, "theWebUI.RSSDelete()"]
+				]);
 			}
 		}
 	}
-	else
-		theContextMenu.hide();
-	theWebUI.dID = "";
-	theWebUI.clearDetails();
+	return entries;
 }
 
 theWebUI.RSSAddToFilter = function()
@@ -471,33 +465,39 @@ theWebUI.RSSAddToFilter = function()
 	theWebUI.request("?action=getfilters",[this.loadFiltersWithAdditions, this]);
 }
 
-theWebUI.createRSSMenu = function(e, id) 
+plugin.createMenu = theWebUI.createMenu;
+theWebUI.createMenu = function(e, id)
 {
-	var trtArray = [];
-	this.rssArray = [];
-	var sr = this.getTable("rss").rowSel;
-	for(var k in sr) 
-	{
-		if(sr[k] == true)
-		{
-			var hash = this.rssItems[k].hash;
-			if(hash && $type(theWebUI.torrents[hash]))
-				trtArray.push(hash);
-			else
-				this.rssArray.push(k);
-		}
+	if (id in this.rssItems) {
+		// context menu for rss item
+		theWebUI.createRSSMenu(e, id);
+	} else {
+		plugin.createMenu.call(theWebUI, e, id);
 	}
+}
+
+theWebUI.createRSSMenu = function(e, id)
+{
+	const [rssArray, trtArray] = Object.entries(this.getTable("rss").rowSel)
+	.filter(([_, sel]) => sel)
+	.map(([link,_]) => [link, this.rssItems[link].hash])
+	.reduce((rss_trt, [l,h]) => {
+		const isTorrent = h && h in theWebUI.torrents;
+		rss_trt[isTorrent ? 1 : 0].push(isTorrent ? h : l);
+		return rss_trt;
+	}, [[],[]]);
+
+	this.rssArray = rssArray;
+
 	theContextMenu.clear();
 	if(this.rssArray.length)
 	{
-	        if(plugin.canChangeMenu())
-	        {
+		if(plugin.canChangeMenu())
+		{
 			theContextMenu.add([ theUILang.rssMenuLoad, "theWebUI.RSSLoad()"]);
 			theContextMenu.add([ theUILang.rssMenuOpen, "theWebUI.RSSOpen()"]);
 			theContextMenu.add([ theUILang.rssMenuAddToFilter, "theWebUI.RSSAddToFilter()"]);
 			theContextMenu.add([CMENU_CHILD, theUILang.rssMarkAs, [ [ theUILang.rssAsLoaded, "theWebUI.RSSMarkState(1)"], [ theUILang.rssAsUnloaded, "theWebUI.RSSMarkState(0)"] ]]);
-			theContextMenu.add([CMENU_SEP]);
-			theWebUI.createRSSMenuPrim();
 		}
 		else
 			theContextMenu.hide();
@@ -505,7 +505,7 @@ theWebUI.createRSSMenu = function(e, id)
 	else
 	if(trtArray.length)
 	{
-	        var table = this.getTable("trt");
+		var table = this.getTable("trt");
 		for(var k in table.rowSel)
 			table.rowSel[k] = false;
 		table.selCount = trtArray.length;
@@ -514,11 +514,7 @@ theWebUI.createRSSMenu = function(e, id)
 		table.refreshSelection();
 		this.dID = trtArray[0];
 		theWebUI.createMenu(e, trtArray[0]);
-		theContextMenu.add([CMENU_SEP]);
-		theWebUI.createRSSMenuPrim();
 	}
-	else
-		theWebUI.createRSSMenuPrim();
 }
 
 theWebUI.rssSelect = function(e, id)
@@ -683,7 +679,7 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 		for( const [lbl, category] of labels ) {
 			let li = $($$(lbl));
 			if(li.length === 0) {
-				li = theWebUI.createSelectableLabelElement(lbl, category.name, theWebUI.rssLabelContextMenu);
+				li = theWebUI.createSelectableLabelElement(lbl, category.name, theWebUI.labelContextMenu);
 			}
 			li.addClass([rssClass, 'disRSS']);
 			li.removeClass(category.enabled == 1 ? 'disRSS' : rssClass);
@@ -700,9 +696,9 @@ theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
 	const curRSSLbl = theWebUI.actRSSLbl;
 	theWebUI.actRSSLbl = null;
 	if (removedLbls.includes(curRSSLbl)) {
-		this.switchLabel($$("_rssAll_"));
+		this.switchLabel('prss_cont', '_rssAll_');
 	} else if(curRSSLbl) {
-		this.switchLabel($$(curRSSLbl));
+		this.switchLabel('prss_cont', curRSSLbl);
 	}
 }
 
@@ -1040,9 +1036,9 @@ theWebUI.showFilterResults = function( d )
 {
 	this.showErrors(d.errors);
 	if(d.rss && d.rss.length)
-		this.switchLabel($$(d.rss));
+		this.switchLabel('prss_cont', d.rss);
 	else
-		this.switchLabel($$('_rssAll_'));
+		this.switchLabel('prss_cont', '_rssAll_');
 	var table = this.getTable("rss");
 	for(var k in table.rowSel)
 		table.rowSel[k] = false;
@@ -1151,14 +1147,322 @@ rTorrentStub.prototype.setrsssettings = function()
 	this.rssCommon("mode=setsettings&interval="+this.ss[0]+"&delayerrui="+this.ss[1]);
 }
 
-rTorrentStub.prototype.getrssdetailsResponse = function(data)
-{
-    	const doc = new DOMParser().parseFromString(String(data), 'text/html');
-    	var s = new Sanitize(Sanitize.Config.RESTRICTED);
-    	$("#rsslayout").html(s.clean_node(doc.body));
-    	return(false);
-}
+theWebUI.mapBBCodeToHTML = function (htmlText) {
+	const tags = {
+		...Object.fromEntries(
+			[ "b", "i", "sup", "sub", "table", "thead", "tbody", "tfoot", "tr", "td", "th", "li" ].map((t) => [t, () => [t]])
+		),
+		...Object.fromEntries(
+			["ul", "ol", "list"].map((name) => [
+				name,
+				(_, content) => {
+					const htmlTag = name === "list" ? "ul" : name;
+					const ele = $(`<${htmlTag}>`).html(content);
+					const list = $(`<${htmlTag}>`);
+					let lastLiNode = $("<li>");
+					for (const node of ele.contents()) {
+						if (node.nodeName.toLowerCase() === "li") {
+							// keep li nodes
+							lastLiNode = $(node);
+						} else {
+							if (node.nodeType === 3) {
+								// parse list items denoted by [*] and *
+								const items = String(node.nodeValue)
+									.replaceAll(/(^|[\s\]])\*\s/g, "[*]")
+									.split(/\[\*\]/g);
+								if (!list.children("li").length) {
+									// set text of empty list
+									list.text(items.shift());
+								}
+								const firstItem = items.shift();
+								if (firstItem) {
+									// add textnode to lastLiNode
+									lastLiNode.append(document.createTextNode(firstItem));
+								}
+								for (const item of items) {
+									list.append(lastLiNode);
+									lastLiNode = $("<li>").text(item);
+								}
+							} else {
+								// add some node to lastLiNode
+								lastLiNode.append($(node));
+							}
+						}
+						// add lastLiNode to list (if not added already)
+						list.append(lastLiNode);
+					}
+					return [htmlTag, {}, list[0].innerHTML];
+				},
+			])
+		),
+		u: () => ["ins"],
+		s: () => ["del"],
+		...Object.fromEntries(
+			["small", "normal", "large"].map((t) => [
+				t,
+				() => ["span", { class: `bbcode-size-${t}` }],
+			])
+		),
+		size: (arg) => ["span", { class: `bbcode-size-${arg}` }],
+		color: (arg) => ["span", { class: `bbcode-color-${arg}` }],
+		...Object.fromEntries(
+			["center", "left", "right"].map((t) => [
+				t,
+				() => ["span", { class: `bbcode-align-${t}` }],
+			])
+		),
+		...Object.fromEntries(
+			["font", "face"].map((t) => [
+				t,
+				(arg) => ["span", { class: (arg || "").toLowerCase() }],
+			])
+		),
+		style: (_, __, args) => [
+			"span",
+			{
+				class: Object.entries(args)
+					.map(([k, v]) => `bbcode-${k}-${v}`)
+					.join(" "),
+			},
+		],
+		img: (arg, content, args) => [
+			"img",
+			{
+				src: content,
+				...Object.fromEntries(
+					(arg || "")
+						.split("x")
+						.map((v, k) => [["width", "height"][k], Number.parseInt(v)])
+						.filter(([_, v]) => !Number.isNaN(v))
+				),
+				...args,
+			},
+			"",
+		],
+		url: (arg, content) => ["a", { href: arg == null ? content : arg }],
+		email: (arg, content) => [
+			"a",
+			{ href: `mailto:${arg == null ? content : arg}` },
+		],
+		quote: (arg, content, args) => [
+			"blockquote",
+			{},
+			$("<p>").html(content)[0].outerHTML +
+				$("<span>")
+					.addClass("bbcode-quote")
+					.text("-- ")
+					.append($("<cite>").text(arg || args["author"] || ""))[0].outerHTML,
+		],
+		code: () => ["pre", { class: "bbcode-code" }],
+		spoiler: (arg, content) => [
+			"details",
+			{},
+			$("<summary>").html(arg)[0].outerHTML + content,
+		],
+		"bbcode-root": () => ["div"],
+	};
 
+	const trimArg = (arg) =>
+		arg == null
+			? null
+			: arg.startsWith('"')
+			? arg.substring(1, arg.length - 1)
+			: arg.trim();
+	const argsToDict = (args) => {
+		const dict = {};
+		for (const match of args.matchAll(
+			/\s+?(?<name>[a-z]+)=(?<arg>"(.*?)"|[^\s]*)/gi
+		)) {
+			const { name, arg } = match.groups;
+			if (name && arg) {
+				dict[name] = trimArg(arg);
+			}
+		}
+		return dict;
+	};
+
+	const nodeToElement = (node) => {
+		const htmlContent = node.children
+			.map((n) => (n.name ? nodeToElement(n).outerHTML : n))
+			.join("");
+		const arg = trimArg(node.arg);
+		const args = node.args ? argsToDict(node.args) : {};
+		const [htmlTag, attribs, htmlContentProcessed] = tags[node.name](
+			arg,
+			htmlContent,
+			args
+		);
+		const ele = $(`<${htmlTag}>`)
+			.attr(attribs || {})
+			.html(htmlContentProcessed || htmlContent)[0];
+		return ele;
+	};
+
+	const simpleParamPattern = '\\s*?=\\s*?(?<arg>"(.*?)"|.*?)';
+	const complexParamPattern = '(?<args>(\\s+?[a-z]+=("(.*?)"|[^\\s]*?))+)';
+	const tagPattern = new RegExp(
+		"\\[\\/?(?<name>" +
+			Object.keys(tags).join("|") +
+			")(" +
+			simpleParamPattern +
+			"|" +
+			complexParamPattern +
+			")?\\s*?\\]",
+		"gsi"
+	);
+	let nodeStack = [{ name: "bbcode-root", children: [] }];
+	let offset = 0;
+	for (const match of htmlText.matchAll(tagPattern)) {
+		const parent = nodeStack[nodeStack.length - 1];
+		const { name, arg, args } = match.groups;
+		const closing = match[0].startsWith("[/");
+		// add textnode to parent
+		const textnode = match.input.substring(offset, match.index);
+		if (textnode) {
+			parent.children.push(textnode);
+		}
+		if (closing) {
+			if (parent.name === name && nodeStack.length > 1) {
+				nodeStack.pop();
+			} else {
+				// encoutered unexpected close tag
+				nodeStack = [nodeStack[0]];
+			}
+		} else {
+			const node = { name, arg, args, children: [] };
+			parent.children.push(node);
+			// make curnode to parent node
+			nodeStack.push(node);
+		}
+		offset = match.index + match[0].length;
+	}
+	nodeStack[nodeStack.length-1].children.push(htmlText.substring(offset, htmlText.length));
+	const htmlContent = nodeToElement(nodeStack[0]).innerHTML;
+
+	// Support for some emoticons from WhatCD/Gazelle (https://github.com/WhatCD/Gazelle/tree/master/static/common/smileys)
+	// :code: => utf8 emoticon (https://utf8-icons.com/subset/emoticons)
+	const emoticons = {
+		smile: "&#128578;",
+		blank: "&#128528;",
+		biggrin: "&#128513;",
+		angry: "&#128545;",
+		blush: "&#128522;",
+		cool: "&#128526;",
+		crying: "&#128546;",
+		frown: "&#128577;",
+		unsure: "&#128533;",
+		lol: "&#128516;",
+		ninja: "&#129399;",
+		no: "&#128581;",
+		ohno: "&#128552;",
+		ohnoes: "&#128552;",
+		omg: "&#128576;",
+		shifty: "&#128530;",
+		sick: "&#128567;",
+		wink: "&#128521;",
+		creepy: "&#128520;",
+		tongue: "&#128540;",
+		thumbsup: "&#128077;",
+		"+1": "&#128077;",
+		thumbsdown: "&#128078;",
+		"-1": "&#128078;",
+	};
+	const emoticonRegExp = new RegExp(
+		":(" +
+			Object.keys(emoticons)
+				.map((e) => e.replaceAll(/\+/g, "\\+"))
+				.join("|") +
+			"):",
+		"g"
+	);
+	return htmlContent.replace(
+		emoticonRegExp,
+		(_, iconName) => emoticons[iconName]
+	);
+};
+
+rTorrentStub.prototype.getrssdetailsResponse = function (data) {
+	const colorNamePattern =
+		/^(?:aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen)$/;
+	const colorCodePattern = /^#?[a-f0-9]{6}$/i;
+	const restirctedFontSize = (value) => {
+		const size = Math.max(4, Math.min(40, Number.parseInt(value)));
+		return Number.isNaN(size) ? "normal" : `${size}px`;
+	};
+	const bbNodeAttr = {
+		color: (value) =>
+			colorNamePattern.test(value)
+				? { color: value }
+				: colorCodePattern.test(value)
+				? { color: value.startsWith("#") ? value : `#${value}` }
+				: null,
+		size: (value) =>
+			["small", "large", "normal"].includes(value)
+				? "class"
+				: { "font-size": restirctedFontSize(value) },
+		align: (value) =>
+			["left", "right", "center"].includes(value) ? "class" : null,
+		font: (value) =>
+			[ "times", "courier", "arial", "serif", "sans", "fantasy", "monospace", "caps", ].includes(value) ? "class" : null,
+	};
+	const bbclassTransform = (cfg) => {
+		const node = cfg.node;
+		if (!["pre", "span"].includes(node.nodeName.toLowerCase())) {
+			return null;
+		}
+		let styles = {};
+		let classes = [];
+		for (const bbClass of (node.attributes.class?.value || "").split(" ")) {
+			const [bbcode, key, value] = bbClass.split("-");
+			if (bbcode === "bbcode") {
+				const style = key in bbNodeAttr ? bbNodeAttr[key](value || "") : null;
+				if (style !== null) {
+					if (style !== "class") {
+						styles = { ...styles, ...style };
+					}
+					classes.push(
+						`${bbcode}-${key}` + (style === "class" ? `-${value}` : "")
+					);
+				}
+			}
+		}
+		// replace existing attributes with style and class
+		[...node.attributes].forEach((attr) => node.removeAttribute(attr.name));
+		for (const [name, value] of [
+			["style", Object.entries(styles).map((e) => e.join(": ")).join("; ")],
+			["class", classes.join(" ")],
+		]) {
+			if (value) {
+				const attr = cfg.dom.createAttribute(name);
+				attr.value = value;
+				node.attributes[name] = attr;
+			}
+		}
+		return {
+			whitelist: Boolean(classes.length),
+			attr_whitelist: ["class", "style"],
+			node,
+		};
+	};
+	const cfg = Sanitize.Config.RESTRICTED;
+	const s = new Sanitize({
+		elements: [...cfg.elements, "ins", "details", "summary"],
+		transformers: [bbclassTransform],
+	});
+	const rawHTML = String(data);
+	const dirtyHTML = theWebUI.mapBBCodeToHTML(rawHTML);
+	const doc = new DOMParser().parseFromString(dirtyHTML, "text/html");
+	$("#rsslayout")
+		.empty()
+		.append(
+		$("<details>")
+			.addClass('raw-details')
+			.text(rawHTML)
+			.append($("<hr>"))
+			.append($("<summary>").text("Raw")),
+		$('<div>').html(s.clean_node(doc.body)));
+	return false;
+};
 
 rTorrentStub.prototype.setfilters = function()
 {
@@ -1421,7 +1725,7 @@ plugin.onLangLoaded = function()
 				theWebUI.createSelectableLabelElement(
 					'_rssAll_',
 					theUILang.allFeeds,
-					theWebUI.rssLabelContextMenu
+					theWebUI.labelContextMenu
 				).addClass('RSS')
 		));
 	$("#prss").append( $("<span></span>").attr("id", "rsstimer") );
