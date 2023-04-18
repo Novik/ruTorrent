@@ -259,36 +259,6 @@ plugin.reloadData = function(id)
 	}
 }
 
-plugin.enterTeg = function()
-{
-	plugin.reloadData(theWebUI.actLbls["flabel_cont"]);
-	var lst = $("#List");
-	var table = theWebUI.getTable("teg");
-	if(lst.is(":visible"))	
-	{
-		theWebUI.getTable("trt").clearSelection();
-		theWebUI.dID = "";
-		theWebUI.clearDetails();
-		var teg = $("#TegList");
-		teg.css( { width: lst.width(), height: lst.height() } );
-		table.resize(lst.width(), lst.height());
-		lst.hide();
-		teg.show();
-		table.scrollTo(0);
-	}
-	table.calcSize().resizeHack();
-}
-
-plugin.leaveTeg = function()
-{
-	$("#TegList").hide();
-	$("#List").show();
-	if(theWebUI.actLbls["flabel_cont"] && $($$(theWebUI.actLbls["flabel_cont"])).hasClass("exteg")) 
-	{
-		plugin.switchLabel.call(theWebUI,$("#flabel_cont .-_-_-all-_-_-").get(0));
-	}
-}
-
 plugin.correctCounter = function(id,count)
 {
 	if($type(plugin.tegs[id]))
@@ -306,20 +276,55 @@ plugin.correctCounter = function(id,count)
 }
 
 plugin.switchLabel = theWebUI.switchLabel;
-theWebUI.switchLabel = function(obj)
+theWebUI.switchLabel = function(labelType, targetId, toggle=false, range=false)
 {
-	if(plugin.enabled && theWebUI.actLbls["flabel_cont"] && $type(plugin.tegs[theWebUI.actLbls["flabel_cont"]]))
-		plugin.leaveTeg();
-	plugin.switchLabel.call(theWebUI,obj);
-	if(plugin.enabled && theWebUI.actLbls["flabel_cont"] && $type(plugin.tegs[theWebUI.actLbls["flabel_cont"]]))
-		plugin.enterTeg();
+	const tegList = $("#TegList");
+	const list = $("#List");
+	if (plugin.enabled 
+		&& labelType == 'flabel_cont' 
+		&& targetId in plugin.tegs 
+		&& $($$(targetId)).hasClass('exteg') 
+	) {
+		// no support for multi selection
+		toggle = false;
+		range = false;
+		plugin.reloadData(targetId);
+		const table = theWebUI.getTable("teg");
+		if (!tegList.is(":visible"))
+		{
+			// switch to extsearch view
+			theWebUI.getTable("trt").clearSelection();
+			theWebUI.dID = "";
+			theWebUI.clearDetails();
+			tegList.css( { width: list.width(), height: list.height() } );
+			table.resize(list.width(), list.height());
+			tegList.show();
+		}
+		table.scrollTo(0);
+		table.calcSize().resizeHack();
+	} else {
+		// switch away from extsearch view
+		tegList.hide();
+		list.show();
+	}
+	plugin.switchLabel.call(theWebUI, labelType, targetId, toggle, range);
+
+	// finally hide list if teglist shown
+	if (tegList.is(":visible")) {
+		list.hide();
+	}
 }
 
-plugin.filterByLabel = theWebUI.filterByLabel;
-theWebUI.filterByLabel = function(hash)
+theWebUI.activeExtTegId = function() {
+	return (theWebUI.actLbls['flabel_cont'] ?? []).find(lid => lid in plugin.tegs);
+}
+
+plugin.filterTorrentTable = theWebUI.filterTorrentTable;
+theWebUI.filterTorrentTable = function()
 {
-        if(!$($$(this.actLbls["flabel_cont"])).hasClass("exteg"))
-		plugin.filterByLabel.call(theWebUI,hash);
+	if (!theWebUI.activeExtTegId()) {
+		plugin.filterTorrentTable.call(theWebUI);
+	}
 }
 
 theWebUI.setTagsHash = function(d)
@@ -355,32 +360,36 @@ theWebUI.extTegOpen = function()
 theWebUI.tegItemRemove = function()
 {
 	var table = theWebUI.getTable("teg");
+	const tegId = theWebUI.activeExtTegId();
 	for(var i = 0; i<plugin.tegArray.length; i++)
 	{
-		plugin.tegs[theWebUI.actLbls["flabel_cont"]].data[plugin.tegArray[i].ndx].deleted = true;
-		table.removeRow( theWebUI.actLbls["flabel_cont"]+"$"+plugin.tegArray[i].ndx );
+		plugin.tegs[tegId].data[plugin.tegArray[i].ndx].deleted = true;
+		table.removeRow( tegId+"$"+plugin.tegArray[i].ndx );
 	}
 	table.correctSelection();
-	plugin.correctCounter(theWebUI.actLbls["flabel_cont"],null);
+	plugin.correctCounter(tegId,null);
 	table.refreshRows();
 }
 
 theWebUI.showTegURLInfo = function()
 {
 	var table = theWebUI.getTable("teg");
+	const tegId = theWebUI.activeExtTegId();
 	for(var i = 0; i<plugin.tegArray.length; i++)
 	{
-		log(theUILang.exsURLGUID+": "+plugin.tegs[theWebUI.actLbls["flabel_cont"]].data[plugin.tegArray[i].ndx].desc);
-		log(theUILang.exsURLHref+": "+plugin.tegs[theWebUI.actLbls["flabel_cont"]].data[plugin.tegArray[i].ndx].link);
+		log(theUILang.exsURLGUID+": "+plugin.tegs[tegId].data[plugin.tegArray[i].ndx].desc);
+		log(theUILang.exsURLHref+": "+plugin.tegs[tegId].data[plugin.tegArray[i].ndx].link);
 	}
 }
 
 theWebUI.extTegDelete = function()
 {
-	var lbl = theWebUI.actLbls["flabel_cont"];
-	theWebUI.switchLabel($("#flabel_cont .-_-_-all-_-_-").get(0))
-	delete plugin.tegs[lbl];
-	$($$(lbl)).remove();
+	const tegId = theWebUI.activeExtTegId();
+	theWebUI.switchLabel('flabel_cont', '');
+	if (tegId) {
+		delete plugin.tegs[tegId];
+		$($$(tegId)).remove();
+	}
 }
 
 plugin.createExtTegMenu = function(e, id)
@@ -432,39 +441,35 @@ plugin.createExtTegMenu = function(e, id)
 	}
 }
 
-plugin.extTegContextMenu = function(e)
-{
-        if(e.which==3)
-        {
-		if(plugin.canChangeMenu())
-		{
-			var table = theWebUI.getTable("teg");
-			theWebUI.getTable("trt").clearSelection();
-			table.clearSelection();
-			theWebUI.switchLabel(this);
-			table.fillSelection();
-			var id = table.getFirstSelected();
-			if(id)
-			{
-				plugin.createExtTegMenu(null, id);
-		   		theContextMenu.add([CMENU_SEP]);
-			}
-			else
-				theContextMenu.clear();
-			theContextMenu.add([ theUILang.tegRefresh,  "theWebUI.tegRefresh()"]);
-			theContextMenu.add([ theUILang.tegMenuDelete, "theWebUI.extTegDelete()"]);
-			theContextMenu.show();
-		}
-		else
-		{
-			theContextMenu.hide();
-			theWebUI.switchLabel(this);
-		}
+plugin.contextMenuTable = theWebUI.contextMenuTable;
+theWebUI.contextMenuTable = function(labelType, el) {
+	return labelType === 'flabel_cont' && $(el).hasClass('exteg') ?
+		theWebUI.getTable('teg')
+		: plugin.contextMenuTable.call(theWebUI, labelType, el);
+},
+
+plugin.contextMenuEntries = theWebUI.contextMenuEntries;
+theWebUI.contextMenuEntries = function(labelType, el) {
+	if (labelType === 'flabel_cont' && $(el).hasClass('exteg')) {
+		theWebUI.getTable('trt').clearSelection();
+		return plugin.canChangeMenu() ? [
+			[ theUILang.tegRefresh,  "theWebUI.tegRefresh()"],
+			[ theUILang.tegMenuDelete, "theWebUI.extTegDelete()"]
+		] : false;
 	}
-	else
-		theWebUI.switchLabel(this);
-	return(false);
-};
+	return plugin.contextMenuEntries.call(theWebUI, labelType, el);
+}
+
+plugin.createMenu = theWebUI.createMenu;
+theWebUI.createMenu = function(e,id) {
+	if (id in this.getTable('teg').rowSel) {
+		// context menu for ext search
+		plugin.createExtTegMenu(e, id);
+	} else {
+		plugin.createMenu.call(theWebUI, e, id);
+	}
+}
+
 
 theWebUI.setExtSearchTag = function( d )
 {
@@ -475,17 +480,17 @@ theWebUI.setExtSearchTag = function( d )
 		if(plugin.tegs[id].val==str)
 		{
 			plugin.tegs[id].data = d.data;
-			theWebUI.switchLabel($$(id));
+			theWebUI.switchLabel('flabel_cont', id);
 			return;
 		}
 	var tegId = "extteg_"+plugin.lastTeg;
 	plugin.lastTeg++;
-	var el = theWebUI.createSelectableLabelElement(tegId, str, plugin.extTegContextMenu)
+	var el = theWebUI.createSelectableLabelElement(tegId, str, theWebUI.labelContextMenu)
 		.addClass('exteg');
 	el.find('.label-icon').addClass('Engine'+d.eng);
 	$("#lblf").append( el );
 	plugin.tegs[tegId] = { "val": str, "what": what, "cat": d.cat, "eng": d.eng, "data": d.data };
-	theWebUI.switchLabel(el[0]);
+	theWebUI.switchLabel('flabel_cont', tegId);
 }
 
 plugin.getTegByRowId = function( rowId )
@@ -506,14 +511,15 @@ theWebUI.loadTorrents = function(needSort)
 {
 	plugin.loadTorrents.call(this,needSort);
 	var table = this.getTable("teg");
-	if(plugin.enabled && this.actLbls["flabel_cont"] && $type(plugin.tegs[this.actLbls["flabel_cont"]]))
+	const tegId = theWebUI.activeExtTegId();
+	if(plugin.enabled && tegId) 
 	{
 		var updated = false;
-		var tegItems = plugin.tegs[this.actLbls["flabel_cont"]].data;
+		var tegItems = plugin.tegs[tegId].data;
 		for(var i=0; i<tegItems.length; i++)
 		{
 			var item = tegItems[i];
-			var ndx = this.actLbls["flabel_cont"]+'$'+i;
+			var ndx = tegId+'$'+i;
 			if($type(table.rowdata[ndx]))
 			{
 				if((item.hash!="") && $type(this.torrents[item.hash]))
@@ -541,9 +547,9 @@ theWebUI.loadTorrents = function(needSort)
 
 theWebUI.tegRefresh = function()
 {
-	if($type(plugin.tegs[theWebUI.actLbls["flabel_cont"]]))
-	{
-		var item = plugin.tegs[theWebUI.actLbls["flabel_cont"]];
+	const tegId = theWebUI.activeExtTegId();
+	if (tegId) {
+		const item = plugin.tegs[tegId];
 		$("#query").val(item.what).prop("readonly",true);
 		theWebUI.requestWithoutTimeout("?action=extsearch&s="+item.eng+"&v="+encodeURIComponent(item.what)+"&v="+encodeURIComponent(item.cat),[theWebUI.setExtSearchTag, theWebUI]);
 	}
