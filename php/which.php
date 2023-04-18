@@ -49,15 +49,14 @@ class WhichInstance
 	private static $instance = null;
 	private static $cache = null;
 	
-	public static function load($diagnostic)
+	public static function load()
 	{
 		if (!self::initialized())
 		{
 			self::$cache = new rCache();
 			self::$instance = new WhichCache();
 			self::$cache->get(self::$instance);
-			if ($diagnostic)
-				self::$instance->pruneCache();
+			self::$instance->pruneCache();
 		}
 		return(self::$instance);
 	}
@@ -83,6 +82,5 @@ function findEXE( $exe )
 	if(isset($pathToExternals[$exe]) && !empty($pathToExternals[$exe]))
 		return(is_executable($pathToExternals[$exe]) ? $pathToExternals[$exe] : false);
 	
-	global $do_diagnostic;
-	return(WhichInstance::load($do_diagnostic)->getFilePath($exe));
+	return(WhichInstance::load()->getFilePath($exe));
 }
