@@ -710,7 +710,7 @@ var theFormatter =
 	      				arr[i] = theConverter.time(arr[i]);
       					break;
       				case 'last' :
-	      				arr[i] = iv(arr[i]) ? theConverter.time( $.now()/1000 - iv(arr[i]) - theWebUI.deltaTime/1000,true) : '';
+					arr[i] = arr[i] > 0 ? theConverter.time(arr[i], true) : '';
       					break;
 	      		}
 		}
@@ -769,7 +769,7 @@ var theFormatter =
 				(l === level ? '├' : '│') :
 				(l === level ? '└' : ' '));
 		}
-		return prefix;
+		return prefix.join('');
 	}
 };
 
@@ -1627,6 +1627,14 @@ function strip_tags(input, allowed)
 	{
 		return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
     	});
+}
+
+if (!window.requestIdleCallback) {
+	// monkey patch requestIdleCallback (for Safari)
+	window.requestIdleCallback = function(func, _) {
+		return setTimeout(() => func({didTimeout: true, timeRemaining: () => 0}), 1);
+	};
+	window.cancelIdleCallback = clearTimeout;
 }
 
 // Caveat: doesn't work with Internet Explorer.
