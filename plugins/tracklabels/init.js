@@ -77,11 +77,24 @@ if(!$type(theWebUI.getTrackerName))
 
 plugin.contextMenuEntries = theWebUI.contextMenuEntries;
 theWebUI.contextMenuEntries = function(labelType, el) {
-	if (labelType === 'ptrackers_cont') {
-		return plugin.canChangeMenu() ? [] : false;
+	const entries = plugin.contextMenuEntries.call(theWebUI, labelType, el);
+	if (plugin.canChangeMenu() && ['ptrackers_cont', 'plabel_cont'].includes(labelType)) {
+		const lbl = 'ptrackers_cont' === labelType ? el.id.substr(1) : theWebUI.idToLbl(el.id);
+		if (lbl)
+			return entries.concat([
+				[theUILang.EditIcon, `theWebUI.showTracklabelsDialog('${lbl}');`]
+			]);
 	}
-	return plugin.contextMenuEntries.call(theWebUI, labelType, el);
+	return entries;
 }
+
+
+theWebUI.showTracklabelsDialog = function(lbl) {
+	$(`#${plugin.dialogId} input[type=text]`).val(lbl);
+	theDialogManager.show(plugin.dialogId);
+}
+
+
 
 plugin.updateLabel = theWebUI.updateLabel;
 theWebUI.updateLabel = function(label, ...args)
