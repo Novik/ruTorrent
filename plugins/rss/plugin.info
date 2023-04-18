@@ -1,6 +1,6 @@
 plugin.description: This plugin is designed to fetch torrents via rss download links.
 plugin.author: Novik
-plugin.version: 4.0
+plugin.version: 4.1
 plugin.remote: warning
 rtorrent.external.warning: curl
 rtorrent.external.error: php

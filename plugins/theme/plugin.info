@@ -1,6 +1,6 @@
 plugin.description: This plugin allows to change the UI theme to one of several provided themes.
 plugin.author: Novik
 plugin.runlevel: 5
-plugin.version: 4.0
+plugin.version: 4.1
 rtorrent.need: 0
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginTheme
