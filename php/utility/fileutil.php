@@ -6,6 +6,7 @@ require_once( 'user.php' );
 class FileUtil
 {
 	private static $profilePathInstance = null;
+	private static $rootDirectory = dirname(__FILE__)."/../..";
 	
 	public static function getFileName($path)
 	{
@@ -91,15 +92,13 @@ class FileUtil
 	public static function getPluginConf($plugin)
 	{
 		$ret = '';
-		// Go back to ruTorrent root folder and include the plugin config.php file
-		$conf = dirname(__FILE__).'/../../plugins/'.$plugin.'/conf.php';
+		$conf = self::$rootDirectory.'/plugins/'.$plugin.'/conf.php';
 		if(is_file($conf) && is_readable($conf))
 			$ret.='require("'.$conf.'");';
 		$user = User::getUser();
 		if($user!='')
 		{
-			// Go back to ruTorrent root folder and include the user plugin config.php file
-			$conf = dirname(__FILE__).'/../../conf/users/'.$user.'/plugins/'.$plugin.'/conf.php';
+			$conf = self::$rootDirectory.'/conf/users/'.$user.'/plugins/'.$plugin.'/conf.php';
 			if(is_file($conf) && is_readable($conf))
 				$ret.='require("'.$conf.'");';
 		}
@@ -111,8 +110,7 @@ class FileUtil
 		$user = User::getUser();
 		if($user!='')
 		{
-			// Go back to ruTorrent root folder and find user config file
-			$conf = dirname(__FILE__).'/../../conf/users/'.$user.'/'.$name;
+			$conf = self::$rootDirectory.'/conf/users/'.$user.'/'.$name;
 			if(is_file($conf) && is_readable($conf))
 				return($conf);
 		}
