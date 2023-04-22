@@ -92,14 +92,14 @@ class FileUtil
 	{
 		$ret = '';
 		// Go back to ruTorrent root folder and include the plugin config.php file
-		$conf = dirname(__FILE__)."/../../plugins/'.$plugin.'/conf.php";
+		$conf = dirname(__FILE__).'/../../plugins/'.$plugin.'/conf.php';
 		if(is_file($conf) && is_readable($conf))
 			$ret.='require("'.$conf.'");';
 		$user = User::getUser();
 		if($user!='')
 		{
 			// Go back to ruTorrent root folder and include the user plugin config.php file
-			$conf = dirname(__FILE__)."/../../conf/users/'.$user.'/plugins/'.$plugin.'/conf.php";
+			$conf = dirname(__FILE__).'/../../conf/users/'.$user.'/plugins/'.$plugin.'/conf.php';
 			if(is_file($conf) && is_readable($conf))
 				$ret.='require("'.$conf.'");';
 		}
@@ -111,8 +111,8 @@ class FileUtil
 		$user = User::getUser();
 		if($user!='')
 		{
-			global $rootPath;
-			$conf = $rootPath.'/conf/users/'.$user.'/'.$name;
+			// Go back to ruTorrent root folder and find user config file
+			$conf = dirname(__FILE__).'/../../conf/users/'.$user.'/'.$name;
 			if(is_file($conf) && is_readable($conf))
 				return($conf);
 		}
