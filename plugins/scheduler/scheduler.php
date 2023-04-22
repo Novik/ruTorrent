@@ -1,7 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
-require_once( $rootPath.'/php/cache.php');
+require_once( dirname(__FILE__)."/../../php/cache.php" );
 eval(FileUtil::getPluginConf('scheduler'));
 
 @define('SCH_FAST', 0);

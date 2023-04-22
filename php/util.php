@@ -2,7 +2,9 @@
 
 // Include our base configuration file
 $rootPath = realpath(dirname(__FILE__)."/..");
-require_once( $rootPath.'/conf/config.php' );
+// Avoid reusing $rootPath here becuase it calls realpath
+// dirname is a more stable option becuase it's not file system aware
+require_once( dirname(__FILE__).'/../conf/config.php' );
 
 // Automatically include only the used utility classes
 spl_autoload_register(function ($class) 

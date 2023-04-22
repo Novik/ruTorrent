@@ -1,8 +1,8 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
-require_once( $rootPath.'/php/cache.php');
-require_once( $rootPath.'/php/settings.php');
+require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/settings.php" );
 eval(FileUtil::getPluginConf('ratio'));
 
 @define('RAT_STOP',0);
