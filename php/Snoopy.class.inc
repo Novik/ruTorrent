@@ -215,24 +215,25 @@ class Snoopy
 
 	public function fetchComplex($URI,$method="GET",$content_type="",$body="")
 	{
-		global $rootPath;
 		$parts = parse_url($URI);
 		$this->host = $parts["host"];
 		if(rTorrentSettings::get()->isPluginRegistered('cookies') && !empty($this->host))
 		{
-			require_once($rootPath."/plugins/cookies/cookies.php");	
+			// Go back to ruTorrent root folder and include cookies.php plugin file
+			require_once(dirname(__FILE__)."/../plugins/cookies/cookies.php");
 			$cookies = rCookies::load();
 			$this->cookies = array_merge($this->cookies,$cookies->getCookiesForHost($this->host));
 		}
 		$this->cookies = array_merge($this->cookies,self::getURLCookies($URI));
 		if(rTorrentSettings::get()->isPluginRegistered('loginmgr'))
 		{
-			require_once($rootPath."/plugins/loginmgr/accounts.php");	
+			// Go back to ruTorrent root folder and include accounts.php plugin file
+			require_once(dirname(__FILE__)."/../plugins/loginmgr/accounts.php");
 			$am = accountManager::load();
 			if($am===false)
 			{
 				$am = new accountManager();
-				$am->obtain($rootPath."/plugins/loginmgr/accounts");
+				$am->obtain();
 			}
 			$acc = $am->getAccount($URI);
 			if($acc)

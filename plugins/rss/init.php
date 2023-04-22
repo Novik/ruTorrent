@@ -6,7 +6,8 @@ FileUtil::makeDirectory( array($st.'/rss',$st.'/rss/cache') );
 $needStart = User::isLocalMode() && $theSettings->linkExist;
 if($needStart)
 {
-	require_once($rootPath.'/plugins/rss/rss.php');
+	// Go back to ruTorrent root folder and include rss.php plugin file
+	require_once( dirname(__FILE__)."/../../plugins/rss/rss.php");
 	$mngr = new rRSSManager();
 	if($mngr->setHandlers())
 	{
