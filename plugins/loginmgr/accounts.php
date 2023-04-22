@@ -1,8 +1,8 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/util.php" );
-require_once( $rootPath.'/php/cache.php');
-require_once( $rootPath.'/php/Snoopy.class.inc');
+require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc");
 eval( FileUtil::getPluginConf( 'loginmgr' ) );
 
 class privateData

@@ -1,6 +1,6 @@
 <?php
 
-require_once( $rootPath.'/plugins/history/history.php' );
+require_once( 'history.php' );
 
 $mngr = rHistory::load();
 if($mngr->setHandlers())

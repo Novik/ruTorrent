@@ -4,8 +4,8 @@ if(count($argv)>2)
 	$_SERVER['REMOTE_USER'] = $argv[2];
 
 require_once( 'retrackers.php' );
-require_once( $rootPath.'/php/xmlrpc.php' );
-require_once( $rootPath.'/php/rtorrent.php' );
+require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
+require_once( dirname(__FILE__)."/../../php/cache.php" );
 
 function clearTracker($addition,$tracker)
 {
