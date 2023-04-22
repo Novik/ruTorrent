@@ -91,14 +91,15 @@ class FileUtil
 	public static function getPluginConf($plugin)
 	{
 		$ret = '';
-		global $rootPath;
-		$conf = $rootPath.'/plugins/'.$plugin.'/conf.php';
+		// Go back to ruTorrent root folder and include the plugin config.php file
+		$conf = dirname(__FILE__)."/../../plugins/'.$plugin.'/conf.php";
 		if(is_file($conf) && is_readable($conf))
 			$ret.='require("'.$conf.'");';
 		$user = User::getUser();
 		if($user!='')
 		{
-			$conf = $rootPath.'/conf/users/'.$user.'/plugins/'.$plugin.'/conf.php';
+			// Go back to ruTorrent root folder and include the user plugin config.php file
+			$conf = dirname(__FILE__)."/../../conf/users/'.$user.'/plugins/'.$plugin.'/conf.php";
 			if(is_file($conf) && is_readable($conf))
 				$ret.='require("'.$conf.'");';
 		}
