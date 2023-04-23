@@ -391,13 +391,14 @@ var theWebUI =
 			this.assignEvents();
 			this.resize();
 			this.update();
-			this.createSpeedGraph();
 		}
 	},
 	
 	createSpeedGraph: function()
 	{
-		this.speedGraph.create($("#Speed"));		
+		const speedTab = $("#Speed");
+		if (speedTab.length)
+			this.speedGraph.create(speedTab);
 	},
 
 	config: function()
@@ -464,6 +465,7 @@ var theWebUI =
 			}
 			return sorter;
 		}
+		this.createSpeedGraph();
 		const tab = theWebUI.settings['webui.selected_tab.keep'] ?
 					theWebUI.settings['webui.selected_tab.last'] : 'lcont';
 		theTabs.show(tab);
