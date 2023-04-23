@@ -128,6 +128,7 @@ class rGraph {
 
   draw(force = false) {
     if (
+      this.plot &&
       (force || !this.webuiView || theWebUI.activeView === this.webuiView) &&
       !this._animationRequestId
     ) {
