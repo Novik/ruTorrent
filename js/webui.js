@@ -5,7 +5,7 @@
 
 var theWebUI =
 {
-  version: "4.1",
+  	version: "4.1",
 	tables:
 	{
 		trt:
@@ -390,8 +390,14 @@ var theWebUI =
 			this.catchErrors(true);
 			this.assignEvents();
 			this.resize();
-			this.update();	
+			this.update();
+			this.createSpeedGraph();
 		}
+	},
+	
+	createSpeedGraph: function()
+	{
+		this.speedGraph.create($("#Speed"));		
 	},
 
 	config: function()
@@ -458,7 +464,6 @@ var theWebUI =
 			}
 			return sorter;
 		}
-		this.speedGraph.create($("#Speed"));
 		const tab = theWebUI.settings['webui.selected_tab.keep'] ?
 					theWebUI.settings['webui.selected_tab.last'] : 'lcont';
 		theTabs.show(tab);
