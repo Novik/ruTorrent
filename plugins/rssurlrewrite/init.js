@@ -218,13 +218,14 @@ if(plugin.canChangeMenu())
 	plugin.createRSSMenuPrim = theWebUI.createRSSMenuPrim;
 	theWebUI.createRSSMenuPrim = function()
 	{
-		plugin.createRSSMenuPrim.call(this);
 		if(plugin.enabled)
 		{
-			var el = theContextMenu.get( theUILang.rssMenuManager );
-			if( el )
-				theContextMenu.add( el, [theUILang.rssRulesManager, "theWebUI.showRules()"] );
+			let entries = plugin.createRSSMenuPrim.call(this);
+			entries.push([CMENU_SEP]);
+			entries.push([theUILang.rssRulesManager, "theWebUI.showRules()"]);
+			return entries;
 		}
+		return plugin.createRSSMenuPrim.call(this);
 	}
 
 	theWebUI.showURLInfo = function(id)
