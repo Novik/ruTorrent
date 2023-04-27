@@ -918,7 +918,8 @@ var theWebUI =
 			if((/^webui\./).test(i))
 				cookie[i] = v;
 		}
-		theWebUI.request("?action=setuisettings&v=" + JSON.stringify(cookie),reply);
+		// We must encode the URL here to avoid injection with the "&" symbol from search results
+		theWebUI.request("?action=setuisettings&v=" + encodeURIComponent(JSON.stringify(cookie),reply));
 	},
 
 //
