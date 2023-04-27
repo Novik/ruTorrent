@@ -317,7 +317,8 @@ rTorrentStub.prototype.list = function()
 
 rTorrentStub.prototype.setuisettings = function()
 {
-	this.content = "v="+encodeURIComponent(this.vs[0]);
+	// encodeURIComponent is called inside webui.js to avoid injection
+	this.content = "v="+this.vs[0];
 	this.mountPoint = theURLs.SetSettingsURL;
 	this.contentType = "application/x-www-form-urlencoded";
 	this.dataType = "text";
