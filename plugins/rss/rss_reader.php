@@ -120,7 +120,7 @@ class RegexRSSReader
 
 function rssXpath($data)
 {
-	if (extension_loaded('libxml')) {
+	if (extension_loaded('dom') && extension_loaded('libxml')) {
 		$doc = new DOMDocument();
 		$doc->recover = true;
 		// note: as of php8 (libxml 2.9.0) entity substitution is disabled by default
