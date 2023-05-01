@@ -460,7 +460,7 @@ if(plugin.canChangeMenu())
 
 plugin.onLangLoaded = function()
 {
-	injectScript(plugin.path+"/desktop-notify.js",function()
+	injectScript(plugin.path+"desktop-notify.js",function()
 	{
 		plugin.attachPageToOptions( $("<div>").attr("id","st_history").html(
 			"<div class='checkbox'>" +
