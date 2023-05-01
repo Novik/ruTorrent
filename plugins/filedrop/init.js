@@ -5,7 +5,7 @@ else
 
 plugin.onLangLoaded = function()
 {
-	injectScript(plugin.path+"/jquery.filedrop.js",function()
+	injectScript(plugin.path+"jquery.filedrop.js",function()
 	{
 		$("#maincont").filedrop(
 		{
