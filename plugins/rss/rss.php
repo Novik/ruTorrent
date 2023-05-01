@@ -208,7 +208,7 @@ class rRSS
 						$item['timestamp'] = 0;
 				}
 				// expect permalink in guid and normal link in url
-				$httpLinkExpr = '|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i';
+				$httpLinkExpr = '|^http(s)?://[a-z0-9-]+(\.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i';
 				$validPermalink = preg_match($httpLinkExpr, $item['guid']);
 				if (preg_match($httpLinkExpr, $item['link']) ) {
 					if (!$validPermalink) {
