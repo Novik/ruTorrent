@@ -5,17 +5,15 @@ require_once( 'utility.php' );
 
 class CachedEcho
 {	
-	public static function send( $content, $type = null, $cacheable = false, $exit = true, $cacheDuration = -1 )
+	public static function send( $content, $type = null, $cacheable = false, $exit = true )
 	{
 		header("X-Server-Timestamp: ".time());
 		if($cacheable && isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD']=='GET'))
 		{
-			global $miscCacheExpire;
-			$cacheAge = ($cacheDuration == -1) ? $miscCacheExpire : $cacheDuration;
 			$etag = '"'.strtoupper(dechex(crc32($content))).'"';
 			header('Expires: ');
 			header('Pragma: ');
-			header('Cache-Control: max-age='.$cacheAge);
+			header('Cache-Control: ');
 			if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag)
 			{
 				header('HTTP/1.0 304 Not Modified');
