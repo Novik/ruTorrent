@@ -18,7 +18,7 @@ if(plugin.canChangeMenu())
 	{
 	    if (plugin.enabled)
 	    {
-	        theWebUI.remove = function()
+	        theWebUI.removeTorrent = function()
 	        {
 	            theWebUI.removeWithData( plugin.enableForceDeletion );
 	        }

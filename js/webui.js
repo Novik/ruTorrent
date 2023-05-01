@@ -1663,6 +1663,11 @@ var theWebUI =
    	},
 
 	remove: function()
+	{		
+		this.perform("remove");
+	},
+
+	removeTorrent: function()
 	{
 		var table = this.getTable("trt");
 		if((table.selCount>1) ||
@@ -1672,7 +1677,7 @@ var theWebUI =
 			{
 				this.delmode = "remove";
 				askYesNo( theUILang.Remove_torrents, theUILang.Rem_torrents_prompt, "theWebUI.doRemove()" );
-	      		}
+	      	}
 			else
 				this.perform("remove");
 		}
