@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.seedingTime		= "Finished";
- theUILang.addTime		= "Added";
+theUILang.seedingTime		= "Completo"; // Finished
+ theUILang.addTime		= "Adicionado";
 
 thePlugins.get("seedingtime").langLoaded();

@@ -6,8 +6,8 @@
  * Author: 
  */
 
- theUILang.Rem_torrents_content_prompt		= "Do you really want to remove the selected torrent(s)? WARNING: This will delete torrent's content.";
- theUILang.Delete_data_with_path		= "Delete Path";
- theUILang.Rem_torrents_with_path_prompt	= "Do you really want to remove the selected torrent(s)? WARNING: This will delete all files in this torrent's current directory.";
+ theUILang.Rem_torrents_content_prompt		= "Queres realmente remover o(s) torrent(s) selecionado(s)? AVISO: Isso removerá o conteúdo do torrent.";
+ theUILang.Delete_data_with_path		= "Apagar caminho";
+ theUILang.Rem_torrents_with_path_prompt	= "Queres realmente remover o(s) torrent(s) selecionado(s)? AVISO: Isso removerá todos os ficheiros no diretório atual deste torrent.";
 
 thePlugins.get("erasedata").langLoaded();

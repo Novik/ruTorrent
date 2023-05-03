@@ -6,33 +6,33 @@
  * Author: 
  */
 
- theUILang.historyAddition		= "Addition";
- theUILang.historyDeletion		= "Deletion";
- theUILang.historyFinish		= "Finish";
- theUILang.historyLog			= "Log";
- theUILang.history			= "History";
- theUILang.historyLimit			= "Maximum number of records";
- theUILang.seedingTime			= "Finished";
- theUILang.addTime			= "Added";
- theUILang.hstDeletePrompt		= "Do you really want to delete the selected record(s)?";
- theUILang.hstDelete			= "Delete record(s)";
- theUILang.Added			= "Added";
- theUILang.Finished			= "Finished";
- theUILang.Deleted			= "Deleted";
- theUILang.Time				= "Time";
- theUILang.Tracker			= "Tracker";
- theUILang.enableNotifications		= "Enable desktop notifications";
- theUILang.historyNotification		= "Desktop Notifications";
- theUILang.notifAutoClose		= "Autoclose notifications after";
+ theUILang.historyAddition		= "Adição";
+ theUILang.historyDeletion		= "Remoção";
+ theUILang.historyFinish		= "Completo";
+ theUILang.historyLog			= "Registro";
+ theUILang.history			= "Histórico";
+ theUILang.historyLimit			= "Número máximo de registros";
+ theUILang.seedingTime			= "Completo";
+ theUILang.addTime			= "Adicionado";
+ theUILang.hstDeletePrompt		= "Deseja realmente remover o(s) registro(s) selecionado(s)?";
+ theUILang.hstDelete			= "Remover registro(s)";
+ theUILang.Added			= "Adicionado";
+ theUILang.Finished			= "Completo";
+ theUILang.Deleted			= "Removido";
+ theUILang.Time				= "Tempo";
+ theUILang.Tracker			= "Rastreador";
+ theUILang.enableNotifications		= "Ativar notificações na área de trabalho";
+ theUILang.historyNotification		= "Notificações na área de trabalho";
+ theUILang.notifAutoClose		= "Fechar as notificações automaticamente após";
  theUILang.notifTip			= {
- 					  false: "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 					  false: "O navegador não oferece suporte a notificações na área de trabalho. Tente usar outro navegador, por exemplo, Google Chrome.",
  					  "granted": "",
- 					  "default": "Your browser supports desktop notifications. Press button below to enable it.",
- 					  "denied": "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 					  "default": "O navegador oferece suporte a notificações na área de trabalho. Pressione o botão abaixo para ativá-las.",
+ 					  "denied": "O navegador oferece suporte a notificações na área de trabalho, mas estão desativadas para este site. Feche esta caixa de diálogo e use as opções do navegador para ativar as notificações na área de trabalho.",
  					  };
- theUILang.pushbulletNotification	= "PushBullet notifications";
- theUILang.pushbulletKey		= "PushBullet Access Token";
- theUILang.turnNotifyOn			= "Turn notifications on";
- theUILang.turnNotifyOff		= "Turn notifications off";
+ theUILang.pushbulletNotification	= "Notificações PushBullet";
+ theUILang.pushbulletKey		= "Token de acesso PushBullet";
+ theUILang.turnNotifyOn			= "Ative as notificações";
+ theUILang.turnNotifyOff		= "Desative as notificações";
 
 thePlugins.get("history").langLoaded();

@@ -6,13 +6,13 @@
  * Author: 
  */
 
- theUILang.accLogin		= "Login";
- theUILang.accPassword		= "Password";
- theUILang.accAccounts		= "Accounts";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accLogin		= "Nome de Utilizador";
+ theUILang.accPassword		= "Palavra-Chave";
+ theUILang.accAccounts		= "Contas";
+ theUILang.accAuto		= "Entrar automaticamente";
+ theUILang.acAutoNone		= "Nenhum";
+ theUILang.acAutoDay		= "Todos os dias";
+ theUILang.acAutoWeek		= "Todos as semanas";
+ theUILang.acAutoMonth		= "Todos os meses";
 
 thePlugins.get("loginmgr").langLoaded();

@@ -8,9 +8,9 @@
  * Author: 
  */
 
- theUILang.peerComment		= "Add comment";
- theUILang.peerCommentLabel	= "Enter new comment for peer";
- theUILang.commentName		= "Comment";
+ theUILang.peerComment		= "Adicionar comentário";
+ theUILang.peerCommentLabel	= "Insira um novo comentário para o par";
+ theUILang.commentName		= "Comentário";
  theUILang.countryName		= "País";
 
  theUILang.country = new Array();
@@ -69,7 +69,7 @@
  theUILang.country[ "cw" ] = "Curaçao";
  theUILang.country[ "cx" ] = "Ilha do Natal";
  theUILang.country[ "cy" ] = "Chipre";
- theUILang.country[ "cz" ] = "República Checa";
+ theUILang.country[ "cz" ] = "Chéquia";
  theUILang.country[ "de" ] = "Alemanha";
  theUILang.country[ "dj" ] = "Djibouti";
  theUILang.country[ "dk" ] = "Dinamarca";

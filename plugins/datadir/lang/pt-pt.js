@@ -6,10 +6,10 @@
  * Author: 
  */
 
- theUILang.DataDir		= "Save to";
- theUILang.DataDirMove		= "Move data files";
- theUILang.datadirDlgCaption	= "Torrent Data Directory";
- theUILang.datadirDirNotFound	= "DataDir plugin: Invalid directory";
- theUILang.datadirSetDirFail	= "DataDir plugin: Operation fail";
+ theUILang.DataDir		= "Guardar em";
+ theUILang.DataDirMove		= "Mover ficheiros de dados";
+ theUILang.datadirDlgCaption	= "Diretório de dados";
+ theUILang.datadirDirNotFound	= "DataDir plugin: Diretório inválido";
+ theUILang.datadirSetDirFail	= "DataDir plugin: Falha na operação";
 
 thePlugins.get("datadir").langLoaded();
