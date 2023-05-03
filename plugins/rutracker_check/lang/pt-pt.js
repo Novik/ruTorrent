@@ -6,18 +6,18 @@
  * Author: 
  */
 
- theUILang.checkTorrent		= "Check for Update";
- theUILang.chkHdr		= "Torrent Update Check";
- theUILang.checkedAt		= "Last Checked";
- theUILang.checkedResult	= "Result";
+ theUILang.checkTorrent		= "Verificar por atualizações";
+ theUILang.chkHdr		= "Verificação de Atualização de Torrent";
+ theUILang.checkedAt		= "Última verificação";
+ theUILang.checkedResult	= "Resultado";
  theUILang.chkResults		= [
- 				  "In progress",
- 				  "Updated",
- 				  "No update required",
- 				  "Probably deleted",
- 				  "Error accessing the tracker",
- 				  "Error interacting with rTorrent",
- 				  "No need"
+ 				  "Em andamento",
+ 				  "Atualizado",
+ 				  "Nenhuma atualização necessária",
+ 				  "Provavelmente apagado",
+ 				  "Erro ao acessar o rastreador",
+ 				  "Erro ao interagir com o rTorrent",
+ 				  "Não há necessidade"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

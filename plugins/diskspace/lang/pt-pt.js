@@ -6,6 +6,6 @@
  * Author: 
  */
 
- theUILang.diskNotification	= "Warning! The disk is full. rTorrent may not run correctly, and no data will be downloaded until you free some disk space.";
+ theUILang.diskNotification	= "Aviso! O disco está cheio. O rTorrent pode não funcionar corretamente e nenhum dado será descarregado até espaço em disco ser libertado.";
 
 thePlugins.get("diskspace").langLoaded();

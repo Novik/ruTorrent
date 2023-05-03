@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.getSource		= "Get .torrent";
- theUILang.cantFindTorrent	= "Source torrent file for this download not found.";
+ theUILang.getSource		= "Obter .torrent";
+ theUILang.cantFindTorrent	= "Ficheiro torrent de origem para esta descarga não encontrado.";
 
 thePlugins.get("source").langLoaded();

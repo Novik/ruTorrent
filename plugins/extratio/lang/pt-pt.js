@@ -6,20 +6,20 @@
  * Author: 
  */
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo		= "Set throttle to";
- theUILang.ratioNewRule		= "New rule";
+ theUILang.ratioRulesManager	= "Gestor de regras";
+ theUILang.mnu_ratiorule	= "Regras de racio";
+ theUILang.ratAddRule		= "Adicionar";
+ theUILang.ratDelRule		= "Apagar";
+ theUILang.ratUpRule		= "Mover para cima";
+ theUILang.ratDownRule		= "Mover para baixo";
+ theUILang.ratioIfLegend	= "Se"; // If
+ theUILang.ratLabelContain	= "O rótulo do torrent contém";
+ theUILang.ratTrackerContain	= "Um dos URLs do rastreador do torrent contém";
+ theUILang.ratTrackerPublic	= "Todos os rastreadores de torrent são públicos";
+ theUILang.ratTrackerPrivate	= "Um dos rastreadores do torrent é privado";
+ theUILang.ratioThenLegend	= "Então"; // Then
+ theUILang.setRatioTo		= "Definir racio para";
+ theUILang.setChannelTo		= "Definir velocidade para"; // Set thtottle to: check better translation
+ theUILang.ratioNewRule		= "Nova regra";
 
 thePlugins.get("extratio").langLoaded();

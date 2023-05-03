@@ -6,21 +6,21 @@
  * Author: 
  */
 
- theUILang.ratios		= "Ratio Groups";
- theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set Ratio Group";
- theUILang.mnuRatioUnlimited	= "No Ratio";
- theUILang.ratioName		= "Name";
+ theUILang.ratios		= "Grupos de Racio";
+ theUILang.ratio		= "Racio";
+ theUILang.mnuRatio		= "Definir grupo de racio";
+ theUILang.mnuRatioUnlimited	= "Sem racio";
+ theUILang.ratioName		= "Nome";
  theUILang.minRatio		= "Min";
  theUILang.maxRatio		= "Max";
  theUILang.ratioUpload		= "UL";
- theUILang.ratioAction		= "Action";
- theUILang.ratioStop		= "Stop";
- theUILang.ratioStopAndRemove	= "Stop & Clear group";
- theUILang.ratioErase		= "Remove";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault		= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.ratioAction		= "Ação";
+ theUILang.ratioStop		= "Parar";
+ theUILang.ratioStopAndRemove	= "Parar e limpar grupo";
+ theUILang.ratioErase		= "Remover";
+ theUILang.ratioEraseData	= "Remover dados";
+ theUILang.maxTime		= "Tempo";
+ theUILang.ratioDefault		= "Grupo de racio padrão";
+ theUILang.setThrottleTo	= "Aplicar a velocidade";
 
 thePlugins.get("ratio").langLoaded();

@@ -6,11 +6,11 @@
  * Author: 
  */
 
- theUILang.throttles		= "Channels";
- theUILang.throttle		= "Channel";
- theUILang.mnuThrottle		= "Set Channel";
- theUILang.mnuUnlimited		= "No Channel";
- theUILang.channelName		= "Name";
- theUILang.channelDefault	= "Default channel";
+ theUILang.throttles		= "Velocidades";
+ theUILang.throttle		= "Velocidade";
+ theUILang.mnuThrottle		= "Definir Velocidade";
+ theUILang.mnuUnlimited		= "Sem limitação";
+ theUILang.channelName		= "Nome";
+ theUILang.channelDefault	= "Velocidade padrão";
 
 thePlugins.get("throttle").langLoaded();
