@@ -47,7 +47,7 @@ var AvailableLanguages =
 	no:'Norsk',
 	pl:'Polski',
 	"pt-br":'Português (Brasil)',
-	"pt-pt":'Português (Portugal)'
+	"pt-pt":'Português (Portugal)',
 	ru:'Русский',
 	sk:'Slovenský',
 	sr:'Српски',
