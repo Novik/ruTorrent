@@ -233,6 +233,7 @@ var theWebUI =
 	cLabels:	{},
 	stateLabels: {},
 	staticLabels: ['dls','com','act','iac','nlb','err'],
+	quickSearch: { teg: {val: ''}, debounce: { timeoutId: 0, delayMs: 220 } },
 	dID:		"",
 	pID:		"",
 	speedGraph:	new rSpeedGraph(),
@@ -545,6 +546,27 @@ var theWebUI =
 		});
 
 		this.registerMagnetHandler();
+		// setup quick search
+		const searchField = $('#query');
+		const updateQuickSearch = () => {
+			this.quickSearch.teg = this.searchToTeg(searchField.val());
+		};
+		const qsd = this.quickSearch.debounce;
+		searchField.on('input', () => {
+			updateQuickSearch();
+			if (qsd.timeoutId) {
+				clearTimeout(qsd.timeoutId);
+			}
+			qsd.timeoutId = setTimeout(() => {
+				if ((this.actLbls['flabel_cont'] ?? []).length) {
+					this.actLbls['flabel_cont'] = [];
+					this.onLabelSelectionChanged('flabel_cont');
+				} else {
+					this.filterTorrentTable();
+				}
+			}, qsd.delayMs);
+		});
+		updateQuickSearch();
 		this.configured = true;
 	},
 
@@ -1906,18 +1928,19 @@ var theWebUI =
 //
 // labels
 //
+	searchToTeg: function(str) {
+		return {
+			val: str,
+			pattern: new RegExp(str.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&').replace('*', '.+'), 'i')
+		};
+	},
 
 	createTeg: function(str) {
 		const tegId = "teg_"+this.lastTeg;
 		this.lastTeg++;
 		const el = this.createSelectableLabelElement(tegId, str, theWebUI.labelContextMenu).addClass('teg');
 		$("#lblf").append( el );
-		this.tegs[tegId] = {
-			val: str,
-			pattern: new RegExp(str
-				.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&')
-				.replace('*', '.+'), 'i')
-		};
+		this.tegs[tegId] = this.searchToTeg(str);
 		this.updateTegs([this.tegs[tegId]]);
 		this.updateTegLabels([tegId]);
 		return el;
@@ -1926,18 +1949,18 @@ var theWebUI =
 	setTeg: function(str)
 	{
 		str = str.trim();
-		const validTeg = str !== '';
-		let teg_entry = validTeg && Object.entries(this.tegs)
-			.find(([_,teg]) => teg.val == str);
-		if (!teg_entry) {
-			this.resetLabels();
-			if (validTeg) {
-				const teg = this.createTeg(str);
-				teg_entry = [teg.id, teg];
+		let tegId = str !== '' && (
+			Object.entries(this.tegs)
+			.find(([_,teg]) => teg.val == str)?.[0] ||
+			this.createTeg(str).attr('id')
+		);
+		if (tegId) {
+			// Select the search teg
+			const tegIds = this.actLbls['flabel_cont'] ?? [];
+			if (!tegIds.includes(tegId)) {
+				this.actLbls['flabel_cont'] = tegIds.concat([tegId]);
+				this.onLabelSelectionChanged('flabel_cont');
 			}
-		}
-		if (teg_entry) {
-			this.switchLabel('flabel_cont', teg_entry[0]);
 		}
 	},
 
@@ -2327,11 +2350,9 @@ var theWebUI =
 	},
 
 	resetLabels: function() {
-		for (const labelType of Object.keys(this.actLbls)) {
-			this.actLbls[labelType] = [];
-			this.refreshLabelSelection(labelType);
-		}
-		this.filterTorrentTable();
+		const labelTypes = Object.keys(this.actLbls);
+		this.actLbls = {};
+		this.onLabelSelectionChanged(...labelTypes);
 	},
 
 	switchLabel: function(labelType, targetId, toggle=false, range=false)
@@ -2374,27 +2395,30 @@ var theWebUI =
 		if (labelIds.some(lid => !oldLabelIds.includes(lid)) || oldLabelIds.some(lid => !labelIds.includes(lid))) {
 			// change in label selection
 			this.actLbls[labelType] = labelIds;
-
-			this.refreshLabelSelection(labelType);
-
-			this.filterTorrentTable();
-
-			if (this.settings['webui.open_tegs.keep']
-				||this.settings['webui.selected_labels.keep'])
-				this.save();
+			this.onLabelSelectionChanged(labelType);
 		}
 	},
 
-	refreshLabelSelection: function(labelType) {
-		const container = $($$(labelType));
-		container.find('.sel').removeClass('sel');
-		const labelIds = this.actLbls[labelType] ?? [];
-		if (labelIds.length) {
-			for (const labelId of labelIds) {
-				$($$(labelId)).addClass('sel');
-			}
-		} else {
+	onLabelSelectionChanged: function(...labelTypes) {
+		this.refreshLabelSelection(...labelTypes);
+
+		this.filterTorrentTable();
+
+		this.save();
+	},
+
+	refreshLabelSelection: function(...dirtyLabelTypes) {
+		for (const lType of dirtyLabelTypes) {
+			const container = $($$(lType));
+			container.find('.sel').removeClass('sel');
+			const labelIds = (this.actLbls[lType] ?? []);
+			if (labelIds.length) {
+				for (const labelId of labelIds) {
+					$($$(labelId)).addClass('sel');
+				}
+			} else {
 				container.find('.-_-_-all-_-_-').addClass('sel');
+			}
 		}
 	},
 
@@ -2425,15 +2449,21 @@ var theWebUI =
 	isTorrentRowShown: function(table, sId)
 	{
 		const title = table.getValueById(sId, 'name');
+		const qTeg = this.quickSearch.teg;
+		const qTegEnabled = theSearchEngines.current <= 0 && qTeg.val;
 		const label = table.getAttr(sId, 'label');
-		return Object.entries(this.actLbls).filter(
-			([labelType, _]) => ['plabel_cont', 'pstate_cont', 'flabel_cont'].includes(labelType)
-		).every(([labelType, actLbls]) => !actLbls.length || (
-			// filter by torrent label
-			labelType !== 'flabel_cont' ? actLbls.some(labelId => label.includes(labelId))
-			// filter by title search teg
-			: actLbls.some(labelId => !(labelId in this.tegs) || this.matchTeg(this.tegs[labelId], title))
-		));
+		return ['pstate_cont', 'plabel_cont', 'flabel_cont']
+			.map(labelType => [labelType, this.actLbls[labelType] ?? []])
+			.every(([labelType, actLbls]) => labelType !== 'flabel_cont'
+				// filter by torrent label
+				? !actLbls.length ||
+				actLbls.some(labelId => label.includes(labelId))
+				// filter by title search teg
+				: (!actLbls.length && !qTegEnabled) ||
+				actLbls.some(labelId => !(labelId in this.tegs) || this.matchTeg(this.tegs[labelId], title)) ||
+				// Add quick search as search teg filter
+				(qTegEnabled && this.matchTeg(qTeg, title))
+			);
 	},
 
 //

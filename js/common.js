@@ -785,10 +785,11 @@ var theSearchEngines =
 
 	run: function()
 	{
-	        if(theSearchEngines.current>=0)
-			window.open(theSearchEngines.sites[theSearchEngines.current].url + $("#query").val(), "_blank");
+		const q = $("#query").val();
+		if(theSearchEngines.current >= 0)
+			window.open(theSearchEngines.sites[theSearchEngines.current].url + encodeURIComponent(q), "_blank");
 		else
-			theWebUI.setTeg($("#query").val());
+			theWebUI.setTeg(q);
 	},
 	set: function( no, noSave )
 	{
