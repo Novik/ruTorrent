@@ -97,5 +97,13 @@ function SetActiveLanguage(lang)
 {
 	const lang = GetActiveLanguage();
 	document.documentElement.setAttribute('lang', lang);
-	document.write(`<script type="text/javascript" src="./lang/${lang}.js"></script>`);
+	$('<script>').attr({ type: 'text/javascript', src: `./lang/${lang}.js`})
+		.insertBefore($('head script:last-child'));
 }
+
+$(document).ready(() => {
+	// translate uilang elements
+	$('[uilang]').each(function () {
+		$(this).text(theUILang[$(this).text()]).removeAttr('uilang');
+	});
+});
