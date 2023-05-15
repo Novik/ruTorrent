@@ -203,7 +203,7 @@ rTorrentStub.prototype.loadtegtorrents = function()
 	if(lbl.length)
 		this.content += '&label='+encodeURIComponent(lbl);
 	if($("#tegfast_resume").prop("checked"))
-		this.content += 'fast_resume=1&';
+		this.content += '&fast_resume=1';
 	for(var i = 0; i<plugin.tegArray.length; i++)
 	{
 		var item = plugin.tegArray[i];
