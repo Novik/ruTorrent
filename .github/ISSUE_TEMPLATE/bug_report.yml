@@ -5,11 +5,9 @@ body:
     attributes:
       value: |
         #### Advisory
-        - When upgrading ruTorrent you MUST clear your web browser cache.
-        - Please follow our four step procress before submitting an issue report.
-      
-        - Remember: Professionals still make mistakes. This template is here to help you.
-        - Many of our issue reports come from Web Developers who don't follow our template.
+        - When upgrading ruTorrent you MUST clear your web browser cache. Please follow our four step procress before submitting an issue report.
+        - The rtinst install script is broken and no longer maintained. Please do NOT file bug reports using this install script. See [#2482](https://github.com/Novik/ruTorrent/discussions/2482) for alternatives.
+        - Remember: Professionals still make mistakes. This template is here to help you. Many of our issue reports come from Web Developers who don't follow our template.
             
         #### Clear Cache using Google Chrome
         - Step 1: Install Google Chrome.
@@ -26,6 +24,8 @@ body:
         - label: Web browser cache cleared
           required: true
         - label: Link provided to install script if applicable
+          required: true
+        - label: Not using broken rtinst install script
           required: true
         - label: Web browser, ruTorrent, PHP and OS version provided
           required: true
