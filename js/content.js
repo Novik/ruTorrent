@@ -22,7 +22,10 @@ function makeContent()
 	$("#query").on('keydown', function(e)
 	{
 		if(e.keyCode == 13)
+		{
 			theSearchEngines.run();
+			theSearchEngines.run();
+		}
 	});
 
 	new DnD("HDivider",
