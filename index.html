@@ -74,7 +74,7 @@
 			</a>
 			<table id='rc' cellpadding="0" cellspacing="0"><tr id='rrow'>
 				<td>
-					<a id="mnu_search" class="top-menu-item" href="javascript://void();" onclick="theSearchEngines.show(); theSearchEngines.run(); return(false);" onfocus="this.blur()" title="Search">
+					<a id="mnu_search" class="top-menu-item" href="javascript://void();" onclick="theSearchEngines.show(); return(false);" onfocus="this.blur()" title="Search">
 						<div id="search" class="top-menu-item"></div>
 					</a>
 				</td>
@@ -82,7 +82,7 @@
 					<input type="text" class="TextboxMid" id="query" onfocus="$('#sc').hide();"/>
 				</td>
 				<td>
-					<a id="mnu_go" href="javascript://void();" onclick="theSearchEngines.run(); return(false);" onfocus="this.blur()" title="Go">
+					<a id="mnu_go" href="javascript://void();" onclick="theSearchEngines.run(); theSearchEngines.run(); return(false);" onfocus="this.blur()" title="Go">
 						<div id="go"></div>
 					</a>
 				</td>
