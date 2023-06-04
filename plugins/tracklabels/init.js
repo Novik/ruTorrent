@@ -18,11 +18,11 @@ theWebUI.config = function()
 	}
 }
 
-plugin.isTorrentRowShown = theWebUI.isTorrentRowShown;
-theWebUI.isTorrentRowShown = function(table, hash)
+plugin.shouldShowTorrentRow = theWebUI.shouldShowTorrentRow;
+theWebUI.shouldShowTorrentRow = function(table, hash, actLbls, quickSearch)
 {
-	return plugin.isTorrentRowShown.call(theWebUI, table, hash) && (
-		!plugin.enabled || !(theWebUI.actLbls['ptrackers_cont'] ?? []).length || (
+	return plugin.shouldShowTorrentRow.call(theWebUI, table, hash, actLbls, quickSearch) && (
+		!plugin.enabled || !(actLbls['ptrackers_cont'] ?? []).length || (
 		// check if tracker of hash is selected
 		hash in this.trackers
 		&& this.trackers[hash]
@@ -316,7 +316,7 @@ plugin.onLangLoaded = function()
 		updateButtons();
 	});
 
-	plugin.addPaneToCategory("ptrackers",theUILang.Trackers, 'flabel_cont')
+	plugin.addPaneToCategory('ptrackers', theUILang.Trackers)
 		.append(
 			$('<ul>').attr('id', 'torrl')
 			.append(theWebUI.createSelectableLabelElement(undefined, theUILang.All, theWebUI.labelContextMenu).addClass('-_-_-all-_-_- sel'))

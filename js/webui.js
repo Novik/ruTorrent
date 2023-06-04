@@ -151,6 +151,7 @@ var theWebUI =
 		"webui.speedlistul":		"128,512,1024,2048,3072,4096,5120,6144,7168,8192,9216,10240",
 		"webui.ignore_timeouts":	0,
 		"webui.retry_on_error":		120,
+		"webui.category_panels":	['pview', 'pstate', 'plabel', 'flabel', 'ptrackers', 'prss'],
 		"webui.closed_panels":		{},
 		"webui.open_tegs.last": [],
 		"webui.open_tegs.keep": 0,
@@ -514,8 +515,10 @@ var theWebUI =
 
 		$(".catpanel").each( function()
 		{
-			theWebUI.showPanel(this,!theWebUI.settings["webui.closed_panels"][this.id]);
+			theWebUI.updatePanel(this.id);
 		});
+		theWebUI.sortPanels();
+
 		// recreate tegs if enabled
 		if (theWebUI.settings["webui.open_tegs.keep"]) {
 			for(const tegStr of theWebUI.settings["webui.open_tegs.last"]) {
@@ -530,9 +533,7 @@ var theWebUI =
 				this.actLbls[labelType] = Array.isArray(lbls) ? lbls : lbls ? [lbls] : [];
 			}
 		}
-		for (const labelType of ['pstate_cont', 'plabel_cont', 'flabel_cont']) {
-			this.refreshLabelSelection(labelType);
-		}
+		this.refreshLabelSelection('pstate_cont', 'plabel_cont', 'flabel_cont');
 
 		// user must be able add peer when peers are empty
 		$("#PeerList .stable-body").mouseclick(function(e)
@@ -2178,7 +2179,7 @@ var theWebUI =
 				$(val).remove();
 			}
 		});
-		const actLbls = theWebUI.actLbls['plabel_cont'];
+		const actLbls = theWebUI.actLbls['plabel_cont'] ?? [];
 		const residualActLbls = actLbls.filter(labelId => pLabels.includes(theWebUI.idToLbl(labelId)));
 		const actDeleted = actLbls.length !== residualActLbls.length;
 		if (actDeleted)
@@ -2448,12 +2449,17 @@ var theWebUI =
 
 	isTorrentRowShown: function(table, sId)
 	{
+		return this.shouldShowTorrentRow(table, sId, this.actLbls, this.quickSearch);
+	},
+
+	shouldShowTorrentRow: function(table, sId, actLbls, quickSearch)
+	{
 		const title = table.getValueById(sId, 'name');
-		const qTeg = this.quickSearch.teg;
+		const qTeg = quickSearch.teg;
 		const qTegEnabled = theSearchEngines.current <= 0 && qTeg.val;
 		const label = table.getAttr(sId, 'label');
 		return ['pstate_cont', 'plabel_cont', 'flabel_cont']
-			.map(labelType => [labelType, this.actLbls[labelType] ?? []])
+			.map(labelType => [labelType, actLbls[labelType] ?? []])
 			.every(([labelType, actLbls]) => labelType !== 'flabel_cont'
 				// filter by torrent label
 				? !actLbls.length ||
@@ -2834,17 +2840,55 @@ var theWebUI =
 		theWebUI.save();
 	},
 
-	showPanel: function(pnl,enable)
+	sortPanels: function() {
+		// Sort category panels based on setting webui.category_panels
+		const catList = $('#CatList');
+		const elements = Object.fromEntries(
+			Object.values(catList.children())
+			.map(e => [e.id, e])
+		);
+
+		catList[0].replaceChildren(...
+			theWebUI.settings['webui.category_panels']
+				.filter(panelId => panelId in elements)
+				.flatMap(panelId => [elements[panelId], elements[`${panelId}_cont`]])
+		);
+	},
+
+	addPanel: function(id, name) {
+		const panels = theWebUI.settings['webui.category_panels'];
+		if (!panels.includes(id)) {
+			theWebUI.settings['webui.category_panels'].push(id);
+		}
+		const catpanel = $("<div>")
+			.addClass("catpanel")
+			.attr("id",id)
+			.text(name)
+			.on('click', function() { theWebUI.togglePanel(this); });
+		const catcont = $("<div>")
+			.attr("id",id+"_cont")
+			.addClass("catpanel_cont");
+		$('#CatList').append(catpanel, catcont);
+		theWebUI.updatePanel(id);
+		theWebUI.sortPanels();
+	},
+
+	updatePanel: function(panelId)
 	{
-		var cont = $('#'+pnl.id+"_cont");
-		cont.toggle(enable);
-		theWebUI.settings["webui.closed_panels"][pnl.id] = !enable;
-		pnl.style.backgroundImage="url("+this.getTable("trt").paletteURL+(enable ? "/images/pnl_open.gif)" : "/images/pnl_close.gif)");
+		const enable = !theWebUI.settings['webui.closed_panels'][panelId];
+		$(`#${panelId}_cont`).toggle(enable);
+		$($$(panelId)).css(
+			'background-image',
+			'url('+this.getTable('trt').paletteURL+(enable ? '/images/pnl_open.gif)' : '/images/pnl_close.gif)')
+		);
 	},
 
 	togglePanel: function(pnl)
 	{
-		theWebUI.showPanel(pnl,!$('#'+pnl.id+"_cont").is(":visible"));
+		const panelId = pnl.id;
+		const panels = theWebUI.settings["webui.closed_panels"];
+		panels[panelId] = !panels[panelId];
+		theWebUI.updatePanel(panelId);
 		theWebUI.save();
 	},
 
