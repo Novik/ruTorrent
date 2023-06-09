@@ -157,6 +157,7 @@ var theWebUI =
 		"webui.open_tegs.keep": 0,
 		"webui.selected_labels.last": {},
 		"webui.selected_labels.keep": 0,
+		"webui.selected_labels.views": [],
 		"webui.selected_tab.last": {},
 		"webui.selected_tab.keep": 0,
 		"webui.timeformat":		0,
@@ -168,10 +169,12 @@ var theWebUI =
 		"webui.show_labelsize":		1,
 		"webui.show_searchlabelsize":	0,
 		"webui.show_statelabelsize":	0,
+		"webui.show_viewlabelsize":		1,
 		"webui.show_label_path_tree":	1,
 		"webui.show_empty_path_labels":	0,
 		"webui.show_label_text_overflow": 0,
 		"webui.show_open_status":	1,
+		"webui.show_view_panel": 1,
 		"webui.register_magnet":	0,
 		...(() => {
 			const defaults = {};
@@ -226,6 +229,8 @@ var theWebUI =
 		"-_-_-nlb-_-_-":	{ cnt: 0, size: 0 },
 		"-_-_-err-_-_-":	{ cnt: 0, size: 0 }
 	},
+	viewPanelStats: [],
+	viewPanelLabelTypes: ['pstate_cont', 'plabel_cont', 'flabel_cont'],
 	actLbls:
 	{
 		'pstate_cont': [],
@@ -513,11 +518,14 @@ var theWebUI =
 		if(!theWebUI.systemInfo.rTorrent.started)
 			$(theWebUI.getTable("trt").scp).text(theUILang.noTorrentList).show();
 
+		// Restore category panels (fold and sort)
 		$(".catpanel").each( function()
 		{
 			theWebUI.updatePanel(this.id);
 		});
 		theWebUI.sortPanels();
+		theWebUI.updateViewPanel();
+		theWebUI.updateViewPanelLabels();
 
 		// recreate tegs if enabled
 		if (theWebUI.settings["webui.open_tegs.keep"]) {
@@ -533,7 +541,8 @@ var theWebUI =
 				this.actLbls[labelType] = Array.isArray(lbls) ? lbls : lbls ? [lbls] : [];
 			}
 		}
-		this.refreshLabelSelection('pstate_cont', 'plabel_cont', 'flabel_cont');
+		this.adjustViewSelectionToActiveLabels();
+		this.refreshLabelSelection('pview_cont', ...(this.viewPanelLabelTypes));
 
 		// user must be able add peer when peers are empty
 		$("#PeerList .stable-body").mouseclick(function(e)
@@ -859,6 +868,11 @@ var theWebUI =
 								theWebUI.settings["webui.speedgraph.max_seconds"] = nv;
 								theWebUI.speedGraph.setMaxSeconds(parseInt(theWebUI.settings['webui.speedgraph.max_seconds']))
 								theWebUI.speedGraph.draw();
+								break;
+							}
+							case "webui.show_view_panel":
+							{
+								theWebUI.updatePanel('pview');
 								break;
 							}
 						}
@@ -1771,6 +1785,9 @@ var theWebUI =
 				// update search labels (tegs)
 				this.updateTegs(Object.values(this.tegs));
 
+				// update views (cnt and size)
+				this.updateViewPanel();
+
 				// set timeout for next update
 				this.setInterval();
 
@@ -1790,6 +1807,7 @@ var theWebUI =
 					if (!this.firstLoad)
 						await nextAFrame();
 					this.updateTegLabels(Object.keys(this.tegs));
+					this.updateViewPanelLabels();
 					if (!this.firstLoad)
 						await nextAFrame();
 					this.updateViewRows(table);
@@ -2052,7 +2070,7 @@ var theWebUI =
 			}
 			theContextMenu.show(e.clientX,e.clientY);
 		}
-		return(false);
+		return(e.fromTextCtrl);
 	},
 
 	contextMenuTable: function(labelType, el) {
@@ -2068,6 +2086,14 @@ var theWebUI =
 			).concat([
 				[theUILang.removeAllTegs, "theWebUI.removeAllTegs();"]
 			]);
+		} else if (labelType === 'pview_cont') {
+			return (this.actLbls['pview_cont'] ?? []).length ? [
+					[theUILang.RenameView, `theWebUI.renameView('${el.id}');`],
+					[CMENU_CHILD, theUILang.MoveView.base, ['top', 'up', 'down', 'bottom']
+							.map(action => [theUILang.MoveView[action], `theWebUI.moveView('${el.id}', '${action}');`])
+					],
+					[theUILang.RemoveActiveViews, "theWebUI.removeActiveViews();"]
+				] : [];
 		}
 		return [];
 	},
@@ -2320,6 +2346,8 @@ var theWebUI =
 
 	updateLabels: function(wasRemoved)
 	{
+		this.updateViewPanelLabels();
+
 		const catlist = $($$('CatList'));
 		if (theWebUI.settings['webui.labelsize_rightalign'])
 			catlist.addClass('rightalign-labelsize');
@@ -2401,11 +2429,72 @@ var theWebUI =
 	},
 
 	onLabelSelectionChanged: function(...labelTypes) {
+		if (labelTypes.every(lType => lType === 'pview_cont')) {
+			this.adjustActiveLabelsToViewSelection();
+			this.refreshLabelSelection(...(this.viewPanelLabelTypes));
+		} else if (labelTypes.some(lType => this.viewPanelLabelTypes.includes(lType))) {
+			this.adjustViewSelectionToActiveLabels();
+			this.refreshLabelSelection('pview_cont');
+		}
 		this.refreshLabelSelection(...labelTypes);
 
 		this.filterTorrentTable();
-
 		this.save();
+	},
+
+	adjustActiveLabelsToViewSelection: function() {
+		const customViews = theWebUI.settings['webui.selected_labels.views'];
+		for (const lType of this.viewPanelLabelTypes) {
+			const viewLbls = (this.actLbls['pview_cont'] ?? [])
+				.filter(viewId => viewId.startsWith('pview_custom_view_'))
+				.map(viewId => customViews[Number(viewId.split('_').at(-1))]
+					?.labels[lType] ?? []
+				);
+			this.actLbls[lType] = viewLbls.every(lbls => lbls.length)
+				? [...new Set(viewLbls.flat())]
+				: [];
+		}
+		this.checkViewDirty();
+	},
+
+	adjustViewSelectionToActiveLabels: function() {
+		const actViewPanelLbls = this.viewPanelLabelTypes
+			.map(lType => [lType, new Set(this.actLbls[lType] ?? [])]);
+		// A custom view is selected if it is a subset of the active labels.
+		// "All" is only selected if there are no active labels.
+		this.actLbls['pview_cont'] = actViewPanelLbls.some(([_,actLbls]) => actLbls.size)
+			? theWebUI.settings['webui.selected_labels.views']
+				.map((view, i) => [`pview_custom_view_${i}`, view])
+				.filter(([_, view]) => actViewPanelLbls
+					.every(([lType, actLbls]) => {
+						const viewLbls = view.labels[lType] ?? [];
+						return !actLbls.size || viewLbls.length && viewLbls
+							.every(viewLbl => actLbls.has(viewLbl));
+				}))
+				.map(([viewId]) => viewId)
+			: [];
+		this.checkViewDirty();
+	},
+
+	checkViewDirty: function() {
+		// If the active selection is not an existing view, it is dirty.
+		// (A dirty view may be saved as a 'New View')
+		const actViewIds = this.actLbls['pview_cont'];
+		const lTypes = this.viewPanelLabelTypes;
+		const actLbls = lTypes.map(lType => new Set(this.actLbls[lType] ?? []));
+		const activeSelectionIsExistingView = theWebUI.settings['webui.selected_labels.views']
+			.map(view => lTypes.map(lType => view.labels[lType] ?? []))
+			// Consider the 'All' view
+			.concat([lTypes.map(() => [])])
+			// Check if some view equals the active label selection
+			.some(viewEntries => viewEntries
+				.map((vLbls, i) => [actLbls[i], vLbls])
+				.every(([aLbls, vLbls]) => vLbls.length === aLbls.size &&
+					vLbls.every(lbl => aLbls.has(lbl)))
+			);
+		this.actLbls['pview_cont'] = actViewIds
+			.filter(v => v !== 'pview_dirty_view')
+			.concat(activeSelectionIsExistingView ? [] : ['pview_dirty_view']);
 	},
 
 	refreshLabelSelection: function(...dirtyLabelTypes) {
@@ -2419,6 +2508,13 @@ var theWebUI =
 				}
 			} else {
 				container.find('.-_-_-all-_-_-').addClass('sel');
+			}
+			if (lType === 'pview_cont') {
+				// Enable view save button if view selection is dirty
+				$('#pview_save_view_button')[0]?.toggleAttribute(
+					'disabled',
+					!labelIds.includes('pview_dirty_view')
+				);
 			}
 		}
 	},
@@ -2841,7 +2937,7 @@ var theWebUI =
 	},
 
 	sortPanels: function() {
-		// Sort category panels based on setting webui.category_panels
+		// Sort category panels based on setting
 		const catList = $('#CatList');
 		const elements = Object.fromEntries(
 			Object.values(catList.children())
@@ -2858,7 +2954,7 @@ var theWebUI =
 	addPanel: function(id, name) {
 		const panels = theWebUI.settings['webui.category_panels'];
 		if (!panels.includes(id)) {
-			theWebUI.settings['webui.category_panels'].push(id);
+			panels.push(id);
 		}
 		const catpanel = $("<div>")
 			.addClass("catpanel")
@@ -2875,9 +2971,12 @@ var theWebUI =
 
 	updatePanel: function(panelId)
 	{
-		const enable = !theWebUI.settings['webui.closed_panels'][panelId];
-		$(`#${panelId}_cont`).toggle(enable);
-		$($$(panelId)).css(
+		const showPanel = panelId !== 'pview' || Boolean(theWebUI.settings['webui.show_view_panel']);
+		const enable = showPanel && !theWebUI.settings['webui.closed_panels'][panelId];
+		$($$(`${panelId}_cont`)).toggle(enable);
+		$($$(panelId))
+			.toggle(showPanel)
+			.css(
 			'background-image',
 			'url('+this.getTable('trt').paletteURL+(enable ? '/images/pnl_open.gif)' : '/images/pnl_close.gif)')
 		);
@@ -2890,6 +2989,134 @@ var theWebUI =
 		panels[panelId] = !panels[panelId];
 		theWebUI.updatePanel(panelId);
 		theWebUI.save();
+	},
+
+	onViewsChanged: function()
+	{
+		this.updateViewPanel();
+		this.updateViewPanelLabels();
+		this.adjustViewSelectionToActiveLabels();
+		this.refreshLabelSelection('pview_cont', ...(this.viewPanelLabelTypes));
+		this.filterTorrentTable();
+		this.save();
+	},
+
+	saveCurrentView: function()
+	{
+		const vs = 'webui.selected_labels.views';
+		this.settings[vs] = this.settings[vs]
+			.concat([{
+				name: 'New View',
+				labels: Object.fromEntries(
+					this.viewPanelLabelTypes
+					.filter(n => (this.actLbls[n] ?? []).length)
+					.map(n => [n, this.actLbls[n]])
+				)
+		}]);
+		this.onViewsChanged();
+	},
+
+	updateViewPanel: function()
+	{
+		const table = this.getTable('trt');
+		const qs = {teg: {val: ''}};
+		// accumulate torrent count and size for views
+		this.viewPanelStats = this.settings['webui.selected_labels.views']
+			.map(view => {
+				let [cnt, size] = [0,0];
+				for(const hash in this.torrents)
+				{
+					if (this.shouldShowTorrentRow(table, hash, view.labels, qs))
+					{
+						cnt++;
+						size += this.torrents[hash].size;
+					}
+				}
+				return {cnt, size};
+			});
+	},
+
+	updateViewPanelLabels: function()
+	{
+		const customViewRows = $('#pview_cont').children('.pview_custom_view');
+		const customViews = this.settings['webui.selected_labels.views'];
+		const showlabelsize = this.settings["webui.show_viewlabelsize"] || true;
+
+		this.updateAllFilterLabel('pview_cont', showlabelsize);
+
+		// Update or add view rows
+		const dirtyViewEl = $('#pview_dirty_view');
+		for (let i = 0; i < customViews.length; i++) {
+			const customViewId = `pview_custom_view_${i}`;
+			const view = customViews[i];
+			const stats = this.viewPanelStats[i] ?? {cnt: 0, size: 0};
+
+			if (i >= customViewRows.length) {
+				dirtyViewEl.before(
+					this.createSelectableLabelElement(customViewId, view.name, theWebUI.labelContextMenu)
+						.addClass('pview_custom_view')
+				);
+			}
+
+			this.updateLabel($$(customViewId), stats.cnt, stats.size, showlabelsize, view.name);
+		}
+		// Remove unused view rows
+		for (let i = customViews.length; i < customViewRows.length; i++) {
+			$($$(`pview_custom_view_${i}`)).remove();
+		}
+	},
+
+	removeActiveViews: function()
+	{
+		const removeViewLbls = this.actLbls['pview_cont'] ?? [];
+		// Remove previously selected view rows
+		const vs = 'webui.selected_labels.views';
+		theWebUI.settings[vs] = theWebUI.settings[vs]
+			.filter((_, i) => !removeViewLbls.includes(`pview_custom_view_${i}`));
+		this.onViewsChanged();
+	},
+
+	renameView: function(viewId)
+	{
+		const viewIndex = Number(viewId.split('_').at(-1));
+		const customViews = theWebUI.settings['webui.selected_labels.views'];
+		if (viewIndex in customViews) {
+			const labelText = $(`#${viewId} .label-text`);
+			const renameInput = $('<input type="text">');
+			const doRename = () => {
+				const newName = renameInput.val();
+				customViews[viewIndex].name = newName;
+				renameInput.remove();
+				labelText.text(newName).show();
+				theWebUI.save();
+			};
+			labelText
+			.hide()
+			.after(renameInput
+				.on('blur', () => doRename())
+				.on('keydown', (e) => e.keyCode === /* Enter */ 13 && doRename() || true)
+				.val(customViews[viewIndex].name)
+			);
+			$(`#${viewId} input`)[0].focus();
+		}
+	},
+
+	moveView: function(viewId, action)
+	{
+		// Move view according to action (to targetIndex)
+		const viewIndex = Number(viewId.split('_').at(-1));
+		const customViews = this.settings['webui.selected_labels.views'];
+		if (viewIndex in customViews) {
+			const targetIndex = {
+				top: 0,
+				up: Math.max(viewIndex - 1, 0),
+				down: Math.min(viewIndex + 1, customViews.length),
+				bottom: customViews.length
+			}[action] ?? viewIndex;
+			const views = this.settings['webui.selected_labels.views'];
+			views.splice(targetIndex, 0, views.splice(viewIndex, 1)[0]);
+			this.onViewsChanged();
+		}
 	},
 
 	showAdd: function()

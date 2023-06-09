@@ -491,6 +491,7 @@ function makeContent()
 									$('<option>').attr({ value }).text(text)
 						))),
 						...[
+							['webui.show_viewlabelsize', theUILang.showViewLabelSize],
 							['webui.show_statelabelsize', theUILang.showStateLabelSize],
 							['webui.show_labelsize', theUILang.showLabelSize],
 							['webui.show_searchlabelsize', theUILang.showSearchLabelSize],
@@ -499,6 +500,7 @@ function makeContent()
 							['webui.show_empty_path_labels', theUILang.showEmptyPathLabel],
 							['webui.show_label_text_overflow', theUILang.showLabelTextOverflow],
 							['webui.show_open_status', theUILang.showOpenStatus],
+							['webui.show_view_panel', theUILang.showViewPanel],
 						].map(([id, label]) =>
 						$('<div>').append(
 							$('<input>').attr({ type: 'checkbox', id, checked: 'true' }),

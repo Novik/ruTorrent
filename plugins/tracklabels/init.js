@@ -1,5 +1,6 @@
 
 theWebUI.trackersLabels = {};
+theWebUI.viewPanelLabelTypes.push('ptrackers_cont');
 plugin.injectedStyles = {};
 plugin.loadLang();
 

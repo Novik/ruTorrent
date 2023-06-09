@@ -73,6 +73,9 @@ input[type="file"] {-moz-border-radius: 5px; -webkit-border-radius: 5px; border-
 input[type="number"][disabled],input[type="text"][disabled], input[type="password"][disabled], input[type="file"][disabled], select[disabled] {color: black; border: 1px solid #000;background: #888888 url(./images/headers.png) repeat-x 0px -138px;-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
 input.Button {border: 1px solid #000;background: #000 url(./images/headers.png) repeat-x 0px 0px;color:#AACF27;cursor: pointer;font-weight: bold;text-shadow:0px -1px 0px #000;-moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
 
+.pview_custom_view .label-icon { background-color: #181818; line-height: 13px; }
+.pview_custom_view .label-icon > span { color: #D4D6C9 !important; }
+
 div#CatList {border:none;background-color: #212121;border-right: 1px solid #1b1b1b;border-left: 1px solid #070707;}
 div#CatList ul li {color:#D4D6C9}
 div#CatList ul li.sel {color:#AACF27}

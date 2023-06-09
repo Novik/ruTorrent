@@ -95,6 +95,13 @@
 			<tr>
 				<td class="uicell" rowspan="3">
 					<div id="CatList">
+						<div id="pview" class="catpanel" onclick="theWebUI.togglePanel(this); return(false);"><span uilang>pnlViews</span><input class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" onclick="theWebUI.saveCurrentView(); event.stopPropagation(); return(false);"/></div>
+						<ul id="pview_cont" class="catpanel_cont">
+							<li class="-_-_-all-_-_- sel cat">
+								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>All</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
+							</li>
+							<li id="pview_dirty_view" style="display:none"></li>
+						</ul>
 						<div class="catpanel" id="pstate" onclick="theWebUI.togglePanel(this); return(false);" uilang>pnlState</div>
 						<ul id="pstate_cont" class="catpanel_cont">
 							<li class="-_-_-all-_-_- sel cat">
