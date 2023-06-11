@@ -45,7 +45,7 @@ Input.TextboxShort {border: 1px solid #333333}
 Input.TextboxMid {border: 1px solid #333333}
 Input.TextboxLarge {border: 1px solid #333333}
 Input.TextboxVShort {border: 1px solid #333333}
-input.Button {background-color: #999999}
+input.Button {color: #111111; background-color: #999999}
 a {color: #686868}
 
 div#CatList {border: 1px solid #333333; background-color: #181818}
