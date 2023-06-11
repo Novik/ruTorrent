@@ -407,7 +407,6 @@ rPlugin.prototype.addPaneToCategory = function(id,name)
 	if(this.canChangeCategory())
 	{
 		theWebUI.addPanel(id, name);
-		theWebUI.updatePanel(id);
 	}
 	return($("#"+id+"_cont"));
 }

@@ -219,17 +219,6 @@ var theWebUI =
 	props:		{},
 	peers:		{},
 	labels: {},
-	labelStats:
-	{
-		"-_-_-all-_-_-":	{ cnt: 0, size: 0 },
-		"-_-_-dls-_-_-":	{ cnt: 0, size: 0 },
-		"-_-_-com-_-_-":	{ cnt: 0, size: 0 },
-		"-_-_-act-_-_-":	{ cnt: 0, size: 0 },
-		"-_-_-iac-_-_-":	{ cnt: 0, size: 0 },
-		"-_-_-nlb-_-_-":	{ cnt: 0, size: 0 },
-		"-_-_-err-_-_-":	{ cnt: 0, size: 0 }
-	},
-	viewPanelStats: [],
 	viewPanelLabelTypes: ['pstate_cont', 'plabel_cont', 'flabel_cont'],
 	actLbls:
 	{
@@ -237,7 +226,6 @@ var theWebUI =
 		'plabel_cont': []
 	},
 	cLabels:	{},
-	stateLabels: {},
 	staticLabels: ['dls','com','act','iac','nlb','err'],
 	quickSearch: { teg: {val: ''}, debounce: { timeoutId: 0, delayMs: 220 } },
 	dID:		"",
@@ -524,7 +512,6 @@ var theWebUI =
 			theWebUI.updatePanel(this.id);
 		});
 		theWebUI.sortPanels();
-		theWebUI.updateViewPanel();
 		theWebUI.updateViewPanelLabels();
 
 		// recreate tegs if enabled
@@ -568,6 +555,12 @@ var theWebUI =
 				clearTimeout(qsd.timeoutId);
 			}
 			qsd.timeoutId = setTimeout(() => {
+				this.labels['quick_search'] = new Set(
+					Object.entries(this.torrents)
+					.filter(([_, torrent]) => this.quickSearch.teg.val &&
+						this.matchTeg(this.quickSearch.teg, torrent.name))
+					.map(([hash]) => hash)
+				);
 				if ((this.actLbls['flabel_cont'] ?? []).length) {
 					this.actLbls['flabel_cont'] = [];
 					this.onLabelSelectionChanged('flabel_cont');
@@ -1687,6 +1680,14 @@ var theWebUI =
 	{
 	},
 
+	labelStat: function(lbl) {
+		const torrentHashes = this.labels[lbl] ?? new Set();
+		let size = 0;
+		for (const hash of torrentHashes)
+			size += this.torrents[hash].size;
+		return { cnt: torrentHashes.size, size };
+	},
+
 	/**
 	 * @typedef {Object} WebUITorrent
 	 * @property {string} name
@@ -1718,38 +1719,44 @@ var theWebUI =
 		const dataTorrents = data.torrents;
 		data = null;
 
+		const torrentViews = Object.fromEntries(theWebUI.settings['webui.selected_labels.views']
+				.map((view, i) => [`pview_custom_view_${i}`, view])
+		);
+		let torrentLabels = Object.fromEntries(
+			Object.keys(torrentViews)
+			.concat([...this.staticLabels, 'nlb'].map(n => `-_-_-${n}-_-_-`))
+			.map((lbl) => [lbl, new Set()])
+		);
+		let [tdl, tul, tsize] = [0, 0, 0];
+		const newHashes = [];
+
 		this.taskAddTorrents
 			.reset()
 			.map(Object.entries(dataTorrents), ([hash, torrent]) => {
 				const sInfo = this.getStatusIcon(torrent);
 				torrent.status = sInfo[1];
-				const lbl = this.getLabels(hash, torrent);
-				this.labels[hash] = lbl;
-				if (table.setRowById(torrent, hash, sInfo[0], {label: lbl}))
-					this.filterByLabel(hash);
+				// Determine labels of torrent
+				const lbls = this.getLabels(hash, torrent);
+				for (const lblId of lbls) {
+					const labels = torrentLabels[lblId] ?? new Set();
+					labels.add(hash);
+					torrentLabels[lblId] = labels;
+				}
+				for (const [lbl, view] of Object.entries(torrentViews)) {
+					if (this.shouldShowTorrentRow(hash, torrentLabels, view.labels, true)) {
+						torrentLabels[lbl].add(hash);
+					}
+				}
+				// Accumulate torrent data
+				tdl += iv(torrent.dl);
+				tul += iv(torrent.ul);
+				tsize += torrent.size;
+				if (!(hash in this.torrents))
+					newHashes.push(hash);
+				// Update torrent table
+				table.setRowById(torrent, hash, sInfo[0], {labels: lbls.join('-_-_-')})
 			})
 			.enqueueFunc(() => {
-				// accumulate torrent data (new, up/down speed and sizes)
-				const labelCount = Object.fromEntries(
-					this.staticLabels.map(lbl => [lbl, 0])
-				);
-				const labelSize = {...labelCount};
-				this.allLabelSize = 0;
-				let tdl = 0;
-				let tul = 0;
-				const newHashes = [];
-				for (const [hash, torrent] of Object.entries(dataTorrents)) {
-					tdl += iv(torrent.dl);
-					tul += iv(torrent.ul);
-					if (!(hash in this.torrents))
-						newHashes.push(hash);
-					for (const lbl of [...this.stateLabels[hash]||[], torrent.label].filter(l => l.length)) {
-						labelCount[lbl] = (labelCount[lbl]||0) + 1;
-						labelSize[lbl] = (labelSize[lbl]||0) + torrent.size;
-					}
-					this.allLabelSize += torrent.size;
-				}
-
 				// update details page
 				const detailsTorrent = dataTorrents[theWebUI.dID];
 				const oldDetailsTorrent = this.torrents[theWebUI.dID];
@@ -1764,29 +1771,30 @@ var theWebUI =
 				if(theWebUI.activeView === 'PeerList')
 					theWebUI.updatePeers(theWebUI.dID);
 
-				// cleanup removed torrents
+				// Cleanup removed torrents
 				for (const hash in this.torrents) {
 					if (!(hash in dataTorrents)) {
 						delete theWebUI.files[hash];
 						delete theWebUI.dirs[hash];
 						delete theWebUI.peers[hash];
-						delete theWebUI.labels[hash];
 						table.removeRow(hash);
 					}
 				}
+				// Assign new torrent data
 				this.torrents = dataTorrents;
+				this.labels = torrentLabels;
+				this.allLabelSize = tsize;
 				this.setSpeedValues(tul, tdl);
-				this.getAllTrackers(newHashes);
 
+				// Filter torrent table
+				for (const hash in this.torrents)
+					this.filterByLabel(table, hash);
+
+				// Fetch additional data
+				this.getAllTrackers(newHashes);
 				this.getTotal();
 				if (this.settings['webui.show_open_status'])
 					this.getOpenStatus();
-
-				// update search labels (tegs)
-				this.updateTegs(Object.values(this.tegs));
-
-				// update views (cnt and size)
-				this.updateViewPanel();
 
 				// set timeout for next update
 				this.setInterval();
@@ -1802,12 +1810,7 @@ var theWebUI =
 				const domUpdates = async () => {
 					// update state, custom, and teg labels
 					await nextAFrame();
-					this.loadLabels(labelCount, labelSize);
 					this.updateLabels();
-					if (!this.firstLoad)
-						await nextAFrame();
-					this.updateTegLabels(Object.keys(this.tegs));
-					this.updateViewPanelLabels();
 					if (!this.firstLoad)
 						await nextAFrame();
 					this.updateViewRows(table);
@@ -1960,8 +1963,8 @@ var theWebUI =
 		const el = this.createSelectableLabelElement(tegId, str, theWebUI.labelContextMenu).addClass('teg');
 		$("#lblf").append( el );
 		this.tegs[tegId] = this.searchToTeg(str);
-		this.updateTegs([this.tegs[tegId]]);
-		this.updateTegLabels([tegId]);
+		this.updateTegs([tegId]);
+		this.updateLabels();
 		return el;
 	},
 
@@ -1988,29 +1991,12 @@ var theWebUI =
 		return teg.pattern.test(name);
 	},
 
-	updateTegs: function(tegObjs)
+	updateTegs: function(tegIds)
 	{
-		for (var teg of tegObjs) {
-			teg.cnt = 0;
-			teg.size = 0;
-		}
-		for (var hash in this.torrents) {
-			var torrent = this.torrents[hash];
-			for (var teg of tegObjs) {
-				if(this.matchTeg(teg, torrent.name)) {
-					teg.cnt++;
-					teg.size += torrent.size;
-				}
-			}
-		}
-	},
-
-	updateTegLabels: function(tegIds)
-	{
-		for( var id of tegIds )
-		{
-			var teg = this.tegs[id];
-			this.updateLabel($$(id), teg.cnt, teg.size, this.settings["webui.show_searchlabelsize"]);
+		for (const tegId of tegIds) {
+			this.labels[tegId] = new Set(Object.entries(this.torrents)
+				.filter(([_, torrent]) => this.matchTeg(this.tegs[tegId], torrent.name))
+				.map(([tegId]) => tegId));
 		}
 	},
 
@@ -2108,10 +2094,11 @@ var theWebUI =
 	 * @param {Object.<string, number>} c - <label_name, count>
 	 * @param {Object.<string, number>} s - labels size
 	 */
-	loadLabels: function(c, s)
+	updateCustomLabels: function()
 	{
-		var p = $("#lbll");
-		var lbls = Object.keys(c);
+		const ul = $("#lbll");
+		const lbls = Object.keys(this.labels)
+			.filter(lbl => lbl.startsWith('clabel__'));
 		lbls.sort((x,y) => {
 			const xPath = x.split('/');
 			const yPath = y.split('/');
@@ -2125,66 +2112,42 @@ var theWebUI =
 			return xPath.length - yPath.length;
 		});
 
-		this.cLabels = {};
-		let prevCustomEle = null;
-		for(var lbl of lbls)
-		{
-			var id = "-_-_-" + lbl + "-_-_-";
-			this.labelStats[id] = { cnt: c[lbl], size: s[lbl] };
-			if (!this.staticLabels.includes(lbl))
+		// Remove empty label rows
+		for(const el of ul.children())
+			if(el.id.startsWith('clabel__') && !this.labels[el.id]?.size)
 			{
-				// use custom label
-				let path = [];
-				for(const nodeText of lbl.split('/')) {
-					path.push(nodeText);
-					const clbl = path.join('/');
-					const cid = '-_-_-' + clbl + '-_-_-';
-					if (this.settings['webui.show_empty_path_labels'])
-					{
-						// add empty non-leaf labels
-						if (!(cid in this.labelStats))
-							this.labelStats[cid] = { cnt: 0, size: 0 };
-					}
-					else if (cid in this.labelStats && this.labelStats[cid].cnt === 0 && cid !== id)
-					{
-						// delete empty non-leaf labels
-						// (keep empty leaf labels since they can not be recovered with show_empty_path_labels = true)
-						delete this.labelStats[cid];
-					}
-					if (!(clbl in this.cLabels) && cid in this.labelStats)
-					{
-						this.cLabels[clbl] = {
-							path: path.slice(),
-							level: path.length-1,
-						};
-						let ele = $$(cid);
-						if(!ele) {
-							ele = this.createSelectableLabelElement(cid, clbl, theWebUI.labelContextMenu);
-							if (this.actLbls['plabel_cont'].includes(cid)) {
-								$('#plabel_cont .-_-_-all-_-_-').removeClass('sel');
-								ele.addClass('sel');
-							}
-							if (prevCustomEle) {
-								ele.insertAfter(prevCustomEle);
-							} else {
-								p.append(ele);
-							}
-						}
-						prevCustomEle = ele;
-					}
-				}
+				$(el).remove();
 			}
-		}
-		if ( !this.settings['webui.show_empty_path_labels'] ) {
-			// flatten tree where parent nodes are missing
-			for (const lbl in this.cLabels) {
-				while (true) {
-					const label = this.cLabels[lbl];
-					const omittedPath = label.path.slice(0, label.level);
-					if ( !omittedPath.length || (omittedPath.join('/') in this.cLabels))
-						break;
-					$($$('-_-_-' + omittedPath.join('/') + '-_-_-')).remove();
-					this.cLabels[lbl].level--;
+
+		this.cLabels = {};
+		let previousLabelEl = null;
+		let previousPath = [];
+		for(const lbl of lbls)
+		{
+			let labelPath = [];
+			for(const nodeText of lbl.substring(8).split('/')) {
+				labelPath.push(nodeText);
+				const clbl = labelPath.join('/');
+				const pathLbl = 'clabel__' + clbl;
+				const notEmpty = this.labels[pathLbl]?.size > 0;
+				let labelEl = $$(pathLbl);
+				if (!(clbl in this.cLabels) && (notEmpty || this.settings['webui.show_empty_path_labels']))
+				{
+					const path = labelPath.slice();
+					// Flatten tree where parent nodes are missing
+					const diffIndex = path.findIndex((sub,i) => sub !== previousPath[i]);
+					const level = diffIndex >= 0 ? diffIndex : path.length - 1;
+					this.cLabels[clbl] = { path: path.slice(), level };
+					if(!labelEl) {
+						labelEl = this.createSelectableLabelElement(pathLbl, clbl, theWebUI.labelContextMenu);
+						if (previousLabelEl) {
+							labelEl.insertAfter(previousLabelEl);
+						} else {
+							ul.append(labelEl);
+						}
+					}
+					previousLabelEl = labelEl;
+					previousPath = path;
 				}
 			}
 		}
@@ -2196,17 +2159,9 @@ var theWebUI =
 			label.hasNext = [...hasNext];
 			hasNext[label.level] = true;
 		}
-		const pLabels = ['nlb'].concat(Object.keys(this.cLabels));
-		p.children().each(function(ndx,val)
-		{
-			var id = val.id;
-			var lbl = (id&&theWebUI.idToLbl(id))||'nlb';
-			if (!pLabels.includes(lbl)) {
-				$(val).remove();
-			}
-		});
 		const actLbls = theWebUI.actLbls['plabel_cont'] ?? [];
-		const residualActLbls = actLbls.filter(labelId => pLabels.includes(theWebUI.idToLbl(labelId)));
+		const residualActLbls = actLbls.filter(labelId => !labelId.startsWith('clabel__') ||
+			(labelId.substring(8) in this.cLabels));
 		const actDeleted = actLbls.length !== residualActLbls.length;
 		if (actDeleted)
 		{
@@ -2222,16 +2177,22 @@ var theWebUI =
 	 * @param {string} id - torrent hash
 	 * @param {WebUITorrent} torrent
 	 */
-	getLabels : function(id, torrent)
+	getLabels: function(id, torrent)
 	{
-		this.stateLabels[id] = [
-			torrent.label.length ? '' : 'nlb',
-			torrent.done < 1000 ? 'dls' : 'com',
-			(torrent.dl >= 1024) || (torrent.ul >= 1024) ? 'act' : 'iac',
-			torrent.state & dStatus.error ? 'err' : '',
-		].filter(lbl => lbl.length);
-		return((torrent.label.length ? '-_-_-' + torrent.label + '-_-_-' : '') +
-			this.stateLabels[id].map(function (lbl) { return('-_-_-' + lbl + '-_-_-'); }).join(''));
+		return [
+				torrent.done < 1000 ? 'dls' : 'com',
+				(torrent.dl >= 1024) || (torrent.ul >= 1024) ? 'act' : 'iac',
+				torrent.state & dStatus.error ? 'err' : ''
+			]
+			.filter(lbl => lbl.length)
+			.map(lbl => '-_-_-' + lbl + '-_-_-')
+			.concat([torrent.label ? 'clabel__' + torrent.label : '-_-_-nlb-_-_-'])
+			.concat(Object.entries(this.tegs)
+				.filter(([_,teg]) => this.matchTeg(teg, torrent.name))
+				.map(([tegId]) => tegId))
+			.concat(this.quickSearch.teg.val && this.matchTeg(this.quickSearch.teg, torrent.name)
+				? ['quick_search']
+				: []);
 	},
 
 	/**
@@ -2344,8 +2305,9 @@ var theWebUI =
 		return(id.substr(5, id.length - 10));
 	},
 
-	updateLabels: function(wasRemoved)
+	updateLabels: function()
 	{
+		this.updateCustomLabels();
 		this.updateViewPanelLabels();
 
 		const catlist = $($$('CatList'));
@@ -2361,16 +2323,21 @@ var theWebUI =
 		this.updateAllFilterLabel('plabel_cont', this.settings["webui.show_labelsize"]);
 		this.updateAllFilterLabel('flabel_cont', this.settings["webui.show_searchlabelsize"]);
 
-		for(const k in this.labelStats)
+		for(const k in this.labels)
 		{
-			const lbl = this.idToLbl(k);
-			const customLabel = lbl in this.cLabels && lbl;
+			const customLabel = k.startsWith('clabel__') && k.substring(8);
+			const lbl = customLabel || (k.startsWith('-_-_-') ? this.idToLbl(k) : k);
 			const showTree = customLabel && this.settings['webui.show_label_path_tree'];
+			const stat = this.labelStat(k);
 			this.updateLabel(
 				$$(k),
-				this.labelStats[k].cnt,
-				this.labelStats[k].size,
-				this.staticLabels.includes(lbl) && lbl != 'nlb' ? this.settings["webui.show_statelabelsize"] : this.settings["webui.show_labelsize"],
+				stat.cnt,
+				stat.size,
+				this.staticLabels.includes(lbl) && lbl != 'nlb'
+				? this.settings["webui.show_statelabelsize"]
+				: k.startsWith('teg_')
+				? this.settings["webui.show_searchlabelsize"]
+				: this.settings["webui.show_labelsize"],
 				(showTree && this.cLabelText(lbl))||customLabel,
 				showTree && theFormatter.treePrefix(this.cLabels[lbl]),
 				customLabel,
@@ -2522,49 +2489,36 @@ var theWebUI =
 	filterTorrentTable: function() {
 		var table = this.getTable("trt");
 		table.scrollTo(0);
-		for(var k in this.torrents)
-			this.filterByLabel(k);
+		for(const hash of Object.keys(this.torrents))
+			this.filterByLabel(table, hash);
 		table.clearSelection();
 		if(this.dID != "")
 		{
 			this.dID = "";
 			this.clearDetails();
 		}
-
 		this.updateViewRows(table);
 	},
 
-	filterByLabel: function(sId)
+	filterByLabel: function(table, sId)
 	{
-		const table = this.getTable('trt');
-		if(this.isTorrentRowShown(table, sId))
+		if(this.shouldShowTorrentRow(
+			sId, this.labels, this.actLbls, !(this.quickSearch.teg.val && theSearchEngines.current === -1)
+		))
 			table.unhideRow(sId);
 		else
 			table.hideRow(sId);
 	},
 
-	isTorrentRowShown: function(table, sId)
+	shouldShowTorrentRow: function(hash, labels, actLbls, noQuickSearch)
 	{
-		return this.shouldShowTorrentRow(table, sId, this.actLbls, this.quickSearch);
-	},
-
-	shouldShowTorrentRow: function(table, sId, actLbls, quickSearch)
-	{
-		const title = table.getValueById(sId, 'name');
-		const qTeg = quickSearch.teg;
-		const qTegEnabled = theSearchEngines.current <= 0 && qTeg.val;
-		const label = table.getAttr(sId, 'label');
-		return ['pstate_cont', 'plabel_cont', 'flabel_cont']
-			.map(labelType => [labelType, actLbls[labelType] ?? []])
-			.every(([labelType, actLbls]) => labelType !== 'flabel_cont'
-				// filter by torrent label
-				? !actLbls.length ||
-				actLbls.some(labelId => label.includes(labelId))
-				// filter by title search teg
-				: (!actLbls.length && !qTegEnabled) ||
-				actLbls.some(labelId => !(labelId in this.tegs) || this.matchTeg(this.tegs[labelId], title)) ||
-				// Add quick search as search teg filter
-				(qTegEnabled && this.matchTeg(qTeg, title))
+		return this.viewPanelLabelTypes
+			.map(labelType => (actLbls[labelType] ?? [])
+				/* Let the quick search act as a search teg */
+				.concat(!noQuickSearch && labelType === 'flabel_cont' ? ['quick_search'] : [])
+			)
+			.every(activeLabels => !activeLabels.length ||
+				activeLabels.some(lbl => labels[lbl]?.has(hash))
 			);
 	},
 
@@ -3018,22 +2972,12 @@ var theWebUI =
 
 	updateViewPanel: function()
 	{
-		const table = this.getTable('trt');
-		const qs = {teg: {val: ''}};
-		// accumulate torrent count and size for views
-		this.viewPanelStats = this.settings['webui.selected_labels.views']
-			.map(view => {
-				let [cnt, size] = [0,0];
-				for(const hash in this.torrents)
-				{
-					if (this.shouldShowTorrentRow(table, hash, view.labels, qs))
-					{
-						cnt++;
-						size += this.torrents[hash].size;
-					}
-				}
-				return {cnt, size};
-			});
+		for (const [lbl, view] of theWebUI.settings['webui.selected_labels.views']
+						.map((view, i) => [`pview_custom_view_${i}`, view])) {
+			this.labels[lbl] = new Set(Object.keys(this.torrents)
+				.filter(hash => this.shouldShowTorrentRow(hash, this.labels, view.labels, true))
+			);
+		}
 	},
 
 	updateViewPanelLabels: function()
@@ -3049,16 +2993,25 @@ var theWebUI =
 		for (let i = 0; i < customViews.length; i++) {
 			const customViewId = `pview_custom_view_${i}`;
 			const view = customViews[i];
-			const stats = this.viewPanelStats[i] ?? {cnt: 0, size: 0};
+			const stat = this.labelStat(customViewId);
 
-			if (i >= customViewRows.length) {
-				dirtyViewEl.before(
-					this.createSelectableLabelElement(customViewId, view.name, theWebUI.labelContextMenu)
-						.addClass('pview_custom_view')
-				);
+			let cViewRow = $($$(customViewId));
+			if (!cViewRow.length) {
+				cViewRow = this.createSelectableLabelElement(
+					customViewId,
+					view.name,
+					theWebUI.labelContextMenu
+				).addClass('pview_custom_view');
+				cViewRow
+					.children('.label-icon')
+					.append($('<span>'));
+				dirtyViewEl.before(cViewRow);
 			}
 
-			this.updateLabel($$(customViewId), stats.cnt, stats.size, showlabelsize, view.name);
+			this.updateLabel(cViewRow[0], stat.cnt, stat.size, showlabelsize, view.name);
+			cViewRow
+				.find('.label-icon > span')
+				.text(view.name.charAt(0));
 		}
 		// Remove unused view rows
 		for (let i = customViews.length; i < customViewRows.length; i++) {
