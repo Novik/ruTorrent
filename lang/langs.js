@@ -116,7 +116,7 @@ function loadUILang(onLoadFunc)
 
 function translateDOM() {
 	// Translate uilang elements and uilangtitle/uilangvalue attributes
-	for (const attr of ['', 'title', 'value']) {
+	for (const attr of ['', 'title', 'value', 'text']) {
 		for (el of document.querySelectorAll(`[uilang${attr}]`)) {
 			const translationId = attr.length ? el.getAttribute(`uilang${attr}`) : el.textContent;
 			const translation = theUILang[translationId] ?? translationId;

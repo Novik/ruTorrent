@@ -1,0 +1,139 @@
+:host {
+  display: flex;
+  padding: 3px;
+  flex-flow: row nowrap;
+  align-items: center;
+  height: 16px;
+  cursor: pointer;
+  overflow: hidden;
+  --prefix-color: black;
+  --prefix-fontsize: 19px;
+  --badge-color: black;
+  --badge-background-color: #f0f0f0;
+  --status-image: url(../images/tstatus.png);
+  --icon-size: 16px;
+}
+
+:host([selected]) {
+  background-color: #cfdeef;
+  border-color: #cfdeef;
+}
+
+div {
+  margin-right: 0.5em;
+}
+
+[part="prefix"] {
+  color: var(--prefix-color);
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  opacity: 0.1;
+  font-family: monospace;
+  font-size: var(--prefix-fontsize);
+  margin-left: -2px;
+  margin-right: 2px;
+}
+[part="prefix"] div {
+  margin-right: 0px;
+  min-width: 12px;
+  max-width: 12px;
+}
+
+[part="text"] {
+  white-space: pre;
+}
+
+[part="count"],
+[part="size"] {
+  color: var(--badge-color);
+  background-color: var(--badge-background-color);
+  padding: var(--badge-padding, 0.1em 0.3em 0.1em 0.3em);
+  border-radius: var(--badge-border-radius, 0.8em);
+  white-space: pre;
+}
+
+[part="icon"] {
+  min-width: var(--icon-size);
+  min-height: var(--icon-size);
+  background-image: var(--status-image);
+  background-position: var(--icon-offset, 0px 0px);
+  background-repeat: no-repeat;
+  background-size: var(--icon-image-size, unset);
+}
+
+[part="icon"].icon-letter {
+  background-image: none;
+  color: var(--icon-letter-color, --badge-color);
+  background-color: var(
+    --icon-letter-background-color,
+    --badge-background-color
+  );
+  border: 1px solid var(--icon-letter-border-color, rgba(128, 128, 128, 0.2));
+  border-radius: calc(var(--icon-size) / 2);
+  width: calc(var(--icon-size) - 2px);
+  height: calc(var(--icon-size) - 2px);
+  font-size: calc(var(--icon-size) - 5px);
+  display: flex;
+  font-style: normal;
+}
+
+[part="icon"].icon-letter > span {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  line-height: calc(var(--icon-size) - 3px);
+}
+.icon-by-url {
+  background-position: 0px 0px;
+  background-size: var(--icon-size) var(--icon-size);
+  background-image: none;
+}
+
+:host([icon="down"]) {
+  --icon-offset: 0px 0px;
+}
+:host([icon="up"]) {
+  --icon-offset: 0px -16px;
+}
+:host([icon="search"]),
+:host([icon="inactive"]) {
+  --icon-offset: 0px -32px;
+}
+:host([icon="paused"]) {
+  --icon-offset: 0px -48px;
+}
+:host([icon="error-down"]) {
+  --icon-offset: 0px -64px;
+}
+:host([icon="error-up"]) {
+  --icon-offset: 0px -80px;
+}
+:host([icon="error"]) {
+  --icon-offset: 0px -96px;
+}
+:host([icon="completed"]) {
+  --icon-offset: 0px -112px;
+}
+:host([icon="queued-down"]) {
+  --icon-offset: 0px -128px;
+}
+:host([icon="queued-up"]) {
+  --icon-offset: 0px -144px;
+}
+:host([icon="up-down"]) {
+  --icon-offset: 0px -160px;
+}
+:host([icon="checking"]),
+:host([icon="all"]) {
+  --icon-offset: 0px -176px;
+}
+:host([icon="rss"]) {
+  --icon-offset: 0px -208px;
+}
+:host([icon="rss-dis"]) {
+  --icon-offset: 0px -192px;
+}
+:host([icon="rss-group"]) {
+  --icon-offset: 0px -240px;
+}

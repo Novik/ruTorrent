@@ -22,10 +22,13 @@
 		<meta name="msapplication-TileImage" content="./images/mstile-144x144.png" />
 		<link href="./css/style.css" rel="stylesheet" type="text/css" />
 		<link href="./css/stable.css" rel="stylesheet" type="text/css" />
+		<link rel="preload" as="style" href="./css/category-panel.css" />
+		<link rel="preload" as="style" href="./css/panel-label.css" />
 		<script type="text/javascript" src="./js/jquery.js?v=430"></script>
 		<script type="text/javascript" src="./js/jquery.flot.js?v=430"></script>
 		<script type="text/javascript" src="./js/sanitize.js?v=430"></script>
 		<script type="text/javascript" src="./js/sanitize.config.js?v=430"></script>
+		<script type="text/javascript" src="./js/custom-elements.js?v=430"></script>
 		<script type="text/javascript" src="./lang/langs.js?v=430"></script>
 		<link rel="preload" as="script" href="./js/common.js?v=430" />
 		<link rel="preload" as="script" href="./js/objects.js?v=430" />
@@ -49,6 +52,9 @@
 			});
 		</script>
 		<script type="module" src="./js/backgroundtask.js?v=430"></script>
+		<script type="module" src="./js/category-list.js?v=430"></script>
+		<script type="module" src="./js/panel.js?v=430"></script>
+		<script type="text/javascript" src="./js/category-list-elements.js?v=430" defer></script>
 	</head>
 	<body>
 		<div id="preload"></div>
@@ -105,53 +111,51 @@
 		<table id="maincont" cellpadding="0" cellspacing="0" summary="layout table">
 			<tr>
 				<td class="uicell" rowspan="3">
-					<div id="CatList">
-						<div id="pview" class="catpanel" onclick="theWebUI.togglePanel(this); return(false);"><span uilang>pnlViews</span><input class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" onclick="theWebUI.saveCurrentView(); event.stopPropagation(); return(false);"/></div>
-						<ul id="pview_cont" class="catpanel_cont">
-							<li class="-_-_-all-_-_- sel cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>All</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-							<li id="pview_dirty_view" style="display:none"></li>
-						</ul>
-						<div class="catpanel" id="pstate" onclick="theWebUI.togglePanel(this); return(false);" uilang>pnlState</div>
-						<ul id="pstate_cont" class="catpanel_cont">
-							<li class="-_-_-all-_-_- sel cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>All</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-							<li id="-_-_-dls-_-_-" class="cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>Downloading</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-							<li id="-_-_-com-_-_-" class="cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>Finished</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-							<li id="-_-_-act-_-_-" class="cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>Active</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-							<li id="-_-_-iac-_-_-" class="cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>Inactive</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-							<li id="-_-_-err-_-_-" class="cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>Error</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-						</ul>
-						<div class="catpanel" id="plabel" onclick="theWebUI.togglePanel(this); return(false);" uilang>Labels</div>
-						<ul class="catpanel_cont" id="plabel_cont">
-							<li class="-_-_-all-_-_- sel cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>All</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-							<li id="-_-_-nlb-_-_-" class="cat">
-								<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>No_label</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-							</li>
-						</ul>
-						<div class="catpanel" id="flabel" onclick="theWebUI.togglePanel(this); return(false);" uilang>mnu_search</div>
-						<div class="catpanel_cont" id="flabel_cont">
-							<ul id="lblf">
-								<li class="-_-_-all-_-_- sel cat">
-									<div class="label-prefix"></div><div class="label-icon"></div><div class="label-text" uilang>All</div><div class="label-count">0</div><div class="label-size" style="display: none"></div>
-								</li>
-							</ul>
+					<template id="panel-label-template">
+						<link href="./css/panel-label.css" rel="stylesheet" type="text/css" />
+						<div part="prefix" hidden></div>
+						<div part="icon"></div>
+						<div part="text"></div>
+						<div part="count">0</div>
+						<div part="size" style="display: none;"></div>
+					</template>
+					<template id="category-panel-template">
+						<link href="./css/category-panel.css" rel="stylesheet" type="text/css" />
+						<div part="heading">
+							<span class="text"></span><slot name="decorator" class="decorator"></slot>
 						</div>
-					</div>
+						<slot name="content"></slot>
+					</template>
+					<template id="pview-rename-dialog-template">
+						<div class="content">
+							<input type="text" onfocus="this.select()"/>
+						</div>
+						<div class="aright buttons-list" style="margin-top: 10px">
+							<button class="Button" value="confirm" uilang>ok</button>
+							<button class="Button Cancel" uilang>Cancel</button>
+						</div>
+					</template>
+					<category-list id="CatList">
+						<category-panel id="pview" uilangtext="pnlViews">
+							<input slot="decorator" class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" />
+							<panel-label id="pview_all" icon="all" uilangtext="All" selected></panel-label>
+						</category-panel>
+						<category-panel id="pstate" uilangtext="pnlState">
+							<panel-label id="pstate_all" icon="all" uilangtext="All" selected></panel-label>
+							<panel-label id="-_-_-dls-_-_-" icon="down" uilangtext="Downloading"></panel-label>
+							<panel-label id="-_-_-com-_-_-" icon="completed" uilangtext="Finished"></panel-label>
+							<panel-label id="-_-_-act-_-_-" icon="up-down" uilangtext="Active"></panel-label>
+							<panel-label id="-_-_-iac-_-_-" icon="inactive" uilangtext="Inactive"></panel-label>
+							<panel-label id="-_-_-err-_-_-" icon="error" uilangtext="Error"></panel-label>
+						</category-panel>
+						<category-panel id="plabel" uilangtext="Labels">
+							<panel-label id="plabel_all" icon="all" uilangtext="All" selected></panel-label>
+							<panel-label id="-_-_-nlb-_-_-" icon="no-label" uilangtext="No_label"></panel-label>
+						</category-panel>
+						<category-panel id="psearch" uilangtext="mnu_search">
+							<panel-label id="psearch_all" icon="all" uilangtext="All" selected></panel-label>
+						</category-panel>
+					</category-list>
 				</td>
 				<td class="uicell" rowspan="3">
 					<div id="HDivider"></div><div id="dividerDrag"></div>
