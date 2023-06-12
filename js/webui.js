@@ -2897,12 +2897,43 @@ var theWebUI =
 			Object.values(catList.children())
 			.map(e => [e.id, e])
 		);
-
+		const panelIds = theWebUI.settings['webui.category_panels'];
 		catList[0].replaceChildren(...
-			theWebUI.settings['webui.category_panels']
+			panelIds
 				.filter(panelId => panelId in elements)
 				.flatMap(panelId => [elements[panelId], elements[`${panelId}_cont`]])
 		);
+		const mask = $($$('catpanelDrag'));
+		for (const [index, pId, panel] of panelIds.map((p, i) => [i, p, $(elements[p])])) {
+			const dnd = new DnD(pId, {
+				restrictX: true,
+				maskId: 'catpanelDrag',
+				onStart: (e) => e.which === /*left-click*/ 1 &&
+					theWebUI.settings["webui.show_cats"],
+				onRun: () => mask.css('opacity', 0.8).text(panel.text()),
+				onFinish: ({data}) => {
+					const panelHeadMids = panelIds
+						.map(p => $($$(p)))
+						.map(p => (p.height() / 2) + p.offset()?.top);
+					const dragMid = (data.mask.height() / 2) + data.mask.offset().top;
+					const findIndex = panelHeadMids.findIndex(mid => dragMid < mid);
+					const newPanelIndex = findIndex === -1
+						? panelIds.length - 1
+						: findIndex > index
+						? findIndex - 1
+						: findIndex;
+					// Move panel id to new position
+					if (index !== newPanelIndex) {
+						panelIds.splice(index, 1);
+						panelIds.splice(newPanelIndex, 0, pId);
+						theWebUI.sortPanels();
+						theWebUI.save();
+					}
+					mask.css('opacity', 0);
+				}
+			});
+			panel.data('dnd', dnd);
+		}
 	},
 
 	addPanel: function(id, name) {

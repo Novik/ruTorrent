@@ -489,6 +489,15 @@ li.sel .label-count, li.sel .label-size {
 	border:none
 }
 
+div#catpanelDrag {
+	font-size:12px;
+	font-weight:700;
+	font-family:'Roboto';
+	line-height:25px;
+	padding:2px 30px;
+	color:#DCDCDC;
+}
+
 .catpanelcont
 {
 	margin:15px 2px;
