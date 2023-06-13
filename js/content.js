@@ -657,8 +657,26 @@ function makeContent()
 		"</div>");
 }
 
+function hasThemeHint() {
+	return 'theme-hint' in window.localStorage;
+}
+
+function setThemeHint(dark) {
+	window.localStorage['theme-hint'] = dark ? 'dark-theme' : 'light-theme';
+}
+
+if (hasThemeHint()) {
+	$(':root').addClass('pre-theme-load').addClass(window.localStorage['theme-hint']);
+}
+
 function correctContent()
 {
+	if (hasThemeHint() && !thePlugins.isInstalled("theme")) {
+		// Remove theme hint if theme plugin is not used
+		$(':root').removeClass('pre-theme-load').removeClass(window.localStorage['theme-hint']);
+		delete window.localStorage['theme-hint'];
+	}
+
 	var showEnum =
 	{
 		showDownloadsPage:	0x0001,
