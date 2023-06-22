@@ -1226,11 +1226,12 @@ dxSTable.prototype.removeRow = function(sId)
 {
 	if(!(sId in this.rowdata))
 		return;
+	if (this.rowdata[sId].enabled)
+		this.viewRows--;
 	delete this.rowSel[sId];
 	delete this.rowdata[sId];
 	this.rowIDs.splice(this.rowIDs.indexOf(sId), 1);
 	this.rows--;
-	this.viewRows--;
 
 	this.markViewRowsChange(sId, 0)
 }
