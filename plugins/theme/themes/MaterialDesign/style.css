@@ -737,6 +737,12 @@ div#tdcont
 	padding:0
 }
 
+table#maincont td.uicell {
+  overflow: hidden;
+  padding: 0;
+  vertical-align: top;
+}
+
 div#HDivider
 {
 	background:#141414;
