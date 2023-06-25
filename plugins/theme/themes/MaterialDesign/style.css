@@ -199,7 +199,7 @@ div#t
 	background-color:#273238;
 	background-image:none;
 	border-bottom:none;
-	padding:4px 0 2px 0;
+	padding:4px 0 2px 5px;
 	height: 40px;
 }
 
@@ -227,7 +227,7 @@ div#t div.TB_Separator
 
 div#t div#add
 {
-	background:transparent url(./images/toolbar.png) no-repeat 0 0
+	background:transparent url(./images/toolbar.png) no-repeat 0 1px;
 }
 
 div#t div#add:hover
@@ -735,6 +735,12 @@ div#tdcont
 	background:#181818;
 	border:none;
 	padding:0
+}
+
+table#maincont td.uicell {
+  overflow: hidden;
+  padding: 0;
+  vertical-align: top;
 }
 
 div#HDivider
