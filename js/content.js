@@ -662,7 +662,12 @@ function hasThemeHint() {
 }
 
 function setThemeHint(dark) {
-	window.localStorage['theme-hint'] = dark ? 'dark-theme' : 'light-theme';
+	const theme = dark ? 'dark-theme' : 'light-theme';
+	const previousTheme = window.localStorage['theme-hint'];
+	if (theme !== previousTheme) {
+		window.localStorage['theme-hint'] = theme;
+		$(':root').removeClass(previousTheme).addClass(theme);
+	}
 }
 
 if (hasThemeHint()) {

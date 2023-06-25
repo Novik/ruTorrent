@@ -62,7 +62,9 @@ theWebUI.setSettings = function()
 	const themeVal = $($$("webui.theme")).val();
 	if(themeVal !== theWebUI.theme)
 	{
-		plugin.updateThemeHint(themeVal);
-		theWebUI.request("?action=settheme",[theWebUI.reload, theWebUI]);
+		theWebUI.request("?action=settheme", () => {
+			plugin.updateThemeHint(themeVal);
+			theWebUI.reload();
+		});
 	}
 }
