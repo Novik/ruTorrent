@@ -51,7 +51,7 @@ var dxSTable = function()
 	this.format = function(r) { return r; };
 	this.sortId = '';
 	this.reverse = 0;
-	this.sortId2 = 'name';
+	this.sortId2 = '';
 	this.secRev = 0;
 	this.tBody = null;
 	this.tHead = null;
@@ -317,7 +317,7 @@ dxSTable.prototype.removeColumn = function(no)
 		if(this.getColNoById(this.sortId) === i)
 			this.sortId = '';
 		if(this.getColNoById(this.sortId2) === i) {
-			this.sortId2 = 'name';
+			this.sortId2 = '';
 			this.secRev = 0;
 		}
 
@@ -369,10 +369,7 @@ dxSTable.prototype.calcSize = function()
 		var h = this.dCont.clientHeight - this.dHead.offsetHeight;
 		if(h >= 0) 
 			this.dBody.style.height = h + "px";
-		var nsb = -2;
-		if((this.dBody.offsetWidth != this.dBody.clientWidth) && (window.scrollbarWidth!=null))
-			nsb-=window.scrollbarWidth;
-		this.dHead.style.width = this.dCont.clientWidth + nsb + "px";
+		this.dHead.style.width = (this.dCont.clientWidth - 2) + "px";
 		this.rowCover.style.width = this.dHead.style.width;
 		if((this.cols > 0) && (!this.isResizing)) 
 		{
@@ -704,18 +701,19 @@ dxSTable.prototype.Sort = function(e)
 
 	const sortingValues = id => {
 		const no = this.getColById(id);
-			return Object.fromEntries(
+		return no >= 0 ? Object.fromEntries(
 			Object.entries(this.rowdata)
 				.map(([k,v]) => [k, v.data[no]]
 			)
-		);
+		) : {};
 	};
 
 	const primaryValues = sortingValues(this.sortId);
 	const primarySort = this.getSortFunc(this.sortId, this.reverse, x => primaryValues[x]);
 
-	const secondaryValues = sortingValues(this.sortId2);
-	const secondarySort = this.getSortFunc(this.sortId2, this.secRev, x => secondaryValues[x]);
+	const secondary = this.sortId2 || this.ids[0];
+	const secondaryValues = sortingValues(secondary);
+	const secondarySort = this.getSortFunc(secondary, this.secRev, x => secondaryValues[x]);
 
 	this.rowIDs.sort((x,y) => primarySort(x,y) || secondarySort(x,y) || theSort.Default(x, y));
 
@@ -1225,11 +1223,12 @@ dxSTable.prototype.removeRow = function(sId)
 {
 	if(!(sId in this.rowdata))
 		return;
+	if (this.rowdata[sId].enabled)
+		this.viewRows--;
 	delete this.rowSel[sId];
 	delete this.rowdata[sId];
 	this.rowIDs.splice(this.rowIDs.indexOf(sId), 1);
 	this.rows--;
-	this.viewRows--;
 
 	this.markViewRowsChange(sId, 0)
 }
