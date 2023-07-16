@@ -23,11 +23,12 @@ function injectScript(fname,initFunc)
 	void (h.appendChild(s));
 }
 
-function injectCSS(fname)
+function injectCSS(fname, onLoadFunc)
 {
 	var newSS=document.createElement('link');
 	newSS.rel='stylesheet';
 	newSS.href=fname;
+	newSS.onload = onLoadFunc;
 	var h = document.getElementsByTagName("head").item(0);
 	void (h.appendChild(newSS));
 }
@@ -198,9 +199,9 @@ rPlugin.prototype.loadLang = function(sendNotify)
 	return(this);
 }
 
-rPlugin.prototype.loadCSS = function(name)
+rPlugin.prototype.loadCSS = function(name, onLoadFunc)
 {
-	injectCSS(this.path+name+".css");
+	injectCSS(this.path+name+".css", onLoadFunc);
 	return(this);
 }
 
