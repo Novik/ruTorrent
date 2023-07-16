@@ -24,7 +24,6 @@ function makeContent()
 		if(e.keyCode == 13)
 		{
 			theSearchEngines.run();
-			theSearchEngines.run();
 		}
 	});
 
