@@ -2297,7 +2297,7 @@ var theWebUI =
 			}
 		}
 		const txt = li.children('.label-text');
-		if (text)
+		if ((text || text === '') && text !== txt.text())
 			txt.text(text);
 		const lblSize = theConverter.bytes(size, 'catlist');
 		const title = (titleText||text||txt.contents().not(txt.children('script')).text()) +
