@@ -72,7 +72,7 @@
 			<a id="mnu_help" href="javascript://void();" onclick="theDialogManager.toggle('dlgHelp'); return(false);" onfocus="this.blur()" title="Help">
 				<div id="help"></div>
 			</a>
-			<table id='rc' cellpadding="0" cellspacing="0"><tr id='rrow'>
+			<table id='rc' class="mobile-search" cellpadding="0" cellspacing="0"><tr id='rrow'>
 				<td>
 					<a id="mnu_search" class="top-menu-item" href="javascript://void();" onclick="theSearchEngines.show(); return(false);" onfocus="this.blur()" title="Search">
 						<div id="search" class="top-menu-item"></div>
@@ -240,8 +240,8 @@
 							        <table id="st_up" class="statuscell" cellpadding="0" cellspacing="0">
 							        	<tr>
 										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Speed); </script>:</div></td><td><div class="stval" id="stup_speed"></div></td>
-										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.limit); </script>:</div></td><td><div class="stval" id="stup_limit"></div></td>
-										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Total); </script>:</div></td><td><div class="stval" id="stup_total"></div></td>
+										<td class="desktop"><div class="sthdr"><script type="text/javascript"> document.write(theUILang.limit); </script>:</div></td><td class="desktop"><div class="stval" id="stup_limit"></div></td>
+										<td class="desktop"><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Total); </script>:</div></td><td class="desktop"><div class="stval" id="stup_total"></div></td>
 									</tr>
 								</table>
 							</td>
@@ -249,26 +249,26 @@
 							        <table id="st_down" class="statuscell" cellpadding="0" cellspacing="0">
 							        	<tr>
 										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Speed); </script>:</div></td><td><div class="stval" id="stdown_speed"></div></td>
-										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.limit); </script>:</div></td><td><div class="stval" id="stdown_limit"></div></td>
-										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Total); </script>:</div></td><td><div class="stval" id="stdown_total"></div></td>
+										<td class="desktop"><div class="sthdr"><script type="text/javascript"> document.write(theUILang.limit); </script>:</div></td><td class="desktop"><div class="stval" id="stdown_limit"></div></td>
+										<td class="desktop"><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Total); </script>:</div></td><td class="desktop"><div class="stval" id="stdown_total"></div></td>
 									</tr>
 								</table>
 							</td>
-							<td>
+							<td class="desktop">
 								<table id="st_fd" class="statuscell" cellpadding="0" cellspacing="0">
 									<tr>
 										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Open_label); </script>:</div></td><td><div class="stval" id="stopen_http_count"></div></td><td><div class="stval" id="stopen_sock_count"></div></td><td><div class="stval" id="stopen_fd_count"></div></td>
 									</tr>
 								</table>
 							</td>
-							<td>
+							<td class="desktop">
 							        <table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
 							        	<tr>
 										<td><div class="sthdr">rTorrent:</div></td><td><div class="stval" id="rtorrentv"></div></td>
 									</tr>
 								</table>
 							</td>
-							<td class="statusCell">
+							<td class="statusCell desktop">
 								<table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
 									<tr>
 										<td><div class="sthdr"><script type="text/javascript"> document.write(theUILang.Torrents); </script>:</div></td><td><div class="stval" id="viewrows"></div></td>
