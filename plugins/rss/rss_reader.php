@@ -66,7 +66,7 @@ class RegexRSSReader
 	public function searchNodes($path, $ctx = null)
 	{
 		if (!is_array($path)) {
-			yield from $this->searchNodes(explode('/', $path), $ctx);
+			yield from ($this->searchNodes(explode('/', $path), $ctx));
 		} elseif (count($path) > 0) {
 			// find parent nodes
 			while (count($path) > 1) {
@@ -170,7 +170,7 @@ function rssXpath($data)
 		};
 		$xIter = function ($expr, &$ctx = null) use (&$regxSearch) {
 			foreach (explode('|', $expr) as $e)
-				yield from $regxSearch->searchNodes($e, $ctx);
+				yield from ($regxSearch->searchNodes($e, $ctx));
 		};
 		$errors = function () use (&$regxSearch) {
 			return $regxSearch->errors;
