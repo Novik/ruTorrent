@@ -168,6 +168,9 @@ input.Button:active {
 	-webkit-box-shadow:inset 0px 0px 8px 0px #474747;
 }
 
+.pview_custom_view .label-icon { background-color: #111111; line-height: 13px; }
+.pview_custom_view .label-icon > span { color: #999999 !important; }
+
 a {color: #686868}
 
 div#CatList {border: 1px solid #333333; background-color: #181818}

@@ -453,9 +453,17 @@ div#CatList li.sel .label-prefix
 	color:#FFF;
 }
 
-.label-count,.label-size {
+
+.label-count,.label-size,.pview_custom_view .label-icon {
 	color: #D4D6C9;
 	background-color: #273238;
+}
+
+#pview_save_view_button {
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+	font-family: monospace, monospace;
 }
 
 li.sel .label-count, li.sel .label-size {

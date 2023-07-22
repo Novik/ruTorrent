@@ -402,24 +402,11 @@ rPlugin.prototype.removePaneFromStatusbar = function(id)
 	return(this);
 }
 
-rPlugin.prototype.addPaneToCategory = function(id,name, afterId)
+rPlugin.prototype.addPaneToCategory = function(id,name)
 {
 	if(this.canChangeCategory())
 	{
-		const catpanel = $("<div>")
-			.addClass("catpanel")
-			.attr("id",id)
-			.text(name)
-			.on('click', function() { theWebUI.togglePanel(this); });
-		const catcont = $("<div>")
-			.attr("id",id+"_cont")
-			.addClass("catpanel_cont");
-		if (afterId) {
-			$(`#${afterId}`).after(catpanel, catcont);
-		} else {
-			$('#CatList').append(catpanel, catcont);
-		}
-		theWebUI.showPanel($$(id),!theWebUI.settings["webui.closed_panels"][id]);
+		theWebUI.addPanel(id, name);
 	}
 	return($("#"+id+"_cont"));
 }
