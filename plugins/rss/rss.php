@@ -242,7 +242,7 @@ class rRSS
 				}
 				$item = [
 					'title'=> $xText('title', $i),
-					'timestamp'=>strtotime($xText('updated', $i)) ?? false,
+					'timestamp'=>strtotime($xText('updated', $i)) ?: false,
 					'link'=> $urlPrefix.$xText('link/@href', $i),
 					'description'=> join("\n\n", $description),
 				];
