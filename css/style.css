@@ -85,6 +85,8 @@ Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; w
 Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 30px}
 input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0; cursor: pointer }
 input.Button[disabled] { opacity: 0.3; cursor: default }
+input.Button:not([disabled]):hover { background-color: #F5F5F5; }
+input.Button:not([disabled]):hover:active { background-color: #FAFAFA; }
 #pview { display: flex; padding-right: 0px; }
 #pview > span { flex: 1; }
 #pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
@@ -302,7 +304,7 @@ div#tadd select { width: 220px }
 .userInterfaceOptions > div { max-width: 50% }
 .optionColumn { display: flex; justify-content: space-between; flex-flow: column wrap; }
 .optionColumn input[type=number],.optionColumn select { padding: 1px; margin: 0.1em 0.5em; width: 6em; }
-.optionColumn div { padding-left: 0; }
+.optionColumn div { display:flex; align-items: center; padding-left: 0; }
 .statuscell td { padding: 0 }
 #st_fd .sthdr { padding-left: 8px; }
 #st_fd .stval { text-align: center; width: 4.3em; }
