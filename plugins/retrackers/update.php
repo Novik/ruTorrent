@@ -5,7 +5,7 @@ if(count($argv)>2)
 
 require_once( 'retrackers.php' );
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
-require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/rtorrent.php" );
 
 function clearTracker($addition,$tracker)
 {
@@ -29,12 +29,15 @@ function deleteTrackers(&$lst,$todelete)
 	{
 		foreach( $group as $kt=>$trk )
 		{
-			if(in_array($trk,$todelete))
+			foreach ( $todelete as $kd )
 			{
-				unset($lst[$kg][$kt]);
-				if(!count($lst[$kg]))
+				if(stristr($trk,$kd))
+				{
+					unset($lst[$kg][$kt]);
+					if(!count($lst[$kg]))
 					unset($lst[$kg]);
-				$ret = true;
+					$ret = true;
+				}
 			}
 		}
 	}
