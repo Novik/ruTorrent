@@ -167,6 +167,6 @@ class UTF
 	}
 
 	public static function raw_url_decode($string){
-		return mb_convert_encoding(rawurldecode($string), "UTF-8", "auto"));
+		return mb_convert_encoding(rawurldecode($string, "UTF-8", "auto"));
 	}
 }
