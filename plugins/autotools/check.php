@@ -12,7 +12,7 @@ require_once( "./autotools.php" );
 $base_path = $argv[1];
 $base_name = $argv[2];
 $is_multy = $argv[3];
-$label	   = rawurldecode($argv[4]);
+$label	   = UTF::raw_url_decode($argv[4]);
 $name = $argv[5];
 
 $base_path = rtRemoveTailSlash( $base_path );
