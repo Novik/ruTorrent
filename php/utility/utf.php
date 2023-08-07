@@ -161,12 +161,12 @@ class UTF
 					$mixed = self::mix2utf($mixed);
 		return($mixed);
 	}
-	
+
 	public static function raw_url_encode($string){
-        return rawurlencode(mb_convert_encoding($string, "UTF-8", "auto"));
-    }
-	
+		return rawurlencode(mb_convert_encoding($string, "UTF-8", "auto"));
+	}
+
 	public static function raw_url_decode($string){
-        return mb_convert_encoding(rawurldecode($string), "UTF-8", "auto"));
-    }
+		return mb_convert_encoding(rawurldecode($string), "UTF-8", "auto"));
+	}
 }
