@@ -2864,6 +2864,7 @@ var theWebUI =
 		if((theWebUI.settings["webui.hsplit"] != r) && (r>0) && (r<1))
 		{
 			theWebUI.settings["webui.hsplit"] = r;
+			theWebUI.resize();
 			theWebUI.save();
 		}
 	},
