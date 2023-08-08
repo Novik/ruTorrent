@@ -1,5 +1,5 @@
 plugin.description: This plugin adds tracker-based labels to the category panel.
 plugin.author: Novik
 plugin.runlevel: 11
-plugin.version: 4.1
+plugin.version: 4.2
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginTracklabels

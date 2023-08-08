@@ -1,6 +1,6 @@
 plugin.description: This plugin shows geolocation of peers for the selected torrent.
 plugin.author: Zoltan Csala,Novik
 plugin.runlevel: 15
-plugin.version: 4.1
+plugin.version: 4.2
 php.extensions.error: json
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginGeoIP
