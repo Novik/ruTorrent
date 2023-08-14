@@ -89,9 +89,9 @@ plugin.updateLabel = theWebUI.updateLabel;
 theWebUI.updateLabel = function(label, ...args)
 {
 	plugin.updateLabel.call(this, label, ...args);
-	var icon = $(label).children('.label-icon');
-	var id = icon.parent().attr('id');
-	if (id && icon.parents('#plabel_cont')[0] && !icon.children('img')[0])
+	const icon = $(label).children('.label-icon');
+	const id = label.id;
+	if (id && (id === '-_-_-nlb-_-_-' || id.startsWith('clabel__')) && !icon.children('img')[0])
 	{
 		var lbl = id.startsWith('-_-_-') ? theWebUI.idToLbl(id) : id.substr(8);
 		icon.append($("<img>")

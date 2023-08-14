@@ -763,13 +763,12 @@ var theFormatter =
 	},
 	treePrefix: function({hasNext, level})
 	{
-		const prefix = [];
-		for (let l = 1; l < level+1; l++) {
-			prefix.push(hasNext[l] ?
-				(l === level ? '├' : '│') :
-				(l === level ? '└' : ' '));
-		}
-		return prefix.join('');
+		return hasNext
+			.slice(1)
+			.map((next,l) => next
+				? (l+1 === level ? '├' : '│')
+				: (l+1 === level ? '└' : ' ')
+			).join('');
 	}
 };
 

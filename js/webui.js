@@ -2096,77 +2096,98 @@ var theWebUI =
 	 */
 	updateCustomLabels: function()
 	{
-		const ul = $("#lbll");
-		const lbls = Object.keys(this.labels)
-			.filter(lbl => lbl.startsWith('clabel__'));
-		lbls.sort((x,y) => {
-			const xPath = x.split('/');
-			const yPath = y.split('/');
-			const l = Math.min(xPath.length, yPath.length);
-			for (let i = 0; i < l; i++) {
-				const o = xPath[i].localeCompare(yPath[i]);
-				if (o) {
-					return o;
+		const customLabels = Object.keys(this.labels)
+			.filter((lbl) => lbl.startsWith("clabel__"))
+			.map((lbl) => lbl.substring(8));
+
+		const showlabelsize = this.settings["webui.show_labelsize"];
+
+		// Build tree from path labels
+		const labelTree = {};
+		for (const label of customLabels) {
+			let node = labelTree;
+			for (const pathSegment of label.split('/')) {
+				if (!(pathSegment in node)) {
+					node[pathSegment] = {};
 				}
+				node = node[pathSegment];
 			}
-			return xPath.length - yPath.length;
-		});
-
-		// Remove empty label rows
-		for(const el of ul.children())
-			if(el.id.startsWith('clabel__') && !this.labels[el.id]?.size)
-			{
-				$(el).remove();
-			}
-
+		}
+		let customLabelElements = [];
 		this.cLabels = {};
-		let previousLabelEl = null;
-		let previousPath = [];
-		for(const lbl of lbls)
 		{
-			let labelPath = [];
-			for(const nodeText of lbl.substring(8).split('/')) {
-				labelPath.push(nodeText);
-				const clbl = labelPath.join('/');
-				const pathLbl = 'clabel__' + clbl;
-				const notEmpty = this.labels[pathLbl]?.size > 0;
-				let labelEl = $$(pathLbl);
-				if (!(clbl in this.cLabels) && (notEmpty || this.settings['webui.show_empty_path_labels']))
-				{
-					const path = labelPath.slice();
-					// Flatten tree where parent nodes are missing
-					const diffIndex = path.findIndex((sub,i) => sub !== previousPath[i]);
-					const level = diffIndex >= 0 ? diffIndex : path.length - 1;
-					this.cLabels[clbl] = { path: path.slice(), level };
-					if(!labelEl) {
-						labelEl = this.createSelectableLabelElement(pathLbl, clbl, theWebUI.labelContextMenu);
-						if (previousLabelEl) {
-							labelEl.insertAfter(previousLabelEl);
-						} else {
-							ul.append(labelEl);
-						}
+			const showAsTree = this.settings['webui.show_label_path_tree'];
+			const showEmptyLabels = this.settings['webui.show_empty_path_labels'];
+			// Create a panel-label element for existing labels. Additionally,
+			// for showAsTree: show non-flat parent labels,
+			// for showEmptyLabels: show all parent labels.
+			const nextVisits = (n, path, nextLevel, hasNext) =>
+				Object.keys(n)
+					.sort((a, b) => /* reversed order for stack */ b.localeCompare(a))
+					.map((name, i) => [
+						n[name],
+						path.concat([name]),
+						nextLevel,
+						hasNext.concat([i !== /* last */ 0]),
+					]);
+			const pathToLabelId = (path) => 'clabel__' + path.join('/');
+			let stack = nextVisits(labelTree, [], 0, []);
+			let visit;
+			while ((visit = stack.pop())) {
+				let [node, path, level, hasNext] = visit;
+				let nextLevel = level + 1;
+				while (
+					showAsTree &&
+					!showEmptyLabels &&
+					/* Path is flat parent */ !(pathToLabelId(path) in this.labels) &&
+					Object.keys(node).length === 1
+				) {
+					// Flatten tree
+					let [name, flatNode] = Object.entries(node)[0];
+					path.push(name);
+					nextLevel += 1;
+					node = flatNode;
+				}
+				stack.push(...nextVisits(node, path, nextLevel, hasNext));
+
+				const labelId = pathToLabelId(path);
+				if (showAsTree || showEmptyLabels || labelId in this.labels) {
+					// Create panel-label leaf node
+					const titleText = path.join('/');
+					this.cLabels[labelId] = { level, path };
+					let el = $$(labelId);
+					if (el === null) {
+						el = this.createSelectableLabelElement(
+							labelId, "new", this.labelContextMenu
+						)[0];
 					}
-					previousLabelEl = labelEl;
-					previousPath = path;
+					const stat = this.labelStat(labelId);
+					this.updateLabel(
+						el,
+						stat.cnt,
+						stat.size,
+						showlabelsize,
+						showAsTree ? this.cLabelText(labelId) : titleText,
+						showAsTree
+						? theFormatter.treePrefix({ hasNext, level })
+						: null,
+						titleText
+					);
+					customLabelElements.push(el);
 				}
 			}
 		}
-		// determine for each cLabel if it has a next sibling
-		let hasNext = [];
-		for (const lbl of Object.keys(this.cLabels).reverse()) {
-			let label = this.cLabels[lbl];
-			hasNext = hasNext.slice(0, label.level+1);
-			label.hasNext = [...hasNext];
-			hasNext[label.level] = true;
-		}
-		const actLbls = theWebUI.actLbls['plabel_cont'] ?? [];
-		const residualActLbls = actLbls.filter(labelId => !labelId.startsWith('clabel__') ||
-			(labelId.substring(8) in this.cLabels));
-		const actDeleted = actLbls.length !== residualActLbls.length;
-		if (actDeleted)
+
+		const labelPanelEl = document.getElementById('plabel_cont');
+		labelPanelEl.replaceChildren(
+			...labelPanelEl.querySelectorAll(':scope > :not(li[id^="clabel__"])'),
+			...customLabelElements
+		);
+		if (this.actLbls['plabel_cont'].some(lbl => !document.getElementById(lbl)))
 		{
-			// filter out removed labels (no re-filtering required)
-			theWebUI.actLbls['plabel_cont'] = residualActLbls;
+			// Remove non-existent active labels (to potentially show 'All' label as selected)
+			this.actLbls['plabel_cont'] = this.actLbls['plabel_cont']
+				.filter((lbl) => document.getElementById(lbl));
 			// no theWebUI.switchLabel: to avoid switching away from other table views (extsearch, rss)
 			this.refreshLabelSelection('plabel_cont');
 		}
@@ -2325,23 +2346,21 @@ var theWebUI =
 
 		for(const k in this.labels)
 		{
-			const customLabel = k.startsWith('clabel__') && k.substring(8);
-			const lbl = customLabel || (k.startsWith('-_-_-') ? this.idToLbl(k) : k);
-			const showTree = customLabel && this.settings['webui.show_label_path_tree'];
-			const stat = this.labelStat(k);
-			this.updateLabel(
-				$$(k),
-				stat.cnt,
-				stat.size,
-				this.staticLabels.includes(lbl) && lbl != 'nlb'
-				? this.settings["webui.show_statelabelsize"]
-				: k.startsWith('teg_')
-				? this.settings["webui.show_searchlabelsize"]
-				: this.settings["webui.show_labelsize"],
-				(showTree && this.cLabelText(lbl))||customLabel,
-				showTree && theFormatter.treePrefix(this.cLabels[lbl]),
-				customLabel,
-			);
+			if (!k.startsWith('clabel__')) {
+				const lbl = k.startsWith('-_-_-') ? this.idToLbl(k) : k;
+				const stat = this.labelStat(k);
+				this.updateLabel(
+					$$(k),
+					stat.cnt,
+					stat.size,
+					this.staticLabels.includes(lbl) && lbl != 'nlb'
+					? this.settings["webui.show_statelabelsize"]
+					: k.startsWith('teg_')
+					? this.settings["webui.show_searchlabelsize"]
+					: this.settings["webui.show_labelsize"],
+					false,
+				);
+			}
 		}
 	},
 
