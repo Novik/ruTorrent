@@ -1481,12 +1481,13 @@ var theWebUI =
 		_bf.push([theUILang.New_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.newLabel()" : null]);
    		_bf.push([theUILang.Remove_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.removeLabel()" : null]);
    		_bf.push([CMENU_SEP]);
-		for(var lbl in this.cLabels)
+		for(var labelId in this.cLabels)
 		{
+			const lbl = labelId.substring(8);
 			var lblText = this.settings['webui.show_label_path_tree'] ?
-				'│'.repeat(this.cLabels[lbl].level) + this.cLabelText(lbl):
+				'│'.repeat(this.cLabels[labelId].level) + this.cLabelText(labelId):
 				lbl;
-			if((table.selCount == 1) && (this.torrents[id].label == lbl))
+			if((table.selCount == 1) && (this.torrents[id].label === lbl))
 				_bf.push([CMENU_SEL, lblText]);
 			else
 				_bf.push([lblText, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.setLabel('" + addslashes(lbl) + "')" : null]);
