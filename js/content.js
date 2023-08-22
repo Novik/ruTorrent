@@ -147,7 +147,10 @@ function makeContent()
 			.append('<option selected>'+theUILang.No_label+'</option>')
 			.append('<option>'+theUILang.newLabel+'</option>').show();
 		for (var lbl in theWebUI.cLabels)
-			$("#tadd_label_select").append("<option>"+lbl+"</option>");
+		{
+			var lblText = lbl.substring(8);
+			$("#tadd_label_select").append("<option>"+lblText+"</option>");
+		}
 		$("#add_button").prop("disabled",false);
 		$("#tadd_label_select").trigger('change');
 	});
