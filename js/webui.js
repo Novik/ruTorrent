@@ -2347,7 +2347,7 @@ var theWebUI =
 
 		for(const k in this.labels)
 		{
-			if (!k.startsWith('clabel__')) {
+			if (k !== 'quick_search' && !k.startsWith('clabel__')) {
 				const lbl = k.startsWith('-_-_-') ? this.idToLbl(k) : k;
 				const stat = this.labelStat(k);
 				this.updateLabel(
