@@ -2,6 +2,17 @@
  *      Main object.
  *
  */
+function mapPanelIdtoLegacyPanelId(panelId) {
+	return {
+		psearch: 'flabel',
+	}[panelId] ?? panelId;
+}
+function mapPanelIdtoLegacyLabelType(panelId) {
+	return panelId.endsWith('_cont') ? panelId : mapPanelIdtoLegacyPanelId(panelId) + '_cont';
+}
+function mapLabelIdToLegacyLabelId(labelId) {
+	return labelId.startsWith("psearch_") ? "teg_" + labelId.slice(8) : labelId;
+}
 
 var theWebUI =
 {
@@ -525,9 +536,18 @@ var theWebUI =
 			const actLbls = this.settings['webui.selected_labels.last'];
 			for(const [labelType, lbls] of Object.entries(actLbls)) {
 				// consider legacy single-label selection
-				this.actLbls[labelType] = Array.isArray(lbls) ? lbls : lbls ? [lbls] : [];
+				const labelIds = Array.isArray(lbls) ? lbls : lbls ? [lbls] : [];
+				this.actLbls[mapPanelIdtoLegacyLabelType(labelType)] = labelIds.map(mapLabelIdToLegacyLabelId);
 			}
 		}
+		theWebUI.settings["webui.selected_labels.views"] = theWebUI.settings["webui.selected_labels.views"]
+			.map(view => ({...view, labels: Object.fromEntries(
+				Object.entries(view.labels)
+				.map(([panelId, labelIds]) => [
+					mapPanelIdtoLegacyLabelType(panelId),
+					labelIds.map(mapLabelIdToLegacyLabelId)
+			]))}));
+
 		this.adjustViewSelectionToActiveLabels();
 		this.refreshLabelSelection('pview_cont', ...(this.viewPanelLabelTypes));
 
@@ -2946,16 +2966,16 @@ var theWebUI =
 			Object.values(catList.children())
 			.map(e => [e.id, e])
 		);
-
+		const panelIds = theWebUI.settings['webui.category_panels'].map(mapPanelIdtoLegacyPanelId);
 		catList[0].replaceChildren(...
-			theWebUI.settings['webui.category_panels']
+			panelIds
 				.filter(panelId => panelId in elements)
 				.flatMap(panelId => [elements[panelId], elements[`${panelId}_cont`]])
 		);
 	},
 
 	addPanel: function(id, name) {
-		const panels = theWebUI.settings['webui.category_panels'];
+		const panels = theWebUI.settings['webui.category_panels'].map(mapPanelIdtoLegacyPanelId);
 		if (!panels.includes(id)) {
 			panels.push(id);
 		}
