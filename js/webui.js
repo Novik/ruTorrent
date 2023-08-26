@@ -2184,7 +2184,7 @@ var theWebUI =
 			...labelPanelEl.querySelectorAll(':scope > :not(li[id^="clabel__"])'),
 			...customLabelElements
 		);
-		if (this.actLbls['plabel_cont'].some(lbl => !document.getElementById(lbl)))
+		if ((this.actLbls['plabel_cont'] ?? []).some(lbl => !document.getElementById(lbl)))
 		{
 			// Remove non-existent active labels (to potentially show 'All' label as selected)
 			this.actLbls['plabel_cont'] = this.actLbls['plabel_cont']
