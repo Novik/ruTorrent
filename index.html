@@ -20,16 +20,34 @@
 		<link rel="icon" type="image/png" href="./images/favicon-16x16.png" sizes="16x16" />
 		<meta name="msapplication-TileColor" content="#FFFFFF" />
 		<meta name="msapplication-TileImage" content="./images/mstile-144x144.png" />
+		<link href="./css/style.css" rel="stylesheet" type="text/css" />
 		<link href="./css/stable.css" rel="stylesheet" type="text/css" />
-		<style type="text/css">
-			@import "./css/style.css";
-		</style>
 		<script type="text/javascript" src="./js/jquery.js?v=427"></script>
 		<script type="text/javascript" src="./js/jquery.flot.js?v=427"></script>
 		<script type="text/javascript" src="./js/sanitize.js?v=427"></script>
 		<script type="text/javascript" src="./js/sanitize.config.js?v=427"></script>
 		<script type="text/javascript" src="./lang/langs.js?v=427"></script>
-		<script type="text/javascript" src="./js/main.js?v=427"></script>
+		<link rel="preload" as="script" href="./js/common.js?v=427" />
+		<link rel="preload" as="script" href="./js/objects.js?v=427" />
+		<link rel="preload" as="script" href="./js/content.js?v=427" />
+		<link rel="preload" as="script" href="./js/stable.js?v=427" />
+		<link rel="preload" as="script" href="./js/graph.js?v=427" />
+		<link rel="preload" as="script" href="./js/plugins.js?v=427" />
+		<link rel="preload" as="script" href="./js/rtorrent.js?v=427" />
+		<link rel="preload" as="script" href="./js/webui.js?v=427" />
+		<script>
+			loadUILang(() => {
+				// Load scripts which depend on theUILang to be loaded
+				for (const scriptLinkElement of document.head.querySelectorAll(
+					"link[rel=preload][as=script]"
+				)) {
+					const script = document.createElement("script");
+					script.src = scriptLinkElement.href;
+					script.async = false;
+					document.head.replaceChild(script, scriptLinkElement);
+				}
+			});
+		</script>
 		<script type="module" src="./js/backgroundtask.js?v=427"></script>
 	</head>
 	<body>
