@@ -2184,7 +2184,7 @@ var theWebUI =
 			...labelPanelEl.querySelectorAll(':scope > :not(li[id^="clabel__"])'),
 			...customLabelElements
 		);
-		if (this.actLbls['plabel_cont'].some(lbl => !document.getElementById(lbl)))
+		if ((this.actLbls['plabel_cont'] ?? []).some(lbl => !document.getElementById(lbl)))
 		{
 			// Remove non-existent active labels (to potentially show 'All' label as selected)
 			this.actLbls['plabel_cont'] = this.actLbls['plabel_cont']
@@ -2347,7 +2347,7 @@ var theWebUI =
 
 		for(const k in this.labels)
 		{
-			if (!k.startsWith('clabel__')) {
+			if (k !== 'quick_search' && !k.startsWith('clabel__') && !k.startsWith('pview_custom_view_')) {
 				const lbl = k.startsWith('-_-_-') ? this.idToLbl(k) : k;
 				const stat = this.labelStat(k);
 				this.updateLabel(
@@ -3005,7 +3005,7 @@ var theWebUI =
 	{
 		const customViewRows = $('#pview_cont').children('.pview_custom_view');
 		const customViews = this.settings['webui.selected_labels.views'];
-		const showlabelsize = this.settings["webui.show_viewlabelsize"] || true;
+		const showlabelsize = this.settings["webui.show_viewlabelsize"];
 
 		this.updateAllFilterLabel('pview_cont', showlabelsize);
 
