@@ -2512,6 +2512,7 @@ var theWebUI =
 		for(const hash of Object.keys(this.torrents))
 			this.filterByLabel(table, hash);
 		table.clearSelection();
+		table.syncDOM();
 		if(this.dID != "")
 		{
 			this.dID = "";
