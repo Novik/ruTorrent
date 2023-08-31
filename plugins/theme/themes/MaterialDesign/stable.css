@@ -3,7 +3,7 @@
     font-family: 'Ubuntu';
     font-style: normal;
     font-weight: 400;
-    src: local('Ubuntu'), url(https://themes.googleusercontent.com/static/fonts/ubuntu/v5/_xyN3apAT_yRRDeqB3sPRg.woff) format('woff');
+    src: local('Ubuntu'), url(./font/ubuntu.woff) format('woff');
 }
 
 .stable { border: 1px solid; border-color: #333333 #181818 #181818 #333333; }
