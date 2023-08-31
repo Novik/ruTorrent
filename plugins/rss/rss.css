@@ -1,4 +1,4 @@
-div#RSSList {border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div#RSSList {border: 1px solid var(--menu-border-color); background-color: var(--menu-background-color); overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
 
 div#dlgAddRSS {width: 355px; height: 132px}
 div#dlgAddRSS div.dlg-header {background-image: url(./images/rss.gif)}
@@ -30,16 +30,16 @@ div#dlgLoadTorrents br {clear: left; line-height: 0}
 div#dlgEditFilters {width: 690px; height: 360px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
 div#dlgEditFilters div.dlg-header {background-image: url(./images/rss.gif)}
 .lfc {float: left; }
-.lf {width: 245px; height: 230px; margin: 5px; margin-right: 0; padding: 5px; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
+.lf {width: 245px; height: 230px; margin: 5px; margin-right: 0; padding: 5px; background-color: var(--menu-background-color); border: 1px solid var(--menu-border-color); overflow: auto}
 .lf ul {width: 100%; margin: 2px; padding: 0; list-style-position: inside; list-style: none; white-space: nowrap}
 .lf li input { margin: 0 5px 0 0; padding: 4px; } 
 .lf li {margin: 0 ; padding: 0}
-.lf li input.TextboxFocus { width: 85%; background-color: #CFDEEF; }
-.lf li input.TextboxNormal { width: 85%; background-color: #FFFFFF }
+.lf li input.TextboxFocus { width: 85%; background-color: var(--menu-highlight-background-color); }
+.lf li input.TextboxNormal { width: 85%; background-color: var(--menu-background-color) }
 .lf li input { border: 0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: default; font-weight: bold; }
 div#FLTchk_buttons {padding-top: 5px; width: 260px; text-align:center}
 .rf fieldset {margin: auto; height: 265px}
-.rf {float: right; width: 400px; height: 285px; margin: 4px; background-color: #FAFAFA}
+.rf {float: right; width: 400px; height: 285px; margin: 4px; background-color: var(--settings-background-color); }
 .rf label {width: 75px; display: inline-block; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 .rf br {clear: left; line-height: 0}
 .rf select {width: 273px; margin-left: 5px; margin-bottom: 3px; }
@@ -79,11 +79,6 @@ div#FLT_buttons {clear: both}
 div#dlgAddRSSGroup div.content {width: 302px; margin: 5px; padding: 5px; line-height: 16px}
 #rssGroupSet { overflow: auto; width: 275px; height: 160px }
 
-.RSS .label-icon { background-position: 0px -208px; }
-.disRSS .label-icon { background-position: 0px -192px; }
-.RSSGroup .label-icon { background-position: 0px -240px; }
-
-#prss_cont .notification::after { color: red; content: " ⚠"; }
 #tab_lcont.notification > a::after { color: gray; content: " ⚠"; }
 
-#rsstimer { float: right; font-weight: normal; margin-right: -18px; }
+#rsstimer { font-weight: normal; }
