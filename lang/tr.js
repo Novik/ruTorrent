@@ -183,6 +183,7 @@ var theUILang =
  scrapeDownloaded		: "İndirilen",
  Total				: "Toplam",
  pnlViews			: "Views",
+ NewView			: "New View",
  MoveView			: {base: "Move view", top: "To top", up: "Up", down: "Down", bottom: "To bottom"},
  RenameView			: "Rename view",
  RemoveActiveViews		: "Remove active views",

@@ -186,6 +186,7 @@ var theUILang =
  addTorrentSuccess		: "Se agregó el torrent con éxito.",
  addTorrentFailed		: "Fallo al agregar el torrent.",
  pnlViews			: "Views",
+ NewView			: "New View",
  MoveView			: {base: "Move view", top: "To top", up: "Up", down: "Down", bottom: "To bottom"},
  RenameView			: "Rename view",
  RemoveActiveViews		: "Remove active views",

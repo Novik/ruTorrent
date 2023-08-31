@@ -186,6 +186,7 @@ var theUILang =
  addTorrentSuccess		: "Завантаження успішно передано в rTorrent.",
  addTorrentFailed		: "Сталася помилка додавання завантаження.",
  pnlViews			: "Views",
+ NewView			: "New View",
  MoveView			: {base: "Move view", top: "To top", up: "Up", down: "Down", bottom: "To bottom"},
  RenameView			: "Rename view",
  RemoveActiveViews		: "Remove active views",

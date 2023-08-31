@@ -184,6 +184,7 @@ var theUILang =
  addTorrentSuccess		: "토렌트를 성공적으로 추가했습니다.",
  addTorrentFailed		: "토렌트를 추가하지 못했습니다.",
  pnlViews			: "Views",
+ NewView			: "New View",
  MoveView			: {base: "Move view", top: "To top", up: "Up", down: "Down", bottom: "To bottom"},
  RenameView			: "Rename view",
  RemoveActiveViews		: "Remove active views",
