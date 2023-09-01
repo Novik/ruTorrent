@@ -870,6 +870,16 @@ var theWebUI =
 								theWebUI.updatePanel('pview');
 								break;
 							}
+							case "webui.show_viewlabelsize":
+							case "webui.show_statelabelsize":
+							case "webui.show_labelsize":
+							case "webui.show_searchlabelsize":
+							case "webui.labelsize_rightalign":
+							case "webui.show_label_text_overflow":
+							{
+								theWebUI.updateLabels()
+								break;
+							}
 						}
 					}
 					else
