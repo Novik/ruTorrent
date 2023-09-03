@@ -549,7 +549,7 @@ var theWebUI =
 			this.quickSearch.teg = this.searchToTeg(searchField.val());
 		};
 		const qsd = this.quickSearch.debounce;
-		searchField.on('input', () => {
+		searchField.on('input focus', () => {
 			updateQuickSearch();
 			if (qsd.timeoutId) {
 				clearTimeout(qsd.timeoutId);
@@ -565,11 +565,13 @@ var theWebUI =
 					this.actLbls['flabel_cont'] = [];
 					this.onLabelSelectionChanged('flabel_cont');
 				} else {
+					this.refreshLabelSelection('pview_cont', 'flabel_cont');
 					this.filterTorrentTable();
 				}
 			}, qsd.delayMs);
 		});
 		updateQuickSearch();
+		this.refreshLabelSelection('pview_cont', 'flabel_cont');
 		this.configured = true;
 	},
 
@@ -2407,11 +2409,20 @@ var theWebUI =
 				labelIds.filter(id => !oldSelSet.has(id))
 			);
 		}
+		const clearQuickSearch = ['pview_cont', 'flabel_cont'].includes(labelType) && !targetId;
+		if (clearQuickSearch) {
+			// Selecting 'All' in 'Views' or 'Searches' suspends the quick search until focused again
+			$$('query').blur();
+			this.quickSearch.teg = this.searchToTeg('');
+		}
 
 		if (labelIds.some(lid => !oldLabelIds.includes(lid)) || oldLabelIds.some(lid => !labelIds.includes(lid))) {
 			// change in label selection
 			this.actLbls[labelType] = labelIds;
 			this.onLabelSelectionChanged(labelType);
+		} else if (clearQuickSearch)  {
+			this.refreshLabelSelection('pview_cont', 'flabel_cont');
+			this.filterTorrentTable();
 		}
 	},
 
@@ -2484,12 +2495,16 @@ var theWebUI =
 			.concat(activeSelectionIsExistingView ? [] : ['pview_dirty_view']);
 	},
 
+	quickSearchActive: function() {
+		return this.quickSearch.teg.val && theSearchEngines.current === -1;
+	},
+
 	refreshLabelSelection: function(...dirtyLabelTypes) {
 		for (const lType of dirtyLabelTypes) {
 			const container = $($$(lType));
 			container.find('.sel').removeClass('sel');
 			const labelIds = (this.actLbls[lType] ?? []);
-			if (labelIds.length) {
+			if ( labelIds.length || (['pview_cont', 'flabel_cont'].includes(lType) && this.quickSearchActive())) {
 				for (const labelId of labelIds) {
 					$($$(labelId)).addClass('sel');
 				}
@@ -2523,7 +2538,7 @@ var theWebUI =
 	filterByLabel: function(table, sId)
 	{
 		if(this.shouldShowTorrentRow(
-			sId, this.labels, this.actLbls, !(this.quickSearch.teg.val && theSearchEngines.current === -1)
+			sId, this.labels, this.actLbls, !this.quickSearchActive()
 		))
 			table.unhideRow(sId);
 		else
