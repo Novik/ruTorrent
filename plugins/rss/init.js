@@ -247,23 +247,6 @@ theWebUI.rssDblClick = function( obj )
 		window.open(theWebUI.rssItems[obj.id].guid,"_blank");
 }
 
-theWebUI.showRSSTimer = function( tm )
-{
-	$("#rsstimer").text( theConverter.time( tm ) ).prop( "row", tm );
-	if(plugin.rssShowInterval)
-		window.clearInterval( plugin.rssShowInterval );
-	plugin.rssShowInterval = window.setInterval( function()
-	{
-		var tm = $("#rsstimer").prop("row")-1;
-		if(!tm)
-		{
-			$("#rsstimer").text('*');
-			window.clearInterval( plugin.rssShowInterval );
-		}
-		$("#rsstimer").text( theConverter.time( tm ) ).prop( "row", tm );
-	}, 1000 );
-}
-
 theWebUI.getRSSSettings = function( d )
 {
 	theWebUI.updateRSSInterval = d.interval*60000;	
