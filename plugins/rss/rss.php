@@ -1005,11 +1005,8 @@ class rRSSManager
 	}
 	public function getSettings()
 	{
-		$nextTouch = $this->data->interval*60;
-		if($this->rssList->updatedAt)
-			$nextTouch = $nextTouch-(time()-$this->rssList->updatedAt)+45;
 		return([
-			"next"=>$nextTouch,
+			"updatedAt"=>$this->rssList->updatedAt,
 			"interval"=>$this->data->interval,
 			"delayerrui"=>$this->data->delayErrorsUI
 		]);
