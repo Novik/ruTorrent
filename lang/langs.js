@@ -52,7 +52,7 @@ var AvailableLanguages =
 	sk:'Slovenský',
 	sr:'Српски',
 	sv:'Svenska',
-	tr:'Türk',
+	tr:'Türkçe',
 	uk:'Українська',
 	vi:'Tiếng Việt',
 	"zh-cn":'简体中文',
