@@ -5,6 +5,7 @@ require_once( dirname(__FILE__)."/../../php/settings.php" );
 class ffmpegSettings
 {
 	public $hash = "ffmpeg.dat";
+	public $modified = false;
 	public $data = array(
 		'exusewidth'=>0,
 		'exfrmwidth'=>320,

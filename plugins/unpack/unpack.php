@@ -8,6 +8,7 @@ eval( FileUtil::getPluginConf( 'unpack' ) );
 class rUnpack
 {
 	public $hash = "unpack.dat";
+	public $modified = false;
 	public $enabled = 0;
 	public $filter = '/.*/';
 	public $path = "";

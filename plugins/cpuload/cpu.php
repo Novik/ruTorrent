@@ -6,6 +6,7 @@ eval(FileUtil::getPluginConf('cpuload'));
 class rCPU
 {
 	public $hash = "cpu.dat";
+	public $modified = false;
 	public $count = 1;
 
 	static public function load()

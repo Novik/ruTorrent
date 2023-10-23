@@ -8,6 +8,7 @@ eval( FileUtil::getPluginConf( 'create' ) );
 class recentTrackers
 {
 	public $hash = "rtrackers.dat";
+	public $modified = false;
 	public $list = array();
 
 	static public function load()

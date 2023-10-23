@@ -6,6 +6,7 @@ eval(FileUtil::getPluginConf('autotools'));
 class rAutoTools
 {
 	public $hash = "autotools.dat";
+	public $modified = false;
 	public $enable_label = 0;
 	public $label_template = "{DIR}";
 	public $enable_move = 0;

@@ -14,6 +14,7 @@ eval(FileUtil::getPluginConf('scheduler'));
 class rScheduler
 {
 	public $hash = "scheduler.dat";
+	public $modified = false;
 	public $enabled = 0;
 	public $UL = array();
 	public $DL = array();

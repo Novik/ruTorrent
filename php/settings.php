@@ -6,6 +6,7 @@ require_once( 'cache.php');
 class rTorrentSettings
 {
 	public $hash = "rtorrent.dat";
+	public $modified = false;
 	public $linkExist = false;
 	public $badXMLRPCVersion = true;
 	public $directory = '/tmp';
