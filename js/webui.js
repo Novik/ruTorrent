@@ -2349,7 +2349,7 @@ var theWebUI =
 
 		for(const k in this.labels)
 		{
-			if (k !== 'quick_search' && !k.startsWith('clabel__') && !k.startsWith('pview_custom_view_')) {
+			if (k && k !== 'quick_search' && !k.startsWith('clabel__') && !k.startsWith('pview_custom_view_')) {
 				const lbl = k.startsWith('-_-_-') ? this.idToLbl(k) : k;
 				const stat = this.labelStat(k);
 				this.updateLabel(
