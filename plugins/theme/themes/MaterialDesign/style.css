@@ -1,8 +1,20 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,600,700,300);
-
-@font-face
-{
-	font-family:'Roboto'!important
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: url(./font/roboto-300.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url(./font/roboto-400.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: url(./font/roboto-700.ttf) format('truetype');
 }
 
 html,body

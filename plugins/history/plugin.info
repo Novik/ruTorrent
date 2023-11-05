@@ -1,6 +1,6 @@
 plugin.description: This plugin is designed to log a history of torrents.
 plugin.author: Novik
-plugin.version: 4.1
+plugin.version: 4.2
 plugin.runlevel: 11
 rtorrent.remote: error
 rtorrent.external.error: php

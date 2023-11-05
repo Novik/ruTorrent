@@ -162,11 +162,15 @@ class UTF
 		return($mixed);
 	}
 
+	private static function maybe_mb_convert_to_utf8($string) {
+		return function_exists('mb_convert_encoding') ? mb_convert_encoding($string, "UTF-8", "auto") : $string;
+	}
+
 	public static function raw_url_encode($string){
-		return rawurlencode(mb_convert_encoding($string, "UTF-8", "auto"));
+		return rawurlencode(Self::maybe_mb_convert_to_utf8($string));
 	}
 
 	public static function raw_url_decode($string){
-		return mb_convert_encoding(rawurldecode($string, "UTF-8", "auto"));
+		return rawurldecode(Self::maybe_mb_convert_to_utf8($string));
 	}
 }

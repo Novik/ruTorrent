@@ -5,6 +5,7 @@ require_once( dirname(__FILE__)."/../../php/cache.php" );
 class rUploadeta
 {
 	public $hash = "uploadeta.dat"; /* The file where our value will be stored */
+	public $modified = false;
 	public $uploadtarget = 200; /* Just a default value */
 
 	static public function load()

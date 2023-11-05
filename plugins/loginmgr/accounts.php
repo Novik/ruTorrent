@@ -8,6 +8,7 @@ eval( FileUtil::getPluginConf( 'loginmgr' ) );
 class privateData
 {
 	public $hash = '';
+	public $modified = false;
 	public $cookies = null;
 	public $referer = null;
 	public $loaded = false;
@@ -132,6 +133,7 @@ abstract class commonAccount
 class accountManager
 {
 	public $hash = "loginmgr.dat";
+	public $modified = false;
 	public $accounts = array();
 
 	static public function load()

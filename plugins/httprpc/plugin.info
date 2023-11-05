@@ -1,6 +1,6 @@
 plugin.description: This plugin is a low-traffic replacement for the mod_scgi webserver module.
 plugin.author: Novik
-plugin.version: 4.1
+plugin.version: 4.2
 plugin.runlevel: 13
 plugin.may_be_shutdowned: 0
 php.extensions.error: json

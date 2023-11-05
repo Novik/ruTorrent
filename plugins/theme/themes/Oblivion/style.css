@@ -67,6 +67,7 @@ div#t div#go {background: transparent url(./images/toolbar.png) no-repeat -72px 
 
 a {color: #686868; font-family:inherit;}
 textarea {border: 1px solid #000;background: #ffffff;-moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
+div#tcreate textarea#trackers {color: black;}
 textarea[disabled] {border: 1px solid #000;background: #888888;-moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
 input[type="number"],input[type="text"], input[type="password"], select {color: black; border: 1px solid #000;background: #ffffff url(./images/headers.png) repeat-x 0px -138px;-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
 input[type="file"] {-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}

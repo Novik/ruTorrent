@@ -9,6 +9,7 @@ eval(FileUtil::getPluginConf('history'));
 class rHistoryData
 {
 	public $hash = 'history_data.dat';
+	public $modified = false;
 	public $data = array();
 
 	static public function load()
@@ -66,6 +67,7 @@ class rHistoryData
 class rHistory
 {
 	public $hash = "history.dat";
+	public $modified = false;
 	public $log = array
 	( 
 		"addition"=>1, 
