@@ -1,6 +1,6 @@
 plugin.description: This plugin allows to define any of six rTorrent behavior types at each particular hour of 168 week hours.
 plugin.author: Novik
-plugin.version: 4.2
+plugin.version: 4.3
 rtorrent.remote: error
 rtorrent.external.error: php
 rtorrent.php.error: update.php,scheduler.php,conf.php

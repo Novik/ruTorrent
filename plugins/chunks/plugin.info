@@ -1,6 +1,6 @@
 plugin.description: This plugin shows the download status of torrent chunks.
 plugin.author: Zoltan Csala,Novik
 plugin.runlevel: 11
-plugin.version: 4.2
+plugin.version: 4.3
 rtorrent.version: 0.8.5
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginChunks

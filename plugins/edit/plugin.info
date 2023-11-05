@@ -1,6 +1,6 @@
 plugin.description: This plugin allows to edit the list of trackers and change the comment of the current torrent.
 plugin.author: Novik
-plugin.version: 4.2
+plugin.version: 4.3
 rtorrent.remote: error
 php.extensions.error: json
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginEdit
