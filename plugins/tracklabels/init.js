@@ -181,7 +181,7 @@ theWebUI.rebuildTrackersLabels = function()
 				.append($('<img>').attr('src', plugin.imageURI('tracker', lbl)))
 				.css({ background: 'none' });
 			if (previousLabelEl !== null)
-				previousLabelEl.after(labelEl);
+				$(previousLabelEl).after(labelEl);
 			else
 				ul.append(labelEl);
 		}
