@@ -1783,7 +1783,7 @@ dxSTable.prototype.setIcon = function(row, icon)
 dxSTable.prototype.setAttr = function(row, attr)
 {
 	// set attribute of row
-	const attrEntries = Object.entries(attr)
+	const attrEntries = Object.entries(attr || {})
 	const dataRow = this.rowdata[row];
 	if(dataRow && attrEntries.some(([name, val]) => dataRow[name] !== val))
 	{
