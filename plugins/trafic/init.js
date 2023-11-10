@@ -120,7 +120,7 @@ class rTraficGraph extends rGraph {
 
   resize(newWidth, newHeight) {
     if (newWidth) newWidth -= 8;
-    if (newHeight)
+    if (this.plot && newHeight)
       newHeight -=
         iv($$(this.plot.getPlaceholder().attr("id") + "_ctrl").style.height) +
         $("#tabbar").outerHeight();
