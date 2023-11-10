@@ -170,7 +170,9 @@ rPlugin.prototype.langLoaded = function()
 	try {
 	if(($type(this["onLangLoaded"])=="function") && this.enabled)
 		this.onLangLoaded();
-	} catch(e) {}			// konqueror hack
+	} catch(e) {
+		console.warn(`Plugin "${this.name}" failed to load:`, e);
+	} // konqueror hack
 	this.markLoaded();
 }
 
@@ -300,7 +302,7 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 		var beforeLbl = $$("tab_"+idBefore);
 		beforeLbl.parentNode.insertBefore(newLbl,beforeLbl);
 		if (theWebUI.activeView === dlg.id) {
-			setTimeout(() => theTabs.onShow(dlg.id));
+			setTimeout(() => theTabs.show(dlg.id));
 		}
 	}
 	return(this);
