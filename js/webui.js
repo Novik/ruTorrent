@@ -2007,6 +2007,7 @@ var theWebUI =
 	{
 		const tegIds = this.actLbls['flabel_cont'] ?? [];
 		for (const tegId of tegIds) {
+			delete this.labels[tegId];
 			delete this.tegs[tegId];
 			$($$(tegId)).remove();
 		}
