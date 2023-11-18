@@ -2017,6 +2017,7 @@ var theWebUI =
 	removeAllTegs: function()
 	{
 		for (var id in this.tegs) {
+			delete this.labels[id];
 			delete this.tegs[id];
 			$($$(id)).remove();
 		}
