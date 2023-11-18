@@ -1252,7 +1252,7 @@ var theWebUI =
 				{
 					var entry = dir[i];
 					if(entry.link==null)
-						table.setRowById(entry.data, i, entry.icon, {link : null});
+						table.setRowById(entry.data, i, entry.icon, {link: undefined});
 				}
 			}
 		}
