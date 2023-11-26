@@ -67,11 +67,17 @@ div#t div#go {background: transparent url(./images/toolbar.png) no-repeat -72px 
 
 a {color: #686868; font-family:inherit;}
 textarea {border: 1px solid #000;background: #ffffff;-moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
+div#tcreate textarea#trackers {color: black;}
 textarea[disabled] {border: 1px solid #000;background: #888888;-moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
 input[type="number"],input[type="text"], input[type="password"], select {color: black; border: 1px solid #000;background: #ffffff url(./images/headers.png) repeat-x 0px -138px;-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
 input[type="file"] {-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
 input[type="number"][disabled],input[type="text"][disabled], input[type="password"][disabled], input[type="file"][disabled], select[disabled] {color: black; border: 1px solid #000;background: #888888 url(./images/headers.png) repeat-x 0px -138px;-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
 input.Button {border: 1px solid #000;background: #000 url(./images/headers.png) repeat-x 0px 0px;color:#AACF27;cursor: pointer;font-weight: bold;text-shadow:0px -1px 0px #000;-moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
+input.Button:not([disabled]):hover { background: #000 url(./images/headers.png) repeat-x 0px -6px; }
+input.Button:not([disabled]):hover:active { background: #000 url(./images/headers.png) repeat-x 0px -8px; }
+
+.pview_custom_view .label-icon { background-color: #181818; line-height: 13px; }
+.pview_custom_view .label-icon > span { color: #D4D6C9 !important; }
 
 div#CatList {border:none;background-color: #212121;border-right: 1px solid #1b1b1b;border-left: 1px solid #070707;}
 div#CatList ul li {color:#D4D6C9}

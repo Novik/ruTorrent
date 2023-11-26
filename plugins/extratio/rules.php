@@ -83,6 +83,7 @@ class rRatioRule
 class rRatioRulesList
 {
 	public $hash = "ratiorules.dat";
+	public $modified = false;
         public $lst = array();
 
 	static public function load()

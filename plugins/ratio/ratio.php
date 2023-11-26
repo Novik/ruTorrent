@@ -15,6 +15,7 @@ eval(FileUtil::getPluginConf('ratio'));
 class rRatio
 {
 	public $hash = "ratio.dat";
+	public $modified = false;
 	public $rat = array();
 	public $default = 0;
 	private $version = 3;

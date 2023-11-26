@@ -161,4 +161,16 @@ class UTF
 					$mixed = self::mix2utf($mixed);
 		return($mixed);
 	}
+
+	private static function maybe_mb_convert_to_utf8($string) {
+		return function_exists('mb_convert_encoding') ? mb_convert_encoding($string, "UTF-8", "auto") : $string;
+	}
+
+	public static function raw_url_encode($string){
+		return rawurlencode(Self::maybe_mb_convert_to_utf8($string));
+	}
+
+	public static function raw_url_decode($string){
+		return rawurldecode(Self::maybe_mb_convert_to_utf8($string));
+	}
 }

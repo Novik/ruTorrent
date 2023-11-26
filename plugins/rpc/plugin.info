@@ -1,4 +1,4 @@
 plugin.description: This plugin is a replacement for the mod_scgi webserver module.
 plugin.author: Novik
-plugin.version: 4.1
+plugin.version: 4.2
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginRPC

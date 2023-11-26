@@ -150,6 +150,7 @@ input.Button {
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d6d6d6', endColorstr='#c7c7c7',GradientType=0);
 	background-color:#d6d6d6;
 	border:1px solid #333333;
+	color: #111111;
 }
 
 input.Button:active {
@@ -167,6 +168,9 @@ input.Button:active {
     -moz-box-shadow:inset 0px 0px 8px 0px #474747;
 	-webkit-box-shadow:inset 0px 0px 8px 0px #474747;
 }
+
+.pview_custom_view .label-icon { background-color: #111111; line-height: 13px; }
+.pview_custom_view .label-icon > span { color: #999999 !important; }
 
 a {color: #686868}
 

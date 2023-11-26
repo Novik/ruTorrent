@@ -5,6 +5,7 @@ require_once( dirname(__FILE__)."/../../php/settings.php");
 class rXmpp
 {
 	public $hash = "xmpp.dat";
+	public $modified = false;
 	public $jabberHost = "";
 	public $jabberPort = 5222;
 	public $jabberLogin = "";

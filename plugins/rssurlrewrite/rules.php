@@ -48,6 +48,7 @@ class rURLRewriteRule
 class rURLRewriteRulesList
 {
 	public $hash = "urlrewriterules.dat";
+	public $modified = false;
         public $lst = array();
 
 	static public function load( $mngr = null )

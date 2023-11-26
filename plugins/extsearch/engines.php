@@ -158,6 +158,7 @@ class commonEngine
 class rSearchHistory
 {
 	public $hash = "extsearch_history.dat";
+	public $modified = false;
 	public $lst = array();
 	public $changed = false;
 
@@ -206,6 +207,7 @@ class rSearchHistory
 class engineManager
 {
 	public $hash = "extsearch.dat";
+	public $modified = false;
 	public $limit = 1000;
 	public $engines = array();
 

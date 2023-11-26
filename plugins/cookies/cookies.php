@@ -4,6 +4,7 @@ require_once( dirname(__FILE__)."/../../php/cache.php" );
 class rCookies
 {
 	public $hash = "cookies.dat";
+	public $modified = false;
 	public $list = array();
 
 	static public function load()

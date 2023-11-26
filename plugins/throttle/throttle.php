@@ -6,6 +6,7 @@ eval(FileUtil::getPluginConf('throttle'));
 class rThrottle
 {
 	public $hash = "throttle.dat";
+	public $modified = false;
 	public $thr = array();
 	public $default = 0;
 

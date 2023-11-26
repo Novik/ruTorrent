@@ -4,6 +4,7 @@ require_once( dirname(__FILE__)."/../../php/cache.php" );
 class rRetrackers
 {
 	public $hash = "retrackers.dat";
+	public $modified = false;
 	public $list = array();
 	public $todelete = array();
 	public $dontAddPrivate = 1;

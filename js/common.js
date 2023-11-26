@@ -710,7 +710,7 @@ var theFormatter =
 	      				arr[i] = theConverter.time(arr[i]);
       					break;
       				case 'last' :
-	      				arr[i] = iv(arr[i]) ? theConverter.time( $.now()/1000 - iv(arr[i]) - theWebUI.deltaTime/1000,true) : '';
+					arr[i] = arr[i] > 0 ? theConverter.time(arr[i], true) : '';
       					break;
 	      		}
 		}
@@ -763,13 +763,12 @@ var theFormatter =
 	},
 	treePrefix: function({hasNext, level})
 	{
-		const prefix = [];
-		for (let l = 1; l < level+1; l++) {
-			prefix.push(hasNext[l] ?
-				(l === level ? '├' : '│') :
-				(l === level ? '└' : ' '));
-		}
-		return prefix;
+		return hasNext
+			.slice(1)
+			.map((next,l) => next
+				? (l+1 === level ? '├' : '│')
+				: (l+1 === level ? '└' : ' ')
+			).join('');
 	}
 };
 
@@ -785,10 +784,11 @@ var theSearchEngines =
 
 	run: function()
 	{
-	        if(theSearchEngines.current>=0)
-			window.open(theSearchEngines.sites[theSearchEngines.current].url + $("#query").val(), "_blank");
+		const q = $("#query").val();
+		if(theSearchEngines.current >= 0)
+			window.open(theSearchEngines.sites[theSearchEngines.current].url + encodeURIComponent(q), "_blank");
 		else
-			theWebUI.setTeg($("#query").val());
+			theWebUI.setTeg(q);
 	},
 	set: function( no, noSave )
 	{
@@ -1627,6 +1627,14 @@ function strip_tags(input, allowed)
 	{
 		return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
     	});
+}
+
+if (!window.requestIdleCallback) {
+	// monkey patch requestIdleCallback (for Safari)
+	window.requestIdleCallback = function(func, _) {
+		return setTimeout(() => func({didTimeout: true, timeRemaining: () => 0}), 1);
+	};
+	window.cancelIdleCallback = clearTimeout;
 }
 
 // Caveat: doesn't work with Internet Explorer.

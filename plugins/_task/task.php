@@ -344,7 +344,7 @@ class rTaskManager
 			} 
 			closedir($handle);		
 	        }
-	        uasort($tasks,array('self', 'sortByStarted'));
+	        uasort($tasks,array(self::class, 'sortByStarted'));
 	        return($tasks);
 	}
 	

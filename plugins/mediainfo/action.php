@@ -6,6 +6,7 @@ eval( FileUtil::getPluginConf( 'mediainfo' ) );
 class mediainfoSettings
 {
 	public $hash = "mediainfo.dat";
+	public $modified = false;
 	public $data = array();
 	static public function load()
 	{
