@@ -3,7 +3,8 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com) 
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
  theUILang.traf			= "Trafik";
@@ -12,8 +13,8 @@
  theUILang.perYear		= "Yıllık";
  theUILang.allTrackers		= "Bütün izleyiciler";
  theUILang.ClearButton		= "Temizle";
- theUILang.ClearQuest		= "Seçilen izleyici(ler) için istatistikleri gerçekten silmek istiyor musunuz?";
- theUILang.selectedTorrent	= "Seçilen torrent(ler)";
- theUILang.ratioDay		= "Ratio/gün";
- theUILang.ratioWeek		= "Ratio/hafta";
- theUILang.ratioMonth		= "Ratio/ay";
+ theUILang.ClearQuest		= "Seçilen izleyici(ler) için istatistikleri silmek istediğinizden emin misiniz?";
+ theUILang.selectedTorrent	= "Seçilen torrent(lar)";
+ theUILang.ratioDay		= "Oran/gün";
+ theUILang.ratioWeek		= "Oran/hafta";
+ theUILang.ratioMonth		= "Oran/ay";

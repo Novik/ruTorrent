@@ -3,14 +3,15 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.retrackers		= "Retrackers";
- theUILang.retrackersAdd = "Duyuru URL'lerini Ekle";
- theUILang.retrackersDel = "Duyuru URL'lerini Kaldır";
- theUILang.dontAddToPrivate = "Özel torrentlere dokunmayın";
- theUILang.addToBegin = "İzleyici listesinin başına duyuru URL'lerini ekleyin";
+ theUILang.retrackers		= "Retracker'lar";
+ theUILang.retrackersAdd = "Duyuru URL'lerini ekle";
+ theUILang.retrackersDel = "Duyuru URL'lerini kaldır";
+ theUILang.dontAddToPrivate = "Özel torrent'lara dokunma";
+ theUILang.addToBegin = "Duyuru URL'lerini izleyici listesinin başına ekleyin";
   
 
 thePlugins.get("retrackers").langLoaded();

@@ -3,9 +3,10 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.diskNotification	= "Uyarı! Disk dolu. rTorrent düzgün çalışmayabilir ve siz biraz disk alanı boşaltana kadar hiçbir veri indirilmeyecektir.";
+ theUILang.diskNotification	= "Uyarı! Disk dolu. rTorrent düzgün çalışmayabilir. Yeni veri indirmek için disk alanınızı boşaltmalısınız.";
 
 thePlugins.get("diskspace").langLoaded();

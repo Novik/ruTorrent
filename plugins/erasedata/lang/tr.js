@@ -3,11 +3,12 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.Rem_torrents_content_prompt		= "Seçilen torrent(ler)i gerçekten kaldırmak istiyor musunuz? UYARI: Bu, torrentin içeriğini siler.";
+ theUILang.Rem_torrents_content_prompt		= "Seçilen torrent'(lar)ı kaldırmak istediğinizden emin misiniz? UYARI: Torrent içeriği de silinecektir.";
  theUILang.Delete_data_with_path		= "Dizini Sil";
- theUILang.Rem_torrents_with_path_prompt	= "Do you really want to remove the selected torrent(s)? WARNING: This will delete all files in this torrent's current directory.";
+ theUILang.Rem_torrents_with_path_prompt	= "Seçilen torrent'(lar)ı kaldırmak istediğinizden emin misiniz? UYARI: Torrent'ın mevcut dizinindeki tüm dosyalar silinecektir.";
 
 thePlugins.get("erasedata").langLoaded();

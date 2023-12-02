@@ -3,10 +3,11 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.cookiesDesc		= "Çerezler (Format: host|çerez1;çerez2...)";
+ theUILang.cookiesDesc		= "Çerezler (Biçim: anamakine|çerez1;çerez2...)";
  theUILang.cookiesName		= "Çerezler";
 
 thePlugins.get("cookies").langLoaded();
