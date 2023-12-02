@@ -14,21 +14,23 @@ if(plugin.canChangeColumns())
 			{
 			        var s = table.getIdByCol(i);
 				if(s=="seedingtime")
-					arr[i] = (arr[i]>3600*24*365) ? theConverter.time(new Date().getTime()/1000-(iv(arr[i])+theWebUI.deltaTime/1000),true) : "";
+					arr[i] = arr[i] != -1 ? theConverter.time(arr[i],true) : "";
 				else
 				if(s=="addtime")
-					arr[i] = (arr[i]>3600*24*365) ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : "";
+					arr[i] = arr[i] != -1 ? theConverter.date(arr[i]) : "";
 		        }
 			return(plugin.trtFormat(table,arr));
 		}
 		plugin.config.call(this);
 		plugin.reqId1 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"seedingtime",function(hash,torrent,value)
 		{
-			torrent.seedingtime = value;
+			const epochSeconds = iv(value);
+			torrent.seedingtime = (epochSeconds > 3600*24*365) ? new Date().getTime()/1000-(epochSeconds+theWebUI.deltaTime/1000) : -1;
 		});
 		plugin.reqId2 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"addtime",function(hash,torrent,value)
 		{
-			torrent.addtime = value;
+			const epochSeconds = iv(value);
+			torrent.addtime = (epochSeconds > 3600*24*365) ? epochSeconds+theWebUI.deltaTime/1000 : -1;
 		});
 		plugin.trtRenameColumn();
 	}

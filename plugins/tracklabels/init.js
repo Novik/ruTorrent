@@ -1,7 +1,10 @@
 
-theWebUI.trackersLabels = {};
+theWebUI.viewPanelLabelTypes.push('ptrackers_cont');
+theWebUI.trackerNames = [];
+theWebUI.torrentTrackerIds = {};
 plugin.injectedStyles = {};
 plugin.loadLang();
+
 
 plugin.config = theWebUI.config;
 theWebUI.config = function()
@@ -16,20 +19,6 @@ theWebUI.config = function()
 			tracker.icon = domain ? {src: plugin.imageURI('tracker', domain)} : 'Status_Checking';
 		});
 	}
-}
-
-plugin.isTorrentRowShown = theWebUI.isTorrentRowShown;
-theWebUI.isTorrentRowShown = function(table, hash)
-{
-	return plugin.isTorrentRowShown.call(theWebUI, table, hash) && (
-		!plugin.enabled || !(theWebUI.actLbls['ptrackers_cont'] ?? []).length || (
-		// check if tracker of hash is selected
-		hash in this.trackers
-		&& this.trackers[hash]
-			.filter(t => Number(t.group) === 0)
-			.map(t => theWebUI.getTrackerName( t.name ))
-			.some(name => name && plugin.isActiveLabel(name))
-	));
 }
 
 plugin.isActiveLabel = function(lbl)
@@ -79,7 +68,7 @@ plugin.contextMenuEntries = theWebUI.contextMenuEntries;
 theWebUI.contextMenuEntries = function(labelType, el) {
 	const entries = plugin.contextMenuEntries.call(theWebUI, labelType, el);
 	if (plugin.canChangeMenu() && ['ptrackers_cont', 'plabel_cont'].includes(labelType)) {
-		const lbl = 'ptrackers_cont' === labelType ? el.id.substr(1) : theWebUI.idToLbl(el.id);
+		const lbl = el.id.startsWith('-_-_-') ? theWebUI.idToLbl(el.id) : el.id.substr('ptrackers_cont' === labelType ? 1 : 8);
 		if (lbl)
 			return entries.concat([
 				[theUILang.EditIcon, `theWebUI.showTracklabelsDialog('${lbl}');`]
@@ -100,11 +89,11 @@ plugin.updateLabel = theWebUI.updateLabel;
 theWebUI.updateLabel = function(label, ...args)
 {
 	plugin.updateLabel.call(this, label, ...args);
-	var icon = $(label).children('.label-icon');
-	var id = icon.parent().attr('id');
-	if (id && icon.parents('#plabel_cont')[0] && !icon.children('img')[0])
+	const icon = $(label).children('.label-icon');
+	const id = label.id;
+	if (id && (id === '-_-_-nlb-_-_-' || id.startsWith('clabel__')) && !icon.children('img')[0])
 	{
-		var lbl = theWebUI.idToLbl(id);
+		var lbl = id.startsWith('-_-_-') ? theWebUI.idToLbl(id) : id.substr(8);
 		icon.append($("<img>")
 			.attr({ id: 'lbl_'+lbl, src: plugin.imageURI('label', lbl)}))
 			.css({ background: 'none' });
@@ -112,15 +101,20 @@ theWebUI.updateLabel = function(label, ...args)
 }
 
 plugin.updateLabels = theWebUI.updateLabels;
-theWebUI.updateLabels = function(wasRemoved)
+theWebUI.updateLabels = function()
 {
 	if(plugin.enabled)
 	{
-		if(wasRemoved)
-			theWebUI.rebuildTrackersLabels();
 		theWebUI.updateAllFilterLabel('torrl', this.settings["webui.show_labelsize"]);
 	}
-	plugin.updateLabels.call(theWebUI,wasRemoved);
+	plugin.updateLabels.call(theWebUI);
+}
+
+plugin.getLabels = theWebUI.getLabels;
+theWebUI.getLabels = function(hash, torrent)
+{
+	return plugin.getLabels.call(theWebUI, hash, torrent)
+		.concat(this.torrentTrackerIds[hash] ?? []);
 }
 
 theWebUI.rebuildTrackersLabels = function()
@@ -136,79 +130,68 @@ theWebUI.rebuildTrackersLabels = function()
 	const setTracker = plugin.canChangeColumns()
 		? ((hash, trk) => table.setValue(hash, colId, trk))
 		: () => {};
-	const countByTracker = {};
-	const sizeByTracker = {};
+	const torrentHashByTrackerName = {}; 
+	this.torrentTrackerIds = {};
 	for(const [hash, torrent] of Object.entries(this.torrents))
 	{
 		const trackerNames = (this.trackers[hash] ?? [])
-			.filter(t => t.group == 0)
-			.map(t => theWebUI.getTrackerName(t.name))
-			.filter(name => Boolean(name));
+					.filter(t => Number(t.group) === 0)
+					.map(t => theWebUI.getTrackerName(t.name))
+					.filter(name => Boolean(name));
+		this.torrentTrackerIds[hash] = trackerNames
+			.map(name => 'i' + name);
 
 		const firstName = trackerNames[0] ?? null;
 		torrent.tracker = firstName;
 		if (firstName)
 		{
 			setTracker(hash, firstName);
-			const size = parseInt(torrent.size);
-			new Set(trackerNames).forEach( name => {
-				countByTracker[name] = (countByTracker[name] ?? 0) + 1;
-				sizeByTracker[name] = (sizeByTracker[name] ?? 0) + size;
-			});
+			for (const name of trackerNames) {
+				const names = torrentHashByTrackerName[name] ?? new Set();
+				names.add(hash);
+				torrentHashByTrackerName[name] = names;
+			}
 		}
 	}
+
+	for (const [name, hashes] of Object.entries(torrentHashByTrackerName)) {
+		this.labels['i' + name] = hashes;
+	}
+
 	const ul = $("#torrl");
-	const lbls = Object.keys(countByTracker);
+	const lbls = Object.keys(torrentHashByTrackerName);
 	lbls.sort();
 
-	let needTableFilter = false;
+	// Remove empty tracker rows with no torrents
+	for(const el of ul.children())
+		if(el.id.startsWith('i') && !(el.id.substr(1) in torrentHashByTrackerName))
+		{
+			$(el).remove();
+		}
+	let previousLabelEl = null;
 	for(const lbl of lbls)
 	{
-		if(!(lbl in this.trackersLabels))
+		const lblId = 'i'+lbl;
+		let labelEl = $$(lblId);
+		if(!labelEl)
 		{
-			const labelEl = theWebUI.createSelectableLabelElement('i'+lbl, lbl, theWebUI.labelContextMenu)
+			labelEl = this.createSelectableLabelElement(lblId, lbl, theWebUI.labelContextMenu)
 				.addClass('tracker');
 			labelEl.children('.label-icon')
 				.append($('<img>').attr('src', plugin.imageURI('tracker', lbl)))
 				.css({ background: 'none' });
-			ul.append(labelEl);
+			if (previousLabelEl !== null)
+				$(previousLabelEl).after(labelEl);
+			else
+				ul.append(labelEl);
 		}
-		theWebUI.updateLabel($$('i'+lbl), countByTracker[lbl], sizeByTracker[lbl], theWebUI.settings["webui.show_labelsize"]);
-		if(plugin.isActiveLabel(lbl)) {
-			const actLabel = $($$('i'+lbl));
-			if (!actLabel.hasClass('sel')) {
-				needTableFilter = true;
-				$('#ptrackers_cont').find('.sel').removeClass('sel');
-				$(actLabel).addClass("sel");
-			}
-		}
+		previousLabelEl = labelEl;
 	}
-	if (needTableFilter)
-		theWebUI.filterTorrentTable();
-	let needSwitch = false;
-	for(const lbl in this.trackersLabels)
-		if(!(lbl in countByTracker))
-		{
-			$($$('i'+lbl)).remove();
-			if(plugin.isActiveLabel(lbl))
-				needSwitch = true;
-		}
-	this.trackersLabels = countByTracker;
-	if(needSwitch)
-		theWebUI.resetLabels();
 
-	setTimeout(plugin.refreshTrackerRows, 0);
-}
-
-plugin.refreshTrackerRows = function()
-{
-	if(plugin.canChangeColumns())
-	{
-		var table = theWebUI.getTable('trt');
-		table.refreshRows();
-		if(table.sortId)
-			table.Sort();
-	}
+	this.trackerNames = lbls;
+	this.updateViewPanel();
+	this.refreshLabelSelection('ptrackers_cont');
+	this.updateLabels();
 }
 
 plugin.imageURI = function (target, label) {
@@ -310,13 +293,13 @@ plugin.onLangLoaded = function()
 	theDialogManager.setHandler(plugin.dialogId, 'beforeShow', function()
 	{
 		$(`#${eid}-datalist`).empty().append(
-			...Object.keys(theWebUI.cLabels).concat(Object.keys(theWebUI.trackersLabels))
+			...Object.keys(theWebUI.cLabels).concat(theWebUI.trackerNames)
 			.map(lbl => $('<option>').attr('value', lbl))
 		);
 		updateButtons();
 	});
 
-	plugin.addPaneToCategory("ptrackers",theUILang.Trackers, 'flabel_cont')
+	plugin.addPaneToCategory('ptrackers', theUILang.Trackers)
 		.append(
 			$('<ul>').attr('id', 'torrl')
 			.append(theWebUI.createSelectableLabelElement(undefined, theUILang.All, theWebUI.labelContextMenu).addClass('-_-_-all-_-_- sel'))

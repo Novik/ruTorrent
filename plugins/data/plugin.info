@@ -1,5 +1,5 @@
 plugin.description: This plugin allows to copy torrent data files from the host to the local machine.
 plugin.author: Novik
-plugin.version: 4.1
+plugin.version: 4.2
 rtorrent.remote: error
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginData

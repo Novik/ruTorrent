@@ -60,8 +60,8 @@ class rGraph {
     this.checked = this.datasets.map(() => true);
 
     // resize to same size as parent
-    aOwner.width(aOwner.parent().width());
-    aOwner.height(aOwner.parent().height());
+    aOwner.width(Math.max(aOwner.parent().width(), 1));
+    aOwner.height(Math.max(aOwner.parent().height(), 1));
     this.width = aOwner.width();
     this.height = aOwner.height();
     this._animationRequestId = 0;
@@ -94,7 +94,9 @@ class rGraph {
   update() {
     if (
       this.badTextCache &&
-      (this.badTextCache = $($$("cover")).is(":visible"))
+      (this.badTextCache =
+        $($$("cover")).is(":visible") ||
+        !this.plot.getPlaceholder().is(":visible"))
     ) {
       // avoid that flot caches incorrect text width/height
       this.draw();

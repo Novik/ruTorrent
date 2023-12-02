@@ -97,7 +97,8 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
 .catpanel { background: url(./images/pnl_open.gif) 2px no-repeat; background-color: #1e2124; color: #00ff00; font-weight: bold;}
-.label-count,.label-size { background-color: #1e2124; }
+.pview_custom_view .label-icon { color: #1e2124; background-color: #00ff00;}
+.label-count,.label-size,.pview_custom_view .label-icon { background-color: #1e2124; }
 li.sel .label-count,li.sel .label-size { background-color: #909090; }
 
 div#tadd-header {background-image: url(./images/world.gif); }

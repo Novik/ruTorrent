@@ -4,7 +4,8 @@ require_once( 'cache.php' );
 
 class WebUISettings
 {
-	public $hash = "WebUISettings.dat";	
+	public $hash = "WebUISettings.dat";
+	public $modified = false;
 	private $jsonString = "{}";
 
 	public static function load()

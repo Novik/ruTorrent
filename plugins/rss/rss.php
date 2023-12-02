@@ -24,6 +24,7 @@ class rRSS
 	public $url = null;
 	public $srcURL = null;
 	public $hash = null;
+	public $modified = false;
 	public $cookies = array();
 	public $lastModified = null;
 	public $etag = null;
@@ -300,6 +301,7 @@ class rRSS
 class rRSSHistory
 {
 	public $hash = "history";
+	public $modified = false;
 	public $lst = array();
 	public $filtersTime = array();
 	public $changed = false;
@@ -531,6 +533,7 @@ class rRSSFilter
 class rRSSFilterList
 {
 	public $hash = "filters";
+	public $modified = false;
         public $lst = array();
 	
 	public function add( $filter )
@@ -558,6 +561,7 @@ class rRSSGroup
 {
 	public $name;
 	public $hash;
+	public $modified = false;
 	public $lst = array();
 
 	public function	__construct( $name, $hash = null )
@@ -590,6 +594,7 @@ class rRSSGroup
 class rRSSGroupList
 {
 	public $hash = "groups";
+	public $modified = false;
         public $lst = array();
 	
 	public function add( $grp )
@@ -640,6 +645,7 @@ class rRSSGroupList
 class rRSSMetaList
 {
 	public $hash = "info";
+	public $modified = false;
 	public $lst = array();
 	public $updatedAt = 0;
 	public $err = array();
@@ -726,6 +732,7 @@ class rRSSMetaList
 class rRSSData
 {
 	public $hash = "data";
+	public $modified = false;
 	public $interval = 30;
 	public $delayErrorsUI = true;
 }

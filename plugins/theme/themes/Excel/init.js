@@ -8,7 +8,7 @@ plugin.allDone = function()
 	$(".catpanel img").each( function()
 	{
 		var owner = $(this).parent()[0];
-		theWebUI.showPanel(owner,!theWebUI.settings["webui.closed_panels"][owner.id]);
+		theWebUI.updatePanel(owner.id);
 	});
 	$(".tabbar li:last-child a").after( $("<img></img>").attr( { src: $(".tabbar li:last-child").hasClass("selected") ? 
 		"plugins/theme/themes/Excel/images/tabbghfin.png" : 
@@ -28,10 +28,12 @@ theTabs.show = function(id)
 		"plugins/theme/themes/Excel/images/tabbgfin.png" } );
 }
 
-theWebUI.showPanel = function(pnl,enable)
+plugin.updatePanel = theWebUI.updatePanel;
+theWebUI.updatePanel = function(panelId)
 {
-	var cont = $('#'+pnl.id+"_cont");
-	cont.toggle(enable);
-	theWebUI.settings["webui.closed_panels"][pnl.id] = !enable;
-	$('#'+pnl.id+" img").prop("src",enable ? "plugins/theme/themes/Excel/images/pnl_open.png" : "plugins/theme/themes/Excel/images/pnl_close.png");
+	const enable = !theWebUI.settings['webui.closed_panels'][panelId];
+	$(`#${panelId}_cont`).toggle(enable);
+	$(`#${panelId} img`).attr(
+		"src", "plugins/theme/themes/Excel/images/" + (enable ? "pnl_open.png" : "pnl_close.png")
+	);
 }

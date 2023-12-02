@@ -1,6 +1,6 @@
 plugin.description: This plugin checks the rutracker.org tracker for updated/deleted torrents.
 plugin.author: Novik
-plugin.version: 4.1
+plugin.version: 4.2
 rtorrent.remote: error
 rtorrent.external.error: php
 plugin.dependencies: loginmgr

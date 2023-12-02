@@ -71,6 +71,7 @@ class rXMLRPCRequest
 {
 	protected $commands = array();
 	protected $content = "";
+	protected $commandOffset = 0;
 	public $i8s = array();
 	public $strings = array();
 	public $val = array();

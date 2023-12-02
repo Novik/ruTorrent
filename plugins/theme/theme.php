@@ -6,6 +6,7 @@ eval( FileUtil::getPluginConf( 'theme' ) );
 class rTheme
 {
 	public $hash = "theme.dat";
+	public $modified = false;
 	public $current = "";
 
 	static public function load()
