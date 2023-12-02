@@ -3,20 +3,21 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.checkTorrent		= "Güncellemeleri kontrol et";
+ theUILang.checkTorrent		= "Güncellemeleri denetle";
  theUILang.chkHdr		= "Torrent Güncelleme Kontrolü";
- theUILang.checkedAt		= "Son Kontrol Edilen";
+ theUILang.checkedAt		= "Son kontrol";
  theUILang.checkedResult	= "Sonuç";
  theUILang.chkResults		= [
- 				  "Devam etmekte",
- 				  "Güncellenmiş",
+ 				  "Sürüyor",
+ 				  "Güncellendi",
        "Güncelleme gerekli değil",
  				  "Muhtemelen silindi",
        "İzleyiciye erişim hatası",
-       "rTorrent ile etkileşimde hata",
+       "rTorrent ile etkileşim hatası",
        "Gerek yok"
  				  ];
 

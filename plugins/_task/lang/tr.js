@@ -3,25 +3,25 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Author: Selim Şumlu
  */
 
- theUILang.tskCommand		= "Running...";
- theUILang.tskCommandDone	= "Done.";
- theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostics";
- theUILang.tskBackground	= "Hide";
- theUILang.tskStart		= "Started";
- theUILang.tskFinish		= "Finished";
- theUILang.tskElapsed		= "Elapsed";
- theUILang.tskPlugin		= "Plugin";
- theUILang.tskDeletePrompt	= "Do you really want to delete the selected task(s)?";
- theUILang.tskDelete		= "Delete tasks(s)";
- theUILang.tskActivate		= "Activate";
- theUILang.tskRemove		= "Remove";
- theUILang.tskRefresh		= "Refresh";
- theUILang.tskRunning		= "Running";
- theUILang.tskArg		= "Parameter";
- theUILang.tskTasks		= "Tasks";
+ theUILang.tskCommand		= "Çalışıyor...";
+ theUILang.tskCommandDone	= "Bitti.";
+ theUILang.tskConsole		= "Konsol";
+ theUILang.tskErrors		= "Tanılama";
+ theUILang.tskBackground	= "Gizle";
+ theUILang.tskStart		= "Başlatıldı";
+ theUILang.tskFinish		= "Bitti";
+ theUILang.tskElapsed		= "Geçen";
+ theUILang.tskPlugin		= "Eklenti";
+ theUILang.tskDeletePrompt	= "Seçilen görev(ler)i silmek istediğinizden emin misiniz?";
+ theUILang.tskDelete		= "Görev(ler)i sil";
+ theUILang.tskActivate		= "Etkinleştir";
+ theUILang.tskRemove		= "Kaldır";
+ theUILang.tskRefresh		= "Yenile";
+ theUILang.tskRunning		= "Çalışıyor";
+ theUILang.tskArg		= "Parametre";
+ theUILang.tskTasks		= "Görevler";
 
 thePlugins.get("_task").langLoaded();

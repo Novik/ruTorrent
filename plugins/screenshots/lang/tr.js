@@ -3,18 +3,19 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.exFFMPEG		= "Ekran Görüntüsü";
- theUILang.exFrameWidth		= "Görüntü genişliği";
- theUILang.exFramesCount	= "Görüntü sayısı";
- theUILang.exStartOffset	= "Görüntü ofsetini başlat";
- theUILang.exBetween		= "Görüntüler arasındaki süre";
+ theUILang.exFFMPEG		= "Ekran Görüntüleri";
+ theUILang.exFrameWidth		= "Kare genişliği";
+ theUILang.exFramesCount	= "Kareler sayısı";
+ theUILang.exStartOffset	= "Kareler ofsetini başlat";
+ theUILang.exBetween		= "Kareler arasındaki süre";
  theUILang.exSave		= "Kaydet";
- theUILang.exSaveAll		= "Hepsini Kaydet";
- theUILang.exScreenshot		= "Ekran Görüntüsü";
+ theUILang.exSaveAll		= "Tümünü kaydet";
+ theUILang.exScreenshot		= "Ekran Ggrüntüsü";
  theUILang.exPlayInterval	= "Slayt gösterisi aralığı";
- theUILang.exImageFormat	= "Görüntü formatı";
+ theUILang.exImageFormat	= "Resim biçimi";
 
 thePlugins.get("screenshots").langLoaded();

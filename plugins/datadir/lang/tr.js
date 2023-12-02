@@ -3,13 +3,14 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.DataDir		= "Şuraya kaydet";
+ theUILang.DataDir		= "Kayıt yeri";
  theUILang.DataDirMove		= "Veri dosyalarını taşı";
  theUILang.datadirDlgCaption	= "Torrent Veri Dizini";
- theUILang.datadirDirNotFound	= "DataDir Eklentisi: Geçersiz dizin";
- theUILang.datadirSetDirFail	= "DataDir Eklentisi: İşlem başarısız";
+ theUILang.datadirDirNotFound	= "DataDir eklentisi: Geçersiz dizin";
+ theUILang.datadirSetDirFail	= "DataDir eklentisi: İşlem başarısız";
 
 thePlugins.get("datadir").langLoaded();
