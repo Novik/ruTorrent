@@ -3,16 +3,16 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Author: Selim Şumlu
  */
 
- theUILang.accLogin		= "Login";
- theUILang.accPassword		= "Password";
- theUILang.accAccounts		= "Accounts";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accLogin		= "Kullanıcı adı";
+ theUILang.accPassword		= "Parola";
+ theUILang.accAccounts		= "Hesaplar";
+ theUILang.accAuto		= "Otomatik giriş";
+ theUILang.acAutoNone		= "Yok";
+ theUILang.acAutoDay		= "Her gün";
+ theUILang.acAutoWeek		= "Her hafta";
+ theUILang.acAutoMonth		= "Her ay";
 
 thePlugins.get("loginmgr").langLoaded();

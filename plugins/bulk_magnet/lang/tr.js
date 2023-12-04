@@ -3,12 +3,13 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
  theUILang.bulkCopy		= "Kopyala";
  theUILang.Magnet		= "Magnet linki";
- theUILang.bulkAdd		= "Bulk loading"; 
- theUILang.bulkAddDescription	= "Her satır için bir link (HTTP, magnet-link ya da hash)";
+ theUILang.bulkAdd		= "Toplu ekleme"; 
+ theUILang.bulkAddDescription	= "Her satıra bir link (HTTP, magnet linki veya hash)";
 
 thePlugins.get("bulk_magnet").langLoaded();

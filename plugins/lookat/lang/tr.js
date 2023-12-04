@@ -3,10 +3,11 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.lookAtDesc		= "Şurada bul (Format: isim|url)";
- theUILang.lookAt		= "Şurada bul";
+ theUILang.lookAtDesc		= "Bul (Biçim: isim|url)";
+ theUILang.lookAt		= "Burada ara";
 
 thePlugins.get("lookat").langLoaded();

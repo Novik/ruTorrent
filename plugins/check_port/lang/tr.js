@@ -3,11 +3,12 @@
  *
  * Turkish language file.
  *
- * Author: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.checkWebsiteNotFound = "Check_port Eklentisi: Eklenti çalışmayacak, geçersiz yapılandırma.";
- theUILang.checkPort		= "Port Durumunu Kontrol Et";
+ theUILang.checkWebsiteNotFound = "Check_port eklentisi: Eklenti çalışmayacak. Yapılandırma geçersiz.";
+ theUILang.checkPort		= "Port durumunu denetle";
  theUILang.portStatus		= [
  				  "Port durumu bilinmiyor",
  				  "Port kapalı",

@@ -246,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tanzanya";
  theUILang.country[ "ua" ] = "Ukrayna";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "um" ] = "Amerika Birleşik Devletleri'nin küçük dış adaları";
+ theUILang.country[ "um" ] = "ABD'nin Küçük Dış Adaları";
  theUILang.country[ "un" ] = "Bilinmeyen";
  theUILang.country[ "us" ] = "Amerika Birleşik Devletleri";
  theUILang.country[ "uy" ] = "Uruguay";
