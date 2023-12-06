@@ -1,14 +1,12 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
-require_once( $rootPath.'/php/cache.php');
-eval(getPluginConf('throttle'));
-
-@define('MAX_SPEED', 327625*1024);
-// Can't be greater then 327625*1024 due to limitation in libtorrent ResourceManager::set_max_upload_unchoked function.
+require_once( dirname(__FILE__)."/../../php/cache.php" );
+eval(FileUtil::getPluginConf('throttle'));
 
 class rThrottle
 {
 	public $hash = "throttle.dat";
+	public $modified = false;
 	public $thr = array();
 	public $default = 0;
 
@@ -71,10 +69,10 @@ class rThrottle
 		}
 
 		if($this->isCorrect($this->default-1))
-			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.getUser(), 
+			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(), 
 				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd("d.get_throttle_name").'=,'.getCmd('d.set_throttle_name').'=thr_'.($this->default-1))));
 		else
-			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.getUser(), getCmd('cat='))));
+			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(), getCmd('cat='))));
 		return($req->run() && !$req->fault);
 	}
 	public function correct()
@@ -127,11 +125,12 @@ class rThrottle
 			new rXMLRPCCommand( "get_download_rate" ) ));
 		if($req->run() && !$req->fault)
 		{
+			global $throttleMaxSpeed;
 			$req1 = new rXMLRPCRequest();
 			if($req->val[0]==0)
-				$req1->addCommand(new rXMLRPCCommand( "set_upload_rate", MAX_SPEED ));
+				$req1->addCommand(new rXMLRPCCommand( "set_upload_rate", $throttleMaxSpeed ));
 			if($req->val[1]==0)
-				$req1->addCommand(new rXMLRPCCommand( "set_download_rate", MAX_SPEED ));
+				$req1->addCommand(new rXMLRPCCommand( "set_download_rate", $throttleMaxSpeed ));
 			if((($req->val[0]==0) || ($req->val[1]==0)) &&
 				(!$req1->run() || $req1->fault))
 				return(false);
@@ -180,7 +179,7 @@ class rThrottle
 	{
 		$ret = "theWebUI.throttles = [";
 		foreach($this->thr as $item)
-			$ret.="{ up: ".$item["up"].", down: ".$item["down"].", name : ".quoteAndDeslashEachItem($item["name"])." },";
+			$ret.="{ up: ".$item["up"].", down: ".$item["down"].", name : ".Utility::quoteAndDeslashEachItem($item["name"])." },";
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);

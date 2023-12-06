@@ -165,7 +165,7 @@ $.fn.extend(
 						e.shiftKey = false;	// for safari
                                                 return(handler.apply(this,arguments));
 					});
-                                        $(this).mousedown(function(e)
+                                        $(this).on('mousedown', function(e)
 					{
 						if(e.which != 3)
 							return(handler.apply(this,arguments));
@@ -174,7 +174,7 @@ $.fn.extend(
 				else
 				if(browser.isOpera)
 				{
-			        	$(this).mousedown(function(e)
+			        	$(this).on('mousedown', function(e)
 					{
 						if(e.which==3)
 						{
@@ -196,7 +196,7 @@ $.fn.extend(
 						}
 						return(handler.apply(this,arguments));
 					});
-					$(this).mouseup(function(e)
+					$(this).on('mouseup', function(e)
 					{
 						var c = $(this).data("btn");
 						if(c)
@@ -209,7 +209,7 @@ $.fn.extend(
 					});
 				}
 				else
-					$(this).mousedown( handler );
+					$(this).on('mousedown', handler );
 			}
 			else
 			{
@@ -226,7 +226,7 @@ $.fn.extend(
 	enableSysMenu: function()
 	{
 		return(this.on("contextmenu",function(e) { e.stopImmediatePropagation(); }).
-			bind("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
+			on("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
 	},
 
 	setCursorPosition: function(pos)
@@ -300,7 +300,7 @@ function askYesNo( title, content, funcYesName )
 	$("#yesnoDlg-header").html(title);
 	$("#yesnoDlg-content").html(content);
 	$("#yesnoOK").off('click');
-	$("#yesnoOK").click( function()
+	$("#yesnoOK").on('click', function()
 	{
 		typeof(funcYesName)==="function" ? funcYesName() : eval(funcYesName);
 		theDialogManager.hide("yesnoDlg");
@@ -353,7 +353,7 @@ var theURLs =
 	GetSettingsURL		: "php/getsettings.php",
 	GetPluginsURL		: "php/getplugins.php",
 	GetDonePluginsURL	: "php/doneplugins.php",
-	RIPEURL			: "https://apps.db.ripe.net/search/query.html?searchtext="
+	IPQUERYURL		: "https://ipinfo.io/"
 };
 
 var theOptionsSwitcher =
@@ -437,10 +437,9 @@ var theConverter =
 			ret += val + theUILang.time_s;
 		return( ret.substring(0,ret.length-1) );
 	},
-	bytes: function(bt, p)
+	bytes: function(bt, context='other')
 	{
-		p = (p == null) ? 1 : p;
-		var a = new Array(theUILang.bytes, theUILang.KB, theUILang.MB, theUILang.GB, theUILang.TB, theUILang.PB);
+		var a = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
 		var ndx = 0;
 		if(bt == 0)
 			ndx = 1;
@@ -460,7 +459,7 @@ var theConverter =
             			}
 	         	}
 		}
-		return(this.round(bt, p) + " " + a[ndx]);
+		return(this.round(bt, theWebUI.sizeDecimalPlaces(context, a[ndx].toLowerCase())) + " " + theUILang[a[ndx]]);
 	},
 	speed: function(bt)
 	{
@@ -541,7 +540,7 @@ var theFormatter =
 				case 4:
 				case 5:
 				case 15:
-					arr[i] = theConverter.bytes(arr[i], 2);
+					arr[i] = theConverter.bytes(arr[i], 'table');
 					break;
 				case 6:
 					arr[i] = (arr[i] ==- 1) ? "\u221e" : theConverter.round(arr[i] / 1000, 3);
@@ -711,7 +710,7 @@ var theFormatter =
 	      				arr[i] = theConverter.time(arr[i]);
       					break;
       				case 'last' :
-	      				arr[i] = iv(arr[i]) ? theConverter.time( $.now()/1000 - iv(arr[i]) - theWebUI.deltaTime/1000,true) : '';
+					arr[i] = arr[i] > 0 ? theConverter.time(arr[i], true) : '';
       					break;
 	      		}
 		}
@@ -750,7 +749,7 @@ var theFormatter =
    			{
       				case 'size' :
       				case 'done' :
-      					arr[i] = theConverter.bytes(arr[i], 2);
+      					arr[i] = theConverter.bytes(arr[i], 'table');
       					break;
 	      			case 'percent' :
       					arr[i] = arr[i] + "%";
@@ -761,6 +760,15 @@ var theFormatter =
 	      		}
 	   	}
 		return(arr);
+	},
+	treePrefix: function({hasNext, level})
+	{
+		return hasNext
+			.slice(1)
+			.map((next,l) => next
+				? (l+1 === level ? '├' : '│')
+				: (l+1 === level ? '└' : ' ')
+			).join('');
 	}
 };
 
@@ -776,10 +784,11 @@ var theSearchEngines =
 
 	run: function()
 	{
-	        if(theSearchEngines.current>=0)
-			window.open(theSearchEngines.sites[theSearchEngines.current].url + $("#query").val(), "_blank");
+		const q = $("#query").val();
+		if(theSearchEngines.current >= 0)
+			window.open(theSearchEngines.sites[theSearchEngines.current].url + encodeURIComponent(q), "_blank");
 		else
-			theWebUI.setTeg($("#query").val());
+			theWebUI.setTeg(q);
 	},
 	set: function( no, noSave )
 	{
@@ -850,10 +859,10 @@ var theTabs =
    		for(var n in this.tabs)
       			s += "<li id=\"tab_" + n + "\"><a href=\"javascript://void();\" onmousedown=\"theTabs.show('" + n + "'); return(false);\" onfocus=\"this.blur();\">" + this.tabs[n] + "</a></li>";
 		$("#tabbar").html(s);
-		$("#tab_lcont").append( $("<input type='button'>").attr("id","clear_log").addClass('Button').val(theUILang.ClearButton).hide().click( function()
+		$("#tab_lcont").append( $("<input type='button'>").attr("id","clear_log").addClass('Button').val(theUILang.ClearButton).hide().on('click', function()
 		{
 			$("#lcont").empty();
-		}).focus( function()
+		}).on('focus', function()
 		{
 			this.blur();
 		}));
@@ -971,6 +980,38 @@ function noty(msg,status,noTime)
 		if(iv(theWebUI.settings["webui.log_autoswitch"]) && !$.noty)
 			theTabs.show("lcont");
 	}
+}
+
+function fallbackCopyToClipboard(text)
+{
+	var textarea = document.createElement("textarea");
+	textarea.textContent = text;
+	textarea.style.position = "fixed";
+	document.body.appendChild(textarea);
+	textarea.select();
+	try {
+		var success = document.execCommand("copy");
+		if(success)
+			noty( theUILang.copyToClipboardSuccess, "success" );
+	} catch (err) {
+		prompt(theUILang.copyToClipboardFailed, text);
+	} finally {
+		document.body.removeChild(textarea);
+	}
+}
+
+function copyToClipboard(text)
+{
+	if (!navigator.clipboard)
+	{
+		fallbackCopyToClipboard(text);
+		return;
+	}
+	navigator.clipboard.writeText(text).then(function() {
+		noty( theUILang.copyToClipboardSuccess, "success" );
+	}, function(err) {
+		fallbackCopyToClipboard(text);
+	});
 }
 
 function rDirectory()
@@ -1102,56 +1143,50 @@ rDirectory.prototype.setDirectory = function(name)
 	this.current = name;
 }
 
-// -SM1310-
-
 var theBTClientVersion =
 {
 	azLikeClients4:
 	{
-		"AR" : "Ares", "AT" : "Artemis", "AV" : "Avicora",
-		"BG" : "BTGetit", "BM" : "BitMagnet", "BP" : "BitTorrent Pro (Azureus + Spyware)",
-		"bk" : "BitKitten (libtorrent)", "BS" : "BTSlave",
-		"BW" : "BitWombat", "BX" : "BittorrentX", "EB" : "EBit",
-		"DE" : "Deluge", "DP" : "Propogate Data Client", "FC" : "FileCroc",
-		"FT" : "FoxTorrent/RedSwoosh", "GR" : "GetRight", "HN" : "Hydranode",
-		"JS" : "justseed.it", "LC" : "LeechCraft", "LH" : "LH-ABC", "NX" : "Net Transport",
-		"MO" : "MonoTorrent", "MR" : "Miro", "MT" : "Moonlight",
-		"OT" : "OmegaTorrent", "PD" : "Pando", "QD" : "QQDownload",
-		"RS" : "Rufus", "RT" : "Retriever", "RZ" : "RezTorrent",
-		"SD" : "Xunlei", "SS" : "SwarmScope", "SZ" : "Shareaza",
-		"S~" : "Shareaza beta", "st" : "SharkTorrent", "TN" : "Torrent .NET",
-		"TS" : "TorrentStorm", "UL" : "uLeecher!", "UW" : "uTorrent Web", "VG" : "Vagaa",
-		"WY" : "Wyzo", "XL" : "Xunlei",
-		"XT" : "XanTorrent", "ZT" : "Zip Torrent",
-		'GS' : "GSTorrent", 'KG' : "KGet", 'ST' : "SymTorrent",
-		'BE' : "BitTorrent SDK", "TB" : "Torch",
-		"FL" : "Flud", "ZO" : "Zona"
+		"AR" : "Ares", "AT" : "Artemis", "AV" : "Avicora", "BE" : "BitTorrent SDK",
+		"BG" : "BTGetit", "BI" : "BiglyBT", "bk" : "BitKitten (libtorrent)",
+		"BM" : "BitMagnet", "BP" : "BitTorrent Pro (Azureus + Spyware)", "BS" : "BTSlave",
+		"BW" : "BitWombat", "BX" : "BittorrentX", "DE" : "Deluge", "DP" : "Propogate Data Client",
+		"EB" : "EBit", "FC" : "FileCroc", "FL" : "Flud", "FT" : "FoxTorrent/RedSwoosh",
+		"GR" : "GetRight", "GS" : "GSTorrent", "GT" : "go.torrent", "HN" : "Hydranode",
+		"JS" : "JSTorrent", "KG" : "KGet", "LC" : "LeechCraft", "LH" : "LH-ABC",
+		"MO" : "MonoTorrent", "MR" : "Miro", "MT" : "Moonlight", "NX" : "Net Transport",
+		"OS" : "OneSwarm", "OT" : "OmegaTorrent", "PD" : "Pando", "QD" : "QQDownload",
+		"RS" : "Rufus", "RT" : "Retriever", "RZ" : "RezTorrent", "SD" : "Xunlei",
+		"S~" : "Shareaza beta", "SS" : "SwarmScope", "st" : "SharkTorrent", "ST" : "SymTorrent",
+		"SZ" : "Shareaza", "TB" : "Torch", "TN" : "Torrent .NET", "TS" : "TorrentStorm",
+		"UL" : "uLeecher!", "UW" : "µTorrent Web", "VG" : "Vagaa", "WY" : "Wyzo",
+		"XF" : "Xfplay", "XL" : "Xunlei", "XT" : "XanTorrent", "ZO" : "Zona", "ZT" : "Zip Torrent"
 	 },
 	azLikeClients3:
 	{
-	        "AG" : "Ares", "A~" : "Ares", "ES" : "Electric Sheep",
-        	"HL" : "Halite", "LT" : "libtorrent (Rasterbar)", "lt" : "libTorrent (Rakshasa)",
-	        "MP" : "MooPolice", "TT" : "TuoTu", "qB" : "qBittorrent",
-       		'MG' : "MediaGet",	// ? -MG1Cr0-
-       		"IL" : "iLivid", "TL" : "Tribler"
+		"A~" : "Ares", "AG" : "Ares", "ES" : "Electric Sheep", "FW" : "FrostWire", "HL" : "Halite",
+		"IL" : "iLivid", "Lr" : "LibreTorrent", "lt" : "libTorrent (Rakshasa)",
+		"LT" : "libtorrent (Rasterbar)", "MG" : "MediaGet", "MP" : "MooPolice", "qB" : "qBittorrent",
+		"SM" : "SoMud", "TL" : "Tribler", "TT" : "TuoTu"
 	},
 	azLikeClients2x2:
 	{
-	        "AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent", "FX" : "Freebox BitTorrent"
+		"AX" : "BitPump", "BC" : "BitComet", "CD" : "Enhanced CTorrent", "FX" : "Freebox BitTorrent",
+		"WD" : "WebTorrent Desktop", "WW" : "WebTorrent"
 	},
 	azLikeClientsSpec:
 	{
-		'UM' : "uTorrent for Mac", 'UT' : "uTorrent", 'BT' : "BitTorrent", 'TR' : "Transmission",
-		'AZ' : "Azureus", 'KT' : "KTorrent", "BF" : "BitFlu",
-	        'LW' : "LimeWire", "BB" : "BitBuddy", "BR" : "BitRocket",
-		"CT" : "CTorrent", 'XX' : "Xtorrent", 'LP' : "Lphant",
-		"SK" : "Spark", "tT" : "tTorrent", "FD" : "Free Download Manager"
+		"AZ" : "Azureus", "BB" : "BitBuddy", "BF" : "BitFlu", "BR" : "BitRocket", "BT" : "BitTorrent",
+		"cT" : "CuteTorrent", "CT" : "CTorrent", "FD" : "Free Download Manager",
+		"JT" : "Torrent Downloader (jTorrent)", "jT" : "Torrent Downloader (jTorrent)",
+		"KT" : "KTorrent", "LP" : "Lphant", "LW" : "LimeWire", "PI" : "PicoTorrent", "SK" : "Spark",
+		"TR" : "Transmission", "tT" : "tTorrent", "UM" : "µTorrent for Mac", "UT" : "µTorrent",
+		"XX" : "Xtorrent"
 	},
 	shLikeClients:
 	{
-		'O' : "Osprey ", 'Q' : "BTQueue",
-        	'A' : "ABC", 'R' : "Tribler", 'S' : "Shad0w",
-	        'T' : "BitTornado", 'U': "UPnP NAT Bit Torrent"
+		"A" : "ABC", "O" : "Osprey ", "Q" : "BTQueue", "R" : "Tribler", "S" : "Shad0w", 
+		"T" : "BitTornado", "U" : "UPnP NAT Bit Torrent"
 	},
 	get: function( origStr )
 	{
@@ -1174,7 +1209,7 @@ var theBTClientVersion =
 
 		function shChar3( ch )
 		{
-			var codes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz";
+			var codes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz";
 			var loc = codes.indexOf(ch);
 			if(loc<0) loc = 0;
 			return(String(loc));
@@ -1262,6 +1297,16 @@ var theBTClientVersion =
 					case 'FD':
 						ret = cli+" "+shChar3(str.charAt(3))+"."+shChar3(str.charAt(4))+"."+shChar3(str.charAt(5));
 						break;
+					case 'cT':
+						ret = cli+" "+shChar3(str.charAt(3))+"."+shChar3(str.charAt(4))+"."+shChar3(str.charAt(5))+"."+shChar3(str.charAt(6));
+						break;
+					case 'PI':
+						ret = cli+" "+str.charAt(3)+"."+str.charAt(4)+str.charAt(5)+"."+str.charAt(6);
+						break;
+					case 'JT':
+					case 'jT':
+						ret = cli+" "+str.charAt(3)+"."+str.charAt(4);
+						break;
 					default:
 						var ch = str.charAt(6);
 						ret = cli+" "+str.charAt(3)+"."+parseInt(str.substr(4,2),10);
@@ -1318,7 +1363,7 @@ var theBTClientVersion =
 				ret = "BitTorrent "+str.charAt(3)+"."+parseInt(str.substr(4,2),10)+"."+parseInt(str.substr(6,2),10)+getMnemonicEnd(str.charAt(8));
 			else
 			if(str.match(/^-UT/))
-				ret = "uTorrent "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5);
+				ret = "µTorrent "+str.charAt(3)+"."+str.charAt(4)+"."+str.charAt(5);
 			else
 			if(str.match(/^-FG\d\d\d\d/))
 				ret = "FlashGet "+parseInt(str.substr(3,2),10)+"."+parseInt(str.substr(5,2),10);
@@ -1583,3 +1628,19 @@ function strip_tags(input, allowed)
 		return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
     	});
 }
+
+if (!window.requestIdleCallback) {
+	// monkey patch requestIdleCallback (for Safari)
+	window.requestIdleCallback = function(func, _) {
+		return setTimeout(() => func({didTimeout: true, timeRemaining: () => 0}), 1);
+	};
+	window.cancelIdleCallback = clearTimeout;
+}
+
+// Caveat: doesn't work with Internet Explorer.
+(function setBrowserTimezoneCookie()
+{
+	try {
+		document.cookie = "browser_timezone="+Intl.DateTimeFormat().resolvedOptions().timeZone
+	} catch(e) {}
+}).apply();

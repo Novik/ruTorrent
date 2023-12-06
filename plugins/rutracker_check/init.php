@@ -1,10 +1,10 @@
 <?php
 
 require_once( "xmlrpc.php" );
-eval( getPluginConf( $plugin["name"] ) );
+eval( FileUtil::getPluginConf( $plugin["name"] ) );
 
 $session = rTorrentSettings::get()->session;
-if( !strlen($session) || !@file_exists(addslash($session).'.') )
+if( !strlen($session) || !@file_exists(FileUtil::addslash($session).'.') )
 {
 	$jResult .= "plugin.disable(); noty('".$plugin["name"].": '+theUILang.webBadSessionError+' (".$session.").','error');";
 }
@@ -12,8 +12,8 @@ else
 {
 	if($updateInterval)
 	{
-		$req = new rXMLRPCRequest( $theSettings->getScheduleCommand('rutracker_check',$updateInterval,
-			getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' &}' ));
+		$req = new rXMLRPCRequest( $theSettings->getAbsScheduleCommand('rutracker_check',$updateInterval*60,
+			getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(User::getUser()).' &}' ));
 		if($req->success())
 			$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 		else

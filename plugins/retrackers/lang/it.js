@@ -3,13 +3,13 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.retrackers		= "Retrackers";
- theUILang.retrackersAdd	= "Add Announce URLs";
- theUILang.retrackersDel	= "Remove Announce URLs";
- theUILang.dontAddToPrivate	= "Don't touch private torrents";
- theUILang.addToBegin		= "Add announce URLs to the beginning of the trackers list";
+ theUILang.retrackers		= "Retracker";
+ theUILang.retrackersAdd	= "Aggiungi URL Announce";
+ theUILang.retrackersDel	= "Rimuovi URL Announce";
+ theUILang.dontAddToPrivate	= "Non modificare torrent privati";
+ theUILang.addToBegin		= "Aggiungi URL Announce all'inizio della lista dei tracker";
 
 thePlugins.get("retrackers").langLoaded();

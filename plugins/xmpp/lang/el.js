@@ -8,13 +8,13 @@
 
  var s_PluginFail			= "Το πρόσθετο δεν θα λειτουργήσει.";
 
- theUILang.xmpp 			= "XMPP";
- theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Παραλήπτης:";
+ theUILang.xmpp				= "XMPP";
+ theUILang.xmppJabberJID		= "JID:";
+ theUILang.xmppJabberFor		= "Παραλήπτης:";
  theUILang.xmppMessage			= "Μήνυμα:";
  theUILang.xmppJabberPasswd		= "Κωδικός:";
  theUILang.xmppAdvancedSettings		= "Προηγμένες:";
- theUILang.xmppJabberHost		= "Διακομιστής:";
+ theUILang.xmppJabberHost		= "Διακομιστής";
  theUILang.xmppJabberPort		= "Θύρα";
  theUILang.xmppUseEncryption		= "Χρήση κρυπτογράφησης";
 

@@ -2,10 +2,22 @@ plugin.loadLang();
 
 if(plugin.canChangeMenu())
 {
-	theWebUI.getSource = function( id )
+	theWebUI.getSource = function()
 	{
-		$("#srchash").val(id);
-		$("#getsource").submit();
+		var sr = this.getTable("trt").rowSel;
+		var hash = '';
+		for( var k in sr )
+		{
+			if( sr[k] && (k.length == 40) )
+			{
+				if( hash )
+					hash += " " + k;
+				else
+					hash = k;
+			}
+		}
+		$("#srchash").val(hash);
+		$("#getsource").trigger('submit');
 	}
 
 	plugin.createMenu = theWebUI.createMenu;
@@ -16,14 +28,14 @@ if(plugin.canChangeMenu())
 		{
 			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
-				theContextMenu.add( el, [theUILang.getSource,  (this.getTable("trt").selCount > 1) || (id.length>40) ? null : "theWebUI.getSource('" + id + "')"] );
+				theContextMenu.add( el, [theUILang.getSource, "theWebUI.getSource()"] );
 		}
 	}
 }
 
 plugin.onLangLoaded = function()
 {
-	$(document.body).append($("<iframe name='srcfrm'/>").css({visibility: "hidden"}).attr( { name: "srcfrm", id: "srcfrm" } ).width(0).height(0).load(function()
+	$(document.body).append($("<iframe name='srcfrm'/>").css({visibility: "hidden"}).attr( { name: "srcfrm", id: "srcfrm" } ).width(0).height(0).on('load', function()
 	{
 	        $("#srchash").val('');
 		var d = (this.contentDocument || this.contentWindow.document);
@@ -31,7 +43,7 @@ plugin.onLangLoaded = function()
 			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));
 	$(document.body).append(
-		$('<form action="plugins/source/action.php" id="getsource" method="get" target="srcfrm">'+
+		$('<form action="plugins/source/action.php" id="getsource" method="post" target="srcfrm">'+
 			'<input type="hidden" name="hash" id="srchash" value="">'+
 		'</form>').width(0).height(0));
 }

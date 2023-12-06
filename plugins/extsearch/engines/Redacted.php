@@ -28,7 +28,7 @@ class RedactedEngine extends commonEngine
 				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
 				break;
 
-			$res = preg_match_all('/\[ <a href="torrents\.php\?(?P<link>.*)".*>DL<\/a>.*'.
+			$res = preg_match_all('/<tr class="torrent">.*<a href="torrents\.php\?(?P<link>.*)".*>DL<\/a>.*'.
 				'<\/span>(?P<artist>.*)<a href="torrents\.php\?id=(?P<desc>\d+)\&.*>(?P<title>.*)<div class="torrent_info">(?P<cat>.*)<\/div>.*'.
 				'<td class="nobr"><span .* title="(?P<date>.*)">.*<\/span>.*<td .*>(?P<size>.*)<\/td>.*'.
 				'<td .*>.*<\/td>.*<td .*>(?P<seeds>.*)<\/td>.*<td .*>(?P<leech>.*)<\/td>'.
@@ -45,7 +45,7 @@ class RedactedEngine extends commonEngine
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
 						$item["desc"] = $url."/torrents.php?id=".$matches["desc"][$i];
 						$item["name"] = self::removeTags($matches["artist"][$i].$matches["title"][$i]);
-						$item["size"] = self::formatSize($matches["size"][$i]);
+						$item["size"] = self::formatSize(str_replace(",","",$matches["size"][$i]));
 						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));

@@ -11,10 +11,10 @@
  theUILang.rssRulesManager	= "Regelbehandling";
  theUILang.rssAddRule		= "Legg til";
  theUILang.rssDelRule		= "Slett";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Regelinstillinger";
- theUILang.rssSrcHref		= "Hvis lenke for torrentnedlasting matcher med mønster";
- theUILang.rssSrcGuid		= "Hvis lenke for torrentbeskrivelse matcher med mønster";
+ theUILang.rssSrcHref		= "Hvis lenke for torrentnedlasting samsvarer med mønster";
+ theUILang.rssSrcGuid		= "Hvis lenke for torrentbeskrivelse samsvarer med mønster";
  theUILang.rssDstHref		= "så erstatt lenken for torrentnedlasting med";
  theUILang.rssDstGuid		= "så erstatt lenken for torrentbeskrivelsen med";
  theUILang.rssRulesDebug	= "Regelfeilsøking";

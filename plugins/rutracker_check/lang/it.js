@@ -3,21 +3,21 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.checkTorrent 	= "Check for Update";
- theUILang.chkHdr		= "Torrent Update Check";
- theUILang.checkedAt		= "Last Checked";
- theUILang.checkedResult	= "Result";
+ theUILang.checkTorrent		= "Controlla agiornamenti";
+ theUILang.chkHdr		= "Controlla aggiornamento torrent";
+ theUILang.checkedAt		= "Ultimo controllo";
+ theUILang.checkedResult	= "Risultato";
  theUILang.chkResults		= [
- 				  "In progress",
- 				  "Updated",
- 				  "No update required",
- 				  "Probably deleted",
- 				  "Error accessing the tracker",
- 				  "Error interacting with rTorrent",
- 				  "No need"
+ 				  "In corso",
+ 				  "Aggiornato",
+ 				  "Nessun aggiornamento richiesto",
+ 				  "Probabilmente cancellato",
+ 				  "Errore di accesso al tracker",
+ 				  "Errore di interazione con rTorrent",
+ 				  "Non serve"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

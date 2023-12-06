@@ -3,14 +3,14 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.throttles		= "Channels";
- theUILang.throttle		= "Channel";
- theUILang.mnuThrottle		= "Set Channel";
- theUILang.mnuUnlimited 	= "No Channel";
- theUILang.channelName		= "Name";
- theUILang.channelDefault	= "Default channel";
+ theUILang.throttles		= "Canali";
+ theUILang.throttle		= "Canale";
+ theUILang.mnuThrottle		= "Imposta Canale";
+ theUILang.mnuUnlimited		= "Nessun Canale";
+ theUILang.channelName		= "Nome";
+ theUILang.channelDefault	= "Canale predefinito";
 
 thePlugins.get("throttle").langLoaded();

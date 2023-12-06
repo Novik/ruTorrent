@@ -11,25 +11,32 @@ class rTorrent
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
 	{
 		$hash = false;
-		$torrent = is_object($fname) ? $fname : new Torrent($fname);
+		$mustSave = is_object($fname);
+		$torrent = $mustSave ? $fname : new Torrent($fname);
+
 		if(!$torrent->errors())
 		{
 			if($isFast && ($resume = self::fastResume($torrent, $directory, $isAddPath)))
-				$torrent = $resume;
-			else
-				if($isNew)
-				{
-					if(isset($torrent->{'libtorrent_resume'}))
-						unset($torrent->{'libtorrent_resume'});
-				}			
-			if($isNew)
 			{
-				if(isset($torrent->{'rtorrent'}))
-					unset($torrent->{'rtorrent'});
+				$torrent = $resume;
+				$mustSave = true;
+			}
+			else
+			{
+				if($isNew && isset($torrent->{'libtorrent_resume'}))
+				{
+					unset($torrent->{'libtorrent_resume'});
+					$mustSave = true;
+				}
+			}
+			if($isNew && isset($torrent->{'rtorrent'}))
+			{
+				unset($torrent->{'rtorrent'});
+				$mustSave = true;
 			}
 			$raw_value = base64_encode($torrent->__toString());
 			$filename = is_object($fname) ? $torrent->getFileName() : $fname;
-			if((strlen($raw_value)<self::RTORRENT_PACKET_LIMIT) || is_null($filename) || !isLocalMode())
+			if(strlen($raw_value)<self::RTORRENT_PACKET_LIMIT)
 			{
 				$cmd = new rXMLRPCCommand( $isStart ? 'load_raw_start' : 'load_raw' );
 				$cmd->addParameter($raw_value,"base64");
@@ -38,11 +45,26 @@ class rTorrent
 			}
 			else
 			{
+				if(!User::isLocalMode())
+				{
+					// we can't send torrent to the other host without FS sharing
+					return(false);
+				}
+				if(is_null($filename))
+				{
+					$filename = FileUtil::getTempFilename($torrent->name(), 'torrent');
+					$mustSave = true;
+				}
+				if($mustSave)
+				{
+					// because torrent may be changed in memory
+					$torrent->save($filename);
+				}
 				$cmd = new rXMLRPCCommand( $isStart ? 'load_start' : 'load' );
 				$cmd->addParameter($filename);
 			}
 			if(!is_null($filename) && (rTorrentSettings::get()->iVersion>=0x805))
-				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(getFileName($filename)));
+				$cmd->addParameter(getCmd("d.set_custom")."=x-filename,".rawurlencode(FileUtil::getFileName($filename)));
 			$req = new rXMLRPCRequest();
 			$directory = self::parseDirectory($directory, $isAddPath);
 			if($directory && (strlen($directory)>0))
@@ -55,8 +77,8 @@ class rTorrent
 			$comment = $torrent->comment();
 			if($comment)
 			{
-				if(isInvalidUTF8($comment))
-					$comment = win2utf($comment);
+				if(UTF::isInvalidUTF8($comment))
+					$comment = UTF::win2utf($comment);
 				if(strlen($comment)>0)
 				{
 					$comment = "VRS24mrker".rawurlencode($comment);
@@ -91,7 +113,7 @@ class rTorrent
 				$fpos = strlen($magnet);
 			$hash = strtoupper(substr($magnet,$hpos,$fpos-$hpos));
                         if(strlen($hash)==32)
-		        	$hash = base32decode($hash);
+		        	$hash = Decode::base32decode($hash);
 	        	if(strlen($hash)==40)
 	        	{
 				$req = new rXMLRPCRequest();
@@ -165,7 +187,7 @@ class rTorrent
 		}
 	        if($psize && rTorrentSettings::get()->correctDirectory($base))
 	        {
-		        $base = addslash($base);
+		        $base = FileUtil::addslash($base);
 	                $tsize = 0.0;
 			if(isset($info['files']))
 			{

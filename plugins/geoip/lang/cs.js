@@ -14,7 +14,6 @@
  theUILang.countryName		= "Země";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Spojené arabské emiráty";
  theUILang.country[ "af" ] = "Afghánistán";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albánie";
  theUILang.country[ "am" ] = "Arménie";
- theUILang.country[ "an" ] = "Nizozemské Antily";
  theUILang.country[ "ao" ] = "Angola";
  theUILang.country[ "aq" ] = "Antarktida";
  theUILang.country[ "ar" ] = "Argentina";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "Bahrajn";
  theUILang.country[ "bi" ] = "Burundi";
  theUILang.country[ "bj" ] = "Benin";
+ theUILang.country[ "bl" ] = "Svatý Bartoloměj";
  theUILang.country[ "bm" ] = "Bermudy";
  theUILang.country[ "bn" ] = "Brunej";
  theUILang.country[ "bo" ] = "Bolívie";
@@ -156,9 +155,10 @@
  theUILang.country[ "mc" ] = "Monako";
  theUILang.country[ "md" ] = "Moldavsko";
  theUILang.country[ "me" ] = "Černá Hora";
+ theUILang.country[ "mf" ] = "Svatý Martin";
  theUILang.country[ "mg" ] = "Madagaskar";
  theUILang.country[ "mh" ] = "Marshallovy ostrovy";
- theUILang.country[ "mk" ] = "Makedonie";
+ theUILang.country[ "mk" ] = "Severní Makedonie";
  theUILang.country[ "ml" ] = "Mali";
  theUILang.country[ "mm" ] = "Myanmar";
  theUILang.country[ "mn" ] = "Mongolsko";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "Surinam";
  theUILang.country[ "ss" ] = "Jižní Súdán";
  theUILang.country[ "st" ] = "Svatý Tomáš a Princův ostrov";
- theUILang.country[ "su" ] = "Rusko";
  theUILang.country[ "sv" ] = "Salvador";
  theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Sýrie";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tanzanie";
  theUILang.country[ "ua" ] = "Ukrajina";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "Spojené království";
+ theUILang.country[ "um" ] = "Menší odlehlé ostrovy Spojených států";
  theUILang.country[ "un" ] = "Neznámý";
  theUILang.country[ "us" ] = "Spojené státy americké";
  theUILang.country[ "uy" ] = "Uruguay";

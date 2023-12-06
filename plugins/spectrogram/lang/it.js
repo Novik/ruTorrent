@@ -3,10 +3,10 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.exsox		= "Spectrogram";
- theUILang.exSave		= "Save";
+ theUILang.exsox		= "Spettrogramma";
+ theUILang.exSave		= "Salva";
 
 thePlugins.get("spectrogram").langLoaded();

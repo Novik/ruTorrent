@@ -3,14 +3,14 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.EditTrackers 		= "Edit Torrent...";
- theUILang.EditTorrentProperties	= "Torrent Properties";
- theUILang.errorAddTorrent		= "Error adding torrent file";
- theUILang.errorWriteTorrent		= "Error writing torrent file";
- theUILang.errorReadTorrent		= "Error reading torrent file";
- theUILang.cantFindTorrent		= "Source torrent file for this download not found."
+ theUILang.EditTrackers			= "Modifica Torrent...";
+ theUILang.EditTorrentProperties	= "Proprietà del Torrent";
+ theUILang.errorAddTorrent		= "Errore di aggiunta del file torrent";
+ theUILang.errorWriteTorrent		= "Errore di scrittura del file torrent";
+ theUILang.errorReadTorrent		= "Errore di lettura del file torrent";
+ theUILang.cantFindTorrent		= "File torrent di origine per questo download non trovato."
 
 thePlugins.get("edit").langLoaded();

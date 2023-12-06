@@ -30,6 +30,7 @@ function readLangCookie() {
 
 var AvailableLanguages =
 {
+	bn:'Bengali',
 	cs:'Český',
 	da:'Dansk',
 	de:'Deutsch',
@@ -45,12 +46,13 @@ var AvailableLanguages =
 	nl:'Nederlands',
 	no:'Norsk',
 	pl:'Polski',
-	pt:'Português',
+	"pt-br":'Português (Brasil)',
+	"pt-pt":'Português (Portugal)',
 	ru:'Русский',
 	sk:'Slovenský',
 	sr:'Српски',
 	sv:'Svenska',
-	tr:'Türk',
+	tr:'Türkçe',
 	uk:'Українська',
 	vi:'Tiếng Việt',
 	"zh-cn":'简体中文',
@@ -92,4 +94,37 @@ function SetActiveLanguage(lang)
 	document.cookie = "Language="+ lang + expires +"; path=/";
 }
 
-document.write("<script type=\"text/javascript\" src=\"./lang/"+GetActiveLanguage()+".js\"></script>");
+function loadUILang(onLoadFunc)
+{
+	const lang = GetActiveLanguage();
+	document.documentElement.setAttribute('lang', lang);
+
+	const langScript = document.createElement("script");
+	langScript.onload = () => {
+		if (onLoadFunc) {
+			onLoadFunc();
+		}
+		if (document.readyState === 'loading') {
+			document.addEventListener("DOMContentLoaded", translateDOM);
+		} else {
+			translateDOM();
+		}
+	};
+	langScript.src = `./lang/${lang}.js`;
+	document.head.appendChild(langScript);
+}
+
+function translateDOM() {
+	// Translate uilang elements and uilangtitle/uilangvalue attributes
+	for (const attr of ['', 'title', 'value']) {
+		for (el of document.querySelectorAll(`[uilang${attr}]`)) {
+			const translationId = attr.length ? el.getAttribute(`uilang${attr}`) : el.textContent;
+			const translation = theUILang[translationId] ?? translationId;
+			if (attr.length)
+				el.setAttribute(attr, translation);
+			else
+				el.textContent = translation;
+			el.removeAttribute(`uilang${attr}`);
+		}
+	}
+}

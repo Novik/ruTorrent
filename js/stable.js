@@ -27,6 +27,8 @@ var TYPE_NUMBER = 1;
 var TYPE_DATE = 2;
 var TYPE_STRING_NO_CASE = 3;
 var TYPE_PROGRESS = 4;
+var TYPE_PEERS = 5;
+var TYPE_SEEDS = 6;
 var ALIGN_AUTO = 0;
 var ALIGN_LEFT = 1;
 var ALIGN_CENTER = 2;
@@ -37,19 +39,19 @@ var TR_HEIGHT	=	19;
 var dxSTable = function() 
 {
 	this.rows = 0;
-	this.rowdata = new Object();
-	this.rowIDs = new Array();
-	this.rowSel = new Array();
+	this.rowdata = {};
+	this.rowIDs = [];
+	this.rowSel = {};
 	this.maxRows = false;
 	this.noDelayingDraw = true;
 	this.viewRows = 0;
 	this.cols = 0;
 	this.colsdata = new Array();
-	this.stSel = null;
+	this.stSel = [];
 	this.format = function(r) { return r; };
-	this.sIndex =- 1;
+	this.sortId = '';
 	this.reverse = 0;
-	this.secIndex = 0;
+	this.sortId2 = '';
 	this.secRev = 0;
 	this.tBody = null;
 	this.tHead = null;
@@ -70,7 +72,6 @@ var dxSTable = function()
 	this.onmove = null;
 	this.onresize = null;
 	this.ondblclick = null;
-	this.sortTimeout = null;
 	this.hotCell =- 1;
 	this.isMoving = false;
 	this.isResizing = false;
@@ -83,7 +84,20 @@ var dxSTable = function()
 	this.prgEndColor = new RGBackground(".meter-value-end-color");
 	this.mni = 0;
 	this.mxi = 0;
-	this.maxViewRows = 100;
+	this.pendingSync = {};
+	this.syncDOMHandlers = {
+		throttle: {
+			timeoutId: 0,
+			delayMs: 500
+		},
+		debounce: {
+			timeoutId: 0,
+			startTime: -1,
+			delayMs: 50
+		},
+		lazy: false,
+		reqAFrameId: 0
+	};
 }
 
 dxSTable.prototype.setPaletteByURL = function(url) 
@@ -105,7 +119,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 {
 	if(!ele || this.created)
 		return;
-	var tr, td, cl, cg, div;
+	let tr, td, cl, cg;
 	this.prefix = aName;
 	this.dCont = ele;
 
@@ -123,10 +137,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 
 	tr = $("<tr>");
 	this.tHead.tb.appendChild(tr.get(0));
-	var self = this, span;
-	var j = 0;
-	if(this.sIndex>=styles.length)
-		this.sIndex = -1;
+	const self = this;
 
 	for(var i in this.colOrder)
 	{
@@ -191,19 +202,18 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			width(styles[this.colOrder[i]].width).
 			attr("index", i));
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
-		td.mouseclick( 	function(e) 
+		td.mouseclick(function(e)
 		{ 
 			self.onRightClick(e);
-		}).mouseup( function(e) 
+		}).on('mouseup', function(e) 
 		{ 
 			self.Sort(e);
 		});
 		if(!$.support.touchable)
-			td.mousedown( function(e) { self.bindKeys(); });
+			td.on('mousedown', function(e) { self.bindKeys(); });
 		this.tHeadCols[i] = td.get(0);
 		if(!this.colsdata[i].enabled)
   	                td.hide();
-		j++;
 	}
 	this.tBody = $("<table>").width(0).get(0);
 	this.tBody.cellSpacing = 0;
@@ -213,7 +223,12 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.dBody.appendChild(this.tBody);
 	this.bpad = $("<div>").addClass("stable-virtpad").get(0);
 	this.dBody.appendChild(this.bpad);
-	this.tBody.tb = $("<tbody>").get(0);
+	const tb = $("<tbody>");
+	tb.mouseclick(this.handleClick.bind(this));
+	if(typeof this.ondblclick === 'function') {
+		tb.dblclick(this.handleClick.bind(this));
+	}
+	this.tBody.tb = tb[0];
 	this.tBody.appendChild(this.tBody.tb);
 
 	cg = $("<colgroup>");
@@ -230,7 +245,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.dCont.appendChild(this.scp);
 	this.dCont.style.position = "relative";
 	this.init();
-	$(window).unload(function() { self.clearRows(); });
 	this.calcSize().resizeColumn();
 
 	this.colReszObj = $("<div>").addClass("stable-resize-header").get(0);
@@ -239,6 +253,17 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.rowCover = $("<div>").addClass("rowcover").get(0);
 	this.dHead.appendChild(this.rowCover);
 	this.created = true;
+}
+
+dxSTable.prototype.handleClick = function(e)
+{
+	const row = $(e.target).parents('tr')[0];
+	if (e.type == 'dblclick') {
+		this.ondblclick(row);
+	} else if (e.which === 3 || e.which === 1) {
+		// only select rows with left or right click
+		this.selectRow(e, row);
+	}
 }
 
 dxSTable.prototype.toggleColumn = function(i)
@@ -267,7 +292,7 @@ dxSTable.prototype.removeColumnById = function(id, name)
 
 dxSTable.prototype.removeColumn = function(no)
 {
-	i = this.getColOrder(no);
+	const i = this.getColOrder(no);
 	if(i>=0)
 	{
 		$(this.tHeadCols[i]).remove();
@@ -287,13 +312,17 @@ dxSTable.prototype.removeColumn = function(no)
 		this.tHeadCols.splice(i,1);
 
 		this.cols--;
-		if(this.sIndex == i)
-			this.sIndex = -1;
-		if(this.secIndex == i)
-			this.secIndex = 0;
+		for(let c = i; c < this.cols; c++)
+			this.tHeadCols[c].setAttribute("index", c);
+		if(this.getColNoById(this.sortId) === i)
+			this.sortId = '';
+		if(this.getColNoById(this.sortId2) === i) {
+			this.sortId2 = '';
+			this.secRev = 0;
+		}
 
-	        this.dHead.scrollLeft = this.dBody.scrollLeft;
-        	this.calcSize().resizeColumn();
+		this.dHead.scrollLeft = this.dBody.scrollLeft;
+		this.calcSize().resizeColumn();
 	}
 }
 
@@ -335,15 +364,12 @@ dxSTable.prototype.calcSize = function()
 	if(this.created && this.dCont.offsetWidth >= 4) 
 	{
 		this.dBody.style.width = this.dCont.offsetWidth - 2 + "px";
-		this.dBody.style.paddingTop = this.dHead.offsetHeight + "px";
+		this.dBody.style.marginTop = this.dHead.offsetHeight + "px";
 		this.tBody.style.width = this.tHead.offsetWidth + "px";
 		var h = this.dCont.clientHeight - this.dHead.offsetHeight;
 		if(h >= 0) 
 			this.dBody.style.height = h + "px";
-		var nsb = -2;
-		if((this.dBody.offsetWidth != this.dBody.clientWidth) && (window.scrollbarWidth!=null))
-			nsb-=window.scrollbarWidth;
-		this.dHead.style.width = this.dCont.clientWidth + nsb + "px";
+		this.dHead.style.width = (this.dCont.clientWidth - 2) + "px";
 		this.rowCover.style.width = this.dHead.style.width;
 		if((this.cols > 0) && (!this.isResizing)) 
 		{
@@ -370,6 +396,9 @@ dxSTable.prototype.calcSize = function()
 
 dxSTable.prototype.resizeColumn = function() 
 {
+	if (this.tBody == null)
+		return;
+	
 	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
 	var needCallHandler = false;
 	var w = 0, c;
@@ -491,38 +520,6 @@ var moveColumn = function(_11, _12)
 	this.colOrder = aO.slice(0);
 	for(i = 0; i < this.cols; i++)
 		this.tHeadCols[i].setAttribute("index", i);
-	if((_12 == this.sIndex) && (_11 > _12))
-		this.sIndex = _12 + 1;
-	else 
-	{
-		if((_11 < _12) && (this.sIndex < _12) && (this.sIndex > _11))
-			this.sIndex--;
-		else
-		{
-			if(_11 == this.sIndex) 
-			{
-				this.sIndex = _12;
-				if(_12 > _11)
-					this.sIndex = _12 - 1;
-			}
-		}
-	}
-	if((_12 == this.secIndex) && (_11 > _12))
-		this.secIndex = _12 + 1;
-	else 
-	{
-		if((_11 < _12) && (this.secIndex < _12) && (this.secIndex > _11))
-			this.secIndex--;
-		else
-		{
-			if(_11 == this.secIndex) 
-			{
-				this.secIndex = _12;
-				if(_12 > _11)
-					this.secIndex = _12 - 1;
-			}
-		}
-	}
 	this.cancelSort = false;
 	if($type(this.onmove) == "function")
 		this.onmove();
@@ -551,7 +548,7 @@ dxSTable.ColumnMove.prototype =
 	init : function(o, _1b, _1c, _1d) 
 	{      
 		var self = this;      
-		$(o).mousedown( function(e)
+		$(o).on('mousedown', function(e)
 		{
 			if(self.parent.hotCell >- 1)
 				return;
@@ -670,110 +667,83 @@ dxSTable.prototype.Sort = function(e)
 	if(this.cancelSort) 
 		return(true);
 	this.isSorting = true;
-	var col = null;
-	var rev = true;
-	if(e == null) 
-	{
-		if(this.sIndex ==- 1) 
-		{
-		        this.calcSize().resizeHack();
-			return(true);
+	const primarySorting = Boolean(this.sortId);
+	const notSorting = e == null && !primarySorting;
+	if(notSorting || e?.which === 3) {
+		if(notSorting) {
+			this.calcSize().resizeHack();
 		}
-		rev = false;
-		col = this.tHead.tb.rows[0].cells[this.sIndex];
+		return(true);
 	}
-	else 
-	{
-		if(e.which==3)
-			return(true);
-		col = (e.target) ? e.target : e.srcElement;
-	}
-	if(col.tagName == "DIV") 
-	{
-		col = col.parentNode;
-	}
-	var ind = parseInt(col.getAttribute("index"));
-	if(e && e.shiftKey && (this.sIndex >- 1))
-	{
-		if(this.secIndex == ind) 
-			this.secRev = 1 - this.secRev;
-		else 
+	const oldCol = primarySorting ? this.tHeadCols[this.getColNoById(this.sortId)] : null;
+	const col = e ? e.delegateTarget : oldCol;
+	const sortIdCurrent = this.getIdByCol(this.colOrder[parseInt(col.getAttribute("index"))]) ?? '';
+	const toggleReverse = (oldId, oldRev) => (oldId === sortIdCurrent) ? 1 - oldRev : 0;
+	if (e) {
+		if (e.shiftKey && primarySorting) {
+			// do secondary sort
+			this.secRev = toggleReverse(this.sortId2, this.secRev);
+			this.sortId2 = sortIdCurrent;
+		} else {
+			// do primary sort
+			this.reverse = toggleReverse(this.sortId, this.reverse);
+			this.sortId = sortIdCurrent;
+			this.sortId2 = 'name';
 			this.secRev = 0;
-		this.secIndex = ind;
-		ind = this.sIndex;
-		rev = false;
-		col = this.tHead.tb.rows[0].cells[this.sIndex];
+		}
 	}
-	if(rev) 
-	        this.reverse = (this.sIndex == ind) ? 1 - this.reverse : 0;
-	if(this.sIndex >= 0) 
-	{
-		var td = this.tHead.tb.rows[0].cells[this.sIndex];
-		td.style.backgroundImage = "url("+this.paletteURL+"/images/blank.gif)";
+	if (this.sortId === sortIdCurrent) {
+		if (oldCol) {
+			oldCol.style.backgroundImage = "url("+this.paletteURL+"/images/blank.gif)";
+		}
+		col.style.backgroundImage = "url(" + (this.reverse ? this.sortAscImage : this.sortDescImage) + ")";
 	}
-	col.style.backgroundImage = "url(" + (this.reverse ? this.sortAscImage : this.sortDescImage) + ")";
-	this.sIndex = ind;
-	var d = this.getCache(ind);
-	var u = d.slice(0);
-	var self = this;
-	switch(this.colsdata[ind].type) 
-	{
-		case TYPE_STRING : 
-			d.sort(function(x, y) { return self.sortAlphaNumeric(x, y); });
-      			break;
-      		case TYPE_PROGRESS :
-      		case TYPE_NUMBER : 
-      			d.sort(function(x, y) { return self.sortNumeric(x, y); });
-      			break;
-      		default : 
-      			d.sort();
-      			break;
-      	}
-   	if(this.reverse) 
-		d.reverse();
-	this.rowIDs = [];
-	var c = 0, i = 0;
-	while(i < this.rows) 
-	{
-		this.rowdata[d[i].key] = d[i].e;
-		this.rowIDs.push(d[i].key);
-      		i++;
-	}
-	this.clearCache(d);
-	this.clearCache(u);
+
+	const sortingValues = id => {
+		const no = this.getColById(id);
+		return no >= 0 ? Object.fromEntries(
+			Object.entries(this.rowdata)
+				.map(([k,v]) => [k, v.data[no]]
+			)
+		) : {};
+	};
+
+	const primaryValues = sortingValues(this.sortId);
+	const primarySort = this.getSortFunc(this.sortId, this.reverse, x => primaryValues[x]);
+
+	const secondary = this.sortId2 || this.ids[0];
+	const secondaryValues = sortingValues(secondary);
+	const secondarySort = this.getSortFunc(secondary, this.secRev, x => secondaryValues[x]);
+
+	this.rowIDs.sort((x,y) => primarySort(x,y) || secondarySort(x,y) || theSort.Default(x, y));
+
 	this.isSorting = false;
-	if(!this.isScrolling) 
-		this.refreshRows();
-	this.calcSize().resizeHack();
+	this.refreshRows();
 	if($type(this.onsort) == "function") 
-		this.onsort();
+		setTimeout(() => this.onsort());
 	return(false);
 }
 
-dxSTable.prototype.sortNumeric = function(x, y)
+dxSTable.prototype.getSorter = function(colType, valMapping)
 {
-	var r = theSort.Numeric(x.v, y.v);
-	return( (r == 0) ? this.sortSecondary(x, y) : r );
+	const peerSort = (x,y) => theSort.PeersConnected(x,y) || theSort.PeersTotal(x,y);
+	const sorter = {
+		[TYPE_STRING]: theSort.AlphaNumeric,
+		[TYPE_PROGRESS]: theSort.Numeric,
+		[TYPE_NUMBER]: theSort.Numeric,
+		[TYPE_PEERS]: peerSort,
+		[TYPE_SEEDS]: peerSort
+	}[colType];
+	return sorter ?
+		((x, y) => sorter(valMapping(x), valMapping(y)))
+		: ((_) => 0);
 }
 
-dxSTable.prototype.sortAlphaNumeric = function(x, y)
+dxSTable.prototype.getSortFunc = function(id, reverse, valMapping)
 {
-	var r = theSort.AlphaNumeric(x.v, y.v);
-	return( (r == 0) ? this.sortSecondary(x, y) : r );
-}
-
-dxSTable.prototype.sortSecondary = function(x, y)
-{
-	var m = this.getValue(x.e, this.secIndex);
-	var n = this.getValue(y.e, this.secIndex);
-	if(this.secRev)
-	{
-		var tmp = m;
-		m = n;
-      		n = tmp;
-	}
-	var ret = this.colsdata[this.secIndex].type;
-	return( (ret==0) ? theSort.AlphaNumeric(m, n) : ((ret==1) || (ret==4)) ? theSort.Numeric(m, n) : theSort.Default(m, n) );
+	const order = reverse ? -1 : 1;
+	const sorter = this.getSorter(this.colsdata[this.getColNoById(id)]?.type, valMapping);
+	return (x,y) => order * sorter(x, y);
 }
 
 var theSort = 
@@ -796,8 +766,24 @@ var theSort =
 		if(y==null) y = "";
 		var a = (x + "").toLowerCase();
 		var b = (y + "").toLowerCase();
-		return((a < b) ? -1 : (a > b) ? 1 : 0);
-	}
+		return(a.localeCompare(b));
+	},
+	PeersTotal: function(x, y)
+	{
+		return( this.Numeric( this.PeerValue(x,this.peers_total_re), this.PeerValue(y,this.peers_total_re) ) );
+	},
+	PeersConnected: function(x, y)
+	{
+		return( this.Numeric( this.PeerValue(x,this.peers_connected_re), this.PeerValue(y,this.peers_connected_re) ) );
+	},
+	PeerValue: function(x,pcre)
+	{
+		var val = ((x || '')+"").match(pcre);
+		return( val ? val[1] : 0 );
+	},
+
+	peers_total_re: /\((\d+)\)$/,
+	peers_connected_re: /^(\d+)/
 };
 
 dxSTable.prototype.init = function() 
@@ -852,7 +838,7 @@ dxSTable.prototype.setBodyState = function(v)
 dxSTable.prototype.assignEvents = function() 
 {
 	var self = this;
-	this.scrollTimeout = null;
+	this.scrollTimeout = 0;
 	this.scrollTop = 0;
 	this.scrollDiff = 0;
 	this.scOdd = null;
@@ -868,19 +854,25 @@ dxSTable.prototype.assignEvents = function()
 				self.scOdd = null;
 				self.scrollDiff = self.scrollTop - self.dBody.scrollTop;
 				self.scrollTop = self.dBody.scrollTop;
-				if(self.noDelayingDraw || (Math.abs(self.scrollDiff) <= TR_HEIGHT*3) || (self.viewRows <= maxRows))
+				if (self.isScrolling ||
+				    (!self.noDelayingDraw &&
+				     Math.abs(self.scrollDiff) > TR_HEIGHT*3 &&
+				     (self.viewRows > maxRows))
+				   )
 				{
-					handleScroll.apply(self);
-					return;
+					self.isScrolling = true;
+					if (self.scrollTimeout !== 0)
+						clearTimeout(self.scrollTimeout);
+					self.scrollTimeout = setTimeout( function() {
+						self.scrollTimeout = 0;
+						self.isScrolling = false;
+						self.pendingSync.scroll = true;
+						self.syncDOMAsync();
+					}, 500);
+					self.syncDOMAsync();
 				}
-				this.isScrolling = true;
-				self.setBodyState("hidden");
-				if(!!self.scrollTimeout) 
-					window.clearTimeout(self.scrollTimeout);
-				self.scrollTimeout = window.setTimeout(
-					function() { self.isScrolling = false; handleScroll.apply(self); }
-				        , 500);
-				self.scrollPos();
+				self.pendingSync.scroll = true;
+				self.syncDOMAsync();
 			}
 		});
 	this.tHead.onmousedown = function(e) 
@@ -907,7 +899,7 @@ dxSTable.prototype.assignEvents = function()
 			}
 		};
 	if(!$.support.touchable)
-		$(this.dCont).mousedown( function(e) { self.bindKeys(); } );
+		$(this.dCont).on('mousedown', function(e) { self.bindKeys(); } );
 }
 
 dxSTable.prototype.colDrag = function(e) 
@@ -995,109 +987,45 @@ dxSTable.prototype.scrollPos = function()
 	this.scp.innerHTML = escapeHTML("Current Row: " + str);
 }
 
-function handleScroll() 
-{
-	if(!!this.scrollTimeout) 
-		window.clearTimeout(this.scrollTimeout);
-	this.scrollTimeout = null;
-	this.refreshRows(null, true);
-	this.setBodyState("visible");
-	this.scp.style.display = "none";
-}
-
 dxSTable.prototype.getMaxRows = function()
 {
-	return((this.maxRows || this.viewRows<this.maxViewRows) ? 1000000 : Math.ceil(Math.min(this.dBody.clientHeight,this.dCont.clientHeight) / TR_HEIGHT));	
+	return this.maxRows
+		? this.viewRows
+		: Math.ceil(Math.min(this.dBody.clientHeight,this.dCont.clientHeight) / TR_HEIGHT);
 }
 
 dxSTable.prototype.refreshRows = function( height, fromScroll ) 
 {
-	if(this.isScrolling || !this.created) 
-	{
-		return;
-   	}
-
-   	var maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
-	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
-	if(mni + maxRows > this.viewRows) 
-	{
-		mni = this.viewRows - maxRows;
-	}
-	if(mni < 0) 
-	{
-		mni = 0;
-   	}
-	var mxi = mni + maxRows;
-	if((mni==this.mni && mxi==this.mxi) && fromScroll)
+	if (this.isScrolling || !this.created)
 		return;
 
-	this.cancelSort = true;
+	const maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
+	const topRow = Math.max(0, Math.min(this.viewRows - maxRows,
+		Math.floor(this.dBody.scrollTop / TR_HEIGHT)
+	));
+	const extra = this.noDelayingDraw ? 16 : 4;
+	const extraOffset = topRow % extra;
+	const mni = Math.max(0, topRow - extra - extraOffset);
+	const mxi = Math.min(this.viewRows, topRow + maxRows + 2*extra - extraOffset);
+	if (fromScroll && (mni==this.mni && mxi==this.mxi))
+		return;
+
 	this.mni = mni;
 	this.mxi = mxi;
-	var h = (this.viewRows - maxRows) * TR_HEIGHT;
-	var ht = (h<0) ? 0 : mni*TR_HEIGHT;
-	var hb = (h<0) ? 0 : h - ht;
-	this.tpad.style.height = ht + "px";
-	this.bpad.style.height = hb + "px";
-	var tb = this.tBody.tb, vr =- 1, i = 0, c = 0, obj = null;
+	const createRow = (id) => {
+		const r = this.rowdata[id];
+		return this.createRow(r.data, id, r.icon, r.attr);
+	};
+	const viewRows = this.rowIDs
+		.filter(id => this.rowdata[id]?.enabled)
+		.filter((_, index) => index >= mni && index <= mxi)
+		.map(id => $$(id) ?? createRow(id))
 
-	for(i = 0; i < this.rows; i++) 
-	{
-		var id = this.rowIDs[i];
-		var r = this.rowdata[id];
-		if(!$type(r)) 
-			continue;
-		obj = $$(id);
-		if(!r.enabled) 
-		{
-			if( (obj != null) && (obj.parentNode == tb) )
-			{
-				tb.removeChild(obj);
-			}
-			continue;
-		}
-		vr++;
-		if((vr >= mni) && (vr <= mxi)) 
-		{
-			if(!$type(tb.rows[c])) 
-			{
-				if( (obj != null) && (obj.parentNode == tb) )
-				{
-					tb.removeChild(obj);
-            			}
-				else 
-				{
-					obj = this.createRow(r.data, id, r.icon, r.attr);
-				}
-				tb.appendChild(obj);
-         		}
-			else 
-			{
-				if(tb.rows[c].id != id) 
-				{
-					if( (obj != null) && (obj.parentNode == tb) )
-					{
-						tb.removeChild(obj);
-               				}
-					else 
-					{
-						obj = this.createRow(r.data, id, r.icon, r.attr);
-               				}
-					tb.insertBefore(obj, tb.rows[c]);
-            			}
-         		}
-			c++;
-      		}
-		else 
-		{
-			if( (obj != null) && (obj.parentNode == tb) )
-			{
-				tb.removeChild(obj);
-			}
-		}
-   	}
+	this.tpad.style.height = (mni * TR_HEIGHT) + "px";
+	this.tBody.tb.replaceChildren(...viewRows);
+	this.bpad.style.height = ((this.viewRows - mxi) * TR_HEIGHT) + "px";
+
 	this.refreshSelection();
-	this.cancelSort = false;
 	this.calcSize().resizeHack();
 }
 
@@ -1140,197 +1068,148 @@ dxSTable.prototype.selectRow = function(e, row)
 {
 	if(!$.support.touchable)
 		this.bindKeys();
-	var id = row.id;
-	if(!((e.which==3) && (this.rowSel[id] == true))) 
-	{
-		if(e.shiftKey) 
-		{
-			if(this.stSel == null) 
+
+	const targetId = row.id;
+	const rightClick = e.which === 3;
+	if (!(rightClick && this.rowSel[targetId])) {
+		const toggle = e.metaKey;
+		const range = e.shiftKey;
+		const oldSel = this.stSel ?? [];
+		const anchor = oldSel.length ? oldSel[toggle ? oldSel.length-1 : 0] : null;
+		let selection = [];
+
+		if (range && anchor && anchor !== targetId) {
+			// range selection
+			let behindAnchor = false;
+			let behindTarget = false;
+			let reverse = false;
+			for(let i = 0; i < this.rowIDs.length; i++)
 			{
-				this.stSel = id;
-				this.rowSel[id] = true;
-				this.selCount = 1;
-			}
-			else 
-			{
-				this.selCount = 0;
-				var _81 = false, passedCID = false, k = "";
-				for(var i = 0, l = this.rowIDs.length; i < l; i++) 
-				{
-					k = this.rowIDs[i];
-					this.rowSel[k] = false;
-					if((k == this.stSel) || _81) 
-					{
-						if(!passedCID) 
-						{
-							this.rowSel[k] = true;
-							this.selCount++;
-                     				}
-						else 
-						{
-							if((k == this.stSel) || (k == id)) 
-							{
-				                        	this.rowSel[k] = true;
-								this.selCount++;
-							}
-						}
+				const id = this.rowIDs[i];
+				behindAnchor |= anchor === id;
+				behindTarget |= targetId === id;
+				reverse |= behindTarget && !behindAnchor;
+
+				if (
+					(behindAnchor || behindTarget)
+					&& !(toggle && this.rowSel[id])
+					&& this.rowdata[id].enabled
+				) {
+					if (reverse) {
+						selection.unshift(id);
+					} else {
+						selection.push(id);
 					}
-					else 
-					{
-						if((k == id) || passedCID) 
-						{
-							if(!_81) 
-							{
-								this.rowSel[k] = true;
-								this.selCount++;
-							}
-							else 
-							{
-								if((k == this.stSel) || (k == id)) 
-								{
-									this.rowSel[k] = true;
-									this.selCount++;
-                           					}
-                        				}
-                     				}
-                  			}
-					if(!this.rowdata[k].enabled && this.rowSel[k]) 
-					{
-						this.rowSel[k] = false;
-						this.selCount--;
-                  			}
-					if(k == this.stSel) 
-						_81 = true;
-					if(k == id) 
-						passedCID = true;
+				}
+				if (behindAnchor && behindTarget) {
+					break;
 				}
 			}
+		} else {
+			selection = [targetId];
 		}
-		else 
-		{
-			if(e.metaKey) 
-			{
-				this.stSel = id;
-				this.rowSel[id] =!this.rowSel[id];
-				if(this.rowSel[id]) 
-					this.selCount++;
-				else 
-					this.selCount--;
-			}
-			else 
-			{
-				this.stSel = id;
-				this.selCount = 0;
-				for(var k in this.rowSel) 
-				{
-					if(k == id) 
-					{
-						this.rowSel[k] = true;
-						this.selCount++;
-					}
-					else 
-						this.rowSel[k] = false;
-				}
-			}
+
+		if (toggle) {
+			const selSet = new Set(selection);
+			// unselect ids if already selected
+			selection = oldSel.filter(id => !selSet.has(id)).concat(
+				selection.filter(id => !this.rowSel[id])
+			);
 		}
-		if(this.selCount == 0) 
-			this.stSel = null;
-		this.refreshSelection();
+		const fullSelSet = new Set(selection);
+		for (const id in this.rowSel) {
+			this.rowSel[id] = fullSelSet.has(id);
+		}
+		this.selCount = fullSelSet.size;
+		this.stSel = selection;
+		this.markSelectionDirty();
 	}
+
 	if($type(this.onselect) == "function") 
-		this.onselect(e, id);
+		this.onselect(e, targetId);
 	return(false);
+}
+
+dxSTable.prototype.setRowById = function(ids, sId, icon, attr)
+{
+	return (sId in this.rowdata)
+		? Boolean(this.setValuesByIds(sId, ids) + this.setIcon(sId, icon) + this.setAttr(sId, attr))
+		: this.addRowById(ids, sId, icon, attr);
 }
 
 dxSTable.prototype.addRowById = function(ids, sId, icon, attr)
 {
-        var cols = [];
-        for(var i=0; i<this.cols; i++)
-		cols.push(null);
-	for(var i in ids) 
-	{
-		var no = this.getColById(i);
-		if(no>=0)
-			cols[no] = ids[i];
-	}
-	this.addRow(cols, sId, icon, attr);
+	return this.addRow(this.ids.map(id => ids[id] ?? null), sId, icon, attr);
 }
 
-dxSTable.prototype.addRow = function(cols, sId, icon, attr) 
+dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 {
-	if(cols.length != this.cols) 
-		return;
-	if(this.sortTimeout != null) 
+	let validInput = !attr || !('id' in attr) || attr.id === sId;
+	validInput &= cols.length === this.cols;
+	if (!validInput)
 	{
-		window.clearTimeout(this.sortTimeout);
-		this.sortTimeout = null;
+		console.error(`Invalid input to addRow: attr.id: '${attr?.id}' sId: '${sId}' cols: ${cols}`);
+		return false;
 	}
 	this.rowdata[sId] = {"data" : cols, "icon" : icon, "attr" : attr, "enabled" : true, fmtdata: this.format(this,cols.slice(0))};
 	this.rowSel[sId] = false;
 	this.rowIDs.push(sId);
-	var maxRows = this.getMaxRows();
-	if(this.viewRows < maxRows) 
-		this.tBody.tb.appendChild(this.createRow(cols, sId, icon, attr));
+	
 	this.rows++;
 	this.viewRows++;
-	if(this.viewRows > maxRows) 
-		this.bpad.style.height = ((this.viewRows - maxRows) * TR_HEIGHT) + "px";
-	var self = this;
-	if((this.sIndex !=- 1) && !this.noSort)
-		this.sortTimeout = window.setTimeout(function() { self.Sort(); }, 200);
+
+	this.markViewRowsChange(sId, 1);
+	return true;
 }
 
-dxSTable.prototype.createRow = function(cols, sId, icon, attr) 
+dxSTable.prototype.createIconHTML = function(icon)
 {
-	if(!$type(attr)) 
-		attr = [];
-	var tr = $("<tr>").attr( { index: this.rows, title: cols[0] });
-	if(sId != null) 
-		tr.attr("id",sId);
-	var self = this;
-	if(this.colorEvenRows) 
-		tr.addClass( (this.rows & 1) ? "odd" : "even" );
+	return icon == null ? '' : (typeof icon === 'object'
+		? $('<img>').attr({src: icon.src, width: 16, height: 16}).css('background-image', 'none').addClass('stable-icon')
+		: $('<span>').addClass(['stable-icon', icon]))[0].outerHTML;
+}
 
-	tr.mouseclick( function(e) { return(self.selectRow(e, this)); });
-
-	if($type(this.ondblclick) == "function") 
-		tr.dblclick( function(e) { return(self.ondblclick(this)); });
-
-	for(var k in attr) 
-		tr.attr(k, attr[k]);
-	var data = this.rowdata[sId].fmtdata;
-	var s = "";
-	var div;
-	var ret;
-	for(var i = 0; i < this.cols; i++) 
-	{
-		var ind = this.colOrder[i];
-		s+="<td class='stable-"+this.dCont.id+"-col-"+ind+"'";
-		var span1 = "";
-		var span2 = "";
-		if(this.colsdata[i].type==TYPE_PROGRESS)
-		{
-			s+=" rawvalue='"+($type(cols[ind]) ? cols[ind] : "")+"'";
-		        span1 = "<span class='meter-text' style='overflow: visible'>"+escapeHTML(data[ind])+"</span>";
-			div = "<div class='meter-value' style='float: left; background-color: "+
-		 		(new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(data[ind])).getColor()+
-				"; width: "+iv(data[ind])+"%"+
-				"; visibility: "+(iv(data[ind]) ? "visible" : "hidden")+
-				"'>&nbsp;</div>";
-		}
-		else
-			div = "<div>"+((String(data[ind]) == "") ? "&nbsp;" : escapeHTML(data[ind]))+"</div>";
-		if((ind == 0) && (icon != null)) 
-			span2 = "<span class='stable-icon "+icon+"'></span>";
-		if(!this.colsdata[i].enabled && !browser.isIE7x)
-			s+=" style='display: none'";
-		s+=">";
-		s+=span1;
-		s+=span2;
-		s+=div;
-		s+="</td>";
+dxSTable.prototype.createRow = function(cols, sId, icon, attr)
+{
+	const attrs = { id: sId, index: this.rows, title: cols[0] };
+	if (sId == null) {
+		delete attrs['id'];
 	}
-	ret = tr.append(s).get(0);
+	Object.assign(attrs, attr || {});
+	const data = this.rowdata[sId]?.fmtdata || {};
+
+	const ret = document.createElement('tr');
+	ret.className = this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "";
+	for(const [a,v] of Object.entries(attrs)) {
+		const attr_node = document.createAttribute(a);
+		attr_node.value = v;
+		ret.setAttributeNode(attr_node);
+	}
+	ret.innerHTML = [...Array(this.cols).keys()]
+			.map((_,i) => [this.colOrder[i], this.colsdata[i]])
+			.map(([ind, cdat]) => ({
+				td: [
+					`<td class="stable-${this.dCont.id}-col-${ind}"`,
+					Boolean(cdat.enabled || browser.isIE7x) ?	'>' : ' style="display: none">',
+					ind === 0 ? this.createIconHTML(icon) : ''
+				],
+				celldata: data[ind] || '',
+				rawvalue: cols[ind] || '',
+				progress: cdat.type == TYPE_PROGRESS,
+			}))
+			.flatMap(({td, celldata, rawvalue, progress}) => progress
+				? [
+					td[0], ` rawvalue="${rawvalue}"`, ...td.slice(1),
+					'<span class="meter-text" style="overflow: visible">', escapeHTML(celldata), '</span>',
+					'<div class="meter-value" style="', Object.entries(this.progressStyle(celldata)).map(pair => pair.join(': ')).join(';'), '">&nbsp;</div>',
+					'</td>'
+				]
+				: [
+					...td,
+					'<div>', escapeHTML(celldata) || '&nbsp;', '</div>',
+					'</td>'
+				]
+			).join('');
 	if(!browser.isIE7x)
 	{
 		var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
@@ -1342,52 +1221,45 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 
 dxSTable.prototype.removeRow = function(sId) 
 {
-	if(!$type(this.rowdata[sId])) 
+	if(!(sId in this.rowdata))
 		return;
-	if(this.rowdata[sId].enabled) 
-	{
+	if (this.rowdata[sId].enabled)
 		this.viewRows--;
-	}
-	try 
-	{
-		var obj = this.tBody.tb.removeChild($$(sId));
-		$(obj).off();
-	} catch(ex) {}
 	delete this.rowSel[sId];
 	delete this.rowdata[sId];
-	for(var i in this.rowIDs) 
-	{
-		if(this.rowIDs[i] == sId) 
-		{
-			delete this.rowIDs[i];
-			this.rowIDs.splice(i,1);
-			break;
-		}
-	}
+	this.rowIDs.splice(this.rowIDs.indexOf(sId), 1);
 	this.rows--;
-	this.refreshSelection();
+
+	this.markViewRowsChange(sId, 0)
+}
+
+dxSTable.prototype.updateRows = function(rawRowObjs)
+{
+	const rowObjs = Object.fromEntries(
+		Object.entries(rawRowObjs).map(
+			([i,obj]) => [obj.attr?.id || i, obj])
+	);
+	for (const sId of Object.keys(this.rowdata))
+		if (!(sId in rowObjs))
+			this.removeRow(sId);
+	for (const [sId, obj] of Object.entries(rowObjs))
+		this.setRowById(obj, sId, obj.icon, obj.attr);
 }
 
 dxSTable.prototype.clearRows = function() 
 {
-	if(this.created)
-	{
-		var tb = this.tBody.tb;
-		while(tb.firstChild) 
-		{ 
-			var obj = tb.removeChild(tb.firstChild); 
-			$(obj).off();
-		}
-		this.rows = 0;
-		this.viewRows = 0;
-		this.selCount = 0;		
-		this.rowSel = new Array(0);
-		this.rowdata = new Array(0);
-		this.rowIDs = new Array(0);
-		this.bpad.style.height = "0px";
-		this.tpad.style.height = "0px";
-		this.dBody.scrollTop = 0;
-	}
+	this.rows = 0;
+	this.viewRows = 0;
+	this.selCount = 0;
+	this.rowdata = {};
+	this.rowSel = {};
+	this.rowIDs = [];
+
+	delete this.pendingSync.rows;
+	delete this.pendingSync.dirty;
+	delete this.pendingSync.scroll;
+	this.pendingSync.clear = 1;
+	this.syncDOMAsync();
 }
 
 dxSTable.prototype.setAlignment = function()
@@ -1461,15 +1333,21 @@ dxSTable.prototype.setAlignment = function()
 dxSTable.prototype.hideRow = function(sId)
 {
 	if(this.rowdata[sId].enabled)
+	{
 		this.viewRows--;
-	this.rowdata[sId].enabled = false;
+		this.rowdata[sId].enabled = false;
+		this.markViewRowsChange(sId);
+	}
 }
 
 dxSTable.prototype.unhideRow = function(sId)
 {
 	if(!this.rowdata[sId].enabled)
+	{
 		this.viewRows++;
-	this.rowdata[sId].enabled = true;
+		this.rowdata[sId].enabled = true;
+		this.markViewRowsChange(sId);
+	}
 }
 
 dxSTable.prototype.refreshSelection = function() 
@@ -1497,58 +1375,49 @@ dxSTable.prototype.clearSelection = function()
 	for(var k in this.rowSel)
 		this.rowSel[k] = false;
 	this.selCount = 0;
-	this.refreshSelection();
+	this.stSel = [];
+	this.markSelectionDirty();
+}
+
+dxSTable.prototype.correctSelection = function()
+{
+	this.selCount = 0;
+	for(var k in this.rowSel) 
+	{
+		if(this.rowdata[k].enabled && this.rowSel[k])
+		{
+			this.selCount++;
+		}
+	}
 }
 
 dxSTable.prototype.fillSelection = function() 
 {
-	this.selCount = 0;
+	this.stSel = [];
 	for(var k in this.rowSel) 
 		if(this.rowdata[k].enabled)
 		{
 			this.rowSel[k] = true;
-			this.selCount++;
+			this.stSel.push(k);
 		}
-	this.refreshSelection();
-}
-
-dxSTable.prototype.getCache = function(col)
-{
-	var a = new Array(0);
-	if(this.tBody)
-	{
-		for(var k in this.rowdata)
-			a.push( {"key" : k, "v" : this.getValue(this.rowdata[k], col), "e" : this.rowdata[k]} );
-		this.rowdata = [];
-	}
-	return(a);
-}
-
-dxSTable.prototype.clearCache = function(a)
-{
-	var l = a.length;
-	for(var i = 0; i < l; i++)
-	{
-		a[i].v = null;
-		a[i].e = null;
-		a[i] = null;
-	}
+	this.selCount = this.stSel.length;
+	this.markSelectionDirty();
 }
 
 dxSTable.prototype.getColOrder = function(col)
 {
-	for(var i = 0; i < this.cols; i++)
-		if(this.colOrder[i] == col)
-			return(i);
-	return(-1);
+	return this.colOrder.indexOf(col);
 }
+
 
 dxSTable.prototype.getColById = function(id)
 {
-        for(var i = 0; i < this.ids.length; i++)
-        	if(this.ids[i]==id)
-			return(i);
-	return(-1);
+	return this.ids.indexOf(id);
+}
+
+dxSTable.prototype.getColNoById = function(id)
+{
+	return this.getColOrder(this.getColById(id));
 }
 
 dxSTable.prototype.getIdByCol = function(col)
@@ -1575,6 +1444,20 @@ dxSTable.prototype.getValue = function(row, col)
 dxSTable.prototype.getValueById = function(row, id)
 {
 	return(this.getRawValue(row, this.getColById(id)));
+}
+
+dxSTable.prototype.getAllEnabledValuesById = function(id)
+{
+	const col = this.getColById(id);
+	return this.rowIDs
+		.map(rowId => this.rowdata[rowId])
+		.filter(row => row.enabled)
+		.map(row => row.data[col]);
+}
+
+dxSTable.prototype.getSelected = function()
+{
+	return this.rowIDs.filter(row => this.rowSel[row]);
 }
 
 dxSTable.prototype.getRawValue = function(row, col)
@@ -1613,51 +1496,267 @@ dxSTable.prototype.setValues = function(row,arr)
 	return(ret);
 }
 
+dxSTable.prototype.setValuesByIds = function(row, rowObj)
+{
+	return Object.entries(this.ids)
+		.filter(([_, propName]) => propName in rowObj)
+		.map(([col, propName]) => this.setValue(row, col, rowObj[propName]))
+		.some(change => change);
+}
+
 dxSTable.prototype.setValueById = function(row, id, val)
 {
 	return(this.setValue(row, this.getColById(id), val));
 }
 
+dxSTable.prototype.progressStyle = function(val)
+{
+  const nval = iv(val);
+  return {
+    float: 'left',
+    width: `${nval}%`,
+    'background-color': new RGBackground()
+      .setGradient(this.prgStartColor, this.prgEndColor, parseFloat(val))
+      .getColor(),
+    visibility: nval ? 'visible' : 'hidden',
+  };
+}
+
 dxSTable.prototype.setValue = function(row, col, val)
 {
-	if((col>=0) && this.rowdata[row])
+	const rdata = this.rowdata[row];
+	if((col>=0) && rdata &&
+		(typeof val === 'object' || rdata.data[col] !== val))
 	{
-		this.rowdata[row].data[col] = val;
-		var r = $$(row);
-		var rawvalue = val;
-		var arr = [];
+		rdata.data[col] = val;
+		let arr = [];
 		arr[col] = val;
-		val = this.format(this,arr)[col];
-
-		if(this.rowdata[row].fmtdata[col] != val)
+		const fmtVal = this.format(this,arr)[col];
+		const fmtdata = rdata.fmtdata;
+		if(fmtdata[col] != fmtVal)
 		{
-			this.rowdata[row].fmtdata[col] = val;
-        		if(r)
-        		{
-	        		var c = this.getColOrder(col);
-				var td = r.cells[c];
-			
-			        if(td)
-			        {
-					if(this.colsdata[c].type==TYPE_PROGRESS)
-					{
-						$(td).attr("rawvalue",rawvalue);
-						td.lastChild.style.width = iv(val)+"%";
-						td.lastChild.style.backgroundColor = (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,parseFloat(val)).getColor();
-						if(!iv(val))
-							$(td.lastChild).css({visibility: "hidden"});
-						else
-							$(td.lastChild).css({visibility: "visible"});
-						td.firstChild.innerHTML = escapeHTML(val);
-					}
-					else
-						td.lastChild.innerHTML = escapeHTML(val);
-				}
-			}					
-			return(true);
+			fmtdata[col] = fmtVal;
+			this.markRowDirty(row, 'col', col);
 		}
+		return(true);
 	}
 	return(false);
+}
+
+dxSTable.prototype.markRowDirty = function(row, fieldName, mark = 'm')
+{
+	const dirtyRows = this.pendingSync.dirty ?? {};
+	const dirtyRow = dirtyRows[row] ?? {};
+	const dirtyField = dirtyRow[fieldName] ?? {};
+	dirtyField[mark] = 1;
+	dirtyRow[fieldName] = dirtyField;
+	dirtyRows[row] = dirtyRow;
+	this.pendingSync.dirty = dirtyRows;
+	this.syncDOMAsync();
+}
+
+dxSTable.prototype.markViewRowsChange = function(sId, needsSort)
+{
+	this.pendingSync.prows = this.pendingSync.prows ?? {};
+	const prev = this.pendingSync.prows[sId] ?? 0;
+	this.pendingSync.prows[sId] = needsSort === undefined ? prev : needsSort;
+	this.syncDOMAsync();
+}
+
+dxSTable.prototype.markSelectionDirty = function()
+{
+	this.pendingSync.dirtySelection = true;
+	this.syncDOMAsync();
+}
+
+dxSTable.prototype.syncDOM = function()
+{
+	if (!this.created || !this.dCont)
+		return;
+	const p = this.pendingSync;
+	this.pendingSync = {};
+	if (p.clear)
+	{
+		this.bpad.style.height = "0px";
+		this.tpad.style.height = "0px";
+		this.dBody.scrollTop = 0;
+		$(this.tBody.tb).empty();
+	} else if ('scrollTo' in p) {
+		this.dBody.scrollTop = p.scrollTo;
+	}
+
+	const dirtyRows = !p.clear && p.dirty || {};
+
+	for (const [row, marks] of Object.entries(dirtyRows)) {
+		const tr = $$(row);
+		const dataRow = this.rowdata[row];
+		if(tr && dataRow)
+		{
+			// update attributes
+			if ('attrRemove' in marks)
+				for (const name of tr.getAttributeNames())
+					if (name in marks.attrRemove)
+						tr.removeAttribute(name);
+			if ('attrSet' in marks)
+				for (const [name, attr] of Object.entries(dataRow.attr || {}))
+					if (name in marks.attrSet)
+						tr.setAttribute(name, attr);
+
+			// update icon
+			if ('icon' in marks)
+			{
+				const icon = dataRow.icon;
+				const td = tr.cells[this.getColOrder(0)];
+				if (td.firstChild.classList.contains('stable-icon'))
+					td.firstChild.remove();
+				if (icon !== null)
+					td.innerHTML = this.createIconHTML(icon) + td.innerHTML;
+			}
+
+			// update cols
+			for (const colStr of Object.keys(marks.col || {}))
+			{
+				const col = Number.parseInt(colStr);
+				const c = this.getColOrder(col);
+				const td = tr.cells[c];
+				if(td)
+				{
+					const fmtVal = dataRow.fmtdata[col];
+					let textEl = td.lastChild;
+					if(this.colsdata[c].type==TYPE_PROGRESS)
+					{
+						$(td).attr('rawvalue', dataRow.data[col])
+							.children('.meter-value')
+							.css(this.progressStyle(fmtVal));
+						textEl = td.firstChild;
+					}
+					$(textEl).text(fmtVal);
+				}
+			}
+		}
+	}
+
+	const pRows = Object.entries(p.prows || {});
+	const needsRefresh = pRows.length;
+	const sortCols = [this.sortId, this.sortId2]
+		.map(id => this.getColById(id))
+		.filter(col => col >= 0);
+	const needsSort = p.clear || pRows.some(([_, sort]) => sort) || Object.values(dirtyRows)
+		.some(marks => ('col' in marks) && sortCols.some(col => col in marks.col));
+	const onlyNeedsScroll = p.scroll && !needsSort && !needsRefresh;
+	const wantsCustomRefresh = p.resizeHeight || onlyNeedsScroll;
+	const sortRefreshed = !this.noSort && needsSort && /* Sort returns 0 on success */ !this.Sort();
+
+	if (wantsCustomRefresh)
+	{
+		if (p.resizeHeight)
+			this.dCont.style.height = p.resizeHeight + "px";
+		if (p.resizeWidth)
+			this.dCont.style.width = p.resizeWidth + "px";
+
+		this.refreshRows(p.resizeHeight, onlyNeedsScroll);
+	}
+	else if (needsRefresh && !sortRefreshed)
+	{
+		this.refreshRows();
+	}
+	else if (p.dirtySelection && !needsRefresh)
+	{
+		this.refreshSelection();
+	}
+
+	if (p.scroll)
+	{
+		if (this.isScrolling)
+		{
+			this.setBodyState("hidden");
+			this.scrollPos();
+		}
+		else
+		{
+			this.setBodyState("visible");
+			this.scp.style.display = "none";
+		}
+	}
+}
+
+
+
+dxSTable.prototype.syncDOMAsync = function()
+{
+	const syncer = this.syncDOMHandlers;
+	const th = syncer.throttle;
+	const dh = syncer.debounce;
+	const stop = (handler) =>
+	{
+		if (handler.timeoutId !== 0)
+		{
+			clearTimeout(handler.timeoutId);
+			handler.timeoutId = 0;
+		}
+	};
+	const reqAFrame = () =>
+	{
+		stop(th);
+		stop(dh);
+		dh.startTime = -1;
+		if (syncer.reqAFrameId === 0)
+		{
+			syncer.reqAFrameId = window.requestAnimationFrame(() => {
+				syncer.reqAFrameId = 0;
+				this.syncDOM();
+			});
+		}
+	};
+	const start = (handler, func, delayMs) =>
+	{
+		handler.timeoutId = setTimeout(() => {
+			handler.timeoutId = 0;
+			func();
+		}, delayMs);
+	};
+	if (this.pendingSync.scroll)
+	{
+		// immediately react to user scroll
+		reqAFrame();
+	}
+	else
+	{
+		// debounce other DOM updates
+		// if not lazy we immediately react to the first event
+		if (!syncer.lazy && dh.timeoutId === 0 && th.timeoutId === 0)
+			reqAFrame();
+		if (dh.timeoutId === 0)
+		{
+			// note that new Date().getTime() is much faster than clearTimeout()/setTimeout()
+			const updateDebounce = () =>
+			{
+				if (dh.startTime !== -1)
+				{
+					const remainingMs = dh.delayMs - (dh.startTime - new Date().getTime());
+					if (remainingMs > 0)
+						start(dh, updateDebounce, remainingMs);
+					else
+						reqAFrame()
+				}
+			};
+			dh.startTime = new Date().getTime();
+			updateDebounce();
+		}
+		if (th.timeoutId === 0)
+		{
+			// run throttled DOM update in case debounce takes too long to settle
+			start(th, reqAFrame, th.delayMs);
+		}
+	}
+	// update debounce startTime
+	if (dh.startTime !== -1)
+		dh.startTime = new Date().getTime();
+}
+
+dxSTable.prototype.setLazy = function(lazy)
+{
+	this.syncDOMHandlers.throttle.lazy = Boolean(lazy);
 }
 
 dxSTable.prototype.getIcon = function(row)
@@ -1667,15 +1766,15 @@ dxSTable.prototype.getIcon = function(row)
 
 dxSTable.prototype.setIcon = function(row, icon) 
 {
-	if(this.rowdata[row].icon != icon)
+	const dataRow = this.rowdata[row];
+	const oldIconIsImg = Boolean(dataRow.icon?.src);
+	const newIconIsImg = Boolean(icon?.src);
+	if(newIconIsImg != oldIconIsImg ||
+		(newIconIsImg && dataRow.icon.src !== icon.src) ||
+		(!oldIconIsImg && dataRow.icon !== icon))
 	{
-		this.rowdata[row].icon = icon;
-		var r = $$(row);
-		if(r == null) 
-			return(false);
-		var td = r.cells[this.getColOrder(0)];
-
-		td.firstChild.className = (icon) ? "stable-icon " + icon : "";
+		dataRow.icon = icon;
+		this.markRowDirty(row, 'icon');
 		return(true);
 	}
 	return(false);
@@ -1683,34 +1782,38 @@ dxSTable.prototype.setIcon = function(row, icon)
 
 dxSTable.prototype.setAttr = function(row, attr)
 {
-        if(($type(attr)=="object") || ($type(attr)=="array"))
-        {
-		if(!this.rowdata[row].attr)
-			this.rowdata[row].attr = {};
-		for(var name in attr) 
-			this.rowdata[row].attr[name] = attr[name];
-		var r = $$(row);
-		if(r)
-			for(var name in attr) 
-				r.setAttribute(name, attr[name]);
+	// set attribute of row
+	const attrEntries = Object.entries(attr || {})
+	const dataRow = this.rowdata[row];
+	if(dataRow && attrEntries.some(([name, val]) => dataRow[name] !== val))
+	{
+		dataRow.attr = dataRow.attr ?? {};
+		// attributes are only removed if val === undefined
+		for (const name of Object.keys(dataRow.attr))
+			if ((name in attr) && attr[name] === undefined)
+				delete dataRow.attr[name];
+		for (const [name, value] of attrEntries)
+		{
+			const removed = value === undefined;
+			if (!removed)
+				dataRow.attr[name] = String(value);
+			this.markRowDirty(row, removed ? 'attrRemove' : 'attrSet', name);
+		}
+		return true;
 	}
+	return false;
 }
 
 dxSTable.prototype.getAttr = function(row, attrName)
 {
-	return(this.rowdata[row].attr ? this.rowdata[row].attr[attrName] : null);
+	return(this.rowdata[row]?.attr ? this.rowdata[row].attr[attrName] : null);
 }
 
 dxSTable.prototype.resize = function(w, h) 
 {
-	if(this.dCont)
-	{
-		if(w) 
-			this.dCont.style.width = w + "px";
-		if(h) 
-			this.dCont.style.height = h + "px";
-		this.refreshRows(h);
-	}
+	this.pendingSync.resizeWidth = w;
+	this.pendingSync.resizeHeight = h;
+	this.syncDOMAsync();
 }
 
 dxSTable.prototype.isColumnEnabled = function(i) 
@@ -1739,7 +1842,7 @@ dxSTable.prototype.getFirstSelected = function()
 
 dxSTable.prototype.scrollTo = function(value) 
 {
-	var old = this.dBody.scrollTop;
-	this.dBody.scrollTop = value;
-	return(old);
+	this.pendingSync.scrollTo = value;
+	this.syncDOMAsync();
+	return 0;
 }

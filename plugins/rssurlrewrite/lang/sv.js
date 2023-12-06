@@ -3,7 +3,7 @@
  *
  * Swedish language file.
  *
- * Author: Magnus Holm (holmen@brasse.se) 
+ * Author: Magnus Holm (holmen@brasse.se)
  */
 
  theUILang.rssNewRule		= "Ny regel";
@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Regelhanterare";
  theUILang.rssAddRule		= "Lägg till";
  theUILang.rssDelRule		= "Ta bort";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Regelinställningar";
  theUILang.rssSrcHref		= "Om URL för torrentnedladdning passar mönster";
  theUILang.rssSrcGuid		= "Om URL i torrentbeskrivning passar mönster";

@@ -8,5 +8,5 @@
 #scnext { width: 40px }
 #sclast { width: 40px }
 
-.scframe_cont { overflow: auto; background-color: black }
+.scframe_cont { overflow: auto; background-color: black; margin: 0 auto; }
 #st_screenshots { overflow: auto }

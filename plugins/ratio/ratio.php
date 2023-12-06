@@ -1,9 +1,9 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
-require_once( $rootPath.'/php/cache.php');
-require_once( $rootPath.'/php/settings.php');
-eval(getPluginConf('ratio'));
+require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/settings.php" );
+eval(FileUtil::getPluginConf('ratio'));
 
 @define('RAT_STOP',0);
 @define('RAT_STOP_AND_REMOVE',1);
@@ -15,30 +15,50 @@ eval(getPluginConf('ratio'));
 class rRatio
 {
 	public $hash = "ratio.dat";
+	public $modified = false;
 	public $rat = array();
 	public $default = 0;
+	private $version = 3;
 
 	static public function load()
 	{
 		$cache = new rCache();
 		$rt = new rRatio();
 		if(!$cache->get($rt))
+		{
 			$rt->fillArray();
+			$rt->version = 4;
+			$cache->set($rt);
+		}
+		elseif ($rt->version != 4)
+		{
+			$rt->migrate();
+			$rt->pad();
+			$rt->version = 4;
+			$cache->set($rt);
+		}
 		else
 			$rt->pad();
 		return($rt);
+	}
+	private function migrate()
+	{
+		for($i=0; $i<count($this->rat); $i++)
+		{
+			$this->rat[$i]["upload"] /= 1024;
+		}		
 	}
 	public function pad()
 	{
 	        for($i=0; $i<count($this->rat); $i++)
 	        {
 	        	$rat = &$this->rat[$i];
-	        	$rat["min"] = iclamp($rat["min"]);
-	        	$rat["max"] = iclamp($rat["max"]);
-	        	$rat["upload"] = iclamp($rat["upload"],0,8796093022207);
+	        	$rat["min"] = Math::iclamp($rat["min"]);
+	        	$rat["max"] = Math::iclamp($rat["max"]);
+	        	$rat["upload"] = $rat["upload"] == 0 ? 0 : Math::fRoundClamp($rat["upload"]);
 	        }
 		for($i=count($this->rat); $i<MAX_RATIO; $i++)
-			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>20, "name"=>"ratio".$i, "time"=>-1 );
+			$this->rat[] = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>0.1, "name"=>"ratio".$i, "time"=>-1 );
 	}
 	public function fillArray()
 	{
@@ -104,8 +124,8 @@ class rRatio
 	{
 		global $checkTimesInterval;
 		$req =  new rXMLRPCRequest( $this->hasTimes() ? 
-			rTorrentSettings::get()->getScheduleCommand("ratio",$checkTimesInterval,
-				getCmd('execute').'={sh,-c,'.escapeshellarg(getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(getUser()).' & exit 0}' ) :
+			rTorrentSettings::get()->getAbsScheduleCommand("ratio",$checkTimesInterval*60,
+				getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(User::getUser()).' &}' ) :
 			rTorrentSettings::get()->getRemoveScheduleCommand("ratio") );
 		return($req->success());
 	}
@@ -156,10 +176,10 @@ class rRatio
 					$req->addCommand(new rXMLRPCCommand("group.insert_persistent_view", array("", "rat_".$i)));
 				if($this->isCorrect($i))
 				{
-					$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.enable",array("")));
-					$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.min.set",$rat["min"]));
-					$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.max.set",$rat["max"]));
-					$req->addCommand(new rXMLRPCCommand("group.rat_".$i.".ratio.upload.set",floatval($rat["upload"]*1024*1024)));
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.enable',array("")) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.min.set',$rat["min"]) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.max.set',$rat["max"]) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.upload.set',floatval($rat["upload"]*1024*1024*1024)) );
 					switch($rat["action"])
 					{
 						case RAT_STOP:
@@ -204,10 +224,10 @@ class rRatio
 			}
 
 			if($this->isCorrect($this->default-1))
-				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.getUser(), 
+				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.User::getUser(), 
 					$insCmd.getCmd('view.set_visible=').'rat_'.($this->default-1))));
 			else
-				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.getUser(), getCmd('cat='))));
+				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.User::getUser(), getCmd('cat='))));
 
 			return($req->run() && !$req->fault);
 		}
@@ -225,15 +245,18 @@ class rRatio
 		$this->default = 0;
 		for($i = 0; $i<MAX_RATIO; $i++)
 		{
-			$arr = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>20, "name"=>"", "time"=>-1 );
+			$arr = array( "action"=>RAT_STOP, "min"=>100, "max"=>300, "upload"=>0.1, "name"=>"", "time"=>-1 );
 			if(isset($_REQUEST['rat_action'.$i]))
 				$arr["action"] = intval($_REQUEST['rat_action'.$i]);
 			if(isset($_REQUEST['rat_min'.$i]))
-			        $arr["min"] = iclamp($_REQUEST['rat_min'.$i]);
+			        $arr["min"] = Math::iclamp($_REQUEST['rat_min'.$i]);
 			if(isset($_REQUEST['rat_max'.$i]))
-			        $arr["max"] = iclamp($_REQUEST['rat_max'.$i]);
+			        $arr["max"] = Math::iclamp($_REQUEST['rat_max'.$i]);
 			if(isset($_REQUEST['rat_upload'.$i]))
-			        $arr["upload"] = iclamp($_REQUEST['rat_upload'.$i],0,8796093022207);
+			{        
+				$upload = $_REQUEST['rat_upload'.$i];
+				$arr["upload"] = $upload == 0 ? 0 : Math::fRoundClamp($upload);
+			}
 			if(isset($_REQUEST['rat_time'.$i]))
 			        $arr["time"] = (is_numeric($_REQUEST['rat_time'.$i]) ? floatval($_REQUEST['rat_time'.$i]) : -1);
 			if(isset($_REQUEST['rat_name'.$i]))
@@ -245,7 +268,7 @@ class rRatio
 			$this->rat[] = $arr;
 		}
 		if(isset($_REQUEST['default']))
-			$this->default = intval($_REQUEST['default']);
+			$this->default = floatval($_REQUEST['default']);
                 $this->store();
 		$this->flush();
 		$this->setHandlers();
@@ -257,7 +280,7 @@ class rRatio
 		{
 			$tm = (array_key_exists("time",$item) ? $item["time"] : -1);
 			$ret.="{ action: ".$item["action"].", min: ".$item["min"].", max: ".$item["max"].
-				", time: ".$tm.", upload: ".$item["upload"].", name : ".quoteAndDeslashEachItem($item["name"])." },";
+				", time: ".$tm.", upload: ".$item["upload"].", name : ".Utility::quoteAndDeslashEachItem($item["name"])." },";
 		}
 		$len = strlen($ret);
 		if($ret[$len-1]==',')

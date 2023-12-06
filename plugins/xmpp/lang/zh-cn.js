@@ -6,16 +6,16 @@
  * Author: 
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "插件将不会工作.";
 
- theUILang.xmpp 			= "XMPP";
- theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Recipient:";
- theUILang.xmppMessage			= "Message:";
- theUILang.xmppJabberPasswd		= "Password:";
- theUILang.xmppAdvancedSettings		= "Advanced:";
- theUILang.xmppJabberHost		= "Host:";
- theUILang.xmppJabberPort		= "Port";
- theUILang.xmppUseEncryption		= "Use encryption";
+ theUILang.xmpp				= "XMPP";
+ theUILang.xmppJabberJID		= "JID:";
+ theUILang.xmppJabberFor		= "接收者:";
+ theUILang.xmppMessage			= "信息:";
+ theUILang.xmppJabberPasswd		= "密码:";
+ theUILang.xmppAdvancedSettings		= "高级:";
+ theUILang.xmppJabberHost		= "主机";
+ theUILang.xmppJabberPort		= "端口";
+ theUILang.xmppUseEncryption		= "使用加密";
 
 thePlugins.get("xmpp").langLoaded();

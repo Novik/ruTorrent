@@ -5,7 +5,7 @@
  *
  * Initial Author: art.spb, December 2009.
  *
- * Author: Magnus Holm (holmen@brasse.se) 
+ * Author: Magnus Holm (holmen@brasse.se)
  */
 
  theUILang.peerComment		= "Lägg till kommentar";
@@ -14,7 +14,6 @@
  theUILang.countryName		= "Land";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Förenade Arabemiraten";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albanien";
  theUILang.country[ "am" ] = "Armenien";
- theUILang.country[ "an" ] = "Nederländska Antillerna";
  theUILang.country[ "ao" ] = "Angola";
  theUILang.country[ "aq" ] = "Antarktis";
  theUILang.country[ "ar" ] = "Argentina";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "Bahrain";
  theUILang.country[ "bi" ] = "Burundi";
  theUILang.country[ "bj" ] = "Benin";
+ theUILang.country[ "bl" ] = "Saint-Barthélemy";
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
@@ -156,9 +155,10 @@
  theUILang.country[ "mc" ] = "Monaco";
  theUILang.country[ "md" ] = "Moldavien";
  theUILang.country[ "me" ] = "Montenegro";
+ theUILang.country[ "mf" ] = "Saint-Martin";
  theUILang.country[ "mg" ] = "Madagaskar";
  theUILang.country[ "mh" ] = "Marshallöarna";
- theUILang.country[ "mk" ] = "Makedonien";
+ theUILang.country[ "mk" ] = "Nordmakedonien";
  theUILang.country[ "ml" ] = "Mali";
  theUILang.country[ "mm" ] = "Myanmar";
  theUILang.country[ "mn" ] = "Mongoliet";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "Surinam";
  theUILang.country[ "ss" ] = "Sydsudan";
  theUILang.country[ "st" ] = "Sao Tomé och Principe";
- theUILang.country[ "su" ] = "Ryssland";
  theUILang.country[ "sv" ] = "El Salvador";
  theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syrien";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tanzania";
  theUILang.country[ "ua" ] = "Ukraina";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "Storbritannien";
+ theUILang.country[ "um" ] = "Förenta staternas mindre öar i Oceanien och Västindien";
  theUILang.country[ "un" ] = "Okänd";
  theUILang.country[ "us" ] = "Förenta staterna";
  theUILang.country[ "uy" ] = "Uruguay";

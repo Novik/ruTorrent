@@ -1,11 +1,12 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/cache.php" );
-eval(getPluginConf('cpuload'));
+eval(FileUtil::getPluginConf('cpuload'));
 
 class rCPU
 {
 	public $hash = "cpu.dat";
+	public $modified = false;
 	public $count = 1;
 
 	static public function load()

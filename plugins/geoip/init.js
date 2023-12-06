@@ -60,7 +60,7 @@ var thePeersCache =
 };
 
 plugin.config = theWebUI.config;
-theWebUI.config = function(data)
+theWebUI.config = function()
 {
 	if(plugin.canChangeColumns())
 	{
@@ -90,7 +90,7 @@ theWebUI.config = function(data)
 		if(plugin.retrieveComments)
 			this.tables.prs.columns.push({text : 'Comment', width : '200px', id: 'comment', type : TYPE_STRING});
 	}
-	plugin.config.call(this,data);
+	plugin.config.call(this);
 	if((plugin.retrieveCountry || plugin.retrieveComments) && plugin.canChangeColumns())
 		plugin.done();
 }
@@ -147,14 +147,17 @@ if(plugin.canChangeColumns())
 			table.oldFilesSortAlphaNumeric = table.sortAlphaNumeric;
 			table.sortAlphaNumeric = function(x, y) 
 			{
-				if(this.getIdByCol(this.sIndex)=="country")
+				if(this.sortId === "country")
 				{
-				        var newX = { key: x.k, v: x.v, e: x.e };
-			        	var newY = { key: y.k, v: y.v, e: y.e };		
-					if(theUILang.country[x.v])
-						newX.v = theUILang.country[x.v];
-					if(theUILang.country[y.v])
-						newY.v = theUILang.country[y.v];
+				        var newX = { key: x.key, v: x.v, e: x.e };
+			        	var newY = { key: y.key, v: y.v, e: y.e };
+
+					var countryName = theUILang.country[x.v.substr(0,2)];
+					if(countryName)
+						newX.v = countryName+x.v.substr(2);
+					countryName = theUILang.country[y.v.substr(0,2)];
+					if(countryName)
+						newY.v = countryName+y.v.substr(2);
 					return(this.oldFilesSortAlphaNumeric(newX,newY));
 				}
 				return(this.oldFilesSortAlphaNumeric(x,y));
@@ -170,15 +173,20 @@ if(plugin.canChangeMenu() && plugin.retrieveComments)
 	plugin.createPeerMenu = theWebUI.createPeerMenu;
    	theWebUI.createPeerMenu = function(e, id)
 	{
-		if(plugin.createPeerMenu.call(theWebUI,e,id))
+		if(plugin.createPeerMenu.call(theWebUI, e, id))
 		{
-			var el = theContextMenu.get( theUILang.peerAdd );
-			if(el)
+			if(plugin.enabled && plugin.allStuffLoaded)
 			{
-				theContextMenu.add(el,[theUILang.peerComment+'...', 
-					this.isTorrentCommandEnabled('commentpeer',this.dID) && (theWebUI.getTable("prs").selCount==1) ? "theDialogManager.show('cadd')" : null]);
-				return(true);
+				var el = theContextMenu.get(theUILang.peerAdd);
+				var selCount = theWebUI.getTable("prs").selCount;
+				if(el && selCount)
+				{
+					theContextMenu.add(el, [theUILang.peerComment+'...',
+						(this.isTorrentCommandEnabled('commentpeer',theWebUI.dID) && (selCount==1)) ? 
+							"theDialogManager.show('cadd')" : null]);
+				}
 			}
+			return(true);
 		}
 		return(false);
    	}
@@ -226,5 +234,5 @@ plugin.onRemove = function()
         if(plugin.retrieveCountry)
 		theWebUI.getTable("prs").removeColumnById("country");
         if(plugin.retrieveComments)
-		theWebUI.getTable("prs").removeColumnById("country");
+		theWebUI.getTable("prs").removeColumnById("comment");
 }

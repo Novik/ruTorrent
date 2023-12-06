@@ -18,25 +18,35 @@ class rStat
 
 	public function __construct( $prefix )
 	{
-		$this->fname = getSettingsPath().'/trafic/'.$prefix;
+		$this->fname = FileUtil::getSettingsPath().'/trafic/'.$prefix;
 		if($file=@fopen($this->fname,"r"))
 		{
-			$this->hourUp = fgetcsv($file);
-			$this->hourDown = fgetcsv($file);
-			$this->hourHitTimes = fgetcsv($file);
-			$this->monthUp = fgetcsv($file);
-			$this->monthDown = fgetcsv($file);
-			$this->monthHitTimes = fgetcsv($file);
-			$this->yearUp = fgetcsv($file);
-			$this->yearDown = fgetcsv($file);
-			$this->yearHitTimes = fgetcsv($file);
+			$hourUp = fgetcsv($file);
+			$hourDown = fgetcsv($file);
+			$hourHitTimes = fgetcsv($file);
+			$monthUp = fgetcsv($file);
+			$monthDown = fgetcsv($file);
+			$monthHitTimes = fgetcsv($file);
+			$yearUp = fgetcsv($file);
+			$yearDown = fgetcsv($file);
+			$yearHitTimes = fgetcsv($file);
 			fclose($file);
+
+			if ($hourUp) $this->hourUp = $hourUp;
+			if ($hourDown) $this->hourDown = $hourDown;
+			if ($hourHitTimes) $this->hourHitTimes = $hourHitTimes;
+			if ($monthUp) $this->monthUp = $monthUp;
+			if ($monthDown) $this->monthDown = $monthDown;
+			if ($monthHitTimes) $this->monthHitTimes = $monthHitTimes;
+			if ($yearUp) $this->yearUp = $yearUp;
+			if ($yearDown) $this->yearDown = $yearDown;
+			if ($yearHitTimes) $this->yearHitTimes = $yearHitTimes;
 		}
 	}
 	public function flush()
 	{
 		global $profileMask;
-		$randName = uniqid(getTempDirectory()."rutorrent-trafic-");
+		$randName = FileUtil::getTempFilename('trafic');
 		if($file=@fopen($randName,"w"))
 		{
 			if( (fputcsv($file,$this->hourUp)!==false) &&
@@ -48,7 +58,7 @@ class rStat
 				(fputcsv($file,$this->yearUp)!==false) &&
 				(fputcsv($file,$this->yearDown)!==false) &&
 				(fputcsv($file,$this->yearHitTimes)!==false))
-			{				
+			{
 				if( fclose($file)!==false )
 				{
 					rename( $randName, $this->fname );
@@ -57,7 +67,7 @@ class rStat
 				}
 			}
 			fclose($file);
-			unlink($randName);			
+			unlink($randName);
 		}
 		return(false);
 	}
@@ -107,7 +117,7 @@ class rStat
 	static protected function getTrackers()
 	{
 		$files = array();
-		$dir = getSettingsPath().'/trafic/trackers';
+		$dir = FileUtil::getSettingsPath().'/trafic/trackers';
 		$dh = @opendir($dir);
 		if($dh)
 		{
@@ -119,6 +129,7 @@ class rStat
 					$files[] = basename($path, ".csv");
 				}
 			}
+			closedir($dh);
 		}
 		sort($files,SORT_STRING);
 		return( $files );
@@ -144,7 +155,7 @@ class rStat
 			"labels"	=> $this->monthHitTimes,
 			"mode"	 	=> 'month',
 			"trackers"	=> self::getTrackers()
-		));	
+		));
 	}
         public function getYear()
 	{
@@ -155,7 +166,7 @@ class rStat
 			"labels"	=> $this->yearHitTimes,
 			"mode"		=> 'year',
 			"trackers"	=> self::getTrackers()
-		));	
+		));
 	}
 	public function getRatios( $time )
 	{

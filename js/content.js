@@ -19,10 +19,12 @@ function makeContent()
 	$("#mnu_go").attr("title",theUILang.mnu_go);
 	$("#mnu_help").attr("title",theUILang.mnu_help+"...");
 
-	$("#query").keydown( function(e) 
+	$("#query").on('keydown', function(e)
 	{
-		if(e.keyCode == 13) 
+		if(e.keyCode == 13)
+		{
 			theSearchEngines.run();
+		}
 	});
 
 	new DnD("HDivider",
@@ -33,11 +35,11 @@ function makeContent()
 		maskId : "dividerDrag",
 		onStart : function(e) { return(theWebUI.settings["webui.show_cats"]); },
 		onRun : function(e) { $(document.body).css( "cursor", "e-resize" ); },
-		onFinish : function(e) 
+		onFinish : function(e)
 		{
 		        var self = e.data;
 			var w = self.mask.offset().left-2;
-			theWebUI.resizeLeft(w,null);	
+			theWebUI.resizeLeft(w,null);
 			w = $(window).width()-w-11;
 			theWebUI.resizeTop(w,null);
       		        theWebUI.resizeBottom(w,null);
@@ -54,7 +56,7 @@ function makeContent()
 		maskId : "dividerDrag",
 		onStart : function(e) { return(theWebUI.settings["webui.show_dets"]); },
 		onRun : function(e) { $(document.body).css( "cursor", "n-resize" ); },
-		onFinish : function(e) 
+		onFinish : function(e)
 		{
 		        var self = e.data;
 		        var offs = self.mask.offset();
@@ -65,7 +67,7 @@ function makeContent()
 		}
 	});
 
-	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).load(function()
+	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function()
 	{
 		$("#torrent_file").val("");
 		$("#add_button").prop("disabled",false);
@@ -75,7 +77,7 @@ function makeContent()
 			try { var txt = d.body.textContent ? d.body.textContent : d.body.innerText; eval(txt); } catch(e) {}
 		}
 	}));
-	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).load(function()
+	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function()
 	{
 		$("#url").val("");
 		var d = (this.contentDocument || this.contentWindow.document);
@@ -100,12 +102,12 @@ function makeContent()
 				'<span id="fast_resume_option">'+
 				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
 				'</span>'+
-				'<span id="randomize_hash_option">'+				
+				'<span id="randomize_hash_option">'+
 				'<label>&nbsp;</label><input type="checkbox" name="randomize_hash" id="randomize_hash"/>'+theUILang.doRandomizeHash+'<br/>'+
-				'</span>'+				
+				'</span>'+
 				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
 				'<hr/>'+
-				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept=".torrent,application/x-bittorrent" class="TextboxLarge"/><br/>'+
+				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept=".torrent" class="TextboxLarge"/><br/>'+
 				'<label>&nbsp;</label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
 			'</form>'+
 			'<hr/>'+
@@ -115,10 +117,10 @@ function makeContent()
 			'</form>'+
 		'</div>');
 
-	$("#tadd_label_select").change( function(e)
+	$("#tadd_label_select").on('change', function(e)
 	{
 		var index = this.selectedIndex;
-		switch (index) 
+		switch (index)
 		{
 			case 1:
 			{
@@ -129,13 +131,13 @@ function makeContent()
 			{
 				$("#tadd_label").val("");
 				break;
-			}				
+			}
 			default:
 			{
 				$("#tadd_label").val(this.options[index].value);
 				break;
 			}
-		}			
+		}
 	});
 
 	theDialogManager.setHandler('tadd','beforeShow',function()
@@ -145,12 +147,16 @@ function makeContent()
 			.append('<option selected>'+theUILang.No_label+'</option>')
 			.append('<option>'+theUILang.newLabel+'</option>').show();
 		for (var lbl in theWebUI.cLabels)
-			$("#tadd_label_select").append("<option>"+lbl+"</option>");
+		{
+			var lblText = lbl.substring(8);
+			$("#tadd_label_select").append("<option>"+lblText+"</option>");
+		}
 		$("#add_button").prop("disabled",false);
+		$("#tadd_label_select").trigger('change');
 	});
 
 	var input = $$('url');
-	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',$.trim(input.value)==''); };
+	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',input.value.trim()==''); };
 	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
 	{
@@ -164,10 +170,10 @@ function makeContent()
 			req.push('not_add_path=1');
 		if($("#randomize_hash").prop("checked"))
 			req.push('randomize_hash=1');
-		var dir = $.trim($("#dir_edit").val());
+		var dir = $("#dir_edit").val().trim();
 		if(dir.length)
 			req.push('dir_edit='+encodeURIComponent(dir));
-		var lbl = $.trim($("#tadd_label").val());
+		var lbl = $("#tadd_label").val().trim();
 		if(lbl.length)
 			req.push('label='+encodeURIComponent(lbl));
 		if(req.length)
@@ -175,9 +181,9 @@ function makeContent()
 		frm.action = s;
 		return(true);
 	}
-	$("#addtorrent").submit(function()
+	$("#addtorrent").on('submit', function()
 	{
-		if(!$("#torrent_file").val().match(/\.torrent$/i)) 
+		if(!$("#torrent_file").val().match(/\.torrent$/i))
 		{
 			alert(theUILang.Not_torrent_file);
 	   		return(false);
@@ -185,7 +191,7 @@ function makeContent()
 		$("#add_button").prop("disabled",true);
 		return(makeAddRequest(this));
 	});
-	$("#addtorrenturl").submit(function()
+	$("#addtorrenturl").on('submit', function()
 	{
 	   	$("#add_url").prop("disabled",true);
 	   	return(makeAddRequest(this));
@@ -229,8 +235,6 @@ function makeContent()
 			'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Moskalets Alexander (<a href="mailto:novik65@gmail.com">Novik</a>)<br/>'+
 			'<br/>'+
 			'<strong>'+theUILang.Check_new_version+'&nbsp;<a href="https://github.com/Novik/ruTorrent" target=_blank>'+theUILang.here+'</a></strong><br/>'+
-			'<br/>'+
-			'<center><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2KEV2MSBTF99U" target=_blank><img src="images/btn_donate.gif" border=0/></a></center>'+
 		'</div>');
 	theDialogManager.make("dlgLabel",theUILang.enterLabel,
 		'<div class="content fxcaret">'+theUILang.Enter_label_prom+':<br/>'+
@@ -240,7 +244,11 @@ function makeContent()
 		true);
 	theDialogManager.setHandler('dlgLabel','afterShow',function()
 	{
-		setTimeout(function(){$("#txtLabel").off('focus').on('focus',function() { $(this).select(); } ).focus();}, 0);
+		setTimeout(function(){
+			$("#txtLabel").off('focus').on('focus',function() { 
+				$(this).select(); 
+			}).trigger('focus');		
+		}, 0);
 	});
 	theDialogManager.make("yesnoDlg","",
 		'<div class="content" id="yesnoDlg-content"></div>'+
@@ -269,6 +277,9 @@ function makeContent()
 					"<li id='hld_st_bt'><a id=\"mnu_st_bt\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_bt\'); return(false);\">"+
 						theUILang.BitTorrent+
 					"</a></li>"+
+					"<li  id='hld_st_fmt' ><a id=\"mnu_st_fmt\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_fmt\'); return(false);\">"+
+						theUILang.Format+
+					"</a></li>"+
 					"<li  id='hld_st_ao' class=\"last\"><a id=\"mnu_st_ao\" href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_ao\'); return(false);\">"+
 						theUILang.Advanced+
 					"</a></li>"+
@@ -277,67 +288,43 @@ function makeContent()
 			"<div id=\"st_gl\" class=\"stg_con\">"+
 				"<fieldset>"+
 					"<legend>"+theUILang.User_Interface+"</legend>"+
-					"<div class=\"op50l\">"+
-						"<input type=\"checkbox\" id=\"webui.confirm_when_deleting\" checked=\"true\" />"+
-						"<label for=\"webui.confirm_when_deleting\">"+theUILang.Confirm_del_torr+"</label>"+
-					"</div>"+
-					"<div class=\"op50l algnright\">"+
-						theUILang.Update_GUI_every+":&nbsp;<input type=\"text\" id=\"webui.update_interval\" class=\"TextboxShort\" value=\"3000\" />"+
-						theUILang.ms+
-					"</div>"+
-					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.alternate_color\" />"+
-						"<label for=\"webui.alternate_color\">"+theUILang.Alt_list_bckgnd+"</label>"+
-					"</div>"+
-					"<div class=\"op50l algnright\">"+
-						theUILang.ReqTimeout+":&nbsp;<input type=\"text\" id=\"webui.reqtimeout\" class=\"TextboxShort\" value=\"5000\" />"+
-						theUILang.ms+
-					"</div>"+
-					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.show_cats\" checked=\"true\" />"+
-						"<label for=\"webui.show_cats\">"+theUILang.Show_cat_start+"</label>"+
-					"</div>"+
-					"<div class=\"op50l algnright\"><input type=\"checkbox\" id=\"webui.show_dets\" checked=\"true\" />"+
-						"<label for=\"webui.show_dets\">"+theUILang.Show_det_start+"</label>"+
-					"</div>"+
-					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.needmessage\"/>"+
-						"<label for=\"webui.needmessage\">"+theUILang.GetTrackerMessage+"</label>"+
-					"</div>"+
-
-					"<div class=\"op50l algnright\">"+
-						"<label for=\"webui.dateformat\">"+theUILang.DateFormat+":</label>&nbsp;"+
-						"<select id=\"webui.dateformat\">"+
-							"<option value='0'>31.12.2011</option>"+
-							"<option value='1'>2011-12-31</option>"+
-							"<option value='2'>12/31/2011</option>"+
-						"</select>"+
-					"</div>"+
-
-					"<div class=\"op50l\">"+
-						"<label for=\"webui.ignore_timeouts\">"+"<input type=\"checkbox\" id=\"webui.ignore_timeouts\" checked=\"true\" />"+theUILang.dontShowTimeouts+"</label>"+
-					"</div>"+
-
-					"<div class=\"op50l algnright\"><input type=\"checkbox\" id=\"webui.effects\"/>"+
-						"<label for=\"webui.effects\">"+theUILang.UIEffects+"</label>"+
-					"</div>"+
-					"<div class=\"op50l\"><input type=\"checkbox\" id=\"webui.fullrows\"  onchange=\"linked(this, 1, ['webui.no_delaying_draw']);\"/>"+
-						"<label for=\"webui.fullrows\">"+theUILang.fullTableRender+"</label>"+
-					"</div>"+
-
-					"<div class=\"op50l algnright\"><input type=\"checkbox\" id=\"webui.speedintitle\"/>"+
-						"<label for=\"webui.speedintitle\">"+theUILang.showSpeedInTitle+"</label>"+
-					"</div>"+					
-
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.no_delaying_draw\"/>"+
-						"<label for=\"webui.no_delaying_draw\" id=\"lbl_webui.no_delaying_draw\" >"+theUILang.showScrollTables+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.log_autoswitch\"/>"+
-						"<label for=\"webui.log_autoswitch\" id=\"lbl_webui.log_autoswitch\" >"+theUILang.logAutoSwitch+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.show_labelsize\"/>"+
-						"<label for=\"webui.show_labelsize\" id=\"lbl_webui.show_labelsize\" >"+theUILang.showLabelSize+"</label>"+
-					"</div>"+
-					"<div class=\"op100l\"><input type=\"checkbox\" id=\"webui.register_magnet\"/>"+
-						"<label for=\"webui.register_magnet\" id=\"lbl_webui.register_magnet\" >"+theUILang.registerMagnet+"</label>"+
-					"</div>"+
+					$('<div>').addClass('optionColumn userInterfaceOptions').append(
+						...[
+							['webui.confirm_when_deleting', theUILang.Confirm_del_torr],
+							['webui.alternate_color', theUILang.Alt_list_bckgnd],
+							['webui.ignore_timeouts', theUILang.dontShowTimeouts],
+							['webui.fullrows', theUILang.fullTableRender],
+							['webui.no_delaying_draw', theUILang.showScrollTables],
+							['webui.log_autoswitch', theUILang.logAutoSwitch],
+							['webui.register_magnet', theUILang.registerMagnet],
+							['webui.show_cats', theUILang.Show_cat_start],
+							['webui.show_dets', theUILang.Show_det_start],
+							['webui.open_tegs.keep', theUILang.KeepSearches],
+							['webui.selected_tab.keep', theUILang.KeepSelectedTab],
+							['webui.selected_labels.keep', theUILang.KeepSelectedLabels],
+							['webui.effects', theUILang.UIEffects],
+							['webui.speedintitle', theUILang.showSpeedInTitle],
+						].map(([id, label]) =>
+						$('<div>').append(
+							$('<input>').attr({ type: 'checkbox', id, checked: 'true' }),
+							$('<label>').attr({ for: id }).text(label)
+						)))[0].outerHTML +
+					$('<div>').addClass('optionColumn').append(
+						...[
+							['webui.update_interval', theUILang.Update_GUI_every +':', theUILang.ms, 3000],
+							['webui.reqtimeout', theUILang.ReqTimeout +':', theUILang.ms, 5000],
+						].map(([id, prefix, suffix, value]) =>
+							$('<div>').append(
+								$('<span>').text(prefix),
+								$('<input>').attr({type: 'number', id, value, min: 0 }),
+								$('<span>').text(suffix),
+						)),
+					$('<div>').append(
+						$('<label>').attr({ for: 'webui.speedgraph.max_seconds' }).text(theUILang.speedGraphDuration),
+						$('<select>').attr({ id: 'webui.speedgraph.max_seconds' }).append(
+							...Object.entries(theUILang.speedGraphDurationOptions).map(([value, text]) =>
+								$('<option>').attr({ value }).text(text)
+					))))[0].outerHTML+
 					"<div class=\"op100l\">"+
 						"<label for=\"webui.retry_on_error\">"+theUILang.retryOnErrorTitle+":</label>&nbsp;"+
 						"<select id=\"webui.retry_on_error\">"+
@@ -496,6 +483,58 @@ function makeContent()
 					"</table>"+
 				"</fieldset>"+
 			"</div>"+
+			"<div id=\"st_fmt\" class=\"stg_con\">"+
+				"<fieldset>"+
+					"<legend>"+theUILang.Format+"</legend>"+
+					$('<div>').addClass('optionColumn userInterfaceOptions').append(
+						$('<div>').append(
+							$('<label>').attr({ for: 'webui.dateformat' }).text(theUILang.DateFormat),
+							$('<select>').attr({ id: 'webui.dateformat' }).css({ width: '7em' }).append(
+								...Object.entries({0: '31.12.2011', 1: '2011-12-31', 2: '12/31/2011' }).map(([value, text]) =>
+									$('<option>').attr({ value }).text(text)
+						))),
+						...[
+							['webui.show_viewlabelsize', theUILang.showViewLabelSize],
+							['webui.show_statelabelsize', theUILang.showStateLabelSize],
+							['webui.show_labelsize', theUILang.showLabelSize],
+							['webui.show_searchlabelsize', theUILang.showSearchLabelSize],
+							['webui.labelsize_rightalign', theUILang.labelSizeRightAlign],
+							['webui.show_label_path_tree', theUILang.showCustomLabelTree],
+							['webui.show_empty_path_labels', theUILang.showEmptyPathLabel],
+							['webui.show_label_text_overflow', theUILang.showLabelTextOverflow],
+							['webui.show_open_status', theUILang.showOpenStatus],
+							['webui.show_view_panel', theUILang.showViewPanel],
+						].map(([id, label]) =>
+						$('<div>').append(
+							$('<input>').attr({ type: 'checkbox', id, checked: 'true' }),
+							$('<label>').attr({ for: id, id: 'lbl_'+id }).text(label)
+						)))[0].outerHTML +
+				"</fieldset>"+
+				"<fieldset>"+
+					"<legend>"+theUILang.DecimalPlacesSizes+"</legend>"+
+					$('<table>').append(
+						$('<tr>').append(...[ '', 'Default', 'KB', 'MB', 'GB', 'TB', 'PB'].map((unit) =>
+							$('<th>').text(unit !== '' ? theUILang[unit] : ''))
+						),...Object.entries({
+							catlist: theUILang.CatListSizeDecimalPlaces,
+							table: theUILang.TableSizeDecimalPlaces,
+							details: theUILang.DetailsSizeDecimalPlaces,
+							other: theUILang.OtherSizeDecimalPlaces,
+						}).map(([context, name]) =>
+							$('<tr>').append(...
+								$('<th>').text(name),
+								...['default', 'kb', 'mb', 'gb', 'tb', 'pb'].map(unit =>
+									$('<td>').append(
+											$('<input>')
+												.attr({
+													type: 'number',
+													id: 'webui.size_decimal_places.' + context + '.' + unit,
+													maxlength: 1,
+													min: 0,
+												}).addClass('Textbox')
+					))))).addClass('decimalDigitEdit')[0].outerHTML+
+				"</fieldset>"+
+			"</div>"+
 			"<div id=\"st_ao\" class=\"stg_con\">"+
 				"<fieldset>"+
 					"<legend>"+theUILang.Advanced+"</legend>"+
@@ -622,9 +661,32 @@ function makeContent()
 		"</div>");
 }
 
+function hasThemeHint() {
+	return 'theme-hint' in window.localStorage;
+}
+
+function setThemeHint(dark) {
+	const theme = dark ? 'dark-theme' : 'light-theme';
+	const previousTheme = window.localStorage['theme-hint'];
+	if (theme !== previousTheme) {
+		window.localStorage['theme-hint'] = theme;
+		$(':root').removeClass(previousTheme).addClass(theme);
+	}
+}
+
+if (hasThemeHint()) {
+	$(':root').addClass('pre-theme-load').addClass(window.localStorage['theme-hint']);
+}
+
 function correctContent()
 {
-	var showEnum = 
+	if (hasThemeHint() && !thePlugins.isInstalled("theme")) {
+		// Remove theme hint if theme plugin is not used
+		$(':root').removeClass('pre-theme-load').removeClass(window.localStorage['theme-hint']);
+		delete window.localStorage['theme-hint'];
+	}
+
+	var showEnum =
 	{
 		showDownloadsPage:	0x0001,
 		showConnectionPage:	0x0002,
@@ -674,7 +736,7 @@ function correctContent()
 		$("#prop-superseed").remove();
 		$("#lbl_prop-superseed").remove();
 		$("#dlgProps .OK").remove();
-        }		
+        }
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithoutPath))
 	{
 		$("#addtorrent #not_add_path_option").remove();
@@ -682,15 +744,15 @@ function correctContent()
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithoutStarting))
 	{
 		$("#addtorrent #torrents_start_stopped_option").remove();
-	}	
+	}
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithResume))
 	{
 		$("#addtorrent #fast_resume_option").remove();
-	}		
+	}
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithRandomizeHash))
 	{
 		$("#addtorrent #randomize_hash_option").remove();
-	}	
+	}
 	if(!theWebUI.systemInfo.rTorrent.started)
 	{
 		rPlugin.prototype.removePageFromTabs("TrackerList");
@@ -712,12 +774,12 @@ function correctContent()
 	{
 		if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
 		{
-			theRequestManager.addRequest("fls","f.prioritize_first=",function(hash, fls, value) 
+			theRequestManager.addRequest("fls","f.prioritize_first=",function(hash, fls, value)
 			{
 				if(value=='1')
 					fls.prioritize = 1;
 			});
-			theRequestManager.addRequest("fls","f.prioritize_last=",function(hash, fls, value) 
+			theRequestManager.addRequest("fls","f.prioritize_last=",function(hash, fls, value)
 			{
 				if(value=='1')
 					fls.prioritize = 2;
@@ -728,7 +790,7 @@ function correctContent()
 			$('#st_ao_h table tr:first').remove();
 			$('#st_ao_h table tr:first').remove();
 			$('#st_ao_h table tr:first').remove();
-			$.extend(theRequestManager.aliases, 
+			$.extend(theRequestManager.aliases,
 			{
 				"get_hash_interval"		: { name: "cat", prm: 0 },
 				"get_hash_max_tries"		: { name: "cat", prm: 0 },
@@ -742,15 +804,15 @@ function correctContent()
 	if(theWebUI.systemInfo.rTorrent.iVersion>=0x806)
 	{
 		theRequestManager.aliases[""] = { name: "", prm: 0 };
-		$.extend(theRequestManager.aliases, 
+		$.extend(theRequestManager.aliases,
 		{
 			"d.set_peer_exchange" 		: { name: "d.peer_exchange.set", prm: 0 },
 			"d.set_connection_seed"		: { name: "d.connection_seed.set", prm: 0 }
 		});
 	}
-	if(theWebUI.systemInfo.rTorrent.iVersion>=0x904)	
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x904)
 	{
-		$.extend(theRequestManager.aliases, 
+		$.extend(theRequestManager.aliases,
 		{
 			"create_link"		:	{ name: "d.create_link", prm: 0 },
 			"d.get_base_filename"	:	{ name: "d.base_filename", prm: 0 },
@@ -839,6 +901,7 @@ function correctContent()
 			"d.set_tied_to_file"	:	{ name: "d.tied_to_file.set", prm: 0 },
 			"d.set_tracker_numwant"	:	{ name: "d.tracker_numwant.set", prm: 0 },
 			"d.set_uploads_max"	:	{ name: "d.uploads_max.set", prm: 0 },
+			"execute"		:	{ name: "execute2", prm: 1 },
 			"execute_capture"	:	{ name: "execute.capture", prm: 1 },
 			"execute_capture_nothrow"	:	{ name: "execute.capture_nothrow", prm: 1 },
 			"execute_nothrow"	:	{ name: "execute.nothrow", prm: 1 },
@@ -997,6 +1060,8 @@ function correctContent()
 			"set_use_udp_trackers"	:	{ name: "trackers.use_udp.set", prm: 1 },
 			"set_xmlrpc_dialect"	:	{ name: "network.xmlrpc.dialect.set", prm: 1 },
 			"set_xmlrpc_size_limit"	:	{ name: "network.xmlrpc.size_limit.set", prm: 1 },
+			"schedule"		:	{ name: "schedule2", prm: 1 },
+			"schedule_remove"	:	{ name: "schedule_remove2", prm: 1 },
 			"system.file_allocate"	:	{ name: "system.file.allocate", prm: 0 },
 			"system.file_allocate.set"	:	{ name: "system.file.allocate.set", prm: 1 },
 			"system.method.erase"	:	{ name: "method.erase", prm: 1 },
@@ -1039,9 +1104,14 @@ function correctContent()
 			"load"			:	{ name: "load.normal", prm: 1 }
 		});
 	}
-	if(theWebUI.systemInfo.rTorrent.apiVersion>=10)	
+	if(theWebUI.systemInfo.rTorrent.iVersion < 0x907) {
+		const title = theUILang.requiresAtLeastRtorrent.replace('{version}', 'v0.9.7');
+		$($$('webui.show_open_status')).attr({ disabled: '', title });
+		$($$('lbl_webui.show_open_status')).attr({ title }).addClass('disabled');
+	}
+	if(theWebUI.systemInfo.rTorrent.apiVersion>=11)	// at current moment (2019.07.20) this is feature-bind branch of rtorrent
 	{
-		$.extend(theRequestManager.aliases, 
+		$.extend(theRequestManager.aliases,
 		{
 			"get_port_open"		: { name: "network.listen.is_open", prm: 0 },
 			"get_port_random" 	: { name: "network.port.randomize", prm: 0 },

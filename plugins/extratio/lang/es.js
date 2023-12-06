@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "Uno de los trackers es privado";
  theUILang.ratioThenLegend	= "Entonces";
  theUILang.setRatioTo		= "setear ratio a";
- theUILang.setChannelTo 	= "Setear acelerador a";
- theUILang.ratioNewRule 	= "Nueva regla";
+ theUILang.setChannelTo		= "Setear acelerador a";
+ theUILang.ratioNewRule		= "Nueva regla";
 
 thePlugins.get("extratio").langLoaded();

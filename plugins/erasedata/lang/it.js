@@ -3,11 +3,11 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.Rem_torrents_content_prompt		= "Do you really want to remove the selected torrent(s)? WARNING: This will delete torrent's content.";
- theUILang.Delete_data_with_path		= "Delete Path";
- theUILang.Rem_torrents_with_path_prompt	= "Do you really want to remove the selected torrent(s)? WARNING: This will delete all files in this torrent's current directory.";
+ theUILang.Rem_torrents_content_prompt		= "Vuoi veramente rimuovere i torrent selezionati? ATTENZIONE: Questo cancellerà i contenuti dei torrent.";
+ theUILang.Delete_data_with_path		= "Cancella cartella";
+ theUILang.Rem_torrents_with_path_prompt	= "Vuoi veramente rimuovere i torrent selezionati? ATTENZIONE: Questo cancellerà tutti i file nella cartella di questi torrent.";
 
 thePlugins.get("erasedata").langLoaded();

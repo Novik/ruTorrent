@@ -3,10 +3,11 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.getSource		= "Get .torrent";
- theUILang.cantFindTorrent	= "Source torrent file for this download not found.";
+ theUILang.getSource		= ".torrent'ı al";
+ theUILang.cantFindTorrent	= "Bu indirmenin kaynak .torrent dosyası bulunamadı.";
 
 thePlugins.get("source").langLoaded();

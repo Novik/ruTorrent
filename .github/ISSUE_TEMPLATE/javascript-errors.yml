@@ -1,0 +1,65 @@
+name: "JavaScript Errors"
+description: "Report JavaScript errors here"
+body: 
+  - type: checkboxes
+    id: checklist_javascript
+    attributes:
+      label: Please complete the following tasks.
+      description: Check off each box when completed.
+      options:
+        - label: Web browser cache cleared
+          required: true
+        - label: Copied everything if upgrading to v4.0 or master
+          required: true
+        - label: Web browser and ruTorrent version provided
+          required: true
+ 
+  - type: textarea
+    attributes:
+      label: Tell us about your environment
+      description: |
+        Example of preferred formatting:
+        Web Browser: Google Chrome 97.0.4692.71
+        ruTorrent: v4.0-beta.1 OR Master: fc9d1f0
+      placeholder: |
+        Web Browser:
+        ruTorrent:
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: What were you trying to do?
+      description: A clear and concise description of what you were doing before the error happened.
+      placeholder: |
+        Example: I was trying to change my theme to oblivion.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: What us the error message?
+      description: Give us the error message from ruTorrent. You may censor the domain name if required.
+      placeholder: |
+        JS error: [https://www.example.com/rutorrent/ : 1118] Uncaught ReferenceError: bobo is not defined
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Give us the stack trace.
+      description: | 
+        Please note this feature is currently only supported on the master branch.
+        
+        In Google Chrome go to Options -> More tools -> Developer tools.
+        Select the "console" tab at the top. Then click the "info" tab on the left.
+      placeholder: |
+        Uncaught ReferenceError: bobo is not defined from ReferenceError: bobo is not defined
+        at String.<anonymous> (<anonymous>:1118:4)
+        at Function.each (rutorrent/js/jquery.js:2:3003)
+        at rPlugin.plugin.allDone (<anonymous>:1111:4)
+        at eval (eval at waitLoad (rutorrent/js/plugins.js:94:4), <anonymous>:1:25)
+        at Object.waitLoad (rutorrent/js/plugins.js:94:4)
+        at <anonymous>:1:12
+    validations:
+      required: false

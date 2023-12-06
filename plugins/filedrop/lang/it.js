@@ -3,11 +3,12 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
+ * Author: Marco (marco.romanelli@protonmail.ch)
  */
 
- theUILang.doesntSupportHTML5	= "Plugin filedrop: Your browser does not support HTML5 file uploads. Plugin was disabled.";
- theUILang.tooManyFiles 	= "Plugin filedrop: Too many files. Must be <= ";
- theUILang.fileTooLarge 	= "is too large. Please upload files up to";
+ theUILang.doesntSupportHTML5	= "Plugin 'filedrop': Il tuo browser non suppporta l'upload di file tramite HTML5 . Plugin disabilitato.";
+ theUILang.tooManyFiles		= "Plugin 'filedrop': Troppi file. Devono essere <= ";
+ theUILang.fileTooLarge		= "è troppo grande. Per favore carica file fino a";
 
 thePlugins.get("filedrop").langLoaded();

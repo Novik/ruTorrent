@@ -7,14 +7,14 @@ plugin.playTimer = null;
 if(plugin.canChangeOptions() && !explorerIsInstalled)
 {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
-	theWebUI.addAndShowSettings = function(arg) 
+	theWebUI.addAndShowSettings = function(arg)
 	{
 		if(plugin.enabled && plugin.allStuffLoaded)
 		{
 			$.each( plugin.ffmpegSettings, function(name,val)
 			{
 				if($('#'+name).is(":checkbox"))
-					$('#'+name).prop('checked', val!=0).change();
+					$('#'+name).prop('checked', val!=0).trigger('change');
 				else
 					$('#'+name).val(val);
 			});
@@ -22,7 +22,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
-	plugin.ffmpegWasChanged = function() 
+	plugin.ffmpegWasChanged = function()
 	{
 		var ret = false;
 		if( plugin.allStuffLoaded )
@@ -32,7 +32,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 				if($('#'+name).is(":checkbox"))
 				{
 					if($('#'+name).prop('checked')!=val)
-					{       	
+					{
 						ret = true;
 						return(false);
 					}
@@ -54,7 +54,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
-	theWebUI.setSettings = function() 
+	theWebUI.setSettings = function()
 	{
 		plugin.setSettings.call(this);
 		if(plugin.enabled && plugin.ffmpegWasChanged())
@@ -69,7 +69,7 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 			if($('#'+name).is(":checkbox"))
 				s+=("&"+name+"="+ ($('#'+name).prop('checked') ? 1 : 0) );
 			else
-				s+=("&"+name+"="+encodeURIComponent($.trim($('#'+name).val())));
+				s+=("&"+name+"="+encodeURIComponent($('#'+name).val()).trim());
 		});
 		this.content = "cmd=ffmpegset"+s;
 	        this.contentType = "application/x-www-form-urlencoded";
@@ -81,11 +81,11 @@ if(plugin.canChangeOptions() && !explorerIsInstalled)
 if(plugin.canChangeMenu())
 {
 	plugin.createFileMenu = theWebUI.createFileMenu;
-	theWebUI.createFileMenu = function( e, id ) 
+	theWebUI.createFileMenu = function( e, id )
 	{
-		if(plugin.createFileMenu.call(this, e, id)) 
+		if(plugin.createFileMenu.call(this, e, id))
 		{
-			if(plugin.enabled && plugin.allStuffLoaded) 
+			if(plugin.enabled && plugin.allStuffLoaded)
 			{
 				var fno = null;
 				var table = this.getTable("fls");
@@ -121,18 +121,18 @@ if(plugin.canChangeMenu())
 
 	theWebUI.fileFFMPEG = function(hash,no)
 	{
-	        this.startConsoleTask( "ffmpeg", plugin.name, 
-	        	{ "hash" : hash, "no" : no }, 
+	        this.startConsoleTask( "ffmpeg", plugin.name,
+	        	{ "hash" : hash, "no" : no },
 	        	{ noclose: true });
 	}
 
 	plugin.onTaskShowInterface = function(task)
 	{
 	        $('.scplay').hide();
-	        $('#tskcmdlog').addClass('scframe_cont');	
+	        $('#tskcmdlog').addClass('scframe_cont');
 	}
 
-	plugin.onTaskShowLog = function(task,line,id,ndx) 
+	plugin.onTaskShowLog = function(task,line,id,ndx)
 	{
 		if(id=='tskcmdlog')
 		{
@@ -144,7 +144,7 @@ if(plugin.canChangeMenu())
 					$('.scframe').hide();
 				$('#'+id).append("<div class='scframe' id='scframe"+ndx+"'><img src='plugins/screenshots/action.php?cmd=ffmpeggetimage&no="+task.no+
 					"&fno="+line+"&file="+encodeURIComponent($('#scimgfile').val())+"' /></div>");
-				$('#scframe'+ndx+' img').load(function() 
+				$('#scframe'+ndx+' img').on('load', function()
 				{
 					plugin.centerFrame(ndx);
 				});
@@ -153,7 +153,7 @@ if(plugin.canChangeMenu())
 		}
 		return(escapeHTML(line)+'<br>');
 	}
-	
+
 	plugin.onTaskFinished = function(task,onBackground)
 	{
 		if(!onBackground)
@@ -165,7 +165,7 @@ if(plugin.canChangeMenu())
 			}
 			$("#sctaskno").val(task.no);
 			plugin.setPlayControls();
-		}			
+		}
 	}
 
 	plugin.onTaskHideInterface = function(task)
@@ -176,7 +176,7 @@ if(plugin.canChangeMenu())
 		{
 			window.clearInterval(plugin.playTimer);
 			plugin.playTimer = null;
-		}	
+		}
 	}
 
 	plugin.setPlayControls = function()
@@ -269,7 +269,7 @@ plugin.onLangLoaded = function()
 					"<legend>"+theUILang.exFFMPEG+"</legend>"+
 					"<table>"+
 					"<tr><td><input type=\"checkbox\" id=\"exusewidth\" onchange=\"linked(this, 0, ['exfrmwidth']);\"/><label id='lbl_exfrmwidth' for='exfrmwidth' class='disabled'>"+
-						theUILang.exFrameWidth+'<label></td><td class="alr"><input type="text" id="exfrmwidth" class="TextboxShort" disabled=true/></td></tr>'+
+						theUILang.exFrameWidth+'</label></td><td class="alr"><input type="text" id="exfrmwidth" class="TextboxShort" disabled="true"/></td></tr>'+
 					"<tr><td>"+theUILang.exFramesCount+'</td><td class="alr"><input type="text" id="exfrmcount" class="TextboxShort"/></td></tr>'+
 					"<tr><td>"+theUILang.exStartOffset+', '+theUILang.time_s+'</td><td class="alr"><input type="text" id="exfrmoffs" class="TextboxShort"/></td></tr>'+
 					"<tr><td>"+theUILang.exBetween+', '+theUILang.time_s+'</td><td class="alr"><input type="text" id="exfrminterval" class="TextboxShort"/></td></tr>'+
@@ -290,20 +290,20 @@ plugin.onLangLoaded = function()
 			"<input type='button' class='Button scplay' id='scsave' value='"+theUILang.exSave+"'>"+
 			"<input type='button' class='Button scplay' id='scsaveall' value='"+theUILang.exSaveAll+"'>"
 			 );
-		$("#scfirst").click( function()
+		$("#scfirst").on('click', function()
 		{
 			plugin.setCurrentFrame(0);
 		});
-		$("#sclast").click( function()
+		$("#sclast").on('click', function()
 		{
 			plugin.setCurrentFrame($('.scframe').length-1);
 		});
-		$("#scprev").click( function()
+		$("#scprev").on('click', function()
 		{
 			plugin.setCurrentFrame( plugin.getCurrentFrame()-1 );
 		});
-		$("#scnext").click( plugin.setNextFrame );
-		$("#scplay").click( function()
+		$("#scnext").on('click', plugin.setNextFrame );
+		$("#scplay").on('click', function()
 		{
 		        if(plugin.playTimer)
 			{
@@ -325,16 +325,16 @@ plugin.onLangLoaded = function()
 				'<input type="hidden" name="fno" id="scimgno" value="0">'+
 				'<input type="hidden" name="file" id="scimgfile" value="frame">'+
 			'</form>').width(0).height(0));
-		$("#scsave").click( function()
+		$("#scsave").on('click', function()
 		{
 			$("#scimgno").val(plugin.getCurrentFrame());
 			$("#scimgcmd").val("ffmpeggetimage");
-			$('#scgetimg').submit();
+			$('#scgetimg').trigger('submit');
 		});
-		$("#scsaveall").click( function()
+		$("#scsaveall").on('click', function()
 		{
 			$("#scimgcmd").val("ffmpeggetall");
-			$('#scgetimg').submit();
+			$('#scgetimg').trigger('submit');
 		});
 		plugin.markLoaded();
 	}
@@ -346,7 +346,7 @@ plugin.onRemove = function()
 		this.removePageFromOptions("st_screenshots");
 }
 
-plugin.langLoaded = function() 
+plugin.langLoaded = function()
 {
 	if(plugin.enabled)
 		plugin.onLangLoaded();

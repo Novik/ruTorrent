@@ -6,7 +6,7 @@
 .stable-head table tr td {height: 14px; font-size: 11px; border: 1px solid; border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF; background: transparent url(../images/blank.gif) no-repeat scroll right center; line-height: 14px; overflow: hidden; white-space: nowrap; vertical-align: top}
 .stable-head td div {padding: 0 12px 0 4px}
 .stable-head div.resz {border: 1px solid #FF0000; width: 5px; height: 14px; padding: 0 !important; float: right; background: transparent url(../images/s.gif) no-repeat scroll left center; cursor: e-resize}
-.stable-body {background: window; overflow: auto}
+.stable-body {background: window; overflow: auto; overflow-anchor: none}
 .stable-body table {table-layout: fixed; width: 0; }
 .stable-body tr {cursor: pointer}
 .stable-body td {height: 16px; border-bottom: 1px solid #E0E0E0; border-width: 0px 1px 1px 0px; overflow: hidden; vertical-align: top}

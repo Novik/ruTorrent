@@ -1,0 +1,32 @@
+<?php
+
+$theUILang["all"]		= "Todos os torrents";
+$theUILang["completed"]		= "Torrents Completos";
+$theUILang["downloading"]	= "Torrents Descarregando";
+$theUILang["active"]		= "Torrents Activos";
+$theUILang["inactive"]		= "Torrents Inativos";
+$theUILang["error"]		= "Torrents com Erro";
+$theUILang["Transfer"]		= "Transferir";
+$theUILang["Size"]		= "Tamanho";
+$theUILang["Remaining"]		= "Restante";
+$theUILang["Share_ratio"]	= "Racio de partilha";
+$theUILang["Downloaded"]	= "Descarregado";
+$theUILang["Down_speed"]	= "Velocidade de descarga";
+$theUILang["Uploaded"]		= "Enviado";
+$theUILang["Ul_speed"]		= "Velocidade de envio";
+$theUILang["Seeds"]		= "Sementes";
+$theUILang["Peers"]		= "Pares";
+$theUILang["Track_status"]	= "Estado do rastreador";
+$theUILang["Comment"]		= "Comentário";
+$theUILang["s"]			= "s";
+$theUILang["bytes"]		= "bytes";
+$theUILang["KB"]		= "KiB";
+$theUILang["MB"]		= "MiB";
+$theUILang["GB"]		= "GiB";
+$theUILang["TB"]		= "TiB";
+$theUILang["PB"]		= "PiB";
+$theUILang["time_w"]		= "S ";
+$theUILang["time_d"]		= "d ";
+$theUILang["time_h"]		= "h ";
+$theUILang["time_m"]		= "m ";
+$theUILang["time_s"]		= "s ";

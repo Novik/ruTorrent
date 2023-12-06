@@ -2,8 +2,10 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
 div#HDivider { width: 5px }
 div#CatList { border-top-style: none; border-color: #9EB6CE; background: scroll transparent url(./images/cbg.png) repeat-y 0 0 }
 div#CatList ul { background: scroll transparent url(./images/cbg.png) repeat-y 0 0 }
-div#CatList ul li { border-top: 1px solid #d0d7e5; border-bottom: 1px solid transparent; padding-left: 46px }
+div#CatList ul li { border-top: 1px solid #d0d7e5; border-bottom: 1px solid transparent; padding: 2px 0px 0px 4px; }
 .catpanel { border: none; background: transparent url(./images/pbg.png) repeat-x 0 0; padding: 0px 32px; height: 20px }
+.label-count,.label-size { background-color: #d2e0f0; border-radius: 0.5em 0 0 0; }
+li.sel .label-count,li.sel .label-size { background-color: #FFFFFF; }
 
 div.table_tab { border: none }
 

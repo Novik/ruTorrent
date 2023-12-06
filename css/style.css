@@ -1,10 +1,15 @@
 * { -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,1.0); }
 html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
 html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif;}
+.light-theme { color-scheme: light; }
+.dark-theme { color-scheme: dark; }
 form{margin:0;}
 div#preload {width: 0px; height: 0px; display: none; background-image: url(../images/toolbar.png); background-image: url(../images/tstatus.png); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/close.png); background-image: url(../images/file.gif); background-image: url(../images/dir.gif); background-image: url(../images/pnl_open.gif); background-image: url(../images/pnl_close.gif)}
 div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; background: #FFFFFF}
 div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold;  text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
+.pre-theme-load.dark-theme div#cover { background: #181818; }
+.pre-theme-load.dark-theme div#msg { color: #fff; background: #151515; border-color: #333; }
+.pre-theme-load.dark-theme #loadimg { filter: invert(1); }
 div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none; opacity: 0.5; background-color: #CCCCCC;}
 .konqueror div#modalbg { background: none; }
 .ie div#modalbg { filter:alpha(opacity=50); }
@@ -79,25 +84,45 @@ Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; wid
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
 Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 30px}
 input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0; cursor: pointer }
+input.Button[disabled] { opacity: 0.3; cursor: default }
+input.Button:not([disabled]):hover { background-color: #F5F5F5; }
+input.Button:not([disabled]):hover:active { background-color: #FAFAFA; }
+#pview { display: flex; padding-right: 0px; }
+#pview > span { flex: 1; }
+#pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
+#pview_cont .label-text { white-space: pre; }
+.pview_custom_view .label-icon { background-image: none; background-color: #F0F0F0; border: 1px solid rgba(128,128,128,0.2); border-radius: 0.8em; min-width: 14px; min-height: 14px; display: flex; font-style: normal;  }
+.pview_custom_view .label-icon > span { flex: 1; text-align: center; font-size: 11px; font-weight: bold; }
 
 select {margin-top: 5px}
 a {font-size: 11px;  color: #686868}
-table#maincont {margin: 5px 0 0 0}
+table#maincont {margin: 5px 0 0 0; min-width: 600px;}
 table#maincont td.uicell {vertical-align: top; padding: 0 }
 
-div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden}
-div#CatList ul {padding: 0; margin: 0; list-style: none; white-space: nowrap}
-div#CatList ul li {padding: 2px 25px; margin: 0; line-height: 14px; font-size: 11px;  cursor: pointer; border: 1px solid #FFFFFF; background-repeat: no-repeat}
+div#CatList {width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden; min-width: 160px; }
+div#CatList ul { margin: 0; padding: 0; list-style: none; white-space: nowrap}
+div#CatList ul li { display: flex; padding: 3px; flex-flow: row nowrap; align-items: center; height: 16px; font-size: 11px;  cursor: pointer; border: 0px solid #FFFFFF; overflow: hidden;}
 div#CatList ul li.sel {background-color: #CFDEEF; border-color: #CFDEEF }
-#-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(../images/tstatus.png)}
-#-_-_-all-_-_- {background-position: 4px -174px;}
-#-_-_-dls-_-_- {background-position: 4px 2px;}
-#-_-_-com-_-_- {background-position: 4px -14px;}
-#-_-_-act-_-_- {background-position: 4px -158px;}
-#-_-_-iac-_-_- {background-position: 4px -30px;}
-#-_-_-err-_-_- {background-position: 4px -94px;}
-div#CatList ul li.RSS {background-image: url(../images/tstatus.png); background-position: 4px -206px}
-div#CatList ul li.disRSS {background-image: url(../images/tstatus.png); background-position: 4px -190px}
+div#CatList ul li div { margin-right: 0.5em; }
+div#CatList .label-prefix { flex: 0 0 auto; display: flex; flex-flow: row nowrap; opacity: 0.1; font-family: monospace; font-size: 19px; margin-left: -2px; margin-right: 2px; }
+div#CatList .label-prefix div { margin-right: 0px; width: 12px; }
+.label-icon { min-width: 16px; min-height: 16px; background-image: url(../images/tstatus.png); background-repeat: no-repeat; }
+.label-icon img { width: 16px; height: 16px; }
+.-_-_-all-_-_- .label-icon, #-_-_-all-_-_- .label-icon {background-position: 0px -176px;}
+#-_-_-dls-_-_- .label-icon {background-position: 0px 0px;}
+#-_-_-com-_-_- .label-icon {background-position: 0px -16px;}
+#-_-_-act-_-_- .label-icon {background-position: 0px -160px;}
+#-_-_-iac-_-_- .label-icon {background-position: 0px -32px;}
+#-_-_-err-_-_- .label-icon {background-position: 0px -96px;}
+.label-count,.label-size { background-color: #F0F0F0; padding: 0.1em 0.3em 0.1em 0.3em; border-radius: 0.8em; }
+#CatList.rightalign-labelsize .label-size {
+	margin-left: auto;
+}
+#CatList.hide-textoverflow .label-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#flabel_cont li:not(.-_-_-all-_-_-) .label-icon { background-position: 0px -32px; }
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
 .Status_Down {background-position: 0px 0px}
@@ -146,7 +171,7 @@ div.algnright {text-align: right; clear: right}
 .lm li a {color: #000000; padding: 1px 2px}
 .lm li a.focus {background-color: #E0E0E0}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
-.stg_con {float: right; position: relative; width: 450px; height: 500px; margin: 4px; background-color: #FAFAFA}
+.stg_con { display: none; float: right; position: relative; width: 450px; height: 500px; margin: 4px; background-color: #FAFAFA}
 .ie9 .stg_con {position: static}
 fieldset {margin: 4px}
 * > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px; -webkit-border-radius:6px; border-radius:6px;}
@@ -166,7 +191,7 @@ div input, div select {margin: 0 4px; font-size: 11px; padding: 1px 4px}
 legend {color: #000000; font-weight: bold}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
-#st_dl, #st_con, #st_bt, #st_que, #st_sch, #st_ao, #st_dc {display: none}
+#st_que, #st_sch, #st_dc {display: none}
 #st_btns {float: right; position: relative; width: 450px; height: 20px; padding: 3px; text-align: right; }
 #st_btns input {margin-left: 5px}
 a {text-decoration: none}
@@ -186,10 +211,15 @@ div#lcont div.std {padding: 2px}
 div#gcont table {font-size: 11px;  line-height: 10px}
 div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
 
-div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
-div.graph_tab {font-size: 11px;  line-height: 11px; color: #545454}
+div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; font-size: 11px;  line-height: 11px; color: #545454;}
+.graph_tab_grid,.graph_tab_legend {
+	display: none;
+}
+.graph_tab_grid { background-color: transparent; border: 2px solid #545454; }
+.graph_tab_legend { background-color: #F0F0F0; border: 0px none transparent; }
+.graph_tab_tooltip { position: absolute; border: 1px solid #fdd; padding: 2px; background-color: #fee; color: black; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; opacity: 0.80; }
 
-div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
 div#List {border: 1px solid #A0A0A0;}
 
 div.cont {padding: 6px; font-size: 11px;}
@@ -245,10 +275,10 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
 textarea { overflow: auto; }
 
-.catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px;  cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled }
+.catpanel { background: url(../images/pnl_open.gif) 2px no-repeat; background-color: #F0F0F0; border-bottom: 1px solid #A0A0A0; border-top: 1px solid #A0A0A0; padding: 2px 21px; margin: 0px; line-height: 16px; font-size: 11px;  cursor: pointer; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
 
 div#tadd-header {background-image: url(../images/world.gif)}
-div#tadd {display: none; width: 380px; height: 290px; left: 100px; top: 100px; position: absolute; margin: 0 auto }
+div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 auto }
 div#tadd label {text-align: right; width: 75px; padding-right: 20px; float: left }
 div#tadd br {clear: left; line-height: 0}
 div#tadd input {margin-bottom: 1px}
@@ -268,12 +298,23 @@ div#tadd select { width: 220px }
 .sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
 .stval { padding-right: 3px; overflow: hidden; width: 65px; }
 .speedEdit { width: 320px }
+.decimalDigitEdit input[type=number] { padding: 1px; margin: 0; width: 3em; }
+.decimalDigitEdit tr:first-child th { text-align: center; }
+.decimalDigitEdit tr th { text-align: left; }
+.userInterfaceOptions {  max-height: 180px; }
+.userInterfaceOptions > div { max-width: 50% }
+.optionColumn { display: flex; justify-content: space-between; flex-flow: column wrap; }
+.optionColumn input[type=number],.optionColumn select { padding: 1px; margin: 0.1em 0.5em; width: 6em; }
+.optionColumn div { display:flex; align-items: center; padding-left: 0; }
 .statuscell td { padding: 0 }
+#st_fd .sthdr { padding-left: 8px; }
+#st_fd .stval { text-align: center; width: 4.3em; }
 #st_system .sthdr { padding-left: 8px }
 
 .ie fieldset {padding: 5px}
 .buttons-list {  margin-bottom: 5px }
 #servertime { text-align: center }
+#viewrows { text-align: center; }
 
 #bf {white-space:pre}
 
@@ -281,4 +322,20 @@ div#tadd select { width: 220px }
 { 
 	#go { display: none }
 	#query { width: 80px }
+}
+
+@media only screen and (min-width: 1280px) {
+  .desktop { display: inline-block; }
+}
+
+@media only screen and (max-width: 1279px) {
+  .desktop { display: none; }
+}
+
+@media only screen and (min-width: 730px) {
+  .mobile-search { display: inline-block; }
+}
+
+@media only screen and (max-width: 729px) {
+  .mobile-search { display: none; }
 }

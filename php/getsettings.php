@@ -1,20 +1,7 @@
 <?php
 
-require_once( 'util.php' );
+require_once( 'WebUISettings.php' );
 
-$s = '{}';
-$fname = getSettingsPath()."/uisettings.json";
-$fo = @fopen($fname, 'r');
-if($fo!==false)
-{
-	if(flock($fo, LOCK_SH))
-	{
-		$s = @file_get_contents($fname);
-		if($s==false)
-			$s = '{}';
-		flock($fo, LOCK_UN); 
-	}
-	fclose($fo); 
-}
-
-cachedEcho($s,"application/json",true);
+$settings = WebUISettings::load();
+$json = $settings->get();
+CachedEcho::send($json,"application/json",false);

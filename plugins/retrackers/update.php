@@ -4,8 +4,8 @@ if(count($argv)>2)
 	$_SERVER['REMOTE_USER'] = $argv[2];
 
 require_once( 'retrackers.php' );
-require_once( $rootPath.'/php/xmlrpc.php' );
-require_once( $rootPath.'/php/rtorrent.php' );
+require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
+require_once( dirname(__FILE__)."/../../php/rtorrent.php" );
 
 function clearTracker($addition,$tracker)
 {
@@ -29,12 +29,15 @@ function deleteTrackers(&$lst,$todelete)
 	{
 		foreach( $group as $kt=>$trk )
 		{
-			if(in_array($trk,$todelete))
+			foreach ( $todelete as $kd )
 			{
-				unset($lst[$kg][$kt]);
-				if(!count($lst[$kg]))
+				if(stristr($trk,$kd))
+				{
+					unset($lst[$kg][$kt]);
+					if(!count($lst[$kg]))
 					unset($lst[$kg]);
-				$ret = true;
+					$ret = true;
+				}
 			}
 		}
 	}
@@ -74,7 +77,7 @@ if(count($argv)>1)
 				$torrent = new Torrent( $fname );		
 				if( !$torrent->errors() )
 				{
-				        $needToProcessed = true;
+				        $wasAddition = true;
 					$lst = $torrent->announce_list();
 					if(!$lst)
 					{
@@ -90,7 +93,9 @@ if(count($argv)>1)
 							}
 						} 
 						else
-							$needToProcessed = false;
+						{
+							$wasAddition = false;
+						}
 					}
 					else
 					{
@@ -99,20 +104,24 @@ if(count($argv)>1)
 							foreach( $group as $tracker )
 								$addition = clearTracker($addition,$tracker);
 						if(count($addition))
+						{
 							$torrent->announce_list($trks->addToBegin ? array_merge($addition,$lst) : array_merge($lst,$addition));
+						}
 						else
-							$needToProcessed = false;
+						{
+							$wasAddition = false;
+						}
 					}
 
+				        $wasDeletion = false;
 					$lst = $torrent->announce_list();
-					if($lst && count($trks->todelete))
+					if($lst && count($trks->todelete) && deleteTrackers($lst,$trks->todelete))
 					{
-						$needToProcessed = deleteTrackers($lst,$trks->todelete);
-						if($needToProcessed)
-							$torrent->announce_list($lst);
+						$wasDeletion = true;
+						$torrent->announce_list($lst);
 					}
 
-					if($needToProcessed)
+					if($wasAddition || $wasDeletion)
 					{
 						if(isset($torrent->{'rtorrent'}))
 							unset($torrent->{'rtorrent'});

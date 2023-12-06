@@ -3,25 +3,25 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Marco (marco.romanelli@protonmail.ch)
  */
 
- theUILang.tskCommand		= "Running...";
- theUILang.tskCommandDone	= "Done.";
+ theUILang.tskCommand		= "Comando in esecuzione...";
+ theUILang.tskCommandDone	= "Comando terminato.";
  theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostics";
- theUILang.tskBackground	= "Hide";
- theUILang.tskStart		= "Started";
- theUILang.tskFinish		= "Finished";
- theUILang.tskElapsed		= "Elapsed";
+ theUILang.tskErrors		= "Diagnostiche";
+ theUILang.tskBackground	= "Nascondi";
+ theUILang.tskStart		= "Avviato";
+ theUILang.tskFinish		= "Terminato";
+ theUILang.tskElapsed		= "Trascorso";
  theUILang.tskPlugin		= "Plugin";
- theUILang.tskDeletePrompt	= "Do you really want to delete the selected task(s)?";
- theUILang.tskDelete		= "Delete tasks(s)";
- theUILang.tskActivate		= "Activate";
- theUILang.tskRemove		= "Remove";
- theUILang.tskRefresh		= "Refresh";
- theUILang.tskRunning		= "Running";
- theUILang.tskArg		= "Parameter";
- theUILang.tskTasks		= "Tasks";
+ theUILang.tskDeletePrompt	= "Vuoi veramente rimuovere il comando(i) selezionato(i)?";
+ theUILang.tskDelete		= "Rimuovi comando";
+ theUILang.tskActivate		= "Attivare";
+ theUILang.tskRemove		= "Rimuovere";
+ theUILang.tskRefresh		= "Aggiornare";
+ theUILang.tskRunning		= "In esecuzione";
+ theUILang.tskArg		= "Parametro";
+ theUILang.tskTasks		= "Comando";
 
 thePlugins.get("_task").langLoaded();

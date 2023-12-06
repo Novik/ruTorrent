@@ -9,11 +9,11 @@ require_once( "../../php/Torrent.php" );
 function rtDbg( $prefix, $str )
 {
 	if( !$str )
-		toLog( "" );
+		FileUtil::toLog( "" );
 	elseif( $prefix && strlen( $prefix ) > 0 )
-		toLog( $prefix.": ".$str );
+		FileUtil::toLog( $prefix.": ".$str );
 	else
-		toLog( $str );
+		FileUtil::toLog( $str );
 }
 
 
@@ -301,26 +301,29 @@ function rtRemoveDirectory( $path, $with_files = false )
 	$path = rtRemoveTailSlash( $path );
 	if( !file_exists( $path ) || !is_dir( $path ) )
 		return false;
-	$handle = opendir( $path );
 	$empty = true;
-	while( false !== ( $item = readdir( $handle ) ) )
+	$handle = opendir( $path );
+	if($handle !== false)
 	{
-		if( $item == '.' || $item == '..' )
-			continue;
-		$path_to_item = $path.'/'.$item;
-		if( is_dir( $path_to_item ) )
+		while( false !== ( $item = readdir( $handle ) ) )
 		{
-			if( !rtRemoveDirectory( $path_to_item, $with_files ) )
-				$empty = false;
+			if( $item == '.' || $item == '..' )
+				continue;
+			$path_to_item = $path.'/'.$item;
+			if( is_dir( $path_to_item ) )
+			{
+				if( !rtRemoveDirectory( $path_to_item, $with_files ) )
+					$empty = false;
+			}
+			else
+			{
+				if( !$with_files || !@unlink( $path_to_item ) )
+					$empty = false;
+			}
 		}
-		else
-		{
-			if( !$with_files || !unlink( $path_to_item ) )
-				$empty = false;
-		}
+		closedir( $handle );
 	}
-	closedir( $handle );
-	return ( $empty && rmdir( $path ) );
+	return ( $empty && @rmdir( $path ) );
 }
 
 
@@ -393,8 +396,8 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 	$comment = $torrent->comment();
 	if( $comment && strlen( $comment ) > 0 )
 	{
-		if( isInvalidUTF8( $comment ) )
-			$comment = win2utf($comment);
+		if( UTF::isInvalidUTF8( $comment ) )
+			$comment = UTF::win2utf($comment);
 		if( strlen( $comment ) > 0 )
 		{
 			$comment = rtMakeStrParam( "d.set_custom2=VRS24mrker".rawurlencode( $comment ) );

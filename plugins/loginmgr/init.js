@@ -14,7 +14,7 @@ if(plugin.canChangeOptions())
 				$('#'+name+'_lmlogin').val(val.login);
 				$('#'+name+'_lmauto').val(val.auto);
 				$('#'+name+'_lmpassword').val(val.password);
-				$('#'+name+'_lmenabled').change();
+				$('#'+name+'_lmenabled').trigger('change');
 			});
 		}
 		plugin.accaddAndShowSettings.call(theWebUI,arg);
@@ -52,8 +52,8 @@ if(plugin.canChangeOptions())
 		{
 			s+=("&"+name+"_enabled="+($('#'+name+'_lmenabled').prop("checked") ? 1 : 0)+
 				"&"+name+"_auto="+$('#'+name+'_lmauto').val()+
-				"&"+name+"_login="+encodeURIComponent($.trim($('#'+name+'_lmlogin').val()))+
-				"&"+name+"_password="+encodeURIComponent($.trim($('#'+name+'_lmpassword').val())));
+				"&"+name+"_login="+encodeURIComponent($('#'+name+'_lmlogin').val()).trim()+
+				"&"+name+"_password="+encodeURIComponent($('#'+name+'_lmpassword').val()).trim());
 		});
 		this.content = "mode=set"+s;
 	        this.contentType = "application/x-www-form-urlencoded";
@@ -71,7 +71,7 @@ plugin.onLangLoaded = function()
 			"<legend>"+name+"</legend>"+
 			"<table>"+
 				"<tr>"+
-					"<td><input type='checkbox' id='"+name+"_lmenabled' onchange=\"linked(this, 0, ['"+name+"_lmlogin','"+name+"_lmpassword','"+name+"_lmauto']);\"/><label for='"+name+"_enabled' id='lbl_"+name+"_lmenabled'>"+theUILang.Enabled+"</label></td>"+
+					"<td><input type='checkbox' id='"+name+"_lmenabled' onchange=\"linked(this, 0, ['"+name+"_lmlogin','"+name+"_lmpassword','"+name+"_lmauto']);\"/><label for='"+name+"_lmenabled' id='lbl_"+name+"_lmenabled'>"+theUILang.Enabled+"</label></td>"+
 				"</tr>"+
 				"<tr>"+
 					"<td><label id='lbl_"+name+"_lmlogin' for='"+name+"_lmlogin' class='disabled'>"+theUILang.accLogin+":</label></td>"+

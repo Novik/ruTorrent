@@ -189,7 +189,7 @@ plugin.check = function(data)
 		this.foreTimeout = setTimeout( function() 
 		{
 			theWebUI.requestWithoutTimeout("?action=taskcheck&hash="+self.foreground.no,[self.check,self]);
-		},1000);
+		}, theWebUI.settings["webui.update_interval"]);
 	}
 	else
 	{
@@ -311,7 +311,7 @@ rTorrentStub.prototype.tasklist = function()
 if(plugin.canChangeTabs())
 {
 	plugin.tasksConfig = theWebUI.config;
-	theWebUI.config = function(data)
+	theWebUI.config = function()
 	{
         	plugin.attachPageToTabs($('<div>').attr("id","tasks").addClass("table_tab stable").get(0),"Tasks","lcont");
 		theWebUI.tables["tasks"] =  
@@ -366,7 +366,7 @@ if(plugin.canChangeTabs())
 				return(arr);
 			}
 		};
-		plugin.tasksConfig.call(theWebUI,data);	
+		plugin.tasksConfig.call(this);
 		if(!plugin.showTabAlways)
 		{
 			$('li#tab_tasks').hide();		
@@ -547,23 +547,29 @@ plugin.onGetTasks = function(d)
 				if(plugin.background[id] && (plugin.background[id].status<0))
 					plugin.callNotification("Finished",item,true);
 		}
+		var deleted = false;
                	for( var id in plugin.background )
 		{
 			if(!$type(d[id]))
 			{
 				table.removeRow( "tasks_"+id );
 				updated = true;
+				deleted = true;
 			}
 		}
 		plugin.background = d;
 		if(updated)
 		{
+			if(deleted)
+			{
+				table.correctSelection();	
+			}
 			if(!plugin.isInBackground())
 				$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );
 			$('li#tab_tasks').show();
 			$(theWebUI.tables["tasks"].container).show();
 			table.refreshRows();
-			if(table.sIndex !=- 1)
+			if(table.sortId)
 				table.Sort();
 		}
 	}
@@ -606,6 +612,6 @@ plugin.onLangLoaded = function()
 		if(!plugin.cHeight)
 			plugin.cHeight = $('#tskcmderrors').parent().height();
 	});
-	$('#tskBackground').click( plugin.toBackground );
+	$('#tskBackground').on('click', plugin.toBackground );
 	$(".tskconsole").enableSysMenu();
 }

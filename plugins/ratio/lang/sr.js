@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "Уклонити";
  theUILang.ratioEraseData	= "Remove data";
  theUILang.maxTime		= "Time";
- theUILang.ratioDefault 	= "Default ratio group";
+ theUILang.ratioDefault		= "Default ratio group";
  theUILang.setThrottleTo	= "Set channel to";
 
 thePlugins.get("ratio").langLoaded();

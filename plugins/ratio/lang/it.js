@@ -3,24 +3,24 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.ratios		= "Ratio Groups";
+ theUILang.ratios		= "Gruppi Ratio";
  theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set Ratio Group";
+ theUILang.mnuRatio		= "Imposta Gruppo Ratio";
  theUILang.mnuRatioUnlimited	= "No Ratio";
- theUILang.ratioName		= "Name";
+ theUILang.ratioName		= "Nome";
  theUILang.minRatio		= "Min";
  theUILang.maxRatio		= "Max";
  theUILang.ratioUpload		= "UL";
- theUILang.ratioAction		= "Action";
+ theUILang.ratioAction		= "Azione";
  theUILang.ratioStop		= "Stop";
- theUILang.ratioStopAndRemove	= "Stop & Clear group";
- theUILang.ratioErase		= "Remove";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault 	= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.ratioStopAndRemove	= "Stop & ripulisci gruppo";
+ theUILang.ratioErase		= "Rimuovi";
+ theUILang.ratioEraseData	= "Rimuovi dati";
+ theUILang.maxTime		= "Tempo";
+ theUILang.ratioDefault		= "Gruppo Ratio predefinito";
+ theUILang.setThrottleTo	= "Imposta canale su";
 
 thePlugins.get("ratio").langLoaded();

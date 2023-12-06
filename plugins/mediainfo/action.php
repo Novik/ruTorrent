@@ -1,11 +1,12 @@
 <?php
 
 require_once( dirname(__FILE__).'/../_task/task.php' );
-eval( getPluginConf( 'mediainfo' ) );
+eval( FileUtil::getPluginConf( 'mediainfo' ) );
 
 class mediainfoSettings
 {
 	public $hash = "mediainfo.dat";
+	public $modified = false;
 	public $data = array();
 	static public function load()
 	{
@@ -45,7 +46,7 @@ if(isset($_REQUEST['hash']) &&
 					$st = mediainfoSettings::load();
 					$task = new rTask( array
 					( 
-						'arg' => getFileName($filename),					
+						'arg' => FileUtil::getFileName($filename),					
 						'requester'=>'mediainfo',
 						'name'=>'mediainfo', 
 						'hash'=>$_REQUEST['hash'], 
@@ -57,7 +58,7 @@ if(isset($_REQUEST['hash']) &&
 						file_put_contents( $randName, $st->data["mediainfotemplate"] );
 						$flags = "--Inform=file://".escapeshellarg($randName);
 					}
-					$commands[] = getExternal("mediainfo")." ".$flags." ".escapeshellarg($filename);
+					$commands[] = Utility::getExternal("mediainfo")." ".$flags." ".escapeshellarg($filename);
 					$ret = $task->start($commands, rTask::FLG_WAIT);
 				}
 			}
@@ -66,4 +67,4 @@ if(isset($_REQUEST['hash']) &&
 	}
 }
 
-cachedEcho(safe_json_encode($ret),"application/json");
+CachedEcho::send(JSON::safeEncode($ret),"application/json");

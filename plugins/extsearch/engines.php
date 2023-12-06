@@ -1,10 +1,10 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/util.php" );
-require_once( $rootPath.'/php/cache.php');
-require_once( $rootPath.'/php/settings.php');
-require_once( $rootPath.'/php/Snoopy.class.inc');
-eval( getPluginConf( 'extsearch' ) );
+require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/settings.php" );
+require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc");
+eval( FileUtil::getPluginConf( 'extsearch' ) );
 
 class commonEngine
 {
@@ -65,7 +65,7 @@ class commonEngine
 			$name = $cli->get_filename();
 			if($name===false)
 				$name = md5($url).".torrent";
-			$name = getUniqueUploadedFilename($name);
+			$name = FileUtil::getUniqueUploadedFilename($name);
 			$f = @fopen($name,"w");
 			if($f!==false)
 			{
@@ -91,27 +91,31 @@ class commonEngine
 			{
 				case "tib":
 				case "tb":
+				case "tio":
 				case "to":
-				case "òá":
-				case "ÒÁ":
+				case "Ã²Ã¡":
+				case "Ã’Ã":
 					$val*=1024;
 				case "gib":
 				case "gb":
+				case "gio":
 				case "go":
-				case "ãá":
-				case "ÃÁ":
+				case "Ã£Ã¡":
+				case "ÃƒÃ":
 					$val*=1024;
 				case "mib":
 				case "mb":
+				case "mio":
 				case "mo":
-				case "ìá":
-				case "ÌÁ":
+				case "Ã¬Ã¡":
+				case "ÃŒÃ":
 					$val*=1024;
 				case "kib":
 				case "kb":
+				case "kio":
 				case "ko":
-				case "êá":
-				case "ÊÁ":
+				case "ÃªÃ¡":
+				case "ÃŠÃ":
 					$val*=1024;
 			}
 			return($val);
@@ -141,7 +145,7 @@ class commonEngine
 		if(function_exists('utf8_encode'))
 		        $out = utf8_encode($out);
 		else
-		        $out = win2utf($out);
+		        $out = UTF::win2utf($out);
 		return($out);	
 	}
 	static public function fromJSON($str)
@@ -154,6 +158,7 @@ class commonEngine
 class rSearchHistory
 {
 	public $hash = "extsearch_history.dat";
+	public $modified = false;
 	public $lst = array();
 	public $changed = false;
 
@@ -187,7 +192,7 @@ class rSearchHistory
 	}
 	public function pack()
 	{
-		uasort($this->lst, "sortArrayTime");
+		uasort($this->lst, array("Utility", "sortArrayTime"));
 		$cnt = count($this->lst)/2;
 		$i=0;
 		foreach( $this->lst as $key=>$value )
@@ -202,6 +207,7 @@ class rSearchHistory
 class engineManager
 {
 	public $hash = "extsearch.dat";
+	public $modified = false;
 	public $limit = 1000;
 	public $engines = array();
 
@@ -229,7 +235,7 @@ class engineManager
 				if(is_file($dir.'/'.$file))
 				{
 					$name = basename($file,".php");
-					$this->engines[$name] = array( "name"=>$name, "path"=>fullpath($dir.'/'.$file), "object"=>$name."Engine", "enabled"=>true, "global"=>true, "limit"=>100 );
+					$this->engines[$name] = array( "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Engine", "enabled"=>true, "global"=>true, "limit"=>100 );
 					$obj = $this->getObject($name);
 					$this->engines[$name]["enabled"] = intval($obj->defaults["public"]);
 					$this->engines[$name]["public"] = intval($obj->defaults["public"]);
@@ -268,10 +274,10 @@ class engineManager
 		foreach( $this->engines as $name=>$nfo )
 		{
 			$ret.="'".$name."': { enabled: ".intval($nfo["enabled"]). ", global: ".intval($nfo["global"]).
-				", auth: ".intval($nfo["auth"]).", limit: ".$nfo["limit"].", public: ".intval($nfo["public"]). ", cookies: ".quoteAndDeslashEachItem($nfo["cookies"]).", cats: [";
+				", auth: ".intval($nfo["auth"]).", limit: ".$nfo["limit"].", public: ".intval($nfo["public"]). ", cookies: ".Utility::quoteAndDeslashEachItem($nfo["cookies"]).", cats: [";
 			foreach( $nfo["cats"] as $cat=>$prm )
 			{
-				$ret.=quoteAndDeslashEachItem($cat);
+				$ret.=Utility::quoteAndDeslashEachItem($cat);
 				$ret.=',';
 			}
 			$len = strlen($ret);
@@ -310,8 +316,8 @@ class engineManager
 		{
 			if(rTorrentSettings::get()->isPluginRegistered("rss"))
 			{
-				global $rootPath;
-				require_once( $rootPath.'/plugins/rss/rss.php');
+				// Go back to ruTorrent root folder and include rss.php
+				require_once( dirname(__FILE__)."/../../plugins/rss/rss.php");
 				$cache  = new rCache( '/rss/cache' );
 				$rssHistory = new rRSSHistory();
 				if($cache->get($rssHistory))
@@ -362,7 +368,7 @@ class engineManager
 			$nfo["seeds"] = 0;
 		if(empty($nfo["peers"]))
 			$nfo["peers"] = 0;
-		if( isInvalidUTF8( $nfo["name"] ) )
+		if( UTF::isInvalidUTF8( $nfo["name"] ) )
 			$nfo["name"] = commonEngine::toUTF($nfo["name"],"ISO-8859-1");
 	}
 
@@ -435,7 +441,7 @@ class engineManager
 				$object = $this->getObject($engs[$i]);
         			$torrent = $object->getTorrent( $url, $object );
 				if($torrent!==false)
-				{	
+				{
 					global $saveUploadedTorrents;
 					if(($success = rTorrent::sendTorrent($torrent, $isStart, $isAddPath, $directory, $label, $saveUploadedTorrents, $fast))===false)
 						@unlink($torrent);

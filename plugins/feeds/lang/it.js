@@ -3,14 +3,14 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.feedAll		= "All torrents";
- theUILang.feedCompleted	= "Completed torrents";
- theUILang.feedDownloading	= "Downloading torrents";
- theUILang.feedActive		= "Active torrents";
- theUILang.feedInactive 	= "Inactive torrents";
- theUILang.feedError		= "Error torrents";
+ theUILang.feedAll		= "Tutti i torrent";
+ theUILang.feedCompleted	= "Torrent completati";
+ theUILang.feedDownloading	= "Torrent in download";
+ theUILang.feedActive		= "Torrent attivi";
+ theUILang.feedInactive		= "Torrent inattivi";
+ theUILang.feedError		= "Torrent in errore";
 
 thePlugins.get("feeds").langLoaded();

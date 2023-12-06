@@ -3,23 +3,23 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo 	= "Set throttle to";
- theUILang.ratioNewRule 	= "New rule";
+ theUILang.ratioRulesManager	= "Regolatore";
+ theUILang.mnu_ratiorule	= "Regole del Ratio";
+ theUILang.ratAddRule		= "Aggiungi";
+ theUILang.ratDelRule		= "Cancella";
+ theUILang.ratUpRule		= "Su";
+ theUILang.ratDownRule		= "Giù";
+ theUILang.ratioIfLegend	= "Se";
+ theUILang.ratLabelContain	= "L'etichetta del torrent contiene";
+ theUILang.ratTrackerContain	= "Uno degli indirizzi dei tracker contiene";
+ theUILang.ratTrackerPublic	= "Tutti i tracker del torrent sono pubblici";
+ theUILang.ratTrackerPrivate	= "Uno dei tracker del torrent è privato";
+ theUILang.ratioThenLegend	= "Allora";
+ theUILang.setRatioTo		= "Imposta ratio a";
+ theUILang.setChannelTo		= "Imposta limite a";
+ theUILang.ratioNewRule		= "Nuova regola";
 
 thePlugins.get("extratio").langLoaded();

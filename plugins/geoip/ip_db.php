@@ -10,8 +10,8 @@ class ipDB
 
 	public function __construct()
 	{
-		$pathToDatabase = getSettingsPath().'/'.sqlite_db_name();
-		@makeDirectory( dirname($pathToDatabase) );
+		$pathToDatabase = FileUtil::getSettingsPath().'/'.sqlite_db_name();
+		@FileUtil::makeDirectory( dirname($pathToDatabase) );
 		$needCreate = (!is_readable($pathToDatabase));
 		if( $this->handle = sqlite_open1($pathToDatabase, 0666, $this->error) )
 		{
@@ -54,7 +54,7 @@ class ipDB
 		$comment = self::trunc($comment);
 		$ip = "'".sqlite_escape_string1($ip)."'";
 		if( $comment=='' )
-			sqlite_exec($this->handle, "delete from comments where ip=".$ip,
+			sqlite_exec1($this->handle, "delete from comments where ip=".$ip,
 				$this->error);
 		else
 		{

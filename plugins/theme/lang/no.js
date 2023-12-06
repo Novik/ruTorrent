@@ -3,7 +3,7 @@
  *
  * Norwegian language file.
  *
- * Author: nirosa (nirosax@gmail.com)
+ * Author:
  */
 
  theUILang.themeStandard	= "Standard";

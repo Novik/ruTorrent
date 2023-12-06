@@ -3,7 +3,7 @@
  *
  * Swedish language file.
  *
- * Author: Magnus Holm (holmen@brasse.se) 
+ * Author: Magnus Holm (holmen@brasse.se)
  */
 
  theUILang.ratioRulesManager	= "Regelhanterare";
@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "En av torrentens trackers är privat";
  theUILang.ratioThenLegend	= "Då";
  theUILang.setRatioTo		= "Sätt ratio till";
- theUILang.setChannelTo 	= "Sätt strypning till";
- theUILang.ratioNewRule 	= "Ny regel";
+ theUILang.setChannelTo		= "Sätt strypning till";
+ theUILang.ratioNewRule		= "Ny regel";
 
 thePlugins.get("extratio").langLoaded();

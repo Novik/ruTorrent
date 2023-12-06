@@ -14,7 +14,6 @@
  theUILang.countryName		= "Страна";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Остров Вознесения";
  theUILang.country[ "ad" ] = "Андорра";
  theUILang.country[ "ae" ] = "ОАЭ";
  theUILang.country[ "af" ] = "Афганистан";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "Ангилья";
  theUILang.country[ "al" ] = "Албания";
  theUILang.country[ "am" ] = "Армения";
- theUILang.country[ "an" ] = "Нидерландские Антильские острова";
  theUILang.country[ "ao" ] = "Ангола";
  theUILang.country[ "aq" ] = "Антарктида";
  theUILang.country[ "ar" ] = "Аргентина";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "Бахрейн";
  theUILang.country[ "bi" ] = "Бурунди";
  theUILang.country[ "bj" ] = "Бенин";
+ theUILang.country[ "bl" ] = "Сен-Бартелеми";
  theUILang.country[ "bm" ] = "Бермуды";
  theUILang.country[ "bn" ] = "Бруней";
  theUILang.country[ "bo" ] = "Боливия";
@@ -156,9 +155,10 @@
  theUILang.country[ "mc" ] = "Монако";
  theUILang.country[ "md" ] = "Молдавия";
  theUILang.country[ "me" ] = "Черногория";
+ theUILang.country[ "mf" ] = "Сен-Мартен";
  theUILang.country[ "mg" ] = "Мадагаскар";
  theUILang.country[ "mh" ] = "Маршалловы Острова";
- theUILang.country[ "mk" ] = "Македония";
+ theUILang.country[ "mk" ] = "Северная Македония";
  theUILang.country[ "ml" ] = "Мали";
  theUILang.country[ "mm" ] = "Мьянма";
  theUILang.country[ "mn" ] = "Монголия";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "Суринам";
  theUILang.country[ "ss" ] = "Южный Судан";
  theUILang.country[ "st" ] = "Сан-Томе и Принсипи";
- theUILang.country[ "su" ] = "Россия";
  theUILang.country[ "sv" ] = "Сальвадор";
  theUILang.country[ "sx" ] = "Синт-Мартен";
  theUILang.country[ "sy" ] = "Сирия";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "Танзания";
  theUILang.country[ "ua" ] = "Украина";
  theUILang.country[ "ug" ] = "Уганда";
- theUILang.country[ "uk" ] = "Великобритания";
+ theUILang.country[ "um" ] = "Внешние малые острова США";
  theUILang.country[ "un" ] = "Неизвестно";
  theUILang.country[ "us" ] = "США";
  theUILang.country[ "uy" ] = "Уругвай";

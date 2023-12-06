@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.EditTrackers 		= "Editar Torrent...";
+ theUILang.EditTrackers			= "Editar Torrent...";
  theUILang.EditTorrentProperties	= "Propiedades del Torrent";
  theUILang.errorAddTorrent		= "Error al agregar el torrent";
  theUILang.errorWriteTorrent		= "Error al escribir el torrent";

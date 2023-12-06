@@ -3,7 +3,7 @@
  *
  * Swedish language file.
  *
- * Author: Magnus Holm (holmen@brasse.se) 
+ * Author: Magnus Holm (holmen@brasse.se)
  */
 
  theUILang.tegMenuLoad			= "Ladda";
@@ -29,7 +29,7 @@
  theUILang.extPrivate			= "Privat";
  theUILang.extPublic			= "Offentlig";
  theUILang.exsCookies			= "Cookieformat";
- theUILang.extAllPublic 		= "Alla offentliga";
+ theUILang.extAllPublic			= "Alla offentliga";
  theUILang.extAllPrivate		= "Alla Privata";
  theUILang.exsMustInstallCookies	= "Cookies-insticksprogram krävs för att denna sökmotor ska fungera.";
  theUILang.exsMustInstallLoginMgr	= "LoginMgr-insticksprogram krävs för att denna sökmotor ska fungera.";

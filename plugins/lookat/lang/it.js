@@ -3,10 +3,10 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.lookAtDesc = "Find at (Format: name|url)";
- theUILang.lookAt = "Find at";
+ theUILang.lookAtDesc		= "Cerca in (Formato: nome|url)";
+ theUILang.lookAt		= "Cerca in";
 
 thePlugins.get("lookat").langLoaded();

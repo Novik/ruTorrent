@@ -3,7 +3,7 @@
  *
  * Swedish language file.
  *
- * Author: Magnus Holm	(holmen@brasse.se) 
+ * Author: Magnus Holm	(holmen@brasse.se)
  */
 
  theUILang.unpack		= "Packa upp";

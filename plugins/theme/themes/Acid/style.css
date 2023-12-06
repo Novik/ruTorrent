@@ -19,6 +19,8 @@ ul.CMenu li:hover ul li a {background-color: #272E36; color: #00FF00}
 ul.CMenu li:hover ul li a:hover {background-color: #BDDBDB; color: #272E36;}
 
 div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
+.graph_tab_legend { color: #FFF; background-color: #272E36; }
+.graph_tab_tooltip { color: #FFF; background-color: #272E36; border: 1px solid #BDDBDB; }
 
 div#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
 div#t a:hover {background: transparent url(./images/tb_bg.gif) no-repeat scroll center center}
@@ -42,15 +44,6 @@ input.Button { background: #D7D7D7 url(./images/h.gif) repeat-x center bottom; }
 div#CatList { background-color: #272E36; color: #BDDBDB;}
 div#CatList ul li { border: 1px solid #272E36; font-weight: bold; }
 div#CatList ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; color: #272E36;}
-#-_-_-all-_-_-, #-_-_-dls-_-_-, #-_-_-com-_-_-, #-_-_-act-_-_-, #-_-_-iac-_-_-, #-_-_-err-_-_- {background-image: url(./images/tstatus.png)}
-#-_-_-all-_-_- {background-position: 4px -174px;}
-#-_-_-dls-_-_- {background-position: 4px 2px;}
-#-_-_-com-_-_- {background-position: 4px -14px;}
-#-_-_-act-_-_- {background-position: 4px -158px;}
-#-_-_-iac-_-_- {background-position: 4px -30px;}
-#-_-_-err-_-_- {background-position: 4px -94px;}
-div#CatList ul li.RSS {background-image: url(./images/tstatus.png); }
-div#CatList ul li.disRSS {background-image: url(./images/tstatus.png); }
 
 .stable-icon {background-image: url(./images/tstatus.png); }
 
@@ -104,6 +97,9 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
 .catpanel { background: url(./images/pnl_open.gif) 2px no-repeat; background-color: #1e2124; color: #00ff00; font-weight: bold;}
+.pview_custom_view .label-icon { color: #1e2124; background-color: #00ff00;}
+.label-count,.label-size,.pview_custom_view .label-icon { background-color: #1e2124; }
+li.sel .label-count,li.sel .label-size { background-color: #909090; }
 
 div#tadd-header {background-image: url(./images/world.gif); }
 div#tadd { background-color: #1e2124; border: 2px solid #909090; color: #BDDBDB;}

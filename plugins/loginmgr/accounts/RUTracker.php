@@ -2,7 +2,7 @@
 
 class ruTrackerAccount extends commonAccount
 {
-	public $url = "https://rutracker.net";
+	public $url = "https://rutracker.org";
 
 	protected function isOK($client)
 	{
@@ -11,9 +11,9 @@ class ruTrackerAccount extends commonAccount
 	protected function updateCached($client,&$url,&$method,&$content_type,&$body)
 	{
 		$id = $this->getDownloadId($url);
-                if($id!==false)
+		if($id!==false)
 		{
-			$client->referer = "https://rutracker.net/forum/viewtopic.php?t=".$id;	
+			$client->referer = "https://rutracker.org/forum/viewtopic.php?t=".$id;
 			$client->cookies["bb_dl"]=$id;
 			$method = "POST";
 			$content_type = "application/x-www-form-urlencoded";
@@ -34,15 +34,15 @@ class ruTrackerAccount extends commonAccount
 		if($id===false)
 		{
 			$redirect = $url;
-			$referer = "https://rutracker.net/forum/index.php";
+			$referer = "https://rutracker.org/forum/index.php";
 			$is_result_fetched = true;
 		}
 		else
 		{
-			$redirect = "https://rutracker.net/forum/viewtopic.php?t=".$id;
-			$referer = "https://rutracker.net/forum/viewtopic.php?t=".$id;
+			$redirect = "https://rutracker.org/forum/viewtopic.php?t=".$id;
+			$referer = "https://rutracker.org/forum/viewtopic.php?t=".$id;
 		}
-		if($client->fetch( $this->url."/forum/login.php","POST","application/x-www-form-urlencoded", 
+		if($client->fetch( $this->url."/forum/login.php","POST","application/x-www-form-urlencoded",
 			"redirect=".rawurlencode($redirect)."&login_username=".rawurlencode($login)."&login_password=".rawurlencode($password)."&login=%C2%F5%EE%E4" ))
 		{
 			$client->setcookies();
@@ -60,6 +60,6 @@ class ruTrackerAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)rutracker.(org|cr|net|nl)\/forum\//si", $url ));
+		return(preg_match( "/(\.|\/)rutracker\.(org|cr|net|nl)\/forum\//si", $url ));
 	}
 }

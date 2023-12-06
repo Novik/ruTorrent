@@ -3,11 +3,12 @@
 require_once( dirname(__FILE__).'/../_task/task.php' );
 require_once( dirname(__FILE__).'/../../php/Torrent.php' );
 require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
-eval( getPluginConf( 'create' ) );
+eval( FileUtil::getPluginConf( 'create' ) );
 
 class recentTrackers
 {
 	public $hash = "rtrackers.dat";
+	public $modified = false;
 	public $list = array();
 
 	static public function load()
@@ -23,6 +24,12 @@ class recentTrackers
 		$this->strip();
 		return($cache->set($this));
 	}
+	public function delete($trk)
+	{
+		$cache = new rCache();
+		$this->list = $trk;
+		return($cache->set($this));
+	}
 	public function get()
 	{
 		$ret = array();
@@ -34,7 +41,19 @@ class recentTrackers
 	{
 		global $recentTrackersMaxCount;
 		$this->list = array_values( array_unique($this->list) );
-		$cnt = count($this->list)-$recentTrackersMaxCount;
+		$cnt = count($this->list);
+		$arr = array_values($this->list);
+		$lastAnn = self::getTrackerDomain(end($arr));
+		$i = 0;
+		foreach( $this->list as $ann )
+		{
+			if( ($i + 1) === $cnt )
+				break;
+			if( self::getTrackerDomain($ann) === $lastAnn )
+				array_splice($this->list,$i,1);
+			$i = $i + 1;
+		}
+		$cnt = $cnt-$recentTrackersMaxCount;
 		if($cnt>0)
 			array_splice($this->list,0,$cnt);
 	}
@@ -70,6 +89,25 @@ if(isset($_REQUEST['cmd']))
 			$ret = $rt->get();
 			break;
 		}
+		case "rtdelete":
+		{
+			if(isset($_REQUEST['trackers']))
+			{
+				$rt = recentTrackers::load();
+				$trk = array();
+				$arr = explode("\r",$_REQUEST['trackers']);
+				foreach( $arr as $key => $value )
+				{
+					$value = trim($value);
+					if(strlen($value))
+						$trk[] = $value;
+				}
+				$newList = array_diff($rt->list,$trk);
+				if( $newList !== $rt->list )
+					$ret = $rt->delete($newList);
+			}
+			break;
+		}
 		case "create":
 		{
 			$error = "Invalid parameters";
@@ -77,11 +115,11 @@ if(isset($_REQUEST['cmd']))
 		        {
 		        	$path_edit = trim($_REQUEST['path_edit']);
 				if(is_dir($path_edit))
-					$path_edit = addslash($path_edit);
+					$path_edit = FileUtil::addslash($path_edit);
 		        	if(rTorrentSettings::get()->correctDirectory($path_edit))
 				{
 					$rt = recentTrackers::load();
-					$trackers = array(); 
+					$trackers = array();
 					$announce_list = '';
 					if(isset($_REQUEST['trackers']))
 					{
@@ -114,34 +152,39 @@ if(isset($_REQUEST['cmd']))
 						$pathToCreatetorrent = $useExternal;
 					if($useExternal=="mktorrent")
 						$piece_size = log($piece_size,2);
-					else
+					if(isset($_REQUEST['hybrid']))
+						$hybrid = TRUE;
 					if($useExternal===false)
 						$useExternal = "inner";
 					$task = new rTask( array
-					( 
-						'arg' => getFileName($path_edit),
+					(
+						'arg' => FileUtil::getFileName($path_edit),
 						'requester'=>'create',
-						'name'=>'create', 
+						'name'=>'create',
 						'path_edit'=>$_REQUEST['path_edit'],
 						'trackers'=>$_REQUEST['trackers'],
 						'comment'=>$_REQUEST['comment'],
 						'source'=>$_REQUEST['source'],
 						'start_seeding'=>$_REQUEST['start_seeding'],
 						'piece_size'=>$_REQUEST['piece_size'],
-						'private'=>$_REQUEST['private']
+						'private'=>$_REQUEST['private'],
+						'hybrid'=>$_REQUEST['hybrid']
 					) );
 					$commands = array();
+
 					$commands[] = escapeshellarg($rootPath.'/plugins/create/'.$useExternal.'.sh')." ".
-						$task->id." ".
-						escapeshellarg(getPHP())." ".
-						escapeshellarg($pathToCreatetorrent)." ".
-						escapeshellarg($path_edit)." ".
-						$piece_size." ".
-						escapeshellarg(getUser())." ".
-						escapeshellarg(rTask::formatPath($task->id));
+					$task->id." ".
+					escapeshellarg(Utility::getPHP())." ".
+					escapeshellarg($pathToCreatetorrent)." ".
+					escapeshellarg($path_edit)." ".
+					$piece_size." ".
+					escapeshellarg(User::getUser())." ".
+					escapeshellarg(rTask::formatPath($task->id))." ".
+					escapeshellarg($hybrid);
+
 					$commands[] = '{';
 					$commands[] = 'chmod a+r "${dir}"/result.torrent';
-					$commands[] = '}';						
+					$commands[] = '}';
 					$ret = $task->start($commands, 0);
 					break;
 				}
@@ -164,4 +207,4 @@ if(isset($_REQUEST['cmd']))
 	}
 }
 
-cachedEcho(safe_json_encode($ret),"application/json");
+CachedEcho::send(JSON::safeEncode($ret),"application/json");

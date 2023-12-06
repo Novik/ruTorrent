@@ -19,7 +19,7 @@
  theUILang.ratTrackerPrivate	= "Один із трекерів завантаження приватний";
  theUILang.ratioThenLegend	= "То";
  theUILang.setRatioTo		= "Установити коефіцієнт";
- theUILang.setChannelTo 	= "Установити канал";
- theUILang.ratioNewRule 	= "Нове правило";
+ theUILang.setChannelTo		= "Установити канал";
+ theUILang.ratioNewRule		= "Нове правило";
 
 thePlugins.get("extratio").langLoaded();

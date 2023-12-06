@@ -117,11 +117,11 @@ plugin.allDone = function()
 
 	$('input[type="text"],input[type="password"],input[type="file"],select,textarea').each( function()
 	{
-		$(this).focus( function()
+		$(this).on('focus', function()
 		{
 			$(this).css( { "border-color": "#7eadd9" } );
 		});
-		$(this).blur( function()
+		$(this).on('blur', function()
 		{
 			$(this).css( { "border-color": "#b5b8c8" } );
 		});

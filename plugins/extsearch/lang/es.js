@@ -29,7 +29,7 @@
  theUILang.extPrivate			= "Privado";
  theUILang.extPublic			= "Público";
  theUILang.exsCookies			= "Formato de cookies";
- theUILang.extAllPublic 		= "Todos públicos";
+ theUILang.extAllPublic			= "Todos públicos";
  theUILang.extAllPrivate		= "Todos privados";
  theUILang.exsMustInstallCookies	= "El plugin Cookies es requerido para este motor de búsqueda.";
  theUILang.exsMustInstallLoginMgr	= "El plugin LoginMgr es requerido para este motor de búsqueda.";

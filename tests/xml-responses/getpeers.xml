@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+<params>
+<param><value><array><data>
+<value><array><data>
+<value><string>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string></value>
+<value><string>111.111.111.111</string></value>
+<value><string>Transmission 2.9.4.0</string></value>
+<value><i8>1</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+<value><i8>95</i8></value>
+<value><i8>0</i8></value>
+<value><i8>222222222</i8></value>
+<value><i8>0</i8></value>
+<value><i8>2121</i8></value>
+<value><string></string></value>
+<value><i8>222222222</i8></value>
+<value><i8>111111111111</i8></value>
+<value><i8>1212</i8></value>
+</data></array></value>
+<value><array><data>
+<value><string>YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY</string></value>
+<value><string>222.222.222.222</string></value>
+<value><string>Transmission 2.9.4.0</string></value>
+<value><i8>1</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+<value><i8>95</i8></value>
+<value><i8>0</i8></value>
+<value><i8>111111111</i8></value>
+<value><i8>0</i8></value>
+<value><i8>2121</i8></value>
+<value><string></string></value>
+<value><i8>22222222</i8></value>
+<value><i8>111111111111</i8></value>
+<value><i8>1212</i8></value>
+</data></array></value>
+</data></array></value></param>
+</params>
+</methodResponse>

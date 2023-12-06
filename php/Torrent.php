@@ -387,7 +387,9 @@ class Torrent
 	 */
 	public function save( $filename = null ) 
 	{
-	        $this->filename = is_null( $filename ) ? $this->info['name'] . '.torrent' : $filename;
+	        $this->filename = is_null( $filename ) ? 
+	        	FileUtil::getTempFilename($this->info['name'], 'torrent') : 
+	        	$filename;
         	return file_put_contents( $this->filename, $this->__toString() );
 	}
 
@@ -402,7 +404,7 @@ class Torrent
 		if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 			$filename = rawurlencode($filename);
         	header( 'Content-Disposition: attachment; filename="'.$filename.'"' );
-        	cachedEcho( $this->__toString(), 'application/x-bittorrent', true );
+        	CachedEcho::send( $this->__toString(), 'application/x-bittorrent', true );
     	}
 
 	/** Build torrent info

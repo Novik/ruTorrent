@@ -3,18 +3,18 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.exFFMPEG		= "Screenshots";
- theUILang.exFrameWidth 	= "Frame width";
- theUILang.exFramesCount	= "Frames count";
- theUILang.exStartOffset	= "Start frame offset";
- theUILang.exBetween		= "Time between frames";
- theUILang.exSave		= "Save";
- theUILang.exSaveAll		= "Save all";
- theUILang.exScreenshot 	= "Screenshot";
- theUILang.exPlayInterval	= "Slideshow interval";
- theUILang.exImageFormat	= "Image format";
+ theUILang.exFFMPEG		= "Screenshot";
+ theUILang.exFrameWidth		= "Larghezza riquadro";
+ theUILang.exFramesCount	= "Conteggio riquadri";
+ theUILang.exStartOffset	= "Distanza di inizio riquadro";
+ theUILang.exBetween		= "Tempo tra due riquadri";
+ theUILang.exSave		= "Salva";
+ theUILang.exSaveAll		= "Salva tutto";
+ theUILang.exScreenshot		= "Screenshot";
+ theUILang.exPlayInterval	= "Intervallo Slideshow";
+ theUILang.exImageFormat	= "Formato immagine";
 
 thePlugins.get("screenshots").langLoaded();

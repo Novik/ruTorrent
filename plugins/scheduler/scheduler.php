@@ -1,8 +1,8 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
-require_once( $rootPath.'/php/cache.php');
-eval(getPluginConf('scheduler'));
+require_once( dirname(__FILE__)."/../../php/cache.php" );
+eval(FileUtil::getPluginConf('scheduler'));
 
 @define('SCH_FAST', 0);
 @define('SCH_STOP', 1);
@@ -14,6 +14,7 @@ eval(getPluginConf('scheduler'));
 class rScheduler
 {
 	public $hash = "scheduler.dat";
+	public $modified = false;
 	public $enabled = 0;
 	public $UL = array();
 	public $DL = array();

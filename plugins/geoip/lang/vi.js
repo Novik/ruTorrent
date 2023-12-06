@@ -14,7 +14,6 @@
  theUILang.countryName		= "Quốc Gia";
 
  theUILang.country = new Array();
- theUILang.country[ "ac" ] = "Đảo Ascension";
  theUILang.country[ "ad" ] = "Andorra";
  theUILang.country[ "ae" ] = "Các tiểu Vương Quốc Ả Rập Thống Nhất";
  theUILang.country[ "af" ] = "Afghanistan";
@@ -22,7 +21,6 @@
  theUILang.country[ "ai" ] = "Anguilla";
  theUILang.country[ "al" ] = "Albania";
  theUILang.country[ "am" ] = "Armenia";
- theUILang.country[ "an" ] = "Antille thuộc Hà Lan";
  theUILang.country[ "ao" ] = "Angola";
  theUILang.country[ "aq" ] = "Nam Cực";
  theUILang.country[ "ar" ] = "Argentina";
@@ -41,6 +39,7 @@
  theUILang.country[ "bh" ] = "Bahrain";
  theUILang.country[ "bi" ] = "Burundi";
  theUILang.country[ "bj" ] = "Bénin";
+ theUILang.country[ "bl" ] = "Saint-Barthélemy";
  theUILang.country[ "bm" ] = "Bermuda";
  theUILang.country[ "bn" ] = "Brunei";
  theUILang.country[ "bo" ] = "Bolivia";
@@ -156,9 +155,10 @@
  theUILang.country[ "mc" ] = "Monaco";
  theUILang.country[ "md" ] = "Moldova";
  theUILang.country[ "me" ] = "Montenegro";
+ theUILang.country[ "mf" ] = "Saint-Martin";
  theUILang.country[ "mg" ] = "Madagascar";
  theUILang.country[ "mh" ] = "Quần đảo Marshall";
- theUILang.country[ "mk" ] = "Macedonia";
+ theUILang.country[ "mk" ] = "Bắc Macedonia";
  theUILang.country[ "ml" ] = "Mali";
  theUILang.country[ "mm" ] = "Myanmar";
  theUILang.country[ "mn" ] = "Mông Cổ";
@@ -224,7 +224,6 @@
  theUILang.country[ "sr" ] = "Suriname";
  theUILang.country[ "ss" ] = "Nam Sudan";
  theUILang.country[ "st" ] = "São Tomé và Príncipe";
- theUILang.country[ "su" ] = "Nga";
  theUILang.country[ "sv" ] = "El Salvador";
  theUILang.country[ "sx" ] = "Sint Maarten";
  theUILang.country[ "sy" ] = "Syria";
@@ -247,7 +246,7 @@
  theUILang.country[ "tz" ] = "Tanzania";
  theUILang.country[ "ua" ] = "Ukraina";
  theUILang.country[ "ug" ] = "Uganda";
- theUILang.country[ "uk" ] = "Vương Quốc Anh";
+ theUILang.country[ "um" ] = "Các tiểu đảo xa của Hoa Kỳ";
  theUILang.country[ "un" ] = "Không rõ";
  theUILang.country[ "us" ] = "Hoa Kỳ";
  theUILang.country[ "uy" ] = "Uruguay";

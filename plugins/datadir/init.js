@@ -6,7 +6,7 @@ theWebUI.EditDataDir = function()
 	var id = theWebUI.getTable("trt").getFirstSelected();
 	if( id && (id.length==40) && this.torrents[id] )
 	{
-	        var save_path = $.trim(this.torrents[id].save_path)
+	        var save_path = this.torrents[id].save_path.trim();
 		if( !save_path.length ) // torrent is not open
 			this.request( "?action=getsavepath&hash=" + id, [this.showDataDirDlg, this] );
 		else
@@ -21,16 +21,16 @@ theWebUI.showDataDirDlg = function( d )
 	var is_multy = false;
 	if( id && (id.length==40) && this.torrents[id] )
 	{
-		is_done = $.trim(this.torrents[id].done) == 1000;
-		is_multy = $.trim(this.torrents[id].multi_file) != "0";
+		is_done = String(this.torrents[id].done).trim() === "1000";
+		is_multy = String(this.torrents[id].multi_file).trim() !== "0";
 	}
-	$('#edit_datadir').val( $.trim(d.savepath) );
+	$('#edit_datadir').val( d.savepath.trim() );
 	$('#btn_datadir_ok').prop("disabled",false);
 	// can't ignore torrent's path if not multy
 	$('#move_not_add_path').prop("disabled",!is_multy).prop("checked",false);
 	$('#move_datafiles').prop("checked",true);
 	// can't "fast resume" torrent if not completed
-	$('#move_fastresume').prop("disabled",!is_done).prop("checked",is_done);
+	$('#move_fastresume').prop("disabled",!is_done).prop("checked",false);
 	theDialogManager.show( "dlg_datadir" );
 }
 
@@ -56,7 +56,7 @@ rTorrentStub.prototype.getsavepathResponse = function( xml )
 	var save_path = '';
 	if(torrent)
 	{
-		torrent.base_path = this.getValue( values, 3 );
+		torrent.base_path = this.getXMLValue( values, 3 );
 		var pos = torrent.base_path.lastIndexOf('/');
 		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ? 
 			torrent.base_path.substring(0,pos) : torrent.base_path;

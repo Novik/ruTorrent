@@ -107,9 +107,9 @@ var theDialogManager =
 		var checkForButtons = function me(val)
 		{
 			if(val.hasClass("Cancel"))
-				val.click( function() { theDialogManager.hide(id); } );
+				val.on('click', function() { theDialogManager.hide(id); } );
 			if(val.hasClass("Button"))
-				$(val).focus( function() { this.blur(); } );
+				$(val).on('focus', function() { this.blur(); } );
 			val.children().each( function(ndx,val) { me($(val)) } );
 		};
 		checkForButtons(obj);
@@ -120,14 +120,14 @@ var theDialogManager =
 			var c = $(obj).offset();
 			return((obj.scrollHeight > obj.clientHeight) && (x>obj.clientWidth+c.left));
 		};
-		obj.mousedown( function(e) 
+		obj.on('mousedown', function(e) 
 		{
 			if( (!browser.isOpera || !inScrollBarArea(e.target,e.clientX,e.clientY)) && !theDialogManager.modalState )
 				self.bringToTop(this.id);
-		}).attr("tabindex","0").keypress( function (e)
+		}).attr("tabindex","0").on('keypress', function (e)
 		{
 			if((e.keyCode==13) && !(e.target && e.target.tagName && (/^textarea$/i).test(e.target.tagName)) && !$('#'+id+' .OK').prop('disabled'))
-				$('#'+id+' .OK').click();
+				$('#'+id+' .OK').trigger('click');
 		});
 
 //		this.center(id);
@@ -215,7 +215,7 @@ var theDialogManager =
 		}
 		$('#'+id).css("z-index",++theDialogManager.maxZ);
 		if(!browser.isOpera)
-			$('#'+id).focus();
+			$('#'+id).trigger('focus');
 	},
 	hideTopmost: function()
 	{
@@ -241,8 +241,8 @@ var theContextMenu =
         init: function()
 	{
 		var self = this;
-		$(document).mousemove( function(e) { self.mouse.x = e.clientX; self.mouse.y = e.clientY; } );
-		$(document).mouseup( function(e)
+		$(document).on('mousemove', function(e) { self.mouse.x = e.clientX; self.mouse.y = e.clientY; } );
+		$(document).on('mouseup', function(e)
 		{
 			var ele = $(e.target);
 			if(e.which == 3) 
@@ -324,10 +324,10 @@ var theContextMenu =
 		 	        	var a = $("<a></a>").addClass("sel menu-cmd").text(val[1]);
 			 	        switch($type(val[2]))
 			 	        {
-						case "string": a.attr("href","javascript://void();").click( function() { eval(val[2]) } ); break;
-						case "function": a.attr("href","javascript://void();").click(val[2]); break;
+						case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[2]) } ); break;
+						case "function": a.attr("href","javascript://void();").on('click', val[2]); break;
 					}
-					li.append(a.focus( function() { this.blur(); } ));
+					li.append(a.on('focus', function() { this.blur(); } ));
 				}
 				else
 				{
@@ -337,10 +337,10 @@ var theContextMenu =
 						switch($type(val[1]))
 						{
 				 	        	case false: a.addClass("dis"); break;
-							case "string": a.attr("href","javascript://void();").click( function() { eval(val[1]) } ); break;
-							case "function": a.attr("href","javascript://void();").click(val[1]); break;
+							case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[1]) } ); break;
+							case "function": a.attr("href","javascript://void();").on('click', val[1]); break;
 						}
-						li.append(a.focus( function() { this.blur(); } ));
+						li.append(a.on('focus', function() { this.blur(); } ));
 					}
 				}
 				if(aft)
@@ -372,16 +372,23 @@ var theContextMenu =
 		if(y<0)
 			y = 0;
 		obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
-                $("ul.CMenu a.exp").hover( function() 
-                { 
-                	var submenu = $(this).next();
-                	if(submenu.offset().left + submenu.width() > $(window).width()) 
-	                	submenu.css( "left", -150 );
-                	if(submenu.offset().top + submenu.height() > $(window).height()) 
-	                	submenu.css( "top", -submenu.height()+20 );
-	                if(submenu.offset().top<0)
-				submenu.css( "top", -submenu.height()+20-submenu.offset().top );
-                });
+		obj.children("li").on( 'mouseenter', function() {
+			var submenu = $(this).children("ul");
+			if (submenu.length) {
+				if(submenu.offset().left + submenu.width() > $(window).width())
+					submenu.css( "left", -150 );
+				if(submenu.offset().top + submenu.height() > $(window).height())
+					submenu.css( "top", -submenu.height()+20 );
+				if(submenu.offset().top<0)
+					submenu.css( "top", -submenu.height()+20-submenu.offset().top );
+				if ($(window).height() < submenu.offset().top + submenu.height())
+					submenu.css( { "padding-right": 12, "max-height": $(window).height() - submenu.offset().top, overflow: "visible scroll" } );
+			}
+		}).on( 'mouseleave', function () {
+			var submenu = $(this).children("ul");
+			if (submenu.length)
+				submenu.css( { "padding-right": 0, "max-height": "none", overflow: "visible" } );
+		});
                 obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
 	},
 	hide: function()

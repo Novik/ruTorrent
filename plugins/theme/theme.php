@@ -1,11 +1,12 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/cache.php" );
-eval( getPluginConf( 'theme' ) );
+eval( FileUtil::getPluginConf( 'theme' ) );
 
 class rTheme
 {
 	public $hash = "theme.dat";
+	public $modified = false;
 	public $current = "";
 
 	static public function load()

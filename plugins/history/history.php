@@ -4,11 +4,12 @@ require_once( dirname(__FILE__).'/../../php/cache.php');
 require_once( dirname(__FILE__).'/../../php/util.php');
 require_once( dirname(__FILE__).'/../../php/settings.php');
 require_once( dirname(__FILE__).'/../../php/Snoopy.class.inc');
-eval(getPluginConf('history'));
+eval(FileUtil::getPluginConf('history'));
 
 class rHistoryData
 {
 	public $hash = 'history_data.dat';
+	public $modified = false;
 	public $data = array();
 
 	static public function load()
@@ -46,7 +47,8 @@ class rHistoryData
 		{
 			$keys = array_keys($this->data);
 			$values = array_values($this->data);
-			$this->data = array_combine(array_splice($keys,$count-1),array_splice($values,$count-1));
+			$offset = $limit / 2;
+			$this->data = array_combine(array_splice($keys,0,$offset),array_splice($values,0,$offset));
 		}
 		$this->store();
 	}
@@ -65,6 +67,7 @@ class rHistoryData
 class rHistory
 {
 	public $hash = "history.dat";
+	public $modified = false;
 	public $log = array
 	( 
 		"addition"=>1, 
@@ -125,47 +128,47 @@ class rHistory
 	}
 	public function get()
 	{
-		return("theWebUI.history = ".safe_json_encode($this->log).";");
+		return("theWebUI.history = ".JSON::safeEncode($this->log).";");
 	}
 	public function setHandlers()
 	{
 		global $rootPath;
 		if($this->log["addition"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_addition"]))
 		{
-			$addCmd = getCmd('execute').'={'.getPHP().','.$rootPath.'/plugins/history/update.php'.',1,$'.
+			$addCmd = getCmd('execute.nothrow.bg').'={'.Utility::getPHP().','.$rootPath.'/plugins/history/update.php'.',1,$'.
 				getCmd('d.get_name').'=,$'.getCmd('d.get_size_bytes').'=,$'.getCmd('d.get_bytes_done').'=,$'.
 				getCmd('d.get_up_total').'=,$'.getCmd('d.get_ratio').'=,$'.getCmd('d.get_creation_date').'=,$'.
 				getCmd('d.get_custom').'=addtime,$'.getCmd('d.get_custom').'=seedingtime'.
 				',"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#",$'.
 				getCmd('d.get_custom1')."=,$".getCmd('d.get_custom')."=x-pushbullet,".
-				getUser().'}';
+				User::getUser().'}';
 		}				
 		else
 			$addCmd = getCmd('cat=');
 		if($this->log["finish"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_finish"]))
-			$finCmd = getCmd('execute').'={'.getPHP().','.$rootPath.'/plugins/history/update.php'.',2,$'.
+			$finCmd = getCmd('execute.nothrow.bg').'={'.Utility::getPHP().','.$rootPath.'/plugins/history/update.php'.',2,$'.
 				getCmd('d.get_name').'=,$'.getCmd('d.get_size_bytes').'=,$'.getCmd('d.get_bytes_done').'=,$'.
 				getCmd('d.get_up_total').'=,$'.getCmd('d.get_ratio').'=,$'.getCmd('d.get_creation_date').'=,$'.
 				getCmd('d.get_custom').'=addtime,$'.getCmd('d.get_custom').'=seedingtime'.
 				',"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#",$'.
 				getCmd('d.get_custom1')."=,$".getCmd('d.get_custom')."=x-pushbullet,".
-				getUser().'}';
+				User::getUser().'}';
 		else
 			$finCmd = getCmd('cat=');
 		if($this->log["deletion"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_deletion"]))
-			$delCmd = getCmd('execute').'={'.getPHP().','.$rootPath.'/plugins/history/update.php'.',3,$'.
+			$delCmd = getCmd('execute.nothrow.bg').'={'.Utility::getPHP().','.$rootPath.'/plugins/history/update.php'.',3,$'.
 				getCmd('d.get_name').'=,$'.getCmd('d.get_size_bytes').'=,$'.getCmd('d.get_bytes_done').'=,$'.
 				getCmd('d.get_up_total').'=,$'.getCmd('d.get_ratio').'=,$'.getCmd('d.get_creation_date').'=,$'.
 				getCmd('d.get_custom').'=addtime,$'.getCmd('d.get_custom').'=seedingtime'.
 				',"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#",$'.
 				getCmd('d.get_custom1')."=,$".getCmd('d.get_custom')."=x-pushbullet,".
-				getUser().'}';
+				User::getUser().'}';
 		else
 			$delCmd = getCmd('cat=');
 		$req = new rXMLRPCRequest( array(
-			rTorrentSettings::get()->getOnInsertCommand( array('thistory'.getUser(), $addCmd ) ),
-			rTorrentSettings::get()->getOnFinishedCommand( array('thistory'.getUser(), $finCmd ) ),
-			rTorrentSettings::get()->getOnEraseCommand( array('thistory'.getUser(), $delCmd ) ),
+			rTorrentSettings::get()->getOnInsertCommand( array('thistory'.User::getUser(), $addCmd ) ),
+			rTorrentSettings::get()->getOnFinishedCommand( array('thistory'.User::getUser(), $finCmd ) ),
+			rTorrentSettings::get()->getOnEraseCommand( array('thistory'.User::getUser(), $delCmd ) ),
 			));
 		return($req->success());
 	}
@@ -210,6 +213,11 @@ class rHistory
 			'{name}', '{label}', '{size}', '{downloaded}', '{uploaded}', '{ratio}',
 			'{creation}', '{added}', '{finished}', '{tracker}',
 		);
+		if( !is_null(rTorrentSettings::get()->tz) )
+		{
+			$tz = date_default_timezone_get();
+			date_default_timezone_set(rTorrentSettings::get()->tz);
+		}
 		$values = array
 		(
 			$data['name'], 
@@ -223,11 +231,15 @@ class rHistory
 			strftime('%c',$data['finished']),
 			$data['tracker'],
 		);
+		if( !is_null(rTorrentSettings::get()->tz) )
+		{
+			date_default_timezone_set($tz);
+		}
 		$title = str_replace( $fields, $values, $section['title'] );
 		$body = str_replace( $fields, $values, $section['body'] );
 		$client = new Snoopy();
 		$client->user = $this->log["pushbullet_key"];
-		$client->fetch($pushBulletEndpoint,"POST","application/json", safe_json_encode(array
+		$client->fetch($pushBulletEndpoint,"POST","application/json", JSON::safeEncode(array
 		(
 			'type'=>'note',
 			'title'=>$title,

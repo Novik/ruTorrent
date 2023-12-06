@@ -1,6 +1,6 @@
 <?php
 
-require_once( $rootPath.'/plugins/extratio/rules.php' );
+require_once( 'rules.php' );
 
 $mngr = rRatioRulesList::load();
 if($mngr->setHandlers())

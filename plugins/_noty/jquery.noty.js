@@ -22,7 +22,7 @@
 			base.options.layout = base.options.cssPrefix+'layout_'+base.options.layout;
 
 			if (base.options.custom.container) customContainer = base.options.custom.container;
-			isCustom = ($.type(customContainer) === 'object') ? true : false;
+			isCustom = (typeof customContainer === 'object') ? true : false;
 
 			return base.addQueue();
 		};
@@ -46,7 +46,7 @@
 	  	} else {
 	  		if ($.noty.available) {
 					var fromQueue = $.noty.queue.shift(); // Get noty from queue
-					if ($.type(fromQueue) === 'object') {
+					if (typeof fromQueue === 'object') {
 						$.noty.available = false;
 						base.options = fromQueue.options;
 					} else {
@@ -69,14 +69,14 @@
 	  	(base.options.closeButton) ? $noty.addClass('noty_closable').find('.noty_close').show() : $noty.find('.noty_close').remove();
 
 	  	// Bind close event to button
-	  	$noty.find('.noty_close').bind('click', function() { $noty.trigger('noty.close'); });
+	  	$noty.find('.noty_close').on('click', function() { $noty.trigger('noty.close'); });
 
 	  	// If we have a button we must disable closeOnSelfClick and closeOnSelfOver option
 	  	if (base.options.buttons) base.options.closeOnSelfClick = base.options.closeOnSelfOver = false;
 	  	// Close on self click
-	  	if (base.options.closeOnSelfClick) $noty.bind('click', function() { $noty.trigger('noty.close'); }).css('cursor', 'pointer');
+	  	if (base.options.closeOnSelfClick) $noty.on('click', function() { $noty.trigger('noty.close'); }).css('cursor', 'pointer');
 	  	// Close on self mouseover
-	  	if (base.options.closeOnSelfOver) $noty.bind('mouseover', function() { $noty.trigger('noty.close'); }).css('cursor', 'pointer');
+	  	if (base.options.closeOnSelfOver) $noty.on('mouseover', function() { $noty.trigger('noty.close'); }).css('cursor', 'pointer');
 
 	  	// Set buttons if available
 	  	if (base.options.buttons) {
@@ -85,8 +85,8 @@
 				$.each(base.options.buttons, function(i, button) {
 					bclass = (button.type) ? button.type : 'gray';
 					$button = $('<button/>').addClass(bclass).html(button.text).appendTo($noty.find('.noty_buttons'))
-					.bind('click', function() {
-						if ($.isFunction(button.click)) {
+					.on('click', function() {
+						if (typeof button.click === "function") {
 							button.click.call($button, $noty);
 						}
 					});
@@ -111,30 +111,30 @@
 				$.noty.reCenter($noty);
 			}
 
-	  	$noty.bind('noty.setText', function(event, text) {
+	  	$noty.on('noty.setText', function(event, text) {
 	  		$noty.find('.noty_text').html(text); $.noty.reCenter($noty);
 	  	});
 
-	  	$noty.bind('noty.getId', function(event) {
+	  	$noty.on('noty.getId', function(event) {
 	  		return $noty.data('noty_options').id;
 	  	});
 
 	  	// Bind close event
-	  	$noty.one('noty.close', function(event) {
+	  	$noty.on('noty.close', function(event) {
 				var options = $noty.data('noty_options');
 
 				// Modal Cleaning
 				if (options.modal) $('.noty_modal').fadeOut('fast', function() { $(this).remove(); });
 
 				$noty.clearQueue().stop().animate(
-						$noty.data('noty_options').animateClose,
-						$noty.data('noty_options').speed,
-						$noty.data('noty_options').easing,
-						$noty.data('noty_options').onClose)
+						options.animateClose,
+						options.speed,
+						options.easing,
+						options.onClose)
 				.promise().done(function() {
 
 					// Layout spesific cleaning
-					if ($.inArray($noty.data('noty_options').layout, $.noty.growls) > -1) {
+					if ($.inArray(options.layout, $.noty.growls) > -1) {
 						$noty.parent().remove();
 					} else {
 						$noty.remove();

@@ -93,7 +93,7 @@ switch($mode)
 			"d.get_up_total=", "d.get_ratio=", "d.get_up_rate=", "d.get_down_rate=", "d.get_chunk_size=",
 			"d.get_custom1=", "d.get_peers_accounted=", "d.get_peers_not_connected=", "d.get_peers_connected=", "d.get_peers_complete=",
 			"d.get_left_bytes=", "d.get_priority=", "d.get_state_changed=", "d.get_skip_total=", "d.get_hashing=",
-			"d.get_chunks_hashed=", "d.get_base_path=", "d.get_creation_date=", "d.get_tracker_focus=", "d.is_active=",
+			"d.get_chunks_hashed=", "d.get_base_path=", "d.get_creation_date=", "d.get_tracker_size=", "d.is_active=",
 			"d.get_message=", "d.get_custom2=", "d.get_free_diskspace=", "d.is_private=", "d.is_multi_file="
 			);
 		$cmd = new rXMLRPCCommand( "d.multicall", "main" );
@@ -199,6 +199,23 @@ switch($mode)
 			$req->addCommand( new rXMLRPCCommand( $prm ) );	
 		if($req->success(false))
 	        	$result = $req->val;
+		break;
+	}
+	case "opn":	/**/
+	{
+		$cmds = array(
+			"network.http.current_open", "network.open_sockets"
+		);
+		if (rTorrentSettings::get()->apiVersion >= 11)
+			$cmds[] = "network.open_files";
+		$req = new rXMLRPCRequest();
+		foreach( $cmds as $cmd )
+			$req->addCommand( new rXMLRPCCommand( $cmd ) );
+		if($req->success(false)) {
+			$result = $req->val;
+			if (count($cmds) < 3)
+				$result[] = -1;
+		}
 		break;
 	}
 	case "prp":	/**/
@@ -466,7 +483,7 @@ switch($mode)
 				$pos = strpos($result, "\r\n\r\n");
 				if($pos !== false)
 					$result = substr($result,$pos+4);
-				cachedEcho($result, "text/xml");
+				CachedEcho::send($result, "text/xml");
 			}
 		}
 		break;
@@ -476,7 +493,7 @@ switch($mode)
 if(is_null($result))
 {
 	header("HTTP/1.0 500 Server Error");
-	cachedEcho( (isset($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. May be, rTorrent is down?","text/html");
+	CachedEcho::send( (isset($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. Maybe, rTorrent is down?","text/html");
 }
 else
-	cachedEcho(safe_json_encode($result),"application/json");
+	CachedEcho::send(JSON::safeEncode($result),"application/json");

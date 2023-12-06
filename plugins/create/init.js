@@ -11,16 +11,17 @@ theWebUI.checkCreate = function()
        	var arr = $('#trackers').val().split("\n");
 	var trk = '';
 	for( var i in arr )
-		trk+=($.trim(arr[i])+'\r');
-        this.startConsoleTask( "create", plugin.name, 
-	{ 
-		"piece_size" : $('#piece_size').val(), 
+		trk+=(arr[i].trim()+'\r');
+        this.startConsoleTask( "create", plugin.name,
+	{
+		"piece_size" : $('#piece_size').val(),
 		"trackers" : trk,
-		"path_edit" : $.trim($("#path_edit").val()), 
-		"comment" : $.trim($("#comment").val()),
-		"source" : $.trim($("#source").val()),
+		"path_edit" : $("#path_edit").val().trim(),
+		"comment" : $("#comment").val().trim(),
+		"source" : $("#source").val().trim(),
 		"private" : $('#private').prop('checked') ? 1 : 0,
-		"start_seeding" : $('#start_seeding').prop('checked') ? 1 : 0		
+		"start_seeding" : $('#start_seeding').prop('checked') ? 1 : 0,
+		"hybrid" : $('#hybrid').prop('checked') ? 1 : 0
 	},
 	{
 	       	noclose: true
@@ -34,25 +35,37 @@ plugin.onTaskFinished = function(task,fromBackground)
 		$("#xtaskno").val(task.no);
 		if(!task.status)
 			$('#xcsave').show();
-	}		
+	}
 	theWebUI.request('?action=rtget',[plugin.getRecentTrackers, plugin]);
 }
 
 rTorrentStub.prototype.rtget = function()
 {
 	this.content = "cmd=rtget";
-        this.contentType = "application/x-www-form-urlencoded";	
+        this.contentType = "application/x-www-form-urlencoded";
+	this.mountPoint = "plugins/create/action.php";
+	this.dataType = "json";
+}
+
+rTorrentStub.prototype.rtdelete = function()
+{
+	this.content = "cmd=rtdelete&trackers="+plugin.deleteFromRecentTrackers;
+	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/create/action.php";
 	this.dataType = "json";
 }
 
 theWebUI.showCreate = function()
 {
+	if( $("#trackers").val().trim().length < 1 )
+		$("#deleteFromRecentTrackers").addClass("disabled");
+	else
+		$("#deleteFromRecentTrackers").removeClass("disabled");
 	$('#start_seeding').prop('disabled',!theWebUI.systemInfo.rTorrent.started);
 	if(theWebUI.systemInfo.rTorrent.started)
 		$('#lbl_start_seeding').removeClass('disabled');
-	else		
-		$('#lbl_start_seeding').addClass('disabled');		
+	else
+		$('#lbl_start_seeding').addClass('disabled');
 	theDialogManager.show('tcreate');
 }
 
@@ -67,11 +80,12 @@ plugin.getRecentTrackers = function( data )
 
 theWebUI.addTrackerToBox = function(ann)
 {
+	$("#deleteFromRecentTrackers").removeClass("disabled");
 	var val = $('#trackers').val();
 	if(val.length)
 		val+='\r\n';
 	$('#trackers').val( val+ann );
-	$('#trackers').focus();
+	$('#trackers').trigger('focus');
 }
 
 theWebUI.showRecentTrackers = function()
@@ -84,6 +98,22 @@ theWebUI.showRecentTrackers = function()
 		var offs = $("#recentTrackers").offset();
 		theContextMenu.show(offs.left,offs.top-theContextMenu.obj.height()-5);
 	}
+}
+
+theWebUI.deleteFromRecentTrackers = function()
+{
+	$("#deleteFromRecentTrackers").addClass("disabled");
+	var trklist = $('#trackers').val();
+	if(!trklist)
+		return(false);
+       	var arr = trklist.split("\n");
+	$('#trackers').val('');
+	var trk = '';
+	for( var i in arr )
+		trk+=(arr[i].trim()+'\r');
+	plugin.deleteFromRecentTrackers = trk;
+	theWebUI.request('?action=rtdelete');
+	theWebUI.request('?action=rtget',[plugin.getRecentTrackers, plugin]);
 }
 
 plugin.onLangLoaded = function()
@@ -99,7 +129,7 @@ plugin.onLangLoaded = function()
 			 );
 		plugin.addButtonToToolbar("create",theUILang.mnu_create,"theWebUI.showCreate()","remove");
 		plugin.addSeparatorToToolbar("remove");
-		var pieceSize = 
+		var pieceSize =
 			"<label>"+theUILang.PieceSize+": </label>"+
 			"<select id='piece_size' name='piece_size'>"+
 				"<option value=\"32\">32"+theUILang.KB+"</option>"+
@@ -112,9 +142,18 @@ plugin.onLangLoaded = function()
 				"<option value=\"4096\">4"+theUILang.MB+"</option>"+
 				"<option value=\"8192\">8"+theUILang.MB+"</option>"+
 				"<option value=\"16384\">16"+theUILang.MB+"</option>"+
+				"<option value=\"32768\">32"+theUILang.MB+"</option>"+
+				"<option value=\"65536\">64"+theUILang.MB+"</option>"+
 				"</select>";
 		if(plugin.hidePieceSize)
-			pieceSize = "";	
+			pieceSize = "";
+
+		var hybridTorrent =
+				"<label for='hybrid' id='lbl_hybrid' class='nomargin'>"+
+				"<input type='checkbox' name='hybrid' id='hybrid'/>"+theUILang.HybridTorrent+"</label>";
+
+		if(plugin.hideHybrid)
+			hybridTorrent = "";
 
 		theDialogManager.make("tcreate",theUILang.CreateNewTorrent,
 			"<div class='cont fxcaret'>"+
@@ -131,24 +170,25 @@ plugin.onLangLoaded = function()
         		               	"<input type='text' id='comment' name='comment' class='TextboxLarge'/><br/>"+
         	                       	       "<label>" + theUILang.source + ": </label>"+
         		               	"<input type='text' id='source' name='source' class='TextboxLarge'/><br/>"+
-					pieceSize+	
+					pieceSize+
 				"</fieldset>"+
 				"<fieldset>"+
 					"<legend>"+theUILang.Other+"</legend>"+
 					"<label for='start_seeding' id='lbl_start_seeding' class='nomargin'><input type='checkbox' name='start_seeding' id='start_seeding'/>"+theUILang.StartSeeding+"</label>"+
-					"<label class='nomargin'><input type='checkbox' name='private' id='private'/>"+theUILang.PrivateTorrent+"</label><br/>"+
+					"<label class='nomargin'><input type='checkbox' name='private' id='private'/>"+theUILang.PrivateTorrent+"</label>"+
+					hybridTorrent+"<br/>"+
 				"</fieldset>"+
 			"</div>"+
-			"<div class='aright buttons-list'><input type='button' id='recentTrackers' value='"+theUILang.recentTrackers+"...' class='Button menuitem' onclick='theWebUI.showRecentTrackers()'/><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='OK Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",true);		
+			"<div class='aright buttons-list'><input type='button' id='recentTrackers' value='"+theUILang.recentTrackers+"...' class='Button menuitem' onclick='theWebUI.showRecentTrackers()'/><input type='button' id='deleteFromRecentTrackers' value='"+theUILang.deleteFromRecentTrackers+"' class='Button' onclick='theWebUI.deleteFromRecentTrackers()'/><input type='button' id='torrentCreate' value='"+theUILang.torrentCreate+"' class='OK Button' onclick='theWebUI.checkCreate()'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",true);
 		$(document.body).append($("<iframe name='xcreatefrm'/>").css({visibility: "hidden"}).attr( { name: "xcreatefrm", id: "xcreatefrm" } ).width(0).height(0));
 		$(document.body).append(
 			$('<form action="plugins/create/action.php" id="xgetfile" method="post" target="xcreatefrm">'+
 				'<input type="hidden" name="cmd" value="getfile">'+
 				'<input type="hidden" name="no" id="xtaskno" value="0">'+
 			'</form>').width(0).height(0));
-		$("#xcsave").click( function()
+		$("#xcsave").on('click', function()
 		{
-			$('#xgetfile').submit();
+			$('#xgetfile').trigger('submit');
 		});
 		if(thePlugins.isInstalled("_getdir"))
 		{
@@ -164,7 +204,7 @@ plugin.onLangLoaded = function()
 		{
 			$('#xcsave').hide();
 		});
-		plugin.markLoaded();		
+		plugin.markLoaded();
 	}
 };
 
@@ -174,7 +214,7 @@ plugin.onRemove = function()
 	plugin.removeButtonFromToolbar("create");
 }
 
-plugin.langLoaded = function() 
+plugin.langLoaded = function()
 {
 	if(plugin.enabled)
 		plugin.onLangLoaded();

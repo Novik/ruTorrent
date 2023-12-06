@@ -20,7 +20,7 @@
  theUILang.ratioErase		= "Efface";
  theUILang.ratioEraseData	= "Supprime les données";
  theUILang.maxTime		= "Temps";
- theUILang.ratioDefault 	= "Groupe de ratio par défaut";
+ theUILang.ratioDefault		= "Groupe de ratio par défaut";
  theUILang.setThrottleTo	= "Appliquer la vitesse";
 
 thePlugins.get("ratio").langLoaded();

@@ -11,7 +11,7 @@
  theUILang.rssRulesManager	= "Administration des règles";
  theUILang.rssAddRule		= "Ajouter";
  theUILang.rssDelRule		= "Supprimer";
- theUILang.rssCheckRule 	= "?";
+ theUILang.rssCheckRule		= "?";
  theUILang.rssRulesLegend	= "Configuration de la règle";
  theUILang.rssSrcHref		= "Si l'URL du torrent à charger correspond au modèle";
  theUILang.rssSrcGuid		= "Si l'URL de la description du torrent correspond au modèle";

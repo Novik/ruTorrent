@@ -3,14 +3,16 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkWebsiteNotFound = "Check_port eklentisi: Eklenti çalışmayacak. Yapılandırma geçersiz.";
+ theUILang.checkPort		= "Port durumunu denetle";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Port durumu bilinmiyor",
+ 				  "Port kapalı",
+ 				  "Port açık"
  				  ];
 
 thePlugins.get("check_port").langLoaded();

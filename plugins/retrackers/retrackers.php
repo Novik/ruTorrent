@@ -4,6 +4,7 @@ require_once( dirname(__FILE__)."/../../php/cache.php" );
 class rRetrackers
 {
 	public $hash = "retrackers.dat";
+	public $modified = false;
 	public $list = array();
 	public $todelete = array();
 	public $dontAddPrivate = 1;
@@ -68,6 +69,6 @@ class rRetrackers
 	}
 	public function get()
 	{
-		return("theWebUI.retrackers = ".safe_json_encode($this).";\n");
+		return("theWebUI.retrackers = ".JSON::safeEncode($this).";\n");
 	}
 }

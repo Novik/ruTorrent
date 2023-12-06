@@ -6,6 +6,7 @@
  * Author: 
  */
 
+ theUILang.checkWebsiteNotFound = "Check_port plugin: Plugin will not work. Invalid configuration";
  theUILang.checkPort		= "检查端口状态";
  theUILang.portStatus		= [
  				  "端口状态未知",

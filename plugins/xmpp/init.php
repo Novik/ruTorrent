@@ -18,7 +18,7 @@ if($at->setHandlers())
 			else
 			{
 				$session = rTorrentSettings::get()->session;
-				if( !strlen($session) || !@file_exists(addslash(rTorrentSettings::get()->session).'.') )
+				if( !strlen($session) || !@file_exists(FileUtil::addslash(rTorrentSettings::get()->session).'.') )
 					$jResult .= "plugin.disable(); noty('".$plugin["name"].": '+theUILang.webBadSessionWarning+' (".$session.").','error');";
 			}
 		}

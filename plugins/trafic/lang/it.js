@@ -3,17 +3,17 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- theUILang.traf 		= "Traffic";
- theUILang.perDay		= "Per day";
- theUILang.perMonth		= "Per month";
- theUILang.perYear		= "Per year";
- theUILang.allTrackers		= "All trackers";
- theUILang.ClearButton		= "Clear";
- theUILang.ClearQuest		= "Do you really want to clear statistics for selected tracker(s)?";
- theUILang.selectedTorrent	= "Selected torrent(s)";
- theUILang.ratioDay		= "Ratio/day";
- theUILang.ratioWeek		= "Ratio/week";
- theUILang.ratioMonth		= "Ratio/month";
+ theUILang.traf			= "Traffico";
+ theUILang.perDay		= "Al giorno";
+ theUILang.perMonth		= "Al mese";
+ theUILang.perYear		= "All'anno";
+ theUILang.allTrackers		= "Tutti i tracker";
+ theUILang.ClearButton		= "Ripulisci";
+ theUILang.ClearQuest		= "Vuoi veramente ripulire le statistiche per i torrent selezionati?";
+ theUILang.selectedTorrent	= "Torrent Selezionati";
+ theUILang.ratioDay		= "Ratio/giorno";
+ theUILang.ratioWeek		= "Ratio/settimana";
+ theUILang.ratioMonth		= "Ratio/mese";

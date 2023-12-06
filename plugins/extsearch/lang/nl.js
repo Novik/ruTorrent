@@ -11,7 +11,7 @@
  theUILang.tegMenuDeleteItem		= "Verwijder item";
  theUILang.tegMenuDelete		= "Verwijder tag";
  theUILang.tegRefresh			= "refresh-tag";
- theUILang.exsGlobal			= "Voeg toe aan' Alles 'categorie ";
+ theUILang.exsGlobal			= "Voeg toe aan 'Alles' categorie";
  theUILang.exsLimit			= "Resultaat beperken";
  theUILang.exsEngines			= "Zoek Machines";
  theUILang.exsSearch			= "Zoeken";
@@ -29,10 +29,10 @@
  theUILang.extPrivate			= "Prive";
  theUILang.extPublic			= "Public";
  theUILang.exsCookies			= "Opmaak van cookies";
- theUILang.extAllPublic 		= "Alle open trackers";
+ theUILang.extAllPublic			= "Alle open trackers";
  theUILang.extAllPrivate		= "Alle prive trackers (private)";
- theUILang.exsMustInstallCookies	= "De plugin : COOKIES dient geinstalleerd te zijn voor deze zoekmachine.";
- theUILang.exsMustInstallLoginMgr	= "De plugin : LOGINMGR dient geinstalleerd te zijn voor deze zoekmachine";
+ theUILang.exsMustInstallCookies	= "De plugin: COOKIES dient geinstalleerd te zijn voor deze zoekmachine.";
+ theUILang.exsMustInstallLoginMgr	= "De plugin: LOGINMGR dient geinstalleerd te zijn voor deze zoekmachine.";
  theUILang.exsLoginMgr			= "Zet je account op in LOGINMGR om deze zoekmachine te gebruiken.";
  theUILang.exsURLInfo			= "URL info";
  theUILang.exsURLGUID			= "Omschrijving URL";

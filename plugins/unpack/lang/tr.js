@@ -3,16 +3,17 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Authors: Müslüm Barış Korkmazer (bkbabinco@gmail.com)
+ *		    Selim Şumlu
  */
 
- theUILang.unpack		= "Unpack";
- theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";
- theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
- theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
- theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
- theUILang.unpackAddLabel	= "Torrent Label";
- theUILang.unpackAddName	= "Torrent Name";
+ theUILang.unpack		= "Paket Aç";
+ theUILang.unpackPath		= "Paketin açılacağı dizin (torrent'ın olduğu dizin için boş bırakın)";
+ theUILang.unzipNotFound	= "Unpack eklentisi: rTorrent kullanıcısı 'unzip' programına erişemiyor.";
+ theUILang.unrarNotFound	= "Unpack eklentisi: rTorrent kullanıcısı 'unrar' programına erişemiyor.";
+ theUILang.unpackEnabled	= "Torrent'ın etiketi filtreyle eşleşirse otomatik açmayı etkinleştir";
+ theUILang.unpackTorrents	= "Paketten çıkarırken aşağıdaki torrent verilerini dizin yoluna ekle";
+ theUILang.unpackAddLabel	= "Torrent etiketi";
+ theUILang.unpackAddName	= "Torrent adı";
 
 thePlugins.get("unpack").langLoaded();

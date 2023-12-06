@@ -9,11 +9,11 @@ plugin.showNotification = function(item)
 	if(plugin.allStuffLoaded)
 	{
 		var notification = notify.createNotification( plugin.actionNames[item.action], { body: item.name, icon: { x16: 'images/favicon.ico', x32: 'images/favicon-32x32.png' } } );
-		setTimeout(function () 
+		setTimeout(function ()
 		{
                		notification.close();
                 }, theWebUI.history.closeinterval*1000);
-	}	                
+	}
 }
 
 plugin.isNotificationsSupported = function()
@@ -30,18 +30,18 @@ plugin.rebuildNotificationsPage = function()
 		switch(state)
 		{
 			case notify.PERMISSION_DENIED:
-			case false: 
+			case false:
 			{
 				$('#notifPerms, #notifParam').hide();
 				break;
 			}
-			case notify.PERMISSION_GRANTED: 
+			case notify.PERMISSION_GRANTED:
 			{
 				$('#notifPerms').hide();
 				break;
 			}
 		}
-	}		
+	}
 }
 
 if(plugin.canChangeOptions())
@@ -58,13 +58,13 @@ if(plugin.canChangeOptions())
 			$('#not_closeinterval').val( theWebUI.history.closeinterval );
 			$('#history_limit').val( theWebUI.history.limit );
 			$('#pushbullet_key').val( theWebUI.history.pushbullet_key );
-			$$('pushbullet_enabled').checked = ( theWebUI.history.pushbullet_enabled != 0 );			
+			$$('pushbullet_enabled').checked = ( theWebUI.history.pushbullet_enabled != 0 );
 			$$('pushbullet_addition').checked = ( theWebUI.history.pushbullet_addition != 0 );
 			$$('pushbullet_finish').checked = ( theWebUI.history.pushbullet_finish != 0 );
 			$$('pushbullet_deletion').checked = ( theWebUI.history.pushbullet_deletion != 0 );
 
-			$('#not_autoclose').change();
-			$('#pushbullet_enabled').change();
+			$('#not_autoclose').trigger('change');
+			$('#pushbullet_enabled').trigger('change');
 
 			plugin.rebuildNotificationsPage();
 		}
@@ -105,7 +105,7 @@ if(plugin.canChangeOptions())
 			"&pushbullet_addition=" + ( $$('pushbullet_addition').checked ? '1' : '0' ) +
 			"&pushbullet_deletion=" + ( $$('pushbullet_deletion').checked  ? '1' : '0' ) +
 			"&pushbullet_finish=" + ( $$('pushbullet_finish').checked  ? '1' : '0' ) +
-			"&pushbullet_enabled=" + ( $$('pushbullet_enabled').checked  ? '1' : '0' ) +			
+			"&pushbullet_enabled=" + ( $$('pushbullet_enabled').checked  ? '1' : '0' ) +
 			"&pushbullet_key=" + $('#pushbullet_key').val();
 
 		this.contentType = "application/x-www-form-urlencoded";
@@ -117,21 +117,21 @@ if(plugin.canChangeOptions())
 if(plugin.canChangeTabs() || plugin.canChangeColumns())
 {
 	plugin.config = theWebUI.config;
-	theWebUI.config = function(data)
+	theWebUI.config = function()
 	{
 		if(plugin.canChangeTabs())
 		{
 	        	plugin.attachPageToTabs($('<div>').attr("id","history").addClass("table_tab stable").get(0),"History","lcont");
-			theWebUI.tables["hst"] =  
+			theWebUI.tables["hst"] =
 			{
 	        		obj:		new dxSTable(),
 				container:	"history",
-				columns:	
+				columns:
 				[
-					{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING }, 
+					{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING },
 		      			{ text: theUILang.Status, 		width: "100px",	id: "status",		type: TYPE_STRING },
-					{ text: 'Time',	 			width: "110px", id: "time",		type: TYPE_NUMBER }, 
-			   		{ text: theUILang.Size, 		width: "60px",	id: "size", 		type: TYPE_NUMBER },
+					{ text: 'Time',	 			width: "110px", id: "time",		type: TYPE_NUMBER },
+			   		{ text: theUILang.Size, 		width: "70px",	id: "size", 		type: TYPE_NUMBER },
 					{ text: theUILang.Downloaded, 		width: "100px",	id: "downloaded",	type: TYPE_NUMBER },
 					{ text: theUILang.Uploaded, 		width: "100px",	id: "uploaded",		type: TYPE_NUMBER },
 					{ text: theUILang.Ratio, 		width: "60px",	id: "ratio",		type: TYPE_NUMBER },
@@ -148,20 +148,20 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 						if(arr[i]==null)
 							arr[i] = '';
 						else
-							switch(table.getIdByCol(i)) 
+							switch(table.getIdByCol(i))
 							{
 								case "seedingtime" :
 								case "time":
 								case "addtime":
-								case 'created' : 
+								case 'created' :
 									arr[i] = arr[i] ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : '';
 									break;
 								case 'downloaded' :
 								case 'uploaded' :
 								case 'size' :
-	      								arr[i] = theConverter.bytes(arr[i]);
+	      								arr[i] = theConverter.bytes(arr[i], 'table');
 									break;
-								case 'ratio' : 
+								case 'ratio' :
 									arr[i] = (arr[i] ==- 1) ? "\u221e" : theConverter.round(arr[i] / 1000, 3);
 									break;
 								case 'status' :
@@ -202,7 +202,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 			}
 		}
 
-		plugin.config.call(theWebUI,data);
+		plugin.config.call(this);
 
 		if(plugin.canChangeColumns())
 		{
@@ -210,9 +210,9 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 			{
 				torrent.pushbullet = value;
 			});
-		}			
+		}
 
-		if(plugin.canChangeTabs())		
+		if(plugin.canChangeTabs())
 			plugin.renameHistoryStuff();
 	}
 
@@ -233,8 +233,8 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 
 	plugin.historyRefresh = function()
 	{
-		theWebUI.requestWithoutTimeout("?action=gethistory",[plugin.onGetHistory, plugin]);	
-	}	
+		theWebUI.requestWithoutTimeout("?action=gethistory",[plugin.onGetHistory, plugin]);
+	}
 
 	rTorrentStub.prototype.gethistory = function()
 	{
@@ -261,9 +261,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 				req+=("&hash=" + k);
 		}
 		if(req.length)
-		{
 			theWebUI.request("?action=hst"+cmd+req,[plugin.onGetHistory, plugin]);
-		}
 	}
 
 	rTorrentStub.prototype.hstdelete = function()
@@ -344,11 +342,13 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 		if(updated)
 		{
 			table.refreshRows();
-			if(table.sIndex !=- 1)
+			if(table.sortId)
 				table.Sort();
 		}
 		if((theWebUI.activeView=='history') || (plugin.allStuffLoaded && (plugin.isNotificationsSupported()===notify.PERMISSION_GRANTED)))
+		{
 			plugin.hstTimeout = window.setTimeout(plugin.historyRefresh,theWebUI.settings["webui.update_interval"]);
+		}
 		else
         		if(plugin.hstTimeout)
 	        	{
@@ -437,9 +437,9 @@ if(plugin.canChangeMenu())
 			var el = theContextMenu.get(theUILang.peerAdd);
 			if( el )
 			{
-				if(table.selCount==1) 
-				{			
-					theContextMenu.add(el,[CMENU_CHILD, 'Pushbullet', 
+				if(table.selCount==1)
+				{
+					theContextMenu.add(el,[CMENU_CHILD, 'Pushbullet',
 					[
 						[ theUILang.turnNotifyOn, theWebUI.torrents[id].pushbullet ? "theWebUI.setPushbullet('')" : null ],
 					 	[ theUILang.turnNotifyOff, theWebUI.torrents[id].pushbullet ? null : "theWebUI.setPushbullet('1')" ]
@@ -447,7 +447,7 @@ if(plugin.canChangeMenu())
 				}
 				else
 				{
-					theContextMenu.add(el,[CMENU_CHILD, 'Pushbullet', 
+					theContextMenu.add(el,[CMENU_CHILD, 'Pushbullet',
 					[
 						[ theUILang.turnNotifyOn, "theWebUI.setPushbullet('1')" ],
 					 	[ theUILang.turnNotifyOff, "theWebUI.setPushbullet('')" ]
@@ -455,12 +455,12 @@ if(plugin.canChangeMenu())
 				}
                         }
 		}
-	}	
+	}
 }
 
 plugin.onLangLoaded = function()
 {
-	injectScript(plugin.path+"/desktop-notify.js",function()
+	injectScript(plugin.path+"desktop-notify.js",function()
 	{
 		plugin.attachPageToOptions( $("<div>").attr("id","st_history").html(
 			"<div class='checkbox'>" +
@@ -498,7 +498,7 @@ plugin.onLangLoaded = function()
 				"<div class='checkbox'>" +
 					"<input type='checkbox' id='pushbullet_enabled' onchange=\"linked(this, 0, ['pushbullet_key','pushbullet_addition','pushbullet_deletion','pushbullet_finish']);\"/>"+
 					"<label for='pushbullet_enabled'>"+ theUILang.Enabled +"</label>"+
-				"</div>" +				
+				"</div>" +
 				"<label for='pushbullet_key' id='lbl_pushbullet_key' class='disabled'>"+ theUILang.pushbulletKey +"</label>"+
 				"<input type='text' id='pushbullet_key' class='TextboxLarge' disabled='true' />"+
 				"<div class='checkbox'>" +
@@ -515,27 +515,27 @@ plugin.onLangLoaded = function()
 				"</div>" +
 			"</fieldset>"
 			)[0], theUILang.history );
-		$('#notifPerms').click( function()
+		$('#notifPerms').on('click', function()
 		{
-			notify.requestPermission(function() 
-			{ 
+			notify.requestPermission(function()
+			{
 				plugin.rebuildNotificationsPage();
 				plugin.historyRefresh();
 			});
 		});
 		plugin.actionNames = ['', theUILang.Added, theUILang.Finished, theUILang.Deleted];
 		plugin.markLoaded();
-	});		
+	});
 }
 
 plugin.onRemove = function()
 {
 	plugin.removePageFromOptions("st_history");
-	theWebUI.getTable("trt").removeColumnById("pushbullet");	
-	theRequestManager.removeRequest( "trt", plugin.reqId1 );	
+	theWebUI.getTable("trt").removeColumnById("pushbullet");
+	theRequestManager.removeRequest( "trt", plugin.reqId1 );
 }
 
-plugin.langLoaded = function() 
+plugin.langLoaded = function()
 {
 	if(plugin.enabled)
 		plugin.onLangLoaded();

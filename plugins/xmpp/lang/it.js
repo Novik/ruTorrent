@@ -3,19 +3,19 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author: Gianni
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "Il plugin non funzionerà.";
 
- theUILang.xmpp 			= "XMPP";
- theUILang.xmppJabberJID 		= "JID:";
- theUILang.xmppJabberFor 		= "Recipient:";
- theUILang.xmppMessage			= "Message:";
+ theUILang.xmpp				= "XMPP";
+ theUILang.xmppJabberJID		= "JID:";
+ theUILang.xmppJabberFor		= "Ricevente:";
+ theUILang.xmppMessage			= "Messaggio:";
  theUILang.xmppJabberPasswd		= "Password:";
- theUILang.xmppAdvancedSettings		= "Advanced:";
- theUILang.xmppJabberHost		= "Host:";
+ theUILang.xmppAdvancedSettings		= "Avanzato:";
+ theUILang.xmppJabberHost		= "Host";
  theUILang.xmppJabberPort		= "Port";
- theUILang.xmppUseEncryption		= "Use encryption";
+ theUILang.xmppUseEncryption		= "Usa cifratura";
 
 thePlugins.get("xmpp").langLoaded();

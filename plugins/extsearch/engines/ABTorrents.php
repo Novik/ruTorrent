@@ -2,60 +2,70 @@
 
 class ABTorrentsEngine extends commonEngine
 {
-	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"www.abtorrents.me|uid=XXX;pass=XXX;" );
+	public $defaults = array( "public"=>false, "page_size"=>15, "auth"=>1 );
 	public $categories = array(
-		"all"=>"0", "Adventure"=>"38", "Biographies & Memoirs"=>"23", "Business "=>"19", "Childrens"=>"30",
-		"Comedy"=>"29", "Computers "=>"20", "Erotica"=>"9", "Fantasy-General"=>"26", "Fantasy-Youth"=>"34",
-		"Files"=>"39", "Foreign Language"=>"7", "General Fiction"=>"33", "Historical Fiction"=>"32", "History"=>"24",
-		"Horror"=>"27", "Literature "=>"25", "Mystery "=>"6", "Non-Fiction"=>"31", "Radio Drama"=>"36", "Romance"=>"17",
-		"Science"=>"22", "Science Fiction "=>"4", "Self Improvement"=>"5", "Suspense"=>"28", "Talk Radio"=>"35", "Western"=>"37"
+		"all"=>"&c0=1", "Adventure"=>"&c10=1", "Biographies & Memoirs"=>"&c20=1", "Business"=>"&c30=1", "Childrens"=>"&c40=1",
+		"Comedy"=>"&c50=1", "Comics"=>"&c60=1", "Computers"=>"&c70=1", "Erotica"=>"&c80=1", "Fantasy-General"=>"&c90=1", "Fantasy-Youth"=>"&c100=1",
+		"Files"=>"&c110=1", "Foreign Language"=>"&c120=1", "General Fiction"=>"&c130=1", "Historical Fiction"=>"&c140=1", "History"=>"&c150=1",
+		"Horror"=>"&c160=1", "Literature"=>"&c170=1", "Mystery"=>"&c180=1", "Non-Fiction"=>"&c190=1", "Radio Drama"=>"&c200=1", "Romance"=>"&c210=1",
+		"Science"=>"&c220=1", "Science Fiction"=>"&c230=1", "Sci-Fi Apocalypse"=>"&c235=1", "Self Improvement"=>"&c240=1", "Thriller and Suspense"=>"&c245=1",
+		"Suspense"=>"&c250=1", "Talk Radio"=>"&c260=1", "Urban Fantasy"=>"&c270=1", "Western"=>"&c280=1"
 		);
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.abtorrents.me';
+		$url = 'https://abtorrents.me';
 		if($useGlobalCats)
-			$categories = array( 'all'=>'0' );
+			$categories = array( 'all'=>'&c0=1' );
 		else
 			$categories = &$this->categories;
 		if(!array_key_exists($cat,$categories))
 			$cat = $categories['all'];
 		else
 			$cat = $categories[$cat];
-		$what = rawurlencode(self::fromUTF(rawurldecode($what),"ISO-8859-1"));
+		$what = rawurlencode(rawurldecode($what));
 		for($pg = 0; $pg<10; $pg++)
 		{
-			$cli = $this->fetch( $url.'/pages/torrents/browse.php?q='.$what.'&sort=seeders&dir=desc&nd=1&page='.$pg.'&cat='.$cat );
+			$cli = $this->fetch( $url.'/browse.php?search='.$what.'&page='.$pg.'&searchin=title&incldead=0&sort=7&type=desc'.$cat );
 
-			if( ($cli==false) || (strpos($cli->results, ">No Results Found!<")!==false) 
-				|| (strpos($cli->results, '>Password:<')!==false))
+			if( ($cli==false) || (strpos($cli->results, ">Nothing found!<")!==false)
+				|| (strpos($cli->results, '>Password:<')!==false) )
 				break;
 
-			$res = preg_match_all('`<a href="'.$url.'/pages/torrents/browse\.php\?cat=\d*"><img border="0" src="[^"]*" alt="(?P<cat>[^"]*)"'.
-				'.*<a href="'.$url.'/pages/torrents/details\.php\?id=(?P<id>\d+)&hit=1">(?P<name>[^<]*)</a>'.
-				'.*<td .*>.*</td>'.
-				'.*<td .*>.*</td>'.
-				'.*<td .*>.*</td>'.
-				'.*<td class="row2">(?P<size>.*)</td>'.
-				'.*<td .*>.*</td>'.
-				'.*<td class="row2">(?P<seeds>.*)</td>'.
-				'.*<td class="row2">(?P<leech>.*)</td>'.
-				'.*<td class="row2"><acronym title="(?P<date>[^"]*)">'.
+			if( (strpos($cli->results, 'action="pm_system.php"')!==false) )
+			{
+				$item = $this->getNewEntry();
+				$item["desc"] = $url."/pm_system.php?action=view_mailbox";
+				$item["name"] = "ABTorrents > Double-click here then read all unread messages to grant torrent access";
+				$ret[$link] = $item;
+				break;
+			}
+
+			$res = preg_match_all('`<a href=\'browse\.php\?cat=\d+\'><img border=\'0\' src=\'.*\' alt=\'(?P<cat>.*)\' /></a>.*'.
+				'<a href=\'(?P<desc>.*)\' onmouseover="Tip\(\'(?P<name>.*)<br /><b>Size:&nbsp;(?P<size>.*)</b>.*'.
+				'(?:(?:&nbsp;){4}|(?P<vip>Vip Torrent)).*'.
+				'<td align=\'center\'><a href="(?P<link>.*)">.*'.
+				'<span style=\'white-space: nowrap;\'>(?P<date>.*)</span>.*'.
+				'<font .*>(?P<seeds>\d+)</font>.*'.
+				'<td .*>(?P<leech>\d+)</td>'.
 				'`siU', $cli->results, $matches);
 			if($res)
 			{
 				for($i=0; $i<$res; $i++)
 				{
-					$link = $url."/pages/torrents/download.php/".$matches["id"][$i]."/dummy.torrent";
+					$link = $url."/".self::removeTags($matches["link"][$i]);
 					if(!array_key_exists($link,$ret))
 					{
 						$item = $this->getNewEntry();
 						$item["cat"] = self::removeTags($matches["cat"][$i]);
-						$item["desc"] = $url."/pages/torrents/details.php?id=".$matches["id"][$i]."&hit=1";
-						$item["name"] = self::toUTF(self::removeTags($matches["name"][$i]),"ISO-8859-1");
-						$item["size"] = self::formatSize( $matches["size"][$i] );
-						$item["time"] = strtotime(self::removeTags(str_replace("-", "/",$matches["date"][$i])));						
+						$item["desc"] = $url."/".self::removeTags($matches["desc"][$i]);
+						$name = str_replace("<br />"," ",$matches["name"][$i]);
+						if($matches["vip"][$i])
+							$name = $name." | VIP TORRENT";
+						$item["name"] = self::removeTags($name);
+						$item["size"] = self::formatSize($matches["size"][$i]);
+						$item["time"] = strtotime(self::removeTags($matches["date"][$i]));
 						$item["seeds"] = intval(self::removeTags($matches["seeds"][$i]));
 						$item["peers"] = intval(self::removeTags($matches["leech"][$i]));
 						$ret[$link] = $item;

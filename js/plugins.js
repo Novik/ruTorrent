@@ -1,15 +1,15 @@
 // this function is obsolete
 
-function injectScript(fname,initFunc) 
+function injectScript(fname,initFunc)
 {
 	var h = document.getElementsByTagName("head").item(0);
 	s = document.createElement("script");
 	if(initFunc)
-	{	
+	{
 		if(browser.isIE)
 			s.onreadystatechange = function()
 			{
-				if((this.readyState == 'loaded') || (this.readyState == 'complete')) 
+				if((this.readyState == 'loaded') || (this.readyState == 'complete'))
 					initFunc();
 			}
 		else
@@ -23,32 +23,33 @@ function injectScript(fname,initFunc)
 	void (h.appendChild(s));
 }
 
-function injectCSS(fname) 
+function injectCSS(fname, onLoadFunc)
 {
-	var newSS=document.createElement('link'); 
-	newSS.rel='stylesheet'; 
-	newSS.href=fname; 
+	var newSS=document.createElement('link');
+	newSS.rel='stylesheet';
+	newSS.href=fname;
+	newSS.onload = onLoadFunc;
 	var h = document.getElementsByTagName("head").item(0);
 	void (h.appendChild(newSS));
 }
 
-function injectCSSText(text) 
+function injectCSSText(text)
 {
-	var style=document.createElement('style'); 
+	var style=document.createElement('style');
 	style.setAttribute("type", "text/css");
 	if(style.styleSheet)
 		style.styleSheet.cssText = text;
-	else 
+	else
 		style.appendChild(document.createTextNode(text));
 	var h = document.getElementsByTagName("head").item(0);
 	void (h.appendChild(style));
 }
 
-var thePlugins = 
+var thePlugins =
 {
 	list: {},
 	topMenu: [],
-	restictions:  
+	restictions:
 	{
 		cantChangeToolbar: 	0x0001,
 		cantChangeMenu:		0x0002,
@@ -119,36 +120,36 @@ function rPlugin( name, version, author, descr, restictions, help )
 	thePlugins.register(this);
 }
 
-rPlugin.prototype.markLoaded = function() 
+rPlugin.prototype.markLoaded = function()
 {
 	this.allStuffLoaded = true;
 }
 
-rPlugin.prototype.enable = function() 
+rPlugin.prototype.enable = function()
 {
 	this.enabled = true;
 	return(this);
 }
 
-rPlugin.prototype.disable = function() 
+rPlugin.prototype.disable = function()
 {
 	this.enabled = false;
 	return(this);
 }
 
-rPlugin.prototype.launch = function() 
+rPlugin.prototype.launch = function()
 {
 	this.launched = true;
 	return(this);
 }
 
-rPlugin.prototype.unlaunch = function() 
+rPlugin.prototype.unlaunch = function()
 {
 	this.launched = false;
 	return(this);
 }
 
-rPlugin.prototype.remove = function() 
+rPlugin.prototype.remove = function()
 {
 	if($type(this["onRemove"])=="function")
 		this.onRemove();
@@ -156,7 +157,7 @@ rPlugin.prototype.remove = function()
 	return(this);
 }
 
-rPlugin.prototype.showError = function(err) 
+rPlugin.prototype.showError = function(err)
 {
 	if( this.allStuffLoaded )
 		noty( eval(err), "error" );
@@ -164,12 +165,14 @@ rPlugin.prototype.showError = function(err)
 		setTimeout( 'thePlugins.get("'+this.name+'").showError("' + err + '")', 1000 );
 }
 
-rPlugin.prototype.langLoaded = function() 
+rPlugin.prototype.langLoaded = function()
 {
 	try {
 	if(($type(this["onLangLoaded"])=="function") && this.enabled)
 		this.onLangLoaded();
-	} catch(e) {}			// konqueror hack
+	} catch(e) {
+		console.warn(`Plugin "${this.name}" failed to load:`, e);
+	} // konqueror hack
 	this.markLoaded();
 }
 
@@ -178,7 +181,7 @@ rPlugin.prototype.loadLangPrim = function(lang,template,sendNotify)
 	var self = this;
 	$.ajax(
 	{
-		url: template.replace('{lang}',lang), // this is because plugin.path may be changed during call 
+		url: template.replace('{lang}',lang), // this is because plugin.path may be changed during call
 		dataType: "script",
 		cache: true
 	}).done( function()
@@ -186,7 +189,7 @@ rPlugin.prototype.loadLangPrim = function(lang,template,sendNotify)
 		!sendNotify || self.langLoaded();
 	}).fail( function()
 	{
-		(lang=='en') ? 
+		(lang=='en') ?
 			(!window.console || console.error( "Plugin '"+self.name+"': localization for '"+lang+"' not found." )) :
 			self.loadLangPrim('en',template,sendNotify);
 	});
@@ -198,9 +201,9 @@ rPlugin.prototype.loadLang = function(sendNotify)
 	return(this);
 }
 
-rPlugin.prototype.loadCSS = function(name)
+rPlugin.prototype.loadCSS = function(name, onLoadFunc)
 {
-	injectCSS(this.path+name+".css");
+	injectCSS(this.path+name+".css", onLoadFunc);
 	return(this);
 }
 
@@ -283,16 +286,24 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
         {
                 if(!dlg.className)
 			dlg.className = "tab";
-		theTabs.tabs[dlg.id] = name; 
+		theTabs.tabs[dlg.id] = name;
 		var newLbl = document.createElement("li");
 		newLbl.id = "tab_"+dlg.id;
 		newLbl.innerHTML = "<a href=\"javascript://void();\" onmousedown=\"theTabs.show('"+dlg.id+"');\" onfocus=\"this.blur();\">" + name + "</a>";
 		if(!idBefore)
 			idBefore = "lcont";
+		if(theWebUI.activeView === dlg.id) {
+			$('#tdcont').children().hide();
+			$(dlg).show();
+		} else {
+			$(dlg).hide();
+		}
 		$$(idBefore).parentNode.insertBefore(dlg,$$(idBefore));
 		var beforeLbl = $$("tab_"+idBefore);
 		beforeLbl.parentNode.insertBefore(newLbl,beforeLbl);
-		theTabs.show("lcont");
+		if (theWebUI.activeView === dlg.id) {
+			setTimeout(() => theTabs.show(dlg.id));
+		}
 	}
 	return(this);
 }
@@ -309,7 +320,7 @@ rPlugin.prototype.renameTab = function(id,name)
 
 rPlugin.prototype.removePageFromTabs = function(id)
 {
-	delete theTabs.tabs[id]; 
+	delete theTabs.tabs[id];
 	$('#'+id).remove();
 	$('#tab_'+id).remove();
 	return(this);
@@ -335,10 +346,10 @@ rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 		newBtn.href='javascript://void();';
 		newBtn.title=name;
 		newBtn.innerHTML='<div class="top-menu-item" id="'+id+'" onclick="'+onclick+';return(false);"></div>';
-		$(newBtn).addClass('top-menu-item').focus( function(e) { this.blur(); } );
-		var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;	
+		$(newBtn).addClass('top-menu-item').on('focus', function(e) { this.blur(); } );
+		var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;
 		if(targetBtn)
-			targetBtn.parentNode.insertBefore(newBtn,targetBtn);	
+			targetBtn.parentNode.insertBefore(newBtn,targetBtn);
 		else
 		{
 			targetBtn = $$("mnu_settings");
@@ -352,8 +363,8 @@ rPlugin.prototype.removeButtonFromToolbar = function(id)
 {
 	$("#mnu_"+id).remove();
 }
-	
-rPlugin.prototype.addSeparatorToToolbar = function(idBefore)	
+
+rPlugin.prototype.addSeparatorToToolbar = function(idBefore)
 {
         if(this.canChangeToolbar())
         {
@@ -361,7 +372,7 @@ rPlugin.prototype.addSeparatorToToolbar = function(idBefore)
 		var sep = document.createElement("DIV");
 		sep.className = "TB_Separator";
 		if(targetBtn)
-			targetBtn.parentNode.insertBefore(sep,targetBtn);	
+			targetBtn.parentNode.insertBefore(sep,targetBtn);
 		else
 		{
 	        	targetBtn = $$("mnu_settings");
@@ -395,12 +406,9 @@ rPlugin.prototype.removePaneFromStatusbar = function(id)
 
 rPlugin.prototype.addPaneToCategory = function(id,name)
 {
-        if(this.canChangeCategory())
-        {
-		$('#CatList').append(
-			$("<div>").addClass("catpanel").attr("id",id).text(name).click(function() { theWebUI.togglePanel(this); })).
-				append($("<div>").attr("id",id+"_cont").addClass("catpanel_cont"));
-		theWebUI.showPanel($$(id),!theWebUI.settings["webui.closed_panels"][id]);
+	if(this.canChangeCategory())
+	{
+		theWebUI.addPanel(id, name);
 	}
 	return($("#"+id+"_cont"));
 }

@@ -10,7 +10,7 @@
  theUILang.feedCompleted	= "Befejezett torrentek";
  theUILang.feedDownloading	= "Letöltött torrentek";
  theUILang.feedActive		= "Aktív torrentek";
- theUILang.feedInactive 	= "Inaktív torrentek";
+ theUILang.feedInactive		= "Inaktív torrentek";
  theUILang.feedError		= "Hibás torrentek";
 
 thePlugins.get("feeds").langLoaded();

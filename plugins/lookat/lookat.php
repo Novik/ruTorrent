@@ -4,6 +4,7 @@ require_once( dirname(__FILE__)."/../../php/cache.php" );
 class rLook
 {
 	public $hash = "look.dat";
+	public $modified = false;
 	public $list = array();
 
 	static public function load()
@@ -12,12 +13,12 @@ class rLook
 		$rt = new rLook();
 		if(!$cache->get($rt))
 		{
-			$rt->list["YouTube"] = "http://www.youtube.com/results?search_query={title}";
-			$rt->list["MetaCritic"] = "http://www.metacritic.com/search/all/{title}/results";
-			$rt->list["IMDb"] = "http://www.imdb.com/find?q={title}&s=all";
 			$rt->list["Google"] = "https://www.google.com/search?q={title}";
-			$rt->list["TMDb"] = "http://www.themoviedb.org/search?query={title}";
-			$rt->list["TheTVDb"] = "http://thetvdb.com/?string={title}&searchseriesid=&tab=listseries&function=Search";
+			$rt->list["IMDb"] = "https://www.imdb.com/find?q={title}";
+			$rt->list["MetaCritic"] = "https://www.metacritic.com/search/all/{title}/results";
+			$rt->list["TMDb"] = "https://www.themoviedb.org/search?query={title}";
+			$rt->list["TheTVDb"] = "https://www.thetvdb.com/search?query={title}";
+			$rt->list["YouTube"] = "https://www.youtube.com/results?search_query={title}";
 		}
 		return($rt);
 	}
@@ -57,6 +58,6 @@ class rLook
 	}
 	public function get()
 	{
-		return(safe_json_encode($this->list));
+		return(JSON::safeEncode($this->list));
 	}
 }

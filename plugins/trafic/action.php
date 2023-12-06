@@ -1,4 +1,4 @@
 <?php
 	require_once( './ratios.php' );
 		
-	cachedEcho(getRatiosStat(),"application/javascript");
+	CachedEcho::send(getRatiosStat(),"application/javascript");

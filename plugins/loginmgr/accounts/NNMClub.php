@@ -2,7 +2,7 @@
 
 class NNMClubAccount extends commonAccount
 {
-	public $url = "https://nnm-club.me";
+	public $url = "https://nnmclub.to";
 
 	protected function isOK($client)
 	{
@@ -17,7 +17,7 @@ class NNMClubAccount extends commonAccount
 		{
 			$client->cookies = array_merge($client->cookies, array('_ddn_'.$matches["cname"]=>$matches["cvalue"]));
 		}
-		if($client->fetch( $this->url."/forum/login.php","POST","application/x-www-form-urlencoded", 
+		if($client->fetch( $this->url."/forum/login.php","POST","application/x-www-form-urlencoded",
 			"&username=".rawurlencode($login)."&password=".rawurlencode($password)."&autologin=on&login=%C2%F5%EE%E4" ))
 		{
 			$client->setcookies();
@@ -27,6 +27,7 @@ class NNMClubAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to|name|tv)\/forum\//si", $url ) && !preg_match( "/(\.|\/)(nnm-club|nnmclub).(ru|me|to|name|tv)\/forum\/login.php/si", $url ));
+		return(preg_match( "/(\.|\/)(nnm-club|nnmclub)\.(ru|me|to|name|tv)\/forum\//si", $url ) && 
+			!preg_match( "/(\.|\/)(nnm-club|nnmclub)\.(ru|me|to|name|tv)\/forum\/login.php/si", $url ));
 	}
 }

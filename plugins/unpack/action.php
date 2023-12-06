@@ -14,7 +14,7 @@ if(isset($_REQUEST['cmd']))
 		{
 			$up = rUnpack::load();
 			$up->set();
-			cachedEcho($up->get(),"application/javascript");
+			CachedEcho::send($up->get(),"application/javascript");
 			break;
 		}
 		case "unpack":
@@ -26,4 +26,4 @@ if(isset($_REQUEST['cmd']))
 	}
 }
 
-cachedEcho(safe_json_encode($ret),"application/json");
+CachedEcho::send(JSON::safeEncode($ret),"application/json");

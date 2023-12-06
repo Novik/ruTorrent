@@ -8,7 +8,7 @@ if( count( $argv ) > 7 )
 
 require_once( "./util_rt.php" );
 require_once( "./autotools.php" );
-eval( getPluginConf( 'autotools' ) );
+eval( FileUtil::getPluginConf( 'autotools' ) );
 
 //------------------------------------------------------------------------------
 function Debug( $str )
@@ -19,17 +19,23 @@ function Debug( $str )
 
 
 //------------------------------------------------------------------------------
-function skip_move($files) {
-    global $at;
-    $filter = $at->skip_move_for_files;
-    Debug("using filter:".$filter);
-    foreach($files as $file) {
-       if ( preg_match($filter.'u',$file)==1) {
-           return true;
+function skip_move($files) 
+{
+	global $at;
+	$filter = $at->skip_move_for_files;
+	if(strlen($filter)>0)
+    	{
+		Debug("using filter:".$filter);
+		foreach($files as $file) 
+		{
+			if ( preg_match($filter.'u',$file)==1) 
+			{
+				return true;
+			}
+	    	}
+		Debug("filter: " . $filter . " did not match any files in" . implode(" | ",$files) .". end");
 	}
-    }
-    Debug("filter: " . $filter . " did not match any files in" . implode(" | ",$files) .". end");
-    return false;
+	return(false);
 }
 
 //------------------------------------------------------------------------------
@@ -123,9 +129,9 @@ if( $at->enable_move && (@preg_match($at->automove_filter.'u',$label)==1) )
 					$dest_path = rtAddTailSlash( $path_to_finished.$rel_path );
 					// last condition avoids appending duplicate path from combining folder and label (eg autowatch and autolabel)
 					if($at->addLabel && ($label!='') && ($label!=trim($rel_path,'/')))
-		        			$dest_path.=addslash($label);
+		        			$dest_path.=FileUtil::addslash($label);
 			        	if($at->addName && ($name!=''))
-						$dest_path.=addslash($name);					
+						$dest_path.=FileUtil::addslash($name);					
 					if(operationOnTorrentFiles($torrent,$base_path,$base_name,$is_multi,$dest_path,$fileop_type))
 					{
 //						if($fileop_type=="Move")

@@ -2,7 +2,7 @@ plugin.loadLang();
 if(theWebUI.theme)
 {
 	plugin.path = "plugins/theme/themes/"+theWebUI.theme+"/";
-	plugin.loadCSS("style");
+	plugin.loadCSS("style", () => $(':root').removeClass('pre-theme-load'));
 	plugin.loadCSS("stable");
 
 	plugin.allDone = function()
@@ -15,11 +15,11 @@ if(theWebUI.theme)
 	}
 
 	plugin.config = theWebUI.config;
-	theWebUI.config = function(data)
+	theWebUI.config = function()
 	{
 		this.getTable("trt").setPaletteByURL("plugins/theme/themes/"+theWebUI.theme);
 		plugin.loadCSS("plugins");
-		plugin.config.call(this,data);
+		plugin.config.call(this);
 		thePlugins.waitLoad( "thePlugins.get('theme').allDone" );
 	}
 }
@@ -34,6 +34,13 @@ plugin.onLangLoaded = function()
 		'<label for="webui.theme">'+theUILang.theme+':</label>'+
 		'<select id="webui.theme">'+themes+'</select></div>' );
 }
+
+plugin.updateThemeHint = function(theme)
+{
+	const dark = !['Blue', 'Excel', ''].includes(theme);
+	setThemeHint(dark);
+}
+plugin.updateThemeHint(theWebUI.theme);
 
 rTorrentStub.prototype.settheme = function()
 {
@@ -52,6 +59,12 @@ plugin.setSettings = theWebUI.setSettings;
 theWebUI.setSettings = function() 
 {
 	plugin.setSettings.call(this);
-	if($($$("webui.theme")).val()!=theWebUI.theme)
-		theWebUI.request("?action=settheme",[theWebUI.reload, theWebUI]);
+	const themeVal = $($$("webui.theme")).val();
+	if(themeVal !== theWebUI.theme)
+	{
+		theWebUI.request("?action=settheme", () => {
+			plugin.updateThemeHint(themeVal);
+			theWebUI.reload();
+		});
+	}
 }

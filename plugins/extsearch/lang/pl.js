@@ -29,7 +29,7 @@
  theUILang.extPrivate			= "Prywatne";
  theUILang.extPublic			= "Publiczne";
  theUILang.exsCookies			= "Format ciasteczek";
- theUILang.extAllPublic 		= "Wszystkie publiczne";
+ theUILang.extAllPublic			= "Wszystkie publiczne";
  theUILang.extAllPrivate		= "Wszystkie prywatne";
  theUILang.exsMustInstallCookies	= "Wtyczka 'cookies' jest wymagana jeśli chcesz użyć tej wyszukiwarki.";
  theUILang.exsMustInstallLoginMgr	= "Wtyczka 'loginmgr' jest wymagana jeśli chcesz użyć tej wyszukiwarki.";

@@ -12,7 +12,7 @@ class rLock
 	protected function __construct( $name, $maxLockTime )
 	{
 		$this->lockTime = $maxLockTime;
-		$this->file = getSettingsPath().'/'.$name.".lock";
+		$this->file = FileUtil::getSettingsPath().'/'.$name.".lock";
 	}
 
 	function __destruct()

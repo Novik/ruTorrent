@@ -20,7 +20,7 @@ plugin.allDone = function()
 }
 
 plugin.config = theWebUI.config;
-theWebUI.config = function(data)
+theWebUI.config = function()
 {
 	if(plugin.canChangeColumns())
 	{
@@ -40,7 +40,7 @@ theWebUI.config = function(data)
 			return(plugin.trtFormat(table,arr));
 		};
 	}
-	plugin.config.call(this,data);
+	plugin.config.call(this);
 	plugin.reqId = theRequestManager.addRequest("trt", theRequestManager.map("cat=")+'$'+theRequestManager.map("d.views="),function(hash,torrent,value)
 	{
 		torrent.ratiogroup = value;
@@ -131,8 +131,8 @@ if(plugin.canChangeOptions())
 		this.content = "default="+iv($('#ratDefault').val());
 		for(var i=0; i<theWebUI.maxRatio; i++)
 		{
-			var name = $.trim($('#rat_name'+i).val());
-			var upload = iv($('#rat_upload'+i).val());
+			var name = $('#rat_name'+i).val().trim();
+			var upload = $('#rat_upload'+i).val();
 			var min = $('#rat_min'+i).val();
 			var time = $('#rat_time'+i).val();
 			var max = $('#rat_max'+i).val();
@@ -246,7 +246,7 @@ plugin.onLangLoaded = function()
 					"<td align=center><b>"+theUILang.ratioName+"</b></td>"+
 					"<td align=center><b>"+theUILang.minRatio+",%</b></td>"+
 					"<td align=center><b>"+theUILang.maxRatio+",%</b></td>"+
-					"<td align=center><b>"+theUILang.ratioUpload+","+theUILang.MB+"</b></td>"+
+					"<td align=center><b>"+theUILang.ratioUpload+","+theUILang.GB+"</b></td>"+
 					"<td class='ratio_time' align=center><b>"+theUILang.maxTime+","+theUILang.time_h.substr(0,theUILang.time_h.length-1)+"</b></td>"+
 					"<td align=center><b>"+theUILang.ratioAction+"</b></td>"+
 				"</tr>";
@@ -261,11 +261,19 @@ plugin.onLangLoaded = function()
 				"<td class='ratio_time'><input type='text' id='rat_time"+i+"' class='Textbox num1' maxlength='6'/></td>"+
 				"<td><select id='rat_action"+i+"'><option value='0'>"+theUILang.ratioStop+"</option><option value='1'>"+theUILang.ratioStopAndRemove+"</option><option value='2'>"+theUILang.ratioErase+"</option><option value='3'>"+theUILang.ratioEraseData+"</option><option value='4'>"+theUILang.ratioEraseData+" ("+theUILang.All+")</option></select></td>"+
 			"</tr>";
-	s+="</table></div></fieldset>";
-	s+="<div class='aright'><label>"+theUILang.ratioDefault+":</label><select id='ratDefault'><option value='0'>"+theUILang.dontSet+"</option>";
+	s+="</table></div></fieldset>";	
+	// Table to put the default ratio group selector beside the UL Legend
+	s+="<table><tr><td>";	
+	// Legend explaining how UL column works
+	s+="<div id='st_legend'><fieldset><legend>"+theUILang.ratioUpload+","+theUILang.GB+"</legend><table>";
+	s+="<tr><label>"+theUILang.minRatio+": 0.01"+theUILang.GB+" = 10"+theUILang.MB+"</label><br></tr>";
+	s+="<tr><label>"+theUILang.maxRatio+": 999999"+theUILang.GB+" = 1"+theUILang.PB+"</label></tr>";
+	s+="</table></fieldset></div></td>";
+	// Default ratio group selector
+	s+="<td><div class='aright'><label>"+theUILang.ratioDefault+":</label><select id='ratDefault'><option value='0'>"+theUILang.dontSet+"</option>";
 	for(var i=1; i<=theWebUI.maxRatio; i++)
 		s+="<option value='"+i+"'>"+i+"</option>";
-	s+="</select></div>";
+	s+="</select></div></td></tr></table>";
 	this.attachPageToOptions($("<div>").attr("id","st_ratio").html(s).get(0),theUILang.ratios);
 }
 

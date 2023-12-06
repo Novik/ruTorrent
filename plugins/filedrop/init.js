@@ -5,7 +5,7 @@ else
 
 plugin.onLangLoaded = function()
 {
-	injectScript(plugin.path+"/jquery.filedrop.js",function()
+	injectScript(plugin.path+"jquery.filedrop.js",function()
 	{
 		$("#maincont").filedrop(
 		{
@@ -60,5 +60,5 @@ plugin.onLangLoaded = function()
 
 plugin.onRemove = function()
 {
-	$("#maincont").unbind('drop').unbind('dragenter').unbind('dragover').unbind('dragleave');
+	$("#maincont").off('drop').off('dragenter').off('dragover').off('dragleave');
 }
