@@ -9,8 +9,6 @@ body:
       options:
         - label: Web browser cache cleared
           required: true
-        - label: Copied everything if upgrading to v4.0 or master
-          required: true
         - label: Web browser, ruTorrent and PHP version provided
           required: true
           
@@ -20,7 +18,7 @@ body:
       description: |
         Example of preferred formatting:
         Web Browser: Google Chrome 97.0.4692.71
-        ruTorrent: v4.0-beta.1 OR Master: fc9d1f0
+        ruTorrent: v4.2.9 OR Master: fc9d1f0
         PHP: PHP 7.4.3
       placeholder: |
         Web Browser:
