@@ -1,0 +1,38 @@
+:host {
+	display: contents;
+	font-size: 11px;
+	--open-background-image: url(../images/pnl_open.gif);
+	--close-background-image: url(../images/pnl_close.gif);
+	--heading-background-color: #f0f0f0;
+	--heading-border-color: #a0a0a0;
+}
+
+:host([closed]) slot[name="content"] {
+	display: none;
+}
+
+
+div[part=heading] {
+	display: flex;
+	background: var(--open-background-image) 2px no-repeat;
+	background-color: var(--heading-background-color);
+	border-bottom: 1px solid var(--heading-border-color);
+	border-top: 1px solid var(--heading-border-color);
+	padding: 2px 5px 2px 21px;
+	margin: 0px;
+	line-height: 16px;
+	cursor: pointer;
+	-moz-user-select: none;
+	-moz-user-focus: normal;
+	-moz-user-input: enabled;
+	user-select: none;
+}
+
+:host([closed]) div[part="heading"] {
+	background-image: var(--close-background-image);
+}
+
+.text {
+	flex: 1;
+	white-space: nowrap;
+}

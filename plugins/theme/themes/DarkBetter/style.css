@@ -1,4 +1,142 @@
 html, body {background-color: #181818; color: #999999; }
+:root {
+  --menu-color: #666666;
+  --menu-background-color: #181818;
+
+  --menu-disabled-color: #333333;
+
+  --menu-border-color: #333333;
+  --menu-highlight-color: #111111;
+  --menu-highlight-background-color: #888888;
+
+  --settings-background-color: #181818;
+}
+button,
+input.Button {
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0.05, #d6d6d6),
+    color-stop(1, #c7c7c7)
+  );
+  background: -moz-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
+  background: -webkit-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
+  background: -o-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
+  background: -ms-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
+  background: linear-gradient(to bottom, #d6d6d6 5%, #c7c7c7 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d6d6d6', endColorstr='#c7c7c7',GradientType=0);
+  background-color: #d6d6d6;
+  border: 1px solid #333333;
+  color: #111111;
+}
+button:hover,
+input.Button:not([disabled]):hover {
+  background-color: #999999;
+  filter: brightness(1.2);
+}
+button:hover:active,
+input.Button:not([disabled]):hover:active {
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0.05, #c7c7c7),
+    color-stop(1, #d6d6d6)
+  );
+  background: -moz-linear-gradient(top, #c7c7c7 5%, #d6d6d6 100%);
+  background: -webkit-linear-gradient(top, #c7c7c7 5%, #d6d6d6 100%);
+  background: -o-linear-gradient(top, #c7c7c7 5%, #d6d6d6 100%);
+  background: -ms-linear-gradient(top, #c7c7c7 5%, #d6d6d6 100%);
+  background: linear-gradient(to bottom, #c7c7c7 5%, #d6d6d6 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c7c7c7', endColorstr='#d6d6d6',GradientType=0);
+  background-color: #c7c7c7;
+  -moz-box-shadow: inset 0px 0px 8px 0px #474747;
+  -webkit-box-shadow: inset 0px 0px 8px 0px #474747;
+}
+
+#CatList,
+category-list {
+  border: 1px solid #333333;
+  background-color: #181818;
+}
+
+category-panel::part(heading) {
+  background-color: #111111;
+  border-bottom: 1px solid #333333;
+  border-top: 1px solid #333333;
+  background: url(./images/pnl_open.svg) 4px no-repeat;
+  background-size: 14px;
+}
+category-panel[closed]::part(heading) {
+  background: url(./images/pnl_close.svg) 4px no-repeat;
+}
+
+
+panel-label {
+  border-color: #181818;
+  --prefix-color: #fff;
+  --badge-color: #666666;
+  --badge-background-color: #111111;
+  --icon-letter-color: #999999;
+  --icon-letter-background-color: #111111;
+  --icon-offset: 0px 0px;
+  --icon-size: 18px;
+  --icon-image-size: 18px;
+}
+
+panel-label[selected] {
+  background-color: #888888;
+  color: #111111;
+  border-color: #888888;
+  --badge-color: #111111;
+  --badge-background-color: #999999;
+}
+
+panel-label[icon="down"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_down.svg);
+}
+panel-label[icon="up"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_up.svg);
+}
+panel-label[icon="search"],
+panel-label[icon="inactive"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_inactive.svg);
+}
+panel-label[icon="paused"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_paused.svg);
+}
+panel-label[icon="error-down"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_error_down.svg);
+}
+panel-label[icon="error-up"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_error_up.svg);
+}
+panel-label[icon="error"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_error.svg);
+}
+panel-label[icon="completed"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_completed.svg);
+}
+panel-label[icon="queued-down"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_queued_down.svg);
+}
+panel-label[icon="queued-up"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_queued_up.svg);
+}
+panel-label[icon="active"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_active.svg);
+}
+panel-label[icon="all"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/t_all.svg);
+}
+panel-label[icon="rss"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/tb_rss.svg);
+}
+panel-label[icon="rss-group"] {
+  --status-image: url(../plugins/theme/themes/DarkBetter/images/tb_rss_group.svg);
+}
+
 div#preload {
     width: 0px; height: 0px; display: none;
     background-image: url(./images/tb_add.svg);
@@ -99,16 +237,6 @@ a.dlg-close:active {
     background: transparent url(./images/t_error.svg) center;
 }
 
-div#CatList ul li.RSS .label-icon {
-    background: url(./images/tb_rss.svg) 2px 0px no-repeat;
-    background-size: 18px !important;
-}
-
-div#CatList ul li.RSSGroup .label-icon {
-    background: url(./images/tb_rss_group.svg) 2px 0px no-repeat !important;
-    background-size: 18px !important;
-}
-
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
 .Status_Down {background: transparent url(./images/t_down.svg) no-repeat center center !important; background-size: 16px !important}
 .Status_Up {background: transparent url(./images/t_up.svg) no-repeat center center !important; background-size: 16px !important}
@@ -124,60 +252,14 @@ div#CatList ul li.RSSGroup .label-icon {
 .Status_Checking {background: transparent url(./images/t_all.svg) no-repeat center center !important; background-size: 16px !important}
 .Status_RSS {background: transparent url(./images/rb_rss.svg) no-repeat center center !important; background-size: 16px !important}
 
-.label-icon { min-width: 18px; min-height: 18px; background-size: 18px !important; background-position: 0px 0px !important; }
-.label-icon img { width: 18px; }
-.-_-_-all-_-_- .label-icon, #-_-_-all-_-_- .label-icon {background-image: url(./images/t_all.svg) !important}
-#-_-_-dls-_-_- .label-icon {background-image: url(./images/t_down.svg) !important}
-#-_-_-com-_-_- .label-icon {background-image: url(./images/t_up.svg) !important}
-#-_-_-act-_-_- .label-icon {background-image: url(./images/t_active.svg) !important}
-#-_-_-iac-_-_- .label-icon {background-image: url(./images/t_inactive.svg) !important}
-#-_-_-err-_-_- .label-icon {background-image: url(./images/t_error.svg) !important}
-#flabel_cont li:not(.-_-_-all-_-_-) .label-icon {background-image: url(./images/tb_search.svg) !important}
-
-
 input.Textbox, input.Button, select {border: 1px solid #333333}
 Input.TextboxShort {border: 1px solid #333333}
 Input.TextboxMid {border: 1px solid #333333}
 Input.TextboxLarge {border: 1px solid #333333}
 Input.TextboxVShort {border: 1px solid #333333}
-input.Button {
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #d6d6d6), color-stop(1, #c7c7c7));
-	background:-moz-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
-	background:-webkit-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
-	background:-o-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
-	background:-ms-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
-	background:linear-gradient(to bottom, #d6d6d6 5%, #c7c7c7 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d6d6d6', endColorstr='#c7c7c7',GradientType=0);
-	background-color:#d6d6d6;
-	border:1px solid #333333;
-	color: #111111;
-}
-
-input.Button:active {
-    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #c7c7c7), color-stop(1, #d6d6d6));
-	background:-moz-linear-gradient(top, #c7c7c7 5%, #d6d6d6 100%);
-	background:-webkit-linear-gradient(top, #c7c7c7 5%, #d6d6d6 100%);
-	background:-o-linear-gradient(top, #c7c7c7 5%, #d6d6d6 100%);
-	background:-ms-linear-gradient(top, #c7c7c7 5%, #d6d6d6 100%);
-	background:linear-gradient(to bottom, #c7c7c7 5%, #d6d6d6 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c7c7c7', endColorstr='#d6d6d6',GradientType=0);
-	background-color:#c7c7c7;
-}
-
-input.Button:active {
-    -moz-box-shadow:inset 0px 0px 8px 0px #474747;
-	-webkit-box-shadow:inset 0px 0px 8px 0px #474747;
-}
-
-.pview_custom_view .label-icon { background-color: #111111; line-height: 13px; }
-.pview_custom_view .label-icon > span { color: #999999 !important; }
 
 a {color: #686868}
 
-div#CatList {border: 1px solid #333333; background-color: #181818}
-div#CatList ul li {border-color: #181818}
-div#CatList ul li.sel {background-color: #888888 !important; color:#111111; border-color: #888888}
-div#CatList ul li.disRSS .label-icon {background-image: url(./images/tstatus.png)}
 .stable-icon {background-image: url(./images/tstatus.png)}
 .Icon_File {background: transparent url(./images/file.svg) no-repeat left center; background-size: 16px}
 .Icon_Dir {background: transparent url(./images/dir.svg) no-repeat left center; background-size: 16px}
@@ -233,18 +315,6 @@ div.tab {background-color: #181818}
 div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0px center; background-size: 28px}
 
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; background-size: 28px}
-
-.catpanel {background: url(./images/pnl_open.svg) 4px no-repeat; background-size: 14px; background-color: #111111; border-bottom: 1px solid #333333; border-top: 1px solid #333333}
-.catpanel[style*="pnl_open.gif"] {
-    background: url(./images/pnl_open.svg) 4px no-repeat !important; background-size: 14px !important;
-}
-
-.catpanel[style*="pnl_close.gif"] {
-    background: url(./images/pnl_close.svg) 4px no-repeat !important; background-size: 14px !important;
-}
-.label-count,.label-size { background-color: #111111; }
-li.sel .label-count,li.sel .label-size { background-color: #999999; }
-
 
 #StatusBar {border-top: 1px solid #333333; background-color: #181818; color: #888888}
 #st_up {background:url(./images/up.svg) no-repeat; background-size: 22px}

@@ -404,18 +404,17 @@ rPlugin.prototype.removePaneFromStatusbar = function(id)
 	return(this);
 }
 
-rPlugin.prototype.addPaneToCategory = function(id,name)
+rPlugin.prototype.addPaneToCategory = function(id,name, labelAttribs, statisticInit)
 {
 	if(this.canChangeCategory())
 	{
-		theWebUI.addPanel(id, name);
+		theWebUI.categoryList.addPanel(id, name, labelAttribs, statisticInit);
 	}
-	return($("#"+id+"_cont"));
+	return($($$(id)));
 }
 
 rPlugin.prototype.removePaneFromCategory = function(id)
 {
-	$("#"+id).remove();
-	$("#"+id+"_cont").remove();
+	theWebUI.categoryList.removePanel(id);
 	return(this);
 }

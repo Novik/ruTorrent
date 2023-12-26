@@ -761,15 +761,6 @@ var theFormatter =
 	   	}
 		return(arr);
 	},
-	treePrefix: function({hasNext, level})
-	{
-		return hasNext
-			.slice(1)
-			.map((next,l) => next
-				? (l+1 === level ? '├' : '│')
-				: (l+1 === level ? '└' : ' ')
-			).join('');
-	}
 };
 
 var theSearchEngines =
@@ -793,6 +784,10 @@ var theSearchEngines =
 	set: function( no, noSave )
 	{
 		theSearchEngines.current = no;
+		if (no !== -1)
+		{
+			theWebUI.categoryList.setQuickSearch(null);
+		}
 		if(!noSave)
 			theWebUI.save();
 	},

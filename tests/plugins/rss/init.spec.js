@@ -1,4 +1,5 @@
 import { readFileSync } from "fs";
+import { CategoryList } from "../../../js/category-list";
 window.$ = require("jquery");
 window.theWebUI = {
   settings: {
@@ -13,14 +14,25 @@ window.theWebUI = {
       started: true,
     },
   },
+  categoryList: new CategoryList({}),
 };
 window.GetActiveLanguage = function () {
   return "en";
 };
+document.body.append(
+  ...["category-list", "panel-label"].map((elementTag) =>
+    Object.assign(document.createElement("template"), {
+      id: `${elementTag}-template`,
+      innerHTML: '<link rel="stylesheet" />',
+    })
+  )
+);
 
 for (const src of [
   "../js/sanitize.js",
   "../js/sanitize.config.js",
+  "../js/custom-elements.js",
+  "../js/category-list-elements.js",
   "../lang/en.js",
   "../js/common.js",
   "../js/content.js",

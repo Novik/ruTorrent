@@ -3,8 +3,24 @@ if(browser.isIE && browser.versionMajor < 8)
 	plugin.loadCSS("ie");
 plugin.loadLang();
 
+theWebUI.rssListVisible = false;
 theWebUI.rssShowErrorsDelayed = true;
 theWebUI.delayedRSSErrors = {};
+const catlist = theWebUI.categoryList;
+
+injectCustomElementCSS('panel-label', plugin.path + 'panel-label.css');
+injectCustomElementAttribute('panel-label', 'alert', function(oldValue, newValue) {
+	if (oldValue) {
+		const element = this.shadowRoot.querySelector('.alert');
+		if (element) element.remove();
+	}
+	if (newValue) {
+		const div = document.createElement('div');
+		div.classList.add('alert');
+		div.textContent = newValue;
+		this.shadowRoot.appendChild(div);
+	}
+});
 
 if(plugin.canChangeOptions())
 {
@@ -37,41 +53,37 @@ if(plugin.canChangeOptions())
 		}
 	}
 }
+plugin.actRSSLbl = () => catlist.selection.ids('prss')[0] ?? null;
 
-plugin.switchLabel = theWebUI.switchLabel;
-theWebUI.switchLabel = function(labelType, targetId, toggle=false, range=false)
+const origSwitchLabel = catlist.switchLabel.bind(catlist);
+catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 {
-	const rssList = $("#RSSList");
-	const list = $("#List");
-	if(labelType === 'prss_cont') {
-		theWebUI.switchRSSLabel($$(targetId));
+	const rssListVisible = theWebUI.rssListVisible;
+	let change;
+	if(panelId === 'prss') {
+		change = origSwitchLabel(panelId, targetId) || !rssListVisible;
+		if (change) {
+			theWebUI.switchRSSLabel();
+		}
 	} else {
-		list.show();
-		if(rssList.is(":visible"))
+		if(rssListVisible)
 		{
+			theWebUI.rssListVisible = false;
+			catlist.refresh('prss');
+
 			theWebUI.getTable("trt").clearSelection();
 			theWebUI.dID = "";
 			theWebUI.clearDetails();
 			theWebUI.getTable("rss").clearSelection();
-			if(theWebUI.actRSSLbl)
-				$($$(theWebUI.actRSSLbl)).removeClass('sel');
-			theWebUI.actRSSLbl = null;
-			rssList.hide();
+			$("#RSSList").hide();
+			$("#List").show();
 			theWebUI.switchLayout(false);
 		}
-		plugin.switchLabel.call(theWebUI, labelType, targetId, toggle, range);
+		if (!origSwitchLabel(panelId, targetId, toggle, range) && rssListVisible) {
+			catlist.syncFn();
+		}
 	}
-	// finally hide list if rsslist shown
-	if(rssList.is(":visible")) {
-		list.hide();
-	}
-}
-
-theWebUI.isActiveRSSEnabled = function()
-{
-	return((theWebUI.actRSSLbl == "_rssAll_") || 
-		(theWebUI.isGroupSelected() && (theWebUI.rssGroups[theWebUI.actRSSLbl].enabled==1)) ||
-		(!theWebUI.isGroupSelected() && theWebUI.rssLabels[theWebUI.actRSSLbl].enabled==1));
+	return change;
 }
 
 theWebUI.updateRSSDetails = function(id)
@@ -97,35 +109,35 @@ theWebUI.switchLayout = function(toRSS,id)
 	}
 }
 
-theWebUI.switchRSSLabel = function(el)
-{
-	if((el.id == theWebUI.actRSSLbl) && $(el).hasClass('sel'))
-		return;
-	if(theWebUI.actRSSLbl)
-		$($$(theWebUI.actRSSLbl)).removeClass('sel')
-	theWebUI.actRSSLbl = el.id;
-	$(el).addClass('sel');
+theWebUI.shouldShowRSSRow = function(href) {
+	const actLabelId = plugin.actRSSLbl();
+	const item = this.rssItems[href];
+	return !actLabelId ||
+		this.isGroupContain( this.rssGroups[actLabelId], item) ||
+		item.rss.has(actLabelId);
+};
 
+theWebUI.switchRSSLabel = function()
+{
 	var table = theWebUI.getTable("rss");
 	table.scrollTo(0);
-	for(var k in theWebUI.rssItems)
+	for(const href in theWebUI.rssItems)
 	{
-		if((theWebUI.actRSSLbl == "_rssAll_") || 
-			(theWebUI.isGroupSelected() &&
-				theWebUI.isGroupContain( theWebUI.rssGroups[theWebUI.actRSSLbl], theWebUI.rssItems[k] )) ||
-			theWebUI.rssItems[k].rss[theWebUI.actRSSLbl])
-			table.unhideRow(k);
+		if(this.shouldShowRSSRow(href))
+			table.unhideRow(href);
 		else
-			table.hideRow(k);
+			table.hideRow(href);
 	}
 	table.clearSelection();
-	var lst = $("#List");
-	var rss = $("#RSSList");
-	if(lst.is(":visible"))
+	if(!theWebUI.rssListVisible)
 	{
+		theWebUI.rssListVisible = true;
+		catlist.refresh('prss');
+
+		const rss = $("#RSSList");
+		const lst = $("#List");
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
-		plugin.correctCSS();
 		rss.css( { width: lst.width(), height: lst.height() } );
 		table.resize(lst.width(), lst.height());
 		table.calcSize();
@@ -142,14 +154,14 @@ theWebUI.showDelayedRSSErrros = function() {
 	// show delayed notifications
 	$('#tab_lcont').removeClass('notification');
 	const notyArgss = Object.values(theWebUI.delayedRSSErrors);
-	for (const eid in theWebUI.delayedRSSErrors) {
-		$('#'+eid).removeClass('notification');
-	}
 	theWebUI.delayedRSSErrors = {};
 	for (const argss of notyArgss) {
 		for (const args of argss) {
 			noty(...args);
 		}
+	}
+	if (plugin.allStuffLoaded) {
+		catlist.refreshAndSyncPanel('prss');
 	}
 };
 
@@ -167,15 +179,17 @@ theWebUI.config = function()
 	this.rssLabels = {};
 	this.rssItems = {};
 	this.rssGroups = {};
-	this.actRSSLbl = null;
 	this.updateRSSTimer = null;
 	this.updateRSSInterval = 5*60*1000;
-	this.rssUpdateInProgress = false;
 	this.rssID = "";
-	this.cssCorrected = false;
 	this.rssArray = [];
 	this.filters = [];	
-	$("#List").after($("<div>").attr("id","RSSList").css("display","none"));
+	$("#List").after(
+		$("<div>")
+		.attr("id","RSSList")
+		.addClass('main-table')
+		.css("display","none")
+	);
 	this.tables["rss"] =  
 	{
 	        obj:		new dxSTable(),
@@ -299,10 +313,11 @@ theWebUI.RSSDelete = function()
 
 theWebUI.RSSEdit = function()
 {
-	if(theWebUI.actRSSLbl && theWebUI.rssLabels[this.actRSSLbl])
+	const rssLabel = theWebUI.rssLabels[plugin.actRSSLbl()]
+	if(rssLabel)
 	{
-		$('#editrssURL').val( theWebUI.rssLabels[this.actRSSLbl].url ); 
-		$('#editrssLabel').val( theWebUI.rssLabels[this.actRSSLbl].name );
+		$('#editrssURL').val( rssLabel.url );
+		$('#editrssLabel').val( rssLabel.name );
 		theDialogManager.show("dlgEditRSS");
 	}
 }
@@ -313,17 +328,17 @@ theWebUI.RSSManager = function()
 }
 
 plugin.contextMenuTable = theWebUI.contextMenuTable;
-theWebUI.contextMenuTable = function(labelType, el) {
-	return labelType === 'prss_cont' ? 
-		theWebUI.getTable('rss') 
-		: plugin.contextMenuTable.call(theWebUI, labelType, el);
+theWebUI.contextMenuTable = function(panelId, el) {
+	return panelId === 'prss' ?
+		theWebUI.getTable('rss')
+		: plugin.contextMenuTable.call(theWebUI, panelId, el);
 },
 
-plugin.contextMenuEntries = theWebUI.contextMenuEntries;
-theWebUI.contextMenuEntries = function(labelType, el) {
-	return labelType === 'prss_cont' ?
+plugin.contextMenuEntries = catlist.contextMenuEntries.bind(catlist);
+catlist.contextMenuEntries = function(panelId, labelId) {
+	return panelId === 'prss' ?
 		theWebUI.createRSSMenuPrim()
-		: plugin.contextMenuEntries.call(theWebUI, labelType, el);
+		: plugin.contextMenuEntries(panelId, labelId);
 }
 
 theWebUI.fillRSSGroups = function()
@@ -339,12 +354,12 @@ theWebUI.fillRSSGroups = function()
 theWebUI.RSSEditGroup = function()
 {
 	theWebUI.fillRSSGroups();
-	var grp = theWebUI.rssGroups[this.actRSSLbl];
+	var grp = theWebUI.rssGroups[plugin.actRSSLbl()];
 	for(var i=0; i<grp.lst.length; i++)
 		$('#grp_'+grp.lst[i]).prop('checked',true);
 	$("#rssGroupLabel").val(grp.name);
 	$("#dlgAddRSSGroup-header").html(theUILang.editRSSGroup);
-	$("#rssGroupHash").val(this.actRSSLbl);
+	$("#rssGroupHash").val(plugin.actRSSLbl());
 	theDialogManager.show("dlgAddRSSGroup");
 }
 
@@ -414,10 +429,11 @@ theWebUI.createRSSMenuPrim = function()
 		[ theUILang.addRSSGroup, "theWebUI.RSSAddGroup()"],
 		[ theUILang.rssMenuManager, "theWebUI.RSSManager()"]
 	];
-	if(theWebUI.actRSSLbl)
+	const actLabelId = plugin.actRSSLbl();
+	if(actLabelId)
 	{
 		entries.push([CMENU_SEP]);
-		if(this.actRSSLbl == "_rssAll_")
+		if(!actLabelId)
 		{
 			entries = entries.concat([
 				[ theUILang.rssMenuDisable ],
@@ -428,13 +444,13 @@ theWebUI.createRSSMenuPrim = function()
 		}
 		else
 		{
-			if(this.isGroupSelected())
+			if(actLabelId in this.rssGroups)
 			{
-				entries = entries.concat(this.rssGroups[this.actRSSLbl].enabled==1 ? [
+				entries = entries.concat(this.rssGroups[actLabelId].enabled==1 ? [
 					[ theUILang.rssMenuGroupDisable, "theWebUI.RSSGroupSetStatus(0)"],
 					[ theUILang.rssMenuGroupRefresh, "theWebUI.RSSGroupRefresh()"]
 				] : [
-					[ theUILang.rssMenuGroupEnable, (this.rssGroups[this.actRSSLbl].cnt==0) ? null : "theWebUI.RSSGroupSetStatus(1)"],
+					[ theUILang.rssMenuGroupEnable, (this.rssGroups[actLabelId].cnt==0) ? null : "theWebUI.RSSGroupSetStatus(1)"],
 					[ theUILang.rssMenuGroupRefresh ]
 				]).concat([
 					[ theUILang.rssMenuGroupEdit, "theWebUI.RSSEditGroup()"],
@@ -444,7 +460,7 @@ theWebUI.createRSSMenuPrim = function()
 			}
 			else
 			{
-				entries = entries.concat(this.rssLabels[this.actRSSLbl].enabled==1 ? [
+				entries = entries.concat(this.rssLabels[actLabelId].enabled==1 ? [
 					[ theUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"],
 					[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]
 				] : [
@@ -633,78 +649,34 @@ theWebUI.editRSS = function()
 
 theWebUI.isGroupContain = function( rssGroup, rssItem )
 {
-	return rssGroup && rssGroup.lst.some(href => href in rssItem.rss);
+	return rssGroup && rssGroup.lst.some(href => rssItem.rss.has(href));
 }
 
-theWebUI.isGroupSelected = function()
-{
-	return(this.actRSSLbl && this.actRSSLbl.length && (this.actRSSLbl[0]=='g'));
+plugin.updatedRSSEntry = (labelId, attrs) => {
+	attrs = { ...catlist.panelLabelAttribs.prss.get(labelId), ...attrs };
+	const icon = labelId in theWebUI.rssGroups ? 'rss-group' : 'rss';
+	const count = String(
+		labelId === 'prss_all'
+			? Object.keys(theWebUI.rssItems).length
+			: (theWebUI.rssLabels[labelId] ?? theWebUI.rssGroups[labelId]).cnt);
+	const title = `${attrs.text} (${count})`;
+	const selected = theWebUI.rssListVisible && catlist.isLabelIdSelected('prss', labelId);
+	const alert = labelId in theWebUI.delayedRSSErrors ? '⚠' : null;
+	return [labelId, {...attrs, icon, count, title, selected, alert}];
 }
 
-theWebUI.updateRSSLabels = function(rssLabels,rssGroups)
-{
-	// remove elements
-	const removedGroups = Object.keys(this.rssGroups).filter(lbl => !(lbl in rssGroups));
-	const removedLabels = Object.keys(this.rssLabels).filter(lbl => !(lbl in rssLabels));
-	const removedLbls = removedGroups.concat(removedLabels);
-	for (const lbl of removedLbls) {
-		$($$(lbl)).remove();
-	}
-
-	this.rssLabels = rssLabels;
-	this.rssGroups = rssGroups;
-
-	const allItems = Object.values(this.rssItems);
-
-	// update group values
-	for (const group of Object.values(this.rssGroups)) {
-		group.cnt = allItems
-			.filter(item => theWebUI.isGroupContain(group, item))
-			.length;
-		group.enabled = group.lst
-			.some(l => l in rssLabels && rssLabels[l].enabled);
-	}
-	// update total item count
-	theWebUI.updateLabel('#_rssAll_', allItems.length, 0, false);
-
-	// add, update (and resort) rss categories
-	const ul = $("#rssl");
-	for ( const [rssClass, rssCategory] of [
-		['RSSGroup', this.rssGroups],
-		['RSS', this.rssLabels]
-	]) {
-		const labels = Object.entries(rssCategory);
-		labels.sort( ([_,a], [__, b]) => a.name.localeCompare(b.name));
-
-		for( const [lbl, category] of labels ) {
-			let li = $($$(lbl));
-			if(li.length === 0) {
-				li = theWebUI.createSelectableLabelElement(lbl, category.name, theWebUI.labelContextMenu);
-			}
-			li.addClass([rssClass, 'disRSS']);
-			li.removeClass(category.enabled == 1 ? 'disRSS' : rssClass);
-			theWebUI.updateLabel(li, category.cnt, 0, false);
-			if(lbl==this.actRSSLbl)
-				li.addClass('sel');
-			else
-				li.removeClass('sel');
-				li.appendTo(ul);
-		}
-	}
-
-	// refresh label
-	const curRSSLbl = theWebUI.actRSSLbl;
-	theWebUI.actRSSLbl = null;
-	if (removedLbls.includes(curRSSLbl)) {
-		this.switchLabel('prss_cont', '_rssAll_');
-	} else if(curRSSLbl) {
-		this.switchLabel('prss_cont', curRSSLbl);
-	}
-}
+// Update feed and group RSS labels
+catlist.refreshPanel.prss = () => [
+	plugin.updatedRSSEntry('prss_all'),
+	...[theWebUI.rssGroups, theWebUI.rssLabels]
+	.flatMap((rssLabels) => Object.entries(rssLabels)
+			.map(([_, feed]) => [_, feed.name])
+			.sort( ([_,a], [__, b]) => a.localeCompare(b))
+			.map(([labelId, text]) => plugin.updatedRSSEntry(labelId, { text }))
+)];
 
 theWebUI.showRSS = function()
 {
-	plugin.correctCSS();
         if($('#rssl').children().length)
         	theWebUI.RSSManager();
         else
@@ -728,97 +700,85 @@ theWebUI.showErrors = function(errors)
 		if (!theWebUI.rssShowErrorsDelayed || $('#RSSList').is(':visible') || $('#lcont').is(':visible')) {
 			noty(...args);
 		} else {
-			const id = idHash || '_rssAll_';
-			$('#'+id).addClass('notification');
+			const id = idHash || 'prss_all';
 			$('#tab_lcont').addClass('notification');
 			const delayed = theWebUI.delayedRSSErrors;
 			delayed[id] = id in delayed ? delayed[id].concat([args]) : [args];
+			catlist.refreshAndSyncPanel('prss');
 		}
 	}
 }
 
 theWebUI.addRSSItems = function(d)
 {
-	if(!this.rssUpdateInProgress)
-	{
-		for(var href in this.rssItems)
-			this.rssItems[href].rss = {};
-		var updated = false;
-		this.rssUpdateInProgress = true;
-		var rssLabels = {};
-		var table = this.getTable("rss");
-		for( var i=0; i<d.list.length; i++)
-		{
-			var rss = d.list[i];
-			rssLabels[rss.hash] = { name: rss.label, cnt: rss.items.length, enabled: rss.enabled, url: rss.url };
-			for( var j=0; j<rss.items.length; j++)
-			{
-				var item = rss.items[j];
-				if($type(theWebUI.rssItems[item.href]))
-				{
-					if($type(this.torrents[item.hash]))
-						updated = table.updateRowFrom(this.getTable("trt"),item.hash,item.href);
-					else
+	const rssItems = {};
+	const rssLabels = {};
+	const table = this.getTable("rss");
+	const trtTable = this.getTable('trt');
+	// Insert items in rss table
+	for (const {hash, label, items, enabled, url} of d.list) {
+		rssLabels[hash] = { name: label, cnt: items.length, enabled, url };
+		for (const item of items) {
+			if (item.hash in this.torrents) {
+				// Copy torrent data of item from trt table
+				table.setRowById(
+					Object.fromEntries(
+						trtTable.getValues(item.hash)
+						.map((v,i) => [trtTable.ids[i], v])
+					),
+					item.href,
+					trtTable.getIcon(item.hash),
+					{}
+				);
+			} else {
+				// Insert item as rss row
+				table.setRowById(
 					{
-						updated = table.setValuesById(item.href,
-						{
-						 	name: item.title,
-						 	status: (item.hash=="") ? theUILang.rssStatus : (item.hash=="Failed") ? theUILang.rssStatusError+" ("+item.errcount+")" : theUILang.rssStatusLoaded, 
-							label: rss.label,
-							created: item.time
-						},true) || updated; 
-  				                updated = table.setIcon(item.href,"Status_RSS") || updated;
-					}
-	                        	item.rss = theWebUI.rssItems[item.href].rss;
-				}
-				else
-				{
-					if((item.hash!="") && $type(this.torrents[item.hash]))
-					{
-						table.addRow(this.getTable("trt").getValues(item.hash),
-							item.href, this.getTable("trt").getIcon(item.hash));
-					}
-					else
-					{
-						table.addRowById(
-						{
-							name: item.title,
-						 	status: (item.hash=="") ? theUILang.rssStatus : (item.hash=="Failed") ? theUILang.rssStatusError+" ("+item.errcount+")" : theUILang.rssStatusLoaded, 
-							label: rss.label,
-							created: item.time
-						}, item.href, "Status_RSS");
-					}
-					updated = true;
-					item.rss = {};
-				}
-				item.rss[rss.hash] = true;
-				item.label = rss.label;
-				theWebUI.rssItems[item.href] = item;
+						name: item.title,
+						status: (item.hash=="")
+							? theUILang.rssStatus
+							: (item.hash=="Failed")
+							? theUILang.rssStatusError+" ("+item.errcount+")"
+							: theUILang.rssStatusLoaded,
+						label,
+						created: item.time
+					},
+					item.href,
+					"Status_RSS",
+					{}
+				);
 			}
+			const ritem = rssItems[item.href] ?? { label, rssFirst: hash, rss: new Set(), ...item };
+			ritem.rss.add(hash);
+			rssItems[item.href] = ritem;
 		}
-		var deleted = false;
-		for(var href in this.rssItems)
-		{
-			if(!plugin.getFirstRSS(this.rssItems[href]))
-			{
-				updated = true;
-				delete this.rssItems[href];
-				table.removeRow(href);
-				deleted = true;
-			}
-		}
-		if(updated)
-		{
-			if(deleted)
-			{
-				table.correctSelection();
-			}
-			table.Sort();
-		}
-		this.updateRSSLabels(rssLabels,d.groups);
-		this.showErrors(d.errors);
-		this.rssUpdateInProgress = false;
 	}
+
+	// Remove non-existent rss items from table
+	for(const href in this.rssItems)
+	{
+		if (!(href in rssItems)) {
+			table.removeRow(href);
+		}
+	}
+	// Update rss group item counts and enabled state
+	const allItems = Object.values(rssItems);
+	for (const group of Object.values(d.groups)) {
+		group.cnt = allItems
+			.filter(item => theWebUI.isGroupContain(group, item))
+			.length;
+		group.enabled = group.lst
+			.some(l => rssLabels[l]?.enabled);
+	}
+
+	this.rssItems = rssItems;
+	this.rssLabels = rssLabels;
+	this.rssGroups = Array.isArray(d.groups) ? {} : d.groups;
+
+	catlist.refresh('prss');
+	catlist.syncWithPrunedSelection('prss');
+
+	this.showErrors(d.errors);
 }
 
 theWebUI.storeFilterParams = function()
@@ -1035,10 +995,7 @@ theWebUI.checkCurrentFilter = function()
 theWebUI.showFilterResults = function( d )
 {
 	this.showErrors(d.errors);
-	if(d.rss && d.rss.length)
-		this.switchLabel('prss_cont', d.rss);
-	else
-		this.switchLabel('prss_cont', '_rssAll_');
+	catlist.switchLabel('prss', d.rss && d.rss.length ? d.rss : null);
 	var table = this.getTable("rss");
 	for(var k in table.rowSel)
 		table.rowSel[k] = false;
@@ -1090,39 +1047,10 @@ theWebUI.rssClearFilter = function()
 	}
 }
 
-plugin.getFirstRSS = function(item)
-{
-	var ret = '';
-	for(var k in item.rss)
-	{
-		ret = k;
-		break;
+rTorrentStub.prototype.rssCommon = function(content, rssLabelId) {
+	if (rssLabelId) {
+		content += "&rss=" + rssLabelId;
 	}
-	return(ret);
-}
-
-plugin.resizeTop = theWebUI.resizeTop;
-theWebUI.resizeTop = function( w, h )
-{
-	plugin.resizeTop.call(theWebUI,w,h);
-	if(plugin.enabled)
-	{
-		if(w!==null)
-		{
-			$("#RSSList").width( w );
-			if(theWebUI.configured)
-		       	       	this.getTable("rss").resize( w );
-		}
-        	if(h!==null)
-		{
-			$("#RSSList").height( h );
-			if(theWebUI.configured)
-				this.getTable("rss").resize(null,h); 
-	       	}
-	}
-}
-
-rTorrentStub.prototype.rssCommon = function(content) {
 	this.content = content;
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rss/action.php";
@@ -1137,7 +1065,7 @@ rTorrentStub.prototype.clearfiltertime = function()
 rTorrentStub.prototype.getrssdetails = function()
 {
 	var ndx = decodeURIComponent(this.ss[0]);
-	this.rssCommon("mode=getdesc&href="+this.ss[0]+"&rss="+plugin.getFirstRSS(theWebUI.rssItems[ndx]));
+	this.rssCommon("mode=getdesc&href="+this.ss[0], theWebUI.rssItems[ndx].rssFirst);
 	this.method = 'GET';
 	this.cache = true;
 }
@@ -1516,10 +1444,7 @@ rTorrentStub.prototype.addrssgroup = function()
 
 rTorrentStub.prototype.editrss = function()
 {
-	let content = "mode=edit&url="+this.vs[0]+"&label="+this.ss[0];
-	if(theWebUI.actRSSLbl && (theWebUI.actRSSLbl != "_rssAll_"))
-		content = content + "&rss=" + theWebUI.actRSSLbl;
-	this.rssCommon(content);
+	this.rssCommon("mode=edit&url="+this.vs[0]+"&label="+this.ss[0], plugin.actRSSLbl());
 }
 
 rTorrentStub.prototype.loadrss = function()
@@ -1543,7 +1468,7 @@ rTorrentStub.prototype.loadrsstorrents = function()
 	for(let i = 0; i<theWebUI.rssArray.length; i++)
 	{
 		const item = theWebUI.rssItems[theWebUI.rssArray[i]];
-		content = content + '&rss='+plugin.getFirstRSS(item)+'&url='+encodeURIComponent(item.href);
+		content = content + '&rss='+item.rssFirst+'&url='+encodeURIComponent(item.href);
 	}
 	this.rssCommon(content);
 }
@@ -1561,27 +1486,21 @@ rTorrentStub.prototype.clearhistory = function()
 
 rTorrentStub.prototype.rssrefresh = function()
 {
-	let content = "mode=refresh";
-	if(theWebUI.actRSSLbl && (theWebUI.actRSSLbl != "_rssAll_"))
-		content = content + "&rss=" + theWebUI.actRSSLbl;
-	this.rssCommon(content);
+	this.rssCommon("mode=refresh", plugin.actRSSLbl());
 	this.method = 'GET';
 	this.cache = true;
 }
 
 rTorrentStub.prototype.rssgrouprefresh = function()
 {
-	this.rssCommon("mode=refreshgroup&rss=" + theWebUI.actRSSLbl);
+	this.rssCommon("mode=refreshgroup", plugin.actRSSLbl());
 	this.method = 'GET';
 	this.cache = true;
 }
 
 rTorrentStub.prototype.rsstoggle = function()
 {
-	let content = "mode=toggle";
-	if(theWebUI.actRSSLbl && (theWebUI.actRSSLbl != "_rssAll_"))
-		content += "&rss=" + theWebUI.actRSSLbl;
-	this.rssCommon(content);
+	this.rssCommon("mode=toggle", plugin.actRSSLbl());
 }
 
 rTorrentStub.prototype.rssmarkstate = function()
@@ -1598,25 +1517,22 @@ rTorrentStub.prototype.rssmarkstate = function()
 
 rTorrentStub.prototype.rssgroupstatus = function()
 {
-	this.rssCommon("mode=setgroupstate&state="+this.ss[0]+"&rss=" + theWebUI.actRSSLbl);
+	this.rssCommon("mode=setgroupstate&state="+this.ss[0], plugin.actRSSLbl());
 }
 
 rTorrentStub.prototype.rssremove = function()
 {
-	let content = "mode=remove";
-	if(theWebUI.actRSSLbl && (theWebUI.actRSSLbl != "_rssAll_"))
-		content += "&rss=" + theWebUI.actRSSLbl;
-	this.rssCommon(content);
+	this.rssCommon("mode=remove", plugin.actRSSLbl());
 }
 
 rTorrentStub.prototype.rssgroupremove = function()
 {
-	this.rssCommon("mode=removegroup&rss=" + theWebUI.actRSSLbl);
+	this.rssCommon("mode=removegroup", plugin.actRSSLbl());
 }
 
 rTorrentStub.prototype.rssgroupremovecontents = function()
 {
-	this.rssCommon( "mode=removegroupcontents&rss=" + theWebUI.actRSSLbl);
+	this.rssCommon( "mode=removegroupcontents", plugin.actRSSLbl());
 }
 
 rTorrentStub.prototype.getfilters = function()
@@ -1670,65 +1586,16 @@ plugin.correctFilterDialog = function()
 		setTimeout(plugin.correctFilterDialog,1000);
 }
 
-plugin.correctCSS = function()
-{
-        if(!this.cssCorrected)
-        {
-		var rule = getCSSRule("div#List");
-        	var rule1 = getCSSRule("div#RSSList");
-	        var ruleMain = getCSSRule("html, body");
-        	if(!ruleMain)
-        		ruleMain = getCSSRule("html");
-		if(rule && rule1)
-		{
-			rule1.style.borderColor = rule.style.borderColor;
-			rule1.style.backgroundColor = rule.style.backgroundColor;
-		}
-		rule = getCSSRule("div#CatList ul li.sel");
-		rule1 = getCSSRule("div#CatList ul li.selRSS");
-		rule2 = getCSSRule("div#CatList ul li.selDisRSS");
-		rule3 = getCSSRule(".lf li input.TextboxFocus");
-		if(rule && rule1 && rule2 && rule3 && ruleMain)
-		{
-			rule1.style.backgroundColor = rule.style.backgroundColor;
-			rule1.style.color = rule.style.color;
-			rule2.style.backgroundColor = rule.style.backgroundColor;
-			rule2.style.color = rule.style.color;
-			rule3.style.backgroundColor = rule.style.backgroundColor;
-			rule3.style.color = rule.style.color;
-		}
-		rule = getCSSRule("div#stg .lm");
-	        rule1 = getCSSRule(".lf");
-        	rule2 = getCSSRule(".lf li input.TextboxNormal");
-		if(rule && rule1 && rule2 && ruleMain)
-		{
-			rule1.style.borderColor = rule.style.borderColor;
-			rule1.style.backgroundColor = rule.style.backgroundColor;
-			rule2.style.backgroundColor = rule.style.backgroundColor;
-			rule2.style.color = ruleMain.style.color;
-		}
-		rule = getCSSRule(".stg_con");
-	        rule1 = getCSSRule(".rf");
-        	if(rule && rule1)
-			rule1.style.backgroundColor = rule.style.backgroundColor;
-		this.cssCorrected = true;
-	}
-}
-
 plugin.onLangLoaded = function()
 {
         this.addButtonToToolbar("rss",theUILang.mnu_rss,"theWebUI.showRSS()","settings");
 
-	plugin.addPaneToCategory("prss",theUILang.rssFeeds)
-		.append( $('<ul>').prop('id', 'rssl')
-			.append(
-				theWebUI.createSelectableLabelElement(
-					'_rssAll_',
-					theUILang.allFeeds,
-					theWebUI.labelContextMenu
-				).addClass('RSS')
-		));
-	$("#prss").append( $("<span></span>").attr("id", "rsstimer") );
+	plugin.addPaneToCategory(
+		"prss",
+		theUILang.rssFeeds,
+		[['prss_all', { text: theUILang.allFeeds, icon: 'rss' }]]
+	);
+	$("#prss").prepend( $("<span>").attr({ id: "rsstimer", slot: "decorator" }));
 
 	this.attachPageToOptions( $("<div>").attr("id","st_rss").html(
 		"<fieldset>"+
@@ -1852,7 +1719,6 @@ plugin.onRemove = function()
         if(theWebUI.updateRSSTimer)
 	        window.clearTimeout(theWebUI.updateRSSTimer);
 	theWebUI.switchLayout(false);
-	theWebUI.resetLabels();
 	$("#RSSList").remove();
 	plugin.removePaneFromCategory("prss");
 	$("#rsslayout").remove();

@@ -1,4 +1,62 @@
 html, body {background-color: #181818; color: #999999; }
+:root {
+  --menu-color: #666666;
+  --menu-background-color: #181818;
+
+  --menu-disabled-color: #333333;
+
+  --menu-border-color: #333333;
+  --menu-highlight-color: #111111;
+  --menu-highlight-background-color: #888888;
+
+  --settings-background-color: #181818;
+}
+button, input.Button {
+  color: #111111;
+  background-image: url(./images/h.gif);
+  background-color: #999999;
+  border-color: #333333;
+}
+button:not([disabled]):hover, input.Button:not([disabled]):hover {
+  background-color: #999999;
+  filter: brightness(1.2);
+}
+button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
+  background-color: #999999;
+  filter: brightness(1.3);
+}
+
+#CatList, category-list {
+  border: 1px solid #333333;
+  background-color: #181818;
+}
+
+category-panel {
+  --open-background-image: url(../plugins/theme/themes/Dark/images/pnl_open.gif);
+  --close-background-image: url(../plugins/theme/themes/Dark/images/pnl_close.gif);
+}
+
+category-panel::part(heading) {
+  background-color: #111111;
+  border-bottom: 1px solid #333333;
+  border-top: 1px solid #333333;
+}
+
+panel-label {
+  border-color: #181818;
+  --prefix-color: #FFF;
+  --badge-color: #666666;
+  --badge-background-color: #111111;
+  --status-image: url(../plugins/theme/themes/Dark/images/tstatus.png);
+}
+
+panel-label[selected] {
+  background-color: #888888;
+  color:#111111;
+  border-color: #888888;
+  --badge-color: #111111;
+  --badge-background-color: #999999;
+}
 div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/pnl_open.gif); background-image: url(./images/pnl_close.gif)}
 div#cover {background: #181818}
 div#msg {background: #181818; border-top: 1px solid #333333; border-bottom: 1px solid #333333}
@@ -6,18 +64,9 @@ div#sc {border: 1px solid #333333; background-color: #181818}
 div#sc li.se_act div {background-color: #333333; color: #888888}
 div#lng {background-color:#181818; border:1px solid #333333}
 ul.CMenu {border: 1px solid #333333; border-right: 2px solid #333333; border-bottom: 2px solid #333333; background: #181818; }
-ul.CMenu li {background: #181818}
-ul.CMenu li a.dis {color: #333333}
-ul.CMenu li a.dis:hover {background-color: #181818; color: #333333}
 ul.CMenu li hr {border-top: 1px solid #333333}
 ul.CMenu li a.exp {background: transparent url(./images/menuexp.gif) no-repeat scroll 140px center; }
 ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat scroll 4px center}
-ul.CMenu li a:hover {background-color: #888888; color: #111111}
-
-ul.CMenu li:hover ul li a {background-color: #181818; color: #666666}
-ul.CMenu li:hover ul li a:hover {background-color: #888888; color: #111111}
-ul.CMenu li ul li a.dis {color: #333333}
-ul.CMenu li ul li a.dis:hover {background-color: #181818; color: #333333}
 
 #sel {border: 1px dotted #555555;}
 
@@ -45,14 +94,8 @@ Input.TextboxShort {border: 1px solid #333333}
 Input.TextboxMid {border: 1px solid #333333}
 Input.TextboxLarge {border: 1px solid #333333}
 Input.TextboxVShort {border: 1px solid #333333}
-input.Button {color: #111111; background-color: #999999}
 a {color: #686868}
 
-div#CatList {border: 1px solid #333333; background-color: #181818}
-div#CatList ul li {border-color: #181818}
-div#CatList ul li.sel {background-color: #888888; color:#111111; border-color: #888888 }
-div#CatList ul li.RSS .label-icon {background-image: url(./images/tstatus.png); }
-div#CatList ul li.disRSS .label-icon {background-image: url(./images/tstatus.png); }
 .stable-icon {background-image: url(./images/tstatus.png); }
 .Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
@@ -108,10 +151,6 @@ div.tab {background-color: #181818}
 div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0px center;}
 
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; }
-
-.catpanel { background: url(./images/pnl_open.gif) 2px no-repeat; background-color: #111111; border-bottom: 1px solid #333333; border-top: 1px solid #333333;  }
-.label-count,.label-size { background-color: #111111; }
-li.sel .label-count,li.sel .label-size { background-color: #999999; }
 
 #StatusBar { border-top: 1px solid #333333; background-color: #181818; color: #888888 }
 #st_up { background:url(./images/status_up.gif) 6px no-repeat; }
