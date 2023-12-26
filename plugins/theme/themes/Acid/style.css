@@ -86,8 +86,7 @@ div#t div#setting {background: transparent url(./images/toolbar.png) no-repeat -
 div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}
 div#t div#go {background: transparent url(./images/go.gif) no-repeat 0px center; }
 
-
-div#CatList { background-color: #272E36; color: #BDDBDB;}
+category-list#CatList { background-color: #272E36; color: #BDDBDB;}
 div#CatList ul li { border: 1px solid #272E36; font-weight: bold; }
 div#CatList ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; color: #272E36;}
 
