@@ -328,10 +328,10 @@ theWebUI.RSSManager = function()
 }
 
 plugin.contextMenuTable = theWebUI.contextMenuTable;
-theWebUI.contextMenuTable = function(panelId, el) {
+theWebUI.contextMenuTable = function(panelId, labelId) {
 	return panelId === 'prss' ?
 		theWebUI.getTable('rss')
-		: plugin.contextMenuTable.call(theWebUI, panelId, el);
+		: plugin.contextMenuTable.call(theWebUI, panelId, labelId);
 },
 
 plugin.contextMenuEntries = catlist.contextMenuEntries.bind(catlist);

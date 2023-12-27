@@ -429,10 +429,10 @@ function idIsExTeg(labelId) {
 }
 
 plugin.contextMenuTable = theWebUI.contextMenuTable;
-theWebUI.contextMenuTable = function(panelId, el) {
-	return panelId === 'psearch' && idIsExTeg(el.id) ?
+theWebUI.contextMenuTable = function(panelId, labelId) {
+	return panelId === 'psearch' && idIsExTeg(labelId) ?
 		theWebUI.getTable('teg')
-		: plugin.contextMenuTable.call(theWebUI, panelId, el);
+		: plugin.contextMenuTable.call(theWebUI, panelId, labelId);
 },
 
 plugin.contextMenuEntries = catlist.contextMenuEntries.bind(catlist);
@@ -444,7 +444,7 @@ catlist.contextMenuEntries = function(panelId, labelId) {
 			[ theUILang.tegMenuDelete, "theWebUI.extTegDelete()"]
 		] : false;
 	}
-	return catlist.contextMenuEntries(panelId, labelId);
+	return plugin.contextMenuEntries(panelId, labelId);
 }
 
 plugin.createMenu = theWebUI.createMenu;

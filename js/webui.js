@@ -1912,7 +1912,7 @@ var theWebUI =
 		return(e.fromTextCtrl);
 	},
 
-	contextMenuTable: function(labelType, el) {
+	contextMenuTable: function(panelId, labelId) {
 		return theWebUI.getTable('trt');
 	},
 
