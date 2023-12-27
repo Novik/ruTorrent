@@ -285,7 +285,7 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 		}
 		table.scrollTo(0);
 		table.calcSize().resizeHack();
-	} else {
+	} else if (tegList.is(":visible")) {
 		// switch away from extsearch view
 		tegList.hide();
 		list.show();
@@ -465,7 +465,8 @@ catlist.refreshPanel.psearch = (attribs) => psearchEntries(attribs).concat(Objec
 			...attribs.get(tegId),
 			text: teg.val,
 			icon: `url:./plugins/extsearch/images/${teg.eng === 'all' ? 'search' : teg.eng}.png`,
-			count: String(teg.data.filter(d => !d.deleted).length)
+			count: String(teg.data.filter(d => !d.deleted).length),
+			selected: catlist.isLabelIdSelected("psearch", tegId),
 		}
 	]));
 
