@@ -285,7 +285,7 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 		}
 		table.scrollTo(0);
 		table.calcSize().resizeHack();
-	} else {
+	} else if (tegList.is(":visible")) {
 		// switch away from extsearch view
 		tegList.hide();
 		list.show();
@@ -429,10 +429,10 @@ function idIsExTeg(labelId) {
 }
 
 plugin.contextMenuTable = theWebUI.contextMenuTable;
-theWebUI.contextMenuTable = function(panelId, el) {
-	return panelId === 'psearch' && idIsExTeg(el.id) ?
+theWebUI.contextMenuTable = function(panelId, labelId) {
+	return panelId === 'psearch' && idIsExTeg(labelId) ?
 		theWebUI.getTable('teg')
-		: plugin.contextMenuTable.call(theWebUI, panelId, el);
+		: plugin.contextMenuTable.call(theWebUI, panelId, labelId);
 },
 
 plugin.contextMenuEntries = catlist.contextMenuEntries.bind(catlist);
@@ -444,7 +444,7 @@ catlist.contextMenuEntries = function(panelId, labelId) {
 			[ theUILang.tegMenuDelete, "theWebUI.extTegDelete()"]
 		] : false;
 	}
-	return catlist.contextMenuEntries(panelId, labelId);
+	return plugin.contextMenuEntries(panelId, labelId);
 }
 
 plugin.createMenu = theWebUI.createMenu;
@@ -465,7 +465,8 @@ catlist.refreshPanel.psearch = (attribs) => psearchEntries(attribs).concat(Objec
 			...attribs.get(tegId),
 			text: teg.val,
 			icon: `url:./plugins/extsearch/images/${teg.eng === 'all' ? 'search' : teg.eng}.png`,
-			count: String(teg.data.filter(d => !d.deleted).length)
+			count: String(teg.data.filter(d => !d.deleted).length),
+			selected: catlist.isLabelIdSelected("psearch", tegId),
 		}
 	]));
 
