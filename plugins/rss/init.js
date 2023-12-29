@@ -179,8 +179,11 @@ theWebUI.config = function()
 	this.rssLabels = {};
 	this.rssItems = {};
 	this.rssGroups = {};
-	this.updateRSSTimer = null;
+	this.actRSSLbl = null;
+	this.updateRSSTimer = 0;
+	this.rsstimerUpdateIntervalId = 0;
 	this.updateRSSInterval = 5*60*1000;
+	this.rssUpdateTimestamp = Date.now() + this.updateRSSInterval;
 	this.rssID = "";
 	this.rssArray = [];
 	this.filters = [];	
@@ -207,9 +210,28 @@ theWebUI.config = function()
 plugin.start = function()
 {
 	if(plugin.allStuffLoaded)
+	{
 		theWebUI.request("?action=getrsssettings",[theWebUI.getRSSSettings, theWebUI]);
+		theWebUI.rsstimerUpdateIntervalId = setInterval(
+			() => $("#rsstimer").text(
+				theConverter.time(Math.floor(
+					theWebUI.rssTimeUntilNextUpdate() / 1000
+			))), 1000);
+	}
 	else
 		setTimeout(arguments.callee,1000);
+}
+
+theWebUI.rssTimeUntilNextUpdate = function () {
+	const timeSinceUpdate = Date.now() - theWebUI.rssUpdateTimestamp;
+	// The frontend reads the cached feeds from the backend.
+	// Expect that the backend at most needs 45 seconds to fetch feeds
+	const expectedFetchDelay = 45 * 1000;
+	return (
+		theWebUI.updateRSSInterval -
+			((theWebUI.updateRSSInterval + timeSinceUpdate - expectedFetchDelay) %
+			theWebUI.updateRSSInterval)
+		);
 }
 
 theWebUI.rssDblClick = function( obj )
@@ -225,31 +247,20 @@ theWebUI.rssDblClick = function( obj )
 		window.open(theWebUI.rssItems[obj.id].guid,"_blank");
 }
 
-theWebUI.showRSSTimer = function( tm )
-{
-	$("#rsstimer").text( theConverter.time( tm ) ).prop( "row", tm );
-	if(plugin.rssShowInterval)
-		window.clearInterval( plugin.rssShowInterval );
-	plugin.rssShowInterval = window.setInterval( function()
-	{
-		var tm = $("#rsstimer").prop("row")-1;
-		if(!tm)
-		{
-			$("#rsstimer").text('*');
-			window.clearInterval( plugin.rssShowInterval );
-		}
-		$("#rsstimer").text( theConverter.time( tm ) ).prop( "row", tm );
-	}, 1000 );
-}
-
 theWebUI.getRSSSettings = function( d )
 {
-	if(theWebUI.updateRSSTimer) 
-		window.clearTimeout(theWebUI.updateRSSTimer);
-        theWebUI.loadRSS();
 	theWebUI.updateRSSInterval = d.interval*60000;	
-	theWebUI.updateRSSTimer = window.setTimeout("theWebUI.updateRSS()", d.next*1000);
-	theWebUI.showRSSTimer(d.next);
+	theWebUI.rssUpdateTimestamp = d.updatedAt * 1000;
+	if(theWebUI.updateRSSTimer)
+		clearTimeout(theWebUI.updateRSSTimer);
+	const loadRSSLoop = () => {
+		theWebUI.loadRSS();
+		theWebUI.updateRSSTimer = setTimeout(
+			loadRSSLoop,
+			theWebUI.rssTimeUntilNextUpdate()
+		);
+	};
+	loadRSSLoop();
 
 	theWebUI.rssShowErrorsDelayed = Boolean(d.delayerrui);
 	if (!theWebUI.rssShowErrorsDelayed) {
@@ -600,14 +611,6 @@ theWebUI.loadTorrents = function(needSort)
 	}
 }
 
-theWebUI.updateRSS = function()
-{
-	if(theWebUI.updateRSSTimer) 
-		window.clearTimeout(theWebUI.updateRSSTimer);
-	theWebUI.loadRSS();
-	theWebUI.updateRSSTimer = window.setTimeout("theWebUI.updateRSS()", theWebUI.updateRSSInterval);
-	theWebUI.showRSSTimer( theWebUI.updateRSSInterval/1000 );
-}
 
 theWebUI.retryRSSRequest = function()
 {
@@ -1717,7 +1720,11 @@ plugin.onLangLoaded = function()
 plugin.onRemove = function()
 {
         if(theWebUI.updateRSSTimer)
-	        window.clearTimeout(theWebUI.updateRSSTimer);
+	        clearTimeout(theWebUI.updateRSSTimer);
+	theWebUI.updateRSSTimer = 0;
+        if(theWebUI.rsstimerUpdateIntervalId)
+	        clearInterval(theWebUI.rsstimerUpdateIntervalId);
+	theWebUI.rsstimerUpdateIntervalId = 0;
 	theWebUI.switchLayout(false);
 	$("#RSSList").remove();
 	plugin.removePaneFromCategory("prss");
