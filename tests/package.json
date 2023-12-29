@@ -39,7 +39,7 @@
     "test",
     "rutorrent"
   ],
-  "target": "es6",
+  "target": "es2020",
   "module": "commonjs",
   "author": "TrimmingFool",
   "license": "GPL-3.0"
