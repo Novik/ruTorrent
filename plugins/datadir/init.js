@@ -3,8 +3,8 @@ plugin.loadLang();
 
 function firstSelectedTorrent() {
 	const table = theWebUI.getTable("trt");
-	const id = table.selCount > 0 ? table.getFirstSelected() : null;
-	return id && id.length === 40 ? theWebUI.torrents[id] : undefined;
+	const hash = table.selCount > 0 ? table.getFirstSelected() : null;
+	return hash && hash.length === 40 ? {...theWebUI.torrents[hash], hash} : undefined;
 }
 
 theWebUI.EditDataDir = function()
@@ -14,9 +14,9 @@ theWebUI.EditDataDir = function()
 	{
 	        var save_path = torrent.save_path.trim();
 		if( !save_path.length ) // torrent is not open
-			this.request( "?action=getsavepath&hash=" + id, [this.showDataDirDlg, this] );
+			this.request( "?action=getsavepath&hash=" + torrent.hash, [this.showDataDirDlg, this] );
 		else
-			theWebUI.showDataDirDlg( { hash: id, savepath: save_path } );
+			theWebUI.showDataDirDlg( { hash: torrent.hash, savepath: save_path } );
 	}
 }
 
