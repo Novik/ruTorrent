@@ -20,10 +20,10 @@
 		<link rel="icon" type="image/png" href="./images/favicon-16x16.png" sizes="16x16" />
 		<meta name="msapplication-TileColor" content="#FFFFFF" />
 		<meta name="msapplication-TileImage" content="./images/mstile-144x144.png" />
-		<link href="./css/style.css" rel="stylesheet" type="text/css" />
-		<link href="./css/stable.css" rel="stylesheet" type="text/css" />
-		<link rel="preload" as="style" href="./css/category-panel.css" />
-		<link rel="preload" as="style" href="./css/panel-label.css" />
+		<link href="./css/style.css?v=430" rel="stylesheet" type="text/css" />
+		<link href="./css/stable.css?v=430" rel="stylesheet" type="text/css" />
+		<link rel="preload" as="style" href="./css/category-panel.css?v=430" />
+		<link rel="preload" as="style" href="./css/panel-label.css?v=430" />
 		<script type="text/javascript" src="./js/jquery.js?v=430"></script>
 		<script type="text/javascript" src="./js/jquery.flot.js?v=430"></script>
 		<script type="text/javascript" src="./js/sanitize.js?v=430"></script>
@@ -112,7 +112,7 @@
 			<tr>
 				<td class="uicell" rowspan="3">
 					<template id="panel-label-template">
-						<link href="./css/panel-label.css" rel="stylesheet" type="text/css" />
+						<link href="./css/panel-label.css?v=430" rel="stylesheet" type="text/css" />
 						<div part="prefix" hidden></div>
 						<div part="icon"></div>
 						<div part="text"></div>
@@ -120,7 +120,7 @@
 						<div part="size" style="display: none;"></div>
 					</template>
 					<template id="category-panel-template">
-						<link href="./css/category-panel.css" rel="stylesheet" type="text/css" />
+						<link href="./css/category-panel.css?v=430" rel="stylesheet" type="text/css" />
 						<div part="heading">
 							<span class="text"></span><slot name="decorator" class="decorator"></slot>
 						</div>
