@@ -13,7 +13,7 @@ loadUILang(() => {
   document.head.append(
     ...scripts.map((name) => {
       const script = document.createElement("script");
-      script.src = `./js/${name}.js?v=429`;
+      script.src = `./js/${name}.js?v=4210`;
       script.async = false;
       return script;
     })
