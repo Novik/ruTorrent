@@ -71,11 +71,14 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 			theWebUI.rssListVisible = false;
 			catlist.refresh('prss');
 
-			theWebUI.getTable("trt").clearSelection();
+			const rss = $("#RSSList");
+			const trt = theWebUI.getTable("trt");
+			trt.resize(rss.width(), rss.height());
+			trt.clearSelection();
 			theWebUI.dID = "";
 			theWebUI.clearDetails();
 			theWebUI.getTable("rss").clearSelection();
-			$("#RSSList").hide();
+			rss.hide();
 			$("#List").show();
 			theWebUI.switchLayout(false);
 		}
@@ -84,6 +87,12 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 		}
 	}
 	return change;
+}
+
+plugin.resizeTop = theWebUI.resizeTop.bind(theWebUI);
+theWebUI.resizeTop = function (w, h) {
+	theWebUI.getTable("rss").resize(w, h);
+	plugin.resizeTop(w, h);
 }
 
 theWebUI.updateRSSDetails = function(id)
@@ -138,9 +147,7 @@ theWebUI.switchRSSLabel = function()
 		const lst = $("#List");
 		theWebUI.dID = "";
 		theWebUI.clearDetails();
-		rss.css( { width: lst.width(), height: lst.height() } );
 		table.resize(lst.width(), lst.height());
-		table.calcSize();
 		rss.show();
 		lst.hide();
 		table.scrollTo(0);
