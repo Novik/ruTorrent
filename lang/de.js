@@ -18,7 +18,7 @@ var theUILang =
  Confirm_del_torr		: "Löschen von Torrents bestätigen",
  Update_GUI_every		: "Aktualisierungsintervall",
  ms				: "ms",
- Alt_list_bckgnd		: "Alternativer Listenhintergrund",
+ Alt_list_bckgnd		: "Abwechselnder Zeilenhintergrund",
  Show_cat_start			: "Zeige Gruppen beim Start",
  Show_det_start			: "Zeige Details beim Start",
  KeepSearches			: "Keep searches",
