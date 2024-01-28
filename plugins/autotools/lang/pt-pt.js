@@ -22,7 +22,7 @@
  theUILang.autotoolsFileOpCopy		= "Copiar";
  theUILang.autotoolsFileOpSoftLink	= "Soft link";
  theUILang.autotoolsAddLabel		= "Adicionar o rótulo do torrent ao caminho";
- theUILang.autotoolsAddName		= "AAdicionar o nome do torrent ao caminho";
+ theUILang.autotoolsAddName		= "Adicionar o nome do torrent ao caminho";
  theUILang.autotoolsEnableMove		= "Habilitar recurso \"AutoMove\" se o rótulo do torrent corresponder ao filtro";
  theUILang.autotoolsSkipMoveForFiles	= "Ignorar torrents que contenham ficheiros que correspondam ao padrão";
 
