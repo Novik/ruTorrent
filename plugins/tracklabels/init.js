@@ -73,10 +73,10 @@ if(!$type(theWebUI.getTrackerName))
 {
 	theWebUI.getTrackerName = function(announce)
 	{
-	        var domain = '';
+		var domain = '';
 		if(announce)
 		{
-			var parts = announce.match(/^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/);
+			var parts = announce.match(/^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/);
 			if(parts && (parts.length>6))
 			{
 				domain = parts[6];
