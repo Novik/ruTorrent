@@ -12,3 +12,8 @@ $useExternal = false;		// Valid choices:
 $pathToCreatetorrent = '';	// Something like /bin/createtorrent, or /bin/transmissioncli. If empty, program will be found in PATH.
 
 $recentTrackersMaxCount = 15;
+
+// Sets wether to use internal realization, when the external program doesn't support hybrid torrents.
+// This option is slower, but adds compatibility for hybrid torrents, where the external program lacks support. 
+// It's recommended to enable with option and use an external program such as "mktorrent" to accelerate torrent creation.
+$useInternalHybrid = true;
