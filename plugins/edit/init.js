@@ -84,11 +84,10 @@ if(plugin.canChangeMenu())
 	{
 		if(act=="edittorrent")
 		{
-			if(!plugin.isTorrentCommandEnabled.call(this,act,hash))
-				return(false);
-			else
-				return(hash && (hash.length==40))
+			var regex = '^(http|https)://';
+			return(hash && (hash.length==40) && !(hash.match(regex)));
 		}
+
 		return(plugin.isTorrentCommandEnabled.call(this,act,hash));
 	}
 
