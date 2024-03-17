@@ -161,7 +161,7 @@ if(plugin.canChangeMenu())
 	theWebUI.createMenu = function(e, id)
 	{
 		plugin.createMenu.call(this, e, id);
-		if(plugin.enabled && plugin.allStuffLoaded)
+		if(plugin.enabled && plugin.allStuffLoaded && !theContextMenu.get(theUILang.rssMenuLoad))
 		{
 			var el = theContextMenu.get(theUILang.Priority);
 			var curNo = null;

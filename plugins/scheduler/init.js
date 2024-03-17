@@ -29,7 +29,7 @@ if(plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVersion >= 0x805))
 	theWebUI.createMenu = function( e, id )
 	{
 		plugin.createMenu.call(this, e, id);
-		if(plugin.enabled)
+		if(plugin.enabled && !theContextMenu.get(theUILang.rssMenuLoad))
 		{
 			var table = this.getTable("trt");
 			if(table.selCount == 1)
