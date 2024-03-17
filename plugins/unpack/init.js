@@ -54,7 +54,7 @@ if(plugin.canChangeMenu())
 	theWebUI.createMenu = function( e, id )
 	{
 		plugin.createMenu.call(this, e, id);
-		if(plugin.enabled)
+		if(plugin.enabled && !theContextMenu.get(theUILang.rssMenuLoad))
 		{
 			plugin.fno = null;
 			plugin.mode = null;
