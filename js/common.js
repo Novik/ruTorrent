@@ -913,7 +913,11 @@ var theTabs =
                				theWebUI.setActiveView(id);
             				l.addClass("selected").css("z-index",1);
 	            			if(n=="lcont")
-		            			$("#clear_log").css("display","inline");
+		            			$("#clear_log").css(
+								{
+									"display": "inline",
+									"margin-top": "-2px"
+								});
             			}
          			else
          			{
