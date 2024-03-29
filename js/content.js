@@ -5,7 +5,6 @@
 
 function makeContent()
 {
-	$(".cat").mouseclick(theWebUI.labelContextMenu);
 	$("#st_up").mouseclick(theWebUI.upRateMenu);
 	$("#st_down").mouseclick(theWebUI.downRateMenu);
 
@@ -146,11 +145,8 @@ function makeContent()
 		$("#tadd_label_select").empty()
 			.append('<option selected>'+theUILang.No_label+'</option>')
 			.append('<option>'+theUILang.newLabel+'</option>').show();
-		for (var lbl in theWebUI.cLabels)
-		{
-			var lblText = lbl.substring(8);
-			$("#tadd_label_select").append("<option>"+lblText+"</option>");
-		}
+		for(const [torrentLabel] of theWebUI.categoryList.torrentLabelTree.torrentLabels)
+			$("#tadd_label_select").append("<option>"+torrentLabel+"</option>");
 		$("#add_button").prop("disabled",false);
 		$("#tadd_label_select").trigger('change');
 	});

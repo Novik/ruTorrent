@@ -2,6 +2,7 @@ plugin.loadMainCSS();
 plugin.loadLang();
 
 plugin.categories = [ 'all', 'movies', 'tv', 'music', 'games', 'anime', 'software', 'pictures', 'books' ];
+const catlist = theWebUI.categoryList;
 
 plugin.set = theSearchEngines.set;
 theSearchEngines.set = function(val, noSave)
@@ -174,7 +175,7 @@ theSearchEngines.run = function()
 		}
 		else
 		{
-			theWebUI.resetLabels();
+			theWebUI.categoryList.resetSelection();
 		}
 	}
 	else
@@ -227,7 +228,6 @@ plugin.reloadData = function(id)
 	        table.clearRows();
 		table.scrollTo(0);
 		var data = plugin.tegs[id].data;
-		var count = 0;
 		for( var i = 0; i<data.length; i++ )
 		{
 			var item = data[i];
@@ -249,41 +249,24 @@ plugin.reloadData = function(id)
 					status: item.src,
 					label: item.cat
 				}, id+'$'+i, "Engine"+item.src);
-				count++;
 			}
 		}
 		if(table.sortId)
 			table.Sort();
-		plugin.correctCounter(id,count);
+		catlist.refreshAndSyncPanel('psearch');
 		table.noSort = false;
 	}
 }
 
-plugin.correctCounter = function(id,count)
-{
-	if($type(plugin.tegs[id]))
-	{
-		if(count===null)
-		{
-			count = 0;
-			var data = plugin.tegs[id].data;
-			for( var i = 0; i<data.length; i++ )
-				if(!data[i].deleted)			
-					count++;
-		}
-		theWebUI.updateLabel($$(id), count); 
-	}
-}
 
-plugin.switchLabel = theWebUI.switchLabel;
-theWebUI.switchLabel = function(labelType, targetId, toggle=false, range=false)
+plugin.switchLabel = catlist.switchLabel.bind(catlist);
+catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 {
 	const tegList = $("#TegList");
 	const list = $("#List");
 	if (plugin.enabled 
-		&& labelType == 'flabel_cont' 
+		&& panelId == 'psearch'
 		&& targetId in plugin.tegs 
-		&& $($$(targetId)).hasClass('exteg') 
 	) {
 		// no support for multi selection
 		toggle = false;
@@ -302,21 +285,22 @@ theWebUI.switchLabel = function(labelType, targetId, toggle=false, range=false)
 		}
 		table.scrollTo(0);
 		table.calcSize().resizeHack();
-	} else {
+	} else if (tegList.is(":visible")) {
 		// switch away from extsearch view
 		tegList.hide();
 		list.show();
 	}
-	plugin.switchLabel.call(theWebUI, labelType, targetId, toggle, range);
+	const change = plugin.switchLabel(panelId, targetId, toggle, range);
 
 	// finally hide list if teglist shown
 	if (tegList.is(":visible")) {
 		list.hide();
 	}
+	return change;
 }
 
 theWebUI.activeExtTegId = function() {
-	return (theWebUI.actLbls['flabel_cont'] ?? []).find(lid => lid in plugin.tegs);
+	return catlist.selection.ids('psearch').find(lid => lid in plugin.tegs);
 }
 
 plugin.filterTorrentTable = theWebUI.filterTorrentTable;
@@ -367,7 +351,7 @@ theWebUI.tegItemRemove = function()
 		table.removeRow( tegId+"$"+plugin.tegArray[i].ndx );
 	}
 	table.correctSelection();
-	plugin.correctCounter(tegId,null);
+	catlist.refreshAndSyncPanel("psearch");
 	table.refreshRows();
 }
 
@@ -385,10 +369,10 @@ theWebUI.showTegURLInfo = function()
 theWebUI.extTegDelete = function()
 {
 	const tegId = theWebUI.activeExtTegId();
-	theWebUI.switchLabel('flabel_cont', '');
+	catlist.switchLabel('psearch', '');
 	if (tegId) {
 		delete plugin.tegs[tegId];
-		$($$(tegId)).remove();
+		catlist.refreshAndSyncPanel("psearch");
 	}
 }
 
@@ -440,24 +424,27 @@ plugin.createExtTegMenu = function(e, id)
 		theWebUI.createMenu(e, trtArray[0]);
 	}
 }
+function idIsExTeg(labelId) {
+	return labelId?.startsWith('extteg_') ?? false;
+}
 
 plugin.contextMenuTable = theWebUI.contextMenuTable;
-theWebUI.contextMenuTable = function(labelType, el) {
-	return labelType === 'flabel_cont' && $(el).hasClass('exteg') ?
+theWebUI.contextMenuTable = function(panelId, labelId) {
+	return panelId === 'psearch' && idIsExTeg(labelId) ?
 		theWebUI.getTable('teg')
-		: plugin.contextMenuTable.call(theWebUI, labelType, el);
+		: plugin.contextMenuTable.call(theWebUI, panelId, labelId);
 },
 
-plugin.contextMenuEntries = theWebUI.contextMenuEntries;
-theWebUI.contextMenuEntries = function(labelType, el) {
-	if (labelType === 'flabel_cont' && $(el).hasClass('exteg')) {
+plugin.contextMenuEntries = catlist.contextMenuEntries.bind(catlist);
+catlist.contextMenuEntries = function(panelId, labelId) {
+	if (panelId === 'psearch' && idIsExTeg(labelId)) {
 		theWebUI.getTable('trt').clearSelection();
 		return plugin.canChangeMenu() ? [
 			[ theUILang.tegRefresh,  "theWebUI.tegRefresh()"],
 			[ theUILang.tegMenuDelete, "theWebUI.extTegDelete()"]
 		] : false;
 	}
-	return plugin.contextMenuEntries.call(theWebUI, labelType, el);
+	return plugin.contextMenuEntries(panelId, labelId);
 }
 
 plugin.createMenu = theWebUI.createMenu;
@@ -470,6 +457,18 @@ theWebUI.createMenu = function(e,id) {
 	}
 }
 
+const psearchEntries = catlist.refreshPanel.psearch.bind(catlist);
+catlist.refreshPanel.psearch = (attribs) => psearchEntries(attribs).concat(Object.entries(plugin.tegs)
+	.map(([tegId, teg]) => [
+		tegId,
+		{
+			...attribs.get(tegId),
+			text: teg.val,
+			icon: `url:./plugins/extsearch/images/${teg.eng === 'all' ? 'search' : teg.eng}.png`,
+			count: String(teg.data.filter(d => !d.deleted).length),
+			selected: catlist.isLabelIdSelected("psearch", tegId),
+		}
+	]));
 
 theWebUI.setExtSearchTag = function( d )
 {
@@ -480,17 +479,14 @@ theWebUI.setExtSearchTag = function( d )
 		if(plugin.tegs[id].val==str)
 		{
 			plugin.tegs[id].data = d.data;
-			theWebUI.switchLabel('flabel_cont', id);
+			catlist.switchLabel('psearch', id);
 			return;
 		}
-	var tegId = "extteg_"+plugin.lastTeg;
+	const tegId = "extteg_"+plugin.lastTeg;
 	plugin.lastTeg++;
-	var el = theWebUI.createSelectableLabelElement(tegId, str, theWebUI.labelContextMenu)
-		.addClass('exteg');
-	el.find('.label-icon').addClass('Engine'+d.eng);
-	$("#lblf").append( el );
 	plugin.tegs[tegId] = { "val": str, "what": what, "cat": d.cat, "eng": d.eng, "data": d.data };
-	theWebUI.switchLabel('flabel_cont', tegId);
+	catlist.refresh('psearch');
+	catlist.switchLabel('psearch', tegId);
 }
 
 plugin.getTegByRowId = function( rowId )
@@ -782,7 +778,6 @@ plugin.onLangLoaded = function()
 	var contPrivate = "";
 	var optPublic = "";
 	var optPrivate = "";
-	var styles = "";
 	var toDisable = [];
 	$.each(theSearchEngines.sites,function(ndx,val)
 	{
@@ -832,8 +827,6 @@ plugin.onLangLoaded = function()
 			optPrivate +=
 				"<option value='"+ndx+"' id='opt_"+ndx+"'>"+ndx+"</option>";
 		}
-		styles +=
-			(".Engine"+ndx+" {background-image: url(./plugins/extsearch/images/"+ndx+".png) !important; background-repeat: no-repeat}\n");
 	});
 	if(contPublic.length)
 	{
@@ -853,8 +846,6 @@ plugin.onLangLoaded = function()
 		s+=contPrivate;
 		s+="</fieldset>";
 	}
-	if(styles.length)
-		injectCSSText(styles);
 	this.attachPageToOptions($("<div>").attr("id","st_extsearch").html(s)[0],theUILang.exsSearch);
 	for( var i in toDisable )
 	{
@@ -885,7 +876,7 @@ plugin.onRemove = function()
 	theSearchEngines.sites = plugin.sites;
 	theSearchEngines.current = -1;
 	theWebUI.save();
-	theWebUI.resetLabels();
+	catlist.resetSelection();
 	for( var teg in plugin.tegs )
 		$("#"+teg).remove();
 	plugin.tegs = {};

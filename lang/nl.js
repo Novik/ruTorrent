@@ -186,6 +186,7 @@ var theUILang =
  addTorrentSuccess		: "Torrent is succesvol verstuurd naar rTorrent.",
  addTorrentFailed		: "Fout: Torrent is niet verstuurd naar rTorrent.",
  pnlViews			: "Views",
+ NewView			: "New View",
  MoveView			: {base: "Move view", top: "To top", up: "Up", down: "Down", bottom: "To bottom"},
  RenameView			: "Rename view",
  RemoveActiveViews		: "Remove active views",

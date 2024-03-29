@@ -13,7 +13,7 @@ if($useExternal!==false)
 		if(($useExternal === "transmissioncli") || ($useExternal === "transmissioncreate"))
 			$jResult.="plugin.hidePieceSize = true;";
 
-		if (($useExternal !== "torrenttools"))
+		if (($useExternal !== "torrenttools") && ($useInternalHybrid==false))
 			$jResult.="plugin.hideHybrid = true;";
 
 		$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);

@@ -110,13 +110,13 @@ function loadUILang(onLoadFunc)
 			translateDOM();
 		}
 	};
-	langScript.src = `./lang/${lang}.js?v=4210`;
+	langScript.src = `./lang/${lang}.js?v=430`;
 	document.head.appendChild(langScript);
 }
 
 function translateDOM() {
 	// Translate uilang elements and uilangtitle/uilangvalue attributes
-	for (const attr of ['', 'title', 'value']) {
+	for (const attr of ['', 'title', 'value', 'text']) {
 		for (el of document.querySelectorAll(`[uilang${attr}]`)) {
 			const translationId = attr.length ? el.getAttribute(`uilang${attr}`) : el.textContent;
 			const translation = theUILang[translationId] ?? translationId;

@@ -186,6 +186,7 @@ var theUILang =
  addTorrentSuccess		: "টরেন্ট সফলভাবে যুক্ত করা হয়েছে।",
  addTorrentFailed		: "টরেন্ট যুক্ত করতে ব্যর্থ হয়েছে।",
  pnlViews			: "Views",
+ NewView			: "New View",
  MoveView			: {base: "Move view", top: "To top", up: "Up", down: "Down", bottom: "To bottom"},
  RenameView			: "Rename view",
  RemoveActiveViews		: "Remove active views",

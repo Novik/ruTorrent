@@ -153,7 +153,11 @@ if(isset($_REQUEST['cmd']))
 					if($useExternal=="mktorrent")
 						$piece_size = log($piece_size,2);
 					if(isset($_REQUEST['hybrid']))
+					{
 						$hybrid = TRUE;
+						if ($useExternal!=="torrenttools" && $_REQUEST['hybrid']==1)
+							$useExternal = "inner";
+					}
 					if($useExternal===false)
 						$useExternal = "inner";
 					$task = new rTask( array

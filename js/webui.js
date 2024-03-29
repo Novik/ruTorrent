@@ -5,7 +5,7 @@
 
 var theWebUI =
 {
-  	version: "4.2.11",
+  	version: "4.3.0",
 	tables:
 	{
 		trt:
@@ -137,10 +137,10 @@ var theWebUI =
 		"webui.show_cats":		1,
 		"webui.show_dets":		1,
 		"webui.needmessage":		1,
-		"webui.reqtimeout":		30000,
+		"webui.reqtimeout":		10000,
 		"webui.confirm_when_deleting":	1,
 		"webui.alternate_color":	0,
-		"webui.update_interval":	3000,
+		"webui.update_interval":	2500,
 		"webui.hsplit":			0.88,
 		"webui.vsplit":			0.5,
 		"webui.effects":		0,
@@ -218,16 +218,6 @@ var theWebUI =
 	trackers:	{},
 	props:		{},
 	peers:		{},
-	labels: {},
-	viewPanelLabelTypes: ['pstate_cont', 'plabel_cont', 'flabel_cont'],
-	actLbls:
-	{
-		'pstate_cont': [],
-		'plabel_cont': []
-	},
-	cLabels:	{},
-	staticLabels: ['dls','com','act','iac','nlb','err'],
-	quickSearch: { teg: {val: ''}, debounce: { timeoutId: 0, delayMs: 220 } },
 	dID:		"",
 	pID:		"",
 	speedGraph:	new rSpeedGraph(),
@@ -235,11 +225,10 @@ var theWebUI =
 	timer:		new Timer(),
 	activeView:	null,
 	delmode:	"remove",
-	tegs:		{},
-	lastTeg:	0,
 	deltaTime:	0,
 	serverDeltaTime:0,
 	taskAddTorrents: null,
+	categoryList: null,
 	taskAddTorrentsAnimateHandleId: 0,
 
 //
@@ -506,30 +495,17 @@ var theWebUI =
 		if(!theWebUI.systemInfo.rTorrent.started)
 			$(theWebUI.getTable("trt").scp).text(theUILang.noTorrentList).show();
 
-		// Restore category panels (fold and sort)
-		$(".catpanel").each( function()
-		{
-			theWebUI.updatePanel(this.id);
-		});
-		theWebUI.sortPanels();
-		theWebUI.updateViewPanelLabels();
-
-		// recreate tegs if enabled
-		if (theWebUI.settings["webui.open_tegs.keep"]) {
-			for(const tegStr of theWebUI.settings["webui.open_tegs.last"]) {
-				theWebUI.createTeg(tegStr);
-			}
-		}
-		// switch to labels if keeping selected labels is enabled
-		if (theWebUI.settings["webui.selected_labels.keep"]) {
-			const actLbls = this.settings['webui.selected_labels.last'];
-			for(const [labelType, lbls] of Object.entries(actLbls)) {
-				// consider legacy single-label selection
-				this.actLbls[labelType] = Array.isArray(lbls) ? lbls : lbls ? [lbls] : [];
-			}
-		}
-		this.adjustViewSelectionToActiveLabels();
-		this.refreshLabelSelection('pview_cont', ...(this.viewPanelLabelTypes));
+		theWebUI.categoryList.config(this.settings);
+		// Setup quick search
+		const searchField = $$("query");
+		const updateQuickSearch = () => {
+			this.categoryList.setQuickSearch(
+				theSearchEngines.current === -1 ? searchField.value : null
+			);
+		};
+		searchField.addEventListener("focus", () => updateQuickSearch());
+		searchField.addEventListener("input", () => updateQuickSearch());
+		updateQuickSearch();
 
 		// user must be able add peer when peers are empty
 		$("#PeerList .stable-body").mouseclick(function(e)
@@ -543,35 +519,6 @@ var theWebUI =
 		});
 
 		this.registerMagnetHandler();
-		// setup quick search
-		const searchField = $('#query');
-		const updateQuickSearch = () => {
-			this.quickSearch.teg = this.searchToTeg(searchField.val());
-		};
-		const qsd = this.quickSearch.debounce;
-		searchField.on('input focus', () => {
-			updateQuickSearch();
-			if (qsd.timeoutId) {
-				clearTimeout(qsd.timeoutId);
-			}
-			qsd.timeoutId = setTimeout(() => {
-				this.labels['quick_search'] = new Set(
-					Object.entries(this.torrents)
-					.filter(([_, torrent]) => this.quickSearch.teg.val &&
-						this.matchTeg(this.quickSearch.teg, torrent.name))
-					.map(([hash]) => hash)
-				);
-				if ((this.actLbls['flabel_cont'] ?? []).length) {
-					this.actLbls['flabel_cont'] = [];
-					this.onLabelSelectionChanged('flabel_cont');
-				} else {
-					this.refreshLabelSelection('pview_cont', 'flabel_cont');
-					this.filterTorrentTable();
-				}
-			}, qsd.delayMs);
-		});
-		updateQuickSearch();
-		this.refreshLabelSelection('pview_cont', 'flabel_cont');
 		this.configured = true;
 	},
 
@@ -774,6 +721,7 @@ var theWebUI =
 	        var req = '';
 	        var needSave = false;
 		var needResize = false;
+		let needCatListSync = false;
 		var reply = null;
 		$.each(this.settings, function(i,v)
 		{
@@ -792,6 +740,7 @@ var theWebUI =
 				}
 				if(nv!=v)
 				{
+					theWebUI.settings[i] = nv;
 					if((/^webui\./).test(i))
 					{
 						needSave = true;
@@ -853,21 +802,25 @@ var theWebUI =
 							}
 							case "webui.update_interval":
 							{
-								theWebUI.settings["webui.update_interval"] = nv;
 								if(theWebUI.systemInfo.rTorrent.started)
 									theWebUI.resetInterval();
 								break;
 							}
 							case "webui.speedgraph.max_seconds":
 							{
-								theWebUI.settings["webui.speedgraph.max_seconds"] = nv;
 								theWebUI.speedGraph.setMaxSeconds(parseInt(theWebUI.settings['webui.speedgraph.max_seconds']))
 								theWebUI.speedGraph.draw();
 								break;
 							}
+							case "webui.show_viewlabelsize":
+							case "webui.show_statelabelsize":
+							case "webui.show_labelsize":
+							case "webui.show_searchlabelsize":
+							case "webui.labelsize_rightalign":
+							case "webui.show_label_text_overflow":
 							case "webui.show_view_panel":
 							{
-								theWebUI.updatePanel('pview');
+								needCatListSync = true;
 								break;
 							}
 						}
@@ -877,10 +830,15 @@ var theWebUI =
 						var k_type = o.is("input:checkbox") || o.is("select") || o.hasClass("num") ? "n" : "s";
 						req+=("&s="+k_type+i+"&v="+nv);
 					}
-					theWebUI.settings[i] = nv;
 				}
 			}
 		});
+		if (needCatListSync)
+		{
+			const c = this.categoryList;
+			c.refresh(...c.statistic.panelIds);
+			c.syncFn();
+		}
 		if(needResize)
 			this.resize();
 		if((req.length>0) && theWebUI.systemInfo.rTorrent.started)
@@ -937,12 +895,6 @@ var theWebUI =
 		});
 
 		theWebUI.settings['webui.selected_tab.last'] = theWebUI.activeView;
-		const savedActLbls = {}
-		for (const labelType of ['pstate_cont', 'plabel_cont', 'flabel_cont', 'ptrackers_cont']) {
-			savedActLbls[labelType] = theWebUI.actLbls[labelType];
-		}
-		theWebUI.settings['webui.selected_labels.last'] = savedActLbls;
-		theWebUI.settings['webui.open_tegs.last'] = Object.values(theWebUI.tegs).map(t => t.val);
 		var cookie = {};
 		theWebUI.settings["webui.search"] = theSearchEngines.current;
 		for(const [i,v] of Object.entries(theWebUI.settings))
@@ -1483,16 +1435,15 @@ var theWebUI =
 		_bf.push([theUILang.New_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.newLabel()" : null]);
    		_bf.push([theUILang.Remove_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.removeLabel()" : null]);
    		_bf.push([CMENU_SEP]);
-		for(var labelId in this.cLabels)
+		for(const [torrentLabel, info]  of theWebUI.categoryList.torrentLabelTree.torrentLabels)
 		{
-			const lbl = labelId.substring(8);
-			var lblText = this.settings['webui.show_label_path_tree'] ?
-				'│'.repeat(this.cLabels[labelId].level) + this.cLabelText(labelId):
-				lbl;
-			if((table.selCount == 1) && (this.torrents[id].label === lbl))
+			const lblText = this.settings["webui.show_label_path_tree"]
+				? ('│'.repeat(info.level) + info.path.slice(info.level).join("/"))
+				: torrentLabel;
+			if((table.selCount == 1) && (this.torrents[id].label == torrentLabel))
 				_bf.push([CMENU_SEL, lblText]);
 			else
-				_bf.push([lblText, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.setLabel('" + addslashes(lbl) + "')" : null]);
+				_bf.push([lblText, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? "theWebUI.setLabel('" + addslashes(torrentLabel) + "')" : null]);
 		}
    		theContextMenu.add([CMENU_CHILD, theUILang.Labels, _bf]);
    		theContextMenu.add([CMENU_SEP]);
@@ -1683,14 +1634,6 @@ var theWebUI =
 	{
 	},
 
-	labelStat: function(lbl) {
-		const torrentHashes = this.labels[lbl] ?? new Set();
-		let size = 0;
-		for (const hash of torrentHashes)
-			size += this.torrents[hash].size;
-		return { cnt: torrentHashes.size, size };
-	},
-
 	/**
 	 * @typedef {Object} WebUITorrent
 	 * @property {string} name
@@ -1722,42 +1665,17 @@ var theWebUI =
 		const dataTorrents = data.torrents;
 		data = null;
 
-		const torrentViews = Object.fromEntries(theWebUI.settings['webui.selected_labels.views']
-				.map((view, i) => [`pview_custom_view_${i}`, view])
-		);
-		let torrentLabels = Object.fromEntries(
-			Object.keys(torrentViews)
-			.concat([...this.staticLabels, 'nlb'].map(n => `-_-_-${n}-_-_-`))
-			.map((lbl) => [lbl, new Set()])
-		);
-		let [tdl, tul, tsize] = [0, 0, 0];
-		const newHashes = [];
+		let statistic = this.categoryList.statistic.empty();
 
 		this.taskAddTorrents
 			.reset()
 			.map(Object.entries(dataTorrents), ([hash, torrent]) => {
 				const sInfo = this.getStatusIcon(torrent);
 				torrent.status = sInfo[1];
-				// Determine labels of torrent
-				const lbls = this.getLabels(hash, torrent);
-				for (const lblId of lbls) {
-					const labels = torrentLabels[lblId] ?? new Set();
-					labels.add(hash);
-					torrentLabels[lblId] = labels;
-				}
-				for (const [lbl, view] of Object.entries(torrentViews)) {
-					if (this.shouldShowTorrentRow(hash, torrentLabels, view.labels, true)) {
-						torrentLabels[lbl].add(hash);
-					}
-				}
-				// Accumulate torrent data
-				tdl += iv(torrent.dl);
-				tul += iv(torrent.ul);
-				tsize += torrent.size;
-				if (!(hash in this.torrents))
-					newHashes.push(hash);
+				// Accumulate into view category list
+				statistic.scan(hash, torrent);
 				// Update torrent table
-				table.setRowById(torrent, hash, sInfo[0], {labels: lbls.join('-_-_-')})
+				table.setRowById(torrent, hash, sInfo[0], {})
 			})
 			.enqueueFunc(() => {
 				// update details page
@@ -1783,11 +1701,12 @@ var theWebUI =
 						table.removeRow(hash);
 					}
 				}
+				const newHashes = Object.keys(dataTorrents)
+					.filter(hash => !(hash in this.torrents));
 				// Assign new torrent data
 				this.torrents = dataTorrents;
-				this.labels = torrentLabels;
-				this.allLabelSize = tsize;
-				this.setSpeedValues(tul, tdl);
+				this.categoryList.statistic = statistic;
+				this.setSpeedValues(statistic.upload, statistic.download);
 
 				// Filter torrent table
 				for (const hash in this.torrents)
@@ -1813,7 +1732,7 @@ var theWebUI =
 				const domUpdates = async () => {
 					// update state, custom, and teg labels
 					await nextAFrame();
-					this.updateLabels();
+					this.categoryList.syncAfterScan();
 					if (!this.firstLoad)
 						await nextAFrame();
 					this.updateViewRows(table);
@@ -1829,12 +1748,6 @@ var theWebUI =
 			});
 	},
 
-	updateAllFilterLabel: function(labelType, showSize) {
-		this.updateLabel(
-			'#' + labelType + ' .-_-_-all-_-_-',
-			Object.keys(this.torrents).length,
-			this.allLabelSize, showSize);
-	},
 
 	updateViewRows: function(table)
 	{
@@ -1857,7 +1770,16 @@ var theWebUI =
 		if(this.firstLoad)
 		{
 			this.firstLoad = false;
-			this.show();
+			const catList = $$('CatList');
+			if (catList.pendingStyleLoad) {
+				catList.addEventListener(
+					'style-load',
+					() => this.show(),
+					{ once: true }
+				);
+			} else {
+				this.show();
+			}
 		}
 		this.updateDetails();
    	},
@@ -1953,95 +1875,21 @@ var theWebUI =
 //
 // labels
 //
-	searchToTeg: function(str) {
-		return {
-			val: str,
-			pattern: new RegExp(str.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&').replace('*', '.+'), 'i')
-		};
-	},
-
-	createTeg: function(str) {
-		const tegId = "teg_"+this.lastTeg;
-		this.lastTeg++;
-		const el = this.createSelectableLabelElement(tegId, str, theWebUI.labelContextMenu).addClass('teg');
-		$("#lblf").append( el );
-		this.tegs[tegId] = this.searchToTeg(str);
-		this.updateTegs([tegId]);
-		this.updateLabels();
-		return el;
-	},
-
-	setTeg: function(str)
-	{
-		str = str.trim();
-		let tegId = str !== '' && (
-			Object.entries(this.tegs)
-			.find(([_,teg]) => teg.val == str)?.[0] ||
-			this.createTeg(str).attr('id')
-		);
-		if (tegId) {
-			// Select the search teg
-			const tegIds = this.actLbls['flabel_cont'] ?? [];
-			if (!tegIds.includes(tegId)) {
-				this.actLbls['flabel_cont'] = tegIds.concat([tegId]);
-				this.onLabelSelectionChanged('flabel_cont');
-			}
-		}
-	},
-
-	matchTeg: function(teg, name)
-	{
-		return teg.pattern.test(name);
-	},
-
-	updateTegs: function(tegIds)
-	{
-		for (const tegId of tegIds) {
-			this.labels[tegId] = new Set(Object.entries(this.torrents)
-				.filter(([_, torrent]) => this.matchTeg(this.tegs[tegId], torrent.name))
-				.map(([tegId]) => tegId));
-		}
-	},
-
-	removeActiveTegs: function()
-	{
-		const tegIds = this.actLbls['flabel_cont'] ?? [];
-		for (const tegId of tegIds) {
-			delete this.labels[tegId];
-			delete this.tegs[tegId];
-			$($$(tegId)).remove();
-		}
-		this.resetLabels();
-	},
-
-	removeAllTegs: function()
-	{
-		for (var id in this.tegs) {
-			delete this.labels[id];
-			delete this.tegs[id];
-			$($$(id)).remove();
-		}
-		this.resetLabels();
-	},
-
 	labelContextMenu: function(e)
 	{
-		const el = e.delegateTarget;
-		const labelType = $(el).parents('.catpanel_cont')[0].id;
-		const table = theWebUI.contextMenuTable(labelType, el);
-		const rightClick = e.which===3;
-		if (rightClick)
+		const table = theWebUI.contextMenuTable(e.panelId, e.labelId);
+		if (e.rightClick)
 		{
 			table.clearSelection();
 		}
-		if (!(rightClick && (theWebUI.actLbls[labelType] ?? []).includes(el.id))) {
-			theWebUI.switchLabel(labelType, el.id, e.metaKey, e.shiftKey);
+		if (!(e.rightClick && theWebUI.categoryList.selectionActive(e.panelId, e.labelId))) {
+			theWebUI.categoryList.switchLabel(e.panelId, e.labelId, e.metaKey, e.shiftKey);
 		}
-		if (rightClick)
+		if (e.rightClick)
 		{
 			table.fillSelection();
 			const id = table.getFirstSelected();
-			const entries = theWebUI.contextMenuEntries(labelType, el);
+			const entries = theWebUI.categoryList.contextMenuEntries(e.panelId, e.labelId);
 			if (!(entries && (id || entries.length)))
 			{
 				theContextMenu.hide();
@@ -2064,161 +1912,18 @@ var theWebUI =
 		return(e.fromTextCtrl);
 	},
 
-	contextMenuTable: function(labelType, el) {
+	contextMenuTable: function(panelId, labelId) {
 		return theWebUI.getTable('trt');
 	},
 
-	contextMenuEntries: function(labelType, el) {
-		if (labelType === 'flabel_cont') {
-			return (
-				(this.actLbls['flabel_cont'] ?? []).length ? [
-					[theUILang.removeTeg, "theWebUI.removeActiveTegs();"]
-				] : []
-			).concat([
-				[theUILang.removeAllTegs, "theWebUI.removeAllTegs();"]
-			]);
-		} else if (labelType === 'pview_cont') {
-			return (this.actLbls['pview_cont'] ?? []).length ? [
-					[theUILang.RenameView, `theWebUI.renameView('${el.id}');`],
-					[CMENU_CHILD, theUILang.MoveView.base, ['top', 'up', 'down', 'bottom']
-							.map(action => [theUILang.MoveView[action], `theWebUI.moveView('${el.id}', '${action}');`])
-					],
-					[theUILang.RemoveActiveViews, "theWebUI.removeActiveViews();"]
-				] : [];
-		}
-		return [];
+	setTeg: function(str) {
+		this.categoryList.addTextSearch(str);
 	},
 
-	cLabelText: function(lbl) {
-		const l = this.cLabels[lbl];
-		return l.path.slice(l.level).join('/');
-	},
-
-	/**
-	 *
-	 * @param {Object.<string, number>} c - <label_name, count>
-	 * @param {Object.<string, number>} s - labels size
-	 */
-	updateCustomLabels: function()
-	{
-		const customLabels = Object.keys(this.labels)
-			.filter((lbl) => lbl.startsWith("clabel__"))
-			.map((lbl) => lbl.substring(8));
-
-		const showlabelsize = this.settings["webui.show_labelsize"];
-
-		// Build tree from path labels
-		const labelTree = {};
-		for (const label of customLabels) {
-			let node = labelTree;
-			for (const pathSegment of label.split('/')) {
-				if (!(pathSegment in node)) {
-					node[pathSegment] = {};
-				}
-				node = node[pathSegment];
-			}
-		}
-		let customLabelElements = [];
-		this.cLabels = {};
-		{
-			const showAsTree = this.settings['webui.show_label_path_tree'];
-			const showEmptyLabels = this.settings['webui.show_empty_path_labels'];
-			// Create a panel-label element for existing labels. Additionally,
-			// for showAsTree: show non-flat parent labels,
-			// for showEmptyLabels: show all parent labels.
-			const nextVisits = (n, path, nextLevel, hasNext) =>
-				Object.keys(n)
-					.sort((a, b) => /* reversed order for stack */ b.localeCompare(a))
-					.map((name, i) => [
-						n[name],
-						path.concat([name]),
-						nextLevel,
-						hasNext.concat([i !== /* last */ 0]),
-					]);
-			const pathToLabelId = (path) => 'clabel__' + path.join('/');
-			let stack = nextVisits(labelTree, [], 0, []);
-			let visit;
-			while ((visit = stack.pop())) {
-				let [node, path, level, hasNext] = visit;
-				let nextLevel = level + 1;
-				while (
-					showAsTree &&
-					!showEmptyLabels &&
-					/* Path is flat parent */ !(pathToLabelId(path) in this.labels) &&
-					Object.keys(node).length === 1
-				) {
-					// Flatten tree
-					let [name, flatNode] = Object.entries(node)[0];
-					path.push(name);
-					nextLevel += 1;
-					node = flatNode;
-				}
-				stack.push(...nextVisits(node, path, nextLevel, hasNext));
-
-				const labelId = pathToLabelId(path);
-				if (showAsTree || showEmptyLabels || labelId in this.labels) {
-					// Create panel-label leaf node
-					const titleText = path.join('/');
-					this.cLabels[labelId] = { level, path };
-					let el = $$(labelId);
-					if (el === null) {
-						el = this.createSelectableLabelElement(
-							labelId, "new", this.labelContextMenu
-						)[0];
-					}
-					const stat = this.labelStat(labelId);
-					this.updateLabel(
-						el,
-						stat.cnt,
-						stat.size,
-						showlabelsize,
-						showAsTree ? this.cLabelText(labelId) : titleText,
-						showAsTree
-						? theFormatter.treePrefix({ hasNext, level })
-						: null,
-						titleText
-					);
-					customLabelElements.push(el);
-				}
-			}
-		}
-
-		const labelPanelEl = document.getElementById('plabel_cont');
-		labelPanelEl.replaceChildren(
-			...labelPanelEl.querySelectorAll(':scope > :not(li[id^="clabel__"])'),
-			...customLabelElements
-		);
-		if ((this.actLbls['plabel_cont'] ?? []).some(lbl => !document.getElementById(lbl)))
-		{
-			// Remove non-existent active labels (to potentially show 'All' label as selected)
-			this.actLbls['plabel_cont'] = this.actLbls['plabel_cont']
-				.filter((lbl) => document.getElementById(lbl));
-			// no theWebUI.switchLabel: to avoid switching away from other table views (extsearch, rss)
-			this.refreshLabelSelection('plabel_cont');
-		}
-	},
-
-	/**
-	 *
-	 * @param {string} id - torrent hash
-	 * @param {WebUITorrent} torrent
-	 */
-	getLabels: function(id, torrent)
-	{
-		return [
-				torrent.done < 1000 ? 'dls' : 'com',
-				(torrent.dl >= 1024) || (torrent.ul >= 1024) ? 'act' : 'iac',
-				torrent.state & dStatus.error ? 'err' : ''
-			]
-			.filter(lbl => lbl.length)
-			.map(lbl => '-_-_-' + lbl + '-_-_-')
-			.concat([torrent.label ? 'clabel__' + torrent.label : '-_-_-nlb-_-_-'])
-			.concat(Object.entries(this.tegs)
-				.filter(([_,teg]) => this.matchTeg(teg, torrent.name))
-				.map(([tegId]) => tegId))
-			.concat(this.quickSearch.teg.val && this.matchTeg(this.quickSearch.teg, torrent.name)
-				? ['quick_search']
-				: []);
+	sizeDecimalPlaces: function(context, unit) {
+		let n = parseInt(this.settings['webui.size_decimal_places.'+context+'.'+unit]);
+		n = isNaN(n) ? parseInt(this.settings['webui.size_decimal_places.'+context+'.default']) : n;
+		return isNaN(n) ? (context === 'other' ? 0 : this.sizeDecimalPlaces('other', unit)) : n;
 	},
 
 	/**
@@ -2274,254 +1979,8 @@ var theWebUI =
 			if(req.length>0)
 				this.request("?action=setlabel"+req+"&list=1",[this.addTorrents, this]);
 		}
-   	},
-
-	createSelectableLabelElement: function(id, text, onClick) {
-		return( $("<LI>").attr("id",id)
-		.append($('<div>').addClass('label-prefix').hide())
-		.append($('<div>').addClass('label-icon'))
-		.append($('<div>').addClass('label-text').text(text))
-		.append($('<div>').addClass('label-count').text(0))
-		.append($('<div>').addClass('label-size').hide())
-		.attr("title",text+" (0)")
-		.mouseclick(onClick)
-		.addClass("cat"));
 	},
 
-
-	sizeDecimalPlaces: function(context, unit) {
-		let n = parseInt(this.settings['webui.size_decimal_places.'+context+'.'+unit]);
-		n = isNaN(n) ? parseInt(this.settings['webui.size_decimal_places.'+context+'.default']) : n;
-		return isNaN(n) ? (context === 'other' ? 0 : this.sizeDecimalPlaces('other', unit)) : n;
-	},
-
-	updateLabel: function(label, count, size, showSize, text, prefix, titleText) {
-		const li = $(label);
-		if (prefix !== li.attr('prefix')) {
-			li.attr('prefix', prefix);
-			const pfx = li.children('.label-prefix');
-			if (!prefix) {
-				pfx.hide();
-			} else {
-				pfx.empty();
-				for (const c of prefix) {
-					pfx.append($('<div>').text(c));
-				}
-				pfx.show();
-			}
-		}
-		const txt = li.children('.label-text');
-		if ((text || text === '') && text !== txt.text())
-			txt.text(text);
-		const lblSize = theConverter.bytes(size, 'catlist');
-		const title = (titleText||text||txt.contents().not(txt.children('script')).text()) +
-			' ('+ count + ( showSize ? ' ; '+ lblSize : '') +')';
-		if (title !== li.attr('title')) {
-			li.attr('title', title);
-			li.children('.label-count').text(count);
-			const sizeSpan = li.children('.label-size');
-			if (size && showSize) {
-				sizeSpan.text(lblSize);
-				sizeSpan.show();
-			} else sizeSpan.hide();
-		}
-	},
-
-	idToLbl: function(id) {
-		return(id.substr(5, id.length - 10));
-	},
-
-	updateLabels: function()
-	{
-		this.updateCustomLabels();
-		this.updateViewPanelLabels();
-
-		const catlist = $($$('CatList'));
-		if (theWebUI.settings['webui.labelsize_rightalign'])
-			catlist.addClass('rightalign-labelsize');
-		else
-			catlist.removeClass('rightalign-labelsize');
-		if (theWebUI.settings['webui.show_label_text_overflow'])
-			catlist.removeClass('hide-textoverflow');
-		else
-			catlist.addClass('hide-textoverflow');
-		this.updateAllFilterLabel('pstate_cont', this.settings["webui.show_statelabelsize"]);
-		this.updateAllFilterLabel('plabel_cont', this.settings["webui.show_labelsize"]);
-		this.updateAllFilterLabel('flabel_cont', this.settings["webui.show_searchlabelsize"]);
-
-		for(const k in this.labels)
-		{
-			if (k !== 'quick_search' && !k.startsWith('clabel__') && !k.startsWith('pview_custom_view_')) {
-				const lbl = k.startsWith('-_-_-') ? this.idToLbl(k) : k;
-				const stat = this.labelStat(k);
-				this.updateLabel(
-					$$(k),
-					stat.cnt,
-					stat.size,
-					this.staticLabels.includes(lbl) && lbl != 'nlb'
-					? this.settings["webui.show_statelabelsize"]
-					: k.startsWith('teg_')
-					? this.settings["webui.show_searchlabelsize"]
-					: this.settings["webui.show_labelsize"],
-					false,
-				);
-			}
-		}
-	},
-
-	resetLabels: function() {
-		const labelTypes = Object.keys(this.actLbls);
-		this.actLbls = {};
-		this.onLabelSelectionChanged(...labelTypes);
-	},
-
-	switchLabel: function(labelType, targetId, toggle=false, range=false)
-	{
-		const oldLabelIds = this.actLbls[labelType] ?? [];
-		const oldSelSet = new Set(oldLabelIds);
-		let labelIds = targetId ? [targetId] : [];
-
-		if (range && targetId) {
-			// range selection
-			const anchor = oldLabelIds.length ? oldLabelIds[toggle ? oldLabelIds.length-1 : 0] : 'all';
-			if (targetId !== anchor && !(toggle && oldLabelIds.includes(targetId))) {
-				// select labelIds between anchor and target
-				const allTypeLabelIds = $($$(labelType)).find('.cat').map((_,e) => e.id || 'all');
-				const indexOfLabel = lid => Number(Object.entries(allTypeLabelIds).find(([_,l]) => l === lid)[0]);
-				const a = indexOfLabel(anchor);
-				const t = indexOfLabel(targetId);
-
-				const rangeIndices = [];
-				const step = a <= t ? 1 : -1;
-				for (let i = a; i != t; i += step) {
-					rangeIndices.push(i);
-				}
-				rangeIndices.push(t);
-
-				labelIds = rangeIndices
-					.map(i => allTypeLabelIds[i])
-					.filter(lid => lid !== 'all' && !(toggle && oldSelSet.has(lid)));
-			}
-		}
-
-		if (toggle) {
-			const selSet = new Set(labelIds);
-			// unselect ids if already selected
-			labelIds = oldLabelIds.filter(id => !selSet.has(id)).concat(
-				labelIds.filter(id => !oldSelSet.has(id))
-			);
-		}
-		const clearQuickSearch = ['pview_cont', 'flabel_cont'].includes(labelType) && !targetId;
-		if (clearQuickSearch) {
-			// Selecting 'All' in 'Views' or 'Searches' suspends the quick search until focused again
-			$$('query').blur();
-			this.quickSearch.teg = this.searchToTeg('');
-		}
-
-		if (labelIds.some(lid => !oldLabelIds.includes(lid)) || oldLabelIds.some(lid => !labelIds.includes(lid))) {
-			// change in label selection
-			this.actLbls[labelType] = labelIds;
-			this.onLabelSelectionChanged(labelType);
-		} else if (clearQuickSearch)  {
-			this.refreshLabelSelection('pview_cont', 'flabel_cont');
-			this.filterTorrentTable();
-		}
-	},
-
-	onLabelSelectionChanged: function(...labelTypes) {
-		if (labelTypes.every(lType => lType === 'pview_cont')) {
-			this.adjustActiveLabelsToViewSelection();
-			this.refreshLabelSelection(...(this.viewPanelLabelTypes));
-		} else if (labelTypes.some(lType => this.viewPanelLabelTypes.includes(lType))) {
-			this.adjustViewSelectionToActiveLabels();
-			this.refreshLabelSelection('pview_cont');
-		}
-		this.refreshLabelSelection(...labelTypes);
-
-		this.filterTorrentTable();
-		this.save();
-	},
-
-	adjustActiveLabelsToViewSelection: function() {
-		const customViews = theWebUI.settings['webui.selected_labels.views'];
-		for (const lType of this.viewPanelLabelTypes) {
-			const viewLbls = (this.actLbls['pview_cont'] ?? [])
-				.filter(viewId => viewId.startsWith('pview_custom_view_'))
-				.map(viewId => customViews[Number(viewId.split('_').at(-1))]
-					?.labels[lType] ?? []
-				);
-			this.actLbls[lType] = viewLbls.every(lbls => lbls.length)
-				? [...new Set(viewLbls.flat())]
-				: [];
-		}
-		this.checkViewDirty();
-	},
-
-	adjustViewSelectionToActiveLabels: function() {
-		const actViewPanelLbls = this.viewPanelLabelTypes
-			.map(lType => [lType, new Set(this.actLbls[lType] ?? [])]);
-		// A custom view is selected if it is a subset of the active labels.
-		// "All" is only selected if there are no active labels.
-		this.actLbls['pview_cont'] = actViewPanelLbls.some(([_,actLbls]) => actLbls.size)
-			? theWebUI.settings['webui.selected_labels.views']
-				.map((view, i) => [`pview_custom_view_${i}`, view])
-				.filter(([_, view]) => actViewPanelLbls
-					.every(([lType, actLbls]) => {
-						const viewLbls = view.labels[lType] ?? [];
-						return !actLbls.size || viewLbls.length && viewLbls
-							.every(viewLbl => actLbls.has(viewLbl));
-				}))
-				.map(([viewId]) => viewId)
-			: [];
-		this.checkViewDirty();
-	},
-
-	checkViewDirty: function() {
-		// If the active selection is not an existing view, it is dirty.
-		// (A dirty view may be saved as a 'New View')
-		const actViewIds = this.actLbls['pview_cont'];
-		const lTypes = this.viewPanelLabelTypes;
-		const actLbls = lTypes.map(lType => new Set(this.actLbls[lType] ?? []));
-		const activeSelectionIsExistingView = theWebUI.settings['webui.selected_labels.views']
-			.map(view => lTypes.map(lType => view.labels[lType] ?? []))
-			// Consider the 'All' view
-			.concat([lTypes.map(() => [])])
-			// Check if some view equals the active label selection
-			.some(viewEntries => viewEntries
-				.map((vLbls, i) => [actLbls[i], vLbls])
-				.every(([aLbls, vLbls]) => vLbls.length === aLbls.size &&
-					vLbls.every(lbl => aLbls.has(lbl)))
-			);
-		this.actLbls['pview_cont'] = actViewIds
-			.filter(v => v !== 'pview_dirty_view')
-			.concat(activeSelectionIsExistingView ? [] : ['pview_dirty_view']);
-	},
-
-	quickSearchActive: function() {
-		return this.quickSearch.teg.val && theSearchEngines.current === -1;
-	},
-
-	refreshLabelSelection: function(...dirtyLabelTypes) {
-		for (const lType of dirtyLabelTypes) {
-			const container = $($$(lType));
-			container.find('.sel').removeClass('sel');
-			const labelIds = (this.actLbls[lType] ?? []);
-			if ( labelIds.length || (['pview_cont', 'flabel_cont'].includes(lType) && this.quickSearchActive())) {
-				for (const labelId of labelIds) {
-					$($$(labelId)).addClass('sel');
-				}
-			} else {
-				container.find('.-_-_-all-_-_-').addClass('sel');
-			}
-			if (lType === 'pview_cont') {
-				// Enable view save button if view selection is dirty
-				$('#pview_save_view_button')[0]?.toggleAttribute(
-					'disabled',
-					!labelIds.includes('pview_dirty_view')
-				);
-			}
-		}
-	},
 
 	filterTorrentTable: function() {
 		var table = this.getTable("trt");
@@ -2540,24 +1999,10 @@ var theWebUI =
 
 	filterByLabel: function(table, sId)
 	{
-		if(this.shouldShowTorrentRow(
-			sId, this.labels, this.actLbls, !this.quickSearchActive()
-		))
+		if(this.categoryList.selected(sId))
 			table.unhideRow(sId);
 		else
 			table.hideRow(sId);
-	},
-
-	shouldShowTorrentRow: function(hash, labels, actLbls, noQuickSearch)
-	{
-		return this.viewPanelLabelTypes
-			.map(labelType => (actLbls[labelType] ?? [])
-				/* Let the quick search act as a search teg */
-				.concat(!noQuickSearch && labelType === 'flabel_cont' ? ['quick_search'] : [])
-			)
-			.every(activeLabels => !activeLabels.length ||
-				activeLabels.some(lbl => labels[lbl]?.has(hash))
-			);
 	},
 
 //
@@ -2929,188 +2374,6 @@ var theWebUI =
 		theWebUI.save();
 	},
 
-	sortPanels: function() {
-		// Sort category panels based on setting
-		const catList = $('#CatList');
-		const elements = Object.fromEntries(
-			Object.values(catList.children())
-			.map(e => [e.id, e])
-		);
-
-		catList[0].replaceChildren(...
-			theWebUI.settings['webui.category_panels']
-				.filter(panelId => panelId in elements)
-				.flatMap(panelId => [elements[panelId], elements[`${panelId}_cont`]])
-		);
-	},
-
-	addPanel: function(id, name) {
-		const panels = theWebUI.settings['webui.category_panels'];
-		if (!panels.includes(id)) {
-			panels.push(id);
-		}
-		const catpanel = $("<div>")
-			.addClass("catpanel")
-			.attr("id",id)
-			.text(name)
-			.on('click', function() { theWebUI.togglePanel(this); });
-		const catcont = $("<div>")
-			.attr("id",id+"_cont")
-			.addClass("catpanel_cont");
-		$('#CatList').append(catpanel, catcont);
-		theWebUI.updatePanel(id);
-		theWebUI.sortPanels();
-	},
-
-	updatePanel: function(panelId)
-	{
-		const showPanel = panelId !== 'pview' || Boolean(theWebUI.settings['webui.show_view_panel']);
-		const enable = showPanel && !theWebUI.settings['webui.closed_panels'][panelId];
-		$($$(`${panelId}_cont`)).toggle(enable);
-		$($$(panelId))
-			.toggle(showPanel)
-			.css(
-			'background-image',
-			'url('+this.getTable('trt').paletteURL+(enable ? '/images/pnl_open.gif)' : '/images/pnl_close.gif)')
-		);
-	},
-
-	togglePanel: function(pnl)
-	{
-		const panelId = pnl.id;
-		const panels = theWebUI.settings["webui.closed_panels"];
-		panels[panelId] = !panels[panelId];
-		theWebUI.updatePanel(panelId);
-		theWebUI.save();
-	},
-
-	onViewsChanged: function()
-	{
-		this.updateViewPanel();
-		this.updateViewPanelLabels();
-		this.adjustViewSelectionToActiveLabels();
-		this.refreshLabelSelection('pview_cont', ...(this.viewPanelLabelTypes));
-		this.filterTorrentTable();
-		this.save();
-	},
-
-	saveCurrentView: function()
-	{
-		const vs = 'webui.selected_labels.views';
-		this.settings[vs] = this.settings[vs]
-			.concat([{
-				name: 'New View',
-				labels: Object.fromEntries(
-					this.viewPanelLabelTypes
-					.filter(n => (this.actLbls[n] ?? []).length)
-					.map(n => [n, this.actLbls[n]])
-				)
-		}]);
-		this.onViewsChanged();
-	},
-
-	updateViewPanel: function()
-	{
-		for (const [lbl, view] of theWebUI.settings['webui.selected_labels.views']
-						.map((view, i) => [`pview_custom_view_${i}`, view])) {
-			this.labels[lbl] = new Set(Object.keys(this.torrents)
-				.filter(hash => this.shouldShowTorrentRow(hash, this.labels, view.labels, true))
-			);
-		}
-	},
-
-	updateViewPanelLabels: function()
-	{
-		const customViewRows = $('#pview_cont').children('.pview_custom_view');
-		const customViews = this.settings['webui.selected_labels.views'];
-		const showlabelsize = this.settings["webui.show_viewlabelsize"];
-
-		this.updateAllFilterLabel('pview_cont', showlabelsize);
-
-		// Update or add view rows
-		const dirtyViewEl = $('#pview_dirty_view');
-		for (let i = 0; i < customViews.length; i++) {
-			const customViewId = `pview_custom_view_${i}`;
-			const view = customViews[i];
-			const stat = this.labelStat(customViewId);
-
-			let cViewRow = $($$(customViewId));
-			if (!cViewRow.length) {
-				cViewRow = this.createSelectableLabelElement(
-					customViewId,
-					view.name,
-					theWebUI.labelContextMenu
-				).addClass('pview_custom_view');
-				cViewRow
-					.children('.label-icon')
-					.append($('<span>'));
-				dirtyViewEl.before(cViewRow);
-			}
-
-			this.updateLabel(cViewRow[0], stat.cnt, stat.size, showlabelsize, view.name);
-			cViewRow
-				.find('.label-icon > span')
-				.text(view.name.charAt(0));
-		}
-		// Remove unused view rows
-		for (let i = customViews.length; i < customViewRows.length; i++) {
-			$($$(`pview_custom_view_${i}`)).remove();
-		}
-	},
-
-	removeActiveViews: function()
-	{
-		const removeViewLbls = this.actLbls['pview_cont'] ?? [];
-		// Remove previously selected view rows
-		const vs = 'webui.selected_labels.views';
-		theWebUI.settings[vs] = theWebUI.settings[vs]
-			.filter((_, i) => !removeViewLbls.includes(`pview_custom_view_${i}`));
-		this.onViewsChanged();
-	},
-
-	renameView: function(viewId)
-	{
-		const viewIndex = Number(viewId.split('_').at(-1));
-		const customViews = theWebUI.settings['webui.selected_labels.views'];
-		if (viewIndex in customViews) {
-			const labelText = $(`#${viewId} .label-text`);
-			const renameInput = $('<input type="text">');
-			const doRename = () => {
-				const newName = renameInput.val();
-				customViews[viewIndex].name = newName;
-				renameInput.remove();
-				labelText.text(newName).show();
-				theWebUI.save();
-			};
-			labelText
-			.hide()
-			.after(renameInput
-				.on('blur', () => doRename())
-				.on('keydown', (e) => e.keyCode === /* Enter */ 13 && doRename() || true)
-				.val(customViews[viewIndex].name)
-			);
-			$(`#${viewId} input`)[0].focus();
-		}
-	},
-
-	moveView: function(viewId, action)
-	{
-		// Move view according to action (to targetIndex)
-		const viewIndex = Number(viewId.split('_').at(-1));
-		const customViews = this.settings['webui.selected_labels.views'];
-		if (viewIndex in customViews) {
-			const targetIndex = {
-				top: 0,
-				up: Math.max(viewIndex - 1, 0),
-				down: Math.min(viewIndex + 1, customViews.length),
-				bottom: customViews.length
-			}[action] ?? viewIndex;
-			const views = this.settings['webui.selected_labels.views'];
-			views.splice(targetIndex, 0, views.splice(viewIndex, 1)[0]);
-			this.onViewsChanged();
-		}
-	},
-
 	showAdd: function()
 	{
    		theDialogManager.toggle("tadd");
@@ -3215,15 +2478,92 @@ var theWebUI =
 		if(!theWebUI.settings["webui.ignore_timeouts"])
 			noty(theUILang.Request_timed_out,"alert");
 	}
+
 };
+
+
+function createCategoryList(catModule) {
+	const catList = $$('CatList');
+	const saveViewButton = $$('pview_save_view_button');
+	theDialogManager.make(
+		"dlgRenameView",
+		theUILang.RenameView,
+		$$('pview-rename-dialog-template').innerHTML,
+		true
+	);
+	$$('dlgRenameView')
+		.querySelector('button[value="confirm"]')
+		.addEventListener("click", function () {
+			const dialogEl = $$('dlgRenameView');
+			const inputEl = dialogEl.querySelector('input[type="text"]');
+			categoryList.renameView(inputEl.dataset.viewId, inputEl.value);
+			theDialogManager.hide('dlgRenameView');
+		},
+	);
+	const categoryList = new catModule.CategoryList({
+		panelAttribs: catList.panelAttribs,
+		panelLabelAttribs: catList.panelLabelAttribs,
+		syncFn: () => {
+			catList.classList.toggle(
+				"rightalign-labelsize",
+				theWebUI.settings["webui.labelsize_rightalign"]
+			);
+			catList.classList.toggle(
+				"hide-textoverflow",
+				!theWebUI.settings["webui.show_label_text_overflow"]
+			);
+			categoryList.panelAttribs.pview.hidden = !theWebUI.settings["webui.show_view_panel"];
+			catList.sync(categoryList.panelLabelAttribs, categoryList.panelAttribs);
+			// Enable view save button if view selection is new
+			saveViewButton.toggleAttribute('disabled', !categoryList.currentViewIsNew());
+		},
+		onSelectionChangeFn: () => {
+			if (theSearchEngines.current === -1 && !categoryList.quickSearchActive()) {
+				const searchField = $$('query');
+				if (searchField.value) {
+					searchField.blur();
+				}
+			}
+			theWebUI.filterTorrentTable();
+		},
+		borrowTorrentsFn: () => theWebUI.torrents,
+		onConfigChangeFn: theWebUI.save.bind(theWebUI),
+		byteSizeToStringFn: (size) => theConverter.bytes(size, 'catlist'),
+		renameViewDialogFn: (viewId, viewName) => {
+			const dialogEl = $$('dlgRenameView');
+			const inputEl = dialogEl.querySelector('input[type="text"]');
+			inputEl.value = viewName;
+			inputEl.dataset.viewId = viewId;
+			theDialogManager.show(dialogEl.id);
+			inputEl.focus();
+		},
+		dStatus,
+		theUILang
+	});
+	catList.addEventListener('panel-close', ({panelId, closed}) => {
+		categoryList.setPanelClosed(panelId, closed, true);
+	});
+	catList.addEventListener('label-click', theWebUI.labelContextMenu.bind(theWebUI));
+	// Bind button to save a new view
+	saveViewButton.addEventListener("click", (event) => {
+		categoryList.saveNewView();
+		event.stopPropagation();
+		return false;
+	});
+	return categoryList;
+}
 
 $(document).ready(function()
 {
 	makeContent();
 	theContextMenu.init();
 	theTabs.init();
-	import('./backgroundtask.js').then(bgModule => {
+	Promise.all([
+		import('./backgroundtask.js'),
+		import('./category-list.js'),
+	]).then(([bgModule, catModule]) => {
 		theWebUI.taskAddTorrents = new bgModule.BackgroundTask();
+		theWebUI.categoryList = createCategoryList(catModule);
 		theWebUI.init();
 	});
 });

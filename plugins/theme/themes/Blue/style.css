@@ -1,4 +1,41 @@
 html, body { background-color: #DFE8F6 }
+:root {
+  --menu-color: #222222;
+  --menu-background-color: #F0F0F0;
+
+  --menu-disabled-color: #808080;
+
+  --menu-border-color: #718BB7;
+  --menu-highlight-color: #222222;
+  --menu-highlight-background-color: #D9E8FB;
+
+  --settings-background-color: #272E36;
+}
+#CatList, category-list {
+  border-color: #99BBE8;
+}
+
+category-panel {
+  --open-background-image: url(../plugins/theme/themes/Blue/images/pnl_open.gif);
+  --close-background-image: url(../plugins/theme/themes/Blue/images/pnl_close.gif);
+}
+
+category-panel::part(heading) {
+  color: #15428B;
+  font-weight: bold;
+  background-color: #D9E8FB;
+  border-color: #8DB2E3;
+}
+
+panel-label {
+  --badge-border-radius: 0.5em 0.5em 0 0;
+  --status-image: url(../plugins/theme/themes/Acid/images/tstatus.png);
+}
+
+panel-label[selected] {
+  background-color: #D9E8FB;
+  border-color: #D9E8FB;
+}
 
 div#t {background: #181818 url(./images/header_bg.gif) repeat-x center center; border-bottom: 1px solid #333333;}
 
@@ -19,8 +56,6 @@ div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0p
 
 ul.CMenu li a:hover {background-color: #D9E8FB}
 ul.CMenu li:hover ul li a:hover {background-color: #D9E8FB}
-div#CatList ul li.sel {background-color: #D9E8FB; border-color: #D9E8FB }
-div#CatList { border-color: #99BBE8 }
 
 div#tdetails {background: transparent url(./images/tab-strip-bg.gif) repeat-x 0px center;} 
 
@@ -28,14 +63,11 @@ div#tdetails {background: transparent url(./images/tab-strip-bg.gif) repeat-x 0p
 .tabbar li a:hover {border-top: 1px solid #8DB2E3}
 .tabbar li.selected a { border-top: 2px solid #8DB2E3; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B; font-weight: bold}
 
-input.Button { background-image: url(./images/btn-sprite.gif); background-position: 0 -43px }
+button, input.Button { background-image: url(./images/btn-sprite.gif); background-position: 0 -43px }
 
 input[type="text"], input[type="password"], input[type="file"], select, textarea { background: #FFFFFF url(./images/text-bg.gif) repeat-x 0 0; border:1px solid #B5B8C8; }
 input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled], select[disabled], textarea[disabled] { border: 1px solid #C0C0C0; background: #F0F0F0; color: #C0C0C0}
 
-.catpanel {background-color: #D9E8FB; color: #15428B; font-weight: bold; border: 1px solid #8DB2E3; background-image: url(./images/pnl_open.gif) }
-.label-count,.label-size { background-color: #D9E8FB; border-radius: 0.5em 0.5em 0 0; }
-li.sel .label-count,li.sel .label-size { background-color: #FFFFFF; }
 
 div#tdcont { background: #FFFFFF; border: 1px solid #99BBE8; }
 
@@ -44,21 +76,10 @@ div#tdcont { background: #FFFFFF; border: 1px solid #99BBE8; }
 .sthdr { color: #15428B; }
 
 ul.CMenu { border: 1px solid #718BB7; border-right: 1px solid #718BB7; border-bottom: 1px solid #718BB7; background: #F0F0F0; color: #222222}
-ul.CMenu li {background: #F0F0F0; color: #222222}
-ul.CMenu li a {background: #F0F0F0; color: #222222}
 
 ul.CMenu li a.exp {background: transparent url(./images/menu-parent.gif) no-repeat scroll 140px center; }
 
-ul.CMenu li a:hover {background-color: #D9E8FB; color: #222222}
-ul.CMenu li:hover ul li a { background-color: #F0F0F0; color: #222222}
-ul.CMenu li:hover ul li a:hover {background-color: #D9E8FB; color: #222222}
-
 ul.CMenu li.menuitem hr {background-color: #E0E0E0; color: #000000; border-bottom-width: 1px; border-bottom-color: #FFFFFF}
-
-ul.CMenu li a.dis {color: #808080}
-ul.CMenu li a.dis:hover {background-color: #F0F0F0; color: #808080}
-ul.CMenu li ul li a.dis {color: #808080}
-ul.CMenu li ul li a.dis:hover {background-color: #F0F0F0; color: #808080}
 
 div.dlg-window { color: #000000; border: 0 }
 div.dlg-header { background: #D9E8FB url(../../images/blank.gif) no-repeat scroll 4px center; border: 0; color: #15428B; font-weight: bold}

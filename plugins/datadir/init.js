@@ -1,28 +1,34 @@
 plugin.loadMainCSS();
 plugin.loadLang();
 
+function firstSelectedTorrent() {
+	const table = theWebUI.getTable("trt");
+	const hash = table.selCount > 0 ? table.getFirstSelected() : null;
+	return hash && hash.length === 40 ? {...theWebUI.torrents[hash], hash} : undefined;
+}
+
 theWebUI.EditDataDir = function()
 {
-	var id = theWebUI.getTable("trt").getFirstSelected();
-	if( id && (id.length==40) && this.torrents[id] )
+	const torrent = firstSelectedTorrent();
+	if( torrent )
 	{
-	        var save_path = this.torrents[id].save_path.trim();
+	        var save_path = torrent.save_path.trim();
 		if( !save_path.length ) // torrent is not open
-			this.request( "?action=getsavepath&hash=" + id, [this.showDataDirDlg, this] );
+			this.request( "?action=getsavepath&hash=" + torrent.hash, [this.showDataDirDlg, this] );
 		else
-			theWebUI.showDataDirDlg( { hash: id, savepath: save_path } );
+			theWebUI.showDataDirDlg( { hash: torrent.hash, savepath: save_path } );
 	}
 }
 
 theWebUI.showDataDirDlg = function( d )
 {
-	var id = theWebUI.getTable("trt").getFirstSelected();
 	var is_done = false;
 	var is_multy = false;
-	if( id && (id.length==40) && this.torrents[id] )
+	const torrent = firstSelectedTorrent();
+	if( torrent )
 	{
-		is_done = String(this.torrents[id].done).trim() === "1000";
-		is_multy = String(this.torrents[id].multi_file).trim() !== "0";
+		is_done = String(torrent.done).trim() === "1000";
+		is_multy = String(torrent.multi_file).trim() !== "0";
 	}
 	$('#edit_datadir').val( d.savepath.trim() );
 	$('#btn_datadir_ok').prop("disabled",false);
@@ -73,12 +79,10 @@ if(plugin.canChangeMenu())
 		plugin.createMenu.call(this, e, id);
 		if(plugin.enabled && plugin.allStuffLoaded)
 		{
-			var table = this.getTable("trt");
-			
 			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
 				theContextMenu.add( el, [theUILang.DataDir + "...", 
-					((table.selCount > 1) || (table.getFirstSelected().length==40)) ? "theWebUI.EditDataDir()" : null] );
+					firstSelectedTorrent() ? "theWebUI.EditDataDir()" : null] );
 		}
 	}
 }

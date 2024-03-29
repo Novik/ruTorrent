@@ -24,6 +24,77 @@ html,body
 	color:#fff;
 	text-shadow:0 -1px 0 #000
 }
+:root {
+	--menu-color: #757571;
+	--menu-border-color: #333;
+	--menu-background-color: #181818;
+
+	--menu-disabled-color: #333;
+
+	--menu-highlight-color: #fff;
+	--menu-highlight-background-color: #888;
+
+	--settings-background-color: #222;
+}
+
+#CatList, category-list
+{
+	border:none;
+	background-color:#1A2329;
+	border-right:1px solid #1b1b1b;
+	border-left:none
+}
+
+panel-label {
+	color:#FFF;
+	border:none;
+	padding: 4px;
+	background-color: #1A2329;
+	--prefix-color: #FFF;
+	--prefix-fontsize: 21px;
+	--badge-color: #D4D6C9;
+	--icon-letter-color: #D4D6C9;
+	--badge-background-color: #273238;
+	--status-image: url(../plugins/theme/themes/MaterialDesign/images/status_icons.png);
+}
+
+panel-label:hover {
+	background-color: #161F25;
+}
+
+panel-label[selected] {
+	background-color: #1A2329;
+	color:#009DDD;
+	text-shadow:0 -1px 0 #000;
+	--badge-color: #009DDD;
+}
+
+panel-label[selected]:hover {
+	background-color: #161F25;
+}
+
+panel-label[icon=file] {
+  --icon-offset: 0px -256px;
+}
+panel-label[icon=directory] {
+  --icon-offset: 0px -272px;
+}
+panel-label[icon=config] {
+  --icon-offset: 0px -288px;
+}
+panel-label[icon=tag] {
+  --icon-offset: 0px -304px;
+}
+panel-label[icon=measure] {
+  --icon-offset: 0px -320px;
+}
+panel-label[icon=storage] {
+  --icon-offset: 0px -336px;
+}
+panel-label[icon=search] {
+  --icon-offset: 0px -352px;
+}
+
 
 div#preload
 {
@@ -85,7 +156,7 @@ div#lng
 ul.CMenu
 {
 	opacity:.98;
-	border:1px solid #333;
+	border:1px solid var(--menu-border-color);
 	border-right:1px solid #070707;
 	border-left:1px solid #1b1b1b;
 	border-bottom:1px solid #000;
@@ -347,7 +418,6 @@ div select {
 a
 {
 	color:#686868;
-	font-family:'Roboto'
 }
 
 div#stg-header
@@ -356,103 +426,36 @@ div#stg-header
 	text-shadow:0 -1px 0 #000
 }
 
-div#CatList
-{
-	border:none;
-	background-color:#1A2329;
-	border-right:1px solid #1b1b1b;
-	border-left:none
-}
-
-div#CatList ul li
-{
-	color:#FFF;
-	border:none;
-	padding: 4px;
-	font-family:'Roboto';
-	background-color: #1A2329;
-}
-
-div#CatList ul li:hover
-{
-	background-color: #161F25;
-}
-
-div#CatList .label-prefix
-{
-	font-size: 21px;
-}
-
-
-div#CatList ul li.sel
-{
-	background-color: #1A2329;
-	color:#009DDD;
-	text-shadow:0 -1px 0 #000;
-	border:none
-}
-
-
-div#CatList ul li.sel:hover
-{
-	background-color: #161F25;
-}
-div#CatList li.sel .label-prefix
-{
-	color:#FFF;
-}
-
-
-.label-count,.label-size,.pview_custom_view .label-icon {
-	color: #D4D6C9;
-	background-color: #273238;
-}
 
 #pview_save_view_button {
 	width: 20px;
 	height: 20px;
 	font-size: 20px;
 	font-family: monospace, monospace;
+	margin: 0px;
 }
 
-li.sel .label-count, li.sel .label-size {
-	color:#009DDD;
+category-panel {
+	color: #DCDCDC;
+	--open-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_open.gif);
+	--close-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_close.gif);
+	--heading-background-color: #273238;
 }
 
-.label-icon {
-	background-image: url(./images/status_icons.png);
-}
-
-.catpanel
+category-panel::part(heading)
 {
-	font-size:12px;
-	font-family:'Roboto';
-	padding:2px 30px;
-	height:22px;
-	line-height:25px;
-	background:url(./images/pnl_open.gif) 0 0 no-repeat;
-	background-color:#273238;
-	font-weight:700;
-	color:#DCDCDC;
-	text-shadow:0 -1px 0 #000;
-	border:none
+	font-size: 12px;
+	padding: 2px 14px 2px 30px;
+	height: 22px;
+	line-height: 25px;
+	font-weight: 700;
+	text-shadow: 0 -1px 0 #000;
+	border: none;
 }
-
-.catpanelcont
-{
-	margin:15px 2px;
-	transition:all .3s cubic-bezier(0.68,-0.55,0.27,1.55) 0
-}
-
 
 .stable-icon
 {
 	background-image:url(./images/status_icons.png);
-}
-
-.stable-icon
-{
-	background-image:url(./images/status_icons.png)
 }
 
 .Icon_File
@@ -470,12 +473,6 @@ li.sel .label-count, li.sel .label-size {
 	background:transparent url(./images/dir.gif) no-repeat left center
 }
 
-div#CatList .sel .label-size, div#CatList .sel .label-size
-{
-	color:#009DDD
-}
-
-#flabel_cont li:not(.-_-_-all-_-_-) .label-icon { background:transparent url(./images/status_icons.png) no-repeat 0 -352px; }
 
 div.tab
 {
@@ -546,7 +543,7 @@ div#modalbg
 	background-color:#181818
 }
 
-div#List
+div#List,.main-table
 {
 	margin-right:6px;
 	border:none;
@@ -760,6 +757,7 @@ textarea
 	border-radius:2px
 }
 
+button,
 input.Button,
 input.Button:not([disabled]):focus
 {
@@ -778,12 +776,14 @@ input.Button:not([disabled]):focus
 }
 
 
+button:not([disabled]):hover,
 input.Button:not([disabled]):hover
 {
 	background-color: #3498db;
 	filter: brightness(1.2);
 }
 
+button:not([disabled]):hover:active,
 input.Button:not([disabled]):hover:active
 {
 	background-color: #3498db;

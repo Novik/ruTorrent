@@ -1,6 +1,6 @@
 plugin.description: This plugin is intended to show screenshots from video files.
 plugin.author: Novik
-plugin.version: 4.2
+plugin.version: 4.3
 rtorrent.remote: error
 rtorrent.external.error: ffmpeg
 plugin.dependencies: _task

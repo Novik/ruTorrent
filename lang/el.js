@@ -184,6 +184,7 @@ var theUILang =
  addTorrentSuccess		: "Το αρχείο torrent προστέθηκε με επιτυχία.",
  addTorrentFailed		: "Αποτυχία προσθήκης του αρχείου torrent.",
  pnlViews			: "Προβολές",
+ NewView			: "New View",
  MoveView			: {base: "Μετακίνηση προβολής", top: "Στην κορυφή", up: "Πάνω", down: "Κάτω", bottom: "Στο κάτω μέρος"},
  RenameView			: "Μετονομασία προβολής",
  RemoveActiveViews		: "Αφαίρεση ενεργών προβολών",

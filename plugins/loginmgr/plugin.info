@@ -1,7 +1,7 @@
 plugin.description: This plugin is used to login to torrent sites in cases where cookies fail.
 plugin.author: Novik
 plugin.runlevel: 0
-plugin.version: 4.2
+plugin.version: 4.3
 rtorrent.need: 0
 php.extensions.warning: json
 rtorrent.php.error: update.php,accounts.php
