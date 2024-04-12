@@ -1,0 +1,4 @@
+plugin.description: This plugin dumps .torrent file information to the console
+plugin.author: TheGoblinHero
+plugin.version: 1.0
+plugin.dependencies: _task
