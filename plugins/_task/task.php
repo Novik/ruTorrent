@@ -16,7 +16,8 @@ class rTask
 	const FLG_RUN_AS_CMD	= 0x0040;
 	const FLG_STRIP_ERRS	= 0x0080;
 	const FLG_NO_LOG	= 0x0100;
-	const FLG_REMOVE_ASCII	= 0x0200;	
+	const FLG_REMOVE_ASCII	= 0x0200;
+	const FLG_DO_NOT_TRIM	= 0x0400;
 
 	public $params = array();
 	public $id = 0;
@@ -173,11 +174,12 @@ class rTask
 		}	
 	}
 
-	static protected function processLog( $dir, $logName, &$ret, $stripConsole, $removeASCII )
+	static protected function processLog( $dir, $logName, &$ret, $stripConsole, $removeASCII, $doNotTrim )
 	{
 		if(is_file($dir.'/'.$logName) && is_readable($dir.'/'.$logName))
 		{
-			$lines = self::tail($dir.'/'.$logName);
+			if($doNotTrim) $lines = file($dir.'/'.$logName);
+			else $lines = self::tail($dir.'/'.$logName);
 			foreach( $lines as $line )
 			{
 //				if($stripConsole)
@@ -242,8 +244,8 @@ class rTask
 			}
 			if(is_file($dir.'/params') && is_readable($dir.'/params'))
 				$ret["params"] = unserialize(file_get_contents($dir.'/params'));
-			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS), ($flags & self::FLG_REMOVE_ASCII));
-			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS), ($flags & self::FLG_REMOVE_ASCII));
+			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS), ($flags & self::FLG_REMOVE_ASCII), ($flags & self::FLG_DO_NOT_TRIM) );
+			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS), ($flags & self::FLG_REMOVE_ASCII), false);
 		}
 		return($ret);
 	}

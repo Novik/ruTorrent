@@ -31,7 +31,7 @@ if(isset($_REQUEST['hash']) && isset($_REQUEST['cmd']))
 				$commands = array();
 				$task = new rTask(array('requester'=>'dump', 'name'=>'dump'));
 				$commands[] = Utility::getExternal("dumptorrent")." ".$arguments." ".escapeshellarg($fname);
-				$ret = $task->start($commands, rTask::FLG_WAIT);
+				$ret = $task->start($commands, rTask::FLG_WAIT | rTask::FLG_DO_NOT_TRIM);
 			}
 		}
 	}
