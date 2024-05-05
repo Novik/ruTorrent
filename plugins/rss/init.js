@@ -675,7 +675,7 @@ theWebUI.isGroupContain = function( rssGroup, rssItem )
 
 plugin.updatedRSSEntry = (labelId, attrs) => {
 	attrs = { ...catlist.panelLabelAttribs.prss.get(labelId), ...attrs };
-	const icon = labelId in theWebUI.rssGroups ? 'rss-group' : 'rss';
+	let icon = labelId in theWebUI.rssGroups ? 'rss-group' : 'rss';
 	const count = String(
 		labelId === 'prss_all'
 			? Object.keys(theWebUI.rssItems).length
@@ -683,6 +683,10 @@ plugin.updatedRSSEntry = (labelId, attrs) => {
 	const title = `${attrs.text} (${count})`;
 	const selected = theWebUI.rssListVisible && catlist.isLabelIdSelected('prss', labelId);
 	const alert = labelId in theWebUI.delayedRSSErrors ? '⚠' : null;
+	// Check if enabled is 0, then change icon
+        if (theWebUI.rssLabels[labelId]?.enabled === 0) {
+                icon = 'rss-dis';
+        }
 	return [labelId, {...attrs, icon, count, title, selected, alert}];
 }
 
@@ -698,7 +702,7 @@ catlist.refreshPanel.prss = () => [
 
 theWebUI.showRSS = function()
 {
-        if($('#rssl').children().length)
+        if(Object.keys(theWebUI.rssLabels).length > 0)
         	theWebUI.RSSManager();
         else
 		theDialogManager.toggle("dlgAddRSS");
