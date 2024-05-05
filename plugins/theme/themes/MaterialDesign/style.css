@@ -635,8 +635,8 @@ div#stg .lm
 .lm li a
 {
 	font-size:1em;
-	font-weight:400;
-	color:#555B62;
+	font-weight:300;
+	color:#FFF;
 	transition:all .5s
 }
 
@@ -847,7 +847,7 @@ ul#tabbar li a
 {
 	background:none;
 	border:none;
-	color:#606060;
+	color:#fff;
 	cursor:pointer;
 	font-family:inherit;
 	line-height:24px;
@@ -1134,7 +1134,9 @@ div#lcont div.std
 	background:#181818 url(./images/headers.png) repeat-x 0 -37px;
 	min-height:17px;
 	line-height:17px;
-	border-bottom:1px solid #333
+	border-bottom:1px solid #333;
+	font-weight:300;
+	color:#fff;
 }
 
 div#lcont div.std:nth-child(2n+1)
@@ -1209,7 +1211,9 @@ span.det
 .stable-head table tr td
 {
 	border-right:1px solid #242424!important;
-	font-family:Roboto!important
+	font-family:Roboto!important;
+	font-weight:800;
+	color:#fff;
 }
 
 .Icon_Dir
@@ -1263,3 +1267,8 @@ span.det
 {
 	background:transparent url(./images/archive.zip) no-repeat scroll left center!important
 }
+
+.sthdr { color: #FFF; }
+.stval { color: #FFF; }
+.tickLabel { color: #FFF; }
+.fxcaret legend { color: #FFF; }
