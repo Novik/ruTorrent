@@ -11,6 +11,7 @@
  theUILang.tskConsole		= "Konsol";
  theUILang.tskErrors		= "Tanılama";
  theUILang.tskBackground	= "Gizle";
+ theUILang.tskCopy		= "Copy";
  theUILang.tskStart		= "Başlatıldı";
  theUILang.tskFinish		= "Bitti";
  theUILang.tskElapsed		= "Geçen";

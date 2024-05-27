@@ -11,6 +11,7 @@
  theUILang.tskConsole		= "Консоль";
  theUILang.tskErrors		= "Діагностика";
  theUILang.tskBackground	= "Приховати";
+ theUILang.tskCopy		= "Copy";
  theUILang.tskStart		= "Початок";
  theUILang.tskFinish		= "Завершення";
  theUILang.tskElapsed		= "Минуло";

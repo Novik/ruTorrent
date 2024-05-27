@@ -11,6 +11,7 @@
  theUILang.tskConsole		= "Konzol";
  theUILang.tskErrors		= "Diagnosztika";
  theUILang.tskBackground	= "Elrejtés";
+ theUILang.tskCopy		= "Copy";
  theUILang.tskStart		= "Elindult";
  theUILang.tskFinish		= "Végzett";
  theUILang.tskElapsed		= "Eltelt";

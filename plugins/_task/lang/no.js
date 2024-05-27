@@ -11,6 +11,7 @@
  theUILang.tskConsole		= "Konsoll";
  theUILang.tskErrors		= "Diagnostikk";
  theUILang.tskBackground	= "Skjul";
+ theUILang.tskCopy		= "Copy";
  theUILang.tskStart		= "Startet";
  theUILang.tskFinish		= "Fullført";
  theUILang.tskElapsed		= "Forløpt";
