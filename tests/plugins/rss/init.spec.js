@@ -17,6 +17,7 @@ window.theWebUI = {
     },
   },
   categoryList: new CategoryList({}),
+  resizeTop: (w, h) => console.log(`resizeTop ${w}w ${h}h`),
 };
 window.GetActiveLanguage = function () {
   return "en";
