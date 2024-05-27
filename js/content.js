@@ -70,7 +70,7 @@ function makeContent()
 	{
 		$("#torrent_file").val("");
 		$("#add_button").prop("disabled",false);
-		var d = (this.contentDocument || this.contentWindow.document);
+		var d = this.contentDocument;
 		if(d && (d.location.href != "about:blank"))
 		{
 			try { var txt = d.body.textContent ? d.body.textContent : d.body.innerText; eval(txt); } catch(e) {}
@@ -79,7 +79,7 @@ function makeContent()
 	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function()
 	{
 		$("#url").val("");
-		var d = (this.contentDocument || this.contentWindow.document);
+		var d = this.contentDocument;
 		if(d.location.href != "about:blank")
 			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));

@@ -61,7 +61,7 @@ panel-label {
   color: #D4D6C9;
   border-color: #212121;
   --prefix-color: #FFF;
-  --badge-color: #666666;
+  --badge-color: #999999;
   --badge-background-color: #181818;
   --icon-letter-color: #D4D6C9;
   --icon-letter-background-color: #181818;
@@ -73,8 +73,8 @@ panel-label[selected] {
   color: #009DDD;
   text-shadow:0px -1px 0px #000;
   border:1px solid #212121;
-  --badge-color: #111111;
-  --badge-background-color: #999999;
+  --badge-color: #999999;
+  --badge-background-color: #181818;
 }
 
 panel-label[icon=file] {
