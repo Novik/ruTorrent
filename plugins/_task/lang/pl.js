@@ -11,6 +11,7 @@
  theUILang.tskConsole		= "Konsola";
  theUILang.tskErrors		= "Diagnostyka";
  theUILang.tskBackground	= "Ukryj";
+ theUILang.tskCopy		= "Copy";
  theUILang.tskStart		= "Rozpoczęty";
  theUILang.tskFinish		= "Zakończony";
  theUILang.tskElapsed		= "Upłynęło";
