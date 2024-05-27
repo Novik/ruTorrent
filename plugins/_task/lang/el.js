@@ -11,6 +11,7 @@
  theUILang.tskConsole		= "Κονσόλα";
  theUILang.tskErrors		= "Διαγνωστικά";
  theUILang.tskBackground	= "Απόκρυψη";
+ theUILang.tskCopy		= "Copy";
  theUILang.tskStart		= "Εκκίνηση";
  theUILang.tskFinish		= "Ολοκλήρωση";
  theUILang.tskElapsed		= "Χρόνος που πέρασε";
