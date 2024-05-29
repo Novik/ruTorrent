@@ -78,6 +78,14 @@ if(plugin.canChangeMenu())
 					plugin.setConsoleSize(this);
 				});
 				$("#soxtaskno").val(task.no);
+        $('#tsk_btns').prepend(
+          "<input type='button' class='Button soxplay' id='soxsave' value='"+theUILang.exSave+"'>"
+        );
+        $("#soxsave").on('click', function()
+        {
+          $("#soximgcmd").val("soxgetimage");
+          $('#soxgetimg').trigger('submit');
+        });
 			}
 			else
 				$('.soxplay').hide();
@@ -134,9 +142,6 @@ plugin.onLangLoaded = function()
 		setTimeout(arguments.callee,1000);
 	else
 	{
-		$('#tsk_btns').prepend(
-			"<input type='button' class='Button soxplay' id='soxsave' value='"+theUILang.exSave+"'>"
-			 );
 		$(document.body).append($("<iframe name='soxplayfrm'/>").css({visibility: "hidden"}).attr( { name: "soxplayfrm", id: "soxplayfrm" } ).width(0).height(0));
 		$(document.body).append(
 			$('<form action="plugins/spectrogram/action.php" id="soxgetimg" method="post" target="soxplayfrm">'+
@@ -144,11 +149,6 @@ plugin.onLangLoaded = function()
 				'<input type="hidden" name="no" id="soxtaskno" value="0">'+
 				'<input type="hidden" name="file" id="soximgfile" value="frame">'+
 			'</form>').width(0).height(0));
-		$("#soxsave").on('click', function()
-		{
-			$("#soximgcmd").val("soxgetimage");
-			$('#soxgetimg').trigger('submit');
-		});
 		plugin.markLoaded();
 	}
 }
