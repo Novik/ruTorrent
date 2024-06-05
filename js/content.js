@@ -80,7 +80,7 @@ function makeContent()
 	{
 		$("#url").val("");
 		var d = this.contentDocument;
-		if(d.location.href != "about:blank")
+		if(d && d.location.href != "about:blank")
 			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));
 	theDialogManager.make("padd",theUILang.peerAdd,
