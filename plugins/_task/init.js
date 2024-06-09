@@ -116,9 +116,22 @@ plugin.fromBackground = function( no )
 	plugin.onStart(this.foreground); 
 }
 
+plugin.copyConsoleLog = function()
+{
+	let consoleLog = $('#tskcmdlog')[0].innerText;
+	if(consoleLog !== "")
+	{
+		navigator.clipboard.writeText(consoleLog);
+	}
+	else
+	{
+		log("Console log is empty.");
+	}
+}
+
 plugin.toBackground = function()
 {
-       	if(!plugin.isInBackground())
+	if(!plugin.isInBackground())
 		plugin.background[ plugin.foreground.no ] = cloneObject( this.foreground );
 	plugin.callNotification("HideInterface");	
 	plugin.clear();			
@@ -594,6 +607,7 @@ plugin.onLangLoaded = function()
 			"</fieldset>"+
 		"</div>"+
 		"<div class='aright buttons-list' id='tsk_btns'>"+
+			"<input type='button' id='tskCopy' class='Button' value='"+theUILang.tskCopy+"'/>"+
 			"<input type='button' id='tskBackground' class='Button' value='"+theUILang.tskBackground+"'/>"+
 			"<input type='button' id='tskCancel' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
 		"</div>",true);
@@ -614,4 +628,5 @@ plugin.onLangLoaded = function()
 	});
 	$('#tskBackground').on('click', plugin.toBackground );
 	$(".tskconsole").enableSysMenu();
+	$("#tskCopy").on('click', plugin.copyConsoleLog);
 }
