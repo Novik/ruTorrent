@@ -291,6 +291,7 @@ var theUILang =
  Toggle_details			: "Перемкнути деталі",
  Toggle_categories		: "Перемкнути категорії",
  Delete_current_torrents	: "Видлити поточні торенти",
+ Quick_search			: "Quick search",
  Select_all			: "Вибрати все",
  Deselect_all			: "Скасувати вибір",
  showSpeedInTitle		: "Показувати швидкість у заголовку",

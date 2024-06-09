@@ -291,6 +291,7 @@ var theUILang =
  Toggle_details			: "বিবরণ টগল করুন",
  Toggle_categories		: "ক্যাটাগরি টগল করুন",
  Delete_current_torrents	: "বর্তমান টরেন্ট (গুলি) মুছুন",
+ Quick_search			: "Quick search",
  Select_all			: "সব নির্বাচন করুন",
  Deselect_all			: "সব গুলো অনির্বাচিত করুন",
  showSpeedInTitle		: "শিরোনামে স্পিড দেখান",

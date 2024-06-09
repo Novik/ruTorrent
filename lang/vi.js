@@ -289,6 +289,7 @@ var theUILang =
  Toggle_details			: "Bật tắt chi tiết",
  Toggle_categories		: "Bật tắt danh mục",
  Delete_current_torrents	: "Xóa torrent hiện tại",
+ Quick_search			: "Quick search",
  Select_all			: "Chọn tất cả",
  Deselect_all			: "Bỏ chọn tất cả",
  showSpeedInTitle		: "Hiển thị tốc độ ở tiêu đề",

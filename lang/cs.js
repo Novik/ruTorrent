@@ -291,6 +291,7 @@ var theUILang =
  Toggle_details			: "Toggle details",
  Toggle_categories		: "Toggle categories",
  Delete_current_torrents	: "Delete current torrent(s)",
+ Quick_search			: "Quick search",
  Select_all			: "Select all",
  Deselect_all			: "Deselect all",
  showSpeedInTitle		: "Show speed in the title",

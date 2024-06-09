@@ -212,15 +212,16 @@ function makeContent()
 		'<div class="content">'+
 				'<table width=100% border=0>'+
 					'<tr><td><strong>F1</strong></td><td>'+theUILang.This_screen+'</td></tr>'+
-					'<tr><td><strong><strong>Ctrl-F1</strong></td><td><a href="javascript://void();" onclick="theDialogManager.toggle(\'dlgAbout\'); return(false);">'+theUILang.About_program+'</a></td></tr>'+
-					'<tr><td><strong><strong>F4</strong></td><td><a href="javascript://void();" onclick="theWebUI.toggleMenu(); return(false);">'+theUILang.Toggle_menu+'</a></td></tr>'+
-					'<tr><td><strong><strong>F6</strong></td><td><a href="javascript://void();" onclick="theWebUI.toggleDetails(); return(false);">'+theUILang.Toggle_details+'</a></td></tr>'+
-					'<tr><td><strong><strong>F7</strong></td><td><a href="javascript://void();" onclick="theWebUI.toggleCategories(); return(false);">'+theUILang.Toggle_categories+'</a></td></tr>'+
-					'<tr><td><strong><strong>Ctrl-O</strong></td><td><a href="javascript://void();" onclick="theWebUI.showAdd(); return(false);">'+theUILang.torrent_add+'</a></td></tr>'+
-					'<tr><td><strong><strong>Ctrl-P</strong></td><td><a href="javascript://void();" onclick="theWebUI.showSettings(); return(false);">'+theUILang.ruTorrent_settings+'</a></td></tr>'+
-					'<tr><td><strong><strong>Del</strong></td><td>'+theUILang.Delete_current_torrents+'</td></tr>'+
-					'<tr><td><strong><strong>Ctrl-A</strong></td><td>'+theUILang.Select_all+'</td></tr>'+
-					'<tr><td><strong><strong>Ctrl-Z</strong></td><td>'+theUILang.Deselect_all+'</td></tr>'+
+					'<tr><td><strong>Ctrl-F1</strong></td><td><a href="javascript://void();" onclick="theDialogManager.toggle(\'dlgAbout\'); return(false);">'+theUILang.About_program+'</a></td></tr>'+
+					'<tr><td><strong>F4</strong></td><td><a href="javascript://void();" onclick="theWebUI.toggleMenu(); return(false);">'+theUILang.Toggle_menu+'</a></td></tr>'+
+					'<tr><td><strong>F6</strong></td><td><a href="javascript://void();" onclick="theWebUI.toggleDetails(); return(false);">'+theUILang.Toggle_details+'</a></td></tr>'+
+					'<tr><td><strong>F7</strong></td><td><a href="javascript://void();" onclick="theWebUI.toggleCategories(); return(false);">'+theUILang.Toggle_categories+'</a></td></tr>'+
+					'<tr><td><strong>Ctrl-O</strong></td><td><a href="javascript://void();" onclick="theWebUI.showAdd(); return(false);">'+theUILang.torrent_add+'</a></td></tr>'+
+					'<tr><td><strong>Ctrl-P</strong></td><td><a href="javascript://void();" onclick="theWebUI.showSettings(); return(false);">'+theUILang.ruTorrent_settings+'</a></td></tr>'+
+					'<tr><td><strong>Ctrl-F</strong></td><td>'+theUILang.Quick_search+'</td></tr>'+
+					'<tr><td><strong>Del</strong></td><td>'+theUILang.Delete_current_torrents+'</td></tr>'+
+					'<tr><td><strong>Ctrl-A</strong></td><td>'+theUILang.Select_all+'</td></tr>'+
+					'<tr><td><strong>Ctrl-Z</strong></td><td>'+theUILang.Deselect_all+'</td></tr>'+
 				'</table>'+
 		'</div>');
 	theDialogManager.make("dlgAbout","ruTorrent v"+theWebUI.version,

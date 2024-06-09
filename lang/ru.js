@@ -291,6 +291,7 @@ var theUILang =
  Toggle_details			: "Показать/скрыть детали",
  Toggle_categories		: "Показать/скрыть категории",
  Delete_current_torrents	: "Удалить торрент(ы)",
+ Quick_search			: "Быстрый поиск",
  Select_all			: "Выделить все",
  Deselect_all			: "Отмена выделения",
  showSpeedInTitle		: "Скорость в заголовке",

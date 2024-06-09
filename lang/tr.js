@@ -291,6 +291,7 @@ var theUILang =
  Toggle_details			: "Ayrıntıları aç/kapat",
  Toggle_categories		: "Kategorileri aç/kapat",
  Delete_current_torrents	: "Geçerli torrent'(lar)ı sil",
+ Quick_search			: "Quick search",
  Select_all : "Tümünü seç",
  Deselect_all : "Tüm seçimi kaldır",
  showSpeedInTitle : "Başlıkta hızı göster",

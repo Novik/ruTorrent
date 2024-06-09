@@ -266,12 +266,20 @@ var theWebUI =
 		{
 			switch(e.which)
 			{
-		   		case 27 : 				// Esc
-		   		{
-		   			if(theContextMenu.hide() || theDialogManager.hideTopmost())
+				case 27: // Esc
+				{
+					if(theContextMenu.hide() || theDialogManager.hideTopmost())
 						return(false);
-		   			break;
-		   		}
+					if($$("query").value === "")
+					{
+						theWebUI.endSearch();
+					}
+					else
+					{
+						theWebUI.clearSearch();
+					}
+					break;
+				}
 		   		case 79 : 				// ^O
    				{
 					if(e.metaKey && !theDialogManager.isModalState())
@@ -289,6 +297,14 @@ var theWebUI =
 						return(false);
       					}
 		   			break;
+				}
+				case 70 : // ^F
+				{
+					if(e.metaKey && !theDialogManager.isModalState())
+					{
+						theWebUI.startSearch(e);
+					}
+					break;
 				}
 		  		case 112:				// F1
    				{
@@ -498,14 +514,9 @@ var theWebUI =
 		theWebUI.categoryList.config(this.settings);
 		// Setup quick search
 		const searchField = $$("query");
-		const updateQuickSearch = () => {
-			this.categoryList.setQuickSearch(
-				theSearchEngines.current === -1 ? searchField.value : null
-			);
-		};
-		searchField.addEventListener("focus", () => updateQuickSearch());
-		searchField.addEventListener("input", () => updateQuickSearch());
-		updateQuickSearch();
+		searchField.addEventListener("focus", theWebUI.updateQuickSearch);
+		searchField.addEventListener("input", theWebUI.updateQuickSearch);
+		theWebUI.updateQuickSearch();
 
 		// user must be able add peer when peers are empty
 		$("#PeerList .stable-body").mouseclick(function(e)
@@ -2378,6 +2389,30 @@ var theWebUI =
 	{
    		theDialogManager.toggle("tadd");
    	},
+
+	startSearch: function(e)
+	{
+	e.preventDefault();
+	$$("query").focus();
+	},
+
+	clearSearch: function()
+	{
+		$$("query").value = "";
+		theWebUI.updateQuickSearch();
+	},
+
+	endSearch: function()
+	{
+		$$("query").blur();
+	},
+
+	updateQuickSearch: function()
+	{
+		theWebUI.categoryList.setQuickSearch(
+			theSearchEngines.current === -1 ? $$("query").value : null
+		);
+	},
 
 	resetInterval: function()
 	{

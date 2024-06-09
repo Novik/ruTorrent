@@ -735,7 +735,7 @@ plugin.refreshCategories = function()
 		for( var i=0; i<theSearchEngines.sites[theSearchEngines.current].cats.length; i++)
 			$('#exscategory').append("<option value='"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"'>"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"</option>");
 	}
-	$("#exscategory").prop("disabled",(theSearchEngines.current == -1));
+	$("#exscategory").prop("hidden", (theSearchEngines.current === -1));
 }
 
 plugin.shutdownOldVersion = function()

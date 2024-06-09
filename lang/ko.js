@@ -289,6 +289,7 @@ var theUILang =
  Toggle_details			: "세부 정보 표시 전환",
  Toggle_categories		: "카테고리 표시 전환",
  Delete_current_torrents	: "현재 토렌트 삭제",
+ Quick_search			: "Quick search",
  Select_all			: "모두 선택",
  Deselect_all			: "모두 선택 해제",
  showSpeedInTitle		: "제목에 속도 표시",

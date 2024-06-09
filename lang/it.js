@@ -292,6 +292,7 @@ var theUILang =
  Toggle_details			: "Mostra/Nascondi dettagli",
  Toggle_categories		: "Mostra/Nascondi Categorie",
  Delete_current_torrents	: "Elimina torrent selezionati",
+ Quick_search			: "Quick search",
  Select_all			: "Seleziona tutti",
  Deselect_all			: "Cancella selezione",
  showSpeedInTitle		: "Mostra velocità nel titolo",

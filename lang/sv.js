@@ -289,6 +289,7 @@ var theUILang =
  Toggle_details			: "Visa/dölj detaljer",
  Toggle_categories		: "Visa/dölj kategorier",
  Delete_current_torrents	: "Ta bort aktuell(a) torrent(er)",
+ Quick_search			: "Quick search",
  Select_all			: "Markera alla",
  Deselect_all			: "Avmarkera alla",
  showSpeedInTitle		: "Visa hastighet i titel",

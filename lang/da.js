@@ -291,6 +291,7 @@ var theUILang =
  Toggle_details			: "Toggle details",
  Toggle_categories		: "Toggle categories",
  Delete_current_torrents	: "Slet nuværende torrent(s)",
+ Quick_search			: "Quick search",
  Select_all			: "Vælg alle",
  Deselect_all			: "Fravælg alle",
  showSpeedInTitle		: "Vis hastighed i titlen",

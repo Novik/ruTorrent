@@ -289,6 +289,7 @@ var theUILang =
  Toggle_details			: "Εμφάνιση/Απόκρυψη λεπτομερειών",
  Toggle_categories		: "Εμφάνιση/Απόκρυψη κατηγοριών",
  Delete_current_torrents	: "Διαγραφή υπάρχοντων torrent",
+ Quick_search			: "Quick search",
  Select_all			: "Επιλογή όλων",
  Deselect_all			: "Αποεπιλογή όλων",
  showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",

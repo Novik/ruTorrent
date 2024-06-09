@@ -292,6 +292,7 @@ var theUILang =
  Toggle_details			: "Przełącz szczegóły",
  Toggle_categories		: "Przełącz kategorie",
  Delete_current_torrents	: "Usuń torrent",
+ Quick_search			: "Quick search",
  Select_all			: "Zaznacz wszystkie",
  Deselect_all			: "Odznacz wszystkie",
  showSpeedInTitle		: "Pokaż prędkość w tytule",

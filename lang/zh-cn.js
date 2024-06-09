@@ -291,6 +291,7 @@ var theUILang =
  Toggle_details			: "切换详情",
  Toggle_categories		: "切换分类",
  Delete_current_torrents	: "删除当前 torrent(s)",
+ Quick_search			: "快速搜索",
  Select_all			: "全选",
  Deselect_all			: "全不选",
  showSpeedInTitle		: "在标题中显示速度",

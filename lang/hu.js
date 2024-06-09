@@ -291,6 +291,7 @@ var theUILang =
  Toggle_details			: "Részletek megjelenítése",
  Toggle_categories		: "Kategória megjelenítése",
  Delete_current_torrents	: "Kiválasztott torrent(ek) törlése",
+ Quick_search			: "Quick search",
  Select_all			: "Összes kijelölés",
  Deselect_all			: "Kijelölés törlése",
  showSpeedInTitle		: "Sebesség megjelenítése a címben",
