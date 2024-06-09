@@ -265,21 +265,21 @@ var theWebUI =
 		var keyEvent = function (e)
 		{
 			switch(e.which)
-      {
-        case 27: // Esc
-        {
-          if(theContextMenu.hide() || theDialogManager.hideTopmost())
-            return(false);
-          if($$("query").value === "")
-          {
-            theWebUI.endSearch();
-          }
-          else
-          {
-            theWebUI.clearSearch();
-          }
-          break;
-        }
+			{
+				case 27: // Esc
+				{
+					if(theContextMenu.hide() || theDialogManager.hideTopmost())
+						return(false);
+					if($$("query").value === "")
+					{
+						theWebUI.endSearch();
+					}
+					else
+					{
+						theWebUI.clearSearch();
+					}
+					break;
+				}
 		   		case 79 : 				// ^O
    				{
 					if(e.metaKey && !theDialogManager.isModalState())
@@ -298,14 +298,14 @@ var theWebUI =
       					}
 		   			break;
 				}
-        case 70 : // ^F
-        {
-          if(e.metaKey && !theDialogManager.isModalState())
-          {
-            theWebUI.startSearch(e);
-          }
-          break;
-        }
+				case 70 : // ^F
+				{
+					if(e.metaKey && !theDialogManager.isModalState())
+					{
+						theWebUI.startSearch(e);
+					}
+					break;
+				}
 		  		case 112:				// F1
    				{
    				        if((!browser.isOpera || !e.fromTextCtrl) && !theDialogManager.isModalState())
@@ -514,9 +514,9 @@ var theWebUI =
 		theWebUI.categoryList.config(this.settings);
 		// Setup quick search
 		const searchField = $$("query");
-    searchField.addEventListener("focus", theWebUI.updateQuickSearch);
-    searchField.addEventListener("input", theWebUI.updateQuickSearch);
-    theWebUI.updateQuickSearch();
+		searchField.addEventListener("focus", theWebUI.updateQuickSearch);
+		searchField.addEventListener("input", theWebUI.updateQuickSearch);
+		theWebUI.updateQuickSearch();
 
 		// user must be able add peer when peers are empty
 		$("#PeerList .stable-body").mouseclick(function(e)
@@ -2389,30 +2389,30 @@ var theWebUI =
 	{
    		theDialogManager.toggle("tadd");
    	},
-  
-  startSearch: function(e)
-  {
-    e.preventDefault();
-    $$("query").focus();
-  },
 
-  clearSearch: function()
-  {
-    $$("query").value = "";
-    theWebUI.updateQuickSearch();
-  },
+	startSearch: function(e)
+	{
+	e.preventDefault();
+	$$("query").focus();
+	},
 
-  endSearch: function()
-  {
-    $$("query").blur();
-  },
+	clearSearch: function()
+	{
+		$$("query").value = "";
+		theWebUI.updateQuickSearch();
+	},
 
-  updateQuickSearch: function()
-  {
-    theWebUI.categoryList.setQuickSearch(
-      theSearchEngines.current === -1 ? $$("query").value : null
-    );
-  },
+	endSearch: function()
+	{
+		$$("query").blur();
+	},
+
+	updateQuickSearch: function()
+	{
+		theWebUI.categoryList.setQuickSearch(
+			theSearchEngines.current === -1 ? $$("query").value : null
+		);
+	},
 
 	resetInterval: function()
 	{

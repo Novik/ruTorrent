@@ -290,7 +290,7 @@ var theUILang =
  Toggle_details			: "Vis/skjul detaljer",
  Toggle_categories		: "Vis/skjul kategorier",
  Delete_current_torrents	: "Slett følgende torrent(er)",
- Quick_search   : "Quick search",
+ Quick_search			: "Quick search",
  Select_all			: "Velg alle",
  Deselect_all			: "Velg ingen",
  showSpeedInTitle		: "Vis hastighet i tittelen",
