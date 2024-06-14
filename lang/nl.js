@@ -51,6 +51,7 @@ var theUILang =
  DL				: "Downsnelheid",
  UL				: "Upsnelheid",
  ETA				: "Resterende tijd",
+ return_to_select		: "Select",
  Label				: "Etiket",
  Peers				: "Peers",
  Seeds				: "Seeds",

@@ -50,6 +50,7 @@ var theUILang =
  DL				: "Nedl.",
  UL				: "Oppl.",
  ETA				: "ETA",
+ return_to_select		: "Select",
  Label				: "Etikett",
  Peers				: "Peers",
  Seeds				: "Seeds",

@@ -50,6 +50,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "ETA",
  Label				: "라벨",
+ return_to_select		: "Select",
  Peers				: "피어",
  Seeds				: "시드",
  Remaining			: "남은 시간",

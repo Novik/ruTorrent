@@ -52,6 +52,7 @@ var theUILang =
  UL				: "Su",
  ETA				: "ETA",
  Label				: "Etiqueta",
+ return_to_select		: "Select",
  Peers				: "Clientes",
  Seeds				: "Semillas",
  Remaining			: "Restante",

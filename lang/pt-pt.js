@@ -52,6 +52,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "ETA",// Widely used term
  Label				: "Rótulo",
+ return_to_select		: "Select",
  Peers				: "Pares",
  Seeds				: "Sementes",
  Remaining			: "Faltando",

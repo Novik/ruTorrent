@@ -52,6 +52,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "ETA",
  Label				: "Etiket",
+ return_to_select		: "Select",
  Peers				: "Peers",
  Seeds				: "Seeds",
  Remaining			: "Tilbage",

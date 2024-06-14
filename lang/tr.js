@@ -52,6 +52,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "Kalan Süre",
  Label				: "Etiket",
+ return_to_select		: "Select",
  Peers				: "Eşler",
  Seeds				: "Ortaklar",
  Remaining			: "Kalan",

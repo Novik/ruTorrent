@@ -52,6 +52,7 @@ var theUILang =
  UL				: "Lähetysnopeus",
  ETA				: "Aika",
  Label				: "Nimike",
+ return_to_select		: "Select",
  Peers				: "Lataajat",
  Seeds				: "Jakajat",
  Remaining			: "Jäljellä",

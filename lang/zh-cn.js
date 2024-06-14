@@ -52,6 +52,7 @@ var theUILang =
  UL				: "上传速度",
  ETA				: "剩余时间",
  Label				: "标签",
+ return_to_select		: "选择",
  Peers				: "用户",
  Seeds				: "种子",
  Remaining			: "剩余大小",

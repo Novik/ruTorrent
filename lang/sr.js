@@ -50,6 +50,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "ETA",
  Label				: "Ознака",
+ return_to_select		: "Select",
  Peers				: "Парњаци",
  Seeds				: "Сејачи",
  Remaining			: "Преостало",

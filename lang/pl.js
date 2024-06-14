@@ -52,6 +52,7 @@ var theUILang =
  DL				: "Pobieranie",
  UL				: "Wysyłanie",
  ETA				: "Szacowane",
+ return_to_select		: "Select",
  Label				: "Etykieta",
  Peers				: "Peery",
  Seeds				: "Seedy",

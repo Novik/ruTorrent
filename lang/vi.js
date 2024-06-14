@@ -50,6 +50,7 @@ var theUILang =
  UL				: "T.Lên",
  ETA				: "Hoàn tất sau",
  Label				: "Nhãn",
+ return_to_select		: "Select",
  Peers				: "Thành viên",
  Seeds				: "Máy nguồn",
  Remaining			: "Còn lại",

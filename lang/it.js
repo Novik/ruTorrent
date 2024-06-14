@@ -53,6 +53,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "ETA",
  Label				: "Etichetta",
+ return_to_select		: "Select",
  Peers				: "Peer",
  Seeds				: "Seed",
  Remaining			: "Rimanenti",

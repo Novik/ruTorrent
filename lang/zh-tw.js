@@ -50,6 +50,7 @@ var theUILang =
  UL				: "上傳速度",
  ETA				: "剩餘時間",
  Label				: "標籤",
+ return_to_select		: "Select",
  Peers				: "用戶數量",
  Seeds				: "種子數量",
  Remaining			: "剩餘時間",

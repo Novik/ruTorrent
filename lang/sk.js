@@ -52,6 +52,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "ETA",
  Label				: "Kategoria",
+ return_to_select		: "Select",
  Peers				: "Peerov",
  Seeds				: "Seedov",
  Remaining			: "Zostáva",

@@ -52,6 +52,7 @@ var theUILang =
  UL				: "A. ātrums",
  ETA				: "Laiks",
  Label				: "Grupa",
+ return_to_select		: "Select",
  Peers				: "Iesaistītie",
  Seeds				: "Devēji",
  Remaining			: "Atlicis",

@@ -112,7 +112,7 @@ function makeContent()
 						$("<label>").attr({for: "tadd_label"}).text(theUILang.Label + ": "),
 						$("<input>").attr({type: "text", id: "tadd_label", name: "tadd_label"}).addClass("textbox-grow"),
 						$("<select>").attr({id: "tadd_label_select"}),
-						$("<input>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).addClass("Button").val("Return to Select"),
+						$("<input>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).addClass("Button").val(theUILang.return_to_select),
 					),
 				),
 				$("<fieldset>").append(

@@ -52,6 +52,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "Čas",
  Label				: "Kategorie",
+ return_to_select		: "Select",
  Peers				: "Peerů",
  Seeds				: "Seedů",
  Remaining			: "Zbývající",

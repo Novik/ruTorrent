@@ -52,6 +52,7 @@ var theUILang =
  UL				: "Вивантаження",
  ETA				: "Час",
  Label				: "Мітка",
+ return_to_select		: "Select",
  Peers				: "Піри",
  Seeds				: "Сіди",
  Remaining			: "Залишилось",

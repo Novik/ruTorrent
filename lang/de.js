@@ -52,6 +52,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "Fertig",
  Label				: "Gruppe",
+ return_to_select		: "Auswahlen",
  Peers				: "Peers",
  Seeds				: "Seeds",
  Remaining			: "Rest",

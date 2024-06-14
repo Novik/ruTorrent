@@ -50,6 +50,7 @@ var theUILang =
  UL				: "UL",
  ETA				: "ETA",
  Label				: "Ετικέτα",
+ return_to_select		: "Select",
  Peers				: "Χρήστες",
  Seeds				: "Διαμοιράζουν",
  Remaining			: "Απομένουν",

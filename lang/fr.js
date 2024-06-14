@@ -52,6 +52,7 @@ var theUILang =
  UL				: "Émission",
  ETA				: "Temps estimé",
  Label				: "Étiquette",
+ return_to_select		: "Sélectionner",
  Peers				: "Clients",
  Seeds				: "Sources",
  Remaining			: "Restant",

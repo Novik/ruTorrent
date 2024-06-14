@@ -51,6 +51,7 @@ var theUILang =
  DL				: "Le",
  UL				: "Fel",
  ETA				: "Hátralévő idő",
+ return_to_select		: "Select",
  Label				: "Cimke",
  Peers				: "Peer",
  Seeds				: "Seed",
