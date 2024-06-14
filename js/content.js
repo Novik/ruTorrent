@@ -69,7 +69,7 @@ function makeContent()
 	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function()
 	{
 		$("#torrent_file").val("");
-		$("#add_button").prop("disabled",false);
+		$("#add_button").prop("disabled",true);
 		var d = this.contentDocument;
 		if(d && (d.location.href != "about:blank"))
 		{
@@ -89,32 +89,53 @@ function makeContent()
 			'<input type="button" class="Cancel Button" value="'+theUILang.Cancel+'"/></div>',
 		true);
 	theDialogManager.make("tadd",theUILang.torrent_add,
-		'<div class="cont fxcaret">'+
-			'<form action="addtorrent.php" id="addtorrent" method="post" enctype="multipart/form-data" target="uploadfrm">'+
-				'<label>'+theUILang.Base_directory+':</label><input type="text" id="dir_edit" name="dir_edit" class="TextboxLarge"/><br/>'+
-				'<span id="not_add_path_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+theUILang.Dont_add_tname+'<br/>'+
-				'</span>'+
-				'<span id="torrents_start_stopped_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+theUILang.Dnt_start_down_auto+'<br/>'+
-				'</span>'+
-				'<span id="fast_resume_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
-				'</span>'+
-				'<span id="randomize_hash_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="randomize_hash" id="randomize_hash"/>'+theUILang.doRandomizeHash+'<br/>'+
-				'</span>'+
-				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
-				'<hr/>'+
-				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept=".torrent" class="TextboxLarge"/><br/>'+
-				'<label>&nbsp;</label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
-			'</form>'+
-			'<hr/>'+
-			'<form action="addtorrent.php" id="addtorrenturl" method="post" target="uploadfrmurl">'+
-				'<label>'+theUILang.Torrent_URL+':</label><input type="text" id="url" name="url" class="TextboxLarge"/><br/>'+
-				'<label>&nbsp;</label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button" disabled="true"/>'+
-			'</form>'+
-		'</div>');
+		$("<div>").addClass("cont fxcaret optionColumn").append(
+			$("<form>").attr({action: "addtorrent.php", id: "addtorrent", method: "post", enctype: "multipart/form-data", target: "uploadfrm"}).append(
+				$("<fieldset>").append(
+					$("<legend>").text("Torrent options:"),
+					$("<div>").append(
+						$("<label>").attr({for: "dir_edit"}).text(theUILang.Base_directory),
+						$("<input>").attr({type: "text", id: "dir_edit", name: "dir_edit"}).addClass("textbox-grow"),
+					),
+					...[
+						["not_add_path", theUILang.Dont_add_tname],
+						["torrents_start_stopped", theUILang.Dnt_start_down_auto],
+						["fast_resume", theUILang.doFastResume],
+						["randomize_hash", theUILang.doRandomizeHash],
+					].map(([id, label]) => {
+						return $("<div>").attr({id: id + "_option"}).addClass("indent-left").append(
+							$("<input>").attr({type: "checkbox", name: id, id: id}),
+							$("<label>").attr({for: id}).text(label),
+						)
+					}),
+					$("<div>").addClass("indent-left").append(
+						$("<label>").attr({for: "tadd_label"}).text(theUILang.Label + ": "),
+						$("<input>").attr({type: "text", id: "tadd_label", name: "tadd_label"}).addClass("textbox-grow"),
+						$("<select>").attr({id: "tadd_label_select"}),
+						$("<input>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).addClass("Button").val("Return to Select"),
+					),
+				),
+				$("<fieldset>").append(
+					$("<legend>").text("Add from file:"),
+					$("<div>").append(
+						$("<label>").attr({for: "torrent_file"}).text(theUILang.Torrent_file),
+						$("<input>").attr({type: "file", multiple: "multiple", name: "torrent_file[]", id: "torrent_file", accept: ".torrent"}).addClass("textbox-grow"),
+						$("<input>").val(theUILang.add_button).attr({type: "submit", id: "add_button"}).addClass("Button").prop("disabled", true),
+					),
+				),
+			),
+			$("<form>").attr({action: "addtorrent.php", id: "addtorrenturl", method: "post", target: "uploadfrmurl"}).append(
+				$("<fieldset>").append(
+					$("<legend>").text("Add from URL:"),
+					$("<div>").append(
+						$("<label>").attr({for: "url"}).text(theUILang.Torrent_URL),
+						$("<input>").attr({type: "text", id: "url", name: "url"}).addClass("textbox-grow"),
+						$("<input>").val(theUILang.add_url).attr({type: "submit", id: "add_url"}).addClass("Button").prop("disabled", true),
+					)
+				)
+			),
+		)[0].outerHTML
+  );
 
 	$("#tadd_label_select").on('change', function(e)
 	{
@@ -125,6 +146,7 @@ function makeContent()
 			{
 				$(this).hide();
 				$("#tadd_label").show();
+				$("#tadd-return-select").show();
 			}
 			case 0:
 			{
@@ -139,21 +161,33 @@ function makeContent()
 		}
 	});
 
+	$("#tadd-return-select").on("click", function(e)
+	{
+		$(this).hide();
+		$("#tadd_label").val("").hide();
+		$("#tadd_label_select").prop("selectedIndex", 0);
+		$("#tadd_label_select").show();
+	});
+
 	theDialogManager.setHandler('tadd','beforeShow',function()
 	{
 		$("#tadd_label").hide();
+		$("#tadd-return-select").hide();
 		$("#tadd_label_select").empty()
 			.append('<option selected>'+theUILang.No_label+'</option>')
 			.append('<option>'+theUILang.newLabel+'</option>').show();
 		for(const [torrentLabel] of theWebUI.categoryList.torrentLabelTree.torrentLabels)
 			$("#tadd_label_select").append("<option>"+torrentLabel+"</option>");
-		$("#add_button").prop("disabled",false);
 		$("#tadd_label_select").trigger('change');
 	});
 
-	var input = $$('url');
-	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',input.value.trim()==''); };
-	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
+	const file_input = $$("torrent_file");
+	file_input.onchange = function() {
+		$("#add_button").prop("disabled",file_input.files.length===0);
+	};
+	const url_input = $$('url');
+	url_input.onupdate = url_input.onkeyup = function() { $('#add_url').prop('disabled',url_input.value.trim()===''); };
+	url_input.onpaste = function() { setTimeout( url_input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
 	{
 		var s = theURLs.AddTorrentURL;

@@ -5,6 +5,9 @@
 .project
 .jsdtscope
 
+# VSCode
+.vscode
+
 # ruTorrent
 conf/users/*
 share/users/*

@@ -282,13 +282,7 @@ div#t
 	background-color:#273238;
 	background-image:none;
 	border-bottom:none;
-	padding:4px 0 2px 5px;
-	height: 40px;
-}
-
-div#t a
-{
-	margin:4px 5px 0 0
+  margin-bottom: 2px;
 }
 
 #mnu_logoff.top-menu-item {
@@ -721,7 +715,7 @@ div#tcreate textarea#trackers
 	cursor:text
 }
 
-input[type="number"],input[type="text"],input[type="password"],select
+input[type="number"],input[type="text"],input[type="password"],input[type="file"],select
 {
 	color:#fff;
 	border:none;
@@ -771,7 +765,6 @@ input.Button:not([disabled]):focus
 	height:21px;
 	line-height:2px;
 	margin:0 10px 0 5px;
-	padding:0;
 	text-shadow: #2980b9 0px 1px;
 }
 
@@ -1004,8 +997,8 @@ div#dlgHelp-header,div#dlgHelp div.dlg-header
 div#tadd
 {
 	margin:5px;
-	height:300px!important;
-	width:450px!important
+	height: auto;
+	width: auto;
 }
 
 div#tadd-header
@@ -1013,37 +1006,6 @@ div#tadd-header
 	background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 0;
 	border-bottom:1px solid #333;
 	text-shadow:0 -1px 0 #000
-}
-
-#addtorrenturl label:nth-of-type(2),#addtorrenturl br,#addtorrent label:last-of-type,#addtorrent br:last-of-type,#addtorrent br:nth-last-of-type(2)
-{
-	display:none!important
-}
-
-#addtorrent hr:last-of-type
-{
-	margin-bottom:15px
-}
-
-#tadd_label,#tadd_label_select
-{
-	margin:5px 0 5px 25px
-}
-
-#addtorrent span,#addtorrent label,#tadd_label_select,#tadd_label
-{
-	clear:both;
-	float:left
-}
-
-#addtorrent span:first-of-type,#addtorrent label:nth-of-type(2)
-{
-	margin-top:10px
-}
-
-#addtorrenturl
-{
-	margin-top:15px
 }
 
 Input.TextboxLarge
@@ -1122,11 +1084,6 @@ span#loadimg
 {
 	height:50px;
 	background-color:#343434
-}
-
-input#clear_log,input#add_url,input#add_button
-{
-	margin-top:2px
 }
 
 div#lcont div.std
