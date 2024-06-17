@@ -101,6 +101,7 @@ Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; w
 Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 110px}
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
 Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 30px}
+input.textbox-grow {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; flex: 1;}
 button, input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0; cursor: pointer }
 button[disabled],input.Button[disabled] { opacity: 0.3; cursor: default }
 button:not([disabled]):hover, input.Button:not([disabled]):hover { background-color: #F5F5F5; }
@@ -267,10 +268,8 @@ textarea { overflow: auto; }
 
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 auto }
-div#tadd label {text-align: right; width: 75px; padding-right: 20px; float: left }
-div#tadd br {clear: left; line-height: 0}
-div#tadd input {margin-bottom: 1px}
-div#tadd select { width: 220px }
+div#tadd fieldset {display: grid; grid-template-columns: 1fr 3fr 1fr; align-items: center; gap: 2px;}
+div#tadd input[type=file] {display: block; width: 100%;}
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
@@ -314,10 +313,12 @@ div#tadd select { width: 220px }
 
 @media only screen and (min-width: 1280px) {
   .desktop { display: inline-block; }
+	.dlg-window {max-width: 60vw;}
 }
 
 @media only screen and (max-width: 1279px) {
   .desktop { display: none; }
+	.dlg-window {max-width: 100vw;}
 }
 
 @media only screen and (min-width: 730px) {
@@ -326,4 +327,76 @@ div#tadd select { width: 220px }
 
 @media only screen and (max-width: 729px) {
   .mobile-search { display: none; }
+}
+
+/* X-Small devices (portrait phones, less than 576px) */
+/* No media query for `xs` since this is the default in Bootstrap */
+/* Break point settings borrowed from Bootstrap framework */
+div.col-1 {grid-column: auto / span 1;}
+div.col-2 {grid-column: auto / span 2;}
+div.col-3 {grid-column: auto / span 3;}
+div.col-sm-1, div.col-md-1, div.col-lg-1, div.col-xl-1, div.col-xxl-1 {grid-column: 1 / -1}
+div.col-sm-1, div.col-md-2, div.col-lg-2, div.col-xl-2, div.col-xxl-2 {grid-column: 1 / -1}
+div.col-sm-3, div.col-md-3, div.col-lg-3, div.col-xl-3, div.col-xxl-3 {grid-column: 1 / -1}
+div.col-offset-1 {grid-column-start: 2;}
+div.col-offset-2 {grid-column-start: 3;}
+div.flex-row {display: flex; flex-direction: row; gap: 2px; align-items: center;}
+div.flex-row.display-sm, div.flex-row.display-md, div.flex-row.display-lg, div.flex-row.display-xl, div.flex-row.display-xxl {display: none;}
+.display-sm, .display-md, .display-lg, .display-xl, .display-xxl {display: none;}
+.flex-grow {flex-grow: 1;}
+div.justify-end {justify-content: end;}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+	div.col-sm-1 {grid-column: auto / span 1;}
+	div.col-sm-2 {grid-column: auto / span 2;}
+	div.col-sm-3 {grid-column: auto / span 3;}
+	div.col-offset-sm-1 {grid-column-start: 2;}
+	div.col-offset-sm-2 {grid-column-start: 3;}
+	div.flex-row.display-sm {display: flex;}
+	.display-sm {display: inline;}
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+	div.col-md-1 {grid-column: auto / span 1;}
+	div.col-md-2 {grid-column: auto / span 2;}
+	div.col-md-3 {grid-column: auto / span 3;}
+	div.col-offset-md-1 {grid-column-start: 2;}
+	div.col-offset-md-2 {grid-column-start: 3;}
+	div.flex-row.display-md {display: flex;}
+	.display-md {display: inline;}
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+	div.col-lg-1 {grid-column: auto / span 1;}
+	div.col-lg-2 {grid-column: auto / span 2;}
+	div.col-lg-3 {grid-column: auto / span 3;}
+	div.col-offset-lg-1 {grid-column-start: 2;}
+	div.col-offset-lg-2 {grid-column-start: 3;}
+	div.flex-row.display-lg {display: flex;}
+	.display-lg {display: inline;}
+}
+
+/* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+	div.col-xl-1 {grid-column: auto / span 1;}
+	div.col-xl-2 {grid-column: auto / span 2;}
+	div.col-xl-3 {grid-column: auto / span 3;}
+	div.col-offset-xl-1 {grid-column-start: 2;}
+	div.col-offset-xl-2 {grid-column-start: 3;}
+	div.flex-row.display-xl {display: flex;}
+	.display-xl {display: inline;}
+}
+
+/* XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) { 
+	div.col-xxl-1 {grid-column: auto / span 1;}
+	div.col-xxl-2 {grid-column: auto / span 2;}
+	div.col-xxl-3 {grid-column: auto / span 3;}
+	div.col-offset-xxl-1 {grid-column-start: 2;}
+	div.col-offset-xxl-2 {grid-column-start: 3;}
+	div.flex-row.display-xxl {display: flex;}
+	.display-xxl {display: inline;}
 }
