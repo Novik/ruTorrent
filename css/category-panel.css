@@ -28,6 +28,10 @@ div[part=heading] {
 	user-select: none;
 }
 
+:host([hidden]) {
+	display: none;
+}
+
 :host([closed]) div[part="heading"] {
 	background-image: var(--close-background-image);
 }
