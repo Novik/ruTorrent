@@ -141,7 +141,7 @@ var theUILang =
  Torrent_options		: "Torrent Options",
  Return_select_label		: "Select",
  Add_from_file			: "Add From File",
- Add_from_URL				: "Add From URL",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "與其他使用者連線的最小數量",
  Number_Peers_max		: "與其他使用者連線的最大數量",
  Tracker_Numwant		: "向tracker查詢使用者資訊時，期望一次回應的數量",

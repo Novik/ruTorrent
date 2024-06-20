@@ -144,7 +144,7 @@ var theUILang =
  Torrent_options		: "Torrent Options",
  Return_select_label		: "Select",
  Add_from_file			: "Add From File",
- Add_from_URL				: "Add From URL",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "Minimalna liczba peerów",
  Number_Peers_max		: "Maksymalna liczba peerów",
  Tracker_Numwant		: "Pożądana liczba peerów",

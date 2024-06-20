@@ -143,7 +143,7 @@ var theUILang =
  Torrent_options		: "Torrent 选项",
  Return_select_label		: "选择",
  Add_from_file			: "添加文件",
- Add_from_URL				: "添加URL",
+ Add_from_URL			: "添加URL",
  Number_Peers_min		: "最小用户数",
  Number_Peers_max		: "最大用户数",
  Tracker_Numwant		: "希望用户数",

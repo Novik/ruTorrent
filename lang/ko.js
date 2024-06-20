@@ -141,7 +141,7 @@ var theUILang =
  Torrent_options		: "Torrent Options",
  Return_select_label		: "Select",
  Add_from_file			: "Add From File",
- Add_from_URL				: "Add From URL",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "최소 피어 수",
  Number_Peers_max		: "최대 피어 수",
  Tracker_Numwant		: "희망 피어 수",
