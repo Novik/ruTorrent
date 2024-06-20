@@ -1,6 +1,7 @@
 * { -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,1.0); }
 html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
-html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif;}
+html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 11px;}
+input[type=file] {border: solid 1px #676774; border-radius: 3px; width: 100%;}
 .light-theme { color-scheme: light; }
 .dark-theme { color-scheme: dark; }
 :root {
@@ -68,7 +69,7 @@ ul.CMenu li:hover ul.left {left: -150px}
 span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
 #sel {width: 0px; height: 0px; position: absolute; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
 
-div#t {width: 100%; height: 36px; background: #F0F0F0 url(../images/t_bg.png) repeat-x center center; line-height: 36px; border-bottom: 1px solid #D0D0D0; white-space: nowrap}
+div#t {width: 100%; height: 36px; background: #F0F0F0 url(../images/t_bg.png) repeat-x center center; border-bottom: 1px solid #D0D0D0; white-space: nowrap}
 div#t a {float: left; margin: 3px 0 0 5px; padding: 3px}
 div#t a:hover {background: transparent url(../images/tb_bg.gif) no-repeat scroll center center}
 div#t a:active {padding: 4px 2px 2px 4px}
@@ -176,9 +177,7 @@ input.str {text-align: left; width: 130px}
 td label, div label {cursor: pointer}
 input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
-fieldset div {padding: 2px}
 .ie7 fieldset div {padding: 0px}
-div input, div select {margin: 0 4px; font-size: 11px; padding: 1px 4px}
 legend {color: #000000; font-weight: bold}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
@@ -268,8 +267,10 @@ textarea { overflow: auto; }
 
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 auto }
-div#tadd fieldset {display: grid; grid-template-columns: 1fr 3fr 1fr; align-items: center; gap: 2px;}
-div#tadd input[type=file] {display: block; width: 100%;}
+div#tadd .container {padding: 0;}
+div#tadd .row {margin: 0 0 0.25rem 0; padding: 0;}
+div#tadd .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
+div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
@@ -313,12 +314,10 @@ div#tadd input[type=file] {display: block; width: 100%;}
 
 @media only screen and (min-width: 1280px) {
   .desktop { display: inline-block; }
-	.dlg-window {max-width: 60vw;}
 }
 
 @media only screen and (max-width: 1279px) {
   .desktop { display: none; }
-	.dlg-window {max-width: 100vw;}
 }
 
 @media only screen and (min-width: 730px) {
@@ -329,74 +328,35 @@ div#tadd input[type=file] {display: block; width: 100%;}
   .mobile-search { display: none; }
 }
 
+/* Custom break point settings for responsiveness */
+
 /* X-Small devices (portrait phones, less than 576px) */
 /* No media query for `xs` since this is the default in Bootstrap */
-/* Break point settings borrowed from Bootstrap framework */
-div.col-1 {grid-column: auto / span 1;}
-div.col-2 {grid-column: auto / span 2;}
-div.col-3 {grid-column: auto / span 3;}
-div.col-sm-1, div.col-md-1, div.col-lg-1, div.col-xl-1, div.col-xxl-1 {grid-column: 1 / -1}
-div.col-sm-1, div.col-md-2, div.col-lg-2, div.col-xl-2, div.col-xxl-2 {grid-column: 1 / -1}
-div.col-sm-3, div.col-md-3, div.col-lg-3, div.col-xl-3, div.col-xxl-3 {grid-column: 1 / -1}
-div.col-offset-1 {grid-column-start: 2;}
-div.col-offset-2 {grid-column-start: 3;}
-div.flex-row {display: flex; flex-direction: row; gap: 2px; align-items: center;}
-div.flex-row.display-sm, div.flex-row.display-md, div.flex-row.display-lg, div.flex-row.display-xl, div.flex-row.display-xxl {display: none;}
-.display-sm, .display-md, .display-lg, .display-xl, .display-xxl {display: none;}
-.flex-grow {flex-grow: 1;}
-div.justify-end {justify-content: end;}
+/* Custom rules for medium devices */
+.dlg-window {max-width: 95vw;}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
-	div.col-sm-1 {grid-column: auto / span 1;}
-	div.col-sm-2 {grid-column: auto / span 2;}
-	div.col-sm-3 {grid-column: auto / span 3;}
-	div.col-offset-sm-1 {grid-column-start: 2;}
-	div.col-offset-sm-2 {grid-column-start: 3;}
-	div.flex-row.display-sm {display: flex;}
-	.display-sm {display: inline;}
+  /* Custom rules for small devices */
 }
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
-	div.col-md-1 {grid-column: auto / span 1;}
-	div.col-md-2 {grid-column: auto / span 2;}
-	div.col-md-3 {grid-column: auto / span 3;}
-	div.col-offset-md-1 {grid-column-start: 2;}
-	div.col-offset-md-2 {grid-column-start: 3;}
-	div.flex-row.display-md {display: flex;}
-	.display-md {display: inline;}
+  /* Custom rules for medium devices */
+  .dlg-window {max-width: 400px;}
 }
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) { 
-	div.col-lg-1 {grid-column: auto / span 1;}
-	div.col-lg-2 {grid-column: auto / span 2;}
-	div.col-lg-3 {grid-column: auto / span 3;}
-	div.col-offset-lg-1 {grid-column-start: 2;}
-	div.col-offset-lg-2 {grid-column-start: 3;}
-	div.flex-row.display-lg {display: flex;}
-	.display-lg {display: inline;}
+  /* Custom rules for large devices */
 }
 
 /* X-Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) { 
-	div.col-xl-1 {grid-column: auto / span 1;}
-	div.col-xl-2 {grid-column: auto / span 2;}
-	div.col-xl-3 {grid-column: auto / span 3;}
-	div.col-offset-xl-1 {grid-column-start: 2;}
-	div.col-offset-xl-2 {grid-column-start: 3;}
-	div.flex-row.display-xl {display: flex;}
-	.display-xl {display: inline;}
+  /* Custom rules for x-large devices */
 }
 
 /* XX-Large devices (larger desktops, 1400px and up) */
 @media (min-width: 1400px) { 
-	div.col-xxl-1 {grid-column: auto / span 1;}
-	div.col-xxl-2 {grid-column: auto / span 2;}
-	div.col-xxl-3 {grid-column: auto / span 3;}
-	div.col-offset-xxl-1 {grid-column-start: 2;}
-	div.col-offset-xxl-2 {grid-column-start: 3;}
-	div.flex-row.display-xxl {display: flex;}
-	.display-xxl {display: inline;}
+  /* Custom rules for xx-large devices */
 }
