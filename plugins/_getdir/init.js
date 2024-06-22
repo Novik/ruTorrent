@@ -1,6 +1,6 @@
 plugin.loadMainCSS();
 
-theWebUI.rDirBrowser = function( dlg_id, edit_id, btn_id, frame_id, withFiles )
+theWebUI.rDirBrowser = function( dlg_id, edit_id, btn_id, frame_id, withFiles, height )
 {
 	this.edit = $('#'+edit_id);
 	this.btn  = $('#'+btn_id);
@@ -13,6 +13,7 @@ theWebUI.rDirBrowser = function( dlg_id, edit_id, btn_id, frame_id, withFiles )
 	this.frame = $("<iframe>").attr( {id: frame_id, src: ""} ).css({position: "absolute", width: 0, visibility: "hidden"}).addClass("browseFrame");
 	this.dlg_id = dlg_id;
 	$('#'+dlg_id).append( this.frame );
+	this.height = !height ? 150 : height
 }
 
 theWebUI.rDirBrowser.prototype.show = function()
@@ -35,7 +36,8 @@ theWebUI.rDirBrowser.prototype.show = function()
 			visibility: "visible",
 			left: x,
 			top: y,
-			width: this.edit.width()+2
+			width: this.edit.width()+2,
+			height: this.height
 		}).show();
 	this.btn.val("X");
 	theDialogManager.bringToTop(this.frame.attr("id"));
