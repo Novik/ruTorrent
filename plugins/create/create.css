@@ -9,8 +9,6 @@ div#tcreate label.nomargin { margin-top: 0px; margin-bottom: 0px; }
 div#tcreate input, select {margin-top: 5px; margin-bottom: 5px;}
 div#tcreate br {clear: left; line-height: 0}
 
-div#tcreate iframe {border-width: 1px; width:170px; height:200px; visibility:hidden; position:absolute; z-index:100;}
-
 #browse_path {width: 30px;}
 
 #recentTrackers { float: left; width: 130px }
