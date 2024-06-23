@@ -138,6 +138,10 @@ var theUILang =
  time_m				: "분 ", /*for x minutes remaining*/
  time_s				: "초 ", /*for x seconds remaining*/
  Base_directory			: "디렉토리",
+ Torrent_options		: "Torrent Options",
+ Return_select_label		: "Select",
+ Add_from_file			: "Add From File",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "최소 피어 수",
  Number_Peers_max		: "최대 피어 수",
  Tracker_Numwant		: "희망 피어 수",

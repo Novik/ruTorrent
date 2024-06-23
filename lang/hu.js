@@ -140,6 +140,10 @@ var theUILang =
  time_m				: "Perc ", /*for x minutes remaining*/
  time_s				: "mp ", /*for x seconds remaining*/
  Base_directory			: "Mappa",
+ Torrent_options		: "Torrent Options",
+ Return_select_label		: "Select",
+ Add_from_file			: "Add From File",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "Peer kapcsolatok minimum száma",
  Number_Peers_max		: "Peer kapcsolatok maximum száma",
  Tracker_Numwant		: "Kért peer kapcsolatok száma",

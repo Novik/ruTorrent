@@ -138,6 +138,10 @@ var theUILang =
  time_m				: "λ. ", /*for x minutes remaining*/
  time_s				: "δευτ. ", /*for x seconds remaining*/
  Base_directory			: "Φάκελος",
+ Torrent_options		: "Torrent Options",
+ Return_select_label		: "Select",
+ Add_from_file			: "Add From File",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "Ελάχιστος αριθμός χρηστών",
  Number_Peers_max		: "Μέγιστος αριθμός χρηστών",
  Tracker_Numwant		: "Ζητούμενος αριθμός χρηστών",

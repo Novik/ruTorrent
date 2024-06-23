@@ -141,6 +141,10 @@ var theUILang =
  time_m				: "m ", /*for x minutes remaining*/
  time_s				: "s ", /*for x seconds remaining*/
  Base_directory			: "Katalog",
+ Torrent_options		: "Torrent Options",
+ Return_select_label		: "Select",
+ Add_from_file			: "Add From File",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "Minimalna liczba peerów",
  Number_Peers_max		: "Maksymalna liczba peerów",
  Tracker_Numwant		: "Pożądana liczba peerów",

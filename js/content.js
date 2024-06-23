@@ -69,7 +69,7 @@ function makeContent()
 	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function()
 	{
 		$("#torrent_file").val("");
-		$("#add_button").prop("disabled",false);
+		$("#add_button").prop("disabled",true);
 		var d = this.contentDocument;
 		if(d && (d.location.href != "about:blank"))
 		{
@@ -89,32 +89,86 @@ function makeContent()
 			'<input type="button" class="Cancel Button" value="'+theUILang.Cancel+'"/></div>',
 		true);
 	theDialogManager.make("tadd",theUILang.torrent_add,
-		'<div class="cont fxcaret">'+
-			'<form action="addtorrent.php" id="addtorrent" method="post" enctype="multipart/form-data" target="uploadfrm">'+
-				'<label>'+theUILang.Base_directory+':</label><input type="text" id="dir_edit" name="dir_edit" class="TextboxLarge"/><br/>'+
-				'<span id="not_add_path_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="not_add_path" id="not_add_path"/>'+theUILang.Dont_add_tname+'<br/>'+
-				'</span>'+
-				'<span id="torrents_start_stopped_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"/>'+theUILang.Dnt_start_down_auto+'<br/>'+
-				'</span>'+
-				'<span id="fast_resume_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="fast_resume" id="fast_resume"/>'+theUILang.doFastResume+'<br/>'+
-				'</span>'+
-				'<span id="randomize_hash_option">'+
-				'<label>&nbsp;</label><input type="checkbox" name="randomize_hash" id="randomize_hash"/>'+theUILang.doRandomizeHash+'<br/>'+
-				'</span>'+
-				'<label>'+theUILang.Label+':</label><input type="text" id="tadd_label" name="tadd_label" class="TextboxLarge" /><select id="tadd_label_select"></select><br/>'+
-				'<hr/>'+
-				'<label>'+theUILang.Torrent_file+':</label><input type="file" multiple="multiple" name="torrent_file[]" id="torrent_file" accept=".torrent" class="TextboxLarge"/><br/>'+
-				'<label>&nbsp;</label><input type="submit" value="'+theUILang.add_button+'" id="add_button" class="Button" /><br/>'+
-			'</form>'+
-			'<hr/>'+
-			'<form action="addtorrent.php" id="addtorrenturl" method="post" target="uploadfrmurl">'+
-				'<label>'+theUILang.Torrent_URL+':</label><input type="text" id="url" name="url" class="TextboxLarge"/><br/>'+
-				'<label>&nbsp;</label><input type="submit" id="add_url" value="'+theUILang.add_url+'" class="Button" disabled="true"/>'+
-			'</form>'+
-		'</div>');
+		$("<div>").addClass("cont fxcaret").append(
+			$("<form>").addClass("container").attr(
+				{action: "addtorrent.php", id: "addtorrent", method: "post", enctype: "multipart/form-data", target: "uploadfrm"}
+			).append(
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.Torrent_options),
+					$("<div>").addClass("row").append(
+						$("<div>").addClass("d-none col-md-3 d-md-flex align-items-center justify-content-end").append(
+							$("<label>").attr({for: "dir_edit"}).text(theUILang.Base_directory + ": "),
+						),
+						$("<div>").addClass("col-md-9 d-flex flex-row align-items-center").append(
+							$("<input>").attr(
+								{type: "text", id: "dir_edit", name: "dir_edit", placeholder: theUILang.Base_directory}
+							).addClass("flex-grow-1 mx-1"),
+						),
+					),
+					$("<div>").addClass("row d-flex flex-column").append(
+						$("<div>").addClass("col-md-9 offset-md-3 d-flex flex-column").append(
+							...[
+								["not_add_path", theUILang.Dont_add_tname],
+								["torrents_start_stopped", theUILang.Dnt_start_down_auto],
+								["fast_resume", theUILang.doFastResume],
+								["randomize_hash", theUILang.doRandomizeHash],
+							].map(([id, label]) => $("<div>").attr({id: id + "_option"}).addClass(
+								"d-flex flex-row align-items-center"
+							).append(
+									$("<input>").attr({type: "checkbox", name: id, id: id}),
+									$("<label>").attr({for: id}).text(label),
+								)
+							),
+						)
+					),
+					$("<div>").addClass("row").append(
+						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end align-items-center").append(
+							$("<label>").attr({for: "tadd_label"}).text(theUILang.Label + ": "),
+						),
+						$("<div>").addClass("col-md-7 d-flex flex-row align-items-center").append(
+							$("<input>").attr({type: "text", id: "tadd_label", name: "tadd_label", placeholder: theUILang.Label}).addClass("flex-grow-1 mx-1"),
+							$("<select>").attr({id: "tadd_label_select"}).addClass("flex-grow-1 mx-1"),
+						),
+						$("<div>").addClass("col-md-2 d-flex align-items-center").append(
+							$("<input>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).addClass("Button").val(theUILang.Return_select_label),
+						),
+					),
+				),
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.Add_from_file),
+					$("<div>").addClass("row").append(
+						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end align-items-center").append(
+							$("<label>").attr({for: "torrent_file"}).text(theUILang.Torrent_file + ": "),
+						),
+						$("<div>").addClass("col-md-6 d-flex").append(
+							$("<input>").attr({type: "file", multiple: "multiple", name: "torrent_file[]", id: "torrent_file", accept: ".torrent"}).addClass("flex-shrink-1"),
+						),
+						$("<div>").addClass("col-md-3 d-flex align-items-center").append(
+							$("<input>").val(theUILang.add_button).attr({type: "submit", id: "add_button"}).addClass("Button").prop("disabled", true),
+						),
+					),
+				),
+			),
+			$("<form>").addClass("container").attr(
+				{action: "addtorrent.php", id: "addtorrenturl", method: "post", target: "uploadfrmurl"}
+			).append(
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.Add_from_URL),
+					$("<div>").addClass("row").append(
+						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end align-items-center").append(
+							$("<label>").attr({for: "url"}).text(theUILang.Torrent_URL + ": "),
+						),
+						$("<div>").addClass("col-md-6 d-flex").append(
+							$("<input>").attr({type: "text", id: "url", name: "url", placeholder: theUILang.Torrent_URL}).addClass("flex-grow-1"),
+						),
+						$("<div>").addClass("col-md-3 d-flex align-items-center").append(
+							$("<input>").val(theUILang.add_url).attr({type: "submit", id: "add_url"}).addClass("Button").prop("disabled", true),
+						),
+					),
+				),
+			),
+		)[0].outerHTML
+  );
 
 	$("#tadd_label_select").on('change', function(e)
 	{
@@ -125,6 +179,7 @@ function makeContent()
 			{
 				$(this).hide();
 				$("#tadd_label").show();
+				$("#tadd-return-select").show();
 			}
 			case 0:
 			{
@@ -139,21 +194,35 @@ function makeContent()
 		}
 	});
 
+	$("#tadd-return-select").on("click", function(e)
+	{
+		$(this).hide();
+		$("#tadd_label").val("").hide();
+		$("#tadd_label_select").prop("selectedIndex", 0);
+		$("#tadd_label_select").show();
+	});
+
 	theDialogManager.setHandler('tadd','beforeShow',function()
 	{
 		$("#tadd_label").hide();
+		$("#tadd-return-select").hide();
 		$("#tadd_label_select").empty()
 			.append('<option selected>'+theUILang.No_label+'</option>')
 			.append('<option>'+theUILang.newLabel+'</option>').show();
 		for(const [torrentLabel] of theWebUI.categoryList.torrentLabelTree.torrentLabels)
 			$("#tadd_label_select").append("<option>"+torrentLabel+"</option>");
-		$("#add_button").prop("disabled",false);
+		$("#torrent_file").val("");
+		$("#add_button").prop("disabled", true);
 		$("#tadd_label_select").trigger('change');
 	});
 
-	var input = $$('url');
-	input.onupdate = input.onkeyup = function() { $('#add_url').prop('disabled',input.value.trim()==''); };
-	input.onpaste = function() { setTimeout( input.onupdate, 10 ) };
+	const file_input = $$("torrent_file");
+	file_input.onchange = function() {
+		$("#add_button").prop("disabled",file_input.files.length===0);
+	};
+	const url_input = $$('url');
+	url_input.onupdate = url_input.onkeyup = function() { $('#add_url').prop('disabled',url_input.value.trim()===''); };
+	url_input.onpaste = function() { setTimeout( url_input.onupdate, 10 ) };
 	var makeAddRequest = function(frm)
 	{
 		var s = theURLs.AddTorrentURL;

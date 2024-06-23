@@ -138,6 +138,10 @@ var theUILang =
  time_m				: "ph ", /*for x minutes remaining*/
  time_s				: "g ", /*for x seconds remaining*/
  Base_directory			: "Thư mục",
+ Torrent_options		: "Torrent Options",
+ Return_select_label		: "Select",
+ Add_from_file			: "Add From File",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "Số máy tối thiểu",
  Number_Peers_max		: "Số máy tối đa",
  Tracker_Numwant		: "Số máy mong muốn",

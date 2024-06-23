@@ -138,6 +138,10 @@ var theUILang =
  time_m				: "м ", /*for x minutes remaining*/
  time_s				: "с ", /*for x seconds remaining*/
  Base_directory			: "Директоријум",
+ Torrent_options		: "Torrent Options",
+ Return_select_label		: "Select",
+ Add_from_file			: "Add From File",
+ Add_from_URL			: "Add From URL",
  Number_Peers_min		: "Најмањи број парњака",
  Number_Peers_max		: "Највећи број парњака",
  Tracker_Numwant		: "Жељени број парњака",

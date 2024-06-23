@@ -140,6 +140,10 @@ var theUILang =
  time_h				: "h ", /*for x hours remaining*/
  time_m				: "m ", /*for x minutes remaining*/
  time_s				: "s ", /*for x seconds remaining*/
+ Torrent_options		: "Torrent Options",
+ Return_select_label		: "Select",
+ Add_from_file			: "Add From File",
+ Add_from_URL			: "Add From URL",
  Base_directory			: "Cartella",
  Number_Peers_min		: "Numero minimo di peer",
  Number_Peers_max		: "Numero massimo di peer",
