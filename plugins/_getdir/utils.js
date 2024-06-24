@@ -12,4 +12,11 @@ function filterDir(e) {
 	}
 }
 
-document.querySelector("input.filter-dir").addEventListener("keyup", filterDir);
+document.getElementById("dir-search-bar").addEventListener("keyup", filterDir);
+document.addEventListener("readystatechange", () => {
+	if (document.readyState === "complete") {
+		setTimeout(() => {
+			document.getElementById("dir-search-bar").focus()
+		}, 500);
+	}
+});

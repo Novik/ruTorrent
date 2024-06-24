@@ -192,7 +192,7 @@ function menuDblClickAndExit(obj)
 </head>
 <body onLoad='init()'>
 	<div class="dir-list">
-		<div class="search-bar"><input type="text" class="filter-dir" placeholder="Type to filter..." /></div>
+		<div class="search-bar"><input id="dir-search-bar" type="text" class="filter-dir" placeholder="Type to filter..." /></div>
 		<div class="rmenuobj">
 			<?php
 			function ordutf8($s, $offset) 
