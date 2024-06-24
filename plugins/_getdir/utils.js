@@ -15,8 +15,10 @@ function filterDir(e) {
 document.getElementById("dir-search-bar").addEventListener("keyup", filterDir);
 document.addEventListener("readystatechange", () => {
 	if (document.readyState === "complete") {
+		// A `setTimeout()` function is used here for browser compatability,
+		// as a plain `focus()` wouldn't work on FireFox.
 		setTimeout(() => {
 			document.getElementById("dir-search-bar").focus()
-		}, 500);
+		}, 100); 
 	}
 });
