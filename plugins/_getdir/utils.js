@@ -3,11 +3,10 @@ function filterDir(e) {
 		e.target.value = "";
 	}
 	let keyword = e.currentTarget.value.toUpperCase();
-	dirs = document.querySelector(".rmenuobj").querySelectorAll("div");
+	let dirs = document.querySelector(".rmenuobj").querySelectorAll("div");
 	for (let i = 0; i < dirs.length; i++) {
-		dir = dirs[i];
-		if (dir) {
-			txtValue = dir.textContent || dir.innerText;
+		if (dirs[i]) {
+			let txtValue = dirs[i].textContent || dirs[i].innerText;
 			dirs[i].style.display = txtValue.toUpperCase().indexOf(keyword) > -1 ? "" : "none";
 		}
 	}
