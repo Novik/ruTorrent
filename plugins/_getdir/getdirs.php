@@ -70,16 +70,9 @@ if($dh)
 	uksort($files,"compareEntries");
 }
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
 <head>
-<style>
-body { background-color: window; color: windowtext; border: 0px; margin: 0px; padding: 0px; -moz-user-select:none; }
-td { padding-top: 1px; padding-bottom: 1px; padding-left: 0px; padding-right: 0px; cursor:default; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; }
-.rmenuobj { border-width: 0; }
-.rmenuitem { color: windowtext; }
-.rmenuitemselected { color: highlighttext; background-color: highlight; }
-</style>
+<link href="./_getdir.css?v=430" rel="stylesheet" type="text/css" />
 <title></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script language='JavaScript'>
@@ -113,7 +106,7 @@ function init()
 	{
 		var _timer=setInterval(function(){ scrollBy(1,1); clearInterval(_timer); },10);
 	}
-	window.onkeypress = keyHandler;
+	// window.onkeypress = keyHandler;
 }
 
 selected = null;
@@ -157,38 +150,41 @@ function menuDblClickAndExit(obj)
 	menuClick(obj);
 	hideFrame();
 }
-
 </script>
 </head>
 <body onLoad='init()'>
+	<div class="dir-list">
+		<div class="search-bar"><input id="dir-search-bar" type="text" class="filter-dir" placeholder="Type to filter..." /></div>
+		<div class="rmenuobj">
+			<?php
+			function ordutf8($s) 
+			{
+				if(function_exists("mb_convert_encoding"))
+				{
+					list(, $ret) = unpack('N', mb_convert_encoding(mb_strtolower($s), 'UCS-4BE', 'UTF-8'));
+				}
+				else
+				{
+					$ret = ord( strtolower($s) );
+				}
+				return($ret);
+			}
 
-<table class='rmenuobj' cellpadding=0 cellspacing=0 width=100%>
-<?php
-function ordutf8($s) 
-{
-	if(function_exists("mb_convert_encoding"))
-	{
-		list(, $ret) = unpack('N', mb_convert_encoding(mb_strtolower($s), 'UCS-4BE', 'UTF-8'));
-	}
-	else
-	{
-		$ret = ord( strtolower($s) );
-	}
-	return($ret);
-}
-
-foreach($files as $key=>$data)
-{
-	$key = trim($key);
-	$chr = ordutf8($key);
-	if($key==='.')
-		echo "<tr><td code='".rawurlencode($data)."' id='root' class='rmenuitemselected' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClickAndExit(this); return false;'>";
-	else
-		echo "<tr><td code='".rawurlencode($data)."' class='rmenuitem' id='i".$chr."' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClick(this); return false;'>";
-	echo "&nbsp;&nbsp;";
-	echo $key;
-	echo "</td></tr>";
-}
-?>
-</table>
+			foreach($files as $key=>$data)
+			{
+				$key = trim($key);
+				$chr = ordutf8($key);
+				if($key==='.')
+					echo "<div code='".rawurlencode($data)."' id='root' class='rmenuitemselected' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClickAndExit(this); return false;'>";
+				else
+					echo "<div code='".rawurlencode($data)."' class='rmenuitem' id='i".$chr."' nowrap onclick='menuClick(this); return false;' ondblclick='menuDblClick(this); return false;'>";
+				echo "&nbsp;&nbsp;";
+				echo $key;
+				echo "</div>";
+			}
+			?>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../js/browser.js?v=430"></script>
+	<script type="text/javascript" src="./utils.js?v=430"></script>
 </body>
