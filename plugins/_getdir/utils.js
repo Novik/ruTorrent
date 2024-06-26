@@ -15,10 +15,16 @@ function filterDir(e) {
 document.getElementById("dir-search-bar").addEventListener("keyup", filterDir);
 document.addEventListener("readystatechange", () => {
 	if (document.readyState === "complete") {
-		// A `setTimeout()` function is used here for browser compatability,
-		// as a plain `focus()` wouldn't work on FireFox.
-		setTimeout(() => {
-			document.getElementById("dir-search-bar").focus()
-		}, 100); 
+		const browser = new browserDetect();
+		if (browser.isFirefox) {
+			// A `setTimeout()` function is used here for browser compatability,
+			// as a plain `focus()` wouldn't work on FireFox.
+			setTimeout(() => {
+				document.getElementById("dir-search-bar").focus();
+			}, 100); 
+		} else {
+			// This has been tested on Chrome and MS Edge, both working fine.
+			document.getElementById("dir-search-bar").focus();
+		}
 	}
 });

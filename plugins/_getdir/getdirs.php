@@ -185,5 +185,6 @@ function menuDblClickAndExit(obj)
 			?>
 		</div>
 	</div>
+	<script type="text/javascript" src="../../js/browser.js?v=430"></script>
 	<script type="text/javascript" src="./utils.js?v=430"></script>
 </body>

@@ -13,7 +13,7 @@ body {background-color: window; color: windowtext; border: 0px; margin: 0px; pad
 }
 .search-bar {display: flex; flex-direction: row;}
 .search-bar input[type="text"] {flex-grow: 1;}
-.rmenuobj {margin-bottom: 5px; border-width: 0; overflow-y: auto;}
+.rmenuobj {margin-bottom: 5px; border-width: 0; overflow-y: auto; flex-grow: 1;}
 .rmenuitem { color: windowtext; }
 .rmenuitemselected { color: highlighttext; background-color: highlight; }
 
