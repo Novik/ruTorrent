@@ -102,7 +102,6 @@ Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; w
 Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 110px}
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
 Input.TextboxVShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 30px}
-input.textbox-grow {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; flex: 1;}
 button, input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0; cursor: pointer }
 button[disabled],input.Button[disabled] { opacity: 0.3; cursor: default }
 button:not([disabled]):hover, input.Button:not([disabled]):hover { background-color: #F5F5F5; }
@@ -300,7 +299,7 @@ div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
 #st_system .sthdr { padding-left: 8px }
 
 .ie fieldset {padding: 5px}
-.buttons-list {  margin-bottom: 5px }
+div.space {flex-grow: 1;}
 #servertime { text-align: center }
 #viewrows { text-align: center; }
 
@@ -334,6 +333,12 @@ div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
 div#tadd {max-width: 95vw;}
+.buttons-list {
+  margin: 0.5rem;
+  gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
@@ -344,6 +349,13 @@ div#tadd {max-width: 95vw;}
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
   div#tadd {max-width: 600px;}
+  .buttons-list {
+    margin: 1rem 0.5rem;
+    gap: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
 }
 
 /* Large devices (desktops, 992px and up) */
