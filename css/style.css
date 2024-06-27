@@ -334,7 +334,7 @@ div.space {flex-grow: 1;}
 /* Custom rules for medium devices */
 div#tadd {max-width: 95vw;}
 .buttons-list {
-  margin: 0 0.5rem 0.5rem 0.5rem;
+  margin: 0.5rem;
   gap: 0.25rem;
   display: flex;
   flex-direction: column;
@@ -350,7 +350,7 @@ div#tadd {max-width: 95vw;}
   /* Custom rules for medium devices */
   div#tadd {max-width: 600px;}
   .buttons-list {
-    margin: 0 0.5rem 0.5rem 0.5rem;
+    margin: 1rem 0.5rem;
     gap: 0.25rem;
     display: flex;
     flex-direction: row;

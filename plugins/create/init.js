@@ -236,7 +236,7 @@ plugin.onLangLoaded = function()
 		});
 		if(thePlugins.isInstalled("_getdir"))
 		{
-			plugin.btn = new theWebUI.rDirBrowser( 'tcreate', 'path_edit', 'browse_path', null, true, 300 );
+			plugin.btn = new theWebUI.rDirBrowser( 'tcreate', 'path_edit', 'browse_path', null, true, 375 );
 			theDialogManager.setHandler('tcreate','afterHide',function()
 			{
 				plugin.btn.hide();
