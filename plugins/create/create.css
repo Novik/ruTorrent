@@ -14,12 +14,25 @@ div#tcreate textarea {resize: none; height: 8rem;}
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
 div#tcreate {min-width: 90vw;}
+div#tcreate .buttons-list {
+  margin: 0.5rem;
+  gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
   /* Custom rules for small devices */
   div#tcreate {min-width: 518px;}
-  div#tcreate textarea {height: 16rem;}
+  div#tcreate textarea {resize: none; height: 16rem;}
+  div#tcreate .buttons-list {
+    margin: 1rem 0.5rem;
+    gap: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
 }
 
 /* Medium devices (tablets, 768px and up) */
