@@ -18,6 +18,7 @@
  theUILang.ratTrackerPublic	= "Alla torrentens trackers är offentliga";
  theUILang.ratTrackerPrivate	= "En av torrentens trackers är privat";
  theUILang.ratioThenLegend	= "Då";
+ theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
  theUILang.setRatioTo		= "Sätt ratio till";
  theUILang.setChannelTo		= "Sätt strypning till";
  theUILang.ratioNewRule		= "Ny regel";

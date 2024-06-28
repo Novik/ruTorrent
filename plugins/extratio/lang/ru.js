@@ -18,6 +18,7 @@
  theUILang.ratTrackerPublic	= "Все трекеры закачки публичные";
  theUILang.ratTrackerPrivate	= "Один из трекеров закачки частный";
  theUILang.ratioThenLegend	= "То";
+ theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
  theUILang.setRatioTo		= "Установить ratio";
  theUILang.setChannelTo		= "Установить канал";
  theUILang.ratioNewRule		= "Новое правило";

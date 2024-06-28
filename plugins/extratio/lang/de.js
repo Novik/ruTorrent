@@ -18,6 +18,7 @@
  theUILang.ratTrackerPublic	= "All torrent's trackers are public";
  theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
  theUILang.ratioThenLegend	= "Then";
+ theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
  theUILang.setRatioTo		= "Set ratio to";
  theUILang.setChannelTo		= "Set throttle to";
  theUILang.ratioNewRule		= "New rule";
