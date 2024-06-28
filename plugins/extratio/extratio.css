@@ -25,12 +25,12 @@ div#dlgEditRatioRules {max-width: 95vw;}
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
   /* Custom rules for small devices */
-  div#dlgEditRatioRules {min-width: 600px;}
 }
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
+  div#dlgEditRatioRules {min-width: 600px;}
 }
 
 /* Large devices (desktops, 992px and up) */
