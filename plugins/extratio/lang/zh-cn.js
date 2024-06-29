@@ -18,6 +18,7 @@
  theUILang.ratTrackerPublic	= "Torrent 的所有 trackers 是公共的";
  theUILang.ratTrackerPrivate	= "Torrent 的某个 tracker 是私有的";
  theUILang.ratioThenLegend	= "然后";
+ theUILang.ratShortcutLegend	= "键盘快捷方式";
  theUILang.setRatioTo		= "把分享率设为";
  theUILang.setChannelTo		= "把限制设为";
  theUILang.ratioNewRule		= "新规则";

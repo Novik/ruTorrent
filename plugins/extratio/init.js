@@ -303,47 +303,112 @@ plugin.onLangLoaded = function()
 {
 	this.registerTopMenu(7);
 	theDialogManager.make( "dlgEditRatioRules", theUILang.ratioRulesManager,
-		"<div class='fxcaret'>"+
-			"<div class='lfc_rru'>"+
-				"<div class='lf_rru' id='ratioRuleList'>"+
-					"<ul id='rlsul'></ul>"+
-				"</div>"+
-				"<div id='exratio_buttons1'>"+
-					"<input type='button' id='ratAddRule' class='Button' value='"+theUILang.ratAddRule+"' onclick='theWebUI.addNewRatioRule(); return(false);'/>"+
-					"<input type='button' id='ratDelRule' class='Button' value='"+theUILang.ratDelRule+"' onclick='theWebUI.deleteCurrentRatioRule(); return(false);'/>"+
-					"<input type='button' id='ratUpRule' class='Button' value='"+theUILang.ratUpRule+"' onclick='theWebUI.upRatioRule(); return(false);'/>"+
-					"<input type='button' id='ratDownRule' class='Button' value='"+theUILang.ratDownRule+"' onclick='theWebUI.downRatioRule(); return(false);'/>"+
-				"</div>"+
-			"</div>"+
-			"<div class='rf_rru'>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.ratioIfLegend+"</legend>"+
-					"<select id='ratio_reason'>"+
-						"<option value='0'>"+theUILang.ratLabelContain+"</option>"+
-						"<option value='1'>"+theUILang.ratTrackerContain+"</option>"+
-						"<option value='3'>"+theUILang.ratTrackerPublic+"</option>"+
-						"<option value='2'>"+theUILang.ratTrackerPrivate+"</option>"+
-					"</select><br/>"+
-					"<input type='text' id='ratio_pattern' class='TextboxLarge'/><br/>"+
-				"</fieldset>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.ratioThenLegend+"</legend>"+
-					"<table>"+
-						"<tr><td>"+theUILang.setRatioTo+"</td>"+
-						"<td><select id='dst_ratio'></select></td></tr>"+
-						"<tr><td>"+theUILang.setChannelTo+"</td>"+
-						"<td><select id='dst_throttle'></select></td></tr>"+
-					"</table>"+
-				"</fieldset>"+
-			"</div>"+
-		"</div>"+
-		"<div id='exratio_buttons2' class='aright buttons-list'>"+
-			"<input type='button' class='OK Button' value='"+theUILang.ok+"' onclick='theDialogManager.hide(\"dlgEditRatioRules\");theWebUI.setRatioRules();return(false);'/>"+
-			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
-		"</div>");
-  	$('#ratio_reason').on('change', function() 
-  	{ 
+		$("<div>").addClass("cont fxcaret").append(
+			$("<div>").addClass("row").append(
+				$("<div>").addClass("col-md-6 d-flex flex-column align-items-center").append(
+					$("<div>").attr({id: "ratioRuleList"}).addClass("flex-grow-1 align-self-stretch").append(
+						$("<ul>").attr({id: "rlsul"}),
+					),
+					$("<div>").attr({id: "exratio_buttons1"}).addClass("buttons-group-row").append(
+						...[
+							["ratAddRule", theUILang.ratAddRule, "addNewRatioRule"],
+							["ratDelRule", theUILang.ratDelRule, "deleteCurrentRatioRule"],
+							["ratUpRule", theUILang.ratUpRule, "upRatioRule"],
+							["ratDownRule", theUILang.ratDownRule, "downRatioRule"],
+						].map(([id, value, onclick]) => $("<input>").attr(
+							{type: "button", id: id, onclick: "theWebUI." + onclick + "(); return(false);"}
+						).addClass("Button").val(value)),
+					),
+				),
+				$("<div>").addClass("col-md-6").append(
+					$("<fieldset>").append(
+						$("<legend>").text(theUILang.ratioIfLegend),
+						$("<div>").addClass("d-flex flex-row").append(
+							$("<select>").attr({id: "ratio_reason"}).addClass("flex-grow-1").append(
+								...[
+									theUILang.ratLabelContain, 
+									theUILang.ratTrackerContain, 
+									theUILang.ratTrackerPublic, 
+									theUILang.ratTrackerPrivate,
+								].map((val, index) => $("<option>").attr({value: index}).text(val)),
+							),
+						),
+						$("<div>").addClass("d-flex flex-row").append(
+							$("<input>").attr({type: "text", id: "ratio_pattern"}).addClass("flex-grow-1"),
+						),
+					),
+					$("<fieldset>").append(
+						$("<legend>").text(theUILang.ratioThenLegend),
+						$("<div>").addClass("row align-items-center").append(
+							$("<div>").addClass("col-md-6 d-flex justify-content-md-end").append(
+								$("<label>").attr({for: "dst_ratio"}).text(theUILang.setRatioTo),
+							),
+							$("<div>").addClass("col-md-6 d-flex").append(
+								$("<select>").attr({id: "dst_ratio"}).addClass("flex-grow-1"),
+							),
+						),
+						$("<div>").addClass("row align-items-center").append(
+							$("<div>").addClass("col-md-6 d-flex justify-content-md-end").append(
+								$("<label>").attr({for: "dst_throttle"}).text(theUILang.setChannelTo),
+							),
+							$("<div>").addClass("col-md-6 d-flex").append(
+								$("<select>").attr({id: "dst_throttle"}).addClass("flex-grow-1"),
+							),
+						),
+					),
+					$("<fieldset>").append(
+						$("<legend>").text(theUILang.ratShortcutLegend),
+						$("<div>").addClass("row").append(
+							$("<div>").addClass("col-4").append(
+								$("<kbd>").text("Alt"),
+								$("<span>").text(" + "),
+								$("<kbd>").text("↑"),
+							),
+							$("<div>").addClass("col-8").append(
+								$("<span>").text(theUILang.ratUpRule),
+							),
+						),
+						$("<div>").addClass("row").append(
+							$("<div>").addClass("col-4").append(
+								$("<kbd>").text("Alt"),
+								$("<span>").text(" + "),
+								$("<kbd>").text("↓"),
+							),
+							$("<div>").addClass("col-8").append(
+								$("<span>").text(theUILang.ratDownRule),
+							),
+						),
+					),
+				),
+			),
+		)[0].outerHTML +
+		$("<div>").addClass("buttons-list").append(
+			$("<input>").attr(
+				{type: "button", onclick: "theDialogManager.hide(\"dlgEditRatioRules\");theWebUI.setRatioRules();return(false);"}
+			).addClass("OK Button").val(theUILang.ok),
+			$("<input>").attr({type: "button"}).addClass("Cancel Button").val(theUILang.Cancel),
+		)[0].outerHTML
+	);
+	$('#ratio_reason').on('change', function() { 
 		$('#ratio_pattern').css("visibility", iv($(this).val())>1 ? "hidden" : "visible");
+	});
+	$("#dlgEditRatioRules").on("keyup", (e) => {
+		if (e.altKey) {
+			switch (e.which) {
+				case 38: // Alt+ArrowUp
+				{
+					theWebUI.upRatioRule();
+					$("#dlgEditRatioRules").focus();
+					break;
+				}
+				case 40: // Alt+ArrowDown
+				{
+					theWebUI.downRatioRule();
+					$("#dlgEditRatioRules").focus();
+					break;
+				}
+			}
+		}
 	});
 };
 

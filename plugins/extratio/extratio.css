@@ -1,30 +1,62 @@
-div#dlgEditRatioRules {width: 610px; height: 300px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
+div#dlgEditRatioRules {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
 div#dlgEditRatioRules div.dlg-header {background-image: url(../../images/settings.gif)}
+div#dlgEditRatioRules .container {margin: 0.25rem; padding: 0; width: auto;}
+div#dlgEditRatioRules .row {margin: 0 0 0.25rem 0; padding: 0;}
+div#dlgEditRatioRules .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
+div#dlgEditRatioRules fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem 0.5rem;}
 
-.lfc_rru {float: left; }
-.lf_rru {width: 245px; height: 200px; margin: 5px; margin-right: 0; padding: 5px; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
-.lf_rru ul {width: 100%; margin: 2px; padding: 0; list-style-position: inside; list-style: none; white-space: nowrap}
-.lf_rru li input { margin: 0 5px 0 0; padding: 4px; } 
-.lf_rru li {margin: 0 ; padding: 0}
-.lf_rru li input.TextboxFocus { width: 85%; background-color: #CFDEEF; }
-.lf_rru li input.TextboxNormal { width: 85%; background-color: #FFFFFF }
-.lf_rru li input { border: 0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: default; font-weight: bold; }
+ul#rlsul {margin: 0.25rem; padding: 0.25rem; list-style: none; white-space: nowrap;}
+ul#rlsul > li {margin: 0.2rem 0; display: flex; flex-direction: row;}
+ul#rlsul > li input[type="text"] {border: solid 1px #000000; border-radius: 3px; flex-grow: 1;}
+ul#rlsul > li input.TextboxFocus {background-color: #CFDEEF; }
+ul#rlsul > li input.TextboxNormal {background-color: #FFFFFF }
 
-div#exratio_buttons1 {padding-top: 5px; padding-left: 3px; width: 260px; text-align:center}
+#exratio_buttons1 input.Button {width: 57px;}
 
-.rf_rru fieldset {margin: 3px; }
-.rf_rru {float: right; margin: 4px; background-color: #FAFAFA}
-.rf_rru label {width: 75px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
-.rf_rru br {clear: left; line-height: 0}
-.rf_rru select {width: 200px; margin: 3px; }
-.rf_rru input.TextboxLarge {margin: 3px; width: 300px;}
-.rf_rru input.Button {margin: 3px}
-#ratio_reason {width: 305px; margin: 3px; }
+/* Custom break point settings for responsiveness */
 
-#exratio_buttons1 input.Button {width: 57px}
+/* X-Small devices (portrait phones, less than 576px) */
+/* No media query for `xs` since this is the default in Bootstrap */
+/* Custom rules for medium devices */
+div#dlgEditRatioRules {max-width: 95vw;}
+div#dlgEditRatioRules .buttons-list {
+  margin: 0.5rem 0.25rem;
+  gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+}
+div#ratioRuleList {border: solid 1px #A0A0A0; border-radius: 3px; height: 120px; overflow-y: auto;}
 
-div#exratio_buttons2 {clear: both}
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+  /* Custom rules for small devices */
+}
 
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#dlgEditRatioRules {min-width: 600px;}
+  div#dlgEditRatioRules .buttons-list {
+    margin: 1rem 0.5rem;
+    gap: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
+  div#ratioRuleList {border: solid 1px #A0A0A0; border-radius: 3px; height: 260px; overflow-y: auto;}
+}
 
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  /* Custom rules for large devices */
+}
 
+/* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+  /* Custom rules for x-large devices */
+}
 
+/* XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) { 
+  /* Custom rules for xx-large devices */
+}

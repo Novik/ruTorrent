@@ -18,7 +18,8 @@ theUILang.ratTrackerContain    = "A torrent egyik tracker URL-je tartalmazza";
 theUILang.ratTrackerPublic = "A torrent tracker nyilvános(public)";
 theUILang.ratTrackerPrivate    = "A torrent tracker privát";
 theUILang.ratioThenLegend   = "Akkor";
-theUILang.setRatioTo       = "Állítsa be az arányt";
+theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
+ theUILang.setRatioTo       = "Állítsa be az arányt";
 theUILang.setChannelTo     = "Csatorna";
 theUILang.ratioNewRule     = "Új szabály";
 

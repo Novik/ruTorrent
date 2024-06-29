@@ -18,6 +18,7 @@
  theUILang.ratTrackerPublic	= "Усі трекери завантаження публічні";
  theUILang.ratTrackerPrivate	= "Один із трекерів завантаження приватний";
  theUILang.ratioThenLegend	= "То";
+ theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
  theUILang.setRatioTo		= "Установити коефіцієнт";
  theUILang.setChannelTo		= "Установити канал";
  theUILang.ratioNewRule		= "Нове правило";
