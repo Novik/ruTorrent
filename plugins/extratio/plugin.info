@@ -2,7 +2,7 @@ plugin.description: This plugin extends the functionality of the ratio plugin.
 plugin.author: Novik
 plugin.runlevel: 12
 plugin.version: 4.3
-plugin.dependencies: ratio,throttle
+plugin.dependencies: ratio
 php.extensions.error: json
 rtorrent.version: 0.8.6
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginExtRatio
