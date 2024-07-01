@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.mnu_create			= "Новый торрент...";
+ theUILang.mnu_create			= "Новый торрент";
  theUILang.CreateNewTorrent		= "Новый торрент";
  theUILang.SelectSource			= "Выбор источника";
  theUILang.TorrentProperties		= "Настройка торрента";

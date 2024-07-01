@@ -1,3 +1,5 @@
+div#mnu_rss input {background: url(../../images/toolbar.png); background-position-x: -240px;}
+
 div#RSSList {border: 1px solid var(--menu-border-color); background-color: var(--menu-background-color); overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
 
 div#dlgAddRSS {width: 355px; height: 132px}

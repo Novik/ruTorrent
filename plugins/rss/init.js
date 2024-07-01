@@ -1318,7 +1318,7 @@ plugin.correctFilterDialog = function()
 
 plugin.onLangLoaded = function()
 {
-        this.addButtonToToolbar("rss",theUILang.mnu_rss,"theWebUI.showRSS()","settings");
+	this.addButtonToToolbar("mnu_rss",theUILang.mnu_rss,theWebUI.showRSS,"mnu_settings");
 
 	plugin.addPaneToCategory(
 		"prss",

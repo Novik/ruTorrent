@@ -126,9 +126,9 @@ plugin.onLangLoaded = function()
 		theWebUI.request('?action=rtget',[plugin.getRecentTrackers, plugin]);
 		$('#tsk_btns').prepend(
 			"<input type='button' class='Button' id='xcsave' value='"+theUILang.torrentSave+"'>"
-			 );
-		plugin.addButtonToToolbar("create",theUILang.mnu_create,"theWebUI.showCreate()","remove");
-		plugin.addSeparatorToToolbar("remove");
+		);
+		plugin.addButtonToToolbar("mnu_create",theUILang.mnu_create,theWebUI.showCreate,"mnu_remove");
+		plugin.addSeparatorToToolbar("mnu_remove");
 		var pieceSize = $("<div>").addClass("row").append(
 			$("<div>").addClass("col-md-2").append(
 				$("<label>").attr({for: "piece_size", name: "lbl_piece_size", id: "lbl_piece_size"}).text(theUILang.PieceSize + ": "),

@@ -101,8 +101,14 @@ var thePlugins =
 	{
 		this.topMenu.push( { "name": plg.name, "weight": weight } );
 		this.topMenu.sort( function(a,b) { return(a.weight-b.weight); } );
-	}
+	},
 
+	registerDropdownMenu: function(plg, weight)
+	{
+		$("#mnu_plugins").append(
+			$("<div>").addClass("dropdown-menu"),
+		);
+	},
 };
 
 function rPlugin( name, version, author, descr, restictions, help )
@@ -328,33 +334,26 @@ rPlugin.prototype.removePageFromTabs = function(id)
 
 rPlugin.prototype.registerTopMenu = function(weight)
 {
-        if(this.canChangeToolbar())
-        {
-        	if( !$$("mnu_plugins") )
-        		this.addButtonToToolbar("plugins",theUILang.Plugins+"...","theWebUI.showPluginsMenu()","help");
-		thePlugins.registerTopMenu( this, weight );
+	if(this.canChangeToolbar())
+	{
+		if( !$$("mnu_plugins") )
+		{
+			this.addButtonToToolbar("mnu_plugins", theUILang.Plugins, theWebUI.showPluginsMenu, "mnu_help");
+		}
+		thePlugins.registerTopMenu(this, weight);
 	}
 	return(this);
 }
 
 rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 {
-        if(this.canChangeToolbar())
-        {
-		var newBtn = document.createElement("A");
-		newBtn.id="mnu_"+id;
-		newBtn.href='javascript://void();';
-		newBtn.title=name;
-		newBtn.innerHTML='<div class="top-menu-item" id="'+id+'" onclick="'+onclick+';return(false);"></div>';
-		$(newBtn).addClass('top-menu-item').on('focus', function(e) { this.blur(); } );
-		var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;
-		if(targetBtn)
-			targetBtn.parentNode.insertBefore(newBtn,targetBtn);
-		else
-		{
-			targetBtn = $$("mnu_settings");
-			targetBtn.parentNode.appendChild(newBtn);
-		}
+	if(this.canChangeToolbar())
+	{
+		const btn = $("<div>").attr({id: id, title: name + "..."}).addClass("top-menu-item").append(
+			$("<input>").attr({type: "button"}).on("click", onclick),
+		);
+		const beforeBtn = $("#" + idBefore);
+		(beforeBtn && beforeBtn.length > 0) ? btn.insertBefore(beforeBtn) : btn.insertBefore($("mnu_settings"));
 	}
 	return(this);
 }
@@ -366,18 +365,13 @@ rPlugin.prototype.removeButtonFromToolbar = function(id)
 
 rPlugin.prototype.addSeparatorToToolbar = function(idBefore)
 {
-        if(this.canChangeToolbar())
-        {
-	        var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;
-		var sep = document.createElement("DIV");
-		sep.className = "TB_Separator";
-		if(targetBtn)
-			targetBtn.parentNode.insertBefore(sep,targetBtn);
-		else
-		{
-	        	targetBtn = $$("mnu_settings");
-			targetBtn.parentNode.appendChild(sep);
+	if(this.canChangeToolbar())
+	{
+		const targetBtn = $("#" + idBefore);
+		if (targetBtn.prev().hasClass("separator")) {
+			return(this);
 		}
+		$("<div>").addClass("separator").insertBefore(targetBtn);
 	}
 	return(this);
 }

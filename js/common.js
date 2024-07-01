@@ -746,9 +746,9 @@ var theSearchEngines =
 			theContextMenu.add([CMENU_SEL, theUILang.innerSearch, "theSearchEngines.set(-1)"]);
 		else
 			theContextMenu.add([theUILang.innerSearch, "theSearchEngines.set(-1)"]);
-		var offs = $("#search").offset();
-		theContextMenu.show(offs.left-5,offs.top+5+$("#search").height());
-        }
+		var offs = $("#mnu_search").offset();
+		theContextMenu.show(offs.left-5,offs.top+5+$("#mnu_search").height());
+	}
 };
 
 var Timer = function()

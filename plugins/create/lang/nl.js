@@ -6,7 +6,7 @@
  * Author: rascalli (rascallim@gmail.com)
  */
 
- theUILang.mnu_create			= "Maak torrent...";
+ theUILang.mnu_create			= "Maak torrent";
  theUILang.CreateNewTorrent		= "Maak Torrent";
  theUILang.SelectSource			= "Selecteer Folder/Bestand";
  theUILang.TorrentProperties		= "Torrent Eigenschappen";

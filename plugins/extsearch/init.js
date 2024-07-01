@@ -118,8 +118,8 @@ theSearchEngines.show = function()
 			theContextMenu.add([CMENU_SEL, theUILang.innerSearch, "theSearchEngines.set(-1)"]);
 		else
 			theContextMenu.add([theUILang.innerSearch, "theSearchEngines.set(-1)"]);
-		var offs = $("#search").offset();
-		theContextMenu.show(offs.left-5,offs.top+5+$("#search").height());
+		var offs = $("#mnu_search").offset();
+		theContextMenu.show(offs.left-5,offs.top+5+$("#mnu_search").height());
 	}
 	else
 		plugin.sitesShow.call(theSearchEngines);
@@ -862,9 +862,9 @@ plugin.onLangLoaded = function()
 		$(".seng_private").hide();
 		$('#cont_'+$(this).val()).show();
 	});
-	var td = $$('rrow').insertCell(2);
-	s ="<select id='exscategory' title='"+theUILang.excat+"'></select>";
-	$(td).prop("id","exscat").html(s); 
+	$("<div>").attr({id: "exscat"}).append(
+		$("<select>").attr({id: "exscategory", title: theUILang.excat}),
+	).insertBefore($("#mnu_go"));
 	plugin.markLoaded();
 	theSearchEngines.checkForIncorrectCurrent(true);
 	if(thePlugins.isInstalled('search'))

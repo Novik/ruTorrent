@@ -6,7 +6,7 @@
  * Author: Selim Şumlu
  */
 
- theUILang.mnu_create			= "Torrent oluştur...";
+ theUILang.mnu_create			= "Torrent oluştur";
  theUILang.CreateNewTorrent		= "Yeni Torrent Oluştur";
  theUILang.SelectSource			= "Kaynağı seçin";
  theUILang.TorrentProperties		= "Torrent Özellikleri";

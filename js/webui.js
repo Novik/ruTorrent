@@ -571,8 +571,8 @@ var theWebUI =
 		theContextMenu.clear();
 		for( var item in thePlugins.topMenu )
 			thePlugins.get(thePlugins.topMenu[item].name).createPluginMenu();
-        	var offs = $("#plugins").offset();
-		theContextMenu.show(offs.left-5,offs.top+5+$("#plugins").height());
+		var offs = $("#mnu_plugins").offset();
+		theContextMenu.show(offs.left-5,offs.top+5+$("#mnu_plugins").height());
 	},
 
 	plgSelect: function(e, id)
