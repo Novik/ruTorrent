@@ -32,6 +32,10 @@ function makeContent()
 		).on("click", onclick);
 	});
 
+	$("#toggle-top-menu").on("click", () => {
+		$(".top-menu").toggleClass("d-none d-flex");
+	});
+
 	$("#query").on('keydown', function(e)
 	{
 		if(e.keyCode == 13)
