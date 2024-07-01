@@ -226,6 +226,7 @@ rTorrentStub.prototype.setratiorules = function()
 {
 	this.content = "mode=setrules";
 	plugin.storeRuleParams();
+	const thrtlInstalled = thePlugins.isInstalled("throttle");
 	for(var i=0; i<plugin.rules.length; i++)
 	{
 		var rle = plugin.rules[i];
@@ -234,9 +235,7 @@ rTorrentStub.prototype.setratiorules = function()
 		this.content += "&name="+encodeURIComponent(name) + "&pattern=" + encodeURIComponent(rle.pattern) + 
 			"&enabled=" + enabled + "&reason=" + rle.reason + 
 			"&ratio=" + rle.ratio + "&no="+rle.no;
-		if (thePlugins.isInstalled("throttle")) {
-			this.content += "&channel=" + rle.channel;
-		}
+		thrtlInstalled && (this.content += "&channel=" + rle.channel);
 	}
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/extratio/action.php";
