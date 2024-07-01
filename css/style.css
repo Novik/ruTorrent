@@ -71,28 +71,22 @@ span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
 
 div#t {
   height: 36px;
-  padding: 0 0.5rem;
   background: #F0F0F0 url(../images/t_bg.png) repeat-x center center;
   border-bottom: 1px solid #D0D0D0;
   white-space: nowrap;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  align-items: center;
 }
-div#t .separator {
-  width: 1px;
-  padding: 0;
-  margin: 0.75rem 0;
-  border: 0;
-  background-color: #A0A0A0;
-  align-self: stretch;
+div#t.container-fluid {
+  gap: 0.5rem;
+  width: auto;
+}
+div#t div.top-menu {
+  gap: 0.5rem;
 }
 div#t > div.top-menu-item {
   padding: 0;
   margin: 0;
 }
-div.top-menu-item > input[type="button"] {
+div#t button, div.top-menu-item > input[type="button"] {
   width: 24px;
   height: 24px;
   padding: 1px;
@@ -333,12 +327,6 @@ div.space {flex-grow: 1;}
 
 #bf {white-space:pre}
 
-@media only screen and (orientation:portrait) 
-{ 
-	#go { display: none }
-	#query { width: 80px }
-}
-
 @media only screen and (min-width: 1280px) {
   .desktop { display: inline-block; }
 }
@@ -360,6 +348,25 @@ div.space {flex-grow: 1;}
 /* X-Small devices (portrait phones, less than 576px) */
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
+div.top-menu {
+  background-color: #F0F0F0;
+  z-index: 100;
+  padding: 1rem;
+  border: solid 1px #A0A0A0;
+  border-radius: 3px;
+  position: absolute;
+  top: 36px;
+  left: 0;
+  width: calc(100vw - 2rem - 2px);
+}
+div#t .separator {
+  width: auto;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  background-color: #A0A0A0;
+  align-self: stretch;
+}
 div#tadd {max-width: 95vw;}
 div#tadd .buttons-list {
   margin: 0.5rem;
@@ -376,6 +383,17 @@ div#tadd .buttons-list {
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
+  div.top-menu {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    position: static;
+    width: auto;
+  }
+  div#t .separator {
+    width: 1px;
+    height: auto;
+  }  
   div#tadd {min-width: 600px;}
   div#tadd .buttons-list {
     margin: 1rem 0.5rem;

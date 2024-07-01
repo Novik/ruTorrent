@@ -15,6 +15,10 @@ function makeContent()
 		$("#mnu_" + ele).attr("title", theUILang["mnu_" + ele] + "...");
 	});
 
+	$("#toggle-top-menu").on("click", () => {
+		$(".top-menu").toggleClass("d-none d-flex");
+	});
+
 	$("#query").on('keydown', function(e)
 	{
 		if(e.keyCode == 13)

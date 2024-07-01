@@ -862,9 +862,7 @@ plugin.onLangLoaded = function()
 		$(".seng_private").hide();
 		$('#cont_'+$(this).val()).show();
 	});
-	$("<div>").attr({id: "exscat"}).append(
-		$("<select>").attr({id: "exscategory", title: theUILang.excat}),
-	).insertBefore($("#mnu_go"));
+	$("<select>").attr({id: "exscategory", title: theUILang.excat}).addClass("flex-grow-1").insertBefore($("#mnu_go")),
 	plugin.markLoaded();
 	theSearchEngines.checkForIncorrectCurrent(true);
 	if(thePlugins.isInstalled('search'))
@@ -882,5 +880,5 @@ plugin.onRemove = function()
 	plugin.tegs = {};
 	$("#TegList").remove();
 	this.removePageFromOptions("st_extsearch");
-	$("#exscat").remove();
+	$("#exscategory").remove();
 }

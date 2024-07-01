@@ -68,43 +68,50 @@
 		<div id="rs"></div>
 		<div id="sel"></div>
 		<div id="sc"></div>
-		<div id="t">
-			<div id="mnu_add" class="top-menu-item" onclick="theWebUI.showAdd(); return(false);" >
-				<input type="button" />
-			</div>
-			<div class="separator"></div>
-			<div id="mnu_remove" class="top-menu-item" onclick="theWebUI.removeTorrent(); return(false);" >
-				<input type="button" />
-			</div>
-			<div class="separator"></div>
-			<div id="mnu_start" class="top-menu-item" onclick="theWebUI.start(); return(false);" >
-				<input type="button" />
-			</div>
-			<div id="mnu_pause" class="top-menu-item" onclick="theWebUI.pause(); return(false);" >
-				<input type="button" />
-			</div>
-			<div id="mnu_stop" class="top-menu-item" onclick="theWebUI.stop(); return(false);" >
-				<input type="button" />
-			</div>
-			<div class="separator"></div>
-			<div id="mnu_settings" class="top-menu-item" onclick="theWebUI.showSettings(); return(false);" >
-				<input type="button" />
-			</div>
-			<div class="separator"></div>
-			<div id="mnu_help" class="top-menu-item" onclick="theDialogManager.toggle('dlgHelp'); return(false);" >
-				<input type="button" />
-			</div>
-			<div class="space"></div>
-			<div id="mnu_search" class="top-menu-item" onclick="theSearchEngines.show(); return(false);" >
-				<input type="button" />
-			</div>
-			<div id="mnu_search_input" class="top-menu-item">
-				<input type="text" id="query" onfocus="$('#sc').hide();" />
-			</div>
-			<div id="mnu_go" class="top-menu-item" onclick="theSearchEngines.run(); return(false);" >
-				<input type="button" />
+		<div id="t" class="container-fluid d-flex justify-content-end align-items-center">
+			<div class="top-menu d-none d-md-flex flex-column flex-md-row flex-grow-1 align-self-start align-self-md-center">
+				<div id="mnu_add" class="top-menu-item" onclick="theWebUI.showAdd(); return(false);" >
+					<input type="button" />
+				</div>
+				<div class="separator"></div>
+				<div id="mnu_remove" class="top-menu-item" onclick="theWebUI.removeTorrent(); return(false);" >
+					<input type="button" />
+				</div>
+				<div class="separator"></div>
+				<div id="mnu_start" class="top-menu-item" onclick="theWebUI.start(); return(false);" >
+					<input type="button" />
+				</div>
+				<div id="mnu_pause" class="top-menu-item" onclick="theWebUI.pause(); return(false);" >
+					<input type="button" />
+				</div>
+				<div id="mnu_stop" class="top-menu-item" onclick="theWebUI.stop(); return(false);" >
+					<input type="button" />
+				</div>
+				<div class="separator"></div>
+				<div id="mnu_settings" class="top-menu-item" onclick="theWebUI.showSettings(); return(false);" >
+					<input type="button" />
+				</div>
+				<div class="separator"></div>
+				<div id="mnu_help" class="top-menu-item" onclick="theDialogManager.toggle('dlgHelp'); return(false);" >
+					<input type="button" />
+				</div>
+				<div class="space"></div>
+				<div class="d-flex flex-row align-items-center">
+					<div id="mnu_search" class="top-menu-item" onclick="theSearchEngines.show(); return(false);" >
+						<input type="button" />
+					</div>
+					<input type="text" id="query" class="top-menu-item flex-grow-1" onfocus="$('#sc').hide();" />
+					<div id="mnu_go" class="top-menu-item" onclick="theSearchEngines.run(); return(false);" >
+						<input type="button" />
+					</div>
+				</div>
 			</div>
 			<div id="ind"></div>
+			<button id="toggle-top-menu" class="d-block d-md-none">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+					<path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+				</svg>
+			</button>
 		</div>
 		<table id="maincont" cellpadding="0" cellspacing="0" summary="layout table">
 			<tr>
