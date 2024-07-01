@@ -349,9 +349,12 @@ rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 {
 	if(this.canChangeToolbar())
 	{
-		const btn = $("<div>").attr({id: id, title: name + "..."}).addClass("top-menu-item").append(
-			$("<input>").attr({type: "button"}).on("click", onclick),
-		);
+		const btn = $("<div>").attr(
+			{id: id, title: name + "..."}
+		).addClass("top-menu-item d-flex flex-row align-items-center").append(
+			$("<input>").attr({type: "button"}),
+			$("<span>").addClass("mx-3 d-inline d-md-none").text(name),
+		).on("click", onclick);
 		const beforeBtn = $("#" + idBefore);
 		(beforeBtn && beforeBtn.length > 0) ? btn.insertBefore(beforeBtn) : btn.insertBefore($("mnu_settings"));
 	}

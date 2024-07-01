@@ -86,6 +86,7 @@ div#t > div.top-menu-item {
   padding: 0;
   margin: 0;
 }
+div.top-menu-item span {font-size: 20px;}
 div#t button, div.top-menu-item > input[type="button"] {
   width: 24px;
   height: 24px;
@@ -103,6 +104,7 @@ div.top-menu-item:hover {
   border-radius: 5px;
   background: transparent url(../images/tb_bg.gif) no-repeat scroll center center;
 }
+div#search-field {gap: 0.5rem;}
 
 div#mnu_add input {background-image: url(../images/toolbar.png); background-position-x: -24px;}
 div#mnu_remove input {background-image: url(../images/toolbar.png); background-position-x: -72px;}

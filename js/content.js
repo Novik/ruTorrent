@@ -9,10 +9,23 @@ function makeContent()
 	$("#st_down").mouseclick(theWebUI.downRateMenu);
 
 	[
-		"add", "remove", "start", "pause", "stop", 
-		"settings", "help", "search", "go",
+		"search", "go",
 	].forEach(ele => {
 		$("#mnu_" + ele).attr("title", theUILang["mnu_" + ele] + "...");
+	});
+
+	[
+		["add", theWebUI.showAdd],
+		["remove", theWebUI.removeTorrent],
+		["start", theWebUI.start],
+		["pause", theWebUI.pause],
+		["stop", theWebUI.stop],
+		["settings", () => theWebUI.showSettings()],
+		["help", () => theDialogManager.toggle('dlgHelp')],
+	].forEach(([id, onclick]) => {
+		$("#mnu_" + id).attr("title", theUILang["mnu_" + id] + "...").addClass("d-flex flex-row align-items-center").append(
+			$("<span>").addClass("mx-3 d-inline d-md-none").text(theUILang["mnu_" + id]),
+		).on("click", onclick);
 	});
 
 	$("#toggle-top-menu").on("click", () => {
