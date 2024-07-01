@@ -50,19 +50,27 @@ plugin.loadRules = function( rle )
 	if(fltThrottle.length)
 	{
 		$('#dst_throttle option').remove();
-		fltThrottle.append("<option value=''>"+theUILang.dontSet+"</option>");
+		fltThrottle.append(
+			$("<option>").val("").text(theUILang.dontSet),
+		);
 		for(var i=0; i<theWebUI.maxThrottle; i++)
 			if(theWebUI.isCorrectThrottle(i))
-				fltThrottle.append("<option value='thr_"+i+"'>"+theWebUI.throttles[i].name+"</option>");
+				fltThrottle.append(
+					$("<option>").val("thr_" + i).text(theWebUI.throttles[i].name),
+				);
 	}
 	var fltRatio = $('#dst_ratio');
 	if(fltRatio.length)
 	{
 		$('#dst_ratio option').remove();
-		fltRatio.append("<option value=''>"+theUILang.dontSet+"</option>");
+		fltRatio.append(
+			$("<option>").val("").text(theUILang.dontSet),
+		);
 		for(var i=0; i<theWebUI.maxRatio; i++)
 			if(theWebUI.isCorrectRatio(i))
-				fltRatio.append("<option value='rat_"+i+"'>"+theWebUI.ratios[i].name+"</option>");
+				fltRatio.append(
+					$("<option>").val("rat_" + i).text(theWebUI.ratios[i].name),
+				);
 	}
 	plugin.curRule = null;
 	var list = $("#rlsul");
@@ -74,10 +82,14 @@ plugin.loadRules = function( rle )
 		var f = plugin.rules[i];
 		if(plugin.maxRuleNo<f.no)
 			plugin.maxRuleNo = f.no;
-		list.append( $("<li>").html("<input type='checkbox' id='_rre"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectRatioRule(this);\" id='_rrn"+i+"'/>"));
-		$("#_rrn"+i).val(f.name);
-		if(f.enabled)
-			$("#_rre"+i).prop("checked",true);
+		list.append(
+			$("<li>").append(
+				$("<input>").attr({type: "checkbox", id: "_rre" + i}).prop("checked", f.enabled),
+				$("<input>").attr(
+					{type: "text", id: "_rrn" + i, onfocus: "theWebUI.selectRatioRule(this);"}
+				).addClass("TextboxNormal").val(f.name),
+			),
+		);
 	}
 	for(var i=0; i<plugin.rules.length; i++)
 	{
@@ -214,15 +226,16 @@ rTorrentStub.prototype.setratiorules = function()
 {
 	this.content = "mode=setrules";
 	plugin.storeRuleParams();
+	const thrtlInstalled = thePlugins.isInstalled("throttle");
 	for(var i=0; i<plugin.rules.length; i++)
 	{
 		var rle = plugin.rules[i];
 		var enabled = $("#_rre"+i).prop("checked") ? 1 : 0;
 		var name = $("#_rrn"+i).val();
-		this.content = this.content+"&name="+encodeURIComponent(name)+"&pattern="+encodeURIComponent(rle.pattern)+"&enabled="+enabled+
-		        "&reason="+rle.reason+
-			"&channel="+rle.channel+"&ratio="+rle.ratio+
-			"&no="+rle.no;
+		this.content += "&name="+encodeURIComponent(name) + "&pattern=" + encodeURIComponent(rle.pattern) + 
+			"&enabled=" + enabled + "&reason=" + rle.reason + 
+			"&ratio=" + rle.ratio + "&no="+rle.no;
+		thrtlInstalled && (this.content += "&channel=" + rle.channel);
 	}
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/extratio/action.php";
@@ -347,7 +360,7 @@ plugin.onLangLoaded = function()
 								$("<select>").attr({id: "dst_ratio"}).addClass("flex-grow-1"),
 							),
 						),
-						$("<div>").addClass("row align-items-center").append(
+						thePlugins.isInstalled("throttle") && $("<div>").addClass("row align-items-center").append(
 							$("<div>").addClass("col-md-6 d-flex justify-content-md-end").append(
 								$("<label>").attr({for: "dst_throttle"}).text(theUILang.setChannelTo),
 							),
