@@ -75,13 +75,6 @@ div#t {
   border-bottom: 1px solid #D0D0D0;
   white-space: nowrap;
 }
-div#t.container-fluid {
-  gap: 0.5rem;
-  width: auto;
-}
-div#t div.top-menu {
-  gap: 0.5rem;
-}
 div#t > div.top-menu-item {
   padding: 0;
   margin: 0;
@@ -104,7 +97,6 @@ div.top-menu-item:hover {
   border-radius: 5px;
   background: transparent url(../images/tb_bg.gif) no-repeat scroll center center;
 }
-div#search-field {gap: 0.5rem;}
 
 div#mnu_add input {background-image: url(../images/toolbar.png); background-position-x: -24px;}
 div#mnu_remove input {background-image: url(../images/toolbar.png); background-position-x: -72px;}
@@ -353,7 +345,6 @@ div.space {flex-grow: 1;}
 div.top-menu {
   background-color: #F0F0F0;
   z-index: 100;
-  padding: 1rem;
   border: solid 1px #A0A0A0;
   border-radius: 3px;
   position: absolute;
@@ -387,10 +378,8 @@ div#tadd .buttons-list {
   /* Custom rules for medium devices */
   div.top-menu {
     background-color: transparent;
-    padding: 0;
     border: none;
     position: static;
-    width: auto;
   }
   div#t .separator {
     width: 1px;
