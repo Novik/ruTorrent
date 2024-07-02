@@ -121,10 +121,20 @@ button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
 
 select {margin-top: 5px}
 a {color: #686868}
-table#maincont {margin: 5px 0 0 0;}
-table#maincont td.uicell {vertical-align: top; padding: 0 }
+div#maincont {height: calc(100vh - 36px - 5px - 25px);}
 
-#CatList { display: block; margin: 0; padding: 0; width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden; min-width: 160px; }
+#CatList {
+  display: block;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  border: 1px solid #A0A0A0;
+  background-color: #FFFFFF;
+  overflow: hidden auto;
+}
+#cat-division {
+  min-width: 180px;
+}
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
 .Status_Down {background-position: 0px 0px}
@@ -141,9 +151,9 @@ table#maincont td.uicell {vertical-align: top; padding: 0 }
 .Status_Checking {background-position: 0px -176px}
 .Status_RSS {background-position: 0px -208px}
 
-div#HDivider, div#VDivider { font-size: 0; }
-div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize; }
-div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
+div#HDivider, div#VDivider {font-size: 0; align-self: stretch;}
+div#HDivider { width: 5px; cursor: e-resize; }
+div#VDivider { height: 5px; cursor: n-resize; }
 div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
 
 div#stg {width: 600px; height: 560px; position: absolute; left: 0px; top: 50px; display: none; overflow: visible}

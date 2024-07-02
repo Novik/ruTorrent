@@ -342,7 +342,7 @@ var theWebUI =
 		};
 
 		$(document).on( browser.isOpera ? 'keypress' : 'keydown', keyEvent);
-		$("#toggle-top-menu").on("click", this.toggleTopMenu);
+		$("#toggle-top-menu").on("click", this.toggleTopMenu).on("touchend", this.toggleTopMenu);
 	},
 
 	updateServerTime: function()
@@ -2270,16 +2270,11 @@ var theWebUI =
 		return(false);
 	},
 
-	resizeLeft: function( w, h )
+	resizeLeft: function(w)
 	{
-	        if(w!==null)
-	        {
-			$("#CatList").width( w );
-			$("#VDivider").width( $(window).width()-w-10 );
-		}
-		if(h!==null)
-		{
-			$("#CatList").height( h );
+		if (w !== null) {
+			$("#cat-division").width(Math.max(w, parseInt($("#cat-division").css("min-width"))));
+			$("#list-division").width($("#cat-division").parent().width() - $("#cat-division").width() - 5);
 		}
 	},
 
@@ -2318,24 +2313,21 @@ var theWebUI =
 	{
 		var ww = $(window).width();
 		var wh = $(window).height();
-       		var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
-	        var th = ($("#t").is(":visible") ? $("#t").height() : -1)+$("#StatusBar").height()+12;
-		$("#StatusBar").width(ww);
+		var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
+		var th = ($("#t").is(":visible") ? $("#t").height() : -1)+$("#StatusBar").height()+12;
 		if(theWebUI.settings["webui.show_cats"])
 		{
-			theWebUI.resizeLeft( w, wh-th );
+			theWebUI.resizeLeft(w);
 			w = ww - w;
 		}
 		else
 		{
-			$("#VDivider").width( ww-10 );
 			w = ww;
 		}
 		w-=11;
 		theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th-7 );
 		if(theWebUI.settings["webui.show_dets"])
 			theWebUI.resizeBottom( w, Math.floor(wh * (1 - theWebUI.settings["webui.vsplit"])) );
-		$("#HDivider").height( wh-th+2 );
 	},
 
 	update: function()

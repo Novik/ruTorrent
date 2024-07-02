@@ -50,12 +50,12 @@ function makeContent()
 		onRun : function(e) { $(document.body).css( "cursor", "e-resize" ); },
 		onFinish : function(e)
 		{
-		        var self = e.data;
+			var self = e.data;
 			var w = self.mask.offset().left-2;
-			theWebUI.resizeLeft(w,null);
+			theWebUI.resizeLeft(w);
 			w = $(window).width()-w-11;
 			theWebUI.resizeTop(w,null);
-      		        theWebUI.resizeBottom(w,null);
+			theWebUI.resizeBottom(w,null);
 			theWebUI.setHSplitter();
 			$(document.body).css( "cursor", "default" );
 		}

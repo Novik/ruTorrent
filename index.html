@@ -96,9 +96,9 @@
 				</svg>
 			</button>
 		</div>
-		<table id="maincont" cellpadding="0" cellspacing="0" summary="layout table">
-			<tr>
-				<td class="uicell" rowspan="3">
+		<div id="maincont" class="container-fluid px-0">
+			<div class="row h-100 m-0">
+				<div id="cat-division" class="p-0 m-0 h-100 d-none d-md-block">
 					<template id="panel-label-template">
 						<link href="./css/panel-label.css?v=430" rel="stylesheet" type="text/css" />
 						<div part="prefix" hidden></div>
@@ -123,7 +123,7 @@
 							<button class="Button Cancel" uilang>Cancel</button>
 						</div>
 					</template>
-					<category-list id="CatList">
+					<category-list id="CatList" class="w-100">
 						<category-panel id="pview" uilangtext="pnlViews">
 							<input slot="decorator" class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" />
 							<panel-label id="pview_all" icon="all" uilangtext="All" selected></panel-label>
@@ -144,22 +144,13 @@
 							<panel-label id="psearch_all" icon="all" uilangtext="All" selected></panel-label>
 						</category-panel>
 					</category-list>
-				</td>
-				<td class="uicell" rowspan="3">
-					<div id="HDivider"></div><div id="dividerDrag"></div>
-				</td>
-				<td class="uicell">
-					<div id="List" class="table_tab"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="uicell">
+				</div>
+				<div class="p-0 m-0 d-none d-md-block" id="HDivider"></div>
+				<div id="dividerDrag"></div>
+				<div id="list-division" class="p-0 m-0 d-flex flex-column">
+					<div class="p-0 m-0 table_tab" id="List"></div>
 					<div id="VDivider"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="uicell">
-					<div id="tdetails">
+					<div id="tdetails" class="p-0 m-0">
 						<ul id="tabbar" class="tabbar">
 						</ul>
 						<div id="tdcont">
@@ -230,66 +221,62 @@
 							<div id="Speed" class="graph_tab"></div>
 							<div id="PluginList" class="table_tab"></div>
 							<div id="lcont" class="tab"></div>
+							<div class="graph_tab_grid"></div>
+							<div class="graph_tab_legend"></div>
 						</div>
 					</div>
-				</td>
-			</tr>
-			<tr>
-				<td class="uicell" colspan=3>
-					<div id="StatusBar">
-					<table cellpadding="0" cellspacing="0">
-					        <tr id="firstStatusRow">
-							<td>
-							        <table id="st_up" class="statuscell" cellpadding="0" cellspacing="0">
-							        	<tr>
-										<td><div class="sthdr"><span uilang>Speed</span>:</div></td><td><div class="stval" id="stup_speed"></div></td>
-										<td class="desktop"><div class="sthdr"><span uilang>limit</span>:</div></td><td class="desktop"><div class="stval" id="stup_limit"></div></td>
-										<td class="desktop"><div class="sthdr"><span uilang>Total</span>:</div></td><td class="desktop"><div class="stval" id="stup_total"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td>
-							        <table id="st_down" class="statuscell" cellpadding="0" cellspacing="0">
-							        	<tr>
-										<td><div class="sthdr"><span uilang>Speed</span>:</div></td><td><div class="stval" id="stdown_speed"></div></td>
-										<td class="desktop"><div class="sthdr"><span uilang>limit</span>:</div></td><td class="desktop"><div class="stval" id="stdown_limit"></div></td>
-										<td class="desktop"><div class="sthdr"><span uilang>Total</span>:</div></td><td class="desktop"><div class="stval" id="stdown_total"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td class="desktop">
-								<table id="st_fd" class="statuscell" cellpadding="0" cellspacing="0">
-									<tr>
-										<td><div class="sthdr"><span uilang>Open_label</span>:</div></td><td><div class="stval" id="stopen_http_count"></div></td><td><div class="stval" id="stopen_sock_count"></div></td><td><div class="stval" id="stopen_fd_count"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td class="desktop">
-							        <table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
-							        	<tr>
-										<td><div class="sthdr">rTorrent:</div></td><td><div class="stval" id="rtorrentv"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td class="statusCell desktop">
-								<table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
-									<tr>
-										<td><div class="sthdr"><span uilang>Torrents</span>:</div></td><td><div class="stval" id="viewrows"></div></td>
-										<td><div class="stval" id="viewrows_size"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td class="statuscell">
-								<div class="stval" id="servertime"></div>
-							</td>
-							<td width=100%></td>
-						</tr>
-					</table>
-					</div>
-				</td>
-			</tr>
-		</table>
-		<div class="graph_tab_grid"></div>
-		<div class="graph_tab_legend"></div>
+				</div>
+			</div>
+		</div>
+		<div id="StatusBar">
+			<table cellpadding="0" cellspacing="0">
+				<tr id="firstStatusRow">
+					<td>
+						<table id="st_up" class="statuscell" cellpadding="0" cellspacing="0">
+							<tr>
+								<td><div class="sthdr"><span uilang>Speed</span>:</div></td><td><div class="stval" id="stup_speed"></div></td>
+								<td class="desktop"><div class="sthdr"><span uilang>limit</span>:</div></td><td class="desktop"><div class="stval" id="stup_limit"></div></td>
+								<td class="desktop"><div class="sthdr"><span uilang>Total</span>:</div></td><td class="desktop"><div class="stval" id="stup_total"></div></td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<table id="st_down" class="statuscell" cellpadding="0" cellspacing="0">
+							<tr>
+								<td><div class="sthdr"><span uilang>Speed</span>:</div></td><td><div class="stval" id="stdown_speed"></div></td>
+								<td class="desktop"><div class="sthdr"><span uilang>limit</span>:</div></td><td class="desktop"><div class="stval" id="stdown_limit"></div></td>
+								<td class="desktop"><div class="sthdr"><span uilang>Total</span>:</div></td><td class="desktop"><div class="stval" id="stdown_total"></div></td>
+							</tr>
+						</table>
+					</td>
+					<td class="desktop">
+						<table id="st_fd" class="statuscell" cellpadding="0" cellspacing="0">
+							<tr>
+								<td><div class="sthdr"><span uilang>Open_label</span>:</div></td><td><div class="stval" id="stopen_http_count"></div></td><td><div class="stval" id="stopen_sock_count"></div></td><td><div class="stval" id="stopen_fd_count"></div></td>
+							</tr>
+						</table>
+					</td>
+					<td class="desktop">
+						<table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
+							<tr>
+								<td><div class="sthdr">rTorrent:</div></td><td><div class="stval" id="rtorrentv"></div></td>
+							</tr>
+						</table>
+					</td>
+					<td class="statusCell desktop">
+						<table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
+							<tr>
+								<td><div class="sthdr"><span uilang>Torrents</span>:</div></td><td><div class="stval" id="viewrows"></div></td>
+								<td><div class="stval" id="viewrows_size"></div></td>
+							</tr>
+						</table>
+					</td>
+					<td class="statuscell">
+						<div class="stval" id="servertime"></div>
+					</td>
+					<td width=100%></td>
+				</tr>
+			</table>
+		</div>
 	</body>
 </html>
