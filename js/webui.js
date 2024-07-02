@@ -342,6 +342,7 @@ var theWebUI =
 		};
 
 		$(document).on( browser.isOpera ? 'keypress' : 'keydown', keyEvent);
+		$("#toggle-top-menu").on("click", this.toggleTopMenu);
 	},
 
 	updateServerTime: function()
@@ -560,6 +561,11 @@ var theWebUI =
 			this.sTimer = null;
 		}
 		this.sTimer = window.setInterval(this.updateStatus, 1000);
+	},
+
+	toggleTopMenu: function()
+	{
+		$(window).width() < 768 && $(".top-menu").toggleClass("d-none d-flex");
 	},
 
 //

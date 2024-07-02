@@ -71,44 +71,26 @@
 		<div id="sc"></div>
 		<div id="t" class="container-fluid w-auto d-flex gap-2 justify-content-end align-items-center">
 			<div class="top-menu p-2 p-md-0 gap-2 d-none d-md-flex flex-column flex-md-row flex-grow-1 align-self-start align-self-md-center">
-				<div id="mnu_add" class="top-menu-item">
-					<input type="button" />
-				</div>
+				<button id="mnu_add" class="top-menu-item"></button>
 				<div class="separator"></div>
-				<div id="mnu_remove" class="top-menu-item">
-					<input type="button" />
-				</div>
+				<button id="mnu_remove" class="top-menu-item"></button>
 				<div class="separator"></div>
-				<div id="mnu_start" class="top-menu-item">
-					<input type="button" />
-				</div>
-				<div id="mnu_pause" class="top-menu-item">
-					<input type="button" />
-				</div>
-				<div id="mnu_stop" class="top-menu-item">
-					<input type="button" />
-				</div>
+				<button id="mnu_start" class="top-menu-item"></button>
+				<button id="mnu_pause" class="top-menu-item"></button>
+				<button id="mnu_stop" class="top-menu-item"></button>
 				<div class="separator"></div>
-				<div id="mnu_settings" class="top-menu-item">
-					<input type="button" />
-				</div>
+				<button id="mnu_settings" class="top-menu-item"></button>
 				<div class="separator"></div>
-				<div id="mnu_help" class="top-menu-item">
-					<input type="button" />
-				</div>
+				<button id="mnu_help" class="top-menu-item"></button>
 				<div class="space"></div>
 				<div id="search-field" class="d-flex gap-2 flex-row align-items-center">
-					<div id="mnu_search" class="top-menu-item" onclick="theSearchEngines.show(); return(false);" >
-						<input type="button" />
-					</div>
+					<button id="mnu_search" class="top-menu-item"></button>
 					<input type="text" id="query" class="top-menu-item flex-grow-1" onfocus="$('#sc').hide();" />
-					<div id="mnu_go" class="top-menu-item" onclick="theSearchEngines.run(); return(false);" >
-						<input type="button" />
-					</div>
+					<button id="mnu_go" class="top-menu-item"></button>
 				</div>
 			</div>
 			<div id="ind"></div>
-			<button id="toggle-top-menu" class="d-block d-md-none">
+			<button id="toggle-top-menu" class="top-menu-item px-2 d-block d-md-none">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
 					<path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
 				</svg>

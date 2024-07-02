@@ -349,10 +349,10 @@ rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
 {
 	if(this.canChangeToolbar())
 	{
-		const btn = $("<div>").attr(
+		const btn = $("<button>").attr(
 			{id: id, title: name + "..."}
 		).addClass("top-menu-item d-flex flex-row align-items-center").append(
-			$("<input>").attr({type: "button"}),
+			$("<div>").addClass("top-menu-icon"),
 			$("<span>").addClass("mx-3 d-inline d-md-none").text(name),
 		).on("click", onclick);
 		const beforeBtn = $("#" + idBefore);

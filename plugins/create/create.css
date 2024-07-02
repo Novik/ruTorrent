@@ -1,4 +1,4 @@
-div#mnu_create input {background-image: url(../../images/toolbar.png); background-position-x: -48px;}
+button#mnu_create div.top-menu-icon {background-image: url(../../images/toolbar.png); background-position-x: -48px;}
 
 div#tcreate div.dlg-header {background-image: url(./images/create16.gif)}
 div#tcreate .container {padding: 0;}

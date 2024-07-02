@@ -9,9 +9,12 @@ function makeContent()
 	$("#st_down").mouseclick(theWebUI.downRateMenu);
 
 	[
-		"search", "go",
-	].forEach(ele => {
-		$("#mnu_" + ele).attr("title", theUILang["mnu_" + ele] + "...");
+		["search", () => theSearchEngines.show()],
+		["go", () => theSearchEngines.run()],
+	].forEach(([id, onclick]) => {
+		$("#mnu_" + id).attr("title", theUILang["mnu_" + id] + "...").addClass("d-flex flex-row align-items-center").append(
+			$("<div>").addClass("top-menu-icon"),
+		).on("click", onclick);
 	});
 
 	[
@@ -24,12 +27,9 @@ function makeContent()
 		["help", () => theDialogManager.toggle('dlgHelp')],
 	].forEach(([id, onclick]) => {
 		$("#mnu_" + id).attr("title", theUILang["mnu_" + id] + "...").addClass("d-flex flex-row align-items-center").append(
+			$("<div>").addClass("top-menu-icon"),
 			$("<span>").addClass("mx-3 d-inline d-md-none").text(theUILang["mnu_" + id]),
 		).on("click", onclick);
-	});
-
-	$("#toggle-top-menu").on("click", () => {
-		$(".top-menu").toggleClass("d-none d-flex");
 	});
 
 	$("#query").on('keydown', function(e)

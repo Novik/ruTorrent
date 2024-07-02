@@ -74,37 +74,39 @@ div#t {
   border-bottom: 1px solid #D0D0D0;
   white-space: nowrap;
 }
-div#t button, div.top-menu-item > input[type="button"] {
+div.top-menu-icon {
   width: 24px;
   height: 24px;
-  padding: 1px;
+  margin: 1px;
   border: none;
   cursor: pointer;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center;
 }
-div.top-menu-item > input[type="button"]:active {
-  margin: 1px -1px -1px 1px;
+button.top-menu-item:active {
+  position: relative;
+  top: 0.1rem;
+  left: 0.1rem;
 }
-/* div.top-menu-item:hover {
-  border-radius: 5px;
-  background: transparent url(../images/tb_bg.gif) no-repeat scroll center center;
-} */
+button.top-menu-item:hover {
+  filter: brightness(1.3);
+}
 
-div#mnu_add input {background-image: url(../images/toolbar.png); background-position-x: -24px;}
-div#mnu_remove input {background-image: url(../images/toolbar.png); background-position-x: -72px;}
-div#mnu_start input {background-image: url(../images/toolbar.png); background-position-x: -96px;}
-div#mnu_pause input {background-image: url(../images/toolbar.png); background-position-x: -120px;}
-div#mnu_stop input {background-image: url(../images/toolbar.png); background-position-x: -144px;}
-div#mnu_settings input {background-image: url(../images/toolbar.png); background-position-x: -264px;}
-div#mnu_help input {background-image: url(../images/quest.gif);}
-div#mnu_search input {background-image: url(../images/toolbar.png); background-position-x: -216px;}
-div#mnu_go input {background-image: url(../images/go.gif);}
-div#mnu_plugins input {background-image: url(../images/plugin.png);}
+button#mnu_add div.top-menu-icon {background-image: url(../images/toolbar.png); background-position-x: -24px;}
+button#mnu_remove div.top-menu-icon {background-image: url(../images/toolbar.png); background-position-x: -72px;}
+button#mnu_start div.top-menu-icon {background-image: url(../images/toolbar.png); background-position-x: -96px;}
+button#mnu_pause div.top-menu-icon {background-image: url(../images/toolbar.png); background-position-x: -120px;}
+button#mnu_stop div.top-menu-icon {background-image: url(../images/toolbar.png); background-position-x: -144px;}
+button#mnu_settings div.top-menu-icon {background-image: url(../images/toolbar.png); background-position-x: -264px;}
+button#mnu_help div.top-menu-icon {background-image: url(../images/quest.gif);}
+button#mnu_search div.top-menu-icon {background-image: url(../images/toolbar.png); background-position-x: -216px;}
+button#mnu_go div.top-menu-icon {background-image: url(../images/go.gif);}
+button#mnu_plugins div.top-menu-icon {background-image: url(../images/plugin.png);}
 div#t div#ind {height: 32px; width: 32px; background: transparent url(../images/ajax-loader.gif) no-repeat 0px center; cursor: default; }
 div#t div#moveu {background: transparent url(../images/toolbar.png) no-repeat -168px center}
 div#t div#moved {background: transparent url(../images/toolbar.png) no-repeat -192px center}
+input#query {min-width: 30px;}
 
 input.Textbox, button, input.Button, select {border: 1px solid #B0B0B0; padding: 2px}
 Input.TextboxShort {border: 1px solid #B0B0B0; padding: 2px; width: 50px}
@@ -119,7 +121,7 @@ button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
 
 select {margin-top: 5px}
 a {color: #686868}
-table#maincont {margin: 5px 0 0 0; min-width: 600px;}
+table#maincont {margin: 5px 0 0 0;}
 table#maincont td.uicell {vertical-align: top; padding: 0 }
 
 #CatList { display: block; margin: 0; padding: 0; width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden; min-width: 160px; }
@@ -338,7 +340,8 @@ html, body, input, select, button, textarea {
   font-family: Tahoma, Arial, Helvetica, sans-serif; 
   font-size: 16px;
 }
-div#t div.top-menu-item {
+div#t div.top-menu-item, div#t button.top-menu-item {
+  width: auto;
   padding: 0.1rem;
   margin: 0;
   border: 1px solid #A0A0A0;
