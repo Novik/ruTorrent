@@ -71,8 +71,6 @@ ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat s
 #sel {border: 1px dotted #555555;}
 
 div#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #333333;}
-div#t a:hover {background: transparent url(./images/tb_bg.gif) no-repeat scroll center center}
-div#t div.TB_Separator {background-color: #333333}
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}
 div#t div#remove {background: transparent url(./images/toolbar.png) no-repeat -72px center}

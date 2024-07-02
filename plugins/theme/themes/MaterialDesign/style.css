@@ -307,14 +307,6 @@ div#t a:active
 	filter: brightness(1.3);
 }
 
-div#t div.TB_Separator
-{
-	border:none;
-	background:none;
-	margin:0 5px;
-	height:40px
-}
-
 div#t div#add
 {
 	background:transparent url(./images/toolbar.png) no-repeat 0 1px;

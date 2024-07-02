@@ -127,7 +127,6 @@ ul.CMenu li:hover ul li a:hover { text-shadow:0px -1px 0px #000;}
 
 div#t {background: #000 url(./images/headers.png) repeat-x 0px -252px; border-bottom: none;}
 div#t a:hover {background: none;}
-div#t div.TB_Separator {border-right:1px solid #262626;background-color: #000;height:35px;margin:0px 0px 0px 5px}
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat 0px 0px}
 div#t div#add:hover {background: transparent url(./images/toolbar.png) no-repeat px -24px}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -24px 0px}

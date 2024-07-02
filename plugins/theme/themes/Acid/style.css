@@ -70,7 +70,6 @@ div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
 .graph_tab_tooltip { color: #FFF; background-color: #272E36; border: 1px solid #BDDBDB; }
 
 div#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
-div#t a:hover {background: transparent url(./images/tb_bg.gif) no-repeat scroll center center}
 
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}

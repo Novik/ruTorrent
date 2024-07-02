@@ -15,11 +15,11 @@ function makeContent()
 	});
 
 	[
-		["add", theWebUI.showAdd],
-		["remove", theWebUI.removeTorrent],
-		["start", theWebUI.start],
-		["pause", theWebUI.pause],
-		["stop", theWebUI.stop],
+		["add", () => theWebUI.showAdd()],
+		["remove", () => theWebUI.removeTorrent()],
+		["start", () => theWebUI.start()],
+		["pause", () => theWebUI.pause()],
+		["stop", () => theWebUI.stop()],
 		["settings", () => theWebUI.showSettings()],
 		["help", () => theDialogManager.toggle('dlgHelp')],
 	].forEach(([id, onclick]) => {
