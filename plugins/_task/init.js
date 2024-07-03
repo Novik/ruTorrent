@@ -485,25 +485,6 @@ theTabs.onShow = function(id)
 		plugin.tasksOnShow.call(this,id);
 };
 
-plugin.resizeBottom = theWebUI.resizeBottom;
-theWebUI.resizeBottom = function( w, h )
-{
-	plugin.resizeBottom.call(theWebUI,w,h);
-	if(theWebUI.configured)
-	{
-	       	if(w!==null)
-			w-=8;
-		if(h!==null)
-       		{
-			h-=($("#tabbar").outerHeight());
-			h-=2;
-        	}
-		var table = this.getTable("tasks");
-		if(table)
-			table.resize(w,h);
-	}
-}
-
 plugin.canDetachTask = function()
 {
 	return( !(plugin.foreground.options && plugin.foreground.options.nohide) &&

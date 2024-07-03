@@ -100,12 +100,6 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 	return change;
 }
 
-plugin.resizeTop = theWebUI.resizeTop.bind(theWebUI);
-theWebUI.resizeTop = function (w, h) {
-	theWebUI.getTable("rss").resize(w, h);
-	plugin.resizeTop(w, h);
-}
-
 theWebUI.updateRSSDetails = function(id)
 {
 	if(id)

@@ -50,12 +50,9 @@ function makeContent()
 		onRun : function(e) { $(document.body).css( "cursor", "e-resize" ); },
 		onFinish : function(e)
 		{
-			var self = e.data;
-			var w = self.mask.offset().left-2;
+			const self = e.data;
+			const w = self.mask.offset().left-2;
 			theWebUI.resizeLeft(w);
-			w = $(window).width()-w-11;
-			theWebUI.resizeTop(w,null);
-			theWebUI.resizeBottom(w,null);
 			theWebUI.setHSplitter();
 			$(document.body).css( "cursor", "default" );
 		}
@@ -71,11 +68,10 @@ function makeContent()
 		onRun : function(e) { $(document.body).css( "cursor", "n-resize" ); },
 		onFinish : function(e)
 		{
-		        var self = e.data;
-		        var offs = self.mask.offset();
-      		        theWebUI.resizeTop(null,offs.top-($("#t").is(":visible") ?  $("#t").height() : -1)-8);
-      		        theWebUI.resizeBottom(null,$(window).height()-offs.top-$("#StatusBar").height()-14);
-      		        theWebUI.setVSplitter();
+			const self = e.data;
+			const offs = self.mask.offset();
+			theWebUI.resizeTop(offs.top-($("#t").is(":visible") ?  $("#t").height() : -1)-8);
+			theWebUI.setVSplitter();
 			$(document.body).css( "cursor", "default" );
 		}
 	});

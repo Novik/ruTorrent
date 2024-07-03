@@ -128,12 +128,15 @@ div#maincont {height: calc(100vh - 36px - 5px - 25px);}
   margin: 0;
   padding: 0;
   height: 100%;
-  border: 1px solid #A0A0A0;
   background-color: #FFFFFF;
   overflow: hidden auto;
 }
 #cat-division {
   min-width: 180px;
+  border: 1px solid #A0A0A0;
+}
+#list-division {
+  min-height: 300px;
 }
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}

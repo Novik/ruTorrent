@@ -606,27 +606,6 @@ theWebUI.tegItemDblClick = function(obj)
 	}
 }
 
-plugin.resizeTop = theWebUI.resizeTop;
-theWebUI.resizeTop = function( w, h )
-{
-	plugin.resizeTop.call(theWebUI,w,h);
-	if(plugin.enabled)
-	{
-		if(w!==null)
-		{
-			$("#TegList").width( w );
-			if(theWebUI.configured)
-		       	       	this.getTable("teg").resize( w );
-		}
-        	if(h!==null)
-		{
-			$("#TegList").height( h );
-			if(theWebUI.configured)
-				this.getTable("teg").resize(null,h); 
-	       	}
-	}
-}
-
 plugin.config = theWebUI.config;
 theWebUI.config = function()
 {

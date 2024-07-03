@@ -148,19 +148,6 @@ if(plugin.canChangeTabs())
 		}
 	}
 
-	plugin.resizeBottom = theWebUI.resizeBottom;
-	theWebUI.resizeBottom = function( w, h )
-	{
-		if(plugin.enabled) 
-		{
-		        if(plugin.allStuffLoaded)
-				this.trafGraph.resize(w,h);
-			else
-				setTimeout( 'theWebUI.resize()', 1000 );
-		}
-		plugin.resizeBottom.call(this,w,h);
-	}
-
 	theWebUI.showTrafic = function(d)
 	{
 		if( $type(d) )

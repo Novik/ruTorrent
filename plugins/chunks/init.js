@@ -116,22 +116,6 @@ rTorrentStub.prototype.getchunksParseXML = function(xml)
 	return(ret);
 }
 
-plugin.resizeBottom = theWebUI.resizeBottom;
-theWebUI.resizeBottom = function( w, h )
-{
-	if(plugin.enabled) 
-	{
-	        if(theWebUI.configured)
-	        {
-	        	if(h)
-		        	$('#cCont').height(h-50);
-		}
-		else
-			setTimeout( 'theWebUI.resize()', 1000 );
-	}
-	plugin.resizeBottom.call(this,w,h);
-}
-
 plugin.onLangLoaded = function() 
 {
 	plugin.attachPageToTabs(
