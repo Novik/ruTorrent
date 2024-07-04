@@ -343,7 +343,15 @@ var theWebUI =
 
 		$(document).on( browser.isOpera ? 'keypress' : 'keydown', keyEvent);
 
-		$("#toggle-top-menu").on("click", this.toggleTopMenu).on("touchend", this.toggleTopMenu);
+		$("#toggle-top-menu").on("click touchend", () => this.toggleTopMenu());
+		$(".top-menu").on("click touchend", (e) => {
+			if(e.target.id === "query")
+				return;
+			this.toggleTopMenu();
+		});
+
+		$("#toggle-side-panel").on("click touchend", () => this.toggleSidePanel());
+		$("panel-label").on("click touchend", () => this.toggleSidePanel());
 	},
 
 	updateServerTime: function()
@@ -563,6 +571,15 @@ var theWebUI =
 	toggleTopMenu: function()
 	{
 		$(window).width() < 768 && $(".top-menu").toggleClass("d-none d-flex");
+	},
+
+	toggleSidePanel: function()
+	{
+		if($(window).width() < 768) {
+			$("#cat-division").toggleClass("d-none d-block");
+			this.resizeLeft($("#maincont").width());
+			$("#trt-division").toggleClass("d-none d-flex");
+		}
 	},
 
 //
@@ -2172,10 +2189,11 @@ var theWebUI =
 
 	updateStatus: function()
 	{
-	        var self = theWebUI;
+		var self = theWebUI;
+		$("#top-menu-title").text("ruTorrent v" + self.version);	
 		var ul = theConverter.speed(self.total.speedUL);
 		var dl = theConverter.speed(self.total.speedDL);
-		var newTitle = '';
+		var newTitle = "";
 		if(theWebUI.settings["webui.speedintitle"])
 		{
 			if(ul.length)
@@ -2374,14 +2392,14 @@ var theWebUI =
 	hideCategories: function()
 	{
 		$("#cat-division").removeClass("d-md-block").addClass("d-md-none");
-		$("#HDivider").addClass("d-none");
+		$("#HDivider").addClass("d-md-none");
 		this.resize();
 	},
 
 	displayCategories: function()
 	{
 		$("#cat-division").removeClass("d-md-none").addClass("d-md-block");
-		$("#HDivider").removeClass("d-none");
+		$("#HDivider").removeClass("d-md-none");
 		this.resize();
 	},
 
