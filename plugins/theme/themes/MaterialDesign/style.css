@@ -535,13 +535,6 @@ div#modalbg
 	background-color:#181818
 }
 
-div#List,.main-table
-{
-	margin-right:6px;
-	border:none;
-	background-color:#181818
-}
-
 div#FileList,div#TrackerList,div#PeerList,div#Speed
 {
 	background-color:#181818

@@ -609,7 +609,7 @@ theWebUI.tegItemDblClick = function(obj)
 plugin.config = theWebUI.config;
 theWebUI.config = function()
 {
-	$("#List").after($("<div>").attr("id","TegList").css("display","none"));
+	$("#List").after($("<div>").attr("id","TegList").addClass("p-0 m-0 h-100").css("display","none"));
 	this.tables["teg"] =  
 	{
 	        obj:		new dxSTable(),

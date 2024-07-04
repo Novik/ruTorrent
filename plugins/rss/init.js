@@ -202,7 +202,7 @@ theWebUI.config = function()
 	$("#List").after(
 		$("<div>")
 		.attr("id","RSSList")
-		.addClass('main-table')
+		.addClass("p-0 m-0 h-100")
 		.css("display","none")
 	);
 	this.tables["rss"] =  

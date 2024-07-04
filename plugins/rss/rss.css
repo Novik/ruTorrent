@@ -1,6 +1,14 @@
 button#mnu_rss div.top-menu-icon {background: url(../../images/toolbar.png); background-position-x: -240px;}
 
-div#RSSList {border: 1px solid var(--menu-border-color); background-color: var(--menu-background-color); overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled}
+div#RSSList {
+  border: 1px solid var(--menu-border-color);
+  background-color: var(--menu-background-color);
+  overflow: hidden;
+  -moz-user-select: none;
+  -moz-user-focus: normal;
+  -moz-user-input: enabled;
+  user-select: none;
+}
 
 div#dlgAddRSS {width: 355px; height: 132px}
 div#dlgAddRSS div.dlg-header {background-image: url(./images/rss.gif)}

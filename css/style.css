@@ -137,6 +137,7 @@ div#maincont {height: calc(100vh - 36px - 5px - 25px);}
 }
 #list-division {
   min-height: 300px;
+  border: solid 1px #A0A0A0;
 }
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
@@ -231,8 +232,7 @@ div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz
 .graph_tab_legend { background-color: #F0F0F0; border: 0px none transparent; }
 .graph_tab_tooltip { position: absolute; border: 1px solid #fdd; padding: 2px; background-color: #fee; color: black; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; opacity: 0.80; }
 
-div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
-div#List,.main-table {border: 1px solid #A0A0A0;}
+div.table_tab {background-color: #FFFFFF; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
 
 div.cont {padding: 6px;}
 
