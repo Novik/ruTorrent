@@ -69,8 +69,8 @@ function makeContent()
 		onFinish : function(e)
 		{
 			const self = e.data;
-			const offs = self.mask.offset();
-			theWebUI.resizeTop(offs.top-($("#t").is(":visible") ?  $("#t").height() : -1)-8);
+			const h = self.mask.offset().top-8;
+			theWebUI.resizeTop(h);
 			theWebUI.setVSplitter();
 			$(document.body).css( "cursor", "default" );
 		}

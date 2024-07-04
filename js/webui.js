@@ -474,13 +474,9 @@ var theWebUI =
 		this.activeView = tab;
 
 		if(!this.settings["webui.show_cats"])
-			$("#CatList").hide();
-		if(!this.settings["webui.show_dets"])
-		{
-			$("#tdetails").hide();
-			if(!theWebUI.systemInfo.rTorrent.started)
-				this.toggleDetails();
-		}
+			this.hideCategories();
+		if(!(this.settings["webui.show_dets"] && theWebUI.systemInfo.rTorrent.started))
+			this.hideDetails();
 		theDialogManager.setEffects( iv(this.settings["webui.effects"])*200 );
 //		this.setStatusUpdate();
 		$.each(this.tables, function(ndx,table)
@@ -2292,27 +2288,18 @@ var theWebUI =
 		}
 		if (h !== null) {
 			$("#list-division").height(Math.max(h, parseInt($("#list-division").css("min-height"))));
-			$("#tdetails").height($("#trt-division").height() - $("#list-division").height() - 5);
+			$("#tdetails").height($("#trt-division").height() - $("#list-division").height() - 7);
 		}
 	},
 
 	resize: function()
 	{
-		var ww = $(window).width();
-		var wh = $(window).height();
-		var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
-		var th = ($("#t").is(":visible") ? $("#t").height() : -1)+$("#StatusBar").height()+12;
-		if(theWebUI.settings["webui.show_cats"])
-		{
+		const totalWidth = $("#maincont").width();
+		const totalHeight = $("#maincont").height();
+		const w = Math.floor(totalWidth * (1 - theWebUI.settings["webui.hsplit"])) - 5;
 		theWebUI.resizeLeft(w);
-			w = ww - w;
-		}
-		else
-		{
-			w = ww;
-		}
-		w-=11;
-		theWebUI.resizeTop(Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th-7 );
+		const h = Math.floor(totalHeight * (theWebUI.settings["webui.vsplit"]));
+		theWebUI.resizeTop(h);
 	},
 
 	update: function()
@@ -2325,7 +2312,7 @@ var theWebUI =
 
 	setVSplitter : function()
 	{
-		let r = 1 - ($("#tdetails").height() / $(window).height());
+		let r = 1 - ($("#tdetails").height() / $("#maincont").height());
 		r = Math.floor(r * 1000) / 1000;
 		if ((this.settings["webui.vsplit"] !== r) && (r > 0) && (r < 1))
 		{
@@ -2336,7 +2323,7 @@ var theWebUI =
 
 	setHSplitter : function()
 	{
-		let r = 1 - ($("#cat-division").width() / $(window).width());
+		let r = 1 - ($("#cat-division").width() / $("#maincont").width());
 		r = Math.floor(r * 1000) / 1000;
 		if ((theWebUI.settings["webui.hsplit"] !== r) && (r > 0) && (r < 1))
 		{
