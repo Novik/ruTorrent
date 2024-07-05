@@ -1,3 +1,12 @@
-#meter-cpu-text { position: absolute; left: 40px; top: 0px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif }
-#meter-cpu-holder { width: 100px; height: 19px; line-height: 19px; }
-#meter-cpu-td { display: block; width: 16px; height: 16px; background: url(./images/cpu.png) 0px no-repeat; }
+#meter-cpu-icon {
+  width: 24px;
+  height: 24px;
+  margin-left: 0.25em;
+  margin-right: 0.25rem;
+  background: url(./images/cpu.png) center no-repeat;
+}
+#meter-cpu-text {
+  line-height: 24px;
+  text-align: center;
+}
+#meter-cpu-holder {width: 100px; height: 24px;}

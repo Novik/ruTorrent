@@ -384,13 +384,12 @@ rPlugin.prototype.removeSeparatorFromToolbar = function(idBefore)
 	$("#mnu_"+idBefore).prev().remove();
 }
 
-rPlugin.prototype.addPaneToStatusbar = function(id,div,no)
+rPlugin.prototype.addPaneToStatusbar = function(pane, idBefore)
 {
-        if(this.canChangeStatusBar())
-        {
-		var row = $("#firstStatusRow").get(0);
-		var td = row.insertCell(iv(no));
-		$(td).attr("id",id).addClass("statuscell").append( $(div) );
+	if(this.canChangeStatusBar())
+	{
+		const divBefore = $("#" + idBefore);
+		(divBefore && divBefore.length > 0) ? pane.insertBefore(divBefore) : pane.insertBefore($(".status-cell").get(-1));
 	}
 	return(this);
 }

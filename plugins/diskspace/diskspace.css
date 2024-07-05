@@ -1,4 +1,25 @@
-#meter-disk-value { float: left; border: 1px inset #BBBBBB; border-bottom: none;}
-#meter-disk-text { position: relative; text-align: left; float: left; width: 0px; height: 0px; overflow: visible; left: 40%; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; z-index: 1; }
-#meter-disk-holder { width: 100px; height: 18px; line-height: 18px; margin-left: 25px; }
-#meter-disk-td { background: url(./images/disk.png) 5px no-repeat; }
+#meter-disk-icon {
+  width: 24px;
+  height: 24px;
+  margin-left: 0.25em;
+  margin-right: 0.25rem;
+  background: url(./images/disk.png) 5px no-repeat;
+}
+#meter-disk-text {
+  line-height: 24px;
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+}
+#meter-disk-holder {
+  position: relative;
+  width: 100px;
+  height: 24px;
+}
+#meter-disk-value {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 20px;
+}

@@ -298,14 +298,42 @@ div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
 .konqueror div#tadd { height: 290px; }
 .konqueror #st_con { height: 340px; overflow: auto; }
 
-#StatusBar { border-top: 1px solid #A0A0A0; background-color: #FFFFFF; margin-top: 4px; height: 24px; color: #000000; white-space: nowrap; overflow: hidden;}
-#st_up { background:url(../images/status_up.gif) 6px no-repeat; }
-#st_down { background:url(../images/status_down.gif) 6px no-repeat; }
-#st_up td:first-child .sthdr { margin-left: 25px }
-#st_down td:first-child .sthdr { margin-left: 25px }
-.statuscell {height: 20px; border-right: 1px solid #A0A0A0;}
-.sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
-.stval { padding-right: 3px; overflow: hidden; width: 65px; }
+#StatusBar {
+  border-top: 1px solid #A0A0A0;
+  background-color: #FFFFFF;
+  margin-top: 4px;
+  height: 24px;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.status-cell {
+  flex-shrink: 0;
+  border-right: 1px solid #A0A0A0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#st_up_icon {
+  background:url(../images/status_up.gif) center no-repeat;
+  width: 24px;
+  height: 24px;
+}
+#st_down_icon {
+  background:url(../images/status_down.gif) center no-repeat;
+  width: 24px;
+  height: 24px;
+}
+.sthdr {
+  font-weight: bold;
+  padding-right: 0.1rem;
+  text-align: right;
+}
+.stval {
+  padding-left: 0.1rem;
+  padding-right: 0.3rem;
+  min-width: 2rem;
+}
 .speedEdit { width: 320px }
 .decimalDigitEdit input[type=number] { padding: 1px; margin: 0; width: 3em; }
 .decimalDigitEdit tr:first-child th { text-align: center; }

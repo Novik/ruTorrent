@@ -9,7 +9,7 @@ class rLoadGraph {
     this._animationRequestId = 0;
 
     this.plot = $.plot(aOwner, this.data, this.options);
-    aOwner.append($("<div>").attr("id", "meter-cpu-text").css({ top: 0 }));
+    aOwner.append($("<div>").attr("id", "meter-cpu-text"));
   }
 
   update() {
@@ -119,17 +119,11 @@ plugin.init = function () {
     plugin.prgStartColor = new RGBackground("#99D699");
     plugin.prgEndColor = new RGBackground("#E69999");
     plugin.addPaneToStatusbar(
-      "meter-cpu-pane",
-      $("<table>")
-        .append(
-          $("<tbody>").append(
-            $("<tr>").append(
-              $("<td>").attr("id", "meter-cpu-td"),
-              $("<td>").append($("<div>").attr("id", "meter-cpu-holder"))
-            )
-          )
-        )
-        .get(0)
+			$("<div>").attr({id: "meter-cpu-pane"}).addClass("status-cell").append(
+				$("<div>").attr({id: "meter-cpu-icon"}),
+				$("<div>").attr({id: "meter-cpu-holder"}),
+			),
+			"st_up",
     );
     plugin.graph = new rLoadGraph();
     plugin.graph.create($("#meter-cpu-holder"));
