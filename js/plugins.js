@@ -97,6 +97,13 @@ var thePlugins =
 			window.setTimeout( 'thePlugins.waitLoad("'+callback+'")', 500 );
 	},
 
+	registerIFrame: function(name, id)
+	{
+		const iframe = $("<iframe>").css({display: "none"}).attr({name: name, id: id});
+		$("#frm-container").append(iframe,);
+		return iframe;
+	},
+
 	registerTopMenu: function( plg, weight )
 	{
 		this.topMenu.push( { "name": plg.name, "weight": weight } );
@@ -174,8 +181,8 @@ rPlugin.prototype.showError = function(err)
 rPlugin.prototype.langLoaded = function()
 {
 	try {
-	if(($type(this["onLangLoaded"])=="function") && this.enabled)
-		this.onLangLoaded();
+		if(($type(this["onLangLoaded"]) === "function") && this.enabled)
+			this.onLangLoaded();
 	} catch(e) {
 		console.warn(`Plugin "${this.name}" failed to load:`, e);
 	} // konqueror hack

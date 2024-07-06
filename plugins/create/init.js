@@ -224,12 +224,15 @@ plugin.onLangLoaded = function()
 		);
 		$("option[value='1024']").attr({selected: ""});
 
-		$(document.body).append($("<iframe name='xcreatefrm'/>").css({visibility: "hidden"}).attr( { name: "xcreatefrm", id: "xcreatefrm" } ).width(0).height(0));
-		$(document.body).append(
-			$('<form action="plugins/create/action.php" id="xgetfile" method="post" target="xcreatefrm">'+
-				'<input type="hidden" name="cmd" value="getfile">'+
-				'<input type="hidden" name="no" id="xtaskno" value="0">'+
-			'</form>').width(0).height(0));
+		$("#frm-container").append($("<iframe>").css({display: "none"}).attr({name: "xcreatefrm", id: "xcreatefrm"}));
+		$("#form-container").append(
+			$("<form>").attr(
+				{action: "plugins/create/action.php", id: "xgetfile", method: "post", target: "xcreatefrm"}
+			).append(
+				$("<input>").attr({type: "hidden", name: "cmd"}).val("getfile"),
+				$("<input>").attr({type: "hidden", name: "no", id: "xtaskno"}).val(0),
+			),
+		);
 		$("#xcsave").on('click', function()
 		{
 			$('#xgetfile').trigger('submit');

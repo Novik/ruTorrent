@@ -84,9 +84,12 @@ var theDialogManager =
 
 	make: function( id, name, content, isModal, noClose )
 	{
-		$(document.body).append($("<div>").attr("id",id).addClass("dlg-window").html(content).
-			prepend( $("<div>").attr("id",id+"-header").addClass("dlg-header").text(name) ).
-			prepend( $("<a></a>").addClass("dlg-close") ));
+		$("#dlg-container").append(
+			$("<div>").attr("id",id).addClass("dlg-window").html(content).prepend(
+				$("<a>").addClass("dlg-close"),
+				$("<div>").attr("id",id+"-header").addClass("dlg-header").text(name),
+			),
+		);
 		return(this.add(id,isModal,noClose));
 	},
         add: function( id, isModal, noClose )

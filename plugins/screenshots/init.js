@@ -317,7 +317,7 @@ plugin.onLangLoaded = function()
 				plugin.setNextFrame();
 			}
 		});
-		$(document.body).append($("<iframe name='scplayfrm'/>").css({visibility: "hidden"}).attr( { name: "scplayfrm", id: "scplayfrm" } ).width(0).height(0));
+		$("#frm-container").append($("<iframe>").css({display: "none"}).attr({name: "scplayfrm", id: "scplayfrm"}));
 		$(document.body).append(
 			$('<form action="plugins/screenshots/action.php" id="scgetimg" method="post" target="scplayfrm">'+
 				'<input type="hidden" name="cmd" id="scimgcmd" value="ffmpeggetimage">'+

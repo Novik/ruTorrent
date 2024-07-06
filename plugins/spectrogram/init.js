@@ -142,13 +142,16 @@ plugin.onLangLoaded = function()
 		setTimeout(arguments.callee,1000);
 	else
 	{
-		$(document.body).append($("<iframe name='soxplayfrm'/>").css({visibility: "hidden"}).attr( { name: "soxplayfrm", id: "soxplayfrm" } ).width(0).height(0));
-		$(document.body).append(
-			$('<form action="plugins/spectrogram/action.php" id="soxgetimg" method="post" target="soxplayfrm">'+
-				'<input type="hidden" name="cmd" id="soximgcmd" value="soxgetimage">'+
-				'<input type="hidden" name="no" id="soxtaskno" value="0">'+
-				'<input type="hidden" name="file" id="soximgfile" value="frame">'+
-			'</form>').width(0).height(0));
+		$("#frm-container").append($("<iframe>").css({display: "none"}).attr({name: "soxplayfrm", id: "soxplayfrm"}));
+		$("#form-container").append(
+			$("<form>").attr(
+				{action: "plugins/spectrogram/action.php", id: "soxgetimg", method: "post", target:"soxplayfrm",}
+			).append(
+				$("<input>").attr({type: "hidden", name: "cmd", id: "soximgcmd"}).val("soxgetimage"),
+				$("<input>").attr({type: "hidden", name: "no", id: "soxtaskno"}).val(0),
+				$("<inupt>").attr({type: "hidden", name: "file", id: "soximgfile"}).val("frame"),
+			),
+		);
 		plugin.markLoaded();
 	}
 }

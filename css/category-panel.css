@@ -10,7 +10,6 @@
 	display: none;
 }
 
-
 div[part=heading] {
 	display: flex;
 	background: var(--open-background-image) 2px no-repeat;
@@ -25,6 +24,10 @@ div[part=heading] {
 	-moz-user-focus: normal;
 	-moz-user-input: enabled;
 	user-select: none;
+}
+
+#pviews div[part=heading] {
+  border-top: none;
 }
 
 :host([closed]) div[part="heading"] {
