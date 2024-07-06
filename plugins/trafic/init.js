@@ -1,6 +1,7 @@
 if(browser.isKonqueror && (browser.versionMajor<4))
 	plugin.disable();
 
+plugin.loadMainCSS();
 theWebUI.ratiosStat = {};
 
 class rTraficGraph extends rGraph {
@@ -118,12 +119,9 @@ class rTraficGraph extends rGraph {
     this.draw();
   }
 
-  resize(newWidth, newHeight) {
-    if (newWidth) newWidth -= 8;
-    if (this.plot && newHeight)
-      newHeight -=
-        iv($$(this.plot.getPlaceholder().attr("id") + "_ctrl").style.height) +
-        $("#tabbar").outerHeight();
+  resize() {
+    const newWidth = $("#traf").width();
+		const newHeight = $("#traf").height() - $("#traf_graph_ctrl").height();
     super.resize(newWidth, newHeight);
   }
 }
@@ -164,6 +162,7 @@ if(plugin.canChangeTabs())
 			$('#traf_mode').val(d.mode);
 			$('#traf_graph').show();
 			this.trafGraph.setData(d);
+			this.trafGraph.resize();
 		}			
 	}
 
@@ -311,21 +310,45 @@ plugin.onLangLoaded = function()
 				plugin.onShow.call(this,id);
 		};
 	 	this.attachPageToTabs(
-			$('<div>').attr("id","traf").html(
-				"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
-					(plugin.disableClearButton ? "" : "<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>")+
-					"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-						"<option value='global' selected>"+theUILang.allTrackers+"</option>"+
-					"</select>"+
-					"<select name='traf_mode' id='traf_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-						"<option value='day'>"+theUILang.perDay+"</option>"+
-						"<option value='month'>"+theUILang.perMonth+"</option>"+
-						"<option value='year'>"+theUILang.perYear+"</option>"+
-					"</select>"+
-        "</div><div id='traf_graph' style='display: none' class='graph_tab'></div>").get(0),theUILang.traf,"lcont");
+			$('<div>').attr("id","traf").append(
+				$("<div>").attr({id: "traf_graph_ctrl"}).addClass("graph_tab").append(
+					(plugin.disableClearButton ? "" : $("<button>").addClass("Button me-auto").text(theUILang.ClearButton).on("click", () => {
+						theWebUI.clearStats();
+					})),
+					$("<select>").attr({name: "tracker_mode", id: "tracker_mode"}).on("change", () => {
+						theWebUI.reqForTraficGraph();
+					}).append(
+						$("<option>").val("global").text(theUILang.allTrackers),
+					),
+					$("<select>").attr({name: "traf_mode", id: "traf_mode"}).on("change", () => {
+						theWebUI.reqForTraficGraph();
+					}).append(
+						...[
+							["day", theUILang.perDay],
+							["month", theUILang.perMonth],
+							["year", theUILang.perYear],
+						].map(([val, text]) => $("<option>").val(val).text(text)),
+					),
+				),
+				$("<div>").attr({id: "traf_graph"}).addClass("graph_tab")
+			)[0],
+			theUILang.traf,"lcont",
+		);
 		theWebUI.trafGraph = new rTraficGraph();
 		theWebUI.trafGraph.create($("#traf_graph"));
-		theWebUI.resize();
+		theWebUI.trafGraph.resize();
+
+		plugin.resizeLeft = theWebUI.resizeLeft;
+		theWebUI.resizeLeft = function(w) {
+			plugin.resizeLeft.call(this, w);
+			theWebUI.trafGraph.resize();
+		};
+
+		plugin.resizeTop = theWebUI.resizeTop;
+		theWebUI.resizeTop = function(h) {
+			plugin.resizeTop.call(this, h);
+			theWebUI.trafGraph.resize();
+		}
 	}
 };
 

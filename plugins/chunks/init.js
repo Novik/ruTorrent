@@ -120,25 +120,32 @@ plugin.onLangLoaded = function()
 {
 	plugin.attachPageToTabs(
 		$("<div>").attr("id","Chunks").append(
-			$("<div>").attr("id","cHeader").html( 
-				"<table width='100%'><tr>"+
-				"<td class='sthdr'>"+theUILang.chunksCount+":</td>"+
-				"<td class='stval' id='ccount'>&nbsp;</td>"+
-				"<td class='sthdr'>"+theUILang.chunkSize+":</td>"+
-				"<td class='stval' id='csize'>&nbsp;</td>"+
-				"<td class='sthdr' id='cinfohdr'>"+theUILang.cDownloaded+":</td>"+
-				"<td class='stval' id='cinfo'>&nbsp;</td>"+
-				"<td class='sthdr'>"+theUILang.cLegend+":</td>"+
-				"<td class='stval' id='clegend'>&nbsp;</td>"+
-				"<td align='right' id='cmode_cont' class='sthdr'>"+
-					theUILang.cMode+":&nbsp;"+
-					"<select name='chunks_mode' id='chunks_mode' onchange='theWebUI.updateDetails()'>"+
-						"<option value='0' selected>"+theUILang.cDownloaded+"</option>"+
-						"<option value='1'>"+theUILang.cAvail+"</option>"+
-					"</select>"+
-				"</td></tr></table>").append(
+			$("<div>").attr("id","cHeader").append( 
+				$("<div>").addClass("row px-0 py-2 m-0").append(
+					...[
+						[, "sthdr", theUILang.chunksCount + ":"],
+						["ccount", , ""],
+						[, "sthdr", theUILang.chunkSize + ":"],
+						["csize", , ""],
+						["cinfohdr", "sthdr", theUILang.cDownloaded + ":"],
+						["cinfo", , ""],
+						[, "sthdr", theUILang.cLegend + ":"],
+						["clegend", , ""],
+					].map(([id, className, text]) => $("<div>").attr({id: id}).addClass("col-6 col-md-2 " + className).text(text)),
+					$("<div>").attr({id: "cmode_cont"}).addClass("col-6 col-md-2 sthdr").text(theUILang.cMode + ":"),
+					$("<div>").addClass("col-6 col-md-6").append(
+						$("<select>").attr({id: "chunks_mode", name: "chunks_mode"}).on("change", () => theWebUI.updateDetails()).append(
+							$("<option>").val(0).text(theUILang.cDownloaded),
+							$("<option>").val(1).text(theUILang.cAvail),
+						),
+					),
+				),
+			),
 			$("<div>").attr("id","cCont").append( 
-				$("<table>").attr("id","cTable")))).get(0), theUILang.Chunks,"lcont");
+				$("<table>").attr("id","cTable")
+			)).get(0),
+			theUILang.Chunks,"lcont"
+		);
 	if(theWebUI.systemInfo.rTorrent.apiVersion<4)
 		$('#cmode_cont').empty();
 }

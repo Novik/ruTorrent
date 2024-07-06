@@ -9,8 +9,7 @@
 }
 .stable td {white-space: nowrap; padding: 1px}
 .stable-head {
-  flex-shrink: 0;
-  flex-basis: 18px;
+  flex: 0 0 18px;
   background: #F5F5F5;
   overflow: hidden;
   user-select: none;

@@ -1,6 +1,8 @@
-#Chunks
-{
+#Chunks {
 	overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 #cCont
@@ -8,7 +10,7 @@
 	font-family: fixed;
 	font-size: 12px;
 	overflow: auto;
-	height: 100%
+	flex: 1 1 auto;
 } 
 
 #cTable 
@@ -21,16 +23,15 @@
 	table-layout:fixed;
 }
 
-#cHeader
+#cHeader div.row
 {
-	font-size: 11px; 
-	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	padding: 0.5rem 0;
+  margin: 0;
+	align-items: center;
 }
 
-#cHeader .sthdr, #cHeader .stval
-{
-	width: 80px;
-	white-space: nowrap;
+#cHeader div.row > div {
+  margin: 0.25rem 0;
 }
 
 .cCell {

@@ -241,13 +241,28 @@ div#tdetails {
 }
 div#tdetails a.h {margin: 0}
 div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 0 2px 0 2px; overflow: hidden }
+div#mainlayout {
+  overflow: hidden auto;
+  width: 100%;
+}
 
 div.tab { height:100%; background: #F5F5F5; overflow: auto }
 div#lcont {background: #FFFFFF}
 div#lcont div.mono {font-family: monospace; background: #F5F5F5; white-space: pre}
 div#lcont div.std {padding: 2px}
 
-div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
+div#gcont div.Header {
+  font-weight: bold;
+  background: #FCFCFC;
+}
+div#gcont div.row {
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+}
+div#gcont div.row div {
+  margin: 0;
+  padding: 0.25rem 0;
+}
 
 div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; line-height: 11px; color: #545454;}
 .graph_tab_grid,.graph_tab_legend {

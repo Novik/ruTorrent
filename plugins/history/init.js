@@ -121,7 +121,10 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 	{
 		if(plugin.canChangeTabs())
 		{
-	        	plugin.attachPageToTabs($('<div>').attr("id","history").addClass("table_tab stable").get(0),"History","lcont");
+			plugin.attachPageToTabs(
+				$('<div>').attr({id: "history"}).addClass("table_tab stable h-100").get(0),
+				"History", "lcont",
+			);
 			theWebUI.tables["hst"] =
 			{
 	        		obj:		new dxSTable(),

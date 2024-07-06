@@ -326,7 +326,10 @@ if(plugin.canChangeTabs())
 	plugin.tasksConfig = theWebUI.config;
 	theWebUI.config = function()
 	{
-        	plugin.attachPageToTabs($('<div>').attr("id","tasks").addClass("table_tab stable").get(0),"Tasks","lcont");
+		plugin.attachPageToTabs(
+			$('<div>').attr({id: "tasks"}).addClass("table_tab stable h-100").get(0),
+			"Tasks","lcont",
+		);
 		theWebUI.tables["tasks"] =  
 		{
         		obj:		new dxSTable(),
