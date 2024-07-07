@@ -352,6 +352,8 @@ var theWebUI =
 
 		$("#toggle-side-panel").on("click touchend", () => this.toggleSidePanel());
 		$("panel-label").on("click touchend", () => this.toggleSidePanel());
+
+		$("#toggle-status-bar").on("click touchend", () => this.toggleStatusBar());
 	},
 
 	updateServerTime: function()
@@ -579,6 +581,26 @@ var theWebUI =
 			$("#cat-division").toggleClass("d-none d-block");
 			this.resizeLeft($("#maincont").width());
 			$("#trt-division").toggleClass("d-none d-flex");
+		}
+	},
+
+	toggleStatusBar: function()
+	{
+		if($(window).width() < 992) {
+			$("#status-bar-menu").toggleClass("d-none d-flex");
+		}
+		if($("#status-bar-menu").css("display") === "none") {
+			$("#toggle-status-bar").html(`
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+					<path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+				</svg>
+			`);
+		} else {
+			$("#toggle-status-bar").html(`
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+  				<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+				</svg>
+			`);
 		}
 	},
 
@@ -2221,7 +2243,6 @@ var theWebUI =
 				else
 					ele.hide()
 			}
-			$("#st_fd").show();
 		} else {
 			$("#st_fd").hide();
 		}

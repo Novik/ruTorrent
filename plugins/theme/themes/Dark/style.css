@@ -91,7 +91,6 @@ input.Textbox, input.Button, select {border: 1px solid #333333}
 Input.TextboxShort {border: 1px solid #333333}
 Input.TextboxMid {border: 1px solid #333333}
 Input.TextboxLarge {border: 1px solid #333333}
-Input.TextboxVShort {border: 1px solid #333333}
 a {color: #686868}
 
 .stable-icon {background-image: url(./images/tstatus.png); }

@@ -128,8 +128,14 @@ input.Textbox, button, input.Button, select {border: 1px solid #B0B0B0; padding:
 Input.TextboxShort {border: 1px solid #B0B0B0; padding: 2px; width: 50px}
 Input.TextboxMid {border: 1px solid #B0B0B0; padding: 2px; width: 110px}
 Input.TextboxLarge {border: 1px solid #B0B0B0; padding: 2px; width: 220px}
-Input.TextboxVShort {border: 1px solid #B0B0B0; padding: 2px; width: 30px}
-button, input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; border: 1px solid #A0A0A0; cursor: pointer }
+button, input.Button {
+  padding: 1px 10px;
+  background: #F0F0F0 url(../images/h.gif) repeat-x center bottom;
+  width: 80px;
+  border: 1px solid #A0A0A0;
+  border-radius: 6px;
+  cursor: pointer;
+}
 button[disabled],input.Button[disabled] { opacity: 0.3; cursor: default }
 button:not([disabled]):hover, input.Button:not([disabled]):hover { background-color: #F5F5F5; }
 button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active { background-color: #FAFAFA; }
@@ -348,11 +354,14 @@ div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
   white-space: nowrap;
   overflow: hidden;
 }
+button#toggle-status-bar {
+  width: auto;
+  padding: 0.1rem;
+}
 .status-cell {
-  flex-shrink: 0;
-  border-right: 1px solid #A0A0A0;
   display: flex;
   flex-direction: row;
+  flex: 0 0 auto;
   align-items: center;
 }
 #st_up_icon {
@@ -427,7 +436,6 @@ div#t div.top-menu-item, div#t button.top-menu-item {
   padding: 0.1rem;
   margin: 0;
   border: 1px solid #A0A0A0;
-  border-radius: 6px;
 }
 div.top-menu {
   background-color: #F0F0F0;
@@ -453,6 +461,21 @@ div#tadd .buttons-list {
   gap: 0.25rem;
   display: flex;
   flex-direction: column;
+}
+div#status-bar-menu {
+  background-color: #F0F0F0;
+  z-index: 99;
+  border: solid 1px #A0A0A0;
+  border-radius: 3px;
+  position: absolute;
+  bottom: 25px;
+  left: 0;
+  width: calc(100vw - 2px);
+}
+.status-cell {
+  border-right: none;
+  border-bottom: 1px dotted #A0A0A0;
+  padding: 0.2rem;
 }
 
 /* Small devices (landscape phones, 576px and up) */
@@ -488,6 +511,21 @@ div#tadd .buttons-list {
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) { 
   /* Custom rules for large devices */
+  div.top-menu, div#status-bar-menu {
+    background-color: transparent;
+    border: none;
+    position: static;
+  }
+  .status-cell {
+    border-right: 1px solid #A0A0A0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  #st_st {
+    border-right: none;
+    border-left: 1px solid #A0A0A0;
+    border-bottom: none;
+  }
 }
 
 /* X-Large devices (large desktops, 1200px and up) */
