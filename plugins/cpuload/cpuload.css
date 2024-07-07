@@ -8,5 +8,7 @@
 #meter-cpu-text {
   line-height: 24px;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 #meter-cpu-holder {width: 100px; height: 24px;}
