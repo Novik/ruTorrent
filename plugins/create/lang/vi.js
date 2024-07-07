@@ -6,7 +6,7 @@
  * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
- theUILang.mnu_create			= "Tạo torrent...";
+ theUILang.mnu_create			= "Tạo torrent";
  theUILang.CreateNewTorrent		= "Tạo Torrent mới";
  theUILang.SelectSource			= "Chọn nguồn";
  theUILang.TorrentProperties		= "Các thuộc tính Torrent";

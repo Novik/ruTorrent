@@ -6,7 +6,7 @@
  * Author: Limerainne (limerainne@gmail.com)
  */
 
- theUILang.mnu_create			= "토렌트 생성...";
+ theUILang.mnu_create			= "토렌트 생성";
  theUILang.CreateNewTorrent		= "새 토렌트 생성";
  theUILang.SelectSource			= "원본 선택";
  theUILang.TorrentProperties		= "토렌트 속성";

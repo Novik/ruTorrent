@@ -6,7 +6,7 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.mnu_create			= "Lag torrent...";
+ theUILang.mnu_create			= "Lag torrent";
  theUILang.CreateNewTorrent		= "Lag ny torrent";
  theUILang.SelectSource			= "Velg kilde";
  theUILang.TorrentProperties		= "Torrentegenskaper";

@@ -6,7 +6,7 @@
  * Author: Zoltan Csala (zcsala021 at gmail dot com)
  */
 
- theUILang.mnu_create			= "Направи торент...";
+ theUILang.mnu_create			= "Направи торент";
  theUILang.CreateNewTorrent		= "Направи нови торент";
  theUILang.SelectSource			= "Избор извора";
  theUILang.TorrentProperties		= "Својства торента";
