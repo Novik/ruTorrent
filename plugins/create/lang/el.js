@@ -6,7 +6,7 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
- theUILang.mnu_create			= "Δημιουργία Torrent...";
+ theUILang.mnu_create			= "Δημιουργία Torrent";
  theUILang.CreateNewTorrent		= "Δημιουργία Νέου Torrent";
  theUILang.SelectSource			= "Επιλογή πηγής";
  theUILang.TorrentProperties		= "Ιδιότητες Torrent";

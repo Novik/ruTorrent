@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.mnu_create			= "Crear Torrent...";
+ theUILang.mnu_create			= "Crear Torrent";
  theUILang.CreateNewTorrent		= "Crear Nuevo Torrent";
  theUILang.SelectSource			= "Seleccione origen";
  theUILang.TorrentProperties		= "Propiedades del Torrent";

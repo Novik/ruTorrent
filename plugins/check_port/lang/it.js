@@ -14,5 +14,7 @@
  				  "La porta è chiusa",
  				  "La porta è aperta"
  				  ];
+ theUILang.clickReveal		= "Click to Reveal";
+ theUILang.clickHide		= "Click to Hide";
 
 thePlugins.get("check_port").langLoaded();

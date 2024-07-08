@@ -6,7 +6,7 @@
  * Author: Tiby08
  */
 
- theUILang.mnu_create			= "Torrent létrehozása...";
+ theUILang.mnu_create			= "Torrent létrehozása";
  theUILang.CreateNewTorrent		= "Új torrent létrehozása";
  theUILang.SelectSource			= "Forrás kiválasztása";
  theUILang.TorrentProperties		= "Torrent tulajdonságok";

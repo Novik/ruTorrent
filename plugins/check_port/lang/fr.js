@@ -13,5 +13,7 @@
  				  "Le port est fermé",
  				  "Le port est ouvert"
  				  ];
+ theUILang.clickReveal		= "Click to Reveal";
+ theUILang.clickHide		= "Click to Hide";
 
 thePlugins.get("check_port").langLoaded();

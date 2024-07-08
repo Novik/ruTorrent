@@ -6,7 +6,7 @@
  * Author: Magnus Holm (holmen@brasse.se)
  */
 
- theUILang.mnu_create			= "Skapa torrent...";
+ theUILang.mnu_create			= "Skapa torrent";
  theUILang.CreateNewTorrent		= "Skapa ny torrent";
  theUILang.SelectSource			= "Välj källa";
  theUILang.TorrentProperties		= "Torrentegenskaper";
