@@ -13,7 +13,7 @@
  				  "Cổng bị đóng",
  				  "Cổng đang mở"
  				  ];
- theUILang.clickReveal	= "Click to Reveal";
+ theUILang.clickReveal		= "Click to Reveal";
  theUILang.clickHide		= "Click to Hide";
 
 thePlugins.get("check_port").langLoaded();
