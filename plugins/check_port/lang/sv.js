@@ -17,3 +17,4 @@
  theUILang.clickHide		= "Click to Hide";
 
 thePlugins.get("check_port").langLoaded();
+

@@ -17,3 +17,4 @@
  theUILang.clickHide		= "点击隐藏";
 
 thePlugins.get("check_port").langLoaded();
+
