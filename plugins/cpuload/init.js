@@ -120,16 +120,15 @@ plugin.init = function () {
     plugin.prgEndColor = new RGBackground("#E69999");
     plugin.addPaneToStatusbar(
       "meter-cpu-pane",
-      $("<table>")
-        .append(
-          $("<tbody>").append(
-            $("<tr>").append(
-              $("<td>").attr("id", "meter-cpu-td"),
-              $("<td>").append($("<div>").attr("id", "meter-cpu-holder"))
-            )
-          )
-        )
-        .get(0)
+      $("<table>").append(
+				$("<tbody>").append(
+					$("<tr>").append(
+						$("<td>").attr("id", "meter-cpu-td"),
+						$("<td>").append($("<div>").attr("id", "meter-cpu-holder"))
+					)
+				)
+			),
+			0, true,
     );
     plugin.graph = new rLoadGraph();
     plugin.graph.create($("#meter-cpu-holder"));

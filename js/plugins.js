@@ -387,13 +387,22 @@ rPlugin.prototype.removeSeparatorFromToolbar = function(idBefore)
 	$("#mnu_"+idBefore).prev().remove();
 }
 
-rPlugin.prototype.addPaneToStatusbar = function(id,div,no)
+rPlugin.prototype.addPaneToStatusbar = function(id, statusCell, no, mobileVisible)
 {
-        if(this.canChangeStatusBar())
-        {
-		var row = $("#firstStatusRow").get(0);
-		var td = row.insertCell(iv(no));
-		$(td).attr("id",id).addClass("statuscell").append( $(div) );
+	if(this.canChangeStatusBar())
+	{
+		statusCell.attr({id: id}).addClass("status-cell");
+		mobileVisible || statusCell.addClass("d-none d-lg-flex");
+
+		if (
+			!$("#plugin-cells div.status-cell").length || 
+			no >= $("#plugin-cells div.status-cell").length ||
+			no < 0
+		) {
+			$("#plugin-cells").append(statusCell);
+		} else {
+			statusCell.insertBefore($("#plugin-cells div.status-cell").get(no));
+		}
 	}
 	return(this);
 }

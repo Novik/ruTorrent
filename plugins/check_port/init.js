@@ -3,19 +3,19 @@ plugin.loadMainCSS();
 
 plugin.init = function()
 {
-	$$("port-td").className = "statuscell pstatus0";
+	$$("port-td").className = "status-cell pstatus0";
 	theWebUI.request("?action=initportcheck", [plugin.getPortStatus, plugin]);
 }
 
 plugin.update = function()
 {
-	$$("port-td").className = "statuscell pstatus0";
+	$$("port-td").className = "status-cell pstatus0";
 	theWebUI.request("?action=updateportcheck", [plugin.getPortStatus, plugin]);
 }
 
 plugin.getPortStatus = function(d)
 {
-	$("#port-td").prop("title",d.ip+":"+d.port+": "+theUILang.portStatus[d.status]).get(0).className = "statuscell pstatus"+d.status;
+	$("#port-td").prop("title",d.ip+":"+d.port+": "+theUILang.portStatus[d.status]).get(0).className = "status-cell pstatus"+d.status;
 	$("#port-ip-text").text(d.ip+':'+d.port);
 }
 
@@ -46,8 +46,13 @@ plugin.createPortMenu = function(e)
 
 plugin.onLangLoaded = function()
 {
-	plugin.addPaneToStatusbar("port-td",$("<div>").attr("id","port-holder")
-		.append( $("<span></span>").attr("id","port-ip-text").css({overflow: "visible"}) ).get(0),2);
+	plugin.addPaneToStatusbar(
+		"port-td",
+		$("<div>").append(
+			$("<span>").attr("id","port-ip-text").css({overflow: "visible"}),
+		),
+		-1, true,
+	);
 	if(plugin.canChangeMenu())
 		$("#port-td").addClass("pstatus0").mouseclick( plugin.createPortMenu );
 	plugin.init();
