@@ -232,8 +232,8 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 		{
 			case "HardLink":
 			{
-				if( link( $source, $dest ) )
-					break;
+				link( $source, $dest );
+				break;
 			}
 			case "Copy":
 			{
