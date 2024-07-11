@@ -392,7 +392,7 @@ rPlugin.prototype.addPaneToStatusbar = function(id, statusCell, no, mobileVisibl
 	if(this.canChangeStatusBar())
 	{
 		statusCell.attr({id: id}).addClass("status-cell");
-		mobileVisible || statusCell.addClass("d-none d-lg-flex");
+		mobileVisible || statusCell.addClass("d-none d-md-flex");
 
 		if (
 			!$("#plugin-cells div.status-cell").length || 
