@@ -286,16 +286,17 @@ div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
   white-space: nowrap;
   overflow: hidden;
 }
+#StatusBar .icon {
+  height: 16px;
+  width: 16px;
+  margin: 0 0.25rem;
+}
 #StatusBar table { line-height: 24px; }
 #st_up .icon {
   background: url(../images/status_up.gif) center no-repeat;
-  width: 16px;
-  height: 16px;
 }
 #st_down .icon {
   background: url(../images/status_down.gif) center no-repeat;
-  width: 16px;
-  height: 16px;
 }
 .status-cell {
   padding: 0 0.25rem;

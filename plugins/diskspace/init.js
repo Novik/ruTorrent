@@ -9,7 +9,7 @@ plugin.setValue = function( full, free )
 	$("#meter-disk-value").width( percent+"%" ).css( { "background-color": (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,percent).getColor(),
 		visibility: !percent ? "hidden" : "visible" } );
 	$("#meter-disk-text").text(percent+'%');
-	$("#meter-disk-td").prop("title", theConverter.bytes(free)+"/"+theConverter.bytes(full));
+	$("#meter-disk-pane").prop("title", theConverter.bytes(free)+"/"+theConverter.bytes(full));
 
 	if($.noty && plugin.allStuffLoaded)
 	{
@@ -37,10 +37,13 @@ plugin.init = function()
 		plugin.prgStartColor = new RGBackground("#99D699");
 		plugin.prgEndColor = new RGBackground("#E69999");
 		plugin.addPaneToStatusbar(
-			"meter-disk-td",
-			$("<div>").attr("id","meter-disk-holder").append(
-				$("<span>").attr("id","meter-disk-text").css({overflow: "visible"}),
-				$("<div>").attr("id","meter-disk-value").css({ visibility: "hidden", float: "left" }).width(0).html("&nbsp;"),
+			"meter-disk-pane",
+			$("<div>").append(
+				$("<div>").addClass("icon"),
+				$("<div>").attr({id: "meter-disk-holder"}).append(
+					$("<div>").attr({id: "meter-disk-value"}).width(0),
+					$("<div>").attr({id: "meter-disk-text"}),
+				),
 			),
 			0, true,
 		);
@@ -75,7 +78,7 @@ plugin.init = function()
 
 plugin.onRemove = function()
 {
-	plugin.removePaneFromStatusbar("meter-disk-td");
+	plugin.removePaneFromStatusbar("meter-disk-pane");
 	if(plugin.diskTimeout)
 	{
 		window.clearTimeout(plugin.diskTimeout);
