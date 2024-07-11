@@ -110,7 +110,7 @@ function loadUILang(onLoadFunc)
 			translateDOM();
 		}
 	};
-	langScript.src = `./lang/${lang}.js?v=435`;
+	langScript.src = `./lang/${lang}.js?v=436`;
 	document.head.appendChild(langScript);
 }
 
