@@ -6,7 +6,7 @@ div#dlgAddRSS div.content {width: 330px; margin: 5px; padding: 5px; line-height:
 div#dlgAddRSS div.content input {margin-top: 5px}
 div#dlgAddRSS label {width: 70px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 div#dlgAddRSS label#nomargin { margin-top: 0px; margin-bottom: 0px; }
-div#dlgAddRSS input, select {margin-top: 5px; margin-bottom: 5px;}
+div#dlgAddRSS input, div#dlgAddRSS select {margin-top: 5px; margin-bottom: 5px;}
 div#dlgAddRSS br {clear: left; line-height: 0}
 
 div#dlgEditRSS {width: 355px; height: 132px}
@@ -15,7 +15,7 @@ div#dlgEditRSS div.content {width: 330px; margin: 5px; padding: 5px; line-height
 div#dlgEditRSS div.content input {margin-top: 5px}
 div#dlgEditRSS label {width: 70px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
 div#dlgEditRSS label#nomargin { margin-top: 0px; margin-bottom: 0px; }
-div#dlgEditRSS input, select {margin-top: 5px; margin-bottom: 5px;}
+div#dlgEditRSS input, div#dlgEditRSS select {margin-top: 5px; margin-bottom: 5px;}
 div#dlgEditRSS br {clear: left; line-height: 0}
 
 div#dlgLoadTorrents #RSSBtn {width: 30px;}
@@ -24,7 +24,7 @@ div#dlgLoadTorrents div.dlg-header {background-image: url(../../images/world.gif
 div#dlgLoadTorrents div.content {margin: 5px; padding: 5px; line-height: 16px}
 div#dlgLoadTorrents div.content input {margin-top: 0px}
 div#dlgLoadTorrents label {width: 75px; display: block; float: left; margin-top: 0px; margin-bottom: 5px; margin-left: 5px; }
-div#dlgLoadTorrents input, select {margin-top: 2px; margin-bottom: 2px;}
+div#dlgLoadTorrents input, div#dlgLoadTorrents select {margin-top: 2px; margin-bottom: 2px;}
 div#dlgLoadTorrents br {clear: left; line-height: 0}
 
 div#dlgEditFilters {width: 690px; height: 360px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
