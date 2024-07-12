@@ -395,13 +395,13 @@ rPlugin.prototype.addPaneToStatusbar = function(id, statusCell, no, mobileVisibl
 		mobileVisible || statusCell.addClass("d-none d-md-flex");
 
 		if (
-			!$("#plugin-cells div.status-cell").length || 
-			no >= $("#plugin-cells div.status-cell").length ||
+			!$("#StatusBar div.status-cell").length || 
+			no >= $("#StatusBar div.status-cell").length ||
 			no < 0
 		) {
-			$("#plugin-cells").append(statusCell);
+			statusCell.insertBefore($("div#servertime").parent());
 		} else {
-			statusCell.insertBefore($("#plugin-cells div.status-cell").get(no));
+			statusCell.insertBefore($("#StatusBar div.status-cell").get(no));
 		}
 	}
 	return(this);
