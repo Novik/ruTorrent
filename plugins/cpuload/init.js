@@ -39,6 +39,11 @@ class rLoadGraph {
     plot.draw();
   }
 
+	resize() {
+		this.plot.resize();
+		this.draw();
+	}
+
   get data() {
     return [this.load.data];
   }
@@ -99,6 +104,7 @@ class rLoadGraph {
     this.draw();
   }
 }
+
 plugin.check = function () {
   $.ajax({
     type: "GET",
@@ -130,6 +136,9 @@ plugin.init = function () {
     plugin.graph.create($("#meter-cpu-holder"));
     plugin.check();
     plugin.reqId = theRequestManager.addRequest("ttl", null, plugin.check);
+
+		$(window).on("resize", () => plugin.graph.resize());
+
     plugin.markLoaded();
   } else window.setTimeout(arguments.callee, 500);
 };
