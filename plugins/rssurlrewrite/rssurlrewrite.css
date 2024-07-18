@@ -45,15 +45,7 @@ div#dlgEditRules .row > div {
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
 div#dlgEditRules {max-width: 95vw;}
-div#dlgEditRules .buttons-list {
-  margin: 0.5rem 0.25rem;
-  gap: 0.25rem;
-  display: flex;
-  flex-direction: column;
-}
-#rlslist {
-  max-height: 130px;
-}
+#rlslist {max-height: 130px;}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
@@ -64,16 +56,7 @@ div#dlgEditRules .buttons-list {
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
   div#dlgEditRules {min-width: 600px;}
-  div#dlgEditRules .buttons-list {
-    margin: 1rem 0.5rem;
-    gap: 0.25rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: end;
-  }
-  #rlslist {
-    max-height: 260px;
-  }
+  #rlslist {max-height: 260px;}
 }
 
 /* Large devices (desktops, 992px and up) */

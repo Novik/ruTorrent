@@ -350,11 +350,13 @@ div.space {flex-grow: 1;}
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
 div#tadd {max-width: 95vw;}
-div#tadd .buttons-list {
+div.dlg-window .buttons-list {
   margin: 0.5rem;
   gap: 0.25rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: start;
+  flex-wrap: wrap;
 }
 
 /* Small devices (landscape phones, 576px and up) */
@@ -366,12 +368,13 @@ div#tadd .buttons-list {
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
   div#tadd {min-width: 600px;}
-  div#tadd .buttons-list {
+  div.dlg-window .buttons-list {
     margin: 1rem 0.5rem;
     gap: 0.25rem;
     display: flex;
     flex-direction: row;
     justify-content: end;
+    flex-wrap: nowrap;
   }
 }
 
