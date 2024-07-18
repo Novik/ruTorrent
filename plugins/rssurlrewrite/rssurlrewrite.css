@@ -1,28 +1,75 @@
-div#dlgEditRules {width: 610px; height: 320px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
 div#dlgEditRules div.dlg-header {background-image: url(./images/rss.gif)}
+div#dlgEditRules .row {
+  margin: 0 0 0.25rem 0;
+  padding: 0;
+}
+div#dlgEditRules .row > div {
+  padding: 0 0.25rem;
+  margin-bottom: 0.1rem;
+}
 
-.lfc_rur {float: left; }
-.lf_rur {width: 245px; height: 200px; margin: 5px; margin-right: 0; padding: 5px; background-color: #FFFFFF; border: 1px solid #D0D0D0; overflow: auto}
-.lf_rur ul {width: 100%; margin: 2px; padding: 0; list-style-position: inside; list-style: none; white-space: nowrap}
-.lf_rur li input { margin: 0 5px 0 0; padding: 4px; } 
-.lf_rur li {margin: 0 ; padding: 0}
-.lf_rur li input.TextboxFocus { width: 85%; background-color: #CFDEEF; }
-.lf_rur li input.TextboxNormal { width: 85%; background-color: #FFFFFF }
-.lf_rur li input { border: 0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: default; font-weight: bold; }
-div#RLSchk_buttons {padding-top: 5px; width: 260px; text-align:center}
-.rf_rur fieldset {margin: 3px; }
-.rf_rur {float: right; margin: 4px; background-color: #FAFAFA}
-.rf_rur label {width: 75px; display: block; float: left; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
-.rf_rur br {clear: left; line-height: 0}
-.rf_rur select {width: 305px; margin: 3px; }
-.rf_rur input.TextboxLarge {margin: 3px; width: 300px;}
-.rf_rur select#RLS_rss { width: 220px;}
-.rf_rur input#RLS_test { width: 215px;}
-.rf_rur input#RLS_result { width: 215px;}
-
-.rf_rur input.Button {margin: 3px;}
-div#RLS_buttons {clear: both}
+.lf_rur {
+  background-color: #FFFFFF; 
+  border: 1px solid #D0D0D0;
+  border-radius: 3px;
+  flex: 1 0 160px;
+  overflow-y: auto;
+}
+.lf_rur ul {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0.25rem;
+  padding: 0.15rem;
+  list-style-position: inside;
+  list-style: none;
+  white-space: nowrap;
+}
+.lf_rur li {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+}
+.lf_rur input[type=text] {
+  flex: 1 1 auto;
+}
+.lf_rur input.TextboxFocus {background-color: #CFDEEF;}
+.lf_rur input.TextboxNormal {background-color: #FFFFFF;}
 
 #chkRuleBtn {width: 50px}
 
+/* Custom break point settings for responsiveness */
 
+/* X-Small devices (portrait phones, less than 576px) */
+/* No media query for `xs` since this is the default in Bootstrap */
+/* Custom rules for medium devices */
+div#dlgEditRules {max-width: 95vw;}
+#rlslist {max-height: 130px;}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+  /* Custom rules for small devices */
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#dlgEditRules {min-width: 600px;}
+  #rlslist {max-height: 260px;}
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  /* Custom rules for large devices */
+}
+
+/* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+  /* Custom rules for x-large devices */
+}
+
+/* XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) { 
+  /* Custom rules for xx-large devices */
+}

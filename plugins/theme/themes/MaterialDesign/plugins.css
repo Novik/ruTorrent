@@ -74,7 +74,6 @@ div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header { background: #181818 url(./i
 div#dlgEditRules-header,#dlgEditRatioRules-header,div#dlgEditRules div.dlg-header { background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 -72px !important; border-bottom: 1px solid #333333; text-shadow: 0px -1px 0px #000; }
 div#dlgEditRules,div#dlgEditRatioRules { width:600px; }
 
-.lfc_rru, .lfc_rur { width:250px;}
 .lf_rru, .lf_rur { border:none; border-radius:2px; background-color:#2D2D2D;}
 
 #exratio_buttons1 input.Button {margin:0px 3px;}

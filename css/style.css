@@ -217,8 +217,6 @@ div.algnright {text-align: right; clear: right}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
 .stg_con { display: none; float: right; position: relative; width: 450px; height: 500px; margin: 4px; background-color: var(--settings-background-color); }
 .ie9 .stg_con {position: static}
-fieldset {margin: 4px}
-* > fieldset {border: 1px solid #D0D0D0; -moz-border-radius: 6px; -webkit-border-radius:6px; border-radius:6px;}
 .stg_con table {width: 100%}
 .stg_con td {font-weight: normal; height: 19px}
 .stg_con td.alr {text-align: right}
@@ -452,11 +450,13 @@ div#t .separator {
   align-self: stretch;
 }
 div#tadd {max-width: 95vw;}
-div#tadd .buttons-list {
+div.dlg-window .buttons-list {
   margin: 0.5rem;
   gap: 0.25rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: start;
+  flex-wrap: wrap;
 }
 div#status-bar-menu {
   background-color: #F0F0F0;
@@ -495,12 +495,13 @@ div#status-bar-menu {
     height: auto;
   }  
   div#tadd {min-width: 600px;}
-  div#tadd .buttons-list {
+  div.dlg-window .buttons-list {
     margin: 1rem 0.5rem;
     gap: 0.25rem;
     display: flex;
     flex-direction: row;
     justify-content: end;
+    flex-wrap: nowrap;
   }
   div.status-row:not(:first-of-type) {
     border-bottom: none;
