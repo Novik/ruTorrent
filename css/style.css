@@ -386,9 +386,6 @@ div.dlg-window .buttons-list {
   justify-content: start;
   flex-wrap: wrap;
 }
-div.status-row:not(:first-of-type) {
-  border-bottom: dotted 1px #A0A0A0;
-}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
@@ -407,9 +404,6 @@ div.status-row:not(:first-of-type) {
     justify-content: end;
     flex-wrap: nowrap;
   }
-  div.status-row:not(:first-of-type) {
-    border-bottom: none;
-  }  
 }
 
 /* Large devices (desktops, 992px and up) */
