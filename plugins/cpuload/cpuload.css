@@ -1,3 +1,30 @@
-#meter-cpu-text { position: absolute; left: 40px; top: 0px; font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif }
-#meter-cpu-holder { width: 100px; height: 19px; line-height: 19px; }
-#meter-cpu-td { display: block; width: 16px; height: 16px; background: url(./images/cpu.png) 0px no-repeat; }
+#meter-cpu-pane .icon {
+  background: url(./images/cpu.png) center no-repeat;
+}
+#meter-cpu-holder {
+  position: relative;
+  height: 16px;
+}
+#meter-cpu-text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+/* Custom break point settings for responsiveness */
+
+/* X-Small devices (portrait phones, less than 576px) */
+/* No media query for `xs` since this is the default in Bootstrap */
+/* Custom rules for x-small devices */
+#meter-cpu-holder {
+  width: 50px;
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  /* Custom rules for large devices */
+  #meter-cpu-holder {
+    width: 100px;
+  }
+}

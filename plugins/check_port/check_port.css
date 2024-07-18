@@ -1,13 +1,13 @@
-#port-ip-text { font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif }
-
-#StatusBar table tr td.pstatus0 { background: url(./images/yellow.png) 5px no-repeat; }
-#StatusBar table tr td.pstatus1 { background: url(./images/red.png) 5px no-repeat; }
-#StatusBar table tr td.pstatus2 { background: url(./images/green.png) 5px no-repeat; }
-
-@media only screen and (min-width: 730px) {
-  #port-holder { height: 19px; line-height: 19px; margin-left: 24px; margin-right: 8px; display: inline-block; }
+#port-pane .icon {
+  background-position: center;
+  background-repeat: no-repeat;
 }
-
-@media only screen and (max-width: 729px) {
-  #port-holder { display: none; }
+#port-pane .pstatus0 {
+  background-image: url(./images/yellow.png);
+}
+#port-pane .pstatus1 {
+  background-image: url(./images/red.png);
+}
+#port-pane .pstatus2 {
+  background-image: url(./images/green.png);
 }

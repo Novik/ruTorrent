@@ -248,61 +248,45 @@
 					</div>
 				</td>
 			</tr>
-			<tr>
-				<td class="uicell" colspan=3>
-					<div id="StatusBar">
-					<table cellpadding="0" cellspacing="0">
-					        <tr id="firstStatusRow">
-							<td>
-							        <table id="st_up" class="statuscell" cellpadding="0" cellspacing="0">
-							        	<tr>
-										<td><div class="sthdr"><span uilang>Speed</span>:</div></td><td><div class="stval" id="stup_speed"></div></td>
-										<td class="desktop"><div class="sthdr"><span uilang>limit</span>:</div></td><td class="desktop"><div class="stval" id="stup_limit"></div></td>
-										<td class="desktop"><div class="sthdr"><span uilang>Total</span>:</div></td><td class="desktop"><div class="stval" id="stup_total"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td>
-							        <table id="st_down" class="statuscell" cellpadding="0" cellspacing="0">
-							        	<tr>
-										<td><div class="sthdr"><span uilang>Speed</span>:</div></td><td><div class="stval" id="stdown_speed"></div></td>
-										<td class="desktop"><div class="sthdr"><span uilang>limit</span>:</div></td><td class="desktop"><div class="stval" id="stdown_limit"></div></td>
-										<td class="desktop"><div class="sthdr"><span uilang>Total</span>:</div></td><td class="desktop"><div class="stval" id="stdown_total"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td class="desktop">
-								<table id="st_fd" class="statuscell" cellpadding="0" cellspacing="0">
-									<tr>
-										<td><div class="sthdr"><span uilang>Open_label</span>:</div></td><td><div class="stval" id="stopen_http_count"></div></td><td><div class="stval" id="stopen_sock_count"></div></td><td><div class="stval" id="stopen_fd_count"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td class="desktop">
-							        <table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
-							        	<tr>
-										<td><div class="sthdr">rTorrent:</div></td><td><div class="stval" id="rtorrentv"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td class="statusCell desktop">
-								<table id="st_system" class="statuscell" cellpadding="0" cellspacing="0">
-									<tr>
-										<td><div class="sthdr"><span uilang>Torrents</span>:</div></td><td><div class="stval" id="viewrows"></div></td>
-										<td><div class="stval" id="viewrows_size"></div></td>
-									</tr>
-								</table>
-							</td>
-							<td class="statuscell">
-								<div class="stval" id="servertime"></div>
-							</td>
-							<td width=100%></td>
-						</tr>
-					</table>
-					</div>
-				</td>
-			</tr>
 		</table>
+		<div id="StatusBar" class="d-flex flex-row align-items-stretch justify-content-start">
+			<div id="st_up" class="status-cell">
+				<div class="icon"></div>
+				<div class="sthdr d-none d-lg-block"><span uilang>Speed</span>:</div>
+				<div class="stval" id="stup_speed"></div>
+				<div class="sthdr d-none d-lg-block"><span uilang>limit</span>:</div>
+				<div class="stval d-none d-lg-block" id="stup_limit"></div>
+				<div class="sthdr d-none d-lg-block"><span uilang>Total</span>:</div>
+				<div class="stval d-none d-lg-block" id="stup_total"></div>
+			</div>
+			<div id="st_down" class="status-cell">
+				<div class="icon"></div>
+				<div class="sthdr d-none d-lg-block"><span uilang>Speed</span>:</div>
+				<div class="stval" id="stdown_speed"></div>
+				<div class="sthdr d-none d-lg-block"><span uilang>limit</span>:</div>
+				<div class="stval d-none d-lg-block" id="stdown_limit"></div>
+				<div class="sthdr d-none d-lg-block"><span uilang>Total</span>:</div>
+				<div class="stval d-none d-lg-block" id="stdown_total"></div>
+			</div>
+			<div id="st_fd" class="status-cell">
+				<div class="sthdr d-none d-lg-block"><span uilang>Open_label</span>:</div>
+				<div class="stval" id="stopen_http_count"></div>
+				<div class="stval" id="stopen_sock_count"></div>
+				<div class="stval" id="stopen_fd_count"></div>
+			</div>
+			<div class="status-cell d-none d-md-flex">
+				<div class="sthdr">rTorrent:</div>
+				<div class="stval" id="rtorrentv"></div>
+			</div>
+			<div class="status-cell d-none d-md-flex">
+				<div class="sthdr"><span uilang>Torrents</span>:</div>
+				<div class="stval" id="viewrows"></div>
+				<div class="stval" id="viewrows_size"></div>
+			</div>
+			<div class="status-cell ms-auto d-none d-lg-flex">
+				<div class="stval" id="servertime"></div>
+			</div>
+		</div>
 		<div class="graph_tab_grid"></div>
 		<div class="graph_tab_legend"></div>
 	</body>

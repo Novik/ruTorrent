@@ -275,15 +275,47 @@ div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
 .konqueror div#tadd { height: 290px; }
 .konqueror #st_con { height: 340px; overflow: auto; }
 
-#StatusBar { border-top: 1px solid #A0A0A0; background-color: #FFFFFF; margin-top: 4px; height: 24px; font-size: 11px;  color: #000000; white-space: nowrap; overflow: hidden;}
+#StatusBar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-top: 1px solid #A0A0A0;
+  background-color: #FFFFFF;
+  margin-top: 4px;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+}
+#StatusBar .icon {
+  height: 16px;
+  width: 16px;
+  margin: 0 0.25rem;
+}
 #StatusBar table { line-height: 24px; }
-#st_up { background:url(../images/status_up.gif) 6px no-repeat; }
-#st_down { background:url(../images/status_down.gif) 6px no-repeat; }
-#st_up td:first-child .sthdr { margin-left: 25px }
-#st_down td:first-child .sthdr { margin-left: 25px }
-.statuscell {height: 20px; line-height: 20px; border-right: 1px solid #A0A0A0;}
+#st_up .icon {
+  background: url(../images/status_up.gif) center no-repeat;
+}
+#st_down .icon {
+  background: url(../images/status_down.gif) center no-repeat;
+}
+.status-cell {
+  padding: 0 0.25rem;
+  margin: 0;
+  min-height: 24px;
+  border-right: dotted 1px #A0A0A0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.status-row:last-of-type {
+  border-left: solid 1px #A0A0A0;
+}
 .sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
-.stval { padding-right: 3px; overflow: hidden; width: 65px; }
+.stval {
+  padding-right: 3px;
+  overflow: hidden;
+  min-width: 3rem;
+}
 .speedEdit { width: 320px }
 .decimalDigitEdit input[type=number] { padding: 1px; margin: 0; width: 3em; }
 .decimalDigitEdit tr:first-child th { text-align: center; }
@@ -293,11 +325,7 @@ div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
 .optionColumn { display: flex; justify-content: space-between; flex-flow: column wrap; }
 .optionColumn input[type=number],.optionColumn select { padding: 1px; margin: 0.1em 0.5em; width: 6em; }
 .optionColumn div { display:flex; align-items: center; padding-left: 0; }
-.statuscell td { padding: 0 }
 .buttons-group-row {margin: 0.25rem; gap: 0.25rem; display: flex; flex-direction: row;}
-#st_fd .sthdr { padding-left: 8px; }
-#st_fd .stval { text-align: center; width: 4.3em; }
-#st_system .sthdr { padding-left: 8px }
 
 .ie fieldset {padding: 5px}
 div.space {flex-grow: 1;}
@@ -340,6 +368,9 @@ div#tadd .buttons-list {
   display: flex;
   flex-direction: column;
 }
+div.status-row:not(:first-of-type) {
+  border-bottom: dotted 1px #A0A0A0;
+}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
@@ -357,6 +388,9 @@ div#tadd .buttons-list {
     flex-direction: row;
     justify-content: end;
   }
+  div.status-row:not(:first-of-type) {
+    border-bottom: none;
+  }  
 }
 
 /* Large devices (desktops, 992px and up) */
