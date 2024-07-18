@@ -3,7 +3,6 @@ div#dlgEditRatioRules div.dlg-header {background-image: url(../../images/setting
 div#dlgEditRatioRules .container {margin: 0.25rem; padding: 0; width: auto;}
 div#dlgEditRatioRules .row {margin: 0 0 0.25rem 0; padding: 0;}
 div#dlgEditRatioRules .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
-div#dlgEditRatioRules fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem 0.5rem;}
 
 ul#rlsul {margin: 0.25rem; padding: 0.25rem; list-style: none; white-space: nowrap;}
 ul#rlsul > li {margin: 0.2rem 0; display: flex; flex-direction: row;}
@@ -19,12 +18,6 @@ ul#rlsul > li input.TextboxNormal {background-color: #FFFFFF }
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
 div#dlgEditRatioRules {max-width: 95vw;}
-div#dlgEditRatioRules .buttons-list {
-  margin: 0.5rem 0.25rem;
-  gap: 0.25rem;
-  display: flex;
-  flex-direction: column;
-}
 div#ratioRuleList {border: solid 1px #A0A0A0; border-radius: 3px; height: 120px; overflow-y: auto;}
 
 /* Small devices (landscape phones, 576px and up) */
@@ -36,13 +29,6 @@ div#ratioRuleList {border: solid 1px #A0A0A0; border-radius: 3px; height: 120px;
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
   div#dlgEditRatioRules {min-width: 600px;}
-  div#dlgEditRatioRules .buttons-list {
-    margin: 1rem 0.5rem;
-    gap: 0.25rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: end;
-  }
   div#ratioRuleList {border: solid 1px #A0A0A0; border-radius: 3px; height: 260px; overflow-y: auto;}
 }
 

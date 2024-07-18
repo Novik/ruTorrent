@@ -99,8 +99,6 @@ div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0
 .x-window-br { background: url(./images/right-corners.png) no-repeat scroll right bottom transparent; padding-right: 6px; margin: 0 }
 .x-window-bc { background: url(./images/top-bottom.png) repeat-x scroll 0 bottom transparent; margin: 0 }
 
-.buttons-list { padding-top: 5px; padding-bottom: 5px; margin: 0 }
-
 .x-shadow { overflow: hidden; position: absolute; display: none }
 .x-shadow * { overflow: hidden; clear: none; margin: 0; padding: 0; border: 0 none }
 .xsb, .xst  { height: 6px; width: 100% }
