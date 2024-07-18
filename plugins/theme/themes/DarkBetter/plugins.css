@@ -13,12 +13,6 @@ div#dlg_unpack div.dlg-header, div#cadd div.dlg-header { background: transparent
 
 #exscategory {margin-top: 4px}
 
-#port-holder {
-    height: 22px !important;
-    line-height: 22px !important;
-    margin-left: 22px !important;
-}
-
 /* labels */
 #lbl_nlb {content:url(./images/no_label.svg)}
 

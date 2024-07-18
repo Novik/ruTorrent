@@ -13,8 +13,6 @@
  				  "端口是关闭的",
  				  "端口是开放的"
  				  ];
- theUILang.clickReveal		= "点击显示";
- theUILang.clickHide		= "点击隐藏";
 
 thePlugins.get("check_port").langLoaded();
 

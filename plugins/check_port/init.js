@@ -3,19 +3,20 @@ plugin.loadMainCSS();
 
 plugin.init = function()
 {
-	$$("port-td").className = "statuscell pstatus0";
+	$("port-pane .icon").addClass("pstatus0");
 	theWebUI.request("?action=initportcheck", [plugin.getPortStatus, plugin]);
 }
 
 plugin.update = function()
 {
-	$$("port-td").className = "statuscell pstatus0";
+	$("port-pane .icon").addClass("pstatus0");
 	theWebUI.request("?action=updateportcheck", [plugin.getPortStatus, plugin]);
 }
 
 plugin.getPortStatus = function(d)
 {
-	$("#port-td").prop("title",d.ip+":"+d.port+": "+theUILang.portStatus[d.status]).get(0).className = "statuscell pstatus"+d.status;
+	$("#port-pane").prop("title", d.ip+":"+d.port+": "+theUILang.portStatus[d.status]);
+	$("#port-pane .icon").removeClass().addClass("icon pstatus" + d.status)
 	$("#port-ip-text").text(d.ip+':'+d.port);
 }
 
@@ -35,8 +36,8 @@ rTorrentStub.prototype.updateportcheck = function()
 
 plugin.createPortMenu = function(e)
 {
-        if(e.which==3)
-        {
+	if(e.which==3)
+	{
 		theContextMenu.clear();
 		theContextMenu.add([ theUILang.checkPort, plugin.update ]);
 		theContextMenu.show();
@@ -46,14 +47,22 @@ plugin.createPortMenu = function(e)
 
 plugin.onLangLoaded = function()
 {
-	plugin.addPaneToStatusbar("port-td",$("<div>").attr("id","port-holder")
-		.append( $("<span></span>").attr("id","port-ip-text").css({overflow: "visible"}) ).get(0),2);
-	if(plugin.canChangeMenu())
-		$("#port-td").addClass("pstatus0").mouseclick( plugin.createPortMenu );
+	plugin.addPaneToStatusbar(
+		"port-pane",
+		$("<div>").append(
+			$("<div>").addClass("icon"),
+			$("<span>").attr("id","port-ip-text").addClass("d-none d-lg-block"),
+		),
+		-1, true,
+	);
+	if(plugin.canChangeMenu()) {
+		$("#port-pane .icon").addClass("pstatus0");
+		$("#port-pane").mouseclick( plugin.createPortMenu );
+	}
 	plugin.init();
 }
 
 plugin.onRemove = function()
 {
-	plugin.removePaneFromStatusbar("port-td");
+	plugin.removePaneFromStatusbar("port-pane");
 }
