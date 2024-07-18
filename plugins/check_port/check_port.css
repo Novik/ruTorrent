@@ -11,11 +11,3 @@
 #port-pane .pstatus2 {
   background-image: url(./images/green.png);
 }
-
-@media only screen and (min-width: 730px) {
-  #port-holder { height: 19px; line-height: 19px; margin-left: 24px; margin-right: 8px; display: inline-block; }
-}
-
-@media only screen and (max-width: 729px) {
-  #port-holder { display: none; }
-}

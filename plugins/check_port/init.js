@@ -15,10 +15,9 @@ plugin.update = function()
 
 plugin.getPortStatus = function(d)
 {
-	$("#port-pane").data(d);
-	$("#port-pane").prop("title", "*.*.*.*:* - " + theUILang.portStatus[d.status]);
+	$("#port-pane").prop("title", d.ip+":"+d.port+": "+theUILang.portStatus[d.status]);
 	$("#port-pane .icon").removeClass().addClass("icon pstatus" + d.status)
-	$("#port-ip-text").addClass("censored").text("*.*.*.*:*");
+	$("#port-ip-text").text(d.ip+':'+d.port);
 }
 
 rTorrentStub.prototype.initportcheck = function()
@@ -46,41 +45,20 @@ plugin.createPortMenu = function(e)
 	return(false);
 }
 
-plugin.toggleIpAddress = function()
-{
-	const ipAddr = $("#port-ip-text");
-	const ipPane = $("#port-pane");
-	if (ipAddr.hasClass("censored")) {
-		ipAddr.text("*.*.*.*:*");
-		ipPane.prop(
-			"title", `${ipAddr.text()} - ${theUILang.portStatus[ipPane.data("status")]} (${theUILang.clickReveal})`
-		);
-	} else {
-		ipAddr.text(ipPane.data("ip") + ":" + ipPane.data("port"));
-		ipPane.prop(
-			"title", `${ipAddr.text()} - ${theUILang.portStatus[ipPane.data("status")]} (${theUILang.clickHide})`
-		);
-	}
-}
-
 plugin.onLangLoaded = function()
 {
 	plugin.addPaneToStatusbar(
 		"port-pane",
 		$("<div>").append(
 			$("<div>").addClass("icon"),
-			$("<span>").attr("id","port-ip-text"),
+			$("<span>").attr("id","port-ip-text").addClass("d-none d-lg-block"),
 		),
-		-1, false,
+		-1, true,
 	);
 	if(plugin.canChangeMenu()) {
 		$("#port-pane .icon").addClass("pstatus0");
 		$("#port-pane").mouseclick( plugin.createPortMenu );
 	}
-	$("#port-ip-text").on("click", () => {
-		$("#port-ip-text").toggleClass("censored");
-		this.toggleIpAddress();
-	});
 	plugin.init();
 }
 
