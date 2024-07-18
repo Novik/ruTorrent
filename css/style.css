@@ -393,11 +393,7 @@ button#toggle-status-bar {
 .optionColumn { display: flex; justify-content: space-between; flex-flow: column wrap; }
 .optionColumn input[type=number],.optionColumn select { padding: 1px; margin: 0.1em 0.5em; width: 6em; }
 .optionColumn div { display:flex; align-items: center; padding-left: 0; }
-.statuscell td { padding: 0 }
 .buttons-group-row {margin: 0.25rem; gap: 0.25rem; display: flex; flex-direction: row;}
-#st_fd .sthdr { padding-left: 8px; }
-#st_fd .stval { text-align: center; width: 4.3em; }
-#st_system .sthdr { padding-left: 8px }
 
 .ie fieldset {padding: 5px}
 div.space {flex-grow: 1;}
@@ -506,6 +502,9 @@ div#status-bar-menu {
     flex-direction: row;
     justify-content: end;
   }
+  div.status-row:not(:first-of-type) {
+    border-bottom: none;
+  }  
 }
 
 /* Large devices (desktops, 992px and up) */

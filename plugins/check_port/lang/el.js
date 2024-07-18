@@ -13,7 +13,5 @@
  				  "Η θύρα είναι κλειστή",
  				  "Η θύρα είναι ανοικτή"
  				  ];
- theUILang.clickReveal		= "Click to Reveal";
- theUILang.clickHide		= "Click to Hide";
 
 thePlugins.get("check_port").langLoaded();

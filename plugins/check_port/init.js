@@ -53,8 +53,8 @@ rTorrentStub.prototype.updateportcheck = function()
 
 plugin.createPortMenu = function(e)
 {
-        if(e.which==3)
-        {
+	if(e.which==3)
+	{
 		theContextMenu.clear();
 		theContextMenu.add([ theUILang.checkPort, plugin.update ]);
 		theContextMenu.show();

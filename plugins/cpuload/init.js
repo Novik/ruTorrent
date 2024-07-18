@@ -16,8 +16,8 @@ class rLoadGraph {
     const plot = this.plot;
     const ph = plot.getPlaceholder();
     const pText = `${this.percent}%`;
-    ph.attr("title", pText);
-    $($$("meter-cpu-text")).text(pText);
+    ph.parent().attr("title", pText);
+    $("#meter-cpu-text").text(pText);
 
     const opts = this.options;
     for (const [name, axis] of Object.entries(plot.getAxes())) {
@@ -38,6 +38,11 @@ class rLoadGraph {
     plot.setupGrid();
     plot.draw();
   }
+
+	resize() {
+		this.plot.resize();
+		this.draw();
+	}
 
   get data() {
     return [this.load.data];
@@ -99,6 +104,7 @@ class rLoadGraph {
     this.draw();
   }
 }
+
 plugin.check = function () {
   $.ajax({
     type: "GET",
@@ -129,6 +135,9 @@ plugin.init = function () {
     plugin.graph.create($("#meter-cpu-holder"));
     plugin.check();
     plugin.reqId = theRequestManager.addRequest("ttl", null, plugin.check);
+
+		$(window).on("resize", () => plugin.graph.resize());
+
     plugin.markLoaded();
   } else window.setTimeout(arguments.callee, 500);
 };

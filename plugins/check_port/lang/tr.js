@@ -14,8 +14,6 @@
  				  "Port kapalı",
  				  "Port açık"
  				  ];
- theUILang.clickReveal		= "Click to Reveal";
- theUILang.clickHide		= "Click to Hide";
 
 thePlugins.get("check_port").langLoaded();
 
