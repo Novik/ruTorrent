@@ -8,12 +8,22 @@ theWebUI.rDirBrowser = function( dlg_id, edit_id, btn_id, frame_id, withFiles, h
 	if(!frame_id)
 		frame_id = edit_id+"_frame";
 	var self = this;
-	this.btn.val("...").on( "click", function() { return(self.toggle()); } ).addClass("browseButton");
+	this.setButtonText("...")
+	this.btn.on( "click", function() { return(self.toggle()); } ).addClass("browseButton");
 	this.edit.prop("autocomplete", "off").on( browser.isIE ? "focusin" : "focus", function() { return(self.hide()); } ).addClass("browseEdit");
 	this.frame = $("<iframe>").attr( {id: frame_id, src: ""} ).css({position: "absolute", width: 0, visibility: "hidden"}).addClass("browseFrame");
 	this.dlg_id = dlg_id;
 	$('#'+dlg_id).append( this.frame );
 	this.height = !height ? 150 : height
+}
+
+theWebUI.rDirBrowser.prototype.setButtonText = function(buttonText)
+{
+	if(this.btn[0].tagName === "INPUT") {
+		this.btn.val(buttonText);
+	} else if(this.btn[0].tagName === "BUTTON") {
+		this.btn.text(buttonText);
+	}
 }
 
 theWebUI.rDirBrowser.prototype.show = function()
@@ -39,7 +49,7 @@ theWebUI.rDirBrowser.prototype.show = function()
 			width: this.edit.width()+2,
 			height: this.height
 		}).show();
-	this.btn.val("X");
+	this.setButtonText("X");
 	theDialogManager.bringToTop(this.frame.attr("id"));
 	this.edit.prop( "read-only", true );
 	return(false);
@@ -47,9 +57,9 @@ theWebUI.rDirBrowser.prototype.show = function()
 
 theWebUI.rDirBrowser.prototype.hide = function()
 {
-        if(this.frame.css("visibility")!="hidden")
-        {
-	        this.btn.val("...");
+	if(this.frame.css("visibility")!="hidden")
+	{
+		this.setButtonText("...");
 		this.edit.prop( "read-only", false );
 		this.frame.css( { visibility: "hidden" } );
 		this.frame.hide().css( {width: 0} );	
