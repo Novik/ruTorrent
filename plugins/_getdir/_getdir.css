@@ -17,4 +17,8 @@ body {background-color: window; color: windowtext; border: 0px; margin: 0px; pad
 .rmenuitem { color: windowtext; }
 .rmenuitemselected { color: highlighttext; background-color: highlight; }
 
-input.browseButton {width:30px; margin-left: 0.25rem; margin-right: 0.25rem;}
+input.browseButton, button.browseButton {
+  width:30px;
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}

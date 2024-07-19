@@ -1,13 +1,35 @@
-div#dlg_datadir {width: 450px; height: 193px; overflow: visible}
-
-div#dlg_datadir fieldset div {line-height: 16px}
-div#dlg_datadir fieldset div.props-spacer {width: 90%; float: left}
-
-div#dlg_datadir label {width: 120px; vertical-align: middle; margin-top: 5px; margin-bottom: 5px; margin-left: 10px; }
-div#dlg_datadir input {vertical-align: middle; margin-top: 5px; margin-bottom: 5px;}
-
-div#dlg_datadir #edit_datadir {width: 290px}
-
-div#dlg_datadir br {clear: left; line-height: 0}
-
 div#dlg_datadir div.dlg-header {background-image: url(../../images/settings.gif)}
+div#dlg_datadir div.row {row-gap: 1.5rem;}
+
+/* Custom break point settings for responsiveness */
+
+/* X-Small devices (portrait phones, less than 576px) */
+/* No media query for `xs` since this is the default in Bootstrap */
+/* Custom rules for medium devices */
+div#dlg_datadir {max-width: 95vw;}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+  /* Custom rules for small devices */
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#dlg_datadir {max-width: 600px;}
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  /* Custom rules for large devices */
+}
+
+/* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+  /* Custom rules for x-large devices */
+}
+
+/* XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) { 
+  /* Custom rules for xx-large devices */
+}

@@ -22,6 +22,28 @@ select, input[type=file], input[type=text] {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
+button, input[type=button], .Button {
+  border: 1px solid #B0B0B0;
+  border-radius: 3px;
+  padding: 1px 10px;
+  background: #F0F0F0 url(../images/h.gif) repeat-x center bottom;
+  width: 80px;
+  cursor: pointer;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+button:disabled, input[type=button]:disabled, a.Button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+button:not(:disabled):hover, input[type=button]:not(:disabled):hover, a.Button:not(:disabled):hover {
+  background-color: #F5F5F5;
+}
+button:not(:disabled):active, input[type=button]:not(:disabled):active, a.Button:not(:disabled):active {
+  background-color: #FAFAFA;
+}
+
 .light-theme { color-scheme: light; }
 .dark-theme { color-scheme: dark; }
 :root {
@@ -117,14 +139,10 @@ div#t div#plugins {background: transparent url(../images/plugin.png) no-repeat 0
 div#t a#mnu_go {margin: 3px 0 0 0; padding: 3px}
 div#t #ind {margin-top: 2px; background: transparent url(../images/ajax-loader.gif) no-repeat 0px center; width: 32px; margin-right: 2px; line-height: 26px; cursor: default; }
 
-input.Textbox, button, input.Button {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px}
+input.Textbox {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px}
 Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 50px}
 Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 110px}
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
-button, input.Button {padding: 1px 10px; background: #F0F0F0 url(../images/h.gif) repeat-x center bottom; width: 80px; height: 19px; border: 1px solid #A0A0A0; cursor: pointer }
-button[disabled],input.Button[disabled] { opacity: 0.3; cursor: default }
-button:not([disabled]):hover, input.Button:not([disabled]):hover { background-color: #F5F5F5; }
-button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active { background-color: #FAFAFA; }
 #pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
 
 a {font-size: 11px;  color: #686868}
