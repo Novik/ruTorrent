@@ -11,6 +11,20 @@ fieldset {
   border-radius:6px;
   margin: 0.25rem 0;
   padding: 0.25rem 0.5rem;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+textarea {
+  border: 1px solid #B0B0B0;
+  border-radius: 3px;
+  margin: 0.25rem 0;
+  padding: 0.25rem;
+  resize: none;
+  width: 100%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 select, input[type=file], input[type=text] {
   border: 1px solid #B0B0B0;
@@ -296,7 +310,6 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 .Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
 
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
-textarea { overflow: auto; }
 
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 auto }
@@ -340,9 +353,6 @@ div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
   display: flex;
   flex-direction: row;
   align-items: center;
-}
-.status-row:last-of-type {
-  border-left: solid 1px #A0A0A0;
 }
 .sthdr { font-weight: bold; padding-right: 3px; text-align: right; }
 .stval {
@@ -404,9 +414,6 @@ div.dlg-window .buttons-list {
   justify-content: start;
   flex-wrap: wrap;
 }
-div.status-row:not(:first-of-type) {
-  border-bottom: dotted 1px #A0A0A0;
-}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
@@ -425,9 +432,6 @@ div.status-row:not(:first-of-type) {
     justify-content: end;
     flex-wrap: nowrap;
   }
-  div.status-row:not(:first-of-type) {
-    border-bottom: none;
-  }  
 }
 
 /* Large devices (desktops, 992px and up) */
