@@ -129,7 +129,7 @@ var theUILang =
  mnu_start			: "Iniciar",
  mnu_pause			: "Pausar",
  mnu_stop			: "Parar",
- mnu_rss			: "Feeds RSS",//
+ mnu_rss			: "Feeds RSS",// Widely used term
  mnu_settings			: "Definições",
  mnu_search			: "Pesquisar",
  mnu_lang			: "Idioma",
@@ -190,7 +190,7 @@ var theUILang =
  addTorrentSuccess		: "Torrent foi adicionado com sucesso.",
  addTorrentFailed		: "Erro ao adicionar torrent.",
  pnlViews			: "Vistas", // Or 'Perspectivas'
- NewView			: "New View",
+ NewView			: "Nova Vista",
  MoveView			: {base: "Mover vista", top: "Para o topo", up: "Para cima", down: "Para baixo", bottom: "Para o fundo"},
  RenameView			: "Mudar nome da vista",
  RemoveActiveViews		: "Remover vistas ativas",
