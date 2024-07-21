@@ -1,58 +1,46 @@
-div#tedit 
-{
-	width: 405px; 
+div#tedit .row > div {
+  padding: 0;
 }
 
-div#tedit div.dlg-header 
-{
-	background-image: url(../../images/settings.gif)
+div#tedit div.dlg-header {
+  background-image: url(../../images/settings.gif);
 }
 
-div#tedit .text-wrapper
-{
-	border: 1px solid #D0D0D0; 
-	padding: 5px;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;		
+/* X-Small devices (portrait phones, less than 576px) */
+/* No media query for `xs` since this is the default in Bootstrap */
+/* Custom rules for medium devices */
+div#tedit {max-width: 95vw;}
+textarea#etrackers {
+  line-height: 1.2rem;
+  height: 12rem;
+  word-break: break-all;
 }
 
-div#tedit textarea#etrackers 
-{
-	width: 100%; 
-	height: 120px; 
-	border: 0;
-	font-size: 11px; 
-	font-family: Tahoma, Arial, Helvetica, sans-serif; 
-	cursor: text; 
-	resize: none;
-	margin: 0;
-	padding: 0;
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+  /* Custom rules for small devices */
 }
 
-div#tedit fieldset label 
-{
-	display: inline-block; 
-	margin-top: 5px; 
-	margin-bottom: 5px; 
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#tedit {min-width: 500px;}
+  textarea#etrackers {
+    height: 24rem;
+  }
 }
 
-div#tedit fieldset input, div#tedit fieldset select
-{
-	padding: 5px;
-	margin: 0;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;	
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  /* Custom rules for large devices */
 }
 
-div#tedit fieldset input[type='checkbox']
-{
-	margin: 8px 5px 5px 0;
+/* X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+  /* Custom rules for x-large devices */
 }
 
-div#tedit #ecomment, div#tedit select
-{
-	width: 100%;
+/* XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) { 
+  /* Custom rules for xx-large devices */
 }
-

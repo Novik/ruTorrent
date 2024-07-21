@@ -162,22 +162,44 @@ theWebUI.receiveEdit = function(d)
 
 plugin.onLangLoaded = function() 
 {
-	theDialogManager.make( "tedit", theUILang.EditTorrentProperties,
-		"<div class='cont fxcaret'>"+
-			"<fieldset>"+
-				"<input type='checkbox' name='eset_trackers' id='eset_trackers'/><label for='eset_trackers'>"+theUILang.Trackers+": </label>"+
-				"<div class='text-wrapper'><textarea id='etrackers'></textarea></div>"+
-				"<input type='checkbox' name='eset_comment' id='eset_comment'/><label for='eset_comment'>"+theUILang.Comment+": </label>"+
-                               	"<input type='text' id='ecomment' name='ecomment' class='TextboxLarge'/>"+
-                               	"<input type='checkbox' name='eset_private' id='eset_private'/><label for='eset_private'>"+theUILang.trkPrivate+": </label>"+
-                               	"<select id='eprivate'>"+
-	                               	"<option value='0'>"+theUILang.no+"</option>"+
-	                               	"<option value='1'>"+theUILang.yes+"</option>"+	                               	
-                               	"</select>"+
-			"</fieldset>"+
-		"</div>"+
-		"<div class='aright buttons-list'><input type='button' value='"+theUILang.ok+"' class='OK Button' id='editok' onclick='theWebUI.sendEdit(); return(false);'/><input type='button' value='"+theUILang.Cancel+"' class='Cancel Button'/></div>",
-		true);
+	theDialogManager.make("tedit", theUILang.EditTorrentProperties,
+		$("<div>").addClass("cont fxcaret").append(
+			$("<fieldset>").append(
+				$("<legend>").addClass("d-none d-md-block").text(theUILang.EditTorrentProperties),
+				$("<div>").addClass("m-0 row align-items-center").append(
+					$("<div>").addClass("col-md-3 d-flex flex-row align-items-center align-self-start").append(
+						$("<input>").attr({type: "checkbox", name: "eset_trackers", id: "eset_trackers"}),
+						$("<label>").attr({for: "eset_trackers"}).text(theUILang.Trackers + ": "),
+					),
+					$("<div>").addClass("col-md-9").append(
+						$("<textarea>").attr({id: "etrackers"}),
+					),
+					$("<div>").addClass("col-md-3 d-flex flex-row align-items-center").append(
+						$("<input>").attr({type: "checkbox", name: "eset_comment", id: "eset_comment"}),
+						$("<label>").attr({for: "eset_comment"}).text(theUILang.Comment + ": "),
+					),
+					$("<div>").addClass("col-md-9").append(
+						$("<input>").attr({type: "text", name: "ecomment", id: "ecomment"}),
+					),
+					$("<div>").addClass("col-3 d-flex flex-row align-items-center").append(
+						$("<input>").attr({type: "checkbox", name: "eset_private", id: "eset_private"}),
+						$("<label>").attr({for: "eset_private"}).text(theUILang.trkPrivate + ": "),
+					),
+					$("<div>").addClass("col-3").append(
+						$("<select>").attr({id: "eprivate"}).append(
+							$("<option>").val(0).text(theUILang.no),
+							$("<option>").val(1).text(theUILang.yes),
+						),
+					),
+				),
+			),
+		)[0].outerHTML +
+		$("<div>").addClass("buttons-list").append(
+			$("<button>").attr({id: "editok", onclick: "theWebUI.sendEdit(); return(false);"}).addClass("OK").text(theUILang.ok),
+			$("<button>").addClass("Cancel").text(theUILang.Cancel),
+		)[0].outerHTML,
+		true,
+	);
 }
 
 rTorrentStub.prototype.edittorrent = function()
