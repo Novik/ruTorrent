@@ -6,15 +6,15 @@ div#tedit div.dlg-header {
   background-image: url(../../images/settings.gif);
 }
 
-textarea#etrackers {
-  height: 150px;
-  word-break: break-all;
-}
-
 /* X-Small devices (portrait phones, less than 576px) */
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
 div#tedit {max-width: 95vw;}
+textarea#etrackers {
+  line-height: 1.2rem;
+  height: 12rem;
+  word-break: break-all;
+}
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
@@ -25,6 +25,9 @@ div#tedit {max-width: 95vw;}
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
   div#tedit {min-width: 500px;}
+  textarea#etrackers {
+    height: 24rem;
+  }
 }
 
 /* Large devices (desktops, 992px and up) */
