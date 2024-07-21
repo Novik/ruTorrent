@@ -329,7 +329,6 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 .Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
 
 div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
-textarea { overflow: auto; }
 
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 auto }
@@ -503,9 +502,6 @@ div#status-bar-menu {
     justify-content: end;
     flex-wrap: nowrap;
   }
-  div.status-row:not(:first-of-type) {
-    border-bottom: none;
-  }  
 }
 
 /* Large devices (desktops, 992px and up) */
