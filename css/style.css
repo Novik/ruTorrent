@@ -38,21 +38,23 @@ legend {
 textarea {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
-  margin: 0.25rem 0;
+  margin: 0.25rem;
   padding: 0.25rem;
   resize: none;
   width: 100%;
 }
+input[type=checkbox], input[type=radio] {margin: 0.25rem;}
 select, input[type=file], input[type=text] {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
-  margin: 0.25rem 0;
+  margin: 0.25rem;
   padding: 0.25rem;
   width: 100%;
 }
 button, input[type=button], .Button {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
+  margin: 0.25rem;
   padding: 1px 10px;
   background: #F0F0F0 url(../images/h.gif) repeat-x center bottom;
   width: 80px;

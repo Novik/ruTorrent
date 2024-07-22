@@ -102,7 +102,7 @@ function makeContent()
 						$("<div>").addClass("col-md-9 d-flex flex-row align-items-center").append(
 							$("<input>").attr(
 								{type: "text", id: "dir_edit", name: "dir_edit", placeholder: theUILang.Base_directory}
-							).addClass("flex-grow-1 mx-1"),
+							).addClass("flex-grow-1"),
 						),
 					),
 					$("<div>").addClass("row d-flex flex-column").append(
@@ -126,8 +126,8 @@ function makeContent()
 							$("<label>").attr({for: "tadd_label"}).text(theUILang.Label + ": "),
 						),
 						$("<div>").addClass("col-md-7 d-flex flex-row align-items-center").append(
-							$("<input>").attr({type: "text", id: "tadd_label", name: "tadd_label", placeholder: theUILang.Label}).addClass("flex-grow-1 mx-1"),
-							$("<select>").attr({id: "tadd_label_select"}).addClass("flex-grow-1 mx-1"),
+							$("<input>").attr({type: "text", id: "tadd_label", name: "tadd_label", placeholder: theUILang.Label}).addClass("flex-grow-1"),
+							$("<select>").attr({id: "tadd_label_select"}).addClass("flex-grow-1"),
 						),
 						$("<div>").addClass("col-md-2 d-flex align-items-center").append(
 							$("<input>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).addClass("Button").val(theUILang.Return_select_label),
