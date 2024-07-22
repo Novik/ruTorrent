@@ -1,51 +1,64 @@
-* { -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,1.0); }
+* {
+  box-sizing: unset; /* prevent collision with bootstrap */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,1.0);
+}
 html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
 html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 11px;}
-div {
+div, fieldset, textarea, select, input, .Button, td {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
+}
+table {
+  /* prevent collision with bootstrap */
+  border-collapse: initial;
+}
+tbody, td, tfoot, th, thead, tr {
+  /* prevent collision with bootstrap */
+  border-color: initial;
+  border-style: initial;
+  border-width: 1px;
 }
 fieldset {
   border: 1px solid #D0D0D0;
   border-radius:6px;
   margin: 0.25rem 0;
   padding: 0.25rem 0.5rem;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
+}
+legend {
+  color: #000000;
+  font-weight: bold;
+  float: unset; /* prevent collision with bootstrap */
+  width: unset; /* prevent collision with bootstrap */
+  padding: unset;
+  margin: 0 0.5rem;
+  font-size: inherit;
 }
 textarea {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
-  margin: 0.25rem 0;
+  margin: 0.25rem;
   padding: 0.25rem;
   resize: none;
   width: 100%;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
 }
+input[type=checkbox], input[type=radio] {margin: 0.25rem;}
 select, input[type=file], input[type=text] {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
-  margin: 0.25rem 0;
+  margin: 0.25rem;
   padding: 0.25rem;
   width: 100%;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
 }
 button, input[type=button], .Button {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
+  margin: 0.25rem;
   padding: 1px 10px;
   background: #F0F0F0 url(../images/h.gif) repeat-x center bottom;
   width: 80px;
   cursor: pointer;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
 }
 button:disabled, input[type=button]:disabled, a.Button:disabled {
   opacity: 0.3;
@@ -225,7 +238,6 @@ td label, div label {cursor: pointer}
 input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
 .ie7 fieldset div {padding: 0px}
-legend {color: #000000; font-weight: bold}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
 #st_que, #st_sch, #st_dc {display: none}
@@ -316,7 +328,6 @@ div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 
 div#tadd .container {padding: 0;}
 div#tadd .row {margin: 0 0 0.25rem 0; padding: 0;}
 div#tadd .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
-div#tadd fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }

@@ -121,17 +121,14 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		return;
 	let tr, td, cl, cg;
 	this.prefix = aName;
-	this.dCont = ele;
-
+	this.dCont = $(ele).addClass("stable").get(0);
 	this.dHead = $("<div>").addClass("stable-head").get(0);
 	this.dBody = $("<div>").addClass("stable-body").get(0);
-	$(this.dCont).addClass("stable");
-	this.tHead = $("<table>").width(100).get(0);
-	this.tHead.cellSpacing = 0;
-	this.tHead.cellPadding = 0;
-	this.tHead.tb = $("<tbody>").get(0);
 	this.dCont.appendChild(this.dHead);
 	this.dCont.appendChild(this.dBody);
+
+	this.tHead = $("<table>").prop({cellSpacing: 0, cellPadding: 0}).width(100).get(0);
+	this.tHead.tb = $("<tbody>").get(0);
 	this.dHead.appendChild(this.tHead);
 	this.tHead.appendChild(this.tHead.tb);
 
@@ -139,16 +136,13 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.tHead.tb.appendChild(tr.get(0));
 	const self = this;
 
-	for(var i in this.colOrder)
-	{
-		if(this.colOrder[i]>=styles.length)
-		{
+	for (let i in this.colOrder) {
+		if (this.colOrder[i] >= styles.length) {
 			this.colOrder = new Array();
 			break;
 		}
 	}
-	for(var i = 0, l = styles.length; i < l; i++) 
-	{
+	for (let i = 0; i < styles.length; i++) {
 		if(!$type(this.colOrder[i]))
 			this.colOrder[i] = i;
 		if(!$type(styles[this.colOrder[i]].enabled)) 
@@ -361,8 +355,7 @@ var preventSort = function()
 
 dxSTable.prototype.calcSize = function() 
 {
-	if(this.created && this.dCont.offsetWidth >= 4) 
-	{
+	if (this.created && this.dCont.offsetWidth >= 4) {
 		this.dBody.style.width = this.dCont.offsetWidth - 2 + "px";
 		this.dBody.style.marginTop = this.dHead.offsetHeight + "px";
 		this.tBody.style.width = this.tHead.offsetWidth + "px";
@@ -371,27 +364,23 @@ dxSTable.prototype.calcSize = function()
 			this.dBody.style.height = h + "px";
 		this.dHead.style.width = (this.dCont.clientWidth - 2) + "px";
 		this.rowCover.style.width = this.dHead.style.width;
-		if((this.cols > 0) && (!this.isResizing)) 
-		{
-			for(var i = 0, l = this.cols; i < l; i++) 
-			{
+		if ((this.cols > 0) && (!this.isResizing)) {
+			for (let i = 0; i < this.cols; i++) {
 				var _9a = iv(this.tBodyCols[i].style.width);
-				if(browser.isIE && (this.tBodyCols[i].offsetWidth != 0)) 
-				{
+				if (browser.isIE && (this.tBodyCols[i].offsetWidth != 0)) {
 					_9a = this.tBodyCols[i].offsetWidth;
 				}
-				if(!_9a) 
-				{
+				if (!_9a) {
 					continue;
 				}
-				if((browser.isChrome && (browser.versionMajor<537)) || browser.isKonqueror || browser.isSafari)
-					_9a+=4;
-				if(_9a>8)
-					this.tHeadCols[i].style.width = (_9a - 4) + "px";
+				if ((browser.isChrome && (browser.versionMajor<537)) || browser.isKonqueror || browser.isSafari)
+					_9a += 4;
+				if (_9a>8)
+					this.tHeadCols[i].style.width = _9a + "px";
 			}
 		}
 	}
-	return(this);
+	return this;
 }
 
 dxSTable.prototype.resizeColumn = function() 
@@ -402,36 +391,26 @@ dxSTable.prototype.resizeColumn = function()
 	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
 	var needCallHandler = false;
 	var w = 0, c;
-	for(var i = 0, l = _e.length; i < l; i++) 
-	{
-                c = this.tHeadCols[i];
+	for (var i = 0; i < _e.length; i++) {
+		c = this.tHeadCols[i];
 		w = this.colsdata[i].width;
-		if(iv(_e[i].style.width)!=w)
-		{
+		if (iv(_e[i].style.width) !== w) {
 			_e[i].style.width = w + "px";
 			needCallHandler = true;
 		}
-		if(
-			(browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) &&
-			this.tBody.rows.length>0)
-		{
-			if((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width!=w) && (w>=4))
-			{
-				this.tBody.rows[0].cells[i].width=w;
+		if ((browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) && this.tBody.rows.length > 0) {
+			if ((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width !== w) && (w >= 4)) {
+				this.tBody.rows[0].cells[i].width = w;
 				needCallHandler = true;
 			}
 //			for( var j=0; j<this.tBody.rows.length; j++ )
 //				this.tBody.rows[j].cells[i].style.textAlign = c.style.textAlign;
 		}
-
 	}
 	this.tBody.tb.style.width = this.tHead.offsetWidth + "px";
 	this.tBody.style.width = this.tHead.offsetWidth + "px";
 
-	if(($type(this.onresize) == "function") && needCallHandler)
-	{
-		this.onresize();
-	}
+	(($type(this.onresize) === "function") && needCallHandler) && this.onresize();
 }
 
 var moveColumn = function(_11, _12) 

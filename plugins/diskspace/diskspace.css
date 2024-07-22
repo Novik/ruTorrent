@@ -3,12 +3,10 @@
 }
 #meter-disk-holder {
   border: inset 1px #BBBBBB;
-  box-sizing: border-box;
   position: relative;
   height: 18px;
 }
 #meter-disk-value {
-  box-sizing: border-box;
   height: 100%;
 }
 #meter-disk-text {

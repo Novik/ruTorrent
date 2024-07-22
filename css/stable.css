@@ -9,7 +9,7 @@
 .stable-body {background: window; overflow: auto; overflow-anchor: none}
 .stable-body table {table-layout: fixed; width: 0; }
 .stable-body tr {cursor: pointer}
-.stable-body td {height: 16px; border-bottom: 1px solid #E0E0E0; border-width: 0px 1px 1px 0px; overflow: hidden; vertical-align: top}
+.stable-body td {height: 16px; border-bottom: 1px solid #E0E0E0; overflow: hidden; vertical-align: top}
 .stable-icon {width: 16px; height: 16px; margin-right: -6px; margin: 0 5px; padding: 0 !important; float: left}
 .ie .stable-icon {}
 .stable-lpad {width: 5px; height: 16px; margin: 0; padding: 0; float: left; }
