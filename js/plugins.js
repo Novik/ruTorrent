@@ -328,35 +328,26 @@ rPlugin.prototype.removePageFromTabs = function(id)
 
 rPlugin.prototype.registerTopMenu = function(weight)
 {
-        if(this.canChangeToolbar())
-        {
-        	if( !$$("mnu_plugins") )
-        		this.addButtonToToolbar("plugins",theUILang.Plugins+"...","theWebUI.showPluginsMenu()","help");
-		thePlugins.registerTopMenu( this, weight );
+	if (this.canChangeToolbar()) {
+		if (!$$("mnu_plugins"))
+			this.addButtonToToolbar("plugins", theUILang.Plugins, "theWebUI.showPluginsMenu()", "help");
+		thePlugins.registerTopMenu(this, weight);
 	}
-	return(this);
+	return this;
 }
 
-rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
-{
-        if(this.canChangeToolbar())
-        {
-		var newBtn = document.createElement("A");
-		newBtn.id="mnu_"+id;
-		newBtn.href='javascript://void();';
-		newBtn.title=name;
-		newBtn.innerHTML='<div class="top-menu-item" id="'+id+'" onclick="'+onclick+';return(false);"></div>';
-		$(newBtn).addClass('top-menu-item').on('focus', function(e) { this.blur(); } );
-		var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;
-		if(targetBtn)
-			targetBtn.parentNode.insertBefore(newBtn,targetBtn);
-		else
-		{
-			targetBtn = $$("mnu_settings");
-			targetBtn.parentNode.appendChild(newBtn);
-		}
+rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore) {
+	if (this.canChangeToolbar()) {
+		const newBtn = $("<a>").attr(
+			{id:`mnu_${id}`, href:"#", onclick:onclick, onfocus:"this.blur();", title:`${name}...`}
+		).addClass("nav-link").append(
+			$("<div>").attr({id:id}).addClass("nav-icon top-menu-item"),
+			$("<span>").addClass("d-inline d-md-none").text(`${name}...`),
+		);
+		const beforeBtn = $(`#mnu_${idBefore}`);
+		beforeBtn && beforeBtn.length > 0 ? newBtn.insertBefore(beforeBtn) : newBtn.insertBefore($("#mnu_settings"));
 	}
-	return(this);
+	return this;
 }
 
 rPlugin.prototype.removeButtonFromToolbar = function(id)

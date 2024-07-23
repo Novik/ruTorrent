@@ -1064,16 +1064,6 @@ div#t div#ind
 	margin:2px 6px
 }
 
-tr#rrow td *
-{
-	margin-top:-2px
-}
-
-tr#rrow td a#mnu_go div#go
-{
-	margin-top:-5px
-}
-
 span#loadimg
 {
 	background:transparent url(./images/ajax-loader.gif) no-repeat center center

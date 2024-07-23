@@ -8,15 +8,14 @@ function makeContent()
 	$("#st_up").mouseclick(theWebUI.upRateMenu);
 	$("#st_down").mouseclick(theWebUI.downRateMenu);
 
-	$("#mnu_add").attr("title",theUILang.mnu_add+"...");
-	$("#mnu_remove").attr("title",theUILang.mnu_remove);
-	$("#mnu_start").attr("title",theUILang.mnu_start);
-	$("#mnu_pause").attr("title",theUILang.mnu_pause);
-	$("#mnu_stop").attr("title",theUILang.mnu_stop);
-	$("#mnu_settings").attr("title",theUILang.mnu_settings+"...");
-	$("#mnu_search").attr("title",theUILang.mnu_search+"...");
-	$("#mnu_go").attr("title",theUILang.mnu_go);
-	$("#mnu_help").attr("title",theUILang.mnu_help+"...");
+	[
+		"add", "remove", "start", "pause", "stop",
+		"settings", "search", "go", "help"
+	].forEach(id => {
+		$(`#mnu_${id}`).attr({title:theUILang[`mnu_${id}...`]}).append(
+			$("<span>").addClass("d-inline d-md-none").text(theUILang[`mnu_${id}`]),
+		);
+	});
 
 	$("#query").on('keydown', function(e)
 	{

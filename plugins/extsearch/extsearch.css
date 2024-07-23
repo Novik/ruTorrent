@@ -8,10 +8,4 @@ div#tegLoadTorrents input, div#tegLoadTorrents select {margin-top: 2px; margin-b
 div#tegLoadTorrents br {clear: left; line-height: 0}
 
 #st_extsearch { overflow: auto }
-#exscategory { margin-top: 6px; width: 100px }
 .bld { color: blue; font-weight: bold; }
-
-@media only screen and (orientation:portrait) 
-{ 
-	#exscategory { width: 30px }
-}
