@@ -139,7 +139,7 @@ span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
 #sel {width: 0px; height: 0px; position: absolute; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
 
 div#t {
-  height: 36px;
+  height: auto;
   background: #F0F0F0 url(../images/t_bg.png) repeat-x center 0.25rem;
   border-bottom: 1px solid #D0D0D0;
   white-space: nowrap;
@@ -458,11 +458,14 @@ div.dlg-window .buttons-list {
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
+  div#t {
+    height: 36px;
+  }
   #top-menu {
     background-color: transparent;
     border-bottom: none;
     z-index: auto;
-  }  
+  }
   div#t div.navbar-nav a:hover {
     background: transparent url(../images/tb_bg.gif) no-repeat scroll center center;
     filter: none;
@@ -471,7 +474,7 @@ div.dlg-window .buttons-list {
     border: none;
     border-radius: 0;
     background-color: transparent;
-  }  
+  }
   div#tadd {min-width: 600px;}
   div.dlg-window .buttons-list {
     margin: 1rem 0.5rem;

@@ -126,6 +126,21 @@ ul.CMenu li:hover ul li a:hover { text-shadow:0px -1px 0px #000;}
 #sel {border: 1px dotted #555555;}
 
 div#t {background: #000 url(./images/headers.png) repeat-x 0px -252px; border-bottom: none;}
+#top-menu {
+  background-color: #000;
+  border-bottom: none;
+}
+div#t button.navbar-toggler {
+  background-color: #000;
+  background-image: none;
+  border-color: #0F0F0F;
+}
+div#t .nav-link {
+  background: #000 url(./images/headers.png) repeat-x 0px 0px;
+  border-color: #0F0F0F;
+  color: #626262;
+  font-weight: bold;
+}
 div#t a:hover {background: none;}
 div#t div.TB_Separator {border-right:1px solid #262626;background-color: #000;height:35px;margin:0px 0px 0px 5px}
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat 0px 0px}
@@ -261,17 +276,15 @@ background-color: #343434;
 }
 /* LOG */
 input#clear_log,input#add_url, input#add_button {margin-top:2px;}
-div#lcont {}
 div#lcont div.std {background: #181818 url(./images/headers.png) repeat-x 0px -37px;height:17px;line-height:17px;border-bottom: 1px solid #333333;}
 div#lcont div.std:nth-child(2n+1) {background: #181818 url(./images/headers.png) repeat-x 0px -64px;}
-
 
 #StatusBar { border-top: 1px solid #333333; background: #000 url(./images/headers.png) repeat-x 0px 0px; color: #888888;font-family:inherit; }
 #StatusBar table tr td {padding-right:5px;border:none;background: transparent url(./images/headers.png) no-repeat right -208px;}
 #StatusBar table tr td td {background:none;}
 #StatusBar table tr td:last-child {border-top:red;}
-#st_up { background:url(./images/status.png) no-repeat 6px 2px; }
-#st_down { background:url(./images/status.png) no-repeat 6px -18px; }
+#st_up .icon {background:url(./images/status.png) no-repeat 6px 2px;}
+#st_down .icon {background:url(./images/status.png) no-repeat 6px -18px;}
 .statuscell {padding-right:5px;border:none;}
 #stup_speed{color:#AACF27;}
 #stdown_speed {color: #178FD1;}
@@ -300,4 +313,12 @@ span.det {color:#fff;}
     width: 0;
     height: 0;
     display: none;
+}
+
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#t .nav-link {
+    background: none;
+    border: none;
+  }
 }
