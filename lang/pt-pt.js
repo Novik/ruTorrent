@@ -140,10 +140,10 @@ var theUILang =
  time_m				: "m ", /*for x minutes remaining*/
  time_s				: "s ", /*for x seconds remaining*/
  Base_directory			: "Diretório",
- Torrent_options		: "Torrent Options",
- Return_select_label		: "Select",
- Add_from_file			: "Add From File",
- Add_from_URL			: "Add From URL",
+ Torrent_options		: "Opções do Torrent",
+ Return_select_label		: "Selecionar",
+ Add_from_file			: "Adicionar por ficheiro",
+ Add_from_URL			: "Adicionar por URL",
  Number_Peers_min		: "Número mínimo de pares",
  Number_Peers_max		: "Número máximo de pares",
  Tracker_Numwant		: "Número desejado de pares",
@@ -295,7 +295,7 @@ var theUILang =
  Toggle_details			: "Mostrar/Ocultar detalhes",
  Toggle_categories		: "Mostrar/Ocultar categorias",
  Delete_current_torrents	: "Remover torrent(s) atuais(s)",
- Quick_search			: "Quick search",
+ Quick_search			: "Pesquisa rápida",
  Select_all			: "Marcar todos",
  Deselect_all			: "Desmarcar todos",
  showSpeedInTitle		: "Mostrar velocidade no título",
