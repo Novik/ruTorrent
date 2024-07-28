@@ -862,9 +862,8 @@ plugin.onLangLoaded = function()
 		$(".seng_private").hide();
 		$('#cont_'+$(this).val()).show();
 	});
-	var td = $$('rrow').insertCell(2);
-	s ="<select id='exscategory' title='"+theUILang.excat+"'></select>";
-	$(td).prop("id","exscat").html(s); 
+	s = "<select id='exscategory' title='" + theUILang.excat + "'></select>";
+	$("<div>").prop("id","exscat").html(s).insertBefore($("#mnu_go"));
 	plugin.markLoaded();
 	theSearchEngines.checkForIncorrectCurrent(true);
 	if(thePlugins.isInstalled('search'))

@@ -38,6 +38,17 @@ panel-label[selected] {
 }
 
 div#t {background: #181818 url(./images/header_bg.gif) repeat-x center center; border-bottom: 1px solid #333333;}
+#top-menu {
+  background-color: #181818;
+  border-bottom: 1px solid #333333;
+}
+div#t .nav-link {
+  background-image: url(./images/tabs-bg.png);
+  border-color: #8DB2E3;
+  color: #15428B;
+  font-weight: normal;
+}
+div#t button.navbar-toggler {background-image: none;}
 
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}
@@ -82,7 +93,7 @@ ul.CMenu li a.exp {background: transparent url(./images/menu-parent.gif) no-repe
 ul.CMenu li.menuitem hr {background-color: #E0E0E0; color: #000000; border-bottom-width: 1px; border-bottom-color: #FFFFFF}
 
 div.dlg-window { color: #000000; border: 0 }
-div.dlg-header { background: #D9E8FB url(../../images/blank.gif) no-repeat scroll 4px center; border: 0; color: #15428B; font-weight: bold}
+div.dlg-header { background: #D9E8FB url(./images/blank.gif) no-repeat scroll 4px center; border: 0; color: #15428B; font-weight: bold}
 
 .stg_con { background-color: #FFFFFF }
 div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
@@ -112,3 +123,10 @@ div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0
 .xsbl { background: url(./images/shadow.png) no-repeat scroll 0 -12px transparent; float: left; width: 6px; height: 6px }
 .xsbc { background: url(./images/shadow.png) repeat-x scroll 0 -36px transparent; float: left; height: 6px }
 .xsbr { background: url(./images/shadow.png) repeat-x scroll 0 -6px transparent; float: left; width: 6px; height: 6px }
+
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#t .nav-link {
+    background-image: none;
+  }
+}

@@ -5,7 +5,7 @@
 }
 html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
 html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 11px;}
-div, fieldset, textarea, select, input, .Button, td {
+div, nav, fieldset, textarea, select, input, .Button, td {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -138,35 +138,73 @@ ul.CMenu li:hover ul.left {left: -150px}
 span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
 #sel {width: 0px; height: 0px; position: absolute; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
 
-div#t {width: 100%; height: 36px; background: #F0F0F0 url(../images/t_bg.png) repeat-x center center; border-bottom: 1px solid #D0D0D0; white-space: nowrap}
-div#t a {float: left; margin: 3px 0 0 5px; padding: 3px}
-div#t a:hover {background: transparent url(../images/tb_bg.gif) no-repeat scroll center center}
-div#t a:active {padding: 4px 2px 2px 4px}
-div#t div {width: 24px; height: 24px; float: left; cursor: pointer}
-div#t div.TB_Separator {width: 1px; height: 22px; margin: 7px 0 0 5px; padding: 0; border: 0; background-color: #A0A0A0}
+div#t {
+  height: auto;
+  background: #F0F0F0 url(../images/t_bg.png) repeat-x center 0.25rem;
+  border-bottom: 1px solid #D0D0D0;
+  white-space: nowrap;
+}
+#top-menu {
+  background-color: #F0F0F0;
+  border-bottom: 1px solid #D0D0D0;
+  z-index: 30;
+}
+div#t button.navbar-toggler {width: 3rem; background-color: #F0F0F0;}
+div#t a {padding: 3px;}
+div#t div.navbar-nav a:hover {
+  filter: brightness(1.3);
+}
+div#t div.navbar-nav a:active {padding: 4px 2px 2px 4px;}
+div#t div.TB_Separator {
+  align-self: stretch;
+  flex: 0 0 1px;
+  margin: 0.25rem;
+  padding: 0;
+  border: 0;
+  background-color: #A0A0A0;
+}
+div#t .nav-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  border: 1px solid #A0A0A0;
+  border-radius: 8px;
+  background-color: #F0F0F0;
+  background-image: none;
+  margin: 0.15rem;
+}
+div.navbar-nav div.nav-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+div#add, div#remove, div#start, div#pause, div#stop, div#search, div#rss, div#setting {background-image: url(../images/toolbar.png);}
+div#add {background-position-x: -24px;}
+div#remove {background-position-x: -72px;}
+div#start {background-position-x: -96px;}
+div#pause {background-position-x: -120px;}
+div#stop {background-position-x: -144px;}
+div#search {background-position-x: -216px;}
+div#rss {background-position-x: -240px;}
+div#setting {background-position-x: -264px;}
+div#moveu {background: url(../images/toolbar.png) -168px center}
+div#moved {background: url(../images/toolbar.png) -192px center}
+div#help {background: url(../images/quest.gif) 0px center}
+div#plugins {background: url(../images/plugin.png) 0px center}
+#go {background: url(../images/go.gif) 0px center; }
 
-div#t div#add {background: transparent url(../images/toolbar.png) no-repeat -24px center}
-div#t div#create {background: transparent url(../images/toolbar.png) no-repeat -48px center}
-div#t div#remove {background: transparent url(../images/toolbar.png) no-repeat -72px center}
-div#t div#start {background: transparent url(../images/toolbar.png) no-repeat -96px center}
-div#t div#pause {background: transparent url(../images/toolbar.png) no-repeat -120px center}
-div#t div#stop {background: transparent url(../images/toolbar.png) no-repeat -144px center}
-div#t div#moveu {background: transparent url(../images/toolbar.png) no-repeat -168px center}
-div#t div#moved {background: transparent url(../images/toolbar.png) no-repeat -192px center}
-div#t div#search {background: transparent url(../images/toolbar.png) no-repeat -216px center}
-div#t div#rss {background: transparent url(../images/toolbar.png) no-repeat -240px center}
-div#t div#setting {background: transparent url(../images/toolbar.png) no-repeat -264px center}
+#ind {
+  background: transparent url(../images/ajax-loader.gif) no-repeat 0px center;
+  width: 32px;
+  height: 32px;
+  cursor: default;
+}
 
-div#t div#help {background: transparent url(../images/quest.gif) no-repeat 0px center}
-div#t div#plugins {background: transparent url(../images/plugin.png) no-repeat 0px center}
-
-#rc { float: right; }
-#go {background: transparent url(../images/go.gif) no-repeat 0px center; }
-#query { margin-top: 4px; }
-div#t a#mnu_go {margin: 3px 0 0 0; padding: 3px}
-div#t #ind {margin-top: 2px; background: transparent url(../images/ajax-loader.gif) no-repeat 0px center; width: 32px; margin-right: 2px; line-height: 26px; cursor: default; }
-
-input.Textbox {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px}
 Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 50px}
 Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 110px}
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
@@ -389,26 +427,12 @@ div.space {flex-grow: 1;}
 
 #bf {white-space:pre}
 
-@media only screen and (orientation:portrait) 
-{ 
-	#go { display: none }
-	#query { width: 80px }
-}
-
 @media only screen and (min-width: 1280px) {
   .desktop { display: inline-block; }
 }
 
 @media only screen and (max-width: 1279px) {
   .desktop { display: none; }
-}
-
-@media only screen and (min-width: 730px) {
-  .mobile-search { display: inline-block; }
-}
-
-@media only screen and (max-width: 729px) {
-  .mobile-search { display: none; }
 }
 
 /* Custom break point settings for responsiveness */
@@ -434,6 +458,23 @@ div.dlg-window .buttons-list {
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
+  div#t {
+    height: 36px;
+  }
+  #top-menu {
+    background-color: transparent;
+    border-bottom: none;
+    z-index: auto;
+  }
+  div#t div.navbar-nav a:hover {
+    background: transparent url(../images/tb_bg.gif) no-repeat scroll center center;
+    filter: none;
+  }
+  div#t .nav-link {
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+  }
   div#tadd {min-width: 600px;}
   div.dlg-window .buttons-list {
     margin: 1rem 0.5rem;

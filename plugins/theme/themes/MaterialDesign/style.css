@@ -277,13 +277,27 @@ ul.CMenu li ul li a.dis:hover
 	border:1px dotted #555
 }
 
-div#t
-{
+div#t {
 	background-color:#273238;
 	background-image:none;
 	border-bottom:none;
 	padding:4px 0 2px 5px;
-	height: 40px;
+	height: auto;
+}
+
+#top-menu {
+  background-color: #273238;
+  border-bottom: none;
+}
+div#t button.navbar-toggler {
+  background-color: #3498DB;
+  background-image: none;
+  border: none;
+}
+div#t .nav-link {
+  background-color: #181818;
+  border: none;
+  color: #EEE;
 }
 
 div#t a
@@ -1064,16 +1078,6 @@ div#t div#ind
 	margin:2px 6px
 }
 
-tr#rrow td *
-{
-	margin-top:-2px
-}
-
-tr#rrow td a#mnu_go div#go
-{
-	margin-top:-5px
-}
-
 span#loadimg
 {
 	background:transparent url(./images/ajax-loader.gif) no-repeat center center
@@ -1157,55 +1161,47 @@ div#lcont div.std:nth-child(2n+1)
 }
 
 
-#st_up
-{
-	background:url(./images/status.png) no-repeat 6px 2px
+#st_up .icon {
+	background:url(./images/status.png) no-repeat 0px -2px;
+	background-size: 100%;
 }
 
-#st_down
-{
-	background:url(./images/status.png) no-repeat 6px -18px
+#st_down .icon {
+	background:url(./images/status.png) no-repeat 0px -22px;
+	background-size: 100%;
 }
 
-.statuscell
-{
-	padding-right:5px;
-	border:none
+.status-cell {
+	padding-right: 5px;
+	border: none;
 }
 
-#stup_speed
-{
-	color:#AACF27
+#stup_speed {
+	color:#AACF27;
 }
 
-#stdown_speed
-{
-	color:#178FD1
+#stdown_speed {
+	color:#178FD1;
 }
 
-#stup_total,#stdown_total
-{
-	color:#fff
+#stup_total, #stdown_total {
+	color:#FFF;
 }
 
-span#ds,span#dl
-{
-	color:#178FD1
+span#ds, span#dl {
+	color:#178FD1;
 }
 
-span#ra
-{
-	color:#F70000
+span#ra {
+	color:#F70000;
 }
 
-span#us,span#ul
-{
-	color:#AACF27
+span#us, span#ul {
+	color:#AACF27;
 }
 
-span.det
-{
-	color:#fff
+span.det {
+	color:#FFF;
 }
 
 .stable-head table tr td
@@ -1272,3 +1268,13 @@ span.det
 .stval { color: #FFF; }
 .tickLabel { color: #FFF; }
 .fxcaret legend { color: #FFF; }
+
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+	div#t {
+		height: 40px;
+	}
+  div#t .nav-link {
+    background-color: transparent;
+  }
+}

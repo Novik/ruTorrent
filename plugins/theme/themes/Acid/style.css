@@ -70,8 +70,16 @@ div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
 .graph_tab_tooltip { color: #FFF; background-color: #272E36; border: 1px solid #BDDBDB; }
 
 div#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
-div#t a:hover {background: transparent url(./images/tb_bg.gif) no-repeat scroll center center}
-
+#top-menu {
+  background-color: #252525;
+  border-bottom: 1px solid #252525;
+}
+div#t .nav-link {
+  background-color: #1E2124;
+  border-color: #D0D0D0;
+  color: #00FF00;
+  font-weight: bold;
+}
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}
 div#t div#remove {background: transparent url(./images/toolbar.png) no-repeat -72px center}
@@ -150,3 +158,11 @@ div#tadd { background-color: #1e2124; border: 2px solid #909090; color: #BDDBDB;
 
 .sthdr { color: #00FF00;}
 .stval { color: #BDDBDB;}
+
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#t .nav-link {
+    background-color: transparent;
+    border: none;
+  }
+}

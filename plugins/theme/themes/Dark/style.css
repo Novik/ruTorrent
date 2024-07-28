@@ -71,7 +71,20 @@ ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat s
 #sel {border: 1px dotted #555555;}
 
 div#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #333333;}
-div#t a:hover {background: transparent url(./images/tb_bg.gif) no-repeat scroll center center}
+#top-menu {
+  background-color: #181818;
+  border-bottom: 1px solid #333333;
+}
+div#t button.navbar-toggler {
+  background-color: #888888;
+  background-image: none;
+  border-color: #333333;
+}
+div#t .nav-link {
+  background-color: #333333;
+  border-color: #333333;
+  color: #686868;
+}
 div#t div.TB_Separator {background-color: #333333}
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}
@@ -156,3 +169,11 @@ span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat ce
 #st_up { background:url(./images/status_up.gif) 6px no-repeat; }
 #st_down { background:url(./images/status_down.gif) 6px no-repeat; }
 .statuscell {border-right: 1px solid #333333;}
+
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#t .nav-link {
+    background-color: transparent;
+    border: none;
+  }
+}

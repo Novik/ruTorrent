@@ -51,6 +51,7 @@ input.Button:not([disabled]):hover:active {
   background: linear-gradient(to bottom, #c7c7c7 5%, #d6d6d6 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c7c7c7', endColorstr='#d6d6d6',GradientType=0);
   background-color: #c7c7c7;
+  box-shadow: inset 0px 0px 8px 0px #474747;
   -moz-box-shadow: inset 0px 0px 8px 0px #474747;
   -webkit-box-shadow: inset 0px 0px 8px 0px #474747;
 }
@@ -207,6 +208,20 @@ ul.CMenu li ul li a.dis:hover {background-color: #181818; color: #333333}
 #sel {border: 1px dotted #555555}
 
 div#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #333333;}
+#top-menu {
+  background-color: #181818;
+  border-bottom: 1px solid #333333;
+}
+div#t button.navbar-toggler {
+  background-color: #888888;
+  background-image: none;
+  border-color: #333333;
+}
+div#t .nav-link {
+  background-color: #181818;
+  border-color: #333333;
+  color: #686868;
+}
 div#t a:hover {background: #222;}
 div#t div.TB_Separator {background-color: #333333}
 div#t div#add {background: transparent url(./images/tb_add.svg) no-repeat center; background-size: 28px}
@@ -317,45 +332,60 @@ div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; background-size: 28px}
 
 #StatusBar {border-top: 1px solid #333333; background-color: #181818; color: #888888}
-#st_up {background:url(./images/up.svg) no-repeat; background-size: 22px}
-#st_down {background:url(./images/down.svg) no-repeat; background-size: 22px}
-.statuscell {border-right: 1px solid #333333}
-
+#st_up .icon {background:url(./images/up.svg) no-repeat; background-size: 100%;}
+#st_down .icon {background:url(./images/down.svg) no-repeat; background-size: 100%;}
+.status-cell {border-right: 1px solid #333333}
 
 div#stg-header {
-    background: url(./images/settings.svg) no-repeat 2px center !important; background-size: 20px; padding-left: 28px;
+  background: url(./images/settings.svg) no-repeat 2px center !important;
+  background-size: 20px;
+  padding-left: 28px;
 }
 
 div#tcreate div.dlg-header {
-    background: transparent url(./images/tb_create.svg) no-repeat 2px center !important; background-size: 20px !important;
+  background: transparent url(./images/tb_create.svg) no-repeat 2px center !important;
+  background-size: 20px !important;
 }
 
 div#dlgEditRules div.dlg-header, div#dlgEditFilters div.dlg-header {
-    background: transparent url(./images/tb_rss.svg) no-repeat 2px center !important; background-size: 20px !important;
+  background: transparent url(./images/tb_rss.svg) no-repeat 2px center !important;
+  background-size: 20px !important;
 }
 
 div#dlgEditRatioRules div.dlg-header, div#tedit div.dlg-header, div#padd div.dlg-header, div#tskConsole div.dlg-header {
-    background: transparent url(./images/edit.svg) no-repeat 2px center !important; background-size: 20px !important;
+  background: transparent url(./images/edit.svg) no-repeat 2px center !important;
+  background-size: 20px !important;
 }
 
 div#tadd-header {
-    background: transparent url(./images/world.svg) no-repeat 2px center !important; background-size: 20px !important;
+  background: transparent url(./images/world.svg) no-repeat 2px center !important;
+  background-size: 20px !important;
 }
 
 div#dlgHelp div.dlg-header, div#dlgAbout div.dlg-header {
-    background: transparent url(./images/quest.svg) no-repeat 2px center !important; background-size: 20px !important;
+  background: transparent url(./images/quest.svg) no-repeat 2px center !important;
+  background-size: 20px !important;
 }
 
 div#dlgLabel div.dlg-header {
-    background: url(./images/label.svg) no-repeat 2px center !important; background-size: 20px !important;
+  background: url(./images/label.svg) no-repeat 2px center !important;
+  background-size: 20px !important;
 }
 
 div#dlgProps div.dlg-header {
-    background: url(./images/file.svg) no-repeat 2px center !important; background-size: 20px !important;
+  background: url(./images/file.svg) no-repeat 2px center !important;
+  background-size: 20px !important;
 }
 
 div#yesnoDlg div.dlg-header {
-    background: url(./images/yellow.svg) no-repeat 2px center !important; background-size: 20px !important;
+  background: url(./images/yellow.svg) no-repeat 2px center !important;
+  background-size: 20px !important;
 }
 
-div.dlg-header {}
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#t .nav-link {
+    background-color: transparent;
+    border: none;
+  }
+}

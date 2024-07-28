@@ -68,47 +68,51 @@
 		<div id="rs"></div>
 		<div id="sel"></div>
 		<div id="sc"></div>
-		<div id="t"><a id="mnu_add" href="javascript://void();" onclick="theWebUI.showAdd(); return(false);" onfocus="this.blur()" uilangtitle="mnu_add">
-				<div id="add"></div>
-			</a>
-			<div class="TB_Separator"></div>
-			<a id="mnu_remove" href="javascript://void();" onclick="theWebUI.removeTorrent(); return(false);" onfocus="this.blur()" uilangtitle="mnu_remove">
-				<div id="remove"></div>
-			</a>
-			<div class="TB_Separator"></div>
-			<a id="mnu_start" href="javascript://void();" onclick="theWebUI.start(); return(false);" onfocus="this.blur()" uilangtitle="mnu_start">
-				<div id="start"></div>
-			</a><a id="mnu_pause" href="javascript://void();" onclick="theWebUI.pause(); return(false);" onfocus="this.blur()" uilangtitle="mnu_pause">
-				<div id="pause"></div>
-			</a><a id="mnu_stop" href="javascript://void();" onclick="theWebUI.stop(); return(false);" onfocus="this.blur()" uilangtitle="mnu_stop">
-				<div id="stop"></div>
-			</a>
-			<div class="TB_Separator"></div>
-			<a id="mnu_settings" href="javascript://void();" onclick="theWebUI.showSettings(); return(false);" onfocus="this.blur()" uilangtitle="mnu_settings">
-				<div id="setting"></div>
-			</a>
-			<div class="TB_Separator"></div>
-			<a id="mnu_help" href="javascript://void();" onclick="theDialogManager.toggle('dlgHelp'); return(false);" onfocus="this.blur()" uilangtitle="mnu_help">
-				<div id="help"></div>
-			</a>
-			<table id='rc' class="mobile-search" cellpadding="0" cellspacing="0"><tr id='rrow'>
-				<td>
-					<a id="mnu_search" class="top-menu-item" href="javascript://void();" onclick="theSearchEngines.show(); return(false);" onfocus="this.blur()" uilangtitle="mnu_search">
-						<div id="search" class="top-menu-item"></div>
-					</a>
-				</td>
-				<td>
-					<input type="text" class="TextboxMid" id="query" onfocus="$('#sc').hide();"/>
-				</td>
-				<td>
-					<a id="mnu_go" href="javascript://void();" onclick="theSearchEngines.run(); return(false);" onfocus="this.blur()" ulangtitle="mnu_go">
-						<div id="go"></div>
-					</a>
-				</td>
-				<td>
-					<div id="ind"></div>
-				</td>
-			</tr></table>
+		<div id="t" class="py-0 navbar navbar-expand-md">
+			<div class="container-fluid justify-content-end px-0">
+				<button class="navbar-toggler my-2" type="button" data-bs-toggle="collapse" data-bs-target="#top-menu" aria-controls="top-menu" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>	
+				<div class="collapse navbar-collapse px-1 py-2 py-md-0" id="top-menu">
+					<div class="navbar-nav flex-grow-1">
+						<a id="mnu_add" class="nav-link" href="#" onclick="theWebUI.showAdd(); return(false);" onfocus="this.blur()" uilangtitle="mnu_add">
+							<div id="add" class="nav-icon"></div>
+						</a>
+						<div class="TB_Separator"></div>
+						<a id="mnu_remove" class="nav-link" href="#" onclick="theWebUI.removeTorrent(); return(false);" onfocus="this.blur()" uilangtitle="mnu_remove">
+							<div id="remove" class="nav-icon"></div>
+						</a>
+						<div class="TB_Separator"></div>
+						<a id="mnu_start" class="nav-link" href="#" onclick="theWebUI.start(); return(false);" onfocus="this.blur()" uilangtitle="mnu_start">
+							<div id="start" class="nav-icon"></div>
+						</a>
+						<a id="mnu_pause" class="nav-link" href="#" onclick="theWebUI.pause(); return(false);" onfocus="this.blur()" uilangtitle="mnu_pause">
+							<div id="pause" class="nav-icon"></div>
+						</a>
+						<a id="mnu_stop" class="nav-link" href="#" onclick="theWebUI.stop(); return(false);" onfocus="this.blur()" uilangtitle="mnu_stop">
+							<div id="stop" class="nav-icon"></div>
+						</a>
+						<div class="TB_Separator"></div>
+						<a id="mnu_settings" class="nav-link" href="#" onclick="theWebUI.showSettings(); return(false);" onfocus="this.blur()" uilangtitle="mnu_settings">
+							<div id="setting" class="nav-icon"></div>
+						</a>
+						<div class="TB_Separator"></div>
+						<a id="mnu_help" class="nav-link" href="#" onclick="theDialogManager.toggle('dlgHelp'); return(false);" onfocus="this.blur()" uilangtitle="mnu_help">
+							<div id="help" class="nav-icon"></div>
+						</a>
+						<div id="rc" class="ms-0 ms-md-auto d-flex gap-1 flex-row align-items-center">
+							<a id="mnu_search" class="nav-link top-menu-item" href="#" onclick="theSearchEngines.show(); return(false);" onfocus="this.blur()" uilangtitle="mnu_search">
+								<div id="search" class="nav-icon top-menu-item"></div>
+							</a>
+							<input type="text" id="query" onfocus="$('#sc').hide();"/>
+							<a id="mnu_go" class="nav-link" href="#" onclick="theSearchEngines.run(); return(false);" onfocus="this.blur()" ulangtitle="mnu_go">
+								<div id="go" class="nav-icon"></div>
+							</a>
+							<div id="ind" class="flex-shrink-0"></div>
+						</div>
+					</div>
+				</div>	
+			</div>
 		</div>
 		<table id="maincont" cellpadding="0" cellspacing="0" summary="layout table">
 			<tr>
@@ -289,5 +293,6 @@
 		</div>
 		<div class="graph_tab_grid"></div>
 		<div class="graph_tab_legend"></div>
+		<script type="text/javascript" src="./js/bootstrap.bundle.min.js?v=430"></script>
 	</body>
 </html>
