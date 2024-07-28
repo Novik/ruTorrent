@@ -206,8 +206,6 @@ div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #18181
 
 
 .lm li {background: transparent url(./images/bul.gif) no-repeat scroll left center}
-.lm li.first {background: transparent url(./images/bul_f.gif) no-repeat scroll left bottom}
-.lm li.last {background: transparent url(./images/bul_l.gif) no-repeat scroll left top}
 .lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
 .lm li a {color: #888888}
 .lm li a.focus {background-color: #333333}

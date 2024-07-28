@@ -424,7 +424,7 @@ div select {
 	padding:1px 4px
 }
 
-#st_ao_h,#st_throttle_h
+#st_throttle_h
 {
 	height:360px !important
 }
@@ -638,7 +638,7 @@ div#stg .lm
 	border:none
 }
 
-.lm li,.lm li.first,.lm li.last,.lm li div.toggle
+.lm li, .lm li div.toggle
 {
 	background:transparent none repeat scroll 0 0;
 	text-transform:uppercase;

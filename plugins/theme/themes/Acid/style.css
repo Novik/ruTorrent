@@ -105,8 +105,6 @@ div#stg-header { background: #1e2124 url(./images/settings.gif) no-repeat scroll
 div#stg .lm { background-color: #272E36; border: 1px solid #D0D0D0; }
 
 .lm li { background: transparent url(./images/bul.gif) no-repeat scroll left center}
-.lm li.first {background: transparent url(./images/bul_f.gif) no-repeat scroll left bottom}
-.lm li.last {background: transparent url(./images/bul_l.gif) no-repeat scroll left top}
 .lm li div.toggle { background: transparent url(./images/exp.gif) no-repeat scroll center center; }
 .lm li a {color: #BDDBDB; }
 .lm li a.focus {background-color: #BDDBDB; color: #272E36;}
