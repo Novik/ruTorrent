@@ -171,7 +171,7 @@ div#t {
   border-bottom: 1px solid #D0D0D0;
   z-index: 30;
 }
-div#t button.navbar-toggler {width: 3rem; background-color: #F0F0F0;}
+div#t button.navbar-toggler {background-color: #F0F0F0;}
 div#t a {padding: 3px;}
 div#t div.navbar-nav a:hover {
   filter: brightness(1.3);
