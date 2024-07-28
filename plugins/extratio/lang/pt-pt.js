@@ -18,7 +18,7 @@
  theUILang.ratTrackerPublic	= "Todos os rastreadores de torrent são públicos";
  theUILang.ratTrackerPrivate	= "Um dos rastreadores do torrent é privado";
  theUILang.ratioThenLegend	= "Então"; // Then
- theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
+ theUILang.ratShortcutLegend	= "Atalhos do teclado";
  theUILang.setRatioTo		= "Definir racio para";
  theUILang.setChannelTo		= "Definir velocidade para"; // Set thtottle to: check better translation
  theUILang.ratioNewRule		= "Nova regra";
