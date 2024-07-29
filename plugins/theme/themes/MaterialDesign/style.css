@@ -467,8 +467,12 @@ category-panel::part(heading)
 	border: none;
 }
 
-.stable-icon
-{
+.stable {
+	background-color:#181818;
+	font-family:'Roboto';
+}
+
+.stable-icon {
 	background-image:url(./images/status_icons.png);
 }
 
@@ -546,14 +550,7 @@ div.graph_tab
 	border: 1px solid #606060;
 }
 
-div.table_tab
-{
-	background-color:#181818;
-	font-family:'Roboto'
-}
-
-div#modalbg
-{
+div#modalbg {
 	background-color:#181818
 }
 
