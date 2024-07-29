@@ -5,7 +5,7 @@
 }
 html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
 html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 11px;}
-div, nav, fieldset, textarea, select, input, .Button, td {
+div, td, label, fieldset, textarea, select, input, button, .Button {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -43,15 +43,19 @@ textarea {
   resize: none;
   width: 100%;
 }
+label {
+  cursor: pointer;
+  margin: 0.15rem 0.25rem;
+}
 input[type=checkbox], input[type=radio] {margin: 0.25rem;}
-select, input[type=file], input[type=text] {
+select, input[type=file], input[type=text], input[type=number], input[type=password] {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
   margin: 0.25rem;
   padding: 0.25rem;
   width: 100%;
 }
-button, input[type=button], .Button {
+button, input[type=button], input[type=submit], .Button {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
   margin: 0.25rem;
@@ -109,9 +113,27 @@ div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute;
 .ie div#modalbg { filter:alpha(opacity=50); }
 
 div.aright {text-align: right}
-div.dlg-window {position: absolute; left: 0px; top: 0px; background-color: #FAFAFA; font-size: 11px;  color: #000000; border: 2px solid #909090; display: none; overflow: hidden}
+div.dlg-window {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  background-color: #FAFAFA;
+  color: #000000;
+  border: 2px solid #909090;
+  border-radius: 8px;
+  display: none;
+  overflow: hidden;
+  max-width: 95vw;
+}
 div.fxcaret {overflow: auto}
-div.dlg-header {padding: 2px 24px; line-height: 20px; background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center; font-size: 11px;  font-weight: bold; border-bottom: 1px solid #909090}
+div.dlg-header {
+  padding: 2px 24px;
+  line-height: 20px;
+  background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center;
+  font-weight: bold;
+  border-bottom: 1px solid #909090;
+  border-radius: 10px 10px 0 0;
+}
 a.dlg-close:link, a.dlg-close:visited {width: 14px; height: 14px; margin: 5px; background: transparent url(../images/close.png) no-repeat scroll left center; float: right; border: 0}
 a.dlg-close:hover {width: 14px; height: 14px; background: transparent url(../images/close.png) no-repeat scroll -14px center; float: right; border: 0}
 a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../images/close.png) no-repeat scroll -28px center; float: right; border: 0}
@@ -149,7 +171,7 @@ div#t {
   border-bottom: 1px solid #D0D0D0;
   z-index: 30;
 }
-div#t button.navbar-toggler {width: 3rem; background-color: #F0F0F0;}
+div#t button.navbar-toggler {background-color: #F0F0F0;}
 div#t a {padding: 3px;}
 div#t div.navbar-nav a:hover {
   filter: brightness(1.3);
@@ -236,54 +258,82 @@ div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize;
 div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
 div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
 
-div#stg {width: 600px; height: 560px; position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
-div#stg_c {overflow: hidden}
+div#stg {position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
+div#stg_c {
+  display: flex;
+  flex-direction: row;
+}
+div#stg-pages {
+  padding: 0 0.5rem;
+  height: 550px;
+  width: 550px;
+  display: flex;
+  flex-direction: column;
+}
+div#stg_c div.row > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 div#stg-header { background-image: url(../images/settings.gif); }
 
-div#stg .lm {width: 120px; height: 511px; margin: 5px; margin-right: 0; padding: 5px; float: left; position: relative; background-color: var(--menu-background-color); border: 1px solid var(--menu-border-color); overflow: auto}
+div#stg .lm {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--menu-background-color);
+  border: 1px solid var(--menu-border-color);
+  border-radius: 0 0 0 6px;
+  overflow: hidden auto;
+}
 .ie div#stg .lm {width: 125px; position: static;}
 .ie9 div#stg .lm {position: static}
 .ie div#stg {width: 605px;}
 div.op100l {width: 400px; float: left}
-div.op50l {width: 200px; float: left; clear: left}
-div.op50l select {padding: 0}
-div.algnright {text-align: right; clear: right}
-.ie div.op50l {clear: none}
-.ie div.algnright {clear: none}
-.ie9 div.op50l {clear: left}
-.ie9 div.algnright {clear: right}
 
+.lm li {
+  margin: 0.25rem 0.5rem;
+  padding: 0 0 0 1rem;
+  line-height: 1.5rem;
+  background: transparent url(../images/bul.gif) no-repeat scroll left center;
+}
+.lm li:first-of-type {
+  background-image: url(../images/bul_f.gif);
+  background-position-y: bottom;
+}
+.lm li:last-of-type {
+  background-image: url(../images/bul_l.gif);
+  background-position-y: top;
+}
 .lm ul {width: 100%; margin: 0; padding: 0; list-style-position: inside; list-style: none}
-.lm li {margin: 0 5px; padding: 0 12px; line-height: 16px !important; background: transparent url(../images/bul.gif) no-repeat scroll left center}
 .lm ul.child {margin: 0 0 0 5px; display: none}
 .lm ul.child li {margin: 0 0 0 9px}
-.lm li.first {background: transparent url(../images/bul_f.gif) no-repeat scroll left bottom}
-.lm li.last {background: transparent url(../images/bul_l.gif) no-repeat scroll left top}
 .lm li div.toggle {width: 10px; height: 10px; background: transparent url(../images/exp.gif) no-repeat scroll center center; float: left; margin: 3px 0 0 -16px; cursor: pointer}
-.lm li a {color: #000000; padding: 1px 2px}
+.lm li a {
+  color: #000000;
+  padding: 1px 2px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 .lm li a.focus {background-color: #E0E0E0}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
-.stg_con { display: none; float: right; position: relative; width: 450px; height: 500px; margin: 4px; background-color: var(--settings-background-color); }
+.stg_con {
+  display: none;
+  flex: 1 1 auto;
+  background-color: var(--settings-background-color);
+  overflow: hidden auto;
+}
 .ie9 .stg_con {position: static}
 .stg_con table {width: 100%}
 .stg_con td {font-weight: normal; height: 19px}
 .stg_con td.alr {text-align: right}
-.stg_con td input {margin: 0 4px; font-size: 11px; padding: 1px 4px}
-.stg_con select {margin: 1px 4px; font-size: 11px; padding: 1px 4px}
-input.num {text-align: right; width: 50px}
-input.str {text-align: left; width: 130px}
-td label, div label {cursor: pointer}
 input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
 .ie7 fieldset div {padding: 0px}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
 #st_que, #st_sch, #st_dc {display: none}
-#st_btns {float: right; position: relative; width: 450px; height: 20px; padding: 3px; text-align: right; }
-#st_btns input {margin-left: 5px}
 a {text-decoration: none}
-#st_ao_h {width: 420px; overflow: auto; }
-#st_ao_h table {width: 400px}
 select.cols {border: 1px solid #808080; font-size: 11px;  padding: 2px; width: 120px}
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
 div#tdetails {height: 50%; padding: 0 5px 0 0; background-color: #F5F5F5}
@@ -410,13 +460,23 @@ div#tadd .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
   min-width: 3rem;
 }
 .speedEdit { width: 320px }
-.decimalDigitEdit input[type=number] { padding: 1px; margin: 0; width: 3em; }
-.decimalDigitEdit tr:first-child th { text-align: center; }
-.decimalDigitEdit tr th { text-align: left; }
-.userInterfaceOptions {  max-height: 180px; }
-.userInterfaceOptions > div { max-width: 50% }
-.optionColumn { display: flex; justify-content: space-between; flex-flow: column wrap; }
-.optionColumn input[type=number],.optionColumn select { padding: 1px; margin: 0.1em 0.5em; width: 6em; }
+.decimalDigitEdit input[type=number] {padding: 1px; margin: 0;}
+.decimalDigitEdit > .row > div {padding-left: 0.25rem; padding-right: 0.25rem;}
+.decimalDigitEdit > .row {padding: 0.5rem 0;}
+.decimalDigitEdit > .row:not(:last-child) {
+  border-bottom: 1px dotted #D0D0D0;
+}
+.decimalDigitEdit > .row:first-of-type > div,
+.decimalDigitEdit > .row > div:first-of-type {
+  font-weight: bold;
+  justify-content: center;
+}
+.optionColumn {
+  display: flex;
+  justify-content: space-between;
+  flex-flow: column wrap;
+  margin-bottom: 0.5rem;
+}
 .optionColumn div { display:flex; align-items: center; padding-left: 0; }
 .buttons-group-row {margin: 0.25rem; gap: 0.25rem; display: flex; flex-direction: row;}
 

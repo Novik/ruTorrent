@@ -260,12 +260,16 @@ rPlugin.prototype.canBeLaunched = function()
 
 rPlugin.prototype.attachPageToOptions = function(dlg,name)
 {
-        if(this.canChangeOptions())
+	if(this.canChangeOptions())
 	{
 		$("#st_btns").before( $(dlg).addClass("stg_con") );
-		$(".lm ul li:last").removeClass("last");
-		$(".lm ul").append( $("<li>").attr("id","hld_"+dlg.id).addClass("last").html("<a id='mnu_"+dlg.id+"' href=\"javascript://void()\" onclick=\"theOptionsSwitcher.run('"+dlg.id+"'); return(false);\">"+name+"</a>") );
-		$(dlg).css( {display: "none"} );
+		$(".lm ul").append(
+			$("<li>").attr("id","hld_"+dlg.id).append(
+				$("<a>").attr(
+					{id: `mnu_${dlg.id}`, href: "#", onclick: `theOptionsSwitcher.run('${dlg.id}');return(false);`}
+				).text(name),
+			),
+		);
 	}
 	return(this);
 }
