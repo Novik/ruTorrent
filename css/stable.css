@@ -1,28 +1,28 @@
 .stable {
   background-color: #FFFFFF;
-	border: 1px solid;
-	border-color: #D0D0D0 #FFFFFF #FFFFFF #D0D0D0;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	user-select: none;
-	-moz-user-select: none;
-	-moz-user-focus: normal;
-	-moz-user-input: enabled;
+  border: 1px solid;
+  border-color: #D0D0D0 #FFFFFF #FFFFFF #D0D0D0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  user-select: none;
+  -moz-user-select: none;
+  -moz-user-focus: normal;
+  -moz-user-input: enabled;
 }
 .stable td {font: menu; white-space: nowrap; padding: 1px}
 .stable-head {
-	width: 100%;
-	flex: 0 0 auto;
-	background: #F5F5F5;
-	overflow: hidden;
-	user-select: none;
-	-moz-user-select: none;
-	border: 1px solid;
-	border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF;
-	border-bottom: 0;
-	z-index: 10;
+  width: 100%;
+  flex: 0 0 auto;
+  background: #F5F5F5;
+  overflow: hidden;
+  user-select: none;
+  -moz-user-select: none;
+  border: 1px solid;
+  border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF;
+  border-bottom: 0;
+  z-index: 10;
 }
 .stable-head table {table-layout: fixed; width: 0}
 .stable-head table tr {background: transparent url(../images/header.gif) repeat-x scroll center top}
@@ -30,11 +30,11 @@
 .stable-head td div {padding: 0 12px 0 4px}
 .stable-head div.resz {border: 1px solid #FF0000; width: 5px; height: 14px; padding: 0 !important; float: right; background: transparent url(../images/s.gif) no-repeat scroll left center; cursor: e-resize}
 .stable-body {
-	width: 100%;
-	flex: 1 1 auto;
-	background: #F5F5F5;
-	overflow: auto;
-	overflow-anchor: none;
+  width: 100%;
+  flex: 1 1 auto;
+  background: #F5F5F5;
+  overflow: auto;
+  overflow-anchor: none;
 }
 .stable-body table {table-layout: fixed; width: 0; }
 .stable-body tr {cursor: pointer}
