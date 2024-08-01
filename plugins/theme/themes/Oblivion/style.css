@@ -280,8 +280,8 @@ div#lcont div.std:nth-child(2n+1) {background: #181818 url(./images/headers.png)
 #StatusBar table tr td {padding-right:5px;border:none;background: transparent url(./images/headers.png) no-repeat right -208px;}
 #StatusBar table tr td td {background:none;}
 #StatusBar table tr td:last-child {border-top:red;}
-#st_up .icon {background:url(./images/status.png) no-repeat 6px 2px;}
-#st_down .icon {background:url(./images/status.png) no-repeat 6px -18px;}
+#st_up .icon {background:url(./images/status.png) no-repeat 0px -2px;}
+#st_down .icon {background:url(./images/status.png) no-repeat 0px -22px;}
 .statuscell {padding-right:5px;border:none;}
 #stup_speed{color:#AACF27;}
 #stdown_speed {color: #178FD1;}
