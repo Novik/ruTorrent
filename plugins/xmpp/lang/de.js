@@ -13,7 +13,7 @@
  theUILang.xmppJabberFor		= "Empfänger:";
  theUILang.xmppMessage			= "Nachricht:";
  theUILang.xmppJabberPasswd		= "Passwort:";
- theUILang.xmppAdvancedSettings		= "Erweitert:";
+ theUILang.xmppAdvancedSettings		= "Erweitert";
  theUILang.xmppJabberHost		= "Host";
  theUILang.xmppJabberPort		= "Port";
  theUILang.xmppUseEncryption		= "Verschlüsselung nutzen";

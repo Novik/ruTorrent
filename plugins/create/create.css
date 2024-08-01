@@ -17,7 +17,7 @@ div#tcreate {min-width: 90vw;}
 @media (min-width: 576px) { 
   /* Custom rules for small devices */
   div#tcreate {min-width: 518px;}
-  div#tcreate textarea {resize: none; height: 16rem;}
+  div#tcreate textarea {height: 16rem;}
 }
 
 /* Medium devices (tablets, 768px and up) */

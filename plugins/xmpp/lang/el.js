@@ -13,7 +13,7 @@
  theUILang.xmppJabberFor		= "Παραλήπτης:";
  theUILang.xmppMessage			= "Μήνυμα:";
  theUILang.xmppJabberPasswd		= "Κωδικός:";
- theUILang.xmppAdvancedSettings		= "Προηγμένες:";
+ theUILang.xmppAdvancedSettings		= "Προηγμένες";
  theUILang.xmppJabberHost		= "Διακομιστής";
  theUILang.xmppJabberPort		= "Θύρα";
  theUILang.xmppUseEncryption		= "Χρήση κρυπτογράφησης";

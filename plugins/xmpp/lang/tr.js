@@ -14,7 +14,7 @@
  theUILang.xmppJabberFor		= "Alıcı:";
  theUILang.xmppMessage			= "İleti:";
  theUILang.xmppJabberPasswd		= "Parola:";
- theUILang.xmppAdvancedSettings		= "Gelişmiş:";
+ theUILang.xmppAdvancedSettings		= "Gelişmiş";
  theUILang.xmppJabberHost		= "Ana makine";
  theUILang.xmppJabberPort		= "Port";
  theUILang.xmppUseEncryption		= "Şifreleme kullan";

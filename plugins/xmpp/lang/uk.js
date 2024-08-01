@@ -13,7 +13,7 @@
  theUILang.xmppJabberFor		= "Одержувач:";
  theUILang.xmppMessage			= "Повідомлення:";
  theUILang.xmppJabberPasswd		= "Пароль:";
- theUILang.xmppAdvancedSettings		= "Додатково:";
+ theUILang.xmppAdvancedSettings		= "Додатково";
  theUILang.xmppJabberHost		= "Сервер";
  theUILang.xmppJabberPort		= "Порт";
  theUILang.xmppUseEncryption		= "Використовувати шифрування";
