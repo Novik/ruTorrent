@@ -80,11 +80,24 @@ theWebUI.updateDetails = function()
 plugin.onLangLoaded = function()
 {
 	$("#mainlayout").append( 
-		"<tr id='chkinfo1'><td colspan='6' class='Header'>"+theUILang.chkHdr+"</td></tr>"+
-		"<tr id='chkinfo2'><td nowrap>"+theUILang.checkedAt+":</td>"+
-			"<td><span id='chktime' class='det'></span></td>"+
-			"<td nowrap>"+theUILang.checkedResult+":</td>"+
-			"<td colspan=3><span id='chkresult' class='det'></span></td></tr>" );
+		$("<div>").addClass("row Header").append(
+			$("<div>").attr({id:"chkinfo1"}).addClass("col-12").text(theUILang.chkHdr),
+		),
+		$("<div>").addClass("row").append(
+			$("<div>").attr({id:"chkinfo2"}).addClass("col-12 col-md-2").append(
+				$("<span>").addClass("det-hdr").text(theUILang.checkedAt + ": "),
+			),
+			$("<div>").addClass("col-12 col-md-10").append(
+				$("<span>").attr({id:"chktime"}).addClass("det"),
+			),
+			$("<div>").addClass("col-12 col-md-2").append(
+				$("<span>").addClass("det-hdr").text(theUILang.checkedResult + ": "),
+			),
+			$("<div>").addClass("col-12 col-md-10").append(
+				$("<span>").attr({id:"chkresult"}).addClass("det"),
+			),
+		),
+	);
 }
 
 plugin.onRemove = function()

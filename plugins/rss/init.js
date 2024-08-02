@@ -206,10 +206,7 @@ theWebUI.config = function()
 	this.rssArray = [];
 	this.filters = [];	
 	$("#List").after(
-		$("<div>")
-		.attr("id","RSSList")
-		.addClass('main-table')
-		.css("display","none")
+		$("<div>").attr("id","RSSList").css("display","none"),
 	);
 	this.tables["rss"] =  
 	{

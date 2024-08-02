@@ -56,8 +56,7 @@ input.Button:not([disabled]):hover:active {
   -webkit-box-shadow: inset 0px 0px 8px 0px #474747;
 }
 
-#CatList,
-category-list {
+#side-panel, category-list {
   border: 1px solid #333333;
   background-color: #181818;
 }
@@ -282,7 +281,7 @@ a {color: #686868}
 
 div.tab {background: #181818}
 div#lcont {background: #181818}
-div#gcont table td.Header {background: #181818}
+div#gcont div.Header {background: #181818;}
 div.graph_tab {background-color: #181818}
 .graph_tab_legend { color: #FFF; background-color: #181818; }
 .graph_tab_tooltip { color: #FFF; background-color: #606060; border: 1px solid #606060; }
@@ -290,7 +289,7 @@ div#List {border: 1px solid #333333}
 
 div#modalbg {background-color: #181818}
 
-div#List {border: 1px solid #333333; background-color: #181818}
+div#list-table {border: 1px solid #333333; background-color: #181818}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
 div#stg {background-color: #181818; color: #888888; border: 1px solid #333333}

@@ -467,12 +467,11 @@ var theWebUI =
 		theTabs.show(tab);
 		this.activeView = tab;
 
-		if(!this.settings["webui.show_cats"])
-			$("#CatList").hide();
-		if(!this.settings["webui.show_dets"])
-		{
+		if (!this.settings["webui.show_cats"])
+			$("#side-panel").hide();
+		if (!this.settings["webui.show_dets"]) {
 			$("#tdetails").hide();
-			if(!theWebUI.systemInfo.rTorrent.started)
+			if (!theWebUI.systemInfo.rTorrent.started)
 				this.toggleDetails();
 		}
 		theDialogManager.setEffects( iv(this.settings["webui.effects"])*200 );
@@ -769,7 +768,7 @@ var theWebUI =
 							}
 							case "webui.show_cats":
 							{
-								$("#CatList").toggle();
+								$("#side-panel").toggle();
 								needResize = true;
 								break;
 							}
@@ -2359,25 +2358,24 @@ var theWebUI =
 		}
 	},
 
-	toggleMenu: function()
-	{
+	toggleMenu: function() {
 		$("#t").toggle();
-  		theWebUI.resize();
+		theWebUI.resize();
 	},
 
-	toggleDetails: function()
-	{
+	toggleDetails: function() {
 		theWebUI.settings["webui.show_dets"] = !theWebUI.settings["webui.show_dets"];
 		$("#tdetails").toggle();
-      		theWebUI.resize();
+		$("#VDivider").toggle();
+		theWebUI.resize();
 		theWebUI.save();
 	},
 
-	toggleCategories: function()
-	{
-	        theWebUI.settings["webui.show_cats"] = !theWebUI.settings["webui.show_cats"];
-		$("#CatList").toggle();
-      		theWebUI.resize();
+	toggleCategories: function() {
+		theWebUI.settings["webui.show_cats"] = !theWebUI.settings["webui.show_cats"];
+		$("#side-panel").toggle();
+		$("#HDivider").toggle();
+    theWebUI.resize();
 		theWebUI.save();
 	},
 

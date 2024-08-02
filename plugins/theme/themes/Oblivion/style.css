@@ -30,7 +30,7 @@ button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
   background: #000 url(./images/headers.png) repeat-x 0px -8px;
 }
 
-#CatList, category-list {
+#side-panel, category-list {
   border:none;
   background-color: #212121;
   border-right: 1px solid #1b1b1b;
@@ -187,18 +187,28 @@ input[type="number"][disabled],input[type="text"][disabled], input[type="passwor
 
 div.tab {background: #181818;font-family: inherit;}
 div#lcont {background: #181818;font-family: inherit;}
-div#gcont table td.Header {background: transparent url(./images/status_icons.png) no-repeat 0px -286px;font-family: inherit;color:#D4D6C9;padding-left:17px;}
-
-div#gcont table tr {background: #181818 url(./images/headers.png) repeat-x 0px -93px;font-family: inherit;color:#D4D6C9}
-div#gcont table tr td{background: #181818 url(./images/headers.png) repeat-x 0px -38px;}
-div#gcont table {font-family:inherit;}
+div#gcont {font-family:inherit;}
+div#gcont div.Header {
+  background: transparent url(./images/status_icons.png) no-repeat 0px -286px;
+  font-family: inherit;
+  color: #D4D6C9;
+  padding-left: 17px;
+}
+div#gcont div.row {
+  background: #181818 url(./images/headers.png) repeat-x 0px -93px;
+  font-family: inherit;
+  color: #D4D6C9;
+}
+div#gcont div.row > div {
+  background: #181818 url(./images/headers.png) repeat-x 0px -38px;
+}
 div.graph_tab {color:#FFF; background-color: #181818}
 .graph_tab_legend { color: #FFF; background-color: #181818; }
 .graph_tab_tooltip { color: #FFF; background-color: #606060; border: 1px solid #606060; }
 
 div#modalbg {background-color: #181818;}
 
-div#List {margin-right:6px;border-top: 1px solid #333; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000; background-color: #181818;}
+#list-table {margin-right:6px;border-top: 1px solid #333; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000; background-color: #181818;}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
 .dlg-window { background-color: #222222; box-shadow: 2px 2px 5px #888;}
