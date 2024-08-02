@@ -26,7 +26,6 @@ panel-label {
 panel-label[selected] {
   --badge-background-color: #FFFFFF;
 }
-div#HDivider { width: 5px }
 
 .stable {border: none;}
 

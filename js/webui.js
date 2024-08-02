@@ -2259,22 +2259,28 @@ var theWebUI =
 		return(false);
 	},
 
-	resizeLeft: function( w, h )
-	{
-	        if(w!==null)
-	        {
-			$("#CatList").width( w );
-			$("#VDivider").width( $(window).width()-w-10 );
-		}
-		if(h!==null)
-		{
-			$("#CatList").height( h );
+	resizeLeft: function(w) {
+		if (w === null)
+			return;
+		w = Math.max(w, parseFloat($("#side-panel").css("min-width")));
+		if ($("#side-panel").css("display") !== "none") {
+			$("#side-panel").width(w);
+			$("#main-info").width($("#maincont").width() - 5 - w);
+		} else {
+			$("#main-info").width(100);
 		}
 	},
 
-	resizeTop : function( w, h )
-	{
-		this.getTable("trt").resize(w,h);
+	resizeTop: function(w, h) {
+		if (h === null)
+			return
+		h = Math.max(h, parseFloat($("#list-table").css("min-height")));
+		if ($("#tdetails").css("display") !== "none") {
+			$("#list-table").height(h);
+			$("#tdetails").height($("#maincont").height() - 5 - h);
+		} else {
+			$("#list-table").height(100);
+		}
 	},
 
 	resizeBottom : function( w, h )
@@ -2303,28 +2309,11 @@ var theWebUI =
 		}
 	},
 
-	resize: function()
-	{
-		var ww = $(window).width();
-		var wh = $(window).height();
-       		var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
-	        var th = ($("#t").is(":visible") ? $("#t").height() : -1)+$("#StatusBar").height()+12;
-		$("#StatusBar").width(ww);
-		if(theWebUI.settings["webui.show_cats"])
-		{
-			theWebUI.resizeLeft( w, wh-th );
-			w = ww - w;
-		}
-		else
-		{
-			$("#VDivider").width( ww-10 );
-			w = ww;
-		}
-		w-=11;
-		theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th-7 );
-		if(theWebUI.settings["webui.show_dets"])
-			theWebUI.resizeBottom( w, Math.floor(wh * (1 - theWebUI.settings["webui.vsplit"])) );
-		$("#HDivider").height( wh-th+2 );
+	resize: function() {
+		const w = $("#maincont").width() * (1 - theWebUI.settings["webui.hsplit"]) - 5;
+		theWebUI.resizeLeft(w);
+		const h = $("#maincont").height() * theWebUI.settings["webui.vsplit"];
+		theWebUI.resizeTop(null, h);
 	},
 
 	update: function()
@@ -2335,25 +2324,20 @@ var theWebUI =
 			theWebUI.show();
    	},
 
-	setVSplitter : function()
-	{
-		var r = 1 - ($("#tdetails").height() / $(window).height());
-		r = Math.floor(r * Math.pow(10, 3)) / Math.pow(10, 3);
-		if((theWebUI.settings["webui.vsplit"] != r) && (r>0) && (r<1))
-		{
+	setVSplitter: function() {
+		let r = 1 - $("#tdetails").outerHeight() / $("#maincont").height();
+		r = Math.floor(r * 1000) / 1000;
+		if ((theWebUI.settings["webui.vsplit"] !== r) && (r > 0) && (r < 1)) {
 			theWebUI.settings["webui.vsplit"] = r;
 			theWebUI.save();
 		}
 	},
 
-	setHSplitter : function()
-	{
-		var r = 1 - ($("#CatList").width()+5)/$(window).width();
-		r = Math.floor(r * Math.pow(10, 3)) / Math.pow(10, 3);
-		if((theWebUI.settings["webui.hsplit"] != r) && (r>0) && (r<1))
-		{
+	setHSplitter: function() {
+		let r = 1 - $("#side-panel").outerWidth() / $("#maincont").width();
+		r = Math.floor(r * 1000) / 1000;
+		if ((theWebUI.settings["webui.hsplit"] !== r) && (r > 0) && (r < 1)) {
 			theWebUI.settings["webui.hsplit"] = r;
-			theWebUI.resize();
 			theWebUI.save();
 		}
 	},
@@ -2361,6 +2345,7 @@ var theWebUI =
 	toggleMenu: function() {
 		$("#t").toggle();
 		theWebUI.resize();
+		theWebUI.save()
 	},
 
 	toggleDetails: function() {
