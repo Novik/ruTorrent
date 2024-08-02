@@ -30,9 +30,13 @@ plugin.onLangLoaded = function()
 	for( var i in plugin.themes )
 		themes += '<option value="'+plugin.themes[i]+'"'+(theWebUI.theme==plugin.themes[i] ? 'selected' : '')+'>'+plugin.themes[i]+'</option>';
 	$($$("webui.lang")).parent().after(
-		'<div class="op50l algnright">'+
-		'<label for="webui.theme">'+theUILang.theme+':</label>'+
-		'<select id="webui.theme">'+themes+'</select></div>' );
+		$("<div>").addClass("col-6 col-md-3").append(
+			$("<label>").attr({for: "webui.theme"}).text(theUILang.theme + ": "),
+		),
+		$("<div>").addClass("col-6 col-md-3").append(
+			$("<select>").attr({id: "webui.theme"}).html(themes),
+		),
+	);
 }
 
 plugin.updateThemeHint = function(theme)

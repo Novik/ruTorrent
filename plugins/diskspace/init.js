@@ -37,14 +37,15 @@ plugin.init = function()
 		plugin.prgStartColor = new RGBackground("#99D699");
 		plugin.prgEndColor = new RGBackground("#E69999");
 		plugin.addPaneToStatusbar(
-			$("<div>").attr({id: "meter-disk-pane"}).addClass("status-cell").append(
-				$("<div>").attr({id: "meter-disk-icon"}),
+			"meter-disk-pane",
+			$("<div>").append(
+				$("<div>").addClass("icon"),
 				$("<div>").attr({id: "meter-disk-holder"}).append(
+					$("<div>").attr({id: "meter-disk-value"}).width(0),
 					$("<div>").attr({id: "meter-disk-text"}),
-					$("<canvas>").attr({id: "meter-disk-value"}).css({visibility: "hidden"}),
 				),
 			),
-			"st_up",
+			0, true,
 		);
 
 		plugin.check = function()

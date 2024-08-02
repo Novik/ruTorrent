@@ -273,12 +273,16 @@ rPlugin.prototype.canBeLaunched = function()
 
 rPlugin.prototype.attachPageToOptions = function(dlg,name)
 {
-        if(this.canChangeOptions())
+	if(this.canChangeOptions())
 	{
 		$("#st_btns").before( $(dlg).addClass("stg_con") );
-		$(".lm ul li:last").removeClass("last");
-		$(".lm ul").append( $("<li>").attr("id","hld_"+dlg.id).addClass("last").html("<a id='mnu_"+dlg.id+"' href=\"javascript://void()\" onclick=\"theOptionsSwitcher.run('"+dlg.id+"'); return(false);\">"+name+"</a>") );
-		$(dlg).css( {display: "none"} );
+		$(".lm ul").append(
+			$("<li>").attr("id","hld_"+dlg.id).append(
+				$("<a>").attr(
+					{id: `mnu_${dlg.id}`, href: "#", onclick: `theOptionsSwitcher.run('${dlg.id}');return(false);`}
+				).text(name),
+			),
+		);
 	}
 	return(this);
 }
@@ -341,31 +345,26 @@ rPlugin.prototype.removePageFromTabs = function(id)
 
 rPlugin.prototype.registerTopMenu = function(weight)
 {
-	if(this.canChangeToolbar())
-	{
-		if( !$$("mnu_plugins") )
-		{
-			this.addButtonToToolbar("mnu_plugins", theUILang.Plugins, theWebUI.showPluginsMenu, "mnu_help");
-		}
+	if (this.canChangeToolbar()) {
+		if (!$$("mnu_plugins"))
+			this.addButtonToToolbar("plugins", theUILang.Plugins, "theWebUI.showPluginsMenu()", "help");
 		thePlugins.registerTopMenu(this, weight);
 	}
-	return(this);
+	return this;
 }
 
-rPlugin.prototype.addButtonToToolbar = function(id,name,onclick,idBefore)
-{
-	if(this.canChangeToolbar())
-	{
-		const btn = $("<button>").attr(
-			{id: id, title: name + "..."}
-		).addClass("top-menu-item d-flex flex-row align-items-center").append(
-			$("<div>").addClass("top-menu-icon"),
-			$("<span>").addClass("mx-3 d-inline d-md-none").text(name),
-		).on("click", onclick);
-		const beforeBtn = $("#" + idBefore);
-		(beforeBtn && beforeBtn.length > 0) ? btn.insertBefore(beforeBtn) : btn.insertBefore($("mnu_settings"));
+rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore) {
+	if (this.canChangeToolbar()) {
+		const newBtn = $("<a>").attr(
+			{id:`mnu_${id}`, href:"#", onclick:onclick, onfocus:"this.blur();", title:`${name}...`}
+		).addClass("nav-link").append(
+			$("<div>").attr({id:id}).addClass("nav-icon top-menu-item"),
+			$("<span>").addClass("d-inline d-md-none").text(`${name}...`),
+		);
+		const beforeBtn = $(`#mnu_${idBefore}`);
+		beforeBtn && beforeBtn.length > 0 ? newBtn.insertBefore(beforeBtn) : newBtn.insertBefore($("#mnu_settings"));
 	}
-	return(this);
+	return this;
 }
 
 rPlugin.prototype.removeButtonFromToolbar = function(id)
@@ -391,12 +390,22 @@ rPlugin.prototype.removeSeparatorFromToolbar = function(idBefore)
 	$("#mnu_"+idBefore).prev().remove();
 }
 
-rPlugin.prototype.addPaneToStatusbar = function(pane, idBefore)
+rPlugin.prototype.addPaneToStatusbar = function(id, statusCell, no, mobileVisible)
 {
 	if(this.canChangeStatusBar())
 	{
-		const divBefore = $("#" + idBefore);
-		(divBefore && divBefore.length > 0) ? pane.insertBefore(divBefore) : pane.insertBefore($(".status-cell").get(-1));
+		statusCell.attr({id: id}).addClass("status-cell");
+		mobileVisible || statusCell.addClass("d-none d-md-flex");
+
+		if (
+			!$("#StatusBar div.status-cell").length || 
+			no >= $("#StatusBar div.status-cell").length ||
+			no < 0
+		) {
+			statusCell.insertBefore($("div#servertime").parent());
+		} else {
+			statusCell.insertBefore($("#StatusBar div.status-cell").get(no));
+		}
 	}
 	return(this);
 }

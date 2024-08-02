@@ -3,38 +3,21 @@ plugin.loadMainCSS();
 
 plugin.init = function()
 {
+	$("port-pane .icon").addClass("pstatus0");
 	theWebUI.request("?action=initportcheck", [plugin.getPortStatus, plugin]);
 }
 
 plugin.update = function()
 {
-	$("#port-status-icon").get(0).classList = "pstatus0";
+	$("port-pane .icon").addClass("pstatus0");
 	theWebUI.request("?action=updateportcheck", [plugin.getPortStatus, plugin]);
 }
 
 plugin.getPortStatus = function(d)
 {
-	$("#port-status-icon").get(0).className = "pstatus"+d.status;
-	$("#port-ip-text").data({ipAddr: d.ip + ":" + d.port, status: d.status});
-	this.diaplayText();
-}
-
-plugin.diaplayText = function()
-{
-	const ipAddr = $("#port-ip-text");
-	if(ipAddr.hasClass("censored")) {
-		ipAddr.text("*.*.*.*:*");
-		$("#port-holder").prop("title", `*.*.*.*:* - ${theUILang.portStatus[ipAddr.data("status")]} (${theUILang.clickReveal})`);
-	} else {
-		ipAddr.text(ipAddr.data("ipAddr"));
-		$("#port-holder").prop("title", `${ipAddr.text()} - ${theUILang.portStatus[ipAddr.data("status")]} (${theUILang.clickHide})`);
-	}
-}
-
-plugin.toggleIPAddress = function()
-{
-	$("#port-ip-text").toggleClass("censored");
-	this.diaplayText();
+	$("#port-pane").prop("title", d.ip+":"+d.port+": "+theUILang.portStatus[d.status]);
+	$("#port-pane .icon").removeClass().addClass("icon pstatus" + d.status)
+	$("#port-ip-text").text(d.ip+':'+d.port);
 }
 
 rTorrentStub.prototype.initportcheck = function()
@@ -65,18 +48,21 @@ plugin.createPortMenu = function(e)
 plugin.onLangLoaded = function()
 {
 	plugin.addPaneToStatusbar(
-		$("<div>").addClass("status-cell").attr({id: "port-holder"}).append(
-			$("<div>").attr({id: "port-status-icon"}),
-			$("<span>").addClass("stval censored").attr({id: "port-ip-text"}).on("click", () => plugin.toggleIPAddress()),
+		"port-pane",
+		$("<div>").append(
+			$("<div>").addClass("icon"),
+			$("<span>").attr("id","port-ip-text").addClass("d-none d-lg-block"),
 		),
-		"st_fd",
+		-1, true,
 	);
-	if(plugin.canChangeMenu())
-		$("#port-status-icon").addClass("pstatus0").mouseclick(plugin.createPortMenu);
+	if(plugin.canChangeMenu()) {
+		$("#port-pane .icon").addClass("pstatus0");
+		$("#port-pane").mouseclick( plugin.createPortMenu );
+	}
 	plugin.init();
 }
 
 plugin.onRemove = function()
 {
-	plugin.removePaneFromStatusbar("port-holder");
+	plugin.removePaneFromStatusbar("port-pane");
 }

@@ -293,18 +293,16 @@ var theURLs =
 	IPQUERYURL		: "https://ipinfo.io/"
 };
 
-var theOptionsSwitcher =
-{
+const theOptionsSwitcher = {
 	current: "st_gl",
 
-	run: function(id)
-	{
-	        $('#'+theOptionsSwitcher.current).hide();
-		$("#mnu_" + theOptionsSwitcher.current).toggleClass("focus");
-		theOptionsSwitcher.current = id;
-	        $('#'+theOptionsSwitcher.current).show();
-		$("#mnu_" + theOptionsSwitcher.current).toggleClass("focus");
-	}
+	run: function(id) {
+		$('#' + this.current).hide();
+		$("#mnu_" + this.current).removeClass("focus");
+		this.current = id;
+		$('#' + this.current).show();
+		$("#mnu_" + this.current).addClass("focus");
+	},
 };
 
 var theConverter =

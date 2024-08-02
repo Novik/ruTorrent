@@ -71,6 +71,21 @@ ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat s
 #sel {border: 1px dotted #555555;}
 
 div#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #333333;}
+#top-menu {
+  background-color: #181818;
+  border-bottom: 1px solid #333333;
+}
+div#t button.navbar-toggler {
+  background-color: #888888;
+  background-image: none;
+  border-color: #333333;
+}
+div#t .nav-link {
+  background-color: #333333;
+  border-color: #333333;
+  color: #686868;
+}
+div#t div.TB_Separator {background-color: #333333}
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}
 div#t div#remove {background: transparent url(./images/toolbar.png) no-repeat -72px center}
@@ -118,8 +133,6 @@ div#stg-header {background-color: #181818; border-bottom: 1px solid #333333}
 div#stg .lm {background-color: #181818; border: 1px solid #333333}
 
 .lm li {background: transparent url(./images/bul.gif) no-repeat scroll left center}
-.lm li.first {background: transparent url(./images/bul_f.gif) no-repeat scroll left bottom}
-.lm li.last {background: transparent url(./images/bul_l.gif) no-repeat scroll left top}
 .lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
 .lm li a {color: #888888}
 .lm li a.focus {background-color: #333333}
@@ -153,3 +166,11 @@ span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat ce
 #st_up { background:url(./images/status_up.gif) 6px no-repeat; }
 #st_down { background:url(./images/status_down.gif) 6px no-repeat; }
 .statuscell {border-right: 1px solid #333333;}
+
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  div#t .nav-link {
+    background-color: transparent;
+    border: none;
+  }
+}

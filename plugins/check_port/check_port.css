@@ -1,4 +1,13 @@
-#port-status-icon {width: 24px; height: 24px; background-repeat: no-repeat; background-position: center;}
-#port-status-icon.pstatus0 {background-image: url(./images/yellow.png);}
-#port-status-icon.pstatus1 {background-image: url(./images/red.png);}
-#port-status-icon.pstatus2 {background-image: url(./images/green.png);}
+#port-pane .icon {
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#port-pane .pstatus0 {
+  background-image: url(./images/yellow.png);
+}
+#port-pane .pstatus1 {
+  background-image: url(./images/red.png);
+}
+#port-pane .pstatus2 {
+  background-image: url(./images/green.png);
+}

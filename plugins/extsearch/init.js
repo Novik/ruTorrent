@@ -841,7 +841,8 @@ plugin.onLangLoaded = function()
 		$(".seng_private").hide();
 		$('#cont_'+$(this).val()).show();
 	});
-	$("<select>").attr({id: "exscategory", title: theUILang.excat}).addClass("flex-grow-1").insertBefore($("#mnu_go")),
+	s = "<select id='exscategory' title='" + theUILang.excat + "'></select>";
+	$("<div>").prop("id","exscat").html(s).insertBefore($("#mnu_go"));
 	plugin.markLoaded();
 	theSearchEngines.checkForIncorrectCurrent(true);
 	if(thePlugins.isInstalled('search'))
