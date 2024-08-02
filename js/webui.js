@@ -342,6 +342,18 @@ var theWebUI =
 		};
 
 		$(document).on( browser.isOpera ? 'keypress' : 'keydown', keyEvent);
+
+		$("#toggle-top-menu").on("click touchend", () => this.toggleTopMenu());
+		$(".top-menu").on("click touchend", (e) => {
+			if(e.target.id === "query")
+				return;
+			this.toggleTopMenu();
+		});
+
+		$("#toggle-side-panel").on("click touchend", () => this.toggleSidePanel());
+		$("panel-label").on("click touchend", () => this.toggleSidePanel());
+
+		$("#toggle-status-bar").on("click touchend", () => this.toggleStatusBar());
 	},
 
 	updateServerTime: function()
@@ -472,13 +484,9 @@ var theWebUI =
 		this.activeView = tab;
 
 		if(!this.settings["webui.show_cats"])
-			$("#CatList").hide();
-		if(!this.settings["webui.show_dets"])
-		{
-			$("#tdetails").hide();
-			if(!theWebUI.systemInfo.rTorrent.started)
-				this.toggleDetails();
-		}
+			this.hideCategories();
+		if(!(this.settings["webui.show_dets"] && theWebUI.systemInfo.rTorrent.started))
+			this.hideDetails();
 		theDialogManager.setEffects( iv(this.settings["webui.effects"])*200 );
 //		this.setStatusUpdate();
 		$.each(this.tables, function(ndx,table)
@@ -562,6 +570,40 @@ var theWebUI =
 		this.sTimer = window.setInterval(this.updateStatus, 1000);
 	},
 
+	toggleTopMenu: function()
+	{
+		$(window).width() < 768 && $(".top-menu").toggleClass("d-none d-flex");
+	},
+
+	toggleSidePanel: function()
+	{
+		if($(window).width() < 768) {
+			$("#cat-division").toggleClass("d-none d-block");
+			this.resizeLeft($("#maincont").width());
+			$("#trt-division").toggleClass("d-none d-flex");
+		}
+	},
+
+	toggleStatusBar: function()
+	{
+		if($(window).width() < 992) {
+			$("#status-bar-menu").toggleClass("d-none d-flex");
+		}
+		if($("#status-bar-menu").css("display") === "none") {
+			$("#toggle-status-bar").html(`
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+					<path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+				</svg>
+			`);
+		} else {
+			$("#toggle-status-bar").html(`
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+  				<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+				</svg>
+			`);
+		}
+	},
+
 //
 // plugins
 //
@@ -571,8 +613,8 @@ var theWebUI =
 		theContextMenu.clear();
 		for( var item in thePlugins.topMenu )
 			thePlugins.get(thePlugins.topMenu[item].name).createPluginMenu();
-        	var offs = $("#plugins").offset();
-		theContextMenu.show(offs.left-5,offs.top+5+$("#plugins").height());
+		var offs = $("#mnu_plugins").offset();
+		theContextMenu.show(offs.left-5,offs.top+5+$("#mnu_plugins").height());
 	},
 
 	plgSelect: function(e, id)
@@ -2169,10 +2211,11 @@ var theWebUI =
 
 	updateStatus: function()
 	{
-	        var self = theWebUI;
+		var self = theWebUI;
+		$("#top-menu-title").text("ruTorrent v" + self.version);	
 		var ul = theConverter.speed(self.total.speedUL);
 		var dl = theConverter.speed(self.total.speedDL);
-		var newTitle = '';
+		var newTitle = "";
 		if(theWebUI.settings["webui.speedintitle"])
 		{
 			if(ul.length)
@@ -2200,7 +2243,6 @@ var theWebUI =
 				else
 					ele.hide()
 			}
-			$("#st_fd").show();
 		} else {
 			$("#st_fd").hide();
 		}
@@ -2264,72 +2306,39 @@ var theWebUI =
 		return(false);
 	},
 
-	resizeLeft: function( w, h )
+	resizeLeft: function(w)
 	{
-	        if(w!==null)
-	        {
-			$("#CatList").width( w );
-			$("#VDivider").width( $(window).width()-w-10 );
+		if ($("#cat-division").css("display") === "none") {
+			$("#trt-division").width("100%");
+			return
 		}
-		if(h!==null)
-		{
-			$("#CatList").height( h );
+		if (w !== null) {
+			$("#cat-division").width(Math.max(w, parseInt($("#cat-division").css("min-width"))));
+			$("#trt-division").width($("#cat-division").parent().width() - $("#cat-division").width() - 7);
+			// 7 = 5 + 2: 5px for #HDivider width, 2px for left and right border width of #cat-division
 		}
 	},
 
-	resizeTop : function( w, h )
+	resizeTop: function(h)
 	{
-		this.getTable("trt").resize(w,h);
-	},
-
-	resizeBottom : function( w, h )
-	{
-        	if(w!==null)
-        	{
-			$("#tdetails").width( w );
-			w-=8;
+		if ($("#tdetails").css("display") === "none") {
+			$("#list-division").height("100%");
+			return
 		}
-		if(h!==null)
-        	{
-			$("#tdetails").height( h );
-			h-=($("#tabbar").outerHeight());
-			$("#tdcont").height( h );
-			h-=2;
-        	}
-        	if(theWebUI.configured)
-        	{
-	        	this.getTable("fls").resize(w,h);
-			this.getTable("trk").resize(w,h);
-			this.getTable("prs").resize(w,h);
-			var table = this.getTable("plg");
-			if(table)
-				table.resize(w,h);
-			this.speedGraph.resize(w,h);
+		if (h !== null) {
+			$("#list-division").height(Math.max(h, parseInt($("#list-division").css("min-height"))));
+			$("#tdetails").height($("#trt-division").height() - $("#list-division").height() - 7);
 		}
 	},
 
 	resize: function()
 	{
-		var ww = $(window).width();
-		var wh = $(window).height();
-       		var w = Math.floor(ww * (1 - theWebUI.settings["webui.hsplit"])) - 5;
-	        var th = ($("#t").is(":visible") ? $("#t").height() : -1)+$("#StatusBar").height()+12;
-		$("#StatusBar").width(ww);
-		if(theWebUI.settings["webui.show_cats"])
-		{
-			theWebUI.resizeLeft( w, wh-th );
-			w = ww - w;
-		}
-		else
-		{
-			$("#VDivider").width( ww-10 );
-			w = ww;
-		}
-		w-=11;
-		theWebUI.resizeTop( w, Math.floor(wh * (theWebUI.settings["webui.show_dets"] ? theWebUI.settings["webui.vsplit"] : 1))-th-7 );
-		if(theWebUI.settings["webui.show_dets"])
-			theWebUI.resizeBottom( w, Math.floor(wh * (1 - theWebUI.settings["webui.vsplit"])) );
-		$("#HDivider").height( wh-th+2 );
+		const totalWidth = $("#maincont").width();
+		const totalHeight = $("#maincont").height();
+		const w = Math.floor(totalWidth * (1 - theWebUI.settings["webui.hsplit"])) - 5;
+		theWebUI.resizeLeft(w);
+		const h = Math.floor(totalHeight * (theWebUI.settings["webui.vsplit"]));
+		theWebUI.resizeTop(h);
 	},
 
 	update: function()
@@ -2342,46 +2351,83 @@ var theWebUI =
 
 	setVSplitter : function()
 	{
-		var r = 1 - ($("#tdetails").height() / $(window).height());
-		r = Math.floor(r * Math.pow(10, 3)) / Math.pow(10, 3);
-		if((theWebUI.settings["webui.vsplit"] != r) && (r>0) && (r<1))
+		let r = 1 - ($("#tdetails").height() / $("#maincont").height());
+		r = Math.floor(r * 1000) / 1000;
+		if ((this.settings["webui.vsplit"] !== r) && (r > 0) && (r < 1))
 		{
-			theWebUI.settings["webui.vsplit"] = r;
-			theWebUI.save();
+			this.settings["webui.vsplit"] = r;
+			this.save();
 		}
 	},
 
 	setHSplitter : function()
 	{
-		var r = 1 - ($("#CatList").width()+5)/$(window).width();
-		r = Math.floor(r * Math.pow(10, 3)) / Math.pow(10, 3);
-		if((theWebUI.settings["webui.hsplit"] != r) && (r>0) && (r<1))
+		let r = 1 - ($("#cat-division").width() / $("#maincont").width());
+		r = Math.floor(r * 1000) / 1000;
+		if ((theWebUI.settings["webui.hsplit"] !== r) && (r > 0) && (r < 1))
 		{
-			theWebUI.settings["webui.hsplit"] = r;
-			theWebUI.resize();
-			theWebUI.save();
+			this.settings["webui.hsplit"] = r;
+			this.save();
 		}
+	},
+
+	hideMenu: function()
+	{
+		// 25px for #StatusBar height
+		$("#t").removeClass("d-flex").addClass("d-none");
+		$("#maincont").height($(window).height() - 25);
+	},
+
+	displayMenu: function()
+	{
+		$("#t").removeClass("d-none").addClass("d-flex");
+		$("#maincont").height("");
 	},
 
 	toggleMenu: function()
 	{
-		$("#t").toggle();
-  		theWebUI.resize();
+		$("#t").css("display") === "none" ? this.displayMenu() : this.hideMenu();
+	},
+
+	hideDetails: function()
+	{
+		$("#tdetails").removeClass("d-flex").addClass("d-none");
+		$("#VDivider").addClass("d-none");
+		this.resize();
+	},
+
+	displayDetails: function()
+	{
+		$("#tdetails").removeClass("d-none").addClass("d-flex");
+		$("#VDivider").removeClass("d-none");
+		this.resize();
 	},
 
 	toggleDetails: function()
 	{
 		theWebUI.settings["webui.show_dets"] = !theWebUI.settings["webui.show_dets"];
-		$("#tdetails").toggle();
-      		theWebUI.resize();
-		theWebUI.save();
+		$("#tdetails").css("display") === "none" ? this.displayDetails() : this.hideDetails();
+		this.save();
+	},
+
+	hideCategories: function()
+	{
+		$("#cat-division").removeClass("d-md-block").addClass("d-md-none");
+		$("#HDivider").addClass("d-md-none");
+		this.resize();
+	},
+
+	displayCategories: function()
+	{
+		$("#cat-division").removeClass("d-md-none").addClass("d-md-block");
+		$("#HDivider").removeClass("d-md-none");
+		this.resize();
 	},
 
 	toggleCategories: function()
 	{
-	        theWebUI.settings["webui.show_cats"] = !theWebUI.settings["webui.show_cats"];
-		$("#CatList").toggle();
-      		theWebUI.resize();
+		theWebUI.settings["webui.show_cats"] = !theWebUI.settings["webui.show_cats"];
+		$("#cat-division").css("display") === "none" ? this.displayCategories() : this.hideCategories();
 		theWebUI.save();
 	},
 
@@ -2392,14 +2438,14 @@ var theWebUI =
 
 	startSearch: function(e)
 	{
-	e.preventDefault();
-	$$("query").focus();
+		e.preventDefault();
+		$$("query").focus();
 	},
 
 	clearSearch: function()
 	{
 		$$("query").value = "";
-		theWebUI.updateQuickSearch();
+		this.updateQuickSearch();
 	},
 
 	endSearch: function()
@@ -2436,7 +2482,7 @@ var theWebUI =
 		this.updTimer = window.setTimeout(this.update, this.interval);
    	},
 
-   	setActiveView: function(id)
+	setActiveView: function(id)
 	{
 		$("#tooltip").remove();
 		this.activeView=id;

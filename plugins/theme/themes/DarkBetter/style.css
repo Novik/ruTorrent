@@ -223,7 +223,6 @@ div#t .nav-link {
   color: #686868;
 }
 div#t a:hover {background: #222;}
-div#t div.TB_Separator {background-color: #333333}
 div#t div#add {background: transparent url(./images/tb_add.svg) no-repeat center; background-size: 28px}
 div#t div#create {background: transparent url(./images/tb_create.svg) no-repeat center; background-size: 28px}
 div#t div#remove {background: transparent url(./images/tb_trash.svg) no-repeat center; background-size: 28px}
@@ -271,7 +270,6 @@ input.Textbox, input.Button, select {border: 1px solid #333333}
 Input.TextboxShort {border: 1px solid #333333}
 Input.TextboxMid {border: 1px solid #333333}
 Input.TextboxLarge {border: 1px solid #333333}
-Input.TextboxVShort {border: 1px solid #333333}
 
 a {color: #686868}
 

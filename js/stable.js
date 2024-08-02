@@ -237,7 +237,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	}
 	this.scp = $("<span></span>").addClass("stable-scrollpos").get(0);
 	this.dCont.appendChild(this.scp);
-	this.dCont.style.position = "relative";
 	this.init();
 	this.calcSize().resizeColumn();
 
@@ -359,10 +358,6 @@ dxSTable.prototype.calcSize = function()
 		this.dBody.style.width = this.dCont.offsetWidth - 2 + "px";
 		this.dBody.style.marginTop = this.dHead.offsetHeight + "px";
 		this.tBody.style.width = this.tHead.offsetWidth + "px";
-		var h = this.dCont.clientHeight - this.dHead.offsetHeight;
-		if(h >= 0) 
-			this.dBody.style.height = h + "px";
-		this.dHead.style.width = (this.dCont.clientWidth - 2) + "px";
 		this.rowCover.style.width = this.dHead.style.width;
 		if ((this.cols > 0) && (!this.isResizing)) {
 			for (let i = 0; i < this.cols; i++) {

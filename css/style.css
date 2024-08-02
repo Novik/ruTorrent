@@ -104,7 +104,7 @@ dialog {
 form{margin:0;}
 div#preload {width: 0px; height: 0px; display: none; background-image: url(../images/toolbar.png); background-image: url(../images/tstatus.png); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/close.png); background-image: url(../images/file.gif); background-image: url(../images/dir.gif); background-image: url(../images/pnl_open.gif); background-image: url(../images/pnl_close.gif)}
 div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; background: #FFFFFF}
-div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold;  text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
+div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-weight: bold;  text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
 .pre-theme-load.dark-theme div#cover { background: #181818; }
 .pre-theme-load.dark-theme div#msg { color: #fff; background: #151515; border-color: #333; }
 .pre-theme-load.dark-theme #loadimg { filter: invert(1); }
@@ -141,14 +141,14 @@ a.dlg-close:active {width: 14px; height: 14px; background: transparent url(../im
 div#sc {width: 150px; right: 57px; top: 40px; position: absolute; display: none; border: 1px solid #808080; background-color: #E0E0E0; z-index: 100}
 div#sc ul {margin: 0; padding: 0; list-style: none}
 div#sc ul li {margin: 0; padding: 0}
-div#sc li div {line-height: 14px; padding: 4px; font-weight: bold; font-size: 11px;}
+div#sc li div {line-height: 14px; padding: 4px; font-weight: bold;}
 div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
 ul.CMenu {width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
 ul.CMenu li {float: left; margin-right: 1px; position: relative; width: 150px; background: var(--menu-background-color); }
 ul.CMenu li a {display: block; line-height: 16px; padding: 3px 4px 3px 16px; font-weight: normal; background-color: var(--menu-background-color); color: var(--menu-color);}
 ul.CMenu li ul li a.dis, ul.CMenu li a.dis { color: var(--menu-disabled-color); }
 ul.CMenu li hr {width: 90%; border-top: 1px solid var(--menu-border-color); height: 0px; margin-top: 2px; margin-bottom: 2px; }
-.ie ul.CMenu li hr { line-height:1px; font-size:1px; margin: 0 }
+.ie ul.CMenu li hr { line-height:1px; margin: 0 }
 ul.CMenu li a.exp {background: transparent url(../images/menuexp.gif) no-repeat scroll 140px center; }
 ul.CMenu li a.sel {background: transparent url(../images/menusel.gif) no-repeat scroll 4px center}
 ul.CMenu li a:not(.dis):hover {background-color: var(--menu-highlight-background-color); color: var(--menu-highlight-color)}
@@ -236,7 +236,24 @@ a {font-size: 11px;  color: #686868}
 table#maincont {margin: 5px 0 0 0; min-width: 600px;}
 table#maincont td.uicell {vertical-align: top; padding: 0 }
 
-#CatList { display: block; margin: 0; padding: 0; width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden; min-width: 160px; }
+#CatList {
+  display: block;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #FFFFFF;
+  overflow: hidden auto;
+}
+#cat-division {
+  min-width: 180px;
+  border: 1px solid #A0A0A0;
+  box-sizing: border-box;
+}
+#list-division {
+  min-height: 300px;
+  border: solid 1px #A0A0A0;
+  box-sizing: border-box;
+}
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
 .Status_Down {background-position: 0px 0px}
@@ -253,9 +270,9 @@ table#maincont td.uicell {vertical-align: top; padding: 0 }
 .Status_Checking {background-position: 0px -176px}
 .Status_RSS {background-position: 0px -208px}
 
-div#HDivider, div#VDivider { font-size: 0; }
-div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize; }
-div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
+div#HDivider, div#VDivider {font-size: 0; align-self: stretch;}
+div#HDivider { width: 5px; cursor: e-resize; }
+div#VDivider { height: 5px; cursor: n-resize; }
 div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
 
 div#stg {position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
@@ -336,34 +353,50 @@ div.indent {padding-left: 16px}
 a {text-decoration: none}
 select.cols {border: 1px solid #808080; font-size: 11px;  padding: 2px; width: 120px}
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
-div#tdetails {height: 50%; padding: 0 5px 0 0; background-color: #F5F5F5}
+div#tdetails {
+  background-color: #F5F5F5;
+  box-sizing: border-box;
+}
 div#tdetails a.h {margin: 0}
 div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 0 2px 0 2px; overflow: hidden }
+div#mainlayout {
+  overflow: hidden auto;
+  width: 100%;
+}
 
 div.tab { height:100%; background: #F5F5F5; overflow: auto }
-div#lcont {font-size: 11px;  line-height: 11px; background: #FFFFFF}
-div#lcont div.mono {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre}
+div#lcont {background: #FFFFFF}
+div#lcont div.mono {font-family: monospace; background: #F5F5F5; white-space: pre}
 div#lcont div.std {padding: 2px}
 
-div#gcont table {font-size: 11px;  line-height: 10px}
-div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
+div#gcont div.Header {
+  font-weight: bold;
+  background: #FCFCFC;
+}
+div#gcont div.row {
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+}
+div#gcont div.row div {
+  margin: 0;
+  padding: 0.25rem 0;
+}
 
-div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; font-size: 11px;  line-height: 11px; color: #545454;}
+div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; line-height: 11px; color: #545454;}
 .graph_tab_grid,.graph_tab_legend {
 	display: none;
 }
 .graph_tab_grid { background-color: transparent; border: 2px solid #545454; }
 .graph_tab_legend { background-color: #F0F0F0; border: 0px none transparent; }
-.graph_tab_tooltip { position: absolute; border: 1px solid #fdd; padding: 2px; background-color: #fee; color: black; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; opacity: 0.80; }
+.graph_tab_tooltip { position: absolute; border: 1px solid #fdd; padding: 2px; background-color: #fee; color: black; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; opacity: 0.80; }
 
-div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
-div#List,.main-table {border: 1px solid #A0A0A0;}
+div.table_tab {background-color: #FFFFFF; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
 
-div.cont {padding: 6px; font-size: 11px;}
+div.cont {padding: 6px;}
 
 .tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
 .tabbar li {margin: 0; padding: 0; display: inline; white-space: nowrap;}
-.tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px;  -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; border-top-right-radius:5px; border-top-left-radius:5px; vertical-align: top; cursor: pointer}
+.tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; border-top-right-radius:5px; border-top-left-radius:5px; vertical-align: top; cursor: pointer}
 .tabbar li a:hover {border-top: 2px solid #FFC73C}
 .tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
 div#dlgLabel {width: 250px; height: 140px}
@@ -500,6 +533,34 @@ div.space {flex-grow: 1;}
 /* X-Small devices (portrait phones, less than 576px) */
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
+html, body, input, select, button, textarea {
+  font-family: Tahoma, Arial, Helvetica, sans-serif; 
+  font-size: 16px;
+}
+div#t div.top-menu-item, div#t button.top-menu-item {
+  width: auto;
+  padding: 0.1rem;
+  margin: 0;
+  border: 1px solid #A0A0A0;
+}
+div.top-menu {
+  background-color: #F0F0F0;
+  z-index: 100;
+  border: solid 1px #A0A0A0;
+  border-radius: 3px;
+  position: absolute;
+  top: 36px;
+  left: 0;
+  width: calc(100vw - 1rem - 2px);
+}
+div#t .separator {
+  width: auto;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  background-color: #A0A0A0;
+  align-self: stretch;
+}
 div#tadd {max-width: 95vw;}
 div.dlg-window .buttons-list {
   margin: 0.5rem;
@@ -549,6 +610,21 @@ div.dlg-window .buttons-list {
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) { 
   /* Custom rules for large devices */
+  div.top-menu, div#status-bar-menu {
+    background-color: transparent;
+    border: none;
+    position: static;
+  }
+  .status-cell {
+    border-right: 1px solid #A0A0A0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  #st_st {
+    border-right: none;
+    border-left: 1px solid #A0A0A0;
+    border-bottom: none;
+  }
 }
 
 /* X-Large devices (large desktops, 1200px and up) */

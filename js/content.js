@@ -35,12 +35,9 @@ function makeContent()
 		onRun : function(e) { $(document.body).css( "cursor", "e-resize" ); },
 		onFinish : function(e)
 		{
-		        var self = e.data;
-			var w = self.mask.offset().left-2;
-			theWebUI.resizeLeft(w,null);
-			w = $(window).width()-w-11;
-			theWebUI.resizeTop(w,null);
-      		        theWebUI.resizeBottom(w,null);
+			const self = e.data;
+			const w = self.mask.offset().left-2;
+			theWebUI.resizeLeft(w);
 			theWebUI.setHSplitter();
 			$(document.body).css( "cursor", "default" );
 		}
@@ -56,16 +53,15 @@ function makeContent()
 		onRun : function(e) { $(document.body).css( "cursor", "n-resize" ); },
 		onFinish : function(e)
 		{
-		        var self = e.data;
-		        var offs = self.mask.offset();
-      		        theWebUI.resizeTop(null,offs.top-($("#t").is(":visible") ?  $("#t").height() : -1)-8);
-      		        theWebUI.resizeBottom(null,$(window).height()-offs.top-$("#StatusBar").height()-14);
-      		        theWebUI.setVSplitter();
+			const self = e.data;
+			const h = self.mask.offset().top-8;
+			theWebUI.resizeTop(h);
+			theWebUI.setVSplitter();
 			$(document.body).css( "cursor", "default" );
 		}
 	});
 
-	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function()
+	$("#frm-container").append($("<iframe>").css({display: "none"}).attr({name: "uploadfrm"}).on("load", function()
 	{
 		$("#torrent_file").val("");
 		$("#add_button").prop("disabled",true);
@@ -75,7 +71,7 @@ function makeContent()
 			try { var txt = d.body.textContent ? d.body.textContent : d.body.innerText; eval(txt); } catch(e) {}
 		}
 	}));
-	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function()
+	$("#frm-container").append($("<iframe>").css({display: "none"}).attr({name: "uploadfrmurl"}).on("load", function()
 	{
 		$("#url").val("");
 		var d = this.contentDocument;

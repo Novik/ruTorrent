@@ -118,8 +118,8 @@ theSearchEngines.show = function()
 			theContextMenu.add([CMENU_SEL, theUILang.innerSearch, "theSearchEngines.set(-1)"]);
 		else
 			theContextMenu.add([theUILang.innerSearch, "theSearchEngines.set(-1)"]);
-		var offs = $("#search").offset();
-		theContextMenu.show(offs.left-5,offs.top+5+$("#search").height());
+		var offs = $("#mnu_search").offset();
+		theContextMenu.show(offs.left-5,offs.top+5+$("#mnu_search").height());
 	}
 	else
 		plugin.sitesShow.call(theSearchEngines);
@@ -606,31 +606,10 @@ theWebUI.tegItemDblClick = function(obj)
 	}
 }
 
-plugin.resizeTop = theWebUI.resizeTop;
-theWebUI.resizeTop = function( w, h )
-{
-	plugin.resizeTop.call(theWebUI,w,h);
-	if(plugin.enabled)
-	{
-		if(w!==null)
-		{
-			$("#TegList").width( w );
-			if(theWebUI.configured)
-		       	       	this.getTable("teg").resize( w );
-		}
-        	if(h!==null)
-		{
-			$("#TegList").height( h );
-			if(theWebUI.configured)
-				this.getTable("teg").resize(null,h); 
-	       	}
-	}
-}
-
 plugin.config = theWebUI.config;
 theWebUI.config = function()
 {
-	$("#List").after($("<div>").attr("id","TegList").css("display","none"));
+	$("#List").after($("<div>").attr("id","TegList").addClass("p-0 m-0 h-100").css("display","none"));
 	this.tables["teg"] =  
 	{
 	        obj:		new dxSTable(),
@@ -881,5 +860,5 @@ plugin.onRemove = function()
 	plugin.tegs = {};
 	$("#TegList").remove();
 	this.removePageFromOptions("st_extsearch");
-	$("#exscat").remove();
+	$("#exscategory").remove();
 }

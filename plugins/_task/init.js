@@ -326,7 +326,10 @@ if(plugin.canChangeTabs())
 	plugin.tasksConfig = theWebUI.config;
 	theWebUI.config = function()
 	{
-        	plugin.attachPageToTabs($('<div>').attr("id","tasks").addClass("table_tab stable").get(0),"Tasks","lcont");
+		plugin.attachPageToTabs(
+			$('<div>').attr({id: "tasks"}).addClass("table_tab stable h-100").get(0),
+			"Tasks","lcont",
+		);
 		theWebUI.tables["tasks"] =  
 		{
         		obj:		new dxSTable(),
@@ -484,25 +487,6 @@ theTabs.onShow = function(id)
 	else
 		plugin.tasksOnShow.call(this,id);
 };
-
-plugin.resizeBottom = theWebUI.resizeBottom;
-theWebUI.resizeBottom = function( w, h )
-{
-	plugin.resizeBottom.call(theWebUI,w,h);
-	if(theWebUI.configured)
-	{
-	       	if(w!==null)
-			w-=8;
-		if(h!==null)
-       		{
-			h-=($("#tabbar").outerHeight());
-			h-=2;
-        	}
-		var table = this.getTable("tasks");
-		if(table)
-			table.resize(w,h);
-	}
-}
 
 plugin.canDetachTask = function()
 {

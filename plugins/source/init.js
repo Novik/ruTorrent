@@ -35,17 +35,20 @@ if(plugin.canChangeMenu())
 
 plugin.onLangLoaded = function()
 {
-	$(document.body).append($("<iframe name='srcfrm'/>").css({visibility: "hidden"}).attr( { name: "srcfrm", id: "srcfrm" } ).width(0).height(0).on('load', function()
+	$("#frm-container").append($("<iframe>").css({display: "none"}).attr({name: "srcfrm", id: "srcfrm"}).on('load', function()
 	{
-	        $("#srchash").val('');
+		$("#srchash").val('');
 		var d = (this.contentDocument || this.contentWindow.document);
 		if(d && (d.location.href != "about:blank"))
 			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
 	}));
-	$(document.body).append(
-		$('<form action="plugins/source/action.php" id="getsource" method="post" target="srcfrm">'+
-			'<input type="hidden" name="hash" id="srchash" value="">'+
-		'</form>').width(0).height(0));
+	$("#form-container").append(
+		$("<form>").attr(
+			{action: "plugins/source/action.php", id: "getsource", method: "post", target: "srcfrm"}
+		).append(
+			$("<input>").attr({type: "hidden", name: "hash", id: "srchash"}).val(""),
+		),
+	);
 }
 
 plugin.onRemove = function()

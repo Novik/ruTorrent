@@ -121,7 +121,10 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 	{
 		if(plugin.canChangeTabs())
 		{
-	        	plugin.attachPageToTabs($('<div>').attr("id","history").addClass("table_tab stable").get(0),"History","lcont");
+			plugin.attachPageToTabs(
+				$('<div>').attr({id: "history"}).addClass("table_tab stable h-100").get(0),
+				"History", "lcont",
+			);
 			theWebUI.tables["hst"] =
 			{
 	        		obj:		new dxSTable(),
@@ -372,25 +375,6 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 		}
 		else
 			plugin.onShow.call(this,id);
-	}
-
-	plugin.resizeBottom = theWebUI.resizeBottom;
-	theWebUI.resizeBottom = function( w, h )
-	{
-		plugin.resizeBottom.call(theWebUI,w,h);
-        	if(w!==null)
-			w-=8;
-		if(h!==null)
-        	{
-			h-=($("#tabbar").outerHeight());
-			h-=2;
-        	}
-        	if(theWebUI.configured)
-        	{
-			var table = this.getTable("hst");
-			if(table)
-				table.resize(w,h);
-		}
 	}
 
 	if(plugin.canChangeMenu())

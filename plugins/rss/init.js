@@ -100,12 +100,6 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 	return change;
 }
 
-plugin.resizeTop = theWebUI.resizeTop.bind(theWebUI);
-theWebUI.resizeTop = function (w, h) {
-	theWebUI.getTable("rss").resize(w, h);
-	plugin.resizeTop(w, h);
-}
-
 theWebUI.updateRSSDetails = function(id)
 {
 	if(id)
@@ -208,7 +202,7 @@ theWebUI.config = function()
 	$("#List").after(
 		$("<div>")
 		.attr("id","RSSList")
-		.addClass('main-table')
+		.addClass("p-0 m-0 h-100")
 		.css("display","none")
 	);
 	this.tables["rss"] =  
@@ -1318,7 +1312,7 @@ plugin.correctFilterDialog = function()
 
 plugin.onLangLoaded = function()
 {
-        this.addButtonToToolbar("rss",theUILang.mnu_rss,"theWebUI.showRSS()","settings");
+	this.addButtonToToolbar("mnu_rss",theUILang.mnu_rss,theWebUI.showRSS,"mnu_settings");
 
 	plugin.addPaneToCategory(
 		"prss",

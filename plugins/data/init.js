@@ -74,19 +74,25 @@ if(plugin.canChangeMenu())
 
 plugin.onLangLoaded = function()
 {
-	$(document.body).append($("<iframe name='datafrm'/>").css({visibility: "hidden"}).attr( { name: "datafrm", id: "datafrm" } ).width(0).height(0).on('load', function()
-	{
-	        $("#datahash").val('');
-	        $("#datano").val('');
-		var d = (this.contentDocument || this.contentWindow.document);
-		if(d && (d.location.href != "about:blank"))
-			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
-	}));
-	$(document.body).append(
-		$('<form action="plugins/data/action.php" id="getdata" method="get" target='+(browser.isiOS ? '"_blank"' : '"datafrm"')+'>'+
-			'<input type="hidden" name="hash" id="datahash" value="">'+
-			'<input type="hidden" name="no" id="datano" value="">'+
-		'</form>').width(0).height(0));
+	$("#frm-container").append(
+		$("<iframe>").css({display: "none"}).attr({name: "datafrm", id: "datafrm"}).on('load', function() {
+			$("#datahash").val('');
+			$("#datano").val('');
+			var d = (this.contentDocument || this.contentWindow.document);
+			if(d && (d.location.href != "about:blank"))
+				try {
+					eval(d.body.textContent ? d.body.textContent : d.body.innerText);
+				} catch(e) {}
+		}),
+	);
+	$("#form-container").append(
+		$("<form>").attr(
+			{action: "plugins/data/action.php", id: "getdata", method: "get", target: (browser.isiOS ? '"_blank"' : '"datafrm"')}
+		).append(
+			$("<input>").attr({type: "hidden", name: "hash", id: "datahash"}).val(""),
+			$("<input>").attr({type: "hidden", name: "no", id: "datano"}).val(""),
+		),
+	);
 }
 
 plugin.onRemove = function()

@@ -142,7 +142,6 @@ div#t .nav-link {
   font-weight: bold;
 }
 div#t a:hover {background: none;}
-div#t div.TB_Separator {border-right:1px solid #262626;background-color: #000;height:35px;margin:0px 0px 0px 5px}
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat 0px 0px}
 div#t div#add:hover {background: transparent url(./images/toolbar.png) no-repeat px -24px}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -24px 0px}

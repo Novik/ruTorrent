@@ -97,12 +97,25 @@ var thePlugins =
 			window.setTimeout( 'thePlugins.waitLoad("'+callback+'")', 500 );
 	},
 
+	registerIFrame: function(name, id)
+	{
+		const iframe = $("<iframe>").css({display: "none"}).attr({name: name, id: id});
+		$("#frm-container").append(iframe,);
+		return iframe;
+	},
+
 	registerTopMenu: function( plg, weight )
 	{
 		this.topMenu.push( { "name": plg.name, "weight": weight } );
 		this.topMenu.sort( function(a,b) { return(a.weight-b.weight); } );
-	}
+	},
 
+	registerDropdownMenu: function(plg, weight)
+	{
+		$("#mnu_plugins").append(
+			$("<div>").addClass("dropdown-menu"),
+		);
+	},
 };
 
 function rPlugin( name, version, author, descr, restictions, help )
@@ -168,8 +181,8 @@ rPlugin.prototype.showError = function(err)
 rPlugin.prototype.langLoaded = function()
 {
 	try {
-	if(($type(this["onLangLoaded"])=="function") && this.enabled)
-		this.onLangLoaded();
+		if(($type(this["onLangLoaded"]) === "function") && this.enabled)
+			this.onLangLoaded();
 	} catch(e) {
 		console.warn(`Plugin "${this.name}" failed to load:`, e);
 	} // konqueror hack
@@ -361,18 +374,13 @@ rPlugin.prototype.removeButtonFromToolbar = function(id)
 
 rPlugin.prototype.addSeparatorToToolbar = function(idBefore)
 {
-        if(this.canChangeToolbar())
-        {
-	        var targetBtn = idBefore ? $$("mnu_"+idBefore) : null;
-		var sep = document.createElement("DIV");
-		sep.className = "TB_Separator";
-		if(targetBtn)
-			targetBtn.parentNode.insertBefore(sep,targetBtn);
-		else
-		{
-	        	targetBtn = $$("mnu_settings");
-			targetBtn.parentNode.appendChild(sep);
+	if(this.canChangeToolbar())
+	{
+		const targetBtn = $("#" + idBefore);
+		if (targetBtn.prev().hasClass("separator")) {
+			return(this);
 		}
+		$("<div>").addClass("separator").insertBefore(targetBtn);
 	}
 	return(this);
 }

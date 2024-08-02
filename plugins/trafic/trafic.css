@@ -1,0 +1,21 @@
+div#traf {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+  overflow: hidden;
+}
+div#traf_graph {
+  flex: 1 0 auto;
+  overflow: hidden;
+}
+div#traf_graph_ctrl {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
