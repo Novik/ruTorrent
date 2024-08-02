@@ -1,7 +1,6 @@
 .stable {
+  height: 100%;
   background-color: #FFFFFF;
-  border: 1px solid;
-  border-color: #D0D0D0 #FFFFFF #FFFFFF #D0D0D0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -19,9 +18,6 @@
   overflow: hidden;
   user-select: none;
   -moz-user-select: none;
-  border: 1px solid;
-  border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF;
-  border-bottom: 0;
   z-index: 10;
 }
 .stable-head table {table-layout: fixed; width: 0}

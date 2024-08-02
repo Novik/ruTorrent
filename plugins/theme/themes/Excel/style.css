@@ -27,8 +27,6 @@ panel-label[selected] {
   --badge-background-color: #FFFFFF;
 }
 
-.stable {border: none;}
-
 div#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
 .statuscell { border-color: #9EB6CE }
 
