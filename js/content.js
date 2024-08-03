@@ -3,8 +3,7 @@
  *
  */
 
-function makeContent()
-{
+function makeContent() {
 	$("#st_up").mouseclick(theWebUI.upRateMenu);
 	$("#st_down").mouseclick(theWebUI.downRateMenu);
 
@@ -17,10 +16,10 @@ function makeContent()
 		);
 	});
 
-	$("#query").on('keydown', function(e)
-	{
-		if(e.keyCode == 13)
-		{
+	$("#offcanvas-sidepanel-label").text("ruTorrent v" + theWebUI.version);
+
+	$("#query").on('keydown', function(e) {
+		if (e.keyCode === 13) {
 			theSearchEngines.run();
 		}
 	});
@@ -28,12 +27,12 @@ function makeContent()
 	new DnD("HDivider", {
 		restrictY: true,
 		maskId: "HDivider",
-		onStart: function(e) {return $("#side-panel").css("display") !== "none";},
+		onStart: function(e) {return $("#offcanvas-sidepanel").css("display") !== "none";},
 		onRun: function(e) {
 			theWebUI.resizeLeft(parseFloat(e.data.mask.css("left")));
 		},
 		onFinish: function(e) {
-			$("#HDivider").attr({style:""});
+			$("#HDivider").css({left:""});
 			theWebUI.setHSplitter();
 		},
 	});
@@ -42,29 +41,30 @@ function makeContent()
 		restrictX: true,
 		maskId: "VDivider",
 		onStart: function(e) {return $("#tdetails").css("display") !== "none";},
-		onRun: function(e) {theWebUI.resizeTop(null, parseFloat(e.data.mask.css("top")) - $("#t").outerHeight() - 5);},
+		onRun: function(e) {
+			theWebUI.resizeTop(null, parseFloat(e.data.mask.css("top")) - $("#t").outerHeight() - 5);
+		},
 		onFinish: function(e) {
-			$("#VDivider").attr({style:""});
+			$("#VDivider").css({top:""});
 			theWebUI.setVSplitter();
 		},
 	});
 
-	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function()
-	{
+	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function() {
 		$("#torrent_file").val("");
 		$("#add_button").prop("disabled",true);
 		var d = this.contentDocument;
-		if(d && (d.location.href != "about:blank"))
-		{
+		if (d && (d.location.href != "about:blank")) {
 			try { var txt = d.body.textContent ? d.body.textContent : d.body.innerText; eval(txt); } catch(e) {}
 		}
 	}));
-	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function()
-	{
+	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function() {
 		$("#url").val("");
 		var d = this.contentDocument;
-		if(d && d.location.href != "about:blank")
-			try { eval(d.body.textContent ? d.body.textContent : d.body.innerText); } catch(e) {}
+		if (d && d.location.href != "about:blank")
+			try {
+				eval(d.body.textContent ? d.body.textContent : d.body.innerText);
+			} catch(e) {}
 	}));
 	theDialogManager.make("padd",theUILang.peerAdd,
 		'<div class="content fxcaret">'+theUILang.peerAddLabel+'<br><input type="text" id="peerIP" class="Textbox" value="my.friend.addr:6881"/></div>'+

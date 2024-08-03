@@ -50,6 +50,7 @@ class DnD {
 	}
 
 	run(e) {
+		$("body").css({cursor:"grabbing"});
 		const self = e.data;
 		if (!self.options.restrictX) {
 			self.mask.css({
@@ -66,6 +67,7 @@ class DnD {
 	}
 
 	finish(e) {
+		$("body").css({cursor:""});
 		const self = e.data;
 		self.options.onFinish(e);
 		if (self.detachedMask) {
@@ -88,23 +90,23 @@ var theDialogManager =
 	divider: 0,
 	modalState: false,
 
-	make: function( id, name, content, isModal, noClose )
-	{
-		$(document.body).append($("<div>").attr("id",id).addClass("dlg-window").html(content).
-			prepend( $("<div>").attr("id",id+"-header").addClass("dlg-header").text(name) ).
-			prepend( $("<a></a>").addClass("dlg-close") ));
+	make: function(id, name, content, isModal, noClose) {
+		$(document.body).append($("<div>").attr("id",id).addClass(
+			"dlg-window position-absolute overflow-hidden"
+		).html(content).
+			prepend($("<div>").attr("id",id+"-header").addClass("dlg-header fw-bold px-5 py-1").text(name)).
+			prepend($("<a>").addClass("dlg-close")));
 		return(this.add(id,isModal,noClose));
 	},
-        add: function( id, isModal, noClose )
-	{
-	        var obj = $('#'+id);
-	        if(!isModal)
-		        isModal = false;
+	add: function(id, isModal, noClose) {
+		var obj = $('#'+id);
+		if(!isModal)
+			isModal = false;
 		obj.css( { position: "absolute", display: "none", outline: "0px solid transparent" } ).
-	        	data("modal",isModal).data("nokeyclose",noClose);
-	        if(!noClose)
-		        obj.find(".dlg-close").attr("href","javascript:theDialogManager.hide('"+id+"');");
-	        var self = this;
+			data("modal",isModal).data("nokeyclose",noClose);
+		if(!noClose)
+			obj.find(".dlg-close").attr("href","javascript:theDialogManager.hide('"+id+"');");
+		var self = this;
 		var checkForButtons = function me(val)
 		{
 			if(val.hasClass("Cancel"))
