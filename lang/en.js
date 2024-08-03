@@ -286,7 +286,7 @@ var theUILang =
  webBadSessionError		: "Plugin will not work. Webserver user must have execute access to the rtorrent session directory",
  webBadSessionWarning		: "Some functionality will be unavailable. Webserver user must have execute access to the rtorrent session directory",
  Developers			: "Developers",
- Original_webui	: "Original uTorrent WebUI",
+ Original_webui	: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Check new version",
  here				: "here",

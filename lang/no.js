@@ -285,7 +285,7 @@ var theUILang =
  webBadSessionError		: "Tilleggsmodul vil ikke fungere. Webserver-bruker må ha kjøretilgang til rTorrent sin sessionmappe.",
  webBadSessionWarning		: "Noe funksjonalitet vil ikke være tilgjengelig. Webserver-bruker må ha kjøretilgang til rTorrent sin sessionmappe.",
  Developers			: "Utviklere",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Se etter ny versjon",
  here				: "her",

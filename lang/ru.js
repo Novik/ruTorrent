@@ -286,7 +286,7 @@ var theUILang =
  webBadSessionError		: "Плагин не будет работать. Веб сервер должен иметь доступ на выполнение к директории session rtorrent",
  webBadSessionWarning		: "Часть функциональности плагина будет недоступна. Веб сервер должен иметь доступ на выполнение к директории session rtorrent",
  Developers			: "Разработчики",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Проверка наличия новых версий",
  here				: "здесь",

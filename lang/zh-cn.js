@@ -286,7 +286,7 @@ var theUILang =
  webBadSessionError		: "插件将不会工作. 网页服务器运行用户必须对 rTorrent 的 session 文件夹有 执行 权限",
  webBadSessionWarning		: "某些功能将不可用. 网页服务器运行用户必须对 rTorrent 的 session 文件夹有 执行 权限",
  Developers			: "开发者",
- Original_webui			: "原生 uTorrent WebUI",
+ Original_webui			: "原生 µTorrent WebUI",
  rTorrent_adaption		: "rTorrent 适配 (ruTorrent)",
  Check_new_version		: "检查新版本",
  here				: "here",

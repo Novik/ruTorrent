@@ -287,7 +287,7 @@ var theUILang =
  webBadSessionError		: "Wtyczka nie będzie działać. Użytkownik serwera www musi posiadać uprawnienia wykonywania w katalogu sesji rtorrent",
  webBadSessionWarning		: "Niektóre funkcje będą niedostępne. Użytkownik serwera www musi posiadać uprawnienia wykonywania w katalogu sesji rtorrent",
  Developers			: "Autorzy",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Sprawdź nową wersję",
  here				: "tutaj",

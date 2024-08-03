@@ -286,7 +286,7 @@ var theUILang =
  webBadSessionError		: "Плагін не працюватиме. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent",
  webBadSessionWarning		: "Деякі функції не будуть доступні. Користувач веб-сервера повинен мати права на виконання на каталог сесії rtorrent",
  Developers			: "Розробники",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Перевірка наявності нових версій",
  here				: "тут",

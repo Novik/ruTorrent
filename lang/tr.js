@@ -286,7 +286,7 @@ var theUILang =
  webBadSessionError		: "Eklenti çalışmayacak. Web sunucusu kullanıcısı rtorrent session dizininde çalıştırma erişimine sahip olmalıdır",
  webBadSessionWarning		: "Bazı işlevler kullanılamayacak. Web sunucusu kullanıcısı rtorrent session dizininde çalıştırma erişimine sahip olmalıdır",
  Developers			: "Geliştiriciler",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Yeni sürümü kontrol etmek için",
  here				: "tıklayın",

@@ -286,7 +286,7 @@ var theUILang =
  webBadSessionError		: "Le plugin ne fonctionnera pas. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
  webBadSessionWarning		: "Certaines fonctionnalités ne seront pas disponibles. Le serveur web n'a pas la permission de lister le répertoire de session de rtorrent.",
  Developers			: "Développeurs ",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Voir si une nouvelle version existe :",
  here				: "ici",

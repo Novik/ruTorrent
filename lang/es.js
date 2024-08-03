@@ -286,7 +286,7 @@ var theUILang =
  webBadSessionError		: "El Plugin no funcionará. El Webserver debe poder ejecutar dentro de la carpeta de sesión",
  webBadSessionWarning		: "Algunas funcionalidades no estarán disponibles. El Webserver debe poder ejecutar dentro de la carpeta de sesión",
  Developers			: "Developers",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Comprobar versiones nuevas",
  here				: "aqui",

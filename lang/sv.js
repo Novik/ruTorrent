@@ -284,7 +284,7 @@ var theUILang =
  webBadSessionError		: "Insticksprogrammet kommer inte att fungera. Webbserveranvändaren måste ha exekveringsåtkomst till rTorrent's session-katalog",
  webBadSessionWarning		: "Vissa funktioner kommer att vara otillgängliga. Webbserveranvändaren måste ha exekveringsåtkomst till rTorrent's session-katalog",
  Developers			: "Utvecklare",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Kolla efter ny version",
  here				: "här",

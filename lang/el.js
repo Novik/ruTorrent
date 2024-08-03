@@ -284,7 +284,7 @@ var theUILang =
  webBadSessionError		: "Το πρόσθετο δεν θα λειτουργήσει. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
  webBadSessionWarning		: "Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες. Ο χρήστης του διακομιστή Web πρέπει να έχει δικαιώματα εκτέλεσης στον φάκελο session του rtorrent",
  Developers			: "Ανάπτυξη λογισμικού",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Έλεγχος για νέα έκδοση",
  here				: "εδώ",

@@ -284,7 +284,7 @@ var theUILang =
  webBadSessionError		: "Trình bổ sung sẽ không chạy. Người chạy máy chủ Web phải có quyền thực thi trong thư mục quản lý phiên rtorrent",
  webBadSessionWarning		: "Một số tính năng sẽ không có. Người chạy máy chủ Web phải có quyền thực thi trong thư mục quản lý phiên rtorrent",
  Developers			: "Phát triển",
- Original_webui			: "Original uTorrent WebUI",
+ Original_webui			: "Original µTorrent WebUI",
  rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Kiểm tra phiên bản mới",
  here				: "ở đây",
