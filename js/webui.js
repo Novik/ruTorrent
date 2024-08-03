@@ -467,12 +467,14 @@ var theWebUI =
 		theTabs.show(tab);
 		this.activeView = tab;
 
-		if (!this.settings["webui.show_cats"])
-			$("#side-panel").hide();
-		if (!this.settings["webui.show_dets"]) {
-			$("#tdetails").hide();
-			if (!theWebUI.systemInfo.rTorrent.started)
-				this.toggleDetails();
+		if (!this.settings["webui.show_cats"]) {
+			$("#side-panel").addClass("d-none");
+			$("#HDivider").addClass("d-none");
+		}
+		if (!this.settings["webui.show_dets"] || !theWebUI.systemInfo.rTorrent.started) {
+			$("#tdetails").addClass("d-none");
+			$("#tdetails").removeClass("d-flex");
+			$("#VDivider").addClass("d-none")
 		}
 		theDialogManager.setEffects( iv(this.settings["webui.effects"])*200 );
 //		this.setStatusUpdate();
@@ -2267,8 +2269,9 @@ var theWebUI =
 			$("#side-panel").width(w);
 			$("#main-info").width($("#maincont").width() - 5 - w);
 		} else {
-			$("#main-info").width(100);
+			$("#main-info").width($("#maincont").width());
 		}
+		this.resizeGraph();
 	},
 
 	resizeTop: function(w, h) {
@@ -2279,37 +2282,23 @@ var theWebUI =
 			$("#list-table").height(h);
 			$("#tdetails").height($("#maincont").height() - 5 - h);
 		} else {
-			$("#list-table").height(100);
+			$("#list-table").height($("#maincont").height());
 		}
+		this.resizeGraph();
 	},
 
-	resizeBottom : function( w, h )
-	{
-        	if(w!==null)
-        	{
-			$("#tdetails").width( w );
-			w-=8;
-		}
-		if(h!==null)
-        	{
-			$("#tdetails").height( h );
-			h-=($("#tabbar").outerHeight());
-			$("#tdcont").height( h );
-			h-=2;
-        	}
-        	if(theWebUI.configured)
-        	{
-	        	this.getTable("fls").resize(w,h);
-			this.getTable("trk").resize(w,h);
-			this.getTable("prs").resize(w,h);
-			var table = this.getTable("plg");
-			if(table)
-				table.resize(w,h);
-			this.speedGraph.resize(w,h);
-		}
+	resizeGraph: function() {
+		// Resize graphs in #tdetails
+		const tdcont = $("#tdcont");
+		this.speedGraph.resize(tdcont.width(), tdcont.height());
 	},
 
 	resize: function() {
+		if ($("#t").css("display") === "none") {
+			$("#maincont").height($(window).height() - 30); // 25px for #StatusBar, 5px for margin top
+		} else {
+			$("#maincont").css({height:""});
+		}
 		const w = $("#maincont").width() * (1 - theWebUI.settings["webui.hsplit"]) - 5;
 		theWebUI.resizeLeft(w);
 		const h = $("#maincont").height() * theWebUI.settings["webui.vsplit"];
@@ -2329,7 +2318,7 @@ var theWebUI =
 		r = Math.floor(r * 1000) / 1000;
 		if ((theWebUI.settings["webui.vsplit"] !== r) && (r > 0) && (r < 1)) {
 			theWebUI.settings["webui.vsplit"] = r;
-			theWebUI.save();
+			this.save();
 		}
 	},
 
@@ -2338,30 +2327,29 @@ var theWebUI =
 		r = Math.floor(r * 1000) / 1000;
 		if ((theWebUI.settings["webui.hsplit"] !== r) && (r > 0) && (r < 1)) {
 			theWebUI.settings["webui.hsplit"] = r;
-			theWebUI.save();
+			this.save();
 		}
 	},
 
 	toggleMenu: function() {
 		$("#t").toggle();
-		theWebUI.resize();
-		theWebUI.save()
+		this.resize();
 	},
 
 	toggleDetails: function() {
-		theWebUI.settings["webui.show_dets"] = !theWebUI.settings["webui.show_dets"];
-		$("#tdetails").toggle();
-		$("#VDivider").toggle();
-		theWebUI.resize();
-		theWebUI.save();
+		this.settings["webui.show_dets"] = !this.settings["webui.show_dets"];
+		$("#tdetails").toggleClass("d-flex d-none");
+		$("#VDivider").toggleClass("d-none");
+		this.resize();
+		this.save();
 	},
 
 	toggleCategories: function() {
-		theWebUI.settings["webui.show_cats"] = !theWebUI.settings["webui.show_cats"];
-		$("#side-panel").toggle();
-		$("#HDivider").toggle();
-    theWebUI.resize();
-		theWebUI.save();
+		this.settings["webui.show_cats"] = !this.settings["webui.show_cats"];
+		$("#side-panel").toggleClass("d-none");
+		$("#HDivider").toggleClass("d-none");
+    this.resize();
+		this.save();
 	},
 
 	showAdd: function()
