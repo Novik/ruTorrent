@@ -17,8 +17,6 @@ function makeContent()
 		);
 	});
 
-	$("#query").on("keydown", (e) => (e.keyCode === 13) && theSearchEngines.run());
-
 	new DnD("HDivider",
 	{
 		left : function() { return(60); },

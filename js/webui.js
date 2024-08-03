@@ -253,93 +253,89 @@ var theWebUI =
 	{
 		window.onresize = theWebUI.resize;
 		window.onorientationchange = theWebUI.resize;
-		$(document).on("dragstart",function(e) { return(false); } );
-		$(document).on("selectstart",function(e) { return(e.fromTextCtrl); });
-		$(document).on("contextmenu",function(e)
-		{
-			if(e.fromTextCtrl)
+		$(document).on("dragstart", function(e) { return(false); } );
+		$(document).on("selectstart", function(e) { return(e.fromTextCtrl); });
+		$(document).on("contextmenu", function(e) {
+			if (e.fromTextCtrl)
 				theContextMenu.hide();
 			else
-				return(false);
+				return false;
 		});
-		var keyEvent = function (e)
-		{
-			switch(e.which)
-			{
+		const keyEvent = function (e) {
+			switch (e.which) {
 				case 27: // Esc
 				{
-					if(theContextMenu.hide() || theDialogManager.hideTopmost())
+					if (theContextMenu.hide() || theDialogManager.hideTopmost())
 						return(false);
-					if($$("query").value === "")
-					{
+					if ($$("query").value === "") {
 						theWebUI.endSearch();
-					}
-					else
-					{
+					} else {
 						theWebUI.clearSearch();
 					}
 					break;
 				}
-		   		case 79 : 				// ^O
-   				{
-					if(e.metaKey && !theDialogManager.isModalState())
-   					{
+				case 79: // ^O
+   			{
+					if (e.metaKey && !theDialogManager.isModalState()) {
 						theWebUI.showAdd();
-						return(false);
-      					}
-		   			break;
+						return false;
+					}
+		   		break;
 				}
-				case 80 :                               // ^P
+				case 80: // ^P
 				{
-					if(e.metaKey && !theDialogManager.isModalState())
-					{
+					if (e.metaKey && !theDialogManager.isModalState()) {
 						theWebUI.showSettings();
-						return(false);
-      					}
-		   			break;
+						return false;
+					}
+					break;
 				}
-				case 70 : // ^F
+				case 70: // ^F
 				{
-					if(e.metaKey && !theDialogManager.isModalState())
-					{
+					if (e.metaKey && !theDialogManager.isModalState()) {
 						theWebUI.startSearch(e);
 					}
 					break;
 				}
-		  		case 112:				// F1
-   				{
-   				        if((!browser.isOpera || !e.fromTextCtrl) && !theDialogManager.isModalState())
-   				        {
-			   		        theDialogManager.show(e.metaKey ? "dlgAbout" : "dlgHelp");
-						return(false);
-					}
-		   		}
-				case 115 : 				// F4
+				case 112: // F1
 				{
-					if(!browser.isOpera || !e.fromTextCtrl)
-					{
+					if ((!browser.isOpera || !e.fromTextCtrl) && !theDialogManager.isModalState()) {
+						theDialogManager.show(e.metaKey ? "dlgAbout" : "dlgHelp");
+						return false;
+					}
+					break;
+				}
+				case 115: // F4
+				{
+					if (!browser.isOpera || !e.fromTextCtrl) {
 						theWebUI.toggleMenu();
-						return(false);
+						return false;
 					}
+					break;
 				}
-				case 117 :                      	// F6
+				case 117: // F6
 				{
-				        if(!browser.isOpera || !e.fromTextCtrl)
-				        {
+					if (!browser.isOpera || !e.fromTextCtrl) {
 						theWebUI.toggleDetails();
-						return(false);
+						return false;
 					}
+					break;
 				}
-				case 118 :                      	// F7
+				case 118: // F7
 				{
-				        if(!browser.isOpera || !e.fromTextCtrl)
-				        {
+					if (!browser.isOpera || !e.fromTextCtrl) {
 						theWebUI.toggleCategories();
 						return(false);
 					}
+					break;
 				}
 			}
 		};
+		$("#query").on("keydown", (e) => {
+			if (e.keyCode === 13) {
+				theSearchEngines.run()
+			}
+		});
 
 		$(document).on( browser.isOpera ? 'keypress' : 'keydown', keyEvent);
 	},
