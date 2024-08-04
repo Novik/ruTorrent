@@ -452,7 +452,7 @@ function makeContent()
 			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
 					$("<input>").attr({type: "checkbox", id: "check_hash"}),
-					$("<label>").attr({for: "checkbox"}).text(theUILang.Check_hash),
+					$("<label>").attr({for: "check_hash"}).text(theUILang.Check_hash),
 				),
 			),
 			$("<div>").addClass("row").append(
