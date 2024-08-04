@@ -1,7 +1,3 @@
-div#tedit .row > div {
-  padding: 0;
-}
-
 div#tedit div.dlg-header {
   background-image: url(../../images/settings.gif);
 }

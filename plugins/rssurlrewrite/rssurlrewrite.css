@@ -3,10 +3,6 @@ div#dlgEditRules .row {
   margin: 0 0 0.25rem 0;
   padding: 0;
 }
-div#dlgEditRules .row > div {
-  padding: 0 0.25rem;
-  margin-bottom: 0.1rem;
-}
 
 .lf_rur {
   background-color: #FFFFFF; 

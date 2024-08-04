@@ -286,6 +286,8 @@ var theUILang =
  webBadSessionError		: "Plugin não irá funcionar. Utilizador do servidor precisa ter permissão de acesso ao diretório da secessão",
  webBadSessionWarning		: "Algumas funcionalidades estarão indisponíveis. Utilizador do servidor precisa ter permissão de acesso ao diretório da secessão",
  Developers			: "Desenvolvedores",
+ Original_webui			: "Original µTorrent WebUI",
+ rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Verificar nova versão",
  here				: "aqui",
  Num_No				: "N°", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin

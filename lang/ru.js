@@ -286,6 +286,8 @@ var theUILang =
  webBadSessionError		: "Плагин не будет работать. Веб сервер должен иметь доступ на выполнение к директории session rtorrent",
  webBadSessionWarning		: "Часть функциональности плагина будет недоступна. Веб сервер должен иметь доступ на выполнение к директории session rtorrent",
  Developers			: "Разработчики",
+ Original_webui			: "Original µTorrent WebUI",
+ rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Проверка наличия новых версий",
  here				: "здесь",
  Num_No				: "№", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin

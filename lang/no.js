@@ -285,6 +285,8 @@ var theUILang =
  webBadSessionError		: "Tilleggsmodul vil ikke fungere. Webserver-bruker må ha kjøretilgang til rTorrent sin sessionmappe.",
  webBadSessionWarning		: "Noe funksjonalitet vil ikke være tilgjengelig. Webserver-bruker må ha kjøretilgang til rTorrent sin sessionmappe.",
  Developers			: "Utviklere",
+ Original_webui			: "Original µTorrent WebUI",
+ rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Se etter ny versjon",
  here				: "her",
  Num_No				: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin

@@ -1,8 +1,6 @@
 div#dlgEditRatioRules {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
 div#dlgEditRatioRules div.dlg-header {background-image: url(../../images/settings.gif)}
-div#dlgEditRatioRules .container {margin: 0.25rem; padding: 0; width: auto;}
 div#dlgEditRatioRules .row {margin: 0 0 0.25rem 0; padding: 0;}
-div#dlgEditRatioRules .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
 
 ul#rlsul {margin: 0.25rem; padding: 0.25rem; list-style: none; white-space: nowrap;}
 ul#rlsul > li {margin: 0.2rem 0; display: flex; flex-direction: row;}

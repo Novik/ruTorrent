@@ -333,7 +333,7 @@ plugin.onLangLoaded = function()
 						).addClass("Button").val(value)),
 					),
 				),
-				$("<div>").addClass("col-md-6").append(
+				$("<div>").addClass("col-md-6 flex-column align-items-stretch").append(
 					$("<fieldset>").append(
 						$("<legend>").text(theUILang.ratioIfLegend),
 						$("<div>").addClass("d-flex flex-row").append(
