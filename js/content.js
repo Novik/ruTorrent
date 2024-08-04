@@ -300,7 +300,9 @@ function makeContent()
 						$("<kbd>").text(keyboard),
 					),
 					$("<div>").addClass("col-8").append(
-						$("<span>").attr({onclick:action}).text(text)
+						action ?
+						$("<a>").attr({href:"#", onclick:action}).text(text) :
+						$("<span>").text(text)
 					),
 				]),
 			),
@@ -327,7 +329,8 @@ function makeContent()
 					$("<span>").text(")")
 				),
 				$("<div>").addClass("pt-3 col-12").append(
-					$("<strong>").text(theUILang.Check_new_version + " "),
+					$("<strong>").text(theUILang.Check_new_version),
+					$("<span>").html("&nbsp;"),
 					$("<a>").attr({href:"https://github.com/Novik/ruTorrent", target:"_blank"}).text(theUILang.here),
 				),
 			),
