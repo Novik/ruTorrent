@@ -7,7 +7,7 @@ function filterDir(ev) {
 		$(ev.currentTarget).next().children().css("display", "");
 		return;
 	}
-	const dirs = $(ev.currentTarget).next().children(".rmenuitem");
+	const dirs = $(ev.currentTarget).next().find(".rmenuitem");
 	for (let i = 0; i < dirs.length; i++) {
 		if (dirs[i]) {
 			const txtValue = dirs[i].textContent || dirs[i].innerText;
@@ -36,10 +36,10 @@ theWebUI.rDirBrowser = class {
 				switch (ev.key) {
 					case "Escape": {
 						ev.stopPropagation();
-						if ($(ev.currentTarget).children(".filter-dir").val() === "") {
+						if ($(ev.currentTarget).find(".filter-dir").val() === "") {
 							this.hide();
 						} else {
-							$(ev.currentTarget).children(".filter-dir").val("").trigger("input");
+							$(ev.currentTarget).find(".filter-dir").val("").trigger("input");
 						}
 					} break;
 					case "ArrowDown": {
@@ -95,15 +95,19 @@ theWebUI.rDirBrowser = class {
 				}
 			}
 		).hide();
-		$("#iframe-container").append(this.frame);
+		$("#dir-container").append(this.frame);
 	}
 
 	requestDir() {
+		const path = this.edit.val();
+		if (path.length > 0 && !path.endsWith("/")) {
+			this.edit.val(path.slice(0, path.lastIndexOf("/") + 1));
+		}
 		$.ajax(
 			`plugins/_getdir/listdir.php?dir=${encodeURIComponent(this.edit.val())}&time=${(new Date()).getTime()}${this.withFiles ? "&withfiles=1" : ""}`,
 			{
 				success: (res) => {
-					this.frame.children(".filter-dir").val("").trigger("focus");
+					this.frame.find(".filter-dir").val("").trigger("focus");
 					this.edit.val(res.path).data({cwd:res.path});
 					$(".rmenuobj").remove();
 					this.frame.append(
@@ -112,10 +116,10 @@ theWebUI.rDirBrowser = class {
 							...(this.withFiles ? res.files : []).map(ele => $("<div>").addClass("rmenuitem").text(ele)),
 						),
 					);
-					this.frame.children(".rmenuobj").on(
+					this.frame.find(".rmenuobj").on(
 						"click", (ev) => this.selectItem(ev)
 					).on(
-						"dblclick", () => this.requestDir()
+						"dblclick", (ev) => (ev.currentTarget.innerText.endsWith("/")) ? this.requestDir() : this.hide()
 					);
 				},
 				error: (res) => console.log(res),
@@ -132,7 +136,7 @@ theWebUI.rDirBrowser = class {
 	}
 
 	selectItem(ev) {
-		$(ev.target).parent().children(".active").removeClass("active");
+		$(ev.target).parent().find(".active").removeClass("active");
 		$(ev.target).addClass("active");
 		this.edit.val(this.edit.data("cwd") + ev.target.innerText);
 	}
@@ -156,7 +160,7 @@ theWebUI.rDirBrowser = class {
 		if (this.frame.css("display") !== "none") {
 			this.setButtonText("...");
 			this.edit.prop("read-only", false);
-			this.frame.children(".filter-dir").val("");
+			this.frame.find(".filter-dir").val("");
 			this.frame.hide();
 		}
 		return false;
