@@ -32,21 +32,66 @@ theWebUI.rDirBrowser = class {
 			),
 		).on(
 			"keydown", (ev) => {
+				// some keyboard shortcuts for dir list operation
 				switch (ev.key) {
-					case "Escape":
+					case "Escape": {
 						ev.stopPropagation();
 						if ($(ev.currentTarget).children(".filter-dir").val() === "") {
 							this.hide();
 						} else {
 							$(ev.currentTarget).children(".filter-dir").val("").trigger("input");
 						}
-						break;
-					case "ArrowUp":
-						if ($(ev.currentTarget).children(".active").length === 0) {
-							$(ev.currentTarget).children(".rmenuitem").first().addClass("active");
+					} break;
+					case "ArrowDown": {
+						const selector = "[style!='display: none;']";
+						const itemList = $(ev.currentTarget).find(".rmenuitem" + selector);
+						if (itemList.filter(".active").length === 0) {
+							itemList.first().trigger("click");
 						} else {
-
+							itemList.filter(".active").nextAll(selector).first().trigger("click");
 						}
+					} break;
+					case "ArrowUp": {
+						const selector = "[style!='display: none;']";
+						const itemList = $(ev.currentTarget).find(".rmenuitem" + selector);
+						if (itemList.filter(".active").length === 0) {
+							itemList.last().trigger("click");
+						} else {
+							itemList.filter(".active").prevAll(selector).first().trigger("click");
+						}
+					}	break;
+					case "ArrowRight": {
+						$(ev.currentTarget).find(".rmenuitem.active").trigger("dblclick");
+					} break;
+					case "ArrowLeft": {
+						$(ev.currentTarget).find(".rmenuitem:contains('..')").trigger("click").trigger("dblclick");
+					} break;
+				}
+
+				// scroll vertically if selected item is out of list container
+				const selected = $(ev.currentTarget).find(".rmenuitem.active");
+				if (selected.length === 0)
+					return;
+				const selPos = {
+					top: selected.offset().top,
+					bottom: selected.offset().top + selected.outerHeight(),
+				};
+				const container = $(ev.currentTarget).find(".rmenuobj");
+				const contPos = {
+					top: container.offset().top,
+					bottom: container.offset().top + container[0].clientHeight,
+				};
+				const bottomDiff = selPos.bottom - contPos.bottom;
+				if (bottomDiff > 0) {
+					const topScroll = container.scrollTop();
+					container.scrollTop(topScroll + bottomDiff);
+					return;
+				}
+				const topDiff = selPos.top - contPos.top;
+				if (topDiff < 0) {
+					const topScroll = container.scrollTop();
+					container.scrollTop(topScroll + topDiff);
+					return;
 				}
 			}
 		).hide();
