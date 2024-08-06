@@ -196,18 +196,18 @@ plugin.onLangLoaded = function()
 			"</fieldset>"
 			)[0], theUILang.unpack );
 		$('#edit_unpack').val( theWebUI.unpackData.path );
-		if(thePlugins.isInstalled("_getdir"))
-		{
+		if (thePlugins.isInstalled("_getdir")) {
 			var btn = new theWebUI.rDirBrowser( 'dlg_unpack', 'edit_unpack', 'btn_unpack' );
-			theDialogManager.setHandler('dlg_unpack','afterHide',function()
-			{
+			theDialogManager.setHandler('dlg_unpack', 'afterHide', function() {
 				btn.hide();
 			});
-			if(plugin.canChangeOptions())
-				plugin.btn = new theWebUI.rDirBrowser( 'st_unpack', 'edit_unpack1', 'btn_unpack1' );
-		}
-		else
-		{
+			if (plugin.canChangeOptions()) {
+				plugin.btn = new theWebUI.rDirBrowser('st_unpack', 'edit_unpack1', 'btn_unpack1');
+				theDialogManager.addHandler("stg", "afterHide", () => {
+					plugin.btn.hide();
+				});
+			}
+		} else {
 			$('#btn_unpack').remove();
 			$('#btn_unpack1').remove();
 		}

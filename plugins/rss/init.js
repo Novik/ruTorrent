@@ -1435,6 +1435,9 @@ plugin.onLangLoaded = function()
 		});
 		$('#FLTdir_edit').after($("<input type=button>").addClass("Button").attr("id","FLTBtn").on('focus', function() { this.blur(); } ));
 		plugin.editFilersBtn = new theWebUI.rDirBrowser( 'dlgEditFilters', 'FLTdir_edit', 'FLTBtn' );
+		theDialogManager.setHandler("dlgEditFilters", "afterHide", function() {
+			plugin.editFilersBtn.hide();
+		});
 	}
 
 	if(thePlugins.isInstalled('throttle'))

@@ -63,19 +63,31 @@ DnD.prototype.run = function( e )
 	return(false);
 }
 
-DnD.prototype.finish = function( e )
-{
-	var self = e.data;
+DnD.prototype.finish = function(e) {
+	const self = e.data;
 	self.options.onFinish(e);
-	if(self.detachedMask)
-	{
-		var offs = self.mask.offset();
+	if (self.detachedMask) {
+		const offs = self.mask.offset();
 		self.mask.hide();
-		self.obj.css( { left: offs.left, top: offs.top } );
+		self.obj.css(offs);
+
+		// move only the visible path browse frame along with the dialog window
+		// because invisible ones will reposition when toggled open
+		self.obj.find(".browseEdit").each((i, ele) => {
+			if ($(`#${ele.id}_frame`).css("display") !== "none") {
+				const frameOffs = ele.getBoundingClientRect();
+				$(`#${ele.id}_frame`).css(
+					{
+						top: frameOffs.bottom,
+						left: frameOffs.left,
+					}
+				);
+			}
+		});
 	}
 	$(document).off("mousemove",self.run); 
 	$(document).off("mouseup",self.finish);
-	return(false);
+	return false;
 }
 
 // Dialog manager
@@ -176,25 +188,38 @@ var theDialogManager =
 	        	this.items[id].afterShow(id);
 		this.bringToTop(id);
 	},
-	hide: function( id, callback )
-	{
-		var pos = $.inArray(id+"",this.visible);
-		if(pos>=0)
+
+	hide: function(id, callback) {
+		const pos = $.inArray(id + "", this.visible);
+		if (pos >= 0)
 			this.visible.splice(pos,1);
-        	var obj = $('#'+id);
-        	if($type(this.items[id]) && ($type(this.items[id].beforeHide)=="function"))
-	        	this.items[id].beforeHide(id);
-		obj.hide(this.divider,callback);
-        	if($type(this.items[id]) && ($type(this.items[id].afterHide)=="function"))
-	        	this.items[id].afterHide(id);
-		if(obj.data("modal"))
+		const obj = $('#' + id);
+		if ($type(this.items[id]) && ($type(this.items[id].beforeHide) === "function"))
+			this.items[id].beforeHide(id);
+		obj.hide(this.divider, callback);
+		if ($type(this.items[id]) && ($type(this.items[id].afterHide) === "function"))
+			this.items[id].afterHide(id);
+		if (obj.data("modal"))
 			this.clearModalState();
 	},
-	setHandler: function(id,type,handler)
-	{
-		if($type(this.items[id]))
-	        	this.items[id][type] = handler;
-		return(this);
+	setHandler: function(id, type, handler) {
+		if ($type(this.items[id]))
+			this.items[id][type] = handler;
+		return this;
+	},
+	addHandler: function(id, type, handler) {
+		if ($type(this.items[id])) {
+			const existing = this.items[id][type];
+			if (existing) {
+				this.items[id][type] = function() {
+					existing();
+					handler();
+				};
+			} else {
+				this.items[id][type] = handler;
+			}
+		}
+		return this;
 	},
 	isModalState: function()
 	{
