@@ -18,14 +18,14 @@ function filterDir(ev) {
 
 theWebUI.rDirBrowser = class {
 	constructor(dlg_id, edit_id, btn_id, frame_id, withFiles, height) {
-		this.edit = $('#' + edit_id);
-		this.btn = $('#' + btn_id);
+		this.edit = $('#' + edit_id).addClass("browseEdit").prop("autocomplete", "off").on(
+			browser.isIE ? "focusin" : "focus", () => self.hide()
+		);
+		this.btn = $('#' + btn_id).addClass("browseButton").on("click", () => self.toggle());
 		this.setButtonText("...");
 		this.withFiles = withFiles;
 		this.height = height;
 		const self = this;
-		this.btn.on("click", () => self.toggle()).addClass("browseButton");
-		this.edit.prop("autocomplete", "off").on(browser.isIE ? "focusin" : "focus", function () { return self.hide(); }).addClass("browseEdit");
 		this.frame = $("<div>").attr({id: edit_id + "_frame"}).addClass("browseFrame").append(
 			$("<input>").attr({type: "text", placeholder:theUILang.typeToFilter}).addClass("filter-dir").on(
 				"input", filterDir
@@ -109,14 +109,14 @@ theWebUI.rDirBrowser = class {
 				success: (res) => {
 					this.frame.find(".filter-dir").val("").trigger("focus");
 					this.edit.val(res.path).data({cwd:res.path});
-					$(".rmenuobj").remove();
+					this.frame.find(".rmenuobj").remove();
 					this.frame.append(
 						$("<div>").addClass("rmenuobj").append(
 							...res.directories.map(ele => $("<div>").addClass("rmenuitem").text(ele + "/")),
 							...(this.withFiles ? res.files : []).map(ele => $("<div>").addClass("rmenuitem").text(ele)),
 						),
 					);
-					this.frame.find(".rmenuobj").on(
+					this.frame.find(".rmenuitem").on(
 						"click", (ev) => this.selectItem(ev)
 					).on(
 						"dblclick", (ev) => (ev.currentTarget.innerText.endsWith("/")) ? this.requestDir() : this.hide()
@@ -136,8 +136,8 @@ theWebUI.rDirBrowser = class {
 	}
 
 	selectItem(ev) {
-		$(ev.target).parent().find(".active").removeClass("active");
-		$(ev.target).addClass("active");
+		this.frame.find(".rmenuitem.active").removeClass("active");
+		$(ev.currentTarget).addClass("active");
 		this.edit.val(this.edit.data("cwd") + ev.target.innerText);
 	}
 
