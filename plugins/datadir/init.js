@@ -172,7 +172,7 @@ plugin.onLangLoaded = function()
 		true,
 	);
 	if (thePlugins.isInstalled("_getdir")) {
-		new theWebUI.rDirBrowser( 'dlg_datadir', 'edit_datadir', 'btn_datadir_browse', 'frame_datadir_browse' );
+		new theWebUI.rDirBrowser("edit_datadir");
 	}
 }
 

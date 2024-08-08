@@ -17,7 +17,7 @@ function filterDir(ev) {
 }
 
 theWebUI.rDirBrowser = class {
-	constructor(dlg_id, edit_id, btn_id, frame_id, withFiles, height) {
+	constructor(edit_id, withFiles, height) {
 		this.edit = $('#' + edit_id).addClass("browseEdit").prop("autocomplete", "off").on(
 			browser.isIE ? "focusin" : "focus", () => self.hide()
 		);

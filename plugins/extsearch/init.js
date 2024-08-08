@@ -762,7 +762,7 @@ plugin.onLangLoaded = function()
 		"<div id='buttons' class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"tegLoadTorrents\");theWebUI.tegLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
 		true);
 	if (thePlugins.isInstalled("_getdir")) {
-		new theWebUI.rDirBrowser( 'tegLoadTorrents', 'tegdir_edit', 'tegBtn' );
+		new theWebUI.rDirBrowser("tegdir_edit");
 	}
 	var s = "<fieldset>"+
 			"<legend>"+theUILang.exsGlobalLimit+"</legend>"+

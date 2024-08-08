@@ -167,8 +167,8 @@ plugin.onLangLoaded = function()
 			"</table>"+
 		"</fieldset>")[0], theUILang.autotools );
 		if (thePlugins.isInstalled("_getdir")) {
-			new theWebUI.rDirBrowser( 'st_autotools', 'path_to_finished', 'automove_browse_btn', 'automove_browse_frame' );
-			new theWebUI.rDirBrowser( 'st_autotools', 'path_to_watch', 'autowatch_browse_btn', 'autowatch_browse_frame' );
+			new theWebUI.rDirBrowser("path_to_finished");
+			new theWebUI.rDirBrowser("path_to_watch");
 		}
 	}
 }

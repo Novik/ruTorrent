@@ -234,7 +234,7 @@ plugin.onLangLoaded = function()
 			$('#xgetfile').trigger('submit');
 		});
 		if (thePlugins.isInstalled("_getdir")) {
-			new theWebUI.rDirBrowser( 'tcreate', 'path_edit', 'browse_path', null, true, 375 );
+			new theWebUI.rDirBrowser("path_edit", true, 375);
 		}
 		plugin.markLoaded();
 	}

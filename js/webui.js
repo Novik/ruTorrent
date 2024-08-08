@@ -361,7 +361,7 @@ var theWebUI =
 
 	loadPlugins: function() {
 		if (thePlugins.isInstalled("_getdir")) {
-			new this.rDirBrowser( 'tadd', 'dir_edit', 'dir_btn' );
+			new this.rDirBrowser("dir_edit");
 		}
 		correctContent();
 		this.updateServerTime();

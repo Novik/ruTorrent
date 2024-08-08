@@ -1426,8 +1426,8 @@ plugin.onLangLoaded = function()
 	$("#gcont").append( $("<div>").attr("id","rsslayout").css( "display", "none" ));
 
 	if (thePlugins.isInstalled("_getdir")) {
-		new theWebUI.rDirBrowser( 'dlgLoadTorrents', 'RSSdir_edit', 'RSSBtn' );
-		new theWebUI.rDirBrowser( 'dlgEditFilters', 'FLTdir_edit', 'FLTBtn' );
+		new theWebUI.rDirBrowser("RSSdir_edit");
+		new theWebUI.rDirBrowser("FLTdir_edit");
 	}
 
 	if(thePlugins.isInstalled('throttle'))

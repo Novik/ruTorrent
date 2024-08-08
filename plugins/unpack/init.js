@@ -195,9 +195,9 @@ plugin.onLangLoaded = function()
 			)[0], theUILang.unpack );
 		$('#edit_unpack').val( theWebUI.unpackData.path );
 		if (thePlugins.isInstalled("_getdir")) {
-			new theWebUI.rDirBrowser( 'dlg_unpack', 'edit_unpack', 'btn_unpack' );
+			new theWebUI.rDirBrowser("edit_unpack");
 			if (plugin.canChangeOptions()) {
-				new theWebUI.rDirBrowser('st_unpack', 'edit_unpack1', 'btn_unpack1');
+				new theWebUI.rDirBrowser("edit_unpack1");
 			}
 		}
 		plugin.markLoaded();
