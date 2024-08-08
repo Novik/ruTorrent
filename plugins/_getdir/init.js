@@ -21,8 +21,12 @@ theWebUI.rDirBrowser = class {
 		this.edit = $('#' + edit_id).addClass("browseEdit").prop("autocomplete", "off").on(
 			browser.isIE ? "focusin" : "focus", () => self.hide()
 		);
-		this.btn = $('#' + btn_id).addClass("browseButton").on("click", () => self.toggle());
-		this.setButtonText("...");
+		this.btn = $("<button>").attr(
+			{type:"button", id:edit_id + "_btn"}
+		).addClass("browseButton").text("...").on("focus", (ev) => ev.currentTarget.blur()).on("click", () => self.toggle());
+		this.edit.after(
+			this.btn,
+		);
 		this.withFiles = withFiles;
 		this.height = height;
 		const self = this;
@@ -127,14 +131,6 @@ theWebUI.rDirBrowser = class {
 		);
 	}
 
-	setButtonText(buttonText) {
-		if (this.btn[0].tagName === "INPUT") {
-			this.btn.val(buttonText);
-		} else if (this.btn[0].tagName === "BUTTON") {
-			this.btn.text(buttonText);
-		}
-	}
-
 	selectItem(ev) {
 		this.frame.find(".rmenuitem.active").removeClass("active");
 		$(ev.currentTarget).addClass("active");
@@ -150,7 +146,7 @@ theWebUI.rDirBrowser = class {
 			height: this.height || "",
 		}).show();
 		this.requestDir();
-		this.setButtonText("X");
+		this.btn.text("X");
 		theDialogManager.bringToTop(this.frame.attr("id"));
 		this.edit.prop("read-only", true);
 		return false;
@@ -158,7 +154,7 @@ theWebUI.rDirBrowser = class {
 
 	hide() {
 		if (this.frame.css("display") !== "none") {
-			this.setButtonText("...");
+			this.btn.text("...");
 			this.edit.prop("read-only", false);
 			this.frame.find(".filter-dir").val("");
 			this.frame.hide();
@@ -168,6 +164,20 @@ theWebUI.rDirBrowser = class {
 
 	toggle() {
 		return (this.frame.css("display") !== "none") ? this.hide() : this.show();
+	}
+}
+
+plugin.hideBrowseFrame = function(containerId) {
+	if (thePlugins.isInstalled("_getdir")) {
+		$(`#${containerId} .browseEdit`).each((i, ele) => {
+			const frame = $(`#${ele.id}_frame`);
+			if (frame.css("display") !== "none") {
+				$(`#${ele.id}_btn`).text("...");
+				$(`#${ele.id}`).prop("read-only", false);
+				frame.find(".filter-dir").val("");
+				frame.hide();
+			}
+		});
 	}
 }
 

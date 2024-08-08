@@ -359,16 +359,9 @@ var theWebUI =
 		this.requestWithoutTimeout("?action=getuisettings", [this.initSettings, this], true);
 	},
 
-	loadPlugins: function()
-	{
-		if(thePlugins.isInstalled("_getdir"))
-		{
-			$('#dir_edit').after($("<input type=button>").addClass("Button").attr("id","dir_btn").on('focus', function() { this.blur(); } ));
-			var btn = new this.rDirBrowser( 'tadd', 'dir_edit', 'dir_btn' );
-			theDialogManager.setHandler('tadd','afterHide',function()
-			{
-				btn.hide();
-			});
+	loadPlugins: function() {
+		if (thePlugins.isInstalled("_getdir")) {
+			new this.rDirBrowser( 'tadd', 'dir_edit', 'dir_btn' );
 		}
 		correctContent();
 		this.updateServerTime();
