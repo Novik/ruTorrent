@@ -252,7 +252,8 @@ a.dlg-close:active {
     background: transparent url(./images/t_error.svg) center;
 }
 
-.stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
+.stable {background-color: #181818;}
+.stable-icon {background-image: url(./images/tstatus.png); background-repeat: no-repeat}
 .Status_Down {background: transparent url(./images/t_down.svg) no-repeat center center !important; background-size: 16px !important}
 .Status_Up {background: transparent url(./images/t_up.svg) no-repeat center center !important; background-size: 16px !important}
 .Status_Incompleted {background: transparent url(./images/t_inactive.svg) no-repeat center center !important; background-size: 16px !important}
@@ -275,7 +276,6 @@ Input.TextboxVShort {border: 1px solid #333333}
 
 a {color: #686868}
 
-.stable-icon {background-image: url(./images/tstatus.png)}
 .Icon_File {background: transparent url(./images/file.svg) no-repeat left center; background-size: 16px}
 .Icon_Dir {background: transparent url(./images/dir.svg) no-repeat left center; background-size: 16px}
 .Icon_Share {background: transparent url(./images/dir.svg) no-repeat left center; background-size: 16px}
@@ -286,7 +286,6 @@ div#gcont table td.Header {background: #181818}
 div.graph_tab {background-color: #181818}
 .graph_tab_legend { color: #FFF; background-color: #181818; }
 .graph_tab_tooltip { color: #FFF; background-color: #606060; border: 1px solid #606060; }
-div.table_tab {background-color: #181818}
 div#List {border: 1px solid #333333}
 
 div#modalbg {background-color: #181818}

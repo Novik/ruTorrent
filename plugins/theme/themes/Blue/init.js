@@ -1,14 +1,4 @@
-plugin.loadCSS("jquery.safari-checkbox");
-
-plugin.correctCheckboxes = function()
-{
-	$('input:checkbox:not([safari])').checkbox();
-	$('input[safari]:checkbox').checkbox();
-	$('input:radio').checkbox();
-}
-
-plugin.showShadow = function(id,callback)
-{
+plugin.showShadow = function(id,callback) {
 	var p = $("#"+id);
 //	p.css("z-index", p.css("z-index")+1);
 	var shadow = $("#"+id+"-shadow")
@@ -20,59 +10,13 @@ plugin.showShadow = function(id,callback)
 }
 
 plugin.oldAllDone = plugin.allDone;
-plugin.allDone = function()
-{
+plugin.allDone = function() {
 	plugin.oldAllDone.call(this);
-	injectScript(plugin.path+"jquery.checkbox.js", function()
-	{
-		plugin.correctCheckboxes();
 
-		if(thePlugins.isInstalled('rss'))	
-		{
-			plugin.loadFilters = theWebUI.loadFilters;
-			theWebUI.loadFilters = function( flt, additions )
-			{
-				plugin.loadFilters.call(theWebUI,flt, additions);
-				plugin.correctCheckboxes();
-			}
-
-			plugin.addNewFilter = theWebUI.addNewFilter;
-			theWebUI.addNewFilter = function()
-			{
-				plugin.addNewFilter.call(theWebUI);
-				plugin.correctCheckboxes();
-			}
-
-			plugin.fillRSSGroups = theWebUI.fillRSSGroups;
-			theWebUI.fillRSSGroups = function()
-			{
-				plugin.fillRSSGroups.call(theWebUI);
-				plugin.correctCheckboxes();
-			}
-
-			plugin.trafDraw = theWebUI.trafGraph.draw;
-			theWebUI.trafGraph.draw = function()
-			{
-				plugin.trafDraw.call(this);
-				plugin.correctCheckboxes();
-			}
-		}
-		if(thePlugins.isInstalled('rssurlrewrite'))	
-		{
-			plugin.loadRules = theWebUI.loadRules;
-			theWebUI.loadRules = function( rle )
-			{
-				plugin.loadRules.call(theWebUI,rle);
-				plugin.correctCheckboxes();
-			}
-		}
-	});
-
-	$('.dlg-header').each( function()
-	{
-		var hdr = $(this).css( { "background-color": "transparent", "background-position": "0px"
-//			, cursor: "move"
-			 } );
+	$('.dlg-header').each(function() {
+		var hdr = $(this).css(
+			{"background-color":"transparent", "background-position":"0px"}
+		);
 		var parent = hdr.parent();
 		var close = hdr.prev();	
 		parent.width(parent.width()+12);

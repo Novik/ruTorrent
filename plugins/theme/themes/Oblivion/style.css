@@ -179,11 +179,11 @@ input[type="number"],input[type="text"], input[type="password"], select {color: 
 input[type="file"] {-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
 input[type="number"][disabled],input[type="text"][disabled], input[type="password"][disabled], input[type="file"][disabled], select[disabled] {color: black; border: 1px solid #000;background: #888888 url(./images/headers.png) repeat-x 0px -138px;-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
 
+.stable {background-color: #181818; font-family: inherit;}
 .stable-icon {background-image: url(./images/status_icons.png); }
 .Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
-
 
 div.tab {background: #181818;font-family: inherit;}
 div#lcont {background: #181818;font-family: inherit;}
@@ -195,7 +195,6 @@ div#gcont table {font-family:inherit;}
 div.graph_tab {color:#FFF; background-color: #181818}
 .graph_tab_legend { color: #FFF; background-color: #181818; }
 .graph_tab_tooltip { color: #FFF; background-color: #606060; border: 1px solid #606060; }
-div.table_tab {background-color: #181818;font-family: inherit;}
 
 div#modalbg {background-color: #181818;}
 
@@ -281,8 +280,8 @@ div#lcont div.std:nth-child(2n+1) {background: #181818 url(./images/headers.png)
 #StatusBar table tr td {padding-right:5px;border:none;background: transparent url(./images/headers.png) no-repeat right -208px;}
 #StatusBar table tr td td {background:none;}
 #StatusBar table tr td:last-child {border-top:red;}
-#st_up .icon {background:url(./images/status.png) no-repeat 6px 2px;}
-#st_down .icon {background:url(./images/status.png) no-repeat 6px -18px;}
+#st_up .icon {background:url(./images/status.png) no-repeat 0px -2px;}
+#st_down .icon {background:url(./images/status.png) no-repeat 0px -22px;}
 .statuscell {padding-right:5px;border:none;}
 #stup_speed{color:#AACF27;}
 #stdown_speed {color: #178FD1;}

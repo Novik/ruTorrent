@@ -6,8 +6,16 @@
 
 .Cell0 {border: 1px dotted #888888}
 
-#meter-disk-td {background: url(./images/disk.svg) no-repeat !important; background-size: 22px !important}
-#meter-cpu-td {width: 22px; height: 22px; background: url(./images/cpu.svg) no-repeat !important; background-size: 22px !important}
+#meter-disk-pane .icon {
+  background: url(./images/disk.svg) no-repeat -3px !important;
+  background-size: 22px !important;
+}
+#meter-cpu-pane .icon {
+  width: 22px;
+  height: 22px;
+  background: url(./images/cpu.svg) no-repeat !important;
+  background-size: 22px !important;
+}
 
 div#dlg_unpack div.dlg-header, div#cadd div.dlg-header { background: transparent url(./images/edit.svg) no-repeat 2px center !important; background-size: 20px !important}
 
