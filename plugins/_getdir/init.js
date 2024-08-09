@@ -70,6 +70,12 @@ theWebUI.rDirBrowser = class {
 					case "ArrowLeft": {
 						$(ev.currentTarget).find(".rmenuitem:contains('..')").trigger("click").trigger("dblclick");
 					} break;
+					case "Home": {
+						$(ev.currentTarget).find(".rmenuitem").first().trigger("click");
+					} break;
+					case "End": {
+						$(ev.currentTarget).find(".rmenuitem").last().trigger("click");
+					} break;
 				}
 
 				// scroll vertically if selected item is out of list container
