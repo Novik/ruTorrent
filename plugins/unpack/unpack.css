@@ -7,9 +7,6 @@ div#dlg_unpack input {vertical-align: middle; margin-top: 5px; margin-bottom: 5p
 
 div#dlg_unpack br {clear: left; line-height: 0}
 
-#btn_unpack {width:30px}
-#btn_unpack1 {width:30px}
-
 div#dlg_unpack div.dlg-header {background-image: url(../../images/settings.gif)}
 
 div#st_unpack { display: none }

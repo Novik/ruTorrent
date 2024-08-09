@@ -171,16 +171,9 @@ plugin.onLangLoaded = function()
 		)[0].outerHTML,
 		true,
 	);
-	if(thePlugins.isInstalled("_getdir"))
-	{
-		var btn = new theWebUI.rDirBrowser( 'dlg_datadir', 'edit_datadir', 'btn_datadir_browse', 'frame_datadir_browse' );
-		theDialogManager.setHandler('dlg_datadir','afterHide',function()
-		{
-			btn.hide();
-		});
+	if (thePlugins.isInstalled("_getdir")) {
+		new theWebUI.rDirBrowser("edit_datadir");
 	}
-	else
-		$('#btn_datadir_browse').remove();
 }
 
 plugin.onRemove = function()

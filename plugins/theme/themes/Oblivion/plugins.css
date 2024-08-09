@@ -1,3 +1,7 @@
+div.browseFrame {
+  border: 1px solid #212121;
+  background-color: #181818;
+}
 .tskconsole, .exconsole, .console, .starterConsole {background: #333333}
 .cCell {color: black}
 #meter-disk-value, #qmeter-disk-value, #qmeter-band-value { float: left; border: 1px inset #1b1b1b; border-bottom: none; background: #96CE00 url(./images/headers.png) repeat-x 0px -138px;}

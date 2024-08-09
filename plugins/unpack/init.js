@@ -160,7 +160,6 @@ plugin.onLangLoaded = function()
 				"<fieldset>" +
 					"<div>" + theUILang.unpackPath + "</div>" +
 					"<input type='text' id='edit_unpack' class='TextboxLarge' maxlength='200'/>" +
-					"<input type='button' id='btn_unpack' class='Button' value='...' />" +
 				"</fieldset>" +
 			"</div>"+
 			"<div class='aright buttons-list'>" +
@@ -181,7 +180,6 @@ plugin.onLangLoaded = function()
 			"<fieldset>"+
 				"<legend>"+theUILang.unpackPath+"</legend>"+
 				"<input type='text' id='edit_unpack1' class='TextboxLarge' maxlength='200'/>" +
-				"<input type='button' id='btn_unpack1' class='Button' value='...' />" +
 			"</fieldset>"+
 			"<fieldset>"+
 				"<legend>"+theUILang.unpackTorrents+"</legend>"+
@@ -196,20 +194,11 @@ plugin.onLangLoaded = function()
 			"</fieldset>"
 			)[0], theUILang.unpack );
 		$('#edit_unpack').val( theWebUI.unpackData.path );
-		if(thePlugins.isInstalled("_getdir"))
-		{
-			var btn = new theWebUI.rDirBrowser( 'dlg_unpack', 'edit_unpack', 'btn_unpack' );
-			theDialogManager.setHandler('dlg_unpack','afterHide',function()
-			{
-				btn.hide();
-			});
-			if(plugin.canChangeOptions())
-				plugin.btn = new theWebUI.rDirBrowser( 'st_unpack', 'edit_unpack1', 'btn_unpack1' );
-		}
-		else
-		{
-			$('#btn_unpack').remove();
-			$('#btn_unpack1').remove();
+		if (thePlugins.isInstalled("_getdir")) {
+			new theWebUI.rDirBrowser("edit_unpack");
+			if (plugin.canChangeOptions()) {
+				new theWebUI.rDirBrowser("edit_unpack1");
+			}
 		}
 		plugin.markLoaded();
 	}		
