@@ -13,39 +13,6 @@ plugin.oldAllDone = plugin.allDone;
 plugin.allDone = function() {
 	plugin.oldAllDone.call(this);
 
-	if (thePlugins.isInstalled('rss')) {
-		plugin.loadFilters = theWebUI.loadFilters;
-		theWebUI.loadFilters = function(flt, additions) {
-			plugin.loadFilters.call(theWebUI,flt, additions);
-			plugin.correctCheckboxes();
-		}
-
-		plugin.addNewFilter = theWebUI.addNewFilter;
-		theWebUI.addNewFilter = function() {
-			plugin.addNewFilter.call(theWebUI);
-			plugin.correctCheckboxes();
-		}
-
-		plugin.fillRSSGroups = theWebUI.fillRSSGroups;
-		theWebUI.fillRSSGroups = function() {
-			plugin.fillRSSGroups.call(theWebUI);
-			plugin.correctCheckboxes();
-		}
-
-		plugin.trafDraw = theWebUI.trafGraph.draw;
-		theWebUI.trafGraph.draw = function() {
-			plugin.trafDraw.call(this);
-			plugin.correctCheckboxes();
-		}
-	}
-	if (thePlugins.isInstalled('rssurlrewrite')) {
-		plugin.loadRules = theWebUI.loadRules;
-		theWebUI.loadRules = function(rle) {
-			plugin.loadRules.call(theWebUI, rle);
-			plugin.correctCheckboxes();
-		}
-	}
-
 	$('.dlg-header').each(function() {
 		var hdr = $(this).css(
 			{"background-color":"transparent", "background-position":"0px"}
