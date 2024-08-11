@@ -96,7 +96,7 @@ function makeContent()
 							).addClass("flex-grow-1"),
 						),
 					),
-					$("<div>").addClass("row d-flex flex-column").append(
+					$("<div>").addClass("row").append(
 						$("<div>").addClass("col-md-9 offset-md-3 d-flex flex-column align-items-start").append(
 							...[
 								["not_add_path", theUILang.Dont_add_tname],
@@ -121,7 +121,7 @@ function makeContent()
 							$("<select>").attr({id: "tadd_label_select"}).addClass("flex-grow-1"),
 						),
 						$("<div>").addClass("col-md-2 d-flex align-items-center").append(
-							$("<input>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).addClass("Button").val(theUILang.Return_select_label),
+							$("<button>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).text(theUILang.Return_select_label),
 						),
 					),
 				),
@@ -164,23 +164,17 @@ function makeContent()
 	$("#tadd_label_select").on('change', function(e) {
 		const index = this.selectedIndex;
 		switch (index) {
-			case 1:
-			{
+			case 1: {
 				$(this).hide();
 				$("#tadd_label").show();
 				$("#tadd-return-select").show();
-				break;
-			}
-			case 0:
-			{
+			} break;
+			case 0: {
 				$("#tadd_label").val("");
-				break;
-			}
-			default:
-			{
+			} break;
+			default: {
 				$("#tadd_label").val(this.options[index].value);
-				break;
-			}
+			} break;
 		}
 	});
 
