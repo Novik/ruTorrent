@@ -1,23 +1,50 @@
-.stable {border: 1px solid; border-color: #D0D0D0 #FFFFFF #FFFFFF #D0D0D0; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; }
+.stable {
+  background-color: #FFFFFF;
+  border: 1px solid;
+  border-color: #D0D0D0 #FFFFFF #FFFFFF #D0D0D0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  user-select: none;
+  -moz-user-select: none;
+  -moz-user-focus: normal;
+  -moz-user-input: enabled;
+}
 .stable td {font: menu; white-space: nowrap; padding: 1px}
-.stable-head {position: absolute; background: #F5F5F5; overflow: hidden; -moz-user-select: none; border: 1px solid; border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF; border-bottom: 0; z-index: 10}
+.stable-head {
+  width: 100%;
+  flex: 0 0 auto;
+  background: #F5F5F5;
+  overflow: hidden;
+  user-select: none;
+  -moz-user-select: none;
+  border: 1px solid;
+  border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF;
+  border-bottom: 0;
+  z-index: 10;
+}
 .stable-head table {table-layout: fixed; width: 0}
 .stable-head table tr {background: transparent url(../images/header.gif) repeat-x scroll center top}
 .stable-head table tr td {height: 14px; font-size: 11px; border: 1px solid; border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF; background: transparent url(../images/blank.gif) no-repeat scroll right center; line-height: 14px; overflow: hidden; white-space: nowrap; vertical-align: top}
 .stable-head td div {padding: 0 12px 0 4px}
 .stable-head div.resz {border: 1px solid #FF0000; width: 5px; height: 14px; padding: 0 !important; float: right; background: transparent url(../images/s.gif) no-repeat scroll left center; cursor: e-resize}
-.stable-body {background: window; overflow: auto; overflow-anchor: none}
+.stable-body {
+  width: 100%;
+  flex: 1 1 auto;
+  background: #F5F5F5;
+  overflow: auto;
+  overflow-anchor: none;
+}
 .stable-body table {table-layout: fixed; width: 0; }
 .stable-body tr {cursor: pointer}
 .stable-body td {height: 16px; border-bottom: 1px solid #E0E0E0; overflow: hidden; vertical-align: top}
 .stable-icon {width: 16px; height: 16px; margin-right: -6px; margin: 0 5px; padding: 0 !important; float: left}
-.ie .stable-icon {}
 .stable-lpad {width: 5px; height: 16px; margin: 0; padding: 0; float: left; }
 .stable-body td div {font-size: 11px; overflow: hidden; height: 16px !important;}
 .konqueror .stable-body td div { margin: 0 0px 0 0px !important }
 .stable-body td div { margin: 0 2px 0 2px !important}
 .ie .stable-body td, .ie .stable-body td div {zoom: 1 !important; height: 16px !important; line-height: 16px !important; vertical-align: top; float: none; white-space: nowrap !important}
-.stable-body {background: #F5F5F5}
 .stable-body tr.selected td {background: #CFDEEF}
 .stable-body tr.odd td {background: #F3F3F3}
 .stable-body tr.even td {background: #FFFFFF}
