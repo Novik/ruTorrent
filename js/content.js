@@ -291,7 +291,7 @@ function makeContent()
 					["Ctrl-Z", theUILang.Deselect_all,],
 				].flatMap(([keyboard, text, action]) => [
 					$("<div>").addClass("col-4").append(
-						$("<kbd>").text(keyboard),
+						$("<span>").addClass("fw-bold").text(keyboard),
 					),
 					$("<div>").addClass("col-8").append(
 						action ?

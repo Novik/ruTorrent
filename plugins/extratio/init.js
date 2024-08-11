@@ -373,9 +373,7 @@ plugin.onLangLoaded = function()
 						$("<legend>").text(theUILang.ratShortcutLegend),
 						$("<div>").addClass("row").append(
 							$("<div>").addClass("col-4").append(
-								$("<kbd>").text("Alt"),
-								$("<span>").text(" + "),
-								$("<kbd>").text("↑"),
+								$("<span>").addClass("fw-bold").text("Alt + ↑"),
 							),
 							$("<div>").addClass("col-8").append(
 								$("<span>").text(theUILang.ratUpRule),
@@ -383,9 +381,7 @@ plugin.onLangLoaded = function()
 						),
 						$("<div>").addClass("row").append(
 							$("<div>").addClass("col-4").append(
-								$("<kbd>").text("Alt"),
-								$("<span>").text(" + "),
-								$("<kbd>").text("↓"),
+								$("<span>").addClass("fw-bold").text("Alt + ↓"),
 							),
 							$("<div>").addClass("col-8").append(
 								$("<span>").text(theUILang.ratDownRule),
