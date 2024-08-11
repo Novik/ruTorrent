@@ -412,18 +412,17 @@ function makeContent()
 		$("<fieldset>").append(
 			$("<legend>").text(theUILang.speedList),
 			$("<div>").addClass("row").append(
-				$("<div>").addClass("col-md-2").append(
-					$("<label>").text(theUILang.UL + ": "),
-				),
-				$("<div>").addClass("col-md-10").append(
-					$("<input>").attr({type: "text", id: "webui.speedlistul"}).prop("maxlength", 128).addClass("speedEdit"),
-				),
-				$("<div>").addClass("col-md-2").append(
-					$("<label>").text(theUILang.DL + ": "),
-				),
-				$("<div>").addClass("col-md-10").append(
-					$("<input>").attr({type: "text", id: "webui.speedlistdl"}).prop("maxlength", 128).addClass("speedEdit"),
-				),
+				...[
+					["webui.speedlistul", theUILang.UL],
+					["webui.speedlistdl", theUILang.DL],
+				].flatMap(([id, text]) => [
+					$("<div>").addClass("col-md-2").append(
+						$("<label>").attr({for:id}).text(text + ": "),
+					),
+					$("<div>").addClass("col-md-10").append(
+						$("<input>").attr({type:"text", id:id}).prop("maxlength", 128).addClass("speedEdit"),
+					),
+				]),
 			),
 		),
 	);
@@ -452,7 +451,7 @@ function makeContent()
 			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
 					$("<input>").attr({type: "checkbox", id: "check_hash"}),
-					$("<label>").attr({for: "checkbox"}).text(theUILang.Check_hash),
+					$("<label>").attr({for: "check_hash"}).text(theUILang.Check_hash),
 				),
 			),
 			$("<div>").addClass("row").append(
@@ -535,16 +534,16 @@ function makeContent()
 					$("<label>").attr({for: "peer_exchange"}).text(theUILang.Peer_exch),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({id: "lbl_dht_port"}).addClass("disabled").text(theUILang.dht_port + ": "),
+					$("<label>").attr({id:"lbl_dht_port", for:"dht_port"}).addClass("disabled").text(theUILang.dht_port + ": "),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<input>").attr({type: "text", id: "dht_port"}).prop("maxlength", 6).prop("disabled", true),
+					$("<input>").attr({type:"text", id:"dht_port"}).prop("maxlength", 6).prop("disabled", true),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({id: "ip"}).text(theUILang.Ip_report_track + ": "),
+					$("<label>").attr({id:"lbl_ip", for:"ip"}).text(theUILang.Ip_report_track + ": "),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<input>").attr({type: "text", id: "ip"}).prop("maxlength", 6),
+					$("<input>").attr({type:"text", id:"ip"}).prop("maxlength", 6),
 				),
 			),
 		),

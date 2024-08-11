@@ -356,7 +356,12 @@ div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz
 .graph_tab_legend { background-color: #F0F0F0; border: 0px none transparent; }
 .graph_tab_tooltip { position: absolute; border: 1px solid #fdd; padding: 2px; background-color: #fee; color: black; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; opacity: 0.80; }
 
-div.table_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; }
+div.table_tab {
+  -moz-user-select: none;
+  -moz-user-focus: normal;
+  -moz-user-input: enabled;
+  user-select: none;
+}
 div#List,.main-table {border: 1px solid #A0A0A0;}
 
 div.cont {padding: 6px; font-size: 11px;}
@@ -462,7 +467,7 @@ div#tadd .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
 .speedEdit { width: 320px }
 .decimalDigitEdit input[type=number] {padding: 1px; margin: 0;}
 .decimalDigitEdit > .row > div {padding-left: 0.25rem; padding-right: 0.25rem;}
-.decimalDigitEdit > .row {padding: 0.5rem 0;}
+.decimalDigitEdit > .row {padding: 0.5rem;}
 .decimalDigitEdit > .row:not(:last-child) {
   border-bottom: 1px dotted #D0D0D0;
 }

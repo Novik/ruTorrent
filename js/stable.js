@@ -209,7 +209,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		if(!this.colsdata[i].enabled)
   	                td.hide();
 	}
-	this.tBody = $("<table>").width(0).get(0);
+	this.tBody = $("<table>").get(0);
 	this.tBody.cellSpacing = 0;
 	this.tBody.cellPadding = 0;
 	this.tpad = $("<div>").addClass("stable-virtpad").get(0);
@@ -235,9 +235,8 @@ dxSTable.prototype.create = function(ele, styles, aName)
       		if(!this.colsdata[i].enabled)
 			cl.hide();
 	}
-	this.scp = $("<span></span>").addClass("stable-scrollpos").get(0);
+	this.scp = $("<span>").addClass("stable-scrollpos").get(0);
 	this.dCont.appendChild(this.scp);
-	this.dCont.style.position = "relative";
 	this.init();
 	this.calcSize().resizeColumn();
 
@@ -356,13 +355,7 @@ var preventSort = function()
 dxSTable.prototype.calcSize = function() 
 {
 	if (this.created && this.dCont.offsetWidth >= 4) {
-		this.dBody.style.width = this.dCont.offsetWidth - 2 + "px";
-		this.dBody.style.marginTop = this.dHead.offsetHeight + "px";
 		this.tBody.style.width = this.tHead.offsetWidth + "px";
-		var h = this.dCont.clientHeight - this.dHead.offsetHeight;
-		if(h >= 0) 
-			this.dBody.style.height = h + "px";
-		this.dHead.style.width = (this.dCont.clientWidth - 2) + "px";
 		this.rowCover.style.width = this.dHead.style.width;
 		if ((this.cols > 0) && (!this.isResizing)) {
 			for (let i = 0; i < this.cols; i++) {
