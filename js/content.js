@@ -359,12 +359,6 @@ function makeContent()
 		'<div id="yesnoDlg-buttons" class="aright buttons-list"><input type="button" class="OK Button" value="'+theUILang.ok+'" id="yesnoOK">'+
 		'<input type="button" class="Button Cancel" value="'+theUILang.Cancel+'" id="yesnoCancel"></div>',
 		true);
-	var languages = '';
-	for (var i in AvailableLanguages)
-		languages+="<option value='"+i+"'>"+AvailableLanguages[i]+"</option>";
-	var retries = '';
-	for (var i in theUILang.retryOnErrorList)
-		retries+="<option value='"+i+"'>"+theUILang.retryOnErrorList[i]+"</option>";
 
 	const stgPanel = $("<div>").addClass("lm").append(
 		$("<ul>").append(
@@ -436,7 +430,11 @@ function makeContent()
 					$("<label>").attr({for: "webui.retry_on_error"}).text(theUILang.retryOnErrorTitle + ": "),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<select>").attr({id: "webui.retry_on_error"}).html(retries),
+					$("<select>").attr({id: "webui.retry_on_error"}).append(
+						...Object.entries(theUILang.retryOnErrorList).map(
+							([index, text]) => $("<option>").val(index).text(text)
+						),
+					),
 				),
 			),
 			$("<div>").addClass("row").append(
@@ -444,7 +442,11 @@ function makeContent()
 					$("<label>").attr({for: "webui.lang"}).text(theUILang.mnu_lang + ": "),
 				),
 				$("<div>").addClass("col-6 col-md-3").append(
-					$("<select>").attr({id: "webui.lang"}).html(languages),
+					$("<select>").attr({id: "webui.lang"}).append(
+						...Object.entries(AvailableLanguages).map(
+							([code, language]) => $("<option>").val(code).text(language)
+						),
+					),
 				),
 			),
 		),
