@@ -286,6 +286,8 @@ var theUILang =
  webBadSessionError		: "Plugin zal niet functioneren. Webserver-gebruiker moet uitvoerrechten hebben op de sessiemap van rTorrent.",
  webBadSessionWarning		: "Sommige functionaliteiten niet beschikbaar. Webserver-gebruiker moet uitvoerrechten hebben op de sessiemap van rTorrent.",
  Developers			: "Ontwikkelaars",
+ Original_webui			: "Original µTorrent WebUI",
+ rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Controleer voor nieuwe versie",
  here				: "hier",
  Num_No				: "Nr.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin

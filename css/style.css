@@ -125,6 +125,17 @@ div.dlg-window {
   overflow: hidden;
   max-width: 95vw;
 }
+div.dlg-window div.row {
+  margin: 0.5rem 0;
+  padding: 0;
+}
+div.dlg-window div.row > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 0.25rem;
+  margin-bottom: 0.1rem;
+}
 div.fxcaret {overflow: auto}
 div.dlg-header {
   padding: 2px 24px;
@@ -143,7 +154,7 @@ div#sc ul {margin: 0; padding: 0; list-style: none}
 div#sc ul li {margin: 0; padding: 0}
 div#sc li div {line-height: 14px; padding: 4px; font-weight: bold; font-size: 11px;}
 div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
-ul.CMenu {width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
+ul.CMenu {position: absolute; width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
 ul.CMenu li {float: left; margin-right: 1px; position: relative; width: 150px; background: var(--menu-background-color); }
 ul.CMenu li a {display: block; line-height: 16px; padding: 3px 4px 3px 16px; font-weight: normal; background-color: var(--menu-background-color); color: var(--menu-color);}
 ul.CMenu li ul li a.dis, ul.CMenu li a.dis { color: var(--menu-disabled-color); }
@@ -270,11 +281,6 @@ div#stg-pages {
   display: flex;
   flex-direction: column;
 }
-div#stg_c div.row > div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
 div#stg-header { background-image: url(../images/settings.gif); }
 
 div#stg .lm {
@@ -371,34 +377,21 @@ div.cont {padding: 6px; font-size: 11px;}
 .tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px;  -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; border-top-right-radius:5px; border-top-left-radius:5px; vertical-align: top; cursor: pointer}
 .tabbar li a:hover {border-top: 2px solid #FFC73C}
 .tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
-div#dlgLabel {width: 250px; height: 140px}
+div#dlgLabel {max-width: 350px;}
 div#dlgLabel div.dlg-header {background-image: url(../images/label.gif)}
-div#dlgLabel div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
-div#dlgLabel div.content input {margin-top: 5px}
-#txtLabel {width: 200px}
 div#padd {width: 250px; height: 120px}
 div#padd div.dlg-header {background-image: url(../images/props.gif)}
 div#padd div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
 div#padd div.content input {margin-top: 5px}
 #peerIP {width: 200px}
-div#dlgAbout {width: 250px; height: 250px}
+div#dlgAbout {max-width: 300px;}
 div#dlgAbout div.dlg-header {background-image: url(../images/about.gif)}
-div#dlgAbout div.content {width: 230px; margin: 5px; padding: 5px}
-div#dlgHelp {width: 250px; height: 250px}
+div#dlgHelp {max-width: 300px;}
 div#dlgHelp div.dlg-header {background-image: url(../images/about.gif)}
-div#dlgHelp div.content {width: 230px; margin: 5px; padding: 5px}
 
-div#dlgProps {width: 395px; height: 215px}
+div#dlgProps {max-width: 450px;}
 div#dlgProps div.dlg-header {background-image: url(../images/props.gif)}
-div#dlgProps div.content {width: 380px; margin-left: 5px; }
 div#dlgProps textarea#prop-trackers {width: 100%; height: 70px; background: #FFFFFF; border: 1px solid #D0D0D0}
-div#dlgProps fieldset {margin-bottom: 5px; }
-div#dlgProps fieldset div {line-height: 16px; }
-div#dlgProps fieldset div.props-spacer {width: 90%; float: left}
-input#prop-tracker_numwant {width: 60px; float: right}
-input#prop-ulslots {width: 60px; float: right}
-input#prop-peers_min {width: 60px; float: right}
-input#prop-peers_max {width: 60px; float: right}
 input#prop-seed_ratio {width: 40px}
 
 div#yesnoDlg {width: 280px; height: auto; min-height: 100px}
@@ -418,9 +411,6 @@ div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
 
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 auto }
-div#tadd .container {padding: 0;}
-div#tadd .row {margin: 0 0 0.25rem 0; padding: 0;}
-div#tadd .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
@@ -466,8 +456,6 @@ div#tadd .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
 }
 .speedEdit { width: 320px }
 .decimalDigitEdit input[type=number] {padding: 1px; margin: 0;}
-.decimalDigitEdit > .row > div {padding-left: 0.25rem; padding-right: 0.25rem;}
-.decimalDigitEdit > .row {padding: 0.5rem;}
 .decimalDigitEdit > .row:not(:last-child) {
   border-bottom: 1px dotted #D0D0D0;
 }

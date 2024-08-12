@@ -286,6 +286,8 @@ var theUILang =
  webBadSessionError		: "A plugin nem fog működni. A webszerver felhasználónak rendelkeznie kell az rtorrent munkamenet könyvtárhoz való végrehajtási hozzáféréssel.",
  webBadSessionWarning		: "Egyes funkciók nem lesznek elérhetők. A webszerver felhasználónak rendelkeznie kell végrehajtási hozzáféréssel az rtorrent munkamenet könyvtárhoz.",
  Developers			: "Fejlesztő",
+ Original_webui			: "Original µTorrent WebUI",
+ rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Új verzió ellenörzése",
  here				: "Ide",
  Num_No				: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin

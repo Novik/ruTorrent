@@ -286,6 +286,8 @@ var theUILang =
  webBadSessionError		: "প্লাগইন কাজ করবে না। ওয়েবসার্ভার ব্যবহারকারীর অবশ্যই rTorrent সেশন ডিরেক্টরিতে এক্সিকিউট এক্সেস থাকতে হবে।",
  webBadSessionWarning		: "কিছু কার্যকারিতা অপ্রাপ্য হবে। ওয়েবসার্ভার ব্যবহারকারীর অবশ্যই rTorrent সেশন ডিরেক্টরিতে এক্সিকিউট এক্সেস থাকতে হবে।",
  Developers			: "ডেভেলপারস",
+ Original_webui			: "Original µTorrent WebUI",
+ rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "নতুন ভার্সন চেক করুন",
  here				: "এখানে",
  Num_No				: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin

@@ -344,8 +344,8 @@ rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore) {
 	if (this.canChangeToolbar()) {
 		const newBtn = $("<a>").attr(
 			{id:`mnu_${id}`, href:"#", onclick:onclick, onfocus:"this.blur();", title:`${name}...`}
-		).addClass("nav-link").append(
-			$("<div>").attr({id:id}).addClass("nav-icon top-menu-item"),
+		).addClass("nav-link top-menu-item").append(
+			$("<div>").attr({id:id}).addClass("nav-icon"),
 			$("<span>").addClass("d-inline d-md-none").text(`${name}...`),
 		);
 		const beforeBtn = $(`#mnu_${idBefore}`);

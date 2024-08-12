@@ -1,9 +1,6 @@
 div#create {background: url(../../images/toolbar.png) -48px center}
 div#tcreate div.dlg-header {background-image: url(./images/create16.gif)}
-div#tcreate .container {padding: 0;}
 div#tcreate .row {margin: 0 0 0.25rem 0; padding: 0; align-items: center;}
-div#tcreate .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
-div#tcreate fieldset {margin: 0 0 0.25rem 0; padding: 0.25rem;}
 div#tcreate textarea {resize: none; height: 8rem;}
 
 #recentTrackers {width: 130px;}

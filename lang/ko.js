@@ -284,6 +284,8 @@ var theUILang =
  webBadSessionError		: "플러그인이 동작하지 않습니다. 웹서버 사용자가 반드시 rTorrent 세션 디렉토리에 실행 권한을 가져야 합니다",
  webBadSessionWarning		: "일부 기능을 사용할 수 없습니다. 웹서버 사용자가 반드시 rTorrent 세션 디렉토리에 실행 권한을 가져야 합니다",
  Developers			: "개발자",
+ Original_webui			: "Original µTorrent WebUI",
+ rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "업데이트 확인",
  here				: "여기",
  Num_No				: "No.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin

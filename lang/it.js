@@ -287,6 +287,8 @@ var theUILang =
  webBadSessionError		: "Il plugin non funzionerà. L'utente che esegue il Webserver deve avere i permessi di esecuzione sulla cartella delle sessioni di rTorrent",
  webBadSessionWarning		: "Alcune funzioni non saranno disponibili. L'utente che esegue il Webserver deve avere i permessi di esecuzione sulla cartella delle sessioni di rTorrent",
  Developers			: "Sviluppatori",
+ Original_webui			: "Original µTorrent WebUI",
+ rTorrent_adaption		: "rTorrent adaption (ruTorrent)",
  Check_new_version		: "Controlla nuova versione",
  here				: "qui",
  Num_No				: "Nr.", // This means "Number". To be used as header for number count, e.g.: throttle/ratio plugin
