@@ -238,35 +238,30 @@ var theContextMenu =
 	mouse: { x: 0, y: 0 },
 	noHide: false,
 
-        init: function()
-	{
+	init: function() {
 		var self = this;
 		$(document).on('mousemove', function(e) { self.mouse.x = e.clientX; self.mouse.y = e.clientY; } );
-		$(document).on('mouseup', function(e)
-		{
-			var ele = $(e.target);
-			if(e.which == 3) 
-			{
-				if(!e.fromTextCtrl)
+		$(document).on('mouseup', function(e) {
+			const ele = $(e.target);
+			if (e.which === 3) {
+				if (!e.fromTextCtrl)
 					e.stopPropagation();
-			}
-			else
-			{
-				if(!ele.hasClass("top-menu-item") &&
+			} else {
+				if(!ele.hasClass("top-menu-item") && !ele.parent().hasClass("top-menu-item") &&
 					!ele.hasClass("exp") &&
 					!ele.hasClass("CMenu") &&
 					!(ele.hasClass("menu-cmd") && ele.hasClass("dis")) &&
 					!ele.hasClass("menuitem") &&
 					!ele.hasClass("menu-line"))
 				{
-					if(ele.hasClass("menu-cmd") && self.noHide)
+					if (ele.hasClass("menu-cmd") && self.noHide)
 						ele.toggleClass("sel");
 					else
-		   				window.setTimeout("theContextMenu.hide()", 50); 
+						window.setTimeout("theContextMenu.hide()", 50); 
 				}
 			}
 		});
-                this.obj = $("<UL>").css( { position: "absolute" } ).addClass("CMenu");
+		this.obj = $("<ul>").addClass("CMenu");
 		$(document.body).append(this.obj);
 	},
 	get: function( label )

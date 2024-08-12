@@ -154,7 +154,7 @@ div#sc ul {margin: 0; padding: 0; list-style: none}
 div#sc ul li {margin: 0; padding: 0}
 div#sc li div {line-height: 14px; padding: 4px; font-weight: bold; font-size: 11px;}
 div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
-ul.CMenu {width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
+ul.CMenu {position: absolute; width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
 ul.CMenu li {float: left; margin-right: 1px; position: relative; width: 150px; background: var(--menu-background-color); }
 ul.CMenu li a {display: block; line-height: 16px; padding: 3px 4px 3px 16px; font-weight: normal; background-color: var(--menu-background-color); color: var(--menu-color);}
 ul.CMenu li ul li a.dis, ul.CMenu li a.dis { color: var(--menu-disabled-color); }
