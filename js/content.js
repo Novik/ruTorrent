@@ -17,44 +17,36 @@ function makeContent()
 		);
 	});
 
-	new DnD("HDivider",
+	$("#query").on('keydown', function(e)
 	{
-		left : function() { return(60); },
-		right : function() { return( $(window).width()-20 ); },
-		restrictY : true,
-		maskId : "dividerDrag",
-		onStart : function(e) { return(theWebUI.settings["webui.show_cats"]); },
-		onRun : function(e) { $(document.body).css( "cursor", "e-resize" ); },
-		onFinish : function(e)
+		if(e.keyCode == 13)
 		{
-		        var self = e.data;
-			var w = self.mask.offset().left-2;
-			theWebUI.resizeLeft(w,null);
-			w = $(window).width()-w-11;
-			theWebUI.resizeTop(w,null);
-      		        theWebUI.resizeBottom(w,null);
-			theWebUI.setHSplitter();
-			$(document.body).css( "cursor", "default" );
+			theSearchEngines.run();
 		}
 	});
 
-	new DnD("VDivider",
-	{
-		top : function() { return(60); },
-		bottom : function() { return( $(window).height()-60 ); },
-		restrictX : true,
-		maskId : "dividerDrag",
-		onStart : function(e) { return(theWebUI.settings["webui.show_dets"]); },
-		onRun : function(e) { $(document.body).css( "cursor", "n-resize" ); },
-		onFinish : function(e)
-		{
-		        var self = e.data;
-		        var offs = self.mask.offset();
-      		        theWebUI.resizeTop(null,offs.top-($("#t").is(":visible") ?  $("#t").height() : -1)-8);
-      		        theWebUI.resizeBottom(null,$(window).height()-offs.top-$("#StatusBar").height()-14);
-      		        theWebUI.setVSplitter();
-			$(document.body).css( "cursor", "default" );
-		}
+	new DnD("HDivider", {
+		restrictY: true,
+		maskId: "HDivider",
+		onStart: function(e) {return $("#side-panel").css("display") !== "none";},
+		onRun: function(e) {
+			theWebUI.resizeLeft(parseFloat(e.data.mask.css("left")));
+		},
+		onFinish: function(e) {
+			$("#HDivider").attr({style:""});
+			theWebUI.setHSplitter();
+		},
+	});
+
+	new DnD("VDivider", {
+		restrictX: true,
+		maskId: "VDivider",
+		onStart: function(e) {return $("#tdetails").css("display") !== "none";},
+		onRun: function(e) {theWebUI.resizeTop(null, parseFloat(e.data.mask.css("top")) - $("#t").outerHeight() - 5);},
+		onFinish: function(e) {
+			$("#VDivider").attr({style:""});
+			theWebUI.setVSplitter();
+		},
 	});
 
 	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function()

@@ -37,7 +37,7 @@ html,body
 	--settings-background-color: #222;
 }
 
-#CatList, category-list
+#side-panel, category-list
 {
 	border:none;
 	background-color:#1A2329;
@@ -504,29 +504,25 @@ div#lcont
 	font-family:'Roboto'
 }
 
-div#gcont table td.Header
-{
+div#gcont div.Header {
 	background:transparent url(./images/status_icons.png) no-repeat 0 -286px;
 	font-family:'Roboto';
 	color:#D4D6C9;
-	padding-left:17px
+	padding-left:17px;
 }
 
-div#gcont table tr
-{
+div#gcont div.row {
 	background:#181818 url(./images/headers.png) repeat-x 0 -93px;
 	font-family:'Roboto';
-	color:#D4D6C9
+	color:#D4D6C9;
 }
 
-div#gcont table tr td
-{
+div#gcont div.row > div {
 	background:#181818 url(./images/headers.png) repeat-x 0 -38px
 }
 
-div#gcont table
-{
-	font-family:'Roboto'
+div#gcont {
+	font-family:'Roboto';
 }
 
 div.graph_tab
@@ -554,10 +550,8 @@ div#modalbg {
 	background-color:#181818
 }
 
-div#List,.main-table
-{
+#list-table {
 	margin-right:6px;
-	border:none;
 	background-color:#181818
 }
 

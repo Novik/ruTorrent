@@ -94,9 +94,9 @@ div#t div#setting {background: transparent url(./images/toolbar.png) no-repeat -
 div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}
 div#t div#go {background: transparent url(./images/go.gif) no-repeat 0px center; }
 
-category-list#CatList { background-color: #272E36; color: #BDDBDB;}
-div#CatList ul li { border: 1px solid #272E36; font-weight: bold; }
-div#CatList ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; color: #272E36;}
+#side-panel { background-color: #272E36; color: #BDDBDB;}
+div#side-panel ul li { border: 1px solid #272E36; font-weight: bold; }
+div#side-panel ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; color: #272E36;}
 
 .stable-icon {background-image: url(./images/tstatus.png); }
 
@@ -124,8 +124,8 @@ div#tdcont {background: #272E36; }
 div.tab { background: #272E36; }
 div#lcont { background: #272E36; font-weight: bold; color: #BDDBDB;}
 
-div#gcont table {color: #BDDBDB; font-weight: bold;}
-div#gcont table td.Header {background: #323A46;}
+div#gcont {color: #BDDBDB; font-weight: bold;}
+div#gcont div.Header {background: #323A46;}
 
 .tabbar {background-color: #1e2124;}
 .tabbar li a:hover {border-top: 2px solid #00FF00;}

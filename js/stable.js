@@ -127,7 +127,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.dCont.appendChild(this.dHead);
 	this.dCont.appendChild(this.dBody);
 
-	this.tHead = $("<table>").prop({cellSpacing: 0, cellPadding: 0}).width(100).get(0);
+	this.tHead = $("<table>").prop({cellSpacing: 0, cellPadding: 0}).get(0);
 	this.tHead.tb = $("<tbody>").get(0);
 	this.dHead.appendChild(this.tHead);
 	this.tHead.appendChild(this.tHead.tb);
@@ -400,8 +400,6 @@ dxSTable.prototype.resizeColumn = function()
 //				this.tBody.rows[j].cells[i].style.textAlign = c.style.textAlign;
 		}
 	}
-	this.tBody.tb.style.width = this.tHead.offsetWidth + "px";
-	this.tBody.style.width = this.tHead.offsetWidth + "px";
 
 	(($type(this.onresize) === "function") && needCallHandler) && this.onresize();
 }
@@ -1619,21 +1617,11 @@ dxSTable.prototype.syncDOM = function()
 	const wantsCustomRefresh = p.resizeHeight || onlyNeedsScroll;
 	const sortRefreshed = !this.noSort && needsSort && /* Sort returns 0 on success */ !this.Sort();
 
-	if (wantsCustomRefresh)
-	{
-		if (p.resizeHeight)
-			this.dCont.style.height = p.resizeHeight + "px";
-		if (p.resizeWidth)
-			this.dCont.style.width = p.resizeWidth + "px";
-
+	if (wantsCustomRefresh) {
 		this.refreshRows(p.resizeHeight, onlyNeedsScroll);
-	}
-	else if (needsRefresh && !sortRefreshed)
-	{
+	} else if (needsRefresh && !sortRefreshed) {
 		this.refreshRows();
-	}
-	else if (p.dirtySelection && !needsRefresh)
-	{
+	} else if (p.dirtySelection && !needsRefresh) {
 		this.refreshSelection();
 	}
 

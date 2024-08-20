@@ -175,6 +175,7 @@ div#t {
   height: auto;
   background: #F0F0F0 url(../images/t_bg.png) repeat-x center 0.25rem;
   border-bottom: 1px solid #D0D0D0;
+  margin-bottom: 5px;
   white-space: nowrap;
 }
 #top-menu {
@@ -244,10 +245,27 @@ Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; w
 #pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
 
 a {font-size: 11px;  color: #686868}
-table#maincont {margin: 5px 0 0 0; min-width: 600px;}
-table#maincont td.uicell {vertical-align: top; padding: 0 }
-
-#CatList { display: block; margin: 0; padding: 0; width: 0px; border: 1px solid #A0A0A0; background-color: #FFFFFF; overflow-y: auto; overflow-x: hidden; min-width: 160px; }
+#maincont {
+  height: calc(100vh - 36px - 5px - 25px - 5px);
+  width: 100vw;
+}
+#side-panel {
+  border: 1px solid #A0A0A0;
+  background-color: #FFFFFF;
+  min-width: 200px;
+  overflow: hidden auto;
+}
+#main-info {
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+#list-table {
+  flex: 1 1 auto;
+  border: 1px solid #A0A0A0;
+  background-color: #FFFFFF;
+  overflow: hidden;
+  min-height: 300px;
+}
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
 .Status_Down {background-position: 0px 0px}
@@ -264,10 +282,15 @@ table#maincont td.uicell {vertical-align: top; padding: 0 }
 .Status_Checking {background-position: 0px -176px}
 .Status_RSS {background-position: 0px -208px}
 
-div#HDivider, div#VDivider { font-size: 0; }
-div#HDivider { width: 5px; height: 0px; padding: 0; margin: 0; cursor: e-resize; }
-div#VDivider { width: 100%; height: 5px; padding: 0; margin: 0; cursor: n-resize; }
-div#dividerDrag { width: 5px; height: 5px; padding: 0; margin: 0; background: #A0A0A0; position: absolute; display: none }
+div#HDivider, div#VDivider {
+  align-self: stretch;
+  padding: 0;
+  margin: 0;
+  flex: 0 0 5px;
+}
+div#HDivider {cursor: e-resize;}
+div#VDivider {cursor: n-resize;}
+div#HDivider:active, div#VDivider:active {cursor: grabbing;}
 
 div#stg {position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
 div#stg_c {
@@ -342,17 +365,30 @@ div.indent {padding-left: 16px}
 a {text-decoration: none}
 select.cols {border: 1px solid #808080; font-size: 11px;  padding: 2px; width: 120px}
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
-div#tdetails {height: 50%; padding: 0 5px 0 0; background-color: #F5F5F5}
+div#tdetails {
+  background-color: #F5F5F5;
+  flex: 1 1 auto;
+}
 div#tdetails a.h {margin: 0}
-div#tdcont {height: 200px; background: #FFFFFF; border: 1px solid #D0D0D0; padding: 0 2px 0 2px; overflow: hidden }
-
+div#tdcont {
+  flex: 1 1 auto;
+  background: #FFFFFF;
+  border: 1px solid #D0D0D0;
+  padding: 0 2px 0 2px;
+  overflow: auto;
+}
+div#tdcont > div {
+  height: 100%;
+}
 div.tab { height:100%; background: #F5F5F5; overflow: auto }
 div#lcont {font-size: 11px;  line-height: 11px; background: #FFFFFF}
 div#lcont div.mono {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre}
 div#lcont div.std {padding: 2px}
 
-div#gcont table {font-size: 11px;  line-height: 10px}
-div#gcont table td.Header {font-weight: bold; background: #FCFCFC}
+div#gcont span.det-hdr {font-weight: bold;}
+div#gcont div.row.Header {font-size: 14px; font-weight: bold; background: #FCFCFC; padding: 0.5rem;}
+div#gcont div.row:not(.Header) {padding: 0 0.3rem; word-break: break-all;}
+div#gcont div.row > div {padding-top: 0.25rem; padding-bottom: 0.25rem;}
 
 div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; font-size: 11px;  line-height: 11px; color: #545454;}
 .graph_tab_grid,.graph_tab_legend {
@@ -368,11 +404,16 @@ div.table_tab {
   -moz-user-input: enabled;
   user-select: none;
 }
-div#List,.main-table {border: 1px solid #A0A0A0;}
 
-div.cont {padding: 6px; font-size: 11px;}
+div.cont {padding: 6px;}
 
-.tabbar {height: 18px; margin: 0; padding: 0; list-style-type: none; text-align: left}
+.tabbar {
+  flex: 0 0 18px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  text-align: left;
+}
 .tabbar li {margin: 0; padding: 0; display: inline; white-space: nowrap;}
 .tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px;  -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; border-top-right-radius:5px; border-top-left-radius:5px; vertical-align: top; cursor: pointer}
 .tabbar li a:hover {border-top: 2px solid #FFC73C}
@@ -422,7 +463,7 @@ div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 
   bottom: 0;
   border-top: 1px solid #A0A0A0;
   background-color: #FFFFFF;
-  margin-top: 4px;
+  margin-top: 5px;
   color: #000000;
   white-space: nowrap;
   overflow: hidden;
@@ -477,8 +518,6 @@ div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 
 div.space {flex-grow: 1;}
 #servertime { text-align: center }
 #viewrows { text-align: center; }
-
-#bf {white-space:pre}
 
 @media only screen and (min-width: 1280px) {
   .desktop { display: inline-block; }

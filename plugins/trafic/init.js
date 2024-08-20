@@ -148,17 +148,28 @@ if(plugin.canChangeTabs())
 		}
 	}
 
-	plugin.resizeBottom = theWebUI.resizeBottom;
-	theWebUI.resizeBottom = function( w, h )
-	{
-		if(plugin.enabled) 
-		{
-		        if(plugin.allStuffLoaded)
-				this.trafGraph.resize(w,h);
-			else
-				setTimeout( 'theWebUI.resize()', 1000 );
+	plugin.resizeLeft = theWebUI.resizeLeft;
+	theWebUI.resizeLeft = function(w) {
+		if (plugin.enabled) {
+			if (plugin.allStuffLoaded) {
+				const tdcont = $("#tdcont");
+				this.trafGraph.resize(tdcont.width(), tdcont.height());
+			} else
+				setTimeout('theWebUI.resize()', 1000);
 		}
-		plugin.resizeBottom.call(this,w,h);
+		plugin.resizeLeft.call(this, w);
+	}
+
+	plugin.resizeTop = theWebUI.resizeTop;
+	theWebUI.resizeTop = function(w, h) {
+		if (plugin.enabled) {
+			if (plugin.allStuffLoaded) {
+				const tdcont = $("#tdcont");
+				this.trafGraph.resize(tdcont.width(), tdcont.height());
+			} else
+				setTimeout('theWebUI.resize()', 1000);
+		}
+		plugin.resizeTop.call(this, w, h);
 	}
 
 	theWebUI.showTrafic = function(d)

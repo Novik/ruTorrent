@@ -2,7 +2,7 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
 :root {
   --settings-background-color: #FFFFFF;
 }
-#CatList, category-list {
+#side-panel, category-list {
   border-top-style: none;
   border-color: #9EB6CE;
   background: local transparent url(./images/cbg.png) repeat-y 0 0;
@@ -26,9 +26,6 @@ panel-label {
 panel-label[selected] {
   --badge-background-color: #FFFFFF;
 }
-div#HDivider { width: 5px }
-
-.stable {border: none;}
 
 div#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
 .statuscell { border-color: #9EB6CE }
@@ -49,7 +46,7 @@ input[type="text"][disabled],input[type="password"][disabled],input[type="file"]
 
 div#tdcont, div.tab, div#lcont { background-color: #d2e0f0; color: #034084 }
 div.graph_tab { background-color: #d2e0f0; color: #034084; border-color: #ffffff }
-div#gcont table td.Header { background-color: #e4edf6 }
+div#gcont div.Header {background-color: #e4edf6;}
 div#tdcont { border-color: #9EB6CE }
 div#tdetails { background-color: transparent }
 

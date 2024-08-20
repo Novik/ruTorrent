@@ -1,5 +1,4 @@
-.stable {border: 1px solid; border-color: #333333 #181818 #181818 #333333}
-.stable-head { background: #181818; border-color: #181818 #333333 #333333 #181818;}
+.stable-head {background: #181818;}
 .stable-head table tr {background: transparent url(./images/header.gif) repeat-x scroll center top}
 .stable-head table tr td { border-color: #181818 #333333 #333333 #181818; }
 .stable-head div.resz {border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center;}

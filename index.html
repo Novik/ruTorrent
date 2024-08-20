@@ -114,146 +114,133 @@
 				</div>	
 			</div>
 		</div>
-		<table id="maincont" cellpadding="0" cellspacing="0" summary="layout table">
-			<tr>
-				<td class="uicell" rowspan="3">
-					<template id="panel-label-template">
-						<link href="./css/panel-label.css?v=430" rel="stylesheet" type="text/css" />
-						<div part="prefix" hidden></div>
-						<div part="icon"></div>
-						<div part="text"></div>
-						<div part="count">0</div>
-						<div part="size" style="display: none;"></div>
-					</template>
-					<template id="category-panel-template">
-						<link href="./css/category-panel.css?v=430" rel="stylesheet" type="text/css" />
-						<div part="heading">
-							<span class="text"></span><slot name="decorator" class="decorator"></slot>
-						</div>
-						<slot name="content"></slot>
-					</template>
-					<template id="pview-rename-dialog-template">
-						<div class="content">
-							<input type="text" onfocus="this.select()"/>
-						</div>
-						<div class="aright buttons-list" style="margin-top: 10px">
-							<button class="Button" value="confirm" uilang>ok</button>
-							<button class="Button Cancel" uilang>Cancel</button>
-						</div>
-					</template>
-					<category-list id="CatList">
-						<category-panel id="pview" uilangtext="pnlViews">
-							<input slot="decorator" class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" />
-							<panel-label id="pview_all" icon="all" uilangtext="All" selected></panel-label>
-						</category-panel>
-						<category-panel id="pstate" uilangtext="pnlState">
-							<panel-label id="pstate_all" icon="all" uilangtext="All" selected></panel-label>
-							<panel-label id="-_-_-dls-_-_-" icon="down" uilangtext="Downloading"></panel-label>
-							<panel-label id="-_-_-com-_-_-" icon="completed" uilangtext="Finished"></panel-label>
-							<panel-label id="-_-_-act-_-_-" icon="up-down" uilangtext="Active"></panel-label>
-							<panel-label id="-_-_-iac-_-_-" icon="inactive" uilangtext="Inactive"></panel-label>
-							<panel-label id="-_-_-err-_-_-" icon="error" uilangtext="Error"></panel-label>
-						</category-panel>
-						<category-panel id="plabel" uilangtext="Labels">
-							<panel-label id="plabel_all" icon="all" uilangtext="All" selected></panel-label>
-							<panel-label id="-_-_-nlb-_-_-" icon="no-label" uilangtext="No_label"></panel-label>
-						</category-panel>
-						<category-panel id="psearch" uilangtext="mnu_search">
-							<panel-label id="psearch_all" icon="all" uilangtext="All" selected></panel-label>
-						</category-panel>
-					</category-list>
-				</td>
-				<td class="uicell" rowspan="3">
-					<div id="HDivider"></div><div id="dividerDrag"></div>
-				</td>
-				<td class="uicell">
-					<div id="List"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="uicell">
-					<div id="VDivider"></div>
-				</td>
-			</tr>
-			<tr>
-				<td class="uicell">
-					<div id="tdetails">
-						<ul id="tabbar" class="tabbar">
-						</ul>
-						<div id="tdcont">
-							<div id="gcont" class="tab">
-								<table cellpadding="5" cellspacing="2" width="100%" summary="layout table" id="mainlayout">
-									<tr>
-										<td colspan="6" class="Header"><span uilang>Transfer</span></td>
-									</tr>
-									<tr>
-										<td width="6%" nowrap><span uilang>Time_el</span>:</td><td width="11%" nowrap><span id="et" class="det"></span></td>
-										<td width="6%" nowrap><span uilang>Remaining</span>:</td><td width="11%" nowrap><span id="rm" class="det"></span></td>
-										<td width="6%" nowrap><span uilang>Share_ratio</span>:</td><td width="11%" nowrap><span id="ra" class="det"></span></td>
-									</tr>
-									<tr>
-										<td width="6%" nowrap><span uilang>Downloaded</span>:</td><td width="11%" nowrap><span id="dl" class="det"></span></td>
-										<td width="6%" nowrap><span uilang>Down_speed</span>:</td><td width="11%" nowrap><span id="ds" class="det"></span></td>
-										<td width="6%" nowrap><span uilang>Wasted</span>:</td><td width="11%" nowrap><span id="wa" class="det"></span></td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Uploaded</span>:</td><td nowrap><span id="ul" class="det"></span></td>
-										<td nowrap><span uilang>Ul_speed</span>:</td><td nowrap><span id="us" class="det"></span></td>
-										<td nowrap>&nbsp;</td><td nowrap>&nbsp;</td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Seeds</span>:</td><td nowrap><span id="se" class="det"></span></td>
-										<td nowrap><span uilang>Peers</span>:</td><td nowrap><span id="pe" class="det"></span></td>
-										<td nowrap>&nbsp;</td><td>&nbsp;</td>
-									</tr>
-									<tr>
-										<td colspan="6" class="Header"><span uilang>Tracker</span></td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Track_URL</span>:</td>
-										<td colspan="5" nowrap><span id="tu" class="det"></span></td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Track_status</span>:</td>
-										<td colspan="5" nowrap><span id="ts" class="det"></span></td>
-									</tr>
-									<tr>
-										<td colspan="6" class="Header"><span uilang>General</span></td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Save_as</span></td>
-										<td colspan="5" nowrap><span id="bf" class="det"></span></td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Free_Disk_Space</span>:</td>
-										<td colspan="5" nowrap><span id="dsk" class="det"></span></td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Created_on</span>:</td>
-										<td colspan="5" nowrap><span id="co" class="det"></span></td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Hash</span>:</td>
-										<td colspan="5" nowrap><span id="hs" class="det"></span></td>
-									</tr>
-									<tr>
-										<td nowrap><span uilang>Comment</span>:</td>
-										<td colspan="5"><span id="cmt" class="det"></span></td>
-									</tr>
-								</table>
-							</div>
-							<div id="FileList" class="table_tab"></div>
-							<div id="TrackerList" class="table_tab"></div>
-							<div id="PeerList" class="table_tab"></div>
-							<div id="Speed" class="graph_tab"></div>
-							<div id="PluginList" class="table_tab"></div>
-							<div id="lcont" class="tab"></div>
-						</div>
+		<div id="maincont" class="d-flex flex-row align-items-stretch">
+			<div id="side-panel">
+				<template id="panel-label-template">
+					<link href="./css/panel-label.css?v=430" rel="stylesheet" type="text/css" />
+					<div part="prefix" hidden></div>
+					<div part="icon"></div>
+					<div part="text"></div>
+					<div part="count">0</div>
+					<div part="size" style="display: none;"></div>
+				</template>
+				<template id="category-panel-template">
+					<link href="./css/category-panel.css?v=430" rel="stylesheet" type="text/css" />
+					<div part="heading">
+						<span class="text"></span><slot name="decorator" class="decorator"></slot>
 					</div>
-				</td>
-			</tr>
-		</table>
-		<div id="StatusBar" class="d-flex flex-row align-items-stretch justify-content-start">
+					<slot name="content"></slot>
+				</template>
+				<template id="pview-rename-dialog-template">
+					<div class="content">
+						<input type="text" onfocus="this.select()"/>
+					</div>
+					<div class="aright buttons-list" style="margin-top: 10px">
+						<button class="Button" value="confirm" uilang>ok</button>
+						<button class="Button Cancel" uilang>Cancel</button>
+					</div>
+				</template>
+				<category-list id="CatList">
+					<category-panel id="pview" uilangtext="pnlViews">
+						<input slot="decorator" class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" />
+						<panel-label id="pview_all" icon="all" uilangtext="All" selected></panel-label>
+					</category-panel>
+					<category-panel id="pstate" uilangtext="pnlState">
+						<panel-label id="pstate_all" icon="all" uilangtext="All" selected></panel-label>
+						<panel-label id="-_-_-dls-_-_-" icon="down" uilangtext="Downloading"></panel-label>
+						<panel-label id="-_-_-com-_-_-" icon="completed" uilangtext="Finished"></panel-label>
+						<panel-label id="-_-_-act-_-_-" icon="up-down" uilangtext="Active"></panel-label>
+						<panel-label id="-_-_-iac-_-_-" icon="inactive" uilangtext="Inactive"></panel-label>
+						<panel-label id="-_-_-err-_-_-" icon="error" uilangtext="Error"></panel-label>
+					</category-panel>
+					<category-panel id="plabel" uilangtext="Labels">
+						<panel-label id="plabel_all" icon="all" uilangtext="All" selected></panel-label>
+						<panel-label id="-_-_-nlb-_-_-" icon="no-label" uilangtext="No_label"></panel-label>
+					</category-panel>
+					<category-panel id="psearch" uilangtext="mnu_search">
+						<panel-label id="psearch_all" icon="all" uilangtext="All" selected></panel-label>
+					</category-panel>
+				</category-list>
+			</div>
+			<div id="HDivider"></div>
+			<div id="main-info" class="d-flex flex-column align-items-stretch">
+				<div id="list-table">
+					<div id="List" class="h-100"></div>
+				</div>
+				<div id="VDivider"></div>
+				<div id="tdetails" class="d-flex flex-column align-items-stretch">
+					<ul id="tabbar" class="tabbar"></ul>
+					<div id="tdcont">
+						<div id="gcont" class="tab">
+							<div id="mainlayout" class="container-fluid">
+								<div class="row Header">
+									<div class="col-12"><span uilang>Transfer</span></div>
+								</div>
+								<div class="row">
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Time_el</span>:</div>
+									<div class="col-6 col-md-2"><span id="et" class="det"></span></div>
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Remaining</span>:</div>
+									<div class="col-6 col-md-2"><span id="rm" class="det"></span></div>
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Share_ratio</span>:</div>
+									<div class="col-6 col-md-2"><span id="ra" class="det"></span></div>
+								</div>
+								<div class="row">
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Downloaded</span>:</div>
+									<div class="col-6 col-md-2"><span id="dl" class="det"></span></div>
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Down_speed</span>:</div>
+									<div class="col-6 col-md-2"><span id="ds" class="det"></span></div>
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Wasted</span>:</div>
+									<div class="col-6 col-md-2"><span id="wa" class="det"></span></div>
+								</div>
+								<div class="row">
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Uploaded</span>:</div>
+									<div class="col-6 col-md-2"><span id="ul" class="det"></span></div>
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Ul_speed</span>:</div>
+									<div class="col-6 col-md-2"><span id="us" class="det"></span></div>
+								</div>
+								<div class="row">
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Seeds</span>:</div>
+									<div class="col-6 col-md-2"><span id="se" class="det"></span></div>
+									<div class="col-6 col-md-2"><span class="det-hdr" uilang>Peers</span>:</div>
+									<div class="col-6 col-md-2"><span id="pe" class="det"></span></div>
+								</div>
+								<div class="row Header">
+									<div class="col-12"><span uilang>Tracker</span></div>
+								</div>
+								<div class="row">
+									<div class="col-12 col-md-2"><span class="det-hdr" uilang>Track_URL</span>:</div>
+									<div class="col-12 col-md-10"><span id="tu" class="det"></span></div>
+									<div class="col-12 col-md-2"><span class="det-hdr" uilang>Track_status</span>:</div>
+									<div class="col-12 col-md-10"><span id="ts" class="det"></span></div>
+								</div>
+								<div class="row Header">
+									<div class="col-12"><span uilang>General</span></div>
+								</div>
+								<div class="row">
+									<div class="col-12 col-md-2"><span class="det-hdr" uilang>Save_as</span>:</div>
+									<div class="col-12 col-md-10"><span id="bf" class="det"></span></div>
+									<div class="col-12 col-md-2"><span class="det-hdr" uilang>Free_Disk_Space</span>:</div>
+									<div class="col-12 col-md-10"><span id="dsk" class="det"></span></div>
+									<div class="col-12 col-md-2"><span class="det-hdr" uilang>Created_on</span>:</div>
+									<div class="col-12 col-md-10"><span id="co" class="det"></span></div>
+									<div class="col-12 col-md-2"><span class="det-hdr" uilang>Hash</span>:</div>
+									<div class="col-12 col-md-10"><span id="hs" class="det"></span></div>
+									<div class="col-12 col-md-2"><span class="det-hdr" uilang>Comment</span>:</div>
+									<div class="col-12 col-md-10"><span id="cmt" class="det"></span></div>
+								</div>
+							</div>
+						</div>
+						<div id="FileList" class="table_tab"></div>
+						<div id="TrackerList" class="table_tab"></div>
+						<div id="PeerList" class="table_tab"></div>
+						<div id="Speed" class="graph_tab"></div>
+						<div id="PluginList" class="table_tab"></div>
+						<div id="lcont" class="tab"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="StatusBar" class="d-flex flex-row align-items-stretch justify-content-start w-100">
 			<div id="st_up" class="status-cell">
 				<div class="icon"></div>
 				<div class="sthdr d-none d-lg-block"><span uilang>Speed</span>:</div>

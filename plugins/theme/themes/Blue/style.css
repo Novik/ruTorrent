@@ -11,7 +11,7 @@ html, body { background-color: #DFE8F6 }
 
   --settings-background-color: #272E36;
 }
-#CatList, category-list {
+#side-panel, category-list {
   border-color: #99BBE8;
 }
 
