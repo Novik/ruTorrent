@@ -12,6 +12,8 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --settings-background-color: #181818;
 
   --btn-bg-color: #515151;
+  --header-bg-color: #222222;
+  --header-border-color: #333333;
 }
 
 button, input[type=button], input[type=submit], .Button {
@@ -272,13 +274,28 @@ div#tdcont {background: #181818; border-top: none; border-right: 1px solid #0707
 /* DIALOGS */
 div#dlgProps textarea#prop-trackers {background: #222222; border: 1px solid #333333}
 div.dlg-window {background-color: #222222; box-shadow: 2px 2px 5px #888; color: #fff; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;	}
-div.dlg-header { background-color: #222222; border-bottom: 1px solid #333333}
-div#yesnoDlg div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -120px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
-div#stg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -72px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+.dlg-header {background: linear-gradient(0deg, rgba(11,11,11,1), rgba(44,44,44,1) 100%);}
+.dlg-header > div:first-child {
+  padding-left: 3rem;
+  text-shadow:0px -1px 0px #000;
+}
+#yesnoDlg-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -120px;
+}
+#stg-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -72px;
+}
 div#stg .lm {background-color: #181818; border: 1px solid #333333}
-div#dlgHelp-header,div#dlgHelp div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -96px;text-shadow:0px -1px 0px #000;}
-
-div#tadd-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px 0px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+#dlgHelp-header, #dlgAbout-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -96px;
+}
+#tadd-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: 0px;
+}
 
 div.tab {background-color: #181818}
 

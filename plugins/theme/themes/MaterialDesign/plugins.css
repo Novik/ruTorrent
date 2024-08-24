@@ -34,9 +34,15 @@
   background: url(./images/status_icons.png) no-repeat center -320px !important;
 }
 
-div#tcreate div.dlg-header { background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -24px; border-bottom: 1px solid #333333; text-shadow: 0px -1px 0px #000; }
+#tcreate-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -24px;
+}
 div#dlgAddRSS { background-color: #222222; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000; }
-div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header { background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -48px; border-bottom: 1px solid #333333; text-shadow: 0px -1px 0px #000; }
+#dlgAddRSS-header, #dlgAddRSS-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -48px;
+}
 
 .lf li input.TextboxFocus { background-color: transparent; color: #009DDD }
 
@@ -62,7 +68,10 @@ div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header { background: #181818 url(./i
 #tCellNotSupported { text-align: center; }
 #tRowNotSupported { vertical-align: middle; color: red; }
 
-div#dlgEditRules-header,#dlgEditRatioRules-header,div#dlgEditRules div.dlg-header { background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 -72px !important; border-bottom: 1px solid #333333; text-shadow: 0px -1px 0px #000; }
+#dlgEditRules-header, #dlgEditRatioRules-header, #dlgEditFilters-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -72px;
+}
 div#dlgEditRules,div#dlgEditRatioRules { width:600px; }
 
 .lf_rru, .lf_rur { border:none; border-radius:2px; background-color:#2D2D2D;}

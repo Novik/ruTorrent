@@ -123,8 +123,8 @@ var theDialogManager = {
 		}
 		$("#dialog-container").append(
 			$("<div>").attr("id",id).addClass("dlg-window").append(
-				$("<div>").append(
-					$("<div>").attr({id:`${id}-header`}).addClass("dlg-header").text(name),
+				$("<div>").addClass("dlg-header").append(
+					$("<div>").attr({id:`${id}-header`}).text(name),
 					$("<a>").attr({href:"#"}).addClass("dlg-close"),
 				),
 				content,
@@ -141,6 +141,7 @@ var theDialogManager = {
 			nokeyclose: noClose,
 		});
 		if (!noClose)
+			// prevent dragging on close button
 			obj.find(".dlg-close").on("click", () => theDialogManager.hide(id));
 		var self = this;
 		var checkForButtons = function me(val) {

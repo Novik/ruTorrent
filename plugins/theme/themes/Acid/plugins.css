@@ -5,8 +5,13 @@
 div#create_btns {background-image: url(./images/ajax-loader_h.gif)}
 #meter-disk-td, #qmeter-disk-td {background-image: url(./images/disk.gif)}
 div#t div#starter {background-image: url(./images/starter.png)}
-div#tedit div.dlg-header, div#dlg_datadir div.dlg-header, div#dlg_starter div.dlg-header, div#dlg_unpack div.dlg-header, div#exConsole div.dlg-header, div#tskConsole div.dlg-header, div#exCommand div.dlg-header, div#exMegaupload div.dlg-header {background-image: url(./images/settings.gif)}
-div#dlgLoadTorrents div.dlg-header {background-image: url(./images/world.gif)}
+
+/* Dialog window icons */
+#tedit-header, #dlg_datadir-header, #dlg_starter-header, #dlg_unpack-header,
+#exConsole-header, #tskConsole-header, #exCommand-header, #exMegaupload-header {
+  background-image: url(./images/settings.gif);
+}
+#dlgLoadTorrents-header {background-image: url(./images/world.gif);}
 
 .lf li input.TextboxFocus {background-color: #BDDBDB; color: #272E36;}
 .lf li input.TextboxNormal {background-color: #272E36; color: #BDDBDB;}
