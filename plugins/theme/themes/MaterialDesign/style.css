@@ -868,12 +868,6 @@ ul#tabbar li.selected a
 	transition:all .2s cubic-bezier(.18,.89,.32,1.28) 0
 }
 
-.tabbar li
-{
-	margin-left:1px;
-	margin-right:2px
-}
-
 .tabbar
 {
 	background:none;

@@ -282,16 +282,14 @@ rPlugin.prototype.removePageFromOptions = function(id) {
 	return this;
 }
 
-rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
-{
-        if(this.canChangeTabs())
-        {
-                if(!dlg.className)
+rPlugin.prototype.attachPageToTabs = function(dlg, name, idBefore) {
+	if (this.canChangeTabs()) {
+		if(!dlg.className)
 			dlg.className = "tab";
 		theTabs.tabs[dlg.id] = name;
-		var newLbl = document.createElement("li");
-		newLbl.id = "tab_"+dlg.id;
-		newLbl.innerHTML = "<a href=\"javascript://void();\" onmousedown=\"theTabs.show('"+dlg.id+"');\" onfocus=\"this.blur();\">" + name + "</a>";
+		const newLabel = $("<li>").attr({id:"tab_"+dlg.id}).addClass("nav-item").append(
+			$("<a>").attr({href:"#"}).addClass("nav-link").text(name).on("click", () => theTabs.show(dlg.id)).on("focus", (ev) => ev.target.blur()),
+		);
 		if(!idBefore)
 			idBefore = "lcont";
 		if(theWebUI.activeView === dlg.id) {
@@ -301,13 +299,12 @@ rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)
 			$(dlg).hide();
 		}
 		$$(idBefore).parentNode.insertBefore(dlg,$$(idBefore));
-		var beforeLbl = $$("tab_"+idBefore);
-		beforeLbl.parentNode.insertBefore(newLbl,beforeLbl);
+		$("#tab_"+idBefore).before(newLabel);
 		if (theWebUI.activeView === dlg.id) {
 			setTimeout(() => theTabs.show(dlg.id));
 		}
 	}
-	return(this);
+	return this;
 }
 
 rPlugin.prototype.renameTab = function(id,name)
