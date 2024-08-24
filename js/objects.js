@@ -92,10 +92,14 @@ var theDialogManager =
 
 	make: function(id, name, content, isModal, noClose) {
 		$(document.body).append($("<div>").attr("id",id).addClass(
-			"dlg-window position-absolute overflow-hidden"
-		).html(content).
-			prepend($("<div>").attr("id",id+"-header").addClass("dlg-header fw-bold px-5 py-1").text(name)).
-			prepend($("<a>").addClass("dlg-close")));
+			"dlg-window position-absolute"
+		).append(
+			$("<div>").addClass("d-flex flex-row align-items-center justify-content-between position-sticky top-0").append(
+				$("<div>").attr("id",id+"-header").addClass("dlg-header fw-bold ps-5 pe-1 py-1 flex-grow-1").text(name),
+				$("<a>").attr({href:"#"}).addClass("dlg-close"),
+			),
+			$(content),
+		));
 		return(this.add(id,isModal,noClose));
 	},
 	add: function(id, isModal, noClose) {
@@ -105,7 +109,7 @@ var theDialogManager =
 		obj.css( { position: "absolute", display: "none", outline: "0px solid transparent" } ).
 			data("modal",isModal).data("nokeyclose",noClose);
 		if(!noClose)
-			obj.find(".dlg-close").attr("href","javascript:theDialogManager.hide('"+id+"');");
+			obj.find(".dlg-close").on("click", () => theDialogManager.hide(id));
 		var self = this;
 		var checkForButtons = function me(val)
 		{
