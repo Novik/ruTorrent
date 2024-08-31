@@ -245,10 +245,12 @@ Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; w
 
 a {color: #686868;}
 #maincont {height: calc(100vh - 36px - 5px - 25px - 5px);}
-#offcanvas-sidepanel {min-width: 200px;}
+#offcanvas-sidepanel {
+  min-width: 200px;
+  background-color: #FFFFFF;
+}
 #side-panel {
   border: 1px solid #A0A0A0;
-  background-color: #FFFFFF;
 }
 #list-table {
   border: 1px solid #A0A0A0;

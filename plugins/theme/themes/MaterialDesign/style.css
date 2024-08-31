@@ -37,6 +37,10 @@ html,body
 	--settings-background-color: #222;
 }
 
+#offcanvas-sidepanel {
+  color: #EEE;
+  background-color: #1A2329;
+}
 #side-panel, category-list
 {
 	border:none;
