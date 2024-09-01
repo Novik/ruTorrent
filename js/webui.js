@@ -2262,27 +2262,37 @@ var theWebUI =
 	},
 
 	resizeLeft: function(w) {
-		if (w === null)
+		if (!w)
 			return;
-		w = Math.max(w, parseFloat($("#side-panel").css("min-width")));
-		if ($("#side-panel").css("display") !== "none") {
-			$("#side-panel").width(w);
-			$("#main-info").width($("#maincont").width() - 5 - w);
-		} else {
+		const offcanvas = $("#offcanvas-sidepanel");
+		w = Math.max(w, parseFloat(offcanvas.css("min-width")));
+		if (offcanvas.css("display") === "none") {
+			// Senerio 1: when side panel is toggled off
+			$("#HDivider").addClass("d-md-none").removeClass("d-md-block");
 			$("#main-info").width($("#maincont").width());
+		} else {
+			// When side panel is toggled on
+			if ($(window).width() < 768) {
+				// Senerio 2: small screens and below
+				$("#main-info").width($("#maincont").width());
+			} else {
+				// Senerio 3: medium screens and above
+				offcanvas.width(w);
+				$("#main-info").width($("#maincont").width() - 5 - w);
+			}
 		}
 		this.resizeGraph();
 	},
 
 	resizeTop: function(w, h) {
-		if (h === null)
+		if (!h)
 			return
 		h = Math.max(h, parseFloat($("#list-table").css("min-height")));
 		if ($("#tdetails").css("display") !== "none") {
 			$("#list-table").height(h);
-			$("#tdetails").height($("#maincont").height() - 5 - h);
+			$("#tdetails").height($("#main-info").height() - 5 - h);
 		} else {
-			$("#list-table").height($("#maincont").height());
+			$("#list-table").height($("#main-info").height());
 		}
 		this.resizeGraph();
 	},
@@ -2345,9 +2355,13 @@ var theWebUI =
 	},
 
 	toggleCategories: function() {
+		if ($(window).width() < 768) {
+			// do nothing on mobile displays
+			return;
+		}
 		this.settings["webui.show_cats"] = !this.settings["webui.show_cats"];
-		$("#side-panel").toggleClass("d-none");
-		$("#HDivider").toggleClass("d-none");
+		$("#offcanvas-sidepanel").toggleClass("d-md-none");
+		$("#HDivider").toggleClass("d-md-none d-md-block");
     this.resize();
 		this.save();
 	},

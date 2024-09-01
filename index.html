@@ -59,18 +59,26 @@
 		<script type="text/javascript" src="./js/category-list-elements.js?v=430" defer></script>
 	</head>
 	<body>
-		<div id="preload"></div>
-		<div id="cover">
-			<div id="msg"><span id="loadimg">&nbsp;</span><span uilang>Loading</span></div>
+		<div id="preload" class="d-none"></div>
+		<div id="cover" class="w-100 h-100 position-absolute top-0 left-0">
+			<div id="msg" class="w-100 h-100 position-relative text-center">
+				<span id="loadimg">&nbsp;</span>
+				<span uilang>Loading</span>
+			</div>
 		</div>
-		<div id="modalbg"></div>
+		<div id="modalbg" class="w-100 h-100 position-absolute"></div>
 		<div id="dragmask"></div>
 		<div id="rs"></div>
-		<div id="sel"></div>
+		<div id="sel" class="position-absolute"></div>
 		<div id="sc"></div>
 		<div id="t" class="py-0 navbar navbar-expand-md">
-			<div class="container-fluid justify-content-end px-0">
-				<button class="navbar-toggler my-2" type="button" data-bs-toggle="collapse" data-bs-target="#top-menu" aria-controls="top-menu" aria-expanded="false" aria-label="Toggle navigation">
+			<div class="px-0 container-fluid justify-content-between align-items-stretch">
+				<button class="d-md-none my-2 navbar-toggler h-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-sidepanel" aria-controls="offcanvas-sidepanel">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+						<path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+					</svg>
+				</button>
+				<button class="navbar-toggler my-2 h-auto" type="button" data-bs-toggle="collapse" data-bs-target="#top-menu" aria-controls="top-menu" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>	
 				<div class="collapse navbar-collapse px-1 py-2 py-md-0" id="top-menu">
@@ -115,62 +123,70 @@
 			</div>
 		</div>
 		<div id="maincont" class="d-flex flex-row align-items-stretch">
-			<div id="side-panel">
-				<template id="panel-label-template">
-					<link href="./css/panel-label.css?v=430" rel="stylesheet" type="text/css" />
-					<div part="prefix" hidden></div>
-					<div part="icon"></div>
-					<div part="text"></div>
-					<div part="count">0</div>
-					<div part="size" style="display: none;"></div>
-				</template>
-				<template id="category-panel-template">
-					<link href="./css/category-panel.css?v=430" rel="stylesheet" type="text/css" />
-					<div part="heading">
-						<span class="text"></span><slot name="decorator" class="decorator"></slot>
+			<div class="offcanvas-md offcanvas-start" tabindex="-1" id="offcanvas-sidepanel" aria-labelledby="offcanvas-sidepanel-label">
+				<div class="offcanvas-header">
+					<h4 class="offcanvas-title" id="offcanvas-sidepanel-label"></h4>
+					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvas-sidepanel" aria-label="Close"></button>		
+				</div>
+				<div class="p-1 p-md-0 mh-100 offcanvas-body overflow-x-hidden flex-grow-1 flex-shrink-1">
+					<div id="side-panel" class="w-100 overflow-x-hidden overflow-y-auto">
+						<template id="panel-label-template">
+							<link href="./css/panel-label.css?v=430" rel="stylesheet" type="text/css" />
+							<div part="prefix" hidden></div>
+							<div part="icon"></div>
+							<div part="text"></div>
+							<div part="count">0</div>
+							<div part="size" style="display: none;"></div>
+						</template>
+						<template id="category-panel-template">
+							<link href="./css/category-panel.css?v=430" rel="stylesheet" type="text/css" />
+							<div part="heading">
+								<span class="text"></span><slot name="decorator" class="decorator"></slot>
+							</div>
+							<slot name="content"></slot>
+						</template>
+						<template id="pview-rename-dialog-template">
+							<div class="content">
+								<input type="text" onfocus="this.select()"/>
+							</div>
+							<div class="aright buttons-list" style="margin-top: 10px">
+								<button class="Button" value="confirm" uilang>ok</button>
+								<button class="Button Cancel" uilang>Cancel</button>
+							</div>
+						</template>
+						<category-list id="CatList">
+							<category-panel id="pview" uilangtext="pnlViews">
+								<input slot="decorator" class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" />
+								<panel-label id="pview_all" icon="all" uilangtext="All" selected></panel-label>
+							</category-panel>
+							<category-panel id="pstate" uilangtext="pnlState">
+								<panel-label id="pstate_all" icon="all" uilangtext="All" selected></panel-label>
+								<panel-label id="-_-_-dls-_-_-" icon="down" uilangtext="Downloading"></panel-label>
+								<panel-label id="-_-_-com-_-_-" icon="completed" uilangtext="Finished"></panel-label>
+								<panel-label id="-_-_-act-_-_-" icon="up-down" uilangtext="Active"></panel-label>
+								<panel-label id="-_-_-iac-_-_-" icon="inactive" uilangtext="Inactive"></panel-label>
+								<panel-label id="-_-_-err-_-_-" icon="error" uilangtext="Error"></panel-label>
+							</category-panel>
+							<category-panel id="plabel" uilangtext="Labels">
+								<panel-label id="plabel_all" icon="all" uilangtext="All" selected></panel-label>
+								<panel-label id="-_-_-nlb-_-_-" icon="no-label" uilangtext="No_label"></panel-label>
+							</category-panel>
+							<category-panel id="psearch" uilangtext="mnu_search">
+								<panel-label id="psearch_all" icon="all" uilangtext="All" selected></panel-label>
+							</category-panel>
+						</category-list>
 					</div>
-					<slot name="content"></slot>
-				</template>
-				<template id="pview-rename-dialog-template">
-					<div class="content">
-						<input type="text" onfocus="this.select()"/>
-					</div>
-					<div class="aright buttons-list" style="margin-top: 10px">
-						<button class="Button" value="confirm" uilang>ok</button>
-						<button class="Button Cancel" uilang>Cancel</button>
-					</div>
-				</template>
-				<category-list id="CatList">
-					<category-panel id="pview" uilangtext="pnlViews">
-						<input slot="decorator" class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" />
-						<panel-label id="pview_all" icon="all" uilangtext="All" selected></panel-label>
-					</category-panel>
-					<category-panel id="pstate" uilangtext="pnlState">
-						<panel-label id="pstate_all" icon="all" uilangtext="All" selected></panel-label>
-						<panel-label id="-_-_-dls-_-_-" icon="down" uilangtext="Downloading"></panel-label>
-						<panel-label id="-_-_-com-_-_-" icon="completed" uilangtext="Finished"></panel-label>
-						<panel-label id="-_-_-act-_-_-" icon="up-down" uilangtext="Active"></panel-label>
-						<panel-label id="-_-_-iac-_-_-" icon="inactive" uilangtext="Inactive"></panel-label>
-						<panel-label id="-_-_-err-_-_-" icon="error" uilangtext="Error"></panel-label>
-					</category-panel>
-					<category-panel id="plabel" uilangtext="Labels">
-						<panel-label id="plabel_all" icon="all" uilangtext="All" selected></panel-label>
-						<panel-label id="-_-_-nlb-_-_-" icon="no-label" uilangtext="No_label"></panel-label>
-					</category-panel>
-					<category-panel id="psearch" uilangtext="mnu_search">
-						<panel-label id="psearch_all" icon="all" uilangtext="All" selected></panel-label>
-					</category-panel>
-				</category-list>
+				</div>
 			</div>
-			<div id="HDivider"></div>
-			<div id="main-info" class="d-flex flex-column align-items-stretch">
-				<div id="list-table">
+			<div id="HDivider" class="p-0 m-0 d-none d-md-block align-self-stretch"></div>
+			<div id="main-info" class="d-flex flex-column align-items-stretch flex-grow-1 flex-shrink-1 overflow-hidden">
+				<div id="list-table" class="flex-grow-1 flex-shrink-1 overflow-hidden">
 					<div id="List" class="h-100"></div>
 				</div>
-				<div id="VDivider"></div>
-				<div id="tdetails" class="d-flex flex-column align-items-stretch">
-					<ul id="tabbar" class="tabbar"></ul>
-					<div id="tdcont">
+				<div id="VDivider" class="p-0 m-0 align-self-stretch"></div>
+				<div id="tdetails" class="d-flex flex-column align-items-stretch flex-grow-1 flex-shrink-1">
+					<ul id="tabbar" class="tabbar m-0 p-0 flex-grow-0 flex-shrink-0 overflow-x-auto"></ul>
+					<div id="tdcont" class="p-1 flex-grow-1 flex-shrink-1 overflow-auto">
 						<div id="gcont" class="tab">
 							<div id="mainlayout" class="container-fluid">
 								<div class="row Header">
@@ -240,7 +256,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="StatusBar" class="d-flex flex-row align-items-stretch justify-content-start w-100">
+		<div id="StatusBar" class="d-flex flex-row align-items-stretch justify-content-start w-100 overflow-hidden">
 			<div id="st_up" class="status-cell">
 				<div class="icon"></div>
 				<div class="sthdr d-none d-lg-block"><span uilang>Speed</span>:</div>

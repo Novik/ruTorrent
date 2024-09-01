@@ -102,19 +102,18 @@ dialog {
   border-color: var(--menu-border-color);
 }
 form{margin:0;}
-div#preload {width: 0px; height: 0px; display: none; background-image: url(../images/toolbar.png); background-image: url(../images/tstatus.png); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/close.png); background-image: url(../images/file.gif); background-image: url(../images/dir.gif); background-image: url(../images/pnl_open.gif); background-image: url(../images/pnl_close.gif)}
-div#cover {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; background: #FFFFFF}
-div#msg {width: 100%; height: 100px; position: relative; top: 50%; margin-top: -50px; line-height: 100px; font-size: 11px; font-weight: bold;  text-align: center; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
+div#preload {background-image: url(../images/toolbar.png); background-image: url(../images/tstatus.png); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/close.png); background-image: url(../images/file.gif); background-image: url(../images/dir.gif); background-image: url(../images/pnl_open.gif); background-image: url(../images/pnl_close.gif)}
+div#cover {z-index: 500; background: #FFFFFF}
+div#msg {top: 50%; margin-top: -50px; line-height: 100px; font-weight: bold; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
 .pre-theme-load.dark-theme div#cover { background: #181818; }
 .pre-theme-load.dark-theme div#msg { color: #fff; background: #151515; border-color: #333; }
 .pre-theme-load.dark-theme #loadimg { filter: invert(1); }
-div#modalbg {width: 100%; height: 100%; left: 0px; top: 0px; position: absolute; z-index: 500; display: none; opacity: 0.5; background-color: #CCCCCC;}
+div#modalbg {left: 0px; top: 0px; z-index: 500; display: none; opacity: 0.5; background-color: #CCCCCC;}
 .konqueror div#modalbg { background: none; }
 .ie div#modalbg { filter:alpha(opacity=50); }
 
 div.aright {text-align: right}
 div.dlg-window {
-  position: absolute;
   left: 0px;
   top: 0px;
   background-color: #FAFAFA;
@@ -122,7 +121,6 @@ div.dlg-window {
   border: 2px solid #909090;
   border-radius: 8px;
   display: none;
-  overflow: hidden;
   max-width: 95vw;
 }
 div.dlg-window div.row {
@@ -138,10 +136,8 @@ div.dlg-window div.row > div {
 }
 div.fxcaret {overflow: auto}
 div.dlg-header {
-  padding: 2px 24px;
   line-height: 20px;
   background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center;
-  font-weight: bold;
   border-bottom: 1px solid #909090;
   border-radius: 10px 10px 0 0;
 }
@@ -169,7 +165,7 @@ ul.CMenu li:hover ul li ul {display: none;}
 ul.CMenu li:hover ul.left {left: -150px}
 
 span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
-#sel {width: 0px; height: 0px; position: absolute; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
+#sel {width: 0px; height: 0px; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
 
 div#t {
   height: auto;
@@ -183,7 +179,10 @@ div#t {
   border-bottom: 1px solid #D0D0D0;
   z-index: 30;
 }
-div#t button.navbar-toggler {background-color: #F0F0F0;}
+div#t button.navbar-toggler {
+  background-color: #F0F0F0;
+  width: 5rem;
+}
 div#t a {padding: 3px;}
 div#t div.navbar-nav a:hover {
   filter: brightness(1.3);
@@ -244,26 +243,18 @@ Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; wid
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
 #pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
 
-a {font-size: 11px;  color: #686868}
-#maincont {
-  height: calc(100vh - 36px - 5px - 25px - 5px);
-  width: 100vw;
+a {color: #686868;}
+#maincont {height: calc(100vh - 36px - 5px - 25px - 5px);}
+#offcanvas-sidepanel {
+  min-width: 200px;
+  background-color: #FFFFFF;
 }
 #side-panel {
   border: 1px solid #A0A0A0;
-  background-color: #FFFFFF;
-  min-width: 200px;
-  overflow: hidden auto;
-}
-#main-info {
-  flex: 0 0 auto;
-  overflow: hidden;
 }
 #list-table {
-  flex: 1 1 auto;
   border: 1px solid #A0A0A0;
   background-color: #FFFFFF;
-  overflow: hidden;
   min-height: 300px;
 }
 
@@ -282,15 +273,10 @@ a {font-size: 11px;  color: #686868}
 .Status_Checking {background-position: 0px -176px}
 .Status_RSS {background-position: 0px -208px}
 
-div#HDivider, div#VDivider {
-  align-self: stretch;
-  padding: 0;
-  margin: 0;
-  flex: 0 0 5px;
-}
+div#HDivider, div#VDivider {flex: 0 0 5px;}
 div#HDivider {cursor: e-resize;}
 div#VDivider {cursor: n-resize;}
-div#HDivider:active, div#VDivider:active {cursor: grabbing;}
+div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
 
 div#stg {position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
 div#stg_c {
@@ -365,21 +351,13 @@ div.indent {padding-left: 16px}
 a {text-decoration: none}
 select.cols {border: 1px solid #808080; font-size: 11px;  padding: 2px; width: 120px}
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
-div#tdetails {
-  background-color: #F5F5F5;
-  flex: 1 1 auto;
-}
+div#tdetails {background-color: #F5F5F5;}
 div#tdetails a.h {margin: 0}
 div#tdcont {
-  flex: 1 1 auto;
   background: #FFFFFF;
   border: 1px solid #D0D0D0;
-  padding: 0 2px 0 2px;
-  overflow: auto;
 }
-div#tdcont > div {
-  height: 100%;
-}
+div#tdcont > div {height: 100%;}
 div.tab { height:100%; background: #F5F5F5; overflow: auto }
 div#lcont {font-size: 11px;  line-height: 11px; background: #FFFFFF}
 div#lcont div.mono {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre}
@@ -408,9 +386,6 @@ div.table_tab {
 div.cont {padding: 6px;}
 
 .tabbar {
-  flex: 0 0 18px;
-  margin: 0;
-  padding: 0;
   list-style-type: none;
   text-align: left;
 }
@@ -448,8 +423,6 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 .Icon_Dir {background: transparent url(../images/dir.gif) no-repeat left center}
 .Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
 
-div#HDivider:hover, div#VDivider:hover { background: #A0A0A0; }
-
 div#tadd-header {background-image: url(../images/world.gif)}
 div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 auto }
 
@@ -466,7 +439,6 @@ div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 
   margin-top: 5px;
   color: #000000;
   white-space: nowrap;
-  overflow: hidden;
 }
 #StatusBar .icon {
   height: 16px;

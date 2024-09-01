@@ -94,7 +94,7 @@ div#t div#setting {background: transparent url(./images/toolbar.png) no-repeat -
 div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}
 div#t div#go {background: transparent url(./images/go.gif) no-repeat 0px center; }
 
-#side-panel { background-color: #272E36; color: #BDDBDB;}
+#offcanvas-sidepanel { background-color: #272E36; color: #BDDBDB;}
 div#side-panel ul li { border: 1px solid #272E36; font-weight: bold; }
 div#side-panel ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; color: #272E36;}
 

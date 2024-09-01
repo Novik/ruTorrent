@@ -30,6 +30,10 @@ button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
   background: #000 url(./images/headers.png) repeat-x 0px -8px;
 }
 
+#offcanvas-sidepanel {
+  color: #626262;
+  background-color: #212121;
+}
 #side-panel, category-list {
   border:none;
   background-color: #212121;
@@ -131,7 +135,7 @@ div#t {background: #000 url(./images/headers.png) repeat-x 0px -252px; border-bo
   border-bottom: none;
 }
 div#t button.navbar-toggler {
-  background-color: #000;
+  background-color: #515151;
   background-image: none;
   border-color: #0F0F0F;
 }
@@ -211,9 +215,6 @@ div#modalbg {background-color: #181818;}
 #list-table {margin-right:6px;border-top: 1px solid #333; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000; background-color: #181818;}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
-.dlg-window { background-color: #222222; box-shadow: 2px 2px 5px #888;}
-
-
 .lm li {background: transparent url(./images/bul.gif) no-repeat scroll left center}
 .lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
 .lm li a {color: #888888}
@@ -237,7 +238,7 @@ div#tdcont {background: #181818; border-top: none; border-right: 1px solid #0707
 
 /* DIALOGS */
 div#dlgProps textarea#prop-trackers {background: #222222; border: 1px solid #333333}
-div.dlg-window {background-color: #222222; color: #fff; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;	}
+div.dlg-window {background-color: #222222; box-shadow: 2px 2px 5px #888; color: #fff; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;	}
 div.dlg-header { background-color: #222222; border-bottom: 1px solid #333333}
 div#yesnoDlg div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -120px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
 div#stg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -72px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}

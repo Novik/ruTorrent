@@ -37,6 +37,10 @@ html,body
 	--settings-background-color: #222;
 }
 
+#offcanvas-sidepanel {
+  color: #EEE;
+  background-color: #1A2329;
+}
 #side-panel, category-list
 {
 	border:none;
@@ -560,12 +564,6 @@ div#FileList,div#TrackerList,div#PeerList,div#Speed
 	background-color:#181818
 }
 
-.dlg-window
-{
-	background-color:#222;
-	box-shadow:0 19px 38px rgba(0,0,0,0.60)
-}
-
 * > fieldset
 {
 	border:1px solid #222;
@@ -702,20 +700,8 @@ table#maincont td.uicell {
   vertical-align: top;
 }
 
-div#HDivider
-{
-	background:#141414;
-	cursor:e-resize;
-	height:0;
-	margin:0;
-	padding:0;
-	width:5px
-}
-
-div#HDivider:hover,div#VDivider:hover
-{
-	background:#334550
-}
+div#HDivider, div#VDivider {background:#141414;}
+div#HDivider:hover, div#VDivider:hover {background:#334550}
 
 div#tcreate textarea#trackers
 {
@@ -962,14 +948,14 @@ div#dlgProps textarea#prop-trackers
 	border:1px solid #333
 }
 
-div.dlg-window
-{
-	background-color:#222;
-	color:#fff;
-	border-top:1px solid #333;
-	border-right:1px solid #1b1b1b;
-	border-left:1px solid #1b1b1b;
-	border-bottom:1px solid #000
+div.dlg-window {
+	background-color: #222;
+	box-shadow: 0 19px 38px rgba(0,0,0,0.60);
+	color: #fff;
+	border-top: 1px solid #333;
+	border-right: 1px solid #1b1b1b;
+	border-left: 1px solid #1b1b1b;
+	border-bottom: 1px solid #000;
 }
 
 #stg_c

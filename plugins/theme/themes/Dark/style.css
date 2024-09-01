@@ -26,9 +26,13 @@ button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
   filter: brightness(1.3);
 }
 
-#side-panel, category-list {
-  border: 1px solid #333333;
+#offcanvas-sidepanel {
+  color: #686868;
   background-color: #181818;
+}
+#side-panel, category-list {
+  background-color: #181818;
+  border: 1px solid #333333;
 }
 
 category-panel {

@@ -56,6 +56,10 @@ input.Button:not([disabled]):hover:active {
   -webkit-box-shadow: inset 0px 0px 8px 0px #474747;
 }
 
+#offcanvas-sidepanel {
+  color: #686868;
+  background-color: #181818;
+}
 #side-panel, category-list {
   border: 1px solid #333333;
   background-color: #181818;
