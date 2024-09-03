@@ -90,10 +90,10 @@ plugin.onLangLoaded = function() {
 					$("<div>").addClass("col-1 justify-content-md-end").append(
 						$("<input>").attr({type:"checkbox", id:"enable_label", onchange:"linked(this, 0, ['label_template']);"}),
 					),
-					$("<div>").addClass("col-11 col-md-5").append(
+					$("<div>").addClass("col-11").append(
 						$("<label>").attr({for:"enable_label"}).text(theUILang.autotoolsEnableLabel),
 					),
-					$("<div>").addClass("col-11 offset-1 col-md-6 offset-md-0").append(
+					$("<div>").addClass("col-11 offset-1").append(
 						$("<input>").attr({type:"text", id:"label_template", maxlength:100}),
 					),
 				),
@@ -101,22 +101,22 @@ plugin.onLangLoaded = function() {
 					$("<div>").addClass("col-1 justify-content-md-end").append(
 						$("<input>").attr({type:"checkbox", id:"enable_move", onchange:"linked(this, 0, ['automove_filter', 'skip_move_for_files', 'path_to_finished', 'automove_browse_btn', 'fileop_type', 'auto_add_label', 'auto_add_name']);"}),
 					),
-					$("<div>").addClass("col-11 col-md-5").append(
+					$("<div>").addClass("col-11").append(
 						$("<label>").attr({for:"enable_move"}).text(theUILang.autotoolsEnableMove),
 					),
-					$("<div>").addClass("col-11 offset-1 col-md-6 offset-md-0").append(
+					$("<div>").addClass("col-11 offset-1").append(
 						$("<input>").attr({type:"text", id:"automove_filter", maxlength:200}),
 					),
-					$("<div>").addClass("col-11 col-md-5 offset-1").append(
+					$("<div>").addClass("col-11 offset-1").append(
 						$("<label>").attr({id:"lbl_skip_move_for_files", for:"skip_move_for_files"}).addClass("disabled").text(theUILang.autotoolsSkipMoveForFiles),
 					),
-					$("<div>").addClass("col-11 offset-1 col-md-6 offset-md-0").append(
+					$("<div>").addClass("col-11 offset-1").append(
 						$("<input>").attr({type:"text", id:"skip_move_for_files", maxlength:30}),
 					),
-					$("<div>").addClass("col-11 col-md-5 offset-1").append(
+					$("<div>").addClass("col-11 offset-1").append(
 						$("<label>").attr({id:"lbl_path_to_finished", for:"path_to_finished"}).addClass("disabled").text(theUILang.autotoolsPathToFinished + ": "),
 					),
-					$("<div>").addClass("col-11 offset-1 col-md-6 offset-md-0").append(
+					$("<div>").addClass("col-11 offset-1").append(
 						$("<input>").attr({type:"text", id:"path_to_finished", maxlength:100}),
 						$("<button>").attr({type:"button", id:"automove_browse_btn"}).addClass("browseButton").text("..."),
 					),
