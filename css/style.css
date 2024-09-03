@@ -42,6 +42,7 @@ textarea {
   padding: 0.25rem;
   resize: none;
   width: 100%;
+  height: 10rem;
 }
 label {
   cursor: pointer;
@@ -337,6 +338,10 @@ div.op100l {width: 400px; float: left}
   flex: 1 1 auto;
   background-color: var(--settings-background-color);
   overflow: hidden auto;
+}
+.stg_con legend {
+  position: sticky;
+  top: 0;
 }
 .ie9 .stg_con {position: static}
 .stg_con table {width: 100%}

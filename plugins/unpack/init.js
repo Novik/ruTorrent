@@ -82,23 +82,20 @@ if(plugin.canChangeMenu())
 	}
 }
 
-if(plugin.canChangeOptions())
-{
+if (plugin.canChangeOptions()) {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
-	theWebUI.addAndShowSettings = function( arg )
-	{
-        	if(plugin.enabled && plugin.allStuffLoaded)
-	        {
+	theWebUI.addAndShowSettings = function(arg) {
+		if (plugin.enabled && plugin.allStuffLoaded) {
 			$('#unpack_enabled').prop('checked',(theWebUI.unpackData.enabled == 1));
 			$('#unpack_label').prop('checked',(theWebUI.unpackData.addLabel == 1));
 			$('#unpack_name').prop('checked',(theWebUI.unpackData.addName == 1));
 			$('#edit_unpack1').val( theWebUI.unpackData.path );
 			$('#edit_filter').val( theWebUI.unpackData.filter );
-			linked( $$('unpack_enabled'), 0, ['edit_filter'] );
-			if(plugin.btn)
+			linked($$('unpack_enabled'), 0, ['edit_filter', 'edit_unpack1', 'btn_unpack1']);
+			if (plugin.btn)
 				plugin.btn.hide();
 		}
-		plugin.addAndShowSettings.call(theWebUI,arg);
+		plugin.addAndShowSettings.call(theWebUI, arg);
 	}
 
 	theWebUI.unpackWasChanged = function()
@@ -155,59 +152,67 @@ plugin.onLangLoaded = function()
 		setTimeout(arguments.callee,1000);
 	else
 	{
-		theDialogManager.make( 'dlg_unpack', theUILang.unpack,
-			"<div class='cont fxcaret'>" +
-				"<fieldset>" +
-					"<div>" + theUILang.unpackPath + "</div>" +
-					"<input type='text' id='edit_unpack' class='TextboxLarge' maxlength='200'/>" +
-					"<input type='button' id='btn_unpack' class='Button' value='...' />" +
-				"</fieldset>" +
-			"</div>"+
-			"<div class='aright buttons-list'>" +
-				"<input type='button' value='" + theUILang.ok + "' class='OK Button' " +
-					" onclick='theWebUI.unpack(); return(false);' />" +
-				"<input type='button' value='"+ theUILang.Cancel + "' class='Cancel Button'/>" +
-			"</div>", true);
+		theDialogManager.make('dlg_unpack', theUILang.unpack,
+			$("<div>").addClass("cont fxcaret").append(
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.unpackPath),
+					$("<div>").addClass("row mx-1 my-5").append(
+						$("<div>").addClass("col-12 d-flex align-items-center").append(
+							$("<input>").attr({type:"text", id:"edit_unpack", maxlength:200}),
+							$("<button>").attr({type:"button", id:"btn_unpack"}).text("..."),
+						),
+					),
+				),
+			)[0].outerHTML +
+			$("<div>").addClass("buttons-list my-3").append(
+				$("<button>").attr({type:"button", onclick:"theWebUI.unpack(); return(false);"}).addClass("OK").text(theUILang.ok),
+				$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+			)[0].outerHTML,
+			true,
+		);
 
-		plugin.attachPageToOptions( $("<div>").attr("id","st_unpack").html(
-			"<div>"+
-				"<input id=\"unpack_enabled\" type=\"checkbox\""+
-					" onchange='linked(this, 0, [\"edit_filter\"]);' />"+
-				"<label for=\"unpack_enabled\">"+
-					theUILang.unpackEnabled+
-				"</label>"+
-				"<input type='text' id='edit_filter' class='TextboxMid' maxlength='200'/>" +
-			"</div>"+
-			"<fieldset>"+
-				"<legend>"+theUILang.unpackPath+"</legend>"+
-				"<input type='text' id='edit_unpack1' class='TextboxLarge' maxlength='200'/>" +
-				"<input type='button' id='btn_unpack1' class='Button' value='...' />" +
-			"</fieldset>"+
-			"<fieldset>"+
-				"<legend>"+theUILang.unpackTorrents+"</legend>"+
-				"<div class='checkbox'>" +
-					"<input type='checkbox' id='unpack_label'/>"+
-					"<label for='unpack_label'>"+ theUILang.unpackAddLabel +"</label>"+
-				"</div>" +
-				"<div class='checkbox'>" +
-					"<input type='checkbox' id='unpack_name'/>"+
-					"<label for='unpack_name'>"+ theUILang.unpackAddName +"</label>"+
-				"</div>"+
-			"</fieldset>"
-			)[0], theUILang.unpack );
+		plugin.attachPageToOptions(
+			$("<div>").attr({id:"st_unpack"}).append(
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.unpackPath),
+					$("<div>").addClass("row").append(
+						$("<div>").addClass("col-12 col-md-6").append(
+							$("<input>").attr({type:"checkbox", id:"unpack_enabled", onchange:"linked(this, 0, ['edit_filter', 'edit_unpack1', 'btn_unpack1']);"}),
+							$("<label>").attr({for:"unpack_enabled"}).text(theUILang.unpackEnabled),
+						),
+						$("<div>").addClass("col-12 col-md-6").append(
+							$("<input>").attr({type:"text", id:"edit_filter", maxlength:200}),
+						),
+						$("<div>").addClass("col-12").append(
+							$("<input>").attr({type:"text", id:"edit_unpack1", maxlength:200}),
+							$("<button>").attr({type:"button", id:"btn_unpack1"}).addClass("browseButton").text("..."),
+						),
+					),
+				),
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.unpackTorrents),
+					$("<div>").addClass("row").append(
+						...[
+							["unpack_label", theUILang.unpackAddLabel],
+							["unpack_name", theUILang.unpackAddName],
+						].map(([id, text]) => $("<div>").addClass("col-12 col-md-6").append(
+							$("<input>").attr({type:"checkbox", id:id}),
+							$("<label>").attr({for:id}).text(text),
+						)),
+					),
+				),
+			)[0],
+			theUILang.unpack,
+		);
 		$('#edit_unpack').val( theWebUI.unpackData.path );
-		if(thePlugins.isInstalled("_getdir"))
-		{
-			var btn = new theWebUI.rDirBrowser( 'dlg_unpack', 'edit_unpack', 'btn_unpack' );
-			theDialogManager.setHandler('dlg_unpack','afterHide',function()
-			{
+		if (thePlugins.isInstalled("_getdir")) {
+			const btn = new theWebUI.rDirBrowser('dlg_unpack', 'edit_unpack', 'btn_unpack');
+			theDialogManager.setHandler('dlg_unpack', 'afterHide', function() {
 				btn.hide();
 			});
-			if(plugin.canChangeOptions())
-				plugin.btn = new theWebUI.rDirBrowser( 'st_unpack', 'edit_unpack1', 'btn_unpack1' );
-		}
-		else
-		{
+			if (plugin.canChangeOptions())
+				plugin.btn = new theWebUI.rDirBrowser('stg', 'edit_unpack1', 'btn_unpack1');
+		} else {
 			$('#btn_unpack').remove();
 			$('#btn_unpack1').remove();
 		}

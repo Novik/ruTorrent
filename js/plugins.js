@@ -274,14 +274,12 @@ rPlugin.prototype.attachPageToOptions = function(dlg,name)
 	return(this);
 }
 
-rPlugin.prototype.removePageFromOptions = function(id)
-{
-	if(theOptionsSwitcher.current==id)
+rPlugin.prototype.removePageFromOptions = function(id) {
+	if (theOptionsSwitcher.current === id)
 		theOptionsSwitcher.run('st_gl');
-	$("#"+id).remove();
-	$("#hld_"+id).remove();
-	$(".lm ul li:last").addClass("last");
-	return(this);
+	$("#" + id).remove();
+	$("#hld_" + id).remove();
+	return this;
 }
 
 rPlugin.prototype.attachPageToTabs = function(dlg,name,idBefore)

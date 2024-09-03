@@ -13,7 +13,7 @@
  theUILang.xmppJabberFor		= "수신:";
  theUILang.xmppMessage			= "메시지:";
  theUILang.xmppJabberPasswd		= "암호:";
- theUILang.xmppAdvancedSettings		= "고급:";
+ theUILang.xmppAdvancedSettings		= "고급";
  theUILang.xmppJabberHost		= "호스트";
  theUILang.xmppJabberPort		= "포트";
  theUILang.xmppUseEncryption		= "암호화 사용";
