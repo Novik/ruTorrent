@@ -125,11 +125,22 @@ div.tab { background: #272E36; }
 div#lcont { background: #272E36; font-weight: bold; color: #BDDBDB;}
 
 div#gcont {color: #BDDBDB; font-weight: bold;}
-div#gcont div.Header {background: #323A46;}
+div#gcont div.row.Header {background: #323A46;}
 
 .tabbar {background-color: #1e2124;}
-.tabbar li a:hover {border-top: 2px solid #00FF00;}
-.tabbar li.selected a { border-top: 2px solid #BDDBDB; background: #272E36; color: #BDDBDB; font-weight: bold;}
+.tabbar li.nav-item a.nav-link {
+  border: 1px solid #D0D0D0;
+  background-color: #272E36;
+}
+.tabbar li.nav-item a.nav-link:hover {
+  border-top: 2px solid #00FF00;
+}
+.tabbar li.nav-item.selected a.nav-link {
+  border-top: 2px solid #BDDBDB;
+  background-color: #272E36;
+  color: #BDDBDB;
+  font-weight: bold;
+}
 
 div.dlg-header { background-color: #1e2124; color: #00FF00;}
 div.content {color: #BDDBDB;}

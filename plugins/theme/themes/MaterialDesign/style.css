@@ -508,7 +508,7 @@ div#lcont
 	font-family:'Roboto'
 }
 
-div#gcont div.Header {
+div#gcont div.row.Header {
 	background:transparent url(./images/status_icons.png) no-repeat 0 -286px;
 	font-family:'Roboto';
 	color:#D4D6C9;
@@ -555,7 +555,7 @@ div#modalbg {
 }
 
 #list-table {
-	margin-right:6px;
+	border: none;
 	background-color:#181818
 }
 
@@ -748,10 +748,7 @@ textarea
 	border-radius:2px
 }
 
-button,
-input.Button,
-input.Button:not([disabled]):focus
-{
+button, input[type=button], input.Button:not([disabled]):focus, .Button {
 	background: #3498db none repeat scroll 0 0;
 	border-radius:2px;
 	border:none;
@@ -816,13 +813,6 @@ input[type="checkbox"]:hover
 input[type="checkbox"]:hover:active
 {
 	filter: brightness(1.3);
-}
-
-
-
-#mainlayout
-{
-	max-width:1000px
 }
 
 ul#tabbar

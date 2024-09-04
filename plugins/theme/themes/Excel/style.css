@@ -5,7 +5,7 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
 #side-panel, category-list {
   border-top-style: none;
   border-color: #9EB6CE;
-  background: local transparent url(./images/cbg.png) repeat-y 0 0;
+  background-color: #FFFFFF;
 }
 category-panel::part(heading) {
   border: none;
@@ -30,7 +30,7 @@ panel-label[selected] {
 div#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
 .statuscell { border-color: #9EB6CE }
 
-div#t {background-color: #B5D5FB; border-bottom: 1px solid #9EB6CE;}
+div#t {background: none; border: none;}
 #top-menu {
   background-color: #B5D5FB;
   border-bottom: 1px solid #9EB6CE;
@@ -46,7 +46,7 @@ input[type="text"][disabled],input[type="password"][disabled],input[type="file"]
 
 div#tdcont, div.tab, div#lcont { background-color: #d2e0f0; color: #034084 }
 div.graph_tab { background-color: #d2e0f0; color: #034084; border-color: #ffffff }
-div#gcont div.Header {background-color: #e4edf6;}
+div#gcont div.row.Header {background-color: #e4edf6;}
 div#tdcont { border-color: #9EB6CE }
 div#tdetails { background-color: transparent }
 
@@ -57,10 +57,44 @@ div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
 div.dlg-window { color: #000000; border-color: #9EB6CE; background-color: #FFFFFF }
 div.dlg-header { background: #D9E8FB url(../../../../images/blank.gif) no-repeat scroll 4px center; border-color: #9EB6CE; color: #15428B; font-weight: bold}
 .tabbar { background: transparent url(./images/tabbarbg.png) repeat-x 0 0 }
-
-.tabbar li a { background: transparent url(./images/tabbg.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; -webkit-border-top-left-radius:0px; -webkit-border-top-right-radius:0px; border-top-right-radius:0px; border-top-left-radius:0px; color: #034084 }
-.tabbar li a:hover { border: none; opacity: 0.8 }
-.tabbar li:first-child a { background: transparent url(./images/tabbgf.png) no-repeat 0 0 }
-.tabbar li.selected:first-child a { background: transparent url(./images/tabbgfh.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; top: 3px }
-.tabbar li.selected a { background: transparent url(./images/tabbgh.png) no-repeat 0 0; border: none; margin: 0; padding: 2px 0 2px 15px; top: 3px; }
-.tabbar li.selected+li a { background: url(./images/tabbgfhn.png) no-repeat 0 0 }
+.tabbar li.nav-item a.nav-link {
+  border: none;
+  background: transparent url(./images/tabbg.png) no-repeat 0 0;
+  margin: 1px 0;
+  padding: 2px 0 2px 15px;
+  color: #034084;
+  -moz-border-radius-topleft: 0px;
+  -moz-border-radius-topright: 0px;
+  -webkit-border-top-left-radius: 0px;
+  -webkit-border-top-right-radius: 0px;
+  border-top-right-radius:0px;
+  border-top-left-radius:0px;
+}
+.tabbar li.nav-item a.nav-link:hover {
+  border: none;
+  opacity: 0.8;
+}
+.tabbar li.nav-item:first-child a.nav-link {
+  background: transparent url(./images/tabbgf.png) no-repeat 0 0;
+}
+.tabbar li.nav-item.selected a.nav-link {
+  border-top: 2px solid #BDDBDB;
+  background-color: #272E36;
+}
+.tabbar li.nav-item.selected:first-child a.nav-link {
+  background: transparent url(./images/tabbgfh.png) no-repeat 0 0;
+  border: none;
+  margin: 1px 0;
+  padding: 2px 0 2px 15px;
+  top: 3px;
+}
+.tabbar li.nav-item.selected a.nav-link {
+  background: transparent url(./images/tabbgh.png) no-repeat 0 0;
+  border: none;
+  margin: 1px 0;
+  padding: 2px 0 2px 15px;
+  top: 3px;
+}
+.tabbar li.nav-item.selected+li.nav-item a.nav-link {
+  background: url(./images/tabbgfhn.png) no-repeat 0 0;
+}
