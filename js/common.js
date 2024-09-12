@@ -777,10 +777,6 @@ var theTabs = {
   },
 
 	init: function() {
-		if (browser.isKonqueror && (browser.versionMajor<4)) {
-			delete this.tabs["Speed"];
-			$("#Speed").remove();
-		}
 		$("#tabbar").append(
 			...Object.entries(this.tabs).map(([id, name]) => $("<li>").attr({id:`tab_${id}`}).addClass("nav-item").append(
 				$("<a>").attr({href:"#"}).on(

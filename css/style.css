@@ -407,6 +407,7 @@ div.cont {padding: 6px;}
   border-bottom: none;
   background-color: #FFFFFF;
   color: unset;
+  text-wrap: nowrap;
 }
 .tabbar li.nav-item a.nav-link:hover {
   border-top: 2px solid #FFC73C;

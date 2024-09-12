@@ -1,6 +1,3 @@
-if(browser.isKonqueror && (browser.versionMajor<4))
-	plugin.disable();
-
 theWebUI.ratiosStat = {};
 
 class rTraficGraph extends rGraph {
