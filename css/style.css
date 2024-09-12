@@ -38,7 +38,7 @@ legend {
 textarea {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
-  margin: 0.25rem;
+  margin: 0.25rem 0;
   padding: 0.25rem;
   resize: none;
   width: 100%;
@@ -314,7 +314,6 @@ div#stg .lm {
 .ie div#stg .lm {width: 125px; position: static;}
 .ie9 div#stg .lm {position: static}
 .ie div#stg {width: 605px;}
-div.op100l {width: 400px; float: left}
 
 .lm li {
   margin: 0.25rem 0.5rem;

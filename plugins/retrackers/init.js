@@ -114,32 +114,41 @@ if(plugin.canChangeOptions())
 	}
 }
 
-plugin.onLangLoaded = function() 
-{
-	if(this.canChangeOptions())
-	        this.attachPageToOptions(
-		        $("<div>").attr("id","st_retrackers").html(
-				"<div>"+		
-					"<input type='checkbox' id='dont_private' checked='true' />"+
-					"<label for='dont_private'>"+theUILang.dontAddToPrivate+"</label>"+
-				"</div>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.retrackersAdd+"</legend>"+
-					"<div class=\"op100l\">"+
-						"<textarea id='eretrackers' class='retrackers'></textarea>"+
-					"</div>"+
-					"<div class=\"op100l\">"+		
-						"<input type='checkbox' id='add_begin' checked='false' />"+
-						"<label for='add_begin'>"+theUILang.addToBegin+"</label>"+
-					"</div>"+
-				"</fieldset>"+
-				"<fieldset>"+
-					"<legend>"+theUILang.retrackersDel+"</legend>"+
-					"<div class=\"op100l\">"+
-						"<textarea id='dretrackers' class='retrackers'></textarea>"+
-					"</div>"+
-				"</fieldset>"
-				)[0],theUILang.retrackers);
+plugin.onLangLoaded = function() {
+	if (this.canChangeOptions()) {
+		this.attachPageToOptions(
+			$("<div>").attr("id","st_retrackers").append(
+				$("<fieldset>").append(
+					$("<legend>").append(theUILang.retrackers),
+					$("<div>").append(
+						$("<div>").addClass("row").append(
+							$("<div>").addClass("col-12").append(
+								$("<input>").attr({type:"checkbox", id:"dont_private"}).prop("checked", true),
+								$("<label>").attr({for:"dont_private"}).text(theUILang.dontAddToPrivate),
+							),
+							$("<div>").addClass("col-12").append(
+								$("<input>").attr({type:"checkbox", id:"add_begin"}).prop("checked", true),
+								$("<label>").attr({for:"add_begin"}).text(theUILang.addToBegin),
+							),
+							$("<div>").addClass("col-12").append(
+								$("<label>").attr({for:"eretrackers"}).text(theUILang.retrackersAdd),
+							),
+							$("<div>").addClass("col-12").append(
+								$("<textarea>").attr({id:"eretrackers"}).addClass("retrackers"),
+							),
+							$("<div>").addClass("col-12").append(
+								$("<label>").attr({for:"dretrackers"}).text(theUILang.retrackersDel),
+							),
+							$("<div>").addClass("col-12").append(
+								$("<textarea>").attr({id:"dretrackers"}).addClass("retrackers"),
+							),
+						),
+					),
+				),
+			)[0],
+			theUILang.retrackers,
+		);
+	}
 }
 
 plugin.onRemove = function() 
