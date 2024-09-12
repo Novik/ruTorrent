@@ -12,7 +12,7 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --settings-background-color: #181818;
 }
 
-button, input.Button {
+button, input[type=button], .Button {
   border: 1px solid #000;
   background: #000 url(./images/headers.png) repeat-x 0px 0px;
   color:#AACF27;
@@ -192,19 +192,24 @@ input[type="number"][disabled],input[type="text"][disabled], input[type="passwor
 div.tab {background: #181818;font-family: inherit;}
 div#lcont {background: #181818;font-family: inherit;}
 div#gcont {font-family:inherit;}
-div#gcont div.Header {
-  background: transparent url(./images/status_icons.png) no-repeat 0px -286px;
+div#gcont div.row.Header {
+  background-color: transparent;
   font-family: inherit;
   color: #D4D6C9;
+}
+div#gcont div.row.Header span {
   padding-left: 17px;
+  background: transparent url(./images/status_icons.png) no-repeat left -285px;
+}
+div#gcont div.row:not(.Header) span.det-hdr {
+  text-wrap: nowrap;
+  padding-left: 17px;
+  background: transparent url(./images/status_icons.png) no-repeat left -305px;
 }
 div#gcont div.row {
-  background: #181818 url(./images/headers.png) repeat-x 0px -93px;
+  background-color: #181818;
   font-family: inherit;
   color: #D4D6C9;
-}
-div#gcont div.row > div {
-  background: #181818 url(./images/headers.png) repeat-x 0px -38px;
 }
 div.graph_tab {color:#FFF; background-color: #181818}
 .graph_tab_legend { color: #FFF; background-color: #181818; }
@@ -230,11 +235,30 @@ div#tdetails {padding:0px;margin:0px;background-color: #181818;color:#888888;-mo
 div#tdcont {background: #181818; border-top: none; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;}
 
 /*TABBED MENU */
-.tabbar li {margin-right:2px;}
-.tabbar {color:#038BA9;background: #181818 url(./images/headers.png) repeat-x 0px -89px;  text-shadow:0px 1px 0px #000;height:24px;border-top: 1px solid #333; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: none;}
-.tabbar li a {top:1px;margin: -2px 1px 0px;border-color:#0f0f0f;padding:4px 6px 3px 6px;line-height:24px;background: #000 url(./images/headers.png) repeat-x 0px 0px;color:#626262;cursor: pointer;text-shadow:0px -1px 0px #000;font-family: inherit;-moz-border-radius-topleft:5px; -webkit-border-top-left-radius:5px;-moz-border-radius-topright:5px;-webkit-border-top-right-radius:5px;border-top-right-radius:5px;border-top-left-radius:5px;}
-.tabbar li a:hover {color:#fff;border-color: #0f0f0f;border-width: 1px;}
-.tabbar li.selected a {padding:4px 6px 5px 6px;top:1px;border: 1px solid #333333;border-bottom:none; background: #181818; color: #178FD1;text-shadow:0px -1px 0px #000;}
+.tabbar {
+  color: #038BA9; background: #181818 url(./images/headers.png) repeat-x 0px -89px;
+  text-shadow: 0px 1px 0px #000;
+  border-top: 1px solid #333;
+  border-right: 1px solid #070707;
+  border-left: 1px solid #1b1b1b;
+  border-bottom: none;
+}
+.tabbar li.nav-item a.nav-link {
+  border: 1px solid #0F0F0F;
+  background: #000 url(./images/headers.png) repeat-x 0px 0px;
+  color: #999999;
+  text-shadow:0px -1px 0px #000;
+}
+.tabbar li.nav-item a.nav-link:hover {
+  border-top: 2px solid #222222;
+  color: #FFF;
+}
+.tabbar li.nav-item.selected a.nav-link {
+  border: 1px solid #333333;
+  border-top: 2px solid #222222;
+  background-color: #181818;
+  color: #178FD1;
+}
 
 /* DIALOGS */
 div#dlgProps textarea#prop-trackers {background: #222222; border: 1px solid #333333}

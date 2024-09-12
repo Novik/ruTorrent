@@ -400,14 +400,24 @@ div.table_tab {
 
 div.cont {padding: 6px;}
 
-.tabbar {
-  list-style-type: none;
-  text-align: left;
+.tabbar li.nav-item a.nav-link {
+  padding: 0.3rem;
+  margin-left: 0.2rem;
+  border: 1px solid #D0D0D0;
+  border-bottom: none;
+  background-color: #FFFFFF;
+  color: unset;
+  text-wrap: nowrap;
 }
-.tabbar li {margin: 0; padding: 0; display: inline; white-space: nowrap;}
-.tabbar li a {position: relative; top: 3px; text-decoration: none; border: 1px solid #D0D0D0; border-bottom: 0; margin: -5px 1px 0 1px; padding: 1px 5px; font-size: 11px;  -moz-border-radius-topleft: 5px; -moz-border-radius-topright: 5px; -webkit-border-top-left-radius:5px; -webkit-border-top-right-radius:5px; border-top-right-radius:5px; border-top-left-radius:5px; vertical-align: top; cursor: pointer}
-.tabbar li a:hover {border-top: 2px solid #FFC73C}
-.tabbar li.selected a {margin: 0 -2px 0 0; padding: 1px 7px 4px 7px; position: relative; top: 2px; vertical-align: top; border-top: 2px solid #FFC73C; background: #FFFFFF; color: #000000}
+.tabbar li.nav-item a.nav-link:hover {
+  border-top: 2px solid #FFC73C;
+  color: unset;
+}
+.tabbar li.nav-item.selected a.nav-link {
+  border-top: 2px solid #FFC73C;
+  color: unset;
+}
+
 div#dlgLabel {max-width: 350px;}
 div#dlgLabel div.dlg-header {background-image: url(../images/label.gif)}
 div#padd {width: 250px; height: 120px}

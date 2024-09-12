@@ -81,7 +81,9 @@ plugin.onLangLoaded = function()
 {
 	$("#mainlayout").append( 
 		$("<div>").addClass("row Header").append(
-			$("<div>").attr({id:"chkinfo1"}).addClass("col-12").text(theUILang.chkHdr),
+			$("<div>").attr({id:"chkinfo1"}).addClass("col-12").append(
+				$("<span>").text(theUILang.chkHdr),
+			),
 		),
 		$("<div>").addClass("row").append(
 			$("<div>").attr({id:"chkinfo2"}).addClass("col-12 col-md-2").append(

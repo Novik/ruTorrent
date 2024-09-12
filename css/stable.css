@@ -1,4 +1,5 @@
 .stable {
+  position: relative;  /* Need to be positioned for drag masks to be positioned properly */
   height: 100%;
   background-color: #FFFFFF;
   overflow: hidden;

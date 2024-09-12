@@ -285,7 +285,7 @@ a {color: #686868}
 
 div.tab {background: #181818}
 div#lcont {background: #181818}
-div#gcont div.Header {background: #181818;}
+div#gcont div.row.Header {background: #181818;}
 div.graph_tab {background-color: #181818}
 .graph_tab_legend { color: #FFF; background-color: #181818; }
 .graph_tab_tooltip { color: #FFF; background-color: #606060; border: 1px solid #606060; }
@@ -317,9 +317,19 @@ div#tdcont {background: #181818; border: 1px solid #333333}
 
 div#tadd {background-color: #181818; border: 1px solid #333333}
 div#tadd-header {background-color: #181818; border-bottom: 1px solid #333333}
-.tabbar li a {border: 1px solid #333333; }
-.tabbar li a:hover {border-top: 2px solid #222222}
-.tabbar li.selected a {border-top: 2px solid #999999; background: #181818; color: #888888}
+.tabbar li.nav-item a.nav-link {
+  border: 1px solid #333333;
+  background-color: #181818;
+  color: #5B5B5B;
+}
+.tabbar li.nav-item a.nav-link:hover {
+  border-top: 2px solid #222222;
+}
+.tabbar li.nav-item.selected a.nav-link {
+  border-top: 2px solid #222222;
+  background-color: #888888;
+  color: #252525;
+}
 div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333333}
 
 div.dlg-window {background-color: #181818; color: #888888; border: 1px solid #333333}

@@ -765,40 +765,36 @@ Timer.prototype.stop = function()
 	this.interval = (new Date()).getTime() - this.initial;
 };
 
-var theTabs =
-{
-	tabs:
-	{
-   		gcont : theUILang.General,
-   		FileList : theUILang.Files,
-   		TrackerList : theUILang.Trackers,
-   		PeerList : theUILang.Peers,
-   		Speed : theUILang.Speed,
-   		PluginList : theUILang.Plugins,
-   		lcont : theUILang.Logger
-   	},
+var theTabs = {
+	tabs: {
+		gcont: theUILang.General,
+		FileList: theUILang.Files,
+		TrackerList: theUILang.Trackers,
+		PeerList: theUILang.Peers,
+		Speed: theUILang.Speed,
+		PluginList: theUILang.Plugins,
+		lcont: theUILang.Logger
+  },
 
-   	init: function()
-   	{
-		if(browser.isKonqueror && (browser.versionMajor<4))
-		{
-			delete this.tabs["Speed"];
-			$("#Speed").remove();
-		}
-   		var s = "";
-   		for(var n in this.tabs)
-      			s += "<li id=\"tab_" + n + "\"><a href=\"javascript://void();\" onmousedown=\"theTabs.show('" + n + "'); return(false);\" onfocus=\"this.blur();\">" + this.tabs[n] + "</a></li>";
-		$("#tabbar").html(s);
-		$("#tab_lcont").append( $("<input type='button'>").attr("id","clear_log").addClass('Button mx-2').val(theUILang.ClearButton).hide().on('click', function()
-		{
-			$("#lcont").empty();
-		}).on('focus', function()
-		{
-			this.blur();
-		}));
-   		this.show("gcont");
-   		$('#gcont,#lcont').enableSysMenu();
-   	},
+	init: function() {
+		$("#tabbar").append(
+			...Object.entries(this.tabs).map(([id, name]) => $("<li>").attr({id:`tab_${id}`}).addClass("nav-item").append(
+				$("<a>").attr({href:"#"}).on(
+					"click", () => theTabs.show(id)
+				).on("click", (ev) => ev.target.blur()).addClass("nav-link").text(name),
+			)),
+		);
+		$("#tab_lcont").after(
+			$("<button>").attr(
+				{type:"button", id:"clear_log"}
+			).addClass('Button mx-2').text(theUILang.ClearButton).hide().on(
+				'click', () => $("#lcont").empty()
+			).on('focus', function() {
+				this.blur();
+			}));
+		this.show("gcont");
+		$('#gcont,#lcont').enableSysMenu();
+	},
 	onShow : function(id)
 	{
 	},

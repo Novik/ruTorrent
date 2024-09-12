@@ -508,17 +508,20 @@ div#lcont
 	font-family:'Roboto'
 }
 
-div#gcont div.Header {
-	background:transparent url(./images/status_icons.png) no-repeat 0 -286px;
-	font-family:'Roboto';
-	color:#D4D6C9;
-	padding-left:17px;
-}
-
 div#gcont div.row {
-	background:#181818 url(./images/headers.png) repeat-x 0 -93px;
 	font-family:'Roboto';
 	color:#D4D6C9;
+}
+div#gcont div.row.Header {
+  background-color: transparent;
+}
+div#gcont div.row.Header span {
+	background: transparent url(./images/status_icons.png) no-repeat 0 -288px;
+  padding-left: 17px;
+}
+div#gcont div.row:not(.Header) span.det-hdr {
+	background: transparent url(./images/status_icons.png) no-repeat 0 -306px;
+  padding-left: 17px;
 }
 
 div#gcont div.row > div {
@@ -555,7 +558,7 @@ div#modalbg {
 }
 
 #list-table {
-	margin-right:6px;
+	border: none;
 	background-color:#181818
 }
 
@@ -748,10 +751,7 @@ textarea
 	border-radius:2px
 }
 
-button,
-input.Button,
-input.Button:not([disabled]):focus
-{
+button, input[type=button], input.Button:not([disabled]):focus, .Button {
 	background: #3498db none repeat scroll 0 0;
 	border-radius:2px;
 	border:none;
@@ -818,24 +818,14 @@ input[type="checkbox"]:hover:active
 	filter: brightness(1.3);
 }
 
-
-
-#mainlayout
-{
-	max-width:1000px
-}
-
-ul#tabbar
-{
+ul#tabbar {
 	background:none;
 	border:none;
 	color:#606060;
-	height:24px;
 	text-shadow:none
 }
 
-ul#tabbar li a
-{
+.tabbar li.nav-item a.nav-link {
 	background:none;
 	border:none;
 	color:#fff;
@@ -846,49 +836,36 @@ ul#tabbar li a
 	padding:4px 15px 3px;
 	font-weight:500;
 	text-shadow:none;
-	top:0
 }
 
-ul#tabbar li a:hover
-{
+.tabbar li.nav-item a.nav-link:hover {
 	color:#fff;
 	text-shadow:none;
 	background:none
 }
 
-ul#tabbar li.selected a
-{
+.tabbar li.nav-item.selected a.nav-link {
 	background:none;
 	border-bottom:2px solid #3BB9D4;
 	color:#eee;
 	padding:4px 15px 5px;
 	font-weight:700;
 	text-shadow:none;
-	top:0;
 	transition:all .2s cubic-bezier(.18,.89,.32,1.28) 0
 }
 
-.tabbar li
-{
-	margin-left:1px;
-	margin-right:2px
-}
-
-.tabbar
-{
+.tabbar {
 	background:none;
 	border:none;
 	color:#038ba9;
-	height:21px;
 	padding:4px;
 	text-shadow:none
 }
 
-.tabbar li a
-{
+.tabbar li.nav-item a.nav-link {
 	background:none;
 	border:none;
-	color:#606060;
+	color:#999999;
 	cursor:pointer;
 	font-family:inherit;
 	line-height:24px;
@@ -900,15 +877,13 @@ ul#tabbar li.selected a
 	transition:all .5s
 }
 
-.tabbar li a:hover
-{
+.tabbar li.nav-item a.nav-link:hover {
 	color:#fff;
 	background:none;
 	border:none
 }
 
-.tabbar li.selected a
-{
+.tabbar li.nav-item.selected a.nav-link {
 	background:none;
 	border:none;
 	border-bottom:2px solid #fff;

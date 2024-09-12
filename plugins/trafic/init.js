@@ -1,6 +1,3 @@
-if(browser.isKonqueror && (browser.versionMajor<4))
-	plugin.disable();
-
 theWebUI.ratiosStat = {};
 
 class rTraficGraph extends rGraph {
@@ -335,18 +332,31 @@ plugin.onLangLoaded = function()
 				plugin.onShow.call(this,id);
 		};
 	 	this.attachPageToTabs(
-			$('<div>').attr("id","traf").html(
-				"<div id='traf_graph_ctrl' class='graph_tab' align=right style='height:30px;'>"+
-					(plugin.disableClearButton ? "" : "<input type='button' value='"+theUILang.ClearButton+"' class='Button' onclick='theWebUI.clearStats();return(false);'>")+
-					"<select name='tracker_mode' id='tracker_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-						"<option value='global' selected>"+theUILang.allTrackers+"</option>"+
-					"</select>"+
-					"<select name='traf_mode' id='traf_mode' onchange='theWebUI.reqForTraficGraph()'>"+
-						"<option value='day'>"+theUILang.perDay+"</option>"+
-						"<option value='month'>"+theUILang.perMonth+"</option>"+
-						"<option value='year'>"+theUILang.perYear+"</option>"+
-					"</select>"+
-        "</div><div id='traf_graph' style='display: none' class='graph_tab'></div>").get(0),theUILang.traf,"lcont");
+			$('<div>').attr("id","traf").append(
+				$("<div>").attr({id:"traf_graph_ctrl"}).addClass("graph_tab d-flex flex-row").append(
+					plugin.disableClearButton ? $() : $("<button>").attr({type:"button", onclick: "theWebUI.clearStats();return(false);"}).text(theUILang.ClearButton),
+					$("<select>").attr({
+						name:"tracker_mode",
+						id:"tracker_mode",
+						onchange:"theWebUI.reqForTraficGraph()",
+					}).addClass("ms-auto w-auto flex-grow-0").append(
+						$("<option>").prop("selected", true).val("global").text(theUILang.allTrackers),
+					),
+					$("<select>").attr({
+						name:"traf_mode",
+						id:"traf_mode",
+						onchange:"theWebUI.reqForTraficGraph()",
+					}).addClass("w-auto flex-grow-0").append(
+						$("<option>").val("day").text(theUILang.perDay),
+						$("<option>").val("month").text(theUILang.perMonth),
+						$("<option>").val("year").text(theUILang.perYear),
+					),
+				),
+				$("<div>").attr({id:"traf_graph"}).addClass("graph_tab"),
+			)[0],
+			theUILang.traf,
+			"lcont",
+		);
 		theWebUI.trafGraph = new rTraficGraph();
 		theWebUI.trafGraph.create($("#traf_graph"));
 		theWebUI.resize();
