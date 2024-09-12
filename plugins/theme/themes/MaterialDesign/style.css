@@ -865,7 +865,7 @@ ul#tabbar {
 .tabbar li.nav-item a.nav-link {
 	background:none;
 	border:none;
-	color:#606060;
+	color:#999999;
 	cursor:pointer;
 	font-family:inherit;
 	line-height:24px;
