@@ -78,9 +78,25 @@ plugin.tegRenameColumn = function() {
 
 /* Create option page */
 plugin.onLangLoaded = function() {
-	var input = "<fieldset><legend>"+theUILang.uploadtarget+"</legend><div><input id='uploadtarget' type='text' size='2' onkeypress='return isNumberKey(event);'/>%</div></fieldset>";
-	var description = "<div>"+theUILang.ULdescription+"</div>";
-	this.attachPageToOptions($("<div>").attr("id","st_uploadeta").html(input + description)[0], theUILang.uploadeta);
+	this.attachPageToOptions(
+		$("<div>").attr("id","st_uploadeta").append(
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.uploadtarget),
+				$("<div>").addClass("row").append(
+					$("<div>").addClass("col-9 col-md-6").append(
+						$("<input>").attr({type:"text", id:"uploadtarget", onkepress:"return isNumberKey(event);"}),
+					),
+					$("<div>").addClass("col-3 col-md-6").append(
+						$("<span>").text("%"),
+					),
+					$("<div>").addClass("col-12").append(
+						$("<div>").text(theUILang.ULdescription),
+					),
+				),
+			),
+		)[0],
+		theUILang.uploadeta,
+	);
 }
 
 /* Field shoud be numbers only */
