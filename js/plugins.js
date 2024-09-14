@@ -265,6 +265,10 @@ rPlugin.prototype.attachPageToOptions = function(dlg,name)
 		$("#st_btns").before( $(dlg).addClass("stg_con") );
 		$(".lm ul").append(
 			$("<li>").attr("id","hld_"+dlg.id).append(
+				$("<div>").append(
+					$("<div>"),
+					$("<div>"),
+				),
 				$("<a>").attr(
 					{id: `mnu_${dlg.id}`, href: "#", onclick: `theOptionsSwitcher.run('${dlg.id}');return(false);`}
 				).text(name),

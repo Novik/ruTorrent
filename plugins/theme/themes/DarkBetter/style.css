@@ -11,8 +11,7 @@ html, body {background-color: #181818; color: #999999; }
 
   --settings-background-color: #181818;
 }
-button,
-input.Button {
+button, input.Button {
   background: -webkit-gradient(
     linear,
     left top,
@@ -30,13 +29,11 @@ input.Button {
   border: 1px solid #333333;
   color: #111111;
 }
-button:hover,
-input.Button:not([disabled]):hover {
+button:hover, input.Button:not([disabled]):hover {
   background-color: #999999;
   filter: brightness(1.2);
 }
-button:hover:active,
-input.Button:not([disabled]):hover:active {
+button:hover:active, input.Button:not([disabled]):hover:active {
   background: -webkit-gradient(
     linear,
     left top,
@@ -75,7 +72,6 @@ category-panel::part(heading) {
 category-panel[closed]::part(heading) {
   background: url(./images/pnl_close.svg) 4px no-repeat;
 }
-
 
 panel-label {
   border-color: #181818;
@@ -301,7 +297,15 @@ div#stg {background-color: #181818; color: #888888; border: 1px solid #333333}
 div#stg-header {background-color: #181818; border-bottom: 1px solid #333333}
 div#stg .lm {background-color: #181818; border: 1px solid #333333}
 
-.lm li {background: transparent url(./images/bul.gif) no-repeat scroll left center}
+.lm li div > div {
+  border-left-color: #616161;
+}
+.lm li div > div:first-of-type {
+  border-bottom-color: #616161;
+}
+.lm li div > div:last-of-type {
+  border-top-color: #616161;
+}
 .lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
 .lm li a {color: #888888}
 .lm li a.focus {background-color: #333333}
