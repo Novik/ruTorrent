@@ -76,6 +76,11 @@ switch($cmd)
 			$mngr->update(true);
 		break;
 	}
+	case "get":
+	{
+		$mngr->update(true);
+		break;
+	}
 	case "refreshgroup":
 	{
 		if(isset($_REQUEST['rss']))
