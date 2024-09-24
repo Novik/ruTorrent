@@ -439,63 +439,78 @@ if(plugin.canChangeMenu())
 	}
 }
 
-plugin.onLangLoaded = function()
-{
-	injectScript(plugin.path+"desktop-notify.js",function()
-	{
-		plugin.attachPageToOptions( $("<div>").attr("id","st_history").html(
-			"<div class='checkbox'>" +
-				"<label for='history_limit'>"+ theUILang.historyLimit +"</label>"+
-				"<input type='text' maxlength=4 id='history_limit' class='TextboxShort'/>"+
-			"</div>" +
-			"<fieldset>"+
-				"<legend>"+theUILang.historyLog+"</legend>"+
-				"<div class='checkbox'>" +
-					"<input type='checkbox' id='history_addition'/>"+
-					"<label for='history_addition'>"+ theUILang.historyAddition +"</label>"+
-				"</div>" +
-				"<div class='checkbox'>" +
-					"<input type='checkbox' id='history_deletion'/>"+
-					"<label for='history_deletion'>"+ theUILang.historyDeletion +"</label>"+
-				"</div>" +
-				"<div class='checkbox'>" +
-					"<input type='checkbox' id='history_finish'/>"+
-					"<label for='history_finish'>"+ theUILang.historyFinish +"</label>"+
-				"</div>" +
-			"</fieldset>"+
-			"<fieldset>"+
-				"<legend>"+theUILang.historyNotification+"</legend>"+
-				"<div id='notifTip'>" +
-				"</div>" +
-				"<input type='button' value='"+theUILang.enableNotifications+"' id='notifPerms'/>"+
-				"<div id='notifParam'>" +
-					"<input type='checkbox' id='not_autoclose' onchange=\"linked(this, 0, ['not_closeinterval']);\" />"+
-					"<label for='not_closeinterval' id='lbl_not_closeinterval' class='disabled'>"+ theUILang.notifAutoClose +" </label>" +
-					"<input type='text' id='not_closeinterval' class='TextboxShort' maxlength='3' disabled='true'/>" + theUILang.s +
-				"</div>" +
-			"</fieldset>"+
-			"<fieldset>"+
-				"<legend><a href='https://www.pushbullet.com/' target='_blank'>"+theUILang.pushbulletNotification+"</a></legend>"+
-				"<div class='checkbox'>" +
-					"<input type='checkbox' id='pushbullet_enabled' onchange=\"linked(this, 0, ['pushbullet_key','pushbullet_addition','pushbullet_deletion','pushbullet_finish']);\"/>"+
-					"<label for='pushbullet_enabled'>"+ theUILang.Enabled +"</label>"+
-				"</div>" +
-				"<label for='pushbullet_key' id='lbl_pushbullet_key' class='disabled'>"+ theUILang.pushbulletKey +"</label>"+
-				"<input type='text' id='pushbullet_key' class='TextboxLarge' disabled='true' />"+
-				"<div class='checkbox'>" +
-					"<input type='checkbox' id='pushbullet_addition' disabled='true' />"+
-					"<label for='pushbullet_addition' id='lbl_pushbullet_addition' class='disabled'>"+ theUILang.historyAddition +"</label>"+
-				"</div>" +
-				"<div class='checkbox'>" +
-					"<input type='checkbox' class='disabled' id='pushbullet_deletion' disabled='true' />"+
-					"<label for='pushbullet_deletion' id='lbl_pushbullet_deletion' class='disabled'>"+ theUILang.historyDeletion +"</label>"+
-				"</div>" +
-				"<div class='checkbox'>" +
-					"<input type='checkbox' id='pushbullet_finish' disabled='true' />"+
-					"<label for='pushbullet_finish' id='lbl_pushbullet_finish' class='disabled'>"+ theUILang.historyFinish +"</label>"+
-				"</div>" +
-			"</fieldset>"
-			)[0], theUILang.history );
+plugin.onLangLoaded = function() {
+	injectScript(plugin.path+"desktop-notify.js", function() {
+		plugin.attachPageToOptions(
+			$("<div>").attr({id:"st_history"}).append(
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.historyLog),
+					$("<div>").addClass("row").append(
+						$("<div>").addClass("col-12 col-md-6").append(
+							$("<label>").attr({for:"history_limit"}).text(theUILang.historyLimit),
+						),
+						$("<div>").addClass("col-12 col-md-3").append(
+							$("<input>").attr({type:"text", id:"history_limit", maxlength:4}),
+						),
+						...[
+							["history_addition", theUILang.historyAddition],
+							["history_deletion", theUILang.historyDeletion],
+							["history_finish", theUILang.historyFinish],
+						].map(([id, text]) => $("<div>").addClass("col-12 col-md-4").append(
+							$("<input>").attr({type:"checkbox", id:id}),
+							$("<label>").attr({for:id}).text(text),
+						)),
+					),
+				),
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.historyNotification),
+					$("<div>").addClass("row").append(
+						$("<div>").addClass("col-12").append(
+							$("<div>").attr({id:"notifTip"}),
+						),
+						$("<div>").addClass("col-12").append(
+							$("<button>").attr({type:"button", id:"notifPerms"}).text(theUILang.enableNotifications),
+						),
+						$("<div>").addClass("col-12 col-md-6").append(
+							$("<input>").attr({type:"checkbox", id:"not_autoclose", onchange:"linked(this, 0, ['not_closeinterval']);"}),
+							$("<label>").attr({for:"not_closeinterval", id:"lbl_not_closeinterval"}).text(theUILang.notifAutoClose),
+						),
+						$("<div>").addClass("col-6 col-md-3").append(
+							$("<input>").attr({type:"text", id:"not_closeinterval", maxlength:3}).prop("disabled", true),
+						),
+						$("<div>").addClass("col-6 col-md-3").append(
+							$("<span>").text(theUILang.s),
+						),
+					),
+				),
+				$("<fieldset>").append(
+					$("<legend>").append(
+						$("<a>").attr({href:"https://www.pushbullet.com/", target:"_blank"}).text(theUILang.pushbulletNotification),
+					),
+					$("<div>").addClass("row").append(
+						$("<div>").addClass("col-12").append(
+							$("<input>").attr({type:"checkbox", id:"pushbullet_enabled", onchange:"linked(this, 0, ['pushbullet_key','pushbullet_addition','pushbullet_deletion','pushbullet_finish']);"}),
+							$("<label>").attr({for:"pushbullet_enabled"}).text(theUILang.Enabled),
+						),
+						$("<div>").addClass("col-12 col-md-6").append(
+							$("<label>").attr({for:"pushbullet_key", id:"lbl_pushbullet_key"}).text(theUILang.pushbulletKey),
+						),
+						$("<div>").addClass("col-12 col-md-6").append(
+							$("<input>").attr({type:"text", id:"pushbullet_key"}).prop("disabled", true),
+						),
+						...[
+							["pushbullet_addition", theUILang.historyAddition],
+							["pushbullet_deletion", theUILang.historyDeletion],
+							["pushbullet_finish", theUILang.historyFinish],
+						].map(([id, text]) => $("<div>").addClass("col-12 col-md-4").append(
+							$("<input>").attr({type:"checkbox", id:id}).prop("disabled", true),
+							$("<label>").attr({for:id, id:`lbl_${id}`}).text(text),
+						)),
+					),
+				),
+			)[0],
+			theUILang.history,
+		);
 		$('#notifPerms').on('click', function()
 		{
 			notify.requestPermission(function()

@@ -59,15 +59,18 @@ if(plugin.canChangeOptions())
 	}
 }
 
-plugin.onLangLoaded = function() 
-{
-	this.attachPageToOptions($('<div>').attr("id","st_cookies").html(
-		"<fieldset>"+
-			"<legend>"+theUILang.cookiesDesc+"</legend>"+
-			"<div class=\"op100l\">"+
-				"<textarea id='hostcookies'></textarea>"+
-			"</div>"+
-		"</fieldset>")[0],theUILang.cookiesName);
+plugin.onLangLoaded = function() {
+	this.attachPageToOptions(
+		$('<div>').attr("id","st_cookies").append(
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.cookiesDesc),
+				$("<div>").append(
+					$("<textarea>").attr({id:"hostcookies"})
+				),
+			),
+		)[0],
+		theUILang.cookiesName,
+	);
 }
 
 plugin.onRemove = function()

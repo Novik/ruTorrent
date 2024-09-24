@@ -630,58 +630,61 @@ div#stg .lm
 	border:none
 }
 
-.lm li, .lm li div.toggle
-{
+.lm li div > div {
+  border-left-color: #AAAAAA;
+  border-left-style: solid;
+}
+.lm li div > div:first-of-type {
+  border-bottom-color: #AAAAAA;
+  border-bottom-style: solid;
+}
+.lm li div > div:last-of-type {
+  border-top-color: #AAAAAA;
+  border-top-style: solid;
+}
+.lm li, .lm li div.toggle {
 	background:transparent none repeat scroll 0 0;
 	text-transform:uppercase;
 	font-size:.9em;
 	margin:0 0 3px
 }
 
-.lm li a
-{
+.lm li a {
 	font-size:1em;
 	font-weight:300;
 	color:#FFF;
 	transition:all .5s
 }
 
-.lm li a:hover
-{
+.lm li a:hover {
 	color:#80cbc4;
 	transition:all .5s
 }
 
-.lm li a.focus
-{
+.lm li a.focus {
 	color:#80cbc4;
 	background:none
 }
 
-input.disabled
-{
+input.disabled {
 	background-color:#181818;
 	color:#333;
 	border:1px solid #333
 }
 
-legend
-{
+legend {
 	color:#888
 }
 
-select.cols
-{
+select.cols {
 	border:1px solid #333
 }
 
-div#dragmask
-{
+div#dragmask {
 	border:1px dotted #333
 }
 
-div#tdetails
-{
+div#tdetails {
 	padding:0;
 	margin:0;
 	background-color:#181818;
@@ -690,8 +693,7 @@ div#tdetails
 	border-top-left-radius:6px
 }
 
-div#tdcont
-{
+div#tdcont {
 	background:#181818;
 	border:none;
 	padding:0

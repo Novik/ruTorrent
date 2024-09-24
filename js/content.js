@@ -362,6 +362,10 @@ function makeContent() {
 				["st_fmt", theUILang.Format],
 				["st_ao", theUILang.Advanced],
 			].map(([id, text, defaultFocus]) => $("<li>").attr({id: `hld_${id}`}).append(
+				$("<div>").append(
+					$("<div>"),
+					$("<div>"),
+				),
 				$("<a>").attr(
 					{id: `mnu_${id}`, href: "#", onclick: `theOptionsSwitcher.run('${id}');return(false);`}
 				).addClass(defaultFocus ? "focus" : "").text(text),

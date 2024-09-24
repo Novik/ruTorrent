@@ -220,7 +220,15 @@ div#modalbg {background-color: #181818;}
 #list-table {margin-right:6px;border-top: 1px solid #333; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000; background-color: #181818;}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
-.lm li {background: transparent url(./images/bul.gif) no-repeat scroll left center}
+.lm li div > div {
+  border-left-color: #AACF27;
+}
+.lm li div > div:first-of-type {
+  border-bottom-color: #AACF27;
+}
+.lm li div > div:last-of-type {
+  border-top-color: #AACF27;
+}
 .lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
 .lm li a {color: #888888}
 .lm li a.focus {background-color: #333333}

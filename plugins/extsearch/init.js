@@ -749,18 +749,40 @@ plugin.shutdownOldVersion = function()
 		setTimeout(arguments.callee,1000);
 }
 
-plugin.onLangLoaded = function()
-{
-	theDialogManager.make( "tegLoadTorrents", theUILang.torrent_add,
-		"<div class='content'>"+
-			"<label>"+theUILang.Base_directory+":</label><input type='text' id='tegdir_edit' class='TextboxLarge'/><br/>"+
-			"<label></label><input type='checkbox' id='tegnot_add_path'/>"+theUILang.Dont_add_tname+"<br/>"+
-			"<label></label><input type='checkbox' id='tegtorrents_start_stopped'/>"+theUILang.Dnt_start_down_auto+"<br/>"+
-			'<label></label><input type="checkbox" id="tegfast_resume"/>'+theUILang.doFastResume+'<br/>'+
-			"<label>"+theUILang.Label+":</label><input type='text' id='teglabel' class='TextboxLarge'/>"+
-		"</div>"+
-		"<div id='buttons' class='aright buttons-list'><input type='button' class='OK Button' value="+theUILang.ok+" onclick='theDialogManager.hide(\"tegLoadTorrents\");theWebUI.tegLoadTorrents();return(false);'/><input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/></div>",
-		true);
+plugin.onLangLoaded = function() {
+	theDialogManager.make("tegLoadTorrents", theUILang.torrent_add,
+		$("<div>").addClass("fxcaret cont").append(
+			$("<div>").addClass("row").append(
+				$("<div>").addClass("col-12 col-md-3 justify-content-md-end").append(
+					$("<label>").attr({for:"tegdir_edit"}).text(theUILang.Base_directory + ":"),
+				),
+				$("<div>").addClass("col-12 col-md-9").append(
+					$("<input>").attr({type:"text", id:"tegdir_edit"}),
+				),
+				...[
+					["tegnot_add_path", theUILang.Dont_add_tname],
+					["tegtorrents_start_stopped", theUILang.Dnt_start_down_auto],
+					["tegfast_resume", theUILang.doFastResume],
+				].map(([id, text]) => $("<div>").addClass("col-12 col-md-9 offset-md-3").append(
+					$("<input>").attr({type:"checkbox", id:id}),
+					$("<label>").attr({for:id}).text(text),
+				)),
+				$("<div>").addClass("col-12 col-md-3justify-content-md-end").append(
+					$("<label>").attr({for:"teglabel"}).text(theUILang.Label + ":"),
+				),
+				$("<div>").addClass("col-12 col-md-9").append(
+					$("<input>").attr({type:"text", id:"teglabel"}),
+				),
+			),
+		)[0].outerHTML +
+		$("<div>").append(
+			$("<div>").attr({id:"buttons"}).addClass("buttons-list").append(
+				$("<button>").attr({type:"button", onclick:"theDialogManager.hide('tegLoadTorrents');theWebUI.tegLoadTorrents();return(false);"}).addClass("OK").text(theUILang.ok),
+				$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+			),
+		)[0].outerHTML,
+		true,
+	);
 	if(thePlugins.isInstalled("_getdir"))
 	{
 		$('#tegdir_edit').after($("<input type=button>").addClass("Button").attr("id","tegBtn").on('focus', function() { this.blur(); } ));
@@ -770,100 +792,140 @@ plugin.onLangLoaded = function()
 			btn.hide();
 		});
 	}
-	var s = "<fieldset>"+
-			"<legend>"+theUILang.exsGlobalLimit+"</legend>"+
-			"<div class='checkbox'><label for='exs_limit' id='lbl_exs_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='exs_limit'/></div>"+
-		"</fieldset>";
-	var contPublic = "";
-	var contPrivate = "";
-	var optPublic = "";
-	var optPrivate = "";
+	const commonSettings = $("<fieldset>").append(
+		$("<legend>").text(theUILang.exsGlobalLimit),
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12 col-md-3").append(
+				$("<label>").attr({for:"exs_limit", id:"lbl_exs_limit"}).text(theUILang.exsLimit + ":"),
+			),
+			$("<div>").addClass("col-12 col-md-9").append(
+				$("<input>").attr({type:"text", id:"exs_limit", maxlength:6}).addClass("Textbox num"),
+			),
+		),
+	);
+	const publicTrackers = $("<fieldset>").append(
+		$("<legend>").text(theUILang.exsEngines+" ("+theUILang.extPublic+")"),
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12").append(
+				$("<select>").attr({id:"sel_public"}),
+			),
+		),
+	);
+	const privateTrackers = $("<fieldset>").append(
+		$("<legend>").text(theUILang.exsEngines+" ("+theUILang.extPrivate+")"),
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12").append(
+				$("<select>").attr({id:"sel_private"}),
+			),
+		),
+	);
 	var toDisable = [];
-	$.each(theSearchEngines.sites,function(ndx,val)
-	{
-		if(val.public)
-		{
-			contPublic +=
-				"<div id='cont_"+ndx+"' class='seng_public'>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' onchange=\"$('#opt_"+ndx+"').toggleClass('bld'); linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
-					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>"+
-				"</div>";
-			optPublic +=
-				"<option value='"+ndx+"' id='opt_"+ndx+"'>"+ndx+"</option>";
-		}
-		else
-		{
-			contPrivate +=  
-				"<div id='cont_"+ndx+"' class='seng_private'>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_enabled' onchange=\"$('#opt_"+ndx+"').toggleClass('bld'); linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);\"/><label for='"+ndx+"_enabled' id='lbl_"+ndx+"_enabled'>"+theUILang.Enabled+"</label></div>"+
-					"<div class='checkbox'><input type='checkbox' id='"+ndx+"_global' onchange=\"linked(this, 0, ['"+ndx+"_limit']);\"/><label for='"+ndx+"_global' id='lbl_"+ndx+"_global'>"+theUILang.exsGlobal+"</label></div>"+
-					"<div class='checkbox'><label for='"+ndx+"_limit' id='lbl_"+ndx+"_limit'>"+theUILang.exsLimit+":</label><input type='text' class='Textbox num' maxlength=6 id='"+ndx+"_limit'/></div>";
-			if(val.cookies)
-			{
-				if(thePlugins.isInstalled("cookies"))
-					contPrivate+=		
-						"<div class='checkbox'><a href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_cookies\'); return(false);\">"+theUILang.exsCookies+":</a><input type='text' class='TextboxLarge' readOnly=true id='"+ndx+"_cookies' value='"+val.cookies+"'/></div>";
-				else
-				{
-					contPrivate+="<div class='checkbox'>"+theUILang.exsMustInstallCookies+"</div>";
+	$.each(theSearchEngines.sites, (ndx, val) => {
+		if (val.public) {
+			publicTrackers.append(
+				$("<div>").attr({id:`cont_${ndx}`}).addClass("row seng_public").append(
+					$("<div>").addClass("col-12").append(
+						$("<input>").attr({
+							type: "checkbox",
+							id: `${ndx}_enabled`,
+							onchange: "$('#opt_"+ndx+"').toggleClass('bld'); linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);"
+						}),
+						$("<label>").attr({for:`${ndx}_enabled`, id:`lbl_${ndx}_enabled`}).text(theUILang.Enabled),
+					),
+					$("<div>").addClass("col-12").append(
+						$("<input>").attr({type:"checkbox", id:`${ndx}_global`, onchange:"linked(this, 0, ['"+ndx+"_limit']);"}),
+						$("<label>").attr({for:`${ndx}_global`, id:`lbl_${ndx}_global`}).text(theUILang.exsGlobal),
+					),
+					$("<div>").addClass("col-12 col-md-3").append(
+						$("<label>").attr({for:`${ndx}_limit`, id:`lbl_${ndx}_limit`}).text(theUILang.exsLimit + ":"),
+					),
+					$("<div>").addClass("col-12 col-md-9").append(
+						$("<input>").attr({type:"text", id:`${ndx}_limit`, maxlength:6}).addClass("Textbox num"),
+					),
+				),
+			);
+			publicTrackers.find("select").append(
+				$("<option>").attr({id:`opt_${ndx}`}).val(ndx).text(ndx),
+			);
+		} else {
+			privateTrackers.append(
+				$("<div>").attr({id:`cont_${ndx}`}).addClass("row seng_private").append(
+					$("<div>").addClass("col-12").append(
+						$("<input>").attr({type:"checkbox", id:`${ndx}_enabled`, onchange:"$('#opt_"+ndx+"').toggleClass('bld'); linked(this, 0, ['"+ndx+"_global','"+ndx+"_limit']);"}),
+						$("<label>").attr({for:`${ndx}_enabled`, id:`lbl_${ndx}_enabled`}).text(theUILang.Enabled),
+					),
+					$("<div>").addClass("col-12").append(
+						$("<input>").attr({type:"checkbox", id:`${ndx}_global`, onchange:"linked(this, 0, ['"+ndx+"_limit']);"}),
+						$("<label>").attr({for:`${ndx}_global`, id:`lbl_${ndx}_global`}).text(theUILang.exsGlobal),
+					),
+					$("<div>").addClass("col-12 col-md-3").append(
+						$("<label>").attr({for:`${ndx}_limit`, id:`lbl_${ndx}_limit`}).text(theUILang.exsLimit + ":"),
+					),
+					$("<div>").addClass("col-12 col-md-9").append(
+						$("<input>").attr({type:"text", id:`${ndx}_limit`, maxlength:6}).addClass("Textbox num"),
+					),
+				),
+			);
+			if (val.cookies) {
+				if (thePlugins.isInstalled("cookies")) {
+					privateTrackers.find(`#cont_${ndx}`).append(
+						$("<div>").addClass("checkbox").append(
+							$("<a>").attr({href:"javascript://void();", onclick:"theOptionsSwitcher.run('st_cookies'); return(false);"}).text(theUILang.exsCookies),
+							$("<input>").attr({type:"text", id:`${ndx}_cookies`}).val(val.cookies).prop("readonly", true),
+						),
+					);
+				} else {
+					privateTrackers.find(`#cont_${ndx}`).append(
+						$("<div>").addClass("checkbox").text(theUILang.exsMustInstallCookies),
+					);
+					toDisable.push(ndx);
+				}
+			} else if (val.auth) {
+				if (thePlugins.isInstalled("loginmgr")) {
+					privateTrackers.find(`#cont_${ndx}`).append(
+						$("<div>").addClass("checkbox").append(
+							$("<a>").attr({href:"javascript://void();", onclick:"theOptionsSwitcher.run('st_loginmgr'); return(false);"}).text(theUILang.exsLoginMgr),
+						),
+					);
+				} else {
+					privateTrackers.find(`#cont_${ndx}`).append(
+						$("<div>").addClass("checkbox").text(theUILang.exsMustInstallLoginMgr),
+					);
 					toDisable.push(ndx);
 				}
 			}
-			else
-			if(val.auth)
-			{
-				if(thePlugins.isInstalled("loginmgr"))
-					contPrivate+=		
-						"<div class='checkbox'><a href=\"javascript://void();\" onclick=\"theOptionsSwitcher.run(\'st_loginmgr\'); return(false);\">"+theUILang.exsLoginMgr+"</a></div>";
-				else
-				{
-					contPrivate+="<div class='checkbox'>"+theUILang.exsMustInstallLoginMgr+"</div>";
-					toDisable.push(ndx);
-				}
-			}
-			contPrivate+=
-				"</div>";
-			optPrivate +=
-				"<option value='"+ndx+"' id='opt_"+ndx+"'>"+ndx+"</option>";
+			privateTrackers.find("select").append(
+				$("<option>").attr({id:`opt_${ndx}`}).val(ndx).text(ndx),
+			);
 		}
 	});
-	if(contPublic.length)
-	{
-		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPublic+")</legend>";
-		s+="<select id='sel_public'>";
-		s+=optPublic;
-		s+="</select>";
-		s+=contPublic;
-		s+="</fieldset>";
+	if (publicTrackers.find("div.row.seng_public").length < 1) {
+		publicTrackers.remove();
 	}
-	if(contPrivate.length)
-	{
-		s+="<fieldset><legend>"+theUILang.exsEngines+" ("+theUILang.extPrivate+")</legend>";
-		s+="<select id='sel_private'>";
-		s+=optPrivate;
-		s+="</select>";
-		s+=contPrivate;
-		s+="</fieldset>";
+	if (privateTrackers.find("div.row.seng_private").length < 1) {
+		privateTrackers.remove();
 	}
-	this.attachPageToOptions($("<div>").attr("id","st_extsearch").html(s)[0],theUILang.exsSearch);
-	for( var i in toDisable )
-	{
+	this.attachPageToOptions(
+		$("<div>").attr("id","st_extsearch").append(
+			commonSettings, publicTrackers, privateTrackers,
+		)[0],
+		theUILang.exsSearch,
+	);
+	for (var i in toDisable) {
 		$('#'+toDisable[i]+'_enabled').prop("disabled",true).prop("checked",false);
 		$('#lbl_'+toDisable[i]+'_enabled').addClass("disabled");
 	}
-	$('#sel_public').on('change', function()
-	{
+	$('#sel_public').on('change', function() {
 		$(".seng_public").hide();
 		$('#cont_'+$(this).val()).show();
 	});
-	$('#sel_private').on('change', function()
-	{
+	$('#sel_private').on('change', function() {
 		$(".seng_private").hide();
 		$('#cont_'+$(this).val()).show();
 	});
-	s = "<select id='exscategory' title='" + theUILang.excat + "'></select>";
-	$("<div>").prop("id","exscat").html(s).insertBefore($("#mnu_go"));
+	$("<div>").attr({id:"exscat"}).append(
+		$("<select>").attr({id:"exscategory", title:theUILang.excat})
+	).insertBefore($("#mnu_go"));
 	plugin.markLoaded();
 	theSearchEngines.checkForIncorrectCurrent(true);
 	if(thePlugins.isInstalled('search'))

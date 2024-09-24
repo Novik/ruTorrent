@@ -75,7 +75,7 @@ plugin.onLangLoaded = function() {
 								$("<label>").attr({for:id}).text(text),
 							),
 							$("<div>").addClass("col-12 col-md-4").append(
-								$("<input>").attr({type:"text", id:id, maxlength:100}),
+								$("<input>").attr({type:id.includes("Passwd") ? "password" : "text", id:id, maxlength:100}),
 							),
 						];
 					}),

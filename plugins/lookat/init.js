@@ -94,15 +94,18 @@ if(plugin.canChangeMenu())
 	}
 }
 
-plugin.onLangLoaded = function() 
-{
-	this.attachPageToOptions($('<div>').attr("id","st_lookat").html(
-		"<fieldset>"+
-			"<legend>"+theUILang.lookAtDesc+"</legend>"+
-			"<div class=\"op100l\">"+
-				"<textarea id='lookat'></textarea>"+
-			"</div>"+
-		"</fieldset>")[0],theUILang.lookAt);
+plugin.onLangLoaded = function() {
+	this.attachPageToOptions(
+		$('<div>').attr("id","st_lookat").append(
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.lookAtDesc),
+				$("<div>").append(
+					$("<textarea>").attr({id:"lookat"}),
+				),
+			),
+		)[0],
+		theUILang.lookAt,
+	);
 }
 
 plugin.onRemove = function()

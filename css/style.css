@@ -38,7 +38,7 @@ legend {
 textarea {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
-  margin: 0.25rem;
+  margin: 0.25rem 0;
   padding: 0.25rem;
   resize: none;
   width: 100%;
@@ -314,21 +314,36 @@ div#stg .lm {
 .ie div#stg .lm {width: 125px; position: static;}
 .ie9 div#stg .lm {position: static}
 .ie div#stg {width: 605px;}
-div.op100l {width: 400px; float: left}
 
 .lm li {
-  margin: 0.25rem 0.5rem;
-  padding: 0 0 0 1rem;
+  margin: 0 0.5rem;
+  padding: 0;
   line-height: 1.5rem;
-  background: transparent url(../images/bul.gif) no-repeat scroll left center;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
-.lm li:first-of-type {
-  background-image: url(../images/bul_f.gif);
-  background-position-y: bottom;
+.lm li div {
+  display: flex;
+  flex-direction: column;
+  width: 1rem;
+  align-items: stretch;
 }
-.lm li:last-of-type {
-  background-image: url(../images/bul_l.gif);
-  background-position-y: top;
+.lm li div > div {
+  flex-grow: 1;
+  border-left: 2px dotted #909090;
+}
+.lm li div > div:first-of-type {
+  border-bottom: 1px dotted #909090;
+}
+.lm li div > div:last-of-type {
+  border-top: 1px dotted #909090;
+}
+.lm li:first-of-type div > div:first-of-type {
+  border-left: none;
+}
+.lm li:last-of-type div > div:last-of-type {
+  border-left: none;
 }
 .lm ul {width: 100%; margin: 0; padding: 0; list-style-position: inside; list-style: none}
 .lm ul.child {margin: 0 0 0 5px; display: none}
@@ -337,9 +352,7 @@ div.op100l {width: 400px; float: left}
 .lm li a {
   color: #000000;
   padding: 1px 2px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-grow: 1;
 }
 .lm li a.focus {background-color: #E0E0E0}
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
