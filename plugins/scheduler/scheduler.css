@@ -1,7 +1,4 @@
-#st_scheduler {display: none;}
-#st_scheduler_h {width: 450px; height: 300px; overflow: auto}
-
-#sch_graph {width: 415px; border: 0; border-collapse:collapse; table-layout: fixed; margin-left: 10px}
+#sch_graph {border: 0; border-collapse:collapse; table-layout: fixed;}
 #sch_graph td {height: 16px; padding: 0; white-space: nowrap; }
 .sch_fast {background: #00A800; border: 1px solid black; width: 15px;}
 .sch_res1 {background: #8DAA8D; border: 1px solid black; width: 15px;}
@@ -18,7 +15,5 @@
 
 .sch_week {border: 0; width: 22px; text-align: left}
 
-#sch_desc {width: 390px; margin-left: 5px; padding: 5px; white-space: nowrap}
-
-#sch_legend {width: 390px; border: 0; table-layout: fixed; margin-left: 10px; border-collapse:collapse; }
+#sch_legend {border: 0; table-layout: fixed; border-collapse:collapse;}
 #sch_legend td { padding: 3px; height: 16px }

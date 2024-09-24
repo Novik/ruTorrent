@@ -115,6 +115,7 @@ div#modalbg {left: 0px; top: 0px; z-index: 500; display: none; opacity: 0.5; bac
 
 div.aright {text-align: right}
 div.dlg-window {
+  position: absolute;
   left: 0px;
   top: 0px;
   background-color: #FAFAFA;
@@ -122,9 +123,8 @@ div.dlg-window {
   border: 2px solid #909090;
   border-radius: 8px;
   display: none;
-  max-width: 95vw;
+  max-width: 95vw !important;
   max-height: 95vh;
-  overflow: auto;
 }
 div.dlg-window div.row {
   margin: 0.5rem 0;
@@ -289,7 +289,7 @@ div#HDivider {cursor: e-resize;}
 div#VDivider {cursor: n-resize;}
 div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
 
-div#stg {position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
+div#stg {width: 95vw;}
 div#stg_c {
   display: flex;
   flex-direction: row;
@@ -297,9 +297,10 @@ div#stg_c {
 div#stg-pages {
   padding: 0 0.5rem;
   height: 550px;
-  width: 550px;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  overflow-x: auto;
 }
 div#stg-header { background-image: url(../images/settings.gif); }
 
@@ -358,7 +359,7 @@ div#stg .lm {
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
 .stg_con {
   display: none;
-  flex: 1 1 auto;
+  margin-bottom: auto;
   background-color: var(--settings-background-color);
   overflow: hidden auto;
 }
@@ -586,6 +587,7 @@ div.dlg-window .buttons-list {
     justify-content: end;
     flex-wrap: nowrap;
   }
+  div#stg {width: 660px;}
 }
 
 /* Large devices (desktops, 992px and up) */

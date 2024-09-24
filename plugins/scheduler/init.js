@@ -216,88 +216,112 @@ if(plugin.canChangeOptions())
 					cell.className = isChecked ? '' : "disabled";
 		        }
 		}
-		$$('sch_desc').className = isChecked ? '' : "disabled";
+		isChecked ? $("#sch_desc").removeClass("disabled") : $("#sch_desc").addClass("disabled");
 	}
 }
 
-plugin.onLangLoaded = function() 
-{
-        if(this.canChangeOptions())
-        {
-		var s = 
-			"<div>"+
-				"<input id='sch_enable' type='checkbox' onchange=\"theWebUI.linkedSch(this, ['restrictedUL1', 'restrictedDL1', 'restrictedUL2', 'restrictedDL2', 'restrictedUL3', 'restrictedDL3']);\" />"+
-				"<label for='sch_enable'>"+
-					theUILang.schedulerOn+
-				"</label>"+
-			"</div>"+
-			"<fieldset>"+
-				"<legend>"+theUILang.schedulerGraph+"</legend>"+
-			"<table id='sch_graph'>";
-		for(var i=0; i<7; i++)
-		{
-			s += "<tr><td class='sch_week disabled'>"+theUILang.schShortWeek[i]+"</td>";
-			for(var j=0; j<24; j++)
-			{
-				var day = theWebUI.scheduleTable.week[i][j];
-				s+="<td class='"+schClasses[day]+"dis' clr='"+day+"' onmouseover='theWebUI.schMouseOver("+i+","+j+");' onmouseout='theWebUI.schMouseOut();' onclick='theWebUI.schClick(this,"+i+","+j+");'></td>";
-			}
-			s += "</tr>";
-		}
-		s+="</table><div id='sch_desc' class='disabled'>&nbsp;</div>";
-		s+="<table id='sch_legend'>"+
-			"<tr>"+
-			"<td clr='0' class='sch_fastdis' onmouseover='theWebUI.schLegendMouseOver(0);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schUnlimited+"</td>"+
-			"<td clr='1' class='sch_stopdis' onmouseover='theWebUI.schLegendMouseOver(1);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schTurnOff+"</td>"+
-			"<td clr='2' class='sch_seeddis' onmouseover='theWebUI.schLegendMouseOver(2);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schSeedingOnly+"</td>"+
-			"</tr>"+
-			"<tr>"+
-			"<td clr='3' class='sch_res1dis' onmouseover='theWebUI.schLegendMouseOver(3);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"1</td>"+
-			"<td clr='4' class='sch_res2dis' onmouseover='theWebUI.schLegendMouseOver(4);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"2</td>"+
-			"<td clr='5' class='sch_res3dis' onmouseover='theWebUI.schLegendMouseOver(5);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"3</td>"+
-			"</tr>"+
-		"</table></fieldset><div id='st_scheduler_h'>";
-
-		s+="<fieldset>"+
-			"<legend>"+theUILang.schLimited+"1</legend>"+
-			"<table>"+
-				"<tr>"+
-					"<td><label id='lbl_restrictedUL1' for='restrictedUL1' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedUL1' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
-				"</tr>"+
-				"<tr>"+
-					"<td><label id='lbl_restrictedDL1' for='restrictedDL1' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedDL1' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
-				"</tr>"+
-			"</table>"+
-		   "</fieldset>"+
-		   "<fieldset>"+
-			"<legend>"+theUILang.schLimited+"2</legend>"+
-			"<table>"+
-				"<tr>"+
-					"<td><label id='lbl_restrictedUL2' for='restrictedUL2' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedUL2' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
-				"</tr>"+
-				"<tr>"+
-					"<td><label id='lbl_restrictedDL2' for='restrictedDL2' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedDL2' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
-				"</tr>"+
-			"</table>"+
-		   "</fieldset>"+
-		   "<fieldset>"+
-			"<legend>"+theUILang.schLimited+"3</legend>"+
-			"<table>"+
-				"<tr>"+
-					"<td><label id='lbl_restrictedUL3' for='restrictedUL3' class='disabled'>"+theUILang.schLimitedUL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedUL3' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
-				"</tr>"+
-				"<tr>"+
-					"<td><label id='lbl_restrictedDL3' for='restrictedDL3' class='disabled'>"+theUILang.schLimitedDL+" ("+theUILang.KB + "/" + theUILang.s+"):</label></td>"+
-					"<td class=\"alr\"><input type='text' id='restrictedDL3' class='TextboxNum' maxlength='6' disabled='1'/></td>"+
-				"</tr>"+
-			"</table>"+
-		   "</fieldset>";
-		this.attachPageToOptions($("<div>").attr("id","st_scheduler").html(s+"</div>")[0],theUILang.scheduler);
+plugin.onLangLoaded = function() {
+	if (this.canChangeOptions()) {
+		const s = $("<div>").attr({id:"st_scheduler"}).append(
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.schedulerGraph),
+				$("<div>").addClass("row").append(
+					$("<div>").addClass("col-12").append(
+						$("<input>").attr({
+							type: "checkbox",
+							id: "sch_enable",
+							onchange:"theWebUI.linkedSch(this, ['restrictedUL1', 'restrictedDL1', 'restrictedUL2', 'restrictedDL2', 'restrictedUL3', 'restrictedDL3']);",
+						}),
+						$("<label>").attr({for:"sch_enable"}).text(theUILang.schedulerOn),
+					),
+					$("<div>").addClass("col-12").append(
+						$("<table>").attr({id:"sch_graph"}).append(
+							...Array.from(Array(7).keys()).map(week => $("<tr>").append(
+								$("<td>").addClass("sch_week disabled").text(theUILang.schShortWeek[week]),
+								...Array.from(Array(24).keys()).map(hour => {
+									const day = theWebUI.scheduleTable.week[week][hour];
+									return $("<td>").attr({
+										clr: day,
+										onmouseover: `theWebUI.schMouseOver("${week}","${hour}")`,
+										onmouseout: "theWebUI.schMouseOut();",
+										onclick: `theWebUI.schClick(this, "${week}","${hour}");`,
+									}).addClass(schClasses[day] + "dis");
+								}),
+							)),
+						),
+					),
+					$("<div>").addClass("col-12").append(
+						$("<div>").attr({id:"sch_desc"}).addClass("p-2 flex-grow-1 disabled").html("&nbsp;"),
+					),
+					$("<div>").addClass("col-12").append(
+						$("<table>").attr({id:"sch_legend"}).html(
+							"<tr>"+
+								"<td clr='0' class='sch_fastdis' onmouseover='theWebUI.schLegendMouseOver(0);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schUnlimited+"</td>"+
+								"<td clr='1' class='sch_stopdis' onmouseover='theWebUI.schLegendMouseOver(1);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schTurnOff+"</td>"+
+								"<td clr='2' class='sch_seeddis' onmouseover='theWebUI.schLegendMouseOver(2);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schSeedingOnly+"</td>"+
+							"</tr>"+
+							"<tr>"+
+								"<td clr='3' class='sch_res1dis' onmouseover='theWebUI.schLegendMouseOver(3);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"1</td>"+
+								"<td clr='4' class='sch_res2dis' onmouseover='theWebUI.schLegendMouseOver(4);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"2</td>"+
+								"<td clr='5' class='sch_res3dis' onmouseover='theWebUI.schLegendMouseOver(5);' onmouseout='theWebUI.schMouseOut();'></td><td class='disabled'>"+theUILang.schLimited+"3</td>"+
+							"</tr>"
+						),
+					),
+				),
+			),
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.schLimited + " 1"),
+				$("<div>").addClass("row").append(
+					...[
+						["restrictedUL1", theUILang.schLimitedUL],
+						["restrictedDL1", theUILang.schLimitedDL],
+					].flatMap(([id, text]) => [
+						$("<div>").addClass("col-12 col-md-4").append(
+							$("<label>").attr({id:`lbl_${id}`, for:id}).addClass("disabled").text(text + " ("+theUILang.KB + "/" + theUILang.s+"):"),
+						),
+						$("<div>").addClass("col-12 col-md-8").append(
+							$("<input>").attr({type:"text", id:id, maxlength:6}).addClass("TextboxNum").prop("disabled", true),
+						),
+					]),
+				),
+			),
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.schLimited + " 2"),
+				$("<div>").addClass("row").append(
+					...[
+						["restrictedUL2", theUILang.schLimitedUL],
+						["restrictedDL2", theUILang.schLimitedDL],
+					].flatMap(([id, text]) => [
+						$("<div>").addClass("col-12 col-md-4").append(
+							$("<label>").attr({id:`lbl_${id}`, for:id}).addClass("disabled").text(text + " ("+theUILang.KB + "/" + theUILang.s+"):"),
+						),
+						$("<div>").addClass("col-12 col-md-8").append(
+							$("<input>").attr({type:"text", id:id, maxlength:6}).addClass("TextboxNum").prop("disabled", true),
+						),
+					]),
+				),
+			),
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.schLimited + " 3"),
+				$("<div>").addClass("row").append(
+					...[
+						["restrictedUL3", theUILang.schLimitedUL],
+						["restrictedDL3", theUILang.schLimitedDL],
+					].flatMap(([id, text]) => [
+						$("<div>").addClass("col-12 col-md-4").append(
+							$("<label>").attr({id:`lbl_${id}`, for:id}).addClass("disabled").text(text + " ("+theUILang.KB + "/" + theUILang.s+"):"),
+						),
+						$("<div>").addClass("col-12 col-md-8").append(
+							$("<input>").attr({type:"text", id:id, maxlength:6}).addClass("TextboxNum").prop("disabled", true),
+						),
+					]),
+				),
+			),
+		);
+		this.attachPageToOptions(
+			s[0],
+			theUILang.scheduler,
+		);
 	}
 }
 

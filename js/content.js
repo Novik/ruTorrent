@@ -695,7 +695,7 @@ function makeContent() {
 	);
 
 	theDialogManager.make("stg",theUILang.ruTorrent_settings,
-		$("<div>").attr({id: "stg_c"}).addClass("fxcaret cont").append(
+		$("<div>").attr({id: "stg_c"}).addClass("cont").append(
 			stgPanel,
 			$("<div>").attr({id: "stg-pages"}).append(
 				stgGlCont, stgDlCont, stgConCont, stgBtCont, stgFmtCont, stgAoCont,
