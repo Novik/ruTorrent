@@ -150,8 +150,7 @@ plugin.onLangLoaded = function()
 	var plg = thePlugins.get("_task");
 	if(!plg.allStuffLoaded)
 		setTimeout(arguments.callee,1000);
-	else
-	{
+	else {
 		theDialogManager.make('dlg_unpack', theUILang.unpack,
 			$("<div>").addClass("cont fxcaret").append(
 				$("<fieldset>").append(
@@ -176,11 +175,11 @@ plugin.onLangLoaded = function()
 				$("<fieldset>").append(
 					$("<legend>").text(theUILang.unpackPath),
 					$("<div>").addClass("row").append(
-						$("<div>").addClass("col-12 col-md-6").append(
+						$("<div>").addClass("col-12").append(
 							$("<input>").attr({type:"checkbox", id:"unpack_enabled", onchange:"linked(this, 0, ['edit_filter', 'edit_unpack1', 'btn_unpack1']);"}),
 							$("<label>").attr({for:"unpack_enabled"}).text(theUILang.unpackEnabled),
 						),
-						$("<div>").addClass("col-12 col-md-6").append(
+						$("<div>").addClass("col-12").append(
 							$("<input>").attr({type:"text", id:"edit_filter", maxlength:200}),
 						),
 						$("<div>").addClass("col-12").append(
