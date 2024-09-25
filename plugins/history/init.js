@@ -1,4 +1,5 @@
 plugin.loadLang();
+plugin.loadMainCSS();
 plugin.mark = 0;
 plugin.hstTimeout = null;
 

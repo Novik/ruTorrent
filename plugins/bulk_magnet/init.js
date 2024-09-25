@@ -152,14 +152,15 @@ plugin.onLangLoaded = function()
 {
 	this.registerTopMenu(9);
 	theDialogManager.make( "dlgBulkAdd", theUILang.bulkAdd,
-		"<div class='container'>"+
-			"<textarea id='bulkadd'></textarea>"+
-			theUILang.bulkAddDescription+
-		"</div>"+
-		"<div class='aright buttons-list'>"+
-			"<input type='button' class='OK Button' disabled='disabled' value='"+theUILang.ok+"'/>"+
-			"<input type='button' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
-		"</div>");
+		$("<div>").addClass("cont fxcaret").append(
+			$("<textarea>").attr({id:"bulkadd"}),
+			$("<span>").text(theUILang.bulkAddDescription),
+		)[0].outerHTML +
+		$("<div>").addClass("buttons-list").append(
+			$("<button>").attr({type:"button"}).addClass("OK").prop("disabled", true).text(theUILang.ok),
+			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+		)[0].outerHTML,
+	);
 	var text = $$('bulkadd');
 	theDialogManager.setHandler('dlgBulkAdd','beforeShow',function()
 	{

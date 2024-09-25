@@ -61,7 +61,7 @@ button, input[type=button], input[type=submit], .Button {
   padding: 1px 10px;
   background: #F0F0F0 url(../images/h.gif) repeat-x center bottom;
   width: 80px;
-  cursor: pointer;
+  text-wrap: nowrap;
 }
 button:disabled, input[type=button]:disabled, a.Button:disabled {
   opacity: 0.3;
@@ -442,11 +442,8 @@ div.cont {padding: 6px;}
 
 div#dlgLabel {max-width: 350px;}
 div#dlgLabel div.dlg-header {background-image: url(../images/label.gif)}
-div#padd {width: 250px; height: 120px}
+div#padd {width: 250px;}
 div#padd div.dlg-header {background-image: url(../images/props.gif)}
-div#padd div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
-div#padd div.content input {margin-top: 5px}
-#peerIP {width: 200px}
 div#dlgAbout {max-width: 300px;}
 div#dlgAbout div.dlg-header {background-image: url(../images/about.gif)}
 div#dlgHelp {max-width: 300px;}

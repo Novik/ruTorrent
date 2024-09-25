@@ -116,15 +116,11 @@ plugin.fromBackground = function( no )
 	plugin.onStart(this.foreground); 
 }
 
-plugin.copyConsoleLog = function()
-{
-	let consoleLog = $('#tskcmdlog')[0].innerText;
-	if(consoleLog !== "")
-	{
-		navigator.clipboard.writeText(consoleLog);
-	}
-	else
-	{
+plugin.copyConsoleLog = function() {
+	const consoleLog = $('#tskcmdlog').text();
+	if (consoleLog !== "") {
+		copyToClipboard(consoleLog);
+	} else {
 		log("Console log is empty.");
 	}
 }
@@ -234,6 +230,10 @@ plugin.setConsoleControls = function(errPresent) {
 	if (plugin.foreground.status >= 0) {
 		$('#tsk_btns').css( "background", "none" );
 		$("#tskConsole-header").html(theUILang.tskCommandDone);
+		if ($('#tskcmdlog').text() === "") {
+			// hide copy log button if log output is empty
+			$("#tskCopy").hide();
+		};
 	}
 	else
 		$('#tsk_btns').css( "background", "transparent url(./plugins/_task/images/ajax-loader.gif) no-repeat 5px 7px" );
@@ -580,12 +580,18 @@ plugin.onLangLoaded = function() {
 			),
 		)[0].outerHTML +
 		$("<div>").attr({id:"tsk_btns"}).addClass("buttons-list").append(
-			$("<button>").attr({type:"button", id:"tskCopy"}).text(theUILang.tskCopy),
-			$("<button>").attr({type:"button", id:"tskBackground"}).text(theUILang.tskBackground),
-			$("<button>").attr({type:"button", id:"tskCancel"}).addClass("Cancel").text(theUILang.Cancel),
+			$("<button>").attr({type:"button", id:"tskCopy"})
+				.text(theUILang.tskCopy),
+			$("<button>").attr({type:"button", id:"tskBackground"})
+				.text(theUILang.tskBackground),
+			$("<button>").attr({type:"button", id:"tskCancel"})
+				.addClass("Cancel")
+				.text(theUILang.Cancel),
 		)[0].outerHTML,
 		true,
 	);
+	$("#tskCopy").on("click", plugin.copyConsoleLog);
+	$("#tskBackground").on("click", plugin.toBackground);
 
 	theDialogManager.setHandler('tskConsole','afterHide',function()
 	{
@@ -602,7 +608,5 @@ plugin.onLangLoaded = function() {
 		if(!plugin.cHeight)
 			plugin.cHeight = $('#tskcmderrors').parent().height();
 	});
-	$('#tskBackground').on('click', plugin.toBackground );
 	$(".tskconsole").enableSysMenu();
-	$("#tskCopy").on('click', plugin.copyConsoleLog);
 }
