@@ -46,7 +46,8 @@ textarea {
 }
 label {
   cursor: pointer;
-  margin: 0.15rem 0.25rem;
+  margin: 0.15rem;
+  overflow: hidden;
 }
 input[type=checkbox], input[type=radio] {margin: 0.25rem;}
 select, input[type=file], input[type=text], input[type=number], input[type=password] {
@@ -123,7 +124,7 @@ div.dlg-window {
   border: 2px solid #909090;
   border-radius: 8px;
   display: none;
-  max-width: 95vw !important;
+  max-width: 95vw;
   max-height: 95vh;
 }
 div.dlg-window div.row {

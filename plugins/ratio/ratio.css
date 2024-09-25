@@ -1,0 +1,9 @@
+#st_ratio .ratio-name {
+  width: 8rem;
+}
+#st_ratio .ratio-condition {
+  min-width: 4rem;
+}
+#st_ratio .ratio-action {
+  width: 10rem;
+}

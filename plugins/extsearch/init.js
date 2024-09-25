@@ -767,7 +767,7 @@ plugin.onLangLoaded = function() {
 					$("<input>").attr({type:"checkbox", id:id}),
 					$("<label>").attr({for:id}).text(text),
 				)),
-				$("<div>").addClass("col-12 col-md-3justify-content-md-end").append(
+				$("<div>").addClass("col-12 col-md-3 justify-content-md-end").append(
 					$("<label>").attr({for:"teglabel"}).text(theUILang.Label + ":"),
 				),
 				$("<div>").addClass("col-12 col-md-9").append(

@@ -257,22 +257,22 @@ plugin.onLangLoaded = function() {
 						...Array.from(Array(theWebUI.maxRatio).keys()).map(i => $("<tr>").append(
 							$("<td>").addClass("alr").append($("<strong>").text((i + 1) + ".")),
 							$("<td>").append(
-								$("<input>").attr({type:"text", id:`rat_name${i}`}).addClass("w-auto"),
+								$("<input>").attr({type:"text", id:`rat_name${i}`}).addClass("ratio-name"),
 							),
 							$("<td>").append(
-								$("<input>").attr({type:"text", id:`rat_min${i}`}),
+								$("<input>").attr({type:"text", id:`rat_min${i}`}).addClass("ratio-condition"),
 							),
 							$("<td>").append(
-								$("<input>").attr({type:"text", id:`rat_max${i}`}),
+								$("<input>").attr({type:"text", id:`rat_max${i}`}).addClass("ratio-condition"),
 							),
 							$("<td>").append(
-								$("<input>").attr({type:"text", id:`rat_upload${i}`, maxlength:6}),
+								$("<input>").attr({type:"text", id:`rat_upload${i}`, maxlength:6}).addClass("ratio-condition"),
 							),
 							$("<td>").addClass("ratio_time").append(
-								$("<input>").attr({type:"text", id:`rat_time${i}`, maxlength:6}),
+								$("<input>").attr({type:"text", id:`rat_time${i}`, maxlength:6}).addClass("ratio-condition"),
 							),
 							$("<td>").append(
-								$("<select>").attr({id:`rat_action${i}`}).addClass("w-auto").append(
+								$("<select>").attr({id:`rat_action${i}`}).addClass("ratio-action").append(
 									$("<option>").val(0).text(theUILang.ratioStop),
 									$("<option>").val(1).text(theUILang.ratioStopAndRemove),
 									$("<option>").val(2).text(theUILang.ratioErase),
