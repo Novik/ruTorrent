@@ -229,27 +229,20 @@ plugin.kill = function()
 		plugin.callNotification("Finished");
 }
 
-plugin.setConsoleControls = function( errPresent )
-{
+plugin.setConsoleControls = function(errPresent) {
 	$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );
-	if(plugin.foreground.status>=0)
-	{
+	if (plugin.foreground.status >= 0) {
 		$('#tsk_btns').css( "background", "none" );
 		$("#tskConsole-header").html(theUILang.tskCommandDone);
 	}
 	else
 		$('#tsk_btns').css( "background", "transparent url(./plugins/_task/images/ajax-loader.gif) no-repeat 5px 7px" );
-	if(errPresent)
-	{
-		$('#tskcmdlog').height(plugin.cHeight-18).parent().height(plugin.cHeight);
+	if (errPresent) {
 		$('#tskcmderrors').show();
 		$('#tskcmderrors_set').show();
-	}
-	else
-	{
+	} else {
 		$('#tskcmderrors').hide();
 		$('#tskcmderrors_set').hide();
-		$('#tskcmdlog').height(plugin.cHeight*2+3).parent().height(plugin.cHeight*2+21);
 	}
 }
 
@@ -574,24 +567,26 @@ plugin.onGetTasks = function(d)
 	}		
 }
 
-plugin.onLangLoaded = function()
-{
-	theDialogManager.make("tskConsole",theUILang.tskCommand,
-		"<div class='fxcaret'>"+
-			"<fieldset id='tskcmdlog_set'>"+
-				"<legend>"+theUILang.tskConsole+"</legend>"+
-				"<div class='tskconsole' id='tskcmdlog'></div>"+
-			"</fieldset>"+
-			"<fieldset id='tskcmderrors_set'>"+
-				"<legend>"+theUILang.tskErrors+"</legend>"+
-				"<div class='tskconsole' id='tskcmderrors'></div>"+
-			"</fieldset>"+
-		"</div>"+
-		"<div class='aright buttons-list' id='tsk_btns'>"+
-			"<input type='button' id='tskCopy' class='Button' value='"+theUILang.tskCopy+"'/>"+
-			"<input type='button' id='tskBackground' class='Button' value='"+theUILang.tskBackground+"'/>"+
-			"<input type='button' id='tskCancel' class='Cancel Button' value='"+theUILang.Cancel+"'/>"+
-		"</div>",true);
+plugin.onLangLoaded = function() {
+	theDialogManager.make("tskConsole", theUILang.tskCommand,
+		$("<div>").addClass("cont fxcaret").append(
+			$("<fieldset>").attr({id:"tskcmdlog_set"}).append(
+				$("<legend>").text(theUILang.tskConsole),
+				$("<div>").attr({id:"tskcmdlog"}).addClass("tskconsole"),
+			),
+			$("<fieldset>").attr({id:"tskcmderrors_set"}).append(
+				$("<legend>").text(theUILang.tskErrors),
+				$("<div>").attr({id:"tskcmderrors"}).addClass("tskconsole"),
+			),
+		)[0].outerHTML +
+		$("<div>").attr({id:"tsk_btns"}).addClass("buttons-list").append(
+			$("<button>").attr({type:"button", id:"tskCopy"}).text(theUILang.tskCopy),
+			$("<button>").attr({type:"button", id:"tskBackground"}).text(theUILang.tskBackground),
+			$("<button>").attr({type:"button", id:"tskCancel"}).addClass("Cancel").text(theUILang.Cancel),
+		)[0].outerHTML,
+		true,
+	);
+
 	theDialogManager.setHandler('tskConsole','afterHide',function()
 	{
 		if( plugin.foreground.no )
