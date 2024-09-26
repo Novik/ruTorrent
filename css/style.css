@@ -371,6 +371,16 @@ div#stg .lm {
 .stg_con table {width: 100%}
 .stg_con td {font-weight: normal; height: 19px}
 .stg_con td.alr {text-align: right}
+.stg_con td:first-child {
+  text-wrap: nowrap;
+  text-align: right;
+  font-weight: bold;
+}
+.stg_con thead td {
+  text-align: center;
+  font-weight: bold;
+  text-wrap: nowrap;
+}
 input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
 .ie7 fieldset div {padding: 0px}
@@ -507,14 +517,8 @@ div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 
   min-width: 3rem;
 }
 .speedEdit { width: 320px }
-.decimalDigitEdit input[type=number] {padding: 1px; margin: 0;}
-.decimalDigitEdit > .row:not(:last-child) {
-  border-bottom: 1px dotted #D0D0D0;
-}
-.decimalDigitEdit > .row:first-of-type > div,
-.decimalDigitEdit > .row > div:first-of-type {
-  font-weight: bold;
-  justify-content: center;
+#decimalDigitEdit input[type=number] {
+  min-width: 2rem;
 }
 .optionColumn {
   display: flex;

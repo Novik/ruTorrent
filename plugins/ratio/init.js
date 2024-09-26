@@ -242,7 +242,7 @@ plugin.onLangLoaded = function() {
 				$("<table>").append(
 					$("<thead>").append(
 						$("<tr>").append(
-							$("<td>").append($("<strong>").text(theUILang.Num_No)),
+							$("<td>").text(theUILang.Num_No),
 							...[
 								theUILang.ratioName, theUILang.minRatio + ", %",
 								theUILang.maxRatio + ", %", theUILang.ratioUpload + "," + theUILang.GB,
@@ -255,7 +255,7 @@ plugin.onLangLoaded = function() {
 					),
 					$("<tbody>").append(
 						...Array.from(Array(theWebUI.maxRatio).keys()).map(i => $("<tr>").append(
-							$("<td>").addClass("alr").append($("<strong>").text((i + 1) + ".")),
+							$("<td>").text((i + 1) + "."),
 							$("<td>").append(
 								$("<input>").attr({type:"text", id:`rat_name${i}`}).addClass("ratio-name"),
 							),

@@ -220,12 +220,12 @@ plugin.onLangLoaded = function() {
 								theUILang.Num_No, theUILang.channelName,
 								theUILang.UL + " (" + theUILang.KB + "/" + theUILang.s + ")",
 								theUILang.DL + " (" + theUILang.KB + "/" + theUILang.s + ")",
-							].map(th => $("<td>").append($("<strong>").text(th))),
+							].map(th => $("<td>").text(th)),
 						),
 					),
 					$("<tbody>").append(
 						...Array.from(Array(theWebUI.maxThrottle).keys()).map(i => $("<tr>").append(
-							$("<td>").addClass("alr").append(
+							$("<td>").append(
 								$("<strong>").text((i + 1) + "."),
 							),
 							$("<td>").append(

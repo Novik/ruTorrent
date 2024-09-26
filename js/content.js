@@ -617,30 +617,36 @@ function makeContent() {
 		),
 		$("<fieldset>").append(
 			$("<legend>").text(theUILang.DecimalPlacesSizes),
-			$("<div>").addClass("decimalDigitEdit").append(
-				$("<div>").addClass("row").append(
-					...[
-						"", "Default", "KB", "MB", "GB", "TB", "PB",
-					].map((unit) => $("<div>").addClass(
-						unit !== "" ? "col" : "col-12 col-md-3"						
-					).text(unit !== "" ? theUILang[unit] : "")),
+			$("<div>").attr({id:"decimalDigitEdit"}).addClass("row").append(
+				$("<div>").addClass("col-12 overflow-x-auto").append(
+					$("<table>").append(
+						$("<thead>").append(
+							$("<tr>").append(
+								...[
+									"", "Default", "KB", "MB", "GB", "TB", "PB",
+								].map((unit) => $("<td>").text(theUILang[unit] ?? "")),
+							),
+						),
+						$("<tbody>").append(
+							...Object.entries({
+								catlist: theUILang.CatListSizeDecimalPlaces,
+								table: theUILang.TableSizeDecimalPlaces,
+								details: theUILang.DetailsSizeDecimalPlaces,
+								other: theUILang.OtherSizeDecimalPlaces,
+							}).map(([context, name]) => $('<tr>').append(
+								$("<td>").text(name + ": "),
+								...["default", "kb", "mb", "gb", "tb", "pb"].map(unit => $("<td>").append(
+									$("<input>").attr({
+										type: "number",
+										id: "webui.size_decimal_places." + context + "." + unit,
+										maxlength: 1,
+										min: 0,
+									}),
+								)),
+							)),
+						),
+					),
 				),
-				...Object.entries({
-					catlist: theUILang.CatListSizeDecimalPlaces,
-					table: theUILang.TableSizeDecimalPlaces,
-					details: theUILang.DetailsSizeDecimalPlaces,
-					other: theUILang.OtherSizeDecimalPlaces,
-				}).map(([context, name]) => $('<div>').addClass("row").append(
-					$("<div>").addClass("col-12 col-md-3").text(name + ": "),
-					...["default", "kb", "mb", "gb", "tb", "pb"].map(unit => $("<div>").addClass("col").append(
-						$("<input>").attr({
-							type: "number",
-							id: "webui.size_decimal_places." + context + "." + unit,
-							maxlength: 1,
-							min: 0,
-						}),
-					)),
-				)),				
 			),
 		),
 	);
