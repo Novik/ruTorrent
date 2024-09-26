@@ -1,5 +1,4 @@
 plugin.loadLang();
-plugin.loadMainCSS();
 
 plugin.config = theWebUI.config;
 theWebUI.config = function()
@@ -213,7 +212,7 @@ plugin.onLangLoaded = function() {
 	const s = $("<fieldset>").append(
 		$("<legend>").text(theUILang.throttles),
 		$("<div>").addClass("row").append(
-			$("<div>").addClass("col-12 overflow-auto").append(
+			$("<div>").addClass("col-12 overflow-x-auto").append(
 				$("<table>").append(
 					$("<thead>").append(
 						$("<tr>").append(

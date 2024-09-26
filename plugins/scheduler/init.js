@@ -234,7 +234,7 @@ plugin.onLangLoaded = function() {
 						}),
 						$("<label>").attr({for:"sch_enable"}).text(theUILang.schedulerOn),
 					),
-					$("<div>").addClass("col-12").append(
+					$("<div>").addClass("col-12 overflow-x-auto").append(
 						$("<table>").attr({id:"sch_graph"}).append(
 							...Array.from(Array(7).keys()).map(week => $("<tr>").append(
 								$("<td>").addClass("sch_week disabled").text(theUILang.schShortWeek[week]),

@@ -237,8 +237,8 @@ theWebUI.isCorrectRatio = function(i)
 plugin.onLangLoaded = function() {
 	const s = $("<fieldset>").append(
 		$("<legend>").text(theUILang.ratios),
-		$("<div>").attr({id:"st_ratio_h"}).addClass("row").append(
-			$("<div>").addClass("col-12").append(
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12 overflow-x-auto").append(
 				$("<table>").append(
 					$("<thead>").append(
 						$("<tr>").append(

@@ -137,7 +137,6 @@ div.dlg-window div.row > div {
   align-items: center;
   padding: 0 0.25rem;
   margin-bottom: 0.1rem;
-  overflow: auto;
 }
 div.fxcaret {overflow: auto}
 div.dlg-header {
