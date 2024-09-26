@@ -1,11 +1,14 @@
-
 @font-face {
-    font-family: 'Ubuntu';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Ubuntu'), url(https://themes.googleusercontent.com/static/fonts/ubuntu/v5/_xyN3apAT_yRRDeqB3sPRg.woff) format('woff');
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Ubuntu'), url(https://themes.googleusercontent.com/static/fonts/ubuntu/v5/_xyN3apAT_yRRDeqB3sPRg.woff) format('woff');
 }
 
+.browseFrame {
+  border: 1px solid #161F25;
+  background-color: #273238;
+}
 .tskconsole, .exconsole, .console, .starterConsole { background: #333333 }
 #tsk_btns input.Button {
   margin: 0px 3px

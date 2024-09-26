@@ -1540,16 +1540,9 @@ plugin.onLangLoaded = function()
 	);
 	$("#gcont").append( $("<div>").attr("id","rsslayout").css( "display", "none" ));
 
-	if(thePlugins.isInstalled("_getdir"))
-	{
-		$('#RSSdir_edit').after($("<input type=button>").addClass("Button").attr("id","RSSBtn").on('focus', function() { this.blur(); } ));
-		var btn = new theWebUI.rDirBrowser( 'dlgLoadTorrents', 'RSSdir_edit', 'RSSBtn' );
-		theDialogManager.setHandler('dlgLoadTorrents','afterHide',function()
-		{
-			btn.hide();
-		});
-		$('#FLTdir_edit').after($("<input type=button>").addClass("Button").attr("id","FLTBtn").on('focus', function() { this.blur(); } ));
-		plugin.editFilersBtn = new theWebUI.rDirBrowser( 'dlgEditFilters', 'FLTdir_edit', 'FLTBtn' );
+	if (thePlugins.isInstalled("_getdir")) {
+		new theWebUI.rDirBrowser("RSSdir_edit");
+		new theWebUI.rDirBrowser("FLTdir_edit");
 	}
 
 	thePlugins.isInstalled('throttle') && this.correctFilterDialog();

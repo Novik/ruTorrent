@@ -91,7 +91,7 @@ if (plugin.canChangeOptions()) {
 			$('#unpack_name').prop('checked',(theWebUI.unpackData.addName == 1));
 			$('#edit_unpack1').val( theWebUI.unpackData.path );
 			$('#edit_filter').val( theWebUI.unpackData.filter );
-			linked($$('unpack_enabled'), 0, ['edit_filter', 'edit_unpack1', 'btn_unpack1']);
+			linked($$('unpack_enabled'), 0, ['edit_filter', 'edit_unpack1', 'edit_unpack1_btn'] );
 			if (plugin.btn)
 				plugin.btn.hide();
 		}
@@ -176,7 +176,7 @@ plugin.onLangLoaded = function()
 					$("<legend>").text(theUILang.unpackPath),
 					$("<div>").addClass("row").append(
 						$("<div>").addClass("col-12").append(
-							$("<input>").attr({type:"checkbox", id:"unpack_enabled", onchange:"linked(this, 0, ['edit_filter', 'edit_unpack1', 'btn_unpack1']);"}),
+							$("<input>").attr({type:"checkbox", id:"unpack_enabled", onchange:"linked(this, 0, ['edit_filter', 'edit_unpack1', 'edit_unpack1_btn']);"}),
 							$("<label>").attr({for:"unpack_enabled"}).text(theUILang.unpackEnabled),
 						),
 						$("<div>").addClass("col-12").append(
@@ -184,7 +184,6 @@ plugin.onLangLoaded = function()
 						),
 						$("<div>").addClass("col-12").append(
 							$("<input>").attr({type:"text", id:"edit_unpack1", maxlength:200}),
-							$("<button>").attr({type:"button", id:"btn_unpack1"}).addClass("browseButton").text("..."),
 						),
 					),
 				),
@@ -205,15 +204,10 @@ plugin.onLangLoaded = function()
 		);
 		$('#edit_unpack').val( theWebUI.unpackData.path );
 		if (thePlugins.isInstalled("_getdir")) {
-			const btn = new theWebUI.rDirBrowser('dlg_unpack', 'edit_unpack', 'btn_unpack');
-			theDialogManager.setHandler('dlg_unpack', 'afterHide', function() {
-				btn.hide();
-			});
-			if (plugin.canChangeOptions())
-				plugin.btn = new theWebUI.rDirBrowser('stg', 'edit_unpack1', 'btn_unpack1');
-		} else {
-			$('#btn_unpack').remove();
-			$('#btn_unpack1').remove();
+			new theWebUI.rDirBrowser("edit_unpack");
+			if (plugin.canChangeOptions()) {
+				new theWebUI.rDirBrowser("edit_unpack1");
+			}
 		}
 		plugin.markLoaded();
 	}		

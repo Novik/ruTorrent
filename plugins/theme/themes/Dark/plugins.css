@@ -1,3 +1,7 @@
+.browseFrame {
+  border: 1px solid #888888;
+  background-color: #999999;
+}
 .tskconsole, .exconsole, .console, .starterConsole {background: #333333}
 .cCell {color: black; border-color: #888888}
 

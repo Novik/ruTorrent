@@ -783,15 +783,10 @@ plugin.onLangLoaded = function() {
 		)[0].outerHTML,
 		true,
 	);
-	if(thePlugins.isInstalled("_getdir"))
-	{
-		$('#tegdir_edit').after($("<input type=button>").addClass("Button").attr("id","tegBtn").on('focus', function() { this.blur(); } ));
-		var btn = new theWebUI.rDirBrowser( 'tegLoadTorrents', 'tegdir_edit', 'tegBtn' );
-		theDialogManager.setHandler('tegLoadTorrents','afterHide',function()
-		{
-			btn.hide();
-		});
+	if (thePlugins.isInstalled("_getdir")) {
+		new theWebUI.rDirBrowser("tegdir_edit");
 	}
+
 	const commonSettings = $("<fieldset>").append(
 		$("<legend>").text(theUILang.exsGlobalLimit),
 		$("<div>").addClass("row").append(
