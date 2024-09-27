@@ -80,49 +80,39 @@ if(plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVersion >= 0x805))
 	}
 }
 
-if(plugin.canChangeOptions())
-{
+if (plugin.canChangeOptions()) {
 	plugin.loadMainCSS();
 
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
-	theWebUI.addAndShowSettings = function(arg) 
-	{
-		if(plugin.enabled)
-		{
-			var tbl = $$('sch_graph');
-			for(var i=0; i<7; i++)
-			{
-				for(var j=1; j<25; j++)
-				{
-					cell = tbl.rows[i].cells[j];
-					cell.setAttribute("clr",theWebUI.scheduleTable.week[i][j-1]);
+	theWebUI.addAndShowSettings = function(arg) {
+		if (plugin.enabled) {
+			for (let day = 0; day < 7; day++) {
+				for (let hour = 0; hour < 24; hour++) {
+					$(`.day-${day}.hour-${hour}`).attr("clr", theWebUI.scheduleTable.week[day][hour]);
 				}
 			}
 			$$('sch_enable').checked = theWebUI.scheduleTable.enabled;
-			for(var i=0; i<3; i++)
-			{
-				$$('restrictedUL'+(i+1)).value = theWebUI.scheduleTable.UL[i];
-				$$('restrictedDL'+(i+1)).value = theWebUI.scheduleTable.DL[i];
+			for (let i = 0; i < 3; i++) {
+				$$('restrictedUL' + ( i + 1 )).value = theWebUI.scheduleTable.UL[i];
+				$$('restrictedDL' + ( i + 1 )).value = theWebUI.scheduleTable.DL[i];
 			}
 			theWebUI.linkedSch($$('sch_enable'), ['restrictedUL1', 'restrictedDL1', 'restrictedUL2', 'restrictedDL2', 'restrictedUL3', 'restrictedDL3']);
 		}
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
-	theWebUI.schedulerWasChanged = function() 
-	{
-		if($$('sch_enable').checked != theWebUI.scheduleTable.enabled)
-			return(true);
-		for(var i=0; i<3; i++)
-			if(($$('restrictedUL'+(i+1)).value!=theWebUI.scheduleTable.UL[i]) ||
-				($$('restrictedDL'+(i+1)).value!=theWebUI.scheduleTable.DL[i]))
-					return(true);
-		var tbl = $$('sch_graph');
-		for(var i=0; i<7; i++)
-			for(var j=1; j<25; j++)
-				if(tbl.rows[i].cells[j].getAttribute("clr")!=theWebUI.scheduleTable.week[i][j-1])
-					return(true);
-		return(false);
+	theWebUI.schedulerWasChanged = function() {
+		if ($$('sch_enable').checked != theWebUI.scheduleTable.enabled)
+			return true;
+		for (var i = 0; i < 3; i++)
+			if (($$('restrictedUL' + (i + 1)).value != theWebUI.scheduleTable.UL[i]) ||
+				($$('restrictedDL' + (i + 1)).value != theWebUI.scheduleTable.DL[i]))
+					return true;
+		for (let day = 0; day < 7; day++)
+			for (let hour = 1; hour < 25; hour++)
+				if ($(`.day-${day}.hour-${hour}`).attr("clr") !== theWebUI.scheduleTable.week[day][hour])
+					return true;
+		return false;
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
@@ -133,25 +123,19 @@ if(plugin.canChangeOptions())
 			this.request("?action=setschedule");
 	}
 
-	rTorrentStub.prototype.setschedule = function()
-	{
+	rTorrentStub.prototype.setschedule = function() {
 		this.content = "dummy=1";
-		var tbl = $$('sch_graph');
-		for(var i=0; i<7; i++)
-		{
-			for(var j=1; j<25; j++)
-			{
-				var cell = tbl.rows[i].cells[j];
-				this.content += ('&day_'+i+'_'+(j-1)+'='+cell.getAttribute("clr"));
+		for (let day = 0; day < 7; day++) {
+			for (let hour = 0; hour < 24; hour++) {
+				this.content += ('&day_' + day + '_' + hour + '=' + $(`.day-${day}.hour-${hour}`).attr("clr"));
 			}
 		}
-		for(var i=0; i<3; i++)
-		{
+		for (let i = 0; i < 3; i++) {
 			this.content += ('&UL'+i+'='+$$('restrictedUL'+(i+1)).value);
 			this.content += ('&DL'+i+'='+$$('restrictedDL'+(i+1)).value);
 		}
 		this.content += ('&enabled='+($$('sch_enable').checked ? '1' : '0'));
-	        this.contentType = "application/x-www-form-urlencoded";
+		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/scheduler/action.php";
 		this.dataType = "script";
 	}
@@ -187,34 +171,32 @@ if(plugin.canChangeOptions())
 		}
 	}
 
-	theWebUI.linkedSch = function(obj, lst) 
-	{
-		linked(obj,0,lst);
-		var tbl = $$('sch_graph');
-		var isChecked = $$('sch_enable').checked;
-		for(var i=0; i<7; i++)
-		{
-			var cell = tbl.rows[i].cells[0];
-			cell.className = isChecked ? 'sch_week' : 'sch_week disabled';
-			for(var j=1; j<25; j++)
-			{
-				cell = tbl.rows[i].cells[j];
-				var clr = schClasses[cell.getAttribute("clr")];
-				cell.className = isChecked ? clr : clr+"dis";
+	theWebUI.linkedSch = function(obj, lst) {
+		linked(obj, 0, lst);
+		const isChecked = $$('sch_enable').checked;
+		isChecked
+			// enable/disable day of week column
+			? $("span.sch-week").removeClass("disabled")
+			: $("span.sch-week").addClass("disabled");
+		for (let day = 0; day < 7; day++) {
+			for (let hour = 0; hour < 24; hour++) {
+				const cell = $(`.day-${day}.hour-${hour}`);
+				const clr = schClasses[cell.attr("clr")];
+				isChecked
+					? cell.addClass(clr).removeClass(clr + "dis")
+					: cell.removeClass(clr).addClass(clr + "dis");
 			}
 		}
-		tbl = $$('sch_legend');
-		for(var i=0; i<2; i++)
-		{
-	        	for(var j=0; j<6; j++)
-		        {
-			        var cell = tbl.rows[i].cells[j];
+		const legendTbl = $$('sch_legend');
+		for (var i=0; i<2; i++) {
+			for (var j=0; j<6; j++) {
+				var cell = legendTbl.rows[i].cells[j];
 				var clr = schClasses[cell.getAttribute("clr")];
-				if(clr!=null)
+				if (clr!=null)
 					cell.className = isChecked ? clr : clr+"dis";
 				else
 					cell.className = isChecked ? '' : "disabled";
-		        }
+			}
 		}
 		isChecked ? $("#sch_desc").removeClass("disabled") : $("#sch_desc").addClass("disabled");
 	}
@@ -234,21 +216,25 @@ plugin.onLangLoaded = function() {
 						}),
 						$("<label>").attr({for:"sch_enable"}).text(theUILang.schedulerOn),
 					),
-					$("<div>").addClass("col-12 overflow-x-auto").append(
-						$("<table>").attr({id:"sch_graph"}).append(
-							...Array.from(Array(7).keys()).map(week => $("<tr>").append(
-								$("<td>").addClass("sch_week disabled").text(theUILang.schShortWeek[week]),
-								...Array.from(Array(24).keys()).map(hour => {
-									const day = theWebUI.scheduleTable.week[week][hour];
-									return $("<td>").attr({
-										clr: day,
-										onmouseover: `theWebUI.schMouseOver("${week}","${hour}")`,
-										onmouseout: "theWebUI.schMouseOut();",
-										onclick: `theWebUI.schClick(this, "${week}","${hour}");`,
-									}).addClass(schClasses[day] + "dis");
-								}),
-							)),
-						),
+					$("<div>").attr({id:"sch_graph"}).addClass("col-12 row").append(
+						...Array.from(Array(7).keys()).flatMap(day => [
+							$("<div>").addClass("col-2 col-md-1").append(
+								$("<span>").addClass("sch-week").text(theUILang.schShortWeek[day]),
+							),
+							$("<div>").addClass("col-10 col-md-11 row flex-grow-1 mb-1 mb-md-0").append(
+								...["am", "pm"].map(_ => $("<div>").addClass("col-12 col-md-6 align-items-stretch").append(
+									...Array.from(Array(12).keys()).map(hour => {
+										const clr = theWebUI.scheduleTable.week[day][hour];
+										return $("<span>").attr({
+											clr,
+											onmouseover: `theWebUI.schMouseOver("${day}","${hour}")`,
+											onmouseout: "theWebUI.schMouseOut();",
+											onclick: `theWebUI.schClick(this, "${day}","${hour}");`,
+										}).addClass(`${schClasses[clr]}dis day-${day} hour-${hour}`);
+									}),
+								)),
+							),
+						])
 					),
 					$("<div>").addClass("col-12").append(
 						$("<div>").attr({id:"sch_desc"}).addClass("p-2 flex-grow-1 disabled").html("&nbsp;"),

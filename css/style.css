@@ -10,12 +10,9 @@ div, td, label, fieldset, textarea, select, input, button, .Button {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-table {
+table, tbody, td, tfoot, th, thead, tr {
   /* prevent collision with bootstrap */
-  border-collapse: initial;
-}
-tbody, td, tfoot, th, thead, tr {
-  /* prevent collision with bootstrap */
+  border-collapse: collapse;
   border-color: initial;
   border-style: initial;
   border-width: 1px;
@@ -53,7 +50,7 @@ input[type=checkbox], input[type=radio] {margin: 0.25rem;}
 select, input[type=file], input[type=text], input[type=number], input[type=password] {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
-  margin: 0.25rem;
+  margin: 0.25rem auto;
   padding: 0.25rem;
   width: 100%;
 }
@@ -375,8 +372,9 @@ div#stg .lm {
   text-wrap: nowrap;
   text-align: right;
   font-weight: bold;
+  padding-right: 0.5rem;
 }
-.stg_con thead td {
+.stg_con th {
   text-align: center;
   font-weight: bold;
   text-wrap: nowrap;

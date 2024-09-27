@@ -242,15 +242,15 @@ plugin.onLangLoaded = function() {
 				$("<table>").append(
 					$("<thead>").append(
 						$("<tr>").append(
-							$("<td>").text(theUILang.Num_No),
+							$("<th>").text(theUILang.Num_No),
 							...[
 								theUILang.ratioName, theUILang.minRatio + ", %",
 								theUILang.maxRatio + ", %", theUILang.ratioUpload + "," + theUILang.GB,
-							].map(th => $("<td>").attr({align:"center"}).append($("<strong>").text(th))),
-							$("<td>").attr({align:"center"}).addClass("ratio_time").append(
-								$("<strong>").text(theUILang.maxTime + ", " + theUILang.time_h.substr(0, theUILang.time_h.length - 1)),
+							].map(th => $("<th>").text(th)),
+							$("<th>").addClass("ratio_time")
+								.text(theUILang.maxTime + ", " + theUILang.time_h.substr(0, theUILang.time_h.length - 1),
 							),
-							$("<td>").attr({align:"center"}).append($("<strong>").text(theUILang.ratioAction)),
+							$("<th>").text(theUILang.ratioAction),
 						),
 					),
 					$("<tbody>").append(
