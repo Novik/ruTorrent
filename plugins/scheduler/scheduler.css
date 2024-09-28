@@ -1,24 +1,33 @@
-#st_scheduler {display: none;}
-#st_scheduler_h {width: 450px; height: 300px; overflow: auto}
+.sch-week {
+  margin-left: auto;
+  font-weight: bold;
+}
+#sch_graph div {
+  margin: 0;
+}
+#sch_graph div.row > div {
+  margin: 0;
+  padding: 0;
+}
+#sch_graph div.row > div span {
+  border: 1px solid var(--menu-border-color);
+  height: 1.5rem;
+  flex-grow: 1;
+  text-align: center;
+}
+.day-half {width: 1rem;}
+.sch_fast {background: #00A800;}
+.sch_res1 {background: #8DAA8D;}
+.sch_res2 {background: #8DCC8D;}
+.sch_res3 {background: #8DFF8D;}
+.sch_stop {background: #FFFFFF;}
+.sch_seed {background: #FFC0C0;}
+.sch_fastdis {background: #636363;}
+.sch_res1dis {background: #9E9E9E;}
+.sch_res2dis {background: #B2B2B2;}
+.sch_res3dis {background: #D0D0D0;}
+.sch_stopdis {background: #FFFFFF;}
+.sch_seeddis {background: #D2D2D2;}
 
-#sch_graph {width: 415px; border: 0; border-collapse:collapse; table-layout: fixed; margin-left: 10px}
-#sch_graph td {height: 16px; padding: 0; white-space: nowrap; }
-.sch_fast {background: #00A800; border: 1px solid black; width: 15px;}
-.sch_res1 {background: #8DAA8D; border: 1px solid black; width: 15px;}
-.sch_res2 {background: #8DCC8D; border: 1px solid black; width: 15px;}
-.sch_res3 {background: #8DFF8D; border: 1px solid black; width: 15px;}
-.sch_stop {background: #FFFFFF; border: 1px solid black; width: 15px;}
-.sch_seed {background: #FFC0C0; border: 1px solid black; width: 15px;}
-.sch_fastdis {background: #636363; border: 1px solid black; width: 15px;}
-.sch_res1dis {background: #9E9E9E; border: 1px solid black; width: 15px;}
-.sch_res2dis {background: #B2B2B2; border: 1px solid black; width: 15px;}
-.sch_res3dis {background: #D0D0D0; border: 1px solid black; width: 15px;}
-.sch_stopdis {background: #FFFFFF; border: 1px solid black; width: 15px;}
-.sch_seeddis {background: #D2D2D2; border: 1px solid black; width: 15px;}
-
-.sch_week {border: 0; width: 22px; text-align: left}
-
-#sch_desc {width: 390px; margin-left: 5px; padding: 5px; white-space: nowrap}
-
-#sch_legend {width: 390px; border: 0; table-layout: fixed; margin-left: 10px; border-collapse:collapse; }
-#sch_legend td { padding: 3px; height: 16px }
+#sch_legend {border: 0; table-layout: auto;}
+#sch_legend td {padding: 3px; height: 16px; min-width: 2rem;}

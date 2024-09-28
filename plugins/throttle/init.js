@@ -1,5 +1,4 @@
 plugin.loadLang();
-plugin.loadMainCSS();
 
 plugin.config = theWebUI.config;
 theWebUI.config = function()
@@ -209,33 +208,54 @@ theWebUI.isCorrectThrottle = function(i)
 		(theWebUI.throttles[i].down>=0));
 }
 
-plugin.onLangLoaded = function() 
-{
-	var s = 
-		"<fieldset>"+
-			"<legend>"+theUILang.throttles+"</legend>"+
-			"<div id='st_throttle_h'>"+
-			"<table>"+
-				"<tr>"+
-					"<td><b>"+theUILang.Num_No+"</b></td>"+
-					"<td><b>"+theUILang.channelName+"</b></td>"+
-					"<td><b>"+theUILang.UL+" ("+theUILang.KB+"/"+theUILang.s+")</b></td>"+
-					"<td><b>"+theUILang.DL+" ("+theUILang.KB+"/"+theUILang.s+")</b></td>"+
-				"</tr>";
-	for(var i=0; i<theWebUI.maxThrottle; i++)
-		s +=
-			"<tr>"+
-			        "<td class='alr'><b>"+(i+1)+".</b></td>"+
-				"<td><input type='text' id='thr_name"+i+"' class='TextboxLarge'/></td>"+
-				"<td><input type='text' id='thr_up"+i+"' class='Textbox num' maxlength='6'/></td>"+
-				"<td><input type='text' id='thr_down"+i+"' class='Textbox num' maxlength='6'/></td>"+
-			"</tr>";
-	s+="</table></div></fieldset>";
-	s+="<div class='aright'><label>"+theUILang.channelDefault+":</label><select id='chDefault'><option value='0'>"+theUILang.dontSet+"</option>";
-	for(var i=1; i<=theWebUI.maxThrottle; i++)
-		s+="<option value='"+i+"'>"+i+"</option>";
-	s+="</select></div>";
-	this.attachPageToOptions($("<div>").attr("id","st_throttle").html(s).get(0),theUILang.throttles);
+plugin.onLangLoaded = function() {
+	const s = $("<fieldset>").append(
+		$("<legend>").text(theUILang.throttles),
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12 overflow-x-auto").append(
+				$("<table>").append(
+					$("<thead>").append(
+						$("<tr>").append(
+							...[
+								theUILang.Num_No, theUILang.channelName,
+								theUILang.UL + " (" + theUILang.KB + "/" + theUILang.s + ")",
+								theUILang.DL + " (" + theUILang.KB + "/" + theUILang.s + ")",
+							].map(th => $("<td>").text(th)),
+						),
+					),
+					$("<tbody>").append(
+						...Array.from(Array(theWebUI.maxThrottle).keys()).map(i => $("<tr>").append(
+							$("<td>").append(
+								$("<strong>").text((i + 1) + "."),
+							),
+							$("<td>").append(
+								$("<input>").attr({type:"text", id:`thr_name${i}`}),
+							),
+							$("<td>").append(
+								$("<input>").attr({type:"text", id:`thr_up${i}`, maxlength:6}).addClass("num"),
+							),
+							$("<td>").append(
+								$("<input>").attr({type:"text", id:`thr_down${i}`, maxlength:6}).addClass("num"),
+							),
+						),),
+					),
+				),
+			),
+			$("<div>").addClass("col-12 col-md-6").append(
+				$("<label>").attr({for:"chDefault"}).text(theUILang.channelDefault + ":"),
+			),
+			$("<div>").addClass("col-12 col-md-6").append(
+				$("<select>").attr({id:"chDefault"}).append(
+					$("<option>").val(0).text(theUILang.dontSet),
+					...Array.from(Array(theWebUI.maxThrottle).keys()).map(i => $("<option>").val(i).text(i + 1)),
+				),
+			),
+		),
+	);
+	this.attachPageToOptions(
+		$("<div>").attr("id","st_throttle").append(s)[0],
+		theUILang.throttles,
+	);
 }
 
 plugin.onRemove = function()

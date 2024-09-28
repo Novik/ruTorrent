@@ -10,12 +10,9 @@ div, td, label, fieldset, textarea, select, input, button, .Button {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-table {
+table, tbody, td, tfoot, th, thead, tr {
   /* prevent collision with bootstrap */
-  border-collapse: initial;
-}
-tbody, td, tfoot, th, thead, tr {
-  /* prevent collision with bootstrap */
+  border-collapse: collapse;
   border-color: initial;
   border-style: initial;
   border-width: 1px;
@@ -46,13 +43,14 @@ textarea {
 }
 label {
   cursor: pointer;
-  margin: 0.15rem 0.25rem;
+  margin: 0.15rem;
+  overflow: hidden;
 }
 input[type=checkbox], input[type=radio] {margin: 0.25rem;}
 select, input[type=file], input[type=text], input[type=number], input[type=password] {
   border: 1px solid #B0B0B0;
   border-radius: 3px;
-  margin: 0.25rem;
+  margin: 0.25rem auto;
   padding: 0.25rem;
   width: 100%;
 }
@@ -115,6 +113,7 @@ div#modalbg {left: 0px; top: 0px; z-index: 500; display: none; opacity: 0.5; bac
 
 div.aright {text-align: right}
 div.dlg-window {
+  position: absolute;
   left: 0px;
   top: 0px;
   background-color: #FAFAFA;
@@ -124,7 +123,6 @@ div.dlg-window {
   display: none;
   max-width: 95vw;
   max-height: 95vh;
-  overflow: auto;
 }
 div.dlg-window div.row {
   margin: 0.5rem 0;
@@ -136,7 +134,6 @@ div.dlg-window div.row > div {
   align-items: center;
   padding: 0 0.25rem;
   margin-bottom: 0.1rem;
-  overflow: auto;
 }
 div.fxcaret {overflow: auto}
 div.dlg-header {
@@ -289,7 +286,7 @@ div#HDivider {cursor: e-resize;}
 div#VDivider {cursor: n-resize;}
 div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
 
-div#stg {position: absolute; left: 0px; top: 50px; display: none; overflow: visible}
+div#stg {width: 95vw;}
 div#stg_c {
   display: flex;
   flex-direction: row;
@@ -297,9 +294,10 @@ div#stg_c {
 div#stg-pages {
   padding: 0 0.5rem;
   height: 550px;
-  width: 550px;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  overflow-x: auto;
 }
 div#stg-header { background-image: url(../images/settings.gif); }
 
@@ -358,7 +356,7 @@ div#stg .lm {
 .ie .lm li a {margin: 0 0 0 -5px; padding: 0}
 .stg_con {
   display: none;
-  flex: 1 1 auto;
+  margin-bottom: auto;
   background-color: var(--settings-background-color);
   overflow: hidden auto;
 }
@@ -370,6 +368,17 @@ div#stg .lm {
 .stg_con table {width: 100%}
 .stg_con td {font-weight: normal; height: 19px}
 .stg_con td.alr {text-align: right}
+.stg_con td:first-child {
+  text-wrap: nowrap;
+  text-align: right;
+  font-weight: bold;
+  padding-right: 0.5rem;
+}
+.stg_con th {
+  text-align: center;
+  font-weight: bold;
+  text-wrap: nowrap;
+}
 input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
 .ie7 fieldset div {padding: 0px}
@@ -506,14 +515,8 @@ div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 
   min-width: 3rem;
 }
 .speedEdit { width: 320px }
-.decimalDigitEdit input[type=number] {padding: 1px; margin: 0;}
-.decimalDigitEdit > .row:not(:last-child) {
-  border-bottom: 1px dotted #D0D0D0;
-}
-.decimalDigitEdit > .row:first-of-type > div,
-.decimalDigitEdit > .row > div:first-of-type {
-  font-weight: bold;
-  justify-content: center;
+#decimalDigitEdit input[type=number] {
+  min-width: 2rem;
 }
 .optionColumn {
   display: flex;
@@ -586,6 +589,7 @@ div.dlg-window .buttons-list {
     justify-content: end;
     flex-wrap: nowrap;
   }
+  div#stg {width: 660px;}
 }
 
 /* Large devices (desktops, 992px and up) */
