@@ -1,6 +1,6 @@
 plugin.description: This plugin is intended to display media file information.
 plugin.author: Novik
-plugin.version: 4.3
+plugin.version: 5.0
 rtorrent.remote: error
 rtorrent.external.error: mediainfo
 plugin.dependencies: _task

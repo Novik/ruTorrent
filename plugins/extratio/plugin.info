@@ -1,7 +1,7 @@
 plugin.description: This plugin extends the functionality of the ratio plugin.
 plugin.author: Novik
 plugin.runlevel: 12
-plugin.version: 4.3
+plugin.version: 5.0
 plugin.dependencies: ratio
 php.extensions.error: json
 rtorrent.version: 0.8.6

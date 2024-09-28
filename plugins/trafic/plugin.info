@@ -1,6 +1,6 @@
 plugin.description: This plugin allows to monitor rTorrent system wide and per-tracker traffic totals.
 plugin.author: Novik
-plugin.version: 4.3
+plugin.version: 5.0
 plugin.runlevel: 11
 rtorrent.remote: error
 rtorrent.external.error: php

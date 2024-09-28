@@ -1,6 +1,6 @@
 plugin.description: This plugin dumps .torrent file information to the console
 plugin.author: TheGoblinHero
-plugin.version: 1.0
+plugin.version: 5.0
 plugin.dependencies: _task
 rtorrent.external.error: dumptorrent
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginDump

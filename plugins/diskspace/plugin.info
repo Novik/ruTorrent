@@ -1,5 +1,5 @@
 plugin.description: This plugin adds an easy to read disk meter to the bottom bar.
 plugin.author: Novik
-plugin.version: 4.3
+plugin.version: 5.0
 rtorrent.need: 0
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginDiskspace
