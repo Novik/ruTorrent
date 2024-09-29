@@ -5,9 +5,10 @@ eval(FileUtil::getPluginConf("_getdir"));
 
 $theSettings = rTorrentSettings::get();
 
-if(isset($_REQUEST['dir']) && strlen($_REQUEST['dir']))
+$requestedDir = $_REQUEST['dir'];
+if(isset($requestedDir) && strlen($requestedDir))
 {
-	$dir = rawurldecode($_REQUEST['dir']);
+	$dir = rawurldecode($requestedDir);
 	rTorrentSettings::get()->correctDirectory($dir);
 	$dir = FileUtil::addslash($dir);
 
@@ -21,7 +22,9 @@ if(isset($_REQUEST['dir']) && strlen($_REQUEST['dir']))
 }
 else
 {
-	$dir = $topDirectory;
+	$dir = User::isLocalMode() ? $theSettings->directory : $topDirectory;
+	if(strpos(FileUtil::addslash($dir),$topDirectory)!==0)
+		$dir = $topDirectory;
 }
 
 $items = array_diff(scandir($dir), (($dir == $topDirectory) ? ["..", "."] : ["."]));
@@ -35,7 +38,7 @@ $files = array_filter($items, function ($item) {
 });
 
 header("Content-Type: application/json");
-echo json_encode(array(
+echo JSON::safeEncode(array(
 	"path" => $dir,
 	"directories" => array_values($directories),
 	"files" => array_values($files),
