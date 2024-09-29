@@ -1,12 +1,18 @@
-.scframe { position: relative; left: 0px; top: 0px; text-align: center; width: 100%; padding: 0; vertical-align: middle; }
+.scframe {
+  position: relative;
+  text-align: center;
+  width: 100%;
+  padding: 0;
+  cursor: default;
+}
 .scframe img { width: 100%; vertical-align: middle; }
-.scplay { display: none }
-
-#scfirst { width: 40px }
-#scprev { width: 40px }
-#scplay { width: 40px }
-#scnext { width: 40px }
-#sclast { width: 40px }
+.scplay {
+  display: none;
+  text-wrap: nowrap;
+  width: 50px;
+  padding: 0;
+}
+#sclast {margin-right: auto;}
 
 .scframe_cont { overflow: auto; background-color: black; margin: 0 auto; }
 #st_screenshots { overflow: auto }
