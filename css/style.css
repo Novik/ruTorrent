@@ -468,7 +468,6 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 .Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
 
 div#tadd-header {background-image: url(../images/world.gif)}
-div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 auto }
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
@@ -513,7 +512,7 @@ div#tadd {display: none; left: 100px; top: 100px; position: absolute; margin: 0 
 }
 .speedEdit { width: 320px }
 #decimalDigitEdit input[type=number] {
-  min-width: 2rem;
+  min-width: 3rem;
 }
 .optionColumn {
   display: flex;

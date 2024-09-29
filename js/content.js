@@ -639,7 +639,7 @@ function makeContent() {
 							$("<tr>").append(
 								...[
 									"", "Default", "KB", "MB", "GB", "TB", "PB",
-								].map((unit) => $("<td>").text(theUILang[unit] ?? "")),
+								].map((unit) => $("<th>").text(theUILang[unit] ?? "")),
 							),
 						),
 						$("<tbody>").append(
