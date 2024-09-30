@@ -857,17 +857,15 @@ var theTabs = {
    	}
 };
 
-function log(text,noTime,divClass,force)
-{
-	var tm = '';
-	if(!noTime)
-		tm = "[" + theConverter.date(new Date().getTime()/1000) + "]";
+function log(text,noTime,divClass,force) {
+	const tm = noTime ? "" : `[${theConverter.date(new Date().getTime() / 1000)}]`;
 	if(!divClass)
 		divClass = 'std';
-	var obj = $("#lcont");
-	if(obj.length)
-	{
-		obj.append( $("<div>").addClass(divClass).text(tm + " " + text).show() );
+	const obj = $("#lcont");
+	if (obj.length) {
+		obj.append(
+			$("<span>").addClass(divClass).text(tm + " " + text)
+		);
 		obj[0].scrollTop = obj[0].scrollHeight;
 		if(iv(theWebUI.settings["webui.log_autoswitch"]) || force)
 			theTabs.show("lcont");
@@ -888,28 +886,16 @@ function logHTML(text,divClass,force)
 	}
 }
 
-function noty(msg,status,noTime)
-{
-	if($.noty)
-	{
-		$.noty(
-		{
+function noty(msg, status, noTime) {
+	if ($.noty) {
+		$.noty({
 			text: escapeHTML(msg),
 			layout : 'bottomRight',
 			type: status
 		});
 	}
-	var obj = $("#lcont");
-	if(obj.length)
-	{
-		var tm = '';
-		if(!noTime)
-			tm = "[" + theConverter.date(new Date().getTime()/1000) + "]";
-		obj.append( $("<div>").addClass('std').text(tm + " " + msg).show() );
-		obj[0].scrollTop = obj[0].scrollHeight;
-		if(iv(theWebUI.settings["webui.log_autoswitch"]) && !$.noty)
-			theTabs.show("lcont");
-	}
+	const force = iv(theWebUI.settings["webui.log_autoswitch"]) && !$.noty;
+	log(msg, noTime, "std", force);
 }
 
 function fallbackCopyToClipboard(text)
