@@ -299,6 +299,10 @@ const theOptionsSwitcher = {
 	run: function(id) {
 		$('#' + this.current).hide();
 		$("#mnu_" + this.current).removeClass("focus");
+		// close directory frames associated with the current option page
+		if (thePlugins.isInstalled("_getdir")) {
+			thePlugins.get("_getdir").hideBrowseFrame(this.current);
+		}
 		this.current = id;
 		$('#' + this.current).show();
 		$("#mnu_" + this.current).addClass("focus");

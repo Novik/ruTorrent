@@ -1,3 +1,7 @@
+.browseFrame {
+  border: 1px solid #909090;
+  background-color: #1E2124;
+}
 div#create_btns {background-image: url(./images/ajax-loader_h.gif)}
 #meter-disk-td, #qmeter-disk-td {background-image: url(./images/disk.gif)}
 div#t div#starter {background-image: url(./images/starter.png)}

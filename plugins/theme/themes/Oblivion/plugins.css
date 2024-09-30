@@ -1,3 +1,7 @@
+.browseFrame {
+  border: 1px solid #757571;
+  background-color: #181818;
+}
 .tskconsole, .exconsole, .console, .starterConsole {background: #333333}
 .cCell {color: black}
 #meter-disk-value {

@@ -160,7 +160,6 @@ plugin.onLangLoaded = function()
 					$("<div>").addClass("row").append(
 						$("<div>").addClass("col-12 d-flex flex-row").append(
 							$("<input>").attr({type: "text", id: "path_edit", name: "path_edit", autocomplete: "off"}).addClass("flex-grow-1"),
-							$("<input>").attr({type: "button", id: "browse_path"}).addClass("Button").val("..."),
 						),
 					),
 				),
@@ -234,20 +233,9 @@ plugin.onLangLoaded = function()
 		{
 			$('#xgetfile').trigger('submit');
 		});
-		if(thePlugins.isInstalled("_getdir"))
-		{
-			plugin.btn = new theWebUI.rDirBrowser( 'tcreate', 'path_edit', 'browse_path', null, true, 375 );
-			theDialogManager.setHandler('tcreate','afterHide',function()
-			{
-				plugin.btn.hide();
-			});
+		if (thePlugins.isInstalled("_getdir")) {
+			new theWebUI.rDirBrowser("path_edit", true, 375);
 		}
-		else
-			$('#browse_path').remove();
-		theDialogManager.setHandler('tskConsole','beforeShow',function()
-		{
-			$('#xcsave').hide();
-		});
 		plugin.markLoaded();
 	}
 };

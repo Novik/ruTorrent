@@ -703,30 +703,19 @@ table#maincont td.uicell {
 div#HDivider, div#VDivider {background:#141414;}
 div#HDivider:hover, div#VDivider:hover {background:#334550}
 
-div#tcreate textarea#trackers
-{
-	color:#fff;
-	border:none!important;
-	background:#6F6F6F;
-	border-radius:2px;
-	cursor:text
+input[type="number"],input[type="text"],input[type="password"],select {
+	color: #fff;
+	border: none;
+	background-color: #6F6F6F;
+	border-radius: 2px;
 }
 
-input[type="number"],input[type="text"],input[type="password"],select
-{
-	color:#fff;
-	border:none;
-	background:#6F6F6F url(./images/headers.png) repeat-x scroll 0 -138px;
-	border-radius:2px
-}
-
-input[type="number"][disabled],input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled],select[disabled]
-{
-	color:#fff;
-	border:none;
-	background:#6F6F6F url(./images/headers.png) repeat scroll 0 0!important;
-	border-radius:2px;
-	opacity:.2
+input[type="number"][disabled],input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled],select[disabled] {
+	color: #fff;
+	border: none;
+	background-color: #6F6F6F;
+	border-radius: 2px;
+	opacity: .2;
 }
 
 #StatusBar table tr td.pstatus2
@@ -734,21 +723,16 @@ input[type="number"][disabled],input[type="text"][disabled],input[type="password
 	background:transparent url(./images/green.png) no-repeat scroll 5px center!important
 }
 
-textarea
-{
-	border:none;
-	border-radius:2px
+textarea {
+	border: none;
+	border-radius: 2px;
+	color: #fff;
+	border: none!important;
+	background: #6F6F6F;
+	border-radius: 2px;
 }
 
-#hostcookies,#lookat,#message,#FS_downlink
-{
-	color:#fff;
-	border:none!important;
-	background:#6F6F6F;
-	border-radius:2px
-}
-
-button, input[type=button], input.Button:not([disabled]):focus, .Button {
+button, input[type=button], input[type=submit], input.Button:not([disabled]):focus, .Button {
 	background: #3498db none repeat scroll 0 0;
 	border-radius:2px;
 	border:none;
@@ -797,9 +781,7 @@ input[type="checkbox"]:checked
 
 input[type="checkbox"]:checked::after {
 	position: relative;
-	left: -2px;
-	font-size: 12px;
-	line-height: 12px;
+	left: 3px;
 	content: "✔";
 	color: #fff;
 	text-shadow: #2980b9 0px 1px;
@@ -964,49 +946,11 @@ div#dlgHelp-header,div#dlgHelp div.dlg-header
 	text-shadow:0 -1px 0 #000
 }
 
-div#tadd
-{
-	margin:5px;
-	height:300px!important;
-	width:450px!important
-}
-
 div#tadd-header
 {
 	background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 0;
 	border-bottom:1px solid #333;
 	text-shadow:0 -1px 0 #000
-}
-
-#addtorrenturl label:nth-of-type(2),#addtorrenturl br,#addtorrent label:last-of-type,#addtorrent br:last-of-type,#addtorrent br:nth-last-of-type(2)
-{
-	display:none!important
-}
-
-#addtorrent hr:last-of-type
-{
-	margin-bottom:15px
-}
-
-#tadd_label,#tadd_label_select
-{
-	margin:5px 0 5px 25px
-}
-
-#addtorrent span,#addtorrent label,#tadd_label_select,#tadd_label
-{
-	clear:both;
-	float:left
-}
-
-#addtorrent span:first-of-type,#addtorrent label:nth-of-type(2)
-{
-	margin-top:10px
-}
-
-#addtorrenturl
-{
-	margin-top:15px
 }
 
 Input.TextboxLarge
@@ -1075,11 +1019,6 @@ span#loadimg
 {
 	height:50px;
 	background-color:#343434
-}
-
-input#clear_log,input#add_url,input#add_button
-{
-	margin-top:2px
 }
 
 div#lcont div.std

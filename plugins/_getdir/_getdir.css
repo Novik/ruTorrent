@@ -1,24 +1,31 @@
-html {height: 100%;}
-body {background-color: window; color: windowtext; border: 0px; margin: 0px; padding: 0px; -moz-user-select:none; overflow: hidden; height: 100%;}
-.dir-list {display: flex; flex-direction: column; align-items: stretch; height: 100%;}
-.dir-list div {
-  padding-top: 1px;
-  padding-bottom: 1px;
-  padding-left: 0px;
-  padding-right: 0px;
-  cursor: default;
-  font-size: 11px;
-  font-family: Tahoma, Arial, Helvetica, sans-serif;
-  white-space: nowrap;
+.browseFrame {
+  position: absolute;
+  border: 1px solid #B0B0B0;
+  background-color: #F0F0F0;
+  height: 200px; /* default height 200px */
+  overflow: hidden;
+  padding: 0.25rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
-.search-bar {display: flex; flex-direction: row;}
-.search-bar input[type="text"] {flex-grow: 1;}
-.rmenuobj {margin-bottom: 5px; border-width: 0; overflow-y: auto; flex-grow: 1;}
-.rmenuitem { color: windowtext; }
-.rmenuitemselected { color: highlighttext; background-color: highlight; }
+.rmenuobj {
+  border: 0;
+  overflow-y: auto;
+  padding: 0.25rem;
+}
+.rmenuitem {
+  color: windowtext;
+  padding: 0.15rem;
+  text-wrap: nowrap;
+}
+.rmenuitem.active {
+  color: highlighttext;
+  background-color: highlight;
+}
 
 input.browseButton, button.browseButton {
-  width:30px;
+  width: 30px;
   margin-left: 0.25rem;
   margin-right: 0.25rem;
 }

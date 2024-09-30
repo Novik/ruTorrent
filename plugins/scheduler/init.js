@@ -109,7 +109,7 @@ if (plugin.canChangeOptions()) {
 				($$('restrictedDL' + (i + 1)).value != theWebUI.scheduleTable.DL[i]))
 					return true;
 		for (let day = 0; day < 7; day++)
-			for (let hour = 1; hour < 25; hour++)
+			for (let hour = 0; hour < 24; hour++)
 				if ($(`.day-${day}.hour-${hour}`).attr("clr") !== theWebUI.scheduleTable.week[day][hour])
 					return true;
 		return false;
@@ -142,10 +142,9 @@ if (plugin.canChangeOptions()) {
 
 	var schClasses = [ "sch_fast", "sch_stop", "sch_seed", "sch_res1", "sch_res2", "sch_res3" ];
 
-	theWebUI.schMouseOver = function(i,j)
-	{
-		var from = (j < 10) ? ("0" + j) : j;
-		$('#sch_desc').text( theUILang.schFullWeek[i]+', '+from+':00 - '+from+':59' );
+	theWebUI.schMouseOver = function(day, hour) {
+		const from = (hour < 10) ? ("0" + hour) : hour;
+		$('#sch_desc').text( theUILang.schFullWeek[day]+', '+from+':00 - '+from+':59' );
 	}
 
 	theWebUI.schLegendMouseOver = function(i)
@@ -159,15 +158,13 @@ if (plugin.canChangeOptions()) {
 		$('#sch_desc').html('&nbsp;');
 	}
 
-	theWebUI.schClick = function(obj,i,j)
-	{
-		if($$('sch_enable').checked)
-		{
-			var clr = parseInt(obj.getAttribute("clr"))+1;
-			if(clr>=schClasses.length)
+	theWebUI.schClick = function(obj, day, hour) {
+		if ($$('sch_enable').checked) {
+			let clr = parseInt(obj.getAttribute("clr")) + 1;
+			if (clr >= schClasses.length)
 				clr = 0;
-			obj.className = schClasses[clr];
-			obj.setAttribute("clr",clr);
+			obj.className = schClasses[clr] + ` day-${day} hour-${hour}`;
+			obj.setAttribute("clr", clr);
 		}
 	}
 
@@ -222,15 +219,16 @@ plugin.onLangLoaded = function() {
 								$("<span>").addClass("sch-week").text(theUILang.schShortWeek[day]),
 							),
 							$("<div>").addClass("col-10 col-md-11 row flex-grow-1 mb-1 mb-md-0").append(
-								...["am", "pm"].map(_ => $("<div>").addClass("col-12 col-md-6 align-items-stretch").append(
+								...[0, 1].map(dayHalf => $("<div>").addClass("col-12 col-md-6 align-items-stretch").append(
 									...Array.from(Array(12).keys()).map(hour => {
-										const clr = theWebUI.scheduleTable.week[day][hour];
+										const hour24 = hour + 12 * dayHalf;
+										const clr = theWebUI.scheduleTable.week[day][hour24];
 										return $("<span>").attr({
-											clr,
-											onmouseover: `theWebUI.schMouseOver("${day}","${hour}")`,
+											clr: clr ?? 0,
+											onmouseover: `theWebUI.schMouseOver(${day}, ${hour24})`,
 											onmouseout: "theWebUI.schMouseOut();",
-											onclick: `theWebUI.schClick(this, "${day}","${hour}");`,
-										}).addClass(`${schClasses[clr]}dis day-${day} hour-${hour}`);
+											onclick: `theWebUI.schClick(this, ${day}, ${hour24});`,
+										}).addClass(`${schClasses[clr] ?? "sch_fast"}dis day-${day} hour-${hour24}`);
 									}),
 								)),
 							),
