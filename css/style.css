@@ -395,7 +395,13 @@ div#tdcont {
   border: 1px solid #D0D0D0;
 }
 div#tdcont > div {height: 100%;}
-div.tab { height:100%; background: #F5F5F5; overflow: auto }
+div.tab {
+  height:100%;
+  background: #F5F5F5;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
 div#lcont {font-size: 11px;  line-height: 11px; background: #FFFFFF}
 div#lcont div.mono {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre}
 div#lcont div.std {padding: 2px}

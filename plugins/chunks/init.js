@@ -116,41 +116,40 @@ rTorrentStub.prototype.getchunksParseXML = function(xml)
 	return(ret);
 }
 
-plugin.resizeTop = theWebUI.resizeTop;
-theWebUI.resizeTop = function(w, h) {
-	if (plugin.enabled) {
-		if (theWebUI.configured) {
-			if (h)
-				$('#cCont').height(h - 50);
-		} else
-			setTimeout('theWebUI.resize()', 1000);
-	}
-	plugin.resizeTop.call(this, w, h);
-}
-
-plugin.onLangLoaded = function() 
-{
+plugin.onLangLoaded = function() {
 	plugin.attachPageToTabs(
 		$("<div>").attr("id","Chunks").append(
-			$("<div>").attr("id","cHeader").html( 
-				"<table width='100%'><tr>"+
-				"<td class='sthdr'>"+theUILang.chunksCount+":</td>"+
-				"<td class='stval' id='ccount'>&nbsp;</td>"+
-				"<td class='sthdr'>"+theUILang.chunkSize+":</td>"+
-				"<td class='stval' id='csize'>&nbsp;</td>"+
-				"<td class='sthdr' id='cinfohdr'>"+theUILang.cDownloaded+":</td>"+
-				"<td class='stval' id='cinfo'>&nbsp;</td>"+
-				"<td class='sthdr'>"+theUILang.cLegend+":</td>"+
-				"<td class='stval' id='clegend'>&nbsp;</td>"+
-				"<td align='right' id='cmode_cont' class='sthdr'>"+
-					theUILang.cMode+":&nbsp;"+
-					"<select name='chunks_mode' id='chunks_mode' onchange='theWebUI.updateDetails()'>"+
-						"<option value='0' selected>"+theUILang.cDownloaded+"</option>"+
-						"<option value='1'>"+theUILang.cAvail+"</option>"+
-					"</select>"+
-				"</td></tr></table>").append(
+			$("<div>").addClass("d-flex flex-row justify-content-between align-items-center").append(
+				...[
+					[theUILang.chunksCount, , "ccount"],
+					[theUILang.chunkSize, , "csize"],
+					[theUILang.cDownloaded, "cinfohdr", "cinfo"],
+					[theUILang.cLegend, , "clegend"],
+				].flatMap(([headerName, headerId, valueId]) => [
+					$("<div>").addClass("sthdr").append(
+						$("<span>").attr({id:headerId}).text(headerName + ":"),
+					),
+					$("<div>").addClass("stval").append(
+						$("<span>").attr({id:valueId}).text(""),
+					),
+				]),
+				$("<div>").addClass("sthdr").append(
+					$("<span>").attr({id:"cmode_cont"}).text(theUILang.cMode + ":"),
+				),
+				$("<div>").addClass("stval").append(
+					$("<select>").attr({name:"chunks_mode", id:"chunks_mode", onchange:"theWebUI.updateDetails();"}).append(
+						$("<option>").val(0).text(theUILang.cDownloaded),
+						$("<option>").val(1).text(theUILang.cAvail),
+					),
+				),
+			),
 			$("<div>").attr("id","cCont").append( 
-				$("<table>").attr("id","cTable")))).get(0), theUILang.Chunks,"lcont");
+				$("<table>").attr("id","cTable")
+			)
+		).get(0),
+		theUILang.Chunks,
+		"lcont",
+	);
 	if(theWebUI.systemInfo.rTorrent.apiVersion<4)
 		$('#cmode_cont').empty();
 }

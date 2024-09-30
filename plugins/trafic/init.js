@@ -339,14 +339,14 @@ plugin.onLangLoaded = function()
 						name:"tracker_mode",
 						id:"tracker_mode",
 						onchange:"theWebUI.reqForTraficGraph()",
-					}).addClass("ms-auto w-auto flex-grow-0").append(
+					}).addClass("ms-auto me-1 w-auto flex-grow-0").append(
 						$("<option>").prop("selected", true).val("global").text(theUILang.allTrackers),
 					),
 					$("<select>").attr({
 						name:"traf_mode",
 						id:"traf_mode",
 						onchange:"theWebUI.reqForTraficGraph()",
-					}).addClass("w-auto flex-grow-0").append(
+					}).addClass("mx-0 w-auto flex-grow-0").append(
 						$("<option>").val("day").text(theUILang.perDay),
 						$("<option>").val("month").text(theUILang.perMonth),
 						$("<option>").val("year").text(theUILang.perYear),
