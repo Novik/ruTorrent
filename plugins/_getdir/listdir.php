@@ -6,6 +6,8 @@ eval(FileUtil::getPluginConf("_getdir"));
 $theSettings = rTorrentSettings::get();
 
 $requestedDir = $_REQUEST['dir'];
+$topDirectory = FileUtil::addslash($topDirectory);
+
 if(isset($requestedDir) && strlen($requestedDir))
 {
 	$dir = rawurldecode($requestedDir);
