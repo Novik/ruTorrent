@@ -291,9 +291,6 @@ a {color: #686868;}
 .Status_RSS {background-position: 0px -208px}
 
 div#HDivider, div#VDivider {flex: 0 0 5px;}
-div#HDivider {cursor: e-resize;}
-div#VDivider {cursor: n-resize;}
-div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
 
 div#stg {width: 95vw;}
 div#stg_c {
@@ -588,6 +585,9 @@ div.dlg-window .buttons-list {
     border-radius: 0;
     background-color: transparent;
   }
+  div#HDivider {cursor: e-resize;}
+  div#VDivider {cursor: n-resize;}
+  div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
   div#tadd {min-width: 600px;}
   div.dlg-window .buttons-list {
     margin: 1rem 0.5rem;
