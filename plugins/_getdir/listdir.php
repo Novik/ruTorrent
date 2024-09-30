@@ -6,7 +6,6 @@ eval(FileUtil::getPluginConf("_getdir"));
 $theSettings = rTorrentSettings::get();
 
 $requestedDir = $_REQUEST['dir'];
-$topDirectory = FileUtil::addslash($topDirectory);
 
 if(isset($requestedDir) && strlen($requestedDir))
 {
@@ -27,6 +26,9 @@ else
 	$dir = User::isLocalMode() ? $theSettings->directory : $topDirectory;
 	if(strpos(FileUtil::addslash($dir),$topDirectory)!==0)
 		$dir = $topDirectory;
+
+	if(strrpos($dir, '/') != strlen($dir) - 1)
+		$dir = FileUtil::addslash($dir);
 }
 
 $items = array_diff(scandir($dir), (($dir == $topDirectory) ? ["..", "."] : ["."]));
