@@ -223,7 +223,7 @@ plugin.onLangLoaded = function() {
 									...Array.from(Array(12).keys()).map(hour => {
 										const hour24 = hour + 12 * dayHalf;
 										const clr = theWebUI.scheduleTable.week[day][hour24];
-										return $("<span>").attr({
+										return $("<div>").attr({
 											clr: clr ?? 0,
 											onmouseover: `theWebUI.schMouseOver(${day}, ${hour24})`,
 											onmouseout: "theWebUI.schMouseOut();",
