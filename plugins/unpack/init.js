@@ -155,10 +155,9 @@ plugin.onLangLoaded = function()
 			$("<div>").addClass("cont fxcaret").append(
 				$("<fieldset>").append(
 					$("<legend>").text(theUILang.unpackPath),
-					$("<div>").addClass("row mx-1 my-5").append(
+					$("<div>").addClass("row").append(
 						$("<div>").addClass("col-12 d-flex align-items-center").append(
 							$("<input>").attr({type:"text", id:"edit_unpack", maxlength:200}),
-							$("<button>").attr({type:"button", id:"btn_unpack"}).text("..."),
 						),
 					),
 				),
