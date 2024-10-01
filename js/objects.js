@@ -33,6 +33,9 @@ class DnD {
 	}
 
 	start(e) {
+		// allow dnd only for medium-sized screens and up
+		if ($(window).width() < 768) return false;
+
 		const self = e.data;
 		if (self.options.onStart(e)) {
 			const offs = self.obj.offset();

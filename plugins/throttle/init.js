@@ -220,7 +220,7 @@ plugin.onLangLoaded = function() {
 								theUILang.Num_No, theUILang.channelName,
 								theUILang.UL + " (" + theUILang.KB + "/" + theUILang.s + ")",
 								theUILang.DL + " (" + theUILang.KB + "/" + theUILang.s + ")",
-							].map(th => $("<td>").text(th)),
+							].map(th => $("<th>").text(th)),
 						),
 					),
 					$("<tbody>").append(

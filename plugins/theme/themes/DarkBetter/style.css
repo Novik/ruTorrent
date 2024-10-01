@@ -52,7 +52,7 @@ button:hover:active, input.Button:not([disabled]):hover:active {
   -moz-box-shadow: inset 0px 0px 8px 0px #474747;
   -webkit-box-shadow: inset 0px 0px 8px 0px #474747;
 }
-
+select, input[type=file], input[type=text], input[type=number], input[type=password] {border: 1px solid #333333;}
 #offcanvas-sidepanel {
   color: #686868;
   background-color: #181818;
@@ -267,11 +267,7 @@ a.dlg-close:active {
 .Status_Checking {background: transparent url(./images/t_all.svg) no-repeat center center !important; background-size: 16px !important}
 .Status_RSS {background: transparent url(./images/rb_rss.svg) no-repeat center center !important; background-size: 16px !important}
 
-input.Textbox, input.Button, select {border: 1px solid #333333}
-Input.TextboxShort {border: 1px solid #333333}
-Input.TextboxMid {border: 1px solid #333333}
 Input.TextboxLarge {border: 1px solid #333333}
-Input.TextboxVShort {border: 1px solid #333333}
 
 a {color: #686868}
 

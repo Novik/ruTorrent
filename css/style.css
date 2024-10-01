@@ -2,6 +2,9 @@
   box-sizing: unset; /* prevent collision with bootstrap */
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: rgba(0,0,0,1.0);
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
 html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 11px;}
@@ -72,6 +75,12 @@ button:not(:disabled):hover, input[type=button]:not(:disabled):hover, a.Button:n
 }
 button:not(:disabled):active, input[type=button]:not(:disabled):active, a.Button:not(:disabled):active {
   background-color: #FAFAFA;
+}
+span {
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
 }
 
 .light-theme { color-scheme: light; }
@@ -246,8 +255,6 @@ div#plugins {background: url(../images/plugin.png) 0px center}
   cursor: default;
 }
 
-Input.TextboxShort {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 50px}
-Input.TextboxMid {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 110px}
 Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
 #pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
 
@@ -282,9 +289,6 @@ a {color: #686868;}
 .Status_RSS {background-position: 0px -208px}
 
 div#HDivider, div#VDivider {flex: 0 0 5px;}
-div#HDivider {cursor: e-resize;}
-div#VDivider {cursor: n-resize;}
-div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
 
 div#stg {width: 95vw;}
 div#stg_c {
@@ -394,18 +398,23 @@ div#tdcont {
   background: #FFFFFF;
   border: 1px solid #D0D0D0;
 }
-div#tdcont > div {height: 100%;}
-div.tab { height:100%; background: #F5F5F5; overflow: auto }
-div#lcont {font-size: 11px;  line-height: 11px; background: #FFFFFF}
-div#lcont div.mono {font-size: 11px; font-family: monospace; line-height: 11px; background: #F5F5F5; white-space: pre}
-div#lcont div.std {padding: 2px}
+div.tab {
+  height:100%;
+  background: #F5F5F5;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+div#lcont {line-height: 1rem; background: #FFFFFF}
+div#lcont div.mono {font-family: monospace; line-height: 1rem; background: #F5F5F5; white-space: pre}
+div#lcont .std {padding: 2px}
 
 div#gcont span.det-hdr {font-weight: bold;}
 div#gcont div.row.Header {font-size: 14px; font-weight: bold; background: #FCFCFC; padding: 0.5rem;}
 div#gcont div.row:not(.Header) {padding: 0 0.3rem; word-break: break-all;}
 div#gcont div.row > div {padding-top: 0.25rem; padding-bottom: 0.25rem;}
 
-div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-select: none; -moz-user-focus: normal; -moz-user-input: enabled; user-select: none; font-size: 11px;  line-height: 11px; color: #545454;}
+div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-focus: normal; -moz-user-input: enabled; line-height: 11px; color: #545454;}
 .graph_tab_grid,.graph_tab_legend {
 	display: none;
 }
@@ -414,10 +423,8 @@ div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz
 .graph_tab_tooltip { position: absolute; border: 1px solid #fdd; padding: 2px; background-color: #fee; color: black; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; opacity: 0.80; }
 
 div.table_tab {
-  -moz-user-select: none;
   -moz-user-focus: normal;
   -moz-user-input: enabled;
-  user-select: none;
 }
 
 div.cont {padding: 6px;}
@@ -576,6 +583,9 @@ div.dlg-window .buttons-list {
     border-radius: 0;
     background-color: transparent;
   }
+  div#HDivider {cursor: e-resize;}
+  div#VDivider {cursor: n-resize;}
+  div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
   div#tadd {min-width: 600px;}
   div.dlg-window .buttons-list {
     margin: 1rem 0.5rem;

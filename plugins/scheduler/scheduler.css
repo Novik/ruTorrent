@@ -9,7 +9,7 @@
   margin: 0;
   padding: 0;
 }
-#sch_graph div.row > div span {
+#sch_graph div.row > div div {
   border: 1px solid var(--menu-border-color);
   height: 1.5rem;
   flex-grow: 1;

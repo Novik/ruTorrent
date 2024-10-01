@@ -134,8 +134,7 @@ rTorrentStub.prototype.setdatadir = function()
 	this.dataType = "json";
 }
 
-plugin.onLangLoaded = function()
-{
+plugin.onLangLoaded = function() {
 	theDialogManager.make('dlg_datadir', theUILang.datadirDlgCaption,
 		$("<div>").addClass("cont fxcaret").append(
 			$("<fieldset>").append(
@@ -146,7 +145,6 @@ plugin.onLangLoaded = function()
 					),
 					$("<div>").addClass("col-md-10 d-flex align-items-center").append(
 						$("<input>").attr({type: "text", id: "edit_datadir"}).addClass("flex-grow-1"),
-						$("<button>").attr({id: "btn_datadir_browse"}).text("..."),
 					),
 					$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
 						$("<input>").attr({type: "checkbox", id: "move_not_add_path"}),

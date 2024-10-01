@@ -107,10 +107,7 @@ div#t div#go {background: transparent url(./images/toolbar.png) no-repeat -96px 
 div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0px center}
 
 input.Textbox, input.Button, select {border: 1px solid #333333}
-Input.TextboxShort {border: 1px solid #333333}
-Input.TextboxMid {border: 1px solid #333333}
 Input.TextboxLarge {border: 1px solid #333333}
-Input.TextboxVShort {border: 1px solid #333333}
 a {color: #686868}
 
 .stable {background-color: #181818;}
