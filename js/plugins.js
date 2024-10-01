@@ -275,6 +275,7 @@ rPlugin.prototype.attachPageToOptions = function(dlg,name)
 			),
 		);
 	}
+	theOptionsSwitcher.items[dlg.id] = {afterShow: null, afterHide: null,};
 	return(this);
 }
 

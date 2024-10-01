@@ -216,7 +216,6 @@ var theDialogManager = {
 		if ($type(this.items[id]) && ($type(this.items[id].beforeHide) === "function"))
 			this.items[id].beforeHide(id);
 		obj.hide(this.divider, callback);
-		thePlugins.get("_getdir").hideBrowseFrame(id);  // close associated directory frames
 		if ($type(this.items[id]) && ($type(this.items[id].afterHide) === "function"))
 			this.items[id].afterHide(id);
 		if (obj.data("modal"))

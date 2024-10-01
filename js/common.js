@@ -295,17 +295,33 @@ var theURLs =
 
 const theOptionsSwitcher = {
 	current: "st_gl",
+	items: {},
+
+	addHandler: function(id, type, handler) {
+		if ($type(this.items[id])) {
+			const existing = this.items[id][type];
+			if (existing) {
+				this.items[id][type] = function() {
+					existing();
+					handler();
+				};
+			} else {
+				this.items[id][type] = handler;
+			}
+		}
+		return this;
+	},
 
 	run: function(id) {
 		$('#' + this.current).hide();
 		$("#mnu_" + this.current).removeClass("focus");
-		// close directory frames associated with the current option page
-		if (thePlugins.isInstalled("_getdir")) {
-			thePlugins.get("_getdir").hideBrowseFrame(this.current);
-		}
+		if ($type(this.items[this.current]) && ($type(this.items[this.current].afterHide) === "function"))
+			this.items[this.current].afterHide();
 		this.current = id;
 		$('#' + this.current).show();
 		$("#mnu_" + this.current).addClass("focus");
+		if ($type(this.items[this.current]) && ($type(this.items[this.current].afterShow) === "function"))
+			this.items[this.current].afterShow();
 	},
 };
 

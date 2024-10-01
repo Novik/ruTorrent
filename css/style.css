@@ -6,7 +6,7 @@
   -moz-user-select: none;
   -webkit-user-select: none;
 }
-html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
+html, body {border: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
 html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 11px;}
 div, td, label, fieldset, textarea, select, input, button, dialog {
   box-sizing: border-box;
