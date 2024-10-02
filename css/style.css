@@ -367,6 +367,7 @@ div#stg .lm {
 .stg_con legend {
   position: sticky;
   top: 0;
+	background-color: var(--menu-background-color);
 }
 .ie9 .stg_con {position: static}
 .stg_con table {width: 100%}
