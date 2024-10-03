@@ -129,6 +129,7 @@ div.dlg-window {
   color: #000000;
   border: 2px solid #909090;
   border-radius: 8px;
+  outline: 0px solid transparent;
   display: none;
   max-width: 95vw;
   max-height: 95vh;
