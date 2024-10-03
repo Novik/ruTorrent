@@ -109,8 +109,8 @@ var theDialogManager =
 
 	make: function(id, name, content, isModal, noClose) {
 		$(document.body).append($("<div>").attr("id",id).addClass("dlg-window").append(
-			$("<div>").addClass("d-flex flex-row align-items-center justify-content-between position-sticky top-0").append(
-				$("<div>").attr("id",id+"-header").addClass("dlg-header fw-bold ps-5 pe-1 py-1 flex-grow-1").text(name),
+			$("<div>").append(
+				$("<div>").attr("id",id+"-header").addClass("dlg-header").text(name),
 				$("<a>").attr({href:"#"}).addClass("dlg-close"),
 			),
 			$(content),
