@@ -1,4 +1,3 @@
-plugin.loadMainCSS();
 plugin.loadLang();
 
 if(plugin.canChangeMenu())
@@ -62,99 +61,95 @@ if(plugin.canChangeMenu())
 		return(escapeHTML(line)+'<br>');
 	}
 
-	plugin.onTaskFinished = function(task,onBackground)
-	{
-		if(!onBackground)
-		{
-			if(plugin.gotImage)
-			{
-				$('.soxplay').show();
+	plugin.onTaskFinished = function(task,onBackground) {
+		if (!onBackground) {
+			if (plugin.gotImage) {
 				$('#tskcmdlog').addClass('soxframe_cont');
 				$('#tskcmdlog').empty();
-				$('#tskcmdlog').append("<div class='soxframe' id='soxframe'><img src='plugins/spectrogram/action.php?cmd=soxgetimage&no="+task.no+
-					"&file="+encodeURIComponent($('#soximgfile').val())+"' /></div>");
-				$('#soxframe img').on('load', function()
-				{
-					plugin.setConsoleSize(this);
-				});
+				$('#tskcmdlog').append(
+					$("<div>").attr({id:"soxframe"}).addClass("soxframe").append(
+						$("<img>").attr({
+							src: `plugins/spectrogram/action.php?cmd=soxgetimage&no=${task.no}&file=${encodeURIComponent($('#soximgfile').val())}`,
+							alt: "",
+						}),
+					),
+				);
+				$('#soxframe img').on('load', () => plugin.setConsoleSize(this));
 				$("#soxtaskno").val(task.no);
-        $('#tsk_btns').prepend(
-          "<input type='button' class='Button soxplay' id='soxsave' value='"+theUILang.exSave+"'>"
-        );
-        $("#soxsave").on('click', function()
-        {
-          $("#soximgcmd").val("soxgetimage");
-          $('#soxgetimg').trigger('submit');
-        });
+				$("#soxsave").on('click', () => {
+					$("#soximgcmd").val("soxgetimage");
+					$('#soxgetimg').trigger('submit');
+				});
+				$('.soxplay').show();
 			}
 			else
-				$('.soxplay').hide();
-		}
+			$('.soxplay').hide();
 	}
+}
 
-	plugin.onTaskShowInterface = function(task)
-	{
-		plugin.gotImage = false;
-		plugin.saveConsoleSize();
-	}
+plugin.onTaskShowInterface = function(task)
+{
+	plugin.gotImage = false;
+	plugin.saveConsoleSize();
+}
 
-	plugin.onTaskHideInterface = function(task)
-	{
-		plugin.setConsoleSize(null);
-	        $('.soxplay').hide();
-		$('#tskcmdlog').removeClass('soxframe_cont');
-	}
+plugin.onTaskHideInterface = function(task)
+{
+	plugin.setConsoleSize(null);
+	$('.soxplay').hide();
+	$('#tskcmdlog').removeClass('soxframe_cont');
+}
 
-	plugin.saveConsoleSize = function()
-	{
-		if(!plugin.consoleWidth)
+plugin.saveConsoleSize = function()
+{
+	if(!plugin.consoleWidth)
 		{
 			plugin.consoleWidth = $('#tskConsole').width();
 			plugin.deltaWidth = $('#tskConsole').width() - $('#tskcmdlog').width();
 		}
 		else
-			plugin.setConsoleSize(null);
-	}
+		plugin.setConsoleSize(null);
+}
 
-	plugin.setConsoleSize = function(img)
-	{
-		if(plugin.consoleWidth &&
-			plugin.deltaWidth)
+plugin.setConsoleSize = function(img)
+{
+	if(plugin.consoleWidth &&
+		plugin.deltaWidth)
 		{
 			if(img)
-			{
-				$('#tskConsole').width(img.naturalWidth+plugin.deltaWidth+window.scrollbarWidth);
-				$('#tskcmdlog').width(img.naturalWidth+window.scrollbarWidth);
-			}
-			else
-			{
-				$('#tskcmdlog').width(plugin.consoleWidth-plugin.deltaWidth);
-				$('#tskConsole').width(plugin.consoleWidth);
-			}
+				{
+					$('#tskConsole').width(img.naturalWidth+plugin.deltaWidth+window.scrollbarWidth);
+					$('#tskcmdlog').width(img.naturalWidth+window.scrollbarWidth);
+				}
+				else
+				{
+					$('#tskcmdlog').width(plugin.consoleWidth-plugin.deltaWidth);
+					$('#tskConsole').width(plugin.consoleWidth);
+				}
 			theDialogManager.center('tskConsole');
 		}
 	}
 }
 
-plugin.onLangLoaded = function()
-{
-	if(!thePlugins.get("_task").allStuffLoaded)
+plugin.onLangLoaded = function() {
+	if (!thePlugins.get("_task").allStuffLoaded)
 		setTimeout(arguments.callee,1000);
-	else
-	{
+	else {
 		$(document.body).append($("<iframe name='soxplayfrm'/>").css({visibility: "hidden"}).attr( { name: "soxplayfrm", id: "soxplayfrm" } ).width(0).height(0));
 		$(document.body).append(
 			$('<form action="plugins/spectrogram/action.php" id="soxgetimg" method="post" target="soxplayfrm">'+
 				'<input type="hidden" name="cmd" id="soximgcmd" value="soxgetimage">'+
 				'<input type="hidden" name="no" id="soxtaskno" value="0">'+
 				'<input type="hidden" name="file" id="soximgfile" value="frame">'+
-			'</form>').width(0).height(0));
+				'</form>').width(0).height(0));
 		plugin.markLoaded();
+		$('#tsk_btns').prepend(
+			$("<button>").attr({type:"button", id:"soxsave"}).addClass("soxplay").text(theUILang.exSave).hide(),
+		);
 	}
 }
 
-plugin.langLoaded = function()
-{
-	if(plugin.enabled)
+plugin.langLoaded = function() {
+	if (plugin.enabled)
 		plugin.onLangLoaded();
 }

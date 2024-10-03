@@ -3,9 +3,12 @@
   line-height: 16px;
   background: #F5F5F5;
   white-space: pre;
-  overflow: scroll;
+  overflow: auto;
   width: 580px;
   cursor: text;
+}
+.tskconsole img {
+  width: 100%;
 }
 #tskcmdlog {
   height: 36rem;
