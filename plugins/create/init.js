@@ -119,14 +119,13 @@ theWebUI.deleteFromRecentTrackers = function()
 plugin.onLangLoaded = function()
 {
 	var plg = thePlugins.get("_task");
-	if(!plg.allStuffLoaded)
+	if (!plg.allStuffLoaded)
 		setTimeout(arguments.callee,1000);
-	else
-	{
+	else {
 		theWebUI.request('?action=rtget',[plugin.getRecentTrackers, plugin]);
 		$('#tsk_btns').prepend(
-			"<input type='button' class='Button' id='xcsave' value='"+theUILang.torrentSave+"'>"
-			 );
+			$("<button>").attr({type:"button", id:"xcsave"}).text(theUILang.torrentSave).hide(),
+		);
 		plugin.addButtonToToolbar("create",theUILang.mnu_create,"theWebUI.showCreate()","remove");
 		plugin.addSeparatorToToolbar("remove");
 		var pieceSize = $("<div>").addClass("row").append(
@@ -221,18 +220,16 @@ plugin.onLangLoaded = function()
 			)[0].outerHTML,
 			true
 		);
-		$("option[value='1024']").attr({selected: ""});
+		$("option[value='1024']").prop("selected", true);
 
 		$(document.body).append($("<iframe name='xcreatefrm'/>").css({visibility: "hidden"}).attr( { name: "xcreatefrm", id: "xcreatefrm" } ).width(0).height(0));
 		$(document.body).append(
 			$('<form action="plugins/create/action.php" id="xgetfile" method="post" target="xcreatefrm">'+
 				'<input type="hidden" name="cmd" value="getfile">'+
 				'<input type="hidden" name="no" id="xtaskno" value="0">'+
-			'</form>').width(0).height(0));
-		$("#xcsave").on('click', function()
-		{
-			$('#xgetfile').trigger('submit');
-		});
+			'</form>').width(0).height(0),
+		);
+		$("#xcsave").on('click', () => $('#xgetfile').trigger('submit'));
 		if (thePlugins.isInstalled("_getdir")) {
 			new theWebUI.rDirBrowser("path_edit", true, 375);
 		}

@@ -129,9 +129,18 @@ div.dlg-window {
   color: #000000;
   border: 2px solid #909090;
   border-radius: 8px;
+  outline: 0px solid transparent;
   display: none;
   max-width: 95vw;
   max-height: 95vh;
+}
+div.dlg-window > div:first-child {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
 }
 div.dlg-window div.row {
   margin: 0.5rem 0;
@@ -150,6 +159,9 @@ div.dlg-header {
   background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center;
   border-bottom: 1px solid #909090;
   border-radius: 10px 10px 0 0;
+  font-weight: bold;
+  padding: 0.25rem 0.25rem 0.25rem 3rem;
+  flex-grow: 1;
 }
 a.dlg-close:link, a.dlg-close:visited {
   display: block;
@@ -294,6 +306,7 @@ div#stg {width: 95vw;}
 div#stg_c {
   display: flex;
   flex-direction: row;
+  background-color: var(--settings-background-color);
 }
 div#stg-pages {
   padding: 0 0.5rem;
@@ -367,6 +380,7 @@ div#stg .lm {
 .stg_con legend {
   position: sticky;
   top: 0;
+  background-color: var(--settings-background-color);
 }
 .ie9 .stg_con {position: static}
 .stg_con table {width: 100%}
@@ -415,9 +429,7 @@ div#gcont div.row:not(.Header) {padding: 0 0.3rem; word-break: break-all;}
 div#gcont div.row > div {padding-top: 0.25rem; padding-bottom: 0.25rem;}
 
 div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-focus: normal; -moz-user-input: enabled; line-height: 11px; color: #545454;}
-.graph_tab_grid,.graph_tab_legend {
-	display: none;
-}
+.graph_tab_grid,.graph_tab_legend {display: none;}
 .graph_tab_grid { background-color: transparent; border: 2px solid #545454; }
 .graph_tab_legend { background-color: #F0F0F0; border: 0px none transparent; }
 .graph_tab_tooltip { position: absolute; border: 1px solid #fdd; padding: 2px; background-color: #fee; color: black; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, Helvetica, sans-serif; opacity: 0.80; }

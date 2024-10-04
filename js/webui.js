@@ -249,10 +249,9 @@ var theWebUI =
 		}
 	},
 
-	assignEvents: function()
-	{
-		window.onresize = theWebUI.resize;
-		window.onorientationchange = theWebUI.resize;
+	assignEvents: function() {
+		window.addEventListener("resize", () => theWebUI.resize());
+		window.addEventListener("orientationchange", () => theWebUI.resize());
 		$(document).on("dragstart", function(e) { return(false); } );
 		$(document).on("selectstart", function(e) { return(e.fromTextCtrl); });
 		$(document).on("contextmenu", function(e) {
@@ -2306,6 +2305,8 @@ var theWebUI =
 		theWebUI.resizeLeft(w);
 		const h = $("#maincont").height() * theWebUI.settings["webui.vsplit"];
 		theWebUI.resizeTop(null, h);
+		// center any open dialog
+		theDialogManager.visible.forEach(id => theDialogManager.center(id));
 	},
 
 	update: function()

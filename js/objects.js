@@ -108,9 +108,9 @@ var theDialogManager =
 	modalState: false,
 
 	make: function(id, name, content, isModal, noClose) {
-		$(document.body).append($("<div>").attr("id",id).addClass("dlg-window").append(
-			$("<div>").addClass("d-flex flex-row align-items-center justify-content-between position-sticky top-0").append(
-				$("<div>").attr("id",id+"-header").addClass("dlg-header fw-bold ps-5 pe-1 py-1 flex-grow-1").text(name),
+		$("#dialog-container").append($("<div>").attr("id",id).addClass("dlg-window").append(
+			$("<div>").append(
+				$("<div>").attr("id",id+"-header").addClass("dlg-header").text(name),
 				$("<a>").attr({href:"#"}).addClass("dlg-close"),
 			),
 			$(content),
@@ -121,13 +121,14 @@ var theDialogManager =
 		var obj = $('#'+id);
 		if(!isModal)
 			isModal = false;
-		obj.css( { position: "absolute", display: "none", outline: "0px solid transparent" } ).
-			data("modal",isModal).data("nokeyclose",noClose);
+		obj.data({
+			modal: isModal,
+			nokeyclose: noClose,
+		});
 		if(!noClose)
 			obj.find(".dlg-close").on("click", () => theDialogManager.hide(id));
 		var self = this;
-		var checkForButtons = function me(val)
-		{
+		var checkForButtons = function me(val) {
 			if(val.hasClass("Cancel"))
 				val.on('click', function() { theDialogManager.hide(id); } );
 			if(val.hasClass("Button"))
@@ -135,8 +136,7 @@ var theDialogManager =
 			val.children().each( function(ndx,val) { me($(val)) } );
 		};
 		checkForButtons(obj);
-		var inScrollBarArea = function(obj,x,y)
-		{
+		var inScrollBarArea = function(obj,x,y) {
 			if(obj.tagName && (/^input|textarea$/i).test(obj.tagName))
 				return(false);
 			var c = $(obj).offset();

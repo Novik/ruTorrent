@@ -264,18 +264,6 @@ ul.CMenu li ul li a.dis:hover
 	color:#333
 }
 
-#tdetails
-{
-	overflow:hidden
-}
-
-#StatusBar
-{
-	border-top:1px solid #292828!important;
-	background:#1E1E1E;
-	margin-top:-2px
-}
-
 #sel
 {
 	border:1px dotted #555
@@ -667,10 +655,6 @@ input.disabled {
 	border:1px solid #333
 }
 
-legend {
-	color:#888
-}
-
 select.cols {
 	border:1px solid #333
 }
@@ -780,8 +764,7 @@ input[type="checkbox"]:checked
 }
 
 input[type="checkbox"]:checked::after {
-	position: relative;
-	left: 3px;
+	margin: auto;
 	content: "✔";
 	color: #fff;
 	text-shadow: #2980b9 0px 1px;
@@ -1041,13 +1024,12 @@ div#lcont div.std:nth-child(2n+1)
 	border-top:1px solid #333;
 	background:#000 url(./images/headers.png) repeat-x 0 0;
 	color:#888;
-	font-family:Roboto
+	font-family:Roboto;
 }
 
 .statuscell td:not(:last-child) {
 	padding-right: 5px;
 }
-
 
 #st_up .icon {
 	background:url(./images/status.png) no-repeat 0px -2px;
