@@ -9,7 +9,7 @@ html, body { background-color: #DFE8F6 }
   --menu-highlight-color: #222222;
   --menu-highlight-background-color: #D9E8FB;
 
-  --settings-background-color: #272E36;
+  --settings-background-color: #DFE8F6;
 }
 #side-panel, category-list {
   border-color: #99BBE8;
@@ -92,37 +92,12 @@ ul.CMenu li a.exp {background: transparent url(./images/menu-parent.gif) no-repe
 
 ul.CMenu li.menuitem hr {background-color: #E0E0E0; color: #000000; border-bottom-width: 1px; border-bottom-color: #FFFFFF}
 
-div.dlg-window { color: #000000; border: 0 }
 div.dlg-header { background: #D9E8FB url(./images/blank.gif) no-repeat scroll 4px center; border: 0; color: #15428B; font-weight: bold}
 
-.stg_con { background-color: #FFFFFF }
 div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
 .lm li a.focus {background-color: #D9E8FB}
 
 div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0px center;}
-
-.x-window-tl { background: url(./images/left-corners.png) no-repeat scroll 0 0 transparent; padding-left: 6px; margin: 0 }
-.x-window-tr { background: url(./images/right-corners.png) no-repeat scroll right 0 transparent; padding-right: 2px; margin: 0 }
-.x-window-tc { background: url(./images/top-bottom.png) repeat-x scroll 0 0 transparent; padding-right: 1px; overflow: hidden; margin: 0 }
-.x-window-ml { background: url(./images/left-right.png) repeat-y scroll 0 0 transparent; padding-left: 4px; margin: 0 }
-.x-window-mr { background: url(./images/left-right.png) repeat-y scroll right 0 transparent; padding-right: 6px; margin: 0 }
-.x-window-bl { background: url(./images/left-corners.png) no-repeat scroll 0 bottom transparent; padding-left: 6px; margin: 0 }
-.x-window-br { background: url(./images/right-corners.png) no-repeat scroll right bottom transparent; padding-right: 6px; margin: 0 }
-.x-window-bc { background: url(./images/top-bottom.png) repeat-x scroll 0 bottom transparent; margin: 0 }
-
-.x-shadow { overflow: hidden; position: absolute; display: none }
-.x-shadow * { overflow: hidden; clear: none; margin: 0; padding: 0; border: 0 none }
-.xsb, .xst  { height: 6px; width: 100% }
-.xstl { background: url(./images/shadow.png) no-repeat scroll 0 0 transparent; float: left; width: 6px; height: 6px }
-.xstc { background: url(./images/shadow.png) repeat-x scroll 0 -30px transparent; float: left; height: 6px }
-.xstr { background: url(./images/shadow.png) repeat-x scroll 0 -18px transparent; float: left; width: 6px; height: 6px }
-.xsc  { width: 100%; }
-.xsml { background: url(./images/shadow-lr.png) repeat-y scroll 0 0 transparent; float: left; width: 6px; height: 100% }
-.xsmc { background: url(./images/shadow-c.png) repeat scroll 0 0 transparent; float: left; height: 100% }
-.xsmr { background: url(./images/shadow-lr.png) repeat-y scroll -6px 0 transparent; float: left; width: 6px; height: 100% }
-.xsbl { background: url(./images/shadow.png) no-repeat scroll 0 -12px transparent; float: left; width: 6px; height: 6px }
-.xsbc { background: url(./images/shadow.png) repeat-x scroll 0 -36px transparent; float: left; height: 6px }
-.xsbr { background: url(./images/shadow.png) repeat-x scroll 0 -6px transparent; float: left; width: 6px; height: 6px }
 
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
