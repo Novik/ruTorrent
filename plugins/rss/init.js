@@ -1340,203 +1340,209 @@ plugin.onLangLoaded = function()
 		theUILang.rssFeeds,
 	);
 	
+	const dlgAddRSSContent = $("<div>").addClass("cont fxcaret").append(
+		$("<div>").addClass("row").append(
+			...[
+				["rssURL", theUILang.feedURL],
+				["rssLabel", theUILang.alias],
+			].flatMap(([id, text]) => [
+				$("<div>").addClass("col-12 col-md-3").append(
+					$("<label>").attr({for:id}).text(text),
+				),
+				$("<div>").addClass("col-12 col-md-9").append(
+					$("<input>").attr({type:"text", id:id}),
+				),
+			]),
+		),
+	);
+	const dlgAddRSSButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).addClass("OK").on("click", () => {theDialogManager.hide('dlgAddRSS'); theWebUI.addRSS(); return false;}).text(theUILang.ok),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+	);
 	theDialogManager.make("dlgAddRSS", theUILang.addRSS,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<div>").addClass("row").append(
-				...[
-					["rssURL", theUILang.feedURL],
-					["rssLabel", theUILang.alias],
-				].flatMap(([id, text]) => [
-					$("<div>").addClass("col-12 col-md-3").append(
-						$("<label>").attr({for:id}).text(text),
-					),
-					$("<div>").addClass("col-12 col-md-9").append(
-						$("<input>").attr({type:"text", id:id}),
-					),
-				]),
-			),
-		)[0].outerHTML +
-		$("<div>").addClass("buttons-list").append(
-			$("<button>").attr({type:"button", onClick: "theDialogManager.hide('dlgAddRSS');theWebUI.addRSS();return false;"}).addClass("OK").text(theUILang.ok),
-			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		[dlgAddRSSContent, dlgAddRSSButtons],
 		true,
+	);
+
+	const dlgAddRSSGroupContent = $("<div>").addClass("cont fxcaret").append(
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12 col-md-3 text-nowrap").append(
+				$("<label>").attr({for:"rssGroupLabel"}).text(theUILang.alias + ": "),
+			),
+			$("<div>").addClass("col-12 col-md-9").append(
+				$("<input>").attr({type:"hidden", id:"rssGroupHash"}),
+				$("<input>").attr({type:"text", id:"rssGroupLabel"}),
+			),
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.addRSSGroupContent),
+				$("<div>").attr({id:"rssGroupSet"}).addClass("d-flex flex-column align-items-start overflow-y-auto"),
+			),
+		),
+	);
+	const dlgAddRSSGroupButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).addClass("OK").text(theUILang.ok).on("click", () => {theWebUI.addRSSGroup(); return false;}),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
 	);
 	theDialogManager.make("dlgAddRSSGroup", theUILang.addRSSGroup,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<div>").addClass("row").append(
+		[dlgAddRSSGroupContent, dlgAddRSSGroupButtons],
+		true,
+	);
+
+	const dlgEditRSSContent = $("<div>").addClass("cont fxcaret").append(
+		$("<div>").addClass("row").append(
+			...[
+				["editrssURL", theUILang.feedURL],
+				["editrssLabel", theUILang.alias],
+			].flatMap(([id, text]) => [
 				$("<div>").addClass("col-12 col-md-3").append(
-					$("<label>").attr({for:"rssGroupLabel"}).text(theUILang.alias + ": "),
+					$("<label>").attr({for:id}).text(text),
 				),
 				$("<div>").addClass("col-12 col-md-9").append(
-					$("<input>").attr({type:"hidden", id:"rssGroupHash"}),
-					$("<input>").attr({type:"text", id:"rssGroupLabel"}),
+					$("<input>").attr({type:"text", id:id}),
 				),
-				$("<fieldset>").append(
-					$("<legend>").text(theUILang.addRSSGroupContent),
-					$("<div>").attr({id:"rssGroupSet"}).addClass("d-flex flex-column align-items-start overflow-y-auto"),
-					),
-				),
-			)[0].outerHTML +
-			$("<div>").addClass("buttons-list").append(
-				$("<button>").attr({type:"button"}).addClass("OK").text(theUILang.ok).on(
-					"click", () => {theWebUI.addRSSGroup(); return false;}
-				),
-				$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-			)[0].outerHTML,
-		true,
+			]),
+		),
+	);
+	const dlgEditRSSButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).addClass("OK").text(theUILang.ok).on("click", () => {theDialogManager.hide("dlgEditRSS"); theWebUI.editRSS(); return false;}
+		),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
 	);
 	theDialogManager.make("dlgEditRSS", theUILang.rssMenuEdit,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<div>").addClass("row").append(
-				...[
-					["editrssURL", theUILang.feedURL],
-					["editrssLabel", theUILang.alias],
-				].flatMap(([id, text]) => [
-					$("<div>").addClass("col-12 col-md-3").append(
-						$("<label>").attr({for:id}).text(text),
-					),
-					$("<div>").addClass("col-12 col-md-9").append(
-						$("<input>").attr({type:"text", id:id}),
-					),
-				]),
-			),
-		)[0].outerHTML +
-		$("<div>").addClass("buttons-list").append(
-			$("<button>").attr({type:"button"}).addClass("OK").text(theUILang.ok).on(
-				"click", () => {theDialogManager.hide("dlgEditRSS"); theWebUI.editRSS(); return false;}
-			),
-			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		[dlgEditRSSContent, dlgEditRSSButtons],
 		true,
+	);
+
+	const dlgLoadTorrentsContent = $("<div>").addClass("cont fxcaret").append(
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12 col-md-3").append(
+				$("<label>").attr({for:"RSSdir_edit"}).text(theUILang.Base_directory),
+			),
+			$("<div>").addClass("col-12 col-md-9").append(
+				$("<input>").attr({type:"text", id:"RSSdir_edit"}),
+			),
+			$("<div>").addClass("col-12 col-md-9 offset-md-3").append(
+				$("<input>").attr({type:"checkbox", id:"RSSnot_add_path"}),
+				$("<label>").attr({for:"RSSnot_add_path"}).text(theUILang.Dont_add_tname),
+			),
+			$("<div>").addClass("col-12 col-md-9 offset-md-3").append(
+				$("<input>").attr({type:"checkbox", id:"RSStorrents_start_stopped"}),
+				$("<label>").attr({for:"RSStorrents_start_stopped"}).text(theUILang.Dnt_start_down_auto),
+			),
+			$("<div>").addClass("col-12 col-md-3").append(
+				$("<label>").attr({for:"RSS_label"}).text(theUILang.Label),
+			),
+			$("<div>").addClass("col-12 col-md-9").append(
+				$("<input>").attr({type:"text", id:"RSS_label"})
+			),
+		),
+	);
+	const dlgLoadTorrentsButtons = $("<div>").attr({id:"buttons"}).addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).addClass("OK").on("click", () => {theDialogManager.hide('dlgLoadTorrents'); theWebUI.RSSLoadTorrents(); return false;}).text(theUILang.ok),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
 	);
 	theDialogManager.make("dlgLoadTorrents", theUILang.torrent_add,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<div>").addClass("row").append(
-				$("<div>").addClass("col-12 col-md-3").append(
-					$("<label>").attr({for:"RSSdir_edit"}).text(theUILang.Base_directory),
-				),
-				$("<div>").addClass("col-12 col-md-9").append(
-					$("<input>").attr({type:"text", id:"RSSdir_edit"}),
-				),
-				$("<div>").addClass("col-12 col-md-9 offset-md-3").append(
-					$("<input>").attr({type:"checkbox", id:"RSSnot_add_path"}),
-					$("<label>").attr({for:"RSSnot_add_path"}).text(theUILang.Dont_add_tname),
-				),
-				$("<div>").addClass("col-12 col-md-9 offset-md-3").append(
-					$("<input>").attr({type:"checkbox", id:"RSStorrents_start_stopped"}),
-					$("<label>").attr({for:"RSStorrents_start_stopped"}).text(theUILang.Dnt_start_down_auto),
-				),
-				$("<div>").addClass("col-12 col-md-3").append(
-					$("<label>").attr({for:"RSS_label"}).text(theUILang.Label),
-				),
-				$("<div>").addClass("col-12 col-md-9").append(
-					$("<input>").attr({type:"text", id:"RSS_label"})
-				),
-			),
-		)[0].outerHTML +
-		$("<div>").attr({id:"buttons"}).addClass("buttons-list").append(
-			$("<button>").attr({type:"button", onClick: "theDialogManager.hide('dlgLoadTorrents');theWebUI.RSSLoadTorrents();return false;"}).addClass("OK").text(theUILang.ok),
-			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		[dlgLoadTorrentsContent, dlgLoadTorrentsButtons],
 		true,
 	);
-	theDialogManager.make("dlgEditFilters", theUILang.rssMenuManager,
-		$("<div>").addClass("cont fxcaret d-flex flex-column flex-md-row align-items-stretch align-items-md-start").append(
-			$("<div>").addClass("lfc flex-grow-0 flex-shrink-0 d-flex flex-column align-items-center").append(
-				$("<div>").attr({id:"filterList"}).addClass("lf p-2 m-2 align-self-stretch").append(
-					$("<ul>").attr({id:"fltlist"}).addClass("p-0 m-0"),
-				),
-				$("<div>").attr({id:"FLTchk_buttons"}).append(
+
+	const dlgEditFiltersContent = $("<div>").addClass("cont fxcaret d-flex flex-column flex-md-row align-items-stretch align-items-md-start").append(
+		$("<div>").addClass("lfc flex-grow-0 flex-shrink-0 d-flex flex-column align-items-center").append(
+			$("<div>").attr({id:"filterList"}).addClass("lf p-2 m-2 align-self-stretch").append(
+				$("<ul>").attr({id:"fltlist"}).addClass("p-0 m-0"),
+			),
+			$("<div>").attr({id:"FLTchk_buttons"}).append(
+				...[
+					[theUILang.rssAddFilter, , "theWebUI.addNewFilter(); return false;"],
+					[theUILang.rssDelFilter, , "theWebUI.deleteCurrentFilter(); return false;"],
+					[theUILang.rssCheckFilter, "chkFilterBtn", "theWebUI.checkCurrentFilter(); return false;"],
+				].map(([text, id, onClick]) => $("<button>").attr(
+					{type:"button", id:id, onClick:onClick}
+				).text(text)),
+			),
+		),
+		$("<div>").attr({id:"filterProps"}).addClass("rf flex-grow-1 flex-shrink-1").append(
+			$("<fieldset>").attr({id:"filterPropsFieldSet"}).append(
+				$("<legend>").text(theUILang.rssFiltersLegend),
+				$("<div>").addClass("row").append(
 					...[
-						[theUILang.rssAddFilter, , "theWebUI.addNewFilter(); return false;"],
-						[theUILang.rssDelFilter, , "theWebUI.deleteCurrentFilter(); return false;"],
-						[theUILang.rssCheckFilter, "chkFilterBtn", "theWebUI.checkCurrentFilter(); return false;"],
-					].map(([text, id, onClick]) => $("<button>").attr(
-						{type:"button", id:id, onClick:onClick}
-					).text(text)),
-				),
-			),
-			$("<div>").attr({id:"filterProps"}).addClass("rf flex-grow-1 flex-shrink-1").append(
-				$("<fieldset>").attr({id:"filterPropsFieldSet"}).append(
-					$("<legend>").text(theUILang.rssFiltersLegend),
-					$("<div>").addClass("row").append(
-						...[
-							["text", "FLT_body", theUILang.rssFilter],
-							["text", "FLT_exclude", theUILang.rssExclude],
-							["checkbox", "FLTchktitle", theUILang.rssCheckTitle],
-							["checkbox", "FLTchkdesc", theUILang.rssCheckDescription],
-							["checkbox", "FLTchklink", theUILang.rssCheckLink],
-							["select", "FLT_rss", theUILang.rssStatus, ["", theUILang.allFeeds]],
-							["text", "FLTdir_edit", theUILang.Base_directory],
-							["checkbox", "FLTnot_add_path", theUILang.Dont_add_tname],
-							["checkbox", "FLTtorrents_start_stopped", theUILang.Dnt_start_down_auto],
-							["select", "FLT_interval", theUILang.rssMinInterval, [
-								[-1, theUILang.rssIntervalAlways],
-								[0, theUILang.rssIntervalOnce],
-								[12, theUILang.rssInterval12h],
-								[24, theUILang.rssInterval1d],
-								[48, theUILang.rssInterval2d],
-								[72, theUILang.rssInterval3d],
-								[96, theUILang.rssInterval4d],
-								[144, theUILang.rssInterval6d],
-								[168, theUILang.rssInterval1w],
-								[336, theUILang.rssInterval2w],
-								[504, theUILang.rssInterval3w],
-								[720, theUILang.rssInterval1m],
-							]],
-						].flatMap(([type, id, text, options]) => {
-							switch (type) {
-								case "text": {
-									return [
-										$("<div>").addClass("col-12 col-md-3").append(
-											$("<label>").attr({for:id}).text(text),
-										),
-										$("<div>").addClass("col-12 col-md-9").append(
-											$("<input>").attr({id:id, type:"text"})
-										),
-									];
-								};
-								case "checkbox": {
-									return [
-										$("<div>").addClass("col-12 col-md-9 offset-md-3").append(
-											$("<input>").attr({type:"checkbox", id:id}),
-											$("<label>").attr({for:id}).text(text),
-										),
-									];
-								}
-								case "select": {
-									return [
-										$("<div>").addClass("col-12 col-md-3").append(
-											$("<label>").attr({for:id}).text(text),
-										),
-										$("<div>").addClass("col-12 col-md-9").append(
-											$("<select>").attr({id:id}).append(
-												...options.map(([value, text]) => $("<option>").val(value).text(text)),
-											),
-										),
-									];
-								}
-								default: {
-									return;
-								}
+						["text", "FLT_body", theUILang.rssFilter],
+						["text", "FLT_exclude", theUILang.rssExclude],
+						["checkbox", "FLTchktitle", theUILang.rssCheckTitle],
+						["checkbox", "FLTchkdesc", theUILang.rssCheckDescription],
+						["checkbox", "FLTchklink", theUILang.rssCheckLink],
+						["select", "FLT_rss", theUILang.rssStatus, ["", theUILang.allFeeds]],
+						["text", "FLTdir_edit", theUILang.Base_directory],
+						["checkbox", "FLTnot_add_path", theUILang.Dont_add_tname],
+						["checkbox", "FLTtorrents_start_stopped", theUILang.Dnt_start_down_auto],
+						["select", "FLT_interval", theUILang.rssMinInterval, [
+							[-1, theUILang.rssIntervalAlways],
+							[0, theUILang.rssIntervalOnce],
+							[12, theUILang.rssInterval12h],
+							[24, theUILang.rssInterval1d],
+							[48, theUILang.rssInterval2d],
+							[72, theUILang.rssInterval3d],
+							[96, theUILang.rssInterval4d],
+							[144, theUILang.rssInterval6d],
+							[168, theUILang.rssInterval1w],
+							[336, theUILang.rssInterval2w],
+							[504, theUILang.rssInterval3w],
+							[720, theUILang.rssInterval1m],
+						]],
+					].flatMap(([type, id, text, options]) => {
+						switch (type) {
+							case "text": {
+								return [
+									$("<div>").addClass("col-12 col-md-3").append(
+										$("<label>").attr({for:id}).text(text),
+									),
+									$("<div>").addClass("col-12 col-md-9").append(
+										$("<input>").attr({id:id, type:"text"})
+									),
+								];
+							};
+							case "checkbox": {
+								return [
+									$("<div>").addClass("col-12 col-md-9 offset-md-3").append(
+										$("<input>").attr({type:"checkbox", id:id}),
+										$("<label>").attr({for:id}).text(text),
+									),
+								];
 							}
-						}),
-						$("<div>").addClass("col-12 col-md-3").append(
-							$("<label>").attr({for:"FLT_label"}).text(theUILang.Label),
-						),
-						$("<div>").addClass("col-12 col-md-9").append(
-							$("<input>").attr({id:"FLT_label", type:"text"}),
-						),
-					)
-				),
+							case "select": {
+								return [
+									$("<div>").addClass("col-12 col-md-3").append(
+										$("<label>").attr({for:id}).text(text),
+									),
+									$("<div>").addClass("col-12 col-md-9").append(
+										$("<select>").attr({id:id}).append(
+											...options.map(([value, text]) => $("<option>").val(value).text(text)),
+										),
+									),
+								];
+							}
+							default: {
+								return;
+							}
+						}
+					}),
+					$("<div>").addClass("col-12 col-md-3").append(
+						$("<label>").attr({for:"FLT_label"}).text(theUILang.Label),
+					),
+					$("<div>").addClass("col-12 col-md-9").append(
+						$("<input>").attr({id:"FLT_label", type:"text"}),
+					),
+				)
 			),
-		)[0].outerHTML +
-		$("<div>").attr({id:"FLT_buttons"}).addClass("buttons-list").append(
-			$("<button>").attr({type:"button", onClick:"theWebUI.rssClearFilter();return false;"}).text(theUILang.rssClearFilter),
-			$("<button>").attr({type:"button", onClick:"theDialogManager.hide('dlgEditFilters');theWebUI.setFilters();return false;"}).addClass("OK").text(theUILang.ok),
-			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		),
+	);
+	const dlgEditFiltersButtons = $("<div>").attr({id:"FLT_buttons"}).addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).on("click", () => {theWebUI.rssClearFilter(); return false;}).text(theUILang.rssClearFilter),
+		$("<button>").attr({type:"button"}).addClass("OK").on("click", () => {theDialogManager.hide('dlgEditFilters'); theWebUI.setFilters(); return false;}).text(theUILang.ok),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+	);
+	theDialogManager.make("dlgEditFilters", theUILang.rssMenuManager,
+		[dlgEditFiltersContent, dlgEditFiltersButtons],
 	);
 	$("#gcont").append( $("<div>").attr("id","rsslayout").css( "display", "none" ));
 

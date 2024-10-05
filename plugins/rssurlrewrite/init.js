@@ -256,76 +256,77 @@ plugin.createPluginMenu = function()
 		theContextMenu.add([theUILang.mnu_rssurlrewrite, "theWebUI.showRules()"]);		
 }
 
-plugin.onLangLoaded = function()
-{
+plugin.onLangLoaded = function() {
 	this.registerTopMenu(5);
-	theDialogManager.make( "dlgEditRules", theUILang.rssRulesManager,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<div>").addClass("row").append(
-				$("<div>").addClass("col-md-6 d-flex flex-column align-items-center").append(
-					$("<div>").addClass("lf_rur align-self-stretch").append(
-						$("<ul>").attr({id: "rlslist"}),
-					),
-					$("<div>").addClass("buttons-group-row").append(
-						$("<button>").attr({onclick: "theWebUI.addNewRule(); return(false);"}).text(theUILang.rssAddRule),
-						$("<button>").attr({onclick: "theWebUI.deleteCurrentRule(); return(false);"}).text(theUILang.rssDelRule),
-						$("<button>").attr({id: "chkRuleBtn", onclick: "theWebUI.checkCurrentRule(); return(false);"}).text(theUILang.rssCheckRule),
+	const dlgEditRulesContent = $("<div>").addClass("cont fxcaret").append(
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-md-6 d-flex flex-column align-items-center").append(
+				$("<div>").addClass("lf_rur align-self-stretch").append(
+					$("<ul>").attr({id: "rlslist"}),
+				),
+				$("<div>").addClass("buttons-group-row").append(
+					$("<button>").attr({onclick: "theWebUI.addNewRule(); return(false);"}).text(theUILang.rssAddRule),
+					$("<button>").attr({onclick: "theWebUI.deleteCurrentRule(); return(false);"}).text(theUILang.rssDelRule),
+					$("<button>").attr({id: "chkRuleBtn", onclick: "theWebUI.checkCurrentRule(); return(false);"}).text(theUILang.rssCheckRule),
+				),
+			),
+			$("<div>").addClass("rf_rur col-md-6 d-flex flex-column align-items-stretch").append(
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.rssRulesLegend),
+					$("<div>").addClass("d-flex flex-column align-items-stretch").append(
+						$("<select>").attr({id: "RLS_src"}).append(
+							$("<option>").val(1).text(theUILang.rssSrcHref),
+							$("<option>").val(0).text(theUILang.rssSrcGuid),
+						),
+						$("<input>").attr({type: "text", id: "RLS_pattern"}),
+						$("<select>").attr({id: "RLS_dst"}).append(
+							$("<option>").val(1).text(theUILang.rssDstHref),
+							$("<option>").val(0).text(theUILang.rssDstGuid),
+						),
+						$("<input>").attr({type: "text", id: "RLS_replacement"}),
+						$("<div>").addClass("row align-items-center").append(
+							$("<div>").addClass("p-0 pe-2 col-md-3 d-flex justify-content-start justify-content-md-end").append(
+								$("<label>").attr({for: "RLS_rss"}).text(theUILang.rssStatus + ": "),
+							),
+							$("<div>").addClass("p-0 col-md-9 d-flex").append(
+								$("<select>").attr({id: "RLS_rss"}).append(
+									$("<option>").val("").text(theUILang.allFeeds),
+								),
+							),
+						),
 					),
 				),
-				$("<div>").addClass("rf_rur col-md-6 d-flex flex-column align-items-stretch").append(
-					$("<fieldset>").append(
-						$("<legend>").text(theUILang.rssRulesLegend),
-						$("<div>").addClass("d-flex flex-column align-items-stretch").append(
-							$("<select>").attr({id: "RLS_src"}).append(
-								$("<option>").val(1).text(theUILang.rssSrcHref),
-								$("<option>").val(0).text(theUILang.rssSrcGuid),
-							),
-							$("<input>").attr({type: "text", id: "RLS_pattern"}),
-							$("<select>").attr({id: "RLS_dst"}).append(
-								$("<option>").val(1).text(theUILang.rssDstHref),
-								$("<option>").val(0).text(theUILang.rssDstGuid),
-							),
-							$("<input>").attr({type: "text", id: "RLS_replacement"}),
-							$("<div>").addClass("row align-items-center").append(
-								$("<div>").addClass("p-0 pe-2 col-md-3 d-flex justify-content-start justify-content-md-end").append(
-									$("<label>").attr({for: "RLS_rss"}).text(theUILang.rssStatus + ": "),
-								),
-								$("<div>").addClass("p-0 col-md-9 d-flex").append(
-									$("<select>").attr({id: "RLS_rss"}).append(
-										$("<option>").val("").text(theUILang.allFeeds),
-									),
-								),
+				$("<fieldset>").append(
+					$("<legend>").text(theUILang.rssRulesDebug),
+					$("<div>").addClass("row align-items-center").append(
+						$("<div>").addClass("p-0 pe-2 col-md-3 d-flex justify-content-start justify-content-md-end").append(
+							$("<label>").attr({for: "RLS_test"}).text(theUILang.rssTestString + ": "),
+						),
+						$("<div>").addClass("p-0 col-md-9 d-flex").append(
+							$("<input>").attr(
+								{type: "text", id: "RLS_test", placeholder: "http://www.mininova.org/get/12345"}
 							),
 						),
 					),
-					$("<fieldset>").append(
-						$("<legend>").text(theUILang.rssRulesDebug),
-						$("<div>").addClass("row align-items-center").append(
-							$("<div>").addClass("p-0 pe-2 col-md-3 d-flex justify-content-start justify-content-md-end").append(
-								$("<label>").attr({for: "RLS_test"}).text(theUILang.rssTestString + ": "),
-							),
-							$("<div>").addClass("p-0 col-md-9 d-flex").append(
-								$("<input>").attr(
-									{type: "text", id: "RLS_test", placeholder: "http://www.mininova.org/get/12345"}
-								),
-							),
+					$("<div>").addClass("row align-items-center").append(
+						$("<div>").addClass("p-0 pe-2 col-md-3 d-flex justify-content-start justify-content-md-end").append(
+							$("<label>").attr({for: "RLS_result"}).text(theUILang.rssTestResult + ":"),
 						),
-						$("<div>").addClass("row align-items-center").append(
-							$("<div>").addClass("p-0 pe-2 col-md-3 d-flex justify-content-start justify-content-md-end").append(
-								$("<label>").attr({for: "RLS_result"}).text(theUILang.rssTestResult + ":"),
-							),
-							$("<div>").addClass("p-0 col-md-9 d-flex").append(
-								$("<input>").attr({type: "text", id: "RLS_result", readonly: ""}),
-							),
+						$("<div>").addClass("p-0 col-md-9 d-flex").append(
+							$("<input>").attr({type: "text", id: "RLS_result", readonly: ""}),
 						),
 					),
 				),
 			),
-		)[0].outerHTML + 
-		$("<div>").addClass("buttons-list").append(
-			$("<button>").addClass("OK").text(theUILang.ok).on("click", () => {theDialogManager.hide("dlgEditRules"); theWebUI.setRules()}),
-			$("<button>").addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		),
+	);
+	const dlgEditRulesButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").addClass("OK").text(theUILang.ok).on("click", () => {theDialogManager.hide("dlgEditRules"); theWebUI.setRules()}),
+		$("<button>").addClass("Cancel").text(theUILang.Cancel),
+	);
+	theDialogManager.make(
+		"dlgEditRules", theUILang.rssRulesManager,
+		[dlgEditRulesContent, dlgEditRulesButtons],
 	);
 };
 

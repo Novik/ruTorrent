@@ -152,72 +152,67 @@ plugin.onLangLoaded = function()
 		if(plugin.hideHybrid)
 			hybridTorrent = "";
 
+		const tcreateContent = $("<div>").addClass("cont fxcaret").append(
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.SelectSource),
+				$("<div>").addClass("row").append(
+					$("<div>").addClass("col-12 d-flex flex-row").append(
+						$("<input>").attr({type: "text", id: "path_edit", name: "path_edit", autocomplete: "off"}).addClass("flex-grow-1"),
+					),
+				),
+			),
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.TorrentProperties),
+				$("<div>").addClass("row").append(
+					$("<div>").addClass("col-md-2 align-self-start").append(
+						$("<label>").attr({for: "trackers", name: "lbl_trackers", id: "lbl_trackers"}).text(theUILang.Trackers + ": "),
+					),
+					$("<div>").addClass("col-md-10 d-flex flex-row").append(
+						$("<textarea>").attr({id: "trackers", name: "trackers"}).addClass("flex-grow-1"),
+					),
+				),
+				$("<div>").addClass("row").append(
+					$("<div>").addClass("col-md-2").append(
+						$("<label>").attr({for: "comment", name: "lbl_comment", id: "lbl_comment"}).text(theUILang.Comment + ": "),
+					),
+					$("<div>").addClass("col-md-10 d-flex flex-row").append(
+						$("<input>").attr({type: "text", id: "comment", name: "comment"}).addClass("flex-grow-1"),
+					),
+				),
+				$("<div>").addClass("row").append(
+					$("<div>").addClass("col-md-2").append(
+						$("<label>").attr({for: "source", name: "lbl_source", id: "lbl_source"}).text(theUILang.source + ": "),
+					),
+					$("<div>").addClass("col-md-10 d-flex flex-row").append(
+						$("<input>").attr({type: "text", id: "source", name: "source"}).addClass("flex-grow-1"),
+					),
+				),
+				pieceSize,
+			),
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.Other),
+				$("<div>").addClass("row").append(
+					$("<div>").addClass("col-md-4 d-flex flex-row align-items-center").append(
+						$("<input>").attr({type: "checkbox", name: "start_seeding", id: "start_seeding"}),
+						$("<label>").attr({for: "start_seeding", id: "lbl_start_seeding"}).text(theUILang.StartSeeding),
+					),
+					$("<div>").addClass("col-md-4 d-flex flex-row align-items-center").append(
+						$("<input>").attr({type: "checkbox", name: "private", id: "private"}),
+						$("<label>").attr({for: "private", id: "lbl_private"}).text(theUILang.PrivateTorrent),
+					),
+					...hybridTorrent,
+				),
+			),
+		);
+		const tcreateButtons = $("<div>").addClass("buttons-list").append(
+			$("<button>").attr({type:"button", id:"recentTrackers"}).text(theUILang.recentTrackers + "...").on("click", () => {theWebUI.showRecentTrackers();}).addClass("menuitem"),
+			$("<button>").attr({type:"button", id:"deleteFromRecentTrackers"}).text(theUILang.deleteFromRecentTrackers).on("click", () => {theWebUI.deleteFromRecentTrackers();}),
+			$("<div>").addClass("space d-none d-md-block"),
+			$("<button>").attr({type:"button", id:"torrentCreate"}).text(theUILang.torrentCreate).on("click", () => {theWebUI.checkCreate();}).addClass("OK"),
+			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+		);
 		theDialogManager.make("tcreate",theUILang.CreateNewTorrent,
-			$("<div>").addClass("cont fxcaret").append(
-				$("<fieldset>").append(
-					$("<legend>").text(theUILang.SelectSource),
-					$("<div>").addClass("row").append(
-						$("<div>").addClass("col-12 d-flex flex-row").append(
-							$("<input>").attr({type: "text", id: "path_edit", name: "path_edit", autocomplete: "off"}).addClass("flex-grow-1"),
-						),
-					),
-				),
-				$("<fieldset>").append(
-					$("<legend>").text(theUILang.TorrentProperties),
-					$("<div>").addClass("row").append(
-						$("<div>").addClass("col-md-2 align-self-start").append(
-							$("<label>").attr({for: "trackers", name: "lbl_trackers", id: "lbl_trackers"}).text(theUILang.Trackers + ": "),
-						),
-						$("<div>").addClass("col-md-10 d-flex flex-row").append(
-							$("<textarea>").attr({id: "trackers", name: "trackers"}).addClass("flex-grow-1"),
-						),
-					),
-					$("<div>").addClass("row").append(
-						$("<div>").addClass("col-md-2").append(
-							$("<label>").attr({for: "comment", name: "lbl_comment", id: "lbl_comment"}).text(theUILang.Comment + ": "),
-						),
-						$("<div>").addClass("col-md-10 d-flex flex-row").append(
-							$("<input>").attr({type: "text", id: "comment", name: "comment"}).addClass("flex-grow-1"),
-						),
-					),
-					$("<div>").addClass("row").append(
-						$("<div>").addClass("col-md-2").append(
-							$("<label>").attr({for: "source", name: "lbl_source", id: "lbl_source"}).text(theUILang.source + ": "),
-						),
-						$("<div>").addClass("col-md-10 d-flex flex-row").append(
-							$("<input>").attr({type: "text", id: "source", name: "source"}).addClass("flex-grow-1"),
-						),
-					),
-					pieceSize,
-				),
-				$("<fieldset>").append(
-					$("<legend>").text(theUILang.Other),
-					$("<div>").addClass("row").append(
-						$("<div>").addClass("col-md-4 d-flex flex-row align-items-center").append(
-							$("<input>").attr({type: "checkbox", name: "start_seeding", id: "start_seeding"}),
-							$("<label>").attr({for: "start_seeding", id: "lbl_start_seeding"}).text(theUILang.StartSeeding),
-						),
-						$("<div>").addClass("col-md-4 d-flex flex-row align-items-center").append(
-							$("<input>").attr({type: "checkbox", name: "private", id: "private"}),
-							$("<label>").attr({for: "private", id: "lbl_private"}).text(theUILang.PrivateTorrent),
-						),
-						...hybridTorrent,
-					),
-				),
-			)[0].outerHTML + 
-			$("<div>").addClass("buttons-list").append(
-				$("<input>").attr(
-					{type: "button", id: "recentTrackers", onclick: "theWebUI.showRecentTrackers();"}
-				).val(theUILang.recentTrackers + "...").addClass("Button menuitem"),
-				$("<input>").attr(
-					{type: "button", id: "deleteFromRecentTrackers", onclick: "theWebUI.deleteFromRecentTrackers();"}
-				).val(theUILang.deleteFromRecentTrackers).addClass("Button"),
-				$("<div>").addClass("space d-none d-md-block"),
-				$("<input>").attr(
-					{type: "button", id: "torrentCreate", onclick: "theWebUI.checkCreate();"}
-				).val(theUILang.torrentCreate).addClass("OK Button"),
-				$("<input>").attr({type: "button"}).addClass("Cancel Button").val(theUILang.Cancel),
-			)[0].outerHTML,
+			[tcreateContent, tcreateButtons],
 			true
 		);
 		$("option[value='1024']").prop("selected", true);

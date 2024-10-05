@@ -148,35 +148,24 @@ plugin.wasAdded = function(data)
 	}
 }
 
-plugin.onLangLoaded = function()
-{
+plugin.onLangLoaded = function() {
 	this.registerTopMenu(9);
-	theDialogManager.make( "dlgBulkAdd", theUILang.bulkAdd,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<textarea>").attr({id:"bulkadd"}),
-			$("<span>").text(theUILang.bulkAddDescription),
-		)[0].outerHTML +
-		$("<div>").addClass("buttons-list").append(
-			$("<button>").attr({type:"button"}).addClass("OK").prop("disabled", true).text(theUILang.ok),
-			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+	const dlgBulkAddContent = $("<div>").addClass("cont fxcaret").append(
+		$("<textarea>").attr({id:"bulkadd"}).on("input", (ev) => {
+			$('#dlgBulkAdd .OK').prop('disabled', ev.target.value.trim() === '');
+		}),
+		$("<span>").text(theUILang.bulkAddDescription),
 	);
-	var text = $$('bulkadd');
-	theDialogManager.setHandler('dlgBulkAdd','beforeShow',function()
-	{
-		text.value = '';
+	const dlgBulkAddButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).addClass("OK").prop("disabled", true).on("click", () => {theDialogManager.hide("dlgBulkAdd"); plugin.bulkAdd(); return false;}).text(theUILang.ok),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+	);
+	theDialogManager.make( "dlgBulkAdd", theUILang.bulkAdd,
+		[dlgBulkAddContent, dlgBulkAddButtons],
+	);
+	theDialogManager.setHandler('dlgBulkAdd', 'beforeShow', function() {
+		$$('bulkadd').value = '';
 	});
-	$('#dlgBulkAdd .OK').on('click', function()
-	{
-		theDialogManager.hide("dlgBulkAdd");
-		plugin.bulkAdd();
-		return(false);
-	});
-	text.onupdate = text.onkeyup = function()
-	{
-		$('#dlgBulkAdd .OK').prop('disabled', text.value.trim()=='');
-	};
-	text.onpaste = function() { setTimeout( text.onupdate, 10 ) };
 };
 
 plugin.onRemove = function()

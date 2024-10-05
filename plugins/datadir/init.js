@@ -135,38 +135,37 @@ rTorrentStub.prototype.setdatadir = function()
 }
 
 plugin.onLangLoaded = function() {
-	theDialogManager.make('dlg_datadir', theUILang.datadirDlgCaption,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<fieldset>").append(
-				$("<legend>").text(theUILang.DataDir),
-				$("<div>").addClass("row align-items-center").append(
-					$("<div>").addClass("col-md-2 d-none d-md-flex justify-content-end").append(
-						$("<label>").attr({id: "lbl_datadir", for: "edit_datadir"}).text(theUILang.DataDir + ": "),
-					),
-					$("<div>").addClass("col-md-10 d-flex align-items-center").append(
-						$("<input>").attr({type: "text", id: "edit_datadir"}).addClass("flex-grow-1"),
-					),
-					$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
-						$("<input>").attr({type: "checkbox", id: "move_not_add_path"}),
-						$("<label>").attr({for: "move_not_add_path"}).text(theUILang.Dont_add_tname),
-					),
-					$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
-						$("<input>").attr({type: "checkbox", id: "move_datafiles"}),
-						$("<label>").attr({for: "move_datafiles"}).text(theUILang.DataDirMove),
-					),
-					$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
-						$("<input>").attr({type: "checkbox", id: "move_fastresume"}),
-						$("<label>").attr({for: "move_fastresume"}).text(theUILang.doFastResume),
-					),
+	const dlgDatadirContent = $("<div>").addClass("cont fxcaret").append(
+		$("<fieldset>").append(
+			$("<legend>").text(theUILang.DataDir),
+			$("<div>").addClass("row align-items-center").append(
+				$("<div>").addClass("col-md-2 d-none d-md-flex justify-content-end").append(
+					$("<label>").attr({id: "lbl_datadir", for: "edit_datadir"}).text(theUILang.DataDir + ": "),
+				),
+				$("<div>").addClass("col-md-10 d-flex align-items-center").append(
+					$("<input>").attr({type: "text", id: "edit_datadir"}).addClass("flex-grow-1"),
+				),
+				$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
+					$("<input>").attr({type: "checkbox", id: "move_not_add_path"}),
+					$("<label>").attr({for: "move_not_add_path"}).text(theUILang.Dont_add_tname),
+				),
+				$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
+					$("<input>").attr({type: "checkbox", id: "move_datafiles"}),
+					$("<label>").attr({for: "move_datafiles"}).text(theUILang.DataDirMove),
+				),
+				$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
+					$("<input>").attr({type: "checkbox", id: "move_fastresume"}),
+					$("<label>").attr({for: "move_fastresume"}).text(theUILang.doFastResume),
 				),
 			),
-		)[0].outerHTML +
-		$("<div>").addClass("buttons-list").append(
-			$("<button>").addClass("OK").attr(
-				{id: "btn_datadir_ok", onclick: "theWebUI.sendDataDir(); return(false);"}
-			).text(theUILang.ok),
-			$("<button>").addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		),
+	);
+	const dlgDatadirButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").addClass("OK").attr({id: "btn_datadir_ok"}).on("click", () => {theWebUI.sendDataDir(); return false;}).text(theUILang.ok),
+		$("<button>").addClass("Cancel").text(theUILang.Cancel),
+	)
+	theDialogManager.make('dlg_datadir', theUILang.datadirDlgCaption,
+		[dlgDatadirContent, dlgDatadirButtons],
 		true,
 	);
 	if (thePlugins.isInstalled("_getdir")) {

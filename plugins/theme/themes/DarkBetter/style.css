@@ -267,8 +267,6 @@ a.dlg-close:active {
 .Status_Checking {background: transparent url(./images/t_all.svg) no-repeat center center !important; background-size: 16px !important}
 .Status_RSS {background: transparent url(./images/rb_rss.svg) no-repeat center center !important; background-size: 16px !important}
 
-Input.TextboxLarge {border: 1px solid #333333}
-
 a {color: #686868}
 
 .Icon_File {background: transparent url(./images/file.svg) no-repeat left center; background-size: 16px}
