@@ -42,7 +42,7 @@ panel-label[selected] {
   border-color: #D9E8FB;
 }
 
-div#t {background: #181818 url(./images/header_bg.gif) repeat-x center center; border-bottom: 1px solid #333333;}
+#t {background: #181818 url(./images/header_bg.gif) repeat-x center center; border-bottom: 1px solid #333333;}
 #top-menu {
   background-color: #181818;
   border-bottom: 1px solid #333333;
@@ -53,7 +53,7 @@ div#t .nav-link {
   color: #15428B;
   font-weight: normal;
 }
-div#t button.navbar-toggler {background-image: none;}
+.navbar-toggler {background-image: none;}
 
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}

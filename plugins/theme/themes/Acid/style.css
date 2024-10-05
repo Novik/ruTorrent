@@ -73,7 +73,7 @@ div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
 .graph_tab_legend { color: #FFF; background-color: #272E36; }
 .graph_tab_tooltip { color: #FFF; background-color: #272E36; border: 1px solid #BDDBDB; }
 
-div#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
+#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
 #top-menu {
   background-color: #252525;
   border-bottom: 1px solid #252525;

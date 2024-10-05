@@ -78,12 +78,12 @@ ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat s
 
 #sel {border: 1px dotted #555555;}
 
-div#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #333333;}
+#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #333333;}
 #top-menu {
   background-color: #181818;
   border-bottom: 1px solid #333333;
 }
-div#t button.navbar-toggler {
+.navbar-toggler {
   background-image: none;
   border-color: #333333;
 }

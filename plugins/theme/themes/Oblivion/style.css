@@ -133,12 +133,12 @@ ul.CMenu li:hover ul li a:hover { text-shadow:0px -1px 0px #000;}
 
 #sel {border: 1px dotted #555555;}
 
-div#t {background: #000 url(./images/headers.png) repeat-x 0px -252px; border-bottom: none;}
+#t {background: #000 url(./images/headers.png) repeat-x 0px -252px; border-bottom: none;}
 #top-menu {
   background-color: #000;
   border-bottom: none;
 }
-div#t button.navbar-toggler {
+.navbar-toggler {
   background-image: none;
   border-color: #0F0F0F;
 }

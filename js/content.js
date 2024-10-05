@@ -539,7 +539,9 @@ function makeContent() {
 			$("<legend>").text(theUILang.Listening_Port),
 			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
-					$("<input>").attr({type: "checkbox", id: "port_open", onclick: "linked(this, 0, ['port_range', 'port_random']);"}),
+					$("<input>")
+						.attr({type: "checkbox", id: "port_open"})
+						.on("click", (ev) => linked(ev.target, 0, ['port_range', 'port_random'])),
 					$("<label>").attr({for: "port_open"}).text(theUILang.Enable_port_open),
 				),
 				$("<div>").addClass("col-md-6").append(
@@ -595,7 +597,9 @@ function makeContent() {
 			$("<legend>").text(theUILang.Add_bittor_featrs),
 			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
-					$("<input>").attr({type: "checkbox", id: "dht", onchange: "linked(this, 0, ['dht_port']);"}),
+					$("<input>")
+						.attr({type: "checkbox", id: "dht"})
+						.on("change", (ev) => linked(ev.target, 0, ['dht_port'])),
 					$("<label>").attr({for: "dht"}).text(theUILang.En_DHT_ntw),
 				),
 				$("<div>").addClass("col-md-6").append(

@@ -444,19 +444,18 @@ ul.CMenu li ul li a.dis:hover
 	border:1px dotted #555
 }
 
-div#t {
+#t {
 	background-color:#273238;
 	background-image:none;
 	border-bottom:none;
-	padding:4px 0 2px 5px;
-	height: auto;
+	height: 40px;
 }
 
 #top-menu {
   background-color: #273238;
   border-bottom: none;
 }
-div#t button.navbar-toggler {
+.navbar-toggler {
   background-image: none;
   border: none;
 }
@@ -1282,9 +1281,6 @@ span.det {
 
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
-	div#t {
-		height: 40px;
-	}
   div#t .nav-link {
     background-color: transparent;
   }

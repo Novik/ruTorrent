@@ -75,15 +75,17 @@
 		<div id="sel" class="position-absolute"></div>
 		<div id="sc"></div>
 		<div id="t" class="py-0 navbar navbar-expand-md">
-			<div class="px-0 container-fluid justify-content-between align-items-stretch">
-				<button class="d-md-none my-2 navbar-toggler h-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-sidepanel" aria-controls="offcanvas-sidepanel">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-						<path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
-					</svg>
-				</button>
-				<button class="navbar-toggler my-2 h-auto" type="button" data-bs-toggle="collapse" data-bs-target="#top-menu" aria-controls="top-menu" aria-expanded="false" aria-label="Toggle navigation">
-					<div class="navbar-toggler-icon"></div>
-				</button>	
+			<div class="h-100 px-0 container-fluid">
+				<div id="toggler-container" class="d-flex d-md-none">
+					<button class="d-md-none my-2 navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-sidepanel" aria-controls="offcanvas-sidepanel">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+							<path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+						</svg>
+					</button>
+					<button class="navbar-toggler my-2" type="button" data-bs-toggle="collapse" data-bs-target="#top-menu" aria-controls="top-menu" aria-expanded="false" aria-label="Toggle navigation">
+						<div class="navbar-toggler-icon"></div>
+					</button>	
+				</div>
 				<div class="collapse navbar-collapse px-1 py-2 py-md-0" id="top-menu">
 					<div class="navbar-nav flex-grow-1">
 						<div class="d-flex flex-row align-items-center flex-wrap flex-md-nowrap">
