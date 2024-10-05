@@ -299,6 +299,8 @@ var theUILang =
  Select_all			: "Select all",
  Deselect_all			: "Deselect all",
  showSpeedInTitle		: "Show speed in the title",
+ sidePanelMinWidth		: "Side Panel Min Width",
+ listTableMinHeight		: "List Table Min Height",
  speedGraphDuration		: "Duration of speed graph",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",

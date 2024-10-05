@@ -418,22 +418,31 @@ function makeContent() {
 					$("<input>").attr({type: "checkbox", id: id}),
 					$("<label>").attr({for: id}).text(label),
 				)),
-			),
-			...[
-				["webui.update_interval", theUILang.Update_GUI_every + ": ", theUILang.ms, 3000],
-				["webui.reqtimeout", theUILang.ReqTimeout + ": ", theUILang.ms, 5000],
-			].map(([id, prefix, suffix, value]) => $("<div>").addClass("row").append(
-				$("<div>").addClass("col-md-6").append(
-					$('<label>').attr({for: id}).text(prefix),
-				),
-				$("<div>").addClass("col-9 col-md-5").append(
-					$('<input>').attr({type: "number", id: id, value: value, min: 0}).addClass("flex-grow-1"),
-				),
-				$("<div>").addClass("col-3 col-md-1").append(
-					$('<span>').text(suffix),
-				),
-			)),
-			$("<div>").addClass("row").append(
+				...[
+					['webui.side_panel_min_width', theUILang.sidePanelMinWidth],
+					['webui.list_table_min_height', theUILang.listTableMinHeight],
+				].map(([id, label]) => [
+					$("<div>").addClass("col-12 col-md-6").append(
+						$("<label>").attr({for:id}).text(label),
+					),
+					$("<div>").addClass("col-12 col-md-6").append(
+						$("<input>").attr({type:"text", id}),
+					),
+				]),
+				...[
+					["webui.update_interval", theUILang.Update_GUI_every + ": ", theUILang.ms, 3000],
+					["webui.reqtimeout", theUILang.ReqTimeout + ": ", theUILang.ms, 5000],
+				].map(([id, prefix, suffix, value]) => [
+					$("<div>").addClass("col-md-6").append(
+						$('<label>').attr({for: id}).text(prefix),
+					),
+					$("<div>").addClass("col-9 col-md-5").append(
+						$('<input>').attr({type: "number", id: id, value: value, min: 0}).addClass("flex-grow-1"),
+					),
+					$("<div>").addClass("col-3 col-md-1").append(
+						$('<span>').text(suffix),
+					),
+				]),
 				$("<div>").addClass("col-md-6").append(
 					$("<label>").attr({for: "webui.speedgraph.max_seconds"}).text(theUILang.speedGraphDuration + ": "),
 				),
@@ -442,8 +451,6 @@ function makeContent() {
 						...Object.entries(theUILang.speedGraphDurationOptions).map(([value, text]) => $("<option>").attr({value: value}).text(text),
 					)),
 				),
-			),
-			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
 					$("<label>").attr({for: "webui.retry_on_error"}).text(theUILang.retryOnErrorTitle + ": "),
 				),
@@ -454,8 +461,6 @@ function makeContent() {
 						),
 					),
 				),
-			),
-			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-6 col-md-3").append(
 					$("<label>").attr({for: "webui.lang"}).text(theUILang.mnu_lang + ": "),
 				),
@@ -728,7 +733,7 @@ function makeContent() {
 			$("<div>").attr({id: "stg-pages"}).append(
 				stgGlCont, stgDlCont, stgConCont, stgBtCont, stgFmtCont, stgAoCont,
 				$("<div>").attr({id: "st_btns"}).addClass("buttons-list").append(
-					$("<button>").text(theUILang.ok).attr({onclick: "theDialogManager.hide('stg');theWebUI.setSettings();return(false);"}),
+					$("<button>").text(theUILang.ok).on("click", () => {theDialogManager.hide('stg'); theWebUI.setSettings(); return false;}),
 					$("<button>").text(theUILang.Cancel).addClass("Cancel"),
 				),
 			),

@@ -272,7 +272,6 @@ div#plugins {background: url(../images/plugin.png) 0px center}
 a {color: #686868;}
 #maincont {height: calc(100vh - 36px - 5px - 25px - 5px);}
 #offcanvas-sidepanel {
-  min-width: 200px;
   background-color: #FFFFFF;
 }
 #side-panel {
@@ -281,7 +280,6 @@ a {color: #686868;}
 #list-table {
   border: 1px solid #A0A0A0;
   background-color: #FFFFFF;
-  min-height: 300px;
 }
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
