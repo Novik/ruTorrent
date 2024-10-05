@@ -432,21 +432,6 @@ a {color: #686868; text-decoration: none;}
   background-color: var(--container-bg-color);
 }
 
-.stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
-.Status_Down {background-position: 0px 0px}
-.Status_Up {background-position: 0px -16px}
-.Status_Incompleted {background-position: 0px -32px}
-.Status_Paused {background-position: 0px -48px}
-.Status_Error_Down {background-position: 0px -64px}
-.Status_Error_Up {background-position: 0px -80px}
-.Status_Error {background-position: 0px -96px}
-.Status_Completed {background-position: 0px -112px}
-.Status_Queued_Down {background-position: 0px -128px}
-.Status_Queued_Up {background-position: 0px -144px}
-.Status_Up_Down {background-position: 0px -160px}
-.Status_Checking {background-position: 0px -176px}
-.Status_RSS {background-position: 0px -208px}
-
 div#HDivider, div#VDivider {flex: 0 0 5px;}
 
 #stg {
@@ -651,10 +636,6 @@ div.table_tab {
 span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.gif) no-repeat center center; }
 .webkit div#msg {position: fixed;}
 .konqueror div#msg {position: fixed;}
-
-.Icon_File {background: transparent url(../images/file.gif) no-repeat left center}
-.Icon_Dir {background: transparent url(../images/dir.gif) no-repeat left center}
-.Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
 
 #tadd-header {background-image: url(../images/world.gif)}
 
