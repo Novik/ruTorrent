@@ -66,13 +66,15 @@ plugin.onLangLoaded = function() {
 		$("<legend>").text(name),
 		$("<div>").addClass("row").append(
 			$("<div>").addClass("col-md-6").append(
-				$("<input>").attr({type:"checkbox", id:`${name}_lmenabled`, onchange:`linked(this, 0, ['${name}_lmlogin','${name}_lmpassword','${name}_lmauto'])`}),
+				$("<input>")
+					.attr({type:"checkbox", id:`${name}_lmenabled`})
+					.on("change", (ev) => linked(ev.target, 0, [`${name}_lmlogin`, `${name}_lmpassword`, `${name}_lmauto`])),
 				$("<label>").attr({for:`${name}_lmenabled`, id:`lbl_${name}_lmenabled`}).text(theUILang.Enabled),
 			),
-			$("<div>").addClass("col-4 col-md-2").append(
+			$("<div>").addClass("col-12 col-md-2").append(
 				$("<label>").attr({id:`lbl_${name}_lmauto`, for:`${name}_lmauto`}).addClass("disabled").text(theUILang.accAuto + ": "),
 			),
-			$("<div>").addClass("col-8 col-md-4").append(
+			$("<div>").addClass("col-12 col-md-4").append(
 				$("<select>").attr({id:`${name}_lmauto`, maxlength:64}).append(
 					...[
 						[0, "acAutoNone"], [86400, "acAutoDay"], [604800, "acAutoWeek"], [2592000, "acAutoMonth"],
@@ -81,16 +83,16 @@ plugin.onLangLoaded = function() {
 			),
 		),
 		$("<div>").addClass("row").append(
-			$("<div>").addClass("col-4 col-md-2").append(
+			$("<div>").addClass("col-12 col-md-2").append(
 				$("<label>").attr({id:`lbl_${name}_lmlogin`, for:`${name}_lmlogin`}).addClass("disabled").text(theUILang.accLogin + ": "),
 			),
-			$("<div>").addClass("col-8 col-md-4").append(
+			$("<div>").addClass("col-12 col-md-4").append(
 				$("<input>").attr({type:"text", id:`${name}_lmlogin`, maxlength:32}),
 			),
-			$("<div>").addClass("col-4 col-md-2").append(
+			$("<div>").addClass("col-12 col-md-2").append(
 				$("<label>").attr({id:`lbl_${name}_lmpassword`, for:`${name}_lmpassword`}).addClass("disabled").text(theUILang.accPassword + ": "),
 			),
-			$("<div>").addClass("col-8 col-md-4").append(
+			$("<div>").addClass("col-12 col-md-4").append(
 				$("<input>").attr({type:"password", id:`${name}_lmpassword`, maxlength:64}),
 			),
 		),

@@ -376,30 +376,25 @@ dxSTable.prototype.calcSize = function()
 	return this;
 }
 
-dxSTable.prototype.resizeColumn = function() 
-{
-	if (this.tBody == null)
+dxSTable.prototype.resizeColumn = function() {
+	if (this.tBody === null)
 		return;
 	
-	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-	var needCallHandler = false;
-	var w = 0, c;
-	for (var i = 0; i < _e.length; i++) {
-		c = this.tHeadCols[i];
-		w = this.colsdata[i].width;
-		if (iv(_e[i].style.width) !== w) {
-			_e[i].style.width = w + "px";
+	let needCallHandler = false;
+	this.tBody.querySelectorAll("colgroup col").forEach((col, index) => {
+		const width = this.colsdata[index].width;
+		this.tHead.rows[0].cells[index].style.width = width + "px";
+		if (iv(col.style.width) !== width) {
+			col.style.width = width + "px";
 			needCallHandler = true;
 		}
 		if ((browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) && this.tBody.rows.length > 0) {
-			if ((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width !== w) && (w >= 4)) {
-				this.tBody.rows[0].cells[i].width = w;
+			if ((this.tBody.rows[0].cells[index].style.width || browser.isSafari) && (this.tBody.rows[0].cells[index].style.width !== width) && (width >= 4)) {
+				this.tBody.rows[0].cells[index].style.width = width;
 				needCallHandler = true;
 			}
-//			for( var j=0; j<this.tBody.rows.length; j++ )
-//				this.tBody.rows[j].cells[i].style.textAlign = c.style.textAlign;
 		}
-	}
+	});
 
 	(($type(this.onresize) === "function") && needCallHandler) && this.onresize();
 }
@@ -1139,8 +1134,7 @@ dxSTable.prototype.createIconHTML = function(icon)
 		: $('<span>').addClass(['stable-icon', icon]))[0].outerHTML;
 }
 
-dxSTable.prototype.createRow = function(cols, sId, icon, attr)
-{
+dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	const attrs = { id: sId, index: this.rows, title: cols[0] };
 	if (sId == null) {
 		delete attrs['id'];
@@ -1148,45 +1142,42 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 	Object.assign(attrs, attr || {});
 	const data = this.rowdata[sId]?.fmtdata || {};
 
-	const ret = document.createElement('tr');
-	ret.className = this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "";
-	for(const [a,v] of Object.entries(attrs)) {
-		const attr_node = document.createAttribute(a);
-		attr_node.value = v;
-		ret.setAttributeNode(attr_node);
-	}
-	ret.innerHTML = [...Array(this.cols).keys()]
-			.map((_,i) => [this.colOrder[i], this.colsdata[i]])
-			.map(([ind, cdat]) => ({
-				td: [
-					`<td class="stable-${this.dCont.id}-col-${ind}"`,
-					Boolean(cdat.enabled || browser.isIE7x) ?	'>' : ' style="display: none">',
-					ind === 0 ? this.createIconHTML(icon) : ''
-				],
-				celldata: data[ind] || '',
-				rawvalue: cols[ind] || '',
-				progress: cdat.type == TYPE_PROGRESS,
-			}))
-			.flatMap(({td, celldata, rawvalue, progress}) => progress
-				? [
-					td[0], ` rawvalue="${rawvalue}"`, ...td.slice(1),
-					'<span class="meter-text" style="overflow: visible">', escapeHTML(celldata), '</span>',
-					'<div class="meter-value" style="', Object.entries(this.progressStyle(celldata)).map(pair => pair.join(': ')).join(';'), '">&nbsp;</div>',
-					'</td>'
-				]
-				: [
-					...td,
-					'<div>', escapeHTML(celldata) || '&nbsp;', '</div>',
-					'</td>'
-				]
-			).join('');
-	if(!browser.isIE7x)
-	{
+	const row = $("<tr>").attr(attrs).addClass(this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "");
+	Array.from(Array(this.cols).keys()).forEach((_, i) => {
+		const index = this.colOrder[i];
+		const cdat = this.colsdata[i];
+		const td = $("<td>")
+			.addClass(`stable-${this.dCont.id}-col-${index}`)
+			.css({display: Boolean(cdat.enabled || browser.isIE7x) ? "" : "none"});
+		const celldata = data[index] || '';
+		const rawvalue = cols[index] || '';
+		const isProgress = cdat.type === TYPE_PROGRESS;
+		if (isProgress) {
+			td.addClass("position-relative align-top").attr({rawvalue:rawvalue}).append(
+				$("<div>")
+				.addClass("meter-value")
+				.css(Object.entries(this.progressStyle(celldata)).reduce((acc, curr) => {acc[curr[0]] = curr[1]; return acc}, {}))
+			);
+			td.prepend(
+				$("<span>").addClass("meter-text").css({overflow:"visible"}).text(escapeHTML(celldata)),
+			);
+		} else {
+			td.append(
+				$("<div>").text(escapeHTML(celldata) || " "),
+			);
+		}
+		if (index === 0) {
+			td.children("div").prepend(this.createIconHTML(icon));
+		}
+		row.append(td);
+	});
+	const ret = row[0];
+	if (!browser.isIE7x) {
 		var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
 		for(var i = 0, l = _e.length; i < l; i++) 
 			ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
 	}
-	return(ret);
+	return ret;
 }
 
 dxSTable.prototype.removeRow = function(sId) 

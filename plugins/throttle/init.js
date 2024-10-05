@@ -1,4 +1,5 @@
 plugin.loadLang();
+plugin.loadMainCSS();
 
 plugin.config = theWebUI.config;
 theWebUI.config = function()
@@ -11,13 +12,12 @@ theWebUI.config = function()
 		{
 			for(var i in arr)
 			{
-				if((table.getIdByCol(i)=="throttle") && arr[i])
-  				{
-	   				var thr = arr[i].match(/^thr_(\d{1,2})$/);
+				if((table.getIdByCol(i)=="throttle") && arr[i]) {
+					var thr = arr[i].match(/^thr_(\d{1,2})$/);
 					arr[i] = ( thr && (thr.length>1) && theWebUI.isCorrectThrottle(thr[1]) ? theWebUI.throttles[thr[1]].name : "" );
 					break;
 				}
-		        }
+			}
 			return(plugin.trtFormat(table,arr));
 		};
 	}
