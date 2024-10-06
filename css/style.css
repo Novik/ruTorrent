@@ -62,7 +62,7 @@ button, input[type=button], input[type=submit], .Button {
   border-radius: 3px;
   margin: 0.25rem;
   padding: 1px 10px;
-  background: #F0F0F0 url(../images/h.gif) repeat-x center bottom;
+  background: var(--btn-bg-color) url(../images/h.gif) repeat-x center bottom;
   width: 80px;
   text-wrap: nowrap;
 }
@@ -97,6 +97,8 @@ span {
   --menu-highlight-background-color: #cfdeef;
 
   --settings-background-color: #fafafa;
+
+  --btn-bg-color: #F0F0F0;
 }
 category-list.rightalign-labelsize panel-label::part(size) {
   margin-left: auto;
@@ -209,7 +211,7 @@ div#t {
   z-index: 30;
 }
 div#t button.navbar-toggler {
-  background-color: #F0F0F0;
+  background-color: var(--btn-bg-color);
   width: 5rem;
 }
 div#t a {padding: 3px;}
@@ -233,7 +235,7 @@ div#t .nav-link {
   font-weight: bold;
   border: 1px solid #A0A0A0;
   border-radius: 8px;
-  background-color: #F0F0F0;
+  background-color: var(--btn-bg-color);
   background-image: none;
   margin: 0.15rem;
 }
@@ -271,6 +273,7 @@ div#plugins {background: url(../images/plugin.png) 0px center}
 
 a {color: #686868;}
 #maincont {height: calc(100vh - 36px - 5px - 25px - 5px);}
+.offcanvas-header .btn-close {background-color: var(--btn-bg-color);}
 #offcanvas-sidepanel {
   background-color: #FFFFFF;
 }

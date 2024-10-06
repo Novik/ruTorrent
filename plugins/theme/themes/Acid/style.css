@@ -10,11 +10,12 @@ html, body { background-color: #1e2124; color: #BDDBDB }
   --menu-highlight-background-color: #BDDBDB;
 
   --settings-background-color: #272E36;
+
+  --btn-bg-color: #D7D7D7;
 }
 button, input.Button {
   color: black;
   background-image: url(./images/h.gif);
-  background-color: #D7D7D7;
   border-color: #333;
 }
 button:hover, input.Button:not([disabled]):hover {
