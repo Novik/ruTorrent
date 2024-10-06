@@ -72,6 +72,7 @@ category-panel::part(heading) {
 }
 category-panel[closed]::part(heading) {
   background: url(./images/pnl_close.svg) 4px no-repeat;
+  background-size: 14px;
 }
 
 panel-label {
