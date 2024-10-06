@@ -247,7 +247,8 @@ plugin.onLangLoaded = function() {
 					if (trkTarget) {
 						plugin.refresh('ptrackers');
 					} else {
-						catlist.refreshTorrentLabelTree();
+						theWebUI.categoryList.refreshPanel.plabel([]);
+						theWebUI.update();  // update icons immediately
 					}
 					catlist.syncFn();
 				} else {
