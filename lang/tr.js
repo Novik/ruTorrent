@@ -301,6 +301,8 @@ var theUILang =
  Select_all : "Tümünü seç",
  Deselect_all : "Tüm seçimi kaldır",
  showSpeedInTitle : "Başlıkta hızı göster",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Hız grafiği zaman aralığı",
  speedGraphDurationOptions		: {600: "10 dk", 1800: "30 dk", 3600: "1 saat", 10800: "3 saat"},
  badTempPath : "Web sunucusu kullanıcısının tmp dizinine okuma/yazma/çalıştırma erişimi yok. ruTorrent çalışmayacak.",

@@ -301,6 +301,8 @@ var theUILang =
  Select_all			: "全选",
  Deselect_all			: "全不选",
  showSpeedInTitle		: "在标题中显示速度",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Duration of speed graph",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "网页服务器运行用户对 tmp 文件夹没有 读/写/执行 权限. ruTorrent 将不会工作.",

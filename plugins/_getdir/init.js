@@ -27,6 +27,19 @@ theWebUI.rDirBrowser = class {
 		this.edit.after(
 			this.btn,
 		);
+		// add a handler to the containing dialog window / option page
+		// to close the directory list along with it
+		// 1. `id` of the containing dialog window
+		const dlgId = this.btn.parents(".dlg-window").attr("id");
+		// 2. add an after-hide handler
+		theDialogManager.addHandler(dlgId, "afterHide", () =>self.hide());
+		// 3. `id` of the containing option page
+		const stgId = this.btn.parents(".stg_con").attr("id");
+		// 4. add an after-hide handler if the button is within an option page
+		if (!!stgId) {
+			theOptionsSwitcher.addHandler(stgId, "afterHide", () => self.hide());
+		}
+
 		this.withFiles = withFiles;
 		this.height = height;
 		this.frame = $("<dialog>").attr({id: edit_id + "_frame"}).addClass("browseFrame").append(
@@ -168,20 +181,6 @@ theWebUI.rDirBrowser = class {
 
 	toggle() {
 		return (this.frame.css("display") !== "none") ? this.hide() : this.show();
-	}
-}
-
-plugin.hideBrowseFrame = function(containerId) {
-	if (thePlugins.isInstalled("_getdir")) {
-		$(`#${containerId} .browseEdit`).each((_, ele) => {
-			const frame = $(`#${ele.id}_frame`);
-			if (frame.css("display") !== "none") {
-				$(`#${ele.id}_btn`).text("...");
-				$(`#${ele.id}`).prop("read-only", false);
-				frame.find(".filter-dir").val("");
-				frame.hide();
-			}
-		});
 	}
 }
 

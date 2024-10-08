@@ -36,9 +36,7 @@ div#t {background: none; border: none;}
   border-bottom: 1px solid #9EB6CE;
 }
 div#t button.navbar-toggler {
-  background-color: #B0B0B0;
   background-image: none;
-  border-color: #9EB6CE;
 }
 
 input[type="text"], input[type="password"], input[type="file"], select, textarea { background-color: #FFFFFF; border:1px solid #B5B8C8; }

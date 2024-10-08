@@ -301,6 +301,8 @@ var theUILang =
  Select_all			: "Sélectionner tout",
  Deselect_all			: "Désélectionner tout",
  showSpeedInTitle		: "Vitesse de transfert dans la barre de titre",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Durée du graphique de vitesse",
  speedGraphDurationOptions	: {600: "10 mins", 1800: "30 mins", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Le serveur web n’a pas accès en lecture/écriture/exécution au répertoire tmp. ruTorrent ne fonctionnera pas.",

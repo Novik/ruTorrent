@@ -10,11 +10,13 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --menu-highlight-background-color: #888888;
 
   --settings-background-color: #181818;
+
+  --btn-bg-color: #515151;
 }
 
 button, input[type=button], input[type=submit], .Button {
   border: 1px solid #000;
-  background: #000 url(./images/headers.png) repeat-x 0px 0px;
+  background: var(--btn-bg-color) url(./images/headers.png) repeat-x 0px 0px;
   color:#AACF27;
   cursor: pointer;
   font-weight: bold;
@@ -135,7 +137,6 @@ div#t {background: #000 url(./images/headers.png) repeat-x 0px -252px; border-bo
   border-bottom: none;
 }
 div#t button.navbar-toggler {
-  background-color: #515151;
   background-image: none;
   border-color: #0F0F0F;
 }

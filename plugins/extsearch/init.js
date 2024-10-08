@@ -750,37 +750,38 @@ plugin.shutdownOldVersion = function()
 }
 
 plugin.onLangLoaded = function() {
+	const tegLoadTorrentsContent = $("<div>").addClass("fxcaret cont").append(
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12 col-md-3 justify-content-md-end").append(
+				$("<label>").attr({for:"tegdir_edit"}).text(theUILang.Base_directory + ":"),
+			),
+			$("<div>").addClass("col-12 col-md-9").append(
+				$("<input>").attr({type:"text", id:"tegdir_edit"}),
+			),
+			...[
+				["tegnot_add_path", theUILang.Dont_add_tname],
+				["tegtorrents_start_stopped", theUILang.Dnt_start_down_auto],
+				["tegfast_resume", theUILang.doFastResume],
+			].map(([id, text]) => $("<div>").addClass("col-12 col-md-9 offset-md-3").append(
+				$("<input>").attr({type:"checkbox", id:id}),
+				$("<label>").attr({for:id}).text(text),
+			)),
+			$("<div>").addClass("col-12 col-md-3 justify-content-md-end").append(
+				$("<label>").attr({for:"teglabel"}).text(theUILang.Label + ":"),
+			),
+			$("<div>").addClass("col-12 col-md-9").append(
+				$("<input>").attr({type:"text", id:"teglabel"}),
+			),
+		),
+	);
+	const tegLoadTorrentsButtons = $("<div>").append(
+		$("<div>").attr({id:"buttons"}).addClass("buttons-list").append(
+			$("<button>").attr({type:"button"}).addClass("OK").on("click", () => {theDialogManager.hide('tegLoadTorrents'); theWebUI.tegLoadTorrents(); return(false);}).text(theUILang.ok),
+			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+		),
+	);
 	theDialogManager.make("tegLoadTorrents", theUILang.torrent_add,
-		$("<div>").addClass("fxcaret cont").append(
-			$("<div>").addClass("row").append(
-				$("<div>").addClass("col-12 col-md-3 justify-content-md-end").append(
-					$("<label>").attr({for:"tegdir_edit"}).text(theUILang.Base_directory + ":"),
-				),
-				$("<div>").addClass("col-12 col-md-9").append(
-					$("<input>").attr({type:"text", id:"tegdir_edit"}),
-				),
-				...[
-					["tegnot_add_path", theUILang.Dont_add_tname],
-					["tegtorrents_start_stopped", theUILang.Dnt_start_down_auto],
-					["tegfast_resume", theUILang.doFastResume],
-				].map(([id, text]) => $("<div>").addClass("col-12 col-md-9 offset-md-3").append(
-					$("<input>").attr({type:"checkbox", id:id}),
-					$("<label>").attr({for:id}).text(text),
-				)),
-				$("<div>").addClass("col-12 col-md-3 justify-content-md-end").append(
-					$("<label>").attr({for:"teglabel"}).text(theUILang.Label + ":"),
-				),
-				$("<div>").addClass("col-12 col-md-9").append(
-					$("<input>").attr({type:"text", id:"teglabel"}),
-				),
-			),
-		)[0].outerHTML +
-		$("<div>").append(
-			$("<div>").attr({id:"buttons"}).addClass("buttons-list").append(
-				$("<button>").attr({type:"button", onclick:"theDialogManager.hide('tegLoadTorrents');theWebUI.tegLoadTorrents();return(false);"}).addClass("OK").text(theUILang.ok),
-				$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-			),
-		)[0].outerHTML,
+		[tegLoadTorrentsContent, tegLoadTorrentsButtons],
 		true,
 	);
 	if (thePlugins.isInstalled("_getdir")) {

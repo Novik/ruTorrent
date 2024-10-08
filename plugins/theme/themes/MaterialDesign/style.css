@@ -35,6 +35,8 @@ html,body
 	--menu-highlight-background-color: #888;
 
 	--settings-background-color: #222;
+
+	--btn-bg-color: #3498DB;
 }
 
 #offcanvas-sidepanel {
@@ -282,7 +284,6 @@ div#t {
   border-bottom: none;
 }
 div#t button.navbar-toggler {
-  background-color: #3498DB;
   background-image: none;
   border: none;
 }
@@ -717,7 +718,7 @@ textarea {
 }
 
 button, input[type=button], input[type=submit], input.Button:not([disabled]):focus, .Button {
-	background: #3498db none repeat scroll 0 0;
+	background: var(--btn-bg-color) none repeat scroll 0 0;
 	border-radius:2px;
 	border:none;
 	color:#FFF;
@@ -934,11 +935,6 @@ div#tadd-header
 	background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 0;
 	border-bottom:1px solid #333;
 	text-shadow:0 -1px 0 #000
-}
-
-Input.TextboxLarge
-{
-	border:none
 }
 
 div.tab

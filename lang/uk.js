@@ -301,6 +301,8 @@ var theUILang =
  Select_all			: "Вибрати все",
  Deselect_all			: "Скасувати вибір",
  showSpeedInTitle		: "Показувати швидкість у заголовку",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Duration of speed graph",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Веб-сервер не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",

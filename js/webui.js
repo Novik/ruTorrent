@@ -140,6 +140,8 @@ var theWebUI =
 		"webui.reqtimeout":		10000,
 		"webui.confirm_when_deleting":	1,
 		"webui.alternate_color":	0,
+		"webui.side_panel_min_width": 	280,
+		"webui.list_table_min_height": 	300,
 		"webui.update_interval":	2500,
 		"webui.hsplit":			0.88,
 		"webui.vsplit":			0.5,
@@ -716,23 +718,19 @@ var theWebUI =
 			theSearchEngines.set(this.settings["webui.search"],true);
    	},
 
-	setSettings: function()
-	{
-	        var req = '';
-	        var needSave = false;
+	setSettings: function() {
+		var req = '';
+		var needSave = false;
 		var needResize = false;
 		let needCatListSync = false;
 		var reply = null;
-		$.each(this.settings, function(i,v)
-		{
-		        var o = $$(i);
-			if(o)
-			{
+		$.each(this.settings, function(i,v) {
+			var o = $$(i);
+			if (o) {
 				o = $(o);
 				var nv = o.is("input:checkbox") ? (o.prop('checked') ? 1 : 0) : o.val();
-				switch(i)
-				{
-				        case "max_memory_usage":
+				switch(i) {
+					case "max_memory_usage":
 						nv *= 1024;
 					case "upload_rate":
 					case "download_rate":
@@ -842,10 +840,10 @@ var theWebUI =
 		if(needResize)
 			this.resize();
 		if((req.length>0) && theWebUI.systemInfo.rTorrent.started)
-	      		this.request("?action=setsettings" + req,null,true);
+			this.request("?action=setsettings" + req,null,true);
 		if(needSave)
 			this.save(reply);
-   	},
+	},
 
    	reload: function()
    	{
@@ -2257,7 +2255,9 @@ var theWebUI =
 		if (!w)
 			return;
 		const offcanvas = $("#offcanvas-sidepanel");
-		w = Math.max(w, parseFloat(offcanvas.css("min-width")));
+		if (theWebUI.settings["webui.list_table_min_height"]) {
+			w = Math.max(w, parseFloat(theWebUI.settings["webui.side_panel_min_width"]));
+		}
 		if (offcanvas.css("display") === "none") {
 			// Senerio 1: when side panel is toggled off
 			$("#HDivider").addClass("d-md-none").removeClass("d-md-block");
@@ -2266,6 +2266,7 @@ var theWebUI =
 			// When side panel is toggled on
 			if ($(window).width() < 768) {
 				// Senerio 2: small screens and below
+				offcanvas.width("");
 				$("#main-info").width($("#maincont").width());
 			} else {
 				// Senerio 3: medium screens and above
@@ -2279,7 +2280,9 @@ var theWebUI =
 	resizeTop: function(w, h) {
 		if (!h)
 			return
-		h = Math.max(h, parseFloat($("#list-table").css("min-height")));
+		if (theWebUI.settings["webui.list_table_min_height"]) {
+			h = Math.max(h, parseFloat(theWebUI.settings["webui.list_table_min_height"]));
+		}
 		if ($("#tdetails").css("display") !== "none") {
 			$("#list-table").height(h);
 			$("#tdetails").height($("#main-info").height() - 5 - h);

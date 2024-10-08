@@ -301,6 +301,8 @@ var theUILang =
  Select_all			: "সব নির্বাচন করুন",
  Deselect_all			: "সব গুলো অনির্বাচিত করুন",
  showSpeedInTitle		: "শিরোনামে স্পিড দেখান",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "স্পিড গ্রাফের সময়কাল",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "ওয়েবসার্ভার ব্যবহারকারীর tmp ডিরেক্টরিতে রিড/রাইট/এক্সেকিউট করার অ্যাক্সেস নেই। ruTorrent কাজ করবে না।",

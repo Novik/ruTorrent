@@ -299,6 +299,8 @@ var theUILang =
  Select_all			: "Επιλογή όλων",
  Deselect_all			: "Αποεπιλογή όλων",
  showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Διάρκεια γραφήματος ταχύτητας",
  speedGraphDurationOptions		: {600: "10 λεπτά", 1800: "30 λεπτά", 3600: "1 ώρα", 10800: "3 ώρες"},
  badTempPath			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",

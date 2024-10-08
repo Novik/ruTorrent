@@ -160,32 +160,40 @@ plugin.imageURI = function (target, label) {
 	return `plugins/tracklabels/action.php?${target}=${encodeURIComponent(label)}`;
 }
 
-plugin.onLangLoaded = function()
-{
+plugin.onLangLoaded = function() {
 	if ('dialogId' in plugin)
 		return;
 	const eid = 'tracklabels-dialog'
 	plugin.dialogId = eid;
-	theDialogManager.make(plugin.dialogId, theUILang.Tracklabels_dialog,
+	theDialogManager.make(
+		plugin.dialogId, theUILang.Tracklabels_dialog,
 		$('<div>').addClass('cont').append(
-		$('<form>').addClass('optionColumn')
-		.attr({ enctype: 'multipart/form-data', method: 'post', action: 'javascript:;' })
-		.append(...[
-			[theUILang.FileUserIcon, 'uploadfile', 'file', { value: '', accept: '.png' }],
-			[theUILang.Label, 'label', 'text', { value: '', list: `${eid}-datalist`, class: 'TextboxLarge' }],
-		].map(([text, name, type, attribs]) => $('<div>').append(
-			$('<label>').attr('for', `${eid}-${name}`).text(text),
-			$('<input>').attr({ name, type, id: `${eid}-${name}`, ...attribs })
-		)),
-			$('<datalist>').attr('id', `${eid}-datalist`),
-			$('<div>').addClass('aright buttons-list').attr('style', 'margin-top: 10px')
-			.append(...[
-				[theUILang.UploadUserIcon, 'submit', 'OK Button', {}],
-				[theUILang.DeleteUserIcon, 'button', 'Button', {name: 'delete'}],
-				[theUILang.Cancel, 'button', 'Cancel Button', {}],
-			].map(([value, type, cls, attribs]) => $('<input>')
-				.attr({value, type, class: cls, ...attribs})
-			))))[0].outerHTML
+			$('<form>').attr({ enctype: 'multipart/form-data', method: 'post', action: 'javascript:;' }).append(
+				$("<div>").addClass("row").append(
+					...[
+						[theUILang.FileUserIcon, 'uploadfile', 'file', { value: '', accept: '.png' }],
+						[theUILang.Label, 'label', 'text', { value: '', list: `${eid}-datalist` }],
+					].map(([text, name, type, attribs]) => [
+						$('<div>').addClass("col-12 col-md-3").append(
+							$('<label>').addClass("ms-md-auto").attr({for:`${eid}-${name}`}).text(text + ": "),
+						),
+						$("<div>").addClass("col-12 col-md-9").append(
+							$('<input>').attr({name, type, id:`${eid}-${name}`, ...attribs}),
+						),
+					]),
+					$("<div>").addClass("col-12").append(
+						$('<datalist>').attr('id', `${eid}-datalist`),
+					),
+				),
+				$('<div>').addClass('buttons-list').append(
+					...[
+						[theUILang.UploadUserIcon, 'submit', 'OK Button', {}],
+						[theUILang.DeleteUserIcon, 'button', 'Button', {name: 'delete'}],
+						[theUILang.Cancel, 'button', 'Cancel Button', {}],
+					].map(([value, type, cls, attribs]) => $('<input>').attr({value, type, class: cls, ...attribs})),
+				),
+			),
+		)
 	);
 	const submitBtn = $(`#${eid} input[type=submit]`);
 	const delBtn = $(`#${eid} input[name=delete]`);
@@ -239,7 +247,8 @@ plugin.onLangLoaded = function()
 					if (trkTarget) {
 						plugin.refresh('ptrackers');
 					} else {
-						catlist.refreshTorrentLabelTree();
+						theWebUI.categoryList.refreshPanel.plabel([]);
+						theWebUI.update();  // update icons immediately
 					}
 					catlist.syncFn();
 				} else {

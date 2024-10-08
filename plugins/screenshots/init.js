@@ -179,14 +179,12 @@ if(plugin.canChangeMenu())
 		}
 	}
 
-	plugin.setPlayControls = function()
-	{
-		if($('.scframe').length)
-		{
+	plugin.setPlayControls = function() {
+		if ($('.scframe').length) {
 			$('.scplay').show();
 			var current = plugin.getCurrentFrame();
 			$("#tskConsole-header").html(theUILang.exScreenshot+" "+(current+1)+"/"+$('.scframe').length);
-			$("#scplay").val(plugin.playTimer ? "▀" : "►")
+			$("#scplay").text(plugin.playTimer ? "■" : "►")
 			if((current==0) || plugin.playTimer)
 			{
 				$("#scfirst,#scprev").prop("disabled",true);
@@ -258,10 +256,10 @@ plugin.setCurrentFrame = function(no)
 }
 
 plugin.onLangLoaded = function() {
-	if(!thePlugins.get("_task").allStuffLoaded)
+	if (!thePlugins.get("_task").allStuffLoaded)
 		setTimeout(arguments.callee,1000);
 	else {
-		if(!explorerIsInstalled)
+		if (!explorerIsInstalled)
 			plugin.attachPageToOptions(
 				$("<div>").attr("id","st_screenshots").append(
 					$("<fieldset>").append(
@@ -308,17 +306,11 @@ plugin.onLangLoaded = function() {
 				["scsave", theUILang.exSave], ["scsaveall", theUILang.exSaveAll],
 			].map(([id, text]) => $("<button>").attr({type:"button", id:id}).addClass("scplay").text(text)),
 		);
-		$("#scfirst").on('click', function() {
-			plugin.setCurrentFrame(0);
-		});
-		$("#sclast").on('click', function() {
-			plugin.setCurrentFrame($('.scframe').length-1);
-		});
-		$("#scprev").on('click', function() {
-			plugin.setCurrentFrame( plugin.getCurrentFrame()-1 );
-		});
-		$("#scnext").on('click', plugin.setNextFrame );
-		$("#scplay").on('click', function() {
+		$("#scfirst").on('click', () => plugin.setCurrentFrame(0));
+		$("#sclast").on('click', () => plugin.setCurrentFrame($('.scframe').length - 1));
+		$("#scprev").on('click', () => plugin.setCurrentFrame( plugin.getCurrentFrame() - 1));
+		$("#scnext").on('click', () => plugin.setNextFrame());
+		$("#scplay").on('click', () => {
 			if (plugin.playTimer) {
 				window.clearInterval(plugin.playTimer);
 				plugin.playTimer = null;

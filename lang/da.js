@@ -301,6 +301,8 @@ var theUILang =
  Select_all			: "Vælg alle",
  Deselect_all			: "Fravælg alle",
  showSpeedInTitle		: "Vis hastighed i titlen",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Duration of speed graph",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Webserverens bruger har ikke read/write/execute adgang til tmp mappen. ruTorrent virker derfor ikke.",

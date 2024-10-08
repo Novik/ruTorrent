@@ -301,6 +301,8 @@ var theUILang =
  Select_all			: "Összes kijelölés",
  Deselect_all			: "Kijelölés törlése",
  showSpeedInTitle		: "Sebesség megjelenítése a címben",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "A sebességgrafikon időtartama",
  speedGraphDurationOptions		: {600: "10 perc", 1800: "30 perc", 3600: "1 óra", 10800: "3 óra"},
  badTempPath			: "A webszerver felhasználónak nincs olvasási/írási/végrehajtási hozzáférése a tmp könyvtárhoz. A ruTorrent nem fog működni.",

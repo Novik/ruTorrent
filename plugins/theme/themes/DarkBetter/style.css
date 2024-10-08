@@ -10,6 +10,8 @@ html, body {background-color: #181818; color: #999999; }
   --menu-highlight-background-color: #888888;
 
   --settings-background-color: #181818;
+
+  --btn-bg-color: #D6D6D6;
 }
 button, input.Button {
   background: -webkit-gradient(
@@ -25,7 +27,6 @@ button, input.Button {
   background: -ms-linear-gradient(top, #d6d6d6 5%, #c7c7c7 100%);
   background: linear-gradient(to bottom, #d6d6d6 5%, #c7c7c7 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d6d6d6', endColorstr='#c7c7c7',GradientType=0);
-  background-color: #d6d6d6;
   border: 1px solid #333333;
   color: #111111;
 }
@@ -71,6 +72,7 @@ category-panel::part(heading) {
 }
 category-panel[closed]::part(heading) {
   background: url(./images/pnl_close.svg) 4px no-repeat;
+  background-size: 14px;
 }
 
 panel-label {
@@ -212,7 +214,6 @@ div#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border
   border-bottom: 1px solid #333333;
 }
 div#t button.navbar-toggler {
-  background-color: #888888;
   background-image: none;
   border-color: #333333;
 }
@@ -266,8 +267,6 @@ a.dlg-close:active {
 .Status_Up_Down {background: transparent url(./images/t_active.svg) no-repeat center center !important; background-size: 16px !important}
 .Status_Checking {background: transparent url(./images/t_all.svg) no-repeat center center !important; background-size: 16px !important}
 .Status_RSS {background: transparent url(./images/rb_rss.svg) no-repeat center center !important; background-size: 16px !important}
-
-Input.TextboxLarge {border: 1px solid #333333}
 
 a {color: #686868}
 

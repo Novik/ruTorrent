@@ -145,27 +145,27 @@ theWebUI.unpack = function()
         });
 }
 
-plugin.onLangLoaded = function()
-{
+plugin.onLangLoaded = function() {
 	var plg = thePlugins.get("_task");
 	if(!plg.allStuffLoaded)
 		setTimeout(arguments.callee,1000);
 	else {
-		theDialogManager.make('dlg_unpack', theUILang.unpack,
-			$("<div>").addClass("cont fxcaret").append(
-				$("<fieldset>").append(
-					$("<legend>").text(theUILang.unpackPath),
-					$("<div>").addClass("row").append(
-						$("<div>").addClass("col-12 d-flex align-items-center").append(
-							$("<input>").attr({type:"text", id:"edit_unpack", maxlength:200}),
-						),
+		const dlgUnpackContent = $("<div>").addClass("cont fxcaret").append(
+			$("<fieldset>").append(
+				$("<legend>").text(theUILang.unpackPath),
+				$("<div>").addClass("row").append(
+					$("<div>").addClass("col-12 d-flex align-items-center").append(
+						$("<input>").attr({type:"text", id:"edit_unpack", maxlength:200}),
 					),
 				),
-			)[0].outerHTML +
-			$("<div>").addClass("buttons-list my-3").append(
-				$("<button>").attr({type:"button", onclick:"theWebUI.unpack(); return(false);"}).addClass("OK").text(theUILang.ok),
-				$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-			)[0].outerHTML,
+			),
+		);
+		const dlgUnpackButtons = $("<div>").addClass("buttons-list").append(
+			$("<button>").attr({type:"button"}).addClass("OK").on("click", () => {theWebUI.unpack(); return false;}).text(theUILang.ok),
+			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+		);
+		theDialogManager.make('dlg_unpack', theUILang.unpack,
+			[dlgUnpackContent, dlgUnpackButtons],
 			true,
 		);
 

@@ -6,7 +6,7 @@
   -moz-user-select: none;
   -webkit-user-select: none;
 }
-html, body {border: 0; margin: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
+html, body {border: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
 html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 11px;}
 div, td, label, fieldset, textarea, select, input, button, dialog {
   box-sizing: border-box;
@@ -62,7 +62,7 @@ button, input[type=button], input[type=submit], .Button {
   border-radius: 3px;
   margin: 0.25rem;
   padding: 1px 10px;
-  background: #F0F0F0 url(../images/h.gif) repeat-x center bottom;
+  background: var(--btn-bg-color) url(../images/h.gif) repeat-x center bottom;
   width: 80px;
   text-wrap: nowrap;
 }
@@ -97,6 +97,8 @@ span {
   --menu-highlight-background-color: #cfdeef;
 
   --settings-background-color: #fafafa;
+
+  --btn-bg-color: #F0F0F0;
 }
 category-list.rightalign-labelsize panel-label::part(size) {
   margin-left: auto;
@@ -209,7 +211,7 @@ div#t {
   z-index: 30;
 }
 div#t button.navbar-toggler {
-  background-color: #F0F0F0;
+  background-color: var(--btn-bg-color);
   width: 5rem;
 }
 div#t a {padding: 3px;}
@@ -233,7 +235,7 @@ div#t .nav-link {
   font-weight: bold;
   border: 1px solid #A0A0A0;
   border-radius: 8px;
-  background-color: #F0F0F0;
+  background-color: var(--btn-bg-color);
   background-image: none;
   margin: 0.15rem;
 }
@@ -267,13 +269,12 @@ div#plugins {background: url(../images/plugin.png) 0px center}
   cursor: default;
 }
 
-Input.TextboxLarge {border: 1px solid #B0B0B0; font-size: 11px;  padding: 2px; width: 220px}
 #pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
 
 a {color: #686868;}
 #maincont {height: calc(100vh - 36px - 5px - 25px - 5px);}
+.offcanvas-header .btn-close {background-color: var(--btn-bg-color);}
 #offcanvas-sidepanel {
-  min-width: 200px;
   background-color: #FFFFFF;
 }
 #side-panel {
@@ -282,7 +283,6 @@ a {color: #686868;}
 #list-table {
   border: 1px solid #A0A0A0;
   background-color: #FFFFFF;
-  min-height: 300px;
 }
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}

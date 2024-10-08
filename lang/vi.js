@@ -299,6 +299,8 @@ var theUILang =
  Select_all			: "Chọn tất cả",
  Deselect_all			: "Bỏ chọn tất cả",
  showSpeedInTitle		: "Hiển thị tốc độ ở tiêu đề",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Duration of speed graph",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Webserver user doesn't have read/write/execute access to the tmp directory. ruTorrent will not work.",

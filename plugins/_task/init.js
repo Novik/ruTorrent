@@ -568,30 +568,31 @@ plugin.onGetTasks = function(d)
 }
 
 plugin.onLangLoaded = function() {
+	const tskConsoleContent = $("<div>").addClass("cont fxcaret").append(
+		$("<fieldset>").attr({id:"tskcmdlog_set"}).append(
+			$("<legend>").text(theUILang.tskConsole),
+			$("<div>").attr({id:"tskcmdlog"}).addClass("tskconsole"),
+		),
+		$("<fieldset>").attr({id:"tskcmderrors_set"}).append(
+			$("<legend>").text(theUILang.tskErrors),
+			$("<div>").attr({id:"tskcmderrors"}).addClass("tskconsole"),
+		),
+	);
+	const tskConsoleButtons = $("<div>").attr({id:"tsk_btns"}).addClass("buttons-list").append(
+		$("<button>").attr({type:"button", id:"tskCopy"})
+			.on("click", plugin.copyConsoleLog)
+			.text(theUILang.tskCopy),
+		$("<button>").attr({type:"button", id:"tskBackground"})
+			.on("click", plugin.toBackground)
+			.text(theUILang.tskBackground),
+		$("<button>").attr({type:"button", id:"tskCancel"})
+			.addClass("Cancel")
+			.text(theUILang.Cancel),
+	);
 	theDialogManager.make("tskConsole", theUILang.tskCommand,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<fieldset>").attr({id:"tskcmdlog_set"}).append(
-				$("<legend>").text(theUILang.tskConsole),
-				$("<div>").attr({id:"tskcmdlog"}).addClass("tskconsole"),
-			),
-			$("<fieldset>").attr({id:"tskcmderrors_set"}).append(
-				$("<legend>").text(theUILang.tskErrors),
-				$("<div>").attr({id:"tskcmderrors"}).addClass("tskconsole"),
-			),
-		)[0].outerHTML +
-		$("<div>").attr({id:"tsk_btns"}).addClass("buttons-list").append(
-			$("<button>").attr({type:"button", id:"tskCopy"})
-				.text(theUILang.tskCopy),
-			$("<button>").attr({type:"button", id:"tskBackground"})
-				.text(theUILang.tskBackground),
-			$("<button>").attr({type:"button", id:"tskCancel"})
-				.addClass("Cancel")
-				.text(theUILang.Cancel),
-		)[0].outerHTML,
+		[tskConsoleContent, tskConsoleButtons],
 		true,
 	);
-	$("#tskCopy").on("click", plugin.copyConsoleLog);
-	$("#tskBackground").on("click", plugin.toBackground);
 
 	theDialogManager.setHandler('tskConsole','afterHide',function()
 	{

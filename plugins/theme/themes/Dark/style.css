@@ -10,11 +10,12 @@ html, body {background-color: #181818; color: #999999; }
   --menu-highlight-background-color: #888888;
 
   --settings-background-color: #181818;
+
+  --btn-bg-color: #999999;
 }
 button, input.Button {
   color: #111111;
   background-image: url(./images/h.gif);
-  background-color: #999999;
   border-color: #333333;
 }
 button:not([disabled]):hover, input.Button:not([disabled]):hover {
@@ -80,7 +81,6 @@ div#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border
   border-bottom: 1px solid #333333;
 }
 div#t button.navbar-toggler {
-  background-color: #888888;
   background-image: none;
   border-color: #333333;
 }
@@ -107,7 +107,6 @@ div#t div#go {background: transparent url(./images/toolbar.png) no-repeat -96px 
 div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0px center}
 
 input.Textbox, input.Button, select {border: 1px solid #333333}
-Input.TextboxLarge {border: 1px solid #333333}
 a {color: #686868}
 
 .stable {background-color: #181818;}

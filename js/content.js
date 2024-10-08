@@ -66,21 +66,23 @@ function makeContent() {
 				eval(d.body.textContent ? d.body.textContent : d.body.innerText);
 			} catch(e) {}
 	}));
-	theDialogManager.make("padd",theUILang.peerAdd,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<fieldset>").append(
-				$("<legend>").text(theUILang.peerAddLabel),
-				$("<div>").addClass("row").append(
-					$("<div>").addClass("col-12").append(
-						$("<input>").attr({type:"text", id:"peerIP", placeholder:"my.friend.addr:6881"}),
-					),
+
+	const paddContent = $("<div>").addClass("cont fxcaret").append(
+		$("<fieldset>").append(
+			$("<legend>").text(theUILang.peerAddLabel),
+			$("<div>").addClass("row").append(
+				$("<div>").addClass("col-12").append(
+					$("<input>").attr({type:"text", id:"peerIP", placeholder:"my.friend.addr:6881"}),
 				),
 			),
-		)[0].outerHTML +
-		$("<div>").addClass("buttons-list").append(
-			$("<button>").attr({type:"button", onclick:"theWebUI.addNewPeer();theDialogManager.hide('padd');return(false);"}).addClass("OK").text(theUILang.ok),
-			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		),
+	);
+	const paddButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).addClass("OK").on("click", () => {theWebUI.addNewPeer(); theDialogManager.hide('padd'); return false;}).text(theUILang.ok),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+	);
+	theDialogManager.make("padd",theUILang.peerAdd,
+		[paddContent, paddButtons],
 		true,
 	);
 	theDialogManager.make("tadd",theUILang.torrent_add,
@@ -136,7 +138,10 @@ function makeContent() {
 							$("<label>").attr({for: "torrent_file"}).text(theUILang.Torrent_file + ": "),
 						),
 						$("<div>").addClass("col-md-6 d-flex").append(
-							$("<input>").attr({type: "file", multiple: "multiple", name: "torrent_file[]", id: "torrent_file", accept: ".torrent"}).addClass("flex-shrink-1"),
+							$("<input>")
+								.attr({type: "file", multiple: "multiple", name: "torrent_file[]", id: "torrent_file", accept: ".torrent"})
+								.on("change", (ev) => {$("#add_button").prop("disabled", ev.target.files.length === 0);})
+								.addClass("flex-shrink-1"),
 						),
 						$("<div>").addClass("col-md-3 d-flex align-items-center").append(
 							$("<input>").val(theUILang.add_button).attr({type: "submit", id: "add_button"}).addClass("Button").prop("disabled", true),
@@ -154,7 +159,10 @@ function makeContent() {
 							$("<label>").attr({for: "url"}).text(theUILang.Torrent_URL + ": "),
 						),
 						$("<div>").addClass("col-md-6 d-flex").append(
-							$("<input>").attr({type: "text", id: "url", name: "url", placeholder: theUILang.Torrent_URL}).addClass("flex-grow-1"),
+							$("<input>")
+								.attr({type: "text", id: "url", name: "url", placeholder: theUILang.Torrent_URL})
+								.on("input", (ev) => {$('#add_url').prop('disabled', ev.target.value.trim() === '');})
+								.addClass("flex-grow-1"),
 						),
 						$("<div>").addClass("col-md-3 d-flex align-items-center").append(
 							$("<input>").val(theUILang.add_url).attr({type: "submit", id: "add_url"}).addClass("Button").prop("disabled", true),
@@ -162,7 +170,7 @@ function makeContent() {
 					),
 				),
 			),
-		)[0].outerHTML
+		),
   );
 
 	$("#tadd_label_select").on('change', function(e) {
@@ -203,13 +211,6 @@ function makeContent() {
 		$("#tadd_label_select").trigger('change');
 	});
 
-	const file_input = $$("torrent_file");
-	file_input.onchange = function() {
-		$("#add_button").prop("disabled",file_input.files.length===0);
-	};
-	const url_input = $$('url');
-	url_input.onupdate = url_input.onkeyup = function() { $('#add_url').prop('disabled',url_input.value.trim()===''); };
-	url_input.onpaste = function() { setTimeout( url_input.onupdate, 10 ) };
 	var makeAddRequest = function(frm) {
 		var s = theURLs.AddTorrentURL;
 		var req = []
@@ -244,38 +245,40 @@ function makeContent() {
 	   	$("#add_url").prop("disabled", true);
 	   	return makeAddRequest(this);
 	});
-	theDialogManager.make("dlgProps", theUILang.Torrent_properties,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<fieldset>").append(
-				$("<legend>").text(theUILang.Bandwidth_sett),
-				$("<div>").addClass("row").append(
-					...[
-						["prop-ulslots", theUILang.Number_ul_slots],
-						["prop-peers_min", theUILang.Number_Peers_min],
-						["prop-peers_max", theUILang.Number_Peers_max],
-						["prop-tracker_numwant", theUILang.Tracker_Numwant],
-					].flatMap(([id, text]) => [
-						$("<div>").addClass("col-12 col-md-6").append(
-							$("<label>").attr({for:id}).text(text + ": "),
-						),
-						$("<div>").addClass("col-12 col-md-6").append(
-							$("<input>").attr({type:"text", id:id,})
-						),
-					]),
-					...[
-						["prop-pex", theUILang.Peer_ex],
-						["prop-superseed", theUILang.SuperSeed],
-					].map(([id, text]) => $("<div>").addClass("col-12 col-md-6").append(
-						$("<input>").attr({type:"checkbox", id:id}),
-						$("<label>").attr({for:id, id:`lbl_${id}`}).text(text),
-					)),
-				),
+
+	const dlgPropsContent = $("<div>").addClass("cont fxcaret").append(
+		$("<fieldset>").append(
+			$("<legend>").text(theUILang.Bandwidth_sett),
+			$("<div>").addClass("row").append(
+				...[
+					["prop-ulslots", theUILang.Number_ul_slots],
+					["prop-peers_min", theUILang.Number_Peers_min],
+					["prop-peers_max", theUILang.Number_Peers_max],
+					["prop-tracker_numwant", theUILang.Tracker_Numwant],
+				].flatMap(([id, text]) => [
+					$("<div>").addClass("col-12 col-md-6").append(
+						$("<label>").attr({for:id}).text(text + ": "),
+					),
+					$("<div>").addClass("col-12 col-md-6").append(
+						$("<input>").attr({type:"text", id:id,})
+					),
+				]),
+				...[
+					["prop-pex", theUILang.Peer_ex],
+					["prop-superseed", theUILang.SuperSeed],
+				].map(([id, text]) => $("<div>").addClass("col-12 col-md-6").append(
+					$("<input>").attr({type:"checkbox", id:id}),
+					$("<label>").attr({for:id, id:`lbl_${id}`}).text(text),
+				)),
 			),
-		)[0].outerHTML +
-		$("<div>").addClass("buttons-list").append(
-			$("<button>").attr({type:"button", onclick:"theWebUI.setProperties(); return(false);"}).addClass("OK").text(theUILang.ok),
-			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		),
+	);
+	const dlgPropsButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).addClass("OK").on("click", () => {theWebUI.setProperties(); return false;}).text(theUILang.ok),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
+	);
+	theDialogManager.make("dlgProps", theUILang.Torrent_properties,
+		[dlgPropsContent, dlgPropsButtons],
 		true,
 	);
 	theDialogManager.make("dlgHelp", theUILang.Help,
@@ -304,7 +307,7 @@ function makeContent() {
 					),
 				]),
 			),
-		)[0].outerHTML,
+		),
 	);
 	theDialogManager.make("dlgAbout", "ruTorrent v" + theWebUI.version,
 		$("<div>").addClass("py-2 container-fluid").append(
@@ -332,23 +335,25 @@ function makeContent() {
 					$("<a>").attr({href:"https://github.com/Novik/ruTorrent", target:"_blank"}).text(theUILang.here),
 				),
 			),
-		)[0].outerHTML,
+		),
+	);
+
+	const dlgLabelContent = $("<div>").addClass("cont fxcaret").append(
+		$("<div>").addClass("row").append(
+			$("<div>").addClass("col-12").append(
+				$("<label>").attr({for:"txtLabel"}).text(theUILang.Enter_label_prom + ": "),
+			),
+			$("<div>").addClass("col-12").append(
+				$("<input>").attr({type:"text", id:"txtLabel"}),
+			),
+		),
+	);
+	const dlgLabelButtons = $("<div>").addClass("buttons-list").append(
+		$("<button>").attr({type:"button"}).addClass("OK").on("click", () => {theWebUI.createLabel(); theDialogManager.hide('dlgLabel'); return false;}).text(theUILang.ok),
+		$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
 	);
 	theDialogManager.make("dlgLabel", theUILang.enterLabel,
-		$("<div>").addClass("cont fxcaret").append(
-			$("<div>").addClass("row").append(
-				$("<div>").addClass("col-12").append(
-					$("<label>").attr({for:"txtLabel"}).text(theUILang.Enter_label_prom + ": "),
-				),
-				$("<div>").addClass("col-12").append(
-					$("<input>").attr({type:"text", id:"txtLabel"}),
-				),
-			),
-		)[0].outerHTML +
-		$("<div>").addClass("buttons-list").append(
-			$("<button>").attr({type:"button", onclick:"theWebUI.createLabel();theDialogManager.hide('dlgLabel');return(false);"}).addClass("OK").text(theUILang.ok),
-			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		[dlgLabelContent, dlgLabelButtons],
 		true,
 	);
 	theDialogManager.setHandler('dlgLabel', 'afterShow', function() {
@@ -359,11 +364,13 @@ function makeContent() {
 		}, 0);
 	});
 	theDialogManager.make("yesnoDlg","",
-		$("<div>").attr({id:"yesnoDlg-content"}).addClass("cont")[0].outerHTML +
-		$("<div>").attr({id:"yesnoDlg-buttons"}).addClass("buttons-list").append(
-			$("<button>").attr({type:"button", id:"yesnoOK"}).addClass("OK").text(theUILang.ok),
-			$("<button>").attr({type:"button", id:"yesnoCancel"}).addClass("Cancel").text(theUILang.Cancel),
-		)[0].outerHTML,
+		[
+			$("<div>").attr({id:"yesnoDlg-content"}).addClass("cont"),
+			$("<div>").attr({id:"yesnoDlg-buttons"}).addClass("buttons-list").append(
+				$("<button>").attr({type:"button", id:"yesnoOK"}).addClass("OK").text(theUILang.ok),
+				$("<button>").attr({type:"button", id:"yesnoCancel"}).addClass("Cancel").text(theUILang.Cancel),
+			),
+		],
 		true,
 	);
 
@@ -411,22 +418,31 @@ function makeContent() {
 					$("<input>").attr({type: "checkbox", id: id}),
 					$("<label>").attr({for: id}).text(label),
 				)),
-			),
-			...[
-				["webui.update_interval", theUILang.Update_GUI_every + ": ", theUILang.ms, 3000],
-				["webui.reqtimeout", theUILang.ReqTimeout + ": ", theUILang.ms, 5000],
-			].map(([id, prefix, suffix, value]) => $("<div>").addClass("row").append(
-				$("<div>").addClass("col-md-6").append(
-					$('<label>').attr({for: id}).text(prefix),
-				),
-				$("<div>").addClass("col-9 col-md-5").append(
-					$('<input>').attr({type: "number", id: id, value: value, min: 0}).addClass("flex-grow-1"),
-				),
-				$("<div>").addClass("col-3 col-md-1").append(
-					$('<span>').text(suffix),
-				),
-			)),
-			$("<div>").addClass("row").append(
+				...[
+					['webui.side_panel_min_width', theUILang.sidePanelMinWidth],
+					['webui.list_table_min_height', theUILang.listTableMinHeight],
+				].map(([id, label]) => [
+					$("<div>").addClass("col-12 col-md-6").append(
+						$("<label>").attr({for:id}).text(label),
+					),
+					$("<div>").addClass("col-12 col-md-6").append(
+						$("<input>").attr({type:"text", id}),
+					),
+				]),
+				...[
+					["webui.update_interval", theUILang.Update_GUI_every + ": ", theUILang.ms, 3000],
+					["webui.reqtimeout", theUILang.ReqTimeout + ": ", theUILang.ms, 5000],
+				].map(([id, prefix, suffix, value]) => [
+					$("<div>").addClass("col-md-6").append(
+						$('<label>').attr({for: id}).text(prefix),
+					),
+					$("<div>").addClass("col-9 col-md-5").append(
+						$('<input>').attr({type: "number", id: id, value: value, min: 0}).addClass("flex-grow-1"),
+					),
+					$("<div>").addClass("col-3 col-md-1").append(
+						$('<span>').text(suffix),
+					),
+				]),
 				$("<div>").addClass("col-md-6").append(
 					$("<label>").attr({for: "webui.speedgraph.max_seconds"}).text(theUILang.speedGraphDuration + ": "),
 				),
@@ -435,8 +451,6 @@ function makeContent() {
 						...Object.entries(theUILang.speedGraphDurationOptions).map(([value, text]) => $("<option>").attr({value: value}).text(text),
 					)),
 				),
-			),
-			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
 					$("<label>").attr({for: "webui.retry_on_error"}).text(theUILang.retryOnErrorTitle + ": "),
 				),
@@ -447,8 +461,6 @@ function makeContent() {
 						),
 					),
 				),
-			),
-			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-6 col-md-3").append(
 					$("<label>").attr({for: "webui.lang"}).text(theUILang.mnu_lang + ": "),
 				),
@@ -721,11 +733,11 @@ function makeContent() {
 			$("<div>").attr({id: "stg-pages"}).append(
 				stgGlCont, stgDlCont, stgConCont, stgBtCont, stgFmtCont, stgAoCont,
 				$("<div>").attr({id: "st_btns"}).addClass("buttons-list").append(
-					$("<button>").text(theUILang.ok).attr({onclick: "theDialogManager.hide('stg');theWebUI.setSettings();return(false);"}),
+					$("<button>").text(theUILang.ok).on("click", () => {theDialogManager.hide('stg'); theWebUI.setSettings(); return false;}),
 					$("<button>").text(theUILang.Cancel).addClass("Cancel"),
 				),
 			),
-		)[0].outerHTML,
+		),
 	);
 }
 

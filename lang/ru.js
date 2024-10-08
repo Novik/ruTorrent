@@ -301,6 +301,8 @@ var theUILang =
  Select_all			: "Выделить все",
  Deselect_all			: "Отмена выделения",
  showSpeedInTitle		: "Скорость в заголовке",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Длительность графика скорости",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Веб сервер не имеет доступа к директории tmp на чтение/запись/выполнение. ruTorrent не будет работать.",

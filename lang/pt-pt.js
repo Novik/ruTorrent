@@ -301,6 +301,8 @@ var theUILang =
  Select_all			: "Marcar todos",
  Deselect_all			: "Desmarcar todos",
  showSpeedInTitle		: "Mostrar velocidade no título",
+ sidePanelMinWidth		: "Side panel min width",
+ listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Duração do gráfico de velocidade",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Utilizador do servidor não tem permissão de leitura/escrita/execução ao diretório tmp. ruTorrent não vai funcionar.",

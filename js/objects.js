@@ -99,8 +99,7 @@ class DnD {
 }
 
 // Dialog manager
-var theDialogManager = 
-{
+var theDialogManager = {
 	maxZ: 2000,
 	visible : [],
 	items : {},
@@ -108,24 +107,35 @@ var theDialogManager =
 	modalState: false,
 
 	make: function(id, name, content, isModal, noClose) {
-		$("#dialog-container").append($("<div>").attr("id",id).addClass("dlg-window").append(
-			$("<div>").append(
-				$("<div>").attr("id",id+"-header").addClass("dlg-header").text(name),
-				$("<a>").attr({href:"#"}).addClass("dlg-close"),
+		// id: HTML `id` of dialog window
+		// name: Title shown in the header of the dialog window
+		// content: Content of the dialog window, including the buttons in the footer.
+		//          Can be an HTML string, a jQuery object, or an array of jQuery objects.
+		// isMocal: Modal state of the dialog window, default is false.
+		// noClose: Disable the close button, default is false.
+		if ($type(content) === "string") {
+			content = $(content);
+		}
+		$("#dialog-container").append(
+			$("<div>").attr("id",id).addClass("dlg-window").append(
+				$("<div>").append(
+					$("<div>").attr({id:`${id}-header`}).addClass("dlg-header").text(name),
+					$("<a>").attr({href:"#"}).addClass("dlg-close"),
+				),
+				content,
 			),
-			$(content),
-		));
-		return(this.add(id,isModal,noClose));
+		);
+		return this.add(id, isModal, noClose);
 	},
 	add: function(id, isModal, noClose) {
 		var obj = $('#'+id);
-		if(!isModal)
+		if (!isModal)
 			isModal = false;
 		obj.data({
 			modal: isModal,
 			nokeyclose: noClose,
 		});
-		if(!noClose)
+		if (!noClose)
 			obj.find(".dlg-close").on("click", () => theDialogManager.hide(id));
 		var self = this;
 		var checkForButtons = function me(val) {
@@ -206,7 +216,6 @@ var theDialogManager =
 		if ($type(this.items[id]) && ($type(this.items[id].beforeHide) === "function"))
 			this.items[id].beforeHide(id);
 		obj.hide(this.divider, callback);
-		thePlugins.get("_getdir").hideBrowseFrame(id);  // close associated directory frames
 		if ($type(this.items[id]) && ($type(this.items[id].afterHide) === "function"))
 			this.items[id].afterHide(id);
 		if (obj.data("modal"))
