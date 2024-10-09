@@ -160,10 +160,10 @@ $.fn.extend(
 		}));
 	},
 
-	enableSysMenu: function()
-	{
-		return(this.on("contextmenu",function(e) { e.stopImmediatePropagation(); }).
-			on("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
+	enableSysMenu: function() {
+		return this
+			.on("contextmenu", (e) => e.stopImmediatePropagation())
+			.on("selectstart", (e) => {e.stopImmediatePropagation(); return true;});
 	},
 
 	setCursorPosition: function(pos)
@@ -232,16 +232,19 @@ function escapeHTML(str)
 	return( String(str).split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;') );
 }
 
-function askYesNo( title, content, funcYesName )
-{
-	$("#yesnoDlg-header").html(title);
-	$("#yesnoDlg-content").html(content);
-	$("#yesnoOK").off('click');
-	$("#yesnoOK").on('click', function()
-	{
-		typeof(funcYesName)==="function" ? funcYesName() : eval(funcYesName);
+/**
+ * Confirm again before taking action.
+ * @param {string} title Title of the dialog.
+ * @param {string} content Hint of the action to be confirmed.
+ * @param {Function | string} funcYesName Function to be executed if confirmed.
+ */
+function askYesNo(title, content, funcYesName) {
+	$("#yesnoDlg-header").text(title);
+	$("#yesnoDlg-content").text(content);
+	$("#yesnoOK").off('click').on('click', () => {
+		$type(funcYesName) === "function" ? funcYesName() : eval(funcYesName);
 		theDialogManager.hide("yesnoDlg");
-		return(false);
+		return false;
 	});
 	theDialogManager.show("yesnoDlg");
 }

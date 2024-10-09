@@ -1005,14 +1005,11 @@ dxSTable.prototype.keyEvents = function(e)
 	if(!e.fromTextCtrl && !theDialogManager.isModalState())
 	{
 		var c = e.which;
-		if((browser.isKonqueror && c == 127) || (c == 46))
-		{
-			if($type(self.ondelete) == "function") 
+		if((browser.isKonqueror && c == 127) || (c == 46)) {
+			// Delete key
+			if ($type(self.ondelete) === "function") 
 				self.ondelete();
-		}
-		else 
-		if(e.metaKey)
-		{
+		} else if (e.metaKey) {
 			switch(c)
 			{
 				case 65:

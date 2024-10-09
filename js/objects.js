@@ -106,13 +106,18 @@ var theDialogManager = {
 	divider: 0,
 	modalState: false,
 
+	/**
+	 * Create a dialog window.
+	 * @param {string} id The HTML `id` of dialog window.
+	 * @param {string} name The title shown in the header of the dialog window.
+	 * @param {string | object | object[]} content Content of the dialog window,
+	 * including the buttons in the footer. Can be an HTML string,
+	 * a jQuery object, or an array of jQuery objects.
+	 * @param {boolean} isModal The modal state of the dialog window, default is `false`.
+	 * @param {boolean} noClose Whether to disable the close button, default is `false`.
+	 * @returns {object} The dialog manager object itself.
+	 */
 	make: function(id, name, content, isModal, noClose) {
-		// id: HTML `id` of dialog window
-		// name: Title shown in the header of the dialog window
-		// content: Content of the dialog window, including the buttons in the footer.
-		//          Can be an HTML string, a jQuery object, or an array of jQuery objects.
-		// isMocal: Modal state of the dialog window, default is false.
-		// noClose: Disable the close button, default is false.
 		if ($type(content) === "string") {
 			content = $(content);
 		}
@@ -321,8 +326,7 @@ var theContextMenu =
 		});
 		return(ret);
 	},
-	add: function()
-	{
+	add: function() {
 		var args = new Array();
 		$.each(arguments, function(ndx,val) { args.push(val); });
         	var aft = null;
@@ -339,55 +343,61 @@ var theContextMenu =
 			args.splice(0, 1);		
 		}
 		var self = this;
-		$.each(args, function(ndx,val) 
-		{
-		        if($type(val))
-			{
-				var li = $("<li>").addClass("menuitem");
-				if(val[0] == CMENU_SEP)
+		$.each(args, function(ndx,val) {
+			if ($type(val)) {
+				const li = $("<li>").addClass("menuitem");
+				if (val[0] == CMENU_SEP)
 					li.append($("<hr>").addClass("menu-line"));
-				else
-				if(val[0] == CMENU_CHILD)
-				{
-					li.append( $("<a></a>").addClass("exp").text(val[1]) );
+				else if(val[0] == CMENU_CHILD) {
+					li.append( $("<a>").addClass("exp").text(val[1]) );
 					var ul = $("<ul>").addClass("CMenu");
-					for(var j = 0, len = val[2].length; j < len; j++) 
-					{
+					for (var j = 0, len = val[2].length; j < len; j++) {
 						self.add(ul, val[2][j]);
 					}
 					li.append(ul);
-				}
-				else
-			       	if(val[0] == CMENU_SEL) 
-		 		{
-		 	        	var a = $("<a></a>").addClass("sel menu-cmd").text(val[1]);
-			 	        switch($type(val[2]))
-			 	        {
-						case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[2]) } ); break;
-						case "function": a.attr("href","javascript://void();").on('click', val[2]); break;
-					}
-					li.append(a.on('focus', function() { this.blur(); } ));
-				}
-				else
-				{
-					if($type(val[0]))
-					{
-						var a = $("<a></a>").addClass("menu-cmd").text(val[0]);
-						switch($type(val[1]))
-						{
-				 	        	case false: a.addClass("dis"); break;
-							case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[1]) } ); break;
-							case "function": a.attr("href","javascript://void();").on('click', val[1]); break;
+				} else if(val[0] == CMENU_SEL) {
+					const a = $("<a>").addClass("sel menu-cmd").attr({href: "#"}).text(val[1]);
+					switch ($type(val[2])) {
+						case "string": {
+							a.on('click', () => eval(val[2]));
+							break;
 						}
-						li.append(a.on('focus', function() { this.blur(); } ));
+						case "function": {
+							a.on('click', val[2]);
+							break;
+						}
+						default: {
+							return;
+						}
+					}
+					li.append(
+						a.on('focus', (ev) => ev.target.blur()),
+					);
+				} else {
+					if ($type(val[0])) {
+						const a = $("<a>").addClass("menu-cmd").text(val[0]);
+						switch ($type(val[1])) {
+							case false: {
+								a.addClass("dis");
+								break;
+							}
+							case "string": {
+								a.attr({href:"#"}).on('click', () => eval(val[1]));
+								break;
+							}
+							case "function": {
+								a.attr({href:"#"}).on('click', val[1]);
+								break;
+							}
+						}
+						li.append(
+							a.on('focus', (ev) => ev.target.blur()),
+						);
 					}
 				}
-				if(aft)
-					aft.after(li);
-				else
-					o.append(li);
+				aft ? aft.after(li) : o.append(li);
 			}
-                });
+		});
 	},
 	clear: function()
 	{
