@@ -235,7 +235,7 @@ function escapeHTML(str)
 /**
  * Confirm again before taking action.
  * @param {string} title Title of the dialog.
- * @param {string} content Hinit of the action to be confirmed.
+ * @param {string} content Hint of the action to be confirmed.
  * @param {Function | string} funcYesName Function to be executed if confirmed.
  */
 function askYesNo(title, content, funcYesName) {
