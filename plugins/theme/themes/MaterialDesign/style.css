@@ -37,6 +37,7 @@ html,body
 	--settings-background-color: #222;
 
 	--btn-bg-color: #3498DB;
+  --header-bg-color: #273238;
 }
 
 #offcanvas-sidepanel {
@@ -422,13 +423,6 @@ a
 	color:#686868;
 }
 
-div#stg-header
-{
-	background:#273238 url(./images/dlg-toolbars.gif) no-repeat scroll 0 -72px;
-	text-shadow:0 -1px 0 #000
-}
-
-
 #pview_save_view_button {
 	width: 20px;
 	height: 20px;
@@ -572,15 +566,12 @@ a.dlg-close:link,a.dlg-close:visited
 	background:transparent url(./images/close.png) no-repeat scroll left center
 }
 
-div.dlg-header
-{
-	background-color:#222;
-	border-bottom:none;
-	font-family:'Roboto';
-	text-transform:uppercase;
-	font-weight:700;
-	font-size:1em
+.dlg-header {
+	border: none;
+	text-transform: uppercase;
+	text-shadow: 0 -1px 0 #000;
 }
+.dlg-header > div:first-child {padding-left: 3rem;}
 
 fieldset
 {
@@ -901,40 +892,28 @@ div.dlg-window {
 	font-weight:300!important
 }
 
-.dlg-header
-{
-	background-color:#222;
-	border-bottom:none
-}
-
 #FS_main div.dlg-header
 {
 	background-image:url(./images/share.png)!important
 }
 
-div#yesnoDlg div.dlg-header
-{
-	background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 -120px;
-	text-shadow:0 -1px 0 #000
+#yesnoDlg-header {
+	background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -120px;
 }
 
-div#stg-header
-{
-	background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 -72px;
-	text-shadow:0 -1px 0 #000
+#stg-header {
+	background-image:url(./images/dlg-toolbars.gif);
+  background-position-y: -72px;
+}
+#dlgHelp-header, #dlgAbout-header {
+	background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -96px;
 }
 
-div#dlgHelp-header,div#dlgHelp div.dlg-header
-{
-	background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 -96px;
-	text-shadow:0 -1px 0 #000
-}
-
-div#tadd-header
-{
-	background:#181818 url(./images/dlg-toolbars.gif) no-repeat 0 0;
-	border-bottom:1px solid #333;
-	text-shadow:0 -1px 0 #000
+#tadd-header {
+	background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: 0;
 }
 
 div.tab

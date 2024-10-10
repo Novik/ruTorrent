@@ -12,6 +12,8 @@ html, body {background-color: #181818; color: #999999; }
   --settings-background-color: #181818;
 
   --btn-bg-color: #999999;
+  --header-bg-color: #181818;
+  --header-border-color: #333333;
 }
 button, input.Button {
   color: #111111;
@@ -130,7 +132,6 @@ div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #18181
 
 div#stg { background-color: #181818; color: #888888; border: 1px solid #333333}
 
-div#stg-header {background-color: #181818; border-bottom: 1px solid #333333}
 div#stg .lm {background-color: #181818; border: 1px solid #333333}
 
 .lm li div > div {
@@ -156,7 +157,6 @@ div#tdetails {background-color: #181818}
 div#tdcont {background: #181818; border: 1px solid #333333}
 
 div#tadd {background-color: #181818; border: 1px solid #333333}
-div#tadd-header {background-color: #181818; border-bottom: 1px solid #333333}
 
 .tabbar li.nav-item a.nav-link {
   border: 1px solid #333333;
@@ -174,7 +174,6 @@ div#tadd-header {background-color: #181818; border-bottom: 1px solid #333333}
 
 div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333333}
 div.dlg-window {background-color: #181818; color: #888888; border: 1px solid #333333;}
-div.dlg-header { background-color: #181818; border-bottom: 1px solid #333333}
 
 div.tab {background-color: #181818}
 

@@ -1,2 +1,1 @@
-div#dlg_unpack .row > div {padding: 0 0.25rem; margin-bottom: 0.1rem;}
-div#dlg_unpack div.dlg-header {background-image: url(../../images/settings.gif)}
+#dlg_unpack-header {background-image: url(../../images/settings.gif)}

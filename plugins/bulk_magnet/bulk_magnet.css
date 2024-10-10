@@ -1,6 +1,6 @@
-div#dlgBulkAdd {width: 395px}
-div#dlgBulkAdd div.dlg-header {background-image: url(../../images/world.gif)}
-div#dlgBulkAdd textarea {
+#dlgBulkAdd {width: 395px}
+#dlgBulkAdd-header {background-image: url(../../images/world.gif)}
+#dlgBulkAdd textarea {
   height: 200px;
   white-space: nowrap;
 }

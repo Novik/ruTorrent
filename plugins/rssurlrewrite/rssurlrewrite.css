@@ -1,8 +1,4 @@
-div#dlgEditRules div.dlg-header {background-image: url(./images/rss.gif)}
-div#dlgEditRules .row {
-  margin: 0 0 0.25rem 0;
-  padding: 0;
-}
+#dlgEditRules-header {background-image: url(./images/rss.gif)}
 
 .lf_rur {
   background-color: #FFFFFF; 
@@ -40,7 +36,7 @@ div#dlgEditRules .row {
 /* X-Small devices (portrait phones, less than 576px) */
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
-div#dlgEditRules {max-width: 95vw;}
+#dlgEditRules {max-width: 95vw;}
 #rlslist {max-height: 130px;}
 
 /* Small devices (landscape phones, 576px and up) */
@@ -51,7 +47,7 @@ div#dlgEditRules {max-width: 95vw;}
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
-  div#dlgEditRules {min-width: 600px;}
+  #dlgEditRules {min-width: 600px;}
   #rlslist {max-height: 260px;}
 }
 

@@ -1,6 +1,9 @@
 html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollbar-base-color: #e3e9f0; scrollbar-track-color: #7797c1; }
 :root {
   --settings-background-color: #FFFFFF;
+
+  --header-bg-color: #D9E8FB;
+  --header-border-color: #9EB6CE;
 }
 #side-panel, category-list {
   border-top-style: none;
@@ -53,7 +56,7 @@ div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
 .lm li a.focus {background-color: #D9E8FB}
 
 div.dlg-window { color: #000000; border-color: #9EB6CE; background-color: #FFFFFF }
-div.dlg-header { background: #D9E8FB url(../../../../images/blank.gif) no-repeat scroll 4px center; border-color: #9EB6CE; color: #15428B; font-weight: bold}
+.dlg-header {color: #15428B;}
 .tabbar { background: transparent url(./images/tabbarbg.png) repeat-x 0 0 }
 .tabbar li.nav-item a.nav-link {
   border: none;

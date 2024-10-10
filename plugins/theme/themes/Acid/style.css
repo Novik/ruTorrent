@@ -12,6 +12,7 @@ html, body { background-color: #1e2124; color: #BDDBDB }
   --settings-background-color: #272E36;
 
   --btn-bg-color: #D7D7D7;
+  --header-bg-color: #1E2124;
 }
 button, input.Button {
   color: black;
@@ -102,7 +103,6 @@ div#side-panel ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; colo
 .stable-icon {background-image: url(./images/tstatus.png); }
 
 div#stg { background-color: #1E2124; color: #BDDBDB; border: 2px solid #909090; }
-div#stg-header { background: #1e2124 url(./images/settings.gif) no-repeat scroll 4px center; color: #00ff00;}
 div#stg .lm { background-color: #272E36; border: 1px solid #D0D0D0; }
 
 .lm li div > div {
@@ -151,13 +151,17 @@ div#gcont div.row.Header {background: #323A46;}
   font-weight: bold;
 }
 
-div.dlg-header { background-color: #1e2124; color: #00FF00;}
+.dlg-header {color: #00FF00;}
 div.content {color: #BDDBDB;}
-div#dlgLabel div.dlg-header {background-image: url(./images/label.gif); }
-div#dlgAbout div.dlg-header {background-image: url(./images/about.gif); }
-div#dlgHelp div.dlg-header {background-image: url(./images/about.gif); }
-div#dlgProps div.dlg-header {background-image: url(./images/props.gif); }
-div#yesnoDlg div.dlg-header {background-image: url(./images/error.gif); }
+
+/* Dialog window icons */
+#stg-header {background-image: url(./images/settings.gif);}
+#tadd-header {background-image: url(./images/world.gif); }
+#dlgLabel-header {background-image: url(./images/label.gif);}
+#dlgAbout-header {background-image: url(./images/about.gif);}
+#dlgHelp-header {background-image: url(./images/about.gif);}
+#dlgProps-header {background-image: url(./images/props.gif);}
+#yesnoDlg-header {background-image: url(./images/error.gif);}
 
 div#t div#ind { background: transparent url(./images/ajax-loader.gif) no-repeat 0px center; }
 
@@ -167,7 +171,6 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
-div#tadd-header {background-image: url(./images/world.gif); }
 div#tadd { background-color: #1e2124; border: 2px solid #909090; color: #BDDBDB;}
 
 #StatusBar { background-color: #1e2124; color: #ffffff; font-weight: bold }
