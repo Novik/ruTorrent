@@ -35,6 +35,8 @@ class DnD {
 	start(e) {
 		// allow dnd only for medium-sized screens and up
 		if ($(window).width() < 768) return false;
+		// disallow dnd on links
+		if (e.target.tagName === "A") return false;
 
 		const self = e.data;
 		if (self.options.onStart(e)) {
