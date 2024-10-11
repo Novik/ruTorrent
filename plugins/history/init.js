@@ -22,22 +22,17 @@ plugin.isNotificationsSupported = function()
 	return( (plugin.allStuffLoaded && !notify.isSupported) ? false : notify.permissionLevel() );
 }
 
-plugin.rebuildNotificationsPage = function()
-{
-	if(plugin.allStuffLoaded)
-	{
-		var state = plugin.isNotificationsSupported();
-		$('#notifTip').text(theUILang.notifTip[state ]);
-		switch(state)
-		{
+plugin.rebuildNotificationsPage = function() {
+	if (plugin.allStuffLoaded) {
+		const state = plugin.isNotificationsSupported();
+		$('#notifTip').text(theUILang.notifTip[state]);
+		switch (state) {
 			case notify.PERMISSION_DENIED:
-			case false:
-			{
+			case false: {
 				$('#notifPerms, #notifParam').hide();
 				break;
 			}
-			case notify.PERMISSION_GRANTED:
-			{
+			case notify.PERMISSION_GRANTED: {
 				$('#notifPerms').hide();
 				break;
 			}
@@ -472,9 +467,15 @@ plugin.onLangLoaded = function() {
 						$("<div>").addClass("col-12").append(
 							$("<button>").attr({type:"button", id:"notifPerms"}).text(theUILang.enableNotifications),
 						),
+					),
+					$("<div>").attr({id:"notifParam"}).addClass("row").append(
 						$("<div>").addClass("col-12 col-md-6").append(
-							$("<input>").attr({type:"checkbox", id:"not_autoclose", onchange:"linked(this, 0, ['not_closeinterval']);"}),
-							$("<label>").attr({for:"not_closeinterval", id:"lbl_not_closeinterval"}).text(theUILang.notifAutoClose),
+							$("<input>")
+								.attr({type:"checkbox", id:"not_autoclose"})
+								.on("change", (ev) => linked(ev.target, 0, ["not_closeinterval"])),
+							$("<label>")
+								.attr({for:"not_closeinterval", id:"lbl_not_closeinterval"})
+								.text(theUILang.notifAutoClose),
 						),
 						$("<div>").addClass("col-6 col-md-3").append(
 							$("<input>").attr({type:"text", id:"not_closeinterval", maxlength:3}).prop("disabled", true),
@@ -490,11 +491,18 @@ plugin.onLangLoaded = function() {
 					),
 					$("<div>").addClass("row").append(
 						$("<div>").addClass("col-12").append(
-							$("<input>").attr({type:"checkbox", id:"pushbullet_enabled", onchange:"linked(this, 0, ['pushbullet_key','pushbullet_addition','pushbullet_deletion','pushbullet_finish']);"}),
+							$("<input>")
+								.attr({type:"checkbox", id:"pushbullet_enabled", onchange:";"})
+								.on("change", (ev) => linked(
+									ev.target, 0,
+									['pushbullet_key','pushbullet_addition','pushbullet_deletion','pushbullet_finish'],
+								)),
 							$("<label>").attr({for:"pushbullet_enabled"}).text(theUILang.Enabled),
 						),
 						$("<div>").addClass("col-12 col-md-6").append(
-							$("<label>").attr({for:"pushbullet_key", id:"lbl_pushbullet_key"}).text(theUILang.pushbulletKey),
+							$("<label>")
+								.attr({for:"pushbullet_key", id:"lbl_pushbullet_key"})
+								.text(theUILang.pushbulletKey),
 						),
 						$("<div>").addClass("col-12 col-md-6").append(
 							$("<input>").attr({type:"text", id:"pushbullet_key"}).prop("disabled", true),
@@ -512,14 +520,11 @@ plugin.onLangLoaded = function() {
 			)[0],
 			theUILang.history,
 		);
-		$('#notifPerms').on('click', function()
-		{
-			notify.requestPermission(function()
-			{
+		$('#notifPerms').on('click', () => notify.requestPermission(() => {
 				plugin.rebuildNotificationsPage();
 				plugin.historyRefresh();
-			});
-		});
+			})
+		);
 		plugin.actionNames = ['', theUILang.Added, theUILang.Finished, theUILang.Deleted];
 		plugin.markLoaded();
 	});
