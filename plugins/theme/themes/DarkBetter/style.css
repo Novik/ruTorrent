@@ -18,6 +18,12 @@ html, body {background-color: #181818; color: #999999; }
   --dialog-bg-color: #181818;
   --dialog-border-color: #333333;
 }
+category-panel {
+  --open-background-image: url(../plugins/theme/themes/DarkBetter/images/pnl_open.svg);
+  --close-background-image: url(../plugins/theme/themes/DarkBetter/images/pnl_close.svg);
+  --heading-background-color: #111111;
+  --heading-border-color: #333333;
+}
 button, input.Button {
   background: -webkit-gradient(
     linear,
@@ -66,18 +72,6 @@ select, input[type=file], input[type=text], input[type=number], input[type=passw
 #side-panel, category-list {
   border: 1px solid #333333;
   background-color: #181818;
-}
-
-category-panel::part(heading) {
-  background-color: #111111;
-  border-bottom: 1px solid #333333;
-  border-top: 1px solid #333333;
-  background: url(./images/pnl_open.svg) 4px no-repeat;
-  background-size: 14px;
-}
-category-panel[closed]::part(heading) {
-  background: url(./images/pnl_close.svg) 4px no-repeat;
-  background-size: 14px;
 }
 
 panel-label {
