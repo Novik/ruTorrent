@@ -382,24 +382,32 @@ rPlugin.prototype.removeSeparatorFromToolbar = function(idBefore)
 	$("#mnu_"+idBefore).prev().remove();
 }
 
-rPlugin.prototype.addPaneToStatusbar = function(id, statusCell, no, mobileVisible)
-{
-	if(this.canChangeStatusBar())
-	{
-		statusCell.attr({id: id}).addClass("status-cell");
-		mobileVisible || statusCell.addClass("d-none d-md-flex");
-
-		if (
-			!$("#StatusBar div.status-cell").length || 
-			no >= $("#StatusBar div.status-cell").length ||
-			no < 0
-		) {
-			statusCell.insertBefore($("div#servertime").parent());
-		} else {
-			statusCell.insertBefore($("#StatusBar div.status-cell").get(no));
+/**
+ * Add a pane (status cell) to the status bar.
+ * @param {string} id HTML `id` of the status cell to be added.
+ * @param {object | HTMLElement | string} statusCell The content of the status cell. 
+ * Can be a jQuery object, an HTML element, or an HTML string.
+ * @param {number} no Number of position where the status cell will be placed.
+ * The status cell will be inserted before the `no`th existing cell, if `no` is positive
+ * **AND** no more than the count of current cells. Otherwise, it will be inserted to the
+ * last of the cell list, before the server time cell.
+ * @param {boolean} mobileVisible Whether the status cell shall be displayed on mobile,
+ * default is `false`.
+ * @returns {rPlugin}
+ */
+rPlugin.prototype.addPaneToStatusbar = function(id, statusCell, no, mobileVisible) {
+	if (this.canChangeStatusBar()) {
+		statusCell = $(statusCell)
+			.attr({id: id})
+			.addClass("status-cell").addClass(mobileVisible ? "" : "d-none d-md-flex");
+		no = iv(no);
+		const countCurrCells = $("#StatusBar div.status-cell").length;
+		if (!countCurrCells || no > countCurrCells || no <= 0) {
+			no = countCurrCells;
 		}
+		$(`#StatusBar div.status-cell:nth-child(${no})`).before(statusCell);
 	}
-	return(this);
+	return this;
 }
 
 rPlugin.prototype.removePaneFromStatusbar = function(id)
