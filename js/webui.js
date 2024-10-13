@@ -178,6 +178,10 @@ var theWebUI =
 		"webui.show_open_status":	1,
 		"webui.show_view_panel": 1,
 		"webui.register_magnet":	0,
+		"webui.not_add_path":		0,
+		"webui.torrents_start_stopped":	0,
+		"webui.fast_resume":		0,
+		"webui.randomize_hash":	0,
 		...(() => {
 			const defaults = {};
 			const units = ['default', 'kb', 'mb', 'gb', 'tb', 'pb'];
@@ -734,8 +738,7 @@ var theWebUI =
 					if((/^webui\./).test(i))
 					{
 						needSave = true;
-						switch(i)
-						{
+						switch(i) {
 						        case "webui.effects":
 						        {
 								theDialogManager.setEffects( iv(nv)*200 );
