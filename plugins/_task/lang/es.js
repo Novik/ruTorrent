@@ -12,6 +12,8 @@
  theUILang.tskErrors		= "Diagnosticos";
  theUILang.tskBackground	= "Hide";
  theUILang.tskCopy		= "Copiar";
+ theUILang.tskLogEmpty		= "Console log is empty.";
+ theUILang.tskSaveLog		= "Save Log";
  theUILang.tskStart		= "Started";
  theUILang.tskFinish		= "Finished";
  theUILang.tskElapsed		= "Elapsed";
