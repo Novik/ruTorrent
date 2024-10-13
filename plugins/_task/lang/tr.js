@@ -12,6 +12,8 @@
  theUILang.tskErrors		= "Tanılama";
  theUILang.tskBackground	= "Gizle";
  theUILang.tskCopy		= "Copy";
+ theUILang.tskLogEmpty		= "Console log is empty.";
+ theUILang.tskSaveLog		= "Save Log";
  theUILang.tskStart		= "Başlatıldı";
  theUILang.tskFinish		= "Bitti";
  theUILang.tskElapsed		= "Geçen";

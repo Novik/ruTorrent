@@ -12,6 +12,8 @@
  theUILang.tskErrors		= "진단";
  theUILang.tskBackground	= "숨기기";
  theUILang.tskCopy		= "Copy";
+ theUILang.tskLogEmpty		= "Console log is empty.";
+ theUILang.tskSaveLog		= "Save Log";
  theUILang.tskStart		= "시작됨";
  theUILang.tskFinish		= "완료됨";
  theUILang.tskElapsed		= "경과";

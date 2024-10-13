@@ -12,6 +12,8 @@
  theUILang.tskErrors		= "诊断";
  theUILang.tskBackground	= "隐藏";
  theUILang.tskCopy		= "复制";
+ theUILang.tskLogEmpty		= "Console log is empty.";
+ theUILang.tskSaveLog		= "Save Log";
  theUILang.tskStart		= "已开始";
  theUILang.tskFinish		= "已完成";
  theUILang.tskElapsed		= "已用时间";

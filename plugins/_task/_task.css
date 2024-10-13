@@ -6,6 +6,7 @@
   overflow: auto;
   width: 580px;
   cursor: text;
+  user-select: text;
 }
 .tskconsole img {
   width: 100%;

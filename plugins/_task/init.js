@@ -116,12 +116,33 @@ plugin.fromBackground = function( no )
 	plugin.onStart(this.foreground); 
 }
 
-plugin.copyConsoleLog = function() {
-	const consoleLog = $('#tskcmdlog').text();
+plugin.readConsoleLog = function() {
+	const consoleLog = $('#tskcmdlog')[0].innerText;
 	if (consoleLog !== "") {
-		copyToClipboard(consoleLog);
+		return consoleLog;
 	} else {
-		log("Console log is empty.");
+		log(theUILang.tskLogEmpty);
+		return;
+	}
+}
+
+plugin.copyConsoleLog = function() {
+	const consoleLog = plugin.readConsoleLog();
+	if (!!consoleLog) {
+		copyToClipboard(consoleLog);
+	}
+}
+
+plugin.saveConsoleLog = function () {
+	const consoleLog = plugin.readConsoleLog();
+	if (!!consoleLog) {
+		const blob = new Blob([consoleLog], {type:"text/plain"});
+		const fileUrl = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.href = fileUrl;
+		link.download = "log.txt";
+		link.click();
+		URL.revokeObjectURL(fileUrl);  // revoke object url to prevent memory leaks
 	}
 }
 
@@ -232,7 +253,9 @@ plugin.setConsoleControls = function(errPresent) {
 		$("#tskConsole-header").html(theUILang.tskCommandDone);
 		if ($('#tskcmdlog').text() === "") {
 			// hide copy log button if log output is empty
-			$("#tskCopy").hide();
+			$("#tskCopy, #tskSaveLog").hide();
+		} else {
+			$("#tskCopy, #tskSaveLog").show();
 		};
 	}
 	else
@@ -579,9 +602,16 @@ plugin.onLangLoaded = function() {
 		),
 	);
 	const tskConsoleButtons = $("<div>").attr({id:"tsk_btns"}).addClass("buttons-list").append(
-		$("<button>").attr({type:"button", id:"tskCopy"})
+		$("<button>")
+			.attr({type:"button", id:"tskCopy"})
 			.on("click", plugin.copyConsoleLog)
-			.text(theUILang.tskCopy),
+			.text(theUILang.tskCopy)
+			.hide(),
+		$("<button>")
+			.attr({type:"button", id:"tskSaveLog"})
+			.on("click", plugin.saveConsoleLog)
+			.text(theUILang.tskSaveLog)
+			.hide(),
 		$("<button>").attr({type:"button", id:"tskBackground"})
 			.on("click", plugin.toBackground)
 			.text(theUILang.tskBackground),
@@ -594,19 +624,17 @@ plugin.onLangLoaded = function() {
 		true,
 	);
 
-	theDialogManager.setHandler('tskConsole','afterHide',function()
-	{
-		if( plugin.foreground.no )
-		{
-			if(!plugin.isInBackground())
+	theDialogManager.setHandler('tskConsole', 'afterHide', function() {
+		if (plugin.foreground.no) {
+			if (!plugin.isInBackground())
 				plugin.shutdown();
 			else
 				theWebUI.getTable('tasks').tasksRemovePrim();
 		}
+		$("#tskCopy, #tskSaveLog").hide();
 	});
-	theDialogManager.setHandler('tskConsole','afterShow',function()
-	{
-		if(!plugin.cHeight)
+	theDialogManager.setHandler('tskConsole', 'afterShow', function() {
+		if (!plugin.cHeight)
 			plugin.cHeight = $('#tskcmderrors').parent().height();
 	});
 	$(".tskconsole").enableSysMenu();

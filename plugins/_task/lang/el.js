@@ -12,6 +12,8 @@
  theUILang.tskErrors		= "Διαγνωστικά";
  theUILang.tskBackground	= "Απόκρυψη";
  theUILang.tskCopy		= "Copy";
+ theUILang.tskLogEmpty		= "Console log is empty.";
+ theUILang.tskSaveLog		= "Save Log";
  theUILang.tskStart		= "Εκκίνηση";
  theUILang.tskFinish		= "Ολοκλήρωση";
  theUILang.tskElapsed		= "Χρόνος που πέρασε";

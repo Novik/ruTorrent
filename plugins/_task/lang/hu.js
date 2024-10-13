@@ -12,6 +12,8 @@
  theUILang.tskErrors		= "Diagnosztika";
  theUILang.tskBackground	= "Elrejtés";
  theUILang.tskCopy		= "Copy";
+ theUILang.tskLogEmpty		= "Console log is empty.";
+ theUILang.tskSaveLog		= "Save Log";
  theUILang.tskStart		= "Elindult";
  theUILang.tskFinish		= "Végzett";
  theUILang.tskElapsed		= "Eltelt";

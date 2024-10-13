@@ -12,6 +12,8 @@
  theUILang.tskErrors		= "Діагностика";
  theUILang.tskBackground	= "Приховати";
  theUILang.tskCopy		= "Copy";
+ theUILang.tskLogEmpty		= "Console log is empty.";
+ theUILang.tskSaveLog		= "Save Log";
  theUILang.tskStart		= "Початок";
  theUILang.tskFinish		= "Завершення";
  theUILang.tskElapsed		= "Минуло";
