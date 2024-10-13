@@ -1,9 +1,10 @@
 div#RSSList {border: 1px solid var(--menu-border-color); background-color: var(--menu-background-color); overflow: hidden; -moz-user-focus: normal; -moz-user-input: enabled}
 
-div#dlgAddRSS div.dlg-header {background-image: url(./images/rss.gif)}
-div#dlgEditRSS div.dlg-header {background-image: url(./images/rss.gif)}
-div#dlgLoadTorrents div.dlg-header {background-image: url(../../images/world.gif)}
-div#dlgEditFilters div.dlg-header {background-image: url(./images/rss.gif)}
+#dlgAddRSS-header {background-image: url(./images/rss.gif)}
+#dlgAddRSSGroup-header {background-image: url(./images/rss.gif)}
+#dlgEditRSS-header {background-image: url(./images/rss.gif)}
+#dlgLoadTorrents-header {background-image: url(../../images/world.gif)}
+#dlgEditFilters-header {background-image: url(./images/rss.gif)}
 #filterList {
   height: 16rem;
 }
@@ -46,7 +47,6 @@ div#FLT_buttons {clear: both}
 #rsslayout .raw-details { font-size: smaller; float: right; padding: 0 0 0.5em 0.5em; max-width: 700px; }
 #rsslayout .raw-details summary { opacity: 0.5; text-align: right;}
 
-#dlgAddRSSGroup div.dlg-header {background-image: url(./images/rss.gif)}
 
 #tab_lcont.notification > a::after { color: gray; content: " ⚠"; }
 

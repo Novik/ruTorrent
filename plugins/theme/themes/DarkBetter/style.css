@@ -12,6 +12,8 @@ html, body {background-color: #181818; color: #999999; }
   --settings-background-color: #181818;
 
   --btn-bg-color: #D6D6D6;
+  --header-bg-color: #181818;
+  --header-border-color: #333333;
 }
 button, input.Button {
   background: -webkit-gradient(
@@ -289,7 +291,6 @@ div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #18181
 
 div#stg {background-color: #181818; color: #888888; border: 1px solid #333333}
 
-div#stg-header {background-color: #181818; border-bottom: 1px solid #333333}
 div#stg .lm {background-color: #181818; border: 1px solid #333333}
 
 .lm li div > div {
@@ -315,7 +316,6 @@ div#tdetails {background-color: #181818}
 div#tdcont {background: #181818; border: 1px solid #333333}
 
 div#tadd {background-color: #181818; border: 1px solid #333333}
-div#tadd-header {background-color: #181818; border-bottom: 1px solid #333333}
 .tabbar li.nav-item a.nav-link {
   border: 1px solid #333333;
   background-color: #181818;
@@ -332,7 +332,6 @@ div#tadd-header {background-color: #181818; border-bottom: 1px solid #333333}
 div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333333}
 
 div.dlg-window {background-color: #181818; color: #888888; border: 1px solid #333333}
-div.dlg-header {background-color: #181818; border-bottom: 1px solid #333333}
 
 div.tab {background-color: #181818}
 
@@ -345,51 +344,18 @@ span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat ce
 #st_down .icon {background:url(./images/down.svg) no-repeat; background-size: 100%;}
 .status-cell {border-right: 1px solid #333333}
 
-div#stg-header {
-  background: url(./images/settings.svg) no-repeat 2px center !important;
-  background-size: 20px;
-  padding-left: 28px;
+.dlg-header > div:first-child {background-size: 1.5rem;}
+#stg-header {background-image: url(./images/settings.svg);}
+#tcreate-header {background-image: url(./images/tb_create.svg);}
+#dlgEditRules-header, #dlgEditFilters-header {background-image: url(./images/tb_rss.svg);}
+#dlgEditRatioRules-header, #tedit-header, #padd-header, #tskConsole-header {
+  background-image: url(./images/edit.svg);
 }
-
-div#tcreate div.dlg-header {
-  background: transparent url(./images/tb_create.svg) no-repeat 2px center !important;
-  background-size: 20px !important;
-}
-
-div#dlgEditRules div.dlg-header, div#dlgEditFilters div.dlg-header {
-  background: transparent url(./images/tb_rss.svg) no-repeat 2px center !important;
-  background-size: 20px !important;
-}
-
-div#dlgEditRatioRules div.dlg-header, div#tedit div.dlg-header, div#padd div.dlg-header, div#tskConsole div.dlg-header {
-  background: transparent url(./images/edit.svg) no-repeat 2px center !important;
-  background-size: 20px !important;
-}
-
-div#tadd-header {
-  background: transparent url(./images/world.svg) no-repeat 2px center !important;
-  background-size: 20px !important;
-}
-
-div#dlgHelp div.dlg-header, div#dlgAbout div.dlg-header {
-  background: transparent url(./images/quest.svg) no-repeat 2px center !important;
-  background-size: 20px !important;
-}
-
-div#dlgLabel div.dlg-header {
-  background: url(./images/label.svg) no-repeat 2px center !important;
-  background-size: 20px !important;
-}
-
-div#dlgProps div.dlg-header {
-  background: url(./images/file.svg) no-repeat 2px center !important;
-  background-size: 20px !important;
-}
-
-div#yesnoDlg div.dlg-header {
-  background: url(./images/yellow.svg) no-repeat 2px center !important;
-  background-size: 20px !important;
-}
+#tadd-header {background-image: url(./images/world.svg);}
+#dlgHelp-header, #dlgAbout-header {background-image: url(./images/quest.svg);}
+#dlgLabel-header {background-image: url(./images/label.svg);}
+#dlgProps-header {background-image: url(./images/file.svg);}
+#yesnoDlg-header {background-image: url(./images/yellow.svg);}
 
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */

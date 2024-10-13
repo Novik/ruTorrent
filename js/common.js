@@ -202,28 +202,34 @@ function ir(val)
 	return(isNaN(v) ? 0 : v);
 }
 
-function linked(obj, _33, lst)
-{
-	var tn = obj.tagName.toLowerCase();
-	if((tn == "input") && (obj.type == "checkbox"))
+/**
+ * Link the enabled status of a series of HTML elements
+ * with a checkbox or a dropdown select.
+ * @param {HTMLInputElement | HTMLSelectElement} obj The HTML element
+ * to be linked to.
+ * @param {boolean | string} _33 An additional option when linking.
+ * 
+ * (1) When linking to a checkbox, a falsey value will enable the linked
+ * objects when the checkbox is checked on.
+ * 
+ * (2) When linking to a dropdown select, it should be one of the values
+ * from the options, which will disable the linked elements when selected.
+ * @param {string[]} lst An array of HTML `id`s of elements to be linked.
+ */
+function linked(obj, _33, lst) {
+	const tn = obj.tagName.toLowerCase();
+	if ((tn === "input") && (obj.type === "checkbox"))
 		var d = _33 ? obj.checked : !obj.checked;
-	else
-		if(tn == "select")
-		{
-			var v = obj.options[obj.selectedIndex].value;
-			var d = (v == _33) ? true : false;
-		}
-	for(var i = 0; i < lst.length; i++)
-	{
-		var o = $$(lst[i]);
-		if(o)
-		{
-			o.disabled = d;
-			o = $$("lbl_" + lst[i]);
-			if(o)
-				o.className = (d) ? "disabled" : "";
-		}
-   	}
+	else if (tn === "select") {
+		var v = obj.options[obj.selectedIndex].value;
+		var d = (v === _33) ? true : false;
+	} else {
+		return;
+	}
+	lst.forEach(id => {
+		$(`#${id}`).prop({disabled:d});
+		d ? $(`#lbl_${id}`).addClass("disabled") : $(`#lbl_${id}`).removeClass("disabled");
+	});
 }
 
 function escapeHTML(str)

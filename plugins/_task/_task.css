@@ -16,7 +16,7 @@
 #tskcmderrors {
   height: 12rem;
 }
-div#tsk_btns {background: transparent url(./images/ajax-loader.gif) no-repeat 5px 7px;}
-div#tskConsole div.dlg-header {background-image: url(../../images/settings.gif)}
+#tsk_btns {background: transparent url(./images/ajax-loader.gif) no-repeat 5px 7px;}
+#tskConsole-header {background-image: url(../../images/settings.gif)}
 
 .konqueror div.tskconsole { height: 546px }

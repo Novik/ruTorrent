@@ -99,6 +99,8 @@ span {
   --settings-background-color: #fafafa;
 
   --btn-bg-color: #F0F0F0;
+  --header-bg-color: #F0F0F0;
+  --header-border-color: #909090;
 }
 category-list.rightalign-labelsize panel-label::part(size) {
   margin-left: auto;
@@ -136,14 +138,6 @@ div.dlg-window {
   max-width: 95vw;
   max-height: 95vh;
 }
-div.dlg-window > div:first-child {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-}
 div.dlg-window div.row {
   margin: 0.5rem 0;
   padding: 0;
@@ -156,21 +150,29 @@ div.dlg-window div.row > div {
   margin-bottom: 0.1rem;
 }
 div.fxcaret {overflow: auto}
-div.dlg-header {
-  line-height: 20px;
-  background: #F0F0F0 url(../images/blank.gif) no-repeat scroll 4px center;
-  border-bottom: 1px solid #909090;
+.dlg-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  padding: 0.5rem;
+  background-color: var(--header-bg-color);
+  border-bottom: 1px solid var(--header-border-color);
   border-radius: 10px 10px 0 0;
+}
+.dlg-header > div:first-child {
+  line-height: 2rem;
   font-weight: bold;
-  padding: 0.25rem 0.25rem 0.25rem 3rem;
-  flex-grow: 1;
+  padding-left: 2rem;
+  background: no-repeat scroll 0.15rem center;
 }
 a.dlg-close:link, a.dlg-close:visited {
   display: block;
-  position: absolute;
-  right: 5px;
   height: 14px;
   width: 14px;
+  margin: auto 0.5rem;
   background: transparent url(../images/close.png) no-repeat scroll left center;
 }
 a.dlg-close:hover {background-position-x: -14px;}
@@ -272,7 +274,7 @@ div#plugins {background: url(../images/plugin.png) 0px center}
 #pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
 
 a {color: #686868;}
-#maincont {height: calc(100vh - 36px - 5px - 25px - 5px);}
+#maincont {height: calc(100dvh - 36px - 5px - 25px - 5px);}
 .offcanvas-header .btn-close {background-color: var(--btn-bg-color);}
 #offcanvas-sidepanel {
   background-color: #FFFFFF;
@@ -316,7 +318,7 @@ div#stg-pages {
   flex-direction: column;
   overflow-x: auto;
 }
-div#stg-header { background-image: url(../images/settings.gif); }
+#stg-header {background-image: url(../images/settings.gif);}
 
 div#stg .lm {
   flex: 0 0 auto;
@@ -459,24 +461,24 @@ div.cont {padding: 6px;}
   color: unset;
 }
 
-div#dlgLabel {max-width: 350px;}
-div#dlgLabel div.dlg-header {background-image: url(../images/label.gif)}
-div#padd {width: 250px;}
-div#padd div.dlg-header {background-image: url(../images/props.gif)}
-div#dlgAbout {max-width: 300px;}
-div#dlgAbout div.dlg-header {background-image: url(../images/about.gif)}
-div#dlgHelp {max-width: 300px;}
-div#dlgHelp div.dlg-header {background-image: url(../images/about.gif)}
+#dlgLabel {max-width: 350px;}
+#dlgLabel-header {background-image: url(../images/label.gif)}
+#padd {width: 250px;}
+#padd-header {background-image: url(../images/props.gif)}
+#dlgAbout {max-width: 300px;}
+#dlgAbout-header {background-image: url(../images/about.gif)}
+#dlgHelp {max-width: 300px;}
+#dlgHelp-header {background-image: url(../images/about.gif)}
 
-div#dlgProps {max-width: 450px;}
-div#dlgProps div.dlg-header {background-image: url(../images/props.gif)}
-div#dlgProps textarea#prop-trackers {width: 100%; height: 70px; background: #FFFFFF; border: 1px solid #D0D0D0}
-input#prop-seed_ratio {width: 40px}
+#dlgProps {max-width: 450px;}
+#dlgProps-header {background-image: url(../images/props.gif)}
+#prop-trackers {width: 100%; height: 70px; background: #FFFFFF; border: 1px solid #D0D0D0}
+#prop-seed_ratio {width: 40px}
 
-div#yesnoDlg {width: 280px; height: auto; min-height: 100px}
-div#yesnoDlg div.dlg-header {background-image: url(../images/error.gif)}
-div#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 16px}
-div#yesnoDlg div.content input {margin-top: 5px}
+#yesnoDlg {width: 280px; height: auto; min-height: 100px}
+#yesnoDlg-header {background-image: url(../images/error.gif)}
+#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 16px}
+#yesnoDlg div.content input {margin-top: 5px}
 
 span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.gif) no-repeat center center; }
 .webkit div#msg {position: fixed;}
@@ -486,7 +488,7 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 .Icon_Dir {background: transparent url(../images/dir.gif) no-repeat left center}
 .Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
 
-div#tadd-header {background-image: url(../images/world.gif)}
+#tadd-header {background-image: url(../images/world.gif)}
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
@@ -494,6 +496,7 @@ div#tadd-header {background-image: url(../images/world.gif)}
 
 #StatusBar {
   position: absolute;
+  z-index: 2;
   left: 0;
   bottom: 0;
   border-top: 1px solid #A0A0A0;

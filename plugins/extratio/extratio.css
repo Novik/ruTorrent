@@ -1,6 +1,4 @@
-div#dlgEditRatioRules {font-size: 11px; font-family: Tahoma, Arial, Helvetica, sans-serif; overflow: visible}
-div#dlgEditRatioRules div.dlg-header {background-image: url(../../images/settings.gif)}
-div#dlgEditRatioRules .row {margin: 0 0 0.25rem 0; padding: 0;}
+#dlgEditRatioRules-header {background-image: url(../../images/settings.gif)}
 
 ul#rlsul {margin: 0.25rem; padding: 0.25rem; list-style: none; white-space: nowrap;}
 ul#rlsul > li {margin: 0.2rem 0; display: flex; flex-direction: row;}
@@ -8,7 +6,7 @@ ul#rlsul > li input[type="text"] {border: solid 1px #000000; border-radius: 3px;
 ul#rlsul > li input.TextboxFocus {background-color: #CFDEEF; }
 ul#rlsul > li input.TextboxNormal {background-color: #FFFFFF }
 
-#exratio_buttons1 input.Button {width: 57px;}
+#exratio_buttons1 button {width: 57px;}
 
 /* Custom break point settings for responsiveness */
 

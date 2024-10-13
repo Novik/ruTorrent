@@ -25,9 +25,15 @@
 }
 
 div.graph_tab {color:#FFF;border-color: #000;}
-div#tcreate div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -24px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+#tcreate-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -24px;
+}
 div#dlgAddRSS {background-color: #222222; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;}
-div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header {background: #181818 url(./images/dlg-toolbars.gif) no-repeat 0px -48px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+#dlgAddRSS-header, #dlgAddRSS-header {
+  background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -48px;
+}
 
 .lf li input.TextboxFocus { background-color: transparent; color: #009DDD }
 
@@ -64,7 +70,10 @@ div#dlgAddRSS-header, div#dlgAddRSS div.dlg-header {background: #181818 url(./im
     color: red;
 }
 
-div#dlgEditRules-header, div#dlgEditRules div.dlg-header {background: #181818 url(./images/dlg-rssurlrewrite.gif) no-repeat 0px 0px; border-bottom: 1px solid #333333;text-shadow:0px -1px 0px #000;}
+#dlgEditRules-header {
+  background-image: url(./images/dlg-rssurlrewrite.gif);
+  background-position-y: 0px;
+}
 
 #autodl-tb {
 	background: transparent url(./images/autodll-irc1.png) no-repeat center;
