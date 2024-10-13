@@ -45,7 +45,7 @@ plugin.init = function()
 					$("<div>").attr({id: "meter-disk-text"}),
 				),
 			),
-			0, true,
+			1, true,
 		);
 
 		plugin.check = function()

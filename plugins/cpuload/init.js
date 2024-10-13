@@ -130,7 +130,7 @@ plugin.init = function () {
 				$("<div>").addClass("icon"),
 				$("<div>").attr({id: "meter-cpu-holder"}),
 			),
-			0, true,
+			1, true,
     );
     plugin.graph = new rLoadGraph();
     plugin.graph.create($("#meter-cpu-holder"));
