@@ -312,14 +312,8 @@ plugin.correctCSS = function()
 	}
 }
 
-plugin.createPluginMenu = function()
-{
-	if(this.enabled)
-		theContextMenu.add([theUILang.mnu_ratiorule, "theWebUI.showRatioRules()"]);
-}
-
 plugin.onLangLoaded = function() {
-	this.registerTopMenu(7);
+	this.registerTopMenu(7, theUILang.mnu_ratiorule, theWebUI.showRatioRules);
 	const dlgEditRatioRulesContent = $("<div>").addClass("cont fxcaret").append(
 		$("<div>").addClass("row").append(
 			$("<div>").addClass("col-md-6 d-flex flex-column align-items-center").append(
