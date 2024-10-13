@@ -1,6 +1,6 @@
 plugin.description: This plugin allows for the creation of new .torrent files.
 plugin.author: Novik
-plugin.version: 5.0
+plugin.version: 5.1
 plugin.dependencies: _task
 rtorrent.need: 0
 rtorrent.remote: error

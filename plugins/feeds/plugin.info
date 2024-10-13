@@ -1,5 +1,5 @@
 plugin.description: This plugin is intended for making RSS feeds with information of torrents.
 plugin.author: Novik
-plugin.version: 5.0
+plugin.version: 5.1
 rtorrent.need: 1
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginFeeds
