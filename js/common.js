@@ -190,16 +190,24 @@ function addslashes(str)
 	return( (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0').replace(/\u000A/g, '\\n').replace(/\u000D/g, '\\r') );
 }
 
-function iv(val)
-{
-	var v = (val==null) ? 0 : parseInt(val + "");
-	return(isNaN(v) ? 0 : v);
+/**
+ * A ruTorrent wrapper to parse an input value as an integer.
+ * @param {any} val Input value to be parsed as an integer.
+ * @returns {number} The parsed result as an integer.
+ */
+function iv(val) {
+	const v = (!val) ? 0 : parseInt(val + "");
+	return isNaN(v) ? 0 : v;
 }
 
-function ir(val)
-{
-	var v = (val==null) ? 0 : parseFloat(val + "");
-	return(isNaN(v) ? 0 : v);
+/**
+ * A ruTorrent wrapper to parse an input value as n float.
+ * @param {any} val Input value to be parsed as a float.
+ * @returns {number} The parsed result as a float.
+ */
+function ir(val) {
+	const v = (!val) ? 0 : parseFloat(val + "");
+	return isNaN(v) ? 0 : v;
 }
 
 /**
