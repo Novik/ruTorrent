@@ -5,7 +5,7 @@
 
 var theWebUI =
 {
-  	version: "5.B.3",
+  	version: "5.1.B2",
 	tables:
 	{
 		trt:
@@ -33,7 +33,7 @@ var theWebUI =
 			],
 			container:	"List",
 			format:		theFormatter.torrents,
-			ondelete:	function() { theWebUI.removeTorrent(); },
+			ondelete:	function() { theWebUI.remove(); },
   	                onselect:	function(e,id) { theWebUI.trtSelect(e,id) },
 			ondblclick:	function(obj) { theWebUI.showDetails(obj.id); return(false); }
 		},
@@ -1463,7 +1463,7 @@ var theWebUI =
 		}
 		theContextMenu.add([CMENU_CHILD, theUILang.Priority, _c0]);
    		theContextMenu.add([CMENU_SEP]);
-   		theContextMenu.add([theUILang.Remove, (table.selCount > 1) || this.isTorrentCommandEnabled("remove",id) ? "theWebUI.removeTorrent()" : null]);
+   		theContextMenu.add([theUILang.Remove, (table.selCount > 1) || this.isTorrentCommandEnabled("remove",id) ? "theWebUI.remove()" : null]);
    		theContextMenu.add([CMENU_SEP]);
    		theContextMenu.add([theUILang.Details, "theWebUI.showDetails('" + id + "')"]);
    		if((table.selCount > 1) || !this.isTorrentCommandEnabled("setprops",id))
