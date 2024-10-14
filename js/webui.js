@@ -438,13 +438,14 @@ var theWebUI = {
 		this.activeView = tab;
 
 		if (!this.settings["webui.show_cats"]) {
-			$("#side-panel").addClass("d-none");
-			$("#HDivider").addClass("d-none");
+			$("#offcanvas-sidepanel, #HDivider").hide();
+		} else {
+			$("#offcanvas-sidepanel, #HDivider").show();
 		}
 		if (!this.settings["webui.show_dets"] || !theWebUI.systemInfo.rTorrent.started) {
-			$("#tdetails").addClass("d-none");
-			$("#tdetails").removeClass("d-flex");
-			$("#VDivider").addClass("d-none")
+			$("#tdetails, #VDivider").hide();
+		} else {
+			$("#tdetails, #VDivider").show();
 		}
 		theDialogManager.setEffects( iv(this.settings["webui.effects"])*200 );
 //		this.setStatusUpdate();
@@ -734,9 +735,8 @@ var theWebUI = {
 								});
 								break;
 							}
-							case "webui.show_cats":
-							{
-								$("#side-panel").toggle();
+							case "webui.show_cats": {
+								$("#offcanvas-sidepanel").toggle();
 								needResize = true;
 								break;
 							}
@@ -2230,21 +2230,23 @@ var theWebUI = {
 			return;
 		const offcanvas = $("#offcanvas-sidepanel");
 		if (theWebUI.settings["webui.list_table_min_height"]) {
-			w = Math.max(w, parseFloat(theWebUI.settings["webui.side_panel_min_width"]));
+			w = Math.max(w, ir(theWebUI.settings["webui.side_panel_min_width"]));
 		}
 		if (offcanvas.css("display") === "none") {
 			// Senerio 1: when side panel is toggled off
-			$("#HDivider").addClass("d-md-none").removeClass("d-md-block");
+			$("#HDivider").hide();
 			$("#main-info").width($("#maincont").width());
 		} else {
 			// When side panel is toggled on
 			if ($(window).width() < 768) {
 				// Senerio 2: small screens and below
 				offcanvas.width("");
+				$("#HDivider").hide();
 				$("#main-info").width($("#maincont").width());
 			} else {
 				// Senerio 3: medium screens and above
 				offcanvas.width(w);
+				$("#HDivider").show();
 				$("#main-info").width($("#maincont").width() - 5 - w);
 			}
 		}
@@ -2255,7 +2257,7 @@ var theWebUI = {
 		if (!h)
 			return
 		if (theWebUI.settings["webui.list_table_min_height"]) {
-			h = Math.max(h, parseFloat(theWebUI.settings["webui.list_table_min_height"]));
+			h = Math.max(h, ir(theWebUI.settings["webui.list_table_min_height"]));
 		}
 		if ($("#tdetails").css("display") !== "none") {
 			$("#list-table").height(h);
@@ -2304,7 +2306,7 @@ var theWebUI = {
 	},
 
 	setHSplitter: function() {
-		let r = 1 - $("#side-panel").outerWidth() / $("#maincont").width();
+		let r = 1 - $("#offcanvas-sidepanel").outerWidth() / $("#maincont").width();
 		r = Math.floor(r * 1000) / 1000;
 		if ((theWebUI.settings["webui.hsplit"] !== r) && (r > 0) && (r < 1)) {
 			theWebUI.settings["webui.hsplit"] = r;
@@ -2331,8 +2333,11 @@ var theWebUI = {
 			return;
 		}
 		this.settings["webui.show_cats"] = !this.settings["webui.show_cats"];
-		$("#offcanvas-sidepanel").toggleClass("d-md-none");
-		$("#HDivider").toggleClass("d-md-none d-md-block");
+		if (this.settings["webui.show_cats"]) {
+			$("#offcanvas-sidepanel, #HDivider").show();
+		} else {
+			$("#offcanvas-sidepanel, #HDivider").hide();
+		}
     this.resize();
 		this.save();
 	},
