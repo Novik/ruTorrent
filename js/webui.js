@@ -140,7 +140,7 @@ var theWebUI =
 		"webui.reqtimeout":		10000,
 		"webui.confirm_when_deleting":	1,
 		"webui.alternate_color":	0,
-		"webui.side_panel_min_width": 	280,
+		"webui.side_panel_min_width": 	200,
 		"webui.list_table_min_height": 	300,
 		"webui.update_interval":	2500,
 		"webui.hsplit":			0.88,
