@@ -554,4 +554,4 @@ if($handle = opendir('../plugins'))
 
 global $cachedPluginLoading;
 $cacheResults=(isset($cachedPluginLoading) && $cachedPluginLoading);
-CachedEcho::send($jResult,"application/javascript",$cacheResults);
+CachedEcho::send(Minifier::minify($jResult),"application/javascript",$cacheResults);
