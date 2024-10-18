@@ -151,7 +151,8 @@ theWebUI.rDirBrowser = class {
 	selectItem(ev) {
 		this.frame.find(".rmenuitem.active").removeClass("active");
 		$(ev.currentTarget).addClass("active");
-		this.edit.val(this.edit.data("cwd") + ev.target.innerText);
+		this.edit.data('previousValue', this.edit.val());
+		this.edit.val(this.edit.data("cwd") + ev.target.innerText).trigger('change');
 	}
 
 	show() {
