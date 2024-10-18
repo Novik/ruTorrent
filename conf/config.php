@@ -64,6 +64,9 @@
 	$cachedPluginLoading = false;		// Set to true to enable rapid cached loading of ruTorrent plugins
 										// Required to clear web browser cache when upgrading versions	
 
+	$pluginMinification = true; 	// Stable change to reduce loading times by minimizing JavaScript networked
+									// Only recommended to disable when required for debuging purposes
+
 	$localhosts = array(			// list of local interfaces
 		"127.0.0.1",
 		"localhost",
