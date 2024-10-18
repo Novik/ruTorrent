@@ -152,8 +152,7 @@ theWebUI.rDirBrowser = class {
 		this.frame.find(".rmenuitem.active").removeClass("active");
 		$(ev.currentTarget).addClass("active");
 		this.edit.data('previousValue', this.edit.val());
-		const val = this.edit.data("cwd") + ev.target.innerText;
-		this.edit.val(val).trigger('change', [val]);
+		this.edit.val(this.edit.data("cwd") + ev.target.innerText).trigger('change');
 	}
 
 	show() {
