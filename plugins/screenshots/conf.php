@@ -14,5 +14,5 @@ $extensions = array
 	"mp2","mp4","mpeg","mpeg1video","mpeg2video","mpegts","mpegtsraw","mpegvideo",
 	"msnwctcp","mvi","mxf","mxf_d10","nc","nsv","nuv","ogg","psp","psxstr","rawvideo","rm","rpl","rtsp",
 	"smk","svcd","swf","vcd","video4linux","video4linux2","vob","webm","wmv",
-	"mkv","ogm","mpg","mpv","m1v","m2v","mp2","qt","rmvb","dat","ts"
+	"mkv","ogm","mpg","mpv","m1v","m2v","mp2","qt","rmvb","dat","ts","m2ts"
 );
