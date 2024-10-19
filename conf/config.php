@@ -28,16 +28,16 @@
 	$do_diagnostic = true;			// Diagnose ruTorrent. Recommended to keep enabled, unless otherwise required.
 	$al_diagnostic = true;			// Diagnose auto-loader. Set to "false" to make composer plugins work.
 
-	$log_file = '/tmp/errors.log';		// path to log file (comment or leave blank to disable logging)
+	$log_file = $_ENV['LOG_FILE'] ?? '/tmp/errors.log'; // path to log file (comment or leave blank to disable logging)
 
 	$saveUploadedTorrents = true;		// Save uploaded torrents to profile/torrents directory or not
 	$overwriteUploadedTorrents = false;	// Overwrite existing uploaded torrents in profile/torrents directory or make unique name
 
-	$topDirectory = '/';			// Upper available directory. Absolute path with trail slash.
+	$topDirectory = $_ENV['TOP_DIR'] ?? '/';			// Upper available directory. Absolute path with trail slash.
 	$forbidUserSettings = false;
 
-	$scgi_port = 5000;
-	$scgi_host = "127.0.0.1";
+	$scgi_port = $_ENV['SCGI_PORT'] ?? 5000;
+	$scgi_host = $_ENV['SCGI_HOST'] ?? "127.0.0.1";
 
 	// For web->rtorrent link through unix domain socket
 	// (scgi_local in rtorrent conf file), change variables
@@ -72,7 +72,9 @@
 		"localhost",
 	);
 
-	$profilePath = '../../share';		// Path to user profiles
+    getenv("LOCALHOSTS") && $localhosts[] = $_ENV['LOCALHOSTS'];
+
+	$profilePath = $_ENV['PROFILE_PATH'] ?? '../../share';		// Path to user profiles
 	$profileMask = 0777;			// Mask for files and directory creation in user profiles.
 						// Both Webserver and rtorrent users must have read-write access to it.
 						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
