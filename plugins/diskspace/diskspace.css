@@ -6,18 +6,6 @@
   position: relative;
   height: 18px;
 }
-#meter-disk-value {
-  height: 100%;
-}
-#meter-disk-text {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
 
 /* Custom break point settings for responsiveness */
 
