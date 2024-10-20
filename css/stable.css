@@ -30,7 +30,7 @@
 }
 .stable-body table {table-layout: fixed; width: 0; }
 .stable-body tr {cursor: pointer}
-.stable-body td {height: 2rem; border-bottom: 1px solid #E0E0E0; overflow: hidden;}
+.stable-body td {border-bottom: 1px solid #E0E0E0; overflow: hidden;}
 .stable-icon {
   width: 16px;
   height: 16px;
@@ -68,15 +68,16 @@
 .stable-head .rowcover { position: absolute; left: 0; top: 0; height: 20px; width: 1000px; background: transparent; display: none; }
 
 .meter-value {
-  position: relative;
+  position: absolute;
+  top: 0;
   background-color: #99D699;
   border: 1px inset #BBBBBB;
   border-bottom: none;
   height: 100%;
-  top: -100%;
 }
 .meter-text {
-  position: relative;
+  position: absolute;
+  top: 0;
   display: inline-flex;
   align-items: center;
   justify-content: space-around;
