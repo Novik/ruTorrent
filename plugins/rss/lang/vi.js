@@ -76,5 +76,6 @@
  theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Các thư mục";
  theUILang.Labels			= "Các nhãn";
+ theUILang.rssPatternExample		= "Regular Expression Example";
 
 thePlugins.get("rss").langLoaded();

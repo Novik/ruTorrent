@@ -76,5 +76,6 @@
  theUILang.rssShowErrorsDelayed		= "Atrase a notificação de erro RSS até que a aba de registro ou feed RSS esteja visível";
  theUILang.Directories			= "Diretórios";
  theUILang.Labels			= "Rótulos";
+ theUILang.rssPatternExample		= "Regular Expression Example";
 
 thePlugins.get("rss").langLoaded();

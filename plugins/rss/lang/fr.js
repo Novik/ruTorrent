@@ -76,5 +76,6 @@
  theUILang.rssShowErrorsDelayed		= "Retarder les notifications d'erreurs RSS jusqu'a ce que l'onglet journal ou le flux RSS soit visible";
  theUILang.Directories			= "Annuaires";
  theUILang.Labels			= "Étiquettes";
+ theUILang.rssPatternExample		= "Regular Expression Example";
 
 thePlugins.get("rss").langLoaded();
