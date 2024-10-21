@@ -1568,10 +1568,10 @@ dxSTable.prototype.syncDOM = function()
 			{
 				const icon = dataRow.icon;
 				const td = tr.cells[this.getColOrder(0)];
-				if (td.firstChild.classList.contains('stable-icon'))
-					td.firstChild.remove();
+				if ($(td).find("div span").hasClass("stable-icon"))
+					$(td).find("div span").remove();
 				if (icon !== null)
-					td.innerHTML = this.createIconHTML(icon) + td.innerHTML;
+					$(td).find("div").prepend(this.createIconHTML(icon));
 			}
 
 			// update cols
