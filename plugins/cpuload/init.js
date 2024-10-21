@@ -9,7 +9,7 @@ class rLoadGraph {
     this._animationRequestId = 0;
 
     this.plot = $.plot(aOwner, this.data, this.options);
-    aOwner.append($("<div>").attr("id", "meter-cpu-text"));
+    aOwner.append($("<div>").attr("id", "meter-cpu-text").addClass("meter-text"));
   }
 
   update() {

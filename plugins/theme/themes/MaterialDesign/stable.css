@@ -66,7 +66,6 @@
 .stable-head div.resz { border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center; }
 .stable-body { background: #181818; text-shadow: 0px 1px 0px #000; color: #CACCCC; }
 .stable-body td { border-bottom: 1px solid #252525; }
-.stable-body td div { font-family: Ubuntu, Verdana, Arial, Helvetica, sans-serif; height: 16px !important; }
 .stable-body tr.odd td { background-color: #2A2A2A; }
 .stable-body tr.even td { background-color: #252525; }
 .stable-body tr.odd:hover td { background-color: #222222; }
@@ -95,4 +94,3 @@ div.stable-body table tbody tr.even td:nth-child(2n+1) { color: #ffffff; }
 .meter-value { border-width: 0px; border-radius: 0.8em; }
 .stable-body tr.selected span.meter-value { color: #fff; }
 .meter-text { text-shadow: 0px 0px 2px #000; }
-

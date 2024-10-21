@@ -24,19 +24,19 @@ if(theWebUI.theme)
 	}
 }
 
-plugin.onLangLoaded = function()
-{
-	var themes = '<option value="" '+(theWebUI.theme ? '' : 'selected')+'>'+theUILang.themeStandard+'</option>';
-	for( var i in plugin.themes )
-		themes += '<option value="'+plugin.themes[i]+'"'+(theWebUI.theme==plugin.themes[i] ? 'selected' : '')+'>'+plugin.themes[i]+'</option>';
+plugin.onLangLoaded = function() {
 	$($$("webui.lang")).parent().after(
-		$("<div>").addClass("col-6 col-md-3").append(
-			$("<label>").attr({for: "webui.theme"}).text(theUILang.theme + ": "),
+		$("<div>").addClass("col-12 col-md-3").append(
+			$("<label>").attr({for: "webui.theme"}).text(theUILang.theme),
 		),
-		$("<div>").addClass("col-6 col-md-3").append(
-			$("<select>").attr({id: "webui.theme"}).html(themes),
+		$("<div>").addClass("col-12 col-md-3").append(
+			$("<select>").attr({id: "webui.theme"}).append(
+				$("<option>").val("").text(theUILang.themeStandard),
+				...plugin.themes.map(theme => $("<option>").val(theme).text(theme)),
+			),
 		),
 	);
+	$($$("webui.theme")).find(`option[value="${theWebUI.theme}"]`).prop("selected", true);
 }
 
 plugin.updateThemeHint = function(theme)

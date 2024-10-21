@@ -39,7 +39,11 @@ panel-label[selected] {
   border-color: #D9E8FB;
 }
 
-div#t {background: #181818 url(./images/header_bg.gif) repeat-x center center; border-bottom: 1px solid #333333;}
+div#t {
+  background-color: #181818;
+  background-image: url(./images/header_bg.gif);
+  border-bottom: 1px solid #333333;
+}
 #top-menu {
   background-color: #181818;
   border-bottom: 1px solid #333333;

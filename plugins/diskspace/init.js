@@ -41,8 +41,8 @@ plugin.init = function()
 			$("<div>").append(
 				$("<div>").addClass("icon"),
 				$("<div>").attr({id: "meter-disk-holder"}).append(
-					$("<div>").attr({id: "meter-disk-value"}).width(0),
-					$("<div>").attr({id: "meter-disk-text"}),
+					$("<div>").attr({id: "meter-disk-value"}).addClass("meter-value").width(0),
+					$("<div>").attr({id: "meter-disk-text"}).addClass("meter-text"),
 				),
 			),
 			1, true,
