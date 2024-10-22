@@ -76,5 +76,6 @@
  theUILang.rssShowErrorsDelayed		= "Az RSS hibaüzenet késleltetése, amíg a naplófül vagy az RSS feed láthatóvá nem válik";
  theUILang.Directories			= "Mappák";
  theUILang.Labels			= "Címkék";
+ theUILang.rssPatternExample		= "Regular Expression Example";
 
 thePlugins.get("rss").langLoaded();
