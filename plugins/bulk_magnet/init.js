@@ -105,14 +105,6 @@ plugin.showBulkAdd = function()
 	theDialogManager.show("dlgBulkAdd");
 }
 
-plugin.createPluginMenu = function()
-{
-	if(this.enabled)
-	{
-		theContextMenu.add([theUILang.bulkAdd, plugin.showBulkAdd]);
-	}
-}
-
 plugin.bulkAdd = function()
 {
 	theWebUI.request("?action=bulkadd",[plugin.wasAdded, plugin]);
@@ -149,7 +141,7 @@ plugin.wasAdded = function(data)
 }
 
 plugin.onLangLoaded = function() {
-	this.registerTopMenu(9);
+	this.registerTopMenu(9, theUILang.bulkAdd, plugin.showBulkAdd);
 	const dlgBulkAddContent = $("<div>").addClass("cont fxcaret").append(
 		$("<textarea>").attr({id:"bulkadd"}).on("input", (ev) => {
 			$('#dlgBulkAdd .OK').prop('disabled', ev.target.value.trim() === '');

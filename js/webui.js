@@ -558,15 +558,6 @@ var theWebUI =
 // plugins
 //
 
-	showPluginsMenu: function()
-	{
-		theContextMenu.clear();
-		for( var item in thePlugins.topMenu )
-			thePlugins.get(thePlugins.topMenu[item].name).createPluginMenu();
-        	var offs = $("#plugins").offset();
-		theContextMenu.show(offs.left-5,offs.top+5+$("#plugins").height());
-	},
-
 	plgSelect: function(e, id)
 	{
 		if($type(id) && (e.which==3))
