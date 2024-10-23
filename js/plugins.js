@@ -48,7 +48,6 @@ function injectCSSText(text)
 var thePlugins =
 {
 	list: {},
-	topMenu: [],
 	restictions:
 	{
 		cantChangeToolbar: 	0x0001,
@@ -96,13 +95,6 @@ var thePlugins =
 		else
 			window.setTimeout( 'thePlugins.waitLoad("'+callback+'")', 500 );
 	},
-
-	registerTopMenu: function( plg, weight )
-	{
-		this.topMenu.push( { "name": plg.name, "weight": weight } );
-		this.topMenu.sort( function(a,b) { return(a.weight-b.weight); } );
-	}
-
 };
 
 function rPlugin( name, version, author, descr, restictions, help )
@@ -330,24 +322,81 @@ rPlugin.prototype.removePageFromTabs = function(id)
 	return(this);
 }
 
-rPlugin.prototype.registerTopMenu = function(weight)
-{
+/**
+ * Add a menu item for the plugin to the plugins' dropdown menu.
+ * @param {number} weight An interger that determines the position of the
+ * menu item in the dropdown menu. A higher value will make a lower position.
+ * If multiple items have the same value, newly added items will be at a
+ * lower position.
+ * @param {string} name Name to be shown on the dropdown menu item.
+ * @param {Function} onclick Function to be executed when clicking on the
+ * dropdown menu item.
+ * @returns {rPlugin}
+ */
+rPlugin.prototype.registerTopMenu = function(weight, name, onclick) {
 	if (this.canChangeToolbar()) {
 		if (!$$("mnu_plugins"))
-			this.addButtonToToolbar("plugins", theUILang.Plugins, "theWebUI.showPluginsMenu()", "help");
-		thePlugins.registerTopMenu(this, weight);
+			this.addButtonToToolbar("plugins", theUILang.Plugins, "", "help", true);
+		weight = iv(weight);
+		const newItem = $("<li>").data({weight:weight}).append(
+			$("<a>")
+				.addClass("dropdown-item")
+				.attr({href:"#"})
+				.on("click", onclick)
+				.text(name ?? this.name),
+		);
+		const dropdownMenu = $("#mnu_plugins").siblings("ul.dropdown-menu");
+		const beforeItem = dropdownMenu.find("li").filter((_, ele) => $(ele).data("weight") > weight);
+		if (beforeItem.length > 0) {
+			// Must call `.first()` here, otherwise the `newItem` will be inserted beore
+			// every item on the 'beforeItem' list.
+			beforeItem.first().before(newItem);
+		} else {
+			dropdownMenu.append(newItem);
+		}
 	}
 	return this;
 }
 
-rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore) {
+/**
+ * Add a new button to the top menu.
+ * @param {string} id HTML `id` of the button. The exact `id` will be applied to
+ * the icon element of the button, and an id of `mnu_id` will be applied to the
+ * wrapper anchor of the button.
+ * @param {string} name Name of the button, will be applied as the tooltip text
+ * on desktop and description title on mobile.
+ * @param {Function | string} onclick Click handler of the button.
+ * @param {string} idBefore HTML `id` of an existing button for the new button
+ * to be inserted before. If no button is found, the new button will be added
+ * before the settings button.
+ * @param {boolean} isDropDown Whether the new button is a dropdown button,
+ * default is `false`.
+ * @returns {rPlugin}
+ */
+rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore, isDropDown) {
 	if (this.canChangeToolbar()) {
-		const newBtn = $("<a>").attr(
-			{id:`mnu_${id}`, href:"#", onclick:onclick, onfocus:"this.blur();", title:`${name}...`}
-		).addClass("nav-link top-menu-item").append(
-			$("<div>").attr({id:id}).addClass("nav-icon"),
-			$("<span>").addClass("d-inline d-md-none").text(`${name}...`),
-		);
+		let newBtn = $("<a>")
+			.attr({id:`mnu_${id}`, href:"#", title:`${name}...`})
+			.on({
+				click: $type(onclick) === "function" ? () => onclick() : () => eval(onclick),
+				focus: (ev) => ev.target.blur(),
+			})
+			.addClass("nav-link top-menu-item")
+			.append(
+				$("<div>").attr({id:id}).addClass("nav-icon"),
+				$("<span>").addClass("d-inline d-md-none").text(`${name}...`),
+			);
+		// make a dropdown button if `isDropDown` is `true`
+		if (isDropDown) {
+			// wrap button in a group, with a dropdown menu
+			newBtn = $("<div>").addClass("btn-group").append(
+				newBtn
+					.addClass("dropdown-toggle")
+					.attr({"aria-expanded":false, "data-bs-toggle":"dropdown"}),
+				$("<ul>").addClass("dropdown-menu p-2").append(),
+			);
+		}
+
 		const beforeBtn = $(`#mnu_${idBefore}`);
 		beforeBtn && beforeBtn.length > 0 ? newBtn.insertBefore(beforeBtn) : newBtn.insertBefore($("#mnu_settings"));
 	}

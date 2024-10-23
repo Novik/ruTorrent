@@ -212,15 +212,22 @@ div#t {
   border-bottom: 1px solid #D0D0D0;
   z-index: 30;
 }
+#top-menu .btn-group {
+  flex-direction: column;
+}
+.dropdown-toggle span {
+  /* Push dropdown triangle to the right end */
+  margin-right: auto;
+}
 div#t button.navbar-toggler {
   background-color: var(--btn-bg-color);
   width: 5rem;
 }
 div#t a {padding: 3px;}
-div#t div.navbar-nav a:hover {
+#t .navbar-nav a:not(.dropdown-item):hover {
   filter: brightness(1.3);
 }
-div#t div.navbar-nav a:active {padding: 4px 2px 2px 4px;}
+#t .navbar-nav a:active {padding: 4px 2px 2px 4px;}
 div#t div.TB_Separator {
   align-self: stretch;
   flex: 0 0 1px;
@@ -595,8 +602,8 @@ div.dlg-window .buttons-list {
     border-bottom: none;
     z-index: auto;
   }
-  div#t div.navbar-nav a:hover {
-    background: transparent url(../images/tb_bg.gif) no-repeat scroll center center;
+  #t .navbar-nav a:not(.dropdown-item):hover {
+    background: transparent url(../images/tb_bg.gif) no-repeat scroll left center;
     filter: none;
   }
   div#t .nav-link {

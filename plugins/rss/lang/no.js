@@ -76,5 +76,6 @@
  theUILang.rssShowErrorsDelayed		= "Utsett varsling om feil på RSS inntil logg eller RSS-feed er synlig";
  theUILang.Directories			= "Mapper";
  theUILang.Labels			= "Etiketter";
+ theUILang.rssPatternExample		= "Regular Expression Example";
 
 thePlugins.get("rss").langLoaded();

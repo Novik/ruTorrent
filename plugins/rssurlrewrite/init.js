@@ -8,7 +8,7 @@ theWebUI.maxRuleNo = 0;
 
 theWebUI.showRules = function()
 {
-	theWebUI.request("?action=getrules",[this.loadRules, this]);
+	theWebUI.request("?action=getrules",[theWebUI.loadRules, this]);
 }
 
 theWebUI.storeRuleParams = function()
@@ -250,14 +250,8 @@ if(plugin.canChangeMenu())
 	}
 }
 
-plugin.createPluginMenu = function()
-{
-	if(this.enabled)
-		theContextMenu.add([theUILang.mnu_rssurlrewrite, "theWebUI.showRules()"]);		
-}
-
 plugin.onLangLoaded = function() {
-	this.registerTopMenu(5);
+	this.registerTopMenu(5, theUILang.mnu_rssurlrewrite, theWebUI.showRules);
 	const dlgEditRulesContent = $("<div>").addClass("cont fxcaret").append(
 		$("<div>").addClass("row").append(
 			$("<div>").addClass("col-md-6 d-flex flex-column align-items-center").append(

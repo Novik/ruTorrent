@@ -86,23 +86,27 @@
 				</button>	
 				<div class="collapse navbar-collapse px-1 py-2 py-md-0" id="top-menu">
 					<div class="navbar-nav flex-grow-1">
-						<a id="mnu_add" class="nav-link" href="#" onclick="theWebUI.showAdd(); return(false);" onfocus="this.blur()" uilangtitle="mnu_add">
-							<div id="add" class="nav-icon"></div>
-						</a>
+						<div class="d-flex flex-row align-items-center">
+							<a id="mnu_add" class="nav-link flex-grow-1" href="#" onclick="theWebUI.showAdd(); return(false);" onfocus="this.blur()" uilangtitle="mnu_add">
+								<div id="add" class="nav-icon"></div>
+							</a>
+							<div class="TB_Separator"></div>
+							<a id="mnu_remove" class="nav-link flex-grow-1" href="#" onclick="theWebUI.removeTorrent(); return(false);" onfocus="this.blur()" uilangtitle="mnu_remove">
+								<div id="remove" class="nav-icon"></div>
+							</a>
+						</div>
 						<div class="TB_Separator"></div>
-						<a id="mnu_remove" class="nav-link" href="#" onclick="theWebUI.removeTorrent(); return(false);" onfocus="this.blur()" uilangtitle="mnu_remove">
-							<div id="remove" class="nav-icon"></div>
-						</a>
-						<div class="TB_Separator"></div>
-						<a id="mnu_start" class="nav-link" href="#" onclick="theWebUI.start(); return(false);" onfocus="this.blur()" uilangtitle="mnu_start">
-							<div id="start" class="nav-icon"></div>
-						</a>
-						<a id="mnu_pause" class="nav-link" href="#" onclick="theWebUI.pause(); return(false);" onfocus="this.blur()" uilangtitle="mnu_pause">
-							<div id="pause" class="nav-icon"></div>
-						</a>
-						<a id="mnu_stop" class="nav-link" href="#" onclick="theWebUI.stop(); return(false);" onfocus="this.blur()" uilangtitle="mnu_stop">
-							<div id="stop" class="nav-icon"></div>
-						</a>
+						<div class="d-flex flex-row align-items-center">
+							<a id="mnu_start" class="nav-link flex-grow-1" href="#" onclick="theWebUI.start(); return(false);" onfocus="this.blur()" uilangtitle="mnu_start">
+								<div id="start" class="nav-icon"></div>
+							</a>
+							<a id="mnu_pause" class="nav-link flex-grow-1" href="#" onclick="theWebUI.pause(); return(false);" onfocus="this.blur()" uilangtitle="mnu_pause">
+								<div id="pause" class="nav-icon"></div>
+							</a>
+							<a id="mnu_stop" class="nav-link flex-grow-1" href="#" onclick="theWebUI.stop(); return(false);" onfocus="this.blur()" uilangtitle="mnu_stop">
+								<div id="stop" class="nav-icon"></div>
+							</a>
+						</div>
 						<div class="TB_Separator"></div>
 						<a id="mnu_settings" class="nav-link" href="#" onclick="theWebUI.showSettings(); return(false);" onfocus="this.blur()" uilangtitle="mnu_settings">
 							<div id="setting" class="nav-icon"></div>
