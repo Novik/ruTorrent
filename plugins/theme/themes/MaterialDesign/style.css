@@ -802,10 +802,6 @@ select.cols {
 	border:1px solid #333
 }
 
-div#dragmask {
-	border:1px dotted #333
-}
-
 div#tdetails {
 	padding:0;
 	margin:0;

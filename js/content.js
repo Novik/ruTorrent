@@ -19,27 +19,30 @@ function makeContent() {
 	$("#offcanvas-sidepanel-label").text("ruTorrent v" + theWebUI.version);
 
 	new DnD("HDivider", {
+		// Restrict both x and y direction so that the `onRun()` function
+		// won't set the position of the divider bar.
+		// This will work because when `theWebUI` resizes, the divider bar
+		// is automatically placed between the side panel and the main content.
+		restrictX: true,
 		restrictY: true,
-		maskId: "HDivider",
 		onStart: function(e) {return $("#offcanvas-sidepanel").css("display") !== "none";},
 		onRun: function(e) {
-			theWebUI.resizeLeft(parseFloat(e.data.mask.css("left")));
+			theWebUI.resizeLeft(e.clientX);
 		},
 		onFinish: function(e) {
-			$("#HDivider").css({left:""});
 			theWebUI.setHSplitter();
 		},
 	});
 
 	new DnD("VDivider", {
+		// Restrict both direction. See comments above for the `HDivider` divider bar.
 		restrictX: true,
-		maskId: "VDivider",
+		restrictY: true,
 		onStart: function(e) {return $("#tdetails").css("display") !== "none";},
 		onRun: function(e) {
-			theWebUI.resizeTop(null, parseFloat(e.data.mask.css("top")) - $("#t").outerHeight() - 5);
+			theWebUI.resizeTop(null, e.clientY - $("#list-table").offset().top);
 		},
 		onFinish: function(e) {
-			$("#VDivider").css({top:""});
 			theWebUI.setVSplitter();
 		},
 	});

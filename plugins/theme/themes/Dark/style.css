@@ -151,7 +151,6 @@ input.disabled, button.disabled {background-color: #181818; color: #333333; bord
 td.disabled, label.disabled, span.disabled, div.disabled {color: #333333}
 legend {color: #888888}
 select.cols {border: 1px solid #333333}
-div#dragmask {border: 1px dotted #333333}
 div#tdetails {background-color: #181818}
 
 .tabbar li.nav-item a.nav-link {

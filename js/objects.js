@@ -11,23 +11,19 @@ class DnD {
 		const header = headers.length > 0 ? $(headers[0]) : this.obj;
 		this.options = options || {};
 		if (!this.options.left)
-			this.options.left = function() {return 0;};
+			this.options.left = 0;
 		if (!this.options.top)
-			this.options.top = function() {return 0;};
+			this.options.top = 0;
 		if (!this.options.right)
-			this.options.right = function() {return ($(window).width());};
+			this.options.right = (() => $(window).width())();
 		if (!this.options.bottom)
-			this.options.bottom = function() {return ($(window).height());};
+			this.options.bottom = (() => $(window).height())();
 		if (!this.options.onStart)
 			this.options.onStart = function() {return true;};
 		if (!this.options.onRun)
 			this.options.onRun = function() {};
 		if (!this.options.onFinish)
 			this.options.onFinish = function() {};
-		if (!this.options.maskId)
-			this.options.maskId = 'dragmask';
-		this.detachedMask = this.options.maskId !== id;
-		this.mask = $('#' + this.options.maskId);
 		header.off("mousedown");
 		header.on("mousedown", this, this.start);
 	}
@@ -40,14 +36,6 @@ class DnD {
 
 		const self = e.data;
 		if (self.options.onStart(e)) {
-			const offs = self.obj.offset();
-			theDialogManager.bringToTop(self.obj.attr("id"));
-			theDialogManager.bringToTop(self.mask.attr("id"));
-			if (self.detachedMask) {
-				self.mask.css({left: offs.left, top: offs.top, width: self.obj.width(), height: self.obj.height()});
-				self.mask.show();
-			}
-			self.delta = {x: e.clientX - offs.left, y: e.clientY - offs.top};
 			$(document).on("mousemove", self, self.run);
 			$(document).on("mouseup", self, self.finish);
 		}
@@ -56,15 +44,24 @@ class DnD {
 
 	run(e) {
 		$("body").css({cursor:"grabbing"});
+		// `e.data` refers to the DnD object attached to the current dialog header
 		const self = e.data;
+
+		const offs = self.obj.offset();
 		if (!self.options.restrictX) {
-			self.mask.css({
-				left: Math.min(Math.max(self.options.left(), e.clientX), self.options.right()) - self.delta.x
+			self.obj.css({
+				left: Math.min(
+					Math.max(self.options.left, offs.left + e.originalEvent.movementX),
+					self.options.right,
+				),
 			});
 		}
 		if (!self.options.restrictY) {
-			self.mask.css({
-				top: Math.min(Math.max(self.options.top(), e.clientY), self.options.bottom()) - self.delta.y
+			self.obj.css({
+				top: Math.min(
+					Math.max(self.options.top, offs.top + e.originalEvent.movementY),
+					self.options.bottom,
+				),
 			});
 		}
 		self.options.onRun(e);
@@ -75,25 +72,6 @@ class DnD {
 		$("body").css({cursor:""});
 		const self = e.data;
 		self.options.onFinish(e);
-		if (self.detachedMask) {
-			const offs = self.mask.offset();
-			self.mask.hide();
-			self.obj.css(offs);
-			// move directory frames along with the dialog window
-			self.obj.find(".browseEdit").each((i, ele) => {
-				if ($(`#${ele.id}_frame`).css("display") !== "none") {
-					// move open ones only because they will automatically reposition
-					// when toggled open
-					const frameOffs = ele.getBoundingClientRect();
-					$(`#${ele.id}_frame`).css(
-						{
-							top: frameOffs.bottom,
-							left: frameOffs.left,
-						}
-					);
-				}
-			});
-		}
 		$(document).off("mousemove", self.run);
 		$(document).off("mouseup", self.finish);
 		return false;
