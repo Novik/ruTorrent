@@ -70,14 +70,14 @@ class rCache
 	}
 	public function get( &$rss )
 	{
-	        $fname = $this->getName($rss);
+		$fname = $this->getName($rss);
 		$ret = @file_get_contents($fname);
 		if($ret!==false)
 		{
 			$tmp = unserialize($ret);
 			if(is_array($tmp))
 			{
-			        $rss = $tmp;				
+				$rss = $tmp;				
 				$ret = true;
 			}
 			else
@@ -87,14 +87,14 @@ class rCache
 					(isset($rss->version) && !isset($tmp->version)) ||
 					(isset($tmp->version) && ($tmp->version==$rss->version))))
 				{
-				        $rss = $tmp;
+					$rss = $tmp;
 					$rss->modified = filemtime($fname);
 					$ret = true;
 				}
 				else
 					$ret = false;
 			}
-        	}
+		}
 		return($ret);
 	}
 	public function remove( $rss )

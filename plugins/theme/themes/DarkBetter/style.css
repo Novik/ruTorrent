@@ -307,7 +307,7 @@ div#stg .lm {background-color: #181818; border: 1px solid #333333}
 .lm li a.focus {background-color: #333333}
 .stg_con {background-color: #181818}
 * > fieldset {border: 1px solid #333333}
-input.disabled {background-color: #181818; color: #333333; border: 1px solid #333333}
+input.disabled, button.disabled {background-color: #181818; color: #333333; border: 1px solid #333333}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #333333}
 legend {color: #888888}
 select.cols {border: 1px solid #333333}

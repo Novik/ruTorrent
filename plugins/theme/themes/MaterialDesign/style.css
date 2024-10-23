@@ -812,7 +812,7 @@ div#stg .lm
 	background:none
 }
 
-input.disabled {
+input.disabled, button.disabled {
 	background-color:#181818;
 	color:#333;
 	border:1px solid #333

@@ -197,8 +197,7 @@ function makeContent() {
 		$("#tadd_label_select").show();
 	});
 
-	theDialogManager.setHandler('tadd','beforeShow',function()
-	{
+	theDialogManager.setHandler('tadd', 'beforeShow', function() {
 		$("#tadd_label").hide();
 		$("#tadd-return-select").hide();
 		$("#tadd_label_select").empty()
@@ -209,6 +208,20 @@ function makeContent() {
 		$("#torrent_file").val("");
 		$("#add_button").prop("disabled", true);
 		$("#tadd_label_select").trigger('change');
+		// toggle default add torrent options
+		[
+			"not_add_path", "torrents_start_stopped",
+			"fast_resume", "randomize_hash",
+		].forEach(ele => $$(ele).checked = !!theWebUI.settings["webui." + ele]);
+	});
+
+	// save add torrent options before closing dialog window
+	theDialogManager.setHandler("tadd", "beforeHide", () => {
+		[
+			"not_add_path", "torrents_start_stopped",
+			"fast_resume", "randomize_hash",
+		].forEach(ele => theWebUI.settings["webui." + ele] = $$(ele).checked);
+		theWebUI.save();
 	});
 
 	var makeAddRequest = function(frm) {
