@@ -415,6 +415,7 @@ a {color: #686868; text-decoration: none;}
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  flex: 0 0 auto;
 }
 .offcanvas-body {
   display: flex;
@@ -426,6 +427,8 @@ a {color: #686868; text-decoration: none;}
   flex: 1 1 auto;
 }
 #list-table {
+  flex: 0 0 auto;
+  overflow: hidden;
   border: 1px solid var(--container-border-color);
   background-color: var(--container-bg-color);
 }
@@ -554,6 +557,7 @@ div#tdetails {
   flex-direction: column;
   align-items: stretch;
   flex: 1 1 auto;
+  overflow: hidden;
   background-color: #F5F5F5;
 }
 div#tdetails a.h {margin: 0}

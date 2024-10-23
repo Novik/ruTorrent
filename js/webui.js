@@ -2233,37 +2233,40 @@ var theWebUI = {
 		if (offcanvas.css("display") === "none") {
 			// Senerio 1: when side panel is toggled off
 			$("#HDivider").hide();
-			$("#main-info").width($("#maincont").width());
 		} else {
 			// When side panel is toggled on
 			if ($(window).width() < 768) {
 				// Senerio 2: small screens and below
-				offcanvas.width("");
+				offcanvas.css("flex-basis", "");
 				$("#HDivider").hide();
-				$("#main-info").width($("#maincont").width());
 			} else {
 				// Senerio 3: medium screens and above
-				offcanvas.width(w);
+				offcanvas.css("flex-basis", w);
 				$("#HDivider").show();
-				$("#main-info").width($("#maincont").width() - 5 - w);
 			}
 		}
 		this.resizeGraph();
 	},
 
-	resizeTop: function(w, h) {
-		if (!h)
+	resizeTop: function(w, h) {  // TODO: rename function to `function(h)` in v6
+		// TODO: remove below in v6
+		if (w && h) {
+			// backward compatibility for those calling this function name with two parameters
+			noty("`theWebUI.resizeTop(w, h)` is deprecated. Please use `theWebUI.resizeTop(h)` instead.");
+		}
+		if (!w && !h)
 			return
+		if (w && !h)
+			h = w;
+		// TODO: remove above in v6
 		if (theWebUI.settings["webui.list_table_min_height"]) {
 			h = Math.max(h, ir(theWebUI.settings["webui.list_table_min_height"]));
 		}
+		h = Math.min(h, $("#main-info").height() - 5);
 		if ($("#tdetails").css("display") !== "none") {
-			$("#list-table").height(h);
-			$("#tdetails").height($("#main-info").height() - 5 - h);
-		} else {
-			$("#list-table").height($("#main-info").height());
+			$("#list-table").css("flex-basis", h);
+			this.resizeGraph();
 		}
-		this.resizeGraph();
 	},
 
 	resizeGraph: function() {

@@ -332,8 +332,8 @@ plugin.onLangLoaded = function()
 				plugin.onShow.call(this,id);
 		};
 	 	this.attachPageToTabs(
-			$('<div>').attr("id","traf").append(
-				$("<div>").attr({id:"traf_graph_ctrl"}).addClass("graph_tab d-flex flex-row").append(
+			$('<div>').attr("id","traf").addClass("graph_tab").append(
+				$("<div>").attr({id:"traf_graph_ctrl"}).addClass("d-flex flex-row").append(
 					plugin.disableClearButton ? $() : $("<button>").attr({type:"button", onclick: "theWebUI.clearStats();return(false);"}).text(theUILang.ClearButton),
 					$("<select>").attr({
 						name:"tracker_mode",
@@ -352,7 +352,7 @@ plugin.onLangLoaded = function()
 						$("<option>").val("year").text(theUILang.perYear),
 					),
 				),
-				$("<div>").attr({id:"traf_graph"}).addClass("graph_tab"),
+				$("<div>").attr({id:"traf_graph"}),
 			)[0],
 			theUILang.traf,
 			"lcont",
