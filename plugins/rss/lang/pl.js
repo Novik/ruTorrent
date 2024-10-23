@@ -76,5 +76,6 @@
  theUILang.rssShowErrorsDelayed		= "Delay RSS error notification until the log tab or RSS feed is visible";
  theUILang.Directories			= "Katalogi";
  theUILang.Labels			= "Etykiety";
+ theUILang.rssPatternExample		= "Przykład wyrażenia regularnego";
 
 thePlugins.get("rss").langLoaded();

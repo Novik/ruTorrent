@@ -38,10 +38,12 @@ if(isset($_REQUEST['cmd']))
 							$name = '"${dir}"/frame'.$i.($st->data['exformat'] ? '.png' : '.jpg');
 							$commands[] = Utility::getExternal("ffmpeg").
 								' -ss '.$offs.
-								" -i ".escapeshellarg($filename).
-								' -y -vframes 1 -an '.
-								($useWidth ? '-vf "scale='.$st->data['exfrmwidth'].':-1"' : '').
-								' '.
+								' -i '.escapeshellarg($filename).
+								' -y'.
+								' -vframes 1'.
+								' -an'.
+								' -sn'.
+								' -vf "scale=\'max(sar,1)*iw\':\'max(1/sar,1)*ih\''.($useWidth ? ',scale='.$st->data['exfrmwidth'].':-1' : '').'" '.
 								$name;
 							$commands[] = '{';
 							$commands[] = '>'.$i;

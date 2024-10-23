@@ -8,24 +8,25 @@ plugin.recentTrackers = {};
 theWebUI.checkCreate = function()
 {
 	theDialogManager.hide('tcreate');
-       	var arr = $('#trackers').val().split("\n");
+		var arr = $('#trackers').val().split("\n");
 	var trk = '';
 	for( var i in arr )
 		trk+=(arr[i].trim()+'\r');
-        this.startConsoleTask( "create", plugin.name,
-	{
-		"piece_size" : $('#piece_size').val(),
-		"trackers" : trk,
-		"path_edit" : $("#path_edit").val().trim(),
-		"comment" : $("#comment").val().trim(),
-		"source" : $("#source").val().trim(),
-		"private" : $('#private').prop('checked') ? 1 : 0,
-		"start_seeding" : $('#start_seeding').prop('checked') ? 1 : 0,
-		"hybrid" : $('#hybrid').prop('checked') ? 1 : 0
-	},
-	{
-	       	noclose: true
-	});
+	theWebUI.startConsoleTask("create", plugin.name,
+		{
+			"piece_size" : $('#piece_size').val(),
+			"trackers" : trk,
+			"path_edit" : $("#path_edit").val().trim(),
+			"comment" : $("#comment").val().trim(),
+			"source" : $("#source").val().trim(),
+			"private" : $('#private').prop('checked') ? 1 : 0,
+			"start_seeding" : $('#start_seeding').prop('checked') ? 1 : 0,
+			"hybrid" : $('#hybrid').prop('checked') ? 1 : 0,
+		},
+		{
+			noclose: true,
+		},
+	);
 }
 
 plugin.onTaskFinished = function(task,fromBackground)
@@ -42,7 +43,7 @@ plugin.onTaskFinished = function(task,fromBackground)
 rTorrentStub.prototype.rtget = function()
 {
 	this.content = "cmd=rtget";
-        this.contentType = "application/x-www-form-urlencoded";
+	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/create/action.php";
 	this.dataType = "json";
 }
@@ -58,9 +59,9 @@ rTorrentStub.prototype.rtdelete = function()
 theWebUI.showCreate = function()
 {
 	if( $("#trackers").val().trim().length < 1 )
-		$("#deleteFromRecentTrackers").addClass("disabled");
+		$("#deleteFromRecentTrackers").prop("disabled", true);
 	else
-		$("#deleteFromRecentTrackers").removeClass("disabled");
+		$("#deleteFromRecentTrackers").prop("disabled", false);
 	$('#start_seeding').prop('disabled',!theWebUI.systemInfo.rTorrent.started);
 	if(theWebUI.systemInfo.rTorrent.started)
 		$('#lbl_start_seeding').removeClass('disabled');
@@ -72,29 +73,28 @@ theWebUI.showCreate = function()
 plugin.getRecentTrackers = function( data )
 {
 	plugin.recentTrackers = data;
-	if(propsCount(plugin.recentTrackers))
-		$("#recentTrackers").removeClass("disabled");
-        else
-	        $("#recentTrackers").addClass("disabled");
+	$("#recentTrackers").prop(
+		"disabled",
+		(!plugin.recentTrackers?.recent_trackers || !propsCount(plugin.recentTrackers.recent_trackers)),
+	);
 }
 
 theWebUI.addTrackerToBox = function(ann)
 {
-	$("#deleteFromRecentTrackers").removeClass("disabled");
-	var val = $('#trackers').val();
+	$("#deleteFromRecentTrackers").prop("disabled", false);
+	const val = $('#trackers').val();
+	if (val.includes(ann)) return;  // do nothing if selected tracker is already in the box
 	if(val.length)
 		val+='\r\n';
 	$('#trackers').val( val+ann );
 	$('#trackers').trigger('focus');
 }
 
-theWebUI.showRecentTrackers = function()
-{
-	if(propsCount(plugin.recentTrackers))
-	{
+theWebUI.showRecentTrackers = function() {
+	if (plugin.recentTrackers?.recent_trackers && propsCount(plugin.recentTrackers.recent_trackers)) {
 		theContextMenu.clear();
-		for( var domain in plugin.recentTrackers )
-			theContextMenu.add([domain,"theWebUI.addTrackerToBox('"+addslashes(plugin.recentTrackers[domain])+"')"]);
+		for( var domain in plugin.recentTrackers.recent_trackers )
+			theContextMenu.add([domain,"theWebUI.addTrackerToBox('"+addslashes(plugin.recentTrackers.recent_trackers[domain])+"')"]);
 		var offs = $("#recentTrackers").offset();
 		theContextMenu.show(offs.left,offs.top-theContextMenu.obj.height()-5);
 	}
@@ -102,11 +102,11 @@ theWebUI.showRecentTrackers = function()
 
 theWebUI.deleteFromRecentTrackers = function()
 {
-	$("#deleteFromRecentTrackers").addClass("disabled");
+	$("#deleteFromRecentTrackers").prop("disabled", true);
 	var trklist = $('#trackers').val();
 	if(!trklist)
 		return(false);
-       	var arr = trklist.split("\n");
+	var arr = trklist.split("\n");
 	$('#trackers').val('');
 	var trk = '';
 	for( var i in arr )
@@ -116,8 +116,7 @@ theWebUI.deleteFromRecentTrackers = function()
 	theWebUI.request('?action=rtget',[plugin.getRecentTrackers, plugin]);
 }
 
-plugin.onLangLoaded = function()
-{
+plugin.onLangLoaded = function() {
 	var plg = thePlugins.get("_task");
 	if (!plg.allStuffLoaded)
 		setTimeout(arguments.callee,1000);
@@ -128,17 +127,17 @@ plugin.onLangLoaded = function()
 		);
 		plugin.addButtonToToolbar("create",theUILang.mnu_create,"theWebUI.showCreate()","remove");
 		plugin.addSeparatorToToolbar("remove");
+
+		const pieceSizeArray = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536];
 		var pieceSize = $("<div>").addClass("row").append(
 			$("<div>").addClass("col-md-2").append(
 				$("<label>").attr({for: "piece_size", name: "lbl_piece_size", id: "lbl_piece_size"}).text(theUILang.PieceSize + ": "),
 			),
 			$("<div>").addClass("col-md-4 d-flex flex-row").append(
 				$("<select>").attr({id: "piece_size", name: "piece_size"}).addClass("flex-grow-1").append(
-					[32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536].map(
-						(ele) => $("<option>").val(ele).text(
-							ele < 1024 ? ele + theUILang.KB : (ele / 1024) + theUILang.MB
-						)
-					),
+					...pieceSizeArray.map(ele => $("<option>").val(ele).text(
+						ele < 1024 ? ele + theUILang.KB : (ele / 1024) + theUILang.MB
+					)),
 				),
 			),
 		);
@@ -205,17 +204,34 @@ plugin.onLangLoaded = function()
 			),
 		);
 		const tcreateButtons = $("<div>").addClass("buttons-list").append(
-			$("<button>").attr({type:"button", id:"recentTrackers"}).text(theUILang.recentTrackers + "...").on("click", () => {theWebUI.showRecentTrackers();}).addClass("menuitem"),
-			$("<button>").attr({type:"button", id:"deleteFromRecentTrackers"}).text(theUILang.deleteFromRecentTrackers).on("click", () => {theWebUI.deleteFromRecentTrackers();}),
-			$("<div>").addClass("space d-none d-md-block"),
-			$("<button>").attr({type:"button", id:"torrentCreate"}).text(theUILang.torrentCreate).on("click", () => {theWebUI.checkCreate();}).addClass("OK"),
+			$("<button>")
+				.attr({type:"button", id:"recentTrackers"})
+				.addClass("menuitem")
+				.on("click", theWebUI.showRecentTrackers)
+				.text(theUILang.recentTrackers + "..."),
+			$("<button>")
+				.attr({type:"button", id:"deleteFromRecentTrackers"})
+				.addClass("me-auto")
+				.on("click", theWebUI.deleteFromRecentTrackers)
+				.text(theUILang.deleteFromRecentTrackers),
+			$("<button>").attr({type:"button", id:"torrentCreate"}).text(theUILang.torrentCreate).on("click", theWebUI.checkCreate).addClass("OK"),
 			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
 		);
 		theDialogManager.make("tcreate",theUILang.CreateNewTorrent,
 			[tcreateContent, tcreateButtons],
 			true
 		);
-		$("option[value='1024']").prop("selected", true);
+		// toggle create torrent options before opening dialog window
+		theDialogManager.setHandler("tcreate", "beforeShow", () => {
+			if (plugin.recentTrackers) {
+				const recent = plugin.recentTrackers;
+				$("#trackers").val(recent.last_used);
+				$(`#piece_size option[value=${recent.piece_size || 1024}]`).prop("selected", true);
+				$("#start_seeding").prop("checked", iv(recent.start_seeding));
+				$("#private").prop("checked", iv(recent.private_torrent));
+				$("#hybrid").prop("checked", iv(recent.hybrid_torrent));
+			}
+		});
 
 		$(document.body).append($("<iframe name='xcreatefrm'/>").css({visibility: "hidden"}).attr( { name: "xcreatefrm", id: "xcreatefrm" } ).width(0).height(0));
 		$(document.body).append(

@@ -10,6 +10,11 @@ class recentTrackers
 	public $hash = "rtrackers.dat";
 	public $modified = false;
 	public $list = array();
+	public $last_used = "";
+	public $piece_size = 1024;
+	public $start_seeding = false;
+	public $private_torrent = false;
+	public $hybrid_torrent = false;
 
 	static public function load()
 	{
@@ -34,7 +39,13 @@ class recentTrackers
 	{
 		$ret = array();
 		foreach( $this->list as $ann )
-			$ret[self::getTrackerDomain($ann)] = $ann;
+			$ret['recent_trackers'][self::getTrackerDomain($ann)] = $ann;
+		$ret['last_used'] = $this->last_used;
+		$ret['piece_size'] = $this->piece_size;
+		$ret['start_seeding'] =  $this->start_seeding;
+		$ret['private_torrent'] = $this->private_torrent;
+		$ret['hybrid_torrent'] = $this->hybrid_torrent;
+
 		return($ret);
 	}
 	public function strip()
@@ -123,6 +134,7 @@ if(isset($_REQUEST['cmd']))
 					$announce_list = '';
 					if(isset($_REQUEST['trackers']))
 					{
+						$rt->last_used = $_REQUEST['trackers'];  // remember trackers last used
 						$arr = explode("\r",$_REQUEST['trackers']);
 						foreach( $arr as $key => $value )
 						{
@@ -131,8 +143,8 @@ if(isset($_REQUEST['cmd']))
 							{
 								$trackers[] = $value;
 								$rt->list[] = $value;
-                                                        }
-                                                        else
+							}
+							else
 							{
 								if(count($trackers)>0)
 								{
@@ -142,13 +154,19 @@ if(isset($_REQUEST['cmd']))
 							}
 						}
 					}
+					// remember checkbox and dropdown options
+					$rt->piece_size = $_REQUEST['piece_size'];
+					$rt->start_seeding = $_REQUEST['start_seeding'];
+					$rt->private_torrent = $_REQUEST['private'];
+					$rt->hybrid_torrent = $_REQUEST['hybrid'];
 					$rt->store();
+
 					if(count($trackers)>0)
 						$announce_list .= (' -a '.escapeshellarg(implode(',',$trackers)));
 					$piece_size = 262144;
 					if(isset($_REQUEST['piece_size']))
 						$piece_size = $_REQUEST['piece_size']*1024;
-	       				if(!$pathToCreatetorrent || ($pathToCreatetorrent==""))
+					if(!$pathToCreatetorrent || ($pathToCreatetorrent==""))
 						$pathToCreatetorrent = $useExternal;
 					if($useExternal=="mktorrent")
 						$piece_size = log($piece_size,2);
