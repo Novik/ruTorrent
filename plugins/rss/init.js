@@ -968,7 +968,7 @@ theWebUI.addNewFilter = function()
 {
 	var list = $("#fltlist");
 	theWebUI.maxFilterNo++;
-	var f = { name: theUILang.rssNewFilter, enabled: 1, pattern: "", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: theWebUI.maxFilterNo };
+	var f = { name: theUILang.rssNewFilter, enabled: 1, pattern: "/^"+theUILang.rssPatternExample+"$/i", exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: theWebUI.maxFilterNo };
 	var i = this.filters.length;
 	list.append( $("<li>").html("<input type='checkbox' id='_fe"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectFilter(this);\" id='_fn"+i+"'/>"));
 	this.filters.push(f);

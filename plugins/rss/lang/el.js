@@ -76,5 +76,6 @@
  theUILang.rssShowErrorsDelayed		= "Καθυστέρηση της ειδοποίησης για σφάλματα RSS μέχρι η καρτέλα καταγραφής σφαλμάτων ή η τροφοδοσία RSS να είναι ορατά";
  theUILang.Directories			= "Φάκελοι";
  theUILang.Labels			= "Ετικέτες";
+ theUILang.rssPatternExample		= "Regular Expression Example";
 
 thePlugins.get("rss").langLoaded();
