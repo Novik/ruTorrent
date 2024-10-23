@@ -119,7 +119,7 @@ div#stg .lm { background-color: #272E36; border: 1px solid #D0D0D0; }
 .lm li a.focus {background-color: #BDDBDB; color: #272E36;}
 .stg_con {background-color: #272E36}
 
-input.disabled {background-color: #272E36; }
+input.disabled, button.disabled {background-color: #272E36; }
 legend {color: #00FF00; font-weight: bold}
 
 #st_gl {background: #272E36; color: #BDDBDB;}

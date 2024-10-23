@@ -10,6 +10,7 @@ class recentTrackers
 	public $hash = "rtrackers.dat";
 	public $modified = false;
 	public $list = array();
+	public $last_used = "";
 	public $piece_size = 1024;
 	public $start_seeding = false;
 	public $private_torrent = false;
@@ -39,6 +40,7 @@ class recentTrackers
 		$ret = array();
 		foreach( $this->list as $ann )
 			$ret['recent_trackers'][self::getTrackerDomain($ann)] = $ann;
+		$ret['last_used'] = $this->last_used;
 		$ret['piece_size'] = $this->piece_size;
 		$ret['start_seeding'] =  $this->start_seeding;
 		$ret['private_torrent'] = $this->private_torrent;
@@ -132,6 +134,7 @@ if(isset($_REQUEST['cmd']))
 					$announce_list = '';
 					if(isset($_REQUEST['trackers']))
 					{
+						$rt->last_used = $_REQUEST['trackers'];  // remember trackers last used
 						$arr = explode("\r",$_REQUEST['trackers']);
 						foreach( $arr as $key => $value )
 						{
@@ -151,6 +154,7 @@ if(isset($_REQUEST['cmd']))
 							}
 						}
 					}
+					// remember checkbox and dropdown options
 					$rt->piece_size = $_REQUEST['piece_size'];
 					$rt->start_seeding = $_REQUEST['start_seeding'];
 					$rt->private_torrent = $_REQUEST['private'];
