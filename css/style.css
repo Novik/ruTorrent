@@ -406,7 +406,7 @@ div#stg .lm {
   font-weight: bold;
   text-wrap: nowrap;
 }
-input.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
+input.disabled, button.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
 .ie7 fieldset div {padding: 0px}
 div.indent {padding-left: 16px}
