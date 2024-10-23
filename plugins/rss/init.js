@@ -889,7 +889,7 @@ theWebUI.loadFiltersWithAdditions = function( flt )
 				ret = ret + "\\";
 			ret+=c;
 		}
-		return(ret+"$/");
+		return(ret+"$/i");
 	}
 
 	var additions = [];
