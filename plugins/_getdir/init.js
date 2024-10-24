@@ -129,7 +129,7 @@ theWebUI.rDirBrowser = class {
 			{
 				success: (res) => {
 					this.frame.find(".filter-dir").val("").trigger("focus");
-					this.edit.val(res.path).data({cwd:res.path});
+					this.edit.val(res.path).data({cwd:res.path, previousValue:this.edit.val()}).change();
 					this.frame.find(".rmenuobj").remove();
 					this.frame.append(
 						$("<div>").addClass("rmenuobj").append(
@@ -151,8 +151,7 @@ theWebUI.rDirBrowser = class {
 	selectItem(ev) {
 		this.frame.find(".rmenuitem.active").removeClass("active");
 		$(ev.currentTarget).addClass("active");
-		this.edit.data('previousValue', this.edit.val());
-		this.edit.val(this.edit.data("cwd") + ev.target.innerText).trigger('change');
+		this.edit.val(this.edit.data("cwd") + ev.target.innerText);
 	}
 
 	show() {
