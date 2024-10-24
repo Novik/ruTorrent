@@ -3,7 +3,7 @@
   padding: 3px;
   flex-flow: row nowrap;
   align-items: center;
-  height: 16px;
+  height: 1.5rem;
   cursor: pointer;
   overflow: hidden;
   --prefix-color: black;

@@ -308,7 +308,6 @@ div#msg
 	background:#151515;
 	border-top:1px solid #333;
 	border-bottom:1px solid #333;
-	font-size:11px;
 	font-weight:700;
 	text-shadow:0 -3px 0 #000
 }
@@ -665,17 +664,16 @@ div#gcont div.row.Header {
   background-color: transparent;
 }
 div#gcont div.row.Header span {
-	background: transparent url(./images/status_icons.png) no-repeat 0 -288px;
+	font-size: 1rem;
+	background: transparent url(./images/status_icons.png) no-repeat 0 -286px;
   padding-left: 17px;
 }
 div#gcont div.row:not(.Header) span.det-hdr {
-	background: transparent url(./images/status_icons.png) no-repeat 0 -306px;
+	background: transparent url(./images/status_icons.png) no-repeat 0 -304px;
   padding-left: 17px;
 }
 
-div#gcont div.row > div {
-	background:#181818 url(./images/headers.png) repeat-x 0 -38px
-}
+div#gcont div.row > div {	background-color: #252525;}
 
 div#gcont {
 	font-family:'Roboto';
@@ -755,7 +753,6 @@ legend
 	color:#999;
 	text-transform:uppercase;
 	font-weight:500;
-	font-size:1em
 }
 
 td.disabled,label.disabled,span.disabled,div.disabled
@@ -791,12 +788,11 @@ div#stg .lm
 .lm li, .lm li div.toggle {
 	background:transparent none repeat scroll 0 0;
 	text-transform:uppercase;
-	font-size:.9em;
+	font-size:.9rem;
 	margin:0 0 3px
 }
 
 .lm li a {
-	font-size:1em;
 	font-weight:300;
 	color:#FFF;
 	transition:all .5s

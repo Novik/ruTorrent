@@ -443,8 +443,8 @@ function makeContent() {
 					),
 				]),
 				...[
-					["webui.update_interval", theUILang.Update_GUI_every + ": ", theUILang.ms, 3000],
-					["webui.reqtimeout", theUILang.ReqTimeout + ": ", theUILang.ms, 5000],
+					["webui.update_interval", theUILang.Update_GUI_every, theUILang.ms, 3000],
+					["webui.reqtimeout", theUILang.ReqTimeout, theUILang.ms, 5000],
 				].map(([id, prefix, suffix, value]) => [
 					$("<div>").addClass("col-md-6").append(
 						$('<label>').attr({for: id}).text(prefix),
@@ -457,7 +457,7 @@ function makeContent() {
 					),
 				]),
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({for: "webui.speedgraph.max_seconds"}).text(theUILang.speedGraphDuration + ": "),
+					$("<label>").attr({for: "webui.speedgraph.max_seconds"}).text(theUILang.speedGraphDuration),
 				),
 				$("<div>").addClass("col-md-6").append(
 					$("<select>").attr({id: "webui.speedgraph.max_seconds"}).addClass("flex-grow-1").append(
@@ -465,7 +465,7 @@ function makeContent() {
 					)),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({for: "webui.retry_on_error"}).text(theUILang.retryOnErrorTitle + ": "),
+					$("<label>").attr({for: "webui.retry_on_error"}).text(theUILang.retryOnErrorTitle),
 				),
 				$("<div>").addClass("col-md-6").append(
 					$("<select>").attr({id: "webui.retry_on_error"}).append(
@@ -474,10 +474,10 @@ function makeContent() {
 						),
 					),
 				),
-				$("<div>").addClass("col-6 col-md-3").append(
-					$("<label>").attr({for: "webui.lang"}).text(theUILang.mnu_lang + ": "),
+				$("<div>").addClass("col-12 col-md-3").append(
+					$("<label>").attr({for: "webui.lang"}).text(theUILang.mnu_lang),
 				),
-				$("<div>").addClass("col-6 col-md-3").append(
+				$("<div>").addClass("col-12 col-md-3").append(
 					$("<select>").attr({id: "webui.lang"}).append(
 						...Object.entries(AvailableLanguages).map(
 							([code, language]) => $("<option>").val(code).text(language)
@@ -494,7 +494,7 @@ function makeContent() {
 					["webui.speedlistdl", theUILang.DL],
 				].flatMap(([id, text]) => [
 					$("<div>").addClass("col-md-2").append(
-						$("<label>").attr({for:id}).text(text + ": "),
+						$("<label>").attr({for:id}).text(text),
 					),
 					$("<div>").addClass("col-md-10").append(
 						$("<input>").attr({type:"text", id:id}).prop("maxlength", 128).addClass("speedEdit"),
@@ -516,7 +516,7 @@ function makeContent() {
 				[theUILang.Tracker_Numwant, "tracker_numwant"],
 			].map(([label, id]) => $("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({for: id}).text(label + ": "),
+					$("<label>").attr({for: id}).text(label),
 				),
 				$("<div>").addClass("col-md-6").append(
 					$("<input>").attr({type: "text", id: id}).prop("maxlength", 6),
@@ -533,7 +533,7 @@ function makeContent() {
 			),
 			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({for: "directory"}).text(theUILang.Directory_For_Dl + ": "),
+					$("<label>").attr({for: "directory"}).text(theUILang.Directory_For_Dl),
 				),
 				$("<div>").addClass("col-md-6").append(
 					$("<input>").attr({type: "text", id: "directory"}).prop("maxlength", 100),
@@ -547,7 +547,9 @@ function makeContent() {
 			$("<legend>").text(theUILang.Listening_Port),
 			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
-					$("<input>").attr({type: "checkbox", id: "port_open", onclick: "linked(this, 0, ['port_range', 'port_random']);"}),
+					$("<input>")
+						.attr({type: "checkbox", id: "port_open"})
+						.on("click", (ev) => linked(ev.target, 0, ['port_range', 'port_random'])),
 					$("<label>").attr({for: "port_open"}).text(theUILang.Enable_port_open),
 				),
 				$("<div>").addClass("col-md-6").append(
@@ -555,7 +557,7 @@ function makeContent() {
 					$("<label>").attr({for: "port_random", id: "lbl_port_random"}).text(theUILang.Rnd_port_torr_start),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({for: "port_range", id: "lbl_port_range"}).text(theUILang.Port_f_incom_conns + ": "),
+					$("<label>").attr({for: "port_range", id: "lbl_port_range"}).text(theUILang.Port_f_incom_conns),
 				),
 				$("<div>").addClass("col-md-6").append(
 					$("<input>").attr({type: "text", id: "port_range"}).prop("maxlength", 13),
@@ -566,13 +568,13 @@ function makeContent() {
 			$("<legend>").text(theUILang.Bandwidth_Limiting),
 			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-8").append(
-					$("<label>").attr({for: "upload_rate"}).text(`${theUILang.Global_max_upl} (${theUILang.KB}/${theUILang.s}): [0: ${theUILang.unlimited}]`),
+					$("<label>").attr({for: "upload_rate"}).text(`${theUILang.Global_max_upl} (${theUILang.KB}/${theUILang.s}) [0: ${theUILang.unlimited}]`),
 				),
 				$("<div>").addClass("col-md-4").append(
 					$("<input>").attr({type: "text", id: "upload_rate"}).prop("maxlength", 6),
 				),
 				$("<div>").addClass("col-md-8").append(
-					$("<label>").attr({for: "download_rate"}).text(`${theUILang.Glob_max_downl} (${theUILang.KB}/${theUILang.s}): [0: ${theUILang.unlimited}]`),
+					$("<label>").attr({for: "download_rate"}).text(`${theUILang.Glob_max_downl} (${theUILang.KB}/${theUILang.s}) [0: ${theUILang.unlimited}]`),
 				),
 				$("<div>").addClass("col-md-4").append(
 					$("<input>").attr({type: "text", id: "download_rate"}).prop("maxlength", 6),
@@ -589,7 +591,7 @@ function makeContent() {
 				["max_open_http", theUILang.Glob_max_http],
 			].map(([id, label]) => $("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-8").append(
-					$("<label>").attr({for: id}).text(label + ": "),
+					$("<label>").attr({for: id}).text(label),
 				),
 				$("<div>").addClass("col-md-4").append(
 					$("<input>").attr({type: "number", id: id}).prop("maxlength", 6),
@@ -603,7 +605,9 @@ function makeContent() {
 			$("<legend>").text(theUILang.Add_bittor_featrs),
 			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-6").append(
-					$("<input>").attr({type: "checkbox", id: "dht", onchange: "linked(this, 0, ['dht_port']);"}),
+					$("<input>")
+						.attr({type: "checkbox", id: "dht"})
+						.on("change", (ev) => linked(ev.target, 0, ['dht_port'])),
 					$("<label>").attr({for: "dht"}).text(theUILang.En_DHT_ntw),
 				),
 				$("<div>").addClass("col-md-6").append(
@@ -611,13 +615,13 @@ function makeContent() {
 					$("<label>").attr({for: "peer_exchange"}).text(theUILang.Peer_exch),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({id:"lbl_dht_port", for:"dht_port"}).addClass("disabled").text(theUILang.dht_port + ": "),
+					$("<label>").attr({id:"lbl_dht_port", for:"dht_port"}).addClass("disabled").text(theUILang.dht_port),
 				),
 				$("<div>").addClass("col-md-6").append(
 					$("<input>").attr({type:"text", id:"dht_port"}).prop("maxlength", 6).prop("disabled", true),
 				),
 				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({id:"lbl_ip", for:"ip"}).text(theUILang.Ip_report_track + ": "),
+					$("<label>").attr({id:"lbl_ip", for:"ip"}).text(theUILang.Ip_report_track),
 				),
 				$("<div>").addClass("col-md-6").append(
 					$("<input>").attr({type:"text", id:"ip"}).prop("maxlength", 6),
@@ -630,8 +634,10 @@ function makeContent() {
 		$("<fieldset>").append(
 			$("<legend>").text(theUILang.Format),
 			$("<div>").addClass("row").append(
-				$("<div>").addClass("col-md-6").append(
-					$("<label>").attr({for: "webui.dateformat"}).addClass("flex-shrink-0").text(theUILang.DateFormat + ": "),
+				$("<div>").addClass("col-md-3").append(
+					$("<label>").attr({for: "webui.dateformat"}).addClass("flex-shrink-0").text(theUILang.DateFormat),
+				),
+				$("<div>").addClass("col-md-3").append(
 					$("<select>").attr({ id: "webui.dateformat"}).addClass("flex-shrink-1").append(
 						...Object.entries({0: "31.12.2011", 1: "2011-12-31", 2: "12/31/2011"}).map(
 							([value, text]) => $("<option>").val(value).text(text)

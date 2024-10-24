@@ -6,16 +6,6 @@
   position: relative;
   height: 18px;
 }
-#meter-disk-value {
-  height: 100%;
-}
-#meter-disk-text {
-  position: absolute;
-  top: 0;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-}
 
 /* Custom break point settings for responsiveness */
 

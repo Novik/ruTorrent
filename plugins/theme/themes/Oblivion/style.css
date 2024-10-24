@@ -112,7 +112,7 @@ div#preload {width: 0px; height: 0px; display: none; background-image: url(./ima
 
 hr {background-color:#000;height:1px;border-width: 0px;border-bottom:1px solid #333333;}
 div#cover {background: #181818}
-div#msg {background: #151515; border-top: 1px solid #333333; border-bottom: 1px solid #333333;font-size: 11px; font-weight: bold;text-shadow:0px -3px 0px #000}
+div#msg {background: #151515; border-top: 1px solid #333333; border-bottom: 1px solid #333333;font-weight: bold;text-shadow:0px -3px 0px #000}
 div#sc {border: 1px solid #333333; background-color: #181818}
 div#sc li.se_act div {background-color: #333333; color: #888888}
 div#lng {background-color:#181818; border:1px solid #333333}
@@ -133,7 +133,7 @@ ul.CMenu li:hover ul li a:hover { text-shadow:0px -1px 0px #000;}
 
 #sel {border: 1px dotted #555555;}
 
-div#t {background: #000 url(./images/headers.png) repeat-x 0px -252px; border-bottom: none;}
+div#t {background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(33,33,33,1) 100%); border-bottom: none;}
 #top-menu {
   background-color: #000;
   border-bottom: none;
@@ -180,11 +180,15 @@ div#t div#go {background: transparent url(./images/toolbar.png) no-repeat -72px 
 .stg_con td input {padding:1px 4px;}
 
 a {color: #686868; font-family:inherit;}
-textarea {color: black; border: 1px solid #000;background: #ffffff;-moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
+textarea {border: 1px solid #000; -moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
 textarea[disabled] {border: 1px solid #000;background: #888888;-moz-border-radius: 5px; -webkit-border-radius: 5px;border-radius: 5px;}
-input[type="number"],input[type="text"], input[type="password"], select {color: black; border: 1px solid #000;background: #ffffff url(./images/headers.png) repeat-x 0px -138px;-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
+input[type="number"],input[type="text"], input[type="password"], select {border: 1px solid #000; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
 input[type="file"] {-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
-input[type="number"][disabled],input[type="text"][disabled], input[type="password"][disabled], input[type="file"][disabled], select[disabled] {color: black; border: 1px solid #000;background: #888888 url(./images/headers.png) repeat-x 0px -138px;-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
+input[type="number"][disabled],input[type="text"][disabled], input[type="password"][disabled], input[type="file"][disabled], select[disabled] {border: 1px solid #000; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
+textarea, select, input[type=file], input[type=text], input[type=number], input[type=password] {
+  color: black;
+  background: linear-gradient(0deg, rgba(49,49,49,1) 0%, rgba(179,179,179,1) 10%, rgba(224,224,224,1) 50%, rgba(179,179,179,1) 90%, rgba(49,49,49,1) 100%);
+}
 
 .stable {background-color: #181818; font-family: inherit;}
 .stable-icon {background-image: url(./images/status_icons.png); }
@@ -195,19 +199,17 @@ input[type="number"][disabled],input[type="text"][disabled], input[type="passwor
 div.tab {background: #181818;font-family: inherit;}
 div#lcont {background: #181818;font-family: inherit;}
 div#gcont {font-family:inherit;}
-div#gcont div.row.Header {
-  background-color: transparent;
-  font-family: inherit;
-  color: #D4D6C9;
-}
+div#gcont div.row.Header {background-color: transparent;}
 div#gcont div.row.Header span {
+  font-size: 1rem;
   padding-left: 17px;
-  background: transparent url(./images/status_icons.png) no-repeat left -285px;
+  background: transparent url(./images/status_icons.png) no-repeat left -283px;
 }
 div#gcont div.row:not(.Header) span.det-hdr {
+  font-size: 0.86rem;
   text-wrap: nowrap;
   padding-left: 17px;
-  background: transparent url(./images/status_icons.png) no-repeat left -305px;
+  background: transparent url(./images/status_icons.png) no-repeat left -301px;
 }
 div#gcont div.row {
   background-color: #181818;
