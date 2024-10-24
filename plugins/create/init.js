@@ -84,10 +84,11 @@ theWebUI.addTrackerToBox = function(ann)
 	$("#deleteFromRecentTrackers").prop("disabled", false);
 	const val = $('#trackers').val();
 	if (val.includes(ann)) return;  // do nothing if selected tracker is already in the box
-	if(val.length)
-		val+='\r\n';
-	$('#trackers').val( val+ann );
-	$('#trackers').trigger('focus');
+	$('#trackers').val(
+		[...val.split(/\r?\n/), ann]  // split by "\r\n" or "\n"
+			.filter(tracker => tracker.trim().length)  // remove empty lines
+			.join("\r\n")
+	).trigger("focus");
 }
 
 theWebUI.showRecentTrackers = function() {
