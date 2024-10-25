@@ -43,6 +43,54 @@ function selectRule() {
 	}
 }
 
+function addNewRule() {
+	const list = $("#rlslist");
+	plugin.maxRuleNo++;
+	const f = {
+		name: theUILang.rssNewRule,
+		enabled: 1,
+		pattern: "|http://www.mininova.org/get/(\\d+)|i",
+		replacement: "http://www.mininova.org/tor/${1}",
+		rssHash: "",
+		hrefAsSrc: 1,
+		hrefAsDest: 0,
+		no: plugin.maxRuleNo,
+	};
+	const i = plugin.rules?.length ?? 0;
+	list.append(
+		makeRuleListItem(f, i),
+	);
+	plugin.rules.push(f);
+	$("#_rn"+i).trigger('focus');
+}
+
+function deleteCurrentRule() {
+	if (plugin.curRule) {
+		var no = parseInt(plugin.curRule.id.substr(3));
+		plugin.rules.splice(no,1);
+		$(plugin.curRule).parent().remove();
+		plugin.curRule = null;
+		if (plugin.rules?.length) {
+			for (var i=no+1; i<plugin.rules.length+1; i++) {
+				$("#_rn"+i).attr("id", "_rn"+(i-1));
+				$("#_re"+i).attr("id", "_re"+(i-1));
+			}
+			if (no>=plugin.rules.length)
+				no = no - 1;
+			$("#_rn"+no).trigger('focus');
+		} else {
+			$('#RLS_replacement,#RLS_pattern,#RLS_rss').val('');
+		}
+	}
+}
+
+function checkCurrentRule() {
+	if (plugin.curRule) {
+		$('#RLS_result').val('');
+		theWebUI.request("?action=checkrule", [theWebUI.showRuleResults, theWebUI]);
+	}
+}
+
 theWebUI.showRules = function()
 {
 	theWebUI.request("?action=getrules",[theWebUI.loadRules, this]);
@@ -94,56 +142,6 @@ theWebUI.loadRules = function( rle )
 	plugin.correctCSS();
 	theDialogManager.show("dlgEditRules");
 	$("#_rn0").trigger('focus');
-}
-
-theWebUI.addNewRule = function() {
-	const list = $("#rlslist");
-	plugin.maxRuleNo++;
-	const f = {
-		name: theUILang.rssNewRule,
-		enabled: 1,
-		pattern: "|http://www.mininova.org/get/(\\d+)|i",
-		replacement: "http://www.mininova.org/tor/${1}",
-		rssHash: "",
-		hrefAsSrc: 1,
-		hrefAsDest: 0,
-		no: plugin.maxRuleNo,
-	};
-	const i = plugin.rules?.length ?? 0;
-	list.append(
-		makeRuleListItem(f, i),
-	);
-	plugin.rules.push(f);
-	$("#_rn"+i).trigger('focus');
-}
-
-theWebUI.deleteCurrentRule = function()
-{
-	if(plugin.curRule) {
-		var no = parseInt(plugin.curRule.id.substr(3));
-		plugin.rules.splice(no,1);
-		$(plugin.curRule).parent().remove();
-		plugin.curRule = null;
-		if (plugin.rules?.length) {
-			for (var i=no+1; i<plugin.rules.length+1; i++) {
-				$("#_rn"+i).prop("id", "_rn"+(i-1));
-				$("#_re"+i).prop("id", "_re"+(i-1));
-			}
-			if (no>=plugin.rules.length)
-				no = no - 1;
-			$("#_rn"+no).trigger('focus');
-		} else {
-			$('#RLS_replacement,#RLS_pattern,#RLS_rss').val('');
-		}
-	}
-}
-
-theWebUI.checkCurrentRule = function()
-{
-	if(plugin.curRule) {
-		$('#RLS_result').val('');
-		this.request("?action=checkrule",[this.showRuleResults, this]);
-	}
 }
 
 theWebUI.showRuleResults = function( d )
@@ -274,11 +272,11 @@ plugin.onLangLoaded = function() {
 					$("<ul>").attr({id: "rlslist"}),
 				),
 				$("<div>").addClass("buttons-group-row").append(
-					$("<button>").on("click", theWebUI.addNewRule).text(theUILang.rssAddRule),
-					$("<button>").on("click", theWebUI.deleteCurrentRule).text(theUILang.rssDelRule),
+					$("<button>").on("click", addNewRule).text(theUILang.rssAddRule),
+					$("<button>").on("click", deleteCurrentRule).text(theUILang.rssDelRule),
 					$("<button>")
 						.attr({id: "chkRuleBtn"})
-						.on("click", theWebUI.checkCurrentRule)
+						.on("click", checkCurrentRule)
 						.text(theUILang.rssCheckRule),
 				),
 			),
