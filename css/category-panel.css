@@ -22,10 +22,6 @@ div[part=heading] {
 	margin: 0px;
 	line-height: 16px;
 	cursor: pointer;
-	-moz-user-select: none;
-	-moz-user-focus: normal;
-	-moz-user-input: enabled;
-	user-select: none;
 }
 
 :host([hidden]) {
