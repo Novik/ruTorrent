@@ -75,19 +75,19 @@ theWebUI.loadRules = function( rle )
 	for(var lbl in this.rssLabels)
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
 	plugin.rules = rle;
-	theWebUI.maxRuleNo = 0;
+	plugin.maxRuleNo = 0;
 	if (plugin.rules) {
 		plugin.rules.forEach((rule, index) => {
-			if (theWebUI.maxRuleNo < rule.no)
-				theWebUI.maxRuleNo = rule.no;
+			if (plugin.maxRuleNo < rule.no)
+				plugin.maxRuleNo = rule.no;
 			list.append(
 				makeRuleListItem(rule, index),
 			);
 		});
 		plugin.rules.forEach(rule => {
 			if (rule.no < 0) {
-				theWebUI.maxRuleNo++;
-				rule.no = theWebUI.maxRuleNo;
+				plugin.maxRuleNo++;
+				rule.no = plugin.maxRuleNo;
 			}
 		});
 	}
@@ -98,7 +98,7 @@ theWebUI.loadRules = function( rle )
 
 theWebUI.addNewRule = function() {
 	const list = $("#rlslist");
-	theWebUI.maxRuleNo++;
+	plugin.maxRuleNo++;
 	const f = {
 		name: theUILang.rssNewRule,
 		enabled: 1,
@@ -107,7 +107,7 @@ theWebUI.addNewRule = function() {
 		rssHash: "",
 		hrefAsSrc: 1,
 		hrefAsDest: 0,
-		no: theWebUI.maxRuleNo,
+		no: plugin.maxRuleNo,
 	};
 	const i = plugin.rules?.length ?? 0;
 	list.append(
@@ -208,11 +208,11 @@ plugin.correctCSS = function()
 			rule3.style.color = rule.style.color;
 		}
 		rule = getCSSRule("div#stg .lm");
-	        rule1 = getCSSRule(".lf_rur");
-        	rule2 = getCSSRule(".lf_rur li input.TextboxNormal");
+		rule1 = getCSSRule(".lf_rur");
+		rule2 = getCSSRule(".lf_rur li input.TextboxNormal");
 		var ruleMain = getCSSRule("html, body");
-        	if(!ruleMain)
-        		ruleMain = getCSSRule("html");
+		if(!ruleMain)
+			ruleMain = getCSSRule("html");
 		if(rule && rule1 && rule2 && ruleMain)
 		{
 			rule1.style.borderColor = rule.style.borderColor;
@@ -221,8 +221,8 @@ plugin.correctCSS = function()
 			rule2.style.color = ruleMain.style.color;
 		}
 		rule = getCSSRule(".stg_con");
-	        rule1 = getCSSRule(".rf_rur");
-        	if(rule && rule1)
+		rule1 = getCSSRule(".rf_rur");
+		if(rule && rule1)
 			rule1.style.backgroundColor = rule.style.backgroundColor;
 		plugin.cssCorrected = true;
 	}
