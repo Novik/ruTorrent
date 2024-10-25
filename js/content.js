@@ -61,7 +61,7 @@ function makeContent() {
 			} catch(e) {}
 	}));
 
-	const paddContent = $("<div>").addClass("cont fxcaret").append(
+	const paddContent = $("<div>").addClass("cont").append(
 		$("<fieldset>").append(
 			$("<legend>").text(theUILang.peerAddLabel),
 			$("<div>").addClass("row").append(
@@ -80,7 +80,7 @@ function makeContent() {
 		true,
 	);
 	theDialogManager.make("tadd",theUILang.torrent_add,
-		$("<div>").addClass("cont fxcaret").append(
+		$("<div>").addClass("cont").append(
 			$("<form>").attr(
 				{action: "addtorrent.php", id: "addtorrent", method: "post", enctype: "multipart/form-data", target: "uploadfrm"}
 			).append(
@@ -251,7 +251,7 @@ function makeContent() {
 	   	return makeAddRequest(this);
 	});
 
-	const dlgPropsContent = $("<div>").addClass("cont fxcaret").append(
+	const dlgPropsContent = $("<div>").addClass("cont").append(
 		$("<fieldset>").append(
 			$("<legend>").text(theUILang.Bandwidth_sett),
 			$("<div>").addClass("row").append(
@@ -343,7 +343,7 @@ function makeContent() {
 		),
 	);
 
-	const dlgLabelContent = $("<div>").addClass("cont fxcaret").append(
+	const dlgLabelContent = $("<div>").addClass("cont").append(
 		$("<div>").addClass("row").append(
 			$("<div>").addClass("col-12").append(
 				$("<label>").attr({for:"txtLabel"}).text(theUILang.Enter_label_prom + ": "),

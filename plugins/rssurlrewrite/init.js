@@ -265,7 +265,7 @@ if(plugin.canChangeMenu())
 
 plugin.onLangLoaded = function() {
 	this.registerTopMenu(5, theUILang.mnu_rssurlrewrite, theWebUI.showRules);
-	const dlgEditRulesContent = $("<div>").addClass("cont fxcaret").append(
+	const dlgEditRulesContent = $("<div>").addClass("cont").append(
 		$("<div>").addClass("row").append(
 			$("<div>").addClass("col-md-6 d-flex flex-column align-items-center").append(
 				$("<div>").addClass("lf_rur align-self-stretch").append(

@@ -152,7 +152,7 @@ plugin.onLangLoaded = function() {
 		if(plugin.hideHybrid)
 			hybridTorrent = "";
 
-		const tcreateContent = $("<div>").addClass("cont fxcaret").append(
+		const tcreateContent = $("<div>").addClass("cont").append(
 			$("<fieldset>").append(
 				$("<legend>").text(theUILang.SelectSource),
 				$("<div>").addClass("row").append(

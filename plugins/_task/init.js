@@ -591,7 +591,7 @@ plugin.onGetTasks = function(d)
 }
 
 plugin.onLangLoaded = function() {
-	const tskConsoleContent = $("<div>").addClass("cont fxcaret").append(
+	const tskConsoleContent = $("<div>").addClass("cont").append(
 		$("<fieldset>").attr({id:"tskcmdlog_set"}).append(
 			$("<legend>").text(theUILang.tskConsole),
 			$("<div>").attr({id:"tskcmdlog"}).addClass("tskconsole"),
