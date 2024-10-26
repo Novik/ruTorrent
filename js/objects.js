@@ -203,7 +203,9 @@ var theDialogManager = {
 		// An offcanvas is a modal under the hood and will intercept focus events
 		// from other elements, and make other text inputs unfocusable and uneditable.
 		if ($(window).width() < 768) {
-			bootstrap.Offcanvas.getInstance($("#offcanvas-sidepanel")[0]).hide();
+			const panel = bootstrap.Offcanvas.getInstance($("#offcanvas-sidepanel")[0]);
+			if (panel)
+				panel.hide();
 		}
 
 		const obj = $('#' + id);
