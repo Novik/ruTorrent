@@ -1,6 +1,10 @@
-.stable-head {background: #272E36;}
-.stable-head table tr {background: transparent url(./images/header.gif) repeat-x scroll center top}
-.stable-head table tr td { border-color: #A0A0A0 #A0A0A0 #A0A0A0 #A0A0A0; background: transparent url(./images/blank.gif) no-repeat scroll right center; color: #00ff00; font-weight: bold;}
+.stable {
+  --header-bg-color: #000000;
+  --header-bg-image: none;
+  --header-border-color: #a0a0a0;
+  --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAGCAYAAAARx7TFAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAfElEQVQImV2OQQqCYBhE3xctau9RxAt0BLeuvErnbKlYKCH/DyUtXouMpIGB4TEMg8rWjY3/bMdGLa2JREXllu+/oaZ2ZmZgoKMjHqFHAyBUSkozmZGRaZmgB25ABk9GFBYmEktaYOBXmIEXcFiX4hLSr4UrcAeenzOejTe+01J0omVRDQAAAABJRU5ErkJggg==);
+}
+.stable-head td {color: #00ff00; font-weight: bold;}
 .stable-head div.resz {background: transparent url(./images/s.gif) no-repeat scroll left center; }
 .stable-body td { border-bottom: 1px solid #E0E0E0; color: #BDDBDB; font-weight: bold;}
 

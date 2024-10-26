@@ -1,6 +1,9 @@
-.stable-head {background: #181818;}
-.stable-head table tr {background: transparent url(./images/header.gif) repeat-x scroll center top}
-.stable-head table tr td {border-color: #181818 #333333 #333333 #181818}
+.stable {
+  --header-bg-color: transparent;
+  --header-bg-image: linear-gradient(0deg, #202020 0%, #000000 100%);
+  --header-border-color: #333333;
+  --header-asc-icon: url("data:image/svg+xml,%3csvg version='1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3e%3cpath fill='%232196F3' d='M43 17.1L39.9 14 24 29.9 8.1 14 5 17.1 24 36z'/%3e%3c/svg%3e");
+}
 .stable-head div.resz {border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center}
 .stable-body {background: window; background-color: #181818}
 .stable-body td {border-bottom: 1px solid #333333}

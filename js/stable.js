@@ -54,9 +54,6 @@ var dxSTable = function()
 	this.tHeadCols = new Array();
 	this.tBodyCols = new Array();
 	this.colorEvenRows = false;
-	this.paletteURL = ".";
-	this.sortAscImage = this.paletteURL+"/images/asc.gif";
-	this.sortDescImage = this.paletteURL+"/images/desc.gif";
 	this.cancelSort = false;
 	this.cancelMove = false;
 	this.colMove = new dxSTable.ColumnMove(this);
@@ -94,13 +91,9 @@ var dxSTable = function()
 	};
 }
 
-dxSTable.prototype.setPaletteByURL = function(url) 
-{
-	this.paletteURL = url;	
-	this.sortAscImage = url+"/images/asc.gif";
-	this.sortDescImage = url+"/images/desc.gif";
-	if(this.created)
-		this.Sort();
+dxSTable.prototype.setPaletteByURL = function(url) {
+	// TODO: deprecated, remove in v6
+	noty("`dxSTable.setPaletteByURL()` is deprecated and will be removed in v6. Please avoid using this method.");
 }
 
 dxSTable.prototype.bindKeys = function()
@@ -572,8 +565,8 @@ dxSTable.prototype.renameColumn = function(no,name)
 
 dxSTable.prototype.Sort = function(e) 
 {
-	if(this.cancelSort) 
-		return(true);
+	if (this.cancelSort || !this.created)
+		return true;
 	this.isSorting = true;
 	const primarySorting = Boolean(this.sortId);
 	const notSorting = e == null && !primarySorting;
@@ -602,10 +595,14 @@ dxSTable.prototype.Sort = function(e)
 		}
 	}
 	if (this.sortId === sortIdCurrent) {
-		if (oldCol) {
-			oldCol.style.backgroundImage = "url("+this.paletteURL+"/images/blank.gif)";
+		oldCol?.classList.remove("asc", "desc");
+		if (this.reverse) {
+			col.classList.add("desc");
+			col.classList.remove("asc");
+		} else {
+			col.classList.add("asc");
+			col.classList.remove("desc");
 		}
-		col.style.backgroundImage = "url(" + (this.reverse ? this.sortAscImage : this.sortDescImage) + ")";
 	}
 
 	const sortingValues = id => {
@@ -821,8 +818,6 @@ dxSTable.prototype.colDrag = function(e)
 		self.hotCell--;
 	var o = self.tHeadCols[self.hotCell];
 	
-	var i = parseInt(o.getAttribute("index"));
-	var tb = self.tBody;
 	var ex = e.clientX;
 	var w = parseInt(o.style.width);
 	var nw = w + ex;
