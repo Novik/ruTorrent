@@ -3,6 +3,7 @@
   --header-bg-image: linear-gradient(0deg, #202020 0%, #000000 100%);
   --header-border-color: #333333;
   /* --header-asc-icon: undefined - inherit from standard theme; */
+  --col-resize-sep-bg-color: #a0a0a0;
 }
 .stable-head div.resz {border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center;}
 .stable-body {background: window; background-color: #181818; }

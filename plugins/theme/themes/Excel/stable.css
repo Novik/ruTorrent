@@ -3,6 +3,7 @@
   --header-bg-image: linear-gradient(0deg, #e1c15f 0%, #f8d79b 100%);
   --header-border-color: #f2993c;
   --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAFCAYAAACXU8ZrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAM0lEQVQImWP4//8/AzJOnHD2P7oYEwMSSJp47j8yDQNM6Aqw8ZmwKUBXyPjj+mysCpABAMnILpbMeCuyAAAAAElFTkSuQmCC);
+  --col-resize-sep-bg-color: #a0a0a0;
 }
 #list-table { border-color: #9eb6ce }
 .stable-head {

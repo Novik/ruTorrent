@@ -124,7 +124,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 				$("<colgroup>"),  // -> cg
 			),
 			$("<div>").addClass("stable-virtpad"),  // -> this.bpad
-			$("<div>").addClass("stable-resize-header"),  // -> this.colReszObj
+			$("<div>").addClass("stable-resize-header").hide(),  // -> this.colReszObj
 		),
 		$("<span>").addClass("stable-scrollpos"),  // -> this.scp
 	);
@@ -146,12 +146,10 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		this.colsdata[i].width = iv(this.colsdata[i].width);
 		this.ids[i] = styles[i].id;
 
-		td = $("<td>").on( "mousemove touchstart", function(e) 
-		{
+		td = $("<td>").on( "mousemove", function(e) {
 			if(self.isResizing) 
 				return;
 			var x = e.clientX - $(this).offset().left;	
-			this.lastMouseX = e.clientX;
 			var w = this.offsetWidth;
 			var i = parseInt(this.getAttribute("index"));
 			var delta = $.support.touchable ? 16 : 8;
@@ -173,7 +171,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 				}
 			}
 		});
-		$(this.tHeadRow).append(
+		this.tHeadRow.append(
 			td.append(
 				$("<div>").append($("<span>").text(styles[this.colOrder[i]].text))
 			)
@@ -317,26 +315,21 @@ dxSTable.prototype.resizeColumn = function() {
 		return;
 
 	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-	var needCallHandler = false;
 	var w = 0, c;
 	for (var i = 0; i < _e.length; i++) {
 		c = this.tHeadCols[i];
 		w = this.colsdata[i].width;
 		if (iv(_e[i].style.width) !== w) {
 			_e[i].style.width = w + "px";
-			needCallHandler = true;
 		}
 		if ((browser.isAppleWebKit || browser.isKonqueror) && this.tBody.rows.length > 0) {
 			if ((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width !== w) && (w >= 4)) {
 				this.tBody.rows[0].cells[i].width = w;
-				needCallHandler = true;
 			}
 //			for( var j=0; j<this.tBody.rows.length; j++ )
 //				this.tBody.rows[j].cells[i].style.textAlign = c.style.textAlign;
 		}
 	}
-
-	(($type(this.onresize) === "function") && needCallHandler) && this.onresize();
 }
 
 var moveColumn = function(_11, _12) 
@@ -482,8 +475,8 @@ dxSTable.ColumnMove.prototype =
 		o.style.visibility = "visible";
 		var self = this;
 		self.ignoreNextMove = true;
-		$(document).on("mousemove",self,self.drag);
-		$(document).on("mouseup touchend",self,self.end);
+		$(document).on("mousemove", self,self.drag);
+		$(document).on("mouseup", self,self.end);
 		this.rx = $(this.parent.dHead).offset().left;
 		this.obj.style.cursor = "move";
 		return(false);
@@ -547,7 +540,7 @@ dxSTable.ColumnMove.prototype =
 		self.parent.isMoving = false;
 		self.parent.cancelSort = false;
 		$(document).off("mousemove",self.drag);
-		$(document).off("mouseup touchend",self.end);
+		$(document).off("mouseup",self.end);
 		return(false);
 	}
 }
@@ -561,7 +554,7 @@ dxSTable.prototype.renameColumn = function(no, name) {
 	no = this.getColOrder(no);
 	if (no>=0) {
 		this.colsdata[no].text = name;
-		this.tHeadRow.cells[no].getElementsByTagName("span")[0].innerText = name;
+		this.tHeadRow[0].cells[no].getElementsByTagName("span")[0].innerText = name;
 	}
 }
 
@@ -783,21 +776,17 @@ dxSTable.prototype.assignEvents = function()
 				self.syncDOMAsync();
 			}
 		});
-	this.tHead.onmousedown = function(e) 
-		{
-			if(self.isResizing)
-			      self.colDragEnd(e);
-			else
-			if((self.hotCell >- 1) && !self.isMoving) 
-			{
-				self.cancelSort = true;
-				self.cancelMove = true;
-                                $(document).on("mousemove",self,self.colDrag);
-                                $(document).on("mouseup touchend",self,self.colDragEnd);
-				$(self.rowCover).show();
-				return(false);
-         		}
-      		};
+	this.tHead.onmousedown = function(e) {
+		if (self.isResizing)
+			self.colDragEnd(e);
+		else if((self.hotCell >- 1) && !self.isMoving) {
+			self.cancelSort = true;
+			self.cancelMove = true;
+			$(document).on("mousemove", self, self.colDrag).on("mouseup", self, self.colDragEnd);
+			self.rowCover.show();
+			return(false);
+		}
+	};
 	this.tHead.onmouseup = function(e) 
 		{
 			if((self.hotCell >- 1) && !self.isMoving)
@@ -810,56 +799,43 @@ dxSTable.prototype.assignEvents = function()
 		this.dCont.on('mousedown', function(e) { self.bindKeys(); } );
 }
 
-dxSTable.prototype.colDrag = function(e) 
-{
-	var self = e.data;
+dxSTable.prototype.colDrag = function(e) {
+	const self = e.data;
 	self.isResizing = true;
-	if(self.hotCell ==- 1) 
+	if (self.hotCell < 0)
 		return(true);
 	while(!self.colsdata[self.hotCell].enabled && self.hotCell>0)
 		self.hotCell--;
-	var o = self.tHeadCols[self.hotCell];
-	
-	var ex = e.clientX;
-	var w = parseInt(o.style.width);
-	var nw = w + ex;
-	if(!$type(o.lastMouseX)) 
-		o.lastMouseX = ex;
-	nw-=o.lastMouseX;
-	if(nw < 10) 
-	{
+	const o = self.tHeadCols[self.hotCell];
+	const nw = o.clientWidth + e.originalEvent.movementX;
+	if (nw < 10) {
 		return(true);
 	}
-	self.colsdata[self.hotCell].width += (e.clientX-o.lastMouseX);
+	self.colsdata[self.hotCell].width = nw;
 	o.style.width = nw + "px";
-	o.lastMouseX = ex;
 	document.body.style.cursor = "e-resize";
 
-	self.colReszObj.style.visibility = "visible";
-	if(!browser.isAppleWebKit && !browser.isKonqueror)
-		nw+=4;
-	self.colReszObj.style.left = (o.offsetLeft+nw-self.dHead.scrollLeft) + "px";
-
-	nw = iv(self.dBody.style.height) + iv(self.dHead.offsetHeight);
-	if(self.dBody.scrollWidth > self.dBody.clientWidth)
-		nw-=window.scrollbarHeight;
-	self.colReszObj.style.height = nw + "px";
+	self.colReszObj
+		.height($(self.tBody).height())
+		.css({
+			top: $(self.tpad).height(),
+			left: o.offsetLeft + nw - self.dHead.scrollLeft,
+		})
+		.show();
+	self.resizeColumn();
 
 	try { document.selection.empty(); } catch(ex) {}
 	return(false);
 }
 
-dxSTable.prototype.colDragEnd = function(e) 
-{
-        var self = e.data;
-	$(document).off("mousemove",self.colDrag);
-	$(document).off("mouseup touchend",self.colDragEnd);
-	$(self.rowCover).hide();
+dxSTable.prototype.colDragEnd = function(e) {
+	const self = e.data;
+	if ($type(self.onresize) === "function")
+		self.onresize();
+	$(document).off("mousemove", self.colDrag).off("mouseup", self.colDragEnd);
+	self.rowCover.hide();
 	self.isResizing = false;
-	self.colReszObj.style.left = 0;
-	self.colReszObj.style.height = 0;
-	self.colReszObj.style.visibility = "hidden";
-	self.resizeColumn();
+	self.colReszObj.hide();
 	self.cancelSort = false;
 	self.cancelMove = false;
 	document.body.style.cursor = "default";
@@ -1739,11 +1715,11 @@ Object.defineProperties(dxSTable.prototype, {
 	dHead: {get: function() {return this.dCont.find(".stable-head")[0];}},
 	dBody: {get: function() {return this.dCont.find(".stable-body")[0];}},
 	tHead: {get: function() {return this.dCont.find(".stable-head > table")[0];}},
-	tHeadRow: {get: function() {return this.dCont.find(".stable-head tr:first-child")[0];}},
+	tHeadRow: {get: function() {return this.dCont.find(".stable-head tr:first-child");}},
 	tpad: {get: function() {return this.dCont.find(".stable-body > .stable-virtpad:first-of-type")[0];}},
 	tBody: {get: function() {return this.dCont.find(".stable-body > table")[0];}},
 	bpad: {get: function() {return this.dCont.find(".stable-body > .stable-virtpad:nth-of-type(2)")[0];}},
 	scp: {get: function() {return this.dCont.find(".stable-scrollpos")[0];}},
-	colReszObj: {get: function() {return this.dCont.find(".stable-resize-header")[0];}},
-	rowCover: {get: function() {return this.dCont.find(".rowcover")[0];}},
+	colReszObj: {get: function() {return this.dCont.find(".stable-resize-header");}},
+	rowCover: {get: function() {return this.dCont.find(".rowcover");}},
 });

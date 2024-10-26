@@ -3,6 +3,7 @@
   --header-bg-image: none;
   --header-border-color: #a0a0a0;
   --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAGCAYAAAARx7TFAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAfElEQVQImV2OQQqCYBhE3xctau9RxAt0BLeuvErnbKlYKCH/DyUtXouMpIGB4TEMg8rWjY3/bMdGLa2JREXllu+/oaZ2ZmZgoKMjHqFHAyBUSkozmZGRaZmgB25ABk9GFBYmEktaYOBXmIEXcFiX4hLSr4UrcAeenzOejTe+01J0omVRDQAAAABJRU5ErkJggg==);
+  --col-resize-sep-bg-color: #a0a0a0;
 }
 .stable-head td {color: #00ff00; font-weight: bold;}
 .stable-head div.resz {background: transparent url(./images/s.gif) no-repeat scroll left center; }
