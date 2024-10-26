@@ -138,22 +138,22 @@ plugin.onLangLoaded = function() {
 	const dlgDatadirContent = $("<div>").addClass("cont fxcaret").append(
 		$("<fieldset>").append(
 			$("<legend>").text(theUILang.DataDir),
-			$("<div>").addClass("row align-items-center").append(
+			$("<div>").addClass("row").append(
 				$("<div>").addClass("col-md-2 d-none d-md-flex justify-content-end").append(
 					$("<label>").attr({id: "lbl_datadir", for: "edit_datadir"}).text(theUILang.DataDir + ": "),
 				),
-				$("<div>").addClass("col-md-10 d-flex align-items-center").append(
+				$("<div>").addClass("col-md-10").append(
 					$("<input>").attr({type: "text", id: "edit_datadir"}).addClass("flex-grow-1"),
 				),
-				$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
+				$("<div>").addClass("offset-md-2 col-md-10").append(
 					$("<input>").attr({type: "checkbox", id: "move_not_add_path"}),
 					$("<label>").attr({for: "move_not_add_path"}).text(theUILang.Dont_add_tname),
 				),
-				$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
+				$("<div>").addClass("offset-md-2 col-md-10").append(
 					$("<input>").attr({type: "checkbox", id: "move_datafiles"}),
 					$("<label>").attr({for: "move_datafiles"}).text(theUILang.DataDirMove),
 				),
-				$("<div>").addClass("offset-md-2 col-md-10 d-flex align-items-center").append(
+				$("<div>").addClass("offset-md-2 col-md-10").append(
 					$("<input>").attr({type: "checkbox", id: "move_fastresume"}),
 					$("<label>").attr({for: "move_fastresume"}).text(theUILang.doFastResume),
 				),

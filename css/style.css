@@ -102,6 +102,15 @@ span {
   --header-bg-color: #F0F0F0;
   --header-border-color: #909090;
 }
+.dropdown-menu {
+  --bs-dropdown-border-color: var(--menu-border-color);
+  --bs-dropdown-bg: var(--menu-background-color);
+  --bs-dropdown-link-color: var(--menu-color);
+  --bs-dropdown-link-active-color: var(--menu-highlight-color);
+  --bs-dropdown-link-active-bg: var(--menu-highlight-background-color);
+  --bs-dropdown-link-hover-color: var(--menu-highlight-color);
+  --bs-dropdown-link-hover-bg: var(--menu-highlight-background-color);
+}
 category-list.rightalign-labelsize panel-label::part(size) {
   margin-left: auto;
 }
@@ -219,6 +228,14 @@ div#t {
   /* Push dropdown triangle to the right end */
   margin-right: auto;
 }
+#t .dropdown-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 1rem;
+  width: auto;
+}
 div#t button.navbar-toggler {
   background-color: var(--btn-bg-color);
   width: 5rem;
@@ -227,7 +244,7 @@ div#t a {padding: 3px;}
 #t .navbar-nav a:not(.dropdown-item):hover {
   filter: brightness(1.3);
 }
-#t .navbar-nav a:active {padding: 4px 2px 2px 4px;}
+#t .nav-link:active {padding: 4px 2px 2px 4px;}
 div#t div.TB_Separator {
   align-self: stretch;
   flex: 0 0 1px;
@@ -280,7 +297,7 @@ div#plugins {background: url(../images/plugin.png) 0px center}
 
 #pview_save_view_button { align-self: center; width: 38px; height: 19px; padding: 0px; line-height: 2px; font-size: 19px;  }
 
-a {color: #686868;}
+a {color: #686868; text-decoration: none;}
 #maincont {height: calc(100dvh - 36px - 5px - 25px - 5px);}
 .offcanvas-header .btn-close {background-color: var(--btn-bg-color);}
 #offcanvas-sidepanel {
@@ -412,7 +429,6 @@ td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor
 div.indent {padding-left: 16px}
 #st_gl {display: block}
 #st_que, #st_sch, #st_dc {display: none}
-a {text-decoration: none}
 select.cols {border: 1px solid #808080; font-size: 11px;  padding: 2px; width: 120px}
 div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
 div#tdetails {

@@ -198,17 +198,19 @@ html,body
 :root {
 	--menu-color: #757571;
 	--menu-border-color: #333;
-	--menu-background-color: #181818;
+	--menu-background-color: #121212;
 
 	--menu-disabled-color: #333;
+	--menu-disabled-background-color: #ffffff;
 
-	--menu-highlight-color: #fff;
-	--menu-highlight-background-color: #888;
+	--menu-highlight-color: #d2d2d2;
+	--menu-highlight-background-color: #121212;
 
 	--settings-background-color: #222;
 
 	--btn-bg-color: #3498DB;
   --header-bg-color: #273238;
+  --header-border-color: transparent;
 }
 
 #offcanvas-sidepanel {
@@ -362,7 +364,6 @@ ul.CMenu li.menuitem:last-child
 
 ul.CMenu li a
 {
-	color:#757571;
 	background:transparent url(./images/menus.png) no-repeat 0 0
 }
 
@@ -589,11 +590,6 @@ div select {
 	padding:1px 4px
 }
 
-a
-{
-	color:#686868;
-}
-
 #pview_save_view_button {
 	width: 20px;
 	height: 20px;
@@ -738,7 +734,6 @@ a.dlg-close:link,a.dlg-close:visited
 }
 
 .dlg-header {
-	border: none;
 	text-transform: uppercase;
 	text-shadow: 0 -1px 0 #000;
 }
