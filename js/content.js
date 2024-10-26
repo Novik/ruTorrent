@@ -18,12 +18,6 @@ function makeContent() {
 
 	$("#offcanvas-sidepanel-label").text("ruTorrent v" + theWebUI.version);
 
-	$("#query").on('keydown', function(e) {
-		if (e.keyCode === 13) {
-			theSearchEngines.run();
-		}
-	});
-
 	new DnD("HDivider", {
 		restrictY: true,
 		maskId: "HDivider",
