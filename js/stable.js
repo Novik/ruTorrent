@@ -675,7 +675,8 @@ dxSTable.prototype.Sort = function(e)
 		}
 		return(true);
 	}
-	const oldCol = primarySorting ? this.tHeadCols[this.getColNoById(this.sortId)] : null;
+	const sortColNo = this.getColNoById(this.sortId);
+	const oldCol = primarySorting ? this.tHeadCols[(sortColNo >= 0) ? sortColNo : 0] : null;
 	const col = e ? e.delegateTarget : oldCol;
 	const sortIdCurrent = this.getIdByCol(this.colOrder[parseInt(col.getAttribute("index"))]) ?? '';
 	const toggleReverse = (oldId, oldRev) => (oldId === sortIdCurrent) ? 1 - oldRev : 0;
