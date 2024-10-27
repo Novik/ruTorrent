@@ -87,10 +87,10 @@ function makeContent() {
 				$("<fieldset>").append(
 					$("<legend>").text(theUILang.Torrent_options),
 					$("<div>").addClass("row").append(
-						$("<div>").addClass("d-none col-md-3 d-md-flex align-items-center justify-content-end").append(
+						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
 							$("<label>").attr({for: "dir_edit"}).text(theUILang.Base_directory + ": "),
 						),
-						$("<div>").addClass("col-md-9 d-flex flex-row align-items-center").append(
+						$("<div>").addClass("col-md-9 d-flex flex-row").append(
 							$("<input>").attr(
 								{type: "text", id: "dir_edit", name: "dir_edit", placeholder: theUILang.Base_directory}
 							).addClass("flex-grow-1"),
@@ -113,14 +113,14 @@ function makeContent() {
 						)
 					),
 					$("<div>").addClass("row").append(
-						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end align-items-center").append(
+						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
 							$("<label>").attr({for: "tadd_label"}).text(theUILang.Label + ": "),
 						),
-						$("<div>").addClass("col-md-7 d-flex flex-row align-items-center").append(
+						$("<div>").addClass("col-md-7 d-flex flex-row").append(
 							$("<input>").attr({type: "text", id: "tadd_label", name: "tadd_label", placeholder: theUILang.Label}).addClass("flex-grow-1"),
 							$("<select>").attr({id: "tadd_label_select"}).addClass("flex-grow-1"),
 						),
-						$("<div>").addClass("col-md-2 d-flex align-items-center").append(
+						$("<div>").addClass("col-md-2 d-flex").append(
 							$("<button>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).text(theUILang.Return_select_label),
 						),
 					),
@@ -128,7 +128,7 @@ function makeContent() {
 				$("<fieldset>").append(
 					$("<legend>").text(theUILang.Add_from_file),
 					$("<div>").addClass("row").append(
-						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end align-items-center").append(
+						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
 							$("<label>").attr({for: "torrent_file"}).text(theUILang.Torrent_file + ": "),
 						),
 						$("<div>").addClass("col-md-6 d-flex").append(
@@ -137,7 +137,7 @@ function makeContent() {
 								.on("change", (ev) => {$("#add_button").prop("disabled", ev.target.files.length === 0);})
 								.addClass("flex-shrink-1"),
 						),
-						$("<div>").addClass("col-md-3 d-flex align-items-center").append(
+						$("<div>").addClass("col-md-3 d-flex").append(
 							$("<input>").val(theUILang.add_button).attr({type: "submit", id: "add_button"}).addClass("Button").prop("disabled", true),
 						),
 					),
@@ -149,7 +149,7 @@ function makeContent() {
 				$("<fieldset>").append(
 					$("<legend>").text(theUILang.Add_from_URL),
 					$("<div>").addClass("row").append(
-						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end align-items-center").append(
+						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
 							$("<label>").attr({for: "url"}).text(theUILang.Torrent_URL + ": "),
 						),
 						$("<div>").addClass("col-md-6 d-flex").append(
@@ -158,7 +158,7 @@ function makeContent() {
 								.on("input", (ev) => {$('#add_url').prop('disabled', ev.target.value.trim() === '');})
 								.addClass("flex-grow-1"),
 						),
-						$("<div>").addClass("col-md-3 d-flex align-items-center").append(
+						$("<div>").addClass("col-md-3 d-flex").append(
 							$("<input>").val(theUILang.add_url).attr({type: "submit", id: "add_url"}).addClass("Button").prop("disabled", true),
 						),
 					),
