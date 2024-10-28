@@ -1,13 +1,14 @@
 html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;background-color: #000;color: #ffffff;text-shadow:0px -1px 0px #000;scrollbar-base-color:#181818; }
 :root {
   --menu-color: #757571;
-  --menu-background-color: transparent;
+  --menu-background-color: #121212;
+  --menu-border-color: #333333;
 
   --menu-disabled-color: #333333;
+  --menu-disabled-background-color: #121212;
 
-  --menu-border-color: #333333;
-  --menu-highlight-color: #fff;
-  --menu-highlight-background-color: #888888;
+  --menu-highlight-color: #ffffff;
+  --menu-highlight-background-color: #121212;
 
   --settings-background-color: #181818;
 
@@ -20,7 +21,6 @@ button, input[type=button], input[type=submit], .Button {
   border: 1px solid #000;
   background: var(--btn-bg-color) url(./images/headers.png) repeat-x 0px 0px;
   color:#AACF27;
-  cursor: pointer;
   font-weight: bold;
   text-shadow:0px -1px 0px #000;
   -moz-border-radius: 5px;

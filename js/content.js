@@ -90,7 +90,7 @@ function makeContent() {
 						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
 							$("<label>").attr({for: "dir_edit"}).text(theUILang.Base_directory + ": "),
 						),
-						$("<div>").addClass("col-md-9 d-flex flex-row").append(
+						$("<div>").addClass("col-md-9").append(
 							$("<input>").attr(
 								{type: "text", id: "dir_edit", name: "dir_edit", placeholder: theUILang.Base_directory}
 							).addClass("flex-grow-1"),
@@ -103,9 +103,7 @@ function makeContent() {
 								["torrents_start_stopped", theUILang.Dnt_start_down_auto],
 								["fast_resume", theUILang.doFastResume],
 								["randomize_hash", theUILang.doRandomizeHash],
-							].map(([id, label]) => $("<div>").attr({id: id + "_option"}).addClass(
-								"d-flex flex-row align-items-center"
-							).append(
+							].map(([id, label]) => $("<div>").attr({id: id + "_option"}).addClass("d-flex").append(
 									$("<input>").attr({type: "checkbox", name: id, id: id}),
 									$("<label>").attr({for: id}).text(label),
 								)
@@ -116,11 +114,11 @@ function makeContent() {
 						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
 							$("<label>").attr({for: "tadd_label"}).text(theUILang.Label + ": "),
 						),
-						$("<div>").addClass("col-md-7 d-flex flex-row").append(
+						$("<div>").addClass("col-md-7").append(
 							$("<input>").attr({type: "text", id: "tadd_label", name: "tadd_label", placeholder: theUILang.Label}).addClass("flex-grow-1"),
 							$("<select>").attr({id: "tadd_label_select"}).addClass("flex-grow-1"),
 						),
-						$("<div>").addClass("col-md-2 d-flex").append(
+						$("<div>").addClass("col-md-2").append(
 							$("<button>").attr({type: "button", id: "tadd-return-select", name: "tadd-return-select"}).text(theUILang.Return_select_label),
 						),
 					),
@@ -131,13 +129,13 @@ function makeContent() {
 						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
 							$("<label>").attr({for: "torrent_file"}).text(theUILang.Torrent_file + ": "),
 						),
-						$("<div>").addClass("col-md-6 d-flex").append(
+						$("<div>").addClass("col-md-6").append(
 							$("<input>")
 								.attr({type: "file", multiple: "multiple", name: "torrent_file[]", id: "torrent_file", accept: ".torrent"})
 								.on("change", (ev) => {$("#add_button").prop("disabled", ev.target.files.length === 0);})
 								.addClass("flex-shrink-1"),
 						),
-						$("<div>").addClass("col-md-3 d-flex").append(
+						$("<div>").addClass("col-md-3").append(
 							$("<input>").val(theUILang.add_button).attr({type: "submit", id: "add_button"}).addClass("Button").prop("disabled", true),
 						),
 					),
@@ -152,13 +150,13 @@ function makeContent() {
 						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
 							$("<label>").attr({for: "url"}).text(theUILang.Torrent_URL + ": "),
 						),
-						$("<div>").addClass("col-md-6 d-flex").append(
+						$("<div>").addClass("col-md-6").append(
 							$("<input>")
 								.attr({type: "text", id: "url", name: "url", placeholder: theUILang.Torrent_URL})
 								.on("input", (ev) => {$('#add_url').prop('disabled', ev.target.value.trim() === '');})
 								.addClass("flex-grow-1"),
 						),
-						$("<div>").addClass("col-md-3 d-flex").append(
+						$("<div>").addClass("col-md-3").append(
 							$("<input>").val(theUILang.add_url).attr({type: "submit", id: "add_url"}).addClass("Button").prop("disabled", true),
 						),
 					),

@@ -2,16 +2,19 @@ html, body { background-color: #DFE8F6 }
 :root {
   --menu-color: #222222;
   --menu-background-color: #F0F0F0;
+  --menu-border-color: #718BB7;
 
   --menu-disabled-color: #808080;
+  --menu-disabled-background-color: #ffffff;
 
-  --menu-border-color: #718BB7;
   --menu-highlight-color: #222222;
   --menu-highlight-background-color: #D9E8FB;
 
   --settings-background-color: #DFE8F6;
 
+  --btn-bg-color: #F0F0F0;
   --header-bg-color: #D9E8FB;
+  --header-border-color: transparent;
 }
 #side-panel, category-list {
   border-color: #99BBE8;
@@ -94,11 +97,7 @@ ul.CMenu li a.exp {background: transparent url(./images/menu-parent.gif) no-repe
 
 ul.CMenu li.menuitem hr {background-color: #E0E0E0; color: #000000; border-bottom-width: 1px; border-bottom-color: #FFFFFF}
 
-.dlg-header {
-  background: var(--header-bg-color);
-  border: none;
-  color: #15428B;
-}
+.dlg-header {color: #15428B;}
 
 div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
 .lm li a.focus {background-color: #D9E8FB}

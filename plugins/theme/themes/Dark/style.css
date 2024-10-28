@@ -2,10 +2,11 @@ html, body {background-color: #181818; color: #999999; }
 :root {
   --menu-color: #666666;
   --menu-background-color: #181818;
+  --menu-border-color: #333333;
 
   --menu-disabled-color: #333333;
+  --menu-disabled-background-color: #181818;
 
-  --menu-border-color: #333333;
   --menu-highlight-color: #111111;
   --menu-highlight-background-color: #888888;
 
@@ -155,8 +156,6 @@ select.cols {border: 1px solid #333333}
 div#dragmask {border: 1px dotted #333333}
 div#tdetails {background-color: #181818}
 div#tdcont {background: #181818; border: 1px solid #333333}
-
-div#tadd {background-color: #181818; border: 1px solid #333333}
 
 .tabbar li.nav-item a.nav-link {
   border: 1px solid #333333;
