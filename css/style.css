@@ -123,6 +123,9 @@ span {
   --bs-dropdown-link-hover-color: var(--menu-highlight-color);
   --bs-dropdown-link-hover-bg: var(--menu-highlight-background-color);
 }
+a.dropdown-item {
+  width: auto;
+}
 category-list.rightalign-labelsize panel-label::part(size) {
   margin-left: auto;
 }
@@ -255,7 +258,6 @@ span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
   align-items: center;
   justify-content: space-between;
   padding: 0.25rem 1rem;
-  width: auto;
 }
 .navbar-toggler {
   background-color: var(--btn-bg-color);
