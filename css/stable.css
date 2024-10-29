@@ -1,5 +1,4 @@
 .stable {
-  position: relative;  /* Need to be positioned for drag masks to be positioned properly */
   height: 100%;
   background-color: #FFFFFF;
   overflow: hidden;
@@ -11,6 +10,7 @@
 }
 .stable td {font: menu; white-space: nowrap; padding: 1px}
 .stable-head {
+  position: relative;  /* Need to be positioned for drag masks to be positioned properly */
   width: 100%;
   flex: 0 0 auto;
   background: #F5F5F5;
