@@ -5,8 +5,6 @@ $.extend($.support,
 
 plugin.holdMouse = { x:0, y: 0 };
 plugin.curMouse = null;
-plugin.scrollInterval = 40;
-plugin.accel = 1.1;
 
 plugin.emulateRightClick = function()
 {
@@ -66,8 +64,7 @@ plugin.touchStart = function(event)
 {
 	if(event.changedTouches.length)
 	{
-		plugin.stopScroll();
-		if($(event.changedTouches[0].target).is("select") || $(event.changedTouches[0].target).is("input"))
+		if($(event.changedTouches[0].target).is("select") || $(event.changedTouches[0].target).is("input") || $(event.changedTouches[0].target).is("button") || $(event.changedTouches[0].target).is("label"))
 			return;
 		plugin.dispatchMouse(event,"mousemove");
 		var touch = plugin.dispatchMouse(event,"mousedown");;
@@ -94,104 +91,6 @@ plugin.touchStart = function(event)
 	return(false);
 }
 
-plugin.stopScroll = function()
-{
-	if(plugin.scrollTimeout)
-		window.clearTimeout(plugin.scrollTimeout);
-	plugin.scrollTimeout = null;
-}
-
-plugin.startScroll = function( prop, speed, target )
-{
-	plugin.speed = speed;
-	if((plugin.prop!=prop) || (plugin.target!=target))
-		plugin.stopScroll();
-	plugin.prop = prop;
-	plugin.target = target;
-	if(!plugin.scrollTimeout)
-		plugin.scrollTimeout = window.setTimeout( function() 
-		{
-			var pos = target[prop];
-			target[prop] -= plugin.speed*plugin.scrollInterval;
-			var scrollEvent = document.createEvent("HTMLEvents");
-			scrollEvent.initEvent( 'scroll', true, true )
-			target.dispatchEvent(scrollEvent);
-			if(pos!=target[prop])
-				plugin.scrollTimeout = window.setTimeout( arguments.callee, plugin.scrollInterval );
-			else
-				plugin.scrollTimeout = null;
-		}, 40);
-}
-
-plugin.touchMove = function(event)
-{
-	if(event.changedTouches.length)
-	{
-		var touch = plugin.dispatchMouse(event,"mousemove");
-		if(plugin.rightClick && 
-			(plugin.rightClick.target!=touch.target))
-			plugin.cancelMouseUp = false;
-		if(plugin.curMouse)
-		{
-			var delta = { x:touch.screenX-plugin.curMouse.x, y:touch.screenY-plugin.curMouse.y, tm: touch.timeStamp-plugin.curMouse.timeStamp };
-			if((delta.x || delta.y) && delta.tm)
-			{
-				var target = $(touch.target);
-				var mode = { x: true, y: true };
-				try {
-				while(target.length)
-				{
-					if(target.css("overflow")=="auto")
-						break;
-					else
-					if(target.css("overflow-x")=="auto")
-					{
-						mode.y = false;
-						break;
-					}
-					else
-					if(target.css("overflow-y")=="auto")
-					{
-						mode.x = false;
-						break;
-					}
-                        	        target = target.parent();
-				}
-				} catch(e) {}
-				if(target.length)
-				{
-				        if(mode.x && mode.y)
-				        {
-				        	if(Math.abs(delta.x)>Math.abs(delta.y))
-				        		mode.y = false;
-						else
-				        		mode.x = false;
-				        }
-					target = target.get(0);
-
-					if(mode.x)
-						plugin.startScroll( "scrollLeft", delta.x/delta.tm*plugin.accel, target );
-					if(mode.y)
-						plugin.startScroll( "scrollTop", delta.y/delta.tm*plugin.accel, target );
-/*
-					if(mode.x)
-						target.scrollLeft = target.scrollLeft-delta.x;
-					if(mode.y)
-						target.scrollTop = target.scrollTop-delta.y;
-					var scrollEvent = document.createEvent("HTMLEvents");
-					scrollEvent.initEvent( 'scroll', true, true )
-					target.dispatchEvent(scrollEvent);
-*/
-				}
-			}
-		}
-		plugin.curMouse = { x: touch.screenX, y: touch.screenY, timeStamp: $.now() };
-
-	}
-	event.preventDefault();
-	return(false);
-}
-
 plugin.touchEnd = function(event)
 {
 	if(event.changedTouches.length)
@@ -213,6 +112,5 @@ plugin.touchEnd = function(event)
 if($.support.touchable && browser.isSafari)
 {
 	document.addEventListener("touchstart", plugin.touchStart, false);
-	document.addEventListener("touchmove", plugin.touchMove, false);
 	document.addEventListener("touchend", plugin.touchEnd, false);
 }
