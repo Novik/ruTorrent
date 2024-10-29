@@ -210,6 +210,8 @@ var theDialogManager = {
 		if ($(window).width() < 768) {
 			bootstrap.Offcanvas.getOrCreateInstance(document.querySelector("#offcanvas-sidepanel")).hide();
 		}
+		// close collapsible top menu on opening dialog windows
+		bootstrap.Collapse.getOrCreateInstance("#top-menu").hide();
 
 		const obj = $('#' + id);
 		if (obj.data("modal"))
@@ -456,4 +458,3 @@ var theContextMenu =
 		return(false);
 	}
 }
-
