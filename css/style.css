@@ -209,12 +209,18 @@ ul.CMenu li:hover ul.left {left: -150px}
 span.htkey {text-align:right; position: absolute; right: 16px; z-index:100}
 #sel {width: 0px; height: 0px; left: 0px; top: 0px; border: 1px dotted #000000; display: none; z-index: 1000}
 
-div#t {
-  height: auto;
+#t {
+  height: 36px;
   background: #F0F0F0 url(../images/t_bg.png) repeat-x center 0.25rem;
   border-bottom: 1px solid #D0D0D0;
   margin-bottom: 5px;
   white-space: nowrap;
+}
+#toggler-container {
+  min-height: 100%;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: space-between;
 }
 #top-menu {
   background-color: #F0F0F0;
@@ -223,6 +229,7 @@ div#t {
 }
 #top-menu .btn-group {
   flex-direction: column;
+  justify-content: center;
 }
 .dropdown-toggle span {
   /* Push dropdown triangle to the right end */
@@ -236,9 +243,17 @@ div#t {
   padding: 0.25rem 1rem;
   width: auto;
 }
-div#t button.navbar-toggler {
+.navbar-toggler {
   background-color: var(--btn-bg-color);
   width: 5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.navbar-toggler > div {
+  width: 16px;
+  height: 16px;
 }
 div#t a {padding: 3px;}
 #t .navbar-nav a:not(.dropdown-item):hover {
@@ -575,17 +590,8 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 .buttons-group-row {margin: 0.25rem; gap: 0.25rem; display: flex; flex-direction: row;}
 
 .ie fieldset {padding: 5px}
-div.space {flex-grow: 1;}
 #servertime { text-align: center }
 #viewrows { text-align: center; }
-
-@media only screen and (min-width: 1280px) {
-  .desktop { display: inline-block; }
-}
-
-@media only screen and (max-width: 1279px) {
-  .desktop { display: none; }
-}
 
 /* Custom break point settings for responsiveness */
 
@@ -610,9 +616,6 @@ div.dlg-window .buttons-list {
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
-  div#t {
-    height: 36px;
-  }
   #top-menu {
     background-color: transparent;
     border-bottom: none;

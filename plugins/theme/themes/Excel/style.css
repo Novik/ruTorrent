@@ -44,12 +44,12 @@ panel-label[selected] {
 div#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
 .statuscell { border-color: #9EB6CE }
 
-div#t {background: none; border: none;}
+#t {background: none; border: none;}
 #top-menu {
   background-color: #B5D5FB;
   border-bottom: 1px solid #9EB6CE;
 }
-div#t button.navbar-toggler {
+.navbar-toggler {
   background-image: none;
 }
 
