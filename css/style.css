@@ -110,6 +110,9 @@ span {
   --menu-item-active-icon: url(data:image/gif;base64,R0lGODlhBwAHAPABAAAAAACMFCH5BAUAAAEALAAAAAAHAAcAAAIMjA9nwMj9wmuLIlUAADs=);
   --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAPABAAAAAAAAACH5BAUAAAEALAAAAAAIAAcAAAIMRI4Blrq9HoqQJZsKADs=);
 
+  --menu-connect-line-color: #909090;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #ffffff;
   --container-border-color: #a0a0a0;
   --btn-bg-color: #F0F0F0;
@@ -143,6 +146,21 @@ span {
   --bs-dropdown-link-active-bg: var(--menu-highlight-background-color);
   --bs-dropdown-link-hover-color: var(--menu-highlight-color);
   --bs-dropdown-link-hover-bg: var(--menu-highlight-background-color);
+}
+.list-group {
+  --bs-list-group-border-color: transparent;
+  --bs-list-group-border-width: 0;
+  --bs-list-group-bg: var(--menu-background-color);
+  --bs-list-group-color: var(--menu-color);
+  --bs-list-group-active-color: var(--menu-highlight-color);
+  --bs-list-group-active-border-color: transparent;
+  --bs-list-group-active-bg: var(--menu-highlight-background-color);
+  --bs-list-group-action-hover-color: var(--menu-highlight-color);
+  --bs-list-group-action-hover-bg: var(--menu-highlight-background-color);
+  --bs-list-group-action-active-color: var(--menu-highlight-color);
+  --bs-list-group-action-active-bg: var(--menu-highlight-background-color);
+  --bs-list-group-item-padding-x: 0.25rem;
+  --bs-list-group-item-padding-y: 0.25rem;
 }
 a.dropdown-item {
   width: auto;
@@ -445,9 +463,9 @@ div#HDivider, div#VDivider {flex: 0 0 5px;}
 #stg_c {
   display: flex;
   flex-direction: row;
+  gap: 5px;
 }
 #stg-pages {
-  padding: 0 0.5rem;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -455,7 +473,7 @@ div#HDivider, div#VDivider {flex: 0 0 5px;}
 }
 #stg-header {background-image: url(../images/settings.gif);}
 
-div#stg .lm {
+#stg .lm {
   flex: 0 0 auto;
   padding: 0.25rem 0.5rem;
   background-color: var(--menu-background-color);
@@ -464,48 +482,27 @@ div#stg .lm {
   overflow: hidden auto;
 }
 
-.lm li {
-  margin: 0 0.5rem;
-  padding: 0;
+#stg .list-group-item {
+  width: auto;
+  margin-left: 0.75rem;
   line-height: 1.5rem;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
 }
-.lm li div {
-  display: flex;
-  flex-direction: column;
-  width: 1rem;
-  align-items: stretch;
+#stg .list-group-item::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -1rem;
+  left: -0.8rem;
+  width: 0.8rem;
+  height: 2rem;
+  border-left: 1px var(--menu-connect-line-style) var(--menu-connect-line-color);
+  border-bottom: 1px var(--menu-connect-line-style) var(--menu-connect-line-color);
 }
-.lm li div > div {
-  flex-grow: 1;
-  border-left: 2px dotted #909090;
+#stg .list-group-item:first-child::before {
+  top: 0;
+  height: 1rem;
 }
-.lm li div > div:first-of-type {
-  border-bottom: 1px dotted #909090;
-}
-.lm li div > div:last-of-type {
-  border-top: 1px dotted #909090;
-}
-.lm li:first-of-type div > div:first-of-type {
-  border-left: none;
-}
-.lm li:last-of-type div > div:last-of-type {
-  border-left: none;
-}
-.lm ul {width: 100%; margin: 0; padding: 0; list-style-position: inside; list-style: none}
-.lm ul.child {margin: 0 0 0 5px; display: none}
-.lm ul.child li {margin: 0 0 0 9px}
-.lm li div.toggle {width: 10px; height: 10px; background: transparent url(../images/exp.gif) no-repeat scroll center center; float: left; margin: 3px 0 0 -16px; cursor: pointer}
-.lm li a {
-  color: #000000;
-  padding: 1px 2px;
-  flex-grow: 1;
-}
-.lm li a.focus {background-color: #E0E0E0}
 .stg_con {
-  display: none;
   margin-bottom: auto;
   overflow: hidden auto;
 }
@@ -531,8 +528,6 @@ div#stg .lm {
 input.disabled, button.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
 div.indent {padding-left: 16px}
-#st_gl {display: block}
-#st_que, #st_sch, #st_dc {display: none}
 select.cols {border: 1px solid #808080; font-size: 11px;  padding: 2px; width: 120px}
 div#tdetails {
   display: flex;
