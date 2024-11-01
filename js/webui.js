@@ -320,6 +320,7 @@ var theWebUI = {
 				theSearchEngines.run()
 			}
 		});
+		$("#clear_log").on("click", () => $("#clear_log").siblings().remove());
 
 		$(document).on( browser.isOpera ? 'keypress' : 'keydown', keyEvent);
 	},

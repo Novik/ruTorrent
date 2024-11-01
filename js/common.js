@@ -821,14 +821,6 @@ var theTabs = {
 				).on("click", (ev) => ev.target.blur()).addClass("nav-link").text(name),
 			)),
 		);
-		$("#tab_lcont").after(
-			$("<button>").attr(
-				{type:"button", id:"clear_log"}
-			).addClass('Button mx-2').text(theUILang.ClearButton).hide().on(
-				'click', () => $("#lcont").empty()
-			).on('focus', function() {
-				this.blur();
-			}));
 		this.show("gcont");
 		$('#gcont,#lcont').enableSysMenu();
 	},
@@ -875,15 +867,11 @@ var theTabs = {
                				        theWebUI.getTable(prefix).refreshRows();
                				theWebUI.setActiveView(id);
             				l.addClass("selected").css("z-index",1);
-	            			if(n=="lcont")
-		            			$("#clear_log").css("display","inline");
             			}
          			else
          			{
             				p.hide();
             				l.removeClass("selected").css("z-index",0);
-	            			if(n=="lcont")
-		            			$("#clear_log").hide();
             			}
          		}
       		}
