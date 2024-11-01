@@ -129,7 +129,7 @@ if(plugin.canChangeMenu())
 	plugin.onTaskShowInterface = function(task)
 	{
 	        $('.scplay').hide();
-	        $('#tskcmdlog').addClass('scframe_cont');
+	        $('#tskcmdlog').addClass('image-cont');
 	}
 
 	plugin.onTaskShowLog = function(task,line,id,ndx)
@@ -144,10 +144,6 @@ if(plugin.canChangeMenu())
 					$('.scframe').hide();
 				$('#'+id).append("<div class='scframe' id='scframe"+ndx+"'><img src='plugins/screenshots/action.php?cmd=ffmpeggetimage&no="+task.no+
 					"&fno="+line+"&file="+encodeURIComponent($('#scimgfile').val())+"' /></div>");
-				$('#scframe'+ndx+' img').on('load', function()
-				{
-					plugin.centerFrame(ndx);
-				});
 			}
 			return('');
 		}
@@ -171,7 +167,7 @@ if(plugin.canChangeMenu())
 	plugin.onTaskHideInterface = function(task)
 	{
 	        $('.scplay').hide();
-		$('#tskcmdlog').removeClass('scframe_cont');
+		$('#tskcmdlog').removeClass('image-cont');
 		if(plugin.playTimer)
 		{
 			window.clearInterval(plugin.playTimer);
@@ -221,18 +217,6 @@ if(plugin.canChangeMenu())
 	}
 }
 
-plugin.centerFrame = function(no)
-{
-	var img = $('#scframe'+no+' img');
-	if(img.height())
-	{
-		var delta = ($('#tskcmdlog').height()-img.height())/2;
-		if(delta>0)
-			img.parent().css("top",delta);
-	}
-}
-
-
 plugin.getCurrentFrame = function()
 {
 	return($('.scframe:visible').length ? iv($('.scframe:visible').attr("id").substr(7)) : 0);
@@ -251,7 +235,6 @@ plugin.setCurrentFrame = function(no)
 		no = 0;
 	$('.scframe:visible').hide();
 	$('#scframe'+no).show();
-	plugin.centerFrame(no);
 	plugin.setPlayControls();
 }
 

@@ -1,11 +1,3 @@
-.scframe {
-  position: relative;
-  text-align: center;
-  width: 100%;
-  padding: 0;
-  cursor: default;
-}
-.scframe img { width: 100%; vertical-align: middle; }
 .scplay {
   display: none;
   text-wrap: nowrap;
@@ -13,6 +5,3 @@
   padding: 0;
 }
 #sclast {margin-right: auto;}
-
-.scframe_cont { overflow: auto; background-color: black; margin: 0 auto; }
-#st_screenshots { overflow: auto }

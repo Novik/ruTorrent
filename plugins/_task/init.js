@@ -633,9 +633,5 @@ plugin.onLangLoaded = function() {
 		}
 		$("#tskCopy, #tskSaveLog").hide();
 	});
-	theDialogManager.setHandler('tskConsole', 'afterShow', function() {
-		if (!plugin.cHeight)
-			plugin.cHeight = $('#tskcmderrors').parent().height();
-	});
 	$(".tskconsole").enableSysMenu();
 }
