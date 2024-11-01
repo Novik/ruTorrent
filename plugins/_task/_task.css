@@ -10,6 +10,9 @@
   cursor: text;
   user-select: text;
 }
+.tskconsole:not(.image-cont) {
+  max-width: 580px;
+}
 .image-cont {
   background-color: black;
   cursor: default;
