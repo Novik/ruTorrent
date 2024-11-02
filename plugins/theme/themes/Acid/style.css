@@ -2,10 +2,11 @@ html, body { background-color: #1e2124; color: #BDDBDB }
 :root {
   --menu-color: #00FF00;
   --menu-background-color: #181818;
+  --menu-border-color: #a0a0a0;
 
   --menu-disabled-color: #c0c0c0;
+  --menu-disabled-background-color: #ffffff;
 
-  --menu-border-color: #333;
   --menu-highlight-color: #272E36;
   --menu-highlight-background-color: #BDDBDB;
 
@@ -13,6 +14,7 @@ html, body { background-color: #1e2124; color: #BDDBDB }
 
   --btn-bg-color: #D7D7D7;
   --header-bg-color: #1E2124;
+  --header-border-color: #909090;
 }
 button, input.Button {
   color: black;
@@ -71,7 +73,7 @@ div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
 .graph_tab_legend { color: #FFF; background-color: #272E36; }
 .graph_tab_tooltip { color: #FFF; background-color: #272E36; border: 1px solid #BDDBDB; }
 
-div#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
+#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
 #top-menu {
   background-color: #252525;
   border-bottom: 1px solid #252525;
@@ -170,8 +172,6 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 .Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
-
-div#tadd { background-color: #1e2124; border: 2px solid #909090; color: #BDDBDB;}
 
 #StatusBar { background-color: #1e2124; color: #ffffff; font-weight: bold }
 #st_up { background:url(./images/status_up.gif) 6px no-repeat; color: #BDDBDB; }

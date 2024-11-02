@@ -14,8 +14,8 @@ class rLook
 		if(!$cache->get($rt))
 		{
 			$rt->list["Google"] = "https://www.google.com/search?q={title}";
-			$rt->list["IMDb"] = "https://www.imdb.com/find?q={title}";
-			$rt->list["MetaCritic"] = "https://www.metacritic.com/search/all/{title}/results";
+			$rt->list["IMDb"] = "https://www.imdb.com/find/?q={title}";
+			$rt->list["MetaCritic"] = "https://www.metacritic.com/search/{title}";
 			$rt->list["TMDb"] = "https://www.themoviedb.org/search?query={title}";
 			$rt->list["TheTVDb"] = "https://www.thetvdb.com/search?query={title}";
 			$rt->list["YouTube"] = "https://www.youtube.com/results?search_query={title}";

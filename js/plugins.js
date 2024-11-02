@@ -393,7 +393,7 @@ rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore, isD
 				newBtn
 					.addClass("dropdown-toggle")
 					.attr({"aria-expanded":false, "data-bs-toggle":"dropdown"}),
-				$("<ul>").addClass("dropdown-menu p-2").append(),
+				$("<ul>").addClass("dropdown-menu").append(),
 			);
 		}
 

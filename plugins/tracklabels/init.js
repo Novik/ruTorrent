@@ -190,7 +190,10 @@ plugin.onLangLoaded = function() {
 						[theUILang.UploadUserIcon, 'submit', 'OK Button', {}],
 						[theUILang.DeleteUserIcon, 'button', 'Button', {name: 'delete'}],
 						[theUILang.Cancel, 'button', 'Cancel Button', {}],
-					].map(([value, type, cls, attribs]) => $('<input>').attr({value, type, class: cls, ...attribs})),
+					].map(([value, type, cls, attribs]) => $('<input>')
+						.attr({value, type, ...attribs})
+						.addClass(cls),
+					),
 				),
 			),
 		)
@@ -245,11 +248,11 @@ plugin.onLangLoaded = function() {
 					// show uploaded image
 					plugin.imageEditSuffix[target][label] = `&t=${new Date().getTime()})`;
 					if (trkTarget) {
-						plugin.refresh('ptrackers');
+						catlist.refreshPanel.ptrackers();
 					} else {
-						theWebUI.categoryList.refreshPanel.plabel([]);
-						theWebUI.update();  // update icons immediately
+						catlist.refreshPanel.plabel([]);
 					}
+					theWebUI.update();  // update icons immediately
 					catlist.syncFn();
 				} else {
 					noty(`Icon edit failed! ${request.response}`, 'error');

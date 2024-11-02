@@ -198,17 +198,25 @@ var theDialogManager = {
        		$('#modalbg').hide();
 		this.modalState = false;
 	},
-	show: function( id, callback )
-	{
-	        var obj = $('#'+id);
-	        if(obj.data("modal"))
+	show: function(id, callback) {
+		// Close side panel on mobile:
+		// An offcanvas is a modal under the hood and will intercept focus events
+		// from other elements, and make other text inputs unfocusable and uneditable.
+		if ($(window).width() < 768) {
+			const panel = bootstrap.Offcanvas.getInstance($("#offcanvas-sidepanel")[0]);
+			if (panel)
+				panel.hide();
+		}
+
+		const obj = $('#' + id);
+		if (obj.data("modal"))
 			this.setModalState();
-	      	if($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
-	        	this.items[id].beforeShow(id);
+		if ($type(this.items[id]) && ($type(this.items[id].beforeShow)=="function"))
+			this.items[id].beforeShow(id);
 		this.center(id);
-		obj.show(obj.data("modal") ? null : this.divider,callback); 
-        	if($type(this.items[id]) && ($type(this.items[id].afterShow)=="function"))
-	        	this.items[id].afterShow(id);
+		obj.show(obj.data("modal") ? null : this.divider, callback);
+		if ($type(this.items[id]) && ($type(this.items[id].afterShow)=="function"))
+			this.items[id].afterShow(id);
 		this.bringToTop(id);
 	},
 	hide: function(id, callback) {

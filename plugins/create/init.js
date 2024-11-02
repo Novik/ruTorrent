@@ -84,10 +84,11 @@ theWebUI.addTrackerToBox = function(ann)
 	$("#deleteFromRecentTrackers").prop("disabled", false);
 	const val = $('#trackers').val();
 	if (val.includes(ann)) return;  // do nothing if selected tracker is already in the box
-	if(val.length)
-		val+='\r\n';
-	$('#trackers').val( val+ann );
-	$('#trackers').trigger('focus');
+	$('#trackers').val(
+		[...val.split(/\r?\n/), ann]  // split by "\r\n" or "\n"
+			.filter(tracker => tracker.trim().length)  // remove empty lines
+			.join("\r\n")
+	).trigger("focus");
 }
 
 theWebUI.showRecentTrackers = function() {
@@ -133,7 +134,7 @@ plugin.onLangLoaded = function() {
 			$("<div>").addClass("col-md-2").append(
 				$("<label>").attr({for: "piece_size", name: "lbl_piece_size", id: "lbl_piece_size"}).text(theUILang.PieceSize + ": "),
 			),
-			$("<div>").addClass("col-md-4 d-flex flex-row").append(
+			$("<div>").addClass("col-md-4").append(
 				$("<select>").attr({id: "piece_size", name: "piece_size"}).addClass("flex-grow-1").append(
 					...pieceSizeArray.map(ele => $("<option>").val(ele).text(
 						ele < 1024 ? ele + theUILang.KB : (ele / 1024) + theUILang.MB
@@ -144,7 +145,7 @@ plugin.onLangLoaded = function() {
 		if(plugin.hidePieceSize)
 			pieceSize = "";
 
-		var hybridTorrent = $("<div>").addClass("col-md-4 d-flex flex-row align-items-center").append(
+		var hybridTorrent = $("<div>").addClass("col-md-4").append(
 			$("<input>").attr({type: "checkbox", name: "hybrid", id: "hybrid"}),
 			$("<label>").attr({for: "hybrid", id: "lbl_hybrid"}).text(theUILang.HybridTorrent),
 		);
@@ -155,7 +156,7 @@ plugin.onLangLoaded = function() {
 			$("<fieldset>").append(
 				$("<legend>").text(theUILang.SelectSource),
 				$("<div>").addClass("row").append(
-					$("<div>").addClass("col-12 d-flex flex-row").append(
+					$("<div>").addClass("col-12").append(
 						$("<input>").attr({type: "text", id: "path_edit", name: "path_edit", autocomplete: "off"}).addClass("flex-grow-1"),
 					),
 				),
@@ -166,7 +167,7 @@ plugin.onLangLoaded = function() {
 					$("<div>").addClass("col-md-2 align-self-start").append(
 						$("<label>").attr({for: "trackers", name: "lbl_trackers", id: "lbl_trackers"}).text(theUILang.Trackers + ": "),
 					),
-					$("<div>").addClass("col-md-10 d-flex flex-row").append(
+					$("<div>").addClass("col-md-10").append(
 						$("<textarea>").attr({id: "trackers", name: "trackers"}).addClass("flex-grow-1"),
 					),
 				),
@@ -174,7 +175,7 @@ plugin.onLangLoaded = function() {
 					$("<div>").addClass("col-md-2").append(
 						$("<label>").attr({for: "comment", name: "lbl_comment", id: "lbl_comment"}).text(theUILang.Comment + ": "),
 					),
-					$("<div>").addClass("col-md-10 d-flex flex-row").append(
+					$("<div>").addClass("col-md-10").append(
 						$("<input>").attr({type: "text", id: "comment", name: "comment"}).addClass("flex-grow-1"),
 					),
 				),
@@ -182,7 +183,7 @@ plugin.onLangLoaded = function() {
 					$("<div>").addClass("col-md-2").append(
 						$("<label>").attr({for: "source", name: "lbl_source", id: "lbl_source"}).text(theUILang.source + ": "),
 					),
-					$("<div>").addClass("col-md-10 d-flex flex-row").append(
+					$("<div>").addClass("col-md-10").append(
 						$("<input>").attr({type: "text", id: "source", name: "source"}).addClass("flex-grow-1"),
 					),
 				),
@@ -191,11 +192,11 @@ plugin.onLangLoaded = function() {
 			$("<fieldset>").append(
 				$("<legend>").text(theUILang.Other),
 				$("<div>").addClass("row").append(
-					$("<div>").addClass("col-md-4 d-flex flex-row align-items-center").append(
+					$("<div>").addClass("col-md-4").append(
 						$("<input>").attr({type: "checkbox", name: "start_seeding", id: "start_seeding"}),
 						$("<label>").attr({for: "start_seeding", id: "lbl_start_seeding"}).text(theUILang.StartSeeding),
 					),
-					$("<div>").addClass("col-md-4 d-flex flex-row align-items-center").append(
+					$("<div>").addClass("col-md-4").append(
 						$("<input>").attr({type: "checkbox", name: "private", id: "private"}),
 						$("<label>").attr({for: "private", id: "lbl_private"}).text(theUILang.PrivateTorrent),
 					),
