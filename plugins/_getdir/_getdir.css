@@ -23,9 +23,4 @@
   color: highlighttext;
   background-color: highlight;
 }
-
-input.browseButton, button.browseButton {
-  width: 30px;
-  margin-left: 0.25rem;
-  margin-right: 0.25rem;
-}
+.browseButton {width: 30px;}

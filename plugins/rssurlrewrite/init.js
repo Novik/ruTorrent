@@ -1,42 +1,40 @@
 plugin.loadMainCSS();
-if(browser.isIE && browser.versionMajor < 8)
+if (browser.isIE && browser.versionMajor < 8)
 	plugin.loadCSS("ie");
 plugin.loadLang();
 
-theWebUI.curRule = null;
-theWebUI.maxRuleNo = 0;
+plugin.curRule = null;
+plugin.maxRuleNo = 0;
+plugin.rules = [];
 
-theWebUI.showRules = function()
-{
-	theWebUI.request("?action=getrules",[theWebUI.loadRules, this]);
+function makeRuleListItem(rule, index) {
+	return $("<li>").append(
+		$("<input>")
+			.attr({type:"checkbox", id:`_re${index}`})
+			.prop("checked", rule.enabled),
+		$("<input>")
+			.attr({type:"text", id:`_rn${index}`})
+			.addClass("TextboxNormal")
+			.on("focus", selectRule)
+			.val(rule.name),
+	)
 }
 
-theWebUI.storeRuleParams = function()
-{
-	var no = 0;
-	if(this.curRule)
-	{
-		no = parseInt(this.curRule.id.substr(3));
-		this.rules[no].pattern = $('#RLS_pattern').val();
-		this.rules[no].replacement = $('#RLS_replacement').val();
-		this.rules[no].hrefAsSrc = $('#RLS_src').val();
-		this.rules[no].hrefAsDest = $('#RLS_dst').val();
-		this.rules[no].rssHash = $('#RLS_rss').val();
-	}
-	return(no);
-}
-
-theWebUI.selectRule = function( el )
-{
-	if(this.curRule!=el)
-	{
-		if(this.curRule)
-			this.curRule.className = 'TextboxNormal';
-		this.storeRuleParams();
-		this.curRule = el;
-		this.curRule.className = 'TextboxFocus';
-		var no = parseInt(this.curRule.id.substr(3));
-		var rle = this.rules[no];
+/**
+ * Actions to be performed when a RSS rule is selected.
+ * This function is going to be used as an event handler
+ * on rule's textbox focus events, so the `this` keyword
+ * refers to the event target, i.e. the focused rule item.
+ */
+function selectRule() {
+	if (plugin.curRule !== this) {
+		if (plugin.curRule)
+			plugin.curRule.className = 'TextboxNormal';
+		theWebUI.storeRuleParams();
+		plugin.curRule = this;
+		plugin.curRule.className = 'TextboxFocus';
+		var no = parseInt(plugin.curRule.id.substr(3));
+		var rle = plugin.rules[no];
 		$('#RLS_pattern').val(rle.pattern);
 		$('#RLS_replacement').val(rle.replacement);
 		$('#RLS_src').val(rle.hrefAsSrc);
@@ -45,9 +43,77 @@ theWebUI.selectRule = function( el )
 	}
 }
 
+function addNewRule() {
+	const list = $("#rlslist");
+	plugin.maxRuleNo++;
+	const f = {
+		name: theUILang.rssNewRule,
+		enabled: 1,
+		pattern: "|http://www.mininova.org/get/(\\d+)|i",
+		replacement: "http://www.mininova.org/tor/${1}",
+		rssHash: "",
+		hrefAsSrc: 1,
+		hrefAsDest: 0,
+		no: plugin.maxRuleNo,
+	};
+	const i = plugin.rules?.length ?? 0;
+	list.append(
+		makeRuleListItem(f, i),
+	);
+	plugin.rules.push(f);
+	$("#_rn"+i).trigger('focus');
+}
+
+function deleteCurrentRule() {
+	if (plugin.curRule) {
+		var no = parseInt(plugin.curRule.id.substr(3));
+		plugin.rules.splice(no,1);
+		$(plugin.curRule).parent().remove();
+		plugin.curRule = null;
+		if (plugin.rules?.length) {
+			for (var i=no+1; i<plugin.rules.length+1; i++) {
+				$("#_rn"+i).attr("id", "_rn"+(i-1));
+				$("#_re"+i).attr("id", "_re"+(i-1));
+			}
+			if (no>=plugin.rules.length)
+				no = no - 1;
+			$("#_rn"+no).trigger('focus');
+		} else {
+			$('#RLS_replacement,#RLS_pattern,#RLS_rss').val('');
+		}
+	}
+}
+
+function checkCurrentRule() {
+	if (plugin.curRule) {
+		$('#RLS_result').val('');
+		theWebUI.request("?action=checkrule", [theWebUI.showRuleResults, theWebUI]);
+	}
+}
+
+theWebUI.showRules = function()
+{
+	theWebUI.request("?action=getrules",[theWebUI.loadRules, this]);
+}	
+
+theWebUI.storeRuleParams = function()
+{
+	var no = 0;
+	if(plugin.curRule)
+	{
+		no = parseInt(plugin.curRule.id.substr(3));
+		plugin.rules[no].pattern = $('#RLS_pattern').val();
+		plugin.rules[no].replacement = $('#RLS_replacement').val();
+		plugin.rules[no].hrefAsSrc = $('#RLS_src').val();
+		plugin.rules[no].hrefAsDest = $('#RLS_dst').val();
+		plugin.rules[no].rssHash = $('#RLS_rss').val();
+	}	
+	return(no);
+}	
+
 theWebUI.loadRules = function( rle )
 {
-	this.curRule = null;
+	plugin.curRule = null;
 	var list = $("#rlslist");
 	list.empty();
 	$('#RLS_rss option').remove();	
@@ -56,79 +122,26 @@ theWebUI.loadRules = function( rle )
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
 	for(var lbl in this.rssLabels)
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
-	this.rules = rle;
-	theWebUI.maxRuleNo = 0;
-	for(var i=0; i<this.rules.length; i++)
-	{
-		var f = this.rules[i];
-		if(theWebUI.maxRuleNo<f.no)
-			theWebUI.maxRuleNo = f.no;
-		list.append( $("<li>").html("<input type='checkbox' id='_re"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectRule(this);\" id='_rn"+i+"'/>"));
-		$("#_rn"+i).val(f.name);
-		if(f.enabled)
-			$("#_re"+i).prop("checked",true);
-	}
-	for(var i=0; i<this.rules.length; i++)
-	{
-		var f = this.rules[i];
-		if(f.no<0)
-		{
-			theWebUI.maxRuleNo++;
-			f.no = theWebUI.maxRuleNo;
-		}
+	plugin.rules = rle;
+	plugin.maxRuleNo = 0;
+	if (plugin.rules) {
+		plugin.rules.forEach((rule, index) => {
+			if (plugin.maxRuleNo < rule.no)
+				plugin.maxRuleNo = rule.no;
+			list.append(
+				makeRuleListItem(rule, index),
+			);
+		});
+		plugin.rules.forEach(rule => {
+			if (rule.no < 0) {
+				plugin.maxRuleNo++;
+				rule.no = plugin.maxRuleNo;
+			}
+		});
 	}
 	plugin.correctCSS();
 	theDialogManager.show("dlgEditRules");
 	$("#_rn0").trigger('focus');
-}
-
-theWebUI.addNewRule = function()
-{
-	var list = $("#rlslist");
-	theWebUI.maxRuleNo++;
-	var f = { name: theUILang.rssNewRule, enabled: 1, pattern: "|http://www.mininova.org/get/(\\d+)|i", replacement: "http://www.mininova.org/tor/${1}", rssHash: "", hrefAsSrc: 1, hrefAsDest: 0, no: theWebUI.maxRuleNo };
-	var i = this.rules.length;
-	list.append( $("<li>").html("<input type='checkbox' id='_re"+i+"'/><input type='text' class='TextboxNormal' onfocus=\"theWebUI.selectRule(this);\" id='_rn"+i+"'/>"));
-	this.rules.push(f);
-	$("#_rn"+i).val( f.name );
-	if(f.enabled)
-		$("#_re"+i).prop("checked",true);
-	$("#_rn"+i).trigger('focus');
-}
-
-theWebUI.deleteCurrentRule = function()
-{
-        if(this.curRule)
-        {
-		var no = parseInt(this.curRule.id.substr(3));
-		this.rules.splice(no,1);
-		$(this.curRule).parent().remove();
-		this.curRule = null;
-		if(this.rules.length)
-		{
-			for(var i=no+1; i<this.rules.length+1; i++)
-			{
-				$("#_rn"+i).prop("id", "_rn"+(i-1));
-				$("#_re"+i).prop("id", "_re"+(i-1));
-			}
-			if(no>=this.rules.length)
-				no = no - 1;
-			$("#_rn"+no).trigger('focus');
-		}
-		else
-		{
-			$('#RLS_replacement,#RLS_pattern,#RLS_rss').val('');
-		}
-	}
-}
-
-theWebUI.checkCurrentRule = function()
-{
-	if(this.curRule)
-	{
-		$('#RLS_result').val('');
-		this.request("?action=checkrule",[this.showRuleResults, this]);
-	}
 }
 
 theWebUI.showRuleResults = function( d )
@@ -146,9 +159,9 @@ rTorrentStub.prototype.setrules = function()
 {
 	this.content = "mode=setrules";
 	theWebUI.storeRuleParams();
-	for(var i=0; i<theWebUI.rules.length; i++)
+	for(var i=0; i<plugin.rules.length; i++)
 	{
-		var rle = theWebUI.rules[i];
+		var rle = plugin.rules[i];
 		var enabled = $("#_re"+i).prop("checked") ? 1 : 0;
 		var name = $("#_rn"+i).val();
 		this.content = this.content+"&name="+encodeURIComponent(name)+"&pattern="+encodeURIComponent(rle.pattern)+"&enabled="+enabled+
@@ -164,7 +177,7 @@ rTorrentStub.prototype.setrules = function()
 rTorrentStub.prototype.checkrule = function()
 {
 	var no = theWebUI.storeRuleParams();
-	var rle = theWebUI.rules[no];
+	var rle = plugin.rules[no];
 	this.content = "mode=checkrule&pattern="+encodeURIComponent(rle.pattern)+"&replacement="+encodeURIComponent(rle.replacement)+"&test="+encodeURIComponent($('#RLS_test').val());
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/rssurlrewrite/action.php";
@@ -183,8 +196,8 @@ rTorrentStub.prototype.getrules = function()
 
 plugin.correctCSS = function()
 {
-        if(!this.cssCorrected)
-        {
+	if(!plugin.cssCorrected)
+		{
 		rule = getCSSRule("div#CatList ul li.sel");
 		rule3 = getCSSRule(".lf_rur li input.TextboxFocus");
 		if(rule && rule3)
@@ -193,11 +206,11 @@ plugin.correctCSS = function()
 			rule3.style.color = rule.style.color;
 		}
 		rule = getCSSRule("div#stg .lm");
-	        rule1 = getCSSRule(".lf_rur");
-        	rule2 = getCSSRule(".lf_rur li input.TextboxNormal");
+		rule1 = getCSSRule(".lf_rur");
+		rule2 = getCSSRule(".lf_rur li input.TextboxNormal");
 		var ruleMain = getCSSRule("html, body");
-        	if(!ruleMain)
-        		ruleMain = getCSSRule("html");
+		if(!ruleMain)
+			ruleMain = getCSSRule("html");
 		if(rule && rule1 && rule2 && ruleMain)
 		{
 			rule1.style.borderColor = rule.style.borderColor;
@@ -206,10 +219,10 @@ plugin.correctCSS = function()
 			rule2.style.color = ruleMain.style.color;
 		}
 		rule = getCSSRule(".stg_con");
-	        rule1 = getCSSRule(".rf_rur");
-        	if(rule && rule1)
+		rule1 = getCSSRule(".rf_rur");
+		if(rule && rule1)
 			rule1.style.backgroundColor = rule.style.backgroundColor;
-		this.cssCorrected = true;
+		plugin.cssCorrected = true;
 	}
 }
 
@@ -259,9 +272,12 @@ plugin.onLangLoaded = function() {
 					$("<ul>").attr({id: "rlslist"}),
 				),
 				$("<div>").addClass("buttons-group-row").append(
-					$("<button>").attr({onclick: "theWebUI.addNewRule(); return(false);"}).text(theUILang.rssAddRule),
-					$("<button>").attr({onclick: "theWebUI.deleteCurrentRule(); return(false);"}).text(theUILang.rssDelRule),
-					$("<button>").attr({id: "chkRuleBtn", onclick: "theWebUI.checkCurrentRule(); return(false);"}).text(theUILang.rssCheckRule),
+					$("<button>").on("click", addNewRule).text(theUILang.rssAddRule),
+					$("<button>").on("click", deleteCurrentRule).text(theUILang.rssDelRule),
+					$("<button>")
+						.attr({id: "chkRuleBtn"})
+						.on("click", checkCurrentRule)
+						.text(theUILang.rssCheckRule),
 				),
 			),
 			$("<div>").addClass("rf_rur col-md-6 d-flex flex-column align-items-stretch").append(

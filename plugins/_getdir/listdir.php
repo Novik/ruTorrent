@@ -11,7 +11,6 @@ if(isset($requestedDir) && strlen($requestedDir))
 {
 	$dir = rawurldecode($requestedDir);
 	rTorrentSettings::get()->correctDirectory($dir);
-	$dir = FileUtil::addslash($dir);
 
 	if(
 			(strpos($dir,$topDirectory)!==0) ||
@@ -24,13 +23,11 @@ if(isset($requestedDir) && strlen($requestedDir))
 else
 {
 	$dir = User::isLocalMode() ? $theSettings->directory : $topDirectory;
-	if(strpos(FileUtil::addslash($dir),$topDirectory)!==0)
+	if (strpos($dir, $topDirectory) !== 0)
 		$dir = $topDirectory;
-
-	if(strrpos($dir, '/') != strlen($dir) - 1)
-		$dir = FileUtil::addslash($dir);
 }
 
+$dir = FileUtil::addslash($dir);
 $items = array_diff(scandir($dir), (($dir == $topDirectory) ? ["..", "."] : ["."]));
 $directories = array_filter($items, function ($item) {
 	global $dir;

@@ -53,7 +53,7 @@ if (plugin.canChangeMenu()) {
 	plugin.onTaskFinished = function(task,onBackground) {
 		if (!onBackground) {
 			if (plugin.gotImage) {
-				$('#tskcmdlog').addClass('soxframe_cont');
+				$('#tskcmdlog').addClass('image-cont');
 				$('#tskcmdlog').empty();
 				$('#tskcmdlog').append(
 					$("<div>").attr({id:"soxframe"}).addClass("soxframe").append(
@@ -63,7 +63,6 @@ if (plugin.canChangeMenu()) {
 						}),
 					),
 				);
-				$('#soxframe img').on('load', () => plugin.setConsoleSize(this));
 				$("#soxtaskno").val(task.no);
 				$("#soxsave").on('click', () => {
 					$("#soximgcmd").val("soxgetimage");
@@ -77,34 +76,11 @@ if (plugin.canChangeMenu()) {
 
 	plugin.onTaskShowInterface = function(task) {
 		plugin.gotImage = false;
-		plugin.saveConsoleSize();
 	}
 
 	plugin.onTaskHideInterface = function(task) {
-		plugin.setConsoleSize(null);
 		$('.soxplay').hide();
-		$('#tskcmdlog').removeClass('soxframe_cont');
-	}
-
-	plugin.saveConsoleSize = function() {
-		if (!plugin.consoleWidth) {
-			plugin.consoleWidth = $('#tskConsole').width();
-			plugin.deltaWidth = $('#tskConsole').width() - $('#tskcmdlog').width();
-		} else
-			plugin.setConsoleSize(null);
-	}
-
-	plugin.setConsoleSize = function(img) {
-		if (plugin.consoleWidth && plugin.deltaWidth) {
-			if (img) {
-				$('#tskConsole').width(img.naturalWidth+plugin.deltaWidth+window.scrollbarWidth);
-				$('#tskcmdlog').width(img.naturalWidth+window.scrollbarWidth);
-			} else {
-				$('#tskcmdlog').width(plugin.consoleWidth-plugin.deltaWidth);
-				$('#tskConsole').width(plugin.consoleWidth);
-			}
-			theDialogManager.center('tskConsole');
-		}
+		$('#tskcmdlog').removeClass('image-cont');
 	}
 }
 
