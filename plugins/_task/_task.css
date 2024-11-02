@@ -34,7 +34,10 @@
 #tskcmderrors {
   height: 12rem;
 }
-#tsk_btns {background: transparent url(./images/ajax-loader.gif) no-repeat 5px 7px;}
+#tsk_btns {
+  background: transparent url(./images/ajax-loader.gif) no-repeat 5px top;
+  padding-top: 2.5rem;
+}
 #tskConsole-header {background-image: url(../../images/settings.gif)}
 
 .konqueror .tskconsole { height: 546px }
