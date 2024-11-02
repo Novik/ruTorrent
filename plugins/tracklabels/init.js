@@ -255,7 +255,7 @@ plugin.onLangLoaded = function() {
 					theWebUI.update();  // update icons immediately
 					catlist.syncFn();
 				} else {
-					noty(`Icon edit failed! ${request.response}`, 'error');
+					noty(theUILang.EditFailed + ` ${request.response}`, 'error');
 				}
 				submitBtn.prop('disabled', false);
 			};

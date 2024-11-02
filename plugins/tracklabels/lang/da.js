@@ -4,5 +4,6 @@
  theUILang.FileUserIcon = "PNG file";
  theUILang.UploadUserIcon = "Upload";
  theUILang.EditIcon = "Edit icon";
+ theUILang.EditFailed = "Icon edit failed!";
 
 thePlugins.get("tracklabels").langLoaded();
