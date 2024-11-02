@@ -1,15 +1,29 @@
+#tskConsole {
+  width: 95vw;
+}
 .tskconsole {
   font-family: monospace;
-  line-height: 16px;
+  line-height: 1.5rem;
   background: #F5F5F5;
   white-space: pre;
   overflow: auto;
-  width: 580px;
   cursor: text;
   user-select: text;
 }
-.tskconsole img {
+.image-cont {
+  background-color: black;
+  cursor: default;
+}
+.image-cont > div {
+  height: 100%;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.tskconsole img {
+  max-height: 100%;
+  max-width: 100%;
 }
 #tskcmdlog {
   height: 36rem;
@@ -17,7 +31,21 @@
 #tskcmderrors {
   height: 12rem;
 }
-#tsk_btns {background: transparent url(./images/ajax-loader.gif) no-repeat 5px 7px;}
+#tsk_btns {
+  background: transparent url(./images/ajax-loader.gif) no-repeat 5px top;
+  padding-top: 2.5rem;
+}
 #tskConsole-header {background-image: url(../../images/settings.gif)}
 
-.konqueror div.tskconsole { height: 546px }
+.konqueror .tskconsole { height: 546px }
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+  /* Custom rules for medium devices */
+  #tskConsole {
+    width: unset;
+  }
+  .tskconsole {
+    width: 64rem;
+  }
+}

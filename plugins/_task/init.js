@@ -249,7 +249,7 @@ plugin.kill = function()
 plugin.setConsoleControls = function(errPresent) {
 	$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );
 	if (plugin.foreground.status >= 0) {
-		$('#tsk_btns').css( "background", "none" );
+		$('#tsk_btns').css({background:"none", paddingTop:0});
 		$("#tskConsole-header").html(theUILang.tskCommandDone);
 		if ($('#tskcmdlog').text() === "") {
 			// hide copy log button if log output is empty
@@ -259,7 +259,7 @@ plugin.setConsoleControls = function(errPresent) {
 		};
 	}
 	else
-		$('#tsk_btns').css( "background", "transparent url(./plugins/_task/images/ajax-loader.gif) no-repeat 5px 7px" );
+		$('#tsk_btns').css({background: "", paddingTop:""});
 	if (errPresent) {
 		$('#tskcmderrors').show();
 		$('#tskcmderrors_set').show();
@@ -632,10 +632,6 @@ plugin.onLangLoaded = function() {
 				theWebUI.getTable('tasks').tasksRemovePrim();
 		}
 		$("#tskCopy, #tskSaveLog").hide();
-	});
-	theDialogManager.setHandler('tskConsole', 'afterShow', function() {
-		if (!plugin.cHeight)
-			plugin.cHeight = $('#tskcmderrors').parent().height();
 	});
 	$(".tskconsole").enableSysMenu();
 }

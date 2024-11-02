@@ -636,11 +636,7 @@ div.dlg-window .buttons-list {
   div#tadd {min-width: 600px;}
   div.dlg-window .buttons-list {
     margin: 1rem 0.5rem;
-    gap: 0.25rem;
-    display: flex;
-    flex-direction: row;
     justify-content: end;
-    flex-wrap: nowrap;
   }
   div#stg {width: 660px;}
 }
