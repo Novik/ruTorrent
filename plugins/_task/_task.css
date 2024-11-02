@@ -10,9 +10,6 @@
   cursor: text;
   user-select: text;
 }
-.tskconsole:not(.image-cont) {
-  max-width: 580px;
-}
 .image-cont {
   background-color: black;
   cursor: default;
@@ -47,5 +44,8 @@
   /* Custom rules for medium devices */
   #tskConsole {
     width: unset;
+  }
+  .tskconsole {
+    width: 64rem;
   }
 }
