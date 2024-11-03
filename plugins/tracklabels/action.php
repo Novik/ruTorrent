@@ -84,9 +84,13 @@ if ($png_name !== null) {
 
 			$url = Snoopy::linkencode("http://".$tracker."/favicon.ico");
 			$client = new Snoopy();
+			$client->read_timeout = 5;
+			$client->_fp_timeout = 5;
 			@$client->fetchComplex($url);
 			if ($client->status == 200)
 				file_put_contents($ico_name, $client->results);
+			if (strpos(mime_content_type($ico_name), "image/")===false)
+				@unlink($ico_name);
 			try_send_image($ico_name, 'image/x-icon');
 		}
 	}
