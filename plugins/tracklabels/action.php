@@ -89,6 +89,8 @@ if ($png_name !== null) {
 			@$client->fetchComplex($url);
 			if ($client->status == 200)
 				file_put_contents($ico_name, $client->results);
+			if (strpos(mime_content_type($ico_name), "image/")===false)
+				@unlink($ico_name);
 			try_send_image($ico_name, 'image/x-icon');
 		}
 	}
