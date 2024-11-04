@@ -108,13 +108,18 @@ var theDialogManager = {
 	divider: 0,
 	modalState: false,
 
+	/**
+	 * Create a new dialog window.
+	 * @param {string} id The HTML `id` of the dialog window.
+	 * @param {string} name The title shown in the header of the dialog window.
+	 * @param {string | Object | Object[]} content Content of the dialog window,
+	 * including the buttons in the footer. Can be an HTML string, a jQuery object,
+	 * or an array of jQuery objects.
+	 * @param {boolean} isModal The modal state of the dialog window, default is `false`.
+	 * @param {boolean} noClose Whether to disable the close button, default is `false`.
+	 * @returns {Object}
+	 */
 	make: function(id, name, content, isModal, noClose) {
-		// id: HTML `id` of dialog window
-		// name: Title shown in the header of the dialog window
-		// content: Content of the dialog window, including the buttons in the footer.
-		//          Can be an HTML string, a jQuery object, or an array of jQuery objects.
-		// isMocal: Modal state of the dialog window, default is false.
-		// noClose: Disable the close button, default is false.
 		if ($type(content) === "string") {
 			content = $(content);
 		}
@@ -125,7 +130,7 @@ var theDialogManager = {
 					$("<a>").attr({href:"#"}).addClass("dlg-close"),
 				),
 				content,
-			),
+			).hide(),
 		);
 		return this.add(id, isModal, noClose);
 	},
@@ -203,9 +208,7 @@ var theDialogManager = {
 		// An offcanvas is a modal under the hood and will intercept focus events
 		// from other elements, and make other text inputs unfocusable and uneditable.
 		if ($(window).width() < 768) {
-			const panel = bootstrap.Offcanvas.getInstance($("#offcanvas-sidepanel")[0]);
-			if (panel)
-				panel.hide();
+			bootstrap.Offcanvas.getOrCreateInstance(document.querySelector("#offcanvas-sidepanel")).hide();
 		}
 
 		const obj = $('#' + id);

@@ -253,6 +253,4 @@
 
 div#cadd {width: 250px; height: 120px}
 div#cadd div.dlg-header {background-image: url(../../images/props.gif)}
-div#cadd div.content {width: 230px; margin: 5px; padding: 5px; line-height: 16px}
-div#cadd div.content input {margin-top: 5px}
 #peerComment {width: 200px}

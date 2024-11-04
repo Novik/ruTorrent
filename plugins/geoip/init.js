@@ -213,7 +213,7 @@ if(plugin.canChangeMenu() && plugin.retrieveComments)
 
 plugin.onLangLoaded = function() {
 	if (plugin.retrieveComments) {
-		const caddContent = $("<div>").addClass("cont fxcaret").append(
+		const caddContent = $("<div>").addClass("cont").append(
 			$("<fieldset>").append(
 				$("<legend>").text(theUILang.peerCommentLabel),
 				$("<div>").addClass("row").append(

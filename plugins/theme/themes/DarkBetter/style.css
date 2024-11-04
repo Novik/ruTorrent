@@ -15,6 +15,8 @@ html, body {background-color: #181818; color: #999999; }
   --btn-bg-color: #D6D6D6;
   --header-bg-color: #181818;
   --header-border-color: #333333;
+  --dialog-bg-color: #181818;
+  --dialog-border-color: #333333;
 }
 button, input.Button {
   background: -webkit-gradient(
@@ -289,7 +291,7 @@ div#modalbg {background-color: #181818}
 div#list-table {border: 1px solid #333333; background-color: #181818}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
-div#stg {background-color: #181818; color: #888888; border: 1px solid #333333}
+#stg {background-color: #181818; color: #888888; border: 1px solid #333333}
 
 div#stg .lm {background-color: #181818; border: 1px solid #333333}
 
@@ -331,7 +333,7 @@ div#tadd {background-color: #181818; border: 1px solid #333333}
 }
 div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333333}
 
-div.dlg-window {background-color: #181818; color: #888888; border: 1px solid #333333}
+.dlg-window {color: #888888;}
 
 div.tab {background-color: #181818}
 

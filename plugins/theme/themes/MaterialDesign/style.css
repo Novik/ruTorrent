@@ -211,6 +211,8 @@ html,body
 	--btn-bg-color: #3498DB;
   --header-bg-color: #273238;
   --header-border-color: transparent;
+  --dialog-bg-color: #222222;
+  --dialog-border-color: #333333;
 }
 
 #offcanvas-sidepanel {
@@ -1042,14 +1044,13 @@ div#dlgProps textarea#prop-trackers
 	border:1px solid #333
 }
 
-div.dlg-window {
-	background-color: #222;
+.dlg-window {
 	box-shadow: 0 19px 38px rgba(0,0,0,0.60);
 	color: #fff;
-	border-top: 1px solid #333;
-	border-right: 1px solid #1b1b1b;
-	border-left: 1px solid #1b1b1b;
-	border-bottom: 1px solid #000;
+	border-top-color: #333;
+	border-right-color: #1b1b1b;
+	border-left-color: #1b1b1b;
+	border-bottom-color: #000;
 }
 
 #stg_c
@@ -1277,7 +1278,7 @@ span.det {
 .sthdr { color: #FFF; }
 .stval { color: #FFF; }
 .tickLabel { color: #FFF; }
-.fxcaret legend { color: #FFF; }
+.dlg-window legend { color: #FFF; }
 
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */

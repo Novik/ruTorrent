@@ -314,7 +314,7 @@ plugin.correctCSS = function()
 
 plugin.onLangLoaded = function() {
 	this.registerTopMenu(7, theUILang.mnu_ratiorule, theWebUI.showRatioRules);
-	const dlgEditRatioRulesContent = $("<div>").addClass("cont fxcaret").append(
+	const dlgEditRatioRulesContent = $("<div>").addClass("cont").append(
 		$("<div>").addClass("row").append(
 			$("<div>").addClass("col-md-6 d-flex flex-column align-items-center").append(
 				$("<div>").attr({id: "ratioRuleList"}).addClass("flex-grow-1 align-self-stretch").append(

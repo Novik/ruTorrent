@@ -142,7 +142,7 @@ plugin.wasAdded = function(data)
 
 plugin.onLangLoaded = function() {
 	this.registerTopMenu(9, theUILang.bulkAdd, plugin.showBulkAdd);
-	const dlgBulkAddContent = $("<div>").addClass("cont fxcaret").append(
+	const dlgBulkAddContent = $("<div>").addClass("cont").append(
 		$("<textarea>").attr({id:"bulkadd"}).on("input", (ev) => {
 			$('#dlgBulkAdd .OK').prop('disabled', ev.target.value.trim() === '');
 		}),

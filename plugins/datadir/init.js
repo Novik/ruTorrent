@@ -135,7 +135,7 @@ rTorrentStub.prototype.setdatadir = function()
 }
 
 plugin.onLangLoaded = function() {
-	const dlgDatadirContent = $("<div>").addClass("cont fxcaret").append(
+	const dlgDatadirContent = $("<div>").addClass("cont").append(
 		$("<fieldset>").append(
 			$("<legend>").text(theUILang.DataDir),
 			$("<div>").addClass("row").append(

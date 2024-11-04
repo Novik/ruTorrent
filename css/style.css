@@ -101,6 +101,8 @@ span {
   --btn-bg-color: #F0F0F0;
   --header-bg-color: #F0F0F0;
   --header-border-color: #909090;
+  --dialog-bg-color: #FAFAFA;
+  --dialog-border-color: #909090;
 }
 .dropdown-menu {
   --bs-dropdown-border-color: var(--menu-border-color);
@@ -133,32 +135,31 @@ div#modalbg {left: 0px; top: 0px; z-index: 500; display: none; opacity: 0.5; bac
 .konqueror div#modalbg { background: none; }
 .ie div#modalbg { filter:alpha(opacity=50); }
 
-div.aright {text-align: right}
-div.dlg-window {
+.dlg-window {
   position: absolute;
   left: 0px;
   top: 0px;
-  background-color: #FAFAFA;
+  background-color: var(--dialog-bg-color);
   color: #000000;
-  border: 2px solid #909090;
+  border: 2px solid var(--dialog-border-color);
   border-radius: 8px;
   outline: 0px solid transparent;
-  display: none;
+  display: flex;
+  flex-direction: column;
   max-width: 95vw;
   max-height: 95vh;
 }
-div.dlg-window div.row {
+.dlg-window .row {
   margin: 0.5rem 0;
   padding: 0;
 }
-div.dlg-window div.row > div {
+.dlg-window .row > div {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0 0.25rem;
   margin-bottom: 0.1rem;
 }
-div.fxcaret {overflow: auto}
 .dlg-header {
   display: flex;
   flex-direction: row;
@@ -343,15 +344,17 @@ a {color: #686868; text-decoration: none;}
 
 div#HDivider, div#VDivider {flex: 0 0 5px;}
 
-div#stg {width: 95vw;}
-div#stg_c {
+#stg {
+  width: 95vw;
+  height: 95vh;
+}
+#stg_c {
   display: flex;
   flex-direction: row;
   background-color: var(--settings-background-color);
 }
-div#stg-pages {
+#stg-pages {
   padding: 0 0.5rem;
-  height: 550px;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -369,7 +372,7 @@ div#stg .lm {
 }
 .ie div#stg .lm {width: 125px; position: static;}
 .ie9 div#stg .lm {position: static}
-.ie div#stg {width: 605px;}
+.ie #stg {width: 605px;}
 
 .lm li {
   margin: 0 0.5rem;
@@ -485,7 +488,11 @@ div.table_tab {
   -moz-user-input: enabled;
 }
 
-div.cont {padding: 6px;}
+.cont {
+  padding: 6px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
 
 .tabbar li.nav-item a.nav-link {
   padding: 0.3rem;
@@ -521,8 +528,6 @@ div.cont {padding: 6px;}
 
 #yesnoDlg {width: 280px; height: auto; min-height: 100px}
 #yesnoDlg-header {background-image: url(../images/error.gif)}
-#yesnoDlg div.content {width: 260px; margin: 5px; padding: 5px; line-height: 16px}
-#yesnoDlg div.content input {margin-top: 5px}
 
 span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.gif) no-repeat center center; }
 .webkit div#msg {position: fixed;}
@@ -599,7 +604,7 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
 div#tadd {max-width: 95vw;}
-div.dlg-window .buttons-list {
+.dlg-window .buttons-list {
   margin: 0.5rem;
   gap: 0.25rem;
   display: flex;
@@ -634,11 +639,14 @@ div.dlg-window .buttons-list {
   div#VDivider {cursor: n-resize;}
   div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
   div#tadd {min-width: 600px;}
-  div.dlg-window .buttons-list {
+  .dlg-window .buttons-list {
     margin: 1rem 0.5rem;
     justify-content: end;
   }
-  div#stg {width: 660px;}
+  #stg {
+    width: 660px;
+    height: 600px;
+  }
 }
 
 /* Large devices (desktops, 992px and up) */

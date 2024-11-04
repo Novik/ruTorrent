@@ -15,6 +15,8 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --btn-bg-color: #515151;
   --header-bg-color: #222222;
   --header-border-color: #333333;
+  --dialog-bg-color: #222222;
+  --dialog-border-color: #333333;
 }
 
 button, input[type=button], input[type=submit], .Button {
@@ -273,7 +275,7 @@ div#tdcont {background: #181818; border-top: none; border-right: 1px solid #0707
 
 /* DIALOGS */
 div#dlgProps textarea#prop-trackers {background: #222222; border: 1px solid #333333}
-div.dlg-window {background-color: #222222; box-shadow: 2px 2px 5px #888; color: #fff; border-top: 1px solid #333; border-right: 1px solid #1b1b1b; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;	}
+.dlg-window {box-shadow: 2px 2px 5px #888; color: #fff; border-top-color: #333; border-right-color: #1b1b1b; border-left-color: #1b1b1b; border-bottom-color: #000000;}
 .dlg-header {background: linear-gradient(0deg, rgba(11,11,11,1), rgba(44,44,44,1) 100%);}
 .dlg-header > div:first-child {
   padding-left: 3rem;

@@ -750,7 +750,7 @@ plugin.shutdownOldVersion = function()
 }
 
 plugin.onLangLoaded = function() {
-	const tegLoadTorrentsContent = $("<div>").addClass("fxcaret cont").append(
+	const tegLoadTorrentsContent = $("<div>").addClass("cont").append(
 		$("<div>").addClass("row").append(
 			$("<div>").addClass("col-12 col-md-3 justify-content-md-end").append(
 				$("<label>").attr({for:"tegdir_edit"}).text(theUILang.Base_directory + ":"),

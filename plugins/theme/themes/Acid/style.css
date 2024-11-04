@@ -15,6 +15,8 @@ html, body { background-color: #1e2124; color: #BDDBDB }
   --btn-bg-color: #D7D7D7;
   --header-bg-color: #1E2124;
   --header-border-color: #909090;
+  --dialog-bg-color: #1E2124;
+  --dialog-border-color: #909090;
 }
 button, input.Button {
   color: black;
@@ -61,7 +63,7 @@ panel-label[selected] {
 div#preload {background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif); background-image: url(./images/pnl_open.gif); background-image: url(./images/pnl_close.gif)}
 div#cover {background: #272E36}
 div#msg {background: #272E36; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0; color: #00ff00;}
-div.dlg-window { background-color: #1e2124; color: #BDDBDB }
+.dlg-window { color: #BDDBDB }
 
 div#modalbg {background-color: #181818;}
 
@@ -104,7 +106,7 @@ div#side-panel ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; colo
 
 .stable-icon {background-image: url(./images/tstatus.png); }
 
-div#stg { background-color: #1E2124; color: #BDDBDB; border: 2px solid #909090; }
+#stg { background-color: #1E2124; color: #BDDBDB; border: 2px solid #909090; }
 div#stg .lm { background-color: #272E36; border: 1px solid #D0D0D0; }
 
 .lm li div > div {
@@ -154,7 +156,6 @@ div#gcont div.row.Header {background: #323A46;}
 }
 
 .dlg-header {color: #00FF00;}
-div.content {color: #BDDBDB;}
 
 /* Dialog window icons */
 #stg-header {background-image: url(./images/settings.gif);}
