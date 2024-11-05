@@ -19,6 +19,10 @@ html, body { background-color: #DFE8F6 }
   --btn-bg-color: #F0F0F0;
   --header-bg-color: #D9E8FB;
   --header-border-color: transparent;
+  --footer-height: 25px;
+  --footer-bg-color: #ffffff;
+  --footer-bg-image: none;
+  --footer-border-color: #99bbe8;
   --dialog-bg-color: #FAFAFA;
   --dialog-border-color: #909090;
 
@@ -88,7 +92,7 @@ button, input.Button { background-image: url(./images/btn-sprite.gif); backgroun
 input[type="text"], input[type="password"], input[type="file"], select, textarea { background: #FFFFFF url(./images/text-bg.gif) repeat-x 0 0; border:1px solid #B5B8C8; }
 input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled], select[disabled], textarea[disabled] { border: 1px solid #C0C0C0; background: #F0F0F0; color: #C0C0C0}
 
-#StatusBar { border-color: #99BBE8; background-color: #FFFFFF; color: #000000; }
+#StatusBar { color: #000000; }
 .statuscell { border-color: #99BBE8;}
 .sthdr { color: #15428B; }
 

@@ -215,10 +215,14 @@ html,body
 	--btn-bg-color: #3498DB;
   --header-bg-color: #273238;
   --header-border-color: transparent;
+  --footer-height: 25px;
+  --footer-bg-color: #191919;
+  --footer-bg-image: none;
+  --footer-border-color: #333333;
   --dialog-bg-color: #222222;
   --dialog-border-color: #333333;
 
-	--navbar-height: 40px;
+  --navbar-height: 40px;
   --navbar-bg-color: #273238;
   --navbar-bg-image: none;
   --navbar-border-color: transparent;
@@ -736,7 +740,7 @@ input[type="number"][disabled],input[type="text"][disabled],input[type="password
 	opacity: .2;
 }
 
-#StatusBar table tr td.pstatus2
+#port-pane .pstatus2
 {
 	background:transparent url(./images/green.png) no-repeat scroll 5px center!important
 }
@@ -1027,13 +1031,7 @@ div#lcont div.std:nth-child(2n+1)
 	background:#181818 url(./images/headers.png) repeat-x 0 -64px
 }
 
-#StatusBar
-{
-	border-top:1px solid #333;
-	background:#000 url(./images/headers.png) repeat-x 0 0;
-	color:#888;
-	font-family:Roboto;
-}
+#StatusBar {color: #888;}
 
 .statuscell td:not(:last-child) {
 	padding-right: 5px;
@@ -1047,11 +1045,6 @@ div#lcont div.std:nth-child(2n+1)
 #st_down .icon {
 	background:url(./images/status.png) no-repeat 0px -22px;
 	background-size: 100%;
-}
-
-.status-cell {
-	padding-right: 5px;
-	border: none;
 }
 
 #stup_speed {

@@ -19,6 +19,10 @@ html, body {background-color: #181818; color: #999999; }
   --btn-bg-color: #999999;
   --header-bg-color: #181818;
   --header-border-color: #333333;
+  --footer-height: 25px;
+  --footer-bg-color: #181818;
+  --footer-bg-image: none;
+  --footer-border-color: #333333;
   --dialog-bg-color: #181818;
   --dialog-border-color: #333333;
 
@@ -173,7 +177,7 @@ div.tab {background-color: #181818}
 
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; }
 
-#StatusBar { border-top: 1px solid #333333; background-color: #181818; color: #888888 }
+#StatusBar { color: #888888 }
 #st_up { background:url(./images/status_up.gif) 6px no-repeat; }
 #st_down { background:url(./images/status_down.gif) 6px no-repeat; }
 .statuscell {border-right: 1px solid #333333;}
