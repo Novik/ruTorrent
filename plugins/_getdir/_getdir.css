@@ -18,6 +18,9 @@
   color: windowtext;
   padding: 0.15rem;
   text-wrap: nowrap;
+
+  /* whitespace here is deliberate, and should be shown as we set it */
+  white-space: pre;
 }
 .rmenuitem.active {
   color: highlighttext;
