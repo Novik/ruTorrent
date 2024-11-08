@@ -146,8 +146,8 @@ div#modalbg {left: 0px; top: 0px; z-index: 500; display: none; opacity: 0.5; bac
   outline: 0px solid transparent;
   display: flex;
   flex-direction: column;
-  max-width: 95vw;
-  max-height: 95vh;
+  max-width: 95dvw;
+  max-height: 95dvh;
 }
 .dlg-window .row {
   margin: 0.5rem 0;
