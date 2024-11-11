@@ -18,7 +18,7 @@
  theUILang.ratTrackerPublic	= "Wszystkie trackery są publiczne";
  theUILang.ratTrackerPrivate	= "Jeden z trackerów jest prywatny";
  theUILang.ratioThenLegend	= "Wtedy";
- theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
+ theUILang.ratShortcutLegend	= "Skróty klawiaturowe";
  theUILang.setRatioTo		= "Ustaw ratio na";
  theUILang.setChannelTo		= "Ustaw limit na";
  theUILang.ratioNewRule		= "Nowa reguła";
