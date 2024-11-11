@@ -226,7 +226,7 @@ plugin.onLangLoaded = function() {
 		theDialogManager.setHandler("tcreate", "beforeShow", () => {
 			if (plugin.recentTrackers) {
 				const recent = plugin.recentTrackers;
-				$("#trackers").val(recent.last_used);
+				$("#trackers").val(recent.last_used.join("\r\n"));
 				$(`#piece_size option[value=${recent.piece_size || 1024}]`).prop("selected", true);
 				$("#start_seeding").prop("checked", iv(recent.start_seeding));
 				$("#private").prop("checked", iv(recent.private_torrent));

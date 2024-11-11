@@ -10,7 +10,7 @@ class recentTrackers
 	public $hash = "rtrackers.dat";
 	public $modified = false;
 	public $list = array();
-	public $last_used = "";
+	public $last_used = array();
 	public $piece_size = 1024;
 	public $start_seeding = false;
 	public $private_torrent = false;
@@ -21,6 +21,14 @@ class recentTrackers
 		$cache = new rCache();
 		$rt = new recentTrackers();
 		$cache->get($rt);
+
+		// TODO: Temporary migration from string to array
+		// Can remove this after November 2026
+		if (is_string(($rt->last_used)))
+		{
+			$rt->last_used = [];
+		}
+
 		return($rt);
 	}
 	public function store()
@@ -51,6 +59,7 @@ class recentTrackers
 	public function strip()
 	{
 		global $recentTrackersMaxCount;
+		$this->last_used = array_values( array_unique($this->last_used) );
 		$this->list = array_values( array_unique($this->list) );
 		$cnt = count($this->list);
 		$arr = array_values($this->list);
@@ -131,38 +140,29 @@ if(isset($_REQUEST['cmd']))
 				{
 					$rt = recentTrackers::load();
 					$trackers = array();
-					$announce_list = '';
 					if(isset($_REQUEST['trackers']))
 					{
-						$rt->last_used = $_REQUEST['trackers'];  // remember trackers last used
-						$arr = explode("\r",$_REQUEST['trackers']);
+						$arr = explode("\r", $_REQUEST['trackers']);
 						foreach( $arr as $key => $value )
 						{
 							$value = trim($value);
-							if(strlen($value))
+							if(strlen($value) === 0)
 							{
-								$trackers[] = $value;
-								$rt->list[] = $value;
+								continue;
 							}
-							else
-							{
-								if(count($trackers)>0)
-								{
-									$announce_list .= (' -a '.escapeshellarg(implode(',',$trackers)));
-									$trackers = array();
-								}
-							}
+
+							$trackers[] = $value;
+							$rt->list[] = $value;
 						}
 					}
 					// remember checkbox and dropdown options
+					$rt->last_used = $trackers;
 					$rt->piece_size = $_REQUEST['piece_size'];
 					$rt->start_seeding = $_REQUEST['start_seeding'];
 					$rt->private_torrent = $_REQUEST['private'];
 					$rt->hybrid_torrent = $_REQUEST['hybrid'];
 					$rt->store();
 
-					if(count($trackers)>0)
-						$announce_list .= (' -a '.escapeshellarg(implode(',',$trackers)));
 					$piece_size = 262144;
 					if(isset($_REQUEST['piece_size']))
 						$piece_size = $_REQUEST['piece_size']*1024;
