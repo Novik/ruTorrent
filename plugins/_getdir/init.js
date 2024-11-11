@@ -121,7 +121,7 @@ theWebUI.rDirBrowser = class {
 
 	requestDir() {
 		$.ajax(
-			`plugins/_getdir/listdir.php?dir=${encodeURIComponent(this.edit.val().replace(/\u00a0/g, " "))}&time=${(new Date()).getTime()}${this.withFiles ? "&withfiles=1" : ""}`,
+			`plugins/_getdir/listdir.php?dir=${encodeURIComponent(this.edit.val())}&time=${(new Date()).getTime()}${this.withFiles ? "&withfiles=1" : ""}`,
 			{
 				success: (res) => {
 					this.frame.find(".filter-dir").val("").trigger("focus");
@@ -129,8 +129,8 @@ theWebUI.rDirBrowser = class {
 					this.frame.find(".rmenuobj").remove();
 					this.frame.append(
 						$("<div>").addClass("rmenuobj").append(
-							...res.directories.map(ele => $("<div>").addClass("rmenuitem").text(ele.replace(/ /g, "\u00a0") + "/")),
-							...(this.withFiles ? res.files : []).map(ele => $("<div>").addClass("rmenuitem").text(ele.replace(/ /g, "\u00a0"))),
+							...res.directories.map(ele => $("<div>").addClass("rmenuitem").text(ele + "/")),
+							...(this.withFiles ? res.files : []).map(ele => $("<div>").addClass("rmenuitem").text(ele)),
 						),
 					);
 					this.frame.find(".rmenuitem").on(
