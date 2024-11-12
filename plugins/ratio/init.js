@@ -291,7 +291,7 @@ plugin.onLangLoaded = function() {
 			$("<div>").addClass("col-12 col-md-6").append(
 				$("<select>").attr({id:"ratDefault"}).append(
 					$("<option>").val(0).text(theUILang.dontSet),
-					...Array.from(Array(theWebUI.maxRatio).keys()).map(i => $("<option>").val(i).text(i + 1)),
+					...Array.from(Array(theWebUI.maxRatio).keys()).map(i => $("<option>").val(i + 1).text(i + 1)),
 				),
 			),
 		),
