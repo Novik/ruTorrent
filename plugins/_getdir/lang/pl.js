@@ -5,6 +5,6 @@
  * Author: 
  */
 
- theUILang.typeToFilter		= "Type to filter...";
+ theUILang.typeToFilter		= "Wyszukaj...";
 
 thePlugins.get("_getdir").langLoaded();
