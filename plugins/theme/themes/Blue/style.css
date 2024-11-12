@@ -18,20 +18,19 @@ html, body { background-color: #DFE8F6 }
   --dialog-bg-color: #FAFAFA;
   --dialog-border-color: #909090;
 }
-#side-panel, category-list {
-  border-color: #99BBE8;
-}
-
 category-panel {
   --open-background-image: url(../plugins/theme/themes/Blue/images/pnl_open.gif);
   --close-background-image: url(../plugins/theme/themes/Blue/images/pnl_close.gif);
+  --heading-background-color: #d9e8fb;
+  --heading-border-color: #8db2e3;
+}
+#side-panel, category-list {
+  border-color: #99BBE8;
 }
 
 category-panel::part(heading) {
   color: #15428B;
   font-weight: bold;
-  background-color: #D9E8FB;
-  border-color: #8DB2E3;
 }
 
 panel-label {

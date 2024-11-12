@@ -18,18 +18,17 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
   --dialog-bg-color: #D9E8FB;
   --dialog-border-color: #FFFFFF;
 }
+category-panel {
+  --open-background-image: none;
+  --close-background-image: none;
+  --heading-background-color: linear-gradient(0deg, rgba(158,182,206,1) 0%, rgba(230,235,243,1) 100%);
+  --heading-border-color: transparent;
+}
 #side-panel, category-list {
   border-top-style: none;
   border-color: #9EB6CE;
   background-color: #FFFFFF;
 }
-category-panel::part(heading) {
-  border: none;
-  background: transparent url(./images/pbg.png) repeat-x 0 0;
-  padding: 0px 32px;
-  height: 20px;
-}
-
 panel-label {
   border-top: 1px solid #d0d7e5;
   border-bottom: 1px solid transparent;

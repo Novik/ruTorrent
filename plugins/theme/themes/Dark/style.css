@@ -18,6 +18,12 @@ html, body {background-color: #181818; color: #999999; }
   --dialog-bg-color: #181818;
   --dialog-border-color: #333333;
 }
+category-panel {
+  --open-background-image: url(../plugins/theme/themes/Dark/images/pnl_open.gif);
+  --close-background-image: url(../plugins/theme/themes/Dark/images/pnl_close.gif);
+  --heading-background-color: #111111;
+  --heading-border-color: #333333;
+}
 button, input.Button {
   color: #111111;
   background-image: url(./images/h.gif);
@@ -39,17 +45,6 @@ button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
 #side-panel, category-list {
   background-color: #181818;
   border: 1px solid #333333;
-}
-
-category-panel {
-  --open-background-image: url(../plugins/theme/themes/Dark/images/pnl_open.gif);
-  --close-background-image: url(../plugins/theme/themes/Dark/images/pnl_close.gif);
-}
-
-category-panel::part(heading) {
-  background-color: #111111;
-  border-bottom: 1px solid #333333;
-  border-top: 1px solid #333333;
 }
 
 panel-label {

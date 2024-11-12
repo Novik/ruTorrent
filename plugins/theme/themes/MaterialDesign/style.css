@@ -214,6 +214,12 @@ html,body
   --dialog-bg-color: #222222;
   --dialog-border-color: #333333;
 }
+category-panel {
+  --open-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_open.png);
+  --close-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_close.png);
+  --heading-background-color: #273238;
+  --heading-border-color: transparent;
+}
 
 #offcanvas-sidepanel {
   color: #EEE;
@@ -599,22 +605,14 @@ div select {
 	margin: 0px;
 }
 
-category-panel {
-	color: #DCDCDC;
-	--open-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_open.gif);
-	--close-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_close.gif);
-	--heading-background-color: #273238;
-}
-
 category-panel::part(heading)
 {
+	color: #DCDCDC;
 	font-size: 12px;
-	padding: 2px 14px 2px 30px;
 	height: 22px;
 	line-height: 25px;
 	font-weight: 700;
 	text-shadow: 0 -1px 0 #000;
-	border: none;
 }
 
 .stable {

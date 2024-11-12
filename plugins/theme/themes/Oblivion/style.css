@@ -18,6 +18,12 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --dialog-bg-color: #222222;
   --dialog-border-color: #333333;
 }
+category-panel {
+  --open-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_open.png);
+  --close-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_close.png);
+  --heading-background-color: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(7,7,99,0.75) 0%, rgba(8,8,105,1) 0%, rgba(10,10,10,1) 0%, rgba(40,40,40,1) 100%);
+  --heading-border-color: #333333;
+}
 
 button, input[type=button], input[type=submit], .Button {
   border: 1px solid #000;
@@ -47,24 +53,14 @@ button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
   border-left: 1px solid #070707;
 }
 
-category-panel {
-  --open-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_open.gif);
-  --close-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_close.gif);
-}
-
 category-panel::part(heading) {
   font-size:12px;
   font-family:inherit;
-  padding: 2px 24px;
   height:25px;
   line-height:25px;
-  background-color: #232323;
   font-weight: bold;
   color:#DCDCDC;
   text-shadow: 0px -1px 0px #000;
-  border-top:1px solid #333;
-  border-bottom: none;
-  border-right: none;
 }
 
 panel-label {
