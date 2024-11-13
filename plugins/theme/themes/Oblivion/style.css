@@ -11,7 +11,8 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --menu-highlight-background-color: #121212;
 
   --settings-background-color: #181818;
-
+  --container-bg-color: #181818;
+  --container-border-color: #333333;
   --btn-bg-color: #515151;
   --header-bg-color: #222222;
   --header-border-color: #333333;
@@ -44,9 +45,8 @@ button:not([disabled]):hover:active, input.Button:not([disabled]):hover:active {
 
 #offcanvas-sidepanel {
   color: #626262;
-  background-color: #212121;
 }
-#side-panel, category-list {
+category-list {
   border:none;
   background-color: #212121;
   border-right: 1px solid #1b1b1b;
@@ -218,7 +218,6 @@ div.graph_tab {color:#FFF; background-color: #181818}
 
 div#modalbg {background-color: #181818;}
 
-#list-table {margin-right:6px;border-top: 1px solid #333; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000; background-color: #181818;}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
 .lm li div > div {
@@ -241,7 +240,6 @@ legend {color: #888888}
 select.cols {border: 1px solid #333333}
 div#dragmask {border: 1px dotted #333333}
 div#tdetails {padding:0px;margin:0px;background-color: #181818;color:#888888;-moz-border-radius-topleft:5px; -webkit-border-top-left-radius:5px;-moz-border-radius-topright:5px;-webkit-border-top-right-radius:5px;border-top-right-radius:5px;border-top-left-radius:5px;}
-div#tdcont {background: #181818; border-top: none; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;}
 
 /*TABBED MENU */
 .tabbar {

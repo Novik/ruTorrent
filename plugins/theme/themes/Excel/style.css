@@ -11,7 +11,8 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
   --menu-highlight-background-color: #ffeec2;
 
   --settings-background-color: #FFFFFF;
-
+  --container-bg-color: #d2e0f0;
+  --container-border-color: #9eb6ce;
   --btn-bg-color: #f1f1ec;
   --header-bg-color: #D9E8FB;
   --header-border-color: #FFFFFF;
@@ -24,7 +25,7 @@ category-panel {
   --heading-background-color: linear-gradient(0deg, rgba(158,182,206,1) 0%, rgba(230,235,243,1) 100%);
   --heading-border-color: transparent;
 }
-#side-panel, category-list {
+category-list {
   border-top-style: none;
   border-color: #9EB6CE;
   background-color: #FFFFFF;
@@ -42,7 +43,7 @@ panel-label[selected] {
   --badge-background-color: #FFFFFF;
 }
 
-div#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
+#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
 .statuscell { border-color: #9EB6CE }
 
 #t {background: none; border: none;}
@@ -57,10 +58,10 @@ div#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; b
 input[type="text"], input[type="password"], input[type="file"], select, textarea { background-color: #FFFFFF; border:1px solid #B5B8C8; }
 input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled], select[disabled], textarea[disabled] { border: 1px solid #C0C0C0; color: #C0C0C0}
 
-div#tdcont, div.tab, div#lcont { background-color: #d2e0f0; color: #034084 }
+div.tab, div#lcont { background-color: #d2e0f0; color: #034084 }
 div.graph_tab { background-color: #d2e0f0; color: #034084; border-color: #ffffff }
 div#gcont div.row.Header {background-color: #e4edf6;}
-div#tdcont { border-color: #9EB6CE }
+#tdcont { color: #034084 }
 div#tdetails { background-color: transparent }
 
 .stg_con { background-color: #FFFFFF }

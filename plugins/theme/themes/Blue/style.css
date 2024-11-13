@@ -11,7 +11,8 @@ html, body { background-color: #DFE8F6 }
   --menu-highlight-background-color: #D9E8FB;
 
   --settings-background-color: #DFE8F6;
-
+  --container-bg-color: #ffffff;
+  --container-border-color: #99bbe8;
   --btn-bg-color: #F0F0F0;
   --header-bg-color: #D9E8FB;
   --header-border-color: transparent;
@@ -24,7 +25,7 @@ category-panel {
   --heading-background-color: #d9e8fb;
   --heading-border-color: #8db2e3;
 }
-#side-panel, category-list {
+category-list {
   border-color: #99BBE8;
 }
 
@@ -84,9 +85,6 @@ button, input.Button { background-image: url(./images/btn-sprite.gif); backgroun
 
 input[type="text"], input[type="password"], input[type="file"], select, textarea { background: #FFFFFF url(./images/text-bg.gif) repeat-x 0 0; border:1px solid #B5B8C8; }
 input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled], select[disabled], textarea[disabled] { border: 1px solid #C0C0C0; background: #F0F0F0; color: #C0C0C0}
-
-
-div#tdcont { background: #FFFFFF; border: 1px solid #99BBE8; }
 
 #StatusBar { border-color: #99BBE8; background-color: #FFFFFF; color: #000000; }
 .statuscell { border-color: #99BBE8;}

@@ -137,45 +137,43 @@
 					<h4 class="offcanvas-title" id="offcanvas-sidepanel-label"></h4>
 					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvas-sidepanel" aria-label="Close"></button>
 				</div>
-				<div class="p-1 p-md-0 mh-100 offcanvas-body overflow-x-hidden flex-grow-1 flex-shrink-1">
-					<div id="side-panel" class="w-100 overflow-x-hidden overflow-y-auto">
-						<template id="panel-label-template">
-							<link href="./css/panel-label.css?v=51B4" rel="stylesheet" type="text/css" />
-							<div part="prefix" hidden></div>
-							<div part="icon"></div>
-							<div part="text"></div>
-							<div part="count">0</div>
-							<div part="size" style="display: none;"></div>
-						</template>
-						<template id="category-panel-template">
-							<link href="./css/category-panel.css?v=51B4" rel="stylesheet" type="text/css" />
-							<div part="heading">
-								<span class="text"></span><slot name="decorator" class="decorator"></slot>
-							</div>
-							<slot name="content"></slot>
-						</template>
-						<category-list id="CatList">
-							<category-panel id="pview" uilangtext="pnlViews">
-								<input slot="decorator" class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" />
-								<panel-label id="pview_all" icon="all" uilangtext="All" selected></panel-label>
-							</category-panel>
-							<category-panel id="pstate" uilangtext="pnlState">
-								<panel-label id="pstate_all" icon="all" uilangtext="All" selected></panel-label>
-								<panel-label id="-_-_-dls-_-_-" icon="down" uilangtext="Downloading"></panel-label>
-								<panel-label id="-_-_-com-_-_-" icon="completed" uilangtext="Finished"></panel-label>
-								<panel-label id="-_-_-act-_-_-" icon="up-down" uilangtext="Active"></panel-label>
-								<panel-label id="-_-_-iac-_-_-" icon="inactive" uilangtext="Inactive"></panel-label>
-								<panel-label id="-_-_-err-_-_-" icon="error" uilangtext="Error"></panel-label>
-							</category-panel>
-							<category-panel id="plabel" uilangtext="Labels">
-								<panel-label id="plabel_all" icon="all" uilangtext="All" selected></panel-label>
-								<panel-label id="-_-_-nlb-_-_-" icon="no-label" uilangtext="No_label"></panel-label>
-							</category-panel>
-							<category-panel id="psearch" uilangtext="mnu_search">
-								<panel-label id="psearch_all" icon="all" uilangtext="All" selected></panel-label>
-							</category-panel>
-						</category-list>
-					</div>
+				<div class="p-1 p-md-0 offcanvas-body">
+					<template id="panel-label-template">
+						<link href="./css/panel-label.css?v=51B4" rel="stylesheet" type="text/css" />
+						<div part="prefix" hidden></div>
+						<div part="icon"></div>
+						<div part="text"></div>
+						<div part="count">0</div>
+						<div part="size" style="display: none;"></div>
+					</template>
+					<template id="category-panel-template">
+						<link href="./css/category-panel.css?v=51B4" rel="stylesheet" type="text/css" />
+						<div part="heading">
+							<span class="text"></span><slot name="decorator" class="decorator"></slot>
+						</div>
+						<slot name="content"></slot>
+					</template>
+					<category-list id="CatList">
+						<category-panel id="pview" uilangtext="pnlViews">
+							<input slot="decorator" class="Button" type="button" value="+" uilangtitle="SaveCurrentView" id="pview_save_view_button" />
+							<panel-label id="pview_all" icon="all" uilangtext="All" selected></panel-label>
+						</category-panel>
+						<category-panel id="pstate" uilangtext="pnlState">
+							<panel-label id="pstate_all" icon="all" uilangtext="All" selected></panel-label>
+							<panel-label id="-_-_-dls-_-_-" icon="down" uilangtext="Downloading"></panel-label>
+							<panel-label id="-_-_-com-_-_-" icon="completed" uilangtext="Finished"></panel-label>
+							<panel-label id="-_-_-act-_-_-" icon="up-down" uilangtext="Active"></panel-label>
+							<panel-label id="-_-_-iac-_-_-" icon="inactive" uilangtext="Inactive"></panel-label>
+							<panel-label id="-_-_-err-_-_-" icon="error" uilangtext="Error"></panel-label>
+						</category-panel>
+						<category-panel id="plabel" uilangtext="Labels">
+							<panel-label id="plabel_all" icon="all" uilangtext="All" selected></panel-label>
+							<panel-label id="-_-_-nlb-_-_-" icon="no-label" uilangtext="No_label"></panel-label>
+						</category-panel>
+						<category-panel id="psearch" uilangtext="mnu_search">
+							<panel-label id="psearch_all" icon="all" uilangtext="All" selected></panel-label>
+						</category-panel>
+					</category-list>
 				</div>
 			</div>
 			<div id="HDivider" class="p-0 m-0"></div>
