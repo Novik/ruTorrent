@@ -106,7 +106,7 @@ div#side-panel ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; colo
 
 .stable-icon {background-image: url(./images/tstatus.png); }
 
-#stg { background-color: #1E2124; color: #BDDBDB; border: 2px solid #909090; }
+#stg { background-color: #272E36; color: #BDDBDB; border: 2px solid #909090; }
 div#stg .lm { background-color: #272E36; border: 1px solid #D0D0D0; }
 
 .lm li div > div {
