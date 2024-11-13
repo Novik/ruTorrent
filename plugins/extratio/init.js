@@ -339,10 +339,13 @@ plugin.onLangLoaded = function() {
 					$("<div>").addClass("d-flex flex-row").append(
 						$("<select>").attr({id: "ratio_reason"}).addClass("flex-grow-1").append(
 							...[
+								// The order of these must match the RR_* constants
+								// in rules.php because we're currently using array
+								// position as an enum key
 								theUILang.ratLabelContain, 
 								theUILang.ratTrackerContain, 
-								theUILang.ratTrackerPublic, 
 								theUILang.ratTrackerPrivate,
+								theUILang.ratTrackerPublic,
 							].map((val, index) => $("<option>").attr({value: index}).text(val)),
 						),
 					),
