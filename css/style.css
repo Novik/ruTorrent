@@ -347,11 +347,11 @@ div#HDivider, div#VDivider {flex: 0 0 5px;}
 #stg {
   width: 95vw;
   height: 95vh;
+background-color: var(--settings-background-color);
 }
 #stg_c {
   display: flex;
   flex-direction: row;
-  background-color: var(--settings-background-color);
 }
 #stg-pages {
   padding: 0 0.5rem;
