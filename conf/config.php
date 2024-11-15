@@ -28,16 +28,16 @@
 	$do_diagnostic = true;			// Diagnose ruTorrent. Recommended to keep enabled, unless otherwise required.
 	$al_diagnostic = true;			// Diagnose auto-loader. Set to "false" to make composer plugins work.
 
-	$log_file = $_ENV['LOG_FILE'] ?? '/tmp/errors.log'; // path to log file (comment or leave blank to disable logging)
+	$log_file = $_ENV['RU_LOG_FILE'] ?? '/tmp/errors.log'; // path to log file (comment or leave blank to disable logging)
 
 	$saveUploadedTorrents = true;		// Save uploaded torrents to profile/torrents directory or not
 	$overwriteUploadedTorrents = false;	// Overwrite existing uploaded torrents in profile/torrents directory or make unique name
 
-	$topDirectory = $_ENV['TOP_DIR'] ?? '/';			// Upper available directory. Absolute path with trail slash.
+	$topDirectory = $_ENV['RU_TOP_DIR'] ?? '/';			// Upper available directory. Absolute path with trail slash.
 	$forbidUserSettings = false;
 
-	$scgi_port = $_ENV['SCGI_PORT'] ?? 5000;
-	$scgi_host = $_ENV['SCGI_HOST'] ?? "127.0.0.1";
+	$scgi_port = $_ENV['RU_SCGI_PORT'] ?? 5000;
+	$scgi_host = $_ENV['RU_SCGI_HOST'] ?? "127.0.0.1";
 
 	// For web->rtorrent link through unix domain socket
 	// (scgi_local in rtorrent conf file), change variables
@@ -72,18 +72,18 @@
 		"localhost",
 	);
 
-    getenv("LOCALHOSTS") && $localhosts[] = $_ENV['LOCALHOSTS'];
+    getenv("LOCALHOSTS") && $localhosts[] = $_ENV['RU_LOCALHOSTS'];
 
-	$profilePath = $_ENV['PROFILE_PATH'] ?? '../../share';		// Path to user profiles
-	$profileMask = $_ENV['PROFILE_MASK'] ?? 0777;			// Mask for files and directory creation in user profiles.
+	$profilePath = $_ENV['RU_PROFILE_PATH'] ?? '../../share';		// Path to user profiles
+	$profileMask = $_ENV['RU_PROFILE_MASK'] ?? 0777;			// Mask for files and directory creation in user profiles.
 						// Both Webserver and rtorrent users must have read-write access to it.
 						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
 
-	$tempDirectory = $_ENV['TEMP_DIRECTORY'] ?? null;			// Temp directory. Absolute path with trail slash. If null, then autodetect will be used.
+	$tempDirectory = $_ENV['RU_TEMP_DIRECTORY'] ?? null;			// Temp directory. Absolute path with trail slash. If null, then autodetect will be used.
 
 	$canUseXSendFile = false;		// If true then use X-Sendfile feature if it exist
 
-	$locale =  "UTF8";
+	$locale = "UTF8";
 
 	$enableCSRFCheck = false;		// If true then Origin and Referer will be checked
 	$enabledOrigins = array();		// List of enabled domains for CSRF check (only hostnames, without protocols, port etc.).
