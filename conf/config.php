@@ -72,7 +72,7 @@
 		"localhost",
 	);
 
-    getenv("LOCALHOSTS") && $localhosts[] = $_ENV['RU_LOCALHOSTS'];
+    getenv("RU_LOCALHOSTS") && $localhosts[] = $_ENV['RU_LOCALHOSTS'];
 
 	$profilePath = $_ENV['RU_PROFILE_PATH'] ?? '../../share';		// Path to user profiles
 	$profileMask = $_ENV['RU_PROFILE_MASK'] ?? 0777;			// Mask for files and directory creation in user profiles.
