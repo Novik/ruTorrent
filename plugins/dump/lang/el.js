@@ -3,9 +3,9 @@
  *
  * Greek language file.
  *
- * Author:
+ * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
-theUILang.dumpTorrent		= "Dump .torrent...";
+theUILang.dumpTorrent		= "Πληροφορίες από το .torrent...";
 
 thePlugins.get("dump").langLoaded();

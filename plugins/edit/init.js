@@ -161,7 +161,7 @@ theWebUI.receiveEdit = function(d)
 }
 
 plugin.onLangLoaded = function() {
-	const teditContent = $("<div>").addClass("cont fxcaret").append(
+	const teditContent = $("<div>").addClass("cont").append(
 		$("<fieldset>").append(
 			$("<legend>").addClass("d-none d-md-block").text(theUILang.EditTorrentProperties),
 			$("<div>").addClass("m-0 row align-items-center").append(

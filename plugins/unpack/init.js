@@ -150,7 +150,7 @@ plugin.onLangLoaded = function() {
 	if(!plg.allStuffLoaded)
 		setTimeout(arguments.callee,1000);
 	else {
-		const dlgUnpackContent = $("<div>").addClass("cont fxcaret").append(
+		const dlgUnpackContent = $("<div>").addClass("cont").append(
 			$("<fieldset>").append(
 				$("<legend>").text(theUILang.unpackPath),
 				$("<div>").addClass("row").append(

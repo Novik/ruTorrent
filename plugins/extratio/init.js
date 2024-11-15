@@ -314,7 +314,7 @@ plugin.correctCSS = function()
 
 plugin.onLangLoaded = function() {
 	this.registerTopMenu(7, theUILang.mnu_ratiorule, theWebUI.showRatioRules);
-	const dlgEditRatioRulesContent = $("<div>").addClass("cont fxcaret").append(
+	const dlgEditRatioRulesContent = $("<div>").addClass("cont").append(
 		$("<div>").addClass("row").append(
 			$("<div>").addClass("col-md-6 d-flex flex-column align-items-center").append(
 				$("<div>").attr({id: "ratioRuleList"}).addClass("flex-grow-1 align-self-stretch").append(
@@ -339,10 +339,13 @@ plugin.onLangLoaded = function() {
 					$("<div>").addClass("d-flex flex-row").append(
 						$("<select>").attr({id: "ratio_reason"}).addClass("flex-grow-1").append(
 							...[
+								// The order of these must match the RR_* constants
+								// in rules.php because we're currently using array
+								// position as an enum key
 								theUILang.ratLabelContain, 
 								theUILang.ratTrackerContain, 
-								theUILang.ratTrackerPublic, 
 								theUILang.ratTrackerPrivate,
+								theUILang.ratTrackerPublic,
 							].map((val, index) => $("<option>").attr({value: index}).text(val)),
 						),
 					),

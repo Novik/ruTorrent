@@ -11,24 +11,31 @@
 	display: none;
 }
 
-
 div[part=heading] {
 	display: flex;
-	background: var(--open-background-image) 2px no-repeat;
-	background-color: var(--heading-background-color);
+	gap: 0.25rem;
+	align-items: center;
+	background: var(--heading-background-color);
 	border-bottom: 1px solid var(--heading-border-color);
 	border-top: 1px solid var(--heading-border-color);
-	padding: 2px 5px 2px 21px;
+	padding: 0.25rem;
 	margin: 0px;
-	line-height: 16px;
+	line-height: 1.5rem;
 	cursor: pointer;
+}
+div[part=heading]::before {
+	content: "";
+	display: block;
+	height: 20px;
+	width: 20px;
+	background: var(--open-background-image) center no-repeat;
 }
 
 :host([hidden]) {
 	display: none;
 }
 
-:host([closed]) div[part="heading"] {
+:host([closed]) div[part="heading"]::before {
 	background-image: var(--close-background-image);
 }
 
