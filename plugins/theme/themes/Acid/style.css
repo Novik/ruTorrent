@@ -11,7 +11,8 @@ html, body { background-color: #1e2124; color: #BDDBDB }
   --menu-highlight-background-color: #BDDBDB;
 
   --settings-background-color: #272E36;
-
+  --container-bg-color: #272E36;
+  --container-border-color: #a0a0a0;
   --btn-bg-color: #D7D7D7;
   --header-bg-color: #1E2124;
   --header-border-color: #909090;
@@ -100,7 +101,7 @@ div#t div#setting {background: transparent url(./images/toolbar.png) no-repeat -
 div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px center}
 div#t div#go {background: transparent url(./images/go.gif) no-repeat 0px center; }
 
-#offcanvas-sidepanel { background-color: #272E36; color: #BDDBDB;}
+#offcanvas-sidepanel { color: #BDDBDB;}
 div#side-panel ul li { border: 1px solid #272E36; font-weight: bold; }
 div#side-panel ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; color: #272E36;}
 
@@ -133,7 +134,6 @@ legend {color: #00FF00; font-weight: bold}
 a { color: #00ff00; font-weight: bold;}
 
 div#tdetails {background-color: #1E2124}
-div#tdcont {background: #272E36; }
 div.tab { background: #272E36; }
 div#lcont { background: #272E36; font-weight: bold; color: #BDDBDB;}
 
