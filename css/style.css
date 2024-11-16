@@ -319,7 +319,7 @@ a {color: #686868; text-decoration: none;}
 .offcanvas-header .btn-close {background-color: var(--btn-bg-color);}
 #offcanvas-sidepanel {
   border: 1px solid var(--container-border-color);
-  background-color: var(--container-bg-color);
+  background-color: var(--container-bg-color) !important;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -327,10 +327,11 @@ a {color: #686868; text-decoration: none;}
 .offcanvas-body {
   display: flex;
   flex-direction: column;
+  flex-grow: 1 !important;
+  overflow-y: auto !important;
 }
 #CatList {
   flex: 1 1 auto;
-  overflow: hidden auto;
 }
 #list-table {
   border: 1px solid var(--container-border-color);
