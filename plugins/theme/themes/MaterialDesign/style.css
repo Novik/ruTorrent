@@ -207,7 +207,8 @@ html,body
 	--menu-highlight-background-color: #121212;
 
 	--settings-background-color: #222;
-
+  --container-bg-color: #181818;
+  --container-border-color: #1b1b1b;
 	--btn-bg-color: #3498DB;
   --header-bg-color: #273238;
   --header-border-color: transparent;
@@ -223,9 +224,8 @@ category-panel {
 
 #offcanvas-sidepanel {
   color: #EEE;
-  background-color: #1A2329;
 }
-#side-panel, category-list
+category-list
 {
 	border:none;
 	background-color:#1A2329;
@@ -701,11 +701,6 @@ div#modalbg {
 	background-color:#181818
 }
 
-#list-table {
-	border: none;
-	background-color:#181818
-}
-
 div#FileList,div#TrackerList,div#PeerList,div#Speed
 {
 	background-color:#181818
@@ -827,12 +822,6 @@ div#tdetails {
 	color:#888;
 	border-top-right-radius:6px;
 	border-top-left-radius:6px
-}
-
-div#tdcont {
-	background:#181818;
-	border:none;
-	padding:0
 }
 
 table#maincont td.uicell {

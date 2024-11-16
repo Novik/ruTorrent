@@ -97,7 +97,8 @@ span {
   --menu-highlight-background-color: #cfdeef;
 
   --settings-background-color: #fafafa;
-
+  --container-bg-color: #ffffff;
+  --container-border-color: #a0a0a0;
   --btn-bg-color: #F0F0F0;
   --header-bg-color: #F0F0F0;
   --header-border-color: #909090;
@@ -317,14 +318,24 @@ a {color: #686868; text-decoration: none;}
 #maincont {height: calc(100dvh - 36px - 5px - 25px - 5px);}
 .offcanvas-header .btn-close {background-color: var(--btn-bg-color);}
 #offcanvas-sidepanel {
-  background-color: #FFFFFF;
+  border: 1px solid var(--container-border-color);
+  background-color: var(--container-bg-color) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
-#side-panel {
-  border: 1px solid #A0A0A0;
+.offcanvas-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1 !important;
+  overflow-y: auto !important;
+}
+#CatList {
+  flex: 1 1 auto;
 }
 #list-table {
-  border: 1px solid #A0A0A0;
-  background-color: #FFFFFF;
+  border: 1px solid var(--container-border-color);
+  background-color: var(--container-bg-color);
 }
 
 .stable-icon {background-image: url(../images/tstatus.png); background-repeat: no-repeat}
@@ -347,7 +358,7 @@ div#HDivider, div#VDivider {flex: 0 0 5px;}
 #stg {
   width: 95vw;
   height: 95vh;
-background-color: var(--settings-background-color);
+  background-color: var(--settings-background-color);
 }
 #stg_c {
   display: flex;
@@ -457,9 +468,9 @@ div#tdetails {
   background-color: #F5F5F5;
 }
 div#tdetails a.h {margin: 0}
-div#tdcont {
-  background: #FFFFFF;
-  border: 1px solid #D0D0D0;
+#tdcont {
+  background: var(--container-bg-color);
+  border: 1px solid var(--container-border-color);
 }
 div.tab {
   height:100%;

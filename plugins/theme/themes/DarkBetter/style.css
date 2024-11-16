@@ -11,7 +11,8 @@ html, body {background-color: #181818; color: #999999; }
   --menu-highlight-background-color: #888888;
 
   --settings-background-color: #181818;
-
+  --container-bg-color: #181818;
+  --container-border-color: #333333;
   --btn-bg-color: #D6D6D6;
   --header-bg-color: #181818;
   --header-border-color: #333333;
@@ -67,9 +68,8 @@ button:hover:active, input.Button:not([disabled]):hover:active {
 select, input[type=file], input[type=text], input[type=number], input[type=password] {border: 1px solid #333333;}
 #offcanvas-sidepanel {
   color: #686868;
-  background-color: #181818;
 }
-#side-panel, category-list {
+category-list {
   border: 1px solid #333333;
   background-color: #181818;
 }
@@ -282,7 +282,6 @@ div#List {border: 1px solid #333333}
 
 div#modalbg {background-color: #181818}
 
-div#list-table {border: 1px solid #333333; background-color: #181818}
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
 #stg {background-color: #181818; color: #888888; border: 1px solid #333333}
@@ -309,7 +308,6 @@ legend {color: #888888}
 select.cols {border: 1px solid #333333}
 div#dragmask {border: 1px dotted #333333}
 div#tdetails {background-color: #181818}
-div#tdcont {background: #181818; border: 1px solid #333333}
 
 div#tadd {background-color: #181818; border: 1px solid #333333}
 .tabbar li.nav-item a.nav-link {
