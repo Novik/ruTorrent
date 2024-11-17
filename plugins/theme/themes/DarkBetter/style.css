@@ -125,7 +125,7 @@ panel-label[icon="queued-down"] {
 panel-label[icon="queued-up"] {
   --status-image: url(../plugins/theme/themes/DarkBetter/images/t_queued_up.svg);
 }
-panel-label[icon="active"] {
+panel-label[icon="up-down"] {
   --status-image: url(../plugins/theme/themes/DarkBetter/images/t_active.svg);
 }
 panel-label[icon="all"] {
