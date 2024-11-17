@@ -5,10 +5,14 @@ if(browser.isKonqueror)
 
 plugin.recentTrackers = {};
 
-theWebUI.checkCreate = function()
-{
+function checkCreate() {
+	const path_edit = $("#path_edit").val().trim();
+	if (!path_edit.length) {
+		noty(theUILang.BadTorrentData, "error0");
+		return;
+	}
 	theDialogManager.hide('tcreate');
-		var arr = $('#trackers').val().split("\n");
+	var arr = $('#trackers').val().split("\n");
 	var trk = '';
 	for( var i in arr )
 		trk+=(arr[i].trim()+'\r');
@@ -16,7 +20,7 @@ theWebUI.checkCreate = function()
 		{
 			"piece_size" : $('#piece_size').val(),
 			"trackers" : trk,
-			"path_edit" : $("#path_edit").val().trim(),
+			"path_edit" : path_edit,
 			"comment" : $("#comment").val().trim(),
 			"source" : $("#source").val().trim(),
 			"private" : $('#private').prop('checked') ? 1 : 0,
@@ -154,7 +158,7 @@ plugin.onLangLoaded = function() {
 
 		const tcreateContent = $("<div>").addClass("cont").append(
 			$("<fieldset>").append(
-				$("<legend>").text(theUILang.SelectSource),
+				$("<legend>").text(theUILang.SelectSource + " *"),
 				$("<div>").addClass("row").append(
 					$("<div>").addClass("col-12").append(
 						$("<input>").attr({type: "text", id: "path_edit", name: "path_edit", autocomplete: "off"}).addClass("flex-grow-1"),
@@ -215,7 +219,7 @@ plugin.onLangLoaded = function() {
 				.addClass("me-auto")
 				.on("click", theWebUI.deleteFromRecentTrackers)
 				.text(theUILang.deleteFromRecentTrackers),
-			$("<button>").attr({type:"button", id:"torrentCreate"}).text(theUILang.torrentCreate).on("click", theWebUI.checkCreate).addClass("OK"),
+			$("<button>").attr({type:"button", id:"torrentCreate"}).text(theUILang.torrentCreate).on("click", checkCreate).addClass("OK"),
 			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),
 		);
 		theDialogManager.make("tcreate",theUILang.CreateNewTorrent,
