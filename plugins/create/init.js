@@ -8,7 +8,7 @@ plugin.recentTrackers = {};
 function checkCreate() {
 	const path_edit = $("#path_edit").val().trim();
 	if (!path_edit.length) {
-		noty(theUILang.BadTorrentData, "error0");
+		noty(theUILang.BadTorrentData, "error");
 		return;
 	}
 	theDialogManager.hide('tcreate');
