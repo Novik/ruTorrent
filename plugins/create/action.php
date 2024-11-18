@@ -131,12 +131,12 @@ if(isset($_REQUEST['cmd']))
 		case "create":
 		{
 			$error = "Invalid parameters";
-		        if(isset($_REQUEST['path_edit']))
-		        {
-		        	$path_edit = trim($_REQUEST['path_edit']);
+			if(isset($_REQUEST['path_edit']) && strlen($_REQUEST['path_edit']))
+			{
+				$path_edit = trim($_REQUEST['path_edit']);
 				if(is_dir($path_edit))
 					$path_edit = FileUtil::addslash($path_edit);
-		        	if(rTorrentSettings::get()->correctDirectory($path_edit))
+				if(rTorrentSettings::get()->correctDirectory($path_edit))
 				{
 					$rt = recentTrackers::load();
 					$trackers = array();

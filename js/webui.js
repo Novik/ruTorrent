@@ -5,7 +5,7 @@
 
 var theWebUI =
 {
-  	version: "5.1.B4",
+  	version: "5.1.B5",
 	tables:
 	{
 		trt:
