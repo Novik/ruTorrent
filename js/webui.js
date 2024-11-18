@@ -391,7 +391,6 @@ var theWebUI = {
 			table.obj.ondblclick = table.ondblclick;
 			table.obj.onselect = table.onselect;
 			table.obj.ondelete = table.ondelete;
-			table.obj.colorEvenRows = theWebUI.settings["webui.alternate_color"];
 			table.obj.maxRows = iv(theWebUI.settings["webui.fullrows"]);
 			table.obj.noDelayingDraw = iv(theWebUI.settings["webui.no_delaying_draw"]);
 			if($type(theWebUI.settings["webui."+ndx+".sindex"]))
@@ -466,6 +465,7 @@ var theWebUI = {
 				}
 			}
 		});
+		$(".stable").toggleClass("alternate", !!theWebUI.settings["webui.alternate_color"]);
 		table = this.getTable("plg");
 		if(table)
 		{
@@ -722,13 +722,8 @@ var theWebUI = {
 								theDialogManager.setEffects( iv(nv)*200 );
 								break;
 							}
-							case "webui.alternate_color":
-							{
-								$.each(theWebUI.tables, function(ndx,table)
-								{
-							  		table.obj.colorEvenRows = nv;
-						     			table.obj.refreshSelection();
-								});
+							case "webui.alternate_color": {
+								$(".stable").toggleClass("alternate", !!nv);
 								break;
 							}
 							case "webui.show_cats": {

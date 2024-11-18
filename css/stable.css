@@ -4,6 +4,10 @@
   --header-border-color: #d0d0d0;
   --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAGCAYAAAARx7TFAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAU0lEQVQImYXOsQ0AMQgDQFIgZRxG9G60zECTBdJQ+6t8EfR6JDfWSUbkOgC8uwYyk5/wgL03q6pDAIwIZibXWm8OHABoZjLnFFVtC+4u4+9ZAOMBnF07zgszHpwAAAAASUVORK5CYII=);
   --col-resize-sep-bg-color: #a0a0a0;
+  --row-odd-bg-color: #f3f3f3;
+  --row-even-bg-color: #ffffff;
+  --row-active-bg-color: #cfdeef;
+  --row-highlight-brightness: 1;
   height: 100%;
   background-color: #FFFFFF;
   overflow: hidden;
@@ -100,9 +104,11 @@
   margin: 0 2px !important;
 }
 .konqueror .stable-body td div { margin: 0 0px 0 0px !important }
-.stable-body tr.selected td {background: #CFDEEF}
-.stable-body tr.odd td {background: #F3F3F3}
-.stable-body tr.even td {background: #FFFFFF}
+.stable-body tr.selected td {background: var(--row-active-bg-color) !important;}
+.stable-body tr:hover td {filter: brightness(var(--row-highlight-brightness));}
+.stable-body tr td {background: var(--row-even-bg-color);}
+.alternate .stable-body tr:nth-child(odd) td {background: var(--row-odd-bg-color);}
+.alternate .stable-body tr:nth-child(even) td {background: var(--row-even-bg-color);}
 .stable-move-header {position: absolute; background: transparent url(../images/header_move.gif) repeat-x scroll center top rgba(255,255,255,0.7); top: 0px; font: menu; padding: 2px 12px 2px 4px; line-height: 12px; visibility: visible; border: 1px solid #0099FF; overflow: hidden; }
 .webkit .stable-move-header {background: rgba(255,255,255,0.7);}
 .opera .stable-move-header {background: rgba(255,255,255,0.7);}
