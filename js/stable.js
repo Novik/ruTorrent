@@ -53,7 +53,6 @@ var dxSTable = function()
 	this.secRev = 0;
 	this.tHeadCols = new Array();
 	this.tBodyCols = new Array();
-	this.colorEvenRows = false;
 	this.cancelSort = false;
 	this.cancelMove = false;
 	this.colMove = new dxSTable.ColumnMove(this);
@@ -208,7 +207,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	}
 	this.init();
 	this.resizeColumn();
-
 	this.created = true;
 }
 
@@ -1064,7 +1062,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	Object.assign(attrs, attr || {});
 	const data = this.rowdata[sId]?.fmtdata || {};
 
-	const row = $("<tr>").attr(attrs).addClass(this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "");
+	const row = $("<tr>").attr(attrs);
 	for (let i = 0; i < this.cols; i++) {
 		const index = this.colOrder[i];
 		const cdat = this.colsdata[i];
@@ -1224,23 +1222,15 @@ dxSTable.prototype.unhideRow = function(sId)
 	}
 }
 
-dxSTable.prototype.refreshSelection = function() 
-{
-        if(this.created)
-        {
+dxSTable.prototype.refreshSelection = function() {
+	if (this.created) {
 		var rows = this.tBody.getElementsByTagName("tbody")[0].rows, l = rows.length;
-		for(var i = 0; i < l; i++) 
-		{
+		for (var i = 0; i < l; i++) {
 			if(this.rowSel[rows[i].id] == true) 
-				rows[i].className = "selected";
-			else 
-			{
-				if(!this.colorEvenRows) 
-					rows[i].className = "even";
-				else 
-					rows[i].className = (i & 1) ? "odd" : "even";
-			}
-      		}
+				rows[i].classList.add("selected");
+			else
+				rows[i].classList.remove("selected");
+		}
 	}
 }
 
