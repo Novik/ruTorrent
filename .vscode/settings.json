@@ -2,6 +2,8 @@
     "editor.tabSize": 2,
     "editor.insertSpaces": false,
     "editor.detectIndentation": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
     "[css]": {
         "editor.insertSpaces": true
     }
