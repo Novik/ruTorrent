@@ -9,6 +9,9 @@ html, body {background-color: #181818; color: #999999; }
 
   --menu-highlight-color: #111111;
   --menu-highlight-background-color: #888888;
+  --menu-active-color: #666666;
+  --menu-item-active-icon: url(data:image/gif;base64,R0lGODlhBQAFAPMIAP////n5+dXV1c/Pz8nJycbGxsDAwLS0tACMFAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAUAAAgALAAAAAAFAAUAAAQPEA1AkAC4YBwmNogBHEgEADs=);
+  --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAPABAP///wCMFCH5BAUAAAEALAAAAAAIAAcAAAIMRI4Blrq9HoqQJZsKADs=);
 
   --settings-background-color: #181818;
   --container-bg-color: #181818;
@@ -77,10 +80,6 @@ div#msg {background: #181818; border-top: 1px solid #333333; border-bottom: 1px 
 div#sc {border: 1px solid #333333; background-color: #181818}
 div#sc li.se_act div {background-color: #333333; color: #888888}
 div#lng {background-color:#181818; border:1px solid #333333}
-ul.CMenu {border: 1px solid #333333; border-right: 2px solid #333333; border-bottom: 2px solid #333333; background: #181818; }
-ul.CMenu li hr {border-top: 1px solid #333333}
-ul.CMenu li a.exp {background: transparent url(./images/menuexp.gif) no-repeat scroll 140px center; }
-ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat scroll 4px center}
 
 #sel {border: 1px dotted #555555;}
 

@@ -9,6 +9,9 @@ html, body {background-color: #181818; color: #999999; }
 
   --menu-highlight-color: #111111;
   --menu-highlight-background-color: #888888;
+  --menu-active-color: #666666;
+  --menu-item-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3e%3ccircle fill='%23FFF' cx='24' cy='24' r='19'/%3e%3c/svg%3e");
+  --menu-item-exp-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3e%3cpath fill='%23FFF' d='M34 24L14 42V6z'/%3e%3c/svg%3e");
 
   --settings-background-color: #181818;
   --container-bg-color: #181818;
@@ -161,8 +164,6 @@ div#preload {
     background-image: url(./images/tb_rss.svg);
     background-image: url(./images/rb_rss_group.svg);
     background-image: url(./images/tb_setting.svg);
-    background-image: url(./images/menuexp.svg);
-    background-image: url(./images/menusel.svg);
     background-image: url(./images/tb_rss.svg);
     background-image: url(./images/t_error.svg);
     background-image: url(./images/close.svg);
@@ -200,19 +201,6 @@ div#msg {background: #181818; border-top: 1px solid #333333; border-bottom: 1px 
 div#sc {border: 1px solid #333333; background-color: #181818}
 div#sc li.se_act div {background-color: #333333; color: #888888}
 div#lng {background-color:#181818; border:1px solid #333333}
-ul.CMenu {border: 1px solid #333333; border-right: 2px solid #333333; border-bottom: 2px solid #333333; background: #181818}
-ul.CMenu li {background: #181818}
-ul.CMenu li a.dis {color: #333333}
-ul.CMenu li a.dis:hover {background-color: #181818; color: #333333}
-ul.CMenu li hr {border-top: 1px solid #333333}
-ul.CMenu li a.exp {background: transparent url(./images/menuexp.svg) no-repeat scroll 138px center; background-size: 10px}
-ul.CMenu li a.sel {background: transparent url(./images/menusel.svg) no-repeat scroll 4px center; background-size: 8px}
-ul.CMenu li a:hover {background-color: #888888; color: #111111}
-
-ul.CMenu li:hover ul li a {background-color: #181818; color: #666666}
-ul.CMenu li:hover ul li a:hover {background-color: #888888; color: #111111}
-ul.CMenu li ul li a.dis {color: #333333}
-ul.CMenu li ul li a.dis:hover {background-color: #181818; color: #333333}
 
 #sel {border: 1px dotted #555555}
 

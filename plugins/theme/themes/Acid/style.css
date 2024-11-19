@@ -1,7 +1,7 @@
 html, body { background-color: #1e2124; color: #BDDBDB }
 :root {
   --menu-color: #00FF00;
-  --menu-background-color: #181818;
+  --menu-background-color: #1e2124;
   --menu-border-color: #a0a0a0;
 
   --menu-disabled-color: #c0c0c0;
@@ -9,6 +9,9 @@ html, body { background-color: #1e2124; color: #BDDBDB }
 
   --menu-highlight-color: #272E36;
   --menu-highlight-background-color: #BDDBDB;
+  --menu-active-color: #00ff00;
+  /* --menu-item-active-icon: undefined - inherit from standard theme; */
+  --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAMQAAAAAAP///wD4AADpAADKAAC5AAC1AACwAAChAACQAACIAAT/BCX/JTH/MU//T1X/VW3/bW//b////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAAIAAcAAAUYYCSNpAQ55fg0S8oIxFEORpIWSiohuhQCADs=);
 
   --settings-background-color: #272E36;
   --container-bg-color: #272E36;
@@ -76,10 +79,6 @@ div#msg {background: #272E36; border-top: 1px solid #D0D0D0; border-bottom: 1px 
 .dlg-window { color: #BDDBDB }
 
 div#modalbg {background-color: #181818;}
-
-ul.CMenu { background-color: #1e2124; }
-ul.CMenu li a.exp {background-image: url(./images/menuexp.gif); }
-ul.CMenu li a.sel {background-image: url(./images/menusel.gif); }
 
 div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
 .graph_tab_legend { color: #FFF; background-color: #272E36; }

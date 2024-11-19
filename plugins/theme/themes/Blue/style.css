@@ -9,6 +9,9 @@ html, body { background-color: #DFE8F6 }
 
   --menu-highlight-color: #222222;
   --menu-highlight-background-color: #D9E8FB;
+  --menu-active-color: #222222;
+  --menu-item-active-icon: url(data:image/gif;base64,R0lGODlhBwAHAPABAAAAAACMFCH5BAUAAAEALAAAAAAHAAcAAAIMjA9nwMj9wmuLIlUAADs=);
+  --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhDAAJAPQUACluvipxvzJ1vyxwwCt1yjp6zjiC1jmE0zyE0z2I3UeLyUGJ2VWUzlKg7FSg6Weg1WKq8Y7D9orD/JXL/0D/QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAUAABQALAAAAAAMAAkAAAUkoEGNZEkliGkS06GSRCQtL0U40CO8RMMENYICULMNipQCkhICADs=);
 
   --settings-background-color: #DFE8F6;
   --container-bg-color: #ffffff;
@@ -74,9 +77,6 @@ div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px ce
 div#t div#go {background: transparent url(./images/go.gif) no-repeat 0px center; }
 div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0px center}
 
-ul.CMenu li a:hover {background-color: #D9E8FB}
-ul.CMenu li:hover ul li a:hover {background-color: #D9E8FB}
-
 div#tdetails {background: transparent url(./images/tab-strip-bg.gif) repeat-x 0px center;} 
 
 .tabbar li a { border: 1px solid #8DB2E3; border-bottom: none; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B }
@@ -91,12 +91,6 @@ input[type="text"][disabled],input[type="password"][disabled],input[type="file"]
 #StatusBar { border-color: #99BBE8; background-color: #FFFFFF; color: #000000; }
 .statuscell { border-color: #99BBE8;}
 .sthdr { color: #15428B; }
-
-ul.CMenu { border: 1px solid #718BB7; border-right: 1px solid #718BB7; border-bottom: 1px solid #718BB7; background: #F0F0F0; color: #222222}
-
-ul.CMenu li a.exp {background: transparent url(./images/menu-parent.gif) no-repeat scroll 140px center; }
-
-ul.CMenu li.menuitem hr {background-color: #E0E0E0; color: #000000; border-bottom-width: 1px; border-bottom-color: #FFFFFF}
 
 .dlg-header {color: #15428B;}
 
