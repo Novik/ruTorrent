@@ -38,8 +38,7 @@ html, body { background-color: #1e2124; }
   --loading-indicator-side-length: 32px;
 }
 category-panel {
-  --open-background-image: url(../plugins/theme/themes/Acid/images/pnl_open.gif);
-  --close-background-image: url(../plugins/theme/themes/Acid/images/pnl_close.gif);
+  --open-background-image: url(data:image/gif;base64,R0lGODlhEQARANUAAAAAAP///wD6AAD5AADyAADoAADmAADfAADeAADaAADKAAC/AAC2AACuAACqAACfAACbAACaAACLAACGAACAAAB9AAB0AABtAABsAABoAABgAAX/BRH/ERL/EhX/FRb/Fhf/Fyz/LDf/Nzz/PED/QEP/Q0T/RFL/Ulf/V17/XmP/Y2b/Zmj/aP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAC0ALAAAAAARABEAAAZFwJZwSCwaj8ikcslsNkun1IqlQplCHUEBURSRTKVRyDM4KBZH0IezISQWDkjSkFAwHpLKshGZWDJNFBcaTi0YhYiJikpBADs=);
   --heading-background-color: #1e2124;
   --heading-border-color: #909090;
 }
@@ -79,7 +78,7 @@ panel-label[selected] {
   color: #272E36;
 }
 
-div#preload {background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif); background-image: url(./images/pnl_open.gif); background-image: url(./images/pnl_close.gif)}
+div#preload {background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif);}
 div#cover {background: #272E36}
 div#msg {background: #272E36; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0; color: #00ff00;}
 

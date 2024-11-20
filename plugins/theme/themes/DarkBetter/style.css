@@ -38,8 +38,7 @@ html, body {background-color: #181818; color: #999999; }
   --loading-indicator-side-length: 28px;
 }
 category-panel {
-  --open-background-image: url(../plugins/theme/themes/DarkBetter/images/pnl_open.svg);
-  --close-background-image: url(../plugins/theme/themes/DarkBetter/images/pnl_close.svg);
+  --open-background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3e%3cpath stroke='#23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M24 34l18-20H6z'/%3e%3c/svg%3e");
   --heading-background-color: #111111;
   --heading-border-color: #333333;
 }
@@ -174,8 +173,6 @@ div#preload {
     background-image: url(./images/yellow.svg);
     background-image: url(./images/red.svg);
     background-image: url(./images/green.svg);
-    background-image: url(./images/pnl_open.svg);
-    background-image: url(./images/pnl_close.svg);
     background-image: url(./images/file.svg);
     background-image: url(./images/dir.svg);
     background-image: url(./images/t_down.svg);
