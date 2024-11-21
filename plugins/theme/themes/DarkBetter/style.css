@@ -18,6 +18,15 @@ html, body {background-color: #181818; color: #999999; }
   --header-border-color: #333333;
   --dialog-bg-color: #181818;
   --dialog-border-color: #333333;
+
+  --navbar-height: 36px;
+  --navbar-bg-color: #181818;
+  --navbar-bg-image: url(../plugins/theme/themes/DarkBetter/images/t_bg.png);
+  --navbar-border-color: #333333;
+  --navbar-item-bg-color: #181818;
+  --navbar-item-border-color: #333333;
+  --loading-indicator-icon: url(../plugins/theme/themes/DarkBetter/images/ajax-loader.gif);
+  --loading-indicator-side-length: 28px;
 }
 category-panel {
   --open-background-image: url(../plugins/theme/themes/DarkBetter/images/pnl_open.svg);
@@ -207,18 +216,11 @@ ul.CMenu li ul li a.dis:hover {background-color: #181818; color: #333333}
 
 #sel {border: 1px dotted #555555}
 
-#t {background: #181818 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #333333;}
-#top-menu {
-  background-color: #181818;
-  border-bottom: 1px solid #333333;
-}
 .navbar-toggler {
   background-image: none;
   border-color: #333333;
 }
-div#t .nav-link {
-  background-color: #181818;
-  border-color: #333333;
+#t .nav-link {
   color: #686868;
 }
 div#t div.TB_Separator {background-color: #333333}
@@ -329,8 +331,6 @@ div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333
 
 div.tab {background-color: #181818}
 
-div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0px center; background-size: 28px}
-
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; background-size: 28px}
 
 #StatusBar {border-top: 1px solid #333333; background-color: #181818; color: #888888}
@@ -350,11 +350,3 @@ span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat ce
 #dlgLabel-header {background-image: url(./images/label.svg);}
 #dlgProps-header {background-image: url(./images/file.svg);}
 #yesnoDlg-header {background-image: url(./images/yellow.svg);}
-
-@media (min-width: 768px) { 
-  /* Custom rules for medium devices */
-  div#t .nav-link {
-    background-color: transparent;
-    border: none;
-  }
-}

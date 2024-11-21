@@ -18,6 +18,15 @@ html, body { background-color: #1e2124; color: #BDDBDB }
   --header-border-color: #909090;
   --dialog-bg-color: #1E2124;
   --dialog-border-color: #909090;
+
+  --navbar-height: 36px;
+  --navbar-bg-color: #252525;
+  --navbar-bg-image: url(../plugins/theme/themes/Acid/images/t_bg.png);
+  --navbar-border-color: #d0d0d0;
+  --navbar-item-bg-color: #1e2124;
+  --navbar-item-border-color: #d0d0d0;
+  --loading-indicator-icon: url(../plugins/theme/themes/Acid/images/ajax-loader.gif);
+  --loading-indicator-side-length: 32px;
 }
 category-panel {
   --open-background-image: url(../plugins/theme/themes/Acid/images/pnl_open.gif);
@@ -76,16 +85,8 @@ div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
 .graph_tab_legend { color: #FFF; background-color: #272E36; }
 .graph_tab_tooltip { color: #FFF; background-color: #272E36; border: 1px solid #BDDBDB; }
 
-#t {background: #252525 url(./images/t_bg.png) repeat-x center center; border-bottom: 1px solid #252525;}
-#top-menu {
-  background-color: #252525;
-  border-bottom: 1px solid #252525;
-}
-div#t .nav-link {
-  background-color: #1E2124;
-  border-color: #D0D0D0;
+#t .nav-link {
   color: #00FF00;
-  font-weight: bold;
 }
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat -24px center}
 div#t div#create {background: transparent url(./images/toolbar.png) no-repeat -48px center}
@@ -166,8 +167,6 @@ div#gcont div.row.Header {background: #323A46;}
 #dlgProps-header {background-image: url(./images/props.gif);}
 #yesnoDlg-header {background-image: url(./images/error.gif);}
 
-div#t div#ind { background: transparent url(./images/ajax-loader.gif) no-repeat 0px center; }
-
 span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat center center; }
 
 .Icon_File {background: transparent url(./images/file.gif) no-repeat left center}
@@ -180,11 +179,3 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 
 .sthdr { color: #00FF00;}
 .stval { color: #BDDBDB;}
-
-@media (min-width: 768px) { 
-  /* Custom rules for medium devices */
-  div#t .nav-link {
-    background-color: transparent;
-    border: none;
-  }
-}
