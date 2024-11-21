@@ -30,11 +30,33 @@ plugin.onLangLoaded = function()
 				? /\r\n|\n|\r/  // line split text/uri-list
 				: /\s+/;        // word split text/plain
 			uriList.getAsString(async data => {
-				// add all magnet URLs and http/https URLs, which are
+				// find all magnet URLs and http/https URLs, which are
 				// assumed to be links to torrent files
-				for (let url of data.split(separator)) {
-					url = url.trim();
-					if ((/^magnet:|^https?:\/\//i).test(url)) {
+				const urls = data.split(separator)
+					.map(item => item.trim())
+					.filter(item => (/^magnet:|^https?:\/\//i).test(item));
+
+				// break URL list into chunks based on plugin configuration
+				const urlChunks = [];
+				if (plugin.queuefiles) {
+					for (let i = 0; i < urls.length; i += plugin.queuefiles)
+						urlChunks.push(urls.slice(i, i + plugin.queuefiles));
+				}
+				else {
+					if (plugin.maxfiles && urls.length > plugin.maxfiles) {
+						noty(theUILang.tooManyFiles + plugin.maxfiles, "error");
+						return;
+					}
+					urlChunks.push(urls);  // all URLs in one chunk
+				}
+
+				// send API calls to rTorrent one chunk at a time with
+				// delay between chunks
+				for (const [i, urls] of urlChunks.entries()) {
+					if (i != 0)
+						await new Promise(r => setTimeout(r, 200));
+
+					await Promise.all(urls.map(async url => {
 						const data = await $.ajax({
 							url: plugin.path + '../../php/addtorrent.php',
 							method: "POST",
@@ -54,7 +76,7 @@ plugin.onLangLoaded = function()
 						noty(
 							`${url} : ${theUILang['addTorrent' + result]}`,
 							(result == "Success") ? "success" : "error");
-					}
+					}));
 				}
 			});
 
