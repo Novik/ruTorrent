@@ -204,14 +204,14 @@ var theDialogManager = {
 		this.modalState = false;
 	},
 	show: function(id, callback) {
-		// Close side panel on mobile:
-		// An offcanvas is a modal under the hood and will intercept focus events
-		// from other elements, and make other text inputs unfocusable and uneditable.
 		if ($(window).width() < 768) {
+			// Close side panel on mobile:
+			// An offcanvas is a modal under the hood and will intercept focus events
+			// from other elements, and make other text inputs unfocusable and uneditable.
 			bootstrap.Offcanvas.getOrCreateInstance(document.querySelector("#offcanvas-sidepanel")).hide();
+			// close collapsible top menu on opening dialog windows
+			bootstrap.Collapse.getOrCreateInstance("#top-menu").hide();
 		}
-		// close collapsible top menu on opening dialog windows
-		bootstrap.Collapse.getOrCreateInstance("#top-menu").hide();
 
 		const obj = $('#' + id);
 		if (obj.data("modal"))

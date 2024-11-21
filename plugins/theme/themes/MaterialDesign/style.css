@@ -221,7 +221,7 @@ html,body
   --navbar-border-color: transparent;
   --navbar-item-bg-color: #181818;
   --navbar-item-border-color: transparent;
-  --loading-indicator-icon: url(/plugins/theme/themes/MaterialDesign/images/ajax-loader-small.gif);
+  --loading-indicator-icon: url(../plugins/theme/themes/MaterialDesign/images/ajax-loader-small.gif);
   --loading-indicator-side-length: 34px;
 }
 category-panel {

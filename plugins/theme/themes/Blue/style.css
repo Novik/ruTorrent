@@ -21,11 +21,11 @@ html, body { background-color: #DFE8F6 }
 
   --navbar-height: 36px;
   --navbar-bg-color: #181818;
-  --navbar-bg-image: url(/plugins/theme/themes/Blue/images/header_bg.gif);
+  --navbar-bg-image: url(../plugins/theme/themes/Blue/images/header_bg.gif);
   --navbar-border-color: #333333;
   --navbar-item-bg-color: linear-gradient(0deg, rgba(180,207,240,1) 0%, rgba(222,236,253,1) 100%);
   --navbar-item-border-color: #8db2e3;
-  --loading-indicator-icon: url(/plugins/theme/themes/Blue/images/ajax-loader.gif);
+  --loading-indicator-icon: url(../plugins/theme/themes/Blue/images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
 category-panel {

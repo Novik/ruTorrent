@@ -21,11 +21,11 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
 
   --navbar-height: 36px;
   --navbar-bg-color: transparent;
-  --navbar-bg-image: url(/images/t_bg.png);
+  --navbar-bg-image: url(../images/t_bg.png);
   --navbar-border-color: transparent;
   --navbar-item-bg-color: #f0f0f0;
   --navbar-item-border-color: #a0a0a0;
-  --loading-indicator-icon: url(/images/ajax-loader.gif);
+  --loading-indicator-icon: url(../images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
 category-panel {

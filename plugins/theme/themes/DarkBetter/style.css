@@ -21,11 +21,11 @@ html, body {background-color: #181818; color: #999999; }
 
   --navbar-height: 36px;
   --navbar-bg-color: #181818;
-  --navbar-bg-image: url(/plugins/theme/themes/DarkBetter/images/t_bg.png);
+  --navbar-bg-image: url(../plugins/theme/themes/DarkBetter/images/t_bg.png);
   --navbar-border-color: #333333;
   --navbar-item-bg-color: #181818;
   --navbar-item-border-color: #333333;
-  --loading-indicator-icon: url(/plugins/theme/themes/DarkBetter/images/ajax-loader.gif);
+  --loading-indicator-icon: url(../plugins/theme/themes/DarkBetter/images/ajax-loader.gif);
   --loading-indicator-side-length: 28px;
 }
 category-panel {

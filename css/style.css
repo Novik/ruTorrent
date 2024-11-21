@@ -107,11 +107,11 @@ span {
 
   --navbar-height: 36px;
   --navbar-bg-color: #f0f0f0;
-  --navbar-bg-image: url(/images/t_bg.png);
+  --navbar-bg-image: url(../images/t_bg.png);
   --navbar-border-color: #d0d0d0;
   --navbar-item-bg-color: #f0f0f0;
   --navbar-item-border-color: #a0a0a0;
-  --loading-indicator-icon: url(/images/ajax-loader.gif);
+  --loading-indicator-icon: url(../images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
 .dropdown-menu {

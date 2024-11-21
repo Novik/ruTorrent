@@ -21,11 +21,11 @@ html, body { background-color: #1e2124; color: #BDDBDB }
 
   --navbar-height: 36px;
   --navbar-bg-color: #252525;
-  --navbar-bg-image: url(/plugins/theme/themes/Acid/images/t_bg.png);
+  --navbar-bg-image: url(../plugins/theme/themes/Acid/images/t_bg.png);
   --navbar-border-color: #d0d0d0;
   --navbar-item-bg-color: #1e2124;
   --navbar-item-border-color: #d0d0d0;
-  --loading-indicator-icon: url(/plugins/theme/themes/Acid/images/ajax-loader.gif);
+  --loading-indicator-icon: url(../plugins/theme/themes/Acid/images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
 category-panel {

@@ -25,7 +25,7 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --navbar-border-color: transparent;
   --navbar-item-bg-color: linear-gradient(0deg, rgba(17,17,17,1) 0%, rgba(46,46,46,1) 100%);
   --navbar-item-border-color: #0f0f0f;
-  --loading-indicator-icon: url(/plugins/theme/themes/Oblivion/images/ajax-loader.gif);
+  --loading-indicator-icon: url(../plugins/theme/themes/Oblivion/images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
 category-panel {
