@@ -123,6 +123,7 @@ var theWebUI = {
 		"webui.confirm_when_deleting":	1,
 		"webui.alternate_color":	0,
 		"webui.side_panel_min_width": 	200,
+		"webui.side_panel_max_width_percent": 50,
 		"webui.list_table_min_height": 	300,
 		"webui.update_interval":	2500,
 		"webui.hsplit":			0.88,
@@ -2223,8 +2224,11 @@ var theWebUI = {
 		if (!w)
 			return;
 		const offcanvas = $("#offcanvas-sidepanel");
-		if (theWebUI.settings["webui.list_table_min_height"]) {
+		if (theWebUI.settings["webui.side_panel_min_width"]) {
 			w = Math.max(w, ir(theWebUI.settings["webui.side_panel_min_width"]));
+		}
+		if (theWebUI.settings["webui.side_panel_max_width_percent"]) {
+			w = Math.min(w, $(window).width() * ir(theWebUI.settings["webui.side_panel_max_width_percent"]) / 100);
 		}
 		if (offcanvas.css("display") === "none") {
 			// Senerio 1: when side panel is toggled off

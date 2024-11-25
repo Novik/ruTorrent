@@ -391,6 +391,7 @@ function makeContent() {
 				["st_bt", theUILang.BitTorrent],
 				["st_fmt", theUILang.Format],
 				["st_ao", theUILang.Advanced],
+				["st_dev", theUILang.Developers],
 			].map(([id, text, defaultFocus]) => $("<li>").attr({id: `hld_${id}`}).append(
 				$("<div>").append(
 					$("<div>"),
@@ -426,17 +427,6 @@ function makeContent() {
 					$("<input>").attr({type: "checkbox", id: id}),
 					$("<label>").attr({for: id}).text(label),
 				)),
-				...[
-					['webui.side_panel_min_width', theUILang.sidePanelMinWidth],
-					['webui.list_table_min_height', theUILang.listTableMinHeight],
-				].map(([id, label]) => [
-					$("<div>").addClass("col-12 col-md-6").append(
-						$("<label>").attr({for:id}).text(label),
-					),
-					$("<div>").addClass("col-12 col-md-6").append(
-						$("<input>").attr({type:"text", id}),
-					),
-				]),
 				...[
 					["webui.update_interval", theUILang.Update_GUI_every + ": ", theUILang.ms, 3000],
 					["webui.reqtimeout", theUILang.ReqTimeout + ": ", theUILang.ms, 5000],
@@ -739,11 +729,34 @@ function makeContent() {
 		),
 	);
 
+	const stgDevCont = $("<div>").attr({id: "st_dev"}).addClass("stg_con").append(
+		$("<fieldset>").append(
+			$("<legend>").text(theUILang.Developers),
+			$("<div>").attr({id: "st_dev_h"}).addClass("row").append(
+				...[
+					['webui.side_panel_min_width', theUILang.sidePanelMinWidth, theUILang.Pixel],
+					['webui.side_panel_max_width_percent', theUILang.sidePanelMaxWidthPercent, "%"],
+					['webui.list_table_min_height', theUILang.listTableMinHeight, theUILang.Pixel],
+				].map(([id, label, unit]) => [
+					$("<div>").addClass("col-12 col-md-6").append(
+						$("<label>").attr({for:id}).text(label),
+					),
+					$("<div>").addClass("col-10 col-md-5").append(
+						$("<input>").attr({type:"text", id}),
+					),
+					$("<div>").addClass("col-2 col-md-1").append(
+						$("<span>").text(unit),
+					),
+				]),
+			),
+		),
+	);
+
 	theDialogManager.make("stg",theUILang.ruTorrent_settings,
 		$("<div>").attr({id: "stg_c"}).addClass("cont").append(
 			stgPanel,
 			$("<div>").attr({id: "stg-pages"}).append(
-				stgGlCont, stgDlCont, stgConCont, stgBtCont, stgFmtCont, stgAoCont,
+				stgGlCont, stgDlCont, stgConCont, stgBtCont, stgFmtCont, stgAoCont, stgDevCont,
 				$("<div>").attr({id: "st_btns"}).addClass("buttons-list").append(
 					$("<button>").text(theUILang.ok).on("click", () => {theDialogManager.hide('stg'); theWebUI.setSettings(); return false;}),
 					$("<button>").text(theUILang.Cancel).addClass("Cancel"),
