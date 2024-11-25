@@ -2249,7 +2249,7 @@ var theWebUI =
 		if (!w)
 			return;
 		const offcanvas = $("#offcanvas-sidepanel");
-		if (theWebUI.settings["webui.list_table_min_height"]) {
+		if (theWebUI.settings["webui.side_panel_min_width"]) {
 			w = Math.max(w, ir(theWebUI.settings["webui.side_panel_min_width"]));
 		}
 		if (offcanvas.css("display") === "none") {
