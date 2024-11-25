@@ -39,6 +39,20 @@ theWebUI.rDirBrowser = class {
 		if (!!stgId) {
 			theOptionsSwitcher.addHandler(stgId, "afterHide", () => self.hide());
 		}
+		// move dir list frame along with the containing dialog window
+		$(`#${dlgId}`).data("dnd").options.onRun = () => {
+			$(`#${dlgId}`).find(".browseEdit").each((_, ele) => {
+				// move open ones only because frames will automatically reposition
+				// when toggled open
+				if ($(`#${ele.id}_frame`).css("display") !== "none") {
+					const frameOffs = ele.getBoundingClientRect();
+					$(`#${ele.id}_frame`).css({
+						top: frameOffs.bottom,
+						left: frameOffs.left,
+					});
+				}
+			});
+		};
 
 		this.withFiles = withFiles;
 		this.height = height;

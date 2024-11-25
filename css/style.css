@@ -470,7 +470,6 @@ div.indent {padding-left: 16px}
 #st_gl {display: block}
 #st_que, #st_sch, #st_dc {display: none}
 select.cols {border: 1px solid #808080; font-size: 11px;  padding: 2px; width: 120px}
-div#dragmask {width: 10px; height: 10px; left: 0px; top: 0px; position: absolute; z-index: 5000; display: none; border: 1px dotted #A0A0A0}
 div#tdetails {
   display: flex;
   flex-direction: column;
