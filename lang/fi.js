@@ -93,7 +93,7 @@ var theUILang =
  GB				: "Gt",
  TB				: "Tt",
  PB				: "Pt",
- Pixel		: "Pixel",
+ Pixel				: "Pixel",
  Loading			: "Ladataan...",
  Torrent_file			: "Torrent-tiedosto",
  Torrent_URL			: "Torrentin URL",

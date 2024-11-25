@@ -91,7 +91,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
- Pixel		: "Pixel",
+ Pixel				: "Pixel",
  Loading			: "Φόρτωση...",
  Torrent_file			: "Αρχείο Torrent",
  Torrent_URL			: "URL του Torrent",

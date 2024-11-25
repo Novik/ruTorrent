@@ -93,7 +93,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
- Pixel		: "Pixel",
+ Pixel				: "Pixel",
  Loading			: "Lade rTorrent WebUI in Deutsch...",
  Torrent_file			: "Torrent Datei",
  Torrent_URL			: "Torrent URL",

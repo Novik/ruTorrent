@@ -91,7 +91,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
- Pixel		: "Pixel",
+ Pixel				: "Pixel",
  Loading			: "불러오는 중...",
  Torrent_file			: "토렌트 파일",
  Torrent_URL			: "토렌트 URL",

@@ -93,7 +93,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
- Pixel		: "Pixel",
+ Pixel				: "Pixel",
  Loading			: "Yükleniyor...",
  Torrent_file			: "Torrent dosyası",
  Torrent_URL			: "Torrent URL'si",

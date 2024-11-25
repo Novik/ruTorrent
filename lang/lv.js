@@ -93,7 +93,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
- Pixel		: "Pixel",
+ Pixel				: "Pixel",
  Loading			: "Ielādē...",
  Torrent_file			: "Torenta fails",
  Torrent_URL			: "Torenta adrese",
