@@ -5,7 +5,7 @@
 
 var theWebUI =
 {
-  	version: "5.1.B5",
+  	version: "5.1.0",
 	tables:
 	{
 		trt:
@@ -2249,7 +2249,7 @@ var theWebUI =
 		if (!w)
 			return;
 		const offcanvas = $("#offcanvas-sidepanel");
-		if (theWebUI.settings["webui.list_table_min_height"]) {
+		if (theWebUI.settings["webui.side_panel_min_width"]) {
 			w = Math.max(w, ir(theWebUI.settings["webui.side_panel_min_width"]));
 		}
 		if (offcanvas.css("display") === "none") {
@@ -2306,6 +2306,10 @@ var theWebUI =
 		theWebUI.resizeTop(null, h);
 		// center any open dialog
 		theDialogManager.visible.forEach(id => theDialogManager.center(id));
+		if ($(window).width < 768) {
+			// close collapsible top menu
+			bootstrap.Collapse.getOrCreateInstance("#top-menu").hide();
+		}
 	},
 
 	update: function()

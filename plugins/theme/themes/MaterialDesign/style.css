@@ -214,6 +214,15 @@ html,body
   --header-border-color: transparent;
   --dialog-bg-color: #222222;
   --dialog-border-color: #333333;
+
+	--navbar-height: 40px;
+  --navbar-bg-color: #273238;
+  --navbar-bg-image: none;
+  --navbar-border-color: transparent;
+  --navbar-item-bg-color: #181818;
+  --navbar-item-border-color: transparent;
+  --loading-indicator-icon: url(../plugins/theme/themes/MaterialDesign/images/ajax-loader-small.gif);
+  --loading-indicator-side-length: 34px;
 }
 category-panel {
   --open-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_open.png);
@@ -452,43 +461,25 @@ ul.CMenu li ul li a.dis:hover
 	border:1px dotted #555
 }
 
-#t {
-	background-color:#273238;
-	background-image:none;
-	border-bottom:none;
-	height: 40px;
-}
-
-#top-menu {
-  background-color: #273238;
-  border-bottom: none;
-}
 .navbar-toggler {
   background-image: none;
   border: none;
 }
-div#t .nav-link {
-  background-color: #181818;
-  border: none;
+#t .nav-link {
   color: #EEE;
-}
-
-div#t a
-{
-	margin:4px 5px 0 0
 }
 
 #mnu_logoff.top-menu-item {
         margin-left: 15px;
 }
 
-div#t a:hover
+#t .nav-link:hover
 {
 	background: none;
 	filter: brightness(1.2);
 }
 
-div#t a:active
+#t .nav-link:active
 {
 	background: none;
 	filter: brightness(1.3);
@@ -1074,14 +1065,6 @@ div.tab
 	background-color:#181818
 }
 
-div#t div#ind
-{
-	height:34px;
-	width:34px;
-	background:transparent url(./images/ajax-loader-small.gif) no-repeat 0 center;
-	margin:2px 6px
-}
-
 span#loadimg
 {
 	background:transparent url(./images/ajax-loader.gif) no-repeat center center
@@ -1266,10 +1249,3 @@ span.det {
 .stval { color: #FFF; }
 .tickLabel { color: #FFF; }
 .dlg-window legend { color: #FFF; }
-
-@media (min-width: 768px) { 
-  /* Custom rules for medium devices */
-  div#t .nav-link {
-    background-color: transparent;
-  }
-}

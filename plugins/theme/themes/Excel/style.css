@@ -18,6 +18,15 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
   --header-border-color: #FFFFFF;
   --dialog-bg-color: #D9E8FB;
   --dialog-border-color: #FFFFFF;
+
+  --navbar-height: 36px;
+  --navbar-bg-color: transparent;
+  --navbar-bg-image: url(../images/t_bg.png);
+  --navbar-border-color: transparent;
+  --navbar-item-bg-color: #f0f0f0;
+  --navbar-item-border-color: #a0a0a0;
+  --loading-indicator-icon: url(../images/ajax-loader.gif);
+  --loading-indicator-side-length: 32px;
 }
 category-panel {
   --open-background-image: none;
@@ -46,11 +55,6 @@ panel-label[selected] {
 #StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
 .statuscell { border-color: #9EB6CE }
 
-#t {background: none; border: none;}
-#top-menu {
-  background-color: #B5D5FB;
-  border-bottom: 1px solid #9EB6CE;
-}
 .navbar-toggler {
   background-image: none;
 }

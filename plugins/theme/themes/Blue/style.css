@@ -18,6 +18,15 @@ html, body { background-color: #DFE8F6 }
   --header-border-color: transparent;
   --dialog-bg-color: #FAFAFA;
   --dialog-border-color: #909090;
+
+  --navbar-height: 36px;
+  --navbar-bg-color: #181818;
+  --navbar-bg-image: url(../plugins/theme/themes/Blue/images/header_bg.gif);
+  --navbar-border-color: #333333;
+  --navbar-item-bg-color: linear-gradient(0deg, rgba(180,207,240,1) 0%, rgba(222,236,253,1) 100%);
+  --navbar-item-border-color: #8db2e3;
+  --loading-indicator-icon: url(../plugins/theme/themes/Blue/images/ajax-loader.gif);
+  --loading-indicator-side-length: 32px;
 }
 category-panel {
   --open-background-image: url(../plugins/theme/themes/Blue/images/pnl_open.gif);
@@ -44,14 +53,7 @@ panel-label[selected] {
   border-color: #D9E8FB;
 }
 
-#t {background: #181818 url(./images/header_bg.gif) repeat-x center center; border-bottom: 1px solid #333333;}
-#top-menu {
-  background-color: #181818;
-  border-bottom: 1px solid #333333;
-}
-div#t .nav-link {
-  background-image: url(./images/tabs-bg.png);
-  border-color: #8DB2E3;
+#t .nav-link {
   color: #15428B;
   font-weight: normal;
 }
@@ -100,12 +102,3 @@ ul.CMenu li.menuitem hr {background-color: #E0E0E0; color: #000000; border-botto
 
 div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
 .lm li a.focus {background-color: #D9E8FB}
-
-div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0px center;}
-
-@media (min-width: 768px) { 
-  /* Custom rules for medium devices */
-  div#t .nav-link {
-    background-image: none;
-  }
-}

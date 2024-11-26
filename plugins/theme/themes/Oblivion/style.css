@@ -18,6 +18,15 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --header-border-color: #333333;
   --dialog-bg-color: #222222;
   --dialog-border-color: #333333;
+
+  --navbar-height: 36px;
+  --navbar-bg-color: #181818;
+  --navbar-bg-image: linear-gradient(0deg, rgba(24,24,24,1) 0%, rgba(33,33,33,1) 100%);
+  --navbar-border-color: transparent;
+  --navbar-item-bg-color: linear-gradient(0deg, rgba(17,17,17,1) 0%, rgba(46,46,46,1) 100%);
+  --navbar-item-border-color: #0f0f0f;
+  --loading-indicator-icon: url(../plugins/theme/themes/Oblivion/images/ajax-loader.gif);
+  --loading-indicator-side-length: 32px;
 }
 category-panel {
   --open-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_open.png);
@@ -131,22 +140,15 @@ ul.CMenu li:hover ul li a:hover { text-shadow:0px -1px 0px #000;}
 
 #sel {border: 1px dotted #555555;}
 
-#t {background: #000 url(./images/headers.png) repeat-x 0px -252px; border-bottom: none;}
-#top-menu {
-  background-color: #000;
-  border-bottom: none;
-}
 .navbar-toggler {
   background-image: none;
   border-color: #0F0F0F;
 }
-div#t .nav-link {
-  background: #000 url(./images/headers.png) repeat-x 0px 0px;
-  border-color: #0F0F0F;
+#t .nav-link {
   color: #626262;
   font-weight: bold;
 }
-div#t a:hover {background: none;}
+#t .nav-link:hover {background: none;}
 div#t div.TB_Separator {border-right:1px solid #262626;background-color: #000;height:35px;margin:0px 0px 0px 5px}
 div#t div#add {background: transparent url(./images/toolbar.png) no-repeat 0px 0px}
 div#t div#add:hover {background: transparent url(./images/toolbar.png) no-repeat px -24px}
@@ -295,8 +297,6 @@ div#stg .lm {background-color: #181818; border: 1px solid #333333}
 
 div.tab {background-color: #181818}
 
-div#t div#ind {background: transparent url(./images/ajax-loader.gif) no-repeat 0px center;}
-
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; }
 /*Scrollbars*/
 
@@ -364,12 +364,4 @@ span.det {color:#fff;}
     width: 0;
     height: 0;
     display: none;
-}
-
-@media (min-width: 768px) { 
-  /* Custom rules for medium devices */
-  div#t .nav-link {
-    background: none;
-    border: none;
-  }
 }
