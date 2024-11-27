@@ -492,6 +492,19 @@ div.tab {
 div#lcont {line-height: 1rem; background: #FFFFFF}
 div#lcont div.mono {font-family: monospace; line-height: 1rem; background: #F5F5F5; white-space: pre}
 div#lcont .std {padding: 2px}
+#clear_log {
+  position: fixed;
+  bottom: 4rem;
+  right: 2rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-image: none;
+}
 
 div#gcont span.det-hdr {font-weight: bold;}
 div#gcont div.row.Header {font-size: 14px; font-weight: bold; background: #FCFCFC; padding: 0.5rem;}
