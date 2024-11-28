@@ -378,7 +378,7 @@ rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore, isD
 		let newBtn = $("<a>")
 			.attr({id:`mnu_${id}`, href:"#", title:`${name}...`})
 			.on({
-				click: $type(onclick) === "function" ? () => onclick() : () => eval(onclick),
+				click: $type(onclick) === "function" ? onclick : () => eval(onclick),
 				focus: (ev) => ev.target.blur(),
 			})
 			.addClass("nav-link top-menu-item")
