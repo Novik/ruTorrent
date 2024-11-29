@@ -59,7 +59,18 @@ class recentTrackers
 	public function strip()
 	{
 		global $recentTrackersMaxCount;
-		$this->last_used = array_values( array_unique($this->last_used) );
+		for ($i = count($this->last_used) - 1; $i >= 0; $i--)
+		# remove trailing white spaces and preserve those in between from last used array
+		{
+			if( strlen(trim($this->last_used[$i])) < 1 )
+			{
+				array_pop($this->last_used);
+			}
+			else
+			{
+				break;
+			}
+		}
 		$this->list = array_values( array_unique($this->list) );
 		$cnt = count($this->list);
 		$arr = array_values($this->list);
@@ -142,8 +153,8 @@ if(isset($_REQUEST['cmd']))
 					$trackers = array();
 					if(isset($_REQUEST['trackers']))
 					{
-						$arr = explode("\r", $_REQUEST['trackers']);
-						foreach( $arr as $key => $value )
+						$trackers = explode("\r", $_REQUEST['trackers']);
+						foreach( $trackers as $key => $value )
 						{
 							$value = trim($value);
 							if(strlen($value) === 0)
@@ -151,7 +162,6 @@ if(isset($_REQUEST['cmd']))
 								continue;
 							}
 
-							$trackers[] = $value;
 							$rt->list[] = $value;
 						}
 					}
