@@ -241,6 +241,7 @@ div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
   font-weight: normal;
   color: var(--menu-color);
   border-radius: inherit;
+  white-space: nowrap;
 }
 .CMenu li a.sel {
   color: var(--menu-active-color);
@@ -248,8 +249,8 @@ div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
 .CMenu li a::before, .CMenu li a::after {
   content: "";
   display: block;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.35rem;
+  height: 1.35rem;
   background-size: 0.75rem;
   background-position: center;
   background-repeat: no-repeat;
@@ -265,15 +266,17 @@ div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
   color: var(--menu-disabled-color);
 }
 .CMenu li hr {
-  width: 90%;
-  margin: 0;
+  width: auto;
+  margin: 0.25rem;
+  border-color: var(--menu-border-color);
+  opacity: 0.75;
 }
 .CMenu li a:not(.dis):hover {
   background-color: var(--menu-highlight-background-color);
   color: var(--menu-highlight-color);
 }
 
-ul.CMenu li:hover ul {display: block; position: absolute; top: 0; left: 146px; width:150px;}
+ul.CMenu li:hover ul {display: block; top: 0;}
 ul.CMenu li:hover ul li ul {display: none;}
 ul.CMenu li:hover ul.left {left: -150px}
 

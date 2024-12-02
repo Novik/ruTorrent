@@ -131,7 +131,6 @@ div#preload {
   background-image: url(./images/headers.png);
 }
 
-hr {background-color:#000;height:1px;border-width: 0px;border-bottom:1px solid #333333;}
 div#cover {background: #181818}
 div#msg {background: #151515; border-top: 1px solid #333333; border-bottom: 1px solid #333333;font-size: 11px; font-weight: bold;text-shadow:0px -3px 0px #000}
 div#sc {border: 1px solid #333333; background-color: #181818}
@@ -142,13 +141,10 @@ div#lng {background-color:#181818; border:1px solid #333333}
 .CMenu {
   opacity:0.98;
 }
-.CMenu li hr {background-color:#000;height:1px;border-width: 0px;border-bottom:1px solid #1b1b1b;padding:0px;margin:0px;width:100%;}
 .CMenu li .exp:hover::after {
 	filter: brightness(1.8);
 }
 ul.CMenu li a:hover { text-shadow:0px -1px 0px #000;}
-
-ul.CMenu li:hover ul li a:hover { text-shadow:0px -1px 0px #000;}
 
 #sel {border: 1px dotted #555555;}
 

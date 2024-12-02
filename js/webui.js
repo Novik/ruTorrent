@@ -1439,7 +1439,6 @@ var theWebUI = {
 				: null,
 		]);
 		theContextMenu.add([CMENU_SEP]);
-		theContextMenu.add([theUILang.Details, "theWebUI.showDetails('" + id + "')"]);
 		if ((table.selCount > 1) || !this.isTorrentCommandEnabled("setprops",id))
 			theContextMenu.add([theUILang.Properties]);
 		else

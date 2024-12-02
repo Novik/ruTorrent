@@ -311,14 +311,6 @@ div#preload
 	background-image:url(./images/headers.png)
 }
 
-hr
-{
-	background-color:#000;
-	height:1px;
-	border-width:0;
-	border-bottom:1px solid #333
-}
-
 div#cover
 {
 	background:#181818
@@ -354,13 +346,6 @@ div#lng
 
 .CMenu {
 	opacity: .98;
-}
-
-.CMenu li hr
-{
-	border-bottom:1px solid #1b1b1b;
-	padding:0;
-	width:100%
 }
 
 .CMenu li .exp:hover::after {
