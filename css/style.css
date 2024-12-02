@@ -216,7 +216,7 @@ div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
   border: 2px ridge var(--menu-border-color);
   border-radius: 5px;
   background: var(--menu-background-color);
-  padding: 0;
+  padding: 0.25rem 0;
   margin: 0;
   list-style-type: none;
   z-index: 1000
