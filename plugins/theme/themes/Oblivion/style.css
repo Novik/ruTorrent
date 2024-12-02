@@ -9,6 +9,9 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
 
   --menu-highlight-color: #ffffff;
   --menu-highlight-background-color: #121212;
+  --menu-active-color: #178fd1;
+  --menu-item-active-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAICAYAAAA1BOUGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAxUlEQVQImWMUFBRkQAO6MAYzJycnqgS3oBRLyqyj//79zWRC18YcULWDgYOL4Z+MDgMTg3vefybr6P8MDAy6TK5ZlxglVBn+vHzA8O/qPgaWvwxMDMwGXgwsCgaXGGW0Gf68fsjw5+YxBub7pw2Z2X5/fcEgLOfDLKXO8P/rR4bft04wMJ3dYMf05+cpZu5/33/9+fsn8z8zK8PfN48YGM6sC2X+9n4HAwMDAwsDA8NlljvHGH/++fOf6fNrO7aPLw7DHAcAYQxFFwvnY44AAAAASUVORK5CYII=);
+  --menu-item-exp-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAKCAYAAAB4zEQNAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAmElEQVQYlWXNsQ2DMBRF0WuM6BByhcQADIFLl9SkZ6nskCYdI0DjDbwBJXJnxXEqJExO+a/0vlBKPYAXIIEvFwXwNsbQtm3kpgA+TdMwTRNa61RVVRYBkFIyDAPzPKeu61IWT3VdM44jfd+nv3j/mfHesyzL0zknyvMYY2TbNqy1IoQAQAlwHAfrurLvu7iuCKUUQAKyAPADcbArU+HIrAcAAAAASUVORK5CYII=);
 
   --settings-background-color: #181818;
   --container-bg-color: #181818;
@@ -114,10 +117,20 @@ panel-label[icon=search] {
   --icon-offset: 0px -352px;
 }
 
-div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/menus.png);background-image: url(./images/toolbar.png); background-image: url(./images/status_icons.png);  background-image: url(./images/r_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/pnl_open.gif); background-image: url(./images/pnl_close.gif);background-image: url(./images/headers.png);}
+div#preload {
+  width: 0px;
+  height: 0px;
+  display: none;
+  background-image: url(./images/toolbar.png);
+  background-image: url(./images/status_icons.png);
+  background-image: url(./images/r_bg.gif);
+  background-image: url(./images/asc.gif);
+  background-image: url(./images/desc.gif);
+  background-image: url(./images/pnl_open.gif);
+  background-image: url(./images/pnl_close.gif);
+  background-image: url(./images/headers.png);
+}
 
-
-hr {background-color:#000;height:1px;border-width: 0px;border-bottom:1px solid #333333;}
 div#cover {background: #181818}
 div#msg {background: #151515; border-top: 1px solid #333333; border-bottom: 1px solid #333333;font-size: 11px; font-weight: bold;text-shadow:0px -3px 0px #000}
 div#sc {border: 1px solid #333333; background-color: #181818}
@@ -125,18 +138,13 @@ div#sc li.se_act div {background-color: #333333; color: #888888}
 div#lng {background-color:#181818; border:1px solid #333333}
 
 /*Drop Menu */
-ul.CMenu {opacity:0.98;border-top: 1px solid #333; border-right: 1px solid #070707; border-left: 1px solid #1b1b1b; border-bottom: 1px solid #000000;background: #000; padding:0px;-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;}
-ul.CMenu li.menuitem:first-child {-moz-border-radius-topleft:5px; -webkit-border-top-left-radius:5px;-moz-border-radius-topright:5px;-webkit-border-top-right-radius:5px;border-top-right-radius:5px;border-top-left-radius:5px;}
-ul.CMenu li.menuitem:last-child{-moz-border-radius-bottomleft:5px; -webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomright:5px;-webkit-border-bottom-right-radius:5px;border-bottom-right-radius:5px;border-top-left-radius:5px;}
-ul.CMenu li a {color: #757571;background: transparent url(./images/menus.png) no-repeat 0px 0px;}
-ul.CMenu li hr {background-color:#000;height:1px;border-width: 0px;border-bottom:1px solid #1b1b1b;padding:0px;margin:0px;width:100%;}
-ul.CMenu li a.exp {background: transparent url(./images/menus.png) no-repeat right -22px;}
-ul.CMenu li a.exp:hover {background: transparent url(./images/menus.png) no-repeat right -44px;}
-ul.CMenu li a.sel {color:#178FD1;background: transparent url(./images/menus.png) no-repeat 0px -66px;}
-ul.CMenu li ul li a.sel {color:#178FD1}
+.CMenu {
+  opacity:0.98;
+}
+.CMenu li .exp:hover::after {
+	filter: brightness(1.8);
+}
 ul.CMenu li a:hover { text-shadow:0px -1px 0px #000;}
-
-ul.CMenu li:hover ul li a:hover { text-shadow:0px -1px 0px #000;}
 
 #sel {border: 1px dotted #555555;}
 

@@ -95,6 +95,9 @@ span {
 
   --menu-highlight-color: #ffffff;
   --menu-highlight-background-color: #cfdeef;
+  --menu-active-color: #000000;
+  --menu-item-active-icon: url(data:image/gif;base64,R0lGODlhBwAHAPABAAAAAACMFCH5BAUAAAEALAAAAAAHAAcAAAIMjA9nwMj9wmuLIlUAADs=);
+  --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAPABAAAAAAAAACH5BAUAAAEALAAAAAAIAAcAAAIMRI4Blrq9HoqQJZsKADs=);
 
   --settings-background-color: #fafafa;
   --container-bg-color: #ffffff;
@@ -206,17 +209,74 @@ div#sc ul {margin: 0; padding: 0; list-style: none}
 div#sc ul li {margin: 0; padding: 0}
 div#sc li div {line-height: 14px; padding: 4px; font-weight: bold; font-size: 11px;}
 div#sc li.se_act div {background-color: #808080; color: #FFFFFF}
-ul.CMenu {position: absolute; width: 150px; left: 0px; top: 0px; display: none; border: 1px solid #A0A0A0; border-right: 2px solid #A0A0A0; border-bottom: 2px solid #808080; background: #F0F0F0; text-decoration: none; padding: 2px 0 0 2px; margin: 0; list-style-type: none; z-index: 1000}
-ul.CMenu li {float: left; margin-right: 1px; position: relative; width: 150px; background: var(--menu-background-color); }
-ul.CMenu li a {display: block; line-height: 16px; padding: 3px 4px 3px 16px; font-weight: normal; background-color: var(--menu-background-color); color: var(--menu-color);}
-ul.CMenu li ul li a.dis, ul.CMenu li a.dis { color: var(--menu-disabled-color); }
-ul.CMenu li hr {width: 90%; border-top: 1px solid var(--menu-border-color); height: 0px; margin-top: 2px; margin-bottom: 2px; }
-.ie ul.CMenu li hr { line-height:1px; font-size:1px; margin: 0 }
-ul.CMenu li a.exp {background: transparent url(../images/menuexp.gif) no-repeat scroll 140px center; }
-ul.CMenu li a.sel {background: transparent url(../images/menusel.gif) no-repeat scroll 4px center}
-ul.CMenu li a:not(.dis):hover {background-color: var(--menu-highlight-background-color); color: var(--menu-highlight-color)}
 
-ul.CMenu li:hover ul {display: block; position: absolute; top: 0; left: 146px; width:150px;}
+.CMenu {
+  position: absolute;
+  display: none;
+  border: 2px ridge var(--menu-border-color);
+  border-radius: 5px;
+  background: var(--menu-background-color);
+  padding: 0.25rem 0;
+  margin: 0;
+  list-style-type: none;
+  z-index: 1000
+}
+.CMenu li {
+  display: block;
+  position: relative;
+}
+.CMenu li:first-child {
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+.CMenu li:last-child {
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+.CMenu li a {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.25rem;
+  font-weight: normal;
+  color: var(--menu-color);
+  border-radius: inherit;
+  white-space: nowrap;
+}
+.CMenu li a.sel {
+  color: var(--menu-active-color);
+}
+.CMenu li a::before, .CMenu li a::after {
+  content: "";
+  display: block;
+  width: 1.35rem;
+  height: 1.35rem;
+  background-size: 0.75rem;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.CMenu li a.sel::before {
+  background-image: var(--menu-item-active-icon);
+}
+.CMenu li a.exp::after {
+  background-image: var(--menu-item-exp-icon);
+  margin-left: auto;
+}
+.CMenu li a.dis {
+  color: var(--menu-disabled-color);
+}
+.CMenu li hr {
+  width: auto;
+  margin: 0.25rem;
+  border-color: var(--menu-border-color);
+  opacity: 0.75;
+}
+.CMenu li a:not(.dis):hover {
+  background-color: var(--menu-highlight-background-color);
+  color: var(--menu-highlight-color);
+}
+
+ul.CMenu li:hover ul {display: block; top: 0;}
 ul.CMenu li:hover ul li ul {display: none;}
 ul.CMenu li:hover ul.left {left: -150px}
 

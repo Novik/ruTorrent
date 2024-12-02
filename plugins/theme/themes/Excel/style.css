@@ -9,6 +9,9 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
 
   --menu-highlight-color: #000000;
   --menu-highlight-background-color: #ffeec2;
+  --menu-active-color: #000000;
+  /* --menu-item-active-icon: undefined - inherit from standard theme; */
+  /* --menu-item-exp-icon: undefined - inherit from standard theme; */
 
   --settings-background-color: #FFFFFF;
   --container-bg-color: #d2e0f0;
