@@ -19,6 +19,10 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
   --btn-bg-color: #f1f1ec;
   --header-bg-color: #D9E8FB;
   --header-border-color: #FFFFFF;
+  --footer-height: 25px;
+  --footer-bg-color: transparent;
+  --footer-bg-image: linear-gradient(0deg, #586675 0%, #bad4f7 10%, #ffffff 100%);
+  --footer-border-color: #567db0;
   --dialog-bg-color: #D9E8FB;
   --dialog-border-color: #FFFFFF;
 
@@ -55,7 +59,7 @@ panel-label[selected] {
   --badge-background-color: #FFFFFF;
 }
 
-#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
+#StatusBar { color: #034084 }
 .statuscell { border-color: #9EB6CE }
 
 .navbar-toggler {
