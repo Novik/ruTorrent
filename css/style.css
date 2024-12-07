@@ -6,7 +6,15 @@
   -moz-user-select: none;
   -webkit-user-select: none;
 }
-html, body {border: 0; padding: 0; cursor: default; overflow: hidden; background-color: #F5F5F5; height: 100%;}
+html, body {
+  border: 0;
+  padding: 0;
+  cursor: default;
+  overflow: hidden;
+  color: var(--text-color);
+  background-color: #F5F5F5;
+  height: 100%;
+}
 html, body, input,select,button,textarea{font-family: Tahoma, Arial, Helvetica, sans-serif; font-size: 11px;}
 div, td, label, fieldset, textarea, select, input, button, dialog {
   box-sizing: border-box;
@@ -27,7 +35,7 @@ fieldset {
   padding: 0.25rem 0.5rem;
 }
 legend {
-  color: #000000;
+  color: var(--text-header-color);
   font-weight: bold;
   float: unset; /* prevent collision with bootstrap */
   width: unset; /* prevent collision with bootstrap */
@@ -86,6 +94,9 @@ span {
 .light-theme { color-scheme: light; }
 .dark-theme { color-scheme: dark; }
 :root {
+  --text-color: #000000;
+  --text-header-color: var(--text-color);
+
   --menu-color: #000000;
   --menu-background-color: #ffffff;
   --menu-border-color: #d0d0d0;
@@ -99,7 +110,6 @@ span {
   --menu-item-active-icon: url(data:image/gif;base64,R0lGODlhBwAHAPABAAAAAACMFCH5BAUAAAEALAAAAAAHAAcAAAIMjA9nwMj9wmuLIlUAADs=);
   --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAPABAAAAAAAAACH5BAUAAAEALAAAAAAIAAcAAAIMRI4Blrq9HoqQJZsKADs=);
 
-  --settings-background-color: #fafafa;
   --container-bg-color: #ffffff;
   --container-border-color: #a0a0a0;
   --btn-bg-color: #F0F0F0;
@@ -141,7 +151,7 @@ category-list.hide-textoverflow panel-label::part(text) {
   text-overflow: ellipsis;
 }
 dialog {
-  background-color: var(--settings-background-color);
+  background-color: var(--dialog-bg-color);
   border-color: var(--menu-border-color);
 }
 form{margin:0;}
@@ -160,7 +170,7 @@ div#modalbg {left: 0px; top: 0px; z-index: 500; display: none; opacity: 0.5; bac
   left: 0px;
   top: 0px;
   background-color: var(--dialog-bg-color);
-  color: #000000;
+  color: var(--text-color);
   border: 2px solid var(--dialog-border-color);
   border-radius: 8px;
   outline: 0px solid transparent;
@@ -188,9 +198,12 @@ div#modalbg {left: 0px; top: 0px; z-index: 500; display: none; opacity: 0.5; bac
   position: sticky;
   top: 0;
   padding: 0.5rem;
+  color: var(--text-header-color);
   background-color: var(--header-bg-color);
   border-bottom: 1px solid var(--header-border-color);
-  border-radius: 10px 10px 0 0;
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 .dlg-header > div:first-child {
   line-height: 2rem;
@@ -437,7 +450,6 @@ div#HDivider, div#VDivider {flex: 0 0 5px;}
 #stg {
   width: 95vw;
   height: 95vh;
-  background-color: var(--settings-background-color);
 }
 #stg_c {
   display: flex;
@@ -508,13 +520,12 @@ div#stg .lm {
 .stg_con {
   display: none;
   margin-bottom: auto;
-  background-color: var(--settings-background-color);
   overflow: hidden auto;
 }
 .stg_con legend {
   position: sticky;
   top: 0;
-  background-color: var(--settings-background-color);
+  background-color: var(--dialog-bg-color);
 }
 .ie9 .stg_con {position: static}
 .stg_con table {width: 100%}
@@ -688,7 +699,6 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 }
 .buttons-group-row {margin: 0.25rem; gap: 0.25rem; display: flex; flex-direction: row;}
 
-.ie fieldset {padding: 5px}
 #servertime { text-align: center }
 #viewrows { text-align: center; }
 
