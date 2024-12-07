@@ -21,6 +21,10 @@ html, body { background-color: #1e2124; }
   --btn-bg-color: #D7D7D7;
   --header-bg-color: #1E2124;
   --header-border-color: #909090;
+  --footer-height: 25px;
+  --footer-bg-color: #1e2124;
+  --footer-bg-image: none;
+  --footer-border-color: #a0a0a0;
   --dialog-bg-color: #1E2124;
   --dialog-border-color: #909090;
 
@@ -164,7 +168,7 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
-#StatusBar { background-color: #1e2124; color: #ffffff; font-weight: bold }
+#StatusBar { color: #ffffff; font-weight: bold }
 #st_up { background:url(./images/status_up.gif) 6px no-repeat; color: #BDDBDB; }
 #st_down { background:url(./images/status_down.gif) 6px no-repeat; color: #BDDBDB;}
 

@@ -21,6 +21,10 @@ html, body {background-color: #181818; color: #999999; }
   --btn-bg-color: #D6D6D6;
   --header-bg-color: #181818;
   --header-border-color: #333333;
+  --footer-height: 25px;
+  --footer-bg-color: #181818;
+  --footer-bg-image: none;
+  --footer-border-color: #333333;
   --dialog-bg-color: #181818;
   --dialog-border-color: #333333;
 
@@ -230,9 +234,9 @@ div#t div#help {background: transparent url(./images/quest.svg) no-repeat center
 div#t div#go {background: transparent url(./images/go.svg) no-repeat center; background-size: 28px}
 div#t div#plugins {background: transparent url(./images/plugin.svg) no-repeat center; background-size: 28px}
 
-#StatusBar table tr td.pstatus0 {background: url(./images/yellow.svg) no-repeat !important; background-size: 22px !important}
-#StatusBar table tr td.pstatus1 {background: url(./images/red.svg) no-repeat !important; background-size: 22px !important}
-#StatusBar table tr td.pstatus2 {background: url(./images/green.svg) no-repeat !important; background-size: 22px !important}
+#port-pane .pstatus0 {background: url(./images/yellow.svg) no-repeat !important;}
+#port-pane .pstatus1 {background: url(./images/red.svg) no-repeat !important;}
+#port-pane .pstatus2 {background: url(./images/green.svg) no-repeat !important;}
 
 a.dlg-close:hover, a.dlg-close:link, a.dlg-close:visited {
     background: transparent url(./images/close.svg) center; background-size: 22px !important;
@@ -315,10 +319,9 @@ div.tab {background-color: #181818}
 
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; background-size: 28px}
 
-#StatusBar {border-top: 1px solid #333333; background-color: #181818; color: #888888}
+#StatusBar {color: #888888}
 #st_up .icon {background:url(./images/up.svg) no-repeat; background-size: 100%;}
 #st_down .icon {background:url(./images/down.svg) no-repeat; background-size: 100%;}
-.status-cell {border-right: 1px solid #333333}
 
 .dlg-header > div:first-child {background-size: 1.5rem;}
 #stg-header {background-image: url(./images/settings.svg);}

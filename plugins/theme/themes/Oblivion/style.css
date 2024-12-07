@@ -21,6 +21,10 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --btn-bg-color: #515151;
   --header-bg-color: #222222;
   --header-border-color: #333333;
+  --footer-height: 25px;
+  --footer-bg-color: transparent;
+  --footer-bg-image: linear-gradient(0deg, #090909 0%, #2e2e2e 100%);
+  --footer-border-color: #333333;
   --dialog-bg-color: #222222;
   --dialog-border-color: #333333;
 
@@ -336,10 +340,7 @@ background-color: #343434;
 div#lcont div.std {background: #181818 url(./images/headers.png) repeat-x 0px -37px;height:17px;line-height:17px;border-bottom: 1px solid #333333;}
 div#lcont div.std:nth-child(2n+1) {background: #181818 url(./images/headers.png) repeat-x 0px -64px;}
 
-#StatusBar { border-top: 1px solid #333333; background: #000 url(./images/headers.png) repeat-x 0px 0px; color: #888888;font-family:inherit; }
-#StatusBar table tr td {padding-right:5px;border:none;background: transparent url(./images/headers.png) no-repeat right -208px;}
-#StatusBar table tr td td {background:none;}
-#StatusBar table tr td:last-child {border-top:red;}
+#StatusBar { color: #888888; }
 #st_up .icon {background:url(./images/status.png) no-repeat 0px -2px;}
 #st_down .icon {background:url(./images/status.png) no-repeat 0px -22px;}
 .statuscell {padding-right:5px;border:none;}

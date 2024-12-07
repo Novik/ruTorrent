@@ -186,9 +186,9 @@ var theDialogManager = {
 			// Close side panel on mobile:
 			// An offcanvas is a modal under the hood and will intercept focus events
 			// from other elements, and make other text inputs unfocusable and uneditable.
-			bootstrap.Offcanvas.getOrCreateInstance(document.querySelector("#offcanvas-sidepanel")).hide();
+			bootstrap.Offcanvas.getInstance("#offcanvas-sidepanel")?.hide();
 			// close collapsible top menu on opening dialog windows
-			bootstrap.Collapse.getOrCreateInstance("#top-menu").hide();
+			bootstrap.Collapse.getInstance("#top-menu")?.hide();
 		}
 
 		const obj = $('#' + id);
