@@ -4,6 +4,7 @@
   --header-border-color: #d0d0d0;
   --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAGCAYAAAARx7TFAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAU0lEQVQImYXOsQ0AMQgDQFIgZRxG9G60zECTBdJQ+6t8EfR6JDfWSUbkOgC8uwYyk5/wgL03q6pDAIwIZibXWm8OHABoZjLnFFVtC+4u4+9ZAOMBnF07zgszHpwAAAAASUVORK5CYII=);
   --col-resize-sep-bg-color: #a0a0a0;
+  --row-border-color: #e0e0e0;
   --row-odd-bg-color: #f3f3f3;
   --row-even-bg-color: #ffffff;
   --row-active-bg-color: #cfdeef;
@@ -84,9 +85,11 @@
   height: 100%;
   top: 0;
 }
-.stable tbody tr {cursor: pointer;}
-.stable tbody tr:not(:first-child) {border-top: 1px solid #E0E0E0;}
-.stable tbody tr:not(:last-child) {border-bottom: 1px solid #E0E0E0;}
+.stable tbody tr {
+  cursor: pointer;
+  border-top: 1px solid var(--row-border-color);
+  border-bottom: 1px solid var(--row-border-color);
+}
 .stable tbody td:first-child div {
   display: flex;
   align-items: center;
