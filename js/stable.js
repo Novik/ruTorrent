@@ -1130,15 +1130,23 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	return true;
 }
 
-dxSTable.prototype.createIconHTML = function(icon)
-{
-	return icon == null ? '' : (typeof icon === 'object'
-		? $('<img>').attr({src: icon.src, width: 16, height: 16}).css('background-image', 'none').addClass('stable-icon')
-		: $('<span>').addClass(['stable-icon', icon]))[0].outerHTML;
+dxSTable.prototype.createIconHTML = function(icon) {
+	// TODO: deprecated, remove this method in v6
+	noty("Deprecation warning: `dxSTable.createIconHTML()` is deprecated. Please use `dxSTable.createIcon()` instead.");
+	return this.createIcon(icon)[0].outerHTML;
 }
 
-dxSTable.prototype.createRow = function(cols, sId, icon, attr)
-{
+dxSTable.prototype.createIcon = function(icon) {
+	if (!icon) return "";
+	const iconObj = $("<span>").addClass("stable-icon");
+	if ($type(icon) === "object") {
+		return iconObj.css("background-image", `url(${icon.src})`);
+	} else {
+		return iconObj.addClass(icon).css("background-image", "");
+	}
+}
+
+dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	const attrs = { id: sId, index: this.rows, title: cols[0] };
 	if (sId == null) {
 		delete attrs['id'];
@@ -1146,45 +1154,36 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 	Object.assign(attrs, attr || {});
 	const data = this.rowdata[sId]?.fmtdata || {};
 
-	const ret = document.createElement('tr');
-	ret.className = this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "";
-	for(const [a,v] of Object.entries(attrs)) {
-		const attr_node = document.createAttribute(a);
-		attr_node.value = v;
-		ret.setAttributeNode(attr_node);
+	const row = $("<tr>").attr(attrs).addClass(this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "");
+	for (let i = 0; i < this.cols; i++) {
+		const index = this.colOrder[i];
+		const cdat = this.colsdata[i];
+		const td = $("<td>").addClass(`stable-${this.dCont.id}-col-${index}`).toggle(!!(cdat.enabled || browser.isIE7x));
+		const celldata = data[index] || '';
+		const rawvalue = cols[index] || '';
+		const isProgress = cdat.type === TYPE_PROGRESS;
+		if (isProgress) {
+			td.attr({rawvalue:rawvalue}).append(
+				$("<span>").addClass("meter-text").css({overflow:"visible"}).text(celldata),
+				$("<div>")
+					.addClass("meter-value")
+					.css(this.progressStyle(celldata)),
+			);
+		} else {
+			td.append(
+				$("<div>").text(celldata || " "),
+			);
+		}
+		row.append(td);
 	}
-	ret.innerHTML = [...Array(this.cols).keys()]
-			.map((_,i) => [this.colOrder[i], this.colsdata[i]])
-			.map(([ind, cdat]) => ({
-				td: [
-					`<td class="stable-${this.dCont.id}-col-${ind}"`,
-					Boolean(cdat.enabled || browser.isIE7x) ?	'>' : ' style="display: none">',
-					ind === 0 ? this.createIconHTML(icon) : ''
-				],
-				celldata: data[ind] || '',
-				rawvalue: cols[ind] || '',
-				progress: cdat.type == TYPE_PROGRESS,
-			}))
-			.flatMap(({td, celldata, rawvalue, progress}) => progress
-				? [
-					td[0], ` rawvalue="${rawvalue}"`, ...td.slice(1),
-					'<span class="meter-text" style="overflow: visible">', escapeHTML(celldata), '</span>',
-					'<div class="meter-value" style="', Object.entries(this.progressStyle(celldata)).map(pair => pair.join(': ')).join(';'), '">&nbsp;</div>',
-					'</td>'
-				]
-				: [
-					...td,
-					'<div>', escapeHTML(celldata) || '&nbsp;', '</div>',
-					'</td>'
-				]
-			).join('');
-	if(!browser.isIE7x)
-	{
+	row.find("td:first-child div").prepend(this.createIcon(icon));
+	const ret = row[0];
+	if (!browser.isIE7x) {
 		var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
 		for(var i = 0, l = _e.length; i < l; i++) 
 			ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
 	}
-	return(ret);
+	return ret;
 }
 
 dxSTable.prototype.removeRow = function(sId) 
@@ -1477,11 +1476,9 @@ dxSTable.prototype.setValueById = function(row, id, val)
 	return(this.setValue(row, this.getColById(id), val));
 }
 
-dxSTable.prototype.progressStyle = function(val)
-{
+dxSTable.prototype.progressStyle = function(val) {
   const nval = iv(val);
   return {
-    float: 'left',
     width: `${nval}%`,
     'background-color': new RGBackground()
       .setGradient(this.prgStartColor, this.prgEndColor, parseFloat(val))
@@ -1571,14 +1568,13 @@ dxSTable.prototype.syncDOM = function()
 						tr.setAttribute(name, attr);
 
 			// update icon
-			if ('icon' in marks)
-			{
+			if ('icon' in marks) {
 				const icon = dataRow.icon;
 				const td = tr.cells[this.getColOrder(0)];
-				if (td.firstChild.classList.contains('stable-icon'))
-					td.firstChild.remove();
+				if ($(td).find("div span").hasClass("stable-icon"))
+					$(td).find("div span").remove();
 				if (icon !== null)
-					td.innerHTML = this.createIconHTML(icon) + td.innerHTML;
+					$(td).find("div").prepend(this.createIcon(icon));
 			}
 
 			// update cols
