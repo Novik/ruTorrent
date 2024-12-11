@@ -9,15 +9,13 @@
   --row-active-bg-color: #888888;
   --row-highlight-brightness: 1;
 }
-.stable-head div.resz {border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center}
+.stable thead div.resz {border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center}
 .stable-body {background: window; background-color: #181818}
-.stable-body td {border-bottom: 1px solid #333333}
+.stable tbody td {border-bottom: 1px solid #333333}
 
-.stable-body {background: #181818}
-.stable-body tr.selected td {color:#111111}
+.stable tbody tr.selected td {color:#111111}
 .stable-move-header {background: transparent url(./images/header_move.gif) repeat-x scroll center top; border: 1px solid #0099FF}
 
-.stable-move-header {background: transparent url(./images/header_move.gif) repeat-x scroll center top rgba(128,128,128,0.7); border: 1px solid #0099FF}
 .webkit .stable-move-header {background: rgba(128,128,128,0.7);}
 
 .stable-active-header {border-color: threedface !important}
