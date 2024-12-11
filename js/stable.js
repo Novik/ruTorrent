@@ -150,9 +150,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		this.cols++;
 		this.colsdata[i] = styles[this.colOrder[i]];
 
-		if(browser.isIE7x && (this.colsdata[i].type==TYPE_PROGRESS))
-			this.colsdata[i].type = TYPE_NUMBER;
-
 		this.colsdata[i].width = iv(this.colsdata[i].width);
 		this.ids[i] = styles[i].id;
 
@@ -259,14 +256,11 @@ dxSTable.prototype.handleClick = function(e)
 	}
 }
 
-dxSTable.prototype.toggleColumn = function(i)
-{
+dxSTable.prototype.toggleColumn = function(i) {
 	this.colsdata[i].enabled = !this.colsdata[i].enabled;
-	$(this.tBodyCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
-	$(this.tHeadCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
-	if(!browser.isIE7x)
-	        for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
-			$(this.tBody.tb.childNodes[D].childNodes[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
+	$(this.tBodyCols[i]).toggle(this.colsdata[i].enabled);
+	$(this.tHeadCols[i]).toggle(this.colsdata[i].enabled);
+	$(this.tBody.tb).find(`tr td:nth-child(${i + 1})`).toggle(this.colsdata[i].enabled);
 	if(this.colsdata[i].enabled)
 	{
 		$(this.tBodyCols[i]).width( this.colsdata[i].width );
@@ -340,11 +334,9 @@ dxSTable.prototype.onRightClick = function(e)
 	}
 }
 
-dxSTable.prototype.resizeHack = function()
-{
-	if(!browser.isIE7x)
-		this.resizeColumn();
-	return(this);
+dxSTable.prototype.resizeHack = function() {
+	this.resizeColumn();
+	return this;
 }
 
 var preventSort = function() 
@@ -360,9 +352,6 @@ dxSTable.prototype.calcSize = function()
 		if ((this.cols > 0) && (!this.isResizing)) {
 			for (let i = 0; i < this.cols; i++) {
 				var _9a = iv(this.tBodyCols[i].style.width);
-				if (browser.isIE && (this.tBodyCols[i].offsetWidth != 0)) {
-					_9a = this.tBodyCols[i].offsetWidth;
-				}
 				if (!_9a) {
 					continue;
 				}
@@ -391,7 +380,7 @@ dxSTable.prototype.resizeColumn = function()
 			_e[i].style.width = w + "px";
 			needCallHandler = true;
 		}
-		if ((browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) && this.tBody.rows.length > 0) {
+		if ((browser.isAppleWebKit || browser.isKonqueror) && this.tBody.rows.length > 0) {
 			if ((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width !== w) && (w >= 4)) {
 				this.tBody.rows[0].cells[i].width = w;
 				needCallHandler = true;
@@ -1158,7 +1147,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	for (let i = 0; i < this.cols; i++) {
 		const index = this.colOrder[i];
 		const cdat = this.colsdata[i];
-		const td = $("<td>").addClass(`stable-${this.dCont.id}-col-${index}`).toggle(!!(cdat.enabled || browser.isIE7x));
+		const td = $("<td>").addClass(`stable-${this.dCont.id}-col-${index}`).toggle(!!cdat.enabled);
 		const celldata = data[index] || '';
 		const rawvalue = cols[index] || '';
 		const isProgress = cdat.type === TYPE_PROGRESS;
@@ -1178,10 +1167,9 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	}
 	row.find("td:first-child div").prepend(this.createIcon(icon));
 	const ret = row[0];
-	if (!browser.isIE7x) {
-		var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-		for(var i = 0, l = _e.length; i < l; i++) 
-			ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
+	const _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
+	for (let i = 0; i < _e.length; i++) {
+		ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
 	}
 	return ret;
 }
