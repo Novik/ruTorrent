@@ -150,9 +150,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		this.cols++;
 		this.colsdata[i] = styles[this.colOrder[i]];
 
-		if(browser.isIE7x && (this.colsdata[i].type==TYPE_PROGRESS))
-			this.colsdata[i].type = TYPE_NUMBER;
-
 		this.colsdata[i].width = iv(this.colsdata[i].width);
 		this.ids[i] = styles[i].id;
 
@@ -259,14 +256,11 @@ dxSTable.prototype.handleClick = function(e)
 	}
 }
 
-dxSTable.prototype.toggleColumn = function(i)
-{
+dxSTable.prototype.toggleColumn = function(i) {
 	this.colsdata[i].enabled = !this.colsdata[i].enabled;
-	$(this.tBodyCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
-	$(this.tHeadCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
-	if(!browser.isIE7x)
-	        for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
-			$(this.tBody.tb.childNodes[D].childNodes[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
+	$(this.tBodyCols[i]).toggle(this.colsdata[i].enabled);
+	$(this.tHeadCols[i]).toggle(this.colsdata[i].enabled);
+	$(this.tBody.tb).find(`tr td:nth-child(${i + 1})`).toggle(this.colsdata[i].enabled);
 	if(this.colsdata[i].enabled)
 	{
 		$(this.tBodyCols[i]).width( this.colsdata[i].width );
@@ -340,11 +334,9 @@ dxSTable.prototype.onRightClick = function(e)
 	}
 }
 
-dxSTable.prototype.resizeHack = function()
-{
-	if(!browser.isIE7x)
-		this.resizeColumn();
-	return(this);
+dxSTable.prototype.resizeHack = function() {
+	this.resizeColumn();
+	return this;
 }
 
 var preventSort = function() 
@@ -360,9 +352,6 @@ dxSTable.prototype.calcSize = function()
 		if ((this.cols > 0) && (!this.isResizing)) {
 			for (let i = 0; i < this.cols; i++) {
 				var _9a = iv(this.tBodyCols[i].style.width);
-				if (browser.isIE && (this.tBodyCols[i].offsetWidth != 0)) {
-					_9a = this.tBodyCols[i].offsetWidth;
-				}
 				if (!_9a) {
 					continue;
 				}
@@ -391,7 +380,7 @@ dxSTable.prototype.resizeColumn = function()
 			_e[i].style.width = w + "px";
 			needCallHandler = true;
 		}
-		if ((browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) && this.tBody.rows.length > 0) {
+		if ((browser.isAppleWebKit || browser.isKonqueror) && this.tBody.rows.length > 0) {
 			if ((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width !== w) && (w >= 4)) {
 				this.tBody.rows[0].cells[i].width = w;
 				needCallHandler = true;
@@ -1130,15 +1119,23 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	return true;
 }
 
-dxSTable.prototype.createIconHTML = function(icon)
-{
-	return icon == null ? '' : (typeof icon === 'object'
-		? $('<img>').attr({src: icon.src, width: 16, height: 16}).css('background-image', 'none').addClass('stable-icon')
-		: $('<span>').addClass(['stable-icon', icon]))[0].outerHTML;
+dxSTable.prototype.createIconHTML = function(icon) {
+	// TODO: deprecated, remove this method in v6
+	noty("Deprecation warning: `dxSTable.createIconHTML()` is deprecated. Please use `dxSTable.createIcon()` instead.");
+	return this.createIcon(icon)[0].outerHTML;
 }
 
-dxSTable.prototype.createRow = function(cols, sId, icon, attr)
-{
+dxSTable.prototype.createIcon = function(icon) {
+	if (!icon) return "";
+	const iconObj = $("<span>").addClass("stable-icon");
+	if ($type(icon) === "object") {
+		return iconObj.css("background-image", `url(${icon.src})`);
+	} else {
+		return iconObj.addClass(icon).css("background-image", "");
+	}
+}
+
+dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	const attrs = { id: sId, index: this.rows, title: cols[0] };
 	if (sId == null) {
 		delete attrs['id'];
@@ -1146,45 +1143,35 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 	Object.assign(attrs, attr || {});
 	const data = this.rowdata[sId]?.fmtdata || {};
 
-	const ret = document.createElement('tr');
-	ret.className = this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "";
-	for(const [a,v] of Object.entries(attrs)) {
-		const attr_node = document.createAttribute(a);
-		attr_node.value = v;
-		ret.setAttributeNode(attr_node);
+	const row = $("<tr>").attr(attrs).addClass(this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "");
+	for (let i = 0; i < this.cols; i++) {
+		const index = this.colOrder[i];
+		const cdat = this.colsdata[i];
+		const td = $("<td>").addClass(`stable-${this.dCont.id}-col-${index}`).toggle(!!cdat.enabled);
+		const celldata = data[index] || '';
+		const rawvalue = cols[index] || '';
+		const isProgress = cdat.type === TYPE_PROGRESS;
+		if (isProgress) {
+			td.attr({rawvalue:rawvalue}).append(
+				$("<span>").addClass("meter-text").css({overflow:"visible"}).text(celldata),
+				$("<div>")
+					.addClass("meter-value")
+					.css(this.progressStyle(celldata)),
+			);
+		} else {
+			td.append(
+				$("<div>").text(celldata || " "),
+			);
+		}
+		row.append(td);
 	}
-	ret.innerHTML = [...Array(this.cols).keys()]
-			.map((_,i) => [this.colOrder[i], this.colsdata[i]])
-			.map(([ind, cdat]) => ({
-				td: [
-					`<td class="stable-${this.dCont.id}-col-${ind}"`,
-					Boolean(cdat.enabled || browser.isIE7x) ?	'>' : ' style="display: none">',
-					ind === 0 ? this.createIconHTML(icon) : ''
-				],
-				celldata: data[ind] || '',
-				rawvalue: cols[ind] || '',
-				progress: cdat.type == TYPE_PROGRESS,
-			}))
-			.flatMap(({td, celldata, rawvalue, progress}) => progress
-				? [
-					td[0], ` rawvalue="${rawvalue}"`, ...td.slice(1),
-					'<span class="meter-text" style="overflow: visible">', escapeHTML(celldata), '</span>',
-					'<div class="meter-value" style="', Object.entries(this.progressStyle(celldata)).map(pair => pair.join(': ')).join(';'), '">&nbsp;</div>',
-					'</td>'
-				]
-				: [
-					...td,
-					'<div>', escapeHTML(celldata) || '&nbsp;', '</div>',
-					'</td>'
-				]
-			).join('');
-	if(!browser.isIE7x)
-	{
-		var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-		for(var i = 0, l = _e.length; i < l; i++) 
-			ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
+	row.find("td:first-child div").prepend(this.createIcon(icon));
+	const ret = row[0];
+	const _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
+	for (let i = 0; i < _e.length; i++) {
+		ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
 	}
-	return(ret);
+	return ret;
 }
 
 dxSTable.prototype.removeRow = function(sId) 
@@ -1477,11 +1464,9 @@ dxSTable.prototype.setValueById = function(row, id, val)
 	return(this.setValue(row, this.getColById(id), val));
 }
 
-dxSTable.prototype.progressStyle = function(val)
-{
+dxSTable.prototype.progressStyle = function(val) {
   const nval = iv(val);
   return {
-    float: 'left',
     width: `${nval}%`,
     'background-color': new RGBackground()
       .setGradient(this.prgStartColor, this.prgEndColor, parseFloat(val))
@@ -1571,14 +1556,13 @@ dxSTable.prototype.syncDOM = function()
 						tr.setAttribute(name, attr);
 
 			// update icon
-			if ('icon' in marks)
-			{
+			if ('icon' in marks) {
 				const icon = dataRow.icon;
 				const td = tr.cells[this.getColOrder(0)];
-				if (td.firstChild.classList.contains('stable-icon'))
-					td.firstChild.remove();
+				if ($(td).find("div span").hasClass("stable-icon"))
+					$(td).find("div span").remove();
 				if (icon !== null)
-					td.innerHTML = this.createIconHTML(icon) + td.innerHTML;
+					$(td).find("div").prepend(this.createIcon(icon));
 			}
 
 			// update cols
