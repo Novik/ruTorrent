@@ -11,6 +11,7 @@ const theOptionsWindow = {
 		beforeHide: "hide.bs.tab",
 		afterHide: "hidden.bs.tab",
 	},
+	currentPage: {get: function() {return $("#stg_c .tab-pane.active").attr("id");}},
 	init: function() {
 		// initialize options window with default option pages
 		const stgGlCont = $("<div>").attr({id: "st_gl"}).addClass("stg_con").append(
@@ -287,29 +288,27 @@ const theOptionsWindow = {
 		const stgAoCont = $("<div>").attr({id: "st_ao"}).addClass("stg_con").append(
 			$("<fieldset>").append(
 				$("<legend>").text(theUILang.Advanced),
-				$("<div>").attr({id: "st_ao_h"}).append(
+				$("<div>").attr({id: "st_ao_h"}).addClass("row").append(
 					...[
 						["hash_interval", 20], ["hash_max_tries", 5], ["hash_read_ahead", 20],
 						["http_cacert", 100], ["http_capath", 100],
 						["max_downloads_div", 5], ["max_uploads_div", 5], ["max_file_size", 20],
-					].map(([id, maxlength]) => $("<div>").addClass("row").append(
+					].flatMap(([id, maxlength]) => [
 						$("<div>").addClass("col-md-6").append(
 							$("<label>").attr({for: id}).text(id),
 						), 
 						$("<div>").addClass("col-md-6").append(
 							$("<input>").attr({type: "text", id: id}).prop("maxlength", maxlength),
 						),
-					)),
-					$("<div>").addClass("row").append(
-						$("<div>").addClass("col-md-6").append(
-							$("<label>").attr({for: "preload_type"}).text("preload_type"),
-						),
-						$("<div>").addClass("col-md-6").append(
-							$("<select>").attr({id: "preload_type"}).append(
-								$("<option>").val(0).text("off"),
-								$("<option>").val(1).text("madvise"),
-								$("<option>").val(2).text("direct paging"),
-							),
+					]),
+					$("<div>").addClass("col-md-6").append(
+						$("<label>").attr({for: "preload_type"}).text("preload_type"),
+					),
+					$("<div>").addClass("col-md-6").append(
+						$("<select>").attr({id: "preload_type"}).append(
+							$("<option>").val(0).text("off"),
+							$("<option>").val(1).text("madvise"),
+							$("<option>").val(2).text("direct paging"),
 						),
 					),
 					...[
@@ -319,16 +318,23 @@ const theOptionsWindow = {
 						["session", 100], ["session_lock", ], ["session_on_completion",],
 						["split_file_size", 20], ["split_suffix", 100], ["use_udp_trackers", ],
 						["http_proxy", 100], ["proxy_address", 100], ["bind", 100],
-					].map(([id, maxlength]) => $("<div>").addClass("row").append(
-						$("<div>").addClass("col-md-6").append(
-							$("<label>").attr({for: id}).text(id),
-						),
-						$("<div>").addClass("col-md-6").append(
-							maxlength ?
-							$("<input>").attr({type: "text", id: id}).prop("maxlength", maxlength) :
-							$("<input>").attr({type: "checkbox", id: id}),
-						),
-					)),
+					].flatMap(([id, maxlength]) => {
+						if (maxlength) {
+							return [
+								$("<div>").addClass("col-md-6").append(
+									$("<label>").attr({for: id}).text(id),
+								),
+								$("<div>").addClass("col-md-6").append(
+									$("<input>").attr({type: "text", id: id}).prop("maxlength", maxlength),
+								),
+							];
+						} else {
+							return  $("<div>").addClass("col-12").append(
+								$("<input>").attr({type: "checkbox", id}),
+								$("<label>").attr({for: id}).text(id),
+							);
+						}
+					}),
 				),
 			),
 		);
@@ -381,9 +387,6 @@ const theOptionsWindow = {
 	},
 	removePage: function(id) {
 		$("#stg_c").find(`#${id}, #mnu_${id}`).remove();
-	},
-	getCurrentPage: function() {
-		return $("#stg_c .tab-pane.active").attr("id");
 	},
 	goToPage: function(id) {
 		bootstrap.Tab.getOrCreateInstance(`#mnu_${id}`).show();

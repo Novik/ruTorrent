@@ -251,7 +251,7 @@ rPlugin.prototype.attachPageToOptions = function(dlg, name) {
 }
 
 rPlugin.prototype.removePageFromOptions = function(id) {
-	if (theOptionsWindow.getCurrentPage() === id)
+	if (theOptionsWindow.currentPage === id)
 		theOptionsWindow.goToPage("st_gl");
 	theOptionsWindow.removePage(id);
 	return this;
