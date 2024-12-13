@@ -6,14 +6,7 @@ function injectScript(fname,initFunc)
 	s = document.createElement("script");
 	if(initFunc)
 	{
-		if(browser.isIE)
-			s.onreadystatechange = function()
-			{
-				if((this.readyState == 'loaded') || (this.readyState == 'complete'))
-					initFunc();
-			}
-		else
-			s.onload = initFunc;
+		s.onload = initFunc;
 	}
 	if(s.setAttribute)
 		s.setAttribute('src', fname);

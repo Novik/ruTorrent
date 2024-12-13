@@ -163,7 +163,6 @@ div#msg {top: 50%; margin-top: -50px; line-height: 100px; font-weight: bold; bac
 .pre-theme-load.dark-theme #loadimg { filter: invert(1); }
 div#modalbg {left: 0px; top: 0px; z-index: 500; display: none; opacity: 0.5; background-color: #CCCCCC;}
 .konqueror div#modalbg { background: none; }
-.ie div#modalbg { filter:alpha(opacity=50); }
 
 .dlg-window {
   position: absolute;
@@ -475,9 +474,6 @@ div#stg .lm {
   border-radius: 0 0 0 6px;
   overflow: hidden auto;
 }
-.ie div#stg .lm {width: 125px; position: static;}
-.ie9 div#stg .lm {position: static}
-.ie #stg {width: 605px;}
 
 .lm li {
   margin: 0 0.5rem;
@@ -519,7 +515,6 @@ div#stg .lm {
   flex-grow: 1;
 }
 .lm li a.focus {background-color: #E0E0E0}
-.ie .lm li a {margin: 0 0 0 -5px; padding: 0}
 .stg_con {
   display: none;
   margin-bottom: auto;
@@ -530,7 +525,6 @@ div#stg .lm {
   top: 0;
   background-color: var(--dialog-bg-color);
 }
-.ie9 .stg_con {position: static}
 .stg_con table {width: 100%}
 .stg_con td {font-weight: normal; height: 19px}
 .stg_con td.alr {text-align: right}
@@ -547,7 +541,6 @@ div#stg .lm {
 }
 input.disabled, button.disabled {background-color: #FAFAFA; color: #C0C0C0; border: 1px solid #C0C0C0}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #C0C0C0; cursor: default}
-.ie7 fieldset div {padding: 0px}
 div.indent {padding-left: 16px}
 #st_gl {display: block}
 #st_que, #st_sch, #st_dc {display: none}

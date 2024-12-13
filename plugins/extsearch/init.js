@@ -284,7 +284,7 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 			tegList.show();
 		}
 		table.scrollTo(0);
-		table.calcSize().resizeHack();
+		table.calcSize().resizeColumn();
 	} else if (tegList.is(":visible")) {
 		// switch away from extsearch view
 		tegList.hide();

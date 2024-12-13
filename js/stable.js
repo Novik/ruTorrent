@@ -111,8 +111,8 @@ dxSTable.prototype.setPaletteByURL = function(url)
 
 dxSTable.prototype.bindKeys = function()
 {
-	$(document).off( (browser.isOpera && browser.versionMinor<9.8) ? "keypress" : "keydown", this.keyEvents );
-	$(document).on( (browser.isOpera && browser.versionMinor<9.8) ? "keypress" : "keydown", this, this.keyEvents );
+	$(document).off("keydown", this.keyEvents);
+	$(document).on("keydown", this, this.keyEvents);
 }
 
 dxSTable.prototype.create = function(ele, styles, aName)
@@ -149,10 +149,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			styles[this.colOrder[i]].enabled = true;
 		this.cols++;
 		this.colsdata[i] = styles[this.colOrder[i]];
-
-		if(browser.isIE7x && (this.colsdata[i].type==TYPE_PROGRESS))
-			this.colsdata[i].type = TYPE_NUMBER;
-
 		this.colsdata[i].width = iv(this.colsdata[i].width);
 		this.ids[i] = styles[i].id;
 
@@ -264,16 +260,18 @@ dxSTable.prototype.toggleColumn = function(i)
 	this.colsdata[i].enabled = !this.colsdata[i].enabled;
 	$(this.tBodyCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
 	$(this.tHeadCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
-	if(!browser.isIE7x)
-	        for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
+	for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
+	{
 			$(this.tBody.tb.childNodes[D].childNodes[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
+	}
+
 	if(this.colsdata[i].enabled)
 	{
 		$(this.tBodyCols[i]).width( this.colsdata[i].width );
 		$(this.tHeadCols[i]).width( this.colsdata[i].width );
 	}
-        this.dHead.scrollLeft = this.dBody.scrollLeft;
-        this.calcSize().resizeColumn();
+	this.dHead.scrollLeft = this.dBody.scrollLeft;
+	this.calcSize().resizeColumn();
 	if($type(this.onresize) == "function")
 		this.onresize();
 }
@@ -340,13 +338,6 @@ dxSTable.prototype.onRightClick = function(e)
 	}
 }
 
-dxSTable.prototype.resizeHack = function()
-{
-	if(!browser.isIE7x)
-		this.resizeColumn();
-	return(this);
-}
-
 var preventSort = function() 
 {
 	this.cancelSort = true;
@@ -360,13 +351,10 @@ dxSTable.prototype.calcSize = function()
 		if ((this.cols > 0) && (!this.isResizing)) {
 			for (let i = 0; i < this.cols; i++) {
 				var _9a = iv(this.tBodyCols[i].style.width);
-				if (browser.isIE && (this.tBodyCols[i].offsetWidth != 0)) {
-					_9a = this.tBodyCols[i].offsetWidth;
-				}
 				if (!_9a) {
 					continue;
 				}
-				if ((browser.isChrome && (browser.versionMajor<537)) || browser.isKonqueror || browser.isSafari)
+				if (browser.isChrome || browser.isKonqueror || browser.isSafari)
 					_9a += 4;
 				if (_9a>8)
 					this.tHeadCols[i].style.width = _9a + "px";
@@ -391,7 +379,7 @@ dxSTable.prototype.resizeColumn = function()
 			_e[i].style.width = w + "px";
 			needCallHandler = true;
 		}
-		if ((browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) && this.tBody.rows.length > 0) {
+		if ((browser.isAppleWebKit || browser.isKonqueror) && this.tBody.rows.length > 0) {
 			if ((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width !== w) && (w >= 4)) {
 				this.tBody.rows[0].cells[i].width = w;
 				needCallHandler = true;
@@ -641,7 +629,7 @@ dxSTable.prototype.Sort = function(e)
 	const notSorting = e == null && !primarySorting;
 	if(notSorting || e?.which === 3) {
 		if(notSorting) {
-			this.calcSize().resizeHack();
+			this.calcSize().resizeColumn();
 		}
 		return true;
 	}
@@ -997,7 +985,7 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 	this.bpad.style.height = ((this.viewRows - mxi) * TR_HEIGHT) + "px";
 
 	this.refreshSelection();
-	this.calcSize().resizeHack();
+	this.calcSize().resizeColumn();
 }
 
 dxSTable.prototype.keyEvents = function(e) 
@@ -1158,7 +1146,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 			.map(([ind, cdat]) => ({
 				td: [
 					`<td class="stable-${this.dCont.id}-col-${ind}"`,
-					Boolean(cdat.enabled || browser.isIE7x) ?	'>' : ' style="display: none">',
+					Boolean(cdat.enabled) ?	'>' : ' style="display: none">',
 					ind === 0 ? this.createIconHTML(icon) : ''
 				],
 				celldata: data[ind] || '',
@@ -1178,12 +1166,11 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 					'</td>'
 				]
 			).join('');
-	if(!browser.isIE7x)
-	{
-		var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-		for(var i = 0, l = _e.length; i < l; i++) 
-			ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
-	}
+
+	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
+	for(var i = 0, l = _e.length; i < l; i++) 
+		ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
+
 	return(ret);
 }
 
