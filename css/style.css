@@ -643,6 +643,15 @@ div#tadd {max-width: 95vw;}
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   /* Custom rules for medium devices */
+  #top-menu.collapsing {
+    /*
+      prevent top menu blinking when:
+      1) switching from mobile to desktop
+      AND
+      2) the collapsible menu was open before switching.
+    */
+    display: none !important;
+  }
   #t .nav-link:hover {
     background: transparent url(../images/tb_bg.gif) no-repeat scroll left center;
     filter: none;

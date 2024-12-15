@@ -159,12 +159,10 @@ div#preload {
     background-image: url(./images/tb_moved.svg);
     background-image: url(./images/tb_search.svg);
     background-image: url(./images/tb_rss.svg);
-    background-image: url(./images/rb_rss_group.svg);
+    background-image: url(./images/tb_rss_group.svg);
     background-image: url(./images/tb_setting.svg);
     background-image: url(./images/menuexp.svg);
     background-image: url(./images/menusel.svg);
-    background-image: url(./images/tb_rss.svg);
-    background-image: url(./images/t_error.svg);
     background-image: url(./images/close.svg);
     background-image: url(./images/yellow.svg);
     background-image: url(./images/red.svg);
@@ -173,27 +171,21 @@ div#preload {
     background-image: url(./images/pnl_close.svg);
     background-image: url(./images/file.svg);
     background-image: url(./images/dir.svg);
-    background-image: url(./images/dir.svg);
     background-image: url(./images/t_down.svg);
     background-image: url(./images/t_up.svg);
     background-image: url(./images/t_inactive.svg);
     background-image: url(./images/t_paused.svg);
+    background-image: url(./images/t_error.svg);
     background-image: url(./images/t_error_down.svg);
     background-image: url(./images/t_error_up.svg);
-    background-image: url(./images/t_error.svg);
     background-image: url(./images/t_completed.svg);
     background-image: url(./images/t_queued_down.svg);
     background-image: url(./images/t_queued_up.svg);
     background-image: url(./images/t_active.svg);
     background-image: url(./images/t_all.svg);
-    background-image: url(./images/rb_rss.svg);
-    background-image: url(./images/pnl_open.svg);
     background-image: url(./images/quest.svg);
     background-image: url(./images/go.svg);
     background-image: url(./images/plugin.svg);
-    background-image: url(./images/yellow.svg);
-    background-image: url(./images/red.svg);
-    background-image: url(./images/green.svg);
 }
 div#cover {background: #181818}
 div#msg {background: #181818; border-top: 1px solid #333333; border-bottom: 1px solid #333333}
