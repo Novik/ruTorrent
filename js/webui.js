@@ -235,8 +235,8 @@ var theWebUI = {
 	},
 
 	assignEvents: function() {
-		window.addEventListener("resize", () => theWebUI.resize());
-		window.addEventListener("orientationchange", () => theWebUI.resize());
+		window.addEventListener("resize", theWebUI.resize);
+		window.addEventListener("orientationchange", theWebUI.resize);
 		$(document).on("dragstart", function(e) { return false; } );
 		$(document).on("selectstart", function(e) { return(e.fromTextCtrl); });
 		$(document).on("contextmenu", function(e) {
@@ -2233,37 +2233,42 @@ var theWebUI = {
 		if (offcanvas.css("display") === "none") {
 			// Senerio 1: when side panel is toggled off
 			$("#HDivider").hide();
-			$("#main-info").width($("#maincont").width());
 		} else {
 			// When side panel is toggled on
 			if ($(window).width() < 768) {
 				// Senerio 2: small screens and below
-				offcanvas.width("");
+				offcanvas.css("flex-basis", "");
 				$("#HDivider").hide();
-				$("#main-info").width($("#maincont").width());
 			} else {
 				// Senerio 3: medium screens and above
-				offcanvas.width(w);
+				offcanvas.css("flex-basis", w);
 				$("#HDivider").show();
-				$("#main-info").width($("#maincont").width() - 5 - w);
 			}
 		}
 		this.resizeGraph();
 	},
 
-	resizeTop: function(w, h) {
-		if (!h)
+	resizeTop: function(w, h) {  // TODO: rename function to `function(h)` in v6
+		// TODO: remove below in v6
+		if (w && h) {
+			// backward compatibility for those calling this function name with two parameters
+			noty("`theWebUI.resizeTop(w, h)` is deprecated. Please use `theWebUI.resizeTop(h)` instead.");
+		}
+		if (!w && !h)
 			return
+		if (w && !h)
+			h = w;
+		// TODO: remove above in v6
 		if (theWebUI.settings["webui.list_table_min_height"]) {
 			h = Math.max(h, ir(theWebUI.settings["webui.list_table_min_height"]));
 		}
+		h = Math.min(h, $("#main-info").height() - 5);
 		if ($("#tdetails").css("display") !== "none") {
-			$("#list-table").height(h);
-			$("#tdetails").height($("#main-info").height() - 5 - h);
+			$("#list-table").css("flex-basis", h);
+			this.resizeGraph();
 		} else {
-			$("#list-table").height($("#main-info").height());
+			$("#list-table").css("flex-basis", "100%");
 		}
-		this.resizeGraph();
 	},
 
 	resizeGraph: function() {
@@ -2288,16 +2293,15 @@ var theWebUI = {
 		bootstrap.Collapse.getInstance("#top-menu")?.hide();
 	},
 
-	update: function()
-   	{
-   	        if(theWebUI.systemInfo.rTorrent.started || !this.firstLoad)
+	update: function() {
+		if(theWebUI.systemInfo.rTorrent.started || !this.firstLoad)
 			theWebUI.getTorrents("list=1");
 		else
 			theWebUI.show();
-   	},
+	},
 
 	setVSplitter: function() {
-		let r = 1 - $("#tdetails").outerHeight() / $("#maincont").height();
+		let r = 1 - ($("#tdetails").outerHeight() + 5) / $("#maincont").height();
 		r = Math.floor(r * 1000) / 1000;
 		if ((theWebUI.settings["webui.vsplit"] !== r) && (r > 0) && (r < 1)) {
 			theWebUI.settings["webui.vsplit"] = r;
@@ -2321,8 +2325,7 @@ var theWebUI = {
 
 	toggleDetails: function() {
 		this.settings["webui.show_dets"] = !this.settings["webui.show_dets"];
-		$("#tdetails").toggleClass("d-flex d-none");
-		$("#VDivider").toggleClass("d-none");
+		$("#tdetails, #VDivider").toggle(this.settings["webui.show_dets"]);
 		this.resize();
 		this.save();
 	},
@@ -2333,12 +2336,8 @@ var theWebUI = {
 			return;
 		}
 		this.settings["webui.show_cats"] = !this.settings["webui.show_cats"];
-		if (this.settings["webui.show_cats"]) {
-			$("#offcanvas-sidepanel, #HDivider").show();
-		} else {
-			$("#offcanvas-sidepanel, #HDivider").hide();
-		}
-    this.resize();
+		$("#offcanvas-sidepanel, #HDivider").toggle(this.settings["webui.show_cats"]);
+		this.resize();
 		this.save();
 	},
 
