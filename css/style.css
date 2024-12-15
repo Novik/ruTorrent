@@ -499,7 +499,16 @@ div#gcont div.row.Header {font-size: 14px; font-weight: bold; background: #FCFCF
 div#gcont div.row:not(.Header) {padding: 0 0.3rem; word-break: break-all;}
 div#gcont div.row > div {padding-top: 0.25rem; padding-bottom: 0.25rem;}
 
-div.graph_tab {background-color: #FFFFFF; overflow: hidden; display: block; -moz-user-focus: normal; -moz-user-input: enabled; line-height: 11px; color: #545454;}
+div.graph_tab {
+  height: 100%;
+  background-color: #FFFFFF;
+  overflow: hidden;
+  display: block;
+  -moz-user-focus: normal;
+  -moz-user-input: enabled;
+  line-height: 11px;
+  color: #545454;
+}
 .graph_tab_grid,.graph_tab_legend {display: none;}
 .graph_tab_grid { background-color: transparent; border: 2px solid #545454; }
 .graph_tab_legend { background-color: #F0F0F0; border: 0px none transparent; }

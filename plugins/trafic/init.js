@@ -115,14 +115,15 @@ class rTraficGraph extends rGraph {
     this.draw();
   }
 
-  resize(newWidth, newHeight) {
-    if (newWidth) newWidth -= 8;
-    if (this.plot && newHeight)
-      newHeight -=
-        iv($$(this.plot.getPlaceholder().attr("id") + "_ctrl").style.height) +
-        $("#tabbar").outerHeight();
-    super.resize(newWidth, newHeight);
-  }
+	resize(newWidth, newHeight) {
+		if (!newWidth) {
+			newWidth = $("#traf").width();
+		}
+		if (!newHeight) {
+			newHeight = $("#traf").height() - $("#traf_graph_ctrl").height();
+		}
+		super.resize(newWidth, newHeight);
+	}
 }
 
 if(plugin.canChangeTabs())
@@ -147,26 +148,24 @@ if(plugin.canChangeTabs())
 
 	plugin.resizeLeft = theWebUI.resizeLeft;
 	theWebUI.resizeLeft = function(w) {
+		plugin.resizeLeft.call(this, w);
 		if (plugin.enabled) {
 			if (plugin.allStuffLoaded) {
-				const tdcont = $("#tdcont");
-				this.trafGraph.resize(tdcont.width(), tdcont.height());
+				this.trafGraph.resize();
 			} else
 				setTimeout('theWebUI.resize()', 1000);
 		}
-		plugin.resizeLeft.call(this, w);
 	}
 
 	plugin.resizeTop = theWebUI.resizeTop;
 	theWebUI.resizeTop = function(w, h) {
+		plugin.resizeTop.call(this, w, h);
 		if (plugin.enabled) {
 			if (plugin.allStuffLoaded) {
-				const tdcont = $("#tdcont");
-				this.trafGraph.resize(tdcont.width(), tdcont.height());
+				this.trafGraph.resize();
 			} else
 				setTimeout('theWebUI.resize()', 1000);
 		}
-		plugin.resizeTop.call(this, w, h);
 	}
 
 	theWebUI.showTrafic = function(d)
@@ -323,17 +322,17 @@ plugin.onLangLoaded = function()
 		{
 			if(id=="traf")
 			{
-				if(theWebUI.activeView!="traf" || !theWebUI.trafGraph.xticks.length)
+				if(theWebUI.activeView!="traf" || !theWebUI.trafGraph.xticks.length) {
 					theWebUI.reqForTraficGraph();
-				else
-					theWebUI.trafGraph.resize();
+				}
+				theWebUI.trafGraph.resize();
 			}
 			else
 				plugin.onShow.call(this,id);
 		};
 	 	this.attachPageToTabs(
-			$('<div>').attr("id","traf").append(
-				$("<div>").attr({id:"traf_graph_ctrl"}).addClass("graph_tab d-flex flex-row").append(
+			$('<div>').attr("id","traf").addClass("graph_tab").append(
+				$("<div>").attr({id:"traf_graph_ctrl"}).addClass("d-flex flex-row").append(
 					plugin.disableClearButton ? $() : $("<button>").attr({type:"button", onclick: "theWebUI.clearStats();return(false);"}).text(theUILang.ClearButton),
 					$("<select>").attr({
 						name:"tracker_mode",
@@ -352,7 +351,7 @@ plugin.onLangLoaded = function()
 						$("<option>").val("year").text(theUILang.perYear),
 					),
 				),
-				$("<div>").attr({id:"traf_graph"}).addClass("graph_tab"),
+				$("<div>").attr({id:"traf_graph"}),
 			)[0],
 			theUILang.traf,
 			"lcont",
