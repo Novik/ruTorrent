@@ -235,8 +235,8 @@ var theWebUI = {
 	},
 
 	assignEvents: function() {
-		window.addEventListener("resize", () => theWebUI.resize());
-		window.addEventListener("orientationchange", () => theWebUI.resize());
+		window.addEventListener("resize", theWebUI.resize);
+		window.addEventListener("orientationchange", theWebUI.resize);
 		$(document).on("dragstart", function(e) { return false; } );
 		$(document).on("selectstart", function(e) { return(e.fromTextCtrl); });
 		$(document).on("contextmenu", function(e) {
@@ -2266,6 +2266,8 @@ var theWebUI = {
 		if ($("#tdetails").css("display") !== "none") {
 			$("#list-table").css("flex-basis", h);
 			this.resizeGraph();
+		} else {
+			$("#list-table").css("flex-basis", "100%");
 		}
 	},
 
@@ -2291,16 +2293,15 @@ var theWebUI = {
 		bootstrap.Collapse.getInstance("#top-menu")?.hide();
 	},
 
-	update: function()
-   	{
-   	        if(theWebUI.systemInfo.rTorrent.started || !this.firstLoad)
+	update: function() {
+		if(theWebUI.systemInfo.rTorrent.started || !this.firstLoad)
 			theWebUI.getTorrents("list=1");
 		else
 			theWebUI.show();
-   	},
+	},
 
 	setVSplitter: function() {
-		let r = 1 - $("#tdetails").outerHeight() / $("#maincont").height();
+		let r = 1 - ($("#tdetails").outerHeight() + 5) / $("#maincont").height();
 		r = Math.floor(r * 1000) / 1000;
 		if ((theWebUI.settings["webui.vsplit"] !== r) && (r > 0) && (r < 1)) {
 			theWebUI.settings["webui.vsplit"] = r;
@@ -2324,8 +2325,7 @@ var theWebUI = {
 
 	toggleDetails: function() {
 		this.settings["webui.show_dets"] = !this.settings["webui.show_dets"];
-		$("#tdetails").toggleClass("d-flex d-none");
-		$("#VDivider").toggleClass("d-none");
+		$("#tdetails, #VDivider").toggle(this.settings["webui.show_dets"]);
 		this.resize();
 		this.save();
 	},
@@ -2336,12 +2336,8 @@ var theWebUI = {
 			return;
 		}
 		this.settings["webui.show_cats"] = !this.settings["webui.show_cats"];
-		if (this.settings["webui.show_cats"]) {
-			$("#offcanvas-sidepanel, #HDivider").show();
-		} else {
-			$("#offcanvas-sidepanel, #HDivider").hide();
-		}
-    this.resize();
+		$("#offcanvas-sidepanel, #HDivider").toggle(this.settings["webui.show_cats"]);
+		this.resize();
 		this.save();
 	},
 
