@@ -9,6 +9,11 @@
   -moz-user-input: enabled;
 }
 .stable td {font: menu; white-space: nowrap; padding: 1px}
+.stable td:first-child div {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
 .stable-head {
   position: relative;  /* Need to be positioned for drag masks to be positioned properly */
   width: 100%;
@@ -30,10 +35,23 @@
 }
 .stable-body table {table-layout: fixed; width: 0; }
 .stable-body tr {cursor: pointer}
-.stable-body td {height: 16px; border-bottom: 1px solid #E0E0E0; overflow: hidden; vertical-align: top}
-.stable-icon {width: 16px; height: 16px; margin-right: -6px; margin: 0 5px; padding: 0 !important; float: left}
+.stable-body td {border-bottom: 1px solid #E0E0E0; overflow: hidden;}
+.stable-icon {
+  display: inline-block;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin: 0 0.25rem;
+  padding: 0 !important;
+  flex: 0 0 auto;
+  background: url(../images/tstatus.png) no-repeat;
+}
 .stable-lpad {width: 5px; height: 16px; margin: 0; padding: 0; float: left; }
-.stable-body td div {font-size: 11px; overflow: hidden; height: 16px !important;}
+.stable-body td div {
+  font-size: 11px;
+  overflow: hidden;
+  height: 16px !important;
+  margin: 0 2px !important;
+}
 .konqueror .stable-body td div { margin: 0 0px 0 0px !important }
 .stable-body td div { margin: 0 2px 0 2px !important}
 .stable-body tr.selected td {background: #CFDEEF}
@@ -48,10 +66,36 @@
 .stable-scrollpos {width: 80%; height: 16px; left: 10%; top: 50%; position: absolute; padding: 0 5px; margin-top: -8px; background: #FFFFFF; color: #AAAAAA; font-size: 11px; font-weight: bold; text-align: center; overflow: hidden; display: none; white-space: nowrap}
 .stable-resize-header {	position: absolute; background-color: #A0A0A0; width: 1px; top: 0px; font: menu; visibility: hidden; overflow: hidden; z-index: 100; }
 
-.stable-head .rowcover { position: absolute; left: 0; top: 0; height: 20px; width: 1000px; background: transparent; display: none; }
+.rowcover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 20px;
+  width: 100%;
+  background: transparent;
+  display: none;
+}
 
 .meter-value { float: left; background-color: #99D699; border: 1px inset #BBBBBB; border-bottom: none;}
 .meter-text { position: relative; text-align: center; float: left; width: 100%; height: 0px; overflow: visible; font-size: 11px; z-index: 1; }
 
 .meter-value-start-color { background-color: #FFFF00 }
 .meter-value-end-color { background-color: #99D699 }
+
+.Status_Down {background-position: 0px 0px}
+.Status_Up {background-position: 0px -16px}
+.Status_Incompleted {background-position: 0px -32px}
+.Status_Paused {background-position: 0px -48px}
+.Status_Error_Down {background-position: 0px -64px}
+.Status_Error_Up {background-position: 0px -80px}
+.Status_Error {background-position: 0px -96px}
+.Status_Completed {background-position: 0px -112px}
+.Status_Queued_Down {background-position: 0px -128px}
+.Status_Queued_Up {background-position: 0px -144px}
+.Status_Up_Down {background-position: 0px -160px}
+.Status_Checking {background-position: 0px -176px}
+.Status_RSS {background-position: 0px -208px}
+
+.Icon_File {background: transparent url(../images/file.gif) no-repeat left center}
+.Icon_Dir {background: transparent url(../images/dir.gif) no-repeat left center}
+.Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
