@@ -12,11 +12,8 @@
 .stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top; border: 1px solid #0099FF;}
 
 .stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top rgba(128,128,128,0.7); border: 1px solid #0099FF; }
-.gecko .stable-move-header {background: rgba(128,128,128,0.7); -moz-opacity: 0.7;}
-.ie .stable-move-header {background: rgba(128,128,128,0.7); filter:alpha(opacity=70)}
 .webkit .stable-move-header {background: rgba(128,128,128,0.7);}
 
 .stable-active-header {border-color: threedface !important}
 .stable-separator-header {background: #181818;}
 .stable-scrollpos { background: #181818; color: #333333; }
-

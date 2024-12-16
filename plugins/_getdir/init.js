@@ -16,9 +16,7 @@ function filterDir(ev) {
 theWebUI.rDirBrowser = class {
 	constructor(edit_id, withFiles, height) {
 		const self = this;
-		this.edit = $('#' + edit_id).addClass("browseEdit").prop("autocomplete", "off").on(
-			browser.isIE ? "focusin" : "focus", () => self.hide()
-		);
+		this.edit = $('#' + edit_id).addClass("browseEdit").prop("autocomplete", "off").on("focus", () => self.hide());
 		this.btn = $("<button>").attr(
 			{type:"button", id:edit_id + "_btn"}
 		).addClass("browseButton").text("...").on(
@@ -201,5 +199,5 @@ plugin.onLangLoaded = function() {
 plugin.onRemove = function() {
 	$(".browseButton").remove();
 	$(".browseFrame").remove();
-	$(".browseEdit").prop("autocomplete", "on").off(browser.isIE ? "focusin" : "focus");
+	$(".browseEdit").prop("autocomplete", "on").off("focus");
 }
