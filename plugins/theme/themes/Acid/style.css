@@ -16,6 +16,9 @@ html, body { background-color: #1e2124; }
   /* --menu-item-active-icon: undefined - inherit from standard theme; */
   --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAMQAAAAAAP///wD4AADpAADKAAC5AAC1AACwAAChAACQAACIAAT/BCX/JTH/MU//T1X/VW3/bW//b////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAAIAAcAAAUYYCSNpAQ55fg0S8oIxFEORpIWSiohuhQCADs=);
 
+  --menu-connect-line-color: #00FF00;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #272E36;
   --container-border-color: #a0a0a0;
   --btn-bg-color: #D7D7D7;
@@ -111,21 +114,6 @@ div#side-panel ul li { border: 1px solid #272E36; font-weight: bold; }
 div#side-panel ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; color: #272E36;}
 
 .stable-icon {background-image: url(./images/tstatus.png); }
-
-div#stg .lm { background-color: #272E36; border: 1px solid #D0D0D0; }
-
-.lm li div > div {
-  border-left-color: #00FF00;
-}
-.lm li div > div:first-of-type {
-  border-bottom-color: #00FF00;
-}
-.lm li div > div:last-of-type {
-  border-top-color: #00FF00;
-}
-.lm li div.toggle { background: transparent url(./images/exp.gif) no-repeat scroll center center; }
-.lm li a {color: #BDDBDB; }
-.lm li a.focus {background-color: #BDDBDB; color: #272E36;}
 
 input.disabled, button.disabled {background-color: #272E36; }
 

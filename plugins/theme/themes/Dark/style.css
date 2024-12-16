@@ -16,6 +16,9 @@ html, body {background-color: #181818; color: #999999; }
   --menu-item-active-icon: url(data:image/gif;base64,R0lGODlhBQAFAPMIAP////n5+dXV1c/Pz8nJycbGxsDAwLS0tACMFAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAUAAAgALAAAAAAFAAUAAAQPEA1AkAC4YBwmNogBHEgEADs=);
   --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAPABAP///wCMFCH5BAUAAAEALAAAAAAIAAcAAAIMRI4Blrq9HoqQJZsKADs=);
 
+  --menu-connect-line-color: #616161;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #181818;
   --container-border-color: #333333;
   --btn-bg-color: #999999;
@@ -134,18 +137,6 @@ div#modalbg {background-color: #181818;}
 
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
-.lm li div > div {
-  border-left-color: #616161;
-}
-.lm li div > div:first-of-type {
-  border-bottom-color: #616161;
-}
-.lm li div > div:last-of-type {
-  border-top-color: #616161;
-}
-.lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
-.lm li a {color: #888888}
-.lm li a.focus {background-color: #333333}
 * > fieldset {border: 1px solid #333333}
 input.disabled, button.disabled {background-color: #181818; color: #333333; border: 1px solid #333333}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #333333}

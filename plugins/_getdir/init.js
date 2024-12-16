@@ -33,9 +33,9 @@ theWebUI.rDirBrowser = class {
 		theDialogManager.addHandler(dlgId, "afterHide", () =>self.hide());
 		// 3. `id` of the containing option page
 		const stgId = this.btn.parents(".stg_con").attr("id");
-		// 4. add an after-hide handler if the button is within an option page
+		// 4. add an hide tab event handler if the button is within an option page
 		if (!!stgId) {
-			theOptionsSwitcher.addHandler(stgId, "afterHide", () => self.hide());
+			theOptionsWindow.addHandler(`mnu_${stgId}`, "beforeHide", () => this.hide());
 		}
 		// move dir list frame along with the containing dialog window
 		$(`#${dlgId}`).data("dnd").options.onRun = () => {
@@ -174,7 +174,6 @@ theWebUI.rDirBrowser = class {
 		this.btn.text("X");
 		theDialogManager.bringToTop(this.frame.attr("id"));
 		this.edit.prop("read-only", true);
-		return false;
 	}
 
 	hide() {
@@ -184,11 +183,10 @@ theWebUI.rDirBrowser = class {
 			this.frame.find(".filter-dir").val("");
 			this.frame.hide();
 		}
-		return false;
 	}
 
 	toggle() {
-		return (this.frame.css("display") !== "none") ? this.hide() : this.show();
+		(this.frame.css("display") !== "none") ? this.hide() : this.show();
 	}
 }
 

@@ -866,7 +866,7 @@ plugin.onLangLoaded = function() {
 				if (thePlugins.isInstalled("cookies")) {
 					privateTrackers.find(`#cont_${ndx}`).append(
 						$("<div>").addClass("checkbox").append(
-							$("<a>").attr({href:"javascript://void();", onclick:"theOptionsSwitcher.run('st_cookies'); return(false);"}).text(theUILang.exsCookies),
+							$("<a>").attr({href:"#"}).on("click", () => theOptionsWindow.goToPage("st_cookies")).text(theUILang.exsCookies),
 							$("<input>").attr({type:"text", id:`${ndx}_cookies`}).val(val.cookies).prop("readonly", true),
 						),
 					);
@@ -880,7 +880,7 @@ plugin.onLangLoaded = function() {
 				if (thePlugins.isInstalled("loginmgr")) {
 					privateTrackers.find(`#cont_${ndx}`).append(
 						$("<div>").addClass("checkbox").append(
-							$("<a>").attr({href:"javascript://void();", onclick:"theOptionsSwitcher.run('st_loginmgr'); return(false);"}).text(theUILang.exsLoginMgr),
+							$("<a>").attr({href:"#"}).on("click", () => theOptionsWindow.goToPage('st_loginmgr')).text(theUILang.exsLoginMgr),
 						),
 					);
 				} else {
