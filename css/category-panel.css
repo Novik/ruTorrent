@@ -1,14 +1,19 @@
 :host {
 	display: contents;
 	font-size: 11px;
-	--open-background-image: url(../images/pnl_open.gif);
-	--close-background-image: url(../images/pnl_close.gif);
+	--open-background-image: url(data:image/gif;base64,R0lGODlhEQARAPIHAAAAAOTh3bKwrf///7+/v39/fxMTEwAAACH5BAUAAAcALAAAAAARABEAAAMneLrc/jDKSWsVIOsNRBMGMYwjYXgOKJZnpA4m6hpFS2EyFVh871sJADs=);
 	--heading-background-color: #f0f0f0;
 	--heading-border-color: #a0a0a0;
 }
 
+:host slot[name="content"] {
+	display: block;
+	overflow: hidden;
+	max-height: 100%;
+	transition: max-height 0.25s ease-in-out;
+}
 :host([closed]) slot[name="content"] {
-	display: none;
+	max-height: 0;
 }
 
 div[part=heading] {
@@ -29,6 +34,7 @@ div[part=heading]::before {
 	height: 20px;
 	width: 20px;
 	background: var(--open-background-image) center no-repeat;
+	transition: transform 0.25s ease-in-out;
 }
 
 :host([hidden]) {
@@ -36,7 +42,7 @@ div[part=heading]::before {
 }
 
 :host([closed]) div[part="heading"]::before {
-	background-image: var(--close-background-image);
+	transform: rotate(-90deg);
 }
 
 .text {

@@ -38,8 +38,7 @@ html, body { background-color: #DFE8F6 }
   --loading-indicator-side-length: 32px;
 }
 category-panel {
-  --open-background-image: url(../plugins/theme/themes/Blue/images/pnl_open.gif);
-  --close-background-image: url(../plugins/theme/themes/Blue/images/pnl_close.gif);
+  /* --open-background-image: undefined - inherit from standard theme; */
   --heading-background-color: #d9e8fb;
   --heading-border-color: #8db2e3;
 }
