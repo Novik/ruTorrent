@@ -37,6 +37,10 @@ html, body { background-color: #1e2124; }
   --loading-indicator-icon: url(../plugins/theme/themes/Acid/images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
+#StatusBar {
+  --pane-up-icon: url(data:image/gif;base64,R0lGODlhDQANAOYAAAAAAP///yS5JCO0IyGqISW8JSS3JCS2JCS1JCOzIyOwIyKuIiGoISGmIR+eHx2UHSSzJCOvIyGkIR+bHx2RHSe8Jya3JirFKiq7Kiq5Kiq3KimxKSisKCepJzDHMC/ELy/DLyqwKi+/Ly23LSmmKSyvLCqoKjPEMzTENDPCMzPBMzjLODnFOTjBODe6Nz2/PD/DPz7APj29PTy7PEPNQ0DAQEC/QD+9P0HBQUjNSEbFRkK6QkS/REK4QknJSUO6Q0a/RkrGSlDPUFDOUFbSVlXOVVTMVFTLVFPKU1XNVVjNWFfLV1XHVVvTW1rRWlnPWVjMWFbIVl7UXl3SXV/UX2DTYF7NXmfTZ2TIZGrMan3YfYTahITUhIXUhYfWh4bVho3ZjaPho6HdobTmtLjouLjluLznvLzmvMLpwtDu0Nzz3E7GTVDJT1fTVlbOVVfNVlvOWl3SXP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAHIALAAAAAANAA0AAAebgHJqaWhmhmZnZWJYcmNkYWBeX19dX1xZFi9bWlY6ODY3oTYYLWxXTywVBgkBCwoQGTBuVUMoBQgBuQwRGjBFVEInArnEDRsxRlRDKcTNHDJHyioDDMQUEx0zSFJCKQcExA8Oz0dEOSACC8QTEiE1SR4XHyIjJSYkJiUuQU8rNDk+dPDY0eMHkDVv4shp08SJkiVRmESBAmeKnEAAOw==);
+  --pane-down-icon: url(data:image/gif;base64,R0lGODlhDQANAOYAAAAAAP///7jV9BmA5xl/5hh73xh63Bd21Rd10xZxyxuF8BqE7RqC6xqB6Rl94Rl83xh52hh21Rd10hZvxxVqvxyH8Rp/5ByC6h+O/CCF6yCG6yCD5x9/3x592h571yGB4SaR/iWP+CF+2SaN9iWM8iSH6SOC4SF81iSD4SiO9CmP9iiO8yqR+C6W/y+T9y+P8C+M6TWU8jSQ7TaT8TWS7TSP6TSO5zqc/TWQ6TWN5jaN5ziS7TiT7TeQ6j+d+z+e+z6X8T6Y8TyV7DuS5zuQ5TyS50Kb8keg+kii/Eih+0ig+kee9E6n/06l/k2j+E2j90yh9Uyh9E+k91Op/lKo/FGl+VGm+VCk9k+i81Gk9lSp/FOn+Vap/leq/lip/Vel9V+t+12j62Oo7ne3+H67+H227n617YG48YC373+17Ye9857K9p3H87HU+bTW+bXU9LnX9bjW9L7a9s3j+dvr+0Cd9z6X7Ead8U+j9FWq/LnY9v///wAAAAAAAAAAAAAAACH5BAEAAHsALAAAAAANAA0AAAeggHt0c3J6cHFxAm9sYXttbmtqZ2hpaWZlYhcyZGNfQDs9Ojk6PRkvS2BVLhUMAa4FFhoxT15ILAoErgEIBhszTl1IKgsPuhMSHDRPXUkpus8dNVBdSisDzwETHjZRXEcpDRC6FAkdOFBNPiMLDgfZCREfPE8gGCEkJSYiJyIoMEZWWtz4USeIkCFEiti5I0XLHiZTqFi5ggcLnixb8uwJBAA7);
+}
 category-panel {
   --open-background-image: url(../plugins/theme/themes/Acid/images/pnl_open.gif);
   --close-background-image: url(../plugins/theme/themes/Acid/images/pnl_close.gif);
@@ -169,8 +173,7 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
 #StatusBar { color: #ffffff; font-weight: bold }
-#st_up { background:url(./images/status_up.gif) 6px no-repeat; color: #BDDBDB; }
-#st_down { background:url(./images/status_down.gif) 6px no-repeat; color: #BDDBDB;}
+#st_up, #st_down { color: #BDDBDB; }
 
 .sthdr { color: #00FF00;}
 .stval { color: #BDDBDB;}

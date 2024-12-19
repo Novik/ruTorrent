@@ -131,6 +131,10 @@ span {
   --loading-indicator-icon: url(../images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
+#StatusBar {
+  --pane-up-icon: url(data:image/gif;base64,R0lGODlhEAAQAPMOAEDUQDnKOSfGJx66HhOyEwmoCQCZAFfKVxCSEACBABp2GhJvEgpoCv///wAAAAAAACH5BAUAAA4ALAAAAAAQABAAAARd0MlJKwU4ZwsIKYVhJCRwDYMHiiQ5AQLqNeHoSnA8NHzCJq+AQMAr+kbBQHHpA+IAgcCOx2A0XweokrdAfJwOwCG7bSxSBbB4DFUozh6wIzEmD2NySWt/s/j/gBQRADs=);
+  --pane-down-icon: url(data:image/gif;base64,R0lGODlhEAAQAPMLAP///xFTllW//2Sx/1ir/0ij/yo/qjKY/wBo0hyN/wJ89wAAAAAAAAAAAAAAAAAAACH5BAUAAAsALAAAAAAQABAAAARWcMlJKxU4ZytSUqCCjMJ1HF44jsYknB4gi6xbwDIQ0K0kFLdDbifqLX6FnBJkFBCASt2uSXgmZYHApzmoQrOeBLdrDcDEFMOADDwdjBODfD632O94SwQAOw==);
+}
 .dropdown-menu {
   --bs-dropdown-border-color: var(--menu-border-color);
   --bs-dropdown-bg: var(--menu-background-color);
@@ -660,12 +664,13 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
   height: 16px;
   width: 16px;
   margin: 0 0.25rem;
+  background-size: contain;
 }
 #st_up .icon {
-  background: url(../images/status_up.gif) center no-repeat;
+  background-image: var(--pane-up-icon);
 }
 #st_down .icon {
-  background: url(../images/status_down.gif) center no-repeat;
+  background-image: var(--pane-down-icon);
 }
 .status-cell {
   padding: 0 0.25rem;

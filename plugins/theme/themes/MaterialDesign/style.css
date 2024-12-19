@@ -232,6 +232,10 @@ html,body
   --loading-indicator-icon: url(../plugins/theme/themes/MaterialDesign/images/ajax-loader-small.gif);
   --loading-indicator-side-length: 34px;
 }
+#StatusBar {
+  /* --pane-up-icon: undefined - inherit from standard theme; */
+  /* --pane-down-icon: undefined - inherit from standard theme; */
+}
 category-panel {
   --open-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_open.png);
   --close-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_close.png);
@@ -731,11 +735,6 @@ input[type="number"][disabled],input[type="text"][disabled],input[type="password
 	background-color: #6F6F6F;
 	border-radius: 2px;
 	opacity: .2;
-}
-
-#port-pane .pstatus2
-{
-	background:transparent url(./images/green.png) no-repeat scroll 5px center!important
 }
 
 textarea {

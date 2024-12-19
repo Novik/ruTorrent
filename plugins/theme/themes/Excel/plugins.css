@@ -1,3 +1,11 @@
+#StatusBar {
+  /* --pane-cpu-icon: undefined - inherit from standard theme; */
+  /* --pane-disk-icon: undefined - inherit from standard theme; */
+  /* --pane-port-unknown-icon: undefined - inherit from standard theme; */
+  /* --pane-port-error-icon: undefined - inherit from standard theme; */
+  /* --pane-port-success-icon: undefined - inherit from standard theme; */
+}
+
 #meter-cpu-holder { background: #e4edf6; }
 #Chunks { border: none }
 

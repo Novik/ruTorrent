@@ -37,6 +37,10 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
   --loading-indicator-icon: url(../images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
+#StatusBar {
+  /* --pane-up-icon: undefined - inherit from standard theme; */
+  /* --pane-down-icon: undefined - inherit from standard theme; */
+}
 category-panel {
   --open-background-image: none;
   --close-background-image: none;
