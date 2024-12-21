@@ -237,8 +237,7 @@ html,body
   /* --pane-down-icon: undefined - inherit from standard theme; */
 }
 category-panel {
-  --open-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_open.png);
-  --close-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_close.png);
+  --open-background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAVElEQVQImWNUN7JwY8AHJs+cs/k/DjB55pzNzPeevXrLwMgoaGZspIasccqsuVumzJwzmVlEUubuqbPnUBTBJBkYGHaxQDXsmjJzDkI3VJKBgYEBAAChN4WtYNLBAAAAAElFTkSuQmCC);
   --heading-background-color: #273238;
   --heading-border-color: transparent;
 }
@@ -315,8 +314,6 @@ div#preload
 	background-image:url(./images/r_bg.gif);
 	background-image:url(./images/asc.gif);
 	background-image:url(./images/desc.gif);
-	background-image:url(./images/pnl_open.gif);
-	background-image:url(./images/pnl_close.gif);
 	background-image:url(./images/headers.png)
 }
 

@@ -42,8 +42,7 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
   /* --pane-down-icon: undefined - inherit from standard theme; */
 }
 category-panel {
-  --open-background-image: none;
-  --close-background-image: none;
+  --open-background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAmUlEQVQYlY3PUQqCUBQE0NGeppiY9hQrSySCCIJadvtoM23AD7nX24cQmL50PocDw1jP1xtzUqZLsefAg3blUQWYxMXGkXvpg5mh/jh/H6v6VnggagHAjLfrRX3duSDibzeK88iWS65AzL1+gLPQknNmD+AvdtIVmpNGb3oU60CaKgGYxXSjw4nfyjFqQWR0HY49liKkSQgAH1ixL1c3QHZsAAAAAElFTkSuQmCC);
   --heading-background-color: linear-gradient(0deg, rgba(158,182,206,1) 0%, rgba(230,235,243,1) 100%);
   --heading-border-color: transparent;
 }

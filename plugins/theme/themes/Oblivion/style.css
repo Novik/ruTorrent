@@ -42,8 +42,7 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   /* --pane-down-icon: undefined - inherit from standard theme; */
 }
 category-panel {
-  --open-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_open.png);
-  --close-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_close.png);
+  --open-background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAYAAACALL/6AAAACXBIWXMAAAsTAAALEwEAmpwYAAABF0lEQVQYlX2PP0vDUBTFT/uCnbJkVsgH6PfwQ/QLOAgZHJ1FXMVA4IU0kxmymjEQyOrSpVkyFPO2aqH0EXtf/jwXLaGW3u2ee37cc0a2bd9YlnXJGJvgzLRtS5vNRhiMsYvZbHZvWdY5P6qqQhiGtwYRycViUTmOczWZnH6y3++RpulKKfU9BhDkef5SFAX6vj8JLJdLZFn2BCAYa62hlPrknCd1Xf8z73Y7uK77qrVWWmuMf/WgLMu3LMvQdd2wKJIk6YUQOYAAwAEAADWfzx+22+1BEEIgjuNHAN6fNgQCKaXgnH8QEYgIURStpJRiGJGZpjnc34UQo+l0er1er+H7/h0APjQYxyWbpvnyPO+ZiGoA7fH9B1m4kWfDmQhMAAAAAElFTkSuQmCC);
   --heading-background-color: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(7,7,99,0.75) 0%, rgba(8,8,105,1) 0%, rgba(10,10,10,1) 0%, rgba(40,40,40,1) 100%);
   --heading-border-color: #333333;
 }
@@ -136,8 +135,6 @@ div#preload {
   background-image: url(./images/r_bg.gif);
   background-image: url(./images/asc.gif);
   background-image: url(./images/desc.gif);
-  background-image: url(./images/pnl_open.gif);
-  background-image: url(./images/pnl_close.gif);
   background-image: url(./images/headers.png);
 }
 
