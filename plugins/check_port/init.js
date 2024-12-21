@@ -3,13 +3,13 @@ plugin.loadMainCSS();
 
 plugin.init = function()
 {
-	$("port-pane .icon").addClass("pstatus0");
+	$("#port-pane .icon").removeClass().addClass("icon pstatus0");
 	theWebUI.request("?action=initportcheck", [plugin.getPortStatus, plugin]);
 }
 
 plugin.update = function()
 {
-	$("port-pane .icon").addClass("pstatus0");
+	$("#port-pane .icon").removeClass().addClass("icon pstatus0");
 	theWebUI.request("?action=updateportcheck", [plugin.getPortStatus, plugin]);
 }
 

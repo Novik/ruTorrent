@@ -1,5 +1,9 @@
+#StatusBar {
+  --pane-disk-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABIUlEQVR4AWKgGOTmZzbkFWQDOCMDFQZhGIju/39TAWrSoLYguupt14K2DJgoPHJc4gMRT+C7L4YnT4wxS7Jg33eYGbz38GU2WO6ZLe+ZQwyXIL0TRLUgAv0iWtC6E4USVYRQCbZtg3MDhqHGwZV87ao5z/MlWNc1S/q+vwW/f5qmVmBmdyS84W0rWJYFXdedEjKOIzvCnLuUEm/O7hQcx/H3lxERIb+CDxdjoEExCEDR//+KAbYGg9kzAlVUqSoK1Lfc94To4TjXxfHeQ2u9IKVc9j+11iUwzm3bcF0XKKUQQkAphRgjCCHIOU+/7wtjDGbAOQfOOc6T4L5vMMZmwFqLYz+QUvp5H/48zxrovaO1NimlDEII3+HCcAMoz0yUAgBzjuKercwF7wAAAABJRU5ErkJggg==);
+}
+
 #meter-disk-pane .icon {
-  background: url(./images/disk.png) center no-repeat;
+  background-image: var(--pane-disk-icon);
 }
 #meter-disk-holder {
   border: inset 1px #BBBBBB;

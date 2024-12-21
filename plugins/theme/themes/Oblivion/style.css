@@ -37,6 +37,10 @@ html, body {font-family: "Lucida Sans Unicode", "Lucida Grande", Tahoma, Arial, 
   --loading-indicator-icon: url(../plugins/theme/themes/Oblivion/images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
+#StatusBar {
+  /* --pane-up-icon: undefined - inherit from standard theme; */
+  /* --pane-down-icon: undefined - inherit from standard theme; */
+}
 category-panel {
   --open-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_open.png);
   --close-background-image: url(../plugins/theme/themes/Oblivion/images/pnl_close.png);

@@ -37,6 +37,10 @@ html, body { background-color: #DFE8F6 }
   --loading-indicator-icon: url(../plugins/theme/themes/Blue/images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
+#StatusBar {
+  /* --pane-up-icon: undefined - inherit from standard theme; */
+  /* --pane-down-icon: undefined - inherit from standard theme; */
+}
 category-panel {
   --open-background-image: url(../plugins/theme/themes/Blue/images/pnl_open.gif);
   --close-background-image: url(../plugins/theme/themes/Blue/images/pnl_close.gif);
