@@ -16,6 +16,9 @@ html, body { background-color: #DFE8F6 }
   --menu-item-active-icon: url(data:image/gif;base64,R0lGODlhBwAHAPABAAAAAACMFCH5BAUAAAEALAAAAAAHAAcAAAIMjA9nwMj9wmuLIlUAADs=);
   --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhDAAJAPQUACluvipxvzJ1vyxwwCt1yjp6zjiC1jmE0zyE0z2I3UeLyUGJ2VWUzlKg7FSg6Weg1WKq8Y7D9orD/JXL/0D/QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAUAABQALAAAAAAMAAkAAAUkoEGNZEkliGkS06GSRCQtL0U40CO8RMMENYICULMNipQCkhICADs=);
 
+  --menu-connect-line-color: #909090;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #ffffff;
   --container-border-color: #99bbe8;
   --btn-bg-color: #F0F0F0;
@@ -100,6 +103,3 @@ input[type="text"][disabled],input[type="password"][disabled],input[type="file"]
 #StatusBar { color: #000000; }
 .statuscell { border-color: #99BBE8;}
 .sthdr { color: #15428B; }
-
-div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
-.lm li a.focus {background-color: #D9E8FB}

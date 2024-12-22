@@ -243,32 +243,17 @@ rPlugin.prototype.canBeLaunched = function()
 	return(this.restictions & thePlugins.restictions.canBeLaunched);
 }
 
-rPlugin.prototype.attachPageToOptions = function(dlg,name)
-{
-	if(this.canChangeOptions())
-	{
-		$("#st_btns").before( $(dlg).addClass("stg_con") );
-		$(".lm ul").append(
-			$("<li>").attr("id","hld_"+dlg.id).append(
-				$("<div>").append(
-					$("<div>"),
-					$("<div>"),
-				),
-				$("<a>").attr(
-					{id: `mnu_${dlg.id}`, href: "#", onclick: `theOptionsSwitcher.run('${dlg.id}');return(false);`}
-				).text(name),
-			),
-		);
+rPlugin.prototype.attachPageToOptions = function(dlg, name) {
+	if (this.canChangeOptions()) {
+		theOptionsWindow.attachPage(dlg, name);
 	}
-	theOptionsSwitcher.items[dlg.id] = {afterShow: null, afterHide: null,};
-	return(this);
+	return this;
 }
 
 rPlugin.prototype.removePageFromOptions = function(id) {
-	if (theOptionsSwitcher.current === id)
-		theOptionsSwitcher.run('st_gl');
-	$("#" + id).remove();
-	$("#hld_" + id).remove();
+	if (theOptionsWindow.currentPage === id)
+		theOptionsWindow.goToPage("st_gl");
+	theOptionsWindow.removePage(id);
 	return this;
 }
 

@@ -16,6 +16,9 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
   /* --menu-item-active-icon: undefined - inherit from standard theme; */
   /* --menu-item-exp-icon: undefined - inherit from standard theme; */
 
+  --menu-connect-line-color: #909090;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #d2e0f0;
   --container-border-color: #9eb6ce;
   --btn-bg-color: #f1f1ec;
@@ -79,8 +82,6 @@ div.graph_tab { background-color: #d2e0f0; color: #034084; border-color: #ffffff
 div#gcont div.row.Header {background-color: #e4edf6;}
 #tdcont { color: #034084 }
 div#tdetails { background-color: transparent }
-
-.lm li a.focus {background-color: #D9E8FB}
 
 .tabbar { background: transparent url(./images/tabbarbg.png) repeat-x 0 0 }
 .tabbar li.nav-item a.nav-link {
