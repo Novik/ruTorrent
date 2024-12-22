@@ -91,7 +91,7 @@ function checkCurrentRule() {
 
 theWebUI.showRules = function()
 {
-	theWebUI.request("?action=getrules",[theWebUI.loadRules, this]);
+	theWebUI.request("?action=getrules",[theWebUI.loadRules, theWebUI]);
 }	
 
 theWebUI.storeRuleParams = function()
@@ -116,9 +116,9 @@ theWebUI.loadRules = function( rle )
 	list.empty();
 	$('#RLS_rss option').remove();	
 	$('#RLS_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
-	for(var lbl in this.rssGroups)
+	for(var lbl in theWebUI.rssGroups)
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
-	for(var lbl in this.rssLabels)
+	for(var lbl in theWebUI.rssLabels)
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
 	plugin.rules = rle;
 	plugin.maxRuleNo = 0;
