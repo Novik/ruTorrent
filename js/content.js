@@ -723,13 +723,18 @@ function makeContent() {
 					["split_file_size", 20], ["split_suffix", 100], ["use_udp_trackers", ],
 					["http_proxy", 100], ["proxy_address", 100], ["bind", 100],
 				].map(([id, maxlength]) => $("<div>").addClass("row").append(
-					$("<div>").addClass("col-md-6").append(
+					maxlength ?
+					[
+						$("<div>").addClass("col-md-6").append(
+							$("<label>").attr({for: id}).text(id),
+						),
+						$("<div>").addClass("col-md-6").append(
+							$("<input>").attr({type: "text", id: id}).prop("maxlength", maxlength),
+						),
+					] :
+					$("<div>").addClass("col-12").append(
+						$("<input>").attr({type: "checkbox", id}),
 						$("<label>").attr({for: id}).text(id),
-					),
-					$("<div>").addClass("col-md-6").append(
-						maxlength ?
-						$("<input>").attr({type: "text", id: id}).prop("maxlength", maxlength) :
-						$("<input>").attr({type: "checkbox", id: id}),
 					),
 				)),
 			),
