@@ -84,7 +84,7 @@ button:not(:disabled):hover, input[type=button]:not(:disabled):hover, a.Button:n
 button:not(:disabled):active, input[type=button]:not(:disabled):active, a.Button:not(:disabled):active {
   background-color: #FAFAFA;
 }
-span {
+#gcont span, #lcont span {
   user-select: text;
   -moz-user-select: text;
   -webkit-user-select: text;
@@ -177,7 +177,7 @@ dialog {
   border-color: var(--menu-border-color);
 }
 form{margin:0;}
-div#preload {background-image: url(../images/toolbar.png); background-image: url(../images/tstatus.png); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/asc.gif); background-image: url(../images/desc.gif); background-image: url(../images/close.png); background-image: url(../images/file.gif); background-image: url(../images/dir.gif);}
+div#preload {background-image: url(../images/toolbar.png); background-image: url(../images/tstatus.png); background-image: url(../images/t_bg.png); background-image: url(../images/r_bg.gif); background-image: url(../images/i_bg.gif); background-image: url(../images/close.png); background-image: url(../images/file.gif); background-image: url(../images/dir.gif);}
 div#cover {z-index: 500; background: #FFFFFF}
 div#msg {top: 50%; margin-top: -50px; line-height: 100px; font-weight: bold; background: #FDFDFD; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0}
 .pre-theme-load.dark-theme div#cover { background: #181818; }

@@ -1,6 +1,9 @@
-.stable-head {background: #181818;}
-.stable-head table tr {background: transparent url(./images/header.gif) repeat-x scroll center top}
-.stable-head table tr td { border-color: #181818 #333333 #333333 #181818; }
+.stable {
+  --header-bg-color: transparent;
+  --header-bg-image: linear-gradient(0deg, #202020 0%, #000000 100%);
+  --header-border-color: #333333;
+  /* --header-asc-icon: undefined - inherit from standard theme; */
+}
 .stable-head div.resz {border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center;}
 .stable-body {background: window; background-color: #181818; }
 .stable-body td {border-bottom: 1px solid #333333; }

@@ -86,7 +86,7 @@ panel-label[selected] {
   --badge-color: #111111;
   --badge-background-color: #999999;
 }
-div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif);}
+div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif);}
 div#cover {background: #181818}
 div#msg {background: #181818; border-top: 1px solid #333333; border-bottom: 1px solid #333333}
 div#sc {border: 1px solid #333333; background-color: #181818}

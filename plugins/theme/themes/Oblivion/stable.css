@@ -1,12 +1,13 @@
-.stable td {padding:2px;}
+.stable {
+  --header-bg-color: transparent;
+  --header-bg-image: linear-gradient(0deg, #161616 0%, #191919 100%);
+  --header-border-color: transparent;
+  --header-asc-icon: url(data:image/gif;base64,R0lGODlhEAAQAPQeAGZmZoeHh4WFhYCAgH9/f3p6enh4eHV1dXR0dHNzc2hoaGdnZ2RkZF1dXVZWVlVVVVNTU01NTUNDQzs7OzU1NSoqKigoKCUlJSIiIhYWFg4ODgwMDAYGBgMDAwAAAAAAACH5BAUAAB4ALAAAAAAQABAAAAU4oCeOZGmeaKqubDkBRiEby3RuUEIMxPFsKAyDIBgoLKmOBBEwRDoqTcPAyLAuDkqrU+G0vuBwKwQAOw==);
+}
 .stable-head {
   color: #626262;
-  background: #181818 url(./images/headers.png) repeat-x 0px -91px;
   text-shadow:0px 1px 0px #000;
-  font-family: inherit;
 }
-.stable-head table tr {background: transparent;border:none;}
-.stable-head table tr td { border:none; font-family:inherit;height:18px;line-height:18px;cursor:pointer;}
 .stable-head div.resz {border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center;}
 .stable-body {background: window; text-shadow:0px 1px 0px #000;color:#CACCCC; }
 .stable-body td {border-bottom: 1px solid #333333; }

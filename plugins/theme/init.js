@@ -5,19 +5,13 @@ if(theWebUI.theme)
 	plugin.loadCSS("style", () => $(':root').removeClass('pre-theme-load'));
 	plugin.loadCSS("stable");
 
-	plugin.allDone = function()
-	{
+	plugin.allDone = function() {
 		plugin.loadCSS("plugins");
-		$.each(theWebUI.tables, function(ndx,table)
-		{
-			table.obj.setPaletteByURL("plugins/theme/themes/"+theWebUI.theme);
-		});
 	}
 
 	plugin.config = theWebUI.config;
 	theWebUI.config = function()
 	{
-		this.getTable("trt").setPaletteByURL("plugins/theme/themes/"+theWebUI.theme);
 		plugin.loadCSS("plugins");
 		plugin.config.call(this);
 		thePlugins.waitLoad( "thePlugins.get('theme').allDone" );

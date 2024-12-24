@@ -1016,14 +1016,6 @@ span.det {
 	color:#FFF;
 }
 
-.stable-head table tr td
-{
-	border-right:1px solid #242424!important;
-	font-family:Roboto!important;
-	font-weight:700;
-	color:#fff;
-}
-
 .Icon_Dir
 {
 	background-image:url(./images/status_icons.png);

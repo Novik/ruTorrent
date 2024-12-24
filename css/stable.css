@@ -1,4 +1,8 @@
 .stable {
+  --header-bg-color: transparent;
+  --header-bg-image: linear-gradient(0deg, #dfdfdf 0%, #ffffff 100%);
+  --header-border-color: #d0d0d0;
+  --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAGCAYAAAARx7TFAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAU0lEQVQImYXOsQ0AMQgDQFIgZRxG9G60zECTBdJQ+6t8EfR6JDfWSUbkOgC8uwYyk5/wgL03q6pDAIwIZibXWm8OHABoZjLnFFVtC+4u4+9ZAOMBnF07zgszHpwAAAAASUVORK5CYII=);
   height: 100%;
   background-color: #FFFFFF;
   overflow: hidden;
@@ -8,23 +12,59 @@
   -moz-user-focus: normal;
   -moz-user-input: enabled;
 }
-.stable td {font: menu; white-space: nowrap; padding: 1px}
-.stable td:first-child div {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
+.stable td {
+  font: menu;
+  font-family: inherit;
+  font-size: inherit;
+  white-space: nowrap;
+  padding: 0.25rem 0.15rem;
+  overflow: hidden;
 }
 .stable-head {
   position: relative;  /* Need to be positioned for drag masks to be positioned properly */
   width: 100%;
   flex: 0 0 auto;
-  background: #F5F5F5;
   overflow: hidden;
 }
-.stable-head table {table-layout: fixed; width: 0}
-.stable-head table tr {background: transparent url(../images/header.gif) repeat-x scroll center top}
-.stable-head table tr td {height: 14px; font-size: 11px; border: 1px solid; border-color: #FFFFFF #D0D0D0 #D0D0D0 #FFFFFF; background: transparent url(../images/blank.gif) no-repeat scroll right center; line-height: 14px; overflow: hidden; white-space: nowrap; vertical-align: top}
-.stable-head td div {padding: 0 12px 0 4px}
+.stable-head table {
+  table-layout: fixed;
+  width: 0;
+}
+.stable-head tr {
+  background-color: var(--header-bg-color);
+  background-image: var(--header-bg-image);
+}
+.stable-head td {
+  border-bottom: 1px solid var(--header-border-color);
+}
+.stable-head td:not(:first-child) {
+  border-left: 1px solid var(--header-border-color);
+}
+.stable-head td:not(:last-child) {
+  border-right: 1px solid var(--header-border-color);
+}
+.stable-head td div {
+  position: relative;
+  padding: 0 0.25rem;
+}
+.stable-head td.asc div, .stable-head td.desc div {
+  padding-right: 1.5rem;
+}
+.stable-head td.asc div::after, .stable-head td.desc div::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 1.35rem;
+  width: 1.35rem;
+  background: no-repeat center;
+  background-image: var(--header-asc-icon);
+  transition: 0.5s;
+}
+.stable-head td.desc div::after {
+  transform: rotate(-180deg);
+}
 .stable-head div.resz {border: 1px solid #FF0000; width: 5px; height: 14px; padding: 0 !important; float: right; background: transparent url(../images/s.gif) no-repeat scroll left center; cursor: e-resize}
 .stable-body {
   width: 100%;
@@ -36,6 +76,11 @@
 .stable-body table {table-layout: fixed; width: 0; }
 .stable-body tr {cursor: pointer}
 .stable-body td {border-bottom: 1px solid #E0E0E0; overflow: hidden;}
+.stable-body td:first-child div {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
 .stable-icon {
   display: inline-block;
   width: 1.35rem;
@@ -53,7 +98,6 @@
   margin: 0 2px !important;
 }
 .konqueror .stable-body td div { margin: 0 0px 0 0px !important }
-.stable-body td div { margin: 0 2px 0 2px !important}
 .stable-body tr.selected td {background: #CFDEEF}
 .stable-body tr.odd td {background: #F3F3F3}
 .stable-body tr.even td {background: #FFFFFF}
