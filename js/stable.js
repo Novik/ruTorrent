@@ -173,9 +173,13 @@ dxSTable.prototype.create = function(ele, styles, aName)
 				}
 			}
 		});
-		$(this.tHeadRow).append( td.append( $("<div>").html(styles[this.colOrder[i]].text)).
-			width(styles[this.colOrder[i]].width).
-			attr("index", i));
+		$(this.tHeadRow).append(
+			td.append(
+				$("<div>").append($("<span>").text(styles[this.colOrder[i]].text))
+			)
+				.width(styles[this.colOrder[i]].width)
+				.attr("index", i),
+		);
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
 		td.mouseclick(function(e)
 		{ 
@@ -553,13 +557,11 @@ dxSTable.prototype.renameColumnById = function(id, name)
 	this.renameColumn(this.getColById(id), name);
 }
 
-dxSTable.prototype.renameColumn = function(no,name) 
-{
+dxSTable.prototype.renameColumn = function(no, name) {
 	no = this.getColOrder(no);
-	if(no>=0)
-	{
+	if (no>=0) {
 		this.colsdata[no].text = name;
-		this.tHead.getElementsByTagName("tbody")[0].rows[0].cells[no].firstChild.innerHTML = name;
+		this.tHeadRow.cells[no].getElementsByTagName("span")[0].innerText = name;
 	}
 }
 

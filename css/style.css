@@ -84,7 +84,7 @@ button:not(:disabled):hover, input[type=button]:not(:disabled):hover, a.Button:n
 button:not(:disabled):active, input[type=button]:not(:disabled):active, a.Button:not(:disabled):active {
   background-color: #FAFAFA;
 }
-span {
+#gcont span, #lcont span {
   user-select: text;
   -moz-user-select: text;
   -webkit-user-select: text;
