@@ -51,8 +51,6 @@ var dxSTable = function()
 	this.reverse = 0;
 	this.sortId2 = '';
 	this.secRev = 0;
-	this.tHeadCols = new Array();
-	this.tBodyCols = new Array();
 	this.cancelSort = false;
 	this.cancelMove = false;
 	this.colMove = new dxSTable.ColumnMove(this);
@@ -187,7 +185,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		});
 		if(!$.support.touchable)
 			td.on('mousedown', function(e) { self.bindKeys(); });
-		this.tHeadCols[i] = td.get(0);
 		if (!this.colsdata[i].enabled)
 			td.hide();
 	}
@@ -201,7 +198,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	for (var i = 0; i < styles.length; i++) {
 		cl = $("<col>").width(this.colsdata[i].width);
 		cg.append(cl);
-		this.tBodyCols[i] = cl.get(0);
 		if (!this.colsdata[i].enabled)
 			cl.hide();
 	}
@@ -260,8 +256,6 @@ dxSTable.prototype.removeColumn = function(no)
 				this.colOrder[j]--;
 
 		this.colsdata.splice(i,1);
-		this.tBodyCols.splice(i,1);
-		this.tHeadCols.splice(i,1);
 
 		for(let c = i; c < this.cols; c++)
 			this.tHeadCols[c].setAttribute("index", c);
@@ -312,11 +306,9 @@ dxSTable.prototype.resizeColumn = function() {
 	if (this.tBody == null)
 		return;
 
-	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-	var w = 0, c;
+	var _e = this.tBodyCols;
 	for (var i = 0; i < _e.length; i++) {
-		c = this.tHeadCols[i];
-		w = this.colsdata[i].width;
+		const w = this.colsdata[i].width;
 		if (iv(_e[i].style.width) !== w) {
 			_e[i].style.width = w + "px";
 		}
@@ -324,97 +316,81 @@ dxSTable.prototype.resizeColumn = function() {
 			if ((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width !== w) && (w >= 4)) {
 				this.tBody.rows[0].cells[i].width = w;
 			}
-//			for( var j=0; j<this.tBody.rows.length; j++ )
-//				this.tBody.rows[j].cells[i].style.textAlign = c.style.textAlign;
 		}
 	}
 }
 
-var moveColumn = function(_11, _12) 
-{
-	var i, l, oParent, oCol, oBefore, aRows, a;
+/**
+ * Moves a column identified by the given index number, to a location
+ * by the given target index number.
+ *
+ * @param {Number} _11 Origin index of the moving column.
+ * @param {Number} _12 New index of the moving column.
+ * @returns
+ */
+var moveColumn = function(_11, _12) {
 	if(_11 == _12)
 		return;
-	oCol = this.tHeadCols[_11];
-	oParent = oCol.parentNode;
-	if(_12 == this.cols) 
-	{
-		oParent.removeChild(oCol);
-		oParent.appendChild(oCol);
+
+	// move header cells
+	const oHeadCol = this.tHeadCols[_11];
+	if(_12 == this.cols) {
+		this.tHeadRow[0].appendChild(oHeadCol);
+	} else {
+		$(this.tHeadCols[_12]).before(oHeadCol);
 	}
-	else 
-	{
-		oBefore = this.tHeadCols[_12];
-		oParent.removeChild(oCol);
-		oParent.insertBefore(oCol, oBefore);
+
+	// move body colgroup cols
+	const oBodyCol = this.tBodyCols[_11];
+	const oBodyParent = oBodyCol.parentNode;
+	if(_12 == this.cols) {
+		oBodyParent.appendChild(oBodyCol);
+	} else {
+		$(this.tBodyCols[_12]).before(oBodyCol);
 	}
-	oCol = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")[_11];
-	oParent = oCol.parentNode;
-	if(_12 == this.cols) 
-	{
-		oParent.removeChild(oCol);
-		oParent.appendChild(oCol);
-	}
-	else 
-	{
-		oBefore = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")[_12];
-		oParent.removeChild(oCol);
-		oParent.insertBefore(oCol, oBefore);
-	}
-	aRows = this.tBody.getElementsByTagName("tbody")[0].rows;
-	l = aRows.length;
-	i = 0;
-	while(i < l) 
-	{
-		oCol = aRows[i].cells[_11];
-		oParent = aRows[i];
-		if(_12 == this.cols) 
-		{
-			oParent.removeChild(oCol);
-			oParent.appendChild(oCol);
+
+	// move body cells row by row
+	const aRows = this.tBody.getElementsByTagName("tbody")[0].rows;
+	for(let i = 0; i < aRows.length; i++) {
+		const bodyRow = aRows[i];
+		const oBodyCol = bodyRow.cells[_11];
+		if(_12 == this.cols) {
+			bodyRow.appendChild(oBodyCol);
+		} else {
+			$(bodyRow.cells[_12]).before(oBodyCol);
 		}
-		else 
-		{
-			oBefore = aRows[i].cells[_12];
-			oParent.removeChild(oCol);
-			oParent.insertBefore(oCol, oBefore);
-		}
-		i++;
 	}
-	var aHC = new Array();
-	var aBC = new Array();
-	var aC = new Array();
-	var aO = new Array();
-	oCol = this.tHeadCols[_11];
-	var _18 = this.tBodyCols[_11];
-	for(i = 0; i < this.cols; i++) 
-	{
-		if(i == _11)
-			continue;
-		if(i == _12) 
-		{
-			aHC.push(oCol);
-			aBC.push(_18);
-			aC.push(this.colsdata[_11]);
-			aO.push(this.colOrder[_11]);
-		}
-		aHC.push(this.tHeadCols[i]);
-		aBC.push(this.tBodyCols[i]);
-		aC.push(this.colsdata[i]);
-		aO.push(this.colOrder[i]);
+
+	// move data in `colsdata` and `colOrder` properties
+	if (_11 < _12) {
+		this.colsdata = [
+			...this.colsdata.slice(0, _11),
+			...this.colsdata.slice(_11 + 1, _12),
+			this.colsdata[_11],
+			...this.colsdata.slice(_12),
+		];
+		this.colOrder = [
+			...this.colOrder.slice(0, _11),
+			...this.colOrder.slice(_11 + 1, _12),
+			this.colOrder[_11],
+			...this.colOrder.slice(_12),
+		];
+	} else {
+		this.colsdata = [
+			...this.colsdata.slice(0, _12),
+			this.colsdata[_11],
+			...this.colsdata.slice(_12, _11),
+			...this.colsdata.slice(_11 + 1),
+		];
+		this.colOrder = [
+			...this.colOrder.slice(0, _12),
+			this.colOrder[_11],
+			...this.colOrder.slice(_12, _11),
+			...this.colOrder.slice(_11 + 1),
+		];
 	}
-	if(_12 == this.cols) 
-	{
-		aHC.push(oCol);
-		aBC.push(_18);
-		aC.push(this.colsdata[_11]);
-		aO.push(this.colOrder[_11]);
-	}
-	this.tHeadCols = aHC.slice(0);
-	this.tBodyCols = aBC.slice(0);
-	this.colsdata = aC.slice(0);
-	this.colOrder = aO.slice(0);
-	for(i = 0; i < this.cols; i++)
+
+	for(let i = 0; i < this.cols; i++)
 		this.tHeadCols[i].setAttribute("index", i);
 	this.cancelSort = false;
 	if($type(this.onmove) == "function")
@@ -464,7 +440,7 @@ dxSTable.ColumnMove.prototype =
 		this.index = parseInt(p.getAttribute("index"));
 		while(o.firstChild) 
 			o.removeChild(o.firstChild);
-		o.appendChild(document.createTextNode(p.lastChild.innerHTML));
+		o.appendChild(document.createTextNode(p.lastChild.innerText));
 		o.style.width = (p.offsetWidth - 16) + "px";
 		o.style.left = p.offsetLeft + "px";
 		o.style.textAlign = (this.parent.colsdata[this.index].type == TYPE_NUMBER) ? "right" : "left";
@@ -1086,7 +1062,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	}
 	row.find("td:first-child div").prepend(this.createIcon(icon));
 	const ret = row[0];
-	const _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
+	const _e = this.tBodyCols;
 	for (let i = 0; i < _e.length; i++) {
 		ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
 	}
@@ -1158,7 +1134,7 @@ dxSTable.prototype.setAlignment = function()
 		aAlign.push(align);
 		this.tHeadCols[i].style.textAlign = align;
 	}
-	var col = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
+	var col = this.tBodyCols;
 	if(document.all || browser.isAppleWebKit || browser.isKonqueror)
 	{
 		for(var i = 0; i < col.length; i++)
@@ -1706,8 +1682,10 @@ Object.defineProperties(dxSTable.prototype, {
 	dBody: {get: function() {return this.dCont.find(".stable-body")[0];}},
 	tHead: {get: function() {return this.dCont.find(".stable-head > table")[0];}},
 	tHeadRow: {get: function() {return this.dCont.find(".stable-head tr:first-child");}},
+	tHeadCols: {get: function() {return this.tHead.getElementsByTagName("td")}},
 	tpad: {get: function() {return this.dCont.find(".stable-body > .stable-virtpad:first-of-type")[0];}},
 	tBody: {get: function() {return this.dCont.find(".stable-body > table")[0];}},
+	tBodyCols: {get: function() {return this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")}},
 	bpad: {get: function() {return this.dCont.find(".stable-body > .stable-virtpad:nth-of-type(2)")[0];}},
 	scp: {get: function() {return this.dCont.find(".stable-scrollpos")[0];}},
 	colReszObj: {get: function() {return this.dCont.find(".stable-resize-header");}},
