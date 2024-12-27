@@ -3,6 +3,7 @@
   --header-bg-image: linear-gradient(0deg, #dfdfdf 0%, #ffffff 100%);
   --header-border-color: #d0d0d0;
   --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAGCAYAAAARx7TFAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAU0lEQVQImYXOsQ0AMQgDQFIgZRxG9G60zECTBdJQ+6t8EfR6JDfWSUbkOgC8uwYyk5/wgL03q6pDAIwIZibXWm8OHABoZjLnFFVtC+4u4+9ZAOMBnF07zgszHpwAAAAASUVORK5CYII=);
+  --col-resize-sep-bg-color: #a0a0a0;
   height: 100%;
   background-color: #FFFFFF;
   overflow: hidden;
@@ -67,6 +68,7 @@
 }
 .stable-head div.resz {border: 1px solid #FF0000; width: 5px; height: 14px; padding: 0 !important; float: right; background: transparent url(../images/s.gif) no-repeat scroll left center; cursor: e-resize}
 .stable-body {
+  position: relative;
   width: 100%;
   flex: 1 1 auto;
   background: #F5F5F5;
@@ -108,7 +110,13 @@
 .stable-separator-header {position: absolute; top: 0px; left: 0px; font: menu; height: 1em; width: 1px; overflow: hidden; background: #0099FF; padding: 3px 0px}
 .stable-virtpad {width: 10px; height: 0px}
 .stable-scrollpos {width: 80%; height: 16px; left: 10%; top: 50%; position: absolute; padding: 0 5px; margin-top: -8px; background: #FFFFFF; color: #AAAAAA; font-size: 11px; font-weight: bold; text-align: center; overflow: hidden; display: none; white-space: nowrap}
-.stable-resize-header {	position: absolute; background-color: #A0A0A0; width: 1px; top: 0px; font: menu; visibility: hidden; overflow: hidden; z-index: 100; }
+.stable-resize-header {
+  position: absolute;
+  background-color: var(--col-resize-sep-bg-color);
+  width: 1px;
+  overflow: hidden;
+  z-index: 100;
+}
 
 .rowcover {
   position: absolute;
