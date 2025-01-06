@@ -4,6 +4,10 @@
   /* --header-border-color: undefined - inherit from standard theme; */
   --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAFCAYAAACXU8ZrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMUlEQVQImWN0+O/AgAwUJ/b+v59fzIgsxoSuAJnGUIQugcxnwqYAXSHj43e/sSpABgAAzBbHU/fvogAAAABJRU5ErkJggg==);
   --col-resize-sep-bg-color: #a0a0a0;
+  /* --row-odd-bg-color: undefined - inherit from standard theme; */
+  /* --row-even-bg-color: undefined - inherit from standard theme; */
+  /* --row-active-bg-color: undefined - inherit from standard theme; */
   border-color:  #8DB2E3 #FFFFFF #FFFFFF #8DB2E3;
+  --row-highlight-brightness: 1;
 }
 .stable-body tr.selected td {background: #D9E8FB}
