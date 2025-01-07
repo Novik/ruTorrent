@@ -56,5 +56,9 @@ php/commands.lst
 *.iml
 rutorrent-custom-plugins
 
+php/share/settings/*
+php/share/torrents/*
+php/share/users/*
+
 # MacOS
 .DS_Store
