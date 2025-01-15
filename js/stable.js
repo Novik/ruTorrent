@@ -103,7 +103,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 {
 	if(!ele || this.created)
 		return;
-	let td, cl;
 	this.prefix = aName;
 	this.dCont = $(ele).addClass("stable").append(
 		$("<div>").addClass("stable-head").append(  // -> this.dHead
@@ -143,38 +142,13 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		this.colsdata[i].width = iv(this.colsdata[i].width);
 		this.ids[i] = styles[i].id;
 
-		td = $("<td>").on( "mousemove", function(e) {
-			if(self.isResizing) 
-				return;
-			var x = e.clientX - $(this).offset().left;	
-			var w = this.offsetWidth;
-			var i = parseInt(this.getAttribute("index"));
-			var delta = $.support.touchable ? 16 : 8;
-			if (x <= delta) {
-				if (i != 0) {
-					self.hotCell = i - 1;
-					this.style.cursor = "e-resize";
-				} else {
-					self.hotCell =- 1;
-					this.style.cursor = "default";
-				}
-			} else {
-				if (x >= w - delta) {
-					self.hotCell = i;
-					this.style.cursor = "e-resize";
-				} else {
-					self.hotCell =- 1;
-					this.style.cursor = "default";
-				}
-			}
-		});
-		this.tHeadRow.append(
-			td.append(
+		const td = $("<td>").append(
 				$("<div>").append($("<span>").text(styles[this.colOrder[i]].text))
 			)
 				.width(styles[this.colOrder[i]].width)
-				.attr("index", i),
-		);
+				.attr("index", i)
+				.toggle(!!this.colsdata[i].enabled);
+		this.tHeadRow.append(td);
 		this.colMove.init(td.get(0), preventSort, null, moveColumn);
 		td.mouseclick(function(e)
 		{ 
@@ -185,8 +159,6 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		});
 		if(!$.support.touchable)
 			td.on('mousedown', function(e) { self.bindKeys(); });
-		if (!this.colsdata[i].enabled)
-			td.hide();
 	}
 
 	$(this.tBody).find("tbody").mouseclick(this.handleClick.bind(this));
@@ -196,10 +168,9 @@ dxSTable.prototype.create = function(ele, styles, aName)
 
 	const cg = $(this.tBody).find("colgroup");
 	for (var i = 0; i < styles.length; i++) {
-		cl = $("<col>").width(this.colsdata[i].width);
-		cg.append(cl);
-		if (!this.colsdata[i].enabled)
-			cl.hide();
+		cg.append(
+			$("<col>").width(this.colsdata[i].width).toggle(!!this.colsdata[i].enabled),
+		);
 	}
 	this.init();
 	this.resizeColumn();
@@ -661,28 +632,7 @@ var theSort =
 	peers_connected_re: /^(\d+)/
 };
 
-dxSTable.prototype.init = function() 
-{
-	if(navigator.product == "Gecko") 
-	{
-		for(var n = 0, l = document.styleSheets.length; n < l; n++) 
-		{
-			if(!document.styleSheets[n].href || (document.styleSheets[n].href.indexOf("style.css") ==- 1)) 
-			{
-				continue;
-			}
-			try {
-			var _55 = document.styleSheets[n].cssRules;
-			for(var i = 0; i < _55.length; i++) 
-			{
-				if((_55[i].type == CSSRule.STYLE_RULE) && (_55[i].selectorText == ".stable-head")) 
-				{
-					_55[i].style.overflow = "-moz-scrollbars-none";
-				}
-			}
-			} catch(e) {}
-		}
-	}
+dxSTable.prototype.init = function() {
 	this.assignEvents();
 	this.setAlignment();
 }
@@ -769,6 +719,34 @@ dxSTable.prototype.assignEvents = function()
 				self.cancelMove = false;
 			}
 		};
+	this.tHeadRow.on("mousemove", (ev) => {
+		if (this.isResizing || this.isMoving) return;
+
+		// get the cell currently being hovered over and its index number
+		const currCell = ev.target.closest("td");  // find the containing cell element
+		const currIndex = Array.from(this.tHeadCols).indexOf(currCell);
+		// get the X coordinate within the entire header row
+		let mouseX = ev.clientX + this.dBody.scrollLeft - this.dBody.offsetLeft;
+		for (let i = 0; i < currIndex; i++) {
+			mouseX -= this.tHeadCols[i].offsetWidth;
+		}
+
+		const delta = 8;
+		if (mouseX < delta) {
+			// cursor near left border - drag to resize PREVIOUS header cell
+			this.hotCell = currIndex - 1;
+			// can't resize if cursor near the left border of the first cell
+			currCell.style.cursor = (currIndex === 0) ? "default" : "e-resize";
+		} else if (mouseX > (this.tHeadCols[currIndex].offsetWidth - delta)) {
+			// cursor near right border - drag to resize CURRENT header cell
+			this.hotCell = currIndex;
+			currCell.style.cursor = "e-resize";
+		} else {
+			// cursor on the cell body - drag to move CURRENT header cell
+			this.hotCell = -1;
+			currCell.style.cursor = "default";
+		}
+	});
 	if(!$.support.touchable)
 		this.dCont.on('mousedown', function(e) { self.bindKeys(); } );
 }
