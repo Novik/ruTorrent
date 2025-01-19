@@ -5,8 +5,16 @@
 
 // Drag & Drop object 
 class DnD {
-	constructor(id, options) {
-		this.obj = $('#' + id);
+	/**
+	 * Construct a drag-and-drop instance.
+	 * @param {string | HTMLElement} dndObj Reference to the drag-and-drop element.
+	 * Can be the HTML `id` of the element, or a reference to the HTML element.
+	 * @param {Object} options Drag and drop options to be passed.
+	 */
+	constructor(dndObj, options) {
+		this.obj = ($type(dndObj) === "string")
+			? $('#' + dndObj)
+			: $(dndObj);
 		const headers = this.obj.find(".dlg-header");
 		const header = headers.length > 0 ? $(headers[0]) : this.obj;
 		this.options = options || {};

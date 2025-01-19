@@ -80,7 +80,6 @@
 div.stable-body table tbody tr.even td:nth-child(2n+1) { color: #ffffff; }
 .stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top; border: 1px solid #0099FF; }
 
-.stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top rgba(128,128,128,0.7); border: 1px solid #0099FF; }
 .webkit .stable-move-header { background: rgba(128,128,128,0.7); }
 
 .stable-active-header { border-color: threedface !important }

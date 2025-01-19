@@ -51,9 +51,7 @@ var dxSTable = function()
 	this.reverse = 0;
 	this.sortId2 = '';
 	this.secRev = 0;
-	this.cancelSort = false;
-	this.cancelMove = false;
-	this.colMove = new dxSTable.ColumnMove(this);
+	this.colDnD = null;
 	this.colOrder = new Array();
 	this.ids = new Array();
 	this.onselect = null;
@@ -62,10 +60,14 @@ var dxSTable = function()
 	this.onmove = null;
 	this.onresize = null;
 	this.ondblclick = null;
-	this.hotCell =- 1;
+	this.currIndex = -1;
+	this.hotCell = -1;
+	this.index = -1;
+	this.indexNew = -1;
 	this.isMoving = false;
 	this.isResizing = false;
 	this.isSorting = false;
+	this.mouseX = 0;  // x offset of cursor relative to the cell's left border
 	this.selCount = 0;
 	this.created = false;
 	this.prgStartColor = new RGBackground(".meter-value-start-color");
@@ -112,6 +114,8 @@ dxSTable.prototype.create = function(ele, styles, aName)
 				),
 			),
 			$("<div>").addClass("rowcover").hide(),  // -> this.rowCover
+			$("<div>").addClass("stable-move-header").hide(),  // -> this.obj (drag and move object)
+			$("<div>").addClass("stable-separator-header").hide(),  // -> this.sepobj (drag and move separator)
 		),
 		$("<div>").addClass("stable-body").append(  // -> this.dBody
 			$("<div>").addClass("stable-virtpad"),  // -> this.tpad
@@ -125,14 +129,60 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		$("<span>").addClass("stable-scrollpos"),  // -> this.scp
 	);
 
-	const self = this;
-
 	for (let i in this.colOrder) {
 		if (this.colOrder[i] >= styles.length) {
 			this.colOrder = new Array();
 			break;
 		}
 	}
+	this.colDnD = new DnD(
+		this.tHeadRow[0],
+		{
+			onStart: (ev) => {
+				if (ev && ev.which === 3) {
+					this.onRightClick(ev);
+					return;
+				}
+
+				if (this.hotCell > -1) {
+					this.isResizing = true;
+					this.isMoving = false;
+				} else {
+					this.isSorting = true;
+					this.index = this.currIndex;
+					const p = this.tHeadCols[this.index];
+					this.obj.css({
+						width: p.offsetWidth - 16,
+						left: p.offsetLeft,
+						"text-align": (this.colsdata[this.index].type == TYPE_NUMBER) ? "right" : "left",
+						cursor: "move",
+					}).text(p.lastChild.innerText);
+				}
+				return true;
+			},
+			onRun: (ev) => {
+				if (this.isResizing) {
+					this.colDragResize(ev);
+				} else {
+					this.isMoving = true;
+					this.isSorting = false;
+					this.colDragMove(ev);
+				}
+			},
+			onFinish: (ev) => {
+				if (this.isResizing) {
+					this.colDragResizeEnd(ev);
+				} else if (this.isMoving) {
+					this.colDragMoveEnd(ev);
+				} else {
+					this.Sort(ev);
+				}
+				this.isResizing = false;
+				this.isMoving = false;
+				this.isSorting = false;
+			},
+		},
+	);
 	for (let i = 0; i < styles.length; i++) {
 		if(!$type(this.colOrder[i]))
 			this.colOrder[i] = i;
@@ -149,16 +199,11 @@ dxSTable.prototype.create = function(ele, styles, aName)
 				.attr("index", i)
 				.toggle(!!this.colsdata[i].enabled);
 		this.tHeadRow.append(td);
-		this.colMove.init(td.get(0), preventSort, null, moveColumn);
-		td.mouseclick(function(e)
-		{ 
-			self.onRightClick(e);
-		}).on('mouseup', function(e) 
-		{ 
-			self.Sort(e);
+		td.mouseclick((e) => { 
+			this.onRightClick(e);
 		});
 		if(!$.support.touchable)
-			td.on('mousedown', function(e) { self.bindKeys(); });
+			td.on('mousedown', (e) => { this.bindKeys(); });
 	}
 
 	$(this.tBody).find("tbody").mouseclick(this.handleClick.bind(this));
@@ -263,11 +308,6 @@ dxSTable.prototype.onRightClick = function(e)
 	}
 }
 
-var preventSort = function() 
-{
-	this.cancelSort = true;
-}
-
 dxSTable.prototype.calcSize = function() {
 	// TODO: remove in v6
 	noty("`dxStable.calcSize()` is deprecated and will be removed in v6. Please avoid using it and run `dxSTable.resizeColumn()` directly.")
@@ -299,7 +339,7 @@ dxSTable.prototype.resizeColumn = function() {
  * @param {Number} _12 New index of the moving column.
  * @returns
  */
-var moveColumn = function(_11, _12) {
+dxSTable.prototype.moveColumn = function(_11, _12) {
 	if(_11 == _12)
 		return;
 
@@ -363,131 +403,8 @@ var moveColumn = function(_11, _12) {
 
 	for(let i = 0; i < this.cols; i++)
 		this.tHeadCols[i].setAttribute("index", i);
-	this.cancelSort = false;
 	if($type(this.onmove) == "function")
 		this.onmove();
-}
-
-dxSTable.ColumnMove = function(p)
-{
-	this.parent = p;
-	this.obj = $("<div>").addClass("stable-move-header").get(0);
-	this.sepobj = $("<div>").addClass("stable-separator-header").get(0);
-}
-
-dxSTable.ColumnMove.prototype =
-{
-	parent : null, 
-	obj : null, 
-	sepobj : null, 
-	added : false, 
-	rx : -1, 
-	index :- 1, 
-	indexnew :- 1, 
-	mid : 0, 
-	uid : 0, 
-	ignoreNextMove : false,
-
-	init : function(o, _1b, _1c, _1d) 
-	{      
-		var self = this;      
-		$(o).on('mousedown', function(e)
-		{
-			if(self.parent.hotCell >- 1)
-				return;
-			return(self.start(e, this));
-		});
-		this.onDrag = _1c || new Function();
-		this.onDragEnd = _1d || new Function();
-	},
-	start : function(e, p)
-	{	
-		if(this.parent.cancelMove)
-			return;
-		if(e && e.which==3)
-			return(true);
-		this.parent.isMoving = true;
-		var o = this.obj;
-		this.index = parseInt(p.getAttribute("index"));
-		while(o.firstChild) 
-			o.removeChild(o.firstChild);
-		o.appendChild(document.createTextNode(p.lastChild.innerText));
-		o.style.width = (p.offsetWidth - 16) + "px";
-		o.style.left = p.offsetLeft + "px";
-		o.style.textAlign = (this.parent.colsdata[this.index].type == TYPE_NUMBER) ? "right" : "left";
-		this.sepobj.style.left = p.offsetLeft + "px";
-		o.lastMouseX = e.clientX;
-		o.style.visibility = "visible";
-		var self = this;
-		self.ignoreNextMove = true;
-		$(document).on("mousemove", self,self.drag);
-		$(document).on("mouseup", self,self.end);
-		this.rx = $(this.parent.dHead).offset().left;
-		this.obj.style.cursor = "move";
-		return(false);
-	},
-	drag : function(e) 
-	{
-		var self = e.data;
-		if(self.ignoreNextMove)
-		{
-			self.ignoreNextMove = false;
-			return;
-		}
-		self.parent.cancelSort = true;
-		var o = self.obj, l = parseInt(o.style.left), ex = e.clientX, i = 0, c = self.parent.cols;
-		if(!self.added) 
-		{
-			self.parent.dHead.appendChild(self.obj);
-			self.parent.dHead.appendChild(self.sepobj);
-			self.added = true;
-		}
-		l += ex;
-		if(!$type(o.lastMouseX))
-			o.lastMouseX = ex;
-		l -= o.lastMouseX;
-		o.style.left = l + "px";
-		var ox = 0;
-		var orx = ex + self.parent.dBody.scrollLeft - self.rx;
-		for(i = 0; i < c; i++) 
-		{
-		        if(self.parent.colsdata[i].enabled) 
-		        {
-				ox += self.parent.tHeadCols[i].offsetWidth;
-				if(ox > orx) 
-					break;
-			}
-		}
-		if(i >= c) 
-		{
-			self.sepobj.style.left = self.parent.tHeadCols[c - 1].offsetLeft + self.parent.tHeadCols[c - 1].offsetWidth - 1 + "px";
-			i = c;
-		}
-		else 
-			self.sepobj.style.left = self.parent.tHeadCols[i].offsetLeft + "px";
-		self.indexnew = i;
-		self.obj.lastMouseX = ex;
-		self.onDrag.apply(self.parent, [i]);
-		return(false);
-   	},
-	end : function(e)
-	{
-		var self = e.data;	
-		try {
-			self.obj.style.cursor = "default";
-			self.parent.dHead.removeChild(self.obj);
-			self.parent.dHead.removeChild(self.sepobj);
-			self.added = false;
-			self.onDragEnd.apply(self.parent, [self.index, self.indexnew]);
-		} catch(ex) {}
-		self.index =- 1;
-		self.indexnew =- 1;
-		self.parent.isMoving = false;
-		self.parent.cancelSort = false;
-		$(document).off("mousemove",self.drag);
-		$(document).off("mouseup",self.end);
-		return(false);
-	}
 }
 
 dxSTable.prototype.renameColumnById = function(id, name)
@@ -505,7 +422,7 @@ dxSTable.prototype.renameColumn = function(no, name) {
 
 dxSTable.prototype.Sort = function(e) 
 {
-	if (this.cancelSort || !this.created)
+	if (!this.created)
 		return true;
 	this.isSorting = true;
 	const primarySorting = Boolean(this.sortId);
@@ -518,7 +435,7 @@ dxSTable.prototype.Sort = function(e)
 	}
 	const sortColNo = this.getColNoById(this.sortId);
 	const oldCol = primarySorting ? this.tHeadCols[(sortColNo >= 0) ? sortColNo : 0] : null;
-	const col = e ? e.delegateTarget : oldCol;
+	const col = this.tHeadCols[this.currIndex] ?? oldCol;
 	const sortIdCurrent = this.getIdByCol(this.colOrder[parseInt(col.getAttribute("index"))]) ?? '';
 	const toggleReverse = (oldId, oldRev) => (oldId === sortIdCurrent) ? 1 - oldRev : 0;
 	if (e) {
@@ -700,46 +617,28 @@ dxSTable.prototype.assignEvents = function()
 				self.syncDOMAsync();
 			}
 		});
-	this.tHead.onmousedown = function(e) {
-		if (self.isResizing)
-			self.colDragEnd(e);
-		else if((self.hotCell >- 1) && !self.isMoving) {
-			self.cancelSort = true;
-			self.cancelMove = true;
-			$(document).on("mousemove", self, self.colDrag).on("mouseup", self, self.colDragEnd);
-			self.rowCover.show();
-			return(false);
-		}
-	};
-	this.tHead.onmouseup = function(e) 
-		{
-			if((self.hotCell >- 1) && !self.isMoving)
-			{
-				self.cancelSort = false;
-				self.cancelMove = false;
-			}
-		};
 	this.tHeadRow.on("mousemove", (ev) => {
 		if (this.isResizing || this.isMoving) return;
 
 		// get the cell currently being hovered over and its index number
 		const currCell = ev.target.closest("td");  // find the containing cell element
-		const currIndex = Array.from(this.tHeadCols).indexOf(currCell);
+		this.currIndex = Array.from(this.tHeadCols).indexOf(currCell);
+
 		// get the X coordinate within the entire header row
 		let mouseX = ev.clientX + this.dBody.scrollLeft - this.dBody.offsetLeft;
-		for (let i = 0; i < currIndex; i++) {
+		for (let i = 0; i < this.currIndex; i++) {
 			mouseX -= this.tHeadCols[i].offsetWidth;
 		}
 
 		const delta = 8;
 		if (mouseX < delta) {
 			// cursor near left border - drag to resize PREVIOUS header cell
-			this.hotCell = currIndex - 1;
+			this.hotCell = this.currIndex - 1;
 			// can't resize if cursor near the left border of the first cell
-			currCell.style.cursor = (currIndex === 0) ? "default" : "e-resize";
-		} else if (mouseX > (this.tHeadCols[currIndex].offsetWidth - delta)) {
+			currCell.style.cursor = (this.currIndex === 0) ? "default" : "e-resize";
+		} else if (mouseX > (this.tHeadCols[this.currIndex].offsetWidth - delta)) {
 			// cursor near right border - drag to resize CURRENT header cell
-			this.hotCell = currIndex;
+			this.hotCell = this.currIndex;
 			currCell.style.cursor = "e-resize";
 		} else {
 			// cursor on the cell body - drag to move CURRENT header cell
@@ -752,46 +651,80 @@ dxSTable.prototype.assignEvents = function()
 }
 
 dxSTable.prototype.colDrag = function(e) {
-	const self = e.data;
-	self.isResizing = true;
-	if (self.hotCell < 0)
-		return(true);
-	while(!self.colsdata[self.hotCell].enabled && self.hotCell>0)
-		self.hotCell--;
-	const o = self.tHeadCols[self.hotCell];
+	noty("`dxSTable.colDrag()` is deprecated. Please use either `dxSTable.colDragResize()` or `dxSTable.colDragMove()` instead.");
+	this.colDragResize(e);
+}
+
+dxSTable.prototype.colDragResize = function(e) {
+	const o = this.tHeadCols[this.hotCell];
 	const nw = o.clientWidth + e.originalEvent.movementX;
 	if (nw < 10) {
 		return(true);
 	}
-	self.colsdata[self.hotCell].width = nw;
+	this.colsdata[this.hotCell].width = nw;
 	o.style.width = nw + "px";
 	document.body.style.cursor = "e-resize";
 
-	self.colReszObj
-		.height($(self.tBody).height())
+	this.colReszObj
+		.height($(this.tBody).height())
 		.css({
-			top: $(self.tpad).height(),
-			left: o.offsetLeft + nw - self.dHead.scrollLeft,
+			top: $(this.tpad).height(),
+			left: o.offsetLeft + nw,
 		})
 		.show();
-	self.resizeColumn();
+	this.resizeColumn();
 
 	try { document.selection.empty(); } catch(ex) {}
 	return(false);
 }
 
+dxSTable.prototype.colDragMove = function(e) {
+	const o = this.obj;
+	o.show().css({left: o.offset().left - this.tHeadRow.offset().left + e.originalEvent.movementX});
+	const c = this.cols;
+	let mouseX = e.clientX - this.dBody.offsetLeft + this.dBody.scrollLeft;
+	for (let i = 0; i < c; i++) {
+		if (mouseX < this.tHeadCols[i].offsetWidth) {
+			this.currIndex = i;
+			break;
+		}
+		mouseX -= this.tHeadCols[i].offsetWidth;
+	}
+	if ((this.currIndex === c - 1) && (this.tHeadCols[c - 1].offsetWidth - mouseX < 16)) {
+		// cursor on the last header cell AND near the right border (less than 16px to the border)
+		this.sepobj.show().css("left", this.tHeadCols[c - 1].offsetLeft + this.tHeadCols[c - 1].offsetWidth - 1);
+		this.indexNew = this.currIndex + 1;
+	} else {
+		this.sepobj.show().css("left", this.tHeadCols[this.currIndex].offsetLeft);
+		this.indexNew = this.currIndex;
+	}
+}
+
 dxSTable.prototype.colDragEnd = function(e) {
-	const self = e.data;
-	if ($type(self.onresize) === "function")
-		self.onresize();
-	$(document).off("mousemove", self.colDrag).off("mouseup", self.colDragEnd);
-	self.rowCover.hide();
-	self.isResizing = false;
-	self.colReszObj.hide();
-	self.cancelSort = false;
-	self.cancelMove = false;
+	noty("`dxSTable.colDragEnd()` is deprecated. Please use either `dxSTable.colDragResizeEnd()` or `dxSTable.colDragMoveEnd()` instead.");
+	this.colDragResizeEnd(e);
+}
+
+dxSTable.prototype.colDragResizeEnd = function(e) {
+	if ($type(this.onresize) === "function")
+		this.onresize();
+	this.rowCover.hide();
+	this.colReszObj.hide();
 	document.body.style.cursor = "default";
 	return(false);	
+}
+
+dxSTable.prototype.colDragMoveEnd = function(e) {
+	try {
+		this.obj.css("cursor", "default");
+		this.moveColumn(this.index, this.indexNew);
+	} catch(ex) {}
+	this.index = -1;
+	this.indexNew = -1;
+	this.isMoving = false;
+	this.obj.hide();
+	this.sepobj.hide();
+	return false;
 }
 
 dxSTable.prototype.scrollPos = function()
@@ -1668,4 +1601,6 @@ Object.defineProperties(dxSTable.prototype, {
 	scp: {get: function() {return this.dCont.find(".stable-scrollpos")[0];}},
 	colReszObj: {get: function() {return this.dCont.find(".stable-resize-header");}},
 	rowCover: {get: function() {return this.dCont.find(".rowcover");}},
+	obj: {get: function() {return this.dCont.find(".stable-move-header");}},
+	sepobj: {get: function() {return this.dCont.find(".stable-separator-header")}},
 });
