@@ -140,6 +140,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	this.colDnD = new DnD(
 		this.tHeadRow[0],
 		{
+			allowMobile: true,
 			onStart: (ev) => {
 				if (ev && ev.which === 3) {
 					this.onRightClick(ev);
@@ -155,7 +156,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 					const p = this.tHeadCols[this.index];
 					this.obj.css({
 						width: p.offsetWidth - 16,
-						left: p.offsetLeft,
+						left: p.offsetLeft - this.dBody.scrollLeft,
 						"text-align": (this.colsdata[this.index].type == TYPE_NUMBER) ? "right" : "left",
 						cursor: "move",
 					}).text(p.lastChild.innerText);
@@ -673,7 +674,7 @@ dxSTable.prototype.colDragResize = function(e) {
 
 dxSTable.prototype.colDragMove = function(e) {
 	const o = this.obj;
-	o.show().css({left: o.offset().left - this.tHeadRow.offset().left + e.originalEvent.movementX});
+	o.show().css({left: o.offset().left - this.tHeadRow.offset().left - this.dBody.scrollLeft + e.originalEvent.movementX});
 	const c = this.cols;
 	let mouseX = e.clientX - this.dCont.offset().left + this.dBody.scrollLeft;
 	for (let i = 0; i < c; i++) {
@@ -685,10 +686,10 @@ dxSTable.prototype.colDragMove = function(e) {
 	}
 	if ((this.currIndex === c - 1) && (this.tHeadCols[c - 1].offsetWidth - mouseX < 16)) {
 		// cursor on the last header cell AND near the right border (less than 16px to the border)
-		this.sepobj.show().css("left", this.tHeadCols[c - 1].offsetLeft + this.tHeadCols[c - 1].offsetWidth - 1);
+		this.sepobj.show().css("left", this.tHeadCols[c - 1].offsetLeft + this.tHeadCols[c - 1].offsetWidth - this.dBody.scrollLeft - 1);
 		this.indexNew = this.currIndex + 1;
 	} else {
-		this.sepobj.show().css("left", this.tHeadCols[this.currIndex].offsetLeft);
+		this.sepobj.show().css("left", this.tHeadCols[this.currIndex].offsetLeft - this.dBody.scrollLeft);
 		this.indexNew = this.currIndex;
 	}
 }
@@ -928,7 +929,10 @@ dxSTable.prototype.createIcon = function(icon) {
 	if (!icon) return "";
 	const iconObj = $("<span>").addClass("stable-icon");
 	if ($type(icon) === "object") {
-		return iconObj.css("background-image", `url(${icon.src})`);
+		return iconObj.css({
+			"background-image": `url(${icon.src})`,
+			"background-size": "contain",
+		});
 	} else {
 		return iconObj.addClass(icon).css("background-image", "");
 	}
