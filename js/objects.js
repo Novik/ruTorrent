@@ -32,17 +32,20 @@ class DnD {
 			this.options.onRun = function() {};
 		if (!this.options.onFinish)
 			this.options.onFinish = function() {};
+		this.options.allowMobile = !!this.options.allowMobile;
 		header.off("mousedown");
 		header.on("mousedown", this, this.start);
 	}
 
 	start(e) {
-		// allow dnd only for medium-sized screens and up
-		if ($(window).width() < 768) return false;
+		const self = e.data;
+		// allow dnd on small-sized screens only when explicitly allowed to
+		if (($(window).width() < 768) && !self.options.allowMobile){
+			return false;
+		}
 		// disallow dnd on links
 		if (e.target.tagName === "A") return false;
 
-		const self = e.data;
 		if (self.options.onStart(e)) {
 			$(document).on("mousemove", self, self.run);
 			$(document).on("mouseup", self, self.finish);
