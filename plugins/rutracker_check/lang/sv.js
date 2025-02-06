@@ -17,7 +17,8 @@
  				  "Förmodligen borttagen",
  				  "Fel, uppstigning tracker",
  				  "Fel vid interaktivitet med rTorrent",
- 				  "Behövs inte"
+ 				  "Behövs inte",
+ 				  "Ignorerad"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();
