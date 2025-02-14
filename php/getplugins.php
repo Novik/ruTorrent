@@ -212,8 +212,9 @@ $settingsFlags = array(
 	"canChangeTorrentProperties"	=> 0x0080,
 	"canAddTorrentsWithoutPath"	=> 0x0100,
 	"canAddTorrentsWithoutStarting"	=> 0x0200,
-	"canAddTorrentsWithResume"	=> 0x0400,	
-	"canAddTorrentsWithRandomizeHash"	=> 0x0800,	
+	"canAddTorrentsWithResume"	=> 0x0400,
+	"canAddTorrentsWithRandomizeHash"	=> 0x0800,
+	"canChangeTorrentOptions"	=> 0x1000
 );
 $perms = 0;
 foreach($settingsFlags as $flagName=>$flagVal)
