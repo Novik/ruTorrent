@@ -204,7 +204,7 @@ function makeContent() {
 		[
 			"not_add_path", "torrents_start_stopped",
 			"fast_resume", "randomize_hash",
-		].filter(ele => $$(ele)).forEach(ele => $$(ele).checked = !!theWebUI.settings["webui." + ele]);
+		].forEach(ele => $$(ele).checked = !!theWebUI.settings["webui." + ele]);
 	});
 
 	// save add torrent options before closing dialog window
@@ -212,7 +212,7 @@ function makeContent() {
 		[
 			"not_add_path", "torrents_start_stopped",
 			"fast_resume", "randomize_hash",
-		].filter(ele => $$(ele)).forEach(ele => theWebUI.settings["webui." + ele] = $$(ele).checked);
+		].forEach(ele => theWebUI.settings["webui." + ele] = $$(ele).checked);
 		theWebUI.save();
 	});
 
