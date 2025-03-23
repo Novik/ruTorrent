@@ -14,11 +14,12 @@
  theUILang.chkResults		= [
  				  "Sürüyor",
  				  "Güncellendi",
-       "Güncelleme gerekli değil",
+ 				  "Güncelleme gerekli değil",
  				  "Muhtemelen silindi",
-       "İzleyiciye erişim hatası",
-       "rTorrent ile etkileşim hatası",
-       "Gerek yok"
+ 				  "İzleyiciye erişim hatası",
+ 				  "rTorrent ile etkileşim hatası",
+ 				  "Gerek yok",
+ 				  "Yoksayılmış"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

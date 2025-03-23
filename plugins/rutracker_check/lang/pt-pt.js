@@ -17,7 +17,8 @@
  				  "Provavelmente apagado",
  				  "Erro ao acessar o rastreador",
  				  "Erro ao interagir com o rTorrent",
- 				  "Não há necessidade"
+ 				  "Não há necessidade",
+ 				  "Ignorado"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();
