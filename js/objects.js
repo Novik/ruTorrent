@@ -50,7 +50,6 @@ class DnD {
 			$(document).on("mousemove", self, self.run);
 			$(document).on("mouseup", self, self.finish);
 		}
-		return false;
 	}
 
 	run(e) {

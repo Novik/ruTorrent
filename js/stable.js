@@ -34,8 +34,6 @@ var ALIGN_LEFT = 1;
 var ALIGN_CENTER = 2;
 var ALIGN_RIGHT = 3;
 
-var TR_HEIGHT	=	19;
-
 var dxSTable = function() 
 {
 	this.rowdata = {};
@@ -585,21 +583,18 @@ dxSTable.prototype.assignEvents = function()
 	this.scOdd = null;
 	this.isScrolling = false;
 
-	$(this.dBody).on( "scroll",
-		function(e) 
-		{
+	$(this.dBody).on("scroll", function(e) {
 			var maxRows = self.getMaxRows();
-			if(self.scrollTop != self.dBody.scrollTop) 
-			{
+			if (self.scrollTop != self.dBody.scrollTop) {
 				self.scOdd = null;
 				self.scrollDiff = self.scrollTop - self.dBody.scrollTop;
 				self.scrollTop = self.dBody.scrollTop;
-				if (self.isScrolling ||
-				    (!self.noDelayingDraw &&
-				     Math.abs(self.scrollDiff) > TR_HEIGHT*3 &&
-				     (self.viewRows > maxRows))
-				   )
-				{
+				if (
+					self.isScrolling ||
+					(!self.noDelayingDraw &&
+						Math.abs(self.scrollDiff) > this.TR_HEIGHT*3 &&
+						(self.viewRows > maxRows))
+				) {
 					self.isScrolling = true;
 					if (self.scrollTimeout !== 0)
 						clearTimeout(self.scrollTimeout);
@@ -614,7 +609,7 @@ dxSTable.prototype.assignEvents = function()
 				self.pendingSync.scroll = true;
 				self.syncDOMAsync();
 			}
-		});
+	});
 	this.tHeadRow.on("mousemove", (ev) => {
 		if (this.isResizing || this.isMoving) return;
 
@@ -724,9 +719,9 @@ dxSTable.prototype.colDragMoveEnd = function(e) {
 dxSTable.prototype.scrollPos = function()
 {
 	this.scp.style.display = "block";
-	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
-	var mxi = mni + Math.floor(this.dBody.clientHeight / TR_HEIGHT);
-	var mid = Math.floor(((mni + mxi) / 2));
+	var mni = Math.floor(this.dBody.scrollTop / this.TR_HEIGHT);
+	var mxi = mni + Math.floor(this.tBody.height() / this.TR_HEIGHT);
+	var mid = Math.floor((mni + mxi) / 2);
 	if(mid > this.viewRows)
 		mid = this.viewRows - 1;
 	var vr =- 1;
@@ -752,7 +747,7 @@ dxSTable.prototype.getMaxRows = function()
 {
 	return this.maxRows
 		? this.viewRows
-		: Math.ceil(Math.min(this.dBody.clientHeight, this.dCont[0].clientHeight) / TR_HEIGHT);
+		: Math.ceil(Math.min(this.tBody.height(), this.dCont.height()) / this.TR_HEIGHT);
 }
 
 dxSTable.prototype.refreshRows = function( height, fromScroll ) 
@@ -760,14 +755,21 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 	if (this.isScrolling || !this.created)
 		return;
 
-	const maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
-	const topRow = Math.max(0, Math.min(this.viewRows - maxRows,
-		Math.floor(this.dBody.scrollTop / TR_HEIGHT)
+	const maxRows = height ? height / this.TR_HEIGHT : this.getMaxRows();
+	const topRow = Math.max(0, Math.min(
+		this.viewRows - maxRows,
+		Math.floor(this.dBody.scrollTop / this.TR_HEIGHT)
 	));
 	const extra = this.noDelayingDraw ? 16 : 4;
-	const extraOffset = topRow % extra;
-	const mni = Math.max(0, topRow - extra - extraOffset);
-	const mxi = Math.min(this.viewRows, topRow + maxRows + 2*extra - extraOffset);
+	const mni = Math.max(
+		0,
+		// floor to the neareast even number to keep alternating background color consistent
+		Math.floor(this.dBody.scrollTop / (this.TR_HEIGHT * 2)) * 2 - extra,
+	);
+	const mxi = Math.min(
+		this.viewRows,
+		Math.ceil((this.dBody.scrollTop + this.dBody.getBoundingClientRect().height) / this.TR_HEIGHT) + extra,
+	);
 	if (fromScroll && (mni==this.mni && mxi==this.mxi))
 		return;
 
@@ -782,9 +784,9 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 		.filter((_, index) => index >= mni && index <= mxi)
 		.map(id => $$(id) ?? createRow(id))
 
-	this.tpad.height(mni * TR_HEIGHT);
+	this.tpad.height(mni * this.TR_HEIGHT);
 	this.tBody[0].replaceChildren(...viewRows);
-	this.bpad.height((this.viewRows - mxi) * TR_HEIGHT);
+	this.bpad.height((this.viewRows - mxi) * this.TR_HEIGHT);
 
 	this.refreshSelection();
 	this.resizeColumn();
@@ -1581,6 +1583,7 @@ dxSTable.prototype.scrollTo = function(value)
 
 // getter functions
 Object.defineProperties(dxSTable.prototype, {
+	TR_HEIGHT: {get: function() {return this.tBody.find("tr").height() || 19}},
 	rows: {get: function() {return Object.keys(this.rowdata).length;}},
 	cols: {get: function() {return this.colsdata.length;}},
 	dBody: {get: function() {return this.dCont.find(".stable-body")[0];}},

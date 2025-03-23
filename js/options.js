@@ -216,7 +216,7 @@ const theOptionsWindow = {
 						$("<label>").attr({id:"lbl_ip", for:"ip"}).text(theUILang.Ip_report_track + ": "),
 					),
 					$("<div>").addClass("col-md-6").append(
-						$("<input>").attr({type:"text", id:"ip"}).prop("maxlength", 6),
+						$("<input>").attr({type:"text", id:"ip"}),
 					),
 				),
 			),
