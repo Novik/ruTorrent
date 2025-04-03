@@ -68,6 +68,7 @@
 									// Only recommended to disable when required for debuging purposes
 
 	$localhosts = array(			// list of local interfaces
+		"::1",
 		"127.0.0.1",
 		"localhost",
 	);
