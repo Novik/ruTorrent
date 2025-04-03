@@ -79,7 +79,7 @@
 						// Both Webserver and rtorrent users must have read-write access to it.
 						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
 
-	$tempDirectory = $_ENV['RU_TEMP_DIRECTORY'] ?? null;			// Temp directory. Absolute path with trail slash. If null, then autodetect will be used.
+	$tempDirectory = $_ENV['RU_TEMP_DIRECTORY'] ?? null; // Temp directory. Absolute path. If null, then autodetect will be used.
 
 	$canUseXSendFile = false;		// If true then use X-Sendfile feature if it exist
 
