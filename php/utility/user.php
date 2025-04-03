@@ -31,7 +31,7 @@ class User
 		{		
 			global $localhosts; global $scgi_port; global $scgi_host;
 			if(!isset($localhosts) || !count($localhosts))
-				$localhosts = array( "127.0.0.1", "localhost" );
+				$localhosts = array( "::1", "127.0.0.1", "localhost" );
 			if(is_null($port))
 				$port = $scgi_port;
 			if(is_null($host))
