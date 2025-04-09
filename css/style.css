@@ -569,6 +569,7 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 .Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
 
 #tadd-header {background-image: url(../images/world.gif)}
+#randomize_hash {accent-color: red;}
 
 .konqueror div#tadd label { width: 80px; }
 .konqueror div#tadd { height: 290px; }
