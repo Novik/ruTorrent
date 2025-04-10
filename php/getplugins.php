@@ -227,11 +227,10 @@ if($handle = opendir('../plugins'))
 {
 	ignore_user_abort(true);
 	set_time_limit(0);
-	$tmp = FileUtil::getTempDirectory();
-	if($tmp!='/tmp/')
-		FileUtil::makeDirectory($tmp);
 
-	if(!@file_exists($tempDirectory.'/.') || !is_readable($tempDirectory) || !is_writable($tempDirectory))
+	// Check/init: $tempDirectory.
+	$tmp = FileUtil::getTempDirectory();
+	if(!is_dir($tmp) || !@file_exists($tmp.'.') || !is_readable($tmp) || !is_writable($tmp))
 		$jResult.="noty(theUILang.badTempPath+' (".$tempDirectory.")','error');";	
 
 	if(!function_exists('preg_match_all'))
