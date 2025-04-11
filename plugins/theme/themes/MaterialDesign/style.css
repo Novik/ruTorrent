@@ -1,196 +1,6 @@
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format('woff2');
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format('woff2');*/
-  src: url(./font/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Mu5mxKOzY.woff2) format('woff2');*/
-  src: url(./font/KFOmCnqEu92Fr1Mu5mxKOzY.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Mu7mxKOzY.woff2) format('woff2');*/
-  src: url(./font/KFOmCnqEu92Fr1Mu7mxKOzY.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Mu4WxKOzY.woff2) format('woff2');*/
-  src: url(./font/KFOmCnqEu92Fr1Mu4WxKOzY.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Mu7WxKOzY.woff2) format('woff2');*/
-  src: url(./font/KFOmCnqEu92Fr1Mu7WxKOzY.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Mu7GxKOzY.woff2) format('woff2');*/
-  src: url(./font/KFOmCnqEu92Fr1Mu7GxKOzY.woff2) format('woff2');
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Mu4mxK.woff2) format('woff2');*/
-  src: url(./font/KFOmCnqEu92Fr1Mu4mxK.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmWUlfCRc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmWUlfCRc4EsA.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmWUlfABc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmWUlfABc4EsA.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmWUlfCBc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmWUlfCBc4EsA.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmWUlfBxc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmWUlfBxc4EsA.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmWUlfCxc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmWUlfCxc4EsA.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmWUlfChc4EsA.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmWUlfChc4EsA.woff2) format('woff2');
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-/*src: url(https://fonts.gstatic.com/s/roboto/v32/KFOlCnqEu92Fr1MmWUlfBBc4.woff2) format('woff2');*/
-  src: url(./font/KFOlCnqEu92Fr1MmWUlfBBc4.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 html,body
 {
-	font-family:'Roboto' !important;
+	font-family: Arial, Helvetica, sans-serif;
 	background-color:#141414;
 	color:#fff;
 	text-shadow:0 -1px 0 #000
@@ -210,13 +20,13 @@ html,body
   --container-bg-color: #181818;
   --container-border-color: #1b1b1b;
 	--btn-bg-color: #3498DB;
-  --header-bg-color: #273238;
+  --header-bg-color: #252525;
   --header-border-color: transparent;
   --dialog-bg-color: #222222;
   --dialog-border-color: #333333;
 
 	--navbar-height: 40px;
-  --navbar-bg-color: #273238;
+  --navbar-bg-color: #252525;
   --navbar-bg-image: none;
   --navbar-border-color: transparent;
   --navbar-item-bg-color: #181818;
@@ -227,7 +37,7 @@ html,body
 category-panel {
   --open-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_open.png);
   --close-background-image: url(../plugins/theme/themes/MaterialDesign/images/pnl_close.png);
-  --heading-background-color: #273238;
+  --heading-background-color: #252525;
   --heading-border-color: transparent;
 }
 
@@ -237,7 +47,7 @@ category-panel {
 category-list
 {
 	border:none;
-	background-color:#1A2329;
+	background-color:#2a2a2a;
 	border-right:1px solid #1b1b1b;
 	border-left:none
 }
@@ -246,28 +56,28 @@ panel-label {
 	color:#FFF;
 	border:none;
 	padding: 4px;
-	background-color: #1A2329;
+	background-color: #2a2a2a;
 	--prefix-color: #FFF;
 	--prefix-fontsize: 21px;
 	--badge-color: #D4D6C9;
 	--icon-letter-color: #D4D6C9;
-	--badge-background-color: #273238;
-	--status-image: url(../plugins/theme/themes/MaterialDesign/images/status_icons.png);
+	--badge-background-color: #252525;
+	--status-image: url(../plugins/theme/themes/MaterialDesign/src/status_icons.png);
 }
 
 panel-label:hover {
-	background-color: #161F25;
+	background-color: #303030;
 }
 
 panel-label[selected] {
-	background-color: #1A2329;
-	color:#009DDD;
+	background-color: #2a2a2a;
+	color:#65c97a;
 	text-shadow:0 -1px 0 #000;
-	--badge-color: #009DDD;
+	--badge-color: #65c97a;
 }
 
 panel-label[selected]:hover {
-	background-color: #161F25;
+	background-color: #303030;
 }
 
 panel-label[icon=file] {
@@ -495,57 +305,57 @@ div#t div.TB_Separator
 
 div#t div#add
 {
-	background:transparent url(./images/toolbar.png) no-repeat 0 1px;
+	background:transparent url(./images/toolbar.png) no-repeat 0 -1px;
 }
 
 div#t div#create
 {
-	background:transparent url(./images/toolbar.png) no-repeat -24px 0
+	background:transparent url(./images/toolbar.png) no-repeat -22px 0
 }
 
 div#t div#remove
 {
-	background:transparent url(./images/toolbar.png) no-repeat -48px 0
+	background:transparent url(./images/toolbar.png) no-repeat -46px 0
 }
 
 div#t div#start
 {
-	background:transparent url(./images/toolbar.png) no-repeat -72px 0
+	background:transparent url(./images/toolbar.png) no-repeat -70px 0
 }
 
 div#t div#pause
 {
-	background:transparent url(./images/toolbar.png) no-repeat -96px 0
+	background:transparent url(./images/toolbar.png) no-repeat -94px 0
 }
 
 div#t div#stop
 {
-	background:transparent url(./images/toolbar.png) no-repeat -120px 0
+	background:transparent url(./images/toolbar.png) no-repeat -118px 0
 }
 
 div#t div#moveu
 {
-	background:transparent url(./images/toolbar.png) no-repeat -144px 0
+	background:transparent url(./images/toolbar.png) no-repeat -142px 0
 }
 
 div#t div#moved
 {
-	background:transparent url(./images/toolbar.png) no-repeat -168px 0
+	background:transparent url(./images/toolbar.png) no-repeat -166px 0
 }
 
 div#t div#search
 {
-	background:transparent url(./images/toolbar.png) no-repeat -192px 0
+	background:transparent url(./images/toolbar.png) no-repeat -189px 0
 }
 
 div#t div#rss
 {
-	background:transparent url(./images/toolbar.png) no-repeat -241px 0
+	background:transparent url(./images/toolbar.png) no-repeat -239px 0
 }
 
 div#t div#setting
 {
-	background:transparent url(./images/toolbar.png) no-repeat -264px 0
+	background:transparent url(./images/toolbar.png) no-repeat -262px 0
 }
 
 div#t div#plugins
@@ -555,7 +365,7 @@ div#t div#plugins
 
 div#t div#help
 {
-	background:transparent url(./images/toolbar.png) no-repeat -288px 0
+	background:transparent url(./images/toolbar.png) no-repeat -286px 0
 }
 
 div#t div#go
@@ -565,9 +375,9 @@ div#t div#go
 
 div select {
     -webkit-appearance:none !important;
-    background:#6f6f6f url(./images/dropdown.png) no-repeat 0 0;
+    background:#4e4e4e url(./images/dropdown.png) no-repeat 0 0;
     background-position: right;
-    border: 1px solid #6f6f6f;
+    border: 1px solid #4e4e4e;
     padding-right: 15px !important;
 }
 
@@ -592,7 +402,10 @@ div select {
 	width: 20px;
 	height: 20px;
 	font-size: 20px;
+/*
 	font-family: monospace, monospace;
+*/
+	font-family: inherit;
 	margin: 0px;
 }
 
@@ -608,7 +421,7 @@ category-panel::part(heading)
 
 .stable {
 	background-color:#181818;
-	font-family:'Roboto';
+	font-family: inherit;
 }
 
 .stable-icon {
@@ -634,37 +447,41 @@ category-panel::part(heading)
 div.tab
 {
 	background:#181818;
-	font-family:'Roboto'
+	font-family: inherit;
 }
 
 div#lcont
 {
 	background:#181818;
-	font-family:'Roboto'
+	font-family: inherit;
 }
 
 div#gcont div.row {
-	font-family:'Roboto';
+	font-family: inherit;
 	color:#D4D6C9;
 }
 div#gcont div.row.Header {
   background-color: transparent;
 }
 div#gcont div.row.Header span {
-	background: transparent url(./images/status_icons.png) no-repeat 0 -288px;
+	background: transparent url(./images/status_icons.png) no-repeat 0 -286px;
   padding-left: 17px;
 }
 div#gcont div.row:not(.Header) span.det-hdr {
-	background: transparent url(./images/status_icons.png) no-repeat 0 -306px;
+	background: transparent url(./images/status_icons.png) no-repeat 0 -302px;
   padding-left: 17px;
+  font-weight: 400;
 }
 
 div#gcont div.row > div {
+/*
 	background:#181818 url(./images/headers.png) repeat-x 0 -38px
+*/
+	background:none;
 }
 
 div#gcont {
-	font-family:'Roboto';
+	font-family: inherit;
 }
 
 div.graph_tab
@@ -727,7 +544,7 @@ a.dlg-close:link,a.dlg-close:visited
 fieldset
 {
 	background-color:rgb(34,34,34);
-	font-family:'Roboto'
+	font-family: inherit;
 }
 
 legend
@@ -783,12 +600,12 @@ div#stg .lm
 }
 
 .lm li a:hover {
-	color:#80cbc4;
+	color:#65c97a;
 	transition:all .5s
 }
 
 .lm li a.focus {
-	color:#80cbc4;
+	color:#65c97a;
 	background:none
 }
 
@@ -822,19 +639,19 @@ table#maincont td.uicell {
 }
 
 div#HDivider, div#VDivider {background:#141414;}
-div#HDivider:hover, div#VDivider:hover {background:#334550}
+div#HDivider:hover, div#VDivider:hover {background:#343434}
 
 input[type="number"],input[type="text"],input[type="password"],select {
 	color: #fff;
 	border: none;
-	background-color: #6F6F6F;
+	background-color: #4e4e4e;
 	border-radius: 2px;
 }
 
 input[type="number"][disabled],input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled],select[disabled] {
 	color: #fff;
 	border: none;
-	background-color: #6F6F6F;
+	background-color: #4e4e4e;
 	border-radius: 2px;
 	opacity: .2;
 }
@@ -849,7 +666,7 @@ textarea {
 	border-radius: 2px;
 	color: #fff;
 	border: none!important;
-	background: #6F6F6F;
+	background: #4e4e4e;
 	border-radius: 2px;
 }
 
@@ -889,7 +706,7 @@ input[type="checkbox"]
 	width: 14px;
 	height: 14px;
 	display: inline-flex;
-	background-color: #6f6f6f;
+	background-color: #4e4e4e;
 	font-weight: 700;
 	border-radius: 2px;
 	border: none;
@@ -1135,7 +952,7 @@ div#lcont div.std:nth-child(2n+1)
 	border-top:1px solid #333;
 	background:#000 url(./images/headers.png) repeat-x 0 0;
 	color:#888;
-	font-family:Roboto;
+	font-family: inherit;
 }
 
 .statuscell td:not(:last-child) {
@@ -1143,12 +960,12 @@ div#lcont div.std:nth-child(2n+1)
 }
 
 #st_up .icon {
-	background:url(./images/status.png) no-repeat 0px -2px;
+	background:url(./images/status.png) no-repeat 0px -1px;
 	background-size: 100%;
 }
 
 #st_down .icon {
-	background:url(./images/status.png) no-repeat 0px -22px;
+	background:url(./images/status.png) no-repeat 0px -24px;
 	background-size: 100%;
 }
 
@@ -1188,7 +1005,7 @@ span.det {
 .stable-head table tr td
 {
 	border-right:1px solid #242424!important;
-	font-family:Roboto!important;
+	font-family: inherit;
 	font-weight:700;
 	color:#fff;
 }
@@ -1249,3 +1066,5 @@ span.det {
 .stval { color: #FFF; }
 .tickLabel { color: #FFF; }
 .dlg-window legend { color: #FFF; }
+
+
