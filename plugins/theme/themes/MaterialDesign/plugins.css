@@ -1,61 +1,6 @@
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/ubuntu/v20/4iCs6KVjbNBYlgoKcg72j00.woff2) format('woff2');*/
-  src: url(./font/4iCs6KVjbNBYlgoKcg72j00.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/ubuntu/v20/4iCs6KVjbNBYlgoKew72j00.woff2) format('woff2');*/
-  src: url(./font/4iCs6KVjbNBYlgoKew72j00.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/ubuntu/v20/4iCs6KVjbNBYlgoKcw72j00.woff2) format('woff2');*/
-  src: url(./font/4iCs6KVjbNBYlgoKcw72j00.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/ubuntu/v20/4iCs6KVjbNBYlgoKfA72j00.woff2) format('woff2');*/
-  src: url(./font/4iCs6KVjbNBYlgoKfA72j00.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/ubuntu/v20/4iCs6KVjbNBYlgoKcQ72j00.woff2) format('woff2');*/
-  src: url(./font/4iCs6KVjbNBYlgoKcQ72j00.woff2) format('woff2');
-  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: 400;
-/*src: url(https://fonts.gstatic.com/s/ubuntu/v20/4iCs6KVjbNBYlgoKfw72.woff2) format('woff2');*/
-  src: url(./font/4iCs6KVjbNBYlgoKfw72.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 .browseFrame {
-  border: 1px solid #161F25;
-  background-color: #273238;
+  border: 1px solid #303030;
+  background-color: #252525;
 }
 .tskconsole, .exconsole, .console, .starterConsole { background: #333333 }
 #tsk_btns input.Button {
@@ -72,15 +17,23 @@
   color: #fff;
   text-shadow: 0px 0px 2px #000;
   font-size: 11px;
-  font-family: Ubuntu;
+  font-family: inherit;
   z-index: 1;
 }
-#meter-disk-pane .icon {background: url(./images/status_icons.png) no-repeat center -336px;}
 
-#meter-cpu-text { color: #fff; text-shadow: 0px 0px 2px #000; font-family: Ubuntu; }
-#meter-cpu-pane .icon {
-  background: url(./images/status_icons.png) no-repeat center -320px !important;
+#meter-disk-pane .icon {
+	background: none;
+	content: url(./svg/icn_statusbar_hdd.svg);
+	height:14px;
 }
+
+#meter-cpu-text { color: #fff; text-shadow: 0px 0px 2px #000; font-family: inherit; }
+#meter-cpu-pane .icon {
+	background: none;
+	content: url(./svg/icn_statusbar_cpu.svg);
+	height:14px;
+}
+
 
 #tcreate-header {
   background-image: url(./images/dlg-toolbars.gif);
@@ -92,7 +45,7 @@ div#dlgAddRSS { background-color: #222222; border-top: 1px solid #333; border-ri
   background-position-y: -48px;
 }
 
-.lf li input.TextboxFocus { background-color: transparent; color: #009DDD }
+.lf li input.TextboxFocus { background-color: transparent; color: #65c97a }
 
 .cCell { color:#333; }
 
@@ -163,7 +116,7 @@ div#tchat div.dlg-header { background-image: url(./images/chat2.png); }
 
 #userlist, #chatselect, #chatarea, #chatselect option {
   border:none !important;
-  background-color:#6F6F6F !important;
+  background-color:#4e4e4e !important;
   border-radius:2px !important;
   color:#fff !important;
 }
@@ -175,3 +128,4 @@ div#logoffDlg div.dlg-header { background-image: url(./images/logoff2.png); }
 .noty_alert, .noty_success { color: #000000; text-shadow: 0 -1px 0 #ffffff }
 
 #port-ip-text { color: #FFF; }
+
