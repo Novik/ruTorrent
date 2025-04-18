@@ -84,7 +84,7 @@ function makeContent() {
 			$("<form>").attr(
 				{action: "addtorrent.php", id: "addtorrent", method: "post", enctype: "multipart/form-data", target: "uploadfrm"}
 			).append(
-				$("<fieldset>").append(
+				$("<fieldset>").attr({id: "torrent_options"}).append(
 					$("<legend>").text(theUILang.Torrent_options),
 					$("<div>").addClass("row").append(
 						$("<div>").addClass("d-none col-md-3 d-md-flex justify-content-end").append(
@@ -227,12 +227,18 @@ function makeContent() {
 			req.push('not_add_path=1');
 		if($("#randomize_hash").prop("checked"))
 			req.push('randomize_hash=1');
-		var dir = $("#dir_edit").val().trim();
-		if(dir.length)
-			req.push('dir_edit='+encodeURIComponent(dir));
-		var lbl = $("#tadd_label").val().trim();
-		if(lbl.length)
-			req.push('label='+encodeURIComponent(lbl));
+		var dirEle = $$("#dir_edit");
+		if (dirEle) {
+			var dir = dirEle.val().trim();
+			if(dir.length)
+				req.push('dir_edit='+encodeURIComponent(dir));
+		}
+		var lblEle = $$("#tadd_label")
+		if (lblEle) {
+			var lbl = lblEle.val().trim();
+			if(lbl.length)
+				req.push('label='+encodeURIComponent(lbl));
+		}
 		if(req.length)
 			s+=('?'+req.join('&'));
 		frm.action = s;
@@ -793,7 +799,8 @@ function correctContent()
 		canAddTorrentsWithoutPath:	0x0100,
 		canAddTorrentsWithoutStarting:	0x0200,
 		canAddTorrentsWithResume:	0x0400,
-		canAddTorrentsWithRandomizeHash:	0x0800
+		canAddTorrentsWithRandomizeHash:	0x0800,
+		canChangeTorrentOptions:	0x1000
 	};
 
 	if(!$type(theWebUI.systemInfo))
@@ -831,6 +838,10 @@ function correctContent()
 		$("#lbl_prop-superseed").remove();
 		$("#dlgProps .OK").remove();
         }
+        if(!(theWebUI.showFlags & showEnum.canChangeTorrentOptions))
+	{
+		$("#addtorrent #torrent_options").remove();
+	}	
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithoutPath))
 	{
 		$("#addtorrent #not_add_path_option").remove();
