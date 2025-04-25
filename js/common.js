@@ -160,10 +160,10 @@ $.fn.extend(
 		}));
 	},
 
-	enableSysMenu: function()
-	{
-		return(this.on("contextmenu",function(e) { e.stopImmediatePropagation(); }).
-			on("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
+	enableSysMenu: function() {
+		return this
+			.on("contextmenu", (e) => e.stopImmediatePropagation())
+			.on("selectstart", (e) => {e.stopImmediatePropagation(); return true;});
 	},
 
 	setCursorPosition: function(pos)
@@ -246,16 +246,19 @@ function escapeHTML(str)
 	return( String(str).split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;') );
 }
 
-function askYesNo( title, content, funcYesName )
-{
-	$("#yesnoDlg-header").html(title);
-	$("#yesnoDlg-content").html(content);
-	$("#yesnoOK").off('click');
-	$("#yesnoOK").on('click', function()
-	{
-		typeof(funcYesName)==="function" ? funcYesName() : eval(funcYesName);
+/**
+ * Confirm again before taking action.
+ * @param {string} title Title of the dialog.
+ * @param {string} content Hint of the action to be confirmed.
+ * @param {Function | string} funcYesName Function to be executed if confirmed.
+ */
+function askYesNo(title, content, funcYesName) {
+	$("#yesnoDlg-header").text(title);
+	$("#yesnoDlg-content").text(content);
+	$("#yesnoOK").off('click').on('click', () => {
+		$type(funcYesName) === "function" ? funcYesName() : eval(funcYesName);
 		theDialogManager.hide("yesnoDlg");
-		return(false);
+		return false;
 	});
 	theDialogManager.show("yesnoDlg");
 }
@@ -305,38 +308,6 @@ var theURLs =
 	GetPluginsURL		: "php/getplugins.php",
 	GetDonePluginsURL	: "php/doneplugins.php",
 	IPQUERYURL		: "https://ipinfo.io/"
-};
-
-const theOptionsSwitcher = {
-	current: "st_gl",
-	items: {},
-
-	addHandler: function(id, type, handler) {
-		if ($type(this.items[id])) {
-			const existing = this.items[id][type];
-			if (existing) {
-				this.items[id][type] = function() {
-					existing();
-					handler();
-				};
-			} else {
-				this.items[id][type] = handler;
-			}
-		}
-		return this;
-	},
-
-	run: function(id) {
-		$('#' + this.current).hide();
-		$("#mnu_" + this.current).removeClass("focus");
-		if ($type(this.items[this.current]) && ($type(this.items[this.current].afterHide) === "function"))
-			this.items[this.current].afterHide();
-		this.current = id;
-		$('#' + this.current).show();
-		$("#mnu_" + this.current).addClass("focus");
-		if ($type(this.items[this.current]) && ($type(this.items[this.current].afterShow) === "function"))
-			this.items[this.current].afterShow();
-	},
 };
 
 var theConverter =
@@ -818,14 +789,6 @@ var theTabs = {
 				).on("click", (ev) => ev.target.blur()).addClass("nav-link").text(name),
 			)),
 		);
-		$("#tab_lcont").after(
-			$("<button>").attr(
-				{type:"button", id:"clear_log"}
-			).addClass('Button mx-2').text(theUILang.ClearButton).hide().on(
-				'click', () => $("#lcont").empty()
-			).on('focus', function() {
-				this.blur();
-			}));
 		this.show("gcont");
 		$('#gcont,#lcont').enableSysMenu();
 	},
@@ -872,15 +835,11 @@ var theTabs = {
                				        theWebUI.getTable(prefix).refreshRows();
                				theWebUI.setActiveView(id);
             				l.addClass("selected").css("z-index",1);
-	            			if(n=="lcont")
-		            			$("#clear_log").css("display","inline");
             			}
          			else
          			{
             				p.hide();
             				l.removeClass("selected").css("z-index",0);
-	            			if(n=="lcont")
-		            			$("#clear_log").hide();
             			}
          		}
       		}

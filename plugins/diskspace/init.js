@@ -8,7 +8,8 @@ plugin.setValue = function( full, free )
 	        percent = 100;
 	$("#meter-disk-value").width( percent+"%" ).css( { "background-color": (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,percent).getColor(),
 		visibility: !percent ? "hidden" : "visible" } );
-	$("#meter-disk-text").text(percent+'%');
+	if(plugin.freeBytesInMeter) $("#meter-disk-text").text(theConverter.bytes(free));
+	else $("#meter-disk-text").text(percent+'%');
 	$("#meter-disk-pane").prop("title", theConverter.bytes(free)+"/"+theConverter.bytes(full));
 
 	if($.noty && plugin.allStuffLoaded)

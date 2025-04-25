@@ -1,5 +1,8 @@
 html, body {background-color: #181818; color: #999999; }
 :root {
+  --text-color: #888888;
+  --text-header-color: #888888;
+
   --menu-color: #666666;
   --menu-background-color: #181818;
   --menu-border-color: #333333;
@@ -9,13 +12,22 @@ html, body {background-color: #181818; color: #999999; }
 
   --menu-highlight-color: #111111;
   --menu-highlight-background-color: #888888;
+  --menu-active-color: #666666;
+  --menu-item-active-icon: url(data:image/gif;base64,R0lGODlhBQAFAPMIAP////n5+dXV1c/Pz8nJycbGxsDAwLS0tACMFAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAUAAAgALAAAAAAFAAUAAAQPEA1AkAC4YBwmNogBHEgEADs=);
+  --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAPABAP///wCMFCH5BAUAAAEALAAAAAAIAAcAAAIMRI4Blrq9HoqQJZsKADs=);
 
-  --settings-background-color: #181818;
+  --menu-connect-line-color: #616161;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #181818;
   --container-border-color: #333333;
   --btn-bg-color: #999999;
   --header-bg-color: #181818;
   --header-border-color: #333333;
+  --footer-height: 25px;
+  --footer-bg-color: #181818;
+  --footer-bg-image: none;
+  --footer-border-color: #333333;
   --dialog-bg-color: #181818;
   --dialog-border-color: #333333;
 
@@ -28,9 +40,12 @@ html, body {background-color: #181818; color: #999999; }
   --loading-indicator-icon: url(../plugins/theme/themes/Dark/images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
+#StatusBar {
+  /* --pane-up-icon: undefined - inherit from standard theme; */
+  /* --pane-down-icon: undefined - inherit from standard theme; */
+}
 category-panel {
-  --open-background-image: url(../plugins/theme/themes/Dark/images/pnl_open.gif);
-  --close-background-image: url(../plugins/theme/themes/Dark/images/pnl_close.gif);
+  --open-background-image: url(data:image/gif;base64,R0lGODlhEQARAPIGAAAAAE1PUhseIqCgoICAgEBAQAAAAAAAACH5BAUAAAYALAAAAAARABEAAAMkaLrc/jDKSWsNI+s9QsMFIIpF94Bj6UGoOmGESWFrJVh4rlsJADs=);
   --heading-background-color: #111111;
   --heading-border-color: #333333;
 }
@@ -71,16 +86,12 @@ panel-label[selected] {
   --badge-color: #111111;
   --badge-background-color: #999999;
 }
-div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/pnl_open.gif); background-image: url(./images/pnl_close.gif)}
+div#preload {width: 0px; height: 0px; display: none; background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif);}
 div#cover {background: #181818}
 div#msg {background: #181818; border-top: 1px solid #333333; border-bottom: 1px solid #333333}
 div#sc {border: 1px solid #333333; background-color: #181818}
 div#sc li.se_act div {background-color: #333333; color: #888888}
 div#lng {background-color:#181818; border:1px solid #333333}
-ul.CMenu {border: 1px solid #333333; border-right: 2px solid #333333; border-bottom: 2px solid #333333; background: #181818; }
-ul.CMenu li hr {border-top: 1px solid #333333}
-ul.CMenu li a.exp {background: transparent url(./images/menuexp.gif) no-repeat scroll 140px center; }
-ul.CMenu li a.sel {background: transparent url(./images/menusel.gif) no-repeat scroll 4px center}
 
 #sel {border: 1px dotted #555555;}
 
@@ -129,29 +140,10 @@ div#modalbg {background-color: #181818;}
 
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
-#stg { background-color: #181818; color: #888888; border: 1px solid #333333}
-
-div#stg .lm {background-color: #181818; border: 1px solid #333333}
-
-.lm li div > div {
-  border-left-color: #616161;
-}
-.lm li div > div:first-of-type {
-  border-bottom-color: #616161;
-}
-.lm li div > div:last-of-type {
-  border-top-color: #616161;
-}
-.lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
-.lm li a {color: #888888}
-.lm li a.focus {background-color: #333333}
-.stg_con {background-color: #181818}
 * > fieldset {border: 1px solid #333333}
 input.disabled, button.disabled {background-color: #181818; color: #333333; border: 1px solid #333333}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #333333}
-legend {color: #888888}
 select.cols {border: 1px solid #333333}
-div#dragmask {border: 1px dotted #333333}
 div#tdetails {background-color: #181818}
 
 .tabbar li.nav-item a.nav-link {
@@ -169,13 +161,12 @@ div#tdetails {background-color: #181818}
 }
 
 div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333333}
-.dlg-window {color: #888888;}
 
 div.tab {background-color: #181818}
 
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; }
 
-#StatusBar { border-top: 1px solid #333333; background-color: #181818; color: #888888 }
+#StatusBar { color: #888888 }
 #st_up { background:url(./images/status_up.gif) 6px no-repeat; }
 #st_down { background:url(./images/status_down.gif) 6px no-repeat; }
 .statuscell {border-right: 1px solid #333333;}

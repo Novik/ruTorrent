@@ -1,5 +1,8 @@
 html, body {background-color: #181818; color: #999999; }
 :root {
+  --text-color: #888888;
+  --text-header-color: #888888;
+
   --menu-color: #666666;
   --menu-background-color: #181818;
   --menu-border-color: #333333;
@@ -9,13 +12,22 @@ html, body {background-color: #181818; color: #999999; }
 
   --menu-highlight-color: #111111;
   --menu-highlight-background-color: #888888;
+  --menu-active-color: #666666;
+  --menu-item-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3e%3ccircle fill='%23FFF' cx='24' cy='24' r='19'/%3e%3c/svg%3e");
+  --menu-item-exp-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3e%3cpath fill='%23FFF' d='M34 24L14 42V6z'/%3e%3c/svg%3e");
 
-  --settings-background-color: #181818;
+  --menu-connect-line-color: #616161;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #181818;
   --container-border-color: #333333;
   --btn-bg-color: #D6D6D6;
   --header-bg-color: #181818;
   --header-border-color: #333333;
+  --footer-height: 25px;
+  --footer-bg-color: #181818;
+  --footer-bg-image: none;
+  --footer-border-color: #333333;
   --dialog-bg-color: #181818;
   --dialog-border-color: #333333;
 
@@ -28,9 +40,12 @@ html, body {background-color: #181818; color: #999999; }
   --loading-indicator-icon: url(../plugins/theme/themes/DarkBetter/images/ajax-loader.gif);
   --loading-indicator-side-length: 28px;
 }
+#StatusBar {
+  /* --pane-up-icon: undefined - inherit from standard theme; */
+  /* --pane-down-icon: undefined - inherit from standard theme; */
+}
 category-panel {
-  --open-background-image: url(../plugins/theme/themes/DarkBetter/images/pnl_open.svg);
-  --close-background-image: url(../plugins/theme/themes/DarkBetter/images/pnl_close.svg);
+  --open-background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3e%3cpath stroke='#23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M24 34l18-20H6z'/%3e%3c/svg%3e");
   --heading-background-color: #111111;
   --heading-border-color: #333333;
 }
@@ -161,14 +176,10 @@ div#preload {
     background-image: url(./images/tb_rss.svg);
     background-image: url(./images/tb_rss_group.svg);
     background-image: url(./images/tb_setting.svg);
-    background-image: url(./images/menuexp.svg);
-    background-image: url(./images/menusel.svg);
     background-image: url(./images/close.svg);
     background-image: url(./images/yellow.svg);
     background-image: url(./images/red.svg);
     background-image: url(./images/green.svg);
-    background-image: url(./images/pnl_open.svg);
-    background-image: url(./images/pnl_close.svg);
     background-image: url(./images/file.svg);
     background-image: url(./images/dir.svg);
     background-image: url(./images/t_down.svg);
@@ -192,19 +203,6 @@ div#msg {background: #181818; border-top: 1px solid #333333; border-bottom: 1px 
 div#sc {border: 1px solid #333333; background-color: #181818}
 div#sc li.se_act div {background-color: #333333; color: #888888}
 div#lng {background-color:#181818; border:1px solid #333333}
-ul.CMenu {border: 1px solid #333333; border-right: 2px solid #333333; border-bottom: 2px solid #333333; background: #181818}
-ul.CMenu li {background: #181818}
-ul.CMenu li a.dis {color: #333333}
-ul.CMenu li a.dis:hover {background-color: #181818; color: #333333}
-ul.CMenu li hr {border-top: 1px solid #333333}
-ul.CMenu li a.exp {background: transparent url(./images/menuexp.svg) no-repeat scroll 138px center; background-size: 10px}
-ul.CMenu li a.sel {background: transparent url(./images/menusel.svg) no-repeat scroll 4px center; background-size: 8px}
-ul.CMenu li a:hover {background-color: #888888; color: #111111}
-
-ul.CMenu li:hover ul li a {background-color: #181818; color: #666666}
-ul.CMenu li:hover ul li a:hover {background-color: #888888; color: #111111}
-ul.CMenu li ul li a.dis {color: #333333}
-ul.CMenu li ul li a.dis:hover {background-color: #181818; color: #333333}
 
 #sel {border: 1px dotted #555555}
 
@@ -231,10 +229,6 @@ div#t div#setting {background: transparent url(./images/tb_setting.svg) no-repea
 div#t div#help {background: transparent url(./images/quest.svg) no-repeat center; background-size: 28px}
 div#t div#go {background: transparent url(./images/go.svg) no-repeat center; background-size: 28px}
 div#t div#plugins {background: transparent url(./images/plugin.svg) no-repeat center; background-size: 28px}
-
-#StatusBar table tr td.pstatus0 {background: url(./images/yellow.svg) no-repeat !important; background-size: 22px !important}
-#StatusBar table tr td.pstatus1 {background: url(./images/red.svg) no-repeat !important; background-size: 22px !important}
-#StatusBar table tr td.pstatus2 {background: url(./images/green.svg) no-repeat !important; background-size: 22px !important}
 
 a.dlg-close:hover, a.dlg-close:link, a.dlg-close:visited {
     background: transparent url(./images/close.svg) center; background-size: 22px !important;
@@ -278,32 +272,13 @@ div#modalbg {background-color: #181818}
 
 div#FileList, div#TrackerList, div#PeerList, div#Speed {background-color: #181818}
 
-#stg {background-color: #181818; color: #888888; border: 1px solid #333333}
-
-div#stg .lm {background-color: #181818; border: 1px solid #333333}
-
-.lm li div > div {
-  border-left-color: #616161;
-}
-.lm li div > div:first-of-type {
-  border-bottom-color: #616161;
-}
-.lm li div > div:last-of-type {
-  border-top-color: #616161;
-}
-.lm li div.toggle {background: transparent url(./images/exp.gif) no-repeat scroll center center}
-.lm li a {color: #888888}
-.lm li a.focus {background-color: #333333}
-.stg_con {background-color: #181818}
 * > fieldset {border: 1px solid #333333}
 input.disabled, button.disabled {background-color: #181818; color: #333333; border: 1px solid #333333}
 td.disabled, label.disabled, span.disabled, div.disabled {color: #333333}
 legend {color: #888888}
 select.cols {border: 1px solid #333333}
-div#dragmask {border: 1px dotted #333333}
 div#tdetails {background-color: #181818}
 
-div#tadd {background-color: #181818; border: 1px solid #333333}
 .tabbar li.nav-item a.nav-link {
   border: 1px solid #333333;
   background-color: #181818;
@@ -319,16 +294,13 @@ div#tadd {background-color: #181818; border: 1px solid #333333}
 }
 div#dlgProps textarea#prop-trackers {background: #181818; border: 1px solid #333333}
 
-.dlg-window {color: #888888;}
-
 div.tab {background-color: #181818}
 
 span#loadimg {background: transparent url(./images/ajax-loader.gif) no-repeat center center; background-size: 28px}
 
-#StatusBar {border-top: 1px solid #333333; background-color: #181818; color: #888888}
+#StatusBar {color: #888888}
 #st_up .icon {background:url(./images/up.svg) no-repeat; background-size: 100%;}
 #st_down .icon {background:url(./images/down.svg) no-repeat; background-size: 100%;}
-.status-cell {border-right: 1px solid #333333}
 
 .dlg-header > div:first-child {background-size: 1.5rem;}
 #stg-header {background-image: url(./images/settings.svg);}

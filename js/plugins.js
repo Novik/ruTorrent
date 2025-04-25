@@ -6,14 +6,7 @@ function injectScript(fname,initFunc)
 	s = document.createElement("script");
 	if(initFunc)
 	{
-		if(browser.isIE)
-			s.onreadystatechange = function()
-			{
-				if((this.readyState == 'loaded') || (this.readyState == 'complete'))
-					initFunc();
-			}
-		else
-			s.onload = initFunc;
+		s.onload = initFunc;
 	}
 	if(s.setAttribute)
 		s.setAttribute('src', fname);
@@ -250,32 +243,17 @@ rPlugin.prototype.canBeLaunched = function()
 	return(this.restictions & thePlugins.restictions.canBeLaunched);
 }
 
-rPlugin.prototype.attachPageToOptions = function(dlg,name)
-{
-	if(this.canChangeOptions())
-	{
-		$("#st_btns").before( $(dlg).addClass("stg_con") );
-		$(".lm ul").append(
-			$("<li>").attr("id","hld_"+dlg.id).append(
-				$("<div>").append(
-					$("<div>"),
-					$("<div>"),
-				),
-				$("<a>").attr(
-					{id: `mnu_${dlg.id}`, href: "#", onclick: `theOptionsSwitcher.run('${dlg.id}');return(false);`}
-				).text(name),
-			),
-		);
+rPlugin.prototype.attachPageToOptions = function(dlg, name) {
+	if (this.canChangeOptions()) {
+		theOptionsWindow.attachPage(dlg, name);
 	}
-	theOptionsSwitcher.items[dlg.id] = {afterShow: null, afterHide: null,};
-	return(this);
+	return this;
 }
 
 rPlugin.prototype.removePageFromOptions = function(id) {
-	if (theOptionsSwitcher.current === id)
-		theOptionsSwitcher.run('st_gl');
-	$("#" + id).remove();
-	$("#hld_" + id).remove();
+	if (theOptionsWindow.currentPage === id)
+		theOptionsWindow.goToPage("st_gl");
+	theOptionsWindow.removePage(id);
 	return this;
 }
 
@@ -378,7 +356,7 @@ rPlugin.prototype.addButtonToToolbar = function(id, name, onclick, idBefore, isD
 		let newBtn = $("<a>")
 			.attr({id:`mnu_${id}`, href:"#", title:`${name}...`})
 			.on({
-				click: $type(onclick) === "function" ? () => onclick() : () => eval(onclick),
+				click: $type(onclick) === "function" ? onclick : () => eval(onclick),
 				focus: (ev) => ev.target.blur(),
 			})
 			.addClass("nav-link top-menu-item")

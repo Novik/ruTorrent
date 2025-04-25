@@ -20,7 +20,7 @@ div#RSSList {border: 1px solid var(--menu-border-color); background-color: var(-
 .lf li input.TextboxNormal { width: 85%; background-color: var(--menu-background-color) }
 .lf li input { border: 0; font-size: 11px; font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; cursor: default; font-weight: bold; }
 div#FLTchk_buttons {padding-top: 5px; width: 260px; text-align:center}
-.rf {background-color: var(--settings-background-color);}
+.rf {background-color: var(--dialog-bg-color);}
 div#FLT_buttons {clear: both}
 
 #chkFilterBtn {width: 50px}

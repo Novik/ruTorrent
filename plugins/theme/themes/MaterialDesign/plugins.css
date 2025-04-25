@@ -53,6 +53,14 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+#StatusBar {
+  --pane-cpu-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA6cAAAOnAEHlFPdAAACdklEQVQ4jcWTO29UVxSFv33u8fXcmbnzsg04AcaJRkRyGCNRABKRYuQqkSuMwcYgyz+AiAbR5lcgaiTSQ0OHbPGyUhBw4iiGpEgCedjI8/B9eObOPSfFRBGI0kV2vdfe2nt9S6y17KXUntSA1M/MogSMKAqmQWyzhxLlXtTC543WzgcA5aL/R8+yMmC633gS/d5WZZQ1GAv67WmpVdmkZ64wYM9bpar7RoYB6CbdYxgznvTMkKvV10D0/gmmdzJWuVW/VL6W8bLVIEpYnJtmcW6aIErwvGw1X6pca5rCqknTkyJ9mUbAWntaRD3EcRkbO0AQ7tLeiVh58qzfpB1GRsqIW2B/9ll9O2B1K8h8prV9JEcnZ30l9qnowZoSRT4/CEAUdwnDGBGL4/qkNs/SiZ9IOi1uf3cEZTo/gz2u0p6ZLxT92rHxw+SyLq1WRBh2UALFfIbUKdHZ1VyffEC18pK7G+NMjH9EuZSvpYmZ1+7gwKUksTSaIUoEx1FoBxIjbMVZik7CjcsrHBhuMHtjChnIEQVNuj2L67kL2lpbf/XXFm8aLSqlAlorOqlCi2XpyAYXTr2g/GHA3M0pwqTIcCZgfaPNbrfLUClX15VykYVzX7K+8QtP117gZVzeRBlmar8yltvk5W8Zvn9e5Yc/R6kN7RCGHU6fmODTTz7m3v2HolFKvQ3zbqLY78d8dXYNtR1z5/Fhll8fZLTQoU9937++RimZmJrf2m4Hw37Wo1jIE3WEfX7M1S++ZXltlOUfDxGLR97tYWz/R812QBDFVAq5v6V+ZuamEjX3H9tAamCz6TCYUfieQUv67055JwfWmlvyv6fxHxUI/PE+9uDPAAAAAElFTkSuQmCC);
+  --pane-disk-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA6cAAAOnAEHlFPdAAABBUlEQVQ4je2TMU7DQBBF398AjgMEiQYJCYkb0EFBhcIV6OAUnINLJOdAFgUFNX1KkCKQ4pBNbCf2UEAiEyPk9Ew5+/7T7mpGZgbA/ePTjcxuqVEm3XXOz3oAG4umzK6BkzqCb7YH4Er9yzrhVbYs8GsIlmxZUKwhWLLuL6pO/QtKAifVD5XY5STO8jlh0AQD+4EbQrhGg6+c8FNfFby+v2lvewdJLPYDAAlZjp8WpPMQkVAUI1UEw/FHezSdsHoFOTFOmgTjB06PIvqDY/rZVbsi8KM4aoati9X3SsLNMxI74HnQYZK10GwYVQRZknbzvNj/9dPI8ekuL/EhwWZKeyvuLs4+Af8sXE4Ya3VbAAAAAElFTkSuQmCC);
+  /* --pane-port-unknown-icon: undefined - inherit from standard theme; */
+  /* --pane-port-error-icon: undefined - inherit from standard theme; */
+  --pane-port-success-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAACXBIWXMAAAsTAAALEwEAmpwYAAABTElEQVQokY2Sv0uCQRjHP++9kmZkIFZbJoGDoEMJ1VLO5RCBBC1uCRGSEBEERUNLNLkJkVjQX9AYEq29LklOZQ0OLVEZBBFmw3uvnWblF47jjudzz4/7aiEjhaIwEAUiQFDeFYFz4BQwrECbAiWAJBCgWdNyxYA0kFHBBLAHuPhdARkDkLHJ8pL/QJZcMrYgZE+t5TUkNMGOd4EZ96iaOSowBwGAU9jxOvobkIbG9lCMOc84U31Nb0cE39NjfyRO1r+CzzGAhsaW14TOnq7YvD9RwaBQT9mHPD26nQP/Mru+ReY9E+Sfi2zcHVOrfza3gPlPAFy+3rB6e0iv3s2se4yLlxLr5SM+6rXW1ov64NLksNpn5f2R67cKTr2LtXKuHQSQ00JGKgzk+GOyLSoBcYFpozRQ7QCqyljDck5G7u0sp2b6YTkLLtChyb8AXiJSthVagL8AAAAASUVORK5CYII=);
+}
+
 .browseFrame {
   border: 1px solid #161F25;
   background-color: #273238;
@@ -75,12 +83,8 @@
   font-family: Ubuntu;
   z-index: 1;
 }
-#meter-disk-pane .icon {background: url(./images/status_icons.png) no-repeat center -336px;}
 
 #meter-cpu-text { color: #fff; text-shadow: 0px 0px 2px #000; font-family: Ubuntu; }
-#meter-cpu-pane .icon {
-  background: url(./images/status_icons.png) no-repeat center -320px !important;
-}
 
 #tcreate-header {
   background-image: url(./images/dlg-toolbars.gif);
