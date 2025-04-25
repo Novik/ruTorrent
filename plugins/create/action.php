@@ -61,7 +61,7 @@ class recentTrackers
 		global $recentTrackersMaxCount;
 		for ($i = count($this->last_used) - 1; $i >= 0; $i--)
 		# remove trailing white spaces and preserve those in between from last used array
-		{ 
+		{
 			if( strlen(trim($this->last_used[$i])) < 1 )
 			{
 				array_pop($this->last_used);
