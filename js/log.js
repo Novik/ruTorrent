@@ -1,5 +1,5 @@
 function stripTimestamp(line) {
-        return line.replace(/\[[^\]]*\]\s*/, '');
+        return line.replace(/^\[[^\]]*\]\s*/, '');
 }
 
 function fetchLogLines(initialLoad = false) {
