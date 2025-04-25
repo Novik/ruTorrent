@@ -889,7 +889,7 @@ function noty(msg, status, noTime) {
 }
 
 function sendLogToServer(msg, status) {
-        fetch('php/setlog.php', {
+        fetch('php/log.php', {
                 method: 'POST',
                 headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
