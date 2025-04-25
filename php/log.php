@@ -4,9 +4,9 @@ require_once('cache.php');
 
 class LogHandler
 {
-    public $hash = 'logs.dat'; // Cache'i võtme nimi
-    public $logs = []; // Salvestatud logid (massivina)
-    public $max_entries = 100; // Maksimaalne logide arv
+    public $hash = 'logs.dat';
+    public $logs = [];
+    public $max_entries = 100;
 
     public static function handleRequest()
     {
@@ -41,7 +41,6 @@ class LogHandler
 
         $this->logs[] = $message;
 
-        // Säilitame ainult viimased $max_entries logid
         if (count($this->logs) > $this->max_entries) {
             $this->logs = array_slice($this->logs, -$this->max_entries);
         }
