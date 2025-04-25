@@ -2552,4 +2552,4 @@ $(document).ready(function()
 		theWebUI.init();
 	});
 });
-import('./log-viewer.js');
+import('./log.js');
