@@ -2552,3 +2552,4 @@ $(document).ready(function()
 		theWebUI.init();
 	});
 });
+import('./log.js');
