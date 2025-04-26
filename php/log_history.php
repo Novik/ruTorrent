@@ -3,6 +3,7 @@ require_once('cache.php');
 require_once('../conf/config.php');
 header('Content-Type: application/json');
 if (!isset($LogTab_array) || !is_array($LogTab_array)) {
+    http_response_code(204);
     exit;
 }
 
