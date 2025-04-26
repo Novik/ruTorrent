@@ -29,6 +29,8 @@
 	$al_diagnostic = true;			// Diagnose auto-loader. Set to "false" to make composer plugins work.
 
 	$log_file = $_ENV['RU_LOG_FILE'] ?? '/tmp/errors.log'; // path to log file (comment or leave blank to disable logging)
+	$LogTab_max_entry = 100;		// For saving Log Tab content to logs.dat file.
+	$LogTab_count = 10;			// For loading logs to Log Tab on rutorrent start.
 
 	$saveUploadedTorrents = true;		// Save uploaded torrents to profile/torrents directory or not
 	$overwriteUploadedTorrents = false;	// Overwrite existing uploaded torrents in profile/torrents directory or make unique name
