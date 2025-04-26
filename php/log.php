@@ -11,7 +11,6 @@ class LogHandler
     public static function handleRequest()
     {
         $handler = new LogHandler();
-
         $cache = new rCache();
         $cache->get($handler);
 
@@ -24,10 +23,11 @@ class LogHandler
             echo json_encode($response);
         } else {
             $response = $handler->getLatestLogs();
-            header('Content-Type: text/plain');
-            echo implode("\n", $response);
+            header('Content-Type: application/json');
+            echo json_encode($response);
         }
     }
+
 
     public function saveLog($message, $status)
     {
@@ -35,11 +35,16 @@ class LogHandler
             return ['status' => 'error', 'message' => 'No message provided'];
         }
 
-        if (in_array($message, $this->logs)) {
-            return ['status' => 'success', 'message' => 'Log already exists'];
+        foreach ($this->logs as $log) {
+            if ($log['message'] === $message) {
+                return ['status' => 'success', 'message' => 'Log already exists'];
+            }
         }
 
-        $this->logs[] = $message;
+        $this->logs[] = [
+            'message' => $message,
+            'status' => $status
+        ];
 
         if (count($this->logs) > $this->max_entries) {
             $this->logs = array_slice($this->logs, -$this->max_entries);
@@ -52,9 +57,13 @@ class LogHandler
     }
 
     public function getLatestLogs($count = 10)
-    {
-        return array_slice($this->logs, -$count);
-    }
+{
+    return array_values(array_filter(
+        array_slice($this->logs, -$count),
+        fn($log) => is_array($log) && isset($log['message'], $log['status'])
+    ));
+}
+
 }
 
 LogHandler::handleRequest();
