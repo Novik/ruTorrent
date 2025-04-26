@@ -4,21 +4,27 @@ function stripTimestamp(line) {
 
 function fetchLogLines(initialLoad = false) {
         fetch('php/log.php')
-                .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return response.text();
+        .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
                 })
-                .then(text => {
-                        const lines = text.trim().split('\n');
-
-                        lines.forEach(line => {
-                                const cleanLine = stripTimestamp(line);
-                                noty(cleanLine, "info");
-                        });
-                })
-                .catch(err => {
-                        noty("Log fetch error: " + err.message,"error");
+        .then(data => {
+                if (data.length === 0) {
+                        console.log("Log file is empty.");
+                }
+                console.log('Received data:', data);
+                data.forEach(entry => {
+                        const rawMsg = entry.message || '';
+                        const cleanMsg = stripTimestamp(rawMsg);
+                        const status = entry.status || 'info';
+                        noty(cleanMsg, status);
                 });
+        })
+        .catch(err => {
+                noty("Log fetch error: " + err.message, "error");
+        });
 }
 
-fetchLogLines(true);
+setTimeout(() => {
+    fetchLogLines(true);
+}, 3000);
