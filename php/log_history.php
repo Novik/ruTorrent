@@ -38,7 +38,7 @@ class LogHandler
         } else {
             $response = $handler->getLatestLogs();
         }
-        JSON::safeEncode($response);
+        echo JSON::safeEncode($response);
     }
 
     public function saveLog($message, $status)
