@@ -2546,10 +2546,10 @@ $(document).ready(function()
 	Promise.all([
 		import('./backgroundtask.js'),
 		import('./category-list.js'),
+		import('./log.js'),
 	]).then(([bgModule, catModule]) => {
 		theWebUI.taskAddTorrents = new bgModule.BackgroundTask();
 		theWebUI.categoryList = createCategoryList(catModule);
 		theWebUI.init();
 	});
 });
-import('./log.js');
