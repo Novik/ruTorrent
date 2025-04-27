@@ -4,6 +4,7 @@
   --header-border-color: #333333;
   --header-asc-icon: url("data:image/svg+xml,%3csvg version='1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3e%3cpath fill='%232196F3' d='M43 17.1L39.9 14 24 29.9 8.1 14 5 17.1 24 36z'/%3e%3c/svg%3e");
   --col-resize-sep-bg-color: #a0a0a0;
+  --row-border-color: #333333;
   --row-odd-bg-color: #333333;
   --row-even-bg-color: #191919;
   --row-active-bg-color: #888888;
