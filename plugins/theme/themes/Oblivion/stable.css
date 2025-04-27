@@ -4,6 +4,7 @@
   --header-border-color: transparent;
   --header-asc-icon: url(data:image/gif;base64,R0lGODlhEAAQAPQeAGZmZoeHh4WFhYCAgH9/f3p6enh4eHV1dXR0dHNzc2hoaGdnZ2RkZF1dXVZWVlVVVVNTU01NTUNDQzs7OzU1NSoqKigoKCUlJSIiIhYWFg4ODgwMDAYGBgMDAwAAAAAAACH5BAUAAB4ALAAAAAAQABAAAAU4oCeOZGmeaKqubDkBRiEby3RuUEIMxPFsKAyDIBgoLKmOBBEwRDoqTcPAyLAuDkqrU+G0vuBwKwQAOw==);
   --col-resize-sep-bg-color: #a0a0a0;
+  --row-border-color: #181818;
   --row-odd-bg-color: linear-gradient(0deg, #2c2c2c 0%, #272727 100%);
   --row-even-bg-color: linear-gradient(0deg, #222222 0%, #272727 100%);
   --row-active-bg-color: linear-gradient(0deg, #121212 0%, #464646 100%);
