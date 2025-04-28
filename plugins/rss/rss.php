@@ -364,10 +364,6 @@ class rRSSHistory
 			{
 				$ret = ($this->lst[$url]["guid"] === $guid);
 			}
-			if(!$ret && $title && !empty($this->lst[$url]["title"]))
-			{
-				$ret = ($this->lst[$url]["title"] === $title);
-			}
 			if(!$ret)
 			{
 				$ret = ($this->lst[$url]["hash"]!=='Failed') || ($this->getCounter( $url )>HISTORY_MAX_TRY);
