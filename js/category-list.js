@@ -23,23 +23,26 @@ export class CategoryList {
     this.statistic = CategoryListStatistic.from("pview", this.viewSelections, {
       pstate: [
         (_, torrent) => [
-          torrent.done >= 1000
-            ? "-_-_-com-_-_-"
-            : (torrent.state === 1 && torrent.done === 0 && torrent.dl === 0 && torrent.ul === 0)
-            ? "-_-_-wfa-_-_-"
-            : (torrent.done > 0 && torrent.dl === 0 && torrent.ul === 0)
-            ? "-_-_-wfa-_-_-"
-            : (torrent.done === 0 && torrent.dl === 0 && torrent.ul === 0)
-            ? "-_-_-dls-_-_-"
-            : (torrent.dl > 0 || torrent.ul > 0)
-            ? "-_-_-dls-_-_-"
-            : "-_-_-dls-_-_-",
-          torrent.dl >= 1024 || torrent.ul >= 1024
-            ? "-_-_-act-_-_-"
-            : "-_-_-iac-_-_-",
+          // Main group (Completed / Downloading / Stopped)
+          (torrent.done >= 1000)
+            ? "-_-_-com-_-_-" // Completed (even if error)
+            : (torrent.state & this.dStatus.paused)
+            ? "-_-_-wfa-_-_-" // Truly paused (Stopped)
+            : (torrent.state & this.dStatus.started)
+            ? "-_-_-dls-_-_-" // Actively downloading (Started, not Paused)
+            : "-_-_-wfa-_-_-", // Otherwise fallback to Stopped
+
+          // Activity group (Active / Inactive)
+          (torrent.state & this.dStatus.started)
+            ? ((torrent.dl >= 1024 || torrent.ul >= 1024)
+              ? "-_-_-act-_-_-" // Active: started + upload/download happening
+              : "-_-_-iac-_-_-") // Inactive: started but idle (no transfer)
+            : null, // No activity group for completed or stopped
         ],
+
+        // Special case for Errors (only if not completed)
         {
-          "-_-_-err-_-_-": (_, torrent) => torrent.state & this.dStatus.error,
+          "-_-_-err-_-_-": (_, torrent) => (torrent.done < 1000 && (torrent.state & this.dStatus.error)),
         },
       ],
       plabel: [
