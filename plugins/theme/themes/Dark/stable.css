@@ -4,6 +4,7 @@
   --header-border-color: #333333;
   /* --header-asc-icon: undefined - inherit from standard theme; */
   --col-resize-sep-bg-color: #a0a0a0;
+  --row-border-color: #333333;
   --row-odd-bg-color: #333333;
   --row-even-bg-color: #191919;
   --row-active-bg-color: #888888;
