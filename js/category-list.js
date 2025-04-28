@@ -25,15 +25,13 @@ export class CategoryList {
         (_, torrent) => [
           torrent.done >= 1000
             ? "-_-_-com-_-_-"
-            : (torrent.state === 1 && torrent.done === 0 && torrent.dl === 0 && torrent.ul === 0)
-            ? "-_-_-wfa-_-_-"
-            : (torrent.done > 0 && torrent.dl === 0 && torrent.ul === 0)
-            ? "-_-_-wfa-_-_-"
-            : (torrent.done === 0 && torrent.dl === 0 && torrent.ul === 0)
+            : ((torrent.state & this.dStatus.paused) || 
+			      ((torrent.state & this.dStatus.started) && torrent.done === 0 && torrent.dl === 0 && torrent.ul === 0) || 
+			      (torrent.done > 0 && torrent.dl === 0 && torrent.ul === 0))
+            ? "-_-_-psd-_-_-"
+            : (torrent.state & this.dStatus.started)
             ? "-_-_-dls-_-_-"
-            : (torrent.dl > 0 || torrent.ul > 0)
-            ? "-_-_-dls-_-_-"
-            : "-_-_-dls-_-_-",
+            : "-_-_-wfa-_-_-",
           torrent.dl >= 1024 || torrent.ul >= 1024
             ? "-_-_-act-_-_-"
             : "-_-_-iac-_-_-",
