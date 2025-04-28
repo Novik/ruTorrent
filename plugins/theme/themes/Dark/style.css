@@ -146,6 +146,10 @@ td.disabled, label.disabled, span.disabled, div.disabled {color: #333333}
 select.cols {border: 1px solid #333333}
 div#tdetails {background-color: #181818}
 
+.tabbar {
+  border-bottom: none;
+}
+
 .tabbar li.nav-item a.nav-link {
   border: 1px solid #333333;
   background-color: #181818;
