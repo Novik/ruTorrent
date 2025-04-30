@@ -896,9 +896,16 @@ function sendLogToServer(msg, status) {
                 },
                 body: `message=${encodeURIComponent(msg)}&status=${encodeURIComponent(status)}`
         })
-        .then(response => response.json())
+        .then(response => {
+                if (response.status === 204) {
+                        return;
+                }
+                return response.json();
+        })
         .then(data => {
-                console.log("Log saved to server:", data);
+                if (data) {
+                        console.log("Log saved to server:", data);
+                }
         })
         .catch(error => {
                 console.log("Saving Log failed:", error);
