@@ -5,66 +5,73 @@
 
 // Drag & Drop object 
 class DnD {
-	constructor(id, options) {
-		this.obj = $('#' + id);
+	/**
+	 * Construct a drag-and-drop instance.
+	 * @param {string | HTMLElement} dndObj Reference to the drag-and-drop element.
+	 * Can be the HTML `id` of the element, or a reference to the HTML element.
+	 * @param {Object} options Drag and drop options to be passed.
+	 */
+	constructor(dndObj, options) {
+		this.obj = ($type(dndObj) === "string")
+			? $('#' + dndObj)
+			: $(dndObj);
 		const headers = this.obj.find(".dlg-header");
 		const header = headers.length > 0 ? $(headers[0]) : this.obj;
 		this.options = options || {};
 		if (!this.options.left)
-			this.options.left = function() {return 0;};
+			this.options.left = 0;
 		if (!this.options.top)
-			this.options.top = function() {return 0;};
+			this.options.top = 0;
 		if (!this.options.right)
-			this.options.right = function() {return ($(window).width());};
+			this.options.right = (() => $(window).width())();
 		if (!this.options.bottom)
-			this.options.bottom = function() {return ($(window).height());};
+			this.options.bottom = (() => $(window).height())();
 		if (!this.options.onStart)
 			this.options.onStart = function() {return true;};
 		if (!this.options.onRun)
 			this.options.onRun = function() {};
 		if (!this.options.onFinish)
 			this.options.onFinish = function() {};
-		if (!this.options.maskId)
-			this.options.maskId = 'dragmask';
-		this.detachedMask = this.options.maskId !== id;
-		this.mask = $('#' + this.options.maskId);
+		this.options.allowMobile = !!this.options.allowMobile;
 		header.off("mousedown");
 		header.on("mousedown", this, this.start);
 	}
 
 	start(e) {
-		// allow dnd only for medium-sized screens and up
-		if ($(window).width() < 768) return false;
+		const self = e.data;
+		// allow dnd on small-sized screens only when explicitly allowed to
+		if (($(window).width() < 768) && !self.options.allowMobile){
+			return false;
+		}
 		// disallow dnd on links
 		if (e.target.tagName === "A") return false;
 
-		const self = e.data;
 		if (self.options.onStart(e)) {
-			const offs = self.obj.offset();
-			theDialogManager.bringToTop(self.obj.attr("id"));
-			theDialogManager.bringToTop(self.mask.attr("id"));
-			if (self.detachedMask) {
-				self.mask.css({left: offs.left, top: offs.top, width: self.obj.width(), height: self.obj.height()});
-				self.mask.show();
-			}
-			self.delta = {x: e.clientX - offs.left, y: e.clientY - offs.top};
 			$(document).on("mousemove", self, self.run);
 			$(document).on("mouseup", self, self.finish);
 		}
-		return false;
 	}
 
 	run(e) {
 		$("body").css({cursor:"grabbing"});
+		// `e.data` refers to the DnD object attached to the current dialog header
 		const self = e.data;
+
+		const offs = self.obj.offset();
 		if (!self.options.restrictX) {
-			self.mask.css({
-				left: Math.min(Math.max(self.options.left(), e.clientX), self.options.right()) - self.delta.x
+			self.obj.css({
+				left: Math.min(
+					Math.max(self.options.left, offs.left + e.originalEvent.movementX),
+					self.options.right,
+				),
 			});
 		}
 		if (!self.options.restrictY) {
-			self.mask.css({
-				top: Math.min(Math.max(self.options.top(), e.clientY), self.options.bottom()) - self.delta.y
+			self.obj.css({
+				top: Math.min(
+					Math.max(self.options.top, offs.top + e.originalEvent.movementY),
+					self.options.bottom,
+				),
 			});
 		}
 		self.options.onRun(e);
@@ -75,25 +82,6 @@ class DnD {
 		$("body").css({cursor:""});
 		const self = e.data;
 		self.options.onFinish(e);
-		if (self.detachedMask) {
-			const offs = self.mask.offset();
-			self.mask.hide();
-			self.obj.css(offs);
-			// move directory frames along with the dialog window
-			self.obj.find(".browseEdit").each((i, ele) => {
-				if ($(`#${ele.id}_frame`).css("display") !== "none") {
-					// move open ones only because they will automatically reposition
-					// when toggled open
-					const frameOffs = ele.getBoundingClientRect();
-					$(`#${ele.id}_frame`).css(
-						{
-							top: frameOffs.bottom,
-							left: frameOffs.left,
-						}
-					);
-				}
-			});
-		}
 		$(document).off("mousemove", self.run);
 		$(document).off("mouseup", self.finish);
 		return false;
@@ -321,7 +309,7 @@ var theContextMenu =
 				}
 			}
 		});
-		this.obj = $("<ul>").addClass("CMenu");
+		this.obj = $("<ul>").addClass("CMenu").hide();
 		$(document.body).append(this.obj);
 	},
 	get: function( label )
@@ -337,8 +325,7 @@ var theContextMenu =
 		});
 		return(ret);
 	},
-	add: function()
-	{
+	add: function() {
 		var args = new Array();
 		$.each(arguments, function(ndx,val) { args.push(val); });
         	var aft = null;
@@ -355,55 +342,61 @@ var theContextMenu =
 			args.splice(0, 1);		
 		}
 		var self = this;
-		$.each(args, function(ndx,val) 
-		{
-		        if($type(val))
-			{
-				var li = $("<li>").addClass("menuitem");
-				if(val[0] == CMENU_SEP)
+		$.each(args, function(ndx,val) {
+			if ($type(val)) {
+				const li = $("<li>").addClass("menuitem");
+				if (val[0] == CMENU_SEP)
 					li.append($("<hr>").addClass("menu-line"));
-				else
-				if(val[0] == CMENU_CHILD)
-				{
-					li.append( $("<a></a>").addClass("exp").text(val[1]) );
-					var ul = $("<ul>").addClass("CMenu");
-					for(var j = 0, len = val[2].length; j < len; j++) 
-					{
+				else if(val[0] == CMENU_CHILD) {
+					li.append( $("<a>").addClass("exp").text(val[1]) );
+					var ul = $("<ul>").addClass("CMenu").hide();
+					for (var j = 0, len = val[2].length; j < len; j++) {
 						self.add(ul, val[2][j]);
 					}
 					li.append(ul);
-				}
-				else
-			       	if(val[0] == CMENU_SEL) 
-		 		{
-		 	        	var a = $("<a></a>").addClass("sel menu-cmd").text(val[1]);
-			 	        switch($type(val[2]))
-			 	        {
-						case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[2]) } ); break;
-						case "function": a.attr("href","javascript://void();").on('click', val[2]); break;
-					}
-					li.append(a.on('focus', function() { this.blur(); } ));
-				}
-				else
-				{
-					if($type(val[0]))
-					{
-						var a = $("<a></a>").addClass("menu-cmd").text(val[0]);
-						switch($type(val[1]))
-						{
-				 	        	case false: a.addClass("dis"); break;
-							case "string": a.attr("href","javascript://void();").on('click', function() { eval(val[1]) } ); break;
-							case "function": a.attr("href","javascript://void();").on('click', val[1]); break;
+				} else if(val[0] == CMENU_SEL) {
+					const a = $("<a>").addClass("sel menu-cmd").attr({href: "#"}).text(val[1]);
+					switch ($type(val[2])) {
+						case "string": {
+							a.on('click', () => eval(val[2]));
+							break;
 						}
-						li.append(a.on('focus', function() { this.blur(); } ));
+						case "function": {
+							a.on('click', val[2]);
+							break;
+						}
+						default: {
+							return;
+						}
+					}
+					li.append(
+						a.on('focus', (ev) => ev.target.blur()),
+					);
+				} else {
+					if ($type(val[0])) {
+						const a = $("<a>").addClass("menu-cmd").text(val[0]);
+						switch ($type(val[1])) {
+							case false: {
+								a.addClass("dis");
+								break;
+							}
+							case "string": {
+								a.attr({href:"#"}).on('click', () => eval(val[1]));
+								break;
+							}
+							case "function": {
+								a.attr({href:"#"}).on('click', val[1]);
+								break;
+							}
+						}
+						li.append(
+							a.on('focus', (ev) => ev.target.blur()),
+						);
 					}
 				}
-				if(aft)
-					aft.after(li);
-				else
-					o.append(li);
+				aft ? aft.after(li) : o.append(li);
 			}
-                });
+		});
 	},
 	clear: function()
 	{
@@ -412,6 +405,26 @@ var theContextMenu =
 	setNoHide: function()
 	{
 		this.noHide = true;
+	},
+	openSubmenu: function(ev) {
+		const li = $(ev.currentTarget);
+		const submenu = li.children("ul");
+		if (submenu.length) {
+			submenu.show().css({left:li.width()});
+			if(submenu.offset().left + submenu.width() > $(window).width())
+				submenu.css( "left", -submenu.width() );
+			if(submenu.offset().top + submenu.height() > $(window).height())
+				submenu.css( "top", -submenu.height()+20 );
+			if(submenu.offset().top<0)
+				submenu.css( "top", -submenu.height()+20-submenu.offset().top );
+			if ($(window).height() < submenu.offset().top + submenu.height())
+				submenu.css( { "max-height": $(window).height() - submenu.offset().top, overflow: "visible scroll" } );
+		}
+	},
+	closeSubmenu: function(ev) {
+		const submenu = $(ev.currentTarget).children("ul");
+		if (submenu.length)
+			submenu.css( { "max-height": "", overflow: "visible" } ).hide();
 	},
 	show: function(x,y)
 	{
@@ -427,24 +440,11 @@ var theContextMenu =
 		if(y<0)
 			y = 0;
 		obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
-		obj.children("li").on( 'mouseenter', function() {
-			var submenu = $(this).children("ul");
-			if (submenu.length) {
-				if(submenu.offset().left + submenu.width() > $(window).width())
-					submenu.css( "left", -150 );
-				if(submenu.offset().top + submenu.height() > $(window).height())
-					submenu.css( "top", -submenu.height()+20 );
-				if(submenu.offset().top<0)
-					submenu.css( "top", -submenu.height()+20-submenu.offset().top );
-				if ($(window).height() < submenu.offset().top + submenu.height())
-					submenu.css( { "padding-right": 12, "max-height": $(window).height() - submenu.offset().top, overflow: "visible scroll" } );
-			}
-		}).on( 'mouseleave', function () {
-			var submenu = $(this).children("ul");
-			if (submenu.length)
-				submenu.css( { "padding-right": 0, "max-height": "none", overflow: "visible" } );
+		obj.children("li").on({
+			mouseover: theContextMenu.openSubmenu,
+			mouseout: theContextMenu.closeSubmenu,
 		});
-                obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
+		obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
 	},
 	hide: function()
 	{

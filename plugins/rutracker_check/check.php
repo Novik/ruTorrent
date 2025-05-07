@@ -2,6 +2,7 @@
 
 require_once( "../../php/Snoopy.class.inc" );
 require_once( "../../php/rtorrent.php" );
+require_once( "../../php/util.php" );
 
 require_once( "trackers/rutracker.php" );
 require_once( "trackers/anidub.php" );
@@ -10,6 +11,8 @@ require_once( "trackers/nnmclub.php" );
 require_once( "trackers/tapocheknet.php" );
 require_once( "trackers/tfile.php" );
 require_once( "trackers/toloka.php" );
+
+eval(FileUtil::getPluginConf( "rutracker_check" ));
 
 class ruTrackerChecker
 {
@@ -20,6 +23,7 @@ class ruTrackerChecker
 	const STE_CANT_REACH_TRACKER	= 5;
 	const STE_ERROR			= 6;
 	const STE_NOT_NEED		= 7;
+	const STE_IGNORED		= 8;
 	
 	const MAX_LOCK_TIME		= 900;	// 15 min
 	
@@ -51,18 +55,20 @@ class ruTrackerChecker
 		return($req->success());
 	}
 
-	static protected function getState( $hash, &$state, &$time, &$successful_time )
+	static protected function getState( $hash, &$state, &$time, &$successful_time, &$label )
 	{
 		$req = new rXMLRPCRequest( array(
 			new rXMLRPCCommand( getCmd("d.get_custom"), array($hash, "chk-state")  ),
 			new rXMLRPCCommand( getCmd("d.get_custom"), array($hash, "chk-time") ),
-			new rXMLRPCCommand( getCmd("d.get_custom"), array($hash, "chk-stime") )
+			new rXMLRPCCommand( getCmd("d.get_custom"), array($hash, "chk-stime") ),
+			new rXMLRPCCommand( getCmd("d.get_custom1"), $hash )
 			));
 		if($req->success())
 		{
 			$state = intval($req->val[0]);
 			$time = intval($req->val[1]);
 			$successful_time = intval($req->val[2]);
+			$label = $req->val[3];
 			return(true);
 		}
 		else
@@ -140,9 +146,18 @@ class ruTrackerChecker
 		return($client);
 	}
 
-	static public function run( $hash, $state = null, $time = null, $successful_time = null )
+	static public function run( $hash, $state = null, $time = null, $successful_time = null, $label = null )
 	{
-		if(is_null($state)) self::getState( $hash, $state, $time, $successful_time );
+		global $ignoreLabels;
+
+		if(is_null($state)) self::getState( $hash, $state, $time, $successful_time, $label );
+		
+		if (!is_null($label) && in_array($label, $ignoreLabels)) {
+			$state = self::STE_IGNORED;
+			self::setState($hash, $state);
+			return(true);
+		}
+
 		if(($state==self::STE_INPROGRESS) && ((time()-$time)>self::MAX_LOCK_TIME)) $state = 0;
 
 		if($state!==self::STE_INPROGRESS){

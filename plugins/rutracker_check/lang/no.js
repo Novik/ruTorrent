@@ -17,7 +17,8 @@
  				  "Sannsynligvis slettet",
  				  "Tilgangsfeil med trackeren oppstod",
  				  "Kommunikasjonsfeil med rTorrent oppstod",
- 				  "Ikke nødvendig"
+ 				  "Ikke nødvendig",
+ 				  "Ignorert"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

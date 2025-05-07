@@ -34,18 +34,14 @@ var ALIGN_LEFT = 1;
 var ALIGN_CENTER = 2;
 var ALIGN_RIGHT = 3;
 
-var TR_HEIGHT	=	19;
-
 var dxSTable = function() 
 {
-	this.rows = 0;
 	this.rowdata = {};
 	this.rowIDs = [];
 	this.rowSel = {};
 	this.maxRows = false;
 	this.noDelayingDraw = true;
 	this.viewRows = 0;
-	this.cols = 0;
 	this.colsdata = new Array();
 	this.stSel = [];
 	this.format = function(r) { return r; };
@@ -53,17 +49,7 @@ var dxSTable = function()
 	this.reverse = 0;
 	this.sortId2 = '';
 	this.secRev = 0;
-	this.tBody = null;
-	this.tHead = null;
-	this.tHeadCols = new Array();
-	this.tBodyCols = new Array();
-	this.colorEvenRows = false;
-	this.paletteURL = ".";
-	this.sortAscImage = this.paletteURL+"/images/asc.gif";
-	this.sortDescImage = this.paletteURL+"/images/desc.gif";
-	this.cancelSort = false;
-	this.cancelMove = false;
-	this.colMove = new dxSTable.ColumnMove(this);
+	this.colDnD = null;
 	this.colOrder = new Array();
 	this.ids = new Array();
 	this.onselect = null;
@@ -72,14 +58,16 @@ var dxSTable = function()
 	this.onmove = null;
 	this.onresize = null;
 	this.ondblclick = null;
-	this.hotCell =- 1;
+	this.currIndex = -1;
+	this.hotCell = -1;
+	this.index = -1;
+	this.indexNew = -1;
 	this.isMoving = false;
 	this.isResizing = false;
 	this.isSorting = false;
+	this.mouseX = 0;  // x offset of cursor relative to the cell's left border
 	this.selCount = 0;
 	this.created = false;
-	this.colReszObj = null;
-	this.rowCover = null;
 	this.prgStartColor = new RGBackground(".meter-value-start-color");
 	this.prgEndColor = new RGBackground(".meter-value-end-color");
 	this.mni = 0;
@@ -100,41 +88,46 @@ var dxSTable = function()
 	};
 }
 
-dxSTable.prototype.setPaletteByURL = function(url) 
-{
-	this.paletteURL = url;	
-	this.sortAscImage = url+"/images/asc.gif";
-	this.sortDescImage = url+"/images/desc.gif";
-	if(this.created)
-		this.Sort();
+dxSTable.prototype.setPaletteByURL = function(url) {
+	// TODO: deprecated, remove in v6
+	noty("`dxSTable.setPaletteByURL()` is deprecated and will be removed in v6. Please avoid using this method.");
 }
 
 dxSTable.prototype.bindKeys = function()
 {
-	$(document).off( (browser.isOpera && browser.versionMinor<9.8) ? "keypress" : "keydown", this.keyEvents );
-	$(document).on( (browser.isOpera && browser.versionMinor<9.8) ? "keypress" : "keydown", this, this.keyEvents );
+	$(document).off("keydown", this.keyEvents);
+	$(document).on("keydown", this, this.keyEvents);
 }
 
 dxSTable.prototype.create = function(ele, styles, aName)
 {
 	if(!ele || this.created)
 		return;
-	let tr, td, cl, cg;
 	this.prefix = aName;
-	this.dCont = $(ele).addClass("stable").get(0);
-	this.dHead = $("<div>").addClass("stable-head").get(0);
-	this.dBody = $("<div>").addClass("stable-body").get(0);
-	this.dCont.appendChild(this.dHead);
-	this.dCont.appendChild(this.dBody);
-
-	this.tHead = $("<table>").prop({cellSpacing: 0, cellPadding: 0}).get(0);
-	this.tHead.tb = $("<tbody>").get(0);
-	this.dHead.appendChild(this.tHead);
-	this.tHead.appendChild(this.tHead.tb);
-
-	tr = $("<tr>");
-	this.tHead.tb.appendChild(tr.get(0));
-	const self = this;
+	this.dCont = $(ele).addClass("stable").append(
+		$("<div>").addClass("stable-body").append(  // -> this.dBody (`this.dHead` gone)
+			$("<table>").append(  // -> (old `this.tBody` and `this.tHead` gone)
+				$("<colgroup>"),  // -> cg
+				$("<thead>").append(  // -> this.tHead.tb
+					$("<tr>"),  // -> this.tHeadRow
+				),
+				$("<tbody>").addClass("stable-virtpad").append(
+					$("<tr>"),  // -> this.tpad
+				),
+				$("<tbody>"),  // -> this.tBody (new pointer)
+				$("<tbody>").addClass("stable-virtpad").append(
+					$("<tr>"),  // -> this.bpad
+				),
+			),
+		),
+		$("<div>").addClass("stable-gadgets").append(
+			$("<div>").addClass("rowcover").hide(),  // -> this.rowCover
+			$("<div>").addClass("stable-move-header").hide(),  // -> this.obj (drag and move object)
+			$("<div>").addClass("stable-separator-header").hide(),  // -> this.sepobj (drag and move separator)
+			$("<div>").addClass("stable-resize-header").hide(),  // -> this.colReszObj
+			$("<span>").addClass("stable-scrollpos"),  // -> this.scp
+		),
+	);
 
 	for (let i in this.colOrder) {
 		if (this.colOrder[i] >= styles.length) {
@@ -142,109 +135,91 @@ dxSTable.prototype.create = function(ele, styles, aName)
 			break;
 		}
 	}
+	this.colDnD = new DnD(
+		this.tHeadRow[0],
+		{
+			allowMobile: true,
+			onStart: (ev) => {
+				if (ev && ev.which === 3) {
+					this.onRightClick(ev);
+					return;
+				}
+
+				if (this.hotCell > -1) {
+					this.isResizing = true;
+					this.isMoving = false;
+				} else {
+					this.isSorting = true;
+					this.index = this.currIndex;
+					const p = this.tHeadCols[this.index];
+					this.obj.css({
+						width: p.offsetWidth - 16,
+						left: p.offsetLeft - this.dBody.scrollLeft,
+						"text-align": (this.colsdata[this.index].type == TYPE_NUMBER) ? "right" : "left",
+						cursor: "move",
+					}).text(p.lastChild.innerText);
+				}
+				return true;
+			},
+			onRun: (ev) => {
+				if (this.isResizing) {
+					this.colDragResize(ev);
+				} else {
+					this.isMoving = true;
+					this.isSorting = false;
+					this.colDragMove(ev);
+				}
+			},
+			onFinish: (ev) => {
+				if (this.isResizing) {
+					this.colDragResizeEnd(ev);
+				} else if (this.isMoving) {
+					this.colDragMoveEnd(ev);
+				} else {
+					this.Sort(ev);
+				}
+				this.isResizing = false;
+				this.isMoving = false;
+				this.isSorting = false;
+			},
+		},
+	);
 	for (let i = 0; i < styles.length; i++) {
 		if(!$type(this.colOrder[i]))
 			this.colOrder[i] = i;
 		if(!$type(styles[this.colOrder[i]].enabled)) 
 			styles[this.colOrder[i]].enabled = true;
-		this.cols++;
 		this.colsdata[i] = styles[this.colOrder[i]];
-
-		if(browser.isIE7x && (this.colsdata[i].type==TYPE_PROGRESS))
-			this.colsdata[i].type = TYPE_NUMBER;
-
 		this.colsdata[i].width = iv(this.colsdata[i].width);
 		this.ids[i] = styles[i].id;
 
-		td = $("<td>").on( "mousemove touchstart", function(e) 
-		{
-			if(self.isResizing) 
-				return;
-			var x = e.clientX - $(this).offset().left;	
-			this.lastMouseX = e.clientX;
-			var w = this.offsetWidth;
-			var i = parseInt(this.getAttribute("index"));
-			var delta = $.support.touchable ? 16 : 8;
-			if(x <= delta) 
-			{
-				if(i!= 0) 
-				{
-					self.hotCell = i - 1;
-					this.style.cursor = "e-resize";
-				}
-				else 
-				{
-					self.hotCell =- 1;
-					this.style.cursor = "default";
-				}
-			}
-			else 
-			{
-				if(x >= w - delta) 
-				{
-					self.hotCell = i;
-					this.style.cursor = "e-resize";
-				}
-				else 
-				{
-					self.hotCell =- 1;
-					this.style.cursor = "default";
-				}
-			}
-       		});
-		tr.append( td.append( $("<div>").html(styles[this.colOrder[i]].text)).
-			width(styles[this.colOrder[i]].width).
-			attr("index", i));
-		this.colMove.init(td.get(0), preventSort, null, moveColumn);
-		td.mouseclick(function(e)
-		{ 
-			self.onRightClick(e);
-		}).on('mouseup', function(e) 
-		{ 
-			self.Sort(e);
+		const td = $("<td>").append(
+				$("<div>").append($("<span>").text(styles[this.colOrder[i]].text))
+			)
+				.width(styles[this.colOrder[i]].width)
+				.attr("index", i)
+				.toggle(!!this.colsdata[i].enabled);
+		this.tHeadRow.append(td);
+		td.mouseclick((e) => { 
+			this.onRightClick(e);
 		});
 		if(!$.support.touchable)
-			td.on('mousedown', function(e) { self.bindKeys(); });
-		this.tHeadCols[i] = td.get(0);
-		if(!this.colsdata[i].enabled)
-  	                td.hide();
+			td.on('mousedown', (e) => { this.bindKeys(); });
 	}
-	this.tBody = $("<table>").get(0);
-	this.tBody.cellSpacing = 0;
-	this.tBody.cellPadding = 0;
-	this.tpad = $("<div>").addClass("stable-virtpad").get(0);
-	this.dBody.appendChild(this.tpad);
-	this.dBody.appendChild(this.tBody);
-	this.bpad = $("<div>").addClass("stable-virtpad").get(0);
-	this.dBody.appendChild(this.bpad);
-	const tb = $("<tbody>");
-	tb.mouseclick(this.handleClick.bind(this));
+
+	this.tBody.mouseclick(this.handleClick.bind(this));
 	if(typeof this.ondblclick === 'function') {
-		tb.dblclick(this.handleClick.bind(this));
+		this.tBody.dblclick(this.handleClick.bind(this));
 	}
-	this.tBody.tb = tb[0];
-	this.tBody.appendChild(this.tBody.tb);
 
-	cg = $("<colgroup>");
-	this.tBody.appendChild(cg.get(0));
-	for(var i = 0; i < styles.length; i++) 
-	{
-		cl = $("<col>").width(this.colsdata[i].width);
-		cg.append(cl);
-		this.tBodyCols[i] = cl.get(0);
-      		if(!this.colsdata[i].enabled)
-			cl.hide();
+	const cg = this.dCont.find("colgroup");
+	for (var i = 0; i < styles.length; i++) {
+		cg.append(
+			$("<col>").width(this.colsdata[i].width).toggle(!!this.colsdata[i].enabled),
+		);
 	}
-	this.scp = $("<span>").addClass("stable-scrollpos").get(0);
-	this.dCont.appendChild(this.scp);
 	this.init();
-	this.calcSize().resizeColumn();
-
-	this.colReszObj = $("<div>").addClass("stable-resize-header").get(0);
-	this.dBody.appendChild(this.colReszObj);
-
-	this.rowCover = $("<div>").addClass("rowcover").get(0);
-	this.dHead.appendChild(this.rowCover);
+	this.resizeColumn();
 	this.created = true;
 }
 
@@ -259,21 +234,17 @@ dxSTable.prototype.handleClick = function(e)
 	}
 }
 
-dxSTable.prototype.toggleColumn = function(i)
-{
+dxSTable.prototype.toggleColumn = function(i) {
 	this.colsdata[i].enabled = !this.colsdata[i].enabled;
-	$(this.tBodyCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
-	$(this.tHeadCols[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
-	if(!browser.isIE7x)
-	        for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
-			$(this.tBody.tb.childNodes[D].childNodes[i]).css( "display", this.colsdata[i].enabled ? "" : "none" );
+	$(this.tBodyCols[i]).toggle(this.colsdata[i].enabled);
+	$(this.tHeadCols[i]).toggle(this.colsdata[i].enabled);
+	this.tBody.find(`tr td:nth-child(${i + 1})`).toggle(this.colsdata[i].enabled);
 	if(this.colsdata[i].enabled)
 	{
 		$(this.tBodyCols[i]).width( this.colsdata[i].width );
 		$(this.tHeadCols[i]).width( this.colsdata[i].width );
 	}
-        this.dHead.scrollLeft = this.dBody.scrollLeft;
-        this.calcSize().resizeColumn();
+	this.resizeColumn();
 	if($type(this.onresize) == "function")
 		this.onresize();
 }
@@ -283,16 +254,15 @@ dxSTable.prototype.removeColumnById = function(id, name)
 	this.removeColumn(this.getColById(id), name);
 }
 
-dxSTable.prototype.removeColumn = function(no)
-{
+dxSTable.prototype.removeColumn = function(no) {
 	const i = this.getColOrder(no);
 	if(i>=0)
 	{
 		$(this.tHeadCols[i]).remove();
 		$(this.tBodyCols[i]).remove();
 
-		for (var D = 0, B = this.tBody.tb.childNodes.length; D < B; D ++ )
-			$(this.tBody.tb.childNodes[D].childNodes[i]).remove();
+		for (var D = 0, B = this.tBody[0].childNodes.length; D < B; D ++ )
+			$(this.tBody[0].childNodes[D].childNodes[i]).remove();
 
 		this.ids.splice(no,1);
 		this.colOrder.splice(i,1);
@@ -301,10 +271,7 @@ dxSTable.prototype.removeColumn = function(no)
 				this.colOrder[j]--;
 
 		this.colsdata.splice(i,1);
-		this.tBodyCols.splice(i,1);
-		this.tHeadCols.splice(i,1);
 
-		this.cols--;
 		for(let c = i; c < this.cols; c++)
 			this.tHeadCols[c].setAttribute("index", c);
 		if(this.getColNoById(this.sortId) === i)
@@ -314,8 +281,7 @@ dxSTable.prototype.removeColumn = function(no)
 			this.secRev = 0;
 		}
 
-		this.dHead.scrollLeft = this.dBody.scrollLeft;
-		this.calcSize().resizeColumn();
+		this.resizeColumn();
 	}
 }
 
@@ -340,281 +306,103 @@ dxSTable.prototype.onRightClick = function(e)
 	}
 }
 
-dxSTable.prototype.resizeHack = function()
-{
-	if(!browser.isIE7x)
-		this.resizeColumn();
-	return(this);
+dxSTable.prototype.calcSize = function() {
+	// TODO: remove in v6
+	noty("`dxStable.calcSize()` is deprecated and will be removed in v6. Please avoid using it and run `dxSTable.resizeColumn()` directly.")
 }
 
-var preventSort = function() 
-{
-	this.cancelSort = true;
-}
-
-dxSTable.prototype.calcSize = function() 
-{
-	if (this.created && this.dCont.offsetWidth >= 4) {
-		this.tBody.style.width = this.tHead.offsetWidth + "px";
-		this.rowCover.style.width = this.dHead.style.width;
-		if ((this.cols > 0) && (!this.isResizing)) {
-			for (let i = 0; i < this.cols; i++) {
-				var _9a = iv(this.tBodyCols[i].style.width);
-				if (browser.isIE && (this.tBodyCols[i].offsetWidth != 0)) {
-					_9a = this.tBodyCols[i].offsetWidth;
-				}
-				if (!_9a) {
-					continue;
-				}
-				if ((browser.isChrome && (browser.versionMajor<537)) || browser.isKonqueror || browser.isSafari)
-					_9a += 4;
-				if (_9a>8)
-					this.tHeadCols[i].style.width = _9a + "px";
-			}
-		}
-	}
-	return this;
-}
-
-dxSTable.prototype.resizeColumn = function() 
-{
-	if (this.tBody == null)
+dxSTable.prototype.resizeColumn = function() {
+	if (this.tBody.length < 1)
 		return;
-	
-	var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-	var needCallHandler = false;
-	var w = 0, c;
+
+	var _e = this.tBodyCols;
 	for (var i = 0; i < _e.length; i++) {
-		c = this.tHeadCols[i];
-		w = this.colsdata[i].width;
+		const w = this.colsdata[i].width;
 		if (iv(_e[i].style.width) !== w) {
 			_e[i].style.width = w + "px";
-			needCallHandler = true;
 		}
-		if ((browser.isAppleWebKit || browser.isKonqueror || browser.isIE8up) && this.tBody.rows.length > 0) {
-			if ((this.tBody.rows[0].cells[i].width || browser.isSafari) && (this.tBody.rows[0].cells[i].width !== w) && (w >= 4)) {
-				this.tBody.rows[0].cells[i].width = w;
-				needCallHandler = true;
+		if ((browser.isAppleWebKit || browser.isKonqueror) && this.tBody[0].rows.length > 0) {
+			if ((this.tBody[0].rows[0].cells[i].width || browser.isSafari) && (this.tBody[0].rows[0].cells[i].width !== w) && (w >= 4)) {
+				this.tBody[0].rows[0].cells[i].width = w;
 			}
-//			for( var j=0; j<this.tBody.rows.length; j++ )
-//				this.tBody.rows[j].cells[i].style.textAlign = c.style.textAlign;
 		}
 	}
-
-	(($type(this.onresize) === "function") && needCallHandler) && this.onresize();
 }
 
-var moveColumn = function(_11, _12) 
-{
-	var i, l, oParent, oCol, oBefore, aRows, a;
+/**
+ * Moves a column identified by the given index number, to a location
+ * by the given target index number.
+ *
+ * @param {Number} _11 Origin index of the moving column.
+ * @param {Number} _12 New index of the moving column.
+ * @returns
+ */
+dxSTable.prototype.moveColumn = function(_11, _12) {
 	if(_11 == _12)
 		return;
-	oCol = this.tHeadCols[_11];
-	oParent = oCol.parentNode;
-	if(_12 == this.cols) 
-	{
-		oParent.removeChild(oCol);
-		oParent.appendChild(oCol);
+
+	// move header cells
+	const oHeadCol = this.tHeadCols[_11];
+	if(_12 == this.cols) {
+		this.tHeadRow[0].appendChild(oHeadCol);
+	} else {
+		$(this.tHeadCols[_12]).before(oHeadCol);
 	}
-	else 
-	{
-		oBefore = this.tHeadCols[_12];
-		oParent.removeChild(oCol);
-		oParent.insertBefore(oCol, oBefore);
+
+	// move body colgroup cols
+	const oBodyCol = this.tBodyCols[_11];
+	const oBodyParent = oBodyCol.parentNode;
+	if(_12 == this.cols) {
+		oBodyParent.appendChild(oBodyCol);
+	} else {
+		$(this.tBodyCols[_12]).before(oBodyCol);
 	}
-	oCol = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")[_11];
-	oParent = oCol.parentNode;
-	if(_12 == this.cols) 
-	{
-		oParent.removeChild(oCol);
-		oParent.appendChild(oCol);
-	}
-	else 
-	{
-		oBefore = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col")[_12];
-		oParent.removeChild(oCol);
-		oParent.insertBefore(oCol, oBefore);
-	}
-	aRows = this.tBody.tb.rows;
-	l = aRows.length;
-	i = 0;
-	while(i < l) 
-	{
-		oCol = aRows[i].cells[_11];
-		oParent = aRows[i];
-		if(_12 == this.cols) 
-		{
-			oParent.removeChild(oCol);
-			oParent.appendChild(oCol);
+
+	// move body cells row by row
+	const aRows = this.tBody[0].rows;
+	for(let i = 0; i < aRows.length; i++) {
+		const bodyRow = aRows[i];
+		const oBodyCol = bodyRow.cells[_11];
+		if(_12 == this.cols) {
+			bodyRow.appendChild(oBodyCol);
+		} else {
+			$(bodyRow.cells[_12]).before(oBodyCol);
 		}
-		else 
-		{
-			oBefore = aRows[i].cells[_12];
-			oParent.removeChild(oCol);
-			oParent.insertBefore(oCol, oBefore);
-		}
-		i++;
 	}
-	var aHC = new Array();
-	var aBC = new Array();
-	var aC = new Array();
-	var aO = new Array();
-	oCol = this.tHeadCols[_11];
-	var _18 = this.tBodyCols[_11];
-	for(i = 0; i < this.cols; i++) 
-	{
-		if(i == _11)
-			continue;
-		if(i == _12) 
-		{
-			aHC.push(oCol);
-			aBC.push(_18);
-			aC.push(this.colsdata[_11]);
-			aO.push(this.colOrder[_11]);
-		}
-		aHC.push(this.tHeadCols[i]);
-		aBC.push(this.tBodyCols[i]);
-		aC.push(this.colsdata[i]);
-		aO.push(this.colOrder[i]);
+
+	// move data in `colsdata` and `colOrder` properties
+	if (_11 < _12) {
+		this.colsdata = [
+			...this.colsdata.slice(0, _11),
+			...this.colsdata.slice(_11 + 1, _12),
+			this.colsdata[_11],
+			...this.colsdata.slice(_12),
+		];
+		this.colOrder = [
+			...this.colOrder.slice(0, _11),
+			...this.colOrder.slice(_11 + 1, _12),
+			this.colOrder[_11],
+			...this.colOrder.slice(_12),
+		];
+	} else {
+		this.colsdata = [
+			...this.colsdata.slice(0, _12),
+			this.colsdata[_11],
+			...this.colsdata.slice(_12, _11),
+			...this.colsdata.slice(_11 + 1),
+		];
+		this.colOrder = [
+			...this.colOrder.slice(0, _12),
+			this.colOrder[_11],
+			...this.colOrder.slice(_12, _11),
+			...this.colOrder.slice(_11 + 1),
+		];
 	}
-	if(_12 == this.cols) 
-	{
-		aHC.push(oCol);
-		aBC.push(_18);
-		aC.push(this.colsdata[_11]);
-		aO.push(this.colOrder[_11]);
-	}
-	this.tHeadCols = aHC.slice(0);
-	this.tBodyCols = aBC.slice(0);
-	this.colsdata = aC.slice(0);
-	this.colOrder = aO.slice(0);
-	for(i = 0; i < this.cols; i++)
+
+	for(let i = 0; i < this.cols; i++)
 		this.tHeadCols[i].setAttribute("index", i);
-	this.cancelSort = false;
 	if($type(this.onmove) == "function")
 		this.onmove();
-}
-
-dxSTable.ColumnMove = function(p)
-{
-	this.parent = p;
-	this.obj = $("<div>").addClass("stable-move-header").get(0);
-	this.sepobj = $("<div>").addClass("stable-separator-header").get(0);
-}
-
-dxSTable.ColumnMove.prototype =
-{
-	parent : null, 
-	obj : null, 
-	sepobj : null, 
-	added : false, 
-	rx : -1, 
-	index :- 1, 
-	indexnew :- 1, 
-	mid : 0, 
-	uid : 0, 
-	ignoreNextMove : false,
-
-	init : function(o, _1b, _1c, _1d) 
-	{      
-		var self = this;      
-		$(o).on('mousedown', function(e)
-		{
-			if(self.parent.hotCell >- 1)
-				return;
-			return(self.start(e, this));
-		});
-		this.onDrag = _1c || new Function();
-		this.onDragEnd = _1d || new Function();
-	},
-	start : function(e, p)
-	{	
-		if(this.parent.cancelMove)
-			return;
-		if(e && e.which==3)
-			return(true);
-		this.parent.isMoving = true;
-		var o = this.obj;
-		this.index = parseInt(p.getAttribute("index"));
-		while(o.firstChild) 
-			o.removeChild(o.firstChild);
-		o.appendChild(document.createTextNode(p.lastChild.innerHTML));
-		o.style.width = (p.offsetWidth - 16) + "px";
-		o.style.left = p.offsetLeft + "px";
-		o.style.textAlign = (this.parent.colsdata[this.index].type == TYPE_NUMBER) ? "right" : "left";
-		this.sepobj.style.left = p.offsetLeft + "px";
-		o.lastMouseX = e.clientX;
-		o.style.visibility = "visible";
-		var self = this;
-		self.ignoreNextMove = true;
-		$(document).on("mousemove",self,self.drag);
-		$(document).on("mouseup touchend",self,self.end);
-		this.rx = $(this.parent.dHead).offset().left;
-		this.obj.style.cursor = "move";
-		return(false);
-	},
-	drag : function(e) 
-	{
-		var self = e.data;
-		if(self.ignoreNextMove)
-		{
-			self.ignoreNextMove = false;
-			return;
-		}
-		self.parent.cancelSort = true;
-		var o = self.obj, l = parseInt(o.style.left), ex = e.clientX, i = 0, c = self.parent.cols;
-		if(!self.added) 
-		{
-			self.parent.dHead.appendChild(self.obj);
-			self.parent.dHead.appendChild(self.sepobj);
-			self.added = true;
-		}
-		l += ex;
-		if(!$type(o.lastMouseX))
-			o.lastMouseX = ex;
-		l -= o.lastMouseX;
-		o.style.left = l + "px";
-		var ox = 0;
-		var orx = ex + self.parent.dBody.scrollLeft - self.rx;
-		for(i = 0; i < c; i++) 
-		{
-		        if(self.parent.colsdata[i].enabled) 
-		        {
-				ox += self.parent.tHeadCols[i].offsetWidth;
-				if(ox > orx) 
-					break;
-			}
-		}
-		if(i >= c) 
-		{
-			self.sepobj.style.left = self.parent.tHeadCols[c - 1].offsetLeft + self.parent.tHeadCols[c - 1].offsetWidth - 1 + "px";
-			i = c;
-		}
-		else 
-			self.sepobj.style.left = self.parent.tHeadCols[i].offsetLeft + "px";
-		self.indexnew = i;
-		self.obj.lastMouseX = ex;
-		self.onDrag.apply(self.parent, [i]);
-		return(false);
-   	},
-	end : function(e)
-	{
-		var self = e.data;	
-		try {
-			self.obj.style.cursor = "default";
-			self.parent.dHead.removeChild(self.obj);
-			self.parent.dHead.removeChild(self.sepobj);
-			self.added = false;
-			self.onDragEnd.apply(self.parent, [self.index, self.indexnew]);
-		} catch(ex) {}
-		self.index =- 1;
-		self.indexnew =- 1;
-		self.parent.isMoving = false;
-		self.parent.cancelSort = false;
-		$(document).off("mousemove",self.drag);
-		$(document).off("mouseup touchend",self.end);
-		return(false);
-	}
 }
 
 dxSTable.prototype.renameColumnById = function(id, name)
@@ -622,32 +410,30 @@ dxSTable.prototype.renameColumnById = function(id, name)
 	this.renameColumn(this.getColById(id), name);
 }
 
-dxSTable.prototype.renameColumn = function(no,name) 
-{
+dxSTable.prototype.renameColumn = function(no, name) {
 	no = this.getColOrder(no);
-	if(no>=0)
-	{
+	if (no>=0) {
 		this.colsdata[no].text = name;
-		this.tHead.tb.rows[0].cells[no].firstChild.innerHTML = name;
+		this.tHeadRow[0].cells[no].getElementsByTagName("span")[0].innerText = name;
 	}
 }
 
 dxSTable.prototype.Sort = function(e) 
 {
-	if(this.cancelSort) 
-		return(true);
+	if (!this.created)
+		return true;
 	this.isSorting = true;
 	const primarySorting = Boolean(this.sortId);
 	const notSorting = e == null && !primarySorting;
 	if(notSorting || e?.which === 3) {
 		if(notSorting) {
-			this.calcSize().resizeHack();
+			this.resizeColumn();
 		}
 		return true;
 	}
 	const sortColNo = this.getColNoById(this.sortId);
 	const oldCol = primarySorting ? this.tHeadCols[(sortColNo >= 0) ? sortColNo : 0] : null;
-	const col = e ? e.delegateTarget : oldCol;
+	const col = this.tHeadCols[this.currIndex] ?? oldCol;
 	const sortIdCurrent = this.getIdByCol(this.colOrder[parseInt(col.getAttribute("index"))]) ?? '';
 	const toggleReverse = (oldId, oldRev) => (oldId === sortIdCurrent) ? 1 - oldRev : 0;
 	if (e) {
@@ -664,10 +450,14 @@ dxSTable.prototype.Sort = function(e)
 		}
 	}
 	if (this.sortId === sortIdCurrent) {
-		if (oldCol) {
-			oldCol.style.backgroundImage = "url("+this.paletteURL+"/images/blank.gif)";
+		oldCol?.classList.remove("asc", "desc");
+		if (this.reverse) {
+			col.classList.add("desc");
+			col.classList.remove("asc");
+		} else {
+			col.classList.add("asc");
+			col.classList.remove("desc");
 		}
-		col.style.backgroundImage = "url(" + (this.reverse ? this.sortAscImage : this.sortDescImage) + ")";
 	}
 
 	const sortingValues = id => {
@@ -757,35 +547,13 @@ var theSort =
 	peers_connected_re: /^(\d+)/
 };
 
-dxSTable.prototype.init = function() 
-{
-	if(navigator.product == "Gecko") 
-	{
-		for(var n = 0, l = document.styleSheets.length; n < l; n++) 
-		{
-			if(!document.styleSheets[n].href || (document.styleSheets[n].href.indexOf("style.css") ==- 1)) 
-			{
-				continue;
-			}
-			try {
-			var _55 = document.styleSheets[n].cssRules;
-			for(var i = 0; i < _55.length; i++) 
-			{
-				if((_55[i].type == CSSRule.STYLE_RULE) && (_55[i].selectorText == ".stable-head")) 
-				{
-					_55[i].style.overflow = "-moz-scrollbars-none";
-				}
-			}
-			} catch(e) {}
-		}
-	}
+dxSTable.prototype.init = function() {
 	this.assignEvents();
 	this.setAlignment();
 }
 
-dxSTable.prototype.setBodyState = function(v)
-{
-        this.tBody.style.visibility = v;
+dxSTable.prototype.setBodyState = function(v) {
+	this.tBody.css("visibility", v);
 	for(var i = 0; i < this.cols; i++) 
 	{
 		if((this.colsdata[i].type==TYPE_PROGRESS) && this.colsdata[i].enabled)
@@ -815,22 +583,18 @@ dxSTable.prototype.assignEvents = function()
 	this.scOdd = null;
 	this.isScrolling = false;
 
-	$(this.dBody).on( "scroll",
-		function(e) 
-		{
-			self.dHead.scrollLeft = self.dBody.scrollLeft;
+	$(this.dBody).on("scroll", function(e) {
 			var maxRows = self.getMaxRows();
-			if(self.scrollTop != self.dBody.scrollTop) 
-			{
+			if (self.scrollTop != self.dBody.scrollTop) {
 				self.scOdd = null;
 				self.scrollDiff = self.scrollTop - self.dBody.scrollTop;
 				self.scrollTop = self.dBody.scrollTop;
-				if (self.isScrolling ||
-				    (!self.noDelayingDraw &&
-				     Math.abs(self.scrollDiff) > TR_HEIGHT*3 &&
-				     (self.viewRows > maxRows))
-				   )
-				{
+				if (
+					self.isScrolling ||
+					(!self.noDelayingDraw &&
+						Math.abs(self.scrollDiff) > this.TR_HEIGHT*3 &&
+						(self.viewRows > maxRows))
+				) {
 					self.isScrolling = true;
 					if (self.scrollTimeout !== 0)
 						clearTimeout(self.scrollTimeout);
@@ -845,98 +609,119 @@ dxSTable.prototype.assignEvents = function()
 				self.pendingSync.scroll = true;
 				self.syncDOMAsync();
 			}
-		});
-	this.tHead.onmousedown = function(e) 
-		{
-			if(self.isResizing)
-			      self.colDragEnd(e);
-			else
-			if((self.hotCell >- 1) && !self.isMoving) 
-			{
-				self.cancelSort = true;
-				self.cancelMove = true;
-                                $(document).on("mousemove",self,self.colDrag);
-                                $(document).on("mouseup touchend",self,self.colDragEnd);
-				self.rowCover.style.display = "block";
-				return(false);
-         		}
-      		};
-	this.tHead.onmouseup = function(e) 
-		{
-			if((self.hotCell >- 1) && !self.isMoving)
-			{
-				self.cancelSort = false;
-				self.cancelMove = false;
-			}
-		};
+	});
+	this.tHeadRow.on("mousemove", (ev) => {
+		if (this.isResizing || this.isMoving) return;
+
+		// get the cell currently being hovered over and its index number
+		const currCell = ev.target.closest("td");  // find the containing cell element
+		this.currIndex = Array.from(this.tHeadCols).indexOf(currCell);
+
+		// get the X coordinate within the entire header row
+		let mouseX = ev.clientX + this.dBody.scrollLeft - this.dCont.offset().left;
+		for (let i = 0; i < this.currIndex; i++) {
+			mouseX -= this.tHeadCols[i].offsetWidth;
+		}
+
+		const delta = 8;
+		if (mouseX < delta) {
+			// cursor near left border - drag to resize PREVIOUS header cell
+			this.hotCell = this.currIndex - 1;
+			// can't resize if cursor near the left border of the first cell
+			currCell.style.cursor = (this.currIndex === 0) ? "default" : "e-resize";
+		} else if (mouseX > (this.tHeadCols[this.currIndex].offsetWidth - delta)) {
+			// cursor near right border - drag to resize CURRENT header cell
+			this.hotCell = this.currIndex;
+			currCell.style.cursor = "e-resize";
+		} else {
+			// cursor on the cell body - drag to move CURRENT header cell
+			this.hotCell = -1;
+			currCell.style.cursor = "default";
+		}
+	});
 	if(!$.support.touchable)
-		$(this.dCont).on('mousedown', function(e) { self.bindKeys(); } );
+		this.dCont.on('mousedown', function(e) { self.bindKeys(); } );
 }
 
-dxSTable.prototype.colDrag = function(e) 
-{
-	var self = e.data;
-	self.isResizing = true;
-	if(self.hotCell ==- 1) 
-		return(true);
-	while(!self.colsdata[self.hotCell].enabled && self.hotCell>0)
-		self.hotCell--;
-	var o = self.tHeadCols[self.hotCell];
-	
-	var i = parseInt(o.getAttribute("index"));
-	var tb = self.tBody;
-	var ex = e.clientX;
-	var w = parseInt(o.style.width);
-	var nw = w + ex;
-	if(!$type(o.lastMouseX)) 
-		o.lastMouseX = ex;
-	nw-=o.lastMouseX;
-	if(nw < 10) 
-	{
+dxSTable.prototype.colDrag = function(e) {
+	noty("`dxSTable.colDrag()` is deprecated. Please use either `dxSTable.colDragResize()` or `dxSTable.colDragMove()` instead.");
+	this.colDragResize(e);
+}
+
+dxSTable.prototype.colDragResize = function(e) {
+	const o = this.tHeadCols[this.hotCell];
+	const nw = o.clientWidth + e.originalEvent.movementX;
+	if (nw < 10) {
 		return(true);
 	}
-	self.colsdata[self.hotCell].width += (e.clientX-o.lastMouseX);
+	this.colsdata[this.hotCell].width = nw;
 	o.style.width = nw + "px";
-	o.lastMouseX = ex;
 	document.body.style.cursor = "e-resize";
 
-	self.colReszObj.style.visibility = "visible";
-	if(!browser.isAppleWebKit && !browser.isKonqueror)
-		nw+=4;
-	self.colReszObj.style.left = (o.offsetLeft+nw-self.dHead.scrollLeft) + "px";
-
-	nw = iv(self.dBody.style.height) + iv(self.dHead.offsetHeight);
-	if(self.dBody.scrollWidth > self.dBody.clientWidth)
-		nw-=window.scrollbarHeight;
-	self.colReszObj.style.height = nw + "px";
+	this.colReszObj
+		.css({left: o.offsetLeft + nw})
+		.show();
+	this.resizeColumn();
 
 	try { document.selection.empty(); } catch(ex) {}
 	return(false);
 }
 
-dxSTable.prototype.colDragEnd = function(e) 
-{
-        var self = e.data;
-	$(document).off("mousemove",self.colDrag);
-	$(document).off("mouseup touchend",self.colDragEnd);
-	self.rowCover.style.display = "none";
-	self.isResizing = false;
-	self.colReszObj.style.left = 0;
-	self.colReszObj.style.height = 0;
-	self.colReszObj.style.visibility = "hidden";
-	self.resizeColumn();
-	self.cancelSort = false;
-	self.cancelMove = false;
+dxSTable.prototype.colDragMove = function(e) {
+	const o = this.obj;
+	o.show().css({left: o.offset().left - this.tHeadRow.offset().left - this.dBody.scrollLeft + e.originalEvent.movementX});
+	const c = this.cols;
+	let mouseX = e.clientX - this.dCont.offset().left + this.dBody.scrollLeft;
+	for (let i = 0; i < c; i++) {
+		if (mouseX < this.tHeadCols[i].offsetWidth) {
+			this.currIndex = i;
+			break;
+		}
+		mouseX -= this.tHeadCols[i].offsetWidth;
+	}
+	if ((this.currIndex === c - 1) && (this.tHeadCols[c - 1].offsetWidth - mouseX < 16)) {
+		// cursor on the last header cell AND near the right border (less than 16px to the border)
+		this.sepobj.show().css("left", this.tHeadCols[c - 1].offsetLeft + this.tHeadCols[c - 1].offsetWidth - this.dBody.scrollLeft - 1);
+		this.indexNew = this.currIndex + 1;
+	} else {
+		this.sepobj.show().css("left", this.tHeadCols[this.currIndex].offsetLeft - this.dBody.scrollLeft);
+		this.indexNew = this.currIndex;
+	}
+}
+
+dxSTable.prototype.colDragEnd = function(e) {
+	noty("`dxSTable.colDragEnd()` is deprecated. Please use either `dxSTable.colDragResizeEnd()` or `dxSTable.colDragMoveEnd()` instead.");
+	this.colDragResizeEnd(e);
+}
+
+dxSTable.prototype.colDragResizeEnd = function(e) {
+	if ($type(this.onresize) === "function")
+		this.onresize();
+	this.rowCover.hide();
+	this.colReszObj.hide();
 	document.body.style.cursor = "default";
 	return(false);	
+}
+
+dxSTable.prototype.colDragMoveEnd = function(e) {
+	try {
+		this.obj.css("cursor", "default");
+		this.moveColumn(this.index, this.indexNew);
+	} catch(ex) {}
+	this.index = -1;
+	this.indexNew = -1;
+	this.isMoving = false;
+	this.obj.hide();
+	this.sepobj.hide();
+	return false;
 }
 
 dxSTable.prototype.scrollPos = function()
 {
 	this.scp.style.display = "block";
-	var mni = Math.floor(this.dBody.scrollTop / TR_HEIGHT);
-	var mxi = mni + Math.floor(this.dBody.clientHeight / TR_HEIGHT);
-	var mid = Math.floor(((mni + mxi) / 2));
+	var mni = Math.floor(this.dBody.scrollTop / this.TR_HEIGHT);
+	var mxi = mni + Math.floor(this.tBody.height() / this.TR_HEIGHT);
+	var mid = Math.floor((mni + mxi) / 2);
 	if(mid > this.viewRows)
 		mid = this.viewRows - 1;
 	var vr =- 1;
@@ -962,7 +747,7 @@ dxSTable.prototype.getMaxRows = function()
 {
 	return this.maxRows
 		? this.viewRows
-		: Math.ceil(Math.min(this.dBody.clientHeight,this.dCont.clientHeight) / TR_HEIGHT);
+		: Math.ceil(Math.min(this.tBody.height(), this.dCont.height()) / this.TR_HEIGHT);
 }
 
 dxSTable.prototype.refreshRows = function( height, fromScroll ) 
@@ -970,14 +755,21 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 	if (this.isScrolling || !this.created)
 		return;
 
-	const maxRows = height ? height/TR_HEIGHT : this.getMaxRows();
-	const topRow = Math.max(0, Math.min(this.viewRows - maxRows,
-		Math.floor(this.dBody.scrollTop / TR_HEIGHT)
+	const maxRows = height ? height / this.TR_HEIGHT : this.getMaxRows();
+	const topRow = Math.max(0, Math.min(
+		this.viewRows - maxRows,
+		Math.floor(this.dBody.scrollTop / this.TR_HEIGHT)
 	));
 	const extra = this.noDelayingDraw ? 16 : 4;
-	const extraOffset = topRow % extra;
-	const mni = Math.max(0, topRow - extra - extraOffset);
-	const mxi = Math.min(this.viewRows, topRow + maxRows + 2*extra - extraOffset);
+	const mni = Math.max(
+		0,
+		// floor to the neareast even number to keep alternating background color consistent
+		Math.floor(this.dBody.scrollTop / (this.TR_HEIGHT * 2)) * 2 - extra,
+	);
+	const mxi = Math.min(
+		this.viewRows,
+		Math.ceil((this.dBody.scrollTop + this.dBody.getBoundingClientRect().height) / this.TR_HEIGHT) + extra,
+	);
 	if (fromScroll && (mni==this.mni && mxi==this.mxi))
 		return;
 
@@ -992,12 +784,12 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 		.filter((_, index) => index >= mni && index <= mxi)
 		.map(id => $$(id) ?? createRow(id))
 
-	this.tpad.style.height = (mni * TR_HEIGHT) + "px";
-	this.tBody.tb.replaceChildren(...viewRows);
-	this.bpad.style.height = ((this.viewRows - mxi) * TR_HEIGHT) + "px";
+	this.tpad.height(mni * this.TR_HEIGHT);
+	this.tBody[0].replaceChildren(...viewRows);
+	this.bpad.height((this.viewRows - mxi) * this.TR_HEIGHT);
 
 	this.refreshSelection();
-	this.calcSize().resizeHack();
+	this.resizeColumn();
 }
 
 dxSTable.prototype.keyEvents = function(e) 
@@ -1006,14 +798,11 @@ dxSTable.prototype.keyEvents = function(e)
 	if(!e.fromTextCtrl && !theDialogManager.isModalState())
 	{
 		var c = e.which;
-		if((browser.isKonqueror && c == 127) || (c == 46))
-		{
-			if($type(self.ondelete) == "function") 
+		if((browser.isKonqueror && c == 127) || (c == 46)) {
+			// Delete key
+			if ($type(self.ondelete) === "function") 
 				self.ondelete();
-		}
-		else 
-		if(e.metaKey)
-		{
+		} else if (e.metaKey) {
 			switch(c)
 			{
 				case 65:
@@ -1126,22 +915,32 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	this.rowSel[sId] = false;
 	this.rowIDs.push(sId);
 	
-	this.rows++;
 	this.viewRows++;
 
 	this.markViewRowsChange(sId, 1);
 	return true;
 }
 
-dxSTable.prototype.createIconHTML = function(icon)
-{
-	return icon == null ? '' : (typeof icon === 'object'
-		? $('<img>').attr({src: icon.src, width: 16, height: 16}).css('background-image', 'none').addClass('stable-icon')
-		: $('<span>').addClass(['stable-icon', icon]))[0].outerHTML;
+dxSTable.prototype.createIconHTML = function(icon) {
+	// TODO: deprecated, remove this method in v6
+	noty("Deprecation warning: `dxSTable.createIconHTML()` is deprecated. Please use `dxSTable.createIcon()` instead.");
+	return this.createIcon(icon)[0].outerHTML;
 }
 
-dxSTable.prototype.createRow = function(cols, sId, icon, attr)
-{
+dxSTable.prototype.createIcon = function(icon) {
+	if (!icon) return "";
+	const iconObj = $("<span>").addClass("stable-icon");
+	if ($type(icon) === "object") {
+		return iconObj.css({
+			"background-image": `url(${icon.src})`,
+			"background-size": "contain",
+		});
+	} else {
+		return iconObj.addClass(icon).css("background-image", "");
+	}
+}
+
+dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	const attrs = { id: sId, index: this.rows, title: cols[0] };
 	if (sId == null) {
 		delete attrs['id'];
@@ -1149,45 +948,35 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr)
 	Object.assign(attrs, attr || {});
 	const data = this.rowdata[sId]?.fmtdata || {};
 
-	const ret = document.createElement('tr');
-	ret.className = this.colorEvenRows ? ((this.rows & 1) ? "odd" : "even") : "";
-	for(const [a,v] of Object.entries(attrs)) {
-		const attr_node = document.createAttribute(a);
-		attr_node.value = v;
-		ret.setAttributeNode(attr_node);
+	const row = $("<tr>").attr(attrs);
+	for (let i = 0; i < this.cols; i++) {
+		const index = this.colOrder[i];
+		const cdat = this.colsdata[i];
+		const td = $("<td>").addClass(`stable-${this.dCont.attr("id")}-col-${index}`).toggle(!!cdat.enabled);
+		const celldata = data[index] || '';
+		const rawvalue = cols[index] || '';
+		const isProgress = cdat.type === TYPE_PROGRESS;
+		if (isProgress) {
+			td.attr({rawvalue:rawvalue}).append(
+				$("<span>").addClass("meter-text").css({overflow:"visible"}).text(celldata),
+				$("<div>")
+					.addClass("meter-value")
+					.css(this.progressStyle(celldata)),
+			);
+		} else {
+			td.append(
+				$("<div>").text(celldata || " "),
+			);
+		}
+		row.append(td);
 	}
-	ret.innerHTML = [...Array(this.cols).keys()]
-			.map((_,i) => [this.colOrder[i], this.colsdata[i]])
-			.map(([ind, cdat]) => ({
-				td: [
-					`<td class="stable-${this.dCont.id}-col-${ind}"`,
-					Boolean(cdat.enabled || browser.isIE7x) ?	'>' : ' style="display: none">',
-					ind === 0 ? this.createIconHTML(icon) : ''
-				],
-				celldata: data[ind] || '',
-				rawvalue: cols[ind] || '',
-				progress: cdat.type == TYPE_PROGRESS,
-			}))
-			.flatMap(({td, celldata, rawvalue, progress}) => progress
-				? [
-					td[0], ` rawvalue="${rawvalue}"`, ...td.slice(1),
-					'<span class="meter-text" style="overflow: visible">', escapeHTML(celldata), '</span>',
-					'<div class="meter-value" style="', Object.entries(this.progressStyle(celldata)).map(pair => pair.join(': ')).join(';'), '">&nbsp;</div>',
-					'</td>'
-				]
-				: [
-					...td,
-					'<div>', escapeHTML(celldata) || '&nbsp;', '</div>',
-					'</td>'
-				]
-			).join('');
-	if(!browser.isIE7x)
-	{
-		var _e = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
-		for(var i = 0, l = _e.length; i < l; i++) 
-			ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
+	row.find("td:first-child div").prepend(this.createIcon(icon));
+	const ret = row[0];
+	const _e = this.tBodyCols;
+	for (let i = 0; i < _e.length; i++) {
+		ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
 	}
-	return(ret);
+	return ret;
 }
 
 dxSTable.prototype.removeRow = function(sId) 
@@ -1199,7 +988,6 @@ dxSTable.prototype.removeRow = function(sId)
 	delete this.rowSel[sId];
 	delete this.rowdata[sId];
 	this.rowIDs.splice(this.rowIDs.indexOf(sId), 1);
-	this.rows--;
 
 	this.markViewRowsChange(sId, 0)
 }
@@ -1219,7 +1007,6 @@ dxSTable.prototype.updateRows = function(rawRowObjs)
 
 dxSTable.prototype.clearRows = function() 
 {
-	this.rows = 0;
 	this.viewRows = 0;
 	this.selCount = 0;
 	this.rowdata = {};
@@ -1233,22 +1020,19 @@ dxSTable.prototype.clearRows = function()
 	this.syncDOMAsync();
 }
 
-dxSTable.prototype.setAlignment = function()
-{
-	var i, aRows, aAlign, j, align;
+dxSTable.prototype.setAlignment = function() {
+	var i, aAlign, j, align;
 	var aAlign = [];
-	for(i = 0; i < this.cols; i++)
-	{
-		switch(this.colsdata[i].align)
-		{
-			case ALIGN_LEFT: 
+	for (let i = 0; i < this.cols; i++) {
+		switch(this.colsdata[i].align) {
+			case ALIGN_LEFT:
 				align = "left";
 				break;
-			case ALIGN_CENTER: 
+			case ALIGN_CENTER:
 				align = "center";
 				break;
-         		case ALIGN_RIGHT: 
-	         		align = "right";
+			case ALIGN_RIGHT:
+				align = "right";
 				break;
 			case ALIGN_AUTO: 
 			default: 
@@ -1257,7 +1041,7 @@ dxSTable.prototype.setAlignment = function()
 		aAlign.push(align);
 		this.tHeadCols[i].style.textAlign = align;
 	}
-	var col = this.tBody.getElementsByTagName("colgroup")[0].getElementsByTagName("col");
+	var col = this.tBodyCols;
 	if(document.all || browser.isAppleWebKit || browser.isKonqueror)
 	{
 		for(var i = 0; i < col.length; i++)
@@ -1286,7 +1070,7 @@ dxSTable.prototype.setAlignment = function()
 			{
 				for(var i = 0, l = rules.length; i < l; i++)
 				{
-					if((rules[i].type == CSSRule.STYLE_RULE) && (rules[i].selectorText == ".stable-" + this.dCont.id + "-col-" + k))
+					if((rules[i].type == CSSRule.STYLE_RULE) && (rules[i].selectorText == ".stable-" + this.dCont.attr("id") + "-col-" + k))
 					{
 						this.colRules[k] = rules[i];
 						break;
@@ -1296,7 +1080,7 @@ dxSTable.prototype.setAlignment = function()
 			if($type(this.colRules[k]))
 				this.colRules[k].style.textAlign = aAlign[j];
 			else
-				this.colRules[k] = ss.cssRules[ss.insertRule(".stable-" + this.dCont.id + "-col-" + k + " div { text-align: " + aAlign[j] + "; }", 0)];
+				this.colRules[k] = ss.cssRules[ss.insertRule(".stable-" + this.dCont.attr("id") + "-col-" + k + " div { text-align: " + aAlign[j] + "; }", 0)];
 		}
 	}
 }
@@ -1321,23 +1105,15 @@ dxSTable.prototype.unhideRow = function(sId)
 	}
 }
 
-dxSTable.prototype.refreshSelection = function() 
-{
-        if(this.created)
-        {
-		var rows = this.tBody.tb.rows, l = rows.length;
-		for(var i = 0; i < l; i++) 
-		{
+dxSTable.prototype.refreshSelection = function() {
+	if (this.created) {
+		var rows = this.tBody[0].rows, l = rows.length;
+		for (var i = 0; i < l; i++) {
 			if(this.rowSel[rows[i].id] == true) 
-				rows[i].className = "selected";
-			else 
-			{
-				if(!this.colorEvenRows) 
-					rows[i].className = "even";
-				else 
-					rows[i].className = (i & 1) ? "odd" : "even";
-			}
-      		}
+				rows[i].classList.add("selected");
+			else
+				rows[i].classList.remove("selected");
+		}
 	}
 }
 
@@ -1480,11 +1256,9 @@ dxSTable.prototype.setValueById = function(row, id, val)
 	return(this.setValue(row, this.getColById(id), val));
 }
 
-dxSTable.prototype.progressStyle = function(val)
-{
+dxSTable.prototype.progressStyle = function(val) {
   const nval = iv(val);
   return {
-    float: 'left',
     width: `${nval}%`,
     'background-color': new RGBackground()
       .setGradient(this.prgStartColor, this.prgEndColor, parseFloat(val))
@@ -1542,16 +1316,16 @@ dxSTable.prototype.markSelectionDirty = function()
 
 dxSTable.prototype.syncDOM = function()
 {
-	if (!this.created || !this.dCont)
+	if (!this.created || !this.dCont.length)
 		return;
 	const p = this.pendingSync;
 	this.pendingSync = {};
 	if (p.clear)
 	{
-		this.bpad.style.height = "0px";
-		this.tpad.style.height = "0px";
+		this.bpad.height(0);
+		this.tpad.height(0);
 		this.dBody.scrollTop = 0;
-		$(this.tBody.tb).empty();
+		this.tBody.empty();
 	} else if ('scrollTo' in p) {
 		this.dBody.scrollTop = p.scrollTo;
 	}
@@ -1574,14 +1348,13 @@ dxSTable.prototype.syncDOM = function()
 						tr.setAttribute(name, attr);
 
 			// update icon
-			if ('icon' in marks)
-			{
+			if ('icon' in marks) {
 				const icon = dataRow.icon;
 				const td = tr.cells[this.getColOrder(0)];
-				if (td.firstChild.classList.contains('stable-icon'))
-					td.firstChild.remove();
+				if ($(td).find("div span").hasClass("stable-icon"))
+					$(td).find("div span").remove();
 				if (icon !== null)
-					td.innerHTML = this.createIconHTML(icon) + td.innerHTML;
+					$(td).find("div").prepend(this.createIcon(icon));
 			}
 
 			// update cols
@@ -1807,3 +1580,22 @@ dxSTable.prototype.scrollTo = function(value)
 	this.syncDOMAsync();
 	return 0;
 }
+
+// getter functions
+Object.defineProperties(dxSTable.prototype, {
+	TR_HEIGHT: {get: function() {return this.tBody.find("tr").height() || 19}},
+	rows: {get: function() {return Object.keys(this.rowdata).length;}},
+	cols: {get: function() {return this.colsdata.length;}},
+	dBody: {get: function() {return this.dCont.find(".stable-body")[0];}},
+	tHeadRow: {get: function() {return this.dCont.find("thead tr").first();}},
+	tHeadCols: {get: function() {return this.tHeadRow[0].getElementsByTagName("td")}},
+	tpad: {get: function() {return this.dCont.find(".stable-virtpad").first().find("tr");}},
+	tBody: {get: function() {return this.dCont.find("table tbody:not(.stable-virtpad)");}},
+	tBodyCols: {get: function() {return this.dCont.find("colgroup")[0].getElementsByTagName("col")}},
+	bpad: {get: function() {return this.dCont.find(".stable-virtpad").last().find("tr");}},
+	scp: {get: function() {return this.dCont.find(".stable-scrollpos")[0];}},
+	colReszObj: {get: function() {return this.dCont.find(".stable-resize-header");}},
+	rowCover: {get: function() {return this.dCont.find(".rowcover");}},
+	obj: {get: function() {return this.dCont.find(".stable-move-header");}},
+	sepobj: {get: function() {return this.dCont.find(".stable-separator-header")}},
+});

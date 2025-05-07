@@ -145,34 +145,52 @@ class FileUtil
 		$fname = self::getUploadsPath()."/".$fname;
 		return( $overwriteUploadedTorrents ? $fname : self::getUniqueFilename($fname));
 	}
-	
+
 	public static function getTempDirectory() 
 	{
 		global $tempDirectory;		
-		if(empty($tempDirectory))
+		global $tempDirectory_init_done;		
+		if(!$tempDirectory_init_done)
 		{
-			$directories = array();
-			if(ini_get('upload_tmp_dir')) 
-				$directories[] = ini_get('upload_tmp_dir');
-			if(function_exists('sys_get_temp_dir'))
-				$directories[] = sys_get_temp_dir();
-			$directories[] = '/tmp';
-			foreach ($directories as $directory) 
+			if(empty($tempDirectory))
 			{
-				if(is_dir($directory) && is_writable($directory)) 
+				// Auto temp dir.
+				// Do not try to create tmp dir in system.
+				$directories = array();
+				if(ini_get('upload_tmp_dir'))
+					$directories[] = ini_get('upload_tmp_dir');
+				if(function_exists('sys_get_temp_dir'))
+					$directories[] = sys_get_temp_dir();
+				$directories[] = '/tmp';
+				$directories[] = '/var/tmp';
+				foreach ($directories as $directory)
 				{
+					if(!is_dir($directory) || !@file_exists($directory.'/.'))
+						continue;
+					if(!is_readable($directory) || !is_writable($directory))
+						continue;
 					$tempDirectory = $directory;
 					break;
 				}
+				// Fallback: create tmp dir inside rutorrent user profile.
+				if(empty($tempDirectory))
+				{
+					$tempDirectory = self::getProfilePath().'/tmp';
+					FileUtil::makeDirectory($tempDirectory);
+				}
 			}
-			if(empty($tempDirectory))
-				$tempDirectory = self::getProfilePath().'/tmp';
-			
+			else
+			{
+				// User provided, create if not exist.
+				FileUtil::makeDirectory($tempDirectory);
+			}
+			// Make sure that temp dir always have trail slash.
 			$tempDirectory = self::addslash( $tempDirectory );
+			$tempDirectory_init_done = true;
 		}
 		return($tempDirectory);
 	}
-	
+
 	public static function getTempFilename($purpose = '', $extension = null)
 	{
 		do

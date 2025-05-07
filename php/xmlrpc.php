@@ -106,7 +106,7 @@ class rXMLRPCRequest
 			$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, $rpcTimeOut);
 			if($socket) 
 			{
-				$reqheader = "CONTENT_LENGTH\x0".$contentlength."\x0"."SCGI\x0"."1\x0UNTRUSTED_CONNECTION\x0".($trusted ? "0" : "1")."\x0";
+				$reqheader = "CONTENT_LENGTH\x0".$contentlength."\x0"."CONTENT_TYPE\x0"."text/xml\x0"."SCGI\x0"."1\x0UNTRUSTED_CONNECTION\x0".($trusted ? "0" : "1")."\x0";
 				$tosend = strlen($reqheader).":{$reqheader},{$data}";
 				@fwrite($socket,$tosend,strlen($tosend));
 				$result = '';

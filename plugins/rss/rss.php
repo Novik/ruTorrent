@@ -143,12 +143,18 @@ class rRSS
 			$headers['If-Last-Modified'] = $this->lastModified;
 		$cli = call_user_func($this->fetchURL, $this->url, $this->cookies, $headers);
 		if($cli->status<200 || $cli->status>=300) {
-			if ($cli->status!==304) {
-				$this->lastErrorMsgs[] = $cli->status == -100 ? '[RSS-Timeout]' :
-					($cli->status < 100 ? '[RSS-Connection-Error] '.$cli->error : '[RSS-HTTP-Error] Status: '.$cli->status);
-			}
+			if ($cli->status !== 304) {
+                                $msg = $cli->status == -100
+                                        ? '[RSS-Timeout]'
+                                        : ($cli->status < 100
+                                                ? '[RSS-Connection-Error] ' . $cli->error
+                                                : '[RSS-HTTP-Error] Status: ' . $cli->status);
+
+                                $this->lastErrorMsgs[] = $msg;
+                                return false;
+                        }
 			// true if feed not modified
-			return($cli->status===304);
+			return true;
 		}
 
 		// remember etag and lastModified

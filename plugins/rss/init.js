@@ -1,6 +1,4 @@
 plugin.loadMainCSS();
-if(browser.isIE && browser.versionMajor < 8)
-	plugin.loadCSS("ie");
 plugin.loadLang();
 
 // Dynamically import module for transforming bbcode to html
