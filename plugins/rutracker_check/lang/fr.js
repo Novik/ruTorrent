@@ -17,7 +17,8 @@
  				  "Certainement supprimé",
  				  "Erreur d'accès au tracker",
  				  "Problème d'accès à rTorrent",
- 				  "Pas besoin"
+ 				  "Pas besoin",
+ 				  "Ignoré"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

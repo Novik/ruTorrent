@@ -1,7 +1,10 @@
-html, body { background-color: #1e2124; color: #BDDBDB }
+html, body { background-color: #1e2124; }
 :root {
+  --text-color: #bddbdb;
+  --text-header-color: #00ff00;
+
   --menu-color: #00FF00;
-  --menu-background-color: #181818;
+  --menu-background-color: #1e2124;
   --menu-border-color: #a0a0a0;
 
   --menu-disabled-color: #c0c0c0;
@@ -9,13 +12,22 @@ html, body { background-color: #1e2124; color: #BDDBDB }
 
   --menu-highlight-color: #272E36;
   --menu-highlight-background-color: #BDDBDB;
+  --menu-active-color: #00ff00;
+  /* --menu-item-active-icon: undefined - inherit from standard theme; */
+  --menu-item-exp-icon: url(data:image/gif;base64,R0lGODlhCAAHAMQAAAAAAP///wD4AADpAADKAAC5AAC1AACwAAChAACQAACIAAT/BCX/JTH/MU//T1X/VW3/bW//b////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABIALAAAAAAIAAcAAAUYYCSNpAQ55fg0S8oIxFEORpIWSiohuhQCADs=);
 
-  --settings-background-color: #272E36;
+  --menu-connect-line-color: #00FF00;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #272E36;
   --container-border-color: #a0a0a0;
   --btn-bg-color: #D7D7D7;
   --header-bg-color: #1E2124;
   --header-border-color: #909090;
+  --footer-height: 25px;
+  --footer-bg-color: #1e2124;
+  --footer-bg-image: none;
+  --footer-border-color: #a0a0a0;
   --dialog-bg-color: #1E2124;
   --dialog-border-color: #909090;
 
@@ -28,9 +40,12 @@ html, body { background-color: #1e2124; color: #BDDBDB }
   --loading-indicator-icon: url(../plugins/theme/themes/Acid/images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
+#StatusBar {
+  --pane-up-icon: url(data:image/gif;base64,R0lGODlhDQANAOYAAAAAAP///yS5JCO0IyGqISW8JSS3JCS2JCS1JCOzIyOwIyKuIiGoISGmIR+eHx2UHSSzJCOvIyGkIR+bHx2RHSe8Jya3JirFKiq7Kiq5Kiq3KimxKSisKCepJzDHMC/ELy/DLyqwKi+/Ly23LSmmKSyvLCqoKjPEMzTENDPCMzPBMzjLODnFOTjBODe6Nz2/PD/DPz7APj29PTy7PEPNQ0DAQEC/QD+9P0HBQUjNSEbFRkK6QkS/REK4QknJSUO6Q0a/RkrGSlDPUFDOUFbSVlXOVVTMVFTLVFPKU1XNVVjNWFfLV1XHVVvTW1rRWlnPWVjMWFbIVl7UXl3SXV/UX2DTYF7NXmfTZ2TIZGrMan3YfYTahITUhIXUhYfWh4bVho3ZjaPho6HdobTmtLjouLjluLznvLzmvMLpwtDu0Nzz3E7GTVDJT1fTVlbOVVfNVlvOWl3SXP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAHIALAAAAAANAA0AAAebgHJqaWhmhmZnZWJYcmNkYWBeX19dX1xZFi9bWlY6ODY3oTYYLWxXTywVBgkBCwoQGTBuVUMoBQgBuQwRGjBFVEInArnEDRsxRlRDKcTNHDJHyioDDMQUEx0zSFJCKQcExA8Oz0dEOSACC8QTEiE1SR4XHyIjJSYkJiUuQU8rNDk+dPDY0eMHkDVv4shp08SJkiVRmESBAmeKnEAAOw==);
+  --pane-down-icon: url(data:image/gif;base64,R0lGODlhDQANAOYAAAAAAP///7jV9BmA5xl/5hh73xh63Bd21Rd10xZxyxuF8BqE7RqC6xqB6Rl94Rl83xh52hh21Rd10hZvxxVqvxyH8Rp/5ByC6h+O/CCF6yCG6yCD5x9/3x592h571yGB4SaR/iWP+CF+2SaN9iWM8iSH6SOC4SF81iSD4SiO9CmP9iiO8yqR+C6W/y+T9y+P8C+M6TWU8jSQ7TaT8TWS7TSP6TSO5zqc/TWQ6TWN5jaN5ziS7TiT7TeQ6j+d+z+e+z6X8T6Y8TyV7DuS5zuQ5TyS50Kb8keg+kii/Eih+0ig+kee9E6n/06l/k2j+E2j90yh9Uyh9E+k91Op/lKo/FGl+VGm+VCk9k+i81Gk9lSp/FOn+Vap/leq/lip/Vel9V+t+12j62Oo7ne3+H67+H227n617YG48YC373+17Ye9857K9p3H87HU+bTW+bXU9LnX9bjW9L7a9s3j+dvr+0Cd9z6X7Ead8U+j9FWq/LnY9v///wAAAAAAAAAAAAAAACH5BAEAAHsALAAAAAANAA0AAAeggHt0c3J6cHFxAm9sYXttbmtqZ2hpaWZlYhcyZGNfQDs9Ojk6PRkvS2BVLhUMAa4FFhoxT15ILAoErgEIBhszTl1IKgsPuhMSHDRPXUkpus8dNVBdSisDzwETHjZRXEcpDRC6FAkdOFBNPiMLDgfZCREfPE8gGCEkJSYiJyIoMEZWWtz4USeIkCFEiti5I0XLHiZTqFi5ggcLnixb8uwJBAA7);
+}
 category-panel {
-  --open-background-image: url(../plugins/theme/themes/Acid/images/pnl_open.gif);
-  --close-background-image: url(../plugins/theme/themes/Acid/images/pnl_close.gif);
+  --open-background-image: url(data:image/gif;base64,R0lGODlhEQARANUAAAAAAP///wD6AAD5AADyAADoAADmAADfAADeAADaAADKAAC/AAC2AACuAACqAACfAACbAACaAACLAACGAACAAAB9AAB0AABtAABsAABoAABgAAX/BRH/ERL/EhX/FRb/Fhf/Fyz/LDf/Nzz/PED/QEP/Q0T/RFL/Ulf/V17/XmP/Y2b/Zmj/aP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAC0ALAAAAAARABEAAAZFwJZwSCwaj8ikcslsNkun1IqlQplCHUEBURSRTKVRyDM4KBZH0IezISQWDkjSkFAwHpLKshGZWDJNFBcaTi0YhYiJikpBADs=);
   --heading-background-color: #1e2124;
   --heading-border-color: #909090;
 }
@@ -70,16 +85,11 @@ panel-label[selected] {
   color: #272E36;
 }
 
-div#preload {background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/asc.gif); background-image: url(./images/desc.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif); background-image: url(./images/pnl_open.gif); background-image: url(./images/pnl_close.gif)}
+div#preload {background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif);}
 div#cover {background: #272E36}
 div#msg {background: #272E36; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0; color: #00ff00;}
-.dlg-window { color: #BDDBDB }
 
 div#modalbg {background-color: #181818;}
-
-ul.CMenu { background-color: #1e2124; }
-ul.CMenu li a.exp {background-image: url(./images/menuexp.gif); }
-ul.CMenu li a.sel {background-image: url(./images/menusel.gif); }
 
 div.graph_tab {background-color: #272E36; color: #BDDBDB; font-weight: bold;}
 .graph_tab_legend { color: #FFF; background-color: #272E36; }
@@ -108,29 +118,7 @@ div#side-panel ul li.sel {background-color: #BDDBDB; border-color: #BDDBDB; colo
 
 .stable-icon {background-image: url(./images/tstatus.png); }
 
-#stg { background-color: #272E36; color: #BDDBDB; border: 2px solid #909090; }
-div#stg .lm { background-color: #272E36; border: 1px solid #D0D0D0; }
-
-.lm li div > div {
-  border-left-color: #00FF00;
-}
-.lm li div > div:first-of-type {
-  border-bottom-color: #00FF00;
-}
-.lm li div > div:last-of-type {
-  border-top-color: #00FF00;
-}
-.lm li div.toggle { background: transparent url(./images/exp.gif) no-repeat scroll center center; }
-.lm li a {color: #BDDBDB; }
-.lm li a.focus {background-color: #BDDBDB; color: #272E36;}
-.stg_con {background-color: #272E36}
-
 input.disabled, button.disabled {background-color: #272E36; }
-legend {color: #00FF00; font-weight: bold}
-
-#st_gl {background: #272E36; color: #BDDBDB;}
-#st_dl, #st_con, #st_bt, #st_que, #st_sch, #st_ao, #st_dc { color: #BDDBDB;}
-#st_autotools, #st_retrackers, #st_starter, #st_ratio, #st_throttle, #st_unpack, #st_scheduler {color: #BDDBDB;} 
 
 a { color: #00ff00; font-weight: bold;}
 
@@ -156,8 +144,6 @@ div#gcont div.row.Header {background: #323A46;}
   font-weight: bold;
 }
 
-.dlg-header {color: #00FF00;}
-
 /* Dialog window icons */
 #stg-header {background-image: url(./images/settings.gif);}
 #tadd-header {background-image: url(./images/world.gif); }
@@ -173,9 +159,8 @@ span#loadimg { background: transparent url(./images/ajax-loader.gif) no-repeat c
 .Icon_Dir {background: transparent url(./images/dir.gif) no-repeat left center}
 .Icon_Share {background: transparent url(./images/dir.gif) no-repeat left center}
 
-#StatusBar { background-color: #1e2124; color: #ffffff; font-weight: bold }
-#st_up { background:url(./images/status_up.gif) 6px no-repeat; color: #BDDBDB; }
-#st_down { background:url(./images/status_down.gif) 6px no-repeat; color: #BDDBDB;}
+#StatusBar { color: #ffffff; font-weight: bold }
+#st_up, #st_down { color: #BDDBDB; }
 
 .sthdr { color: #00FF00;}
 .stval { color: #BDDBDB;}

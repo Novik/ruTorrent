@@ -1,5 +1,8 @@
 html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollbar-base-color: #e3e9f0; scrollbar-track-color: #7797c1; }
 :root {
+  --text-color: #000000;
+  --text-header-color: #15428b;
+
   --menu-color: #000000;
   --menu-background-color: #f6f6f6;
   --menu-border-color: #002d96;
@@ -9,13 +12,22 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
 
   --menu-highlight-color: #000000;
   --menu-highlight-background-color: #ffeec2;
+  --menu-active-color: #000000;
+  /* --menu-item-active-icon: undefined - inherit from standard theme; */
+  /* --menu-item-exp-icon: undefined - inherit from standard theme; */
 
-  --settings-background-color: #FFFFFF;
+  --menu-connect-line-color: #909090;
+  --menu-connect-line-style: dotted;
+
   --container-bg-color: #d2e0f0;
   --container-border-color: #9eb6ce;
   --btn-bg-color: #f1f1ec;
   --header-bg-color: #D9E8FB;
   --header-border-color: #FFFFFF;
+  --footer-height: 25px;
+  --footer-bg-color: transparent;
+  --footer-bg-image: linear-gradient(0deg, #586675 0%, #bad4f7 10%, #ffffff 100%);
+  --footer-border-color: #567db0;
   --dialog-bg-color: #D9E8FB;
   --dialog-border-color: #FFFFFF;
 
@@ -28,9 +40,12 @@ html, body { background-color: #DFE8F6; scrollbar-arrow-color: #586585; scrollba
   --loading-indicator-icon: url(../images/ajax-loader.gif);
   --loading-indicator-side-length: 32px;
 }
+#StatusBar {
+  /* --pane-up-icon: undefined - inherit from standard theme; */
+  /* --pane-down-icon: undefined - inherit from standard theme; */
+}
 category-panel {
-  --open-background-image: none;
-  --close-background-image: none;
+  --open-background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAmUlEQVQYlY3PUQqCUBQE0NGeppiY9hQrSySCCIJadvtoM23AD7nX24cQmL50PocDw1jP1xtzUqZLsefAg3blUQWYxMXGkXvpg5mh/jh/H6v6VnggagHAjLfrRX3duSDibzeK88iWS65AzL1+gLPQknNmD+AvdtIVmpNGb3oU60CaKgGYxXSjw4nfyjFqQWR0HY49liKkSQgAH1ixL1c3QHZsAAAAAElFTkSuQmCC);
   --heading-background-color: linear-gradient(0deg, rgba(158,182,206,1) 0%, rgba(230,235,243,1) 100%);
   --heading-border-color: transparent;
 }
@@ -52,7 +67,7 @@ panel-label[selected] {
   --badge-background-color: #FFFFFF;
 }
 
-#StatusBar { background: transparent url(./images/statbg.png) repeat-x 0 0; border-top: none; color: #034084 }
+#StatusBar { color: #034084 }
 .statuscell { border-color: #9EB6CE }
 
 .navbar-toggler {
@@ -68,12 +83,6 @@ div#gcont div.row.Header {background-color: #e4edf6;}
 #tdcont { color: #034084 }
 div#tdetails { background-color: transparent }
 
-.stg_con { background-color: #FFFFFF }
-div#stg .lm { background-color: #FAFAFA; border: 1px solid #D0D0D0; }
-.lm li a.focus {background-color: #D9E8FB}
-
-.dlg-window { color: #000000; }
-.dlg-header {color: #15428B;}
 .tabbar { background: transparent url(./images/tabbarbg.png) repeat-x 0 0 }
 .tabbar li.nav-item a.nav-link {
   border: none;

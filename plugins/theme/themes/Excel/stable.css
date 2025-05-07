@@ -1,11 +1,16 @@
-#list-table { border-color: #9eb6ce }
-.stable-head {
-  color: #000000;
-  background: transparent url(./images/header.gif) repeat-x scroll center top;
+.stable {
+  --header-bg-color: transparent;
+  --header-bg-image: linear-gradient(0deg, #e1c15f 0%, #f8d79b 100%);
+  --header-border-color: #f2993c;
+  --header-asc-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAFCAYAAACXU8ZrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAM0lEQVQImWP4//8/AzJOnHD2P7oYEwMSSJp47j8yDQNM6Aqw8ZmwKUBXyPjj+mysCpABAMnILpbMeCuyAAAAAElFTkSuQmCC);
+  --col-resize-sep-bg-color: #a0a0a0;
+  /* --row-odd-bg-color: undefined - inherit from standard theme; */
+  /* --row-even-bg-color: undefined - inherit from standard theme; */
+  /* --row-active-bg-color: undefined - inherit from standard theme; */
+  --row-highlight-brightness: 1;
 }
-.stable-head table tr {background: transparent url(./images/header.gif) repeat-x scroll center top }
-.stable-head table tr td { border-color: #f8d79b #f2993c #f2993c #f8d79b }
+#list-table { border-color: #9eb6ce }
+.stable thead {color: #000000;}
 
-.stable-body table tr td { border-right: 1px solid #d0d7e5; border-bottom: 1px solid #d0d7e5 }
-.stable-body table tr.selected td {background: #cfdeef}
+.stable tbody td { border-right: 1px solid #d0d7e5; border-bottom: 1px solid #d0d7e5 }
 .stable-body {background: #ffffff; color: #000000}

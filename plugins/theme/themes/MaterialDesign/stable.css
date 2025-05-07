@@ -52,34 +52,33 @@
   src: url(./font/4iCs6KVjbNBYlgoKfw72.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
-.stable td { padding: 2px; }
-
-.stable-head {
-  color: #626262;
-  background: #181818 url(./images/headers.png) repeat-x 0px -91px;
+.stable {
+  --header-bg-color: #1b1b1b;
+  --header-bg-image: none;
+  --header-border-color: transparent;
+  --header-asc-icon: url(data:image/gif;base64,R0lGODlhEAAQAPcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//MAP+Z//+ZzP+Zmf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8zZv8zM/8zAP8A//8AzP8Amf8AZv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zMzMzMmczMZszMM8zMAMyZ/8yZzMyZmcyZZsyZM8yZAMxm/8xmzMxmmcxmZsxmM8xmAMwz/8wzzMwzmcwzZswzM8wzAMwA/8wAzMwAmcwAZswAM8wAAJn//5n/zJn/mZn/Zpn/M5n/AJnM/5nMzJnMmZnMZpnMM5nMAJmZ/5mZzJmZmZmZZpmZM5mZAJlm/5lmzJlmmZlmZplmM5lmAJkz/5kzzJkzmZkzZpkzM5kzAJkA/5kAzJkAmZkAZpkAM5kAAGb//2b/zGb/mWb/Zmb/M2b/AGbM/2bMzGbMmWbMZmbMM2bMAGaZ/2aZzGaZmWaZZmaZM2aZAGZm/2ZmzGZmmWZmZmZmM2ZmAGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YAzGYAmWYAZmYAM2YAADP//zP/zDP/mTP/ZjP/MzP/ADPM/zPMzDPMmTPMZjPMMzPMADOZ/zOZzDOZmTOZZjOZMzOZADNm/zNmzDNmmTNmZjNmMzNmADMz/zMzzDMzmTMzZjMzMzMzADMA/zMAzDMAmTMAZjMAMzMAAAD//wD/zAD/mQD/ZgD/MwD/AADM/wDMzADMmQDMZgDMMwDMAACZ/wCZzACZmQCZZgCZMwCZAABm/wBmzABmmQBmZgBmMwBmAAAz/wAzzAAzmQAzZgAzMwAzAAAA/wAAzAAAmQAAZgAAMwAAAICAgHZ2dnV1dVZWVioqKgsLC////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAN4ALAAAAAAQABAAAAg5AL0JHEiwoMGDCBMqXMjQ4DZsECNuQ9hNW0Rs2bol5HaRm8JrD7Ftu7awojaNDLl5bMiypcuXCwMCADs=);
+  --col-resize-sep-bg-color: #a0a0a0;
+  --row-border-color: #1b1b1b;
+  --row-odd-bg-color: #2A2A2A;
+  --row-even-bg-color: #252525;
+  --row-active-bg-color: #191919;
+  --row-highlight-brightness: 0.75;
+}
+.stable thead {
   text-shadow: 0px 1px 0px #000;
+	font-weight:700;
+	color:#fff;
   font-family: Ubuntu;
 }
-.stable-head table tr { background: transparent; border: none; }
-.stable-head table tr td { border: none; font-family: Ubuntu; height: 18px; line-height: 18px; cursor: pointer; }
-.stable-head div.resz { border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center; }
+.stable thead div.resz { border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center; }
 .stable-body { background: #181818; text-shadow: 0px 1px 0px #000; color: #CACCCC; }
-.stable-body td { border-bottom: 1px solid #252525; }
-.stable-body td div { font-family: Ubuntu, Verdana, Arial, Helvetica, sans-serif; height: 16px !important; }
-.stable-body tr.odd td { background-color: #2A2A2A; }
-.stable-body tr.even td { background-color: #252525; }
-.stable-body tr.odd:hover td { background-color: #222222; }
-.stable-body tr.even:hover td { background-color: #1D1D1D; }
-.stable-body tr { height: 22px; }
-.stable-body tr.selected td{ background-color: #191919; color: #009DDD; text-shadow: 0px -1px 0px #000; }
-.stable-body tr.selected:hover td{ background-color: #111111; }
-div.stable-body table tbody tr.even td:nth-child(2n+1) { color: #ffffff; }
+.stable tbody td { border-bottom: 1px solid #252525; }
+.stable tbody td div { font-family: Ubuntu, Verdana, Arial, Helvetica, sans-serif; height: 16px !important; }
+.stable tbody tr { height: 22px; }
+.stable tbody tr.selected td{ color: #009DDD; text-shadow: 0px -1px 0px #000; }
+div.stable tbody tr.even td:nth-child(2n+1) { color: #ffffff; }
 .stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top; border: 1px solid #0099FF; }
 
-.stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top rgba(128,128,128,0.7); border: 1px solid #0099FF; }
-.gecko .stable-move-header { background: rgba(128,128,128,0.7); -moz-opacity: 0.7; }
-.ie .stable-move-header { background: rgba(128,128,128,0.7); filter:alpha(opacity=70) }
 .webkit .stable-move-header { background: rgba(128,128,128,0.7); }
 
 .stable-active-header { border-color: threedface !important }
@@ -90,9 +89,8 @@ div.stable-body table tbody tr.even td:nth-child(2n+1) { color: #ffffff; }
 /* Workaround div.meter-value overflowing (due to `width: 100%`).
  * Note for Firefox 103: `:has` selector needs `layout.css.has-selector.enabled` set to `true`. */
 .stable td:has(> .meter-value) { padding-right: 4px; }
-.stable-body td div.meter-value { margin: 0px !important; }
+.stable tbody td div.meter-value { margin: 0px !important; }
 
 .meter-value { border-width: 0px; border-radius: 0.8em; }
-.stable-body tr.selected span.meter-value { color: #fff; }
+.stable tbody tr.selected span.meter-value { color: #fff; }
 .meter-text { text-shadow: 0px 0px 2px #000; }
-

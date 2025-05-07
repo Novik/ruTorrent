@@ -21,26 +21,27 @@
 		<meta name="msapplication-TileColor" content="#FFFFFF" />
 		<meta name="msapplication-TileImage" content="./images/mstile-144x144.png" />
 
-		<link href="./css/bootstrap.min.css?v=515" rel="stylesheet" type="text/css" />
-		<link href="./css/style.css?v=515" rel="stylesheet" type="text/css" />
-		<link href="./css/stable.css?v=515" rel="stylesheet" type="text/css" />
-		<link rel="preload" as="style" href="./css/category-panel.css?v=515" />
-		<link rel="preload" as="style" href="./css/panel-label.css?v=515" />
-		<script type="text/javascript" src="./js/jquery.js?v=515"></script>
-		<script type="text/javascript" src="./js/jquery.flot.js?v=515"></script>
-		<script type="text/javascript" src="./js/sanitize.js?v=515"></script>
-		<script type="text/javascript" src="./js/sanitize.config.js?v=515"></script>
-		<script type="text/javascript" src="./js/custom-elements.js?v=515"></script>
-		<script type="text/javascript" src="./lang/langs.js?v=515"></script>
-		<link rel="preload" as="script" href="./js/browser.js?v=515" />
-		<link rel="preload" as="script" href="./js/common.js?v=515" />
-		<link rel="preload" as="script" href="./js/objects.js?v=515" />
-		<link rel="preload" as="script" href="./js/content.js?v=515" />
-		<link rel="preload" as="script" href="./js/stable.js?v=515" />
-		<link rel="preload" as="script" href="./js/graph.js?v=515" />
-		<link rel="preload" as="script" href="./js/plugins.js?v=515" />
-		<link rel="preload" as="script" href="./js/rtorrent.js?v=515" />
-		<link rel="preload" as="script" href="./js/webui.js?v=515" />
+		<link href="./css/bootstrap.min.css?v=524" rel="stylesheet" type="text/css" />
+		<link href="./css/style.css?v=524" rel="stylesheet" type="text/css" />
+		<link href="./css/stable.css?v=524" rel="stylesheet" type="text/css" />
+		<link rel="preload" as="style" href="./css/category-panel.css?v=524" />
+		<link rel="preload" as="style" href="./css/panel-label.css?v=524" />
+		<script type="text/javascript" src="./js/jquery.js?v=524"></script>
+		<script type="text/javascript" src="./js/jquery.flot.js?v=524"></script>
+		<script type="text/javascript" src="./js/sanitize.js?v=524"></script>
+		<script type="text/javascript" src="./js/sanitize.config.js?v=524"></script>
+		<script type="text/javascript" src="./js/custom-elements.js?v=524"></script>
+		<script type="text/javascript" src="./lang/langs.js?v=524"></script>
+		<link rel="preload" as="script" href="./js/browser.js?v=524" />
+		<link rel="preload" as="script" href="./js/common.js?v=524" />
+		<link rel="preload" as="script" href="./js/objects.js?v=524" />
+		<link rel="preload" as="script" href="./js/options.js?v=524" />
+		<link rel="preload" as="script" href="./js/content.js?v=524" />
+		<link rel="preload" as="script" href="./js/stable.js?v=524" />
+		<link rel="preload" as="script" href="./js/graph.js?v=524" />
+		<link rel="preload" as="script" href="./js/plugins.js?v=524" />
+		<link rel="preload" as="script" href="./js/rtorrent.js?v=524" />
+		<link rel="preload" as="script" href="./js/webui.js?v=524" />
 
 		<script>
 			loadUILang(() => {
@@ -56,10 +57,10 @@
 			});
 		</script>
 
-		<script type="module" src="./js/backgroundtask.js?v=515"></script>
-		<script type="module" src="./js/category-list.js?v=515"></script>
-		<script type="module" src="./js/panel.js?v=515"></script>
-		<script type="text/javascript" src="./js/category-list-elements.js?v=515" defer></script>
+		<script type="module" src="./js/backgroundtask.js?v=524"></script>
+		<script type="module" src="./js/category-list.js?v=524"></script>
+		<script type="module" src="./js/panel.js?v=524"></script>
+		<script type="text/javascript" src="./js/category-list-elements.js?v=524" defer></script>
 	</head>
 	<body>
 		<div id="preload" class="d-none"></div>
@@ -70,7 +71,6 @@
 			</div>
 		</div>
 		<div id="modalbg" class="w-100 h-100 position-absolute"></div>
-		<div id="dragmask"></div>
 		<div id="rs"></div>
 		<div id="sel" class="position-absolute"></div>
 		<div id="sc"></div>
@@ -139,7 +139,7 @@
 				</div>
 				<div class="p-1 p-md-0 offcanvas-body">
 					<template id="panel-label-template">
-						<link href="./css/panel-label.css?v=515" rel="stylesheet" type="text/css" />
+						<link href="./css/panel-label.css?v=524" rel="stylesheet" type="text/css" />
 						<div part="prefix" hidden></div>
 						<div part="icon"></div>
 						<div part="text"></div>
@@ -147,7 +147,7 @@
 						<div part="size" style="display: none;"></div>
 					</template>
 					<template id="category-panel-template">
-						<link href="./css/category-panel.css?v=515" rel="stylesheet" type="text/css" />
+						<link href="./css/category-panel.css?v=524" rel="stylesheet" type="text/css" />
 						<div part="heading">
 							<span class="text"></span><slot name="decorator" class="decorator"></slot>
 						</div>
@@ -162,8 +162,9 @@
 							<panel-label id="pstate_all" icon="all" uilangtext="All" selected></panel-label>
 							<panel-label id="-_-_-dls-_-_-" icon="down" uilangtext="Downloading"></panel-label>
 							<panel-label id="-_-_-com-_-_-" icon="completed" uilangtext="Finished"></panel-label>
+							<panel-label id="-_-_-wfa-_-_-" icon="inactive" uilangtext="Stopped"></panel-label>
 							<panel-label id="-_-_-act-_-_-" icon="up-down" uilangtext="Active"></panel-label>
-							<panel-label id="-_-_-iac-_-_-" icon="inactive" uilangtext="Inactive"></panel-label>
+							<panel-label id="-_-_-iac-_-_-" icon="paused" uilangtext="Inactive"></panel-label>
 							<panel-label id="-_-_-err-_-_-" icon="error" uilangtext="Error"></panel-label>
 						</category-panel>
 						<category-panel id="plabel" uilangtext="Labels">
@@ -178,7 +179,7 @@
 			</div>
 			<div id="HDivider" class="p-0 m-0"></div>
 			<div id="main-info" class="d-flex flex-column align-items-stretch flex-grow-1 flex-shrink-1 overflow-hidden">
-				<div id="list-table" class="flex-grow-1 flex-shrink-1 overflow-hidden">
+				<div id="list-table">
 					<div id="List"></div>
 				</div>
 				<div id="VDivider" class="p-0 m-0"></div>
@@ -249,12 +250,18 @@
 						<div id="PeerList" class="table_tab"></div>
 						<div id="Speed" class="graph_tab"></div>
 						<div id="PluginList" class="table_tab"></div>
-						<div id="lcont" class="tab"></div>
+						<div id="lcont" class="tab">
+							<button type="button" id="clear_log" uilangtitle="ClearButton">
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
+									<path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
+								</svg>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div id="StatusBar" class="d-flex flex-row align-items-stretch justify-content-start w-100 overflow-hidden">
+		<div id="StatusBar">
 			<div id="st_up" class="status-cell">
 				<div class="icon"></div>
 				<div class="sthdr d-none d-lg-block"><span uilang>Speed</span>:</div>
@@ -296,6 +303,6 @@
 		<div class="graph_tab_legend"></div>
 		<div id="dialog-container"></div>
 		<div id="dir-container"></div>
-		<script type="text/javascript" src="./js/bootstrap.bundle.min.js?v=515"></script>
+		<script type="text/javascript" src="./js/bootstrap.bundle.min.js?v=524"></script>
 	</body>
 </html>
