@@ -61,5 +61,10 @@ jobs:
 
       - name: Build & push the Docker images
         run: |
-          docker buildx build --platform=${{ env.BUILD_PLATFORMS }} --target rutorrent_src --push --tag "${{ env.TARGET_IMAGE }}:latest" --tag "${{ env.TARGET_IMAGE }}:${{ env.clean_version }}" .
+          docker buildx build --platform=${{ env.BUILD_PLATFORMS }} --target rutorrent_src --push \
+            --tag "${{ env.TARGET_IMAGE }}:latest" \
+            --tag "${{ env.TARGET_IMAGE }}:${{ env.clean_version }}" \
+            --tag "ghcr.io/${{ github.repository_owner }}/${{ env.TARGET_IMAGE }}:latest" \
+            --tag "ghcr.io/${{ github.repository_owner }}/${{ env.TARGET_IMAGE }}:${{ env.clean_version }}" \
+          .
 
