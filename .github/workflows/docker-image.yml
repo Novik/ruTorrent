@@ -1,0 +1,61 @@
+name: Multiarch Docker Image Build
+
+on:
+  release:
+    types: [published]
+#  push:
+#    branches: [ master ]
+#    paths:
+#      - 'src/build/**'
+#  pull_request:
+#    branches: [ master ]
+#    paths:
+#      - './.env'
+
+env:
+   BASE_IMAGE: unzel/rutorrent:builder-base
+#  BASE_IMAGE: ghcr.io/${{ github.repository_owner }}/rutorrent:builder-base
+
+
+jobs:
+  build:
+    name: Build docker images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Extract version from release tag
+        shell: bash
+        run: |
+          version="${{ github.event.release.tag_name }}"
+          clean_version="${version#v}"  # Strip leading 'v' if present
+          echo "clean_version=$clean_version" >> "$GITHUB_ENV"
+      # setup Docker buildx action
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Setup buildx
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes && docker buildx create --name builder --driver docker-container --use && docker buildx inspect --bootstrap
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & Push base image if needed
+        run: |
+          export $(grep -v '^#' stable.env | xargs) 
+          if docker pull "$BASE_IMAGE" > /dev/null 2>&1; then
+            echo "Base image found, using cache."
+            echo "build_base=false" >> "$GITHUB_ENV"
+          else
+            echo "Base image not found, will build it."
+            echo "build_base=true" >> "$GITHUB_ENV"
+            docker buildx build --set *.platform=linux/amd64,linux/386,linux/arm64,linux/arm/v7 --target osbuild --push --tag "$BASE_IMAGE" .
+          fi
+
+      - name: Build & push the Docker images
+        run: |
+          docker buildx build --set *.platform=linux/amd64,linux/386,linux/arm64,linux/arm/v7 --target rutorrent_src --push --tag "unzel/rutorrent:${{ env.clean_version }}" .
+
