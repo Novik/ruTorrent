@@ -68,16 +68,17 @@ WORKDIR $APP_HOME
 
 COPY --chown=www-data:www-data ./ $APP_HOME
 
-RUN sh -c "cat <<EOF > /home/runuser/.rtorrent.rc \
-directory = ${RU_TOP_DIR} \
-session = ${STORAGE_DIR}/.session \
-port_range = 55951-55952 \
-port_random = no \
-check_hash = yes \
-encryption = allow_incoming,enable_retry,prefer_plaintext \
-scgi_port = 0.0.0.0:5000 \
-EOF" \
-    && mkdir -p "$RU_TOP_DIR" "$STORAGE_DIR/.session" \
+RUN cat <<EOF > /home/runuser/.rtorrent.rc
+directory = ${RU_TOP_DIR}
+session = ${STORAGE_DIR}/.session
+port_range = 55951-55952
+port_random = no
+check_hash = yes
+encryption = allow_incoming,enable_retry,prefer_plaintext
+scgi_port = 0.0.0.0:5000
+EOF
+
+RUN mkdir -p "$RU_TOP_DIR" "$STORAGE_DIR/.session" \
     && chown -R ${UID}:${GID} "$STORAGE_DIR" /home/runuser/.rtorrent.rc \
     && chmod 775 -R "$APP_HOME" \
     && chown -R www-data:www-data "$APP_HOME" \
