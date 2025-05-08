@@ -14,6 +14,8 @@ on:
 
 env:
    BASE_IMAGE: unzel/rutorrent:builder-base
+   BUILD_PLATFORMS: linux/amd64,linux/386,linux/arm64,linux/arm/v7
+   TARGET_IMAGE: unzel/rutorrent
 #  BASE_IMAGE: ghcr.io/${{ github.repository_owner }}/rutorrent:builder-base
 
 
@@ -45,17 +47,16 @@ jobs:
 
       - name: Build & Push base image if needed
         run: |
-          export $(grep -v '^#' stable.env | xargs) 
           if docker pull "$BASE_IMAGE" > /dev/null 2>&1; then
             echo "Base image found, using cache."
             echo "build_base=false" >> "$GITHUB_ENV"
           else
             echo "Base image not found, will build it."
             echo "build_base=true" >> "$GITHUB_ENV"
-            docker buildx build --set *.platform=linux/amd64,linux/386,linux/arm64,linux/arm/v7 --target osbuild --push --tag "$BASE_IMAGE" .
+            docker buildx build --platform=${{ env.BUILD_PLATFORMS }} --target osbuild --push --tag "$BASE_IMAGE" .
           fi
 
       - name: Build & push the Docker images
         run: |
-          docker buildx build --set *.platform=linux/amd64,linux/386,linux/arm64,linux/arm/v7 --target rutorrent_src --push --tag "unzel/rutorrent:${{ env.clean_version }}" .
+          docker buildx build --platform=${{ env.BUILD_PLATFORMS }} --target rutorrent_src --push --tag "${{ env.TARGET_IMAGE }}:${{ env.clean_version }}" .
 
