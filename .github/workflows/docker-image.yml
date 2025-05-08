@@ -40,8 +40,8 @@ jobs:
           install: true
           driver: docker-container
           buildkitd-flags: --allow-insecure-entitlement network.host
-      #- name: Log in to GitHub Container Registry
-      #  run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -61,5 +61,5 @@ jobs:
 
       - name: Build & push the Docker images
         run: |
-          docker buildx build --platform=${{ env.BUILD_PLATFORMS }} --target rutorrent_src --push --tag "${{ env.TARGET_IMAGE }}:${{ env.clean_version }}" .
+          docker buildx build --platform=${{ env.BUILD_PLATFORMS }} --target rutorrent_src --push --tag "${{ env.TARGET_IMAGE }}:latest" --tag "${{ env.TARGET_IMAGE }}:${{ env.clean_version }}" .
 
