@@ -44,8 +44,8 @@ RUN  docker-php-ext-install sockets pcntl \
 
 RUN echo "${TARGETPLATFORM}" | grep -q "arm" \
            || {  \
-            BUILDPLATFORM_SHORT=$(echo "${TARGETPLATFORM}" | grep -q "64" && echo "amd64" || echo "x32"); \
-            curl -L "https://github.com/TheGoblinHero/dumptorrent/releases/download/v1.3/dumptorrent_linux_$BUILDPLATFORM_SHORT.tar.gz" \
+            BUILDPLATFORM_SHORT=$(echo "${TARGETPLATFORM}" | grep -q "64" && echo "x64" || echo "x86"); \
+            curl -L "https://github.com/TheGoblinHero/dumptorrent/releases/download/v1.3/dumptorrent_linux_amd64.tar.gz" \
                 | tar -xzf - -C "/usr/bin"; \
      } && exit 0
 
@@ -53,18 +53,23 @@ RUN echo "${TARGETPLATFORM}" | grep -q "arm" \
 FROM ${ARCH}unzel/rutorrent:builder-base AS rutorrent_src
 LABEL org.opencontainers.image.authors="hwk <nelu@github.com>"
 
+
 ARG STORAGE_DIR=/data
 ARG UID=1000
 ARG GID=1000
 
 ENV PATH="$PATH:$APP_HOME"
 
+ENV RU_LOG_FILE=${STORAGE_DIR}/logs/rutorrent.log
+ENV RU_TOP_DIR=${STORAGE_DIR}/downloads/
+ENV RU_PROFILE_PATH=${STORAGE_DIR}/share
+
 WORKDIR $APP_HOME
 
 COPY --chown=www-data:www-data ./ $APP_HOME
 
 RUN sh -c "cat <<EOF > /home/runuser/.rtorrent.rc \
-directory = ${STORAGE_DIR}/downloads \
+directory = ${RU_TOP_DIR} \
 session = ${STORAGE_DIR}/.session \
 port_range = 55951-55952 \
 port_random = no \
@@ -72,7 +77,7 @@ check_hash = yes \
 encryption = allow_incoming,enable_retry,prefer_plaintext \
 scgi_port = 0.0.0.0:5000 \
 EOF" \
-    && mkdir -p "$STORAGE_DIR/downloads" "$STORAGE_DIR/.session" \
+    && mkdir -p "$RU_TOP_DIR" "$STORAGE_DIR/.session" \
     && chown -R ${UID}:${GID} "$STORAGE_DIR" /home/runuser/.rtorrent.rc \
     && chmod 775 -R "$APP_HOME" \
     && chown -R www-data:www-data "$APP_HOME" \
