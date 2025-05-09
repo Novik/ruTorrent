@@ -4,7 +4,9 @@
  */
 
 var theWebUI = {
-	version: "5.2.4",
+
+	version: "5.3.0",
+
 	tables: {
 		trt: {
 			obj: new dxSTable(),
@@ -2546,6 +2548,7 @@ $(document).ready(function()
 	Promise.all([
 		import('./backgroundtask.js'),
 		import('./category-list.js'),
+		import('./log_history.js'),
 	]).then(([bgModule, catModule]) => {
 		theWebUI.taskAddTorrents = new bgModule.BackgroundTask();
 		theWebUI.categoryList = createCategoryList(catModule);

@@ -275,7 +275,7 @@ class rRSS
 			rTorrentSettings::get()->pushEvent( "RSSFetched", array( "rss"=>&$this ) );
 			if(!$this->hasIncorrectTimes())
 				foreach( $this->items as $url=>$item )
-					$history->correct($url, $item['timestamp']);
+					$history->correct($url, $item['timestamp'], $item['guid']);
 		}
 		return(true);
 	}
@@ -318,20 +318,20 @@ class rRSSHistory
 		$this->version = 2;
 	}
 
-	public function add( $url, $hash, $timestamp )
+	public function add( $url, $hash, $timestamp, $guid )
 	{
 		$cnt = 0;
 		if(array_key_exists($url,$this->lst))
 			$cnt = ($this->lst[$url]["time"]==$timestamp) ? $this->lst[$url]["cnt"] : 0;
-		$this->lst[$url] = array( "hash"=>$hash, "time"=>$timestamp, "cnt"=>$cnt );
+		$this->lst[$url] = array( "hash" => $hash, "time" => $timestamp, "cnt" => $cnt,	"guid" => $guid );
 		if($hash=='Failed')
 			$this->lst[$url]["cnt"] = $cnt+1;
 		$this->changed = true;
 	}
-        public function correct( $url, $timestamp )
+	public function correct( $url, $timestamp, $guid )
 	{
 		if( array_key_exists($url,$this->lst) && 
-			($this->lst[$url]["time"]!=$timestamp) )
+			($guid && !empty($this->lst[$url]["guid"]) && $this->lst[$url]["guid"] !== $guid) )
 		{
 			unset($this->lst[$url]);
 			$this->changed = true;			
@@ -355,11 +355,20 @@ class rRSSHistory
 			return(intval($this->lst[$url]["cnt"]));
 		return(0);
 	}
-	public function wasLoaded( $url )
+	public function wasLoaded( $url, $guid)
 	{
 		$ret = false;
 		if(array_key_exists($url,$this->lst))
-			$ret = ($this->lst[$url]["hash"]!=='Failed') || ($this->getCounter( $url )>HISTORY_MAX_TRY);
+		{
+			if($guid && !empty($this->lst[$url]["guid"]))
+			{
+				$ret = ($this->lst[$url]["guid"] === $guid);
+			}
+			if(!$ret)
+			{
+				$ret = ($this->lst[$url]["hash"]!=='Failed') || ($this->getCounter( $url )>HISTORY_MAX_TRY);
+			}
+		}
 		return($ret);
 	}
 	public function getHash( $url )
@@ -857,7 +866,7 @@ class rRSSManager
 		foreach( $urls as $ndx=>$url )
 		{
 			if($state)
-				$this->history->add($url,'Loaded',$times[$ndx]);
+				$this->history->add($url, 'Loaded', $times[$ndx], '');
 			else
 				$this->history->del($url);
 		}
@@ -873,15 +882,11 @@ class rRSSManager
 			{
 				if(!$filter->isApplicable( $rss, $this->history, $this->groups ))
 					break;
-				if(     !$this->history->wasLoaded($href) &&
-					$filter->checkItem($href, $item) )
+				if( !$this->history->wasLoaded($href, $item['guid']) && $filter->checkItem($href, $item) )
 				{
 					self::log("Filter [".$filter->name."] of channel [".$rss->url."] was applied for [$href]");
-
-				        $this->history->applyFilter( $filter->no );
-
+					$this->history->applyFilter( $filter->no );
 					rTorrentSettings::get()->pushEvent( "RSSAutoLoad", array( "rss"=>&$rss, "href"=>&$href, "item"=>&$item, "filter"=>&$filter ) );
-
 					$this->getTorrents( $rss, $href, 
 						$filter->start, $filter->addPath, $filter->getDirectory(), $filter->getLabel(), $filter->throttle, $filter->ratio, false );
 					if(WAIT_AFTER_LOADING)
@@ -1211,7 +1216,7 @@ class rRSSManager
 			}
 			if($ret===false)
 				$this->rssList->addError( "theUILang.rssCantLoadTorrent", $url );
-			$this->history->add($url,$thash,$rss->getItemTimestamp( $url ));
+			$this->history->add($url, $thash, $rss->getItemTimestamp($url), $rss->items[$url]['guid']);
 			if($needFlush)
 				$this->saveHistory();
 		}
@@ -1238,7 +1243,7 @@ class rRSSManager
 			if(count($urls))
 				foreach($this->history->lst as $href=>$hash)
 				{
-					if(!array_key_exists($href,$urls))
+					if(!array_key_exists($href,$urls) && $this->history->lst[$href]["hash"] === 'Failed')
 						$this->history->del($href);
 				}
 		}

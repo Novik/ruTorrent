@@ -885,7 +885,33 @@ function noty(msg, status, noTime) {
 	}
 	const force = iv(theWebUI.settings["webui.log_autoswitch"]) && !$.noty;
 	log(msg, noTime, "std", force);
+	sendLogToServer(msg, status);
 }
+
+function sendLogToServer(msg, status) {
+        fetch('php/log_history.php', {
+                method: 'POST',
+                headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `message=${encodeURIComponent(msg)}&status=${encodeURIComponent(status)}`
+        })
+        .then(response => {
+                if (response.status === 204) {
+                        return;
+                }
+                return response.json();
+        })
+        .then(data => {
+                if (data) {
+                        console.log("Log saved to server:", data);
+                }
+        })
+        .catch(error => {
+                console.log("Saving Log failed:", error);
+        });
+}
+
 
 function fallbackCopyToClipboard(text)
 {
