@@ -16,7 +16,7 @@ env:
    BASE_IMAGE: unzel/rutorrent:builder-base
    BUILD_PLATFORMS: linux/amd64,linux/386,linux/arm64,linux/arm/v7
    TARGET_IMAGE: unzel/rutorrent
-#  BASE_IMAGE: ghcr.io/${{ github.repository_owner }}/rutorrent:builder-base
+   GITHUB_IMAGE: ghcr.io/${{ github.repository_owner }}/rutorrent
 
 
 jobs:
@@ -64,7 +64,7 @@ jobs:
           docker buildx build --platform=${{ env.BUILD_PLATFORMS }} --target rutorrent_src --push \
             --tag "${{ env.TARGET_IMAGE }}:latest" \
             --tag "${{ env.TARGET_IMAGE }}:${{ env.clean_version }}" \
-            --tag "ghcr.io/${{ github.repository_owner }}/${{ env.TARGET_IMAGE }}:latest" \
-            --tag "ghcr.io/${{ github.repository_owner }}/${{ env.TARGET_IMAGE }}:${{ env.clean_version }}" \
+            --tag "${{ env.GITHUB_IMAGE }}:latest" \
+            --tag "${{ env.GITHUB_IMAGE }}:${{ env.clean_version }}" \
           .
 
