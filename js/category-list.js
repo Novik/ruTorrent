@@ -42,7 +42,7 @@ export class CategoryList {
 
         // Special case for Errors (only if not completed)
         {
-          "-_-_-err-_-_-": (_, torrent) => (torrent.done < 1000 && (torrent.state & this.dStatus.error)),
+          "-_-_-err-_-_-": (_, torrent) => torrent.state & this.dStatus.error,
         },
       ],
       plabel: [
