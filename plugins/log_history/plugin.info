@@ -1,0 +1,9 @@
+plugin.name: log_history
+plugin.version: 1.0
+plugin.author: ranirahn
+plugin.description: This plugin saves Log TAB into file and shows last messages from it on startup. Settings in plugins/log_history/conf.php.
+plugin.runlevel: 10.0
+plugin.may_be_launched: 1
+plugin.may_be_shutdowned: 1
+rtorrent.need: 0
+php.version: 5.0.0
