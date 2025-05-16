@@ -27,7 +27,7 @@ function fetchLogLines(initialLoad = false) {
                 const status = entry.status || 'info';
 
                 if (style === 'log') {
-                    log(cleanMsg, false, status);
+                    log(cleanMsg, false, 'std');
                 } else {
                     noty(cleanMsg, status);
                 }
