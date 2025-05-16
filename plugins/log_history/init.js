@@ -53,17 +53,30 @@ function sendLogToServer(msg, status) {
         });
 }
 
+window._log_history_status = null;
+
 plugin.init = function () {
-	setTimeout(() => {
-		fetchLogLines(true);
-	}, 3000);
-	
-	const originalLog = window.log;
+    const originalLog = window.log;
     window.log = function(text, noTime, divClass, force) {
         originalLog(text, noTime, divClass, force);
-        sendLogToServer(text, divClass || 'info');
+        const status = window._log_history_status || divClass || 'info';
+        sendLogToServer(text, status);
+        window._log_history_status = null;
     };
-	
+    const originalNoty = window.noty;
+    window.noty = function(msg, status, noTime) {
+        window._log_history_status = status;
+
+        if (typeof originalNoty === 'function') {
+            originalNoty(msg, status, noTime);
+        } else {
+            log(msg, noTime, status);
+        }
+    };
+    setTimeout(() => {
+        fetchLogLines(true);
+    }, 3000);
+
     plugin.markLoaded();
 };
 
