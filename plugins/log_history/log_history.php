@@ -91,7 +91,12 @@ class LogHandler
             $st   = trim($_POST['status'] ?? '');
             $resp = $handler->saveLog($msg, $st);
         } else {
-            $resp = $handler->getLatestLogs();
+        	$resp = $handler->getLatestLogs();
+		global $LogTab_array;
+		$resp = [
+			'logs' => $resp,
+			'load_style' => $LogTab_array['load_style'] ?? 'noty'
+		];
         }
 
         echo JSON::safeEncode($resp);
