@@ -3,33 +3,43 @@ function stripTimestamp(line) {
 }
 
 function fetchLogLines(initialLoad = false) {
-        fetch('plugins/log_history/log_history.php')
+    fetch('plugins/log_history/action.php')
         .then(response => {
-		if (response.status === 204) {
-			console.log("Log is disabled by server (204 No Content).");
-			return Promise.reject({disabled: true});
-		}
-                if (!response.ok) throw new Error('Network response was not ok');
-                        return response.json();
-                })
+            if (response.status === 204) {
+                console.log("Log is disabled by server (204 No Content).");
+                return Promise.reject({ disabled: true });
+            }
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
         .then(data => {
-		if (!data || data.length === 0) {
-			console.log("Log is disabled or empty.");
-			return;
-		}
-                console.log('Received data:', data);
-                data.forEach(entry => {
-                        const rawMsg = entry.message || '';
-                        const cleanMsg = stripTimestamp(rawMsg);
-                        const status = entry.status || 'info';
-                        noty(cleanMsg, status);
-                });
+            const logs = data.logs || data; // backward compatible
+            const style = data.load_style || 'noty'; // default
+
+            if (!logs.length) {
+                console.log("Log is empty or not configured.");
+                return;
+            }
+
+            logs.forEach(entry => {
+                const rawMsg = entry.message || '';
+                const cleanMsg = stripTimestamp(rawMsg);
+                const status = entry.status || 'info';
+
+                if (style === 'log') {
+                    log(cleanMsg, false, status);
+                } else {
+                    noty(cleanMsg, status);
+                }
+            });
         })
         .catch(err => {
-		if (err.disabled) {
-			return;
-		}
+            if (err.disabled) return;
+            if (typeof noty === 'function') {
                 noty("Log fetch error: " + err.message, "error");
+            } else {
+                console.error("Log fetch error:", err.message);
+            }
         });
 }
 
