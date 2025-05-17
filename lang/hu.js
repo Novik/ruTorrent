@@ -320,5 +320,6 @@ var theUILang =
  removeAllTegs			: "Minden címke eltávolítása",
  Torrents			: "Torrent(ek)",
  copyToClipboardFailed		: "A másolás funkció nem működik a böngésződben.\nKérlek, másold le ezt a tartalmat kézzel:\n\n",
- copyToClipboardSuccess		: "Sikeresen átmásoltam a vágólapra!"
+ copyToClipboardSuccess		: "Sikeresen átmásoltam a vágólapra!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };
