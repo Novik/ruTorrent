@@ -230,13 +230,13 @@ function makeContent() {
 			req.push('not_add_path=1');
 		if($("#randomize_hash").prop("checked"))
 			req.push('randomize_hash=1');
-		var dirEle = document.getElementById('dir_edit');
+		var dirEle = $$("dir_edit");
 		if (dirEle) {
 			var dir = dirEle.value.trim();
 			if(dir.length)
 				req.push('dir_edit='+encodeURIComponent(dir));
 		}
-		var lblEle = document.getElementById('tadd_label');
+		var lblEle = $$("tadd_label");
 		if (lblEle) {
 			var lbl = lblEle.value.trim();
 			if(lbl.length)
