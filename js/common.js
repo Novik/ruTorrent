@@ -536,7 +536,9 @@ var theFormatter =
    			switch(iv(i))
 			{
 				case 0:
-					arr[i] = theNormalizer.normalize(arr[i], false);
+					if (theWebUI.settings["webui.normalize_torrent_name"]) {
+						arr[i] = theNormalizer.normalize(arr[i], false);
+					}
 					break;
 				case 3:
 					arr[i] = (arr[i] / 10) + "%";

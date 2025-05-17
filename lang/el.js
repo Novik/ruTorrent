@@ -318,5 +318,6 @@ var theUILang =
  removeAllTegs			: "Διαγραφή όλων των ετικετών",
  Torrents			: "Torrent(s)",
  copyToClipboardFailed		: "Η λειτουργία αντιγραφής δεν λειτουργεί στον περιηγητή σας.\nΠαρακαλώ αντιγράψτε αυτό το περιεχόμενο χειροκίνητα:\n\n",
- copyToClipboardSuccess		: "Αντιγράφηκε με επιτυχία στο πρόχειρο!"
+ copyToClipboardSuccess		: "Αντιγράφηκε με επιτυχία στο πρόχειρο!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

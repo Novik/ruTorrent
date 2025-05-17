@@ -319,5 +319,6 @@ var theUILang =
  removeAllTegs			: "Fjern alle etiketter",
  Torrents			: "Torrent(er)",
  copyToClipboardFailed		: "Kopier-funksjonen virker ikke i nettleseren din.\nVennligst kopier dette innholdet manuelt:\n\n",
- copyToClipboardSuccess		: "Kopiert til utklippstavlen!"
+ copyToClipboardSuccess		: "Kopiert til utklippstavlen!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

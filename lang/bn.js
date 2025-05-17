@@ -320,5 +320,6 @@ var theUILang =
  removeAllTegs			: "সমস্ত ট্যাগ সরান",
  Torrents			: "টরেন্ট (গুলি)",
  copyToClipboardFailed		: "কপি ফাংশন আপনার ব্রাউজারে কাজ করছে না।\nদয়া করে এই কন্টেন্টটি ম্যানুয়ালি কপি করুন:\n\n",
- copyToClipboardSuccess		: "সফলভাবে ক্লিপবোর্ডে কপি করা হয়েছে!"
+ copyToClipboardSuccess		: "সফলভাবে ক্লিপবোর্ডে কপি করা হয়েছে!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

@@ -320,5 +320,6 @@ var theUILang =
  removeAllTegs : "Tüm etiketleri kaldır",
  Torrents: "Torrent",
  copyToClipboardFailed : "Tarayıcınızda kopyalama işlevi çalışmıyor.\nLütfen bunu kendiniz kopyalayın:\n\n",
- copyToClipboardSuccess : "Panoya başarıyla kopyalandı."
+ copyToClipboardSuccess : "Panoya başarıyla kopyalandı.",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };
