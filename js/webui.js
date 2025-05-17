@@ -9,7 +9,7 @@ var theWebUI = {
 		trt: {
 			obj: new dxSTable(),
 			columns: [
-				{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING },
+				{ text: theUILang.Name, 		width: "200px", id: "name",		type: TYPE_STRING_LABEL },
 				{ text: theUILang.Status, 		width: "100px",	id: "status",		type: TYPE_STRING },
 				{ text: theUILang.Size, 		width: "70px",	id: "size", 		type: TYPE_NUMBER },
 				{ text: theUILang.Done, 		width: "100px",	id: "done",		type: TYPE_PROGRESS },
