@@ -33,10 +33,12 @@ const theOptionsWindow = {
 						['webui.selected_labels.keep', theUILang.KeepSelectedLabels],
 						['webui.effects', theUILang.UIEffects],
 						['webui.speedintitle', theUILang.showSpeedInTitle],
+						['webui.normalize_torrent_name', theUILang.normalizeTorrentName],
 					].map(([id, label]) => $("<div>").addClass("col-md-6").append(
 						$("<input>").attr({type: "checkbox", id: id}),
 						$("<label>").attr({for: id}).text(label),
 					)),
+					$("<div>").addClass("col-md-6"),
 					...[
 						["webui.update_interval", theUILang.Update_GUI_every + ": ", theUILang.ms, 3000],
 						["webui.reqtimeout", theUILang.ReqTimeout + ": ", theUILang.ms, 5000],
