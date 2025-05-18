@@ -2,12 +2,18 @@
 set -e
 
 TEST_RUN='
-echo "Running tests...\n";
 foreach(get_declared_classes() as $cls) {
 	if (get_parent_class($cls) == "TestCase") {
-		echo "Test: ".$cls."\n";
-		$obj = new $cls;
-		$obj->run();
+		echo "Test: {$cls}\n";
+		$obj = new $cls();
+		try {
+			$obj->setUp();
+			$obj->run();
+		} catch (Exception $e) {
+			echo $e->getMessage()."\n";
+			echo $e->getTraceAsString()."\n";
+		}
+		$obj->tearDown();
 	}
 }'
 
