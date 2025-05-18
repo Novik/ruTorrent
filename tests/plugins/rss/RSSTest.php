@@ -6,7 +6,7 @@ declare(strict_types=1);
 @define('HISTORY_MAX_TRY', 3, true);
 @define('WAIT_AFTER_LOADING', 0, true);
 
-require(__DIR__ . '/../../php/TestCase.php');
+require_once(__DIR__ . '/../../php/TestCase.php');
 
 $minInterval = 2;	// in minutes
 
@@ -16,7 +16,7 @@ $feedsWithIncorrectTimes = array(
 );
 
 $rss_debug_enabled = true;
-require(__DIR__ . '/../../../plugins/rss/rss.php');
+require_once(__DIR__ . '/../../../plugins/rss/rss.php');
 
 class SnoopyMock
 {
@@ -44,8 +44,6 @@ final class RSSTest extends TestCase
 		$rRSS->lastModified = $exp_lastModified;
 		$history = new rRSSHistory();
 		$succ = $rRSS->fetch($history);
-		var_dump($rRSS->items);
-		var_dump($rRSS->lastErrorMsgs);
 		$this->assertEquals(0, count($rRSS->lastErrorMsgs));
 		$this->assertTrue($succ, 'fetch success');
 
@@ -105,8 +103,6 @@ final class RSSTest extends TestCase
 		$rRSS = new rRSS($exp_url, $rssFetchURL);
 		$history = new rRSSHistory();
 		$succ = $rRSS->fetch($history);
-		var_dump($rRSS->items);
-		var_dump($rRSS->lastErrorMsgs);
 		$this->assertEquals(1, count($rRSS->lastErrorMsgs));
 		$this->assertTrue($succ);
 
@@ -154,8 +150,6 @@ final class RSSTest extends TestCase
 		$rRSS = new rRSS($exp_url, $rssFetchURL);
 		$history = new rRSSHistory();
 		$succ = $rRSS->fetch($history);
-		var_dump($rRSS->items);
-		var_dump($rRSS->lastErrorMsgs);
 		$this->assertEquals(0, count($rRSS->lastErrorMsgs));
 		$this->assertTrue($succ);
 

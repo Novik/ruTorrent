@@ -37,7 +37,11 @@ class Permission
 				return(true);
 		}
 		if(is_link($file))
-			$file = readlink($file);
+		{
+			$newfile = readlink($file);
+			// check for relative link, e.g. ../path/to/other/dir
+			$file = substr($newfile, 0, 1) === '.' ? realpath(dirname($file) . DIRECTORY_SEPARATOR . $newfile) : $newfile;
+		}
 		if(self::isUserHavePrim($uid,$gids,$file,$flags))
 		{
 			if(($flags & 0x0002) && !is_dir($file))
