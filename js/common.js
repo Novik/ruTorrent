@@ -483,13 +483,15 @@ var theNormalizer = {
 	clean(s, sortable = true) {
 		if (s !== null && s.length) {
 			if (sortable) {
-				// replace dot and underscore with whitespace
+				// replace dot, underscore, and dash with whitespace
 				// replace multiple whitespace with single whitespace
-				s = s.replace(/(\.|_|\s{2,})/g, ' ');
+				s = s
+					.replace(/(\.|_|\-)/g, ' ')
+					.replace(/\s{2,}/g, ' ');
 			} else {
 				s = s
-					.replace(/^(\.|_)/g, ' ')
-					.replace(/(\.|_)$/g, ' ');
+					.replace(/^(\.|_|\-)/g, ' ')
+					.replace(/(\.|_|\-)$/g, ' ');
 			}
 			s = s.trim();
 		}
