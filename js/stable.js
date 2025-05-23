@@ -1357,17 +1357,6 @@ dxSTable.prototype.syncDOM = function()
 				for (const [name, attr] of Object.entries(dataRow.attr || {}))
 					if (name in marks.attrSet)
 						tr.setAttribute(name, attr);
-
-			// update icon
-			if ('icon' in marks) {
-				const icon = dataRow.icon;
-				const td = tr.cells[this.getColOrder(0)];
-				if ($(td).find("div span").hasClass("stable-icon"))
-					$(td).find("div span").remove();
-				if (icon !== null)
-					$(td).find("div").prepend(this.createIcon(icon));
-			}
-
 			// update cols
 			for (const colStr of Object.keys(marks.col || {}))
 			{
@@ -1387,6 +1376,15 @@ dxSTable.prototype.syncDOM = function()
 					}
 					$(textEl).text(fmtVal);
 				}
+			}			
+			// update icon
+			if ('icon' in marks) {
+				const icon = dataRow.icon;
+				const td = tr.cells[this.getColOrder(0)];
+				if ($(td).find("div span").hasClass("stable-icon"))
+					$(td).find("div span").remove();
+				if (icon !== null)
+					$(td).find("div").prepend(this.createIcon(icon));
 			}
 		}
 	}
