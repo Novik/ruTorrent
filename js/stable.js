@@ -1369,7 +1369,7 @@ dxSTable.prototype.syncDOM = function()
 			// update icon
 			if ('icon' in marks) {
 				const icon = dataRow.icon;
-				const td = tr.cells[this.getColOrder(0)];
+				const td = $(tr).find("td").first();
 				if ($(td).find("div span").hasClass("stable-icon"))
 					$(td).find("div span").remove();
 				if (icon !== null)
