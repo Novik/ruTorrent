@@ -6,6 +6,6 @@
  * Author:
  */
 
-theUILang.dumpTorrent		= "Dump .torrent...";
+theUILang.dumpTorrent		= "Despejar .torrent...";
 
 thePlugins.get("dump").langLoaded();
