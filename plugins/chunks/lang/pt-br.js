@@ -6,13 +6,13 @@
  * Author: 
  */
 
- theUILang.Chunks		= "Chunks";
- theUILang.cAvail		= "Availability";
- theUILang.cDownloaded		= "Downloaded";
- theUILang.cMode		= "Mode";
- theUILang.chunksCount		= "Chunks count";
- theUILang.chunkSize		= "Chunk size";
- theUILang.cLegend		= "Legend";
- theUILang.cLegendVal		= [ "4 chunks per cell", "1 chunk per cell" ];
+ theUILang.Chunks		= "Pedaços";
+ theUILang.cAvail		= "Disponibilidade";
+ theUILang.cDownloaded		= "Baixado";
+ theUILang.cMode		= "Modo";
+ theUILang.chunksCount		= "Contagem de pedaços";
+ theUILang.chunkSize		= "Tamanho do pedaço";
+ theUILang.cLegend		= "Legenda";
+ theUILang.cLegendVal		= [ "4 pedaços por célula", "1 pedaço por célula" ];
 
 thePlugins.get("chunks").langLoaded();
