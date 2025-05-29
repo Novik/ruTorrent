@@ -5,6 +5,6 @@
  * Author: 
  */
 
- theUILang.cannotLoadCloudscraper		= "_cloudflare plugin: cloudscraper module can't be loaded in Python";
+ theUILang.cannotLoadCloudscraper		= "plugin _cloudflare: o módulo cloudscraper não pode ser carregado no Python";
 
 thePlugins.get("_cloudflare").langLoaded();

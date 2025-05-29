@@ -6,9 +6,9 @@
  * Author: 
  */
 
- theUILang.bulkCopy		= "Copy";
- theUILang.Magnet		= "Magnet link";
- theUILang.bulkAdd		= "Bulk loading"; 
- theUILang.bulkAddDescription	= "One link per line (HTTP, magnet-link or hash)";
+ theUILang.bulkCopy		= "Copiar";
+ theUILang.Magnet		= "Link Magnet";
+ theUILang.bulkAdd		= "Carregamento em massa"; 
+ theUILang.bulkAddDescription	= "Um link por linha (HTTP, link magnet ou hash)";
 
 thePlugins.get("bulk_magnet").langLoaded();

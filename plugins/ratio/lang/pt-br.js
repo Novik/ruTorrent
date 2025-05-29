@@ -6,21 +6,21 @@
  * Author: 
  */
 
- theUILang.ratios		= "Ratio Groups";
- theUILang.ratio		= "RatioGroup";
- theUILang.mnuRatio		= "Set Ratio Group";
- theUILang.mnuRatioUnlimited	= "No Ratio";
- theUILang.ratioName		= "Name";
- theUILang.minRatio		= "Min";
- theUILang.maxRatio		= "Max";
- theUILang.ratioUpload		= "UL";
- theUILang.ratioAction		= "Action";
- theUILang.ratioStop		= "Stop";
- theUILang.ratioStopAndRemove	= "Stop & Clear group";
- theUILang.ratioErase		= "Remove";
- theUILang.ratioEraseData	= "Remove data";
- theUILang.maxTime		= "Time";
- theUILang.ratioDefault		= "Default ratio group";
- theUILang.setThrottleTo	= "Set channel to";
+ theUILang.ratios		= "Grupos de Proporção";
+ theUILang.ratio		= "Grupo de Proporção";
+ theUILang.mnuRatio		= "Definir Grupo de Proporção";
+ theUILang.mnuRatioUnlimited	= "Sem Proporção";
+ theUILang.ratioName		= "Nome";
+ theUILang.minRatio		= "Mín";
+ theUILang.maxRatio		= "Máx";
+ theUILang.ratioUpload		= "Envio";
+ theUILang.ratioAction		= "Ação";
+ theUILang.ratioStop		= "Parar";
+ theUILang.ratioStopAndRemove	= "Parar e Limpar grupo";
+ theUILang.ratioErase		= "Remover";
+ theUILang.ratioEraseData	= "Remover dados";
+ theUILang.maxTime		= "Tempo";
+ theUILang.ratioDefault		= "Grupo de proporção padrão";
+ theUILang.setThrottleTo	= "Definir limite para";
 
 thePlugins.get("ratio").langLoaded();
