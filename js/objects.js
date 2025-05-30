@@ -158,14 +158,30 @@ var theDialogManager = {
 				$('#'+id+' .OK').trigger('click');
 		});
 
-//		this.center(id);
+		this.observe(id);
 		this.items[id] = { beforeShow: null, afterShow: null, beforeHide: null, afterHide : null };
 		obj.data("dnd",new DnD(id));
 		return(this);
 	},
+	observe: function(id)
+	{
+		if (this.resizeObserver === undefined) {
+			this.resizeObserver = new ResizeObserver(entries => {
+				for (const entry of entries) {
+					if (entry.target.id && this.visible.includes(entry.target.id)) {
+						setTimeout(() => this.center(entry.target.id), 0);
+					}
+				}
+			});
+		}
+		var el = $type(id) === 'string' ? document.getElementById(id) : id;
+		if (el) {
+			this.resizeObserver.observe(el);
+		}
+	},
 	center: function( id )
 	{
-	        var obj = $('#'+id);
+		var obj = $('#'+id);
 		obj.css( { left: Math.max(($(window).width()-obj.width())/2,0), top: Math.max(($(window).height()-obj.height())/2,0) } );
 	},
 	toggle: function( id )
