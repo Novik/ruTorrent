@@ -30,7 +30,7 @@ customElements.define(
   "panel-label",
   class extends CustomHTMLElement {
     static template = document.getElementById("panel-label-template");
-    static stringAttributeNames = ["prefix", "icon", "text", "count", "size"];
+    static stringAttributeNames = ["prefix", "icon", "text", "count", "separator", "size"];
     static booleanAttributeNames = ["selected"];
     static attributeChangeCallbacks = {
       prefix: function (_, newValue) {
@@ -78,6 +78,7 @@ customElements.define(
       },
       size: function (_, newValue) {
         this._hideOrSetText(this.parts.size, newValue);
+        this._hideOrSetText(this.parts.separator, newValue, true);
       },
       count: function (_, newValue) {
         this._hideOrSetText(this.parts.count, newValue);
@@ -91,10 +92,12 @@ customElements.define(
       this.customDefineAttributes();
     }
 
-    _hideOrSetText(el, newValue) {
+    _hideOrSetText(el, newValue, skipText = null) {
       if (newValue != null) {
         el.style.display = "block";
-        el.textContent = newValue;
+        if (!skipText) {
+          el.textContent = newValue;
+        }
       } else {
         el.style.display = "none";
       }
