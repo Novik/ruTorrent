@@ -85,6 +85,11 @@ panel-label[selected] {
   color: #272E36;
 }
 
+panel-label[selected]::part(count),
+panel-label[selected]::part(size) {
+  color: #FFF;
+}
+
 div#preload {background-image: url(./images/toolbar.png); background-image: url(./images/tstatus.png); background-image: url(./images/t_bg.png); background-image: url(./images/r_bg.gif); background-image: url(./images/i_bg.gif); background-image: url(./images/file.gif); background-image: url(./images/dir.gif);}
 div#cover {background: #272E36}
 div#msg {background: #272E36; border-top: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0; color: #00ff00;}
