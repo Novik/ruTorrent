@@ -95,6 +95,7 @@ if(!$type(theWebUI.getTrackerName))
 				}
 			}
 		}
+		if ($.inArray( domain, plugin.hideTrackers, domain ) != -1) domain = '';
 		return(domain);
 	}
 }
