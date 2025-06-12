@@ -143,7 +143,7 @@ class rRSS
 			$headers['If-Last-Modified'] = $this->lastModified;
 		$cli = call_user_func($this->fetchURL, $this->url, $this->cookies, $headers);
 		if($cli->status<200 || $cli->status>=300) {
-			if ($cli->status !== 304) {
+			if ($cli->status != 304) {
                                 $msg = $cli->status == -100
                                         ? '[RSS-Timeout]'
                                         : ($cli->status < 100
