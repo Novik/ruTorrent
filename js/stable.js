@@ -558,8 +558,9 @@ dxSTable.prototype.setBodyState = function(v) {
 	{
 		if((this.colsdata[i].type==TYPE_PROGRESS) && this.colsdata[i].enabled)
 		{
-                        for(var j = 0; j < this.rows; j++)
-                        {
+			let rowcount = this.rows;
+			for(var j = 0; j < rowcount; j++)
+			{
 				var id = this.rowIDs[j];
 				if($$(id))
 				{
@@ -726,7 +727,9 @@ dxSTable.prototype.scrollPos = function()
 		mid = this.viewRows - 1;
 	var vr =- 1;
 	var str = "";
-	for(var i = 0; i < this.rows; i++)
+
+	let rowcount = this.rows;
+	for(var i = 0; i < rowcount; i++)
 	{
 		var id = this.rowIDs[i];
 		var r = this.rowdata[id];
