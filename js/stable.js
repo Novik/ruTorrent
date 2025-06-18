@@ -554,12 +554,14 @@ dxSTable.prototype.init = function() {
 
 dxSTable.prototype.setBodyState = function(v) {
 	this.tBody.css("visibility", v);
-	for(var i = 0; i < this.cols; i++) 
+	const colcount = this.cols;
+	for(var i = 0; i < colcount; i++) 
 	{
 		if((this.colsdata[i].type==TYPE_PROGRESS) && this.colsdata[i].enabled)
 		{
-                        for(var j = 0; j < this.rows; j++)
-                        {
+			const rowcount = this.rows;
+			for(var j = 0; j < rowcount; j++)
+			{
 				var id = this.rowIDs[j];
 				if($$(id))
 				{
@@ -726,7 +728,9 @@ dxSTable.prototype.scrollPos = function()
 		mid = this.viewRows - 1;
 	var vr =- 1;
 	var str = "";
-	for(var i = 0; i < this.rows; i++)
+
+	const rowcount = this.rows;
+	for(var i = 0; i < rowcount; i++)
 	{
 		var id = this.rowIDs[i];
 		var r = this.rowdata[id];
@@ -941,7 +945,7 @@ dxSTable.prototype.createIcon = function(icon) {
 }
 
 dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
-	const attrs = { id: sId, index: this.rows, title: cols[0] };
+	const attrs = { id: sId, title: cols[0] };
 	if (sId == null) {
 		delete attrs['id'];
 	}
@@ -972,9 +976,10 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	}
 	row.find("td:first-child div").prepend(this.createIcon(icon));
 	const ret = row[0];
-	const _e = this.tBodyCols;
-	for (let i = 0; i < _e.length; i++) {
-		ret.cells[i].style.textAlign = this.tHeadCols[i].style.textAlign;
+	const _tBodyCols = this.tBodyCols;
+	const _tHeadCols = this.tHeadCols;
+	for (let i = 0; i < _tBodyCols.length; i++) {
+		ret.cells[i].style.textAlign = _tHeadCols[i].style.textAlign;
 	}
 	return ret;
 }
