@@ -22,7 +22,16 @@
 	overflow: hidden;
 }
 
-/* 3. IP Text Behavior */
+/* 3. Group for each IP version (icon + text) */
+.port-group {
+	display: flex;
+	align-items: center;
+	gap: 3px; /* Space between icon and text inside the group */
+	overflow: hidden; /* Prevent internal content from breaking out */
+	min-width: 0; /* Allow the group to shrink */
+}
+
+/* 4. IP Text Behavior */
 .port-status-container .port-ip-text-segment {
 	/* Prevents long text from wrapping and breaking the flexbox layout */
 	white-space: nowrap;
@@ -32,7 +41,7 @@
 	min-width: 0;
 }
 
-/* 4. Icon Base and Status Styles */
+/* 5. Icon Base and Status Styles */
 .port-status-container .icon {
 	background-position: center;
 	background-repeat: no-repeat;
@@ -42,14 +51,17 @@
 	flex-shrink: 0;
 }
 
+/* Port status is unknown */
 .port-status-container .pstatus0 {
 	background-image: var(--pane-port-unknown-icon);
 }
 
+/* Port is closed (error state) */
 .port-status-container .pstatus1 {
 	background-image: var(--pane-port-error-icon);
 }
 
+/* Port is open (success state) */
 .port-status-container .pstatus2 {
 	background-image: var(--pane-port-success-icon);
 }
