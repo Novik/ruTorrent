@@ -168,6 +168,10 @@ function get_and_check_ip($ip_version, $use_website, $rtorrent_ip, $rtorrent_por
 		// Call the appropriate checking function based on the selected service
 		if ($use_website == "yougetsignal") {
 			$status = check_port_yougetsignal($ip_to_check, $rtorrent_port, $timeout);
+			// If yougetsignal fails, fall back to portchecker for IPv4
+			if ($status === 0 && $ip_version == '4') {
+				$status = check_port_portchecker($ip_to_check, $rtorrent_port, $timeout);
+			}
 		} elseif ($use_website == "portchecker") {
 			$status = check_port_portchecker($ip_to_check, $rtorrent_port, $timeout);
 		}
