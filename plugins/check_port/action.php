@@ -42,9 +42,21 @@ function get_public_ip($version, $timeout) {
 		if (filter_var($ip, FILTER_VALIDATE_IP, $flag)) {
 			return $ip; // Return the valid IP
 		}
-		error_log("check_port plugin: {$url} returned invalid IP: " . $ip);
+		// If looking for IPv6 and received a valid IPv4, it indicates no IPv6 is available (e.g. NAT64/DNS64).
+		// If looking for IPv4 and received a valid IPv6, it indicates no IPv4 is available.
+		// These are not error conditions, so we can return null without logging.
+		$isIPv6RequestWithIPv4Response = ($version == '6' && filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4));
+		$isIPv4RequestWithIPv6Response = ($version == '4' && filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6));
+
+		if (!$isIPv6RequestWithIPv4Response && !$isIPv4RequestWithIPv6Response) {
+			error_log("check_port plugin: {$url} returned invalid IP: " . $ip);
+		}
 	} else {
-		error_log("check_port plugin: Failed to fetch from {$url}. Status: {$snoopy->status}, Error: {$snoopy->error}");
+		// cURL error 7 ("Failed to connect to host") indicates a lack of connectivity for the requested IP version.
+		// This is not a plugin error, so we suppress the log for both IPv4 and IPv6 checks.
+		if ($snoopy->status != 7) {
+			error_log("check_port plugin: Failed to fetch from {$url}. Status: {$snoopy->status}, Error: {$snoopy->error}");
+		}
 	}
 	return null; // Return null on failure
 }
@@ -72,6 +84,7 @@ function check_port_yougetsignal($ip, $port, $timeout) {
 		if (stripos($client->results, "is open") !== false) return 2; // Port is open
 		error_log("check_port: yougetsignal response indicators not found for IP {$ip}. Response: " . substr($client->results, 0, 500));
 	} else {
+		// This log will be triggered if the service is offline or unreachable.
 		error_log("check_port: Failed fetch from yougetsignal for IP {$ip}. Status: {$client->status}, Error: {$client->error}");
 	}
 	return 0;
@@ -122,6 +135,7 @@ function check_port_portchecker($ip, $port, $timeout) {
 		if (stripos($client->results, 'is <span class="green">open</span>') !== false) return 2; // Port is open
 		error_log("check_port: portchecker response indicators not found for IP {$ip}. Response: " . substr($client->results, 0, 500));
 	} else {
+		// This log will be triggered if the service is offline or unreachable.
 		error_log("check_port: Failed fetch from portchecker endpoint for IP {$ip}. Status: {$client->status}, Error: {$client->error}");
 	}
 	return 0; // Status is unknown
