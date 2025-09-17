@@ -733,7 +733,7 @@ div#tadd {max-width: 95vw;}
   div#HDivider {cursor: e-resize;}
   div#VDivider {cursor: n-resize;}
   div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
-  div#tadd {min-width: 600px;}
+  div#tadd {width: 600px;}
   .dlg-window .buttons-list {
     margin: 1rem 0.5rem;
     justify-content: end;
