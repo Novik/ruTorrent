@@ -93,6 +93,7 @@ var theUILang =
  GB				: "ГiБ",
  TB				: "ТiБ",
  PB				: "ПiБ",
+ Pixel				: "Pixel",
  Loading			: "Триває завантаження...",
  Torrent_file			: "Файл торента",
  Torrent_URL			: "URL торента",
@@ -302,6 +303,7 @@ var theUILang =
  Deselect_all			: "Скасувати вибір",
  showSpeedInTitle		: "Показувати швидкість у заголовку",
  sidePanelMinWidth		: "Side panel min width",
+ sidePanelMaxWidthPercent	: "Side panel max width",
  listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Duration of speed graph",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
@@ -318,5 +320,6 @@ var theUILang =
  removeAllTegs			: "Видалити всі теги",
  Torrents			: "Torrent(s)",
  copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
- copyToClipboardSuccess		: "Copied to clipboard successfully!"
+ copyToClipboardSuccess		: "Copied to clipboard successfully!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

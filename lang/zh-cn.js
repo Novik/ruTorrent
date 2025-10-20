@@ -93,6 +93,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
+ Pixel				: "Pixel",
  Loading			: "加载中...",
  Torrent_file			: "Torrent 文件",
  Torrent_URL			: "Torrent 链接",
@@ -302,6 +303,7 @@ var theUILang =
  Deselect_all			: "全不选",
  showSpeedInTitle		: "在标题中显示速度",
  sidePanelMinWidth		: "Side panel min width",
+ sidePanelMaxWidthPercent	: "Side panel max width",
  listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Duration of speed graph",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
@@ -316,5 +318,8 @@ var theUILang =
  registerMagnet			: "尝试在启动时注册磁力链协议",
  linkTorTorrentRestored		: "与 rTorrent 的连接已建立.",
  removeAllTegs			: "删除所有标签",
- Torrents			: "Torrent(s)"
+ Torrents			: "Torrent(s)",
+ copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
+ copyToClipboardSuccess		: "Copied to clipboard successfully!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

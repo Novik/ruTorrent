@@ -17,7 +17,8 @@
  				  "Có thể đã xóa",
  				  "Lỗi truy cập máy theo dỗi",
  				  "Lỗi giao tiếp với rTorrent",
- 				  "Không cần thiết"
+ 				  "Không cần thiết",
+ 				  "Bị bỏ qua"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

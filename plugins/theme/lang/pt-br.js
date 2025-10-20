@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.themeStandard	= "Standard";
- theUILang.theme		= "Theme";
+ theUILang.themeStandard	= "Padrão";
+ theUILang.theme		= "Tema";
 
 thePlugins.get("theme").langLoaded();

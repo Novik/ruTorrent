@@ -1,5 +1,9 @@
+#StatusBar {
+  --pane-cpu-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACfUlEQVR4AWKgFLCACJ8V3t3//rLy/AK0Rs4I3h5xHP8MHq9t78ZpwiOEV3hvkDZGF1wldhmr2iZ2srYeY2bi/wnyQ/uls2jl06Upx9kRS/OrhElA4EfUtkNGHl1RoFF0TX710oOvPKIBZnfSa+//ejTxk24Jkhi3e4GOfX47+A45G+OUwDlLu5tS5iWzQ33cu7ZyAvwD8O7ugT24KHhm7T6WphcIb024fuNWlApQUlGWJXl6wmb5OYfRCS9cfsqH279ZAAkweIu+aTrur2I/Yvtkn+GhIcq8QFoIvQBP+wyOzLJy/e3kO6fMuNC6ucvFHsDFZvZEupX5jbMsr6wzOb2K9H2S/gHqqgDrsM4xN79I1D/I6Wkqp8zqaz2AdLe8ZtpG6jCkv3+EtmsI4z5aa1FRglWKqumoW0vfwBhdZzhtqrt7AMFoH2o2oj/pY2Z6Hl+FaOFjheTs8pI0LzEGTGsZHR+jbzSxMwvDz/VqVIsR9sr9iR4zPDKGkhIlNW1ncNbx1+ZZjpCSpjHItLPF6ckXPYBodgThlwjr0EojJGTFFWen52AdgVbUtJydZZi24Wov1XtfBW8AwxrAtQbTWXa3tjg83KMqC5QHeVYQeD6ucTjTUJYXRJ5E3TiInIltT4HwJAaH8gU7O9//DWadQUkPLRWh9rDWYdsMITqErxlfmbO/sIkGMFiKpmZycZQ0PaV/YJz+eIQ4SsA5xF8PGNfyw8U2zaRPdVn0FKCuOgppeGjrNcZkhDyQqMjDnFSIwQB3XsFQgBwN2FUndIkg7k/oAdyxuPqbPjy4ErFAaDBFQ+Mq9LjA+C0kEhWA8zsWF8ZRocfds8tHn/M/zB9SPDFgrdHjyAAAAABJRU5ErkJggg==);
+}
+
 #meter-cpu-pane .icon {
-  background: url(./images/cpu.png) center no-repeat;
+  background-image: var(--pane-cpu-icon);
 }
 #meter-cpu-holder {
   position: relative;

@@ -17,7 +17,8 @@
  				  "아마 삭제됨",
  				  "트래커 접근 중 오류",
  				  "rTorrent 통신 오류",
- 				  "불필요함"
+ 				  "불필요함",
+ 				  "무시됨"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

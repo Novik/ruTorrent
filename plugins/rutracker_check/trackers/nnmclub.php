@@ -7,7 +7,7 @@ class NNMClubCheckImpl
         if (preg_match('`^https?://(nnm-club|nnmclub)\.(ru|me|to|name|tv)/forum/viewtopic\.php\?p=(?P<id>\d+)$`', $url, $matches)) {
             $client = ruTrackerChecker::makeClient("https://nnmclub.to/forum/viewtopic.php?p=".$matches["id"]);
             if ($client->status != 200) return ruTrackerChecker::STE_CANT_REACH_TRACKER;
-            if (preg_match('`btih:(?P<hash>[0-9A-Fa-f]{40})&tr`', $client->results, $matches)) {
+            if (preg_match('`btih:(?P<hash>[0-9A-Fa-f]{40})`', $client->results, $matches)) {
                 if (strtoupper($matches["hash"])==$hash) {
                     return  ruTrackerChecker::STE_UPTODATE;
                 }

@@ -6,21 +6,21 @@
  * Author: 
  */
 
- theUILang.scheduler		= "Scheduler";
- theUILang.schedulerOn		= "Enable scheduler";
- theUILang.schedulerGraph	= "Scheduler Table";
- theUILang.schShortWeek		= [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ];
- theUILang.schFullWeek		= [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ];
- theUILang.schUnlimited		= "Unlimited";
- theUILang.schLimited		= "Limited";
- theUILang.schTurnOff		= "Turn off";
- theUILang.schSeedingOnly	= "Seeding only";
- theUILang.schUnlimitedDesc	= "Unlimited - Global limit is absent";
- theUILang.schLimitedDesc	= "Limited - Uses scheduler-specific bandwidth limit";
- theUILang.schTurnOffDesc	= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc	= "Seeding only - Only upload data";
- theUILang.schLimitedUL		= "Limited UL";
- theUILang.schLimitedDL		= "Limited DL";
- theUILang.shcIgnore		= "Ignore Scheduler";
+ theUILang.scheduler		= "Agendador";
+ theUILang.schedulerOn		= "Habilitar agendador";
+ theUILang.schedulerGraph	= "Tabela do Agendador";
+ theUILang.schShortWeek		= [ "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom" ];
+ theUILang.schFullWeek		= [ "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo" ];
+ theUILang.schUnlimited		= "Ilimitado";
+ theUILang.schLimited		= "Limitado";
+ theUILang.schTurnOff		= "Desligar";
+ theUILang.schSeedingOnly	= "Apenas semear";
+ theUILang.schUnlimitedDesc	= "Ilimitado - Limite global ausente";
+ theUILang.schLimitedDesc	= "Limitado - Usa limite de largura de banda específico do agendador";
+ theUILang.schTurnOffDesc	= "Desligar - Para todos os torrents";
+ theUILang.schSeedingOnlyDesc	= "Apenas semear - Apenas envia dados";
+ theUILang.schLimitedUL		= "UL Limitado";
+ theUILang.schLimitedDL		= "DL Limitado";
+ theUILang.shcIgnore		= "Ignorar Agendador";
 
 thePlugins.get("scheduler").langLoaded();

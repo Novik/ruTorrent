@@ -6,24 +6,24 @@
  * Author: 
  */
 
- var s_PluginFail			= "Plugin will not work.";
+ var s_PluginFail			= "O plugin não funcionará.";
 
  theUILang.autotools			= "Autotools";
- theUILang.autotoolsEnableLabel		= "Enable \"AutoLabel\" feature, Template:";
- theUILang.autotoolsPathToFinished	= "Path to finished downloads";
- theUILang.autotoolsEnableWatch		= "Enable \"AutoWatch\" feature";
- theUILang.autotoolsPathToWatch		= "Path to base watch directory";
- theUILang.autotoolsWatchStart		= "Start download automatically";
- theUILang.autotoolsNoPathToFinished	= "Autotools plugin: path to finished downloads is not set. " + s_PluginFail;
- theUILang.autotoolsNoPathToWatch	= "Autotools plugin: path to base watch directory is not set. " + s_PluginFail;
- theUILang.autotoolsFileOpType		= "Operation type";
- theUILang.autotoolsFileOpMove		= "Move";
- theUILang.autotoolsFileOpHardLink	= "Hard link";
- theUILang.autotoolsFileOpCopy		= "Copy";
- theUILang.autotoolsFileOpSoftLink	= "Soft link";
- theUILang.autotoolsAddLabel		= "Add torrent's label to path";
- theUILang.autotoolsAddName		= "Add torrent's name to path";
- theUILang.autotoolsEnableMove		= "Enable \"AutoMove\" if torrent's label matches filter";
- theUILang.autotoolsSkipMoveForFiles	= "Skip torrents that contain files matching pattern";
+ theUILang.autotoolsEnableLabel		= "Habilitar recurso \"AutoLabel\", Modelo:";
+ theUILang.autotoolsPathToFinished	= "Caminho para downloads concluídos";
+ theUILang.autotoolsEnableWatch		= "Habilitar recurso \"AutoWatch\"";
+ theUILang.autotoolsPathToWatch		= "Caminho para o diretório base de monitoramento";
+ theUILang.autotoolsWatchStart		= "Iniciar download automaticamente";
+ theUILang.autotoolsNoPathToFinished	= "Plugin Autotools: o caminho para downloads concluídos não está definido. " + s_PluginFail;
+ theUILang.autotoolsNoPathToWatch	= "Plugin Autotools: o caminho para o diretório base de monitoramento não está definido. " + s_PluginFail;
+ theUILang.autotoolsFileOpType		= "Tipo de operação";
+ theUILang.autotoolsFileOpMove		= "Mover";
+ theUILang.autotoolsFileOpHardLink	= "Link físico";
+ theUILang.autotoolsFileOpCopy		= "Copiar";
+ theUILang.autotoolsFileOpSoftLink	= "Link simbólico";
+ theUILang.autotoolsAddLabel		= "Adicionar rótulo do torrent ao caminho";
+ theUILang.autotoolsAddName		= "Adicionar nome do torrent ao caminho";
+ theUILang.autotoolsEnableMove		= "Habilitar \"AutoMover\" se o rótulo do torrent corresponder ao filtro";
+ theUILang.autotoolsSkipMoveForFiles	= "Ignorar torrents que contêm arquivos que correspondem ao padrão";
 
 thePlugins.get("autotools").langLoaded();

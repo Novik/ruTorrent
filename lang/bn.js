@@ -93,6 +93,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
+ Pixel				: "Pixel",
  Loading			: "লোডিং...",
  Torrent_file			: "টরেন্ট ফাইল",
  Torrent_URL			: "টরেন্ট URL",
@@ -302,6 +303,7 @@ var theUILang =
  Deselect_all			: "সব গুলো অনির্বাচিত করুন",
  showSpeedInTitle		: "শিরোনামে স্পিড দেখান",
  sidePanelMinWidth		: "Side panel min width",
+ sidePanelMaxWidthPercent	: "Side panel max width",
  listTableMinHeight		: "List table min height",
  speedGraphDuration		: "স্পিড গ্রাফের সময়কাল",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
@@ -318,5 +320,6 @@ var theUILang =
  removeAllTegs			: "সমস্ত ট্যাগ সরান",
  Torrents			: "টরেন্ট (গুলি)",
  copyToClipboardFailed		: "কপি ফাংশন আপনার ব্রাউজারে কাজ করছে না।\nদয়া করে এই কন্টেন্টটি ম্যানুয়ালি কপি করুন:\n\n",
- copyToClipboardSuccess		: "সফলভাবে ক্লিপবোর্ডে কপি করা হয়েছে!"
+ copyToClipboardSuccess		: "সফলভাবে ক্লিপবোর্ডে কপি করা হয়েছে!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

@@ -200,7 +200,11 @@ function rTorrentStub( URI )
 	this.content = null;
 	this.mountPoint = theURLs.XMLRPCMountPoint;
 	this.faultString = [];
-	this.contentType = "text/xml; charset=UTF-8";
+	/* Remove 'charset=UTF-8' due to bug in rtorrent.
+	 * https://github.com/Novik/ruTorrent/issues/2879
+	 * https://github.com/rakshasa/rtorrent/issues/1444#issuecomment-2847868158
+	 */
+	this.contentType = "text/xml";
 	this.dataType = "xml";
 	this.method = "POST";
 	this.ifModified = false;

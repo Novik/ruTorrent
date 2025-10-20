@@ -1,9 +1,17 @@
+#StatusBar {
+  /* --pane-cpu-icon: undefined - inherit from standard theme; */
+  --pane-disk-icon: url(data:image/gif;base64,R0lGODlhEAAQAMQAAAAAAP///wCmZADAAAHAAQLAAgGAAQP/AwT/BAKAAgTABAXABQOAAwj/CAbABgSABAn/CQfABwWABQaABv///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABQALAAAAAAQABAAAAVQICWOZGmeaKqu1OS+sCSLT2Tft+MsD8UswKBwoWAkEgeEcqk8OI8GA2FKpQ4EhGi0wO16ucdjkUEulxdkwK/BhrjfkMgDIALY7/g7a89fhQAAOw==);
+  /* --pane-port-unknown-icon: undefined - inherit from standard theme; */
+  /* --pane-port-error-icon: undefined - inherit from standard theme; */
+  /* --pane-port-success-icon: undefined - inherit from standard theme; */
+}
+
 .browseFrame {
   border: 1px solid #909090;
   background-color: #1E2124;
 }
 div#create_btns {background-image: url(./images/ajax-loader_h.gif)}
-#meter-disk-td, #qmeter-disk-td {background-image: url(./images/disk.gif)}
+#qmeter-disk-td {background-image: var(--pane-disk-icon);}
 div#t div#starter {background-image: url(./images/starter.png)}
 
 /* Dialog window icons */

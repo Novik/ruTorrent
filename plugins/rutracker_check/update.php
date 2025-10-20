@@ -14,18 +14,19 @@ $req =  new rXMLRPCRequest(
 			getCmd("d.get_custom=")."chk-state",
 			getCmd("d.get_custom=")."chk-time",
 			getCmd("d.get_custom=")."chk-stime",
+			getCmd("d.get_custom1="),
 			getCmd("cat").'="$'.getCmd("t.multicall=").getCmd("d.get_hash=").",".getCmd("t.get_url")."=,".getCmd("cat=#").'"'
 		))
 	);
 if($req->success())
 {
-	for($i = 0; $i<count($req->val); $i+=5)
+	for($i = 0; $i<count($req->val); $i+=6)
 	{
 		foreach(ruTrackerChecker::supportedTrackers() as $tracker) 
 		{
-			if(preg_match($tracker,$req->val[$i + 4]))
+			if(preg_match($tracker,$req->val[$i + 5]))
 			{
-				ruTrackerChecker::run($req->val[$i], $req->val[$i + 1], $req->val[$i + 2], $req->val[$i + 3]);
+				ruTrackerChecker::run($req->val[$i], $req->val[$i + 1], $req->val[$i + 2], $req->val[$i + 3], $req->val[$i + 4]);
 				break;
 			}
 		}

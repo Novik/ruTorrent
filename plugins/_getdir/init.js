@@ -16,9 +16,7 @@ function filterDir(ev) {
 theWebUI.rDirBrowser = class {
 	constructor(edit_id, withFiles, height) {
 		const self = this;
-		this.edit = $('#' + edit_id).addClass("browseEdit").prop("autocomplete", "off").on(
-			browser.isIE ? "focusin" : "focus", () => self.hide()
-		);
+		this.edit = $('#' + edit_id).addClass("browseEdit").prop("autocomplete", "off").on("focus", () => self.hide());
 		this.btn = $("<button>").attr(
 			{type:"button", id:edit_id + "_btn"}
 		).addClass("browseButton").text("...").on(
@@ -35,10 +33,24 @@ theWebUI.rDirBrowser = class {
 		theDialogManager.addHandler(dlgId, "afterHide", () =>self.hide());
 		// 3. `id` of the containing option page
 		const stgId = this.btn.parents(".stg_con").attr("id");
-		// 4. add an after-hide handler if the button is within an option page
+		// 4. add an hide tab event handler if the button is within an option page
 		if (!!stgId) {
-			theOptionsSwitcher.addHandler(stgId, "afterHide", () => self.hide());
+			theOptionsWindow.addHandler(`mnu_${stgId}`, "beforeHide", () => this.hide());
 		}
+		// move dir list frame along with the containing dialog window
+		$(`#${dlgId}`).data("dnd").options.onRun = () => {
+			$(`#${dlgId}`).find(".browseEdit").each((_, ele) => {
+				// move open ones only because frames will automatically reposition
+				// when toggled open
+				if ($(`#${ele.id}_frame`).css("display") !== "none") {
+					const frameOffs = ele.getBoundingClientRect();
+					$(`#${ele.id}_frame`).css({
+						top: frameOffs.bottom,
+						left: frameOffs.left,
+					});
+				}
+			});
+		};
 
 		this.withFiles = withFiles;
 		this.height = height;
@@ -162,7 +174,6 @@ theWebUI.rDirBrowser = class {
 		this.btn.text("X");
 		theDialogManager.bringToTop(this.frame.attr("id"));
 		this.edit.prop("read-only", true);
-		return false;
 	}
 
 	hide() {
@@ -172,11 +183,10 @@ theWebUI.rDirBrowser = class {
 			this.frame.find(".filter-dir").val("");
 			this.frame.hide();
 		}
-		return false;
 	}
 
 	toggle() {
-		return (this.frame.css("display") !== "none") ? this.hide() : this.show();
+		(this.frame.css("display") !== "none") ? this.hide() : this.show();
 	}
 }
 
@@ -187,5 +197,5 @@ plugin.onLangLoaded = function() {
 plugin.onRemove = function() {
 	$(".browseButton").remove();
 	$(".browseFrame").remove();
-	$(".browseEdit").prop("autocomplete", "on").off(browser.isIE ? "focusin" : "focus");
+	$(".browseEdit").prop("autocomplete", "on").off("focus");
 }

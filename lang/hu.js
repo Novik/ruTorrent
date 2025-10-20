@@ -93,6 +93,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
+ Pixel				: "Pixel",
  Loading			: "Betöltés...",
  Torrent_file			: "Torrent fájl",
  Torrent_URL			: "Torrent URL",
@@ -302,6 +303,7 @@ var theUILang =
  Deselect_all			: "Kijelölés törlése",
  showSpeedInTitle		: "Sebesség megjelenítése a címben",
  sidePanelMinWidth		: "Side panel min width",
+ sidePanelMaxWidthPercent	: "Side panel max width",
  listTableMinHeight		: "List table min height",
  speedGraphDuration		: "A sebességgrafikon időtartama",
  speedGraphDurationOptions		: {600: "10 perc", 1800: "30 perc", 3600: "1 óra", 10800: "3 óra"},
@@ -318,5 +320,6 @@ var theUILang =
  removeAllTegs			: "Minden címke eltávolítása",
  Torrents			: "Torrent(ek)",
  copyToClipboardFailed		: "A másolás funkció nem működik a böngésződben.\nKérlek, másold le ezt a tartalmat kézzel:\n\n",
- copyToClipboardSuccess		: "Sikeresen átmásoltam a vágólapra!"
+ copyToClipboardSuccess		: "Sikeresen átmásoltam a vágólapra!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

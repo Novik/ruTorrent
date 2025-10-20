@@ -17,7 +17,8 @@
  				  "Wahrscheinlich gelöscht",
  				  "Fehler beim Zugriff auf Tracker",
  				  "Fehler beim Interagieren mit rTorrent",
- 				  "Nicht nötig"
+ 				  "Nicht nötig",
+ 				  "Ignoriert"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

@@ -6,25 +6,25 @@
  * Author: 
  */
 
- theUILang.tskCommand		= "Running...";
- theUILang.tskCommandDone	= "Done.";
+ theUILang.tskCommand		= "Executando...";
+ theUILang.tskCommandDone	= "Concluído.";
  theUILang.tskConsole		= "Console";
- theUILang.tskErrors		= "Diagnostics";
- theUILang.tskBackground	= "Hide";
- theUILang.tskCopy		= "Copy";
- theUILang.tskLogEmpty		= "Console log is empty.";
- theUILang.tskSaveLog		= "Save Log";
- theUILang.tskStart		= "Started";
- theUILang.tskFinish		= "Finished";
- theUILang.tskElapsed		= "Elapsed";
+ theUILang.tskErrors		= "Diagnóstico";
+ theUILang.tskBackground	= "Ocultar";
+ theUILang.tskCopy		= "Copiar";
+ theUILang.tskLogEmpty		= "O registro do console está vazio.";
+ theUILang.tskSaveLog		= "Salvar Registro";
+ theUILang.tskStart		= "Iniciado";
+ theUILang.tskFinish		= "Finalizado";
+ theUILang.tskElapsed		= "Decorrido";
  theUILang.tskPlugin		= "Plugin";
- theUILang.tskDeletePrompt	= "Do you really want to delete the selected task(s)?";
- theUILang.tskDelete		= "Delete tasks(s)";
- theUILang.tskActivate		= "Activate";
- theUILang.tskRemove		= "Remove";
- theUILang.tskRefresh		= "Refresh";
- theUILang.tskRunning		= "Running";
- theUILang.tskArg		= "Parameter";
- theUILang.tskTasks		= "Tasks";
+ theUILang.tskDeletePrompt	= "Você realmente deseja excluir a(s) tarefa(s) selecionada(s)?";
+ theUILang.tskDelete		= "Excluir tarefa(s)";
+ theUILang.tskActivate		= "Ativar";
+ theUILang.tskRemove		= "Remover";
+ theUILang.tskRefresh		= "Atualizar";
+ theUILang.tskRunning		= "Em execução";
+ theUILang.tskArg		= "Parâmetro";
+ theUILang.tskTasks		= "Tarefas";
 
 thePlugins.get("_task").langLoaded();

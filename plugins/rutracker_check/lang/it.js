@@ -17,7 +17,8 @@
  				  "Probabilmente cancellato",
  				  "Errore di accesso al tracker",
  				  "Errore di interazione con rTorrent",
- 				  "Non serve"
+ 				  "Non serve",
+ 				  "Ignorato"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

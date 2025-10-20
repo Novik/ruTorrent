@@ -6,12 +6,14 @@
  * Author: 
  */
 
- theUILang.checkWebsiteNotFound = "Check_port plugin: Plugin will not work. Invalid configuration";
- theUILang.checkPort		= "Check Port Status";
+ theUILang.checkWebsiteNotFound = "plugin check_port: O plugin não funcionará. Configuração inválida";
+ theUILang.checkPort		= "Verificar Status da Porta";
+ theUILang.checkingPort		= "Checking port status";
  theUILang.portStatus		= [
- 				  "Port status is unknown",
- 				  "Port is closed",
- 				  "Port is open"
+ 				  "Status da porta é desconhecido",
+ 				  "Porta está fechada",
+ 				  "Porta está aberta"
  				  ];
+ theUILang.notAvailable = "-";
 
 thePlugins.get("check_port").langLoaded();

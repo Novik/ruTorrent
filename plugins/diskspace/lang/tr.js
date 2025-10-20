@@ -7,6 +7,7 @@
  *		    Selim Şumlu
  */
 
- theUILang.diskNotification	= "Uyarı! Disk dolu. rTorrent düzgün çalışmayabilir. Yeni veri indirmek için disk alanınızı boşaltmalısınız.";
+ theUILang.diskNotification = "Uyarı! Disk dolu. rTorrent düzgün çalışmayabilir. Yeni veri indirmek için disk alanınızı boşaltmalısınız.";
+ theUILang.diskUsage = "%USED%/%TOTAL% (%FREE% free)";
 
 thePlugins.get("diskspace").langLoaded();

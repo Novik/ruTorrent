@@ -6,13 +6,13 @@
  * Author: 
  */
 
- theUILang.unpack		= "Unpack";
- theUILang.unpackPath		= "Unpack to (leave blank for the torrent's current directory)";
- theUILang.unzipNotFound	= "Unpack plugin: rTorrent user can't access 'unzip' program.";
- theUILang.unrarNotFound	= "Unpack plugin: rTorrent user can't access 'unrar' program.";
- theUILang.unpackEnabled	= "Enable autounpacking if torrent's label matches filter";
- theUILang.unpackTorrents	= "Append to Pathname When Unpacking Torrent Data";
- theUILang.unpackAddLabel	= "Torrent Label";
- theUILang.unpackAddName	= "Torrent Name";
+ theUILang.unpack		= "Descompactar";
+ theUILang.unpackPath		= "Descompactar para (deixe em branco para o diretório atual do torrent)";
+ theUILang.unzipNotFound	= "plugin unpack: O usuário do rTorrent não consegue acessar o programa 'unzip'.";
+ theUILang.unrarNotFound	= "plugin unpack: O usuário do rTorrent não consegue acessar o programa 'unrar'.";
+ theUILang.unpackEnabled	= "Habilitar descompactação automática se o rótulo do torrent corresponder ao filtro";
+ theUILang.unpackTorrents	= "Anexar ao Caminho ao Descompactar Dados do Torrent";
+ theUILang.unpackAddLabel	= "Rótulo do Torrent";
+ theUILang.unpackAddName	= "Nome do Torrent";
 
 thePlugins.get("unpack").langLoaded();

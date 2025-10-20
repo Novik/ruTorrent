@@ -93,6 +93,7 @@ var theUILang =
  GB				: "ГБ",
  TB				: "ТБ",
  PB				: "ПБ",
+ Pixel				: "Pixel",
  Loading			: "Загрузка...",
  Torrent_file			: "Торрент файл",
  Torrent_URL			: "Торрент URL",
@@ -302,6 +303,7 @@ var theUILang =
  Deselect_all			: "Отмена выделения",
  showSpeedInTitle		: "Скорость в заголовке",
  sidePanelMinWidth		: "Side panel min width",
+ sidePanelMaxWidthPercent	: "Side panel max width",
  listTableMinHeight		: "List table min height",
  speedGraphDuration		: "Длительность графика скорости",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
@@ -318,5 +320,6 @@ var theUILang =
  removeAllTegs			: "Удалить все теги",
  Torrents			: "Торренты",
  copyToClipboardFailed		: "Функция копирования не работает в вашем браузере.\nСкопируйте требуемое вручную.\n\n",
- copyToClipboardSuccess		: "Успешно скопировано!"
+ copyToClipboardSuccess		: "Успешно скопировано!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

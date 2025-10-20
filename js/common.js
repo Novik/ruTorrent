@@ -160,10 +160,10 @@ $.fn.extend(
 		}));
 	},
 
-	enableSysMenu: function()
-	{
-		return(this.on("contextmenu",function(e) { e.stopImmediatePropagation(); }).
-			on("selectstart",function(e) { e.stopImmediatePropagation(); return(true); }));
+	enableSysMenu: function() {
+		return this
+			.on("contextmenu", (e) => e.stopImmediatePropagation())
+			.on("selectstart", (e) => {e.stopImmediatePropagation(); return true;});
 	},
 
 	setCursorPosition: function(pos)
@@ -246,16 +246,19 @@ function escapeHTML(str)
 	return( String(str).split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;') );
 }
 
-function askYesNo( title, content, funcYesName )
-{
-	$("#yesnoDlg-header").html(title);
-	$("#yesnoDlg-content").html(content);
-	$("#yesnoOK").off('click');
-	$("#yesnoOK").on('click', function()
-	{
-		typeof(funcYesName)==="function" ? funcYesName() : eval(funcYesName);
+/**
+ * Confirm again before taking action.
+ * @param {string} title Title of the dialog.
+ * @param {string} content Hint of the action to be confirmed.
+ * @param {Function | string} funcYesName Function to be executed if confirmed.
+ */
+function askYesNo(title, content, funcYesName) {
+	$("#yesnoDlg-header").text(title);
+	$("#yesnoDlg-content").text(content);
+	$("#yesnoOK").off('click').on('click', () => {
+		$type(funcYesName) === "function" ? funcYesName() : eval(funcYesName);
 		theDialogManager.hide("yesnoDlg");
-		return(false);
+		return false;
 	});
 	theDialogManager.show("yesnoDlg");
 }
@@ -305,38 +308,6 @@ var theURLs =
 	GetPluginsURL		: "php/getplugins.php",
 	GetDonePluginsURL	: "php/doneplugins.php",
 	IPQUERYURL		: "https://ipinfo.io/"
-};
-
-const theOptionsSwitcher = {
-	current: "st_gl",
-	items: {},
-
-	addHandler: function(id, type, handler) {
-		if ($type(this.items[id])) {
-			const existing = this.items[id][type];
-			if (existing) {
-				this.items[id][type] = function() {
-					existing();
-					handler();
-				};
-			} else {
-				this.items[id][type] = handler;
-			}
-		}
-		return this;
-	},
-
-	run: function(id) {
-		$('#' + this.current).hide();
-		$("#mnu_" + this.current).removeClass("focus");
-		if ($type(this.items[this.current]) && ($type(this.items[this.current].afterHide) === "function"))
-			this.items[this.current].afterHide();
-		this.current = id;
-		$('#' + this.current).show();
-		$("#mnu_" + this.current).addClass("focus");
-		if ($type(this.items[this.current]) && ($type(this.items[this.current].afterShow) === "function"))
-			this.items[this.current].afterShow();
-	},
 };
 
 var theConverter =
@@ -491,6 +462,70 @@ var theConverter =
 	}
 };
 
+var theNormalizer = {
+	encloses: ['[]', '{}', '()'],
+	getLabel(s) {
+		let res;
+		if (s !== null) {
+			for (const enclose of this.encloses) {
+				const o = enclose.substr(0, 1);
+				const c = enclose.substr(1, 1);
+				const re = new RegExp(`^\\${o}(.*?)\\${c}`, 'i');
+				const matches = re.exec(s);
+				if (matches) {
+					res = [matches[1], s.substr(matches[0].length)];
+					break;
+				}
+			}
+		}
+		return res;
+	},
+	clean(s, sortable = true) {
+		if (s !== null && s.length) {
+			if (sortable) {
+				// replace dot, underscore, and dash with whitespace
+				// replace multiple whitespace with single whitespace
+				s = s
+					.replace(/(\.|_|\-)/g, ' ')
+					.replace(/\s{2,}/g, ' ');
+			} else {
+				s = s
+					.replace(/^(\.|_|\-)/g, ' ')
+					.replace(/(\.|_|\-)$/g, ' ');
+			}
+			s = s.trim();
+		}
+		return s;
+	},
+	normalize(s, sortable = true) {
+		if (s !== null) {
+			// get label
+			const label = this.getLabel(s);
+			if (label) {
+				s = label[1];
+			}
+			s = this.clean(s, sortable);
+			if (sortable) {
+				// ignore 'the' in the beginning text
+				if (s.length && s.toLowerCase().substr(0, 3) === 'the') {
+					s = s
+						.substr(3)
+						.trim();
+				}
+			}
+			// append label if necessary
+			if (s.length && label) {
+				s += ` \`${label[0]}\``;
+			}
+			// treat label as string
+			if (s.length === 0 && label) {
+				s = label[0];
+			}
+		}
+		return s;
+	}
+}
+
 var theFormatter =
 {
 	torrents: function(table,arr)
@@ -502,6 +537,11 @@ var theFormatter =
 			else
    			switch(iv(i))
 			{
+				case 0:
+					if (theWebUI.settings["webui.normalize_torrent_name"]) {
+						arr[i] = theNormalizer.normalize(arr[i], false);
+					}
+					break;
 				case 3:
 					arr[i] = (arr[i] / 10) + "%";
 					break;
@@ -818,14 +858,6 @@ var theTabs = {
 				).on("click", (ev) => ev.target.blur()).addClass("nav-link").text(name),
 			)),
 		);
-		$("#tab_lcont").after(
-			$("<button>").attr(
-				{type:"button", id:"clear_log"}
-			).addClass('Button mx-2').text(theUILang.ClearButton).hide().on(
-				'click', () => $("#lcont").empty()
-			).on('focus', function() {
-				this.blur();
-			}));
 		this.show("gcont");
 		$('#gcont,#lcont').enableSysMenu();
 	},
@@ -872,15 +904,11 @@ var theTabs = {
                				        theWebUI.getTable(prefix).refreshRows();
                				theWebUI.setActiveView(id);
             				l.addClass("selected").css("z-index",1);
-	            			if(n=="lcont")
-		            			$("#clear_log").css("display","inline");
             			}
          			else
          			{
             				p.hide();
             				l.removeClass("selected").css("z-index",0);
-	            			if(n=="lcont")
-		            			$("#clear_log").hide();
             			}
          		}
       		}

@@ -7,12 +7,12 @@
  */
 
  theUILang.accLogin		= "Login";
- theUILang.accPassword		= "Password";
- theUILang.accAccounts		= "Accounts";
- theUILang.accAuto		= "Autologin";
- theUILang.acAutoNone		= "None";
- theUILang.acAutoDay		= "Every day";
- theUILang.acAutoWeek		= "Every week";
- theUILang.acAutoMonth		= "Every month";
+ theUILang.accPassword		= "Senha";
+ theUILang.accAccounts		= "Contas";
+ theUILang.accAuto		= "Login automático";
+ theUILang.acAutoNone		= "Nenhum";
+ theUILang.acAutoDay		= "Todo dia";
+ theUILang.acAutoWeek		= "Toda semana";
+ theUILang.acAutoMonth		= "Todo mês";
 
 thePlugins.get("loginmgr").langLoaded();

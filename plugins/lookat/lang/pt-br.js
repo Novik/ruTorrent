@@ -6,7 +6,7 @@
  * Author: 
  */
 
- theUILang.lookAtDesc		= "Find at (Format: name|url)";
- theUILang.lookAt		= "Find at";
+ theUILang.lookAtDesc		= "Encontrar em (Formato: nome|url)";
+ theUILang.lookAt		= "Encontrar em";
 
 thePlugins.get("lookat").langLoaded();

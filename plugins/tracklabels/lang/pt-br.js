@@ -1,9 +1,9 @@
 
- theUILang.Tracklabels_dialog = "Upload icon for tracker or label";
- theUILang.DeleteUserIcon = "Delete";
- theUILang.FileUserIcon = "PNG file";
- theUILang.UploadUserIcon = "Upload";
- theUILang.EditIcon = "Edit icon";
- theUILang.EditFailed = "Icon edit failed!";
+ theUILang.Tracklabels_dialog = "Enviar ícone para rastreador ou rótulo";
+ theUILang.DeleteUserIcon = "Excluir";
+ theUILang.FileUserIcon = "Arquivo PNG";
+ theUILang.UploadUserIcon = "Enviar";
+ theUILang.EditIcon = "Editar ícone";
+ theUILang.EditFailed = "Falha ao editar ícone!";
 
 thePlugins.get("tracklabels").langLoaded();

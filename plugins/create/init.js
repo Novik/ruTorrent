@@ -4,6 +4,7 @@ if(browser.isKonqueror)
 	plugin.loadCSS("konqueror");
 
 plugin.recentTrackers = {};
+plugin.deleteFromRecentTrackers = "";
 
 function checkCreate() {
 	const path_edit = $("#path_edit").val().trim();
@@ -33,6 +34,20 @@ function checkCreate() {
 	);
 }
 
+function addTrackerToBox(ev) {
+	const ann = $(ev.target).data("tracker");
+	$("#deleteFromRecentTrackers").prop("disabled", false);
+	const val = $('#trackers').val();
+	if (val.includes(ann)) {
+		// only trim trailing white spaces if selected tracker is already in the box
+		$('#trackers').val(val.trim()).focus();
+		return;
+	}
+	$('#trackers').val(
+		[...val.split(/\r?\n/), ann].join("\r").trim()
+	).trigger("focus");
+}
+
 plugin.onTaskFinished = function(task,fromBackground)
 {
 	if(!fromBackground)
@@ -60,55 +75,44 @@ rTorrentStub.prototype.rtdelete = function()
 	this.dataType = "json";
 }
 
-theWebUI.showCreate = function()
-{
+function showCreate() {
 	if( $("#trackers").val().trim().length < 1 )
 		$("#deleteFromRecentTrackers").prop("disabled", true);
 	else
 		$("#deleteFromRecentTrackers").prop("disabled", false);
-	$('#start_seeding').prop('disabled',!theWebUI.systemInfo.rTorrent.started);
-	if(theWebUI.systemInfo.rTorrent.started)
+	if (theWebUI.systemInfo.rTorrent.started) {
+		$('#start_seeding').prop('disabled', false);
 		$('#lbl_start_seeding').removeClass('disabled');
-	else
+	} else {
+		$('#start_seeding').prop('disabled', true);
 		$('#lbl_start_seeding').addClass('disabled');
+	}
 	theDialogManager.show('tcreate');
 }
 
-plugin.getRecentTrackers = function( data )
-{
+plugin.getRecentTrackers = function(data) {
 	plugin.recentTrackers = data;
-	$("#recentTrackers").prop(
-		"disabled",
-		(!plugin.recentTrackers?.recent_trackers || !propsCount(plugin.recentTrackers.recent_trackers)),
-	);
-}
-
-theWebUI.addTrackerToBox = function(ann)
-{
-	$("#deleteFromRecentTrackers").prop("disabled", false);
-	const val = $('#trackers').val();
-	if (val.includes(ann)) {
-		// only trim trailing white spaces if selected tracker is already in the box
-		$('#trackers').val(val.trim()).trigger("focus");
-		return;
-	}
-	$('#trackers').val(
-		[...val.split(/\r?\n/), ann].join("\r").trim()
-	).trigger("focus");
-}
-
-theWebUI.showRecentTrackers = function() {
-	if (plugin.recentTrackers?.recent_trackers && propsCount(plugin.recentTrackers.recent_trackers)) {
-		theContextMenu.clear();
-		for( var domain in plugin.recentTrackers.recent_trackers )
-			theContextMenu.add([domain,"theWebUI.addTrackerToBox('"+addslashes(plugin.recentTrackers.recent_trackers[domain])+"')"]);
-		var offs = $("#recentTrackers").offset();
-		theContextMenu.show(offs.left,offs.top-theContextMenu.obj.height()-5);
+	if (data?.recent_trackers && propsCount(data.recent_trackers)) {
+		const rtList = $("#recentTrackers + ul").empty();
+		Object.entries(data.recent_trackers).forEach(([domain, tracker]) => {
+			rtList.append(
+				$("<li>").append(
+					$("<a>")
+						.attr({href:"#"})
+						.addClass("dropdown-item")
+						.data("tracker", tracker)
+						.on("click", addTrackerToBox)
+						.text(domain),
+				),
+			);
+		});
+		$("#recentTrakcers").prop("disabled", false);
+	} else {
+		$("#recentTrackers").prop("disabled", true);
 	}
 }
 
-theWebUI.deleteFromRecentTrackers = function()
-{
+function deleteFromRecentTrackers() {
 	$("#deleteFromRecentTrackers").prop("disabled", true);
 	var trklist = $('#trackers').val();
 	if(!trklist)
@@ -119,8 +123,7 @@ theWebUI.deleteFromRecentTrackers = function()
 	for( var i in arr )
 		trk+=(arr[i].trim()+'\r');
 	plugin.deleteFromRecentTrackers = trk;
-	theWebUI.request('?action=rtdelete');
-	theWebUI.request('?action=rtget',[plugin.getRecentTrackers, plugin]);
+	theWebUI.request('?action=rtdelete', [plugin.getRecentTrackers, plugin]);
 }
 
 plugin.onLangLoaded = function() {
@@ -132,7 +135,7 @@ plugin.onLangLoaded = function() {
 		$('#tsk_btns').prepend(
 			$("<button>").attr({type:"button", id:"xcsave"}).text(theUILang.torrentSave).hide(),
 		);
-		plugin.addButtonToToolbar("create",theUILang.mnu_create,"theWebUI.showCreate()","remove");
+		plugin.addButtonToToolbar("create", theUILang.mnu_create, showCreate, "remove");
 		plugin.addSeparatorToToolbar("remove");
 
 		const pieceSizeArray = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536];
@@ -211,15 +214,17 @@ plugin.onLangLoaded = function() {
 			),
 		);
 		const tcreateButtons = $("<div>").addClass("buttons-list").append(
-			$("<button>")
-				.attr({type:"button", id:"recentTrackers"})
-				.addClass("menuitem")
-				.on("click", theWebUI.showRecentTrackers)
-				.text(theUILang.recentTrackers + "..."),
+			$("<div>").addClass("btn-group").append(
+				$("<button>")
+					.attr({type:"button", id:"recentTrackers", "aria-expanded":"false", "data-bs-toggle":"dropdown"})
+					.addClass("dropdown-toggle")
+					.text(theUILang.recentTrackers + "..."),
+				$("<ul>").addClass("dropdown-menu"),
+			),
 			$("<button>")
 				.attr({type:"button", id:"deleteFromRecentTrackers"})
 				.addClass("me-auto")
-				.on("click", theWebUI.deleteFromRecentTrackers)
+				.on("click", deleteFromRecentTrackers)
 				.text(theUILang.deleteFromRecentTrackers),
 			$("<button>").attr({type:"button", id:"torrentCreate"}).text(theUILang.torrentCreate).on("click", checkCreate).addClass("OK"),
 			$("<button>").attr({type:"button"}).addClass("Cancel").text(theUILang.Cancel),

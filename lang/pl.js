@@ -94,6 +94,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
+ Pixel				: "Pixel",
  Loading			: "Wczytywanie...",
  Torrent_file			: "Plik",
  Torrent_URL			: "Adres URL",
@@ -303,6 +304,7 @@ var theUILang =
  Deselect_all			: "Odznacz wszystkie",
  showSpeedInTitle		: "Pokaż prędkość w tytule",
  sidePanelMinWidth		: "Minimalna szerokość panelu bocznego",
+ sidePanelMaxWidthPercent	: "Side panel max width",
  listTableMinHeight		: "Minimalna wysokość listy torrentów",
  speedGraphDuration		: "Czas trwania wykresu prędkości",
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 godz.", 10800: "3 godz."},
@@ -319,5 +321,6 @@ var theUILang =
  removeAllTegs			: "Usuń wszystkie znaczniki",
  Torrents			: "Torrent(y)",
  copyToClipboardFailed		: "Funkcja kopiowania nie działa w Twojej przeglądarce.\nSkopiuj tę zawartość ręcznie:\n\n",
- copyToClipboardSuccess		: "Pomyślnie skopiowano do schowka!"
+ copyToClipboardSuccess		: "Pomyślnie skopiowano do schowka!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

@@ -17,7 +17,8 @@
  				  "Prawdopodobnie usunięte",
  				  "Błąd podczas próby dostępu do trackera",
  				  "Błąd interakcji z rTorrentem",
- 				  "Nie potrzeba"
+ 				  "Nie potrzeba",
+ 				  "Zignorowano"
  				  ];
 
 thePlugins.get("rutracker_check").langLoaded();

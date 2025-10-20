@@ -6,21 +6,21 @@
  * Author: 
  */
 
- theUILang.ratioRulesManager	= "Rules Manager";
- theUILang.mnu_ratiorule	= "Ratio Rules";
- theUILang.ratAddRule		= "Add";
- theUILang.ratDelRule		= "Delete";
- theUILang.ratUpRule		= "Up";
- theUILang.ratDownRule		= "Down";
- theUILang.ratioIfLegend	= "If";
- theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
- theUILang.ratioThenLegend	= "Then";
- theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
- theUILang.setRatioTo		= "Set ratio to";
- theUILang.setChannelTo		= "Set throttle to";
- theUILang.ratioNewRule		= "New rule";
+ theUILang.ratioRulesManager	= "Gerenciador de Regras";
+ theUILang.mnu_ratiorule	= "Regras de Proporção";
+ theUILang.ratAddRule		= "Adicionar";
+ theUILang.ratDelRule		= "Excluir";
+ theUILang.ratUpRule		= "Para cima";
+ theUILang.ratDownRule		= "Para baixo";
+ theUILang.ratioIfLegend	= "Se";
+ theUILang.ratLabelContain	= "Rótulo do Torrent contém";
+ theUILang.ratTrackerContain	= "Uma das URLs do tracker do torrent contém";
+ theUILang.ratTrackerPublic	= "Todos os trackers do torrent são públicos";
+ theUILang.ratTrackerPrivate	= "Um dos trackers do torrent é privado";
+ theUILang.ratioThenLegend	= "Então";
+ theUILang.ratShortcutLegend	= "Atalhos de Teclado";
+ theUILang.setRatioTo		= "Definir proporção para";
+ theUILang.setChannelTo		= "Definir limite para";
+ theUILang.ratioNewRule		= "Nova regra";
 
 thePlugins.get("extratio").langLoaded();

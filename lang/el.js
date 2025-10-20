@@ -91,6 +91,7 @@ var theUILang =
  GB				: "GiB",
  TB				: "TiB",
  PB				: "PiB",
+ Pixel				: "Pixel",
  Loading			: "Φόρτωση...",
  Torrent_file			: "Αρχείο Torrent",
  Torrent_URL			: "URL του Torrent",
@@ -188,7 +189,7 @@ var theUILang =
  addTorrentSuccess		: "Το αρχείο torrent προστέθηκε με επιτυχία.",
  addTorrentFailed		: "Αποτυχία προσθήκης του αρχείου torrent.",
  pnlViews			: "Προβολές",
- NewView			: "New View",
+ NewView			: "Νέα Προβολή",
  MoveView			: {base: "Μετακίνηση προβολής", top: "Στην κορυφή", up: "Πάνω", down: "Κάτω", bottom: "Στο κάτω μέρος"},
  RenameView			: "Μετονομασία προβολής",
  RemoveActiveViews		: "Αφαίρεση ενεργών προβολών",
@@ -300,6 +301,7 @@ var theUILang =
  Deselect_all			: "Αποεπιλογή όλων",
  showSpeedInTitle		: "Προβολή ταχύτητας στον τίτλο",
  sidePanelMinWidth		: "Ελάχιστο πλάτος πλαϊνού πάνελ",
+ sidePanelMaxWidthPercent	: "Side panel max width",
  listTableMinHeight		: "Ελάχιστο ύψος πίνακα λίστας",
  speedGraphDuration		: "Διάρκεια γραφήματος ταχύτητας",
  speedGraphDurationOptions		: {600: "10 λεπτά", 1800: "30 λεπτά", 3600: "1 ώρα", 10800: "3 ώρες"},
@@ -316,5 +318,6 @@ var theUILang =
  removeAllTegs			: "Διαγραφή όλων των ετικετών",
  Torrents			: "Torrent(s)",
  copyToClipboardFailed		: "Η λειτουργία αντιγραφής δεν λειτουργεί στον περιηγητή σας.\nΠαρακαλώ αντιγράψτε αυτό το περιεχόμενο χειροκίνητα:\n\n",
- copyToClipboardSuccess		: "Αντιγράφηκε με επιτυχία στο πρόχειρο!"
+ copyToClipboardSuccess		: "Αντιγράφηκε με επιτυχία στο πρόχειρο!",
+ normalizeTorrentName		: "Ταξινόμηση με χρήση κανονικοποιημένου ονόματος torrent και αναγνώριση ετικέτας ονόματος"
 };

@@ -2,7 +2,12 @@
 #tcreate-header {background-image: url(./images/create16.gif)}
 #tcreate textarea {resize: none; height: 8rem;}
 
-#recentTrackers {width: 130px;}
+#recentTrackers {
+  width: 130px;
+  display: flex;
+  align-items: center;
+}
+#recentTrackers::after {margin-left: auto;}
 #deleteFromRecentTrackers {text-align: left;}
 
 /* Custom break point settings for responsiveness */

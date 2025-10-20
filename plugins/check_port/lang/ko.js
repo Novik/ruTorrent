@@ -8,10 +8,12 @@
 
  theUILang.checkWebsiteNotFound = "Check_port plugin: Plugin will not work. Invalid configuration";
  theUILang.checkPort		= "포트 상태 검사";
+ theUILang.checkingPort		= "Checking port status";
  theUILang.portStatus		= [
  				  "포트 상태 알 수 없음",
  				  "포트 닫힘",
  				  "포트 열림"
  				  ];
+ theUILang.notAvailable = "-";
 
 thePlugins.get("check_port").langLoaded();

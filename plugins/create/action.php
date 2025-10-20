@@ -135,7 +135,8 @@ if(isset($_REQUEST['cmd']))
 				}
 				$newList = array_diff($rt->list,$trk);
 				if( $newList !== $rt->list )
-					$ret = $rt->delete($newList);
+					$rt->delete($newList);
+				$ret = $rt->get();
 			}
 			break;
 		}
