@@ -851,6 +851,17 @@ function correctContent()
 			"load"			:	{ name: "load.normal", prm: 1 }
 		});
 	}
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x1002)
+	{
+		$.extend(theRequestManager.aliases,
+		{
+			"dht"                           : { name: "dht.mode.set", prm: 1 },
+			"throttle.max_uploads.div"      : { name: "throttle.max_uploads.div._val", prm: 1 },
+			"throttle.max_uploads.global"   : { name: "throttle.max_uploads.global._val", prm: 1 },
+			"throttle.max_downloads.div"    : { name: "throttle.max_downloads.div._val", prm: 1 },
+			"throttle.max_downloads.global" : { name: "throttle.max_downloads.global._val", prm: 1 },
+		});
+	}
 	if(theWebUI.systemInfo.rTorrent.iVersion < 0x907) {
 		const title = theUILang.requiresAtLeastRtorrent.replace('{version}', 'v0.9.7');
 		$($$('webui.show_open_status')).attr({ disabled: '', title });
