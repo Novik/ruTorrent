@@ -17,6 +17,7 @@ window.theWebUI = {
 
 for (const src of [
   "../lang/en.js",
+  "../js/browser.js",
   "../js/common.js",
   "../js/content.js",
   "../js/rtorrent.js",
@@ -125,9 +126,15 @@ describe("xmlrpc calls", () => {
     //console.log(stub.content);
     const ret = stub.getResponse(loadXML(stub.action));
     //console.log(ret);
-    expect(Object.keys(ret).length).toBe(2);
+    expect(Object.keys(ret).length).toBe(4);
     expect(ret[h("X")].ip).toBe("111.111.111.111");
     expect(ret[h("Y")].ip).toBe("222.222.222.222");
+    // IPv4-in-IPv6 notation should be normalized to IPv4
+    expect(ret[h("Z")].ip).toBe("10.20.30.40");
+    expect(ret[h("Z")].name).toBe("10.20.30.40");
+    // Bracketed IPv4-in-IPv6 notation (httprpc format) should also be normalized
+    expect(ret[h("W")].ip).toBe("185.199.103.204");
+    expect(ret[h("W")].name).toBe("185.199.103.204");
   });
 
   it("should parse gettrackers response", () => {

@@ -941,7 +941,7 @@ rTorrentStub.prototype.getpeersResponse = function(values)
 	{
 		var data = values[j];
 		var peer = {};
-		peer.name = data[1];
+		peer.name = normalizeIPv4(data[1]);
 		peer.ip = peer.name;
 		var cv = data[2];
 		var mycv = theBTClientVersion.get(data[11]);

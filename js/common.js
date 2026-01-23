@@ -211,6 +211,27 @@ function ir(val) {
 }
 
 /**
+ * Normalize IPv4-in-IPv6 addresses to plain IPv4 notation.
+ * Converts addresses like "::ffff:192.168.1.1" or "[::ffff:192.168.1.1]" to "192.168.1.1".
+ * @param {string} ip The IP address to normalize.
+ * @returns {string} The normalized IP address.
+ */
+function normalizeIPv4(ip) {
+	if (!ip || typeof ip !== 'string') return ip;
+	// Handle bracketed format: [::ffff:x.x.x.x]
+	const bracketedMatch = ip.match(/^\[::ffff:([\d.]+)\]$/i);
+	if (bracketedMatch) {
+		return bracketedMatch[1];
+	}
+	// Handle non-bracketed format: ::ffff:x.x.x.x
+	const ipv4MappedPrefix = '::ffff:';
+	if (ip.toLowerCase().startsWith(ipv4MappedPrefix)) {
+		return ip.substring(ipv4MappedPrefix.length);
+	}
+	return ip;
+}
+
+/**
  * Link the enabled status of a series of HTML elements
  * with a checkbox or a dropdown select.
  * @param {HTMLInputElement | HTMLSelectElement} obj The HTML element
