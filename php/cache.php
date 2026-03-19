@@ -115,7 +115,7 @@ class rCache
 	}
 	public function getModified( $obj = null )
 	{
-		return(filemtime( is_null($obj) ? $this->dir : 
+		return(@filemtime( is_null($obj) ? $this->dir : 
 			(is_object($obj) ? $this->getName($obj) : $this->dir."/".$obj) ));
 			
 	}
