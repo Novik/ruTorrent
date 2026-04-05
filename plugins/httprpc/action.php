@@ -277,6 +277,20 @@ switch($mode)
 		$result = makeSimpleCall(array("d.resume"), $hash);
 		break;
 	}
+	case "removewithdata":	/**/
+	{
+		$forceDelete = isset($vs[0]) ? $vs[0] : "1";
+		$req = new rXMLRPCRequest();
+		foreach($hash as $h)
+		{
+			$req->addCommand( new rXMLRPCCommand( getCmd("d.set_custom5"), array($h, $forceDelete) ) );
+			$req->addCommand( new rXMLRPCCommand( getCmd("d.delete_tied"), $h ) );
+			$req->addCommand( new rXMLRPCCommand( getCmd("d.erase"), $h ) );
+		}
+		if($req->success())
+			$result = $req->val;
+		break;
+	}
 	case "remove":	/**/
 	{
 		$result = makeSimpleCall(array("d.erase"), $hash);
