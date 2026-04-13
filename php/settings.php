@@ -230,7 +230,7 @@ class rTorrentSettings
 					$this->apiVersion = $req->val[0];
 			}
 
-                        $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
+                        $req = new rXMLRPCRequest(new rXMLRPCCommand("convert.kb", array('',floatval(1024))));
 			if($req->run())
 			{
 				if(!$req->fault)
