@@ -160,7 +160,7 @@ function get_and_check_ip($ip_version, $use_website, $rtorrent_ip, $rtorrent_por
 		return ["ip" => $ip_to_check, "status" => $status];
 	}
 	// Return a default "not available" state if no IP could be determined
-	return ["ip" => "-", "status" => 0];
+	return ["ip" => "-", "status" => -1];
 }
 
 // --- Main Execution ---
