@@ -2,11 +2,12 @@
 require_once(dirname(__FILE__) . "/../../php/cache.php");
 require_once(dirname(__FILE__) . "/../../php/utility/json.php");
 require_once(dirname(__FILE__) . "/../../php/utility/fileutil.php");
-require_once(dirname(__FILE__) . "/conf.php");
+
+eval(FileUtil::getPluginConf('log_history'));
+
 header('Content-Type: application/json');
 
 if (!isset($LogTab_array) || !is_array($LogTab_array)) {
-	error_log("log_history plugin error: \$LogTab_array missing or invalid in conf.php");
     http_response_code(204);
     exit;
 }
@@ -35,9 +36,6 @@ class LogHandler
 
         $handler->max_entries = max(1, intval($LogTab_array['max_entries']));
         $handler->log_count   = max(1, intval($LogTab_array['log_count']));
-		
-		error_log("Loaded max_entries: " . $handler->max_entries);
-		error_log("Loaded log_count: " . $handler->log_count);
 
         return $handler;
     }
@@ -47,25 +45,26 @@ class LogHandler
         $this->cache = $cache;
     }
 
-    public function saveLog($message, $status)
+    public function saveLog($message, $status, $timestamp = null)
     {
         if (empty($message)) {
             return ['status' => 'error', 'message' => 'No message provided'];
         }
 
-        error_log("Current logs count before save: " . count($this->logs));
         foreach ($this->logs as $log) {
             if ($log['message'] === $message) {
                 return ['status' => 'success', 'message' => 'Log already exists'];
             }
         }
 
-        $this->logs[] = ['message' => $message, 'status' => $status];
+        $this->logs[] = [
+            'message' => $message,
+            'status' => $status,
+            'timestamp' => $timestamp ? intval($timestamp) : time()
+        ];
 
         if (count($this->logs) > $this->max_entries) {
-            $before = count($this->logs);
             $this->logs = array_slice($this->logs, -$this->max_entries);
-            error_log("Sliced logs from {$before} to " . count($this->logs));
         }
 
         $this->cache->set($this);
@@ -89,14 +88,14 @@ class LogHandler
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $msg  = trim($_POST['message'] ?? '');
             $st   = trim($_POST['status'] ?? '');
-            $resp = $handler->saveLog($msg, $st);
+            $ts   = $_POST['timestamp'] ?? null;
+            $resp = $handler->saveLog($msg, $st, $ts);
         } else {
-        	$resp = $handler->getLatestLogs();
-		global $LogTab_array;
-		$resp = [
-			'logs' => $resp,
-			'load_style' => $LogTab_array['load_style'] ?? 'noty'
-		];
+            global $LogTab_array;
+            $resp = [
+                'logs' => $handler->getLatestLogs(),
+                'load_style' => $LogTab_array['load_style'] ?? 'noty'
+            ];
         }
 
         echo JSON::safeEncode($resp);
