@@ -95,10 +95,11 @@ if(!$type(theWebUI.getTrackerName))
 				}
 			}
 		}
-		if ($.inArray( domain, plugin.hideTrackers, domain ) != -1) domain = '';
 		return(domain);
 	}
 }
+
+if (plugin.hideTrackers && plugin.hideTrackers.length) {	var _origGetTrackerName = theWebUI.getTrackerName;	theWebUI.getTrackerName = function(announce) {		var domain = _origGetTrackerName(announce);		if ($.inArray(domain, plugin.hideTrackers) != -1) domain = "";		return domain;	};}
 
 plugin.contextMenuEntries = catlist.contextMenuEntries.bind(catlist);
 catlist.contextMenuEntries = function(panelId, labelId) {
