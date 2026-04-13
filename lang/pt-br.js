@@ -320,6 +320,6 @@ var theUILang =
  removeAllTegs			: "Remover todas as etiquetas",
  Torrents			: "Torrent(s)",
  copyToClipboardFailed		: "A função de cópia não está funcionando no seu navegador.\nPor favor, copie este conteúdo manualmente:\n\n",
- copyToClipboardSuccess		: "Copiado para a área de transferência com sucesso!"
+ copyToClipboardSuccess		: "Copiado para a área de transferência com sucesso!",
  normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };
