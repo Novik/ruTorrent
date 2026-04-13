@@ -36,7 +36,7 @@ plugin.onLangLoaded = function()
 plugin.updateThemeHint = function(theme)
 {
 	const dark = !['Blue', 'Excel', ''].includes(theme);
-	setThemeHint(dark);
+	if (typeof setThemeHint === "function") setThemeHint(dark);
 }
 plugin.updateThemeHint(theWebUI.theme);
 

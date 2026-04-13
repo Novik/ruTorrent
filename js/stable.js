@@ -776,9 +776,12 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 		// floor to the neareast even number to keep alternating background color consistent
 		Math.floor(this.dBody.scrollTop / (this.TR_HEIGHT * 2)) * 2 - extra,
 	);
+	var bodyH = this.dBody.getBoundingClientRect().height;
+	if (bodyH > this.TR_HEIGHT * 2) this._cachedBodyH = bodyH;
+	else if (this._cachedBodyH) bodyH = this._cachedBodyH;
 	const mxi = Math.min(
 		this.viewRows,
-		Math.ceil((this.dBody.scrollTop + this.dBody.getBoundingClientRect().height) / this.TR_HEIGHT) + extra,
+		Math.ceil((this.dBody.scrollTop + bodyH) / this.TR_HEIGHT) + extra,
 	);
 	if (fromScroll && (mni==this.mni && mxi==this.mxi))
 		return;
