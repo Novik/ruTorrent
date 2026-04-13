@@ -20,8 +20,8 @@
 			$wasTorrents = array();
 			if($file=@fopen($dir.'last.csv',"r"))
 			{
-				$was = fgetcsv($file,100);
-				while(($data = fgetcsv($file, 1000)) !== false)
+				$was = fgetcsv($file, 100, ",", "\"", "");
+				while(($data = fgetcsv($file, 1000, ",", "\"", "")) !== false)
 					$wasTorrents[$data[0]] = array_slice($data,1);
 				fclose($file);
 			}
@@ -37,13 +37,13 @@
 			$randName = FileUtil::getTempFilename('trafic');
 			if($file=@fopen($randName,"w"))
 			{
-				if( ($ok = fputcsv($file,$now))!==false )
+				if( ($ok = fputcsv($file, $now, ",", "\"", ""))!==false )
 				{
 					foreach($nowTorrents as $key=>$data)
 					{
 						$tmp = $data;
 						array_unshift($tmp, $key);
-						if( ($ok = fputcsv($file,$tmp))===false )
+						if( ($ok = fputcsv($file, $tmp, ",", "\"", ""))===false )
 							break;
 					}
 				}					
