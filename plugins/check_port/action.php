@@ -19,7 +19,7 @@ if($useWebsite=="portchecker")
 {
 	$url = "https://portchecker.co/";
 	$ipMatch = '/data-ip="(?P<ip>[^"]+)/';
-	$checker = "https://portchecker.co/check-it";
+	$checker = "https://portchecker.co/check-v0";
 	$closed = ">closed<";
 	$open = ">open<";
 }
@@ -52,6 +52,7 @@ function check_port($ip,$port,$checker,$closed,$open)
 {
 	global $useWebsite;
 	global $useIpv4;
+	global $url;
 
 	$client = new Snoopy();
 	$client->proxy_host = "";
@@ -61,7 +62,7 @@ function check_port($ip,$port,$checker,$closed,$open)
 		$parse = "remoteAddress=".$ip."&portNumber=".$port;
 	if($useWebsite=="portchecker")
 	{
-		@$client->fetch($checker);
+		@$client->fetch($url);
 		$client->setcookies();
 		$parse = "target_ip=".$ip."&port=".$port;
 		if(preg_match('/name="_csrf" value="(?P<csrf>[^"]+)/', $client->results, $match))
