@@ -12,7 +12,7 @@ plugin.loadLang();
 const catlist = theWebUI.categoryList;
 const ptrackersPanelArgs = [
 	[['ptrackers_all', {text: theUILang.All, icon: 'all'}]],
-	[(hash) => theWebUI.torrentTrackerIds.get(hash) ?? []]
+	[(hash) => [...new Set(theWebUI.torrentTrackerIds.get(hash) ?? [])]]
 ];
 
 const plabelEntries = catlist.refreshPanel.plabel.bind(catlist);

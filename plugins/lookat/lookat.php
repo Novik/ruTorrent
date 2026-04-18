@@ -44,7 +44,7 @@ class rLook
 					if(strlen($value))
 					{
 						$tmp = explode("|",$value);
-						if(count($tmp>1) && (trim($tmp[1])!=''))
+						if(count($tmp) > 1 && (trim($tmp[1])!=''))
 						{
 							if(strpos($tmp[1],"{title}")===false)
 								$tmp[1].="{title}";
