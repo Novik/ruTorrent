@@ -11,6 +11,7 @@
 
 require_once( 'util.php' );
 
+#[\AllowDynamicProperties]
 class Torrent
 {
 	protected $errors = array();

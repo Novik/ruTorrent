@@ -23,12 +23,13 @@
 */
 
 var TYPE_STRING = 0;
-var TYPE_NUMBER = 1;
-var TYPE_DATE = 2;
-var TYPE_STRING_NO_CASE = 3;
-var TYPE_PROGRESS = 4;
-var TYPE_PEERS = 5;
-var TYPE_SEEDS = 6;
+var TYPE_STRING_LABEL = 1;
+var TYPE_STRING_NO_CASE = 2;
+var TYPE_NUMBER = 3;
+var TYPE_DATE = 4;
+var TYPE_PROGRESS = 5;
+var TYPE_PEERS = 6;
+var TYPE_SEEDS = 7;
 var ALIGN_AUTO = 0;
 var ALIGN_LEFT = 1;
 var ALIGN_CENTER = 2;
@@ -490,6 +491,7 @@ dxSTable.prototype.getSorter = function(colType, valMapping)
 	const peerSort = (x,y) => theSort.PeersConnected(x,y) || theSort.PeersTotal(x,y);
 	const sorter = {
 		[TYPE_STRING]: theSort.AlphaNumeric,
+		[TYPE_STRING_LABEL]: (x, y) => theSort.NormalizedAlphaNumeric(x, y),
 		[TYPE_PROGRESS]: theSort.Numeric,
 		[TYPE_NUMBER]: theSort.Numeric,
 		[TYPE_PEERS]: peerSort,
@@ -528,6 +530,10 @@ var theSort =
 		var a = (x + "").toLowerCase();
 		var b = (y + "").toLowerCase();
 		return(a.localeCompare(b));
+	},
+	NormalizedAlphaNumeric: function(x, y)
+	{
+		return this.AlphaNumeric(theNormalizer.normalize(x), theNormalizer.normalize(y));
 	},
 	PeersTotal: function(x, y)
 	{
@@ -770,9 +776,12 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 		// floor to the neareast even number to keep alternating background color consistent
 		Math.floor(this.dBody.scrollTop / (this.TR_HEIGHT * 2)) * 2 - extra,
 	);
+	var bodyH = this.dBody.getBoundingClientRect().height;
+	if (bodyH > this.TR_HEIGHT * 2) this._cachedBodyH = bodyH;
+	else if (this._cachedBodyH) bodyH = this._cachedBodyH;
 	const mxi = Math.min(
 		this.viewRows,
-		Math.ceil((this.dBody.scrollTop + this.dBody.getBoundingClientRect().height) / this.TR_HEIGHT) + extra,
+		Math.ceil((this.dBody.scrollTop + bodyH) / this.TR_HEIGHT) + extra,
 	);
 	if (fromScroll && (mni==this.mni && mxi==this.mxi))
 		return;
@@ -960,12 +969,17 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 		const celldata = data[index] || '';
 		const rawvalue = cols[index] || '';
 		const isProgress = cdat.type === TYPE_PROGRESS;
+		const isLabel = cdat.type === TYPE_STRING_LABEL;
 		if (isProgress) {
 			td.attr({rawvalue:rawvalue}).append(
 				$("<span>").addClass("meter-text").css({overflow:"visible"}).text(celldata),
 				$("<div>")
 					.addClass("meter-value")
 					.css(this.progressStyle(celldata)),
+			);
+		} else if (isLabel) {
+			td.append(
+				$("<div>").html((celldata || " ").replace(/`(.*?)`$/, '<code>$1</code>')),
 			);
 		} else {
 			td.append(

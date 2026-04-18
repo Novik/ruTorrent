@@ -189,7 +189,7 @@ var theUILang =
  addTorrentSuccess		: "Το αρχείο torrent προστέθηκε με επιτυχία.",
  addTorrentFailed		: "Αποτυχία προσθήκης του αρχείου torrent.",
  pnlViews			: "Προβολές",
- NewView			: "New View",
+ NewView			: "Νέα Προβολή",
  MoveView			: {base: "Μετακίνηση προβολής", top: "Στην κορυφή", up: "Πάνω", down: "Κάτω", bottom: "Στο κάτω μέρος"},
  RenameView			: "Μετονομασία προβολής",
  RemoveActiveViews		: "Αφαίρεση ενεργών προβολών",
@@ -318,5 +318,6 @@ var theUILang =
  removeAllTegs			: "Διαγραφή όλων των ετικετών",
  Torrents			: "Torrent(s)",
  copyToClipboardFailed		: "Η λειτουργία αντιγραφής δεν λειτουργεί στον περιηγητή σας.\nΠαρακαλώ αντιγράψτε αυτό το περιεχόμενο χειροκίνητα:\n\n",
- copyToClipboardSuccess		: "Αντιγράφηκε με επιτυχία στο πρόχειρο!"
+ copyToClipboardSuccess		: "Αντιγράφηκε με επιτυχία στο πρόχειρο!",
+ normalizeTorrentName		: "Ταξινόμηση με χρήση κανονικοποιημένου ονόματος torrent και αναγνώριση ετικέτας ονόματος"
 };

@@ -62,7 +62,7 @@ function makeMulticall($cmds,$hash,$add,$prefix)
 		$cmd->addParameter($prm);
 	$cnt = count($cmds)+count($add);
 	$req = new rXMLRPCRequest($cmd);
-	if($req->success(false))
+	if($req->success(true))
 	{
 	        $result = array();
 		for($i = 0; $i<count($req->val); $i+=$cnt)
@@ -78,7 +78,7 @@ function makeSimpleCall($cmds,$hash)
 	foreach($hash as $h)
 		foreach($cmds as $cmd)	
 			$req->addCommand( new rXMLRPCCommand( $cmd, $h ) );
-       	return($req->success(false) ? $req->val : false);
+       	return($req->success(true) ? $req->val : false);
 }
 
 $result = null;
@@ -102,7 +102,7 @@ switch($mode)
 			$cmd->addParameter($prm);
 		$cnt = count($cmds)+count($add);
 		$req = new rXMLRPCRequest($cmd);
-		if($req->success(false))
+		if($req->success(true))
 		{
 			$theCache = new rpcCache();
 			$dTorrents = array();
@@ -171,7 +171,7 @@ switch($mode)
 			$req->addCommand( new rXMLRPCCommand( $cmd ) );	
 		foreach( $add as $prm )
 			$req->addCommand( new rXMLRPCCommand( $prm ) );	
-		if($req->success(false))
+		if($req->success(true))
 		{
 	        	$result = array();
 			$dht_active = $req->val[0];
@@ -197,7 +197,7 @@ switch($mode)
 			$req->addCommand( new rXMLRPCCommand( $cmd ) );	
 		foreach( $add as $prm )
 			$req->addCommand( new rXMLRPCCommand( $prm ) );	
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -211,7 +211,7 @@ switch($mode)
 		$req = new rXMLRPCRequest();
 		foreach( $cmds as $cmd )
 			$req->addCommand( new rXMLRPCCommand( $cmd ) );
-		if($req->success(false)) {
+		if($req->success(true)) {
 			$result = $req->val;
 			if (count($cmds) < 3)
 				$result[] = -1;
@@ -229,7 +229,7 @@ switch($mode)
 			$req->addCommand( new rXMLRPCCommand( $cmd, $hash[0] ) );	
 		foreach( $add as $prm )
 			$req->addCommand( new rXMLRPCCommand( $prm, $hash[0] ) );	
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -238,7 +238,7 @@ switch($mode)
 		$req = new rXMLRPCRequest();
 		foreach($vs as $ndx=>$value)
 			$req->addCommand( new rXMLRPCCommand( "t.set_enabled", array($hash[0], intval($value), intval($ss[0])) ) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -248,7 +248,7 @@ switch($mode)
 		foreach($vs as $v)
 			$req->addCommand( new rXMLRPCCommand( "f.set_priority", array($hash[0], intval($v), intval($ss[0])) ) );
 		$req->addCommand( new rXMLRPCCommand("d.update_priorities", $hash[0]) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -259,7 +259,7 @@ switch($mode)
 	}
 	case "start":	/**/
 	{
-		$result = makeSimpleCall(array("d.open","d.start"), $hash);
+		$result = makeSimpleCall(array("d.open","d.start","d.resume"), $hash);
 		break;
 	}
 	case "stop":	/**/
@@ -274,7 +274,21 @@ switch($mode)
 	}
 	case "unpause":	/**/
 	{
-		$result = makeSimpleCall(array("d.start"), $hash);
+		$result = makeSimpleCall(array("d.resume"), $hash);
+		break;
+	}
+	case "removewithdata":	/**/
+	{
+		$forceDelete = isset($vs[0]) ? $vs[0] : "1";
+		$req = new rXMLRPCRequest();
+		foreach($hash as $h)
+		{
+			$req->addCommand( new rXMLRPCCommand( getCmd("d.set_custom5"), array($h, $forceDelete) ) );
+			$req->addCommand( new rXMLRPCCommand( getCmd("d.delete_tied"), $h ) );
+			$req->addCommand( new rXMLRPCCommand( getCmd("d.erase"), $h ) );
+		}
+		if($req->success())
+			$result = $req->val;
 		break;
 	}
 	case "remove":	/**/
@@ -287,7 +301,7 @@ switch($mode)
 		$req = new rXMLRPCRequest();
 		foreach($hash as $ndx=>$h)
 			$req->addCommand( new rXMLRPCCommand( "d.set_priority", array($h, intval($vs[0])) ) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -296,7 +310,7 @@ switch($mode)
 		$req = new rXMLRPCRequest();
 		foreach($hash as $ndx=>$h)
 			$req->addCommand( new rXMLRPCCommand( "d.set_custom1", array($h, $vs[0]) ) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -323,7 +337,7 @@ switch($mode)
 				getCmd("d.get_hash="),
 				$prm
 			) ) );						
-	       		if($req->success(false))
+	       		if($req->success(true))
 			{
 				for( $i = 0; $i< count($req->val); $i+=2 )
 				{
@@ -364,7 +378,7 @@ switch($mode)
 		}
 		if($req->getCommandsCount())
 		{
-			if($req->success(false))
+			if($req->success(true))
 		        	$result = $req->val;
         	}
         	else
@@ -399,21 +413,21 @@ switch($mode)
 			}
 			$req->addCommand($cmd);
 		}
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
 	case "setul":	/**/
 	{
 		$req = new rXMLRPCRequest( new rXMLRPCCommand("set_upload_rate", $ss[0]) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
 	case "setdl":	/**/
 	{
 		$req = new rXMLRPCRequest( new rXMLRPCCommand("set_download_rate", $ss[0]) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -424,7 +438,7 @@ switch($mode)
 		$req = new rXMLRPCRequest();
                 foreach($vs as $v)
 			$req->addCommand( new rXMLRPCCommand("p.snubbed.set", array($hash[0].":p".$v,$on)) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -436,7 +450,7 @@ switch($mode)
 			$req->addCommand( new rXMLRPCCommand("p.banned.set", array($hash[0].":p".$v,1)) );
 			$req->addCommand( new rXMLRPCCommand("p.disconnect", $hash[0].":p".$v) );
 		}
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -445,7 +459,7 @@ switch($mode)
 		$req = new rXMLRPCRequest();
                 foreach($vs as $v)
 			$req->addCommand( new rXMLRPCCommand("p.disconnect", $hash[0].":p".$v) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -453,7 +467,7 @@ switch($mode)
 	{
 		$req = new rXMLRPCRequest(
 			new rXMLRPCCommand( "add_peer", array($hash[0], $vs[0]) ) );
-		if($req->success(false))
+		if($req->success(true))
 	        	$result = $req->val;
 		break;
 	}
@@ -465,7 +479,7 @@ switch($mode)
 			new rXMLRPCCommand( "d.get_size_chunks", $hash[0] ) ));
 		if(rTorrentSettings::get()->apiVersion>=4)
 			$req->addCommand(new rXMLRPCCommand( "d.chunks_seen", $hash[0] ));
-		if($req->success(false))
+		if($req->success(true))
 		{
 	        	$result = array( "chunks"=>$req->val[0], "size"=>$req->val[1], "tsize"=>$req->val[2] );
 			if(rTorrentSettings::get()->apiVersion>=4)

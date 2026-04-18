@@ -318,5 +318,6 @@ var theUILang =
  removeAllTegs			: "Remove all tags",
  Torrents			: "Torrent(s)",
  copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
- copyToClipboardSuccess		: "Copied to clipboard successfully!"
+ copyToClipboardSuccess		: "Copied to clipboard successfully!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

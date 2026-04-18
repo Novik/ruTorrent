@@ -3,6 +3,15 @@ require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
 eval(FileUtil::getPluginConf("_getdir"));
 
+function compareEntries( $a, $b )
+{
+	if($a=='..')
+		return( -1 );
+	if($b=='..')
+		return( 1 );
+	return( strcmp(mb_strtolower($a), mb_strtolower($b)) );
+}
+
 $theSettings = rTorrentSettings::get();
 
 $requestedDir = $_REQUEST['dir'];
@@ -28,7 +37,7 @@ else
 }
 
 $dir = FileUtil::addslash($dir);
-$items = array_diff(scandir($dir), (($dir == $topDirectory) ? ["..", "."] : ["."]));
+$items = array_diff(scandir($dir, SCANDIR_SORT_NONE), (($dir == $topDirectory) ? ["..", "."] : ["."]));
 $directories = array_filter($items, function ($item) {
 	global $dir;
 	return is_dir($dir.$item);
@@ -37,6 +46,9 @@ $files = array_filter($items, function ($item) {
 	global $dir;
 	return is_file($dir.$item);
 });
+
+usort($directories, "compareEntries");
+usort($files, "compareEntries");
 
 header("Content-Type: application/json");
 echo JSON::safeEncode(array(

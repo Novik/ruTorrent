@@ -4,13 +4,30 @@
 	require_once( "sqlite.php" );
 	eval( FileUtil::getPluginConf( 'geoip' ) );
 
+	// Load GeoIP2 library
+	if(isset($geoip2Autoloader) && file_exists($geoip2Autoloader))
+		require_once($geoip2Autoloader);
+
+	$cityReader = null;
+	$ispReader = null;
+	if(isset($geoip2CityDb) && file_exists($geoip2CityDb))
+	{
+		try { $cityReader = new \GeoIp2\Database\Reader($geoip2CityDb); }
+		catch(\Exception $e) { $cityReader = null; }
+	}
+	if(isset($geoip2IspDb) && file_exists($geoip2IspDb))
+	{
+		try { $ispReader = new \GeoIp2\Database\Reader($geoip2IspDb); }
+		catch(\Exception $e) { $ispReader = null; }
+	}
+
 	function isValidCode( $country )
 	{
 		return( !empty($country) && (strlen($country)==2) && !is_numeric($country[1]) );
 	}
 
-	$retrieveCountry = ($retrieveCountry && function_exists("geoip_country_code_by_name"));
-	$retrieveCountryIPv6 = ($retrieveCountry && function_exists("geoip_country_code_by_name_v6"));
+	$retrieveCountry = ($retrieveCountry && $cityReader !== null);
+	$retrieveCountryIPv6 = $retrieveCountry; // GeoIP2 handles both v4 and v6 natively
 	$retrieveComments = ($retrieveComments && sqlite_exists());
 	$ret = array();
 	$dns = null;
@@ -37,49 +54,53 @@
 					if($retrieveCountry)
 					{
 						$country = '';
-					        if(geoip_db_avail(GEOIP_CITY_EDITION_REV1) || geoip_db_avail(GEOIP_CITY_EDITION_REV0))
-					        {
-       					        	$country = @geoip_record_by_name( $value );
-       					        	if(!empty($country))
-							{
-								$c = utf8_encode($country["city"]);
-								if(!empty($c))
-									$city[] = $c;
-       					        		$country = $country["country_code"];
-							}
+						// Strip brackets from IPv6 addresses
+						$lookupIp = $value;
+						if(substr($lookupIp, 0, 1) == '[')
+							$lookupIp = substr($lookupIp, 1, -1);
+
+						try
+						{
+							$record = $cityReader->city($lookupIp);
+							$country = $record->country->isoCode;
+							$c = $record->city->name;
+							if(!empty($c))
+								$city[] = $c;
 						}
-						if(!isValidCode($country) )
-							$country = @geoip_country_code_by_name( $value );
-						if(!isValidCode($country) && substr($value, 0, 1) == '[' && $retrieveCountryIPv6)
-							$country = @geoip_country_code_by_name_v6( substr($value, 1, -1) );
+						catch(\Exception $e)
+						{
+							$country = '';
+						}
+
 						if(!isValidCode($country))
 							$country = "un";
 						else
 						{
 							$country = strtolower($country);
-							$org = '';
-							if(geoip_db_avail(GEOIP_ORG_EDITION))
+							if($ispReader !== null)
 							{
-								$org = utf8_encode(geoip_org_by_name($value));
-								if(!empty($org))
-									$city[] = $org;
-							}
-							if(geoip_db_avail(GEOIP_ISP_EDITION))
-							{
-								$c = utf8_encode(geoip_isp_by_name($value));
-								if(!empty($c) && ($c!=$org))
-									$city[] = $c;
+								try
+								{
+									$ispRecord = $ispReader->isp($lookupIp);
+									$org = $ispRecord->organization ?? '';
+									$isp = $ispRecord->isp ?? '';
+									if(!empty($org))
+										$city[] = $org;
+									if(!empty($isp) && $isp !== $org)
+										$city[] = $isp;
+								}
+								catch(\Exception $e) {}
 							}
 						}
-                    			}
+					}
 					else
 						$country = "un";
 					if(!empty($city))
-                                               $country.=" (".implode(', ',$city).")";
+						$country.=" (".implode(', ', $city).")";
 					$host = $value;
-                                        if($retrieveHost)
-                                        {
-						if($dns) 
+					if($retrieveHost)
+					{
+						if($dns)
 						{
 							$pkt = pack("n", $randbase + $idx) . "\1\0\0\1\0\0\0\0\0\0";
 							$ipmap[$value] = $idx++;
@@ -98,34 +119,34 @@
 							fwrite($dns, $pkt);
 							fflush($dns);
 							$host = $value;
-						} 
-						else 
-						{
-                                                	$host = gethostbyaddr(preg_replace('/^\[?(.+?)\]?$/', '$1', $value));
-	                                                if(empty($host) || (strlen($host)<2))
-        	                                                $host = $value;
 						}
-                                        }
-                                        $comment = '';
-                                        if($retrieveComments)
-                                        {
-        					require_once( 'ip_db.php' );
-        					$db = new ipDB();
-        					$comment = $db->get($value);
-                                        }
+						else
+						{
+							$host = gethostbyaddr(preg_replace('/^\[?(.+?)\]?$/', '$1', $value));
+							if(empty($host) || (strlen($host)<2))
+								$host = $value;
+						}
+					}
+					$comment = '';
+					if($retrieveComments)
+					{
+						require_once( 'ip_db.php' );
+						$db = new ipDB();
+						$comment = $db->get($value);
+					}
 					$ret[] = array( "ip"=>$value, "info"=>array( "country"=>$country, "host"=>$host, "comment"=>$comment ) );
 				}
 			}
 		}
-		if($dns) 
+		if($dns)
 		{
 			stream_set_timeout($dns, $dnsResolverTimeout);
-			while($idx && ($buf=@fread($dns, 512))) 
+			while($idx && ($buf=@fread($dns, 512)))
 			{
 				$pos = 12;
 				$ip = array();
 				$id = ord($buf[0]) * 256 + ord($buf[1]) - $randbase;
-				while($count = ord($buf[$pos++])) 
+				while($count = ord($buf[$pos++]))
 				{
 					if(count($ip) < 4)
 						array_unshift($ip, substr($buf, $pos, $count));
@@ -137,17 +158,17 @@
 				$idx--;
 				$pos += 16;
 				$host = array();
-				while($count = ord($buf[$pos++])) 
+				while($count = ord($buf[$pos++]))
 				{
-					if($count >= 0xc0) 
+					if($count >= 0xc0)
 					{
 						$count = (($count&0x3f) << 8) | ord($buf[$pos]);
-						if($count < $pos-1) 
+						if($count < $pos-1)
 						{
 							$pos = $count;
 							continue;
-						} 
-						else 
+						}
+						else
 						{
 							$host = false;
 							break;
@@ -156,7 +177,7 @@
 					array_push($host, substr($buf, $pos, $count));
 					$pos += $count;
 				}
-				if($host) 
+				if($host)
 				{
 					$host = implode(".", $host);
 					$ret[$id]["info"]["host"] = $host;
@@ -166,4 +187,3 @@
 		}
 	}
 	CachedEcho::send(JSON::safeEncode($ret),"application/json");
-	
