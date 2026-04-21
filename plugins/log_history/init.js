@@ -143,7 +143,6 @@ theWebUI.showLogHistory = function () {
             return;
         }
 
-        // Lisa nupule sündmus (kui pole veel lisatud)
         const clearBtn = container.find("#clearLogBtn");
         if (clearBtn.length > 0 && !clearBtn.data("bound")) {
             clearBtn.on("click", () => clearLog(container));
@@ -157,7 +156,6 @@ theWebUI.showLogHistory = function () {
 };
 
 function loadLogHistory(container) {
-    // Leia või loo logi ala AINULT KORRA
     let logArea = container.find("#logContent");
     if (logArea.length === 0) {
         logArea = $("<div>").attr("id", "logContent").css({
@@ -165,10 +163,9 @@ function loadLogHistory(container) {
             "flex": "1",
             "overflow-y": "auto"
         });
-        container.append(logArea); // Lisa nupu alla
+        container.append(logArea);
     }
 
-    // KUSTUTA AINULT LOGI SISU, MITTE KOGU CONTAINERIT
     logArea.empty().text("Loading...");
 
     fetch('plugins/log_history/log_history.php?all=1')
@@ -179,7 +176,7 @@ function loadLogHistory(container) {
         })
         .then(data => {
             const logs = data.logs || data;
-            logArea.empty(); // Ainult siin kustutame
+            logArea.empty();
 
             if (!logs || logs.length === 0) {
                 logArea.text("Log is empty.");
