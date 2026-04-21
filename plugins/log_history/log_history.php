@@ -85,6 +85,21 @@ class LogHandler
     {
         $handler = self::load();
 
+        if (isset($_GET['all'])) {
+			echo JSON::safeEncode([
+				'logs' => array_slice($handler->logs, 0, $handler->max_entries),
+				'load_style' => $LogTab_array['load_style'] ?? 'noty'
+			]);
+			exit;
+		}
+		
+		if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+			$handler->logs = [];
+			$handler->cache->set($handler);
+			echo JSON::safeEncode(['status' => 'cleared']);
+			exit;
+		}
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $msg  = trim($_POST['message'] ?? '');
             $st   = trim($_POST['status'] ?? '');
