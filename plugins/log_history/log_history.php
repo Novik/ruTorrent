@@ -93,7 +93,7 @@ class LogHandler
 			exit;
 		}
 		
-		if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+		if (isset($_GET['clear'])) {
 			$handler->logs = [];
 			$handler->cache->set($handler);
 			echo JSON::safeEncode(['status' => 'cleared']);
