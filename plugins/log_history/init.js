@@ -244,7 +244,7 @@ function getStatusColor(status) {
 function clearLog(container) {
     if (!confirm(theUILang.ruLogHistoryConfirmClear || "Clear entire log?")) return;
 
-    fetch('plugins/log_history/log_history.php', { method: 'DELETE' })
+    fetch('plugins/log_history/log_history.php?clear=1')
         .then(r => r.ok ? r.json() : Promise.reject("HTTP " + r.status))
         .then(() => {
             loadLogHistory(container);
