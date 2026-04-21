@@ -84,13 +84,13 @@ function sendLogToServer(msg, status) {
 plugin._replaying = false;
 
 plugin.init = function () {
-    plugin._originalNoty = window.noty;
-    const originalNoty = window.noty;
+    plugin._originalLog = window.log;
+    const originalLog = window.log;
 
-    window.noty = function(msg, status, noTime) {
-        originalNoty(msg, status, noTime);
+    window.log = function(text, noTime, divClass, force) {
+        originalLog(text, noTime, divClass, force);
         if (!plugin._replaying) {
-            sendLogToServer(msg, status || 'info');
+            sendLogToServer(text, status || 'info');
         }
     };
 
