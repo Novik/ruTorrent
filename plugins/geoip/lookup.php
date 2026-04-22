@@ -4,9 +4,9 @@
 	require_once( "sqlite.php" );
 	eval( FileUtil::getPluginConf( 'geoip' ) );
 
-	// Load GeoIP2 library
-	if(isset($geoip2Autoloader) && file_exists($geoip2Autoloader))
-		require_once($geoip2Autoloader);
+	// Load bundled GeoIP2 library
+	if(file_exists(dirname(__FILE__).'/geoip2.phar'))
+		require_once('phar://'.dirname(__FILE__).'/geoip2.phar/vendor/autoload.php');
 
 	$cityReader = null;
 	$ispReader = null;
