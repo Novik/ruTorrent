@@ -267,6 +267,11 @@ switch($mode)
 		$result = makeSimpleCall(array("d.stop","d.close"), $hash);
 		break;
 	}
+	case "updatetracker":	/**/
+	{
+		$result = makeSimpleCall(array("d.tracker_announce"), $hash);
+		break;
+	}
 	case "pause":	/**/
 	{
 		$result = makeSimpleCall(array("d.stop"), $hash);
