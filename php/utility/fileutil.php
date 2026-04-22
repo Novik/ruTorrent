@@ -256,12 +256,12 @@ class FileUtil
 		}
 	}
 	
-	public static function getMinFilePerms( $file, $chmod = 755 )
+	public static function getMinFilePerms( $file, $chmod = 0755 )
 	{
 		$code = fileperms($file);
 		
 		if($code!==false)
-			return((decoct($code) & 0777) >= $chmod);
+			return(($code & 0777) >= $chmod);
 		
 		return false;
 	}
