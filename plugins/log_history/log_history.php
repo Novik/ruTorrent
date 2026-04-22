@@ -51,12 +51,6 @@ class LogHandler
             return ['status' => 'error', 'message' => 'No message provided'];
         }
 
-        foreach ($this->logs as $log) {
-            if ($log['message'] === $message) {
-                return ['status' => 'success', 'message' => 'Log already exists'];
-            }
-        }
-
         $this->logs[] = [
             'message' => $message,
             'status' => $status,
