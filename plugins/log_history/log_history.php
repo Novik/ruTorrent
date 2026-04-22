@@ -79,6 +79,13 @@ class LogHandler
     {
         $handler = self::load();
 
+        if (isset($_GET['clear'])) {
+            $handler->logs = [];
+            $handler->cache->set($handler);
+            echo JSON::safeEncode(['status' => 'cleared']);
+            return;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $msg  = trim($_POST['message'] ?? '');
             $st   = trim($_POST['status'] ?? '');
