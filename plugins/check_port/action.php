@@ -42,9 +42,7 @@ function get_public_ip($version, $timeout) {
 		if (filter_var($ip, FILTER_VALIDATE_IP, $flag)) {
 			return $ip; // Return the valid IP
 		}
-		error_log("check_port plugin: {$url} returned invalid IP: " . $ip);
 	} else {
-		error_log("check_port plugin: Failed to fetch from {$url}. Status: {$snoopy->status}, Error: {$snoopy->error}");
 	}
 	return null; // Return null on failure
 }
