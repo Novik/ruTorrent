@@ -166,6 +166,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 				if (this.isResizing) {
 					this.colDragResize(ev);
 				} else {
+					if (ev.originalEvent.movementX === 0 && ev.originalEvent.movementY === 0) return;
 					this.isMoving = true;
 					this.isSorting = false;
 					this.colDragMove(ev);
