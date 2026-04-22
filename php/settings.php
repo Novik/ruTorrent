@@ -358,7 +358,7 @@ class rTorrentSettings
 			$schedule_rand = 10;
 		$tm = getdate();
 		$startAt = mktime($tm["hours"],
-			((integer)($tm["minutes"]/$interval))*$interval+$interval,
+			((int)($tm["minutes"]/$interval))*$interval+$interval,
 			0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0]+rand(0,$schedule_rand);
 		if($startAt<0)
 			$startAt = 0;
