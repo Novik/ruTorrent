@@ -15,6 +15,10 @@ plugin.onLangLoaded = function()
 			// gets called before filedrop's handler.
 
 			const items = [...event.originalEvent.dataTransfer.items];
+			// If a file is present, let the filedrop plugin handle it
+			const hasFile = items.some(item => item.kind === "file");
+			if (hasFile)
+				return true;
 			// find text/uri-list; if not found, find text/plain
 			const uriList = items.find(item =>
 				item.kind === "string" &&
