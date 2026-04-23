@@ -4,9 +4,9 @@ require_once( "sqlite.php" );
 
 eval( FileUtil::getPluginConf( $plugin["name"] ) );
 
-// GeoIP2: check that the autoloader and at least the city database exist
+// GeoIP2: check that the bundled library and at least the city database exist
 $geoip2Available = (
-	isset($geoip2Autoloader) && file_exists($geoip2Autoloader) &&
+	file_exists(dirname(__FILE__).'/geoip2.phar') &&
 	isset($geoip2CityDb) && file_exists($geoip2CityDb)
 );
 $retrieveCountry = ($retrieveCountry && $geoip2Available);

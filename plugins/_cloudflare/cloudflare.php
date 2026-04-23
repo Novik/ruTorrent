@@ -54,7 +54,7 @@ class rCloudflare
 			}
 			$code = escapeshellarg(Utility::getExternal('python'))." -c ".
 				escapeshellarg("import cloudscraper\nimport json\ntokens, user_agent = cloudscraper.get_tokens({$url}{$proxies}{$recaptcha})\nprint(json.dumps([tokens,user_agent]))");
-			$data = `{$code}`;
+			$data = shell_exec($code);
 			if($data &&
 				($data = json_decode($data,true)) &&
 				is_array($data) &&

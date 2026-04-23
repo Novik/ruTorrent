@@ -1,5 +1,5 @@
 function stripTimestamp(line) {
-    return line.replace(/^\[[^\]]*\]\s*/, '');
+    return (line || '').replace(/^\[[^\]]*\]\s*/, '');
 }
 
 function fetchLogLines() {
@@ -21,10 +21,12 @@ function fetchLogLines() {
             plugin._replaying = true;
             var lcont = document.getElementById('lcont');
             if (lcont) {
-                // Save current content (e.g. "WebUI started")
-                var currentContent = lcont.innerHTML;
-                // Clear and rebuild in order
-                lcont.innerHTML = '';
+                // Save current content nodes (e.g. "WebUI started")
+                var currentNodes = [];
+                while (lcont.firstChild) {
+                    currentNodes.push(lcont.firstChild);
+                    lcont.removeChild(lcont.firstChild);
+                }
 
                 // Header
                 var header = document.createElement('span');
@@ -51,7 +53,7 @@ function fetchLogLines() {
                 lcont.appendChild(footer);
 
                 // Re-append current session content
-                lcont.innerHTML += currentContent;
+                currentNodes.forEach(node => lcont.appendChild(node));
 
                 lcont.scrollTop = lcont.scrollHeight;
             }
@@ -93,6 +95,12 @@ plugin.init = function () {
     };
 
     fetchLogLines();
+
+    // Hook the log tab "Clear" button to also clear saved history
+    $("#clear_log").on("click", function() {
+        fetch('plugins/log_history/log_history.php?clear=1').catch(function() {});
+    });
+
     plugin.markLoaded();
 };
 

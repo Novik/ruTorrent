@@ -51,12 +51,6 @@ class LogHandler
             return ['status' => 'error', 'message' => 'No message provided'];
         }
 
-        foreach ($this->logs as $log) {
-            if ($log['message'] === $message) {
-                return ['status' => 'success', 'message' => 'Log already exists'];
-            }
-        }
-
         $this->logs[] = [
             'message' => $message,
             'status' => $status,
@@ -84,6 +78,13 @@ class LogHandler
     static public function handleRequest()
     {
         $handler = self::load();
+
+        if (isset($_GET['clear'])) {
+            $handler->logs = [];
+            $handler->cache->set($handler);
+            echo JSON::safeEncode(['status' => 'cleared']);
+            return;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $msg  = trim($_POST['message'] ?? '');
