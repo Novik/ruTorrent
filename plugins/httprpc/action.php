@@ -515,4 +515,4 @@ if(is_null($result))
 	CachedEcho::send( (isset($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. Maybe, rTorrent is down?","text/html");
 }
 else
-	CachedEcho::send(JSON::safeEncode($result),"application/json");
+	CachedEcho::send(json_encode($result, JSON_THROW_ON_ERROR|JSON_INVALID_UTF8_SUBSTITUTE), "application/json");
