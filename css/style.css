@@ -692,6 +692,14 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 
 /* Custom break point settings for responsiveness */
 
+/* Multiline URL textarea in Add Torrent dialog */
+#addtorrenturl textarea#url {
+	height: 80px;
+	resize: vertical;
+	font-family: monospace;
+	font-size: 0.9em;
+}
+
 /* X-Small devices (portrait phones, less than 576px) */
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */

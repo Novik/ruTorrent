@@ -154,8 +154,8 @@ function makeContent() {
 							$("<label>").attr({for: "url"}).text(theUILang.Torrent_URL + ": "),
 						),
 						$("<div>").addClass("col-md-6").append(
-							$("<input>")
-								.attr({type: "text", id: "url", name: "url", placeholder: theUILang.Torrent_URL})
+							$("<textarea>")
+								.attr({id: "url", name: "url", placeholder: theUILang.Torrent_URL_multiline, rows: 4})
 								.on("input", (ev) => {$('#add_url').prop('disabled', ev.target.value.trim() === '');})
 								.addClass("flex-grow-1"),
 						),

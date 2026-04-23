@@ -65,37 +65,43 @@ else
 		{
 			if(isset($_REQUEST['url']))
 			{
-				$url = trim($_REQUEST['url']);
-				$uploaded_url = array( 'name'=>$url, 'status'=>"Failed" );
-				if(strpos($url,"magnet:")===0)
+				$urls = preg_split('/[\r\n]+/', trim($_REQUEST['url']));
+				foreach($urls as $url)
 				{
-					$uploaded_url['status'] = (rTorrent::sendMagnet($url,
-						!isset($_REQUEST['torrents_start_stopped']),
-						!isset($_REQUEST['not_add_path']),
-						$dir_edit,$label,$addition) ? "Success" : "Failed" );
-				}
-				else
-				{
-					$cli = new Snoopy();
-					if(@$cli->fetchComplex($url) && $cli->status>=200 && $cli->status<300)
+					$url = trim($url);
+					if(empty($url)) continue;
+
+					$uploaded_url = array( 'name'=>$url, 'status'=>"Failed" );
+					if(strpos($url,"magnet:")===0)
 					{
-						$name = $cli->get_filename();
-						if($name===false)
-							$name = md5($url).".torrent";
-						$name = FileUtil::getUniqueUploadedFilename($name);
-						$f = @fopen($name,"w");
-						if($f!==false)
-						{
-							@fwrite($f,$cli->results,strlen($cli->results));
-							fclose($f);
-							$uploaded_url['file'] = $name;
-							$uploaded_url['status'] = "Success";
-						}
+						$uploaded_url['status'] = (rTorrent::sendMagnet($url,
+							!isset($_REQUEST['torrents_start_stopped']),
+							!isset($_REQUEST['not_add_path']),
+							$dir_edit,$label,$addition) ? "Success" : "Failed" );
 					}
 					else
-						$uploaded_url['status'] = "FailedURL";
+					{
+						$cli = new Snoopy();
+						if(@$cli->fetchComplex($url) && $cli->status>=200 && $cli->status<300)
+						{
+							$name = $cli->get_filename();
+							if($name===false)
+								$name = md5($url).".torrent";
+							$name = FileUtil::getUniqueUploadedFilename($name);
+							$f = @fopen($name,"w");
+							if($f!==false)
+							{
+								@fwrite($f,$cli->results,strlen($cli->results));
+								fclose($f);
+								$uploaded_url['file'] = $name;
+								$uploaded_url['status'] = "Success";
+							}
+						}
+						else
+							$uploaded_url['status'] = "FailedURL";
+					}
+					$uploaded_files[] = $uploaded_url;
 				}
-				$uploaded_files[] = $uploaded_url;
 			}
 		}
 	}
