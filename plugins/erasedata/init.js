@@ -53,12 +53,26 @@ if(plugin.canChangeMenu())
 
 	rTorrentStub.prototype.removewithdata = function()
 	{
-		this.content = "mode=removewithdata&v=" + (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1");
-		for( var i = 0; i < this.hashes.length; i++ )
-			this.content += "&hash=" + this.hashes[i];
-		this.contentType = "application/x-www-form-urlencoded";
-		this.mountPoint = "plugins/httprpc/action.php";
-		this.dataType = "json";
-		this.commands = [];
+		if (plugin.debug) console.log("erasedata: removewithdata called, hashes:", this.hashes, "getCommon available:", typeof this.getCommon === "function");
+		if (typeof this.getCommon === "function") {
+			if (plugin.debug) console.log("erasedata: routing through getCommon (trusted handler)");
+			this.vs[0] = (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1");
+			this.getCommon("removewithdata");
+		} else {
+			if (plugin.debug) console.log("erasedata: using direct XMLRPC fallback");
+			for( var i = 0; i < this.hashes.length; i++ )
+			{
+				var cmd = new rXMLRPCCommand( "d.set_custom5" );
+				cmd.addParameter( "string", this.hashes[i] );
+				cmd.addParameter( "string", (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1") );
+				this.commands.push( cmd );
+				cmd = new rXMLRPCCommand( "d.delete_tied" );
+				cmd.addParameter( "string", this.hashes[i] );
+				this.commands.push( cmd );
+				cmd = new rXMLRPCCommand( "d.erase" );
+				cmd.addParameter( "string", this.hashes[i] );
+				this.commands.push( cmd );
+			}
+		}
 	}
 }
