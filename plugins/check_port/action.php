@@ -168,8 +168,8 @@ $ip_glob = rTorrentSettings::get()->ip;
 
 // Initialize the response structure that will be sent to the client
 $response = [
-	"ipv4" => "-", "ipv4_port" => (int)$port, "ipv4_status" => 0,
-	"ipv6" => "-", "ipv6_port" => (int)$port, "ipv6_status" => 0,
+	"ipv4" => "-", "ipv4_port" => (int)$port, "ipv4_status" => -1,
+	"ipv6" => "-", "ipv6_port" => (int)$port, "ipv6_status" => -1,
 ];
 
 // Perform the IPv4 check if it's enabled in conf.php
