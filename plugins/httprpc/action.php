@@ -496,7 +496,24 @@ switch($mode)
 	{
 		if(isset($HTTP_RAW_POST_DATA))
 		{
-			$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA,false);
+			// Determine trust level by parsing the XMLRPC method name.
+			// Only whitelisted methods get trusted SCGI connections.
+			// Default remains untrusted to block dangerous commands
+			// like execute, system.*, etc.
+			$trusted = false;
+			$xml = @simplexml_load_string($HTTP_RAW_POST_DATA);
+			if($xml !== false && isset($xml->methodName))
+			{
+				$methodName = (string)$xml->methodName;
+				$trustedMethods = array(
+					'load.start', 'load.raw_start', 'load.raw', 'load.normal',
+					'load_start', 'load_raw_start', 'load_raw',
+				);
+				$trusted = in_array($methodName, $trustedMethods);
+				if(!$trusted)
+					FileUtil::toLog("httprpc: untrusted raw XMLRPC method: ".$methodName);
+			}
+			$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA,$trusted);
 			if(!empty($result))
 			{
 				$pos = strpos($result, "\r\n\r\n");
