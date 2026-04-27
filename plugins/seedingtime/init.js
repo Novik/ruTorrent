@@ -88,4 +88,5 @@ plugin.onRemove = function()
 	}
 	theRequestManager.removeRequest( "trt", plugin.reqId1 );
 	theRequestManager.removeRequest( "trt", plugin.reqId2 );
+	theRequestManager.removeRequest( "trt", plugin.reqId3 );
 }
