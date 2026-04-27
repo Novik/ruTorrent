@@ -27,10 +27,14 @@ if(plugin.canChangeColumns())
 			const epochSeconds = iv(value);
 			torrent.seedingtime = (epochSeconds > 3600*24*365) ? new Date().getTime()/1000-(epochSeconds+theWebUI.deltaTime/1000) : -1;
 		});
+		plugin.reqId3 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_state_changed="),function(hash, torrent, value)
+		{
+			torrent.state_changed = iv(value);
+		});
 		plugin.reqId2 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"addtime",function(hash,torrent,value)
 		{
 			const epochSeconds = iv(value);
-			torrent.addtime = (epochSeconds > 3600*24*365) ? epochSeconds+theWebUI.deltaTime/1000 : -1;
+			if(epochSeconds > 3600*24*365){ torrent.addtime = epochSeconds + theWebUI.deltaTime/1000; } else if(torrent.state_changed > 0) { torrent.addtime = torrent.state_changed + theWebUI.deltaTime/1000; } else { torrent.addtime = -1; }
 		});
 		plugin.trtRenameColumn();
 	}
