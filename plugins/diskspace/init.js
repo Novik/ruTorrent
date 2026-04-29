@@ -3,14 +3,20 @@ plugin.loadMainCSS();
 
 plugin.setValue = function( full, free )
 {
-        var percent = iv(full ? (full-free)/full*100 : 0);
-        if(percent>100)
-	        percent = 100;
+	var used = full-free;
+	var percent = iv(full ? used/full*100 : 0);
+	if(percent>100)
+		percent = 100;
 	$("#meter-disk-value").width( percent+"%" ).css( { "background-color": (new RGBackground()).setGradient(this.prgStartColor,this.prgEndColor,percent).getColor(),
 		visibility: !percent ? "hidden" : "visible" } );
 	if(plugin.freeBytesInMeter) $("#meter-disk-text").text(theConverter.bytes(free));
 	else $("#meter-disk-text").text(percent+'%');
-	$("#meter-disk-pane").prop("title", theConverter.bytes(free)+"/"+theConverter.bytes(full));
+	$("#meter-disk-pane").prop("title",
+		theUILang.diskUsage
+			.replace(/%USED%/, theConverter.bytes(used))
+			.replace(/%TOTAL%/, theConverter.bytes(full))
+			.replace(/%FREE%/, theConverter.bytes(free))
+	);
 
 	if($.noty && plugin.allStuffLoaded)
 	{

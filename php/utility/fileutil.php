@@ -94,6 +94,9 @@ class FileUtil
 		$conf = dirname(__FILE__).'/../../plugins/'.$plugin.'/conf.php';
 		if(is_file($conf) && is_readable($conf))
 			$ret.='require("'.$conf.'");';
+		$local = dirname(__FILE__).'/../../plugins/'.$plugin.'/conf.local.php';
+		if(is_file($local) && is_readable($local))
+			$ret.='require("'.$local.'");';
 		$user = User::getUser();
 		if($user!='')
 		{
@@ -253,12 +256,12 @@ class FileUtil
 		}
 	}
 	
-	public static function getMinFilePerms( $file, $chmod = 755 )
+	public static function getMinFilePerms( $file, $chmod = 0755 )
 	{
 		$code = fileperms($file);
 		
 		if($code!==false)
-			return((decoct($code) & 0777) >= $chmod);
+			return(($code & 0777) >= $chmod);
 		
 		return false;
 	}

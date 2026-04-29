@@ -318,5 +318,8 @@ var theUILang =
  registerMagnet			: "尝试在启动时注册磁力链协议",
  linkTorTorrentRestored		: "与 rTorrent 的连接已建立.",
  removeAllTegs			: "删除所有标签",
- Torrents			: "Torrent(s)"
+ Torrents			: "Torrent(s)",
+ copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
+ copyToClipboardSuccess		: "Copied to clipboard successfully!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

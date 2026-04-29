@@ -165,7 +165,7 @@ button:not(:disabled):active, input[type=button]:not(:disabled):active, a.Button
 a.dropdown-item {
   width: auto;
 }
-category-list.rightalign-labelsize panel-label::part(size) {
+category-list.rightalign-labelsize panel-label::part(count) {
   margin-left: auto;
 }
 category-list.hide-textoverflow panel-label::part(text) {

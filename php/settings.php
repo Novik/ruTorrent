@@ -220,7 +220,10 @@ class rTorrentSettings
 			{
 				require_once( 'methods-0.9.4.php' );
 			}
-			
+			if($this->iVersion>=0x1002)
+			{
+				require_once( 'methods-0.10.2.php' );
+			}
 			$this->apiVersion = 0;
 			if($this->iVersion>=0x901)
 			{
@@ -230,7 +233,10 @@ class rTorrentSettings
 					$this->apiVersion = $req->val[0];
 			}
 
-                        $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
+			$req = new rXMLRPCRequest(new rXMLRPCCommand(
+				"convert.kb",
+				array('',floatval(1024))
+			));
 			if($req->run())
 			{
 				if(!$req->fault)
@@ -352,7 +358,7 @@ class rTorrentSettings
 			$schedule_rand = 10;
 		$tm = getdate();
 		$startAt = mktime($tm["hours"],
-			((integer)($tm["minutes"]/$interval))*$interval+$interval,
+			((int)($tm["minutes"]/$interval))*$interval+$interval,
 			0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0]+rand(0,$schedule_rand);
 		if($startAt<0)
 			$startAt = 0;

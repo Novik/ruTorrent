@@ -46,11 +46,15 @@ div {
 
 [part="count"],
 [part="size"] {
-  color: var(--badge-color);
   background-color: var(--badge-background-color);
   padding: var(--badge-padding, 0.1em 0.3em 0.1em 0.3em);
   border-radius: var(--badge-border-radius, 0.8em);
   white-space: pre;
+}
+
+:not(:host([selected])) [part="count"],
+:not(:host([selected])) [part="size"] {
+  color: var(--badge-color);
 }
 
 [part="icon"] {

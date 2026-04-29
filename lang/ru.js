@@ -320,5 +320,6 @@ var theUILang =
  removeAllTegs			: "Удалить все теги",
  Torrents			: "Торренты",
  copyToClipboardFailed		: "Функция копирования не работает в вашем браузере.\nСкопируйте требуемое вручную.\n\n",
- copyToClipboardSuccess		: "Успешно скопировано!"
+ copyToClipboardSuccess		: "Успешно скопировано!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

@@ -12,7 +12,7 @@ plugin.loadLang();
 const catlist = theWebUI.categoryList;
 const ptrackersPanelArgs = [
 	[['ptrackers_all', {text: theUILang.All, icon: 'all'}]],
-	[(hash) => theWebUI.torrentTrackerIds.get(hash) ?? []]
+	[(hash) => [...new Set(theWebUI.torrentTrackerIds.get(hash) ?? [])]]
 ];
 
 const plabelEntries = catlist.refreshPanel.plabel.bind(catlist);
@@ -98,6 +98,8 @@ if(!$type(theWebUI.getTrackerName))
 		return(domain);
 	}
 }
+
+if (plugin.hideTrackers && plugin.hideTrackers.length) {	var _origGetTrackerName = theWebUI.getTrackerName;	theWebUI.getTrackerName = function(announce) {		var domain = _origGetTrackerName(announce);		if ($.inArray(domain, plugin.hideTrackers) != -1) domain = "";		return domain;	};}
 
 plugin.contextMenuEntries = catlist.contextMenuEntries.bind(catlist);
 catlist.contextMenuEntries = function(panelId, labelId) {

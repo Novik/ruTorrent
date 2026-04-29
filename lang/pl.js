@@ -321,5 +321,6 @@ var theUILang =
  removeAllTegs			: "Usuń wszystkie znaczniki",
  Torrents			: "Torrent(y)",
  copyToClipboardFailed		: "Funkcja kopiowania nie działa w Twojej przeglądarce.\nSkopiuj tę zawartość ręcznie:\n\n",
- copyToClipboardSuccess		: "Pomyślnie skopiowano do schowka!"
+ copyToClipboardSuccess		: "Pomyślnie skopiowano do schowka!",
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
 };

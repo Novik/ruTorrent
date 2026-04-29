@@ -3,6 +3,8 @@
 require_once( dirname(__FILE__)."/../../php/util.php" );
 require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc" );
 
+eval(FileUtil::getPluginConf('tracklabels'));
+
 function try_send_image($image_name, $mime = 'image/png')
 {
 	if (is_readable($image_name)) {
@@ -18,6 +20,36 @@ function bad($message) {
 }
 
 $basepath = realpath(FileUtil::getSettingsPath());
+$knownAliases = [
+	'app'       => ['apps', 'applications', 'трограммы'],
+	'book'      => ['books', 'livres', 'книги'],
+	'film'      => ['films', 'фильм', 'фильмы'],
+	'game'      => ['jeux', 'игра'],
+	'game2'     => ['games', 'игры'],
+	'image'     => ['images', 'изображения', 'картинки', 'фото'],
+	'kid'       => ['kids', 'enfants', 'детское', 'детям'],
+	'movie'     => ['movies', 'serial', 'serials', 'сериал', 'сериалы'],
+	'music'     => ['musique', 'музыка'],
+	'other'     => ['others', 'autres', 'другое'],
+	'pack'      => ['packs'],
+	'porn'      => ['porno', 'pornos', 'порно'],
+	'serie'     => ['series', 'tv', 'тв'],
+	'software'  => ['softwares', 'logiciels', 'софт'],
+	'sport'     => ['sports', 'спорт'],
+	'video'     => ['videos', 'видео'],
+];
+
+function get_alias($name)
+{
+	global $knownAliases, $labelAliases;
+	foreach (array_merge_recursive($knownAliases, (array) $labelAliases) as $alias => $aliases) {
+		if ((is_array($aliases) && in_array($name, $aliases)) || $aliases === $name) {
+			$name = $alias;
+			break;
+		}
+	}
+	return $name;
+}
 
 function image_name($prefix, $req_field)
 {
@@ -27,9 +59,10 @@ function image_name($prefix, $req_field)
 		$dir = $basepath . '/' . $prefix;
 		if (!is_dir($dir))
 			FileUtil::makeDirectory($dir);
-		$name = function_exists('mb_strtolower')
-			? mb_strtolower(rawurldecode($_REQUEST[$req_field]), 'utf-8')
-			: strtolower(rawurldecode($_REQUEST[$req_field]));
+		$name = rawurldecode($_REQUEST[$req_field]);
+		$name = get_alias(function_exists('mb_strtolower')
+			? mb_strtolower($name, 'utf-8')
+			: strtolower($name));
 		$res = $dir . '/' . $name . '.png';
 		if (!strlen($name)
 			|| strlen($name) > 200
@@ -82,17 +115,19 @@ if ($png_name !== null) {
 			ignore_user_abort(true);
 			set_time_limit(0);
 
-			$url = Snoopy::linkencode("http://".$tracker."/favicon.ico");
 			$client = new Snoopy();
 			$client->read_timeout = 5;
 			$client->_fp_timeout = 5;
-			@$client->fetchComplex($url);
-			if ($client->status == 200) {
-				file_put_contents($ico_name, $client->results);
-				if (strpos(mime_content_type($ico_name), "image/")===false)
-					@unlink($ico_name);
-				else
-					try_send_image($ico_name, 'image/x-icon');
+			foreach (['favicon.ico', 'favicon.png'] as $favicon) {
+				$url = $client->linkencode("http://{$tracker}/{$favicon}");
+				@$client->fetchComplex($url);
+				if ($client->status == 200) {
+					file_put_contents($ico_name, $client->results);
+					if (strpos(mime_content_type($ico_name), "image/")===false)
+						@unlink($ico_name);
+					else
+						try_send_image($ico_name, 'image/x-icon');
+				}
 			}
 		}
 	}
