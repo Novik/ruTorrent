@@ -695,7 +695,7 @@ span#loadimg {padding: 20px; background: transparent url(../images/ajax-loader.g
 /* X-Small devices (portrait phones, less than 576px) */
 /* No media query for `xs` since this is the default in Bootstrap */
 /* Custom rules for medium devices */
-div#tadd {max-width: 95vw;}
+div#tadd {width: 95vw;}
 .dlg-window .buttons-list {
   margin: 0.5rem;
   gap: 0.25rem;
@@ -733,7 +733,7 @@ div#tadd {max-width: 95vw;}
   div#HDivider {cursor: e-resize;}
   div#VDivider {cursor: n-resize;}
   div#HDivider:hover, div#VDivider:hover {background: #A0A0A0;}
-  div#tadd {min-width: 600px;}
+  div#tadd {width: 600px;}
   .dlg-window .buttons-list {
     margin: 1rem 0.5rem;
     justify-content: end;
