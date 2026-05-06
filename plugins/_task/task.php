@@ -153,25 +153,50 @@ class rTask
 			return( file($filename) );
 		else
 		{
-			 $f = fopen($filename, "rb");
+			$f = fopen($filename, "rb");
 			fseek($f, -1, SEEK_END);
 			if(fread($f, 1) != "\n") $lines -= 1;
 
 			$output = '';
 			$chunk = '';
+			
+			$currentLines = 0;
 
-			while(ftell($f) > 0 && ($lines >= 0))
-    			{
+			while($currentLines < $lines && ftell($f) > 0)
+			{
 				$seek = min(ftell($f), $buffer);
 				fseek($f, -$seek, SEEK_CUR);
-			        $output = ($chunk = fread($f, $seek)).$output;
-			        fseek($f, -mb_strlen($chunk, '8bit'), SEEK_CUR);
-			        $lines -= substr_count($chunk, "\n");
-    			}
+
+				$startPosition = ftell($f);
+				$checkPosition = $startPosition;
+				$offset = 0;
+				while ($checkPosition > 0) {
+					fseek($f, $checkPosition, SEEK_SET);
+					$byte = fread($f, 1);
+					$byteValue = ord($byte);
+					if (($byteValue & 0xC0) === 0x80) {
+						$checkPosition++;
+					} else {
+						$offset = $checkPosition - $startPosition;
+						$startPosition = $checkPosition;
+						break;
+					}
+				}
+				fseek($f, $startPosition, SEEK_SET);
+				$chunk = fread($f, $seek - $offset);
+				$currentLines += substr_count($chunk, "\n");
+				$output = $chunk . $output;
+				fseek($f, $startPosition, SEEK_SET);
+
+			}
 			fclose($f);
 
-			return( explode("\n", $output) );
-		}	
+			$linesArray = explode("\n", $output);
+			if(count($linesArray) > $lines) {
+				$linesArray = array_slice($linesArray, -$lines);
+			}
+			return $linesArray;
+		}
 	}
 
 	static protected function processLog( $dir, $logName, &$ret, $stripConsole, $removeASCII, $doNotTrim )
