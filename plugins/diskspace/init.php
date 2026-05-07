@@ -14,9 +14,12 @@ if( is_null($partitionDirectory) )
 		$partitionDirectory = &$topDirectory; // Else, we show $topDirectory by default as fallback
 	}
 }
+$checkDirectory = $partitionDirectory;
+if (is_array($partitionDirectory))
+	$checkDirectory = reset($partitionDirectory);
 
 if(!function_exists('disk_total_space') || !function_exists('disk_free_space') ||
-	(disk_total_space($partitionDirectory)===false) || (disk_free_space($partitionDirectory)===false))
+	(disk_total_space(checkDirectory)===false) || (disk_free_space(checkDirectory)===false))
 	$jResult .= "plugin.disable();";
 else
 {
