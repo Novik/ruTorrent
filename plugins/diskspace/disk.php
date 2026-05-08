@@ -79,7 +79,7 @@ class rDiskSpace
 	public function getOldestIndex()
 	{
 		$oldestIndex = 0;
-		$oldestTime = PHP_INT_MAX;
+		$oldestTime = 9999999999;
 
 		foreach( $this->disks as $index => $disk )
 		{
