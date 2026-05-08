@@ -1,7 +1,7 @@
 plugin.loadLang();
 plugin.loadMainCSS();
 
-plugin.setValue = function( full, free )
+plugin.setValue = function( full, free, all )
 {
 	var used = full-free;
 	var percent = iv(full ? used/full*100 : 0);
@@ -89,7 +89,7 @@ plugin.init = function()
 				cache: false,
 				success : function(data)
 				{
-					plugin.setValue( data.total, data.free );
+					plugin.setValue( data.total, data.free, data.all );
 				},
 				complete : function(jqXHR, textStatus)
 				{
