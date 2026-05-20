@@ -15,5 +15,6 @@
  				  "Port is open"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
 thePlugins.get("check_port").langLoaded();

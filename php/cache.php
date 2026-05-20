@@ -4,6 +4,7 @@ require_once( 'util.php' );
 class rCache
 {
 	protected $dir;
+	protected static $modifiedTimes = [];
 
 	public function __construct( $name = '' )
 	{
@@ -22,14 +23,20 @@ class rCache
 		}
 		return(true);
 	}
+	protected static function getCacheKey( $rss )
+	{
+		return(get_class($rss).':'.$rss->hash);
+	}
 	public function set( $rss, $arg = null )
 	{
 		global $profileMask;
 		$name = $this->getName($rss);
+		$cacheKey = is_object($rss) ? self::getCacheKey($rss) : null;
+		$modTime = $cacheKey ? (self::$modifiedTimes[$cacheKey] ?? (isset($rss->modified) ? $rss->modified : 0)) : 0;
 		if(     is_object($rss) &&
-			isset($rss->modified) &&
+			$modTime &&
 			method_exists($rss,"merge") &&
-			($rss->modified < filemtime($name)))
+			($modTime < filemtime($name)))
 		{
 		        $className = get_class($rss);
 			$newInstance = new $className();
@@ -88,7 +95,8 @@ class rCache
 					(isset($tmp->version) && ($tmp->version==$rss->version))))
 				{
 					$rss = $tmp;
-					$rss->modified = filemtime($fname);
+					$cacheKey = self::getCacheKey($rss);
+					self::$modifiedTimes[$cacheKey] = filemtime($fname);
 					$ret = true;
 				}
 				else
@@ -107,7 +115,7 @@ class rCache
 	}
 	public function getModified( $obj = null )
 	{
-		return(filemtime( is_null($obj) ? $this->dir : 
+		return(@filemtime( is_null($obj) ? $this->dir : 
 			(is_object($obj) ? $this->getName($obj) : $this->dir."/".$obj) ));
 			
 	}

@@ -89,3 +89,8 @@
 	$enableCSRFCheck = false;		// If true then Origin and Referer will be checked
 	$enabledOrigins = array();		// List of enabled domains for CSRF check (only hostnames, without protocols, port etc.).
 						// If empty, then will retrieve domain from HTTP_HOST / HTTP_X_FORWARDED_HOST
+
+	// Load local deployment overrides if present
+	$configLocalPath = dirname(__FILE__)."/config.local.php";
+	if(is_file($configLocalPath) && is_readable($configLocalPath))
+		require($configLocalPath);
