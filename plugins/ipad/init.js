@@ -1,116 +1,82 @@
-$.extend($.support, 
+$.extend($.support,
 {
 	touchable: 'createTouch' in document
 });
 
-plugin.holdMouse = { x:0, y: 0 };
-plugin.curMouse = null;
+let target = null;
+let startPos = null;
+let longPressTimer = null;
+let suppressNextClick = false;
+let suppressSafetyTimer = null;
 
-plugin.emulateRightClick = function()
-{
-	if(( (Math.abs(plugin.rightClick.screenX - plugin.holdMouse.x)<8) &&
-		(Math.abs(plugin.rightClick.screenY - plugin.holdMouse.y)<8)))
-	{
-		var mouseEvent = document.createEvent("MouseEvent");
-		mouseEvent.initMouseEvent("contextmenu", true, true, window, 1, 
-			plugin.rightClick.screenX + 20, plugin.rightClick.screenY + 5, 
-			plugin.rightClick.clientX + 20, plugin.rightClick.clientY + 5,
-			false, false, false, false, 2, null);
-		plugin.rightClick.target.dispatchEvent(mouseEvent);
-		plugin.cancelMouseUp = true;
+const clearLongPress = () => {
+	if (longPressTimer) {
+		clearTimeout(longPressTimer);
+		longPressTimer = null;
 	}
-	plugin.rightClick = null;
-}
+};
 
-plugin.cancelHold = function() 
-{
-	if(plugin.rightClick) 
-	{
-		window.clearTimeout(plugin.holdTimeout);
-		plugin.rightClick = null;
+const armSuppress = () => {
+	suppressNextClick = true;
+	if (suppressSafetyTimer) clearTimeout(suppressSafetyTimer);
+	suppressSafetyTimer = setTimeout(() => {
+		suppressNextClick = false;
+		suppressSafetyTimer = null;
+	}, 500);
+};
+
+const onTouchStart = (e) => {
+	if (e.touches.length !== 1) {
+		clearLongPress();
+		return;
 	}
-}
+	const t = e.touches[0];
+	target = t.target;
+	startPos = { x: t.clientX, y: t.clientY };
+	longPressTimer = setTimeout(() => {
+		longPressTimer = null;
+		if (!target) return;
+		target.dispatchEvent(new MouseEvent("contextmenu", {
+			bubbles: true, cancelable: true, view: window, button: 2,
+			screenX: t.screenX, screenY: t.screenY,
+			clientX: t.clientX, clientY: t.clientY,
+		}));
+		armSuppress();
+	}, 600);
+};
 
-plugin.startHold = function(touch)
-{
-	if(!plugin.rightClick)
-	{
-		plugin.holdMouse = { x: touch.screenX, y: touch.screenY };
-		plugin.rightClick = touch;
-		plugin.holdTimeout = window.setTimeout(plugin.emulateRightClick, 600);
-	}
-}
+const onTouchMove = (e) => {
+	if (!startPos) return;
+	const t = e.touches[0];
+	if (Math.abs(t.clientX - startPos.x) > 8 || Math.abs(t.clientY - startPos.y) > 8)
+		clearLongPress();
+};
 
-plugin.dispatchMouse = function(event,type)
-{
-	var touch = event.changedTouches[0];
-	touch.timeStamp = $.now();
-	window.setTimeout( function() 
-	{
-		var mouseEvent = document.createEvent("MouseEvent");
-		mouseEvent.initMouseEvent(type, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY,
-			false, false, false, false, 0, null);
-		touch.target.dispatchEvent(mouseEvent);
-	}, 0);
-	return(touch);
-}
+const onTouchEnd = () => {
+	clearLongPress();
+	target = null;
+	startPos = null;
+};
 
-plugin.cancelTarget = function() 
-{
-	plugin.target = null;
-}
-
-plugin.touchStart = function(event)
-{
-	if(event.changedTouches.length)
-	{
-		if($(event.changedTouches[0].target).is("select") || $(event.changedTouches[0].target).is("input") || $(event.changedTouches[0].target).is("button") || $(event.changedTouches[0].target).is("label"))
-			return;
-		plugin.dispatchMouse(event,"mousemove");
-		var touch = plugin.dispatchMouse(event,"mousedown");;
-		if(plugin.targetTimeout)
-			window.clearTimeout(plugin.targetTimeout);
-		if(!plugin.target || (plugin.target != touch.target))
-		{
-			plugin.target = touch.target;
-			plugin.targetTimeout = window.setTimeout(plugin.cancelTarget, 600);
-			plugin.startHold(touch);
-		}
-		else 
-		{
-			if(plugin.target) 
-			{
-				plugin.cancelTarget();
-				plugin.dispatchMouse(event,"click");
-				plugin.dispatchMouse(event,"dblclick");
+const suppressIfFlagged = (e, clearFlag) => {
+	if (suppressNextClick) {
+		if (clearFlag) {
+			suppressNextClick = false;
+			if (suppressSafetyTimer) {
+				clearTimeout(suppressSafetyTimer);
+				suppressSafetyTimer = null;
 			}
 		}
-		plugin.curMouse = { x: touch.screenX, y: touch.screenY, timeStamp: $.now() };
+		e.preventDefault();
+		e.stopImmediatePropagation();
 	}
-	event.preventDefault();
-	return(false);
-}
+};
 
-plugin.touchEnd = function(event)
-{
-	if(event.changedTouches.length)
-	{
-		if(plugin.cancelMouseUp) 
-		{
-			plugin.cancelMouseUp = false;
-			event.preventDefault();
-			return(false);
-		}
-		plugin.cancelHold();
-		var touch = plugin.dispatchMouse(event,"mouseup");
-		if(plugin.target && (plugin.target == touch.target))
-			plugin.dispatchMouse(event,"click");
-		plugin.curMouse = null;
-	}
-}
-
-if($.support.touchable && browser.isSafari)
-{
-	document.addEventListener("touchstart", plugin.touchStart, false);
-	document.addEventListener("touchend", plugin.touchEnd, false);
+if ($.support.touchable && browser.isSafari) {
+	document.addEventListener("touchstart", onTouchStart, { passive: true });
+	document.addEventListener("touchmove",  onTouchMove,  { passive: true });
+	document.addEventListener("touchend",   onTouchEnd,   { passive: true });
+	document.addEventListener("mousedown", (e) => suppressIfFlagged(e, false), true);
+	document.addEventListener("mouseup",   (e) => suppressIfFlagged(e, false), true);
+	document.addEventListener("click",     (e) => suppressIfFlagged(e, true),  true);
 }
