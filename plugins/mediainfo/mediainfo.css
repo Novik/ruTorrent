@@ -1,2 +1,2 @@
 div#dlg_info {width: 600px; height: 450px}
-div#dlg_info div.dlg-header {background-image: url(./images/mediainfo16.png)}
+div#dlg_info div.dlg-header > div:first-child {background-image: url(./images/mediainfo16.png)}

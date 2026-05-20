@@ -81,7 +81,7 @@ class DnD {
 	finish(e) {
 		$("body").css({cursor:""});
 		const self = e.data;
-		self.options.onFinish(e);
+		try { self.options.onFinish(e); } catch(err) { console.error("DnD onFinish error:", err); }
 		$(document).off("mousemove", self.run);
 		$(document).off("mouseup", self.finish);
 		return false;

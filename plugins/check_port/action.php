@@ -42,9 +42,7 @@ function get_public_ip($version, $timeout) {
 		if (filter_var($ip, FILTER_VALIDATE_IP, $flag)) {
 			return $ip; // Return the valid IP
 		}
-		error_log("check_port plugin: {$url} returned invalid IP: " . $ip);
 	} else {
-		error_log("check_port plugin: Failed to fetch from {$url}. Status: {$snoopy->status}, Error: {$snoopy->error}");
 	}
 	return null; // Return null on failure
 }
@@ -160,7 +158,7 @@ function get_and_check_ip($ip_version, $use_website, $rtorrent_ip, $rtorrent_por
 		return ["ip" => $ip_to_check, "status" => $status];
 	}
 	// Return a default "not available" state if no IP could be determined
-	return ["ip" => "-", "status" => 0];
+	return ["ip" => "-", "status" => -1];
 }
 
 // --- Main Execution ---
@@ -170,8 +168,8 @@ $ip_glob = rTorrentSettings::get()->ip;
 
 // Initialize the response structure that will be sent to the client
 $response = [
-	"ipv4" => "-", "ipv4_port" => (int)$port, "ipv4_status" => 0,
-	"ipv6" => "-", "ipv6_port" => (int)$port, "ipv6_status" => 0,
+	"ipv4" => "-", "ipv4_port" => (int)$port, "ipv4_status" => -1,
+	"ipv6" => "-", "ipv6_port" => (int)$port, "ipv6_status" => -1,
 ];
 
 // Perform the IPv4 check if it's enabled in conf.php

@@ -21,6 +21,7 @@ class rRSS
 {
 	public $items = array();
 	public $channel = array();
+	public $isValid = false;
 	public $url = null;
 	public $srcURL = null;
 	public $hash = null;

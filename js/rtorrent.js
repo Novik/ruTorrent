@@ -379,7 +379,8 @@ rTorrentStub.prototype.setsettings = function()
 			else
 				prm = "auto";
 			prmType = "string";
-			cmd = new rXMLRPCCommand('dht');
+			cmd = new rXMLRPCCommand('dht.mode.set');
+			cmd.addParameter("string",'');
 		}
 		else
 			cmd = new rXMLRPCCommand('set_'+this.ss[i].substr(1));

@@ -233,9 +233,9 @@ plugin.onLangLoaded = function() {
 		);
 		theDialogManager.setHandler('cadd','beforeShow',function()
 		{
-			var peer = theWebUI.peers[theWebUI.getTable("prs").getFirstSelected()];
-			plugin.ip = peer.ip;
-			$('#peerComment').val(peer.comment);
+			var table = theWebUI.getTable("prs"); var peerId = table.getFirstSelected();
+			plugin.ip = table.getAttr(peerId, "ip");
+			$('#peerComment').val(table.getValueById(peerId, 'comment') || '');
 		});
 	}
 }

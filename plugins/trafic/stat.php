@@ -21,15 +21,15 @@ class rStat
 		$this->fname = FileUtil::getSettingsPath().'/trafic/'.$prefix;
 		if($file=@fopen($this->fname,"r"))
 		{
-			$hourUp = fgetcsv($file);
-			$hourDown = fgetcsv($file);
-			$hourHitTimes = fgetcsv($file);
-			$monthUp = fgetcsv($file);
-			$monthDown = fgetcsv($file);
-			$monthHitTimes = fgetcsv($file);
-			$yearUp = fgetcsv($file);
-			$yearDown = fgetcsv($file);
-			$yearHitTimes = fgetcsv($file);
+			$hourUp = fgetcsv($file, 0, ",", "\"", "");
+			$hourDown = fgetcsv($file, 0, ",", "\"", "");
+			$hourHitTimes = fgetcsv($file, 0, ",", "\"", "");
+			$monthUp = fgetcsv($file, 0, ",", "\"", "");
+			$monthDown = fgetcsv($file, 0, ",", "\"", "");
+			$monthHitTimes = fgetcsv($file, 0, ",", "\"", "");
+			$yearUp = fgetcsv($file, 0, ",", "\"", "");
+			$yearDown = fgetcsv($file, 0, ",", "\"", "");
+			$yearHitTimes = fgetcsv($file, 0, ",", "\"", "");
 			fclose($file);
 
 			if ($hourUp) $this->hourUp = $hourUp;
@@ -49,15 +49,15 @@ class rStat
 		$randName = FileUtil::getTempFilename('trafic');
 		if($file=@fopen($randName,"w"))
 		{
-			if( (fputcsv($file,$this->hourUp)!==false) &&
-				(fputcsv($file,$this->hourDown)!==false) &&
-				(fputcsv($file,$this->hourHitTimes)!==false) &&
-				(fputcsv($file,$this->monthUp)!==false) &&
-				(fputcsv($file,$this->monthDown)!==false) &&
-				(fputcsv($file,$this->monthHitTimes)!==false) &&
-				(fputcsv($file,$this->yearUp)!==false) &&
-				(fputcsv($file,$this->yearDown)!==false) &&
-				(fputcsv($file,$this->yearHitTimes)!==false))
+			if( (fputcsv($file,$this->hourUp, ",", "\"", "")!==false) &&
+				(fputcsv($file,$this->hourDown, ",", "\"", "")!==false) &&
+				(fputcsv($file,$this->hourHitTimes, ",", "\"", "")!==false) &&
+				(fputcsv($file,$this->monthUp, ",", "\"", "")!==false) &&
+				(fputcsv($file,$this->monthDown, ",", "\"", "")!==false) &&
+				(fputcsv($file,$this->monthHitTimes, ",", "\"", "")!==false) &&
+				(fputcsv($file,$this->yearUp, ",", "\"", "")!==false) &&
+				(fputcsv($file,$this->yearDown, ",", "\"", "")!==false) &&
+				(fputcsv($file,$this->yearHitTimes, ",", "\"", "")!==false))
 			{
 				if( fclose($file)!==false )
 				{

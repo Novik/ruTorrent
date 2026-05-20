@@ -251,6 +251,6 @@
 .geoip_flag_zm {background-image: url( "flags/zm.gif" ); }
 .geoip_flag_zw {background-image: url( "flags/zw.gif" ); }
 
-div#cadd {width: 250px; height: 120px}
-div#cadd div.dlg-header {background-image: url(../../images/props.gif)}
-#peerComment {width: 200px}
+div#cadd {width: 400px}
+div#cadd div.dlg-header > div:first-child {background-image: url(../../images/props.gif)}
+#peerComment {width: 100%}
