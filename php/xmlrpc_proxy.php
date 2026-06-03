@@ -8,6 +8,11 @@
  *   "sanitize"           — parse and sanitize known methods, send safe
  *                          payload as trusted; pass unknown methods as
  *                          untrusted (rtorrent whitelist decides)
+ *
+ * Dependencies (loaded by the production caller before non-"off" modes):
+ *   php/util.php    — FileUtil::toLog
+ *   php/xmlrpc.php  — rXMLRPCRequest::send
+ * (Both are required by plugins/httprpc/action.php, the production caller.)
  */
 
 class XMLRPCProxy
@@ -20,7 +25,6 @@ class XMLRPCProxy
 	);
 
 	private static $log = true;
-	private static $safeParams = array();
 
 	private static function log($msg)
 	{
@@ -29,18 +33,35 @@ class XMLRPCProxy
 	}
 
 	/**
+	 * Parse untrusted XMLRPC XML with entity loading disabled.
+	 *
+	 * PHP 8+ libxml2 defaults external-entity loading off; PHP 7.x does
+	 * not, and ruTorrent still supports PHP 7. We disable it explicitly to
+	 * prevent XXE on client-supplied XML.
+	 */
+	private static function parseXml($rawData)
+	{
+		$prev = null;
+		if(PHP_VERSION_ID < 80000 && function_exists('libxml_disable_entity_loader'))
+			$prev = libxml_disable_entity_loader(true);
+		$xml = @simplexml_load_string($rawData, 'SimpleXMLElement', LIBXML_NONET);
+		if($prev !== null)
+			libxml_disable_entity_loader($prev);
+		return $xml;
+	}
+
+	/**
 	 * Process a raw XMLRPC payload according to the configured mode.
 	 *
-	 * @param string $rawData       Raw XMLRPC XML from the client
-	 * @param string $mode          "off", "passthrough_unsafe", or "sanitize"
-	 * @param bool   $enableLog     Enable/disable logging
-	 * @param array  $safeParams    Whitelisted command prefixes for load.* params
-	 * @return string|null          SCGI response, or null on error/rejection
+	 * @param string $rawData     Raw XMLRPC XML from the client
+	 * @param string $mode        "off", "passthrough_unsafe", or "sanitize"
+	 * @param bool   $enableLog   Enable/disable logging
+	 * @param array  $safeParams  Whitelisted command prefixes for load.* params
+	 * @return string|null        SCGI response, or null on rejection
 	 */
 	public static function process($rawData, $mode = 'sanitize', $enableLog = true, $safeParams = array())
 	{
 		self::$log = $enableLog;
-		self::$safeParams = $safeParams;
 
 		if($mode === 'off')
 		{
@@ -55,17 +76,24 @@ class XMLRPCProxy
 		}
 
 		// sanitize mode
-		$xml = @simplexml_load_string($rawData);
+		$xml = self::parseXml($rawData);
 		if($xml === false || !isset($xml->methodName))
 		{
-			self::log("rejected (invalid XML)");
+			self::log("untrusted (invalid XML)");
 			return rXMLRPCRequest::send($rawData, false);
 		}
 
 		$methodName = (string)$xml->methodName;
 
-		if(in_array($methodName, self::$sanitizeMethods))
-			return self::sanitizeLoad($xml, $methodName);
+		if(in_array($methodName, self::$sanitizeMethods, true))
+		{
+			$rebuilt = self::rebuildLoadParams($xml, $methodName, $safeParams);
+			if(count($rebuilt['stripped']) > 0)
+				self::log("sanitized: ".$methodName." (kept ".$rebuilt['kept']." params, stripped: ".implode(', ', $rebuilt['stripped']).")");
+			else
+				self::log("trusted: ".$methodName." (".$rebuilt['kept']." params)");
+			return rXMLRPCRequest::send($rebuilt['xml'], true);
+		}
 
 		// Unknown method — pass through as untrusted.
 		// rtorrent's own whitelist will allow/reject.
@@ -74,11 +102,11 @@ class XMLRPCProxy
 	}
 
 	/**
-	 * Check if a load.* command parameter is safe.
+	 * Check if a load.* command parameter matches the safe-prefix whitelist.
 	 */
-	private static function isSafeLoadParam($paramValue)
+	private static function isSafeLoadParam($paramValue, $safeParams)
 	{
-		foreach(self::$safeParams as $prefix)
+		foreach($safeParams as $prefix)
 		{
 			if(strpos($paramValue, $prefix) === 0)
 				return true;
@@ -87,12 +115,34 @@ class XMLRPCProxy
 	}
 
 	/**
-	 * Rebuild a load.* call keeping only safe parameters.
-	 * param 0: target (empty string)
-	 * param 1: URL or raw torrent data
-	 * param 2+: command strings — keep safe ones, strip dangerous ones
+	 * Extract a load.* command-param value from its <value> element.
+	 *
+	 * Handles both the typed form <value><string>foo</string></value> and
+	 * the implicit-string form <value>foo</value>. For non-string types
+	 * (<int>, <base64>) the raw text is returned; it simply won't match
+	 * any whitelist prefix and will be stripped — safe default.
 	 */
-	private static function sanitizeLoad($xml, $methodName)
+	private static function extractParamValue($paramElement)
+	{
+		if(isset($paramElement->string))
+			return (string)$paramElement->string;
+		return trim((string)$paramElement);
+	}
+
+	/**
+	 * Rebuild a load.* call keeping only safe parameters.
+	 *
+	 *   Param 0: target           (always kept)
+	 *   Param 1: URL or raw data  (always kept)
+	 *   Param 2+: command strings (kept iff prefix-matches the whitelist,
+	 *                              otherwise stripped)
+	 *
+	 * Public for unit testing — production callers should go through
+	 * process().
+	 *
+	 * @return array ['xml' => string, 'kept' => int, 'stripped' => array]
+	 */
+	public static function rebuildLoadParams($xml, $methodName, $safeParams = array())
 	{
 		$cleanXml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 		$cleanXml .= '<methodCall><methodName>' . htmlspecialchars($methodName) . '</methodName>';
@@ -114,12 +164,8 @@ class XMLRPCProxy
 				}
 				else
 				{
-					// Command parameter — check whitelist
-					$value = (string)$param->value->string;
-					if(empty($value))
-						$value = (string)$param->value;
-
-					if(self::isSafeLoadParam($value))
+					$value = self::extractParamValue($param->value);
+					if(self::isSafeLoadParam($value, $safeParams))
 					{
 						$cleanXml .= '<param>' . $param->value->asXML() . '</param>';
 						$kept++;
@@ -135,11 +181,6 @@ class XMLRPCProxy
 
 		$cleanXml .= '</params></methodCall>';
 
-		if(count($stripped) > 0)
-			self::log("sanitized: ".$methodName." (kept ".$kept." params, stripped: ".implode(', ', $stripped).")");
-		else
-			self::log("trusted: ".$methodName." (".$kept." params)");
-
-		return rXMLRPCRequest::send($cleanXml, true);
+		return array('xml' => $cleanXml, 'kept' => $kept, 'stripped' => $stripped);
 	}
 }

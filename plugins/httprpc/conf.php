@@ -30,5 +30,7 @@ $XMLRPCProxySafeParams = array(
 	'd.priority.set',           // priority
 	'd.throttle_name.set',      // throttle group
 	'd.views.push_back_unique', // view membership
+
+	// Actions (not setters):
 	'd.delete_tied',            // delete .torrent on remove
 );
