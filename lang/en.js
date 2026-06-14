@@ -97,6 +97,7 @@ var theUILang =
  Loading			: "Loading...",
  Torrent_file			: "Torrent file",
  Torrent_URL			: "Torrent URL",
+ Torrent_URL_multiline		: "Torrent URLs (one per line)",
  Torrent_properties		: "Torrent Properties",
  Trackers			: "Trackers",
  Bandwidth_sett			: "Bandwidth Settings",
