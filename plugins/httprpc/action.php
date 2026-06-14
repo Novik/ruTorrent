@@ -1,6 +1,7 @@
 <?php
 
 require_once( '../../php/xmlrpc.php' );
+require_once( '../../php/xmlrpc_proxy.php' );
 require_once( 'rpccache.php' );
 
 $mode = "raw";
@@ -496,7 +497,11 @@ switch($mode)
 	{
 		if(isset($HTTP_RAW_POST_DATA))
 		{
-			$result = rXMLRPCRequest::send($HTTP_RAW_POST_DATA,false);
+			eval(FileUtil::getPluginConf('httprpc'));
+			$proxyMode = isset($XMLRPCProxy) ? $XMLRPCProxy : 'sanitize';
+			$proxyLog = isset($XMLRPCProxyLog) ? $XMLRPCProxyLog : true;
+			$proxySafeParams = isset($XMLRPCProxySafeParams) ? $XMLRPCProxySafeParams : array();
+			$result = XMLRPCProxy::process($HTTP_RAW_POST_DATA, $proxyMode, $proxyLog, $proxySafeParams);
 			if(!empty($result))
 			{
 				$pos = strpos($result, "\r\n\r\n");
