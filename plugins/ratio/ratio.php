@@ -166,20 +166,37 @@ class rRatio
 		$req1 = new rXMLRPCRequest(new rXMLRPCCommand("view_list"));
 		if($req1->run() && !$req1->fault)
 		{
+			// Best-effort insert of the rat_* persistent views that view.list
+			// reports missing. Run as its own request so any fault here
+			// (typically "View with same name already inserted" when the
+			// session restored rat_* but our cached view.list lagged) does
+			// not propagate into the settings multicall below and sink the
+			// whole plugin start with a misleading "Plugin failed to start".
+			$insertReq = new rXMLRPCRequest();
+			for($i=0; $i<MAX_RATIO; $i++)
+			{
+				if(!in_array("rat_".$i,$req1->val))
+					$insertReq->addCommand(new rXMLRPCCommand("group.insert_persistent_view", array("", "rat_".$i)));
+			}
+			if($insertReq->getCommandsCount())
+				$insertReq->run();
+
 			$insCmd = getCmd('branch=');
 			$req = new rXMLRPCRequest();
 			for($i=0; $i<MAX_RATIO; $i++)
 			{
 				$insCmd .= (getCmd('d.views.has=').'rat_'.$i.',,');
 				$rat = $this->rat[$i];
-				if(!in_array("rat_".$i,$req1->val))
-					$req->addCommand(new rXMLRPCCommand("group.insert_persistent_view", array("", "rat_".$i)));
 				if($this->isCorrect($i))
 				{
 					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.enable',array("")) );
-					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.min.set',$rat["min"]) );
-					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.max.set',$rat["max"]) );
-					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.upload.set',floatval($rat["upload"]*1024*1024*1024)) );
+					// rtorrent 0.16+ requires (target, value) for group.*.ratio.*.set;
+					// pre-0.16 group2.* aliases tolerated a single scalar param. Always
+					// prepend the empty-string target so the call shape matches the
+					// strict 0.16 signature on every supported rtorrent.
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.min.set',array("",$rat["min"])) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.max.set',array("",$rat["max"])) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.upload.set',array("",floatval($rat["upload"]*1024*1024*1024))) );
 					switch($rat["action"])
 					{
 						case RAT_STOP:
