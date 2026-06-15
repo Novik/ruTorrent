@@ -11,12 +11,14 @@ plugin.setValue = function( full, free )
 		visibility: !percent ? "hidden" : "visible" } );
 	if(plugin.freeBytesInMeter) $("#meter-disk-text").text(theConverter.bytes(free));
 	else $("#meter-disk-text").text(percent+'%');
-	$("#meter-disk-pane").prop("title",
-		theUILang.diskUsage
-			.replace(/%USED%/, theConverter.bytes(used))
-			.replace(/%TOTAL%/, theConverter.bytes(full))
-			.replace(/%FREE%/, theConverter.bytes(free))
-	);
+	if(theUILang.diskUsage) {
+		$("#meter-disk-pane").prop("title",
+			theUILang.diskUsage
+				.replace(/%USED%/, theConverter.bytes(used))
+				.replace(/%TOTAL%/, theConverter.bytes(full))
+				.replace(/%FREE%/, theConverter.bytes(free))
+		);
+	}
 
 	if($.noty && plugin.allStuffLoaded)
 	{

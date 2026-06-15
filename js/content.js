@@ -154,8 +154,8 @@ function makeContent() {
 							$("<label>").attr({for: "url"}).text(theUILang.Torrent_URL + ": "),
 						),
 						$("<div>").addClass("col-md-6").append(
-							$("<input>")
-								.attr({type: "text", id: "url", name: "url", placeholder: theUILang.Torrent_URL})
+							$("<textarea>")
+								.attr({id: "url", name: "url", placeholder: theUILang.Torrent_URL_multiline, rows: 4})
 								.on("input", (ev) => {$('#add_url').prop('disabled', ev.target.value.trim() === '');})
 								.addClass("flex-grow-1"),
 						),
@@ -870,6 +870,30 @@ function correctContent()
 			"ratio.upload.set"              : { name: "group2.seeding.ratio.upload.set", prm: 1 },
 			"connection_leech"              : { name: "protocol.connection.leech.set", prm: 1 },
 			"connection_seed"               : { name: "protocol.connection.seed.set", prm: 1 },
+		});
+	}
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x1000)
+	{
+		// rtorrent 0.16.x: deprecated aliases (schedule2, schedule_remove2,
+		// execute2, network.http.max_open*, group2.*) are gated behind
+		// method.use_deprecated which since 0.16.14 can no longer be enabled
+		// from the rc file — only via the -D launch flag. Override the JS
+		// alias map so theRequestManager.map() returns the canonical names
+		// for any code path that builds an XMLRPC command client-side and
+		// sends it via httprpc/multirpc. Mirrors php/methods-0.16.0.php.
+		$.extend(theRequestManager.aliases,
+		{
+			"schedule"          : { name: "schedule",                              prm: 1 },
+			"schedule_remove"   : { name: "schedule.remove",                       prm: 1 },
+			"execute"           : { name: "execute",                               prm: 1 },
+			"get_max_open_http" : { name: "network.http.max_total_connections",    prm: 0 },
+			"set_max_open_http" : { name: "network.http.max_total_connections.set",prm: 1 },
+			"ratio.min"         : { name: "group.seeding.ratio.min",               prm: 0 },
+			"ratio.max"         : { name: "group.seeding.ratio.max",               prm: 0 },
+			"ratio.upload"      : { name: "group.seeding.ratio.upload",            prm: 0 },
+			"ratio.min.set"     : { name: "group.seeding.ratio.min.set",           prm: 1 },
+			"ratio.max.set"     : { name: "group.seeding.ratio.max.set",           prm: 1 },
+			"ratio.upload.set"  : { name: "group.seeding.ratio.upload.set",        prm: 1 },
 		});
 	}
 	if(theWebUI.systemInfo.rTorrent.iVersion < 0x907) {

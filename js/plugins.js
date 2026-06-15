@@ -1,5 +1,10 @@
 // this function is obsolete
 
+function cacheBust(url) {
+	var sep = (url.indexOf('?') === -1) ? '?' : '&';
+	return url + sep + 'v=' + (typeof theWebUI !== 'undefined' ? theWebUI.version.replace(/\./g, '') : Date.now());
+}
+
 function injectScript(fname,initFunc)
 {
 	var h = document.getElementsByTagName("head").item(0);
@@ -9,9 +14,9 @@ function injectScript(fname,initFunc)
 		s.onload = initFunc;
 	}
 	if(s.setAttribute)
-		s.setAttribute('src', fname);
+		s.setAttribute('src', cacheBust(fname));
 	else
-		s.src = fname;
+		s.src = cacheBust(fname);
 	s.type = "text/javascript";
 	void (h.appendChild(s));
 }
@@ -20,7 +25,7 @@ function injectCSS(fname, onLoadFunc)
 {
 	var newSS=document.createElement('link');
 	newSS.rel='stylesheet';
-	newSS.href=fname;
+	newSS.href=cacheBust(fname);
 	newSS.onload = onLoadFunc;
 	var h = document.getElementsByTagName("head").item(0);
 	void (h.appendChild(newSS));
@@ -166,7 +171,7 @@ rPlugin.prototype.loadLangPrim = function(lang,template,sendNotify)
 	var self = this;
 	$.ajax(
 	{
-		url: template.replace('{lang}',lang), // this is because plugin.path may be changed during call
+		url: cacheBust(template.replace('{lang}',lang)),
 		dataType: "script",
 		cache: true
 	}).done( function()
