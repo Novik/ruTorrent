@@ -224,6 +224,10 @@ class rTorrentSettings
 			{
 				require_once( 'methods-0.10.2.php' );
 			}
+			if($this->iVersion>=0x1000)
+			{
+				require_once( 'methods-0.16.0.php' );
+			}
 			$this->apiVersion = 0;
 			if($this->iVersion>=0x901)
 			{
@@ -311,7 +315,15 @@ class rTorrentSettings
 	}
 	public function getRatioGroupCommand($ratio,$cmd,$args)
 	{
-		$prefix = ($this->iVersion >= 0x904) && in_array($cmd,$this->ratioCmds) ? "group2." : "group.";
+		// rtorrent 0.16 removed the group2.* aliases (deprecated and gated
+		// behind method.use_deprecated, which on 0.16.14+ cannot be enabled
+		// from the rc file — only via the -D launch flag). Use group.* for
+		// every cmd on 0.16+; the older split is kept for pre-0.16 slots.
+		if($this->iVersion >= 0x1000) {
+			$prefix = "group.";
+		} else {
+			$prefix = ($this->iVersion >= 0x904) && in_array($cmd,$this->ratioCmds) ? "group2." : "group.";
+		}
 		return( new rXMLRPCCommand( $prefix.$ratio.".".$cmd, $args ) );
 	}
 	public function getEventCommand($cmd1,$cmd2,$args)
