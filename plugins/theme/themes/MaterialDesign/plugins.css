@@ -62,8 +62,8 @@
 }
 
 .browseFrame {
-  border: 1px solid #161F25;
-  background-color: #273238;
+  border: 1px solid #303030;
+  background-color: #252525;
 }
 .tskconsole, .exconsole, .console, .starterConsole { background: #333333 }
 #tsk_btns input.Button {
@@ -80,11 +80,23 @@
   color: #fff;
   text-shadow: 0px 0px 2px #000;
   font-size: 11px;
-  font-family: Ubuntu;
+  font-family: inherit;
   z-index: 1;
 }
 
+#meter-disk-pane .icon {
+	background: none;
+	content: url(./svg/icn_statusbar_hdd.svg);
+	height:14px;
+}
+
 #meter-cpu-text { color: #fff; text-shadow: 0px 0px 2px #000; font-family: Ubuntu; }
+#meter-cpu-pane .icon {
+	background: none;
+	content: url(./svg/icn_statusbar_cpu.svg);
+	height:14px;
+}
+
 
 #tcreate-header {
   background-image: url(./images/dlg-toolbars.gif);
@@ -96,7 +108,7 @@ div#dlgAddRSS { background-color: #222222; border-top: 1px solid #333; border-ri
   background-position-y: -48px;
 }
 
-.lf li input.TextboxFocus { background-color: transparent; color: #009DDD }
+.lf li input.TextboxFocus { background-color: transparent; color: #65c97a }
 
 .cCell { color:#333; }
 
@@ -167,7 +179,7 @@ div#tchat div.dlg-header { background-image: url(./images/chat2.png); }
 
 #userlist, #chatselect, #chatarea, #chatselect option {
   border:none !important;
-  background-color:#6F6F6F !important;
+  background-color:#4e4e4e !important;
   border-radius:2px !important;
   color:#fff !important;
 }
@@ -179,3 +191,4 @@ div#logoffDlg div.dlg-header { background-image: url(./images/logoff2.png); }
 .noty_alert, .noty_success { color: #000000; text-shadow: 0 -1px 0 #ffffff }
 
 #port-ip-text { color: #FFF; }
+
