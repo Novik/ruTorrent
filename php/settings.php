@@ -32,18 +32,6 @@ class rTorrentSettings
 
 	static private $theSettings = null;
 
-	private $ratioCmds = array
-	(
-		"view",          
-		"view.set",
-		"ratio.min",
-		"ratio.min.set",
-		"ratio.max",
-		"ratio.max.set",
-		"ratio.upload",
-		"ratio.upload.set",
-	);
-
 	private function __construct()
     	{
     		if( array_key_exists("browser_timezone",$_COOKIE) )
@@ -315,16 +303,24 @@ class rTorrentSettings
 	}
 	public function getRatioGroupCommand($ratio,$cmd,$args)
 	{
-		// rtorrent 0.16 removed the group2.* aliases (deprecated and gated
-		// behind method.use_deprecated, which on 0.16.14+ cannot be enabled
-		// from the rc file — only via the -D launch flag). Use group.* for
-		// every cmd on 0.16+; the older split is kept for pre-0.16 slots.
-		if($this->iVersion >= 0x1000) {
-			$prefix = "group.";
-		} else {
-			$prefix = ($this->iVersion >= 0x904) && in_array($cmd,$this->ratioCmds) ? "group2." : "group.";
+		// Use group.* on every rtorrent. group2.* was a transient alias
+		// experiment: stubbed (non-functional) on 0.15.x and removed in
+		// 0.16. The canonical group.* commands work across the version
+		// range we care to support.
+		//
+		// rtorrent 0.16+ tightened the signature on group.NAME.*.set:
+		// it strictly requires (target_string, value), and rejects a
+		// bare value with "invalid parameters: target must be a string".
+		// 0.15.x is the opposite — strictly takes the bare value and
+		// rejects (target, value) with "Wrong object type". Adapt the
+		// args automatically by rtorrent version so callers do not
+		// have to track which signature applies.
+		if(($this->iVersion >= 0x1000) && (substr($cmd, -4) === ".set"))
+		{
+			if(!is_array($args)) $args = array($args);
+			array_unshift($args, "");
 		}
-		return( new rXMLRPCCommand( $prefix.$ratio.".".$cmd, $args ) );
+		return( new rXMLRPCCommand( "group.".$ratio.".".$cmd, $args ) );
 	}
 	public function getEventCommand($cmd1,$cmd2,$args)
 	{

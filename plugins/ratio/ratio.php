@@ -190,13 +190,9 @@ class rRatio
 				if($this->isCorrect($i))
 				{
 					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.enable',array("")) );
-					// rtorrent 0.16+ requires (target, value) for group.*.ratio.*.set;
-					// pre-0.16 group2.* aliases tolerated a single scalar param. Always
-					// prepend the empty-string target so the call shape matches the
-					// strict 0.16 signature on every supported rtorrent.
-					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.min.set',array("",$rat["min"])) );
-					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.max.set',array("",$rat["max"])) );
-					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.upload.set',array("",floatval($rat["upload"]*1024*1024*1024))) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.min.set',$rat["min"]) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.max.set',$rat["max"]) );
+					$req->addCommand( rTorrentSettings::get()->getRatioGroupCommand("rat_".$i,'ratio.upload.set',floatval($rat["upload"]*1024*1024*1024)) );
 					switch($rat["action"])
 					{
 						case RAT_STOP:
