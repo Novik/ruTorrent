@@ -107,61 +107,6 @@ class UTF
 		return($outstr);
 	}
 
-	private static function mix2utf($str, $inv = '_') 
-	{
-		$len = strlen($str);
-		for($i = 0; $i < $len; $i++)
-		{
-			$c = ord($str[$i]);
-			if($c > 128) 
-			{
-				$bytes = 0;
-				if(($c > 247)) $str[$i] = $inv;
-				elseif($c > 239) $bytes = 4;
-				elseif($c > 223) $bytes = 3;
-				elseif($c > 191) $bytes = 2;
-				else $str[$i] = $inv;
-				if($bytes)
-				{
-					if(($i + $bytes) > $len) $str[$i] = $inv;
-					else
-					{
-						$start = $i;
-						$cnt = $bytes;
-						while($bytes > 1) 
-						{
-							$i++;
-							$b = ord($str[$i]);
-							if($b < 128 || $b > 191) 
-							{
-								$str[$start] = $inv;
-								$i = $start;
-								break;
-							}
-							$bytes--;
-						}
-					}
-				}
-			}
-		}
-		return($str);
-	}
-
-	public static function utf8ize($mixed) 
-	{
-		if(is_array($mixed) || is_object($mixed)) 
-		{
-				foreach($mixed as $key => $value) 
-				{
-					$mixed[$key] = self::utf8ize($value);
-				}
-			} 
-			else 
-				if(is_string($mixed)) 
-					$mixed = self::mix2utf($mixed);
-		return($mixed);
-	}
-
 	private static function maybe_mb_convert_to_utf8($string) {
 		return function_exists('mb_convert_encoding') ? mb_convert_encoding($string, "UTF-8", "auto") : $string;
 	}
