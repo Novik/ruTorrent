@@ -95,6 +95,7 @@ var theUILang =
  Loading			: "Φόρτωση...",
  Torrent_file			: "Αρχείο Torrent",
  Torrent_URL			: "URL του Torrent",
+ Torrent_URL_multiline		: "URL των TorrentTorrent (ένα ανά γραμμή)",
  Torrent_properties		: "Ιδιότητες του Torrent",
  Trackers			: "Trackers",
  Bandwidth_sett			: "Ρυθμίσεις εύρους ζώνης",
