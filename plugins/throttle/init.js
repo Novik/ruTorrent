@@ -169,34 +169,19 @@ if(plugin.canChangeMenu())
 		var req = '';
 		for(var k in sr)
        			if(sr[k] && (k.length==40))
-				req += ("&hash=" + k + "&v="+throttle);
+				req += ("&hash=" + k);
 		if(req.length>0)
-			this.request("?action=setthrottle"+req+"&list=1",[this.addTorrents, this]);
+			this.request("?action=setthrottle&v="+throttle+req+"&list=1",[this.addTorrents, this]);
 	}
 
 	rTorrentStub.prototype.setthrottle = function()
 	{
-		for(var i=0; i<this.vs.length; i++)
-		{
-			var needRestart = (theWebUI.torrents[this.hashes[i]].status==theUILang.Seeding) || (theWebUI.torrents[this.hashes[i]].status==theUILang.Downloading);
-			var name = (this.vs[i]>=0) ? "thr_"+this.vs[i] : "";
-			if(needRestart)
-			{
-				cmd = new rXMLRPCCommand('d.stop');
-				cmd.addParameter("string",this.hashes[i]);
-				this.commands.push( cmd );
-			}
-			cmd = new rXMLRPCCommand('d.set_throttle_name');
-			cmd.addParameter("string",this.hashes[i]);
-			cmd.addParameter("string",name);
-			this.commands.push( cmd );
-			if(needRestart)
-			{
-				cmd = new rXMLRPCCommand('d.start');
-				cmd.addParameter("string",this.hashes[i]);
-				this.commands.push( cmd );
-			}
-		}
+		this.content = "apply=1&v="+encodeURIComponent(this.vs[0]);
+		for(var i=0; i<this.hashes.length; i++)
+			this.content += ("&hash%5B%5D="+encodeURIComponent(this.hashes[i]));
+		this.contentType = "application/x-www-form-urlencoded";
+		this.mountPoint = "plugins/throttle/action.php";
+		this.dataType = "script";
 	}
 }
 

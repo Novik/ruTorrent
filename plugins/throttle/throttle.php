@@ -118,6 +118,28 @@ class rThrottle
         	}
 		return(false);
 	}
+	public function apply()
+	{
+		$hashes = isset($_REQUEST['hash']) ? $_REQUEST['hash'] : array();
+		if(!is_array($hashes))
+			$hashes = array($hashes);
+		$v = isset($_REQUEST['v']) ? intval($_REQUEST['v']) : -1;
+		$name = ($v>=0) ? ("thr_".$v) : "";
+		$req = new rXMLRPCRequest();
+		foreach($hashes as $hash)
+		{
+			if((strlen($hash)!=40) || !ctype_xdigit($hash))
+				continue;
+			$req->addCommand(new rXMLRPCCommand( "branch", array(
+				$hash,
+				getCmd("d.is_active="),
+				getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$name.',$'.getCmd('d.start='),
+				getCmd('d.set_throttle_name=').$name )));
+		}
+		if($req->getCommandsCount())
+			return($req->run() && !$req->fault);
+		return(true);
+	}
 	public function obtain()
 	{
 		$req = new rXMLRPCRequest( array(
