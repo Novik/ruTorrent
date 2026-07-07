@@ -258,6 +258,20 @@ switch($mode)
         	$result = makeSimpleCall(array("d.check_hash"), $hash);
 		break;
 	}
+	case "getsavepath":	/**/
+	{
+		if(isset($hash[0]))
+		{
+			$req = new rXMLRPCRequest( array(
+				new rXMLRPCCommand( "d.open", $hash[0] ),
+				new rXMLRPCCommand( "d.get_base_path", $hash[0] ),
+				new rXMLRPCCommand( "d.close", $hash[0] )
+			) );
+			if($req->success(true))
+				$result = $req->val;
+		}
+		break;
+	}
 	case "start":	/**/
 	{
 		$result = makeSimpleCall(array("d.open","d.start","d.resume"), $hash);
