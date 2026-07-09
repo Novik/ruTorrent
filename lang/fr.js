@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Fréq. des MàJ de l’UI",
  ms				: "ms",
  Alt_list_bckgnd		: "Couleurs alternées pour la liste",
+ Compact_rows			: "Lignes compactes",
  Show_cat_start			: "Afficher les catégories au démarrage",
  Show_det_start			: "Afficher les détails au démarrage",
  KeepSearches			: "Conserver les recherches",

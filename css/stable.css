@@ -196,3 +196,8 @@
 .Icon_File {background: transparent url(../images/file.gif) no-repeat left center}
 .Icon_Dir {background: transparent url(../images/dir.gif) no-repeat left center}
 .Icon_Share {background: transparent url(../images/share.gif) no-repeat left center}
+
+/* Compact mode (Settings > General > User Interface): tighten list + sidebar rows */
+body.compact .stable tbody td div { padding-block: 0; margin-block: 0; }
+body.compact panel-label { padding-block: 0; }
+body.compact category-panel::part(heading) { padding-block: 0; }

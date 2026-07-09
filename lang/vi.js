@@ -17,6 +17,7 @@ var theUILang =
  Update_GUI_every		: "Cập nhật sau mỗi",
  ms				: "ms",
  Alt_list_bckgnd		: "Xen kẽ màu nền trong danh sách",
+ Compact_rows			: "Hàng thu gọn",
  Show_cat_start			: "Hiển thị các mục khi khởi động",
  Show_det_start			: "Hiển thị đầy đủ khi khởi động",
  KeepSearches			: "Keep searches",

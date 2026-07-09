@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Aktualisierungsintervall",
  ms				: "ms",
  Alt_list_bckgnd		: "Abwechselnder Zeilenhintergrund",
+ Compact_rows			: "Kompakte Listenzeilen",
  Show_cat_start			: "Zeige Gruppen beim Start",
  Show_det_start			: "Zeige Details beim Start",
  KeepSearches			: "Keep searches",

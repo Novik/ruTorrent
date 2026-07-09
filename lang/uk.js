@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Оновл. GUI кожні",
  ms				: "мс",
  Alt_list_bckgnd		: "Альтернативний колір списку",
+ Compact_rows			: "Компактні рядки",
  Show_cat_start			: "Показати категорії під час запуску",
  Show_det_start			: "Показати деталі під час запуску",
  KeepSearches			: "Keep searches",

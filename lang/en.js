@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Update GUI every",
  ms				: "ms",
  Alt_list_bckgnd		: "Alternate list background colour",
+  Compact_rows			: "Compact list rows",
  Show_cat_start			: "Show categories on startup",
  Show_det_start			: "Show details on startup",
  KeepSearches			: "Keep searches",

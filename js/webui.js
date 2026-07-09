@@ -122,6 +122,7 @@ var theWebUI = {
 		"webui.reqtimeout":		10000,
 		"webui.confirm_when_deleting":	1,
 		"webui.alternate_color":	0,
+		"webui.compact_rows":		0,
 		"webui.side_panel_min_width": 	200,
 		"webui.side_panel_max_width_percent": 35,
 		"webui.list_table_min_height": 	300,
@@ -471,6 +472,7 @@ var theWebUI = {
 			}
 		});
 		$(".stable").toggleClass("alternate", !!theWebUI.settings["webui.alternate_color"]);
+		$("body").toggleClass("compact", !!theWebUI.settings["webui.compact_rows"]);
 		table = this.getTable("plg");
 		if(table)
 		{
@@ -729,6 +731,10 @@ var theWebUI = {
 							}
 							case "webui.alternate_color": {
 								$(".stable").toggleClass("alternate", !!nv);
+								break;
+							}
+							case "webui.compact_rows": {
+								$("body").toggleClass("compact", !!nv);
 								break;
 							}
 							case "webui.show_cats": {

@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Arayüz yenileme süresi",
  ms				: "ms",
  Alt_list_bckgnd		: "Alternatif liste arka plan rengi",
+ Compact_rows			: "Sıkışık satırlar",
  Show_cat_start			: "Açılışta kategorileri göster",
  Show_det_start			: "Açılışta ayrıntıları göster",
  KeepSearches			: "Aramaları koru",

@@ -17,6 +17,7 @@ var theUILang =
  Update_GUI_every		: "更新圖形介面頻率",
  ms				: "ms",
  Alt_list_bckgnd		: "交替顯示列表背景色",
+ Compact_rows			: "緊湊行距",
  Show_cat_start			: "啟動時顯示類別",
  Show_det_start			: "啟動時顯示詳細內容",
  KeepSearches			: "Keep searches",

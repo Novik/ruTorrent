@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Obnovování GUI po",
  ms				: "ms",
  Alt_list_bckgnd		: "Šedé pozadí pro sudé řádky",
+ Compact_rows			: "Kompaktní řádky",
  Show_cat_start			: "Zobrazovat kategorie po spuštění",
  Show_det_start			: "Zobrazit detaily po spuštění",
  KeepSearches			: "Keep searches",

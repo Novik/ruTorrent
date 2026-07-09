@@ -17,6 +17,7 @@ var theUILang =
  Update_GUI_every		: "Освежи графички интерфејс сваких",
  ms				: "милисекунди",
  Alt_list_bckgnd		: "Наизменично бојење редова у листи",
+ Compact_rows			: "Компактни редови",
  Show_cat_start			: "Покажи категорије на почетку",
  Show_det_start			: "Покажи детаље на почетку",
  KeepSearches			: "Keep searches",
