@@ -21,7 +21,6 @@ $this->aliases = array_merge($this->aliases, array(
 	"set_max_open_files" => array( "name"=>"system.sockets.files.min_alloc.set", "prm"=>1 ),
 
 	// d.multicall2 removed; d.multicall is canonical
-	"d.multicall"  => array( "name"=>"d.multicall",  "prm"=>1 ),
 	"d.multicall2" => array( "name"=>"d.multicall",  "prm"=>1 ),
 
 	// Proxy addresses — removed in 0.16.16
