@@ -898,7 +898,7 @@ function correctContent()
 	}
 	if(theWebUI.systemInfo.rTorrent.iVersion>=0x1010)
 	{
-		// rtorrent >= 0.16.17: override aliases for commands that were
+		// rtorrent >= 0.16.16: override aliases for commands that were
 		// removed or now log deprecation warnings. Mirrors php/methods-0.16.16.php.
 		$.extend(theRequestManager.aliases,
 		{
