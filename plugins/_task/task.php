@@ -46,16 +46,6 @@ class rTask
 	{
 		if(!rTorrentSettings::get()->linkExist)
 			$flags|=self::FLG_RUN_AS_WEB;
-		// A task is normally launched by asking rtorrent to run it (execute.nothrow.bg
-		// in run()), which is fine from a web request while rtorrent is idle. But when
-		// start() is reached from a script rtorrent invoked through an event handler's
-		// blocking `execute` (e.g. the unpack plugin's update.php on
-		// event.download.finished), that callback re-enters rtorrent while its main
-		// thread is blocked inside the very handler that triggered us -- a deadlock that
-		// stalls the client until the RPC socket times out and the task is discarded.
-		// Such scripts run under the CLI SAPI, so launch the task directly instead.
-		if(PHP_SAPI==='cli')
-			$flags|=self::FLG_RUN_AS_WEB;
 	        if(count($commands))
 	        {
 			$dir = $this->makeDirectory();
