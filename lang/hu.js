@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "GUI frissítési ideje",
  ms				: "ms",
  Alt_list_bckgnd		: "Eltérő háttér színű lista",
+ Compact_rows			: "Kompakt sorok",
  Show_cat_start			: "Kategóriák mutatása indításkor",
  Show_det_start			: "Tulajdonságok mutatása indításkor",
  KeepSearches			: "Keep searches",

@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "GUI আপডেট করুন প্রতি",
  ms				: "ms",
  Alt_list_bckgnd		: "বিকল্প তালিকার ব্যাকগ্রাউন্ড কালার",
+ Compact_rows			: "কম্প্যাক্ট সারি",
  Show_cat_start			: "স্টার্টআপে ক্যাটাগরি দেখান",
  Show_det_start			: "শুরুতে বিস্তারিত দেখান",
  KeepSearches			: "অনুসন্ধান রাখা",

@@ -20,6 +20,7 @@ var theUILang =
  Update_GUI_every		: "Aggiorna i dati ogni",
  ms				: "ms",
  Alt_list_bckgnd		: "Alterna i colori di sfondo nelle liste",
+ Compact_rows			: "Righe compatte",
  Show_cat_start			: "Mostra categorie all'avvio",
  Show_det_start			: "Mostra dettagli all'avvio",
  KeepSearches			: "Mantieni le ricerche",

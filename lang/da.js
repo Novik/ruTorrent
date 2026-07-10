@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Opdater GUI hvert",
  ms				: "ms",
  Alt_list_bckgnd		: "Alternativ liste baggrundsfarve",
+ Compact_rows			: "Kompakte rækker",
  Show_cat_start			: "Vis kategorier ved start",
  Show_det_start			: "Vis details ved start",
  KeepSearches			: "Keep searches",

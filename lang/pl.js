@@ -20,6 +20,7 @@ var theUILang =
  Update_GUI_every		: "Aktualizuj interfejs co",
  ms				: "ms",
  Alt_list_bckgnd		: "Alternatywny kolor tła listy",
+ Compact_rows			: "Kompaktowe wiersze",
  Show_cat_start			: "Pokaż kategorie na starcie",
  Show_det_start			: "Pokaż szczegóły na starcie",
  KeepSearches			: "Pamiętaj wyszukiwania",

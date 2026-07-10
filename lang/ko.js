@@ -17,6 +17,7 @@ var theUILang =
  Update_GUI_every		: "다음 시간마다 GUI 갱신",
  ms				: "ms",
  Alt_list_bckgnd		: "줄무늬 목록 배경색 사용",
+ Compact_rows			: "간격 좁은 목록",
  Show_cat_start			: "시작 시 카테고리 표시",
  Show_det_start			: "시작시 세부 정보 표시",
  KeepSearches			: "Keep searches",

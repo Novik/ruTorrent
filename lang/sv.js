@@ -17,6 +17,7 @@ var theUILang =
  Update_GUI_every		: "Uppdatera användargränssnitt varje",
  ms				: "ms",
  Alt_list_bckgnd		: "Alternera bakgrundsfärg i lista",
+ Compact_rows			: "Kompakta rader",
  Show_cat_start			: "Visa kategorier vid uppstart",
  Show_det_start			: "Visa detaljer vid upstart",
  KeepSearches			: "Keep searches",

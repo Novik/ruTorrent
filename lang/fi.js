@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Paivita käyttöliittymä joka",
  ms				: "ms",
  Alt_list_bckgnd		: "Riveittäin vaihteleva taustaväri",
+ Compact_rows			: "Tiiviit rivit",
  Show_cat_start			: "Näytä ryhmat käynnistettäessä",
  Show_det_start			: "Nayta yksityiskohdat käynnist.",
  KeepSearches			: "Keep searches",

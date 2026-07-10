@@ -18,6 +18,7 @@ var theUILang =
  Update_GUI_every		: "Oppdater brukergrensesnitt hvert",
  ms				: "ms",
  Alt_list_bckgnd		: "Alternativ listebakgrunnsfarge",
+ Compact_rows			: "Kompakte rader",
  Show_cat_start			: "Vis kategorier ved start",
  Show_det_start			: "Vis detaljer ved start",
  KeepSearches			: "Behold søk",

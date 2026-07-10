@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Aktualizovať GUI každych",
  ms				: "ms",
  Alt_list_bckgnd		: "Alternatívne pozadie zoznamu",
+ Compact_rows			: "Kompaktné riadky",
  Show_cat_start			: "Zobraziť kategórie po spusteni",
  Show_det_start			: "Zobraziť detaily po spustení",
  KeepSearches			: "Keep searches",

@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Vernieuw GUI iedere",
  ms				: "ms",
  Alt_list_bckgnd		: "Andere achtergrondkleur voor lijst",
+ Compact_rows			: "Compacte lijstregels",
  Show_cat_start			: "Bij opstarten categorieën weergeven",
  Show_det_start			: "Bij opstarten details weergeven",
  KeepSearches			: "Keep searches",

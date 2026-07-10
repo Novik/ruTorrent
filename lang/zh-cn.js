@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "GUI更新间隔",
  ms				: "ms",
  Alt_list_bckgnd		: "交替显示列表背景色",
+ Compact_rows			: "紧凑行距",
  Show_cat_start			: "启动时显示类别",
  Show_det_start			: "启动时显示详情",
  KeepSearches			: "Keep searches",

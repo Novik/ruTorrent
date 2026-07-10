@@ -19,6 +19,7 @@ var theUILang =
  Update_GUI_every		: "Atjaunot GUI ik pēc",
  ms				: "ms",
  Alt_list_bckgnd		: "Izmainīt saraksta fona krāsu",
+ Compact_rows			: "Kompaktas rindas",
  Show_cat_start			: "Rādīt kategorijas, kad startē WebUI",
  Show_det_start			: "Rādīt detaļas, kad startē WebUI",
  KeepSearches			: "Keep searches",

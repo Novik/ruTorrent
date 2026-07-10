@@ -17,6 +17,7 @@ var theUILang =
  Update_GUI_every		: "Ανανέωση GUI κάθε",
  ms				: "ms",
  Alt_list_bckgnd		: "Αλλαγή φόντου προβολής λίστας",
+ Compact_rows			: "Συμπαγείς γραμμές",
  Show_cat_start			: "Προβολή κατηγοριών κατά την εκκίνηση",
  Show_det_start			: "Προβολή λεπτομερειών κατά την εκκίνηση",
  KeepSearches			: "Διατήρηση αναζητήσεων",

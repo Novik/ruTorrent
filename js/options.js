@@ -21,6 +21,7 @@ const theOptionsWindow = {
 					...[
 						['webui.confirm_when_deleting', theUILang.Confirm_del_torr],
 						['webui.alternate_color', theUILang.Alt_list_bckgnd],
+						['webui.compact_rows', theUILang.Compact_rows],
 						['webui.ignore_timeouts', theUILang.dontShowTimeouts],
 						['webui.fullrows', theUILang.fullTableRender],
 						['webui.no_delaying_draw', theUILang.showScrollTables],
