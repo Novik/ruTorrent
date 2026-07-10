@@ -4,7 +4,7 @@
   "description": "ruTorrent javascript tests",
   "name": "rutorrent-tests",
   "devDependencies": {
-    "@babel/core": "7.22.9",
+    "@babel/core": "7.29.6",
     "@babel/preset-env": "7.22.9",
     "babel-jest": "29.5.0",
     "jest": "29.5.0",
