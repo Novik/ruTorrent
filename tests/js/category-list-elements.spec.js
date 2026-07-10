@@ -153,7 +153,7 @@ describe("panel-label", () => {
     const ic = label.parts.icon;
     label.icon = "url:name";
     await new Promise(process.nextTick);
-    expect(ic.style.backgroundImage).toEqual(`url(name)`);
+    expect(ic.style.backgroundImage).toEqual(`url("name")`);
     expect(ic.children.length).toBe(0);
     expect([...ic.classList]).toEqual(["icon-by-url"]);
     label.icon = "name";
