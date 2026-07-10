@@ -67,14 +67,14 @@ describe("Category list", () => {
       Object.fromEntries(
         [
           ["AA", "", "[Test] less", 16, 100 << 20, 0, 0],
-          ["BB", "Software", "[Banana] green", 0, 12 << 20, 5000, 10],
+          ["BB", "Software", "[Banana] green", 1, 12 << 20, 5000, 10],
           ["CC", "Image/Banana", "[Banana] ripe", 15, 1 << 30, 0, 10000],
           ["DD", "Image/Peach", "[Peach] rotten", 1, 500 << 20, 3000, 5000],
           ["EE", "Misc/Other/More", "[More] or less", 2, 300 << 20, 200, 0],
           ["FF", "Misc/Other/Less", "[Less] or more", 16, 200 << 20, 0, 0],
-        ].map(([hash, label, name, status, size, ul, dl]) => [
+        ].map(([hash, label, name, state, size, ul, dl]) => [
           hash,
-          { label, name, status, size, ul, dl },
+          { label, name, state, size, ul, dl },
         ])
       )
     );
@@ -86,7 +86,7 @@ describe("Category list", () => {
       borrowTorrentsFn,
       onConfigChangeFn,
       byteSizeToStringFn: (size) => `${(size / (1 << 20)).toFixed(2)} MiB`,
-      dStatus: { error: 16 },
+      dStatus: { started: 1, paused: 2, checking: 4, hashing: 8, error: 16 },
     });
   });
   it("should restore selection and searches on config", () => {

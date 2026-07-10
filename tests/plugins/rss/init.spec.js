@@ -4,6 +4,7 @@ import * as bbcodeModule from "../../../plugins/rss/bbcode";
 
 window.$ = require("jquery");
 window.theWebUI = {
+  version: "0.0.0",
   settings: {
     "webui.needmessage": true,
   },
