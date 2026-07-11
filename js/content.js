@@ -896,6 +896,26 @@ function correctContent()
 			"ratio.upload.set"  : { name: "group.seeding.ratio.upload.set",        prm: 1 },
 		});
 	}
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x1010)
+	{
+		// rtorrent >= 0.16.16: override aliases for commands that were
+		// removed or now log deprecation warnings. Mirrors php/methods-0.16.16.php.
+		$.extend(theRequestManager.aliases,
+		{
+			"get_max_open_http"      : { name: "system.sockets.http.max_alloc",          prm: 0 },
+			"set_max_open_http"      : { name: "system.sockets.http.max_alloc.set",      prm: 1 },
+			"set_max_open_files"     : { name: "system.sockets.files.max_alloc.set",     prm: 1 },
+			"d.multicall2"           : { name: "d.multicall",                             prm: 1 },
+			"get_http_proxy"         : { name: "network.proxy.http",                     prm: 0 },
+			"set_http_proxy"         : { name: "network.proxy.http.set",                 prm: 1 },
+			"http_proxy"             : { name: "network.proxy.http",                     prm: 0 },
+			"get_proxy_address"      : { name: "network.proxy.global",                    prm: 0 },
+			"set_proxy_address"      : { name: "network.proxy.global.set",                prm: 1 },
+			"get_max_open_sockets"   : { name: "system.sockets.max_size",                prm: 0 },
+			"network.open_sockets"   : { name: "system.sockets.size",                    prm: 0 },
+			"network.max_open_sockets": { name: "system.sockets.max_size",               prm: 0 },
+		});
+	}
 	if(theWebUI.systemInfo.rTorrent.iVersion < 0x907) {
 		const title = theUILang.requiresAtLeastRtorrent.replace('{version}', 'v0.9.7');
 		$($$('webui.show_open_status')).attr({ disabled: '', title });

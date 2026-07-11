@@ -216,6 +216,10 @@ class rTorrentSettings
 			{
 				require_once( 'methods-0.16.0.php' );
 			}
+			if($this->iVersion>=0x1010)
+			{
+				require_once( 'methods-0.16.16.php' );
+			}
 			$this->apiVersion = 0;
 			if($this->iVersion>=0x901)
 			{
