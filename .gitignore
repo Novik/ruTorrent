@@ -19,6 +19,7 @@ conf/config.local.php
 share/users/*
 share/torrents/*
 share/settings/*
+plugins/*/conf.local.php
 plugins/xirvik
 .htpasswd
 plugins/shoutbox
