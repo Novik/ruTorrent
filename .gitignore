@@ -15,6 +15,7 @@
 
 # ruTorrent
 conf/users/*
+conf/config.local.php
 share/users/*
 share/torrents/*
 share/settings/*
