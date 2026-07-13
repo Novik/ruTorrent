@@ -1,7 +1,7 @@
 plugin.loadLang();
 plugin.loadMainCSS();
 
-plugin.setValue = function( full, free )
+plugin.setValue = function( full, free, all )
 {
 	var used = full-free;
 	var percent = iv(full ? used/full*100 : 0);
@@ -11,14 +11,33 @@ plugin.setValue = function( full, free )
 		visibility: !percent ? "hidden" : "visible" } );
 	if(plugin.freeBytesInMeter) $("#meter-disk-text").text(theConverter.bytes(free));
 	else $("#meter-disk-text").text(percent+'%');
-	if(theUILang.diskUsage) {
-		$("#meter-disk-pane").prop("title",
+	var tooltip = [];
+	if(all && all.length)
+	{
+		for(var i = 0; i < all.length; i++)
+		{
+			var disk = all[i];
+			var dUsed = disk.total - disk.free;
+			var dPercent = disk.total ? Math.round(dUsed / disk.total * 100) : 0;
+			tooltip.push(
+				disk.path + "\n" +
+					theUILang.diskUsage
+					.replace(/%USED%/, theConverter.bytes(dUsed))
+					.replace(/%TOTAL%/, theConverter.bytes(disk.total))
+					.replace(/%FREE%/, theConverter.bytes(disk.free))
+			);
+		}
+	}
+	else
+	{
+		tooltip.push(
 			theUILang.diskUsage
 				.replace(/%USED%/, theConverter.bytes(used))
 				.replace(/%TOTAL%/, theConverter.bytes(full))
 				.replace(/%FREE%/, theConverter.bytes(free))
 		);
 	}
+	$("#meter-disk-pane").prop("title", tooltip.join("\n------------------\n"));
 
 	if($.noty && plugin.allStuffLoaded)
 	{
@@ -70,7 +89,7 @@ plugin.init = function()
 				cache: false,
 				success : function(data)
 				{
-					plugin.setValue( data.total, data.free );
+					plugin.setValue( data.total, data.free, data.all );
 				},
 				complete : function(jqXHR, textStatus)
 				{
