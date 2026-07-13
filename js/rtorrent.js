@@ -1259,6 +1259,16 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 	{
 		Ajax_UpdateTime(jqXHR);
 		
+		if(jqXHR.status == 401)	// auth/session expired -- re-authenticate instead of spamming parse errors
+		{
+			if(!theWebUI.authExpired)
+			{
+				theWebUI.authExpired = true;
+				window.location.reload();	// navigation -> auth layer redirects to login
+			}
+			stub = null;
+			return;
+		}
 		if((textStatus=="timeout") && ($type(onTimeout) == "function"))
 			onTimeout();
 		else if($type(onError) == "function")
