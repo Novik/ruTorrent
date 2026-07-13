@@ -1485,7 +1485,7 @@ dxSTable.prototype.syncDOMAsync = function()
 			{
 				if (dh.startTime !== -1)
 				{
-					const remainingMs = dh.delayMs - (dh.startTime - new Date().getTime());
+					const remainingMs = dh.delayMs - (new Date().getTime() - dh.startTime);
 					if (remainingMs > 0)
 						start(dh, updateDebounce, remainingMs);
 					else
