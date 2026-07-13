@@ -58,6 +58,8 @@ $this->aliases = array_merge($this->aliases,array(
 "d.get_skip_total"	=>	array( "name"=>"d.skip.total", "prm"=>0 ),
 "d.get_state"		=>	array( "name"=>"d.state", "prm"=>0 ),
 "d.get_state_changed"	=>	array( "name"=>"d.state_changed", "prm"=>0 ),
+"d.get_timestamp_finished"      => array( "name"=>"d.timestamp.finished", "prm"=>0 ),
+"d.get_timestamp_started"      => array( "name"=>"d.timestamp.started", "prm"=>0 ),
 "d.get_state_counter"	=>	array( "name"=>"d.state_counter", "prm"=>0 ),
 "d.get_throttle_name"	=>	array( "name"=>"d.throttle_name", "prm"=>0 ),
 "d.get_tied_to_file"	=>	array( "name"=>"d.tied_to_file", "prm"=>0 ),
