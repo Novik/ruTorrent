@@ -2,14 +2,18 @@
   "Exclude": [
     "\\.min\\.(js|css)$",
     "\\.phar$",
-    "js/jquery\\.js$",
-    "js/jquery\\.flot\\.js$",
+    "jquery",
     "bootstrap",
     "flotr",
     "codemirror",
     "prototype",
     "scriptaculous",
+    "_noty",
+    "LICENSE",
     "/vendor/",
-    "node_modules"
+    "node_modules",
+    "\\.github/",
+    "\\.vscode/",
+    "tests/"
   ]
 }

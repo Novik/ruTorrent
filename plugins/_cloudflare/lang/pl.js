@@ -2,7 +2,7 @@
  *
  * Polish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.cannotLoadCloudscraper		= "Wtyczka _cloudflare: Nie można załadować w Pythonie modułu cloudscraper";

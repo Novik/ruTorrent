@@ -17,10 +17,10 @@ class rCloudflare
 	{
 		return( ($this->client->status == 503 || $this->client->status == 429) &&
 			(stripos( $this->client->get_header("Server"), "cloudflare" ) === 0) &&
-			$this->client->results 
+			$this->client->results
 //			&&
 //			(stripos( $this->client->results, "jschl_vc" ) !== false) &&
-//			(stripos( $this->client->results, "jschl_answer" ) !== false) 
+//			(stripos( $this->client->results, "jschl_answer" ) !== false)
 			);
 	}
 

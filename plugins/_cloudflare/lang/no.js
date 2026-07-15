@@ -2,7 +2,7 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.cannotLoadCloudscraper		= "_cloudflare plugin: cloudscraper-modulen kunne ikke lastes i Python";

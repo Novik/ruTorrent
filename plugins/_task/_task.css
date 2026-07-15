@@ -40,7 +40,7 @@
 .konqueror .tskconsole { height: 546px }
 
 /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) { 
+@media (min-width: 768px) {
   /* Custom rules for medium devices */
   #tskConsole {
     width: unset;

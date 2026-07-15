@@ -8,7 +8,7 @@ plugin.running = 0;
 theWebUI.startConsoleTask = function( taskName, requesterName, parameters, options )
 {
 	plugin.clearForeTimeout();
-	plugin.foreground = 
+	plugin.foreground =
 	{
 		no: 0,
 		pid: 0,
@@ -47,7 +47,7 @@ theWebUI.setConsoleTaskState = function( options )
 	}
 }
 
-//			
+//
 
 plugin.start = function()
 {
@@ -64,7 +64,7 @@ plugin.start = function()
 			{
 				for( var k in parameter )
 					req+=('&v='+i+'[]&s='+encodeURIComponent(parameter[k]));
-				break;					
+				break;
 			}
 			case "object":
 			{
@@ -72,15 +72,15 @@ plugin.start = function()
 				{
 					if( parameter.hasOwnProperty(property) )
 						req+=('&v='+i+'['+property+']&s='+encodeURIComponent(parameter[property]));
-				}						
-				break;					
-			}			
+				}
+				break;
+			}
 			default:
 			{
 				req+=('&v='+i+'&s='+encodeURIComponent(parameter));
 				break;
 			}
-		}							
+		}
 	}
 	theWebUI.requestWithoutTimeout("?action=taskstart&hash="+this.foreground.name+"&hash="+this.foreground.requester+req,[this.onStart, this]);
 }
@@ -102,7 +102,7 @@ plugin.callNotification = function( type, data, status )
 	var requester = thePlugins.get(this.foreground.requester);
 	if(requester && $type(requester[type])=="function")
 		ret = requester[type](data || this.foreground, status || false);
-	return(ret);		
+	return(ret);
 }
 
 plugin.fromBackground = function( no )
@@ -110,10 +110,10 @@ plugin.fromBackground = function( no )
 	this.foreground = cloneObject(this.background[no]);
 	this.foreground.options = {};
 	this.foreground.tskcmderrors = 0;
-	this.foreground.tskcmdlog = 0;	
+	this.foreground.tskcmdlog = 0;
 	$('#tskcmdlog').empty();
 	$('#tskcmderrors').empty();
-	plugin.onStart(this.foreground); 
+	plugin.onStart(this.foreground);
 }
 
 plugin.readConsoleLog = function() {
@@ -150,15 +150,15 @@ plugin.toBackground = function()
 {
 	if(!plugin.isInBackground())
 		plugin.background[ plugin.foreground.no ] = cloneObject( this.foreground );
-	plugin.callNotification("HideInterface");	
-	plugin.clear();			
-	theDialogManager.hide('tskConsole');	
+	plugin.callNotification("HideInterface");
+	plugin.clear();
+	theDialogManager.hide('tskConsole');
 	plugin.refreshTasks();
 }
 
 plugin.shutdown = function()
 {
-	this.kill();		
+	this.kill();
 	this.callNotification("HideInterface");
 	this.callNotification("Shutdown");
 	this.clear();
@@ -189,7 +189,7 @@ plugin.onStart = function(data)
 	{
 		if(!this.isInBackground())
 			plugin.refreshTasks();
-		plugin.callNotification("ShowInterface",$.extend(this.foreground,data));	
+		plugin.callNotification("ShowInterface",$.extend(this.foreground,data));
 	        $("#tskConsole-header").html(theUILang.tskCommand);
 	        theDialogManager.show("tskConsole");
 		this.check(data);
@@ -198,10 +198,10 @@ plugin.onStart = function(data)
 		if(!data.status)
 		{
 			this.foreground.no = data.no;
-			this.kill();		
+			this.kill();
 			this.callNotification("Shutdown");
 			this.clear();
-		}			
+		}
 }
 
 plugin.check = function(data)
@@ -216,7 +216,7 @@ plugin.check = function(data)
 	if(this.foreground.status<0)
 	{
 		var self = this;
-		this.foreTimeout = setTimeout( function() 
+		this.foreTimeout = setTimeout( function()
 		{
 			theWebUI.requestWithoutTimeout("?action=taskcheck&hash="+self.foreground.no,[self.check,self]);
 		}, theWebUI.settings["webui.update_interval"]);
@@ -276,7 +276,7 @@ plugin.fillConsole = function(id,arr)
 		var s = '';
 		var requester = thePlugins.get(this.foreground.requester);
 		for(var i = 0; i<arr.length; i++)
-			s += (requester && $type(requester["onTaskShowLog"])=="function") ? 
+			s += (requester && $type(requester["onTaskShowLog"])=="function") ?
 				requester.onTaskShowLog(this.foreground,arr[i],id,i) : escapeHTML(arr[i])+'<br>';
 		var crc = getCRC( s, 0 );
 		if(plugin.foreground[id]!=crc)
@@ -323,7 +323,7 @@ rTorrentStub.prototype.taskremove = function()
 {
 	this.content = "cmd=remove";
 	for(var i=0; i<this.hashes.length; i++)
-		this.content += ('&no='+this.hashes[i]);	
+		this.content += ('&no='+this.hashes[i]);
         this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/_task/action.php";
 	this.dataType = "json";
@@ -343,27 +343,27 @@ if(plugin.canChangeTabs())
 	theWebUI.config = function()
 	{
         	plugin.attachPageToTabs($('<div>').attr("id","tasks").addClass("table_tab stable").get(0),"Tasks","lcont");
-		theWebUI.tables["tasks"] =  
+		theWebUI.tables["tasks"] =
 		{
         		obj:		new dxSTable(),
 			container:	"tasks",
-			columns:	
+			columns:
 			[
-				{ text: theUILang.Name, 		width: "100px", id: "name",		type: TYPE_STRING }, 
+				{ text: theUILang.Name, 		width: "100px", id: "name",		type: TYPE_STRING },
 				{ text: "Plugin",	 		width: "100px", id: "plugin",		type: TYPE_STRING },
-				{ text: "Parameter",	 		width: "200px", id: "arg",		type: TYPE_STRING },				
-				{ text: theUILang.Status, 		width: "100px", id: "status",		type: TYPE_NUMBER }, 
-				{ text: "Started", 			width: "110px", id: "start",		type: TYPE_NUMBER }, 
-				{ text: "Elapsed", 			width: "110px", id: "elapsed",		type: TYPE_NUMBER }, 			
+				{ text: "Parameter",	 		width: "200px", id: "arg",		type: TYPE_STRING },
+				{ text: theUILang.Status, 		width: "100px", id: "status",		type: TYPE_NUMBER },
+				{ text: "Started", 			width: "110px", id: "start",		type: TYPE_NUMBER },
+				{ text: "Elapsed", 			width: "110px", id: "elapsed",		type: TYPE_NUMBER },
 				{ text: "Finished", 			width: "110px", id: "finish",		type: TYPE_NUMBER }
 			],
        		        onselect:	function(e,id) { this.tasksSelect(e,id) },
        		        ondelete:	function() { this.tasksRemove(); },
-       		        ondblclick:	function(obj) 
-       		        { 
+       		        ondblclick:	function(obj)
+       		        {
        		        	var id = obj.id.substr(6);
 				plugin.fromBackground(id);
-       		        	return(false); 
+       		        	return(false);
        		        },
        	        	format:	function(table,arr)
 			{
@@ -379,7 +379,7 @@ if(plugin.canChangeTabs())
 						{
 							arr[i] = (arr[i]>3600*24*365) ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : "";
 							break;
-						}							
+						}
 						case 'elapsed':
 						{
 							arr[i] = arr[i] ? theConverter.time(iv(arr[i]),true) : "";
@@ -390,7 +390,7 @@ if(plugin.canChangeTabs())
 							arr[i] = (arr[i]<0) ? theUILang.tskRunning : (arr[i]>0) ? theUILang.Error : theUILang.ok;
 							break;
 						}
-					}													
+					}
 				}
 				return(arr);
 			}
@@ -398,11 +398,11 @@ if(plugin.canChangeTabs())
 		plugin.tasksConfig.call(this);
 		if(!plugin.showTabAlways)
 		{
-			$('li#tab_tasks').hide();		
+			$('li#tab_tasks').hide();
 			$(theWebUI.tables["tasks"].container).hide();
-		}			
+		}
 		plugin.renameTasksStuff();
-	}	
+	}
 }
 
 plugin.renameTasksStuff = function()
@@ -415,16 +415,16 @@ plugin.renameTasksStuff = function()
 		table.renameColumnById("finish",theUILang.tskFinish);
 		table.renameColumnById("elapsed",theUILang.tskElapsed);
 		table.renameColumnById("plugin",theUILang.tskPlugin);
-		table.renameColumnById("arg",theUILang.tskArg);		
+		table.renameColumnById("arg",theUILang.tskArg);
 		$("#tasks .stable-body").mouseclick( function(e)
 		{
 			if((e.which==3) && plugin.allStuffLoaded && plugin.canChangeMenu())
 			{
 				table.tasksSelect(e,null);
 				return(true);
-			}	
+			}
 			return(false);
-		});		
+		});
 		plugin.refreshTasks();
 	}
 	else
@@ -434,7 +434,7 @@ plugin.renameTasksStuff = function()
 plugin.refreshTasks = function()
 {
 	plugin.clearBackTimeout();
-	theWebUI.requestWithoutTimeout("?action=tasklist",[plugin.onGetTasks,plugin]);	
+	theWebUI.requestWithoutTimeout("?action=tasklist",[plugin.onGetTasks,plugin]);
 }
 
 dxSTable.prototype.tasksRemove = function()
@@ -461,8 +461,8 @@ dxSTable.prototype.tasksRemovePrim = function(cmd)
 	}
 	if(req.length)
 		theWebUI.request("?action=taskremove"+req,[plugin.onGetTasks, plugin]);
-	plugin.clear();		
-	theDialogManager.hide('tskConsole');		
+	plugin.clear();
+	theDialogManager.hide('tskConsole');
 }
 
 dxSTable.prototype.tasksSelect = function(e,id)
@@ -473,12 +473,12 @@ dxSTable.prototype.tasksSelect = function(e,id)
 		if(this.selCount)
 		{
 			id = this.getFirstSelected().substr(6);
-			theContextMenu.add([theUILang.tskActivate, this.selCount==1 ? function() 
+			theContextMenu.add([theUILang.tskActivate, this.selCount==1 ? function()
 			{
 				plugin.fromBackground( id );
 			} : null ]);
-		}			
-		theContextMenu.add([theUILang.tskRemove, this.selCount ? "theWebUI.getTable('tasks').tasksRemove()" : null ]); 
+		}
+		theContextMenu.add([theUILang.tskRemove, this.selCount ? "theWebUI.getTable('tasks').tasksRemove()" : null ]);
 		theContextMenu.add([CMENU_SEP]);
 		theContextMenu.add([theUILang.tskRefresh, plugin.refreshTasks]);
 		theContextMenu.show(e.clientX,e.clientY);
@@ -504,7 +504,7 @@ theTabs.onShow = function(id)
 plugin.canDetachTask = function()
 {
 	return( !(plugin.foreground.options && plugin.foreground.options.nohide) &&
-		((((plugin.running<plugin.maxConcurentTasks) || (plugin.foreground.status>=0)) && (plugin.foreground.pid>0)) 
+		((((plugin.running<plugin.maxConcurentTasks) || (plugin.foreground.status>=0)) && (plugin.foreground.pid>0))
 			|| plugin.isInBackground()) );
 }
 
@@ -544,7 +544,7 @@ plugin.onGetTasks = function(d)
 					name: item.name,
 					status: item.status,
 					plugin: item.requester,
-					arg: item.params ? item.params['arg'] : '',					
+					arg: item.params ? item.params['arg'] : '',
 					start: item.start,
 					elapsed: item.finish ? iv(item.finish)-iv(item.start) : (new Date().getTime()/1000-(iv(item.start)+theWebUI.deltaTime/1000)),
 					finish: item.finish
@@ -572,7 +572,7 @@ plugin.onGetTasks = function(d)
 		{
 			if(deleted)
 			{
-				table.correctSelection();	
+				table.correctSelection();
 			}
 			if(!plugin.isInBackground())
 				$('#tskBackground').prop( 'disabled', !plugin.canDetachTask() );
@@ -583,11 +583,11 @@ plugin.onGetTasks = function(d)
 				table.Sort();
 		}
 	}
-	if( ((theWebUI.activeView=='tasks')  && plugin.running ) || plugin.foreground.no ) 
+	if( ((theWebUI.activeView=='tasks')  && plugin.running ) || plugin.foreground.no )
 	{
 		plugin.clearBackTimeout();
 		plugin.backTimeout = setTimeout(plugin.refreshTasks,theWebUI.settings["webui.update_interval"]);
-	}		
+	}
 }
 
 plugin.onLangLoaded = function() {

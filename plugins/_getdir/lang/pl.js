@@ -2,7 +2,7 @@
  *
  * Polish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.typeToFilter		= "Wyszukaj...";

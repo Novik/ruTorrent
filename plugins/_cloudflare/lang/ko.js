@@ -2,7 +2,7 @@
  *
  * Korean language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.cannotLoadCloudscraper		= "_cloudflare plugin: cloudscraper module can't be loaded in Python";

@@ -111,13 +111,13 @@ class rTask
 			self::clean($dir);
 		}
 		return(array
-		( 
-			"no"=>$this->id, 
-			"pid"=>0, 
-			"status"=>255, 
-			"log"=>array(), 
-			"params"=>array(), 
-			"errors"=>array(count($commands) ? "Can't start operation" : "Incorrect target directory") 
+		(
+			"no"=>$this->id,
+			"pid"=>0,
+			"status"=>255,
+			"log"=>array(),
+			"params"=>array(),
+			"errors"=>array(count($commands) ? "Can't start operation" : "Incorrect target directory")
 		));
 	}
 
@@ -130,7 +130,7 @@ class rTask
 	{
 		$subject = preg_replace('/\x1b(\[|\(|\))[;?0-9]*[0-9A-Za-z]/', "",$subject);
 		$subject = preg_replace('/\x1b(\[|\(|\))[;?0-9]*[0-9A-Za-z]/', "",$subject);
-		$subject = preg_replace('/[\x03|\x1a]/', "", $subject);  
+		$subject = preg_replace('/[\x03|\x1a]/', "", $subject);
 		return($subject);
 	}
 
@@ -159,7 +159,7 @@ class rTask
 
 			$output = '';
 			$chunk = '';
-			
+
 			$currentLines = 0;
 
 			while($currentLines < $lines && ftell($f) > 0)
@@ -236,22 +236,22 @@ class rTask
 			}
 			if($stripConsole && (count($ret[$logName])>self::MAX_CONSOLE_SIZE))
 				array_splice($ret[$logName],0,count($ret[$logName])-self::MAX_CONSOLE_SIZE);
-		}		
+		}
 	}
 
 	static public function check( $taskNo, $flags = null )
 	{
 		$dir = self::formatPath($taskNo);
 		$ret = array
-		( 
-			"no"=>$taskNo, 
-			"pid"=>0, 
-			"status"=>-1, 
-			"log"=>array(), 
-			"errors"=>array(), 
-			"params"=>array(), 
-			"start"=>@filemtime($dir.'/pid'), 
-			"finish"=>0 
+		(
+			"no"=>$taskNo,
+			"pid"=>0,
+			"status"=>-1,
+			"log"=>array(),
+			"errors"=>array(),
+			"params"=>array(),
+			"start"=>@filemtime($dir.'/pid'),
+			"finish"=>0
 		);
 		if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 		{
@@ -265,7 +265,7 @@ class rTask
 				{
 					$ret["status"] = intval($status);
 					$ret["finish"] = filemtime($dir.'/status');
-				}					
+				}
 			}
 			if(is_file($dir.'/params') && is_readable($dir.'/params'))
 				$ret["params"] = unserialize(file_get_contents($dir.'/params'));
@@ -289,7 +289,7 @@ class rTask
 		}
 		else
 		{
-			$req = new rXMLRPCRequest( 
+			$req = new rXMLRPCRequest(
 				((rTorrentSettings::get()->iVersion>=0x900) && !($flags & self::FLG_WAIT)) ?
 					new rXMLRPCCommand( "execute.nothrow.bg", array("","sh",$cmd) ) :
 					new rXMLRPCCommand( "execute_nothrow", array("sh","-c",$cmd.$params) )
@@ -304,13 +304,13 @@ class rTask
 	{
 		$dir = self::formatPath($taskNo);
 		$ret = array
-		( 
-			"no"=>$taskNo, 
-			"pid"=>0, 
-			"status"=>-1, 
-			"log"=>array(), 
-			"params"=>array(), 
-			"errors"=>array() 
+		(
+			"no"=>$taskNo,
+			"pid"=>0,
+			"status"=>-1,
+			"log"=>array(),
+			"params"=>array(),
+			"errors"=>array()
 		);
 		if(is_file($dir.'/pid') && is_readable($dir.'/pid'))
 		{
@@ -368,13 +368,13 @@ class rTaskManager
 						$tasks[$file]["requester"] = 'Unknown';
 					}
 				}
-			} 
-			closedir($handle);		
+			}
+			closedir($handle);
 	        }
 	        uasort($tasks,array(self::class, 'sortByStarted'));
 	        return($tasks);
 	}
-	
+
 	static public function sortByStarted($a,$b)
 	{
 		return( $a['start'] > $b['start'] ? -1 : ($a['start'] < $b['start'] ? 1 : 0) );
@@ -410,7 +410,7 @@ class rTaskManager
 			{
 				if($file != "." && $file != ".." && is_dir($dir.$file) && in_array($file,$list))
 					$tasks[] = $file;
-			} 
+			}
 			closedir($handle);
 			foreach( $tasks as $id )
 				rTask::kill( $id );

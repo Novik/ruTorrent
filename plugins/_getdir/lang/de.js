@@ -2,7 +2,7 @@
  *
  * German language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.typeToFilter		= "Type to filter...";

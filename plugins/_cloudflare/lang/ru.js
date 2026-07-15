@@ -2,7 +2,7 @@
  *
  * Russian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.cannotLoadCloudscraper		= "Плагин _cloudflare: Python не может загрузить модуль cloudscraper";

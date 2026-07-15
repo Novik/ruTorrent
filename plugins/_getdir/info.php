@@ -13,7 +13,7 @@ function compareEntries( $a, $b )
 		return( -1 );
 	if($b=='..')
 		return( 1 );
-	return( function_exists("mb_strtolower") ? 
+	return( function_exists("mb_strtolower") ?
 		strcmp(mb_strtolower($a), mb_strtolower($b)) :
 		strcmp(strtolower($a), strtolower($b)) );
 }

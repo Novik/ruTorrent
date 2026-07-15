@@ -2,7 +2,7 @@
  *
  * Portuguese (Brazil) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.typeToFilter		= "Digite para filtrar...";
