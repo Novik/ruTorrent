@@ -1,16 +1,16 @@
 /**
  * Copyright (c) 2010 by Gabriel Birke
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the 'Software'), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,7 +38,7 @@ function Sanitize(){
   this.config.remove_element_contents = {};
   this.config.remove_all_contents = false;
   if(options.remove_contents) {
-    
+
     if(options.remove_contents instanceof Array) {
       for(i=0;i<options.remove_contents.length;i++) {
         this.config.remove_element_contents[options.remove_contents[i]] = true;
@@ -62,7 +62,7 @@ Sanitize.prototype.clean_node = function(container) {
   this.current_element = fragment;
   this.whitelist_nodes = [];
 
-  
+
 
   /**
    * Utility function to check if an element exists in an array
@@ -70,12 +70,12 @@ Sanitize.prototype.clean_node = function(container) {
   function _array_index(needle, haystack) {
     var i;
     for(i=0; i < haystack.length; i++) {
-      if(haystack[i] == needle) 
+      if(haystack[i] == needle)
         return i;
     }
     return -1;
   }
-  
+
   function _merge_arrays_uniq() {
     var result = [];
     var uniq_hash = {};
@@ -92,7 +92,7 @@ Sanitize.prototype.clean_node = function(container) {
     }
     return result;
   }
-  
+
   /**
    * Clean function that checks the different node types and cleans them up accordingly
    * @param elem DOM Node to clean
@@ -125,22 +125,22 @@ Sanitize.prototype.clean_node = function(container) {
         if (console && console.log) console.log("unknown node type", elem.nodeType);
         break;
     }
- 
+
   }
-  
+
   function _clean_element(elem) {
     var i, j, clone, parent_element, name, allowed_attributes, attr, attr_name, attr_node, protocols, del, attr_ok;
     var transform = _transform_element.call(this, elem);
-    
+
     elem = transform.node;
     name = elem.nodeName.toLowerCase();
-    
+
     // check if element itself is allowed
     parent_element = this.current_element;
     if(this.allowed_elements[name] || transform.whitelist) {
         this.current_element = this.dom.createElement(elem.nodeName);
         parent_element.appendChild(this.current_element);
-        
+
       // clean attributes
       var attrs = this.config.attributes;
       allowed_attributes = _merge_arrays_uniq(attrs[name], attrs[Sanitize.ALL], transform.attr_whitelist);
@@ -167,7 +167,7 @@ Sanitize.prototype.clean_node = function(container) {
             }
         }
       }
-      
+
       // Add attributes
       if(this.config.add_attributes[name]) {
         for(attr_name in this.config.add_attributes[name]) {
@@ -194,14 +194,14 @@ Sanitize.prototype.clean_node = function(container) {
         _clean.call(this, elem.childNodes[i]);
       }
     }
-    
+
     // some versions of IE don't support normalize.
     if(this.current_element.normalize) {
       this.current_element.normalize();
     }
     this.current_element = parent_element;
   } // END clean_element function
-  
+
   function _transform_element(node) {
     var output = {
       attr_whitelist:[],
@@ -218,7 +218,7 @@ Sanitize.prototype.clean_node = function(container) {
         whitelist_nodes: this.whitelist_nodes,
         dom: this.dom
       });
-      if (transform == null) 
+      if (transform == null)
         continue;
       else if(typeof transform == 'object') {
         if(transform.whitelist_nodes && transform.whitelist_nodes instanceof Array) {
@@ -240,19 +240,19 @@ Sanitize.prototype.clean_node = function(container) {
     }
     return output;
   }
-  
-  
-  
+
+
+
   for(i=0;i<container.childNodes.length;i++) {
     _clean.call(this, container.childNodes[i]);
   }
-  
+
   if(fragment.normalize) {
     fragment.normalize();
   }
-  
+
   return fragment;
-  
+
 };
 
 if ( typeof define === "function" ) {

@@ -15,7 +15,7 @@
 /** @type {StatusMask} */
 var dStatus = { started : 1, paused : 2, checking : 4, hashing : 8, error : 16 };
 
-var theRequestManager = 
+var theRequestManager =
 {
 	aliases: {},
 	torrents: {},
@@ -23,7 +23,7 @@ var theRequestManager =
         trt:
         {
 		commands:
-		[ 
+		[
 			"d.get_hash=", "d.is_open=", "d.is_hash_checking=", "d.is_hash_checked=", "d.get_state=",
 			"d.get_name=", "d.get_size_bytes=", "d.get_completed_chunks=", "d.get_size_chunks=", "d.get_bytes_done=",
 			"d.get_up_total=", "d.get_ratio=", "d.get_up_rate=", "d.get_down_rate=", "d.get_chunk_size=",
@@ -34,37 +34,37 @@ var theRequestManager =
 		],
 		handlers: []
 	},
-	trk: 
+	trk:
 	{
-		commands: 
+		commands:
 		[
-		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=", 
+		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=",
 			"t.get_scrape_incomplete=", "t.get_scrape_downloaded=",
 			"t.get_normal_interval=", "t.get_scrape_time_last="
 		],
 		handlers: []
 	},
-	fls: 
+	fls:
 	{
-		commands: 
+		commands:
 		[
 			"f.get_path=", "f.get_completed_chunks=", "f.get_size_chunks=", "f.get_size_bytes=", "f.get_priority="
 		],
 		handlers: []
 	},
-	prs: 
+	prs:
 	{
-		commands: 
-		[ 
+		commands:
+		[
 			"p.get_id=", "p.get_address=", "p.get_client_version=", "p.is_incoming=", "p.is_encrypted=",
 			"p.is_snubbed=", "p.get_completed_percent=", "p.get_down_total=", "p.get_up_total=", "p.get_down_rate=",
 			"p.get_up_rate=", "p.get_id_html=", "p.get_peer_rate=", "p.get_peer_total=", "p.get_port="
 		],
 		handlers: []
 	},
-	ttl: 
+	ttl:
 	{
-		commands: 
+		commands:
 		[
 			"get_up_total", "get_down_total", "get_upload_rate", "get_download_rate"
 		],
@@ -78,10 +78,10 @@ var theRequestManager =
 		],
 		handlers: []
 	},
-	prp: 
+	prp:
 	{
-		commands: 
-		[ 
+		commands:
+		[
 			"d.get_peer_exchange", "d.get_peers_max", "d.get_peers_min", "d.get_tracker_numwant", "d.get_uploads_max",
 			"d.is_private", "d.get_connection_seed"
 		],
@@ -91,7 +91,7 @@ var theRequestManager =
 	{
 		commands:
 		[
-			"check_hash", "bind", "dht_port", "directory", "download_rate", 
+			"check_hash", "bind", "dht_port", "directory", "download_rate",
 			"hash_interval", "hash_max_tries", "hash_read_ahead", "http_cacert", "http_capath",
 			"http_proxy", "ip", "max_downloads_div", "max_downloads_global", "max_file_size",
 			"max_memory_usage", "max_open_files", "max_open_http", "max_peers", "max_peers_seed",
@@ -142,7 +142,7 @@ var theRequestManager =
 				add = '=';
 			}
 			return(this.aliases[cmd] ? this.aliases[cmd].name+add : cmd+add);
-		}			
+		}
 		return( this.map(this[cmd].commands[no]) );
 	},
 	patchCommand: function( cmd, name )
@@ -164,8 +164,8 @@ var theRequestManager =
 			else
 			if(cmd.command.indexOf('f.') === 0)
 				prefix = ':f';
-			if(prefix && 
-				(cmd.params.length>1) && 
+			if(prefix &&
+				(cmd.params.length>1) &&
 				(cmd.command.indexOf('.multicall')<0) &&
 				(cmd.params[0].value.indexOf(':') < 0))
 			{
@@ -187,7 +187,7 @@ function rXMLRPCCommand( cmd )
 
 rXMLRPCCommand.prototype.addParameter = function(aType,aValue)
 {
-	this.params.push( {type : aType, value : aValue} );	
+	this.params.push( {type : aType, value : aValue} );
 }
 
 function rTorrentStub( URI )
@@ -739,7 +739,7 @@ rTorrentStub.prototype.getXMLValue = function(values,i)
 		while(!el.tagName)
 			el = el.childNodes[0];
 		ret = $type(el.textContent) ? el.textContent.trim() :
-			el.childNodes.length ? 
+			el.childNodes.length ?
 			el.childNodes[0].data : "";
 	}
 	return((ret==null) ? "" : ret);
@@ -751,7 +751,7 @@ rTorrentStub.prototype.processAction = function(actionSuffix, data)
 	return parseFunc in this ? this[parseFunc](data) : data;
 }
 
-rTorrentStub.prototype.getResponse = function(data) 
+rTorrentStub.prototype.getResponse = function(data)
 {
 	var ret = "";
 	let responseData = data;
@@ -1254,11 +1254,11 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		traditional: true,
 		global: true
 	});
-	
+
 	request.fail(function(jqXHR, textStatus, errorThrown)
 	{
 		Ajax_UpdateTime(jqXHR);
-		
+
 		if(jqXHR.status == 401)	// auth/session expired -- re-authenticate instead of spamming parse errors
 		{
 			if(!theWebUI.authExpired)
@@ -1275,18 +1275,18 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 		{
 			var status = "Status unavailable";
 			var response = "Response unavailable";
-			try { status = jqXHR.status; response = jqXHR.responseText; } catch(e) {};				
+			try { status = jqXHR.status; response = jqXHR.responseText; } catch(e) {};
 			if( stub.dataType=="script" )
 				response = errorThrown;
 			onError(status+" ["+textStatus+","+stub.action+"]",response);
 		}
 		stub = null; // Cleanup memory leak
 	});
-	
+
 	request.done(function(data, textStatus, jqXHR)
 	{
 		Ajax_UpdateTime(jqXHR);
-		
+
 		stub.logErrorMessages();
 		if(!stub.isError()) {
 			var responseText = stub.getResponse(data);
@@ -1306,24 +1306,24 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 			} else {
 				if(stub.listRequired) {
 					Ajax("?list=1", isASync, onComplete, onTimeout, onError, reqTimeout);
-				} else {	
+				} else {
 					switch($type(onComplete)) {
 						case "function": {
 							onComplete(responseText);
 							break;
-						}				
+						}
 						case "array": {
 							onComplete[0].apply(onComplete[1], new Array(responseText, onComplete[2]));
 							break;
-						}	
-					}	
+						}
+					}
 				}
 			}
 			responseText = null; // Cleanup memory leak
 		}
 		stub = null; // Cleanup memory leak
 	});
-	
+
 	// Nullify ajax request varriables to cleanup up memory leaks
 	request.onreadystatechange = null;
 	request = null;
@@ -1338,7 +1338,7 @@ function Ajax_UpdateTime(jqXHR)
 		theWebUI.deltaTime = iv(diff);
 		diff = null; // Cleanup memory leak
 	}
-	
+
 	if(theWebUI.serverDeltaTime==0)
 	{
 		var timestamp = jqXHR.getResponseHeader("X-Server-Timestamp");
@@ -1349,7 +1349,7 @@ function Ajax_UpdateTime(jqXHR)
 	jqXHR = null; // Cleanup memory leak
 }
 
-$(document).ready(function() 
+$(document).ready(function()
 {
 	var timer = null;
 

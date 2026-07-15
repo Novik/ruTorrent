@@ -349,7 +349,7 @@ var theWebUI = {
 		correctContent();
 		this.updateServerTime();
 		window.setInterval( this.updateServerTime, 1000 );
-		
+
 		// Mark plugins as done loading. Initialize UI if JSON file is loaded
 		this.pluginsLoaded = true;
 		this.initFinish();
@@ -369,7 +369,7 @@ var theWebUI = {
 			this.update();
 		}
 	},
-	
+
 	createSpeedGraph: function()
 	{
 		const speedTab = $("#Speed");
@@ -638,12 +638,12 @@ var theWebUI = {
 	{
 		// Add webui settings for the first time
 		this.addSettings(newSettings);
-		
+
 		// Mark JSON file as loaded. Initialize UI if plugins are loaded
 		this.jsonLoaded = true;
 		this.initFinish();
 	},
-	
+
 	addSettings: function(newSettings)
 	{
 		$.each(newSettings, function(i,v)
@@ -1473,7 +1473,7 @@ var theWebUI = {
 	},
 
 	/**
-	 * Check if an action is enabled to be performed on 
+	 * Check if an action is enabled to be performed on
 	 * a torrent specified by the torrent's hash.
 	 * @param {string} act Action to be checked.
 	 * @param {string} hash Hash of the torrent to be checked.
@@ -1504,8 +1504,8 @@ var theWebUI = {
 	},
 
 	/**
-	 * 
-	 * @param {string} act 
+	 *
+	 * @param {string} act
 	 * @returns {string} Query string of hashes of selected torrents.
 	 */
 	getHashes: function(act) {
@@ -1540,7 +1540,7 @@ var theWebUI = {
 	/**
 	 * Remove selected torrent(s), **without** confirmation.
 	 */
-	remove: function() {		
+	remove: function() {
 		this.perform("remove");
 	},
 
@@ -2450,10 +2450,10 @@ var theWebUI = {
 				msg = "JS error: [" + url + " : " + line + "] " + msg;
 				theWebUI.msg(msg);
 				log(msg);
-				
+
 				if (error != null)
 					console.log(msg, "from", error.stack);
-				
+
 				return true;
 			}
    	},

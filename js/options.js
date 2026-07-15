@@ -299,7 +299,7 @@ const theOptionsWindow = {
 					].flatMap(([id, maxlength]) => [
 						$("<div>").addClass("col-md-6").append(
 							$("<label>").attr({for: id}).text(id),
-						), 
+						),
 						$("<div>").addClass("col-md-6").append(
 							$("<input>").attr({type: "text", id: id}).prop("maxlength", maxlength),
 						),
