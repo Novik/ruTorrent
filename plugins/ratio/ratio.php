@@ -181,11 +181,9 @@ class rRatio
 			if($insertReq->getCommandsCount())
 				$insertReq->run();
 
-			$insCmd = getCmd('branch=');
 			$req = new rXMLRPCRequest();
 			for($i=0; $i<MAX_RATIO; $i++)
 			{
-				$insCmd .= (getCmd('d.views.has=').'rat_'.$i.',,');
 				$rat = $this->rat[$i];
 				if($this->isCorrect($i))
 				{
@@ -236,6 +234,18 @@ class rRatio
 				}
 			}
 
+			// Apply the default ratio group to newly added torrents, but only when
+			// the torrent is not already in one of the rat_* views (e.g. one assigned
+			// by the extratio rules plugin). The membership checks are grouped with
+			// the (or,...) object form: rtorrent >=0.16.16 made `branch` strictly
+			// ternary and silently drops surplus arguments, so the previous flat
+			// many-argument branch left the trailing view.set_visible unreachable and
+			// the default group was never applied (issue #3100). The object syntax is
+			// understood by rtorrent 0.9.8 and the 0.16.x series alike.
+			$insCmd = getCmd('branch').'=('.getCmd('or');
+			for($i=0; $i<MAX_RATIO; $i++)
+				$insCmd .= ',('.getCmd('d.views.has').',rat_'.$i.')';
+			$insCmd .= '),,';
 			if($this->isCorrect($this->default-1))
 				$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_ratio'.User::getUser(), 
 					$insCmd.getCmd('view.set_visible=').'rat_'.($this->default-1))));
