@@ -3,7 +3,7 @@
  *
  * Greek language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Tracker_status = "Κατάσταση του Tracker";

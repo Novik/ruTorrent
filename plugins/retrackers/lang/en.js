@@ -3,7 +3,7 @@
  *
  * English language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.retrackers		= "Retrackers";

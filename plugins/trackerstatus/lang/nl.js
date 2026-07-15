@@ -3,7 +3,7 @@
  *
  * Dutch language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Tracker_status = "Trackerstatus";

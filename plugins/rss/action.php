@@ -135,9 +135,9 @@ switch($cmd)
 
 		if(isset($_REQUEST['rss']))
 			$hash = $_REQUEST['rss'];
-		if(isset($_REQUEST['pattern']))		
+		if(isset($_REQUEST['pattern']))
 			$pattern = trim($_REQUEST['pattern']);
-		if(isset($_REQUEST['exclude']))		
+		if(isset($_REQUEST['exclude']))
 			$exclude = trim($_REQUEST['exclude']);
 		if(isset($_REQUEST['chktitle']))
 			$checkTitle = $_REQUEST['chktitle'];
@@ -314,7 +314,7 @@ switch($cmd)
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
 			$lbl = null;
 			$dir = null;
-			$isStart = true; 
+			$isStart = true;
 			$isAddPath = true;
 			$curRSS = null;
 			$rssArray = array();

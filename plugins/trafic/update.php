@@ -7,10 +7,10 @@
 		require_once( dirname(__FILE__).'/../../php/xmlrpc.php' );
 		require_once( 'stat.php' );
 		eval(FileUtil::getPluginConf('trafic'));
-		
+
 		$req = new rXMLRPCRequest( array(
 			new rXMLRPCCommand("get_up_total"),
-			new rXMLRPCCommand("get_down_total"), 
+			new rXMLRPCCommand("get_down_total"),
 			new rXMLRPCCommand("d.multicall", array("main",getCmd("d.get_hash="),getCmd("d.get_up_total="),getCmd("d.get_down_total=")))));
 		$req->setParseByTypes();
 		if($req->run() && !$req->fault)
@@ -46,7 +46,7 @@
 						if( ($ok = fputcsv($file, $tmp, ",", "\"", ""))===false )
 							break;
 					}
-				}					
+				}
 				if($ok !== false)
 				{
 					if( fclose($file) !== false )
@@ -92,7 +92,7 @@
 				foreach($needTorrents as $key=>$data)
 				{
 				        $req = new rXMLRPCRequest( array(
-						new rXMLRPCCommand("t.multicall", 
+						new rXMLRPCCommand("t.multicall",
 							array($key,"",getCmd("t.is_enabled="),getCmd("t.get_type="),getCmd("t.get_group="),getCmd("t.get_url=")))));
 					$req->setParseByTypes();
 					if($req->run() && !$req->fault)

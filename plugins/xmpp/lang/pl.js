@@ -3,7 +3,7 @@
  *
  * Polish language file.
  *
- * Author: 
+ * Author:
  */
 
  var s_PluginFail			= "Wtyczka nie będzie działać.";

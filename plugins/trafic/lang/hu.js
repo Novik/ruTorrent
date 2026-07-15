@@ -3,7 +3,7 @@
  *
  * Hungarian language file.
  *
- * Author: 
+ * Author:
  */
 
 theUILang.traf 		= "Adatforgalom";

@@ -11,13 +11,13 @@ if(plugin.canChangeMenu())
 			var el = theContextMenu.get( theUILang.Force_recheck );
 			if( el )
 			{
-				theContextMenu.add( el, [theUILang.checkTorrent, 
+				theContextMenu.add( el, [theUILang.checkTorrent,
 					((this.getTable("trt").selCount>1) && this.getHashes('checktorrent')) ||
 					this.isTorrentCommandEnabled("checktorrent",id) ? "theWebUI.perform( 'checktorrent' )" : null] );
 			}
 		}
 	}
-		
+
 	rTorrentStub.prototype.checktorrent = function()
 	{
 		this.content = "cmd=check";
@@ -46,7 +46,7 @@ theWebUI.config = function()
 }
 
 plugin.isTorrentCommandEnabled = theWebUI.isTorrentCommandEnabled;
-theWebUI.isTorrentCommandEnabled = function(act,hash) 
+theWebUI.isTorrentCommandEnabled = function(act,hash)
 {
 	if(act=="checktorrent")
 	{
@@ -58,7 +58,7 @@ theWebUI.isTorrentCommandEnabled = function(act,hash)
 }
 
 plugin.getStatusIcon = theWebUI.getStatusIcon;
-theWebUI.getStatusIcon = function(torrent) 
+theWebUI.getStatusIcon = function(torrent)
 {
 	if(plugin.allStuffLoaded && (torrent.chkstate==4))	// STE_DELETED
 		return(["Status_Error", theUILang.chkResults[torrent.chkstate-1]]);
@@ -79,7 +79,7 @@ theWebUI.updateDetails = function()
 
 plugin.onLangLoaded = function()
 {
-	$("#mainlayout").append( 
+	$("#mainlayout").append(
 		$("<div>").addClass("row Header").append(
 			$("<div>").attr({id:"chkinfo1"}).addClass("col-12").append(
 				$("<span>").text(theUILang.chkHdr),

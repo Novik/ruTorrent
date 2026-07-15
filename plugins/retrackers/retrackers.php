@@ -31,7 +31,7 @@ class rRetrackers
 		if(isset($HTTP_RAW_POST_DATA))
 		{
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
-			$this->list = array(); 
+			$this->list = array();
 			$this->todelete = array();
 			$this->dontAddPrivate = 0;
 			$trackers = array();

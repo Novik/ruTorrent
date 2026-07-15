@@ -302,4 +302,3 @@ plugin.onRemove = function()
 			theWebUI.getTable("rss").removeColumnById("tracker");
 	}
 }
-

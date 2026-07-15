@@ -3,7 +3,7 @@
  *
  * Korean language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.uploadeta		= "업로드 예상 시간";

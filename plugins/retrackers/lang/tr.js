@@ -12,6 +12,6 @@
  theUILang.retrackersDel = "Duyuru URL'lerini kaldır";
  theUILang.dontAddToPrivate = "Özel torrent'lara dokunma";
  theUILang.addToBegin = "Duyuru URL'lerini izleyici listesinin başına ekleyin";
-  
+
 
 thePlugins.get("retrackers").langLoaded();

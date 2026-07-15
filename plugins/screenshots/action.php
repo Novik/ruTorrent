@@ -12,7 +12,7 @@ if(isset($_REQUEST['cmd']))
 	{
 		case "ffmpeg":
 		{
-			if(isset($_REQUEST['hash']) && 
+			if(isset($_REQUEST['hash']) &&
 				isset($_REQUEST['no']))
 			{
 				$req = new rXMLRPCRequest( new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no']))) );
@@ -53,12 +53,12 @@ if(isset($_REQUEST['cmd']))
 						$commands[] = 'chmod a+r "${dir}"/frame*.*';
 					}
 					$task = new rTask( array
-					( 
+					(
 						'arg' => FileUtil::getFileName($filename),
 						'requester'=>'screenshots',
-						'name'=>'ffmpeg', 
-						'hash'=>$_REQUEST['hash'], 
-						'no'=>$_REQUEST['no'] 
+						'name'=>'ffmpeg',
+						'hash'=>$_REQUEST['hash'],
+						'no'=>$_REQUEST['no']
 					));
 					$ret = $task->start($commands, rTask::FLG_NO_ERR);
 				}

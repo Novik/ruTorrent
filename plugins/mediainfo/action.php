@@ -18,7 +18,7 @@ class mediainfoSettings
 
 $ret = array( "status"=>255, "errors"=>array("Can't retrieve information") );
 
-if(isset($_REQUEST['hash']) && 
+if(isset($_REQUEST['hash']) &&
 	isset($_REQUEST['no']) &&
 	isset($_REQUEST['cmd']))
 {
@@ -45,13 +45,13 @@ if(isset($_REQUEST['hash']) &&
 					$flags = '';
 					$st = mediainfoSettings::load();
 					$task = new rTask( array
-					( 
-						'arg' => FileUtil::getFileName($filename),					
+					(
+						'arg' => FileUtil::getFileName($filename),
 						'requester'=>'mediainfo',
-						'name'=>'mediainfo', 
-						'hash'=>$_REQUEST['hash'], 
-						'no'=>$_REQUEST['no'] 
-					) );					
+						'name'=>'mediainfo',
+						'hash'=>$_REQUEST['hash'],
+						'no'=>$_REQUEST['no']
+					) );
 					if($st && !empty($st->data["mediainfousetemplate"]))
 					{
 						$randName = $task->makeDirectory()."/opts";

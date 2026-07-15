@@ -54,7 +54,7 @@ theDialogManager.setHandler('stg','beforeShow',function()
 });
 
 plugin.setSettings = theWebUI.setSettings;
-theWebUI.setSettings = function() 
+theWebUI.setSettings = function()
 {
 	plugin.setSettings.call(this);
 	const themeVal = $($$("webui.theme")).val();

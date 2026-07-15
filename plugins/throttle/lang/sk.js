@@ -3,7 +3,7 @@
  *
  * Slovak language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.throttles		= "Channels";

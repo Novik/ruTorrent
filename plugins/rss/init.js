@@ -202,11 +202,11 @@ theWebUI.config = function()
 	this.rssUpdateTimestamp = Date.now() + this.updateRSSInterval;
 	this.rssID = "";
 	this.rssArray = [];
-	this.filters = [];	
+	this.filters = [];
 	$("#List").after(
 		$("<div>").attr("id","RSSList").css("display","none"),
 	);
-	this.tables["rss"] =  
+	this.tables["rss"] =
 	{
 	        obj:		new dxSTable(),
 		container:	"RSSList",
@@ -262,7 +262,7 @@ theWebUI.rssDblClick = function( obj )
 
 theWebUI.getRSSSettings = function( d )
 {
-	theWebUI.updateRSSInterval = d.interval*60000;	
+	theWebUI.updateRSSInterval = d.interval*60000;
 	theWebUI.rssUpdateTimestamp = d.updatedAt * 1000;
 	if(theWebUI.updateRSSTimer)
 		clearTimeout(theWebUI.updateRSSTimer);
@@ -562,7 +562,7 @@ theWebUI.rssSelect = function(e, id)
 {
 	var sr = theWebUI.getTable("rss").rowSel;
 	var trtArray = [];
-	for(var k in sr) 
+	for(var k in sr)
 	{
 		if(sr[k] == true)
 		{
@@ -613,10 +613,10 @@ theWebUI.loadTorrents = function(needSort)
 				updated = table.setValuesById(href,
 				{
 				 	name: item.title,
-				 	status: (item.hash=="") ? theUILang.rssStatus : (item.hash=="Failed") ? theUILang.rssStatusError+" ("+item.errcount+")" : theUILang.rssStatusLoaded, 
+				 	status: (item.hash=="") ? theUILang.rssStatus : (item.hash=="Failed") ? theUILang.rssStatusError+" ("+item.errcount+")" : theUILang.rssStatusLoaded,
 					label: item.label,
 					created: item.time
-				},true) || updated; 
+				},true) || updated;
 				updated = table.setIcon(href,"Status_RSS") || updated;
 			}
 		}
@@ -628,7 +628,7 @@ theWebUI.loadTorrents = function(needSort)
 
 theWebUI.retryRSSRequest = function()
 {
-	theWebUI.timeout(); 
+	theWebUI.timeout();
 	window.setTimeout("theWebUI.loadRSS()", theWebUI.settings["webui.reqtimeout"]);
 }
 
@@ -642,7 +642,7 @@ theWebUI.processRSS = function(action,elURL,elLbl)
 	var url = elURL.val().trim();
 	var lbl = elLbl.val().trim();
 	var re = new RegExp();
-	re.compile("^[A-Za-z]+://[A-Za-z0-9-]+\.[A-Za-z0-9]+"); 
+	re.compile("^[A-Za-z]+://[A-Za-z0-9-]+\.[A-Za-z0-9]+");
 	if(!re.test(url))
 		alert(theUILang.incorrectURL);
 	else
@@ -894,7 +894,7 @@ theWebUI.loadFiltersWithAdditions = function( flt )
 	for(var i = 0; i<this.rssArray.length; i++)
 	{
 		var s = this.rssItems[this.rssArray[i]].title;
-		additions.push( { name: s, enabled: 1, 
+		additions.push( { name: s, enabled: 1,
 			pattern: makePatternString(s), exclude: "", label: "", hash: "", start: 1, add_path: 1, dir: "", throttle: "", ratio: "", chktitle: 1, chkdesc: 0, chklink: 0, interval: -1, no: -1 } );
 	}
 	this.loadFilters( flt, additions );
@@ -906,7 +906,7 @@ theWebUI.loadFilters = function( flt, additions )
 	this.curFilter = null;
 	var list = $("#fltlist");
 	list.empty();
-	$('#FLT_rss option').remove();	
+	$('#FLT_rss option').remove();
 	$('#FLT_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
 	for(var lbl in this.rssGroups)
 		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
@@ -993,7 +993,7 @@ theWebUI.deleteCurrentFilter = function()
 		}
 		if(no>=this.filters.length)
 			no = no - 1;
-		$("#_fn"+no).trigger('focus');	
+		$("#_fn"+no).trigger('focus');
 	}
 	else
 	{
@@ -1041,7 +1041,7 @@ theWebUI.showFilterResults = function( d )
 			else
 			if(labels.length==3)
 				labels.push('...');
-		}			
+		}
 	}
 	table.refreshSelection();
 	var s = theUILang.foundedByFilter+" : "+d.count;
@@ -1337,7 +1337,7 @@ plugin.onLangLoaded = function()
 		)[0],
 		theUILang.rssFeeds,
 	);
-	
+
 	const dlgAddRSSContent = $("<div>").addClass("cont").append(
 		$("<div>").addClass("row").append(
 			...[

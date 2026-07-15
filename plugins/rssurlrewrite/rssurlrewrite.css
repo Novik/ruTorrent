@@ -1,7 +1,7 @@
 #dlgEditRules-header {background-image: url(./images/rss.gif)}
 
 .lf_rur {
-  background-color: #FFFFFF; 
+  background-color: #FFFFFF;
   border: 1px solid #D0D0D0;
   border-radius: 3px;
   flex: 1 0 160px;
@@ -40,28 +40,28 @@
 #rlslist {max-height: 130px;}
 
 /* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) { 
+@media (min-width: 576px) {
   /* Custom rules for small devices */
 }
 
 /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) { 
+@media (min-width: 768px) {
   /* Custom rules for medium devices */
   #dlgEditRules {min-width: 600px;}
   #rlslist {max-height: 260px;}
 }
 
 /* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) { 
+@media (min-width: 992px) {
   /* Custom rules for large devices */
 }
 
 /* X-Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) { 
+@media (min-width: 1200px) {
   /* Custom rules for x-large devices */
 }
 
 /* XX-Large devices (larger desktops, 1400px and up) */
-@media (min-width: 1400px) { 
+@media (min-width: 1400px) {
   /* Custom rules for xx-large devices */
 }

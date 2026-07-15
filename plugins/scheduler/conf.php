@@ -1,7 +1,7 @@
 <?php
 	// configuration parameters
 
-	@define('SCH_DEF_UL', 327625);	// default UL (KB/s). 
+	@define('SCH_DEF_UL', 327625);	// default UL (KB/s).
 	@define('SCH_DEF_DL', 327625);	// default DL (KB/s)
 	// Can't be greater then 327625 due to limitation in libtorrent ResourceManager::set_max_upload_unchoked function.
 

@@ -3,7 +3,7 @@
  *
  * Chinese Traditional language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.exsox		= "Spectrogram";

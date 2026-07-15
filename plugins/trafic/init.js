@@ -184,7 +184,7 @@ if(plugin.canChangeTabs())
 			$('#traf_mode').val(d.mode);
 			$('#traf_graph').show();
 			this.trafGraph.setData(d);
-		}			
+		}
 	}
 
 	rTorrentStub.prototype.gettrafic = function()
@@ -198,7 +198,7 @@ if(plugin.canChangeTabs())
 	if(plugin.collectStatForTorrents)
 	{
 		plugin.trtSelect = theWebUI.trtSelect;
-		theWebUI.trtSelect = function(e, id) 
+		theWebUI.trtSelect = function(e, id)
 		{
 			plugin.trtSelect.call(this,e,id);
 			if( (this.activeView == 'traf') && ($('#tracker_mode').val()=='none'))
@@ -209,7 +209,7 @@ if(plugin.canChangeTabs())
 
 if(plugin.canChangeColumns() && plugin.collectStatForTorrents)
 {
-	plugin.ratioChanged = false;	
+	plugin.ratioChanged = false;
 	plugin.config = theWebUI.config;
 	theWebUI.config = function()
 	{
@@ -246,7 +246,7 @@ if(plugin.canChangeColumns() && plugin.collectStatForTorrents)
 		else
 			setTimeout(arguments.callee,1000);
 	}
-        
+
 	plugin.rssRenameColumn = function()
 	{
 		if(theWebUI.getTable("rss").created)
@@ -273,7 +273,7 @@ if(plugin.canChangeColumns() && plugin.collectStatForTorrents)
 
 	plugin.startRatios = function()
 	{
-		theWebUI.request("?action=getratios",[plugin.updateRatios, this]);	
+		theWebUI.request("?action=getratios",[plugin.updateRatios, this]);
 	}
 
 	plugin.updateRatios = function( d )
@@ -281,7 +281,7 @@ if(plugin.canChangeColumns() && plugin.collectStatForTorrents)
 		plugin.ratioChanged = true;
 		window.setTimeout( plugin.startRatios, plugin.updateInterval*60000 );
 	}
-	
+
 	plugin.addTorrents = theWebUI.addTorrents;
 	theWebUI.addTorrents = function(data)
 	{
@@ -377,7 +377,7 @@ plugin.onRemove = function()
 			theWebUI.getTable("rss").removeColumnById("ratioday");
 			theWebUI.getTable("rss").removeColumnById("ratioweek");
 			theWebUI.getTable("rss").removeColumnById("ratiomonth");
-		}		
+		}
 	}
 }
 

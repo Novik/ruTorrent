@@ -3,7 +3,7 @@
  *  Based on "Oblivion" theme, by LesBleus
  *  Icons from "small-n-flat" pack by paomedia ( https://github.com/paomedia/small-n-flat )
  *  Author: Phlo
- */ 
+ */
 
 TR_HEIGHT = 22
 

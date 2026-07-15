@@ -16,7 +16,7 @@ if(plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVersion >= 0x805))
 	{
 		var h = "";
 		var sr = theWebUI.getTable("trt").rowSel;
-		for(var k in sr) 
+		for(var k in sr)
 			if((sr[k] == true) && (k.length==40))
 			{
 				var state = theWebUI.torrents[k].sch_ignore ? '' : 1;
@@ -116,7 +116,7 @@ if (plugin.canChangeOptions()) {
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
-	theWebUI.setSettings = function() 
+	theWebUI.setSettings = function()
 	{
 		plugin.setSettings.call(this);
 		if(plugin.enabled && this.schedulerWasChanged())
@@ -309,7 +309,7 @@ plugin.onLangLoaded = function() {
 	}
 }
 
-plugin.onRemove = function() 
+plugin.onRemove = function()
 {
 	plugin.removePageFromOptions("st_scheduler");
 	if($type(plugin.reqId))

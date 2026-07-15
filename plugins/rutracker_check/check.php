@@ -24,15 +24,15 @@ class ruTrackerChecker
 	const STE_ERROR			= 6;
 	const STE_NOT_NEED		= 7;
 	const STE_IGNORED		= 8;
-	
+
 	const MAX_LOCK_TIME		= 900;	// 15 min
-	
+
 	private static $TRACKERS = array();
-	private static $ANNOUNCES = array();	
+	private static $ANNOUNCES = array();
 
 	static public function registerTracker($commentFiler, $announceFilter, $handler)
 	{
-		if(!array_key_exists($commentFiler, self::$TRACKERS)) 
+		if(!array_key_exists($commentFiler, self::$TRACKERS))
 		{
 			self::$TRACKERS[$commentFiler] = $handler;
 			self::$ANNOUNCES[] = $announceFilter;
@@ -128,7 +128,7 @@ class ruTrackerChecker
 		if(!$torrent->errors()){
 			foreach (self::$TRACKERS as $key => $value)
 			{
-				if( preg_match($key, $torrent->comment()) ) 
+				if( preg_match($key, $torrent->comment()) )
 				{
 					return call_user_func($value, $torrent->comment(), $hash, $torrent);
 				}
@@ -151,7 +151,7 @@ class ruTrackerChecker
 		global $ignoreLabels;
 
 		if(is_null($state)) self::getState( $hash, $state, $time, $successful_time, $label );
-		
+
 		if (!is_null($label) && in_array($label, $ignoreLabels)) {
 			$state = self::STE_IGNORED;
 			self::setState($hash, $state);

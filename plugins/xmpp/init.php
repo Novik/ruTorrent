@@ -4,7 +4,7 @@ require_once( '../plugins/xmpp/xmpp.php');
 
 $at = rXmpp::load();
 if($at->setHandlers())
-{	
+{
 	$jResult .= $at->get();
 	/*if( $do_diagnostic )
 	{
