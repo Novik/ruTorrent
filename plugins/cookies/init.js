@@ -30,7 +30,7 @@ if(plugin.canChangeOptions())
 		for(var i = 0; i<arr.length; i++)
 		{
 			var tmp = arr[i].trim();
-			tmp = tmp.split("\|",2);
+			tmp = tmp.split("|",2);
 			if((tmp.length<2) ||
 			        (tmp[0]!=hostCookies[i].host) ||
 				(tmp[1]!=hostCookies[i].cookies))

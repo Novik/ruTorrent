@@ -486,12 +486,12 @@ var theNormalizer = {
 				// replace dot, underscore, and dash with whitespace
 				// replace multiple whitespace with single whitespace
 				s = s
-					.replace(/(\.|_|\-)/g, ' ')
+					.replace(/(\.|_|-)/g, ' ')
 					.replace(/\s{2,}/g, ' ');
 			} else {
 				s = s
-					.replace(/^(\.|_|\-)/g, ' ')
-					.replace(/(\.|_|\-)$/g, ' ');
+					.replace(/^(\.|_|-)/g, ' ')
+					.replace(/(\.|_|-)$/g, ' ');
 			}
 			s = s.trim();
 		}
@@ -1310,7 +1310,7 @@ var theBTClientVersion =
 		}
 		if(!ret)
 		{
-			if(str.match(/^[MQ]\d-\d[\-\d][\-\d][\-\d]-/))
+			if(str.match(/^[MQ]\d-\d[-\d][-\d][-\d]-/))
 			{
 				ret = (str.charAt(0)=='Q') ? "Queen Bee " : "BitTorrent ";
 				if(str.charAt(4) == '-')
@@ -1445,7 +1445,7 @@ var theBTClientVersion =
 		}
 		if(!ret)
 		{
-			if(str.match(/^[A-Z]([A-Z0-9\-\.]{1,5})/i))
+			if(str.match(/^[A-Z]([A-Z0-9\-.]{1,5})/i))
 			{
 				var cli = this.shLikeClients[str.charAt(0)];
 				if(cli)

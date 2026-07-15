@@ -51,7 +51,7 @@ function Sanitize(){
   this.transformers = options.transformers ? options.transformers : [];
 }
 
-Sanitize.REGEX_PROTOCOL = /^([A-Za-z0-9\+\-\.\&\;\*\s]*?)(?:\:|&*0*58|&*x0*3a)/i;
+Sanitize.REGEX_PROTOCOL = /^([A-Za-z0-9+\-.&;*\s]*?)(?::|&*0*58|&*x0*3a)/i;
 
 // emulate Ruby symbol with string constant
 Sanitize.RELATIVE = '__RELATIVE__';

@@ -1020,8 +1020,8 @@ var theWebUI = {
 		return(
 			(/(http|https|udp):\/\/(?:[0-9]{1,3}\.){3}[0-9]{1,3}((:(\d){2,5})|).*(\/a.*(\?.+=.+|\/.+)|\?.+=.+)/i).test(url) ||
 			(/(http|https|udp):\/\/(?:[0-9]{1,3}\.){3}[0-9]{1,3}((:(\d){2,5})|)\/.*[0-9a-z]{8,32}\/a/i).test(url) ||
-			(/(http|https|udp):\/\/[a-z0-9-\.]+\.[a-z]{2,253}((:(\d){2,5})|).*(\/a.*(\?.+=.+|\/.+)|\?.+=.+)/i).test(url) ||
-			(/(http|https|udp):\/\/[a-z0-9-\.]+\.[a-z]{2,253}((:(\d){2,5})|)\/.*[0-9a-z]{8,32}\/a/i).test(url) ? 1 : 0 );
+			(/(http|https|udp):\/\/[a-z0-9-.]+\.[a-z]{2,253}((:(\d){2,5})|).*(\/a.*(\?.+=.+|\/.+)|\?.+=.+)/i).test(url) ||
+			(/(http|https|udp):\/\/[a-z0-9-.]+\.[a-z]{2,253}((:(\d){2,5})|)\/.*[0-9a-z]{8,32}\/a/i).test(url) ? 1 : 0 );
 	},
 
    	trkSelect: function(e, id)
@@ -1940,7 +1940,7 @@ var theWebUI = {
 	createLabel: function()
 	{
    		var lbl = $("#txtLabel").val().trim();
-		lbl = lbl.replace(/\"/g, "'");
+		lbl = lbl.replace(/"/g, "'");
    		if(lbl != "")
 		{
 	   		var sr = this.getTable("trt").rowSel;
