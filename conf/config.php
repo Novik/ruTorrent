@@ -60,9 +60,9 @@
 	);
 
 	$localHostedMode = false;		// Set to true if rTorrent is hosted on the SAME machine as ruTorrent
-	
+
 	$cachedPluginLoading = false;		// Set to true to enable rapid cached loading of ruTorrent plugins
-										// Required to clear web browser cache when upgrading versions	
+										// Required to clear web browser cache when upgrading versions
 
 	$pluginMinification = true; 	// Stable change to reduce loading times by minimizing JavaScript networked
 									// Only recommended to disable when required for debuging purposes

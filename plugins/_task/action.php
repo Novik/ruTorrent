@@ -20,13 +20,13 @@ switch($_REQUEST['cmd'])
 	{
 		set_time_limit(0);
 		$ret = rTaskManager::obtain();
-		break;		
+		break;
 	}
 	case "remove":
 	{
 		$list = array();
 		if(!isset($HTTP_RAW_POST_DATA))
-			$HTTP_RAW_POST_DATA = file_get_contents("php://input");	
+			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
 		if(isset($HTTP_RAW_POST_DATA))
 		{
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
@@ -40,9 +40,9 @@ switch($_REQUEST['cmd'])
 						$list[] = $value;
 				}
 			}
-		}			
+		}
 		$ret = rTaskManager::remove($list);
-		break;		
-	}	
+		break;
+	}
 }
 CachedEcho::send(JSON::safeEncode($ret),"application/json");

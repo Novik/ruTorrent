@@ -2,7 +2,7 @@
  *
  * Greek language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.cannotLoadCloudscraper		= "_cloudflare plugin: Το πρόσθετο cloudscraper δεν μπορεί να φορτωθεί στην Python";

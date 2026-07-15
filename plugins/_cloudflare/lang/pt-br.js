@@ -2,7 +2,7 @@
  *
  * Portuguese (Brazil) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.cannotLoadCloudscraper		= "plugin _cloudflare: o módulo cloudscraper não pode ser carregado no Python";

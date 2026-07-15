@@ -3,7 +3,7 @@
  *
  * Vietnamese language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.tskCommand		= "Running...";
