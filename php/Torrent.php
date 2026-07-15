@@ -15,7 +15,7 @@ require_once( 'util.php' );
 class Torrent
 {
 	protected $errors = array();
-	protected $basedir = null;	
+	protected $basedir = null;
 	protected $pointer = 0;
 	private $data;
 	protected $log_callback = null;
@@ -37,7 +37,7 @@ class Torrent
 	 * @param string|array announce url or meta informations (optional)
 	 * @param int piece length (optional)
 	 */
-	public function __construct( $data, $meta = array(), $piece_length = 256, $log_callback = null, $err_callback = null ) 
+	public function __construct( $data, $meta = array(), $piece_length = 256, $log_callback = null, $err_callback = null )
 	{
         	try {
 		if( is_string( $meta ) )
@@ -83,7 +83,7 @@ class Torrent
 	/** Convert the current Torrent instance in torrent format
 	 * @return string encoded torrent data
 	 */
-	public function __toString() 
+	public function __toString()
 	{
         	return $this->encode( $this );
 	}
@@ -91,12 +91,12 @@ class Torrent
 	/** Return Errors
 	 * @return array|boolean error list or null if none
 	 */
-	public function errors() 
+	public function errors()
 	{
 		return(empty( $this->errors ) ? false : $this->errors);
 	}
 
-	public function getFileName() 
+	public function getFileName()
 	{
 		return($this->filename);
 	}
@@ -107,10 +107,10 @@ class Torrent
 	 * @param mixed data to encode
 	 * @return string torrent encoded data
 	 */
-	static protected function encode( $mixed ) 
+	static protected function encode( $mixed )
 	{
 		switch ( gettype( $mixed ) )
-		{	
+		{
 			case 'integer':
 			case 'double':
 				return self::encode_integer( $mixed );
@@ -127,7 +127,7 @@ class Torrent
 	 * @param string string to encode
 	 * @return string encoded string
 	 */
-	static private function encode_string( $string ) 
+	static private function encode_string( $string )
 	{
         	return(strlen( $string ) . ':' . $string);
 	}
@@ -136,7 +136,7 @@ class Torrent
 	 * @param integer integer to encode
 	 * @return string encoded integer
 	 */
-	static private function encode_integer( $integer ) 
+	static private function encode_integer( $integer )
 	{
         	return('i' . $integer . 'e');
 	}
@@ -145,7 +145,7 @@ class Torrent
 	 * @param array array to encode
 	 * @return string encoded dictionary or list
 	 */
-	static private function encode_array( $array ) 
+	static private function encode_array( $array )
 	{
         	if( self::is_list( (array) $array ) )
         	{
@@ -172,7 +172,7 @@ class Torrent
 	 * @param array array to test
 	 * @return boolean is the array a list
 	 */
-	static protected function is_list ( $array ) 
+	static protected function is_list ( $array )
 	{
         	foreach( array_keys( $array ) as $key )
 			if( !is_int( $key ) )
@@ -182,7 +182,7 @@ class Torrent
 
 	/**** Decode BitTorrent ****/
 
-	public function decode( $string ) 
+	public function decode( $string )
 	{
 		if(is_file( $string ))
 		{
@@ -195,7 +195,7 @@ class Torrent
 		return($this->decode_data());
 	}
 
-	protected function decode_data() 
+	protected function decode_data()
 	{
         	if($this->pointer>=strlen($this->data))
         		throw new Exception('Bad torrent data1 '.$this->pointer);
@@ -212,7 +212,7 @@ class Torrent
         	}
 	}
 
-	private function decode_dictionary() 
+	private function decode_dictionary()
 	{
 		$dictionary = array();
 		$this->pointer++;
@@ -225,7 +225,7 @@ class Torrent
 	        return($dictionary);
 	}
 
-	private function decode_list() 
+	private function decode_list()
 	{
 		$list = array();
 		$this->pointer++;
@@ -235,7 +235,7 @@ class Torrent
 		return($list);
 	}
 
-	private function decode_string() 
+	private function decode_string()
 	{
 		$delim_pos = strpos($this->data, ':', $this->pointer);
 	        if($delim_pos===false)
@@ -249,7 +249,7 @@ class Torrent
 		return($elem_name);
 	}
 
-	private function decode_integer() 
+	private function decode_integer()
 	{
 		$this->pointer++;
 	        $delim_pos = strpos($this->data, 'e', $this->pointer);
@@ -277,7 +277,7 @@ class Torrent
 	 * @param null|string annouce url (optional, if omitted it's a getter)
 	 * @return string|null annouce url or null if not set
 	 */
-    	public function announce( $announce = null ) 
+    	public function announce( $announce = null )
 	{
         	return(is_null( $announce ) ?
 			isset( $this->announce ) ? $this->announce : null :
@@ -295,7 +295,7 @@ class Torrent
      	 * @return array|null annouce list or null if not set
 	 */
 
-    	public function announce_list( $announce_list = null ) 
+    	public function announce_list( $announce_list = null )
     	{
         	return(is_null( $announce_list ) ?
 			isset( $this->{'announce-list'} ) ? $this->{'announce-list'} : null :
@@ -312,7 +312,7 @@ class Torrent
 	 * @param null|string comment (optional, if omitted it's a getter)
 	 * @return string|null comment or null if not set
 	 */
-    	public function comment( $comment = null ) 
+    	public function comment( $comment = null )
     	{
         	return(is_null( $comment ) ?
             		isset( $this->comment ) ? $this->comment : null :
@@ -329,7 +329,7 @@ class Torrent
 	 * @param null|string name (optional, if omitted it's a getter)
 	 * @return string|null name or null if not set
 	 */
-	public function name( $name = null ) 
+	public function name( $name = null )
     	{
         	return(is_null( $name ) ?
 			isset( $this->info['name'] ) ? $this->info['name'] : null :
@@ -353,7 +353,7 @@ class Torrent
 	 * @param null|boolean is private or not (optional, if omitted it's a getter)
 	 * @return boolean private flag
 	 */
-	public function is_private( $private = null ) 
+	public function is_private( $private = null )
 	{
         	return(is_null( $private ) ?
 			!empty( $this->info['private'] ) :
@@ -364,7 +364,7 @@ class Torrent
 	 * @param null|string|array webseed or webseeds mirror list (optional, if omitted it's a getter)
 	 * @return string|array|null webseed(s) or null if not set
 	 */
-	public function url_list( $urls = null ) 
+	public function url_list( $urls = null )
 	{
         	return(is_null( $urls ) ?
 			isset( $this->{'url-list'} ) ? $this->{'url-list'} : null :
@@ -375,7 +375,7 @@ class Torrent
 	 * @param null|string|array httpseed or httpseeds mirror list (optional, if omitted it's a getter)
 	 * @return array|null httpseed(s) or null if not set
 	 */
-	public function httpseeds( $urls = null ) 
+	public function httpseeds( $urls = null )
 	{
         	return(is_null( $urls ) ?
 			isset( $this->httpseeds ) ? $this->httpseeds : null :
@@ -386,10 +386,10 @@ class Torrent
 	 * @param null|string name of the file (optional)
 	 * @return boolean file has been saved or not
 	 */
-	public function save( $filename = null ) 
+	public function save( $filename = null )
 	{
-	        $this->filename = is_null( $filename ) ? 
-	        	FileUtil::getTempFilename($this->info['name'], 'torrent') : 
+	        $this->filename = is_null( $filename ) ?
+	        	FileUtil::getTempFilename($this->info['name'], 'torrent') :
 	        	$filename;
         	return file_put_contents( $this->filename, $this->__toString() );
 	}
@@ -398,7 +398,7 @@ class Torrent
 	 * @param null|string name of the file (optional)
 	 * @return void script exit
 	 */
-	public function send( $filename = null ) 
+	public function send( $filename = null )
 	{
 	        if(is_null( $filename ))
 			$filename = $this->info['name'].'.torrent';
@@ -413,7 +413,7 @@ class Torrent
      	 * @param integer piece length
 	 * @return array|boolean torrent info or false if data isn't folder/file(s)
 	 */
-	protected function build( $data, $piece_length ) 
+	protected function build( $data, $piece_length )
 	{
         	if( is_null( $data ) )
             		return(false);
@@ -440,7 +440,7 @@ class Torrent
 	 * @param integer piece length
 	 * @return array torrent info
 	 */
-	private function file( $file, $piece_length ) 
+	private function file( $file, $piece_length )
 	{
 	        $this->notify_log( 'Hash '.$file );
         	if(!($handle = @fopen( $file, 'r' )))
@@ -459,7 +459,7 @@ class Torrent
             		'pieces'        => $pieces
         		));
     	}
-    	
+
     	private static function sortNames($a,$b)
     	{
 		$ret = substr_count($b,DIRECTORY_SEPARATOR)-substr_count($a,DIRECTORY_SEPARATOR);
@@ -471,7 +471,7 @@ class Torrent
 	 * @param integer piece length
 	 * @return array torrent info
 	 */
-	private function files( $files, $piece_length ) 
+	private function files( $files, $piece_length )
 	{
 		if(!$this->basedir)
         		$files  = array_map( 'realpath', $files );
@@ -480,7 +480,7 @@ class Torrent
 
 		if($this->basedir)
 			$path   = explode( DIRECTORY_SEPARATOR, $this->basedir );
-		else	
+		else
 		        $path   = explode( DIRECTORY_SEPARATOR, dirname( realpath( current( $files ) ) ) );
 
 	        $length = $piece_length;
@@ -489,7 +489,7 @@ class Torrent
 		foreach( $files as $i => $file )
 		{
 			$this->notify_log( 'Hash '.$file );
-			if( $path != array_intersect_assoc( $file_path = explode( DIRECTORY_SEPARATOR, $file ), $path ) ) 
+			if( $path != array_intersect_assoc( $file_path = explode( DIRECTORY_SEPARATOR, $file ), $path ) )
 			{
 				$this->notify_err('Files must be in the same folder: "' . $file . '" discarded');
 		                continue;

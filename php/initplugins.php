@@ -17,12 +17,12 @@ if( !chdir( dirname( __FILE__ ) ) )
         exit();
 
 function pluginsSort($a, $b)
-{ 
+{
 	$lvl1 = (float) $a["level"];
 	$lvl2 = (float) $b["level"];
 	if($lvl1>$lvl2)
 		return(1);
-	if($lvl1<$lvl2)	
+	if($lvl1<$lvl2)
 		return(-1);
 	return( strcmp($a["name"],$b["name"]) );
 }
@@ -42,12 +42,12 @@ function getFlag($permissions,$pname,$fname)
 
 function getPluginInfo( $name, $permissions )
 {
-        $info = array( 
+        $info = array(
 		'rtorrent.php.error'=>array(),
 		'rtorrent.external.error'=>array(),
 		'rtorrent.script.error'=>array(),
 		'rtorrent.version'=>0x802,
-		'plugin.runlevel'=>10.0, 
+		'plugin.runlevel'=>10.0,
 		'plugin.dependencies'=>array(),
 		'php.extensions.error'=>array(),
 		'php.version'=>0x50000,
@@ -64,7 +64,7 @@ function getPluginInfo( $name, $permissions )
 			if(count($fields)==2)
 			{
 				$value = addcslashes(trim($fields[1]),"\\\'\"\n\r\t");
-				$field = trim($fields[0]); 
+				$field = trim($fields[0]);
 				switch($field)
 				{
 					case "plugin.may_be_shutdowned":
@@ -158,7 +158,7 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 				$userPermissions[$file] = true;
 			$info = getPluginInfo( $file, $permissions );
 			if($info &&
-				$info["plugin.may_be_launched"] && 
+				$info["plugin.may_be_launched"] &&
 				(getFlag($permissions,$file,"enabled")=="user-defined") &&
 				!$userPermissions[$file])
 				$info = false;
@@ -216,7 +216,7 @@ if( $theSettings->linkExist && ($handle = opendir('../plugins')))
 					$php = NULL;
 				$init[] = array( "php" => $php, "name" => $file, "level" => $info["plugin.runlevel"], "deps"=>$info["plugin.dependencies"] );
 				$names[] = $file;
-			} 
+			}
 		}
 	}
 	closedir($handle);

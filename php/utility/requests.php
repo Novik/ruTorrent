@@ -4,20 +4,20 @@ class Requests
 {
 	public static function disableUnsupportedMethods()
 	{
-		if( isset($_SERVER['REQUEST_METHOD']) && 
-			($_SERVER['REQUEST_METHOD']!='GET') && 
+		if( isset($_SERVER['REQUEST_METHOD']) &&
+			($_SERVER['REQUEST_METHOD']!='GET') &&
 			($_SERVER['REQUEST_METHOD']!='POST') )
 		{
 			header('HTTP/1.0 405 Method Not Allowed', true, 405);
 			die('Method Not Allowed');
 		}
-	}	
-		
+	}
+
 	public static function makeCSRFCheck()
-	{				
+	{
 		global $enableCSRFCheck;
-		if($enableCSRFCheck && 
-			isset($_SERVER['REQUEST_METHOD']) && 
+		if($enableCSRFCheck &&
+			isset($_SERVER['REQUEST_METHOD']) &&
 			($_SERVER['REQUEST_METHOD'] != "GET"))
 		{
 			global $enabledOrigins;

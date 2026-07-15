@@ -10,17 +10,17 @@ class Math
 	const DEF_FLOAT_MIN = 0.01;
 	const DEF_FLOAT_MAX = 999999;
 	const DEF_FLOAT_PER = 2;
-	
+
 	public static function iclamp( $val, $min = 0, $max = self::XMLRPC_MAX_I8 )
 	{
-		$val = floatval($val);	
+		$val = floatval($val);
 		if( $val < $min )
 			$val = $min;
 		if( $val > $max )
 			$val = $max;
 		return( ((PHP_INT_SIZE>4) || ( ($val>=self::PHP_INT_MIN) && ($val<=PHP_INT_MAX) )) ? intval($val) : $val );
 	}
-	
+
 	public static function fRoundClamp( $val, $per = self::DEF_FLOAT_PER, $min = self::DEF_FLOAT_MIN, $max = self::DEF_FLOAT_MAX)
 	{
 		$val = floatval($val);

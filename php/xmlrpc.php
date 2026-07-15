@@ -28,7 +28,7 @@ class rXMLRPCCommand
 		$this->command = getCmd($cmd);
 		$this->params = array();
 		rTorrentSettings::get()->patchDeprecatedCommand($this,$cmd);
-		if($args!==null) 
+		if($args!==null)
 		{
 		        if(is_array($args))
 				foreach($args as $prm)
@@ -40,7 +40,7 @@ class rXMLRPCCommand
 
 	public function addParameters( $args )
 	{
-		if($args!==null) 
+		if($args!==null)
 		{
 			if(is_array($args))
 				foreach($args as $prm)
@@ -104,7 +104,7 @@ class rXMLRPCRequest
 			global $scgi_host;
 			global $scgi_port;
 			$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, $rpcTimeOut);
-			if($socket) 
+			if($socket)
 			{
 				$reqheader = "CONTENT_LENGTH\x0".$contentlength."\x0"."CONTENT_TYPE\x0"."text/xml\x0"."SCGI\x0"."1\x0UNTRUSTED_CONNECTION\x0".($trusted ? "0" : "1")."\x0";
 				$tosend = strlen($reqheader).":{$reqheader},{$data}";
@@ -194,7 +194,7 @@ class rXMLRPCRequest
 						(preg_match_all("|<value><i.>(.*)</i.></value>|Us",$answer,$this->i8s)!==false) &&
 						count($this->i8s)>1)
 					{
-						foreach($strings[1] as $str) 
+						foreach($strings[1] as $str)
 						{
 							$this->strings[] = html_entity_decode(
 								str_replace( array("\\","\""), array("\\\\","\\\""), $str ),
@@ -209,7 +209,7 @@ class rXMLRPCRequest
 					if((preg_match_all("/<value>(<string>|<i.>)(.*)(<\/string>|<\/i.>)<\/value>/Us",$answer,$response)!==false) &&
 						count($response)>2)
 					{
-						foreach($response[2] as $str) 
+						foreach($response[2] as $str)
 						{
 							$this->val[] = html_entity_decode(
 								str_replace( array("\\","\""), array("\\\\","\\\""), $str ),

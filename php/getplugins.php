@@ -4,12 +4,12 @@ require_once( 'which.php' );
 require_once( "settings.php" );
 
 function pluginsSort($a, $b)
-{ 
+{
 	$lvl1 = (float) $a["info"]["plugin.runlevel"];
 	$lvl2 = (float) $b["info"]["plugin.runlevel"];
 	if($lvl1>$lvl2)
 		return(1);
-	if($lvl1<$lvl2)	
+	if($lvl1<$lvl2)
 		return(-1);
 	return( strcmp($a["name"],$b["name"]) );
 }
@@ -29,8 +29,8 @@ function getFlag($permissions,$pname,$fname)
 
 function getPluginInfo( $name, $permissions )
 {
-        $info = array( 
-		'rtorrent.need'=>1, 
+        $info = array(
+		'rtorrent.need'=>1,
 		'rtorrent.remote'=>'ok',
 		'rtorrent.external.warning'=>array(),
 		'rtorrent.external.error'=>array(),
@@ -40,8 +40,8 @@ function getPluginInfo( $name, $permissions )
 		'rtorrent.version.readable'=>'0.8.2',
 		'plugin.may_be_shutdowned'=>1,
 		'plugin.may_be_launched'=>1,
-		'plugin.runlevel'=>10.0, 
-		'plugin.description'=>'', 
+		'plugin.runlevel'=>10.0,
+		'plugin.description'=>'',
 		'plugin.author'=>'unknown',
 		'plugin.dependencies'=>array(),
 		'php.version'=>0x50000,
@@ -62,7 +62,7 @@ function getPluginInfo( $name, $permissions )
 			if(count($fields)==2)
 			{
 				$value = addcslashes(trim($fields[1]),"\\\'\"\n\r\t");
-				$field = trim($fields[0]); 
+				$field = trim($fields[0]);
 				switch($field)
 				{
 					case "plugin.help":
@@ -224,7 +224,7 @@ $jResult .= "theWebUI.showFlags = ".$perms.";\n";
 $jResult .= "theURLs.XMLRPCMountPoint = '".$XMLRPCMountPoint."';\n";
 $jResult.="theWebUI.systemInfo = {};\ntheWebUI.systemInfo.php = { canHandleBigFiles : ".((PHP_INT_SIZE<=4) ? "false" : "true")." };\n";
 
-if($handle = opendir('../plugins')) 
+if($handle = opendir('../plugins'))
 {
 	ignore_user_abort(true);
 	set_time_limit(0);
@@ -232,7 +232,7 @@ if($handle = opendir('../plugins'))
 	// Check/init: $tempDirectory.
 	$tmp = FileUtil::getTempDirectory();
 	if(!is_dir($tmp) || !@file_exists($tmp.'.') || !is_readable($tmp) || !is_writable($tmp))
-		$jResult.="noty(theUILang.badTempPath+' (".$tempDirectory.")','error');";	
+		$jResult.="noty(theUILang.badTempPath+' (".$tempDirectory.")','error');";
 
 	if(!function_exists('preg_match_all'))
 	{
@@ -331,9 +331,9 @@ if($handle = opendir('../plugins'))
 				if(!array_key_exists($file,$userPermissions))
 					$userPermissions[$file] = true;
 				$info = getPluginInfo( $file, $permissions );
-				if($info) 
+				if($info)
 				{
-					if(     $info["plugin.may_be_launched"] && 
+					if(     $info["plugin.may_be_launched"] &&
 						getFlag($permissions,$file,"enabled")=="user-defined")
 					{
 					        $info["perms"] |= $canBeLaunched;
@@ -373,9 +373,9 @@ if($handle = opendir('../plugins'))
 					        $disabled[$file] = $info;
 						continue;
 					}
-					if(count($info['web.external.error']) || 
+					if(count($info['web.external.error']) ||
 						count($info['web.external.warning']) ||
-						count($info['rtorrent.external.error']) || 
+						count($info['rtorrent.external.error']) ||
 						count($info['rtorrent.external.warning']))
 						eval( FileUtil::getPluginConf( $file ) );
 					foreach( $info['web.external.error'] as $external )
@@ -494,7 +494,7 @@ if($handle = opendir('../plugins'))
 					$names[] = $file;
 				}
 			}
-		} 
+		}
 		if($phpRequired)
 		{
 			$val = strtoupper(ini_get("register_argc_argv"));

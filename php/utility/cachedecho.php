@@ -4,7 +4,7 @@ require_once( 'fileutil.php' );
 require_once( 'utility.php' );
 
 class CachedEcho
-{	
+{
 	public static function send( $content, $type = null, $cacheable = false, $exit = true )
 	{
 		header("X-Server-Timestamp: ".time());
@@ -31,15 +31,15 @@ class CachedEcho
 				global $phpUseGzip;
 				if($phpUseGzip && isset($_SERVER['HTTP_ACCEPT_ENCODING']))
 				{
-					if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false ) 
-						$encoding = 'x-gzip'; 
+					if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false )
+						$encoding = 'x-gzip';
 				else if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false )
-						$encoding = 'gzip'; 
+						$encoding = 'gzip';
 				if($encoding && ($len>=2048))
 				{
 					global $phpGzipLevel;
 					$gzip = Utility::getExternal('gzip');
-					header('Content-Encoding: '.$encoding); 
+					header('Content-Encoding: '.$encoding);
 					$randName = FileUtil::getTempFilename('answer');
 					file_put_contents($randName,$content);
 					passthru( $gzip." -".$phpGzipLevel." -c < ".$randName );

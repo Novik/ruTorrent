@@ -1,14 +1,14 @@
 <?php
 
 class UTF
-{	
+{
 	public static function isInvalidUTF8($str)
 	{
 		$len = strlen($str);
 		for($i = 0; $i < $len; $i++)
 		{
 			$c = ord($str[$i]);
-			if($c > 128) 
+			if($c > 128)
 			{
 				if(($c > 247)) return(true);
 				elseif($c > 239) $bytes = 4;
@@ -16,7 +16,7 @@ class UTF
 				elseif($c > 191) $bytes = 2;
 				else return(true);
 				if(($i + $bytes) > $len) return(true);
-				while ($bytes > 1) 
+				while ($bytes > 1)
 				{
 					$i++;
 					$b = ord($str[$i]);
@@ -51,10 +51,10 @@ class UTF
 			0x0448,0x0449,0x044A,0x044B,0x044C,0x044D,0x044E,0x044F
 		);
 		$and=0x3F;
-		for($i=0;$i<strlen($str);$i++) 
+		for($i=0;$i<strlen($str);$i++)
 		{
 			$octet=array();
-			if(ord($str[$i])<0x80) 
+			if(ord($str[$i])<0x80)
 				$strhex=ord($str[$i]);
 			else
 				$strhex=$recode[ord($str[$i])-128];
@@ -64,29 +64,29 @@ class UTF
 			{
 				$octet[0]=0xC0;
 				$octet[1]=0x80;
-			} 
-			elseif($strhex<0x10000) 
+			}
+			elseif($strhex<0x10000)
 			{
 				$octet[0]=0xE0;
 				$octet[1]=0x80;
 				$octet[2]=0x80;
-			} 
-			elseif($strhex<0x200000) 
+			}
+			elseif($strhex<0x200000)
 			{
 				$octet[0]=0xF0;
 				$octet[1]=0x80;
 				$octet[2]=0x80;
 				$octet[3]=0x80;
-			} 
-			elseif ($strhex<0x4000000) 
+			}
+			elseif ($strhex<0x4000000)
 			{
 				$octet[0]=0xF8;
 				$octet[1]=0x80;
 				$octet[2]=0x80;
 				$octet[3]=0x80;
 				$octet[4]=0x80;
-			} 
-			else 
+			}
+			else
 			{
 				$octet[0]=0xFC;
 				$octet[1]=0x80;
@@ -95,13 +95,13 @@ class UTF
 				$octet[4]=0x80;
 				$octet[5]=0x80;
 				}
-				for($j=(count($octet)-1);$j>=1;$j--) 
+				for($j=(count($octet)-1);$j>=1;$j--)
 			{
 				$octet[$j]=$octet[$j] + ($strhex & $and);
 				$strhex=$strhex>>6;
 			}
 			$octet[0]=$octet[0] + $strhex;
-			for($j=0;$j<count($octet);$j++) 
+			for($j=0;$j<count($octet);$j++)
 				$outstr.=chr($octet[$j]);
 		}
 		return($outstr);

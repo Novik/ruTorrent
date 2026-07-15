@@ -15,7 +15,7 @@ class LFS
 	{
 		$out = array();
 		$st = explode(':',@exec( Utility::getExternal('stat').' -Lc%d:%i:%f:%h:%u:%g:%s:%X:%Y:%Z:%B:%b '.escapeshellarg( $fname ), $out, $ret ));
-		return(($ret == 0) ? array( 
+		return(($ret == 0) ? array(
 		        "dev"	=>	intval($st[0]),
 			"ino"	=>	intval($st[1]),
 			"mode"	=>	intval($st[2],16),
