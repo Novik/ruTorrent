@@ -766,11 +766,6 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 	if (this.isScrolling || !this.created)
 		return;
 
-	const maxRows = height ? height / this.TR_HEIGHT : this.getMaxRows();
-	const topRow = Math.max(0, Math.min(
-		this.viewRows - maxRows,
-		Math.floor(this.dBody.scrollTop / this.TR_HEIGHT)
-	));
 	const extra = this.noDelayingDraw ? 16 : 4;
 	const mni = Math.max(
 		0,

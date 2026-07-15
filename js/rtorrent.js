@@ -1154,7 +1154,6 @@ rTorrentStub.prototype.listResponse = function(data)
 		var state = 0;
 		var is_open = iv(values[0]);
 		var is_hash_checking = iv(values[1]);
-		var is_hash_checked = iv(values[2]);
 		var get_state = iv(values[3]);
 		var get_hashing = iv(values[23]);
 		var is_active = iv(values[28]);

@@ -30,6 +30,10 @@ export default [
 			// Empty catch blocks are used intentionally here (feature
 			// detection, eval fallbacks); other empty blocks are still flagged.
 			'no-empty': ['error', { allowEmptyCatch: true }],
+			// Globals are cross-file here (utility helpers, per-plugin vars), so
+			// only flag genuinely dead *local* variables; unused positional
+			// callback params and catch bindings are left alone.
+			'no-unused-vars': ['error', { vars: 'local', args: 'none', caughtErrors: 'none' }],
 		},
 	},
 	{

@@ -357,7 +357,6 @@ theWebUI.tegItemRemove = function()
 
 theWebUI.showTegURLInfo = function()
 {
-	var table = theWebUI.getTable("teg");
 	const tegId = theWebUI.activeExtTegId();
 	for(var i = 0; i<plugin.tegArray.length; i++)
 	{
