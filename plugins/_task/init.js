@@ -70,7 +70,7 @@ plugin.start = function()
 			{
 				for( var property in  parameter )
 				{
-					if( parameter.hasOwnProperty(property) )
+					if( Object.prototype.hasOwnProperty.call(parameter, property) )
 						req+=('&v='+i+'['+property+']&s='+encodeURIComponent(parameter[property]));
 				}
 				break;

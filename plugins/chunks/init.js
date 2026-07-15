@@ -121,10 +121,10 @@ plugin.onLangLoaded = function() {
 		$("<div>").attr("id","Chunks").append(
 			$("<div>").addClass("d-flex flex-row justify-content-between align-items-center").append(
 				...[
-					[theUILang.chunksCount, , "ccount"],
-					[theUILang.chunkSize, , "csize"],
+					[theUILang.chunksCount, undefined, "ccount"],
+					[theUILang.chunkSize, undefined, "csize"],
 					[theUILang.cDownloaded, "cinfohdr", "cinfo"],
-					[theUILang.cLegend, , "clegend"],
+					[theUILang.cLegend, undefined, "clegend"],
 				].flatMap(([headerName, headerId, valueId]) => [
 					$("<div>").addClass("sthdr").append(
 						$("<span>").attr({id:headerId}).text(headerName + ":"),

@@ -27,6 +27,9 @@ export default [
 			// entirely false positives. Disable it rather than maintain an
 			// exhaustive globals list; the rest of eslint:recommended stays on.
 			'no-undef': 'off',
+			// Empty catch blocks are used intentionally here (feature
+			// detection, eval fallbacks); other empty blocks are still flagged.
+			'no-empty': ['error', { allowEmptyCatch: true }],
 		},
 	},
 	{

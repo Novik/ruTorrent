@@ -36,7 +36,7 @@ class CustomHTMLElement extends HTMLElement {
   customDefineAttributes() {
     this._restartMutationObserver((pendingMutations) => {
       for (const attrName of this.constructor.stringAttributeNames) {
-        if (!this.hasOwnProperty(attrName)) {
+        if (!Object.prototype.hasOwnProperty.call(this, attrName)) {
           Object.defineProperty(this, attrName, {
             set(value) {
               if (value !== this.getAttribute(attrName)) {
@@ -55,7 +55,7 @@ class CustomHTMLElement extends HTMLElement {
         }
       }
       for (const attrName of this.constructor.booleanAttributeNames) {
-        if (!this.hasOwnProperty(attrName)) {
+        if (!Object.prototype.hasOwnProperty.call(this, attrName)) {
           Object.defineProperty(this, attrName, {
             set(value) {
               this.toggleAttribute(attrName, value);
