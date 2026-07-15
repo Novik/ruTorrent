@@ -17,11 +17,11 @@ class ipDB
 		{
 			if($needCreate)
 			{
-				sqlite_exec1($this->handle, 
+				sqlite_exec1($this->handle,
 					'create table comments( '.
 						'id integer primary key,'.
 						'ip text unique,'.
-						'comment text)', 
+						'comment text)',
 						$this->error);
 				@chmod($pathToDatabase, 0666);
 			}

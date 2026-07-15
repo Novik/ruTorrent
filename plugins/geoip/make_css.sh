@@ -27,4 +27,3 @@ do
     cnt=${cnt#*/}
     echo ".geoip_flag_"$cnt" {background-image: url( \""$fl"\" ); }" >> geoip.css
 done
-

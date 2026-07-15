@@ -28,20 +28,20 @@ function array_diff_assoc_recursive($array1, $array2)
 			$difference[$key] = $value;
 	}
 	return(isset($difference) ? $difference : false);
-} 
+}
 
 class rpcCache
 {
 
 	protected $dir;
-        
+
         public function __construct()
         {
 		$this->dir = FileUtil::getSettingsPath()."/httprpc";
 		if(!is_dir($this->dir))
 			FileUtil::makeDirectory($this->dir);
         }
-	
+
 	protected function store( $torrents = array() )
 	{
 	        $cid = 0;
@@ -74,10 +74,10 @@ class rpcCache
 
 	protected function strip()
 	{
-		if($dh = opendir($this->dir)) 
+		if($dh = opendir($this->dir))
 		{
 			$files = array();
-		        while(($file = readdir($dh)) !== false) 
+		        while(($file = readdir($dh)) !== false)
 		        {
 				$filename = $this->dir.'/'.$file;
 		        	if(is_file($filename))
@@ -89,7 +89,7 @@ class rpcCache
 		        	asort($files,SORT_NUMERIC);
 		        	$i = 0;
 		        	foreach( $files as $file=>$time )
-		        	{	
+		        	{
 					@unlink( $file );
 					$i++;
 					if($i>(MAX_CACHE-MIN_CACHE))

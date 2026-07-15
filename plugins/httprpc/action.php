@@ -24,7 +24,7 @@ if(isset($HTTP_RAW_POST_DATA))
 				$c = getCmd(rawurldecode($parts[1]));
 				if(strpos($c,"execute")===false)
 					$add[] = $c;
-				break;  	
+				break;
 			}
 			case "s":
 			{
@@ -77,7 +77,7 @@ function makeSimpleCall($cmds,$hash)
 {
 	$req = new rXMLRPCRequest();
 	foreach($hash as $h)
-		foreach($cmds as $cmd)	
+		foreach($cmds as $cmd)
 			$req->addCommand( new rXMLRPCCommand( $cmd, $h ) );
        	return($req->success(true) ? $req->val : false);
 }
@@ -108,13 +108,13 @@ switch($mode)
 			$theCache = new rpcCache();
 			$dTorrents = array();
 			$torrents = array();
-			foreach($req->val as $index=>$value) 
+			foreach($req->val as $index=>$value)
 			{
-				if($index % $cnt == 0) 
+				if($index % $cnt == 0)
 				{
 					$current_index = $value;
 					$torrents[$current_index] = array();
-				} 
+				}
 				else
 					$torrents[$current_index][] = $value;
 			}
@@ -145,7 +145,7 @@ switch($mode)
 	case "trk":	/**/
 	{
 		$result = makeMulticall(array(
-		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=", 
+		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=",
 			"t.get_scrape_incomplete=", "t.get_scrape_downloaded=",
 			"t.get_normal_interval=", "t.get_scrape_time_last="
 			),$hash[0],$add,'t');
@@ -154,7 +154,7 @@ switch($mode)
 	case "stg":	/**/
 	{
 		$cmds = array(
-			"get_check_hash", "get_bind", "get_dht_port", "get_directory", "get_download_rate", 
+			"get_check_hash", "get_bind", "get_dht_port", "get_directory", "get_download_rate",
 			"get_hash_interval", "get_hash_max_tries", "get_hash_read_ahead", "get_http_cacert", "get_http_capath",
 			"get_http_proxy", "get_ip", "get_max_downloads_div", "get_max_downloads_global", "get_max_file_size",
 			"get_max_memory_usage", "get_max_open_files", "get_max_open_http", "get_max_peers", "get_max_peers_seed",
@@ -169,9 +169,9 @@ switch($mode)
 			$cmds[5] = $cmds[6] = $cmds[7] = "cat";
 		$req = new rXMLRPCRequest( new rXMLRPCCommand( "dht_statistics" ) );
 		foreach( $cmds as $cmd )
-			$req->addCommand( new rXMLRPCCommand( $cmd ) );	
+			$req->addCommand( new rXMLRPCCommand( $cmd ) );
 		foreach( $add as $prm )
-			$req->addCommand( new rXMLRPCCommand( $prm ) );	
+			$req->addCommand( new rXMLRPCCommand( $prm ) );
 		if($req->success(true))
 		{
 	        	$result = array();
@@ -195,9 +195,9 @@ switch($mode)
 		        );
 		$req = new rXMLRPCRequest();
 		foreach( $cmds as $cmd )
-			$req->addCommand( new rXMLRPCCommand( $cmd ) );	
+			$req->addCommand( new rXMLRPCCommand( $cmd ) );
 		foreach( $add as $prm )
-			$req->addCommand( new rXMLRPCCommand( $prm ) );	
+			$req->addCommand( new rXMLRPCCommand( $prm ) );
 		if($req->success(true))
 	        	$result = $req->val;
 		break;
@@ -227,9 +227,9 @@ switch($mode)
 		        );
 		$req = new rXMLRPCRequest();
 		foreach( $cmds as $cmd )
-			$req->addCommand( new rXMLRPCCommand( $cmd, $hash[0] ) );	
+			$req->addCommand( new rXMLRPCCommand( $cmd, $hash[0] ) );
 		foreach( $add as $prm )
-			$req->addCommand( new rXMLRPCCommand( $prm, $hash[0] ) );	
+			$req->addCommand( new rXMLRPCCommand( $prm, $hash[0] ) );
 		if($req->success(true))
 	        	$result = $req->val;
 		break;
@@ -373,7 +373,7 @@ switch($mode)
 	case "trkall":	/**/
 	{
 		$cmds = array(
-		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=", 
+		        "t.get_url=", "t.get_type=", "t.is_enabled=", "t.get_group=", "t.get_scrape_complete=",
 			"t.get_scrape_incomplete=", "t.get_scrape_downloaded="
 		        );
 		$result = array();
@@ -388,11 +388,11 @@ switch($mode)
 			$cnt = count($cmds)+count($add);
 			$req = new rXMLRPCRequest();
 			$req->addCommand( new rXMLRPCCommand( "d.multicall", array
-			( 
+			(
 				"main",
 				getCmd("d.get_hash="),
 				$prm
-			) ) );						
+			) ) );
 	       		if($req->success(true))
 			{
 				for( $i = 0; $i< count($req->val); $i+=2 )
@@ -402,7 +402,7 @@ switch($mode)
 						unset( $tracker[ count($tracker)-1 ] );
 					$result[ $req->val[$i] ] = array_chunk( $tracker, $cnt );
 				}
-			}									
+			}
 		}
 		else
 		{
@@ -410,7 +410,7 @@ switch($mode)
 			{
 				$ret = makeMulticall($cmds,$h,$add,'t');
 				if($ret===false)
-					$result[$h] = array();				
+					$result[$h] = array();
 				else
 					$result[$h] = $ret;
 			}

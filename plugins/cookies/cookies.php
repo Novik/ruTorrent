@@ -26,7 +26,7 @@ class rCookies
 		if(isset($HTTP_RAW_POST_DATA))
 		{
 			$vars = explode('&', $HTTP_RAW_POST_DATA);
-			$this->list = array(); 
+			$this->list = array();
 			foreach($vars as $var)
 			{
 				$parts = explode("=",$var);

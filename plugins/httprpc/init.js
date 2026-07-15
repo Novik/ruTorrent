@@ -220,7 +220,7 @@ rTorrentStub.prototype.addpeer = function()
 }
 
 plugin.origgetchunks = rTorrentStub.prototype.getchunks;
-rTorrentStub.prototype.getchunks = function() 
+rTorrentStub.prototype.getchunks = function()
 {
 	this.hashes[0] = theWebUI.dID;
         this.getCommon("getchunks");

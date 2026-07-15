@@ -4,7 +4,7 @@ class RARbgTorrentAPIEngine extends commonEngine
 	public $defaults = array( "public"=>true, "page_size"=>75 );
  	public $categories = array
  	(
- 		"all"=>"0", 
+ 		"all"=>"0",
  		"XXX (18+)"=>"4",
  		"Movies/XVID"=>"14",
  		"Movies/XVID/720"=>"48",
@@ -75,11 +75,11 @@ class RARbgTorrentAPIEngine extends commonEngine
 			$added = 0;
 			if($useGlobalCats)
 				$categories = array
-				( 
+				(
 					'all'=>'0',
-					'movies'=>'14;48;17;44;45;47;50;51;52;42;46', 
-					'tv'=>'18;41;49', 
-					'music'=>'23;25', 
+					'movies'=>'14;48;17;44;45;47;50;51;52;42;46',
+					'tv'=>'18;41;49',
+					'music'=>'23;25',
 					'games'=>'27;28;40;32',
 					'software'=>'33'
 				 );
@@ -97,7 +97,7 @@ class RARbgTorrentAPIEngine extends commonEngine
 				for( $i=0; $i<$torrent_count; $i++ )
 				{
 					$torrent = $obj->torrent_results[$i];
-					if(!array_key_exists($torrent->download, $ret)) 
+					if(!array_key_exists($torrent->download, $ret))
 					{
 						$item = $this->getNewEntry();
 						$item["cat"] = $torrent->category;

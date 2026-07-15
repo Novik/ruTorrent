@@ -3,7 +3,7 @@
  *
  * French language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.lookAtDesc		= "Chercher sur (Format: nom|url)";

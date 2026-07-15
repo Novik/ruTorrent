@@ -26,7 +26,7 @@ $pushBulletNotifications = array
 			  "Added: {added}\n".
 			  "Finished: {finished}\n".
 			  "Tracker: {tracker}",
-	),	
+	),
 	"finish" => array
 	(
 		"title" => "Torrent was finished",
@@ -40,5 +40,5 @@ $pushBulletNotifications = array
 			  "Added: {added}\n".
 			  "Finished: {finished}\n".
 			  "Tracker: {tracker}",
-	),	
+	),
 );

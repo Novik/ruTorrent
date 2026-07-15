@@ -22,7 +22,7 @@ if(isset($_REQUEST['mode']))
 		case "info":
 		{
 			CachedEcho::send(JSON::safeEncode($em->getInfo()),"application/json");
-			break;			
+			break;
 		}
 	}
 }

@@ -3,7 +3,7 @@
  *
  * Hungarian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.checkWebsiteNotFound = "Check_port bővítmény: Bővítmény nem fog működni. Érvénytelen konfiguráció";

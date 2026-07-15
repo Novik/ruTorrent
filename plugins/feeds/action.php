@@ -3,8 +3,8 @@ require_once( '../../php/util.php' );
 require_once( '../../php/settings.php' );
 eval( FileUtil::getPluginConf( 'feeds' ) );
 
-$lang = (isset($_REQUEST['lang']) && 
-	preg_match('/^[A-Za-z]{2}(\-[A-Za-z]{2}|)$/', $_REQUEST['lang']) && 
+$lang = (isset($_REQUEST['lang']) &&
+	preg_match('/^[A-Za-z]{2}(\-[A-Za-z]{2}|)$/', $_REQUEST['lang']) &&
 	is_file('lang/'.$_REQUEST['lang'].'.php')) ? $_REQUEST['lang'] : 'en';
 $theUILang = array();
 require_once( 'lang/'.$lang.'.php' );
@@ -58,7 +58,7 @@ function eta($tm)
 	$v = 0;
 	$ret = "";
 	if($w > 0)
-	{	
+	{
 		$ret = $w.$theUILang["time_w"];
 		$v++;
 	}
@@ -73,7 +73,7 @@ function eta($tm)
       		$v++;
 	}
 	if(($m > 0) && ($v < 2))
-	{	
+	{
 		$ret .= $m.$theUILang["time_m"];
 		$v++;
 	}
@@ -166,7 +166,7 @@ if($showItemDescription)
 		getCmd("d.get_chunk_size="),
 		getCmd("d.get_peers_not_connected="),
 		getCmd("d.get_peers_connected="),
-		getCmd("d.get_peers_accounted="), 
+		getCmd("d.get_peers_accounted="),
 		getCmd("d.get_peers_complete=")));
 $req = new rXMLRPCRequest( new rXMLRPCCommand("d.multicall", $prm) );
 

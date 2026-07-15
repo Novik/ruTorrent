@@ -9,7 +9,7 @@
 # $7 - dir
 
 "${3}" -v -l ${5} -a dummy -o "${7}/temp.torrent" "${4}"
-last=$? 
+last=$?
 chmod a+r "${7}/temp.torrent"
 if [ $last -eq 0 ] ; then
 	echo 'Try to correct torrent file...'

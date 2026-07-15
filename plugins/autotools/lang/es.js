@@ -3,7 +3,7 @@
  *
  * Spanish language file.
  *
- * Author: 
+ * Author:
  */
 
  var s_PluginFail			= "El Plugin no funcionará.";

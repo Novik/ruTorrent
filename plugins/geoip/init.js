@@ -1,7 +1,7 @@
 plugin.loadLang();
 plugin.loadMainCSS();
 
-var thePeersCache = 
+var thePeersCache =
 {
 	MAX_SIZE: 1024,
 	ips: [],
@@ -145,7 +145,7 @@ if(plugin.canChangeColumns())
 			table.renameColumnById("country",theUILang.countryName);
 			table.renameColumnById("comment",theUILang.commentName);
 			table.oldFilesSortAlphaNumeric = table.sortAlphaNumeric;
-			table.sortAlphaNumeric = function(x, y) 
+			table.sortAlphaNumeric = function(x, y)
 			{
 				if(this.sortId === "country")
 				{
@@ -162,7 +162,7 @@ if(plugin.canChangeColumns())
 				}
 				return(this.oldFilesSortAlphaNumeric(x,y));
 			}
-		}       	
+		}
 		else
 			setTimeout(arguments.callee,1000);
 	}
@@ -182,7 +182,7 @@ if(plugin.canChangeMenu() && plugin.retrieveComments)
 				if(el && selCount)
 				{
 					theContextMenu.add(el, [theUILang.peerComment+'...',
-						(this.isTorrentCommandEnabled('commentpeer',theWebUI.dID) && (selCount==1)) ? 
+						(this.isTorrentCommandEnabled('commentpeer',theWebUI.dID) && (selCount==1)) ?
 							"theDialogManager.show('cadd')" : null]);
 				}
 			}

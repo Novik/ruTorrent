@@ -3,7 +3,7 @@
  *
  * Finnish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.EditTrackers			= "Edit Torrent...";

@@ -4,7 +4,7 @@ plugin.loadLang();
 if(plugin.canChangeOptions())
 {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
-	theWebUI.addAndShowSettings = function(arg) 
+	theWebUI.addAndShowSettings = function(arg)
 	{
 		if(plugin.enabled)
 		{
@@ -16,7 +16,7 @@ if(plugin.canChangeOptions())
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
-	theWebUI.lookatWasChanged = function() 
+	theWebUI.lookatWasChanged = function()
 	{
 		var arr = $('#lookat').val().split("\n");
 		var j = 0;
@@ -36,7 +36,7 @@ if(plugin.canChangeOptions())
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
-	theWebUI.setSettings = function() 
+	theWebUI.setSettings = function()
 	{
 		plugin.setSettings.call(this);
 		if(plugin.enabled && this.lookatWasChanged())

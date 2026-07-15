@@ -2,30 +2,30 @@ plugin.loadLang();
 plugin.loadMainCSS();
 
 plugin.updateDetails = theWebUI.updateDetails;
-theWebUI.updateDetails = function() 
+theWebUI.updateDetails = function()
 {
 	plugin.updateDetails.call(this);
 	if((this.activeView == 'Chunks') && plugin.enabled && plugin.allStuffLoaded)
 	{
-		if (this.dID != "") 
+		if (this.dID != "")
 		{
 			plugin.hash = this.dID;
 			this.request( "?action=getchunks", [plugin.drawChunks, plugin]);
-		} 
+		}
 		else
 			plugin.clearChunks();
 	}
 }
 
 plugin.clearDetails = theWebUI.clearDetails;
-theWebUI.clearDetails = function() 
+theWebUI.clearDetails = function()
 {
 	plugin.clearDetails.call(theWebUI);
 	if(plugin.enabled && plugin.allStuffLoaded)
 		plugin.clearChunks();
 }
 
-plugin.drawChunks = function( d ) 
+plugin.drawChunks = function( d )
 {
 	if( $('#cCont').get(0).clientWidth && ($type(d.chunks) || $type(d.seen)) )
 	{
@@ -49,10 +49,10 @@ plugin.drawChunks = function( d )
 		var k = mode;
 		var sumAvail = 0;
 		var sumBitAvail = 0;
-		for(var i=0; i < numRows; i++) 
+		for(var i=0; i < numRows; i++)
 		{
 			var tRow = mustInsert ? table.insertRow(-1) : table.rows[i];
-			for(var j=0; j < numCols && (k<cells.length); j++, k++) 
+			for(var j=0; j < numCols && (k<cells.length); j++, k++)
 			{
 	    			var tCell = mustInsert ? tRow.insertCell(-1) : tRow.cells[j];
 				var chunk = cells.charAt( k );
@@ -61,7 +61,7 @@ plugin.drawChunks = function( d )
     				else
 					tCell.innerHTML = "&nbsp;";
 				tCell.className = "cCell Cell" + chunk;
-				if(mode) 
+				if(mode)
 				{
 					var val = parseInt(chunk,16);
 					sumAvail+=val;
@@ -82,7 +82,7 @@ plugin.drawChunks = function( d )
 	d = null;
 }
 
-plugin.clearChunks = function() 
+plugin.clearChunks = function()
 {
 	$('#cTable').empty();
 	$('#ccount').text('');
@@ -92,7 +92,7 @@ plugin.clearChunks = function()
 	$('#clegend').text( '' );
 }
 
-rTorrentStub.prototype.getchunks = function() 
+rTorrentStub.prototype.getchunks = function()
 {
 	var commands = ["d.get_bitfield", "d.get_chunk_size", "d.get_size_chunks"];
 	if(theWebUI.systemInfo.rTorrent.apiVersion>=4)
@@ -143,7 +143,7 @@ plugin.onLangLoaded = function() {
 					),
 				),
 			),
-			$("<div>").attr("id","cCont").append( 
+			$("<div>").attr("id","cCont").append(
 				$("<table>").attr("id","cTable")
 			)
 		).get(0),

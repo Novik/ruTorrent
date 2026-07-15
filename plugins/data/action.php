@@ -6,7 +6,7 @@ if(isset($_REQUEST['result']))
 
 if(isset($_REQUEST['hash']) && isset($_REQUEST['no']))
 {
-	$req = new rXMLRPCRequest( 
+	$req = new rXMLRPCRequest(
 		new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no']))) );
 	if($req->success())
 	{

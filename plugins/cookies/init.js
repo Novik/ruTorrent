@@ -4,7 +4,7 @@ plugin.loadLang();
 if(plugin.canChangeOptions())
 {
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
-	theWebUI.addAndShowSettings = function(arg) 
+	theWebUI.addAndShowSettings = function(arg)
 	{
 		if(plugin.enabled)
 		{
@@ -20,7 +20,7 @@ if(plugin.canChangeOptions())
 		plugin.addAndShowSettings.call(theWebUI,arg);
 	}
 
-	theWebUI.cookiesWasChanged = function() 
+	theWebUI.cookiesWasChanged = function()
 	{
 		var arr = $('#hostcookies').val().split("\n");
 		if(arr.length!=hostCookies.length)
@@ -40,7 +40,7 @@ if(plugin.canChangeOptions())
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
-	theWebUI.setSettings = function() 
+	theWebUI.setSettings = function()
 	{
 		plugin.setSettings.call(this);
 		if(plugin.enabled && this.cookiesWasChanged())

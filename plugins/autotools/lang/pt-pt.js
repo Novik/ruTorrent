@@ -3,7 +3,7 @@
  *
  * Portuguese (Portugal) language file.
  *
- * Author: 
+ * Author:
  */
 
  var s_PluginFail			= "O Plugin não irá funcionar.";

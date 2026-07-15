@@ -101,19 +101,19 @@ plugin.onLangLoaded = function()
 				json: 	1
 			},
 
-			uploadFinished: function(i, file, response, time) 
+			uploadFinished: function(i, file, response, time)
 			{
 				noty(file.name+' : '+ theUILang['addTorrent'+response.result], (response.result=='Success') ? "success" : "error");
 			},
 
-			beforeEach: function(file) 
+			beforeEach: function(file)
 			{
 				return(file.name.match(".torrent")!=null);
 			},
 
-			error: function(err, file) 
+			error: function(err, file)
 			{
-				switch(err) 
+				switch(err)
 				{
 					case 'BrowserNotSupported':
 					{
@@ -135,7 +135,7 @@ plugin.onLangLoaded = function()
 						break;
 				}
 			}
-		});	
+		});
 	});
 }
 

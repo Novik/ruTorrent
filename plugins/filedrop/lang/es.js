@@ -3,7 +3,7 @@
  *
  * Spanish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.doesntSupportHTML5	= "Plugin filedrop: Su navegador no soporta subidas por HTML5. El Plugin fué deshabilitado.";

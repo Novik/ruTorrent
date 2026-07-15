@@ -25,7 +25,7 @@ plugin.setValue = function( full, free )
 		if((free<plugin.notifySpaceLimit) && !plugin.noty)
 			plugin.noty = $.noty(
 			{
-				text: theUILang.diskNotification, 
+				text: theUILang.diskNotification,
 				layout : 'bottomLeft',
 				type: 'error',
 				timeout : false,

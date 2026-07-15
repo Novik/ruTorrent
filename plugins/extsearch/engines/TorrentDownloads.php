@@ -9,13 +9,13 @@ class TorrentDownloadsEngine extends commonEngine
 	protected static function getInnerCategory($cat)
 	{
 		$categories = array(
-			'1'=>'Anime', 
-			'2'=>'Books', 
+			'1'=>'Anime',
+			'2'=>'Books',
 			'3'=>'Games',
-			'4'=>'Movies', 
-			'5'=>'Music', 
-			'7'=>'Software', 
-			'8'=>'TV Shows', 
+			'4'=>'Movies',
+			'5'=>'Music',
+			'7'=>'Software',
+			'8'=>'TV Shows',
 			'9'=>'Other');
 		return(array_key_exists($cat,$categories) ? $categories[$cat] : '');
 	}
@@ -38,7 +38,7 @@ class TorrentDownloadsEngine extends commonEngine
 			$cli = $this->fetch( $url.'/search/?page='.$pg.'&search='.$what.'&s_cat='.$cat.'&srt=seeds&order=desc' );
 			if( ($cli==false) || (strpos($cli->results, "</ul>No torrents</div>")!==false) )
 				break;
-		
+
 			$res = preg_match_all('`<img src="/templates/new/images/icons/menu_icon(?P<cat>\d+)\.png" alt="">'.
 				'<a href="/torrent/(?P<id>.*)/.*"[^>]*>(?P<name>.*)</a>.*'.
 				'<span>(?P<leech>.*)</span><span>(?P<seeds>.*)</span><span>(?P<size>.*)</span>'.

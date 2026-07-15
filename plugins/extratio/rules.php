@@ -181,7 +181,7 @@ class rRatioRulesList
 		$req = new rXMLRPCRequest();
 		foreach( $hashes as $hash )
 		{
-			$req->addCommand( new rXMLRPCCommand( "d.get_custom1", $hash ) ); 
+			$req->addCommand( new rXMLRPCCommand( "d.get_custom1", $hash ) );
 			$req->addCommand( new rXMLRPCCommand( "d.get_state", $hash ) );
 			$req->addCommand( new rXMLRPCCommand("branch", array
 			(
@@ -201,12 +201,12 @@ class rRatioRulesList
 				$state = !empty($req->val[$ndx*4+1]);
 				$ratio = null;
 				if( preg_match( '`rat_(\d+)`',$req->val[$ndx*4+2],$matches ) )
-					$ratio = 'rat_'.$matches[1];	
+					$ratio = 'rat_'.$matches[1];
 				$throttle = $req->val[$ndx*4+3];
 
 				$trackers = '';
 			        $req1 = new rXMLRPCRequest( array(
-					new rXMLRPCCommand("t.multicall", 
+					new rXMLRPCCommand("t.multicall",
 						array($hash,"",getCmd("t.get_url=")))));
 				if($req1->success())
 					$trackers = implode( '#', $req1->val );
@@ -246,12 +246,12 @@ class rRatioRulesList
 		{
 			if($item->ratio!='')
 				$ratioRulesExist = true;
-			if($item->channel!='')		
+			if($item->channel!='')
 				$throttleRulesExist = true;
 		}
 		if($ratioRulesExist)
 		{
-			$ratCmd = 
+			$ratCmd =
                                 getCmd('d.set_custom').'=x-extratio1,"$'.getCmd('execute_capture').
                                 '={'.Utility::getPHP().','.$rootPath.'/plugins/extratio/update.php,\"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#\",$'.getCmd('d.get_custom1').'=,ratio,'.User::getUser().'}" ; '.
                                 getCmd('branch').'='.getCmd('d.get_custom').'=x-extratio1,'.
@@ -260,7 +260,7 @@ class rRatioRulesList
 		else
 			$ratCmd = getCmd('cat=');
 		if($throttleRulesExist)
-			$thrCmd = 
+			$thrCmd =
                                 getCmd('d.set_custom').'=x-extratio2,"$'.getCmd('execute_capture').
                                 '={'.Utility::getPHP().','.$rootPath.'/plugins/extratio/update.php,\"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#\",$'.getCmd('d.get_custom1').'=,channel,'.User::getUser().'}" ; '.
                                 getCmd('branch').'='.getCmd('d.get_custom').'=x-extratio2,'.

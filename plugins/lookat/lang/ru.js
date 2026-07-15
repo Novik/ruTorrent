@@ -3,7 +3,7 @@
  *
  * Russian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.lookAtDesc		= "Смотреть на (Формат: name|url)";

@@ -10,7 +10,7 @@ class AnimeBytesAccount extends commonAccount
 	{
 		$is_result_fetched = false;
 		$client->referer = $this->url;
-       		if($client->fetch( $this->url."/user/login","POST","application/x-www-form-urlencoded", 
+       		if($client->fetch( $this->url."/user/login","POST","application/x-www-form-urlencoded",
 			"username=".rawurlencode($login)."&password=".rawurlencode($password) ))
 		{
 			$client->setcookies();

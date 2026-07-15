@@ -142,7 +142,7 @@ class GimmePeersEngine extends commonEngine
 				(strpos($cli->results, "<h1>Not logged in!</h1>")!==false))
 				break;
 			$data = $cli->results;
-			
+
 			$res = preg_match_all('`<td><a href="browse.php\?cat=(?P<cat>[^"]*)"><img.*'.
 	        		'<td align=left>&nbsp;<a href="details.php\?id=(?P<id>.*)&amp;hit=1"><b.*'.
         			'<td align=center><a title=\'Download Link\' href="download\.php\/\d+\/(?P<tname>.*)\?passkey=(?P<passkey>.*)">.*down.png><\/a><\/td>.*'.

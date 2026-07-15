@@ -3,7 +3,7 @@
  *
  * English language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.doesntSupportHTML5	= "Plugin filedrop: Your browser does not support HTML5 file uploads. Plugin was disabled.";

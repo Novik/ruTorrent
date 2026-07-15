@@ -18,4 +18,3 @@
  theUILang.notAvailable = "-";
 
 thePlugins.get("check_port").langLoaded();
-

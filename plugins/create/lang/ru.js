@@ -3,7 +3,7 @@
  *
  * Russian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.mnu_create			= "Новый торрент";

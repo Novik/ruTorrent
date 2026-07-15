@@ -5,10 +5,10 @@ class HDTsEngine extends commonEngine
        	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"hdts.ru|pass=XXX;uid=XXX;" );
 
 	public $categories = array
-	( 
-		'all'=>'', 
+	(
+		'all'=>'',
 		'Movie(all)'=>'&category[]=1&category[]=2&category[]=5&category[]=3&category[]=63',
-		'Movie(all-3D only)'=>'&category[]=1&category[]=2&category[]=5&category[]=3&category[]=63&3d=1',	
+		'Movie(all-3D only)'=>'&category[]=1&category[]=2&category[]=5&category[]=3&category[]=63&3d=1',
 		'Movie/BluRay'=>'&category[]=1',
 		'Movie/BluRay(3D only)'=>'&category[]=1&3d=1',
 		'Movie/Remux'=>'&category[]=2',
@@ -25,9 +25,9 @@ class HDTsEngine extends commonEngine
 		'TV Show/Remux'=>'&category[]=60',
 		'TV Show/Remux(3D only)'=>'&category[]=60&3d=1',
 		'TV Show/1080p/i'=>'&category[]=30',
-		'TV Show/1080p/i(3D only)'=>'&category[]=30&3d=1',	
+		'TV Show/1080p/i(3D only)'=>'&category[]=30&3d=1',
 		'TV Show/720p'=>'&category[]=38',
-		'TV Show/720p(3D only)'=>'&category[]=38&3d=1',			
+		'TV Show/720p(3D only)'=>'&category[]=38&3d=1',
 		'Music(all)'=>'&category[]=44&category[]=61&category[]=62&category[]=57&category[]=45',
 		'Music(3D only)'=>'&category[]=44&category[]=61&category[]=62&category[]=57&category[]=45&3d=1',
 		'Music/Album'=>'&category[]=44',
@@ -35,11 +35,11 @@ class HDTsEngine extends commonEngine
 		'Music/Remux'=>'&category[]=62',
 		'Music/1080p/i'=>'&category[]=57',
 		'Music/720p'=>'&category[]=45',
-		'XXX(all)'=>'&category[]=58&category[]=48&category[]=47', 
-		'XXX(3D only)'=>'&category[]=58&category[]=48&category[]=47&3d=1', 
-		'XXX/Blu-ray'=>'&category[]=58', 
-		'XXX/1080p/i'=>'category[]=48', 
-		'XXX/720p'=>'&category[]=47' 
+		'XXX(all)'=>'&category[]=58&category[]=48&category[]=47',
+		'XXX(3D only)'=>'&category[]=58&category[]=48&category[]=47&3d=1',
+		'XXX/Blu-ray'=>'&category[]=58',
+		'XXX/1080p/i'=>'category[]=48',
+		'XXX/720p'=>'&category[]=47'
 	);
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)

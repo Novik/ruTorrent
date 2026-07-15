@@ -3,7 +3,7 @@
  *
  * Danish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.cookiesDesc		= "Cookies (Format: host|cookie1;cookie2...)";

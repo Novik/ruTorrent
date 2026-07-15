@@ -3,7 +3,7 @@
  *
  * Russian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.ratioRulesManager	= "Менеджер правил";

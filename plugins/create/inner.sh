@@ -10,7 +10,7 @@
 
 cd "$(dirname $0)"
 "${2}" ./createtorrent.php ${1} "${6}"
-last=$? 
+last=$?
 if [ $last -eq 0 ] ; then
 	echo 'Done.'
 else

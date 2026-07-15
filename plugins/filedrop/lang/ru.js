@@ -3,7 +3,7 @@
  *
  * Russian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.doesntSupportHTML5	= "Плагин filedrop: Ваш браузер не поддерживает HTML5 загрузку файлов. Плагин выгружен.";

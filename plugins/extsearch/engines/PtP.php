@@ -4,12 +4,12 @@ class PtPEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"passthepopcorn.me|session=XXX" );
 	public $categories = array
-	( 
-		'all'=>'', 
-		'Feature Film'=>'&filter_cat[1]=1', 
-		'Short Film'=>'&filter_cat[2]=1', 
-		'Miniseries'=>'&filter_cat[3]=1', 
-		'Stand-up Comedy'=>'&filter_cat[4]=1', 
+	(
+		'all'=>'',
+		'Feature Film'=>'&filter_cat[1]=1',
+		'Short Film'=>'&filter_cat[2]=1',
+		'Miniseries'=>'&filter_cat[3]=1',
+		'Stand-up Comedy'=>'&filter_cat[4]=1',
 		'Concert'=>'&filter_cat[5]=1' ,
 	);
 
@@ -29,11 +29,11 @@ class PtPEngine extends commonEngine
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$itemsFound = false;
-			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.$cat.'&order_by=seeders&grouping=1&page='.$pg );			
+			$cli = $this->fetch( $url.'/torrents.php?searchstr='.$what.$cat.'&order_by=seeders&grouping=1&page='.$pg );
 			if( ($cli==false) || (strpos($cli->results, "<h2>Your search did not match anything.</h2>")!==false) ||
 				(strpos($cli->results, "<td>Password&nbsp;</td>")!==false))
 				break;
-		
+
 			$res = preg_match_all('`<tr class="group">.*'.
 				'<td class="small" id="large_groupid_(?P<id>\d+)".*'.
 				'title="View Torrent">(?P<name>.*)<span'.

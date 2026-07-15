@@ -3,7 +3,7 @@
  *
  * Chinese Simplified language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Rem_torrents_content_prompt		= "你真的想移除选中的 torrent(s) 吗? 警告: 这将删除 torrent 的内容.";

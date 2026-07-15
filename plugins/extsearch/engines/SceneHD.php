@@ -3,8 +3,8 @@
 class SceneHDEngine extends commonEngine
 {
        	public $defaults = array( "public"=>false, "page_size"=>50, "cookies"=>"scenehd.org|pass=XXX;uid=XXX;" );
-	public $categories = array( 'all'=>'', 'Movie/1080'=>'&cat=1', 'Movie/720'=>'&cat=4', 'Movie/BD5/9'=>'&cat=8', 'Movie/Complete'=>'&cat=22', 
-		'TV/1080'=>'&cat=5', 'TV/720'=>'&cat=7', 'WMV-HD'=>'&cat=11', 'XXX'=>'&cat=10', 'MVID'=>'&cat=13', 'Subpacks'=>'&cat=16', 'Other'=>'&cat=9' ); 
+	public $categories = array( 'all'=>'', 'Movie/1080'=>'&cat=1', 'Movie/720'=>'&cat=4', 'Movie/BD5/9'=>'&cat=8', 'Movie/Complete'=>'&cat=22',
+		'TV/1080'=>'&cat=5', 'TV/720'=>'&cat=7', 'WMV-HD'=>'&cat=11', 'XXX'=>'&cat=10', 'MVID'=>'&cat=13', 'Subpacks'=>'&cat=16', 'Other'=>'&cat=9' );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
@@ -28,13 +28,13 @@ class SceneHDEngine extends commonEngine
 			$res = preg_match_all('`<img border="0" src="[^"]*" title="(?P<cat>[^"]*)"><\/a><\/td>.*'.
 				'<a class="(?P<stat>[^"]*)" href="details\.php\?id=(?P<id>\d+)" title="(?P<name>[^"]*)">.*<\/td>.*'.
 				'<nobr>(?P<size>[^<]*)<br>.*'.
-				'<td.*>(?P<date>.*\d+)<\/td>.*'.	
+				'<td.*>(?P<date>.*\d+)<\/td>.*'.
 				'<span.*>(?P<seeds>.*\d++)<\/span>.*'.
 				'\/.\n.*<span.*>(?P<leech>\d++)'.
 				'`siU', $cli->results, $matches);
 			if(($res!==false) && ($res>0) &&
 				count($matches["cat"])==count($matches["id"]) &&
-				count($matches["id"])==count($matches["name"]) && 
+				count($matches["id"])==count($matches["name"]) &&
 				count($matches["name"])==count($matches["size"]) &&
 				count($matches["size"])==count($matches["seeds"]) &&
 				count($matches["size"])==count($matches["date"]) &&

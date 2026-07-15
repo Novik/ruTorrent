@@ -64,7 +64,7 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 	Debug( "" );
 	Debug( "--- begin ---" );
 	Debug( $datadir );
-	Debug( 
+	Debug(
 		"\"".($move_addpath    == '0' ? "don't " : "")."add path\"".
 		", \"".($move_datafiles  == '0' ? "don't " : "")."move files\"".
 		", \"".($move_fastresume == '0' ? "don't " : "")."fast resume\"" );

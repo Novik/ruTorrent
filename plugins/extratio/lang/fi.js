@@ -3,7 +3,7 @@
  *
  * Finnish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.ratioRulesManager	= "Rules Manager";

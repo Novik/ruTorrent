@@ -3,7 +3,7 @@
  *
  * Chinese Simplified language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.lookAtDesc		= "在此查找 (格式: 名称|url)";

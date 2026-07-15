@@ -3,7 +3,7 @@
  *
  * Russian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Rem_torrents_content_prompt		= "Вы действительно хотите удалить выбранные торрент(ы)? ВНИМАНИЕ: Содержимое торрента будет удалено.";

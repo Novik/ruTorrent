@@ -3,7 +3,7 @@
  *
  * Hungarian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Rem_torrents_content_prompt		= "Tényleg el akarja távolítani a kiválasztott torrent(ek)et? FIGYELMEZTETÉS: Ez a torrent teljes tartalmát törli.";

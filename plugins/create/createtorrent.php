@@ -9,7 +9,7 @@ if( count( $argv ) > 1 )
 	require_once( dirname(__FILE__).'/../../php/rtorrent.php' );
 	require_once( dirname(__FILE__).'/../_task/task.php' );
 	eval(FileUtil::getPluginConf('create'));
-	
+
 	if(function_exists('ini_set'))
 	{
 		ini_set('display_errors',true);
@@ -18,15 +18,15 @@ if( count( $argv ) > 1 )
 
 	function log_stdout( $msg )
 	{
-		$fp=fopen("php://stdout","w"); 
-		fputs($fp, $msg."\n"); 
+		$fp=fopen("php://stdout","w");
+		fputs($fp, $msg."\n");
 		fclose($fp);
 	}
 
 	function log_stderr( $msg )
 	{
-		$fp=fopen("php://stderr","w"); 
-		fputs($fp, $msg."\n"); 
+		$fp=fopen("php://stderr","w");
+		fputs($fp, $msg."\n");
 		fclose($fp);
 	}
 
@@ -36,8 +36,8 @@ if( count( $argv ) > 1 )
 	{
 		$request = unserialize(file_get_contents( $fname ));
 		$comment = '';
-		$announce_list = array(); 
-		$trackers = array(); 
+		$announce_list = array();
+		$trackers = array();
 		$trackersCount = 0;
 		if(isset($request['trackers']))
 		{

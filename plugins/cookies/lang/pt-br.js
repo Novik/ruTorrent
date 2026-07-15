@@ -3,7 +3,7 @@
  *
  * Portuguese (Brazil) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.cookiesDesc		= "Cookies (Formato: host|cookie1;cookie2...)";

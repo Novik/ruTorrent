@@ -3,8 +3,8 @@
 class KinozalTVEngine extends commonEngine
 {
        	public $defaults = array( "public"=>false, "page_size"=>40, "cookies"=>"kinozal.guru|uid=XXX;pass=XXX;" );
-       	
-	public $categories = array( 'all'=>'0', 
+
+	public $categories = array( 'all'=>'0',
 		'РљРёРЅРѕ - РЎРµСЂРёР°Р»'=>'5',
 		'РљРёРЅРѕ - РљРѕРјРµРґРёСЏ'=>'8',
 		'РљРёРЅРѕ - Р‘РѕРµРІРёРє / Р’РѕРµРЅРЅС‹Р№'=>'6',
@@ -80,9 +80,9 @@ class KinozalTVEngine extends commonEngine
 
 	protected static function formatTime($time)
 	{
-		$search = array( ' января ', ' февраля ', ' марта ', ' апреля ', ' мая ', ' июня ', 
+		$search = array( ' января ', ' февраля ', ' марта ', ' апреля ', ' мая ', ' июня ',
 			' июля ', ' августа ', ' сентября ', ' октября ', ' ноября ', ' декабря ', 'вчера ', ' сегодня ' );
-		$replace = array( '.01.', '.02.', '.03.', '.04.', '.05.', '.06.', 
+		$replace = array( '.01.', '.02.', '.03.', '.04.', '.05.', '.06.',
 			'.07.', '.08.', '.09.', '.10.', '.11.', '.12.', '-1 day ', '0 day ' );
 		return( strtotime(str_replace( $search, $replace, $time )) );
 	}
@@ -103,7 +103,7 @@ class KinozalTVEngine extends commonEngine
 		for($pg = 0; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/browse.php?s='.$what.'&a=3&page='.$pg.'&c='.$cat );
-			if( ($cli==false) || 
+			if( ($cli==false) ||
 				(strpos($cli->results, "<br><center><b>Нет активных раздач")!==false) ||
 				(strpos($cli->results, '<input type=password size=48 name="password"')!==false)
 				)

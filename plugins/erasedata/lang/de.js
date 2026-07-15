@@ -3,7 +3,7 @@
  *
  * German language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Rem_torrents_content_prompt		= "Do you really want to remove the selected torrent(s)? WARNING: This will delete torrent's content.";

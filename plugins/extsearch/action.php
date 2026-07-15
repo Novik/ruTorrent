@@ -36,7 +36,7 @@ if(isset($_REQUEST['mode']))
 				$vars = explode('&', $HTTP_RAW_POST_DATA);
 				$lbl = null;
 				$dir = null;
-				$isStart = true; 
+				$isStart = true;
 				$isAddPath = true;
 				$fast = false;
 				$urls = array();

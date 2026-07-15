@@ -3,7 +3,7 @@
  *
  * Portuguese (Brazil) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.lookAtDesc		= "Encontrar em (Formato: nome|url)";

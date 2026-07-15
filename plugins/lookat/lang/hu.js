@@ -3,7 +3,7 @@
  *
  * Hungarian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.lookAtDesc		= "Keresés a (Formátum: név|url)";

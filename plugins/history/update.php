@@ -10,8 +10,8 @@
 		$action = intval($argv[1]);
 		$actions = array
 		(
-			1 => 'addition', 
-			2 => 'finish', 
+			1 => 'addition',
+			2 => 'finish',
 			3 => 'deletion',
 		);
 		$tracker = '';
@@ -21,14 +21,14 @@
 		$data = array
 		(
 			"action"=>$action,
-			"name"=>$argv[2], 
-			"size"=>floatval($argv[3]), 
+			"name"=>$argv[2],
+			"size"=>floatval($argv[3]),
 			"downloaded"=>floatval($argv[4]),
-			"uploaded"=>floatval($argv[5]), 
-			"ratio"=>floatval($argv[6]), 
+			"uploaded"=>floatval($argv[5]),
+			"ratio"=>floatval($argv[6]),
 			"creation"=>intval($argv[7]),
-			"added"=>intval($argv[8]), 
-			"finished"=>intval($argv[9]), 
+			"added"=>intval($argv[8]),
+			"finished"=>intval($argv[9]),
 			"tracker"=>$tracker,
 			"label"=>rawurldecode($argv[11]),
 		);
