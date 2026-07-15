@@ -684,7 +684,7 @@ var theWebUI = {
 					switch(i)
 					{
 					        case "max_memory_usage":
-              						v /= 1024;
+              						v /= 1024;  // falls through
 						case "upload_rate":
 						case "download_rate":
               						v /= 1024;
@@ -712,7 +712,7 @@ var theWebUI = {
 				var nv = o.is("input:checkbox") ? (o.prop('checked') ? 1 : 0) : o.val();
 				switch(i) {
 					case "max_memory_usage":
-						nv *= 1024;
+						nv *= 1024;  // falls through
 					case "upload_rate":
 					case "download_rate":
 						nv *= 1024;

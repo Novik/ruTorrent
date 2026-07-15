@@ -113,7 +113,6 @@ plugin.check = function () {
     cache: false,
     url: "plugins/cpuload/action.php",
     dataType: "json",
-    cache: false,
     success: function (data) {
       plugin.graph.addData(data.load);
     },
