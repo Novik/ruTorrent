@@ -1,0 +1,47 @@
+name: lint
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  php-syntax:
+    # Blocking: every PHP file must parse.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - name: php -l
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            php -l "$f" > /dev/null || { echo "::error file=$f::PHP syntax error"; fail=1; }
+          done < <(find . -type f -name '*.php' -not -path './tests/*' -not -path './node_modules/*')
+          exit $fail
+
+  editorconfig:
+    # Advisory for now: the existing tree has a backlog of whitespace issues.
+    # The plan is to clear it in small per-file PRs, then make this blocking.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: editorconfig-checker
+        run: npx --yes editorconfig-checker@5
+
+  eslint:
+    # Advisory for now (same plan as editorconfig).
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: install eslint
+        run: npm install --no-save eslint@9 @eslint/js@9
+      - name: eslint
+        run: npx eslint "js/**/*.js" "plugins/**/*.js"
