@@ -599,7 +599,6 @@ theWebUI.tegItemDblClick = function(obj)
 			var tmp = new Object();
 	                tmp.id = nfo.data.hash;
         		theWebUI.getTable("trt").ondblclick( tmp );
-        		delete tmp;
 		}
 		else
 			window.open(nfo.data.desc,"_blank");

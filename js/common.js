@@ -187,6 +187,7 @@ $.fn.extend(
 
 function addslashes(str)
 {
+	// eslint-disable-next-line no-control-regex -- intentional: escape NUL, LF and CR
 	return( (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0').replace(/\u000A/g, '\\n').replace(/\u000D/g, '\\r') );
 }
 
@@ -273,7 +274,7 @@ function cloneObject( srcObj )
 		{
 			newObject = new srcObj.constructor();
 			for( var property in srcObj )
-				if( srcObj.hasOwnProperty(property) || typeof( srcObj[property] ) === 'object' )
+				if( Object.prototype.hasOwnProperty.call(srcObj, property) || typeof( srcObj[property] ) === 'object' )
 					newObject[property]= cloneObject( srcObj[property] );
 			break;
        		}

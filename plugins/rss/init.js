@@ -254,7 +254,6 @@ theWebUI.rssDblClick = function( obj )
 		var tmp = {};
                 tmp.id = theWebUI.rssItems[obj.id].hash
         	theWebUI.getTable("trt").ondblclick( tmp );
-        	delete tmp;
 	}
 	else
 		window.open(theWebUI.rssItems[obj.id].guid,"_blank");
@@ -1451,8 +1450,8 @@ plugin.onLangLoaded = function()
 			),
 			$("<div>").attr({id:"FLTchk_buttons"}).append(
 				...[
-					[theUILang.rssAddFilter, , "theWebUI.addNewFilter(); return false;"],
-					[theUILang.rssDelFilter, , "theWebUI.deleteCurrentFilter(); return false;"],
+					[theUILang.rssAddFilter, undefined, "theWebUI.addNewFilter(); return false;"],
+					[theUILang.rssDelFilter, undefined, "theWebUI.deleteCurrentFilter(); return false;"],
 					[theUILang.rssCheckFilter, "chkFilterBtn", "theWebUI.checkCurrentFilter(); return false;"],
 				].map(([text, id, onClick]) => $("<button>").attr(
 					{type:"button", id:id, onClick:onClick}
