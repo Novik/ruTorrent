@@ -1,0 +1,11 @@
+{
+  "Exclude": [
+    "\\.min\\.(js|css)$",
+    "jquery",
+    "flotr",
+    "bootstrap",
+    "codemirror",
+    "/vendor/",
+    "node_modules"
+  ]
+}
