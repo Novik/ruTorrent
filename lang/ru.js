@@ -3,7 +3,7 @@
  *
  * Initial Author: Artem Lopata (mod-s@yandex.ru)
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =

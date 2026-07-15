@@ -246,7 +246,7 @@ var theUILang =
  webExternalNotFoundWarning : "Bazı işlevler kullanılamayacak. Web sunucusu kullanıcısı harici programa erişemiyor",
  rTorrentBadScriptPath : "Eklenti çalışmayacak. rTorrent kullanıcısı dosyaya okuma/çalıştırma erişimine sahip olmalıdır",
  rTorrentBadPHPScriptPath : "Eklenti çalışmayacak. rTorrent kullanıcısının dosyaya okuma erişimi olmalıdır",
- dependenceError : "Eklenti çalışmayacak. Başka eklenti(ler) gerekli", 
+ dependenceError : "Eklenti çalışmayacak. Başka eklenti(ler) gerekli",
  peerAdd			: "Eş ekle...",
  peerBan			: "Engelle",
  peerKick			: "At",

@@ -3,7 +3,7 @@
  *
  * Initial Author: Carlos López (the_spide21@yahoo.com)
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =

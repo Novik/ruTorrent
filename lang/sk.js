@@ -3,7 +3,7 @@
  *
  * Initial Author: AndzinSan
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =

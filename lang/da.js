@@ -3,7 +3,7 @@
  *
  * Initial Author: Denhart (Denhart@Denhart.dk)
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =
