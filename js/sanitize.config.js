@@ -6,7 +6,7 @@ Sanitize.Config.RESTRICTED = {
   elements: [
      'a', 'b', 'blockquote', 'br', 'cite', 'code', 'dd', 'dl', 'dt', 'em',
      'i', 'li', 'ol', 'p', 'pre', 'q', 'small', 'strike', 'strong', 'sub',
-     'sup', 'u', 'ul']       
+     'sup', 'u', 'ul']
 }
 
 Sanitize.Config.BASIC = {

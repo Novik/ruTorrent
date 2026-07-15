@@ -3,7 +3,7 @@
  *
  */
 
-// Drag & Drop object 
+// Drag & Drop object
 class DnD {
 	/**
 	 * Construct a drag-and-drop instance.
@@ -148,7 +148,7 @@ var theDialogManager = {
 			var c = $(obj).offset();
 			return((obj.scrollHeight > obj.clientHeight) && (x>obj.clientWidth+c.left));
 		};
-		obj.on('mousedown', function(e) 
+		obj.on('mousedown', function(e)
 		{
 			if( (!browser.isOpera || !inScrollBarArea(e.target,e.clientX,e.clientY)) && !theDialogManager.modalState )
 				self.bringToTop(this.id);
@@ -297,7 +297,7 @@ var CMENU_SEP =	" 0";
 var CMENU_CHILD = " 1";
 var CMENU_SEL = " 2";
 
-var theContextMenu = 
+var theContextMenu =
 {
 	mouse: { x: 0, y: 0 },
 	noHide: false,
@@ -321,7 +321,7 @@ var theContextMenu =
 					if (ele.hasClass("menu-cmd") && self.noHide)
 						ele.toggleClass("sel");
 					else
-						window.setTimeout("theContextMenu.hide()", 50); 
+						window.setTimeout("theContextMenu.hide()", 50);
 				}
 			}
 		});
@@ -331,8 +331,8 @@ var theContextMenu =
 	get: function( label )
 	{
 	        var ret = null;
-		$("a",this.obj).each( function(ndx,val) 
-		{ 
+		$("a",this.obj).each( function(ndx,val)
+		{
 			if($(val).text()==label)
 			{
 				ret = $(val).parent();
@@ -345,17 +345,17 @@ var theContextMenu =
 		var args = new Array();
 		$.each(arguments, function(ndx,val) { args.push(val); });
         	var aft = null;
-		if(($type(args[0]) == "object") && args[0].hasClass && args[0].hasClass("CMenu")) 
+		if(($type(args[0]) == "object") && args[0].hasClass && args[0].hasClass("CMenu"))
 		{
 			var o = args[0];
 			args.splice(0, 1);
 		}
-		else 
+		else
 			var o = this.obj;
-		if(($type(args[0]) == "object") && args[0].hasClass && args[0].hasClass("menuitem")) 
+		if(($type(args[0]) == "object") && args[0].hasClass && args[0].hasClass("menuitem"))
 		{
 			aft = args[0];
-			args.splice(0, 1);		
+			args.splice(0, 1);
 		}
 		var self = this;
 		$.each(args, function(ndx,val) {
@@ -449,9 +449,9 @@ var theContextMenu =
 			x = this.mouse.x;
 		if(y==null)
 			y = this.mouse.y;
-		if(x + obj.width() > $(window).width()) 
+		if(x + obj.width() > $(window).width())
 			x -= obj.width();
-		if(y + this.obj.height() > $(window).height()) 
+		if(y + this.obj.height() > $(window).height())
 			y -= obj.height();
 		if(y<0)
 			y = 0;

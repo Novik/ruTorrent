@@ -372,9 +372,9 @@ function makeContent() {
 	);
 	theDialogManager.setHandler('dlgLabel', 'afterShow', function() {
 		setTimeout(function() {
-			$("#txtLabel").off('focus').on('focus',function() { 
-				$(this).select(); 
-			}).trigger('focus');		
+			$("#txtLabel").off('focus').on('focus',function() {
+				$(this).select();
+			}).trigger('focus');
 		}, 0);
 	});
 	theDialogManager.make("yesnoDlg","",
@@ -399,7 +399,7 @@ function makeContent() {
 			),
 		),
 	);
-	
+
 	theOptionsWindow.init();
 }
 
@@ -483,7 +483,7 @@ function correctContent()
         if(!(theWebUI.showFlags & showEnum.canChangeTorrentOptions))
 	{
 		$("#addtorrent #torrent_options").remove();
-	}	
+	}
         if(!(theWebUI.showFlags & showEnum.canAddTorrentsWithoutPath))
 	{
 		$("#addtorrent #not_add_path_option").remove();

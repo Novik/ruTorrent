@@ -35,7 +35,7 @@ var ALIGN_LEFT = 1;
 var ALIGN_CENTER = 2;
 var ALIGN_RIGHT = 3;
 
-var dxSTable = function() 
+var dxSTable = function()
 {
 	this.rowdata = {};
 	this.rowIDs = [];
@@ -189,7 +189,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 	for (let i = 0; i < styles.length; i++) {
 		if(!$type(this.colOrder[i]))
 			this.colOrder[i] = i;
-		if(!$type(styles[this.colOrder[i]].enabled)) 
+		if(!$type(styles[this.colOrder[i]].enabled))
 			styles[this.colOrder[i]].enabled = true;
 		this.colsdata[i] = styles[this.colOrder[i]];
 		this.colsdata[i].width = iv(this.colsdata[i].width);
@@ -202,7 +202,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 				.attr("index", i)
 				.toggle(!!this.colsdata[i].enabled);
 		this.tHeadRow.append(td);
-		td.mouseclick((e) => { 
+		td.mouseclick((e) => {
 			this.onRightClick(e);
 		});
 		if(!$.support.touchable)
@@ -420,7 +420,7 @@ dxSTable.prototype.renameColumn = function(no, name) {
 	}
 }
 
-dxSTable.prototype.Sort = function(e) 
+dxSTable.prototype.Sort = function(e)
 {
 	if (!this.created)
 		return true;
@@ -482,7 +482,7 @@ dxSTable.prototype.Sort = function(e)
 
 	this.isSorting = false;
 	this.refreshRows();
-	if($type(this.onsort) == "function") 
+	if($type(this.onsort) == "function")
 		setTimeout(() => this.onsort());
 	return(false);
 }
@@ -510,7 +510,7 @@ dxSTable.prototype.getSortFunc = function(id, reverse, valMapping)
 	return (x,y) => order * sorter(x, y);
 }
 
-var theSort = 
+var theSort =
 {
 	Default: function(x, y)
 	{
@@ -521,7 +521,7 @@ var theSort =
 		return((a < b) ? -1 : (a > b) ? 1 : 0);
 	},
 	Numeric: function(x, y)
-	{	
+	{
 		return(ir(x) - ir(y));
 	},
 	AlphaNumeric: function(x, y)
@@ -562,7 +562,7 @@ dxSTable.prototype.init = function() {
 dxSTable.prototype.setBodyState = function(v) {
 	this.tBody.css("visibility", v);
 	const colcount = this.cols;
-	for(var i = 0; i < colcount; i++) 
+	for(var i = 0; i < colcount; i++)
 	{
 		if((this.colsdata[i].type==TYPE_PROGRESS) && this.colsdata[i].enabled)
 		{
@@ -583,7 +583,7 @@ dxSTable.prototype.setBodyState = function(v) {
 	}
 }
 
-dxSTable.prototype.assignEvents = function() 
+dxSTable.prototype.assignEvents = function()
 {
 	var self = this;
 	this.scrollTimeout = 0;
@@ -709,7 +709,7 @@ dxSTable.prototype.colDragResizeEnd = function(e) {
 	this.rowCover.hide();
 	this.colReszObj.hide();
 	document.body.style.cursor = "default";
-	return(false);	
+	return(false);
 }
 
 dxSTable.prototype.colDragMoveEnd = function(e) {
@@ -761,7 +761,7 @@ dxSTable.prototype.getMaxRows = function()
 		: Math.ceil(Math.min(this.tBody.height(), this.dCont.height()) / this.TR_HEIGHT);
 }
 
-dxSTable.prototype.refreshRows = function( height, fromScroll ) 
+dxSTable.prototype.refreshRows = function( height, fromScroll )
 {
 	if (this.isScrolling || !this.created)
 		return;
@@ -806,7 +806,7 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 	this.resizeColumn();
 }
 
-dxSTable.prototype.keyEvents = function(e) 
+dxSTable.prototype.keyEvents = function(e)
 {
 	var self = e.data;
 	if(!e.fromTextCtrl && !theDialogManager.isModalState())
@@ -814,7 +814,7 @@ dxSTable.prototype.keyEvents = function(e)
 		var c = e.which;
 		if((browser.isKonqueror && c == 127) || (c == 46)) {
 			// Delete key
-			if ($type(self.ondelete) === "function") 
+			if ($type(self.ondelete) === "function")
 				self.ondelete();
 		} else if (e.metaKey) {
 			switch(c)
@@ -822,14 +822,14 @@ dxSTable.prototype.keyEvents = function(e)
 				case 65:
 				{
 					self.fillSelection();
-					if($type(self.onselect) == "function") 
+					if($type(self.onselect) == "function")
 						self.onselect(e);
 					return(false);
 				}
 				case 90:
 				{
 					self.clearSelection();
-					if($type(self.onselect) == "function") 
+					if($type(self.onselect) == "function")
 						self.onselect(e);
 					return(false);
 	            		}
@@ -838,7 +838,7 @@ dxSTable.prototype.keyEvents = function(e)
 	}
 }
 
-dxSTable.prototype.selectRow = function(e, row) 
+dxSTable.prototype.selectRow = function(e, row)
 {
 	if(!$.support.touchable)
 		this.bindKeys();
@@ -899,7 +899,7 @@ dxSTable.prototype.selectRow = function(e, row)
 		this.markSelectionDirty();
 	}
 
-	if($type(this.onselect) == "function") 
+	if($type(this.onselect) == "function")
 		this.onselect(e, targetId);
 	return(false);
 }
@@ -928,7 +928,7 @@ dxSTable.prototype.addRow = function(cols, sId, icon, attr)
 	this.rowdata[sId] = {"data" : cols, "icon" : icon, "attr" : attr, "enabled" : true, fmtdata: this.format(this,cols.slice(0))};
 	this.rowSel[sId] = false;
 	this.rowIDs.push(sId);
-	
+
 	this.viewRows++;
 
 	this.markViewRowsChange(sId, 1);
@@ -999,7 +999,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	return ret;
 }
 
-dxSTable.prototype.removeRow = function(sId) 
+dxSTable.prototype.removeRow = function(sId)
 {
 	if(!(sId in this.rowdata))
 		return;
@@ -1025,7 +1025,7 @@ dxSTable.prototype.updateRows = function(rawRowObjs)
 		this.setRowById(obj, sId, obj.icon, obj.attr);
 }
 
-dxSTable.prototype.clearRows = function() 
+dxSTable.prototype.clearRows = function()
 {
 	this.viewRows = 0;
 	this.selCount = 0;
@@ -1054,8 +1054,8 @@ dxSTable.prototype.setAlignment = function() {
 			case ALIGN_RIGHT:
 				align = "right";
 				break;
-			case ALIGN_AUTO: 
-			default: 
+			case ALIGN_AUTO:
+			default:
 				align = (this.colsdata[i].type==TYPE_NUMBER) ? "right" : "left";
 		}
 		aAlign.push(align);
@@ -1129,7 +1129,7 @@ dxSTable.prototype.refreshSelection = function() {
 	if (this.created) {
 		var rows = this.tBody[0].rows, l = rows.length;
 		for (var i = 0; i < l; i++) {
-			if(this.rowSel[rows[i].id] == true) 
+			if(this.rowSel[rows[i].id] == true)
 				rows[i].classList.add("selected");
 			else
 				rows[i].classList.remove("selected");
@@ -1149,7 +1149,7 @@ dxSTable.prototype.clearSelection = function()
 dxSTable.prototype.correctSelection = function()
 {
 	this.selCount = 0;
-	for(var k in this.rowSel) 
+	for(var k in this.rowSel)
 	{
 		if(this.rowdata[k].enabled && this.rowSel[k])
 		{
@@ -1158,10 +1158,10 @@ dxSTable.prototype.correctSelection = function()
 	}
 }
 
-dxSTable.prototype.fillSelection = function() 
+dxSTable.prototype.fillSelection = function()
 {
 	this.stSel = [];
-	for(var k in this.rowSel) 
+	for(var k in this.rowSel)
 		if(this.rowdata[k].enabled)
 		{
 			this.rowSel[k] = true;
@@ -1385,7 +1385,7 @@ dxSTable.prototype.syncDOM = function()
 					}
 					$(textEl).text(fmtVal);
 				}
-			}			
+			}
 			// update icon
 			if ('icon' in marks) {
 				const icon = dataRow.icon;
@@ -1516,7 +1516,7 @@ dxSTable.prototype.getIcon = function(row)
 	return(this.rowdata[row].icon);
 }
 
-dxSTable.prototype.setIcon = function(row, icon) 
+dxSTable.prototype.setIcon = function(row, icon)
 {
 	const dataRow = this.rowdata[row];
 	const oldIconIsImg = Boolean(dataRow.icon?.src);
@@ -1561,24 +1561,24 @@ dxSTable.prototype.getAttr = function(row, attrName)
 	return(this.rowdata[row]?.attr ? this.rowdata[row].attr[attrName] : null);
 }
 
-dxSTable.prototype.resize = function(w, h) 
+dxSTable.prototype.resize = function(w, h)
 {
 	this.pendingSync.resizeWidth = w;
 	this.pendingSync.resizeHeight = h;
 	this.syncDOMAsync();
 }
 
-dxSTable.prototype.isColumnEnabled = function(i) 
+dxSTable.prototype.isColumnEnabled = function(i)
 {
 	return(this.colsdata[this.getColOrder(i)].enabled ? 1 : 0);
 }
 
-dxSTable.prototype.getColWidth = function(i) 
+dxSTable.prototype.getColWidth = function(i)
 {
 	return(this.colsdata[this.getColOrder(i)].width);
 }
 
-dxSTable.prototype.getFirstSelected = function() 
+dxSTable.prototype.getFirstSelected = function()
 {
 	var ret = null;
 	for( var k in this.rowSel )
@@ -1592,7 +1592,7 @@ dxSTable.prototype.getFirstSelected = function()
 	return(ret);
 }
 
-dxSTable.prototype.scrollTo = function(value) 
+dxSTable.prototype.scrollTo = function(value)
 {
 	this.pendingSync.scrollTo = value;
 	this.syncDOMAsync();

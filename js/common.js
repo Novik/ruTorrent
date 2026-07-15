@@ -216,10 +216,10 @@ function ir(val) {
  * @param {HTMLInputElement | HTMLSelectElement} obj The HTML element
  * to be linked to.
  * @param {boolean | string} _33 An additional option when linking.
- * 
+ *
  * (1) When linking to a checkbox, a falsey value will enable the linked
  * objects when the checkbox is checked on.
- * 
+ *
  * (2) When linking to a dropdown select, it should be one of the values
  * from the options, which will disable the linked elements when selected.
  * @param {string[]} lst An array of HTML `id`s of elements to be linked.
@@ -1159,7 +1159,7 @@ var theBTClientVersion =
 	},
 	shLikeClients:
 	{
-		"A" : "ABC", "O" : "Osprey ", "Q" : "BTQueue", "R" : "Tribler", "S" : "Shad0w", 
+		"A" : "ABC", "O" : "Osprey ", "Q" : "BTQueue", "R" : "Tribler", "S" : "Shad0w",
 		"T" : "BitTornado", "U" : "UPnP NAT Bit Torrent"
 	},
 	get: function( origStr )

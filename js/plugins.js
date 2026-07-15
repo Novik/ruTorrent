@@ -417,7 +417,7 @@ rPlugin.prototype.removeSeparatorFromToolbar = function(idBefore)
 /**
  * Add a pane (status cell) to the status bar.
  * @param {string} id HTML `id` of the status cell to be added.
- * @param {object | HTMLElement | string} statusCell The content of the status cell. 
+ * @param {object | HTMLElement | string} statusCell The content of the status cell.
  * Can be a jQuery object, an HTML element, or an HTML string.
  * @param {number} no Number of position where the status cell will be placed.
  * The status cell will be inserted before the `no`th existing cell, if `no` is positive
