@@ -34,7 +34,7 @@ theWebUI.rDirBrowser = class {
 		// 3. `id` of the containing option page
 		const stgId = this.btn.parents(".stg_con").attr("id");
 		// 4. add an hide tab event handler if the button is within an option page
-		if (!!stgId) {
+		if (stgId) {
 			theOptionsWindow.addHandler(`mnu_${stgId}`, "beforeHide", () => this.hide());
 		}
 		// move dir list frame along with the containing dialog window
