@@ -3,7 +3,7 @@
  *
  * Initial Author: skevin (skevin@china.com)
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =

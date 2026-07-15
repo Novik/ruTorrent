@@ -3,7 +3,7 @@
  *
  * Initial Author: Spike_B (mr.anon.91@hotmail.com)
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =

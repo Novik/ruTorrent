@@ -3,7 +3,7 @@
  *
  * Initial Author: Oszy007 (oszy007@gmail.com)
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =

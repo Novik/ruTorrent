@@ -3,7 +3,7 @@
  *
  * Initial Author:
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =

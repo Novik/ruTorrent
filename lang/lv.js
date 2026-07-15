@@ -3,7 +3,7 @@
  *
  * Initial Author: vebero (vebero@inbox.lv)
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =

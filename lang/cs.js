@@ -3,7 +3,7 @@
  *
  * Initial Author: emc (emc@utorrent.cz)
  *
- * Author: 
+ * Author:
  */
 
 var theUILang =
