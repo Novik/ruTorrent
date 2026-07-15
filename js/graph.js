@@ -82,7 +82,7 @@ class rGraph {
           ` onchange="rGraph.legendCheckboxChanged('${label}', event.target)" ${
             rGraph.legendLabels[label]?.labelIsChecked(label) ? "checked" : ""
           }/>` +
-          rGraph.legendLabelTranslations[label] ?? label
+          (rGraph.legendLabelTranslations[label] ?? label)
       );
     };
     this.badTextCache = true;

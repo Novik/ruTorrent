@@ -67,7 +67,6 @@ plugin.init = function()
 			        cache: false,
 				url : "plugins/diskspace/action.php",
 				dataType : "json",
-				cache: false,
 				success : function(data)
 				{
 					plugin.setValue( data.total, data.free );
