@@ -66,7 +66,7 @@ plugin.loadRules = function( rle )
 		fltRatio.append(
 			$("<option>").val("").text(theUILang.dontSet),
 		);
-		for(var i=0; i<theWebUI.maxRatio; i++)
+		for(i=0; i<theWebUI.maxRatio; i++)
 			if(theWebUI.isCorrectRatio(i))
 				fltRatio.append(
 					$("<option>").val("rat_" + i).text(theWebUI.ratios[i].name),
@@ -77,7 +77,7 @@ plugin.loadRules = function( rle )
 	list.empty();
 	plugin.rules = rle || [];
 	plugin.maxRuleNo = 0;
-	for(var i=0; i<plugin.rules.length; i++)
+	for(i=0; i<plugin.rules.length; i++)
 	{
 		var f = plugin.rules[i];
 		if(plugin.maxRuleNo<f.no)
@@ -91,9 +91,9 @@ plugin.loadRules = function( rle )
 			),
 		);
 	}
-	for(var i=0; i<plugin.rules.length; i++)
+	for(i=0; i<plugin.rules.length; i++)
 	{
-		var f = plugin.rules[i];
+		f = plugin.rules[i];
 		if(f.no<0)
 		{
 			plugin.maxRuleNo++;

@@ -118,7 +118,7 @@ theWebUI.loadRules = function( rle )
 	$('#RLS_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
 	for(var lbl in theWebUI.rssGroups)
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
-	for(var lbl in theWebUI.rssLabels)
+	for(lbl in theWebUI.rssLabels)
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
 	plugin.rules = rle;
 	plugin.maxRuleNo = 0;

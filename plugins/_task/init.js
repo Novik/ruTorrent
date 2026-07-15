@@ -558,7 +558,7 @@ plugin.onGetTasks = function(d)
 					plugin.callNotification("Finished",item,true);
 		}
 		var deleted = false;
-               	for( var id in plugin.background )
+               	for( id in plugin.background )
 		{
 			if(!$type(d[id]))
 			{

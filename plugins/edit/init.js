@@ -216,7 +216,7 @@ rTorrentStub.prototype.edittorrent = function()
 		if(s.toLowerCase()!='dht://')
 			this.content += ("&tracker="+encodeURIComponent(s));
 	}
-	for( var i = 0; i < this.hashes.length; i++ )
+	for( i = 0; i < this.hashes.length; i++ )
 		this.content += ("&hash="+this.hashes[i]);
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/edit/action.php";

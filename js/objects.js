@@ -351,7 +351,7 @@ var theContextMenu =
 			args.splice(0, 1);
 		}
 		else
-			var o = this.obj;
+			o = this.obj;
 		if(($type(args[0]) == "object") && args[0].hasClass && args[0].hasClass("menuitem"))
 		{
 			aft = args[0];
