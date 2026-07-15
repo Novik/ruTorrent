@@ -109,7 +109,7 @@ rTorrentStub.prototype.getpeersResponse = function(xml)
 		});
 		if(content.length)
 		{
-			var AjaxReq = jQuery.ajax(
+			jQuery.ajax(
 			{
 				type: "POST",
 				contentType: "application/x-www-form-urlencoded",

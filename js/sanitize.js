@@ -21,7 +21,7 @@
  */
 
 function Sanitize(){
-  var i, e, options;
+  var i, options;
   options = arguments[0] || {};
   this.config = {};
   this.config.elements = options.elements ? options.elements : [];
@@ -129,7 +129,7 @@ Sanitize.prototype.clean_node = function(container) {
   }
 
   function _clean_element(elem) {
-    var i, j, clone, parent_element, name, allowed_attributes, attr, attr_name, attr_node, protocols, del, attr_ok;
+    var i, parent_element, name, allowed_attributes, attr, attr_name, attr_node, protocols, del, attr_ok;
     var transform = _transform_element.call(this, elem);
 
     elem = transform.node;

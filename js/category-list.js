@@ -556,7 +556,7 @@ export class CategoryList {
   removeActiveTextSearches() {
     const removedSearchIndices = new Set(
       this.selection.ids("psearch").map((searchId) => {
-        const [_, searchIndex] = searchId.split("_", 2);
+        const [, searchIndex] = searchId.split("_", 2);
         return Number(searchIndex);
       })
     );

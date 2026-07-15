@@ -81,7 +81,6 @@ if(plugin.canChangeMenu())
 		plugin.createMenu.call(this, e, id);
 		if(plugin.enabled && plugin.allStuffLoaded)
 		{
-			var table = this.getTable("trt");
 			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
 			{

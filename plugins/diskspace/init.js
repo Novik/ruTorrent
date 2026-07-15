@@ -59,7 +59,7 @@ plugin.init = function()
 
 		plugin.check = function()
 		{
-			var AjaxReq = jQuery.ajax(
+			jQuery.ajax(
 			{
 				type: "GET",
 				timeout: theWebUI.settings["webui.reqtimeout"],
