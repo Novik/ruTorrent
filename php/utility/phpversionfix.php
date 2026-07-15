@@ -1,7 +1,7 @@
 <?php
 
 class phpVersionFix
-{	
+{
 	private static function stripSlashesFromArray(&$arr)
 	{
 	        if(is_array($arr))

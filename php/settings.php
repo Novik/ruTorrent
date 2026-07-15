@@ -72,11 +72,11 @@ class rTorrentSettings
 			"level" => $level,
 		);
 
-		$sort = function ($a,$b) 
-		{ 
+		$sort = function ($a,$b)
+		{
 			$lvl1 = (float) $a["level"];
 			$lvl2 = (float) $b["level"];
-			return( $lvl1 > $lvl2 ? 1 : 
+			return( $lvl1 > $lvl2 ? 1 :
 				($lvl1 < $lvl2 ? -1 : strcmp($a["name"], $b["name"]) ));
 		};
 
@@ -147,7 +147,7 @@ class rTorrentSettings
 				{
 					require_once( $file );
 					$func = str_replace('-', '_', $hook['name']).'Hooks::On'.$ename;
-					if(is_callable( $func ) && 
+					if(is_callable( $func ) &&
 						(call_user_func_array($func,$prm)==true))
 					{
 						break;
@@ -284,7 +284,7 @@ class rTorrentSettings
 							$this->home = trim($line[2]);
 							if(!empty($this->directory) &&
 								($this->directory[0]=='~'))
-								$this->directory = $this->home.substr($this->directory,1);	
+								$this->directory = $this->home.substr($this->directory,1);
 						}
 						else
 							$this->idNotFound = true;
@@ -303,7 +303,7 @@ class rTorrentSettings
 			$cmd = substr($cmd,0,-1);
 			$add = '=';
 		}
-		return(array_key_exists($cmd,$this->aliases) ? $this->aliases[$cmd]["name"].$add : $cmd.$add);		
+		return(array_key_exists($cmd,$this->aliases) ? $this->aliases[$cmd]["name"].$add : $cmd.$add);
 	}
 	public function getRatioGroupCommand($ratio,$cmd,$args)
 	{
@@ -379,7 +379,7 @@ class rTorrentSettings
 	}
 	public function getRemoveScheduleCommand($name)
 	{
-		return(	new rXMLRPCCommand("schedule_remove", $name.User::getUser()) );	
+		return(	new rXMLRPCCommand("schedule_remove", $name.User::getUser()) );
 	}
 	public function correctDirectory(&$dir,$resolve_links = false)
 	{
@@ -393,13 +393,13 @@ class rTorrentSettings
 			if(!$path)
 				$dir = FileUtil::addslash(realpath(dirname($dir))).basename($dir);
 			else
-				$dir = $path;	
+				$dir = $path;
 		}
 		return(strpos(FileUtil::addslash($dir),$topDirectory)===0);
 	}
 	public function patchDeprecatedCommand( $cmd, $name )
 	{
-		if((array_key_exists($name,$this->aliases) && $this->aliases[$name]["prm"]) || 
+		if((array_key_exists($name,$this->aliases) && $this->aliases[$name]["prm"]) ||
 			(($this->iVersion>=0x904) && (strpos($cmd->command,"group2.")===0)))
 			$cmd->addParameter("");
 	}
@@ -422,8 +422,8 @@ class rTorrentSettings
 				else
 				if(strpos($cmd->command, 'f.') === 0)
 					$prefix = ':f';
-				if(!empty($prefix) && 
-					(count($cmd->params)>1) && 
+				if(!empty($prefix) &&
+					(count($cmd->params)>1) &&
 					(substr($cmd->command, -10) !== '.multicall') &&
 					(strpos($cmd->params[0]->value, ':') === false) )
 				{

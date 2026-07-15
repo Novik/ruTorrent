@@ -1,10 +1,10 @@
 <?php
 
 class Utility
-{	
+{
 	public static function quoteAndDeslashEachItem($item)
 	{
-		return('"'.addcslashes($item,"\\\'\"\n\r\t").'"'); 
+		return('"'.addcslashes($item,"\\\'\"\n\r\t").'"');
 	}
 
 	public static function sortArrayTime( $a, $b )

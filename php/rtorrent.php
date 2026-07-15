@@ -146,7 +146,7 @@ class rTorrent
 
 	static public function getSource($hash)
 	{
-		$req = new rXMLRPCRequest( array(		
+		$req = new rXMLRPCRequest( array(
 			new rXMLRPCCommand("get_session"),
 			new rXMLRPCCommand("d.get_tied_to_file",$hash)) );
 		if($req->run() && !$req->fault)
@@ -161,7 +161,7 @@ class rTorrent
 			}
 			if($fname)
 			{
-				$torrent = new Torrent( $fname );		
+				$torrent = new Torrent( $fname );
 				if( !$torrent->errors() )
 				{
 					if(isset($torrent->{'libtorrent_resume'}))

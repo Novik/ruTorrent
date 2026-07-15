@@ -6,25 +6,25 @@ require_once( 'user.php' );
 class FileUtil
 {
 	private static $profilePathInstance = null;
-	
+
 	public static function getFileName($path)
 	{
 		$arr = explode('/',$path);
 		return(end($arr));
 	}
-	
+
 	public static function addslash( $str )
 	{
 		$len = strlen( $str );
 		return( (($len == 0) || ($str[$len-1] == '/')) ? $str : $str.'/' );
 	}
-	
+
 	public static function delslash( $str )
 	{
 		$len = strlen( $str );
 		return( (($len == 0) || ($str[$len-1] != '/')) ? $str : substr($str,0,$len-1) );
 	}
-	
+
 	public static function fullpath($path,$base = '')
 	{
 		$root  = '';
@@ -44,7 +44,7 @@ class FileUtil
 		}
 		return($root.implode('/', $newpath));
 	}
-	
+
 	public static function getProfilePath()
 	{
 		if (is_null(self::$profilePathInstance))
@@ -52,11 +52,11 @@ class FileUtil
 
 		return(self::$profilePathInstance);
 	}
-	
+
 	public static function getProfilePathEx($user = null)
 	{
 		global $profilePath;
-		$ret = self::fullpath(isset($profilePath) ? $profilePath : '../../share', dirname(__FILE__));		
+		$ret = self::fullpath(isset($profilePath) ? $profilePath : '../../share', dirname(__FILE__));
 		if(is_null($user))
 			$user = User::getUser();
 		if($user!='')
@@ -65,29 +65,29 @@ class FileUtil
 			if(!is_dir($ret))
 				self::makeDirectory( array($ret,$ret.'/settings',$ret.'/torrents',$ret.'/tmp') );
 		}
-		return $ret;		
+		return $ret;
 	}
-	
+
 	public static function getSettingsPath()
 	{
 		return( self::getProfilePath().'/settings' );
 	}
-	
+
 	public static function getSettingsPathEx($user = null)
 	{
-		return( self::getProfilePathEx($user).'/settings' );	
+		return( self::getProfilePathEx($user).'/settings' );
 	}
 
 	public static function getUploadsPath()
 	{
 		return( self::getProfilePath().'/torrents' );
 	}
-	
+
 	public static function getUploadsPathEx($user = null)
 	{
 		return( self::getProfilePathEx($user).'/torrents' );
 	}
-	
+
 	public static function getPluginConf($plugin)
 	{
 		$ret = '';
@@ -106,7 +106,7 @@ class FileUtil
 		}
 		return($ret);
 	}
-	
+
 	public static function getConfFile($name)
 	{
 		$user = User::getUser();
@@ -118,14 +118,14 @@ class FileUtil
 		}
 		return(false);
 	}
-	
+
 	public static function getUniqueFilename($fname)
 	{
 		while(file_exists($fname))
 		{
 			$ext = '';
 			$pos = strrpos($fname,'.');
-			if($pos!==false) 
+			if($pos!==false)
 			{
 				$ext = substr($fname,$pos);
 				$fname = substr($fname,0,$pos);
@@ -133,7 +133,7 @@ class FileUtil
 			$pos = preg_match('/.*\((?P<no>\d+)\)$/',$fname,$matches);
 			$no = 1;
 			if($pos)
-			{		
+			{
 				$no = intval($matches["no"])+1;
 				$fname = substr($fname,0,strrpos($fname,'('));
 			}
@@ -149,10 +149,10 @@ class FileUtil
 		return( $overwriteUploadedTorrents ? $fname : self::getUniqueFilename($fname));
 	}
 
-	public static function getTempDirectory() 
+	public static function getTempDirectory()
 	{
-		global $tempDirectory;		
-		global $tempDirectory_init_done;		
+		global $tempDirectory;
+		global $tempDirectory_init_done;
 		if(!$tempDirectory_init_done)
 		{
 			if(empty($tempDirectory))
@@ -208,7 +208,7 @@ class FileUtil
 		} while(file_exists($fname));	// this is no guarantee, of course...
 		return($fname);
 	}
-	
+
 	public static function makeDirectory( $dirs, $perms = null )
 	{
 		global $profileMask;
@@ -221,23 +221,23 @@ class FileUtil
 		else
 			(file_exists(self::addslash($dirs).'.') && @chmod($dirs,$perms)) || @mkdir($dirs,$perms,true);
 		@umask($oldMask);
-	} 
+	}
 
 	// [fixme] hidden files doesn't processed
 	public static function deleteDirectory( $dir )
 	{
 		$dir = self::addslash($dir);
 		$files = array_diff(scandir($dir), array('.','..'));
-		foreach($files as $file) 
+		foreach($files as $file)
 		{
 			$path = $dir.$file;
 			is_dir($path) ? deleteDirectory($path) : unlink($path);
 		}
 		return(rmdir($dir));
 	}
-	
+
 	public static function toLog( $str )
-	{		
+	{
 		global $log_file;
 		if( $log_file && strlen( $log_file ) > 0 )
 		{
@@ -255,14 +255,14 @@ class FileUtil
 			}
 		}
 	}
-	
+
 	public static function getMinFilePerms( $file, $chmod = 0755 )
 	{
 		$code = fileperms($file);
-		
+
 		if($code!==false)
 			return(($code & 0777) >= $chmod);
-		
+
 		return false;
 	}
 }

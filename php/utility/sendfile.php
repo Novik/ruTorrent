@@ -11,7 +11,7 @@ class SendFile
 		$arr = explode('/',$path);
 		return(end($arr));
 	}
-	
+
 	public static function send( $filename, $contentType = null, $nameToSent = null, $mustExit = true )
 	{
 		global $canUseXSendFile;
@@ -30,12 +30,12 @@ class SendFile
 				if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 					$nameToSent = rawurlencode($nameToSent);
 				header('Content-Disposition: attachment; filename="'.$nameToSent.'"');
-		
+
 				if( $mustExit && $canUseXSendFile &&
-					function_exists('apache_get_modules') && 
+					function_exists('apache_get_modules') &&
 					in_array('mod_xsendfile', apache_get_modules()))
-				{ 
-					header("X-Sendfile: ".$filename); 
+				{
+					header("X-Sendfile: ".$filename);
 				}
 				else
 				{
@@ -50,15 +50,15 @@ class SendFile
 					header('Content-Transfer-Encoding: binary');
 					header('Content-Description: File Transfer');
 
-					if(ob_get_level()) 
+					if(ob_get_level())
 						while(@ob_end_clean());
 
 					$begin = 0;
 					$end = $stat['size'];
 					if(isset($_SERVER['HTTP_RANGE']))
-					{ 
+					{
 						if(preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches))
-							{ 
+							{
 								$begin=intval($matches[1]);
 							if(!empty($matches[2]))
 								$end=intval($matches[2]);
@@ -83,7 +83,7 @@ class SendFile
 								$cur = $begin;
 								fseek($f,$begin,0);
 								while( !feof($f) && ($cur<$end) && !connection_aborted() && (connection_status()==0) )
-								{ 
+								{
 									print(fread($f,min(1024*16,$end-$cur)));
 									$cur+=1024*16;
 								}
@@ -92,7 +92,7 @@ class SendFile
 						}
 						else
 						{
-							header('HTTP/1.0 200 OK');  
+							header('HTTP/1.0 200 OK');
 							readfile($filename);
 						}
 					}
@@ -105,7 +105,7 @@ class SendFile
 		}
 		return(false);
 	}
-	
+
 	public static function sendCachedImage($location, $type, $duration)
 	{
 		header('Content-Type: '.$type);
