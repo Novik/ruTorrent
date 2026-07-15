@@ -642,7 +642,7 @@ theWebUI.processRSS = function(action,elURL,elLbl)
 	var url = elURL.val().trim();
 	var lbl = elLbl.val().trim();
 	var re = new RegExp();
-	re.compile("^[A-Za-z]+://[A-Za-z0-9-]+\.[A-Za-z0-9]+");
+	re.compile("^[A-Za-z]+://[A-Za-z0-9-]+.[A-Za-z0-9]+");
 	if(!re.test(url))
 		alert(theUILang.incorrectURL);
 	else
@@ -879,7 +879,7 @@ theWebUI.loadFiltersWithAdditions = function( flt )
 	function makePatternString(s)
 	{
 		var ret = "/^";
-		var specChars = "?*+#\^$.[]|(){}/";
+		var specChars = "?*+#^$.[]|(){}/";
 		for(var i = 0; i<s.length; i++)
 		{
 			var c = s.charAt(i);
