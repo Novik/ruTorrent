@@ -128,14 +128,14 @@ plugin.readConsoleLog = function() {
 
 plugin.copyConsoleLog = function() {
 	const consoleLog = plugin.readConsoleLog();
-	if (!!consoleLog) {
+	if (consoleLog) {
 		copyToClipboard(consoleLog);
 	}
 }
 
 plugin.saveConsoleLog = function () {
 	const consoleLog = plugin.readConsoleLog();
-	if (!!consoleLog) {
+	if (consoleLog) {
 		const blob = new Blob([consoleLog], {type:"text/plain"});
 		const fileUrl = URL.createObjectURL(blob);
 		const link = document.createElement("a");
