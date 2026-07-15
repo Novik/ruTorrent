@@ -3,7 +3,7 @@
  *
  * Chinese Simplified language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.DataDir		= "保存到";

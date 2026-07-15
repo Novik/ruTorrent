@@ -3,7 +3,7 @@
  *
  * Portuguese (Portugal) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.checkWebsiteNotFound = "Check_port plugin: O plug-in não funcionará. Configuração inválida";

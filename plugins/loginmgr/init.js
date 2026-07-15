@@ -3,7 +3,7 @@ plugin.loadLang();
 if(plugin.canChangeOptions())
 {
 	plugin.accaddAndShowSettings = theWebUI.addAndShowSettings;
-	theWebUI.addAndShowSettings = function(arg) 
+	theWebUI.addAndShowSettings = function(arg)
 	{
 		if(plugin.enabled)
 		{
@@ -19,7 +19,7 @@ if(plugin.canChangeOptions())
 		plugin.accaddAndShowSettings.call(theWebUI,arg);
 	}
 
-	plugin.accWasChanged = function() 
+	plugin.accWasChanged = function()
 	{
 		var ret = false;
 		$.each( theWebUI.theAccounts, function(name,val)
@@ -37,7 +37,7 @@ if(plugin.canChangeOptions())
 	}
 
 	plugin.accSettings = theWebUI.setSettings;
-	theWebUI.setSettings = function() 
+	theWebUI.setSettings = function()
 	{
 		plugin.accSettings.call(this);
 		if(plugin.enabled && plugin.accWasChanged())

@@ -15,7 +15,7 @@ class TapochekNetAccount extends commonAccount
 		{
 			$client->setcookies();
 			$client->referer = $this->url."/login.php";
-			if($client->fetch( $this->url."/login.php","POST","application/x-www-form-urlencoded", 
+			if($client->fetch( $this->url."/login.php","POST","application/x-www-form-urlencoded",
 			    "login_username=".rawurlencode($login)."&login_password=".rawurlencode($password)."&login=%C2%F5%EE%E4" ))
 			{
 				$client->setcookies();

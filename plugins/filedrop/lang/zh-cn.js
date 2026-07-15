@@ -3,7 +3,7 @@
  *
  * Chinese Simplified language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.doesntSupportHTML5	= "Filedrop 插件: 你的浏览器不支持 HTML5 文件上传. 插件已被禁用.";

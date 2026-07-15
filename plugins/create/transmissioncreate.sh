@@ -9,7 +9,7 @@
 # $7 - tmp
 
 "${3}" "${4}" -o "${7}/temp.torrent"
-last=$? 
+last=$?
 chmod a+r "${7}/temp.torrent"
 if [ $last -le 1 ] ; then
 	echo ''

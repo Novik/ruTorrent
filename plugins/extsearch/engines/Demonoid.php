@@ -24,7 +24,7 @@ class DemonoidEngine extends commonEngine
 		for($pg = 1; $pg<11; $pg++)
 		{
 			$cli = $this->fetch( $url.'/files/?subcategory=All&quality=All&seeded=0&external=2&uid=0&sort=S&query='.$what.'&category='.$cat.'&page='.$pg );
-			
+
 			if( ($cli==false) || (strpos($cli->results, "<b>No torrents found</b>")!==false)
 				|| (strpos($cli->results, '>Password:</td>')!==false))
 				break;
@@ -43,7 +43,7 @@ class DemonoidEngine extends commonEngine
 						'<td .*>(?P<leech>.*)<\/td>/siU', $items["item"][$i], $matches);
                                         if(($res!==false) && ($res>0) &&
 						count($matches["id"])==count($matches["cat"]) &&
-						count($matches["cat"])==count($matches["name"]) && 
+						count($matches["cat"])==count($matches["name"]) &&
 						count($matches["name"])==count($matches["size"]) &&
 						count($matches["size"])==count($matches["seeds"]) &&
 						count($matches["seeds"])==count($matches["leech"]) )

@@ -5,7 +5,7 @@ theWebUI.config = function()
 {
 	plugin.config.call(this);
 	var oldDblClick = this.getTable("fls").ondblclick;
-	this.getTable("fls").ondblclick = function(obj) 
+	this.getTable("fls").ondblclick = function(obj)
 	{
 		if(plugin.enabled && (theWebUI.dID!="") && (theWebUI.dID.length==40))
 		{
@@ -59,8 +59,8 @@ if(plugin.canChangeMenu())
 					else
 						if(!this.dirs[this.dID].isDirectory(fid))
 							fno = fid.substr(3);
-					if( 
-//						((fno!=null) && (this.files[this.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles) || 
+					if(
+//						((fno!=null) && (this.files[this.dID][fno].size>=2147483647) && !theWebUI.systemInfo.php.canHandleBigFiles) ||
 						(theWebUI.dID.length>40))
 						fno = null;
 				}

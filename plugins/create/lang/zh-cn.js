@@ -3,7 +3,7 @@
  *
  * Chinese Simplified language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.mnu_create			= "创建 Torrent";

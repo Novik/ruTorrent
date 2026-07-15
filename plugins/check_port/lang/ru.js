@@ -3,7 +3,7 @@
  *
  * Russian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.checkWebsiteNotFound = "Плагин check_port не будет работать: неверные настройки";

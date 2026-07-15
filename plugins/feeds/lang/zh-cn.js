@@ -3,7 +3,7 @@
  *
  * Chinese Simplified language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.feedAll		= "所有 torrents";

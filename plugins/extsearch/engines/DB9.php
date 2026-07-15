@@ -3,7 +3,7 @@
 class DB9Engine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>50, "auth"=>1 );
-	public $categories = array( 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Tutorials'=>'&filter_cat[2]=1', 'Samples'=>'&filter_cat[3]=1', 
+	public $categories = array( 'all'=>'', 'Music'=>'&filter_cat[1]=1', 'Tutorials'=>'&filter_cat[2]=1', 'Samples'=>'&filter_cat[3]=1',
 		'Videos'=>'&filter_cat[4]=1' );
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)

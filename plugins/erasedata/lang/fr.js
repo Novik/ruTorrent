@@ -3,7 +3,7 @@
  *
  * French language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Rem_torrents_content_prompt		= "Voulez-vous vraiment effacer le(s) torrent(s) sélectionné(s) ? ATTENTION : Ceci va supprimer le contenu du torrent.";

@@ -3,7 +3,7 @@
  *
  * Spanish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.mnu_create			= "Crear Torrent";

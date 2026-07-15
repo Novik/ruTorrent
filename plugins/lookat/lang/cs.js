@@ -3,7 +3,7 @@
  *
  * Czech language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.lookAtDesc		= "Find at (Format: name|url)";

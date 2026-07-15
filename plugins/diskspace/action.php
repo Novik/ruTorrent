@@ -6,11 +6,11 @@
 	if( is_null($partitionDirectory) )
 	{
 		// If we run locally && we the download directory seems to exists
-		if ( User::isLocalMode() && rTorrentSettings::get()->linkExist && file_exists(rTorrentSettings::get()->directory) ) 
+		if ( User::isLocalMode() && rTorrentSettings::get()->linkExist && file_exists(rTorrentSettings::get()->directory) )
 		{
 			$partitionDirectory = rTorrentSettings::get()->directory; // Then we can show the disk space of the download directory
-		} 
-		else 
+		}
+		else
 		{
 			$partitionDirectory = &$topDirectory; // Else, we show $topDirectory by default as fallback
 		}

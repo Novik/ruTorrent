@@ -1,4 +1,4 @@
-$.extend($.support, 
+$.extend($.support,
 {
 	touchable: 'createTouch' in document
 });
@@ -12,8 +12,8 @@ plugin.emulateRightClick = function()
 		(Math.abs(plugin.rightClick.screenY - plugin.holdMouse.y)<8)))
 	{
 		var mouseEvent = document.createEvent("MouseEvent");
-		mouseEvent.initMouseEvent("contextmenu", true, true, window, 1, 
-			plugin.rightClick.screenX + 20, plugin.rightClick.screenY + 5, 
+		mouseEvent.initMouseEvent("contextmenu", true, true, window, 1,
+			plugin.rightClick.screenX + 20, plugin.rightClick.screenY + 5,
 			plugin.rightClick.clientX + 20, plugin.rightClick.clientY + 5,
 			false, false, false, false, 2, null);
 		plugin.rightClick.target.dispatchEvent(mouseEvent);
@@ -22,9 +22,9 @@ plugin.emulateRightClick = function()
 	plugin.rightClick = null;
 }
 
-plugin.cancelHold = function() 
+plugin.cancelHold = function()
 {
-	if(plugin.rightClick) 
+	if(plugin.rightClick)
 	{
 		window.clearTimeout(plugin.holdTimeout);
 		plugin.rightClick = null;
@@ -45,7 +45,7 @@ plugin.dispatchMouse = function(event,type)
 {
 	var touch = event.changedTouches[0];
 	touch.timeStamp = $.now();
-	window.setTimeout( function() 
+	window.setTimeout( function()
 	{
 		var mouseEvent = document.createEvent("MouseEvent");
 		mouseEvent.initMouseEvent(type, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY,
@@ -55,7 +55,7 @@ plugin.dispatchMouse = function(event,type)
 	return(touch);
 }
 
-plugin.cancelTarget = function() 
+plugin.cancelTarget = function()
 {
 	plugin.target = null;
 }
@@ -76,9 +76,9 @@ plugin.touchStart = function(event)
 			plugin.targetTimeout = window.setTimeout(plugin.cancelTarget, 600);
 			plugin.startHold(touch);
 		}
-		else 
+		else
 		{
-			if(plugin.target) 
+			if(plugin.target)
 			{
 				plugin.cancelTarget();
 				plugin.dispatchMouse(event,"click");
@@ -95,7 +95,7 @@ plugin.touchEnd = function(event)
 {
 	if(event.changedTouches.length)
 	{
-		if(plugin.cancelMouseUp) 
+		if(plugin.cancelMouseUp)
 		{
 			plugin.cancelMouseUp = false;
 			event.preventDefault();

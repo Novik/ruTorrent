@@ -21,6 +21,6 @@ if( $retrieveHost || $retrieveCountry || $retrieveComments )
 		$jResult .= "plugin.retrieveHost = true;";
 	if($retrieveComments)
 		$jResult .= "plugin.retrieveComments = true;";
-} 
+}
 else
 	$jResult .= "plugin.disable();";

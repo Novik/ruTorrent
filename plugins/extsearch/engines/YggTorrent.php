@@ -112,7 +112,7 @@ class YggTorrentEngine extends commonEngine
         }
 
         $nbRet = preg_match_all('`>(?P<results>\d+) résultats trouvés`', $cli->results, $retPage);
-	if (!$nbRet) 
+	if (!$nbRet)
 	{
 	    $item = $this->getNewEntry();
 	    $item["name"] = "No result found";

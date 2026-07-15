@@ -3,7 +3,7 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.accLogin		= "Accedi";

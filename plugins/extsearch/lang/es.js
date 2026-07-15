@@ -3,7 +3,7 @@
  *
  * Spanish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.tegMenuLoad			= "Cargar";

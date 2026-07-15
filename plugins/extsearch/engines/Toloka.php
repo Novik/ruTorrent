@@ -16,7 +16,7 @@ class TolokaEngine extends commonEngine
 			foreach( $obj as $torrent )
 			{
 				if( property_exists($torrent,"link") && !array_key_exists($torrent->link, $ret) )
-				{	
+				{
 					$item = $this->getNewEntry();
 					$item["name"] = $torrent->title;
 					$item["seeds"] = $torrent->seeders;

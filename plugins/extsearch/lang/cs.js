@@ -3,7 +3,7 @@
  *
  * Czech language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.tegMenuLoad			= "Load";

@@ -5,12 +5,12 @@ class HDTorrentsEngine extends commonEngine
        	public $defaults = array( "public"=>false, "page_size"=>15, "cookies"=>"hd-torrents.org|pass=XXX;uid=XXX;" );
 
 	public $categories = array
-	( 
-		'all'=>'', 
+	(
+		'all'=>'',
 		'Movie'=>'&category[]=1&category[]=2&category[]=5category[]=3category[]=63',
 		'TV Show'=>'&category[]=59&category[]=60&category[]=30category[]=38',
 		'Music'=>'&category[]=44&category[]=61&category[]=62&category[]=57&category[]=45',
-		'XXX'=>'&category[]=58&category[]=48&category[]=47' 
+		'XXX'=>'&category[]=58&category[]=48&category[]=47'
 	);
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
@@ -19,10 +19,10 @@ class HDTorrentsEngine extends commonEngine
 		$url = 'http://hd-torrents.org';
 		if($useGlobalCats)
 			$categories = array
-			( 
-				'all'=>'0', 
-				'movies'=>'&category[]=1&category[]=2&category[]=5category[]=3category[]=63', 
-				'tv'=>'&category[]=59&category[]=60&category[]=30category[]=38', 
+			(
+				'all'=>'0',
+				'movies'=>'&category[]=1&category[]=2&category[]=5category[]=3category[]=63',
+				'tv'=>'&category[]=59&category[]=60&category[]=30category[]=38',
 				'music'=>'&category[]=44&category[]=61&category[]=62&category[]=57&category[]=45'
 			);
 		else

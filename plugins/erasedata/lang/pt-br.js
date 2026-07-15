@@ -3,7 +3,7 @@
  *
  * Portuguese (Brazil) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Rem_torrents_content_prompt		= "Você realmente deseja remover o(s) torrent(s) selecionado(s)? AVISO: Isso apagará o conteúdo do torrent.";

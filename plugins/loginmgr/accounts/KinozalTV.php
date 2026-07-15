@@ -15,7 +15,7 @@ class KinozalTVAccount extends commonAccount
 		{
                         $client->setcookies();
 			$client->referer = $this->url;
-        		if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded", 
+        		if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded",
 				"username=".rawurlencode($login)."&password=".rawurlencode($password) ))
 			{
 				$client->setcookies();
@@ -27,5 +27,5 @@ class KinozalTVAccount extends commonAccount
 	public function test($url)
 	{
 		return(preg_match( "/(\.|\/)kinozal\.(tv|me|guru)\//si", $url ));
-	}	
+	}
 }

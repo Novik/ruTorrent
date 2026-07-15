@@ -13,9 +13,9 @@ theSearchEngines.set = function(val, noSave)
 
 theSearchEngines.getEngName = function(eng)
 {
-	return(eng=="all" ? theUILang.All : 
-		eng=="public" ? theUILang.extAllPublic : 
-		eng=="private" ? theUILang.extAllPrivate : 
+	return(eng=="all" ? theUILang.All :
+		eng=="public" ? theUILang.extAllPublic :
+		eng=="private" ? theUILang.extAllPrivate :
 		eng);
 }
 
@@ -136,14 +136,14 @@ theSearchEngines.checkForIncorrectCurrent = function( refreshCats )
 		}
 		else
 		{
-			if((    (theSearchEngines.current!='all') && 
-				(theSearchEngines.current!='private') && 
-				(theSearchEngines.current!='public') && 
-				(!$type(theSearchEngines.sites[theSearchEngines.current]) || !theSearchEngines.sites[theSearchEngines.current].enabled) 
-			   ) 
+			if((    (theSearchEngines.current!='all') &&
+				(theSearchEngines.current!='private') &&
+				(theSearchEngines.current!='public') &&
+				(!$type(theSearchEngines.sites[theSearchEngines.current]) || !theSearchEngines.sites[theSearchEngines.current].enabled)
+			   )
 				||
 			   (
-				!(this.isPublicPresent(true) && this.isPublicPresent(false)) && 
+				!(this.isPublicPresent(true) && this.isPublicPresent(false)) &&
 				((theSearchEngines.current=='private') || (theSearchEngines.current=='public'))
 			   ))
 			{
@@ -168,7 +168,7 @@ theSearchEngines.run = function()
 		        if(theSearchEngines.current==-1)
 			        theWebUI.setTeg(s);
 			else
-			{		
+			{
 				$("#query").prop("readonly",true);
 				theWebUI.requestWithoutTimeout("?action=extsearch&s="+theSearchEngines.current+"&v="+encodeURIComponent(s)+"&v="+encodeURIComponent($("#exscategory").val()),[theWebUI.setExtSearchTag, theWebUI]);
 			}
@@ -238,7 +238,7 @@ plugin.reloadData = function(id)
 					table.addRow(theWebUI.getTable("trt").getValues(item.hash),
 						id+'$'+i, theWebUI.getTable("trt").getIcon(item.hash));
 				}
-				else		
+				else
 				table.addRowById(
 				{
 					name: item.name,
@@ -264,9 +264,9 @@ catlist.switchLabel = function(panelId, targetId, toggle=false, range=false)
 {
 	const tegList = $("#TegList");
 	const list = $("#List");
-	if (plugin.enabled 
+	if (plugin.enabled
 		&& panelId == 'psearch'
-		&& targetId in plugin.tegs 
+		&& targetId in plugin.tegs
 	) {
 		// no support for multi selection
 		toggle = false;
@@ -320,7 +320,7 @@ theWebUI.setTagsHash = function(d)
 			var item = plugin.tegs[d.teg].data[ d.data[i].ndx ];
 			item.hash = d.data[i].hash;
 			noty( (item.hash ? theUILang.addTorrentSuccess : theUILang.addTorrentFailed) +" ("+item.name+')', (item.hash ? "success" : "error") );
-		} 
+		}
 		theWebUI.getTorrents("list=1");
 	}
 }
@@ -382,7 +382,7 @@ plugin.createExtTegMenu = function(e, id)
 	plugin.tegArray = new Array();
 
 	var sr = theWebUI.getTable("teg").rowSel;
-	for(var k in sr) 
+	for(var k in sr)
 	{
 		if(sr[k] == true)
 		{
@@ -508,7 +508,7 @@ theWebUI.loadTorrents = function(needSort)
 	plugin.loadTorrents.call(this,needSort);
 	var table = this.getTable("teg");
 	const tegId = theWebUI.activeExtTegId();
-	if(plugin.enabled && tegId) 
+	if(plugin.enabled && tegId)
 	{
 		var updated = false;
 		var tegItems = plugin.tegs[tegId].data;
@@ -531,7 +531,7 @@ theWebUI.loadTorrents = function(needSort)
 						size: item.size,
 						status: item.src,
 						label: item.cat
-					},true) || updated; 
+					},true) || updated;
 					updated = table.setIcon(ndx,"Engine"+item.src) || updated;
 				}
 			}
@@ -555,11 +555,11 @@ theWebUI.tegItemSelect = function(e,id)
 {
 	var sr = theWebUI.getTable("teg").rowSel;
 	var trtArray = new Array();
-	for(var k in sr) 
+	for(var k in sr)
 	{
 		if(sr[k] == true)
 		{
-			var nfo = plugin.getTegByRowId(k);	
+			var nfo = plugin.getTegByRowId(k);
 			if(nfo && nfo.data.hash && $type(theWebUI.torrents[nfo.data.hash]))
 				trtArray.push(nfo.data.hash);
 		}
@@ -572,7 +572,7 @@ theWebUI.tegItemSelect = function(e,id)
 		table.rowSel[trtArray[i]] = true;
 	table.refreshSelection();
 	if(id && (nfo = plugin.getTegByRowId(id)) &&
-		nfo.data.hash && 
+		nfo.data.hash &&
 		$type(theWebUI.torrents[nfo.data.hash]))
 		theWebUI.trtSelect(e, nfo.data.hash);
 	else
@@ -591,7 +591,7 @@ theWebUI.tegItemSelect = function(e,id)
 
 theWebUI.tegItemDblClick = function(obj)
 {
-	var nfo = plugin.getTegByRowId(obj.id);	
+	var nfo = plugin.getTegByRowId(obj.id);
 	if(nfo)
 	{
 		if(nfo.data.hash && $type(theWebUI.torrents[nfo.data.hash]))
@@ -622,7 +622,7 @@ theWebUI.resizeTop = function( w, h )
 		{
 			$("#TegList").height( h );
 			if(theWebUI.configured)
-				this.getTable("teg").resize(null,h); 
+				this.getTable("teg").resize(null,h);
 	       	}
 	}
 }
@@ -631,7 +631,7 @@ plugin.config = theWebUI.config;
 theWebUI.config = function()
 {
 	$("#List").after($("<div>").attr("id","TegList").css("display","none"));
-	this.tables["teg"] =  
+	this.tables["teg"] =
 	{
 	        obj:		new dxSTable(),
 		container:	"TegList",
@@ -648,7 +648,7 @@ theWebUI.config = function()
 if(plugin.enabled && plugin.canChangeOptions())
 {
 	plugin.andShowSettings = theWebUI.addAndShowSettings;
-	theWebUI.addAndShowSettings = function(arg) 
+	theWebUI.addAndShowSettings = function(arg)
 	{
 		if(plugin.enabled)
 		{
@@ -672,7 +672,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 		plugin.andShowSettings.call(theWebUI,arg);
 	}
 
-	plugin.dataWasChanged = function() 
+	plugin.dataWasChanged = function()
 	{
 		if(iv($('#exs_limit').val())!=theSearchEngines.globalLimit)
 			return(true);
@@ -691,7 +691,7 @@ if(plugin.enabled && plugin.canChangeOptions())
 	}
 
 	plugin.setSettings = theWebUI.setSettings;
-	theWebUI.setSettings = function() 
+	theWebUI.setSettings = function()
 	{
 		plugin.setSettings.call(this);
 		if(plugin.enabled && plugin.dataWasChanged())

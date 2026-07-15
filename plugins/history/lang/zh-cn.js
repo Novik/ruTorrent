@@ -3,7 +3,7 @@
  *
  * Chinese Simplified language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.historyAddition		= "添加";

@@ -77,7 +77,7 @@ rTorrentStub.prototype.getsavepathResponse = function( xml )
 	{
 		torrent.base_path = base_path;
 		var pos = torrent.base_path.lastIndexOf('/');
-		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ? 
+		torrent.save_path = (torrent.base_path.substring(pos+1) === torrent.name) ?
 			torrent.base_path.substring(0,pos) : torrent.base_path;
 		save_path = torrent.save_path;
 	}
@@ -94,7 +94,7 @@ if(plugin.canChangeMenu())
 		{
 			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
-				theContextMenu.add( el, [theUILang.DataDir + "...", 
+				theContextMenu.add( el, [theUILang.DataDir + "...",
 					firstSelectedTorrent() ? "theWebUI.EditDataDir()" : null] );
 		}
 	}

@@ -147,7 +147,7 @@ if( $is_ok &&
 	preg_match( "/{NOW:?([^}]*)}/", $label, $match ) > 0 &&
 	count( $match ) > 0 )
 {
-	// $matches[0] will contain the text that matched the full pattern, 
+	// $matches[0] will contain the text that matched the full pattern,
 	// $matches[1] will have the text that matched the first captured parenthesized subpattern, and so on
 
 	Debug( "count           : \"".count( $match )."\"" );

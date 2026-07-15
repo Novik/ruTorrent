@@ -3,7 +3,7 @@
  *
  * Portuguese (Brazil) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.mnu_create			= "Criar Torrent";

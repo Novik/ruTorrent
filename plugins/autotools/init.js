@@ -22,7 +22,7 @@ if (plugin.canChangeOptions()) {
 				plugin.DirBrowser2.hide();
 			$$('automove_filter').value = theWebUI.autotools.MoveFilter;
 			$$('auto_add_label').checked = (theWebUI.autotools.AddLabel === 1);
-			$$('auto_add_name').checked = (theWebUI.autotools.AddName === 1);			
+			$$('auto_add_name').checked = (theWebUI.autotools.AddName === 1);
 		}
 		plugin.addAndShowSettings.call(theWebUI, arg);
 	}
@@ -73,7 +73,7 @@ if (plugin.canChangeOptions()) {
 			"&add_label=" + ( $$('auto_add_label').checked  ? '1' : '0' ) +
 			"&add_name=" + ( $$('auto_add_name').checked  ? '1' : '0' ) +
 			"&path_to_watch=" + $$('path_to_watch').value +
-			"&automove_filter=" + $$('automove_filter').value +			
+			"&automove_filter=" + $$('automove_filter').value +
 			"&watch_start=" + ( $$('watch_start').checked  ? '1' : '0' );
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/autotools/action.php";

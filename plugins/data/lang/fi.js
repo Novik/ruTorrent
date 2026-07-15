@@ -3,7 +3,7 @@
  *
  * Finnish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.getData		= "Get File";

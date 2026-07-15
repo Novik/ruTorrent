@@ -3,7 +3,7 @@
  *
  * Serbian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.feedAll		= "All torrents";

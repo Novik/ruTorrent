@@ -17,7 +17,7 @@ class LostFilmAccount extends commonAccount
 		{
 			$client->cookies["dlt_2"] = $md5[1];
 			return($client->fetch($url,$method,$content_type,$body) && ($client->get_filename()!==false));
-		} 
+		}
 		return(true);
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
@@ -27,7 +27,7 @@ class LostFilmAccount extends commonAccount
 		{
 			$client->setcookies();
 			$client->referer = $this->url;
-        		if($client->fetch( $this->url."/useri.php","POST","application/x-www-form-urlencoded", 
+        		if($client->fetch( $this->url."/useri.php","POST","application/x-www-form-urlencoded",
 				"FormLogin=".rawurlencode($login)."&FormPassword=".rawurlencode($password).'&module=1&repage=user&act=login' ))
 			{
 				$client->setcookies();

@@ -3,7 +3,7 @@
  *
  * Czech language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.mnu_create			= "Create Torrent";

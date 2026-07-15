@@ -3,7 +3,7 @@
  *
  * Portuguese (Portugal) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.ratioRulesManager	= "Gestor de regras";

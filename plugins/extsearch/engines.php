@@ -25,8 +25,8 @@ class commonEngine
 	public function getNewEntry()
 	{
 		return( array(
-			"time"=>0, 
-			"cat"=>'', 
+			"time"=>0,
+			"cat"=>'',
 			"size"=>0,
 			"desc"=>'',
 			"name"=>'',
@@ -132,7 +132,7 @@ class commonEngine
 		else
 		if(function_exists('utf8_decode'))
 		        $out = utf8_decode($out);
-		return($out);	
+		return($out);
 	}
 	static public function toUTF($out,$encoding)
 	{
@@ -146,7 +146,7 @@ class commonEngine
 		        $out = utf8_encode($out);
 		else
 		        $out = UTF::win2utf($out);
-		return($out);	
+		return($out);
 	}
 	static public function fromJSON($str)
 	{
@@ -252,17 +252,17 @@ class engineManager
 						$this->engines[$name]["limit"] = intval($oldEngines[$name]["limit"]);
 					}
 
-					if(!rTorrentSettings::get()->isPluginRegistered('cookies') && 
-						$this->engines[$name]["enabled"] && 
+					if(!rTorrentSettings::get()->isPluginRegistered('cookies') &&
+						$this->engines[$name]["enabled"] &&
 						!empty($this->engines[$name]["cookies"]))
 						$this->engines[$name]["enabled"] = 0;
-					if(!rTorrentSettings::get()->isPluginRegistered('loginmgr') && 
-						$this->engines[$name]["enabled"] && 
+					if(!rTorrentSettings::get()->isPluginRegistered('loginmgr') &&
+						$this->engines[$name]["enabled"] &&
 						$this->engines[$name]["auth"])
 						$this->engines[$name]["enabled"] = 0;
 				}
-			} 
-			closedir($handle);		
+			}
+			closedir($handle);
 	        }
 		ksort($this->engines);
 		$this->store();
@@ -406,7 +406,7 @@ class engineManager
 			}
 		}
 		uasort($arr, array(__CLASS__,"sortBySeeds"));
-		$cnt = 0;		
+		$cnt = 0;
 		$history = self::loadHistory(true);
 
 		$ret = array( "eng"=>$eng, "cat"=>$cat, "data"=>array() );

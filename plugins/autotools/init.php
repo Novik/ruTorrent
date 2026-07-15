@@ -4,7 +4,7 @@ require_once( '../plugins/autotools/autotools.php');
 
 $at = rAutoTools::load();
 if($at->setHandlers())
-{	
+{
 	$jResult .= $at->get();
 	if( $do_diagnostic )
 	{

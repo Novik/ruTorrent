@@ -3,7 +3,7 @@
  *
  * Chinese Simplified language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.checkWebsiteNotFound = "Check_port plugin: Plugin will not work. Invalid configuration";
@@ -17,4 +17,3 @@
  theUILang.notAvailable = "-";
 
 thePlugins.get("check_port").langLoaded();
-

@@ -10,7 +10,7 @@
 Plugin Features:
 1. "AutoLabel": Automatic creation of labels when adding a new torrent to rutorrent WebUI
 
-2. "AutoMove":  Automatically moves torrents which have finished downloading from the 
+2. "AutoMove":  Automatically moves torrents which have finished downloading from the
                 rtorrent download directory to a new directory.  rtorrent will seed from\
                 this new location.
 
@@ -29,7 +29,7 @@ Template variables:
 
 {DIR}
   If your download directory is "directory = /usr/p2p/downloads"
-  and the new torrent is set to download to /usr/p2p/downloads/Video/DVD/ then 
+  and the new torrent is set to download to /usr/p2p/downloads/Video/DVD/ then
   the variable would be "Video/DVD"
 
 {TRACKER)
@@ -44,7 +44,7 @@ Template variables:
 ---------------------------------------------------------------------------------------------
 "AutoMove"
 ---------------------------------------------------------------------------------------------
-Downloaded torrent data is moved to a new directory preserving the directory scruture relative to the 
+Downloaded torrent data is moved to a new directory preserving the directory scruture relative to the
 original download directory set in ".rtorrent.rc"
 
 This works in much the same way as AutoLabel.  If you create a nested hierarchy of Directories like:
@@ -52,35 +52,35 @@ This works in much the same way as AutoLabel.  If you create a nested hierarchy 
 /usr/p2p/downloads/Video/Blueray/
 /usr/p2p/downloads/Video/TV/
 
-and your download path is set to /usr/p2p/downloads in .rtorrent.rc, torrents saved 
-in these subdirectories will be automatically moved, on completion of downloading, 
-to the "AutoMove" Directory so, for example, if you set the "AutoMove" Directory 
-to /media/p2p/ and you set a torrent to download to /usr/p2p/downloads/Video/DVD/  
+and your download path is set to /usr/p2p/downloads in .rtorrent.rc, torrents saved
+in these subdirectories will be automatically moved, on completion of downloading,
+to the "AutoMove" Directory so, for example, if you set the "AutoMove" Directory
+to /media/p2p/ and you set a torrent to download to /usr/p2p/downloads/Video/DVD/
 when it is finished downloading, it will be moved to /media/p2p/Video/DVD/
 
 Torrents will then seed from this new location.
 
-It was planned to use this plugin with devices mounted from another location, SMB or NFS shares. 
-This solution works on FreeBSD, but according to Novik "under the 2.4 linux kernel 
-(which is used on many routers), the smbfs and nfs mounts will not work.  Calling mmap, 
+It was planned to use this plugin with devices mounted from another location, SMB or NFS shares.
+This solution works on FreeBSD, but according to Novik "under the 2.4 linux kernel
+(which is used on many routers), the smbfs and nfs mounts will not work.  Calling mmap,
 does not work in these conditions".
 If possible, use FreeBSD or any linux kernel past 2.6.26
 
-This plugin has no problem with multiple torrents stored in the same directory, 
-it will move only the files listed from that torrent, and not the base directory. 
-However, if new downloads with the same name, in the same directory are moved, 
-they will overwrite the older ones. (for example, if you have 
-/usr/p2p/downloads/Video/DVD/movie.avi and it is moved, then you download another 
-file named /usr/p2p/downloads/Video/DVD/movie.avi  it will overwrite the old one).  
-The best solution for this is to create a subdirectory that is different from the first, 
+This plugin has no problem with multiple torrents stored in the same directory,
+it will move only the files listed from that torrent, and not the base directory.
+However, if new downloads with the same name, in the same directory are moved,
+they will overwrite the older ones. (for example, if you have
+/usr/p2p/downloads/Video/DVD/movie.avi and it is moved, then you download another
+file named /usr/p2p/downloads/Video/DVD/movie.avi  it will overwrite the old one).
+The best solution for this is to create a subdirectory that is different from the first,
 in this very unlikely situation.
 
-For your convenience, it is recommended that you install the plugin "_getdir"  
+For your convenience, it is recommended that you install the plugin "_getdir"
 This will make navigating the filesystem from the webgui much easier.
 
-After file transfer the plugin searches for file ".mailto" in directories, 
-from "/media/p2p/Video/Movie/ downto "/media/p2p/. If this file is found, 
-e-mail will be sent according to information from this file. 
+After file transfer the plugin searches for file ".mailto" in directories,
+from "/media/p2p/Video/Movie/ downto "/media/p2p/. If this file is found,
+e-mail will be sent according to information from this file.
 "CC:" and "BCC:" params are optional
 Sample file is (without "===" lines):
 ===========================================
@@ -102,15 +102,15 @@ Hello, User!
 ----------------------------------------------------------------------------------------------
 "AutoWatch"
 ----------------------------------------------------------------------------------------------
- 
+
 *.torrent files are placed in nested subdirectories of a desired structure on
 some base directory.  This base directory is set in the plugin settings.
 
-This works very much like normal watch directories in rtorrent, except in a nested 
+This works very much like normal watch directories in rtorrent, except in a nested
 hierarchy.  Torrents added in this way, will be downloaded to a corresponding directory
 in the path of whatever dir you've set in .rtorrent.rc
 
-With this, you can create a system of watch directories to drop .torrent files into.  
+With this, you can create a system of watch directories to drop .torrent files into.
 
 
 
@@ -121,7 +121,7 @@ Version History:
     2012-02-15:
     - "CC:" and "BCC:" options for .mailto
     - Minor changes
-    
+
     2010-06-26:
     - Plugin was adapted for ruTorrent 3.1
     - Function AutoLabel can be configured by templates

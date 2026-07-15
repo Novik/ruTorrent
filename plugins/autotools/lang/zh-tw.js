@@ -3,7 +3,7 @@
  *
  * Chinese Traditional language file.
  *
- * Author: 
+ * Author:
  */
 
  var s_PluginFail			= "Plugin will not work.";

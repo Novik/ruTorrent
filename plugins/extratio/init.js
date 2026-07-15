@@ -121,7 +121,7 @@ plugin.setButtonsState = function()
 		if(plugin.rules.length)
 			$('#ratDelRule').removeClass('disabled');
 		else
-			$('#ratDelRule').addClass('disabled');		
+			$('#ratDelRule').addClass('disabled');
 	}
 	else
 		$('#ratDelRule,#ratUpRule,#ratDownRule').addClass('disabled');
@@ -171,7 +171,7 @@ theWebUI.downRatioRule = function()
 
 		next.after( cur );
 		plugin.setButtonsState();
-	}	
+	}
 }
 
 theWebUI.addNewRatioRule = function() {
@@ -238,8 +238,8 @@ rTorrentStub.prototype.setratiorules = function()
 		var rle = plugin.rules[i];
 		var enabled = $("#_rre"+i).prop("checked") ? 1 : 0;
 		var name = $("#_rrn"+i).val();
-		this.content += "&name="+encodeURIComponent(name) + "&pattern=" + encodeURIComponent(rle.pattern) + 
-			"&enabled=" + enabled + "&reason=" + rle.reason + 
+		this.content += "&name="+encodeURIComponent(name) + "&pattern=" + encodeURIComponent(rle.pattern) +
+			"&enabled=" + enabled + "&reason=" + rle.reason +
 			"&ratio=" + rle.ratio + "&no="+rle.no;
 		thrtlInstalled && (this.content += "&channel=" + rle.channel);
 	}
@@ -342,8 +342,8 @@ plugin.onLangLoaded = function() {
 								// The order of these must match the RR_* constants
 								// in rules.php because we're currently using array
 								// position as an enum key
-								theUILang.ratLabelContain, 
-								theUILang.ratTrackerContain, 
+								theUILang.ratLabelContain,
+								theUILang.ratTrackerContain,
 								theUILang.ratTrackerPrivate,
 								theUILang.ratTrackerPublic,
 							].map((val, index) => $("<option>").attr({value: index}).text(val)),
@@ -401,7 +401,7 @@ plugin.onLangLoaded = function() {
 	theDialogManager.make( "dlgEditRatioRules", theUILang.ratioRulesManager,
 		[dlgEditRatioRulesContent, dlgEditRatioRulesButtons],
 	);
-	$('#ratio_reason').on('change', function() { 
+	$('#ratio_reason').on('change', function() {
 		$('#ratio_pattern').css("visibility", iv($(this).val())>1 ? "hidden" : "visible");
 	});
 	$("#dlgEditRatioRules").on("keyup", (e) => {

@@ -22,9 +22,9 @@ plugin.getTorrentEditables = function(id)
 			}
 		}
 	}
-	return( 
-	{ 
-		trackers: s.trim(), 
+	return(
+	{
+		trackers: s.trim(),
 		comment: theWebUI.torrents[id].comment.trim(),
 		private: theWebUI.torrents[id].private,
 		set_trackers: true,
@@ -38,7 +38,7 @@ theWebUI.editTrackers = function(id)
 	if(!id)
 	{
 		var sr = this.getTable("trt").rowSel;
-		for(var k in sr) 
+		for(var k in sr)
 		{
 			if((sr[k] == true) && this.isTorrentCommandEnabled("edittorrent",k))
 			{
@@ -80,7 +80,7 @@ theWebUI.editTrackers = function(id)
 if(plugin.canChangeMenu())
 {
 	plugin.isTorrentCommandEnabled = theWebUI.isTorrentCommandEnabled;
-	theWebUI.isTorrentCommandEnabled = function(act,hash) 
+	theWebUI.isTorrentCommandEnabled = function(act,hash)
 	{
 		if(act=="edittorrent")
 		{
@@ -92,7 +92,7 @@ if(plugin.canChangeMenu())
 	}
 
 	plugin.createMenu = theWebUI.createMenu;
-	theWebUI.createMenu = function(e, id) 
+	theWebUI.createMenu = function(e, id)
 	{
 		plugin.createMenu.call(this,e,id);
 		if(plugin.enabled && plugin.allStuffLoaded)
@@ -100,22 +100,22 @@ if(plugin.canChangeMenu())
 			var el = theContextMenu.get(theUILang.Properties);
 			if(el)
 			{
-				theContextMenu.add([theUILang.EditTrackers,  
-					((this.getTable("trt").selCount>1) && this.getHashes('edittorrent')) || this.isTorrentCommandEnabled("edittorrent",id) ? 
-					"theWebUI.editTrackers('"+theWebUI.dID+"')" : null]);				
+				theContextMenu.add([theUILang.EditTrackers,
+					((this.getTable("trt").selCount>1) && this.getHashes('edittorrent')) || this.isTorrentCommandEnabled("edittorrent",id) ?
+					"theWebUI.editTrackers('"+theWebUI.dID+"')" : null]);
 			}
 		}
 	}
 
 	plugin.createTrackerMenu = theWebUI.createTrackerMenu;
-	theWebUI.createTrackerMenu = function(e, id) 
+	theWebUI.createTrackerMenu = function(e, id)
 	{
 		if(plugin.createTrackerMenu.call(theWebUI, e, id))
 		{
 			if(plugin.enabled && plugin.allStuffLoaded)
 			{
 				theContextMenu.add([CMENU_SEP]);
-				theContextMenu.add([theUILang.EditTrackers,  
+				theContextMenu.add([theUILang.EditTrackers,
 					this.isTorrentCommandEnabled("edittorrent",theWebUI.dID) ? "theWebUI.editTrackers('"+theWebUI.dID+"')" : null]);
 			}
 			return(true);
@@ -124,7 +124,7 @@ if(plugin.canChangeMenu())
 	}
 }
 
-theWebUI.sendEdit = function() 
+theWebUI.sendEdit = function()
 {
 	$('#editok').prop("disabled",true);
 	this.requestWithTimeout("?action=edittorrent"+this.getHashes('edittorrent'),[this.receiveEdit, this], function()
@@ -139,12 +139,12 @@ theWebUI.receiveEdit = function(d)
 	$('#editok').prop("disabled",false);
 	if(d.hash.length)
 	{
-		window.setTimeout( function() 
-		{ 
+		window.setTimeout( function()
+		{
 			theWebUI.getTable("trt").clearSelection();
 			theWebUI.dID = "";
 			theWebUI.clearDetails();
-			theWebUI.getTorrents("list=1"); 
+			theWebUI.getTorrents("list=1");
 		}, 1000 );
 		theDialogManager.hide("tedit");
 	}
@@ -157,7 +157,7 @@ theWebUI.receiveEdit = function(d)
 				s = s + " ("+d.errors[i].prm+")";
 			noty(s,"error");
 		}
-	}			
+	}
 }
 
 plugin.onLangLoaded = function() {
@@ -210,14 +210,14 @@ rTorrentStub.prototype.edittorrent = function()
 		"&set_private="+($('#eset_private').is(":checked")+0)+
 		"&private="+$('#eprivate').val();
 	var arr = $('#etrackers').val().split("\n");
-	for(var i = 0; i<arr.length; i++)	
+	for(var i = 0; i<arr.length; i++)
 	{
 		var s = arr[i].replace(/(^\s+)|(\s+$)/g, "");
 		if(s.toLowerCase()!='dht://')
 			this.content += ("&tracker="+encodeURIComponent(s));
 	}
 	for( var i = 0; i < this.hashes.length; i++ )
-		this.content += ("&hash="+this.hashes[i]);	
+		this.content += ("&hash="+this.hashes[i]);
 	this.contentType = "application/x-www-form-urlencoded";
 	this.mountPoint = "plugins/edit/action.php";
 	this.dataType = "json";

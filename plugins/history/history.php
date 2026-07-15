@@ -69,16 +69,16 @@ class rHistory
 	public $hash = "history.dat";
 	public $modified = false;
 	public $log = array
-	( 
-		"addition"=>1, 
-		"finish"=>1, 
-		"deletion"=>1, 
-		"limit"=>300, 
-		"autoclose"=>1, 
-		"closeinterval"=>5, 
-		"pushbullet_enabled"=>0, 
-		"pushbullet_addition"=>0, 
-		"pushbullet_finish"=>0, 
+	(
+		"addition"=>1,
+		"finish"=>1,
+		"deletion"=>1,
+		"limit"=>300,
+		"autoclose"=>1,
+		"closeinterval"=>5,
+		"pushbullet_enabled"=>0,
+		"pushbullet_addition"=>0,
+		"pushbullet_finish"=>0,
 		"pushbullet_deletion"=>0,
 		"pushbullet_key"=>'',
 	);
@@ -142,7 +142,7 @@ class rHistory
 				',"$'.getCmd('t.multicall').'=$'.getCmd('d.get_hash').'=,'.getCmd('t.get_url').'=,'.getCmd('cat').'=#",$'.
 				getCmd('d.get_custom1')."=,$".getCmd('d.get_custom')."=x-pushbullet,".
 				User::getUser().'}';
-		}				
+		}
 		else
 			$addCmd = getCmd('cat=');
 		if($this->log["finish"] || ($this->log["pushbullet_enabled"] && $this->log["pushbullet_finish"]))
@@ -203,8 +203,8 @@ class rHistory
 		global $pushBulletNotifications, $pushBulletEndpoint;
 		$actions = array
 		(
-			1 => 'addition', 
-			2 => 'finish', 
+			1 => 'addition',
+			2 => 'finish',
 			3 => 'deletion',
 		);
 		$section = $pushBulletNotifications[$actions[$data['action']]];
@@ -220,13 +220,13 @@ class rHistory
 		}
 		$values = array
 		(
-			$data['name'], 
-			$data['label'], 
-			self::bytes($data['size']), 
-			self::bytes($data['downloaded']), 
-			self::bytes($data['uploaded']), 
+			$data['name'],
+			$data['label'],
+			self::bytes($data['size']),
+			self::bytes($data['downloaded']),
+			self::bytes($data['uploaded']),
 			$data['ratio'],
-			strftime('%c',$data['creation']), 
+			strftime('%c',$data['creation']),
 			strftime('%c',$data['added']),
 			strftime('%c',$data['finished']),
 			$data['tracker'],

@@ -33,7 +33,7 @@ class MMATorrentsEngine extends commonEngine
 		{
 			$cli = $this->fetch( $url.'/torrents.php?search='.$what.'&incldead=0&sort=seeders&order=desc&page='.$pg.$cat );
 
-			if( ($cli==false) || (strpos($cli->results, "Nothing Found</font>")!==false) 
+			if( ($cli==false) || (strpos($cli->results, "Nothing Found</font>")!==false)
 				|| (strpos($cli->results, '><b>Password')!==false))
 				break;
 			$res = preg_match_all('/<img border="0"src="http\:\/\/mma\-torrents\.com\/images\/categories\/.*" alt="(?P<cat>[^"]*)"'.

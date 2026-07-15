@@ -3,7 +3,7 @@
  *
  * Portuguese (Portugal) language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.doesntSupportHTML5	= "Plugin filedrop: navegador não suporta envio de ficheiros HTML5. O plugin foi desativado.";

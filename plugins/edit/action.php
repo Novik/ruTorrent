@@ -12,13 +12,13 @@ if(!isset($HTTP_RAW_POST_DATA))
 if(isset($HTTP_RAW_POST_DATA))
 {
 	$vars = explode('&', $HTTP_RAW_POST_DATA);
-	$announce_list = array(); 
+	$announce_list = array();
 	$trackers = array();
 	$comment = '';
 	$trackersCount = 0;
 	$private = 0;
 	$setComment = false;
-	$setTrackers = false;	
+	$setTrackers = false;
 	$setPrivate = false;
 	foreach($vars as $var)
 	{
@@ -36,10 +36,10 @@ if(isset($HTTP_RAW_POST_DATA))
 			$setComment = intval($parts[1]);
 		else
 		if($parts[0]=="set_trackers")
-			$setTrackers = intval($parts[1]);			
+			$setTrackers = intval($parts[1]);
 		else
 		if($parts[0]=="set_private")
-			$setPrivate = intval($parts[1]);			
+			$setPrivate = intval($parts[1]);
 		else
 		if($parts[0]=="tracker")
 		{
@@ -63,9 +63,9 @@ if(isset($HTTP_RAW_POST_DATA))
 		$announce_list[] = $trackers;
 	if($setComment || $setTrackers || $setPrivate)
 	{
-		foreach($hashes as $hash)	
+		foreach($hashes as $hash)
 		{
-			$req = new rXMLRPCRequest( array(		
+			$req = new rXMLRPCRequest( array(
 				new rXMLRPCCommand("get_session"),
 				new rXMLRPCCommand("d.is_open",$hash),
 				new rXMLRPCCommand("d.is_active",$hash),
@@ -92,7 +92,7 @@ if(isset($HTTP_RAW_POST_DATA))
 				}
 				if($fname)
 				{
-					$torrent = new Torrent( $fname );		
+					$torrent = new Torrent( $fname );
 					if( !$torrent->errors() )
 					{
 						if($setPrivate)

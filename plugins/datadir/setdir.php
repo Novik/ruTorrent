@@ -58,7 +58,7 @@ if( $is_ok && $hash && strlen( $datadir ) > 0 )
 	{
 		Debug( "can't create ".$datadir );
 	}
-	elseif( !rtSetDataDir( $hash, $datadir, 
+	elseif( !rtSetDataDir( $hash, $datadir,
 		$move_addpath == '1', $move_datafiles == '1', $move_fastresume == '1',
 		$datadir_debug_enabled ) )
 	{

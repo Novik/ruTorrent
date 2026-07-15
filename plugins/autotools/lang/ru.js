@@ -3,7 +3,7 @@
  *
  * Russian language file.
  *
- * Author: 
+ * Author:
  */
 
  var s_PluginFail			= "Плагин не будет работать.";

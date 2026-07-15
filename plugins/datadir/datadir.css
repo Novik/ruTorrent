@@ -8,27 +8,27 @@
 #dlg_datadir {max-width: 95vw;}
 
 /* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) { 
+@media (min-width: 576px) {
   /* Custom rules for small devices */
 }
 
 /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) { 
+@media (min-width: 768px) {
   /* Custom rules for medium devices */
   #dlg_datadir {max-width: 600px;}
 }
 
 /* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) { 
+@media (min-width: 992px) {
   /* Custom rules for large devices */
 }
 
 /* X-Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) { 
+@media (min-width: 1200px) {
   /* Custom rules for x-large devices */
 }
 
 /* XX-Large devices (larger desktops, 1400px and up) */
-@media (min-width: 1400px) { 
+@media (min-width: 1400px) {
   /* Custom rules for xx-large devices */
 }
