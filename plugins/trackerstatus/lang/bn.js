@@ -3,7 +3,7 @@
  *
  * Bengali language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Tracker_status = "ট্র্যাকার স্টেটাস";

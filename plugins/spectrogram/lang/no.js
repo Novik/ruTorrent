@@ -3,7 +3,7 @@
  *
  * Norwegian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.exsox		= "Spektrogram";

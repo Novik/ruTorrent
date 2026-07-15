@@ -128,7 +128,7 @@ class rRSS
 				"href"=>self::quoteInvalidURI($href),
 				"guid"=>self::quoteInvalidURI($item['guid']),
 				"errcount"=>$history->getCounter($href),
-				"hash"=>$history->getHash($href) 
+				"hash"=>$history->getHash($href)
 				);
 		}
 		return($ret);
@@ -331,11 +331,11 @@ class rRSSHistory
 	}
 	public function correct( $url, $timestamp, $guid )
 	{
-		if( array_key_exists($url,$this->lst) && 
+		if( array_key_exists($url,$this->lst) &&
 			($guid && !empty($this->lst[$url]["guid"]) && $this->lst[$url]["guid"] !== $guid) )
 		{
 			unset($this->lst[$url]);
-			$this->changed = true;			
+			$this->changed = true;
 		}
 	}
 	public function del( $href )
@@ -433,22 +433,22 @@ class rRSSFilter
 	public $label = null;
 	public $throttle = null;
 	public $ratio = null;
-	public $titleCheck = 1; 
+	public $titleCheck = 1;
 	public $descCheck = 0;
 	public $linkCheck = 0;
 	public $no = -1;
 	public $interval = -1;
 	public $matches = array();
 	private static $search = array
-	( 
+	(
 		null,
 		'${1}', '${2}', '${3}', '${4}', '${5}', '${6}', '${7}', '${8}', '${9}', '${10}',
 		'${11}', '${12}', '${13}', '${14}', '${15}', '${16}', '${17}', '${18}', '${19}', '${20}',
 		'${21}', '${22}', '${23}', '${24}', '${25}', '${26}', '${27}', '${28}', '${29}', '${30}',
 	);
 
-	public function	__construct( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '', 
-		$start = 0, $addPath = 1, $directory = null, $label = null, 
+	public function	__construct( $name, $pattern = '', $exclude = '', $enabled = 0, $rssHash = '',
+		$start = 0, $addPath = 1, $directory = null, $label = null,
 		$titleCheck = 1, $descCheck = 0, $linkCheck = 0,
 		$throttle = null, $ratio = null, $no = -1, $interval = -1 )
 	{
@@ -472,7 +472,7 @@ class rRSSFilter
 	}
 	public function isApplicable( $rss, $history, $groups )
 	{
-		return(($this->enabled==1) && 
+		return(($this->enabled==1) &&
   	                (($this->titleCheck == 1) || ($this->descCheck == 1) || ($this->linkCheck == 1)) &&
 			(!$this->rssHash || (strlen($this->rssHash)==0) || ($this->rssHash==$rss->hash) || $groups->hashPresent( $this->rssHash, $rss->hash )) &&
 			$history->mayBeApplied( $this->no, $this->interval )
@@ -485,7 +485,7 @@ class rRSSFilter
 	public function getLabel()
 	{
 		return(str_replace(self::$search,$this->matches,$this->label));
-	}	
+	}
 	protected function isOK( $string )
 	{
 		$this->matches = array();
@@ -496,17 +496,17 @@ class rRSSFilter
 	public function checkItem( $href, $rssItem )
 	{
 		$content = '';
-                if(($this->titleCheck == 1) && 
+                if(($this->titleCheck == 1) &&
 			array_key_exists('title',$rssItem))
 			$content = $rssItem['title'];
-		if(($this->descCheck == 1) && 
+		if(($this->descCheck == 1) &&
 			array_key_exists('description',$rssItem))
 		{
 			$temp = preg_replace("/\s+/u"," ", $rssItem['description']);
 			if(!empty($content))
 				$content.=' ';
 			$content.=$temp;
-		}	
+		}
 		if($this->linkCheck == 1)
 		{
 			if(!empty($content))
@@ -525,7 +525,7 @@ class rRSSFilter
 	}
 	public function getContents()
 	{
-		return( array( 	
+		return( array(
 				"name"=>$this->name,
 				"enabled"=>intval($this->enabled),
 				"pattern"=>$this->pattern,
@@ -541,7 +541,7 @@ class rRSSFilter
 				"chklink"=>intval($this->linkCheck),
 				"no"=>intval($this->no),
 				"interval"=>intval($this->interval),
-				"dir"=>$this->directory 
+				"dir"=>$this->directory
 			));
 	}
 }
@@ -551,7 +551,7 @@ class rRSSFilterList
 	public $hash = "filters";
 	public $modified = false;
         public $lst = array();
-	
+
 	public function add( $filter )
 	{
 		$this->lst[] = $filter;
@@ -588,7 +588,7 @@ class rRSSGroup
 		else
 			$this->hash = $hash;
 	}
-	public function check( $rssList )	
+	public function check( $rssList )
 	{
 		$changed = false;
 		foreach( $this->lst as $ndx=>$item )
@@ -612,7 +612,7 @@ class rRSSGroupList
 	public $hash = "groups";
 	public $modified = false;
         public $lst = array();
-	
+
 	public function add( $grp )
 	{
 		$this->lst[$grp->hash] = $grp;
@@ -655,7 +655,7 @@ class rRSSGroupList
 		if($grp)
 			return($grp->hashPresent($rssHash));
 		return(false);
-	}	
+	}
 }
 
 class rRSSMetaList
@@ -888,7 +888,7 @@ class rRSSManager
 					self::log("Filter [".$filter->name."] of channel [".$rss->url."] was applied for [$href]");
 					$this->history->applyFilter( $filter->no );
 					rTorrentSettings::get()->pushEvent( "RSSAutoLoad", array( "rss"=>&$rss, "href"=>&$href, "item"=>&$item, "filter"=>&$filter ) );
-					$this->getTorrents( $rss, $href, 
+					$this->getTorrents( $rss, $href,
 						$filter->start, $filter->addPath, $filter->getDirectory(), $filter->getLabel(), $filter->throttle, $filter->ratio, false );
 					if(WAIT_AFTER_LOADING)
 						sleep(WAIT_AFTER_LOADING);
@@ -942,11 +942,11 @@ class rRSSManager
 			}
 		}
 		return(array
-		( 
-			"errors"=>$this->rssList->formatErrors(), 
-			"rss"=>$hash, 
+		(
+			"errors"=>$this->rssList->formatErrors(),
+			"rss"=>$hash,
 			"count"=>count($hrefs),
-			"list"=>$hrefs, 
+			"list"=>$hrefs,
 		));
 	}
 	public function updateRSSGroup($hash)
@@ -1127,7 +1127,7 @@ class rRSSManager
 			$grp->name = $label;
 			$grp->lst = $rssList;
 			$grp->check($this->rssList);
-			$this->saveGroups();	
+			$this->saveGroups();
 		}
 	}
 	public function change( $hash, $rssURL, $rssLabel, $rssAuto = 1 )
@@ -1163,7 +1163,7 @@ class rRSSManager
 		$grp->lst = $rssList;
 		$grp->check($this->rssList);
 		$this->groups->add($grp);
-		$this->saveGroups();			
+		$this->saveGroups();
 	}
 	public function add( $rssURL, $rssLabel = null, $rssAuto = 0, $enabled = 1 )
 	{
@@ -1285,7 +1285,7 @@ class rRSSManager
 	protected static function log( $msg )
 	{
 		global $rss_debug_enabled;
-		if( $rss_debug_enabled ) 
+		if( $rss_debug_enabled )
 		{
 			FileUtil::toLog("RSS: $msg");
 		}

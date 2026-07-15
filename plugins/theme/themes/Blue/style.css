@@ -89,7 +89,7 @@ div#t div#help {background: transparent url(./images/quest.gif) no-repeat 0px ce
 div#t div#go {background: transparent url(./images/go.gif) no-repeat 0px center; }
 div#t div#plugins {background: transparent url(./images/plugin.png) no-repeat 0px center}
 
-div#tdetails {background: transparent url(./images/tab-strip-bg.gif) repeat-x 0px center;} 
+div#tdetails {background: transparent url(./images/tab-strip-bg.gif) repeat-x 0px center;}
 
 .tabbar li a { border: 1px solid #8DB2E3; border-bottom: none; background: transparent url(./images/tabs-bg.png) repeat-x 0 -4px; color: #15428B }
 .tabbar li a:hover {border-top: 1px solid #8DB2E3}

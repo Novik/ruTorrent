@@ -3,7 +3,7 @@
  *
  * Korean language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.exsox		= "Spectrogram";

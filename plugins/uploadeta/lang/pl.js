@@ -3,7 +3,7 @@
  *
  * Polish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.uploadeta		= "Wyślij";

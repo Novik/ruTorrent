@@ -52,13 +52,13 @@ class rUnpack
 				{
 					$this->filter = trim(rawurldecode($parts[1]));
 					if(@preg_match($this->filter, null) === false)
-						$this->filter = "/.*/";					
+						$this->filter = "/.*/";
 				}
 				else
 				if( $parts[0] == "unpack_path" )
 				{
 					$this->path = trim(rawurldecode($parts[1]));
-					if(($this->path != '') && !rTorrentSettings::get()->correctDirectory($this->path))	
+					if(($this->path != '') && !rTorrentSettings::get()->correctDirectory($this->path))
 						$this->path = '';
 				}
 			}
@@ -75,7 +75,7 @@ class rUnpack
 	protected static function log( $msg )
 	{
 		global $unpack_debug_enabled;
-		if( $unpack_debug_enabled ) 
+		if( $unpack_debug_enabled )
 		{
 			FileUtil::toLog($msg);
 		}
@@ -88,7 +88,7 @@ class rUnpack
 			self::log("Unpack: SoftLink operation enabled. Deleting " . $filePath);
 			$filesToDelete .= $filePath . ";";
 		}
-		else 
+		else
 		{
 			$stat = LFS::stat($filePath);
 			if($stat)
@@ -128,7 +128,7 @@ class rUnpack
 					{
 						$filePath = $fileName->getPathname();
 						$this->checkOneFile( $filePath, $filesToDelete );
-					}    
+					}
 				}
 				else
 				{
@@ -149,13 +149,13 @@ class rUnpack
 		self::log("Start unpack operation as task ".$task->id." with arguments ".
 			json_encode($commands,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
 		return( self::isDryRun() ? array
-		( 
-			"no"=>$task->id, 
-			"pid"=>0, 
-			"status"=>255, 
-			"log"=>array(), 
-			"params"=>array(), 
-			"errors"=>array( "Dry-run operation, no real task start" ) 
+		(
+			"no"=>$task->id,
+			"pid"=>0,
+			"status"=>255,
+			"log"=>array(),
+			"params"=>array(),
+			"errors"=>array( "Dry-run operation, no real task start" )
 		) : $task->start($commands, 0) );
 	}
 
@@ -176,12 +176,12 @@ class rUnpack
 		$pathToUnrar = Utility::getExternal("unrar");
 		$pathToUnzip = Utility::getExternal("unzip");
 		$zipPresent = false;
-		$rarPresent = false;		
+		$rarPresent = false;
 		$outPath = $this->path;
-		
-		if(($outPath!='') && !rTorrentSettings::get()->correctDirectory($outPath))	
+
+		if(($outPath!='') && !rTorrentSettings::get()->correctDirectory($outPath))
 			$outPath = '';
-		
+
 		self::log("[Auto] Check torrent [$name] at [$basename] for archives");
 
 		if(is_dir($basename))
@@ -190,14 +190,14 @@ class rUnpack
 			if($outPath=='')
 				$outPath = $basename;
 			$basename = FileUtil::addslash($basename);
-			
+
 			$filesToDelete = "";
 			$downloadname = FileUtil::addslash($downloadname);
 			$Directory = new RecursiveDirectoryIterator($basename);
 			$Iterator = new RecursiveIteratorIterator($Directory);
 			$rarRegex = new RegexIterator($Iterator, '/.*\.(rar|r\d\d|\d\d\d)$/si');
 			$zipRegex = new RegexIterator($Iterator, '/.*\.zip$/si');
-			
+
 			if(USE_UNRAR && (sizeof(iterator_to_array($rarRegex)) > 0))
 			{
 				$rarPresent = true;
@@ -257,18 +257,18 @@ class rUnpack
 				escapeshellarg($filesToDelete)." ".
 				escapeshellarg($randTempDirectory);
 			if($cleanupAutoTasks)
-				$commands[] = 'rm -r "${dir}"';	
+				$commands[] = 'rm -r "${dir}"';
 
 			self::log("[Auto] Unpack files from torrent [$name] at [$basename] to [$outPath]");
 
 			$task = new rTask( array
-			( 
+			(
 				'arg' => FileUtil::getFileName(FileUtil::delslash($basename)),
 				'requester'=>'unpack',
-				'name'=>'unpack', 
-				'hash'=>$hash, 
-				'dir'=>$outPath, 
-				'mode'=>null, 
+				'name'=>'unpack',
+				'hash'=>$hash,
+				'dir'=>$outPath,
+				'mode'=>null,
 				'no'=>null
 			) );
 			self::processTask( $task, $commands );
@@ -296,20 +296,20 @@ class rUnpack
 		}
 
 		$taskArgs = array
-		( 
+		(
 			'requester'=>'unpack',
-			'name'=>'unpack', 
-			'hash'=>$hash, 
-			'dir'=>$outPath, 
-			'mode'=>$mode, 
+			'name'=>'unpack',
+			'hash'=>$hash,
+			'dir'=>$outPath,
+			'mode'=>$mode,
 			'no'=>$fileno
 		);
-		if(($outPath!='') && !rTorrentSettings::get()->correctDirectory($outPath))	
+		if(($outPath!='') && !rTorrentSettings::get()->correctDirectory($outPath))
 			$outPath = '';
 
 		if(!empty($mode))
 	        {
-			$req = new rXMLRPCRequest( 
+			$req = new rXMLRPCRequest(
 				new rXMLRPCCommand( "f.get_frozen_path", array($hash,intval($fileno)) ));
 			if($req->success())
 			{
@@ -363,7 +363,7 @@ class rUnpack
 						$basename = $req->val[1];
 				}
 				self::log("[Manual] Check torrent [$tname] at [$basename] for archives");
-				$req = new rXMLRPCRequest( 
+				$req = new rXMLRPCRequest(
 					new rXMLRPCCommand( "f.multicall", array($hash,"",getCmd("f.get_path=")) ));
 				if($req->success())
 				{
@@ -436,7 +436,7 @@ class rUnpack
 		global $rootPath;
 		if($this->enabled)
 		{
-			$cmd =  rTorrentSettings::get()->getOnFinishedCommand( array('unpack'.User::getUser(), 
+			$cmd =  rTorrentSettings::get()->getOnFinishedCommand( array('unpack'.User::getUser(),
 					getCmd('execute.nothrow.bg').'={'.Utility::getPHP().','.$rootPath.'/plugins/unpack/update.php,$'.getCmd('d.get_directory').'=,$'.getCmd('d.get_base_filename').'=,$'.getCmd('d.is_multi_file').
 					'=,$'.getCmd('d.get_custom1').'=,$'.getCmd('d.get_name').'=,$'.getCmd('d.get_hash').'=,$'.getCmd('d.get_custom').'=x-dest,'.User::getUser().'}'));
 		}

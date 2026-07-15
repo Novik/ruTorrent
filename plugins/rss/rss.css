@@ -53,7 +53,7 @@ div#FLT_buttons {clear: both}
 #rsstimer { font-weight: normal; }
 
 /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) { 
+@media (min-width: 768px) {
   #filterList {
     height: 24rem;
   }

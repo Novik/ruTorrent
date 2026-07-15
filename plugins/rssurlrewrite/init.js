@@ -92,7 +92,7 @@ function checkCurrentRule() {
 theWebUI.showRules = function()
 {
 	theWebUI.request("?action=getrules",[theWebUI.loadRules, theWebUI]);
-}	
+}
 
 theWebUI.storeRuleParams = function()
 {
@@ -105,16 +105,16 @@ theWebUI.storeRuleParams = function()
 		plugin.rules[no].hrefAsSrc = $('#RLS_src').val();
 		plugin.rules[no].hrefAsDest = $('#RLS_dst').val();
 		plugin.rules[no].rssHash = $('#RLS_rss').val();
-	}	
+	}
 	return(no);
-}	
+}
 
 theWebUI.loadRules = function( rle )
 {
 	plugin.curRule = null;
 	var list = $("#rlslist");
 	list.empty();
-	$('#RLS_rss option').remove();	
+	$('#RLS_rss option').remove();
 	$('#RLS_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
 	for(var lbl in theWebUI.rssGroups)
 		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");

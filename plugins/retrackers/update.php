@@ -49,7 +49,7 @@ $trks = rRetrackers::load();
 if(count($argv)>1)
 {
 	$hash = $argv[1];
-	$req = new rXMLRPCRequest( array(		
+	$req = new rXMLRPCRequest( array(
 		new rXMLRPCCommand("get_session"),
 		new rXMLRPCCommand("d.get_custom4",$hash),
 		new rXMLRPCCommand("d.get_tied_to_file",$hash),
@@ -74,7 +74,7 @@ if(count($argv)>1)
 			}
 			if($fname)
 			{
-				$torrent = new Torrent( $fname );		
+				$torrent = new Torrent( $fname );
 				if( !$torrent->errors() )
 				{
 				        $wasAddition = true;
@@ -84,14 +84,14 @@ if(count($argv)>1)
 						if(count($trks->list))
 						{
 							if($torrent->announce())
-								$torrent->announce_list($trks->addToBegin ? array_merge($trks->list, array(array($torrent->announce()))) : 
+								$torrent->announce_list($trks->addToBegin ? array_merge($trks->list, array(array($torrent->announce()))) :
 									array_merge(array(array($torrent->announce())),$trks->list));
 							else
 							{
 								$torrent->announce($trks->list[0][0]);
 								$torrent->announce_list($trks->list);
 							}
-						} 
+						}
 						else
 						{
 							$wasAddition = false;

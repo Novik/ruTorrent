@@ -3,7 +3,7 @@
  *
  * Latvian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.uploadeta		= "Upload ETA";

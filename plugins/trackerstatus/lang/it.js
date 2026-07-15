@@ -3,7 +3,7 @@
  *
  * Italian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Tracker_status = "Stato del Tracker";

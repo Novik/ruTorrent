@@ -26,7 +26,7 @@ class rThrottle
 	        {
 			$this->thr[] = array( "up"=>$v, "down"=>0, "name"=>"up".$v );
 			$v = $v*2;
-		}	
+		}
 		$v = 16;
 	        for($i=0; $i<MAX_THROTTLE/2; $i++)
 	        {
@@ -39,14 +39,14 @@ class rThrottle
 	{
 		return( ($no>=0) &&
 			($no<count($this->thr)) &&
-		        ($this->thr[$no]["name"]!="") && 
+		        ($this->thr[$no]["name"]!="") &&
 			($this->thr[$no]["up"]>=0) &&
 			($this->thr[$no]["down"]>=0) );
 	}
 	public function isThrottled($no)
 	{
 		return( ($no<count($this->thr)) &&
-		        ($this->thr[$no]["name"]!="") && 
+		        ($this->thr[$no]["name"]!="") &&
 			(($this->thr[$no]["up"]>0) || ($this->thr[$no]["down"]>0)) );
 	}
 	public function init()
@@ -69,7 +69,7 @@ class rThrottle
 		}
 
 		if($this->isCorrect($this->default-1))
-			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(), 
+			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(),
 				getCmd('branch').'=$'.getCmd('not').'=$'.getCmd("d.get_throttle_name").'=,'.getCmd('d.set_throttle_name').'=thr_'.($this->default-1))));
 		else
 			$req->addCommand(rTorrentSettings::get()->getOnInsertCommand(array('_throttle'.User::getUser(), getCmd('cat='))));
@@ -78,7 +78,7 @@ class rThrottle
 	public function correct()
 	{
 		$toCorrect = array();
-		$req = new rXMLRPCRequest( 
+		$req = new rXMLRPCRequest(
 			new rXMLRPCCommand( "d.multicall", array(
 			        "",
 				getCmd("d.get_hash="),
@@ -104,9 +104,9 @@ class rThrottle
 				foreach($toCorrect as $hash=>$name)
 				{
 					$req->addCommand(new rXMLRPCCommand( "branch", array(
-						$hash, 
-						getCmd("d.is_active="), 
-						getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$name.',$'.getCmd('d.start='), 
+						$hash,
+						getCmd("d.is_active="),
+						getCmd('cat').'=$'.getCmd("d.stop").'=,$'.getCmd("d.set_throttle_name=").$name.',$'.getCmd('d.start='),
 						getCmd('d.set_throttle_name=').$name )));
 				}
 				if($req->getCommandsCount())
@@ -177,7 +177,7 @@ class rThrottle
 				$v = intval($_REQUEST['thr_up'.$i]);
 				if($v>=0)
 					$arr["up"] = $v;
-			}				
+			}
 			if(isset($_REQUEST['thr_down'.$i]))
 			{
 				$v = intval($_REQUEST['thr_down'.$i]);

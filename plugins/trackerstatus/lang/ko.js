@@ -3,7 +3,7 @@
  *
  * Korean language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Tracker_status = "트래커 상태";

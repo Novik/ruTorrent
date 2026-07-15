@@ -64,7 +64,7 @@ if(plugin.canChangeMenu())
 		        this.uID = ((this.getTable("trt").selCount == 1) && !(thePlugins.isInstalled("quotaspace") && theWebUI.quotaAlreadyWarn)) ? (id || this.dID) : null;
 			if(this.uID && (this.torrents[this.uID].done==1000) && $type(this.files[this.uID]))
 			{
-				for(var i in this.files[this.uID]) 
+				for(var i in this.files[this.uID])
 				{
 					var file = this.files[this.uID][i];
 					if(plugin.useUnrar && (/.*\.(rar|r\d\d|\d\d\d)$/i).test(file.name))
@@ -75,8 +75,8 @@ if(plugin.canChangeMenu())
 					checked = true;
 				}
 			}
-			theContextMenu.add( [theUILang.unpack+'...',  
-				(this.uID && (this.uID.length==40) && (this.torrents[this.uID].done==1000) && (!checked || rarPresent || zipPresent)) ? 
+			theContextMenu.add( [theUILang.unpack+'...',
+				(this.uID && (this.uID.length==40) && (this.torrents[this.uID].done==1000) && (!checked || rarPresent || zipPresent)) ?
 				"theDialogManager.show('dlg_unpack')" : null] );
 		}
 	}
@@ -133,9 +133,9 @@ if (plugin.canChangeOptions()) {
 theWebUI.unpack = function()
 {
 	theDialogManager.hide('dlg_unpack');
-        theWebUI.startConsoleTask( "unpack", plugin.name, 
-        { 
-        	hash: theWebUI.uID, 
+        theWebUI.startConsoleTask( "unpack", plugin.name,
+        {
+        	hash: theWebUI.uID,
         	dir: $('#edit_unpack').val(),
         	mode: plugin.mode || '',
         	no: plugin.fno || ''
@@ -212,7 +212,7 @@ plugin.onLangLoaded = function() {
 			}
 		}
 		plugin.markLoaded();
-	}		
+	}
 }
 
 plugin.onRemove = function()
@@ -221,7 +221,7 @@ plugin.onRemove = function()
 	plugin.removePageFromOptions("st_unpack");
 }
 
-plugin.langLoaded = function() 
+plugin.langLoaded = function()
 {
 	if(plugin.enabled)
 		plugin.onLangLoaded();

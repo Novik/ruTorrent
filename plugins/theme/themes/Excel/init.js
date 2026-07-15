@@ -16,7 +16,7 @@ plugin.allDone = function()
 plugin.tabsShow = theTabs.show;
 theTabs.show = function(id) {
 	plugin.tabsShow.call(this, id);
-	$(".tabbar img").prop( { src: $(".tabbar li:last-child").hasClass("selected") ? 
-		"plugins/theme/themes/Excel/images/tabbghfin.png" : 
+	$(".tabbar img").prop( { src: $(".tabbar li:last-child").hasClass("selected") ?
+		"plugins/theme/themes/Excel/images/tabbghfin.png" :
 		"plugins/theme/themes/Excel/images/tabbgfin.png" } );
 }

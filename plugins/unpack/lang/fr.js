@@ -16,4 +16,3 @@
  theUILang.unpackAddName	= "Nom du torrent";
 
 thePlugins.get("unpack").langLoaded();
-

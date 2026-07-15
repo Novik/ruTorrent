@@ -3,7 +3,7 @@
  *
  * Portuguese (Portugal) language file..
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Tracker_status = "Estado do Rastreador";

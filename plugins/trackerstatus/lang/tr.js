@@ -3,7 +3,7 @@
  *
  * Turkish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.Tracker_status = "İzleyici Durumu";

@@ -3,7 +3,7 @@
  *
  * Serbian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.checkTorrent		= "Check for Update";

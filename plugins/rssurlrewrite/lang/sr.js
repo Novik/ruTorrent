@@ -3,7 +3,7 @@
  *
  * Serbian language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.rssNewRule		= "New rule";

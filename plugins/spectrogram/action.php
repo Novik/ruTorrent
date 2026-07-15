@@ -10,7 +10,7 @@ if(isset($_REQUEST['cmd']))
 	{
 		case "sox":
 		{
-			if(isset($_REQUEST['hash']) && 
+			if(isset($_REQUEST['hash']) &&
 				isset($_REQUEST['no']))
 			{
 				$req = new rXMLRPCRequest( new rXMLRPCCommand( "f.get_frozen_path", array($_REQUEST['hash'],intval($_REQUEST['no']))) );
@@ -42,12 +42,12 @@ if(isset($_REQUEST['cmd']))
 						$commands[] = 'chmod a+r "${dir}"/frame.png';
 					}
 					$task = new rTask( array
-					( 
+					(
 					        'arg' => FileUtil::getFileName($filename),
 						'requester'=>'spectrogram',
-						'name'=>'sox', 
-						'hash'=>$_REQUEST['hash'], 
-						'no'=>$_REQUEST['no'] 
+						'name'=>'sox',
+						'hash'=>$_REQUEST['hash'],
+						'no'=>$_REQUEST['no']
 					) );
 					$ret = $task->start($commands, rTask::FLG_ONE_LOG | rTask::FLG_STRIP_LOGS);
 				}

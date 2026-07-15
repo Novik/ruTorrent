@@ -3,7 +3,7 @@
  *
  * Danish language file.
  *
- * Author: 
+ * Author:
  */
 
  theUILang.mediainfo		= "Media Info";

@@ -22,7 +22,7 @@ if($req->success())
 {
 	for($i = 0; $i<count($req->val); $i+=6)
 	{
-		foreach(ruTrackerChecker::supportedTrackers() as $tracker) 
+		foreach(ruTrackerChecker::supportedTrackers() as $tracker)
 		{
 			if(preg_match($tracker,$req->val[$i + 5]))
 			{
