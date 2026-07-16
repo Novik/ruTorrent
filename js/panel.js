@@ -451,7 +451,7 @@ class CategoryListStatistic extends TorrentStatisticBucket {
     }
   }
   ids(panelId) {
-    return [...this._panels[panelId]?.buckets.keys()];
+    return [...this._panels[panelId].buckets.keys()];
   }
 
   selected(hash, panelLabelSelection) {
