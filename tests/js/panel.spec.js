@@ -318,4 +318,18 @@ describe("Category list statistic", () => {
     expect(viewBucket.upload).toBe(pstateBucket.upload);
     expect(viewBucket.download).toBe(pstateBucket.download);
   });
+
+  it("ids(): known panels return bucket keys; unknown panel throws (pinned across the optional-chaining fix)", () => {
+    const torrents = generateTorrents(50);
+    for (const [hash, torrent] of Object.entries(torrents)) {
+      statistic.scan(hash, torrent);
+    }
+    for (const panelId of ["plabel", "pstate", "psearch"]) {
+      const ids = statistic.ids(panelId);
+      expect(Array.isArray(ids)).toBe(true);
+      expect(ids.every((k) => typeof k === "string")).toBe(true);
+    }
+    expect(statistic.ids("plabel").length).toBeGreaterThan(0);
+    expect(() => statistic.ids("no_such_panel")).toThrow();
+  });
 });

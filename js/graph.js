@@ -292,23 +292,6 @@ class rSpeedGraph extends rGraph {
     });
 
     super.create(aOwner, webuiView);
-    // this.#testData();
-  }
-
-  #testData() {
-    this.setMaxSeconds(10);
-    setInterval(() => {
-      const t = new Date().getTime() / 3000;
-      const mb = (Math.sin(t / 100) + 1) * (1 << 20);
-      this.addData(
-        (Math.sin(t) + 1) * mb,
-        ([10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-          .map((k) => Math.cos(k * t) / k)
-          .reduce((a, b) => a + b, 0) +
-          4) *
-          mb
-      );
-    }, 100);
   }
 
   yTickFormatter(n) {
