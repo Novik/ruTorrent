@@ -618,6 +618,8 @@ function correctContent()
 			"d.get_skip_total"	:	{ name: "d.skip.total", prm: 0 },
 			"d.get_state"		:	{ name: "d.state", prm: 0 },
 			"d.get_state_changed"	:	{ name: "d.state_changed", prm: 0 },
+			"d.get_timestamp_finished"      : { name: "d.timestamp.finished", prm: 0 },
+			"d.get_timestamp_started"      : { name: "d.timestamp.started", prm: 0 },
 			"d.get_state_counter"	:	{ name: "d.state_counter", prm: 0 },
 			"d.get_throttle_name"	:	{ name: "d.throttle_name", prm: 0 },
 			"d.get_tied_to_file"	:	{ name: "d.tied_to_file", prm: 0 },
