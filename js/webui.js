@@ -1171,15 +1171,15 @@ var theWebUI = {
 			if(!this.settings["webui.fls.view"] && this.dirs[hash])
 			{
 				var dir = this.dirs[hash].getDirectory();
-				for(var i in dir)
+				for(i in dir)
 				{
 					var entry = dir[i];
 					if(entry.link!=null)
 						table.setRowById(entry.data, i, entry.icon, {link: entry.link});
 				}
-				for(var i in dir)
+				for(i in dir)
 				{
-					var entry = dir[i];
+					entry = dir[i];
 					if(entry.link==null)
 						table.setRowById(entry.data, i, entry.icon, {link: undefined});
 				}
@@ -1325,7 +1325,7 @@ var theWebUI = {
 				        var dir = theWebUI.dirs[id];
 				        var ids = new Array();
 				        dir.getFilesIds(ids,dir.current,k,p);
-				        for(var i in ids)
+				        for(i in ids)
 						str += "&f=" + ids[i];
 					needSort = true;
         			}

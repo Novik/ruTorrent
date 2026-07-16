@@ -231,7 +231,7 @@ function linked(obj, _33, lst) {
 		var d = _33 ? obj.checked : !obj.checked;
 	else if (tn === "select") {
 		var v = obj.options[obj.selectedIndex].value;
-		var d = (v === _33) ? true : false;
+		d = (v === _33) ? true : false;
 	} else {
 		return;
 	}
@@ -1022,7 +1022,7 @@ rDirectory.prototype.addFile = function(aData,no)
 		}
 		else
 		{
-			var sId = "_d_"+name;
+			sId = "_d_"+name;
 			if(!this.dirs[file.path][sId])
 				this.dirs[file.path][sId] = { data: { name: file.name, size: 0, done: 0, percent: 0.0, priority: -1, prioritize: -1 }, icon: "Icon_Dir", link: name };
 		}
@@ -1283,7 +1283,7 @@ var theBTClientVersion =
 						ret = cli+" "+str.charAt(3)+"."+str.charAt(4);
 						break;
 					default:
-						var ch = str.charAt(6);
+						ch = str.charAt(6);
 						ret = cli+" "+str.charAt(3)+"."+parseInt(str.substr(4,2),10);
 						if((ch=='Z') || (ch=='X'))
 							ret+='+';
@@ -1448,7 +1448,7 @@ var theBTClientVersion =
 		{
 			if(str.match(/^[A-Z]([A-Z0-9\-.]{1,5})/i))
 			{
-				var cli = this.shLikeClients[str.charAt(0)];
+				cli = this.shLikeClients[str.charAt(0)];
 				if(cli)
 					ret = cli+" "+shChar(str.charAt(1))+"."+shChar(str.charAt(2))+"."+shChar(str.charAt(3));
 			}
@@ -1498,7 +1498,7 @@ function RGBackground( selector )
 		var cs;
                 var rule = getCSSRule(selector);
 		if(rule)
-			var cs = rule.style.backgroundColor;
+			cs = rule.style.backgroundColor;
 		else
 			cs = selector;
 		if(cs.charAt(0) == '#')

@@ -1037,7 +1037,7 @@ dxSTable.prototype.clearRows = function()
 
 dxSTable.prototype.setAlignment = function() {
 	var i, aAlign, j, align;
-	var aAlign = [];
+	aAlign = [];
 	for (let i = 0; i < this.cols; i++) {
 		switch(this.colsdata[i].align) {
 			case ALIGN_LEFT:
@@ -1059,7 +1059,7 @@ dxSTable.prototype.setAlignment = function() {
 	var col = this.tBodyCols;
 	if(document.all || browser.isAppleWebKit || browser.isKonqueror)
 	{
-		for(var i = 0; i < col.length; i++)
+		for(i = 0; i < col.length; i++)
 			col[i].align = aAlign[i];
 	}
 	else
@@ -1078,12 +1078,12 @@ dxSTable.prototype.setAlignment = function() {
 			return;
 		if(!$type(this.colRules))
 			this.colRules = new Array();
-		for(var j = 0; j < col.length; j++)
+		for(j = 0; j < col.length; j++)
 		{
 			var k = this.colOrder[j];
 			if(!this.colRules[k])
 			{
-				for(var i = 0, l = rules.length; i < l; i++)
+				for(i = 0, l = rules.length; i < l; i++)
 				{
 					if((rules[i].type == CSSRule.STYLE_RULE) && (rules[i].selectorText == ".stable-" + this.dCont.attr("id") + "-col-" + k))
 					{

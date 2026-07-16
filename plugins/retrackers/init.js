@@ -24,7 +24,7 @@ if(plugin.canChangeOptions())
 			}
 			$('#eretrackers').val(s);
 			s = '';
-			for(var i=0; i<theWebUI.retrackers.todelete.length; i++)
+			for(i=0; i<theWebUI.retrackers.todelete.length; i++)
 			{
 				s+=theWebUI.retrackers.todelete[i];
 				s+='\r\n';
@@ -58,7 +58,7 @@ if(plugin.canChangeOptions())
 			groups.push(curGroup);
 		if(groups.length!=theWebUI.retrackers.list.length)
 			return(true);
-		for(var i = 0; i<groups.length; i++)
+		for(i = 0; i<groups.length; i++)
 		{
 			if(groups[i].length!=theWebUI.retrackers.list[i].length)
 				return(true);
@@ -68,15 +68,15 @@ if(plugin.canChangeOptions())
 		}
 		arr = $('#dretrackers').val().split("\n");
 		var todelete = [];
-		for(var i=0; i<arr.length; i++)
+		for(i=0; i<arr.length; i++)
 		{
-			var s = arr[i].trim();
+			s = arr[i].trim();
 			if(s.length)
 				todelete.push(s);
 		}
 		if(todelete.length!=theWebUI.retrackers.todelete.length)
 			return(true);
-		for(var i=0; i<theWebUI.retrackers.todelete.length; i++)
+		for(i=0; i<theWebUI.retrackers.todelete.length; i++)
 			if(theWebUI.retrackers.todelete[i]!=todelete[i])
 				return(true);
 		return(false);
@@ -102,9 +102,9 @@ if(plugin.canChangeOptions())
 				this.content = 	this.content+"&tracker="+encodeURIComponent(s);
 		}
 		arr = $('#dretrackers').val().split("\n");
-		for(var i = 0; i<arr.length; i++)
+		for(i = 0; i<arr.length; i++)
 		{
-			var s = arr[i].trim();
+			s = arr[i].trim();
 			if(s.length)
 				this.content = 	this.content+"&todelete="+encodeURIComponent(s);
 		}

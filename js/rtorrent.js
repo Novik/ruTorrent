@@ -506,7 +506,7 @@ rTorrentStub.prototype.setprioritize = function()
 			}
 			case '1':
 			{
-				var cmd = new rXMLRPCCommand( "f.prioritize_first.enable" );
+				cmd = new rXMLRPCCommand( "f.prioritize_first.enable" );
 				cmd.addParameter("string",this.hashes[0]+":f"+this.vs[i]);
 				this.commands.push( cmd );
 				cmd = new rXMLRPCCommand( "f.prioritize_last.disable" );
@@ -516,7 +516,7 @@ rTorrentStub.prototype.setprioritize = function()
 			}
 			case '2':
 			{
-				var cmd = new rXMLRPCCommand( "f.prioritize_first.disable" );
+				cmd = new rXMLRPCCommand( "f.prioritize_first.disable" );
 				cmd.addParameter("string",this.hashes[0]+":f"+this.vs[i]);
 				this.commands.push( cmd );
 				cmd = new rXMLRPCCommand( "f.prioritize_last.enable" );
@@ -707,12 +707,12 @@ rTorrentStub.prototype.makeNextMultiCall = function()
 		this.hashes = [];
 		for(; this.commandOffset < this.commands.length; this.commandOffset++)
 		{
-			var cmd = this.commands[this.commandOffset];
+			cmd = this.commands[this.commandOffset];
 			var cmd_string=('<value><struct><member><name>methodName</name><value><string>'+
 				cmd.command+'</string></value></member><member><name>params</name><value><array><data>');
 			for(var j=0; j<cmd.params.length; j++)
 			{
-				var prm = cmd.params[j];
+				prm = cmd.params[j];
 				cmd_string += ('<value><'+prm.type+'>'+
 					prm.value+'</'+prm.type+'></value>');
 			}
@@ -767,7 +767,7 @@ rTorrentStub.prototype.getResponse = function(data)
 		}
 		else
 		{
-			var names = data.getElementsByTagName('name');
+			names = data.getElementsByTagName('name');
 			if(names)
 				for(var i=0; i<names.length; i++)
 					if(names[i].childNodes[0].data=="faultString")

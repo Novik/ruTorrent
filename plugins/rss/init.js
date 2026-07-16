@@ -571,7 +571,7 @@ theWebUI.rssSelect = function(e, id)
 		}
 	}
 	var table = theWebUI.getTable("trt");
-	for(var k in table.rowSel)
+	for(k in table.rowSel)
 		table.rowSel[k] = false;
 	table.selCount = trtArray.length;
 	for(var i = 0; i<trtArray.length; i++)
@@ -909,7 +909,7 @@ theWebUI.loadFilters = function( flt, additions )
 	$('#FLT_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
 	for(var lbl in this.rssGroups)
 		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
-	for(var lbl in this.rssLabels)
+	for(lbl in this.rssLabels)
 		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
 	var fltThrottle = $('#FLT_throttle');
 	if(fltThrottle.length)
@@ -925,7 +925,7 @@ theWebUI.loadFilters = function( flt, additions )
 	{
 		$('#FLT_ratio option').remove();
 		fltRatio.append("<option value=''>"+theUILang.mnuRatioUnlimited+"</option>");
-		for(var i=0; i<theWebUI.maxRatio; i++)
+		for(i=0; i<theWebUI.maxRatio; i++)
 			if(theWebUI.isCorrectRatio(i))
 				fltRatio.append("<option value='rat_"+i+"'>"+theWebUI.ratios[i].name+"</option>");
 	}
@@ -933,7 +933,7 @@ theWebUI.loadFilters = function( flt, additions )
 	if(additions)
 		this.filters = additions.concat(this.filters);
 	theWebUI.maxFilterNo = 0;
-	for(var i=0; i<this.filters.length; i++)
+	for(i=0; i<this.filters.length; i++)
 	{
 		var f = this.filters[i];
 		if(theWebUI.maxFilterNo<f.no)
@@ -943,9 +943,9 @@ theWebUI.loadFilters = function( flt, additions )
 		if(f.enabled)
 			$("#_fe"+i).prop("checked",true);
 	}
-	for(var i=0; i<this.filters.length; i++)
+	for(i=0; i<this.filters.length; i++)
 	{
-		var f = this.filters[i];
+		f = this.filters[i];
 		if(f.no<0)
 		{
 			theWebUI.maxFilterNo++;

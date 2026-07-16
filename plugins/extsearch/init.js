@@ -413,7 +413,7 @@ plugin.createExtTegMenu = function(e, id)
 	if(trtArray.length)
 	{
 	        var table = theWebUI.getTable("trt");
-		for(var k in table.rowSel)
+		for(k in table.rowSel)
 			table.rowSel[k] = false;
 		table.selCount = trtArray.length;
 		for(var i = 0; i<trtArray.length; i++)
@@ -564,7 +564,7 @@ theWebUI.tegItemSelect = function(e,id)
 		}
 	}
 	var table = theWebUI.getTable("trt");
-	for(var k in table.rowSel)
+	for(k in table.rowSel)
 		table.rowSel[k] = false;
 	table.selCount = trtArray.length;
 	for(var i = 0; i<trtArray.length; i++)
@@ -730,7 +730,7 @@ plugin.refreshCategories = function()
 	else
         if($type(theSearchEngines.sites[theSearchEngines.current]))
 	{
-		for( var i=0; i<theSearchEngines.sites[theSearchEngines.current].cats.length; i++)
+		for( i=0; i<theSearchEngines.sites[theSearchEngines.current].cats.length; i++)
 			$('#exscategory').append("<option value='"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"'>"+theSearchEngines.sites[theSearchEngines.current].cats[i]+"</option>");
 	}
 	$("#exscategory").prop("hidden", (theSearchEngines.current === -1));
