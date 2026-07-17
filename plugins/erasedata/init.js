@@ -59,20 +59,18 @@ if(plugin.canChangeMenu())
 			this.vs[0] = (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1");
 			this.getCommon("removewithdata");
 		} else {
-			if (plugin.debug) console.log("erasedata: using direct XMLRPC fallback");
+			if (plugin.debug) console.log("erasedata: routing through plugins/erasedata/action.php");
+			// No httprpc: POST to erasedata's own endpoint, which records the
+			// delete list and erases (same shared logic httprpc uses). Setting
+			// content without queuing commands makes the stub send it as-is,
+			// like httprpc's getCommon().
+			this.contentType = "application/x-www-form-urlencoded";
+			this.mountPoint = "plugins/erasedata/action.php";
+			this.dataType = "json";
+			this.content = "mode=removewithdata";
 			for( var i = 0; i < this.hashes.length; i++ )
-			{
-				var cmd = new rXMLRPCCommand( "d.set_custom5" );
-				cmd.addParameter( "string", this.hashes[i] );
-				cmd.addParameter( "string", (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1") );
-				this.commands.push( cmd );
-				cmd = new rXMLRPCCommand( "d.delete_tied" );
-				cmd.addParameter( "string", this.hashes[i] );
-				this.commands.push( cmd );
-				cmd = new rXMLRPCCommand( "d.erase" );
-				cmd.addParameter( "string", this.hashes[i] );
-				this.commands.push( cmd );
-			}
+				this.content += "&hash=" + this.hashes[i];
+			this.content += "&v=" + (plugin.force_delete && plugin.enableForceDeletion ? "2" : "1");
 		}
 	}
 }
