@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Bestimmten Port erzwingen...";
+ theUILang.forcePortPrompt	= "Lausch-Port festlegen (1-65535):";
+ theUILang.forcePortInvalid	= "Ungültige Portnummer.";
+
 thePlugins.get("check_port").langLoaded();

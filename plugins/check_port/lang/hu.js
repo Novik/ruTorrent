@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Adott port kényszerítése...";
+ theUILang.forcePortPrompt	= "Figyelő port beállítása (1-65535):";
+ theUILang.forcePortInvalid	= "Érvénytelen portszám.";
+
 thePlugins.get("check_port").langLoaded();

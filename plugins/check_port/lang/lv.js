@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Piespiest noteiktu portu...";
+ theUILang.forcePortPrompt	= "Iestatīt klausīšanās portu (1-65535):";
+ theUILang.forcePortInvalid	= "Nederīgs porta numurs.";
+
 thePlugins.get("check_port").langLoaded();

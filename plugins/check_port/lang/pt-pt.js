@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Forçar porta específica...";
+ theUILang.forcePortPrompt	= "Definir a porta de escuta (1-65535):";
+ theUILang.forcePortInvalid	= "Número de porta inválido.";
+
 thePlugins.get("check_port").langLoaded();

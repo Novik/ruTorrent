@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Specifieke poort forceren...";
+ theUILang.forcePortPrompt	= "Luisterpoort instellen (1-65535):";
+ theUILang.forcePortInvalid	= "Ongeldig poortnummer.";
+
 thePlugins.get("check_port").langLoaded();

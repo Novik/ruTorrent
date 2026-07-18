@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "특정 포트 강제 지정...";
+ theUILang.forcePortPrompt	= "수신 포트 설정 (1-65535):";
+ theUILang.forcePortInvalid	= "잘못된 포트 번호입니다.";
+
 thePlugins.get("check_port").langLoaded();

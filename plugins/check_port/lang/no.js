@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Tving bestemt port...";
+ theUILang.forcePortPrompt	= "Angi lytteporten (1-65535):";
+ theUILang.forcePortInvalid	= "Ugyldig portnummer.";
+
 thePlugins.get("check_port").langLoaded();

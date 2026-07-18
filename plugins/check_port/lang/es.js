@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Forzar puerto específico...";
+ theUILang.forcePortPrompt	= "Establecer el puerto de escucha (1-65535):";
+ theUILang.forcePortInvalid	= "Número de puerto no válido.";
+
 thePlugins.get("check_port").langLoaded();

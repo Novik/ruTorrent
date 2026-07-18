@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Vynutit konkrétní port...";
+ theUILang.forcePortPrompt	= "Nastavte naslouchací port (1-65535):";
+ theUILang.forcePortInvalid	= "Neplatné číslo portu.";
+
 thePlugins.get("check_port").langLoaded();
