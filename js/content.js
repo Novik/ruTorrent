@@ -918,6 +918,25 @@ function correctContent()
 			"network.max_open_sockets": { name: "system.sockets.max_size",               prm: 0 },
 		});
 	}
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x1012)
+	{
+		// rtorrent >= 0.16.18: the listening-port commands were renamed
+		// (network.port_range/.random -> network.listen.port.range/.random) and
+		// network.port_open was removed. On a normal launch (no -D) the old names
+		// are absent and fault; mirror php/methods-0.16.18.php so any client-side
+		// XMLRPC keeps working. network.port_open has no replacement -> route it
+		// to the harmless "cat" no-op.
+		$.extend(theRequestManager.aliases,
+		{
+			"get_port_range"  : { name: "network.listen.port.range",      prm: 0 },
+			"set_port_range"  : { name: "network.listen.port.range.set",  prm: 1 },
+			"get_port_random" : { name: "network.listen.port.random",     prm: 0 },
+			"set_port_random" : { name: "network.listen.port.random.set", prm: 1 },
+			"get_port_open"   : { name: "cat", prm: 0 },
+			"set_port_open"   : { name: "cat", prm: 1 },
+			"port_open"       : { name: "cat", prm: 0 },
+		});
+	}
 	if(theWebUI.systemInfo.rTorrent.iVersion < 0x907) {
 		const title = theUILang.requiresAtLeastRtorrent.replace('{version}', 'v0.9.7');
 		$($$('webui.show_open_status')).attr({ disabled: '', title });
