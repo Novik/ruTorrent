@@ -455,6 +455,16 @@ function correctContent()
 		rPlugin.prototype.removePageFromOptions("st_dl");
 	if(!(theWebUI.showFlags & showEnum.showConnectionPage))
 		rPlugin.prototype.removePageFromOptions("st_con");
+	// rtorrent 0.16.x: network.port_open is an unused no-op (nothing in rtorrent
+	// reads it; an explicit deprecated no-op since 0.16.18). Drop its checkbox
+	// from the Connection page, and add an empty grid cell after the "randomize"
+	// checkbox so the two-column layout stays even and the port-range label + its
+	// field remain paired on one row. rtorrent <= 0.9.x keeps the checkbox.
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x1000)
+	{
+		$("#port_open").closest(".col-md-6").remove();
+		$("#port_random").closest(".col-md-6").after($("<div>").addClass("col-md-6"));
+	}
 	if(!(theWebUI.showFlags & showEnum.showBittorentPage))
 		rPlugin.prototype.removePageFromOptions("st_bt");
 	if(!(theWebUI.showFlags & showEnum.showAdvancedPage))
