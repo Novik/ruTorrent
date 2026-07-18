@@ -4,7 +4,7 @@
  */
 
 var theWebUI = {
-	version: "5.3.8",
+	version: "5.3.9",
 	tables: {
 		trt: {
 			obj: new dxSTable(),
