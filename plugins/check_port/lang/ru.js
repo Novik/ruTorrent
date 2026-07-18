@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Задать конкретный порт...";
+ theUILang.forcePortPrompt	= "Укажите порт прослушивания (1-65535):";
+ theUILang.forcePortInvalid	= "Недопустимый номер порта.";
+
 thePlugins.get("check_port").langLoaded();

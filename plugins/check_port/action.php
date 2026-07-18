@@ -166,6 +166,20 @@ function get_and_check_ip($ip_version, $use_website, $rtorrent_ip, $rtorrent_por
 $port = rTorrentSettings::get()->port;
 $ip_glob = rTorrentSettings::get()->ip;
 
+// Optional: force a specific listening port before checking it. rtorrent
+// >= 0.16.18 exposes network.listen.port.set, which changes the live listening
+// port with no restart. Requires a trusted connection (the default here). The
+// port check below then runs against the new port so the user can immediately
+// confirm reachability.
+if (isset($_REQUEST['setport'])) {
+	$newport = (int)$_REQUEST['setport'];
+	if ($newport >= 1 && $newport <= 65535) {
+		$sreq = new rXMLRPCRequest(new rXMLRPCCommand("network.listen.port.set", array("", $newport)));
+		if ($sreq->success())
+			$port = $newport;
+	}
+}
+
 // Initialize the response structure that will be sent to the client
 $response = [
 	"ipv4" => "-", "ipv4_port" => (int)$port, "ipv4_status" => -1,

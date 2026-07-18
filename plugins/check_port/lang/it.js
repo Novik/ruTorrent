@@ -17,4 +17,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Forza una porta specifica...";
+ theUILang.forcePortPrompt	= "Imposta la porta di ascolto (1-65535):";
+ theUILang.forcePortInvalid	= "Numero di porta non valido.";
+
 thePlugins.get("check_port").langLoaded();

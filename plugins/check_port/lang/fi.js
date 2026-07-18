@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Pakota tietty portti...";
+ theUILang.forcePortPrompt	= "Aseta kuunteluportti (1-65535):";
+ theUILang.forcePortInvalid	= "Virheellinen portin numero.";
+
 thePlugins.get("check_port").langLoaded();

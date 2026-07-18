@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Wymuś określony port...";
+ theUILang.forcePortPrompt	= "Ustaw port nasłuchiwania (1-65535):";
+ theUILang.forcePortInvalid	= "Nieprawidłowy numer portu.";
+
 thePlugins.get("check_port").langLoaded();

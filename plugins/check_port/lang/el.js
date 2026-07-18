@@ -16,4 +16,8 @@
  				  ];
  theUILang.notAvailable = "-";
 
+ theUILang.forcePort		= "Επιβολή συγκεκριμένης θύρας...";
+ theUILang.forcePortPrompt	= "Ορισμός θύρας ακρόασης (1-65535):";
+ theUILang.forcePortInvalid	= "Μη έγκυρος αριθμός θύρας.";
+
 thePlugins.get("check_port").langLoaded();

@@ -64,6 +64,7 @@ function updateProtocolStatus(data, proto, getStatusText) {
 }
 
 plugin.getPortStatus = function(d) {
+	plugin.currentPort = d.ipv4_port || d.ipv6_port || plugin.currentPort;
 	const getStatusText = function(statusCode) {
 		return theUILang.portStatus[statusCode] || theUILang.portStatus[0] || "Unknown";
 	};
@@ -100,10 +101,35 @@ rTorrentStub.prototype.updateportcheck = function() {
 	this.dataType = "json";
 };
 
+plugin.forcePort = function() {
+	const cur = plugin.currentPort || "";
+	const v = prompt(theUILang.forcePortPrompt || "Set the listening port (1-65535):", cur);
+	if (v === null)
+		return;
+	const port = parseInt(v, 10);
+	if (!(port >= 1 && port <= 65535)) {
+		alert(theUILang.forcePortInvalid || "Invalid port number.");
+		return;
+	}
+	plugin.pendingPort = port;
+	plugin.resetStatus(true);
+	theWebUI.request("?action=forceport", [plugin.getPortStatus, plugin]);
+};
+
+rTorrentStub.prototype.forceport = function() {
+	this.contentType = "application/x-www-form-urlencoded";
+	this.mountPoint = "plugins/check_port/action.php?setport=" + encodeURIComponent(plugin.pendingPort);
+	this.dataType = "json";
+};
+
 plugin.createPortMenu = function(e) {
 	if (e.which === 3) {
 		theContextMenu.clear();
 		theContextMenu.add([(theUILang.checkPort || "Refresh Port Status"), plugin.update]);
+		// rtorrent >= 0.16.18 (iVersion 0x1012) added network.listen.port.set,
+		// which changes the live listening port with no restart.
+		if (theWebUI.systemInfo && theWebUI.systemInfo.rTorrent.iVersion >= 0x1012)
+			theContextMenu.add([(theUILang.forcePort || "Force specific port..."), plugin.forcePort]);
 		theContextMenu.show();
 	}
 	return false;
