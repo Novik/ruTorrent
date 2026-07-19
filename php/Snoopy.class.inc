@@ -290,7 +290,7 @@ class Snoopy
 			}
 			case "https":
 			{
-				$ret = $this->_httpsrequest($URI,$content_type,$body);
+				$ret = $this->_httpsrequest($URI,$content_type,$body,$method);
 				break;
 			}
 			default:
@@ -484,7 +484,7 @@ class Snoopy
 		return true;
 	}
 
-	function _httpsrequest($url,$content_type="",$body="")
+	function _httpsrequest($url,$content_type="",$body="",$http_method="GET")
 	{
 		if($this->passcookies && $this->_redirectaddr)
 			$this->setcookies();
@@ -519,6 +519,10 @@ class Snoopy
 			$headers[] = "Authorization: Basic ".base64_encode($this->user.":".$this->pass);
 
 		$cmdline_params = '';
+		// Legacy 3-arg callers keep curl's own method choice; explicit callers
+		// (fetch with any method) get the method forwarded verbatim.
+		if(func_num_args() >= 4)
+			$cmdline_params .= " -X ".escapeshellarg(strtoupper($http_method));
 		foreach( $headers as $header )
 			$cmdline_params .= " -H ".escapeshellarg($header);
 

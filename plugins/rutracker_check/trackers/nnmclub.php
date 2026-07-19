@@ -1,82 +1,25 @@
 <?php
 
 /**
- * NNMClub Torrent Checker — Cloudflare-Resilient Override
+ * NNMClub handler, resilient to the Cloudflare Turnstile that now blocks
+ * loginmgr-based authentication (an unauthenticated topic page has no btih
+ * hash, which made the upstream checker report every torrent as deleted).
  *
- * This file overrides the upstream trackers/nnmclub.php to work around
- * Cloudflare Turnstile CAPTCHA protection on NNMClub's website.
- *
- * ## Background
- *
- * NNMClub (nnmclub.to) is a BitTorrent tracker forum based on phpBB.
- * The upstream checker fetches the topic page (viewtopic.php) and looks for
- * a magnet `btih:` hash in the HTML to detect torrent updates. However,
- * NNMClub is now behind Cloudflare Turnstile, which blocks automated logins
- * via the `loginmgr` plugin. Without authentication, the topic page is
- * served as a "guest" page (~16 KB) that does NOT contain the btih hash.
- * This causes the upstream code to always return STE_DELETED (false positive).
- *
- * ## Key Discoveries
- *
- * 1. The guest page DOES contain a `download.php?id=...` link.
- * 2. The `download.php` endpoint is NOT behind Cloudflare and returns
- *    a valid .torrent file (~521 KB) even for unauthenticated requests.
- * 3. Guest-downloaded torrents contain a dummy passkey (`ffffffff...`)
- *    in the announce URL instead of the user's real passkey.
- * 4. The BitTorrent tracker (bt02.nnm-club.cc:2710) is NOT behind
- *    Cloudflare and responds to scrape requests directly.
- * 5. NNMClub passkeys are per-user (not per-torrent): any passkey from
- *    the same user account works for scraping any torrent.
- *
- * ## Two-Phase Algorithm
- *
- * Phase 1 — Tracker Scrape (fast, ~67 bytes response):
- *   Scrapes bt02.nnm-club.cc directly with the user's passkey extracted
- *   from an existing NNMClub torrent. If the current info_hash is found
- *   in the scrape response, the torrent is up-to-date. This handles
- *   ~99% of checks with minimal bandwidth.
- *   Note: Dummy/guest passkeys (all-f's) are filtered out and never used.
- *
- * Phase 2 — Guest Torrent Download (only if scrape says "not found"):
- *   Downloads the guest .torrent from download.php, compares its info_hash
- *   with the current hash. If they differ, the torrent was updated on NNMClub.
- *   The dummy passkey in the downloaded torrent is patched with the real one
- *   before handing it to createTorrent() for replacement.
- *
- * ## Session Patching
- *
- * If a torrent in the rtorrent session lacks a passkey in its announce URL
- * (e.g., previously downloaded without authentication), and a donor passkey
- * is found from another NNMClub torrent, the session .torrent file is patched
- * using the Torrent class.  libtorrent_resume and rtorrent metadata are
- * preserved so fast-resume works correctly after restart.
- *
- * @see https://nnmclub.to  NNMClub tracker forum
+ * Phase 1: scrape the tracker endpoint derived from the torrent's announce
+ * URL — download.php and the tracker itself are not behind Cloudflare.
+ * Phase 2 (only when scrape says the hash is gone): download the guest
+ * .torrent from download.php and compare info hashes. Guest torrents carry a
+ * dummy credential; it is replaced with the reusable `uk` profile credential
+ * before the replacement is loaded. Path-style credentials belong to one
+ * distribution and are never transplanted to another torrent.
  */
 
 class NNMClubCheckImpl
 {
-    private const DEFAULT_USER_AGENT =
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-      . "AppleWebKit/537.36 (KHTML, like Gecko) "
-      . "Chrome/120.0.0.0 Safari/537.36";
-
-    /**
-     * Tracker hostnames for scrape requests (NOT behind Cloudflare).
-     * If the first host fails, the next is tried.
-     */
-    private const TRACKER_HOSTS = ['bt02.nnm-club.cc', 'bt02.nnm-club.info'];
-    private const TRACKER_PORT  = 2710;
-
-    /**
-     * Default site domain for viewtopic/download requests.
-     * Used as fallback when the domain from comment URL is not available.
-     */
+    /** Default site domain when the topic URL carries no host. */
     private const SITE_DOMAIN = 'nnmclub.to';
 
-    /**
-     * Explicit allowlist for topic hosts to avoid requesting arbitrary domains.
-     */
+    /** Explicit allowlist for topic hosts to avoid requesting arbitrary domains. */
     private const TOPIC_HOSTS = [
         'nnmclub.ru',
         'nnmclub.me',
@@ -91,91 +34,79 @@ class NNMClubCheckImpl
     ];
 
     /**
-     * Regex to match dummy/guest passkeys that must be ignored.
-     * Guest downloads produce all-f's; all-zeros is another degenerate case.
+     * Official tracker hosts that may receive a reusable profile credential.
+     * Keep this exact: matching an arbitrary nnmclub-like domain would leak it.
      */
+    private const TRACKER_HOSTS = [
+        'bt.searchtor.to',
+        'ipv6.bt.searchtor.to',
+        'nnm-club.ru',
+        'bt.nnm-club.ru',
+        'bt01.nnm-club.ru',
+        'bt02.nnm-club.ru',
+        'bt.ipv6.nnm-club.ru',
+        'bt01.ipv6.nnm-club.ru',
+        'bt02.ipv6.nnm-club.ru',
+        'nnm-club.cc',
+        'bt.nnm-club.cc',
+        'bt01.nnm-club.cc',
+        'bt02.nnm-club.cc',
+        'bt.ipv6.nnm-club.cc',
+        'bt01.ipv6.nnm-club.cc',
+        'bt02.ipv6.nnm-club.cc',
+        'nnm-club.info',
+        'bt.nnm-club.info',
+        'bt01.nnm-club.info',
+        'bt02.nnm-club.info',
+        'bt.ipv6.nnm-club.info',
+        'bt01.ipv6.nnm-club.info',
+        'bt02.ipv6.nnm-club.info',
+        'nnmclub.to',
+        'bt.nnmclub.to',
+        'bt.ipv6.nnmclub.to',
+        'ipv6.nnmclub.to',
+    ];
+
+    /** Dummy/guest passkeys that must never be treated as credentials. */
     private const DUMMY_PASSKEY_RE = '/^(?:f{32}|0{32})$/i';
 
-    /**
-     * Regex fragment for NNMClub hostnames in announce URLs.
-     * Port is optional to support URLs with implicit default ports.
-     */
-    private const ANNOUNCE_HOST_RE = '(?:nnm-club|nnmclub)\.\w+(?::\d+)?';
-
-    /**
-     * Regex to extract a 32-character hex passkey from an NNMClub announce URL.
-     * Supports both domain formats: nnm-club.* and nnmclub.*.
-     */
-    private const TOKEN_RE = '`' . self::ANNOUNCE_HOST_RE . '/([0-9a-f]{32})/announce`i';
+    private const TOKEN_RE = '/^[A-Za-z0-9]{32}$/D';
+    private const TRACKER_URL_RE = '`https?://[A-Za-z0-9.-]+(?::\d+)?/'
+        . '(?:[A-Za-z0-9]{32}/)?announce(?:\?uk=[A-Za-z0-9]{32})?`i';
 
     private const SCRAPE_RESULT_UPTODATE = 1;
     private const SCRAPE_RESULT_NOT_FOUND = 2;
     private const SCRAPE_RESULT_FAILED = 3;
 
-    /** @var string|null Cached rtorrent session directory path */
-    private static $sessionDirCache = null;
+    /** @var false|null|array false = not looked up, null = absent, array = found */
+    private static $donor = false;
 
-    /** @var bool True once session dir lookup has been attempted */
-    private static $sessionDirCacheLoaded = false;
-
-    /** @var bool True once donor passkey lookup has been attempted */
-    private static $donorPasskeyCacheLoaded = false;
-
-    /** @var string|null Cached donor passkey (null means not found) */
-    private static $donorPasskeyCache = null;
-
-    // ====================================================================
-    // Logging
-    // ====================================================================
-
-    /**
-     * Log a message through ruTrackerChecker::logDebug().
-     * @param string $message  Message (auto-prefixed with [NNMClub])
-     */
     private static function log($message)
     {
         ruTrackerChecker::logDebug('[NNMClub] ' . $message);
     }
 
-    /**
-     * Build a plain Snoopy client for "guest mode" requests.
-     * Intentionally uses fetch() (not fetchComplex()) to bypass loginmgr logic.
-     *
-     * @return Snoopy
-     */
+    // fetch() (not fetchComplex()) deliberately bypasses loginmgr: this handler
+    // works as a guest, and a Cloudflare-blocked login would poison the check.
     private static function makeGuestClient()
     {
         $client = new Snoopy();
         $client->read_timeout = 5;
         $client->_fp_timeout = 5;
-        $client->agent = self::DEFAULT_USER_AGENT;
+        $client->agent = ruTrackerChecker::USER_AGENT;
         return $client;
     }
 
-    /**
-     * Execute a single guest HTTP request with logging for transport failures.
-     *
-     * @param  Snoopy $client
-     * @param  string $url
-     * @param  string $method
-     * @param  string $contentType
-     * @param  string $body
-     * @return void
-     */
     private static function guestFetch($client, $url, $method = "GET", $contentType = "", $body = "")
     {
         @$client->fetch($url, $method, $contentType, $body);
-        if ($client->status < 0) {
+        // Socket errors are negative; the https path stores curl's exit code,
+        // which is below any real HTTP status.
+        if ($client->status < 100) {
             self::log("Guest fetch failed: url={$url} status={$client->status}");
         }
     }
 
-    /**
-     * Detect common anti-bot/challenge pages where download link is absent.
-     *
-     * @param  string $html
-     * @return bool
-     */
     private static function looksLikeChallengePage($html)
     {
         return is_string($html)
@@ -184,11 +115,9 @@ class NNMClubCheckImpl
     }
 
     /**
-     * Parse and normalize an NNMClub viewtopic URL.
-     * Supports both ?p=... and ?t=... topic references.
+     * Parse and normalize an NNMClub viewtopic URL (?p=... or ?t=...).
      *
-     * @param  string $url
-     * @return array|null ['host' => string, 'query' => string, 'id' => string]
+     * @return array|null ['host' => string, 'query' => string]
      */
     private static function parseTopicRef($url)
     {
@@ -222,11 +151,12 @@ class NNMClubCheckImpl
         parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
 
         foreach (['p', 't'] as $param) {
-            if (array_key_exists($param, $query) && ctype_digit((string) $query[$param])) {
+            if (array_key_exists($param, $query)
+                && is_scalar($query[$param])
+                && ctype_digit((string) $query[$param])) {
                 return [
                     'host' => $host,
                     'query' => $param . '=' . $query[$param],
-                    'id' => (string) $query[$param],
                 ];
             }
         }
@@ -234,221 +164,164 @@ class NNMClubCheckImpl
         return null;
     }
 
-    /**
-     * Validate topic host against a strict allowlist.
-     *
-     * @param  string $host
-     * @return bool
-     */
     private static function isAllowedTopicHost($host)
     {
-        return in_array($host, self::TOPIC_HOSTS, true);
+        $normalized = preg_replace('/^www\./i', '', (string) $host);
+        return in_array($normalized, self::TOPIC_HOSTS, true);
     }
 
-    // ====================================================================
-    // Passkey Discovery
-    // ====================================================================
+    private static function isAllowedTrackerHost($host)
+    {
+        return is_string($host)
+            && in_array(strtolower($host), self::TRACKER_HOSTS, true);
+    }
 
     /**
-     * Extract a real 32-hex passkey from an announce URL or announce-list.
-     * Dummy/guest passkeys (all-f's, all-zeros) are filtered out.
+     * Parse one announce URL into a typed credential descriptor.
+     * Path credentials are distribution-specific; `uk` credentials are reusable.
      *
-     * @param  string|array|null $announce  Single URL, announce-list array, or null
-     * @return string|null  Lowercase 32-hex passkey, or null if not found / dummy
+     * @return array|null ['mode' => 'dynamic'|'static', 'token' => string, 'announceUrl' => string]
      */
-    private static function extractPasskey($announce)
+    private static function parseAuthUrl($url)
+    {
+        if (!is_string($url) || $url === '') return null;
+
+        $url = trim($url);
+        $parts = @parse_url($url);
+        if (!is_array($parts)
+            || !isset($parts['scheme'], $parts['host'])
+            || !preg_match('/^https?$/i', $parts['scheme'])
+            || !self::isAllowedTrackerHost(strtolower($parts['host']))) {
+            return null;
+        }
+        $path = isset($parts['path']) ? $parts['path'] : '';
+        if (!preg_match('`/(?:[A-Za-z0-9]{32}/)?announce/?$`', $path)) return null;
+
+        $query = array();
+        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
+        if (isset($query['uk'])
+            && is_scalar($query['uk'])
+            && preg_match(self::TOKEN_RE, (string) $query['uk'])
+            && !preg_match(self::DUMMY_PASSKEY_RE, (string) $query['uk'])) {
+            return array(
+                'mode' => 'static',
+                'token' => (string) $query['uk'],
+                'announceUrl' => $url,
+            );
+        }
+
+        if (preg_match('`/([A-Za-z0-9]{32})/announce/?$`', $path, $match)
+            && !preg_match(self::DUMMY_PASSKEY_RE, $match[1])) {
+            return array(
+                'mode' => 'dynamic',
+                'token' => $match[1],
+                'announceUrl' => $url,
+            );
+        }
+        return null;
+    }
+
+    /**
+     * Extract a typed credential from announce metadata or raw session bencode.
+     *
+     * @param  string|array|null $announce
+     * @param  string|null       $requiredMode Optional `dynamic` or `static` filter
+     * @return array|null
+     */
+    private static function extractAuth($announce, $requiredMode = null)
     {
         if ($announce === null) return null;
 
         if (is_array($announce)) {
-            foreach ($announce as $tier) {
-                $urls = is_array($tier) ? $tier : [$tier];
-                foreach ($urls as $url) {
-                    $pk = self::extractPasskey($url);
-                    if ($pk !== null) return $pk;
-                }
+            foreach ($announce as $value) {
+                $auth = self::extractAuth($value, $requiredMode);
+                if ($auth !== null) return $auth;
             }
             return null;
         }
-
-        // Accept any string (URL or raw bencode data from findDonorPasskey)
         if (!is_string($announce)) return null;
 
-        if (preg_match(self::TOKEN_RE, $announce, $m)) {
-            $pk = strtolower($m[1]);
-            if (preg_match(self::DUMMY_PASSKEY_RE, $pk)) {
-                return null;  // Reject dummy passkey
+        $auth = self::parseAuthUrl($announce);
+        if ($auth !== null && ($requiredMode === null || $auth['mode'] === $requiredMode)) {
+            return $auth;
+        }
+
+        if (preg_match_all(self::TRACKER_URL_RE, $announce, $matches)) {
+            foreach ($matches[0] as $url) {
+                $auth = self::parseAuthUrl($url);
+                if ($auth !== null && ($requiredMode === null || $auth['mode'] === $requiredMode)) {
+                    return $auth;
+                }
             }
-            return $pk;
         }
         return null;
     }
 
     /**
-     * Scan rtorrent session directory for any NNMClub torrent with a real passkey.
-     *
-     * Since NNMClub passkeys are per-user (all interchangeable), we can
-     * borrow a passkey from ANY NNMClub torrent belonging to the same user.
-     *
-     * Optimization: reads only the first 4 KB for quick rejection and
-     * passkey extraction before falling back to full file read.
-     *
-     * @return string|null  32-hex passkey from a donor torrent, or null
+     * Scan the rTorrent session directory for a reusable profile `uk`
+     * credential; the result (or its absence) is cached per process.
      */
-    private static function findDonorPasskey()
+    private static function findDonorStaticAuth()
     {
-        if (self::$donorPasskeyCacheLoaded) {
-            self::log("Using cached donor passkey lookup result");
-            return self::$donorPasskeyCache;
+        if (self::$donor !== false) {
+            return self::$donor;
         }
+        self::$donor = null;
 
-        $sessionDir = self::getSessionDir();
-        if ($sessionDir === null) return self::cacheDonorPasskey(null);
-
-        $sessionDir = rtrim($sessionDir, '/');
+        $sessionDir = rtrim((string) rTorrentSettings::get()->session, '/');
         if ($sessionDir === '') {
-            self::log("Invalid session dir from get_session, skipping donor passkey lookup");
-            return self::cacheDonorPasskey(null);
+            self::log("No session directory, skipping reusable credential lookup");
+            return null;
         }
 
         $files = @glob($sessionDir . '/*.torrent');
         if (!$files) {
-            self::log("No session torrents found for donor passkey lookup");
-            return self::cacheDonorPasskey(null);
+            self::log("No session torrents found for reusable credential lookup");
+            return null;
         }
 
         foreach ($files as $path) {
-            // Quick rejection: check first 4 KB for NNMClub signature
-            $head = @file_get_contents($path, false, null, 0, 4096);
-            if ($head === false
-                || (stripos($head, 'nnm-club') === false
-                    && stripos($head, 'nnmclub') === false)) {
+            // announce keys precede the info dict in bencode order, so a
+            // bounded head read finds any credential the file has.
+            $head = @file_get_contents($path, false, null, 0, 65536);
+            if ($head === false || !preg_match('/nnm-?club|searchtor/i', $head)) {
                 continue;
             }
-
-            // Passkey is usually near the beginning of the bencoded data.
-            // Try head first, then full file only when needed.
-            $pk = self::extractPasskey($head);
-            if ($pk !== null) {
-                return self::cacheDonorPasskey($pk);
-            }
-
-            if (strlen($head) >= 4096) {
-                $full = @file_get_contents($path);
-                if ($full !== false) {
-                    $pk = self::extractPasskey($full);
-                    if ($pk !== null) {
-                        return self::cacheDonorPasskey($pk);
-                    }
-                }
+            $auth = self::extractAuth($head, 'static');
+            if ($auth !== null) {
+                return (self::$donor = $auth);
             }
         }
-        self::log("Donor passkey not found in session torrents");
-        return self::cacheDonorPasskey(null);
-    }
-
-    /**
-     * Save donor passkey lookup result in cache.
-     *
-     * @param  string|null $passkey  Found passkey or null if absent
-     * @return string|null
-     */
-    private static function cacheDonorPasskey($passkey)
-    {
-        self::$donorPasskeyCacheLoaded = true;
-        self::$donorPasskeyCache = $passkey;
-        return $passkey;
-    }
-
-    /**
-     * Get rtorrent session directory via XMLRPC (result is cached).
-     * @return string|null  Session directory path, or null on failure
-     */
-    private static function getSessionDir()
-    {
-        if (self::$sessionDirCacheLoaded) {
-            return self::$sessionDirCache;
-        }
-
-        self::$sessionDirCacheLoaded = true;
-
-        $req = new rXMLRPCRequest(new rXMLRPCCommand("get_session"));
-        if ($req->run() && !$req->fault && !empty($req->val[0])) {
-            self::$sessionDirCache = $req->val[0];
-            return self::$sessionDirCache;
-        }
-
-        self::$sessionDirCache = null;
-        self::log("Failed to resolve rtorrent session directory via get_session");
+        self::log("Reusable profile credential not found in session torrents");
         return null;
     }
 
-    // ====================================================================
-    // Session Torrent Patching
-    // ====================================================================
-
-    /**
-     * Patch announce URLs in the session .torrent file to include passkey.
-     *
-     * Uses the Torrent class for clean bencode parsing and serialization.
-     * Preserves libtorrent_resume and rtorrent metadata so that
-     * fast-resume works correctly after rtorrent restart.
-     *
-     * @param  string $hash     Info hash (hex, uppercase)
-     * @param  string $passkey  32-hex passkey to inject
-     * @return bool   True if the file was patched and saved
-     */
-    private static function patchSessionTorrent($hash, $passkey)
+    private static function rebuildTrackerUrl($parts, $path, $query)
     {
-        $sessionDir = self::getSessionDir();
-        if ($sessionDir === null) {
-            self::log("patchSessionTorrent skipped: no session dir for {$hash}");
-            return false;
+        $url = strtolower($parts['scheme']) . '://' . strtolower($parts['host']);
+        if (isset($parts['port'])) $url .= ':' . (int) $parts['port'];
+        $url .= $path;
+        if (count($query)) {
+            $url .= '?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
         }
-
-        $path = rtrim($sessionDir, '/') . '/' . $hash . '.torrent';
-        if (!is_writable($path)) {
-            self::log("patchSessionTorrent skipped: not writable {$path}");
-            return false;
-        }
-
-        $torrent = new Torrent($path);
-        if ($torrent->errors()) {
-            self::log("patchSessionTorrent failed: unreadable torrent {$path}");
-            return false;
-        }
-
-        $changed = self::patchPasskeyInTorrent($torrent, $passkey);
-        if (!$changed) {
-            self::log("patchSessionTorrent no-op for {$hash}: no announce URLs to patch");
-            return false;
-        }
-
-        // NOTE: We intentionally preserve libtorrent_resume and rtorrent
-        // metadata — they are needed for fast-resume after rtorrent restart.
-        // Only the announce URLs are modified (outside the info dict),
-        // so the info_hash and resume data remain valid.
-
-        $saved = (bool) $torrent->save($path);
-        self::log("patchSessionTorrent " . ($saved ? "saved" : "failed to save") . " for {$hash}");
-        return $saved;
+        return $url;
     }
 
     /**
-     * Patch NNMClub announce URLs inside a Torrent object.
+     * Patch NNMClub announce URLs with a reusable profile credential.
      *
-     * @param  Torrent $torrent
-     * @param  string  $passkey
-     * @return bool  True when at least one URL was changed
+     * @return bool True when at least one URL was changed
      */
-    private static function patchPasskeyInTorrent($torrent, $passkey)
+    private static function patchStaticAuthInTorrent($torrent, $auth)
     {
+        if (!is_array($auth) || ($auth['mode'] ?? null) !== 'static') return false;
+
         $announceChanged = false;
         $listChanged = false;
 
         $announce = $torrent->announce();
         if (is_string($announce) && $announce !== '') {
-            $patched = self::injectPasskeyIntoUrl($announce, $passkey);
+            $patched = self::injectStaticAuthIntoUrl($announce, $auth['token']);
             if ($patched !== $announce) {
                 $torrent->announce($patched);
                 $announceChanged = true;
@@ -463,7 +336,7 @@ class NNMClubCheckImpl
                 $urls = is_array($tier) ? $tier : [$tier];
                 foreach ($urls as $url) {
                     $patchedUrl = is_string($url)
-                        ? self::injectPasskeyIntoUrl($url, $passkey)
+                        ? self::injectStaticAuthIntoUrl($url, $auth['token'])
                         : $url;
                     if ($patchedUrl !== $url) {
                         $listChanged = true;
@@ -480,194 +353,113 @@ class NNMClubCheckImpl
         return $announceChanged || $listChanged;
     }
 
-    /**
-     * Inject a passkey into an NNMClub announce URL.
-     * Supports both nnm-club.* and nnmclub.* domain formats.
-     * Non-NNMClub URLs are returned unchanged.
-     *
-     * @param  string $url      Announce URL
-     * @param  string $passkey  32-hex passkey to inject
-     * @return string  Modified URL (or original if not NNMClub)
-     */
-    private static function injectPasskeyIntoUrl($url, $passkey)
+    /** Convert an NNMClub announce URL to reusable `announce?uk=TOKEN` form. */
+    private static function injectStaticAuthIntoUrl($url, $token)
     {
-        $hostGroup = '(' . self::ANNOUNCE_HOST_RE . ')';
-        $result = preg_replace(
-            '`' . $hostGroup . '/(?:[0-9a-f]{32}/)?announce`i',
-            '$1/' . $passkey . '/announce',
-            $url,
-            1,
-            $count
-        );
-        if ($count > 0 && $result !== null) {
-            return $result;
+        if (!is_string($url) || !preg_match(self::TOKEN_RE, (string) $token)) return $url;
+        $parts = @parse_url($url);
+        if (!is_array($parts)
+            || !isset($parts['scheme'], $parts['host'], $parts['path'])
+            || !preg_match('/^https?$/i', $parts['scheme'])
+            || !self::isAllowedTrackerHost(strtolower($parts['host']))) {
+            return $url;
         }
 
-        return $url;
-    }
+        $path = preg_replace('`/(?:[A-Za-z0-9]{32}/)?announce/?$`', '/announce', $parts['path'], 1, $count);
+        if ($count !== 1 || $path === null) return $url;
 
-    // ====================================================================
-    // Tracker Scrape
-    // ====================================================================
-
-    /**
-     * Decode one bencoded value from $data starting at $offset.
-     *
-     * @param  string $data
-     * @param  int    $offset
-     * @return mixed
-     * @throws Exception
-     */
-    private static function decodeBencodeValue($data, &$offset)
-    {
-        if (!isset($data[$offset])) {
-            throw new Exception("Unexpected EOF at offset {$offset}");
-        }
-
-        $token = $data[$offset];
-        if ($token >= '0' && $token <= '9') {
-            return self::decodeBencodeString($data, $offset);
-        }
-
-        if ($token === 'i') {
-            $offset++;
-            $end = strpos($data, 'e', $offset);
-            if ($end === false) {
-                throw new Exception("Invalid integer at offset {$offset}");
-            }
-            $num = substr($data, $offset, $end - $offset);
-            if ($num === '' || !preg_match('/^-?\d+$/', $num)) {
-                throw new Exception("Invalid integer value at offset {$offset}");
-            }
-            $offset = $end + 1;
-            return (int) $num;
-        }
-
-        if ($token === 'l') {
-            $offset++;
-            $list = [];
-            while (isset($data[$offset]) && $data[$offset] !== 'e') {
-                $list[] = self::decodeBencodeValue($data, $offset);
-            }
-            if (!isset($data[$offset])) {
-                throw new Exception("Unterminated list at offset {$offset}");
-            }
-            $offset++;
-            return $list;
-        }
-
-        if ($token === 'd') {
-            $offset++;
-            $dict = [];
-            while (isset($data[$offset]) && $data[$offset] !== 'e') {
-                $key = self::decodeBencodeString($data, $offset);
-                $dict[$key] = self::decodeBencodeValue($data, $offset);
-            }
-            if (!isset($data[$offset])) {
-                throw new Exception("Unterminated dict at offset {$offset}");
-            }
-            $offset++;
-            return $dict;
-        }
-
-        throw new Exception("Unknown token '{$token}' at offset {$offset}");
+        $query = array();
+        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
+        $query['uk'] = $token;
+        return self::rebuildTrackerUrl($parts, $path, $query);
     }
 
     /**
-     * Decode one bencoded byte string from $data starting at $offset.
+     * Check whether a scrape response lists the given hash. Scrape bodies are
+     * tiny bencoded dicts keyed by raw 20-byte hashes, so finding the bencoded
+     * key is enough; phase 2 (guest download + hash comparison) independently
+     * re-verifies before any replacement happens.
      *
-     * @param  string $data
-     * @param  int    $offset
-     * @return string
-     * @throws Exception
-     */
-    private static function decodeBencodeString($data, &$offset)
-    {
-        $colon = strpos($data, ':', $offset);
-        if ($colon === false) {
-            throw new Exception("Invalid string length at offset {$offset}");
-        }
-
-        $lenRaw = substr($data, $offset, $colon - $offset);
-        if ($lenRaw === '' || preg_match('/\D/', $lenRaw)) {
-            throw new Exception("Invalid string size '{$lenRaw}' at offset {$offset}");
-        }
-
-        $len = (int) $lenRaw;
-        $offset = $colon + 1;
-        if (($offset + $len) > strlen($data)) {
-            throw new Exception("String out of bounds at offset {$offset}");
-        }
-
-        $value = substr($data, $offset, $len);
-        $offset += $len;
-        return $value;
-    }
-
-    /**
-     * Parse scrape bencode and check whether "files" contains $binaryHash key.
-     *
-     * @param  string $payload
-     * @param  string $binaryHash  Raw 20-byte hash
-     * @return bool|null  true: found, false: not found, null: parse error
+     * @param  string $binaryHash Raw 20-byte hash
      */
     private static function scrapeContainsHash($payload, $binaryHash)
     {
-        if (!is_string($payload) || !is_string($binaryHash) || strlen($binaryHash) !== 20) {
-            return false;
-        }
+        return is_string($payload)
+            && is_string($binaryHash) && strlen($binaryHash) === 20
+            && isset($payload[0]) && $payload[0] === 'd'
+            && strpos($payload, '20:' . $binaryHash) !== false;
+    }
 
-        try {
-            $offset = 0;
-            $root = self::decodeBencodeValue($payload, $offset);
-        } catch (Exception $e) {
-            self::log("Scrape parse failed: " . $e->getMessage());
+    /** Derive a scrape URL without changing the credential's meaning or case. */
+    private static function buildScrapeUrl($auth, $binaryHash)
+    {
+        if (!is_array($auth) || !isset($auth['mode'], $auth['token'], $auth['announceUrl'])) {
+            return null;
+        }
+        $parts = @parse_url($auth['announceUrl']);
+        if (!is_array($parts)
+            || !isset($parts['scheme'], $parts['host'], $parts['path'])
+            || !self::isAllowedTrackerHost(strtolower($parts['host']))) {
             return null;
         }
 
-        return is_array($root)
-            && isset($root['files'])
-            && is_array($root['files'])
-            && array_key_exists($binaryHash, $root['files']);
+        $path = preg_replace('`/announce/?$`', '/scrape', $parts['path'], 1, $count);
+        if ($count !== 1 || $path === null) return null;
+
+        $query = array();
+        parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
+        unset($query['info_hash']);
+        if ($auth['mode'] === 'static') {
+            $query['uk'] = $auth['token'];
+        } elseif ($auth['mode'] !== 'dynamic') {
+            return null;
+        }
+
+        $url = self::rebuildTrackerUrl($parts, $path, $query);
+        return $url . (count($query) ? '&' : '?') . 'info_hash=' . rawurlencode($binaryHash);
     }
 
     /**
-     * Scrape the NNMClub tracker to check if a hash is registered.
+     * Scrape the tracker endpoint associated with a typed credential.
+     * Static credentials may fall back to the current official IPv4 endpoint;
+     * dynamic credentials must stay on their original distribution URL.
      *
-     * Uses Snoopy (via makeClient) for consistency with the rest of the
-     * plugin (respects proxy settings, bind IP, timeouts).
-     * Tries all configured TRACKER_HOSTS with fallback on failure.
-     *
-     * @param  string $passkey  32-hex passkey for tracker auth
-     * @param  string $hash     Info hash (hex, uppercase, 40 chars)
-     * @return int  One of SCRAPE_RESULT_* constants
+     * @return int One of SCRAPE_RESULT_* constants
      */
-    private static function checkViaScrape($passkey, $hash)
+    private static function checkViaScrape($auth, $hash)
     {
-        $binary = @pack('H*', $hash);
-        if (strlen($binary) !== 20) {
+        if (!is_string($hash) || !preg_match('/^[0-9A-F]{40}$/i', $hash)) {
             self::log("Scrape skipped: invalid info hash format {$hash}");
             return self::SCRAPE_RESULT_FAILED;
         }
+        $binary = pack('H*', $hash);
+
+        $urls = array();
+        $primary = self::buildScrapeUrl($auth, $binary);
+        if ($primary !== null) $urls[] = $primary;
+        if (($auth['mode'] ?? null) === 'static') {
+            $fallback = self::buildScrapeUrl(array(
+                'mode' => 'static',
+                'token' => $auth['token'],
+                'announceUrl' => 'http://bt.searchtor.to/announce?uk=' . rawurlencode($auth['token']),
+            ), $binary);
+            if ($fallback !== null && !in_array($fallback, $urls, true)) $urls[] = $fallback;
+        }
+        if (!count($urls)) return self::SCRAPE_RESULT_FAILED;
 
         $sawNotFound = false;
 
-        foreach (self::TRACKER_HOSTS as $host) {
-            $url = 'http://' . $host . ':' . self::TRACKER_PORT
-                 . '/' . $passkey . '/scrape?info_hash=' . rawurlencode($binary);
+        foreach ($urls as $url) {
+            $host = @parse_url($url, PHP_URL_HOST);
+            $host = is_string($host) ? $host : 'unknown';
 
             $client = ruTrackerChecker::makeClient($url);
 
             if ($client->status == 200
                 && is_string($client->results)
                 && $client->results !== '') {
-                $hashState = self::scrapeContainsHash($client->results, $binary);
-                if ($hashState === true) {
+                if (self::scrapeContainsHash($client->results, $binary)) {
                     return self::SCRAPE_RESULT_UPTODATE;
-                }
-                if ($hashState === null) {
-                    self::log("Scrape response parse error on {$host}");
-                    continue;
                 }
                 self::log("Scrape response OK on {$host}, hash {$hash} not found");
                 $sawNotFound = true;
@@ -680,31 +472,6 @@ class NNMClubCheckImpl
             ? self::SCRAPE_RESULT_NOT_FOUND
             : self::SCRAPE_RESULT_FAILED;
     }
-
-    // ====================================================================
-    // Formatting
-    // ====================================================================
-
-    /**
-     * Convert result values to readable log-safe strings.
-     *
-     * @param  mixed $value
-     * @return string
-     */
-    private static function stringify($value)
-    {
-        if ($value === null) return 'null';
-        if ($value === true) return 'true';
-        if ($value === false) return 'false';
-        if (is_int($value) || is_float($value) || is_string($value)) {
-            return (string) $value;
-        }
-        return gettype($value);
-    }
-
-    // ====================================================================
-    // Main Entry Point
-    // ====================================================================
 
     /**
      * Check whether an NNMClub torrent needs updating.
@@ -721,45 +488,38 @@ class NNMClubCheckImpl
         // Prefer matched URL, but fallback to torrent comment if handler was
         // invoked via announce URL.
         $topicRef = self::parseTopicRef($url);
-        if ($topicRef === null && is_object($old_torrent)) {
+        if ($topicRef === null && is_object($old_torrent) && method_exists($old_torrent, 'comment')) {
             $topicRef = self::parseTopicRef($old_torrent->comment());
         }
-        if ($topicRef === null) {
-            self::log("Skip check: unable to parse NNMClub topic reference from URL/comment");
-            return ruTrackerChecker::STE_NOT_NEED;
-        }
-        $siteDomain = $topicRef['host'];
-        $topicQuery = $topicRef['query'];
-        self::log("Start check for {$hash} using {$siteDomain}/forum/viewtopic.php?{$topicQuery}");
-
-        // =============================================================
-        // PASSKEY DISCOVERY
-        // =============================================================
-
-        $passkey = self::extractPasskey($old_torrent->announce())
-                ?? self::extractPasskey($old_torrent->announce_list());
-        if ($passkey !== null) {
-            self::log("Using passkey from current torrent metadata");
+        if ($topicRef !== null) {
+            self::log("Start check for {$hash} using {$topicRef['host']}/forum/viewtopic.php?{$topicRef['query']}");
+        } else {
+            self::log("Start announce-only check for {$hash}; guest replacement will be unavailable");
         }
 
-        if ($passkey === null) {
-            $passkey = self::findDonorPasskey();
-            if ($passkey !== null) {
-                self::log("Found donor passkey, patching session torrent {$hash}");
-                if (!self::patchSessionTorrent($hash, $passkey)) {
-                    self::log("Session patch attempt finished without file changes for {$hash}");
-                }
+        $announces = array($url);
+        if (is_object($old_torrent)) {
+            if (method_exists($old_torrent, 'announce')) $announces[] = $old_torrent->announce();
+            if (method_exists($old_torrent, 'announce_list')) $announces[] = $old_torrent->announce_list();
+        }
+        $staticAuth = self::extractAuth($announces, 'static');
+        $scrapeAuth = self::extractAuth($announces, 'dynamic') ?: $staticAuth;
+
+        if ($scrapeAuth !== null) {
+            self::log("Using {$scrapeAuth['mode']} credential from current torrent metadata");
+        } else {
+            $staticAuth = self::findDonorStaticAuth();
+            $scrapeAuth = $staticAuth;
+            if ($staticAuth !== null) {
+                self::log("Using reusable profile credential from a session torrent");
             } else {
-                self::log("No passkey found for {$hash}, skipping scrape");
+                self::log("No tracker credential found for {$hash}, skipping scrape");
             }
         }
 
-        // =============================================================
-        // PHASE 1: TRACKER SCRAPE (fast path)
-        // =============================================================
-
-        if ($passkey !== null) {
-            $scrapeResult = self::checkViaScrape($passkey, $hash);
+        // Phase 1: tracker scrape (fast path).
+        if ($scrapeAuth !== null) {
+            $scrapeResult = self::checkViaScrape($scrapeAuth, $hash);
             if ($scrapeResult === self::SCRAPE_RESULT_UPTODATE) {
                 return ruTrackerChecker::STE_UPTODATE;
             }
@@ -771,11 +531,14 @@ class NNMClubCheckImpl
             }
         }
 
-        // =============================================================
-        // PHASE 2: GUEST TORRENT DOWNLOAD
-        // =============================================================
+        if ($topicRef === null) {
+            self::log("No topic reference for {$hash}; guest download and replacement are unavailable");
+            return ruTrackerChecker::STE_NOT_NEED;
+        }
+        $siteDomain = $topicRef['host'];
+        $topicQuery = $topicRef['query'];
 
-        // --- Step 1: Fetch guest topic page ---
+        // Phase 2: guest topic page + torrent download.
         $client = self::makeGuestClient();
         self::guestFetch($client, "https://{$siteDomain}/forum/viewtopic.php?" . $topicQuery);
         if ($client->status != 200) {
@@ -783,7 +546,7 @@ class NNMClubCheckImpl
             return ruTrackerChecker::STE_CANT_REACH_TRACKER;
         }
 
-        // --- Step 2: btih shortcut (for authenticated sessions) ---
+        // btih shortcut (present only for authenticated sessions).
         if (preg_match('`btih:(?P<hash>[0-9A-Fa-f]{40})`', $client->results, $btihMatch)) {
             if (strtoupper($btihMatch['hash']) === $hash) {
                 return ruTrackerChecker::STE_UPTODATE;
@@ -791,7 +554,6 @@ class NNMClubCheckImpl
             self::log("Topic btih differs for {$topicQuery}, verifying via downloaded .torrent");
         }
 
-        // --- Step 3: Find download link ---
         if (!preg_match('`(?:/forum/)?download\.php\?id=(?P<dlid>\d+)`i', $client->results, $dlMatch)) {
             if (self::looksLikeChallengePage($client->results)) {
                 self::log("No download link for {$topicQuery}: challenge page detected");
@@ -802,7 +564,6 @@ class NNMClubCheckImpl
         }
         $downloadId = $dlMatch['dlid'];
 
-        // --- Step 4: Download guest .torrent ---
         $client->setcookies();
         self::guestFetch($client, "https://{$siteDomain}/forum/download.php?id=" . $downloadId);
         if ($client->status != 200 || empty($client->results)) {
@@ -814,8 +575,8 @@ class NNMClubCheckImpl
 
         $guestData = $client->results;
 
-        // --- Step 5: Compare info_hash ---
-        $guestTorrent = new Torrent($guestData);
+        // Suppress PHP 7.4's filename-probe warning for binary metainfo.
+        $guestTorrent = @new Torrent($guestData);
         if ($guestTorrent->errors()) {
             self::log("Failed to parse downloaded torrent for {$topicQuery}");
             return ruTrackerChecker::STE_ERROR;
@@ -827,28 +588,31 @@ class NNMClubCheckImpl
             return ruTrackerChecker::STE_UPTODATE;
         }
 
-        // --- Step 6: Hash differs → torrent was updated ---
+        // Hash differs: the torrent was updated on NNMClub.
         self::log("Hash changed for {$topicQuery}: {$hash} -> {$guestHash}");
-        if ($passkey === null) {
-            self::log("Hash differs but passkey is unavailable; refusing replacement");
+        if ($staticAuth === null) {
+            $staticAuth = self::findDonorStaticAuth();
+        }
+        if ($staticAuth === null) {
+            self::log("Hash differs but a reusable profile credential is unavailable; refusing replacement");
             return ruTrackerChecker::STE_ERROR;
         }
-        if (!self::patchPasskeyInTorrent($guestTorrent, $passkey)) {
-            self::log("Hash differs but passkey patch found no NNMClub announce URLs");
+        if (!self::patchStaticAuthInTorrent($guestTorrent, $staticAuth)) {
+            self::log("Hash differs but credential patch found no NNMClub announce URLs");
             return ruTrackerChecker::STE_ERROR;
         }
 
         $replaceResult = ruTrackerChecker::createTorrent((string) $guestTorrent, $hash);
-        self::log("createTorrent result for {$hash}: " . self::stringify($replaceResult));
+        self::log("createTorrent result for {$hash}: " . var_export($replaceResult, true));
         return $replaceResult;
     }
 }
 
 // Register this tracker handler with ruTrackerChecker.
 // First regex: matches the torrent's comment URL.
-// Second regex: matches announce URLs containing "nnm-club" or "nnmclub".
+// Second regex also covers the current official searchtor announcers.
 ruTrackerChecker::registerTracker(
     "/(nnm-club|nnmclub)\./",
-    "/(nnm-club|nnmclub)\./",
+    "/(?:nnm-club|nnmclub)\.|(?:ipv6\.)?bt\.searchtor\.to/i",
     "NNMClubCheckImpl::download_torrent"
 );
