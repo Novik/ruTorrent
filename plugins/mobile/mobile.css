@@ -1,0 +1,481 @@
+/*** Icons (Bootstrap Icons v1.13.1, MIT — only the glyphs this UI uses) ***/
+@font-face {
+  font-family: 'bootstrap-icons';
+  src: url('fonts/bootstrap-icons.woff2') format('woff2'),
+       url('fonts/bootstrap-icons.woff') format('woff');
+}
+.bi:before {
+  display: inline-block;
+  font-family: 'bootstrap-icons' !important;
+  font-style: normal;
+  font-weight: 400 !important;
+  line-height: 1;
+  vertical-align: -.125em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.bi-arrow-clockwise:before {content: "\f116";}
+.bi-arrow-down-up:before {content: "\f127";}
+.bi-arrow-left:before {content: "\f12f";}
+.bi-download:before {content: "\f30a";}
+.bi-file-earmark:before {content: "\f392";}
+.bi-folder2-open:before {content: "\f3d8";}
+.bi-funnel:before {content: "\f3e1";}
+.bi-gear:before {content: "\f3e5";}
+.bi-list-ul:before {content: "\f478";}
+.bi-pause-fill:before {content: "\f4c3";}
+.bi-pencil-square:before {content: "\f4ca";}
+.bi-play-fill:before {content: "\f4f4";}
+.bi-sort-down:before {content: "\f575";}
+.bi-sort-down-alt:before {content: "\f574";}
+.bi-stop-fill:before {content: "\f592";}
+.bi-trash:before {content: "\f5de";}
+.bi-upload:before {content: "\f603";}
+.bi-plus-lg:before {content: "\f64d";}
+.bi-check-lg:before {content: "\f633";}
+.bi-asterisk:before {content: "\f151";}
+.bi-exclamation-triangle-fill:before {content: "\f33a";}
+.bi-globe2:before {content: "\f3ef";}
+.bi-tag:before {content: "\f5b0";}
+
+
+/*** Bootstrap 3 compat (the core now provides Bootstrap 5) ***/
+/* Bootstrap 5 sets smooth scrolling on :root, which animates the
+   scroll-position restore when returning to the torrent list */
+:root {
+  scroll-behavior: auto;
+}
+/* Accent color, switchable between the standard Bootstrap theme colors
+   via plugin.accentColor in init.js */
+:root {
+  --mobile-accent: var(--bs-primary);
+  --mobile-accent-rgb: var(--bs-primary-rgb);
+}
+.progress-bar {
+  background-color: var(--mobile-accent);
+}
+.list-group {
+  --bs-list-group-active-bg: var(--mobile-accent);
+  --bs-list-group-active-border-color: var(--mobile-accent);
+}
+.accordion {
+  /* Expanded header follows the accent color as a light tint */
+  --bs-accordion-active-bg: rgba(var(--mobile-accent-rgb), 0.15);
+  --bs-accordion-active-color: var(--mobile-accent);
+  --bs-accordion-btn-focus-box-shadow: 0 0 0 0.25rem rgba(var(--mobile-accent-rgb), 0.25);
+  /* Keep the neutral chevron; the stock expanded one is primary-blue */
+  --bs-accordion-btn-active-icon: var(--bs-accordion-btn-icon);
+}
+body {
+  font-size: 14px;
+}
+h5 {
+  font-size: 14px;
+  margin: 10px 0;
+}
+/* Follow the accent color, and drop the underlines, which read
+   as noise in a link-heavy touch UI */
+a {
+  color: var(--mobile-accent);
+  text-decoration: none;
+}
+.pull-left {
+  float: left !important;
+}
+.pull-right {
+  float: right !important;
+}
+.navbar-fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.checkbox, .radio {
+  display: block;
+  margin: 10px 0;
+}
+.checkbox label, .radio label, .radio-inline {
+  font-weight: 400;
+  cursor: pointer;
+}
+.checkbox input, .radio input, .radio-inline input {
+  margin-right: 4px;
+}
+.radio-inline {
+  margin-right: 12px;
+}
+.progress {
+  height: 20px;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+.list-group-item .badge {
+  float: right;
+}
+
+
+/*** General ***/
+html, body {
+  overflow: visible;
+}
+a, button, tr, select, input, label {
+  -webkit-tap-highlight-color: transparent;
+}
+div input {
+  margin: 0px;
+}
+select {
+  width:auto;
+}
+.table {
+  margin-bottom: 0;
+}
+#torrentsList .table {
+  table-layout: fixed;
+}
+.tableFixHead {
+  overflow-y: auto;
+  margin-bottom: 0;
+}
+.tableFixHead th {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background: #eee;
+}
+.icon-white {
+  color: white;
+}
+.icon-black {
+  color: black;
+}
+a:hover, a:focus {
+  outline: none;
+  text-decoration: none;
+}
+#mainContainer {
+  background-color: #fff;
+  padding: 45px 3px calc(74px + env(safe-area-inset-bottom, 0px)) 3px;
+  margin: 0;
+}
+/* The label is its own layer sized to the bar, so it centers in the
+   filled part; min-width keeps it from clipping when the bar is narrower
+   than the text, and the halo keeps it readable over the light track */
+.progress {
+  position: relative;
+}
+.progress .progress-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  min-width: max-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+  text-shadow: 0 0 2px #000, 0 0 2px #000, 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFilesPage a, #detailsDetailsPage #label td, .nav a, #getDirList td {
+  word-break:break-all;
+}
+#detailsTrackersPage .accordion-button {
+  font-size: 14px;
+}
+#torrentsList #list span {
+  font-size: 12px;
+}
+
+
+/*** navbar bottom ***/
+.navbar {
+  margin-bottom: 0;
+  border: none;
+}
+.navbar-inverse {
+  background-color: #222;
+}
+/* Keep the buttons clear of the iOS home indicator on devices that have
+   one; on other devices the inset is 0 and the bar stays compact */
+.navbar-fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.navbar .container {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.navbar .nav > li {
+  float: left;
+  margin-right: 15px;
+}
+.navbar .nav > li:last-child {
+  margin-right: 0px;
+  /* Center the up/down speed stack on the bar's midline, like the
+     table-cell-centered icons in the other items */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 65px;
+}
+.navbar .nav > li > a, .navbar .nav > li > a:hover, .navbar .nav > li > a:focus {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 0;
+  font-size: 20px;
+  background-color: transparent;
+  height: 65px;
+}
+.navbar .nav > li > div > span {
+  position: relative;
+  top: -2px;
+  color: #fff;
+  line-height: 0;
+}
+.navbar .nav > li > div > i {
+  margin-right: 2px;
+  font-size: 17px;
+}
+.navbar .divider-vertical {
+  height: 65px;
+  margin: 0 15px 0 0;
+  border-right: 1px solid #323232;
+  border-left: 1px solid #111111;
+}
+
+
+/*** navtabs top ***/
+.nav-tabs {
+  display: flex;
+  /* BS5's .nav wraps by default, which would push the toolbar icons to
+     a second line when the filter text is long; truncate instead */
+  flex-wrap: nowrap;
+  background-color: #fff;
+  padding: 3px 3px 0 3px;
+  border-bottom: 1px solid #ddd;
+}
+.nav-tabs > li {
+  flex: 0 0 auto;
+}
+.nav-tabs a {
+  font-size: 15px;
+}
+.nav-tabs > li > a {
+  display: block;
+  padding: 8px 12px;
+  color: var(--mobile-accent);
+  border-bottom: 2px solid transparent;
+}
+.nav-tabs > li.active > a {
+  border-bottom-color: var(--mobile-accent);
+  font-weight: bold;
+}
+#torrentsList .nav {
+  white-space: nowrap;
+}
+#torrentsList .nav > li > a {
+  margin-right: 1px;
+}
+.nav-tabs > li > a:hover, .nav-tabs > li > a:focus {
+  background-color: transparent;
+}
+.nav-tabs #torrentsFilter {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  order: 1;
+}
+.nav-tabs #refresh {
+  order: 2;
+}
+.nav-tabs #sort {
+  order: 3;
+}
+.nav-tabs #sort #sortIcon i, .nav-tabs #refresh #refreshIcon i {
+  color: var(--mobile-accent);
+}
+.nav-tabs #torrentsFilter > a {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* Only the selection names truncate; the count stays visible */
+.nav-tabs #torrentsFilter #filterText {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-tabs #torrentsFilter #filterCount {
+  flex: 0 0 auto;
+  margin-left: 5px;
+}
+.nav-tabs #torrentsFilter > a > i {
+  color: var(--mobile-accent);
+  margin-right: 6px;
+}
+
+
+/*** Torrent Filter ***/
+#torrentFilter {
+  margin-top: -20px;
+}
+#torrentFilter h5 {
+  font-weight: bold;
+  margin-top: 15px;
+}
+#torrentFilter .list-group {
+  margin-bottom: 10px;
+}
+#torrentFilter .list-group-item .bi {
+  margin-right: 8px;
+}
+#torrentFilter .list-group-item .filter-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: text-bottom;
+}
+#filterButtons {
+  margin-bottom: 5px;
+}
+
+
+/*** Torrent Details ***/
+#torrentDetailsHeader, #detailsTrackersPage, #detailsFilesPage {
+  padding-top: 9px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+#torrentDetails #detailsDetailsPage tr td:first-child {
+  white-space: nowrap;
+}
+#torrentDetails #detailsDetailsPage tr td:last-child {
+ word-break: break-all;
+}
+#torrentDetails #detailsDetailsPage #label input {
+  display: inline;
+  height: 24px;
+  width: 139px;
+  padding-top: 5px;
+  vertical-align: middle;
+}
+#torrentDetails #detailsFilesPage > div {
+  min-height: 24px;
+}
+#torrentDetails #detailsFilesPage > div a {
+  display: block;
+  padding-top: 4px;
+}
+#torrentDetails #detailsFilesPage button {
+  margin-left: 4px;
+}
+
+
+/*** Add Torrent ***/
+#addTorrent {
+  margin-top: -20px;
+}
+#addTorrent #showGetDir, #torrentDataDir #showGetDirDataDir {
+  height: 34px;
+}
+#addTorrent #labelBlock #taddReturnSelect {
+  margin-top: 5px;
+}
+
+
+/*** Torrent Data Directory ***/
+#torrentDataDir {
+  margin-top: -20px;
+}
+#torrentDataDir h5 {
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+
+/*** Peer Actions ***/
+#peerActions {
+  margin: 8px 0;
+}
+#peerActions #peerAddBlock {
+  margin-bottom: 8px;
+}
+#peersTable tbody tr {
+  cursor: pointer;
+}
+#peersTable.no-country th#country, #peersTable.no-country td.country-cell {
+  display: none;
+}
+#peersTable .peer-flag {
+  vertical-align: middle;
+}
+#peersTable td.country-cell {
+  white-space: nowrap;
+}
+#peersTable tbody tr.info > td {
+  background-color: rgba(var(--mobile-accent-rgb), 0.2);
+  --bs-table-bg: rgba(var(--mobile-accent-rgb), 0.2);
+}
+
+
+/*** Tracker Actions ***/
+#detailsTrackersPage #updateTrackersBtn {
+  margin: 8px 0;
+}
+
+
+/*** Server Info ***/
+#globalSettings #serverInfoHeader {
+  font-weight: bold;
+  margin-top: 20px;
+}
+#globalSettings #diskSpaceBar {
+  margin-bottom: 5px;
+}
+
+
+/*** Get Dir List ***/
+#getDirList {
+  margin-top: -20px;
+}
+#getDirList h5 {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+#getDirList button {
+  margin-left: 8px;
+  margin-bottom: 15px;
+}
+#getDirList td {
+  padding: 14px;
+}
+
+/*** Torrent Sort ***/
+#torrentSort {
+  margin-top: -20px;
+}
+
+
+/*** Global Settings ***/
+#globalSettings {
+  margin-top: -20px;
+}
+
+
+/*** Confirm Delete ***/
+#confirmTorrentDelete #confirmText {
+  word-break: normal;
+}

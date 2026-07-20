@@ -1,0 +1,263 @@
+<div id="mainContainer">
+
+  <nav id="mainNavbar" class="navbar navbar-inverse">
+    <div class="container">
+      <ul class="nav navbar-inverse">
+        <li>
+          <a id="navBack" href="javascript://void();" onclick="window.history.go(-1);"><i class="bi bi-arrow-left icon-white"></i></a>
+        </li>
+        <li>
+          <a id="navSettings" href="javascript://void();" onclick="mobile.showSettings();"><i class="bi bi-gear icon-white"></i></a>
+        </li>
+        <li>
+          <a id="navAdd" href="javascript://void();" onclick="mobile.addTorrent();"><i class="bi bi-plus-lg icon-white"></i></a>
+        </li>
+        <li class="torrentControl divider-vertical"></li>
+        <li class="torrentControl">
+          <a id="torrentStart" href="javascript://void();" onclick="mobile.start();"><i class="bi bi-play-fill icon-white"></i></a>
+        </li>
+        <li class="torrentControl">
+          <a id="torrentStop" href="javascript://void();" onclick="mobile.stop();"><i class="bi bi-stop-fill icon-white"></i></a>
+        </li>
+        <li class="torrentControl">
+          <a id="torrentPause" href="javascript://void();" onclick="mobile.pause();"><i class="bi bi-pause-fill icon-white"></i></a>
+        </li>
+        <li class='torrentControl'>
+          <a id="torrentDelete" href="javascript://void();" onclick="mobile.delete();"><i class="bi bi-trash icon-white"></i></a>
+        </li>
+        <li class="divider-vertical"></li>
+        <li>
+          <div>
+            <i class="bi bi-upload icon-white"></i><span id="upspeed"></span>
+          </div>
+          <div>
+            <i class="bi bi-download icon-white"></i><span id="downspeed"></span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="mainContainer" id="torrentsList">
+    <ul class="nav nav-tabs">
+      <li id="sort">
+        <a id="sortIcon" href="javascript://void();" onclick="mobile.showSort();"><i class="bi bi-arrow-down-up icon-black"></i></a>
+      </li>
+      <li id="refresh">
+        <a id="refreshIcon" href="javascript://void();" onclick="mobile.refresh();"><i class="bi bi-arrow-clockwise icon-black"></i></a>
+      </li>
+      <li id="torrentsFilter">
+        <a href="javascript://void();" onclick="mobile.showFilter();"><i class="bi bi-funnel"></i><span id="filterText"></span><span id="filterCount"></span></a>
+      </li>
+    </ul>
+    <div id="list"><table class="table table-striped"><tbody></tbody></table></div>
+  </div>
+
+  <div class="mainContainer" id="torrentDetails" style="display:none;">
+    <div id="torrentDetailsHeader">
+      <h5 id="torrentName"></h5>
+      <div class="progress" id="torrentProgress">
+        <div class="progress-bar progress-bar-striped"></div>
+        <span class="progress-label"></span>
+      </div>
+    </div>
+    <ul class="nav nav-tabs" id="detailsNav">
+      <li class="active" id="detailsDetailsTab">
+        <a href="javascript://void();" onclick="mobile.showDetailsInDetails();"></a>
+      </li>
+      <li id="detailsTrackers">
+        <a href="javascript://void();" onclick="mobile.showTrackersInDetails();"></a>
+      </li>
+      <li id="detailsFiles">
+        <a href="javascript://void();" onclick="mobile.showFilesInDetails();"></a>
+      </li>
+      <li id="detailsPeers">
+        <a href="javascript://void();" onclick="mobile.showPeersInDetails();"></a>
+      </li>
+    </ul>
+    <table class="table table-striped detailsPage" id="detailsDetailsPage">
+      <tbody>
+        <tr id="status"><td></td><td></td></tr>
+        <tr id="priority"><td></td><td><select id="torrentPriority"></select></td></tr>
+        <tr id="label"><td></td><td></td></tr>
+        <tr id="done"><td></td><td></td></tr>
+        <tr id="downloaded"><td></td><td></td></tr>
+        <tr id="size"><td></td><td></td></tr>
+        <tr id="remaining"><td></td><td></td></tr>
+        <tr id="eta"><td></td><td></td></tr>
+        <tr id="uploaded"><td></td><td></td></tr>
+        <tr id="ratio"><td></td><td></td></tr>
+        <tr id="downloadSpeed"><td></td><td></td></tr>
+        <tr id="uploadSpeed"><td></td><td></td></tr>
+        <tr id="timeElapsed"><td></td><td></td></tr>
+        <tr id="created"><td></td><td></td></tr>
+        <tr id="wasted"><td></td><td></td></tr>
+        <tr id="seeds"><td></td><td></td></tr>
+        <tr id="peers"><td></td><td></td></tr>
+        <tr id="savePath"><td></td><td></td></tr>
+        <tr id="freeDiskSpace"><td></td><td></td></tr>
+        <tr id="hash"><td></td><td></td></tr>
+        <tr id="comment"><td></td><td></td></tr>
+        <tr id="trackerUrl"><td></td><td></td></tr>
+        <tr id="trackerStatus"><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="detailsPage" id="detailsTrackersPage"></div>
+    <div class="detailsPage" id="detailsFilesPage"></div>
+    <div class="detailsPage" id="detailsPeersPage">
+      <div id="peerActions">
+        <div class="input-append" id="peerAddBlock">
+          <input type="text" id="peerIp" class="form-control pull-left">
+          <button type="button" id="peerAddBtn" class="btn btn-outline-secondary"></button>
+        </div>
+        <div id="peerRowActions">
+          <button type="button" id="peerBanBtn" class="btn btn-outline-secondary" disabled></button>
+          <button type="button" id="peerKickBtn" class="btn btn-outline-secondary" disabled></button>
+          <button type="button" id="peerSnubBtn" class="btn btn-outline-secondary" disabled></button>
+        </div>
+      </div>
+      <div class="table-responsive tableFixHead">
+        <table class="table table-sm table-striped table-scroll" id="peersTable">
+          <thead>
+            <tr>
+              <th id="country" scope="col"></th>
+              <th id="address" scope="col"></th>
+              <th id ="client" scope="col"></th>
+              <th id ="flags" scope="col"></th>
+              <th id = "done" scope="col"></th>
+              <th id = "downloaded" scope="col"></th>
+              <th id = "uploaded" scope="col"></th>
+              <th id = "dl" scope="col"></th>
+              <th id = "ul" scope="col"></th>
+              <th id = "peer_dl" scope="col"></th>
+              <th id = "peer_downloaded" scope="col"></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="mainContainer container" id="torrentSort" style="display:none;">
+    <div class="form-group">
+      <label class="select" for="sortOption"><h5></h5></label>
+      <select id="sortOption" class="form-select"></select>
+      <div class="radio">
+        <label id="sortAsc" class="radio-inline"><input type="radio" name="inlineRadioOptions" id="sort_asc" value=""><i class="bi bi-sort-down-alt icon-black"></i></label>
+        <label id="sortDesc" class="radio-inline"><input type="radio" name="inlineRadioOptions" id="sort_desc" value="-"><i class="bi bi-sort-down icon-black"></i></label>
+      </div>
+    </div>
+    <button id="sortOk" onclick="mobile.setSort();" class="btn btn-primary"></button>
+    <button id="sortCancel" onclick="history.go(-1);" class="btn btn-outline-secondary"></button>
+  </div>
+
+  <div class="mainContainer container" id="torrentFilter" style="display:none;">
+    <div id="filterButtons">
+      <button id="filterDone" onclick="history.go(-1);" class="btn btn-primary"></button>
+      <button id="filterClear" onclick="mobile.clearFilters();" class="btn btn-outline-secondary"></button>
+    </div>
+    <h5 id="filterStatusHeader"></h5>
+    <div class="list-group" id="filterStatusList"></div>
+    <h5 id="filterLabelsHeader"></h5>
+    <div class="list-group" id="filterLabelsList"></div>
+    <h5 id="filterTrackersHeader"></h5>
+    <div class="list-group" id="filterTrackersList"></div>
+  </div>
+
+  <div class="mainContainer container" id="globalSettings" style="display:none;">
+    <div class="form-group">
+      <label class="select" for="dlLimit"><h5></h5></label>
+      <select id="dlLimit" class="form-select"></select>
+    </div>
+    <div class="form-group">
+      <label class="select" for="ulLimit"><h5></h5></label>
+      <select id="ulLimit" class="form-select"></select>
+    </div>
+    <div class="form-group">
+      <label class="select" for="accentSelect"><h5></h5></label>
+      <select id="accentSelect" class="form-select"></select>
+    </div>
+    <h5 id="serverInfoHeader"></h5>
+    <table class="table table-striped" id="serverInfo">
+      <tbody>
+        <tr id="verRutorrent"><td></td><td></td></tr>
+        <tr id="verRtorrent"><td></td><td></td></tr>
+        <tr id="portIpv4" style="display:none;"><td></td><td></td></tr>
+        <tr id="portIpv6" style="display:none;"><td></td><td></td></tr>
+        <tr id="openStatus" style="display:none;"><td></td><td></td></tr>
+        <tr id="diskSpace" style="display:none;"><td></td><td>
+          <div class="progress" id="diskSpaceBar"><div class="progress-bar"></div><span class="progress-label"></span></div>
+          <span id="diskSpaceText"></span>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mainContainer container" id="addTorrent" style="display:none;">
+    <form action="php/addtorrent.php?" id="addTorrentFile" method="post" enctype="multipart/form-data" target="uploadFrame">
+      <div class="input-append" id="dirEditBlock">
+        <input type="text" id="dir_edit" name="dir_edit" class="form-control pull-left" placeholder="Directory">
+      </div>
+      <div class="checkbox">
+        <label id='notAddPath'><input type="checkbox" name="not_add_path" id="not_add_path"></label>
+      </div>
+      <div class="checkbox">
+        <label id='startStopped'><input type="checkbox" name="torrents_start_stopped" id="torrents_start_stopped"></label>
+      </div>
+      <div class="checkbox">
+        <label id='fastResume'><input type="checkbox" name="fast_resume" id="fast_resume"></label>
+      </div>
+      <div class="checkbox">
+        <label id='randomizeHash'><input type="checkbox" name="randomize_hash" id="randomize_hash"></label>
+      </div>
+      <div id="labelBlock">
+        <select id="tadd_label_select" class="form-select"></select>
+        <input class="form-control" type="text" id="tadd_label" name="tadd_label" placeholder="Label" style="display:none;">
+        <button type="button" id="taddReturnSelect" class="btn btn-outline-secondary" style="display:none;"></button>
+      </div>
+      <hr>
+      <div class="form-group">
+        <label class="control-label" for="torrent_file" id="torrentFile"></label>
+        <input type="file" name="torrent_file[]" id="torrent_file" multiple accept=".torrent">
+      </div>
+      <button type="submit" class="btn btn-primary" id='torrentFileSend' disabled></button>
+    </form>
+    <hr>
+    <form action="php/addtorrent.php?" id="addTorrentUrl" method="post" target="uploadFrame">
+      <div class="form-group">
+        <textarea id="url" name="url" class="form-control" rows="4"></textarea>
+      </div>
+      <button type="submit" id="addUrl" class="btn btn-primary" disabled></button>
+    </form>
+  </div>
+
+  <div class="mainContainer container" id="torrentDataDir" style="display:none;">
+    <h5 id="dataDirHeader"></h5>
+    <div class="input-append" id="dataDirEditBlock">
+      <input type="text" id="datadir_edit" class="form-control pull-left">
+    </div>
+    <div class="checkbox">
+      <label id="dataDirAddPath"><input type="checkbox" id="datadir_not_add_path"></label>
+    </div>
+    <div class="checkbox">
+      <label id="dataDirMove"><input type="checkbox" id="datadir_move"></label>
+    </div>
+    <div class="checkbox">
+      <label id="dataDirFastResume"><input type="checkbox" id="datadir_fastresume"></label>
+    </div>
+    <button id="dataDirOk" onclick="mobile.sendDataDir();" class="btn btn-primary"></button>
+    <button id="dataDirCancel" onclick="history.go(-1);" class="btn btn-outline-secondary"></button>
+  </div>
+
+  <div class="mainContainer" id="getDirList" style="display:none;"></div>
+
+  <div class="mainContainer container text-center" id="confirmTorrentDelete" style="display:none;">
+    <h5></h5>
+    <button id="deleteOk" onclick="mobile.deleteConfirmed();" class="btn btn-primary"></button>
+    <button id="deleteCancel" onclick="history.go(-1);" class="btn btn-outline-secondary"></button>
+  </div>
+
+  <div id="alert_placeholder"></div>
+
+</div>
