@@ -1744,12 +1744,35 @@ plugin.disableOthers = function() {
     // optional plugins list in the README); all others are disabled while
     // the mobile UI is active. Plugins the mobile UI only talks to through
     // their PHP side (diskspace, check_port, tracklabels) need not be here.
-    var keepEnabled = ['rpc', 'httprpc', '_getdir', 'throttle', 'ratio', 'erasedata', 'seedingtime', 'datadir', 'geoip', 'mobile'];
+    // The RPC backend is pluggable and flags itself as un-shutdownable
+    // (plugin.may_be_shutdowned: 0), so rather than hardcoding backend
+    // names, keep every plugin the server marks that way.
+    var keepEnabled = ['_getdir', 'throttle', 'ratio', 'erasedata', 'seedingtime', 'datadir', 'geoip', 'mobile'];
     $.each(thePlugins.list, function(i, v) {
-      if ($.inArray(v.name, keepEnabled) == -1) {
+      if ($.inArray(v.name, keepEnabled) == -1 && v.canShutdown()) {
         v.disable();
       }
     });
+
+    // disable() only flags a plugin off; it doesn't undo hooks or timers
+    // the plugin already installed, and the desktop engine keeps running
+    // underneath the mobile UI. Clean up after the two plugins known to
+    // keep firing into the discarded desktop layout:
+
+    // The rss plugin's self-rescheduling update loop and request callbacks
+    // would keep refreshing a category panel the mobile UI doesn't
+    // maintain (same reason loadTorrents/filterByLabel are stubbed above).
+    theWebUI.loadRSS = function() { }
+    theWebUI.addRSSItems = function() { }
+
+    // The trafic plugin's Flot plot keeps a window-resize handler bound;
+    // once the mobile UI replaces the desktop layout its placeholder is
+    // 0x0 and every resize would throw. If the graph was already created,
+    // shut the plot down to unbind the handler (if the plugin hasn't
+    // finished loading yet, disabling it above prevents creation).
+    if (theWebUI.trafGraph && theWebUI.trafGraph.plot) {
+      theWebUI.trafGraph.plot.shutdown();
+    }
 
     plugin.config = theWebUI.config;
     theWebUI.config = function(data)
