@@ -1756,8 +1756,11 @@ plugin.disableOthers = function() {
 
     // disable() only flags a plugin off; it doesn't undo hooks or timers
     // the plugin already installed, and the desktop engine keeps running
-    // underneath the mobile UI. Clean up after the two plugins known to
-    // keep firing into the discarded desktop layout:
+    // underneath the mobile UI. In particular, theWebUI.config wraps and
+    // already-scheduled callbacks of disabled plugins still run, so stub
+    // the entry points through which they would keep polling the server
+    // or start timers that never end. (More status-bar cleanup that has
+    // to wait until after the takeover lives in plugin.init.)
 
     // The rss plugin's self-rescheduling update loop and request callbacks
     // would keep refreshing a category panel the mobile UI doesn't
@@ -1765,11 +1768,36 @@ plugin.disableOthers = function() {
     theWebUI.loadRSS = function() { }
     theWebUI.addRSSItems = function() { }
 
-    // The trafic plugin's Flot plot keeps a window-resize handler bound;
-    // once the mobile UI replaces the desktop layout its placeholder is
-    // 0x0 and every resize would throw. If the graph was already created,
-    // shut the plot down to unbind the handler (if the plugin hasn't
-    // finished loading yet, disabling it above prevents creation).
+    // ...and its config wrap calls start(), which would fire a
+    // getrsssettings request and start two perpetual timers.
+    var rssPlugin = thePlugins.get('rss');
+    if (rssPlugin) {
+      rssPlugin.start = function() { }
+    }
+
+    // history and _task poll their PHP side from wait loops kicked off by
+    // their config wraps; history's never even terminates while disabled
+    // because its custom langLoaded doesn't set allStuffLoaded.
+    var historyPlugin = thePlugins.get('history');
+    if (historyPlugin) {
+      historyPlugin.renameHistoryStuff = function() { }
+    }
+    var taskPlugin = thePlugins.get('_task');
+    if (taskPlugin) {
+      taskPlugin.renameTasksStuff = function() { }
+    }
+
+    // trafic starts a getratios poll loop at load time (before this code
+    // runs); stubbing the entry point ends it at the next reschedule.
+    var traficPlugin = thePlugins.get('trafic');
+    if (traficPlugin) {
+      traficPlugin.startRatios = function() { }
+    }
+
+    // Defense in depth: the trafic graph is created in onLangLoaded, which
+    // core skips for disabled plugins, but if it ever exists shut its Flot
+    // plot down — a plot whose placeholder was destroyed throws "Invalid
+    // dimensions for plot" from its resize handler.
     if (theWebUI.trafGraph && theWebUI.trafGraph.plot) {
       theWebUI.trafGraph.plot.shutdown();
     }
@@ -1835,6 +1863,33 @@ plugin.init = function() {
       $('link[rel=stylesheet]').filter(function() {
         return this.href.indexOf('css/bootstrap.min.css') === -1;
       }).remove();
+
+      // cpuload and diskspace build their status-bar meters from unguarded
+      // retry loops that wait for their stylesheets, so they may have come
+      // alive between disableOthers and this point. Dismantle whatever
+      // exists; with their stylesheets gone (removed just above) the retry
+      // loops can never create anything again.
+      var cpuloadPlugin = thePlugins.get('cpuload');
+      if (cpuloadPlugin && cpuloadPlugin.graph) {
+        // Unbind Flot's internal handlers and no-op the plugin's own
+        // window-resize handler — resizing a plot whose placeholder was
+        // destroyed throws "Invalid dimensions for plot".
+        cpuloadPlugin.graph.plot.shutdown();
+        cpuloadPlugin.graph.resize = function() { };
+        // Stop re-fetching the CPU load on every torrent-list poll
+        theRequestManager.removeRequest('ttl', cpuloadPlugin.reqId);
+      }
+      var diskspacePlugin = thePlugins.get('diskspace');
+      if (diskspacePlugin) {
+        // End its self-rescheduling free-space poll (and the duplicate
+        // low-space noty it could raise); the mobile UI does its own
+        // diskspace request for the dashboard meter.
+        if (diskspacePlugin.diskTimeout) {
+          window.clearTimeout(diskspacePlugin.diskTimeout);
+          diskspacePlugin.diskTimeout = null;
+        }
+        diskspacePlugin.check = function() { };
+      }
       // The mobile UI is designed for the light scheme
       $('html').attr('data-bs-theme', 'light');
       // Apply the configured accent color (see plugin.accentColor at the top)
