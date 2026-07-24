@@ -1968,9 +1968,11 @@ plugin.processTorrents = function(torrents, singleUpdate) {
 };
 
 plugin.update = function(singleUpdate) {
-  theWebUI.requestWithTimeout("?list=1&getmsg=1", function(data) {
+  // Through plugin.request, so a throwing processTorrents leaves a
+  // console breadcrumb instead of silently blanking the list
+  plugin.request('?list=1&getmsg=1', function(data) {
     plugin.processTorrents(data.torrents, singleUpdate);
-  }, function() {}, function() {});
+  });
 };
 
 /*** Bootstrapping: device detection, plugin takeover and initialization ***/
@@ -2122,7 +2124,13 @@ plugin.init = function() {
       theWebUI.addTorrents = function(listData) {
         plugin.desktopAddTorrents.call(this, listData);
         if (listData && listData.torrents) {
-          plugin.processTorrents(listData.torrents);
+          // Not a plugin.request path, so it needs its own guard for
+          // the same console breadcrumb (see plugin.request)
+          try {
+            plugin.processTorrents(listData.torrents);
+          } catch (e) {
+            console.error('mobile: processTorrents (addTorrents hook) failed:', e);
+          }
         }
       };
 
