@@ -15,6 +15,7 @@ plugin.nextLabelId = 1;
 plugin.nextTrackerId = 1;
 plugin.trackersCache = null;
 plugin.rowsPrev = {};
+plugin.rowsPrimed = false; /* true once the first render cycle has run */
 plugin.labelList = [];
 plugin.trackerList = [];
 plugin.torrents = null;
@@ -943,11 +944,28 @@ plugin.editLabelText = function() {
   $('#torrentDetails #label td:last')
   .html('<div class="input-append">' +
   '<input class="form-control" id="labelEdit" type="text"/>' +
-  '<button class="btn btn-outline-secondary btn-sm"><i class="bi bi-check-lg icon-black"></i></button></div>');
+  '<button type="button" id="labelEditOk" class="btn btn-outline-secondary btn-sm"><i class="bi bi-check-lg icon-black"></i></button></div>');
   $('#labelEdit').val(plugin.torrent.label);
   $('#labelEdit').focus();
-  $('#labelEdit').blur(function() {
+  // Only the check button (or the return key) saves; it has to act on
+  // touchstart/mousedown, which fire before the input's blur — the
+  // blur cancels the edit and would replace the button before its
+  // click could land
+  $('#labelEditOk').on('touchstart mousedown', function(e) {
+    e.preventDefault();
     plugin.setTorrentLabel($('#labelEdit').val());
+  });
+  $('#labelEdit').on('keydown', function(e) {
+    if (e.which == 13) {
+      plugin.setTorrentLabel($('#labelEdit').val());
+    }
+  });
+  $('#labelEdit').blur(function() {
+    // Dismissed by tapping or scrolling away: discard the edit, like
+    // the label select above
+    if (plugin.labelInEdit) {
+      plugin.setTorrentLabel(plugin.torrent.label);
+    }
   });
 };
 
@@ -1742,7 +1760,8 @@ plugin.processTorrents = function(torrents, singleUpdate) {
     var listChanged = !!singleUpdate;
     var changedIds = [];
     var rowsNow = {};
-    var firstNewHash = null;
+    var addedHashes = [];
+    var addedNames = [];
 
     $.each(torrentArray, function(n, v){
       // Mirrors the desktop state panel grouping (see js/category-list.js),
@@ -1768,15 +1787,16 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       tdl += iv(v.dl);
       rowsNow[v.hash] = plugin.rowSnapshot(v);
 
-      // The loop runs in display order, so this picks the topmost of the
-      // torrents added since the last cycle (see the scroll block below)
-      if (plugin.scrollToAddedUntil && firstNewHash === null && !plugin.rowsPrev[v.hash]) {
-        firstNewHash = v.hash;
+      // Collect the torrents added since the last cycle, in display
+      // order (see the scroll/toast block below)
+      if (!plugin.rowsPrev[v.hash]) {
+        addedHashes.push(v.hash);
+        addedNames.push(v.name);
       }
 
       var row = $('#' + v.hash);
       if ( ! row.length || singleUpdate) {
-        listHtmlString +=
+        var rowHtml =
         '<tr id="' + v.hash + '" class="' + rowClass + '" onclick="mobile.showDetails(this.id);"><td>' +
         '<h5>' + escapeHTML(v.name) + '</h5>' +
         '<span>' + statusHtml + '</span>' +
@@ -1785,6 +1805,18 @@ plugin.processTorrents = function(torrents, singleUpdate) {
         '<span class="progress-label" style="width: ' + percent + '%;">' + progressLabel + '</span>' +
         '</div>' +
         '</td></tr>';
+        if (singleUpdate) {
+          listHtmlString += rowHtml;
+        } else if (n == 0) {
+          // A torrent that arrived after the last full render (e.g.
+          // added from another session): insert it at its sorted
+          // position, not at the end of the list. The loop runs in
+          // display order, so every torrent before index n already
+          // has a row in the DOM.
+          listHtml.prepend(rowHtml);
+        } else {
+          $('#' + torrentArray[n - 1].hash).after(rowHtml);
+        }
         listChanged = true;
         changedIds.push(v.hash);
       } else if ( ! plugin.rowsPrev[v.hash] || ! isEqual(rowsNow[v.hash], plugin.rowsPrev[v.hash]) ) {
@@ -1847,12 +1879,10 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       plugin.showAlert((theUILang.Deleted || theUILang.Remove) + ': ' + removedNames.join(', '), 'alert-info');
     }
 
+    // Incremental cycles insert their new rows in place above; only a
+    // full rebuild accumulates the whole list into one string
     if ( listHtmlString ) {
-      if (singleUpdate) {
-        listHtml.html(listHtmlString);
-      } else {
-        listHtml.append(listHtmlString);
-      }
+      listHtml.html(listHtmlString);
     }
 
     // Tracker classes only need a full pass when the torrent set changed
@@ -1880,15 +1910,22 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       }
     }
 
-    // After adding a torrent, scroll the list to it when it appears
-    // (rows are in the DOM and filtered by now); give up quietly if it
-    // hasn't shown up within the deadline
-    if (plugin.scrollToAddedUntil) {
-      if (firstNewHash !== null) {
+    // New arrivals (rows are in the DOM and filtered by now): an add
+    // made here scrolls to its torrent — the upload receipt toast was
+    // already shown — while arrivals from anywhere else (another
+    // session, rss, automation) get a toast like the deletions above.
+    // rowsPrimed skips the first cycle, when every torrent counts as
+    // new; theUILang.Added has a core fallback like Deleted does.
+    var localAdd = plugin.scrollToAddedUntil != 0 && Date.now() <= plugin.scrollToAddedUntil;
+    if (!localAdd) {
+      plugin.scrollToAddedUntil = 0;
+    }
+    if (addedHashes.length && plugin.rowsPrimed) {
+      if (localAdd) {
         plugin.scrollToAddedUntil = 0;
-        plugin.scrollToTorrent(firstNewHash);
-      } else if (Date.now() > plugin.scrollToAddedUntil) {
-        plugin.scrollToAddedUntil = 0;
+        plugin.scrollToTorrent(addedHashes[0]);
+      } else {
+        plugin.showAlert((theUILang.Added || theUILang.mnu_add) + ': ' + addedNames.join(', '), 'alert-info');
       }
     }
 
@@ -1932,15 +1969,26 @@ plugin.processTorrents = function(torrents, singleUpdate) {
     $('#downspeed').text(theConverter.speed(tdl));
 
     plugin.rowsPrev = rowsNow;
+    plugin.rowsPrimed = true;
   };
 
   // The full tracker list only changes when torrents come or go,
   // so don't refetch it on every cycle
-  var trackersKey = Object.keys(plugin.torrents).sort().join(' ');
+  var hashes = Object.keys(plugin.torrents).sort();
+  var trackersKey = hashes.join(' ');
   if (plugin.trackersCache && plugin.trackersCache.key == trackersKey) {
     process(plugin.trackersCache.data, false);
+  } else if (!hashes.length) {
+    // Nothing to fetch, but the render must still run (it also removes
+    // the rows of deleted torrents)
+    process({}, false);
   } else {
-    mobile.request('?action=getalltrackers', function(data) {
+    // Name every hash explicitly, like the desktop's getAllTrackers:
+    // the direct XML-RPC mount builds one t.multicall per given hash
+    // and silently sends nothing when none are given, which left the
+    // list empty forever (httprpc happens to treat "no hashes" as
+    // "all torrents", masking this)
+    mobile.request('?action=getalltrackers' + $.map(hashes, function(h) {return '&hash=' + h;}).join(''), function(data) {
       plugin.trackersCache = {key: trackersKey, data: data};
       process(data, true);
     });
@@ -2180,16 +2228,19 @@ plugin.init = function() {
         }
       });
       // While the on-screen keyboard is open, iOS anchors position:fixed
-      // elements to the layout viewport, so the header and search bar
-      // drift off-screen when the list is scrolled. Dismiss the keyboard
-      // as soon as the user starts a scroll gesture instead — filtering
-      // is live, so there's nothing left to type against. (touchmove
-      // rather than scroll: Safari's own scroll-into-view on focus fires
+      // elements to the layout viewport, so the fixed bars drift
+      // off-screen when the page is scrolled. Dismiss the keyboard as
+      // soon as the user starts a scroll gesture on anything other than
+      // the focused field itself (that would be text selection). This
+      // covers every text input and textarea: search, the add form,
+      // label and save-path edits, peer address... (touchmove rather
+      // than scroll: Safari's own scroll-into-view on focus fires
       // scroll events, which would close the keyboard as it opens.)
       $(document).on('touchmove', function(e) {
-        if (document.activeElement && document.activeElement.id == 'searchInput' &&
-            !$(e.target).closest('#searchBar').length) {
-          document.activeElement.blur();
+        var el = document.activeElement;
+        if (el && $(el).is('input[type=text], input[type=search], textarea') &&
+            el != e.target && !$.contains(el, e.target)) {
+          el.blur();
         }
       });
 
