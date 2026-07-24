@@ -22,6 +22,7 @@ plugin.torrent = undefined;
 plugin.lastHref = "";
 plugin.currentPage = 'torrentsList';
 plugin.scrollTop = 0;
+plugin.scrollToAddedUntil = 0; /* deadline for scrolling to a just-added torrent */
 plugin.labelInEdit = false;
 plugin.eraseWithDataLoaded = false;
 plugin.ratioGroupsLoaded = false;
@@ -216,6 +217,9 @@ plugin.createiFrame = function() {
             // on error the inputs are kept so they can be corrected
             $('#url').val('');
             $('#torrent_file').val('');
+            // Scroll the list to the new torrent once it shows up (a
+            // magnet or URL add can take a few polls to materialize)
+            plugin.scrollToAddedUntil = Date.now() + 30000;
             // Return to the torrent list, unless the user already
             // navigated elsewhere while the upload was in flight
             if (plugin.currentPage == 'addTorrent') {
@@ -1634,6 +1638,25 @@ plugin.rowSnapshot = function(v) {
     ul: v.ul, dl: v.dl, eta: v.eta, ratio: v.ratio, msg: v.msg};
 };
 
+// Scroll the list to a torrent's row and flash it with the accent
+// color, so it's obvious why the list moved
+plugin.scrollToTorrent = function(hash) {
+  var row = $('#' + hash);
+  // Skip if the user left the list, or the active filter hides the row
+  if (this.currentPage != 'torrentsList' || !row.length || row.css('display') == 'none') {
+    return;
+  }
+  // 50px clears the fixed tab bar at the top
+  window.scrollTo({top: Math.max(0, row.offset().top - 50), behavior: 'smooth'});
+  // The highlight lives on the cell, not the row: row updates reset the
+  // row's class attribute every cycle (see the update branch below)
+  var cell = row.children('td');
+  cell.addClass('added-highlight');
+  setTimeout(function() {
+    cell.removeClass('added-highlight');
+  }, 2500);
+};
+
 plugin.processTorrents = function(torrents, singleUpdate) {
   plugin.torrents = torrents;
   var torrentArray = [];
@@ -1669,6 +1692,7 @@ plugin.processTorrents = function(torrents, singleUpdate) {
     var listChanged = !!singleUpdate;
     var changedIds = [];
     var rowsNow = {};
+    var firstNewHash = null;
 
     $.each(torrentArray, function(n, v){
       // Mirrors the desktop state panel grouping (see js/category-list.js),
@@ -1693,6 +1717,12 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       tul += iv(v.ul);
       tdl += iv(v.dl);
       rowsNow[v.hash] = plugin.rowSnapshot(v);
+
+      // The loop runs in display order, so this picks the topmost of the
+      // torrents added since the last cycle (see the scroll block below)
+      if (plugin.scrollToAddedUntil && firstNewHash === null && !plugin.rowsPrev[v.hash]) {
+        firstNewHash = v.hash;
+      }
 
       var row = $('#' + v.hash);
       if ( ! row.length || singleUpdate) {
@@ -1797,6 +1827,18 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       plugin.applyFilters();
       if ($('#torrentFilter').is(':visible')) {
         plugin.renderFilterPage();
+      }
+    }
+
+    // After adding a torrent, scroll the list to it when it appears
+    // (rows are in the DOM and filtered by now); give up quietly if it
+    // hasn't shown up within the deadline
+    if (plugin.scrollToAddedUntil) {
+      if (firstNewHash !== null) {
+        plugin.scrollToAddedUntil = 0;
+        plugin.scrollToTorrent(firstNewHash);
+      } else if (Date.now() > plugin.scrollToAddedUntil) {
+        plugin.scrollToAddedUntil = 0;
       }
     }
 

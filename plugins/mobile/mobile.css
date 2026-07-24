@@ -216,6 +216,16 @@ h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFile
 #torrentsList #list span {
   font-size: 12px;
 }
+/* Accent-colored flash on the row scrolled to after adding a torrent
+   (see plugin.scrollToTorrent). An inset box-shadow, like Bootstrap's
+   own row coloring, so it renders above the table striping */
+@keyframes added-highlight {
+  from { box-shadow: inset 0 0 0 9999px rgba(var(--mobile-accent-rgb), 0.3); }
+  to { box-shadow: inset 0 0 0 9999px rgba(var(--mobile-accent-rgb), 0); }
+}
+#torrentsList #list .added-highlight {
+  animation: added-highlight 2s ease-out;
+}
 
 
 /*** navbar bottom ***/
