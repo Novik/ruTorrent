@@ -181,7 +181,27 @@ plugin.backListener = function() {
 };
 
 plugin.request = function(url, func) {
-  theWebUI.requestWithTimeout(url, function(d){if (func != undefined) func(d);}, function(){}, function(){});
+  theWebUI.requestWithTimeout(url,
+    function(d) {
+      if (func == undefined) {
+        return;
+      }
+      try {
+        func(d);
+      } catch (e) {
+        // Log which request's handler blew up, without user-facing
+        // noise; silent failures here have hidden real bugs
+        console.error('mobile: handler for ' + url + ' failed:', e);
+      }
+    },
+    function() {
+      // Failures are swallowed by design — the next poll retries — but
+      // leave a trace in the console
+      console.warn('mobile: request timed out: ' + url);
+    },
+    function(status, text) {
+      console.warn('mobile: request failed: ' + url + ' (' + status + (text ? ': ' + text : '') + ')');
+    });
 };
 
 plugin.setHash = function(page) {
