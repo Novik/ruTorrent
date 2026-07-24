@@ -1,0 +1,6 @@
+plugin.description: This plugin provides a mobile version of ruTorrent.
+plugin.author: zebraxxl,xombiemp
+plugin.version: 2.0
+rtorrent.need: 1
+rtorrent.remote: warning
+plugin.runlevel: 15
