@@ -1713,16 +1713,28 @@ plugin.processTorrents = function(torrents, singleUpdate) {
   var tul = 0;
   var tdl = 0;
 
-  plugin.labelList = [{name: '', count: theWebUI.categoryList.panelLabelAttribs.plabel.get("-_-_-nlb-_-_-").count}];
+  // Label names/counts come from the desktop categoryList "plabel" panel.
+  // Two things about it are not guaranteed, and reading them unconditionally
+  // threw a TypeError that aborted processTorrents before a single row was
+  // rendered -> blank torrent list (with the error swallowed by the update
+  // request's empty error handler):
+  //   - the panel may not be populated yet on the first mobile paint;
+  //   - the "no label" bucket ("-_-_-nlb-_-_-") only exists when at least one
+  //     torrent is unlabelled, so it is absent when every torrent has a label.
+  var plabel = theWebUI.categoryList.panelLabelAttribs.plabel;
+  var noLabel = plabel && plabel.get("-_-_-nlb-_-_-");
+  plugin.labelList = [{name: '', count: noLabel ? noLabel.count : 0}];
 
-  for (const l of theWebUI.categoryList.panelLabelAttribs.plabel.keys()) {
-    if (l.startsWith("clabel")) {
-      const labelProper = l.replace('clabel__', '');
-      if (plugin.labelIds[labelProper] == undefined) {
-        plugin.labelIds[labelProper] = plugin.nextLabelId++;
+  if (plabel) {
+    for (const l of plabel.keys()) {
+      if (l.startsWith("clabel")) {
+        const labelProper = l.replace('clabel__', '');
+        if (plugin.labelIds[labelProper] == undefined) {
+          plugin.labelIds[labelProper] = plugin.nextLabelId++;
+        }
+
+        plugin.labelList.push({name: labelProper, count: plabel.get(l).count});
       }
-
-      plugin.labelList.push({name: labelProper, count: theWebUI.categoryList.panelLabelAttribs.plabel.get(l).count});
     }
   }
 
