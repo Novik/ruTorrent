@@ -558,7 +558,7 @@ $cacheResults=(isset($cachedPluginLoading) && $cachedPluginLoading);
 global $pluginMinification;
 if (isset($pluginMinification) && $pluginMinification)
 {
-	$jResult = Minifier::minify($jResult);
+	$jResult = \JShrink\Minifier::minify($jResult);
 }
 
 CachedEcho::send($jResult,"application/javascript",$cacheResults);
