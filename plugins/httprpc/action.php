@@ -294,7 +294,11 @@ switch($mode)
 	}
 	case "unpause":	/**/
 	{
-		$result = makeSimpleCall(array("d.resume"), $hash);
+		// d.start (not just d.resume) so d.state is restored: d.resume alone
+		// leaves the torrent flagged paused in the UI forever and marked
+		// user-stopped for the next rtorrent restart (the direct XML-RPC
+		// mount's unpause stub sends d.start as well)
+		$result = makeSimpleCall(array("d.start"), $hash);
 		break;
 	}
 	case "removewithdata":	/**/
