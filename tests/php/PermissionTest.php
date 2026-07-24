@@ -73,8 +73,14 @@ class PermissionTest extends TestCase
 
 	public function testPermission()
 	{
-		$this->assertTrue(Permission::doesUserHave(1000, [1000], $this->getDir('dir1'), 0x0007), 'User has permission for directory');
-		$this->assertTrue(Permission::doesUserHave(1000, [1000], $this->getDir('dir3'), 0x0007), 'User has permission for symlinked directory');
-		$this->assertTrue(Permission::doesUserHave(1000, [1000], $this->getDir('dir4'), 0x0007), 'User has permission for relative symlinked directory');
+		// doesUserHave() answers "would this uid/gids have rwx on the file" from
+		// the file's stat. Probe with the running process's own uid/gids -- it
+		// owns the fixtures -- rather than a hardcoded 1000, so the test does not
+		// depend on which uid runs it.
+		$uid = posix_getuid();
+		$gids = array_merge([posix_getgid()], posix_getgroups());
+		$this->assertTrue(Permission::doesUserHave($uid, $gids, $this->getDir('dir1'), 0x0007), 'User has permission for directory');
+		$this->assertTrue(Permission::doesUserHave($uid, $gids, $this->getDir('dir3'), 0x0007), 'User has permission for symlinked directory');
+		$this->assertTrue(Permission::doesUserHave($uid, $gids, $this->getDir('dir4'), 0x0007), 'User has permission for relative symlinked directory');
 	}
 }

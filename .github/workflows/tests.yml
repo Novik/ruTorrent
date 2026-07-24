@@ -6,6 +6,18 @@ on:
   pull_request:
 
 jobs:
+  php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: posix, dom, xml, mbstring, iconv, json, curl
+      - name: PHP test suite
+        run: bash php-test.sh
+        working-directory: tests
+
   jest:
     runs-on: ubuntu-latest
     steps:
