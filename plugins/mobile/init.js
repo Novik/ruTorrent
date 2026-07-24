@@ -2085,7 +2085,11 @@ plugin.init = function() {
 
   $.ajax({
     type: 'GET',
-    url: this.path + 'mobile.html',
+    // The same ?v= version token the core's plugin loader appends to
+    // init.js/CSS assets: markup and code are coupled (element ids), so
+    // a release must refresh both together instead of running new code
+    // against a stale cached mobile.html
+    url: cacheBust(this.path + 'mobile.html'),
     processData: false,
 
     success: function(data, textStatus) {
