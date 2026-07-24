@@ -22,6 +22,8 @@
 .bi-funnel:before {content: "\f3e1";}
 .bi-gear:before {content: "\f3e5";}
 .bi-house:before {content: "\f425";}
+.bi-search:before {content: "\f52a";}
+.bi-x-lg:before {content: "\f659";}
 .bi-list-ul:before {content: "\f478";}
 .bi-pause-fill:before {content: "\f4c3";}
 .bi-pencil-square:before {content: "\f4ca";}
@@ -336,8 +338,30 @@ h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFile
 .nav-tabs #sort {
   order: 3;
 }
-.nav-tabs #sort #sortIcon i, .nav-tabs #refresh #refreshIcon i {
+.nav-tabs #search {
+  order: 4;
+}
+.nav-tabs #sort #sortIcon i, .nav-tabs #refresh #refreshIcon i, .nav-tabs #search #searchIcon i {
   color: var(--mobile-accent);
+}
+/* The quick-search bar is fixed below the tab bar, so it doesn't scroll
+   away with the list; toggleSearch makes room for it above the list and
+   sets the exact top from the measured tab-bar height.
+   (display comes from here when toggleSearch clears the inline none) */
+#torrentsList #searchBar {
+  position: fixed;
+  top: 44px; /* fallback; toggleSearch measures the real tab bar */
+  left: 0;
+  right: 0;
+  z-index: 1029;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  gap: 5px;
+  padding: 5px 3px;
+}
+#torrentsList #searchBar input {
+  flex: 1 1 auto;
 }
 .nav-tabs #torrentsFilter > a {
   /* inline-flex, so the tap target is only as wide as the funnel icon

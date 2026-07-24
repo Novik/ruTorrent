@@ -23,6 +23,9 @@ plugin.lastHref = "";
 plugin.currentPage = 'torrentsList';
 plugin.scrollTop = 0;
 plugin.scrollToAddedUntil = 0; /* deadline for scrolling to a just-added torrent */
+plugin.searchText = '';
+plugin.searchPattern = null;
+plugin.searchDebounce = 0;
 plugin.labelInEdit = false;
 plugin.eraseWithDataLoaded = false;
 plugin.ratioGroupsLoaded = false;
@@ -373,9 +376,53 @@ plugin.applyFilters = function() {
   });
   var sel = sels.join(', ');
 
+  var matched = $(sel);
+  // The quick search narrows whatever the category filters matched
+  if (this.searchPattern) {
+    matched = matched.filter(function() {
+      var t = plugin.torrents[this.id];
+      return t && plugin.searchPattern.test(t.name);
+    });
+  }
   $('.torrentBlock').css('display', 'none');
-  $(sel).css('display', '');
-  this.updateFilterButton($(sel));
+  matched.css('display', '');
+  this.updateFilterButton(matched);
+};
+
+/*** Quick search (matches the desktop's local search semantics) ***/
+plugin.toggleSearch = function() {
+  var bar = $('#searchBar');
+  if (bar.css('display') == 'none') {
+    // Tuck the bar 1px under the measured tab bar (which draws above
+    // it), so a fractional tab-bar height can't leave a see-through
+    // hairline gap between the two
+    bar.css('top', ($('#torrentsList .nav-tabs').outerHeight() - 1) + 'px');
+    bar.css('display', '');
+    // The bar is fixed below the tab bar, so it takes no flow space;
+    // push the list down to make room for it
+    $('#torrentsList #list').css('margin-top', bar.outerHeight() + 'px');
+    $('#searchInput').trigger('focus');
+  } else {
+    // Hiding the bar also clears the search, so the list can't stay
+    // invisibly narrowed
+    bar.css('display', 'none');
+    $('#torrentsList #list').css('margin-top', '');
+    $('#searchInput').val('');
+    this.setSearch('');
+  }
+};
+
+plugin.setSearch = function(text) {
+  text = $.trim(text);
+  this.searchText = text;
+  // The same pattern the desktop quick search builds (TextSearch in
+  // js/panel.js): case-insensitive substring, * as a wildcard
+  this.searchPattern = text ?
+    new RegExp(text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&").replace("*", ".+"), "i") : null;
+  // The visible set changes, so the remembered position is meaningless
+  this.scrollTop = 0;
+  window.scrollTo(0, 0);
+  this.applyFilters();
 };
 
 plugin.selectionSize = function(elements) {
@@ -406,6 +453,9 @@ plugin.updateFilterButton = function(matched) {
   }
   if (this.filters.tracker.length) {
     parts.push(this.filters.tracker.join('+'));
+  }
+  if (this.searchPattern) {
+    parts.push('"' + this.searchText + '"');
   }
   var text = parts.length ? parts.join(' · ') : theUILang.All;
   var info = matched.length;
@@ -2111,6 +2161,34 @@ plugin.init = function() {
 
       $('.torrentControl').css('display', 'none');
 
+      // Filter live while typing, with the desktop quick search's 220ms
+      // debounce; enter just closes the keyboard
+      $('#searchInput').on('input', function() {
+        var el = this;
+        clearTimeout(plugin.searchDebounce);
+        plugin.searchDebounce = setTimeout(function() {
+          plugin.setSearch(el.value);
+        }, 220);
+      });
+      $('#searchInput').on('keydown', function(e) {
+        if (e.which == 13) {
+          this.blur();
+        }
+      });
+      // While the on-screen keyboard is open, iOS anchors position:fixed
+      // elements to the layout viewport, so the header and search bar
+      // drift off-screen when the list is scrolled. Dismiss the keyboard
+      // as soon as the user starts a scroll gesture instead — filtering
+      // is live, so there's nothing left to type against. (touchmove
+      // rather than scroll: Safari's own scroll-into-view on focus fires
+      // scroll events, which would close the keyboard as it opens.)
+      $(document).on('touchmove', function(e) {
+        if (document.activeElement && document.activeElement.id == 'searchInput' &&
+            !$(e.target).closest('#searchBar').length) {
+          document.activeElement.blur();
+        }
+      });
+
       $('#dlLimit').change(function(){plugin.setDLLimit();});
       $('#ulLimit').change(function(){plugin.setULLimit();});
       $('#accentSelect').change(function(){
@@ -2285,6 +2363,7 @@ plugin.init = function() {
 };
 
 plugin.onLangLoaded = function() {
+  $('#searchInput').attr('placeholder', theUILang.Quick_search);
   $('#filterStatusHeader').text(theUILang.Status);
   $('#filterLabelsHeader').text(theUILang.Labels);
   $('#filterTrackersHeader').text(theUILang.Trackers);

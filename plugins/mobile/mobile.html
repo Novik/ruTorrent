@@ -43,6 +43,9 @@
       <li id="sort">
         <a id="sortIcon" href="javascript://void();" onclick="mobile.showSort();"><i class="bi bi-arrow-down-up icon-black"></i></a>
       </li>
+      <li id="search">
+        <a id="searchIcon" href="javascript://void();" onclick="mobile.toggleSearch();"><i class="bi bi-search icon-black"></i></a>
+      </li>
       <li id="refresh">
         <a id="refreshIcon" href="javascript://void();" onclick="mobile.refresh();"><i class="bi bi-arrow-clockwise icon-black"></i></a>
       </li>
@@ -50,6 +53,10 @@
         <a href="javascript://void();" onclick="mobile.showFilter();"><i class="bi bi-funnel"></i><span id="filterText"></span><span id="filterCount"></span></a>
       </li>
     </ul>
+    <div id="searchBar" style="display:none;">
+      <input type="search" id="searchInput" class="form-control" autocomplete="off">
+      <button type="button" id="searchClose" onclick="mobile.toggleSearch();" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></button>
+    </div>
     <div id="list"><table class="table table-striped"><tbody></tbody></table></div>
   </div>
 
