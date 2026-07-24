@@ -20,6 +20,7 @@ plugin.trackerList = [];
 plugin.torrents = null;
 plugin.torrent = undefined;
 plugin.lastHref = "";
+plugin.currentPage = 'torrentsList';
 plugin.scrollTop = 0;
 plugin.labelInEdit = false;
 plugin.eraseWithDataLoaded = false;
@@ -63,7 +64,7 @@ var detailsIdToLangId = {
   'trackerStatus' : 'Track_status',
   'trackerUrl' : 'Track_URL',
   'created' : 'Created_on',
-  'savePath' : 'Save_path',
+  'savePath' : 'Save_as',
   'freeDiskSpace' : 'Free_Disk_Space',
   'hash' : 'Hash',
   'comment' : 'Comment'
@@ -185,11 +186,15 @@ plugin.setHash = function(page) {
 };
 
 plugin.showAlert = function(message,alerttype) {
-  $('#alert_placeholder').append('<div id="alertdiv" class="alert alert-dismissible fade show navbar-fixed-top '+ alerttype +'" role="alert">'+ escapeHTML(message) +'<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+  // Keep a reference to this alert instead of finding it by id later:
+  // with an id lookup, a previous alert's still-pending timers would
+  // grab whatever alert is showing now and hide it early
+  var alert = $('<div class="alert alert-dismissible fade show navbar-fixed-top '+ alerttype +'" role="alert">'+ escapeHTML(message) +'<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+  $('#alert_placeholder').append(alert);
   setTimeout(function() {
-    $('#alertdiv').removeClass('show');
+    alert.removeClass('show');
     setTimeout(function() {
-      $("#alertdiv").remove();
+      alert.remove();
     }, 1500);
   }, 5000);
 };
@@ -211,6 +216,11 @@ plugin.createiFrame = function() {
             // on error the inputs are kept so they can be corrected
             $('#url').val('');
             $('#torrent_file').val('');
+            // Return to the torrent list, unless the user already
+            // navigated elsewhere while the upload was in flight
+            if (plugin.currentPage == 'addTorrent') {
+              plugin.showList();
+            }
           } else if (matchedRegex[2] == "error") {
             plugin.showAlert(message,"alert-danger");
           }
@@ -228,20 +238,73 @@ plugin.showPage = function(page) {
   if (window.location.hash == "" && page != 'torrentsList') {
     this.scrollTop = $(window).scrollTop();
   }
+  // Leaving the filter page any way other than its OK button (which
+  // clears the snapshot in filterDone) reverts the live-applied filter
+  // changes, like the other edit pages' cancel controls
+  if (this.currentPage == 'torrentFilter' && page != 'torrentFilter' && this.filtersSnapshot) {
+    this.filters = this.filtersSnapshot;
+    this.filtersSnapshot = null;
+    this.applyFilters();
+  }
   $('.mainContainer').css('display', 'none');
   $('.torrentControl').css('display', 'none');
   $('#' + page).css('display', '');
+  this.currentPage = page;
+  // Set the hash before adjusting the scroll position: assigning an
+  // empty fragment (the list page's hash) scrolls the page to the top,
+  // which would wipe the restored position
+  this.setHash(page);
   if (page == 'torrentsList') {
     window.scrollTo(0,this.scrollTop);
   }
   else {
     window.scrollTo(0,0);
   }
-  this.setHash(page);
 };
 
 plugin.showList = function() {
   this.showPage('torrentsList');
+};
+
+// The navbar home control: always return to the torrent list, from any
+// page. (The hardware/browser back button is handled separately by
+// backListener, which maps the hash to the right page.)
+plugin.goHome = function() {
+  // Going home may abandon the directory browser without returning to
+  // the form that opened it; don't let showDataDir restore a stale form
+  // for another torrent later
+  this.returningFromGetDir = false;
+  this.showList();
+};
+
+// In-app back for the pages' own cancel/OK controls: go "up" to the
+// current page's parent instead of history.go(-1), which walks the
+// browser's global history and can land outside the app or reload a
+// stale URL.
+plugin.goBack = function() {
+  switch (this.currentPage) {
+    case 'confirmTorrentDelete':
+    case 'torrentDataDir':
+      // These pages are opened from the details page
+      if (this.torrent != undefined) {
+        this.showDetails(this.torrent.hash);
+      } else {
+        this.showList();
+      }
+      break;
+    case 'getDirList':
+      // Return to whichever form opened the directory browser, keeping
+      // its state: showDataDir has a returningFromGetDir branch for
+      // that, and a plain showPage doesn't touch the add form
+      if (this.getDirTarget == '#datadir_edit') {
+        this.showDataDir();
+      } else {
+        this.showPage('addTorrent');
+      }
+      break;
+    default:
+      this.showList();
+  }
 };
 
 /*** Filter page ***/
@@ -348,11 +411,17 @@ plugin.updateFilterButton = function(matched) {
   }
   $('#filterText').text(text);
   $('#filterCount').text('(' + info + ')');
+  // Same matched count / total size, shown on the filter page itself so
+  // the effect of a selection is visible while making it
+  $('#filterTotals').text(theUILang.Total + ': ' + info);
 };
 
 plugin.setFilter = function(type, value) {
   if (value === null || value === 'all') {
     // The All rows clear their category
+    if (!this.filters[type].length) {
+      return;
+    }
     this.filters[type] = [];
   } else {
     // Tapping an option toggles it, like the desktop panels
@@ -371,6 +440,25 @@ plugin.clearFilters = function() {
   this.filters = {status: [], label: [], tracker: []};
   this.applyFilters();
   this.renderFilterPage();
+};
+
+// Order-insensitive comparison of two {status, label, tracker} filter sets
+plugin.filtersEqual = function(a, b) {
+  return ['status', 'label', 'tracker'].every(function(type) {
+    return (a[type].length == b[type].length) &&
+      a[type].every(function(v) { return $.inArray(v, b[type]) >= 0; });
+  });
+};
+
+// The filter page's OK button: commit the live-applied changes. If the
+// filter really changed, the remembered list scroll position no longer
+// points at anything meaningful, so go back to the top.
+plugin.filterDone = function() {
+  if (this.filtersSnapshot && !this.filtersEqual(this.filters, this.filtersSnapshot)) {
+    this.scrollTop = 0;
+  }
+  this.filtersSnapshot = null;
+  this.showList();
 };
 
 plugin.makeFilterItem = function(text, count, isSelected, type, value, icon) {
@@ -418,25 +506,40 @@ plugin.renderFilterPage = function() {
 };
 
 plugin.showFilter = function() {
+  // Taps on the filter page apply live, but only its OK button commits
+  // them: snapshot the current filters so that leaving the page any
+  // other way (home, hardware back) rolls the changes back (see the
+  // rollback in showPage)
+  this.filtersSnapshot = {
+    status: this.filters.status.slice(),
+    label: this.filters.label.slice(),
+    tracker: this.filters.tracker.slice()
+  };
   this.renderFilterPage();
   this.showPage('torrentFilter');
 };
 
 /*** Settings page ***/
+plugin.fillLimitSelects = function(total) {
+  // 327625 KiB/s is the core's "unlimited" sentinel (see js/webui.js)
+  var fillLimitSelect = function(sel, speedList, current) {
+    sel.empty();
+    $.each(speedList.split(","), function(i, s) {
+      var spd = s * 1024;
+      sel.append('<option' + (spd == current ? ' selected' : '') + ' value="' + spd + '">' + theConverter.speed(spd) + '</option>');
+    });
+    sel.append('<option' + ((current <= 0 || current >= 327625*1024) ? ' selected' : '') + ' value="' + 327625*1024 + '">' + theUILang.unlimited + '</option>');
+  };
+  fillLimitSelect($('#dlLimit'), theWebUI.settings["webui.speedlistdl"], total.rateDL);
+  fillLimitSelect($('#ulLimit'), theWebUI.settings["webui.speedlistul"], total.rateUL);
+  // Remembered so the update loop can tell when the limits changed
+  // elsewhere while the settings page is open
+  this.limitsShown = {rateDL: total.rateDL, rateUL: total.rateUL};
+};
+
 plugin.showSettings = function() {
   this.request("?action=gettotal", function(total) {
-    // 327625 KiB/s is the core's "unlimited" sentinel (see js/webui.js)
-    var fillLimitSelect = function(sel, speedList, current) {
-      sel.empty();
-      $.each(speedList.split(","), function(i, s) {
-        var spd = s * 1024;
-        sel.append('<option' + (spd == current ? ' selected' : '') + ' value="' + spd + '">' + theConverter.speed(spd) + '</option>');
-      });
-      sel.append('<option' + ((current <= 0 || current >= 327625*1024) ? ' selected' : '') + ' value="' + 327625*1024 + '">' + theUILang.unlimited + '</option>');
-    };
-    fillLimitSelect($('#dlLimit'), theWebUI.settings["webui.speedlistdl"], total.rateDL);
-    fillLimitSelect($('#ulLimit'), theWebUI.settings["webui.speedlistul"], total.rateUL);
-
+    plugin.fillLimitSelects(total);
     plugin.loadServerInfo();
     plugin.showPage('globalSettings');
   });
@@ -610,9 +713,14 @@ plugin.setSort = function() {
   if($('#sort_desc').prop('checked')) {
     sort = '-' + sort
   }
-  plugin.sort = sort;
-  plugin.update(true);
-  history.go(-1);
+  if (sort != plugin.sort) {
+    plugin.sort = sort;
+    // The list order changed; the remembered scroll position no longer
+    // points at anything meaningful, so go back to the top
+    plugin.scrollTop = 0;
+    plugin.update(true);
+  }
+  plugin.goBack();
 };
 
 /*** Add-torrent page ***/
@@ -701,7 +809,10 @@ plugin.fillDetails = function(d) {
   $('#torrentDetails #uploadSpeed td:last').text(theConverter.speed(d.ul));
   $('#torrentDetails #seeds td:last').text(d.seeds_actual + " " + theUILang.of + " " + d.seeds_all + " " + theUILang.connected);
   $('#torrentDetails #peers td:last').text(d.peers_actual + " " + theUILang.of + " " + d.peers_all + " " + theUILang.connected);
-  $('#torrentDetails #savePath td:last').text(d.save_path + ' ');
+  // Show the full content path (base_path), like the desktop's Save As
+  // field; the edit button's move form still prefills with the
+  // containing directory (save_path, see showDataDir)
+  $('#torrentDetails #savePath td:last').text(d.base_path + ' ');
   if (this.dataDirLoaded) {
     $('#torrentDetails #savePath td:last').append('<button class="btn btn-outline-secondary btn-sm" type="button" onclick="mobile.showDataDir();"><i class="bi bi-pencil-square .icon-black"></i></button>');
   }
@@ -1112,7 +1223,9 @@ plugin.drawFiles = function(p) {
           .append(document.createTextNode(name))
           .click(function() {mobile.drawFiles(path);}));
     } else {
-      var filePercent = (entry.size > 0) ? Math.min(100, Math.round(entry.done / entry.size * 1000) / 10) : 100;
+      // theConverter.round truncates to one decimal, like the desktop's
+      // file list (see theWebUI.redrawFiles), so both UIs show the same value
+      var filePercent = (entry.size > 0) ? theConverter.round(entry.done / entry.size * 100, 1) : '100.0';
       var info = $('<div style="display:none;" id="file' + entry.id + '">' +
         '<table class="table table-striped"><tbody>' +
         '<tr><td>' + theUILang.Done + '</td><td>' + theConverter.bytes(entry.done) + ' (' + filePercent + '%)</td></tr>' +
@@ -1220,7 +1333,8 @@ plugin.refreshFiles = function() {
       // Update the visible Done cell, if this file's row is rendered
       var cell = $('#file' + i + ' tr:first td:last');
       if (cell.length) {
-        var pct = (rawFiles[i].size > 0) ? Math.min(100, Math.round(rawFiles[i].done / rawFiles[i].size * 1000) / 10) : 100;
+        // Truncate like the desktop's file list (see drawFiles)
+        var pct = (rawFiles[i].size > 0) ? theConverter.round(rawFiles[i].done / rawFiles[i].size * 100, 1) : '100.0';
         cell.text(theConverter.bytes(rawFiles[i].done) + ' (' + pct + '%)');
       }
       // Keep the in-memory tree fresh for navigation
@@ -1305,7 +1419,7 @@ plugin.deleteConfirmed = function() {
 /*** Directory browser and save-path pages ***/
 plugin.chooseGetDir = function(path) {
   $(plugin.getDirTarget || '#dir_edit').val(path);
-  history.go(-1);
+  plugin.goBack();
 }
 
 plugin.drawGetDir = function(path, first) {
@@ -1320,8 +1434,8 @@ plugin.drawGetDir = function(path, first) {
     success: function(data) {
       var container = $('#getDirList').empty();
       container.append($('<h5></h5>').text(data.path));
-      container.append($('<button class="btn btn-' + plugin.currentAccent + '"></button>').text(theUILang.ok).click(function() {mobile.chooseGetDir(data.path);}));
-      container.append($('<button class="btn btn-outline-secondary"></button>').text(theUILang.Cancel).click(function() {history.go(-1);}));
+      container.append($('<button type="button" class="btn btn-' + plugin.currentAccent + '"></button>').text(theUILang.ok).click(function() {mobile.chooseGetDir(data.path);}));
+      container.append($('<button type="button" class="btn btn-outline-secondary"></button>').text(theUILang.Cancel).click(function() {mobile.goBack();}));
 
       var tbody = $('<tbody></tbody>');
       $.each(data.directories, function(i, name) {
@@ -1360,6 +1474,9 @@ plugin.showDataDir = function() {
     $('#datadir_move').prop('checked', true);
     $('#datadir_fastresume').prop('disabled', String(d.done).trim() !== '1000').prop('checked', false);
     $('#dataDirOk').prop('disabled', false);
+    // Remember the initial form state, so an OK without any changes can
+    // be treated as a cancel (see sendDataDir)
+    plugin.dataDirSnapshot = plugin.dataDirFormState();
     plugin.showPage('torrentDataDir');
     var used = ($('#datadir_edit').outerWidth(true) - $('#datadir_edit').width()) + $('#showGetDirDataDir').outerWidth(true) + 1;
     $('#datadir_edit').width($('#torrentDataDir').width() - used);
@@ -1376,7 +1493,21 @@ plugin.showDataDir = function() {
   }
 };
 
+plugin.dataDirFormState = function() {
+  return $('#datadir_edit').val() + '|' +
+    $('#datadir_not_add_path').prop('checked') + '|' +
+    $('#datadir_move').prop('checked') + '|' +
+    $('#datadir_fastresume').prop('checked');
+};
+
 plugin.sendDataDir = function() {
+  // An unchanged form would still bounce the torrent: the datadir worker
+  // stops and closes it before noticing there is nothing to move (see
+  // plugins/datadir/util_setdir.php). Treat OK without changes as cancel.
+  if (this.dataDirSnapshot == this.dataDirFormState()) {
+    this.goBack();
+    return;
+  }
   $('#dataDirOk').prop('disabled', true);
   $.ajax({
     type: 'POST',
@@ -1403,7 +1534,7 @@ plugin.sendDataDir = function() {
           plugin.showAlert(s, 'alert-danger');
         }
       } else {
-        history.go(-1);
+        plugin.goBack();
         plugin.update(true);
       }
     },
@@ -1619,12 +1750,22 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       plugin.trackerList.push({name: t, count: trackersCount[t]});
     });
 
+    var removedNames = [];
     $.each(plugin.rowsPrev, function(n, v){
       if ( ! plugin.torrents[n] ) {
         $('#' + n).remove();
+        removedNames.push(v.name);
         listChanged = true;
       }
     });
+    // Toast deleted torrents, like the desktop's history-plugin
+    // notification; detected from the list diff since the history
+    // plugin (and its gethistory polling) is disabled on mobile.
+    // theUILang.Deleted is the history plugin's string, so fall back
+    // to the core's Remove on installs without it.
+    if (removedNames.length) {
+      plugin.showAlert((theUILang.Deleted || theUILang.Remove) + ': ' + removedNames.join(', '), 'alert-info');
+    }
 
     if ( listHtmlString ) {
       if (singleUpdate) {
@@ -1678,10 +1819,21 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       }
     }
 
-    // The core engine refreshes theWebUI.stopen every cycle when the
-    // open-status setting is on; mirror it live like the desktop status bar
-    if (theWebUI.settings['webui.show_open_status'] && $('#globalSettings').is(':visible')) {
-      plugin.renderOpenStatus(theWebUI.stopen);
+    if ($('#globalSettings').is(':visible')) {
+      // The core engine refreshes theWebUI.stopen every cycle when the
+      // open-status setting is on; mirror it live like the desktop status bar
+      if (theWebUI.settings['webui.show_open_status']) {
+        plugin.renderOpenStatus(theWebUI.stopen);
+      }
+      // The core also refetches the speed limits every cycle (gettotal);
+      // mirror limit changes made elsewhere (e.g. the desktop UI) into
+      // the selects. Only rebuild them on an actual change, so an open
+      // select picker isn't disturbed.
+      if (plugin.limitsShown &&
+          (plugin.limitsShown.rateDL != theWebUI.total.rateDL ||
+           plugin.limitsShown.rateUL != theWebUI.total.rateUL)) {
+        plugin.fillLimitSelects(theWebUI.total);
+      }
     }
 
     $('#upspeed').text(theConverter.speed(tul));
@@ -1856,6 +2008,17 @@ plugin.init = function() {
         if (listData && listData.torrents) {
           plugin.processTorrents(listData.torrents);
         }
+      };
+
+      // Everything the desktop shows as a bottom-right noty notification
+      // (torrent removed, request errors, rtorrent messages...) would
+      // otherwise be rendered into the discarded desktop layout; show
+      // those messages as mobile toasts instead
+      window.noty = function(msg, status) {
+        plugin.showAlert(msg,
+          (status == 'success') ? 'alert-success' :
+          (status == 'error') ? 'alert-danger' :
+          (status == 'alert') ? 'alert-warning' : 'alert-info');
       };
 
       // Keep the core's Bootstrap 5 stylesheet (and its JS bundle, already

@@ -4,7 +4,7 @@
     <div class="container">
       <ul class="nav navbar-inverse">
         <li>
-          <a id="navBack" href="javascript://void();" onclick="window.history.go(-1);"><i class="bi bi-arrow-left icon-white"></i></a>
+          <a id="navHome" href="javascript://void();" onclick="mobile.goHome();"><i class="bi bi-house icon-white"></i></a>
         </li>
         <li>
           <a id="navSettings" href="javascript://void();" onclick="mobile.showSettings();"><i class="bi bi-gear icon-white"></i></a>
@@ -148,15 +148,16 @@
         <label id="sortDesc" class="radio-inline"><input type="radio" name="inlineRadioOptions" id="sort_desc" value="-"><i class="bi bi-sort-down icon-black"></i></label>
       </div>
     </div>
-    <button id="sortOk" onclick="mobile.setSort();" class="btn btn-primary"></button>
-    <button id="sortCancel" onclick="history.go(-1);" class="btn btn-outline-secondary"></button>
+    <button type="button" id="sortOk" onclick="mobile.setSort();" class="btn btn-primary"></button>
+    <button type="button" id="sortCancel" onclick="mobile.goBack();" class="btn btn-outline-secondary"></button>
   </div>
 
   <div class="mainContainer container" id="torrentFilter" style="display:none;">
     <div id="filterButtons">
-      <button id="filterDone" onclick="history.go(-1);" class="btn btn-primary"></button>
-      <button id="filterClear" onclick="mobile.clearFilters();" class="btn btn-outline-secondary"></button>
+      <button type="button" id="filterDone" onclick="mobile.filterDone();" class="btn btn-primary"></button>
+      <button type="button" id="filterClear" onclick="mobile.clearFilters();" class="btn btn-outline-secondary"></button>
     </div>
+    <h5 id="filterTotals"></h5>
     <h5 id="filterStatusHeader"></h5>
     <div class="list-group" id="filterStatusList"></div>
     <h5 id="filterLabelsHeader"></h5>
@@ -246,16 +247,16 @@
     <div class="checkbox">
       <label id="dataDirFastResume"><input type="checkbox" id="datadir_fastresume"></label>
     </div>
-    <button id="dataDirOk" onclick="mobile.sendDataDir();" class="btn btn-primary"></button>
-    <button id="dataDirCancel" onclick="history.go(-1);" class="btn btn-outline-secondary"></button>
+    <button type="button" id="dataDirOk" onclick="mobile.sendDataDir();" class="btn btn-primary"></button>
+    <button type="button" id="dataDirCancel" onclick="mobile.goBack();" class="btn btn-outline-secondary"></button>
   </div>
 
   <div class="mainContainer" id="getDirList" style="display:none;"></div>
 
   <div class="mainContainer container text-center" id="confirmTorrentDelete" style="display:none;">
     <h5></h5>
-    <button id="deleteOk" onclick="mobile.deleteConfirmed();" class="btn btn-primary"></button>
-    <button id="deleteCancel" onclick="history.go(-1);" class="btn btn-outline-secondary"></button>
+    <button type="button" id="deleteOk" onclick="mobile.deleteConfirmed();" class="btn btn-primary"></button>
+    <button type="button" id="deleteCancel" onclick="mobile.goBack();" class="btn btn-outline-secondary"></button>
   </div>
 
   <div id="alert_placeholder"></div>

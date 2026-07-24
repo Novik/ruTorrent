@@ -16,12 +16,12 @@
 }
 .bi-arrow-clockwise:before {content: "\f116";}
 .bi-arrow-down-up:before {content: "\f127";}
-.bi-arrow-left:before {content: "\f12f";}
 .bi-download:before {content: "\f30a";}
 .bi-file-earmark:before {content: "\f392";}
 .bi-folder2-open:before {content: "\f3d8";}
 .bi-funnel:before {content: "\f3e1";}
 .bi-gear:before {content: "\f3e5";}
+.bi-house:before {content: "\f425";}
 .bi-list-ul:before {content: "\f478";}
 .bi-pause-fill:before {content: "\f4c3";}
 .bi-pencil-square:before {content: "\f4ca";}
@@ -78,6 +78,21 @@ h5 {
 a {
   color: var(--mobile-accent);
   text-decoration: none;
+}
+/* Touch browsers keep :hover applied after a tap until the next touch
+   ("sticky hover"), which leaves tapped buttons filled dark (Bootstrap's
+   outline-button hover is a filled state). Neutralize hover styling where
+   hover doesn't really exist; the :active pressed flash is unaffected. */
+@media (hover: none) {
+  .btn:hover {
+    color: var(--bs-btn-color);
+    background-color: var(--bs-btn-bg);
+    border-color: var(--bs-btn-border-color);
+  }
+  .list-group-item-action:not(.active):hover {
+    color: var(--bs-list-group-action-color);
+    background-color: var(--bs-list-group-bg);
+  }
 }
 .pull-left {
   float: left !important;
@@ -162,6 +177,15 @@ a:hover, a:focus {
   background-color: #fff;
   padding: 45px 3px calc(74px + env(safe-area-inset-bottom, 0px)) 3px;
   margin: 0;
+}
+/* Success/error toasts: as high as possible without touching the top
+   edge of the page — a fixed element flush with it gets its background
+   color extended into the iOS status-bar area, so leave a small strip
+   of the page background above the toast (plus the safe-area inset,
+   for when the page runs edge-to-edge in standalone mode) */
+#alert_placeholder .alert {
+  top: calc(env(safe-area-inset-top, 0px) + 5px);
+  margin: 0 5px;
 }
 /* The label is its own layer sized to the bar, so it centers in the
    filled part; min-width keeps it from clipping when the bar is narrower
@@ -306,7 +330,11 @@ h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFile
   color: var(--mobile-accent);
 }
 .nav-tabs #torrentsFilter > a {
-  display: flex;
+  /* inline-flex, so the tap target is only as wide as the funnel icon
+     and text — not the whole stretch of empty tab-bar space the li
+     covers; max-width still lets long filter text truncate */
+  display: inline-flex;
+  max-width: 100%;
   align-items: center;
   overflow: hidden;
   white-space: nowrap;
