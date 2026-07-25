@@ -1983,12 +1983,21 @@ plugin.processTorrents = function(torrents, singleUpdate) {
     // the rows of deleted torrents)
     process({}, false);
   } else {
-    // Name every hash explicitly, like the desktop's getAllTrackers:
-    // the direct XML-RPC mount builds one t.multicall per given hash
-    // and silently sends nothing when none are given, which left the
-    // list empty forever (httprpc happens to treat "no hashes" as
-    // "all torrents", masking this)
-    mobile.request('?action=getalltrackers' + $.map(hashes, function(h) {return '&hash=' + h;}).join(''), function(data) {
+    // The PHP transports (httprpc and its out-of-tree siblings) treat a
+    // hashless getalltrackers as "all torrents" — exactly what's wanted
+    // here, and naming thousands of hashes can overflow transport
+    // limits. Only the direct XML-RPC mount can't take that form: the
+    // base stub builds one t.multicall per given hash and silently
+    // sends nothing when none are given, which left the list empty
+    // forever. Probe how the active transport handles the hashless
+    // form and enumerate only where it's needed; the base stub packs
+    // the hashes into POSTed XML, so there's no size problem there
+    var query = '?action=getalltrackers';
+    var probe = new rTorrentStub(query);
+    if (probe.content == null && !probe.commands.length) {
+      query += $.map(hashes, function(h) {return '&hash=' + h;}).join('');
+    }
+    mobile.request(query, function(data) {
       plugin.trackersCache = {key: trackersKey, data: data};
       process(data, true);
     });
