@@ -19,7 +19,7 @@ These plugins add additional functionality when installed:
 * tracklabels: Shows label icons and tracker favicons on the filter page.
 
 ### Configuration
-There are three configurable boolean options and two multi-value options that you may set at the top of init.js.
+There are three configurable boolean options and three multi-value options that you may set at the top of init.js.
 #### plugin.enableAutodetect
 true by default. This option sets whether mobile devices will be autodetected to enable the plugin.
 
@@ -35,8 +35,12 @@ If in rutorrent you turned off 'Confirm when deleting torrents', this plugin wil
 This option sets the default sort value of the torrent list. Without negative it's ascending, with negative it's descending.
 
 #### plugin.accentColor
-'primary' by default. Possible values: 'primary' (blue), 'secondary' (gray), 'success' (green), 'danger' (red), 'warning' (yellow), 'info' (cyan), 'dark' (near-black).
+'primary' by default. Possible values: 'primary' (blue), 'secondary' (gray), 'success' (green), 'danger' (red), 'warning' (yellow), 'info' (cyan), 'dark' (contrast: near-black on the light theme, near-white on dark).
 This option sets the Bootstrap theme color used for buttons, progress bars, tab highlights and selections. The color can also be changed temporarily from the settings page; a page reload reverts to this option.
+
+#### plugin.theme
+'light' by default. Possible values: 'light', 'dark', 'system'.
+This option sets the color scheme of the UI. 'system' follows the device's light/dark setting, live. The theme can also be changed temporarily from the settings page; a page reload reverts to this option.
 
 ### Utilization
 If you set plugin.enableAutodetect to true, the plugin will automaticaly load when detecting a mobile device. To force load the plugin in a desktop browser add '?mobile=1' to the end of the rutorrent url.
