@@ -52,13 +52,29 @@
 :root {
   --mobile-accent: var(--bs-primary);
   --mobile-accent-rgb: var(--bs-primary-rgb);
+  /* Bootstrap's stripe overlay color; applyAccentColor switches it to
+     a dark one when the accent resolves to near-white (dark theme +
+     near-black accent), where white stripes would be invisible */
+  --mobile-stripe: rgba(255, 255, 255, 0.15);
+  /* Progress-label text and its halo; applyAccentColor inverts them for
+     the near-white accent, where dark-on-light reads better. The label
+     can overhang onto the track, so the halo does the work there */
+  --mobile-progress-label: #fff;
+  --mobile-progress-halo: #000;
+  /* Text on solid accent fills (selected filter rows); applyAccentColor
+     flips it to black when the accent resolves to near-white */
+  --mobile-accent-contrast: #fff;
 }
 .progress-bar {
   background-color: var(--mobile-accent);
 }
+.progress-bar-striped {
+  background-image: linear-gradient(45deg, var(--mobile-stripe) 25%, transparent 25%, transparent 50%, var(--mobile-stripe) 50%, var(--mobile-stripe) 75%, transparent 75%, transparent);
+}
 .list-group {
   --bs-list-group-active-bg: var(--mobile-accent);
   --bs-list-group-active-border-color: var(--mobile-accent);
+  --bs-list-group-active-color: var(--mobile-accent-contrast);
 }
 .accordion {
   /* Expanded header follows the accent color as a light tint */
@@ -163,20 +179,22 @@ select {
   position: sticky;
   position: -webkit-sticky;
   top: 0;
-  background: #eee;
+  background: var(--bs-secondary-bg);
 }
+/* On the bottom navbar, which stays dark in both themes */
 .icon-white {
   color: white;
 }
+/* Follows the theme (near-black on light, near-white on dark) */
 .icon-black {
-  color: black;
+  color: var(--bs-body-color);
 }
 a:hover, a:focus {
   outline: none;
   text-decoration: none;
 }
 #mainContainer {
-  background-color: #fff;
+  background-color: var(--bs-body-bg);
   padding: 45px 3px calc(74px + env(safe-area-inset-bottom, 0px)) 3px;
   margin: 0;
 }
@@ -204,10 +222,10 @@ a:hover, a:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-weight: 500;
+  color: var(--mobile-progress-label);
+  font-weight: 700;
   white-space: nowrap;
-  text-shadow: 0 0 2px #000, 0 0 2px #000, 1px 1px 2px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 0 2px var(--mobile-progress-halo), 0 0 2px var(--mobile-progress-halo), 1px 1px 2px var(--mobile-progress-halo);
 }
 h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFilesPage a, #detailsDetailsPage #label td, .nav a, #getDirList td {
   word-break:break-all;
@@ -297,9 +315,9 @@ h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFile
   /* BS5's .nav wraps by default, which would push the toolbar icons to
      a second line when the filter text is long; truncate instead */
   flex-wrap: nowrap;
-  background-color: #fff;
+  background-color: var(--bs-body-bg);
   padding: 3px 3px 0 3px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--bs-border-color);
 }
 .nav-tabs > li {
   flex: 0 0 auto;
@@ -354,8 +372,8 @@ h5, #detailsTrackersPage a, #detailsTrackersPage .accordion-button, #detailsFile
   left: 0;
   right: 0;
   z-index: 1029;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
+  background-color: var(--bs-body-bg);
+  border-bottom: 1px solid var(--bs-border-color);
   display: flex;
   gap: 5px;
   padding: 5px 3px;
