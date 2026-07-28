@@ -105,8 +105,15 @@ function formatItemDescription($torrent)
 	if(!empty($torrent["mesage"]))
 		$desc.='<fieldset><legend>'.$theUILang["Track_status"].'</legend>'.htmlspecialchars($torrent["mesage"],ENT_COMPAT,"UTF-8").'</fieldset>';
 	if(!empty($torrent["comment"]))
-		$desc.='<fieldset><legend>'.$theUILang["Comment"].'</legend>'.htmlspecialchars($torrent["comment"],ENT_COMPAT,"UTF-8").'</fieldset>';
+		$desc.='<fieldset><legend>'.$theUILang["Comment"].'</legend>'.getClickableComment(htmlspecialchars($torrent["comment"],ENT_COMPAT,"UTF-8")).'</fieldset>';
 	return($desc);
+}
+
+function getClickableComment( string $comment ): string
+{
+    $pattern = '/(https?|ftp):\/\/[^\s<>"]+/i';
+    $result = preg_replace($pattern, '<a href="$0" target="_blank" rel="noopener noreferrer">$0</a>', $comment);
+    return $result ?? $comment;
 }
 
 function sortByPubDate( $a, $b )
