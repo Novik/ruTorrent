@@ -243,9 +243,33 @@ function linked(obj, _33, lst) {
 
 function escapeHTML(str)
 {
-//	return( $("<div>").text(str).html() );
-	return( String(str).split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;') );
+	if (str === null || str === undefined) return '';
+	return String(str)
+		.split('&').join('&amp;')
+		.split('<').join('&lt;')
+		.split('>').join('&gt;')
+		.split('"').join('&quot;')
+		.split("'").join('&#039;');
 }
+
+/**
+ * Converts HTTP and HTTPS URLs in tracker status messages to safe, clickable HTML links.
+ * Excludes trailing '.', ')', and ',' punctuation from the link.
+ *
+ * @param {string} text Raw tracker status message
+ * @returns {string} Safe HTML string with clickable links
+ */
+function getClickableTrackerStatus(text)
+{
+	if (!text) return '';
+	var sanitized = escapeHTML(text);
+	return sanitized.replace(/https?:\/\/[^\s<>"']+/gi, function(match) {
+		var cleanUrl = match.replace(/[\.,\)]+$/, '');
+		var trailing = match.substring(cleanUrl.length);
+		return '<a href="' + cleanUrl + '" target="_blank" rel="noopener noreferrer">' + cleanUrl + '</a>' + trailing;
+	});
+}
+
 
 /**
  * Confirm again before taking action.
