@@ -264,7 +264,7 @@ function getClickableTrackerStatus(text)
 	if (!text) return '';
 	var sanitized = escapeHTML(text);
 	return sanitized.replace(/https?:\/\/[^\s<>"']+/gi, function(match) {
-		var cleanUrl = match.replace(/[\.,\)]+$/, '');
+		var cleanUrl = match.replace(/[.,)]+$/, '');
 		var trailing = match.substring(cleanUrl.length);
 		return '<a href="' + cleanUrl + '" target="_blank" rel="noopener noreferrer">' + cleanUrl + '</a>' + trailing;
 	});
