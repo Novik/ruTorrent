@@ -2098,7 +2098,7 @@ var theWebUI = {
 			const trackers = this.trackers[this.dID] ?? [];
 			$("#tu").text(trackers.length ? (trackers[0].name  + (trackers.length > 1 ? ` ${theUILang.of} ${d.tracker_size}` : '')) : `${d.tracker_size}`);
 	        	$("#hs").text(this.dID.substring(0,40));
-			$("#ts").text(d.msg);
+			$("#ts").html(getClickableTrackerStatus(d.msg));
 			var url = d.comment.trim();
 			if(!url.match(/<a href/i))
 			{
