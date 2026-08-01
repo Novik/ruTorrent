@@ -39,7 +39,7 @@ const theOptionsWindow = {
 						$("<input>").attr({type: "checkbox", id: id}),
 						$("<label>").attr({for: id}).text(label),
 					)),
-					$("<div>").addClass("col-md-6"),
+					$("<div>").addClass("w-100"),
 					...[
 						["webui.update_interval", theUILang.Update_GUI_every + ": ", theUILang.ms, 3000],
 						["webui.reqtimeout", theUILang.ReqTimeout + ": ", theUILang.ms, 5000],
