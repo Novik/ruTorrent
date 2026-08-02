@@ -98,6 +98,28 @@ describe("setsettings on rtorrent with adjustable socket allocation", () => {
   });
 });
 
+describe("settings read-back", () => {
+  function readCommands(iVersion) {
+    loadUI(iVersion);
+    return commandsFor("?action=getsettings").map(([name]) => name);
+  }
+
+  // max_alloc is only the ceiling and commonly sits orders of magnitude above
+  // the allocation in use, so reading it back would misreport the limit.
+  it("reads the allocation in effect once the socket manager owns the limits", () => {
+    const commands = readCommands(0x1010);
+    expect(commands).toContain("system.sockets.http.max_size");
+    expect(commands).not.toContain("system.sockets.http.max_alloc");
+    expect(commands).toContain("network.max_open_files");
+  });
+
+  it("keeps the legacy read-back commands on 0.9.8", () => {
+    const commands = readCommands(0x908);
+    expect(commands).toContain("network.max_open_files");
+    expect(commands).toContain("network.http.max_open");
+  });
+});
+
 // Sending these commands to an rtorrent that aborts on an over-budget
 // adjust_alloc would kill the process, so older versions keep the old command.
 describe("setsettings below the socket allocation version gate", () => {

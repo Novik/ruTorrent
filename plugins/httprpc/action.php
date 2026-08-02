@@ -73,6 +73,44 @@ function makeMulticall($cmds,$hash,$add,$prefix)
 	return(false);
 }
 
+// The socket manager stages min_alloc/max_alloc until adjust_alloc recomputes
+// the allocation. A rejected recompute keeps the staged values, which then also
+// breaks every later recompute, so the bounds in effect are read before they are
+// touched and put back if the recompute is refused.
+function getSocketAlloc($categories)
+{
+	$req = new rXMLRPCRequest();
+	foreach($categories as $category)
+	{
+		$req->addCommand(new rXMLRPCCommand("system.sockets.".$category.".min_alloc"));
+		$req->addCommand(new rXMLRPCCommand("system.sockets.".$category.".max_alloc"));
+	}
+	$req->important = false;
+	if(!$req->success(true) || (count($req->val)!=2*count($categories)))
+		return(array());
+	$ret = array();
+	foreach($categories as $ndx=>$category)
+		$ret[$category] = array_slice($req->val,2*$ndx,2);
+	return($ret);
+}
+
+function restoreSocketAlloc($saved)
+{
+	$req = new rXMLRPCRequest();
+	foreach($saved as $category=>$bounds)
+	{
+		$req->addCommand(new rXMLRPCCommand(
+			"system.sockets.".$category.".min_alloc.set",array("",floatval($bounds[0]))));
+		$req->addCommand(new rXMLRPCCommand(
+			"system.sockets.".$category.".max_alloc.set",array("",floatval($bounds[1]))));
+	}
+	$req->addCommand(new rXMLRPCCommand("system.sockets.adjust_alloc"));
+	// These bounds were in effect moments ago, so the recompute has to accept
+	// them again. Report it rather than leave a stale allocation staged.
+	if(!$req->success(true))
+		FileUtil::toLog("setsettings: socket allocation left staged, restore was refused");
+}
+
 function makeSimpleCall($cmds,$hash)
 {
 	$req = new rXMLRPCRequest();
@@ -397,7 +435,7 @@ switch($mode)
 	case "setsettings":
 	{
 		$req = new rXMLRPCRequest();
-		$adjustAlloc = false;
+		$socketCategories = array();
 		foreach($vs as $ndx=>$v)
 		{
 			if($ss[$ndx][0]=='n')
@@ -414,20 +452,29 @@ switch($mode)
 					"system.sockets.".$socketAlloc.".min_alloc.set",array("",$v)));
 				$cmd = new rXMLRPCCommand(
 					"system.sockets.".$socketAlloc.".max_alloc.set",array("",$v));
-				$adjustAlloc = true;
+				$socketCategories[$socketAlloc] = true;
 			}
 			else
 				$cmd = new rXMLRPCCommand('set_'.substr($ss[$ndx],1),$v);
 			$req->addCommand($cmd);
 		}
+		$socketCategories = array_keys($socketCategories);
 		// The staged min_alloc/max_alloc values only take effect once the
-		// socket manager recomputes its allocation. Send it once per batch.
-		if($adjustAlloc)
+		// socket manager recomputes its allocation. Send it once per batch,
+		// having first read the bounds it would replace.
+		$savedAlloc = array();
+		if(count($socketCategories))
+		{
+			$savedAlloc = getSocketAlloc($socketCategories);
 			$req->addCommand(new rXMLRPCCommand("system.sockets.adjust_alloc"));
+		}
 		if($req->getCommandsCount())
 		{
 			if($req->success(true))
 		        	$result = $req->val;
+			else
+			if(count($savedAlloc))
+				restoreSocketAlloc($savedAlloc);
         	}
         	else
 	        	$result = array();
