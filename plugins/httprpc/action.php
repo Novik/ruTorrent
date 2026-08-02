@@ -397,18 +397,33 @@ switch($mode)
 	case "setsettings":
 	{
 		$req = new rXMLRPCRequest();
+		$adjustAlloc = false;
 		foreach($vs as $ndx=>$v)
 		{
 			if($ss[$ndx][0]=='n')
 				$v = floatval($v);
 			if( ($ss[$ndx]=="sdirectory") && !rTorrentSettings::get()->correctDirectory($v) )
 				continue;
+			$socketAlloc = rTorrentSettings::get()->getSocketAllocCategory($ss[$ndx]);
 			if($ss[$ndx]=="ndht")
 				$cmd = new rXMLRPCCommand('dht',(($v==0) ? "disable" : "auto"));
+			else
+			if($socketAlloc!==null)
+			{
+				$req->addCommand(new rXMLRPCCommand(
+					"system.sockets.".$socketAlloc.".min_alloc.set",array("",$v)));
+				$cmd = new rXMLRPCCommand(
+					"system.sockets.".$socketAlloc.".max_alloc.set",array("",$v));
+				$adjustAlloc = true;
+			}
 			else
 				$cmd = new rXMLRPCCommand('set_'.substr($ss[$ndx],1),$v);
 			$req->addCommand($cmd);
 		}
+		// The staged min_alloc/max_alloc values only take effect once the
+		// socket manager recomputes its allocation. Send it once per batch.
+		if($adjustAlloc)
+			$req->addCommand(new rXMLRPCCommand("system.sockets.adjust_alloc"));
 		if($req->getCommandsCount())
 		{
 			if($req->success(true))

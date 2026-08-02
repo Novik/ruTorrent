@@ -145,6 +145,17 @@ var theRequestManager =
 		}
 		return( this.map(this[cmd].commands[no]) );
 	},
+	// See rTorrentSettings::getSocketAllocCategory() in php/settings.php.
+	getSocketAllocCategory: function( name )
+	{
+		if(theWebUI.systemInfo.rTorrent.iVersion<0x1013)
+			return(null);
+		if(name=="nmax_open_files")
+			return("files");
+		if(name=="nmax_open_http")
+			return("http");
+		return(null);
+	},
 	patchCommand: function( cmd, name )
 	{
 		if(this.aliases[name] && this.aliases[name].prm)
@@ -365,6 +376,7 @@ rTorrentStub.prototype.recheck = function()
 
 rTorrentStub.prototype.setsettings = function()
 {
+	var adjustAlloc = false;
 	for(var i=0; i<this.vs.length; i++)
 	{
 		var prmType = "string";
@@ -372,6 +384,7 @@ rTorrentStub.prototype.setsettings = function()
 			prmType = "i8";
 		var prm = this.vs[i];
 		var cmd = null;
+		var socketAlloc = theRequestManager.getSocketAllocCategory(this.ss[i]);
 		if(this.ss[i]=="ndht")
 		{
 			if(prm==0)
@@ -383,10 +396,25 @@ rTorrentStub.prototype.setsettings = function()
 			cmd.addParameter("string",'');
 		}
 		else
+		if(socketAlloc!==null)
+		{
+			var minCmd = new rXMLRPCCommand("system.sockets."+socketAlloc+".min_alloc.set");
+			minCmd.addParameter("string",'');
+			minCmd.addParameter(prmType,prm);
+			this.commands.push( minCmd );
+			cmd = new rXMLRPCCommand("system.sockets."+socketAlloc+".max_alloc.set");
+			cmd.addParameter("string",'');
+			adjustAlloc = true;
+		}
+		else
 			cmd = new rXMLRPCCommand('set_'+this.ss[i].substr(1));
 		cmd.addParameter(prmType,prm);
 		this.commands.push( cmd );
 	}
+	// The staged min_alloc/max_alloc values only take effect once the socket
+	// manager recomputes its allocation. Send it once per batch.
+	if(adjustAlloc)
+		this.commands.push( new rXMLRPCCommand("system.sockets.adjust_alloc") );
 }
 
 rTorrentStub.prototype.getsettings = function()
