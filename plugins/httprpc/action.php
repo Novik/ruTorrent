@@ -663,9 +663,9 @@ switch($mode)
 if(is_null($result))
 {
 	header("HTTP/1.0 500 Server Error");
-	$message = "Link to XMLRPC failed. Maybe, rTorrent is down?";
+	$message = "Could not reach rTorrent over XMLRPC. Is rTorrent running?";
 	if(isset($req) && $req->fault)
-		$message = ($req->faultString==='') ? "Warning: XMLRPC call is failed." : $req->faultString;
+		$message = ($req->faultString==='') ? "Warning: the XMLRPC call failed." : $req->faultString;
 	CachedEcho::send($message,"text/html");
 }
 else
