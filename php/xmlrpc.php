@@ -76,6 +76,7 @@ class rXMLRPCRequest
 	public $strings = array();
 	public $val = array();
 	public $fault = false;
+	public $faultString = '';
 	public $parseByTypes = false;
 	public $important = true;
 
@@ -223,6 +224,7 @@ class rXMLRPCRequest
 					if(strstr($answer,"faultCode")!==false)
 					{
 						$this->fault = true;
+						$this->faultString = self::parseFaultString($answer);
 						global $rpcLogFaults;
 						if($rpcLogFaults && $this->important)
 						{
@@ -239,6 +241,17 @@ class rXMLRPCRequest
 		return($ret);
 	}
 
+	// rtorrent explains a refusal in faultString -- an allocation that will not
+	// fit, a path outside the permitted tree. Keep it so the caller can pass the
+	// reason on instead of reporting that something unspecified went wrong. Also
+	// matches a fault nested in a system.multicall array.
+	static protected function parseFaultString($answer)
+	{
+		if(preg_match("/<name>faultString<\/name>\s*<value>\s*(?:<string>)?(.*?)(?:<\/string>)?\s*<\/value>/s",
+			$answer,$matches))
+			return(trim(html_entity_decode($matches[1],ENT_COMPAT,"UTF-8")));
+		return('');
+	}
 	public function success($trusted = true)
 	{
 		return($this->run($trusted) && !$this->fault);
