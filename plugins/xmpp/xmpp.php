@@ -131,7 +131,7 @@ class rXmpp
 		if ( $this->message !== '' && isset($this->jabberServer) && isset($this->jabberLogin) && isset($this->jabberPasswd) && isset($this->jabberFor))
 		{
 		    $cmd = $theSettings->getOnFinishedCommand(array('xmpp'.User::getUser(),
-			    getCmd('execute.nothrow.bg').'={'.Utility::getPHP().','.$pathToXmpp.'/notify.php,"$'.getCmd('d.name').'=","'.User::getUser().'"}'
+			    getCmd('execute.nothrow').'={sh,-c,\"$0\" \"$@\" </dev/null >/dev/null 2>&1 &,'.Utility::getPHP().','.$pathToXmpp.'/notify.php,"$'.getCmd('d.name').'=","'.User::getUser().'"}'
 			    ));
 		}
 		else
