@@ -254,7 +254,7 @@ function escapeHTML(str)
 
 /**
  * Converts HTTP and HTTPS URLs in tracker status messages to safe, clickable HTML links.
- * Excludes trailing '.', ')', and ',' punctuation from the link.
+ * Excludes trailing punctuation, brackets, quotes, and backslashes from the link.
  *
  * @param {string} text Raw tracker status message
  * @returns {string} Safe HTML string with clickable links
@@ -264,7 +264,9 @@ function getClickableTrackerStatus(text)
 	if (!text) return '';
 	var sanitized = escapeHTML(text);
 	return sanitized.replace(/https?:\/\/[^\s<>"']+/gi, function(match) {
-		var cleanUrl = match.replace(/[.,)]+$/, '');
+		var entityMatch = match.match(/&(?:quot|#039|#39|lt|gt);/i);
+		var truncated = entityMatch ? match.substring(0, entityMatch.index) : match;
+		var cleanUrl = truncated.replace(/[.,)!?:;\\\]\}]+$/g, '');
 		var trailing = match.substring(cleanUrl.length);
 		return '<a href="' + cleanUrl + '" target="_blank" rel="noopener noreferrer">' + cleanUrl + '</a>' + trailing;
 	});
