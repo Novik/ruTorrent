@@ -1376,6 +1376,16 @@ function Ajax_UpdateTime(jqXHR)
 	jqXHR = null; // Cleanup memory leak
 }
 
+// Recalculate time deltas after browser sleep/tab suspension
+document.addEventListener("visibilitychange", function()
+{
+	if(!document.hidden)
+	{
+		theWebUI.deltaTime = 0;
+		theWebUI.serverDeltaTime = 0;
+	}
+});
+
 $(document).ready(function()
 {
 	var timer = null;
