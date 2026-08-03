@@ -21,6 +21,7 @@ share/torrents/*
 share/settings/*
 plugins/*/conf.local.php
 plugins/xirvik
+.htaccess
 .htpasswd
 plugins/shoutbox
 plugins/backup
