@@ -14,9 +14,9 @@
  theUILang.ratDownRule		= "Down";
  theUILang.ratioIfLegend	= "If";
  theUILang.ratLabelContain	= "Torrent Label contains";
- theUILang.ratTrackerContain	= "One of torrent's tracker URLs contains";
- theUILang.ratTrackerPublic	= "All torrent's trackers are public";
- theUILang.ratTrackerPrivate	= "One of torrent's trackers is private";
+ theUILang.ratTrackerContain	= "One of the torrent's tracker URLs contains";
+ theUILang.ratTrackerPublic	= "All of the torrent's trackers are public";
+ theUILang.ratTrackerPrivate	= "One of the torrent's trackers is private";
  theUILang.ratioThenLegend	= "Then";
  theUILang.ratShortcutLegend	= "Keyboard Shortcuts";
  theUILang.setRatioTo		= "Set ratio to";

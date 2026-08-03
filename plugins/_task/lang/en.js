@@ -12,14 +12,14 @@
  theUILang.tskErrors		= "Diagnostics";
  theUILang.tskBackground	= "Hide";
  theUILang.tskCopy		= "Copy";
- theUILang.tskLogEmpty		= "Console log is empty.";
+ theUILang.tskLogEmpty		= "The console log is empty.";
  theUILang.tskSaveLog		= "Save Log";
  theUILang.tskStart		= "Started";
  theUILang.tskFinish		= "Finished";
  theUILang.tskElapsed		= "Elapsed";
  theUILang.tskPlugin		= "Plugin";
  theUILang.tskDeletePrompt	= "Do you really want to delete the selected task(s)?";
- theUILang.tskDelete		= "Delete tasks(s)";
+ theUILang.tskDelete		= "Delete task(s)";
  theUILang.tskActivate		= "Activate";
  theUILang.tskRemove		= "Remove";
  theUILang.tskRefresh		= "Refresh";

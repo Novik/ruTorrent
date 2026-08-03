@@ -1,4 +1,4 @@
-plugin.description: This plugin appends specified trackers to the trackers list of all newly added torrents.
+plugin.description: This plugin appends the specified trackers to the tracker list of all newly added torrents.
 plugin.author: Novik
 plugin.version: 5.1
 rtorrent.remote: error

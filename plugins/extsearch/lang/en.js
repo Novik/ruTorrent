@@ -11,7 +11,7 @@
  theUILang.tegMenuDeleteItem		= "Remove item";
  theUILang.tegMenuDelete		= "Remove tag";
  theUILang.tegRefresh			= "Refresh tag";
- theUILang.exsGlobal			= "Include into 'All' category";
+ theUILang.exsGlobal			= "Include in 'All' category";
  theUILang.exsLimit			= "Result limit";
  theUILang.exsEngines			= "Engines";
  theUILang.exsSearch			= "Search";
@@ -33,7 +33,7 @@
  theUILang.extAllPrivate		= "All Private";
  theUILang.exsMustInstallCookies	= "Cookies plugin is required to work with this engine.";
  theUILang.exsMustInstallLoginMgr	= "LoginMgr plugin is required to work with this engine.";
- theUILang.exsLoginMgr			= "Setup your account in LoginMgr plugin to work with this engine.";
+ theUILang.exsLoginMgr			= "Set up your account in the LoginMgr plugin to work with this engine.";
  theUILang.exsURLInfo			= "URL info";
  theUILang.exsURLGUID			= "Description URL";
  theUILang.exsURLHref			= "Download URL";

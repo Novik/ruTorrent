@@ -1,5 +1,5 @@
 
- theUILang.Tracklabels_dialog = "Upload icon for tracker or label";
+ theUILang.Tracklabels_dialog = "Upload an icon for a tracker or label";
  theUILang.DeleteUserIcon = "Delete";
  theUILang.FileUserIcon = "PNG file";
  theUILang.UploadUserIcon = "Upload";

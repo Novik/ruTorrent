@@ -1,4 +1,4 @@
-plugin.description: This plugin allows to delete torrent data along with .torrent file.
+plugin.description: This plugin allows you to delete torrent data along with the .torrent file.
 plugin.author: Novik
 plugin.version: 5.1
 rtorrent.remote: error

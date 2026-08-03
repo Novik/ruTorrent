@@ -9,7 +9,7 @@
  */
 
  theUILang.peerComment		= "Add comment";
- theUILang.peerCommentLabel	= "Enter new comment for peer";
+ theUILang.peerCommentLabel	= "Enter a new comment for the peer";
  theUILang.commentName		= "Comment";
  theUILang.countryName		= "Country";
 

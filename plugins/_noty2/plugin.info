@@ -1,4 +1,4 @@
-plugin.description: This plugin provides the notification functionality for other plugins.
+plugin.description: This plugin provides notification functionality for other plugins.
 plugin.author: davorb
 plugin.version: 2
 rtorrent.need: 0

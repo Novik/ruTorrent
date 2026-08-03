@@ -32,7 +32,7 @@ if($mode == "removewithdata" && count($hash))
 if(is_null($result))
 {
 	header("HTTP/1.0 500 Server Error");
-	CachedEcho::send("Link to XMLRPC failed. Maybe, rTorrent is down?", "text/html");
+	CachedEcho::send("Could not reach rTorrent over XMLRPC. Is rTorrent running?", "text/html");
 }
 else
 	CachedEcho::send(JSON::safeEncode($result), "application/json");

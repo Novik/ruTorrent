@@ -1,4 +1,4 @@
-plugin.description: This plugin is used to login to torrent sites in cases where cookies fail.
+plugin.description: This plugin is used to log in to torrent sites in cases where cookies fail.
 plugin.author: Novik
 plugin.runlevel: 0
 plugin.version: 5.1
