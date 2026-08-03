@@ -914,7 +914,7 @@ function correctContent()
 		// removed or now log deprecation warnings. Mirrors php/methods-0.16.16.php.
 		$.extend(theRequestManager.aliases,
 		{
-			"get_max_open_http"      : { name: "system.sockets.http.max_alloc",          prm: 0 },
+			"get_max_open_http"      : { name: "system.sockets.http.max_size",           prm: 0 },
 			"set_max_open_http"      : { name: "system.sockets.http.max_alloc.set",      prm: 1 },
 			"set_max_open_files"     : { name: "system.sockets.files.max_alloc.set",     prm: 1 },
 			"d.multicall2"           : { name: "d.multicall",                             prm: 1 },
