@@ -44,4 +44,10 @@ describe("getClickableTrackerStatus", () => {
     const expected = "ftp://files.example.com/torrent or javascript:alert(1)";
     expect(window.getClickableTrackerStatus(input)).toBe(expected);
   });
+
+  it("handles torrent failure status with PtP style links and escaped quotes", () => {
+    const input = 'https://torrent.site/page?id1=224822&id2=1534647\\"]';
+    const expected = '<a href="https://torrent.site/page?id1=224822&amp;id2=1534647" target="_blank" rel="noopener noreferrer">https://torrent.site/page?id1=224822&amp;id2=1534647</a>\\&quot;]';
+    expect(window.getClickableTrackerStatus(input)).toBe(expected);
+  });
 });
