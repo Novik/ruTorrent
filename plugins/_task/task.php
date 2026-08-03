@@ -291,7 +291,7 @@ class rTask
 		{
 			$req = new rXMLRPCRequest(
 				((rTorrentSettings::get()->iVersion>=0x900) && !($flags & self::FLG_WAIT)) ?
-					new rXMLRPCCommand( "execute.nothrow.bg", array("","sh",$cmd) ) :
+					new rXMLRPCCommand( "execute.nothrow", array("","sh","-c",'"$0" "$1" </dev/null >/dev/null 2>&1 &',"sh",$cmd) ) :
 					new rXMLRPCCommand( "execute_nothrow", array("sh","-c",$cmd.$params) )
 				);
 			if($req->success() && count($req->val))

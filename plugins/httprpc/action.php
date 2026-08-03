@@ -73,6 +73,93 @@ function makeMulticall($cmds,$hash,$add,$prefix)
 	return(false);
 }
 
+// The socket manager stages min_alloc/max_alloc until adjust_alloc recomputes
+// the allocation. A rejected recompute keeps the staged values, which then also
+// breaks every later recompute, so the bounds in effect are read before they are
+// touched and put back if the recompute is refused.
+function getSocketAlloc($categories)
+{
+	$req = new rXMLRPCRequest();
+	foreach($categories as $category)
+	{
+		$req->addCommand(new rXMLRPCCommand("system.sockets.".$category.".min_alloc"));
+		$req->addCommand(new rXMLRPCCommand("system.sockets.".$category.".max_alloc"));
+	}
+	$req->important = false;
+	if(!$req->success(true) || (count($req->val)!=2*count($categories)))
+		return(array());
+	$ret = array();
+	foreach($categories as $ndx=>$category)
+		$ret[$category] = array_slice($req->val,2*$ndx,2);
+	return($ret);
+}
+
+function restoreSocketAlloc($saved)
+{
+	$req = new rXMLRPCRequest();
+	foreach($saved as $category=>$bounds)
+	{
+		$req->addCommand(new rXMLRPCCommand(
+			"system.sockets.".$category.".min_alloc.set",array("",floatval($bounds[0]))));
+		$req->addCommand(new rXMLRPCCommand(
+			"system.sockets.".$category.".max_alloc.set",array("",floatval($bounds[1]))));
+	}
+	$req->addCommand(new rXMLRPCCommand("system.sockets.adjust_alloc"));
+	// These bounds were in effect moments ago, so the recompute has to accept
+	// them again. Report it rather than leave a stale allocation staged.
+	if(!$req->success(true))
+		FileUtil::toLog("setsettings: socket allocation left staged, restore was refused");
+}
+
+// Every settings write is recorded: what was asked for, the value in effect
+// before and after, and whether rtorrent took it. A refused batch can leave a
+// value clamped or untouched, so the "to" side is read back rather than assumed.
+//
+// Everything on the settings page has a symmetric get_* alias except these: the
+// hash_* trio stopped being readable in 0.9.0, and dht is reported through
+// dht.statistics instead of a getter.
+function getSettingReadCommand($name)
+{
+	if($name=="dht")
+		return(null);
+	if((rTorrentSettings::get()->iVersion>=0x900) &&
+		in_array($name,array("hash_interval","hash_max_tries","hash_read_ahead")))
+		return(null);
+	return("get_".$name);
+}
+
+function readSettingValues($names)
+{
+	$ret = array_fill(0,count($names),null);
+	$ndxs = array();
+	$req = new rXMLRPCRequest();
+	foreach($names as $ndx=>$name)
+		if(($cmd = getSettingReadCommand($name))!==null)
+		{
+			$req->addCommand(new rXMLRPCCommand($cmd));
+			$ndxs[] = $ndx;
+		}
+	if(!count($ndxs))
+		return($ret);
+	$req->important = false;
+	if($req->success(true) && (count($req->val)==count($ndxs)))
+		foreach($ndxs as $pos=>$ndx)
+			$ret[$ndx] = $req->val[$pos];
+	return($ret);
+}
+
+function logSettingsWrite($names,$values,$before,$after,$accepted,$faultString)
+{
+	foreach($names as $ndx=>$name)
+		FileUtil::toLog("setsettings: ".$name.
+			" requested=".$values[$ndx].
+			" from=".(($before[$ndx]===null) ? "unavailable" : $before[$ndx]).
+			" to=".(($after[$ndx]===null) ? "unavailable" : $after[$ndx]).
+			" ".($accepted ? "accepted" : "rejected"));
+	FileUtil::toLog("setsettings: batch ".($accepted ? "accepted" : "rejected").
+		((!$accepted && ($faultString!=='')) ? " (".$faultString.")" : ""));
+}
+
 function makeSimpleCall($cmds,$hash)
 {
 	$req = new rXMLRPCRequest();
@@ -397,22 +484,54 @@ switch($mode)
 	case "setsettings":
 	{
 		$req = new rXMLRPCRequest();
+		$socketCategories = array();
+		$logNames = array();
+		$logValues = array();
 		foreach($vs as $ndx=>$v)
 		{
 			if($ss[$ndx][0]=='n')
 				$v = floatval($v);
 			if( ($ss[$ndx]=="sdirectory") && !rTorrentSettings::get()->correctDirectory($v) )
 				continue;
+			$socketAlloc = rTorrentSettings::get()->getSocketAllocCategory($ss[$ndx]);
 			if($ss[$ndx]=="ndht")
 				$cmd = new rXMLRPCCommand('dht',(($v==0) ? "disable" : "auto"));
 			else
+			if($socketAlloc!==null)
+			{
+				$req->addCommand(new rXMLRPCCommand(
+					"system.sockets.".$socketAlloc.".min_alloc.set",array("",$v)));
+				$cmd = new rXMLRPCCommand(
+					"system.sockets.".$socketAlloc.".max_alloc.set",array("",$v));
+				$socketCategories[$socketAlloc] = true;
+			}
+			else
 				$cmd = new rXMLRPCCommand('set_'.substr($ss[$ndx],1),$v);
 			$req->addCommand($cmd);
+			$logNames[] = substr($ss[$ndx],1);
+			$logValues[] = $v;
+		}
+		$socketCategories = array_keys($socketCategories);
+		// The staged min_alloc/max_alloc values only take effect once the
+		// socket manager recomputes its allocation. Send it once per batch,
+		// having first read the bounds it would replace.
+		$savedAlloc = array();
+		if(count($socketCategories))
+		{
+			$savedAlloc = getSocketAlloc($socketCategories);
+			$req->addCommand(new rXMLRPCCommand("system.sockets.adjust_alloc"));
 		}
 		if($req->getCommandsCount())
 		{
-			if($req->success(true))
+			$before = readSettingValues($logNames);
+			$accepted = $req->success(true);
+			if($accepted)
 		        	$result = $req->val;
+			else
+			if(count($savedAlloc))
+				restoreSocketAlloc($savedAlloc);
+			logSettingsWrite($logNames,$logValues,$before,
+				readSettingValues($logNames),$accepted,$req->faultString);
         	}
         	else
 	        	$result = array();
@@ -544,7 +663,10 @@ switch($mode)
 if(is_null($result))
 {
 	header("HTTP/1.0 500 Server Error");
-	CachedEcho::send( (isset($req) && $req->fault) ? "Warning: XMLRPC call is failed." : "Link to XMLRPC failed. Maybe, rTorrent is down?","text/html");
+	$message = "Could not reach rTorrent over XMLRPC. Is rTorrent running?";
+	if(isset($req) && $req->fault)
+		$message = ($req->faultString==='') ? "Warning: the XMLRPC call failed." : $req->faultString;
+	CachedEcho::send($message,"text/html");
 }
 else
 	CachedEcho::send(JSON::safeEncode($result),"application/json");
