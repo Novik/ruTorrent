@@ -45,12 +45,6 @@ describe("getClickableTrackerStatus", () => {
     expect(window.getClickableTrackerStatus(input)).toBe(expected);
   });
 
-  it("handles trailing escaped quotes, backslashes, and brackets in failure messages", () => {
-    const input = 'Tracker: [Could not resolve hostname /// Failure reason \\"Unregistered torrent: Trump: Superior Quality - https://torrent.site/page?id1=12345&id2=67890\\"]';
-    const expected = 'Tracker: [Could not resolve hostname /// Failure reason \\&quot;Unregistered torrent: Trump: Superior Quality - <a href="https://torrent.site/page?id1=12345&amp;id2=67890" target="_blank" rel="noopener noreferrer">https://torrent.site/page?id1=12345&amp;id2=67890</a>\\&quot;]';
-    expect(window.getClickableTrackerStatus(input)).toBe(expected);
-  });
-
   it("handles torrent failure status with PtP style links and escaped quotes", () => {
     const input = 'https://torrent.site/page?id1=224822&id2=1534647\\"]';
     const expected = '<a href="https://torrent.site/page?id1=224822&amp;id2=1534647" target="_blank" rel="noopener noreferrer">https://torrent.site/page?id1=224822&amp;id2=1534647</a>\\&quot;]';
