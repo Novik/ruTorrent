@@ -23,12 +23,12 @@
  theUILang.Tracker			= "Tracker";
  theUILang.enableNotifications		= "Enable desktop notifications";
  theUILang.historyNotification		= "Desktop Notifications";
- theUILang.notifAutoClose		= "Autoclose notifications after";
+ theUILang.notifAutoClose		= "Auto-close notifications after";
  theUILang.notifTip			= {
- 					  false: "Your browser doesn't support desktop notifications. Try to use another browser, for example, Google Chrome.",
+ 					  false: "Your browser doesn't support desktop notifications. Try using another browser, such as Google Chrome.",
  					  "granted": "",
- 					  "default": "Your browser supports desktop notifications. Press button below to enable it.",
- 					  "denied": "Your browser supports desktop notifications, but you've disabled it for this site. Close this dialog and use browser options to enable desktop notifications.",
+ 					  "default": "Your browser supports desktop notifications. Press the button below to enable them.",
+ 					  "denied": "Your browser supports desktop notifications, but you've disabled them for this site. Close this dialog and use browser options to enable desktop notifications.",
  					  };
  theUILang.pushbulletNotification	= "PushBullet notifications";
  theUILang.pushbulletKey		= "PushBullet Access Token";

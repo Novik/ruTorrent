@@ -1,4 +1,4 @@
-plugin.description: This plugin send notification through xmpp about finished downloads
+plugin.description: This plugin sends notifications about finished downloads via XMPP.
 plugin.author: DeadMor0z
 plugin.runlevel: 5
 plugin.version: 0.1

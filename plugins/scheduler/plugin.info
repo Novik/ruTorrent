@@ -1,4 +1,4 @@
-plugin.description: This plugin allows to define any of six rTorrent behavior types at each particular hour of 168 week hours.
+plugin.description: This plugin allows you to define any of six rTorrent behavior types for each of the 168 hours in a week.
 plugin.author: Novik
 plugin.version: 5.1
 rtorrent.remote: error

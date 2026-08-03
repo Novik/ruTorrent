@@ -15,10 +15,10 @@
  theUILang.schLimited		= "Limited";
  theUILang.schTurnOff		= "Turn off";
  theUILang.schSeedingOnly	= "Seeding only";
- theUILang.schUnlimitedDesc	= "Unlimited - Global limit is absent";
+ theUILang.schUnlimitedDesc	= "Unlimited - Applies no global limit";
  theUILang.schLimitedDesc	= "Limited - Uses scheduler-specific bandwidth limit";
  theUILang.schTurnOffDesc	= "Turn off - Stops all torrents";
- theUILang.schSeedingOnlyDesc	= "Seeding only - Only upload data";
+ theUILang.schSeedingOnlyDesc	= "Seeding only - Uploads data only";
  theUILang.schLimitedUL		= "Limited UL";
  theUILang.schLimitedDL		= "Limited DL";
  theUILang.shcIgnore		= "Ignore Scheduler";

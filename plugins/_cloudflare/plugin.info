@@ -1,4 +1,4 @@
-plugin.description: This plugin provides cloudflare scraping for websites protected by the DDOS protection service.
+plugin.description: This plugin provides Cloudflare scraping for websites protected by the DDoS protection service.
 plugin.author: Novik
 plugin.version: 5.1
 rtorrent.need: 0

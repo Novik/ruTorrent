@@ -1,4 +1,4 @@
-plugin.description: This plugin provides the possibility of comfortable navigation on a host file system.
+plugin.description: This plugin provides convenient navigation of the host file system.
 plugin.author: dmrom
 plugin.runlevel: 1
 plugin.version: 5.1
