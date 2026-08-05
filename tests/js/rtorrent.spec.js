@@ -176,6 +176,7 @@ describe("visibilitychange handler", () => {
 
   afterEach(() => {
     // Restore original document.hidden behavior
+    delete document.hidden;
     if (hiddenDescriptor) {
       Object.defineProperty(Document.prototype, "hidden", hiddenDescriptor);
     }
