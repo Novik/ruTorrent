@@ -6,7 +6,16 @@ class KinozalTVAccount extends commonAccount
 
 	protected function isOK($client)
 	{
-		return(strpos($client->results, 'type="password" name="password"')===false);
+		// Two independent markers of a guest answer, because Kinozal has two
+		// kinds of them. The login form is matched on the password field alone
+		// (like RUTracker/TapochekNet do): the previous two-attribute probe
+		// stopped matching once the markup became <input type=password size=35
+		// id="password" name="password">. But get_srv_details.php answers a
+		// guest with a plain "not authorized" line and no form at all, so the
+		// registration link -- which every guest answer carries and no
+		// authenticated one does -- is what catches that second shape.
+		return(strpos($client->results, ' name="password"')===false &&
+			strpos($client->results, '/signup.php')===false);
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
