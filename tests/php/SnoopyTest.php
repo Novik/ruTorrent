@@ -29,8 +29,13 @@ function snoopyCurlArgs()
 }
 
 // Fake curl: records every argument, then fabricates a successful response.
+// $SNOOPY_TEST_ARGS holds the arguments of the LAST invocation only, so a
+// redirect test reads the request Snoopy made after following the redirect.
+// With $SNOOPY_TEST_REDIRECT set, the first invocation answers 302 with that
+// Location instead; $SNOOPY_TEST_SEEN is how the script remembers it did.
 $curlPath = tempnam(sys_get_temp_dir(), 'snoopy-curl-');
 $argsPath = tempnam(sys_get_temp_dir(), 'snoopy-args-');
+$seenPath = sys_get_temp_dir() . '/snoopy-seen-' . getmypid();
 $script = <<<'SH'
 #!/bin/sh
 : > "$SNOOPY_TEST_ARGS"
@@ -50,12 +55,18 @@ while [ "$#" -gt 0 ]; do
 	esac
 	shift
 done
-printf '%b\r\n' "${SNOOPY_TEST_RESPONSE:-HTTP/1.1 200 OK\r\n}" > "$header_file"
+if [ -n "$SNOOPY_TEST_REDIRECT" ] && [ ! -f "$SNOOPY_TEST_SEEN" ]; then
+	: > "$SNOOPY_TEST_SEEN"
+	printf 'HTTP/1.1 302 Found\r\nLocation: %s\r\n\r\n' "$SNOOPY_TEST_REDIRECT" > "$header_file"
+else
+	printf '%b\r\n' "${SNOOPY_TEST_RESPONSE:-HTTP/1.1 200 OK\r\n}" > "$header_file"
+fi
 : > "$body_file"
 SH;
 file_put_contents($curlPath, $script);
 chmod($curlPath, 0700);
 putenv('SNOOPY_TEST_ARGS=' . $argsPath);
+putenv('SNOOPY_TEST_SEEN=' . $seenPath);
 $pathToExternals['curl'] = $curlPath;
 
 function snoopyRespondWith($response)
@@ -216,6 +227,62 @@ $tests = array(
             'Blocked redirect must name the offending address, got: ' . $client->error
         );
     },
+    // A Location like "//host/path" is a network-path reference (RFC 3986
+    // 4.2): it carries its own authority and inherits only the scheme. Kinozal
+    // answers exactly that to a guest download, and resolving it against the
+    // requested host produced https://dl.kinozal.guru:443//kinozal.guru/... --
+    // an address that redirects again, until maxredirs runs out.
+    'protocol-relative redirect inherits the scheme and takes the new host' => function () use ($seenPath) {
+        @unlink($seenPath);
+        putenv('SNOOPY_TEST_REDIRECT=//kinozal.guru/login.php?to=%2Fdownload.php%3Fid%3D1');
+        try {
+            $client = new Snoopy();
+            snoopyAssertTrue(
+                $client->fetch('https://dl.kinozal.guru/download.php?id=1'),
+                'Redirected HTTPS request did not complete'
+            );
+            $args = snoopyCurlArgs();
+            snoopyAssertSame(
+                'https://kinozal.guru/login.php?to=%2Fdownload.php%3Fid%3D1',
+                end($args),
+                'The redirect must be followed to the host it names'
+            );
+            snoopyAssertSame('200', $client->status, 'The redirect target answered');
+        } finally {
+            putenv('SNOOPY_TEST_REDIRECT');
+            @unlink($seenPath);
+        }
+    },
+    // Same rule on the plain-HTTP path, which parses its headers off the
+    // socket instead of curl's dump file. A socket pair stands in for the
+    // connection: the response is written from the far end, whose write side
+    // is then shut down so Snoopy sees EOF while its own request still has
+    // somewhere to go.
+    'protocol-relative redirect inherits the scheme over plain HTTP' => function () {
+        $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
+        snoopyAssertTrue(is_array($pair), 'Unable to create the socket pair standing in for the connection');
+        list($near, $far) = $pair;
+        fwrite($far, "HTTP/1.1 302 Found\r\nLocation: //kinozal.guru/login.php?to=x\r\n\r\n");
+        stream_socket_shutdown($far, STREAM_SHUT_WR);
+
+        $client = new Snoopy();
+        $client->host = 'dl.kinozal.guru';
+        $client->port = 80;
+        try {
+            snoopyAssertTrue(
+                $client->_httprequest('/download.php?id=1', $near, 'http://dl.kinozal.guru/download.php?id=1', 'GET'),
+                'Plain HTTP request did not complete'
+            );
+        } finally {
+            fclose($near);
+            fclose($far);
+        }
+        snoopyAssertSame(
+            'http://kinozal.guru/login.php?to=x',
+            $client->_redirectaddr,
+            'The redirect must be followed to the host it names'
+        );
+    },
 );
 
 $failures = 0;
@@ -233,6 +300,8 @@ foreach ($tests as $name => $callback) {
 echo count($tests) . ' tests, ' . $failures . " failures\n";
 
 putenv('SNOOPY_TEST_ARGS');
+putenv('SNOOPY_TEST_SEEN');
+@unlink($seenPath);
 @unlink($curlPath);
 @unlink($argsPath);
 exit($failures === 0 ? 0 : 1);
