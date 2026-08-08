@@ -1630,6 +1630,25 @@ function strip_tags(input, allowed)
     	});
 }
 
+/**
+ * Whether rtorrent will accept an open files / HTTP connections pair.
+ *
+ * The socket manager hands the configurable categories a fixed budget and
+ * refuses the whole write when a recompute would exceed it, so the pair has to
+ * be checked together rather than field by field.
+ *
+ * @param {number} budget what the two fields may total, 0 when rtorrent does not report it
+ * @param {number} files requested maximum number of open files
+ * @param {number} http requested maximum number of open HTTP connections
+ * @returns {boolean} true when the pair fits, or when there is no budget to check against
+ */
+function socketAllocationFits(budget, files, http)
+{
+	if(!iv(budget))
+		return true;
+	return((iv(files) + iv(http)) <= iv(budget));
+}
+
 if (!window.requestIdleCallback) {
 	// monkey patch requestIdleCallback (for Safari)
 	window.requestIdleCallback = function(func, _) {

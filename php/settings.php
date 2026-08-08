@@ -17,6 +17,10 @@ class rTorrentSettings
 	public $version;
 	public $libVersion;
 	public $apiVersion = 0;
+	public $socketAllocBudget = 0;
+	public $socketHttpAllocMax = 0;
+	public $socketFilesAllocMax = 0;
+	public $socketFilesAllocMin = 0;
 	public $plugins = array();
 	public $hooks = array();
 	public $aliases = array();
@@ -245,6 +249,28 @@ class rTorrentSettings
 				$req->important = false;
 				if($req->success())
 					$this->apiVersion = $req->val[0];
+			}
+			// system.sockets.available_alloc is the total the configurable
+			// categories may share. internal and rpc are not exposed on the
+			// settings page, so what is left is what open files and HTTP
+			// connections have between them. Absent before rtorrent 0.16.21.
+			if($this->iVersion>=0x1015)
+			{
+				$req = new rXMLRPCRequest( array(
+					new rXMLRPCCommand("system.sockets.available_alloc"),
+					new rXMLRPCCommand("system.sockets.internal.max_size"),
+					new rXMLRPCCommand("system.sockets.rpc.max_size"),
+					new rXMLRPCCommand("system.sockets.http.max_alloc.limit"),
+					new rXMLRPCCommand("system.sockets.files.max_alloc.limit"),
+					new rXMLRPCCommand("system.sockets.files.min_alloc.limit") ) );
+				$req->important = false;
+				if($req->success() && (count($req->val)==6))
+				{
+					$this->socketAllocBudget = max(0,$req->val[0]-$req->val[1]-$req->val[2]);
+					$this->socketHttpAllocMax = $req->val[3];
+					$this->socketFilesAllocMax = $req->val[4];
+					$this->socketFilesAllocMin = $req->val[5];
+				}
 			}
 
 			$req = new rXMLRPCRequest(new rXMLRPCCommand(

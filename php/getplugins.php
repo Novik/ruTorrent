@@ -254,7 +254,11 @@ if($handle = opendir('../plugins'))
 		        if($theSettings->idNotFound)
 				$jResult.="noty(theUILang.idNotFound,'error');";
 			$jResult.="theWebUI.systemInfo.rTorrent = { started: true, iVersion : ".$theSettings->iVersion.", version : '".
-				$theSettings->version."', libVersion : '".$theSettings->libVersion."', apiVersion : ".$theSettings->apiVersion." };\n";
+				$theSettings->version."', libVersion : '".$theSettings->libVersion."', apiVersion : ".$theSettings->apiVersion.
+				", socketAllocBudget : ".$theSettings->socketAllocBudget.
+				", socketHttpAllocMax : ".$theSettings->socketHttpAllocMax.
+				", socketFilesAllocMax : ".$theSettings->socketFilesAllocMax.
+				", socketFilesAllocMin : ".$theSettings->socketFilesAllocMin." };\n";
 	        	if($do_diagnostic)
 	        	{
 	        	        global $phpUseGzip;
