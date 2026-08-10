@@ -349,9 +349,11 @@ span.det {color:#fff;}
 
 .meter-value-start-color { background-color: #E05400 }
 .meter-value-end-color { background-color: #8FBC00 }
-::-webkit-scrollbar {
-    width: 15px;
-    height: 15px;
+@supports selector(::-webkit-scrollbar-thumb) {
+    ::-webkit-scrollbar {
+        width: 15px;
+        height: 15px;
+    }
 }
 ::-webkit-scrollbar-thumb {
     height: 12px;
