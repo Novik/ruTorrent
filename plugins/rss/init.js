@@ -710,7 +710,7 @@ theWebUI.showErrors = function(errors)
 		const idHash = err.prm && Object.entries(theWebUI.rssLabels).find(([_,l]) => l.url === err.prm)?.[0];
 		const name = idHash && theWebUI.rssLabels[idHash].name;
 		const args = [
-			'['+theConverter.date('time' in err ? iv(err.time)+theWebUI.deltaTime : new Date().getTime()/1000)+'] '
+			'['+theConverter.date('time' in err ? iv(err.time) : new Date().getTime()/1000)+'] '
 			+ (name ? '<'+name+'> ' : '')
 			+ eval(err.desc)
 			+ (err.prm ? ' ('+err.prm+')' : ''),

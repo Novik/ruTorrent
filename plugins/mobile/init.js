@@ -964,10 +964,10 @@ plugin.fillDetails = function(d) {
   $('#torrentDetails #size td:last').text(theConverter.bytes(d.size,2));
   $('#torrentDetails #remaining td:last').text(theConverter.bytes(d.remaining,2));
   $('#torrentDetails #timeElapsed td:last').text(theConverter.time(Math.floor((new Date().getTime()-theWebUI.deltaTime)/1000-iv(d.state_changed)),true));
-  $('#torrentDetails #created td:last').text((d.created>3600*24*365) ? theConverter.date(iv(d.created)+theWebUI.deltaTime/1000) : "");
+  $('#torrentDetails #created td:last').text((d.created>3600*24*365) ? theConverter.date(iv(d.created)) : "");
   if (this.seedingtimeLoaded) {
     $('#torrentDetails #seedtime td:last').text((d.seedingtime>3600*24*365) ? theConverter.time(new Date().getTime()/1000-(iv(d.seedingtime)+theWebUI.deltaTime/1000),true) : "");
-    $('#torrentDetails #dateAdded td:last').text((d.addtime>3600*24*365) ? theConverter.date(iv(d.addtime)+theWebUI.deltaTime/1000) : "");
+    $('#torrentDetails #dateAdded td:last').text((d.addtime>3600*24*365) ? theConverter.date(iv(d.addtime)) : "");
   }
   $('#torrentDetails #eta td:last').html((d.eta == -1) ? "&#8734;" : theConverter.time(d.eta));
   $('#torrentDetails #ratio td:last').html((d.ratio == -1) ? "&#8734;" : theConverter.round(d.ratio/1000,3));
