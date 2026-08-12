@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Le fichier doit être un torrent",
  Pausing			: "Pause",
  Seeding			: "Envoi",
+ PartialSeed			: "Envoi partiel",
  Downloading			: "Téléchargement",
  Checking			: "Vérification",
  Error				: "Erreur",

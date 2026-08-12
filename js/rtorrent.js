@@ -30,7 +30,8 @@ var theRequestManager =
 			"d.get_custom1=", "d.get_peers_accounted=", "d.get_peers_not_connected=", "d.get_peers_connected=", "d.get_peers_complete=",
 			"d.get_left_bytes=", "d.get_priority=", "d.get_state_changed=", "d.get_skip_total=", "d.get_hashing=",
 			"d.get_chunks_hashed=", "d.get_base_path=", "d.get_creation_date=", "d.get_tracker_size=", "d.is_active=",
-			"d.get_message=", "d.get_custom2=", "d.get_free_diskspace=", "d.is_private=", "d.is_multi_file="
+			"d.get_message=", "d.get_custom2=", "d.get_free_diskspace=", "d.is_private=", "d.is_multi_file=",
+			"d.is_partially_done="
 		],
 		handlers: []
 	},
@@ -1096,6 +1097,7 @@ rTorrentStub.prototype.getalltrackersResponse = function(values)
  * @property {string} msg
  * @property {number} multi_file
  * @property {string} name
+ * @property {number} partially_done - 1 when every selected chunk is on disk, which a fully downloaded torrent also satisfies
  * @property {string} peers (format: "0 (0)")
  * @property {string} peers_actual - number with quotes (e.g.: "123")
  * @property {number} peers_all
@@ -1242,6 +1244,11 @@ rTorrentStub.prototype.listResponse = function(data)
 		torrent.free_diskspace = values[31];
 		torrent.private = values[32];
 		torrent.multi_file = iv(values[33]);
+		// 1 when every selected chunk is on disk. A fully downloaded torrent
+		// satisfies that too, so callers that mean "selected done but torrent
+		// incomplete" have to pair it with the percentage. iv() answers 0 for a
+		// missing value, so a daemon that does not send the field reads as 0.
+		torrent.partially_done = iv(values[34]);
 		torrent.seeds = torrent.seeds_actual + " (" + torrent.seeds_all + ")";
 		torrent.peers = torrent.peers_actual + " (" + torrent.peers_all + ")";
 		theRequestManager.onResponse('trt', [null].concat(values), hash, torrent);

@@ -58,6 +58,7 @@ var theUILang =
  Not_torrent_file		: "반드시 .torrent 파일이어야 합니다.",
  Pausing			: "일시정지 중",
  Seeding			: "시딩 중",
+ PartialSeed			: "부분 시딩 중",
  Downloading			: "다운로드 중",
  Checking			: "검사 중",
  Error				: "오류",

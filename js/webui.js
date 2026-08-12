@@ -1804,6 +1804,14 @@ var theWebUI = {
 	{
 		var state = torrent.state;
 		var completed = torrent.done;
+		// rTorrent calls a download complete only when every chunk of the torrent
+		// is on disk, so a download whose deselected files own at least one chunk
+		// outright never gets there -- those chunks are never fetched.
+		// d.is_partially_done says every selected chunk is on disk -- true for a
+		// fully downloaded torrent as well, hence the percentage test -- and that
+		// is treated as complete wherever the status acts as a category. The
+		// percentage keeps counting the whole torrent, which is what is on disk.
+		var partial = (completed < 1000) && (torrent.partially_done == 1);
 		var icon = "", status = "";
 		if(state & dStatus.checking)
 		{
@@ -1827,8 +1835,9 @@ var theWebUI = {
 				}
 				else
 				{
-					icon = (completed == 1000) ? "Status_Up" : "Status_Down";
-					status = (completed == 1000) ? theUILang.Seeding : theUILang.Downloading;
+					icon = ((completed == 1000) || partial) ? "Status_Up" : "Status_Down";
+					status = (completed == 1000) ? theUILang.Seeding :
+						(partial ? theUILang.PartialSeed : theUILang.Downloading);
 				}
 			}
 		}
@@ -1842,7 +1851,7 @@ var theWebUI = {
 			else
 				icon = "Status_Error";
 		}
-		if((completed == 1000) && (status == ""))
+		if(((completed == 1000) || partial) && (status == ""))
 		{
 			if(icon=="")
 				icon = "Status_Completed";

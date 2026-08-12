@@ -58,6 +58,7 @@ var theUILang =
  Not_torrent_file		: "該檔案不是有效的 torrent 檔案",
  Pausing			: "暫停中",
  Seeding			: "做種中",
+ PartialSeed			: "部分做種中",
  Downloading			: "下載中",
  Checking			: "檢查中",
  Error				: "錯誤",

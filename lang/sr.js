@@ -58,6 +58,7 @@ var theUILang =
  Not_torrent_file		: "Датотека мора бити torrent датотека.",
  Pausing			: "Заустављено",
  Seeding			: "Сејање",
+ PartialSeed			: "Делимично сејање",
  Downloading			: "Низтоварање",
  Checking			: "Проверавање",
  Error				: "Грешка",

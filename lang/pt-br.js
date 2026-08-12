@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "O arquivo deve ser um torrent válido.",
  Pausing			: "Pausado",
  Seeding			: "Semeando",
+ PartialSeed			: "Semeando parcialmente",
  Downloading			: "Baixando",
  Checking			: "Verificando",
  Error				: "Erro",

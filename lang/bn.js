@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "ফাইলটি অবশ্যই একটি .torrent ফাইল হতে হবে।",
  Pausing			: "Pausing",
  Seeding			: "Seeding",
+ PartialSeed			: "আংশিক Seeding",
  Downloading			: "ডাউনলোড হচ্ছে",
  Checking			: "চেকিং",
  Error				: "এরর",

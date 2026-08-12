@@ -204,6 +204,10 @@ class rTorrentSettings
 				if($req->success())
 					$this->iVersion=0x809;
 			}
+			if($this->iVersion<0x900)
+			{
+				require_once( 'methods-pre-0.9.0.php' );
+			}
 			if($this->iVersion>=0x904)
 			{
 				require_once( 'methods-0.9.4.php' );

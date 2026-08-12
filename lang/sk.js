@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Súbor musí byť torrent súbor.",
  Pausing			: "Pauza",
  Seeding			: "Seedujem",
+ PartialSeed			: "Čiastočne seedujem",
  Downloading			: "Sťahujem",
  Checking			: "Kontrolujem",
  Error				: "Chyba",

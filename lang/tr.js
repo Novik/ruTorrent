@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Bu dosya bir .torrent dosyası değil.",
  Pausing			: "Duraklatılıyor",
  Seeding			: "Seed ediliyor",
+ PartialSeed			: "Kısmen seed ediliyor",
  Downloading			: "İndiriliyor",
  Checking			: "Kontrol ediliyor",
  Error				: "Hata",

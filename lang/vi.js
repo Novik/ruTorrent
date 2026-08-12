@@ -58,6 +58,7 @@ var theUILang =
  Not_torrent_file		: "Tập tin phải là tập tin torrent.",
  Pausing			: "Đang tạm dừng",
  Seeding			: "Đang làm nguồn",
+ PartialSeed			: "Đang làm nguồn một phần",
  Downloading			: "Đang tải",
  Checking			: "Đang kiểm tra",
  Error				: "Xảy ra lỗi",

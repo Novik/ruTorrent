@@ -567,6 +567,16 @@ function correctContent()
 			"d.set_connection_seed"		: { name: "d.connection_seed.set", prm: 0 }
 		});
 	}
+	// rTorrent gained d.is_partially_done in 0.9.0. An unknown command faults the
+	// whole d.multicall rather than one field, so on older daemons route it to
+	// the harmless no-op "cat": it answers with an empty string, which keeps the
+	// field in place and reads as "not partially done". Firing at iVersion 0
+	// (daemon unreachable at load) is deliberate: cat is understood by every
+	// daemon generation, so an unknown version degrades safely.
+	if(theWebUI.systemInfo.rTorrent.iVersion<0x900)
+	{
+		theRequestManager.aliases["d.is_partially_done"] = { name: "cat", prm: 0 };
+	}
 	if(theWebUI.systemInfo.rTorrent.iVersion>=0x904)
 	{
 		$.extend(theRequestManager.aliases,
