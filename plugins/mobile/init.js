@@ -2,9 +2,9 @@
 plugin.enableAutodetect = true;
 plugin.tabletsDetect = true;
 plugin.eraseWithDataDefault = false;
-plugin.sort = 'name'; /* 'name', 'status', 'size', 'uploaded', 'downloaded', 'done', 'eta', 'ul', 'dl', 'ratio', and with the seedingtime plugin 'addtime', 'seedingtime'. Add preceding negative for descending sort. */
-plugin.accentColor = 'primary'; /* Bootstrap theme color for buttons, progress bars and highlights: 'primary' (blue), 'secondary' (gray), 'success' (green), 'danger' (red), 'warning' (yellow), 'info' (cyan) or 'dark' (contrast: near-black on the light theme, near-white on dark). */
-plugin.theme = 'light'; /* 'light', 'dark', or 'system' to follow the device setting (live). Can also be changed temporarily from the settings page. */
+plugin.sort = 'name'; /* 'name', 'status', 'size', 'uploaded', 'downloaded', 'done', 'eta', 'ul', 'dl', 'ratio', and with the seedingtime plugin 'addtime', 'seedingtime'. Add preceding negative for descending sort. Default for a user who has not picked a sort order from the sort page. */
+plugin.accentColor = 'primary'; /* Bootstrap theme color for buttons, progress bars and highlights: 'primary' (blue), 'secondary' (gray), 'success' (green), 'danger' (red), 'warning' (yellow), 'info' (cyan) or 'dark' (contrast: near-black on the light theme, near-white on dark). Default for a user who has not picked an accent from the settings page. */
+plugin.theme = 'light'; /* 'light', 'dark', or 'system' to follow the device setting (live). Default for a user who has not picked a theme from the settings page. */
 /*** End Configurable Options ***/
 
 
@@ -621,6 +621,43 @@ plugin.showSettings = function() {
   });
 };
 
+/*** Persisted UI choices ***/
+
+// The theme, accent color and sort order picked from the UI are stored
+// per user in the core's settings blob (any webui.* key is kept
+// verbatim, see js/webui.js save()), so they survive a reload and a new
+// login. The options at the top of this file are the defaults for a
+// user who has not picked anything.
+plugin.storedSetting = function(key, isValid, dflt) {
+  var v = theWebUI.settings['webui.mobile.' + key];
+  return ((typeof v == 'string') && isValid(v)) ? v : dflt;
+};
+
+// Re-fetch the stored settings and merge them in before saving, so this
+// long-lived mobile session doesn't overwrite newer settings saved from
+// the desktop UI (its own snapshot may be stale) -- same reason as the
+// add-torrent page's save.
+plugin.storeSetting = function(key, value) {
+  theWebUI.requestWithoutTimeout('?action=getuisettings', function(stored) {
+    if (stored) {
+      $.extend(theWebUI.settings, stored);
+    }
+    theWebUI.settings['webui.mobile.' + key] = value;
+    theWebUI.save();
+  }, true);
+};
+
+// The option tables below are [value, label] pairs
+plugin.isOption = function(pairs, value) {
+  var found = false;
+  $.each(pairs, function(i, p) {
+    if (p[0] == value) {
+      found = true;
+    }
+  });
+  return found;
+};
+
 plugin.currentTheme = 'light';
 
 plugin.applyTheme = function(theme) {
@@ -638,8 +675,6 @@ plugin.applyTheme = function(theme) {
 
 plugin.themes = [['light', 'Light'], ['dark', 'Dark'], ['system', 'System']];
 
-// Like the accent switcher below: not persisted, a reload reverts to
-// the configured plugin.theme
 plugin.loadThemeSelect = function() {
   var sel = $('#themeSelect').empty();
   $.each(this.themes, function(i, t) {
@@ -700,8 +735,6 @@ plugin.accentColors = [
   ['warning', 'Yellow'], ['info', 'Cyan'], ['dark', 'Contrast']
 ];
 
-// Try-before-you-buy accent switcher; not persisted, a reload reverts
-// to the configured plugin.accentColor
 plugin.loadAccentSelect = function() {
   var sel = $('#accentSelect').empty();
   $.each(this.accentColors, function(i, c) {
@@ -789,6 +822,21 @@ plugin.loadServerInfo = function() {
 };
 
 /*** Sort page ***/
+
+// [field, theUILang id]; the last two need the seedingtime plugin
+plugin.sortFields = [
+  ['name', 'Name'], ['status', 'Status'], ['size', 'Size'],
+  ['uploaded', 'Uploaded'], ['downloaded', 'Downloaded'], ['done', 'Done'],
+  ['eta', 'ETA'], ['ul', 'Ul_speed'], ['dl', 'Down_speed'], ['ratio', 'Ratio'],
+  ['addtime', 'addTime'], ['seedingtime', 'seedingTime']
+];
+
+plugin.seedingtimeSorts = ['addtime', 'seedingtime'];
+
+plugin.isKnownSort = function(sort) {
+  return plugin.isOption(plugin.sortFields, (sort[0] === '-') ? sort.substr(1) : sort);
+};
+
 plugin.showSort = function() {
   $('#sortOption option').prop('selected', false);
   $('#sort_asc').prop('checked', false);
@@ -803,21 +851,12 @@ plugin.showSort = function() {
     $('#sort_asc').prop('checked', true);
   }
 
-  var sortHtml = '<option value="name">' + theUILang.Name + '</option>' +
-              '<option value="status">' + theUILang.Status + '</option>' +
-              '<option value="size">' + theUILang.Size + '</option>' +
-              '<option value="uploaded">' + theUILang.Uploaded + '</option>' +
-              '<option value="downloaded">' + theUILang.Downloaded + '</option>' +
-              '<option value="done">' + theUILang.Done + '</option>' +
-              '<option value="eta">' + theUILang.ETA + '</option>' +
-              '<option value="ul">' + theUILang.Ul_speed + '</option>' +
-              '<option value="dl">' + theUILang.Down_speed + '</option>' +
-              '<option value="ratio">' + theUILang.Ratio + '</option>';
-
-  if (this.seedingtimeLoaded) {
-    sortHtml += '<option value="addtime">' + theUILang.addTime + '</option>' +
-                '<option value="seedingtime">' + theUILang.seedingTime + '</option>'
-  }
+  var sortHtml = '';
+  $.each(this.sortFields, function(i, f) {
+    if (($.inArray(f[0], plugin.seedingtimeSorts) == -1) || plugin.seedingtimeLoaded) {
+      sortHtml += '<option value="' + f[0] + '">' + theUILang[f[1]] + '</option>';
+    }
+  });
   $('#sortOption').html(sortHtml);
   $('#sortOption option[value=' + sort + ']').prop('selected', true);
 
@@ -843,6 +882,7 @@ plugin.setSort = function() {
   }
   if (sort != plugin.sort) {
     plugin.sort = sort;
+    plugin.storeSetting('sort', sort);
     // The list order changed; the remembered scroll position no longer
     // points at anything meaningful, so go back to the top
     plugin.scrollTop = 0;
@@ -2205,6 +2245,11 @@ plugin.init = function() {
 
   this.lastHref = window.location.href;
 
+  // The sort order saved from the sort page, else the configured
+  // plugin.sort. Restored before the first render so the list comes up
+  // in the order the user left it
+  this.sort = this.storedSetting('sort', this.isKnownSort, this.sort);
+
   // The desktop engine keeps running underneath the mobile UI and can
   // auto-save the whole webui.* settings snapshot without user interaction
   // (e.g. categoryList pruning a vanished label selection during the update
@@ -2299,9 +2344,12 @@ plugin.init = function() {
         }
         diskspacePlugin.check = function() { };
       }
-      // Apply the configured theme (see plugin.theme at the top); in
-      // 'system' mode, keep following the device's scheme live
-      plugin.applyTheme(plugin.theme);
+      // Apply the theme saved from the settings page, else the
+      // configured plugin.theme; in 'system' mode, keep following the
+      // device's scheme live
+      plugin.applyTheme(plugin.storedSetting('theme', function(v) {
+        return plugin.isOption(plugin.themes, v);
+      }, plugin.theme));
       if (window.matchMedia) {
         var colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
         if (colorScheme.addEventListener) {
@@ -2312,8 +2360,10 @@ plugin.init = function() {
           });
         }
       }
-      // Apply the configured accent color (see plugin.accentColor at the top)
-      plugin.applyAccentColor(plugin.accentColor);
+      // Likewise for the accent color (see plugin.accentColor at the top)
+      plugin.applyAccentColor(plugin.storedSetting('accent', function(v) {
+        return plugin.isOption(plugin.accentColors, v);
+      }, plugin.accentColor));
       plugin.loadLang();
       plugin.loadMainCSS();
       $('head').append('<meta name="apple-mobile-web-app-capable" content="yes" />');
@@ -2361,12 +2411,14 @@ plugin.init = function() {
       $('#ulLimit').change(function(){plugin.setULLimit();});
       $('#themeSelect').change(function(){
         plugin.applyTheme(this.value);
+        plugin.storeSetting('theme', this.value);
         // The accent swatches resolve per theme (near-black flips to
         // near-white on dark); refresh them for the new theme
         plugin.loadAccentSelect();
       });
       $('#accentSelect').change(function(){
         plugin.applyAccentColor(this.value);
+        plugin.storeSetting('accent', this.value);
         $(this).css('color', 'var(--bs-' + plugin.effectiveAccent(this.value) + ')');
       });
 
