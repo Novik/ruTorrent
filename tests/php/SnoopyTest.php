@@ -50,13 +50,32 @@ while [ "$#" -gt 0 ]; do
 	esac
 	shift
 done
-printf 'HTTP/1.1 200 OK\r\n\r\n' > "$header_file"
+printf '%b\r\n' "${SNOOPY_TEST_RESPONSE:-HTTP/1.1 200 OK\r\n}" > "$header_file"
 : > "$body_file"
 SH;
 file_put_contents($curlPath, $script);
 chmod($curlPath, 0700);
 putenv('SNOOPY_TEST_ARGS=' . $argsPath);
 $pathToExternals['curl'] = $curlPath;
+
+function snoopyRespondWith($response)
+{
+    putenv('SNOOPY_TEST_RESPONSE=' . $response);
+}
+
+// Hostname resolution is stubbed so the SSRF tests never depend on live DNS.
+// Literal addresses still go through the real path, so a redirect to one is
+// judged on its own merits.
+class SnoopyResolvesToPublic extends Snoopy
+{
+    static public function resolveHost($host)
+    {
+        if (filter_var(trim($host, '[]'), FILTER_VALIDATE_IP) !== false) {
+            return parent::resolveHost($host);
+        }
+        return array('93.184.216.34');
+    }
+}
 
 $tests = array(
     'explicit HTTPS POST forwards -X POST to curl' => function () {
@@ -105,11 +124,104 @@ $tests = array(
             'Explicit HTTPS GET method must not be changed to POST by curl -d'
         );
     },
+    'private targets stay reachable while the guard is off' => function () {
+        $client = new Snoopy();
+        snoopyAssertTrue(
+            $client->fetch('https://127.0.0.1/feed'),
+            'Default configuration must not block loopback targets'
+        );
+    },
+    'the guard blocks a literal private address' => function () {
+        $client = new Snoopy();
+        $client->block_private = true;
+        snoopyAssertSame(false, $client->fetch('https://127.0.0.1/feed'), 'Loopback target was fetched anyway');
+        snoopyAssertTrue(
+            strpos($client->error, '127.0.0.1') !== false,
+            'Blocked fetch must name the offending address, got: ' . $client->error
+        );
+    },
+    'the guard blocks the IPv6 loopback literal' => function () {
+        $client = new Snoopy();
+        $client->block_private = true;
+        snoopyAssertSame(false, $client->fetch('https://[::1]/feed'), 'IPv6 loopback target was fetched anyway');
+    },
+    'the guard leaves public literals alone' => function () {
+        $client = new Snoopy();
+        $client->block_private = true;
+        snoopyAssertTrue($client->fetch('https://93.184.216.34/feed'), 'Public literal was blocked: ' . $client->error);
+    },
+    'the allowlist exempts a host from the guard' => function () {
+        $client = new Snoopy();
+        $client->block_private = true;
+        $client->private_allowlist = array('127.0.0.1');
+        snoopyAssertTrue($client->fetch('https://127.0.0.1/feed'), 'Allowlisted host was blocked: ' . $client->error);
+    },
+    'the guard blocks a hostname that resolves to loopback' => function () {
+        $client = new Snoopy();
+        $client->block_private = true;
+        snoopyAssertSame(false, $client->fetch('https://localhost/feed'), 'localhost was fetched anyway');
+    },
+    'a host that cannot be resolved is blocked, and says so' => function () {
+        $client = new Snoopy();
+        $client->block_private = true;
+        snoopyAssertSame(
+            false,
+            $client->fetch('https://tracker.nonexistent.invalid/feed'),
+            'Unresolvable host was fetched anyway'
+        );
+        snoopyAssertTrue(
+            stripos($client->error, 'resolve') !== false,
+            'Unresolvable host must be reported as such, got: ' . $client->error
+        );
+    },
+    'the validated address is pinned for the HTTPS request' => function () {
+        $client = new SnoopyResolvesToPublic();
+        $client->block_private = true;
+        snoopyAssertTrue($client->fetch('https://tracker.test/feed'), 'Public host was blocked: ' . $client->error);
+        $args = snoopyCurlArgs();
+        $flag = array_search('--resolve', $args, true);
+        snoopyAssertTrue($flag !== false, 'Validated host must be pinned with --resolve');
+        snoopyAssertSame(
+            'tracker.test:443:93.184.216.34',
+            isset($args[$flag + 1]) ? $args[$flag + 1] : null,
+            'Pinned address must be the one the guard validated'
+        );
+    },
+    'the guard covers ranges filter_var calls public' => function () {
+        $client = new Snoopy();
+        $client->block_private = true;
+        snoopyAssertSame(false, $client->fetch('https://100.64.0.1/feed'), 'Carrier-grade NAT target was fetched anyway');
+        snoopyAssertSame(false, $client->fetch('https://192.0.0.1/feed'), 'IETF protocol assignment target was fetched anyway');
+    },
+    'the guard is configured from conf/config.php' => function () {
+        $GLOBALS['httpBlockPrivateNetworks'] = true;
+        $GLOBALS['httpPrivateNetworkAllowlist'] = array('127.0.0.1');
+        $client = new Snoopy();
+        unset($GLOBALS['httpBlockPrivateNetworks'], $GLOBALS['httpPrivateNetworkAllowlist']);
+        snoopyAssertTrue($client->block_private, 'Configured guard was not picked up');
+        snoopyAssertSame(false, $client->fetch('https://10.0.0.1/feed'), 'Configured guard did not block a private target');
+        snoopyAssertTrue($client->fetch('https://127.0.0.1/feed'), 'Configured allowlist was not picked up: ' . $client->error);
+    },
+    'a redirect into a private address is blocked too' => function () {
+        snoopyRespondWith('HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1/secret\r\n');
+        $client = new SnoopyResolvesToPublic();
+        $client->block_private = true;
+        snoopyAssertSame(
+            false,
+            $client->fetch('https://tracker.test/start'),
+            'Redirect to a private address was followed'
+        );
+        snoopyAssertTrue(
+            strpos($client->error, '127.0.0.1') !== false,
+            'Blocked redirect must name the offending address, got: ' . $client->error
+        );
+    },
 );
 
 $failures = 0;
 foreach ($tests as $name => $callback) {
     try {
+        snoopyRespondWith('HTTP/1.1 200 OK\r\n');
         $callback();
         echo "ok - {$name}\n";
     } catch (Throwable $error) {
