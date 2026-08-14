@@ -32,15 +32,18 @@ If in rutorrent you turned off 'Confirm when deleting torrents', this plugin wil
 
 #### plugin.sort
 'name' by default. Possible values: 'name', '-name', 'status', '-status', 'size', '-size', 'uploaded', '-uploaded', 'downloaded', '-downloaded', 'done', '-done', 'eta', '-eta', 'ul', '-ul', 'dl', '-dl', 'ratio', '-ratio', and if the seedingtime plugin is loaded 'addtime', '-addtime', 'seedingtime', '-seedingtime'.
-This option sets the default sort value of the torrent list. Without negative it's ascending, with negative it's descending.
+This option sets the default sort value of the torrent list. Without negative it's ascending, with negative it's descending. A sort order picked from the sort page is remembered for that user and takes precedence over this option.
 
 #### plugin.accentColor
 'primary' by default. Possible values: 'primary' (blue), 'secondary' (gray), 'success' (green), 'danger' (red), 'warning' (yellow), 'info' (cyan), 'dark' (contrast: near-black on the light theme, near-white on dark).
-This option sets the Bootstrap theme color used for buttons, progress bars, tab highlights and selections. The color can also be changed temporarily from the settings page; a page reload reverts to this option.
+This option sets the Bootstrap theme color used for buttons, progress bars, tab highlights and selections. An accent picked from the settings page is remembered for that user and takes precedence over this option.
 
 #### plugin.theme
 'light' by default. Possible values: 'light', 'dark', 'system'.
-This option sets the color scheme of the UI. 'system' follows the device's light/dark setting, live. The theme can also be changed temporarily from the settings page; a page reload reverts to this option.
+This option sets the color scheme of the UI. 'system' follows the device's light/dark setting, live. A theme picked from the settings page is remembered for that user and takes precedence over this option.
+
+### Remembered settings
+The theme, accent color and sort order picked from the UI are saved per user, alongside the rest of the ruTorrent settings, so they survive a page reload and a new login. They are stored under the `webui.mobile.*` keys and follow the account, not the device. The options above remain the defaults for users who have not picked their own.
 
 ### Utilization
 If you set plugin.enableAutodetect to true, the plugin will automaticaly load when detecting a mobile device. To force load the plugin in a desktop browser add '?mobile=1' to the end of the rutorrent url.
