@@ -18,13 +18,36 @@ This project is released under the GPLv3 license, for more details, take a look 
 
 ## Download
 
- * [Development version](https://github.com/Novik/ruTorrent/tarball/develop)
- * [Stable version](https://github.com/Novik/ruTorrent/releases)
+ * [Stable version](https://github.com/Novik/ruTorrent/releases/latest) — the latest tagged release
+ * [Current master](https://github.com/Novik/ruTorrent/tarball/master) — what the next release is cut from
 
 ## Getting started
 
   * There's no installation routine or compilation necessary. The sources are cloned/unpacked into a directory which is setup as document root of a web server of your choice (for detailed instructions see the [webserver wiki article](https://github.com/Novik/ruTorrent/wiki/WebSERVER)).
   * After setting up the webserver `ruTorrent` itself needs to be configured. Instructions can be found in various articles in the [wiki](https://github.com/Novik/ruTorrent/wiki).
+
+## Contributing
+
+Pull requests target **`master`**. There is no `develop` branch — it was retired,
+and a release is simply a tag on `master`.
+
+Using AI tooling to write a patch is fine. Opening what it produced without
+reading it is not. Whatever wrote the code, the pull request is yours, and that
+means three things before you open it:
+
+1. **Check that it is sane.** Read the whole diff yourself. A PR that reformats
+   files it had no reason to touch, or that contains changes you cannot explain
+   in your own words, will be closed rather than reviewed.
+2. **Vouch for it.** Run it on a real ruTorrent instance that you actually use —
+   your own, with your torrents and plugins, left running long enough to see it
+   behave. A container spun up to prove the diff applies is not a test. Say in
+   the PR what you ran it against and what you saw.
+3. **Answer reviews personally.** Review comments are addressed to you. If the
+   replies are generated and unread, the PR stops there.
+
+Keep the diff scoped to the change. Whitespace churn, unrelated reformatting and
+rewritten vendored files make a patch unreviewable, and a patch nobody can
+review does not get merged.
 
 ## Requirements
 
