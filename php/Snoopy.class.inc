@@ -217,6 +217,11 @@ class Snoopy
 	{
 		$parts = parse_url($URI);
 		$this->host = $parts["host"];
+		if(!empty($this->host)) {
+			$ip = gethostbyname($this->host);
+			if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false)
+				return false;
+		}
 		if(rTorrentSettings::get()->isPluginRegistered('cookies') && !empty($this->host))
 		{
 			// Go back to ruTorrent root folder and include cookies.php plugin file
