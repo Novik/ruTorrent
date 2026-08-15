@@ -23,7 +23,9 @@ status=0
 for t in $(find php plugins -type f -name '*Test.php')
 do
 	echo '> php' $t
-	DIR=$(dirname "$t")
+	# Absolute: this stands in for __DIR__ below, and a relative path makes a
+	# fixture symlink resolve against the wrong directory.
+	DIR=$(cd "$(dirname "$t")" && pwd)
 	out=$(php -c php-test.ini -f <(cat <(sed "s@__DIR__@\"$DIR\"@g" "$t") <(echo "$TEST_RUN")) 2>&1)
 	code=$?
 	printf '%s\n' "$out"

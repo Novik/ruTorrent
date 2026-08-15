@@ -79,6 +79,11 @@ class PermissionTest extends TestCase
 		// depend on which uid runs it.
 		$uid = posix_getuid();
 		$gids = array_merge([posix_getgid()], posix_getgroups());
+		// A symlink target is resolved against the link's own directory, so a
+		// fixture built from a relative base points nowhere and every answer
+		// below would be about a broken link rather than about permissions.
+		$this->assertTrue(is_dir($this->getDir('dir3')), 'Symlinked fixture resolves');
+		$this->assertTrue(is_dir($this->getDir('dir4')), 'Relative symlinked fixture resolves');
 		$this->assertTrue(Permission::doesUserHave($uid, $gids, $this->getDir('dir1'), 0x0007), 'User has permission for directory');
 		$this->assertTrue(Permission::doesUserHave($uid, $gids, $this->getDir('dir3'), 0x0007), 'User has permission for symlinked directory');
 		$this->assertTrue(Permission::doesUserHave($uid, $gids, $this->getDir('dir4'), 0x0007), 'User has permission for relative symlinked directory');
