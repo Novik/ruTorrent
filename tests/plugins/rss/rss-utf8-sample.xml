@@ -1,0 +1,19 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Русский торрент канал</title>
+        <link>https://example.ru</link>
+        <description>Новинки</description>
+        <language>ru-RU</language>
+        <lastBuildDate>Fri, 31 Dec 2021 12:00:00 +0000</lastBuildDate>
+        <ttl>60</ttl>
+        <item>
+            <title><![CDATA[Новый фильм — четвёртый сезон]]></title>
+            <description><![CDATA[Отличное качество]]></description>
+            <pubDate>Sat, 1 Jan 2022 12:00:00 +0000</pubDate>
+            <link>https://example.ru/path/to/torrent?torr=ABCD</link>
+            <guid>https://example.ru/path/to/torrent?perm=ABCD</guid>
+        </item>
+    </channel>
+</rss>
