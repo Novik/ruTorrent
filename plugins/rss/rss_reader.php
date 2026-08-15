@@ -1,6 +1,77 @@
 <?php
 require_once(dirname(__FILE__) . "/../../php/util.php");
 
+function rssIsValidUTF8($data)
+{
+	if (function_exists('mb_check_encoding')) {
+		return mb_check_encoding($data, 'UTF-8');
+	}
+	if (function_exists('iconv')) {
+		return @iconv('UTF-8', 'UTF-8', $data) === $data;
+	}
+	// PCRE is always available: the /u modifier rejects invalid UTF-8.
+	return preg_match('//u', $data) === 1;
+}
+
+function rssConvertToUTF8($data, $encoding)
+{
+	if (strcasecmp($encoding, 'UTF-8') == 0 || strcasecmp($encoding, 'UTF8') == 0) {
+		return $data;
+	}
+	// Misconfigured aggregators declare a legacy encoding over bytes that are
+	// already UTF-8; converting those a second time would garble every
+	// non-ASCII character, so trust the bytes over the declared encoding.
+	if (rssIsValidUTF8($data)) {
+		return $data;
+	}
+	if (function_exists('mb_convert_encoding')) {
+		try {
+			$converted = @mb_convert_encoding($data, 'UTF-8', $encoding);
+		} catch (Throwable $error) {
+			$converted = false;
+		}
+		if ($converted !== false) {
+			return $converted;
+		}
+	}
+	if (function_exists('iconv')) {
+		$converted = @iconv($encoding, 'UTF-8', $data);
+		if ($converted !== false) {
+			return $converted;
+		}
+	}
+	return false;
+}
+
+function rssNormalizeXMLDocumentEncoding($data)
+{
+	$declaration = '/^\s*<\?xml\s+[^>]*\bencoding\s*=\s*(?<quote>["\'])(?<encoding>[^"\']+)\k<quote>[^>]*\?>/i';
+	if (!preg_match($declaration, $data, $matches)) {
+		return $data;
+	}
+	$encoding = $matches['encoding'];
+	if (strcasecmp($encoding, 'UTF-8') == 0 || strcasecmp($encoding, 'UTF8') == 0) {
+		return $data;
+	}
+
+	$converted = rssConvertToUTF8($data, $encoding);
+	if ($converted === false) {
+		return $data;
+	}
+	// DOM uses UTF-8 internally, so keep the declaration consistent with the
+	// converted bytes — also when a lying declaration left already-UTF-8
+	// bytes untouched above, so libxml decodes the document as the UTF-8 it is.
+	$normalized = preg_replace_callback(
+		'/^(\s*<\?xml\s+[^>]*\bencoding\s*=\s*)(["\'])[^"\']+\2/i',
+		function ($parts) {
+			return $parts[1] . $parts[2] . 'UTF-8' . $parts[2];
+		},
+		$converted,
+		1
+	);
+	return $normalized === null ? $data : $normalized;
+}
+
 class RegexRSSReader
 {
 	private $encoding = 'utf-8';
@@ -103,10 +174,9 @@ class RegexRSSReader
 				$text = trim($c['value']);
 			}
 			if ($this->encoding != 'utf-8') {
-				if (function_exists('iconv'))
-					$text = iconv($this->encoding, 'UTF-8//TRANSLIT', $text);
-				elseif (function_exists('mb_convert_encoding'))
-					$text = mb_convert_encoding($text, 'UTF-8', $this->encoding);
+				$converted = rssConvertToUTF8($text, $this->encoding);
+				if ($converted !== false)
+					$text = $converted;
 				else
 					$text = UTF::win2utf($text);
 			}
@@ -128,6 +198,7 @@ function rssXpath($data)
 			libxml_disable_entity_loader(true);
 		}
 		libxml_use_internal_errors(true);
+		$data = rssNormalizeXMLDocumentEncoding($data);
 		$doc->loadXML(str_replace('xmlns=', 'ns=', $data), LIBXML_NOBLANKS | LIBXML_COMPACT);
 		$errs = [];
 		foreach (libxml_get_errors() as $error) {
