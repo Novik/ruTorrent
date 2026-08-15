@@ -474,7 +474,9 @@ class Snoopy
 
 		// set the read timeout if needed
 		if ($this->read_timeout > 0)
-			socket_set_timeout($fp, $this->read_timeout);
+			// socket_set_timeout() is the same function under a name PHP 8.5
+			// deprecates; stream_set_timeout() has existed since PHP 4.3.
+			stream_set_timeout($fp, $this->read_timeout);
 		$this->timed_out = false;
 		fwrite($fp,$headers.$body,strlen($headers.$body));
 		$this->_redirectaddr = false;
@@ -498,8 +500,15 @@ class Snoopy
 				// get URL portion of the redirect
 				if(!preg_match("/^(Location:|URI:)\s+(.*)/i",chop($currentHeader),$matches))
 					preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($currentHeader),$matches);
+				// a "//host/path" Location is a network-path reference (RFC 3986
+				// 4.2): it carries its own authority and inherits only the
+				// scheme. Resolved against the requested host it would become
+				// http://old.host:80//new.host/path, which redirects again
+				// until maxredirs runs out.
+				if(preg_match("|^//|",$matches[2]))
+					$this->_redirectaddr = "http:".$matches[2];
 				// look for :// in the Location header to see if hostname is included
-				if(!preg_match("|\:\/\/|",$matches[2]))
+				else if(!preg_match("|\:\/\/|",$matches[2]))
 				{
 					$host = isset($this->rawheaders['Host']) ? $this->rawheaders['Host'] : $this->host;
 					$this->_redirectaddr = "http://".$host.":".$this->port;
@@ -662,8 +671,15 @@ class Snoopy
 					if(!preg_match("/^(Location: |URI:)(.*)/i",chop($header),$matches))
 						preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($header),$matches);
 
+					// a "//host/path" Location is a network-path reference
+					// (RFC 3986 4.2): it carries its own authority and
+					// inherits only the scheme. Resolved against the requested
+					// host it would become https://old.host:443//new.host/path,
+					// which redirects again until maxredirs runs out.
+					if(preg_match("|^//|",$matches[2]))
+						$this->_redirectaddr = "https:".$matches[2];
 					// look for :// in the Location header to see if hostname is included
-					if(!preg_match("|\:\/\/|",$matches[2]))
+					else if(!preg_match("|\:\/\/|",$matches[2]))
 					{
 						// no host in the path, so prepend
 						$host = isset($this->rawheaders['Host']) ? $this->rawheaders['Host'] : $this->host;
