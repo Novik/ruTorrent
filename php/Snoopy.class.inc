@@ -82,6 +82,11 @@ class Snoopy
 	var $IP			=	null;
 	var $useIpv4		=	false;
 
+	// refuse targets that resolve to a private or otherwise non-routable address
+	var $block_private	=	false;
+	// hosts exempt from the check above, matched against the URL host verbatim
+	var $private_allowlist	=	array();
+
 	/**** Private variables ****/
 
 	var $_maxlinelen	=	4096;			// max line length (headers)
@@ -93,6 +98,7 @@ class Snoopy
 
 	var $_isproxy		=	false;			// set if using a proxy server
 	var $_fp_timeout	=	30;			// timeout for socket connection
+	var $_pinnedaddr	=	false;			// address the guard validated, connected to verbatim
 
 	public function __construct()
 	{
@@ -101,6 +107,8 @@ class Snoopy
 		global $httpUserAgent;
 		global $httpTimeOut;
 		global $httpUseGzip;
+		global $httpBlockPrivateNetworks;
+		global $httpPrivateNetworkAllowlist;
 
 		if(isset($httpUserAgent))
 			$this->agent = $httpUserAgent;
@@ -117,6 +125,10 @@ class Snoopy
 		}
 		if (isset($httpUseGzip))
 			$this->use_gzip = $httpUseGzip;
+		if(isset($httpBlockPrivateNetworks))
+			$this->block_private = $httpBlockPrivateNetworks;
+		if(isset($httpPrivateNetworkAllowlist) && is_array($httpPrivateNetworkAllowlist))
+			$this->private_allowlist = $httpPrivateNetworkAllowlist;
 		if(isset($httpIP))
 			$this->IP = $httpIP;
 	}
@@ -264,6 +276,9 @@ class Snoopy
 			$this->pass = $parts["pass"];
 		$this->host = $parts["host"];
 		$this->_isproxy = (!empty($this->proxy_host) && !empty($this->proxy_port));
+		$this->_pinnedaddr = false;
+		if($this->block_private && ($parts["scheme"]=="http" || $parts["scheme"]=="https") && !$this->checkTarget($this->host))
+			return(false);
 		$ret = true;
 		switch($parts["scheme"])
 		{
@@ -323,6 +338,76 @@ class Snoopy
 			}
 		}
 		return($ret);
+	}
+
+	protected function checkTarget($host)
+	{
+		if(in_array($host,$this->private_allowlist,true))
+			return(true);
+		$literal = filter_var(trim($host,"[]"),FILTER_VALIDATE_IP)!==false;
+		$addresses = static::resolveHost($host);
+		if(empty($addresses))
+		{
+			$this->error = 'Refusing to fetch: cannot resolve host "'.$host.'".';
+			return(false);
+		}
+		foreach($addresses as $address)
+			if(!self::isPublicAddress($address))
+			{
+				$this->error = 'Refusing to fetch: host "'.$host.'" resolves to the non-public address '.$address.'.';
+				return(false);
+			}
+		// A second lookup at connect time could answer differently, so the
+		// address that passed the check is the one the request goes to.
+		if(!$literal && !$this->_isproxy)
+			$this->_pinnedaddr = $addresses[0];
+		return(true);
+	}
+
+	static public function resolveHost($host)
+	{
+		$host = trim($host,"[]");
+		if(filter_var($host,FILTER_VALIDATE_IP)!==false)
+			return(array($host));
+		$addresses = array();
+		$records = @dns_get_record($host,DNS_A|DNS_AAAA);
+		if(is_array($records))
+			foreach($records as $record)
+			{
+				if(isset($record["ip"]))
+					$addresses[] = $record["ip"];
+				if(isset($record["ipv6"]))
+					$addresses[] = $record["ipv6"];
+			}
+		if(empty($addresses))
+		{
+			$byname = @gethostbynamel($host);
+			if(is_array($byname))
+				$addresses = $byname;
+		}
+		return(array_values(array_unique($addresses)));
+	}
+
+	static public function isPublicAddress($address)
+	{
+		if(filter_var($address,FILTER_VALIDATE_IP,FILTER_FLAG_NO_PRIV_RANGE|FILTER_FLAG_NO_RES_RANGE)===false)
+			return(false);
+		// Ranges filter_var accepts but that are not reachable on the public internet
+		foreach(array("100.64.0.0/10","192.0.0.0/24","192.88.99.0/24","198.18.0.0/15") as $cidr)
+			if(self::addressInCIDR($address,$cidr))
+				return(false);
+		return(true);
+	}
+
+	static protected function addressInCIDR($address,$cidr)
+	{
+		$ip = ip2long($address);
+		list($network,$bits) = explode("/",$cidr);
+		$network = ip2long($network);
+		if($ip===false || $network===false)
+			return(false);
+		$mask = -1 << (32-intval($bits));
+		return(($ip & $mask)===($network & $mask));
 	}
 
 	function get_header( $name )
@@ -538,6 +623,13 @@ class Snoopy
 		if($this->useIpv4)
 			$cmdline_params .= " --ipv4";
 
+		if($this->_pinnedaddr!==false)
+		{
+			$pinned = (filter_var($this->_pinnedaddr,FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)!==false)
+				? "[".$this->_pinnedaddr."]" : $this->_pinnedaddr;
+			$cmdline_params .= " --resolve ".escapeshellarg($this->host.":".$this->port.":".$pinned);
+		}
+
 		if($this->_isproxy)
 			$cmdline_params .= " --proxy-insecure --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
 
@@ -664,9 +756,11 @@ class Snoopy
 		}
 		else
 		{
-			$host = $this->host;
+			$host = ($this->_pinnedaddr===false) ? $this->host : $this->_pinnedaddr;
 			$port = $this->port;
 		}
+		if(filter_var(trim($host,"[]"),FILTER_VALIDATE_IP,FILTER_FLAG_IPV6)!==false)
+			$host = "[".trim($host,"[]")."]";
 		$this->status = 0;
 		if(function_exists("stream_socket_client") && !is_null($this->IP))
 		{

@@ -13,6 +13,14 @@
 		'host'	=> 'PROXY_HOST_HERE',
 		'port'	=> 3128
 	);
+	// Refuse to fetch URLs that resolve to a private or otherwise non-public
+	// address. Off by default: feeds and torrent links commonly point at an
+	// indexer on localhost or the LAN. Turn it on where the URLs come from
+	// someone you do not want reaching services the web server can see.
+	$httpBlockPrivateNetworks = false;
+	// Hosts exempt from the check above, matched against the URL host verbatim,
+	// e.g. array( '127.0.0.1', 'jackett.lan' ).
+	$httpPrivateNetworkAllowlist = array();
 
 	// for xmlrpc actions
 	$rpcTimeOut = 5;			// in seconds
