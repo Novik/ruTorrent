@@ -63,6 +63,9 @@ function makeMulticall($cmds,$hash,$add,$prefix)
 		$cmd->addParameter($prm);
 	$cnt = count($cmds)+count($add);
 	$req = new rXMLRPCRequest($cmd);
+	// Detail polling can race with torrent erase/replacement.
+	if(($prefix === 'f') || ($prefix === 'p') || ($prefix === 't'))
+		$req->important = false;
 	if($req->success(true))
 	{
 	        $result = array();
@@ -218,6 +221,8 @@ switch($mode)
 		$result = makeMulticall(array(
 			"f.get_path=", "f.get_completed_chunks=", "f.get_size_chunks=", "f.get_size_bytes=", "f.get_priority="
 			),$hash[0],$add,'f');
+		if($result === false)
+			$result = array();
 		break;
 	}
 	case "prs":	/**/
@@ -227,6 +232,8 @@ switch($mode)
 			"p.is_snubbed=", "p.get_completed_percent=", "p.get_down_total=", "p.get_up_total=", "p.get_down_rate=",
 			"p.get_up_rate=", "p.get_id_html=", "p.get_peer_rate=", "p.get_peer_total=", "p.get_port="
 			),$hash[0],$add,'p');
+		if($result === false)
+			$result = array();
 		break;
 	}
 	case "trk":	/**/
@@ -236,6 +243,8 @@ switch($mode)
 			"t.get_scrape_incomplete=", "t.get_scrape_downloaded=",
 			"t.get_normal_interval=", "t.get_scrape_time_last="
 			),$hash[0],$add,'t');
+		if($result === false)
+			$result = array();
 		break;
 	}
 	case "stg":	/**/
