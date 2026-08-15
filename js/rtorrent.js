@@ -1358,21 +1358,29 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 
 function Ajax_UpdateTime(jqXHR)
 {
+	// X-Server-Timestamp is emitted by CachedEcho::send for this purpose and is
+	// produced when the response is, including on the conditional-GET path.
+	// Date can arrive from any intermediary, so a cached or revalidated
+	// response carries the age of the cache into every duration on the page.
+	var timestamp = jqXHR.getResponseHeader("X-Server-Timestamp");
+	var serverDelta = (timestamp != null) ? new Date().getTime()-iv(timestamp)*1000 : null;
+
+	if(theWebUI.serverDeltaTime==0 && serverDelta!==null)
+		theWebUI.serverDeltaTime = serverDelta;
+
 	if(theWebUI.deltaTime==0)
 	{
-		var diff = 0;
-		try { diff = new Date().getTime()-Date.parse(jqXHR.getResponseHeader("Date")); } catch(e) { diff = 0; };
-		theWebUI.deltaTime = iv(diff);
-		diff = null; // Cleanup memory leak
+		if(serverDelta!==null)
+			theWebUI.deltaTime = serverDelta;
+		else
+		{
+			var diff = 0;
+			try { diff = new Date().getTime()-Date.parse(jqXHR.getResponseHeader("Date")); } catch(e) { diff = 0; };
+			theWebUI.deltaTime = iv(diff);
+			diff = null; // Cleanup memory leak
+		}
 	}
-
-	if(theWebUI.serverDeltaTime==0)
-	{
-		var timestamp = jqXHR.getResponseHeader("X-Server-Timestamp");
-		if(timestamp != null)
-			theWebUI.serverDeltaTime = new Date().getTime()-iv(timestamp)*1000;
-		timestamp = null; // Cleanup memory leak
-	}
+	timestamp = null; // Cleanup memory leak
 	jqXHR = null; // Cleanup memory leak
 }
 
