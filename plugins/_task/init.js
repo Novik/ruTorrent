@@ -377,7 +377,7 @@ if(plugin.canChangeTabs())
 						case 'finish':
 						case 'start':
 						{
-							arr[i] = (arr[i]>3600*24*365) ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : "";
+							arr[i] = (arr[i]>3600*24*365) ? theConverter.date(iv(arr[i])) : "";
 							break;
 						}
 						case 'elapsed':

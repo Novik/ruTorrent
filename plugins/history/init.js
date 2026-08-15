@@ -150,7 +150,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 								case "time":
 								case "addtime":
 								case 'created' :
-									arr[i] = arr[i] ? theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000) : '';
+									arr[i] = arr[i] ? theConverter.date(iv(arr[i])) : '';
 									break;
 								case 'downloaded' :
 								case 'uploaded' :

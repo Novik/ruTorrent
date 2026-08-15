@@ -30,7 +30,7 @@ if(plugin.canChangeColumns())
 		plugin.reqId2 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"addtime",function(hash,torrent,value)
 		{
 			const epochSeconds = iv(value);
-			torrent.addtime = (epochSeconds > 3600*24*365) ? epochSeconds+theWebUI.deltaTime/1000 : -1;
+			torrent.addtime = (epochSeconds > 3600*24*365) ? epochSeconds : -1;
 		});
 		plugin.trtRenameColumn();
 	}

@@ -592,7 +592,7 @@ var theFormatter =
 					arr[i] = theFormatter.tPriority(arr[i]);
 					break;
 				case 14:
-					arr[i] = theConverter.date(iv(arr[i])+theWebUI.deltaTime/1000);
+					arr[i] = theConverter.date(iv(arr[i]));
 					break;
 			}
 		}
