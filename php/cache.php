@@ -4,7 +4,8 @@ require_once( 'util.php' );
 class rCache
 {
 	protected $dir;
-	protected static $modifiedTimes = [];
+	// How each cache file looked when this process loaded it, keyed by cache key.
+	protected static $loadStamps = [];
 
 	public function __construct( $name = '' )
 	{
@@ -27,57 +28,105 @@ class rCache
 	{
 		return(get_class($rss).':'.$rss->hash);
 	}
+	// A cache file's identity, used to tell whether it is still the one this
+	// process loaded. filemtime resolves only to the second, so two writes
+	// inside one second look identical -- and that is the common case here:
+	// replacing a torrent fires three writers within the same second. set()
+	// always publishes through rename(), which gives the file a fresh inode,
+	// so the inode is what actually separates them.
+	protected static function stampOf( $name )
+	{
+		clearstatcache(true, $name);
+		$st = @stat($name);
+		return($st===false ? null : $st['ino'].':'.$st['mtime'].':'.$st['size']);
+	}
+	// True when the file on disk is no longer the one this process loaded.
+	protected static function hasChangedSinceLoad( $name, $stamp )
+	{
+		if(!is_null($stamp))
+			return($stamp !== self::stampOf($name));
+		// This process loaded nothing: the file was absent or unreadable when
+		// get() ran. Any file present now was published by someone else, and
+		// merging what is on disk is always safe for the merge-capable
+		// classes that are the only callers of this check.
+		return(is_file($name));
+	}
 	public function set( $rss, $arg = null )
 	{
 		global $profileMask;
 		$name = $this->getName($rss);
-		$cacheKey = is_object($rss) ? self::getCacheKey($rss) : null;
-		$modTime = $cacheKey ? (self::$modifiedTimes[$cacheKey] ?? (isset($rss->modified) ? $rss->modified : 0)) : 0;
-		if(     is_object($rss) &&
-			$modTime &&
-			method_exists($rss,"merge") &&
-			($modTime < filemtime($name)))
+		$lockName = $name.'.lock';
+		// One writer per cache key. The changed-since-load check, the merge
+		// and the publishing rename must form a single critical section: two
+		// writers that both check before either publishes both conclude
+		// nothing changed, both skip merging, and the later rename erases the
+		// earlier writer's data. The lock is a sidecar file because the cache
+		// file itself is replaced by rename() on every store.
+		$lock = fopen( $lockName, "c" );
+		if($lock===false)
+			return(false);
+		@chmod($lockName,$profileMask & 0666);
+		if(!self::flock( $lock ))
 		{
-		        $className = get_class($rss);
+			fclose($lock);
+			return(false);
+		}
+
+		$cacheKey = is_object($rss) ? self::getCacheKey($rss) : null;
+		$stamp = ($cacheKey !== null) ? (self::$loadStamps[$cacheKey] ?? null) : null;
+		if(     is_object($rss) &&
+			method_exists($rss,"merge") &&
+			self::hasChangedSinceLoad($name, $stamp))
+		{
+			$className = get_class($rss);
 			$newInstance = new $className();
 			if($this->get($newInstance) &&
 				!$rss->merge($newInstance, $arg))
+			{
+				flock( $lock, LOCK_UN );
+				fclose( $lock );
 				return(false);
+			}
 		}
-		$fp = fopen( $name.'.tmp', "a" );
+		// Use a per-process temporary file and publish it atomically under the key lock.
+		$tmpName = $name.'.'.getmypid().'.'.uniqid('', true).'.tmp';
+		$fp = fopen( $tmpName, "wb" );
 		if($fp!==false)
 		{
-			if(self::flock( $fp ))
+			$str = serialize( $rss );
+			if((fwrite( $fp, $str ) == strlen($str)) && fflush( $fp ))
 			{
-				ftruncate( $fp, 0 );
-				$str = serialize( $rss );
-	        		if((fwrite( $fp, $str ) == strlen($str)) && fflush( $fp ))
-	        		{
-					flock( $fp, LOCK_UN );
-        				if(fclose( $fp ) !== false)
-        				{
-	       					@rename( $name.'.tmp', $name );
+				if(fclose( $fp ) !== false)
+				{
+					@chmod($tmpName,$profileMask & 0666);
+					if(@rename( $tmpName, $name ))
+					{
 						@chmod($name,$profileMask & 0666);
-	        				return(true);
+						flock( $lock, LOCK_UN );
+						fclose( $lock );
+						return(true);
 					}
-					else
-						unlink( $name.'.tmp' );
 				}
 				else
-				{
-					flock( $fp, LOCK_UN );
-        				fclose( $fp );
-        				unlink( $name.'.tmp' );
-				}
-	        	}
-	        	else
-		        	fclose( $fp );
+					@unlink( $tmpName );
+			}
+			else
+				fclose( $fp );
 		}
+		@unlink( $tmpName );
+		flock( $lock, LOCK_UN );
+		fclose( $lock );
 	        return(false);
 	}
 	public function get( &$rss )
 	{
 		$fname = $this->getName($rss);
+		// Stamp before reading. If a concurrent rename lands between the stat
+		// and the read, this process holds new content under an old stamp and
+		// its set() merely performs one redundant merge. Stamping after the
+		// read inverts that: a rename between read and stat pairs old content
+		// with the new identity, and that concurrent write is never merged.
+		$stamp = self::stampOf($fname);
 		$ret = @file_get_contents($fname);
 		if($ret!==false)
 		{
@@ -96,7 +145,7 @@ class rCache
 				{
 					$rss = $tmp;
 					$cacheKey = self::getCacheKey($rss);
-					self::$modifiedTimes[$cacheKey] = filemtime($fname);
+					self::$loadStamps[$cacheKey] = $stamp;
 					$ret = true;
 				}
 				else
@@ -107,7 +156,25 @@ class rCache
 	}
 	public function remove( $rss )
 	{
-		return(@unlink($this->getName($rss)));
+		global $profileMask;
+		$name = $this->getName($rss);
+		$lockName = $name.'.lock';
+		// Delete cache data and its sidecar lock while holding the same key lock used by writers.
+		$lock = fopen( $lockName, "c" );
+		if($lock!==false)
+		{
+			@chmod($lockName,$profileMask & 0666);
+			if(self::flock( $lock ))
+			{
+				$ret = @unlink($name);
+				flock( $lock, LOCK_UN );
+				fclose( $lock );
+				@unlink($lockName);
+				return($ret);
+			}
+			fclose($lock);
+		}
+		return(@unlink($name));
 	}
 	protected function getName($rss)
 	{
