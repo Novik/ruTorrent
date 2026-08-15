@@ -11,7 +11,7 @@ $thisDir = dirname(__FILE__);
 // straight into $listPath, so the plugin only needs to schedule the garbage
 // collector that applies and clears those lists.
 $req = new rXMLRPCRequest( array(
-	$theSettings->getAbsScheduleCommand("erasedata",$garbageCheckInterval,
+	$theSettings->getAlignedScheduleCommand("erasedata",$garbageCheckInterval,
 		getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg($thisDir.'/update.php').' '.escapeshellarg(User::getUser()).' &}' )
 	) );
 if($req->success())

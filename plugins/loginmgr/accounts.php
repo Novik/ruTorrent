@@ -264,7 +264,7 @@ class accountManager
 		if(rTorrentSettings::get()->linkExist)
 		{
 			$req =  new rXMLRPCRequest( $this->hasAuto() ?
-				rTorrentSettings::get()->getAbsScheduleCommand("loginmgr",86400,
+				rTorrentSettings::get()->getAlignedScheduleCommand("loginmgr",86400,
 					getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg(dirname(__FILE__).'/update.php').' '.escapeshellarg(User::getUser()).' & exit 0}' ) :
 				rTorrentSettings::get()->getRemoveScheduleCommand("loginmgr") );
 			$req->success();

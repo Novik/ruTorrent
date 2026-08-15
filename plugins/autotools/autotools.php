@@ -195,7 +195,7 @@ class rAutoTools
 			$cmd = $theSettings->getOnFinishedCommand(array('automove'.User::getUser(), getCmd('cat=')));
 		$req->addCommand($cmd);
 		if($this->enable_watch && (trim($this->path_to_watch)!=''))
-			$cmd = 	$theSettings->getAbsScheduleCommand('autowatch',$autowatch_interval,
+			$cmd = 	$theSettings->getAlignedScheduleCommand('autowatch',$autowatch_interval,
 				getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg($pathToAutoTools.'/watch.php').' '.escapeshellarg(User::getUser()).' &}' );
 		else
 			$cmd = $theSettings->getRemoveScheduleCommand('autowatch');

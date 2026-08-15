@@ -5,7 +5,7 @@ require_once( '../plugins/scheduler/scheduler.php' );
 $schd = rScheduler::load();
 $schd->apply();
 
-$req = new rXMLRPCRequest( $theSettings->getAbsScheduleCommand('scheduler',$updateInterval*60,
+$req = new rXMLRPCRequest( $theSettings->getAlignedScheduleCommand('scheduler',$updateInterval*60,
 	getCmd('execute').'={sh,-c,'.escapeshellarg(Utility::getPHP()).' '.escapeshellarg($rootPath.'/plugins/scheduler/update.php').' '.escapeshellarg(User::getUser()).' & exit 0}' ) );
 if($req->run() && !$req->fault)
 {
