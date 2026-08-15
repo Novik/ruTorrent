@@ -863,7 +863,9 @@ function correctContent()
 			"load"			:	{ name: "load.normal", prm: 1 }
 		});
 	}
-	if(theWebUI.systemInfo.rTorrent.iVersion>=0x1002)
+	// iVersion packs one version component per byte, so 0.10.2 is 0x0a02
+	// (0x1002 would be 0.16.2). Newer daemons inherit these.
+	if(theWebUI.systemInfo.rTorrent.iVersion>=0x0a02)
 	{
 		$.extend(theRequestManager.aliases,
 		{
@@ -917,6 +919,9 @@ function correctContent()
 			"get_max_open_http"      : { name: "system.sockets.http.max_size",           prm: 0 },
 			"set_max_open_http"      : { name: "system.sockets.http.max_alloc.set",      prm: 1 },
 			"set_max_open_files"     : { name: "system.sockets.files.max_alloc.set",     prm: 1 },
+			// The d.multicall entry overrides the d.multicall => d.multicall2
+			// remap from the 0.9.4 table above; d.multicall2 is gone in 0.16.16.
+			"d.multicall"            : { name: "d.multicall",                             prm: 1 },
 			"d.multicall2"           : { name: "d.multicall",                             prm: 1 },
 			"get_http_proxy"         : { name: "network.proxy.http",                     prm: 0 },
 			"set_http_proxy"         : { name: "network.proxy.http.set",                 prm: 1 },

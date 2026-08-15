@@ -21,7 +21,9 @@ $this->aliases = array_merge($this->aliases, array(
 	// (was network.max_open_files.set — now warns)
 	"set_max_open_files" => array( "name"=>"system.sockets.files.max_alloc.set", "prm"=>1 ),
 
-	// d.multicall2 removed; d.multicall is canonical
+	// d.multicall2 removed; d.multicall is canonical. The d.multicall entry
+	// overrides the d.multicall => d.multicall2 remap from methods-0.9.4.php.
+	"d.multicall"  => array( "name"=>"d.multicall",  "prm"=>1 ),
 	"d.multicall2" => array( "name"=>"d.multicall",  "prm"=>1 ),
 
 	// Proxy addresses — removed in 0.16.16
