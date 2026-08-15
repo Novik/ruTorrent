@@ -804,4 +804,5 @@ class Snoopy
 		}
 		return($fp);
 	}
+
 }
