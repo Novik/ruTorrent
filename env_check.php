@@ -127,17 +127,17 @@ foreach (array(
 }
 
 // ---- Recommended external programs ---------------------------------------
-if (fn_available('exec', $disabled)) {
-	foreach (array(
-		'php'  => 'runs plugin helper scripts scheduled by rtorrent (_task, autotools, ...)',
-		'curl' => 'used by some plugins',
-		'gzip' => 'response compression',
-	) as $prog => $why) {
-		$path = @exec('command -v ' . escapeshellarg($prog) . ' 2>/dev/null');
-		check('rec', !empty($path), "program: $prog", $path ? "found at $path" : $why);
+foreach (array(
+	'php'  => 'runs plugin helper scripts scheduled by rtorrent (_task, autotools, ...)',
+	'curl' => 'used by some plugins',
+	'gzip' => 'response compression',
+) as $prog => $why) {
+	$path = '';
+	foreach (explode(':', (string)getenv('PATH')) as $dir) {
+		$f = rtrim($dir, '/') . '/' . $prog;
+		if ($dir !== '' && @is_file($f) && @is_executable($f)) { $path = $f; break; }
 	}
-} else {
-	check('rec', false, 'external programs', 'exec() is disabled -- cannot check for php/curl/gzip; some plugins may not work');
+	check('rec', !empty($path), "program: $prog", $path ? "found at $path" : $why);
 }
 
 // ---- Load ruTorrent config (best effort) ---------------------------------
