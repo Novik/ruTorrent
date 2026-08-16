@@ -9,9 +9,23 @@
  * URL — download.php and the tracker itself are not behind Cloudflare.
  * Phase 2 (only when scrape says the hash is gone): download the guest
  * .torrent from download.php and compare info hashes. Guest torrents carry a
- * dummy credential; it is replaced with the reusable `uk` profile credential
- * before the replacement is loaded. Path-style credentials belong to one
- * distribution and are never transplanted to another torrent.
+ * dummy credential; it is replaced with the account passkey before the
+ * replacement is loaded.
+ *
+ * NNMClub issues one passkey per account and writes it into the announce URL
+ * of every torrent that account downloads, in either of two forms carrying
+ * the same value. The form tracks when the .torrent was downloaded, not
+ * which host it announces to: currently served .torrents carry
+ * `/PASSKEY/announce` on every official host, legacy-named ones included,
+ * while older downloads carry `announce?uk=PASSKEY`. A torrent's own passkey
+ * is therefore what its own replacement needs; every form a replacement URL
+ * already carries is updated in place, and a URL with no passkey at all gets
+ * the query form -- the only form this handler wrote before, and torrents
+ * carrying it announce successfully on the live fleet. A passkey is never
+ * taken from a different torrent unless that torrent published it in the
+ * profile-wide query form (real sessions do carry torrents downloaded from
+ * other accounts, whose path-form keys are not this profile's), and never
+ * written to a host outside TRACKER_HOSTS.
  */
 
 class NNMClubCheckImpl
@@ -34,7 +48,7 @@ class NNMClubCheckImpl
     ];
 
     /**
-     * Official tracker hosts that may receive a reusable profile credential.
+     * Official tracker hosts that may receive the account passkey.
      * Keep this exact: matching an arbitrary nnmclub-like domain would leak it.
      */
     private const TRACKER_HOSTS = [
@@ -70,9 +84,17 @@ class NNMClubCheckImpl
     /** Dummy/guest passkeys that must never be treated as credentials. */
     private const DUMMY_PASSKEY_RE = '/^(?:f{32}|0{32})$/i';
 
-    private const TOKEN_RE = '/^[A-Za-z0-9]{32}$/D';
+    /** The passkey shape, stated once: 32 alphanumerics. */
+    private const PASSKEY_CHARS = '[A-Za-z0-9]{32}';
+
+    private const TOKEN_RE = '/^' . self::PASSKEY_CHARS . '$/D';
     private const TRACKER_URL_RE = '`https?://[A-Za-z0-9.-]+(?::\d+)?/'
-        . '(?:[A-Za-z0-9]{32}/)?announce(?:\?uk=[A-Za-z0-9]{32})?`i';
+        . '(?:' . self::PASSKEY_CHARS . '/)?announce(?:\?uk=' . self::PASSKEY_CHARS . ')?`i';
+    /**
+     * An announce path in either form. $matches[1] is the path prefix,
+     * $matches[2] (when present) the path-form passkey.
+     */
+    private const ANNOUNCE_PATH_RE = '`^(.*?)/(?:(' . self::PASSKEY_CHARS . ')/)?announce/?$`';
 
     private const SCRAPE_RESULT_UPTODATE = 1;
     private const SCRAPE_RESULT_NOT_FOUND = 2;
@@ -177,10 +199,13 @@ class NNMClubCheckImpl
     }
 
     /**
-     * Parse one announce URL into a typed credential descriptor.
-     * Path credentials are distribution-specific; `uk` credentials are reusable.
+     * Parse one announce URL into a typed credential descriptor. `mode` names
+     * the URL form the passkey was found in: `path` (/PASSKEY/announce, the
+     * form in currently served .torrents) or `query` (announce?uk=PASSKEY,
+     * the form in older downloads). Both forms carry the same account
+     * passkey; when a URL carries both, the query value wins.
      *
-     * @return array|null ['mode' => 'dynamic'|'static', 'token' => string, 'announceUrl' => string]
+     * @return array|null ['mode' => 'path'|'query', 'token' => string, 'announceUrl' => string]
      */
     private static function parseAuthUrl($url)
     {
@@ -195,7 +220,7 @@ class NNMClubCheckImpl
             return null;
         }
         $path = isset($parts['path']) ? $parts['path'] : '';
-        if (!preg_match('`/(?:[A-Za-z0-9]{32}/)?announce/?$`', $path)) return null;
+        if (!preg_match(self::ANNOUNCE_PATH_RE, $path, $match)) return null;
 
         $query = array();
         parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
@@ -204,17 +229,17 @@ class NNMClubCheckImpl
             && preg_match(self::TOKEN_RE, (string) $query['uk'])
             && !preg_match(self::DUMMY_PASSKEY_RE, (string) $query['uk'])) {
             return array(
-                'mode' => 'static',
+                'mode' => 'query',
                 'token' => (string) $query['uk'],
                 'announceUrl' => $url,
             );
         }
 
-        if (preg_match('`/([A-Za-z0-9]{32})/announce/?$`', $path, $match)
-            && !preg_match(self::DUMMY_PASSKEY_RE, $match[1])) {
+        if (isset($match[2]) && $match[2] !== ''
+            && !preg_match(self::DUMMY_PASSKEY_RE, $match[2])) {
             return array(
-                'mode' => 'dynamic',
-                'token' => $match[1],
+                'mode' => 'path',
+                'token' => $match[2],
                 'announceUrl' => $url,
             );
         }
@@ -225,7 +250,7 @@ class NNMClubCheckImpl
      * Extract a typed credential from announce metadata or raw session bencode.
      *
      * @param  string|array|null $announce
-     * @param  string|null       $requiredMode Optional `dynamic` or `static` filter
+     * @param  string|null       $requiredMode Optional `path` or `query` filter
      * @return array|null
      */
     private static function extractAuth($announce, $requiredMode = null)
@@ -258,10 +283,15 @@ class NNMClubCheckImpl
     }
 
     /**
-     * Scan the rTorrent session directory for a reusable profile `uk`
-     * credential; the result (or its absence) is cached per process.
+     * Scan the rTorrent session directory for a donor passkey, consulted only
+     * when the torrent being checked carries no usable key of its own. Only a
+     * key another torrent published in the query (`uk=`) form is accepted:
+     * that form has always been profile-wide, whereas a path-form key inside
+     * a foreign torrent belongs to whoever downloaded that file, and real
+     * sessions do carry torrents fetched from other accounts. The result (or
+     * its absence) is cached per process.
      */
-    private static function findDonorStaticAuth()
+    private static function findDonorAuth()
     {
         if (self::$donor !== false) {
             return self::$donor;
@@ -287,7 +317,7 @@ class NNMClubCheckImpl
             if ($head === false || !preg_match('/nnm-?club|searchtor/i', $head)) {
                 continue;
             }
-            $auth = self::extractAuth($head, 'static');
+            $auth = self::extractAuth($head, 'query');
             if ($auth !== null) {
                 return (self::$donor = $auth);
             }
@@ -308,40 +338,52 @@ class NNMClubCheckImpl
     }
 
     /**
-     * Patch NNMClub announce URLs with a reusable profile credential.
+     * Patch every NNMClub announce URL in a torrent with the account passkey.
      *
-     * @return bool True when at least one URL was changed
+     * @return bool True when the torrent carries at least one NNMClub
+     *              announce URL; each such URL now holds the passkey, whether
+     *              or not its text needed changing.
      */
-    private static function patchStaticAuthInTorrent($torrent, $auth)
+    private static function patchAuthInTorrent($torrent, $auth)
     {
-        if (!is_array($auth) || ($auth['mode'] ?? null) !== 'static') return false;
-
-        $announceChanged = false;
-        $listChanged = false;
+        if (!is_array($auth)
+            || !isset($auth['token'])
+            || !preg_match(self::TOKEN_RE, (string) $auth['token'])) {
+            return false;
+        }
+        $token = (string) $auth['token'];
+        $found = false;
 
         $announce = $torrent->announce();
         if (is_string($announce) && $announce !== '') {
-            $patched = self::injectStaticAuthIntoUrl($announce, $auth['token']);
-            if ($patched !== $announce) {
-                $torrent->announce($patched);
-                $announceChanged = true;
+            $patched = self::injectAuthIntoUrl($announce, $token);
+            if ($patched !== null) {
+                $found = true;
+                if ($patched !== $announce) {
+                    $torrent->announce($patched);
+                }
             }
         }
 
         $list = $torrent->announce_list();
         if (is_array($list)) {
             $newList = [];
+            $listChanged = false;
             foreach ($list as $tier) {
                 $newTier = [];
                 $urls = is_array($tier) ? $tier : [$tier];
                 foreach ($urls as $url) {
                     $patchedUrl = is_string($url)
-                        ? self::injectStaticAuthIntoUrl($url, $auth['token'])
-                        : $url;
-                    if ($patchedUrl !== $url) {
-                        $listChanged = true;
+                        ? self::injectAuthIntoUrl($url, $token)
+                        : null;
+                    if ($patchedUrl !== null) {
+                        $found = true;
+                        if ($patchedUrl !== $url) {
+                            $listChanged = true;
+                            $url = $patchedUrl;
+                        }
                     }
-                    $newTier[] = $patchedUrl;
+                    $newTier[] = $url;
                 }
                 $newList[] = $newTier;
             }
@@ -350,27 +392,44 @@ class NNMClubCheckImpl
             }
         }
 
-        return $announceChanged || $listChanged;
+        return $found;
     }
 
-    /** Convert an NNMClub announce URL to reusable `announce?uk=TOKEN` form. */
-    private static function injectStaticAuthIntoUrl($url, $token)
+    /**
+     * Write the account passkey into an NNMClub announce URL. Every form the
+     * URL already carries is updated in place -- the tracker serves both forms
+     * and they hold the same value -- and a URL with no passkey at all gets
+     * the query form: the only form this handler wrote before, and torrents
+     * carrying it announce successfully on the live fleet.
+     *
+     * @param  string $token Passkey already validated against TOKEN_RE
+     * @return string|null Patched URL (possibly identical to the input), or
+     *                     null when the URL is not an NNMClub announce URL
+     */
+    private static function injectAuthIntoUrl($url, $token)
     {
-        if (!is_string($url) || !preg_match(self::TOKEN_RE, (string) $token)) return $url;
+        if (!is_string($url)) return null;
         $parts = @parse_url($url);
         if (!is_array($parts)
             || !isset($parts['scheme'], $parts['host'], $parts['path'])
             || !preg_match('/^https?$/i', $parts['scheme'])
-            || !self::isAllowedTrackerHost(strtolower($parts['host']))) {
-            return $url;
+            || !self::isAllowedTrackerHost(strtolower($parts['host']))
+            || !preg_match(self::ANNOUNCE_PATH_RE, $parts['path'], $match)) {
+            return null;
         }
-
-        $path = preg_replace('`/(?:[A-Za-z0-9]{32}/)?announce/?$`', '/announce', $parts['path'], 1, $count);
-        if ($count !== 1 || $path === null) return $url;
 
         $query = array();
         parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
-        $query['uk'] = $token;
+
+        if (isset($match[2]) && $match[2] !== '') {
+            $path = $match[1] . '/' . $token . '/announce';
+            if (isset($query['uk'])) {
+                $query['uk'] = $token;
+            }
+        } else {
+            $path = $match[1] . '/announce';
+            $query['uk'] = $token;
+        }
         return self::rebuildTrackerUrl($parts, $path, $query);
     }
 
@@ -409,9 +468,9 @@ class NNMClubCheckImpl
         $query = array();
         parse_str(isset($parts['query']) ? $parts['query'] : '', $query);
         unset($query['info_hash']);
-        if ($auth['mode'] === 'static') {
+        if ($auth['mode'] === 'query') {
             $query['uk'] = $auth['token'];
-        } elseif ($auth['mode'] !== 'dynamic') {
+        } elseif ($auth['mode'] !== 'path') {
             return null;
         }
 
@@ -420,9 +479,10 @@ class NNMClubCheckImpl
     }
 
     /**
-     * Scrape the tracker endpoint associated with a typed credential.
-     * Static credentials may fall back to the current official IPv4 endpoint;
-     * dynamic credentials must stay on their original distribution URL.
+     * Scrape the tracker endpoint associated with a typed credential. The
+     * passkey is the account's key in either form, so when the credential's
+     * own host fails the current official IPv4 endpoint is consulted too, in
+     * the same form the credential already uses.
      *
      * @return int One of SCRAPE_RESULT_* constants
      */
@@ -437,11 +497,14 @@ class NNMClubCheckImpl
         $urls = array();
         $primary = self::buildScrapeUrl($auth, $binary);
         if ($primary !== null) $urls[] = $primary;
-        if (($auth['mode'] ?? null) === 'static') {
+        $mode = isset($auth['mode']) ? $auth['mode'] : null;
+        if (isset($auth['token']) && ($mode === 'query' || $mode === 'path')) {
             $fallback = self::buildScrapeUrl(array(
-                'mode' => 'static',
+                'mode' => $mode,
                 'token' => $auth['token'],
-                'announceUrl' => 'http://bt.searchtor.to/announce?uk=' . rawurlencode($auth['token']),
+                'announceUrl' => $mode === 'query'
+                    ? 'http://bt.searchtor.to/announce?uk=' . rawurlencode($auth['token'])
+                    : 'http://bt.searchtor.to/' . rawurlencode($auth['token']) . '/announce',
             ), $binary);
             if ($fallback !== null && !in_array($fallback, $urls, true)) $urls[] = $fallback;
         }
@@ -502,15 +565,17 @@ class NNMClubCheckImpl
             if (method_exists($old_torrent, 'announce')) $announces[] = $old_torrent->announce();
             if (method_exists($old_torrent, 'announce_list')) $announces[] = $old_torrent->announce_list();
         }
-        $staticAuth = self::extractAuth($announces, 'static');
-        $scrapeAuth = self::extractAuth($announces, 'dynamic') ?: $staticAuth;
-
-        if ($scrapeAuth !== null) {
-            self::log("Using {$scrapeAuth['mode']} credential from current torrent metadata");
+        // The passkey this torrent itself announces with is the account's own
+        // key (see the file header), so one credential serves both the scrape
+        // and, if it comes to that, the replacement patch. Prefer the current
+        // path form when a torrent happens to carry both; a donor from the
+        // session is consulted only when the torrent carries no key at all.
+        $auth = self::extractAuth($announces, 'path') ?: self::extractAuth($announces, 'query');
+        if ($auth !== null) {
+            self::log("Using the {$auth['mode']}-form credential from current torrent metadata");
         } else {
-            $staticAuth = self::findDonorStaticAuth();
-            $scrapeAuth = $staticAuth;
-            if ($staticAuth !== null) {
+            $auth = self::findDonorAuth();
+            if ($auth !== null) {
                 self::log("Using reusable profile credential from a session torrent");
             } else {
                 self::log("No tracker credential found for {$hash}, skipping scrape");
@@ -518,8 +583,8 @@ class NNMClubCheckImpl
         }
 
         // Phase 1: tracker scrape (fast path).
-        if ($scrapeAuth !== null) {
-            $scrapeResult = self::checkViaScrape($scrapeAuth, $hash);
+        if ($auth !== null) {
+            $scrapeResult = self::checkViaScrape($auth, $hash);
             if ($scrapeResult === self::SCRAPE_RESULT_UPTODATE) {
                 return ruTrackerChecker::STE_UPTODATE;
             }
@@ -590,14 +655,12 @@ class NNMClubCheckImpl
 
         // Hash differs: the torrent was updated on NNMClub.
         self::log("Hash changed for {$topicQuery}: {$hash} -> {$guestHash}");
-        if ($staticAuth === null) {
-            $staticAuth = self::findDonorStaticAuth();
-        }
-        if ($staticAuth === null) {
-            self::log("Hash differs but a reusable profile credential is unavailable; refusing replacement");
+        if ($auth === null) {
+            self::log("Hash differs but no account passkey is available; refusing replacement");
             return ruTrackerChecker::STE_ERROR;
         }
-        if (!self::patchStaticAuthInTorrent($guestTorrent, $staticAuth)) {
+        self::log("Patching the replacement with the {$auth['mode']}-form passkey");
+        if (!self::patchAuthInTorrent($guestTorrent, $auth)) {
             self::log("Hash differs but credential patch found no NNMClub announce URLs");
             return ruTrackerChecker::STE_ERROR;
         }

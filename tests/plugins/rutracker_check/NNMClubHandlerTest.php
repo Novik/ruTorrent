@@ -165,13 +165,13 @@ $suite->test('scrape miss downloads guest torrent and patches real passkey', fun
     strictAssertTrue(!$patched->errors(), 'Patched replacement torrent must remain valid');
     strictAssertSame($guestHash, $patched->hash_info(), 'Passkey patch must not change info hash');
     strictAssertTrue(
-        strpos($patched->announce(), '/announce?uk=' . $realPasskey) !== false,
-        'Primary announce gets the reusable profile passkey in query form'
+        strpos($patched->announce(), 'http://bt.searchtor.to/' . $realPasskey . '/announce') !== false,
+        'Primary announce keeps the path form the tracker served and carries the account passkey'
     );
     $patchedRaw = (string) $patched;
     strictAssertTrue(
-        strpos($patchedRaw, 'http://ipv6.bt.searchtor.to/announce?uk=' . $realPasskey) !== false,
-        'Official alternate announce gets the reusable profile passkey'
+        strpos($patchedRaw, 'http://ipv6.bt.searchtor.to/' . $realPasskey . '/announce') !== false,
+        'Official alternate announce gets the account passkey in the same form'
     );
     strictAssertTrue(
         strpos($patchedRaw, 'http://bt.nnmclub.example/' . $dummyPasskey . '/announce') !== false,
@@ -184,7 +184,12 @@ $suite->test('scrape miss downloads guest torrent and patches real passkey', fun
     strictAssertTrue(strpos($patchedRaw, 'https://example.test/announce') !== false, 'Unrelated announce URL remains unchanged');
 });
 
-$suite->test('dynamic credential is never transplanted into a changed torrent', function () use ($realPasskey, $dummyPasskey) {
+// NNMClub serves one account passkey per user and writes it into the announce
+// URL of every torrent that account downloads: `/PASSKEY/announce` in
+// currently served .torrents, `announce?uk=PASSKEY` in older downloads. A
+// torrent's own passkey is therefore the right key for its own replacement,
+// in whichever form the tracker served the replacement's URLs.
+$suite->test('a torrent path-form passkey is reused for its own replacement', function () use ($realPasskey, $dummyPasskey) {
     nnmReset();
     $oldRaw = strictTorrentRaw(
         'old-dynamic.bin',
@@ -196,7 +201,11 @@ $suite->test('dynamic credential is never transplanted into a changed torrent', 
     $guestRaw = strictTorrentRaw(
         'new-dynamic.bin',
         'http://bt.searchtor.to/' . $dummyPasskey . '/announce',
-        nnmTopicUrl(42)
+        nnmTopicUrl(42),
+        array(
+            array('http://bt02.nnm-club.cc:2710/' . $dummyPasskey . '/announce'),
+            array('http://bt.nnmclub.example/' . $dummyPasskey . '/announce'),
+        )
     );
     Snoopy::queue(
         nnmDynamicScrapeUrl('bt.searchtor.to', $realPasskey, $oldHash),
@@ -208,8 +217,150 @@ $suite->test('dynamic credential is never transplanted into a changed torrent', 
 
     $result = NNMClubCheckImpl::download_torrent(nnmTopicUrl(42), $oldHash, $oldTorrent);
 
-    strictAssertSame(ruTrackerChecker::STE_ERROR, $result, 'A changed torrent needs a reusable profile credential');
-    strictAssertSame(0, count(ruTrackerChecker::$created), 'Per-distribution credential must not be copied to a new hash');
+    strictAssertSame(null, $result, 'Successful replacement propagates createTorrent result');
+    strictAssertSame(1, count(ruTrackerChecker::$created), 'Changed guest torrent is replaced once');
+    $patched = @new Torrent(ruTrackerChecker::$created[0]['payload']);
+    strictAssertTrue(!$patched->errors(), 'Patched replacement torrent must remain valid');
+    $patchedRaw = (string) $patched;
+    strictAssertTrue(
+        strpos($patchedRaw, 'http://bt.searchtor.to/' . $realPasskey . '/announce') !== false,
+        'The path form is preserved and carries the account passkey'
+    );
+    strictAssertTrue(
+        strpos($patchedRaw, 'http://bt02.nnm-club.cc:2710/' . $realPasskey . '/announce') !== false,
+        'Every official host of the replacement gets the same account passkey'
+    );
+    strictAssertTrue(
+        strpos($patchedRaw, 'http://bt.nnmclub.example/' . $dummyPasskey . '/announce') !== false,
+        'A lookalike tracker host keeps the dummy passkey'
+    );
+    strictAssertTrue(
+        strpos($patchedRaw, 'bt.nnmclub.example/' . $realPasskey) === false,
+        'The account passkey is never written to a lookalike tracker host'
+    );
+});
+
+$suite->test('the query form is preserved when the tracker still serves it', function () use ($realPasskey, $dummyPasskey) {
+    nnmReset();
+    $oldRaw = strictTorrentRaw(
+        'old-mixed.bin',
+        'http://bt02.nnm-club.cc:2710/' . $realPasskey . '/announce',
+        nnmTopicUrl(43)
+    );
+    $oldTorrent = @new Torrent($oldRaw);
+    strictAssertTrue(!$oldTorrent->errors(), 'Old torrent fixture must parse');
+    $oldHash = $oldTorrent->hash_info();
+    $guestRaw = strictTorrentRaw(
+        'new-mixed.bin',
+        'http://bt.nnm-club.ru:2710/announce?uk=' . $dummyPasskey,
+        nnmTopicUrl(43)
+    );
+    // The passkey is the account's key on every host, so a failed scrape on
+    // the torrent's own host may consult the current official endpoint in the
+    // same path form before falling through to the guest download.
+    Snoopy::queue(
+        nnmDynamicScrapeUrl('bt02.nnm-club.cc:2710', $realPasskey, $oldHash),
+        200,
+        strictScrapePayload($oldHash, false)
+    );
+    Snoopy::queue(
+        nnmDynamicScrapeUrl('bt.searchtor.to', $realPasskey, $oldHash),
+        200,
+        strictScrapePayload($oldHash, false)
+    );
+    Snoopy::queue(nnmTopicUrl(43), 200, '<a href="download.php?id=8">download</a>');
+    Snoopy::queue(nnmDownloadUrl(8), 200, $guestRaw);
+
+    $result = NNMClubCheckImpl::download_torrent(nnmTopicUrl(43), $oldHash, $oldTorrent);
+
+    strictAssertSame(null, $result, 'Successful replacement propagates createTorrent result');
+    strictAssertSame(
+        array(
+            array('fetchComplex', nnmDynamicScrapeUrl('bt02.nnm-club.cc:2710', $realPasskey, $oldHash)),
+            array('fetchComplex', nnmDynamicScrapeUrl('bt.searchtor.to', $realPasskey, $oldHash)),
+            array('fetch', nnmTopicUrl(43)),
+            array('fetch', nnmDownloadUrl(8)),
+        ),
+        Snoopy::$requests,
+        'A failed scrape on the torrent\'s own host consults the official fallback first'
+    );
+    strictAssertSame(1, count(ruTrackerChecker::$created), 'A legacy-form replacement is still replaced');
+    $patchedRaw = (string) @new Torrent(ruTrackerChecker::$created[0]['payload']);
+    strictAssertTrue(
+        strpos($patchedRaw, 'announce?uk=' . $realPasskey) !== false,
+        'A query-form announce keeps that form and carries the account passkey'
+    );
+    strictAssertTrue(
+        strpos($patchedRaw, $dummyPasskey) === false,
+        'The dummy passkey is gone from the replacement'
+    );
+});
+
+$suite->test('a replacement already carrying the account passkey is accepted', function () use ($realPasskey) {
+    nnmReset();
+    $oldRaw = strictTorrentRaw(
+        'old-samekey.bin',
+        'http://bt.searchtor.to/' . $realPasskey . '/announce',
+        nnmTopicUrl(46)
+    );
+    $oldTorrent = @new Torrent($oldRaw);
+    strictAssertTrue(!$oldTorrent->errors(), 'Old torrent fixture must parse');
+    $oldHash = $oldTorrent->hash_info();
+    // download.php can serve URLs that already hold the account passkey in
+    // canonical form; "nothing to change" must not read as "no URLs found".
+    $guestRaw = strictTorrentRaw(
+        'new-samekey.bin',
+        'http://bt.searchtor.to/' . $realPasskey . '/announce',
+        nnmTopicUrl(46)
+    );
+    $guestTorrent = @new Torrent($guestRaw);
+    strictAssertTrue(!$guestTorrent->errors(), 'Guest torrent fixture must parse');
+    $guestHash = $guestTorrent->hash_info();
+    strictAssertTrue($guestHash !== $oldHash, 'Guest fixture must represent an update');
+
+    Snoopy::queue(
+        nnmDynamicScrapeUrl('bt.searchtor.to', $realPasskey, $oldHash),
+        200,
+        strictScrapePayload($oldHash, false)
+    );
+    Snoopy::queue(nnmTopicUrl(46), 200, '<a href="download.php?id=11">download</a>');
+    Snoopy::queue(nnmDownloadUrl(11), 200, $guestRaw);
+
+    $result = NNMClubCheckImpl::download_torrent(nnmTopicUrl(46), $oldHash, $oldTorrent);
+
+    strictAssertSame(null, $result, 'An already-authenticated replacement is loaded, not refused');
+    strictAssertSame(1, count(ruTrackerChecker::$created), 'The replacement is loaded exactly once');
+    $patched = @new Torrent(ruTrackerChecker::$created[0]['payload']);
+    strictAssertTrue(!$patched->errors(), 'Loaded replacement torrent must remain valid');
+    strictAssertSame($guestHash, $patched->hash_info(), 'An unchanged payload keeps its info hash');
+    strictAssertSame(
+        'http://bt.searchtor.to/' . $realPasskey . '/announce',
+        $patched->announce(),
+        'The already-correct announce URL is untouched'
+    );
+});
+
+$suite->test('a changed torrent without any passkey anywhere is refused', function () use ($dummyPasskey) {
+    nnmReset();
+    $oldRaw = strictTorrentRaw(
+        'old-nokey.bin',
+        'http://bt.searchtor.to/' . $dummyPasskey . '/announce',
+        nnmTopicUrl(44)
+    );
+    $oldTorrent = @new Torrent($oldRaw);
+    $oldHash = $oldTorrent->hash_info();
+    $guestRaw = strictTorrentRaw(
+        'new-nokey.bin',
+        'http://bt.searchtor.to/' . $dummyPasskey . '/announce',
+        nnmTopicUrl(44)
+    );
+    Snoopy::queue(nnmTopicUrl(44), 200, '<a href="download.php?id=9">download</a>');
+    Snoopy::queue(nnmDownloadUrl(9), 200, $guestRaw);
+
+    $result = NNMClubCheckImpl::download_torrent(nnmTopicUrl(44), $oldHash, $oldTorrent);
+
+    strictAssertSame(ruTrackerChecker::STE_ERROR, $result, 'Without a passkey the replacement is refused');
+    strictAssertSame(0, count(ruTrackerChecker::$created), 'An unauthenticated replacement is never loaded');
 });
 
 $suite->test('array topic parameters are rejected without warnings', function () use ($dummyPasskey) {
@@ -308,6 +459,147 @@ $suite->test('donor passkey is used in memory without rewriting session torrent'
     } finally {
         strictRemoveTree($tempDir);
     }
+});
+
+// The donor is the one remaining cross-torrent transplant: consulted only
+// when the torrent being replaced carries no usable key of its own, and only
+// for keys another torrent published in the profile-wide `uk=` form. A
+// path-form key in a foreign torrent may belong to whoever downloaded that
+// file (real sessions do carry torrents fetched from other accounts).
+$suite->test('a donor query-form passkey patches a keyless replacement', function () use ($realPasskey, $dummyPasskey) {
+    nnmReset();
+    $tempDir = sys_get_temp_dir() . '/nnmclub-donor-patch-' . getmypid() . '-' . mt_rand();
+    mkdir($tempDir, 0700, true);
+
+    try {
+        $oldRaw = strictTorrentRaw(
+            'old-donorpatch.bin',
+            'http://bt02.nnm-club.cc:2710/' . $dummyPasskey . '/announce',
+            nnmTopicUrl(45)
+        );
+        $oldTorrent = @new Torrent($oldRaw);
+        strictAssertTrue(!$oldTorrent->errors(), 'Old torrent fixture must parse');
+        $oldHash = $oldTorrent->hash_info();
+
+        $donorRaw = strictTorrentRaw(
+            'donor.bin',
+            'http://bt.searchtor.to/announce?uk=' . $realPasskey,
+            nnmTopicUrl(77)
+        );
+        file_put_contents($tempDir . '/' . str_repeat('E', 40) . '.torrent', $donorRaw);
+        rTorrentSettings::get()->session = $tempDir . '/';
+
+        $guestRaw = strictTorrentRaw(
+            'new-donorpatch.bin',
+            'http://bt.searchtor.to/' . $dummyPasskey . '/announce',
+            nnmTopicUrl(45)
+        );
+
+        Snoopy::queue(
+            nnmStaticScrapeUrl('bt.searchtor.to', $realPasskey, $oldHash),
+            200,
+            strictScrapePayload($oldHash, false)
+        );
+        Snoopy::queue(nnmTopicUrl(45), 200, '<a href="download.php?id=10">download</a>');
+        Snoopy::queue(nnmDownloadUrl(10), 200, $guestRaw);
+
+        $result = NNMClubCheckImpl::download_torrent(nnmTopicUrl(45), $oldHash, $oldTorrent);
+
+        strictAssertSame(null, $result, 'A donor-patched replacement propagates createTorrent result');
+        strictAssertSame(1, count(ruTrackerChecker::$created), 'The keyless replacement is patched and loaded');
+        $patched = @new Torrent(ruTrackerChecker::$created[0]['payload']);
+        strictAssertTrue(!$patched->errors(), 'Patched replacement torrent must remain valid');
+        strictAssertTrue(
+            strpos($patched->announce(), 'http://bt.searchtor.to/' . $realPasskey . '/announce') !== false,
+            'The donor passkey is written in the form the replacement URL already uses'
+        );
+    } finally {
+        strictRemoveTree($tempDir);
+    }
+});
+
+$suite->test('a session path-form passkey is never donated to another torrent', function () use ($realPasskey, $dummyPasskey) {
+    nnmReset();
+    $tempDir = sys_get_temp_dir() . '/nnmclub-donor-path-' . getmypid() . '-' . mt_rand();
+    mkdir($tempDir, 0700, true);
+
+    try {
+        $oldRaw = strictTorrentRaw(
+            'old-nodonor.bin',
+            'http://bt02.nnm-club.cc:2710/' . $dummyPasskey . '/announce',
+            nnmTopicUrl(47)
+        );
+        $oldTorrent = @new Torrent($oldRaw);
+        strictAssertTrue(!$oldTorrent->errors(), 'Old torrent fixture must parse');
+        $oldHash = $oldTorrent->hash_info();
+
+        $pathDonorRaw = strictTorrentRaw(
+            'pathdonor.bin',
+            'http://bt.searchtor.to/' . $realPasskey . '/announce',
+            nnmTopicUrl(88)
+        );
+        file_put_contents($tempDir . '/' . str_repeat('F', 40) . '.torrent', $pathDonorRaw);
+        rTorrentSettings::get()->session = $tempDir . '/';
+
+        $guestRaw = strictTorrentRaw(
+            'new-nodonor.bin',
+            'http://bt.searchtor.to/' . $dummyPasskey . '/announce',
+            nnmTopicUrl(47)
+        );
+
+        Snoopy::queue(nnmTopicUrl(47), 200, '<a href="download.php?id=12">download</a>');
+        Snoopy::queue(nnmDownloadUrl(12), 200, $guestRaw);
+
+        $result = NNMClubCheckImpl::download_torrent(nnmTopicUrl(47), $oldHash, $oldTorrent);
+
+        strictAssertSame(ruTrackerChecker::STE_ERROR, $result, 'A foreign path-form key must not authenticate a replacement');
+        strictAssertSame(0, count(ruTrackerChecker::$created), 'Nothing is loaded with a foreign path-form key');
+        strictAssertSame(
+            array(
+                array('fetch', nnmTopicUrl(47)),
+                array('fetch', nnmDownloadUrl(12)),
+            ),
+            Snoopy::$requests,
+            'A path-form session key yields no credential, so no scrape is attempted'
+        );
+    } finally {
+        strictRemoveTree($tempDir);
+    }
+});
+
+$suite->test('injectAuthIntoUrl updates every credential form and defaults to the query form', function () use ($realPasskey, $dummyPasskey) {
+    nnmReset();
+    $cases = array(
+        'path and query forms present: both are updated' => array(
+            'http://bt.searchtor.to/' . $dummyPasskey . '/announce?uk=' . $dummyPasskey,
+            'http://bt.searchtor.to/' . $realPasskey . '/announce?uk=' . $realPasskey,
+        ),
+        'keyless URL gets the query form every host generation accepts' => array(
+            'http://bt.nnm-club.ru:2710/announce',
+            'http://bt.nnm-club.ru:2710/announce?uk=' . $realPasskey,
+        ),
+        'an unrecognized path segment is kept, never doubled' => array(
+            'http://bt.searchtor.to/' . str_repeat('a', 40) . '/announce',
+            'http://bt.searchtor.to/' . str_repeat('a', 40) . '/announce?uk=' . $realPasskey,
+        ),
+    );
+    foreach ($cases as $label => $case) {
+        strictAssertSame(
+            $case[1],
+            strictInvoke('NNMClubCheckImpl', 'injectAuthIntoUrl', array($case[0], $realPasskey)),
+            $label
+        );
+    }
+    strictAssertSame(
+        null,
+        strictInvoke('NNMClubCheckImpl', 'injectAuthIntoUrl', array('http://bt.nnmclub.example/' . $dummyPasskey . '/announce', $realPasskey)),
+        'a lookalike host is not a patchable NNMClub announce URL'
+    );
+    strictAssertSame(
+        null,
+        strictInvoke('NNMClubCheckImpl', 'injectAuthIntoUrl', array('https://nnmclub.to/forum/viewtopic.php?t=42', $realPasskey)),
+        'a non-announce URL is not patchable'
+    );
 });
 
 $suite->test('hostile deeply nested scrape payload is dismissed without recursion', function () {
