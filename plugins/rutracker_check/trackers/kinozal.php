@@ -17,6 +17,27 @@ class KinozalCheckImpl
     // never masquerade as a removed release.
     const MISSING_MARKER = 'Торрент файл не найден';
 
+    // Per-process latch. Production runs one PHP process per cycle (update.php,
+    // batch_check.php), so process lifetime IS cycle lifetime and the latch
+    // cannot outlive the run. A locked-out loginmgr account is a property of
+    // the whole run rather than of one topic: without this, every Kinozal
+    // torrent spent a request proving the same thing over again -- 130 of
+    // them per cycle on the live fleet -- and buried the log under 130
+    // identical lines. The latch dies with the process, so the next cycle
+    // retries from scratch and a restored session heals itself.
+    static private $sessionDead = false;
+
+    // How many guest answers in a row mean the session is really gone rather
+    // than blinking. Measured on the live fleet: one cycle got a guest answer
+    // and the next, three seconds later, was authorised again with the very
+    // same stored cookies. Latching on that single answer cost every remaining
+    // Kinozal torrent an hour of waiting, so one is forgiven and the second
+    // in a row is believed -- two wasted requests instead of a hundred and
+    // thirty, and a blink no longer skips the cycle.
+    const GUEST_TOLERANCE = 2;
+
+    static private $guestAnswers = 0;
+
     // get_srv_details.php is served as UTF-8 while the rest of the site is
     // windows-1251, so a needle is looked up in both encodings rather than
     // pinned to whichever charset that endpoint happens to use today.
@@ -58,10 +79,27 @@ class KinozalCheckImpl
         return ruTrackerChecker::STE_CANT_REACH_TRACKER;
     }
 
+    // Same verdict as cantReach(), plus the running count of guest answers.
+    // Once they stop being isolated the session is declared gone for the whole
+    // run: it is one session, so what the tracker just refused it will refuse
+    // for every remaining topic too.
+    static private function guestAnswer($log)
+    {
+        if (++self::$guestAnswers < self::GUEST_TOLERANCE)
+            return self::cantReach($log);
+        self::$sessionDead = true;
+        return self::cantReach($log . ', the rest of this cycle is skipped');
+    }
+
     static public function download_torrent($url, $hash, $old_torrent)
     {
         if (!preg_match('`^https?://kinozal\.(tv|me|guru)/details\.php\?id=(?P<id>\d+)$`', $url, $matches))
             return ruTrackerChecker::STE_NOT_NEED;
+
+        // Checked after the URL match, so a topic this handler does not own
+        // still falls through to STE_NOT_NEED exactly as before.
+        if (self::$sessionDead)
+            return ruTrackerChecker::STE_CANT_REACH_TRACKER;
 
         $id = $matches["id"];
         $client = ruTrackerChecker::makeClient("https://kinozal.guru/get_srv_details.php?action=2&id=".$id);
@@ -70,7 +108,12 @@ class KinozalCheckImpl
 
         $details = (string) $client->results;
         if (self::isGuestAnswer($details))
-            return self::cantReach("get_srv_details answered a guest page, check the loginmgr account: id=".$id);
+            return self::guestAnswer("get_srv_details answered a guest page, check the loginmgr account: id=".$id);
+        // An authenticated answer clears the count: only guest answers that
+        // run together mean a lost session, and isolated ones must not add up
+        // across an otherwise healthy cycle.
+        self::$guestAnswers = 0;
+
         if (self::bodyHas($details, self::MISSING_MARKER))
             return ruTrackerChecker::STE_DELETED;
 
@@ -97,7 +140,7 @@ class KinozalCheckImpl
         if (self::isMetainfo($payload))
             return ruTrackerChecker::createTorrent($payload, $hash);
         if (self::isGuestAnswer($payload))
-            return self::cantReach("download.php answered a guest page, check the loginmgr account: id=".$id);
+            return self::guestAnswer("download.php answered a guest page, check the loginmgr account: id=".$id);
         return self::cantReach("download.php returned no metainfo: id=".$id." bytes=".strlen($payload));
     }
 }
