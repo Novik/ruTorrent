@@ -208,7 +208,9 @@ class rTorrentSettings
 			{
 				require_once( 'methods-0.9.4.php' );
 			}
-			if($this->iVersion>=0x1002)
+			// iVersion packs one version component per byte, so 0.10.2 is
+			// 0x0a02 (0x1002 would be 0.16.2). Newer daemons inherit these.
+			if($this->iVersion>=0x0a02)
 			{
 				require_once( 'methods-0.10.2.php' );
 			}

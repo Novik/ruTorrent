@@ -42,6 +42,156 @@ function loadXML(action) {
 }
 
 describe("xmlrpc calls", () => {
+  function withRtorrentVersion(version, callback) {
+    const oldAliases = theRequestManager.aliases;
+    const oldVersion = theWebUI.systemInfo.rTorrent.iVersion;
+
+    theRequestManager.aliases = {};
+    theWebUI.systemInfo.rTorrent.iVersion = version;
+
+    try {
+      correctContent();
+      callback();
+    } finally {
+      theRequestManager.aliases = oldAliases;
+      theWebUI.systemInfo.rTorrent.iVersion = oldVersion;
+    }
+  }
+
+  it("maps rTorrent 0.16 commands without deprecated aliases", () => {
+    withRtorrentVersion(0x100e, () => {
+      expect(theRequestManager.map("execute")).toBe("execute");
+      expect(theRequestManager.map("schedule")).toBe("schedule");
+      expect(theRequestManager.map("schedule_remove")).toBe("schedule.remove");
+      expect(theRequestManager.map("ratio.min.set")).toBe(
+        "group.seeding.ratio.min.set"
+      );
+
+      const command = new rXMLRPCCommand("schedule");
+      expect(command.command).toBe("schedule");
+      expect(command.params[0]).toStrictEqual({ type: "string", value: "" });
+
+      // rtorrent 0.16's dispatcher parses the first param of any call as
+      // the target, so the ratio setters must send ('', value) — prm: 1
+      // makes rXMLRPCCommand prepend the empty target.
+      const ratioCommand = new rXMLRPCCommand("ratio.min.set");
+      ratioCommand.addParameter("i4", 100);
+      expect(ratioCommand.command).toBe("group.seeding.ratio.min.set");
+      expect(ratioCommand.params).toStrictEqual([
+        { type: "string", value: "" },
+        { type: "i4", value: 100 },
+      ]);
+    });
+  });
+
+  it("keeps rTorrent 0.10.2 aliases available on 0.16.0", () => {
+    withRtorrentVersion(0x1000, () => {
+      expect(theRequestManager.map("dht")).toBe("dht.mode.set");
+      expect(theRequestManager.map("connection_leech")).toBe(
+        "protocol.connection.leech.set"
+      );
+      expect(theRequestManager.map("ratio.min.set")).toBe(
+        "group.seeding.ratio.min.set"
+      );
+    });
+  });
+
+  it("maps rTorrent 0.16.16 commands to canonical names", () => {
+    withRtorrentVersion(0x1010, () => {
+      expect(theRequestManager.map("get_http_proxy")).toBe(
+        "network.proxy.http"
+      );
+      expect(theRequestManager.map("set_http_proxy")).toBe(
+        "network.proxy.http.set"
+      );
+      expect(theRequestManager.map("get_proxy_address")).toBe(
+        "network.proxy.global"
+      );
+      expect(theRequestManager.map("set_proxy_address")).toBe(
+        "network.proxy.global.set"
+      );
+      expect(theRequestManager.map("d.multicall")).toBe("d.multicall");
+      expect(theRequestManager.map("d.multicall2")).toBe("d.multicall");
+
+      const command = new rXMLRPCCommand("d.multicall");
+      expect(command.command).toBe("d.multicall");
+      expect(command.params[0]).toStrictEqual({ type: "string", value: "" });
+    });
+  });
+
+  it("switches port aliases at the rTorrent 0.16.18 boundary", () => {
+    withRtorrentVersion(0x1011, () => {
+      expect(theRequestManager.map("get_port_range")).toBe(
+        "network.port_range"
+      );
+      expect(theRequestManager.map("set_port_range")).toBe(
+        "network.port_range.set"
+      );
+      expect(theRequestManager.map("get_port_random")).toBe(
+        "network.port_random"
+      );
+      expect(theRequestManager.map("set_port_random")).toBe(
+        "network.port_random.set"
+      );
+      expect(theRequestManager.map("get_port_open")).toBe(
+        "network.port_open"
+      );
+      expect(theRequestManager.map("set_port_open")).toBe(
+        "network.port_open.set"
+      );
+      expect(theRequestManager.map("port_open")).toBe("network.port_open");
+    });
+
+    for (const version of [0x1012, 0x1013]) {
+      withRtorrentVersion(version, () => {
+        expect(theRequestManager.map("get_port_range")).toBe(
+          "network.listen.port.range"
+        );
+        expect(theRequestManager.map("set_port_range")).toBe(
+          "network.listen.port.range.set"
+        );
+        expect(theRequestManager.map("get_port_random")).toBe(
+          "network.listen.port.random"
+        );
+        expect(theRequestManager.map("set_port_random")).toBe(
+          "network.listen.port.random.set"
+        );
+        expect(theRequestManager.map("get_port_open")).toBe("cat");
+        expect(theRequestManager.map("set_port_open")).toBe("cat");
+        expect(theRequestManager.map("port_open")).toBe("cat");
+        expect(theRequestManager.map("get_max_open_sockets")).toBe(
+          "system.sockets.max_size"
+        );
+        expect(theRequestManager.map("set_max_open_files")).toBe(
+          "system.sockets.files.max_alloc.set"
+        );
+      });
+    }
+  });
+
+  it("loads rTorrent 0.10.2 aliases at the 0.10.2 boundary", () => {
+    // iVersion packs one version component per byte: 0.10.2 is 0x0a02.
+    // Daemons older than 0.10.2 must not get its aliases.
+    for (const version of [0x908, 0x0a01]) {
+      withRtorrentVersion(version, () => {
+        expect(theRequestManager.map("dht")).toBe("dht");
+        expect(theRequestManager.map("connection_seed")).toBe(
+          "connection_seed"
+        );
+      });
+    }
+
+    withRtorrentVersion(0x0a02, () => {
+      expect(theRequestManager.map("dht")).toBe("dht.mode.set");
+      expect(theRequestManager.map("connection_seed")).toBe(
+        "protocol.connection.seed.set"
+      );
+      expect(theRequestManager.map("ratio.min.set")).toBe(
+        "group2.seeding.ratio.min.set"
+      );
+    });
+  });
+
   it("should parse getprops response", () => {
     const stub = new rTorrentStub(`?action=getprops&hash=${h("A")}`);
     //console.log(stub.content);
