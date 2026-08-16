@@ -61,6 +61,7 @@ var theUILang =
  Not_torrent_file		: "Plik musi być plikiem .torrent",
  Pausing			: "Pauza",
  Seeding			: "Udostępnianie",
+ PartialSeed			: "Częściowe udostępnianie",
  Downloading			: "Pobieranie",
  Checking			: "Sprawdzanie",
  Error				: "Błąd",

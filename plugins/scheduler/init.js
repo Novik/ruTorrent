@@ -54,7 +54,10 @@ if(plugin.canChangeMenu() && (theWebUI.systemInfo.rTorrent.iVersion >= 0x805))
 	{
 		for(var i=0; i<this.hashes.length; i++)
 		{
-			var needRestart = (theWebUI.torrents[this.hashes[i]].status==theUILang.Seeding) || (theWebUI.torrents[this.hashes[i]].status==theUILang.Downloading);
+			// A partial seed is a running torrent too: its selected files are done
+			// but it keeps uploading, so a throttle change has to cycle it.
+			var torrentStatus = theWebUI.torrents[this.hashes[i]].status;
+			var needRestart = (torrentStatus==theUILang.Seeding) || (torrentStatus==theUILang.PartialSeed) || (torrentStatus==theUILang.Downloading);
 			if(needRestart)
 			{
 				var cmd = new rXMLRPCCommand('d.stop');

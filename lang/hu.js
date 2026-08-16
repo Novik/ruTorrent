@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "A fájlnak .torrent fájlnak kell lennie.",
  Pausing			: "Felfüggesztve",
  Seeding			: "Feltölt",
+ PartialSeed			: "Részlegesen feltölt",
  Downloading			: "Letölt",
  Checking			: "Ellenőrzés alatt",
  Error				: "Hiba",

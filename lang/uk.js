@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Файл повинен бути файлом .torrent.",
  Pausing			: "Пауза",
  Seeding			: "Роздача",
+ PartialSeed			: "Часткова роздача",
  Downloading			: "Завантаження",
  Checking			: "Перевірка",
  Error				: "Помилка",

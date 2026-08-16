@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Filen skal være en .torrent fil.",
  Pausing			: "Pausing",
  Seeding			: "Seeding",
+ PartialSeed			: "Delvis seeding",
  Downloading			: "Downloading",
  Checking			: "Checking",
  Error				: "Fejl",

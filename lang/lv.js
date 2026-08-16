@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Failam ir jābūt .torrent failam.",
  Pausing			: "Nopauzēts",
  Seeding			: "Dod",
+ PartialSeed			: "Dod daļēji",
  Downloading			: "Lejupielādē",
  Checking			: "Pārbauda",
  Error				: "Kļūda",

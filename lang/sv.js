@@ -58,6 +58,7 @@ var theUILang =
  Not_torrent_file		: "Filen måste vara en .torrent-fil",
  Pausing			: "Pausad",
  Seeding			: "Seedar",
+ PartialSeed			: "Seedar delvis",
  Downloading			: "Laddar ner",
  Checking			: "Kontrollerar",
  Error				: "Fel",

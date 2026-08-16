@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Tiedoston täytyy olla torrent-tiedosto.",
  Pausing			: "Tauko",
  Seeding			: "Jakaa",
+ PartialSeed			: "Jakaa osittain",
  Downloading			: "Lataa",
  Checking			: "Tarkistetaan",
  Error				: "Virhe",

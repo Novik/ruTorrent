@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Die Datei ist keine torrent-Datei.",
  Pausing			: "Angehalten",
  Seeding			: "Seeden",
+ PartialSeed			: "Teilweises Seeden",
  Downloading			: "Download",
  Checking			: "Uberprüfe",
  Error				: "Fehler",

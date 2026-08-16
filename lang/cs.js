@@ -60,6 +60,7 @@ var theUILang =
  Not_torrent_file		: "Tento soubor není torrent.",
  Pausing			: "Pozastaveno",
  Seeding			: "Seeduji",
+ PartialSeed			: "Seeduji částečně",
  Downloading			: "Stahování",
  Checking			: "Kontroluji",
  Error				: "Chyba",

@@ -1813,10 +1813,13 @@ plugin.dynamicSort = function (property) {
 
 // Only the fields the torrent row rendering depends on; comparing these
 // (instead of whole torrent objects) avoids redrawing rows whose visible
-// content didn't change
+// content didn't change. partially_done is a render input too: statusClass
+// and the status text key on it, and it can flip with every other field
+// unchanged (file priorities edited from another client on an idle torrent).
 plugin.rowSnapshot = function(v) {
   return {name: v.name, size: v.size, label: v.label, state: v.state, done: v.done,
-    ul: v.ul, dl: v.dl, eta: v.eta, ratio: v.ratio, msg: v.msg};
+    ul: v.ul, dl: v.dl, eta: v.eta, ratio: v.ratio, msg: v.msg,
+    partially_done: v.partially_done};
 };
 
 // Scroll the list to a torrent's row and flash it with the accent
@@ -1892,7 +1895,7 @@ plugin.processTorrents = function(torrents, singleUpdate) {
       // Mirrors the desktop state panel grouping (see js/category-list.js),
       // except that any transfer counts as active (the desktop ignores
       // rates below 1 KiB/s)
-      var statusClass = (v.done >= 1000) ? 'Completed' : ((v.state & dStatus.paused) || !(v.state & dStatus.started)) ? 'Stopped' : 'Downloading';
+      var statusClass = (v.done >= 1000 || v.partially_done == 1) ? 'Completed' : ((v.state & dStatus.paused) || !(v.state & dStatus.started)) ? 'Stopped' : 'Downloading';
       var stateClass = (v.state & dStatus.started) ? ((v.dl > 0 || v.ul > 0) ? 'Active' : 'Inactive') : 'None';
       var errorClass = (v.state & dStatus.error) ? 'Yes' : 'No';
       var percent = v.done / 10;

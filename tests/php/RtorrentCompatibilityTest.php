@@ -15,9 +15,11 @@ class RtorrentCompatibilityTest extends TestCase
 	 */
 	private function methodFileGates()
 	{
+		// This fork carries one downlevel gate (methods-pre-0.9.0.php loads
+		// under iVersion < 0x900), so both comparison directions are parsed.
 		$source = file_get_contents(__DIR__ . '/../../php/settings.php');
 		preg_match_all(
-			'/if\s*\(\s*\$this->iVersion\s*>=\s*(0x[0-9A-Fa-f]+)\s*\)\s*\{\s*require_once\(\s*\'(methods-[^\']+\.php)\'\s*\);/',
+			'/if\s*\(\s*\$this->iVersion\s*(>=|<)\s*(0x[0-9A-Fa-f]+)\s*\)\s*\{\s*require_once\(\s*\'(methods-[^\']+\.php)\'\s*\);/',
 			$source,
 			$matches,
 			PREG_SET_ORDER
@@ -27,7 +29,7 @@ class RtorrentCompatibilityTest extends TestCase
 		}
 		$gates = array();
 		foreach ($matches as $match) {
-			$gates[] = array('version' => intval($match[1], 16), 'file' => $match[2]);
+			$gates[] = array('op' => $match[1], 'version' => intval($match[2], 16), 'file' => $match[3]);
 		}
 		return $gates;
 	}
@@ -40,7 +42,10 @@ class RtorrentCompatibilityTest extends TestCase
 		$settings->aliases = [];
 
 		foreach ($this->methodFileGates() as $gate) {
-			if ($version >= $gate['version']) {
+			$applies = ($gate['op'] === '>=')
+				? ($version >= $gate['version'])
+				: ($version < $gate['version']);
+			if ($applies) {
 				$this->loadMethodAliases($settings, $gate['file']);
 			}
 		}
@@ -186,6 +191,18 @@ class RtorrentCompatibilityTest extends TestCase
 			}
 			$this->assertEquals('system.sockets.max_size', $settings->getCommand('get_max_open_sockets'), 'rTorrent '.$label.' reads the generic socket ceiling without removed allocation commands');
 			$this->assertEquals('system.sockets.files.max_alloc.set', $settings->getCommand('set_max_open_files'), 'rTorrent '.$label.' keeps the file-category allocation setter');
+		}
+	}
+
+	public function testPartiallyDoneCommandIsANoOpBelowRtorrent090()
+	{
+		$settings = $this->makeSettings(0x809);
+		$this->assertEquals('cat', $settings->getCommand('d.is_partially_done'), 'rTorrent 0.8.9 answers the partially done question with the no-op cat');
+		$this->assertEquals('cat=', $settings->getCommand('d.is_partially_done='), 'the no-op keeps the trailing = so the multicall field stays in place');
+
+		foreach (array(0x900 => '0.9.0', 0x908 => '0.9.8', 0x1014 => '0.16.20') as $version => $label) {
+			$settings = $this->makeSettings($version);
+			$this->assertEquals('d.is_partially_done', $settings->getCommand('d.is_partially_done'), 'rTorrent '.$label.' asks the daemon directly');
 		}
 	}
 }
