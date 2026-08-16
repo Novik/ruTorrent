@@ -286,6 +286,7 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
 
         public $status = -1;
         public $results = '';
+        public $headers = array();
         public $read_timeout = 0;
         public $_fp_timeout = 0;
         public $agent = '';
@@ -296,12 +297,12 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
             self::$requests = array();
         }
 
-        public static function queue($url, $status, $results)
+        public static function queue($url, $status, $results, $headers = array())
         {
             if (!isset(self::$responses[$url])) {
                 self::$responses[$url] = array();
             }
-            self::$responses[$url][] = array($status, $results);
+            self::$responses[$url][] = array($status, $results, $headers);
         }
 
         private function respond($method, $url)
@@ -310,7 +311,7 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
             if (!isset(self::$responses[$url]) || count(self::$responses[$url]) === 0) {
                 throw new RuntimeException("Unexpected {$method} request: {$url}");
             }
-            list($this->status, $this->results) = array_shift(self::$responses[$url]);
+            list($this->status, $this->results, $this->headers) = array_shift(self::$responses[$url]);
             return true;
         }
 
@@ -345,6 +346,9 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
             . "Chrome/120.0.0.0 Safari/537.36";
 
         public static $created = array();
+        // $created only records payloads that parsed, so a handler that must
+        // not reach createTorrent() at all is asserted against this counter.
+        public static $createCalls = 0;
         public static $logs = array();
         public static $registrations = array();
         public static $createResult = null;
@@ -352,6 +356,7 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
         public static function reset()
         {
             self::$created = array();
+            self::$createCalls = 0;
             self::$logs = array();
             self::$registrations = array();
             self::$createResult = null;
@@ -373,6 +378,7 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
 
         public static function createTorrent($payload, $oldHash)
         {
+            self::$createCalls++;
             $parsed = @new Torrent($payload);
             if ($parsed->errors() || strlen((string) $parsed->hash_info()) !== 40) {
                 return self::STE_ERROR;
