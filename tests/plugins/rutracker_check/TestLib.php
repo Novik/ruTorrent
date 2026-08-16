@@ -72,6 +72,37 @@ function strictAssertSame($expected, $actual, $message)
     }
 }
 
+// Every log line this plugin writes must be English. The UI text moved into
+// plugins/rutracker_check/lang/*.js (the plugin writes a chk-msg token and the
+// browser renders it), so what is left in PHP is log lines only, and the log is
+// read by whoever maintains the plugin rather than by the torrent's owner.
+// Plain printable ASCII is the check: it rejects Cyrillic prose without
+// pretending to judge grammar.
+function strictAssertEnglish($text, $message)
+{
+    strictAssertTrue(is_string($text) && $text !== '', $message . '; not a non-empty string');
+    strictAssertTrue(preg_match('/^[\x09\x20-\x7E]+$/', $text) === 1,
+        $message . '; log line is not plain-ASCII English: ' . $text);
+}
+
+// The recorded log lines containing $needle. Log assertions name the line they
+// mean rather than its index, so adding a diagnostic elsewhere in the same
+// flow cannot silently retarget an existing assertion.
+function strictLogsMatching($logs, $needle)
+{
+    return array_values(array_filter((array) $logs, function ($line) use ($needle) {
+        return strpos((string) $line, $needle) !== false;
+    }));
+}
+
+function strictAssertOneLogMatching($logs, $needle, $message)
+{
+    $matched = strictLogsMatching($logs, $needle);
+    strictAssertSame(1, count($matched), $message . '; expected exactly one line containing "'
+        . $needle . '", saw ' . var_export($logs, true));
+    return $matched[0];
+}
+
 function strictRemoveTree($path)
 {
     if (is_link($path) || is_file($path)) {
