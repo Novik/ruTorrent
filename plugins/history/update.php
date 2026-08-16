@@ -32,12 +32,19 @@
 			"tracker"=>$tracker,
 			"label"=>rawurldecode($argv[11]),
 		);
-		if($mgr->log[$actions[$action]])
+		// A magnet placeholder is not the user's own event: neither record it
+		// nor notify about it. The notification is skipped for the same reason
+		// the row is -- a push about a torrent named after its own hash tells
+		// the user nothing they did.
+		if(!rHistoryData::isMagnetPlaceholder($data["name"]))
 		{
-			$hst->add( $data, $mgr->log["limit"] );
-		}
-		if($mgr->log['pushbullet_enabled'] && $mgr->log['pushbullet_'.$actions[$action]] && !$argv[12])
-		{
-			$mgr->pushBulletNotify( $data );
+			if($mgr->log[$actions[$action]])
+			{
+				$hst->add( $data, $mgr->log["limit"] );
+			}
+			if($mgr->log['pushbullet_enabled'] && $mgr->log['pushbullet_'.$actions[$action]] && !$argv[12])
+			{
+				$mgr->pushBulletNotify( $data );
+			}
 		}
 	}

@@ -137,6 +137,34 @@ $tests = array(
         historyAssertSame('new', array_keys($ours->data)[0], 'the newest row is kept');
     },
 
+    // rTorrent names a magnet that has no metadata yet <INFOHASH>.meta and
+    // replaces that placeholder with the real download the moment metadata
+    // arrives, so every magnet the user adds logs an arrival and a removal
+    // nobody asked for. The hash is hex, so the pattern is case-insensitive on
+    // the letters and anchored on both ends: only a name that IS a placeholder
+    // qualifies, never one that merely looks related.
+    'magnet placeholders are recognised, real downloads are not' => function () {
+        $placeholders = array(
+            'an uppercase placeholder' => str_repeat('A', 40) . '.meta',
+            'a lowercase placeholder' => str_repeat('b', 40) . '.meta',
+            'a mixed-case placeholder' => str_repeat('cD', 20) . '.meta',
+        );
+        foreach ($placeholders as $label => $name)
+            historyAssertSame(true, rHistoryData::isMagnetPlaceholder($name), $label . ' must be recognised');
+
+        $real = array(
+            'a normal download' => 'Some Release 1080p',
+            'a name that merely ends in .meta' => 'metadata.meta',
+            'a hash-named file with another extension' => str_repeat('A', 40) . '.mkv',
+            'a hash-named directory with no extension' => str_repeat('A', 40),
+            'a placeholder name with something appended' => str_repeat('A', 40) . '.meta.part',
+            'a name one character short of a hash' => str_repeat('A', 39) . '.meta',
+            'a name with a non-hex character' => str_repeat('A', 39) . 'Z.meta',
+        );
+        foreach ($real as $label => $name)
+            historyAssertSame(false, rHistoryData::isMagnetPlaceholder($name), $label . ' must be kept');
+    },
+
     'the stored format carries nothing but what it always carried' => function () {
         $ours = historyLoaded(array('a' => historyRecord('a', 100)));
         historyRecordAddition($ours, historyRecord('b', 101), 500);

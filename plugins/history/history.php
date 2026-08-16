@@ -98,6 +98,22 @@ class rHistoryData
 		return(true);
 	}
 
+	// True for the placeholder rTorrent gives a magnet that has no metadata
+	// yet: it names such a download <INFOHASH>.meta and replaces it with the
+	// real one the moment the metainfo arrives. rTorrent::sendMagnet() hands
+	// the magnet straight to load/load_start, so this is what every magnet
+	// added through ruTorrent looks like for as long as the fetch takes --
+	// one magnet, an arrival and a removal of a torrent named after its own
+	// hash, neither of which the user did.
+	//
+	// The name is the whole test on purpose. An entry whose name merely ends
+	// in .meta, or a hash-named file with any other extension, is a real
+	// download and stays in the log.
+	static public function isMagnetPlaceholder( $name )
+	{
+		return(preg_match('/^[0-9A-Fa-f]{40}\.meta$/', (string) $name) === 1);
+	}
+
 	public function add( $e, $limit )
 	{
 		$e["action_time"] = time();
