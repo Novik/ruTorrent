@@ -4,6 +4,9 @@
 // Options:
 //   "sanitize"           — (default) allow load.* with safe params only,
 //                          pass other methods as untrusted
+// Passing a method as untrusted only restricts it on rtorrent 0.16.10 and
+// later, which is where the UNTRUSTED_CONNECTION header is honoured. Older
+// versions ignore it and run those calls with full trust.
 //   "passthrough_unsafe" — send all raw XMLRPC as trusted (DANGEROUS)
 //   "off"                — reject all raw XMLRPC pass-through
 $XMLRPCProxy = "sanitize";
@@ -13,11 +16,13 @@ $XMLRPCProxy = "sanitize";
 // external client integration issues.
 $XMLRPCProxyLog = true;
 
-// Command prefixes allowed as load.* parameters in sanitize mode.
+// Command names allowed as load.* parameters in sanitize mode.
 // External clients (Prowlarr, Sonarr, Radarr, Transdroid) attach these
 // to load.start to set labels, directories, priorities, etc.
-// Any command param not matching these prefixes will be stripped.
-// Add entries here if your external client needs additional commands.
+// Entries are full command names and are matched exactly: 'd.custom' does
+// NOT cover 'd.custom1.set'. A param whose command name is not listed is
+// stripped and logged. Add entries here if your external client needs
+// additional commands.
 $XMLRPCProxySafeParams = array(
 	'd.custom1.set',            // label
 	'd.custom2.set',            // custom field
