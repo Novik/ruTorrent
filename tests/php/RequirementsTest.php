@@ -74,6 +74,32 @@ class RequirementsTest extends TestCase
 		$this->assertTrue(!Requirements::looksAbsolute(''), 'empty is not absolute');
 	}
 
+	public function testRutorrentHandlersIgnoresRtorrentBuiltins()
+	{
+		// A freshly started rtorrent that no ruTorrent has ever talked to.
+		$this->assertEquals(array(), Requirements::rutorrentHandlers(array('1_prepare', '~_save_full')));
+		$this->assertEquals(array(), Requirements::rutorrentHandlers(array()));
+	}
+
+	public function testRutorrentHandlersFindsPluginKeys()
+	{
+		$keys = array('1_prepare', '_exratio1', '_ratio', 'addtime', 'thistory', '~_save_full');
+		$this->assertEquals(array('_exratio1', '_ratio', 'addtime', 'thistory'),
+			Requirements::rutorrentHandlers($keys));
+	}
+
+	public function testRutorrentHandlersKeepsPerUserSuffixes()
+	{
+		// Multi-user installs suffix every key with the ruTorrent username.
+		$keys = array('1_prepare', '_exratio1bob', 'addtimebob', '~_save_full');
+		$this->assertEquals(array('_exratio1bob', 'addtimebob'), Requirements::rutorrentHandlers($keys));
+	}
+
+	public function testRutorrentHandlersToleratesNonArray()
+	{
+		$this->assertEquals(array(), Requirements::rutorrentHandlers(null));
+	}
+
 	public function testScgiLabel()
 	{
 		$this->assertEquals('127.0.0.1:5000', Requirements::scgiLabel('127.0.0.1', 5000));

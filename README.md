@@ -71,6 +71,7 @@ php env_check.php
 
 It verifies the PHP version and extensions, the external programs plugins rely
 on, common `conf/config.php` mistakes, and connects to rtorrent to report and
-classify its version. It exits `0` when everything required passes and `1`
-otherwise, so it can be used in scripts. For safety it runs on the command line
-only and refuses to run under a web server.
+classify its version and to check that ruTorrent's event handlers are registered
+with it. It exits `0` when everything required passes and `1` otherwise, so it
+can be used in scripts. For safety it runs on the command line only and refuses
+to run under a web server.

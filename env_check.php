@@ -54,6 +54,16 @@ class Requirements
 		return self::isUnixSocket($host) ? substr((string)$host, 7) : null;
 	}
 
+	/**
+	 * rtorrent registers these on event.download.inserted_new by itself; every
+	 * other key on that event was installed by ruTorrent (from a plugin init.php).
+	 */
+	public static function rutorrentHandlers($keys)
+	{
+		$builtin = array('1_prepare', '~_save_full');
+		return is_array($keys) ? array_values(array_diff($keys, $builtin)) : array();
+	}
+
 	public static function scgiLabel($host, $port)
 	{
 		return self::isUnixSocket($host) ? (string)$host : $host . ':' . $port;
@@ -189,8 +199,14 @@ if ($cfg === null) {
 }
 
 // ---- rtorrent version (needs config + a running rtorrent) ----------------
-function scgi_call($host, $port, $methodName) {
-	$body = '<?xml version="1.0"?><methodCall><methodName>' . $methodName . '</methodName><params></params></methodCall>';
+function scgi_params($params) {
+	$xml = '';
+	foreach ($params as $p)
+		$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_QUOTES) . '</string></value></param>';
+	return $xml;
+}
+function scgi_call($host, $port, $methodName, $params = array(), $asList = false) {
+	$body = '<?xml version="1.0"?><methodCall><methodName>' . $methodName . '</methodName><params>' . scgi_params($params) . '</params></methodCall>';
 	$hdr  = "CONTENT_LENGTH\x00" . strlen($body) . "\x00SCGI\x001\x00";
 	$packet = strlen($hdr) . ':' . $hdr . ',' . $body;
 	$fp = Requirements::isUnixSocket($host) ? @fsockopen($host, -1, $en, $es, 5) : @fsockopen($host, (int)$port, $en, $es, 5);
@@ -199,6 +215,11 @@ function scgi_call($host, $port, $methodName) {
 	$resp = '';
 	while (!feof($fp)) { $chunk = @fread($fp, 8192); if ($chunk === false) break; $resp .= $chunk; }
 	@fclose($fp);
+	if (strpos($resp, '<fault>') !== false) return null;
+	if ($asList) {
+		if (preg_match_all('#<string>(.*?)</string>#s', $resp, $m)) return $m[1];
+		return array();
+	}
 	if (preg_match('#<value>\s*<string>(.*?)</string>#s', $resp, $m)) return $m[1];
 	if (preg_match('#<string>(.*?)</string>#s', $resp, $m)) return $m[1];
 	return null;
@@ -211,6 +232,22 @@ if ($cfg && Requirements::scgiConfigured($cfg['scgi_host'], $cfg['scgi_port'])) 
 	} else {
 		list($ok, $note) = Requirements::rtorrentSupport($ver);
 		check('rtorrent', $ok, 'rtorrent version', "$ver -- $note");
+
+		// ruTorrent installs its event handlers into rtorrent at runtime, from every
+		// plugin's init.php, whenever a page is loaded. rtorrent does not persist them,
+		// so after it restarts with nobody opening the web UI there are none, and
+		// torrents added by other clients silently get no ratio group, no added time
+		// and no history entry.
+		$keys = scgi_call($cfg['scgi_host'], $cfg['scgi_port'], 'method.list_keys',
+			array('', 'event.download.inserted_new'), true);
+		if (is_array($keys)) {
+			$registered = Requirements::rutorrentHandlers($keys);
+			check('rtorrent', count($registered) > 0, 'handlers registered', count($registered)
+				? count($registered) . ' handler(s) on event.download.inserted_new'
+				: 'none since rtorrent last started -- torrents added outside the web UI get no ' .
+				  'ratio group, added time or history entry. Open ruTorrent once, or run ' .
+				  '"php php/initplugins.php <user>" when rtorrent starts');
+		}
 	}
 } else {
 	check('rtorrent', null, 'rtorrent version', 'no usable SCGI address in config -- cannot check rtorrent');
