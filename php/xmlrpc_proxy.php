@@ -9,10 +9,15 @@
  *                          payload as trusted; pass unknown methods as
  *                          untrusted (rtorrent whitelist decides)
  *
- * Dependencies (loaded by the production caller before non-"off" modes):
+ * process() applies the policy and sends the result; decide() applies it and
+ * returns the result, for a caller that owns its own connection to rtorrent.
+ *
+ * Dependencies of process() (loaded by the production caller before non-"off"
+ * modes):
  *   php/util.php    — FileUtil::toLog
  *   php/xmlrpc.php  — rXMLRPCRequest::send
  * (Both are required by plugins/httprpc/action.php, the production caller.)
+ * decide() has none.
  */
 
 class XMLRPCProxy
@@ -75,25 +80,45 @@ class XMLRPCProxy
 	{
 		self::$log = $enableLog;
 
-		if($mode === 'off')
-		{
-			self::log("rejected (proxy disabled)");
+		$decision = self::decide($rawData, $mode, $safeParams);
+
+		foreach($decision['log'] as $line)
+			self::log($line);
+
+		if($decision['action'] !== 'send')
 			return null;
-		}
+
+		return rXMLRPCRequest::send($decision['payload'], $decision['trusted']);
+	}
+
+	/**
+	 * Decide what to do with a raw XMLRPC payload, without acting on it.
+	 *
+	 * Same policy as process(), separated from the sending and the logging so
+	 * that a caller holding its own connection to rtorrent can apply it —
+	 * ruTorrent's SCGI plumbing needs the settings bootstrap, and an endpoint
+	 * whose whole job is to filter one request should not have to carry that.
+	 *
+	 * @param string $rawData     Raw XMLRPC XML from the client
+	 * @param string $mode        "off", "passthrough_unsafe", or "sanitize"
+	 * @param array  $safeParams  Command names allowed as load.* params, matched exactly
+	 * @return array  'action'  => "send" or "reject"
+	 *                'payload' => the bytes to send, empty when rejecting
+	 *                'trusted' => whether the connection carrying them may be trusted
+	 *                'log'     => what happened, in the order it happened
+	 */
+	public static function decide($rawData, $mode = 'sanitize', $safeParams = array())
+	{
+		if($mode === 'off')
+			return self::reject("rejected (proxy disabled)");
 
 		if($mode === 'passthrough_unsafe')
-		{
-			self::log("passthrough (UNSAFE mode)");
-			return rXMLRPCRequest::send($rawData, true);
-		}
+			return self::forward($rawData, true, "passthrough (UNSAFE mode)");
 
 		// sanitize mode
 		$xml = self::parseXml($rawData);
 		if($xml === false || !isset($xml->methodName))
-		{
-			self::log("untrusted (invalid XML)");
-			return rXMLRPCRequest::send($rawData, false);
-		}
+			return self::forward($rawData, false, "untrusted (invalid XML)");
 
 		$methodName = (string)$xml->methodName;
 
@@ -112,18 +137,29 @@ class XMLRPCProxy
 				$stripped = array();
 				foreach($rebuilt['stripped'] as $value)
 					$stripped[] = self::logValue($value);
-				self::log($state.": ".$methodName." (kept ".$rebuilt['kept']." params, stripped: ".implode(', ', $stripped).")");
+				$line = $state.": ".$methodName." (kept ".$rebuilt['kept']." params, stripped: ".implode(', ', $stripped).")";
 			}
 			else
-				self::log($state.": ".$methodName." (".$rebuilt['kept']." params)");
+				$line = $state.": ".$methodName." (".$rebuilt['kept']." params)";
 
-			return rXMLRPCRequest::send($rebuilt['xml'], $trusted);
+			return self::forward($rebuilt['xml'], $trusted, $line);
 		}
 
 		// Unknown method — pass through as untrusted.
 		// rtorrent's own whitelist will allow/reject.
-		self::log("untrusted: ".self::logValue($methodName));
-		return rXMLRPCRequest::send($rawData, false);
+		return self::forward($rawData, false, "untrusted: ".self::logValue($methodName));
+	}
+
+	private static function forward($payload, $trusted, $line)
+	{
+		return array('action' => 'send', 'payload' => $payload,
+			'trusted' => $trusted, 'log' => array($line));
+	}
+
+	private static function reject($line)
+	{
+		return array('action' => 'reject', 'payload' => '',
+			'trusted' => false, 'log' => array($line));
 	}
 
 	/**
