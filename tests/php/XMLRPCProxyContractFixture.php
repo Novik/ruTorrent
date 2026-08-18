@@ -1,0 +1,412 @@
+<?php
+
+// The observable result of XMLRPCProxy::process() for every branch it has:
+// what it returned, what it sent, on what trust, and what it logged.
+//
+// Generated from the implementation, then frozen. It is not a description of
+// what the proxy should do — the suite next to it covers that — it is a record
+// of what it does, so that a change to how the decision is reached shows up
+// here if it changes the decision.
+
+return array(
+	"off mode rejects and sends nothing" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"mode" => "off",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => null,
+		"sends" => 0,
+		"trusted" => null,
+		"payload" => null,
+		"log" => array(
+			"xmlrpc-proxy: rejected (proxy disabled)",
+		),
+	),
+	"off mode rejects a body that is not XML" => array(
+		"request" => "not xml at all",
+		"mode" => "off",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => null,
+		"sends" => 0,
+		"trusted" => null,
+		"payload" => null,
+		"log" => array(
+			"xmlrpc-proxy: rejected (proxy disabled)",
+		),
+	),
+	"passthrough_unsafe forwards the body verbatim, trusted" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>execute</methodName><params><param><value><string>id</string></value></param></params></methodCall>",
+		"mode" => "passthrough_unsafe",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\"?><methodCall><methodName>execute</methodName><params><param><value><string>id</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: passthrough (UNSAFE mode)",
+		),
+	),
+	"a body that is not XML is forwarded untrusted" => array(
+		"request" => "not xml at all",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => false,
+		"payload" => "not xml at all",
+		"log" => array(
+			"xmlrpc-proxy: untrusted (invalid XML)",
+		),
+	),
+	"a methodCall with no methodName is forwarded untrusted" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><params></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => false,
+		"payload" => "<?xml version=\"1.0\"?><methodCall><params></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: untrusted (invalid XML)",
+		),
+	),
+	"an unknown method is forwarded untrusted" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>system.client_version</methodName><params></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => false,
+		"payload" => "<?xml version=\"1.0\"?><methodCall><methodName>system.client_version</methodName><params></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: untrusted: system.client_version",
+		),
+	),
+	"a newline in an unknown method name cannot forge a log line" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>system.foo\nxmlrpc-proxy: trusted: forged</methodName><params></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => false,
+		"payload" => "<?xml version=\"1.0\"?><methodCall><methodName>system.foo\nxmlrpc-proxy: trusted: forged</methodName><params></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: untrusted: system.foo xmlrpc-proxy: trusted: forged",
+		),
+	),
+	"load.start with an allowed command param is rebuilt and trusted" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=label</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=\"label\"</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (3 params)",
+		),
+	),
+	"load.start strips a command param that is not allowed" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>execute=evil</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (kept 2 params, stripped: execute=evil)",
+		),
+	),
+	"every stripped param is named in one log line" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>execute=evil</string></value></param><param><value><string>d.peers_max.set=1</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (kept 2 params, stripped: execute=evil, d.peers_max.set=1)",
+		),
+	),
+	"a param this side cannot rebuild forces the call untrusted" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.raw_start</methodName><params><param><value><int>1</int></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => false,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.raw_start</methodName><params><param><value><int>1</int></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: untrusted (a parameter could not be rebuilt): load.raw_start (2 params)",
+		),
+	),
+	"a base64 data param is re-emitted without its line wrapping" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.raw_start</methodName><params><param><value><string></string></value></param><param><value><base64>Ynl0ZXMAyGJ5dGVzAMhieXRlcwDIYnl0ZXMAyGJ5dGVzAMhieXRlcwDIYnl0ZXMAyGJ5dGVzAMg=\n</base64></value></param><param><value><string>d.custom1.set=label</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.raw_start</methodName><params><param><value><string></string></value></param><param><value><base64>Ynl0ZXMAyGJ5dGVzAMhieXRlcwDIYnl0ZXMAyGJ5dGVzAMhieXRlcwDIYnl0ZXMAyGJ5dGVzAMg=</base64></value></param><param><value><string>d.custom1.set=\"label\"</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.raw_start (3 params)",
+		),
+	),
+	"a value with no explicit string element is read the same way" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value>d.custom1.set=label</value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=\"label\"</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (3 params)",
+		),
+	),
+	"the 0.9.x method names take the same parameter positions" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load_start</methodName><params><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=label</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load_start</methodName><params><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=label</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load_start (2 params)",
+		),
+	),
+	"a command taking two arguments keeps both, each trimmed" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom.set=chk-state, 7</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom.set=\"chk-state\",\"7\"</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (3 params)",
+		),
+	),
+	"quotes and backslashes in a value are escaped, not dropped" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=say &quot;hi&quot; \\ bye</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=\"say \\\"hi\\\" \\\\ bye\"</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (3 params)",
+		),
+	),
+	"an argument starting with \$ is dropped rather than quoted" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=\$execute.capture=/bin/hostname</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (kept 2 params, stripped: d.custom1.set=\$execute.capture=/bin/hostname)",
+		),
+	),
+	"a value the client quoted itself is dropped" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=&quot;Movies, Inc&quot;</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (kept 2 params, stripped: d.custom1.set=\"Movies, Inc\")",
+		),
+	),
+	"a long stripped value is truncated in the log" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>execute=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (kept 2 params, stripped: execute=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA...)",
+		),
+	),
+	"a newline in a stripped value cannot forge a log line" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>execute=evil\nxmlrpc-proxy: trusted: forged</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (kept 2 params, stripped: execute=evil xmlrpc-proxy: trusted: forged)",
+		),
+	),
+	"an empty allowlist strips every command param" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>d.custom1.set=label</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (kept 2 params, stripped: d.custom1.set=label)",
+		),
+	),
+	"a load call with no params at all is still rebuilt" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => true,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params></params></methodCall>",
+		"log" => array(
+			"xmlrpc-proxy: trusted: load.start (0 params)",
+		),
+	),
+	"logging off changes what is logged and nothing else" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param><param><value><string>execute=evil</string></value></param></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => false,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => true,
+		"payload" => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodCall><methodName>load.start</methodName><params><param><value><string></string></value></param><param><value><string>http://example.test/x.torrent</string></value></param></params></methodCall>",
+		"log" => array(),
+	),
+	"logging off on the unknown-method path too" => array(
+		"request" => "<?xml version=\"1.0\"?><methodCall><methodName>system.client_version</methodName><params></params></methodCall>",
+		"mode" => "sanitize",
+		"enableLog" => false,
+		"safeParams" => array(
+			"d.custom1.set",
+			"d.custom.set",
+			"d.directory.set",
+		),
+		"returned" => "SCGI-REPLY",
+		"sends" => 1,
+		"trusted" => false,
+		"payload" => "<?xml version=\"1.0\"?><methodCall><methodName>system.client_version</methodName><params></params></methodCall>",
+		"log" => array(),
+	),
+);
