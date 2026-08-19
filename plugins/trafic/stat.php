@@ -16,6 +16,14 @@ class rStat
 	public $yearHitTimes = array(0,0,0,0,0,0,0,0,0,0,0,0);
 	public $fname = "";
 
+	// A storage is named by one entry in the plugin's own directory, and the
+	// name can arrive with a request -- it may not describe a path elsewhere.
+	static public function isStorageName( $name )
+	{
+		return( is_string($name) && strlen($name) && (strpos($name,'/')===false) &&
+			(strpos($name,"\0")===false) && ($name!=='.') && ($name!=='..') );
+	}
+
 	public function __construct( $prefix )
 	{
 		$this->fname = FileUtil::getSettingsPath().'/trafic/'.$prefix;

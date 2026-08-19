@@ -22,7 +22,7 @@ if( count( $argv ) > 1 )
 	if(is_file($fname) && is_readable($fname) &&
 		is_file($tname) && is_readable($tname))
 	{
-		$request = unserialize(file_get_contents( $fname ));
+		$request = unserialize(file_get_contents( $fname ), array( 'allowed_classes'=>false ));
 		$comment = '';
 		$announce_list = array();
 		$trackers = array();

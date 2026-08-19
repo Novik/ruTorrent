@@ -34,7 +34,7 @@ if( count( $argv ) > 1 )
 	$fname = rTask::formatPath($taskNo).'/params';
 	if(is_file($fname) && is_readable($fname))
 	{
-		$request = unserialize(file_get_contents( $fname ));
+		$request = unserialize(file_get_contents( $fname ), array( 'allowed_classes'=>false ));
 		$comment = '';
 		$announce_list = array();
 		$trackers = array();
