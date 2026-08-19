@@ -36,4 +36,12 @@ class Utility
 			? str_ends_with($a, $b)
 			: empty($b) || substr($a, -strlen($b)) === $b;
 	}
+
+	// Is $name a dotted host name -- the only thing that may be turned into a
+	// request URL by a caller that took it from user input?
+	public static function isHostname($name)
+	{
+		return( is_string($name) && (strlen($name)<254) && (bool)preg_match(
+			'`^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$`i', $name ) );
+	}
 }

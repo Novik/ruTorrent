@@ -106,7 +106,10 @@ if ($png_name !== null) {
 		try_send_image(dirname(__FILE__).substr($png_name, strlen($basepath)));
 
 
-		if (!isset($_REQUEST["label"]) && isset($_REQUEST["tracker"])) {
+		// The name below is fetched from as a host, so it has to be one: a name
+		// that is not a host name gets the placeholder instead of a request.
+		if (!isset($_REQUEST["label"]) && isset($_REQUEST["tracker"])
+			&& Utility::isHostname(basename($png_name, '.png'))) {
 			$tracker = basename($png_name, '.png');
 			$ico_name = $targetdir . '/' . $tracker . '.ico';
 			try_send_image($ico_name, 'image/x-icon');

@@ -64,7 +64,7 @@ class rpcCache
 			$ret = @file_get_contents($this->dir.'/'.dechex($cid));
 			if($ret!==false)
 			{
-				$torrents = unserialize($ret);
+				$torrents = unserialize($ret, array( 'allowed_classes'=>false ));
 				if($torrents===false)
 					$torrents = array();
 			}

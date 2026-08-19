@@ -18,7 +18,7 @@ if(isset($_REQUEST['tracker']))
 			foreach($vars as $var)
 			{
 				$parts = explode("=",$var);
-				if($parts[0]=="hash")
+				if(($parts[0]=="hash") && rStat::isStorageName($parts[1]))
 					$tstorages[] = 'torrents/'.$parts[1].".csv";
 			}
 		}
@@ -26,7 +26,7 @@ if(isset($_REQUEST['tracker']))
 			$storages = $tstorages;
 	}
 	else
-		if($_REQUEST['tracker']!="global")
+		if(($_REQUEST['tracker']!="global") && rStat::isStorageName($_REQUEST['tracker']))
 			$storages = array( "trackers/".$_REQUEST['tracker'].".csv" );
 }
 

@@ -15,6 +15,13 @@ class ffmpegSettings
 		'explayinterval'=>3,
 		'exformat'=>0,
 		);
+	// The frame number reaches this from a request: the name it builds must
+	// stay one entry inside the task directory.
+	static public function frameName( $dir, $no, $isPNG )
+	{
+		return( $dir.'/frame'.intval($no).($isPNG ? '.png' : '.jpg') );
+	}
+
 	static public function load()
 	{
 		$cache = new rCache();

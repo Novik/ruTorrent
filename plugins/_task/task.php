@@ -30,9 +30,20 @@ class rTask
 			$this->id = uniqid( time(), true );
 	}
 
+	// A task id is produced by uniqid(time(),true). A value of any other shape
+	// names no task, and is encoded so that it addresses a single entry inside
+	// the tasks directory instead of a path relative to it. The prefix keeps
+	// the encoding of "." and ".." -- which are unreserved, so they survive
+	// rawurlencode -- from naming the tasks directory itself or its parent.
+	static public function formatId( $taskNo )
+	{
+		$taskNo = (string)$taskNo;
+		return( preg_match('`^[0-9a-f]+\.[0-9]+$`', $taskNo) ? $taskNo : '~'.rawurlencode($taskNo) );
+	}
+
 	static public function formatPath( $taskNo )
 	{
-		return( FileUtil::getSettingsPath().'/tasks/'.$taskNo );
+		return( FileUtil::getSettingsPath().'/tasks/'.self::formatId($taskNo) );
 	}
 
 	public function makeDirectory()
@@ -138,7 +149,7 @@ class rTask
 	{
 		if(is_file($dir.'/params') && is_readable($dir.'/params'))
 		{
-			$params = unserialize(file_get_contents($dir.'/params'));
+			$params = unserialize(file_get_contents($dir.'/params'), array( 'allowed_classes'=>false ));
 			if( is_array($params) )
 			{
 				rTorrentSettings::get()->pushEvent( $subject, $params );
@@ -268,7 +279,7 @@ class rTask
 				}
 			}
 			if(is_file($dir.'/params') && is_readable($dir.'/params'))
-				$ret["params"] = unserialize(file_get_contents($dir.'/params'));
+				$ret["params"] = unserialize(file_get_contents($dir.'/params'), array( 'allowed_classes'=>false ));
 			self::processLog($dir, 'log', $ret, ($flags & self::FLG_STRIP_LOGS), ($flags & self::FLG_REMOVE_ASCII), ($flags & self::FLG_DO_NOT_TRIM) );
 			self::processLog($dir, 'errors', $ret, ($flags & self::FLG_STRIP_ERRS), ($flags & self::FLG_REMOVE_ASCII), false);
 		}
@@ -324,9 +335,15 @@ class rTask
 			{
 				if(is_null($flags))
 					$flags = intval(file_get_contents($dir.'/flags'));
-				$pid = trim(file_get_contents($dir.'/pid'));
-				self::run("kill -9 `".Utility::getExternal("pgrep")." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
-				self::notify($dir,"TaskKill");
+				// A pid is a number: it is read from a file and reaches a shell.
+				// 0 is excluded as well, since kill(1) reads it as the whole
+				// process group of the caller.
+				$pid = intval(trim(file_get_contents($dir.'/pid')));
+				if($pid>0)
+				{
+					self::run("kill -9 `".Utility::getExternal("pgrep")." -P ".$pid."` ; kill -9 ".$pid, ($flags & self::FLG_RUN_AS_WEB) | self::FLG_WAIT | self::FLG_RUN_AS_CMD );
+					self::notify($dir,"TaskKill");
+				}
 			}
 			self::clean($dir);
 		}
