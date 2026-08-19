@@ -135,6 +135,21 @@ class rRatio
 			($no<count($this->rat)) &&
 		        ($this->rat[$no]["name"]!=""));
 	}
+	// A download's data is deleted by the erasedata plugin, which needs the file
+	// list read over RPC while the download still exists. Hand the erase to that
+	// plugin's helper instead of erasing here, so a ratio group deletes the same
+	// way the web UI's "Remove and delete data" does. Backgrounded: a foreground
+	// execute would block rtorrent while the helper waits for rtorrent to answer.
+	public function getEraseWithDataCommand($force)
+	{
+		$prefix = getCmd("d.stop=")."; ".getCmd("d.close=")."; ";
+		$helper = dirname(dirname(__FILE__))."/erasedata/erase.php";
+		if(!is_file($helper))
+			return($prefix.getCmd("d.set_custom5=").$force."; ".getCmd("d.erase="));
+		return($prefix.'execute.nothrow.bg={'.Utility::getPHP().','.$helper.
+			',$'.getCmd("d.get_hash").'=,'.$force.','.User::getUser().'}');
+	}
+
 	public function correct()
 	{
 		$cmd = new rXMLRPCCommand("d.multicall",array("default",getCmd("d.get_hash=")));
@@ -214,13 +229,13 @@ class rRatio
 						case RAT_ERASEDATA:
 						{
 							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
-								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("d.set_custom5=")."1; ".getCmd("d.erase="))));
+								$this->getEraseWithDataCommand("1"))));
 							break;
 						}
 						case RAT_ERASEDATAALL:
 						{
 							$req->addCommand(new rXMLRPCCommand("system.method.set", array("group.rat_".$i.".ratio.command",
-								getCmd("d.stop=")."; ".getCmd("d.close=")."; ".getCmd("d.set_custom5=")."2; ".getCmd("d.erase="))));
+								$this->getEraseWithDataCommand("2"))));
 							break;
 						}
 						default:
