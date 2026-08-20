@@ -16,6 +16,21 @@ $XMLRPCProxy = "sanitize";
 // external client integration issues.
 $XMLRPCProxyLog = true;
 
+// Allow a caller to name a path on rtorrent's own filesystem in load.start or
+// load.normal (default: false).
+//
+// rtorrent treats a second parameter that is not an http/https/ftp or magnet
+// URI as a path on its own machine: it opens that file and records it as the
+// download's tied file, which d.delete_tied later unlinks. A remote client has
+// no way to know what is on that filesystem and does not use this -- clients
+// send a URL, a magnet, or the torrent itself through load.raw_start.
+//
+// Turn it on only if something you run posts server-local paths through this
+// proxy, and note that it lets that caller choose which file d.delete_tied
+// removes. ruTorrent's own "add torrent" does not go through here, so this
+// does not affect it.
+$XMLRPCProxyAllowLocalPaths = false;
+
 // Command names allowed as load.* parameters in sanitize mode.
 // External clients (Prowlarr, Sonarr, Radarr, Transdroid) attach these
 // to load.start to set labels, directories, priorities, etc.

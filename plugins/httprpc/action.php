@@ -55,6 +55,32 @@ if(isset($HTTP_RAW_POST_DATA))
 	}
 }
 
+/**
+ * Resolve as much of a path as exists. A download directory usually does not
+ * exist yet, so realpath() on it answers nothing and only a lexical check is
+ * left -- which one symlink inside the customer's own tree defeats, and the
+ * customer can create symlinks over FTP. Walk up to the deepest ancestor that
+ * does exist, resolve that, and re-attach the rest.
+ */
+function httprpcResolvePath($path)
+{
+	$real = @realpath($path);
+	if($real !== false)
+		return $real;
+
+	$parts = explode('/', trim($path, '/'));
+	$tail = array();
+	while(count($parts) > 0)
+	{
+		array_unshift($tail, array_pop($parts));
+		$base = '/'.implode('/', $parts);
+		$real = @realpath(($base === '') ? '/' : $base);
+		if($real !== false)
+			return rtrim($real, '/').'/'.implode('/', $tail);
+	}
+	return '';
+}
+
 function makeMulticall($cmds,$hash,$add,$prefix)
 {
 	$cmd = new rXMLRPCCommand( $prefix.".multicall", array( $hash, "" ) );
@@ -657,7 +683,25 @@ switch($mode)
 			$proxyMode = isset($XMLRPCProxy) ? $XMLRPCProxy : 'sanitize';
 			$proxyLog = isset($XMLRPCProxyLog) ? $XMLRPCProxyLog : true;
 			$proxySafeParams = isset($XMLRPCProxySafeParams) ? $XMLRPCProxySafeParams : array();
-			$result = XMLRPCProxy::process($HTTP_RAW_POST_DATA, $proxyMode, $proxyLog, $proxySafeParams);
+			$proxyLocalPaths = isset($XMLRPCProxyAllowLocalPaths) ? $XMLRPCProxyAllowLocalPaths : false;
+			// d.directory.set names the directory rtorrent writes a download
+			// into, and the caller supplies the torrent, so it names the file
+			// too. Confine it to the same boundary the panel already holds
+			// itself to: correctDirectory() is applied to the directory in
+			// sendTorrent(), in addtorrent.php, and to sdirectory in the
+			// setsettings branch above. Raw XMLRPC reached rtorrent without it.
+			//
+			// $topDirectory is a global by now -- php/util.php requires
+			// conf/config.php, and php/xmlrpc.php requires util.php. Where it is
+			// "/" this permits everything, which is what the panel permits with
+			// that setting too; this makes the two doors agree rather than
+			// making one stricter.
+			$proxyOptions = array('directory' => array(
+				'root' => (isset($topDirectory) && ($topDirectory !== ''))
+					? $topDirectory : '/',
+				'resolve' => 'httprpcResolvePath',
+			));
+			$result = XMLRPCProxy::process($HTTP_RAW_POST_DATA, $proxyMode, $proxyLog, $proxySafeParams, $proxyLocalPaths, $proxyOptions);
 			if(!empty($result))
 			{
 				$pos = strpos($result, "\r\n\r\n");
