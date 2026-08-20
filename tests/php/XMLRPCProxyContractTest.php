@@ -59,7 +59,7 @@ class XMLRPCProxyContractTest extends TestCase
 		rXMLRPCRequest::$sent = 0;
 
 		$returned = XMLRPCProxy::process($case['request'], $case['mode'],
-			$case['enableLog'], $case['safeParams']);
+			$case['enableLog'], $case['safeParams'], $case['allowLocalPaths']);
 
 		return array(
 			'returned' => $returned,
@@ -113,7 +113,7 @@ class XMLRPCProxyContractTest extends TestCase
 		foreach($this->cases as $name => $case)
 		{
 			$decision = XMLRPCProxy::decide($case['request'], $case['mode'],
-				$case['safeParams']);
+				$case['safeParams'], $case['allowLocalPaths']);
 
 			$this->assertTrue($decision['action'] === (($case['sends'] === 1) ? 'send' : 'reject'),
 				$name.' — decides to send exactly when process() sent');
@@ -142,7 +142,8 @@ class XMLRPCProxyContractTest extends TestCase
 			rXMLRPCRequest::$sent = 0;
 			FileUtil::$log = array();
 
-			XMLRPCProxy::decide($case['request'], $case['mode'], $case['safeParams']);
+			XMLRPCProxy::decide($case['request'], $case['mode'], $case['safeParams'],
+				$case['allowLocalPaths']);
 
 			$this->assertTrue(rXMLRPCRequest::$sent === 0,
 				$name.' — decide() reaches no socket');
@@ -156,7 +157,7 @@ class XMLRPCProxyContractTest extends TestCase
 		foreach($this->cases as $name => $case)
 		{
 			$decision = XMLRPCProxy::decide($case['request'], $case['mode'],
-				$case['safeParams']);
+				$case['safeParams'], $case['allowLocalPaths']);
 
 			// One line per decision, whether or not the caller wants it logged.
 			// The switch belongs to the caller, which is why the fixture has
