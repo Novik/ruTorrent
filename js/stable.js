@@ -601,7 +601,7 @@ dxSTable.prototype.assignEvents = function()
 				if (
 					self.isScrolling ||
 					(!self.noDelayingDraw &&
-						Math.abs(self.scrollDiff) > this.TR_HEIGHT*3 &&
+						Math.abs(self.scrollDiff) > self.TR_HEIGHT*3 &&
 						(self.viewRows > maxRows))
 				) {
 					self.isScrolling = true;
@@ -1332,6 +1332,12 @@ dxSTable.prototype.markSelectionDirty = function()
 dxSTable.prototype.syncDOM = function()
 {
 	if (!this.created || !this.dCont.length)
+		return;
+	// refreshRows() draws nothing while the table is scrolling, and this
+	// consumes what it is handed, so rows added or removed mid-scroll would be
+	// dropped with nothing left to ask for them again. Leave them queued: the
+	// scroll timeout syncs once more when it clears isScrolling.
+	if (this.isScrolling && this.pendingSync.prows)
 		return;
 	const p = this.pendingSync;
 	this.pendingSync = {};
