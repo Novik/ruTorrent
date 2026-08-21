@@ -335,6 +335,37 @@ describe("xmlrpc calls", () => {
     }
   });
 
+  // The server diffs against a cached copy of the previous answer. When it has
+  // none -- first poll, or the cache was evicted or could not be written -- it
+  // sends the whole list and no deletions, and says so with "full".
+  function seedListState() {
+    const stub = new rTorrentStub("?list=1");
+    stub.getResponse(loadXML(stub.action));
+    return stub;
+  }
+
+  it("drops torrents a full list does not mention", () => {
+    const stub = seedListState();
+    expect(Object.keys(theRequestManager.torrents)).toHaveLength(4);
+
+    const kept = { [h("A")]: theRequestManager.torrents[h("A")] };
+    const ret = stub.listResponse({ t: kept, cid: 7, full: 1 });
+
+    expect(Object.keys(theRequestManager.torrents)).toEqual([h("A")]);
+    expect(Object.keys(ret.torrents)).toEqual([h("A")]);
+  });
+
+  it("keeps torrents a partial list does not mention", () => {
+    const stub = seedListState();
+    const changed = { [h("A")]: theRequestManager.torrents[h("A")] };
+
+    stub.listResponse({ t: changed, cid: 8 });
+
+    expect(Object.keys(theRequestManager.torrents).sort()).toEqual(
+      [h("A"), h("B"), h("C"), h("D")].sort()
+    );
+  });
+
   it("reads the partially done flag from the list response", () => {
     const stub = new rTorrentStub("?list=1");
     const ret = stub.getResponse(loadXML(stub.action));
