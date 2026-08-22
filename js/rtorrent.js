@@ -1161,6 +1161,13 @@ rTorrentStub.prototype.listResponse = function(data)
 	/** @type {ListResponseType} */
 	var ret = { labels: {}, labels_size: {}, torrents: {} };
 	theRequestManager.cid = data.cid;
+	// A full answer lists every torrent there is, so anything held that it does
+	// not mention is gone. Deletions are reported against a previous state the
+	// server no longer has, and would otherwise never arrive.
+	if(data.full)
+		for( var hash in theRequestManager.torrents )
+			if(!(hash in data.t))
+				delete theRequestManager.torrents[hash];
 	if(data.d)
 		$.each( data.d, function( ndx, hash )
 		{

@@ -236,8 +236,14 @@ switch($mode)
 					$torrents[$current_index][] = $value;
 			}
 
-			$theCache->calcDifference( $cid, $torrents, $dTorrents );
+			// Without a previous state there is nothing to diff against, so the
+			// answer is the whole list and carries no deletions -- say so, or a
+			// client that has been running since before the state was lost keeps
+			// torrents rtorrent no longer has, with only a reload to clear them.
+			$hasPrevious = $theCache->calcDifference( $cid, $torrents, $dTorrents );
 			$result = array( "t"=>$torrents, "cid"=>$cid );
+			if(!$hasPrevious)
+				$result["full"] = 1;
 			if(count($dTorrents))
 				$result["d"] = $dTorrents;
 		}
