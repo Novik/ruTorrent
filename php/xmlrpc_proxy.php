@@ -242,7 +242,7 @@ class XMLRPCProxy
 
 		if(self::isDenied($methodName, $deny))
 			return self::reject("rejected (not allowed on this connection): ".
-				self::logValue($methodName));
+				self::logValue($methodName), $methodName);
 
 		$directory = isset($options['directory']) ? $options['directory'] : null;
 
@@ -253,7 +253,7 @@ class XMLRPCProxy
 				$uri = self::loadUri($xml);
 				if(($uri !== null) && !preg_match(self::$networkUri, $uri))
 					return self::reject("rejected (load from a local path): ".
-						$methodName." ".self::logValue($uri));
+						$methodName." ".self::logValue($uri), $methodName);
 			}
 
 			$rebuilt = self::rebuildLoadParams($xml, $methodName, $safeParams, $directory);
@@ -291,7 +291,7 @@ class XMLRPCProxy
 					$command = self::commandName($value);
 					if(($command !== null) && self::isDenied($command, $deny))
 						return self::reject("rejected (not allowed on this connection): ".
-							$methodName." carrying ".self::logValue($command));
+							$methodName." carrying ".self::logValue($command), $command);
 				}
 
 				return self::forward($rawData, false, "untrusted: ".$methodName." (".
@@ -323,7 +323,7 @@ class XMLRPCProxy
 			foreach(self::multicallMemberNames($xml) as $member)
 				if(self::isDenied($member, $deny))
 					return self::reject("rejected (not allowed on this connection): ".
-						"system.multicall carrying ".self::logValue($member));
+						"system.multicall carrying ".self::logValue($member), $member);
 		}
 
 		// Unknown method — pass through as untrusted.
@@ -560,13 +560,35 @@ class XMLRPCProxy
 	private static function forward($payload, $trusted, $line)
 	{
 		return array('action' => 'send', 'payload' => $payload,
-			'trusted' => $trusted, 'log' => array($line));
+			'trusted' => $trusted, 'method' => null, 'log' => array($line));
 	}
 
-	private static function reject($line)
+	private static function reject($line, $method = null)
 	{
 		return array('action' => 'reject', 'payload' => '',
-			'trusted' => false, 'log' => array($line));
+			'trusted' => false, 'method' => $method, 'log' => array($line));
+	}
+
+	/**
+	 * The XMLRPC fault a door returns when this filter refuses a call: -501
+	 * and a string that names the command, matching the fault rpc2.php
+	 * answers for the same refusals so both doors report a refusal the same
+	 * way. rtorrent never saw the call, so the string says this server
+	 * refused it rather than blaming rtorrent for an outage that did not
+	 * happen.
+	 */
+	public static function rejectionFault($method)
+	{
+		$faultString = (($method !== null) && ($method !== ''))
+			? "The command '".$method."' was rejected by this server."
+			: "This XMLRPC call was rejected by this server.";
+		return '<?xml version="1.0" encoding="UTF-8"?>'."\n"
+			.'<methodResponse><fault><value><struct>'
+			.'<member><name>faultCode</name><value><i4>-501</i4></value></member>'
+			.'<member><name>faultString</name><value><string>'
+			.htmlspecialchars($faultString, ENT_NOQUOTES, 'UTF-8')
+			.'</string></value></member>'
+			.'</struct></value></fault></methodResponse>';
 	}
 
 	/**
