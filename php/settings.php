@@ -159,6 +159,14 @@ class rTorrentSettings
 
 	public function store()
 	{
+		// Only obtain() sets linkExist, and only getplugins.php and
+		// initplugins.php call it. Every other entry point reads this cache
+		// and takes it at its word, so caching an object whose probe failed
+		// makes one unanswered request speak for the install: the alias map is
+		// empty, and getCommand() then hands back the pre-0.9 spelling of every
+		// renamed command until something probes again.
+		if(!$this->linkExist)
+			return(false);
 		$cache = new rCache();
 		return($cache->set($this));
 	}
