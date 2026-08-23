@@ -238,14 +238,14 @@ class FileUtil
 
 	public static function toLog( $str )
 	{
-		global $log_file;
+		global $log_file, $profileMask;
 		if( $log_file && strlen( $log_file ) > 0 )
 		{
 			// dmrom: set proper permissions (need if rtorrent user differs from www user)
 			if( !is_file( $log_file ) )
 			{
 				touch( $log_file );
-				chmod( $log_file, 0666 );
+				chmod( $log_file, (isset($profileMask) ? $profileMask : 0777) & 0666 );
 			}
 			$w = fopen( $log_file, "ab+" );
 			if( $w )
