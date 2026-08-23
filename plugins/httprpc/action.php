@@ -707,7 +707,31 @@ switch($mode)
 					? $topDirectory : '/',
 				'resolve' => 'httprpcResolvePath',
 			));
-			$result = XMLRPCProxy::process($HTTP_RAW_POST_DATA, $proxyMode, $proxyLog, $proxySafeParams, $proxyLocalPaths, $proxyOptions);
+			// decide() here, not process(): this endpoint owns its own
+			// connection to rtorrent, and process()'s null return cannot tell a
+			// call this filter refused from one rtorrent could not answer. That
+			// is what rpc2.php does with the same policy.
+			$decision = XMLRPCProxy::decide($HTTP_RAW_POST_DATA, $proxyMode, $proxySafeParams, $proxyLocalPaths, $proxyOptions);
+			if($proxyLog)
+				foreach($decision['log'] as $line)
+					FileUtil::toLog("xmlrpc-proxy: ".$line);
+			if($decision['action'] !== 'send')
+			{
+				// This filter refused the call; rtorrent never saw it. Name the
+				// command and say this server refused it, the 403/-501 rpc2.php
+				// answers for the same refusals -- not "is rtorrent running",
+				// which sends the client to restart a client that is up.
+				header("HTTP/1.0 403 Forbidden");
+				CachedEcho::send(XMLRPCProxy::rejectionFault($decision['method']), "text/xml");
+			}
+			$result = rXMLRPCRequest::send($decision['payload'], $decision['trusted']);
+			if($result === false)
+			{
+				// The call passed the filter but the SCGI connection failed --
+				// this one really is an outage.
+				header("HTTP/1.0 500 Server Error");
+				CachedEcho::send("Could not reach rTorrent over XMLRPC. Is rTorrent running?", "text/html");
+			}
 			if(!empty($result))
 			{
 				$pos = strpos($result, "\r\n\r\n");
