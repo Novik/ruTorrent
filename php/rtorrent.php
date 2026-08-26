@@ -236,9 +236,11 @@ class rTorrent
 	 */
 	static public function quoteCommandArg($value)
 	{
-		// One str_replace() pass, not two: escaping the quote first and the
-		// backslash afterwards would double the backslash the quote escaping
-		// just added, leaving a live quote behind it.
+		// The order of the pairs is what makes this correct, and it must not be
+		// changed: str_replace() works through the arrays left to right and can
+		// revisit a value an earlier pair inserted. Escaping the quote first
+		// would double the backslash that escaping just added, leaving a live
+		// quote behind it -- so the backslash pair has to come first.
 		return('"'.str_replace(array('\\', '"'), array('\\\\', '\\"'), $value).'"');
 	}
 
