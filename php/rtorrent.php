@@ -72,7 +72,7 @@ class rTorrent
 				if(!rTorrentSettings::get()->correctDirectory($directory))
 					return(false);
 				$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
-				$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
+				$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
 			}
 			$comment = $torrent->comment();
 			if($comment)
@@ -124,7 +124,7 @@ class rTorrent
 				{
 					if(!rTorrentSettings::get()->correctDirectory($directory))
 						return(false);
-					$cmd->addParameter( ($isAddPath ? getCmd("d.set_directory=")."\"" : getCmd("d.set_directory_base=")."\"").$directory."\"" );
+					$cmd->addParameter( getCmd($isAddPath ? "d.set_directory=" : "d.set_directory_base=").self::quoteCommandArg($directory) );
 					$req->addCommand( new rXMLRPCCommand( 'execute', array('mkdir','-p',$directory) ) );
 				}
 				if($label && (strlen($label)>0))
@@ -219,6 +219,27 @@ class rTorrent
 			return($torrent);
 		}
 		return(false);
+	}
+
+	/**
+	 * Quote a value for use inside an rtorrent command string.
+	 *
+	 * The commands handed to load/load_raw are not typed parameters: rtorrent
+	 * parses them itself (src/rpc/parse.cc), ending a quoted argument at the
+	 * first unescaped '"' and reading '\' as an escape. A value wrapped in
+	 * quotes without escaping therefore ends the argument early -- a download
+	 * directory holding a quote silently loses everything from that quote on,
+	 * and the command around it stops parsing.
+	 *
+	 * Mirrors the escaping XMLRPCProxy::rebuildSafeLoadParam() applies to the
+	 * command strings it rebuilds.
+	 */
+	static public function quoteCommandArg($value)
+	{
+		// One str_replace() pass, not two: escaping the quote first and the
+		// backslash afterwards would double the backslash the quote escaping
+		// just added, leaving a live quote behind it.
+		return('"'.str_replace(array('\\', '"'), array('\\\\', '\\"'), $value).'"');
 	}
 
 	static protected function parseDirectory($directory, $isAddPath)
