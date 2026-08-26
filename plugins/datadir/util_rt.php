@@ -2,6 +2,7 @@
 
 require_once( "../../php/xmlrpc.php" );
 require_once( "../../php/Torrent.php" );
+require_once( "../../php/rtorrent.php" );
 
 //------------------------------------------------------------------------------
 // Debug stub
@@ -389,7 +390,7 @@ function rtAddTorrent( $fname, $isStart, $directory, $label, $dbg = false )
 
 	if( $directory && strlen( $directory ) > 0 )
 	{
-		$directory = rtMakeStrParam( "d.set_directory=\"".$directory."\"" );
+		$directory = rtMakeStrParam( "d.set_directory=".rTorrent::quoteCommandArg( $directory ) );
 	}
 	else $directory = "";
 
