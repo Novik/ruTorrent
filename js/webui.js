@@ -25,7 +25,9 @@ var theWebUI = {
 				{ text: theUILang.Priority, 		width: "80px", 	id: "priority",		type: TYPE_NUMBER },
 				{ text: theUILang.Created_on,		width: "110px", id: "created",		type: TYPE_NUMBER },
 				{ text: theUILang.Remaining, 		width: "90px", 	id: "remaining",	type: TYPE_NUMBER },
-				{ text: theUILang.Save_path,		width: "200px", id: "save_path",	type: TYPE_STRING }
+				// titled: a save path is routinely wider than the column, and it
+				// is the value a user most often needs to read in full.
+				{ text: theUILang.Save_path,		width: "200px", id: "save_path",	type: TYPE_STRING, titled: true }
 			],
 			container:	"List",
 			format:		theFormatter.torrents,
