@@ -45,6 +45,28 @@ describe("getClickableTrackerStatus", () => {
     expect(window.getClickableTrackerStatus(input)).toBe(expected);
   });
 
+  // rTorrent's d.message belongs to the download, not to one tracker row: it
+  // joins the message of every failing row with ' /// '. Live sample from a
+  // 400-torrent fleet, 2026-08-21:
+  //   Tracker: [Could not connect to server /// Could not resolve hostname]
+  // on a torrent whose failing rows were a retracker and an IPv6 mirror.
+  it("puts each joined tracker row's message on its own line", () => {
+    const input = "Tracker: [Could not connect to server /// Could not resolve hostname]";
+    expect(window.getClickableTrackerStatus(input)).toBe(
+      "Tracker: [Could not connect to server<br>Could not resolve hostname]");
+  });
+
+  it("splits the join without touching a URL that contains slashes", () => {
+    const input = "Tracker: [Failure reason /// see https://tracker.foo/a///b for details]";
+    const expected = 'Tracker: [Failure reason<br>see <a href="https://tracker.foo/a///b" target="_blank" '
+      + 'rel="noopener noreferrer">https://tracker.foo/a///b</a> for details]';
+    expect(window.getClickableTrackerStatus(input)).toBe(expected);
+  });
+
+  it("leaves a bare /// with no surrounding spaces alone", () => {
+    expect(window.getClickableTrackerStatus("a///b")).toBe("a///b");
+  });
+
   it("handles torrent failure status with PtP style links and escaped quotes", () => {
     const input = 'https://torrent.site/page?id1=224822&id2=1534647\\"]';
     const expected = '<a href="https://torrent.site/page?id1=224822&amp;id2=1534647" target="_blank" rel="noopener noreferrer">https://torrent.site/page?id1=224822&amp;id2=1534647</a>\\&quot;]';
