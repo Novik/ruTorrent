@@ -381,18 +381,30 @@ class rTorrentSettings
 		$startAt = $interval+rand(0,$schedule_rand);
 		return( new rXMLRPCCommand("schedule", array( $name.User::getUser(), $startAt."", $interval."", $cmd )) );
 	}
-	public function getScheduleCommand($name,$interval,$cmd,&$startAt = null)	// $interval in minutes
+	public function getScheduleCommand($name,$interval,$cmd,&$startAt = null,$now = null)	// $interval in minutes
 	{
-		global $schedule_rand;
-		if(!isset($schedule_rand))
-			$schedule_rand = 10;
-		$tm = getdate();
-		$startAt = mktime($tm["hours"],
-			((int)($tm["minutes"]/$interval))*$interval+$interval,
-			0,$tm["mon"],$tm["mday"],$tm["year"])-$tm[0]+rand(0,$schedule_rand);
-		if($startAt<0)
-			$startAt = 0;
+		// The start has to be deterministic, not jittered with rand().
+		// php/getplugins.php re-runs every enabled plugin's init.php on each
+		// full load of the web interface, and rTorrent's scheduler replaces an
+		// entry that reuses a key, restarting its countdown at now+start
+		// (CommandScheduler::insert). With a random offset a reload landing in
+		// the jitter window -- after the wall-clock boundary but before the
+		// task actually fired -- recomputed to the *next* boundary, so a user
+		// who kept refreshing cost the task a whole interval each time.
+		// getAlignedStart spreads the tasks over that same window by the crc32
+		// of their key instead, so every re-registration of one task resolves
+		// to the same absolute instant; it counts in seconds, hence the
+		// conversion first. It also never returns 0, so a reload cannot fire
+		// the task at once, and $startAt stays the seconds-until-fire that
+		// callers such as plugins/rss report as the next update time.
+		//
+		// $now is the same clock seam getAlignedStart already carries, and it
+		// is here for the same reason: what this function has to promise is
+		// that two registrations made at *different* instants resolve to the
+		// same fire time, and a caller that can only read the clock samples a
+		// single instant. Production callers pass nothing and get time().
 		$interval = $interval*60;
+		$startAt = self::getAlignedStart($name,$interval,$now);
 		return( new rXMLRPCCommand("schedule", array( $name.User::getUser(), $startAt."", $interval."", $cmd )) );
 	}
 	static public function getAlignedStart($name,$interval,$now = null)	// $interval in seconds
