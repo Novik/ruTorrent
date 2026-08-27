@@ -45,8 +45,9 @@ describe("getClickableTrackerStatus", () => {
     expect(window.getClickableTrackerStatus(input)).toBe(expected);
   });
 
-  // rTorrent's d.message belongs to the download, not to one tracker row: it
-  // joins the message of every failing row with ' /// '. Live sample from a
+  // libtorrent announces to one address family at a time; when both fail it
+  // joins the two reasons with ' /// ' (TrackerHttp::receive_failed). The two
+  // parts are IPv4 and IPv6 for one tracker. Live sample from a
   // 400-torrent fleet, 2026-08-21:
   //   Tracker: [Could not connect to server /// Could not resolve hostname]
   // on a torrent whose failing rows were a retracker and an IPv6 mirror.
