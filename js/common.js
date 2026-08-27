@@ -263,13 +263,21 @@ function getClickableTrackerStatus(text)
 {
 	if (!text) return '';
 	var sanitized = escapeHTML(text);
-	return sanitized.replace(/https?:\/\/[^\s<>"']+/gi, function(match) {
+	var linked = sanitized.replace(/https?:\/\/[^\s<>"']+/gi, function(match) {
 		var entityMatch = match.match(/&(?:quot|#039|#39|lt|gt);/i);
 		var truncated = entityMatch ? match.substring(0, entityMatch.index) : match;
 		var cleanUrl = truncated.replace(/[.,)!?:;\\\]}]+$/g, '');
 		var trailing = match.substring(cleanUrl.length);
 		return '<a href="' + cleanUrl + '" target="_blank" rel="noopener noreferrer">' + cleanUrl + '</a>' + trailing;
 	});
+	// d.message belongs to the whole download, and rTorrent JOINS the message
+	// of every failing tracker row into it with ' /// ' between them -- e.g.
+	// "Tracker: [Could not connect to server /// Could not resolve hostname]"
+	// from two different rows. Run together on one line that reads as a single
+	// garbled sentence, so each row's answer gets its own line. Done AFTER the
+	// linkification: a URL cannot contain a space, so this separator can never
+	// fall inside one of the links just built.
+	return linked.replace(/ \/\/\/ /g, '<br>');
 }
 
 

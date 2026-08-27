@@ -981,6 +981,17 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 			td.append(
 				$("<div>").text(celldata || " "),
 			);
+			// The table is table-layout:fixed with white-space:nowrap and
+			// overflow:hidden, so a value wider than its column is cut off at
+			// the edge with no ellipsis and no other sign that anything is
+			// missing. Wrapping instead is not an option: the body is
+			// virtualized and derives every row's height from the first one
+			// (TR_HEIGHT), so one taller row desynchronizes the scroll for the
+			// whole list. A column that opts in therefore carries the full
+			// value as the cell's own tooltip.
+			// Only when there is something to show: an empty title="" on the
+			// cell would shadow the row's tooltip, which carries the name.
+			if (cdat.titled && celldata) td.attr("title", celldata);
 		}
 		row.append(td);
 	}
@@ -1385,6 +1396,13 @@ dxSTable.prototype.syncDOM = function()
 						textEl = td.firstChild;
 					}
 					$(textEl).text(fmtVal);
+					// The rows are built once and updated in place from here
+					// on, so a tooltip set only in createRow would freeze at
+					// whatever the message was when the row first appeared.
+					if (this.colsdata[c].titled) {
+						if (fmtVal) td.setAttribute("title", fmtVal);
+						else td.removeAttribute("title");
+					}
 				}
 			}
 			// update icon

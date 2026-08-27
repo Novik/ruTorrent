@@ -5,7 +5,7 @@ if(plugin.canChangeColumns())
 	plugin.config = theWebUI.config;
 	theWebUI.config = function()
 	{
-		this.tables.trt.columns.push({text: 'Tracker Status', width: '200px', id: 'msg', type: TYPE_STRING});
+		this.tables.trt.columns.push({text: 'Tracker Status', width: '200px', id: 'msg', type: TYPE_STRING, titled: true});
 		plugin.config.call(this);
 		plugin.trtRenameColumn();
 	}

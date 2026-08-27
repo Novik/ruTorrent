@@ -118,4 +118,92 @@ describe("webui stale details", () => {
     expect(theWebUI.peers[oldHash]).toBeUndefined();
     expect(theWebUI.trackers[oldHash]).toBeUndefined();
   });
+
+  it("discards peer response and preserves clean cache when torrent is not in torrents list", () => {
+    const oldHash = h("A");
+    const currentHash = h("B");
+    const table = {
+      updateRows: jest.fn(),
+      clearRows: jest.fn(),
+    };
+
+    Object.assign(theWebUI, {
+      torrents: {
+        [currentHash]: { name: "current" },
+      },
+      dID: currentHash,
+      peers: {},
+      getTable: jest.fn(() => table),
+    });
+
+    theWebUI.addPeers(
+      {
+        p1: { name: "1.2.3.4", port: 80, ip: "1.2.3.4", attr: {} },
+      },
+      oldHash
+    );
+
+    expect(theWebUI.peers[oldHash]).toBeUndefined();
+    expect(table.clearRows).not.toHaveBeenCalled();
+    expect(table.updateRows).not.toHaveBeenCalled();
+  });
+
+  it("updates cache and table when peer response is for currently selected active torrent", () => {
+    const currentHash = h("B");
+    const table = {
+      updateRows: jest.fn(),
+      clearRows: jest.fn(),
+    };
+
+    Object.assign(theWebUI, {
+      torrents: {
+        [currentHash]: { name: "current" },
+      },
+      dID: currentHash,
+      peers: {},
+      getTable: jest.fn(() => table),
+    });
+
+    theWebUI.addPeers(
+      {
+        p1: { name: "1.2.3.4", port: 80, ip: "1.2.3.4", attr: {} },
+      },
+      currentHash
+    );
+
+    expect(theWebUI.peers[currentHash]).toBeDefined();
+    expect(theWebUI.peers[currentHash].p1.name).toBe("1.2.3.4:80");
+    expect(table.updateRows).toHaveBeenCalledWith(theWebUI.peers[currentHash]);
+  });
+
+  it("updates cache but not table when peer response is for active unselected torrent", () => {
+    const currentHash = h("B");
+    const unselectedHash = h("C");
+    const table = {
+      updateRows: jest.fn(),
+      clearRows: jest.fn(),
+    };
+
+    Object.assign(theWebUI, {
+      torrents: {
+        [currentHash]: { name: "current" },
+        [unselectedHash]: { name: "unselected" },
+      },
+      dID: currentHash,
+      peers: {},
+      getTable: jest.fn(() => table),
+    });
+
+    theWebUI.addPeers(
+      {
+        p1: { name: "5.6.7.8", port: 51413, ip: "5.6.7.8", attr: {} },
+      },
+      unselectedHash
+    );
+
+    expect(theWebUI.peers[unselectedHash]).toBeDefined();
+    expect(theWebUI.peers[unselectedHash].p1.name).toBe("5.6.7.8:51413");
+    expect(table.updateRows).not.toHaveBeenCalled();
+    expect(table.clearRows).not.toHaveBeenCalled();
+  });
 });

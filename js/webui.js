@@ -25,7 +25,9 @@ var theWebUI = {
 				{ text: theUILang.Priority, 		width: "80px", 	id: "priority",		type: TYPE_NUMBER },
 				{ text: theUILang.Created_on,		width: "110px", id: "created",		type: TYPE_NUMBER },
 				{ text: theUILang.Remaining, 		width: "90px", 	id: "remaining",	type: TYPE_NUMBER },
-				{ text: theUILang.Save_path,		width: "200px", id: "save_path",	type: TYPE_STRING }
+				// titled: a save path is routinely wider than the column, and it
+				// is the value a user most often needs to read in full.
+				{ text: theUILang.Save_path,		width: "200px", id: "save_path",	type: TYPE_STRING, titled: true }
 			],
 			container:	"List",
 			format:		theFormatter.torrents,
@@ -906,6 +908,12 @@ var theWebUI = {
 
 	addPeers: function(data, hash)
 	{
+		// A getpeers answer can arrive after its torrent stopped being shown,
+		// or after it disappeared from the list entirely. Ignore a hash we no
+		// longer know: caching it would leak, because the cleanup loop below
+		// only walks the torrents that are still there.
+		if (!Object.prototype.hasOwnProperty.call(this.torrents, hash))
+			return;
 		const table = this.getTable("prs");
 		for (const peer of Object.values(data))
 		{
@@ -918,10 +926,12 @@ var theWebUI = {
 			};
 		}
 		this.peers[hash] = data;
+		// Only the shown torrent may touch the peer table. Clearing it here
+		// would wipe the rows of whatever torrent is actually open; the paths
+		// that own that decision -- getPeers() on a fresh open, and
+		// clearDetails() when the details block closes -- clear it themselves.
 		if (this.dID == hash)
 			table.updateRows(this.peers[hash]);
-		else
-			table.clearRows();
 	},
 
 	prsSelect: function(e, id)
