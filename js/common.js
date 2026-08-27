@@ -270,13 +270,18 @@ function getClickableTrackerStatus(text)
 		var trailing = match.substring(cleanUrl.length);
 		return '<a href="' + cleanUrl + '" target="_blank" rel="noopener noreferrer">' + cleanUrl + '</a>' + trailing;
 	});
-	// d.message belongs to the whole download, and rTorrent JOINS the message
-	// of every failing tracker row into it with ' /// ' between them -- e.g.
+	// A tracker hostname can resolve to both an A and an AAAA record, and
+	// libtorrent announces to one address family at a time. When the first
+	// family fails it stashes the reason, retries the same tracker over the
+	// other family, and if that fails too it reports both joined with ' /// '
+	// (TrackerHttp::receive_failed, src/tracker/tracker_http.cc) -- e.g.
 	// "Tracker: [Could not connect to server /// Could not resolve hostname]"
-	// from two different rows. Run together on one line that reads as a single
-	// garbled sentence, so each row's answer gets its own line. Done AFTER the
-	// linkification: a URL cannot contain a space, so this separator can never
-	// fall inside one of the links just built.
+	// is IPv4 and IPv6 answering differently about one tracker, not two
+	// trackers. There are only two families, so there are only ever two parts.
+	// Run together they read as a single garbled sentence, so each answer gets
+	// its own line. Done AFTER the linkification: a URL cannot contain a
+	// space, so this separator can never fall inside one of the links just
+	// built.
 	return linked.replace(/ \/\/\/ /g, '<br>');
 }
 
