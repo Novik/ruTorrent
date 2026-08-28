@@ -329,7 +329,7 @@ if($handle = opendir('../plugins'))
 			if($file != "." && $file != ".." && is_dir('../plugins/'.$file))
 			{
 				if(!array_key_exists($file,$userPermissions))
-					$userPermissions[$file] = true;
+					$userPermissions[$file] = (bool)getFlag($permissions,$file,"enabledByDefault");
 				$info = getPluginInfo( $file, $permissions );
 				if($info)
 				{
