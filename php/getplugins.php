@@ -1,6 +1,7 @@
 <?php
 
 require_once( 'which.php' );
+require_once( 'pluginflags.php' );
 require_once( "settings.php" );
 
 function pluginsSort($a, $b)
@@ -14,18 +15,6 @@ function pluginsSort($a, $b)
 	return( strcmp($a["name"],$b["name"]) );
 }
 
-function getFlag($permissions,$pname,$fname)
-{
-	$ret = true;
-	if(array_key_exists($pname,$permissions) &&
-		array_key_exists($fname,$permissions[$pname]))
-		$ret = $permissions[$pname][$fname];
-	else
-	if(array_key_exists("default",$permissions) &&
-		array_key_exists($fname,$permissions["default"]))
-		$ret = $permissions["default"][$fname];
-	return($ret);
-}
 
 function getPluginInfo( $name, $permissions )
 {
