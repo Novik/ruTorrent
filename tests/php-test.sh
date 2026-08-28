@@ -26,7 +26,8 @@ do
 	# Absolute: this stands in for __DIR__ below, and a relative path makes a
 	# fixture symlink resolve against the wrong directory.
 	DIR=$(cd "$(dirname "$t")" && pwd)
-	out=$(php -c php-test.ini -f <(cat <(sed "s@__DIR__@\"$DIR\"@g" "$t") <(echo "$TEST_RUN")) 2>&1)
+	out=$(php -d zend.assertions=1 -d error_reporting=-1 -d display_errors=1 \
+		-f <(cat <(sed "s@__DIR__@\"$DIR\"@g" "$t") <(echo "$TEST_RUN")) 2>&1)
 	code=$?
 	printf '%s\n' "$out"
 	if [ "$code" -ne 0 ] || printf '%s\n' "$out" | grep -qE '^Failed:|^not ok|failed with error|PHP (Fatal|Parse) error|Uncaught'; then
