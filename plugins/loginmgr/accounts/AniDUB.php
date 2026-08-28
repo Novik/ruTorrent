@@ -2,7 +2,7 @@
 
 class AniDUBAccount extends commonAccount
 {
-    public $url = "http://tr.anidub.com";
+    public $url = "https://tr.anidub.com";
 
     protected function isOK($client)
     {
@@ -27,6 +27,6 @@ class AniDUBAccount extends commonAccount
     }
     public function test($url)
     {
-        return(preg_match( "/^http:\/\/tr\.anidub\.com\//si", $url ));
+        return(self::urlAddresses($url,array("tr.anidub.com"),"https"));
     }
 }

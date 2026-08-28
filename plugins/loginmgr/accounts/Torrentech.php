@@ -2,7 +2,7 @@
 
 class TorrentechAccount extends commonAccount
 {
-	public $url = "http://www.torrentech.org";
+	public $url = "https://www.torrentech.org";
 
 	protected function isOK($client)
 	{

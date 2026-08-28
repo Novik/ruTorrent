@@ -58,8 +58,13 @@ class ruTrackerAccount extends commonAccount
 		}
 		return(false);
 	}
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/rutracker.org/forum/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)rutracker\.(org|cr|net|nl)\/forum\//si", $url ));
+		return(self::urlAddresses($url,
+			array("rutracker.org","rutracker.cr","rutracker.net","rutracker.nl"),null,"/forum/"));
 	}
 }

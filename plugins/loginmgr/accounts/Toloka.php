@@ -21,8 +21,12 @@ class tolokaAccount extends commonAccount
 		}
 		return(false);
 	}
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/toloka.to/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)toloka.to\//si", $url ));
+		return(self::urlAddresses($url,array("toloka.to")));
 	}
 }

@@ -24,8 +24,12 @@ class TapochekNetAccount extends commonAccount
 		}
 		return(false);
 	}
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/tapochek.net/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)tapochek\.net\//si", $url ));
+		return(self::urlAddresses($url,array("tapochek.net")));
 	}
 }

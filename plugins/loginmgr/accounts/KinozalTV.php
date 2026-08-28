@@ -33,8 +33,12 @@ class KinozalTVAccount extends commonAccount
 		}
 		return(false);
 	}
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/kinozal.guru/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)kinozal\.(tv|me|guru)\//si", $url ));
+		return(self::urlAddresses($url,array("kinozal.tv","kinozal.me","kinozal.guru")));
 	}
 }

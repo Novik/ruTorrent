@@ -2,7 +2,7 @@
 
 class NovaFilmAccount extends commonAccount
 {
-	public $url = "http://novafilm.tv";
+	public $url = "https://novafilm.tv";
 
 	protected function isOK($client)
 	{
@@ -22,6 +22,6 @@ class NovaFilmAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return( stripos( $url, $this->url."/download/" )===0 );
+		return(self::urlAddresses($url,array("novafilm.tv"),"https","/download/"));
 	}
 }

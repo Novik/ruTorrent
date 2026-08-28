@@ -11,9 +11,22 @@ class YggTorrentAccount extends commonAccount
         );
     }
 
+    // The tracker changes domain often, so the host is matched by shape rather
+    // than by name -- but against the host, not against the whole URL. The
+    // pattern this replaced also accepted
+    // https://evil.test/x/ygg.example/engine/download_torrent?id=1, whose host
+    // is the attacker's and which would have been sent this account's cookies.
     public function test($url)
     {
-    	return( preg_match( '/https:\/\/(.*\.)?ygg.*\..*\/engine\/download_torrent\?id=/', $url ) === 1 );
+        $parts = @parse_url((string) $url);
+        if(!is_array($parts) || empty($parts["host"]) ||
+            (strtolower(isset($parts["scheme"]) ? $parts["scheme"] : '')!=='https'))
+            return(false);
+        if(!preg_match('/(^|\.)ygg[^.]*\.[^.]+$/i',$parts["host"]))
+            return(false);
+        if(strcasecmp(isset($parts["path"]) ? $parts["path"] : '','/engine/download_torrent')!==0)
+            return(false);
+        return(preg_match('/(^|&)id=/',isset($parts["query"]) ? $parts["query"] : '')===1);
     }
 
     protected function login($client, $login, $password, &$url, &$method, &$content_type, &$body, &$is_result_fetched)
