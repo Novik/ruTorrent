@@ -2611,14 +2611,14 @@ plugin.onLangLoaded = function() {
 
   $('#dlLimit').parent().children('label').children('h5').text(theUILang.Glob_max_downl);
   $('#ulLimit').parent().children('label').children('h5').text(theUILang.Global_max_upl);
-  $('#themeSelect').parent().children('label').children('h5').text('Theme');
-  $('#accentSelect').parent().children('label').children('h5').text('Accent color');
-  $('#serverInfoHeader').text('Server');
+  $('#themeSelect').parent().children('label').children('h5').text(theUILang.Mobile_theme);
+  $('#accentSelect').parent().children('label').children('h5').text(theUILang.Accent_color);
+  $('#serverInfoHeader').text(theUILang.Server);
   $('#verRutorrent td:first').text('ruTorrent');
   $('#verRtorrent td:first').text('rTorrent');
   $('#portIpv4 td:first').text('IPv4');
   $('#portIpv6 td:first').text('IPv6');
-  $('#openStatus td:first').text('Open');
+  $('#openStatus td:first').text(theUILang.Open_label);
   $('#diskSpace td:first').text(theUILang.Free_Disk_Space);
   $('#speedLimitsOk').text(theUILang.ok);
   $('#speedLimitsCancel').text(theUILang.Cancel);
