@@ -433,7 +433,7 @@ theWebUI.doRSSGroupContentsDelete = function()
 theWebUI.RSSGroupDeleteContents = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		askYesNo( theUILang.rssMenuGroupDeleteContents, theUILang.rssDeleteGroupContentsPrompt, "theWebUI.doRSSGroupContentsDelete()" );
+		askYesNo( theUILang.rssMenuGroupContentsDelete, theUILang.rssDeleteGroupContentsPrompt, "theWebUI.doRSSGroupContentsDelete()" );
 	else
 		theWebUI.doRSSGroupContentsDelete();
 }
