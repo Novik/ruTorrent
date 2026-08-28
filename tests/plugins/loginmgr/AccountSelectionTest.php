@@ -89,6 +89,38 @@ $tests = array(
         selAssertSame(true, (bool) $account->test('http://http-only.example/x'), 'so is its own scheme');
     },
 
+    'no account claims a url whose host it does not own' => function () {
+        // A net rather than a proof: each account is asked about urls that
+        // carry its own name but are served by someone else. It cannot know
+        // every path a given tracker requires, so a rejection here may be for
+        // the path rather than the host -- but an acceptance is always wrong,
+        // and this is what catches the next test() written against the raw
+        // url string instead of the parsed host.
+        foreach (get_declared_classes() as $class) {
+            if (!is_subclass_of($class, 'commonAccount') || $class === 'ProbeHttpSiteAccount') {
+                continue;
+            }
+            $account = new $class();
+            $host = parse_url((string) $account->url, PHP_URL_HOST);
+            if (!$host) {
+                continue;
+            }
+            $elsewhere = array(
+                'https://evil.test/x/' . $host . '/forum/dl.php?t=1',
+                'https://evil.test/x/' . $host . '/download.php?id=1',
+                'https://evil.test/x/' . $host . '/engine/download_torrent?id=1',
+                'https://evil.test/x/' . $host . '/',
+                'https://' . $host . '@evil.test/forum/dl.php?t=1',
+                'https://' . $host . '@evil.test/',
+                'https://' . $host . '.evil.test/forum/dl.php?t=1',
+            );
+            foreach ($elsewhere as $url) {
+                selAssertSame(false, (bool) $account->test($url),
+                    $class . ' must not claim ' . var_export($url, true));
+            }
+        }
+    },
+
     'a url with no host at all matches nothing' => function () {
         foreach (get_declared_classes() as $class) {
             if (!is_subclass_of($class, 'commonAccount') || $class === 'ProbeHttpSiteAccount') {
