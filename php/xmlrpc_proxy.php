@@ -644,10 +644,39 @@ class XMLRPCProxy
 			}
 			else
 			{
-				$start = $i;
-				while($i < $len && $value[$i] !== ',')
+				// Only one escape changes where an argument ends: rtorrent reads
+				// '\\,' as a comma inside the value rather than a separator
+				// (parse_string, src/rpc/parse.cc), so splitting on every comma
+				// cut such a value in two and delivered a second argument the
+				// client never sent.
+				//
+				// Its other escapes are deliberately left alone. rtorrent would
+				// read '\\' as an escape everywhere, which turns C:\\downloads
+				// into C:downloads -- but this side re-quotes the value, so the
+				// backslash reaches rtorrent intact, and clients have been
+				// sending paths and labels through here on that basis. Matching
+				// rtorrent exactly would eat those backslashes.
+				$argument = '';
+				$keep = 0;
+				while($i < $len)
+				{
+					$c = $value[$i];
+					if($c === ',')
+						break;
+					if(($c === '\\') && ($i + 1 < $len) && ($value[$i + 1] === ','))
+					{
+						$argument .= ',';
+						$i += 2;
+						$keep = strlen($argument);
+						continue;
+					}
+					$argument .= $c;
 					$i++;
-				$arguments[] = trim(substr($value, $start, $i - $start));
+					// Trailing whitespace is trimmed as rtorrent trims it.
+					if(($c !== ' ') && ($c !== "\t"))
+						$keep = strlen($argument);
+				}
+				$arguments[] = substr($argument, 0, $keep);
 			}
 
 			while($i < $len && ($value[$i] === ' ' || $value[$i] === "\t"))

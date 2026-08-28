@@ -878,4 +878,47 @@ class XMLRPCProxyTest extends TestCase
 		$this->assertTrue(rXMLRPCRequest::$lastPayload === $xml, 'forwarded byte for byte');
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === false, 'and untrusted');
 	}
+
+	// ---- an escaped comma is part of the value, not a separator ----
+
+	public function testAnEscapedCommaDoesNotSeparateArguments()
+	{
+		$sent = $this->sanitizeParam('d.custom.set=a\,b', array('d.custom.set'));
+		$this->assertTrue(strpos($sent, 'd.custom.set="a,b"') !== false,
+			'rtorrent reads a\,b as the one argument a,b; splitting on it invented a second');
+	}
+
+	public function testAnEscapedCommaAtTheEndOfAValueIsKept()
+	{
+		$sent = $this->sanitizeParam('d.custom1.set=a\,', array('d.custom1.set'));
+		$this->assertTrue(strpos($sent, 'd.custom1.set="a,"') !== false,
+			'the comma is value content, so it survives to the end');
+	}
+
+	public function testAnUnescapedCommaStillSeparates()
+	{
+		$sent = $this->sanitizeParam('d.custom.set=chk-state,7', array('d.custom.set'));
+		$this->assertTrue(strpos($sent, 'd.custom.set="chk-state","7"') !== false,
+			'a bare comma keeps separating arguments');
+	}
+
+	/**
+	 * Every other backslash is left where it is. rtorrent would read it as an
+	 * escape and turn C:\downloads into C:downloads, but this side re-quotes
+	 * the value, so the backslash reaches rtorrent whole -- and clients have
+	 * been sending paths and labels through here on that basis.
+	 */
+	public function testABackslashThatIsNotBeforeACommaIsKept()
+	{
+		$sent = $this->sanitizeParam('d.custom1.set=C:\downloads\tv', array('d.custom1.set'));
+		$this->assertTrue(strpos($sent, 'd.custom1.set="C:\\\\downloads\\\\tv"') !== false,
+			'a windows-style path survives, re-escaped on the way out');
+	}
+
+	public function testATrailingBackslashIsStillJustAValue()
+	{
+		$sent = $this->sanitizeParam('d.custom1.set=abc\\', array('d.custom1.set'));
+		$this->assertTrue(strpos($sent, 'd.custom1.set="abc\\\\"') !== false,
+			'a value ending in a backslash is quoted, not dropped');
+	}
 }
