@@ -2,7 +2,7 @@
 
 class TfileAccount extends commonAccount
 {
-	public $url = "http://megatfile.cc";
+	public $url = "https://megatfile.cc";
 
 	protected function isOK($client)
 	{
@@ -24,8 +24,12 @@ class TfileAccount extends commonAccount
 		}
 		return(false);
 	}
+	// Matched against the URL's host, not against the URL string: the pattern
+	// this replaced also accepted https://evil.test/path/megatfile.cc/forum/x, whose
+	// host is the attacker's, and loginmgr would then have sent this account's
+	// cookies there.
 	public function test($url)
 	{
-		return(preg_match( "/(\.|\/)megatfile\.cc\/forum\//si", $url ));
+		return(self::urlAddresses($url,array("megatfile.cc"),"https","/forum/"));
 	}
 }

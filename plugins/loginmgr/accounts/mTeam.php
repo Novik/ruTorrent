@@ -2,7 +2,7 @@
 
 class mTeamAccount extends commonAccount
 {
-	public $url = "http://mteam.fr";
+	public $url = "https://mteam.fr";
 
 	protected function isOK($client)
 	{

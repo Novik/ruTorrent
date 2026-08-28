@@ -73,9 +73,57 @@ abstract class commonAccount
 	abstract protected function isOK($client);
 	abstract protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched);
 
+	// Prefix-matching the URL string is not the same as matching the site.
+	// "https://tracker.example" is a prefix of "https://tracker.example@evil.test/"
+	// (the tracker name is userinfo, the host is the attacker's) and of
+	// "https://tracker.example.evil.test/" (the tracker name is one label of a
+	// longer domain). Either would have handed this account's cookies to
+	// whoever controls that host, and the URL does not have to come from the
+	// user -- plugins/rss follows links out of a feed.
 	public function test($url)
 	{
-		return( stripos($url,$this->url)===0 );
+		$site = @parse_url((string) $this->url);
+		if(!is_array($site) || empty($site["host"]) || empty($site["scheme"]))
+			return(false);
+		return(self::urlAddresses($url,array($site["host"]),$site["scheme"]));
+	}
+
+	// True when $url's host is one of $hosts, or a subdomain of one, and its
+	// scheme is $scheme when a scheme is named. Subclasses that accept several
+	// domains, or a whole domain's subdomains, say so here instead of matching
+	// the name anywhere in the URL string -- which also accepts
+	// "https://evil.test/path/tracker.example/x", whose host is the attacker's.
+	static protected function urlAddresses($url,$hosts,$scheme = null,$pathPrefix = null)
+	{
+		$parts = @parse_url((string) $url);
+		if(!is_array($parts) || empty($parts["host"]))
+			return(false);
+		// The URL may not weaken the site's scheme. An https site matched over
+		// http would have this account's cookies put on the wire in clear by
+		// the very first request, before any redirect could upgrade it, and a
+		// feed link is not written by the user. The other direction is allowed:
+		// an https URL to a site still configured http simply fails to
+		// connect, and costs nothing to permit.
+		if($scheme!==null)
+		{
+			$urlScheme = strtolower(isset($parts["scheme"]) ? $parts["scheme"] : '');
+			if(($urlScheme!==strtolower($scheme)) && ($urlScheme!=='https'))
+				return(false);
+		}
+		if($pathPrefix!==null)
+		{
+			$path = isset($parts["path"]) ? $parts["path"] : '/';
+			if(strncasecmp($path,$pathPrefix,strlen($pathPrefix))!==0)
+				return(false);
+		}
+		$host = strtolower($parts["host"]);
+		foreach($hosts as $candidate)
+		{
+			$candidate = strtolower($candidate);
+			if(($host===$candidate) || (substr($host,-strlen($candidate)-1)==='.'.$candidate))
+				return(true);
+		}
+		return(false);
 	}
 
 	protected function loadData( $client = null )

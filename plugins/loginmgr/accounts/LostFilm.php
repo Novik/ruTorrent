@@ -2,7 +2,11 @@
 
 class LostFilmAccount extends commonAccount
 {
-	public $url = "http://lostfilm.tv";
+	// https, because login() below posts the account's password to
+	// $url."/useri.php". A redirect to https afterwards does not protect a
+	// POST that has already gone out in the clear -- and the site issues
+	// exactly such a redirect, so http here bought nothing but the exposure.
+	public $url = "https://lostfilm.tv";
 
 	protected function isOK($client)
 	{
@@ -38,6 +42,6 @@ class LostFilmAccount extends commonAccount
 	}
 	public function test($url)
 	{
-		return( stripos( $url, $this->url."/download.php" )===0 );
+		return(self::urlAddresses($url,array("lostfilm.tv"),"https","/download.php"));
 	}
 }
