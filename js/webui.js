@@ -769,6 +769,10 @@ var theWebUI = {
 	},
 
 	setSettings: function() {
+		// Serialize only this browser's Save/restore/refresh chain. rTorrent does
+		// not provide a transaction boundary against another client.
+		if(this.settingsSavePending)
+			return;
 		var req = '';
 		var needSave = false;
 		var needResize = false;
@@ -894,9 +898,61 @@ var theWebUI = {
 			this.resize();
 		if((req.length>0) && theWebUI.systemInfo.rTorrent.started &&
 			this.socketAllocationAccepted())
-			this.request("?action=setsettings" + req,null,true);
-		if(needSave)
+		{
+			this.settingsSavePending = true;
+			this.setSettingsSaveButtons(true);
+			this.deferredSettingsSave = needSave ? { reply: reply } : null;
+			var request = new rTorrentStub(this.url + "?action=setsettings" + req);
+			request.onSetsettingsFailure = function() { theWebUI.refreshSettingsAfterFailedSave(); };
+			request.onIndeterminateFailure = function() { theWebUI.finishSettingsSaveIndeterminate(); };
+			this.request(request,[this.finishSettingsSave, this],true);
+		}
+		else if(needSave)
 			this.save(reply);
+	},
+
+	finishSettingsSave: function()
+	{
+		var deferredSave = this.deferredSettingsSave;
+		this.deferredSettingsSave = null;
+		if(deferredSave)
+			this.save(deferredSave.reply, this.releaseSettingsSave.bind(this));
+		else
+			this.releaseSettingsSave();
+	},
+
+	releaseSettingsSave: function()
+	{
+		this.settingsSavePending = false;
+		this.setSettingsSaveButtons(false);
+	},
+
+	finishSettingsSaveIndeterminate: function()
+	{
+		// Do not let a deferred reload erase the only same-document lock while the
+		// server may still be applying the write or its restore.
+		this.deferredSettingsSave = null;
+		noty("Settings outcome is unknown. Save remains locked; reload manually only after rTorrent responds.","error");
+	},
+
+	setSettingsSaveButtons: function(disabled)
+	{
+		$("#st_btns").find("button").not(".Cancel").prop("disabled", disabled);
+	},
+
+	refreshSettingsAfterFailedSave: function()
+	{
+		var request = new rTorrentStub(this.url + "?action=getsettings");
+		request.onXMLFailure = this.finishSettingsSave.bind(this);
+		this.requestWithTimeout(request, [this.finishSettingsRefresh, this],
+			function() { theWebUI.timeout(); theWebUI.finishSettingsSave(); },
+			function(status, text) { theWebUI.error(status, text); theWebUI.finishSettingsSave(); }, true);
+	},
+
+	finishSettingsRefresh: function(data)
+	{
+		this.addSettings(data);
+		this.finishSettingsSave();
 	},
 
    	reload: function()
@@ -924,10 +980,14 @@ var theWebUI = {
 		theDialogManager.show("stg");
 	},
 
-        save: function(reply)
+	save: function(reply, onTerminal)
 	{
-	        if(!theWebUI.configured)
+		if(!theWebUI.configured)
+		{
+			if(onTerminal)
+				onTerminal();
 			return;
+		}
 	        $.each(theWebUI.tables, function(ndx,table)
 		{
 	   		var width = [];
@@ -955,7 +1015,27 @@ var theWebUI = {
 				cookie[i] = v;
 		}
 		// We must encode the URL here to avoid injection with the "&" symbol from search results
-		theWebUI.request("?action=setuisettings&v=" + encodeURIComponent(JSON.stringify(cookie)), reply);
+		var query = "?action=setuisettings&v=" + encodeURIComponent(JSON.stringify(cookie));
+		if(onTerminal)
+		{
+			var finished = false;
+			var finish = function()
+			{
+				if(!finished)
+				{
+					finished = true;
+					onTerminal();
+				}
+			};
+			var request = new rTorrentStub(theWebUI.url + query);
+			request.handleUnauthorizedAsError = true;
+			theWebUI.requestWithTimeout(request,
+				function(data) { try { if(reply) reply(data); } finally { finish(); } },
+				function() { try { theWebUI.timeout(); } finally { finish(); } },
+				function(status, text) { try { theWebUI.error(status, text); } finally { finish(); } });
+		}
+		else
+			theWebUI.request(query, reply);
 	},
 
 //
@@ -2512,7 +2592,7 @@ var theWebUI = {
 	},
 
 	requestWithTimeout: function(qs, onComplite, onTimeout, onError, isASync) {
-		Ajax(this.url + qs, isASync, onComplite, onTimeout, onError, this.settings["webui.reqtimeout"]);
+		Ajax(qs instanceof rTorrentStub ? qs : this.url + qs, isASync, onComplite, onTimeout, onError, this.settings["webui.reqtimeout"]);
 	},
 
 	requestWithoutTimeout: function(qs, onComplite, isASync) {
