@@ -592,6 +592,77 @@ class XMLRPCProxy
 	}
 
 	/**
+	 * Split command arguments the way rtorrent does: commas separate them, and
+	 * a double-quoted string is one argument even when it contains commas.
+	 * Unquoted arguments are trimmed; quoted ones are not. An unclosed quote,
+	 * or text after a quoted argument that is not a comma, is malformed and
+	 * returns null so the whole parameter is dropped.
+	 *
+	 * Clients such as cross-seed quote every value (d.custom1.set="cross-seed").
+	 * Splitting on ',' first would cut inside those quotes; dropping them left
+	 * torrents unlabeled and in the default directory. Unquoting here, then
+	 * re-quoting in rebuildSafeLoadParam, keeps the value as one argument.
+	 */
+	private static function splitLoadArguments($value)
+	{
+		$arguments = array();
+		$len = strlen($value);
+		$i = 0;
+		while($i < $len)
+		{
+			while($i < $len && ($value[$i] === ' ' || $value[$i] === "\t"))
+				$i++;
+			if($i >= $len)
+				break;
+
+			if($value[$i] === '"')
+			{
+				$i++;
+				$argument = '';
+				$closed = false;
+				while($i < $len)
+				{
+					$c = $value[$i];
+					if($c === '\\' && $i + 1 < $len)
+					{
+						$argument .= $value[$i + 1];
+						$i += 2;
+						continue;
+					}
+					if($c === '"')
+					{
+						$closed = true;
+						$i++;
+						break;
+					}
+					$argument .= $c;
+					$i++;
+				}
+				if(!$closed)
+					return null;
+				$arguments[] = $argument;
+			}
+			else
+			{
+				$start = $i;
+				while($i < $len && $value[$i] !== ',')
+					$i++;
+				$arguments[] = trim(substr($value, $start, $i - $start));
+			}
+
+			while($i < $len && ($value[$i] === ' ' || $value[$i] === "\t"))
+				$i++;
+			if($i < $len)
+			{
+				if($value[$i] !== ',')
+					return null;
+				$i++;
+			}
+		}
+		return $arguments;
+	}
+
+	/**
 	 * Rebuild one command parameter, or return null to drop it.
 	 *
 	 * A parameter is not a single command: rtorrent ends a command at ';' or a
@@ -600,13 +671,11 @@ class XMLRPCProxy
 	 * command name is therefore compared for equality, and each argument is
 	 * quoted so that whatever it contains stays an argument.
 	 *
-	 * Arguments are split on ',' first, exactly as rtorrent would split them,
-	 * so a command that takes several keeps them, and each is trimmed as
-	 * rtorrent trims an unquoted argument.
-	 *
-	 * Values are taken literally: a client sends d.custom1.set=Movies, Inc,
-	 * not a pre-quoted d.custom1.set="Movies, Inc", since the quoting is added
-	 * here and a quote in the value is escaped rather than interpreted.
+	 * Arguments are split the way rtorrent splits them (commas, with quoted
+	 * strings kept whole), so a command that takes several keeps them, and
+	 * each unquoted argument is trimmed as rtorrent trims one. A value the
+	 * client already quoted is unquoted here, then re-quoted, rather than
+	 * dropped: cross-seed and others send d.custom1.set="label".
 	 */
 	private static function rebuildSafeLoadParam($paramValue, $safeParams, $directory = null)
 	{
@@ -618,31 +687,29 @@ class XMLRPCProxy
 		if(!in_array($command, $safeParams, true))
 			return null;
 
+		$parts = self::splitLoadArguments(substr($paramValue, $separator + 1));
+		if($parts === null)
+			return null;
+
 		// A caller that states no boundary is not policed here, which is the
 		// behaviour every caller had before this existed. rpc2.php always states
 		// one and refuses to start without it; the httprpc plugin does not, and
 		// its door needs a ruTorrent session rather than a machine credential.
-		if(($directory !== null) && in_array($command, self::$directoryCommands, true) &&
-			!self::directoryIsAllowed(trim(substr($paramValue, $separator + 1)), $directory))
-			return null;
+		if(($directory !== null) && in_array($command, self::$directoryCommands, true))
+		{
+			$path = isset($parts[0]) ? $parts[0] : '';
+			if(!self::directoryIsAllowed($path, $directory))
+				return null;
+		}
 
 		$arguments = array();
-		foreach(explode(',', substr($paramValue, $separator + 1)) as $argument)
+		foreach($parts as $argument)
 		{
-			// rtorrent trims an unquoted argument, so trim before anything else
-			// is decided about it — quoting a trimmed value must not turn a
-			// leading space into a leading '$'.
-			$argument = trim($argument);
-
 			// An argument whose first character is '$' is parsed and called as a
 			// command after quoting is undone, so quoting cannot make it safe.
+			// Unquoted values are already trimmed by the split; trimming again
+			// here would not turn a leading space into a leading '$'.
 			if(isset($argument[0]) && $argument[0] === '$')
-				return null;
-
-			// A client that quoted the value itself gets dropped and logged
-			// rather than quietly mangled: the quoting is added here, and the
-			// split would fall inside the client's quotes.
-			if(isset($argument[0]) && $argument[0] === '"')
 				return null;
 
 			$arguments[] = '"'.str_replace(array('\\', '"'), array('\\\\', '\\"'), $argument).'"';

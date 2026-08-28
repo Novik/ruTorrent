@@ -361,12 +361,43 @@ class XMLRPCProxyTest extends TestCase
 		$this->assertTrue(rXMLRPCRequest::$lastTrusted === true, 'a rebuilt base64 param does not force the call untrusted');
 	}
 
-	public function testPreQuotedValueIsDroppedNotMangled()
+	public function testPreQuotedValueIsKeptAsOneArgument()
+	{
+		$sent = $this->sanitizeParam('d.custom1.set="Movies, Inc"');
+		$this->assertTrue(strpos($sent, 'd.custom1.set="Movies, Inc"') !== false,
+			'a value the client quoted itself is unquoted and re-quoted as one argument');
+		$this->assertTrue(strpos($sent, 'd.custom1.set="Movies","Inc"') === false,
+			'and the comma inside the quotes does not split it');
+	}
+
+	public function testCrossSeedQuotedLoadParamsAreKept()
+	{
+		$sent = $this->sanitizeParam('d.custom1.set="cross-seed"',
+			array('d.custom1.set', 'd.directory_base.set', 'd.custom.set'));
+		$this->assertTrue(strpos($sent, 'd.custom1.set="cross-seed"') !== false,
+			'cross-seed quotes the label; that must still set custom1');
+
+		$sent = $this->sanitizeParam(
+			'd.directory_base.set="/data/Media/torrent/download/cross-seed/PassThePopcorn"',
+			array('d.custom1.set', 'd.directory_base.set', 'd.custom.set'));
+		$this->assertTrue(strpos($sent,
+			'd.directory_base.set="/data/Media/torrent/download/cross-seed/PassThePopcorn"') !== false,
+			'and the quoted save path must still set directory_base');
+	}
+
+	public function testQuotedDollarPrefixedArgumentIsDropped()
+	{
+		$sent = $this->sanitizeParam('d.custom1.set="$execute.capture=/bin/hostname"');
+		$this->assertTrue(strpos($sent, 'execute.capture') === false,
+			'quoting does not hide a leading $; the argument is still dropped');
+	}
+
+	public function testUnclosedQuoteIsDropped()
 	{
 		$this->resetMocks();
-		$this->sanitizeParamLogged('d.custom1.set="Movies, Inc"');
+		$this->sanitizeParamLogged('d.custom1.set="Movies, Inc');
 		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload, 'd.custom1.set') === false,
-			'a value the client quoted itself is dropped, not split inside its quotes');
+			'an unclosed quote is malformed and dropped, not split inside it');
 		$this->assertTrue(strpos($this->logText(), 'stripped') !== false,
 			'and the drop is visible in the log');
 	}
@@ -752,6 +783,13 @@ class XMLRPCProxyTest extends TestCase
 			'd.directory_base.set sets the root directly, so it is the blunter of the two');
 		$this->assertTrue($this->loadInto('/torrents1/downloads/x', $policy, 'd.directory_base.set'),
 			'and still works inside the boundary');
+	}
+
+	public function testQuotedDirectoryInsideTheBoundaryIsKept()
+	{
+		$policy = array('root' => '/torrents1/downloads');
+		$this->assertTrue($this->loadInto('"/torrents1/downloads/cross-seed"', $policy, 'd.directory_base.set'),
+			'a client-quoted path is unquoted before the boundary check');
 	}
 
 	public function testPathTricksDoNotEscape()
