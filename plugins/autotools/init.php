@@ -1,6 +1,6 @@
 <?php
 
-require_once( '../plugins/autotools/autotools.php');
+require_once( dirname(__FILE__)."/autotools.php");
 
 $at = rAutoTools::load();
 if($at->setHandlers())

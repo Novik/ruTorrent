@@ -1,6 +1,6 @@
 <?php
 
-require_once( 'xmlrpc.php' );
+require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 eval(FileUtil::getPluginConf($plugin["name"]));
 
 $listPath = FileUtil::getSettingsPath()."/erasedata";

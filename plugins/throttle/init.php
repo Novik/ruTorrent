@@ -1,5 +1,5 @@
 <?php
-require_once( '../plugins/throttle/throttle.php');
+require_once( dirname(__FILE__)."/throttle.php");
 
 $thr = rThrottle::load();
 if(!$thr->obtain())

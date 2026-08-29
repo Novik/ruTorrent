@@ -1,6 +1,6 @@
 <?php
 
-require_once( '../plugins/xmpp/xmpp.php');
+require_once( dirname(__FILE__)."/xmpp.php");
 
 $at = rXmpp::load();
 if($at->setHandlers())

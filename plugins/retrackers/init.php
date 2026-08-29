@@ -1,6 +1,6 @@
 <?php
 
-require_once( '../plugins/retrackers/retrackers.php');
+require_once( dirname(__FILE__)."/retrackers.php");
 
 $req = new rXMLRPCRequest( array(
 	$theSettings->getOnInsertCommand(array('tadd_trackers1'.User::getUser(), getCmd('d.set_custom4').'=$'.getCmd('cat').'=$'.getCmd('d.get_state='))),
