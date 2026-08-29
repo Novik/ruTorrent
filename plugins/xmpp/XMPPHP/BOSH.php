@@ -48,7 +48,10 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		protected $http_buffer = Array();
 		protected $session = false;
 
-		public function connect($server, $wait='1', $session=false) {
+		public function connect($server = null, $wait = '1', $session = false) {
+			if($server === null) {
+				throw new XMPPHP_Exception("XMPPHP_BOSH::connect() requires a BOSH endpoint URL.");
+			}
 			$this->http_server = $server;
 			$this->use_encryption = false;
 			$this->session = $session;
@@ -147,7 +150,15 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			}
 		}
 
-		public function send($msg) {
+		/**
+		 * Send to the BOSH endpoint.
+		 *
+		 * @param string $msg
+		 * @param integer $timeout Accepted for signature compatibility with
+		 *                         XMPPHP_XMLStream::send(); BOSH writes over cURL
+		 *                         rather than a socket, so there is nothing to time out on.
+		 */
+		public function send($msg, $timeout = null) {
 			$this->log->log("SEND: $msg",  XMPPHP_Log::LEVEL_VERBOSE);
 			$msg = new SimpleXMLElement($msg);
 			#$msg->addAttribute('xmlns', 'jabber:client');
@@ -157,7 +168,6 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 
 		public function reset() {
 			$this->xml_depth = 0;
-			unset($this->xmlobj);
 			$this->xmlobj = array();
 			$this->setupParser();
 			#$this->send($this->stream_start);

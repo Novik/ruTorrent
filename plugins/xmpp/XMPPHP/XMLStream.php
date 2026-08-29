@@ -223,8 +223,6 @@ class XMPPHP_XMLStream {
 
 	/**
 	 * Set SSL
-	 *
-	 * @return integer
 	 */
 	public function useSSL($use=true) {
 		$this->use_ssl = $use;
@@ -447,10 +445,10 @@ class XMPPHP_XMLStream {
 	/**
 	 * Process
 	 *
-	 * @return string
+	 * @return bool
 	 */
 	public function process() {
-		$this->__process(NULL);
+		return $this->__process(NULL);
 	}
 
 	/**
@@ -748,7 +746,6 @@ class XMPPHP_XMLStream {
 	 */
 	public function reset() {
 		$this->xml_depth = 0;
-		unset($this->xmlobj);
 		$this->xmlobj = array();
 		$this->setupParser();
 		if(!$this->is_server) {

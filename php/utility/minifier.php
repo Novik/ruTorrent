@@ -319,12 +319,12 @@ class Minifier
      */
     protected function clean()
     {
-        unset($this->input);
+        $this->input = null;
         $this->len = 0;
         $this->index = 0;
         $this->a = $this->b = '';
-        unset($this->c);
-        unset($this->options);
+        $this->c = null;
+        $this->options = null;
     }
 
     /**
@@ -337,7 +337,7 @@ class Minifier
         // Check to see if we had anything in the look ahead buffer and use that.
         if (isset($this->c)) {
             $char = $this->c;
-            unset($this->c);
+            $this->c = null;
         } else {
             // Otherwise we start pulling from the input.
             $char = $this->index < $this->len ? $this->input[$this->index] : false;
@@ -445,7 +445,7 @@ class Minifier
         // kill rest of line
         $this->getNext("\n");
 
-        unset($this->c);
+        $this->c = null;
 
         if ($thirdCommentString == '@') {
             $endPoint = $this->index - $startIndex;
