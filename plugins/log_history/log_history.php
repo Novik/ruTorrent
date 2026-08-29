@@ -66,7 +66,7 @@ class LogHandler
         return ['status' => 'success', 'message' => 'Log saved'];
     }
 
-    public function getLatestLogs(int $count = null): array
+    public function getLatestLogs(?int $count = null): array
     {
         $count = $count !== null ? max(1, $count) : $this->log_count;
         return array_values(array_filter(
