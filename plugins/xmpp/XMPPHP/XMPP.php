@@ -73,6 +73,13 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	protected $basejid;
 
 	/**
+	 * Bare JID (user@host), assigned once resource binding succeeds.
+	 *
+	 * @var string
+	 */
+	protected $jid;
+
+	/**
 	 * @var boolean
 	 */
 	protected $authed = false;
