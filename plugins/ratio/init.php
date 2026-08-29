@@ -1,5 +1,5 @@
 <?php
-require_once( '../plugins/ratio/ratio.php');
+require_once( dirname(__FILE__)."/ratio.php");
 
 $rat = rRatio::load();
 if(!$rat->obtain())

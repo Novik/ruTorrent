@@ -1,6 +1,6 @@
 <?php
 
-require_once( '../plugins/scheduler/scheduler.php' );
+require_once( dirname(__FILE__)."/scheduler.php" );
 
 $schd = rScheduler::load();
 $schd->apply();

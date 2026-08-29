@@ -1,6 +1,6 @@
 <?php
 eval(FileUtil::getPluginConf($plugin["name"]));
-require_once( '../plugins/trafic/ratios.php' );
+require_once( dirname(__FILE__)."/ratios.php" );
 
 $st = FileUtil::getSettingsPath();
 FileUtil::makeDirectory( array( $st.'/trafic', $st.'/trafic/trackers', $st.'/trafic/torrents') );
