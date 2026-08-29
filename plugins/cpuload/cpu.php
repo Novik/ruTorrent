@@ -38,19 +38,20 @@ class rCPU
 
 	public function get()
 	{
-		if(!function_exists('sys_getloadavg'))
-		{
-			function sys_getloadavg()
-			{
-				$loadavg_file = '/proc/loadavg';
-				if(file_exists($loadavg_file))
-					return(explode(chr(32),file_get_contents($loadavg_file)));
-				else
-					return(array_map("trim",explode(",",substr(strrchr(shell_exec("uptime"),":"),1))));
-				return array(0,0,0);
-			}
-		}
-		$arr = sys_getloadavg();
+		$arr = $this->loadavg();
 		return( round(min($arr[0]*100/$this->count,100)) );
+	}
+
+	// sys_getloadavg() is not available on every platform the WebUI runs on --
+	// Windows has no such function -- so /proc/loadavg, and then uptime(1),
+	// stand in for it.
+	protected function loadavg()
+	{
+		if(function_exists('sys_getloadavg'))
+			return(sys_getloadavg());
+		$loadavg_file = '/proc/loadavg';
+		if(file_exists($loadavg_file))
+			return(explode(chr(32),file_get_contents($loadavg_file)));
+		return(array_map("trim",explode(",",substr(strrchr(shell_exec("uptime"),":"),1))));
 	}
 }
