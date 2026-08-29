@@ -231,7 +231,7 @@ class FileUtil
 		foreach($files as $file)
 		{
 			$path = $dir.$file;
-			is_dir($path) ? deleteDirectory($path) : unlink($path);
+			is_dir($path) ? self::deleteDirectory($path) : unlink($path);
 		}
 		return(rmdir($dir));
 	}
