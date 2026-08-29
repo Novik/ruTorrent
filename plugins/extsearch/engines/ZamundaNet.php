@@ -4,6 +4,10 @@ class ZamundaNetEngine extends commonEngine
 {
 	public $defaults = array( "public"=>false, "page_size"=>20, "auth"=>1 );
 
+	// The search url of the page being walked. makeClient() sends it as the
+	// referer of every request action() makes.
+	public $search = "";
+
 	public $categories = array
 	(
 		'All'=>'',
