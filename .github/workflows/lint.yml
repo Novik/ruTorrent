@@ -45,3 +45,15 @@ jobs:
         run: npm install --no-save eslint@9 @eslint/js@9
       - name: eslint
         run: npx eslint "js/**/*.js" "plugins/**/*.js"
+
+  phpstan:
+    # Blocking: the tree is at zero level-0 findings and stays there.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: phpstan:2.2.9
+      - name: phpstan
+        run: phpstan analyse --no-progress --memory-limit=512M --error-format=github
