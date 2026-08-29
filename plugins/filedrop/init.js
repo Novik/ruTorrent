@@ -72,10 +72,14 @@ plugin.handlePaste = function(event)
 	if (!text)
 		return;
 
+	// Dropping a link is a deliberate act, but Ctrl+V isn't: most of the
+	// page isn't a text field, so plain prose copied from elsewhere (a
+	// chat, a forum post) would otherwise get treated as a torrent add.
+	// Only intercept when every token in the paste is a magnet/URL.
 	const urls = text.split(/\r\n|\n|\r|\s+/)
 		.map(item => item.trim())
-		.filter(item => (/^magnet:|^https?:\/\//i).test(item));
-	if (!urls.length)
+		.filter(item => item.length > 0);
+	if (!urls.length || !urls.every(item => (/^magnet:|^https?:\/\//i).test(item)))
 		return;
 
 	event.preventDefault();

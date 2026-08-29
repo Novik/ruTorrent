@@ -125,13 +125,36 @@ describe("filedrop: paste-to-add", () => {
   it("extracts every magnet/URL from a multi-line paste", async () => {
     const magnetB =
       "magnet:?xt=urn:btih:2222222222222222222222222222222222222222&dn=B";
-    const text = `${MAGNET}\nnot a link\n${magnetB}`;
+    const text = `${MAGNET}\n${magnetB}`;
 
     await callPasteAndWait(pasteEvent(document.body, text));
 
     expect(ajaxMock).toHaveBeenCalledTimes(2);
     expect(ajaxMock.mock.calls.map((c) => c[0].data.url).sort()).toEqual(
       [MAGNET, magnetB].sort()
+    );
+  });
+
+  it("ignores a paste that mixes a URL with ordinary prose", () => {
+    const text = `look at this ${MAGNET} and check it out`;
+
+    plugin.handlePaste(pasteEvent(document.body, text));
+
+    expect(ajaxMock).not.toHaveBeenCalled();
+  });
+
+  it("adds a lone non-torrent URL pasted outside a text field", async () => {
+    // Trackers link to torrent files with URLs that don't end in
+    // ".torrent" (e.g. RUTracker's /forum/dl.php?t=, Kinozal's
+    // /download.php?id=), so a whole-paste URL is added regardless of
+    // its path/extension -- this is a deliberate tradeoff, not an
+    // oversight.
+    const url = "https://example.com/news/article-about-cats";
+
+    await callPasteAndWait(pasteEvent(document.body, url));
+
+    expect(ajaxMock).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { url, json: 1 } })
     );
   });
 
