@@ -23,11 +23,6 @@ spl_autoload_register(function ($class)
 		@include_once 'utility/'. strtolower($class). '.php';
 });
 
-// Fixes quotations if php verison is less than 5.4
-// Only include these methods if applicable
-if(version_compare(phpversion(), '5.4', '<'))
-	require_once ( 'utility/phpversionfix.php');
-
 // Only allow "POST" or "GET" request methods
 // Exit script and send 405 if anther method is tried
 Requests::disableUnsupportedMethods();

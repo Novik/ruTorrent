@@ -159,19 +159,35 @@ class rUnpack
 		) : $task->start($commands, 0) );
 	}
 
+	// quotaspace is a third-party plugin: ruTorrent does not ship rquota.php, so
+	// a registration is not a promise that the file is there or that it declares
+	// rQuota. A quota that cannot be consulted is not a quota that was exceeded,
+	// so the unpack proceeds, as it does where the plugin was never added.
+	// class_exists() is asked not to autoload: rQuota is the plugin file's to
+	// declare, and the core autoloader would only go looking for it under
+	// php/utility/.
+	static protected function quotaAllows()
+	{
+		if(!rTorrentSettings::get()->isPluginRegistered('quotaspace'))
+			return(true);
+		$rquota = dirname(__FILE__)."/../quotaspace/rquota.php";
+		if(!is_readable($rquota))
+			return(true);
+		require_once( $rquota );
+		if(!class_exists('rQuota',false))
+			return(true);
+		$qt = rQuota::load();
+		return( $qt->check() ? true : false );
+	}
+
 	public function startSilentTask($basename,$downloadname,$label,$name,$hash)
 	{
 		global $rootPath;
 		global $cleanupAutoTasks;
 		global $unpackToTemp;
 
-		if(rTorrentSettings::get()->isPluginRegistered('quotaspace'))
-		{
-			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );
-			$qt = rQuota::load();
-			if(!$qt->check())
-				return;
-		}
+		if(!self::quotaAllows())
+			return;
 
 		$pathToUnrar = Utility::getExternal("unrar");
 		$pathToUnzip = Utility::getExternal("unzip");
@@ -284,15 +300,10 @@ class rUnpack
 		global $rootPath;
 		$ret = array( "no"=>-1, "pid"=>0, "status"=>255, "log"=>array(), "errors"=>array("Unknown error.") );
 
-		if(rTorrentSettings::get()->isPluginRegistered('quotaspace'))
+		if(!self::quotaAllows())
 		{
-			require_once( dirname(__FILE__)."/../quotaspace/rquota.php" );
-			$qt = rQuota::load();
-			if(!$qt->check())
-			{
-				$ret["errors"] = array("Quota limitation was reached. Unpack failed.");
-				return($ret);
-			}
+			$ret["errors"] = array("Quota limitation was reached. Unpack failed.");
+			return($ret);
 		}
 
 		$taskArgs = array
