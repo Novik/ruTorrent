@@ -1,0 +1,15 @@
+parameters:
+	level: 0
+
+	paths:
+		- php
+		- plugins
+		# Snoopy is a .php file in all but name, and PHPStan only walks
+		# .php when it scans a directory, so it is named here explicitly.
+		- php/Snoopy.class.inc
+
+	# GeoIp2 ships as a phar that plugins/geoip/lookup.php requires at
+	# runtime. PHPStan reads class declarations straight out of it, so the
+	# classes resolve without the phar being unpacked or excluded.
+	scanDirectories:
+		- phar://%currentWorkingDirectory%/plugins/geoip/geoip2.phar/src
