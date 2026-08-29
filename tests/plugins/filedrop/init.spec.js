@@ -158,6 +158,50 @@ describe("filedrop: paste-to-add", () => {
     );
   });
 
+  it("splits a comma-separated list of magnet links", async () => {
+    const magnetB =
+      "magnet:?xt=urn:btih:2222222222222222222222222222222222222222&dn=B";
+    const text = `${MAGNET},${magnetB}`;
+
+    await callPasteAndWait(pasteEvent(document.body, text));
+
+    expect(ajaxMock).toHaveBeenCalledTimes(2);
+    expect(ajaxMock.mock.calls.map((c) => c[0].data.url).sort()).toEqual(
+      [MAGNET, magnetB].sort()
+    );
+  });
+
+  it("splits a semicolon-separated list of magnet links with spacing", async () => {
+    const magnetB =
+      "magnet:?xt=urn:btih:2222222222222222222222222222222222222222&dn=B";
+    const text = `${MAGNET}; ${magnetB}`;
+
+    await callPasteAndWait(pasteEvent(document.body, text));
+
+    expect(ajaxMock).toHaveBeenCalledTimes(2);
+    expect(ajaxMock.mock.calls.map((c) => c[0].data.url).sort()).toEqual(
+      [MAGNET, magnetB].sort()
+    );
+  });
+
+  it("does not split a comma-joined tracker list inside one magnet link", async () => {
+    // Multi-tracker magnets commonly comma-join announce URLs within a
+    // single tr= parameter; that comma must not be mistaken for a
+    // separator between two pasted links.
+    const magnetWithTrackers =
+      "magnet:?xt=urn:btih:3333333333333333333333333333333333333333&dn=C" +
+      "&tr=http://t1.example/announce,http://t2.example/announce";
+
+    await callPasteAndWait(pasteEvent(document.body, magnetWithTrackers));
+
+    expect(ajaxMock).toHaveBeenCalledTimes(1);
+    expect(ajaxMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: { url: magnetWithTrackers, json: 1 },
+      })
+    );
+  });
+
   it("reports a failed add", async () => {
     ajaxMock.mockImplementation(() => Promise.resolve({ result: "Failed" }));
 

@@ -76,7 +76,14 @@ plugin.handlePaste = function(event)
 	// page isn't a text field, so plain prose copied from elsewhere (a
 	// chat, a forum post) would otherwise get treated as a torrent add.
 	// Only intercept when every token in the paste is a magnet/URL.
-	const urls = text.split(/\r\n|\n|\r|\s+/)
+	//
+	// A comma/semicolon only splits a token when it's immediately
+	// followed by another "magnet:", e.g. a list exported as
+	// "magnet:aaa,magnet:bbb". Trackers are commonly comma-joined
+	// *inside* a single magnet's tr= parameter
+	// (tr=http://t1,http://t2), so a comma before "http(s)://" is left
+	// alone to avoid shredding a normal link.
+	const urls = text.split(/\r\n|\n|\r|\s+|[,;]+\s*(?=magnet:)/i)
 		.map(item => item.trim())
 		.filter(item => item.length > 0);
 	if (!urls.length || !urls.every(item => (/^magnet:|^https?:\/\//i).test(item)))
