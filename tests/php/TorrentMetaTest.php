@@ -223,6 +223,26 @@ class TorrentMetaTest extends TestCase
 	}
 
 	/**
+	 * A key read back the way it was written. A bencode dictionary key that
+	 * looks like a number arrives from the decoder as an int, and below PHP 8
+	 * an int matches the first case of a switch over strings -- so meta(0)
+	 * answered with the announce URL while meta('0') answered correctly.
+	 */
+	public function testANumericKeyIsReadBackByEitherSpelling()
+	{
+		$raw = 'd' . $this->bstr('announce') . $this->bstr('http://a/announce')
+			. $this->bstr('0') . $this->bstr('zero') . 'e';
+		$torrent = new Torrent($raw);
+		$this->assertTrue($torrent->errors() === false, 'The torrent parses');
+		$this->assertTrue($torrent->meta('0') === 'zero',
+			"meta('0') reads the key the torrent carries");
+		$this->assertTrue($torrent->meta(0) === 'zero',
+			'meta(0) reads the same key, not the first named one');
+		$this->assertTrue($torrent->announce === 'http://a/announce',
+			'and announce is left alone');
+	}
+
+	/**
 	 * The keys that are identifiers are declared properties, and no magic
 	 * accessor stands between a caller and one of them -- a __get() would
 	 * make every property access on a torrent, including a misspelt one,
