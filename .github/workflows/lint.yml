@@ -7,13 +7,16 @@ on:
 
 jobs:
   php-syntax:
-    # Blocking: every PHP file must parse.
+    # Blocking: every PHP file must parse, on every PHP the README supports.
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.4', '8.1']
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ matrix.php }}
       - name: php -l
         run: |
           fail=0

@@ -51,6 +51,7 @@ class Torrent
 	 */
 	public function meta( $key )
 	{
+		$key = (string) $key;
 		switch( $key )
 		{
 			case 'announce':		return($this->announce);
