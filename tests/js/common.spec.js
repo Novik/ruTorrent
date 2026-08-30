@@ -540,3 +540,30 @@ describe("linked", () => {
     expect(() => window.linked(cb, false, [])).not.toThrow();
   });
 });
+
+describe("socketAllocationFits", () => {
+  // rtorrent reports no budget: every pair has to be allowed through.
+  it("accepts anything when there is no budget", () => {
+    expect(window.socketAllocationFits(0, 100000, 100000)).toBe(true);
+    expect(window.socketAllocationFits(undefined, 1, 1)).toBe(true);
+  });
+
+  it("accepts a pair that fits and the exact boundary", () => {
+    expect(window.socketAllocationFits(3448, 2048, 128)).toBe(true);
+    expect(window.socketAllocationFits(3448, 3320, 128)).toBe(true);
+    expect(window.socketAllocationFits(3448, 3448, 0)).toBe(true);
+  });
+
+  it("refuses one over the boundary, whichever field carries it", () => {
+    expect(window.socketAllocationFits(3448, 3321, 128)).toBe(false);
+    expect(window.socketAllocationFits(3448, 2048, 1401)).toBe(false);
+    expect(window.socketAllocationFits(3448, 4096, 128)).toBe(false);
+  });
+
+  // The fields come straight from text inputs.
+  it("copes with the values arriving as strings", () => {
+    expect(window.socketAllocationFits("3448", "3320", "128")).toBe(true);
+    expect(window.socketAllocationFits("3448", "3321", "128")).toBe(false);
+    expect(window.socketAllocationFits(3448, "", "")).toBe(true);
+  });
+});

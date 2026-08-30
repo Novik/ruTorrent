@@ -193,6 +193,11 @@ const theOptionsWindow = {
 						$("<input>").attr({type: "number", id: id}).prop("maxlength", 6),
 					),
 				)),
+				$("<div>").addClass("row").attr({id: "socket_alloc_budget_row"}).hide().append(
+					$("<div>").addClass("col-md-12").append(
+						$("<span>").attr({id: "socket_alloc_budget"}),
+					),
+				),
 			),
 		);
 		const stgBtCont = $("<div>").attr({id: "st_bt"}).addClass("stg_con").append(
