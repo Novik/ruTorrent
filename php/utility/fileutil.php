@@ -216,10 +216,16 @@ class FileUtil
 			$perms = isset($profileMask) ? $profileMask : 0777;
 		$oldMask = umask(0);
 		if(is_array($dirs))
+		{
 			foreach($dirs as $dir)
+			{
 				(file_exists(self::addslash($dir).'.') && @chmod($dir,$perms)) || @mkdir($dir,$perms,true);
+			}
+		}
 		else
+		{
 			(file_exists(self::addslash($dirs).'.') && @chmod($dirs,$perms)) || @mkdir($dirs,$perms,true);
+		}
 		@umask($oldMask);
 	}
 
