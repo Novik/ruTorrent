@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . "/../../php/settings.php");
 require_once(dirname(__FILE__) . "/../../php/Snoopy.class.inc");
+require_once(dirname(__FILE__) . "/parse.php");
 
 // Load the plugin's configuration settings from conf.php
 eval(FileUtil::getPluginConf('check_port'));
@@ -60,6 +61,11 @@ function check_port_yougetsignal($ip, $port, $timeout) {
 	$client->read_timeout = (int)$timeout;
 	$client->proxy_host = ""; // Do not use a proxy for this check
 
+	// The API is the one the site's own front end calls, and it is reached
+	// with the headers a browser on that site would send.
+	$client->rawheaders['Origin'] = "https://www.yougetsignal.com";
+	$client->referer = "https://www.yougetsignal.com/";
+
 	// Obtain a session device ID cookie required by the API
 	@$client->fetch("https://api.connected.app/deviceId");
 	if ($client->status != 204 && $client->status != 200) {
@@ -74,17 +80,12 @@ function check_port_yougetsignal($ip, $port, $timeout) {
 		'query' => $query,
 		'variables' => ['input' => ['host' => $ip, 'port' => (int)$port]],
 	]);
-	$client->referer = "https://www.yougetsignal.com/";
 	@$client->fetch("https://api.connected.app/graphql", "POST", "application/json", $post_data);
 
 	if ($client->status == 200) {
-		$json = json_decode($client->results, true);
-		$parsed = $json['data']['networkToolRunPortCheck']['output']['parsed'] ?? null;
-		if ($parsed && ($parsed['kind'] ?? '') === 'success') {
-			$state = $parsed['port']['state'] ?? '';
-            if ($state === 'closed' || $state === 'filtered') return 1;
-			if ($state === 'open') return 2;
-		}
+		$status = check_port_parse_yougetsignal($client->results);
+		if ($status)
+			return $status;
 		error_log("check_port: yougetsignal unexpected response for IP {$ip}. Response: " . substr($client->results, 0, 500));
 	} else {
 		error_log("check_port: Failed fetch from yougetsignal for IP {$ip}. Status: {$client->status}, Error: {$client->error}");
