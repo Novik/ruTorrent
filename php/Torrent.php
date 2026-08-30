@@ -24,17 +24,17 @@ class Torrent
 	/** Keys of the torrent's top level dictionary.
 	 *
 	 * Declared, so that reading or writing one is a property a reader and a
-	 * static analyser can both check. They are typed mixed and default to
+	 * static analyser can both check. They use PHPDoc mixed and default to
 	 * null: a torrent carries whatever its writer put there, this class
 	 * re-emits it unchanged, and null means the torrent has no such key.
 	 */
-	public mixed $announce = null;
-	public mixed $comment = null;
-	public mixed $encoding = null;
-	public mixed $httpseeds = null;
-	public mixed $info = null;
-	public mixed $libtorrent_resume = null;
-	public mixed $rtorrent = null;
+	/** @var mixed */ public $announce = null;
+	/** @var mixed */ public $comment = null;
+	/** @var mixed */ public $encoding = null;
+	/** @var mixed */ public $httpseeds = null;
+	/** @var mixed */ public $info = null;
+	/** @var mixed */ public $libtorrent_resume = null;
+	/** @var mixed */ public $rtorrent = null;
 
 	/** The keys that are not declared properties above.
 	 *
@@ -69,6 +69,7 @@ class Torrent
 	 */
 	public function setMeta( $key, $value )
 	{
+		$key = (string) $key;
 		switch( $key )
 		{
 			case 'announce':		$this->announce = $value; break;
