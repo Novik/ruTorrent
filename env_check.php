@@ -86,7 +86,51 @@ class Requirements
 	public static function looksAbsolute($path)
 	{
 		if (!is_string($path) || $path === '') return false;
-		return $path[0] === '/' || (bool)preg_match('#^[A-Za-z]:[\\\\/]#', $path);
+		if ($path[0] === '/') return true;
+		return DIRECTORY_SEPARATOR === '\\' &&
+			((bool)preg_match('#^[A-Za-z]:[\\\\/]#', $path) || strncmp($path, '\\\\', 2) === 0);
+	}
+
+	public static function logFileStreamScheme($path)
+	{
+		if (!is_string($path) ||
+			!preg_match('/^([A-Za-z][A-Za-z0-9+.-]*):\/\//', $path, $matches)) return null;
+		return $matches[1];
+	}
+
+	public static function fileUriFilesystemPath($path)
+	{
+		$parts = parse_url($path);
+		if (!is_array($parts) || !isset($parts['scheme']) ||
+			strcasecmp($parts['scheme'], 'file') !== 0 || !isset($parts['path']) ||
+			isset($parts['user']) || isset($parts['pass']) || isset($parts['port']) ||
+			isset($parts['query']) || isset($parts['fragment'])) return null;
+		$host = isset($parts['host']) ? $parts['host'] : '';
+		if ($host === '' || strcasecmp($host, 'localhost') === 0) return $parts['path'];
+		return DIRECTORY_SEPARATOR === '\\'
+			? '\\\\' . $host . str_replace('/', '\\', $parts['path']) : null;
+	}
+
+	public static function logFilePathValid($path)
+	{
+		$scheme = self::logFileStreamScheme($path);
+		if ($scheme !== null && strcasecmp($scheme, 'file') === 0) {
+			$filesystemPath = self::fileUriFilesystemPath($path);
+			return $filesystemPath !== null && self::looksAbsolute($filesystemPath);
+		}
+		return self::looksAbsolute($path) || $scheme !== null;
+	}
+
+	public static function logFileStreamAvailable($path, $wrappers)
+	{
+		$scheme = self::logFileStreamScheme($path);
+		if ($scheme === null || !is_array($wrappers)) return false;
+		if (in_array($scheme, $wrappers, true)) return true;
+		// PHP's built-in wrappers are case-insensitive; user-registered wrappers are not.
+		$builtin = array('https', 'ftps', 'compress.zlib', 'php', 'file',
+			'glob', 'data', 'http', 'ftp', 'phar');
+		$lower = strtolower($scheme);
+		return in_array($lower, $builtin, true) && in_array($lower, $wrappers, true);
 	}
 }
 
@@ -185,8 +229,23 @@ if ($cfg === null) {
 		check('config', $ok, '$topDirectory', ($ok ? 'ok: ' : 'not an existing readable directory: ') . $cfg['topdir']);
 	}
 	if (!empty($cfg['log'])) {
-		$dir = dirname($cfg['log']);
-		check('config', @is_dir($dir) && @is_writable($dir), '$log_file writable', "log dir: $dir");
+		$scheme = Requirements::logFileStreamScheme($cfg['log']);
+		$isFileStream = $scheme !== null && strcasecmp($scheme, 'file') === 0;
+		$available = $scheme === null || Requirements::logFileStreamAvailable($cfg['log'], stream_get_wrappers());
+		if (!$available) {
+			check('config', false, '$log_file stream', "stream wrapper is not available: $scheme");
+		} elseif ($scheme !== null && !$isFileStream) {
+			check('config', null, '$log_file stream',
+				"registered $scheme wrapper; writability is checked on first write");
+		} else {
+			$path = $isFileStream ? Requirements::fileUriFilesystemPath($cfg['log']) : $cfg['log'];
+			$validPath = Requirements::logFilePathValid($cfg['log']);
+			$dir = $validPath ? dirname($path) : null;
+			$ok = $validPath && @is_dir($dir) && @is_writable($dir);
+			$detail = $validPath ? "log dir: $dir"
+				: 'must be an absolute path or stream URI: ' . $cfg['log'];
+			check('config', $ok, '$log_file writable', $detail);
+		}
 	}
 	if (!empty($cfg['tmp'])) {
 		check('config', @is_dir($cfg['tmp']) && @is_writable($cfg['tmp']), '$tempDirectory writable', $cfg['tmp']);
