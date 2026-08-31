@@ -184,7 +184,7 @@ class RtorrentCompatibilityTest extends TestCase
 			'set_port_open' => 'cat',
 			'port_open' => 'cat',
 		);
-		foreach (array(0x1012 => '0.16.18', 0x1013 => '0.16.19') as $version => $label) {
+		foreach (array(0x1012 => '0.16.18', 0x1013 => '0.16.19', 0x1015 => '0.16.21') as $version => $label) {
 			$settings = $this->makeSettings($version);
 			foreach ($canonicalAliases as $alias => $command) {
 				$this->assertEquals($command, $settings->getCommand($alias), 'rTorrent '.$label.' maps '.$alias.' to its canonical command');
@@ -200,7 +200,7 @@ class RtorrentCompatibilityTest extends TestCase
 		$this->assertEquals('cat', $settings->getCommand('d.is_partially_done'), 'rTorrent 0.8.9 answers the partially done question with the no-op cat');
 		$this->assertEquals('cat=', $settings->getCommand('d.is_partially_done='), 'the no-op keeps the trailing = so the multicall field stays in place');
 
-		foreach (array(0x900 => '0.9.0', 0x908 => '0.9.8', 0x1014 => '0.16.20') as $version => $label) {
+		foreach (array(0x900 => '0.9.0', 0x908 => '0.9.8', 0x1014 => '0.16.20', 0x1015 => '0.16.21') as $version => $label) {
 			$settings = $this->makeSettings($version);
 			$this->assertEquals('d.is_partially_done', $settings->getCommand('d.is_partially_done'), 'rTorrent '.$label.' asks the daemon directly');
 		}

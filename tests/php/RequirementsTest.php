@@ -10,7 +10,7 @@ class RequirementsTest extends TestCase
 {
 	public function testRtorrentSupportedVersions()
 	{
-		foreach (array('0.9.8', '0.9.8-1', '0.16.0', '0.16.14', '0.16.17', '0.16.19') as $v) {
+		foreach (array('0.9.8', '0.9.8-1', '0.16.0', '0.16.14', '0.16.17', '0.16.19', '0.16.21') as $v) {
 			list($ok, ) = Requirements::rtorrentSupport($v);
 			$this->assertTrue($ok, "rtorrent $v should be supported");
 		}
