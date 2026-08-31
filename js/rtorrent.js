@@ -946,8 +946,8 @@ rTorrentStub.prototype.getResponse = function(data)
 					this.faultString.push("XMLRPC Error: "+message+" ["+this.action+"]");
 				}
 				else
-					for(var i=0; i<memberFaults.length; i++)
-						this.faultString.push("XMLRPC Error: "+memberFaults[i]+" ["+this.action+"]");
+					for(var j=0; j<memberFaults.length; j++)
+						this.faultString.push("XMLRPC Error: "+memberFaults[j]+" ["+this.action+"]");
 			}
 		}
 		if(!this.xmlRPCFault)
