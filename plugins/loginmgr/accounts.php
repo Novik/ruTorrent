@@ -136,26 +136,112 @@ abstract class commonAccount
 		return(true);
 	}
 
+	// Three answers, not two. They call for three different repairs, and this
+	// class used to make only two of them:
+	//
+	//   ANSWER_LIVE   the tracker answered from behind the login wall.
+	//   ANSWER_GUEST  the tracker answered, and answered as a guest. The
+	//                 session is dead and logging in again is the repair.
+	//   ANSWER_NONE   nothing usable arrived. This says NOTHING about the
+	//                 session, so logging in again is not a repair: it spends
+	//                 a credential POST on a tracker that is already failing
+	//                 and then throws away cookies never shown to be stale.
+	//
+	// Every isOK() under accounts/ tells the first two apart by looking for a
+	// guest marker -- a login form, a registration link, a "you must log in"
+	// line -- and none of them can answer the third, because a page that never
+	// arrived carries no marker either. That is why all three used to collapse
+	// into "the session is live", and why a 5xx error page went back to the
+	// caller as the page or the torrent it had asked for.
+	const ANSWER_NONE = 0;
+	const ANSWER_GUEST = 1;
+	const ANSWER_LIVE = 2;
+
+	// What the client is holding after a fetch of the caller's own URL.
+	protected function classifyAnswer($client)
+	{
+		if(!is_object($client))
+			return(self::ANSWER_NONE);
+		$status = (int) $client->status;
+		// A conditional request the server honoured. It answered, it answered
+		// the authenticated request, and it sent no body on purpose: the
+		// caller asked for that (plugins/rss sends If-None-Match and reads
+		// $client->status itself). Judging it by its absent body would turn
+		// every unchanged poll of an authenticated feed into a fresh login.
+		if($status===304)
+			return(self::ANSWER_LIVE);
+		// Only 2xx carries a body meant for the caller. A 3xx reaching here is
+		// a redirect Snoopy did not follow -- a followed chain ends at the
+		// status of its last hop -- and the boilerplate body a server puts on
+		// one carries no guest marker either, so it would read as a live
+		// session for want of evidence.
+		if(($status<200) || ($status>=300))
+			return(self::ANSWER_NONE);
+		if(!$this->hasReadableBody($client))
+			return(self::ANSWER_NONE);
+		return($this->isOK($client) ? self::ANSWER_LIVE : self::ANSWER_GUEST);
+	}
+
+	// True when $client->results is something a strpos() marker test can read.
+	// Snoopy does not always leave a string there: when a gzipped body arrives
+	// on a build without gzinflate() it shells out to gzip, and if the
+	// decompressed file is missing the body is lost. strpos() on a non-string
+	// is fatal in PHP 8, and every marker test under accounts/ is a strpos().
+	protected function hasReadableBody($client)
+	{
+		return(is_object($client) && is_string($client->results) && ($client->results!==''));
+	}
+
+	// The login answer is a narrower question than the caller's answer: a
+	// login endpoint may legitimately answer with no body at all -- a 30x to
+	// the landing page, or a 200 whose whole content is Set-Cookie -- and it
+	// is the fetch that follows which proves whether the session took. So the
+	// marker test is applied only when there is a body to apply it to, and the
+	// status range stays the one this class has always used here.
+	protected function loginWasNotRefused($client)
+	{
+		if(!is_object($client))
+			return(false);
+		$status = (int) $client->status;
+		if(($status<200) || ($status>=400))
+			return(false);
+		return(!$this->hasReadableBody($client) || $this->isOK($client));
+	}
+
 	protected function isOKPostFetch($client,$url,$method,$content_type,$body)
 	{
-		return($this->isOK($client));
+		return($this->classifyAnswer($client)===self::ANSWER_LIVE);
 	}
 
 	public function fetch( $client, $url, $login, $password, $method, $content_type, $body )
 	{
-	        $is_result_fetched = false;
+		$is_result_fetched = false;
 		$data = $this->loadData($client);
-		$ret = ( ($data->loaded &&
-				$this->updateCached($client,$url,$method,$content_type,$body) &&
-				$client->fetch($url,$method,$content_type,$body) &&
-				$this->isOKPostFetch($client,$url,$method,$content_type,$body)) ||
-			($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) &&
-				$client->status>=200 &&
-				$client->status<400 &&
-				$this->isOK($client) &&
-                                ($is_result_fetched || $client->fetch($url,$method,$content_type,$body)) &&
-				$this->isOKPostFetch($client,$url,$method,$content_type,$body) &&
-				$data->store($client)) );
+		if($data->loaded &&
+			$this->updateCached($client,$url,$method,$content_type,$body))
+		{
+			if(!$client->fetch($url,$method,$content_type,$body))
+				return(false);
+			// Taken before isOKPostFetch(), because an override may fetch
+			// further pages onto this client and the question here is about
+			// the answer to the caller's own URL.
+			$answer = $this->classifyAnswer($client);
+			if($this->isOKPostFetch($client,$url,$method,$content_type,$body))
+				return(true);
+			// Only a guest answer is evidence that the session died. Anything
+			// else leaves that unproven, so report the failure and keep the
+			// cookies rather than log in again against a tracker that is not
+			// answering: one outage would otherwise cost a credential POST per
+			// call for every caller looping over a torrent list, which is how
+			// an account gets locked out.
+			if($answer!==self::ANSWER_GUEST)
+				return(false);
+		}
+		$ret = ( $this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) &&
+			$this->loginWasNotRefused($client) &&
+			($is_result_fetched || $client->fetch($url,$method,$content_type,$body)) &&
+			$this->isOKPostFetch($client,$url,$method,$content_type,$body) &&
+			$data->store($client) );
 		if(!$ret)
 			$data->remove();
 		return($ret);
@@ -166,14 +252,24 @@ abstract class commonAccount
 		$modified = privateData::getModified($this->getName());
 		if( ($modified===false) || ((time()-$modified)>=$auto))
 		{
+			// login() takes these by reference and several accounts read them
+			// before writing: undeclared, they arrived as null, and an account
+			// whose login() starts by fetching $url could never authenticate
+			// from here at all.
+			$url = $this->url;
+			$method = "GET";
+			$content_type = "";
+			$body = "";
+			$is_result_fetched = false;
 			$data = $this->loadData();
 			if($this->login($client,$login,$password,$url,$method,$content_type,$body,$is_result_fetched) &&
-				$client->status>=200 &&
-				$client->status<400 &&
-				$this->isOK($client))
+				$this->loginWasNotRefused($client))
 				$data->store($client);
-			else
-				$data->remove();
+			// A login that did not come back is not evidence that the stored
+			// session is stale, and this job exists to REFRESH a session:
+			// deleting one it merely failed to renew leaves the user worse off
+			// than not running at all. A session that really has died is
+			// discovered, and replaced, by the next fetch().
 		}
 	}
 }

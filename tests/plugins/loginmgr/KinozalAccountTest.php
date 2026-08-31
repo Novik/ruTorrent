@@ -23,25 +23,69 @@ abstract class commonAccount
 
 require_once(testFindRepoRoot() . '/plugins/loginmgr/accounts/KinozalTV.php');
 
-// isOK() reads exactly one field off the Snoopy client.
+// isOK() and login() test double.
 class KinozalFakeClient
 {
+    public $status = 200;
     public $results = '';
+    public $referer = '';
+    public $cookies = array();
+    public $responses = array();
+    public $unreachable = null;
 
-    public function __construct($results)
+    public function __construct($results = '', $status = 200)
     {
         $this->results = $results;
+        $this->status = $status;
+    }
+
+    public function fetch($url, $method = 'GET', $contentType = '', $body = '')
+    {
+        if ($this->unreachable !== null && $url === $this->unreachable) {
+            return false;
+        }
+        if (isset($this->responses[$url])) {
+            $resp = $this->responses[$url];
+            $this->status = $resp['status'] ?? 200;
+            $this->results = $resp['results'] ?? '';
+        }
+        // Snoopy::fetch() returns the transport result, not a verdict on the
+        // status: it answers true for a 500 as readily as for a 200. A double
+        // that refused 4xx/5xx here would do the rejecting that the code under
+        // test is supposed to do, and a reverted fix would still pass.
+        return true;
+    }
+
+    public function setcookies()
+    {
+        $this->cookies['uid'] = '12345';
+        $this->cookies['pass'] = 'abcde';
     }
 }
 
-function kinozalIsOK($body)
+function kinozalIsOK($body, $status = 200)
 {
     $account = new KinozalTVAccount();
     $method = new ReflectionMethod('KinozalTVAccount', 'isOK');
     if (PHP_VERSION_ID < 80100) {
         $method->setAccessible(true);
     }
-    return $method->invoke($account, new KinozalFakeClient($body));
+    return $method->invoke($account, new KinozalFakeClient($body, $status));
+}
+
+function kinozalLogin($client, $user = 'user', $pass = 'pass')
+{
+    $account = new KinozalTVAccount();
+    $method = new ReflectionMethod('KinozalTVAccount', 'login');
+    if (PHP_VERSION_ID < 80100) {
+        $method->setAccessible(true);
+    }
+    $url = '';
+    $httpMethod = 'GET';
+    $contentType = '';
+    $body = '';
+    $isFetched = false;
+    return $method->invokeArgs($account, array($client, $user, $pass, &$url, &$httpMethod, &$contentType, &$body, &$isFetched));
 }
 
 // Captured from https://kinozal.guru/login.php on 2026-08-07: type= carries no
@@ -115,6 +159,42 @@ $suite->test('torrent bytes read as a live session', function () {
         . '4:name9:movie.mkv12:piece lengthi16384e6:pieces20:' . str_repeat("\0", 20) . 'ee';
     strictAssertSame(true, kinozalIsOK($raw),
         'a downloaded torrent must never be mistaken for a login wall');
+});
+
+$suite->test('a torrent whose comment names the signup page is still a torrent', function () {
+    // The registration link is a marker of a guest PAGE. A torrent is payload
+    // and may carry any bytes at all, so reading the marker out of one would
+    // cost a re-login, and the cached session, on every download of it.
+    $torrent = 'd8:announce31:http://tr.kinozal.guru/ann?uk=X7:comment28:see /signup.php to register'
+        . '4:infod6:lengthi1e4:name9:movie.mkv12:piece lengthi16384eee';
+    strictAssertSame(true, kinozalIsOK($torrent),
+        'a torrent must not be read as a login wall because of its comment');
+});
+
+$suite->test('login reports whether the exchange happened, not whether it was accepted', function () {
+    // The verdict belongs to commonAccount::fetch()/check(), which apply it to
+    // this same answer the moment login() returns; the other twenty-four
+    // accounts report the exchange and nothing more, and a login() that judged
+    // for itself would make "false" mean both "the tracker did not answer" and
+    // "the credentials were refused", which the caller cannot tell apart.
+    $client = new KinozalFakeClient();
+    $client->responses = array(
+        'https://kinozal.guru' => array('status' => 200, 'results' => '<html>main page</html>'),
+        'https://kinozal.guru/takelogin.php' => array('status' => 200, 'results' => kinozalLoginPage()),
+    );
+    strictAssertSame(true, kinozalLogin($client, 'baduser', 'badpass'),
+        'both requests went through, which is all login() is asked');
+    strictAssertSame(false, kinozalIsOK($client->results),
+        'and the guest form it came back with is what the caller then refuses');
+    strictAssertSame(true, isset($client->cookies['uid']), 'cookies are captured either way');
+});
+
+$suite->test('login fails when the tracker cannot be reached at all', function () {
+    $client = new KinozalFakeClient();
+    $client->responses = array('https://kinozal.guru' => array('status' => 200, 'results' => ''));
+    $client->unreachable = 'https://kinozal.guru/takelogin.php';
+    strictAssertSame(false, kinozalLogin($client, 'user', 'pass'),
+        'a request that did not go through is a failed login');
 });
 
 exit($suite->run());
