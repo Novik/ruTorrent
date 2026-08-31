@@ -81,7 +81,11 @@
 		"localhost",
 	);
 
-    getenv("RU_LOCALHOSTS") && $localhosts[] = $_ENV['RU_LOCALHOSTS'];
+	// Read from $_ENV, like every other RU_ setting here. Asking getenv()
+	// whether it is set and then reading $_ENV disagrees whenever
+	// variables_order has no E, which appends null instead of the address.
+	if(isset($_ENV['RU_LOCALHOSTS']) && ($_ENV['RU_LOCALHOSTS'] !== ''))
+		$localhosts[] = $_ENV['RU_LOCALHOSTS'];
 
 	$profilePath = $_ENV['RU_PROFILE_PATH'] ?? '../../share';		// Path to user profiles
 	// Environment values are strings; parse the documented octal notation before using it as a file mode.
