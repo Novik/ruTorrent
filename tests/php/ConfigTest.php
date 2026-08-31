@@ -45,11 +45,49 @@ class ConfigTest extends TestCase
 		);
 	}
 
+	public function testAMaskThatCouldNotBeReadSaysSo()
+	{
+		// The fallback is 0777, which is wider than any mask an admin sets one
+		// for. Taking it silently turns a typo into world-writable profiles.
+		$warned = null;
+		set_error_handler(function ($errno, $errstr) use (&$warned) {
+			$warned = $errstr;
+			return true;
+		});
+		$mask = $this->configuredProfileMask('02770');
+		restore_error_handler();
+
+		$this->assertEquals(0777, $mask, 'a mask that could not be read falls back to the default');
+		$this->assertTrue($warned !== null, 'and the fallback is reported');
+		$this->assertTrue(strpos($warned, 'RU_PROFILE_MASK') !== false,
+			'and the report names the setting: ' . var_export($warned, true));
+	}
+
+	public function testAMaskThatIsSimplyUnsetSaysNothing()
+	{
+		$warned = null;
+		set_error_handler(function ($errno, $errstr) use (&$warned) {
+			$warned = $errstr;
+			return true;
+		});
+		$mask = $this->configuredProfileMask('');
+		restore_error_handler();
+
+		$this->assertEquals(0777, $mask, 'an empty mask uses the documented default');
+		$this->assertTrue($warned === null, 'and says nothing, because nothing was asked for');
+	}
+
 	public function testInvalidEnvironmentProfileMaskUsesTheDefault()
 	{
+		// The fallback now reports itself; the handler keeps that out of the
+		// suite log without changing what this case asserts.
+		set_error_handler(function () { return true; });
+		$mask = $this->configuredProfileMask('not-a-mask');
+		restore_error_handler();
+
 		$this->assertEquals(
 			0777,
-			$this->configuredProfileMask('not-a-mask'),
+			$mask,
 			'An invalid RU_PROFILE_MASK cannot reach chmod or mkdir as a string'
 		);
 	}

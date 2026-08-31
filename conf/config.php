@@ -85,8 +85,11 @@
 
 	$profilePath = $_ENV['RU_PROFILE_PATH'] ?? '../../share';		// Path to user profiles
 	// Environment values are strings; parse the documented octal notation before using it as a file mode.
-	// An unset, empty, or malformed RU_PROFILE_MASK uses the documented 0777 default.
+	// An unset, empty, or malformed RU_PROFILE_MASK uses the documented 0777 default -- and a mask that
+	// was set but could not be read says so, because the default is wider than any mask worth setting.
 	$profileMask = $_ENV['RU_PROFILE_MASK'] ?? '';
+	if(($profileMask !== '') && !preg_match('/^0?[0-7]{3}$/D', $profileMask))
+		trigger_error('RU_PROFILE_MASK is not three or four octal digits; using the 0777 default.', E_USER_WARNING);
 	$profileMask = preg_match('/^0?[0-7]{3}$/D', $profileMask) ? intval($profileMask, 8) : 0777;
 						// Both Webserver and rtorrent users must have read-write access to it.
 						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
