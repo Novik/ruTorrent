@@ -142,7 +142,7 @@ describe("xmlrpc calls", () => {
       expect(theRequestManager.map("port_open")).toBe("network.port_open");
     });
 
-    for (const version of [0x1012, 0x1013]) {
+    for (const version of [0x1012, 0x1013, 0x1015]) {
       withRtorrentVersion(version, () => {
         expect(theRequestManager.map("get_port_range")).toBe(
           "network.listen.port.range"
@@ -202,6 +202,11 @@ describe("xmlrpc calls", () => {
       );
     });
     withRtorrentVersion(0x1014, () => {
+      expect(theRequestManager.map("d.is_partially_done=")).toBe(
+        "d.is_partially_done="
+      );
+    });
+    withRtorrentVersion(0x1015, () => {
       expect(theRequestManager.map("d.is_partially_done=")).toBe(
         "d.is_partially_done="
       );
