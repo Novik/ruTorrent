@@ -112,6 +112,33 @@ class TorrentMetaTest extends TestCase
 			'A parsed torrent re-encodes to the bytes it was read from');
 	}
 
+	public function testBinaryMetainfoIsNotProbedAsAFilesystemPath()
+	{
+		$pieces = str_repeat("\0", 20);
+		$raw = 'd4:infod6:lengthi1e4:name8:seed.bin12:piece lengthi16384e6:pieces20:'
+			. $pieces . 'ee';
+		$warnings = array();
+		set_error_handler(function($severity, $message) use (&$warnings) {
+			if($severity === E_WARNING)
+				$warnings[] = $message;
+			return true;
+		});
+		try
+		{
+			$torrent = new Torrent($raw);
+		}
+		finally
+		{
+			restore_error_handler();
+		}
+
+		$this->assertEquals(array(), $warnings,
+			'Binary metainfo bytes are not passed to filesystem path probes');
+		$this->assertTrue($torrent->errors() === false, 'Binary metainfo parses without errors');
+		$this->assertTrue($torrent->info['pieces'] === $pieces,
+			'The binary pieces field is preserved byte for byte');
+	}
+
 	public function testGettersReadTheKeysThatAreNotIdentifiers()
 	{
 		$torrent = new Torrent($this->fixture());

@@ -283,11 +283,17 @@ class Torrent
 		return true;
 	}
 
+	/** Binary bencode strings can contain NUL and are never filesystem paths. */
+	static private function isPathCandidate( $value )
+	{
+		return is_string( $value ) && strpos( $value, "\0" ) === false;
+	}
+
 	/**** Decode BitTorrent ****/
 
 	public function decode( $string )
 	{
-		if(is_file( $string ))
+		if(self::isPathCandidate( $string ) && is_file( $string ))
 		{
 			$this->data = file_get_contents( $string );
 			$this->filename = $string;
@@ -540,12 +546,12 @@ class Torrent
 			$this->info = $this->files( $data, $piece_length );
 	        	return(true);
 		}
-		if( is_dir( $data ) )
+		if( self::isPathCandidate( $data ) && is_dir( $data ) )
 		{
 			$this->info = $this->folder( $data, $piece_length );
 			return(true);
 		}
-        	if( is_file( $data ) && (pathinfo( $data, PATHINFO_EXTENSION ) != 'torrent') )
+		if( self::isPathCandidate( $data ) && is_file( $data ) && (pathinfo( $data, PATHINFO_EXTENSION ) != 'torrent') )
 		{
 			$this->info = $this->file( $data, $piece_length );
 			return(true);
