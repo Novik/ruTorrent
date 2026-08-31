@@ -782,6 +782,7 @@ var theWebUI = {
 		var needResize = false;
 		let needCatListSync = false;
 		var reply = null;
+		var pendingRTorrentSettings = {};
 		var emptyLimitLeavesUnchanged = {
 			max_uploads_global: true,
 			max_downloads_global: true,
@@ -808,9 +809,9 @@ var theWebUI = {
 				}
 				if(nv!=v)
 				{
-					theWebUI.settings[i] = nv;
 					if((/^webui\./).test(i))
 					{
+						theWebUI.settings[i] = nv;
 						needSave = true;
 						switch(i) {
 						        case "webui.effects":
@@ -893,6 +894,9 @@ var theWebUI = {
 					}
 					else
 					{
+						// Keep the read-back model at daemon-confirmed values until the
+						// entire rTorrent batch passes local preflight and is actually sent.
+						pendingRTorrentSettings[i] = nv;
 						// A number input is a numeric setting whether or not it also
 						// carries the legacy "num" class, and the prefix decides both
 						// the cast in action.php and which settings take the socket
@@ -914,6 +918,7 @@ var theWebUI = {
 		if((req.length>0) && theWebUI.systemInfo.rTorrent.started &&
 			this.socketAllocationAccepted())
 		{
+			$.each(pendingRTorrentSettings, function(i,v) { theWebUI.settings[i] = v; });
 			this.settingsSavePending = true;
 			this.setSettingsSaveButtons(true);
 			this.deferredSettingsSave = needSave ? { reply: reply } : null;

@@ -505,6 +505,61 @@ describe("the options save request", () => {
 		expect(theWebUI.settings.max_uploads_global).toBe("2");
 	});
 
+	it("keeps a preflight-rejected rTorrent batch out of the accepted settings model", () => {
+		loadSettingsUI();
+		theWebUI.systemInfo.rTorrent.socketAllocBudget = 100;
+		theWebUI.systemInfo.rTorrent.socketFilesAllocMin = 8;
+		theWebUI.systemInfo.rTorrent.socketFilesAllocMax = 90;
+		theWebUI.systemInfo.rTorrent.socketHttpAllocMax = 90;
+		theWebUI.settings = {
+			max_open_files: 10,
+			max_open_http: 10,
+			max_uploads_global: 1,
+		};
+		$("#max_open_files").val("95");
+		$("#max_open_http").val("10");
+		$("#max_uploads_global").val("2");
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+
+		expect(requests).toHaveLength(0);
+		expect(theWebUI.settings.max_open_files).toBe(10);
+		expect(theWebUI.settings.max_open_http).toBe(10);
+		expect(theWebUI.settings.max_uploads_global).toBe(1);
+	});
+
+	it("uses the accepted daemon value after a rejected socket edit is cleared", () => {
+		loadSettingsUI();
+		theWebUI.systemInfo.rTorrent.socketAllocBudget = 100;
+		theWebUI.systemInfo.rTorrent.socketFilesAllocMin = 8;
+		theWebUI.systemInfo.rTorrent.socketFilesAllocMax = 90;
+		theWebUI.systemInfo.rTorrent.socketHttpAllocMax = 90;
+		theWebUI.settings = {
+			max_open_files: 10,
+			max_open_http: 10,
+			max_uploads_global: 1,
+		};
+		$("#max_open_files").val("95");
+		$("#max_open_http").val("10");
+		$("#max_uploads_global").val("1");
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+		expect(requests).toHaveLength(0);
+
+		$("#max_open_files").val("");
+		$("#max_uploads_global").val("2");
+		theWebUI.setSettings();
+
+		expect(requests).toHaveLength(1);
+		expect(requests[0].ss).toStrictEqual(["nmax_uploads_global"]);
+		expect(theWebUI.settings.max_open_files).toBe(10);
+		expect(theWebUI.settings.max_uploads_global).toBe("2");
+	});
+
 	it("keeps an explicitly typed zero as a numeric write", () => {
 		loadSettingsUI();
 		theWebUI.settings = { max_uploads_global: 1 };
