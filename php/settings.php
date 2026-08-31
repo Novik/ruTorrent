@@ -17,6 +17,10 @@ class rTorrentSettings
 	public $version;
 	public $libVersion;
 	public $apiVersion = 0;
+	// rtorrent 0.16.21. system.sockets.available_alloc and the per-category
+	// limits do not exist before it, so the whole probe is gated on this.
+	const SOCKET_ALLOC_VERSION = 0x1015;
+
 	public $socketAllocBudget = 0;
 	public $socketHttpAllocMax = 0;
 	public $socketFilesAllocMax = 0;
@@ -254,7 +258,7 @@ class rTorrentSettings
 			// categories may share. internal and rpc are not exposed on the
 			// settings page, so what is left is what open files and HTTP
 			// connections have between them. Absent before rtorrent 0.16.21.
-			if($this->iVersion>=0x1015)
+			if(self::socketAllocSupported($this->iVersion))
 			{
 				$req = new rXMLRPCRequest( array(
 					new rXMLRPCCommand("system.sockets.available_alloc"),
@@ -264,13 +268,8 @@ class rTorrentSettings
 					new rXMLRPCCommand("system.sockets.files.max_alloc.limit"),
 					new rXMLRPCCommand("system.sockets.files.min_alloc.limit") ) );
 				$req->important = false;
-				if($req->success() && (count($req->val)==6))
-				{
-					$this->socketAllocBudget = max(0,$req->val[0]-$req->val[1]-$req->val[2]);
-					$this->socketHttpAllocMax = $req->val[3];
-					$this->socketFilesAllocMax = $req->val[4];
-					$this->socketFilesAllocMin = $req->val[5];
-				}
+				if($req->success())
+					$this->applySocketAllocLimits($req->val);
 			}
 
 			$req = new rXMLRPCRequest(new rXMLRPCCommand(
@@ -379,6 +378,44 @@ class rTorrentSettings
 		$cmd->addParameters($args);
 		return($cmd);
 	}
+	/**
+	 * Whether the daemon reports its socket allocation limits at all.
+	 *
+	 * @param int|null $iVersion packed rtorrent version, or null when unknown
+	 */
+	public static function socketAllocSupported( $iVersion )
+	{
+		// null before the version has been read, and 0 is the sentinel
+		// php/getplugins.php emits while the daemon is unreachable. Both
+		// compare below the threshold, so neither is asked.
+		return($iVersion>=self::SOCKET_ALLOC_VERSION);
+	}
+
+	/**
+	 * Take the limits out of the answer to the six-command probe.
+	 *
+	 * The budget is what the two categories the settings page offers have
+	 * between them: the total, less the two categories it does not offer. A
+	 * daemon that answered with anything else leaves the defaults alone --
+	 * a zero budget is read as "unknown" by the settings page, and a wrong
+	 * one would be offered to the user as a limit to type against.
+	 *
+	 * @param array $val the six values, in the order they were asked for
+	 */
+	public function applySocketAllocLimits( $val )
+	{
+		if(!is_array($val) || (count($val)!=6))
+			return(false);
+		foreach($val as $v)
+			if(!is_numeric($v))
+				return(false);
+		$this->socketAllocBudget = max(0,$val[0]-$val[1]-$val[2]);
+		$this->socketHttpAllocMax = $val[3];
+		$this->socketFilesAllocMax = $val[4];
+		$this->socketFilesAllocMin = $val[5];
+		return(true);
+	}
+
 	public function getOnInsertCommand($args)
 	{
 		return($this->getEventCommand('on_insert','inserted_new',$args));
