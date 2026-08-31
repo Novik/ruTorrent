@@ -98,6 +98,31 @@ class XMLRPCProxyRejectionTest extends TestCase
 
 	// --- the fault the door renders names the command and blames this server ---
 
+	public function testRejectionMessageNamesTheCommand()
+	{
+		$this->assertTrue(method_exists('XMLRPCProxy', 'rejectionMessage'),
+			'the proxy exposes one raw refusal message for both HTTP doors');
+		if(!method_exists('XMLRPCProxy', 'rejectionMessage'))
+			return;
+
+		$this->assertEquals("The command 'execute.capture' was rejected by this server.",
+			XMLRPCProxy::rejectionMessage('execute.capture'),
+			'the named raw refusal message identifies the refused command');
+	}
+
+	public function testRejectionMessageWithoutACommandIsGeneric()
+	{
+		if(!method_exists('XMLRPCProxy', 'rejectionMessage'))
+		{
+			$this->assertTrue(false, 'the proxy exposes one raw generic refusal message');
+			return;
+		}
+
+		$this->assertEquals('This XMLRPC call was rejected by this server.',
+			XMLRPCProxy::rejectionMessage(null),
+			'the generic raw refusal message still blames this server');
+	}
+
 	public function testRejectionFaultNamesTheCommandAndBlamesThisServer()
 	{
 		$this->assertTrue(method_exists('XMLRPCProxy', 'rejectionFault'),

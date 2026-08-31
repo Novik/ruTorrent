@@ -173,11 +173,14 @@ if((($topDirectory === '') || ($topDirectory === '/')) && !$allowRootDirectory)
 }
 
 $raw = file_get_contents('php://input');
-if($raw === false || ($raw === ''))
+if($raw === false)
 {
-	// An empty body is what arrives when post_max_size is smaller than the
-	// request, which is easy to hit when a client adds a torrent by file.
-	rpc2_log('empty request body (check post_max_size against the largest torrent you add)');
+	rpc2_log('could not read request body');
+	rpc2_fault('400 Bad Request', 'Could not read XMLRPC request.');
+}
+if($raw === '')
+{
+	rpc2_log('empty request body');
 	rpc2_fault('400 Bad Request', 'Empty XMLRPC request.');
 }
 
@@ -191,7 +194,7 @@ foreach($decision['log'] as $line)
 	rpc2_log($line);
 
 if($decision['action'] !== 'send')
-	rpc2_fault('403 Forbidden', 'This XMLRPC call is not allowed on this endpoint.');
+	rpc2_fault('403 Forbidden', XMLRPCProxy::rejectionMessage($decision['method'] ?? null));
 
 $result = rpc2_send($decision['payload'], $decision['trusted']);
 if($result === null)
