@@ -739,8 +739,12 @@ var theWebUI = {
 		if(!filesField.length || !httpField.length)
 			return(true);
 
-		var files = iv(filesField.val());
-		var http = iv(httpField.val());
+		// A cleared numeric field means "leave unchanged". Validate the last
+		// known value so another setting can still be saved in the same pass.
+		var filesValue = filesField.val();
+		var httpValue = httpField.val();
+		var files = iv(filesValue==="" ? this.settings.max_open_files : filesValue);
+		var http = iv(httpValue==="" ? this.settings.max_open_http : httpValue);
 		var filesMin = this.socketAllocLimit('socketFilesAllocMin');
 		var filesMax = this.socketAllocLimit('socketFilesAllocMax');
 		var httpMax = this.socketAllocLimit('socketHttpAllocMax');
@@ -778,11 +782,23 @@ var theWebUI = {
 		var needResize = false;
 		let needCatListSync = false;
 		var reply = null;
+		var emptyLimitLeavesUnchanged = {
+			max_uploads_global: true,
+			max_downloads_global: true,
+			max_memory_usage: true,
+			max_open_files: true,
+			max_open_http: true
+		};
 		$.each(this.settings, function(i,v) {
 			var o = $$(i);
 			if (o) {
 				o = $(o);
+				var numericInput = o.hasClass("num") || o.is("input[type=number]");
 				var nv = o.is("input:checkbox") ? (o.prop('checked') ? 1 : 0) : o.val();
+				// Clearing one of these five rTorrent limits is not an instruction to
+				// write zero. Other numeric inputs may use empty as a real UI sentinel.
+				if(nv==="" && emptyLimitLeavesUnchanged[i]===true)
+					return;
 				switch(i) {
 					case "max_memory_usage":
 						nv *= 1024;  // falls through
@@ -881,8 +897,7 @@ var theWebUI = {
 						// carries the legacy "num" class, and the prefix decides both
 						// the cast in action.php and which settings take the socket
 						// allocation path.
-						var k_type = o.is("input:checkbox") || o.is("select") || o.hasClass("num") ||
-							o.is("input[type=number]") ? "n" : "s";
+						var k_type = o.is("input:checkbox") || o.is("select") || numericInput ? "n" : "s";
 						req+=("&s="+k_type+i+"&v="+nv);
 					}
 				}
@@ -923,6 +938,7 @@ var theWebUI = {
 
 	releaseSettingsSave: function()
 	{
+		$("#settings_save_indeterminate").empty().hide();
 		this.settingsSavePending = false;
 		this.setSettingsSaveButtons(false);
 	},
@@ -932,7 +948,13 @@ var theWebUI = {
 		// Do not let a deferred reload erase the only same-document lock while the
 		// server may still be applying the write or its restore.
 		this.deferredSettingsSave = null;
-		noty("Settings outcome is unknown. Save remains locked; reload manually only after rTorrent responds.","error");
+		var message = theUILang.Settings_save_indeterminate;
+		var persistent = $("#settings_save_indeterminate");
+		if(!persistent.length)
+			persistent = $("<div>").attr({id:"settings_save_indeterminate",role:"alert","aria-live":"assertive"})
+				.addClass("alert alert-danger").insertBefore("#st_btns");
+		persistent.text(message).show();
+		noty(message,"error");
 	},
 
 	setSettingsSaveButtons: function(disabled)

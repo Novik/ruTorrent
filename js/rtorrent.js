@@ -383,13 +383,7 @@ rTorrentStub.prototype.setsettings = function()
 		var prmType = "string";
 		var prm = this.vs[i];
 		if(this.ss[i].charAt(0)=='n')
-		{
 			prmType = "i8";
-			// Match the httprpc door: an empty numeric field is a valid zero,
-			// not an undecodable empty XML-RPC integer that rejects the batch.
-			if(prm==="")
-				prm = 0;
-		}
 		var cmd = null;
 		var socketAlloc = theRequestManager.getSocketAllocCategory(this.ss[i]);
 		if(this.ss[i]=="ndht")

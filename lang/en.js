@@ -329,5 +329,6 @@ var theUILang =
  Torrents			: "Torrent(s)",
  copyToClipboardFailed		: "The copy function isn't working in your browser.\nPlease copy this content manually:\n\n",
  copyToClipboardSuccess		: "Copied to clipboard successfully!",
- normalizeTorrentName		: "Sort using the normalized torrent name and recognize the name label"
+ normalizeTorrentName		: "Sort using the normalized torrent name and recognize the name label",
+ Settings_save_indeterminate	: "Settings outcome is unknown. Save remains locked; reload manually only after rTorrent responds."
 };

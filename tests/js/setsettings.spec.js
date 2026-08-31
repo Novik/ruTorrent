@@ -136,11 +136,12 @@ describe("direct setsettings refusal recovery", () => {
     );
   }
 
-  it("writes zero for a cleared numeric setting but keeps a cleared string empty", () => {
+  it("does not silently rewrite an unexpected empty numeric request to zero", () => {
     expect(commandsFor("?action=setsettings&s=nmax_uploads_global&v=")).toStrictEqual([
-      ["throttle.max_uploads.global.set", "string:", "i8:0"],
+      ["throttle.max_uploads.global.set", "string:", "i8:"],
     ]);
-    expect(new rTorrentStub("?action=setsettings&s=nmax_uploads_global&v=").content).toContain("<i8>0</i8>");
+    expect(new rTorrentStub("?action=setsettings&s=nmax_uploads_global&v=").content).toContain("<i8></i8>");
+    expect(new rTorrentStub("?action=setsettings&s=nmax_uploads_global&v=").content).not.toContain("<i8>0</i8>");
     expect(commandsFor("?action=setsettings&s=sdirectory&v=")).toStrictEqual([
       ["directory.default.set", "string:", "string:"],
     ]);
@@ -298,7 +299,10 @@ describe("the options save request", () => {
 	});
 
 	function loadSettingsUI() {
-    window.theUILang = new Proxy({}, { get: (_target, prop) => prop });
+    window.theUILang = new Proxy(
+      { Settings_save_indeterminate: "Localized persistent settings recovery guidance" },
+      { get: (target, prop) => target[prop] ?? prop }
+    );
     window.theFormatter = {};
     window.TYPE_STRING = "string";
     window.TYPE_NUMBER = "number";
@@ -423,6 +427,112 @@ describe("the options save request", () => {
     expect(requests).toHaveLength(1);
     expect(requests[0].ss.sort()).toStrictEqual(ids.map((id) => "n" + id).sort());
   });
+
+	it("leaves all five cleared numeric settings unchanged", () => {
+		loadSettingsUI();
+		const previous = {
+			max_uploads_global: 10,
+			max_downloads_global: 20,
+			max_memory_usage: 30 * 1024 * 1024,
+			max_open_files: 40,
+			max_open_http: 50,
+		};
+		theWebUI.settings = { ...previous };
+		Object.keys(previous).forEach((id) => $("#" + $.escapeSelector(id)).val(""));
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+
+		expect(requests).toHaveLength(0);
+		expect(theWebUI.settings).toStrictEqual(previous);
+	});
+
+	it.each([
+		"max_uploads_global",
+		"max_downloads_global",
+		"max_memory_usage",
+		"max_open_files",
+		"max_open_http",
+	])("leaves one cleared %s unchanged while saving a numeric sibling", (cleared) => {
+		loadSettingsUI();
+		const previous = {
+			max_uploads_global: 10,
+			max_downloads_global: 20,
+			max_memory_usage: 30 * 1024 * 1024,
+			max_open_files: 40,
+			max_open_http: 50,
+		};
+		const displayed = { ...previous, max_memory_usage: 30 };
+		theWebUI.settings = { ...previous };
+		Object.entries(displayed).forEach(([id, value]) =>
+			$("#" + $.escapeSelector(id)).val(String(value)));
+		const changed = cleared === "max_uploads_global" ? "max_downloads_global" : "max_uploads_global";
+		$("#" + $.escapeSelector(cleared)).val("");
+		$("#" + $.escapeSelector(changed)).val(String(displayed[changed] + 1));
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+
+		expect(requests).toHaveLength(1);
+		expect(requests[0].ss).toStrictEqual(["n" + changed]);
+		expect(theWebUI.settings[cleared]).toBe(previous[cleared]);
+	});
+
+	it("skips a cleared socket field while saving a changed numeric sibling", () => {
+		loadSettingsUI();
+		theWebUI.systemInfo.rTorrent.socketAllocBudget = 100;
+		theWebUI.systemInfo.rTorrent.socketFilesAllocMin = 8;
+		theWebUI.systemInfo.rTorrent.socketFilesAllocMax = 90;
+		theWebUI.systemInfo.rTorrent.socketHttpAllocMax = 90;
+		theWebUI.settings = {
+			max_open_files: 10,
+			max_open_http: 10,
+			max_uploads_global: 1,
+		};
+		$("#max_open_files").val("");
+		$("#max_open_http").val("10");
+		$("#max_uploads_global").val("2");
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+
+		expect(requests).toHaveLength(1);
+		expect(requests[0].ss).toStrictEqual(["nmax_uploads_global"]);
+		expect(theWebUI.settings.max_open_files).toBe(10);
+		expect(theWebUI.settings.max_uploads_global).toBe("2");
+	});
+
+	it("keeps an explicitly typed zero as a numeric write", () => {
+		loadSettingsUI();
+		theWebUI.settings = { max_uploads_global: 1 };
+		$("#max_uploads_global").val("0");
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+
+		expect(requests).toHaveLength(1);
+		expect(requests[0].ss).toStrictEqual(["nmax_uploads_global"]);
+		expect(requests[0].vs).toStrictEqual(["0"]);
+		expect(requests[0].content).toContain("<i8>0</i8>");
+	});
+
+	it("keeps an empty WebUI numeric sentinel so Default can be restored", () => {
+		loadSettingsUI();
+		const key = "webui.size_decimal_places.table.mb";
+		theWebUI.configured = true;
+		theWebUI.settings = { [key]: "2" };
+		$("#" + $.escapeSelector(key)).val("");
+		const save = jest.spyOn(theWebUI, "save").mockImplementation(() => {});
+
+		theWebUI.setSettings();
+
+		expect(theWebUI.settings[key]).toBe("");
+		expect(save).toHaveBeenCalledTimes(1);
+	});
 
 	it("disables the real Save button until a failed direct save finishes reconciliation", () => {
 		loadSettingsUI();
@@ -835,10 +945,18 @@ describe("the options save request", () => {
 		expect(theWebUI.settingsSavePending).toBe(true);
 		expect(save.disabled).toBe(true);
 		expect(reload).not.toHaveBeenCalled();
-		expect(notice).toHaveBeenCalledTimes(1);
-		expect(notice).toHaveBeenCalledWith(expect.stringMatching(/outcome is unknown/i), "error");
-		expect(notice).toHaveBeenCalledWith(expect.stringMatching(/Save remains locked/), "error");
-		expect(notice).toHaveBeenCalledWith(expect.stringMatching(/reload.*after rTorrent responds/i), "error");
+		const persistent = document.querySelector("#settings_save_indeterminate");
+		expect(persistent).not.toBeNull();
+		expect(persistent.getAttribute("role")).toBe("alert");
+		expect(persistent.getAttribute("aria-live")).toBe("assertive");
+		expect(persistent.textContent).toBe(theUILang.Settings_save_indeterminate);
+		expect(persistent.style.display).not.toBe("none");
+		$("#stg_c").hide().show();
+		expect(persistent.textContent).toBe(theUILang.Settings_save_indeterminate);
+		expect(save.disabled).toBe(true);
+		expect(notice.mock.calls.filter(([message]) =>
+			message === theUILang.Settings_save_indeterminate)).toHaveLength(1);
+		expect(notice).toHaveBeenCalledWith(theUILang.Settings_save_indeterminate, "error");
 	});
 
 	it("unlocks after getsettings returns an HTTP-200 XML-RPC fault", () => {
@@ -916,8 +1034,9 @@ describe("the options save request", () => {
 		expect(theWebUI.settingsSavePending).toBe(true);
 		expect(save.disabled).toBe(true);
 		expect(reload).not.toHaveBeenCalled();
-		expect(notice.mock.calls.filter(([message]) => /outcome is unknown/i.test(message))).toHaveLength(1);
-		expect(notice).toHaveBeenCalledWith(expect.stringMatching(/Save remains locked/), "error");
+		expect(notice.mock.calls.filter(([message]) =>
+			message === theUILang.Settings_save_indeterminate)).toHaveLength(1);
+		expect(notice).toHaveBeenCalledWith(theUILang.Settings_save_indeterminate, "error");
 	});
 
 	it("reconciles once after a restore HTTP-200 XML-RPC fault and unlocks Save", () => {
@@ -1040,6 +1159,29 @@ describe("the options save request", () => {
 		expect(save.disabled).toBe(false);
 	});
 
+	it("omits a cleared numeric field from an enabled httprpc request", () => {
+		loadSettingsUI();
+		enableHttprpc();
+		theWebUI.settings = {
+			max_open_files: 10,
+			max_open_http: 10,
+			max_uploads_global: 1,
+		};
+		$("#max_open_files").val("");
+		$("#max_open_http").val("10");
+		$("#max_uploads_global").val("2");
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+
+		expect(requests).toHaveLength(1);
+		const params = new URLSearchParams(requests[0].content);
+		expect(params.get("mode")).toBe("setsettings");
+		expect(params.getAll("s")).toStrictEqual(["nmax_uploads_global"]);
+		expect(params.getAll("v")).toStrictEqual(["2"]);
+	});
+
 	it("keeps an enabled httprpc status-zero refusal indeterminate", () => {
 		loadSettingsUI();
 		enableHttprpc();
@@ -1061,7 +1203,7 @@ describe("the options save request", () => {
 		expect(theWebUI.settingsSavePending).toBe(true);
 		expect(save.disabled).toBe(true);
 		expect(notice).toHaveBeenCalledTimes(1);
-		expect(notice).toHaveBeenCalledWith(expect.stringMatching(/outcome is unknown/i), "error");
+		expect(notice).toHaveBeenCalledWith(theUILang.Settings_save_indeterminate, "error");
 	});
 });
 

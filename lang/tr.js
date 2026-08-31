@@ -323,5 +323,6 @@ var theUILang =
  Torrents: "Torrent",
  copyToClipboardFailed : "Tarayıcınızda kopyalama işlevi çalışmıyor.\nLütfen bunu kendiniz kopyalayın:\n\n",
  copyToClipboardSuccess : "Panoya başarıyla kopyalandı.",
- normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label",
+ Settings_save_indeterminate	: "Settings outcome is unknown. Save remains locked; reload manually only after rTorrent responds."
 };

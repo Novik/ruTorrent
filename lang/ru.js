@@ -323,5 +323,6 @@ var theUILang =
  Torrents			: "Торренты",
  copyToClipboardFailed		: "Функция копирования не работает в вашем браузере.\nСкопируйте требуемое вручную.\n\n",
  copyToClipboardSuccess		: "Успешно скопировано!",
- normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label",
+ Settings_save_indeterminate	: "Результат сохранения неизвестен. Сохранение заблокировано; перезагрузите страницу вручную только после восстановления ответа rTorrent."
 };

@@ -322,5 +322,6 @@ var theUILang =
  Torrents			: "Torrent(er)",
  copyToClipboardFailed		: "Kopier-funksjonen virker ikke i nettleseren din.\nVennligst kopier dette innholdet manuelt:\n\n",
  copyToClipboardSuccess		: "Kopiert til utklippstavlen!",
- normalizeTorrentName		: "Sort using normalized torrent name and recognize name label"
+ normalizeTorrentName		: "Sort using normalized torrent name and recognize name label",
+ Settings_save_indeterminate	: "Settings outcome is unknown. Save remains locked; reload manually only after rTorrent responds."
 };
