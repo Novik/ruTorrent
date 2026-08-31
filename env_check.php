@@ -91,6 +91,18 @@ class Requirements
 			((bool)preg_match('#^[A-Za-z]:[\\\\/]#', $path) || strncmp($path, '\\\\', 2) === 0);
 	}
 
+	/**
+	 * conf/config.php reads RU_PROFILE_MASK as three or four octal digits and
+	 * falls back to 0777 for anything else -- which is wider than any mask
+	 * somebody sets one for, so a value it could not read is worth reporting.
+	 * An absent or empty mask is not a mistake; it asks for the default.
+	 */
+	public static function profileMaskValid($value)
+	{
+		if ($value === null || $value === '') return true;
+		return is_string($value) && (bool)preg_match('/^0?[0-7]{3}$/D', $value);
+	}
+
 	public static function logFileStreamScheme($path)
 	{
 		if (!is_string($path) ||
@@ -246,6 +258,15 @@ if ($cfg === null) {
 				: 'must be an absolute path or stream URI: ' . $cfg['log'];
 			check('config', $ok, '$log_file writable', $detail);
 		}
+	}
+	// Read the way conf/config.php reads it, so the checker sees what the
+	// configuration sees rather than what the shell happens to export.
+	$rawMask = isset($_ENV['RU_PROFILE_MASK']) ? $_ENV['RU_PROFILE_MASK'] : '';
+	if ($rawMask !== '') {
+		check('config', Requirements::profileMaskValid($rawMask), 'RU_PROFILE_MASK',
+			Requirements::profileMaskValid($rawMask)
+				? 'octal file mode: ' . $rawMask
+				: 'not three or four octal digits, so the wider 0777 default is in use: ' . $rawMask);
 	}
 	if (!empty($cfg['tmp'])) {
 		check('config', @is_dir($cfg['tmp']) && @is_writable($cfg['tmp']), '$tempDirectory writable', $cfg['tmp']);
