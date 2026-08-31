@@ -25,6 +25,39 @@ class FileUtil
 		return( (($len == 0) || ($str[$len-1] != '/')) ? $str : substr($str,0,$len-1) );
 	}
 
+	private static function logFileStreamScheme( $path )
+	{
+		if( !is_string( $path ) ||
+			!preg_match('/^([A-Za-z][A-Za-z0-9+.-]*):\/\//', $path, $matches) )
+			return(null);
+		return($matches[1]);
+	}
+
+	private static function fileUriFilesystemPath( $path )
+	{
+		$parts = parse_url($path);
+		if( !is_array($parts) || !isset($parts['scheme']) ||
+			(strcasecmp($parts['scheme'], 'file') != 0) || !isset($parts['path']) ||
+			isset($parts['user']) || isset($parts['pass']) || isset($parts['port']) ||
+			isset($parts['query']) || isset($parts['fragment']) )
+			return(null);
+		$host = isset($parts['host']) ? $parts['host'] : '';
+		if( ($host === '') || (strcasecmp($host, 'localhost') == 0) )
+			return($parts['path']);
+		return( (DIRECTORY_SEPARATOR == '\\') ?
+			'\\\\'.$host.str_replace('/', '\\', $parts['path']) : null );
+	}
+
+	private static function isAbsoluteLogPath( $path )
+	{
+		if( !is_string( $path ) || ($path === '') )
+			return(false);
+		if( $path[0] == '/' )
+			return(true);
+		return( (DIRECTORY_SEPARATOR == '\\') &&
+			(preg_match('/^[A-Za-z]:[\\\\\/]/', $path) || (strncmp($path, '\\\\', 2) == 0)) );
+	}
+
 	public static function fullpath($path,$base = '')
 	{
 		$root  = '';
@@ -247,13 +280,26 @@ class FileUtil
 		global $log_file, $profileMask;
 		if( $log_file && strlen( $log_file ) > 0 )
 		{
-			// dmrom: set proper permissions (need if rtorrent user differs from www user)
-			if( !is_file( $log_file ) )
+			$streamScheme = self::logFileStreamScheme( $log_file );
+			$isFileStream = !is_null($streamScheme) && (strcasecmp($streamScheme, 'file') == 0);
+			$isFilesystem = is_null($streamScheme) || $isFileStream;
+			$filesystemPath = $isFileStream ? self::fileUriFilesystemPath($log_file) : $log_file;
+			if( $isFilesystem && (is_null($filesystemPath) || !self::isAbsoluteLogPath( $filesystemPath )) )
 			{
-				touch( $log_file );
-				chmod( $log_file, (isset($profileMask) ? $profileMask : 0777) & 0666 );
+				trigger_error('$log_file must be an absolute path or stream URI; the log line was not written.', E_USER_WARNING);
+				return;
 			}
-			$w = fopen( $log_file, "ab+" );
+			$logTarget = $isFilesystem ? $filesystemPath : $log_file;
+			$exists = $isFilesystem ? file_exists( $logTarget ) : @file_exists( $logTarget );
+			// dmrom: set proper permissions (need if rtorrent user differs from www user)
+			if( !$exists && $isFilesystem )
+			{
+				touch( $logTarget );
+				chmod( $logTarget, (isset($profileMask) ? $profileMask : 0777) & 0666 );
+			}
+			// Regular and unstatable stream logs only need write access. Keep the
+			// old mode for FIFOs, where a write-only open blocks until a reader appears.
+			$w = fopen( $logTarget, (!$isFilesystem && !$exists) || is_file( $logTarget ) ? "ab" : "ab+" );
 			if( $w )
 			{
 				fputs( $w, "[".date_create()->format('Y-m-d H:i:s')."] {$str}\n" );

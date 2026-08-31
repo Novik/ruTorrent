@@ -36,7 +36,7 @@
 	$do_diagnostic = true;			// Diagnose ruTorrent. Recommended to keep enabled, unless otherwise required.
 	$al_diagnostic = true;			// Diagnose auto-loader. Set to "false" to make composer plugins work.
 
-	$log_file = $_ENV['RU_LOG_FILE'] ?? '/tmp/errors.log'; // path to log file (comment or leave blank to disable logging)
+	$log_file = $_ENV['RU_LOG_FILE'] ?? '/tmp/errors.log'; // absolute path or stream URI (comment or leave blank to disable logging)
 
 	$saveUploadedTorrents = true;		// Save uploaded torrents to profile/torrents directory or not
 	$overwriteUploadedTorrents = false;	// Overwrite existing uploaded torrents in profile/torrents directory or make unique name
@@ -84,7 +84,10 @@
     getenv("RU_LOCALHOSTS") && $localhosts[] = $_ENV['RU_LOCALHOSTS'];
 
 	$profilePath = $_ENV['RU_PROFILE_PATH'] ?? '../../share';		// Path to user profiles
-	$profileMask = $_ENV['RU_PROFILE_MASK'] ?? 0777;			// Mask for files and directory creation in user profiles.
+	// Environment values are strings; parse the documented octal notation before using it as a file mode.
+	// An unset, empty, or malformed RU_PROFILE_MASK uses the documented 0777 default.
+	$profileMask = $_ENV['RU_PROFILE_MASK'] ?? '';
+	$profileMask = preg_match('/^0?[0-7]{3}$/D', $profileMask) ? intval($profileMask, 8) : 0777;
 						// Both Webserver and rtorrent users must have read-write access to it.
 						// For example, if Webserver and rtorrent users are in the same group then the value may be 0770.
 

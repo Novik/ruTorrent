@@ -69,9 +69,60 @@ class RequirementsTest extends TestCase
 	public function testLooksAbsolute()
 	{
 		$this->assertTrue(Requirements::looksAbsolute('/torrents/data'), 'unix absolute');
-		$this->assertTrue(Requirements::looksAbsolute('C:\\torrents'), 'windows absolute');
+		$this->assertEquals(
+			DIRECTORY_SEPARATOR === '\\',
+			Requirements::looksAbsolute('C:\\torrents'),
+			'Windows drive paths are absolute only on Windows'
+		);
 		$this->assertTrue(!Requirements::looksAbsolute('relative/path'), 'relative is not absolute');
 		$this->assertTrue(!Requirements::looksAbsolute(''), 'empty is not absolute');
+	}
+
+	public function testLogFilePathIsStableAcrossEntryPointDirectories()
+	{
+		$this->assertTrue(Requirements::logFilePathValid('/tmp/errors.log'), 'absolute log path');
+		$this->assertTrue(Requirements::logFilePathValid('php://stderr'), 'stream log URI');
+		$this->assertTrue(Requirements::logFilePathValid('file:///tmp/errors.log'), 'absolute file URI');
+		$this->assertTrue(Requirements::logFilePathValid('file://localhost/tmp/errors.log'), 'localhost file URI');
+		$this->assertEquals(
+			DIRECTORY_SEPARATOR === '\\',
+			Requirements::logFilePathValid('file://server/share/errors.log'),
+			'A remote file authority is a UNC path only on Windows'
+		);
+		$this->assertTrue(!Requirements::logFilePathValid('errors.log'), 'relative log path is unstable');
+	}
+
+	public function testLogFileStreamScheme()
+	{
+		$this->assertEquals('php', Requirements::logFileStreamScheme('php://stderr'));
+		$this->assertEquals('custom-1', Requirements::logFileStreamScheme('custom-1://sink'));
+		$this->assertEquals('MyScheme', Requirements::logFileStreamScheme('MyScheme://sink'));
+		$this->assertTrue(Requirements::logFileStreamScheme('/tmp/errors.log') === null, 'plain path has no stream scheme');
+	}
+
+	public function testLogFileStreamAvailability()
+	{
+		$wrappers = array('file', 'http', 'php', 'MyScheme');
+		$this->assertTrue(
+			Requirements::logFileStreamAvailable('php://stderr', $wrappers),
+			'A registered log stream wrapper is available'
+		);
+		$this->assertTrue(
+			Requirements::logFileStreamAvailable('PHP://stderr', $wrappers),
+			'A built-in log stream wrapper is case-insensitive'
+		);
+		$this->assertTrue(
+			Requirements::logFileStreamAvailable('MyScheme://sink', $wrappers),
+			'A mixed-case custom wrapper keeps its registered spelling'
+		);
+		$this->assertTrue(
+			!Requirements::logFileStreamAvailable('myscheme://sink', $wrappers),
+			'A custom wrapper with the wrong case is unavailable'
+		);
+		$this->assertTrue(
+			!Requirements::logFileStreamAvailable('nosuch://sink', $wrappers),
+			'An unregistered log stream wrapper is unavailable'
+		);
 	}
 
 	public function testRutorrentHandlersIgnoresRtorrentBuiltins()

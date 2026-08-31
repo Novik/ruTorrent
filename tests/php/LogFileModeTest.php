@@ -3,6 +3,64 @@
 require_once(__DIR__ . '/TestCase.php');
 require_once(__DIR__ . '/../../php/utility/fileutil.php');
 
+class LogFileModeStream
+{
+	public $context;
+	public static $fileType;
+	public static $exists;
+	public static $metadataCalls;
+	public static $openModes;
+	public static $body;
+
+	public static function reset($fileType, $exists = true)
+	{
+		clearstatcache(true, 'rutorrent-log-test://sink');
+		self::$fileType = $fileType;
+		self::$exists = $exists;
+		self::$metadataCalls = array();
+		self::$openModes = array();
+		self::$body = '';
+	}
+
+	private static function statResult()
+	{
+		$mode = self::$fileType | 0600;
+		$size = strlen(self::$body);
+		return array(
+			2 => $mode, 7 => $size,
+			'mode' => $mode, 'size' => $size,
+		);
+	}
+
+	public function url_stat($path, $flags)
+	{
+		return self::$exists ? self::statResult() : false;
+	}
+
+	public function stream_open($path, $mode, $options, &$openedPath)
+	{
+		self::$openModes[] = $mode;
+		return true;
+	}
+
+	public function stream_write($data)
+	{
+		self::$body .= $data;
+		return strlen($data);
+	}
+
+	public function stream_flush()
+	{
+		return true;
+	}
+
+	public function stream_metadata($path, $option, $value)
+	{
+		self::$metadataCalls[] = $option;
+		return true;
+	}
+}
+
 /**
  * FileUtil::toLog() creates $log_file on first write. $profileMask is the only
  * knob an operator has for saying how permissive ruTorrent may be when it
@@ -22,6 +80,9 @@ class LogFileModeTest extends TestCase
 
 	public function setUp()
 	{
+		if (!in_array('rutorrent-log-test', stream_get_wrappers(), true)) {
+			stream_wrapper_register('rutorrent-log-test', 'LogFileModeStream');
+		}
 		$this->dir = sys_get_temp_dir() . '/rutorrent-log-file-mode-test-' . getmypid();
 		if (!is_dir($this->dir)) {
 			mkdir($this->dir, 0777, true);
@@ -34,6 +95,9 @@ class LogFileModeTest extends TestCase
 		$this->clean();
 		if (is_dir($this->dir)) {
 			rmdir($this->dir);
+		}
+		if (in_array('rutorrent-log-test', stream_get_wrappers(), true)) {
+			stream_wrapper_unregister('rutorrent-log-test');
 		}
 	}
 
@@ -150,6 +214,202 @@ class LogFileModeTest extends TestCase
 		$this->assertTrue(
 			strpos($body, 'probe') !== false && strpos($body, 'second line') !== false,
 			'Both lines are appended to the log'
+		);
+	}
+
+	public function testAnExistingNonRegularLogIsNotTouchedOrReChmodded()
+	{
+		LogFileModeStream::reset(0010000); // FIFO
+		$GLOBALS['log_file'] = 'rutorrent-log-test://sink';
+		$GLOBALS['profileMask'] = 0777;
+		FileUtil::toLog('probe');
+		$this->assertEquals(
+			array(),
+			LogFileModeStream::$metadataCalls,
+			'An existing non-regular log keeps its operator-assigned permissions'
+		);
+	}
+
+	public function testAnExistingNonRegularFilesystemPathIsNotReChmodded()
+	{
+		$target = $this->dir . '/non-regular-target';
+		mkdir($target, 0700);
+		chmod($target, 0700);
+		$GLOBALS['log_file'] = $target;
+		$GLOBALS['profileMask'] = 0777;
+		set_error_handler(function () { return true; });
+		try {
+			FileUtil::toLog('probe');
+			$mode = $this->modeOf($target);
+		} finally {
+			restore_error_handler();
+			chmod($target, 0700);
+			rmdir($target);
+		}
+		$this->assertEquals(
+			0700,
+			$mode,
+			'An existing non-regular filesystem target keeps its operator-assigned permissions'
+		);
+	}
+
+	public function testARegularLogIsOpenedWriteOnly()
+	{
+		LogFileModeStream::reset(0100000); // Regular file
+		$GLOBALS['log_file'] = 'rutorrent-log-test://sink';
+		FileUtil::toLog('probe');
+		$this->assertEquals(
+			array('ab'),
+			LogFileModeStream::$openModes,
+			'A regular log does not require read permission just to append a line'
+		);
+	}
+
+	public function testANonRegularLogKeepsTheNonBlockingReadWriteMode()
+	{
+		LogFileModeStream::reset(0010000); // FIFO
+		$GLOBALS['log_file'] = 'rutorrent-log-test://sink';
+		FileUtil::toLog('probe');
+		$this->assertEquals(
+			array('ab+'),
+			LogFileModeStream::$openModes,
+			'A non-regular log keeps the mode that does not wait forever for a FIFO reader'
+		);
+	}
+
+	public function testARelativeLogPathIsRejectedBeforeItCanSplitByWorkingDirectory()
+	{
+		$this->clean();
+		$GLOBALS['log_file'] = 'relative.log';
+		$oldDirectory = getcwd();
+		$warning = '';
+		chdir($this->dir);
+		set_error_handler(function ($number, $message) use (&$warning) {
+			$warning = $message;
+			return true;
+		});
+		try {
+			FileUtil::toLog('probe');
+		} finally {
+			restore_error_handler();
+			chdir($oldDirectory);
+		}
+		$this->assertTrue(
+			!file_exists($this->dir . '/relative.log'),
+			'A relative log path cannot create different files from different entry-point directories'
+		);
+		$this->assertTrue(
+			strpos($warning, '$log_file must be an absolute path') !== false,
+			'An invalid $log_file names the configuration error and its consequence'
+		);
+	}
+
+	public function testAnUnstatableStreamSkipsFilesystemMetadataAndOpensWriteOnly()
+	{
+		LogFileModeStream::reset(0100000, false);
+		$GLOBALS['log_file'] = 'rutorrent-log-test://sink';
+		FileUtil::toLog('probe');
+		$this->assertEquals(
+			array(),
+			LogFileModeStream::$metadataCalls,
+			'A stream URI is not touched or chmodded like a filesystem path'
+		);
+		$this->assertEquals(
+			array('ab'),
+			LogFileModeStream::$openModes,
+			'A stream URI only needs write access to append a line'
+		);
+	}
+
+	public function testBuiltinStreamDoesNotEmitFilesystemMetadataWarnings()
+	{
+		$GLOBALS['log_file'] = 'php://temp';
+		$warning = '';
+		set_error_handler(function ($number, $message) use (&$warning) {
+			$warning .= $message;
+			return true;
+		});
+		try {
+			FileUtil::toLog('probe');
+		} finally {
+			restore_error_handler();
+		}
+		$this->assertEquals('', $warning, 'A built-in stream log emits no touch or chmod warning');
+	}
+
+	public function testFileStreamHonorsTheSameMaskAsAPlainPath()
+	{
+		$target = $this->dir . '/file-stream.log';
+		$GLOBALS['log_file'] = 'file://' . $target;
+		$GLOBALS['profileMask'] = 0700;
+		$oldMask = umask(0);
+		try {
+			FileUtil::toLog('probe');
+		} finally {
+			umask($oldMask);
+		}
+		$this->assertTrue(is_file($target), 'A file URI creates its local log target');
+		$this->assertEquals(
+			0600,
+			$this->modeOf($target),
+			'A file URI obeys the same profile mask as a plain filesystem path'
+		);
+	}
+
+	public function testLocalhostFileStreamUsesAnAbsoluteLocalTarget()
+	{
+		if (DIRECTORY_SEPARATOR === '\\') {
+			return;
+		}
+		$target = $this->dir . '/localhost-file-stream.log';
+		$GLOBALS['log_file'] = 'file://localhost' . $target;
+		$GLOBALS['profileMask'] = 0700;
+		FileUtil::toLog('probe');
+		$this->assertTrue(is_file($target), 'A localhost file URI writes to its absolute local target');
+		$this->assertEquals(0600, $this->modeOf($target), 'A localhost file URI obeys the profile mask');
+	}
+
+	public function testRelativeFileStreamIsRejectedAtRuntime()
+	{
+		if (DIRECTORY_SEPARATOR === '\\') {
+			return;
+		}
+		$GLOBALS['log_file'] = 'file://relative/path';
+		$warning = '';
+		set_error_handler(function ($number, $message) use (&$warning) {
+			$warning = $message;
+			return true;
+		});
+		try {
+			FileUtil::toLog('probe');
+		} finally {
+			restore_error_handler();
+		}
+		$this->assertTrue(
+			strpos($warning, '$log_file must be an absolute path') !== false,
+			'A relative file URI is visibly rejected by the runtime parser'
+		);
+	}
+
+	public function testAWindowsPathIsRelativeOnUnix()
+	{
+		if (DIRECTORY_SEPARATOR === '\\') {
+			return;
+		}
+		$this->clean();
+		$GLOBALS['log_file'] = 'C:\\logs\\rutorrent.log';
+		$oldDirectory = getcwd();
+		chdir($this->dir);
+		set_error_handler(function () { return true; });
+		try {
+			FileUtil::toLog('probe');
+		} finally {
+			restore_error_handler();
+			chdir($oldDirectory);
+		}
+		$this->assertTrue(
+			!file_exists($this->dir . '/C:\\logs\\rutorrent.log'),
+			'A Windows drive path cannot become a relative filename on Unix'
 		);
 	}
 }
