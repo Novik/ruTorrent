@@ -8,7 +8,7 @@
 
  theUILang.rssNewRule		= "Νέος κανόνας";
  theUILang.mnu_rssurlrewrite	= "Αντικατάσταση URL στα RSS";
- theUILang.rssRulesManager	= "Διαχειριστής Κανόνων RSS";
+ theUILang.rssRulesManager	= "Διαχείριση Κανόνων RSS";
  theUILang.rssAddRule		= "Προσθήκη";
  theUILang.rssDelRule		= "Διαγραφή";
  theUILang.rssCheckRule		= "Δοκιμή";
