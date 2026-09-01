@@ -15,6 +15,7 @@
  				  "Port is open"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Pakota tietty portti...";
  theUILang.forcePortPrompt	= "Aseta kuunteluportti (1-65535):";

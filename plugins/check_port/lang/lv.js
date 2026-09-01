@@ -15,6 +15,7 @@
  				  "Port is open"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Piespiest noteiktu portu...";
  theUILang.forcePortPrompt	= "Iestatīt klausīšanās portu (1-65535):";

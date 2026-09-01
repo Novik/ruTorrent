@@ -15,6 +15,7 @@
  				  "Port nyitva van"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Adott port kényszerítése...";
  theUILang.forcePortPrompt	= "Figyelő port beállítása (1-65535):";

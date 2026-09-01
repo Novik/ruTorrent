@@ -16,6 +16,7 @@
  				  "La porta è aperta"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Forza una porta specifica...";
  theUILang.forcePortPrompt	= "Imposta la porta di ascolto (1-65535):";

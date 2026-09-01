@@ -15,6 +15,7 @@
  				  "Port is open"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Specifieke poort forceren...";
  theUILang.forcePortPrompt	= "Luisterpoort instellen (1-65535):";

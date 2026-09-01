@@ -15,6 +15,7 @@
  				  "Η θύρα είναι ανοικτή"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Επιβολή συγκεκριμένης θύρας...";
  theUILang.forcePortPrompt	= "Ορισμός θύρας ακρόασης (1-65535):";

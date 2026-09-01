@@ -16,5 +16,10 @@
  				  "Port açık"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
+
+ theUILang.forcePort		= "Force specific port...";
+ theUILang.forcePortPrompt	= "Set the listening port (1-65535):";
+ theUILang.forcePortInvalid	= "Invalid port number.";
 
 thePlugins.get("check_port").langLoaded();
