@@ -3,7 +3,7 @@
  *
  * Greek language file.
  *
- * Author:
+ * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
  theUILang.SortTorrents    = "Ταξινόμηση των torrent κατά";
