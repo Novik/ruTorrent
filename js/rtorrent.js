@@ -377,13 +377,13 @@ rTorrentStub.prototype.recheck = function()
 
 rTorrentStub.prototype.setsettings = function()
 {
-	var adjustAlloc = false;
+	var socketCategories = [];
 	for(var i=0; i<this.vs.length; i++)
 	{
 		var prmType = "string";
+		var prm = this.vs[i];
 		if(this.ss[i].charAt(0)=='n')
 			prmType = "i8";
-		var prm = this.vs[i];
 		var cmd = null;
 		var socketAlloc = theRequestManager.getSocketAllocCategory(this.ss[i]);
 		if(this.ss[i]=="ndht")
@@ -405,7 +405,8 @@ rTorrentStub.prototype.setsettings = function()
 			this.commands.push( minCmd );
 			cmd = new rXMLRPCCommand("system.sockets."+socketAlloc+".max_alloc.set");
 			cmd.addParameter("string",'');
-			adjustAlloc = true;
+			if(socketCategories.indexOf(socketAlloc)<0)
+				socketCategories.push(socketAlloc);
 		}
 		else
 			cmd = new rXMLRPCCommand('set_'+this.ss[i].substr(1));
@@ -414,8 +415,131 @@ rTorrentStub.prototype.setsettings = function()
 	}
 	// The staged min_alloc/max_alloc values only take effect once the socket
 	// manager recomputes its allocation. Send it once per batch.
-	if(adjustAlloc)
+	if(socketCategories.length)
+	{
+		// Reads lead this multicall, so a rejected later member can restore the
+		// allocation in effect before this browser changed either bound.
+		var reads = [];
+		for(var c=0; c<socketCategories.length; c++)
+		{
+			reads.push(new rXMLRPCCommand("system.sockets."+socketCategories[c]+".min_alloc"));
+			reads.push(new rXMLRPCCommand("system.sockets."+socketCategories[c]+".max_alloc"));
+		}
+		this.socketAllocCategories = socketCategories;
+		this.commands = reads.concat(this.commands);
 		this.commands.push( new rXMLRPCCommand("system.sockets.adjust_alloc") );
+	}
+}
+
+rTorrentStub.prototype.finishSetsettingsFailure = function()
+{
+	if($type(this.onSetsettingsFailure)=="function")
+	{
+		var callback = this.onSetsettingsFailure;
+		this.onSetsettingsFailure = null;
+		callback();
+	}
+}
+
+rTorrentStub.prototype.finishSocketRestore = function()
+{
+	if($type(this.onSocketRestoreFinished)=="function")
+	{
+		var callback = this.onSocketRestoreFinished;
+		this.onSocketRestoreFinished = null;
+		callback();
+	}
+}
+
+rTorrentStub.prototype.finishXMLFailure = function()
+{
+	if($type(this.onXMLFailure)=="function")
+	{
+		var callback = this.onXMLFailure;
+		this.onXMLFailure = null;
+		callback();
+	}
+}
+
+rTorrentStub.prototype.finishIndeterminateFailure = function()
+{
+	if($type(this.onIndeterminateFailure)=="function")
+	{
+		var callback = this.onIndeterminateFailure;
+		this.onIndeterminateFailure = null;
+		callback();
+		return(true);
+	}
+	return(false);
+}
+
+rTorrentStub.prototype.setsettingsParseXML = function(xml)
+{
+	if(this.socketAllocCategories)
+	{
+		var categories = this.socketAllocCategories;
+		if(!this.savedSocketAlloc)
+		{
+			var values = this.getXMLValues(xml, 2, 1)[0];
+			if(values && (values.length>=2*categories.length))
+			{
+				var bounds = values.slice(0,2*categories.length);
+				if(!bounds.some(function(bound) { return(!(/^\d+$/).test(bound)); }))
+					this.savedSocketAlloc = bounds;
+			}
+		}
+		if(this.isError())
+		{
+			// A restore is asynchronous; complete failure recovery only after its
+			// response so this WebUI cannot start another Save against stale bounds.
+			this.socketAllocCategories = null;
+			if(this.savedSocketAlloc)
+			{
+				var restore = "";
+				for(var i=0; i<categories.length; i++)
+					restore+=("&s="+categories[i]+"&v="+this.savedSocketAlloc[2*i]+","+this.savedSocketAlloc[2*i+1]);
+				var restoreStub = new rTorrentStub("?action=restoresocketalloc"+restore);
+				restoreStub.onSocketRestoreFinished = this.finishSetsettingsFailure.bind(this);
+				restoreStub.onIndeterminateFailure = this.finishIndeterminateFailure.bind(this);
+				restoreStub.onXMLFailure = restoreStub.finishSocketRestore.bind(restoreStub);
+				var finishRestoreError = function(status, text)
+				{
+					if($type(theWebUI.error)=="function")
+						theWebUI.error(status, text);
+					restoreStub.finishSocketRestore();
+				};
+				Ajax(restoreStub, true, restoreStub.finishSocketRestore.bind(restoreStub),
+					restoreStub.finishSocketRestore.bind(restoreStub), finishRestoreError);
+				return(xml);
+			}
+		}
+	}
+	if(this.isError())
+		this.finishSetsettingsFailure();
+	return(xml);
+}
+
+rTorrentStub.prototype.restoresocketallocParseXML = function(xml)
+{
+	this.finishSocketRestore();
+	return(xml);
+}
+
+rTorrentStub.prototype.restoresocketalloc = function()
+{
+	for(var i=0; i<this.ss.length; i++)
+	{
+		var bounds = this.vs[i].split(",");
+		var minCmd = new rXMLRPCCommand("system.sockets."+this.ss[i]+".min_alloc.set");
+		minCmd.addParameter("string",'');
+		minCmd.addParameter("i8",bounds[0]);
+		this.commands.push( minCmd );
+		var maxCmd = new rXMLRPCCommand("system.sockets."+this.ss[i]+".max_alloc.set");
+		maxCmd.addParameter("string",'');
+		maxCmd.addParameter("i8",bounds[1]);
+		this.commands.push( maxCmd );
+	}
+	this.commands.push( new rXMLRPCCommand("system.sockets.adjust_alloc") );
 }
 
 rTorrentStub.prototype.getsettings = function()
@@ -793,19 +917,35 @@ rTorrentStub.prototype.getResponse = function(data)
 		{
 			var names = data.getElementsByTagName('value');
 			this.faultString.push("XMLRPC Error: "+this.getXMLValue(names,2)+" ["+this.action+"]");
+			this.xmlRPCFault = true;
 		}
 		else
 		{
 			names = data.getElementsByTagName('name');
 			if(names)
+			{
+				var memberFaults = [];
 				for(var i=0; i<names.length; i++)
 					if(names[i].childNodes[0].data=="faultString")
 					{
 						var values = names[i].parentNode.getElementsByTagName('value');
-						this.faultString.push("XMLRPC Error: "+this.getXMLValue(values,0)+" ["+this.action+"]");
+						memberFaults.push(this.getXMLValue(values,0));
 					}
+				if((this.action=="setsettings") && memberFaults.length)
+				{
+					var message = memberFaults[0];
+					if(memberFaults.length>1)
+						message+=" ("+(memberFaults.length-1)+" additional member fault"+
+							((memberFaults.length>2) ? "s" : "")+")";
+					this.faultString.push("XMLRPC Error: "+message+" ["+this.action+"]");
+				}
+				else
+					for(var j=0; j<memberFaults.length; j++)
+						this.faultString.push("XMLRPC Error: "+memberFaults[j]+" ["+this.action+"]");
+			}
 		}
-		responseData = this.processAction('ParseXML', responseData);
+		if(!this.xmlRPCFault)
+			responseData = this.processAction('ParseXML', responseData);
 	}
 	if(!this.isError())
 		ret = this.processAction('Response', responseData);
@@ -1300,13 +1440,23 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 	{
 		Ajax_UpdateTime(jqXHR);
 
-		if(jqXHR.status == 401)	// auth/session expired -- re-authenticate instead of spamming parse errors
+		if((jqXHR.status == 401) && !stub.handleUnauthorizedAsError)
+			// Auth normally navigates globally. A request owning a terminal lock can
+			// opt into its scoped error callback so it can diagnose and release.
 		{
 			if(!theWebUI.authExpired)
 			{
 				theWebUI.authExpired = true;
 				window.location.reload();	// navigation -> auth layer redirects to login
 			}
+			stub = null;
+			return;
+		}
+		// A local timeout or status-zero transport failure cannot prove whether a
+		// settings write (or its restore) completed remotely. A scoped callback
+		// keeps that Save locked instead of treating the client timer as a barrier.
+		if(((jqXHR.status == 0) || (textStatus=="timeout")) && stub.finishIndeterminateFailure())
+		{
 			stub = null;
 			return;
 		}
@@ -1321,6 +1471,7 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 				response = errorThrown;
 			onError(status+" ["+textStatus+","+stub.action+"]",response);
 		}
+		stub.finishSetsettingsFailure();
 		stub = null; // Cleanup memory leak
 	});
 
@@ -1328,9 +1479,9 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 	{
 		Ajax_UpdateTime(jqXHR);
 
+		var responseText = stub.getResponse(data);
 		stub.logErrorMessages();
 		if(!stub.isError()) {
-			var responseText = stub.getResponse(data);
 			if (partialData) {
 				if (responseText instanceof Object && !(responseText instanceof XMLDocument)) {
 					// merge responses for this.hashes with previous partialData
@@ -1361,6 +1512,12 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 				}
 			}
 			responseText = null; // Cleanup memory leak
+		}
+		else
+		{
+			if(stub.xmlRPCFault)
+				stub.finishSetsettingsFailure();
+			stub.finishXMLFailure();
 		}
 		stub = null; // Cleanup memory leak
 	});

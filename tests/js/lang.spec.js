@@ -86,6 +86,16 @@ describe("localization", () => {
     expect(unknown).toEqual([]);
   });
 
+  it("defines persistent settings-save recovery guidance in every core language", () => {
+    const missing = [];
+    for (const name of fs.readdirSync(path.join(ROOT, "lang"))) {
+      if (!name.endsWith(".js") || name === "langs.js") continue;
+      const value = keysOf([path.join(ROOT, "lang", name)]).Settings_save_indeterminate;
+      if (typeof value !== "string" || value.trim() === "") missing.push("lang/" + name);
+    }
+    expect(missing).toEqual([]);
+  });
+
   it("keeps every plugin translation to the keys that plugin's en.js defines", () => {
     const unknown = [];
     for (const file of pluginEn) {

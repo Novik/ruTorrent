@@ -739,8 +739,12 @@ var theWebUI = {
 		if(!filesField.length || !httpField.length)
 			return(true);
 
-		var files = iv(filesField.val());
-		var http = iv(httpField.val());
+		// A cleared numeric field means "leave unchanged". Validate the last
+		// known value so another setting can still be saved in the same pass.
+		var filesValue = filesField.val();
+		var httpValue = httpField.val();
+		var files = iv(filesValue==="" ? this.settings.max_open_files : filesValue);
+		var http = iv(httpValue==="" ? this.settings.max_open_http : httpValue);
 		var filesMin = this.socketAllocLimit('socketFilesAllocMin');
 		var filesMax = this.socketAllocLimit('socketFilesAllocMax');
 		var httpMax = this.socketAllocLimit('socketHttpAllocMax');
@@ -769,16 +773,33 @@ var theWebUI = {
 	},
 
 	setSettings: function() {
+		// Serialize only this browser's Save/restore/refresh chain. rTorrent does
+		// not provide a transaction boundary against another client.
+		if(this.settingsSavePending)
+			return;
 		var req = '';
 		var needSave = false;
 		var needResize = false;
 		let needCatListSync = false;
 		var reply = null;
+		var pendingRTorrentSettings = {};
+		var emptyLimitLeavesUnchanged = {
+			max_uploads_global: true,
+			max_downloads_global: true,
+			max_memory_usage: true,
+			max_open_files: true,
+			max_open_http: true
+		};
 		$.each(this.settings, function(i,v) {
 			var o = $$(i);
 			if (o) {
 				o = $(o);
+				var numericInput = o.hasClass("num") || o.is("input[type=number]");
 				var nv = o.is("input:checkbox") ? (o.prop('checked') ? 1 : 0) : o.val();
+				// Clearing one of these five rTorrent limits is not an instruction to
+				// write zero. Other numeric inputs may use empty as a real UI sentinel.
+				if(nv==="" && emptyLimitLeavesUnchanged[i]===true)
+					return;
 				switch(i) {
 					case "max_memory_usage":
 						nv *= 1024;  // falls through
@@ -788,9 +809,9 @@ var theWebUI = {
 				}
 				if(nv!=v)
 				{
-					theWebUI.settings[i] = nv;
 					if((/^webui\./).test(i))
 					{
+						theWebUI.settings[i] = nv;
 						needSave = true;
 						switch(i) {
 						        case "webui.effects":
@@ -873,12 +894,14 @@ var theWebUI = {
 					}
 					else
 					{
+						// Keep the read-back model at daemon-confirmed values until the
+						// entire rTorrent batch passes local preflight and is actually sent.
+						pendingRTorrentSettings[i] = nv;
 						// A number input is a numeric setting whether or not it also
 						// carries the legacy "num" class, and the prefix decides both
 						// the cast in action.php and which settings take the socket
 						// allocation path.
-						var k_type = o.is("input:checkbox") || o.is("select") || o.hasClass("num") ||
-							o.is("input[type=number]") ? "n" : "s";
+						var k_type = o.is("input:checkbox") || o.is("select") || numericInput ? "n" : "s";
 						req+=("&s="+k_type+i+"&v="+nv);
 					}
 				}
@@ -894,9 +917,69 @@ var theWebUI = {
 			this.resize();
 		if((req.length>0) && theWebUI.systemInfo.rTorrent.started &&
 			this.socketAllocationAccepted())
-			this.request("?action=setsettings" + req,null,true);
-		if(needSave)
+		{
+			$.each(pendingRTorrentSettings, function(i,v) { theWebUI.settings[i] = v; });
+			this.settingsSavePending = true;
+			this.setSettingsSaveButtons(true);
+			this.deferredSettingsSave = needSave ? { reply: reply } : null;
+			var request = new rTorrentStub(this.url + "?action=setsettings" + req);
+			request.onSetsettingsFailure = function() { theWebUI.refreshSettingsAfterFailedSave(); };
+			request.onIndeterminateFailure = function() { theWebUI.finishSettingsSaveIndeterminate(); };
+			this.request(request,[this.finishSettingsSave, this],true);
+		}
+		else if(needSave)
 			this.save(reply);
+	},
+
+	finishSettingsSave: function()
+	{
+		var deferredSave = this.deferredSettingsSave;
+		this.deferredSettingsSave = null;
+		if(deferredSave)
+			this.save(deferredSave.reply, this.releaseSettingsSave.bind(this));
+		else
+			this.releaseSettingsSave();
+	},
+
+	releaseSettingsSave: function()
+	{
+		$("#settings_save_indeterminate").empty().hide();
+		this.settingsSavePending = false;
+		this.setSettingsSaveButtons(false);
+	},
+
+	finishSettingsSaveIndeterminate: function()
+	{
+		// Do not let a deferred reload erase the only same-document lock while the
+		// server may still be applying the write or its restore.
+		this.deferredSettingsSave = null;
+		var message = theUILang.Settings_save_indeterminate;
+		var persistent = $("#settings_save_indeterminate");
+		if(!persistent.length)
+			persistent = $("<div>").attr({id:"settings_save_indeterminate",role:"alert","aria-live":"assertive"})
+				.addClass("alert alert-danger").insertBefore("#st_btns");
+		persistent.text(message).show();
+		noty(message,"error");
+	},
+
+	setSettingsSaveButtons: function(disabled)
+	{
+		$("#st_btns").find("button").not(".Cancel").prop("disabled", disabled);
+	},
+
+	refreshSettingsAfterFailedSave: function()
+	{
+		var request = new rTorrentStub(this.url + "?action=getsettings");
+		request.onXMLFailure = this.finishSettingsSave.bind(this);
+		this.requestWithTimeout(request, [this.finishSettingsRefresh, this],
+			function() { theWebUI.timeout(); theWebUI.finishSettingsSave(); },
+			function(status, text) { theWebUI.error(status, text); theWebUI.finishSettingsSave(); }, true);
+	},
+
+	finishSettingsRefresh: function(data)
+	{
+		this.addSettings(data);
+		this.finishSettingsSave();
 	},
 
    	reload: function()
@@ -924,10 +1007,14 @@ var theWebUI = {
 		theDialogManager.show("stg");
 	},
 
-        save: function(reply)
+	save: function(reply, onTerminal)
 	{
-	        if(!theWebUI.configured)
+		if(!theWebUI.configured)
+		{
+			if(onTerminal)
+				onTerminal();
 			return;
+		}
 	        $.each(theWebUI.tables, function(ndx,table)
 		{
 	   		var width = [];
@@ -955,7 +1042,27 @@ var theWebUI = {
 				cookie[i] = v;
 		}
 		// We must encode the URL here to avoid injection with the "&" symbol from search results
-		theWebUI.request("?action=setuisettings&v=" + encodeURIComponent(JSON.stringify(cookie)), reply);
+		var query = "?action=setuisettings&v=" + encodeURIComponent(JSON.stringify(cookie));
+		if(onTerminal)
+		{
+			var finished = false;
+			var finish = function()
+			{
+				if(!finished)
+				{
+					finished = true;
+					onTerminal();
+				}
+			};
+			var request = new rTorrentStub(theWebUI.url + query);
+			request.handleUnauthorizedAsError = true;
+			theWebUI.requestWithTimeout(request,
+				function(data) { try { if(reply) reply(data); } finally { finish(); } },
+				function() { try { theWebUI.timeout(); } finally { finish(); } },
+				function(status, text) { try { theWebUI.error(status, text); } finally { finish(); } });
+		}
+		else
+			theWebUI.request(query, reply);
 	},
 
 //
@@ -2512,7 +2619,7 @@ var theWebUI = {
 	},
 
 	requestWithTimeout: function(qs, onComplite, onTimeout, onError, isASync) {
-		Ajax(this.url + qs, isASync, onComplite, onTimeout, onError, this.settings["webui.reqtimeout"]);
+		Ajax(qs instanceof rTorrentStub ? qs : this.url + qs, isASync, onComplite, onTimeout, onError, this.settings["webui.reqtimeout"]);
 	},
 
 	requestWithoutTimeout: function(qs, onComplite, isASync) {

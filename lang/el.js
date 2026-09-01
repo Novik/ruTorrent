@@ -322,5 +322,6 @@ var theUILang =
  Torrents			: "Torrent(s)",
  copyToClipboardFailed		: "Η λειτουργία αντιγραφής δεν λειτουργεί στον περιηγητή σας.\nΠαρακαλώ αντιγράψτε αυτό το περιεχόμενο χειροκίνητα:\n\n",
  copyToClipboardSuccess		: "Αντιγράφηκε με επιτυχία στο πρόχειρο!",
- normalizeTorrentName		: "Ταξινόμηση με χρήση κανονικοποιημένου ονόματος torrent και αναγνώριση ετικέτας ονόματος"
+ normalizeTorrentName		: "Ταξινόμηση με χρήση κανονικοποιημένου ονόματος torrent και αναγνώριση ετικέτας ονόματος",
+ Settings_save_indeterminate	: "Settings outcome is unknown. Save remains locked; reload manually only after rTorrent responds."
 };
