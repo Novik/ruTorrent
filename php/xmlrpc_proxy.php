@@ -570,11 +570,10 @@ class XMLRPCProxy
 	}
 
 	/**
-	 * The raw message a door returns when this filter refuses a call names the
-	 * command, so both doors report a refusal the same way. rtorrent never saw
-	 * the call, so the string says this server
-	 * refused it rather than blaming rtorrent for an outage that did not
-	 * happen.
+	 * The sentence both doors show when this filter refuses a call. It names the
+	 * command so a refusal reads the same at either door, and it says this
+	 * server refused the call rather than blaming rtorrent for an outage that
+	 * did not happen -- rtorrent never saw it.
 	 */
 	public static function rejectionMessage($method)
 	{
@@ -583,6 +582,10 @@ class XMLRPCProxy
 			: "This XMLRPC call was rejected by this server.";
 	}
 
+	/**
+	 * The same sentence wrapped in the XMLRPC fault a door returns: faultCode
+	 * -501, matching what rpc2.php answers for the same refusals.
+	 */
 	public static function rejectionFault($method)
 	{
 		$faultString = self::rejectionMessage($method);

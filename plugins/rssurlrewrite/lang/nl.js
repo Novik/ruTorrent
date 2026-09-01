@@ -8,7 +8,7 @@
 
  theUILang.rssNewRule		= "Nieuwe regel";
  theUILang.mnu_rssurlrewrite	= "Vervangende URL in RSS";
- theUILang.rssRulesManager	= "Regel manager";
+ theUILang.rssRulesManager	= "RSS-regelmanager";
  theUILang.rssAddRule		= "Toevoegen";
  theUILang.rssDelRule		= "Verwijderen";
  theUILang.rssCheckRule		= "?";

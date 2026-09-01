@@ -6,7 +6,7 @@
  * Author:
  */
 
- theUILang.ratioRulesManager	= "Rules Manager";
+ theUILang.ratioRulesManager	= "Ratio Rules Manager";
  theUILang.mnu_ratiorule	= "Ratio Rules";
  theUILang.ratAddRule		= "Add";
  theUILang.ratDelRule		= "Delete";

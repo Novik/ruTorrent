@@ -6,7 +6,7 @@
  * Author: Limerainne (limerainne@gmail.com)
  */
 
- theUILang.ratioRulesManager	= "규칙 관리자";
+ theUILang.ratioRulesManager	= "비율 규칙 관리자";
  theUILang.mnu_ratiorule	= "비율 규칙";
  theUILang.ratAddRule		= "추가";
  theUILang.ratDelRule		= "삭제";

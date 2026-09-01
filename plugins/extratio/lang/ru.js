@@ -6,7 +6,7 @@
  * Author:
  */
 
- theUILang.ratioRulesManager	= "Менеджер правил";
+ theUILang.ratioRulesManager	= "Менеджер правил ratio";
  theUILang.mnu_ratiorule	= "Правила ratio";
  theUILang.ratAddRule		= "Добавить";
  theUILang.ratDelRule		= "Удалить";

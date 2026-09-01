@@ -6,7 +6,7 @@
  * Author: Gianni
  */
 
- theUILang.ratioRulesManager	= "Regolatore";
+ theUILang.ratioRulesManager	= "Gestore regole Ratio";
  theUILang.mnu_ratiorule	= "Regole del Ratio";
  theUILang.ratAddRule		= "Aggiungi";
  theUILang.ratDelRule		= "Cancella";

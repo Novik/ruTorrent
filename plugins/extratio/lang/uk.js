@@ -6,7 +6,7 @@
  * Author: Oleksandr Natalenko (oleksandr@natalenko.name)
  */
 
- theUILang.ratioRulesManager	= "Менеджер правил";
+ theUILang.ratioRulesManager	= "Менеджер правил коефіцієнта";
  theUILang.mnu_ratiorule	= "Правила коефіцієнта";
  theUILang.ratAddRule		= "Додати";
  theUILang.ratDelRule		= "Видалити";

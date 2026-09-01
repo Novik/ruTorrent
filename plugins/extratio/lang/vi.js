@@ -6,7 +6,7 @@
  * Author: Ta Xuan Truong (truongtx8 AT gmail DOT com)
  */
 
- theUILang.ratioRulesManager	= "Quản lý quy luật";
+ theUILang.ratioRulesManager	= "Quản lý quy luật Tỉ lệ";
  theUILang.mnu_ratiorule	= "Quy luật Tỉ lệ";
  theUILang.ratAddRule		= "Thêm";
  theUILang.ratDelRule		= "Xóa";

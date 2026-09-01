@@ -8,7 +8,7 @@
 
  theUILang.rssNewRule		= "Nuova regola";
  theUILang.mnu_rssurlrewrite	= "Sostituzione URL nel RSS";
- theUILang.rssRulesManager	= "Regolatore";
+ theUILang.rssRulesManager	= "Gestore regole RSS";
  theUILang.rssAddRule		= "Aggiungi";
  theUILang.rssDelRule		= "Cancella";
  theUILang.rssCheckRule		= "?";

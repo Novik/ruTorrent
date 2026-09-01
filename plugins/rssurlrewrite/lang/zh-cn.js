@@ -8,7 +8,7 @@
 
  theUILang.rssNewRule		= "新建规则";
  theUILang.mnu_rssurlrewrite	= "替换 RSS 中 URL 的规则";
- theUILang.rssRulesManager	= "规则管理";
+ theUILang.rssRulesManager	= "RSS 规则管理器";
  theUILang.rssAddRule		= "添加";
  theUILang.rssDelRule		= "删除";
  theUILang.rssCheckRule		= "?";
