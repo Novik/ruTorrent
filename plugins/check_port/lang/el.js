@@ -8,7 +8,7 @@
 
  theUILang.checkWebsiteNotFound = "Πρόσθετο Check_port: Το πρόσθετο δεν θα λειτουργήσει. Μη έγκυρη παραμετροποίηση";
  theUILang.checkPort		= "Έλεγχος κατάστασης θύρας";
- theUILang.checkingPort		= "Checking port status";
+ theUILang.checkingPort		= "Ελέγχεται η κατάσταση της θύρας";
  theUILang.portStatus		= [
  				  "Η κατάσταση της θύρας είναι άγνωστη",
  				  "Η θύρα είναι κλειστή",
