@@ -15,6 +15,7 @@
  				  "Puerto abierto"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Forzar puerto específico...";
  theUILang.forcePortPrompt	= "Establecer el puerto de escucha (1-65535):";

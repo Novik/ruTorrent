@@ -15,6 +15,7 @@
  				  "Port ist offen"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Bestimmten Port erzwingen...";
  theUILang.forcePortPrompt	= "Lausch-Port festlegen (1-65535):";

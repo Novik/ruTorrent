@@ -15,6 +15,7 @@
  				  "Port is open"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Vynútiť konkrétny port...";
  theUILang.forcePortPrompt	= "Nastavte počúvací port (1-65535):";

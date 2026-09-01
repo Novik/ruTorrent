@@ -15,6 +15,7 @@
  				  "포트 열림"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "특정 포트 강제 지정...";
  theUILang.forcePortPrompt	= "수신 포트 설정 (1-65535):";

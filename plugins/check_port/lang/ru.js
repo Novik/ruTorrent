@@ -15,6 +15,7 @@
  				  "Порт открыт"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Задать конкретный порт...";
  theUILang.forcePortPrompt	= "Укажите порт прослушивания (1-65535):";

@@ -15,6 +15,7 @@
  				  "Port er åpen"
  				  ];
  theUILang.notAvailable = "-";
+ theUILang.portNotConfigured = "Not available on this server";
 
  theUILang.forcePort		= "Tving bestemt port...";
  theUILang.forcePortPrompt	= "Angi lytteporten (1-65535):";
