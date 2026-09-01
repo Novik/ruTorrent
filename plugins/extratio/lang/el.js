@@ -6,7 +6,7 @@
  * Author: Chris Kanatas (ckanatas@gmail.com)
  */
 
- theUILang.ratioRulesManager	= "Διαχείριση Κανόνων";
+ theUILang.ratioRulesManager	= "Διαχείριση Κανόνων Αναλογίας";
  theUILang.mnu_ratiorule	= "Κανόνες Αναλογίας";
  theUILang.ratAddRule		= "Προσθ.";
  theUILang.ratDelRule		= "Διαγρ.";

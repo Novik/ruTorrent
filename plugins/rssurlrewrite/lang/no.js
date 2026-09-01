@@ -8,7 +8,7 @@
 
  theUILang.rssNewRule		= "Ny regel";
  theUILang.mnu_rssurlrewrite	= "Lenkeerstatning i RSS";
- theUILang.rssRulesManager	= "Regelbehandling";
+ theUILang.rssRulesManager	= "RSS-regelbehandling";
  theUILang.rssAddRule		= "Legg til";
  theUILang.rssDelRule		= "Slett";
  theUILang.rssCheckRule		= "?";

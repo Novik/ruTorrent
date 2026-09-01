@@ -8,7 +8,7 @@
 
  theUILang.rssNewRule		= "Створити правило";
  theUILang.mnu_rssurlrewrite	= "Правила замінювання URL-адреси в RSS";
- theUILang.rssRulesManager	= "Менеджер правил";
+ theUILang.rssRulesManager	= "Менеджер правил RSS";
  theUILang.rssAddRule		= "Додати";
  theUILang.rssDelRule		= "Видалити";
  theUILang.rssCheckRule		= "?";

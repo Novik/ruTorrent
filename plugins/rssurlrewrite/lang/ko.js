@@ -8,7 +8,7 @@
 
  theUILang.rssNewRule		= "새 규칙";
  theUILang.mnu_rssurlrewrite	= "RSS URL 교체";
- theUILang.rssRulesManager	= "규칙 관리자";
+ theUILang.rssRulesManager	= "RSS 규칙 관리자";
  theUILang.rssAddRule		= "추가";
  theUILang.rssDelRule		= "삭제";
  theUILang.rssCheckRule		= "?";

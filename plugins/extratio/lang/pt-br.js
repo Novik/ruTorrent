@@ -6,7 +6,7 @@
  * Author:
  */
 
- theUILang.ratioRulesManager	= "Gerenciador de Regras";
+ theUILang.ratioRulesManager	= "Gerenciador de Regras de Proporção";
  theUILang.mnu_ratiorule	= "Regras de Proporção";
  theUILang.ratAddRule		= "Adicionar";
  theUILang.ratDelRule		= "Excluir";

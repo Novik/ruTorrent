@@ -6,7 +6,7 @@
  * Author: Magnus Holm (holmen@brasse.se)
  */
 
- theUILang.ratioRulesManager	= "Regelhanterare";
+ theUILang.ratioRulesManager	= "Ratioregelhanterare";
  theUILang.mnu_ratiorule	= "Ratioregler";
  theUILang.ratAddRule		= "Lägg till";
  theUILang.ratDelRule		= "Ta bort";

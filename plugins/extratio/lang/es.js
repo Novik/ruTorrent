@@ -6,7 +6,7 @@
  * Author:
  */
 
- theUILang.ratioRulesManager	= "Administrador de reglas";
+ theUILang.ratioRulesManager	= "Administrador de reglas de ratio";
  theUILang.mnu_ratiorule	= "Reglas de ratio";
  theUILang.ratAddRule		= "Agregar";
  theUILang.ratDelRule		= "Borrar";

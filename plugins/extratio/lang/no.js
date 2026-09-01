@@ -6,7 +6,7 @@
  * Author: nirosa (nirosax@gmail.com)
  */
 
- theUILang.ratioRulesManager	= "Regelbehandling";
+ theUILang.ratioRulesManager	= "Ratioregelbehandling";
  theUILang.mnu_ratiorule	= "Ratioregler";
  theUILang.ratAddRule		= "Legg til";
  theUILang.ratDelRule		= "Slett";

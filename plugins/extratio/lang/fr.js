@@ -6,7 +6,7 @@
  * Author: Nicobubulle (nicobubulle@gmail.com)
  */
 
- theUILang.ratioRulesManager	= "Gestionnaire de règles";
+ theUILang.ratioRulesManager	= "Gestionnaire de règles de ratio";
  theUILang.mnu_ratiorule	= "Règle de ratio";
  theUILang.ratAddRule		= "Ajout";
  theUILang.ratDelRule		= "Suppr.";
