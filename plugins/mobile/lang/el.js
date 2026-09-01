@@ -6,11 +6,11 @@
  * Author:
  */
 
- theUILang.SortTorrents    = "Sort torrents by";
- theUILang.acs             = "Ascending";
- theUILang.decs            = "Descending";
- theUILang.Mobile_theme    = "Theme";
- theUILang.Accent_color    = "Accent color";
- theUILang.Server          = "Server";
+ theUILang.SortTorrents    = "Ταξινόμηση των torrent κατά";
+ theUILang.acs             = "Αύξουσα";
+ theUILang.decs            = "Φθίνουσα";
+ theUILang.Mobile_theme    = "Θέμα";
+ theUILang.Accent_color    = "Χρώμα έμφασης";
+ theUILang.Server          = "Διακομιστής";
 
 thePlugins.get("mobile").langLoaded();
