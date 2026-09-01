@@ -6,6 +6,14 @@ class KinozalTVAccount extends commonAccount
 
 	protected function isOK($client)
 	{
+		// A downloaded torrent is payload, not a page. It may carry any bytes
+		// at all -- a /signup.php URL in its comment field included -- and the
+		// registration-link marker below would then read a perfectly good
+		// torrent as a login wall, costing a re-login and the cached session
+		// on every download of it. Nothing that opens a bencoded dictionary
+		// came from the web front end.
+		if((strncmp($client->results,'d',1)===0) && (strpos($client->results,'4:info')!==false))
+			return(true);
 		// Two independent markers of a guest answer, because Kinozal has two
 		// kinds of them. The login form is matched on the password field alone
 		// (like RUTracker/TapochekNet do): the previous two-attribute probe
@@ -19,12 +27,12 @@ class KinozalTVAccount extends commonAccount
 	}
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
-	        $is_result_fetched = false;
+		$is_result_fetched = false;
 		if($client->fetch( $this->url ))
 		{
-                        $client->setcookies();
+			$client->setcookies();
 			$client->referer = $this->url;
-        		if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded",
+			if($client->fetch( $this->url."/takelogin.php","POST","application/x-www-form-urlencoded",
 				"username=".rawurlencode($login)."&password=".rawurlencode($password) ))
 			{
 				$client->setcookies();
