@@ -106,6 +106,47 @@ class XMLRPCProxyEntrypointTest extends TestCase
 			'rpc2 refusal returns the XMLRPC -501 envelope');
 	}
 
+	public function testBothDoorsDecideTheSameTrustForTheSameRequest()
+	{
+		$httprpc = $this->runEntrypoint('action', $this->viewActionXml(), true);
+		$this->assertEquals(true, $httprpc['state']['trusted'],
+			'httprpc sends a view-action multicall on a trusted connection');
+		$this->assertTrue(in_array('xmlrpc-proxy: trusted: d.multicall2 (3 params)',
+			$httprpc['state']['logs'], true),
+			'httprpc rebuilt the multicall from the shared policy');
+
+		$rpc2 = $this->runEntrypoint('rpc2', $this->viewActionXml(), true);
+		$this->assertRpc2Log($rpc2, 'trusted: d.multicall2 (3 params)',
+			'rpc2 reaches that same decision on that same request');
+		$this->assertTrue(strpos($rpc2['rpc2logs'], 'untrusted') === false,
+			'and neither door falls back to forwarding it untrusted');
+	}
+
+	public function testHttprpcNamesAMissingPolicyRatherThanStrippingInSilence()
+	{
+		$result = $this->runEntrypoint('action', $this->viewActionXml(), true, 'success', 'none');
+		$this->assertTrue(in_array('xmlrpc-proxy: no $XMLRPCProxySafeParams is defined in '
+			. 'conf/xmlrpc_proxy.php or plugins/httprpc/conf.php',
+			$result['state']['logs'], true),
+			'a tree with no policy says so rather than letting it read as a client fault');
+		$this->assertEquals(false, $result['state']['trusted'],
+			'with no policy every command parameter is stripped and the call goes untrusted');
+	}
+
+	/**
+	 * "Stop all": what a client sends to act on a whole view. rtorrent refuses
+	 * d.stop to an untrusted caller, so a door that forwards this untrusted
+	 * answers a fault where the other door succeeds.
+	 */
+	private function viewActionXml()
+	{
+		return '<?xml version="1.0"?><methodCall><methodName>d.multicall2</methodName>'
+			. '<params><param><value><string></string></value></param>'
+			. '<param><value><string>default</string></value></param>'
+			. '<param><value><string>d.stop=</string></value></param>'
+			. '</params></methodCall>';
+	}
+
 	private function deniedXml()
 	{
 		return '<?xml version="1.0"?><methodCall><methodName>execute.capture</methodName>'
@@ -118,7 +159,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 			. '<params></params></methodCall>';
 	}
 
-	private function runEntrypoint($door, $body, $logging, $send = 'success')
+	private function runEntrypoint($door, $body, $logging, $send = 'success', $policy = 'shipped')
 	{
 		$tree = sys_get_temp_dir() . '/rutorrent-entrypoint-' . uniqid('', true);
 		$process = null;
@@ -126,7 +167,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		{
 			if(!mkdir($tree, 0700, true) && !is_dir($tree))
 				throw new Exception('could not create entrypoint fixture tree');
-			$this->copyProductionTree($tree);
+			$this->copyProductionTree($tree, $policy);
 			$state = $tree . '/state.json';
 			file_put_contents($state, json_encode(array(
 				'sends' => 0, 'responses' => 0, 'logs' => array(),
@@ -175,13 +216,21 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		}
 	}
 
-	private function copyProductionTree($tree)
+	private function copyProductionTree($tree, $policy = 'shipped')
 	{
 		$files = array(
 			'plugins/httprpc/action.php',
 			'php/xmlrpc_proxy.php',
 			'rpc2.php',
 		);
+		// The shipped policy files, so that what a door decides here is what it
+		// decides on an install rather than what this fixture invented. "none"
+		// copies neither, which is a tree missing its configuration.
+		if($policy === 'shipped')
+		{
+			$files[] = 'conf/xmlrpc_proxy.php';
+			$files[] = 'plugins/httprpc/conf.php';
+		}
 		foreach($files as $relative)
 		{
 			$source = $this->sourceRoot . '/' . $relative;
@@ -195,7 +244,8 @@ class XMLRPCProxyEntrypointTest extends TestCase
 
 	private function writeStubs($tree)
 	{
-		mkdir($tree . '/conf', 0700, true);
+		if(!is_dir($tree . '/conf'))
+			mkdir($tree . '/conf', 0700, true);
 		file_put_contents($tree . '/php/xmlrpc.php', <<<'PHP'
 <?php
 function entrypoint_state($key, $value = null)
@@ -221,7 +271,12 @@ class FileUtil
 {
 	public static function getPluginConf($plugin)
 	{
-		return '$XMLRPCProxy = "sanitize"; $XMLRPCProxyLog = '
+		// Production evaluates the plugin's own conf file here. The logging
+		// setting is appended after it, which is where a deployment's own
+		// override lands too.
+		$conf = dirname(__FILE__) . '/../plugins/' . $plugin . '/conf.php';
+		return (is_file($conf) ? 'require("' . $conf . '");' : '')
+			. '$XMLRPCProxyLog = '
 			. ((getenv('XMLRPC_ENTRYPOINT_LOGGING') === '1') ? 'true' : 'false') . ';';
 	}
 	public static function toLog($message) { entrypoint_state('log', $message); }
@@ -250,8 +305,10 @@ PHP
 		file_put_contents($tree . '/plugins/httprpc/rpccache.php', "<?php\n");
 		file_put_contents($tree . '/conf/config.php', <<<'PHP'
 <?php
-$topDirectory = '/';
-$XMLRPCProxyAllowRootDirectory = true;
+// A real directory rather than "/": the shipped policy leaves
+// $XMLRPCProxyAllowRootDirectory false, and rpc2.php refuses to serve at all
+// while the boundary is one that confines nothing.
+$topDirectory = realpath(dirname(__FILE__) . '/..');
 $log_file = dirname(__FILE__) . '/../rpc2.log';
 $scgi_host = '127.0.0.1';
 $scgi_port = 1;
