@@ -103,6 +103,62 @@ class Requirements
 		return is_string($value) && (bool)preg_match('/^0?[0-7]{3}$/D', $value);
 	}
 
+	/**
+	 * The PHP extensions a plugin says it needs, read from its plugin.info.
+	 * Returns array('error' => array(...), 'warning' => array(...)) -- error
+	 * means the plugin is disabled without it, warning that one of its
+	 * features is.
+	 */
+	public static function pluginExtensions($info)
+	{
+		$ret = array('error' => array(), 'warning' => array());
+		if (!is_string($info) || $info === '') return $ret;
+		foreach (preg_split('/\r\n|\r|\n/', $info) as $line) {
+			if (!preg_match('/^\s*php\.extensions\.(error|warning)\s*:\s*(.+)$/', $line, $m)) continue;
+			foreach (explode(',', $m[2]) as $ext) {
+				$ext = trim($ext);
+				if ($ext !== '' && !in_array($ext, $ret[$m[1]], true)) $ret[$m[1]][] = $ext;
+			}
+		}
+		return $ret;
+	}
+
+	/**
+	 * Which of the extensions the plugins declare are not loaded, and what
+	 * each absence costs. $byPlugin is plugin name => the array
+	 * pluginExtensions() returned for it; $loaded is the extension names PHP
+	 * has. Returns extension => array('disables' => array(...),
+	 * 'limits' => array(...)), keyed in a stable order.
+	 */
+	public static function missingPluginExtensions($byPlugin, $loaded)
+	{
+		$wanted = array();
+		foreach ($byPlugin as $plugin => $needs)
+			foreach (array('error', 'warning') as $severity)
+				foreach ((isset($needs[$severity]) ? $needs[$severity] : array()) as $ext) {
+					if (!isset($wanted[$ext])) $wanted[$ext] = array();
+					// A plugin that cannot run without it outranks one that
+					// only loses a feature, so error wins for the same pair.
+					if (!isset($wanted[$ext][$plugin]) || ($severity === 'error'))
+						$wanted[$ext][$plugin] = $severity;
+				}
+		ksort($wanted);
+		// get_loaded_extensions() answers with the name each extension
+		// registered -- Phar, SimpleXML -- while plugin.info spells them
+		// lower case, and extension_loaded() does not care either way.
+		$have = array_map('strtolower', $loaded);
+		$ret = array();
+		foreach ($wanted as $ext => $plugins) {
+			if (in_array(strtolower($ext), $have, true)) continue;
+			ksort($plugins);
+			$ret[$ext] = array(
+				'disables' => array_keys(array_filter($plugins, function ($s) { return $s === 'error'; })),
+				'limits'   => array_keys(array_filter($plugins, function ($s) { return $s === 'warning'; })),
+			);
+		}
+		return $ret;
+	}
+
 	public static function logFileStreamScheme($path)
 	{
 		if (!is_string($path) ||
@@ -278,6 +334,31 @@ if ($cfg === null) {
 	}
 }
 
+// ---- what the bundled plugins declare they need ---------------------------
+// Read from each plugin.info rather than a list kept here, so a plugin that
+// declares a new dependency is checked without this file being touched. A
+// missing extension disables one plugin, not ruTorrent, so these are warnings.
+$pluginDir = __DIR__ . '/plugins';
+if (@is_dir($pluginDir)) {
+	$byPlugin = array();
+	foreach (@scandir($pluginDir) ?: array() as $entry) {
+		if (($entry === '.') || ($entry === '..')) continue;
+		$info = @file_get_contents($pluginDir . '/' . $entry . '/plugin.info');
+		if ($info === false) continue;
+		$byPlugin[$entry] = Requirements::pluginExtensions($info);
+	}
+	$missing = Requirements::missingPluginExtensions($byPlugin, get_loaded_extensions());
+	foreach ($missing as $ext => $cost) {
+		$detail = array();
+		if ($cost['disables']) $detail[] = 'disables ' . implode(', ', $cost['disables']);
+		if ($cost['limits'])   $detail[] = 'limits ' . implode(', ', $cost['limits']);
+		check('plugins', false, "PHP extension: $ext", implode('; ', $detail));
+	}
+	if (!$missing)
+		check('plugins', true, 'plugin extensions',
+			'every extension the bundled plugins declare is loaded');
+}
+
 // ---- rtorrent version (needs config + a running rtorrent) ----------------
 function scgi_params($params) {
 	$xml = '';
@@ -341,7 +422,7 @@ $mark = function($ok, $section) {
 	if ($ok) return 'OK  ';
 	return $section === 'req' ? 'FAIL' : 'WARN';
 };
-$sections = array('req' => 'Required', 'rec' => 'Recommended', 'config' => 'Configuration', 'rtorrent' => 'rtorrent');
+$sections = array('req' => 'Required', 'rec' => 'Recommended', 'config' => 'Configuration', 'plugins' => 'Plugins', 'rtorrent' => 'rtorrent');
 $lines = array();
 $lines[] = "ruTorrent prerequisites & install check  (PHP " . PHP_VERSION . ")";
 $lines[] = str_repeat('-', 74);

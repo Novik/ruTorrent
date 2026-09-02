@@ -2,6 +2,8 @@ plugin.description: This plugin sends notifications about finished downloads via
 plugin.author: DeadMor0z
 plugin.runlevel: 5
 plugin.version: 0.1
+php.extensions.error: mbstring
+php.extensions.warning: openssl
 rtorrent.remote: error
 rtorrent.external.error: php
 rtorrent.php.error: xmpp.php
