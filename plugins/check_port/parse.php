@@ -32,3 +32,30 @@ function check_port_parse_yougetsignal($body)
 
 	return 0;
 }
+
+/**
+ * Reads the port state out of a Globalping measurement's raw output.
+ *
+ * Globalping runs a TCP ping and hands back what the probe printed. The
+ * counter it puts on each attempt, tcp_conn=N, appears on the lines that got
+ * no answer as well as the ones that did, so the counter alone says nothing --
+ * only a line that begins "Reply from" is evidence the port accepted a
+ * connection.
+ *
+ * A probe that got no reply cannot tell a closed port from a filtered one, or
+ * from a route it simply could not take, so that answer is unknown rather than
+ * closed. Only an explicit refusal is proof of a closed port.
+ *
+ * @param string $raw the probe's raw output
+ * @return int Status code (0: unknown, 1: closed, 2: open)
+ */
+function check_port_parse_globalping($raw)
+{
+	if (!is_string($raw) || $raw === '')
+		return 0;
+	if (preg_match('/connection refused|tcp_conn=.*refused/i', $raw))
+		return 1;
+	if (preg_match('/^Reply from .*tcp_conn=\d+/mi', $raw))
+		return 2;
+	return 0;
+}

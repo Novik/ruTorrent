@@ -1,4 +1,6 @@
 <?php
+
+require_once(dirname(dirname(__FILE__)) . "/parse.php");
 /**
  * Checks port status using Globalping.
  *
@@ -85,29 +87,8 @@ function check_port_globalping($ip, $port, $timeout) {
 			return 0;
 		}
 
-		$raw = $result["results"][0]["result"]["rawOutput"] ?? "";
-		if (!is_string($raw) || $raw === "") {
-			return 0;
-		}
-
-		// An explicit refusal means the port is closed.
-		if (preg_match('/connection refused|tcp_conn=.*refused/i', $raw)) {
-			return 1;
-		}
-
-		// Globalping includes tcp_conn=N on both reply and no-reply output.
-		// Only a real reply is evidence that the port is open.
-		if (preg_match('/^Reply from .*tcp_conn=\d+/mi', $raw)) {
-			return 2;
-		}
-
-		// No reply means the probe could not establish a TCP connection.
-		// This is inconclusive (for example, filtered), not proof of closure.
-		if (preg_match('/^No reply from /mi', $raw)) {
-			return 0;
-		}
-
-		return 0;
+		return check_port_parse_globalping(
+			$result["results"][0]["result"]["rawOutput"] ?? "");
 	}
 
 	return 0;
