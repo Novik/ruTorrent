@@ -1,5 +1,10 @@
 <?php
 
+// FileUtil::toLog() is used below when a request is abandoned. erase.php
+// happens to have loaded it already, so nothing has failed yet -- but the
+// dependency belongs to this file, not to whoever happens to call it.
+require_once( dirname(__FILE__)."/../../php/util.php" );
+
 // The queue between the CLI erase entry point (erase.php) and the RPC work.
 //
 // erase.php may be fired for several hundred downloads in one sweep, and
