@@ -705,6 +705,22 @@ textarea {
 	border-radius: 2px;
 }
 
+/* Placeholder text. Nothing styled it before: Bootstrap's rule is scoped to
+   .form-control and these fields carry flex-grow-1 instead, so the colour came
+   from the browser. Chrome and Edge use #757575, which against the #6F6F6F
+   these fields are painted is a contrast ratio of 1.09:1 -- the hint is the
+   same grey as the box it sits in. Firefox derives its placeholder from the
+   element's own colour, which the rules above set to #fff, so it stayed
+   readable there and the report only mentioned the other two (Novik#3077).
+   White at .8 gives 3.88:1 on the same background. */
+input[type="number"]::placeholder,
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+	color: rgba(255, 255, 255, .8);
+	opacity: 1;
+}
+
 button, input[type=button], input[type=submit], input.Button:not([disabled]):focus, .Button {
 	background: var(--btn-bg-color) none repeat scroll 0 0;
 	border-radius:2px;
