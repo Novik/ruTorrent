@@ -1,3 +1,4 @@
 plugin.description: This plugin allows bulk operations with magnet links.
 plugin.author: Novik
 plugin.version: 5.1
+php.extensions.error: json

@@ -6,4 +6,5 @@ plugin.runlevel: 10.0
 plugin.may_be_launched: 1
 plugin.may_be_shutdowned: 1
 rtorrent.need: 0
+php.extensions.error: json
 php.version: 5.0.0

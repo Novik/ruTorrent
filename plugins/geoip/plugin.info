@@ -2,5 +2,6 @@ plugin.description: This plugin shows the geolocation of peers for the selected 
 plugin.author: Zoltan Csala,Novik
 plugin.runlevel: 15
 plugin.version: 5.1
-php.extensions.error: json
+php.extensions.error: json,phar
+php.extensions.warning: sqlite3
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginGeoIP

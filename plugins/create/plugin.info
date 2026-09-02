@@ -8,4 +8,5 @@ rtorrent.external.error: php
 rtorrent.script.error: buildtorrent.sh,createtorrent.sh,inner.sh,mktorrent.sh,transmissioncli.sh
 rtorrent.php.error: correct.php,createtorrent.php,conf.php
 php.extensions.error: json
+php.extensions.warning: mbstring
 plugin.help: https://github.com/Novik/ruTorrent/wiki/PluginCreate
