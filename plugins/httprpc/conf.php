@@ -31,27 +31,11 @@ $XMLRPCProxyLog = true;
 // does not affect it.
 $XMLRPCProxyAllowLocalPaths = false;
 
-// Command names allowed as load.* parameters in sanitize mode.
-// External clients (Prowlarr, Sonarr, Radarr, Transdroid, cross-seed)
-// attach these to load.start / load.raw_start to set labels, directories,
-// priorities, etc. Quoted values (d.custom1.set="cross-seed") are accepted.
-// Entries are full command names and are matched exactly: 'd.custom' does
-// NOT cover 'd.custom1.set'. A param whose command name is not listed is
-// stripped and logged. Add entries here if your external client needs
-// additional commands.
-$XMLRPCProxySafeParams = array(
-	'd.custom1.set',            // label
-	'd.custom2.set',            // custom field
-	'd.custom3.set',            // custom field
-	'd.custom4.set',            // custom field
-	'd.custom5.set',            // used by erasedata
-	'd.custom.set',             // generic custom field
-	'd.directory.set',          // download directory
-	'd.directory_base.set',     // base directory
-	'd.priority.set',           // priority
-	'd.throttle_name.set',      // throttle group
-	'd.views.push_back_unique', // view membership
-
-	// Actions (not setters):
-	'd.delete_tied',            // delete .torrent on remove
-);
+// The command names a caller may attach to a load.* or to a multicall are
+// $XMLRPCProxySafeParams in conf/xmlrpc_proxy.php, which action.php loads
+// before this file. One list serves every entry point that fronts rtorrent,
+// so a client that works through one works through all of them.
+//
+// Setting the list here is still honoured, and still wins, because this file
+// is evaluated after that one -- but it then applies to this entry point
+// alone. Set it here only when this one is meant to differ.
