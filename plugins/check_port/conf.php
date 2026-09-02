@@ -7,9 +7,27 @@ $useWebsiteIPv4 = "yougetsignal";	// Valid choices:
 									// "portchecker" - use https://portchecker.co/
 
 $useWebsiteIPv6 = "portchecker";	// Valid choices:
-									// false - disable IPv6 port check
 									// "portchecker" - use https://portchecker.co/ (Known to work for IPv6)
 									// Note: yougetsignal does not appear to support IPv6 checks
 
-$checkPortTimeout = 15; // Timeout in seconds for external port checking services
-						// (e.g., yougetsignal, portchecker) and for IP detection services (e.g., ipify)
+$checkPortTimeout = 15; // Total timeout budget in seconds for the check,
+									// including provider failover and IP detection.
+
+// Providers tried in order when the primary provider
+// cannot return a definitive result.
+//
+// Valid providers:
+//   yougetsignal
+//   portchecker
+//   globalping
+$failoverProvidersIPv4 = [
+	"portchecker",
+	"globalping",
+];
+
+$failoverProvidersIPv6 = [
+	"globalping",
+];
+
+// Globalping's unauthenticated API is rate-limited per source IP.
+// If enabled as a provider, use it with an appropriate fallback chain.
