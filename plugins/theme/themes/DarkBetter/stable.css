@@ -2,7 +2,7 @@
   --header-bg-color: transparent;
   --header-bg-image: linear-gradient(0deg, #202020 0%, #000000 100%);
   --header-border-color: #333333;
-  --header-asc-icon: url("data:image/svg+xml,%3csvg version='1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3e%3cpath fill='%232196F3' d='M43 17.1L39.9 14 24 29.9 8.1 14 5 17.1 24 36z'/%3e%3c/svg%3e");
+  --header-asc-icon: url("data:image/svg+xml,%3csvg version='1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3e%3cpath fill='%232196F3' d='M5 30.9L8.1 34 24 18.1 39.9 34l3.1-3.1L24 12z'/%3e%3c/svg%3e");
   --col-resize-sep-bg-color: #a0a0a0;
   --row-border-color: #333333;
   --row-odd-bg-color: #333333;
