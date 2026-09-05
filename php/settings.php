@@ -280,11 +280,17 @@ class rTorrentSettings
 			{
 				if(!$req->fault)
 					$this->badXMLRPCVersion = false;
+				// The size limit is a request, not a reading. rtorrent refuses
+				// one above SCgiTask::max_content_size, and inside the batch
+				// below that refusal would take every reading with it.
+				$req = new rXMLRPCRequest( new rXMLRPCCommand("set_xmlrpc_size_limit",67108863) );
+				$req->important = false;
+				$req->success();
+
 				$req = new rXMLRPCRequest( array(
 					new rXMLRPCCommand("get_directory"),
 					new rXMLRPCCommand("get_session"),
 					new rXMLRPCCommand("system.library_version"),
-					new rXMLRPCCommand("set_xmlrpc_size_limit",67108863),
 					new rXMLRPCCommand("get_name"),
 					new rXMLRPCCommand("get_port_range"),
 					new rXMLRPCCommand("get_bind"),
@@ -295,11 +301,11 @@ class rTorrentSettings
 					$this->directory = $req->val[0];
   		        	        $this->session = $req->val[1];
 					$this->libVersion = $req->val[2];
-					$this->server = $req->val[4];
-					$this->portRange = $req->val[5];
+					$this->server = $req->val[3];
+					$this->portRange = $req->val[4];
 					$this->port = intval($this->portRange);
-					$this->bind = $req->val[6];
-					$this->ip = $req->val[7];
+					$this->bind = $req->val[5];
+					$this->ip = $req->val[6];
 
 					if($this->iVersion>=0x809)
 					{
