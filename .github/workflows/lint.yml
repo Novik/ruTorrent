@@ -33,7 +33,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: editorconfig-checker
-        run: npx --yes editorconfig-checker@5
+        # Both halves are pinned on purpose. The wrapper has to be one that
+        # knows the current release asset names as well as the legacy ones,
+        # and EC_VERSION pins the checker it downloads -- left to itself it
+        # takes whatever release is latest, so an upstream change lands here
+        # without a commit.
+        env:
+          EC_VERSION: v4.0.1
+        run: npx --yes editorconfig-checker@7
 
   eslint:
     # Advisory for now (same plan as editorconfig).
