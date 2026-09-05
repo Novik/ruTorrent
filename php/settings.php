@@ -280,10 +280,17 @@ class rTorrentSettings
 			{
 				if(!$req->fault)
 					$this->badXMLRPCVersion = false;
-				// The size limit is a request, not a reading. rtorrent refuses
-				// one above SCgiTask::max_content_size, and inside the batch
-				// below that refusal would take every reading with it.
-				$req = new rXMLRPCRequest( new rXMLRPCCommand("set_xmlrpc_size_limit",67108863) );
+				// The size limit is a request, not a reading. Sent inside the
+				// batch below, a refusal would take every reading with it.
+				//
+				// 16777216 is SCgiTask::max_content_size, which the SCGI
+				// transport applies to CONTENT_LENGTH: a request larger than
+				// that is refused whatever this limit says, so asking for more
+				// buys nothing and from 0.16.22 rtorrent refuses to set it.
+				// Worth asking for at all because the default, 524288, is
+				// smaller than plenty of torrent files, and load.raw_start
+				// carries them through here.
+				$req = new rXMLRPCRequest( new rXMLRPCCommand("set_xmlrpc_size_limit",16777216) );
 				$req->important = false;
 				$req->success();
 
