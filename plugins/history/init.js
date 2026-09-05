@@ -378,7 +378,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 			{
 				var self = "theWebUI.getTable('"+this.prefix+"').";
 				theContextMenu.clear();
-				theContextMenu.add([theUILang.Remove, self+"cmdHistory('delete')"]);
+				theContextMenu.add([theUILang.Remove, self+"historyRemove()"]);
 				theContextMenu.show(e.clientX,e.clientY);
 			}
 		}
