@@ -60,3 +60,7 @@ rutorrent-custom-plugins
 
 # MacOS
 .DS_Store
+
+# PHP CS Fixer configuration
+/.php-cs-fixer.cache
+/.php-cs-fixer.php
