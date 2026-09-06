@@ -10,273 +10,275 @@ require_once(__DIR__ . '/../../php/TestCase.php');
 
 $minInterval = 2;	// in minutes
 
-$feedsWithIncorrectTimes = array(
-	"iptorrents.",
-	"torrentday.",
-);
+$feedsWithIncorrectTimes = [
+    "iptorrents.",
+    "torrentday.",
+];
 
 $rss_debug_enabled = true;
 require_once(__DIR__ . '/../../../plugins/rss/rss.php');
 
 class SnoopyMock
 {
-	public $status = 200, $results = NULL, $headers = array();
+    public $status = 200;
+    public $results = null;
+    public $headers = [];
 }
 
 final class RSSTest extends TestCase
 {
-	public function testAtom(): void
-	{
-		$exp_url = 'https://example.org/rss';
-		$exp_etag = 'some etag';
-		$exp_lastModified = 'some date';
-		$rssFetchURL = function ($url, $cookies, $headers) use ($exp_url, $exp_etag, $exp_lastModified) {
-			$this->assertEquals($exp_url, $url);
-			$this->assertEquals(['key' => 'value', 'key2'=> 'value2'], $cookies);
-			$this->assertEquals(['If-None-Match' => $exp_etag, 'If-Last-Modified' => $exp_lastModified], $headers);
-			$cliMock = new SnoopyMock();
-			$cliMock->results = file_get_contents(__DIR__ . '/atom-sample.xml');
-			return $cliMock;
-		};
+    public function testAtom(): void
+    {
+        $exp_url = 'https://example.org/rss';
+        $exp_etag = 'some etag';
+        $exp_lastModified = 'some date';
+        $rssFetchURL = function ($url, $cookies, $headers) use ($exp_url, $exp_etag, $exp_lastModified) {
+            $this->assertEquals($exp_url, $url);
+            $this->assertEquals(['key' => 'value', 'key2' => 'value2'], $cookies);
+            $this->assertEquals(['If-None-Match' => $exp_etag, 'If-Last-Modified' => $exp_lastModified], $headers);
+            $cliMock = new SnoopyMock();
+            $cliMock->results = file_get_contents(__DIR__ . '/atom-sample.xml');
+            return $cliMock;
+        };
 
-		$rRSS = new rRSS($exp_url.':COOKIE:key=value;key2=value2', $rssFetchURL);
-		$rRSS->etag = $exp_etag;
-		$rRSS->lastModified = $exp_lastModified;
-		$history = new rRSSHistory();
-		$succ = $rRSS->fetch($history);
-		$this->assertEquals(0, count($rRSS->lastErrorMsgs));
-		$this->assertTrue($succ, 'fetch success');
+        $rRSS = new rRSS($exp_url . ':COOKIE:key=value;key2=value2', $rssFetchURL);
+        $rRSS->etag = $exp_etag;
+        $rRSS->lastModified = $exp_lastModified;
+        $history = new rRSSHistory();
+        $succ = $rRSS->fetch($history);
+        $this->assertEquals(0, count($rRSS->lastErrorMsgs));
+        $this->assertTrue($succ, 'fetch success');
 
-		// check channel
-		$this->assertEquals('Example Feed', $rRSS->channel['title']);
-		$this->assertEquals(strtotime('2003-12-13T20:30:02Z'), $rRSS->channel['timestamp']);
-		$this->assertEquals('https://example.org/', $rRSS->channel['link']);
+        // check channel
+        $this->assertEquals('Example Feed', $rRSS->channel['title']);
+        $this->assertEquals(strtotime('2003-12-13T20:30:02Z'), $rRSS->channel['timestamp']);
+        $this->assertEquals('https://example.org/', $rRSS->channel['link']);
 
-		// check items
-		$this->assertEquals(2, count($rRSS->items));
-		$this->assertEquals(array(
-			"timestamp" => strtotime('2003-12-13T18:30:02Z'),
-			"title" => 'Title <1>',
-			"link" => 'https://example.org/2003/12/13/atom03',
-			"guid" => 'https://example.org/2003/12/13/atom03',
-			"description" => 'Some text.',
-		), $rRSS->items['https://example.org/2003/12/13/atom03']);
-		$this->assertEquals(array(
-			"timestamp" => strtotime('2003-12-13T19:30:02Z'),
-			"title" => 'Title <2>',
-			"link" => 'https://example.org/2003/12/13/atom04',
-			"guid" => 'https://example.org/2003/12/13/atom04',
-			"description" => 'Some other text.'."\n\n[Content]\n".'Some content',
-		), $rRSS->items['https://example.org/2003/12/13/atom04']);
+        // check items
+        $this->assertEquals(2, count($rRSS->items));
+        $this->assertEquals([
+            "timestamp" => strtotime('2003-12-13T18:30:02Z'),
+            "title" => 'Title <1>',
+            "link" => 'https://example.org/2003/12/13/atom03',
+            "guid" => 'https://example.org/2003/12/13/atom03',
+            "description" => 'Some text.',
+        ], $rRSS->items['https://example.org/2003/12/13/atom03']);
+        $this->assertEquals([
+            "timestamp" => strtotime('2003-12-13T19:30:02Z'),
+            "title" => 'Title <2>',
+            "link" => 'https://example.org/2003/12/13/atom04',
+            "guid" => 'https://example.org/2003/12/13/atom04',
+            "description" => 'Some other text.' . "\n\n[Content]\n" . 'Some content',
+        ], $rRSS->items['https://example.org/2003/12/13/atom04']);
 
-		// check contents
-		$contents =  $rRSS->getContents("label", "1", "1", $history);
-		$this->assertEquals(array(
-			"time" => strtotime('2003-12-13T18:30:02Z'),
-			"title" => 'Title <1>',
-			"href" => 'https://example.org/2003/12/13/atom03',
-			"guid" => 'https://example.org/2003/12/13/atom03',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][0]);
-		$this->assertEquals(array(
-			"time" => strtotime('2003-12-13T19:30:02Z'),
-			"title" => 'Title <2>',
-			"href" => 'https://example.org/2003/12/13/atom04',
-			"guid" => 'https://example.org/2003/12/13/atom04',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][1]);
-	}
+        // check contents
+        $contents =  $rRSS->getContents("label", "1", "1", $history);
+        $this->assertEquals([
+            "time" => strtotime('2003-12-13T18:30:02Z'),
+            "title" => 'Title <1>',
+            "href" => 'https://example.org/2003/12/13/atom03',
+            "guid" => 'https://example.org/2003/12/13/atom03',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][0]);
+        $this->assertEquals([
+            "time" => strtotime('2003-12-13T19:30:02Z'),
+            "title" => 'Title <2>',
+            "href" => 'https://example.org/2003/12/13/atom04',
+            "guid" => 'https://example.org/2003/12/13/atom04',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][1]);
+    }
 
-	public function testRSS(): void
-	{
-		$exp_url = 'https://onerous.me/rss';
-		$rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
-			$this->assertEquals($exp_url, $url);
-			$this->assertEquals([], $cookies);
-			$this->assertEquals([], $headers);
-			$cliMock = new SnoopyMock();
-			$cliMock->results = file_get_contents(__DIR__ . '/rss-sample-erroneous.xml');
-			return $cliMock;
-		};
-		$rRSS = new rRSS($exp_url, $rssFetchURL);
-		$history = new rRSSHistory();
-		$succ = $rRSS->fetch($history);
-		$this->assertEquals(1, count($rRSS->lastErrorMsgs));
-		$this->assertTrue($succ);
+    public function testRSS(): void
+    {
+        $exp_url = 'https://onerous.me/rss';
+        $rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
+            $this->assertEquals($exp_url, $url);
+            $this->assertEquals([], $cookies);
+            $this->assertEquals([], $headers);
+            $cliMock = new SnoopyMock();
+            $cliMock->results = file_get_contents(__DIR__ . '/rss-sample-erroneous.xml');
+            return $cliMock;
+        };
+        $rRSS = new rRSS($exp_url, $rssFetchURL);
+        $history = new rRSSHistory();
+        $succ = $rRSS->fetch($history);
+        $this->assertEquals(1, count($rRSS->lastErrorMsgs));
+        $this->assertTrue($succ);
 
-		$this->assertEquals('Vexatious torrent channel©', $rRSS->channel['title']);
-		$this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
-		$contents =  $rRSS->getContents("label", "1", "1", $history);
-		$this->assertEquals(3, count($contents['items']));
+        $this->assertEquals('Vexatious torrent channel©', $rRSS->channel['title']);
+        $this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
+        $contents =  $rRSS->getContents("label", "1", "1", $history);
+        $this->assertEquals(3, count($contents['items']));
 
-		$this->assertEquals(array(
-			"time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
-			"title" => 'The best title',
-			"href" => 'https://onerous.me/path/to/torrent?guid=ABCD&torr',
-			"guid" => 'https://onerous.me/path/to/torrent?guid=ABCD&perm',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][0]);
-		$this->assertEquals(array(
-			"time" => strtotime('Sat, 1 Jan 2022 13:00:00 +0000'),
-			"title" => '<No Title>',
-			"href" => 'https://onerous.me/no_tags_allowed/path/to/torrent?guid=ABCE',
-			"guid" => 'https://onerous.me/no_tags_allowed/path/to/torrent?guid=ABCE',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][1]);
-		$this->assertEquals(array(
-			"time" => strtotime('Sat, 1 Jan 2022 14:00:00 +0000'),
-			"title" => 'Wonders of <pubDate>Sat, 1 Jan 2022 14:30:00 +0000</pubDate> wow',
-			"href" => 'https://onerous.me/path/to/torrent?guid=ABCF',
-			"guid" => 'https://onerous.me/path/to/torrent?guid=ABCF',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][2]);
-	}
-	public function testRSS2(): void
-	{
-		$exp_url = 'https://example.jp/rss';
-		$rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
-			$this->assertEquals($exp_url, $url);
-			$this->assertEquals([], $cookies);
-			$this->assertEquals([], $headers);
-			$cliMock = new SnoopyMock();
-			$cliMock->results = file_get_contents(__DIR__ . '/rss-jp-sample.xml');
-			return $cliMock;
-		};
-		$rRSS = new rRSS($exp_url, $rssFetchURL);
-		$history = new rRSSHistory();
-		$succ = $rRSS->fetch($history);
-		$this->assertEquals(0, count($rRSS->lastErrorMsgs));
-		$this->assertTrue($succ);
+        $this->assertEquals([
+            "time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
+            "title" => 'The best title',
+            "href" => 'https://onerous.me/path/to/torrent?guid=ABCD&torr',
+            "guid" => 'https://onerous.me/path/to/torrent?guid=ABCD&perm',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][0]);
+        $this->assertEquals([
+            "time" => strtotime('Sat, 1 Jan 2022 13:00:00 +0000'),
+            "title" => '<No Title>',
+            "href" => 'https://onerous.me/no_tags_allowed/path/to/torrent?guid=ABCE',
+            "guid" => 'https://onerous.me/no_tags_allowed/path/to/torrent?guid=ABCE',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][1]);
+        $this->assertEquals([
+            "time" => strtotime('Sat, 1 Jan 2022 14:00:00 +0000'),
+            "title" => 'Wonders of <pubDate>Sat, 1 Jan 2022 14:30:00 +0000</pubDate> wow',
+            "href" => 'https://onerous.me/path/to/torrent?guid=ABCF',
+            "guid" => 'https://onerous.me/path/to/torrent?guid=ABCF',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][2]);
+    }
+    public function testRSS2(): void
+    {
+        $exp_url = 'https://example.jp/rss';
+        $rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
+            $this->assertEquals($exp_url, $url);
+            $this->assertEquals([], $cookies);
+            $this->assertEquals([], $headers);
+            $cliMock = new SnoopyMock();
+            $cliMock->results = file_get_contents(__DIR__ . '/rss-jp-sample.xml');
+            return $cliMock;
+        };
+        $rRSS = new rRSS($exp_url, $rssFetchURL);
+        $history = new rRSSHistory();
+        $succ = $rRSS->fetch($history);
+        $this->assertEquals(0, count($rRSS->lastErrorMsgs));
+        $this->assertTrue($succ);
 
-		$this->assertEquals('アニメ 放送©', $rRSS->channel['title']);
-		$this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
-		$contents =  $rRSS->getContents("label", "1", "1", $history);
-		$this->assertEquals(1, count($contents['items']));
+        $this->assertEquals('アニメ 放送©', $rRSS->channel['title']);
+        $this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
+        $contents =  $rRSS->getContents("label", "1", "1", $history);
+        $this->assertEquals(1, count($contents['items']));
 
-		$this->assertEquals(array(
-			"time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
-			"title" => '完璧な映画',
-			"href" => 'https://example.jp/path/to/torrent?guid=ABCD&torr',
-			"guid" => 'https://example.jp/path/to/torrent?guid=ABCD&perm',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][0]);
-	}
+        $this->assertEquals([
+            "time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
+            "title" => '完璧な映画',
+            "href" => 'https://example.jp/path/to/torrent?guid=ABCD&torr',
+            "guid" => 'https://example.jp/path/to/torrent?guid=ABCD&perm',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][0]);
+    }
 
-	public function testRSSWin1251(): void
-	{
-		// The fixture deliberately starts with a blank line before the XML
-		// declaration: real-world feeds emit such padding, and it makes
-		// libxml ignore the declared windows-1251 encoding and read the
-		// bytes as if they were UTF-8, garbling every non-ASCII title.
-		$exp_url = 'https://example.ru/rss';
-		$rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
-			$this->assertEquals($exp_url, $url);
-			$this->assertEquals([], $cookies);
-			$this->assertEquals([], $headers);
-			$cliMock = new SnoopyMock();
-			$cliMock->results = file_get_contents(__DIR__ . '/rss-win1251-sample.xml');
-			return $cliMock;
-		};
-		$rRSS = new rRSS($exp_url, $rssFetchURL);
-		$history = new rRSSHistory();
-		$succ = $rRSS->fetch($history);
-		// libxml still reports the misplaced XML declaration, nothing else
-		$this->assertEquals(1, count($rRSS->lastErrorMsgs));
-		$this->assertTrue($succ);
+    public function testRSSWin1251(): void
+    {
+        // The fixture deliberately starts with a blank line before the XML
+        // declaration: real-world feeds emit such padding, and it makes
+        // libxml ignore the declared windows-1251 encoding and read the
+        // bytes as if they were UTF-8, garbling every non-ASCII title.
+        $exp_url = 'https://example.ru/rss';
+        $rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
+            $this->assertEquals($exp_url, $url);
+            $this->assertEquals([], $cookies);
+            $this->assertEquals([], $headers);
+            $cliMock = new SnoopyMock();
+            $cliMock->results = file_get_contents(__DIR__ . '/rss-win1251-sample.xml');
+            return $cliMock;
+        };
+        $rRSS = new rRSS($exp_url, $rssFetchURL);
+        $history = new rRSSHistory();
+        $succ = $rRSS->fetch($history);
+        // libxml still reports the misplaced XML declaration, nothing else
+        $this->assertEquals(1, count($rRSS->lastErrorMsgs));
+        $this->assertTrue($succ);
 
-		$this->assertEquals('Русский торрент канал', $rRSS->channel['title']);
-		$this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
-		$contents =  $rRSS->getContents("label", "1", "1", $history);
-		$this->assertEquals(1, count($contents['items']));
+        $this->assertEquals('Русский торрент канал', $rRSS->channel['title']);
+        $this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
+        $contents =  $rRSS->getContents("label", "1", "1", $history);
+        $this->assertEquals(1, count($contents['items']));
 
-		$this->assertEquals(array(
-			"time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
-			"title" => 'Новый фильм — четвёртый сезон',
-			"href" => 'https://example.ru/path/to/torrent?torr=ABCD',
-			"guid" => 'https://example.ru/path/to/torrent?perm=ABCD',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][0]);
-	}
+        $this->assertEquals([
+            "time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
+            "title" => 'Новый фильм — четвёртый сезон',
+            "href" => 'https://example.ru/path/to/torrent?torr=ABCD',
+            "guid" => 'https://example.ru/path/to/torrent?perm=ABCD',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][0]);
+    }
 
-	public function testRSSUtf8(): void
-	{
-		// Same document as testRSSWin1251 (blank line before the XML
-		// declaration included), but already encoded in UTF-8: it must pass
-		// through unconverted and parse with unchanged titles.
-		$exp_url = 'https://example.ru/rss-utf8';
-		$rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
-			$this->assertEquals($exp_url, $url);
-			$this->assertEquals([], $cookies);
-			$this->assertEquals([], $headers);
-			$cliMock = new SnoopyMock();
-			$cliMock->results = file_get_contents(__DIR__ . '/rss-utf8-sample.xml');
-			return $cliMock;
-		};
-		$rRSS = new rRSS($exp_url, $rssFetchURL);
-		$history = new rRSSHistory();
-		$succ = $rRSS->fetch($history);
-		// libxml still reports the misplaced XML declaration, nothing else
-		$this->assertEquals(1, count($rRSS->lastErrorMsgs));
-		$this->assertTrue($succ);
+    public function testRSSUtf8(): void
+    {
+        // Same document as testRSSWin1251 (blank line before the XML
+        // declaration included), but already encoded in UTF-8: it must pass
+        // through unconverted and parse with unchanged titles.
+        $exp_url = 'https://example.ru/rss-utf8';
+        $rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
+            $this->assertEquals($exp_url, $url);
+            $this->assertEquals([], $cookies);
+            $this->assertEquals([], $headers);
+            $cliMock = new SnoopyMock();
+            $cliMock->results = file_get_contents(__DIR__ . '/rss-utf8-sample.xml');
+            return $cliMock;
+        };
+        $rRSS = new rRSS($exp_url, $rssFetchURL);
+        $history = new rRSSHistory();
+        $succ = $rRSS->fetch($history);
+        // libxml still reports the misplaced XML declaration, nothing else
+        $this->assertEquals(1, count($rRSS->lastErrorMsgs));
+        $this->assertTrue($succ);
 
-		$this->assertEquals('Русский торрент канал', $rRSS->channel['title']);
-		$this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
-		$contents =  $rRSS->getContents("label", "1", "1", $history);
-		$this->assertEquals(1, count($contents['items']));
+        $this->assertEquals('Русский торрент канал', $rRSS->channel['title']);
+        $this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
+        $contents =  $rRSS->getContents("label", "1", "1", $history);
+        $this->assertEquals(1, count($contents['items']));
 
-		$this->assertEquals(array(
-			"time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
-			"title" => 'Новый фильм — четвёртый сезон',
-			"href" => 'https://example.ru/path/to/torrent?torr=ABCD',
-			"guid" => 'https://example.ru/path/to/torrent?perm=ABCD',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][0]);
-	}
+        $this->assertEquals([
+            "time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
+            "title" => 'Новый фильм — четвёртый сезон',
+            "href" => 'https://example.ru/path/to/torrent?torr=ABCD',
+            "guid" => 'https://example.ru/path/to/torrent?perm=ABCD',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][0]);
+    }
 
-	public function testRSSMislabeledWin1251(): void
-	{
-		// Same document again (blank line before the XML declaration
-		// included), but this time the declaration lies: it claims
-		// windows-1251 while the bytes are already UTF-8, as misconfigured
-		// aggregators commonly emit. The declared encoding must not trigger
-		// a second cp1251-to-UTF-8 conversion, or every non-ASCII title
-		// turns into mojibake.
-		$exp_url = 'https://example.ru/rss-mislabeled';
-		$rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
-			$this->assertEquals($exp_url, $url);
-			$this->assertEquals([], $cookies);
-			$this->assertEquals([], $headers);
-			$cliMock = new SnoopyMock();
-			$cliMock->results = file_get_contents(__DIR__ . '/rss-mislabeled-win1251-sample.xml');
-			return $cliMock;
-		};
-		$rRSS = new rRSS($exp_url, $rssFetchURL);
-		$history = new rRSSHistory();
-		$succ = $rRSS->fetch($history);
-		// libxml still reports the misplaced XML declaration, nothing else
-		$this->assertEquals(1, count($rRSS->lastErrorMsgs));
-		$this->assertTrue($succ);
+    public function testRSSMislabeledWin1251(): void
+    {
+        // Same document again (blank line before the XML declaration
+        // included), but this time the declaration lies: it claims
+        // windows-1251 while the bytes are already UTF-8, as misconfigured
+        // aggregators commonly emit. The declared encoding must not trigger
+        // a second cp1251-to-UTF-8 conversion, or every non-ASCII title
+        // turns into mojibake.
+        $exp_url = 'https://example.ru/rss-mislabeled';
+        $rssFetchURL = function ($url, $cookies, $headers) use ($exp_url) {
+            $this->assertEquals($exp_url, $url);
+            $this->assertEquals([], $cookies);
+            $this->assertEquals([], $headers);
+            $cliMock = new SnoopyMock();
+            $cliMock->results = file_get_contents(__DIR__ . '/rss-mislabeled-win1251-sample.xml');
+            return $cliMock;
+        };
+        $rRSS = new rRSS($exp_url, $rssFetchURL);
+        $history = new rRSSHistory();
+        $succ = $rRSS->fetch($history);
+        // libxml still reports the misplaced XML declaration, nothing else
+        $this->assertEquals(1, count($rRSS->lastErrorMsgs));
+        $this->assertTrue($succ);
 
-		$this->assertEquals('Русский торрент канал', $rRSS->channel['title']);
-		$this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
-		$contents =  $rRSS->getContents("label", "1", "1", $history);
-		$this->assertEquals(1, count($contents['items']));
+        $this->assertEquals('Русский торрент канал', $rRSS->channel['title']);
+        $this->assertEquals(strtotime('Fri, 31 Dec 2021 12:00:00 +0000'), $rRSS->channel['timestamp']);
+        $contents =  $rRSS->getContents("label", "1", "1", $history);
+        $this->assertEquals(1, count($contents['items']));
 
-		$this->assertEquals(array(
-			"time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
-			"title" => 'Новый фильм — четвёртый сезон',
-			"href" => 'https://example.ru/path/to/torrent?torr=ABCD',
-			"guid" => 'https://example.ru/path/to/torrent?perm=ABCD',
-			"errcount" => 0,
-			"hash" => ""
-		), $contents['items'][0]);
-	}
+        $this->assertEquals([
+            "time" => strtotime('Sat, 1 Jan 2022 12:00:00 +0000'),
+            "title" => 'Новый фильм — четвёртый сезон',
+            "href" => 'https://example.ru/path/to/torrent?torr=ABCD',
+            "guid" => 'https://example.ru/path/to/torrent?perm=ABCD',
+            "errcount" => 0,
+            "hash" => "",
+        ], $contents['items'][0]);
+    }
 }

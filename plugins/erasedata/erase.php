@@ -17,21 +17,26 @@ $hash = isset($argv[1]) ? $argv[1] : "";
 $force = (isset($argv[2]) && ($argv[2] !== "")) ? $argv[2] : "1";
 $user = isset($argv[3]) ? $argv[3] : "";
 
-if(!preg_match('/^[0-9A-Fa-f]{40}$/', $hash))
-	exit(1);
-if($user !== "")
-	$_SERVER['REMOTE_USER'] = $user;
+if (!preg_match('/^[0-9A-Fa-f]{40}$/', $hash)) {
+    exit(1);
+}
+if ($user !== "") {
+    $_SERVER['REMOTE_USER'] = $user;
+}
 
-require_once( dirname(__FILE__)."/../../php/util.php" );
-require_once( dirname(__FILE__)."/pending.php" );
+require_once(dirname(__FILE__) . "/../../php/util.php");
+require_once(dirname(__FILE__) . "/pending.php");
 eval(FileUtil::getPluginConf('erasedata'));
 
-$listPath = FileUtil::getSettingsPath()."/erasedata";
+$listPath = FileUtil::getSettingsPath() . "/erasedata";
 @FileUtil::makeDirectory($listPath);
 
-if(!erasedataQueueRequest($listPath, $hash, $force))
-	exit(1);
+if (!erasedataQueueRequest($listPath, $hash, $force)) {
+    exit(1);
+}
 
-erasedataDrainQueue($listPath,
-	isset($erasePendingMaxAttempts) ? intval($erasePendingMaxAttempts) : 10);
+erasedataDrainQueue(
+    $listPath,
+    isset($erasePendingMaxAttempts) ? intval($erasePendingMaxAttempts) : 10,
+);
 exit(0);

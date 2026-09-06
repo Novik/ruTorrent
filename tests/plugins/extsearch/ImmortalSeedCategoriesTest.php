@@ -20,8 +20,8 @@ require_once(__DIR__ . '/../rutracker_check/TestLib.php');
 
 class commonEngine
 {
-    public $defaults = array('public' => true, 'page_size' => 100);
-    public $categories = array('All' => '');
+    public $defaults = ['public' => true, 'page_size' => 100];
+    public $categories = ['All' => ''];
 
     public function makeClient($url)
     {
@@ -39,14 +39,14 @@ require_once(testFindRepoRoot() . '/plugins/extsearch/engines/ImmortalSeed.php')
 function extsearchDuplicateArrayKeys($file)
 {
     $tokens = token_get_all(file_get_contents($file));
-    $stack = array(array());
-    $duplicates = array();
+    $stack = [[]];
+    $duplicates = [];
     $total = count($tokens);
     for ($i = 0; $i < $total; $i++) {
         $token = $tokens[$i];
         if (!is_array($token)) {
             if ($token === '(' || $token === '[' || $token === '{') {
-                $stack[] = array();
+                $stack[] = [];
                 continue;
             }
             if ($token === ')' || $token === ']' || $token === '}') {
@@ -63,7 +63,7 @@ function extsearchDuplicateArrayKeys($file)
         // The next significant token decides whether this string is a key.
         for ($j = $i + 1; $j < $total; $j++) {
             $next = $tokens[$j];
-            if (is_array($next) && in_array($next[0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+            if (is_array($next) && in_array($next[0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
                 continue;
             }
             if (is_array($next) && $next[0] === T_DOUBLE_ARROW) {
@@ -87,26 +87,34 @@ $suite->test('every ImmortalSeed movie sub-category is reachable', function () {
     $engine = new ImmortalSeedEngine();
     $categories = $engine->categories;
     // One "Non-English" per Movies parent, with the site's own category id.
-    $expected = array(
+    $expected = [
         'Movies-4k' => '&selectedcats2=60',
         'Movies-HD' => '&selectedcats2=18',
         'Movies-Low Def' => '&selectedcats2=34',
         'Movies-SD' => '&selectedcats2=33',
-    );
+    ];
     foreach ($expected as $parent => $query) {
-        strictAssertTrue(array_key_exists($parent, $categories),
-            'the parent category ' . $parent . ' is gone');
-        strictAssertSame(1, count(array_keys($categories, $query, true)),
+        strictAssertTrue(
+            array_key_exists($parent, $categories),
+            'the parent category ' . $parent . ' is gone',
+        );
+        strictAssertSame(
+            1,
+            count(array_keys($categories, $query, true)),
             'exactly one label must search ' . $query . ', saw '
-            . var_export(array_keys($categories, $query, true), true));
+            . var_export(array_keys($categories, $query, true), true),
+        );
     }
 });
 
 $suite->test('no two ImmortalSeed labels search the same categories', function () {
     $categories = (new ImmortalSeedEngine())->categories;
     foreach ($categories as $label => $query) {
-        strictAssertSame(1, count(array_keys($categories, $query, true)),
-            'more than one label searches ' . var_export($query, true));
+        strictAssertSame(
+            1,
+            count(array_keys($categories, $query, true)),
+            'more than one label searches ' . var_export($query, true),
+        );
     }
 });
 
@@ -117,8 +125,11 @@ $suite->test('the ImmortalSeed map keeps every entry its source declares', funct
     $source = testFindRepoRoot() . '/plugins/extsearch/engines/ImmortalSeed.php';
     $declared = preg_match_all("/^\t\t'.*'=>'[^']*',?$/m", file_get_contents($source));
     strictAssertTrue($declared > 1, 'no category lines found in ' . $source);
-    strictAssertSame($declared, count((new ImmortalSeedEngine())->categories),
-        'the parsed map is smaller than the list the file declares');
+    strictAssertSame(
+        $declared,
+        count((new ImmortalSeedEngine())->categories),
+        'the parsed map is smaller than the list the file declares',
+    );
 });
 
 $suite->test('no search engine hides a category behind a repeated label', function () {
@@ -128,9 +139,12 @@ $suite->test('no search engine hides a category behind a repeated label', functi
     strictAssertTrue(count($engines) > 0, 'no engine files found');
     foreach ($engines as $engine) {
         $duplicates = extsearchDuplicateArrayKeys($engine);
-        strictAssertSame(array(), $duplicates,
+        strictAssertSame(
+            [],
+            $duplicates,
             basename($engine) . ' repeats array key(s) ' . implode(', ', $duplicates)
-            . ' -- every entry but the last is dropped');
+            . ' -- every entry but the last is dropped',
+        );
     }
 });
 

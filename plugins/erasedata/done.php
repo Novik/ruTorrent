@@ -1,6 +1,6 @@
 <?php
 
-$req = new rXMLRPCRequest( array(
-	rTorrentSettings::get()->getRemoveScheduleCommand("erasedata")
-	));
+$req = new rXMLRPCRequest([
+    rTorrentSettings::get()->getRemoveScheduleCommand("erasedata"),
+]);
 $req->run();

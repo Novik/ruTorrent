@@ -18,15 +18,15 @@
 //
 // Loaded from settings.php when iVersion >= 0x1012.
 
-$this->aliases = array_merge($this->aliases, array(
+$this->aliases = array_merge($this->aliases, [
 
-	"get_port_range"  => array( "name"=>"network.listen.port.range",      "prm"=>0 ),
-	"set_port_range"  => array( "name"=>"network.listen.port.range.set",  "prm"=>1 ),
-	"get_port_random" => array( "name"=>"network.listen.port.random",     "prm"=>0 ),
-	"set_port_random" => array( "name"=>"network.listen.port.random.set", "prm"=>1 ),
+    "get_port_range"  => [ "name" => "network.listen.port.range",      "prm" => 0 ],
+    "set_port_range"  => [ "name" => "network.listen.port.range.set",  "prm" => 1 ],
+    "get_port_random" => [ "name" => "network.listen.port.random",     "prm" => 0 ],
+    "set_port_random" => [ "name" => "network.listen.port.random.set", "prm" => 1 ],
 
-	"get_port_open"   => array( "name"=>"cat", "prm"=>0 ),
-	"set_port_open"   => array( "name"=>"cat", "prm"=>1 ),
-	"port_open"       => array( "name"=>"cat", "prm"=>0 ),
+    "get_port_open"   => [ "name" => "cat", "prm" => 0 ],
+    "set_port_open"   => [ "name" => "cat", "prm" => 1 ],
+    "port_open"       => [ "name" => "cat", "prm" => 0 ],
 
-));
+]);

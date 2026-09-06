@@ -12,7 +12,7 @@ function historyAssertSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
@@ -22,12 +22,12 @@ function historyAssertSame($expected, $actual, $message)
 // going through add(), which would try to write the cache file.
 function historyRecord($key, $actionTime, $action = 1)
 {
-    return array(
+    return [
         'action' => $action,
         'name' => 'torrent-' . $key,
         'action_time' => $actionTime,
         'hash' => $key,
-    );
+    ];
 }
 
 // A history object holding exactly $records, with no pending changes: this is
@@ -45,16 +45,22 @@ function historyLoaded($records)
 function historyRecordAddition($object, $record, $limit)
 {
     $object->data[$record['hash']] = $record;
-    historySetProtected($object, 'ownAdditions',
-        historyGetProtected($object, 'ownAdditions') + array($record['hash'] => $record));
+    historySetProtected(
+        $object,
+        'ownAdditions',
+        historyGetProtected($object, 'ownAdditions') + [$record['hash'] => $record],
+    );
     historySetProtected($object, 'limit', $limit);
 }
 
 function historyRecordRemoval($object, $key)
 {
     unset($object->data[$key]);
-    historySetProtected($object, 'ownRemovals',
-        historyGetProtected($object, 'ownRemovals') + array($key => true));
+    historySetProtected(
+        $object,
+        'ownRemovals',
+        historyGetProtected($object, 'ownRemovals') + [$key => true],
+    );
 }
 
 function historyGetProtected($object, $property)
@@ -75,44 +81,50 @@ function historySetProtected($object, $property, $value)
     $reflection->setValue($object, $value);
 }
 
-$tests = array(
+$tests = [
     // The live failure: three events land in the same second when a torrent is
     // replaced, each in its own process, and the last writer used to publish a
     // file without the rows the others had added.
     'a row another process added while this one was writing survives' => function () {
-        $ours = historyLoaded(array('a' => historyRecord('a', 100)));
+        $ours = historyLoaded(['a' => historyRecord('a', 100)]);
         historyRecordAddition($ours, historyRecord('b', 101), 500);
 
         // Meanwhile a second process recorded its own event and stored it.
-        $onDisk = historyLoaded(array(
+        $onDisk = historyLoaded([
             'a' => historyRecord('a', 100),
             'c' => historyRecord('c', 102),
-        ));
+        ]);
 
         historyAssertSame(true, $ours->merge($onDisk, null), 'merge reports success');
-        historyAssertSame(array('c', 'b', 'a'), array_keys($ours->data),
-            'both writers keep their row, newest first');
+        historyAssertSame(
+            ['c', 'b', 'a'],
+            array_keys($ours->data),
+            'both writers keep their row, newest first',
+        );
     },
 
     'a row this process deleted does not come back from the fresher copy' => function () {
-        $ours = historyLoaded(array(
+        $ours = historyLoaded([
             'a' => historyRecord('a', 100),
             'b' => historyRecord('b', 101),
-        ));
+        ]);
         historyRecordRemoval($ours, 'b');
 
-        $onDisk = historyLoaded(array(
+        $onDisk = historyLoaded([
             'a' => historyRecord('a', 100),
             'b' => historyRecord('b', 101),
-        ));
+        ]);
 
         $ours->merge($onDisk, null);
-        historyAssertSame(array('a'), array_keys($ours->data),
-            'the deletion is replayed on top of the fresher copy');
+        historyAssertSame(
+            ['a'],
+            array_keys($ours->data),
+            'the deletion is replayed on top of the fresher copy',
+        );
     },
 
     'a delete never trims a history longer than the default cap' => function () {
-        $records = array();
+        $records = [];
         for ($i = 0; $i < 600; $i++) {
             $records['k' . $i] = historyRecord('k' . $i, 1000 + $i);
         }
@@ -120,12 +132,15 @@ $tests = array(
         historyRecordRemoval($ours, 'k0');
 
         $ours->merge(historyLoaded($records), null);
-        historyAssertSame(599, count($ours->data),
-            'a delete carries no configured limit and must not impose the default one');
+        historyAssertSame(
+            599,
+            count($ours->data),
+            'a delete carries no configured limit and must not impose the default one',
+        );
     },
 
     'a recorded event still applies the configured cap' => function () {
-        $records = array();
+        $records = [];
         for ($i = 0; $i < 10; $i++) {
             $records['k' . $i] = historyRecord('k' . $i, 1000 + $i);
         }
@@ -144,15 +159,16 @@ $tests = array(
     // the letters and anchored on both ends: only a name that IS a placeholder
     // qualifies, never one that merely looks related.
     'magnet placeholders are recognised, real downloads are not' => function () {
-        $placeholders = array(
+        $placeholders = [
             'an uppercase placeholder' => str_repeat('A', 40) . '.meta',
             'a lowercase placeholder' => str_repeat('b', 40) . '.meta',
             'a mixed-case placeholder' => str_repeat('cD', 20) . '.meta',
-        );
-        foreach ($placeholders as $label => $name)
+        ];
+        foreach ($placeholders as $label => $name) {
             historyAssertSame(true, rHistoryData::isMagnetPlaceholder($name), $label . ' must be recognised');
+        }
 
-        $real = array(
+        $real = [
             'a normal download' => 'Some Release 1080p',
             'a name that merely ends in .meta' => 'metadata.meta',
             'a hash-named file with another extension' => str_repeat('A', 40) . '.mkv',
@@ -160,24 +176,34 @@ $tests = array(
             'a placeholder name with something appended' => str_repeat('A', 40) . '.meta.part',
             'a name one character short of a hash' => str_repeat('A', 39) . '.meta',
             'a name with a non-hex character' => str_repeat('A', 39) . 'Z.meta',
-        );
-        foreach ($real as $label => $name)
+        ];
+        foreach ($real as $label => $name) {
             historyAssertSame(false, rHistoryData::isMagnetPlaceholder($name), $label . ' must be kept');
+        }
     },
 
     'the stored format carries nothing but what it always carried' => function () {
-        $ours = historyLoaded(array('a' => historyRecord('a', 100)));
+        $ours = historyLoaded(['a' => historyRecord('a', 100)]);
         historyRecordAddition($ours, historyRecord('b', 101), 500);
 
         $restored = unserialize(serialize($ours));
-        historyAssertSame(array('hash', 'modified', 'data'), $ours->__sleep(),
-            'only the three long-standing properties are serialised');
-        historyAssertSame(array('a', 'b'), array_keys($restored->data),
-            'the records survive a round trip');
-        historyAssertSame(array(), historyGetProtected($restored, 'ownAdditions'),
-            'bookkeeping does not outlive the process that did the writing');
+        historyAssertSame(
+            ['hash', 'modified', 'data'],
+            $ours->__sleep(),
+            'only the three long-standing properties are serialised',
+        );
+        historyAssertSame(
+            ['a', 'b'],
+            array_keys($restored->data),
+            'the records survive a round trip',
+        );
+        historyAssertSame(
+            [],
+            historyGetProtected($restored, 'ownAdditions'),
+            'bookkeeping does not outlive the process that did the writing',
+        );
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $callback) {

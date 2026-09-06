@@ -1,9 +1,11 @@
 <?php
-require_once( dirname(__FILE__)."/ratio.php");
+
+require_once(dirname(__FILE__) . "/ratio.php");
 
 $rat = rRatio::load();
-if(!$rat->obtain())
-	$jResult.="plugin.disable(); noty('ratio: '+theUILang.pluginCantStart,'error');";
-else
-	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
-$jResult.=$rat->get();
+if (!$rat->obtain()) {
+    $jResult .= "plugin.disable(); noty('ratio: '+theUILang.pluginCantStart,'error');";
+} else {
+    $theSettings->registerPlugin($plugin["name"], $pInfo["perms"]);
+}
+$jResult .= $rat->get();

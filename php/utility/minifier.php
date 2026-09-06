@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the JShrink package.
  *
@@ -209,7 +210,8 @@ class Minifier
         '@' => true];
 
 
-    protected function echo($char) {
+    protected function echo($char)
+    {
         $this->output .= $char;
         $this->last_char = $char[-1];
     }
@@ -239,9 +241,9 @@ class Minifier
                         break;
                     }
 
-                // otherwise we treat the newline like a space
+                    // otherwise we treat the newline like a space
 
-                // no break
+                    // no break
                 case ' ':
                     if (static::isAlphaNumeric($this->b)) {
                         $this->echo($this->a);
@@ -271,7 +273,7 @@ class Minifier
                                 break;
                             }
 
-                        // no break
+                            // no break
                         default:
                             // check for some regex that breaks stuff
                             if ($this->a === '/' && ($this->b === '\'' || $this->b === '"')) {
@@ -300,7 +302,7 @@ class Minifier
                 if (strpos($valid_tokens, $last_token) !== false) {
                     // Regex can appear unquoted after these symbols
                     $this->saveRegex();
-                } else if ($this->endsInKeyword()) {
+                } elseif ($this->endsInKeyword()) {
                     // This block checks for the "return" token before the slash.
                     $this->saveRegex();
                 }
@@ -577,10 +579,10 @@ class Minifier
                 case $stringType:
                     break 2;
 
-                // New lines in strings without line delimiters are bad- actual
-                // new lines will be represented by the string \n and not the actual
-                // character, so those will be treated just fine using the switch
-                // block below.
+                    // New lines in strings without line delimiters are bad- actual
+                    // new lines will be represented by the string \n and not the actual
+                    // character, so those will be treated just fine using the switch
+                    // block below.
                 case "\n":
                     if ($stringType === '`') {
                         $this->echo($this->a);
@@ -589,7 +591,7 @@ class Minifier
                     }
                     break;
 
-                // Escaped characters get picked up here. If it's an escaped new line it's not really needed
+                    // Escaped characters get picked up here. If it's an escaped new line it's not really needed
                 case '\\':
 
                     // a is a slash. We want to keep it, and the next character,
@@ -607,10 +609,10 @@ class Minifier
                     break;
 
 
-                // Since we're not dealing with any special cases we simply
-                // output the character and continue our loop.
+                    // Since we're not dealing with any special cases we simply
+                    // output the character and continue our loop.
                 default:
-                $this->echo($this->a);
+                    $this->echo($this->a);
             }
         }
     }
@@ -676,14 +678,15 @@ class Minifier
         return preg_match('/^[\w\$\pL]$/', $char) === 1 || $char == '/';
     }
 
-    protected function endsInKeyword() {
+    protected function endsInKeyword()
+    {
 
         # When this function is called A is not yet assigned to output.
         # Regular expression only needs to check final part of output for keyword.
         $testOutput = substr($this->output . $this->a, -1 * ($this->max_keyword_len + 10));
 
-        foreach(static::$keywords as $keyword) {
-            if (preg_match('/[^\w]'.$keyword.'[ ]?$/i', $testOutput) === 1) {
+        foreach (static::$keywords as $keyword) {
+            if (preg_match('/[^\w]' . $keyword . '[ ]?$/i', $testOutput) === 1) {
                 return true;
             }
         }

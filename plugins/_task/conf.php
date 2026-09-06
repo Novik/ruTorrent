@@ -2,9 +2,8 @@
 
 // configuration parameters
 
-if(empty($pathToExternals['pgrep']))	// May be path already defined?
-{
-	$pathToExternals['pgrep'] = '';	// Something like /usr/bin/pgrep. If empty, will be found in PATH.
+if (empty($pathToExternals['pgrep'])) {	// May be path already defined?
+    $pathToExternals['pgrep'] = '';	// Something like /usr/bin/pgrep. If empty, will be found in PATH.
 }
 
 $maxConcurentTasks 	= 3;

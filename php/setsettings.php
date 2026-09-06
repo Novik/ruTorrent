@@ -1,10 +1,9 @@
 <?php
 
-require_once( 'WebUISettings.php' );
+require_once('WebUISettings.php');
 
 $json = $_POST['v'];
-if(isset($json))
-{
-	$settings = WebUISettings::load();
-	$settings->set($json);
+if (isset($json)) {
+    $settings = WebUISettings::load();
+    $settings->set($json);
 }
