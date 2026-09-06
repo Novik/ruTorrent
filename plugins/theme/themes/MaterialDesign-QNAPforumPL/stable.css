@@ -1,0 +1,334 @@
+:root {
+	--font-family: Arial, Helvetica, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.stable {
+  --header-bg-color: #1b1b1b;
+  --header-bg-image: none;
+  --header-border-color: transparent;
+  --header-asc-icon: url(data:image/gif;base64,R0lGODlhEAAQAPcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//MAP+Z//+ZzP+Zmf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8zZv8zM/8zAP8A//8AzP8Amf8AZv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zMzMzMmczMZszMM8zMAMyZ/8yZzMyZmcyZZsyZM8yZAMxm/8xmzMxmmcxmZsxmM8xmAMwz/8wzzMwzmcwzZswzM8wzAMwA/8wAzMwAmcwAZswAM8wAAJn//5n/zJn/mZn/Zpn/M5n/AJnM/5nMzJnMmZnMZpnMM5nMAJmZ/5mZzJmZmZmZZpmZM5mZAJlm/5lmzJlmmZlmZplmM5lmAJkz/5kzzJkzmZkzZpkzM5kzAJkA/5kAzJkAmZkAZpkAM5kAAGb//2b/zGb/mWb/Zmb/M2b/AGbM/2bMzGbMmWbMZmbMM2bMAGaZ/2aZzGaZmWaZZmaZM2aZAGZm/2ZmzGZmmWZmZmZmM2ZmAGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YAzGYAmWYAZmYAM2YAADP//zP/zDP/mTP/ZjP/MzP/ADPM/zPMzDPMmTPMZjPMMzPMADOZ/zOZzDOZmTOZZjOZMzOZADNm/zNmzDNmmTNmZjNmMzNmADMz/zMzzDMzmTMzZjMzMzMzADMA/zMAzDMAmTMAZjMAMzMAAAD//wD/zAD/mQD/ZgD/MwD/AADM/wDMzADMmQDMZgDMMwDMAACZ/wCZzACZmQCZZgCZMwCZAABm/wBmzABmmQBmZgBmMwBmAAAz/wAzzAAzmQAzZgAzMwAzAAAA/wAAzAAAmQAAZgAAMwAAAICAgHZ2dnV1dVZWVioqKgsLC////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAN4ALAAAAAAQABAAAAg5AL0JHEiwoMGDCBMqXMjQ4DZsECNuQ9hNW0Rs2bol5HaRm8JrD7Ftu7awojaNDLl5bMiypcuXCwMCADs=);
+  --col-resize-sep-bg-color: #a0a0a0;
+  --row-border-color: #1b1b1b;
+  --row-odd-bg-color: #2A2A2A;
+  --row-even-bg-color: #252525;
+  --row-active-bg-color: #191919;
+  --row-highlight-brightness: 0.75;
+}
+.stable thead {
+  text-shadow: 0px 1px 0px #000;
+	font-weight:700;
+	color:#fff;
+  font-family: Ubuntu;
+}
+.stable-head table tr { background: transparent; border: none; }
+.stable-head table tr td { border: none; font-family: inherit; height: 18px; line-height: 18px; cursor: pointer; }
+.stable thead div.resz { border: 1px solid #FF0000; background: transparent url(./images/s.gif) no-repeat scroll left center; }
+.stable-body { background: #181818; text-shadow: 0px 1px 0px #000; color: #CACCCC; }
+.stable tbody td { border-bottom: 1px solid #252525; }
+.stable tbody td div { font-family: inherit; height: 16px !important; }
+.stable tbody tr.odd td { background-color: #2A2A2A; }
+.stable tbody tr.even td { background-color: #252525; }
+.stable tbody tr.odd:hover td { background-color: #222222; }
+.stable tbody tr.even:hover td { background-color: #1D1D1D; }
+.stable tbody tr { height: 22px; }
+.stable tbody tr.selected td{ background-color: #191919; color: #65c97a; text-shadow: 0px -1px 0px #000; }
+.stable tbody tr.selected:hover td{ background-color: #111111; }
+div.stable tbody tr.even td:nth-child(2n+1) { color: #ffffff; }
+.stable-move-header { background: transparent url(./images/header_move.gif) repeat-x scroll center top; border: 1px solid #0099FF; }
+
+.webkit .stable-move-header { background: rgba(128,128,128,0.7); }
+
+.stable-active-header { border-color: threedface !important }
+.stable-separator-header { background: #181818; }
+.stable-scrollpos { background: #181818 url(./images/headers.png) repeat-x 0px -37px; height: 17px; line-height: 17px; border-bottom: 1px solid #333333; }
+.stable-scrollpos:nth-child(2n+1) { background: #181818 url(./images/headers.png) repeat-x 0px -64px; }
+
+/* Workaround div.meter-value overflowing (due to `width: 100%`).
+ * Note for Firefox 103: `:has` selector needs `layout.css.has-selector.enabled` set to `true`. */
+.stable td:has(> .meter-value) { padding-right: 4px; }
+.stable tbody td div.meter-value { margin: 0px !important; }
+
+.meter-value { border-width: 0px; border-radius: 0.8em; }
+.stable tbody tr.selected span.meter-value { color: #fff; }
+.meter-text { text-shadow: 0px 0px 2px #000; }
+
+/* Fixes */
+input.flm-nav-refresh {
+	border: none !important;
+}
+div#gcont div.row.Header {
+	font-size: 12px;
+}
+
+button#clear_log {
+    margin-top: 4px;
+}
+#meter-disk-holder,
+#meter-disk-pane #meter-disk-holder {
+	border: none;
+}
+
+/* Should be removed from style.css in a future */
+#StatusBar table tr td.pstatus2
+{
+	/*
+	background:transparent url(./images/green.png) no-repeat scroll 5px center!important
+	*/
+	background:none !important;
+	background-image: none !important;
+	background: none;
+	content: url("./svg/icn_ok2.svg");
+	height: 16px;
+}
+#port-pane .pstatus0 {
+	background-image: none !important;
+	background: none;
+	content: url("./svg/icn_warning.svg");
+	height: 16px;
+}
+#port-pane .pstatus1 {
+	background-image: none !important;
+	background: none;
+	content: url("./svg/icn_error.svg");
+	height: 16px;
+}
+#port-pane .pstatus2 {
+	background-image: none !important;
+	background: none;
+	content: url("./svg/icn_ok2.svg");
+	height: 16px;
+}
+#st_up .icon {
+	background:none !important;
+	background-size: 100%;
+}
+#st_up .icon {
+    content: url("./svg/icn_leftbar_up.svg");
+    height: 16px;
+}
+#st_down .icon {
+	background:none !important;
+	background-size: 100%;
+}
+#st_down .icon {
+    content: url("./svg/icn_leftbar_down.svg");
+    height: 16px;
+}
+#meter-disk-value {
+	border: none;
+}
+.Status_Up,
+.Status_Down
+.Status_EnterHereSomething{
+	background-position: 0 0;
+}
+.stable-icon {
+	background-image: none !important;
+	background: none;
+}
+
+.Status_Up,
+.Status_Down,
+.Status_Incompleted,
+.Status_Paused,
+.Status_Error_Down,
+.Status_Error_Up,
+.Status_Error,
+.Status_Completed,
+.Status_Queued_Down,
+.Status_Queued_Up,
+.Status_Up_Down,
+.Status_Checking,
+.Status_RSS {
+    height: 14px;
+}
+
+.Status_Up {
+    content: url("./svg/icn_leftbar_up.svg");
+}
+.Status_Down {
+    content: url("./svg/icn_leftbar_down.svg");
+}
+.Status_Incompleted {
+    content: url("./svg/icn_leftbar_not_active.svg");
+}
+.Status_Paused {
+    content: url("./svg/icn_leftbar_pause.svg");
+}
+.Status_Error_Down {
+    content: url("./svg/icn_error_down.svg");
+}
+.Status_Error_Up {
+    content: url("./svg/icn_error_up.svg");
+}
+.Status_Error {
+    content: url("./svg/icn_error.svg");
+}
+.Status_Completed {
+    content: url("./svg/icn_ok.svg");
+}
+.Status_Queued_Down {
+    content: url("./svg/icn_pause_down.svg");
+}
+.Status_Queued_Up {
+    content: url("./svg/icn_pause_up.svg");
+}
+.Status_Up_Down {
+    content: url("./svg/icn_leftbar_up-down.svg");
+}
+.Status_Checking {
+    content: url("./svg/icn_leftbar_all.svg");
+}
+.Status_RSS {
+    content: url("./svg/icn_leftbar_rss.svg");
+}
+
+div#gcont div.row:not(.Header) span.det-hdr {
+	background: url("./svg/icn_tag_grey.svg") no-repeat 0 0px;
+}
+div#gcont div.row.Header span {
+    background: url("./svg/icn_settings.svg") no-repeat 0 0px;
+	margin-left: -3px;
+}
+#stg-header {
+    background: url(./svg/icn_settings.svg) no-repeat center left;
+    background-size: 18px;
+    background-position-x: 6px;
+}
+
+a.dlg-close:link, a.dlg-close:visited,
+a.dlg-close:hover {
+	background-image: none !important;
+	background: none;
+	content: url("./svg/icn_error.svg");
+}
+
+#dlgHelp-header, #dlgAbout-header {
+    background-image: url("./svg/icn_topmenu_help.svg") !important;
+	background-position: 4px center !important;
+    background-size: 16px;
+}
+#dlgAddRSS-header {
+    background-image: url("./svg/icn_leftbar_rss.svg") !important;
+	background-position: 4px center !important;
+    background-size: 16px;
+}
+#dlgBulkAdd-header {
+    background-image: url("./svg/icn_globe.svg") !important;
+	background-position: 4px center !important;
+    background-size: 16px;
+}
+#tadd-header {
+    background-image: url("./svg/icn_topmenu_add.svg") !important;
+	background-position: 4px center !important;
+    background-size: 16px;
+}
+#tcreate-header {
+    background-image: url("./svg/icn_rocket.svg") !important;
+	background-position: 4px center !important;
+    background-size: 16px;
+}
+#tskConsole-header {
+    background-image: url("./svg/icn_terminal.svg") !important;
+	background-position: 4px center !important;
+    background-size: 16px;
+}
+
+#dlgEditRules-header, #dlgEditRatioRules-header, #dlgEditFilters-header{
+    background-image: url("./svg/icn_settings.svg") !important;
+	background-position: 4px center !important;
+    background-size: 16px;
+}
+
+ul#rlsul > li input.TextboxFocus {
+	background-color: #4e4e4e !important;
+}
+input.disabled, button.disabled {
+    background-color: #5b5b5b !important;
+    color: #ffffff !important;
+    border: 1px solid #5b5b5b  !important;
+    text-shadow: 0 0 black  !important;
+}
+button:not(:disabled):hover, 
+input[type=button]:not(:disabled):hover, 
+a.Button:not(:disabled):hover {
+    background-color: #4e4e4e  !important;
+}
+div#t  div#add, 
+div#t  div#remove, 
+div#t  div#start, 
+div#t  div#pause, 
+div#t  div#stop, 
+div#t  div#search, 
+div#t  div#rss, 
+div#t  div#setting,
+div#t  div#plugins,
+div#t  div#help,
+div#t  div#go,
+div#t  div#create,
+div#add, 
+div#remove, 
+div#start, 
+div#pause, 
+div#stop, 
+div#search, 
+div#rss, 
+div#setting,
+div#plugins,
+div#help,
+div#go,
+div#create {
+	background-image: none !important;
+	background: none;
+	max-width: 24px;
+	max-height: 24px;
+}
+div#add {
+    content: url(./svg/icn_topmenu_add.svg);
+}
+div#remove {
+    content: url(./svg/icn_topmenu_del.svg);
+}
+div#start {
+    content: url(./svg/icn_topmenu_play.svg);
+}
+div#pause {
+    content: url(./svg/icn_topmenu_pause.svg);
+}
+div#stop {
+    content: url(./svg/icn_topmenu_stop.svg);
+}
+div#search {
+    content: url(./svg/icn_topmenu_search.svg);
+}
+div#rss {
+    content: url(./svg/icn_topmenu_rss.svg);
+}
+div#setting {
+    content: url(./svg/icn_settings.svg);
+}
+div#plugins {
+    content: url(./svg/icn_topmenu_plugins.svg);
+}
+div#help {
+    content: url(./svg/icn_topmenu_help.svg);
+}
+div#go {
+    content: url(./svg/icn_go.svg);
+}
+div#create {
+    content: url(./svg/icn_rocket.svg);
+}
+panel-label {
+    margin-left: 1px;
+}
+
+/* MaterialDesign-QNAPforumPL — context menus: upstream's item colour (#757571) reads as "disabled"; items are light, disabled ones dim */
+:root { --menu-color: #e0e0e0; --menu-disabled-color: #5a5a5a; --menu-disabled-background-color: transparent; --menu-highlight-color: #ffffff; --menu-highlight-background-color: #2f2f2f; --menu-border-color: #3a3a3a; }
+.CMenu li a { color: var(--menu-color); }
+.CMenu li a.dis { color: var(--menu-disabled-color); }
+
+/* MaterialDesign-QNAPforumPL — context menu and dialog lists: a flat 1 px border instead of upstream's 2 px ridge, and the
+   settings dialog's list takes the dialog's own background instead of the menu's */
+.CMenu { border: 1px solid var(--menu-border-color); }
+.list-group { --bs-list-group-bg: var(--dialog-bg-color); }
