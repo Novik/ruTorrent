@@ -1038,6 +1038,7 @@ dxSTable.prototype.clearRows = function()
 	this.rowdata = {};
 	this.rowSel = {};
 	this.rowIDs = [];
+	this.stSel = [];
 
 	delete this.pendingSync.rows;
 	delete this.pendingSync.dirty;
