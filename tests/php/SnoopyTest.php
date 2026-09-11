@@ -18,7 +18,7 @@ function snoopyAssertSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
@@ -79,21 +79,21 @@ function snoopyRespondWith($response)
 // judged on its own merits.
 class SnoopyResolvesToPublic extends Snoopy
 {
-    static public function resolveHost($host)
+    public static function resolveHost($host)
     {
         if (filter_var(trim($host, '[]'), FILTER_VALIDATE_IP) !== false) {
             return parent::resolveHost($host);
         }
-        return array('93.184.216.34');
+        return ['93.184.216.34'];
     }
 }
 
-$tests = array(
+$tests = [
     'explicit HTTPS POST forwards -X POST to curl' => function () {
         $client = new Snoopy();
         snoopyAssertTrue(
             $client->fetch('https://example.test/resource', 'POST', 'application/x-www-form-urlencoded', ''),
-            'HTTPS request did not complete through the curl test double'
+            'HTTPS request did not complete through the curl test double',
         );
         $args = snoopyCurlArgs();
         $flag = array_search('-X', $args, true);
@@ -101,24 +101,24 @@ $tests = array(
         snoopyAssertSame(
             'POST',
             isset($args[$flag + 1]) ? $args[$flag + 1] : null,
-            'Empty-body explicit POST request was not preserved'
+            'Empty-body explicit POST request was not preserved',
         );
     },
     'legacy positional HTTPS request never adds -X' => function () {
         $client = new Snoopy();
         snoopyAssertTrue(
             $client->_httpsrequest('https://example.test/legacy', 'application/x-www-form-urlencoded', 'payload'),
-            'Legacy positional HTTPS request did not complete'
+            'Legacy positional HTTPS request did not complete',
         );
         $args = snoopyCurlArgs();
         snoopyAssertSame(
             false,
             array_search('-X', $args, true),
-            'Legacy 3-argument call must leave the HTTP method to curl'
+            'Legacy 3-argument call must leave the HTTP method to curl',
         );
         snoopyAssertTrue(
             in_array('Content-type: application/x-www-form-urlencoded', $args, true),
-            'Legacy positional content-type argument remains supported'
+            'Legacy positional content-type argument remains supported',
         );
         snoopyAssertTrue(in_array('payload', $args, true), 'Legacy positional request body remains supported');
     },
@@ -126,20 +126,20 @@ $tests = array(
         $client = new Snoopy();
         snoopyAssertTrue(
             $client->fetch('https://example.test/get-with-body', 'GET', 'text/plain', 'payload'),
-            'Explicit GET-with-body request did not complete'
+            'Explicit GET-with-body request did not complete',
         );
         $args = snoopyCurlArgs();
         $flag = array_search('-X', $args, true);
         snoopyAssertTrue(
             $flag !== false && isset($args[$flag + 1]) && $args[$flag + 1] === 'GET',
-            'Explicit HTTPS GET method must not be changed to POST by curl -d'
+            'Explicit HTTPS GET method must not be changed to POST by curl -d',
         );
     },
     'private targets stay reachable while the guard is off' => function () {
         $client = new Snoopy();
         snoopyAssertTrue(
             $client->fetch('https://127.0.0.1/feed'),
-            'Default configuration must not block loopback targets'
+            'Default configuration must not block loopback targets',
         );
     },
     'the guard blocks a literal private address' => function () {
@@ -148,7 +148,7 @@ $tests = array(
         snoopyAssertSame(false, $client->fetch('https://127.0.0.1/feed'), 'Loopback target was fetched anyway');
         snoopyAssertTrue(
             strpos($client->error, '127.0.0.1') !== false,
-            'Blocked fetch must name the offending address, got: ' . $client->error
+            'Blocked fetch must name the offending address, got: ' . $client->error,
         );
     },
     'the guard blocks the IPv6 loopback literal' => function () {
@@ -164,7 +164,7 @@ $tests = array(
     'the allowlist exempts a host from the guard' => function () {
         $client = new Snoopy();
         $client->block_private = true;
-        $client->private_allowlist = array('127.0.0.1');
+        $client->private_allowlist = ['127.0.0.1'];
         snoopyAssertTrue($client->fetch('https://127.0.0.1/feed'), 'Allowlisted host was blocked: ' . $client->error);
     },
     'the guard blocks a hostname that resolves to loopback' => function () {
@@ -178,11 +178,11 @@ $tests = array(
         snoopyAssertSame(
             false,
             $client->fetch('https://tracker.nonexistent.invalid/feed'),
-            'Unresolvable host was fetched anyway'
+            'Unresolvable host was fetched anyway',
         );
         snoopyAssertTrue(
             stripos($client->error, 'resolve') !== false,
-            'Unresolvable host must be reported as such, got: ' . $client->error
+            'Unresolvable host must be reported as such, got: ' . $client->error,
         );
     },
     'the validated address is pinned for the HTTPS request' => function () {
@@ -195,7 +195,7 @@ $tests = array(
         snoopyAssertSame(
             'tracker.test:443:93.184.216.34',
             isset($args[$flag + 1]) ? $args[$flag + 1] : null,
-            'Pinned address must be the one the guard validated'
+            'Pinned address must be the one the guard validated',
         );
     },
     'the guard covers ranges filter_var calls public' => function () {
@@ -206,7 +206,7 @@ $tests = array(
     },
     'the guard is configured from conf/config.php' => function () {
         $GLOBALS['httpBlockPrivateNetworks'] = true;
-        $GLOBALS['httpPrivateNetworkAllowlist'] = array('127.0.0.1');
+        $GLOBALS['httpPrivateNetworkAllowlist'] = ['127.0.0.1'];
         $client = new Snoopy();
         unset($GLOBALS['httpBlockPrivateNetworks'], $GLOBALS['httpPrivateNetworkAllowlist']);
         snoopyAssertTrue($client->block_private, 'Configured guard was not picked up');
@@ -220,11 +220,11 @@ $tests = array(
         snoopyAssertSame(
             false,
             $client->fetch('https://tracker.test/start'),
-            'Redirect to a private address was followed'
+            'Redirect to a private address was followed',
         );
         snoopyAssertTrue(
             strpos($client->error, '127.0.0.1') !== false,
-            'Blocked redirect must name the offending address, got: ' . $client->error
+            'Blocked redirect must name the offending address, got: ' . $client->error,
         );
     },
     // A Location like "//host/path" is a network-path reference (RFC 3986
@@ -239,13 +239,13 @@ $tests = array(
             $client = new Snoopy();
             snoopyAssertTrue(
                 $client->fetch('https://dl.kinozal.guru/download.php?id=1'),
-                'Redirected HTTPS request did not complete'
+                'Redirected HTTPS request did not complete',
             );
             $args = snoopyCurlArgs();
             snoopyAssertSame(
                 'https://kinozal.guru/login.php?to=%2Fdownload.php%3Fid%3D1',
                 end($args),
-                'The redirect must be followed to the host it names'
+                'The redirect must be followed to the host it names',
             );
             snoopyAssertSame('200', $client->status, 'The redirect target answered');
         } finally {
@@ -271,7 +271,7 @@ $tests = array(
         try {
             snoopyAssertTrue(
                 $client->_httprequest('/download.php?id=1', $near, 'http://dl.kinozal.guru/download.php?id=1', 'GET'),
-                'Plain HTTP request did not complete'
+                'Plain HTTP request did not complete',
             );
         } finally {
             fclose($near);
@@ -280,10 +280,10 @@ $tests = array(
         snoopyAssertSame(
             'http://kinozal.guru/login.php?to=x',
             $client->_redirectaddr,
-            'The redirect must be followed to the host it names'
+            'The redirect must be followed to the host it names',
         );
     },
-);
+];
 
 $failures = 0;
 foreach ($tests as $name => $callback) {

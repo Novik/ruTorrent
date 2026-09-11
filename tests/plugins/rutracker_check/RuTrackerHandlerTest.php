@@ -27,7 +27,7 @@ function ruUserPost($topicId)
         . '<td class="poster_info td1"><p class="nick nick-author">ordinary-user</p>'
         . '<p class="rank_img"><img class="user-rank" alt="User"></p></td>'
         . '<td><div class="post_body"><a href="viewtopic.php?t=' . $topicId . '">other topic</a>'
-        . ' Этот фильм было Поглощено вниманием зрителей.</div><!--/post_body--></td></tr></tbody></table>'
+        . ' Этот фильм было Поглощено вниманием зрителей.</div><!--/post_body--></td></tr></tbody></table>',
     );
 }
 
@@ -38,7 +38,7 @@ function ruModeratorPost($topicId, $prefix = '')
         . '<td class="poster_info td1"><p class="nick nick-author">tracker-moderator</p>'
         . '<p class="rank_img"><img class="user-rank" alt="Moderator"></p></td>'
         . '<td><div class="post_body"><a class="postLink" href="viewtopic.php?t=' . $topicId . '">replacement</a>'
-        . '<span class="post-b">Поглощено</span></div><!--/post_body--></td></tr></tbody></table>'
+        . '<span class="post-b">Поглощено</span></div><!--/post_body--></td></tr></tbody></table>',
     );
 }
 
@@ -51,59 +51,59 @@ $suite->test('error pages and ambiguous topics classify without createTorrent', 
         '<table class="topic"><tbody id="post_200" class="row1"><tr>'
         . '<td><img class="user-rank" alt="Moderator"></td><td><div class="post_body">'
         . '<a href="viewtopic.php?t=98">related</a><a href="viewtopic.php?t=99">replacement</a>'
-        . '<span>Поглощено</span></div><!--/post_body--></td></tr></tbody></table>'
+        . '<span>Поглощено</span></div><!--/post_body--></td></tr></tbody></table>',
     );
-    $rows = array(
-        array(
+    $rows = [
+        [
             'label' => 'API object without a hash falls back without TypeError',
-            'responses' => array(
-                array(ruApiUrl(42), 200, json_encode(array('result' => array('42' => array('error_code' => 1))))),
-                array(ruDownloadUrl(42), 200, '<html>attachment data not found</html>'),
-                array(ruTopicUrl(42), 200, strictCp1251('<div class="post_body">Topic unavailable</div>')),
-            ),
+            'responses' => [
+                [ruApiUrl(42), 200, json_encode(['result' => ['42' => ['error_code' => 1]]])],
+                [ruDownloadUrl(42), 200, '<html>attachment data not found</html>'],
+                [ruTopicUrl(42), 200, strictCp1251('<div class="post_body">Topic unavailable</div>')],
+            ],
             'expected' => ruTrackerChecker::STE_DELETED,
-        ),
-        array(
+        ],
+        [
             'label' => 'concrete remote hash plus login page is a reachability error',
-            'responses' => array(
-                array(ruApiUrl(42), 200, json_encode(array('result' => array('42' => $newHash)))),
-                array(ruDownloadUrl(42), 200, '<!DOCTYPE html><html><form><input name="login_password"></form></html>'),
-                array(ruTopicUrl(42), 200, strictCp1251('<div class="post_body">Active topic</div>')),
-            ),
+            'responses' => [
+                [ruApiUrl(42), 200, json_encode(['result' => ['42' => $newHash]])],
+                [ruDownloadUrl(42), 200, '<!DOCTYPE html><html><form><input name="login_password"></form></html>'],
+                [ruTopicUrl(42), 200, strictCp1251('<div class="post_body">Active topic</div>')],
+            ],
             'expected' => ruTrackerChecker::STE_CANT_REACH_TRACKER,
-        ),
-        array(
+        ],
+        [
             'label' => 'ordinary user text containing Pogloshcheno does not trigger replacement',
-            'responses' => array(
-                array(ruApiUrl(42), 500, ''),
-                array(ruDownloadUrl(42), 200, '<html>attachment data not found</html>'),
-                array(ruTopicUrl(42), 200, ruUserPost(99)),
+            'responses' => [
+                [ruApiUrl(42), 500, ''],
+                [ruDownloadUrl(42), 200, '<html>attachment data not found</html>'],
+                [ruTopicUrl(42), 200, ruUserPost(99)],
                 // Canary: if the user link were followed, this junk payload
                 // would turn the result into STE_ERROR and fail the row.
-                array(ruDownloadUrl(99), 200, 'wrong-user-triggered-replacement'),
-            ),
+                [ruDownloadUrl(99), 200, 'wrong-user-triggered-replacement'],
+            ],
             'expected' => ruTrackerChecker::STE_CANT_REACH_TRACKER,
-        ),
-        array(
+        ],
+        [
             'label' => 'ambiguous moderator absorption links do not select a replacement',
-            'responses' => array(
-                array(ruApiUrl(42), 500, ''),
-                array(ruDownloadUrl(42), 200, '<html>attachment data not found</html>'),
-                array(ruTopicUrl(42), 200, $ambiguous),
-            ),
+            'responses' => [
+                [ruApiUrl(42), 500, ''],
+                [ruDownloadUrl(42), 200, '<html>attachment data not found</html>'],
+                [ruTopicUrl(42), 200, $ambiguous],
+            ],
             'expected' => ruTrackerChecker::STE_CANT_REACH_TRACKER,
-        ),
-        array(
+        ],
+        [
             'label' => 'HTML error from replacement topic is not passed to createTorrent',
-            'responses' => array(
-                array(ruApiUrl(42), 500, ''),
-                array(ruDownloadUrl(42), 200, '<html>attachment data not found</html>'),
-                array(ruTopicUrl(42), 200, ruModeratorPost(99)),
-                array(ruDownloadUrl(99), 200, 'Error: attachment data not found'),
-            ),
+            'responses' => [
+                [ruApiUrl(42), 500, ''],
+                [ruDownloadUrl(42), 200, '<html>attachment data not found</html>'],
+                [ruTopicUrl(42), 200, ruModeratorPost(99)],
+                [ruDownloadUrl(99), 200, 'Error: attachment data not found'],
+            ],
             'expected' => ruTrackerChecker::STE_CANT_REACH_TRACKER,
-        ),
-    );
+        ],
+    ];
 
     foreach ($rows as $row) {
         ruTrackerChecker::reset();
@@ -114,7 +114,7 @@ $suite->test('error pages and ambiguous topics classify without createTorrent', 
         $result = RuTrackerCheckImpl::download_torrent(
             'https://rutracker.org/forum/viewtopic.php?t=42',
             $oldHash,
-            null
+            null,
         );
 
         strictAssertSame($row['expected'], $result, $row['label'] . ': classification result');
@@ -135,7 +135,7 @@ $suite->test('final exact moderator absorption notice triggers replacement', fun
     $result = RuTrackerCheckImpl::download_torrent(
         'https://rutracker.org/forum/viewtopic.php?t=42',
         $oldHash,
-        null
+        null,
     );
 
     strictAssertSame(null, $result, 'Successful replacement propagates createTorrent result');
@@ -143,7 +143,7 @@ $suite->test('final exact moderator absorption notice triggers replacement', fun
     strictAssertSame(
         $replacementPayload,
         ruTrackerChecker::$created[0]['payload'],
-        'Replacement topic payload is forwarded unchanged'
+        'Replacement topic payload is forwarded unchanged',
     );
 });
 
@@ -159,7 +159,7 @@ $suite->test('unparseable absorbed replacement payload is an error without creat
     $result = RuTrackerCheckImpl::download_torrent(
         'https://rutracker.org/forum/viewtopic.php?t=42',
         $oldHash,
-        null
+        null,
     );
 
     strictAssertSame(ruTrackerChecker::STE_ERROR, $result, 'Unparseable replacement download is a hard error');
@@ -174,7 +174,7 @@ $suite->test('last page ignores same-topic start links inside post bodies', func
         '<a class="pg" href="viewtopic.php?t=42&amp;start=50">2</a>'
         . '<tbody id="post_100"><tr><td><div class="post_body">'
         . '<a href="viewtopic.php?t=42&amp;start=999999">stale user link</a>'
-        . '</div><!--/post_body--></td></tr></tbody>'
+        . '</div><!--/post_body--></td></tr></tbody>',
     );
     Snoopy::queue(ruTopicUrl(42), 200, $firstPage);
     Snoopy::queue(ruTopicUrl(42, 50), 200, ruModeratorPost(99));
@@ -184,7 +184,7 @@ $suite->test('last page ignores same-topic start links inside post bodies', func
     $result = RuTrackerCheckImpl::download_torrent(
         'https://rutracker.org/forum/viewtopic.php?t=42',
         $oldHash,
-        null
+        null,
     );
 
     strictAssertSame(null, $result, 'real pagination leads to the final moderator absorption notice');
@@ -195,13 +195,13 @@ $suite->test('valid metainfo containing Error text is not mistaken for an HTTP e
     ruTrackerChecker::reset();
     ruTrackerChecker::$createResult = ruTrackerChecker::STE_UPDATED;
     $payload = strictTorrentRaw('Error: valid release.mkv', 'http://tracker.example/announce');
-    Snoopy::queue(ruApiUrl(42), 200, json_encode(array('result' => array('42' => $newHash))));
+    Snoopy::queue(ruApiUrl(42), 200, json_encode(['result' => ['42' => $newHash]]));
     Snoopy::queue(ruDownloadUrl(42), 200, $payload);
 
     $result = RuTrackerCheckImpl::download_torrent(
         'https://rutracker.org/forum/viewtopic.php?t=42',
         $oldHash,
-        null
+        null,
     );
 
     strictAssertSame(ruTrackerChecker::STE_UPDATED, $result, 'valid binary metainfo must reach createTorrent');
@@ -212,13 +212,13 @@ $suite->test('valid direct metainfo transaction error does not trigger a second 
     ruTrackerChecker::reset();
     ruTrackerChecker::$createResult = ruTrackerChecker::STE_ERROR;
     $payload = strictTorrentRaw('replacement.mkv', 'http://tracker.example/announce');
-    Snoopy::queue(ruApiUrl(42), 200, json_encode(array('result' => array('42' => $newHash))));
+    Snoopy::queue(ruApiUrl(42), 200, json_encode(['result' => ['42' => $newHash]]));
     Snoopy::queue(ruDownloadUrl(42), 200, $payload);
 
     $result = RuTrackerCheckImpl::download_torrent(
         'https://rutracker.org/forum/viewtopic.php?t=42',
         $oldHash,
-        null
+        null,
     );
 
     strictAssertSame(ruTrackerChecker::STE_ERROR, $result, 'local replacement failure is returned unchanged');

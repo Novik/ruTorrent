@@ -1,4 +1,4 @@
 <?php
 
-$req = new rXMLRPCRequest( rTorrentSettings::get()->getRemoveScheduleCommand('scheduler') );
+$req = new rXMLRPCRequest(rTorrentSettings::get()->getRemoveScheduleCommand('scheduler'));
 $req->run();

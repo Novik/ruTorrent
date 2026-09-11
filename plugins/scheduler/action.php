@@ -1,6 +1,7 @@
 <?php
-require_once( 'scheduler.php' );
+
+require_once('scheduler.php');
 
 $sch = rScheduler::load();
 $sch->set();
-CachedEcho::send($sch->get(),"application/javascript");
+CachedEcho::send($sch->get(), "application/javascript");

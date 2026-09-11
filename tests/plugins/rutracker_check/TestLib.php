@@ -13,17 +13,19 @@
 function testFindRepoRoot()
 {
     $path = realpath(__DIR__ . '/../../..');
-    if ($path !== false && is_file($path . '/plugins/rutracker_check/trackers/rutracker.php')) return $path;
+    if ($path !== false && is_file($path . '/plugins/rutracker_check/trackers/rutracker.php')) {
+        return $path;
+    }
     throw new RuntimeException('Unable to locate the ruTorrent repository root');
 }
 
 class StrictTestSuite
 {
-    private $tests = array();
+    private $tests = [];
 
     public function test($name, $callback)
     {
-        $this->tests[] = array($name, $callback);
+        $this->tests[] = [$name, $callback];
     }
 
     // Register every public test* method of an object as a test case.
@@ -31,7 +33,7 @@ class StrictTestSuite
     {
         foreach (get_class_methods($object) as $method) {
             if (strpos($method, 'test') === 0) {
-                $this->tests[] = array($method, array($object, $method));
+                $this->tests[] = [$method, [$object, $method]];
             }
         }
     }
@@ -67,7 +69,7 @@ function strictAssertSame($expected, $actual, $message)
     if ($expected !== $actual) {
         throw new RuntimeException(
             $message . '; expected ' . var_export($expected, true)
-            . ', got ' . var_export($actual, true)
+            . ', got ' . var_export($actual, true),
         );
     }
 }
@@ -81,8 +83,10 @@ function strictAssertSame($expected, $actual, $message)
 function strictAssertEnglish($text, $message)
 {
     strictAssertTrue(is_string($text) && $text !== '', $message . '; not a non-empty string');
-    strictAssertTrue(preg_match('/^[\x09\x20-\x7E]+$/', $text) === 1,
-        $message . '; log line is not plain-ASCII English: ' . $text);
+    strictAssertTrue(
+        preg_match('/^[\x09\x20-\x7E]+$/', $text) === 1,
+        $message . '; log line is not plain-ASCII English: ' . $text,
+    );
 }
 
 // The recorded log lines containing $needle. Log assertions name the line they
@@ -112,7 +116,7 @@ function strictRemoveTree($path)
     if (!is_dir($path)) {
         return;
     }
-    foreach (array_diff(scandir($path), array('.', '..')) as $entry) {
+    foreach (array_diff(scandir($path), ['.', '..']) as $entry) {
         strictRemoveTree($path . '/' . $entry);
     }
     @rmdir($path);
@@ -127,7 +131,7 @@ function strictSetPrivateStatic($className, $property, $value)
     $reflection->setValue(null, $value);
 }
 
-function strictInvoke($className, $method, $arguments = array())
+function strictInvoke($className, $method, $arguments = [])
 {
     $reflection = new ReflectionMethod($className, $method);
     if (PHP_VERSION_ID < 80100) {
@@ -156,19 +160,20 @@ class rXMLRPCCommand
  */
 class rXMLRPCRequest
 {
-    public static $responses = array();
-    public static $requests = array();
-    private $commands = array();
+    public static $responses = [];
+    public static $requests = [];
+    private $commands = [];
     public $important = true;
     public $fault = false;
-    public $val = array();
+    public $val = [];
 
     public function __construct($commands = null)
     {
-        if (is_array($commands))
+        if (is_array($commands)) {
             $this->commands = $commands;
-        elseif ($commands !== null)
+        } elseif ($commands !== null) {
             $this->commands[] = $commands;
+        }
     }
 
     public function addCommand($command)
@@ -178,32 +183,36 @@ class rXMLRPCRequest
 
     public static function reset()
     {
-        self::$responses = array();
-        self::$requests = array();
+        self::$responses = [];
+        self::$requests = [];
     }
 
-    public static function queue($commands, $ok, $fault, $values = array())
+    public static function queue($commands, $ok, $fault, $values = [])
     {
         $key = is_array($commands) ? implode('|', $commands) : $commands;
-        self::$responses[$key][] = array($ok, $fault, $values);
+        self::$responses[$key][] = [$ok, $fault, $values];
     }
 
     public static function requestsFor($key)
     {
-        $matched = array();
-        foreach (self::$requests as $request)
-            if ($request['key'] === $key)
+        $matched = [];
+        foreach (self::$requests as $request) {
+            if ($request['key'] === $key) {
                 $matched[] = $request;
+            }
+        }
         return $matched;
     }
 
     private function execute()
     {
-        $key = implode('|', array_map(function ($command) { return $command->command; }, $this->commands));
-        self::$requests[] = array('key' => $key, 'important' => $this->important, 'commands' => $this->commands);
+        $key = implode('|', array_map(function ($command) {
+            return $command->command;
+        }, $this->commands));
+        self::$requests[] = ['key' => $key, 'important' => $this->important, 'commands' => $this->commands];
         $response = (isset(self::$responses[$key]) && count(self::$responses[$key]))
             ? array_shift(self::$responses[$key])
-            : array(false, true, array());
+            : [false, true, []];
         $this->fault = $response[1];
         $this->val = is_callable($response[2]) ? call_user_func($response[2], $this->commands) : $response[2];
         return $response[0];
@@ -227,8 +236,9 @@ class rTorrentSettings
 
     public static function get()
     {
-        if (!self::$instance)
+        if (!self::$instance) {
             self::$instance = new self();
+        }
         return self::$instance;
     }
 }
@@ -266,17 +276,17 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
         }
     }
 
-    function strictTorrentRaw($name, $announce, $comment = '', $announceList = null, $extra = array())
+    function strictTorrentRaw($name, $announce, $comment = '', $announceList = null, $extra = [])
     {
-        $root = array(
+        $root = [
             'announce' => $announce,
-            'info' => array(
+            'info' => [
                 'length' => 1,
                 'name' => $name,
                 'piece length' => 16384,
                 'pieces' => str_repeat("\0", 20),
-            ),
-        );
+            ],
+        ];
         if ($comment !== '') {
             $root['comment'] = $comment;
         }
@@ -312,33 +322,33 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
 
     class Snoopy
     {
-        public static $responses = array();
-        public static $requests = array();
+        public static $responses = [];
+        public static $requests = [];
 
         public $status = -1;
         public $results = '';
-        public $headers = array();
+        public $headers = [];
         public $read_timeout = 0;
         public $_fp_timeout = 0;
         public $agent = '';
 
         public static function reset()
         {
-            self::$responses = array();
-            self::$requests = array();
+            self::$responses = [];
+            self::$requests = [];
         }
 
-        public static function queue($url, $status, $results, $headers = array())
+        public static function queue($url, $status, $results, $headers = [])
         {
             if (!isset(self::$responses[$url])) {
-                self::$responses[$url] = array();
+                self::$responses[$url] = [];
             }
-            self::$responses[$url][] = array($status, $results, $headers);
+            self::$responses[$url][] = [$status, $results, $headers];
         }
 
         private function respond($method, $url)
         {
-            self::$requests[] = array($method, $url);
+            self::$requests[] = [$method, $url];
             if (!isset(self::$responses[$url]) || count(self::$responses[$url]) === 0) {
                 throw new RuntimeException("Unexpected {$method} request: {$url}");
             }
@@ -356,40 +366,38 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
             return $this->respond('fetchComplex', $url);
         }
 
-        public function setcookies()
-        {
-        }
+        public function setcookies() {}
     }
 
     class ruTrackerChecker
     {
-        const STE_INPROGRESS = 1;
-        const STE_UPDATED = 2;
-        const STE_UPTODATE = 3;
-        const STE_DELETED = 4;
-        const STE_CANT_REACH_TRACKER = 5;
-        const STE_ERROR = 6;
-        const STE_NOT_NEED = 7;
-        const STE_IGNORED = 8;
+        public const STE_INPROGRESS = 1;
+        public const STE_UPDATED = 2;
+        public const STE_UPTODATE = 3;
+        public const STE_DELETED = 4;
+        public const STE_CANT_REACH_TRACKER = 5;
+        public const STE_ERROR = 6;
+        public const STE_NOT_NEED = 7;
+        public const STE_IGNORED = 8;
 
-        const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        public const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             . "AppleWebKit/537.36 (KHTML, like Gecko) "
             . "Chrome/120.0.0.0 Safari/537.36";
 
-        public static $created = array();
+        public static $created = [];
         // $created only records payloads that parsed, so a handler that must
         // not reach createTorrent() at all is asserted against this counter.
         public static $createCalls = 0;
-        public static $logs = array();
-        public static $registrations = array();
+        public static $logs = [];
+        public static $registrations = [];
         public static $createResult = null;
 
         public static function reset()
         {
-            self::$created = array();
+            self::$created = [];
             self::$createCalls = 0;
-            self::$logs = array();
-            self::$registrations = array();
+            self::$logs = [];
+            self::$registrations = [];
             self::$createResult = null;
             Snoopy::reset();
             rXMLRPCRequest::reset();
@@ -397,7 +405,7 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
 
         public static function registerTracker($commentFilter, $announceFilter, $handler)
         {
-            self::$registrations[] = array($commentFilter, $announceFilter, $handler);
+            self::$registrations[] = [$commentFilter, $announceFilter, $handler];
         }
 
         public static function makeClient($url, $method = 'GET', $contentType = '', $body = '')
@@ -414,7 +422,7 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
             if ($parsed->errors() || strlen((string) $parsed->hash_info()) !== 40) {
                 return self::STE_ERROR;
             }
-            self::$created[] = array('payload' => $payload, 'old_hash' => $oldHash);
+            self::$created[] = ['payload' => $payload, 'old_hash' => $oldHash];
             return self::$createResult;
         }
 

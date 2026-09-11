@@ -1,7 +1,7 @@
 <?php
 
-eval( FileUtil::getPluginConf( $plugin["name"] ) );
+eval(FileUtil::getPluginConf($plugin["name"]));
 
-$jResult.=("plugin.hideTrackers = ".JSON::safeEncode($hideTrackers).";");
+$jResult .= ("plugin.hideTrackers = " . JSON::safeEncode($hideTrackers) . ";");
 
-$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
+$theSettings->registerPlugin($plugin["name"], $pInfo["perms"]);

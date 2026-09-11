@@ -21,8 +21,8 @@ class ZamundaFakeClient
 
 class commonEngine
 {
-    public $defaults = array('public' => true, 'page_size' => 100);
-    public $categories = array('All' => '');
+    public $defaults = ['public' => true, 'page_size' => 100];
+    public $categories = ['All' => ''];
 
     public function makeClient($url)
     {
@@ -51,8 +51,10 @@ function zamundaStrict($callback)
 $suite = new StrictTestSuite();
 
 $suite->test('the referer the engine sends is a declared property', function () {
-    strictAssertTrue(property_exists('ZamundaNetEngine', 'search'),
-        'ZamundaNetEngine::$search must be declared, not created on assignment');
+    strictAssertTrue(
+        property_exists('ZamundaNetEngine', 'search'),
+        'ZamundaNetEngine::$search must be declared, not created on assignment',
+    );
 });
 
 $suite->test('a client made before the first search raises no diagnostic', function () {
@@ -73,8 +75,11 @@ $suite->test('the search url becomes the referer of the next request', function 
         return $engine->makeClient('https://zamunda.net/bananas?view=list');
     });
     strictAssertSame($search, $client->referer, 'the referer must be the search page');
-    strictAssertSame('https://zamunda.net/bananas?view=list', $client->url,
-        'the url asked for must reach the parent unchanged');
+    strictAssertSame(
+        'https://zamunda.net/bananas?view=list',
+        $client->url,
+        'the url asked for must reach the parent unchanged',
+    );
 });
 
 exit($suite->run());

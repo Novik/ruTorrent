@@ -1,11 +1,12 @@
 <?php
 
-eval( FileUtil::getPluginConf( 'screenshots' ) );
+eval(FileUtil::getPluginConf('screenshots'));
 
-if(!$theSettings->isPluginRegistered("explorer"))
-	require_once( "ffmpeg.php" );
+if (!$theSettings->isPluginRegistered("explorer")) {
+    require_once("ffmpeg.php");
+}
 
 $st = ffmpegSettings::load();
-$jResult.=("plugin.ffmpegSettings = ".JSON::safeEncode($st->get())."; plugin.extensions = ".JSON::safeEncode($extensions).";");
+$jResult .= ("plugin.ffmpegSettings = " . JSON::safeEncode($st->get()) . "; plugin.extensions = " . JSON::safeEncode($extensions) . ";");
 
-$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
+$theSettings->registerPlugin($plugin["name"], $pInfo["perms"]);
