@@ -24,9 +24,11 @@ class rStat
 			(strpos($name,"\0")===false) && ($name!=='.') && ($name!=='..') );
 	}
 
-	public function __construct( $prefix )
+	public function __construct( $prefix, $settingsPath = null )
 	{
-		$this->fname = FileUtil::getSettingsPath().'/trafic/'.$prefix;
+		if(is_null($settingsPath))
+			$settingsPath = FileUtil::getSettingsPath();
+		$this->fname = $settingsPath.'/trafic/'.$prefix;
 		if($file=@fopen($this->fname,"r"))
 		{
 			$hourUp = fgetcsv($file, 0, ",", "\"", "");
