@@ -567,3 +567,19 @@ describe("socketAllocationFits", () => {
     expect(window.socketAllocationFits(3448, "", "")).toBe(true);
   });
 });
+
+describe("theConverter.time", () => {
+  it("formats 0 as 0s", () => {
+    expect(window.theConverter.time(0, true)).toBe("0s");
+  });
+
+  it("clamps negative durations to 0s", () => {
+    expect(window.theConverter.time(-5, true)).toBe("0s");
+    expect(window.theConverter.time(-15, true)).toBe("0s");
+  });
+
+  it("formats positive durations correctly", () => {
+    expect(window.theConverter.time(65, true)).toBe("1m 5s");
+    expect(window.theConverter.time(3600, true)).toBe("1h 0s");
+  });
+});

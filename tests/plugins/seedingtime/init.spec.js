@@ -79,6 +79,12 @@ describe("seedingtime custom-field requests", () => {
     expect(torrent.seedingtime).toBe(3 * 86400 - BIG_DELTA / 1000);
   });
 
+  it("clamps seedingtime to zero when clock skew places the epoch in the future", () => {
+    const torrent = {};
+    seedingtimeCallback("HASH", torrent, String(NOW / 1000 + 10));
+    expect(torrent.seedingtime).toBe(0);
+  });
+
   it("stores addtime as the raw epoch no matter how skewed the clock is", () => {
     const torrent = {};
     theWebUI.deltaTime = BIG_DELTA;
