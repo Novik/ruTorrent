@@ -904,6 +904,28 @@ rTorrentStub.prototype.processAction = function(actionSuffix, data)
 	return parseFunc in this ? this[parseFunc](data) : data;
 }
 
+// An XMLRPC fault delivered with an error status names the reason in faultString.
+// The envelope around it is not something to show a person, so hand back the
+// sentence; a body that is not a fault is returned as it came.
+function getXMLRPCFaultString(text)
+{
+	if((typeof(text) != "string") || (text.indexOf("faultString") < 0))
+		return(text);
+	var doc = null;
+	try { doc = $.parseXML(text); } catch(e) { return(text); }
+	if(!doc)
+		return(text);
+	var names = doc.getElementsByTagName("name");
+	for(var i=0; i<names.length; i++)
+		if(names[i].childNodes[0] && (names[i].childNodes[0].data == "faultString"))
+		{
+			var values = names[i].parentNode.getElementsByTagName("value");
+			if(values.length)
+				return($(values[0]).text());
+		}
+	return(text);
+}
+
 rTorrentStub.prototype.getResponse = function(data)
 {
 	var ret = "";
@@ -1469,6 +1491,8 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 			try { status = jqXHR.status; response = jqXHR.responseText; } catch(e) {};
 			if( stub.dataType=="script" )
 				response = errorThrown;
+			else
+				response = getXMLRPCFaultString(response);
 			onError(status+" ["+textStatus+","+stub.action+"]",response);
 		}
 		stub.finishSetsettingsFailure();

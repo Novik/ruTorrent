@@ -2671,7 +2671,8 @@ var theWebUI = {
 	error: function(status,text)
 	{
 		theWebUI.show();
-		noty("Bad response from server: ("+status+") "+(text ? text : ""),"error");
+		noty("Bad response from server: ("+status+") "+
+			(text ? text : "the server sent no message"),"error");
 	},
 
 	timeout: function()
