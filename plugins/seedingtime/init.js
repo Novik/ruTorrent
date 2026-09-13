@@ -25,7 +25,7 @@ if(plugin.canChangeColumns())
 		plugin.reqId1 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"seedingtime",function(hash,torrent,value)
 		{
 			const epochSeconds = iv(value);
-			torrent.seedingtime = (epochSeconds > 3600*24*365) ? new Date().getTime()/1000-(epochSeconds+theWebUI.deltaTime/1000) : -1;
+			torrent.seedingtime = (epochSeconds > 3600*24*365) ? Math.max(0, new Date().getTime()/1000-(epochSeconds+theWebUI.deltaTime/1000)) : -1;
 		});
 		plugin.reqId2 = theRequestManager.addRequest("trt", theRequestManager.map("d.get_custom=")+"addtime",function(hash,torrent,value)
 		{
