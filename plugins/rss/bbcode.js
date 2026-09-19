@@ -78,6 +78,24 @@ export function bbclassTransform(cfg) {
   };
 }
 
+// The text this file maps is a remote feed's, and it is sanitized only after
+// mapping. Every parser call below therefore runs on markup nobody has vetted.
+// Elements built inside the window's own document act as soon as the parser
+// creates them -- an <img src> fetches and fires onerror while still detached
+// -- so the mapping parses into a document of its own instead. A document from
+// createHTMLDocument has no browsing context: it builds the same nodes, fetches
+// nothing and runs nothing. Parsing still happens inside an element of the
+// requested type, so the parser infers table sections exactly as before.
+const inertDocument = document.implementation.createHTMLDocument("");
+
+function inertElement(tagName, html) {
+  const element = inertDocument.createElement(tagName);
+  if (html !== undefined && html !== null && html !== "") {
+    element.innerHTML = html;
+  }
+  return element;
+}
+
 export function mapBBCodeToHTML(htmlText) {
   const tags = {
     ...Object.fromEntries(
@@ -101,10 +119,10 @@ export function mapBBCodeToHTML(htmlText) {
         name,
         (_, content) => {
           const htmlTag = name === "list" ? "ul" : name;
-          const ele = $(`<${htmlTag}>`).html(content);
-          const list = $(`<${htmlTag}>`);
-          let lastLiNode = $("<li>");
-          for (const node of ele.contents()) {
+          const ele = inertElement(htmlTag, content);
+          const list = $(inertElement(htmlTag));
+          let lastLiNode = $(inertElement("li"));
+          for (const node of Array.from(ele.childNodes)) {
             if (node.nodeName.toLowerCase() === "li") {
               // keep li nodes
               lastLiNode = $(node);
@@ -125,7 +143,7 @@ export function mapBBCodeToHTML(htmlText) {
                 }
                 for (const item of items) {
                   list.append(lastLiNode);
-                  lastLiNode = $("<li>").text(item);
+                  lastLiNode = $(inertElement("li")).text(item);
                 }
               } else {
                 // add some node to lastLiNode
@@ -191,7 +209,7 @@ export function mapBBCodeToHTML(htmlText) {
     quote: (arg, content, args) => [
       "blockquote",
       {},
-      $("<p>").html(content)[0].outerHTML +
+      inertElement("p", content).outerHTML +
         $("<span>")
           .addClass("bbcode-quote")
           .text("-- ")
@@ -201,7 +219,7 @@ export function mapBBCodeToHTML(htmlText) {
     spoiler: (arg, content) => [
       "details",
       {},
-      $("<summary>").html(arg)[0].outerHTML + content,
+      inertElement("summary", arg).outerHTML + content,
     ],
     "bbcode-root": () => ["div"],
   };
@@ -236,9 +254,13 @@ export function mapBBCodeToHTML(htmlText) {
       htmlContent,
       args
     );
-    const ele = $(`<${htmlTag}>`)
-      .attr(attribs || {})
-      .html(htmlContentProcessed || htmlContent)[0];
+    const ele = inertElement(htmlTag, htmlContentProcessed || htmlContent);
+    for (const [name, value] of Object.entries(attribs || {})) {
+      // jQuery.attr() skipped these rather than writing them out as text.
+      if (value !== null && value !== undefined && value !== false) {
+        ele.setAttribute(name, value);
+      }
+    }
     return ele;
   };
 
