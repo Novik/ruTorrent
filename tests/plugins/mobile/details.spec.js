@@ -104,3 +104,105 @@ describe("mobile details pane", () => {
     expect(seedtimeCell()).toBe("");
   });
 });
+
+// A value that becomes an element if the surrounding text is parsed as html,
+// and that closes the attribute it sits in before doing so.
+const HTML_PAYLOAD = `"><img src=x onerror="window.__ran = 'RAN'">`;
+
+describe("mobile peers table", () => {
+  // loadPeers asks the server and fills the table from the reply, so the reply
+  // is what this drives.
+  function renderPeers(peers) {
+    document.body.innerHTML = "";
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `<div class="tableFixHead"><table id="peersTable"><tbody></tbody></table></div>`
+    );
+    plugin.torrent = { hash: "HASH" };
+    plugin.selectedPeer = null;
+    plugin.request = (url, callback) => callback(peers);
+    plugin.loadPeers();
+    return $("#peersTable tbody");
+  }
+
+  const PEER = {
+    ip: "10.0.0.1", port: 51413, version: "rt", flags: "I",
+    done: 50, downloaded: 0, uploaded: 0, dl: 0, ul: 0,
+    peerdl: 0, peerdownloaded: 0, snubbed: 0,
+  };
+
+  beforeEach(() => {
+    delete window.__ran;
+  });
+
+  it("shows an ordinary peer as address, port and percentage", () => {
+    const body = renderPeers({ p1: PEER });
+    const cells = body.find("tr td").map((_, td) => $(td).text()).get();
+    expect(cells[1]).toBe("10.0.0.1:51413");
+    expect(cells[4]).toBe("50%");
+  });
+
+  // Each of these reaches the row through a different cell, and the peer id
+  // reaches it through an attribute rather than a cell.
+  for (const field of ["ip", "port", "done"]) {
+    it(`does not let a peer's ${field} become markup`, () => {
+      const body = renderPeers({ p1: { ...PEER, [field]: HTML_PAYLOAD } });
+      expect(window.__ran).toBeUndefined();
+      expect(body.find("img").length).toBe(0);
+      expect(body.find("tr td").eq(field === "done" ? 4 : 1).text()).toContain(HTML_PAYLOAD);
+    });
+  }
+
+  it("does not let a peer id become markup", () => {
+    const peers = {};
+    peers[HTML_PAYLOAD] = PEER;
+    const body = renderPeers(peers);
+    expect(window.__ran).toBeUndefined();
+    expect(body.find("img").length).toBe(0);
+    expect(body.find("tr").attr("data-pid")).toBe(HTML_PAYLOAD);
+  });
+});
+
+describe("mobile ratio and throttle pickers", () => {
+  function markup() {
+    document.body.innerHTML = "";
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `<table><tr id="priority"><td></td><td></td></tr></table>`
+    );
+  }
+
+  beforeEach(() => {
+    delete window.__ran;
+    markup();
+    window.thePlugins = {
+      isInstalled: () => false,
+      get: () => ({ allStuffLoaded: true }),
+    };
+  });
+
+  afterEach(() => {
+    window.thePlugins = { isInstalled: () => false, get: () => null };
+  });
+
+  it("lists ratio group names as text, not as markup", () => {
+    window.theWebUI.ratios = { 0: { name: HTML_PAYLOAD }, 1: { name: "normal" } };
+    plugin.loadRatio();
+
+    expect(window.__ran).toBeUndefined();
+    expect($("#torrentRatioGrp img").length).toBe(0);
+    const names = $("#torrentRatioGrp option").map((_, o) => $(o).text()).get();
+    // The first option is the plugin's own 'unlimited' entry.
+    expect(names.slice(1)).toEqual([HTML_PAYLOAD, "normal"]);
+  });
+
+  it("lists throttle channel names as text, not as markup", () => {
+    window.theWebUI.throttles = { 0: { name: HTML_PAYLOAD }, 1: { name: "normal" } };
+    plugin.loadThrottle();
+
+    expect(window.__ran).toBeUndefined();
+    expect($("#torrentChannel img").length).toBe(0);
+    const names = $("#torrentChannel option").map((_, o) => $(o).text()).get();
+    expect(names.slice(1)).toEqual([HTML_PAYLOAD, "normal"]);
+  });
+});
