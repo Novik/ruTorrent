@@ -547,6 +547,68 @@ $tests = array(
             putenv('SNOOPY_TEST_EXIT');
         }
     },
+    // curl exits 35 for any failure in the TLS handshake, verification
+    // included or not: a port answering something that is not TLS reaches it,
+    // and so does a protocol or cipher mismatch. Naming the certificate there
+    // sends an operator to install a certificate authority for a server that
+    // presented no certificate at all.
+    'a handshake failure is not reported as a certificate failure' => function () {
+        putenv('SNOOPY_TEST_EXIT=35');
+        try {
+            $client = new Snoopy();
+            snoopyAssertSame(false, $client->fetch('https://tracker.test/feed'), 'A failed fetch reported success');
+            snoopyAssertSame(
+                'Error: cURL could not retrieve the document, error 35.',
+                $client->error,
+                'A handshake failure must not be diagnosed as a certificate'
+            );
+        } finally {
+            putenv('SNOOPY_TEST_EXIT');
+        }
+    },
+    // The advice is to turn verification off. An install that has already
+    // turned it off is told to do the thing it did, about a check that did
+    // not run -- curl was given -k.
+    'an install that already opted out is not told to opt out' => function () {
+        foreach (array(35, 51, 60, 77) as $exit) {
+            putenv('SNOOPY_TEST_EXIT=' . $exit);
+            try {
+                $client = new Snoopy();
+                $client->verify_certificates = false;
+                snoopyAssertSame(false, $client->fetch('https://tracker.test/feed'), 'A failed fetch reported success');
+                snoopyAssertTrue(
+                    strpos($client->error, 'httpVerifyCertificates') === false,
+                    'With verification off, exit ' . $exit . ' must not name the setting, got: ' . $client->error
+                );
+            } finally {
+                putenv('SNOOPY_TEST_EXIT');
+            }
+        }
+    },
+    // -k and --proxy-insecure are one setting, so either leg can be the one
+    // that failed, and the exit code does not say which. The message names
+    // the host it was fetching from; with a proxy in the way that host may
+    // have presented no certificate at all.
+    'a proxied certificate failure does not blame the origin alone' => function () {
+        putenv('SNOOPY_TEST_EXIT=60');
+        try {
+            $client = new Snoopy();
+            $client->proxy_host = '127.0.0.1';
+            $client->proxy_port = 3128;
+            $client->proxy_proto = 'https';
+            snoopyAssertSame(false, $client->fetch('https://tracker.test/feed'), 'A failed fetch reported success');
+            snoopyAssertTrue(
+                stripos($client->error, 'proxy') !== false,
+                'A proxied failure must say the proxy could be the one, got: ' . $client->error
+            );
+            snoopyAssertTrue(
+                strpos($client->error, 'tracker.test') !== false,
+                'and must still name the host it was fetching, got: ' . $client->error
+            );
+        } finally {
+            putenv('SNOOPY_TEST_EXIT');
+        }
+    },
 );
 
 $failures = 0;

@@ -701,11 +701,33 @@ class Snoopy
 		$is_gzipped = false;
 		if($return)
 		{
-			// 35, 51, 60 and 77 are curl's tls verification failures. Saying so
-			// beats "error 60" for anyone whose indexer signs its own certificate.
-			if(in_array($return,array(35,51,60,77),true))
-				$this->error = "Error: cURL could not verify the certificate of \"".$this->host."\" (error $return). "
+			// 51, 60 and 77 are the exits curl uses when verifying is what
+			// failed. Saying so beats "error 60" for anyone whose indexer signs
+			// its own certificate.
+			//
+			// 35 is not one of them: it is any failure in the TLS handshake, so
+			// a port answering something that is not TLS reaches it, and so
+			// does a protocol or cipher mismatch. Neither says a certificate
+			// was rejected, and the advice that follows would send an operator
+			// to install a certificate authority for a server that presented no
+			// certificate. Nor is any of this worth saying when the check was
+			// already off: curl was given -k, so nothing was verified and there
+			// is nothing left to turn off.
+			//
+			// -k and --proxy-insecure are the same setting here, so with a
+			// proxy in the way either leg can be the one that failed and the
+			// exit code does not say which. The host named is the one being
+			// fetched from, which through a proxy may have presented no
+			// certificate at all, so it is named as one of the two rather than
+			// as the answer.
+			if($this->verify_certificates && in_array($return,array(51,60,77),true))
+			{
+				$whose = $this->_isproxy
+					? "\"".$this->host."\", or of the proxy it was reached through,"
+					: "\"".$this->host."\"";
+				$this->error = "Error: cURL could not verify the certificate of ".$whose." (error $return). "
 					."Install the certificate authority that signed it, or set \$httpVerifyCertificates to false in conf/config.php to stop checking.";
+			}
 			else
 				$this->error = "Error: cURL could not retrieve the document, error $return.";
 		}
