@@ -322,11 +322,14 @@ class accountManager
 		$this->setHandlers();
 	}
 
+	// The stored password is not part of this. The browser only has to know
+	// whether one is set, so that the settings page can say so; it is sent
+	// back only when someone types a new one.
 	public function get()
 	{
                 $ret = "theWebUI.theAccounts = {";
 		foreach( $this->accounts as $name=>$nfo )
-			$ret.="'".$name."': { login: ".Utility::quoteAndDeslashEachItem($nfo["login"]).", password: ".Utility::quoteAndDeslashEachItem($nfo["password"]).", enabled: ".$nfo["enabled"].", auto: ".$nfo["auto"]." },";
+			$ret.="'".$name."': { login: ".Utility::quoteAndDeslashEachItem($nfo["login"]).", password_set: ".(($nfo["password"]==="") ? 0 : 1).", enabled: ".$nfo["enabled"].", auto: ".$nfo["auto"]." },";
 		$len = strlen($ret);
 		if($ret[$len-1]==',')
 			$ret = substr($ret,0,$len-1);
@@ -390,6 +393,10 @@ class accountManager
 			$nfo["url"] = $object->url;
 			unset($nfo["object"]);
 			unset($nfo["path"]);
+			// Nothing reads the password from here, and this answer is json
+			// served to the browser like any other.
+			$nfo["password_set"] = ($nfo["password"]==="") ? 0 : 1;
+			unset($nfo["password"]);
 			$ret[] = $nfo;
 		}
 		return($ret);

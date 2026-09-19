@@ -25,6 +25,7 @@ This project is released under the GPLv3 license, for more details, take a look 
 
   * There's no installation routine or compilation necessary. The sources are cloned/unpacked into a directory which is setup as document root of a web server of your choice (for detailed instructions see the [webserver wiki article](https://github.com/Novik/ruTorrent/wiki/WebSERVER)).
   * After setting up the webserver `ruTorrent` itself needs to be configured. Instructions can be found in various articles in the [wiki](https://github.com/Novik/ruTorrent/wiki).
+  * Keep `share/`, `conf/` and `tests/` out of what the web server will serve. `share/` holds the profile data — settings, stored torrents, and the tracker credentials the `loginmgr` plugin keeps — and it sits under the document root by default. Apache picks this up from the `.htaccess` file in each of those directories; nginx and lighttpd do not read `.htaccess`, so they need the rules in [`nginx-example.conf`](nginx-example.conf), or `$profilePath` in `conf/config.php` pointed at a directory outside the document root.
 
 ## Contributing
 
