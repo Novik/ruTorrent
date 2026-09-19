@@ -1,6 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/utility/json.php" );
 eval( FileUtil::getPluginConf( 'theme' ) );
 
 class rTheme
@@ -28,19 +29,27 @@ class rTheme
 
 	public function isValid()
 	{
-		return( ($this->current!='') && is_dir( dirname(__FILE__).'/themes/'.$this->current ) );
+		return( is_string($this->current) && ($this->current!='') &&
+			($this->current[0]!='.') && (basename($this->current)===$this->current) &&
+			is_dir( dirname(__FILE__).'/themes/'.$this->current ) );
 	}
 
 	public function get()
 	{
-		return( "theWebUI.theme = '".$this->current."';" );
+		return( "theWebUI.theme = ".JSON::jsValue(is_string($this->current) ? $this->current : '').";" );
 	}
 
 	public function set()
 	{
 		if(isset($_REQUEST['theme']))
 		{
-			$this->current = $_REQUEST['theme'];
+			$previous = $this->current;
+			$this->current = is_string($_REQUEST['theme']) ? $_REQUEST['theme'] : '';
+			if(($this->current!='') && !$this->isValid())
+			{
+				$this->current = $previous;
+				return;
+			}
 			$this->store();
 		}
 	}
