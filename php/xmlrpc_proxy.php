@@ -28,9 +28,24 @@ class XMLRPCProxy
 	// A command that is not kept costs a label or a directory and the torrent
 	// is still added, so an unknown one is dropped rather than made to fail
 	// the whole call.
+	//
+	// Every spelling rtorrent registers, both series. src/command_events.cc
+	// registers eight: load.normal, load.start, load.verbose,
+	// load.start_verbose, load.raw, load.raw_start, load.raw_verbose and
+	// load.raw_start_verbose, unchanged between 0.9.8 and current master. The
+	// four _verbose ones take the same arguments as the four they are spelled
+	// after and differ only in what they print, so a list that holds one and
+	// not the other does not rebuild a call it was meant to rebuild: it falls
+	// through to the unknown-method path and is forwarded to rtorrent as the
+	// caller wrote it.
+	//
+	// The legacy spellings are the ones php/methods-0.9.4.php maps, so a
+	// client written against them reaches the same rebuilding.
 	private static $sanitizeMethods = array(
-		'load.start', 'load.raw_start', 'load.raw', 'load.normal',
-		'load_start', 'load_raw_start', 'load_raw',
+		'load.normal', 'load.start', 'load.verbose', 'load.start_verbose',
+		'load.raw', 'load.raw_start', 'load.raw_verbose', 'load.raw_start_verbose',
+		'load', 'load_start', 'load_verbose', 'load_start_verbose',
+		'load_raw', 'load_raw_start', 'load_raw_verbose', 'load_raw_start_verbose',
 	);
 
 	// Of those, the ones whose parameter 1 is a URI rather than the torrent
@@ -44,7 +59,7 @@ class XMLRPCProxy
 	// command string as the URI and refuse a valid call. A load that does not
 	// happen ties nothing, so there is nothing to protect there.
 	private static $uriLoadMethods = array(
-		'load.start', 'load.normal',
+		'load.start', 'load.normal', 'load.start_verbose', 'load.verbose',
 	);
 
 	// Exactly the URIs rtorrent does not treat as a local path:
@@ -288,8 +303,8 @@ class XMLRPCProxy
 				// because untrusted is not a refusal on every version.
 				foreach($rebuilt['stripped'] as $value)
 				{
-					$command = self::commandName($value);
-					if(($command !== null) && self::isDenied($command, $deny))
+					$command = self::refusedCommandName($value, $deny);
+					if($command !== null)
 						return self::reject("rejected (not allowed on this connection): ".
 							$methodName." carrying ".self::logValue($command), $command);
 				}
@@ -318,12 +333,44 @@ class XMLRPCProxy
 		// are calls rather than command strings, so the check above did not see
 		// them. rtorrent refuses them at inner dispatch from 0.16.10 — naming
 		// the inner method, which is how we know it does — but not before.
+		//
+		// A member is judged the way a top-level call is: by its name, and,
+		// where that name is one of the command-carrying methods, by the
+		// commands its own parameters name. Checking only the member name let
+		// a member rtorrent does not refuse — d.multicall — carry a command it
+		// does, because nothing looked inside its parameters. The payload is
+		// still forwarded as the caller wrote it; this says what may be in it,
+		// it does not rebuild it.
 		if($methodName === 'system.multicall')
 		{
-			foreach(self::multicallMemberNames($xml) as $member)
-				if(self::isDenied($member, $deny))
+			foreach(self::multicallMembers($xml) as $member)
+			{
+				if(self::isDenied($member['name'], $deny))
 					return self::reject("rejected (not allowed on this connection): ".
-						"system.multicall carrying ".self::logValue($member), $member);
+						"system.multicall carrying ".self::logValue($member['name']), $member['name']);
+
+				// Nothing here can reason about a nested system.multicall, and
+				// xmlrpc-c refuses one at dispatch in any case.
+				if($member['name'] === 'system.multicall')
+					return self::reject("rejected (nested system.multicall): ".
+						"system.multicall carrying system.multicall", 'system.multicall');
+
+				if(!in_array($member['name'], self::$multicallMethods, true) &&
+					!in_array($member['name'], self::$sanitizeMethods, true))
+					continue;
+
+				// Parameter 0 is the target and parameter 1 the view or the
+				// torrent; commands start at 2, the same position
+				// rebuildLoadParams reads them from.
+				foreach(array_slice($member['params'], 2) as $value)
+				{
+					$command = self::refusedCommandName($value, $deny);
+					if($command !== null)
+						return self::reject("rejected (not allowed on this connection): ".
+							"system.multicall carrying ".self::logValue($member['name']).
+							" carrying ".self::logValue($command), $command);
+				}
+			}
 		}
 
 		// Unknown method — pass through as untrusted.
@@ -386,25 +433,77 @@ class XMLRPCProxy
 	}
 
 	/**
-	 * The methodName of every member of a system.multicall, so they can be
-	 * judged like any other method rather than smuggled past inside a struct.
+	 * The name of a refused command inside this command string, or null when
+	 * it names none.
+	 *
+	 * A command string is not one name. rtorrent nests them: the arguments a
+	 * multicall takes after its view are themselves commands, separated by
+	 * ','; a name introduced by '$' is called wherever it stands, at any
+	 * depth; and a braced list is a command with its own arguments. Reading
+	 * only the name before the first '=' therefore answers for the outermost
+	 * call and for nothing it carries, which is how "d.multicall=main,
+	 * execute=..." and "$execute=..." read as commands nobody refuses.
+	 *
+	 * Every ','-, '$'-, brace-, paren-, quote- or space-separated element
+	 * starts with a name, so each of those leading names is judged. What
+	 * follows '=' inside one element is that command's argument text and is
+	 * not judged, so a custom field whose value begins with a refused word is
+	 * not refused for it.
+	 *
+	 * Public because the httprpc plugin reaches rtorrent without a raw XMLRPC
+	 * body and still has to ask the same question over the same list.
 	 */
-	private static function multicallMemberNames($xml)
+	public static function refusedCommandName($value, $deny = null)
 	{
-		$names = array();
+		if($deny === null)
+			$deny = self::$denyPrefixes;
+		$elements = preg_split('/[,${}()"\s]+/', (string)$value, -1, PREG_SPLIT_NO_EMPTY);
+		if($elements === false)
+			return null;
+		foreach($elements as $element)
+		{
+			if(!preg_match('/^[A-Za-z0-9_.]+/', $element, $match))
+				continue;
+			if(self::isDenied($match[0], $deny))
+				return $match[0];
+		}
+		return null;
+	}
+
+	/**
+	 * Every member of a system.multicall as array('name' => …, 'params' => …),
+	 * so that one can be judged like any other call rather than smuggled past
+	 * inside a struct — by its name and by what its parameters name.
+	 */
+	private static function multicallMembers($xml)
+	{
+		$members = array();
 		if(!isset($xml->params->param->value->array->data->value))
-			return $names;
+			return $members;
 		foreach($xml->params->param->value->array->data->value as $member)
 		{
 			if(!isset($member->struct->member))
 				continue;
+			$name = null;
+			$params = array();
 			foreach($member->struct->member as $field)
-				if(isset($field->name) && ((string)$field->name === 'methodName'))
-					$names[] = isset($field->value->string)
+			{
+				if(!isset($field->name))
+					continue;
+				$fieldName = (string)$field->name;
+				if($fieldName === 'methodName')
+					$name = isset($field->value->string)
 						? (string)$field->value->string
 						: trim((string)$field->value);
+				else
+				if(($fieldName === 'params') && isset($field->value->array->data->value))
+					foreach($field->value->array->data->value as $value)
+						$params[] = self::extractParamValue($value);
+			}
+			if($name !== null)
+				$members[] = array('name' => $name, 'params' => $params);
 		}
-		return $names;
+		return $members;
 	}
 
 	/**
@@ -757,13 +856,25 @@ class XMLRPCProxy
 	/**
 	 * Extract a command-param value from its <value> element.
 	 *
-	 * Handles both the typed form <value><string>foo</string></value> and
-	 * the implicit-string form <value>foo</value>. For non-string types
-	 * (<int>, <base64>) the raw text is returned; it simply won't match
-	 * any allowed command name and will be stripped — safe default.
+	 * Handles the typed form <value><string>foo</string></value>, the
+	 * implicit-string form <value>foo</value>, and <value><base64>...</base64>
+	 * </value>.
+	 *
+	 * base64 is decoded because that is what rtorrent does with it: xmlrpc-c
+	 * hands the decoded bytes to the command parser, so the command a base64
+	 * parameter names is the decoded one. Returning the encoded text instead
+	 * meant the name this side judged was not the name rtorrent ran — the
+	 * encoded text matches no allowed command, so the parameter was stripped
+	 * and the request forwarded verbatim, carrying the command that was never
+	 * looked at.
 	 */
 	private static function extractParamValue($paramElement)
 	{
+		if(isset($paramElement->base64))
+		{
+			$decoded = base64_decode((string)$paramElement->base64, true);
+			return ($decoded === false) ? '' : $decoded;
+		}
 		if(isset($paramElement->string))
 			return (string)$paramElement->string;
 		return trim((string)$paramElement);

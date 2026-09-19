@@ -22,8 +22,29 @@ if(isset($HTTP_RAW_POST_DATA))
 			case "cmd":
 			{
 				$c = getCmd(rawurldecode($parts[1]));
-				if(strpos($c,"execute")===false)
-					$add[] = $c;
+				// Every other door to rtorrent asks conf/xmlrpc_proxy.php what
+				// a caller may name. This one asked whether the word "execute"
+				// appeared anywhere in the string, which is neither the same
+				// list nor the same question: import, try_import, method.insert
+				// and system.shutdown carry no "execute" and were taken as they
+				// arrived. The modes below then put the string where rtorrent
+				// runs it -- as a method name of its own in glbl, ttl and prp,
+				// and as a command parameter of d.multicall in list, fls, prs,
+				// trk and trkall, where it is a command and not a value.
+				//
+				// Asked over the shared list instead, so that this door and the
+				// raw-XMLRPC door below refuse the same commands.
+				$refusedCommand = XMLRPCProxy::refusedCommandName($c);
+				if($refusedCommand !== null)
+				{
+					FileUtil::toLog("httprpc: refused a command parameter naming ".$refusedCommand);
+					header("HTTP/1.0 403 Forbidden");
+					CachedEcho::send("Refused: this server does not allow ".
+						htmlspecialchars($refusedCommand,ENT_QUOTES,"UTF-8").
+						" on this connection.","text/html");
+					exit;
+				}
+				$add[] = $c;
 				break;
 			}
 			case "s":
