@@ -18,6 +18,37 @@ function sortByLevel( $a, $b )
 	return( strrpos($b,"/")-strrpos($a,"/") );
 }
 
+// The base path is the download's own root directory, or, for a single-file
+// download, the file itself. Everything else in the list is measured against
+// it, and with force deletion it is removed whole, so a value that is not a
+// usable base path stops the item rather than being worked around. "/" is not
+// one: a list claiming it would put every path on the host inside the download.
+function isUsableBasePath($base)
+{
+	$base = rtrim($base,'/');
+	return(($base !== '') && ($base[0] == '/') &&
+		(strpos($base,'/../') === false) && (substr($base,-3) != '/..'));
+}
+
+// A list entry names a file to unlink, and what it names came from the torrent
+// -- from path elements its publisher chose. Every file of a download lies
+// under that download's base path, so an entry that does not lie under it is
+// not a file of this download and is not unlinked.
+//
+// This is checked here rather than only where the list is written because a
+// list already queued when this collector replaces the previous one is read by
+// this code, and its entries are as suspect as any: the writer that produced
+// them did not refuse a path carrying a line break.
+function isUnderBasePath($file, $base)
+{
+	$base = rtrim($base,'/');
+	if($file === $base)
+		return(true);
+	if(strpos($file,'/../') !== false || substr($file,-3) == '/..')
+		return(false);
+	return(strncmp($file,$base.'/',strlen($base)+1) === 0);
+}
+
 function parseOneItem($item)
 {
 	global $enableForceDeletion;
@@ -33,10 +64,20 @@ function parseOneItem($item)
 		unset($lines[$cnt-3]);
 		unset($lines[$cnt-2]);
 		unset($lines[$cnt-1]);
+		if(!isUsableBasePath($base_path))
+		{
+			eLog('REFUSED, not a usable base path: '.$base_path);
+			return;
+		}
 		if( !$force_delete || !$is_multi )
 		{
 			foreach( $lines as $file )
 			{
+				if(!isUnderBasePath($file,$base_path))
+				{
+					eLog('REFUSED, not under '.$base_path.': '.$file);
+					continue;
+				}
 				if(@unlink($file))
 					eLog('Successfully delete file '.$file);
 				else

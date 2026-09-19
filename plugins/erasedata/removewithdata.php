@@ -82,6 +82,38 @@ if(!function_exists('erasedataRemoveWithData'))
 			$lines[] = $paths["base"];
 			$lines[] = $paths["multi"];
 			$lines[] = $forceDelete;
+			// The list is newline-delimited and read back a line at a time, so
+			// a path carrying a line break arrives at the collector as more
+			// than one entry, and every entry is a file it unlinks.
+			//
+			// A path element is whatever the torrent's publisher put in it.
+			// libtorrent accepts anything that is not empty, not "." or "..",
+			// and carries no '/' and no NUL (Path::is_valid_component in
+			// src/torrent/path.cc, and is_valid_path_element in the older
+			// src/download/download_constructor.cc): a line break is allowed,
+			// and rtorrent reports the path back with it intact. One element
+			// ending in a line break, with the elements after it supplying the
+			// separators, names an absolute path of the publisher's choosing
+			// starting at column 0 of the next line.
+			//
+			// A line break also moves the last three lines, which are what the
+			// collector reads the base path, the multi-file flag and the
+			// deletion mode from, so a crafted name can decide those too.
+			//
+			// Refused rather than escaped: a download whose file names carry
+			// line breaks is not one this can clean up, and saying so and
+			// keeping the torrent is what an unresolvable file list already
+			// does above. Escaping would have to be understood by a collector
+			// that may still be the previous one during an upgrade.
+			$broken = false;
+			foreach($lines as $line)
+				if(strpbrk($line, "\r\n") !== false)
+					$broken = true;
+			if($broken)
+			{
+				FileUtil::toLog("erasedata: a path of ".$h." contains a line break, torrent not erased");
+				continue;
+			}
 			@file_put_contents($listPath."/".$h.".list", implode("\n", $lines)."\n");
 			$erasable[] = $h;
 		}
