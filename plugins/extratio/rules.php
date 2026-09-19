@@ -86,6 +86,11 @@ class rRatioRulesList
 	public $modified = false;
         public $lst = array();
 
+	static public function cacheClasses()
+	{
+		return(array('rRatioRule'));
+	}
+
 	static public function load()
 	{
 		$cache = new rCache();
