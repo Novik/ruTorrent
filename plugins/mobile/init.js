@@ -1204,12 +1204,12 @@ plugin.loadPeers = function() {
             var countryText = ((theUILang.country && theUILang.country[cc]) || cc) + peers[pid[i]].country.substr(2);
             flagHtml = '<img class="peer-flag" src="plugins/geoip/flags/' + cc.toLowerCase() + '.gif" alt="' + escapeHTML(cc) + '"/> ' + escapeHTML(countryText);
           }
-          peersHtml += '<tr data-pid="' + pid[i] + '" data-snubbed="' + (peers[pid[i]].snubbed ? 1 : 0) + '">' +
+          peersHtml += '<tr data-pid="' + escapeHTML(pid[i]) + '" data-snubbed="' + (peers[pid[i]].snubbed ? 1 : 0) + '">' +
           '<td class="country-cell">' + flagHtml + '</td>' +
-          '<td>' + peers[pid[i]].ip + ':' +  peers[pid[i]].port + '</td>' +
+          '<td>' + escapeHTML(peers[pid[i]].ip) + ':' + escapeHTML(peers[pid[i]].port) + '</td>' +
           '<td>' + escapeHTML(peers[pid[i]].version) + '</td>' +
           '<td>' + escapeHTML(peers[pid[i]].flags) + '</td>' +
-          '<td>' + peers[pid[i]].done + '%</td>' +
+          '<td>' + escapeHTML(peers[pid[i]].done) + '%</td>' +
           '<td>' + theConverter.bytes(peers[pid[i]].downloaded,2) + '</td>' +
           '<td>' + theConverter.bytes(peers[pid[i]].uploaded,2) + '</td>' +
           '<td>' + theConverter.speed(peers[pid[i]].dl) + '</td>' +
@@ -1741,7 +1741,7 @@ plugin.loadRatio = function () {
     $('#torrentRatioGrp').change(function(){mobile.changeRatioGrp()});
     var ratioHTML = '<option value="-1">' + theUILang.mnuRatioUnlimited + '</option>'
     $.each(theWebUI.ratios, function(i, v) {
-      ratioHTML += '<option value="' + i + '">' + v.name + '</option>';
+      ratioHTML += '<option value="' + escapeHTML(i) + '">' + escapeHTML(v.name) + '</option>';
     });
     $('#torrentRatioGrp').html(ratioHTML);
     $('#ratiogrp').children('td:first').text(theUILang.ratio);
@@ -1757,7 +1757,7 @@ plugin.loadThrottle = function () {
     $('#torrentChannel').change(function(){mobile.changeChannel()});
     var throttleHTML = '<option value="-1">' + theUILang.mnuUnlimited + '</option>';
     $.each(theWebUI.throttles, function(i, v) {
-      throttleHTML += '<option value="' + i + '">' + v.name + '</option>';
+      throttleHTML += '<option value="' + escapeHTML(i) + '">' + escapeHTML(v.name) + '</option>';
     });
     $('#torrentChannel').html(throttleHTML);
     $('#throttle').children('td:first').text(theUILang.throttle);
