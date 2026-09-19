@@ -1688,6 +1688,51 @@ function socketAllocationFits(budget, files, http)
 	return((iv(files) + iv(http)) <= iv(budget));
 }
 
+/**
+ * Decide whether an address that came from a remote source may be opened.
+ *
+ * javascript: and data: addresses run in this origin, so an address taken from
+ * a feed, a search result or a saved look-at template cannot be handed to
+ * window.open() as it stands. Parsing it the way the browser will and then
+ * allowing only the schemes those sources legitimately use refuses both, along
+ * with every scheme that addresses something other than a web resource.
+ *
+ * @param {*} url the address to check
+ * @returns {boolean} true when it is one of the allowed schemes
+ */
+function isExternalURL(url)
+{
+	// An empty or blank string resolves to the page itself, which is not an
+	// external address at all.
+	if((typeof url !== "string") || (url.trim() === ""))
+		return(false);
+	try {
+		// Resolved against the page, which is what window.open() would do.
+		return(["http:", "https:", "ftp:", "ftps:", "magnet:"]
+			.indexOf(new URL(url, document.baseURI).protocol) >= 0);
+	} catch(e) {
+		return(false);
+	}
+}
+
+/**
+ * Open an address that came from a remote source in a new tab, if it is one
+ * this may open at all.
+ *
+ * The string is handed to window.open() exactly as given rather than in its
+ * parsed form, so nothing about the address is rewritten on the way.
+ *
+ * @param {*} url the address to open
+ * @returns {boolean} true when a tab was asked for, false when it was refused
+ */
+function openExternalURL(url)
+{
+	if(!isExternalURL(url))
+		return(false);
+	window.open(url, "_blank");
+	return(true);
+}
+
 if (!window.requestIdleCallback) {
 	// monkey patch requestIdleCallback (for Safari)
 	window.requestIdleCallback = function(func, _) {

@@ -279,4 +279,60 @@ final class RSSTest extends TestCase
 			"hash" => ""
 		), $contents['items'][0]);
 	}
+
+	// An item's link and guid are handed to window.open() by
+	// plugins/rss/init.js, so anything the feed puts there that is not an
+	// http(s) address has to be dropped while the feed is parsed.
+	private function feedItems(string $xml): array
+	{
+		$rRSS = new rRSS('https://example.org/rss', function () use ($xml) {
+			$cliMock = new SnoopyMock();
+			$cliMock->results = $xml;
+			return $cliMock;
+		});
+		$this->assertTrue($rRSS->fetch(new rRSSHistory()), 'fetch success');
+		return $rRSS->items;
+	}
+
+	public function testRSSItemsWithoutAnHttpLinkAreDropped(): void
+	{
+		$items = $this->feedItems(
+			'<?xml version="1.0"?><rss version="2.0"><channel>'.
+			'<title>C</title><link>https://example.org/</link>'.
+			'<item><title>good</title><link>https://example.org/ok</link></item>'.
+			'<item><title>js</title><link>javascript:window.x=1</link>'.
+				'<guid>javascript:window.x=1</guid></item>'.
+			'<item><title>data</title><link>data:text/html,&lt;b&gt;x&lt;/b&gt;</link></item>'.
+			'<item><title>file</title><link>file:///etc/passwd</link></item>'.
+			'<item><title>text</title><link>not a url at all</link></item>'.
+			'</channel></rss>');
+		$this->assertEquals(array('https://example.org/ok'), array_keys($items));
+	}
+
+	public function testRSSItemFallsBackToThePermalinkWhenOnlyItIsALink(): void
+	{
+		$items = $this->feedItems(
+			'<?xml version="1.0"?><rss version="2.0"><channel>'.
+			'<title>C</title><link>https://example.org/</link>'.
+			'<item><title>t</title><link>javascript:window.x=1</link>'.
+				'<guid>https://example.org/perma</guid></item>'.
+			'</channel></rss>');
+		$this->assertEquals(array('https://example.org/perma'), array_keys($items));
+		$this->assertEquals('https://example.org/perma', $items['https://example.org/perma']['guid']);
+	}
+
+	public function testAtomEntriesWithoutAnHttpLinkAreDropped(): void
+	{
+		$items = $this->feedItems(
+			'<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">'.
+			'<title>C</title><link href="https://example.org/"/><updated>2003-12-13T20:30:02Z</updated>'.
+			'<entry><title>good</title><link href="https://example.org/ok"/>'.
+				'<updated>2003-12-13T18:30:02Z</updated></entry>'.
+			'<entry><title>js</title><link href="javascript:window.x=1"/>'.
+				'<updated>2003-12-13T18:30:02Z</updated></entry>'.
+			'<entry><title>data</title><link href="data:text/html,x"/>'.
+				'<updated>2003-12-13T18:30:02Z</updated></entry>'.
+			'</feed>');
+		$this->assertEquals(array('https://example.org/ok'), array_keys($items));
+	}
 }

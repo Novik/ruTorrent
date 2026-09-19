@@ -256,7 +256,7 @@ theWebUI.rssDblClick = function( obj )
         	theWebUI.getTable("trt").ondblclick( tmp );
 	}
 	else
-		window.open(theWebUI.rssItems[obj.id].guid,"_blank");
+		openExternalURL(theWebUI.rssItems[obj.id].guid);
 }
 
 theWebUI.getRSSSettings = function( d )
@@ -293,7 +293,7 @@ theWebUI.RSSMarkState = function( state )
 theWebUI.RSSOpen = function()
 {
 	for(var i = 0; i<this.rssArray.length; i++)
-		window.open(this.rssArray[i],"_blank");
+		openExternalURL(this.rssArray[i]);
 }
 
 theWebUI.RSSLoad = function()

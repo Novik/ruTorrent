@@ -338,7 +338,7 @@ theWebUI.extTegLoad = function()
 theWebUI.extTegOpen = function()
 {
 	for(var i = 0; i<plugin.tegArray.length; i++)
-		window.open(plugin.tegArray[i].data.desc,"_blank");
+		openExternalURL(plugin.tegArray[i].data.desc);
 }
 
 theWebUI.tegItemRemove = function()
@@ -600,7 +600,7 @@ theWebUI.tegItemDblClick = function(obj)
         		theWebUI.getTable("trt").ondblclick( tmp );
 		}
 		else
-			window.open(nfo.data.desc,"_blank");
+			openExternalURL(nfo.data.desc);
 	}
 }
 
