@@ -227,8 +227,23 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 			if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dest ) );
 			return false;
 		}
-		if( rtIsFile( $dest ) )
-			unlink( $dest );
+		// Anything already at the destination was not put there by this move.
+		// The directories above it have just been created, and every file of
+		// the download is still at the source, so a name that is taken is
+		// something else's: another download moved into the same directory, or
+		// a file the user keeps there.
+		//
+		// It used to be unlinked. "Move" and "Copy" write over it by
+		// themselves, and the unlink was what let "HardLink" and "SoftLink" do
+		// the same, so whichever operation was chosen the file was gone and the
+		// move reported success. Refuse the move and say which name stopped it:
+		// the user can then choose another directory, which is a choice, where
+		// the deletion was not.
+		if( rtIsFile( $dest ) || is_dir( $dest ) || is_link( $dest ) )
+		{
+			if( $dbg ) rtDbg( __FUNCTION__, "refused, destination already exists: ".$dest );
+			return false;
+		}
 		switch( $op )
 		{
 			case "HardLink":
