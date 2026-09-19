@@ -186,6 +186,9 @@ class rRSS
 		// assign values to this
 		$this->items = [];
 		$this->channel = [];
+		// An item's link and permalink are what plugins/rss/init.js hands to
+		// window.open(), so a feed may only name an http(s) resource with them.
+		$httpLinkExpr = '|^http(s)?://[a-z0-9-]+(\.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i';
 		if (($rss = $xFirst('/rss/channel|/channel')) !== null) {
 			$this->channel = [
 				'title'=>$xText('title', $rss),
@@ -216,7 +219,6 @@ class rRSS
 						$item['timestamp'] = 0;
 				}
 				// expect permalink in guid and normal link in url
-				$httpLinkExpr = '|^http(s)?://[a-z0-9-]+(\.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i';
 				$validPermalink = preg_match($httpLinkExpr, $item['guid']);
 				if (preg_match($httpLinkExpr, $item['link']) ) {
 					if (!$validPermalink) {
@@ -224,6 +226,10 @@ class rRSS
 					}
 				} elseif ($validPermalink) {
 						$item['link'] = $item['guid'];
+				} else {
+					// Neither is an address that may be opened. Keeping the
+					// item would carry whatever the feed put there instead.
+					continue;
 				}
 				$link = $item['link'];
 				if (!empty($link)) {
@@ -255,9 +261,9 @@ class rRSS
 					'description'=> join("\n\n", $description),
 				];
 				$item['guid'] = $item['link'];
-				// only add items with an url
+				// only add items with an url that may be opened
 				$link = $item['link'];
-				if (!empty($link)) {
+				if (!empty($link) && preg_match($httpLinkExpr, $link)) {
 					$this->items[$link] = $item;
 				}
 			}

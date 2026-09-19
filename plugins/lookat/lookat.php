@@ -27,29 +27,30 @@ class rLook
 		$cache = new rCache();
 		return($cache->set($this));
 	}
-	public function set()
+	// $body defaults to the request body; a caller may pass one instead.
+	public function set( $body = null )
 	{
-		if(!isset($HTTP_RAW_POST_DATA))
-			$HTTP_RAW_POST_DATA = file_get_contents("php://input");
-		if(isset($HTTP_RAW_POST_DATA))
+		if(is_null($body))
+			$body = file_get_contents("php://input");
+		$vars = explode('&', $body);
+		$this->list = array();
+		foreach($vars as $var)
 		{
-			$vars = explode('&', $HTTP_RAW_POST_DATA);
-			$this->list = array();
-			foreach($vars as $var)
+			$parts = explode("=",$var);
+			if($parts[0]=="look")
 			{
-				$parts = explode("=",$var);
-				if($parts[0]=="look")
+				$value = trim(rawurldecode($parts[1]));
+				if(strlen($value))
 				{
-					$value = trim(rawurldecode($parts[1]));
-					if(strlen($value))
+					$tmp = explode("|",$value);
+					// The template is completed and opened by
+					// plugins/lookat/init.js, so only an http(s) target is
+					// stored; nothing downstream checks it again.
+					if(count($tmp) > 1 && preg_match('|^\s*https?://|i',$tmp[1]))
 					{
-						$tmp = explode("|",$value);
-						if(count($tmp) > 1 && (trim($tmp[1])!=''))
-						{
-							if(strpos($tmp[1],"{title}")===false)
-								$tmp[1].="{title}";
-							$this->list[$tmp[0]] = $tmp[1];
-						}
+						if(strpos($tmp[1],"{title}")===false)
+							$tmp[1].="{title}";
+						$this->list[$tmp[0]] = $tmp[1];
 					}
 				}
 			}
