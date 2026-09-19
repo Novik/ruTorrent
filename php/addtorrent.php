@@ -4,17 +4,35 @@ require_once( 'Snoopy.class.inc');
 require_once( 'rtorrent.php' );
 set_time_limit(0);
 
+/**
+ * Encode a value for use as a literal in the script this page serves.
+ *
+ * The result of this page is evaluated by the client (js/content.js), so
+ * every reflected value has to be a complete literal that no input can end.
+ * The HEX flags also keep <, >, & and both quote characters out of the bytes,
+ * so the response cannot be turned into markup by asking for it directly.
+ */
+function addtorrent_literal($value)
+{
+	return(json_encode(strval($value),
+		JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_SLASHES));
+}
+
 if(isset($_REQUEST['result']))
 {
+	$results = is_array($_REQUEST['result']) ? array_values($_REQUEST['result']) : array($_REQUEST['result']);
 	if(isset($_REQUEST['json']))
-		CachedEcho::send( '{ "result" : "'.$_REQUEST['result'][0].'" }',"application/json");
+		CachedEcho::send( '{ "result" : '.addtorrent_literal(isset($results[0]) ? $results[0] : '').' }',
+			"application/json");
 	else
 	{
+		$names = (isset($_REQUEST['name']) && is_array($_REQUEST['name']))
+			? array_values($_REQUEST['name']) : array();
 		$js = '';
-		foreach( $_REQUEST['result'] as $ndx=>$result )
-			$js.= ('noty("'.(isset($_REQUEST['name'][$ndx]) ? addslashes(rawurldecode(htmlspecialchars($_REQUEST['name'][$ndx]))).' - ' : '').
-				'"+theUILang.addTorrent'.$_REQUEST['result'][$ndx].
-				',"'.($_REQUEST['result'][$ndx]=='Success' ? 'success' : 'error').'");');
+		foreach( $results as $ndx=>$result )
+			$js.= ('noty('.addtorrent_literal(isset($names[$ndx]) ? ($names[$ndx].' - ') : '').
+				'+theUILang["addTorrent"+'.addtorrent_literal($result).']'.
+				','.addtorrent_literal(($result=='Success') ? 'success' : 'error').');');
 		CachedEcho::send($js,"text/html");
 	}
 }
