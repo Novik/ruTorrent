@@ -35,6 +35,7 @@ if(isset($HTTP_RAW_POST_DATA))
 						$userPermissions[$parts[1]] = false;
 						$jResult.="thePlugins.get('".$parts[1]."').unlaunch();";
 					}
+					break;
 				}
 				case "done":
 				{
