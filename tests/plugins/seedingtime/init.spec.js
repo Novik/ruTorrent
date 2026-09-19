@@ -12,6 +12,13 @@ for (const src of ["../lang/en.js", "../js/common.js"]) {
 // callbacks it registers instead of running a real request manager.
 window.TYPE_NUMBER = "number";
 window.thePlugins = { isInstalled: () => false };
+// The plugin wraps dxSTable.prototype.setRowById; keep the original call
+// observable so the tests can assert on the attributes it receives.
+window.dxSTable = function () {};
+window.dxSTable.prototype.setRowById = function (ids, sId, icon, attr) {
+  this.lastRow = { ids, sId, icon, attr };
+  return this.lastRow;
+};
 const requestCallbacks = {};
 window.theRequestManager = {
   map: (cmd) => cmd,
@@ -36,10 +43,10 @@ window.theWebUI = {
   });
   const scriptEl = document.createElement("script");
   scriptEl.textContent =
-    "(function () { var plugin = { loadLang: function () {}, " +
-    "canChangeColumns: function () { return true; }, allStuffLoaded: true }; " +
+    "(function () { var plugin = { loadLang: function () {}, loadMainCSS: function () {}, " +
+    "canChangeColumns: function () { return true; }, canChangeOptions: function () { return true; }, allStuffLoaded: true }; " +
     code +
-    "\n})();";
+    "\nwindow.__plugin = plugin;\n})();";
   document.body.appendChild(scriptEl);
 }
 
@@ -108,5 +115,75 @@ describe("seedingtime custom-field requests", () => {
       theConverter.date(EPOCH),
     ]);
     expect(theWebUI.tables.trt.format(table, [-1, -1])).toEqual(["", ""]);
+  });
+});
+
+describe("seedingtime finished-duration highlight", () => {
+  const plugin = window.__plugin;
+
+  beforeEach(() => {
+    theWebUI.settings[plugin.highlightSetting] = "";
+  });
+
+  it("parses a duration with a unit, and a bare number as days", () => {
+    expect(plugin.parseDuration("")).toBe(0);
+    expect(plugin.parseDuration("nonsense")).toBe(0);
+    expect(plugin.parseDuration("45s")).toBe(45);
+    expect(plugin.parseDuration("30m")).toBe(30 * 60);
+    expect(plugin.parseDuration("12h")).toBe(12 * 3600);
+    expect(plugin.parseDuration("1d")).toBe(86400);
+    expect(plugin.parseDuration("2w")).toBe(2 * 604800);
+    expect(plugin.parseDuration("2W")).toBe(2 * 604800);
+    expect(plugin.parseDuration(" 3 d ")).toBe(3 * 86400);
+    expect(plugin.parseDuration("3")).toBe(3 * 86400);
+  });
+
+  it("highlights a torrent once its finished duration reaches the limit", () => {
+    theWebUI.settings[plugin.highlightSetting] = "1d";
+    expect(plugin.torrentRowAttr({ seedingtime: 86400 - 1 })).toEqual({
+      "data-seedingtime-highlight": "0",
+    });
+    expect(plugin.torrentRowAttr({ seedingtime: 86400 })).toEqual({
+      "data-seedingtime-highlight": "1",
+    });
+    expect(plugin.torrentRowAttr({ seedingtime: 10 * 86400 })).toEqual({
+      "data-seedingtime-highlight": "1",
+    });
+  });
+
+  it("does not highlight a torrent without a finished duration", () => {
+    theWebUI.settings[plugin.highlightSetting] = "1d";
+    expect(plugin.torrentRowAttr({ seedingtime: -1 })).toEqual({
+      "data-seedingtime-highlight": "0",
+    });
+    expect(plugin.torrentRowAttr(undefined)).toEqual({
+      "data-seedingtime-highlight": "0",
+    });
+  });
+
+  it("disables the highlight for an empty or unparsable limit", () => {
+    expect(plugin.torrentRowAttr({ seedingtime: 365 * 86400 })).toEqual({
+      "data-seedingtime-highlight": "0",
+    });
+    theWebUI.settings[plugin.highlightSetting] = "oops";
+    expect(plugin.torrentRowAttr({ seedingtime: 365 * 86400 })).toEqual({
+      "data-seedingtime-highlight": "0",
+    });
+  });
+
+  it("adds the attribute when the torrent list hands the row to the table", () => {
+    theWebUI.settings[plugin.highlightSetting] = "2w";
+    const table = new dxSTable();
+    table.prefix = "trt";
+    table.setRowById({ seedingtime: 2 * 604800 }, "HASH", "icon", {});
+    expect(table.lastRow.attr).toEqual({ "data-seedingtime-highlight": "1" });
+  });
+
+  it("leaves the attributes of a non-torrent table untouched", () => {
+    theWebUI.settings[plugin.highlightSetting] = "2w";
+    const table = new dxSTable();
+    table.prefix = "rss";
+    table.setRowById({ seedingtime: 2 * 604800 }, "HASH", "icon", { link: "x" });
+    expect(table.lastRow.attr).toEqual({ link: "x" });
   });
 });
