@@ -21,6 +21,14 @@
 	// Hosts exempt from the check above, matched against the URL host verbatim,
 	// e.g. array( '127.0.0.1', 'jackett.lan' ).
 	$httpPrivateNetworkAllowlist = array();
+	// Check the certificate an HTTPS server presents. Earlier releases passed
+	// curl -k on every HTTPS fetch and could not be told not to, so an
+	// indexer with a self-signed or expired certificate worked without anyone
+	// arranging it. Those installs have to set this to false, or install the
+	// certificate authority the server's certificate is signed by. Off means
+	// every HTTPS fetch -- feeds, torrent downloads, tracker logins with their
+	// passwords -- can be read and changed by anything on the path.
+	$httpVerifyCertificates = true;
 
 	// for xmlrpc actions
 	$rpcTimeOut = 5;			// in seconds
