@@ -28,6 +28,54 @@ class rCache
 	{
 		return(get_class($rss).':'.$rss->hash);
 	}
+	// A key names one file inside the cache directory: the shipped ones are a
+	// '<name>.dat', an md5 or a short fixed word. It is concatenated into a
+	// path, and it is not always internal -- plugins/rss/action.php takes one
+	// from a request parameter -- so a key holding a separator would choose
+	// which file is read and unserialized, or which file a store replaces.
+	protected static function isValidKey( $key )
+	{
+		return(is_string($key) && (strlen($key)>0) &&
+			(strpbrk($key,"/\\\0")===false) &&
+			($key!=='.') && ($key!=='..'));
+	}
+	// unserialize() constructs whatever class the stored bytes name, and runs
+	// that class's magic methods while doing it. So the classes a cache file
+	// may name are the ones the caller stores: its own, plus any it declares
+	// through a static cacheClasses(). A file naming another class is not
+	// loaded at all -- see holdsRefusedClass() -- rather than half loaded.
+	protected static function allowedClasses( $target )
+	{
+		if(!is_object($target))
+			return(false);
+		$class = get_class($target);
+		$allowed = array($class);
+		if(is_callable(array($class,'cacheClasses')))
+			$allowed = array_merge($allowed,call_user_func(array($class,'cacheClasses')));
+		return($allowed);
+	}
+	// Whether unserialize() met a class it was not allowed to construct, at
+	// any depth. Such a class comes back as __PHP_Incomplete_Class, which
+	// would fail later and further away if it were handed to the caller.
+	protected static function holdsRefusedClass( $value, $seen = null )
+	{
+		if(is_null($seen))
+			$seen = new SplObjectStorage();
+		if(is_object($value))
+		{
+			if($value instanceof __PHP_Incomplete_Class)
+				return(true);
+			if($seen->contains($value))
+				return(false);
+			$seen->attach($value);
+			$value = (array)$value;
+		}
+		if(is_array($value))
+			foreach($value as $item)
+				if(self::holdsRefusedClass($item,$seen))
+					return(true);
+		return(false);
+	}
 	// A cache file's identity, used to tell whether it is still the one this
 	// process loaded. filemtime resolves only to the second, so two writes
 	// inside one second look identical -- and that is the common case here:
@@ -55,6 +103,8 @@ class rCache
 	{
 		global $profileMask;
 		$name = $this->getName($rss);
+		if(is_null($name))
+			return(false);
 		$lockName = $name.'.lock';
 		// One writer per cache key. The changed-since-load check, the merge
 		// and the publishing rename must form a single critical section: two
@@ -121,6 +171,8 @@ class rCache
 	public function get( &$rss )
 	{
 		$fname = $this->getName($rss);
+		if(is_null($fname))
+			return(false);
 		// Stamp before reading. If a concurrent rename lands between the stat
 		// and the read, this process holds new content under an old stamp and
 		// its set() merely performs one redundant merge. Stamping after the
@@ -130,7 +182,12 @@ class rCache
 		$ret = @file_get_contents($fname);
 		if($ret!==false)
 		{
-			$tmp = unserialize($ret);
+			$tmp = @unserialize($ret,array('allowed_classes'=>self::allowedClasses($rss)));
+			if(self::holdsRefusedClass($tmp))
+			{
+				FileUtil::toLog('rCache: '.basename($fname).' names a class it may not hold; not loaded.');
+				return(false);
+			}
 			if(is_array($tmp))
 			{
 				$rss = $tmp;
@@ -158,6 +215,8 @@ class rCache
 	{
 		global $profileMask;
 		$name = $this->getName($rss);
+		if(is_null($name))
+			return(false);
 		$lockName = $name.'.lock';
 		// Delete cache data and its sidecar lock while holding the same key lock used by writers.
 		$lock = fopen( $lockName, "c" );
@@ -176,14 +235,22 @@ class rCache
 		}
 		return(@unlink($name));
 	}
+	// Null when the key names anything other than a file in this directory.
+	// Every caller treats that as a miss rather than reaching for the path.
 	protected function getName($rss)
 	{
-	        return($this->dir."/".(is_object($rss) ? $rss->hash : $rss['__hash__']));
+		$key = is_object($rss) ? $rss->hash : (isset($rss['__hash__']) ? $rss['__hash__'] : null);
+		if(!self::isValidKey($key))
+			return(null);
+		return($this->dir."/".$key);
 	}
 	public function getModified( $obj = null )
 	{
-		return(@filemtime( is_null($obj) ? $this->dir :
-			(is_object($obj) ? $this->getName($obj) : $this->dir."/".$obj) ));
+		if(is_null($obj))
+			return(@filemtime($this->dir));
+		$name = is_object($obj) ? $this->getName($obj) :
+			(self::isValidKey($obj) ? $this->dir."/".$obj : null);
+		return(is_null($name) ? false : @filemtime($name));
 
 	}
 }

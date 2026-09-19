@@ -334,7 +334,11 @@ switch($cmd)
 					$lbl = rawurldecode($parts[1]);
 				else
 				if($parts[0]=="rss")
-					$curRSS = $parts[1];
+					// The key chooses which cache file is read, so it has to
+					// name a feed this install has rather than merely look
+					// like one. An unknown key adds nothing.
+					$curRSS = (isset($parts[1]) &&
+						$mngr->rssList->isExist($parts[1])) ? $parts[1] : null;
 				else
 				if(($parts[0]=="url") && $curRSS)
 				{

@@ -34,6 +34,15 @@ class rRSS
 	public $lastErrorMsgs = [];
 	private $fetchURL = 'rssFetchURL';
 
+	// $fetchURL names the function that performs the HTTP request. A caller
+	// that constructs an rRSS chooses it; a restored one does not, because the
+	// bytes it was restored from are a file, and a file must not be able to
+	// name the function this object then calls with a URL and its cookies.
+	public function __wakeup()
+	{
+		$this->fetchURL = 'rssFetchURL';
+	}
+
 	public function __construct( $url = null, $fetchURL = 'rssFetchURL' )
 	{
 		$this->fetchURL = $fetchURL;
@@ -552,6 +561,11 @@ class rRSSFilterList
 	public $modified = false;
         public $lst = array();
 
+	static public function cacheClasses()
+	{
+		return(array('rRSSFilter'));
+	}
+
 	public function add( $filter )
 	{
 		$this->lst[] = $filter;
@@ -612,6 +626,11 @@ class rRSSGroupList
 	public $hash = "groups";
 	public $modified = false;
         public $lst = array();
+
+	static public function cacheClasses()
+	{
+		return(array('rRSSGroup'));
+	}
 
 	public function add( $grp )
 	{

@@ -51,6 +51,11 @@ class rURLRewriteRulesList
 	public $modified = false;
         public $lst = array();
 
+	static public function cacheClasses()
+	{
+		return(array('rURLRewriteRule'));
+	}
+
 	static public function load( $mngr = null )
 	{
 		$cache = new rCache();
