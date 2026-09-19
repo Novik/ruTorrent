@@ -703,6 +703,19 @@ theWebUI.showRSS = function()
 		theDialogManager.toggle("dlgAddRSS");
 }
 
+// An error entry carries the name of a theUILang key plus optional free text.
+// The free text can hold whatever a feed server put in its http status line
+// (Snoopy keeps the status token from the response's status line and rss.php
+// concatenates it), so it is looked at as text and never as code.
+theWebUI.rssErrorText = function(err)
+{
+	if(typeof err.key === 'string')
+		return (theUILang[err.key] || err.key) + (err.detail ? ' - '+err.detail : '');
+	// An entry cached by an older release holds a javascript expression in
+	// desc. Show it for what it is rather than running it.
+	return err.desc == null ? '' : String(err.desc);
+}
+
 theWebUI.showErrors = function(errors)
 {
 	for( const err of errors)
@@ -712,7 +725,7 @@ theWebUI.showErrors = function(errors)
 		const args = [
 			'['+theConverter.date('time' in err ? iv(err.time) : new Date().getTime()/1000)+'] '
 			+ (name ? '<'+name+'> ' : '')
-			+ eval(err.desc)
+			+ theWebUI.rssErrorText(err)
 			+ (err.prm ? ' ('+err.prm+')' : ''),
 			'error',
 			true
