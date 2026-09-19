@@ -46,6 +46,15 @@ else {
 	$move_fastresume = trim( $argv[5] );
 }
 
+// The hash names a download to rtorrent and is put into commands built for it.
+// action.php checks it before it starts this script; anything else that starts
+// this script has not, and the script is on disk and runnable on its own.
+if( $is_ok && !ctype_xdigit( $hash ) )
+{
+	Debug( "argument 1 is not a torrent hash" );
+	$is_ok = false;
+}
+
 if( $is_ok && $hash && strlen( $datadir ) > 0 )
 {
 	Debug( "hash        : ".$hash );
