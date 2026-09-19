@@ -109,8 +109,10 @@ catlist.contextMenuEntries = function(panelId, labelId) {
 			const lbl = panelId === 'plabel'
 				? (labelId.startsWith('clabel__') ? labelId.substring(8) : 'nlb')
 				: labelId.substring(1);
+			// A function, not a string: js/objects.js runs a string action
+			// through eval, and lbl is a tracker name or a torrent label.
 			return entries.concat([
-				[theUILang.EditIcon, `theWebUI.showTracklabelsDialog('${lbl}');`]
+				[theUILang.EditIcon, () => theWebUI.showTracklabelsDialog(lbl)]
 			]);
 		}
 	}
