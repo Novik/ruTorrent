@@ -472,13 +472,18 @@ class XMLRPCProxyTest extends TestCase
 			'and it certainly is not trusted');
 	}
 
-	public function testMulticallDollarArgumentIsNeverTrusted()
+	public function testMulticallDollarArgumentIsRefused()
 	{
+		// '$' makes rtorrent call the name after it rather than store it, so
+		// the argument of an allowed command is a command of its own. It was
+		// forwarded untrusted, which is a refusal only from 0.16.10, because
+		// the name read off the parameter was d.custom1.set and nothing looked
+		// past the first '='.
 		$this->multicall(array('', 'main', 'd.custom1.set=$execute.capture=/bin/hostname'));
-		$this->assertTrue(rXMLRPCRequest::$lastTrusted === false,
-			'an allowed command whose argument would be re-parsed is not trusted');
-		$this->assertTrue(strpos((string) rXMLRPCRequest::$lastPayload, 'execute.capture') !== false,
-			'the original is forwarded rather than a rebuilt one, so nothing is smuggled in quoted');
+		$this->assertTrue(rXMLRPCRequest::$sent === 0,
+			'an allowed command whose argument would be re-parsed is refused, not forwarded');
+		$this->assertTrue(rXMLRPCRequest::$lastTrusted === null,
+			'and it certainly is not trusted');
 	}
 
 	public function testMulticallViewNameIsDataNotACommand()
