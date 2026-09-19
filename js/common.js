@@ -1629,6 +1629,32 @@ function getCRC( str, crc )
 	return(crc);
 }
 
+/**
+ * Split plain text into DOM nodes, with every http(s) run turned into a link.
+ *
+ * The text is never parsed as markup: non-url runs become text nodes and the
+ * anchors are built attribute by attribute, so nothing the text contains can
+ * become an element or an attribute. The pattern matches only http and https,
+ * which is the scheme allowlist -- no other scheme can reach an href here.
+ */
+function linkifyToNodes(text)
+{
+	var nodes = [], pattern = /https?:\/\/[^\s<>"']+/g, last = 0, match;
+	text = (text === null || text === undefined) ? '' : String(text);
+	while((match = pattern.exec(text)) !== null)
+	{
+		if(match.index > last)
+			nodes.push(document.createTextNode(text.substring(last,match.index)));
+		nodes.push($("<a>")
+			.attr({ href: match[0], target: "_blank", rel: "noopener noreferrer" })
+			.text(match[0])[0]);
+		last = pattern.lastIndex;
+	}
+	if(last < text.length)
+		nodes.push(document.createTextNode(text.substring(last)));
+	return(nodes);
+}
+
 function strip_tags(input, allowed)
 {
 	allowed = (((allowed || '') + '')
