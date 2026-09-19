@@ -87,6 +87,9 @@ class Snoopy
 	// hosts exempt from the check above, matched against the URL host verbatim
 	var $private_allowlist	=	array();
 
+	// check the certificate an HTTPS server presents
+	var $verify_certificates =	true;
+
 	/**** Private variables ****/
 
 	var $_maxlinelen	=	4096;			// max line length (headers)
@@ -109,6 +112,7 @@ class Snoopy
 		global $httpUseGzip;
 		global $httpBlockPrivateNetworks;
 		global $httpPrivateNetworkAllowlist;
+		global $httpVerifyCertificates;
 
 		if(isset($httpUserAgent))
 			$this->agent = $httpUserAgent;
@@ -129,6 +133,8 @@ class Snoopy
 			$this->block_private = $httpBlockPrivateNetworks;
 		if(isset($httpPrivateNetworkAllowlist) && is_array($httpPrivateNetworkAllowlist))
 			$this->private_allowlist = $httpPrivateNetworkAllowlist;
+		if(isset($httpVerifyCertificates))
+			$this->verify_certificates = (bool)$httpVerifyCertificates;
 		if(isset($httpIP))
 			$this->IP = $httpIP;
 	}
@@ -674,13 +680,18 @@ class Snoopy
 		}
 
 		if($this->_isproxy)
-			$cmdline_params .= " --proxy-insecure --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
+		{
+			if(!$this->verify_certificates)
+				$cmdline_params .= " --proxy-insecure";
+			$cmdline_params .= " --proxy ".(empty($this->proxy_proto) ? '' : $this->proxy_proto.'://').$this->proxy_host.":".$this->proxy_port;
+		}
 
 		$headerfile = FileUtil::getTempFilename('https-header');
 		$contfile = FileUtil::getTempFilename('https-body');
 
-		# accept self-signed certs
-		$cmdline_params .= " -k -s ";
+		if(!$this->verify_certificates)
+			$cmdline_params .= " -k";
+		$cmdline_params .= " -s ";
 		exec(escapeshellarg(Utility::getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		$this->_redirectaddr = false;
 		$this->headers = array();
@@ -690,7 +701,13 @@ class Snoopy
 		$is_gzipped = false;
 		if($return)
 		{
-			$this->error = "Error: cURL could not retrieve the document, error $return.";
+			// 35, 51, 60 and 77 are curl's tls verification failures. Saying so
+			// beats "error 60" for anyone whose indexer signs its own certificate.
+			if(in_array($return,array(35,51,60,77),true))
+				$this->error = "Error: cURL could not verify the certificate of \"".$this->host."\" (error $return). "
+					."Install the certificate authority that signed it, or set \$httpVerifyCertificates to false in conf/config.php to stop checking.";
+			else
+				$this->error = "Error: cURL could not retrieve the document, error $return.";
 		}
 		else
 		{
