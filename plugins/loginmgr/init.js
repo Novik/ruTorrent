@@ -2,6 +2,15 @@ plugin.loadLang();
 
 if(plugin.canChangeOptions())
 {
+	// The stored password never reaches the browser, so the field starts
+	// empty and there is nothing to compare it against. What is typed into it
+	// is a new password and is sent; what is left alone is not, and the stored
+	// one stays as it is. The flag is cleared every time the page is shown.
+	plugin.passwordWasTyped = function(name)
+	{
+		return($('#'+name+'_lmpassword').data('lmtyped') === true);
+	}
+
 	plugin.accaddAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg)
 	{
@@ -12,7 +21,10 @@ if(plugin.canChangeOptions())
 				$('#'+name+'_lmenabled').prop("checked", (val.enabled==1));
 				$('#'+name+'_lmlogin').val(val.login);
 				$('#'+name+'_lmauto').val(val.auto);
-				$('#'+name+'_lmpassword').val(val.password);
+				$('#'+name+'_lmpassword')
+					.val("")
+					.data('lmtyped', false)
+					.attr("placeholder", val.password_set ? "••••••••" : "");
 				$('#'+name+'_lmenabled').trigger('change');
 			});
 		}
@@ -27,7 +39,7 @@ if(plugin.canChangeOptions())
 			if( ($('#'+name+'_lmenabled').prop("checked") ^ val.enabled) ||
 				($('#'+name+'_lmauto').val()!=val.auto) ||
 				($('#'+name+'_lmlogin').val()!=val.login) ||
-				($('#'+name+'_lmpassword').val()!=val.password))
+				plugin.passwordWasTyped(name))
 			{
 				ret = true;
 				return(false);
@@ -51,8 +63,11 @@ if(plugin.canChangeOptions())
 		{
 			s+=("&"+name+"_enabled="+($('#'+name+'_lmenabled').prop("checked") ? 1 : 0)+
 				"&"+name+"_auto="+$('#'+name+'_lmauto').val()+
-				"&"+name+"_login="+encodeURIComponent($('#'+name+'_lmlogin').val()).trim()+
-				"&"+name+"_password="+encodeURIComponent($('#'+name+'_lmpassword').val()).trim());
+				"&"+name+"_login="+encodeURIComponent($('#'+name+'_lmlogin').val()).trim());
+			// Left out entirely when nothing was typed: accountManager::set()
+			// only touches the stored password for the accounts that send one.
+			if(plugin.passwordWasTyped(name))
+				s+=("&"+name+"_password="+encodeURIComponent($('#'+name+'_lmpassword').val()).trim());
 		});
 		this.content = "mode=set"+s;
 	        this.contentType = "application/x-www-form-urlencoded";
@@ -91,7 +106,9 @@ plugin.onLangLoaded = function() {
 				$("<label>").attr({id:`lbl_${name}_lmpassword`, for:`${name}_lmpassword`}).addClass("disabled").text(theUILang.accPassword + ": "),
 			),
 			$("<div>").addClass("col-8 col-md-4").append(
-				$("<input>").attr({type:"password", id:`${name}_lmpassword`, maxlength:64}),
+				$("<input>")
+					.attr({type:"password", id:`${name}_lmpassword`, maxlength:64})
+					.on("input", function() { $(this).data('lmtyped', true); }),
 			),
 		),
 	));
