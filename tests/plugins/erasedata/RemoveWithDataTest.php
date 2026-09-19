@@ -220,4 +220,71 @@ class RemoveWithDataTest extends TestCase
 		erasedataRemoveWithData(array("A","B"), "1");
 		$this->assertEquals(array("A","B"), rXMLRPCRequest::$erased, 'every resolvable hash is erased');
 	}
+
+	// -- a path the list format cannot carry --------------------------------
+
+	// The list is newline-delimited. libtorrent accepts a path element that is
+	// not empty, not "." or "..", and carries no '/' and no NUL, so a line
+	// break in one reaches here from a torrent anyone can publish -- and the
+	// collector reads the extra line as another file to unlink.
+
+	private function rawListFor($hash)
+	{
+		$f = $this->dir.'/erasedata/'.$hash.'.list';
+		return(is_file($f) ? file_get_contents($f) : false);
+	}
+
+	public function testPathWithALineBreakIsNotWritten()
+	{
+		$this->reset();
+		// One element ending in a line break, the elements after it spelling
+		// out an absolute path: what rtorrent reports back for a crafted
+		// torrent, and two entries once the collector reads it.
+		$this->frozen(true, array("/d/name", 1,
+			"/d/name/inject\n/etc/cron.d/victim", "/d/name/b.bin"));
+		$this->eraseOk();
+		$result = erasedataRemoveWithData(array("A"), "1");
+
+		$this->assertTrue($this->rawListFor("A") === false,
+			'no list is written for a path carrying a line break');
+		$this->assertEquals(array(), rXMLRPCRequest::$erased,
+			'and the torrent is kept, so its data can still be identified');
+		$this->assertTrue($result === false, 'the caller is told the removal did not happen');
+		$this->assertEquals(1, count(FileUtil::$log), 'the refusal is logged');
+	}
+
+	public function testCarriageReturnIsRefusedToo()
+	{
+		$this->reset();
+		$this->frozen(true, array("/d/name", 1, "/d/name/inject\r/etc/cron.d/victim"));
+		$this->eraseOk();
+		erasedataRemoveWithData(array("A"), "1");
+		$this->assertTrue($this->rawListFor("A") === false,
+			'a bare carriage return is refused as well');
+	}
+
+	public function testALineBreakInTheBasePathIsRefused()
+	{
+		$this->reset();
+		// The base path, the multi flag and the deletion mode are the last
+		// three lines. A line break in the base moves all three.
+		$this->frozen(true, array("/d/na\nme", 1, "/d/na\nme/a.bin"));
+		$this->eraseOk();
+		erasedataRemoveWithData(array("A"), "1");
+		$this->assertTrue($this->rawListFor("A") === false,
+			'a line break in the base path is refused');
+	}
+
+	public function testOtherHashesInTheBatchAreUnaffected()
+	{
+		$this->reset();
+		// Refusing one download must not cost the rest of the batch: the
+		// scripted layer answers the same reply for both hashes, so this
+		// checks the refusal is per item rather than for the call.
+		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
+		$this->eraseOk();
+		erasedataRemoveWithData(array("A","B"), "1");
+		$this->assertEquals(array("A","B"), rXMLRPCRequest::$erased,
+			'a batch of resolvable downloads is erased in full');
+	}
 }
