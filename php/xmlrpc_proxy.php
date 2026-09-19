@@ -364,6 +364,21 @@ class XMLRPCProxy
 				// rebuildLoadParams reads them from.
 				foreach(array_slice($member['params'], 2) as $value)
 				{
+					// A parameter the single-call path would rebuild is asked
+					// nothing further, because that path asks nothing further
+					// either: $safeParams names the command, and
+					// rebuildSafeLoadParam has already refused an argument
+					// rtorrent would call. Its arguments are values, and
+					// reading them for names refuses the ones people write --
+					// d.custom1.set="catch-up tv" names catch, and
+					// d.directory.set="/torrents/my import" names import. A
+					// batch is refused whole, so one label costs every add in
+					// it. What is forwarded here is still the caller's own
+					// bytes, untrusted, where the single-call path rebuilds
+					// the same parameter and sends it trusted.
+					if(self::rebuildSafeLoadParam($value, $safeParams, $directory) !== null)
+						continue;
+
 					$command = self::refusedCommandName($value, $deny);
 					if($command !== null)
 						return self::reject("rejected (not allowed on this connection): ".
