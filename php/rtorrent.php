@@ -22,11 +22,21 @@ class rTorrent
 	// governs the <methodName> element; an addition travels as a parameter, is
 	// HTML-escaped on its way into the payload, and is read as a command by
 	// rtorrent rather than by the XMLRPC layer.
+	// d.set_custom and d.set_custom3 are on the list because the shipped
+	// plugins build them: the edit and retrackers plugins mark a reloaded
+	// torrent with d.set_custom3, and rutracker_check writes its
+	// replacement marker and check state with d.set_custom. The other
+	// custom fields are deliberately absent -- d.set_custom1 and
+	// d.set_custom2 hold the label and the comment, which sendTorrent()
+	// already writes from its own parameters, and nothing builds
+	// d.set_custom4 or d.set_custom5 as an addition.
 	const ADDITION_COMMANDS = array(
 		'd.set_throttle_name',
 		'd.set_connection_seed',
 		'view.set_visible',
 		'd.views.push_back_unique',
+		'd.set_custom',
+		'd.set_custom3',
 	);
 
 	/**
