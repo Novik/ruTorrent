@@ -1,0 +1,16 @@
+/* Rows whose "Finished" duration reached the limit set in Settings > General.
+
+   The highlight is an inset shadow rather than a background, because a
+   background cannot coexist with the themes: each theme paints its rows with
+   the `background` shorthand, which also sets `background-image` (Oblivion and
+   OblivionBlue use a gradient/texture image, others a solid colour). Setting
+   `background-color` from here is therefore hidden behind that image on the
+   image themes, and replacing `background` outright would discard the theme's
+   row styling. An inset shadow is painted above the row background and below
+   the row content, so one rule tints every theme, light or dark, and a theme
+   can restyle it through --seedingtime-highlight-color.
+
+   A selected row is left alone so the core/theme selection colour still wins. */
+.stable tbody tr[data-seedingtime-highlight="1"]:not(.selected) td {
+  box-shadow: inset 0 0 0 100vmax var(--seedingtime-highlight-color, rgba(255, 196, 0, 0.4)) !important;
+}

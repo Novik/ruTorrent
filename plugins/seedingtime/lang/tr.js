@@ -9,5 +9,6 @@
 
  theUILang.seedingTime		= "Bitiş";
  theUILang.addTime		= "Eklenme";
+ theUILang.seedingTimeHighlight		= "En az (örneğin 1d, 2w) önce tamamlanmış torrentleri vurgulayın";
 
 thePlugins.get("seedingtime").langLoaded();
