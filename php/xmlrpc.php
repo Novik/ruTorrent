@@ -18,14 +18,37 @@ class rXMLRPCParam
 	}
 }
 
+class rXMLRPCInvalidCommandName extends Exception
+{
+	public function __construct( $name )
+	{
+		parent::__construct("Not an rtorrent command name: ".$name);
+	}
+}
+
 class rXMLRPCCommand
 {
+	// A command name is interpolated into <methodName> unescaped, so a name
+	// carrying markup would close that element and add calls of its own to the
+	// same request. An rtorrent method name is letters, digits, '_' and '.':
+	// of the 1001 names system.listMethods answers with on 0.9.8, not one
+	// carries another character. Anything else is refused rather than escaped,
+	// because escaping it would only send a name no daemon answers to.
+	const NAME_PATTERN = '/^[a-z0-9_.]+$/i';
+
 	public $command;
 	public $params;
+
+	static public function isValidCommandName( $name )
+	{
+		return(is_string($name) && (preg_match(self::NAME_PATTERN,$name)===1));
+	}
 
 	public function __construct( $cmd, $args = null )
 	{
 		$this->command = getCmd($cmd);
+		if(!self::isValidCommandName($this->command))
+			throw new rXMLRPCInvalidCommandName($this->command);
 		$this->params = array();
 		rTorrentSettings::get()->patchDeprecatedCommand($this,$cmd);
 		if($args!==null)
@@ -181,6 +204,16 @@ class rXMLRPCRequest
 		$this->i8s = array();
 		$this->strings = array();
 		$this->val = array();
+		// Every name is checked before the first payload is built, so a batch
+		// holding one unusable name sends no part of itself.
+		foreach($this->commands as $cmd)
+			if(!rXMLRPCCommand::isValidCommandName($cmd->command))
+			{
+				$this->fault = true;
+				$this->faultString = 'Refused: not an rtorrent command name.';
+				$this->commands = array();
+				return(false);
+			}
 		rTorrentSettings::get()->patchDeprecatedRequest($this->commands);
 		$this->commandOffset = 0;
 		while($this->makeNextCall())

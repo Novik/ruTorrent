@@ -199,7 +199,14 @@ function makeSimpleCall($cmds,$hash)
 }
 
 $result = null;
+$refused = false;
 
+// Several modes name a command from request input: setsettings and setprops
+// concatenate one, and glbl, ttl and prp take cmd= as a name outright. A name
+// that is not one stops the mode here, with whatever it had built discarded
+// unsent, rather than travelling any further.
+try
+{
 switch($mode)
 {
 	case "list":	/**/
@@ -772,11 +779,24 @@ switch($mode)
 		break;
 	}
 }
+}
+catch(rXMLRPCInvalidCommandName $e)
+{
+	$result = null;
+	$refused = true;
+	// The name itself only ever reaches the log, and with anything that is not
+	// printable ASCII replaced, so that it cannot forge a line there or be
+	// reflected into the answer.
+	FileUtil::toLog("httprpc: ".preg_replace('/[^\x20-\x7e]/','.',$e->getMessage()));
+}
 
 if(is_null($result))
 {
 	header("HTTP/1.0 500 Server Error");
 	$message = "Could not reach rTorrent over XMLRPC. Is rTorrent running?";
+	if($refused)
+		$message = "Refused: not an rtorrent command name.";
+	else
 	if(isset($req) && $req->fault)
 		$message = ($req->faultString==='') ? "Warning: the XMLRPC call failed." : $req->faultString;
 	CachedEcho::send($message,"text/html");
