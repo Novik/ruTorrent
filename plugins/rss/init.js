@@ -906,11 +906,11 @@ theWebUI.loadFilters = function( flt, additions )
 	var list = $("#fltlist");
 	list.empty();
 	$('#FLT_rss option').remove();
-	$('#FLT_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
+	$('#FLT_rss').append($("<option>").val("").text(theUILang.allFeeds));
 	for(var lbl in this.rssGroups)
-		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
+		$('#FLT_rss').append($("<option>").val(lbl).text(this.rssGroups[lbl].name));
 	for(lbl in this.rssLabels)
-		$('#FLT_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
+		$('#FLT_rss').append($("<option>").val(lbl).text(this.rssLabels[lbl].name));
 	var fltThrottle = $('#FLT_throttle');
 	if(fltThrottle.length)
 	{
