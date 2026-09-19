@@ -751,11 +751,16 @@ class rRSSMetaList
 	{
 		return($this->err);
 	}
-	public function addError( $desc, $prm = null )
+	// $key names an entry in theUILang; the browser looks the text up. $detail
+	// is free text appended after it, and is the only part that may carry
+	// anything a remote server said. Neither is ever code.
+	public function addError( $key, $prm = null, $detail = null )
 	{
-		$e = array( 'time'=>time(), 'desc'=>$desc, 'prm'=>'' );
+		$e = array( 'time'=>time(), 'key'=>$key, 'prm'=>'' );
 		if($prm)
 			$e['prm'] = $prm;
+		if(!is_null($detail) && ($detail !== ''))
+			$e['detail'] = $detail;
 		$this->err[] = $e;
 	}
 	public function clearErrors()
@@ -931,17 +936,17 @@ class rRSSManager
 			}
 		}
 		else
-			$this->rssList->addError("theUILang.rssDontExist");
+			$this->rssList->addError("rssDontExist");
 		return($hrefs);
 	}
 	public function testFilter($filter,$hash = null)
 	{
 		$hrefs = array();
 		if(!$filter->isCorrect())
-			$this->rssList->addError("theUILang.rssIncorrectFilter",$filter->pattern);
+			$this->rssList->addError("rssIncorrectFilter",$filter->pattern);
 		else
 		if(!$filter->isCorrectExclude())
-			$this->rssList->addError("theUILang.rssIncorrectFilter",$filter->exclude);
+			$this->rssList->addError("rssIncorrectFilter",$filter->exclude);
 		else
 		{
 			if($hash)
@@ -977,7 +982,7 @@ class rRSSManager
 	private function tryFetch($rss) {
 		$success = $rss->fetch($this->history) && $this->cache->set($rss);
 		if (!$success) {
-			$this->rssList->addError( "theUILang.cantFetchRSS + ' - ".join("; ", $rss->lastErrorMsgs)."'", $rss->getMaskedURL() );
+			$this->rssList->addError( "cantFetchRSS", $rss->getMaskedURL(), join("; ", $rss->lastErrorMsgs) );
 		}
 		return($success);
 	}
@@ -1004,7 +1009,7 @@ class rRSSManager
 				}
 			}
 			else
-				$this->rssList->addError("theUILang.rssDontExist");
+				$this->rssList->addError("rssDontExist");
 		}
 	}
 	public function setStartTime( $startAt )
@@ -1207,7 +1212,7 @@ class rRSSManager
 			}
 		}
 		else
-			$this->rssList->addError( "theUILang.rssAlreadyExist", $rss->getMaskedURL() );
+			$this->rssList->addError( "rssAlreadyExist", $rss->getMaskedURL() );
 	}
 	public function getTorrents( $rss, $url, $isStart, $isAddPath, $directory, $label, $throttle, $ratio, $needFlush = true )
 	{
@@ -1235,7 +1240,7 @@ class rRSSManager
 				}
 			}
 			if($ret===false)
-				$this->rssList->addError( "theUILang.rssCantLoadTorrent", $url );
+				$this->rssList->addError( "rssCantLoadTorrent", $url );
 			$this->history->add($url, $thash, $rss->getItemTimestamp($url), $rss->items[$url]['guid']);
 			if($needFlush)
 				$this->saveHistory();
