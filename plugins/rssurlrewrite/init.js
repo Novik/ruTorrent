@@ -115,11 +115,11 @@ theWebUI.loadRules = function( rle )
 	var list = $("#rlslist");
 	list.empty();
 	$('#RLS_rss option').remove();
-	$('#RLS_rss').append("<option value=''>"+theUILang.allFeeds+"</option>");
+	$('#RLS_rss').append($("<option>").val("").text(theUILang.allFeeds));
 	for(var lbl in theWebUI.rssGroups)
-		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssGroups[lbl].name+"</option>");
+		$('#RLS_rss').append($("<option>").val(lbl).text(this.rssGroups[lbl].name));
 	for(lbl in theWebUI.rssLabels)
-		$('#RLS_rss').append("<option value='"+lbl+"'>"+this.rssLabels[lbl].name+"</option>");
+		$('#RLS_rss').append($("<option>").val(lbl).text(this.rssLabels[lbl].name));
 	plugin.rules = rle;
 	plugin.maxRuleNo = 0;
 	if (plugin.rules) {
