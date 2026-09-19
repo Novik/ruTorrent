@@ -88,6 +88,50 @@ class SnoopyResolvesToPublic extends Snoopy
     }
 }
 
+// Stands in for the connection on the plain-HTTP path, which writes its own
+// request head to a socket instead of handing arguments to curl. Every
+// connect() returns one end of a fresh socket pair whose far end already holds
+// the next canned response with its write side shut down, so Snoopy reads a
+// complete answer; what Snoopy wrote is read back from the far end afterwards.
+class SnoopyOverSocketPair extends Snoopy
+{
+    public $requests = array();
+    private $responses = array();
+    private $farEnds = array();
+
+    public function __construct($responses)
+    {
+        parent::__construct();
+        $this->responses = $responses;
+    }
+
+    function connect()
+    {
+        $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
+        if (!is_array($pair)) {
+            return false;
+        }
+        list($near, $far) = $pair;
+        $response = array_shift($this->responses);
+        fwrite($far, is_null($response) ? "HTTP/1.1 200 OK\r\n\r\n" : $response);
+        stream_socket_shutdown($far, STREAM_SHUT_WR);
+        $this->farEnds[] = $far;
+        return $near;
+    }
+
+    // fetch() closes the near end itself; the request bytes stay readable from
+    // the far end until it is closed here.
+    public function closeSockets()
+    {
+        foreach ($this->farEnds as $far) {
+            stream_set_blocking($far, false);
+            $this->requests[] = (string) stream_get_contents($far);
+            fclose($far);
+        }
+        $this->farEnds = array();
+    }
+}
+
 $tests = array(
     'explicit HTTPS POST forwards -X POST to curl' => function () {
         $client = new Snoopy();
@@ -281,6 +325,127 @@ $tests = array(
             'http://kinozal.guru/login.php?to=x',
             $client->_redirectaddr,
             'The redirect must be followed to the host it names'
+        );
+    },
+    // A redirect names a host of its own choosing. What travelled with the
+    // request was collected for the host that was asked -- basic credentials
+    // from the url, the cookie jar fetchComplex loaded for that host, an
+    // Authorization header a caller set -- so a redirect elsewhere must not
+    // carry any of it.
+    'a cross-host redirect drops the credentials' => function () use ($seenPath) {
+        @unlink($seenPath);
+        putenv('SNOOPY_TEST_REDIRECT=https://collector.test/landing');
+        try {
+            $client = new Snoopy();
+            $client->cookies['session'] = 'secret-session';
+            $client->rawheaders['Authorization'] = 'Bearer secret-token';
+            snoopyAssertTrue(
+                $client->fetch('https://user:pass@tracker.test/feed'),
+                'Redirected HTTPS request did not complete'
+            );
+            $args = snoopyCurlArgs();
+            snoopyAssertSame(
+                'https://collector.test/landing',
+                end($args),
+                'The redirect must be followed to the host it names'
+            );
+            snoopyAssertSame(
+                array(),
+                array_values(array_filter($args, function ($arg) {
+                    return stripos($arg, 'Authorization:') === 0
+                        || stripos($arg, 'Cookie:') === 0;
+                })),
+                'Credentials were sent to the redirect target'
+            );
+            snoopyAssertSame('', $client->user, 'Basic user survived a cross-host redirect');
+            snoopyAssertSame('', $client->pass, 'Basic password survived a cross-host redirect');
+        } finally {
+            putenv('SNOOPY_TEST_REDIRECT');
+            @unlink($seenPath);
+        }
+    },
+    'a redirect within the same host keeps the credentials' => function () use ($seenPath) {
+        @unlink($seenPath);
+        putenv('SNOOPY_TEST_REDIRECT=https://tracker.test/elsewhere');
+        try {
+            $client = new Snoopy();
+            $client->cookies['session'] = 'secret-session';
+            $client->rawheaders['Authorization'] = 'Bearer secret-token';
+            snoopyAssertTrue(
+                $client->fetch('https://user:pass@tracker.test/feed'),
+                'Redirected HTTPS request did not complete'
+            );
+            $args = snoopyCurlArgs();
+            snoopyAssertTrue(
+                in_array('Authorization: Bearer secret-token', $args, true),
+                'A caller header must survive a redirect on the same host'
+            );
+            snoopyAssertTrue(
+                in_array('Cookie: session=secret-session', $args, true),
+                'The cookie jar must survive a redirect on the same host'
+            );
+        } finally {
+            putenv('SNOOPY_TEST_REDIRECT');
+            @unlink($seenPath);
+        }
+    },
+    // Same host, but the redirect moves off tls. The second leg leaves the
+    // curl path for the socket path, which the socket pair stands in for, so
+    // nothing here opens a connection.
+    'a redirect down to plain http drops the credentials' => function () use ($seenPath) {
+        @unlink($seenPath);
+        putenv('SNOOPY_TEST_REDIRECT=http://tracker.test/feed');
+        try {
+            $client = new SnoopyOverSocketPair(array("HTTP/1.1 200 OK\r\n\r\n"));
+            $client->cookies['session'] = 'secret-session';
+            $client->rawheaders['Authorization'] = 'Bearer secret-token';
+            $client->fetch('https://tracker.test/feed');
+            $client->closeSockets();
+            snoopyAssertSame(1, count($client->requests), 'The redirect was not followed');
+            snoopyAssertTrue(
+                stripos($client->requests[0], "\r\nAuthorization:") === false,
+                'An Authorization header went out over plain http'
+            );
+            snoopyAssertTrue(
+                strpos($client->requests[0], 'secret-session') === false,
+                'The cookie jar went out over plain http'
+            );
+        } finally {
+            putenv('SNOOPY_TEST_REDIRECT');
+            @unlink($seenPath);
+        }
+    },
+    // The plain-HTTP path builds its own request head rather than handing
+    // arguments to curl, so it is checked on the bytes it writes. connect() is
+    // replaced by a socket pair per request: the far end already holds the
+    // response with its write side shut, and what Snoopy wrote is read back
+    // from it afterwards.
+    'a cross-host redirect drops the credentials over plain http' => function () {
+        $client = new SnoopyOverSocketPair(array(
+            "HTTP/1.1 302 Found\r\nLocation: http://collector.test/landing\r\n\r\n",
+            "HTTP/1.1 200 OK\r\n\r\n",
+        ));
+        $client->cookies['session'] = 'secret-session';
+        $client->rawheaders['Authorization'] = 'Bearer secret-token';
+        $client->fetch('http://user:pass@tracker.test/feed');
+        $client->closeSockets();
+
+        snoopyAssertSame(2, count($client->requests), 'The redirect was not followed');
+        snoopyAssertTrue(
+            stripos($client->requests[0], "\r\nAuthorization:") !== false,
+            'The first request should have carried the credentials'
+        );
+        snoopyAssertTrue(
+            stripos($client->requests[1], "\r\nAuthorization:") === false,
+            'An Authorization header was written to the redirect target'
+        );
+        snoopyAssertTrue(
+            stripos($client->requests[1], "\r\nCookie:") === false,
+            'A Cookie header was written to the redirect target'
+        );
+        snoopyAssertTrue(
+            strpos($client->requests[1], 'secret-session') === false,
+            'The cookie jar reached the redirect target'
         );
     },
 );
