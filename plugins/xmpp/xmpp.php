@@ -1,6 +1,7 @@
 <?php
 
 require_once( dirname(__FILE__)."/../../php/settings.php");
+require_once( dirname(__FILE__)."/../../php/utility/json.php");
 
 class rXmpp
 {
@@ -106,21 +107,21 @@ class rXmpp
 
 	public function get()
 	{
-		$ret  = "theWebUI.xmpp = { ";
-		$ret .= "JabberHost: '".$this->jabberHost."'";
-		$ret .= ", JabberPort: ".$this->jabberPort;
 		$jid = "";
 		if ($this->jabberLogin && $this->jabberServer)
 		{
 		    $jid = $this->jabberLogin."@".$this->jabberServer;
 		}
-		$ret .= ", JabberJID: '".$jid."'";
-		$ret .= ", JabberPasswd: '".$this->jabberPasswd."'";
-		$ret .= ", UseEncryption: ".$this->useEncryption;
-		$ret .= ", AdvancedSettings: ".$this->advancedSettings;
-		$ret .= ", JabberFor: '".$this->jabberFor."'";
-		$ret .= ", Message: '".addslashes($this->message ? $this->message : $this->message_templ)."'";
-		return $ret." };\n";
+		return "theWebUI.xmpp = ".JSON::jsValue(array(
+			"JabberHost" => strval($this->jabberHost),
+			"JabberPort" => intval($this->jabberPort),
+			"JabberJID" => $jid,
+			"JabberPasswd" => strval($this->jabberPasswd),
+			"UseEncryption" => intval($this->useEncryption),
+			"AdvancedSettings" => intval($this->advancedSettings),
+			"JabberFor" => strval($this->jabberFor),
+			"Message" => strval($this->message ? $this->message : $this->message_templ)
+		)).";\n";
 	}
 
 	public function setHandlers()

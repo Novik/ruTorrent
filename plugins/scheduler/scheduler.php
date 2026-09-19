@@ -2,6 +2,7 @@
 
 require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
 require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/utility/json.php" );
 eval(FileUtil::getPluginConf('scheduler'));
 
 @define('SCH_FAST', 0);
@@ -46,13 +47,20 @@ class rScheduler
 	}
 	public function get()
 	{
-		$ret = "theWebUI.scheduleTable = { UL : [".implode(",",$this->UL)."], DL : [".implode(",",$this->DL)."], enabled : ".$this->enabled.", week : [";
-		foreach($this->week as $item)
-			$ret.="[".implode(",",$item)."],";
-		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
-		return($ret."]};\n");
+		$table = array(
+			"UL" => self::numbers($this->UL),
+			"DL" => self::numbers($this->DL),
+			"enabled" => intval($this->enabled),
+			"week" => array() );
+		foreach((array)$this->week as $item)
+			$table["week"][] = self::numbers($item);
+		return("theWebUI.scheduleTable = ".JSON::jsValue($table).";\n");
+	}
+	// array_values keeps a restored row encoding as a JSON array rather than
+	// as an object, whatever keys it came back with.
+	static protected function numbers( $list )
+	{
+		return(array_map("intval",array_values((array)$list)));
 	}
 	public function set()
 	{
@@ -62,7 +70,7 @@ class rScheduler
 			for($j = 0; $j<24; $j++)
 			{
 				if(isset($_REQUEST['day_'.$i."_".$j]))
-					$this->week[$i][$j] = $_REQUEST['day_'.$i."_".$j];
+					$this->week[$i][$j] = intval($_REQUEST['day_'.$i."_".$j]);
 			}
 		}
 		if(isset($_REQUEST['UL0']))
@@ -78,7 +86,7 @@ class rScheduler
 		if(isset($_REQUEST['DL2']))
 			$this->DL[2] = intval($_REQUEST['DL2']);
 		if(isset($_REQUEST['enabled']))
-			$this->enabled = $_REQUEST['enabled'];
+			$this->enabled = intval($_REQUEST['enabled']);
                 $this->apply();
 	}
 	static public function setSpeed( $ul, $dl )

@@ -1,6 +1,7 @@
 <?php
 /* We use cache to store and retrieve variables for us */
 require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/utility/json.php" );
 
 class rUploadeta
 {
@@ -24,14 +25,14 @@ class rUploadeta
 
 	public function get()
 	{ /* Get our value */
-		return( "theWebUI.uploadtarget = '".$this->uploadtarget."';" );
+		return( "theWebUI.uploadtarget = ".JSON::jsValue(intval($this->uploadtarget)).";" );
 	}
 
 	public function set()
 	{ /* Set our value */
 		if(isset($_REQUEST['uploadtarget']))
 		{
-			$this->uploadtarget = $_REQUEST['uploadtarget'];
+			$this->uploadtarget = intval($_REQUEST['uploadtarget']);
 			$this->store();
 		}
 	}

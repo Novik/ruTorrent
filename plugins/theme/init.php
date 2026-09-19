@@ -2,6 +2,10 @@
 
 require_once( 'theme.php' );
 $theme = rTheme::load();
+// The stored name arrives as a request parameter, and this is the only place
+// that decides whether it names a real theme. Emit it only once it has passed.
+if(!$theme->isValid())
+	$theme->current = '';
 $jResult.=$theme->get();
 
 $themes = "plugin.themes = [";
