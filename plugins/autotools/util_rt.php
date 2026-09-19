@@ -226,8 +226,16 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 			if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dest ) );
 			return false;
 		}
-		if( rtIsFile( $dest ) )
-			unlink( $dest );
+		// Anything already at the destination was not put there by this
+		// operation. The directories above it have just been created, and every
+		// file of the download is still at the source, so a name that is taken
+		// is something else's: another download carried into the same directory,
+		// or a file the user keeps there. Refuse, and say which name stopped it.
+		if( rtIsFile( $dest ) || is_dir( $dest ) || is_link( $dest ) )
+		{
+			if( $dbg ) rtDbg( __FUNCTION__, "refused, destination already exists: ".$dest );
+			return false;
+		}
 		switch( $op )
 		{
 			case "HardLink":
