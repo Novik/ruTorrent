@@ -333,11 +333,45 @@ class Snoopy
 				{
 					$this->_redirectdepth++;
 					$this->lastredirectaddr=$this->_redirectaddr;
+					if($this->redirectLeavesOrigin($parts,$this->_redirectaddr))
+						$this->dropCredentials();
 					$ret = $this->fetch($this->_redirectaddr);
 				}
 			}
 		}
 		return($ret);
+	}
+
+	// Whether following this redirect hands the request to somewhere the
+	// credentials were not meant for. A different host is the plain case. Same
+	// host but https -> http is the other one: the credential would go out in
+	// clear. An http -> https move on the same host is left alone, because
+	// trackers answer exactly that and it takes nothing away.
+	protected function redirectLeavesOrigin($parts,$redirect)
+	{
+		$to = parse_url($redirect);
+		if(!is_array($to) || !isset($to["host"]))
+			return(false);
+		$from = isset($parts["host"]) ? $parts["host"] : "";
+		if(strcasecmp($from,$to["host"])!==0)
+			return(true);
+		$fromScheme = isset($parts["scheme"]) ? strtolower($parts["scheme"]) : "";
+		$toScheme = isset($to["scheme"]) ? strtolower($to["scheme"]) : $fromScheme;
+		return(($fromScheme==="https") && ($toScheme==="http"));
+	}
+
+	// What was collected for the host that was asked, and only for it: the
+	// basic credentials parsed out of the url, the cookie jar (loaded for that
+	// host by fetchComplex, then added to by its Set-Cookie headers) and an
+	// Authorization header a caller put in rawheaders.
+	protected function dropCredentials()
+	{
+		$this->user = "";
+		$this->pass = "";
+		$this->cookies = array();
+		foreach(array_keys($this->rawheaders) as $name)
+			if(strcasecmp($name,"Authorization")===0)
+				unset($this->rawheaders[$name]);
 	}
 
 	protected function checkTarget($host)
