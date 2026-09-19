@@ -8,6 +8,11 @@ class CachedEcho
 	public static function send( $content, $type = null, $cacheable = false, $exit = true )
 	{
 		header("X-Server-Timestamp: ".time());
+		// Every response this class sends declares its type below, so a
+		// browser has no reason to guess one. Without this a response the
+		// caller sent as json or as a download can still be sniffed into
+		// html and rendered.
+		header("X-Content-Type-Options: nosniff");
 		if($cacheable && isset($_SERVER['REQUEST_METHOD']) && ($_SERVER['REQUEST_METHOD']=='GET'))
 		{
 			$etag = '"'.strtoupper(dechex(crc32($content))).'"';
