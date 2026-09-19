@@ -235,6 +235,15 @@ class rRSS
 					}
 				} elseif ($validPermalink) {
 						$item['link'] = $item['guid'];
+				} elseif (self::isOpenableLink($item['link'])) {
+					// An address the browser may open, but not one the
+					// expression above describes: a magnet link, an ftp
+					// resource, or an http(s) url whose host or userinfo
+					// it does not cover. Do not leave behind a permalink
+					// that could not be opened.
+					if (!self::isOpenableLink($item['guid'])) {
+						$item['guid'] = $item['link'];
+					}
 				} else {
 					// Neither is an address that may be opened. Keeping the
 					// item would carry whatever the feed put there instead.
@@ -272,7 +281,7 @@ class rRSS
 				$item['guid'] = $item['link'];
 				// only add items with an url that may be opened
 				$link = $item['link'];
-				if (!empty($link) && preg_match($httpLinkExpr, $link)) {
+				if (!empty($link) && self::isOpenableLink($link)) {
 					$this->items[$link] = $item;
 				}
 			}
@@ -316,6 +325,20 @@ class rRSS
 	static protected function quoteInvalidURI($str)
 	{
 		return( preg_replace("/\s/u"," ",$str) );
+	}
+
+	// Whether plugins/rss/init.js could open this address at all. It hands an
+	// item link and permalink to openExternalURL(), so the set accepted here is
+	// the set isExternalURL() accepts in js/common.js: an http, https, ftp, ftps
+	// or magnet address, or a scheme-relative one that takes the page scheme.
+	// $httpLinkExpr above answers a narrower question -- which of the two is the
+	// better permalink -- and describes only a bare http(s) host and path, so it
+	// rejects magnet links, userinfo, ipv6 literals and hosts holding an
+	// underscore. Dropping those items loses feeds that are perfectly ordinary.
+	static protected function isOpenableLink( $link )
+	{
+		return( is_string($link) &&
+			(preg_match('~^\s*(?:(?:https?|ftps?|magnet):|//[a-z0-9\[])~i',$link)===1) );
 	}
 
 }
