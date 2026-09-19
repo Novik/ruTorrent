@@ -8,8 +8,68 @@ class rTorrent
 {
 	const RTORRENT_PACKET_LIMIT = 1572864;
 
+	// An addition is appended to the load call as a trailing parameter, and
+	// rtorrent reads every parameter a load command carries after the torrent
+	// as a command to run against the download being created. That is how the
+	// directory below is set. So an addition is an rtorrent command, and the
+	// set that may be given as one is the set the shipped plugins build:
+	// throttle, view membership and connection type. Anything outside it is
+	// refused -- 'execute' above all, which would run a program as the daemon's
+	// user, but equally a second directory command, which would land after the
+	// one correctDirectory() approved and replace it.
+	//
+	// This is a different boundary from the one rXMLRPCCommand draws. That one
+	// governs the <methodName> element; an addition travels as a parameter, is
+	// HTML-escaped on its way into the payload, and is read as a command by
+	// rtorrent rather than by the XMLRPC layer.
+	const ADDITION_COMMANDS = array(
+		'd.set_throttle_name',
+		'd.set_connection_seed',
+		'view.set_visible',
+		'd.views.push_back_unique',
+	);
+
+	/**
+	 * Whether one addition may be sent. Each permitted name is compared both as
+	 * written and as the running daemon's alias table spells it, because that is
+	 * how a caller builds one: getCmd('d.set_throttle_name=').$name.
+	 */
+	static public function isValidAddition( $addition )
+	{
+		if(!is_string($addition))
+			return(false);
+		$eq = strpos($addition,'=');
+		if($eq===false)
+			return(false);
+		$name = substr($addition,0,$eq);
+		foreach(self::ADDITION_COMMANDS as $permitted)
+			if(($name===$permitted) ||
+				($name===rTorrentSettings::get()->getCommand($permitted)))
+				return(true);
+		return(false);
+	}
+
+	/**
+	 * A list holding one addition that may not be sent sends none of itself: an
+	 * add is one load call, so dropping the offending entry would still perform
+	 * the rest of an operation that was not the one asked for.
+	 */
+	static protected function areValidAdditions( $addition )
+	{
+		if(is_null($addition))
+			return(true);
+		if(!is_array($addition))
+			return(false);
+		foreach($addition as $prm)
+			if(!self::isValidAddition($prm))
+				return(false);
+		return(true);
+	}
+
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
 	{
+		if(!self::areValidAdditions($addition))
+			return(false);
 		$hash = false;
 		$mustSave = is_object($fname);
 		$torrent = $mustSave ? $fname : new Torrent($fname);
@@ -104,6 +164,8 @@ class rTorrent
 
 	static public function sendMagnet($magnet, $isStart, $isAddPath, $directory, $label, $addition = null)
 	{
+		if(!self::areValidAdditions($addition))
+			return(false);
 	        $hpos = stripos($magnet,'xt=urn:btih:');
 	        if($hpos!==false)
 	        {

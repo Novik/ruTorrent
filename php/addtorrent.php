@@ -49,9 +49,11 @@ else
 		if((strlen($dir_edit)>0) && !rTorrentSettings::get()->correctDirectory($dir_edit))
 			$uploaded_files = array( array( 'status' => "FailedDirectory" ) );
 	}
+	// No addition is taken from the request. An addition is an rtorrent command
+	// appended to the load call, so accepting one here would let a request name
+	// the commands the daemon runs. The parameter stays on rTorrent::sendTorrent()
+	// and rTorrent::sendMagnet() for the plugins that build one in php.
 	$addition = null;
-	if(isset($_REQUEST['addition']) && is_array($_REQUEST['addition']))
-		$addition = $_REQUEST['addition'];
 	if(empty($uploaded_files))
 	{
 		if(isset($_FILES['torrent_file']))
