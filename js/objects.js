@@ -371,18 +371,19 @@ var theContextMenu =
 					}
 					li.append(ul);
 				} else if(val[0] == CMENU_SEL) {
-					const a = $("<a>").addClass("sel menu-cmd").attr({href: "#"}).text(val[1]);
+					const a = $("<a>").addClass("sel menu-cmd").text(val[1]);
 					switch ($type(val[2])) {
 						case "string": {
-							a.on('click', () => eval(val[2]));
+							a.attr({href:"#"}).on('click', () => eval(val[2]));
 							break;
 						}
 						case "function": {
-							a.on('click', val[2]);
+							a.attr({href:"#"}).on('click', val[2]);
 							break;
 						}
 						default: {
-							return;
+							a.addClass("dis");
+							break;
 						}
 					}
 					li.append(
