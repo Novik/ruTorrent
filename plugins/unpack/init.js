@@ -43,7 +43,7 @@ if(plugin.canChangeMenu())
 				if(thePlugins.isInstalled("quotaspace") && theWebUI.quotaAlreadyWarn)
 					plugin.fno=null;
 				this.uID = (plugin.fno==null) ? null : this.dID;
-				theContextMenu.add( [theUILang.unpack+'...',  (plugin.fno==null) ? null : "theDialogManager.show('dlg_unpack')"] );
+				theContextMenu.add( [theUILang.unpack+'...',  (plugin.fno==null) ? null : () => theDialogManager.show('dlg_unpack')] );
 			}
 			return(true);
 		}
@@ -77,7 +77,7 @@ if(plugin.canChangeMenu())
 			}
 			theContextMenu.add( [theUILang.unpack+'...',
 				(this.uID && (this.uID.length==40) && (this.torrents[this.uID].done==1000) && (!checked || rarPresent || zipPresent)) ?
-				"theDialogManager.show('dlg_unpack')" : null] );
+				() => theDialogManager.show('dlg_unpack') : null] );
 		}
 	}
 }

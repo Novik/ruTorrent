@@ -173,11 +173,11 @@ if(plugin.canChangeMenu())
 				if(table.selCount==1)
 					curNo = theWebUI.getRatioData(id);
 				var down = [];
-				down.push([theUILang.mnuRatioUnlimited,(curNo==-1) ? null : "theWebUI.setRatio('-1')"]);
+				down.push([theUILang.mnuRatioUnlimited,(curNo==-1) ? null : () => theWebUI.setRatio('-1')]);
 				down.push([CMENU_SEP]);
-				for(var i=0; i<theWebUI.maxRatio; i++)
+				for(let i=0; i<theWebUI.maxRatio; i++)
 					if(theWebUI.isCorrectRatio(i))
-						down.push([theWebUI.ratios[i].name,(i!=curNo) ? "theWebUI.setRatio('"+i+"')" : null]);
+						down.push([theWebUI.ratios[i].name,(i!=curNo) ? () => theWebUI.setRatio(i) : null]);
 				theContextMenu.add(el,[CMENU_CHILD, theUILang.mnuRatio, down]);
 			}
 		}

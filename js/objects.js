@@ -321,7 +321,7 @@ var theContextMenu =
 					if (ele.hasClass("menu-cmd") && self.noHide)
 						ele.toggleClass("sel");
 					else
-						window.setTimeout("theContextMenu.hide()", 50);
+						window.setTimeout(() => theContextMenu.hide(), 50);
 				}
 			}
 		});
@@ -340,6 +340,22 @@ var theContextMenu =
 			}
 		});
 		return(ret);
+	},
+	// The command of a menu entry is a function, called when the entry is
+	// picked. An entry carrying anything else is inert, so that the text an
+	// entry is built from -- a feed item's address, a label, a tracker name --
+	// cannot become something the browser runs.
+	setCommand: function( a, command )
+	{
+		if($type(command)=="function")
+			a.attr({href:"#"}).on('click', command);
+		else
+		{
+			if($type(command)=="string")
+				console.warn("Context menu command must be a function, not a string: "+command);
+			a.addClass("dis");
+		}
+		return(a);
 	},
 	add: function() {
 		var args = new Array();
@@ -371,43 +387,15 @@ var theContextMenu =
 					}
 					li.append(ul);
 				} else if(val[0] == CMENU_SEL) {
-					const a = $("<a>").addClass("sel menu-cmd").text(val[1]);
-					switch ($type(val[2])) {
-						case "string": {
-							a.attr({href:"#"}).on('click', () => eval(val[2]));
-							break;
-						}
-						case "function": {
-							a.attr({href:"#"}).on('click', val[2]);
-							break;
-						}
-						default: {
-							a.addClass("dis");
-							break;
-						}
-					}
 					li.append(
-						a.on('focus', (ev) => ev.target.blur()),
+						self.setCommand($("<a>").addClass("sel menu-cmd").text(val[1]), val[2])
+							.on('focus', (ev) => ev.target.blur()),
 					);
 				} else {
 					if ($type(val[0])) {
-						const a = $("<a>").addClass("menu-cmd").text(val[0]);
-						switch ($type(val[1])) {
-							case false: {
-								a.addClass("dis");
-								break;
-							}
-							case "string": {
-								a.attr({href:"#"}).on('click', () => eval(val[1]));
-								break;
-							}
-							case "function": {
-								a.attr({href:"#"}).on('click', val[1]);
-								break;
-							}
-						}
 						li.append(
-							a.on('focus', (ev) => ev.target.blur()),
+							self.setCommand($("<a>").addClass("menu-cmd").text(val[0]), val[1])
+								.on('focus', (ev) => ev.target.blur()),
 						);
 					}
 				}

@@ -183,7 +183,7 @@ if(plugin.canChangeMenu() && plugin.retrieveComments)
 				{
 					theContextMenu.add(el, [theUILang.peerComment+'...',
 						(this.isTorrentCommandEnabled('commentpeer',theWebUI.dID) && (selCount==1)) ?
-							"theDialogManager.show('cadd')" : null]);
+							() => theDialogManager.show('cadd') : null]);
 				}
 			}
 			return(true);

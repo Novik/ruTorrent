@@ -31,9 +31,9 @@ describe("context menu entries without a command", () => {
 
   it("keeps every entry of a batch, whatever each one's command is", () => {
     theContextMenu.add(
-      ["Plain with command", "noop()"],
+      ["Plain with command", () => {}],
       ["Plain without command", null],
-      [CMENU_SEL, "Selected with command", "noop()"],
+      [CMENU_SEL, "Selected with command", () => {}],
       [CMENU_SEL, "Selected without command"]
     );
 
@@ -52,7 +52,7 @@ describe("context menu entries without a command", () => {
       CMENU_CHILD,
       "Labels",
       [
-        ["Other label", "theWebUI.setLabel('Other label')"],
+        ["Other label", () => {}],
         [CMENU_SEL, "Label on this torrent"],
       ],
     ]);

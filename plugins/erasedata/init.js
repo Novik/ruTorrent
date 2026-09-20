@@ -38,12 +38,12 @@ if(plugin.canChangeMenu())
 				    var _c0 = [];
 				    _c0.push( [theUILang.Delete_data,
 					    (this.getTable("trt").selCount>1) ||
-					    this.isTorrentCommandEnabled("remove",id) ? "theWebUI.removeWithData(false)" : null] );
+					    this.isTorrentCommandEnabled("remove",id) ? () => theWebUI.removeWithData(false) : null] );
 				    if( plugin.enableForceDeletion )
 				    {
 					    _c0.push( [theUILang.Delete_data_with_path,
 						    (this.getTable("trt").selCount>1) ||
-						    this.isTorrentCommandEnabled("remove",id) ? "theWebUI.removeWithData(true)" : null] );
+						    this.isTorrentCommandEnabled("remove",id) ? () => theWebUI.removeWithData(true) : null] );
 				    }
 				    theContextMenu.add( el, [CMENU_CHILD, theUILang.Remove_and, _c0] );
 			    }

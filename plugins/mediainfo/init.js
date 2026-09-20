@@ -29,7 +29,7 @@ if(plugin.canChangeMenu())
 					if(!this.dirs[this.dID].isDirectory(fid))
 						fno = fid.substr(3);
 				}
-				theContextMenu.add( [theUILang.mediainfo,  (fno==null) ? null : "theWebUI.mediaInfo('" + theWebUI.dID + "',"+fno+")"] );
+				theContextMenu.add( [theUILang.mediainfo,  (fno==null) ? null : () => theWebUI.mediaInfo(theWebUI.dID,fno)] );
 			}
 			return(true);
 		}

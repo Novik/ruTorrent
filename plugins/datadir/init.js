@@ -95,7 +95,7 @@ if(plugin.canChangeMenu())
 			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
 				theContextMenu.add( el, [theUILang.DataDir + "...",
-					firstSelectedTorrent() ? "theWebUI.EditDataDir()" : null] );
+					firstSelectedTorrent() ? () => theWebUI.EditDataDir() : null] );
 		}
 	}
 }

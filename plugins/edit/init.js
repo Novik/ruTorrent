@@ -102,7 +102,7 @@ if(plugin.canChangeMenu())
 			{
 				theContextMenu.add([theUILang.EditTrackers,
 					((this.getTable("trt").selCount>1) && this.getHashes('edittorrent')) || this.isTorrentCommandEnabled("edittorrent",id) ?
-					"theWebUI.editTrackers('"+theWebUI.dID+"')" : null]);
+					() => theWebUI.editTrackers(theWebUI.dID) : null]);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ if(plugin.canChangeMenu())
 			{
 				theContextMenu.add([CMENU_SEP]);
 				theContextMenu.add([theUILang.EditTrackers,
-					this.isTorrentCommandEnabled("edittorrent",theWebUI.dID) ? "theWebUI.editTrackers('"+theWebUI.dID+"')" : null]);
+					this.isTorrentCommandEnabled("edittorrent",theWebUI.dID) ? () => theWebUI.editTrackers(theWebUI.dID) : null]);
 			}
 			return(true);
 		}

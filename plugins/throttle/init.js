@@ -151,12 +151,12 @@ if(plugin.canChangeMenu())
 				if(table.selCount==1)
 					curNo = theWebUI.getThrottleData(id);
 				var down = [];
-				down.push([theUILang.mnuUnlimited, (curNo==-1) ? null : "theWebUI.setThrottle('-1')"]);
+				down.push([theUILang.mnuUnlimited, (curNo==-1) ? null : () => theWebUI.setThrottle('-1')]);
 				down.push([CMENU_SEP]);
-				for(var i=0; i<theWebUI.maxThrottle; i++)
+				for(let i=0; i<theWebUI.maxThrottle; i++)
 				{
 					if(theWebUI.isCorrectThrottle(i))
-						down.push([theWebUI.throttles[i].name,(i!=curNo) ? "theWebUI.setThrottle('"+i+"')" : null]);
+						down.push([theWebUI.throttles[i].name,(i!=curNo) ? () => theWebUI.setThrottle(i) : null]);
 				}
 				theContextMenu.add(el,[CMENU_CHILD, theUILang.mnuThrottle, down]);
 			}

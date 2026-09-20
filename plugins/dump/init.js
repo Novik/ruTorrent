@@ -16,7 +16,7 @@ if(plugin.canChangeMenu())
 		if(plugin.enabled)
 		{
 			var el = theContextMenu.get( theUILang.Properties );
-			if (el) theContextMenu.add( el, [theUILang.dumpTorrent, "theWebUI.dumpTorrent()"] );
+			if (el) theContextMenu.add( el, [theUILang.dumpTorrent, () => theWebUI.dumpTorrent()] );
 		}
 	}
 }
