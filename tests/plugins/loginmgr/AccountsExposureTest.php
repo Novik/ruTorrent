@@ -62,18 +62,18 @@ $tests = array(
             'The stored password was written into the page javascript: ' . $javascript
         );
         expAssertTrue(
-            strpos($javascript, 'password_set: 1') !== false,
+            strpos($javascript, '"password_set":1') !== false,
             'The page must still be told that a password is set: ' . $javascript
         );
         expAssertTrue(
-            strpos($javascript, 'login: "someuser"') !== false,
+            strpos($javascript, '"login":"someuser"') !== false,
             'The login is still shown in the settings page: ' . $javascript
         );
     },
     'an account with no password says so' => function () {
         $javascript = expManager('')->get();
         expAssertTrue(
-            strpos($javascript, 'password_set: 0') !== false,
+            strpos($javascript, '"password_set":0') !== false,
             'An empty password must read as unset: ' . $javascript
         );
     },

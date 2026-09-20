@@ -3,6 +3,7 @@
 require_once( dirname(__FILE__)."/../../php/util.php" );
 require_once( dirname(__FILE__)."/../../php/cache.php" );
 require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc");
+require_once( dirname(__FILE__)."/../../php/utility/json.php");
 eval( FileUtil::getPluginConf( 'loginmgr' ) );
 
 class privateData
@@ -307,11 +308,11 @@ class accountManager
 					$this->accounts[$name] = array( "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 );
 					if(array_key_exists($name,$oldAccounts) && array_key_exists("login",$oldAccounts[$name]))
 					{
-						$this->accounts[$name]["login"] = $oldAccounts[$name]["login"];
-						$this->accounts[$name]["password"] = $oldAccounts[$name]["password"];
-						$this->accounts[$name]["enabled"] = $oldAccounts[$name]["enabled"];
+						$this->accounts[$name]["login"] = self::asText($oldAccounts[$name]["login"]);
+						$this->accounts[$name]["password"] = self::asText($oldAccounts[$name]["password"]);
+						$this->accounts[$name]["enabled"] = self::asFlag($oldAccounts[$name]["enabled"]);
 						if(array_key_exists("auto",$oldAccounts[$name]))
-							$this->accounts[$name]["auto"] = $oldAccounts[$name]["auto"];
+							$this->accounts[$name]["auto"] = self::asNumber($oldAccounts[$name]["auto"]);
 					}
 				}
 			}
@@ -322,18 +323,42 @@ class accountManager
 		$this->setHandlers();
 	}
 
+	// A stored scalar is a flag, a number or a text, and nothing else is kept.
+	// What a settings request carries is whatever the request put there, and
+	// what is already in the cache file may predate this, so the write and the
+	// read both go through these.
+	static protected function asFlag($value)
+	{
+		return(is_scalar($value) && $value && ($value!=='0') ? 1 : 0);
+	}
+
+	static protected function asNumber($value)
+	{
+		return(is_scalar($value) ? intval($value) : 0);
+	}
+
+	static protected function asText($value)
+	{
+		return(is_scalar($value) ? strval($value) : '');
+	}
+
 	// The stored password is not part of this. The browser only has to know
 	// whether one is set, so that the settings page can say so; it is sent
 	// back only when someone types a new one.
+	//
+	// The whole structure is one json literal. Built as javascript text, every
+	// stored value that was not already a number or a quoted string reached
+	// the page as source the browser ran.
 	public function get()
 	{
-                $ret = "theWebUI.theAccounts = {";
+		$accounts = array();
 		foreach( $this->accounts as $name=>$nfo )
-			$ret.="'".$name."': { login: ".Utility::quoteAndDeslashEachItem($nfo["login"]).", password_set: ".(($nfo["password"]==="") ? 0 : 1).", enabled: ".$nfo["enabled"].", auto: ".$nfo["auto"]." },";
-		$len = strlen($ret);
-		if($ret[$len-1]==',')
-			$ret = substr($ret,0,$len-1);
-		return($ret."};\n");
+			$accounts[self::asText($name)] = array(
+				"login" => self::asText($nfo["login"]),
+				"password_set" => (self::asText($nfo["password"])==="") ? 0 : 1,
+				"enabled" => self::asFlag($nfo["enabled"]),
+				"auto" => self::asNumber($nfo["auto"]) );
+		return("theWebUI.theAccounts = ".JSON::jsValue((object) $accounts).";\n");
 	}
 
 	public function set()
@@ -341,18 +366,26 @@ class accountManager
 		foreach( $this->accounts as $name=>$nfo )
 		{
 			if(isset($_REQUEST[$name."_enabled"]))
-				$this->accounts[$name]["enabled"] = $_REQUEST[$name."_enabled"];
+				$this->accounts[$name]["enabled"] = self::asFlag($_REQUEST[$name."_enabled"]);
 			if(isset($_REQUEST[$name."_login"]))
-				$this->accounts[$name]["login"] = $_REQUEST[$name."_login"];
+				$this->accounts[$name]["login"] = self::asText($_REQUEST[$name."_login"]);
 			if(isset($_REQUEST[$name."_password"]))
-				$this->accounts[$name]["password"] = $_REQUEST[$name."_password"];
+				$this->accounts[$name]["password"] = self::asText($_REQUEST[$name."_password"]);
 			if(isset($_REQUEST[$name."_auto"]))
-				$this->accounts[$name]["auto"] = intval($_REQUEST[$name."_auto"]);
-			$data = new privateData( $name );
-			$data->remove();
+				$this->accounts[$name]["auto"] = self::asNumber($_REQUEST[$name."_auto"]);
+			$this->forgetSession($name);
 		}
 		$this->store();
 		$this->setHandlers();
+	}
+
+	// The cookies and referer held for this account. Whatever was just written
+	// may name another site or another user, so the session that belonged to
+	// the previous settings does not survive the write.
+	protected function forgetSession( $name )
+	{
+		$data = new privateData( $name );
+		$data->remove();
 	}
 
 	public function getAccount( $url )
@@ -395,8 +428,11 @@ class accountManager
 			unset($nfo["path"]);
 			// Nothing reads the password from here, and this answer is json
 			// served to the browser like any other.
-			$nfo["password_set"] = ($nfo["password"]==="") ? 0 : 1;
+			$nfo["password_set"] = (self::asText($nfo["password"])==="") ? 0 : 1;
 			unset($nfo["password"]);
+			$nfo["login"] = self::asText($nfo["login"]);
+			$nfo["enabled"] = self::asFlag($nfo["enabled"]);
+			$nfo["auto"] = self::asNumber($nfo["auto"]);
 			$ret[] = $nfo;
 		}
 		return($ret);
