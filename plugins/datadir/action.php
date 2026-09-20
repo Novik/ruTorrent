@@ -83,16 +83,34 @@ if( isset( $HTTP_RAW_POST_DATA ) )
 		Debug( "add path    : ".$move_addpath );
 		Debug( "move files  : ".$move_datafiles );
 		Debug( "fast resume : ".$move_fastresume );
-		$res = rtExec( "execute",
-			array( "sh",
-				"-c",
-				rtSetDirCommand( $php, $script_dir."setdir.php", $hash, $datadir,
-					$move_addpath, $move_datafiles, $move_fastresume, User::getUser() ),
-			),
-			$datadir_debug_enabled );
+		// The move runs in a process of its own, started through rTorrent and
+		// detached: the shell line ends "& exit 0", so what comes back below is
+		// that the job started and never that it worked. A destination that is
+		// already taken is the one refusal that does not need the move to have
+		// started -- it reads the destination and the file list, nothing else --
+		// so it is answered here, where the dialog is still listening.
+		//
+		// It is the same test the move applies, through the same function, so a
+		// name the move would have written is not refused here.
+		$taken = $move_datafiles
+			? rtDataDirCollision( $hash, $datadir, $move_addpath, $datadir_debug_enabled )
+			: '';
+		if( $taken != '' )
+		{
+			Debug( "refused, destination already exists: ".$taken );
+			$errors[] = array('desc'=>"theUILang.datadirSetDirFail", 'prm'=>$taken);
+		}
+		else
+			$res = rtExec( "execute",
+				array( "sh",
+					"-c",
+					rtSetDirCommand( $php, $script_dir."setdir.php", $hash, $datadir,
+						$move_addpath, $move_datafiles, $move_fastresume, User::getUser() ),
+				),
+				$datadir_debug_enabled );
 	}
 
-	if( !$res )
+	if( !$res && !count( $errors ) )
 	{
 		$errors[] = array('desc'=>"theUILang.datadirSetDirFail", 'prm'=>$datadir);
 	}

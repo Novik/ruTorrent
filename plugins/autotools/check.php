@@ -55,4 +55,22 @@ if( $is_multy )
 else
 	$sub_dir = '';					// $base_file - is really a file
 $dest_path.=$sub_dir;
+
+// rtorrent applies this script's answer as d.set_directory_base and only then
+// runs move.php, so a directory move.php will not write to must not be named
+// here: the download would be pointed at a directory its data never reaches,
+// and move.php has no way to say so -- it is run through execute rather than
+// execute_capture, and prints nothing when it refuses.
+//
+// move.php refuses a name that is already taken. The same names are tested
+// here, taken from the data as it stands at the source, and the download stays
+// where it is when one of them is.
+$source_path = $base_path.$sub_dir;
+if( $dest_path != $source_path )
+{
+	$files = $is_multy ? rtScanFiles( $source_path, '/.*/' ) : array( $base_name );
+	if( rtTakenDestination( $files, $dest_path ) != '' )
+		$dest_path = $source_path;
+}
+
 echo $dest_path;
