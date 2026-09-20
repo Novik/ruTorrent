@@ -1,6 +1,14 @@
 plugin.loadLang();
 
 if (plugin.canChangeOptions()) {
+	// The stored password never reaches the browser, so the field starts empty
+	// and there is nothing to compare it against. What is typed into it is a
+	// new password and is sent; what is left alone is not, and the stored one
+	// stays as it is. The flag is cleared every time the page is shown.
+	plugin.passwordWasTyped = function() {
+		return plugin.xmppPasswordTyped === true;
+	}
+
 	plugin.addAndShowSettings = theWebUI.addAndShowSettings;
 	theWebUI.addAndShowSettings = function(arg) {
 		if (plugin.enabled) {
@@ -11,7 +19,9 @@ if (plugin.canChangeOptions()) {
 			linked( $$('advancedSettings'), 0, ['useEncryption', 'jabberHost', 'jabberPort'] );
 			$$('jabberJid').value = theWebUI.xmpp.JabberJID;
 			$$('jabberFor').value = theWebUI.xmpp.JabberFor;
-			$$('jabberPasswd').value = theWebUI.xmpp.JabberPasswd;
+			$$('jabberPasswd').value = "";
+			$$('jabberPasswd').placeholder = theWebUI.xmpp.JabberPasswd_set ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" : "";
+			plugin.xmppPasswordTyped = false;
 			$$('message').value = theWebUI.xmpp.Message;
 		}
 		plugin.addAndShowSettings.call(theWebUI, arg);
@@ -32,7 +42,7 @@ if (plugin.canChangeOptions()) {
 			return true;
 		if ( $$('message').value != theWebUI.xmpp.Message )
 			return true;
-		if ( $$('jabberPasswd').value != theWebUI.xmpp.JabberPasswd )
+		if ( plugin.passwordWasTyped() )
 			return true;
 		return false;
 	}
@@ -51,8 +61,11 @@ if (plugin.canChangeOptions()) {
 			"&jabberPort=" + $$('jabberPort').value +
 			"&jabberJid=" + $$('jabberJid').value +
 			"&jabberFor=" + $$('jabberFor').value +
-			"&message=" + $$('message').value +
-			"&jabberPasswd=" + $$('jabberPasswd').value;
+			"&message=" + $$('message').value;
+		// Left out entirely when nothing was typed: rXmpp::set() only replaces
+		// the stored password when a request carries one.
+		if ( plugin.passwordWasTyped() )
+			this.content += "&jabberPasswd=" + $$('jabberPasswd').value;
 		this.contentType = "application/x-www-form-urlencoded";
 		this.mountPoint = "plugins/xmpp/action.php";
 		this.dataType = "script";
@@ -75,7 +88,11 @@ plugin.onLangLoaded = function() {
 								$("<label>").attr({for:id}).text(text),
 							),
 							$("<div>").addClass("col-12 col-md-4").append(
-								$("<input>").attr({type:id.includes("Passwd") ? "password" : "text", id:id, maxlength:100}),
+								id.includes("Passwd")
+									? $("<input>")
+										.attr({type:"password", id:id, maxlength:100})
+										.on("input", function() { plugin.xmppPasswordTyped = true; })
+									: $("<input>").attr({type:"text", id:id, maxlength:100}),
 							),
 						];
 					}),

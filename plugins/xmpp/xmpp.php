@@ -31,13 +31,20 @@ class rXmpp
 		return $cache->set( $this );
 	}
 
-	public function set()
+	// $rawPostData names the request body, which is otherwise read from
+	// php://input and so cannot be handed to this from a test.
+	public function set($rawPostData = null)
 	{
 		if( !isset( $HTTP_RAW_POST_DATA ) )
-			$HTTP_RAW_POST_DATA = file_get_contents( "php://input" );
+			$HTTP_RAW_POST_DATA = is_null($rawPostData) ? file_get_contents( "php://input" ) : $rawPostData;
 		if( isset( $HTTP_RAW_POST_DATA ) )
 		{
 			$vars = explode( '&', $HTTP_RAW_POST_DATA );
+			// The settings page is not shown the stored password, so it has
+			// none to send back unless somebody typed one. A request that
+			// carries no jabberPasswd leaves the stored one alone.
+			$storedPasswd = $this->jabberPasswd;
+			$passwdWasSent = false;
 			$this->jabberHost = "";
 			$this->jabberPort = 5222;;
 			$this->jabberLogin = "";
@@ -66,7 +73,8 @@ class rXmpp
 				}
 				else if( $parts[0] == "jabberPasswd" )
 				{
-					$this->jabberPasswd = $parts[1];
+					$passwdWasSent = true;
+					$this->jabberPasswd = isset($parts[1]) ? $parts[1] : "";
 				}
 				else if( $parts[0] == "useEncryption" )
 				{
@@ -87,6 +95,10 @@ class rXmpp
 					    $this->message = $parts[1];
 					}
 				}
+			}
+			if (!$passwdWasSent)
+			{
+			    $this->jabberPasswd = $storedPasswd;
 			}
 			if ($this->advancedSettings)
 			{
@@ -116,7 +128,11 @@ class rXmpp
 			"JabberHost" => strval($this->jabberHost),
 			"JabberPort" => intval($this->jabberPort),
 			"JabberJID" => $jid,
-			"JabberPasswd" => strval($this->jabberPasswd),
+			// Whether a password is stored, never the password. This is
+			// appended to the javascript of every page load by
+			// plugins/xmpp/init.php, and is the whole answer of
+			// plugins/xmpp/action.php.
+			"JabberPasswd_set" => (strval($this->jabberPasswd)==="") ? 0 : 1,
 			"UseEncryption" => intval($this->useEncryption),
 			"AdvancedSettings" => intval($this->advancedSettings),
 			"JabberFor" => strval($this->jabberFor),
