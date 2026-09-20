@@ -135,6 +135,16 @@ class SnoopyOverSocketPair extends Snoopy
     }
 }
 
+// Asks the origin rule directly, which is cheaper than arranging a redirect
+// for each pair and says which pair failed.
+class SnoopyOriginProbe extends Snoopy
+{
+    public function leavesOrigin($url, $redirect)
+    {
+        return $this->redirectLeavesOrigin(parse_url($url), $redirect);
+    }
+}
+
 $tests = array(
     'explicit HTTPS POST forwards -X POST to curl' => function () {
         $client = new Snoopy();
@@ -391,6 +401,88 @@ $tests = array(
             putenv('SNOOPY_TEST_REDIRECT');
             @unlink($seenPath);
         }
+    },
+    // What the credentials were collected for is an origin -- scheme, host and
+    // port together -- not a name. Each pair below is (requested, redirect,
+    // whether that leaves the origin).
+    'the origin rule reads the scheme, the host and the port' => function () {
+        $probe = new SnoopyOriginProbe();
+        $pairs = array(
+            // The same origin, however it is spelled.
+            array('https://tracker.test/feed', 'https://tracker.test/elsewhere', false),
+            array('https://tracker.test/feed', 'https://TRACKER.test/elsewhere', false),
+            array('https://tracker.test/feed', 'https://tracker.test:443/x', false),
+            array('http://tracker.test:8080/feed', 'http://tracker.test:8080/x', false),
+            array('https://tracker.test/feed', '/relative/path', false),
+            // A different port is a different service, even on the same name.
+            array('https://tracker.test/feed', 'https://tracker.test:8443/x', true),
+            array('http://tracker.test/feed', 'http://tracker.test:8080/x', true),
+            array('http://tracker.test:8080/feed', 'http://tracker.test/x', true),
+            array('http://tracker.test:8080/feed', 'http://tracker.test:9090/x', true),
+            // A different host, with and without a port to argue about.
+            array('https://tracker.test/feed', 'https://collector.test/landing', true),
+            array('https://tracker.test:8443/feed', 'https://collector.test:8443/x', true),
+            // Off tls, which is where the credential would go out in clear.
+            array('https://tracker.test/feed', 'http://tracker.test/feed', true),
+            array('https://tracker.test:8443/feed', 'http://tracker.test:8443/x', true),
+            // The one move that keeps them, and only in that plain form.
+            array('http://tracker.test/feed', 'https://tracker.test/feed', false),
+            array('http://tracker.test:8080/feed', 'https://tracker.test:8080/x', true),
+        );
+        foreach ($pairs as $pair) {
+            list($url, $redirect, $expected) = $pair;
+            snoopyAssertSame(
+                $expected,
+                $probe->leavesOrigin($url, $redirect),
+                $url . ' -> ' . $redirect
+            );
+        }
+    },
+    // And on the wire, over the socket path, so the drop is read off the bytes
+    // rather than off the predicate.
+    'a redirect to another port on the same host drops the credentials' => function () {
+        $client = new SnoopyOverSocketPair(array(
+            "HTTP/1.1 302 Found\r\nLocation: http://tracker.test:8080/landing\r\n\r\n",
+            "HTTP/1.1 200 OK\r\n\r\n",
+        ));
+        $client->cookies['session'] = 'secret-session';
+        $client->rawheaders['Authorization'] = 'Bearer secret-token';
+        $client->fetch('http://user:pass@tracker.test/feed');
+        $client->closeSockets();
+
+        snoopyAssertSame(2, count($client->requests), 'The redirect was not followed');
+        snoopyAssertTrue(
+            stripos($client->requests[0], "\r\nAuthorization:") !== false,
+            'The first request should have carried the credentials'
+        );
+        snoopyAssertTrue(
+            stripos($client->requests[1], "\r\nAuthorization:") === false,
+            'An Authorization header was written to the other port'
+        );
+        snoopyAssertTrue(
+            strpos($client->requests[1], 'secret-session') === false,
+            'The cookie jar reached the other port'
+        );
+    },
+    'a redirect staying on one port keeps the credentials' => function () {
+        $client = new SnoopyOverSocketPair(array(
+            "HTTP/1.1 302 Found\r\nLocation: http://tracker.test:8080/landing\r\n\r\n",
+            "HTTP/1.1 200 OK\r\n\r\n",
+        ));
+        $client->cookies['session'] = 'secret-session';
+        $client->rawheaders['Authorization'] = 'Bearer secret-token';
+        $client->fetch('http://user:pass@tracker.test:8080/feed');
+        $client->closeSockets();
+
+        snoopyAssertSame(2, count($client->requests), 'The redirect was not followed');
+        snoopyAssertTrue(
+            stripos($client->requests[1], "\r\nAuthorization:") !== false,
+            'A caller header must survive a redirect within one origin'
+        );
+        snoopyAssertTrue(
+            strpos($client->requests[1], 'secret-session') !== false,
+            'The cookie jar must survive a redirect within one origin'
+        );
     },
     // Same host, but the redirect moves off tls. The second leg leaves the
     // curl path for the socket path, which the socket pair stands in for, so
