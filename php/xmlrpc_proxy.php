@@ -101,20 +101,22 @@ class XMLRPCProxy
 		                          // own untrusted gate never sees it
 	);
 
-	// The name an older daemon registers for a command the list above may
-	// refuse under its current name. php/methods-0.9.4.php is where these come
-	// from: it is what rXMLRPCCommand puts every call through, so it is this
-	// tree's own statement of which spelling a given daemon takes.
+	// One canonical name per command, for the other spellings a daemon
+	// registers it under. php/methods-*.php and the table php/settings.php
+	// builds inline are where these come from: they are what rXMLRPCCommand
+	// puts every call through, so they are this tree's own statement of which
+	// spelling a given daemon takes.
 	//
-	// Resolved before the list is consulted, so a family is refused under every
-	// name the daemon answers to, and so a deployment that narrows the list
-	// still gets the list it asked for rather than these as well.
+	// Resolved before anything classifies a name, so a command is judged as
+	// itself under every spelling the daemon answers to rather than once per
+	// spelling — and so a deployment that narrows $denyPrefixes still gets the
+	// list it asked for rather than these as well.
 	//
 	// Matched whole, not as prefixes: set_session is the legacy spelling of
 	// session.path.set, while set_session_lock and set_session_on_completion
-	// are different settings the list does not refuse, and a prefix would take
+	// are different settings nothing here refuses, and a prefix would take
 	// them too.
-	private static $legacyNames = array(
+	private static $canonicalNames = array(
 		'system.method.erase'     => 'method.erase',
 		'system.method.get'       => 'method.get',
 		'system.method.has_key'   => 'method.has_key',
@@ -126,6 +128,30 @@ class XMLRPCProxy
 		'set_session'             => 'session.path.set',
 		'get_scgi_dont_route'     => 'network.scgi.dont_route',
 		'set_scgi_dont_route'     => 'network.scgi.dont_route.set',
+		'd.set_directory'         => 'd.directory.set',
+		'd.set_directory_base'    => 'd.directory_base.set',
+	);
+
+	// Methods that take command strings as ordinary arguments and run them, so
+	// that a call naming one of these carries commands the way a multicall's
+	// trailing parameters do.
+	//
+	// From rtorrent's own registrations: apply_if (src/command_ui.cc) parses a
+	// string argument of branch as a command; apply_and, apply_or and apply_cmp
+	// (less, greater, equal, match) call parse_command_single on each string
+	// argument; try is apply_try, which is rpc::call_object and therefore
+	// parse_command_multiple. if, not, cat, print, value, false, convert.* and
+	// elapsed.* take their string arguments as values and are not here.
+	//
+	// They are not refused, because ruTorrent itself sends one: the superseed
+	// toggle in js/rtorrent.js is a branch call, and with the httprpc plugin
+	// loaded theURLs.XMLRPCMountPoint is this proxy, so it arrives here. Their
+	// arguments are read for the commands they name instead.
+	//
+	// Matched whole. A prefix would take cat with it, and php/methods-0.16.18.php
+	// routes network.port_open to cat on purpose.
+	private static $evaluatorMethods = array(
+		'branch', 'and', 'or', 'try', 'less', 'greater', 'equal', 'match', 'compare',
 	);
 
 	// Methods rtorrent refuses to an untrusted caller that a remote client
@@ -168,6 +194,10 @@ class XMLRPCProxy
 	// ruTorrent already confines these everywhere else: correctDirectory() holds
 	// a directory inside $topDirectory for the panel, for addtorrent.php and for
 	// httprpc's own settings branch. This path skipped it.
+	//
+	// Canonical names. A name is resolved through $canonicalNames before it is
+	// compared with these, so d.set_directory is the same command as
+	// d.directory.set and is confined as one.
 	private static $directoryCommands = array(
 		'd.directory.set', 'd.directory_base.set',
 	);
@@ -288,6 +318,32 @@ class XMLRPCProxy
 
 		$directory = isset($options['directory']) ? $options['directory'] : null;
 
+		// A directory setter called on its own. Inside a load or a multicall
+		// its path is held to the stated boundary; as a call of its own it
+		// reached the unknown-method forward below with the outside path
+		// intact, and on a daemon that reads UNTRUSTED_CONNECTION and ignores
+		// it that is no refusal at all. Same command, same answer, whichever
+		// shape it arrives in and whichever spelling names it.
+		if(self::isDirectoryCommand($methodName))
+		{
+			$refused = self::refusedDirectoryPath(self::callParamValues($xml), $directory);
+			if($refused !== null)
+				return self::reject("rejected (outside the directory this server allows): ".
+					$methodName." ".self::logValue($refused), $methodName);
+		}
+
+		// An evaluator called on its own. Its arguments are command strings
+		// rtorrent runs, so they are read for the commands they name — the
+		// same question the multicall path asks of the parameters that carry
+		// commands there. The call itself is still forwarded below.
+		if(self::isEvaluator($methodName))
+		{
+			$refusal = self::refusedInParams(self::callParamValues($xml), $deny, $directory);
+			if($refusal !== null)
+				return self::reject($refusal['reason'].": ".$methodName." carrying ".
+					self::logValue($refusal['subject']), $refusal['command']);
+		}
+
 		if(in_array($methodName, self::$sanitizeMethods, true))
 		{
 			if(!$allowLocalPaths && in_array($methodName, self::$uriLoadMethods, true))
@@ -364,18 +420,16 @@ class XMLRPCProxy
 				" (arguments did not match the allowed shape)");
 		}
 
-		// system.multicall is about to be forwarded verbatim, and its members
-		// are calls rather than command strings, so the check above did not see
-		// them. rtorrent refuses them at inner dispatch from 0.16.10 — naming
-		// the inner method, which is how we know it does — but not before.
+		// system.multicall's members are calls rather than command strings, so
+		// the checks above did not see them. rtorrent refuses them at inner
+		// dispatch from 0.16.10 — naming the inner method, which is how we know
+		// it does — but not before.
 		//
 		// A member is judged the way a top-level call is: by its name, and,
-		// where that name is one of the command-carrying methods, by the
-		// commands its own parameters name. Checking only the member name let
-		// a member rtorrent does not refuse — d.multicall — carry a command it
-		// does, because nothing looked inside its parameters. The payload is
-		// still forwarded as the caller wrote it; this says what may be in it,
-		// it does not rebuild it.
+		// where that name carries commands, by the commands its own parameters
+		// name. Checking only the member name let a member rtorrent does not
+		// refuse — d.multicall — carry a command it does, because nothing
+		// looked inside its parameters.
 		if($methodName === 'system.multicall')
 		{
 			foreach(self::multicallMembers($xml) as $member)
@@ -390,6 +444,30 @@ class XMLRPCProxy
 					return self::reject("rejected (nested system.multicall): ".
 						"system.multicall carrying system.multicall", 'system.multicall');
 
+				// A directory setter as a member of its own, judged as the same
+				// command the top level judges it as.
+				if(self::isDirectoryCommand($member['name']))
+				{
+					$refused = self::refusedDirectoryPath($member['params'], $directory);
+					if($refused !== null)
+						return self::reject("rejected (outside the directory this server allows): ".
+							"system.multicall carrying ".self::logValue($member['name']).
+							" ".self::logValue($refused), $member['name']);
+					continue;
+				}
+
+				// An evaluator as a member: all of its arguments are commands,
+				// so all of them are read, from parameter 0.
+				if(self::isEvaluator($member['name']))
+				{
+					$refusal = self::refusedInParams($member['params'], $deny, $directory);
+					if($refusal !== null)
+						return self::reject($refusal['reason'].": system.multicall carrying ".
+							self::logValue($member['name'])." carrying ".
+							self::logValue($refusal['subject']), $refusal['command']);
+					continue;
+				}
+
 				if(!in_array($member['name'], self::$multicallMethods, true) &&
 					!in_array($member['name'], self::$sanitizeMethods, true))
 					continue;
@@ -399,34 +477,37 @@ class XMLRPCProxy
 				// rebuildLoadParams reads them from.
 				foreach(array_slice($member['params'], 2) as $value)
 				{
-					// A parameter the single-call path would rebuild is asked
-					// nothing further, because that path asks nothing further
-					// either: $safeParams names the command, and
-					// rebuildSafeLoadParam has already refused an argument
-					// rtorrent would call. Its arguments are values, and
-					// reading them for names refuses the ones people write --
+					// A parameter the rebuild accepts is asked nothing further,
+					// because the rebuilt bytes are what rebuildSystemMulticall
+					// puts on the wire below. Reading such a parameter for names
+					// as well would refuse the ones people write --
 					// d.custom1.set="catch-up tv" names catch, and
-					// d.directory.set="/torrents/my import" names import. A
-					// batch is refused whole, so one label costs every add in
-					// it. What is forwarded here is still the caller's own
-					// bytes, untrusted, where the single-call path rebuilds
-					// the same parameter and sends it trusted.
+					// d.directory.set="/torrents/my import" names import -- and
+					// a batch is refused whole, so one label would cost every
+					// add in it.
 					if(self::rebuildSafeLoadParam($value, $safeParams, $directory) !== null)
 						continue;
 
-					$command = self::refusedCommandName($value, $deny);
-					if($command !== null)
-						return self::reject("rejected (not allowed on this connection): ".
-							"system.multicall carrying ".self::logValue($member['name']).
-							" carrying ".self::logValue($command), $command);
-
-					$command = self::refusedDirectoryCommand($value, $directory);
-					if($command !== null)
-						return self::reject("rejected (outside the directory this server allows): ".
-							"system.multicall carrying ".self::logValue($member['name']).
-							" carrying ".self::logValue($value), $command);
+					// This one is forwarded as the caller wrote it, so anything
+					// in it that rtorrent would run as a command has to be
+					// refused here: untrusted is not a refusal on every version.
+					$refusal = self::refusedInParams(array($value), $deny, $directory);
+					if($refusal !== null)
+						return self::reject($refusal['reason'].": system.multicall carrying ".
+							self::logValue($member['name'])." carrying ".
+							self::logValue($refusal['subject']), $refusal['command']);
 				}
 			}
+
+			// What was judged is what is sent. Every command parameter the
+			// rebuild accepted goes out in its rebuilt spelling, where each
+			// argument is quoted and therefore stays one argument; the original
+			// is a different string, and an unquoted one ends a command at ';'
+			// or a newline and starts another. Everything this side does not
+			// rebuild is copied element for element.
+			$members = self::rebuildSystemMulticall($xml, $safeParams, $directory);
+			return self::forward(($members === null) ? $rawData : $members, false,
+				"untrusted: ".$methodName);
 		}
 
 		// Unknown method — pass through as untrusted.
@@ -471,12 +552,40 @@ class XMLRPCProxy
 	 */
 	private static function isDenied($name, $deny)
 	{
-		if(isset(self::$legacyNames[$name]))
-			$name = self::$legacyNames[$name];
+		$name = self::canonicalName($name);
 		foreach($deny as $prefix)
 			if(strncmp($name, $prefix, strlen($prefix)) === 0)
 				return true;
 		return false;
+	}
+
+	/**
+	 * The one name this side judges a command by. Every spelling a daemon
+	 * registers for the same command resolves to it, so a classification is
+	 * made once and holds for all of them.
+	 */
+	private static function canonicalName($name)
+	{
+		return isset(self::$canonicalNames[$name])
+			? self::$canonicalNames[$name] : (string)$name;
+	}
+
+	/**
+	 * Does this name, under any of its spellings, set the directory a download
+	 * is written into?
+	 */
+	private static function isDirectoryCommand($name)
+	{
+		return in_array(self::canonicalName($name), self::$directoryCommands, true);
+	}
+
+	/**
+	 * Does this name, under any of its spellings, run its string arguments as
+	 * commands?
+	 */
+	private static function isEvaluator($name)
+	{
+		return in_array(self::canonicalName($name), self::$evaluatorMethods, true);
 	}
 
 	/**
@@ -510,7 +619,7 @@ class XMLRPCProxy
 		if($directory === null)
 			return null;
 		$command = self::commandName($value);
-		if(($command === null) || !in_array($command, self::$directoryCommands, true))
+		if(($command === null) || !self::isDirectoryCommand($command))
 			return null;
 		return $command;
 	}
@@ -521,17 +630,19 @@ class XMLRPCProxy
 	 *
 	 * A command string is not one name. rtorrent nests them: the arguments a
 	 * multicall takes after its view are themselves commands, separated by
-	 * ','; a name introduced by '$' is called wherever it stands, at any
-	 * depth; and a braced list is a command with its own arguments. Reading
-	 * only the name before the first '=' therefore answers for the outermost
-	 * call and for nothing it carries, which is how "d.multicall=main,
-	 * execute=..." and "$execute=..." read as commands nobody refuses.
+	 * ','; one command ends and the next begins at ';' or a newline
+	 * (parse_command_multiple, src/rpc/parse_commands.cc); a name introduced
+	 * by '$' is called wherever it stands, at any depth; and a braced list is
+	 * a command with its own arguments. Reading only the name before the first
+	 * '=' therefore answers for the outermost call and for nothing it carries,
+	 * which is how "d.multicall=main, execute=..." and "$execute=..." read as
+	 * commands nobody refuses.
 	 *
-	 * Every ','-, '$'-, brace-, paren-, quote- or space-separated element
-	 * starts with a name, so each of those leading names is judged. What
-	 * follows '=' inside one element is that command's argument text and is
-	 * not judged, so a custom field whose value begins with a refused word is
-	 * not refused for it.
+	 * Every ','-, ';'-, '$'-, brace-, paren-, quote- or space-separated
+	 * element starts with a name, so each of those leading names is judged.
+	 * What follows '=' inside one element is that command's argument text and
+	 * is not judged, so a custom field whose value begins with a refused word
+	 * is not refused for it.
 	 *
 	 * Public because the httprpc plugin reaches rtorrent without a raw XMLRPC
 	 * body and still has to ask the same question over the same list.
@@ -540,7 +651,7 @@ class XMLRPCProxy
 	{
 		if($deny === null)
 			$deny = self::$denyPrefixes;
-		$elements = preg_split('/[,${}()"\s]+/', (string)$value, -1, PREG_SPLIT_NO_EMPTY);
+		$elements = preg_split('/[,;${}()"\s]+/', (string)$value, -1, PREG_SPLIT_NO_EMPTY);
 		if($elements === false)
 			return null;
 		foreach($elements as $element)
@@ -551,6 +662,66 @@ class XMLRPCProxy
 				return $match[0];
 		}
 		return null;
+	}
+
+	/**
+	 * The first refusal any of these parameters earns, as array('reason' => …,
+	 * 'subject' => … , 'command' => …), or null when none of them does.
+	 *
+	 * Asked of parameters that are about to reach rtorrent as the caller wrote
+	 * them, wherever they are: the trailing parameters of a multicall member,
+	 * and every parameter of an evaluator.
+	 */
+	private static function refusedInParams($values, $deny, $directory)
+	{
+		foreach($values as $value)
+		{
+			$command = self::refusedCommandName($value, $deny);
+			if($command !== null)
+				return array(
+					'reason'  => "rejected (not allowed on this connection)",
+					'subject' => $command,
+					'command' => $command);
+
+			$command = self::refusedDirectoryCommand($value, $directory);
+			if($command !== null)
+				return array(
+					'reason'  => "rejected (outside the directory this server allows)",
+					'subject' => $value,
+					'command' => $command);
+		}
+		return null;
+	}
+
+	/**
+	 * The first of these arguments that names a directory outside the stated
+	 * boundary, or null when none does.
+	 *
+	 * For a directory setter called as a call rather than written as a command
+	 * string: parameter 0 names the download and what follows it is the path.
+	 * A caller that stated no boundary is not policed, as everywhere else here.
+	 */
+	private static function refusedDirectoryPath($params, $directory)
+	{
+		if($directory === null)
+			return null;
+		foreach(array_slice($params, 1) as $path)
+			if(!self::directoryIsAllowed($path, $directory))
+				return $path;
+		return null;
+	}
+
+	/**
+	 * The parameters of a call, in order, as the strings rtorrent will read
+	 * them as.
+	 */
+	private static function callParamValues($xml)
+	{
+		$values = array();
+		if(isset($xml->params->param))
+			foreach($xml->params->param as $param)
+				$values[] = self::extractParamValue($param->value);
+		return $values;
 	}
 
 	/**
@@ -590,16 +761,118 @@ class XMLRPCProxy
 	}
 
 	/**
+	 * Re-emit a system.multicall with the command parameters of each
+	 * command-carrying member in the spelling this side rebuilt, or null when
+	 * the call is not in the shape system.multicall has.
+	 *
+	 * Rebuilding a parameter is a transformation, not a verdict: it parses the
+	 * command string and quotes each argument, so that a separator or an
+	 * evaluated form inside an argument becomes part of that argument. That
+	 * only holds for the rebuilt bytes. Judging the original by whether it
+	 * could be rebuilt and then sending the original sends a string nothing
+	 * checked — "d.custom1.set=x;execute=..." rebuilds to one quoted argument
+	 * and reaches rtorrent as two commands.
+	 *
+	 * Everything else is copied element for element: the target and the view
+	 * or torrent of a member, a parameter no rebuild accepted, a member naming
+	 * a method this does not classify, and a member in a shape this does not
+	 * recognise all reach rtorrent with the type and the bytes the caller gave
+	 * them. Null is also the answer when that leaves nothing to change, so a
+	 * call carrying no command parameter is forwarded as it arrived rather
+	 * than re-emitted for no reason.
+	 */
+	private static function rebuildSystemMulticall($xml, $safeParams, $directory)
+	{
+		if(!isset($xml->params->param->value->array->data->value))
+			return null;
+
+		$out = '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
+			. '<methodCall><methodName>system.multicall</methodName>'
+			. '<params><param><value><array><data>';
+
+		$changed = false;
+		foreach($xml->params->param->value->array->data->value as $member)
+			$out .= self::rebuildMulticallMember($member, $safeParams, $directory, $changed);
+
+		if(!$changed)
+			return null;
+
+		return $out . '</data></array></value></param></params></methodCall>';
+	}
+
+	/**
+	 * One member of a system.multicall, rebuilt where its parameters carry
+	 * commands and copied verbatim where they do not. $changed is set when any
+	 * parameter is emitted in bytes other than the ones it arrived in.
+	 */
+	private static function rebuildMulticallMember($member, $safeParams, $directory, &$changed)
+	{
+		if(!isset($member->struct->member))
+			return $member->asXML();
+
+		$name = null;
+		$params = null;
+		foreach($member->struct->member as $field)
+		{
+			if(!isset($field->name))
+				continue;
+			$fieldName = (string)$field->name;
+			if($fieldName === 'methodName')
+				$name = isset($field->value->string)
+					? (string)$field->value->string
+					: trim((string)$field->value);
+			else
+			if($fieldName === 'params')
+				$params = $field->value;
+		}
+
+		if(($name === null) || ($params === null) ||
+			!isset($params->array->data->value) ||
+			(!in_array($name, self::$multicallMethods, true) &&
+				!in_array($name, self::$sanitizeMethods, true)))
+			return $member->asXML();
+
+		$out = '<value><struct>'
+			. '<member><name>methodName</name><value><string>'
+			. htmlspecialchars($name, ENT_NOQUOTES, 'UTF-8')
+			. '</string></value></member>'
+			. '<member><name>params</name><value><array><data>';
+
+		$index = 0;
+		foreach($params->array->data->value as $value)
+		{
+			// Parameter 0 is the target and parameter 1 the view or the
+			// torrent; commands start at 2, the same position the member loop
+			// in decide() reads them from.
+			$rebuilt = ($index < 2) ? null : self::rebuildSafeLoadParam(
+				self::extractParamValue($value), $safeParams, $directory);
+			$index++;
+
+			if($rebuilt === null)
+			{
+				$out .= $value->asXML();
+				continue;
+			}
+
+			$emitted = '<value><string>'
+				. htmlspecialchars($rebuilt, ENT_NOQUOTES, 'UTF-8')
+				. '</string></value>';
+			if($emitted !== $value->asXML())
+				$changed = true;
+			$out .= $emitted;
+		}
+
+		return $out . '</data></array></value></member></struct></value>';
+	}
+
+	/**
 	 * Re-emit a call whose arguments all match the shapes declared for it, or
 	 * null if any of them does not. Nothing is copied from the client: every
 	 * argument is emitted from the value this side validated.
 	 */
 	private static function rebuildElevated($xml, $methodName, $shapes, $sizeLimitMax)
 	{
-		$values = array();
-		if(isset($xml->params->param))
-			foreach($xml->params->param as $param)
-				$values[] = self::extractParamValue($param->value);
+		$values = self::callParamValues($xml);
 
 		if(count($values) !== count($shapes))
 			return null;
@@ -913,7 +1186,7 @@ class XMLRPCProxy
 		// behaviour every caller had before this existed. rpc2.php always states
 		// one and refuses to start without it; the httprpc plugin does not, and
 		// its door needs a ruTorrent session rather than a machine credential.
-		if(($directory !== null) && in_array($command, self::$directoryCommands, true))
+		if(($directory !== null) && self::isDirectoryCommand($command))
 		{
 			$path = isset($parts[0]) ? $parts[0] : '';
 			if(!self::directoryIsAllowed($path, $directory))

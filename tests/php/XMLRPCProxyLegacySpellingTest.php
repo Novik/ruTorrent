@@ -54,7 +54,46 @@ class XMLRPCProxyLegacySpellingTest extends TestCase
 				);
 			}
 		}
-		return $all;
+		return array_merge($all, $this->inlineAliases());
+	}
+
+	/**
+	 * The seventh table. php/settings.php builds one inline for every daemon
+	 * above 0.8.6, before it requires any of the files, and a caller reaches
+	 * rXMLRPCCommand through that one too. It is read out of the source rather
+	 * than written out here, so an entry added to it is covered without this
+	 * file being edited — and the count is asserted, so a change in how it is
+	 * written is a failure rather than a silent empty table.
+	 */
+	private function inlineAliases()
+	{
+		$source = file_get_contents(__DIR__ . '/../../php/settings.php');
+		$start = strpos($source, '$this->aliases = array');
+		if($start === false)
+			return array();
+		$end = strpos($source, ');', $start);
+		$block = substr($source, $start, ($end === false) ? null : $end - $start);
+
+		$found = array();
+		preg_match_all('/"([^"]+)"\s*=>\s*array\(\s*"name"\s*=>\s*"([^"]+)"/',
+			$block, $matches, PREG_SET_ORDER);
+		foreach($matches as $match)
+			$found[] = array(
+				'file'   => 'settings.php',
+				'name'   => $match[1],
+				'target' => $match[2],
+			);
+		return $found;
+	}
+
+	/**
+	 * The names the proxy holds to the directory this server allows.
+	 */
+	private function directoryCommands()
+	{
+		$property = new ReflectionProperty('XMLRPCProxy', 'directoryCommands');
+		$property->setAccessible(true);
+		return $property->getValue();
 	}
 
 	private function call($method, $params = array())
@@ -75,11 +114,126 @@ class XMLRPCProxyLegacySpellingTest extends TestCase
 			array('directory' => array('root' => '/', 'resolve' => null)));
 	}
 
+	/**
+	 * The same door with a boundary that actually excludes something, for the
+	 * commands whose refusal is about where they write.
+	 */
+	private function decideConfined($xml)
+	{
+		return XMLRPCProxy::decide($xml, 'sanitize',
+			array('d.custom1.set', 'd.directory.set', 'd.directory_base.set'), false,
+			array('directory' => array('root' => '/torrents1', 'resolve' => null)));
+	}
+
 	public function testTheAliasTablesAreReadable()
 	{
 		$aliases = $this->aliases();
 		$this->assertTrue(count($aliases) > 300,
 			'the alias tables were loaded (' . count($aliases) . ' entries)');
+	}
+
+	/**
+	 * All seven of them: the six php/methods-*.php files and the one
+	 * php/settings.php builds inline.
+	 */
+	public function testAllSevenAliasTablesAreRead()
+	{
+		$files = array();
+		foreach($this->aliases() as $alias)
+			$files[$alias['file']] = true;
+		ksort($files);
+
+		$this->assertTrue(count($files) === 7,
+			'all seven alias tables are read (' . implode(', ', array_keys($files)) . ')');
+		$this->assertTrue(count($this->inlineAliases()) >= 2,
+			'the table php/settings.php builds inline was parsed out of it ('
+			. count($this->inlineAliases()) . ' entries)');
+	}
+
+	/**
+	 * A directory setter is confined by what it does, not by how it is
+	 * spelled. d.set_directory is d.directory.set on a daemon that registers
+	 * the older name, so a path outside the boundary is refused under both —
+	 * at the top level, as a member of a system.multicall, and written as a
+	 * command inside either kind of multicall.
+	 */
+	public function testAnAliasOfADirectorySetterIsConfinedUnderItsOwnName()
+	{
+		$directoryCommands = $this->directoryCommands();
+		$hash = str_repeat('A', 40);
+		$outside = '/var/www/html';
+		$checked = 0;
+
+		foreach($this->aliases() as $alias)
+		{
+			if(!in_array($alias['target'], $directoryCommands, true))
+				continue;
+			$checked++;
+			$name = $alias['name'];
+			$where = $name . ' (' . $alias['file'] . ')';
+
+			$calls = array(
+				'as a call of its own' => $this->call($name, array($hash, $outside)),
+				'as a d.multicall command parameter' =>
+					$this->call('d.multicall', array('main', '', $name . '=' . $outside)),
+				'as a system.multicall member' => $this->systemMulticall($name,
+					array($hash, $outside)),
+				'inside a system.multicall member' => $this->systemMulticall('d.multicall',
+					array('main', '', $name . '=' . $outside)),
+			);
+
+			foreach($calls as $shape => $request)
+			{
+				$decision = $this->decideConfined($request);
+				$this->assertTrue($decision['action'] === 'reject',
+					$where . ' ' . $shape . ' is refused outside the boundary');
+				$this->assertTrue(strpos($decision['payload'], $outside) === false,
+					$where . ' ' . $shape . ' puts no outside path on the wire');
+			}
+		}
+
+		$this->assertTrue($checked > 0,
+			'the tables name at least one alias of a directory setter (' . $checked . ')');
+	}
+
+	private function systemMulticall($method, $params)
+	{
+		$xml = '<?xml version="1.0"?><methodCall><methodName>system.multicall'
+			. '</methodName><params><param><value><array><data>'
+			. '<value><struct><member><name>methodName</name><value><string>'
+			. htmlspecialchars($method, ENT_NOQUOTES) . '</string></value></member>'
+			. '<member><name>params</name><value><array><data>';
+		foreach($params as $p)
+			$xml .= '<value><string>' . htmlspecialchars($p, ENT_NOQUOTES)
+				. '</string></value>';
+		return $xml . '</data></array></value></member></struct></value>'
+			. '</data></array></value></param></params></methodCall>';
+	}
+
+	/**
+	 * And the same at every one of those positions for the refused families,
+	 * which the tests below already ask about at the first two.
+	 */
+	public function testASystemMulticallCannotCarryAnAliasOfARefusedCommand()
+	{
+		$forwarded = array();
+		foreach($this->aliases() as $alias)
+		{
+			if(XMLRPCProxy::refusedCommandName($alias['target']) === null)
+				continue;
+
+			$asMember = $this->decide($this->systemMulticall($alias['name'], array('x')));
+			if($asMember['action'] !== 'reject')
+				$forwarded[] = $alias['name'] . ' as a member (' . $alias['file'] . ')';
+
+			$inMember = $this->decide($this->systemMulticall('d.multicall',
+				array('main', '', $alias['name'] . '=/bin/id')));
+			if($inMember['action'] !== 'reject')
+				$forwarded[] = $alias['name'] . ' inside a member (' . $alias['file'] . ')';
+		}
+		$this->assertTrue(count($forwarded) === 0,
+			'a system.multicall carrying an alias of a refused command is rejected'
+			. (count($forwarded) ? ', forwarded: ' . implode('; ', $forwarded) : ''));
 	}
 
 	/**
