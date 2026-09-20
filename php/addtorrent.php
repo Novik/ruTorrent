@@ -11,11 +11,20 @@ set_time_limit(0);
  * every reflected value has to be a complete literal that no input can end.
  * The HEX flags also keep <, >, & and both quote characters out of the bytes,
  * so the response cannot be turned into markup by asking for it directly.
+ *
+ * A unix filename is a string of bytes and need not be valid UTF-8, and it
+ * reaches here as name[]. json_encode() answers false for bytes it cannot
+ * encode, which concatenates as nothing at all and leaves the call with an
+ * argument missing rather than an argument that is a literal. So the invalid
+ * bytes become the replacement character, and a refusal for any other reason
+ * still yields a literal.
  */
 function addtorrent_literal($value)
 {
-	return(json_encode(strval($value),
-		JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_SLASHES));
+	$literal = json_encode(strval($value),
+		JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_SLASHES|
+		JSON_INVALID_UTF8_SUBSTITUTE);
+	return($literal===false ? '""' : $literal);
 }
 
 if(isset($_REQUEST['result']))

@@ -122,6 +122,43 @@ class AddTorrentResultTest extends TestCase
 			'the name reaches the client unchanged: ' . $result['body']);
 	}
 
+	// A unix filename is a string of bytes, so name[] need not be valid UTF-8.
+	// json_encode() answers false for such bytes, and false concatenates as
+	// nothing, which left the call an argument short rather than carrying a
+	// literal: noty(+theUILang[...],"success").
+	public function testNameThatIsNotValidUtf8StillProducesALiteral()
+	{
+		$result = $this->get('?result[]=Success&name[]=' . rawurlencode("bad\x80name"));
+		$this->assertTrue(strpos($result['body'], 'noty("') === 0,
+			'the call still opens with a string literal: ' . $result['body']);
+		$decoded = json_decode($this->firstArgument($result['body']), true);
+		$this->assertTrue(is_string($decoded),
+			'the first argument is one complete string literal: ' . $result['body']);
+		$this->assertTrue(substr($decoded, -3) === ' - ',
+			'and it is still the name the template writes: ' . var_export($decoded, true));
+		$this->assertOneWellFormedCall($result);
+	}
+
+	// The same for result[], which is pasted inside the theUILang lookup:
+	// theUILang["addTorrent"+] is not an expression at all.
+	public function testResultThatIsNotValidUtf8StillProducesALiteral()
+	{
+		$result = $this->get('?result[]=' . rawurlencode("bad\x80result"));
+		$decoded = json_decode($this->lookupArgument($result['body']), true);
+		$this->assertTrue(is_string($decoded),
+			'the wording lookup is given one complete string literal: ' . $result['body']);
+		$this->assertOneWellFormedCall($result);
+	}
+
+	public function testJsonBranchStaysJsonForBytesThatAreNotUtf8()
+	{
+		$result = $this->get('?json=1&result[]=' . rawurlencode("bad\x80result"));
+		$decoded = json_decode($result['body'], true);
+		$this->assertTrue(is_array($decoded) && array_key_exists('result', $decoded)
+			&& is_string($decoded['result']),
+			'the json branch still answers one json object: ' . $result['body']);
+	}
+
 	public function testJsonBranchReportsTheResult()
 	{
 		$result = $this->get('?json=1&result[]=Success');
@@ -157,6 +194,37 @@ class AddTorrentResultTest extends TestCase
 			$message . ' -- exactly one call: ' . $body);
 		$this->assertEquals(8, substr_count($body, '"'),
 			$message . ' -- only the eight quotes the template writes: ' . $body);
+	}
+
+	/** The text between noty( and the +theUILang that follows it. */
+	private function firstArgument($body)
+	{
+		$start = strlen('noty(');
+		$end = strpos($body, '+theUILang');
+		return $end === false ? '' : substr($body, $start, $end - $start);
+	}
+
+	/** The text between "addTorrent"+ and the ] that closes the lookup. */
+	private function lookupArgument($body)
+	{
+		$marker = '"addTorrent"+';
+		$start = strpos($body, $marker);
+		if($start === false)
+			return '';
+		$start += strlen($marker);
+		$end = strpos($body, ']', $start);
+		return $end === false ? '' : substr($body, $start, $end - $start);
+	}
+
+	/** One noty() call whose three arguments are all there. */
+	private function assertOneWellFormedCall($result)
+	{
+		$body = $result['body'];
+		$this->assertEquals(1, substr_count($body, 'noty('),
+			'exactly one call: ' . $body);
+		$this->assertTrue(strpos($body, '(+') === false && strpos($body, '+]') === false
+			&& strpos($body, ',)') === false && strpos($body, ',,') === false,
+			'no argument is missing from the call: ' . $body);
 	}
 
 	/**
