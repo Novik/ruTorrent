@@ -1253,10 +1253,14 @@ class rRSSManager
 			if($ret!==false)
 			{
 				$addition = array();
+				// Both arrive in the filter as the user typed them -- unlike
+				// the name and the pattern beside them they are not URL-decoded
+				// out of the POST body -- so they are quoted rather than pasted
+				// in, and a group named with a space or a comma works.
 				if(!empty($throttle))
-					$addition[] = getCmd("d.set_throttle_name=").$throttle;
+					$addition[] = rTorrent::additionCommand("d.set_throttle_name",$throttle);
 				if(!empty($ratio))
-					$addition[] = getCmd("view.set_visible=").$ratio;
+					$addition[] = rTorrent::additionCommand("view.set_visible",$ratio);
 				global $saveUploadedTorrents;
 				$thash = ($ret==='magnet') ?
 					rTorrent::sendMagnet($url, $isStart, $isAddPath, $directory, $label, $addition) :

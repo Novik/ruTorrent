@@ -309,6 +309,17 @@ class TorrentAdditionSourceScanner
 			return $this->unresolved($expr,
 				'getCmd(' . $alias . ') is not followed by an "=", so the element names no command');
 		}
+		// rTorrent::additionCommand("name", $value): the command is the first
+		// argument, named as a literal, so it reduces the same way a getCmd()
+		// element does -- and the value after it is quoted rather than pasted.
+		if ($expr[0][0] === T_STRING && $expr[0][1] === 'rTorrent' &&
+			isset($expr[1]) && $expr[1][0] === T_DOUBLE_COLON &&
+			isset($expr[2]) && $expr[2][0] === T_STRING &&
+			$expr[2][1] === 'additionCommand' &&
+			isset($expr[3]) && $expr[3][1] === '(' &&
+			isset($expr[4]) && $expr[4][0] === T_CONSTANT_ENCAPSED_STRING) {
+			return $this->named($source, $this->literal($expr[4][1]), null);
+		}
 		if ($expr[0][0] === T_CONSTANT_ENCAPSED_STRING) {
 			$text = $this->literal($expr[0][1]);
 			$eq = strpos($text, '=');

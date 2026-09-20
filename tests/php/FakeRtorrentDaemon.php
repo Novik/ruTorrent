@@ -21,6 +21,7 @@ class FakeRtorrentDaemon
 	private $pid;
 	private $port;
 	private $logFile;
+	private $bodyLogFile;
 
 	/**
 	 * $replies is a list, one per request: each entry is the list of values
@@ -29,7 +30,12 @@ class FakeRtorrentDaemon
 	public function __construct($replies, $logFile)
 	{
 		$this->logFile = $logFile;
+		// The method log answers "was this called"; a shape test also has to
+		// ask "carrying what", and the parameters are only in the body. Kept
+		// in a second file so calls() stays a plain list of names.
+		$this->bodyLogFile = $logFile . '.bodies';
 		@unlink($this->logFile);
+		@unlink($this->bodyLogFile);
 		$this->socket = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
 		if ($this->socket === false) {
 			throw new RuntimeException('cannot listen: ' . $errstr);
@@ -57,6 +63,22 @@ class FakeRtorrentDaemon
 	{
 		$log = file_exists($this->logFile) ? trim(file_get_contents($this->logFile)) : '';
 		return $log === '' ? array() : explode("\n", $log);
+	}
+
+	/**
+	 * The full XMLRPC request bodies the daemon was sent, in order. Separated
+	 * by a record marker rather than a newline because a body may contain one.
+	 */
+	public function bodies()
+	{
+		if(!file_exists($this->bodyLogFile))
+			return array();
+		$log = file_get_contents($this->bodyLogFile);
+		if($log === '' || $log === false)
+			return array();
+		$records = explode("\x00--REQ--\x00", $log);
+		array_pop($records);
+		return $records;
 	}
 
 	public function received($method)
@@ -87,6 +109,7 @@ class FakeRtorrentDaemon
 				break;
 			}
 			$body = $this->readRequest($client);
+			file_put_contents($this->bodyLogFile, $body . "\x00--REQ--\x00", FILE_APPEND);
 			foreach ($this->methodNames($body) as $method) {
 				file_put_contents($this->logFile, $method . "\n", FILE_APPEND);
 			}
@@ -147,6 +170,20 @@ class FakeRtorrentDaemon
 		return $names;
 	}
 
+	/**
+	 * Escape a value for XML text content the way rtorrent's XMLRPC layer does:
+	 * '&', '<' and '>' and nothing else. It is byte-wise on purpose -- rtorrent
+	 * answers with whatever bytes the filesystem gave it, including a path that
+	 * is not valid UTF-8, and a quote or a backslash arrives literally rather
+	 * than as an entity. htmlspecialchars() here would escape the quote and
+	 * drop a non-UTF-8 value, and the reading side treats both of those
+	 * differently from the bytes themselves.
+	 */
+	private static function escapeText($value)
+	{
+		return strtr($value, array('&' => '&amp;', '<' => '&lt;', '>' => '&gt;'));
+	}
+
 	private function reply($values)
 	{
 		$xml = '<?xml version="1.0" encoding="UTF-8"?><methodResponse><params><param>'
@@ -154,8 +191,7 @@ class FakeRtorrentDaemon
 		foreach ($values as $value) {
 			$xml .= is_int($value)
 				? '<value><i8>' . $value . '</i8></value>'
-				: '<value><string>' . htmlspecialchars((string)$value, ENT_COMPAT, 'UTF-8')
-					. '</string></value>';
+				: '<value><string>' . self::escapeText((string)$value) . '</string></value>';
 		}
 		return $xml . '</data></array></value></param></params></methodResponse>';
 	}

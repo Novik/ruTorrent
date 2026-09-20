@@ -108,6 +108,19 @@ class rTorrent
 		self::$sends[] = self::$lastSend;
 		return self::$sendResult;
 	}
+
+	// rTorrent::additionCommand(): each value quoted on its own, joined with
+	// the comma rtorrent separates arguments with. Written out rather than
+	// called through, because this file stands in for rTorrent instead of
+	// loading it -- and the exact strings the assertions below pin are what
+	// this double exists to expose.
+	public static function additionCommand($command, ...$values)
+	{
+		$quoted = array();
+		foreach($values as $value)
+			$quoted[] = '"'.str_replace(array('\\', '"'), array('\\\\', '\\"'), (string)$value).'"';
+		return getCmd($command.'=').implode(',', $quoted);
+	}
 }
 
 eval(loadClassDefinition(
@@ -207,13 +220,18 @@ class CheckerTest
 		$this->queueSnapshot($baseDir, $state, $open);
 	}
 
+	// The ownership marker as it goes on the wire. d.set_custom takes a key and
+	// a value, and each is quoted on its own, so the marker is the last
+	// argument and the closing quote is the last byte of the command.
+	const MARKER_PREFIX = 'd.set_custom="chk-replacement","';
+
 	private function currentReplacementMarker()
 	{
 		if(!is_array(rTorrent::$lastSend) || !is_array(rTorrent::$lastSend['addition']))
 			return '';
 		foreach(rTorrent::$lastSend['addition'] as $addition)
-			if(strpos($addition, 'd.set_custom=chk-replacement,') === 0)
-				return substr($addition, strlen('d.set_custom=chk-replacement,'));
+			if(strpos($addition, self::MARKER_PREFIX) === 0)
+				return substr($addition, strlen(self::MARKER_PREFIX), -1);
 		return '';
 	}
 
@@ -296,11 +314,11 @@ class CheckerTest
 		strictAssertSame(sys_get_temp_dir(), rTorrent::$lastSend['directory'], 'the staged copy must reuse the old base directory');
 		strictAssertSame('label', rTorrent::$lastSend['label'], 'the staged copy must reuse the old label');
 		$addition = rTorrent::$lastSend['addition'];
-		strictAssertTrue(strpos($addition[0], 'd.set_custom=chk-replacement,') === 0, 'the ownership marker must be the first load command');
-		strictAssertTrue(in_array('d.set_connection_seed=seed-value', $addition, true), 'the connection seed must be forwarded');
-		strictAssertTrue(in_array('d.set_throttle_name=slow', $addition, true), 'the throttle must be forwarded');
+		strictAssertTrue(strpos($addition[0], self::MARKER_PREFIX) === 0, 'the ownership marker must be the first load command');
+		strictAssertTrue(in_array('d.set_connection_seed="seed-value"', $addition, true), 'the connection seed must be forwarded');
+		strictAssertTrue(in_array('d.set_throttle_name="slow"', $addition, true), 'the throttle must be forwarded');
 		strictAssertSame(
-			array('view.set_visible=rat_2', 'view.set_visible=rat_7', 'view.set_visible=rat_9'),
+			array('view.set_visible="rat_2"', 'view.set_visible="rat_7"', 'view.set_visible="rat_9"'),
 			$this->membershipCommands($addition),
 			'exactly the rat_N view memberships must be forwarded, all visible when all are confirmed'
 		);
@@ -347,9 +365,9 @@ class CheckerTest
 				'a missing view must cost nothing but the visible membership');
 			strictAssertSame(
 				array(
-					'view.set_visible=rat_2',
-					'd.views.push_back_unique=rat_7',
-					'view.set_visible=rat_9',
+					'view.set_visible="rat_2"',
+					'd.views.push_back_unique="rat_7"',
+					'view.set_visible="rat_9"',
 				),
 				$this->membershipCommands(rTorrent::$lastSend['addition']),
 				'a confirmed membership stays visible; the missing one becomes the d.views attribute only'
@@ -383,7 +401,7 @@ class CheckerTest
 			strictAssertSame(null, ruTrackerChecker::createTorrent('new-torrent', 'OLD'),
 				'an unreadable view list must not abort the replacement');
 			strictAssertSame(
-				array('d.views.push_back_unique=rat_2', 'd.views.push_back_unique=rat_9'),
+				array('d.views.push_back_unique="rat_2"', 'd.views.push_back_unique="rat_9"'),
 				$this->membershipCommands(rTorrent::$lastSend['addition']),
 				'every unconfirmed membership becomes the d.views attribute, none stays view.set_visible'
 			);

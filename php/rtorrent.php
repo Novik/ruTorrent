@@ -40,9 +40,139 @@ class rTorrent
 	);
 
 	/**
+	 * Read the argument text of an addition the way rtorrent reads it, and
+	 * answer with the arguments the daemon would hand the command -- or false
+	 * where the daemon would refuse the text, or read a second command out of
+	 * it.
+	 *
+	 * An addition is not a name and a value. DownloadFactory puts every entry
+	 * of a load command list through rpc::parse_command_multiple_std()
+	 * (src/core/download_factory.cc), so the text after the '=' is parsed by
+	 * the same parser as the name, and the only way to say what it asks for is
+	 * to read it as parse_whole_list(..., parse_is_delim_command) does
+	 * (src/rpc/parse.cc) and then apply parse_command()'s rule for what may
+	 * follow (src/rpc/parse_commands.cc).
+	 *
+	 * What that parser does, which is why the answer is a list of arguments
+	 * rather than a yes or a no:
+	 *
+	 *  - parse_object() decides on the raw first byte. '{' opens a block and
+	 *    '(' a function object, and parse_command_execute() runs both. Neither
+	 *    is reachable once the byte is a '"', so a quoted argument cannot be
+	 *    either -- it goes to parse_string() and comes back a string.
+	 *  - parse_string()'s quoted branch ends only at an unescaped '"' and never
+	 *    consults the delimiter, so a ',', a ';', a newline, a NUL and a space
+	 *    inside quotes are all bytes of the value. Its unquoted branch ends at
+	 *    any of them (parse_is_delim_command), and '\' escapes the byte after
+	 *    it in both.
+	 *  - after the list, parse_command() skips spaces and tabs and then demands
+	 *    the end of the text or one of ';', a newline, a NUL. Anything else is
+	 *    "Junk at end of input" and the load is abandoned; one of those three
+	 *    ends the command, and parse_command_multiple() parses what follows as
+	 *    the next command and runs it. Neither may be allowed to leave here.
+	 *
+	 * The arguments come back with the quoting undone, because that is the form
+	 * the one remaining danger is read in: see isValidAddition().
+	 */
+	static private function additionArguments( $text )
+	{
+		// A NUL ends a command wherever the daemon reads the text from a
+		// NUL-terminated buffer, and no value a caller builds carries one, so
+		// it is refused before the quoting can be argued about.
+		if(strpos($text,"\0")!==false)
+			return(false);
+		$arguments = array();
+		$i = 0;
+		$n = strlen($text);
+		while(true)
+		{
+			// parse_list(): only a space and a tab are skipped here, which is
+			// why a leading space does not hide the byte parse_object() reads.
+			while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t")))
+				$i++;
+			// parse_object(): the evaluated forms, on the raw byte.
+			if(($i<$n) && (($text[$i]==='{') || ($text[$i]==='(')))
+				return(false);
+			$value = '';
+			if(($i<$n) && ($text[$i]==='"'))
+			{
+				$i++;
+				$closed = false;
+				while($i<$n)
+				{
+					if($text[$i]==='"')
+					{
+						$closed = true;
+						$i++;
+						break;
+					}
+					if($text[$i]==='\\')
+					{
+						$i++;
+						// "Escape character at end of input."
+						if($i>=$n)
+							return(false);
+					}
+					$value .= $text[$i++];
+				}
+				// "Missing closing quote."
+				if(!$closed)
+					return(false);
+			}
+			else
+			{
+				while($i<$n)
+				{
+					$c = $text[$i];
+					// parse_is_delim_command: ',', ';' and isspace().
+					if(($c===',') || ($c===';') || (strpos(" \t\n\r\v\f",$c)!==false))
+						break;
+					if($c==='\\')
+					{
+						$i++;
+						if($i>=$n)
+							return(false);
+					}
+					$value .= $text[$i++];
+				}
+			}
+			$arguments[] = $value;
+			while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t")))
+				$i++;
+			if(($i<$n) && ($text[$i]===','))
+			{
+				$i++;
+				continue;
+			}
+			break;
+		}
+		while(($i<$n) && (($text[$i]===' ') || ($text[$i]==="\t")))
+			$i++;
+		// Anything left is either a command the daemon would run after this one
+		// or the junk that makes it throw away the load.
+		if($i<$n)
+			return(false);
+		return($arguments);
+	}
+
+	/**
 	 * Whether one addition may be sent. Each permitted name is compared both as
 	 * written and as the running daemon's alias table spells it, because that is
 	 * how a caller builds one: getCmd('d.set_throttle_name=').$name.
+	 *
+	 * The name is the first thing the daemon reads and not the only one, so the
+	 * text after it is judged as well -- a caller appends values of its own and
+	 * a request's alike, and an RSS filter's throttle and ratio arrive in the
+	 * POST body, so a name that matches says nothing about what follows it.
+	 *
+	 * additionArguments() has already refused the text if the daemon would read
+	 * a second command out of it, or throw the load away. One danger survives
+	 * that, and it is the one quoting cannot reach: parse_command_execute()
+	 * hands an argument back to parse_command() and calls it when its first
+	 * byte is a '$', and it reads that byte after parse_string() has taken the
+	 * quotes off (src/rpc/parse_commands.cc). So the test is on the argument as
+	 * the command will receive it, which is also why the extratio plugin's
+	 * d.set_custom=x-extratio1,"$execute_capture={...}" works as it does.
 	 */
 	static public function isValidAddition( $addition )
 	{
@@ -52,19 +182,35 @@ class rTorrent
 		if($eq===false)
 			return(false);
 		$name = substr($addition,0,$eq);
+		$permittedName = false;
 		foreach(self::ADDITION_COMMANDS as $permitted)
 			if(($name===$permitted) ||
 				($name===rTorrentSettings::get()->getCommand($permitted)))
-				return(true);
-		return(false);
+			{
+				$permittedName = true;
+				break;
+			}
+		if(!$permittedName)
+			return(false);
+		$arguments = self::additionArguments(substr($addition,$eq+1));
+		if($arguments===false)
+			return(false);
+		foreach($arguments as $value)
+			if(isset($value[0]) && ($value[0]==='$'))
+				return(false);
+		return(true);
 	}
 
 	/**
 	 * A list holding one addition that may not be sent sends none of itself: an
 	 * add is one load call, so dropping the offending entry would still perform
 	 * the rest of an operation that was not the one asked for.
+	 *
+	 * Public because a caller that erases the download before it loads it again
+	 * has to ask before the erase. sendTorrent() answering false afterwards is
+	 * a download that no longer exists.
 	 */
-	static protected function areValidAdditions( $addition )
+	static public function areValidAdditions( $addition )
 	{
 		if(is_null($addition))
 			return(true);
@@ -74,6 +220,56 @@ class rTorrent
 			if(!self::isValidAddition($prm))
 				return(false);
 		return(true);
+	}
+
+	/**
+	 * Build one addition: the command, '=', and each value quoted, the values
+	 * separated by the comma rtorrent separates arguments with.
+	 *
+	 * A value is an argument to a command the daemon parses itself, so it is
+	 * quoted exactly as the download directory beside it is. Pasted in as bare
+	 * text it stops being one argument: a comma splits it in two, a space makes
+	 * the daemon throw the whole load away, and a semicolon or a newline ends
+	 * the command and hands the daemon whatever follows as the next one to run.
+	 * Quoted, all of those are bytes of the value.
+	 *
+	 * Values are taken one per parameter rather than pre-joined, so nothing
+	 * here has to find the boundary between two of them: a command taking
+	 * several -- d.set_custom takes a key and a value -- names them separately
+	 * and each is quoted on its own.
+	 *
+	 * The value must be in its own bytes: rXMLRPCRequest::unescapeValue() puts
+	 * a value read back from the daemon into that form.
+	 *
+	 * Answers false for a value it will not build, and false is not a valid
+	 * addition, so the list holding it is refused whole rather than sent short.
+	 */
+	static public function additionCommand( $command, ...$values )
+	{
+		if(!count($values))
+			return(false);
+		$quoted = array();
+		foreach($values as $value)
+		{
+			if(is_int($value))
+				$value = (string)$value;
+			if(!is_string($value))
+				return(false);
+			// The one form quoting does not reach. rtorrent takes the quotes
+			// off and then runs an argument whose first byte is '$' as a
+			// command of its own (parse_command_execute,
+			// src/rpc/parse_commands.cc), so it is refused instead -- as
+			// XMLRPCProxy::rebuildSafeLoadParam() refuses it on the way in.
+			if(isset($value[0]) && ($value[0]==='$'))
+				return(false);
+			// Refused here as well as in isValidAddition(), so a caller is
+			// told at the point it builds one rather than at the point the
+			// list is sent.
+			if(strpos($value,"\0")!==false)
+				return(false);
+			$quoted[] = self::quoteCommandArg($value);
+		}
+		return(getCmd($command.'=').implode(',',$quoted));
 	}
 
 	static public function sendTorrent($fname, $isStart, $isAddPath, $directory, $label, $saveTorrent, $isFast, $isNew = true, $addition = null)
@@ -304,7 +500,17 @@ class rTorrent
 	 * and the command around it stops parsing.
 	 *
 	 * Mirrors the escaping XMLRPCProxy::rebuildSafeLoadParam() applies to the
-	 * command strings it rebuilds.
+	 * command strings it rebuilds -- the escaping, and not the rest of what it
+	 * does. That one also refuses an argument beginning with '$', which
+	 * quoting cannot make safe, and it splits a value on commas so a command
+	 * taking several arguments keeps them. A caller quoting a single argument
+	 * here wants neither; a caller building an addition wants the first, and
+	 * gets it from additionCommand().
+	 *
+	 * The value must be the one the download really has. A value read back
+	 * through rXMLRPCRequest::run() arrives already escaped and has to go
+	 * through rXMLRPCRequest::unescapeValue() first, or this escapes the
+	 * escaping and the path gains a backslash.
 	 */
 	static public function quoteCommandArg($value)
 	{

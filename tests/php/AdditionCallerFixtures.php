@@ -125,7 +125,12 @@ trait AdditionCallerFixtures
 		return $missing;
 	}
 
-	/** rTorrent::areValidAdditions(), which is protected. */
+	/**
+	 * rTorrent::areValidAdditions(). Reached by reflection because it was
+	 * protected when this was written; it is public now, so a caller that
+	 * erases a download before reloading it can ask before the erase, and the
+	 * reflection stays only so this helper keeps one spelling for every test.
+	 */
 	public function areValidAdditions($addition)
 	{
 		$method = new ReflectionMethod('rTorrent', 'areValidAdditions');
