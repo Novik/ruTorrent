@@ -47,10 +47,13 @@
 		// rename for. Same commands and the same arguments: a value the daemon
 		// stores or looks up, never one it parses.
 		//
-		// The pre-0.9.4 directory spellings are not here on purpose. Only the
-		// names in XMLRPCProxy::$directoryCommands are held to $topDirectory,
-		// so a spelling added here and not there would name a write target
-		// nothing confines.
+		// The pre-0.9.4 directory spellings are still not here. They would be
+		// confined if they were: a name is resolved to one canonical command
+		// before anything classifies it, so d.set_directory is d.directory.set
+		// and is held to $topDirectory as one. They are left out because a
+		// caller that names a write target under a spelling no supported
+		// daemon needs has nothing to gain from it, and refusing is the
+		// narrower answer.
 		'd.set_custom',             // d.custom.set
 		'd.set_custom3',            // d.custom3.set
 		'd.set_throttle_name',      // d.throttle_name.set
