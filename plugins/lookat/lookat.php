@@ -1,5 +1,6 @@
 <?php
 require_once( dirname(__FILE__)."/../../php/cache.php" );
+require_once( dirname(__FILE__)."/../../php/utility/externalurl.php" );
 
 class rLook
 {
@@ -44,9 +45,12 @@ class rLook
 				{
 					$tmp = explode("|",$value);
 					// The template is completed and opened by
-					// plugins/lookat/init.js, so only an http(s) target is
-					// stored; nothing downstream checks it again.
-					if(count($tmp) > 1 && preg_match('|^\s*https?://|i',$tmp[1]))
+					// plugins/lookat/init.js, which hands it to
+					// openExternalURL() -- the same call a feed item reaches --
+					// so what may be stored here is what that will open. set()
+					// rebuilds the whole list from the body, so a target this
+					// refuses is deleted rather than rejected.
+					if(count($tmp) > 1 && ExternalURL::isOpenable($tmp[1]))
 					{
 						if(strpos($tmp[1],"{title}")===false)
 							$tmp[1].="{title}";

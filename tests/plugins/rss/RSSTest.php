@@ -441,4 +441,45 @@ final class RSSTest extends TestCase
 		}
 		$this->assertEquals($expected, array_keys($this->feedItems($xml.'</channel></rss>')));
 	}
+	// rss.php asks an item for dc:date when it has no pubDate. A plain RSS 2.0
+	// feed has no reason to declare the dc prefix, and an XPath expression
+	// naming a prefix the engine does not know raises a warning -- one per
+	// item, on every poll of every such feed. php-test.sh looks for fatal and
+	// parse errors only, so any number of these is still a green run.
+	public function testAFeedWhoseItemsHaveNoPubDateRaisesNoDiagnostic(): void
+	{
+		$xml = '<?xml version="1.0"?><rss version="2.0"><channel>'.
+			'<title>C</title><link>https://example.org/</link>';
+		for ($i = 0; $i < 5; $i++) {
+			$xml .= '<item><title>t'.$i.'</title>'.
+				'<link>https://example.org/'.$i.'</link></item>';
+		}
+		$raised = array();
+		set_error_handler(function ($no, $str, $file, $line) use (&$raised) {
+			$raised[] = $str.' in '.basename((string)$file).' on line '.$line;
+			return true;
+		});
+		$items = $this->feedItems($xml.'</channel></rss>');
+		restore_error_handler();
+		$this->assertEquals(array(), $raised,
+			'no diagnostic raised while parsing a feed without dates: '.
+			implode('; ', array_unique($raised)));
+		$this->assertEquals(5, count($items));
+	}
+
+	// And the prefix still resolves for a feed that does declare it, so a date
+	// an item carries there is still read.
+	public function testAFeedDeclaringTheDcPrefixStillReadsItsDates(): void
+	{
+		$items = $this->feedItems(
+			'<?xml version="1.0"?>'.
+			'<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel>'.
+			'<title>C</title><link>https://example.org/</link>'.
+			'<item><title>t</title><link>https://example.org/a</link>'.
+			'<dc:date>2024-01-02T03:04:05Z</dc:date></item>'.
+			'</channel></rss>');
+		$this->assertEquals(1, count($items));
+		$this->assertEquals(strtotime('2024-01-02T03:04:05Z'),
+			$items['https://example.org/a']['timestamp']);
+	}
 }
