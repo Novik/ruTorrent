@@ -349,21 +349,46 @@ class Snoopy
 	}
 
 	// Whether following this redirect hands the request to somewhere the
-	// credentials were not meant for. A different host is the plain case. Same
-	// host but https -> http is the other one: the credential would go out in
-	// clear. An http -> https move on the same host is left alone, because
-	// trackers answer exactly that and it takes nothing away.
+	// credentials were not meant for. What they were meant for is an origin:
+	// the scheme, the host and the port together, each port carrying its
+	// scheme's default when the url does not name one. A different port on the
+	// same name is a different service -- often somebody else's, on a host
+	// that hands ports out -- so it is as much a move as a different name is,
+	// and it is what curl treats as a new origin for custom headers too.
+	//
+	// One move keeps them, and is the only one: the same host answering on
+	// https where it was asked on http, both on their default ports. Trackers
+	// answer exactly that, and an upgrade takes nothing away. Every other
+	// crossing drops them, https -> http included, where the credential would
+	// otherwise go out in clear.
 	protected function redirectLeavesOrigin($parts,$redirect)
 	{
 		$to = parse_url($redirect);
 		if(!is_array($to) || !isset($to["host"]))
 			return(false);
-		$from = isset($parts["host"]) ? $parts["host"] : "";
-		if(strcasecmp($from,$to["host"])!==0)
-			return(true);
 		$fromScheme = isset($parts["scheme"]) ? strtolower($parts["scheme"]) : "";
 		$toScheme = isset($to["scheme"]) ? strtolower($to["scheme"]) : $fromScheme;
-		return(($fromScheme==="https") && ($toScheme==="http"));
+		$fromHost = strtolower(isset($parts["host"]) ? $parts["host"] : "");
+		$toHost = strtolower($to["host"]);
+		$fromPort = self::effectivePort($parts,$fromScheme);
+		$toPort = self::effectivePort($to,$toScheme);
+		if(($fromScheme===$toScheme) && ($fromHost===$toHost) && ($fromPort===$toPort))
+			return(false);
+		return(!(($fromHost===$toHost) &&
+			($fromScheme==="http") && ($fromPort===80) &&
+			($toScheme==="https") && ($toPort===443)));
+	}
+
+	// The port this url is addressed on, named or implied by its scheme.
+	static protected function effectivePort($parts,$scheme)
+	{
+		if(isset($parts["port"]) && ($parts["port"]!==''))
+			return(intval($parts["port"]));
+		if($scheme==="https")
+			return(443);
+		if($scheme==="ftp")
+			return(21);
+		return(80);
 	}
 
 	// What was collected for the host that was asked, and only for it: the
