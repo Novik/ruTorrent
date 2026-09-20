@@ -144,6 +144,36 @@ class rXMLRPCRequest
 		return($result);
 	}
 
+	/**
+	 * Undo the escaping run() puts on every string it reads.
+	 *
+	 * run() doubles each backslash and prefixes each double quote in a value
+	 * before it hands it to the caller. That pairs with a caller that pastes
+	 * the value straight into an rtorrent command string without quoting it,
+	 * which is what the shipped plugins did: rtorrent reads '\\' as an escape,
+	 * so the doubling is what makes a path with a backslash in it arrive
+	 * whole.
+	 *
+	 * A caller that quotes the value instead needs it in its own bytes, or the
+	 * quoting escapes the escaping and rtorrent is given a path the download
+	 * never had. This returns the value as the daemon reported it.
+	 */
+	static public function unescapeValue( $value )
+	{
+		if(!is_string($value) || (strpos($value,'\\')===false))
+			return($value);
+		$out = '';
+		$len = strlen($value);
+		for($i = 0; $i<$len; $i++)
+		{
+			if(($value[$i]==='\\') && (($i+1)<$len) &&
+				(($value[$i+1]==='\\') || ($value[$i+1]==='"')))
+				$i++;
+			$out .= $value[$i];
+		}
+		return($out);
+	}
+
 	public function setParseByTypes( $enable = true )
 	{
 		$this->parseByTypes = $enable;

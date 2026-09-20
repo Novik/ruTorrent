@@ -125,12 +125,18 @@ if(count($argv)>1)
 					{
 						if(isset($torrent->{'rtorrent'}))
 							unset($torrent->{'rtorrent'});
-						$eReq = new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) );
-						if($eReq->success())
+						// Asked before the erase, not after: sendTorrent()
+						// refuses an addition list whole, and by then the
+						// download it would have reloaded is gone.
+						$reloadAddition = array(getCmd("d.set_custom3")."=1");
+						$eReq = rTorrent::areValidAdditions($reloadAddition)
+							? new rXMLRPCRequest( new rXMLRPCCommand("d.erase", $hash ) ) : null;
+						if($eReq && $eReq->success())
 						{
-							$label = rawurldecode($req->val[3]);
-							rTorrent::sendTorrent($torrent, $isStart, false, $req->val[4], $label, false, false, false,
-							        array(getCmd("d.set_custom3")."=1") );
+							$label = rawurldecode(rXMLRPCRequest::unescapeValue($req->val[3]));
+							rTorrent::sendTorrent($torrent, $isStart, false,
+							        rXMLRPCRequest::unescapeValue($req->val[4]), $label, false, false, false,
+							        $reloadAddition );
 							$processed = true;
 						}
 					}

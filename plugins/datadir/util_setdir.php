@@ -187,10 +187,16 @@ function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $fast_resume, 
 				$tied_to_file = $req->val[1];
 				$label        = rawurldecode( $req->val[2] );
 				$addition     = array();
+				// Both values were read back through rXMLRPCRequest, which
+				// escapes every string it returns, and both are quoted on the
+				// way out -- so they are put back into their own bytes first
+				// or the quoting escapes that escaping a second time.
 				if( !empty( $req->val[3] ) )
-					$addition[] = getCmd( "d.set_connection_seed=" ).$req->val[3];
+					$addition[] = rTorrent::additionCommand( "d.set_connection_seed",
+						rXMLRPCRequest::unescapeValue( $req->val[3] ) );
 				if( !empty( $req->val[4] ) )
-					$addition[] = getCmd( "d.set_throttle_name=" ).$req->val[4];
+					$addition[] = rTorrent::additionCommand( "d.set_throttle_name",
+						rXMLRPCRequest::unescapeValue( $req->val[4] ) );
 				// build path to .torrent file
 				$fname = rtAddTailSlash( $session ).$hash.".torrent";
 				if( empty( $session ) || !is_readable( $fname ) )
