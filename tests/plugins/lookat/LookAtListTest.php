@@ -56,7 +56,7 @@ class LookAtListTest extends TestCase
 		$this->assertEquals('magnet:?xt=urn:btih:{title}',
 			$this->stored('Name', 'magnet:?xt=urn:btih:{title}'));
 	}
-	
+
 	public function testStillAppendsTheTitlePlaceholderWhenItIsMissing()
 	{
 		$this->assertEquals('https://example.com/search?q={title}',
