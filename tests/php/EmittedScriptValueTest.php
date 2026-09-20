@@ -158,9 +158,14 @@ class EmittedScriptValueTest extends TestCase
 			if (!is_array($settings)) {
 				continue;
 			}
-			$this->assertTrue($settings['JabberHost'] === $payload && $settings['JabberPasswd'] === $payload &&
+			$this->assertTrue($settings['JabberHost'] === $payload &&
 				$settings['JabberFor'] === $payload && $settings['Message'] === $payload,
 				'xmpp strings survive as data for '.$name);
+			// The password is not one of the strings that survives: the page is
+			// told whether one is stored and nothing else.
+			$this->assertTrue(!array_key_exists('JabberPasswd', $settings) &&
+				$settings['JabberPasswd_set'] === 1,
+				'xmpp sends the fact of a password, not the password, for '.$name.': '.json_encode($settings));
 			$this->assertTrue($settings['JabberPort'] === 0 && $settings['UseEncryption'] === 0 &&
 				$settings['AdvancedSettings'] === 0,
 				'xmpp numeric fields stay numbers for '.$name.': '.json_encode($settings));
