@@ -179,25 +179,171 @@ function rtMoveFile( $src, $dst, $dbg = false )
 }
 
 //------------------------------------------------------------------------------
-// The first name under $dst that something already stands at, or '' when the
-// whole list is free
+// The destination root as something nothing can be smuggled out of: the
+// caller's directory with every symlink in it already resolved. Names are
+// built from this, so a symlink above the root -- a download directory that is
+// a link into a storage pool, which is the usual layout -- is followed once
+// here and is not walked through again for every file.
+//------------------------------------------------------------------------------
+function rtDestinationRoot( $dst )
+{
+	$dst = rtRemoveTailSlash( $dst );
+	if( $dst == '' )
+		return '';
+	$real = realpath( $dst );
+	if( $real !== false )
+		return rtRemoveTailSlash( $real );
+	// Not there yet, so there is nothing in it to resolve. The deepest part of
+	// it that is there is resolved instead, and what is added to that is
+	// elements that do not exist and so cannot be symlinks. rtOpFiles()
+	// confirms that is still so once it has made them.
+	$tail = array();
+	$path = $dst;
+	while( true )
+	{
+		$parent = dirname( $path );
+		if( $parent === $path )
+			return '';
+		array_unshift( $tail, basename( $path ) );
+		$real = realpath( $parent );
+		if( $real !== false )
+			return rtRemoveTailSlash( $real ).'/'.implode( '/', $tail );
+		$path = $parent;
+	}
+}
+
+//------------------------------------------------------------------------------
+// The path $file names under $root, with every element of the way down to it
+// checked, or '' when it cannot be reached without leaving $root.
+//
+// $root is canonical, so the only way out of it is through the elements of
+// $file, and lstat() is what sees them: it reports a symlink as a symlink
+// instead of as whatever it points at. Every call the operations end in --
+// mkdir(), rename(), copy(), link(), symlink() -- follows a symlinked element
+// and lands where it leads, so an element that is already there and is not a
+// directory of its own ends the walk.
+//
+// With $make the missing elements are created, one level at a time so that
+// each is checked as it is reached rather than handed to a recursive mkdir()
+// that checks none of them, and each one made is appended to $made.
+//------------------------------------------------------------------------------
+function rtContainedPath( $root, $file, $make = false, &$made = null )
+{
+	$root = rtRemoveTailSlash( $root );
+	if( $root == '' || !is_string( $file ) || $file == '' || $file[0] == '/' )
+		return '';
+	$parts = explode( '/', $file );
+	$leaf = array_pop( $parts );
+	if( $leaf == '' || $leaf == '.' || $leaf == '..' )
+		return '';
+	$path = $root;
+	foreach( $parts as $part )
+	{
+		if( $part == '' || $part == '.' || $part == '..' )
+			return '';
+		$path .= '/'.$part;
+		$st = @lstat( $path );
+		if( $st === false )
+		{
+			// Something is there that cannot be inspected. What it is decides
+			// where the walk goes, so not knowing ends it.
+			if( is_link( $path ) || file_exists( $path ) )
+				return '';
+			if( !$make )
+				continue;
+			if( !@mkdir( $path, 0777 ) )
+			{
+				// Lost the race to create it. What won is only acceptable if
+				// it is the directory this was going to make.
+				$st = @lstat( $path );
+				if( $st === false || ( $st['mode'] & 0170000 ) != 0040000 )
+					return '';
+				continue;
+			}
+			if( is_array( $made ) )
+				$made[] = array( 'rmdir', $path );
+			continue;
+		}
+		if( ( $st['mode'] & 0170000 ) != 0040000 )
+			return '';
+	}
+	return $path.'/'.$leaf;
+}
+
+//------------------------------------------------------------------------------
+// Whether anything at all stands at $path. A directory cannot be written over,
+// and a symlink is a name that belongs to whatever it points at -- writing
+// through it destroys that, and a dangling one is still somebody's.
+//------------------------------------------------------------------------------
+function rtNameInUse( $path )
+{
+	return rtIsFile( $path ) || is_dir( $path ) || is_link( $path ) ||
+		file_exists( $path );
+}
+
+//------------------------------------------------------------------------------
+// The first name under $dst that the operation may not have, or '' when the
+// whole list is free. A name is unavailable either because something already
+// stands at it or because the way down to it leaves $dst.
 //------------------------------------------------------------------------------
 function rtTakenDestination( $files, $dst )
 {
 	if( !is_array( $files ) || $dst == '' )
 		return '';
-	$dst = rtAddTailSlash( $dst );
+	$root = rtDestinationRoot( $dst );
+	if( $root == '' )
+		return rtAddTailSlash( $dst );
 	foreach( $files as $file )
 	{
-		$dest = $dst.$file;
-		// A name is taken whatever stands at it. A directory cannot be
-		// written over at all, and a symlink is a name that belongs to
-		// whatever it points at -- writing through it destroys that, and a
-		// dangling one is still somebody's.
-		if( rtIsFile( $dest ) || is_dir( $dest ) || is_link( $dest ) )
+		$dest = rtContainedPath( $root, $file );
+		if( $dest == '' )
+			return rtAddTailSlash( $dst ).( is_string( $file ) ? $file : '' );
+		if( rtNameInUse( $dest ) )
 			return $dest;
 	}
 	return '';
+}
+
+//------------------------------------------------------------------------------
+// Put back, newest first, what a failed rtOpFiles() had already done. False if
+// anything could not be put back.
+//------------------------------------------------------------------------------
+function rtUndoOpFiles( $journal, $dbg = false )
+{
+	$whole = true;
+	foreach( array_reverse( $journal ) as $entry )
+	{
+		switch( $entry[0] )
+		{
+			case 'moveback':
+			{
+				if( !rtMoveFile( $entry[1], $entry[2], $dbg ) )
+				{
+					if( $dbg ) rtDbg( __FUNCTION__, "can't carry ".$entry[1]." back to ".$entry[2] );
+					$whole = false;
+				}
+				break;
+			}
+			case 'unlink':
+			{
+				if( !@unlink( $entry[1] ) )
+				{
+					if( $dbg ) rtDbg( __FUNCTION__, "can't remove ".$entry[1] );
+					$whole = false;
+				}
+				break;
+			}
+			default:
+			{
+				// A directory this operation made. Something else may have put
+				// a file in it since, and then it is no longer this
+				// operation's to remove.
+				@rmdir( $entry[1] );
+				break;
+			}
+		}
+	}
+	return $whole;
 }
 
 //------------------------------------------------------------------------------
@@ -223,80 +369,134 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 	else $src = rtAddTailSlash( $src );
 
 	// Check if destination directory exists or can be created
-	if( !rtMkDir( dirname( $dst ), 0777 ) )
+	if( !rtMkDir( dirname( rtRemoveTailSlash( $dst ) ), 0777 ) )
 	{
 		if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dst ) );
 		return false;
 	}
-	else $dst = rtAddTailSlash( $dst );
+
+	// Everything below is named from here down, and measured against here.
+	$root = rtDestinationRoot( $dst );
+	if( $root == '' )
+	{
+		if( $dbg ) rtDbg( __FUNCTION__, "can't resolve ".$dst );
+		return false;
+	}
+	$dst = rtAddTailSlash( $root );
 
 	// Check if source and destination directories are the same
-	if( realpath( $src ) == realpath( $dst ) )
+	if( realpath( $src ) === $root )
 	{
 		if( $dbg ) rtDbg( __FUNCTION__, "source is equal to destination" );
-		if( $dbg ) rtDbg( __FUNCTION__, "( ".realpath( $src )." )" );
+		if( $dbg ) rtDbg( __FUNCTION__, "( ".$root." )" );
 		return false;
 	}
 
-	// Every name is settled before the first file is carried. The refusal
-	// below stands in the middle of the walk, so a download whose second file
-	// collides has had its first one carried already when it fires, and false
-	// then means the download is split between two directories with nothing
-	// left to say where the other half went.
-	$taken = rtTakenDestination( $files, $dst );
+	// What this operation has changed so far, so that stopping part way
+	// through can be undone. Without it a refusal in the middle leaves the
+	// download split between two directories with nothing to say where the
+	// other half went, and every caller reads false as "the operation did not
+	// happen".
+	$journal = array();
+
+	// The root itself. Its parent was made above; this one is made here so
+	// that a refusal can take it away again.
+	if( !is_dir( $root ) )
+	{
+		if( !@mkdir( $root, 0777 ) && !is_dir( $root ) )
+		{
+			if( $dbg ) rtDbg( __FUNCTION__, "can't create ".$root );
+			return false;
+		}
+		$journal[] = array( 'rmdir', $root );
+	}
+
+	// Everything below is measured from the root, so the root has to be what
+	// it was resolved to be. Anything else means a symlink stands somewhere in
+	// it that was not there when it was resolved.
+	if( realpath( $root ) !== $root )
+	{
+		if( $dbg ) rtDbg( __FUNCTION__, "refused, ".$root." is no longer its own path" );
+		rtUndoOpFiles( $journal, $dbg );
+		return false;
+	}
+
+	// Every name is settled before the first file is carried, and settled
+	// again below immediately before each one is used: a name that was free
+	// when the walk started can be taken by the time it is reached, and a
+	// directory on the way down can have become a symlink in the same window.
+	$taken = rtTakenDestination( $files, $root );
 	if( $taken != '' )
 	{
-		if( $dbg ) rtDbg( __FUNCTION__, "refused, destination already exists: ".$taken );
+		if( $dbg ) rtDbg( __FUNCTION__, "refused, destination not available: ".$taken );
+		rtUndoOpFiles( $journal, $dbg );
 		return false;
 	}
 
+	$failed = '';
 	foreach( $files as $file )
 	{
 		$source = $src.$file;
-		$dest = $dst.$file;
-
-		if( !rtMkDir( dirname( $dest ), 0777 ) )
-		{
-			if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dest ) );
-			return false;
-		}
-		// The name was free when the walk started. Anything standing at it
-		// now arrived while the download was being carried, and is not this
-		// operation's to write over.
-		if( rtTakenDestination( array( $file ), $dst ) != '' )
-		{
-			if( $dbg ) rtDbg( __FUNCTION__, "refused, destination already exists: ".$dest );
-			return false;
-		}
-		switch( $op )
+		$dest = rtContainedPath( $root, $file, true, $journal );
+		if( $dest == '' )
+			$failed = "can't reach ".$dst.$file;
+		elseif( rtNameInUse( $dest ) )
+			$failed = "destination already exists: ".$dest;
+		else switch( $op )
 		{
 			case "HardLink":
 			{
 				if( link( $source, $dest ) )
+				{
+					$journal[] = array( 'unlink', $dest );
 					break;
+				}
 			}
 			case "Copy":
 			{
 				if( !copy( $source, $dest ) )
-					return false;
+				{
+					$failed = "can't copy ".$source;
+					break;
+				}
+				$journal[] = array( 'unlink', $dest );
 				break;
 			}
 			case "SoftLink":
 			{
 				if( !symlink( $source, $dest ) )
-					return false;
+				{
+					$failed = "can't link ".$dest;
+					break;
+				}
+				$journal[] = array( 'unlink', $dest );
 				break;
 			}
 			default:
 			{
 				if( !rtMoveFile( $source, $dest, $dbg ) )
-					return false;
+				{
+					$failed = "can't move ".$source;
+					break;
+				}
+				$journal[] = array( 'moveback', $dest, $source );
 				break;
 			}
 		}
+		if( $failed != '' )
+			break;
 	}
-	if( $dbg ) rtDbg( __FUNCTION__, "finished" );
-	return true;
+
+	if( $failed == '' )
+	{
+		if( $dbg ) rtDbg( __FUNCTION__, "finished" );
+		return true;
+	}
+
+	if( $dbg ) rtDbg( __FUNCTION__, "refused, ".$failed );
+	if( !rtUndoOpFiles( $journal, $dbg ) )
+		if( $dbg ) rtDbg( __FUNCTION__, "and it could not be undone in full" );
+	return false;
 }
 
 //------------------------------------------------------------------------------
