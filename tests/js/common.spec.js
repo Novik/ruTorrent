@@ -636,6 +636,39 @@ describe("openExternalURL", () => {
     expect(opened.every((a) => a[1] === "_blank")).toBe(true);
   });
 
+  // window.opener is a handle on this tab, and a handle carries the right to
+  // navigate the window it names from any origin. The destination is remote --
+  // a feed item, a search result, a look-at template -- so it must not get one.
+  it("opens with noopener, so the destination cannot navigate this tab", () => {
+    for (const url of ALLOWED) {
+      expect(window.openExternalURL(url)).toBe(true);
+    }
+    expect(
+      opened.every((a) => typeof a[2] === "string" && a[2].includes("noopener"))
+    ).toBe(true);
+  });
+
+  // A browser that does not know the feature ignores it and hands back a
+  // window all the same, so the handle is cleared on whatever comes back.
+  it("clears the handle on a window a browser hands back anyway", () => {
+    const handle = { opener: window };
+    window.open = () => handle;
+    expect(window.openExternalURL("https://example.com/")).toBe(true);
+    expect(handle.opener).toBe(null);
+  });
+
+  it("does not fail when the handle refuses to be written", () => {
+    const handle = {};
+    Object.defineProperty(handle, "opener", {
+      get: () => window,
+      set: () => {
+        throw new Error("cross-origin");
+      },
+    });
+    window.open = () => handle;
+    expect(window.openExternalURL("https://example.com/")).toBe(true);
+  });
+
   it("opens nothing for any other scheme, or for what is not a string", () => {
     for (const url of REFUSED) {
       expect(window.openExternalURL(url)).toBe(false);
