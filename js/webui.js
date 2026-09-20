@@ -97,7 +97,7 @@ var theWebUI = {
 			ondblclick:	function(obj) {
 				const queryUrl = theWebUI.getPeerIpQueryUrl(obj.id);
 				if (queryUrl !== '#')
-					window.open(queryUrl, "_blank");
+					openInNewTab(queryUrl);
 				return false;
 			}
 		},

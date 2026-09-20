@@ -826,7 +826,7 @@ var theSearchEngines =
 	{
 		const q = $("#query").val();
 		if(theSearchEngines.current >= 0)
-			window.open(theSearchEngines.sites[theSearchEngines.current].url + encodeURIComponent(q), "_blank");
+			openInNewTab(theSearchEngines.sites[theSearchEngines.current].url + encodeURIComponent(q));
 		else
 			theWebUI.setTeg(q);
 	},
@@ -1716,6 +1716,30 @@ function isExternalURL(url)
 }
 
 /**
+ * Open an address in a new tab that holds no handle back to this one.
+ *
+ * Without "noopener" the page that opens keeps window.opener, and a window
+ * handle carries the right to navigate the window it names whatever origin
+ * holds it. So a feed item, a search destination or an address lookup could
+ * send the tab ruTorrent is logged in to wherever it liked, with nothing shown
+ * to the user but a second tab opening. The feature is what severs that; a
+ * browser too old to know it hands back a window instead of null, and the
+ * handle is cleared on that by hand.
+ *
+ * @param {string} url the address to open
+ * @returns {Window|null} whatever window.open() gave back
+ */
+function openInNewTab(url)
+{
+	const opened = window.open(url, "_blank", "noopener");
+	if(opened)
+	{
+		try { opened.opener = null; } catch(e) {}
+	}
+	return(opened);
+}
+
+/**
  * Open an address that came from a remote source in a new tab, if it is one
  * this may open at all.
  *
@@ -1729,7 +1753,7 @@ function openExternalURL(url)
 {
 	if(!isExternalURL(url))
 		return(false);
-	window.open(url, "_blank");
+	openInNewTab(url);
 	return(true);
 }
 
