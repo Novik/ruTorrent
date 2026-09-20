@@ -11,55 +11,174 @@
  * the tests one installed settings object per table.
  *
  * php/settings.php builds the table inside the method that interrogates a live
- * daemon, which a test has none of, so the cascade is repeated here. To stop
- * the two drifting apart, versionsCoverEveryMethodFile() asserts that the
- * versions below between them load every php/methods-*.php in the tree; adding
- * a table without teaching these fixtures about it fails that assertion.
+ * daemon, which a test has none of, so the cascade is repeated here -- read out
+ * of php/settings.php rather than transcribed from it. The version gates, the
+ * method file each one loads and the base pair the first gate installs are all
+ * taken from that source, and the version list below is then derived by
+ * building a table either side of every gate and keeping one representative per
+ * distinct result. A gate added there is a table here on the commit that adds
+ * it, with nobody to remember it.
  */
 trait AdditionCallerFixtures
 {
-	/** iVersion => the version string it stands for. */
-	public function supportedVersions()
-	{
-		return array(
-			0x0805 => '0.8.5',
-			0x0809 => '0.8.9',
-			0x0904 => '0.9.4',
-			0x0a02 => '0.10.2',
-			0x1000 => '0.16.0',
-			0x1010 => '0.16.16',
-			0x1012 => '0.16.18',
-		);
-	}
+	/** php/settings.php, read once. */
+	static private $settingsSource = null;
+
+	/** iVersion => the version string it stands for, one per distinct table. */
+	static private $tableVersions = null;
 
 	public function repoRoot()
 	{
 		return realpath(__DIR__ . '/../..');
 	}
 
+	private function settingsSource()
+	{
+		if (self::$settingsSource === null) {
+			self::$settingsSource = file_get_contents($this->repoRoot() . '/php/settings.php');
+		}
+		return self::$settingsSource;
+	}
+
+	/**
+	 * The (operator, iVersion, method file) gates obtain() loads its alias
+	 * files behind, in the order it applies them.
+	 */
+	public function methodFileGates()
+	{
+		preg_match_all('/if\s*\(\s*\$this->iVersion\s*(>=|>|<=|<|==)\s*(0x[0-9a-fA-F]+)\s*\)\s*\{\s*'
+			. 'require_once\s*\(\s*\'(methods-[^\']+)\'\s*\)\s*;/s',
+			$this->settingsSource(), $matches, PREG_SET_ORDER);
+		$gates = array();
+		foreach ($matches as $m) {
+			$gates[] = array('op' => $m[1], 'version' => hexdec($m[2]), 'file' => $m[3]);
+		}
+		return $gates;
+	}
+
+	/**
+	 * The gate and the contents of the pair obtain() assigns to $aliases before
+	 * any method file is merged in.
+	 */
+	public function baseAliasGate()
+	{
+		if (!preg_match('/\$this->iVersion\s*(>=|>)\s*(0x[0-9a-fA-F]+)\s*\)\s*\{\s*'
+			. '\$this->aliases\s*=\s*array\s*\((.*?)\)\s*;/s',
+			$this->settingsSource(), $m)) {
+			return null;
+		}
+		preg_match_all('/"([^"]+)"\s*=>\s*array\(\s*"name"\s*=>\s*"([^"]+)"\s*,\s*'
+			. '"prm"\s*=>\s*(\d+)\s*\)/', $m[3], $entries, PREG_SET_ORDER);
+		$aliases = array();
+		foreach ($entries as $e) {
+			$aliases[$e[1]] = array('name' => $e[2], 'prm' => (int)$e[3]);
+		}
+		return array('op' => $m[1], 'version' => hexdec($m[2]), 'aliases' => $aliases);
+	}
+
+	private function gatePasses($op, $iVersion, $constant)
+	{
+		switch ($op) {
+			case '>=': return $iVersion >= $constant;
+			case '>':  return $iVersion > $constant;
+			case '<=': return $iVersion <= $constant;
+			case '<':  return $iVersion < $constant;
+			case '==': return $iVersion == $constant;
+		}
+		return false;
+	}
+
 	/** The method files php/settings.php loads for $iVersion, in its order. */
 	public function methodFilesFor($iVersion)
 	{
 		$files = array();
-		if ($iVersion < 0x0900) {
-			$files[] = 'methods-pre-0.9.0.php';
-		}
-		if ($iVersion >= 0x0904) {
-			$files[] = 'methods-0.9.4.php';
-		}
-		if ($iVersion >= 0x0a02) {
-			$files[] = 'methods-0.10.2.php';
-		}
-		if ($iVersion >= 0x1000) {
-			$files[] = 'methods-0.16.0.php';
-		}
-		if ($iVersion >= 0x1010) {
-			$files[] = 'methods-0.16.16.php';
-		}
-		if ($iVersion >= 0x1012) {
-			$files[] = 'methods-0.16.18.php';
+		foreach ($this->methodFileGates() as $gate) {
+			if ($this->gatePasses($gate['op'], $iVersion, $gate['version'])) {
+				$files[] = $gate['file'];
+			}
 		}
 		return $files;
+	}
+
+	/** The base pair for $iVersion, before any method file. */
+	public function baseAliasesFor($iVersion)
+	{
+		$base = $this->baseAliasGate();
+		if ($base === null) {
+			return array();
+		}
+		return $this->gatePasses($base['op'], $iVersion, $base['version'])
+			? $base['aliases'] : array();
+	}
+
+	/** The alias table $iVersion produces, without installing it. */
+	public function aliasTableFor($iVersion)
+	{
+		$holder = new AliasTableHolder();
+		$holder->aliases = $this->baseAliasesFor($iVersion);
+		$php = $this->repoRoot() . '/php/';
+		$files = $this->methodFilesFor($iVersion);
+		// The method files assign to $this->aliases, so they are included in a
+		// scope where that is the table being built -- and with include rather
+		// than require_once, because one process builds several tables.
+		$load = Closure::bind(function () use ($php, $files) {
+			foreach ($files as $file) {
+				include($php . $file);
+			}
+		}, $holder, 'AliasTableHolder');
+		$load();
+		return $holder->aliases;
+	}
+
+	/**
+	 * Every iVersion the gates distinguish: one either side of each of them,
+	 * which is where a table can change, plus one below the lowest.
+	 */
+	private function probeVersions()
+	{
+		$constants = array();
+		$base = $this->baseAliasGate();
+		if ($base !== null) {
+			$constants[] = $base['version'];
+		}
+		foreach ($this->methodFileGates() as $gate) {
+			$constants[] = $gate['version'];
+		}
+		$probes = array();
+		foreach ($constants as $c) {
+			$probes[] = $c - 1;
+			$probes[] = $c;
+			$probes[] = $c + 1;
+		}
+		$probes = array_unique($probes);
+		sort($probes);
+		return $probes;
+	}
+
+	/**
+	 * iVersion => version string, one entry per distinct alias table php/ can
+	 * produce. The representative is the lowest iVersion that produces it.
+	 */
+	public function supportedVersions()
+	{
+		if (self::$tableVersions !== null) {
+			return self::$tableVersions;
+		}
+		$seen = array();
+		$versions = array();
+		foreach ($this->probeVersions() as $iVersion) {
+			$table = $this->aliasTableFor($iVersion);
+			ksort($table);
+			$key = md5(serialize($table));
+			if (isset($seen[$key])) {
+				continue;
+			}
+			$seen[$key] = true;
+			$versions[$iVersion] = sprintf('0.%d.%d', ($iVersion >> 8) & 0xff, $iVersion & 0xff);
+		}
+		ksort($versions);
+		self::$tableVersions = $versions;
+		return $versions;
 	}
 
 	/** Installs settings for $iVersion and returns the object. */
@@ -70,22 +189,7 @@ trait AdditionCallerFixtures
 		$settings->iVersion = $iVersion;
 		$settings->apiVersion = 0;
 		$settings->directory = sys_get_temp_dir();
-		$settings->aliases = ($iVersion > 0x0806) ? array(
-			'd.set_peer_exchange'   => array('name' => 'd.peer_exchange.set', 'prm' => 0),
-			'd.set_connection_seed' => array('name' => 'd.connection_seed.set', 'prm' => 0),
-		) : array();
-
-		$php = $this->repoRoot() . '/php/';
-		$files = $this->methodFilesFor($iVersion);
-		// The method files assign to $this->aliases, so they are included in
-		// the settings object's own scope -- and with include rather than
-		// require_once, because one process installs several tables.
-		$load = Closure::bind(function () use ($php, $files) {
-			foreach ($files as $file) {
-				include($php . $file);
-			}
-		}, $settings, 'rTorrentSettings');
-		$load();
+		$settings->aliases = $this->aliasTableFor($iVersion);
 
 		$property = new ReflectionProperty('rTorrentSettings', 'theSettings');
 		$property->setAccessible(true);
@@ -137,4 +241,10 @@ trait AdditionCallerFixtures
 		$method->setAccessible(true);
 		return $method->invoke(null, $addition);
 	}
+}
+
+/** The scope a method file's "$this->aliases = array_merge(...)" runs in. */
+class AliasTableHolder
+{
+	public $aliases = array();
 }

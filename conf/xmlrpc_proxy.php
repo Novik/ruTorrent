@@ -34,11 +34,27 @@
 		'd.directory_base.set',     // base directory
 		'd.priority.set',           // priority
 		'd.throttle_name.set',      // throttle group
-		'd.views.push_back_unique', // view membership
+		'd.connection_seed.set',    // connection type
+		'd.views.push_back_unique', // view membership, creating the view
+		'view.set_visible',         // view membership, for a view that exists
 		'd.delete_tied',            // delete the .torrent on remove
 
 		// Actions a client applies across a view: "pause all", "resume all".
 		'd.open', 'd.close', 'd.start', 'd.stop',
+
+		// The pre-0.9.4 spellings of four of the per-download settings above,
+		// for a client in front of a daemon php/methods-0.9.4.php does not
+		// rename for. Same commands and the same arguments: a value the daemon
+		// stores or looks up, never one it parses.
+		//
+		// The pre-0.9.4 directory spellings are not here on purpose. Only the
+		// names in XMLRPCProxy::$directoryCommands are held to $topDirectory,
+		// so a spelling added here and not there would name a write target
+		// nothing confines.
+		'd.set_custom',             // d.custom.set
+		'd.set_custom3',            // d.custom3.set
+		'd.set_throttle_name',      // d.throttle_name.set
+		'd.set_connection_seed',    // d.connection_seed.set
 	);
 
 	// Let a caller name a path on rtorrent's own filesystem in load.start or
