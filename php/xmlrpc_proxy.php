@@ -101,6 +101,33 @@ class XMLRPCProxy
 		                          // own untrusted gate never sees it
 	);
 
+	// The name an older daemon registers for a command the list above may
+	// refuse under its current name. php/methods-0.9.4.php is where these come
+	// from: it is what rXMLRPCCommand puts every call through, so it is this
+	// tree's own statement of which spelling a given daemon takes.
+	//
+	// Resolved before the list is consulted, so a family is refused under every
+	// name the daemon answers to, and so a deployment that narrows the list
+	// still gets the list it asked for rather than these as well.
+	//
+	// Matched whole, not as prefixes: set_session is the legacy spelling of
+	// session.path.set, while set_session_lock and set_session_on_completion
+	// are different settings the list does not refuse, and a prefix would take
+	// them too.
+	private static $legacyNames = array(
+		'system.method.erase'     => 'method.erase',
+		'system.method.get'       => 'method.get',
+		'system.method.has_key'   => 'method.has_key',
+		'system.method.insert'    => 'method.insert',
+		'system.method.list_keys' => 'method.list_keys',
+		'system.method.set'       => 'method.set',
+		'system.method.set_key'   => 'method.set_key',
+		'set_directory'           => 'directory.default.set',
+		'set_session'             => 'session.path.set',
+		'get_scgi_dont_route'     => 'network.scgi.dont_route',
+		'set_scgi_dont_route'     => 'network.scgi.dont_route.set',
+	);
+
 	// Methods rtorrent refuses to an untrusted caller that a remote client
 	// still needs, with the shape each argument has to have. A call that
 	// matches is re-emitted from the parsed parts and sent trusted; anything
@@ -307,6 +334,14 @@ class XMLRPCProxy
 					if($command !== null)
 						return self::reject("rejected (not allowed on this connection): ".
 							$methodName." carrying ".self::logValue($command), $command);
+
+					// Same reason, for a command that is allowed but whose
+					// directory is not: stripping it refuses it on the
+					// single-call path, and here nothing is stripped.
+					$command = self::refusedDirectoryCommand($value, $directory);
+					if($command !== null)
+						return self::reject("rejected (outside the directory this server allows): ".
+							$methodName." carrying ".self::logValue($value), $command);
 				}
 
 				return self::forward($rawData, false, "untrusted: ".$methodName." (".
@@ -384,6 +419,12 @@ class XMLRPCProxy
 						return self::reject("rejected (not allowed on this connection): ".
 							"system.multicall carrying ".self::logValue($member['name']).
 							" carrying ".self::logValue($command), $command);
+
+					$command = self::refusedDirectoryCommand($value, $directory);
+					if($command !== null)
+						return self::reject("rejected (outside the directory this server allows): ".
+							"system.multicall carrying ".self::logValue($member['name']).
+							" carrying ".self::logValue($value), $command);
 				}
 			}
 		}
@@ -424,10 +465,14 @@ class XMLRPCProxy
 
 	/**
 	 * Is this command name in a refused family? Prefix match, so a version that
-	 * spells it execute2 or schedule.remove is covered by the same entry.
+	 * spells it execute2 or schedule.remove is covered by the same entry, and
+	 * a name an older daemon registers is read as the command it names first,
+	 * so the refusal follows the command rather than one of its spellings.
 	 */
 	private static function isDenied($name, $deny)
 	{
+		if(isset(self::$legacyNames[$name]))
+			$name = self::$legacyNames[$name];
 		foreach($deny as $prefix)
 			if(strncmp($name, $prefix, strlen($prefix)) === 0)
 				return true;
@@ -445,6 +490,29 @@ class XMLRPCProxy
 		if($separator === false)
 			return null;
 		return trim(substr($paramValue, 0, $separator));
+	}
+
+	/**
+	 * The name of a confined command this parameter carries, or null when it
+	 * carries none.
+	 *
+	 * Asked only of a parameter the rebuild declined. A confined command whose
+	 * directory is inside the stated boundary is rebuilt and never reaches
+	 * here, so one that does named a directory outside it, or an argument this
+	 * side could not read -- and an open question about a write target is a no,
+	 * the same answer directoryIsAllowed() gives.
+	 *
+	 * A caller that stated no boundary is not policed, which is the behaviour
+	 * every caller had before the confinement existed.
+	 */
+	private static function refusedDirectoryCommand($value, $directory)
+	{
+		if($directory === null)
+			return null;
+		$command = self::commandName($value);
+		if(($command === null) || !in_array($command, self::$directoryCommands, true))
+			return null;
+		return $command;
 	}
 
 	/**
