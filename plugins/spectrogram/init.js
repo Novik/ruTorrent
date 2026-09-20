@@ -25,7 +25,7 @@ if (plugin.canChangeMenu()) {
 					if ($.inArray( ext.toLowerCase(), plugin.extensions )==-1)
 						fno = null;
 				}
-				theContextMenu.add( [theUILang.exsox,  (fno==null) ? null : "theWebUI.filesox('" + theWebUI.dID + "',"+fno+")"] );
+				theContextMenu.add( [theUILang.exsox,  (fno==null) ? null : () => theWebUI.filesox(theWebUI.dID,fno)] );
 			}
 			return true;
 		}

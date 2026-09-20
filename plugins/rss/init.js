@@ -471,28 +471,28 @@ theWebUI.createRSSMenuPrim = function()
 			if(actLabelId in this.rssGroups)
 			{
 				entries = entries.concat(this.rssGroups[actLabelId].enabled==1 ? [
-					[ theUILang.rssMenuGroupDisable, "theWebUI.RSSGroupSetStatus(0)"],
-					[ theUILang.rssMenuGroupRefresh, "theWebUI.RSSGroupRefresh()"]
+					[ theUILang.rssMenuGroupDisable, () => theWebUI.RSSGroupSetStatus(0)],
+					[ theUILang.rssMenuGroupRefresh, () => theWebUI.RSSGroupRefresh()]
 				] : [
-					[ theUILang.rssMenuGroupEnable, (this.rssGroups[actLabelId].cnt==0) ? null : "theWebUI.RSSGroupSetStatus(1)"],
+					[ theUILang.rssMenuGroupEnable, (this.rssGroups[actLabelId].cnt==0) ? null : () => theWebUI.RSSGroupSetStatus(1)],
 					[ theUILang.rssMenuGroupRefresh ]
 				]).concat([
-					[ theUILang.rssMenuGroupEdit, "theWebUI.RSSEditGroup()"],
-					[ theUILang.rssMenuGroupDelete, "theWebUI.RSSGroupDelete()"],
-					[ theUILang.rssMenuGroupContentsDelete, "theWebUI.RSSGroupDeleteContents()"]
+					[ theUILang.rssMenuGroupEdit, () => theWebUI.RSSEditGroup()],
+					[ theUILang.rssMenuGroupDelete, () => theWebUI.RSSGroupDelete()],
+					[ theUILang.rssMenuGroupContentsDelete, () => theWebUI.RSSGroupDeleteContents()]
 				]);
 			}
 			else
 			{
 				entries = entries.concat(this.rssLabels[actLabelId].enabled==1 ? [
-					[ theUILang.rssMenuDisable, "theWebUI.RSSToggleStatus()"],
-					[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"]
+					[ theUILang.rssMenuDisable, () => theWebUI.RSSToggleStatus()],
+					[ theUILang.rssMenuRefresh, () => theWebUI.RSSRefresh()]
 				] : [
-					[ theUILang.rssMenuEnable, "theWebUI.RSSToggleStatus()"],
+					[ theUILang.rssMenuEnable, () => theWebUI.RSSToggleStatus()],
 					[ theUILang.rssMenuRefresh ]
 				]).concat([
-					[ theUILang.rssMenuEdit, "theWebUI.RSSEdit()"],
-					[ theUILang.rssMenuDelete, "theWebUI.RSSDelete()"]
+					[ theUILang.rssMenuEdit, () => theWebUI.RSSEdit()],
+					[ theUILang.rssMenuDelete, () => theWebUI.RSSDelete()]
 				]);
 			}
 		}
@@ -534,10 +534,10 @@ theWebUI.createRSSMenu = function(e, id)
 	{
 		if(plugin.canChangeMenu())
 		{
-			theContextMenu.add([ theUILang.rssMenuLoad, "theWebUI.RSSLoad()"]);
-			theContextMenu.add([ theUILang.rssMenuOpen, "theWebUI.RSSOpen()"]);
-			theContextMenu.add([ theUILang.rssMenuAddToFilter, "theWebUI.RSSAddToFilter()"]);
-			theContextMenu.add([CMENU_CHILD, theUILang.rssMarkAs, [ [ theUILang.rssAsLoaded, "theWebUI.RSSMarkState(1)"], [ theUILang.rssAsUnloaded, "theWebUI.RSSMarkState(0)"] ]]);
+			theContextMenu.add([ theUILang.rssMenuLoad, () => theWebUI.RSSLoad()]);
+			theContextMenu.add([ theUILang.rssMenuOpen, () => theWebUI.RSSOpen()]);
+			theContextMenu.add([ theUILang.rssMenuAddToFilter, () => theWebUI.RSSAddToFilter()]);
+			theContextMenu.add([CMENU_CHILD, theUILang.rssMarkAs, [ [ theUILang.rssAsLoaded, () => theWebUI.RSSMarkState(1)], [ theUILang.rssAsUnloaded, () => theWebUI.RSSMarkState(0)] ]]);
 		}
 		else
 			theContextMenu.hide();

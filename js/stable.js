@@ -292,11 +292,11 @@ dxSTable.prototype.onRightClick = function(e)
         if((e.which==3) && !this.isMoving)
         {
 		theContextMenu.clear();
-		for(var i = 0; i<this.colsdata.length; i++)
+		for(let i = 0; i<this.colsdata.length; i++)
 		{
 			if(this.colOrder[i])
 			{
-				var a = [this.colsdata[i].text, "theWebUI.getTable('"+this.prefix+"').toggleColumn("+i+")"];
+				var a = [this.colsdata[i].text, () => theWebUI.getTable(this.prefix).toggleColumn(i)];
 				if(this.colsdata[i].enabled)
 					a.unshift(CMENU_SEL);
 				theContextMenu.add(a);

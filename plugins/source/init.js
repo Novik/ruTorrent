@@ -28,7 +28,7 @@ if(plugin.canChangeMenu())
 		{
 			var el = theContextMenu.get( theUILang.Properties );
 			if( el )
-				theContextMenu.add( el, [theUILang.getSource, "theWebUI.getSource()"] );
+				theContextMenu.add( el, [theUILang.getSource, () => theWebUI.getSource()] );
 		}
 	}
 }

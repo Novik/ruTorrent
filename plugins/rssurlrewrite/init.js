@@ -233,7 +233,7 @@ if(plugin.canChangeMenu())
 		{
 			let entries = plugin.createRSSMenuPrim.call(this);
 			entries.push([CMENU_SEP]);
-			entries.push([theUILang.rssRulesManager, "theWebUI.showRules()"]);
+			entries.push([theUILang.rssRulesManager, () => theWebUI.showRules()]);
 			return entries;
 		}
 		return plugin.createRSSMenuPrim.call(this);
@@ -256,7 +256,7 @@ if(plugin.canChangeMenu())
 		{
 			var el = theContextMenu.get( theUILang.rssMenuAddToFilter );
 			if( el && $type(theWebUI.rssItems[id]))
-				theContextMenu.add( el, [theUILang.rssURLInfo, "theWebUI.showURLInfo('"+id+"')"] );
+				theContextMenu.add( el, [theUILang.rssURLInfo, () => theWebUI.showURLInfo(id)] );
 		}
 	}
 }

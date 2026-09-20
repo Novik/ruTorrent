@@ -478,7 +478,7 @@ dxSTable.prototype.tasksSelect = function(e,id)
 				plugin.fromBackground( id );
 			} : null ]);
 		}
-		theContextMenu.add([theUILang.tskRemove, this.selCount ? "theWebUI.getTable('tasks').tasksRemove()" : null ]);
+		theContextMenu.add([theUILang.tskRemove, this.selCount ? () => theWebUI.getTable('tasks').tasksRemove() : null ]);
 		theContextMenu.add([CMENU_SEP]);
 		theContextMenu.add([theUILang.tskRefresh, plugin.refreshTasks]);
 		theContextMenu.show(e.clientX,e.clientY);

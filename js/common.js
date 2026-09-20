@@ -849,15 +849,15 @@ var theSearchEngines =
 				theContextMenu.add([CMENU_SEP]);
 			else
 			if(theSearchEngines.current==ndx)
-				theContextMenu.add([CMENU_SEL, val.name, "theSearchEngines.set("+ndx+")"]);
+				theContextMenu.add([CMENU_SEL, val.name, () => theSearchEngines.set(ndx)]);
 			else
-				theContextMenu.add([val.name, "theSearchEngines.set("+ndx+")"]);
+				theContextMenu.add([val.name, () => theSearchEngines.set(ndx)]);
 		});
 		theContextMenu.add([CMENU_SEP]);
 		if(theSearchEngines.current==-1)
-			theContextMenu.add([CMENU_SEL, theUILang.innerSearch, "theSearchEngines.set(-1)"]);
+			theContextMenu.add([CMENU_SEL, theUILang.innerSearch, () => theSearchEngines.set(-1)]);
 		else
-			theContextMenu.add([theUILang.innerSearch, "theSearchEngines.set(-1)"]);
+			theContextMenu.add([theUILang.innerSearch, () => theSearchEngines.set(-1)]);
 		var offs = $("#search").offset();
 		theContextMenu.show(offs.left-5,offs.top+5+$("#search").height());
         }
