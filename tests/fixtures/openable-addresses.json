@@ -1,0 +1,326 @@
+[
+    {
+        "url": "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567",
+        "client": true,
+        "server": true,
+        "why": "a magnet link, the only address some indexers publish"
+    },
+    {
+        "url": "magnet:?xt=urn:btih:AA&dn=x%20y&tr=udp://t.example.org:80",
+        "client": true,
+        "server": true,
+        "why": "a magnet link carrying a tracker and a display name"
+    },
+    {
+        "url": "ftp://ftp.example.org/pub/a.torrent",
+        "client": true,
+        "server": true,
+        "why": "an ftp resource"
+    },
+    {
+        "url": "ftps://ftp.example.org/pub/b.torrent",
+        "client": true,
+        "server": true,
+        "why": "an ftps resource"
+    },
+    {
+        "url": "ftps:",
+        "client": true,
+        "server": true,
+        "why": "ftps is not a special scheme, so it takes an opaque body"
+    },
+    {
+        "url": "https://user:passkey@tracker.example.org/dl/c.torrent",
+        "client": true,
+        "server": true,
+        "why": "a passkey carried as userinfo"
+    },
+    {
+        "url": "//tracker.example.org/dl/d.torrent",
+        "client": true,
+        "server": true,
+        "why": "scheme-relative: takes the scheme of the page"
+    },
+    {
+        "url": "http://my_tracker.example.org/dl/e.torrent",
+        "client": true,
+        "server": true,
+        "why": "an underscore in the host"
+    },
+    {
+        "url": "//my_tracker.example.org/dl/e.torrent",
+        "client": true,
+        "server": true,
+        "why": "an underscore in the host, scheme-relative"
+    },
+    {
+        "url": "//_leading.example.org/dl/x.torrent",
+        "client": true,
+        "server": true,
+        "why": "a host starting with an underscore"
+    },
+    {
+        "url": "//-leading.example.org/dl/x.torrent",
+        "client": true,
+        "server": true,
+        "why": "a host starting with a hyphen"
+    },
+    {
+        "url": "//%41.example.org/dl/x.torrent",
+        "client": true,
+        "server": true,
+        "why": "a percent-escape in the host"
+    },
+    {
+        "url": "http://[2001:db8::1]/dl/f.torrent",
+        "client": true,
+        "server": true,
+        "why": "an ipv6 literal host"
+    },
+    {
+        "url": "//[2001:db8::1]:8443/dl/f.torrent",
+        "client": true,
+        "server": true,
+        "why": "an ipv6 literal host with a port, scheme-relative"
+    },
+    {
+        "url": "https://tracker.example.org?id=8",
+        "client": true,
+        "server": true,
+        "why": "a query with no path"
+    },
+    {
+        "url": "https://tracker.example.org./dl/g.torrent",
+        "client": true,
+        "server": true,
+        "why": "a trailing dot on the host"
+    },
+    {
+        "url": "https://tracker.example.org:8443/dl/h.torrent",
+        "client": true,
+        "server": true,
+        "why": "an explicit port"
+    },
+    {
+        "url": "https://tracker.example.org:/dl/h.torrent",
+        "client": true,
+        "server": true,
+        "why": "a colon with no port after it"
+    },
+    {
+        "url": "http://xn--bcher-kva.example/dl/i.torrent",
+        "client": true,
+        "server": true,
+        "why": "a punycode host"
+    },
+    {
+        "url": "http://127.0.0.1:8080/dl/j.torrent",
+        "client": true,
+        "server": true,
+        "why": "a bare ipv4 host"
+    },
+    {
+        "url": "HTTPS://TRACKER.EXAMPLE.ORG/dl/k.torrent",
+        "client": true,
+        "server": true,
+        "why": "the scheme and host in upper case"
+    },
+    {
+        "url": "  https://tracker.example.org/dl/l.torrent",
+        "client": true,
+        "server": true,
+        "why": "leading whitespace, which the parser trims"
+    },
+    {
+        "url": "ht\ttps://tracker.example.org/dl/m.torrent",
+        "client": true,
+        "server": true,
+        "why": "a tab inside the scheme, which the parser removes"
+    },
+    {
+        "url": "https://tracker.example.org/dl.php?q=a b",
+        "client": true,
+        "server": true,
+        "why": "an unencoded space in the query, which the parser escapes"
+    },
+    {
+        "url": "http://",
+        "client": false,
+        "server": false,
+        "why": "a scheme with no host at all"
+    },
+    {
+        "url": "https://?q=1",
+        "client": false,
+        "server": false,
+        "why": "a query where the host should be"
+    },
+    {
+        "url": "http://:8080/p",
+        "client": false,
+        "server": false,
+        "why": "a port with no host"
+    },
+    {
+        "url": "http://user@/p",
+        "client": false,
+        "server": false,
+        "why": "userinfo with no host"
+    },
+    {
+        "url": "https://tracker example.org/x",
+        "client": false,
+        "server": false,
+        "why": "an unencoded space in the host"
+    },
+    {
+        "url": "https://tracker<example.org/x",
+        "client": false,
+        "server": false,
+        "why": "a code point the host parser forbids"
+    },
+    {
+        "url": "https://tracker|example.org/x",
+        "client": false,
+        "server": false,
+        "why": "a code point the host parser forbids"
+    },
+    {
+        "url": "https://tracker%zz.example.org/x",
+        "client": false,
+        "server": false,
+        "why": "a percent-escape the host parser cannot read"
+    },
+    {
+        "url": "https://tracker.example.org:65536/x",
+        "client": false,
+        "server": false,
+        "why": "a port above 65535"
+    },
+    {
+        "url": "https://tracker.example.org:8o80/x",
+        "client": false,
+        "server": false,
+        "why": "a port that is not a number"
+    },
+    {
+        "url": "https://[bogus]/x",
+        "client": false,
+        "server": false,
+        "why": "brackets that do not hold an ipv6 address"
+    },
+    {
+        "url": "https://[2001:db8::1/x",
+        "client": false,
+        "server": false,
+        "why": "an ipv6 literal with no closing bracket"
+    },
+    {
+        "url": "//[bogus]/x",
+        "client": false,
+        "server": false,
+        "why": "brackets that do not hold an ipv6 address, scheme-relative"
+    },
+    {
+        "url": "//tracker example.org/x",
+        "client": false,
+        "server": false,
+        "why": "an unencoded space in the host, scheme-relative"
+    },
+    {
+        "url": "//tracker.example.org:99999/x",
+        "client": false,
+        "server": false,
+        "why": "a port above 65535, scheme-relative"
+    },
+    {
+        "url": "javascript:window.x=1",
+        "client": false,
+        "server": false,
+        "why": "runs in the origin of the page"
+    },
+    {
+        "url": "JaVaScRiPt:window.x=1",
+        "client": false,
+        "server": false,
+        "why": "the same, spelled in mixed case"
+    },
+    {
+        "url": "  javascript:window.x=1",
+        "client": false,
+        "server": false,
+        "why": "the same, behind whitespace the parser trims"
+    },
+    {
+        "url": "java\tscript:window.x=1",
+        "client": false,
+        "server": false,
+        "why": "the same, behind a tab the parser removes"
+    },
+    {
+        "url": "data:text/html,<b>x</b>",
+        "client": false,
+        "server": false,
+        "why": "brings its own document"
+    },
+    {
+        "url": "file:///etc/passwd",
+        "client": false,
+        "server": false,
+        "why": "not a web resource"
+    },
+    {
+        "url": "mailto:someone@example.org",
+        "client": false,
+        "server": false,
+        "why": "not a web resource"
+    },
+    {
+        "url": "vbscript:msgbox(1)",
+        "client": false,
+        "server": false,
+        "why": "not a web resource"
+    },
+    {
+        "url": "/rtorrent/plugins/rss/rss.php",
+        "client": true,
+        "server": false,
+        "why": "a path on the panel itself"
+    },
+    {
+        "url": "some/page.html",
+        "client": true,
+        "server": false,
+        "why": "a path relative to the panel"
+    },
+    {
+        "url": "a.torrent",
+        "client": true,
+        "server": false,
+        "why": "a file name relative to the panel"
+    },
+    {
+        "url": "#frag",
+        "client": true,
+        "server": false,
+        "why": "a fragment of the panel page"
+    },
+    {
+        "url": "?q=1",
+        "client": true,
+        "server": false,
+        "why": "a query on the panel page"
+    },
+    {
+        "url": "not a url at all",
+        "client": true,
+        "server": false,
+        "why": "text that is not an address"
+    },
+    {
+        "url": "",
+        "client": false,
+        "server": false,
+        "why": "the empty string"
+    }
+]

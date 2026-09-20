@@ -211,6 +211,11 @@ function rssXpath($data)
 		libxml_use_internal_errors(false);
 		libxml_clear_errors();
 		$xpath = new DOMXPath($doc);
+		// rss.php asks an item for dc:date when it has no pubDate. A plain
+		// RSS 2.0 feed has no reason to declare the dc prefix, and an XPath
+		// expression naming a prefix the engine does not know raises a
+		// warning for every item it is asked about.
+		$xpath->registerNamespace('dc', 'http://purl.org/dc/elements/1.1/');
 		$xText = function ($xpathExprs, &$ctx = null) use (&$xpath) {
 			$text = '';
 			foreach ($xpathExprs as $path) {
