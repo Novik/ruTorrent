@@ -6,6 +6,72 @@ require_once( "../../php/rtorrent.php" );
 require_once( './util_rt.php' );
 
 //------------------------------------------------------------------------------
+// Where a download's data sits now, and where a move would put it
+//------------------------------------------------------------------------------
+function rtDataDirPaths( $base_path, $base_file, $base_name, $dest_path,
+	$add_path, $is_multy_file )
+{
+	// $base_path names the data itself: a file, or the directory a multi file
+	// download's files sit in. What a move carries is what that stands in.
+	$base_path = rtRemoveTailSlash( $base_path );
+	$base_path = rtRemoveLastToken( $base_path, '/' );	// filename or dirname
+	$full_base_path = rtAddTailSlash( $base_path );
+	$full_dest_path = rtAddTailSlash( $dest_path );
+	// Don't use "count( $torrent_files ) > 1" check (there can be one file in a subdir)
+	if( $is_multy_file )
+	{
+		$full_base_path .= rtAddTailSlash( $base_file );
+		$full_dest_path .= $add_path ? rtAddTailSlash( $base_name ) : "";
+	}
+	return array( $full_base_path, $full_dest_path );
+}
+
+//------------------------------------------------------------------------------
+// The name under $dest_path that something already stands at, for the $hash
+// download, or '' when the destination is free
+//------------------------------------------------------------------------------
+function rtDataDirCollision( $hash, $dest_path, $add_path, $dbg = false )
+{
+	if( $dest_path == '' )
+		return '';
+
+	// Read only: nothing about the download is changed to answer this. A
+	// closed one is not opened to find out either -- rTorrent reports no base
+	// path for it until it is -- so '' comes back and the collision is left to
+	// the move, which is where it was found before this was asked at all.
+	$req = rtExec( array(
+			"d.is_open",
+			"d.get_name",
+			"d.get_base_path",
+			"d.get_base_filename",
+			"d.is_multi_file" ),
+		$hash, $dbg );
+	if( !$req || $req->val[0] == 0 )
+		return '';
+	$base_name = trim( $req->val[1] );
+	$base_path = trim( $req->val[2] );
+	$base_file = trim( $req->val[3] );
+	if( $base_path == '' || $base_file == '' )
+		return '';
+
+	list( $full_base_path, $full_dest_path ) = rtDataDirPaths(
+		$base_path, $base_file, $base_name, $dest_path,
+		$add_path, ( $req->val[4] != 0 ) );
+
+	// The same two conditions the move applies before it carries anything. A
+	// destination that is where the data already is moves nothing, so every
+	// name being taken there is the download's own doing and not a collision.
+	if( $full_base_path == $full_dest_path || !is_dir( $full_base_path ) )
+		return '';
+
+	$req = rtExec( "f.multicall", array( $hash, "", getCmd( "f.get_path=" ) ), $dbg );
+	if( !$req )
+		return '';
+
+	return rtTakenDestination( $req->val, $full_dest_path );
+}
+
+//------------------------------------------------------------------------------
 // Move torrent data of $hash torrent to new location at $dest_path
 //------------------------------------------------------------------------------
 function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $fast_resume, $dbg = false )
@@ -89,14 +155,6 @@ function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $fast_resume, 
 			if( $dbg ) rtDbg( __FUNCTION__, "base paths are empty" );
 			$is_ok = false;
 		}
-		else {
-			// Make $base_path a really BASE path for downloading data
-			// (not including single file or subdir for multiple files).
-			// Add trailing slash, if none.
-			$base_path = rtRemoveTailSlash( $base_path );
-			$base_path = rtRemoveLastToken( $base_path, '/' );	// filename or dirname
-			$base_path = rtAddTailSlash( $base_path );
-		}
 	}
 
 	// Get list of torrent data files
@@ -126,18 +184,9 @@ function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $fast_resume, 
 	// Move torrent data files to new location
 	if( $is_ok && $move_files )
 	{
-		$full_base_path = $base_path;
-		$full_dest_path = $dest_path;
-		// Don't use "count( $torrent_files ) > 1" check (there can be one file in a subdir)
-		if( $is_multy_file )
-		{
-			// torrent is a directory
-			$full_base_path .= rtAddTailSlash( $base_file );
-			$full_dest_path .= $add_path ? rtAddTailSlash( $base_name ) : "";
-		}
-		else {
-			// torrent is a single file
-		}
+		list( $full_base_path, $full_dest_path ) = rtDataDirPaths(
+			$base_path, $base_file, $base_name, $dest_path,
+			$add_path, $is_multy_file );
 
 		if( $dbg ) rtDbg( __FUNCTION__, "from ".$full_base_path );
 		if( $dbg ) rtDbg( __FUNCTION__, "to   ".$full_dest_path );
@@ -145,7 +194,20 @@ function rtSetDataDir( $hash, $dest_path, $add_path, $move_files, $fast_resume, 
 		if( $full_base_path != $full_dest_path && is_dir( $full_base_path ) )
 		{
 			if( !rtOpFiles( $torrent_files, $full_base_path, $full_dest_path, "Move", $dbg ) )
+			{
+				// The download was stopped and closed above so that rtorrent
+				// would let go of the files. The move did not happen, so the
+				// data is where it has always been and the download can run on
+				// it -- but everything after this point is behind $is_ok, the
+				// restart included. Give it back the way it was found, rather
+				// than leave it stopped with nothing saying why.
+				$restore = array();
+				if( $is_open || $is_active ) $restore[] = "d.open";
+				if( $is_active ) $restore[] = "d.start";
+				if( count( $restore ) > 0 )
+					rtExec( $restore, $hash, $dbg );
 				$is_ok = false;
+			}
 			else {
 				// Recursively remove source dirs without files
 				if( $dbg ) rtDbg( __FUNCTION__, "clean ".$full_base_path );

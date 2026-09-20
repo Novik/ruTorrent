@@ -179,6 +179,28 @@ function rtMoveFile( $src, $dst, $dbg = false )
 }
 
 //------------------------------------------------------------------------------
+// The first name under $dst that something already stands at, or '' when the
+// whole list is free
+//------------------------------------------------------------------------------
+function rtTakenDestination( $files, $dst )
+{
+	if( !is_array( $files ) || $dst == '' )
+		return '';
+	$dst = rtAddTailSlash( $dst );
+	foreach( $files as $file )
+	{
+		$dest = $dst.$file;
+		// A name is taken whatever stands at it. A directory cannot be
+		// written over at all, and a symlink is a name that belongs to
+		// whatever it points at -- writing through it destroys that, and a
+		// dangling one is still somebody's.
+		if( rtIsFile( $dest ) || is_dir( $dest ) || is_link( $dest ) )
+			return $dest;
+	}
+	return '';
+}
+
+//------------------------------------------------------------------------------
 // Make operation an array of files from $src directory to $dst directory
 // ( files in array are relative to $src directory )
 //------------------------------------------------------------------------------
@@ -216,6 +238,18 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 		return false;
 	}
 
+	// Every name is settled before the first file is carried. The refusal
+	// below stands in the middle of the walk, so a download whose second file
+	// collides has had its first one carried already when it fires, and false
+	// then means the download is split between two directories with nothing
+	// left to say where the other half went.
+	$taken = rtTakenDestination( $files, $dst );
+	if( $taken != '' )
+	{
+		if( $dbg ) rtDbg( __FUNCTION__, "refused, destination already exists: ".$taken );
+		return false;
+	}
+
 	foreach( $files as $file )
 	{
 		$source = $src.$file;
@@ -226,12 +260,10 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 			if( $dbg ) rtDbg( __FUNCTION__, "can't create ".dirname( $dest ) );
 			return false;
 		}
-		// Anything already at the destination was not put there by this
-		// operation. The directories above it have just been created, and every
-		// file of the download is still at the source, so a name that is taken
-		// is something else's: another download carried into the same directory,
-		// or a file the user keeps there. Refuse, and say which name stopped it.
-		if( rtIsFile( $dest ) || is_dir( $dest ) || is_link( $dest ) )
+		// The name was free when the walk started. Anything standing at it
+		// now arrived while the download was being carried, and is not this
+		// operation's to write over.
+		if( rtTakenDestination( array( $file ), $dst ) != '' )
 		{
 			if( $dbg ) rtDbg( __FUNCTION__, "refused, destination already exists: ".$dest );
 			return false;
@@ -240,8 +272,8 @@ function rtOpFiles( $files, $src, $dst, $op, $dbg = false )
 		{
 			case "HardLink":
 			{
-				link( $source, $dest );
-				break;
+				if( link( $source, $dest ) )
+					break;
 			}
 			case "Copy":
 			{
