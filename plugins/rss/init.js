@@ -448,53 +448,41 @@ theWebUI.createRSSMenuPrim = function()
 	}
 	let entries = [];
 	entries = [
-		[ theUILang.rssMenuClearHistory, "theWebUI.RSSClearHistory()"],
-		[ theUILang.addRSS, "theDialogManager.toggle('dlgAddRSS')"],
-		[ theUILang.addRSSGroup, "theWebUI.RSSAddGroup()"],
-		[ theUILang.rssMenuManager, "theWebUI.RSSManager()"]
+		[ theUILang.rssMenuClearHistory, () => theWebUI.RSSClearHistory()],
+		[ theUILang.addRSS, () => theDialogManager.toggle('dlgAddRSS')],
+		[ theUILang.addRSSGroup, () => theWebUI.RSSAddGroup()],
+		[ theUILang.rssMenuManager, () => theWebUI.RSSManager()]
 	];
 	const actLabelId = plugin.actRSSLbl();
 	if(actLabelId)
 	{
 		entries.push([CMENU_SEP]);
-		if(!actLabelId)
+		if(actLabelId in this.rssGroups)
 		{
-			entries = entries.concat([
-				[ theUILang.rssMenuDisable ],
-				[ theUILang.rssMenuEdit ],
-				[ theUILang.rssMenuRefresh, "theWebUI.RSSRefresh()"],
-				[ theUILang.rssMenuDelete ]
+			entries = entries.concat(this.rssGroups[actLabelId].enabled==1 ? [
+				[ theUILang.rssMenuGroupDisable, () => theWebUI.RSSGroupSetStatus(0)],
+				[ theUILang.rssMenuGroupRefresh, () => theWebUI.RSSGroupRefresh()]
+			] : [
+				[ theUILang.rssMenuGroupEnable, (this.rssGroups[actLabelId].cnt==0) ? null : () => theWebUI.RSSGroupSetStatus(1)],
+				[ theUILang.rssMenuGroupRefresh ]
+			]).concat([
+				[ theUILang.rssMenuGroupEdit, () => theWebUI.RSSEditGroup()],
+				[ theUILang.rssMenuGroupDelete, () => theWebUI.RSSGroupDelete()],
+				[ theUILang.rssMenuGroupContentsDelete, () => theWebUI.RSSGroupDeleteContents()]
 			]);
 		}
 		else
 		{
-			if(actLabelId in this.rssGroups)
-			{
-				entries = entries.concat(this.rssGroups[actLabelId].enabled==1 ? [
-					[ theUILang.rssMenuGroupDisable, () => theWebUI.RSSGroupSetStatus(0)],
-					[ theUILang.rssMenuGroupRefresh, () => theWebUI.RSSGroupRefresh()]
-				] : [
-					[ theUILang.rssMenuGroupEnable, (this.rssGroups[actLabelId].cnt==0) ? null : () => theWebUI.RSSGroupSetStatus(1)],
-					[ theUILang.rssMenuGroupRefresh ]
-				]).concat([
-					[ theUILang.rssMenuGroupEdit, () => theWebUI.RSSEditGroup()],
-					[ theUILang.rssMenuGroupDelete, () => theWebUI.RSSGroupDelete()],
-					[ theUILang.rssMenuGroupContentsDelete, () => theWebUI.RSSGroupDeleteContents()]
-				]);
-			}
-			else
-			{
-				entries = entries.concat(this.rssLabels[actLabelId].enabled==1 ? [
-					[ theUILang.rssMenuDisable, () => theWebUI.RSSToggleStatus()],
-					[ theUILang.rssMenuRefresh, () => theWebUI.RSSRefresh()]
-				] : [
-					[ theUILang.rssMenuEnable, () => theWebUI.RSSToggleStatus()],
-					[ theUILang.rssMenuRefresh ]
-				]).concat([
-					[ theUILang.rssMenuEdit, () => theWebUI.RSSEdit()],
-					[ theUILang.rssMenuDelete, () => theWebUI.RSSDelete()]
-				]);
-			}
+			entries = entries.concat(this.rssLabels[actLabelId].enabled==1 ? [
+				[ theUILang.rssMenuDisable, () => theWebUI.RSSToggleStatus()],
+				[ theUILang.rssMenuRefresh, () => theWebUI.RSSRefresh()]
+			] : [
+				[ theUILang.rssMenuEnable, () => theWebUI.RSSToggleStatus()],
+				[ theUILang.rssMenuRefresh ]
+			]).concat([
+				[ theUILang.rssMenuEdit, () => theWebUI.RSSEdit()],
+				[ theUILang.rssMenuDelete, () => theWebUI.RSSDelete()]
+			]);
 		}
 	}
 	return entries;
