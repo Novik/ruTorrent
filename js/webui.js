@@ -1175,7 +1175,7 @@ var theWebUI = {
 					else if (id in table.rowdata)
 	                {
 					if(table.getAttr(id, 'snubbed') != 'on')
-      						theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? () => theWebUI.setPeerState('snub') : null]);
+						theContextMenu.add([theUILang.peerSnub, this.isTorrentCommandEnabled('snub',this.dID) ? () => theWebUI.setPeerState('snub') : null]);
 						else
 							theContextMenu.add([theUILang.peerUnsnub, this.isTorrentCommandEnabled('unsnub',this.dID) ? () => theWebUI.setPeerState('unsnub') : null]);
 	      			}
@@ -1274,20 +1274,20 @@ var theWebUI = {
    		{
 	   		if(this.getTable("trk").selCount > 1)
    			{
-      				theContextMenu.add([theUILang.EnableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? () => theWebUI.setTrackerState(theWebUI.dID,1) : null]);
-      				theContextMenu.add([theUILang.DisableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? () => theWebUI.setTrackerState(theWebUI.dID,0) : null]);
+				theContextMenu.add([theUILang.EnableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? () => theWebUI.setTrackerState(theWebUI.dID,1) : null]);
+				theContextMenu.add([theUILang.DisableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? () => theWebUI.setTrackerState(theWebUI.dID,0) : null]);
 	      		}
    			else
    			{
       				if(this.trackers[this.dID][ind].enabled == 0)
 	      			{
-      					theContextMenu.add([theUILang.EnableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? () => theWebUI.setTrackerState(theWebUI.dID,1) : null]);
+					theContextMenu.add([theUILang.EnableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? () => theWebUI.setTrackerState(theWebUI.dID,1) : null]);
 	      				theContextMenu.add([theUILang.DisableTracker]);
          			}
 	      			else
       				{
 	      				theContextMenu.add([theUILang.EnableTracker]);
-      					theContextMenu.add([theUILang.DisableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? () => theWebUI.setTrackerState(theWebUI.dID,0) : null]);
+					theContextMenu.add([theUILang.DisableTracker, this.isTorrentCommandEnabled('trkstate',this.dID) ? () => theWebUI.setTrackerState(theWebUI.dID,0) : null]);
 	         		}
       			}
 			if(theWebUI.systemInfo.rTorrent.iVersion>=0x809)
@@ -1426,7 +1426,7 @@ var theWebUI = {
 		var table = this.getTable("fls");
 		if(table.selCount > 1)
    		{
-      			_bf.push([theUILang.High_priority, () => theWebUI.setPriority(id,2)]);
+			_bf.push([theUILang.High_priority, () => theWebUI.setPriority(id,2)]);
 			_bf.push([theUILang.Normal_priority, () => theWebUI.setPriority(id,1)]);
 			_bf.push([CMENU_SEP]);
 			_bf.push([theUILang.Dont_download, () => theWebUI.setPriority(id,0)]);
@@ -1434,10 +1434,10 @@ var theWebUI = {
    		else
 	   		if(p!=null)
    			{
-   			       	_bf.push([theUILang.High_priority, (p.priority == 2) ? null : () => theWebUI.setPriority(id,2)]);
-	   	        	_bf.push([theUILang.Normal_priority, (p.priority == 1) ? null : () => theWebUI.setPriority(id,1)]);
+				_bf.push([theUILang.High_priority, (p.priority == 2) ? null : () => theWebUI.setPriority(id,2)]);
+				_bf.push([theUILang.Normal_priority, (p.priority == 1) ? null : () => theWebUI.setPriority(id,1)]);
 	   		        _bf.push([CMENU_SEP]);
-   			        _bf.push([theUILang.Dont_download, (p.priority == 0) ? null : () => theWebUI.setPriority(id,0)]);
+				_bf.push([theUILang.Dont_download, (p.priority == 0) ? null : () => theWebUI.setPriority(id,0)]);
 	      		}
 	      	if(_bf.length && this.isTorrentCommandEnabled('setprio',this.dID) )
 	      		theContextMenu.add([CMENU_CHILD, theUILang.Priority, _bf]);
@@ -1451,7 +1451,7 @@ var theWebUI = {
    			{
 				_bf.push([theUILang.prioritizeNormal, () => theWebUI.setPrioritize(id,0)]);
 				_bf.push([CMENU_SEP]);
-      				_bf.push([theUILang.prioritizeFirst, () => theWebUI.setPrioritize(id,1)]);
+				_bf.push([theUILang.prioritizeFirst, () => theWebUI.setPrioritize(id,1)]);
 				_bf.push([theUILang.prioritizeLast, () => theWebUI.setPrioritize(id,2)]);
 			}
    			else
@@ -1459,7 +1459,7 @@ var theWebUI = {
 	   			{
 					_bf.push([theUILang.prioritizeNormal, !p.prioritize ? null : () => theWebUI.setPrioritize(id,0)]);
 					_bf.push([CMENU_SEP]);
-      					_bf.push([theUILang.prioritizeFirst, (p.prioritize == 1) ? null : () => theWebUI.setPrioritize(id,1)]);
+					_bf.push([theUILang.prioritizeFirst, (p.prioritize == 1) ? null : () => theWebUI.setPrioritize(id,1)]);
 					_bf.push([theUILang.prioritizeLast, (p.prioritize == 2) ? null : () => theWebUI.setPrioritize(id,2)]);
 		      		}
 		      	if(_bf.length && this.isTorrentCommandEnabled('setprioritize',this.dID) )
@@ -1573,19 +1573,19 @@ var theWebUI = {
    		{
 			theContextMenu.add([CMENU_SEL, theUILang.Torrents + ": " + table.selCount, () => theWebUI.trtDeselect()]);
 			theContextMenu.add([CMENU_SEP]);
-      			theContextMenu.add([theUILang.Start, () => theWebUI.start()]);
-      			theContextMenu.add([theUILang.Pause, () => theWebUI.pause()]);
-      			theContextMenu.add([theUILang.Stop, () => theWebUI.stop()]);
-      			theContextMenu.add([theUILang.Force_recheck, () => theWebUI.recheck()]);
+			theContextMenu.add([theUILang.Start, () => theWebUI.start()]);
+			theContextMenu.add([theUILang.Pause, () => theWebUI.pause()]);
+			theContextMenu.add([theUILang.Stop, () => theWebUI.stop()]);
+			theContextMenu.add([theUILang.Force_recheck, () => theWebUI.recheck()]);
 			theContextMenu.add([theUILang.peerAdd]);
    		}
    		else
    		{
 			theContextMenu.add([CMENU_SEL, theUILang.Torrents + ": 1", () => theWebUI.trtDeselect()]);
 			theContextMenu.add([CMENU_SEP]);
-   			theContextMenu.add([theUILang.Start, this.isTorrentCommandEnabled("start",id) ? () => theWebUI.start() : null]);
-   			theContextMenu.add([theUILang.Pause, (this.isTorrentCommandEnabled("pause",id) || this.isTorrentCommandEnabled("unpause",id)) ? () => theWebUI.pause() : null]);
-   			theContextMenu.add([theUILang.Stop, this.isTorrentCommandEnabled("stop",id) ? () => theWebUI.stop() : null]);
+			theContextMenu.add([theUILang.Start, this.isTorrentCommandEnabled("start",id) ? () => theWebUI.start() : null]);
+			theContextMenu.add([theUILang.Pause, (this.isTorrentCommandEnabled("pause",id) || this.isTorrentCommandEnabled("unpause",id)) ? () => theWebUI.pause() : null]);
+			theContextMenu.add([theUILang.Stop, this.isTorrentCommandEnabled("stop",id) ? () => theWebUI.stop() : null]);
 			theContextMenu.add([theUILang.Force_recheck, this.isTorrentCommandEnabled("recheck",id) ? () => theWebUI.recheck() : null]);
 			theContextMenu.add([theUILang.peerAdd,
 				(!this.isTorrentCommandEnabled("start",id) &&
@@ -1600,7 +1600,7 @@ var theWebUI = {
    		theContextMenu.add([CMENU_SEP]);
    		var _bf = [];
 		_bf.push([theUILang.New_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? () => theWebUI.newLabel() : null]);
-   		_bf.push([theUILang.Remove_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? () => theWebUI.removeLabel() : null]);
+		_bf.push([theUILang.Remove_label, (table.selCount > 1) || this.isTorrentCommandEnabled("setlabel",id) ? () => theWebUI.removeLabel() : null]);
    		_bf.push([CMENU_SEP]);
 		for(const [torrentLabel, info]  of theWebUI.categoryList.torrentLabelTree.torrentLabels)
 		{
@@ -2379,13 +2379,13 @@ var theWebUI = {
 	                theContextMenu.clear();
 	                var speeds=theWebUI.settings["webui.speedlistdl"].split(",");
 	                if(theWebUI.total.rateDL<=0 || theWebUI.total.rateDL>=327625*1024)
-	                	theContextMenu.add([CMENU_SEL,theUILang.unlimited,() => theWebUI.setDLRate(327625*1024)]);
+				theContextMenu.add([CMENU_SEL,theUILang.unlimited,() => theWebUI.setDLRate(327625*1024)]);
 			else
 		                theContextMenu.add([theUILang.unlimited,() => theWebUI.setDLRate(327625*1024)]);
 			theContextMenu.add([CMENU_SEP]);
 	                for(var i=0; i<speeds.length; i++)
 	                {
-	                	const spd = iv(speeds[i])*1024;
+				const spd = iv(speeds[i])*1024;
 		                if(theWebUI.total.rateDL==spd)
 					theContextMenu.add([CMENU_SEL,theConverter.speed(spd),() => theWebUI.setDLRate(spd)]);
 				else
@@ -2403,13 +2403,13 @@ var theWebUI = {
 	                theContextMenu.clear();
 	                var speeds=theWebUI.settings["webui.speedlistul"].split(",");
 	                if(theWebUI.total.rateUL<=0 || theWebUI.total.rateUL>=327625*1024)
-	                	theContextMenu.add([CMENU_SEL,theUILang.unlimited,() => theWebUI.setULRate(327625*1024)]);
+				theContextMenu.add([CMENU_SEL,theUILang.unlimited,() => theWebUI.setULRate(327625*1024)]);
 			else
 		                theContextMenu.add([theUILang.unlimited,() => theWebUI.setULRate(327625*1024)]);
 			theContextMenu.add([CMENU_SEP]);
 	                for(var i=0; i<speeds.length; i++)
 	                {
-	                	const spd = iv(speeds[i])*1024;
+				const spd = iv(speeds[i])*1024;
 		                if(theWebUI.total.rateUL==spd)
 					theContextMenu.add([CMENU_SEL,theConverter.speed(spd),() => theWebUI.setULRate(spd)]);
 				else
