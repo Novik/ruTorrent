@@ -66,11 +66,11 @@ class PendingQueueTest extends TestCase
 		');
 		file_put_contents($this->tree . '/plugins/erasedata/removewithdata.php', '<?php
 			function erasedataRemoveWithData($hashes, $force) {
-				// The real one writes <hash>.list on success; success is what the
+				// The real one writes <hash>.list2 on success; success is what the
 				// queue reads, so the double decides it per hash.
 				foreach ($hashes as $h) {
 					if (in_array($h, PendingProbe::$erasable, true))
-						file_put_contents(PendingProbe::$listPath . "/" . $h . ".list", "x");
+						file_put_contents(PendingProbe::$listPath . "/" . $h . ".list2", "x");
 					PendingProbe::$erased[] = $h;
 				}
 				return true;
@@ -191,7 +191,7 @@ class PendingQueueTest extends TestCase
 		$this->fresh();
 		$h = $this->hash('d');
 		erasedataQueueRequest($this->listPath, $h, "1");
-		file_put_contents($this->listPath . '/' . $h . '.list', 'x');
+		file_put_contents($this->listPath . '/' . $h . '.list2', 'x');
 		$pending = erasedataPendingHashes($this->listPath, array());
 		$this->assertTrue(!array_key_exists($h, $pending), 'it is not queued again');
 		$this->assertTrue(!is_file($this->marker($h)), 'and its marker is gone');
@@ -239,7 +239,7 @@ class PendingQueueTest extends TestCase
 		PendingProbe::$erasable = array($h);
 		erasedataDrainOnce($this->listPath, array($h => "1"), 10);
 		$this->assertTrue(!is_file($this->marker($h)), 'the marker is cleared');
-		$this->assertTrue(is_file($this->listPath . '/' . $h . '.list'),
+		$this->assertTrue(is_file($this->listPath . '/' . $h . '.list2'),
 			'and the file list the collector consumes is there');
 	}
 
@@ -254,7 +254,7 @@ class PendingQueueTest extends TestCase
 			erasedataDrainOnce($this->listPath, array($h => "1"), 3);
 		$this->assertTrue(!is_file($this->marker($h)),
 			'the third attempt reaches the limit and the request is abandoned');
-		$this->assertTrue(!is_file($this->listPath . '/' . $h . '.list'),
+		$this->assertTrue(!is_file($this->listPath . '/' . $h . '.list2'),
 			'the download and its data are left in place');
 	}
 

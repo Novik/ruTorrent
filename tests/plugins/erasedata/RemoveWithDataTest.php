@@ -88,8 +88,9 @@ class RemoveWithDataTest extends TestCase
 	// setUp() runs once per class, so each test starts from a clean slate here.
 	private function reset()
 	{
-		foreach(glob($this->dir.'/erasedata/*.list') as $f)
-			@unlink($f);
+		foreach(glob($this->dir.'/erasedata/*') as $f)
+			if(is_file($f))
+				@unlink($f);
 		FileUtil::$log = array();
 		rXMLRPCRequest::$responses = array();
 		rXMLRPCRequest::$requested = array();
@@ -112,7 +113,7 @@ class RemoveWithDataTest extends TestCase
 
 	private function listFor($hash)
 	{
-		$f = $this->dir.'/erasedata/'.$hash.'.list';
+		$f = $this->dir.'/erasedata/'.$hash.'.list2';
 		return(is_file($f) ? file($f, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES) : false);
 	}
 
@@ -230,7 +231,7 @@ class RemoveWithDataTest extends TestCase
 
 	private function rawListFor($hash)
 	{
-		$f = $this->dir.'/erasedata/'.$hash.'.list';
+		$f = $this->dir.'/erasedata/'.$hash.'.list2';
 		return(is_file($f) ? file_get_contents($f) : false);
 	}
 
@@ -286,5 +287,115 @@ class RemoveWithDataTest extends TestCase
 		erasedataRemoveWithData(array("A","B"), "1");
 		$this->assertEquals(array("A","B"), rXMLRPCRequest::$erased,
 			'a batch of resolvable downloads is erased in full');
+	}
+
+	// -- the list has to be there before the torrent is not -----------------
+
+	// erasedataRemoveWithData() writes the list and then erases the torrent.
+	// After the erase the list is the only thing that still names the
+	// download's files, so a list that was not written means data on disk that
+	// nothing identifies -- the same end state the two refusals above exist to
+	// avoid, arrived at by not checking a return value.
+
+	private function publishBlocked()
+	{
+		// A plain file where the list directory belongs: every attempt to
+		// create a file under it fails with ENOTDIR, for any user, whatever
+		// the list is named.
+		@rmdir($this->dir.'/erasedata');
+		file_put_contents($this->dir.'/erasedata', "not a directory\n");
+	}
+
+	private function publishUnblocked()
+	{
+		@unlink($this->dir.'/erasedata');
+		@mkdir($this->dir.'/erasedata', 0777, true);
+	}
+
+	public function testTheTorrentIsKeptWhenTheListCannotBeWritten()
+	{
+		$this->reset();
+		$this->publishBlocked();
+		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
+		$this->eraseOk();
+		$result = erasedataRemoveWithData(array("A"), "1");
+		$this->publishUnblocked();
+
+		$this->assertEquals(array(), rXMLRPCRequest::$erased,
+			'a torrent whose file list could not be recorded is not erased');
+		$this->assertTrue($result === false, 'the caller is told the removal did not happen');
+		$this->assertEquals(1, count(FileUtil::$log), 'the failure is logged');
+	}
+
+	public function testOtherHashesAreStillErasedWhenOnePublicationFails()
+	{
+		$this->reset();
+		// The scripted RPC layer answers per command, so both hashes resolve.
+		// Only the first has a directory sitting on its list name.
+		@mkdir($this->dir.'/erasedata', 0777, true);
+		@mkdir($this->dir.'/erasedata/A.list2', 0777, true);
+		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
+		$this->eraseOk();
+		erasedataRemoveWithData(array("A","B"), "1");
+		@rmdir($this->dir.'/erasedata/A.list2');
+
+		$this->assertEquals(array("B"), rXMLRPCRequest::$erased,
+			'the hash that could be recorded is still erased, the other is not');
+	}
+
+	public function testAFailedPublicationLeavesNothingBehind()
+	{
+		$this->reset();
+		@mkdir($this->dir.'/erasedata', 0777, true);
+		@mkdir($this->dir.'/erasedata/A.list2', 0777, true);
+		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
+		$this->eraseOk();
+		erasedataRemoveWithData(array("A"), "1");
+
+		$strays = array_filter(glob($this->dir.'/erasedata/*'), 'is_file');
+		@rmdir($this->dir.'/erasedata/A.list2');
+		$this->assertEquals(array(), array_values($strays),
+			'a publication that failed leaves no half-written list and no temporary file');
+	}
+
+	// A list is published by renaming a fully written temporary file over the
+	// name the collector reads, because the collector is another process and
+	// may read that name at any moment. The last three lines are the base
+	// path, the multi-file flag and the deletion mode, so a list read while it
+	// is being written is not a short list: it is a different one.
+	//
+	// rename() gives the name a different inode. A write in place does not.
+	public function testTheListIsPublishedByRename()
+	{
+		$this->reset();
+		@mkdir($this->dir.'/erasedata', 0777, true);
+		$name = $this->dir.'/erasedata/A.list2';
+		file_put_contents($name, "previous\n");
+		clearstatcache(true, $name);
+		$before = stat($name);
+
+		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
+		$this->eraseOk();
+		erasedataRemoveWithData(array("A"), "1");
+
+		clearstatcache(true, $name);
+		$after = stat($name);
+		$this->assertTrue($after !== false, 'the list is there');
+		$this->assertTrue($before['ino'] !== $after['ino'],
+			'and it is a new inode, so the name was never the file being written');
+		$this->assertEquals(array("/d/name/a.bin","/d/name","1","1"), $this->listFor("A"),
+			'carrying the list, not the file that was there before');
+	}
+
+	public function testNoTemporaryFileSurvivesASuccess()
+	{
+		$this->reset();
+		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
+		$this->eraseOk();
+		erasedataRemoveWithData(array("A"), "1");
+
+		$this->assertEquals(array($this->dir.'/erasedata/A.list2'),
+			array_values(array_filter(glob($this->dir.'/erasedata/*'), 'is_file')),
+			'the list is the only file publication leaves in the directory');
 	}
 }

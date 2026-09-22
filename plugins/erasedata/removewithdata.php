@@ -61,6 +61,37 @@ if(!function_exists('erasedataCollectPaths'))
 			"files" => $files ) );
 	}
 }
+if(!function_exists('erasedataPublishList'))
+{
+	// Put the list where the collector will find it, or publish nothing.
+	//
+	// Written under a temporary name in the same directory and renamed into
+	// place, because the collector is its own process running on rtorrent's
+	// schedule and may read the directory at any moment. It reads the base
+	// path, the multi-file flag and the deletion mode from the last three
+	// lines, so a list that is half written is not a short list: it is a
+	// different one, naming a base of its own.
+	//
+	// The name carries the current format, ".list2". A ".list" is what the
+	// writer that preceded the line-break refusal produced, and update.php
+	// tells the two apart by that name alone.
+	function erasedataPublishList($listPath, $hash, $contents)
+	{
+		$name = $listPath."/".$hash.".list2";
+		$tmp = $name.".".getmypid().".".uniqid('', true).".tmp";
+		$fp = @fopen($tmp, "wb");
+		if($fp===false)
+			return(false);
+		$written = @fwrite($fp, $contents);
+		$ok = ($written === strlen($contents)) && @fflush($fp);
+		if(@fclose($fp)===false)
+			$ok = false;
+		if($ok && @rename($tmp, $name))
+			return(true);
+		@unlink($tmp);
+		return(false);
+	}
+}
 if(!function_exists('erasedataRemoveWithData'))
 {
 	function erasedataRemoveWithData($hashes, $forceDelete)
@@ -114,7 +145,19 @@ if(!function_exists('erasedataRemoveWithData'))
 				FileUtil::toLog("erasedata: a path of ".$h." contains a line break, torrent not erased");
 				continue;
 			}
-			@file_put_contents($listPath."/".$h.".list", implode("\n", $lines)."\n");
+			// The list is what makes the erase recoverable. The torrent is
+			// about to go, and once it has, the list is the only thing left
+			// that names the download's files. So it is published first, every
+			// step of publishing it is checked, and a failure keeps the
+			// torrent: a full disk or a directory that cannot be written would
+			// otherwise erase the download and leave its data behind with
+			// nothing to identify it -- which is what the two refusals above
+			// already decline to do.
+			if(!erasedataPublishList($listPath, $h, implode("\n", $lines)."\n"))
+			{
+				FileUtil::toLog("erasedata: could not record the files of ".$h.", torrent not erased");
+				continue;
+			}
 			$erasable[] = $h;
 		}
 		if(!count($erasable))
