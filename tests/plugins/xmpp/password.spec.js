@@ -92,7 +92,7 @@ describe("xmpp password handling", () => {
   it("leaves the password out of the request when nothing was typed", () => {
     openSettings(SETTINGS);
     const content = sent();
-    expect(content).toContain("jabberJid=someone@jabber.example");
+    expect(content).toContain("jabberJid=someone%40jabber.example");
     expect(content).not.toContain("jabberPasswd");
     expect(content).not.toContain(STORED);
   });
