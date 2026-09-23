@@ -575,7 +575,7 @@ var theWebUI = {
 				if(plugin.help)
 				{
 					theContextMenu.add([CMENU_SEP]);
-					theContextMenu.add([theUILang.Help, () => window.open(plugin.help, '_blank') ]);
+					theContextMenu.add([theUILang.Help, () => openExternalURL(plugin.help) ]);
 				}
 			}
 	   		theContextMenu.show();
