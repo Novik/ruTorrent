@@ -54,17 +54,64 @@ class rCache
 			$allowed = array_merge($allowed,call_user_func(array($class,'cacheClasses')));
 		return($allowed);
 	}
+	// What the walk below may spend. Its shape is chosen by whoever wrote the
+	// cache file, so it cannot be allowed to cost whatever that shape asks
+	// for. An object met twice is recognised and not walked again, but an
+	// array is a value and has no identity to recognise: an array containing
+	// itself -- fifteen bytes of "a:1:{i:0;R:1;}" -- is walked until the
+	// process dies, and a file may also nest deeper than the stack goes or
+	// hold one sub-value at so many places through R: back-references that a
+	// few hundred bytes describe more nodes than can ever be visited.
+	//
+	// So the walk is allowed one node per byte of the file the value came
+	// from, and never fewer than WALK_MIN_NODES. A file pays its own length
+	// for what it asks to have walked: the shortest a node can be written is
+	// two bytes, so no honest file ever reaches its own allowance, while a
+	// file that names one sub-value at a million places buys only the nodes
+	// its R: back-references are written in. What a walk costs is therefore
+	// bounded by what the file costs to read, rather than by the graph the
+	// file describes.
+	//
+	// A file that exceeds either budget is refused, which is the same answer
+	// as a refused class: a miss. Note that a miss is not always rebuilt --
+	// rCookies::load() and rRetrackers::load() return their defaults and
+	// leave the file alone -- so a refused file stays on disk and is walked
+	// again on the next read. That is what keeps the allowance small.
+	const WALK_MAX_DEPTH = 64;
+	const WALK_MIN_NODES = 100000;
+
 	// Whether unserialize() met a class it was not allowed to construct, at
 	// any depth. Such a class comes back as __PHP_Incomplete_Class, which
 	// would fail later and further away if it were handed to the caller.
-	protected static function holdsRefusedClass( $value, $seen = null )
+	// True as well when the value costs more than the budgets above, because
+	// what could not be walked has not been shown to be free of one. $bytes
+	// is the length of the file the value was unserialized from, and $reason
+	// comes back saying which of the three refused it.
+	protected static function holdsRefusedClass( $value, $bytes = 0, &$reason = null )
 	{
-		if(is_null($seen))
-			$seen = new SplObjectStorage();
+		$budget = max(self::WALK_MIN_NODES,$bytes);
+		$reason = null;
+		return(self::walkForRefusedClass($value,new SplObjectStorage(),0,$budget,$reason));
+	}
+	private static function walkForRefusedClass( $value, $seen, $depth, &$budget, &$reason )
+	{
+		if(--$budget < 0)
+		{
+			$reason = 'describes more than a cache file of its size may describe';
+			return(true);
+		}
+		if($depth > self::WALK_MAX_DEPTH)
+		{
+			$reason = 'nests deeper than a cache file may nest';
+			return(true);
+		}
 		if(is_object($value))
 		{
 			if($value instanceof __PHP_Incomplete_Class)
+			{
+				$reason = 'names a class it may not hold';
 				return(true);
+			}
 			if($seen->contains($value))
 				return(false);
 			$seen->attach($value);
@@ -72,7 +119,7 @@ class rCache
 		}
 		if(is_array($value))
 			foreach($value as $item)
-				if(self::holdsRefusedClass($item,$seen))
+				if(self::walkForRefusedClass($item,$seen,$depth+1,$budget,$reason))
 					return(true);
 		return(false);
 	}
@@ -183,9 +230,9 @@ class rCache
 		if($ret!==false)
 		{
 			$tmp = @unserialize($ret,array('allowed_classes'=>self::allowedClasses($rss)));
-			if(self::holdsRefusedClass($tmp))
+			if(self::holdsRefusedClass($tmp,strlen($ret),$reason))
 			{
-				FileUtil::toLog('rCache: '.basename($fname).' names a class it may not hold; not loaded.');
+				FileUtil::toLog('rCache: '.basename($fname).' '.$reason.'; not loaded.');
 				return(false);
 			}
 			if(is_array($tmp))
