@@ -439,8 +439,8 @@ catlist.contextMenuEntries = function(panelId, labelId) {
 	if (panelId === 'psearch' && idIsExTeg(labelId)) {
 		theWebUI.getTable('trt').clearSelection();
 		return plugin.canChangeMenu() ? [
-			[ theUILang.tegRefresh,  "theWebUI.tegRefresh()"],
-			[ theUILang.tegMenuDelete, "theWebUI.extTegDelete()"]
+			[ theUILang.tegRefresh,  () => theWebUI.tegRefresh()],
+			[ theUILang.tegMenuDelete, () => theWebUI.extTegDelete()]
 		] : false;
 	}
 	return plugin.contextMenuEntries(panelId, labelId);
