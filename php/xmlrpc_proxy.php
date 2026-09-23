@@ -69,6 +69,12 @@ class XMLRPCProxy
 	// would be the hole this closes.
 	private static $networkUri = '#^(?:http://|https://|ftp://|magnet:\?)#';
 
+	// The XMLRPC scalar types a parameter's text can sit inside, other than
+	// <string> and <base64>, which extractParamValue() reads first. rtorrent
+	// takes an integer argument as an integer object, so a caller writing one
+	// the ordinary way is writing a value this side has to read.
+	private static $scalarTypes = array('i8', 'int', 'i4', 'boolean', 'double');
+
 	// Multicalls carry commands in the same trailing position, and the same
 	// rebuilding applies — but for these the commands ARE the request, and
 	// most of them are read commands (d.name=, t.url=) that no allowlist
@@ -82,7 +88,7 @@ class XMLRPCProxy
 	// silently, which for a refusal list is the wrong way to fail.
 	//
 	// This does not exist because rtorrent would allow them. It exists because
-	// rtorrent only refuses them from 0.16.10, where UNTRUSTED_CONNECTION is
+	// rtorrent only refuses them from 0.16.9, where UNTRUSTED_CONNECTION is
 	// honoured; below that the header is read and ignored, so "forward it
 	// untrusted" is a plain forward and this list is the only refusal there is.
 	private static $denyPrefixes = array(
@@ -416,13 +422,22 @@ class XMLRPCProxy
 			$built = self::rebuildElevated($xml, $methodName, $elevate[$methodName], $sizeLimitMax);
 			if($built !== null)
 				return self::forward($built, true, "trusted: ".$methodName." (elevated)");
-			return self::forward($rawData, false, "untrusted: ".self::logValue($methodName).
-				" (arguments did not match the allowed shape)");
+
+			// Nothing stands behind this test. The shape and the $sizeLimitMax
+			// ceiling are applied by re-emitting the call from the values this
+			// side read, so a call this side cannot re-emit has had neither
+			// applied to it -- and on a daemon that reads UNTRUSTED_CONNECTION
+			// and ignores it, forwarding those bytes is running them. Refused,
+			// then: every way the reader here and the one in rtorrent can
+			// disagree about an argument otherwise becomes a way past the
+			// ceiling.
+			return self::reject("rejected (arguments did not match the allowed shape): ".
+				self::logValue($methodName), $methodName);
 		}
 
 		// system.multicall's members are calls rather than command strings, so
 		// the checks above did not see them. rtorrent refuses them at inner
-		// dispatch from 0.16.10 — naming the inner method, which is how we know
+		// dispatch from 0.16.9 — naming the inner method, which is how we know
 		// it does — but not before.
 		//
 		// A member is judged the way a top-level call is: by its name, and,
@@ -434,6 +449,17 @@ class XMLRPCProxy
 		{
 			foreach(self::multicallMembers($xml) as $member)
 			{
+				// A member is a struct, and a struct is a dictionary at
+				// dispatch: one methodName and one params. Written twice,
+				// the two are read by different readers — the policy above
+				// reads every params field, the rebuild below keeps the last
+				// — and a local path can sit in the field the policy is not
+				// the one deciding on. Which field rtorrent itself would
+				// take is not something to guess at either.
+				if($member['duplicated'])
+					return self::reject("rejected (a member names methodName or params twice): ".
+						"system.multicall carrying ".self::logValue($member['name']), $member['name']);
+
 				if(self::isDenied($member['name'], $deny))
 					return self::reject("rejected (not allowed on this connection): ".
 						"system.multicall carrying ".self::logValue($member['name']), $member['name']);
@@ -468,9 +494,39 @@ class XMLRPCProxy
 					continue;
 				}
 
+				// A load naming a URI, judged on the URI the way the same call
+				// is judged on its own. This is parameter 1, which the loop
+				// below never reaches: it starts at 2, where a member's
+				// commands begin, so without this the whole rule lived only on
+				// the single-call path. multicallMembers() has already decoded
+				// a base64 parameter, so encoding the path is not a way round
+				// it either.
+				if(!$allowLocalPaths &&
+					in_array($member['name'], self::$uriLoadMethods, true) &&
+					isset($member['params'][1]) &&
+					!preg_match(self::$networkUri, $member['params'][1]))
+					return self::reject("rejected (load from a local path): ".
+						"system.multicall carrying ".self::logValue($member['name']).
+						" ".self::logValue($member['params'][1]), $member['name']);
+
 				if(!in_array($member['name'], self::$multicallMethods, true) &&
 					!in_array($member['name'], self::$sanitizeMethods, true))
+				{
+					// An elevated method as a member, refused on the same terms
+					// as the same call on its own: the rebuild below is what
+					// holds it to its shape and to the ceiling, so a member the
+					// rebuild cannot make is a member nothing holds. Asked after
+					// the command carriers, so that a name is classified here in
+					// the order the single-call path classifies it in.
+					if(isset($elevate[$member['name']]) &&
+						(self::rebuildElevatedMember($member['name'], $member['values'],
+							$elevate[$member['name']], $sizeLimitMax) === null))
+						return self::reject("rejected (arguments did not match the allowed shape): ".
+							"system.multicall carrying ".self::logValue($member['name']),
+							$member['name']);
+
 					continue;
+				}
 
 				// Parameter 0 is the target and parameter 1 the view or the
 				// torrent; commands start at 2, the same position
@@ -505,7 +561,8 @@ class XMLRPCProxy
 			// is a different string, and an unquoted one ends a command at ';'
 			// or a newline and starts another. Everything this side does not
 			// rebuild is copied element for element.
-			$members = self::rebuildSystemMulticall($xml, $safeParams, $directory);
+			$members = self::rebuildSystemMulticall($xml, $safeParams, $directory,
+				$elevate, $sizeLimitMax);
 			return self::forward(($members === null) ? $rawData : $members, false,
 				"untrusted: ".$methodName);
 		}
@@ -528,17 +585,10 @@ class XMLRPCProxy
 		foreach($xml->params->param as $param)
 		{
 			if($index === 1)
-			{
 				// A base64 parameter is still a URI as far as rtorrent is
 				// concerned: it decodes to the string it opens. Read it the
 				// same way, so encoding it is not a way past this.
-				if(isset($param->value->base64))
-				{
-					$decoded = base64_decode((string)$param->value->base64, true);
-					return ($decoded === false) ? '' : $decoded;
-				}
-				return self::extractParamValue($param->value);
-			}
+				return self::extractParamText($param->value);
 			$index++;
 		}
 		return null;
@@ -713,9 +763,23 @@ class XMLRPCProxy
 
 	/**
 	 * The parameters of a call, in order, as the strings rtorrent will read
-	 * them as.
+	 * them as. One this side cannot read is the empty string here, which is
+	 * what extractParamText() is for.
 	 */
 	private static function callParamValues($xml)
+	{
+		$values = array();
+		foreach(self::callArgumentValues($xml) as $value)
+			$values[] = ($value === null) ? '' : $value;
+		return $values;
+	}
+
+	/**
+	 * The same parameters as the values they are rather than as the strings
+	 * they read as, so that a rebuild can tell an argument it could not read
+	 * from an empty one.
+	 */
+	private static function callArgumentValues($xml)
 	{
 		$values = array();
 		if(isset($xml->params->param))
@@ -725,9 +789,12 @@ class XMLRPCProxy
 	}
 
 	/**
-	 * Every member of a system.multicall as array('name' => …, 'params' => …),
-	 * so that one can be judged like any other call rather than smuggled past
-	 * inside a struct — by its name and by what its parameters name.
+	 * Every member of a system.multicall as array('name' => …, 'params' => …,
+	 * 'values' => …), so that one can be judged like any other call rather than
+	 * smuggled past inside a struct — by its name and by what its parameters
+	 * name. 'params' answers what a parameter names, 'values' what it is:
+	 * the same list with a parameter this side could not read left as null,
+	 * for the rebuilds that have to tell that from an empty one.
 	 */
 	private static function multicallMembers($xml)
 	{
@@ -740,11 +807,15 @@ class XMLRPCProxy
 				continue;
 			$name = null;
 			$params = array();
+			$values = array();
+			$seen = array('methodName' => 0, 'params' => 0);
 			foreach($member->struct->member as $field)
 			{
 				if(!isset($field->name))
 					continue;
 				$fieldName = (string)$field->name;
+				if(isset($seen[$fieldName]))
+					$seen[$fieldName]++;
 				if($fieldName === 'methodName')
 					$name = isset($field->value->string)
 						? (string)$field->value->string
@@ -752,10 +823,14 @@ class XMLRPCProxy
 				else
 				if(($fieldName === 'params') && isset($field->value->array->data->value))
 					foreach($field->value->array->data->value as $value)
-						$params[] = self::extractParamValue($value);
+					{
+						$values[] = self::extractParamValue($value);
+						$params[] = self::extractParamText($value);
+					}
 			}
 			if($name !== null)
-				$members[] = array('name' => $name, 'params' => $params);
+				$members[] = array('name' => $name, 'params' => $params, 'values' => $values,
+					'duplicated' => ($seen['methodName'] > 1) || ($seen['params'] > 1));
 		}
 		return $members;
 	}
@@ -781,7 +856,8 @@ class XMLRPCProxy
 	 * call carrying no command parameter is forwarded as it arrived rather
 	 * than re-emitted for no reason.
 	 */
-	private static function rebuildSystemMulticall($xml, $safeParams, $directory)
+	private static function rebuildSystemMulticall($xml, $safeParams, $directory,
+		$elevate, $sizeLimitMax)
 	{
 		if(!isset($xml->params->param->value->array->data->value))
 			return null;
@@ -792,7 +868,8 @@ class XMLRPCProxy
 
 		$changed = false;
 		foreach($xml->params->param->value->array->data->value as $member)
-			$out .= self::rebuildMulticallMember($member, $safeParams, $directory, $changed);
+			$out .= self::rebuildMulticallMember($member, $safeParams, $directory,
+				$elevate, $sizeLimitMax, $changed);
 
 		if(!$changed)
 			return null;
@@ -805,18 +882,22 @@ class XMLRPCProxy
 	 * commands and copied verbatim where they do not. $changed is set when any
 	 * parameter is emitted in bytes other than the ones it arrived in.
 	 */
-	private static function rebuildMulticallMember($member, $safeParams, $directory, &$changed)
+	private static function rebuildMulticallMember($member, $safeParams, $directory,
+		$elevate, $sizeLimitMax, &$changed)
 	{
 		if(!isset($member->struct->member))
 			return $member->asXML();
 
 		$name = null;
 		$params = null;
+		$seen = array('methodName' => 0, 'params' => 0);
 		foreach($member->struct->member as $field)
 		{
 			if(!isset($field->name))
 				continue;
 			$fieldName = (string)$field->name;
+			if(isset($seen[$fieldName]))
+				$seen[$fieldName]++;
 			if($fieldName === 'methodName')
 				$name = isset($field->value->string)
 					? (string)$field->value->string
@@ -826,11 +907,48 @@ class XMLRPCProxy
 				$params = $field->value;
 		}
 
-		if(($name === null) || ($params === null) ||
-			!isset($params->array->data->value) ||
-			(!in_array($name, self::$multicallMethods, true) &&
-				!in_array($name, self::$sanitizeMethods, true)))
+		// decide() refuses a member naming either field twice before anything
+		// is rebuilt. Keeping the same rule here means this reads the field
+		// the policy read, rather than the last one written, whatever calls it.
+		if(($seen['methodName'] > 1) || ($seen['params'] > 1))
 			return $member->asXML();
+
+		if(($name === null) || ($params === null) || !isset($params->array->data->value))
+			return $member->asXML();
+
+		if(!in_array($name, self::$multicallMethods, true) &&
+			!in_array($name, self::$sanitizeMethods, true))
+		{
+			// An elevated method, validated and re-emitted from its own
+			// arguments exactly as the single-call path does it -- the shape
+			// test, the normalisation and the $sizeLimitMax clamp. The trust
+			// that path also grants is not available here: it is a property of
+			// the connection, and one is carrying every other member too. What
+			// is available is the transformation, and on a daemon below
+			// 0.16.9 -- where UNTRUSTED_CONNECTION is read and ignored, so
+			// forwarding untrusted is forwarding -- the transformation is the
+			// only control there is.
+			//
+			// Checked after the command carriers, so that the order the
+			// single-call path classifies a name in is the order used here.
+			if(isset($elevate[$name]))
+			{
+				$values = array();
+				foreach($params->array->data->value as $value)
+					$values[] = self::extractParamValue($value);
+
+				$built = self::rebuildElevatedMember($name, $values,
+					$elevate[$name], $sizeLimitMax);
+				if($built !== null)
+				{
+					if($built !== $member->asXML())
+						$changed = true;
+					return $built;
+				}
+			}
+
+			return $member->asXML();
+		}
 
 		$out = '<value><struct>'
 			. '<member><name>methodName</name><value><string>'
@@ -854,9 +972,7 @@ class XMLRPCProxy
 				continue;
 			}
 
-			$emitted = '<value><string>'
-				. htmlspecialchars($rebuilt, ENT_NOQUOTES, 'UTF-8')
-				. '</string></value>';
+			$emitted = self::emitText($rebuilt);
 			if($emitted !== $value->asXML())
 				$changed = true;
 			$out .= $emitted;
@@ -872,7 +988,7 @@ class XMLRPCProxy
 	 */
 	private static function rebuildElevated($xml, $methodName, $shapes, $sizeLimitMax)
 	{
-		$values = self::callParamValues($xml);
+		$values = self::callArgumentValues($xml);
 
 		if(count($values) !== count($shapes))
 			return null;
@@ -886,50 +1002,145 @@ class XMLRPCProxy
 			$emitted = self::emitArgument($shape, $values[$index], $sizeLimitMax);
 			if($emitted === null)
 				return null;
-			$out .= $emitted;
+			$out .= '<param>' . $emitted . '</param>';
 		}
 
 		return $out . '</params></methodCall>';
 	}
 
+	/**
+	 * The same call as a member of a system.multicall: the same shapes, the
+	 * same arguments emitted from the same validated values, in the struct a
+	 * member arrives in. Null when the arguments do not match, which leaves
+	 * the member as the caller wrote it -- what the single-call path does with
+	 * a call it cannot rebuild.
+	 */
+	private static function rebuildElevatedMember($name, $values, $shapes, $sizeLimitMax)
+	{
+		if(count($values) !== count($shapes))
+			return null;
+
+		$arguments = '';
+		foreach($shapes as $index => $shape)
+		{
+			$emitted = self::emitArgument($shape, $values[$index], $sizeLimitMax);
+			if($emitted === null)
+				return null;
+			$arguments .= $emitted;
+		}
+
+		return '<value><struct>'
+			. '<member><name>methodName</name><value><string>'
+			. htmlspecialchars($name, ENT_NOQUOTES, 'UTF-8')
+			. '</string></value></member>'
+			. '<member><name>params</name><value><array><data>'
+			. $arguments
+			. '</data></array></value></member></struct></value>';
+	}
+
+	/**
+	 * One validated argument, as the <value> element that carries it. The
+	 * caller wraps it in <param> for a call of its own, or puts it straight
+	 * into the member's array for a batched one.
+	 */
 	private static function emitArgument($shape, $value, $sizeLimitMax)
 	{
+		// No argument to emit from. extractParamValue() says so for a value it
+		// could not read, and nothing may be built on one this side never had.
+		if($value === null)
+			return null;
+
 		switch($shape)
 		{
 			case 'hash':
 				if(!preg_match('/^[0-9A-Fa-f]{40}$/', $value))
 					return null;
-				return '<param><value><string>'.strtoupper($value).'</string></value></param>';
+				return '<value><string>'.strtoupper($value).'</string></value>';
 
 			case 'empty':
 				if($value !== '')
 					return null;
-				return '<param><value><string></string></value></param>';
+				return '<value><string></string></value>';
 
 			case 'int':
-				if(!preg_match('/^-?[0-9]{1,18}$/', $value))
+				$number = self::integerValue($value);
+				if($number === null)
 					return null;
-				return '<param><value><i8>'.$value.'</i8></value></param>';
+				return '<value><i8>'.$number.'</i8></value>';
 
 			case 'size':
-				if(!preg_match('/^[0-9]{1,18}$/', $value))
-					return null;
-				$size = (int)$value;
-				if($size < 1)
+				$size = self::integerValue($value);
+				if(($size === null) || ($size < 1))
 					return null;
 				if($size > $sizeLimitMax)
 					$size = $sizeLimitMax;
-				return '<param><value><i8>'.$size.'</i8></value></param>';
+				return '<value><i8>'.$size.'</i8></value>';
 
 			case 'text':
 				// rtorrent stores an XMLRPC string argument, it does not parse
 				// it as a command, so nothing in it needs rejecting — only the
 				// XML carrying it has to stay well formed.
-				return '<param><value><string>'
-					. htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8')
-					. '</string></value></param>';
+				return self::emitText($value);
 		}
 		return null;
+	}
+
+	/**
+	 * The integer an XMLRPC caller wrote, or null if what was written is not
+	 * one.
+	 *
+	 * Written the way xmlrpc-c reads it (xmlrpc_parse_value, <i8> and <int>),
+	 * measured against 1.59.03 rather than assumed: an optional sign, then
+	 * digits, and nothing else — no leading or trailing space, no other base,
+	 * no exponent. A sign and leading zeros are part of that, so "+16777217"
+	 * and "0016777217" are the same integer as "16777217", and the number of
+	 * digits is not a limit of its own: the range is what the type holds.
+	 *
+	 * The answer is the integer, not the text, so that what this side validated
+	 * is what it goes on to emit — a ceiling compared against the value and
+	 * then written out as the caller's spelling is no ceiling.
+	 */
+	private static function integerValue($text)
+	{
+		if(!preg_match('/^([+-]?)([0-9]+)$/', $text, $match))
+			return null;
+
+		$digits = ltrim($match[2], '0');
+		if($digits === '')
+			return 0;
+
+		// (int) saturates at PHP_INT_MAX instead of failing, so the round trip
+		// is the range test: a value the platform's integer cannot hold comes
+		// back as a different number and is refused rather than clamped to one.
+		$canonical = (($match[1] === '-') ? '-' : '').$digits;
+		$number = (int)$canonical;
+		return ((string)$number === $canonical) ? $number : null;
+	}
+
+	/**
+	 * A validated text value as the <value> element that carries it.
+	 *
+	 * <string> holds only what XML character data holds and hands back
+	 * unchanged. Measured against xmlrpc-c 1.59.03: bytes that are not UTF-8
+	 * and control characters other than tab and newline make it refuse the
+	 * whole document, and a carriage return comes back out of it as a newline.
+	 * htmlspecialchars() answers the empty string for the first of those, which
+	 * would send a label or a comment away as nothing.
+	 *
+	 * base64 carries all of them, byte for byte, and is a form rtorrent already
+	 * reads as the same value — xmlrpc-c hands the decoded bytes on. So text
+	 * that survives <string> is written as <string>, and text that does not is
+	 * written as itself.
+	 */
+	private static function emitText($value)
+	{
+		if(preg_match('/[^\x{9}\x{A}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]/u',
+			$value) !== 0)
+			return '<value><base64>'.base64_encode($value).'</base64></value>';
+
+		return '<value><string>'
+			. htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8')
+			. '</string></value>';
 	}
 
 	/**
@@ -1170,6 +1381,10 @@ class XMLRPCProxy
 	 */
 	private static function rebuildSafeLoadParam($paramValue, $safeParams, $directory = null)
 	{
+		// Nothing this side could read is nothing this side can rebuild.
+		if($paramValue === null)
+			return null;
+
 		$separator = strpos($paramValue, '=');
 		if($separator === false)
 			return null;
@@ -1213,8 +1428,9 @@ class XMLRPCProxy
 	 * Extract a command-param value from its <value> element.
 	 *
 	 * Handles the typed form <value><string>foo</string></value>, the
-	 * implicit-string form <value>foo</value>, and <value><base64>...</base64>
-	 * </value>.
+	 * implicit-string form <value>foo</value>, <value><base64>...</base64>
+	 * </value>, and the numeric and boolean types an XMLRPC caller writes a
+	 * plain number in.
 	 *
 	 * base64 is decoded because that is what rtorrent does with it: xmlrpc-c
 	 * hands the decoded bytes to the command parser, so the command a base64
@@ -1223,17 +1439,76 @@ class XMLRPCProxy
 	 * encoded text matches no allowed command, so the parameter was stripped
 	 * and the request forwarded verbatim, carrying the command that was never
 	 * looked at.
+	 *
+	 * A typed number needs its own reading for the same reason. SimpleXML's
+	 * cast reads only the text directly inside the element it is given, so
+	 * <value><i8>9</i8></value> cast as a <value> is the empty string, not
+	 * "9" — and a size or an integer argument written the ordinary way then
+	 * matched no shape, was left as the caller sent it, and reached rtorrent
+	 * with neither the validation nor the ceiling applied to it.
+	 *
+	 * Null is the answer for a value this side cannot read at all: malformed
+	 * base64, a compound value, an unknown type, or a value naming more than
+	 * one type. That is a different answer from the empty string: the empty
+	 * string is a value, and a caller who sent no readable value has not sent
+	 * an empty one. Whatever is built from this is built from what the caller
+	 * wrote or is not built.
 	 */
 	private static function extractParamValue($paramElement)
 	{
-		if(isset($paramElement->base64))
+		// XMLRPC gives a value either character data (an implicit string) or one
+		// type element. Selecting one recognised child with isset() would turn a
+		// value with two types into whichever one this reader happened to prefer;
+		// casting an array, struct or nil would turn it into an empty string. In
+		// both cases a malformed or type-invalid call would then be rebuilt as a
+		// valid state-changing one. Only normalise a value whose entire shape is
+		// understood.
+		$children = $paramElement->xpath('./*');
+		if($children === false)
+			return null;
+		if(count($children) === 0)
+			return (string)$paramElement;
+		if(count($children) !== 1)
+			return null;
+
+		// XMLRPC type names are unqualified. xpath('./*') deliberately counted
+		// namespaced children above as well, so one cannot disappear from the
+		// shape check and make the value look like an implicit empty string.
+		$plainChildren = $paramElement->xpath('./*[namespace-uri() = ""]');
+		if(($plainChildren === false) || (count($plainChildren) !== 1))
+			return null;
+
+		$typed = $children[0];
+		$nested = $typed->xpath('./*');
+		if(($nested === false) || (count($nested) !== 0))
+			return null;
+
+		$type = $typed->getName();
+		if($type === 'base64')
 		{
-			$decoded = base64_decode((string)$paramElement->base64, true);
-			return ($decoded === false) ? '' : $decoded;
+			$decoded = base64_decode((string)$typed, true);
+			return ($decoded === false) ? null : $decoded;
 		}
-		if(isset($paramElement->string))
-			return (string)$paramElement->string;
-		return trim((string)$paramElement);
+		if($type === 'string')
+			return (string)$typed;
+		if(in_array($type, self::$scalarTypes, true))
+			return (string)$typed;
+		return null;
+	}
+
+	/**
+	 * The same value as the string a policy question is asked of.
+	 *
+	 * A value this side cannot read names no command, no path and no URI, and
+	 * xmlrpc-c cannot read it either -- the daemon answers a fault rather than
+	 * running anything. So the questions "what command is this" and "what path
+	 * is this" are asked of the empty string, and it is the rebuilds, which put
+	 * bytes in front of rtorrent, that refuse it.
+	 */
+	private static function extractParamText($paramElement)
+	{
+		$value = self::extractParamValue($paramElement);
+		return ($value === null) ? '' : $value;
 	}
 
 	/**
@@ -1294,14 +1569,12 @@ class XMLRPCProxy
 					$rebuiltParam = self::rebuildSafeLoadParam($value, $safeParams, $directory);
 					if($rebuiltParam !== null)
 					{
-						$cleanXml .= '<param><value><string>'
-							. htmlspecialchars($rebuiltParam, ENT_NOQUOTES, 'UTF-8')
-							. '</string></value></param>';
+						$cleanXml .= '<param>'.self::emitText($rebuiltParam).'</param>';
 						$kept++;
 					}
 					else
 					{
-						$stripped[] = $value;
+						$stripped[] = ($value === null) ? '' : $value;
 					}
 				}
 				$index++;
