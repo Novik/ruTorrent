@@ -418,7 +418,7 @@ if(plugin.canChangeMenu())
 					theContextMenu.add(el,[CMENU_CHILD, 'Pushbullet',
 					[
 						[ theUILang.turnNotifyOn, theWebUI.torrents[id].pushbullet ? () => theWebUI.setPushbullet('') : null ],
-					 	[ theUILang.turnNotifyOff, theWebUI.torrents[id].pushbullet ? null : () => theWebUI.setPushbullet('1') ]
+						[ theUILang.turnNotifyOff, theWebUI.torrents[id].pushbullet ? null : () => theWebUI.setPushbullet('1') ]
 					]]);
 				}
 				else
@@ -426,7 +426,7 @@ if(plugin.canChangeMenu())
 					theContextMenu.add(el,[CMENU_CHILD, 'Pushbullet',
 					[
 						[ theUILang.turnNotifyOn, () => theWebUI.setPushbullet('1') ],
-					 	[ theUILang.turnNotifyOff, () => theWebUI.setPushbullet('') ]
+						[ theUILang.turnNotifyOff, () => theWebUI.setPushbullet('') ]
 					]]);
 				}
                         }

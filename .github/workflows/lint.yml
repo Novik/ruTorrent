@@ -32,6 +32,13 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+      # editorconfig-checker@7 declares node >=24.14.0. On anything older it
+      # throws out of its own startup before it downloads the checker, and
+      # exits 0 -- a job that reads no file and reports success. Without this
+      # step the runner's default node decides, and it has been older.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
       - name: editorconfig-checker
         # Both halves are pinned on purpose. The wrapper has to be one that
         # knows the current release asset names as well as the legacy ones,
