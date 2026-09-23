@@ -114,7 +114,7 @@ class ForceDeleteContainmentTest extends TestCase
 		$lines[] = $base;
 		$lines[] = $multi;
 		$lines[] = $force;
-		file_put_contents($this->listPath . '/' . $hash . '.list', implode("\n", $lines) . "\n");
+		file_put_contents($this->listPath . '/' . $hash . '.list2', implode("\n", $lines) . "\n");
 	}
 
 	/** Run the shipped collector the way production runs it: its own process. */
@@ -319,7 +319,7 @@ class ForceDeleteContainmentTest extends TestCase
 		$this->queue('I', array($this->tree . '/victim/elsewhere'), '/', '1');
 		$this->collect();
 
-		$this->assertTrue(count(glob($this->listPath . '/*.list')) === 0,
+		$this->assertTrue(count(glob($this->listPath . '/*.list2')) === 0,
 			'a refused list is removed from the queue rather than retried forever');
 	}
 }

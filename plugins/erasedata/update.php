@@ -98,6 +98,56 @@ function containedPathUnderBase($file, $base, $real_base)
 	return($path.'/'.$leaf);
 }
 
+// A ".list" is a list the previous writer produced, and that writer did not
+// refuse a path carrying a line break. The last three lines of a list are the
+// base path, the multi-file flag and the deletion mode -- the base being the
+// path force deletion removes whole, and the path every other entry is
+// measured against -- so one line break in one path element moves all three,
+// and the publisher of the torrent chose them. A list is also just a file in a
+// directory a local account can write.
+//
+// Nothing in the file separates such a list from an honest one, and there is
+// nothing left to check it against: by the time this runs, removewithdata.php
+// has issued d.delete_tied and d.erase, so neither rtorrent nor the session
+// directory still holds the download it describes.
+//
+// So it is not acted on -- and not discarded either, because the files it
+// names are still on disk and it is the only thing that still names them. It
+// is moved to a name this collector does not read, and the move is logged
+// outside the debug channel, because someone has to be told that a deletion
+// they asked for did not happen.
+//
+// A request that was queued but whose torrent was not erased yet costs
+// nothing: pending.php looks for a ".list2", does not find one, and collects
+// the download from rtorrent again through the current writer.
+function quarantineLegacyList($item)
+{
+	// One already put aside is never replaced. The previous writer keeps
+	// running until the upgrade reaches it, so it can queue the same hash
+	// again after one of its lists has been moved aside, and rename() would
+	// put the second on top of the first -- destroying the only remaining
+	// description of one set of orphaned files, which is the whole reason the
+	// first was kept. The second takes a name of its own instead.
+	$aside = $item.'.unverified';
+	for($n = 2; file_exists($aside); $n++)
+	{
+		if($n > 1000)
+		{
+			FileUtil::toLog('erasedata: '.basename($item).' was queued by an earlier version and '.
+				'could not be moved aside; it was not acted on');
+			return;
+		}
+		$aside = $item.'.unverified.'.$n;
+	}
+	if(@rename($item,$aside))
+		FileUtil::toLog('erasedata: '.basename($item).' was queued by an earlier version and '.
+			'cannot be told apart from a planted list; moved to '.basename($aside).
+			' and its data left in place');
+	else
+		FileUtil::toLog('erasedata: '.basename($item).' was queued by an earlier version and '.
+			'could not be moved aside; it was not acted on');
+}
+
 function parseOneItem($item)
 {
 	global $enableForceDeletion;
@@ -208,16 +258,26 @@ if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 {
 	touch($lock);
        	$list = array();
+	$legacy = array();
 	if($handle = @opendir($listPath))
 	{
 	        while(false !== ($file = readdir($handle)))
 		{
 			$fname = $listPath.'/'.$file;
-			if($file != "." && $file != ".." && is_file($fname) && (pathinfo($file,PATHINFO_EXTENSION)=="list") )
+			if($file == "." || $file == ".." || !is_file($fname))
+				continue;
+			$ext = pathinfo($file,PATHINFO_EXTENSION);
+			if($ext == "list2")
 				$list[] = $fname;
+			// Moved aside after the directory has been read rather than during
+			// it, so the scan is not walking a directory it is changing.
+			else if($ext == "list")
+				$legacy[] = $fname;
 		}
 		closedir($handle);
 	}
+	foreach( $legacy as $item )
+		quarantineLegacyList($item);
 	foreach( $list as $item )
 	{
 		parseOneItem($item);

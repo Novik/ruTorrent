@@ -60,7 +60,8 @@ class ListCollectorTest extends TestCase
 				}
 				public static function getPluginConf($name)
 				{
-					return(\'$erasedebug_enabled = true; $enableForceDeletion = false;\');
+					return(\'$erasedebug_enabled = \'.(getenv("ERASEDATA_TEST_DEBUG") === "0" ? "false" : "true")
+						.\'; $enableForceDeletion = false;\');
 				}
 				public static function toLog($msg)
 				{
@@ -110,11 +111,11 @@ class ListCollectorTest extends TestCase
 		$lines[] = $base;
 		$lines[] = $multi;
 		$lines[] = $force;
-		file_put_contents($this->listPath . '/' . $hash . '.list', implode("\n", $lines) . "\n");
+		file_put_contents($this->listPath . '/' . $hash . '.list2', implode("\n", $lines) . "\n");
 	}
 
 	/** Run the shipped collector the way production runs it: its own process. */
-	private function collect()
+	private function collect($debug = true)
 	{
 		$command = escapeshellarg(PHP_BINARY) . ' -d display_errors=1 update.php';
 		$process = proc_open($command,
@@ -124,6 +125,7 @@ class ListCollectorTest extends TestCase
 			array(
 				'ERASEDATA_TEST_SETTINGS' => $this->tree . '/settings',
 				'ERASEDATA_TEST_LOG' => $this->log,
+				'ERASEDATA_TEST_DEBUG' => $debug ? '1' : '0',
 				'PATH' => getenv('PATH'),
 			));
 		if (!is_resource($process))
@@ -248,7 +250,127 @@ class ListCollectorTest extends TestCase
 		$this->queue('H', array($this->tree . '/victim/elsewhere'), '/', '1');
 		$this->collect();
 
-		$this->assertTrue(count(glob($this->listPath . '/*.list')) === 0,
+		$this->assertTrue(count(glob($this->listPath . '/*.list2')) === 0,
 			'a refused list is removed from the queue rather than retried forever');
+	}
+
+	// -- a list the previous writer left behind ------------------------------
+
+	// A ".list" was written before the writer refused a path carrying a line
+	// break. The last three lines of a list are the base path, the multi-file
+	// flag and the deletion mode, so one line break in one path element moves
+	// all three and the publisher of the torrent chose them. By the time the
+	// collector runs, removewithdata.php has already issued d.delete_tied and
+	// d.erase, so there is nothing left to check the declared base against.
+
+	/** A list in the format that preceded the line-break refusal. */
+	private function queueLegacy($hash, $files, $base, $multi, $force = '1')
+	{
+		$lines = $files;
+		$lines[] = $base;
+		$lines[] = $multi;
+		$lines[] = $force;
+		file_put_contents($this->listPath . '/' . $hash . '.list', implode("\n", $lines) . "\n");
+	}
+
+	public function testALegacyListIsNotActedOn()
+	{
+		$this->reset();
+		// A base the download never had, and a file under it: what the
+		// previous writer produced for a torrent whose own name carried a
+		// line break, and what a local account can write by hand.
+		$base = $this->tree . '/elsewhere';
+		$victim = $this->file($base . '/DELETE_ME', 'must survive');
+
+		$this->queueLegacy('L', array($victim), $base, '1');
+		$this->collect();
+
+		$this->assertTrue(is_file($victim),
+			'a list from the previous writer deletes nothing');
+		$this->assertTrue(is_dir($base), 'and its declared base is still there');
+	}
+
+	public function testALegacyListIsKeptRatherThanDiscarded()
+	{
+		$this->reset();
+		$base = $this->tree . '/elsewhere';
+		$victim = $this->file($base . '/DELETE_ME', 'must survive');
+		$this->queueLegacy('M', array($victim), $base, '1');
+		$before = file_get_contents($this->listPath . '/M.list');
+
+		$this->collect();
+
+		$this->assertTrue(!is_file($this->listPath . '/M.list'),
+			'the list is taken out of the queue');
+		$this->assertTrue(is_file($this->listPath . '/M.list.unverified'),
+			'and kept under a name the collector does not read, because the '
+			. 'files it names are still on disk and it still names them');
+		$this->assertTrue(file_get_contents($this->listPath . '/M.list.unverified') === $before,
+			'unchanged');
+	}
+
+	public function testTheQuarantineIsReportedWithDebugLoggingOff()
+	{
+		$this->reset();
+		$base = $this->tree . '/elsewhere';
+		$this->file($base . '/DELETE_ME', 'must survive');
+		$this->queueLegacy('N', array($base . '/DELETE_ME'), $base, '1');
+
+		// Someone asked for a deletion that is not going to happen, so they
+		// are told whether or not the plugin's debug logging is on.
+		$this->collect(false);
+
+		$this->assertTrue(strpos($this->logged(), 'N.list') !== false,
+			'the quarantine names the list outside the debug channel: ' . $this->logged());
+		$this->assertTrue(strpos($this->logged(), 'N.list.unverified') !== false,
+			'and says where it went');
+	}
+
+	public function testACurrentListIsStillApplied()
+	{
+		$this->reset();
+		// The same directory, one list of each kind: the current one is acted
+		// on and the previous one is not, so the two are told apart rather
+		// than the collector having simply stopped.
+		$mine = $this->tree . '/data/Mine';
+		$own = $this->file($mine . '/one.txt');
+		$theirs = $this->tree . '/elsewhere';
+		$victim = $this->file($theirs . '/DELETE_ME', 'must survive');
+
+		$this->queue('P', array($own), $mine, '1');
+		$this->queueLegacy('Q', array($victim), $theirs, '1');
+		$this->collect();
+
+		$this->assertTrue(!is_file($own), 'the current list is applied');
+		$this->assertTrue(is_file($victim), 'the previous one is not');
+	}
+
+	public function testAQuarantineDoesNotReplaceOneAlreadyThere()
+	{
+		$this->reset();
+		// During a rolling upgrade the previous writer is still running, so it
+		// can queue the same hash again after this collector has already put one
+		// of its lists aside. A quarantined list is the only thing that still
+		// names the files it names, so the second one must not land on top of
+		// the first.
+		$base = $this->tree . '/elsewhere';
+		$this->file($base . '/first', 'must survive');
+		$this->file($base . '/second', 'must survive');
+
+		$this->queueLegacy('R', array($base . '/first'), $base, '1');
+		$first = file_get_contents($this->listPath . '/R.list');
+		$this->collect();
+
+		$this->queueLegacy('R', array($base . '/second'), $base, '1');
+		$second = file_get_contents($this->listPath . '/R.list');
+		$this->collect();
+
+		$kept = array();
+		foreach (glob($this->listPath . '/R.list*') as $f)
+			$kept[] = file_get_contents($f);
+		$this->assertTrue(in_array($first, $kept, true),
+			'the list quarantined first still names the files it named');
+		$this->assertTrue(in_array($second, $kept, true),
+			'and so does the one quarantined after it');
 	}
 }

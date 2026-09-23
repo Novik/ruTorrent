@@ -27,7 +27,7 @@ if(!function_exists('erasedataQueueRequest'))
 			return(false);
 		if(($force!=="1") && ($force!=="2"))
 			$force = "1";
-		if(is_file($listPath."/".$hash.".list"))
+		if(is_file($listPath."/".$hash.".list2"))
       // Already collected, waiting for the garbage collector to apply it.
 			return(true);
 		$marker = $listPath."/".$hash.".pending";
@@ -107,7 +107,7 @@ if(!function_exists('erasedataDrainQueue'))
 				continue;
 			// Collected by the web UI's "Remove and delete data" between the
 			// marker being written and this pass.
-			if(is_file($listPath.'/'.$hash.'.list'))
+			if(is_file($listPath.'/'.$hash.'.list2'))
 			{
 				@unlink($item);
 				continue;
@@ -144,13 +144,13 @@ if(!function_exists('erasedataDrainQueue'))
 			if(count($hashes))
 				erasedataRemoveWithData($hashes, $force);
 
-    // Clear the successful deletions from the queue by checking for the .list file
-    // that is created by erasedataRemoveWithData() when it succeeds.
+    // Clear the successful deletions from the queue by checking for the .list2
+    // file that is created by erasedataRemoveWithData() when it succeeds.
 		foreach($batch as $hash=>$force)
 		{
 			$marker = $listPath.'/'.$hash.'.pending';
-			// Once the .list exists, the garbage collector finishes the deletion
-			if(is_file($listPath.'/'.$hash.'.list'))
+			// Once the .list2 exists, the garbage collector finishes the deletion
+			if(is_file($listPath.'/'.$hash.'.list2'))
 			{
 				@unlink($marker);
 				continue;
