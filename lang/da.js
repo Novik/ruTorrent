@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "Kunne ikke tilføje torrent. Kan ikke forbine til URL.",
  addTorrentFailedFile		: "Kunne ikke tilføje torrent. Den modtagende fil er ikke en valid torrent fil.",
  addTorrentFailedDirectory	: "Kunne ikke tilføje torrent. Ukorrekt download mappe var specificeret.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Start",
  plgLocked			: "Mandatory",
  phpExtensionNotFoundWarning	: "Noget funktionalitet vil ikke være tilgængelig. PHP udviddelse skal installeres",

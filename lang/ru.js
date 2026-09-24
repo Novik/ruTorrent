@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "Ошибка добавления закачки. Невозможно получить файл по заданному URL.",
  addTorrentFailedFile		: "Ошибка добавления закачки. Полученный контент не является корректным torrent файлом.",
  addTorrentFailedDirectory	: "Ошибка добавления закачки. Задана некорректная директория.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Запуск",
  plgLocked			: "Обязателен",
  phpExtensionNotFoundWarning	: "Часть функциональности плагина будет недоступна. Расширение PHP должно быть установлено",

@@ -412,6 +412,20 @@ class rTorrent
 		return(false);
 	}
 
+	// The info hashes rtorrent has loaded, upper case, as keys. rtorrent
+	// answers a load for a hash it already has without a fault and drops
+	// the new copy, so the answer to the load alone cannot tell an
+	// addition from a duplicate.
+	static public function loadedHashes()
+	{
+		$hashes = array();
+		$req = new rXMLRPCRequest( new rXMLRPCCommand("download_list") );
+		if($req->success())
+			foreach($req->val as $hash)
+				$hashes[strtoupper($hash)] = true;
+		return($hashes);
+	}
+
 	static public function getSource($hash)
 	{
 		$req = new rXMLRPCRequest( array(

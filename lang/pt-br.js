@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "Falha ao adicionar torrent. Não foi possível recuperar a URL.",
  addTorrentFailedFile		: "Falha ao adicionar torrent. O conteúdo recuperado não é um arquivo torrent válido.",
  addTorrentFailedDirectory	: "Falha ao adicionar torrent. O diretório de download especificado está incorreto.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Iniciar",
  plgLocked			: "Obrigatório",
  phpExtensionNotFoundWarning	: "Algumas funcionalidades ficarão indisponíveis. A extensão do PHP precisa ser instalada",

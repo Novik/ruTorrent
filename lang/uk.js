@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "Сталася помилка. Файл .torrent не передано до rTorrent. Не вдалося отримати URL-адресу.",
  addTorrentFailedFile		: "Сталася помилка. Файл .torrent не передано до rTorrent. Отриманий вміст не є правильним torrent-файлом.",
  addTorrentFailedDirectory	: "Сталася помилка. Файл .torrent не передано до rTorrent. Указано неправильний каталог для завантаження.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Запустити",
  plgLocked			: "Обов’язковий",
  phpExtensionNotFoundWarning	: "Деякі функції будуть недоступні. Потрібно інсталювати розширення PHP",

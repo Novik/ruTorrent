@@ -285,6 +285,7 @@ var theUILang =
  addTorrentFailedURL		: "토렌트를 추가하지 못했습니다. URL에 접근하지 못했습니다.",
  addTorrentFailedFile		: "토렌트를 추가하지 못했습니다. 올바른 토렌트 파일이 아닙니다.",
  addTorrentFailedDirectory	: "토렌트를 추가하지 못했습니다. 잘못된 다운로드 경로를 지정했습니다.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "동작 중",
  plgLocked			: "필수",
  phpExtensionNotFoundWarning	: "일부 기능을 사용할 수 없습니다. PHP 확장이 설치되어 있어야 합니다",

@@ -285,6 +285,7 @@ var theUILang =
  addTorrentFailedURL		: "Không thêm torrent được. Không thể tải được URL.",
  addTorrentFailedFile		: "Không thêm torrent được. Nội dung tải về không phải là tập tin torrent.",
  addTorrentFailedDirectory	: "Không thêm torrent được. Chọn sai thư mục tải về.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Chạy",
  plgLocked			: "Bắt buộc",
  phpExtensionNotFoundWarning	: "Một số tính năng sẽ không có. Phải cài đặt phần mở rộng cho PHP",

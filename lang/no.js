@@ -286,6 +286,7 @@ var theUILang =
  addTorrentFailedURL		: "Klarte ikke å legge til torrent. Kan ikke hente lenke.",
  addTorrentFailedFile		: "Klarte ikke å legge til torrent. Hentet innhold er ikke en gyldig torrentfil.",
  addTorrentFailedDirectory	: "Klarte ikke å legge til torrent. Feil nedlastingsmappe oppgitt.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Kjør",
  plgLocked			: "Obligatorisk",
  phpExtensionNotFoundWarning	: "Noe funksjonalitet vil ikke være tilgjengelig. PHP-utvidelse må installeres.",

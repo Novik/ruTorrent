@@ -288,6 +288,7 @@ var theUILang =
  addTorrentFailedURL		: "Aggiunta torrent fallita. Impossibile elaborare l'URL.",
  addTorrentFailedFile		: "Aggiunta torrent fallita. Il contenuto elaborato non è un file torrent valido.",
  addTorrentFailedDirectory	: "Aggiunta torrent fallita. E' stata specificata una cartella di download sbagliata.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Lancia",
  plgLocked			: "Obbligatorio",
  phpExtensionNotFoundWarning	: "Alcune funzioni non saranno disponibili. L'estensione PHP extension deve essere installata",

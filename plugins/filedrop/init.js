@@ -11,6 +11,12 @@ plugin.isEditableTarget = function(el)
 	return (tag == 'INPUT') || (tag == 'TEXTAREA') || el.isContentEditable;
 }
 
+// The notification style for a result php/addtorrent.php answers with.
+plugin.resultType = function(result)
+{
+	return (result == "Success") ? "success" : ((result == "Duplicate") ? "alert" : "error");
+}
+
 plugin.addUrls = async function(urls)
 {
 	// break URL list into chunks based on plugin configuration
@@ -52,7 +58,7 @@ plugin.addUrls = async function(urls)
 				: "Failed";
 			noty(
 				`${url} : ${theUILang['addTorrent' + result]}`,
-				(result == "Success") ? "success" : "error");
+				plugin.resultType(result));
 		}));
 	}
 }
@@ -154,7 +160,7 @@ plugin.onLangLoaded = function()
 
 			uploadFinished: function(i, file, response, time)
 			{
-				noty(file.name+' : '+ theUILang['addTorrent'+response.result], (response.result=='Success') ? "success" : "error");
+				noty(file.name+' : '+ theUILang['addTorrent'+response.result], plugin.resultType(response.result));
 			},
 
 			beforeEach: function(file)

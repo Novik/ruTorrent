@@ -285,6 +285,7 @@ var theUILang =
  addTorrentFailedURL		: "Det gick inte att lägga till torrent. Kan inte hämta webbadress.",
  addTorrentFailedFile		: "Det gick inte att lägga till torrent. Hämtat innehåll är inte en giltig torrentfil.",
  addTorrentFailedDirectory	: "Det gick inte att lägga till torrent. Felaktig nedladdningskatalog har angetts.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Starta",
  plgLocked			: "Obligatorisk",
  phpExtensionNotFoundWarning	: "Vissa funktioner kommer att vara otillgängliga. PHP-tillägg måste installeras",

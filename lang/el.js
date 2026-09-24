@@ -285,6 +285,7 @@ var theUILang =
  addTorrentFailedURL		: "Αποτυχία προσθήκης αρχείου torrent. Αδυναμία ανάκτησης URL.",
  addTorrentFailedFile		: "Αποτυχία προσθήκης αρχείου torrent. Το ανακτημένο περιεχόμενο δεν είναι έγκυρο αρχείο torrent.",
  addTorrentFailedDirectory	: "Αποτυχία προσθήκης αρχείου torrent. Έχει οριστεί λάθος φάκελος για τις λήψεις.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Εκκίνηση",
  plgLocked			: "Απαραίτητο",
  phpExtensionNotFoundWarning	: "Ορισμένες λειτουργίες δεν θα είναι διαθέσιμες. Πρέπει να εγκατασταθεί κάποια προέκταση της PHP",
