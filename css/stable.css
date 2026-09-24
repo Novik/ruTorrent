@@ -81,9 +81,13 @@
 }
 .stable-gadgets {
   position: absolute;
-  width: 1px;
+  width: 100%;
   height: 100%;
   top: 0;
+  pointer-events: none;
+}
+.stable-gadgets > * {
+  pointer-events: auto;
 }
 .stable tbody tr {
   cursor: pointer;
