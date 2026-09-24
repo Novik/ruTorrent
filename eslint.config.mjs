@@ -1,4 +1,9 @@
-import js from '@eslint/js';
+import { createRequire } from 'node:module';
+
+// eslint and @eslint/js are dev dependencies of the tests package, so
+// they are resolved from tests/ (and from here up, for an install at the
+// root).
+const js = createRequire(new URL('./tests/', import.meta.url))('@eslint/js');
 
 export default [
 	{
