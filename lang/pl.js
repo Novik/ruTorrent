@@ -166,6 +166,7 @@ var theUILang =
  Glob_alloc_http_max		: "Liczba otwartych połączeń HTTP nie może przekroczyć",
  Glob_alloc_files_max		: "Liczba otwartych plików nie może przekroczyć",
  Glob_alloc_files_min		: "Liczba otwartych plików nie może być mniejsza niż",
+ Glob_number_refused		: "Not a number rTorrent can store",
  Open_label         : "Otwarte",
  Other_sett			: "Inne",
  Directory_For_Dl		: "Domyślny katalog pobierania",

@@ -165,6 +165,7 @@ var theUILang =
  Glob_alloc_http_max		: "Open HTTP connections may not exceed",
  Glob_alloc_files_max		: "Open files may not exceed",
  Glob_alloc_files_min		: "Open files may not be lower than",
+ Glob_number_refused		: "Not a number rTorrent can store",
  Open_label         : "Åben",
  Other_sett			: "Andre",
  Directory_For_Dl		: "Standard mappe til downloads",

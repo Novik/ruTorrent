@@ -163,6 +163,7 @@ var theUILang =
  Glob_alloc_http_max		: "Open HTTP connections may not exceed",
  Glob_alloc_files_max		: "Open files may not exceed",
  Glob_alloc_files_min		: "Open files may not be lower than",
+ Glob_number_refused		: "Not a number rTorrent can store",
  Open_label         : "열다",
  Other_sett			: "기타",
  Directory_For_Dl		: "다운로드 기본 디렉토리",
