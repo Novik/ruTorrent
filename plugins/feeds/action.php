@@ -173,13 +173,14 @@ $req = new rXMLRPCRequest( new rXMLRPCCommand("d.multicall", $prm) );
 if($req->success())
 {
 	$items = array();
-	for($i = 0; $i<count($req->val); $i+=21)
+	$fields = count($prm)-1;
+	for($i = 0; $i<count($req->val); $i+=$fields)
 	{
 		$item = array(
 			"guid"=>$req->val[$i],
 			"title"=>$req->val[$i+1],
 			"category"=>rawurldecode($req->val[$i+5]),
-			"pubDate"=>(empty($req->val[$i+7]) ? 0 : floatval($req->val[$i+6])) );
+			"pubDate"=>floatval($req->val[$i+6]) );
 		if(rTorrentSettings::get()->isPluginRegistered('data'))
 			$item["link"] = $url.'plugins/data/action.php?hash='.$req->val[$i].'&no=0&readable=1';
 		if($_REQUEST['mode']=='error')
