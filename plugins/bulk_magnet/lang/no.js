@@ -10,5 +10,6 @@
  theUILang.Magnet		= "Magnet-lenke";
  theUILang.bulkAdd		= "Bulk-lasting";
  theUILang.bulkAddDescription	= "En lenke per linje (HTTP, magnet-lenke eller hash)";
+ theUILang.bulkAddDuplicate	= "Already loaded, not added again.";
 
 thePlugins.get("bulk_magnet").langLoaded();

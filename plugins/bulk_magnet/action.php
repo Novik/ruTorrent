@@ -64,6 +64,7 @@ $result = array
 (
 	'error' => 0,
 	'success' => 0,
+	'duplicate' => 0,
 );
 
 if(!isset($HTTP_RAW_POST_DATA))
@@ -72,6 +73,7 @@ if(isset($HTTP_RAW_POST_DATA))
 {
 	$vars = explode('&', $HTTP_RAW_POST_DATA);
 	$torrents = array();
+	$loaded = rTorrent::loadedHashes();
 	foreach($vars as $var)
 	{
 		$parts = explode("=",$var);
@@ -80,13 +82,19 @@ if(isset($HTTP_RAW_POST_DATA))
 			$value = trim(rawurldecode($parts[1]));
 			if(strlen($value))
 			{
-				if( parseValue( $value ) )
+				$hash = parseValue( $value );
+				if( $hash === false )
 				{
-					$result['success'] = $result['success'] + 1;
+					$result['error'] = $result['error'] + 1;
+				}
+				else if( isset( $loaded[strtoupper($hash)] ) )
+				{
+					$result['duplicate'] = $result['duplicate'] + 1;
 				}
 				else
 				{
-					$result['error'] = $result['error'] + 1;
+					$loaded[strtoupper($hash)] = true;
+					$result['success'] = $result['success'] + 1;
 				}
 			}
 		}
