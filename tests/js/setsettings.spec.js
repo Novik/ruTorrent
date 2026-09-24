@@ -110,6 +110,55 @@ describe.each(V_SOCKET_ALLOC)("setsettings on rtorrent %s with adjustable socket
   });
 });
 
+// An n-prefixed setting goes out as an <i8>, and an <i8> holds an integer and
+// nothing else: "1.5", "1e400" or "Infinity" written into one is a document
+// the daemon cannot read, and it refuses the whole request.
+describe("setsettings numbers", () => {
+  beforeEach(() => loadUI(V_SOCKET_ALLOC[0][1]));
+
+  it.each([
+    ["100", "100"],
+    ["0", "0"],
+    ["-1", "-1"],
+    ["1.5", "2"],
+    ["-2.5", "-3"],
+    ["1e3", "1000"],
+    ["-0", "0"],
+    ["9223372036854774784", "9223372036854774784"],
+    ["-9223372036854775808", "-9223372036854775808"],
+  ])("sends %j as the integer %j", (sent, expected) => {
+    expect(xmlrpcInteger(sent)).toBe(expected);
+    expect(commandsFor(`?action=setsettings&s=nmax_uploads&v=${encodeURIComponent(sent)}`)).toStrictEqual([
+      ["throttle.max_uploads.set", "string:", `i8:${expected}`],
+    ]);
+  });
+
+  it.each(["1e400", "-1e400", "Infinity", "NaN", "abc", "1e19", "9223372036854775808", "-9223372036854777856"])(
+    "has no integer for %j and sends none",
+    (sent) => {
+      expect(xmlrpcInteger(sent)).toBeNull();
+      const stub = new rTorrentStub(`?action=setsettings&s=nmax_uploads&v=${encodeURIComponent(sent)}`);
+      expect(stub.content).toContain("<i8></i8>");
+      expect(stub.content).not.toMatch(/<i8>[^<]/);
+    }
+  );
+
+  it("takes the numbers the settings page computes", () => {
+    expect(xmlrpcInteger(30 * 1024 * 1024)).toBe("31457280");
+    expect(xmlrpcInteger(Infinity)).toBeNull();
+    expect(xmlrpcInteger(1e13 * 1024 * 1024)).toBeNull();
+    expect(xmlrpcInteger(" 7 ")).toBe("7");
+    expect(xmlrpcInteger("")).toBeNull();
+    expect(xmlrpcInteger(null)).toBeNull();
+  });
+
+  it("still leaves the dht switch to its own branch", () => {
+    expect(commandsFor("?action=setsettings&s=ndht&v=1")).toStrictEqual([
+      ["dht.mode.set", "string:", "string:auto"],
+    ]);
+  });
+});
+
 describe("direct setsettings refusal recovery", () => {
   beforeEach(() => loadUI(V_SOCKET_ALLOC[0][1]));
   afterEach(() => jest.restoreAllMocks());
@@ -1259,6 +1308,46 @@ describe("the options save request", () => {
 		expect(save.disabled).toBe(true);
 		expect(notice).toHaveBeenCalledTimes(1);
 		expect(notice).toHaveBeenCalledWith(theUILang.Settings_save_indeterminate, "error");
+	});
+	// type="number" takes any finite double, and max_memory_usage is
+	// multiplied up to bytes, so a figure can leave the page as a number no
+	// <i8> holds.
+	it.each([
+		["max_uploads_global", "1e300"],
+		["max_downloads_global", "-1e19"],
+		["max_memory_usage", "1e13"],
+	])("refuses %s = %s on the page and sends nothing", (id, typed) => {
+		loadSettingsUI();
+		const notice = jest.spyOn(window, "noty").mockImplementation(() => {});
+		theWebUI.settings = { max_uploads_global: 10, max_downloads_global: 20, max_memory_usage: 30 * 1024 * 1024 };
+		const before = { ...theWebUI.settings };
+		$("#" + $.escapeSelector(id)).val(typed);
+		expect($("#" + $.escapeSelector(id)).val()).toBe(typed);
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+
+		expect(requests).toHaveLength(0);
+		expect(notice).toHaveBeenCalledTimes(1);
+		expect(notice).toHaveBeenCalledWith(expect.stringContaining(theUILang.Glob_number_refused), "error");
+		expect(theWebUI.settings).toStrictEqual(before);
+	});
+
+	it("rounds a fractional figure on the page and sends it", () => {
+		loadSettingsUI();
+		const notice = jest.spyOn(window, "noty").mockImplementation(() => {});
+		theWebUI.settings = { max_uploads_global: 10 };
+		$("#max_uploads_global").val("1.5");
+		const requests = [];
+		theWebUI.request = function (request) { requests.push(request); };
+
+		theWebUI.setSettings();
+
+		expect(notice).not.toHaveBeenCalled();
+		expect(requests).toHaveLength(1);
+		expect(requests[0].commands.map((cmd) => [cmd.command, ...cmd.params.map((prm) => `${prm.type}:${prm.value}`)]))
+			.toStrictEqual([["set_max_uploads_global", "i8:2"]]);
 	});
 });
 

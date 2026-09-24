@@ -202,6 +202,27 @@ rXMLRPCCommand.prototype.addParameter = function(aType,aValue)
 	this.params.push( {type : aType, value : aValue} );
 }
 
+// The text of an XMLRPC <i8> for a number or a numeric string, rounded half
+// away from zero as php/xmlrpc.php rounds it, or null if it is not a finite
+// number within 64 bits. "1.5", "1e400" or "abc" written into an <i8> as they
+// stand is not an integer, and the daemon cannot read the request.
+function xmlrpcInteger(value)
+{
+	var n = NaN;
+	if(typeof(value) == "number")
+		n = value;
+	else
+	if((typeof(value) == "string") && (value.trim() !== ""))
+		n = Number(value);
+	if(!isFinite(n))
+		return(null);
+	n = (n<0) ? -Math.round(-n) : Math.round(n);
+	// -2^63 and 2^63 are exact as doubles; the largest below 2^63 is 2^63-1024.
+	if((n < -9223372036854775808) || (n >= 9223372036854775808))
+		return(null);
+	return(n.toFixed(0));
+}
+
 function rTorrentStub( URI )
 {
 	this.action = "none";
@@ -383,7 +404,17 @@ rTorrentStub.prototype.setsettings = function()
 		var prmType = "string";
 		var prm = this.vs[i];
 		if(this.ss[i].charAt(0)=='n')
+		{
 			prmType = "i8";
+			// Empty stays empty, and so does a value with no integer text:
+			// the daemon refuses an empty <i8> as a fault, which is the
+			// outcome such a value should have.
+			if((prm !== "") && (this.ss[i]!="ndht"))
+			{
+				var text = xmlrpcInteger(prm);
+				prm = (text===null) ? "" : text;
+			}
+		}
 		var cmd = null;
 		var socketAlloc = theRequestManager.getSocketAllocCategory(this.ss[i]);
 		if(this.ss[i]=="ndht")

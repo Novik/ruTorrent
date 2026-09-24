@@ -8,13 +8,46 @@ class rXMLRPCParam
 	public $type;
 	public $value;
 
+	// An <i8> or <i4> whose number the type cannot hold keeps a null value,
+	// and rXMLRPCRequest::run() refuses a request carrying one.
 	public function __construct( $aType, $aValue )
 	{
 		$this->type = $aType;
 		if(($this->type=="i8") || ($this->type=="i4"))
-			$this->value = number_format($aValue,0,'.','');
+			$this->value = self::integerText($this->type,$aValue);
 		else
 			$this->value = htmlspecialchars($aValue,ENT_NOQUOTES,"UTF-8");
+	}
+
+	// $value as the text of an XMLRPC $type, a float rounded half away from
+	// zero, or null if it is not a number that type holds. INF, NAN and a
+	// float beyond 64 bits have no such text: number_format() would write
+	// them as "inf", "nan" and a run of digits, none of which is an integer.
+	static public function integerText( $type, $value )
+	{
+		if(is_string($value) && is_numeric($value))
+			$value = $value + 0;
+		if(is_float($value))
+		{
+			if(!is_finite($value))
+				return(null);
+			$value = round($value);
+			// -2^63 and 2^63 are exact as floats, and the largest float
+			// below 2^63 is 2^63-1024.
+			if(($value<-9223372036854775808.0) || ($value>=9223372036854775808.0))
+				return(null);
+			$text = number_format($value,0,'.','');
+		}
+		else
+		if(is_int($value))
+			// Not number_format(), which before PHP 8.3 takes a float and
+			// turns PHP_INT_MAX into 2^63.
+			$text = strval($value);
+		else
+			return(null);
+		if(($type=="i4") && (($value<XMLRPC_MIN_I4) || ($value>XMLRPC_MAX_I4)))
+			return(null);
+		return($text);
 	}
 }
 
@@ -244,6 +277,16 @@ class rXMLRPCRequest
 				$this->commands = array();
 				return(false);
 			}
+		// So is every number, for the same reason.
+		foreach($this->commands as $cmd)
+			foreach($cmd->params as $prm)
+				if((($prm->type=="i8") || ($prm->type=="i4")) && ($prm->value===null))
+				{
+					$this->fault = true;
+					$this->faultString = 'Refused: not a number an XMLRPC integer can hold.';
+					$this->commands = array();
+					return(false);
+				}
 		rTorrentSettings::get()->patchDeprecatedRequest($this->commands);
 		$this->commandOffset = 0;
 		while($this->makeNextCall())

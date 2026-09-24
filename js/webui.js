@@ -729,6 +729,17 @@ var theWebUI = {
 		$('#socket_alloc_budget_row').show();
 	},
 
+	// A numeric setting travels as an XMLRPC integer, which holds a finite
+	// number within 64 bits. Anything else is refused here, before any part
+	// of the batch is sent.
+	numbersAccepted: function(values)
+	{
+		if(!values.length)
+			return(true);
+		noty(theUILang.Glob_number_refused+' ('+values.join(', ')+').','error');
+		return(false);
+	},
+
 	socketAllocationAccepted: function()
 	{
 		var filesField = $('#max_open_files');
@@ -783,6 +794,7 @@ var theWebUI = {
 		let needCatListSync = false;
 		var reply = null;
 		var pendingRTorrentSettings = {};
+		var unrepresentableNumbers = [];
 		var emptyLimitLeavesUnchanged = {
 			max_uploads_global: true,
 			max_downloads_global: true,
@@ -902,6 +914,8 @@ var theWebUI = {
 						// the cast in action.php and which settings take the socket
 						// allocation path.
 						var k_type = o.is("input:checkbox") || o.is("select") || numericInput ? "n" : "s";
+						if(numericInput && (nv!=="") && (xmlrpcInteger(nv)===null))
+							unrepresentableNumbers.push(nv);
 						req+=("&s="+k_type+i+"&v="+nv);
 					}
 				}
@@ -916,6 +930,7 @@ var theWebUI = {
 		if(needResize)
 			this.resize();
 		if((req.length>0) && theWebUI.systemInfo.rTorrent.started &&
+			this.numbersAccepted(unrepresentableNumbers) &&
 			this.socketAllocationAccepted())
 		{
 			$.each(pendingRTorrentSettings, function(i,v) { theWebUI.settings[i] = v; });
