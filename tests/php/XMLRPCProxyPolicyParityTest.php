@@ -13,6 +13,10 @@ require_once(__DIR__ . '/TestCase.php');
  *
  * A shipped file may still restate the policy. This asserts only that it does
  * not restate it differently.
+ *
+ * The httprpc plugin is one of those entry points whether or not its conf
+ * restates the list, so it is checked by what it runs with rather than by
+ * what its conf appears to assign.
  */
 class XMLRPCProxyPolicyParityTest extends TestCase
 {
@@ -81,6 +85,29 @@ class XMLRPCProxyPolicyParityTest extends TestCase
 			$this->assertTrue(in_array($action, (array)$this->reference, true),
 				"the shared policy allows {$action}");
 		}
+	}
+
+	/**
+	 * The list plugins/httprpc/action.php runs with: the shared policy first,
+	 * then the plugin conf evaluated over it, in that order. Reading the
+	 * result rather than the source sees an append, a merge or an unset in
+	 * the plugin conf as well as an assignment.
+	 */
+	public function testTheHttprpcEntryPointRunsWithTheSharedPolicy()
+	{
+		$conf = $this->root . '/plugins/httprpc/conf.php';
+		$this->assertTrue(is_file($conf), 'plugins/httprpc/conf.php is shipped');
+		$effective = function ($shared, $plugin) {
+			require($shared);
+			require($plugin);
+			return isset($XMLRPCProxySafeParams) ? $XMLRPCProxySafeParams : null;
+		};
+		$theirs = (array)$effective($this->root . '/conf/xmlrpc_proxy.php', $conf);
+		$reference = (array)$this->reference;
+		sort($theirs);
+		sort($reference);
+		$this->assertEquals(json_encode($reference), json_encode($theirs),
+			'plugins/httprpc runs with the safe-parameter policy of conf/xmlrpc_proxy.php');
 	}
 
 	public function testEveryOtherDefinitionOfThePolicyAgreesWithIt()
