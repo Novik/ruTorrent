@@ -130,8 +130,7 @@ class commonEngine
 		if(function_exists('mb_convert_encoding'))
 		        $out = mb_convert_encoding($out, $encoding, 'UTF-8');
 		else
-		if(function_exists('utf8_decode'))
-		        $out = utf8_decode($out);
+		        $out = UTF::utf8ToLatin1($out);
 		return($out);
 	}
 	static public function toUTF($out,$encoding)
@@ -142,10 +141,7 @@ class commonEngine
 		if(function_exists('mb_convert_encoding'))
 		        $out = mb_convert_encoding($out, 'UTF-8', $encoding );
 		else
-		if(function_exists('utf8_encode'))
-		        $out = utf8_encode($out);
-		else
-		        $out = UTF::win2utf($out);
+		        $out = UTF::latin1ToUtf8($out);
 		return($out);
 	}
 	static public function fromJSON($str)

@@ -17,7 +17,7 @@ class IPTorrentsEngine extends commonEngine
 
     protected static function disableEntityLoader()
     {
-        if( function_exists('libxml_disable_entity_loader') )
+        if( (PHP_VERSION_ID < 80000) && function_exists('libxml_disable_entity_loader') )
         {
             libxml_disable_entity_loader( true );
         }

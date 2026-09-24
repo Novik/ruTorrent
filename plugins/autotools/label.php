@@ -153,9 +153,9 @@ if( $is_ok &&
 	Debug( "count           : \"".count( $match )."\"" );
 	Debug( "match[1]        : \"".$match[1]."\"" );
 	if( count( $match ) > 1 && strlen( $match[1] ) > 0 )
-		$lbl_now = strftime( $match[1] );
+		$lbl_now = TimeFormat::strftime( $match[1] );
 	else
-		$lbl_now = strftime( '%Y-%m-%d' );
+		$lbl_now = TimeFormat::strftime( '%Y-%m-%d' );
 	$label = str_replace( $match[0], $lbl_now, $label );
 }
 
