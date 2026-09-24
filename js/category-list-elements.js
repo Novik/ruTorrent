@@ -151,7 +151,7 @@ customElements.define(
     _registerLabel(panel, label) {
       this._expectStyleLoad(label);
       label.slot = "content";
-      const onClickEvent = ({ which, button, metaKey, ctrlKey, shiftKey }) => {
+      const onClickEvent = ({ which, button, metaKey, ctrlKey, shiftKey, clientX, clientY }) => {
         this.dispatchEvent(
           Object.assign(new Event("label-click"), {
             labelElement: label,
@@ -162,16 +162,20 @@ customElements.define(
             shiftKey,
             button,
             which,
+            clientX,
+            clientY,
           })
         );
       };
       label.addEventListener("mousedown", (e) => onClickEvent(e));
-      label.addEventListener("contextmenu", () =>
+      label.addEventListener("contextmenu", (e) =>
         onClickEvent({
           which: 3,
           button: 2,
           metaKey: false,
           shiftKey: false,
+          clientX: e.clientX,
+          clientY: e.clientY,
         })
       );
     }

@@ -57,6 +57,24 @@ describe("category-list", () => {
     expect(callArg2.labelId).toEqual(newLabelId);
     expect(callArg2.panelId).toEqual("plabel");
   });
+  // theWebUI.labelContextMenu opens the menu at the event's clientX/clientY,
+  // and only falls back to the last mousemove when they are missing: a
+  // right-click that no mousemove preceded (a touch long-press, say) would
+  // put the menu in the corner of the window.
+  it("should carry the click position on label-click", () => {
+    const onClick = jest.fn();
+    catList.addEventListener("label-click", onClick);
+    const panelLabelEl = document.getElementById("-_-_-com-_-_-");
+
+    panelLabelEl.dispatchEvent(new MouseEvent("mousedown", { which: 3, button: 2, clientX: 120, clientY: 245 }));
+    panelLabelEl.dispatchEvent(new MouseEvent("contextmenu", { button: 2, clientX: 121, clientY: 246 }));
+
+    expect(onClick.mock.calls.length).toBe(2);
+    expect([onClick.mock.calls[0][0].clientX, onClick.mock.calls[0][0].clientY]).toEqual([120, 245]);
+    expect(onClick.mock.calls[1][0].rightClick).toBe(true);
+    expect([onClick.mock.calls[1][0].clientX, onClick.mock.calls[1][0].clientY]).toEqual([121, 246]);
+  });
+
   it("should emit panel-close", async () => {
     const pstateEl = document.getElementById("pstate");
     pstateEl.closed = true;
