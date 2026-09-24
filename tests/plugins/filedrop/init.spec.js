@@ -202,6 +202,55 @@ describe("filedrop: paste-to-add", () => {
     );
   });
 
+  it("drops a separator left on the end of a pasted link", async () => {
+    // Copying the last entry out of a comma-separated list takes the comma
+    // with it. The link is fine; only the separator is not.
+    const magnet =
+      "magnet:?xt=urn:btih:4444444444444444444444444444444444444444&dn=D";
+
+    await callPasteAndWait(pasteEvent(document.body, magnet + ","));
+
+    expect(ajaxMock).toHaveBeenCalledTimes(1);
+    expect(ajaxMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: { url: magnet, json: 1 },
+      })
+    );
+  });
+
+  it("drops a trailing semicolon from every link in a pasted list", async () => {
+    const first =
+      "magnet:?xt=urn:btih:5555555555555555555555555555555555555555&dn=E";
+    const second =
+      "magnet:?xt=urn:btih:6666666666666666666666666666666666666666&dn=F";
+
+    await callPasteAndWait(pasteEvent(document.body, first + ";" + second + ";"));
+
+    expect(ajaxMock).toHaveBeenCalledTimes(2);
+    expect(ajaxMock).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { url: first, json: 1 } })
+    );
+    expect(ajaxMock).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { url: second, json: 1 } })
+    );
+  });
+
+  it("keeps a comma-joined tracker list when a separator is also trailing", async () => {
+    // The trailing separator goes; the one inside tr= stays.
+    const magnetWithTrackers =
+      "magnet:?xt=urn:btih:7777777777777777777777777777777777777777&dn=G" +
+      "&tr=http://t1.example/announce,http://t2.example/announce";
+
+    await callPasteAndWait(pasteEvent(document.body, magnetWithTrackers + ","));
+
+    expect(ajaxMock).toHaveBeenCalledTimes(1);
+    expect(ajaxMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: { url: magnetWithTrackers, json: 1 },
+      })
+    );
+  });
+
   it("reports a failed add", async () => {
     ajaxMock.mockImplementation(() => Promise.resolve({ result: "Failed" }));
 
