@@ -329,7 +329,7 @@ theWebUI.doRSSDelete = function()
 theWebUI.RSSDelete = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		askYesNo( theUILang.rssMenuDelete, theUILang.rssDeletePrompt, "theWebUI.doRSSDelete()" );
+		askYesNo( theUILang.rssMenuDelete, theUILang.rssDeletePrompt, () => theWebUI.doRSSDelete() );
 	else
 		theWebUI.doRSSDelete();
 }
@@ -420,7 +420,7 @@ theWebUI.doRSSGroupDelete = function()
 theWebUI.RSSGroupDelete = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		askYesNo( theUILang.rssMenuGroupDelete, theUILang.rssDeleteGroupPrompt, "theWebUI.doRSSGroupDelete()" );
+		askYesNo( theUILang.rssMenuGroupDelete, theUILang.rssDeleteGroupPrompt, () => theWebUI.doRSSGroupDelete() );
 	else
 		theWebUI.doRSSGroupDelete();
 }
@@ -433,7 +433,7 @@ theWebUI.doRSSGroupContentsDelete = function()
 theWebUI.RSSGroupDeleteContents = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		askYesNo( theUILang.rssMenuGroupContentsDelete, theUILang.rssDeleteGroupContentsPrompt, "theWebUI.doRSSGroupContentsDelete()" );
+		askYesNo( theUILang.rssMenuGroupContentsDelete, theUILang.rssDeleteGroupContentsPrompt, () => theWebUI.doRSSGroupContentsDelete() );
 	else
 		theWebUI.doRSSGroupContentsDelete();
 }
@@ -1308,7 +1308,7 @@ plugin.correctFilterDialog = function() {
 
 plugin.onLangLoaded = function()
 {
-        this.addButtonToToolbar("rss",theUILang.mnu_rss,"theWebUI.showRSS()","settings");
+        this.addButtonToToolbar("rss",theUILang.mnu_rss,() => theWebUI.showRSS(),"settings");
 
 	plugin.addPaneToCategory(
 		"prss",

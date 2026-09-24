@@ -440,7 +440,7 @@ plugin.refreshTasks = function()
 dxSTable.prototype.tasksRemove = function()
 {
 	if(theWebUI.settings["webui.confirm_when_deleting"])
-		askYesNo( theUILang.tskDelete, theUILang.tskDeletePrompt, "theWebUI.getTable('tasks').tasksRemovePrim()" );
+		askYesNo( theUILang.tskDelete, theUILang.tskDeletePrompt, () => this.tasksRemovePrim() );
 	else
 		this.tasksRemovePrim();
 }
