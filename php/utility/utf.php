@@ -2,6 +2,33 @@
 
 class UTF
 {
+	// What utf8_encode() returns, which PHP 8.2 deprecates: each byte read
+	// as ISO-8859-1.
+	public static function latin1ToUtf8($str)
+	{
+		return(preg_replace_callback('`[\x80-\xFF]`', function($m)
+		{
+			$c = ord($m[0]);
+			return(chr(0xC0 | ($c >> 6)).chr(0x80 | ($c & 0x3F)));
+		}, $str));
+	}
+
+	// What utf8_decode() returns, which PHP 8.2 deprecates: a character
+	// outside ISO-8859-1 becomes '?', and so does each malformed sequence,
+	// found and delimited the way utf8_decode() does because
+	// htmlspecialchars() uses the same decoder.
+	public static function utf8ToLatin1($str)
+	{
+		$valid = htmlspecialchars_decode(
+			htmlspecialchars($str, ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8'), ENT_NOQUOTES);
+		return(preg_replace_callback('`[^\x00-\x7F]`u', function($m)
+		{
+			$c = $m[0];
+			return(((strlen($c) == 2) && (ord($c[0]) <= 0xC3)) ?
+				chr(((ord($c[0]) & 0x1F) << 6) | (ord($c[1]) & 0x3F)) : '?');
+		}, $valid));
+	}
+
 	public static function isInvalidUTF8($str)
 	{
 		$len = strlen($str);

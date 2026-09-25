@@ -243,7 +243,7 @@ if($req->success())
 			{
 				if(empty($val))
 					continue;
-				$ret.="\r\n\t<pubDate>".gmstrftime('%a, %d %b %Y %T %Z',$val).'</pubDate>';
+				$ret.="\r\n\t<pubDate>".TimeFormat::gmstrftime('%a, %d %b %Y %T %Z',$val).'</pubDate>';
 			}
 			else
 			if($key=="description")

@@ -299,9 +299,9 @@ class rHistory
 			self::bytes($data['downloaded']),
 			self::bytes($data['uploaded']),
 			$data['ratio'],
-			strftime('%c',$data['creation']),
-			strftime('%c',$data['added']),
-			strftime('%c',$data['finished']),
+			TimeFormat::strftime('%c',$data['creation']),
+			TimeFormat::strftime('%c',$data['added']),
+			TimeFormat::strftime('%c',$data['finished']),
 			$data['tracker'],
 		);
 		if( !is_null(rTorrentSettings::get()->tz) )

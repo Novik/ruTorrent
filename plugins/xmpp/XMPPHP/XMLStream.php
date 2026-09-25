@@ -761,9 +761,8 @@ class XMPPHP_XMLStream {
 		$this->parser = xml_parser_create('UTF-8');
 		xml_parser_set_option($this->parser, XML_OPTION_SKIP_WHITE, 1);
 		xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, 'UTF-8');
-		xml_set_object($this->parser, $this);
-		xml_set_element_handler($this->parser, 'startXML', 'endXML');
-		xml_set_character_data_handler($this->parser, 'charXML');
+		xml_set_element_handler($this->parser, array($this, 'startXML'), array($this, 'endXML'));
+		xml_set_character_data_handler($this->parser, array($this, 'charXML'));
 	}
 
 	public function readyToProcess() {
