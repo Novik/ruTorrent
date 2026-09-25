@@ -59,9 +59,11 @@ jobs:
         with:
           node-version: 20
       - name: install eslint
-        run: npm install --no-save eslint@9 @eslint/js@9
+        working-directory: tests
+        run: npm ci
       - name: eslint
-        run: npx eslint "js/**/*.js" "plugins/**/*.js"
+        working-directory: tests
+        run: npm run lint
 
   phpstan:
     # Blocking: the tree is at zero level-0 findings and stays there.

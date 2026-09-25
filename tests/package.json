@@ -6,7 +6,9 @@
   "devDependencies": {
     "@babel/core": "7.29.6",
     "@babel/preset-env": "7.22.9",
+    "@eslint/js": "9.39.5",
     "babel-jest": "29.5.0",
+    "eslint": "9.39.5",
     "jest": "29.5.0",
     "jest-environment-jsdom": "30.3.0"
   },
@@ -15,7 +17,8 @@
   },
   "scripts": {
     "test": "jest",
-    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand"
+    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
+    "lint": "cd .. && eslint \"js/**/*.js\" \"plugins/**/*.js\""
   },
   "jest": {
     "testEnvironment": "jsdom",
