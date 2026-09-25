@@ -510,24 +510,27 @@ function rtScanFiles( $path, $mask, $subdir = '' )
 	$ret = array();
 	if( is_dir( $path.$subdir ) )
 	{
-		$handle = opendir( $path.$subdir );
-		while( false !== ( $item = readdir( $handle ) ) )
+		$handle = @opendir( $path.$subdir );
+		if( $handle !== false )
 		{
-			if( $item == '.' || $item == '..' )
-				continue;
-			$path_to_item = $path.$subdir.$item;
-			if( is_dir( $path_to_item ) )
+			while( false !== ( $item = readdir( $handle ) ) )
 			{
-				$ret = array_merge( $ret,
-					rtScanFiles( $path, $mask, $subdir.$item ) );
+				if( $item == '.' || $item == '..' )
+					continue;
+				$path_to_item = $path.$subdir.$item;
+				if( is_dir( $path_to_item ) )
+				{
+					$ret = array_merge( $ret,
+						rtScanFiles( $path, $mask, $subdir.$item ) );
+				}
+				elseif( rtIsFile( $path_to_item ) &&
+					preg_match( $mask, $item ) )
+				{
+					$ret[] = $subdir.$item;
+				}
 			}
-			elseif( rtIsFile( $path_to_item ) &&
-				preg_match( $mask, $item ) )
-			{
-				$ret[] = $subdir.$item;
-			}
+			closedir( $handle );
 		}
-		closedir( $handle );
 	}
 	return ( $ret );
 }
@@ -541,26 +544,29 @@ function rtRemoveDirectory( $path, $with_files = false )
 	$path = rtRemoveTailSlash( $path );
 	if( !file_exists( $path ) || !is_dir( $path ) )
 		return false;
-	$handle = opendir( $path );
 	$empty = true;
-	while( false !== ( $item = readdir( $handle ) ) )
+	$handle = @opendir( $path );
+	if($handle !== false)
 	{
-		if( $item == '.' || $item == '..' )
-			continue;
-		$path_to_item = $path.'/'.$item;
-		if( is_dir( $path_to_item ) )
+		while( false !== ( $item = readdir( $handle ) ) )
 		{
-			if( !rtRemoveDirectory( $path_to_item, $with_files ) )
-				$empty = false;
+			if( $item == '.' || $item == '..' )
+				continue;
+			$path_to_item = $path.'/'.$item;
+			if( is_dir( $path_to_item ) )
+			{
+				if( !rtRemoveDirectory( $path_to_item, $with_files ) )
+					$empty = false;
+			}
+			else
+			{
+				if( !$with_files || !@unlink( $path_to_item ) )
+					$empty = false;
+			}
 		}
-		else
-		{
-			if( !$with_files || !unlink( $path_to_item ) )
-				$empty = false;
-		}
+		closedir( $handle );
 	}
-	closedir( $handle );
-	return ( $empty && rmdir( $path ) );
+	return ( $empty && @rmdir( $path ) );
 }
 
 
