@@ -290,13 +290,18 @@ function getClickableTrackerStatus(text)
  * Confirm again before taking action.
  * @param {string} title Title of the dialog.
  * @param {string} content Hint of the action to be confirmed.
- * @param {Function | string} funcYesName Function to be executed if confirmed.
+ * @param {Function} funcYesName Function to be executed if confirmed. Anything
+ * else is not run, and the question is not asked.
  */
 function askYesNo(title, content, funcYesName) {
+	if ($type(funcYesName) !== "function") {
+		console.warn("Confirmation action must be a function, not a string: " + funcYesName);
+		return;
+	}
 	$("#yesnoDlg-header").text(title);
 	$("#yesnoDlg-content").text(content);
 	$("#yesnoOK").off('click').on('click', () => {
-		$type(funcYesName) === "function" ? funcYesName() : eval(funcYesName);
+		funcYesName();
 		theDialogManager.hide("yesnoDlg");
 		return false;
 	});

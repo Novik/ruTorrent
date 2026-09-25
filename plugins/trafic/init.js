@@ -131,7 +131,7 @@ if(plugin.canChangeTabs())
 	theWebUI.clearStats = function()
 	{
 		if(theWebUI.settings["webui.confirm_when_deleting"])
-			askYesNo( theUILang.ClearButton, theUILang.ClearQuest, "theWebUI.reqForTraficGraph(true)" );
+			askYesNo( theUILang.ClearButton, theUILang.ClearQuest, () => theWebUI.reqForTraficGraph(true) );
 		else
 			theWebUI.reqForTraficGraph(true);
 	}

@@ -243,7 +243,7 @@ if(plugin.canChangeTabs() || plugin.canChangeColumns())
 	dxSTable.prototype.historyRemove = function()
 	{
 		if(theWebUI.settings["webui.confirm_when_deleting"])
-			askYesNo( theUILang.hstDelete, theUILang.hstDeletePrompt, "theWebUI.getTable('"+this.prefix+"').cmdHistory('delete')" );
+			askYesNo( theUILang.hstDelete, theUILang.hstDeletePrompt, () => this.cmdHistory('delete') );
 		else
 			this.cmdHistory('delete');
 	}
