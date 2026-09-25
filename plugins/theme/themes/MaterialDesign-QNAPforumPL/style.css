@@ -1,0 +1,992 @@
+html,body
+{
+	font-family: Arial, Helvetica, sans-serif;
+	background-color:#141414;
+	text-shadow:0 -1px 0 #000
+}
+:root {
+  --text-color: #ffffff;
+  --text-header-color: #ffffff;
+
+	--menu-color: #757571;
+	--menu-border-color: #333;
+	--menu-background-color: #181818;
+
+	--menu-disabled-color: #333;
+	--menu-disabled-background-color: #ffffff;
+
+	--menu-highlight-color: #d2d2d2;
+	--menu-highlight-background-color: #121212;
+	--menu-active-color: #178fd1;
+  --menu-item-active-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAICAYAAAA1BOUGAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAxUlEQVQImWMUFBRkQAO6MAYzJycnqgS3oBRLyqyj//79zWRC18YcULWDgYOL4Z+MDgMTg3vefybr6P8MDAy6TK5ZlxglVBn+vHzA8O/qPgaWvwxMDMwGXgwsCgaXGGW0Gf68fsjw5+YxBub7pw2Z2X5/fcEgLOfDLKXO8P/rR4bft04wMJ3dYMf05+cpZu5/33/9+fsn8z8zK8PfN48YGM6sC2X+9n4HAwMDAwsDA8NlljvHGH/++fOf6fNrO7aPLw7DHAcAYQxFFwvnY44AAAAASUVORK5CYII=);
+  --menu-item-exp-icon: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAKCAYAAAB4zEQNAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAmElEQVQYlWXNsQ2DMBRF0WuM6BByhcQADIFLl9SkZ6nskCYdI0DjDbwBJXJnxXEqJExO+a/0vlBKPYAXIIEvFwXwNsbQtm3kpgA+TdMwTRNa61RVVRYBkFIyDAPzPKeu61IWT3VdM44jfd+nv3j/mfHesyzL0zknyvMYY2TbNqy1IoQAQAlwHAfrurLvu7iuCKUUQAKyAPADcbArU+HIrAcAAAAASUVORK5CYII=);
+
+  --menu-connect-line-color: #aaaaaa;
+  --menu-connect-line-style: solid;
+
+  --container-bg-color: #181818;
+  --container-border-color: #1b1b1b;
+	--btn-bg-color: #3498DB;
+  --header-bg-color: #252525;
+  --header-border-color: transparent;
+  --footer-height: 25px;
+  --footer-bg-color: #191919;
+  --footer-bg-image: none;
+  --footer-border-color: #333333;
+  --dialog-bg-color: #222222;
+  --dialog-border-color: #333333;
+
+	--navbar-height: 40px;
+  --navbar-bg-color: #252525;
+  --navbar-bg-image: none;
+  --navbar-border-color: transparent;
+  --navbar-item-bg-color: #181818;
+  --navbar-item-border-color: transparent;
+  --loading-indicator-icon: url(../plugins/theme/themes/MaterialDesign-QNAPforumPL/images/ajax-loader-small.gif);
+  --loading-indicator-side-length: 34px;
+}
+#StatusBar {
+  /* --pane-up-icon: undefined - inherit from standard theme; */
+  /* --pane-down-icon: undefined - inherit from standard theme; */
+}
+category-panel {
+  --open-background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAVElEQVQImWNUN7JwY8AHJs+cs/k/DjB55pzNzPeevXrLwMgoaGZspIasccqsuVumzJwzmVlEUubuqbPnUBTBJBkYGHaxQDXsmjJzDkI3VJKBgYEBAAChN4WtYNLBAAAAAElFTkSuQmCC);
+  --heading-background-color: #252525;
+  --heading-border-color: transparent;
+}
+
+#offcanvas-sidepanel {
+  color: #EEE;
+}
+category-list
+{
+	border:none;
+	background-color:#2a2a2a;
+	border-right:1px solid #1b1b1b;
+	border-left:none
+}
+
+panel-label {
+	color:#FFF;
+	border:none;
+	padding: 4px;
+	background-color: #2a2a2a;
+	--prefix-color: #FFF;
+	--prefix-fontsize: 21px;
+	--badge-color: #D4D6C9;
+	--icon-letter-color: #D4D6C9;
+	--badge-background-color: #252525;
+	--status-image: url(../plugins/theme/themes/MaterialDesign-QNAPforumPL/src/status_icons.png);
+}
+
+panel-label:hover {
+	background-color: #303030;
+}
+
+panel-label[selected] {
+	background-color: #2a2a2a;
+	color:#65c97a;
+	text-shadow:0 -1px 0 #000;
+	--badge-color: #65c97a;
+}
+
+panel-label[selected]:hover {
+	background-color: #303030;
+}
+
+panel-label[icon=file] {
+  --icon-offset: 0px -256px;
+}
+panel-label[icon=directory] {
+  --icon-offset: 0px -272px;
+}
+panel-label[icon=config] {
+  --icon-offset: 0px -288px;
+}
+panel-label[icon=tag] {
+  --icon-offset: 0px -304px;
+}
+panel-label[icon=measure] {
+  --icon-offset: 0px -320px;
+}
+panel-label[icon=storage] {
+  --icon-offset: 0px -336px;
+}
+panel-label[icon=search] {
+  --icon-offset: 0px -352px;
+}
+
+
+div#preload
+{
+	width:0;
+	height:0;
+	display:none;
+	background-image:url(./images/toolbar.png);
+	background-image:url(./images/status_icons.png);
+	background-image:url(./images/r_bg.gif);
+	background-image:url(./images/asc.gif);
+	background-image:url(./images/desc.gif);
+	background-image:url(./images/headers.png)
+}
+
+div#cover
+{
+	background:#181818
+}
+
+div#msg
+{
+	background:#151515;
+	border-top:1px solid #333;
+	border-bottom:1px solid #333;
+	font-size:11px;
+	font-weight:700;
+	text-shadow:0 -3px 0 #000
+}
+
+div#sc
+{
+	border:1px solid #333;
+	background-color:#181818
+}
+
+div#sc li.se_act div
+{
+	background-color:#333;
+	color:#888
+}
+
+div#lng
+{
+	background-color:#181818;
+	border:1px solid #333
+}
+
+.CMenu {
+	opacity: .98;
+}
+
+.CMenu li .exp:hover::after {
+	filter: brightness(1.8);
+}
+
+.CMenu li a:not(.dis):hover
+{
+	text-shadow:0 -1px 0 #000
+}
+
+#sel
+{
+	border:1px dotted #555
+}
+
+.navbar-toggler {
+  background-image: none;
+  border: none;
+}
+#t .nav-link {
+  color: #EEE;
+}
+
+#mnu_logoff.top-menu-item {
+        margin-left: 15px;
+}
+
+#t .nav-link:hover
+{
+	background: none;
+	filter: brightness(1.2);
+}
+
+#t .nav-link:active
+{
+	background: none;
+	filter: brightness(1.3);
+}
+
+div#t div.TB_Separator
+{
+	border:none;
+	background:none;
+	margin:0 5px;
+	height:40px
+}
+
+div#t div#add
+{
+	background:transparent url(./images/toolbar.png) no-repeat 0 -1px;
+}
+
+div#t div#create
+{
+	background:transparent url(./images/toolbar.png) no-repeat -22px 0
+}
+
+div#t div#remove
+{
+	background:transparent url(./images/toolbar.png) no-repeat -46px 0
+}
+
+div#t div#start
+{
+	background:transparent url(./images/toolbar.png) no-repeat -70px 0
+}
+
+div#t div#pause
+{
+	background:transparent url(./images/toolbar.png) no-repeat -94px 0
+}
+
+div#t div#stop
+{
+	background:transparent url(./images/toolbar.png) no-repeat -118px 0
+}
+
+div#t div#moveu
+{
+	background:transparent url(./images/toolbar.png) no-repeat -142px 0
+}
+
+div#t div#moved
+{
+	background:transparent url(./images/toolbar.png) no-repeat -166px 0
+}
+
+div#t div#search
+{
+	background:transparent url(./images/toolbar.png) no-repeat -189px 0
+}
+
+div#t div#rss
+{
+	background:transparent url(./images/toolbar.png) no-repeat -239px 0
+}
+
+div#t div#setting
+{
+	background:transparent url(./images/toolbar.png) no-repeat -262px 0
+}
+
+div#t div#plugins
+{
+	background:transparent url(./images/plugin.png) no-repeat 0 center
+}
+
+div#t div#help
+{
+	background:transparent url(./images/toolbar.png) no-repeat -286px 0
+}
+
+div#t div#go
+{
+	background:transparent url(./images/go.png) no-repeat 0 0
+}
+
+div select {
+    -webkit-appearance:none !important;
+    background:#4e4e4e url(./images/dropdown.png) no-repeat 0 0;
+    background-position: right;
+    border: 1px solid #4e4e4e;
+    padding-right: 15px !important;
+}
+
+.stg_con fieldset
+{
+	border:none;
+	border-top:1px solid #888;
+	border-radius:0
+}
+
+.stg_con td input
+{
+	padding:1px 4px
+}
+
+#pview_save_view_button {
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+/*
+	font-family: monospace, monospace;
+*/
+	font-family: inherit;
+	margin: 0px;
+}
+
+category-panel::part(heading)
+{
+	color: #DCDCDC;
+	font-size: 12px;
+	height: 22px;
+	line-height: 25px;
+	font-weight: 700;
+	text-shadow: 0 -1px 0 #000;
+}
+
+.stable {
+	background-color:#181818;
+	font-family: inherit;
+}
+
+.stable-icon {
+	background-image:url(./images/status_icons.png);
+}
+
+.Icon_File
+{
+	background:transparent url(./images/file.gif) no-repeat left center
+}
+
+.Icon_Dir
+{
+	background:transparent url(./images/dir.gif) no-repeat left center
+}
+
+.Icon_Share
+{
+	background:transparent url(./images/dir.gif) no-repeat left center
+}
+
+
+div.tab
+{
+	background:#181818;
+	font-family: inherit;
+}
+
+div#lcont
+{
+	background:#181818;
+	font-family: inherit;
+}
+
+div#gcont div.row {
+	font-family: inherit;
+	color:#D4D6C9;
+}
+div#gcont div.row.Header {
+  background-color: transparent;
+}
+div#gcont div.row.Header span {
+	background: transparent url(./images/status_icons.png) no-repeat 0 -286px;
+  padding-left: 17px;
+}
+div#gcont div.row:not(.Header) span.det-hdr {
+	background: transparent url(./images/status_icons.png) no-repeat 0 -302px;
+  padding-left: 17px;
+  font-weight: 400;
+}
+
+div#gcont div.row > div {
+/*
+	background:#181818 url(./images/headers.png) repeat-x 0 -38px
+*/
+	background:none;
+}
+
+div#gcont {
+	font-family: inherit;
+}
+
+div.graph_tab
+{
+	color:#FFF;
+	background-color:#181818;
+}
+
+.graph_tab_grid {
+	border: 2px solid #606060;
+}
+
+.graph_tab_legend {
+	color: #FFF;
+	background-color: #181818;
+}
+
+.graph_tab_tooltip {
+	color: #FFF;
+	background-color: #606060;
+	border: 1px solid #606060;
+}
+
+div#modalbg {
+	background-color:#181818
+}
+
+div#FileList,div#TrackerList,div#PeerList,div#Speed
+{
+	background-color:#181818
+}
+
+* > fieldset
+{
+	border:1px solid #222;
+	border-radius:2px
+}
+
+a.dlg-close
+{
+	background:transparent url(./images/close.png) no-repeat scroll left center
+}
+
+a.dlg-close:hover
+{
+	background:transparent url(./images/close.png) no-repeat scroll left center
+}
+
+a.dlg-close:link,a.dlg-close:visited
+{
+	background:transparent url(./images/close.png) no-repeat scroll left center
+}
+
+.dlg-header {
+	text-transform: uppercase;
+	text-shadow: 0 -1px 0 #000;
+}
+.dlg-header > div:first-child {padding-left: 3rem;}
+
+fieldset
+{
+	background-color:rgb(34,34,34);
+	font-family: inherit;
+}
+
+legend
+{
+	color:#999;
+	text-transform:uppercase;
+	font-weight:500;
+	font-size:1em
+}
+
+td.disabled,label.disabled,span.disabled,div.disabled
+{
+	color:#545454
+}
+
+disabled
+{
+	opacity:50%
+}
+
+div#stg .lm
+{
+	margin:5px 0 5px 5px;
+	padding:10px 5px 0;
+	background:none;
+	border:none
+}
+
+.lm li div > div {
+  border-left-color: #AAAAAA;
+  border-left-style: solid;
+}
+.lm li div > div:first-of-type {
+  border-bottom-color: #AAAAAA;
+  border-bottom-style: solid;
+}
+.lm li div > div:last-of-type {
+  border-top-color: #AAAAAA;
+  border-top-style: solid;
+}
+.lm li, .lm li div.toggle {
+	background:transparent none repeat scroll 0 0;
+	text-transform:uppercase;
+	font-size:.9em;
+	margin:0 0 3px
+}
+
+.lm li a {
+	font-size:1em;
+	font-weight:300;
+	color:#FFF;
+	transition:all .5s
+}
+
+.lm li a:hover {
+	color:#65c97a;
+	transition:all .5s
+}
+
+.lm li a.focus {
+	color:#65c97a;
+	background:none
+}
+
+input.disabled, button.disabled {
+	background-color:#181818;
+	color:#333;
+	border:1px solid #333
+}
+
+select.cols {
+	border:1px solid #333
+}
+
+div#tdetails {
+	padding:0;
+	margin:0;
+	background-color:#181818;
+	color:#888;
+	border-top-right-radius:6px;
+	border-top-left-radius:6px
+}
+
+table#maincont td.uicell {
+  overflow: hidden;
+  padding: 0;
+  vertical-align: top;
+}
+
+div#HDivider, div#VDivider {background:#141414;}
+div#HDivider:hover, div#VDivider:hover {background:#343434}
+
+input[type="number"],input[type="text"],input[type="password"],select {
+	color: #fff;
+	border: none;
+	background-color: #4e4e4e;
+	border-radius: 2px;
+}
+
+input[type="number"][disabled],input[type="text"][disabled],input[type="password"][disabled],input[type="file"][disabled],select[disabled] {
+	color: #fff;
+	border: none;
+	background-color: #4e4e4e;
+	border-radius: 2px;
+	opacity: .2;
+}
+
+textarea {
+	border: none;
+	border-radius: 2px;
+	color: #fff;
+	border: none!important;
+	background: #4e4e4e;
+	border-radius: 2px;
+}
+
+button, input[type=button], input[type=submit], input.Button:not([disabled]):focus, .Button {
+	background: var(--btn-bg-color) none repeat scroll 0 0;
+	border-radius:2px;
+	border:none;
+	color:#FFF;
+	display:inline;
+	font-weight:700;
+	text-transform:uppercase;
+	height:21px;
+	line-height:2px;
+	margin:0 10px 0 5px;
+	padding:0;
+	text-shadow: #2980b9 0px 1px;
+}
+
+
+button:not([disabled]):hover,
+input.Button:not([disabled]):hover
+{
+	background-color: #3498db;
+	filter: brightness(1.2);
+}
+
+button:not([disabled]):hover:active,
+input.Button:not([disabled]):hover:active
+{
+	background-color: #3498db;
+	filter: brightness(1.3);
+}
+
+input[type="checkbox"]
+{
+	appearance: none;
+	width: 14px;
+	height: 14px;
+	display: inline-flex;
+	background-color: #4e4e4e;
+	font-weight: 700;
+	border-radius: 2px;
+	border: none;
+}
+
+input[type="checkbox"]:checked
+{
+	background-color: #3498db;
+}
+
+input[type="checkbox"]:checked::after {
+	margin: auto;
+	content: "✔";
+	color: #fff;
+	text-shadow: #2980b9 0px 1px;
+}
+
+input[type="checkbox"]:hover
+{
+	filter: brightness(1.2);
+}
+
+input[type="checkbox"]:hover:active
+{
+	filter: brightness(1.3);
+}
+
+ul#tabbar {
+	background:none;
+	border:none;
+	color:#606060;
+	text-shadow:none
+}
+
+.tabbar li.nav-item a.nav-link {
+	background:none;
+	border:none;
+	color:#fff;
+	cursor:pointer;
+	font-family:inherit;
+	line-height:24px;
+	margin:2px 2px 0;
+	padding:4px 15px 3px;
+	font-weight:500;
+	text-shadow:none;
+}
+
+.tabbar li.nav-item a.nav-link:hover {
+	color:#fff;
+	text-shadow:none;
+	background:none
+}
+
+.tabbar li.nav-item.selected a.nav-link {
+	background:none;
+	border-bottom:2px solid #3BB9D4;
+	color:#eee;
+	padding:4px 15px 5px;
+	font-weight:700;
+	text-shadow:none;
+	transition:all .2s cubic-bezier(.18,.89,.32,1.28) 0
+}
+
+.tabbar {
+	background:none;
+	border:none;
+	color:#038ba9;
+	padding:4px;
+	text-shadow:none
+}
+
+.tabbar li.nav-item a.nav-link {
+	background:none;
+	border:none;
+	color:#999999;
+	cursor:pointer;
+	font-family:inherit;
+	line-height:24px;
+	margin:-2px 1px 0;
+	padding:4px 15px 3px;
+	font-weight:500;
+	text-shadow:none;
+	top:0;
+	transition:all .5s
+}
+
+.tabbar li.nav-item a.nav-link:hover {
+	color:#fff;
+	background:none;
+	border:none
+}
+
+.tabbar li.nav-item.selected a.nav-link {
+	background:none;
+	border:none;
+	border-bottom:2px solid #fff;
+	color:#ececec;
+	font-weight:700;
+	margin:0 2px 0 0;
+	padding:4px 15px 3px;
+	text-shadow:none;
+	top:0
+}
+
+#fMan_navbut
+{
+	background-image:url(./images/directory.png)!important;
+	border:1px solid #181818!important
+}
+
+#fMan_navbut:hover
+{
+	background-image:url(./images/refresh.png)!important
+}
+
+#fMan_pathsel
+{
+	max-width:600px!important
+}
+
+#meter-disk-value
+{
+	border-radius:2px;
+	overflow:hidden
+}
+
+div#dlgProps textarea#prop-trackers
+{
+	background:#222#ff8000;
+	border:1px solid #333
+}
+
+.dlg-window {
+	box-shadow: 0 19px 38px rgba(0,0,0,0.60);
+}
+
+#FS_main div.dlg-header
+{
+	background-image:url(./images/share.png)!important
+}
+
+#yesnoDlg-header {
+	background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -120px;
+}
+
+#stg-header {
+	background-image:url(./images/dlg-toolbars.gif);
+  background-position-y: -72px;
+}
+#dlgHelp-header, #dlgAbout-header {
+	background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: -96px;
+}
+
+#tadd-header {
+	background-image: url(./images/dlg-toolbars.gif);
+  background-position-y: 0;
+}
+
+div.tab
+{
+	background-color:#181818
+}
+
+span#loadimg
+{
+	background:transparent url(./images/ajax-loader.gif) no-repeat center center
+}
+
+.meter-value-start-color
+{
+	background-color:#E05400
+}
+
+.meter-value-end-color
+{
+	background-color:#8FBC00
+}
+
+::-webkit-scrollbar
+{
+	width:12px;
+	height:12px;
+	padding:0;
+	margin:0
+}
+
+::-webkit-scrollbar-button:start:decrement
+{
+	display:none;
+}
+
+::-webkit-scrollbar-button:end:increment
+{
+	display:none;
+}
+
+::-webkit-scrollbar-corner
+{
+	background:#1b1b1b
+}
+
+::-webkit-scrollbar-track-piece
+{
+	background-color:#1b1b1b;
+	border:1px solid #1C1C1C
+}
+
+::-webkit-scrollbar-thumb:vertical,::-webkit-scrollbar-thumb:horizontal
+{
+	height:50px;
+	background-color:#343434
+}
+
+div#lcont div.std
+{
+	background:#181818 url(./images/headers.png) repeat-x 0 -37px;
+	min-height:17px;
+	line-height:17px;
+	border-bottom:1px solid #333;
+	font-weight:300;
+	color:#fff;
+}
+
+div#lcont div.std:nth-child(2n+1)
+{
+	background:#181818 url(./images/headers.png) repeat-x 0 -64px
+}
+
+#StatusBar
+{
+	border-top:1px solid #333;
+	background:#000 url(./images/headers.png) repeat-x 0 0;
+	color:#888;
+	font-family: inherit;
+}
+
+.statuscell td:not(:last-child) {
+	padding-right: 5px;
+}
+
+#st_up .icon {
+	background:url(./images/status.png) no-repeat 0px -1px;
+	background-size: 100%;
+}
+
+#st_down .icon {
+	background:url(./images/status.png) no-repeat 0px -24px;
+	background-size: 100%;
+}
+
+#stup_speed {
+	color:#AACF27;
+}
+
+#stdown_speed {
+	color:#178FD1;
+}
+
+#stup_total, #stdown_total {
+	color:#FFF;
+}
+
+span#ds, span#dl {
+	color:#178FD1;
+}
+
+span#ra {
+	color:#F70000;
+}
+
+span#us, span#ul {
+	color:#AACF27;
+}
+
+span.det {
+	color:#FFF;
+}
+
+.stable-head table tr td
+{
+	border-right:1px solid #242424!important;
+	font-family: inherit;
+	font-weight:700;
+	color:#fff;
+}
+
+.Icon_Dir
+{
+	background-image:url(./images/status_icons.png);
+	background-position:0 -272px
+}
+
+.Icon_File
+{
+	background-image:url(./images/status_icons.png);
+	background-position:0 -256px
+}
+
+.Icon_Torrent
+{
+	background:transparent url(./images/torrent.png) no-repeat scroll left center!important
+}
+
+.Icon_Vid
+{
+	background:transparent url(./images/video.png) no-repeat scroll left center!important
+}
+
+.Icon_Mp3
+{
+	background:transparent url(./images/mp3.png) no-repeat scroll left center!important
+}
+
+.Icon_Img
+{
+	background:transparent url(./images/image.png) no-repeat scroll left center!important
+}
+
+.Icon_Nfo
+{
+	background:transparent url(./images/nfo.png) no-repeat scroll left center!important
+}
+
+.Icon_Sfv
+{
+	background:transparent url(./images/text.png) no-repeat scroll left center!important
+}
+
+.Icon_UpD
+{
+	background:transparent url(./images/up.png) no-repeat scroll left center!important
+}
+
+.Icon_Rar,.Icon_Zip
+{
+	background:transparent url(./images/archive.zip) no-repeat scroll left center!important
+}
+
+.sthdr { color: #FFF; }
+.stval { color: #FFF; }
+.tickLabel { color: #FFF; }
+.dlg-window legend { color: #FFF; }
+
+
+
+/* MaterialDesign-QNAPforumPL — upstream MaterialDesign (PR #2873 icons) plus what QNAP units needed on top:
+   the left panel on the SVG set, headings readable on the dark palette, the File Manager's controls dark */
+#flm-nav-refresh.btn, .flm-nav-refresh { background-color: #2a2a2a !important; color: #dddddd !important; border-color: #444444 !important; }
+#flm-nav-refresh.btn:hover { background-color: #333333 !important; }
+#flm-navpath.form-select, .flm-nav .form-select, .flm-nav .form-control { background-color: #1f1f1f; color: #dddddd; border-color: #444444; }
+#flm-navpath.form-select option { background-color: #1f1f1f; color: #dddddd; }
+category-panel { --heading-background-color: #252525; --heading-border-color: #333333; }
+category-panel::part(heading) { color: #dcdcdc; }
+panel-label[icon="all"]::part(icon)         { background: url(./svg/icn_leftbar_all.svg) center / 16px 16px no-repeat; }
+panel-label[icon="down"]::part(icon)        { background: url(./svg/icn_leftbar_downloading.svg) center / 16px 16px no-repeat; }
+panel-label[icon="up"]::part(icon)          { background: url(./svg/icn_leftbar_uploading.svg) center / 16px 16px no-repeat; }
+panel-label[icon="up-down"]::part(icon)     { background: url(./svg/icn_leftbar_up-down.svg) center / 16px 16px no-repeat; }
+panel-label[icon="completed"]::part(icon)   { background: url(./svg/icn_ok.svg) center / 16px 16px no-repeat; }
+panel-label[icon="inactive"]::part(icon)    { background: url(./svg/icn_leftbar_not_active.svg) center / 16px 16px no-repeat; }
+panel-label[icon="paused"]::part(icon)      { background: url(./svg/icn_leftbar_pause.svg) center / 16px 16px no-repeat; }
+panel-label[icon="queued-down"]::part(icon) { background: url(./svg/icn_pause_down.svg) center / 16px 16px no-repeat; }
+panel-label[icon="queued-up"]::part(icon)   { background: url(./svg/icn_pause_up.svg) center / 16px 16px no-repeat; }
+panel-label[icon="error"]::part(icon)       { background: url(./svg/icn_error.svg) center / 16px 16px no-repeat; }
+panel-label[icon="error-down"]::part(icon)  { background: url(./svg/icn_error_down.svg) center / 16px 16px no-repeat; }
+panel-label[icon="error-up"]::part(icon)    { background: url(./svg/icn_error_up.svg) center / 16px 16px no-repeat; }
+panel-label[icon="checking"]::part(icon)    { background: url(./svg/icn_go.svg) center / 16px 16px no-repeat; }
+panel-label[icon="search"]::part(icon)      { background: url(./svg/icn_topmenu_search.svg) center / 16px 16px no-repeat; }
+panel-label[icon="rss"]::part(icon)         { background: url(./svg/icn_leftbar_rss.svg) center / 16px 16px no-repeat; }
+panel-label[icon="rss-dis"]::part(icon)     { background: url(./svg/icn_leftbar_rss_2.svg) center / 16px 16px no-repeat; }
+panel-label[icon="rss-group"]::part(icon)   { background: url(./svg/icn_leftbar_rss_3.svg) center / 16px 16px no-repeat; }
+
+/* MaterialDesign-QNAPforumPL — the category-panel chevron as SVG (upstream rotates the same image -90° when closed) */
+category-panel { --open-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23e0e0e0' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); }
+/* label rows: the tracklabels plugin serves PNGs by name; the ones this package creates get the theme's SVGs */
+panel-label[icon="url:plugins/tracklabels/action.php?label=nlb"]::part(icon)      { background: url(./svg/icn_tag_grey.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=movie"]::part(icon)    { background: url(./svg/label_video.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=anime"]::part(icon)    { background: url(./svg/label_video.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=tv"]::part(icon)       { background: url(./svg/label_tv.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=music"]::part(icon)    { background: url(./svg/label_music.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=game"]::part(icon)     { background: url(./svg/label_game.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=software"]::part(icon) { background: url(./svg/label_software.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=kids"]::part(icon)     { background: url(./svg/icn_label_green.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=adult"]::part(icon)    { background: url(./svg/icn_label_red.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=book"]::part(icon)     { background: url(./svg/icn_tag_purple.svg) center / 16px 16px no-repeat; }
+panel-label[icon="url:plugins/tracklabels/action.php?label=other"]::part(icon)    { background: url(./svg/label_files_all.svg) center / 16px 16px no-repeat; }
