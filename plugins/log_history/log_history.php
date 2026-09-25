@@ -21,6 +21,11 @@ class LogHandler
     public $log_count;
     protected $cache;
 
+    static public function cacheClasses()
+    {
+        return ['rCache'];
+    }
+
     static public function load()
     {
         global $LogTab_array;
