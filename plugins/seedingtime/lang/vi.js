@@ -8,5 +8,6 @@
 
  theUILang.seedingTime		= "Đã hoàn thành";
  theUILang.addTime		= "Đã thêm vào";
+ theUILang.seedingTimeHighlight		= "Đánh dấu các torrent đã hoàn tất ít nhất (ví dụ: 1 ngày, 2 tuần)";
 
 thePlugins.get("seedingtime").langLoaded();
