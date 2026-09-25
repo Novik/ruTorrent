@@ -315,3 +315,34 @@ describe("filedrop: addUrls chunking (shared by paste and drop)", () => {
     expect(window.$.ajax).toHaveBeenCalledTimes(2);
   });
 });
+
+describe("filedrop: add results", () => {
+  beforeEach(() => {
+    jest.spyOn(window, "noty").mockImplementation(() => {});
+    plugin.queuefiles = null;
+    plugin.maxfiles = null;
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it("reports a torrent that is already loaded with its own wording, as an alert", async () => {
+    window.$.ajax = jest.fn(() => Promise.resolve({ result: "Duplicate" }));
+
+    await plugin.addUrls([MAGNET]);
+
+    expect(theUILang.addTorrentDuplicate).toEqual(expect.any(String));
+    expect(window.noty).toHaveBeenCalledWith(
+      `${MAGNET} : ${theUILang.addTorrentDuplicate}`,
+      "alert"
+    );
+  });
+
+  it("styles each result php/addtorrent.php answers with", () => {
+    expect(plugin.resultType("Success")).toBe("success");
+    expect(plugin.resultType("Duplicate")).toBe("alert");
+    for (const result of ["Failed", "FailedURL", "FailedFile", "FailedDirectory"])
+      expect(plugin.resultType(result)).toBe("error");
+  });
+});

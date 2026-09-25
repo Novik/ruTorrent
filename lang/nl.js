@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "Fout bij toevoegen torrent: kan URL niet ophalen.",
  addTorrentFailedFile		: "Fout bij toevoegen torrent: opgehaalde informatie is geen geldig torrent-bestand.",
  addTorrentFailedDirectory	: "Fout bij toevoegen torrent: ongeldige downloadmap ingesteld.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Launch",
  plgLocked			: "Mandatory",
  phpExtensionNotFoundWarning	: "Sommige functionaliteit zal niet beschikbaar zijn. PHP-extensie vereist:",

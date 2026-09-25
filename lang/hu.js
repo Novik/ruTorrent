@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "Nem sikerült torrentet hozzáadni. Nem tudja lekérdezni az URL-t.",
  addTorrentFailedFile		: "A torrentet nem sikerült hozzáadni. Nem érvényes torrent fájl.",
  addTorrentFailedDirectory	: "A torrentet nem sikerült hozzáadni. Hibás vagy nemlétező letöltési könyvtár.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Indít",
  plgLocked			: "Kötelező",
  phpExtensionNotFoundWarning	: "Néhány funkció nem fog működni. PHP kiterjesztést telepíteni kell",

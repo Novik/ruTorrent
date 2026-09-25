@@ -27,6 +27,19 @@ function addtorrent_literal($value)
 	return($literal===false ? '""' : $literal);
 }
 
+// The result of one load: the hash it returned is a duplicate when it was
+// loaded before this request, or by an earlier item of it.
+function addtorrent_status($hash, &$loaded)
+{
+	if($hash===false)
+		return("Failed");
+	$hash = strtoupper($hash);
+	if(isset($loaded[$hash]))
+		return("Duplicate");
+	$loaded[$hash] = true;
+	return("Success");
+}
+
 if(isset($_REQUEST['result']))
 {
 	$results = is_array($_REQUEST['result']) ? array_values($_REQUEST['result']) : array($_REQUEST['result']);
@@ -41,7 +54,7 @@ if(isset($_REQUEST['result']))
 		foreach( $results as $ndx=>$result )
 			$js.= ('noty('.addtorrent_literal(isset($names[$ndx]) ? ($names[$ndx].' - ') : '').
 				'+theUILang["addTorrent"+'.addtorrent_literal($result).']'.
-				','.addtorrent_literal(($result=='Success') ? 'success' : 'error').');');
+				','.addtorrent_literal(($result=='Success') ? 'success' : (($result=='Duplicate') ? 'alert' : 'error')).');');
 		CachedEcho::send($js,"text/html");
 	}
 }
@@ -63,6 +76,7 @@ else
 	// the commands the daemon runs. The parameter stays on rTorrent::sendTorrent()
 	// and rTorrent::sendMagnet() for the plugins that build one in php.
 	$addition = null;
+	$loaded = rTorrent::loadedHashes();
 	if(empty($uploaded_files))
 	{
 		if(isset($_FILES['torrent_file']))
@@ -103,10 +117,10 @@ else
 					$uploaded_url = array( 'name'=>$url, 'status'=>"Failed" );
 					if(strpos($url,"magnet:")===0)
 					{
-						$uploaded_url['status'] = (rTorrent::sendMagnet($url,
+						$uploaded_url['status'] = addtorrent_status(rTorrent::sendMagnet($url,
 							!isset($_REQUEST['torrents_start_stopped']),
 							!isset($_REQUEST['not_add_path']),
-							$dir_edit,$label,$addition) ? "Success" : "Failed" );
+							$dir_edit,$label,$addition), $loaded);
 					}
 					else
 					{
@@ -156,14 +170,12 @@ else
 			{
 				if(isset($_REQUEST['randomize_hash']))
 					$torrent->info['unique'] = uniqid("rutorrent-",true);
-				if(rTorrent::sendTorrent($torrent,
+				$file['status'] = addtorrent_status(rTorrent::sendTorrent($torrent,
 					!isset($_REQUEST['torrents_start_stopped']),
 					!isset($_REQUEST['not_add_path']),
-					$dir_edit,$label,$saveUploadedTorrents,isset($_REQUEST['fast_resume']),true,$addition)===false)
-				{
+					$dir_edit,$label,$saveUploadedTorrents,isset($_REQUEST['fast_resume']),true,$addition), $loaded);
+				if($file['status']!='Success')
 					@unlink($file['file']);
-					$file['status'] = "Failed";
-				}
 			}
 		}
 		$location.=('result[]='.$file['status'].'&');

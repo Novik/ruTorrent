@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "添加 torrent 失败. 无法取回 URL.",
  addTorrentFailedFile		: "添加 torrent 失败. 取得的文件不是有效的 torrent.",
  addTorrentFailedDirectory	: "添加 torrent 失败. 指定的下载文件夹无效.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "运行",
  plgLocked			: "强制",
  phpExtensionNotFoundWarning	: "某些功能将不可用. PHP 扩展必须被安装",

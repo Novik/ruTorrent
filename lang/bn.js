@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "টরেন্ট যুক্ত করতে ব্যর্থ হয়েছে। URL পুনরুদ্ধার করা যাচ্ছে না।",
  addTorrentFailedFile		: "টরেন্ট যুক্ত করতে ব্যর্থ হয়েছে। পুনরুদ্ধার করা বিষয়বস্তু একটি বৈধ টরেন্ট ফাইল নয়।",
  addTorrentFailedDirectory	: "টরেন্ট যুক্ত করতে ব্যর্থ হয়েছে। ভুল ডাউনলোড ডিরেক্টরি উল্লেখ করা হয়েছে।",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "চালু করুন",
  plgLocked			: "বাধ্যতামূলক",
  phpExtensionNotFoundWarning	: "কিছু কার্যকারিতা অপ্রাপ্য হবে। পিএইচপি এক্সটেনশন অবশ্যই ইনস্টলড থাকতে হবে।",

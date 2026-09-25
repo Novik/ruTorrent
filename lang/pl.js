@@ -288,6 +288,7 @@ var theUILang =
  addTorrentFailedURL		: "Torrent nie został dodany. Nie można pobrać adresu.",
  addTorrentFailedFile		: "Torrent nie został dodany. Pobrana zawartość nie jest poprawnym plikiem torrent.",
  addTorrentFailedDirectory	: "Torrent nie został dodany. Określono nieprawidłowy katalog pobierania.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Przy starcie",
  plgLocked			: "Wymagane",
  phpExtensionNotFoundWarning	: "Niektóre funkcje będą niedostępne. Wymagane rozszerzenie PHP nie jest zainstalowane",

@@ -250,6 +250,8 @@ plugin.createiFrame = function() {
             if (plugin.currentPage == 'addTorrent') {
               plugin.showList();
             }
+          } else if (matchedRegex[2] == "alert") {
+            plugin.showAlert(message,"alert-warning");
           } else if (matchedRegex[2] == "error") {
             plugin.showAlert(message,"alert-danger");
           }

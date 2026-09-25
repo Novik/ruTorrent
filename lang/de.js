@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "Fehler beim hinzufügen eines Torrent. URL kann nicht abgerufen werden.",
  addTorrentFailedFile		: "Fehler beim hinzufügen eines Torrent. Die abgerufene Datei ist keine gültige Torrentdatei.",
  addTorrentFailedDirectory	: "Fehler beim hinzufügen eines Torrent. Falsches Downloadverzeichnis wurde angegeben.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Start",
  plgLocked			: "Obligatorisch",
  phpExtensionNotFoundWarning	: "Einige Funktionalitäten stehen nicht zur Verfügung. PHP Erweiterung muss installiert sein.",

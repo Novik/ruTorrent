@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL : "Torrent eklenemedi. URL alınamıyor.",
  addTorrentFailedFile : "Torrent eklenemedi. Alınan içerik geçerli bir torrent dosyası değil.",
  addTorrentFailedDirectory : "Torrent eklenemedi. Hatalı indirme dizini belirtildi.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Başlat",
  plgLocked			: "Zorunlu",
  phpExtensionNotFoundWarning	: "Bazı işlevler kullanılamayacak. PHP uzantısı yüklenmeli",

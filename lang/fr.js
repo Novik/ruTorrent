@@ -287,6 +287,7 @@ var theUILang =
  addTorrentFailedURL		: "Erreur: le torrent n’a pas pu être ajouté à rTorrent. Impossible de résoudre l’URL.",
  addTorrentFailedFile		: "Erreur: le torrent n’a pas pu être ajouté à rTorrent. Le contenu récupéré n’est pas un fichier torrent.",
  addTorrentFailedDirectory	: "Erreur: le torrent n’a pas pu être ajouté à rTorrent. Le répertoire de téléchargement spécifié est incorrect.",
+ addTorrentDuplicate		: "The torrent is already loaded and was not added again.",
  plgLaunch			: "Démarrage",
  plgLocked			: "Bloqué",
  phpExtensionNotFoundWarning	: "Certaines fonctionnalités ne seront pas disponibles. L’extension PHP doit être installée",
