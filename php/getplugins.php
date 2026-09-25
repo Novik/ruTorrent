@@ -494,17 +494,31 @@ if($handle = opendir('../plugins'))
 			if( $val!=='' && $val!='ON' && $val!='1' && $val!='TRUE' )
 				$jResult.="noty(theUILang.phpParameterUnavailable,'error');";
 		}
+		foreach($disabled as $name=>$pInfo)
+			$init[] = array( "info" => $pInfo, "name" => $name, "disabled" => true );
 		usort($init,"pluginsSort");
 		foreach($init as $plugin)
 		{
 		        $jEnd = '';
 		        $pInfo = $plugin["info"];
 
-			$deps = array_diff( $pInfo["plugin.dependencies"], $names );
-			if(count($deps))
+			if(!isset($plugin["disabled"]))
 			{
-				$jResult.="noty('".$plugin["name"].": '+theUILang.dependenceError+' ".implode(",",$deps)."','error');";
-				$disabled[$plugin["name"]] = $pInfo;
+				$deps = array_diff( $pInfo["plugin.dependencies"], $names );
+				if(count($deps))
+				{
+					$jResult.="noty('".$plugin["name"].": '+theUILang.dependenceError+' ".implode(",",$deps)."','error');";
+					$plugin["disabled"] = true;
+				}
+			}
+			if(isset($plugin["disabled"]))
+			{
+				$jResult.="(function () { var plugin = new rPlugin( '".$plugin["name"]."',".$pInfo["plugin.version"].
+					",'".$pInfo["plugin.author"]."','".$pInfo["plugin.description"]."',".$pInfo["perms"].",'".$pInfo["plugin.help"]."' );\n";
+				$jResult.="plugin.disable(); ";
+				if($pInfo["perms"] & $disabledByUser)
+					$jResult.="plugin.unlaunch(); ";
+				$jResult.="\n})();";
 				continue;
 			}
 
@@ -527,15 +541,6 @@ if($handle = opendir('../plugins'))
 				$jResult.="\n";
 			}
 			$jResult.=$jEnd;
-			$jResult.="\n})();";
-		}
-		foreach($disabled as $name=>$pInfo)
-		{
-			$jResult.="(function () { var plugin = new rPlugin( '".$name."',".$pInfo["plugin.version"].
-				",'".$pInfo["plugin.author"]."','".$pInfo["plugin.description"]."',".$pInfo["perms"].",'".$pInfo["plugin.help"]."' );\n";
-			$jResult.="plugin.disable(); ";
-			if($pInfo["perms"] & $disabledByUser)
-				$jResult.="plugin.unlaunch(); ";
 			$jResult.="\n})();";
 		}
 		$jResult.=testRemoteRequests($remoteRequests);
