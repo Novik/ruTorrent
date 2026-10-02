@@ -116,7 +116,13 @@
 }
 .konqueror .stable tbody td div { margin: 0 0px 0 0px !important }
 .stable tbody tr.selected td {background: var(--row-active-bg-color) !important;}
-.stable tbody tr:hover td {filter: brightness(var(--row-highlight-brightness));}
+/* A touch browser keeps :hover on the element it last tapped, so this dimming
+   stayed on the tapped row. Ask for it only where a pointer can hover, and
+   never for the selected row: the selection colour already marks it, and the
+   two together are unreadable on a dark theme. */
+@media (hover: hover) {
+  .stable tbody tr:not(.selected):hover td {filter: brightness(var(--row-highlight-brightness));}
+}
 .stable tbody tr td {background: var(--row-even-bg-color);}
 .stable.alternate tbody tr:nth-child(odd) td {background: var(--row-odd-bg-color);}
 .stable.alternate tbody tr:nth-child(even) td {background: var(--row-even-bg-color);}
