@@ -1123,16 +1123,21 @@ rDirectory.prototype.updateDirs = function(name)
 	return(allStat);
 }
 
+// A caller can hold an id from a listing that is no longer the current one --
+// a selection that survived a directory change, an event on a row still in the
+// DOM. Answer for what is there rather than throwing.
 rDirectory.prototype.getEntry = function(k)
 {
 	var entry = this.dirs[this.current][k];
+	if(!entry)
+		return(null);
 	return((entry.data.name=="..") ? null : entry.data);
 }
 
 rDirectory.prototype.isDirectory = function(k)
 {
 	var entry = this.dirs[this.current][k];
-	return(entry.link!=null);
+	return(entry ? (entry.link!=null) : false);
 }
 
 rDirectory.prototype.getFilesIds = function(arr,current,k,prt,property)

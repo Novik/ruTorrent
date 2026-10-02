@@ -4,7 +4,6 @@ $.extend($.support,
 });
 
 plugin.holdMouse = { x:0, y: 0 };
-plugin.curMouse = null;
 
 plugin.emulateRightClick = function()
 {
@@ -41,71 +40,39 @@ plugin.startHold = function(touch)
 	}
 }
 
-plugin.dispatchMouse = function(event,type)
-{
-	var touch = event.changedTouches[0];
-	touch.timeStamp = $.now();
-	window.setTimeout( function()
-	{
-		var mouseEvent = document.createEvent("MouseEvent");
-		mouseEvent.initMouseEvent(type, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY,
-			false, false, false, false, 0, null);
-		touch.target.dispatchEvent(mouseEvent);
-	}, 0);
-	return(touch);
-}
-
-plugin.cancelTarget = function()
-{
-	plugin.target = null;
-}
-
+// Safari turns a tap into mousedown/mouseup/click and a double tap into
+// dblclick by itself. The listeners below sit on document, where touchstart is
+// passive, so the preventDefault() that used to suppress those native events
+// was ignored and the mouse events this plugin synthesized arrived on top of
+// them: every tap became a double click, and a double tap opened two folders --
+// the second landing on whatever row the first navigation had moved under the
+// finger. Only the long press is still ours: Safari has no gesture for a right
+// click.
 plugin.touchStart = function(event)
 {
 	if(event.changedTouches.length)
 	{
-		if($(event.changedTouches[0].target).is("select") || $(event.changedTouches[0].target).is("input") || $(event.changedTouches[0].target).is("button") || $(event.changedTouches[0].target).is("label"))
+		var touch = event.changedTouches[0];
+		if($(touch.target).is("select") || $(touch.target).is("input") || $(touch.target).is("button") || $(touch.target).is("label"))
 			return;
-		plugin.dispatchMouse(event,"mousemove");
-		var touch = plugin.dispatchMouse(event,"mousedown");;
-		if(plugin.targetTimeout)
-			window.clearTimeout(plugin.targetTimeout);
-		if(!plugin.target || (plugin.target != touch.target))
-		{
-			plugin.target = touch.target;
-			plugin.targetTimeout = window.setTimeout(plugin.cancelTarget, 600);
-			plugin.startHold(touch);
-		}
-		else
-		{
-			if(plugin.target)
-			{
-				plugin.cancelTarget();
-				plugin.dispatchMouse(event,"click");
-				plugin.dispatchMouse(event,"dblclick");
-			}
-		}
-		plugin.curMouse = { x: touch.screenX, y: touch.screenY, timeStamp: $.now() };
+		plugin.cancelHold();
+		plugin.startHold(touch);
 	}
-	event.preventDefault();
-	return(false);
 }
 
 plugin.touchEnd = function(event)
 {
 	if(event.changedTouches.length)
 	{
+		plugin.cancelHold();
 		if(plugin.cancelMouseUp)
 		{
 			plugin.cancelMouseUp = false;
+			// The tap that ends a long press has already opened the context
+			// menu; keep Safari from also clicking the row underneath it.
 			event.preventDefault();
 			return(false);
 		}
-		plugin.cancelHold();
-		var touch = plugin.dispatchMouse(event,"mouseup");
-		if(plugin.target && (plugin.target == touch.target))
-			plugin.dispatchMouse(event,"click");
-		plugin.curMouse = null;
 	}
 }
 

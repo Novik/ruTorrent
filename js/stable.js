@@ -228,6 +228,13 @@ dxSTable.prototype.create = function(ele, styles, aName)
 dxSTable.prototype.handleClick = function(e)
 {
 	const row = $(e.target).parents('tr')[0];
+	// clearRows() drops the data at once but leaves the old rows in the DOM
+	// until the deferred sync removes them. An event landing on one of them --
+	// on a touch device, the browser's own mousedown that follows the dblclick
+	// which just changed the listing -- must not reach the handlers with an id
+	// the table no longer holds.
+	if (!row || !(row.id in this.rowdata))
+		return;
 	if (e.type == 'dblclick') {
 		this.ondblclick(row);
 	} else if (e.which === 3 || e.which === 1) {
