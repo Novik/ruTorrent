@@ -249,5 +249,7 @@ plugin.onRemove = function()
 	theWebUI.getTable("trt").removeColumnById("throttle");
 	if(thePlugins.isInstalled("rss"))
 		theWebUI.getTable("rss").removeColumnById("throttle");
+	if(thePlugins.isInstalled("extsearch"))
+		theWebUI.getTable("teg").removeColumnById("throttle");
 	theRequestManager.removeRequest( "trt", plugin.reqId );
 }

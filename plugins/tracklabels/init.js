@@ -300,5 +300,7 @@ plugin.onRemove = function()
 		theWebUI.getTable("trt").removeColumnById("tracker");
 		if(thePlugins.isInstalled("rss"))
 			theWebUI.getTable("rss").removeColumnById("tracker");
+		if(thePlugins.isInstalled("extsearch"))
+			theWebUI.getTable("teg").removeColumnById("tracker");
 	}
 }

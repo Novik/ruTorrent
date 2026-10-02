@@ -82,6 +82,11 @@ plugin.onRemove = function()
 		theWebUI.getTable("rss").removeColumnById("seedingtime");
 		theWebUI.getTable("rss").removeColumnById("addtime");
 	}
+	if(thePlugins.isInstalled("extsearch"))
+	{
+		theWebUI.getTable("teg").removeColumnById("seedingtime");
+		theWebUI.getTable("teg").removeColumnById("addtime");
+	}
 	theRequestManager.removeRequest( "trt", plugin.reqId1 );
 	theRequestManager.removeRequest( "trt", plugin.reqId2 );
 }

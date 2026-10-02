@@ -212,7 +212,7 @@ if(plugin.canChangeColumns() && plugin.collectStatForTorrents)
 	plugin.config = theWebUI.config;
 	theWebUI.config = function()
 	{
-		this.tables.trt.columns.push({ text: 'Ratio/day', width: '75x', id: "ratioday", type: TYPE_NUMBER});
+		this.tables.trt.columns.push({ text: 'Ratio/day', width: '75px', id: "ratioday", type: TYPE_NUMBER});
 		this.tables.trt.columns.push({ text: 'Ratio/week', width: '75px', id: "ratioweek", type: TYPE_NUMBER});
 		this.tables.trt.columns.push({ text: 'Ratio/month', width: '75px', id: "ratiomonth", type: TYPE_NUMBER});
 		plugin.trtFormat = this.tables.trt.format;
@@ -369,6 +369,12 @@ plugin.onRemove = function()
 			theWebUI.getTable("rss").removeColumnById("ratioday");
 			theWebUI.getTable("rss").removeColumnById("ratioweek");
 			theWebUI.getTable("rss").removeColumnById("ratiomonth");
+		}
+		if(thePlugins.isInstalled("extsearch"))
+		{
+			theWebUI.getTable("teg").removeColumnById("ratioday");
+			theWebUI.getTable("teg").removeColumnById("ratioweek");
+			theWebUI.getTable("teg").removeColumnById("ratiomonth");
 		}
 	}
 }
