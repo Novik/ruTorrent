@@ -47,6 +47,12 @@ jobs:
         # without a commit.
         env:
           EC_VERSION: v4.0.1
+          # The wrapper asks the GitHub API which asset to download. Anonymous,
+          # that request shares one rate limit with every other job on the
+          # runner's address, and when it is spent the step fails before it
+          # reads a file: "API rate limit exceeded ... Failed to download
+          # binary". The workflow token has its own limit.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx --yes editorconfig-checker@7
 
   eslint:
