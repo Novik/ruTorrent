@@ -1,3 +1,4 @@
 plugin.description: This plugin adds the 'Tracker Status' column to the torrent list.
 plugin.author: Micdu70
 plugin.version: 1.1
+plugin.runlevel: 10.6

@@ -533,6 +533,10 @@ plugin.onRemove = function()
 {
 	plugin.removePageFromOptions("st_history");
 	theWebUI.getTable("trt").removeColumnById("pushbullet");
+	if(thePlugins.isInstalled("rss"))
+		theWebUI.getTable("rss").removeColumnById("pushbullet");
+	if(thePlugins.isInstalled("extsearch"))
+		theWebUI.getTable("teg").removeColumnById("pushbullet");
 	theRequestManager.removeRequest( "trt", plugin.reqId1 );
 }
 
