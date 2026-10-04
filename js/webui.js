@@ -578,7 +578,7 @@ var theWebUI = {
 					theContextMenu.add([theUILang.Help, () => openExternalURL(plugin.help) ]);
 				}
 			}
-	   		theContextMenu.show();
+	   		theContextMenu.show(e.clientX,e.clientY);
 			return(true);
 		}
 		return(false);
@@ -1132,7 +1132,7 @@ var theWebUI = {
 	prsSelect: function(e, id)
 	{
 		if(theWebUI.createPeerMenu(e, id))
-	   		theContextMenu.show();
+	   		theContextMenu.show(e.clientX,e.clientY);
    	},
 
 	getPeerIds: function(cmd)
@@ -1236,7 +1236,7 @@ var theWebUI = {
 			var arr = id.split('_t_');
 	   		var ind = iv(arr[1]);
    			if(theWebUI.createTrackerMenu(e, ind))
-		   		theContextMenu.show();
+		   		theContextMenu.show(e.clientX,e.clientY);
 		}
    	},
 
@@ -1427,7 +1427,7 @@ var theWebUI = {
 			else
 				p = theWebUI.dirs[theWebUI.dID].getEntry(id);
    			if(theWebUI.createFileMenu(e, p))
-				theContextMenu.show();
+				theContextMenu.show(e.clientX,e.clientY);
 		}
    	},
 
