@@ -469,23 +469,15 @@ dxSTable.prototype.Sort = function(e)
 		}
 	}
 
-	const sortingValues = id => {
-		const no = this.getColById(id);
-		return no >= 0 ? Object.fromEntries(
-			Object.entries(this.rowdata)
-				.map(([k,v]) => [k, v.data[no]]
-			)
-		) : {};
-	};
+	// Compute each row's sort key once per column instead of once per
+	// comparison. The old comparators re-lowercased, re-normalized (building
+	// three RegExp objects per call) and re-parsed both values on every one of
+	// the ~n*log(n) comparisons.
+	const primary = this.getSortKeyFunc(this.sortId, this.reverse);
+	const secondaryId = this.sortId2 || this.ids[0];
+	const secondary = this.getSortKeyFunc(secondaryId, this.secRev);
 
-	const primaryValues = sortingValues(this.sortId);
-	const primarySort = this.getSortFunc(this.sortId, this.reverse, x => primaryValues[x]);
-
-	const secondary = this.sortId2 || this.ids[0];
-	const secondaryValues = sortingValues(secondary);
-	const secondarySort = this.getSortFunc(secondary, this.secRev, x => secondaryValues[x]);
-
-	this.rowIDs.sort((x,y) => primarySort(x,y) || secondarySort(x,y) || theSort.Default(x, y));
+	this.rowIDs.sort((x,y) => primary(x,y) || secondary(x,y) || theSort.Default(x, y));
 
 	this.isSorting = false;
 	this.refreshRows();
@@ -515,6 +507,40 @@ dxSTable.prototype.getSortFunc = function(id, reverse, valMapping)
 	const order = reverse ? -1 : 1;
 	const sorter = this.getSorter(this.colsdata[this.getColNoById(id)]?.type, valMapping);
 	return (x,y) => order * sorter(x, y);
+}
+
+/**
+ * Same ordering as getSortFunc(), but the per-row work (lowercasing, label
+ * normalization, number and peer-count parsing) is done once per row up front.
+ * Returns a comparator over row ids.
+ */
+dxSTable.prototype.getSortKeyFunc = function(id, reverse)
+{
+	const no = this.getColById(id);
+	const type = this.colsdata[no]?.type;
+	const order = reverse ? -1 : 1;
+	const cmp = (a, b) => (a < b) ? -1 : (a > b) ? 1 : 0;
+	const keyFn = {
+		[TYPE_STRING]: x => ((x == null ? "" : x) + "").toLowerCase(),
+		[TYPE_STRING_LABEL]: x => (((x = theNormalizer.normalize(x)) == null ? "" : x) + "").toLowerCase(),
+		[TYPE_PROGRESS]: ir,
+		[TYPE_NUMBER]: ir,
+		[TYPE_PEERS]: x => [ir(theSort.PeerValue(x, theSort.peers_connected_re)), ir(theSort.PeerValue(x, theSort.peers_total_re))],
+		[TYPE_SEEDS]: x => [ir(theSort.PeerValue(x, theSort.peers_connected_re)), ir(theSort.PeerValue(x, theSort.peers_total_re))],
+	}[type];
+	if (no < 0 || !keyFn)
+		return () => 0;
+	const keys = {};
+	for (const [k, v] of Object.entries(this.rowdata))
+		keys[k] = keyFn(v.data[no]);
+	let compare;
+	if (type === TYPE_STRING || type === TYPE_STRING_LABEL)
+		compare = (a, b) => a.localeCompare(b);
+	else if (type === TYPE_PEERS || type === TYPE_SEEDS)
+		compare = (a, b) => cmp(a[0], b[0]) || cmp(a[1], b[1]);
+	else
+		compare = cmp;
+	return (x, y) => order * compare(keys[x], keys[y]);
 }
 
 var theSort =
@@ -795,10 +821,19 @@ dxSTable.prototype.refreshRows = function( height, fromScroll )
 		const r = this.rowdata[id];
 		return this.createRow(r.data, id, r.icon, r.attr);
 	};
-	const viewRows = this.rowIDs
-		.filter(id => this.rowdata[id]?.enabled)
-		.filter((_, index) => index >= mni && index <= mxi)
-		.map(id => $$(id) ?? createRow(id))
+	// Walk the id list once and stop at the end of the window. The old
+	// filter/filter/map chain visited every row on every scroll tick.
+	const viewRows = [];
+	let index = 0;
+	for (const id of this.rowIDs) {
+		if (!this.rowdata[id]?.enabled)
+			continue;
+		if (index > mxi)
+			break;
+		if (index >= mni)
+			viewRows.push($$(id) ?? createRow(id));
+		index++;
+	}
 
 	this.tpad.height(mni * this.TR_HEIGHT);
 	this.tBody[0].replaceChildren(...viewRows);
@@ -965,29 +1000,39 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 	const data = this.rowdata[sId]?.fmtdata || {};
 
 	const row = $("<tr>").attr(attrs);
+	const contId = this.dCont.attr("id");
 	for (let i = 0; i < this.cols; i++) {
 		const index = this.colOrder[i];
 		const cdat = this.colsdata[i];
-		const td = $("<td>").addClass(`stable-${this.dCont.attr("id")}-col-${index}`).toggle(!!cdat.enabled);
+		// Cells are built with the DOM API directly: this runs for every
+		// visible row on every scroll, and one jQuery object per cell and
+		// per inner element was most of the cost.
+		const td = document.createElement("td");
+		td.className = `stable-${contId}-col-${index}`;
+		if (!cdat.enabled)
+			td.style.display = "none";
 		const celldata = data[index] || '';
 		const rawvalue = cols[index] || '';
 		const isProgress = cdat.type === TYPE_PROGRESS;
 		const isLabel = cdat.type === TYPE_STRING_LABEL;
 		if (isProgress) {
-			td.attr({rawvalue:rawvalue}).append(
-				$("<span>").addClass("meter-text").css({overflow:"visible"}).text(celldata),
-				$("<div>")
-					.addClass("meter-value")
-					.css(this.progressStyle(celldata)),
-			);
+			td.setAttribute("rawvalue", rawvalue);
+			const meterText = document.createElement("span");
+			meterText.className = "meter-text";
+			meterText.style.overflow = "visible";
+			meterText.textContent = celldata;
+			const meterValue = document.createElement("div");
+			meterValue.className = "meter-value";
+			$(meterValue).css(this.progressStyle(celldata));
+			td.append(meterText, meterValue);
 		} else if (isLabel) {
-			td.append(
-				$("<div>").html((celldata || " ").replace(/`(.*?)`$/, '<code>$1</code>')),
-			);
+			const div = document.createElement("div");
+			div.innerHTML = (celldata || " ").replace(/`(.*?)`$/, '<code>$1</code>');
+			td.append(div);
 		} else {
-			td.append(
-				$("<div>").text(celldata || " "),
-			);
+			const div = document.createElement("div");
+			div.textContent = celldata || " ";
+			td.append(div);
 			// The table is table-layout:fixed with white-space:nowrap and
 			// overflow:hidden, so a value wider than its column is cut off at
 			// the edge with no ellipsis and no other sign that anything is
@@ -998,9 +1043,9 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 			// value as the cell's own tooltip.
 			// Only when there is something to show: an empty title="" on the
 			// cell would shadow the row's tooltip, which carries the name.
-			if (cdat.titled && celldata) td.attr("title", celldata);
+			if (cdat.titled && celldata) td.setAttribute("title", celldata);
 		}
-		row.append(td);
+		row[0].append(td);
 	}
 	row.find("td:first-child div").prepend(this.createIcon(icon));
 	const ret = row[0];
@@ -1279,10 +1324,16 @@ dxSTable.prototype.setValues = function(row,arr)
 
 dxSTable.prototype.setValuesByIds = function(row, rowObj)
 {
-	return Object.entries(this.ids)
-		.filter(([_, propName]) => propName in rowObj)
-		.map(([col, propName]) => this.setValue(row, col, rowObj[propName]))
-		.some(change => change);
+	// Plain loop: this runs once per torrent on every poll, and the old
+	// entries/filter/map/some chain allocated four arrays per call.
+	let changed = false;
+	const ids = this.ids;
+	for (const col of Object.keys(ids)) {
+		const propName = ids[col];
+		if (propName in rowObj)
+			changed = this.setValue(row, col, rowObj[propName]) || changed;
+	}
+	return changed;
 }
 
 dxSTable.prototype.setValueById = function(row, id, val)
