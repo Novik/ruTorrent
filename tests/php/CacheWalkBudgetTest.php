@@ -298,7 +298,7 @@ class CacheWalkBudgetTest extends TestCase
 			'O:17:"BudgetListPayload":1:{s:3:"lst";a:1:{i:0;O:8:"Intruder":0:{}}}');
 		list($result, $logged) = $this->logOf(new BudgetListPayload());
 		$this->assertTrue($result === false, 'a planted refused class is a miss too');
-		$this->assertTrue(strpos($logged, 'names a class it may not hold') !== false,
-			'and that one is logged as a class: ' . trim($logged));
+		$this->assertTrue(strpos($logged, 'names the class Intruder, which it may not hold') !== false,
+			'and that one is logged as the class it named: ' . trim($logged));
 	}
 }
