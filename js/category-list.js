@@ -374,6 +374,10 @@ export class CategoryList {
     return this.statistic.selected(hash, this.selection);
   }
 
+  selectedFn() {
+    return this.statistic.selectedFn(this.selection);
+  }
+
   rescan(panelId, labelId) {
     const torrents = this.borrowTorrentsFn();
     this.statistic.rescan(torrents, panelId, labelId);
