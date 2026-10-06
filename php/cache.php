@@ -83,6 +83,8 @@ class rCache
 	// Whether unserialize() met a class it was not allowed to construct, at
 	// any depth. Such a class comes back as __PHP_Incomplete_Class, which
 	// would fail later and further away if it were handed to the caller.
+	// The refusal names the class: without it the reader has to guess which
+	// of the stored object's properties the file is being refused for.
 	// True as well when the value costs more than the budgets above, because
 	// what could not be walked has not been shown to be free of one. $bytes
 	// is the length of the file the value was unserialized from, and $reason
@@ -109,7 +111,13 @@ class rCache
 		{
 			if($value instanceof __PHP_Incomplete_Class)
 			{
-				$reason = 'names a class it may not hold';
+				// The original name is kept in a property of the stand-in;
+				// reading it through the array cast avoids the notice that
+				// touching an incomplete class's property raises.
+				$name = ((array)$value)['__PHP_Incomplete_Class_Name'] ?? '';
+				$reason = is_string($name) && ($name !== '')
+					? ('names the class '.$name.', which it may not hold')
+					: 'names a class it may not hold';
 				return(true);
 			}
 			if($seen->contains($value))
