@@ -1,0 +1,10 @@
+plugin.description: This plugin sends notifications about torrent state changes via Telegram.
+plugin.author: drrako
+plugin.runlevel: 5
+plugin.version: 0.1
+php.version: 7.4.0
+php.extensions.error: curl,json
+rtorrent.remote: error
+rtorrent.external.error: php
+rtorrent.php.error: telegram.php,notify.php
+rtorrent.version: 0.9.8
