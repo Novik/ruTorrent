@@ -23,9 +23,20 @@ class FakeRtorrentDaemon
 	private $logFile;
 	private $bodyLogFile;
 
+	const FAULT = '__fault__';
+
+	/**
+	 * A reply entry that makes the daemon answer with a fault instead of
+	 * values, for a test that needs the caller's request to fail.
+	 */
+	public static function fault($message, $code = -501)
+	{
+		return array(self::FAULT => array('code' => $code, 'message' => $message));
+	}
+
 	/**
 	 * $replies is a list, one per request: each entry is the list of values
-	 * the daemon answers that request with.
+	 * the daemon answers that request with, or self::fault(...).
 	 */
 	public function __construct($replies, $logFile)
 	{
@@ -186,6 +197,9 @@ class FakeRtorrentDaemon
 
 	private function reply($values)
 	{
+		if (isset($values[self::FAULT])) {
+			return self::faultReply($values[self::FAULT]);
+		}
 		$xml = '<?xml version="1.0" encoding="UTF-8"?><methodResponse><params><param>'
 			. '<value><array><data>';
 		foreach ($values as $value) {
@@ -194,5 +208,15 @@ class FakeRtorrentDaemon
 				: '<value><string>' . self::escapeText((string)$value) . '</string></value>';
 		}
 		return $xml . '</data></array></value></param></params></methodResponse>';
+	}
+
+	private static function faultReply($fault)
+	{
+		return '<?xml version="1.0" encoding="UTF-8"?><methodResponse><fault><value><struct>'
+			. '<member><name>faultCode</name><value><i4>' . (int)$fault['code']
+			. '</i4></value></member>'
+			. '<member><name>faultString</name><value><string>'
+			. self::escapeText($fault['message'])
+			. '</string></value></member></struct></value></fault></methodResponse>';
 	}
 }
