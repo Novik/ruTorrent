@@ -982,7 +982,7 @@ dxSTable.prototype.createRow = function(cols, sId, icon, attr) {
 			);
 		} else if (isLabel) {
 			td.append(
-				$("<div>").html((celldata || " ").replace(/`(.*?)`$/, '<code>$1</code>')),
+				$("<div>").html(escapeHTML(celldata || " ").replace(/`(.*?)`$/, '<code>$1</code>')),
 			);
 		} else {
 			td.append(
