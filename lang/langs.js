@@ -14,7 +14,7 @@
  * lt:'Lithuanian', ms:'Malay', mn:'Mongolian', no:'Norwegian', fa:'Persian',
  * pl:'Polish', pt:'Portuguese', ro:'Romanian', ru:'Russian', sr:'Serbian', sk:'Slovak',
  * sl:'Slovenian', es:'Spanish', sv:'Swedish', th:'Thai', tr:'Turkish', uk:'Ukrainian',
- * vi:'Vietnamese'
+ * vi:'Vietnamese', nn:'Norwegian Nynorsk'
  */
 
 function readLangCookie() {
@@ -45,6 +45,7 @@ var AvailableLanguages =
 	lv:'Latvijas',
 	nl:'Nederlands',
 	no:'Norsk',
+	nn:'Norsk (nynorsk)',
 	pl:'Polski',
 	"pt-br":'Português (Brasil)',
 	"pt-pt":'Português (Portugal)',
