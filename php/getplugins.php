@@ -488,7 +488,9 @@ if($handle = opendir('../plugins'))
 				}
 			}
 		}
-		if($phpRequired)
+		// From PHP 8.5 a script run from the command line gets $argv whatever
+		// register_argc_argv says, and the directive defaults to 0.
+		if($phpRequired && PHP_VERSION_ID < 80500)
 		{
 			$val = strtoupper(ini_get("register_argc_argv"));
 			if( $val!=='' && $val!='ON' && $val!='1' && $val!='TRUE' )
