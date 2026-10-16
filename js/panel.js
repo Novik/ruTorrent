@@ -460,6 +460,22 @@ class CategoryListStatistic extends TorrentStatisticBucket {
     );
   }
 
+  /**
+   * Same answer as `selected`, for one fixed selection and many hashes. The
+   * per-panel label id arrays are built once instead of once per hash, which
+   * matters when every torrent is checked on every poll.
+   * @param {PanelLabelSelection} panelLabelSelection
+   * @returns {(hash: string) => boolean}
+   */
+  selectedFn(panelLabelSelection) {
+    const panels = Object.entries(this._panels).map(([panelId, panel]) => [
+      panel,
+      panelLabelSelection.ids(panelId),
+    ]);
+    return (hash) =>
+      panels.every(([panel, labelIds]) => panel.selected(hash, labelIds));
+  }
+
   lookup(panelId, labelId) {
     const panelStat =
       panelId === this._viewPanelId ? this._viewPanel : this._panels[panelId];

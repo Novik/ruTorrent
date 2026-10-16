@@ -90,6 +90,7 @@ describe("webui stale details", () => {
           empty: () => statistic,
         },
         syncAfterScan: jest.fn(),
+        selectedFn: () => () => true,
       },
       getTable: jest.fn(() => table),
       getStatusIcon: jest.fn(() => ["icon", "status"]),

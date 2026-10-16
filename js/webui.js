@@ -1899,8 +1899,9 @@ var theWebUI = {
 				this.setSpeedValues(statistic.upload, statistic.download);
 
 				// Filter torrent table
+				const isSelected = this.categoryList.selectedFn();
 				for (const hash in this.torrents)
-					this.filterByLabel(table, hash);
+					this.filterByLabel(table, hash, isSelected);
 
 				// Fetch additional data
 				this.getAllTrackers(newHashes);
@@ -2184,8 +2185,9 @@ var theWebUI = {
 	filterTorrentTable: function() {
 		var table = this.getTable("trt");
 		table.scrollTo(0);
+		const isSelected = this.categoryList.selectedFn();
 		for(const hash of Object.keys(this.torrents))
-			this.filterByLabel(table, hash);
+			this.filterByLabel(table, hash, isSelected);
 		table.clearSelection();
 		table.syncDOM();
 		if(this.dID != "")
@@ -2196,9 +2198,9 @@ var theWebUI = {
 		this.updateViewRows(table);
 	},
 
-	filterByLabel: function(table, sId)
+	filterByLabel: function(table, sId, isSelected)
 	{
-		if(this.categoryList.selected(sId))
+		if((isSelected ?? ((hash) => this.categoryList.selected(hash)))(sId))
 			table.unhideRow(sId);
 		else
 			table.hideRow(sId);
