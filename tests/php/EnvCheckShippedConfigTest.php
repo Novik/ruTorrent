@@ -91,18 +91,19 @@ class EnvCheckShippedConfigTest extends TestCase
 	{
 		$saved = $_ENV;
 		$_ENV['RU_PROFILE_MASK'] = $mask;
-		$warned = false;
-		set_error_handler(function ($errno, $errstr) use (&$warned) {
-			if (strpos($errstr, 'RU_PROFILE_MASK') !== false) {
-				$warned = true;
-			}
-			return true;
-		});
-		include($this->root . '/conf/config.php');
-		restore_error_handler();
-		$_ENV = $saved;
+		$errorLog = tempnam(sys_get_temp_dir(), 'rut-mask-log-');
+		$oldErrorLog = ini_get('error_log');
+		ini_set('error_log', $errorLog);
+		try {
+			include($this->root . '/conf/config.php');
+		} finally {
+			$diagnostic = is_file($errorLog) ? file_get_contents($errorLog) : '';
+			ini_set('error_log', $oldErrorLog);
+			unlink($errorLog);
+			$_ENV = $saved;
+		}
 
-		return $warned;
+		return strpos($diagnostic, 'RU_PROFILE_MASK') !== false;
 	}
 
 	/**
