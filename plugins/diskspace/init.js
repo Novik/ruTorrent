@@ -16,7 +16,7 @@ plugin.setValue = function( full, free )
 			theUILang.diskUsage
 				.replace(/%USED%/, theConverter.bytes(used))
 				.replace(/%TOTAL%/, theConverter.bytes(full))
-				.replace(/%FREE%/, theConverter.bytes(free))
+				.replace(/%FREE%/, theConverter.bytes(free) + ", " + iv(full ? free/full*100 : 0) + "%")
 		);
 	}
 
