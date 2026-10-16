@@ -2757,11 +2757,117 @@ function createCategoryList(catModule) {
 	return categoryList;
 }
 
+// A title tooltip never opens on a touch screen, so the status bar panes that
+// keep their numbers in one -- disk space, CPU load, port status -- read as
+// blank when tapped. Show the title in a bubble above the finger instead and
+// leave it there until the next tap, so the numbers can be read. Pointer input
+// is untouched: touch events do not fire for it, and the browser opens its own
+// tooltip on hover.
+var theStatusTip =
+{
+	el: null,
+	cell: null,
+	observer: null,
+	start: null,
+
+	// The status bar scrolls sideways on a narrow screen, so a drag is not a tap.
+	MOVE_TOLERANCE: 10,
+	GAP: 12,
+
+	init: function()
+	{
+		$("#StatusBar")
+			.on("touchstart", function(e)
+			{
+				var touch = e.originalEvent.changedTouches[0];
+				theStatusTip.start = touch ? {x: touch.clientX, y: touch.clientY} : null;
+			})
+			.on("touchend", function(e)
+			{
+				theStatusTip.onTap(e.originalEvent);
+			})
+			.on("scroll", function()
+			{
+				theStatusTip.hide();
+			});
+		$(window).on("resize scroll", function()
+		{
+			theStatusTip.hide();
+		});
+	},
+
+	onTap: function(event)
+	{
+		var touch = event.changedTouches[0];
+		var start = this.start;
+		this.start = null;
+		if(!touch || !start)
+			return;
+		if((Math.abs(touch.clientX - start.x) > this.MOVE_TOLERANCE) ||
+			(Math.abs(touch.clientY - start.y) > this.MOVE_TOLERANCE))
+			return;
+		var cell = $(touch.target).closest("#StatusBar [title]")[0];
+		// A second tap on the same pane closes it, as does a tap on a pane
+		// that has nothing to say.
+		if(cell && (cell !== this.cell) && cell.getAttribute("title"))
+			this.show(cell, touch.clientX);
+		else
+			this.hide();
+	},
+
+	show: function(cell, x)
+	{
+		this.hide();
+		this.cell = cell;
+		this.el = $("<div>")
+			.addClass("status-tip")
+			.attr("role", "tooltip")
+			.text(cell.getAttribute("title"))
+			.appendTo("body");
+		var width = this.el.outerWidth();
+		this.el.css(
+		{
+			left: Math.max(8, Math.min(x - width / 2, window.innerWidth - width - 8)),
+			bottom: window.innerHeight - cell.getBoundingClientRect().top + this.GAP
+		});
+		// Disk space and CPU load rewrite their title every few seconds.
+		if(window.MutationObserver)
+		{
+			this.observer = new MutationObserver(function()
+			{
+				if(theStatusTip.el)
+					theStatusTip.el.text(cell.getAttribute("title"));
+			});
+			this.observer.observe(cell, {attributes: true, attributeFilter: ["title"]});
+		}
+		// Closes on the next tap anywhere outside the status bar.
+		$(document).on("touchend.statustip", function(e)
+		{
+			if(!$(e.target).closest("#StatusBar").length)
+				theStatusTip.hide();
+		});
+	},
+
+	hide: function()
+	{
+		if(this.observer)
+		{
+			this.observer.disconnect();
+			this.observer = null;
+		}
+		if(this.el)
+			this.el.remove();
+		this.el = this.cell = null;
+		$(document).off("touchend.statustip");
+	}
+};
+
 $(document).ready(function()
 {
 	makeContent();
 	theContextMenu.init();
 	theTabs.init();
+	theStatusTip.init();
 	Promise.all([
 		import('./backgroundtask.js'),
 		import('./category-list.js'),
