@@ -239,7 +239,8 @@ class DeprecatedFunctionReplacementTest extends TestCase
 		{
 			list($result, $other) = $this->run_isolated('
 				$method = new ReflectionMethod("' . $engine . 'Engine", "disableEntityLoader");
-				$method->setAccessible(true);
+				if(PHP_VERSION_ID < 80100)
+					$method->setAccessible(true);
 				$method->invoke(null);
 				return true;
 			', array('plugins/extsearch/engines.php', 'plugins/extsearch/engines/' . $engine . '.php'));
