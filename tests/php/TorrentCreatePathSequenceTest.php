@@ -5,7 +5,7 @@ require_once(__DIR__ . '/TorrentSequenceFixtures.php');
 
 /**
  * What the create path does to a torrent: plugins/create/createtorrent.php
- * lines 70-93, plugins/create/correct.php lines 53-76, and the re-read at
+ * lines 70-94, plugins/create/correct.php lines 69-91, and the re-read at
  * plugins/create/action.php line 233 that hands the result to the browser.
  *
  * The create path is the one that writes the three keys a torrent carries
@@ -110,7 +110,7 @@ class TorrentCreatePathSequenceTest extends TestCase
 		);
 		$trackersCount = 3;
 
-		// createtorrent.php lines 70-93.
+		// createtorrent.php lines 70-92.
 		$torrent = new Torrent($this->source, $announce_list[0][0], 16, null, null);
 		if ($trackersCount > 1) {
 			$torrent->announce_list($announce_list);
@@ -205,7 +205,7 @@ class TorrentCreatePathSequenceTest extends TestCase
 		$this->assertTrue(strpos($written, $this->bstr('created by') . $this->bstr($this->ourCreator())) !== false,
 			"'created by' is written with our creator");
 		$this->assertTrue(strpos($written, $this->bstr('creation date') . $this->bint($stamped)) !== false,
-			"'creation date' is written with the time of the build");
+			"'creation date' is written with the time of the last write, not of the build");
 		$this->assertTrue($reread->announce_list() === array(
 				array('http://one.test/announce'), array('udp://two.test/announce')),
 			"'announce-list' reads back through a save and a load");
@@ -220,13 +220,27 @@ class TorrentCreatePathSequenceTest extends TestCase
 	 * clear_announce_list(), so a torrent that arrives with an announce-list
 	 * and is corrected to a single tracker keeps the list it came with -- and
 	 * that has to stay exactly as it is, list and all.
+	 *
+	 * "Correct" is an edit, not a re-creation, and this test says so: the
+	 * external creator's 'created by' and 'creation date' come out unchanged.
+	 * That creator is not a stranger -- each of the six *.sh wrappers in
+	 * plugins/create runs an external hasher over the user's own files and
+	 * then runs correct.php on what it wrote -- but correct.php still creates
+	 * nothing. It hashes no data -- every byte of 'pieces', 'length' and
+	 * 'name' comes from the file it opened -- and it makes the same kind of
+	 * edit plugins/edit/action.php makes on a torrent already loaded in
+	 * rtorrent: trackers, comment, private flag, and here a source tag as
+	 * well. The one asymmetry, that writing info/private or info/source
+	 * changes the info hash, does not make this class the author of a payload
+	 * it never read. Compare the create tests above, where the class does hash
+	 * the files, and its own name and the time of the write are the honest
+	 * answer.
 	 */
 	public function testCorrectingAnExternallyBuiltTorrentSetsTheFormsValues()
 	{
-		$before = time();
 		$torrent = new Torrent($this->announceListTorrent());
 
-		// correct.php lines 53-76, with one tracker on the form.
+		// correct.php lines 69-91, with one tracker on the form.
 		$announce_list = array(array('http://corrected.test/announce'));
 		$trackersCount = 1;
 		$torrent->clear_announce();
@@ -248,8 +262,8 @@ class TorrentCreatePathSequenceTest extends TestCase
 				array('udp://two.test/announce', 'udp://two.test/announce2'),
 			)),
 			'comment'       => $this->bstr('corrected'),
-			'created by'    => $this->bstr($this->ourCreator()),
-			'creation date' => $this->bint($this->stampedDate($written, $before)),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->preservedDate($written)),
 			'info'          => $this->bdict(array(
 				'length'       => $this->bint(1024),
 				'name'         => $this->bstr('test.data'),
@@ -260,6 +274,6 @@ class TorrentCreatePathSequenceTest extends TestCase
 			)),
 		));
 		$this->assertTrue($written === $expected,
-			'the form values are written and the announce-list it came with is left alone');
+			'the form values are written, and the announce-list and the creator it came with are left alone');
 	}
 }
