@@ -767,8 +767,10 @@ plugin.onLangLoaded = function() {
 			$("<div>").addClass("col-12 col-md-3 justify-content-md-end").append(
 				$("<label>").attr({for:"teglabel"}).text(theUILang.Label + ":"),
 			),
-			$("<div>").addClass("col-12 col-md-9").append(
-				$("<input>").attr({type:"text", id:"teglabel"}),
+			$("<div>").addClass("col-12 col-md-9 d-flex").append(
+				$("<input>").attr({type:"text", id:"teglabel", placeholder:theUILang.Label}).addClass("flex-grow-1"),
+				$("<select>").attr({id:"teglabel_select"}).addClass("flex-grow-1"),
+				$("<button>").attr({type:"button", id:"teglabel_return_select"}).text(theUILang.Return_select_label),
 			),
 		),
 	);
@@ -785,6 +787,36 @@ plugin.onLangLoaded = function() {
 	if (thePlugins.isInstalled("_getdir")) {
 		new theWebUI.rDirBrowser("tegdir_edit");
 	}
+	$("#teglabel_select").on("change", function() {
+		switch (this.selectedIndex) {
+			case 0:
+				$("#teglabel").val("");
+				break;
+			case 1:
+				$(this).hide();
+				$("#teglabel").val("").show().trigger("focus");
+				$("#teglabel_return_select").show();
+				break;
+			default:
+				$("#teglabel").val(this.value);
+				break;
+		}
+	});
+	$("#teglabel_return_select").on("click", function() {
+		$(this).hide();
+		$("#teglabel").val("").hide();
+		$("#teglabel_select").prop("selectedIndex", 0).show();
+	});
+	theDialogManager.setHandler("tegLoadTorrents", "beforeShow", () => {
+		$("#teglabel").val("").hide();
+		$("#teglabel_return_select").hide();
+		$("#teglabel_select").empty().append(
+			$("<option>").text(theUILang.No_label),
+			$("<option>").text(theUILang.newLabel),
+			...[...theWebUI.categoryList.torrentLabelTree.torrentLabels.keys()]
+				.map(lbl => $("<option>").val(lbl).text(lbl)),
+		).prop("selectedIndex", 0).show();
+	});
 
 	const commonSettings = $("<fieldset>").append(
 		$("<legend>").text(theUILang.exsGlobalLimit),
