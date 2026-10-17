@@ -13,6 +13,10 @@ foreach (glob(__DIR__ . '/../../../plugins/loginmgr/accounts/*.php') as $account
     require_once($accountFile);
 }
 
+// YggTorrent names no site until one is configured; YggTorrentOriginTest is
+// about that. Here it has one, so that it is asked like every other account.
+$yggTorrentOrigin = 'https://yggtorrent.example';
+
 // A site still configured http, to pin the direction the rule allows.
 class ProbeHttpSiteAccount extends commonAccount
 {
@@ -52,8 +56,9 @@ $tests = array(
             array('ruTrackerAccount', 'https://evil.test/x/rutracker.org/forum/', false),
             array('TapochekNetAccount', 'https://tapochek.net/x', true),
             array('TapochekNetAccount', 'https://tapochek.net.evil.test/x', false),
-            array('YggTorrentAccount', 'https://www.ygg.re/engine/download_torrent?id=1', true),
-            array('YggTorrentAccount', 'https://evil.test/x/ygg.re/engine/download_torrent?id=1', false),
+            array('YggTorrentAccount', 'https://yggtorrent.example/engine/download_torrent?id=1', true),
+            array('YggTorrentAccount', 'https://ygg-lookalike.example/engine/download_torrent?id=1', false),
+            array('YggTorrentAccount', 'https://evil.test/x/yggtorrent.example/engine/download_torrent?id=1', false),
             array('LostFilmAccount', 'https://lostfilm.tv/download.php?id=7&', true),
             array('LostFilmAccount', 'https://lostfilm.tv.evil.test/download.php?id=7&', false),
         );

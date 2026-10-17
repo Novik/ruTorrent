@@ -4,6 +4,11 @@ require_once( dirname(__FILE__)."/../../php/util.php" );
 require_once( dirname(__FILE__)."/../../php/cache.php" );
 require_once( dirname(__FILE__)."/../../php/Snoopy.class.inc");
 require_once( dirname(__FILE__)."/../../php/utility/json.php");
+// The plugin configuration is read into the scope this file is first
+// included from, and that is not always the global one: on the download
+// path it is Snoopy::fetchComplex(), a method. The accounts read their
+// settings as globals, so the settings are declared global here first.
+global $yggTorrentOrigin;
 eval( FileUtil::getPluginConf( 'loginmgr' ) );
 
 class privateData
@@ -60,7 +65,15 @@ class privateData
 
 abstract class commonAccount
 {
-	public $url = 'http://abstract.com';
+	// The site this account logs in at, as "scheme://host". Each account under
+	// accounts/ names its own; the base class names none, and an account that
+	// leaves this empty claims no URL and is never logged in to. It used to be
+	// a placeholder, "http://abstract.com", and check() posted the credentials
+	// of an account that had not overridden it to that host.
+	public $url = '';
+
+	// The accounts refuseUnconfigured() has already reported, by name.
+	private static $unconfiguredLogged = array();
 
 	public function getName()
 	{
@@ -83,10 +96,38 @@ abstract class commonAccount
 	// user -- plugins/rss follows links out of a feed.
 	public function test($url)
 	{
+		if($this->unconfigured()!=='')
+			return(false);
+		$site = parse_url((string) $this->url);
+		return(self::urlAddresses($url,array($site["host"]),$site["scheme"]));
+	}
+
+	// Why this account cannot be used, or '' when it can. The base rule is
+	// that $url parses into a scheme and a host; an account that takes its
+	// site from configuration says here what is missing.
+	protected function unconfigured()
+	{
 		$site = @parse_url((string) $this->url);
 		if(!is_array($site) || empty($site["host"]) || empty($site["scheme"]))
+			return('the account names no site');
+		return('');
+	}
+
+	// True when the account cannot be used, in which case the reason is
+	// logged once per account and process -- the alternative was a credential
+	// POST that quietly went to a placeholder.
+	protected function refuseUnconfigured()
+	{
+		$reason = $this->unconfigured();
+		if($reason==='')
 			return(false);
-		return(self::urlAddresses($url,array($site["host"]),$site["scheme"]));
+		$name = $this->getName();
+		if(!isset(self::$unconfiguredLogged[$name]))
+		{
+			self::$unconfiguredLogged[$name] = true;
+			FileUtil::toLog('loginmgr: '.$name.' is not used: '.$reason);
+		}
+		return(true);
 	}
 
 	// True when $url's host is one of $hosts, or a subdomain of one, and its
@@ -250,6 +291,11 @@ abstract class commonAccount
 
 	public function check( $client, $login, $password, $auto )
 	{
+		// No URL selects the account here: the refresh logs in at the
+		// account's own site, and one without a site has nowhere to send
+		// the credentials.
+		if($this->refuseUnconfigured())
+			return;
 		$modified = privateData::getModified($this->getName());
 		if( ($modified===false) || ((time()-$modified)>=$auto))
 		{
