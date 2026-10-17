@@ -21,9 +21,9 @@ require_once(__DIR__ . '/../../php/TestCase.php');
  * download, whoever wrote the list and whenever they wrote it.
  *
  * update.php is copied rather than included: it runs its work at include time
- * and declares functions, so it can be entered once per process, and its one
- * require_once needs answering by a stub -- the real php/util.php pulls in the
- * configuration and a live rtorrent.
+ * and declares functions, so it can be entered once per process, and its
+ * requires need answering by stubs -- the real php/util.php pulls in the
+ * configuration, and the real php/xmlrpc.php a live rtorrent.
  */
 class ListCollectorTest extends TestCase
 {
@@ -46,6 +46,32 @@ class ListCollectorTest extends TestCase
 		copy($source, $target);
 		if (hash_file('sha256', $source) !== hash_file('sha256', $target))
 			throw new Exception('could not copy update.php');
+
+		// update.php asks rtorrent which hashes it holds before it applies a
+		// list, through erasedataLiveHashes() in pending.php, which is copied
+		// beside it. The daemon this stands for holds none, so every list here
+		// is applied; what the collector does when the daemon holds one, or
+		// does not answer, is pinned in UnconfirmedEraseTest.php against the
+		// real RPC layer.
+		$source = dirname(dirname(dirname(__DIR__))) . '/plugins/erasedata/pending.php';
+		$target = $this->tree . '/plugins/erasedata/pending.php';
+		copy($source, $target);
+		if (hash_file('sha256', $source) !== hash_file('sha256', $target))
+			throw new Exception('could not copy pending.php');
+		file_put_contents($this->tree . '/php/xmlrpc.php', '<?php
+			class rXMLRPCCommand
+			{
+				public $command; public $params;
+				public function __construct($c, $p = null) { $this->command = $c; $this->params = $p; }
+			}
+			class rXMLRPCRequest
+			{
+				public $val = array(); public $important = true;
+				public function __construct($cmds = null) {}
+				public function success() { $this->val = array(); return(true); }
+			}
+			function getCmd($c) { return($c); }
+		');
 
 		file_put_contents($this->tree . '/php/util.php', '<?php
 			class FileUtil
@@ -252,6 +278,29 @@ class ListCollectorTest extends TestCase
 
 		$this->assertTrue(count(glob($this->listPath . '/*.list2')) === 0,
 			'a refused list is removed from the queue rather than retried forever');
+	}
+
+	// -- a list the writer has staged but not published -----------------------
+
+	public function testAStagedListIsNeitherAppliedNorRemoved()
+	{
+		$this->reset();
+		// removewithdata.php writes a list under a temporary name first and
+		// renames it to <hash>.list2 only once rtorrent has confirmed the
+		// erase. A writer that died in between leaves it here, naming the
+		// files of a download rtorrent may well still hold.
+		$staged = $this->tree . '/data/Staged';
+		$kept = $this->file($staged . '/one.txt');
+		$tmp = $this->listPath . '/X.list2.1.1.tmp';
+		file_put_contents($tmp, implode("\n", array($kept, $staged, '1', '1')) . "\n");
+		$applied = $this->tree . '/data/Applied';
+		$gone = $this->file($applied . '/one.txt');
+		$this->queue('Y', array($gone), $applied, '1');
+		$this->collect();
+
+		$this->assertTrue(is_file($kept), 'a file a staged list names is not unlinked');
+		$this->assertTrue(is_file($tmp), 'and the staged list is left where it is');
+		$this->assertTrue(!is_file($gone), 'while the published list beside it is applied');
 	}
 
 	// -- a list the previous writer left behind ------------------------------

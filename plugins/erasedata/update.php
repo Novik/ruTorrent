@@ -4,6 +4,10 @@ if( count( $argv ) > 1 )
 	$_SERVER['REMOTE_USER'] = $argv[1];
 
 require_once( dirname(__FILE__)."/../../php/util.php" );
+require_once( dirname(__FILE__)."/../../php/xmlrpc.php" );
+// For erasedataLiveHashes(): the hashes rtorrent holds, or null when it
+// will not say.
+require_once( dirname(__FILE__)."/pending.php" );
 eval(FileUtil::getPluginConf('erasedata'));
 
 function eLog( $str )
@@ -278,8 +282,37 @@ if(!is_file($lock) || (time()-filemtime($lock)>MAX_DURATION_OF_CHECK))
 	}
 	foreach( $legacy as $item )
 		quarantineLegacyList($item);
-	foreach( $list as $item )
+	// A list is published once rtorrent has confirmed the erase, but the same
+	// hash can be loaded again before this pass -- by hand, from a watch
+	// directory, from an RSS rule -- and rtorrent then finds the files on
+	// disk and seeds them. So before each list is applied, rtorrent is asked
+	// which hashes it holds, and a list whose hash it holds is withdrawn with
+	// its data left in place. Asked before each list rather than once per
+	// pass, because a pass over many lists on slow storage takes long enough
+	// for a hash to be loaded again in the middle of it, and the question
+	// costs milliseconds. When rtorrent does not answer, the pass stops and
+	// the remaining lists wait for the next one: nothing is deleted on an
+	// unknown answer.
+	//
+	// What is left is the moment between one answer and that list's unlinks;
+	// only rtorrent itself could close it.
+	foreach( $list as $n => $item )
 	{
+		$live = erasedataLiveHashes($why);
+		if(!is_array($live))
+		{
+			FileUtil::toLog('erasedata: rtorrent '.
+				(($why === 'fault') ? 'answered with a fault' : 'did not answer').
+				', '.(count($list)-$n).' list(s) kept for the next pass');
+			break;
+		}
+		$hash = basename($item, '.list2');
+		if(array_key_exists(strtoupper($hash), $live))
+		{
+			FileUtil::toLog('erasedata: '.$hash.' is loaded again; list withdrawn, data kept');
+			unlink($item);
+			continue;
+		}
 		parseOneItem($item);
 		unlink($item);
 	}

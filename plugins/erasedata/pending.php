@@ -171,14 +171,20 @@ if(!function_exists('erasedataDrainQueue'))
 		return(count($batch));
 	}
 
-	// The hashes rtorrent currently holds, or null when it will not say.
-	function erasedataLiveHashes()
+	// The hashes rtorrent currently holds, or null when it will not say; $why
+	// then tells which it was: "no-answer" (no connection, or no reply) or
+	// "fault" (it refused the question).
+	function erasedataLiveHashes(&$why = null)
 	{
 		$req = new rXMLRPCRequest( new rXMLRPCCommand("d.multicall",
 			array("default", getCmd("d.get_hash="))) );
 		$req->important = false;
 		if(!$req->success())
+		{
+			$why = $req->fault ? "fault" : "no-answer";
 			return(null);
+		}
+		$why = null;
 		$ret = array();
 		foreach($req->val as $hash)
 			$ret[strtoupper($hash)] = true;
