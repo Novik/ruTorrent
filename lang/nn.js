@@ -1,8 +1,6 @@
 /*
  * Norwegian (nynorsk) language file.
  *
- * Based on the Norwegian (bokmål) language file.
- *
  * Author: jakobbg (jakob@grimstveit.no)
  *
  */
@@ -55,7 +53,7 @@ var theUILang = {
   Label: "Etikett",
   Peers: "Peerar",
   Seeds: "Seedar",
-  Remaining: "Att",
+  Remaining: "Resterande",
   Priority: "Prioritet",
   Not_torrent_file: "Fila må vere ei gyldig .torrent-fil.",
   Pausing: "Pausar",
@@ -225,7 +223,7 @@ var theUILang = {
   newLabel: "Ny etikett",
   enterLabel: "Skriv inn ny etikett",
   UIEffects: "Vis effektar på element i brukargrensesnittet",
-  Plugins: "Programtillegg",
+  Plugins: "Utvidingar",
   plgName: "Namn",
   plgStatus: "Status",
   plgLoaded: "Lasta inn",
@@ -234,12 +232,12 @@ var theUILang = {
   plgAuthor: "Forfattar",
   plgDescr: "Skildring",
   mnu_go: "Gå",
-  pluginCantStart: "Programtillegget kunne ikkje starte.",
+  pluginCantStart: "Programutvidinga kunne ikkje starte.",
   doFastResume: "Hald raskt fram",
   innerSearch: "Lokale torrentar",
   removeTeg: "Fjern tagg",
   errMustBeInSomeHost:
-    "ruTorrent og rTorrent må vere installerte på same vert. Programtillegget vil ikkje fungere.",
+    "ruTorrent og rTorrent må vere installerte på same vert. Programutvidinga vil ikkje fungere.",
   warnMustBeInSomeHost:
     "ruTorrent og rTorrent må vere installerte på same vert. Noko funksjonalitet vil ikkje fungere.",
   plgShutdown: "Fjern",
@@ -274,22 +272,22 @@ var theUILang = {
     "rTorrent-brukaren kan ikkje køyre 'stat'. Noko funksjonalitet vil vere utilgjengeleg.",
   statNotFoundW:
     "Webserverbrukaren kan ikkje køyre 'stat'. Noko funksjonalitet vil vere utilgjengeleg.",
-  badrTorrentVersion: "Programtillegget krev rTorrent-versjon >=",
-  badPHPVersion: "Programtillegget krev PHP-versjon >=",
+  badrTorrentVersion: "Programutvidinga krev rTorrent-versjon >=",
+  badPHPVersion: "Programutvidinga krev PHP-versjon >=",
   rTorrentExternalNotFoundError:
-    "Programtillegget vil ikkje fungere. rTorrent-brukaren får ikkje tilgang til tredjepartsprogrammet",
+    "Programutvidinga vil ikkje fungere. rTorrent-brukaren får ikkje tilgang til tredjepartsprogrammet",
   rTorrentExternalNotFoundWarning:
     "Noko funksjonalitet vil vere utilgjengeleg. rTorrent-brukaren får ikkje tilgang til tredjepartsprogrammet",
   webExternalNotFoundError:
-    "Programtillegget vil ikkje fungere. Webserverbrukaren får ikkje tilgang til tredjepartsprogrammet",
+    "Programutvidinga vil ikkje fungere. Webserverbrukaren får ikkje tilgang til tredjepartsprogrammet",
   webExternalNotFoundWarning:
     "Noko funksjonalitet vil vere utilgjengeleg. Webserverbrukaren får ikkje tilgang til tredjepartsprogrammet",
   rTorrentBadScriptPath:
-    "Programtillegget vil ikkje fungere. rTorrent-brukaren må ha lese- og køyringstilgang til fila",
+    "Programutvidinga vil ikkje fungere. rTorrent-brukaren må ha lese- og køyringstilgang til fila",
   rTorrentBadPHPScriptPath:
-    "Programtillegget vil ikkje fungere. rTorrent-brukaren må ha lesetilgang til fila",
+    "Programutvidinga vil ikkje fungere. rTorrent-brukaren må ha lesetilgang til fila",
   dependenceError:
-    "Programtillegget vil ikkje fungere. Det krev følgjande programtillegg",
+    "Programutvidinga vil ikkje fungere. Det krev følgjande programutvidingar",
   peerAdd: "Legg til peer ...",
   peerBan: "Blokker",
   peerKick: "Kast ut",
@@ -320,7 +318,7 @@ var theUILang = {
   showOpenStatus: "Vis open status i statuslinja",
   requiresAtLeastRtorrent: "Krev rTorrent >= {version}", // ... v0.9.7
   phpParameterUnavailable:
-    "PHP-innstillinga register_argc_argv er sett til OFF. Set til ON, elles vil enkelte programtillegg ikkje fungere som dei skal.",
+    "PHP-innstillinga register_argc_argv er sett til OFF. Set til ON, elles vil enkelte programutvidingar ikkje fungere som dei skal.",
   addTorrentFailedURL:
     "Klarte ikkje å leggje til torrent. Kan ikkje hente URL.",
   addTorrentFailedFile:
@@ -334,11 +332,11 @@ var theUILang = {
   phpExtensionNotFoundWarning:
     "Noko funksjonalitet vil vere utilgjengeleg. PHP-utvidinga må vere installert.",
   phpExtensionNotFoundError:
-    "Programtillegget vil ikkje fungere. PHP-utvidinga må vere installert.",
+    "Programutvidinga vil ikkje fungere. PHP-utvidinga må vere installert.",
   trkPrivate: "Privat",
   dontSet: "Ikkje set",
   webBadSessionError:
-    "Programtillegget vil ikkje fungere. Webserverbrukaren må ha køyringstilgang til session-mappa til rTorrent.",
+    "Programutvidinga vil ikkje fungere. Webserverbrukaren må ha køyringstilgang til session-mappa til rTorrent.",
   webBadSessionWarning:
     "Noko funksjonalitet vil vere utilgjengeleg. Webserverbrukaren må ha køyringstilgang til session-mappa til rTorrent.",
   Developers: "Utviklarar",
