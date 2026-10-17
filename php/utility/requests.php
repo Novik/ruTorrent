@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__.'/../urlhost.php');
+
 class Requests
 {
 	public static function disableUnsupportedMethods()
@@ -23,26 +25,30 @@ class Requests
 			global $enabledOrigins;
 			if(empty($enabledOrigins))
 				$enabledOrigins = array();
+			// A Host header is an authority, host[:port], and an IPv6 host has
+			// colons of its own: read up to the first colon, "[::1]:8080" became
+			// "[", matched no Origin, and every POST made through an IPv6
+			// address answered 403. It is read as the Origin and Referer hosts
+			// below are read, and compared as a DNS name: without regard to
+			// case or trailing dots, and never as a mere substring.
 			if(isset($_SERVER['HTTP_X_FORWARDED_HOST']))
-				$enabledOrigins[] = strtok($_SERVER['HTTP_X_FORWARDED_HOST'], ':');
+				$enabledOrigins[] = UrlHost::of('http://'.$_SERVER['HTTP_X_FORWARDED_HOST']);
 			if(isset($_SERVER['HTTP_HOST']))
-				$enabledOrigins[] = strtok($_SERVER['HTTP_HOST'], ':');
+				$enabledOrigins[] = UrlHost::of('http://'.$_SERVER['HTTP_HOST']);
 			if(isset($_SERVER['HTTP_ORIGIN']))
 			{
 				if($_SERVER['HTTP_ORIGIN'] == "null") # privacy-sensitive context
 				{
 					return;
 				}
-				$host = parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST);
-				if(in_array($host,$enabledOrigins))
+				if(UrlHost::isExactlyOneOf(UrlHost::of($_SERVER['HTTP_ORIGIN']),$enabledOrigins))
 				{
 					return;
 				}
 			}
 			if(isset($_SERVER['HTTP_REFERER']))
 			{
-				$host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-				if(in_array($host,$enabledOrigins))
+				if(UrlHost::isExactlyOneOf(UrlHost::of($_SERVER['HTTP_REFERER']),$enabledOrigins))
 				{
 					return;
 				}
