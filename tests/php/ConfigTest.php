@@ -31,10 +31,19 @@ class ConfigTest extends TestCase
 		}
 	}
 
-	private function configuredProfileMask($value)
+	private function configuredProfileMask($value, &$diagnostic = null)
 	{
 		$_ENV['RU_PROFILE_MASK'] = $value;
-		include(__DIR__ . '/../../conf/config.php');
+		$errorLog = tempnam(sys_get_temp_dir(), 'rut-mask-log-');
+		$oldErrorLog = ini_get('error_log');
+		ini_set('error_log', $errorLog);
+		try {
+			include(__DIR__ . '/../../conf/config.php');
+		} finally {
+			$diagnostic = is_file($errorLog) ? file_get_contents($errorLog) : '';
+			ini_set('error_log', $oldErrorLog);
+			unlink($errorLog);
+		}
 		return $profileMask;
 	}
 
@@ -58,41 +67,125 @@ class ConfigTest extends TestCase
 	{
 		// The fallback is 0777, which is wider than any mask an admin sets one
 		// for. Taking it silently turns a typo into world-writable profiles.
-		$warned = null;
-		set_error_handler(function ($errno, $errstr) use (&$warned) {
-			$warned = $errstr;
-			return true;
-		});
-		$mask = $this->configuredProfileMask('02770');
-		restore_error_handler();
+		$diagnostic = null;
+		$mask = $this->configuredProfileMask('02770', $diagnostic);
 
 		$this->assertEquals(0777, $mask, 'a mask that could not be read falls back to the default');
-		$this->assertTrue($warned !== null, 'and the fallback is reported');
-		$this->assertTrue(strpos($warned, 'RU_PROFILE_MASK') !== false,
-			'and the report names the setting: ' . var_export($warned, true));
+		$this->assertTrue($diagnostic !== '', 'and the fallback is reported');
+		$this->assertTrue(strpos($diagnostic, 'RU_PROFILE_MASK') !== false,
+			'and the report names the setting: ' . var_export($diagnostic, true));
+	}
+
+	public function testInvalidMaskDiagnosticLeavesCliOutputClean()
+	{
+		$errorLog = tempnam(sys_get_temp_dir(), 'rut-mask-log-');
+		$code = '$_ENV["RU_PROFILE_MASK"] = "02770"; require '
+			. var_export(__DIR__ . '/../../conf/config.php', true) . ';';
+		$process = proc_open(array(PHP_BINARY, '-d', 'variables_order=GPCS',
+			'-d', 'error_reporting=-1', '-d', 'display_errors=1', '-d', 'log_errors=0',
+			'-d', 'error_log=' . $errorLog, '-r', $code), array(
+			0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')
+		), $pipes);
+		try {
+			if (!is_resource($process))
+				throw new RuntimeException('Could not start the configuration CLI fixture');
+			fclose($pipes[0]);
+			$stdout = stream_get_contents($pipes[1]);
+			$stderr = stream_get_contents($pipes[2]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			$status = proc_close($process);
+			$diagnostic = file_get_contents($errorLog);
+		} finally {
+			unlink($errorLog);
+		}
+
+		$this->assertEquals(0, $status, 'an invalid mask does not terminate configuration loading');
+		$this->assertEquals('', $stdout, 'the configuration diagnostic leaves CLI stdout clean');
+		$this->assertEquals('', $stderr, 'the configuration diagnostic leaves CLI stderr clean');
+		$this->assertTrue(strpos($diagnostic, 'RU_PROFILE_MASK') !== false,
+			'the invalid mask remains visible in the server error log: ' . var_export($diagnostic, true));
+	}
+
+	public function testInvalidMaskDiagnosticLeavesHttpJsonResponseClean()
+	{
+		$directory = tempnam(sys_get_temp_dir(), 'rut-mask-http-');
+		unlink($directory);
+		mkdir($directory, 0700);
+		$router = $directory . '/router.php';
+		$errorLog = $directory . '/errors.log';
+		$serverLog = $directory . '/server.log';
+		file_put_contents($router, '<?php $_ENV["RU_PROFILE_MASK"] = "02770"; require '
+			. var_export(__DIR__ . '/../../conf/config.php', true)
+			. '; header("Content-Type: application/json"); echo json_encode(array("profileMask" => $profileMask));');
+		$process = null;
+		try {
+			$socket = stream_socket_server('tcp://127.0.0.1:0', $errno, $error);
+			if ($socket === false)
+				throw new RuntimeException('Could not reserve a configuration HTTP port: ' . $error);
+			$address = stream_socket_get_name($socket, false);
+			fclose($socket);
+			// exec keeps proc_terminate directed at PHP rather than a shell parent.
+			$command = 'exec ' . escapeshellarg(PHP_BINARY)
+				. ' -d variables_order=GPCS -d error_reporting=-1 -d display_errors=1 -d log_errors=0'
+				. ' -d error_log=' . escapeshellarg($errorLog)
+				. ' -S ' . escapeshellarg($address) . ' ' . escapeshellarg($router);
+			$process = proc_open($command, array(0 => array('pipe', 'r'),
+				1 => array('file', $serverLog, 'a'), 2 => array('file', $serverLog, 'a')), $pipes);
+			if (!is_resource($process))
+				throw new RuntimeException('Could not start the configuration HTTP fixture');
+			fclose($pipes[0]);
+			$ready = false;
+			$deadline = microtime(true) + 5;
+			do {
+				$connection = @stream_socket_client('tcp://' . $address, $errno, $error, 0.1);
+				if ($connection !== false) {
+					fclose($connection);
+					$ready = true;
+					break;
+				}
+				usleep(10000);
+			} while (microtime(true) < $deadline && proc_get_status($process)['running']);
+			if (!$ready)
+				throw new RuntimeException('Configuration HTTP fixture did not become ready: ' . file_get_contents($serverLog));
+			$context = stream_context_create(array('http' => array('timeout' => 5, 'ignore_errors' => true)));
+			$response = fopen('http://' . $address . '/', 'r', false, $context);
+			if ($response === false)
+				throw new RuntimeException('Could not read the configuration HTTP response');
+			$body = stream_get_contents($response);
+			$headers = stream_get_meta_data($response)['wrapper_data'];
+			fclose($response);
+			$diagnostic = is_file($errorLog) ? file_get_contents($errorLog) : '';
+			$this->assertTrue(strpos($headers[0], '200 OK') !== false, 'configuration loading keeps HTTP status 200');
+			$this->assertTrue(in_array('Content-Type: application/json', $headers, true),
+				'the configuration diagnostic does not prevent the JSON content type');
+			$this->assertEquals('{"profileMask":511}', $body,
+				'the actual HTTP body contains only JSON with the documented fallback mask');
+			$this->assertTrue(strpos($diagnostic, 'RU_PROFILE_MASK') !== false,
+				'the HTTP request records the invalid mask in the server error log');
+		} finally {
+			if (is_resource($process)) {
+				proc_terminate($process);
+				proc_close($process);
+			}
+			foreach (array($router, $errorLog, $serverLog) as $file)
+				if (is_file($file)) unlink($file);
+			rmdir($directory);
+		}
 	}
 
 	public function testAMaskThatIsSimplyUnsetSaysNothing()
 	{
-		$warned = null;
-		set_error_handler(function ($errno, $errstr) use (&$warned) {
-			$warned = $errstr;
-			return true;
-		});
-		$mask = $this->configuredProfileMask('');
-		restore_error_handler();
+		$diagnostic = null;
+		$mask = $this->configuredProfileMask('', $diagnostic);
 
 		$this->assertEquals(0777, $mask, 'an empty mask uses the documented default');
-		$this->assertTrue($warned === null, 'and says nothing, because nothing was asked for');
+		$this->assertEquals('', $diagnostic, 'and says nothing, because nothing was asked for');
 	}
 
 	public function testInvalidEnvironmentProfileMaskUsesTheDefault()
 	{
-		// The fallback now reports itself; the handler keeps that out of the
-		// suite log without changing what this case asserts.
-		set_error_handler(function () { return true; });
 		$mask = $this->configuredProfileMask('not-a-mask');
-		restore_error_handler();
 
 		$this->assertEquals(
 			0777,
