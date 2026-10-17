@@ -40,6 +40,11 @@ require_once( 'settings.php' );
 
 class Snoopy
 {
+	// $status after a body that could not be decoded, below 100 like the
+	// -100 of a read timeout, so callers that already treat a status under
+	// 100 as "nothing arrived" need no new case; the reason is in $error.
+	const RESPONSE_BODY_FAILED = -101;
+
 	/**** Public variables ****/
 
 	/* user definable vars */
@@ -497,6 +502,60 @@ class Snoopy
 		return( $value ? strtotime($value) : false );
 	}
 
+	protected function refuseResponseBody($reason)
+	{
+		$this->status = self::RESPONSE_BODY_FAILED;
+		$this->error = $reason;
+		$this->results = "";
+		return false;
+	}
+
+	// Inflates a gzip body to no more than $maxlength bytes. The socket path
+	// reads at most $maxlength compressed bytes and the curl path reads
+	// whatever curl wrote, but zeros compress about 1000:1 either way, so
+	// 64 KiB from a hostile or broken server inflate to 64 MiB, and the only
+	// thing that used to stop that was memory_limit, with a fatal error.
+	// Returns false for a body that is malformed or inflates past the bound.
+	// An empty or absent body is an empty body: a 304 or 204 may carry the
+	// header with no member behind it. gzinflate() skips the 10-byte header
+	// and never checked the trailer, so on that branch an answer the read cut
+	// short still decodes when its deflate stream came through whole; the
+	// external gzip refuses a truncated member.
+	protected function decodeGzipBody($encoded)
+	{
+		if($encoded === '' || $encoded === false)
+			return '';
+		if(!is_string($encoded))
+			return false;
+		$limit = max(0, (int)$this->maxlength);
+		if(function_exists("gzinflate"))
+		{
+			// max_length is not an exact cap: zlib stops growing its buffer
+			// there and the last round overshoots it, so the length is checked
+			// below. The one byte of slack is insurance only; on PHP 7.4, 8.1
+			// and 8.5 an exact max_length already decodes a body of exactly
+			// that length.
+			$decoded = @gzinflate(substr($encoded, 10), $limit + 1);
+		}
+		else
+		{
+			$randName = FileUtil::getTempFilename('answer');
+			file_put_contents($randName.".gz",$encoded);
+			exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$output,$return);
+			$decoded = false;
+			if(is_file($randName))
+			{
+				// One byte past the bound is read, which is how an oversized
+				// file is told from one of exactly $maxlength bytes.
+				$decoded = @file_get_contents($randName, false, null, 0, $limit + 1);
+				unlink($randName);
+			}
+			else
+				unlink($randName.".gz");
+		}
+		return (is_string($decoded) && strlen($decoded) <= $limit) ? $decoded : false;
+	}
+
 	function _httprequest($url,$fp,$URI,$http_method,$content_type="",$body="")
 	{
 		if($this->passcookies && $this->_redirectaddr)
@@ -608,35 +667,18 @@ class Snoopy
 			if( strlen($results) > $this->maxlength )
 			        break;
 		}
-		// gunzip
-		if ( $is_gzipped )
-		{
-			if(function_exists("gzinflate"))
-			{
-				$results = substr($results, 10);
-				$results = gzinflate($results);
-			}
-			else
-			{
-				$randName = FileUtil::getTempFilename('answer');
-				file_put_contents($randName.".gz",$results);
-				exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
-				if(is_file($randName))
-				{
-					$results = file_get_contents($randName);
-					unlink($randName);
-				}
-				else
-				{
-					unlink($randName.".gz");
-				}
-			}
-		}
-
 		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 		{
 			$this->status=-100;
 			return false;
+		}
+
+		// gunzip
+		if ( $is_gzipped )
+		{
+			$results = $this->decodeGzipBody($results);
+			if($results === false)
+				return $this->refuseResponseBody('invalid-or-oversized-gzip');
 		}
 
 		$this->results = $results;
@@ -804,25 +846,12 @@ class Snoopy
 			// gunzip
 			if ( $is_gzipped )
 			{
-				if(function_exists("gzinflate"))
+				$results = $this->decodeGzipBody($results);
+				if($results === false)
 				{
-					$results = substr($results, 10);
-					$results = gzinflate($results);
-				}
-				else
-				{
-					$randName = FileUtil::getTempFilename('answer');
-					file_put_contents($randName.".gz",$results);
-					exec(escapeshellarg(Utility::getExternal('gzip'))." -d ".$randName.".gz",$results,$return);
-					if(is_file($randName))
-					{
-						$results = file_get_contents($randName);
-						unlink($randName);
-					}
-					else
-					{
-						unlink($randName.".gz");
-					}
+					@unlink($headerfile);
+					@unlink($contfile);
+					return $this->refuseResponseBody('invalid-or-oversized-gzip');
 				}
 			}
 			$this->results = $results;
