@@ -3,8 +3,9 @@
 // strftime() and gmstrftime() are deprecated as of PHP 8.1. This renders the
 // same conversions, flags and widths as they produce in the C locale, which
 // is the LC_TIME every ruTorrent entry point runs under, using date(). The
-// one difference is %s: strftime() reads the local time back through the
-// system time zone instead of PHP's, and here it is the timestamp itself.
+// one difference is %s: strftime() and gmstrftime() read the broken-down
+// time back through the process time zone with mktime() instead of PHP's,
+// and here it is the timestamp itself.
 class TimeFormat
 {
 	public static function strftime($format, $timestamp = null)
