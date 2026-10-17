@@ -21,6 +21,12 @@ class Torrent
 	protected $err_callback = null;
 	protected $filename = null;
 
+	/** True when this instance's info dictionary was built here, out of files
+	 * on disk, rather than decoded from a torrent someone else wrote. Only a
+	 * torrent this class built is this class' to sign; see touch().
+	 * @var boolean */
+	protected $built = false;
+
 	/** Keys of the torrent's top level dictionary.
 	 *
 	 * Declared, so that reading or writing one is a property a reader and a
@@ -143,7 +149,10 @@ class Torrent
 		$this->log_callback = $log_callback;
 		$this->err_callback = $err_callback;
 		if( $this->build( $data, $piece_length * 1024 ) )
+		{
+			$this->built = true;
 			$this->touch();
+		}
 		else
 		{
 			$arr = $this->decode( $data );
@@ -665,11 +674,22 @@ class Torrent
 		return($this->files( self::scandir( $this->basedir ), $piece_length ));
     	}
 
-	/** Set torrent creator and creation date
+	/** Sign a torrent this class built with its creator and creation date
+	 *
+	 * Called from the constructor's build branch and from every setter. The
+	 * two keys name whoever produced the metainfo, so they are only this
+	 * class' to write when this class produced it: on a torrent that was
+	 * decoded from a file, a setter is an edit -- a tracker, a comment, the
+	 * private flag -- and an edit is not authorship. Stamping there would
+	 * destroy the only record a .torrent keeps of who made it and when, which
+	 * is also what rtorrent serves as d.creation_date. Absent keys are
+	 * left absent for the same reason.
 	 * @return void
 	 */
 	protected function touch()
 	{
+		if( !$this->built )
+			return;
         	$this->setMeta( 'created by', 'ruTorrent (PHP Class - Adrien Gibrat)' );
 	        $this->setMeta( 'creation date', time() );
     	}

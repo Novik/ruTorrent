@@ -141,8 +141,8 @@ class RetrackersUpdateSequenceTest extends TestCase
 				array('http://one.test/announce'),
 				array('http://added.test/announce'),
 			)),
-			'created by'    => $this->bstr($this->ourCreator()),
-			'creation date' => $this->bint($this->stampedDate($written, $before)),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->preservedDate($written)),
 			'info'          => $this->singleFileInfo(),
 		));
 		$this->assertTrue($written === $expected,
@@ -174,8 +174,8 @@ class RetrackersUpdateSequenceTest extends TestCase
 				array('http://added.test/announce'),
 				array('http://one.test/announce'),
 			)),
-			'created by'    => $this->bstr($this->ourCreator()),
-			'creation date' => $this->bint($this->stampedDate($written, $before)),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->preservedDate($written)),
 			'info'          => $this->singleFileInfo(),
 		));
 		$this->assertTrue($written === $expected, 'the addition is written in front');
@@ -204,8 +204,8 @@ class RetrackersUpdateSequenceTest extends TestCase
 				array('http://added.test/announce', 'http://added.test/announce2'),
 				array('udp://added.test/announce'),
 			)),
-			'created by'    => $this->bstr($this->ourCreator()),
-			'creation date' => $this->bint($this->stampedDate($written, $before)),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->preservedDate($written)),
 			'info'          => $this->singleFileInfo(),
 		));
 		$this->assertTrue($written === $expected,
@@ -233,8 +233,8 @@ class RetrackersUpdateSequenceTest extends TestCase
 				array('udp://two.test/announce', 'udp://two.test/announce2'),
 				array('http://added.test/announce'),
 			)),
-			'created by'    => $this->bstr($this->ourCreator()),
-			'creation date' => $this->bint($this->stampedDate($written, $before)),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->preservedDate($written)),
 			'info'          => $this->singleFileInfo(),
 		));
 		$this->assertTrue($written === $expected,
@@ -287,8 +287,8 @@ class RetrackersUpdateSequenceTest extends TestCase
 		$expected = $this->bdict(array(
 			'announce'      => $this->bstr('http://one.test/announce'),
 			'announce-list' => $this->bannounceList(array(array('http://one.test/announce'))),
-			'created by'    => $this->bstr($this->ourCreator()),
-			'creation date' => $this->bint($this->stampedDate($written, $before)),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->preservedDate($written)),
 			'info'          => $this->singleFileInfo(),
 		));
 		$this->assertTrue($written === $expected, 'the emptied group is gone from the written torrent');
@@ -315,8 +315,8 @@ class RetrackersUpdateSequenceTest extends TestCase
 				array('http://one.test/announce'),
 				array('http://added.test/announce'),
 			)),
-			'created by'        => $this->bstr($this->ourCreator()),
-			'creation date'     => $this->bint($this->stampedDate($written, $before)),
+			'created by'        => $this->bstr($this->sourceCreator()),
+			'creation date'     => $this->bint($this->preservedDate($written)),
 			'info'              => $this->singleFileInfo(),
 			'libtorrent_resume' => $this->resumeDictionary(),
 		));
