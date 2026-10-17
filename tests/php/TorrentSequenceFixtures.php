@@ -135,6 +135,29 @@ trait TorrentSequenceFixtures
 		));
 	}
 
+	// ---- who wrote the fixture ------------------------------------------
+
+	/**
+	 * The creator every decoded fixture below carries.
+	 *
+	 * These fixtures stand for a .torrent an external program wrote and
+	 * ruTorrent then opened, so both keys have to name that program: they are
+	 * what a script that edits the file must leave alone. Every builder below
+	 * reads them from here, so no two fixtures can drift apart. An expectation
+	 * that spells the same two values out literally instead -- several still
+	 * do -- is correct today but will not follow a change made here.
+	 */
+	protected function sourceCreator()
+	{
+		return 'uTorrent/3.5.5';
+	}
+
+	/** The creation date every decoded fixture below carries. */
+	protected function sourceDate()
+	{
+		return 1234567890;
+	}
+
 	// ---- whole torrents --------------------------------------------------
 
 	/** A plain public torrent with a single tracker and no announce-list. */
@@ -142,8 +165,8 @@ trait TorrentSequenceFixtures
 	{
 		return $this->bdict(array(
 			'announce'      => $this->bstr('http://one.test/announce'),
-			'created by'    => $this->bstr('uTorrent/3.5.5'),
-			'creation date' => $this->bint(1234567890),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
 			'info'          => $this->singleFileInfo(),
 		));
 	}
@@ -152,8 +175,8 @@ trait TorrentSequenceFixtures
 	protected function trackerlessTorrent()
 	{
 		return $this->bdict(array(
-			'created by'    => $this->bstr('uTorrent/3.5.5'),
-			'creation date' => $this->bint(1234567890),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
 			'info'          => $this->singleFileInfo(),
 		));
 	}
@@ -167,8 +190,8 @@ trait TorrentSequenceFixtures
 				array('http://one.test/announce'),
 				array('udp://two.test/announce', 'udp://two.test/announce2'),
 			)),
-			'created by'    => $this->bstr('uTorrent/3.5.5'),
-			'creation date' => $this->bint(1234567890),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
 			'info'          => $this->singleFileInfo(),
 		));
 	}
@@ -179,8 +202,8 @@ trait TorrentSequenceFixtures
 		return $this->bdict(array(
 			'announce'      => $this->bstr('http://one.test/announce'),
 			'comment'       => $this->bstr('from the tracker'),
-			'created by'    => $this->bstr('uTorrent/3.5.5'),
-			'creation date' => $this->bint(1234567890),
+			'created by'    => $this->bstr($this->sourceCreator()),
+			'creation date' => $this->bint($this->sourceDate()),
 			'encoding'      => $this->bstr('UTF-8'),
 			'info'          => $this->multiFileInfo(true),
 		));
@@ -199,8 +222,8 @@ trait TorrentSequenceFixtures
 				array('http://one.test/announce'),
 				array('udp://two.test/announce'),
 			)),
-			'created by'        => $this->bstr('uTorrent/3.5.5'),
-			'creation date'     => $this->bint(1234567890),
+			'created by'        => $this->bstr($this->sourceCreator()),
+			'creation date'     => $this->bint($this->sourceDate()),
 			'info'              => $this->singleFileInfo(),
 			'libtorrent_resume' => $this->resumeDictionary(),
 			'rtorrent'          => $this->rtorrentDictionary(),
@@ -209,7 +232,18 @@ trait TorrentSequenceFixtures
 
 	// ---- reading what was written ----------------------------------------
 
-	/** The value the class stamps into 'created by' whenever a setter runs. */
+	/**
+	 * The value the class stamps into 'created by' for a torrent it BUILT.
+	 *
+	 * Torrent::touch() writes it only for such a torrent: from the
+	 * constructor's build branch, and again from every setter called
+	 * afterwards. A setter on a torrent that was decoded from bytes calls
+	 * touch() too, but there it writes nothing, because 'created by' and
+	 * 'creation date' name whoever produced the metainfo and an edit is not
+	 * authorship. So this is the expected creator of a create-path torrent,
+	 * and never of one of the decoded fixtures above -- those keep
+	 * sourceCreator().
+	 */
 	protected function ourCreator()
 	{
 		return 'ruTorrent (PHP Class - Adrien Gibrat)';
@@ -225,13 +259,27 @@ trait TorrentSequenceFixtures
 		return preg_match('/13:creation datei(\d+)e/', $written, $match) ? intval($match[1]) : null;
 	}
 
-	/** Assert that a setter stamped the creation date, and hand it back so the
-	 * expected bytes can be built with it. */
+	/** Assert that the class stamped a torrent it BUILT, and hand the value
+	 * back so the expected bytes can be built with it. The value is the time
+	 * of the write rather than of the build: touch() runs again on every
+	 * setter called after the build, and each one moves the date forward.
+	 * Only the create path reaches this: see ourCreator(). */
 	protected function stampedDate($written, $notBefore)
 	{
 		$stamped = $this->writtenCreationDate($written);
 		$this->assertTrue(!is_null($stamped) && $stamped >= $notBefore && $stamped <= time(),
-			'A setter stamped the creation date with the time of the write');
+			'The class stamped the torrent it built with the time of the write');
 		return $stamped;
+	}
+
+	/** Assert that a script's setters left a decoded torrent's own creation
+	 * date alone, and hand it back so the expected bytes can be built with
+	 * it. The value is the fixture's, so this fails both if the date moved
+	 * and if the key was dropped. */
+	protected function preservedDate($written)
+	{
+		$this->assertTrue($this->writtenCreationDate($written) === $this->sourceDate(),
+			'The setters left the creation date the file came with alone');
+		return $this->sourceDate();
 	}
 }

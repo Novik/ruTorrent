@@ -28,6 +28,14 @@ require_once(__DIR__ . '/TorrentSequenceFixtures.php');
  * addtorrent.php deletes the uploaded file. The key is also lost: a field is
  * not written back out, so the torrent that does get through is not the
  * torrent that was read.
+ *
+ * An eighth name, 'built', arrived after that rework: it is the flag
+ * Torrent::touch() reads to decide whether this class may sign the torrent
+ * with its own 'created by' and 'creation date'. setMeta() has no case for it,
+ * so a 'built' key lands in $extra and is written back out like any other, and
+ * the loop below pins that. If it ever reached the field instead, a file could
+ * decide that the class had built it and get its own author and date
+ * overwritten -- and lose the key on the way out, as the seven above did.
  */
 class TorrentInternalFieldKeyTest extends TestCase
 {
@@ -54,10 +62,11 @@ class TorrentInternalFieldKeyTest extends TestCase
 		$this->assertTrue((string)$torrent === $fixture, 'and it is written back out');
 	}
 
-	/** The same for the other six. */
+	/** The same for the other six, and for 'built'. */
 	public function testATorrentCarryingAKeyNamedLikeAnyInternalFieldKeepsIt()
 	{
-		foreach (array('filename', 'basedir', 'pointer', 'data', 'log_callback', 'err_callback') as $key) {
+		foreach (array('filename', 'basedir', 'pointer', 'data', 'log_callback', 'err_callback',
+			'built') as $key) {
 			$fixture = $this->torrentWithKey($key, $this->bstr('kept'));
 			$torrent = new Torrent($fixture);
 			$this->assertTrue($torrent->errors() === false, "a torrent carrying {$key} parses");

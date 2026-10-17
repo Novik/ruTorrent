@@ -293,7 +293,7 @@ class TorrentMetaTest extends TestCase
 	{
 		$torrent = new Torrent($this->fixture());
 		foreach (array('errors', 'basedir', 'pointer', 'data', 'log_callback',
-			'err_callback', 'filename', 'extra') as $field) {
+			'err_callback', 'filename', 'built', 'extra') as $field) {
 			$this->assertTrue(strpos((string)$torrent, $this->bstr($field)) === false,
 				"The object field {$field} is not written as a torrent key");
 		}
@@ -339,14 +339,124 @@ class TorrentMetaTest extends TestCase
 	}
 
 	/**
-	 * Every setter stamps 'created by' and 'creation date' through touch(),
-	 * whose result the setters used to return. They return null, and the two
-	 * stamped keys are the class' own, not the file's.
+	 * 'created by' and 'creation date' name whoever produced the metainfo. On
+	 * a torrent this class only decoded they name someone else, and a setter
+	 * is an edit -- changing a tracker, a comment or the private flag is not
+	 * an act of authorship. So a setter has to leave both keys exactly as the
+	 * file carried them: they are the only record a .torrent keeps of where it
+	 * came from, and 'creation date' is what rtorrent reports as
+	 * d.get_creation_date, which the UI shows as the "Created On" column.
 	 */
-	public function testSettersWriteTheKeyAndStampTheCreator()
+	public function testASetterLeavesTheFilesOwnAuthorAndCreationDateAlone()
 	{
 		$torrent = new Torrent($this->fixture());
+		$torrent->announce('http://new.test/announce');
+		$torrent->comment('new comment');
+		$torrent->is_private(false);
+		$written = (string)$torrent;
+
+		$this->assertTrue(strpos($written, $this->bstr('created by') . $this->bstr('uTorrent/3.5.5')) !== false,
+			"A setter leaves the file's own created by alone");
+		$this->assertTrue(strpos($written, $this->bstr('creation date') . 'i1234567890e') !== false,
+			"A setter leaves the file's own creation date alone");
+		$this->assertTrue(strpos($written, $this->bstr('created by')
+				. $this->bstr('ruTorrent (PHP Class - Adrien Gibrat)')) === false,
+			'and does not sign a file it did not write with this class name');
+		$this->assertTrue($torrent->announce() === 'http://new.test/announce'
+				&& $torrent->comment() === 'new comment' && $torrent->is_private() === false,
+			'while the keys the setters were called for are written');
+	}
+
+	/**
+	 * A torrent may carry neither key -- they are optional in the metainfo.
+	 * Stamping only the key that is absent would still be an invention: it
+	 * would claim this class wrote a file it merely edited, and it would date
+	 * the payload to the moment of the edit.
+	 */
+	public function testASetterInventsNeitherKeyForATorrentThatCarriedNone()
+	{
+		$torrent = new Torrent('d4:infod4:name1:xee');
+		$this->assertTrue(is_null($torrent->meta('created by')) && is_null($torrent->meta('creation date')),
+			'the fixture carries neither key');
+		$torrent->comment('added');
+		$written = (string)$torrent;
+
+		$this->assertTrue(strpos($written, $this->bstr('created by')) === false,
+			'a setter does not invent a created by');
+		$this->assertTrue(strpos($written, $this->bstr('creation date')) === false,
+			'a setter does not invent a creation date');
+		$this->assertTrue($written === 'd' . $this->bstr('comment') . $this->bstr('added')
+				. $this->bstr('info') . 'd' . $this->bstr('name') . $this->bstr('x') . 'e' . 'e',
+			'and the written torrent is the one it came from plus the comment');
+	}
+
+	/** Present fields retain their values and types; missing siblings stay missing. */
+	public function testEditsPreservePartialAndAtypicalAuthorshipFields()
+	{
+		$fields = array(
+			$this->bstr('created by') . $this->bstr(''),
+			$this->bstr('creation date') . 'i0e',
+			$this->bstr('created by') . 'i7e'
+				. $this->bstr('creation date') . $this->bstr('not a timestamp'),
+			$this->bstr('built') . 'i1e'
+				. $this->bstr('created by') . $this->bstr('external')
+				. $this->bstr('creation date') . 'i1234567890e',
+		);
+		foreach ($fields as $authorship) {
+			$info = $this->bstr('info') . $this->infoDictionary();
+			$torrent = new Torrent('d' . $authorship . $info . 'e');
+			$this->assertTrue($torrent->errors() === false,
+				'Bencoded authorship values are accepted without imposing a new schema');
+			$torrent->comment('edited');
+			$written = (string)$torrent;
+			$reread = new Torrent($written);
+			$this->assertTrue($reread->errors() === false, 'The edit reads back without errors');
+			$reread->clear_comment();
+			$this->assertTrue((string)$reread === 'd' . $authorship . $info . 'e',
+				'Editing preserves existing authorship values and leaves absent fields absent');
+			$this->assertTrue($reread->hash_info() === strtoupper(sha1($this->infoDictionary())),
+				'The metadata edit preserves the info dictionary');
+		}
+	}
+
+	/**
+	 * The other half of the same rule: a torrent this class builds from files
+	 * on disk really was created by this class, at that moment, so the
+	 * constructor's build branch stamps both keys -- and a setter called
+	 * afterwards, which is what plugins/create/createtorrent.php does, stamps
+	 * them again, moving the date on to the time of that write.
+	 */
+	public function testATorrentTheClassBuildsIsStampedWithOurCreator()
+	{
+		$path = sys_get_temp_dir() . '/rutorrent-meta-built-' . getmypid() . '.data';
+		file_put_contents($path, 'the payload this torrent is built from');
 		$before = time();
+		$torrent = new Torrent($path, 'http://built.test/announce', 16, null, null);
+		$torrent->comment('set after the build');
+		$written = (string)$torrent;
+		@unlink($path);
+
+		$this->assertTrue($torrent->errors() === false, 'the file was hashed without errors');
+		$this->assertTrue(strpos($written, $this->bstr('created by')
+				. $this->bstr('ruTorrent (PHP Class - Adrien Gibrat)')) !== false,
+			'a torrent this class built names this class as its creator');
+		$stamped = preg_match('/13:creation datei(\d+)e/', $written, $match) ? intval($match[1]) : null;
+		$this->assertTrue(!is_null($stamped) && $stamped >= $before && $stamped <= time(),
+			'and its creation date is the moment it was written');
+		$this->assertTrue($torrent->comment() === 'set after the build',
+			'the setter that ran after the build wrote its own key too');
+	}
+
+	/**
+	 * Every setter writes its own key and returns null -- they used to return
+	 * whatever touch() returned. touch() runs on each of them, and on this
+	 * torrent, which was decoded rather than built, it writes nothing: the
+	 * file's own 'created by' and 'creation date' are still there afterwards,
+	 * unchanged, next to the eight keys the setters did write.
+	 */
+	public function testSettersWriteTheirKeyAndLeaveTheFilesStampAlone()
+	{
+		$torrent = new Torrent($this->fixture());
 		$this->assertTrue(is_null($torrent->announce('http://new.test/announce')),
 			'The announce() setter returns null');
 		$this->assertTrue(is_null($torrent->comment('new comment')), 'The comment() setter returns null');
@@ -366,13 +476,13 @@ class TorrentMetaTest extends TestCase
 		$this->assertTrue($torrent->name() === 'renamed.data', 'name() was written');
 		$this->assertTrue($torrent->is_private() === false, 'is_private() was written');
 		$this->assertTrue(strpos($written, $this->bstr('created by')
-				. $this->bstr('ruTorrent (PHP Class - Adrien Gibrat)')) !== false,
-			'A setter stamps our own created by');
-		$this->assertTrue(strpos($written, $this->bstr('creation date') . 'i1234567890e') === false,
-			'A setter replaces the creation date the file had');
+				. $this->bstr('uTorrent/3.5.5')) !== false,
+			'Eight setters later the file still names its own creator');
+		$this->assertTrue(strpos($written, $this->bstr('creation date') . 'i1234567890e') !== false,
+			'and still carries the creation date it was written with');
 		$reread = new Torrent($written);
-		$this->assertTrue($reread->meta('creation date') >= $before,
-			'The stamped creation date is the time of the write');
+		$this->assertTrue($reread->meta('creation date') == 1234567890,
+			'which reads back as the file\'s date, not the time of the write');
 		$this->assertTrue($reread->meta('url-list') === array('http://new.test/f.dat'),
 			'url-list came back through a full write and read');
 		$this->assertTrue($reread->meta('announce-list') === array(array('http://new.test/announce')),
