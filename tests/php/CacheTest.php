@@ -15,6 +15,21 @@ class CacheGhostLoadPayload extends CacheMergePayload
 	public $hash = 'ghost-load-test.dat';
 }
 
+// A payload that refuses every merge and counts the attempts. It tells a
+// store that went straight through from one that re-read and re-merged the
+// file first: the second fails on the refusal.
+class CacheMergeRefusingPayload extends CacheMergePayload
+{
+	public $hash = 'merge-refusing-test.dat';
+	public static $merges = 0;
+
+	public function merge($instance, $arg)
+	{
+		self::$merges++;
+		return(false);
+	}
+}
+
 class CacheTest extends TestCase
 {
 	private $profilePath;
@@ -93,6 +108,39 @@ class CacheTest extends TestCase
 			. "\$go = ceil((microtime(true) + 0.05) * 4) / 4;\n"
 			. "while (microtime(true) < \$go);\n"
 			. "exit(\$payload->addRow(\$row) ? 0 : 1);\n";
+		file_put_contents($path, $code);
+		return $path;
+	}
+
+	// Writes the helper for the repeated-stamp test: another process that
+	// changes one row to a value of the same length, rewrites the file in
+	// place under the key lock and puts the mtime back. The inode, the mtime
+	// and the size are then exactly what this process loaded -- the stat
+	// tuple that two rename-published stores leave behind on an idle ext4,
+	// where the next temporary file is handed the inode the first store
+	// freed -- forced here so the test does not depend on the allocator.
+	private function makeSameStampWriterScript()
+	{
+		$path = FileUtil::getSettingsPath() . '/same-stamp-writer.php';
+		$code = "<?php\n"
+			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->profilePath, true) . ";\n"
+			. 'require_once(' . var_export(realpath(__DIR__ . '/../../php/cache.php'), true) . ");\n"
+			. 'require_once(' . var_export(realpath(__DIR__ . '/CacheMergePayloadFixture.php'), true) . ");\n"
+			. "\$payload = new CacheMergePayload();\n"
+			. "\$name = FileUtil::getSettingsPath() . '/' . \$payload->hash;\n"
+			. "\$lock = fopen(\$name . '.lock', 'c');\n"
+			. "if (\$lock === false || !flock(\$lock, LOCK_EX)) exit(2);\n"
+			. "\$before = stat(\$name);\n"
+			. "if (!(new rCache())->get(\$payload)) exit(3);\n"
+			. "\$payload->rows['slot'] = \$argv[1];\n"
+			. "\$bytes = serialize(\$payload);\n"
+			. "if (strlen(\$bytes) !== \$before['size']) exit(4);\n"
+			. "if (file_put_contents(\$name, \$bytes) !== strlen(\$bytes)) exit(5);\n"
+			. "if (!touch(\$name, \$before['mtime'])) exit(6);\n"
+			. "clearstatcache(true, \$name);\n"
+			. "\$after = stat(\$name);\n"
+			. "exit(\$after['ino'] === \$before['ino'] && \$after['mtime'] === \$before['mtime']\n"
+			. "\t&& \$after['size'] === \$before['size'] ? 0 : 7);\n";
 		file_put_contents($path, $code);
 		return $path;
 	}
@@ -193,6 +241,114 @@ class CacheTest extends TestCase
 		$this->assertTrue(isset($check->rows['mine']), 'this writer keeps its own row');
 		$this->assertTrue(isset($check->rows['other']),
 			'the row that appeared while this writer held nothing is merged, not clobbered');
+	}
+
+	// The stamp is (inode, mtime, size), and all three can repeat for
+	// different bytes: mtime resolves to the second, size repeats whenever a
+	// row changes to a value of the same length, and the inode comes back
+	// because set() publishes by rename(), which frees the loaded inode, and
+	// the next writer's temporary file is handed that number again (12 of 12
+	// times on an idle ext4). A writer whose stamp still matched skipped the
+	// merge and published its stale copy over both newer ones.
+	public function testSameStampWithDifferentBytesFromAnotherProcessStillMerges()
+	{
+		// setUp() runs once for the class, so the file and this process's
+		// record of it carry over from the tests above; seed a fresh file.
+		$path = FileUtil::getSettingsPath() . '/' . (new CacheMergePayload())->hash;
+		@unlink($path);
+		$seed = new CacheMergePayload();
+		$seed->rows['slot'] = 'aaaa';
+		$this->assertTrue((new rCache())->set($seed), 'the seeding write succeeds');
+
+		// This process loads the file; rCache records how it looked.
+		$mine = new CacheMergePayload();
+		$this->assertTrue((new rCache())->get($mine), 'this process loads the file');
+		$before = stat($path);
+		$bytesBefore = file_get_contents($path);
+
+		// Another process changes the row under exactly that stamp.
+		$writer = $this->makeSameStampWriterScript();
+		exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($writer) . ' bbbb', $output, $code);
+		$this->assertEquals(0, $code, 'the other process rewrites the row under the loaded stamp (exit ' . $code . ')');
+		clearstatcache(true, $path);
+		$after = stat($path);
+		$this->assertEquals([$before['ino'], $before['mtime'], $before['size']],
+			[$after['ino'], $after['mtime'], $after['size']],
+			'inode, mtime and size are the ones this process loaded');
+		$this->assertTrue($bytesBefore !== file_get_contents($path), 'and the bytes are not');
+
+		// Only now does this process store its own row.
+		$this->assertTrue($mine->addRow('mine'), 'this process stores its row');
+
+		$check = new CacheMergePayload();
+		(new rCache())->get($check);
+		$this->assertEquals('bbbb', isset($check->rows['slot']) ? $check->rows['slot'] : null,
+			'the row another process changed under a repeated stamp is merged, not overwritten');
+		$this->assertTrue(isset($check->rows['mine']), 'this process keeps its own row');
+	}
+
+	// The other half of the same decision: a stamp that repeats over the
+	// bytes this process loaded means the file is still the one it loaded,
+	// and the store goes through without re-reading and re-merging it.
+	public function testSameStampWithTheSameBytesStoresWithoutReMerging()
+	{
+		$path = FileUtil::getSettingsPath() . '/' . (new CacheMergeRefusingPayload())->hash;
+		@unlink($path);
+		$seed = new CacheMergeRefusingPayload();
+		$seed->rows['seed'] = 'seed';
+		$this->assertTrue((new rCache())->set($seed), 'the seeding write succeeds');
+		$mine = new CacheMergeRefusingPayload();
+		$this->assertTrue((new rCache())->get($mine), 'this process loads the file');
+		CacheMergeRefusingPayload::$merges = 0;
+
+		// Nothing touches the file in between.
+		$this->assertTrue($mine->addRow('mine'), 'a store over the unchanged file goes through');
+		$this->assertEquals(0, CacheMergeRefusingPayload::$merges,
+			'the unchanged file is not re-merged (merge() was called ' . CacheMergeRefusingPayload::$merges . ' times)');
+
+		$check = new CacheMergeRefusingPayload();
+		$this->assertTrue((new rCache())->get($check), 'the stored file loads');
+		$this->assertTrue(isset($check->rows['seed'], $check->rows['mine']),
+			'the seed row and this process\'s row are both in the file');
+	}
+
+	// With the stamp repeated, the bytes decide. When they cannot be read,
+	// this process cannot tell whether the file is still the one it loaded,
+	// and publishing would silently erase a version it could not compare:
+	// the store is refused, and the refusal is logged.
+	public function testFileThatCannotBeReadUnderTheSameStampIsNotOverwritten()
+	{
+		global $log_file;
+
+		$path = FileUtil::getSettingsPath() . '/' . (new CacheMergePayload())->hash;
+		@unlink($path);
+		$seed = new CacheMergePayload();
+		$seed->rows['slot'] = 'aaaa';
+		$this->assertTrue((new rCache())->set($seed), 'the seeding write succeeds');
+		$mine = new CacheMergePayload();
+		$this->assertTrue((new rCache())->get($mine), 'this process loads the file');
+		$bytes = file_get_contents($path);
+
+		// chmod changes the ctime only: the (inode, mtime, size) stamp stays.
+		$this->assertTrue(chmod($path, 0000), 'the file is made unreadable');
+		$this->assertEquals(false, @file_get_contents($path),
+			'the file really cannot be read (not running as root)');
+		$log = $this->profilePath . '/cache-refusal.log';
+		$previousLog = $log_file;
+		$log_file = $log;
+		try {
+			$stored = $mine->addRow('mine');
+		} finally {
+			$log_file = $previousLog;
+			chmod($path, 0600);
+		}
+		$lines = is_file($log) ? file_get_contents($log) : '';
+
+		$this->assertEquals(false, $stored,
+			'a store that cannot compare the file with what it loaded is refused');
+		$this->assertEquals($bytes, file_get_contents($path), 'the file is left exactly as it was');
+		$this->assertTrue(strpos($lines, 'rCache: ' . $mine->hash . ' cannot be read') !== false,
+			'the refusal is logged: ' . json_encode($lines));
 	}
 
 	public function testSetAppliesProfileMaskToLockFile()
