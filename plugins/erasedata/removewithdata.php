@@ -1,10 +1,11 @@
 <?php
 
 // Shared "remove with data" logic used by both the httprpc RPC handler and the
-// direct (non-httprpc) endpoint plugins/erasedata/action.php. Records the list
-// of files to delete -- read over RPC, which works on every rtorrent version --
-// into the erasedata list directory for the garbage collector, then erases the
-// torrents. The caller must have already loaded php/xmlrpc.php.
+// direct (non-httprpc) endpoint plugins/erasedata/action.php. Reads the list
+// of files to delete over RPC, which works on every rtorrent version, erases
+// each torrent, and records its list into the erasedata list directory for
+// the garbage collector once rtorrent has confirmed the erase. The caller
+// must have already loaded php/xmlrpc.php.
 if(!function_exists('erasedataCollectPaths'))
 {
 	// d.base_path and f.frozen_path are only filled in when rtorrent opens a
@@ -61,24 +62,22 @@ if(!function_exists('erasedataCollectPaths'))
 			"files" => $files ) );
 	}
 }
-if(!function_exists('erasedataPublishList'))
+if(!function_exists('erasedataStageList'))
 {
-	// Put the list where the collector will find it, or publish nothing.
+	// Write the list into the list directory under a temporary name, which
+	// the collector does not read, and answer that name -- or false, having
+	// left nothing behind.
 	//
-	// Written under a temporary name in the same directory and renamed into
-	// place, because the collector is its own process running on rtorrent's
-	// schedule and may read the directory at any moment. It reads the base
-	// path, the multi-file flag and the deletion mode from the last three
-	// lines, so a list that is half written is not a short list: it is a
-	// different one, naming a base of its own.
-	//
-	// The name carries the current format, ".list2". A ".list" is what the
-	// writer that preceded the line-break refusal produced, and update.php
-	// tells the two apart by that name alone.
-	function erasedataPublishList($listPath, $hash, $contents)
+	// The list is what makes the erase recoverable: once the torrent is gone,
+	// it is the only thing left that names the download's files. So it is
+	// written in full before the erase is attempted, every step of writing it
+	// is checked, and a failure keeps the torrent: a full disk or a directory
+	// that cannot be written would otherwise erase the download and leave its
+	// data behind with nothing to identify it. The collector sees the list
+	// only once erasedataPublishList() has renamed it, after the erase.
+	function erasedataStageList($listPath, $hash, $contents)
 	{
-		$name = $listPath."/".$hash.".list2";
-		$tmp = $name.".".getmypid().".".uniqid('', true).".tmp";
+		$tmp = $listPath."/".$hash.".list2.".getmypid().".".uniqid('', true).".tmp";
 		$fp = @fopen($tmp, "wb");
 		if($fp===false)
 			return(false);
@@ -86,9 +85,32 @@ if(!function_exists('erasedataPublishList'))
 		$ok = ($written === strlen($contents)) && @fflush($fp);
 		if(@fclose($fp)===false)
 			$ok = false;
-		if($ok && @rename($tmp, $name))
-			return(true);
+		if($ok)
+			return($tmp);
 		@unlink($tmp);
+		return(false);
+	}
+}
+if(!function_exists('erasedataPublishList'))
+{
+	// Put a staged list where the collector will find it, or remove it and
+	// publish nothing.
+	//
+	// Renamed into place rather than written there, because the collector is
+	// its own process running on rtorrent's schedule and may read the
+	// directory at any moment. It reads the base path, the multi-file flag
+	// and the deletion mode from the last three lines, so a list that is half
+	// written is not a short list: it is a different one, naming a base of
+	// its own.
+	//
+	// The name carries the current format, ".list2". A ".list" is what the
+	// writer that preceded the line-break refusal produced, and update.php
+	// tells the two apart by that name alone.
+	function erasedataPublishList($listPath, $hash, $staged)
+	{
+		if(@rename($staged, $listPath."/".$hash.".list2"))
+			return(true);
+		@unlink($staged);
 		return(false);
 	}
 }
@@ -98,7 +120,9 @@ if(!function_exists('erasedataRemoveWithData'))
 	{
 		$listPath = FileUtil::getSettingsPath()."/erasedata";
 		@FileUtil::makeDirectory($listPath);
-		$erasable = array();
+		$result = array();
+		$erased = 0;
+		$failed = false;
 		foreach($hashes as $h)
 		{
 			$paths = erasedataCollectPaths($h);
@@ -145,30 +169,55 @@ if(!function_exists('erasedataRemoveWithData'))
 				FileUtil::toLog("erasedata: a path of ".$h." contains a line break, torrent not erased");
 				continue;
 			}
-			// The list is what makes the erase recoverable. The torrent is
-			// about to go, and once it has, the list is the only thing left
-			// that names the download's files. So it is published first, every
-			// step of publishing it is checked, and a failure keeps the
-			// torrent: a full disk or a directory that cannot be written would
-			// otherwise erase the download and leave its data behind with
-			// nothing to identify it -- which is what the two refusals above
-			// already decline to do.
-			if(!erasedataPublishList($listPath, $h, implode("\n", $lines)."\n"))
+			// Staged before the erase, so that a list which cannot be written
+			// keeps the torrent, and published after it, so that a list the
+			// collector can read means an erase rtorrent has confirmed: the
+			// collector deletes what a list names once rtorrent no longer
+			// lists the hash, so a list must only exist for an erase rtorrent
+			// confirmed. The paths are read first because rtorrent forgets
+			// them once the download is erased.
+			$staged = erasedataStageList($listPath, $h, implode("\n", $lines)."\n");
+			if($staged === false)
 			{
 				FileUtil::toLog("erasedata: could not record the files of ".$h.", torrent not erased");
 				continue;
 			}
-			$erasable[] = $h;
+			// One request per download, so that what rtorrent confirms is this
+			// download's erase and no other's: rXMLRPCRequest reads a reply as
+			// one flat list of values and stops at the first fault, so a batch
+			// could only ever be confirmed whole.
+			$req = new rXMLRPCRequest( array(
+				new rXMLRPCCommand( getCmd("d.set_custom5"), array($h, "") ),
+				new rXMLRPCCommand( getCmd("d.delete_tied"), $h ),
+				new rXMLRPCCommand( getCmd("d.erase"), $h ) ) );
+			if(!$req->success())
+			{
+				// No reply, or a fault. rtorrent may still hold the download,
+				// or may have erased it before the reply was lost; either way
+				// the staged list goes, so the collector has nothing to act on.
+				// A download that was erased after all keeps its data on disk,
+				// which is the recoverable side, and the log says where.
+				@unlink($staged);
+				FileUtil::toLog("erasedata: rtorrent did not confirm the erase of ".$h.
+					", nothing recorded for the collector; its data is at ".$paths["base"]);
+				$failed = true;
+				continue;
+			}
+			// The erase is confirmed and the torrent is gone. A crash between
+			// here and the rename leaves the staged list unread and the data on
+			// disk, which is the same recoverable side.
+			if(!erasedataPublishList($listPath, $h, $staged))
+			{
+				FileUtil::toLog("erasedata: ".$h." was erased but its files could not be recorded".
+					"; its data is left in place at ".$paths["base"]);
+				$failed = true;
+				continue;
+			}
+			$erased++;
+			$result = array_merge($result, $req->val);
 		}
-		if(!count($erasable))
-			return(false);
-		$req = new rXMLRPCRequest();
-		foreach($erasable as $h)
-		{
-			$req->addCommand( new rXMLRPCCommand( getCmd("d.set_custom5"), array($h, "") ) );
-			$req->addCommand( new rXMLRPCCommand( getCmd("d.delete_tied"), $h ) );
-			$req->addCommand( new rXMLRPCCommand( getCmd("d.erase"), $h ) );
-		}
-		return $req->success() ? $req->val : false;
+		// As before: the values rtorrent answered, or false when a removal
+		// did not happen.
+		return (($erased > 0) && !$failed) ? $result : false;
 	}
 }

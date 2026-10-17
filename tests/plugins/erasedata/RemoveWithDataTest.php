@@ -36,6 +36,7 @@ if(!class_exists('rXMLRPCRequest'))
 		public static $responses = array();	// first command name => array(ok, val)
 		public static $requested = array();	// first command name of each request, in order
 		public static $erased = array();	// hashes passed to d.erase
+		public static $unconfirmed = array();	// hashes whose erase request gets no confirmation
 
 		public $val = array();
 		private $commands = array();
@@ -59,7 +60,12 @@ if(!class_exists('rXMLRPCRequest'))
 			self::$requested[] = $first;
 			foreach($this->commands as $c)
 				if($c->command == "d.erase")
+				{
 					self::$erased[] = $c->params;
+					// The request went out; the reply was lost or a fault.
+					if(in_array($c->params, self::$unconfirmed, true))
+						return(false);
+				}
 			if(!array_key_exists($first, self::$responses))
 				return(false);
 			$this->val = self::$responses[$first]["val"];
@@ -95,6 +101,7 @@ class RemoveWithDataTest extends TestCase
 		rXMLRPCRequest::$responses = array();
 		rXMLRPCRequest::$requested = array();
 		rXMLRPCRequest::$erased = array();
+		rXMLRPCRequest::$unconfirmed = array();
 	}
 
 	public function tearDown()
@@ -289,13 +296,15 @@ class RemoveWithDataTest extends TestCase
 			'a batch of resolvable downloads is erased in full');
 	}
 
-	// -- the list has to be there before the torrent is not -----------------
+	// -- the list is staged before the erase and published after it ---------
 
-	// erasedataRemoveWithData() writes the list and then erases the torrent.
-	// After the erase the list is the only thing that still names the
-	// download's files, so a list that was not written means data on disk that
-	// nothing identifies -- the same end state the two refusals above exist to
-	// avoid, arrived at by not checking a return value.
+	// erasedataRemoveWithData() writes the list under a temporary name, erases
+	// the torrent, and renames the list into place once rtorrent has confirmed
+	// the erase. After the erase the list is the only thing that still names
+	// the download's files, so a list that cannot be written keeps the torrent
+	// -- the same end state the two refusals above exist to avoid, arrived at
+	// by not checking a return value. A list that cannot be renamed after the
+	// erase is a failure that is logged, with the data left in place.
 
 	private function publishBlocked()
 	{
@@ -327,20 +336,29 @@ class RemoveWithDataTest extends TestCase
 		$this->assertEquals(1, count(FileUtil::$log), 'the failure is logged');
 	}
 
-	public function testOtherHashesAreStillErasedWhenOnePublicationFails()
+	public function testAListThatCannotBePublishedAfterTheEraseIsLogged()
 	{
 		$this->reset();
 		// The scripted RPC layer answers per command, so both hashes resolve.
-		// Only the first has a directory sitting on its list name.
+		// Only the first has a directory sitting on its list name: the staged
+		// list is written beside it, the erase goes through, and the rename
+		// into place is what fails. The other hash is unaffected.
 		@mkdir($this->dir.'/erasedata', 0777, true);
 		@mkdir($this->dir.'/erasedata/A.list2', 0777, true);
 		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
 		$this->eraseOk();
-		erasedataRemoveWithData(array("A","B"), "1");
+		$result = erasedataRemoveWithData(array("A","B"), "1");
 		@rmdir($this->dir.'/erasedata/A.list2');
 
-		$this->assertEquals(array("B"), rXMLRPCRequest::$erased,
-			'the hash that could be recorded is still erased, the other is not');
+		$this->assertEquals(array("A","B"), rXMLRPCRequest::$erased, 'both downloads are erased');
+		$this->assertEquals(array("/d/name/a.bin","/d/name","1","1"), $this->listFor("B"),
+			'the list of the one that could be published is there');
+		$this->assertTrue($this->listFor("A") === false, 'the other has none');
+		$this->assertTrue($result === false, 'the caller is told something did not happen');
+		$this->assertEquals(1, count(FileUtil::$log), 'and the failure is logged');
+		$this->assertTrue(strpos(FileUtil::$log[0], 'A was erased but its files could not be recorded') !== false
+			&& strpos(FileUtil::$log[0], '/d/name') !== false,
+			'naming the download and where its data is: ' . FileUtil::$log[0]);
 	}
 
 	public function testAFailedPublicationLeavesNothingBehind()
@@ -397,5 +415,50 @@ class RemoveWithDataTest extends TestCase
 		$this->assertEquals(array($this->dir.'/erasedata/A.list2'),
 			array_values(array_filter(glob($this->dir.'/erasedata/*'), 'is_file')),
 			'the list is the only file publication leaves in the directory');
+	}
+
+	// -- a list is published only for an erase rtorrent confirmed -----------
+
+	// The collector deletes what a list names once rtorrent no longer lists the
+	// hash, so a list must only exist for an erase rtorrent confirmed. A request
+	// whose reply never came, or came as a fault, leaves the download where it
+	// may well still be: loaded, with its files in use.
+
+	public function testNoListIsPublishedForAnEraseThatWasNotConfirmed()
+	{
+		$this->reset();
+		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
+		$this->eraseOk();
+		rXMLRPCRequest::$unconfirmed = array("A");
+		$result = erasedataRemoveWithData(array("A"), "1");
+
+		$this->assertEquals(array("A"), rXMLRPCRequest::$erased, 'the erase was asked for');
+		$this->assertTrue($this->rawListFor("A") === false,
+			'but no list is published for an erase that was not confirmed');
+		$this->assertEquals(array(), array_values(array_filter(glob($this->dir.'/erasedata/*'), 'is_file')),
+			'and the staged list is gone too');
+		$this->assertTrue($result === false, 'the caller is told the removal did not happen');
+		$this->assertEquals(1, count(FileUtil::$log), 'and it is logged');
+		$this->assertTrue(strpos(FileUtil::$log[0], 'did not confirm the erase of A') !== false
+			&& strpos(FileUtil::$log[0], '/d/name') !== false,
+			'naming the download and where its data is: ' . FileUtil::$log[0]);
+	}
+
+	public function testOnlyTheConfirmedEraseIsRecorded()
+	{
+		$this->reset();
+		// Each download is erased in a request of its own, so the one whose
+		// reply was lost does not decide for the one that was confirmed.
+		$this->frozen(true, array("/d/name", 1, "/d/name/a.bin"));
+		$this->eraseOk();
+		rXMLRPCRequest::$unconfirmed = array("A");
+		$result = erasedataRemoveWithData(array("A","B"), "1");
+
+		$this->assertEquals(array("d.get_base_path","d.set_custom5","d.get_base_path","d.set_custom5"),
+			rXMLRPCRequest::$requested, 'one erase request per download');
+		$this->assertTrue($this->rawListFor("A") === false, 'no list for the unconfirmed erase');
+		$this->assertEquals(array("/d/name/a.bin","/d/name","1","1"), $this->listFor("B"),
+			'and the list of the confirmed one');
+		$this->assertTrue($result === false, 'the caller is told something did not happen');
 	}
 }

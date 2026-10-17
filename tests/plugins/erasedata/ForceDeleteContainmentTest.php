@@ -22,9 +22,9 @@ require_once(__DIR__ . '/../../php/TestCase.php');
  * directory rather than named files.
  *
  * update.php is copied rather than included: it runs its work at include time
- * and declares functions, so it can be entered once per process, and its one
- * require_once needs answering by a stub -- the real php/util.php pulls in the
- * configuration and a live rtorrent.
+ * and declares functions, so it can be entered once per process, and its
+ * requires need answering by stubs -- the real php/util.php pulls in the
+ * configuration, and the real php/xmlrpc.php a live rtorrent.
  */
 class ForceDeleteContainmentTest extends TestCase
 {
@@ -47,6 +47,32 @@ class ForceDeleteContainmentTest extends TestCase
 		copy($source, $target);
 		if (hash_file('sha256', $source) !== hash_file('sha256', $target))
 			throw new Exception('could not copy update.php');
+
+		// update.php asks rtorrent which hashes it holds before it applies a
+		// list, through erasedataLiveHashes() in pending.php, which is copied
+		// beside it. The daemon this stands for holds none, so every list here
+		// is applied; what the collector does when the daemon holds one, or
+		// does not answer, is pinned in UnconfirmedEraseTest.php against the
+		// real RPC layer.
+		$source = dirname(dirname(dirname(__DIR__))) . '/plugins/erasedata/pending.php';
+		$target = $this->tree . '/plugins/erasedata/pending.php';
+		copy($source, $target);
+		if (hash_file('sha256', $source) !== hash_file('sha256', $target))
+			throw new Exception('could not copy pending.php');
+		file_put_contents($this->tree . '/php/xmlrpc.php', '<?php
+			class rXMLRPCCommand
+			{
+				public $command; public $params;
+				public function __construct($c, $p = null) { $this->command = $c; $this->params = $p; }
+			}
+			class rXMLRPCRequest
+			{
+				public $val = array(); public $important = true;
+				public function __construct($cmds = null) {}
+				public function success() { $this->val = array(); return(true); }
+			}
+			function getCmd($c) { return($c); }
+		');
 
 		// Force deletion is off by default and is what these cases are about,
 		// so the stub takes it from the environment rather than pinning it.
