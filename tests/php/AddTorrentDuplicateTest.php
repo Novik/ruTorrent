@@ -114,7 +114,10 @@ class AddTorrentDuplicateTest extends TestCase
 			. "return true;\n");
 
 		$port = $this->reservePort();
-		$this->server = proc_open(escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -S 127.0.0.1:' . $port
+		// "exec" replaces the shell proc_open() runs the string through, so the
+		// server is the process proc_terminate() signals; /bin/sh forks php and
+		// signalling only the shell would leave the server running.
+		$this->server = proc_open('exec ' . escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -S 127.0.0.1:' . $port
 			. ' ' . escapeshellarg($router), array(
 				0 => array('pipe', 'r'),
 				1 => array('file', $this->base . '/server.out', 'a'),

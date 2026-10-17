@@ -126,7 +126,10 @@ class DonePluginsCommandTest extends TestCase
 			$this->writeStubs($base, $journal);
 
 			$port = $this->reservePort();
-			$command = escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -d zlib.output_compression=0'
+			// "exec" replaces the shell proc_open() runs the string through, so the
+			// server is the process proc_terminate() signals; /bin/sh forks php and
+			// signalling only the shell would leave the server running.
+			$command = 'exec ' . escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -d zlib.output_compression=0'
 				. ' -S 127.0.0.1:' . $port . ' -t ' . escapeshellarg($base . '/php');
 			$process = proc_open($command, array(
 				0 => array('pipe', 'r'),
