@@ -4,7 +4,9 @@ require_once( 'util.php' );
 class rCache
 {
 	protected $dir;
-	// How each cache file looked when this process loaded it, keyed by cache key.
+	// How each cache file looked when this process loaded it, keyed by cache
+	// key: the stamp stampOf() read and, for a merge-capable class, a digest
+	// of the bytes, which decides when the stamp repeats.
 	protected static $loadStamps = [];
 
 	public function __construct( $name = '' )
@@ -136,23 +138,45 @@ class rCache
 	// inside one second look identical -- and that is the common case here:
 	// replacing a torrent fires three writers within the same second. set()
 	// always publishes through rename(), which gives the file a fresh inode,
-	// so the inode is what actually separates them.
+	// so the inode is what separates them -- until it repeats, which
+	// hasChangedSinceLoad() is for.
 	protected static function stampOf( $name )
 	{
 		clearstatcache(true, $name);
 		$st = @stat($name);
 		return($st===false ? null : $st['ino'].':'.$st['mtime'].':'.$st['size']);
 	}
-	// True when the file on disk is no longer the one this process loaded.
-	protected static function hasChangedSinceLoad( $name, $stamp )
+	// True when the file on disk is no longer the one this process loaded,
+	// false when it still is, null when that cannot be told.
+	//
+	// A repeated stamp does not settle it. rename() frees the inode this
+	// process loaded, and the next writer's temporary file is handed that
+	// number again (12 of 12 times on an idle ext4); with a same-second mtime
+	// and a change of the same length, two stores by other processes leave
+	// the loaded stamp on a file holding neither its bytes, and a writer
+	// trusting the stamp published its stale copy over both. So a repeated
+	// stamp is followed by comparing a digest of the bytes, under the key
+	// lock the caller holds, which is what makes the comparison and the
+	// store one decision. When the bytes cannot be read there is nothing to
+	// compare, and the caller must not publish over a version it cannot
+	// see: that is the null.
+	protected static function hasChangedSinceLoad( $name, $loaded )
 	{
-		if(!is_null($stamp))
-			return($stamp !== self::stampOf($name));
-		// This process loaded nothing: the file was absent or unreadable when
-		// get() ran. Any file present now was published by someone else, and
-		// merging what is on disk is always safe for the merge-capable
-		// classes that are the only callers of this check.
-		return(is_file($name));
+		if(is_null($loaded) || is_null($loaded['stamp']))
+		{
+			// This process loaded nothing it can compare with: the file was
+			// absent or unreadable when get() ran. Any file present now was
+			// published by someone else, and merging what is on disk is
+			// always safe for the merge-capable classes that are the only
+			// callers of this check.
+			return(is_file($name));
+		}
+		if($loaded['stamp'] !== self::stampOf($name))
+			return(true);
+		$digest = @hash_file('sha256',$name);
+		if($digest === false)
+			return(null);
+		return($digest !== $loaded['digest']);
 	}
 	public function set( $rss, $arg = null )
 	{
@@ -178,10 +202,17 @@ class rCache
 		}
 
 		$cacheKey = is_object($rss) ? self::getCacheKey($rss) : null;
-		$stamp = ($cacheKey !== null) ? (self::$loadStamps[$cacheKey] ?? null) : null;
-		if(     is_object($rss) &&
-			method_exists($rss,"merge") &&
-			self::hasChangedSinceLoad($name, $stamp))
+		$loaded = ($cacheKey !== null) ? (self::$loadStamps[$cacheKey] ?? null) : null;
+		$changed = (is_object($rss) && method_exists($rss,"merge"))
+			? self::hasChangedSinceLoad($name, $loaded) : false;
+		if(is_null($changed))
+		{
+			flock( $lock, LOCK_UN );
+			fclose( $lock );
+			FileUtil::toLog('rCache: '.basename($name).' cannot be read to compare with what this process loaded; not stored.');
+			return(false);
+		}
+		if($changed)
 		{
 			$className = get_class($rss);
 			$newInstance = new $className();
@@ -257,7 +288,10 @@ class rCache
 				{
 					$rss = $tmp;
 					$cacheKey = self::getCacheKey($rss);
-					self::$loadStamps[$cacheKey] = $stamp;
+					// Only a merge-capable class ever compares the digest,
+					// so only it pays for hashing the file.
+					self::$loadStamps[$cacheKey] = array('stamp' => $stamp,
+						'digest' => method_exists($rss,"merge") ? hash('sha256',$ret) : null);
 					$ret = true;
 				}
 				else
