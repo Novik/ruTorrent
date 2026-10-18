@@ -5,6 +5,14 @@
 	$httpUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36';
 	$httpTimeOut = 30;			// in seconds
 	$httpUseGzip = true;
+	// Largest response body Snoopy accepts, in bytes. It is applied to the body
+	// as it arrives and again to a gzip body once inflated; a larger answer is
+	// refused outright rather than truncated, so a caller cannot mistake a
+	// cut-off document for a complete one. Raise it where legitimate downloads
+	// are bigger -- the metainfo of a very large torrent runs to several
+	// megabytes of piece hashes alone -- bearing in mind that an inflated body
+	// is held in memory and so has to fit within PHP's memory_limit.
+	$httpMaxResponseLength = 4194304;	// 4 MiB
 	$httpIP = null;				// IP string. Or null for any.
 	$httpProxy = array
 	(
