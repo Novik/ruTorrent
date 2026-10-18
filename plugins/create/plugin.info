@@ -5,7 +5,7 @@ plugin.dependencies: _task
 rtorrent.need: 0
 rtorrent.remote: error
 rtorrent.external.error: php
-rtorrent.script.error: buildtorrent.sh,createtorrent.sh,inner.sh,mktorrent.sh
+rtorrent.script.error: buildtorrent.sh,createtorrent.sh,inner.sh,mktorrent.sh,torrenttools.sh,transmissioncreate.sh
 rtorrent.php.error: correct.php,createtorrent.php,conf.php
 php.extensions.error: json
 php.extensions.warning: mbstring
