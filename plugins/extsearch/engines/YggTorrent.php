@@ -2,7 +2,6 @@
 
 class YggTorrentEngine extends commonEngine
 {
-    const URL = 'https://www3.yggtorrent.cool';
     const MAX_PAGE = 10;
     const PAGE_SIZE = 50;
 
@@ -76,8 +75,32 @@ class YggTorrentEngine extends commonEngine
         'filmvidéo' => 'Film/Vidéos'
     );
 
+    // The tracker moves between domains, so its origin is not written here:
+    // it is loginmgr's $yggTorrentOrigin, read through the YggTorrent account,
+    // so that the search, the download links and the login use one host.
+    // '' while it is not set or not usable.
+    protected function origin()
+    {
+        $account = __DIR__ . '/../../loginmgr/accounts/YggTorrent.php';
+        if (!is_file($account)) {
+            return '';
+        }
+        require_once(__DIR__ . '/../../loginmgr/accounts.php');
+        require_once($account);
+        $ygg = new YggTorrentAccount();
+        return $ygg->url;
+    }
+
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
+        $origin = $this->origin();
+        if ($origin === '') {
+            $item = $this->getNewEntry();
+            $item["name"] = 'YggTorrent: set $yggTorrentOrigin to the tracker\'s https origin in the loginmgr plugin configuration';
+            $ret[""] = $item;
+            return;
+        }
+
         if($useGlobalCats) {
             $categories = array('all' => '', 'movies' => "&category=2145", 'music' => "&category=2139", 'games' => "&category=2142", 'anime' => "&sub_category=2178", 'software' => "&category=2144", 'books' => "&category=2140");
             $defaultCat = 'all';
@@ -96,7 +119,7 @@ class YggTorrentEngine extends commonEngine
         $what = rawurlencode(rawurldecode($what));
 
         // Initial search to retrieve the page count
-        $search = self::URL . '/engine/search/?name=' . $what . $catParameters . '&do=search&attempt=1';
+        $search = $origin . '/engine/search/?name=' . $what . $catParameters . '&do=search&attempt=1';
         $cli = $this->fetch($search);
         // Check if we have results
         if ($cli == false) {
@@ -133,7 +156,7 @@ class YggTorrentEngine extends commonEngine
             // We already have results for the first page
             if ($page !== 1) {
                 $pg = ($page - 1) * self::PAGE_SIZE;
-                $search = self::URL . '/engine/search/?name=' . $what . '&page=' . $pg . $catParameters . '&do=search';
+                $search = $origin . '/engine/search/?name=' . $what . '&page=' . $pg . $catParameters . '&do=search';
                 $cli = $this->fetch($search);
             }
 
@@ -151,11 +174,10 @@ class YggTorrentEngine extends commonEngine
             );
 
             if ($res) {
-                // Get current URL
-                preg_match('`.+?(?=/torrent)`', $matches["desc"][0], $url);
-
                 for ($i = 0; $i < $res; $i++) {
-                    $link = $url[0] . "/engine/download_torrent?id=" . $matches["id"][$i];
+                    // On the origin loginmgr logs in at, whichever host the
+                    // page linked to, or the download is made as a guest.
+                    $link = $origin . "/engine/download_torrent?id=" . $matches["id"][$i];
                     if (!array_key_exists($link, $ret)) {
                         $item = $this->getNewEntry();
                         $item["desc"] = $matches["desc"][$i];
@@ -167,7 +189,7 @@ class YggTorrentEngine extends commonEngine
                         $item["size"] = self::formatSize(preg_replace('/([0-9.]+)(\w+)/', '$1 $2', $matches["size"][$i]));
 
                         // To be able to display categories, we need to parse them directly from the torrent URL
-                        $cat = preg_match_all('`' . $url[0] . '/torrent/(?P<cat1>.*)/(?P<cat2>.*)/`', $item['desc'], $catRes);
+                        $cat = preg_match_all('`/torrent/(?P<cat1>[^/]+)/(?P<cat2>[^/]+)/`', $item['desc'], $catRes);
                         if ($cat) {
                             $cat1 = $this->getPrettyCategoryName($catRes['cat1'][0]);
                             $cat2 = $this->getPrettyCategoryName($catRes['cat2'][0]);
