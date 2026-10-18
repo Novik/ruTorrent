@@ -975,20 +975,6 @@ function log(text,noTime,divClass,force) {
 	}
 }
 
-function logHTML(text,divClass,force)
-{
-	var obj = $("#lcont");
-	if(!divClass)
-		divClass = 'std';
-	if(obj.length)
-	{
-		obj.append( $("<div>").addClass(divClass).html(text).show() );
-		obj[0].scrollTop = obj[0].scrollHeight;
-		if(iv(theWebUI.settings["webui.log_autoswitch"]) || force)
-			theTabs.show("lcont");
-	}
-}
-
 function noty(msg, status, noTime) {
 	if ($.noty) {
 		$.noty({
