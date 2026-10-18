@@ -62,8 +62,14 @@ describe("normalized torrent name cell", () => {
   });
 
   it("keeps quotes, ampersands and backslashes of a raw name byte for byte", () => {
-    const div = nameCell('aud "q" \\b \'a\' &c');
+    // The ampersands have to begin entities, or the case cannot tell an
+    // escape that handles "&" from one that does not: "&c" is no entity, so
+    // it survives .html() either way. "&amp;" and "&lt;" are, and an escape
+    // that left "&" alone would hand .html() something to decode -- the cell
+    // would read "A & B <i>" instead of the name that was stored.
+    const raw = 'aud "q" \\b \'a\' A &amp; B &lt;i&gt;';
+    const div = nameCell(raw);
     expect(markup(div).length).toBe(0);
-    expect(div.text()).toBe('aud "q" \\b \'a\' &c');
+    expect(div.text()).toBe(raw);
   });
 });
