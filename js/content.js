@@ -195,11 +195,12 @@ function makeContent() {
 	theDialogManager.setHandler('tadd', 'beforeShow', function() {
 		$("#tadd_label").hide();
 		$("#tadd-return-select").hide();
-		$("#tadd_label_select").empty()
-			.append('<option selected>'+theUILang.No_label+'</option>')
-			.append('<option>'+theUILang.newLabel+'</option>').show();
-		for(const [torrentLabel] of theWebUI.categoryList.torrentLabelTree.torrentLabels)
-			$("#tadd_label_select").append("<option>"+torrentLabel+"</option>");
+		$("#tadd_label_select").empty().append(
+			$("<option>").attr("selected", "selected").text(theUILang.No_label),
+			$("<option>").text(theUILang.newLabel),
+			...[...theWebUI.categoryList.torrentLabelTree.torrentLabels.keys()]
+				.map(torrentLabel => $("<option>").val(torrentLabel).text(torrentLabel)),
+		).show();
 		$("#torrent_file").val("");
 		$("#add_button").prop("disabled", true);
 		$("#tadd_label_select").trigger('change');
