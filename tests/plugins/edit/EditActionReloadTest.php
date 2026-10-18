@@ -3,6 +3,7 @@
 require_once(__DIR__ . '/../../php/TestCase.php');
 require_once(__DIR__ . '/../../php/TorrentSequenceFixtures.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 
 /**
  * plugins/edit/action.php erases the torrent before it reloads it.
@@ -85,6 +86,10 @@ class EditActionReloadTest extends TestCase
 		// session copy it loaded from; each run gets a fresh one.
 		file_put_contents($this->base . '/session/' . self::HASH . '.torrent',
 			$this->announceOnlyTorrent());
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
 		$this->daemon = new FakeRtorrentDaemon(array(
 			array($this->base . '/session/', 1, 1, 1, '', '', '', 'seed', 0),
 			array(0),

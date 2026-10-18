@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../../php/TestCase.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 
 /**
  * "Set data directory" answers the one refusal it can answer before it starts
@@ -94,6 +95,12 @@ class SetDirActionCollisionTest extends TestCase
 		// One reply per request. Before the check existed the first request
 		// was the execute; the list serves both shapes, because the only
 		// thing read out of a reply is that it came back at all.
+
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		// action.php runs as REMOTE_USER, so the profile is that user's own.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/tester');
 		$this->daemon = new FakeRtorrentDaemon(array(
 			array($isOpen, 'mytorrent', $this->base . '/src/mytorrent', 'mytorrent', 1),
 			$names,

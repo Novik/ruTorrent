@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../../php/TestCase.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 
 /**
  * A "Set data directory" that cannot move the files leaves the download
@@ -106,6 +107,12 @@ class SetDirRefusedMoveTest extends TestCase
 		$replies[] = array(0, 0);
 		for ($i = 0; $i < 6; $i++)
 			$replies[] = array(0);
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		// setdir.php is given the user as its last argument, so the profile it
+		// reads is that user's own.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile/users/tester');
 		$this->daemon = new FakeRtorrentDaemon($replies, $this->base . '/calls.log');
 
 		$driver = $this->base . '/drive-setdir.php';

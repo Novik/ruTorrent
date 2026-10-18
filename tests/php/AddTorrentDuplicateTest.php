@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/TestCase.php');
 require_once(__DIR__ . '/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/RtorrentProbeFixture.php');
 
 /**
  * php/addtorrent.php reports a torrent rtorrent already has as a duplicate,
@@ -98,6 +99,10 @@ class AddTorrentDuplicateTest extends TestCase
 		for ($i = 0; $i < $loads; $i++) {
 			$replies[] = array(0);
 		}
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
 		$this->daemon = new FakeRtorrentDaemon($replies, $this->base . '/calls.log');
 
 		$router = $this->base . '/router.php';

@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../../php/TestCase.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 
 /**
  * plugins/feeds/action.php builds an RSS item per torrent from one
@@ -109,6 +110,10 @@ class FeedsPubDateTest extends TestCase
 		if ($this->daemon !== null) {
 			$this->daemon->stop();
 		}
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
 		$this->daemon = new FakeRtorrentDaemon(array($values), $this->base . '/calls.log');
 
 		$driver = $this->base . '/drive-feeds.php';

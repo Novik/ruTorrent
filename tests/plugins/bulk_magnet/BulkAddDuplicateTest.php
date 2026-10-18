@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../../php/TestCase.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 
 /**
  * plugins/bulk_magnet/action.php counts a torrent rtorrent already has as a
@@ -54,6 +55,10 @@ class BulkAddDuplicateTest extends TestCase
 		foreach ($items as $item) {
 			$replies[] = array(0);
 		}
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
 		$this->daemon = new FakeRtorrentDaemon($replies, $this->base . '/calls.log');
 
 		$post = '';

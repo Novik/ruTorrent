@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../../php/TestCase.php');
 require_once(__DIR__ . '/../../php/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/../../php/RtorrentProbeFixture.php');
 
 /**
  * plugins/seedingtime/init.php registers its event handlers and then asks the
@@ -82,6 +83,10 @@ class BackfillRequestTest extends TestCase
 	private function runInit($replies)
 	{
 		$this->stopDaemon();
+		// An install whose interface has been opened has a settings cache.
+		// This script is driven against a profile of its own, so leave one
+		// there rather than have it probe and spend the replies below.
+		RtorrentProbeFixture::warmSettingsCache($this->base . '/profile');
 		$this->daemon = new FakeRtorrentDaemon($replies, $this->base . '/calls.log');
 		$driver = $this->base . '/drive-seedingtime.php';
 		file_put_contents($driver, "<?php\n"
