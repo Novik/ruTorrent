@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/../urlhost.php');
+require_once('urlhost.php');
 
 class Requests
 {
