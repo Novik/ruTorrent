@@ -29,6 +29,48 @@ function keysOf(files) {
   return context.theUILang;
 }
 
+/**
+ * A language file is not flat. geoip hangs 251 country names off
+ * theUILang.country, scheduler hangs the weekday names off two arrays, and
+ * history hangs four notification messages off theUILang.notifTip. Compared
+ * by top-level key those are one key each, so a translation could lose every
+ * country name but one and still look complete.
+ *
+ * Flatten to "country.de" and compare there instead. Arrays are walked the
+ * same way as objects: theUILang.country is built with new Array() and keyed
+ * by country code, and the weekday arrays are keyed 0..6.
+ */
+function leafEntries(value, prefix = "", out = new Map()) {
+  for (const key of Object.keys(value)) {
+    const child = value[key];
+    const name = prefix ? `${prefix}.${key}` : key;
+    if (child !== null && typeof child === "object") leafEntries(child, name, out);
+    else out.set(name, child);
+  }
+  return out;
+}
+
+/**
+ * A blank translation is worse than an untranslated one: the element is set
+ * to the empty string and shows nothing, with no hint of which string is
+ * gone. en.js has one deliberately blank value of its own -- the notification
+ * tip for the state where the browser has already granted permission and
+ * there is nothing to say -- so blankness is only a fault where English has
+ * text.
+ */
+function shortfall(en, theirs, label, out) {
+  for (const [key, english] of en) {
+    if (!theirs.has(key)) {
+      out.push(`${label}: ${key}`);
+      continue;
+    }
+    const translated = theirs.get(key);
+    if (typeof english === "string" && english.trim() !== "" &&
+        typeof translated === "string" && translated.trim() === "")
+      out.push(`${label}: ${key} is blank`);
+  }
+}
+
 const coreEn = path.join(ROOT, "lang", "en.js");
 const pluginEn = fs
   .readdirSync(path.join(ROOT, "plugins"))
@@ -74,12 +116,12 @@ describe("localization", () => {
   it("keeps every translation to the keys en.js defines", () => {
     // A key here that en.js does not have is a typo or a leftover: nothing
     // reads it, and it will never be shown.
-    const english = new Set(Object.keys(keysOf([coreEn])));
+    const english = new Set(leafEntries(keysOf([coreEn])).keys());
     const unknown = [];
     for (const name of fs.readdirSync(path.join(ROOT, "lang"))) {
       if (!name.endsWith(".js") || name === "en.js") continue;
       const file = path.join(ROOT, "lang", name);
-      for (const key of Object.keys(keysOf([file]))) {
+      for (const key of leafEntries(keysOf([file])).keys()) {
         if (!english.has(key)) unknown.push("lang/" + name + " -> " + key);
       }
     }
@@ -107,15 +149,17 @@ describe("localization", () => {
    * A language that has not been translated yet carries the English text, so
    * the key is present and the interface reads -- in English -- rather than
    * silently keeping the previous string.
+   *
+   * Compared leaf by leaf, so that a nested group counts as its members and
+   * not as one key.
    */
   it("defines every key of core en.js in every core language", () => {
-    const en = keysOf([coreEn]);
+    const en = leafEntries(keysOf([coreEn]));
     const missing = [];
     for (const name of fs.readdirSync(path.join(ROOT, "lang"))) {
       if (!name.endsWith(".js") || name === "en.js" || name === "langs.js") continue;
-      const theirs = keysOf([path.join(ROOT, "lang", name)]);
-      for (const key of Object.keys(en))
-        if (!(key in theirs)) missing.push(`lang/${name}: ${key}`);
+      const theirs = leafEntries(keysOf([path.join(ROOT, "lang", name)]));
+      shortfall(en, theirs, `lang/${name}`, missing);
     }
     expect(missing).toEqual([]);
   });
@@ -124,12 +168,11 @@ describe("localization", () => {
     const missing = [];
     for (const file of pluginEn) {
       const dir = path.dirname(file);
-      const en = keysOf([file]);
+      const en = leafEntries(keysOf([file]));
       for (const name of fs.readdirSync(dir)) {
         if (!name.endsWith(".js") || name === "en.js") continue;
-        const theirs = keysOf([path.join(dir, name)]);
-        for (const key of Object.keys(en))
-          if (!(key in theirs)) missing.push(`${path.relative(ROOT, dir)}/${name}: ${key}`);
+        const theirs = leafEntries(keysOf([path.join(dir, name)]));
+        shortfall(en, theirs, `${path.relative(ROOT, dir)}/${name}`, missing);
       }
     }
     expect(missing).toEqual([]);
@@ -162,10 +205,10 @@ describe("localization", () => {
     const unknown = [];
     for (const file of pluginEn) {
       const dir = path.dirname(file);
-      const english = new Set(Object.keys(keysOf([file])));
+      const english = new Set(leafEntries(keysOf([file])).keys());
       for (const name of fs.readdirSync(dir)) {
         if (!name.endsWith(".js") || name === "en.js") continue;
-        for (const key of Object.keys(keysOf([path.join(dir, name)]))) {
+        for (const key of leafEntries(keysOf([path.join(dir, name)])).keys()) {
           if (!english.has(key)) {
             unknown.push(path.relative(ROOT, path.join(dir, name)) + " -> " + key);
           }
