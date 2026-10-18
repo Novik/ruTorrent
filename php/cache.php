@@ -64,6 +64,47 @@ class rCache
 			$allowed = array_merge($allowed,call_user_func(array($class,'cacheClasses')));
 		return($allowed);
 	}
+	// A class the caller declares may be nested in its value, not stand in
+	// its place: an object's file must hold that object's class at its root,
+	// and an array's file an array. The serialized header is checked before
+	// unserialize(), so a wrong root is not constructed on the way to being
+	// refused. set() writes every cache file with serialize(), which writes
+	// an object as O: unless its class implements Serializable without
+	// __serialize() (that writes C:), and no class stored in a cache does.
+	protected static function hasExpectedRoot( $bytes, $target )
+	{
+		if(is_array($target))
+			return(strncmp($bytes,'a:',2)===0);
+		if(!is_object($target))
+			return(false);
+		$class = get_class($target);
+		$prefix = 'O:'.strlen($class).':"'.$class.'":';
+		return(strncmp($bytes,$prefix,strlen($prefix))===0);
+	}
+	// What a refused file holds at its root, for the log line: one of a few
+	// fixed words, or the class its header names -- only when that name is
+	// the length the header claims, at most ROOT_NAME_MAX bytes and spelled
+	// in ASCII class-name characters, so no other byte of the file is logged.
+	const ROOT_NAME_MAX = 128;
+	protected static function describeRoot( $bytes )
+	{
+		if($bytes === '')
+			return('an empty file');
+		if(strncmp($bytes,'a:',2)===0)
+			return('an array');
+		if(preg_match('/^[OC]:([0-9]{1,3}):"([A-Za-z_][A-Za-z0-9_\\\\]*)":/',
+				substr($bytes,0,self::ROOT_NAME_MAX+9),$match) &&
+			(strlen($match[2]) === intval($match[1])) &&
+			(strlen($match[2]) <= self::ROOT_NAME_MAX))
+			return('class '.$match[2]);
+		if(preg_match('/^[OC]:/',$bytes))
+			return('an object');
+		if(preg_match('/^[bids]:/',$bytes))
+			return('a scalar');
+		if(strncmp($bytes,'N;',2)===0)
+			return('null');
+		return('no serialized value');
+	}
 	// What the walk below may spend. Its shape is chosen by whoever wrote the
 	// cache file, so it cannot be allowed to cost whatever that shape asks
 	// for. An object met twice is recognised and not walked again, but an
@@ -277,6 +318,13 @@ class rCache
 		$ret = @file_get_contents($fname);
 		if($ret!==false)
 		{
+			if(!self::hasExpectedRoot($ret,$rss))
+			{
+				FileUtil::toLog('rCache: '.basename($fname).' does not hold '.
+					(is_object($rss) ? get_class($rss) : 'an array').' at its root (found '.
+					self::describeRoot($ret).'); not loaded.');
+				return(false);
+			}
 			$tmp = @unserialize($ret,array('allowed_classes'=>self::allowedClasses($rss)));
 			if(self::holdsRefusedClass($tmp,strlen($ret),$reason))
 			{
