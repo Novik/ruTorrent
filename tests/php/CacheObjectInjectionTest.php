@@ -46,6 +46,12 @@ class InjectionTargetPayload
 class InjectionItemPayload
 {
 	public $name = '';
+	public static $wakeups = 0;
+
+	public function __wakeup()
+	{
+		self::$wakeups++;
+	}
 }
 
 class InjectionListPayload
@@ -232,6 +238,121 @@ class CacheObjectInjectionTest extends TestCase
 		$this->assertTrue($this->gadgetFired() === false,
 			'no object is constructed for an array cache');
 		$this->assertTrue($ok === false, 'and the load is a miss');
+	}
+
+	/**
+	 * A class a list declares may sit inside the list, not in its place.
+	 * Handed back as the root it is another class to a caller that goes on
+	 * to use it as the list -- rRatioRulesList::load() then returns an
+	 * rRatioRule, and extratio's init.php fails on its first method call.
+	 * The file's root is checked before unserialize(), so the class in the
+	 * root's place is not constructed either, and the refusal is logged.
+	 */
+	public function testADeclaredNestedClassIsNotAcceptedAsTheRoot()
+	{
+		$item = new InjectionItemPayload();
+		$item->name = 'nested';
+		$this->plant('injection-list.dat', serialize($item));
+		InjectionItemPayload::$wakeups = 0;
+		$log = $this->profilePath . '/cache-root.log';
+		$GLOBALS['log_file'] = $log;
+		try {
+			$loaded = new InjectionListPayload();
+			$ok = (new rCache())->get($loaded);
+		} finally {
+			$GLOBALS['log_file'] = '';
+		}
+		$lines = is_file($log) ? file_get_contents($log) : '';
+
+		$this->assertTrue($ok === false, 'a file whose root is a declared nested class is a miss');
+		$this->assertTrue($loaded instanceof InjectionListPayload, 'the caller still holds its own class');
+		$this->assertTrue(InjectionItemPayload::$wakeups === 0,
+			'the nested class is not constructed in the root\'s place');
+		$this->assertTrue(substr_count($lines, 'rCache: injection-list.dat does not hold InjectionListPayload'
+			. ' at its root (found class InjectionItemPayload); not loaded.') === 1,
+			'the refusal is logged once, naming the file, the class asked for and the class found: '
+			. json_encode($lines));
+	}
+
+	/**
+	 * The same for a root of another type: an array or a scalar in an
+	 * object's file, a scalar in an array's file. Each used to come back in
+	 * place of the caller's value.
+	 */
+	public function testARootOfAnotherTypeIsAMiss()
+	{
+		$cases = array(
+			array('injection-target.dat', serialize(array('rows' => array('a'))), new InjectionTargetPayload()),
+			array('injection-target.dat', serialize(42), new InjectionTargetPayload()),
+			array('array-target.dat', serialize('text'), array('__hash__' => 'array-target.dat')),
+		);
+		foreach ($cases as list($key, $bytes, $target)) {
+			$this->plant($key, $bytes);
+			$expected = is_object($target) ? get_class($target) : 'array';
+			$thrown = '';
+			try {
+				$ok = (new rCache())->get($target);
+			} catch (Throwable $e) {
+				$ok = null;
+				$thrown = ' (threw ' . get_class($e) . ')';
+			}
+			$this->assertTrue($ok === false, "{$key} holding {$bytes} is a miss" . $thrown);
+			$this->assertTrue(($expected === 'array') ? is_array($target) : ($target instanceof $expected),
+				"and the caller still holds its {$expected}");
+		}
+	}
+
+	/**
+	 * The refusal says what the file holds at its root, as the refusal of a
+	 * nested class names that class: a class name when the header spells
+	 * one plainly, otherwise a fixed word. Nothing else from the file -- a
+	 * name of the wrong length, a long one, one carrying a line break --
+	 * reaches the log.
+	 */
+	public function testTheRootRefusalSaysWhatTheFileHoldsAndNothingMore()
+	{
+		$long = str_repeat('A', 129);
+		$cases = array(
+			array('', 'InjectionTargetPayload', 'an empty file'),
+			array('a:1:{i:0;s:1:"a";}', 'InjectionTargetPayload', 'an array'),
+			array('i:42;', 'InjectionTargetPayload', 'a scalar'),
+			array('N;', 'InjectionTargetPayload', 'null'),
+			array('garbage', 'InjectionTargetPayload', 'no serialized value'),
+			array('O:8:"Intruder":0:{}', 'InjectionTargetPayload', 'class Intruder'),
+			array('O:9:"Intruder":0:{}', 'InjectionTargetPayload', 'an object'),
+			array('O:129:"' . $long . '":0:{}', 'InjectionTargetPayload', 'an object'),
+			array("O:15:\"Intruder\nFORGED\":0:{}", 'InjectionTargetPayload', 'an object'),
+			array('O:8:"Intruder":0:{}', 'array', 'class Intruder'),
+		);
+		$log = $this->profilePath . '/cache-root-found.log';
+		foreach ($cases as list($bytes, $asked, $found)) {
+			@unlink($log);
+			if ($asked === 'array') {
+				$this->plant('array-target.dat', $bytes);
+				$target = array('__hash__' => 'array-target.dat');
+				$line = 'rCache: array-target.dat does not hold an array at its root (found '
+					. $found . '); not loaded.';
+			} else {
+				$this->plant('injection-target.dat', $bytes);
+				$target = new InjectionTargetPayload();
+				$line = 'rCache: injection-target.dat does not hold InjectionTargetPayload at its root (found '
+					. $found . '); not loaded.';
+			}
+			$GLOBALS['log_file'] = $log;
+			$thrown = '';
+			try {
+				(new rCache())->get($target);
+			} catch (Throwable $e) {
+				$thrown = ' (threw ' . get_class($e) . ')';
+			} finally {
+				$GLOBALS['log_file'] = '';
+			}
+			$lines = is_file($log) ? file_get_contents($log) : '';
+			$this->assertTrue((substr_count($lines, $line) === 1) && (substr_count($lines, "\n") === 1)
+				&& (strpos($lines, 'FORGED') === false) && (strpos($lines, $long) === false),
+				'a root of ' . json_encode(substr($bytes, 0, 24)) . ' is logged as "' . $found . '": '
+				. json_encode($lines) . $thrown);
+		}
 	}
 
 	// ---- the file a cache key may name -----------------------------------
