@@ -4,8 +4,9 @@ require_once(__DIR__ . '/TestCase.php');
 
 /**
  * utf8_encode(), utf8_decode(), strptime(), strftime(), gmstrftime(),
- * xml_set_object() and libxml_disable_entity_loader() are deprecated in the
- * PHP versions ruTorrent runs on, and each call writes a deprecation to the
+ * xml_set_object(), libxml_disable_entity_loader() and, from PHP 8.5,
+ * SplObjectStorage::contains() and attach() are deprecated in the PHP
+ * versions ruTorrent runs on, and each call writes a deprecation to the
  * log. Each code path that used one runs here in its own PHP process with
  * every error reported, so that a deprecation shows up in its output, and
  * the same process computes what the deprecated function would have
@@ -269,6 +270,33 @@ class DeprecatedFunctionReplacementTest extends TestCase
 			. json_encode($result) . ' ' . $this->brief($other));
 		$this->assertTrue(strpos($other, 'Deprecated') === false,
 			'setting up the stream parser raises no deprecation: ' . $this->brief($other));
+	}
+
+	// ---- cache: SplObjectStorage::contains() / attach() -------------------
+
+	public function testCacheWalkOverObjectsRaisesNoDeprecation()
+	{
+		// rCache::get() walks every value it unserializes and remembers the
+		// objects it has met, so an object met twice is the path that both
+		// asks whether it was seen and records that it was. PHP 8.5
+		// deprecates SplObjectStorage::contains() and attach() in favour of
+		// offsetExists() and offsetSet(), which exist since PHP 5.3.
+		list($result, $other) = $this->run_isolated('
+			// Bound to rCache rather than a subclass of it, because
+			// constructing an rCache creates the settings directory.
+			$walk = Closure::bind(function($value)
+			{
+				return rCache::holdsRefusedClass($value, 0, $reason);
+			}, null, "rCache");
+			$first = new stdClass();
+			$second = new stdClass();
+			$first->peer = $second;
+			$second->peer = $first;
+			return $walk(array($first, $second));
+		', array('php/cache.php'));
+		$this->assertTrue($result === false, 'a cycle between two objects is walked to the end, not refused: '
+			. json_encode($result) . ' ' . $this->brief($other));
+		$this->assertQuiet($other, 'walking objects for a refused class');
 	}
 
 	// ---- extsearch: libxml_disable_entity_loader() -----------------------

@@ -122,9 +122,11 @@ class rCache
 					: 'names a class it may not hold';
 				return(true);
 			}
-			if($seen->contains($value))
+			// Not contains()/attach(): PHP 8.5 deprecates them, and
+			// offsetExists()/offsetSet() do the same since PHP 5.3.
+			if($seen->offsetExists($value))
 				return(false);
-			$seen->attach($value);
+			$seen->offsetSet($value);
 			$value = (array)$value;
 		}
 		if(is_array($value))
