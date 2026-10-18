@@ -64,9 +64,8 @@ class CacheTest extends TestCase
 	}
 
 	// Writes a helper that does what a second update.php does -- load the
-	// cache, record one row, store it -- as a genuinely separate process. It
-	// has to be a real process: rCache remembers the loaded file's stamp in a
-	// static, so a second writer inside this one would share it.
+	// cache, record one row, store it -- as a genuinely separate process,
+	// with statics of its own, the way a second update.php has them.
 	private function makeWriterScript()
 	{
 		$path = FileUtil::getSettingsPath() . '/concurrent-writer.php';
@@ -243,6 +242,79 @@ class CacheTest extends TestCase
 			'the row that appeared while this writer held nothing is merged, not clobbered');
 	}
 
+	// What rCache remembers about a load belongs to the object that was
+	// loaded, not to its cache key. One process can hold two objects of one
+	// key: an rss update run loads "info" in its rRSSManager, and with
+	// rssurlrewrite enabled each feed fetched with items fires the
+	// RSSFetched hook, which builds a second rRSSManager that loads "info"
+	// again. A load through the second object must not stand for the first,
+	// or the first stores as if it had seen a version it never merged and
+	// erases what that version added.
+	public function testTwoObjectsOfOneKeyKeepTheirOwnLoadedVersions()
+	{
+		$path = FileUtil::getSettingsPath() . '/' . (new CacheMergePayload())->hash;
+		@unlink($path);
+		$seed = new CacheMergePayload();
+		$this->assertTrue($seed->addRow('seed'), 'the seeding write succeeds');
+
+		$cache = new rCache();
+		$first = new CacheMergePayload();
+		$this->assertTrue($cache->get($first), 'the first object loads the seeded file');
+
+		// Another process stores a row; then a second object of the same key
+		// is loaded in this process and sees it.
+		$writer = $this->makeWriterScript();
+		exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($writer) . ' other-process', $output, $code);
+		$this->assertEquals(0, $code, 'the other process stores its row');
+		$second = new CacheMergePayload();
+		$this->assertTrue($cache->get($second), 'a second object of the same key loads the newer file');
+
+		// The first object still holds the seeded version.
+		$this->assertTrue($first->addRow('mine'), 'the first object stores its row');
+
+		$check = new CacheMergePayload();
+		$this->assertTrue($cache->get($check), 'the stored file loads');
+		$this->assertTrue(isset($check->rows['other-process']),
+			'the row the first object never loaded is merged, not erased by its stale copy');
+		$this->assertTrue(isset($check->rows['seed'], $check->rows['mine']),
+			'the seed row and the first object\'s row are both in the file');
+	}
+
+	// An object that loaded nothing merges whatever is on disk when it
+	// stores, whether or not another object of its key was loaded -- also
+	// when that object has been freed and PHP hands its object id to the
+	// next object it creates.
+	public function testAnObjectThatLoadedNothingIsNotTakenForOneThatDid()
+	{
+		$path = FileUtil::getSettingsPath() . '/' . (new CacheMergePayload())->hash;
+		@unlink($path);
+		$seed = new CacheMergePayload();
+		$this->assertTrue($seed->addRow('seed'), 'the seeding write succeeds');
+		$cache = new rCache();
+
+		$peer = new CacheMergePayload();
+		$this->assertTrue($cache->get($peer), 'an object of this key loads the file');
+		$fresh = new CacheMergePayload();
+		$this->assertTrue($fresh->addRow('fresh'), 'a fresh object of the same key stores its row');
+		$check = new CacheMergePayload();
+		$cache->get($check);
+		$this->assertTrue(isset($check->rows['seed'], $check->rows['fresh']),
+			'a fresh object merges the file another live object loaded');
+
+		$gone = new CacheMergePayload();
+		$this->assertTrue($cache->get($gone), 'another object of this key loads the file');
+		$id = spl_object_id($gone);
+		unset($gone);
+		$reused = new CacheMergePayload();
+		$this->assertEquals($id, spl_object_id($reused),
+			'the next object takes the freed object id (precondition)');
+		$this->assertTrue($reused->addRow('reused'), 'that object stores its row');
+		$check = new CacheMergePayload();
+		$cache->get($check);
+		$this->assertTrue(isset($check->rows['seed'], $check->rows['fresh'], $check->rows['reused']),
+			'an object that inherits a freed object id does not inherit its load');
+	}
+
 	// The stamp is (inode, mtime, size), and all three can repeat for
 	// different bytes: mtime resolves to the second, size repeats whenever a
 	// row changes to a value of the same length, and the inode comes back
@@ -347,7 +419,8 @@ class CacheTest extends TestCase
 		$this->assertEquals(false, $stored,
 			'a store that cannot compare the file with what it loaded is refused');
 		$this->assertEquals($bytes, file_get_contents($path), 'the file is left exactly as it was');
-		$this->assertTrue(strpos($lines, 'rCache: ' . $mine->hash . ' cannot be read') !== false,
+		$this->assertTrue(strpos($lines, 'rCache: ' . $mine->hash
+			. ' cannot be read to compare with the loaded version; not stored.') !== false,
 			'the refusal is logged: ' . json_encode($lines));
 	}
 

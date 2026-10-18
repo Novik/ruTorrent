@@ -4,9 +4,13 @@ require_once( 'util.php' );
 class rCache
 {
 	protected $dir;
-	// How each cache file looked when this process loaded it, keyed by cache
-	// key: the stamp stampOf() read and, for a merge-capable class, a digest
-	// of the bytes, which decides when the stamp repeats.
+	// How a cache file looked when get() loaded it into a merge-capable
+	// object: the stamp stampOf() read and a digest of the bytes, which
+	// decides when the stamp repeats. Kept per loaded object, not per cache
+	// key: two objects of one key in one process can hold different versions,
+	// and a load through one must not stand for the other. spl_object_id()
+	// is reused once an object is freed, so each entry also holds a
+	// WeakReference that tells whether it still describes the same object.
 	protected static $loadStamps = [];
 
 	public function __construct( $name = '' )
@@ -26,9 +30,13 @@ class rCache
 		}
 		return(true);
 	}
-	protected static function getCacheKey( $rss )
+	// What get() recorded when it loaded this very object; null when the
+	// object was not loaded from a cache file, or when its class has no
+	// merge() and get() therefore recorded nothing.
+	protected static function loadedStamp( $rss )
 	{
-		return(get_class($rss).':'.$rss->hash);
+		$loaded = self::$loadStamps[spl_object_id($rss)] ?? null;
+		return((!is_null($loaded) && ($loaded['object']->get() === $rss)) ? $loaded : null);
 	}
 	// A key names one file inside the cache directory: the shipped ones are a
 	// '<name>.dat', an md5 or a short fixed word. It is concatenated into a
@@ -135,12 +143,12 @@ class rCache
 					return(true);
 		return(false);
 	}
-	// A cache file's identity, used to tell whether it is still the one this
-	// process loaded. filemtime resolves only to the second, so two writes
-	// inside one second look identical -- and that is the common case here:
-	// replacing a torrent fires three writers within the same second. set()
-	// always publishes through rename(), which gives the file a fresh inode,
-	// so the inode is what separates them -- until it repeats, which
+	// A cache file's identity, used to tell whether it is still the one an
+	// object was loaded from. filemtime resolves only to the second, so two
+	// writes inside one second look identical -- and that is the common case
+	// here: replacing a torrent fires three writers within the same second.
+	// set() always publishes through rename(), which gives the file a fresh
+	// inode, so the inode is what separates them -- until it repeats, which
 	// hasChangedSinceLoad() is for.
 	protected static function stampOf( $name )
 	{
@@ -148,14 +156,14 @@ class rCache
 		$st = @stat($name);
 		return($st===false ? null : $st['ino'].':'.$st['mtime'].':'.$st['size']);
 	}
-	// True when the file on disk is no longer the one this process loaded,
-	// false when it still is, null when that cannot be told.
+	// True when the file on disk is no longer the one the object was loaded
+	// from, false when it still is, null when that cannot be told.
 	//
-	// A repeated stamp does not settle it. rename() frees the inode this
-	// process loaded, and the next writer's temporary file is handed that
-	// number again (12 of 12 times on an idle ext4); with a same-second mtime
-	// and a change of the same length, two stores by other processes leave
-	// the loaded stamp on a file holding neither its bytes, and a writer
+	// A repeated stamp does not settle it. rename() frees the inode the
+	// object was loaded from, and the next writer's temporary file is handed
+	// that number again (12 of 12 times on an idle ext4); with a same-second
+	// mtime and a change of the same length, two stores by other writers
+	// leave the loaded stamp on a file holding neither its bytes, and a writer
 	// trusting the stamp published its stale copy over both. So a repeated
 	// stamp is followed by comparing a digest of the bytes, under the key
 	// lock the caller holds, which is what makes the comparison and the
@@ -166,11 +174,11 @@ class rCache
 	{
 		if(is_null($loaded) || is_null($loaded['stamp']))
 		{
-			// This process loaded nothing it can compare with: the file was
-			// absent or unreadable when get() ran. Any file present now was
-			// published by someone else, and merging what is on disk is
-			// always safe for the merge-capable classes that are the only
-			// callers of this check.
+			// The object holds nothing it can compare with: it was never
+			// loaded, or the file was absent or unreadable when get() ran.
+			// Any file present now may hold what the object has not seen,
+			// and merging what is on disk is always safe for the
+			// merge-capable classes that are the only callers of this check.
 			return(is_file($name));
 		}
 		if($loaded['stamp'] !== self::stampOf($name))
@@ -203,15 +211,14 @@ class rCache
 			return(false);
 		}
 
-		$cacheKey = is_object($rss) ? self::getCacheKey($rss) : null;
-		$loaded = ($cacheKey !== null) ? (self::$loadStamps[$cacheKey] ?? null) : null;
+		$loaded = is_object($rss) ? self::loadedStamp($rss) : null;
 		$changed = (is_object($rss) && method_exists($rss,"merge"))
 			? self::hasChangedSinceLoad($name, $loaded) : false;
 		if(is_null($changed))
 		{
 			flock( $lock, LOCK_UN );
 			fclose( $lock );
-			FileUtil::toLog('rCache: '.basename($name).' cannot be read to compare with what this process loaded; not stored.');
+			FileUtil::toLog('rCache: '.basename($name).' cannot be read to compare with the loaded version; not stored.');
 			return(false);
 		}
 		if($changed)
@@ -289,11 +296,13 @@ class rCache
 					(isset($tmp->version) && ($tmp->version==$rss->version))))
 				{
 					$rss = $tmp;
-					$cacheKey = self::getCacheKey($rss);
-					// Only a merge-capable class ever compares the digest,
-					// so only it pays for hashing the file.
-					self::$loadStamps[$cacheKey] = array('stamp' => $stamp,
-						'digest' => method_exists($rss,"merge") ? hash('sha256',$ret) : null);
+					// Only a merge-capable class ever compares what it
+					// loaded, so only it is remembered and pays for
+					// hashing the file.
+					if(method_exists($rss,"merge"))
+						self::$loadStamps[spl_object_id($rss)] = array(
+							'object' => WeakReference::create($rss),
+							'stamp' => $stamp, 'digest' => hash('sha256',$ret));
 					$ret = true;
 				}
 				else
