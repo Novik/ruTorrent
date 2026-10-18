@@ -60,29 +60,51 @@ var AvailableLanguages =
 	"zh-tw":'繁體中文'
 };
 
+/*
+ * Tags a browser sends that name a language in AvailableLanguages under a
+ * different code. "nb" is the ISO 639-1 code for Bokmal, which is what no.js
+ * holds; the rest follow the regions and scripts CLDR resolves them to, so
+ * zh and zh-SG are Simplified and zh-HK and zh-MO are Traditional.
+ *
+ * These are deliberately not entries in AvailableLanguages: that object is
+ * also the list the settings dialog renders as the language selector, and an
+ * entry here would be a second Norwegian in the dropdown.
+ */
+var LanguageAliases =
+{
+	nb:'no',
+	pt:'pt-br',
+	zh:'zh-cn',
+	"zh-hans":'zh-cn',
+	"zh-hant":'zh-tw',
+	"zh-hk":'zh-tw',
+	"zh-mo":'zh-tw',
+	"zh-sg":'zh-cn'
+};
+
 function GetActiveLanguage()
 {
 	var DefaultLanguage = 'en';
 	var LC = readLangCookie();
 	if(LC != null)
 		return LC;
-	var A;
+	var A = '';
 	if(navigator.userLanguage)
 		A = navigator.userLanguage.toLowerCase();
 	else
 		if(navigator.language)
 			A = navigator.language.toLowerCase();
-	if(A.length >= 5)
+	// Most specific first, dropping one subtag at a time: zh-hant-tw, then
+	// zh-hant, then zh.
+	var subtags = A.split('-');
+	while(subtags.length)
 	{
-		A = A.substr(0,5);
-		if(AvailableLanguages[A])
-			return A;
-	}
-	if(A.length >= 2)
-	{
-		A = A.substr(0,2);
-		if (AvailableLanguages[A])
-			return A;
+		var tag = subtags.join('-');
+		if(AvailableLanguages[tag])
+			return tag;
+		if(LanguageAliases[tag])
+			return LanguageAliases[tag];
+		subtags.pop();
 	}
 	return(DefaultLanguage);
 }
