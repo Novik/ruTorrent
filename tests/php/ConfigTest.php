@@ -76,6 +76,59 @@ class ConfigTest extends TestCase
 			'and the report names the setting: ' . var_export($diagnostic, true));
 	}
 
+	/**
+	 * Naming the setting only narrows the hunt to one variable; the operator
+	 * still has to find where it was set to see what it says. The diagnostic
+	 * carries the value it rejected so that reading the log is enough.
+	 */
+	public function testTheDiagnosticNamesTheValueItRejected()
+	{
+		$diagnostic = null;
+		$this->configuredProfileMask('02770', $diagnostic);
+
+		$this->assertTrue(strpos($diagnostic, '02770') !== false,
+			'the rejected value is in the diagnostic: ' . var_export($diagnostic, true));
+	}
+
+	/**
+	 * error_log() writes one entry per call, and the value is read from the
+	 * environment, so it can carry anything. A raw newline in it would split
+	 * the entry in two and let the tail of the value read as a log line of
+	 * its own.
+	 */
+	public function testTheDiagnosticStaysOnOneLineWhateverTheValue()
+	{
+		$diagnostic = null;
+		$this->configuredProfileMask("0770\n0777", $diagnostic);
+
+		// Asserted first: without it the two below pass on a diagnostic that
+		// never mentions the value, which is the thing being tested.
+		$this->assertTrue(strpos($diagnostic, '0770') !== false,
+			'the value reached the diagnostic: ' . var_export($diagnostic, true));
+		$this->assertEquals(1, substr_count($diagnostic, "\n"),
+			'and the entry is still one line: ' . var_export($diagnostic, true));
+		$this->assertTrue(strpos($diagnostic, '\n') !== false,
+			'because the newline is shown escaped rather than written raw');
+	}
+
+	/**
+	 * config.php is loaded by every request, so the diagnostic is written on
+	 * every request for as long as the setting stays wrong. What it writes
+	 * cannot be whatever length the environment happens to carry.
+	 */
+	public function testTheDiagnosticBoundsAnOverlongValue()
+	{
+		$diagnostic = null;
+		$this->configuredProfileMask(str_repeat('7', 4096), $diagnostic);
+
+		// Asserted first, for the same reason as above: a diagnostic that drops
+		// the value entirely is short too.
+		$this->assertTrue(strpos($diagnostic, '7777') !== false,
+			'the value reached the diagnostic: ' . var_export($diagnostic, true));
+		$this->assertTrue(strlen($diagnostic) < 256,
+			'but not whole: ' . strlen($diagnostic) . ' bytes for a 4096-character value');
+	}
+
 	public function testInvalidMaskDiagnosticLeavesCliOutputClean()
 	{
 		$errorLog = tempnam(sys_get_temp_dir(), 'rut-mask-log-');
