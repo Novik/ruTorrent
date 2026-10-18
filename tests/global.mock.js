@@ -14,3 +14,19 @@ const browserDetect = new Function(
 )();
 global.browserDetect = browserDetect;
 global.browser = new browserDetect();
+
+// jsdom evaluates no media queries and defines no matchMedia at all, so the
+// capability tests common.js runs at load throw there. Answer every query with
+// a non-match; a spec that cares about one replaces this.
+if (typeof window.matchMedia !== "function") {
+  window.matchMedia = (query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener() {},
+    removeEventListener() {},
+    addListener() {},
+    removeListener() {},
+    dispatchEvent: () => false,
+  });
+}

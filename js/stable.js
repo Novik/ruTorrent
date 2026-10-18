@@ -205,7 +205,7 @@ dxSTable.prototype.create = function(ele, styles, aName)
 		td.mouseclick((e) => {
 			this.onRightClick(e);
 		});
-		if(!$.support.touchable)
+		if(!$.support.touchPrimary)
 			td.on('mousedown', (e) => { this.bindKeys(); });
 	}
 
@@ -655,7 +655,7 @@ dxSTable.prototype.assignEvents = function()
 			currCell.style.cursor = "default";
 		}
 	});
-	if(!$.support.touchable)
+	if(!$.support.touchPrimary)
 		this.dCont.on('mousedown', function(e) { self.bindKeys(); } );
 }
 
@@ -842,7 +842,7 @@ dxSTable.prototype.keyEvents = function(e)
 
 dxSTable.prototype.selectRow = function(e, row)
 {
-	if(!$.support.touchable)
+	if(!$.support.touchPrimary)
 		this.bindKeys();
 
 	const targetId = row.id;

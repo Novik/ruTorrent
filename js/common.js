@@ -15,6 +15,20 @@ function $type(obj)
 
 var browser = new browserDetect();
 
+// Two questions the UI asks separately.
+//
+// touchable: can this device deliver touch events? A laptop with a touchscreen
+// answers yes, and still has a mouse and a keyboard.
+//
+// touchPrimary: is touch the way this device is pointed at? That is what to ask
+// wherever the alternative is a hovering cursor or a physical keyboard, and the
+// touchscreen laptop answers no.
+$.extend($.support,
+{
+	touchable: ("ontouchstart" in window) || (navigator.maxTouchPoints > 0),
+	touchPrimary: window.matchMedia("(hover: none) and (pointer: coarse)").matches
+});
+
 $(document).ready(function()
 {
 	var i = document.createElement('p');
@@ -87,7 +101,7 @@ $.fn.extend(
 {
 	mouseclick: function( handler )
 	{
-		var contextMenuPresent = ("oncontextmenu" in document.createElement("foo")) || browser.isFirefox || $.support.touchable;
+		var contextMenuPresent = ("oncontextmenu" in document.createElement("foo"));
 	        return( this.each( function()
 	        {
 	        	if($type(handler)=="function")
