@@ -37,6 +37,12 @@ class FakeRtorrentDaemon
 	/**
 	 * $replies is a list, one per request: each entry is the list of values
 	 * the daemon answers that request with, or self::fault(...).
+	 *
+	 * It may instead be a Closure taking the request body and returning one
+	 * of those, for a caller whose own next request depends on the answer to
+	 * this one -- rTorrentSettings::obtain() is seven round trips and chooses
+	 * several of them from what it has been told so far. Such a daemon
+	 * answers for as long as it is asked rather than for a fixed count.
 	 */
 	public function __construct($replies, $logFile)
 	{
@@ -114,7 +120,9 @@ class FakeRtorrentDaemon
 	private function serve($replies)
 	{
 		@fclose(STDOUT);
-		foreach ($replies as $values) {
+		$responder = ($replies instanceof Closure) ? $replies : null;
+		$queue = ($responder === null) ? $replies : array();
+		while (($responder !== null) || (count($queue) > 0)) {
 			$client = @stream_socket_accept($this->socket, 10);
 			if ($client === false) {
 				break;
@@ -124,6 +132,7 @@ class FakeRtorrentDaemon
 			foreach ($this->methodNames($body) as $method) {
 				file_put_contents($this->logFile, $method . "\n", FILE_APPEND);
 			}
+			$values = ($responder === null) ? array_shift($queue) : $responder($body);
 			@fwrite($client, $this->reply($values));
 			@fclose($client);
 		}

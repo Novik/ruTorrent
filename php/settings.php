@@ -189,6 +189,21 @@ class rTorrentSettings
 			{
 				$cache = new rCache();
 				$cache->get(self::$theSettings);
+				// Nothing was read: the first request of a profile's life, a
+				// profile the web server cannot write, a cache file removed.
+				// An unprobed object reports no version and an empty alias
+				// map, and every caller takes it at its word -- getCommand()
+				// answers with the pre-0.9 spelling of each renamed command,
+				// and patchDeprecatedCommand() leaves out the target argument
+				// d.multicall has taken since 0.16.16. So probe here as well,
+				// rather than let what one entry point sends depend on
+				// another having run first.
+				//
+				// Inside the guard above, not after it: obtain() builds
+				// commands of its own, and every command asks get() for the
+				// settings again.
+				if(empty(self::$theSettings->iVersion))
+					self::$theSettings->obtain();
 			}
 		}
 		return(self::$theSettings);
