@@ -9,11 +9,12 @@
  * the only way to see that the erase happened and the reload did not is to be
  * the daemon on the other end of both.
  *
- * php/xmlrpc.php reads a reply by regex over <value><string> and <value><i8>,
- * so a reply here is that and nothing else; no HTTP framing is involved. The
- * request is an SCGI netstring header followed by the XMLRPC body, and the
- * method names are taken out of the body -- both the single <methodName> form
- * and the members of a system.multicall.
+ * php/xmlrpc.php reads a reply by regex over <value><string> and <value><i8>
+ * and requires it to end with </methodResponse>, so a reply here is that and
+ * nothing else; no HTTP framing is involved, except in a raw() entry, which
+ * is sent as it is given. The request is an SCGI netstring header followed by
+ * the XMLRPC body, and the method names are taken out of the body -- both the
+ * single <methodName> form and the members of a system.multicall.
  */
 class FakeRtorrentDaemon
 {
@@ -24,6 +25,7 @@ class FakeRtorrentDaemon
 	private $bodyLogFile;
 
 	const FAULT = '__fault__';
+	const RAW = '__raw__';
 
 	/**
 	 * A reply entry that makes the daemon answer with a fault instead of
@@ -35,8 +37,20 @@ class FakeRtorrentDaemon
 	}
 
 	/**
+	 * A reply entry that makes the daemon answer with exactly these bytes and
+	 * close the connection: an answer captured from a real rtorrent, SCGI
+	 * headers and all, or one cut short the way a daemon that stopped
+	 * mid-write leaves it.
+	 */
+	public static function raw($bytes)
+	{
+		return array(self::RAW => $bytes);
+	}
+
+	/**
 	 * $replies is a list, one per request: each entry is the list of values
-	 * the daemon answers that request with, or self::fault(...).
+	 * the daemon answers that request with, self::fault(...) or
+	 * self::raw(...).
 	 *
 	 * It may instead be a Closure taking the request body and returning one
 	 * of those, for a caller whose own next request depends on the answer to
@@ -208,6 +222,9 @@ class FakeRtorrentDaemon
 	{
 		if (isset($values[self::FAULT])) {
 			return self::faultReply($values[self::FAULT]);
+		}
+		if (isset($values[self::RAW])) {
+			return $values[self::RAW];
 		}
 		$xml = '<?xml version="1.0" encoding="UTF-8"?><methodResponse><params><param>'
 			. '<value><array><data>';

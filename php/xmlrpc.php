@@ -292,7 +292,7 @@ class rXMLRPCRequest
 		while($this->makeNextCall())
 		{
 			$answer = self::send($this->content,$trusted);
-			if(!empty($answer))
+			if(self::isCompleteAnswer($answer))
 			{
 				if($this->parseByTypes)
 				{
@@ -340,11 +340,37 @@ class rXMLRPCRequest
 						break;
 					}
 				} else break;
-			} else break;
+			}
+			else
+			{
+				// Cut short, or nothing at all: whatever it holds, and
+				// whatever earlier calls of a split multicall returned, is
+				// not the answer to this request.
+				$this->i8s = array();
+				$this->strings = array();
+				$this->val = array();
+				$ret = false;
+				break;
+			}
 		}
 		$this->content = "";
 		$this->commands = array();
 		return($ret);
+	}
+
+	// rtorrent ends every answer with </methodResponse>: built with xmlrpc-c
+	// (as 0.9.8 is) it adds a CRLF, built with tinyxml2 (as 0.16.25 is)
+	// nothing. An answer that does not end so was cut short: rtorrent stopped
+	// while writing it, or the read timed out. The values written before the
+	// cut are still whole, so read as they are they pass for a complete,
+	// shorter result.
+	static protected function isCompleteAnswer($answer)
+	{
+		if(!is_string($answer))
+			return(false);
+		$end = strrpos($answer,'</methodResponse>');
+		return(($end!==false) &&
+			(trim(substr($answer,$end+strlen('</methodResponse>')))===''));
 	}
 
 	// rtorrent explains a refusal in faultString -- an allocation that will not
