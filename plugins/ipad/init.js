@@ -1,8 +1,3 @@
-$.extend($.support,
-{
-	touchable: 'createTouch' in document
-});
-
 plugin.holdMouse = { x:0, y: 0 };
 
 plugin.emulateRightClick = function()
