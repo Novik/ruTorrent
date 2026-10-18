@@ -162,4 +162,67 @@ class RequestsCSRFTest extends TestCase
 			'HTTP_HOST' => '[fd00::5]:8080',
 		)), 'a POST that names no origin at all');
 	}
+
+	public function testAnOpaqueOriginIsRefusedWithoutOurReferer()
+	{
+		// A browser sends "Origin: null" for a form POST from a sandboxed or
+		// data: frame, a file: page, or any page whose referrer policy is
+		// no-referrer -- one <meta> tag on a foreign page is enough. These
+		// header sets were captured from Chrome 155 and Firefox 158 posting
+		// such forms from another origin to http://127.0.0.1:18781, which
+		// is potentially trustworthy and so gets Sec-Fetch-*, and to
+		// http://rutorrent.lan:18781, a plain http name, which does not.
+		foreach (array(
+			'a no-referrer or file: page, by IP' => array(
+				'HTTP_HOST' => '127.0.0.1:18781',
+				'HTTP_ORIGIN' => 'null',
+				'HTTP_SEC_FETCH_SITE' => 'cross-site',
+				'HTTP_SEC_FETCH_MODE' => 'navigate',
+				'HTTP_SEC_FETCH_DEST' => 'document',
+			),
+			'a sandboxed or data: frame, by IP' => array(
+				'HTTP_HOST' => '127.0.0.1:18781',
+				'HTTP_ORIGIN' => 'null',
+				'HTTP_SEC_FETCH_SITE' => 'cross-site',
+				'HTTP_SEC_FETCH_MODE' => 'navigate',
+				'HTTP_SEC_FETCH_DEST' => 'iframe',
+			),
+			'any of those, by name' => array(
+				'HTTP_HOST' => 'rutorrent.lan:18781',
+				'HTTP_ORIGIN' => 'null',
+			),
+			'a sandboxed frame in Firefox, by IP' => array(
+				'HTTP_HOST' => '127.0.0.1:18781',
+				'HTTP_ORIGIN' => 'null',
+				'HTTP_REFERER' => 'http://127.0.0.2:18782/',
+				'HTTP_SEC_FETCH_SITE' => 'cross-site',
+				'HTTP_SEC_FETCH_MODE' => 'navigate',
+				'HTTP_SEC_FETCH_DEST' => 'iframe',
+			),
+			'a sandboxed frame in Firefox, by name' => array(
+				'HTTP_HOST' => 'rutorrent.lan:18781',
+				'HTTP_ORIGIN' => 'null',
+				'HTTP_REFERER' => 'http://attacker.lan:18782/',
+			),
+		) as $page => $headers) {
+			$this->assertEquals('Forbidden', $this->probe($headers), 'a form POST from ' . $page);
+		}
+	}
+
+	public function testAnOpaqueOriginLeavesTheDecisionToTheReferer()
+	{
+		// "null" names no host, so it is read as no Origin at all. The
+		// WebUI's own form POSTs do not arrive this way: index.html declares
+		// a same-origin referrer policy (tests/js/referrer-policy.spec.js).
+		$this->assertEquals('ALLOW', $this->probe(array(
+			'HTTP_HOST' => 'rutorrent.example',
+			'HTTP_ORIGIN' => 'null',
+			'HTTP_REFERER' => 'https://rutorrent.example/rutorrent/',
+		)), 'a POST from a page on the host it was sent to');
+		$this->assertEquals('ALLOW', $this->probe(array(
+			'HTTP_HOST' => '[::1]:8080',
+			'HTTP_ORIGIN' => 'null',
+			'HTTP_REFERER' => 'https://rutorrent.example/rutorrent/',
+		), array('rutorrent.example')), 'and from a page on a configured host');
+	}
 }
