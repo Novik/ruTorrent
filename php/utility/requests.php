@@ -35,12 +35,14 @@ class Requests
 				$enabledOrigins[] = UrlHost::of('http://'.$_SERVER['HTTP_X_FORWARDED_HOST']);
 			if(isset($_SERVER['HTTP_HOST']))
 				$enabledOrigins[] = UrlHost::of('http://'.$_SERVER['HTTP_HOST']);
+			// "Origin: null" names no host, so it matches nothing here and the
+			// Referer decides, as for a request without an Origin. A browser
+			// sends it from sandboxed frames, data: and file: pages, and for a
+			// form POST from any page with a no-referrer policy, so a foreign
+			// page needs only that policy to send it. index.html declares
+			// same-origin to keep the WebUI's own form POSTs from sending it.
 			if(isset($_SERVER['HTTP_ORIGIN']))
 			{
-				if($_SERVER['HTTP_ORIGIN'] == "null") # privacy-sensitive context
-				{
-					return;
-				}
 				if(UrlHost::isExactlyOneOf(UrlHost::of($_SERVER['HTTP_ORIGIN']),$enabledOrigins))
 				{
 					return;
