@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
-require_once(__DIR__ . '/../../php/urlhost.php');
+require_once(__DIR__ . '/../../php/utility/urlhost.php');
 
 /**
  * The one host test, held to the cases that made it necessary: a host
@@ -89,5 +89,46 @@ class UrlHostTest extends TestCase
 			'the last at-sign separates userinfo from the actual host');
 		$this->assertEquals('tracker.example', UrlHost::of('https://tracker.example:8443/download'),
 			'of() returns the host without its port');
+	}
+
+	/**
+	 * php/util.php resolves a class by including utility/<lowercase>.php
+	 * relative to php/, so a helper that ships anywhere else can be named
+	 * only by a file that requires it by path. This one shipped in php/
+	 * while its docblock invited plugins to take it, and a plugin that did
+	 * -- naming the class and requiring nothing -- got a fatal.
+	 *
+	 * Read from a child PHP: this file requires urlhost.php by path for the
+	 * cases above, so in this process the class is loaded whatever the
+	 * autoloader could or could not have done.
+	 */
+	public function testUrlHostShipsWhereTheAutoloaderResolvesClasses()
+	{
+		$php = dirname(dirname(__DIR__)) . '/php';
+		$code = 'require ' . var_export($php . '/util.php', true) . ';'
+			. 'echo realpath((new ReflectionClass("UrlHost"))->getFileName()), "\n";'
+			. 'echo realpath((new ReflectionClass("Math"))->getFileName()), "\n";';
+		$process = proc_open(
+			array(PHP_BINARY, '-c', __DIR__ . '/../php-test.ini', '-d', 'display_errors=stderr', '-r', $code),
+			array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+		if (!is_resource($process)) {
+			$this->assertTrue(false, 'child PHP started');
+			return;
+		}
+		fclose($pipes[0]);
+		$output = stream_get_contents($pipes[1]);
+		fclose($pipes[1]);
+		$errors = stream_get_contents($pipes[2]);
+		fclose($pipes[2]);
+		proc_close($process);
+		$lines = explode("\n", trim($output));
+
+		$this->assertTrue($errors === '', 'the bootstrap writes no diagnostics: ' . $errors);
+		// Nothing requires math.php, so the autoloader is the only thing that
+		// can have found Math: this is the directory it looks in.
+		$this->assertTrue(isset($lines[1]) && $lines[1] === realpath($php . '/utility/math.php'),
+			'the autoloader resolves classes from php/utility: ' . var_export($lines, true));
+		$this->assertTrue(isset($lines[0]) && $lines[0] === realpath($php . '/utility/urlhost.php'),
+			'and UrlHost ships in that directory, so naming it is enough: ' . var_export($lines, true));
 	}
 }
