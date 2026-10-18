@@ -92,6 +92,54 @@ class RequestsCSRFTest extends TestCase
 		), array('rutorrent.example')), 'a subdomain is another host');
 	}
 
+	public function testAConfiguredHostIsComparedAsADnsNameByReferer()
+	{
+		// The Referer branch has a comparison of its own, and the cases around
+		// it only ever handed it a Referer spelled exactly like the host it had
+		// to match. These are the three questions the Origin case above asks.
+		$this->assertEquals('ALLOW', $this->probe(array(
+			'HTTP_HOST' => '[::1]:8080',
+			'HTTP_REFERER' => 'https://RuTorrent.Example/rutorrent/',
+		), array('rutorrent.example')), 'the Referer spells the configured host in another case');
+		$this->assertEquals('ALLOW', $this->probe(array(
+			'HTTP_HOST' => '[::1]:8080',
+			'HTTP_REFERER' => 'https://rutorrent.example/rutorrent/',
+		), array('RuTorrent.Example')), 'and the configured host is the one spelled differently');
+		$this->assertEquals('ALLOW', $this->probe(array(
+			'HTTP_HOST' => '[::1]:8080',
+			'HTTP_REFERER' => 'https://rutorrent.example./rutorrent/',
+		), array('rutorrent.example')), 'and the root dot does not name another host here either');
+		$this->assertEquals('ALLOW', $this->probe(array(
+			'HTTP_HOST' => 'backend:8080',
+			'HTTP_X_FORWARDED_HOST' => 'rutorrent.example',
+			'HTTP_REFERER' => 'https://RuTorrent.Example/rutorrent/',
+		)), 'a forwarded host is folded for the Referer as well');
+		$this->assertEquals('Forbidden', $this->probe(array(
+			'HTTP_HOST' => '[::1]:8080',
+			'HTTP_REFERER' => 'https://www.rutorrent.example/rutorrent/',
+		), array('rutorrent.example')), 'a subdomain is another host by Referer too');
+	}
+
+	public function testAHostIsComparedAsAStringAndNotANumber()
+	{
+		// "127.0" and "127.00" are both numeric strings, which PHP compares as
+		// numbers unless it is told not to: loosely, one is admitted for the
+		// other. They name two different hosts, and the check is an identity
+		// test on the spelling.
+		$this->assertEquals('Forbidden', $this->probe(array(
+			'HTTP_HOST' => '127.00',
+			'HTTP_ORIGIN' => 'http://127.0',
+		)), 'an Origin that equals the Host only as a number');
+		$this->assertEquals('Forbidden', $this->probe(array(
+			'HTTP_HOST' => '127.00',
+			'HTTP_REFERER' => 'http://127.0/rutorrent/',
+		)), 'and the same by Referer');
+		$this->assertEquals('ALLOW', $this->probe(array(
+			'HTTP_HOST' => '127.0',
+			'HTTP_ORIGIN' => 'http://127.0',
+		)), 'while the host the page was served on is still admitted');
+	}
+
 	public function testAForeignOriginIsRefusedWhateverHostItNames()
 	{
 		foreach (array(
