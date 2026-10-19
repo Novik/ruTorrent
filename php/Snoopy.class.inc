@@ -629,7 +629,7 @@ class Snoopy
 		$this->headers = array();
 		$is_gzipped = false;
 
-		while($currentHeader = fgets($fp,$this->_maxlinelen))
+		while(($currentHeader = fgets($fp,$this->_maxlinelen)) !== false)
 		{
 			if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 			{
