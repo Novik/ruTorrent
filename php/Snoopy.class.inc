@@ -156,6 +156,8 @@ class Snoopy
 			return($p_url);
 		$p_url = str_replace("\t","%09",$p_url);
 		$uparts = @parse_url($p_url);
+		if(!is_array($uparts))
+			return($p_url);
 		$scheme = array_key_exists('scheme',$uparts) ? $uparts['scheme'] : "";
 		$pass = array_key_exists('pass',$uparts) ? $uparts['pass']  : "";
 		$user = array_key_exists('user',$uparts) ? $uparts['user']  : "";
@@ -244,7 +246,10 @@ class Snoopy
 
 	public function fetchComplex($URI,$method="GET",$content_type="",$body="")
 	{
+		$urlCookies = self::getURLCookies($URI);
 		$parts = parse_url($URI);
+		if(!is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]))
+			return($this->fetch($URI,$method,$content_type,$body));
 		$this->host = $parts["host"];
 		if(rTorrentSettings::get()->isPluginRegistered('cookies') && !empty($this->host))
 		{
@@ -253,7 +258,7 @@ class Snoopy
 			$cookies = rCookies::load();
 			$this->cookies = array_merge($this->cookies,$cookies->getCookiesForHost($this->host));
 		}
-		$this->cookies = array_merge($this->cookies,self::getURLCookies($URI));
+		$this->cookies = array_merge($this->cookies,$urlCookies);
 		if(rTorrentSettings::get()->isPluginRegistered('loginmgr'))
 		{
 			// Go back to ruTorrent root folder and include accounts.php plugin file
@@ -276,7 +281,10 @@ class Snoopy
 		$parts = parse_url($URI);
 		if( !is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]) )
 		{
-			return(false);
+			$this->headers = array();
+			$this->response_code = "";
+			$this->_redirectaddr = false;
+			return($this->refuseResponseBody("invalid-url"));
 		}
 		rTorrentSettings::get()->pushEvent( "HostConnect", array
 		(
