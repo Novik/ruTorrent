@@ -672,6 +672,13 @@ class Snoopy
 
 			$this->headers[] = $currentHeader;
 		}
+		// A timed-out fgets() returns false without entering the loop body.
+		// Check before another read can clear the stream's timeout flag.
+		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
+		{
+			$this->status=-100;
+			return false;
+		}
 
 		$results = "";
 		$limit = $this->responseLimit();
