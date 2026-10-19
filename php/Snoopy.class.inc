@@ -611,7 +611,7 @@ class Snoopy
 				$headers .= "; boundary=".$this->_mime_boundary;
 			$headers .= "\r\n";
 		}
-		if(!empty($body))
+		if(strlen((string)$body) > 0)
 			$headers .= "Content-length: ".strlen($body)."\r\n";
 		if(!empty($this->user) || !empty($this->pass))
 			$headers .= "Authorization: Basic ".base64_encode($this->user.":".$this->pass)."\r\n";
@@ -691,7 +691,7 @@ class Snoopy
 
 		$results = "";
 		$limit = $this->responseLimit();
-		while( $data = fread($fp, 4096) )
+		while( ($data = fread($fp, 4096)) !== false && $data !== '' )
 		{
 			$results .= $data;
 			if( strlen($results) > $limit )
@@ -752,7 +752,7 @@ class Snoopy
 			else
 				$headers[] = "Content-type: $content_type";
 		}
-		if(!empty($body))
+		if(strlen((string)$body) > 0)
 			$headers[] = "Content-length: ".strlen($body);
 		if(!empty($this->user) || !empty($this->pass))
 			$headers[] = "Authorization: Basic ".base64_encode($this->user.":".$this->pass);
@@ -765,8 +765,9 @@ class Snoopy
 		foreach( $headers as $header )
 			$cmdline_params .= " -H ".escapeshellarg($header);
 
-		if(!empty($body))
-			$cmdline_params .= " -d ".escapeshellarg($body);
+		if(strlen((string)$body) > 0)
+			// -d interprets a leading @ as a filename, even when shell-quoted.
+			$cmdline_params .= " --data-raw ".escapeshellarg($body);
 
 		if($this->read_timeout > 0)
 			$cmdline_params .= " -m ".$this->read_timeout;
