@@ -167,8 +167,22 @@ customElements.define(
           })
         );
       };
-      label.addEventListener("mousedown", (e) => onClickEvent(e));
-      label.addEventListener("contextmenu", (e) =>
+      // A ctrl-click with the primary button is the secondary click on macOS,
+      // and the browser reports it as a mousedown first and a contextmenu
+      // after. Hold such a mousedown until the gesture says which it was.
+      let held = null;
+      label.addEventListener("mousedown", (e) => {
+        held = null;
+        if (!browser.maybeSecondaryClick(e)) return onClickEvent(e);
+        held = e;
+      });
+      label.addEventListener("mouseup", (e) => {
+        const call = held;
+        held = null;
+        if (call && browser.maybeSecondaryClick(e)) onClickEvent(call);
+      });
+      label.addEventListener("contextmenu", (e) => {
+        held = null;
         onClickEvent({
           which: 3,
           button: 2,
@@ -176,8 +190,8 @@ customElements.define(
           shiftKey: false,
           clientX: e.clientX,
           clientY: e.clientY,
-        })
-      );
+        });
+      });
     }
 
     panelClosed(panelId) {
