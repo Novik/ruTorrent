@@ -167,7 +167,7 @@ class rXMLRPCRequest
 				$tosend = strlen($reqheader).":{$reqheader},{$data}";
 				@fwrite($socket,$tosend,strlen($tosend));
 				$result = '';
-				while($data = fread($socket, 65536))
+				while(($data = fread($socket, 65536)) !== false && $data !== '')
 					$result .= $data;
 				fclose($socket);
 			}
