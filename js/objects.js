@@ -446,8 +446,8 @@ var theContextMenu =
 			y = 0;
 		obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
 		obj.children("li").on({
-			mouseover: theContextMenu.openSubmenu,
-			mouseout: theContextMenu.closeSubmenu,
+			mouseenter: theContextMenu.openSubmenu,
+			mouseleave: theContextMenu.closeSubmenu,
 		});
 		obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
 	},
