@@ -44,6 +44,7 @@ class Snoopy
 	// -100 of a read timeout, so callers that already treat a status under
 	// 100 as "nothing arrived" need no new case; the reason is in $error.
 	const RESPONSE_BODY_FAILED = -101;
+	const SOCKET_CONNECT_FAILED = -102;
 
 	/**** Public variables ****/
 
@@ -962,16 +963,26 @@ class Snoopy
 			$fp = fsockopen($host,$port,$errno,$errstr,$this->_fp_timeout);
 		if(!$fp)
 		{
-			// socket connection failed
-			$this->status = $errno;
+			// Positive OS errno values overlap HTTP statuses. Keep the errno in
+			// the message and use a distinct transport status, not -100 or -101.
+			$this->status = $errno > 0 ? self::SOCKET_CONNECT_FAILED : $errno;
+			// PHP can report DNS failure with errno 0; do not expose its raw text.
+			if($errno === 0 && strpos((string)$errstr, "php_network_getaddresses:") === 0)
+			{
+				$this->error = "dns lookup failure (0)";
+				return(false);
+			}
 			switch($errno)
 			{
 				case -3:
 					$this->error="socket creation failed (-3)";
+					break;
 				case -4:
 					$this->error="dns lookup failure (-4)";
+					break;
 				case -5:
 					$this->error="connection refused or timed out (-5)";
+					break;
 				default:
 					$this->error="connection failed (".$errno.")";
 			}
