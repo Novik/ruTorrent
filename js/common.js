@@ -93,6 +93,7 @@ $.event.fix = function(e)
 {
 	e = $.event.inheritedfix(e);
 	e.fromTextCtrl = (e.target && e.target.tagName && (/^input|textarea|a$/i).test(e.target.tagName));
+	e.maybeSecondaryClick = browser.maybeSecondaryClick(e);
 	if(!e.metaKey)
 		e.metaKey = e.ctrlKey;
 	return(e);
@@ -108,8 +109,12 @@ $.fn.extend(
 	        	{
 				if(contextMenuPresent)
 				{
+					// A mousedown that may be a secondary click is not acted on
+					// until the gesture says which click it was.
+					var held = null;
 					$(this).on( "contextmenu", function(e)
 					{
+						held = null;
 						e.which = 3;
 						e.button = 2;
 						e.metaKey = false;	// for safari
@@ -118,8 +123,19 @@ $.fn.extend(
 					});
                                         $(this).on('mousedown', function(e)
 					{
-						if(e.which != 3)
+						held = null;
+						if(e.which == 3)
+							return;
+						if(!e.maybeSecondaryClick)
 							return(handler.apply(this,arguments));
+						held = { self: this, args: arguments };
+					});
+					$(this).on('mouseup', function(e)
+					{
+						var call = held;
+						held = null;
+						if(call && e.maybeSecondaryClick)
+							return(handler.apply(call.self,call.args));
 					});
 				}
 				else
@@ -165,7 +181,10 @@ $.fn.extend(
 			else
 			{
 				if(contextMenuPresent)
+				{
 					$(this).off( "contextmenu" );
+					$(this).off( "mouseup" );
+				}
 				else
 				if(browser.isOpera)
 					$(this).off( "mouseup" );
