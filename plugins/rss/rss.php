@@ -14,6 +14,9 @@ function rssFetchURL($url, $cookies = null, $headers = null )
 		$client->rawheaders = $headers;
 	if(is_array($cookies) && count($cookies))
 		$client->cookies = $cookies;
+	// Cap per-feed wait so a feed behind Cloudflare/DDoS-Guard can't stall the rest
+	$client->_fp_timeout = min($client->_fp_timeout, 10);
+	$client->read_timeout = ($client->read_timeout > 0) ? min($client->read_timeout, 15) : 15;
 	@$client->fetchComplex($url);
 	return $client;
 }
@@ -184,7 +187,16 @@ class rRSS
 			}
 		}
 		// map data from Atom or RSS feeds
-		list($xText, $xIter, $errors) = rssXpath($cli->results);
+		if (!is_string($cli->results) || trim($cli->results) === '') {
+			$this->lastErrorMsgs[] = '[RSS-Empty-Response] Status: ' . $cli->status;
+			return false;
+		}
+		try {
+			list($xText, $xIter, $errors) = rssXpath($cli->results);
+		} catch (\Throwable $e) {
+			$this->lastErrorMsgs[] = '[RSS-Parse-Error] ' . $e->getMessage();
+			return false;
+		}
 
 		$xFirst = function($path) use (&$xIter) {
 			foreach($xIter($path) as $i){
