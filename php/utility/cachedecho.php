@@ -36,6 +36,7 @@ class CachedEcho
 				global $phpUseGzip;
 				if($phpUseGzip && isset($_SERVER['HTTP_ACCEPT_ENCODING']))
 				{
+					$encoding = null;
 					if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false )
 						$encoding = 'x-gzip';
 				else if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false )
