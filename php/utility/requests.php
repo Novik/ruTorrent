@@ -11,6 +11,7 @@ class Requests
 			($_SERVER['REQUEST_METHOD']!='POST') )
 		{
 			header('HTTP/1.0 405 Method Not Allowed', true, 405);
+			header('Content-Type: text/plain; charset=UTF-8');
 			die('Method Not Allowed');
 		}
 	}
@@ -56,6 +57,7 @@ class Requests
 				}
 			}
 			header('HTTP/1.0 403 Forbidden', true, 403);
+			header('Content-Type: text/plain; charset=UTF-8');
 			die('Forbidden');
 		}
 	}
