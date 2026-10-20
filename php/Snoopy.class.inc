@@ -634,6 +634,7 @@ class Snoopy
 			if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 			{
 				$this->status=-100;
+				$this->results = "";
 				return false;
 			}
 
@@ -686,6 +687,7 @@ class Snoopy
 		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 		{
 			$this->status=-100;
+			$this->results = "";
 			return false;
 		}
 
@@ -700,6 +702,7 @@ class Snoopy
 		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 		{
 			$this->status=-100;
+			$this->results = "";
 			return false;
 		}
 
