@@ -91,12 +91,17 @@ class FeedsPubDateTest extends TestCase
 	 * Runs action.php and returns [title => pubDate or null] for every item
 	 * in the feed it prints.
 	 */
-	private function feed($descriptions)
+	private function feed($descriptions, $server = array(), $public = null, $environment = null)
 	{
 		$root = realpath(__DIR__ . '/../../..');
 		$tree = $this->base . '/tree-' . ($descriptions ? 'on' : 'off');
 		foreach (array('php', 'conf', 'plugins/feeds') as $dir) {
 			$this->copyTree($root . '/' . $dir, $tree . '/' . $dir);
+		}
+		@unlink($tree . '/conf/config.local.php');
+		if ($public !== null) {
+			file_put_contents($tree . '/conf/config.local.php',
+				'<?php $publicURL = ' . var_export($public, true) . ';');
 		}
 		if (!$descriptions) {
 			file_put_contents($tree . '/plugins/feeds/conf.local.php',
@@ -118,13 +123,19 @@ class FeedsPubDateTest extends TestCase
 
 		$driver = $this->base . '/drive-feeds.php';
 		file_put_contents($driver, "<?php\n"
+			. 'ini_set(\'error_log\', ' . var_export($this->base . '/child-errors.log', true) . ");\n"
 			. '$_ENV[\'RU_PROFILE_PATH\'] = ' . var_export($this->base . '/profile', true) . ";\n"
+			. 'putenv(' . var_export($environment === null ? 'RU_PUBLIC_URL' : 'RU_PUBLIC_URL=' . $environment, true) . ");\n"
 			. 'require_once(' . var_export($tree . '/conf/config.php', true) . ");\n"
 			. '$scgi_host = "127.0.0.1";' . "\n"
 			. '$scgi_port = ' . $this->daemon->port() . ";\n"
 			. '$rpcTimeOut = 10;' . "\n"
 			. '$_SERVER[\'HTTP_HOST\'] = \'example.test\';' . "\n"
 			. '$_SERVER[\'PHP_SELF\'] = \'/plugins/feeds/action.php\';' . "\n"
+			. '$_SERVER[\'SCRIPT_NAME\'] = \'/plugins/feeds/action.php\';' . "\n"
+			. '$_SERVER = array_merge($_SERVER, ' . var_export($server, true) . ");\n"
+			. 'register_shutdown_function(function() { file_put_contents(' . var_export($this->base . '/response-status', true)
+				. ', (string)(http_response_code() ?: 200)); });' . "\n"
 			. '$_REQUEST[\'mode\'] = \'all\';' . "\n"
 			. 'chdir(' . var_export($tree . '/plugins/feeds', true) . ");\n"
 			. 'require_once(' . var_export($tree . '/php/util.php', true) . ");\n"
@@ -134,6 +145,7 @@ class FeedsPubDateTest extends TestCase
 			. '$settings->iVersion = 0x1018;' . "\n"
 			. '$settings->version = $settings->libVersion = \'0.16.24\';' . "\n"
 			. '$settings->server = \'fake\';' . "\n"
+			. '$settings->registerPlugin(\'data\');' . "\n"
 			. 'require(' . var_export($tree . '/plugins/feeds/action.php', true) . ");\n");
 
 		$output = shell_exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver));
@@ -144,7 +156,7 @@ class FeedsPubDateTest extends TestCase
 			$items[$title[1]] = preg_match('`<pubDate>(.*)</pubDate>`U', $item, $date) ? $date[1] : null;
 		}
 		ksort($items);
-		return array($items, (string)$output);
+		return array($items, (string)$output, (int)file_get_contents($this->base . '/response-status'));
 	}
 
 	private function expected()
@@ -174,5 +186,59 @@ class FeedsPubDateTest extends TestCase
 		$this->assertEquals($this->expected(), $items,
 			'without item descriptions every torrent is still listed and dated from its own row: '
 			. json_encode($items) . ' ' . substr($output, 0, 300));
+	}
+
+	public function testConfiguredPublicBaseReachesEveryFeedLink()
+	{
+		foreach (array(null, '', 'https://env.test:9443/public&tools') as $environment) {
+			$base = $environment === null || $environment === ''
+				? 'https://config.test:8443/torrents/' : $environment . '/';
+			list($items, $output, $status) = $this->feed(false, array(
+				'HTTP_HOST' => 'internal.test:8080', 'HTTP_X_FORWARDED_HOST' => 'trap.test',
+				'PHP_SELF' => '/internal/plugins/feeds/action.php/path-info'),
+				'https://config.test:8443/torrents', $environment);
+			$xml = @simplexml_load_string($output);
+			$this->assertTrue($xml !== false, 'The public feed is well-formed XML');
+			if ($xml === false) {
+				throw new Exception('The public feed could not be parsed');
+			}
+			$this->assertEquals(200, $status, 'The configured public feed succeeds');
+			$this->assertTrue((string)$xml->channel->link === $base, 'The channel uses the public application base');
+			$this->assertTrue((string)$xml->channel->image->url === $base . 'images/logo.png',
+				'The image uses the public prefix, with XML-safe URL bytes');
+			$this->assertTrue((string)$xml->channel->image->link === $base, 'The image link uses the same public base');
+			$this->assertEquals(3, count($xml->channel->item), 'All data links are present');
+			foreach ($xml->channel->item as $item) {
+				$this->assertTrue((string)$item->link === $base . 'plugins/data/action.php?hash='
+					. (string)$item->guid . '&no=0&readable=1', 'A data link uses the public base and its own hash');
+			}
+			$this->assertTrue(strpos($output, 'internal.test') === false && strpos($output, 'trap.test') === false,
+				'Internal and forwarded hosts do not enter an explicitly configured public feed');
+		}
+	}
+
+	public function testDirectFeedBaseUsesScriptNameAndTreatsHttpsOffAsHttp()
+	{
+		list($items, $output) = $this->feed(false, array('HTTP_HOST' => 'public.test:8443', 'HTTPS' => 'off',
+			'SCRIPT_NAME' => '/torrents/plugins/feeds/action.php',
+			'PHP_SELF' => '/internal/plugins/feeds/action.php/path-info'));
+		$xml = @simplexml_load_string($output);
+		$this->assertTrue($xml !== false, 'The direct feed is well-formed XML');
+		if ($xml === false) {
+			throw new Exception('The direct feed could not be parsed');
+		}
+		$this->assertTrue((string)$xml->channel->link === 'http://public.test:8443/torrents/',
+			'The actual script path and HTTPS=off determine a direct installation base');
+	}
+
+	public function testInvalidPublicBaseRefusesBeforeReadingTheDaemon()
+	{
+		list($items, $output, $status) = $this->feed(false, array(), 'https://user:secret@public.test/app/');
+		$this->assertEquals(500, $status, 'Invalid explicit public configuration returns a server error');
+		$this->assertTrue(strpos($output, 'Configure RU_PUBLIC_URL or publicURL') !== false,
+			'The refusal tells the operator which configuration to fix');
+		$this->assertTrue(strpos($output, '<rss') === false && strpos($output, 'secret') === false,
+			'The refusal neither emits a misleading feed nor exposes configured credentials');
+		$this->assertEquals(array(), $this->daemon->calls(), 'Invalid public configuration needs no daemon request');
 	}
 }

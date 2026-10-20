@@ -4,6 +4,64 @@ require_once('urlhost.php');
 
 class Requests
 {
+	private static function normalizedPublicBase($value)
+	{
+		if(!is_string($value) || preg_match('/[\x00-\x20\x7f\\\\]/', $value) ||
+			filter_var($value, FILTER_VALIDATE_URL) === false)
+			return false;
+		$parts = @parse_url($value);
+		if(!is_array($parts) || empty($parts['host']) || empty($parts['scheme']) ||
+			!in_array(strtolower($parts['scheme']), array('http', 'https'), true) ||
+			isset($parts['user']) || isset($parts['pass']) || isset($parts['query']) || isset($parts['fragment']))
+			return false;
+		return rtrim($value, '/').'/';
+	}
+
+	/** Public RSS links need an explicit base when the proxy rewrites Host or the prefix. */
+	public static function publicBaseURL($scriptSuffix)
+	{
+		global $publicURL;
+		$environment = getenv('RU_PUBLIC_URL');
+		// An empty environment value permits config.local.php overrides.
+		$usesEnvironment = $environment !== false && $environment !== '';
+		$configured = $usesEnvironment ? $environment : ($publicURL ?? '');
+		if($configured !== '' && $configured !== null)
+		{
+			$base = self::normalizedPublicBase($configured);
+			if($base !== false)
+				return $base;
+			error_log('public-url: refused setting='.($usesEnvironment ? 'RU_PUBLIC_URL' : 'publicURL')
+				.'; expected an absolute HTTP(S) application base without credentials, query or fragment');
+			return false;
+		}
+		// Forwarded-Host and CSRF grants do not identify the public application URL.
+		$origin = self::currentOrigin();
+		$originParts = $origin === null ? false : @parse_url($origin);
+		$script = $_SERVER['SCRIPT_NAME'] ?? ($_SERVER['PHP_SELF'] ?? '');
+		if(is_string($scriptSuffix) && $scriptSuffix !== '' && is_string($script) &&
+			isset($script[0]) && $script[0] === '/' &&
+			substr($script, -strlen($scriptSuffix)) === $scriptSuffix && is_array($originParts) &&
+			!isset($originParts['path']) && !isset($originParts['query']) && !isset($originParts['fragment']))
+		{
+			$base = self::normalizedPublicBase($origin.substr($script, 0, -strlen($scriptSuffix)).'/');
+			if($base !== false)
+				return $base;
+		}
+		error_log('public-url: refused request origin or script path; configure RU_PUBLIC_URL for a rewriting proxy');
+		return false;
+	}
+
+	private static function currentOrigin()
+	{
+		$scheme = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+			? strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'])
+			: (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https'
+				: (isset($_SERVER['REQUEST_SCHEME']) ? strtolower($_SERVER['REQUEST_SCHEME']) : 'http'));
+		$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+		return in_array($scheme, array('http', 'https'), true) && $host !== ''
+			? $scheme.'://'.$host : null;
+	}
+
 	public static function disableUnsupportedMethods()
 	{
 		if( isset($_SERVER['REQUEST_METHOD']) &&
