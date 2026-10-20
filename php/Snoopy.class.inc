@@ -772,6 +772,10 @@ class Snoopy
 		$limit = $this->responseLimit();
 		while( ($data = fread($fp, 4096)) !== false && $data !== '' )
 		{
+			// PHP 7.4/8.1 can return partial bytes with a timeout already set.
+			// Keep that flag for the failure path below before another read clears it.
+			if ($this->read_timeout > 0 && $this->_check_timeout($fp))
+				break;
 			$results .= $data;
 			if( strlen($results) > $limit )
 			        break;
