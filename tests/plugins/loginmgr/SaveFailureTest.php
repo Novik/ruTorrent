@@ -35,7 +35,7 @@ class SaveFailureManager extends accountManager
         $stored = new self();
         saveAssert((new rCache())->get($stored), 'The credential cache is readable when a session is retired');
         $this->persistedAtForget[$name] = $stored->accounts;
-        parent::forgetSession($name);
+        return parent::forgetSession($name);
     }
 }
 

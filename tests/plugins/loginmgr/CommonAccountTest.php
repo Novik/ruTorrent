@@ -117,6 +117,7 @@ class CARecordingData extends privateData
     public function remove()
     {
         $this->removed++;
+        return true;
     }
 }
 

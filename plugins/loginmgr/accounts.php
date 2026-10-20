@@ -41,10 +41,14 @@ class privateData
 		$this->loaded = false;
 	}
 
+	// True when this account holds no stored session afterwards. The cache
+	// refuses a removal it cannot make safely -- it needs the writer lock the
+	// stores take, and the unlink itself can fail -- so the answer belongs to
+	// the caller, which has no other way to tell.
 	public function remove()
 	{
 		$cache = new rCache('/accounts');
-		$cache->remove($this);
+		return($cache->remove($this));
 	}
 
 	public function store( $client )
@@ -407,7 +411,10 @@ class accountManager
 		return("theWebUI.theAccounts = ".JSON::jsValue((object) $accounts).";\n");
 	}
 
-	public function set()
+	// $notRetired comes back holding the accounts whose stored session is
+	// still on disk after a save that changed their credentials. The save
+	// itself succeeded in that case, so the return value cannot carry it.
+	public function set( &$notRetired = null )
 	{
 		$previous = $this->accounts;
 		foreach( $this->accounts as $name=>$nfo )
@@ -427,19 +434,28 @@ class accountManager
 			$this->accounts = $previous;
 			return(false);
 		}
+		$notRetired = array();
 		foreach(array_keys($this->accounts) as $name)
-			$this->forgetSession($name);
+			if(!$this->forgetSession($name))
+				$notRetired[] = $name;
+		// A session the cache would not discard is still sent to the tracker
+		// under credentials that no longer exist, which is the one thing
+		// forgetSession() is for. Nothing here can force the removal, so the
+		// names go where an operator can read them.
+		if(count($notRetired))
+			FileUtil::toLog('loginmgr: a stored session outlived the credentials it was made with: '.
+				implode(', ',$notRetired));
 		$this->setHandlers();
 		return(true);
 	}
 
-	// The cookies and referer held for this account. Whatever was just written
-	// may name another site or another user, so the session that belonged to
-	// the previous settings does not survive the write.
+	// Discards the cookies and referer held for this account: whatever was
+	// just written may name another site or another user. False when the
+	// session is still there afterwards.
 	protected function forgetSession( $name )
 	{
 		$data = new privateData( $name );
-		$data->remove();
+		return($data->remove());
 	}
 
 	public function getAccount( $url )
