@@ -279,6 +279,32 @@ class Snoopy
 
 	public function fetch($URI,$method="GET",$content_type="",$body="")
 	{
+		$parts = @parse_url((string) $URI);
+		$scopedCredentials = is_array($parts) && isset($parts['user']);
+		if($scopedCredentials)
+		{
+			$previousUser = $this->user;
+			$previousPass = $this->pass;
+		}
+		try
+		{
+			return $this->fetchRequest($URI,$method,$content_type,$body);
+		}
+		finally
+		{
+			// URL userinfo belongs to this request chain, not to a reused client.
+			if($scopedCredentials)
+			{
+				$this->user = $previousUser;
+				$this->pass = $previousPass;
+			}
+		}
+	}
+
+	private function fetchRequest($URI,$method,$content_type,$body)
+	{
+		if($this->_redirectdepth === 0)
+			$this->lastredirectaddr = '';
 		$parts = parse_url($URI);
 		if( !is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]) )
 		{
@@ -296,10 +322,12 @@ class Snoopy
 			"body" => &$body
 		) );
 		$this->port = empty($parts["port"]) ? (($parts["scheme"]=="https") ? 443 : 80) : $parts["port"];
-		if(!empty($parts["user"]))
-			$this->user = $parts["user"];
-		if(!empty($parts["pass"]))
-			$this->pass = $parts["pass"];
+		// Keep the URI override after HostConnect, including empty userinfo.
+		if(isset($parts['user']))
+		{
+			$this->user = $parts['user'];
+			$this->pass = isset($parts['pass']) ? $parts['pass'] : '';
+		}
 		$this->host = $parts["host"];
 		$this->_isproxy = (!empty($this->proxy_host) && !empty($this->proxy_port));
 		$this->_pinnedaddr = false;
@@ -361,7 +389,14 @@ class Snoopy
 					$this->lastredirectaddr=$this->_redirectaddr;
 					if($this->redirectLeavesOrigin($parts,$this->_redirectaddr))
 						$this->dropCredentials();
-					$ret = $this->fetch($this->_redirectaddr);
+					try
+					{
+						$ret = $this->fetch($this->_redirectaddr);
+					}
+					finally
+					{
+						$this->_redirectdepth--;
+					}
 				}
 			}
 		}
