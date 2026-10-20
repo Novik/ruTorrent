@@ -117,6 +117,50 @@ trait BencodeReaderFixture
 		return $info;
 	}
 
+	/**
+	 * Write $value as bencode: a BencodeDictionary as a dictionary with its
+	 * keys in the byte order a dictionary requires, a PHP array as a list, an
+	 * integer as an integer and anything else as a string.
+	 *
+	 * A fixture written by hand is a run of lengths and terminators to count,
+	 * and a miscount reads as a defect in the class under test. This states
+	 * the fixture as a value instead, and it can state the dictionaries a PHP
+	 * array cannot hold.
+	 */
+	protected function bencode($value)
+	{
+		if ($value instanceof BencodeDictionary) {
+			$keys = $value->keys();
+			usort($keys, 'strcmp');
+			$out = 'd';
+			foreach ($keys as $key) {
+				$out .= strlen($key) . ':' . $key . $this->bencode($value->get($key));
+			}
+			return $out . 'e';
+		}
+		if (is_array($value)) {
+			$out = 'l';
+			foreach ($value as $item) {
+				$out .= $this->bencode($item);
+			}
+			return $out . 'e';
+		}
+		if (is_int($value)) {
+			return 'i' . $value . 'e';
+		}
+		return strlen($value) . ':' . $value;
+	}
+
+	/** A dictionary fixture, keeping each key as the string it is written as. */
+	protected function dict($pairs)
+	{
+		$keys = array();
+		foreach ($pairs as $key => $ignored) {
+			$keys[] = (string)$key;
+		}
+		return new BencodeDictionary($keys, $pairs);
+	}
+
 	protected function assertBencodeReaderIsStrict()
 	{
 		foreach (array(
