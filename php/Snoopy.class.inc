@@ -304,7 +304,14 @@ class Snoopy
 	private function fetchRequest($URI,$method,$content_type,$body)
 	{
 		if($this->_redirectdepth === 0)
+		{
+			// A request a caller makes is the start of its own chain: it has
+			// followed no redirect yet, and it inherits none from the chain
+			// before it, which may have stopped at its depth cap with a
+			// target still named.
 			$this->lastredirectaddr = '';
+			$this->_redirectaddr = false;
+		}
 		$parts = parse_url($URI);
 		if( !is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]) )
 			return($this->refuseRequest("invalid-url"));

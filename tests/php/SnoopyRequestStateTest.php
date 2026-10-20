@@ -270,6 +270,28 @@ $tests = array(
             };
         });
     },
+    // $passcookies carries a cookie through a redirect the client follows.
+    // Nothing else may carry one: a chain that stops at its depth cap leaves a
+    // redirect target behind, and the next request a caller makes -- to any
+    // host, with no cookie handling of its own -- must not inherit it.
+    'an independent request sends no cookie from the previous response' => function () use ($ok) {
+        $capped = array('wire' => "HTTP/1.0 302 Found\r\nSet-Cookie: leaked=yes; path=/\r\n"
+            . "Location: http://first.test:{PORT}/next\r\n\r\n");
+        statePeer(array($capped, $ok), function ($client, $port) {
+            $client->maxredirs = 0;
+            stateAssert($client->fetch('http://first.test:' . $port . '/start') && (int) $client->status === 302,
+                'The capped redirect is answered but not followed');
+            stateAssert($client->fetch('http://second.test:' . $port . '/file') && $client->results === 'ok',
+                'The independent request succeeds');
+            stateAssert($client->cookies === array(), 'The independent request absorbs no cookie of its own');
+            return function ($requests) {
+                stateAssert(count($requests) === 2, 'Both requests reach the peer');
+                stateAssert(stateHeader($requests[0], 'Cookie') === array(), 'The first request carries no cookie');
+                stateAssert(stateHeader($requests[1], 'Cookie') === array(),
+                    'A different host receives no cookie set by the previous response');
+            };
+        });
+    },
 );
 $failures = 0;
 foreach ($tests as $name => $test) {
