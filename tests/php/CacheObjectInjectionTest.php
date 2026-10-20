@@ -303,6 +303,50 @@ class CacheObjectInjectionTest extends TestCase
 	}
 
 	/**
+	 * A root is the class the header names, not the class name somewhere in
+	 * the bytes. A cache file can hold the asked-for name in a property value
+	 * and still not be that object at its root -- so a check that searched the
+	 * file instead of reading its header would accept both of these. The first
+	 * hands the caller an array where its own object belongs; the second puts
+	 * the list's declared item class in the list's place and runs its
+	 * __wakeup() to do it.
+	 */
+	public function testTheAskedForClassNameInsideTheBytesIsNotARoot()
+	{
+		$log = $this->profilePath . '/cache-root-name.log';
+		$nested = new InjectionItemPayload();
+		$nested->name = 'InjectionListPayload';
+		$cases = array(
+			array('injection-target.dat', serialize(array('rows' => 'InjectionTargetPayload')),
+				new InjectionTargetPayload(), 'InjectionTargetPayload', 'an array'),
+			array('injection-list.dat', serialize($nested),
+				new InjectionListPayload(), 'InjectionListPayload', 'class InjectionItemPayload'),
+		);
+		foreach ($cases as list($key, $bytes, $target, $asked, $found)) {
+			$this->assertTrue(strpos($bytes, $asked) !== false,
+				"the bytes of {$key} carry the name {$asked}: " . json_encode($bytes));
+			$this->plant($key, $bytes);
+			InjectionItemPayload::$wakeups = 0;
+			@unlink($log);
+			$GLOBALS['log_file'] = $log;
+			try {
+				$ok = (new rCache())->get($target);
+			} finally {
+				$GLOBALS['log_file'] = '';
+			}
+			$lines = is_file($log) ? file_get_contents($log) : '';
+
+			$this->assertTrue($ok === false, "{$key} is a miss though its bytes name {$asked}");
+			$this->assertTrue($target instanceof $asked, "and the caller still holds its {$asked}");
+			$this->assertTrue(InjectionItemPayload::$wakeups === 0,
+				"and nothing was constructed in the place of {$asked}");
+			$this->assertTrue(substr_count($lines, 'rCache: ' . $key . ' does not hold ' . $asked
+				. ' at its root (found ' . $found . '); not loaded.') === 1,
+				'and the refusal names what the file holds instead: ' . json_encode($lines));
+		}
+	}
+
+	/**
 	 * The refusal says what the file holds at its root, as the refusal of a
 	 * nested class names that class: a class name when the header spells
 	 * one plainly, otherwise a fixed word. Nothing else from the file -- a
