@@ -823,9 +823,30 @@ class Snoopy
 		foreach( $headers as $header )
 			$cmdline_params .= " -H ".escapeshellarg($header);
 
+		$bodyfile = null;
 		if(strlen((string)$body) > 0)
-			// -d interprets a leading @ as a filename, even when shell-quoted.
-			$cmdline_params .= " --data-raw ".escapeshellarg($body);
+		{
+			// A body is bytes, and the command line is not a way to carry
+			// bytes: escapeshellarg() keeps only what is a valid character in
+			// the process locale and drops the rest, a single argument is
+			// capped well below the size of a request body, and every argument
+			// is readable in the process table by anyone on the host, where a
+			// body may be carrying credentials. A file has none of those
+			// limits, and the name is one this code generated, so the leading
+			// @ that makes curl read it cannot be mistaken for part of a body.
+			// --data-binary and not -d, which strips line breaks out of what
+			// it reads from a file.
+			$bodyfile = FileUtil::getTempFilename('https-request-body');
+			$mask = umask(0177);
+			$written = @file_put_contents($bodyfile, (string)$body);
+			umask($mask);
+			if($written !== strlen((string)$body))
+			{
+				@unlink($bodyfile);
+				return $this->refuseRequest('request-body-not-written');
+			}
+			$cmdline_params .= " --data-binary ".escapeshellarg("@".$bodyfile);
+		}
 
 		if($this->read_timeout > 0)
 			$cmdline_params .= " -m ".$this->read_timeout;
@@ -857,6 +878,10 @@ class Snoopy
 			$cmdline_params .= " -k";
 		$cmdline_params .= " -s ";
 		exec(escapeshellarg(Utility::getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
+		// curl has read the body by now, and nothing below this line needs it,
+		// so the one copy of it on disk goes away before any return path.
+		if($bodyfile !== null)
+			@unlink($bodyfile);
 		$this->status = $return;
 		$is_gzipped = false;
 		if($return)
