@@ -42,7 +42,8 @@ function snoopyCurlArgs()
 // Location instead; $SNOOPY_TEST_SEEN is how the script remembers it did.
 // $SNOOPY_TEST_BODY names a file whose bytes become the response body;
 // $SNOOPY_TEST_NO_BODY leaves no body file at all, as curl does when the
-// answer has no body.
+// answer has no body. An argument naming a file with a leading @ is read the
+// way curl reads one, so the record holds the request body itself.
 $curlPath = tempnam(sys_get_temp_dir(), 'snoopy-curl-');
 $argsPath = tempnam(sys_get_temp_dir(), 'snoopy-args-');
 $bodyPath = tempnam(sys_get_temp_dir(), 'snoopy-body-');
@@ -62,6 +63,15 @@ while [ "$#" -gt 0 ]; do
 		-o)
 			shift
 			body_file=$1
+			;;
+		# curl reads a request body named with a leading @ out of that
+		# file, so the record carries the bytes it was handed and not
+		# only the name of the file they came in.
+		@/*)
+			if [ -f "${1#@}" ]; then
+				cat "${1#@}" >> "$SNOOPY_TEST_ARGS"
+				printf '\n' >> "$SNOOPY_TEST_ARGS"
+			fi
 			;;
 	esac
 	shift
