@@ -152,8 +152,10 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 			}
 			else
 			{
-				self::expect(!function_exists('pcntl_fork') && !function_exists('posix_kill'),
-					'the parent cannot fork or signal through posix');
+				// PHP 7.4 with Xdebug can report a disabled pcntl function as present.
+				$disabled = array_map('trim', explode(',', ini_get('disable_functions')));
+				self::expect(array_diff(array('pcntl_fork', 'pcntl_waitpid', 'posix_kill'), $disabled) === array(),
+					'the parent disables its fork, wait and signal functions');
 				if($mode === 'queue')
 				{
 					$raw = "Status: 200 OK\r\n\r\n0\x00exact\x80";
