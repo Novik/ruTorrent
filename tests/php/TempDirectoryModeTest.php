@@ -6,9 +6,14 @@ require_once(__DIR__ . '/../../php/utility/fileutil.php');
 class TempDirectoryModeTest extends TestCase
 {
 	private $root;
+	private $umask;
 
+	// The fixtures mkdir() outside makeDirectory(), which masks nothing of
+	// its own, so what these cases read back is the mode the runner's umask
+	// allows. Choose one rather than inherit it.
 	public function setUp()
 	{
+		$this->umask = umask(0022);
 		$this->root = sys_get_temp_dir().'/rutorrent-temp-mode-'.getmypid();
 		@mkdir($this->root, 0700);
 	}
@@ -29,6 +34,7 @@ class TempDirectoryModeTest extends TestCase
 			}
 		}
 		@rmdir($this->root);
+		umask($this->umask);
 	}
 
 	private function mode($path)
