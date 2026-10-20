@@ -40,9 +40,10 @@ require_once( 'settings.php' );
 
 class Snoopy
 {
-	// $status after a body that could not be decoded, below 100 like the
-	// -100 of a read timeout, so callers that already treat a status under
-	// 100 as "nothing arrived" need no new case; the reason is in $error.
+	// $status when the client has no response to report: a request it refused
+	// to send, or a reply it could not take. Below 100 like the -100 of a read
+	// timeout, so callers that already treat a status under 100 as "nothing
+	// arrived" need no new case; the reason is in $error.
 	const RESPONSE_BODY_FAILED = -101;
 	const SOCKET_CONNECT_FAILED = -102;
 
