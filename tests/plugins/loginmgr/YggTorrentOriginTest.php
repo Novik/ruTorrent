@@ -80,6 +80,7 @@ class YggProbeData
     public function remove()
     {
         $this->removed++;
+        return true;
     }
 }
 
