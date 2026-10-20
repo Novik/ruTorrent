@@ -86,16 +86,23 @@ $cases = array(
         array(true, '200', false, '', '')),
     'an oversized response keeps its distinct refusal' => array('', "HTTP/1.0 200 OK\r\n\r\noversized", 0,
         array(false, -101, false, '', 'oversized-response-body')),
+    // Also pin body-read admission on a fresh client, independently of reuse cleanup.
+    'a timed out partial body is refused' => array("HTTP/1.0 200 OK\r\n\r\ncomp", 'lete', 1300000,
+        array(false, -100, true, '', ''), false),
+    'a fragmented body arriving before timeout is accepted' => array("HTTP/1.0 200 OK\r\n\r\ncomp", 'lete', 100000,
+        array(true, '200', false, 'complete', ''), false),
 );
 foreach ($cases as $name => $case) {
     try {
         $client = new Snoopy();
         $client->maxlength = 8;
-        $seed = snoopyTimeoutResponse($client, '', "HTTP/1.0 200 OK\r\n\r\nprevious", 0);
-        $seedExpected = array('fetched' => true, 'status' => '200', 'timed_out' => false,
-            'body' => 'previous', 'error' => '');
-        if ($seed !== $seedExpected)
-            throw new RuntimeException('The first response must seed a real successful body: ' . json_encode($seed));
+        if ($case[4] ?? true) {
+            $seed = snoopyTimeoutResponse($client, '', "HTTP/1.0 200 OK\r\n\r\nprevious", 0);
+            $seedExpected = array('fetched' => true, 'status' => '200', 'timed_out' => false,
+                'body' => 'previous', 'error' => '');
+            if ($seed !== $seedExpected)
+                throw new RuntimeException('The first response must seed a real successful body: ' . json_encode($seed));
+        }
         list($first, $late, $delay, $want) = $case;
         $seen = snoopyTimeoutResponse($client, $first, $late, $delay);
         $expected = array_combine(array('fetched', 'status', 'timed_out', 'body', 'error'), $want);
