@@ -49,6 +49,7 @@ class CachedEcho
 					file_put_contents($randName,$content);
 					passthru( $gzip." -".$phpGzipLevel." -c < ".$randName );
 					unlink($randName);
+					if($exit) exit;
 					return;
 				}
 			}
