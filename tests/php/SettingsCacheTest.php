@@ -139,4 +139,70 @@ class SettingsCacheTest extends TestCase
 			'With no alias map getCommand() falls back to the legacy spelling'
 		);
 	}
+
+	// The entry registerEventHook() stores for a hook, which is what
+	// unregisterEventHookPrim() compares against when removing it.
+	private function hookSubject($plugin, $level = 10)
+	{
+		return array('name' => $plugin, 'level' => $level);
+	}
+
+	/**
+	 * A hook is registered when a plugin is enabled and removed by its
+	 * done.php when it is disabled, and neither process is the one that runs
+	 * the hook: pushEvent() reads the list out of this cache on some later
+	 * request. So the $save argument, which unregisterEventHook() defaults to
+	 * true, is the whole of what a registration or a removal means.
+	 */
+	public function testRegisteringAHookWithSaveWritesItToTheCache()
+	{
+		$settings = $this->makeSettings(true);
+		$settings->registerEventHook('extratio', 'LabelChanged', 10, true);
+
+		$cached = $this->readCached();
+		$this->assertTrue(
+			$cached->hooks === array('LabelChanged' => array($this->hookSubject('extratio'))),
+			'A hook registered with $save is in the cache a later request reads: '
+			. json_encode($cached->hooks)
+		);
+	}
+
+	public function testUnregisteringAHookPersistsTheRemoval()
+	{
+		$settings = $this->makeSettings(true);
+		$settings->registerEventHook('extratio', 'LabelChanged', 10, true);
+		$this->assertTrue(
+			$this->readCached()->hooks !== array(),
+			'The hook is in the cache before it is removed'
+		);
+
+		$settings->unregisterEventHook($this->hookSubject('extratio'), 'LabelChanged');
+
+		$this->assertTrue($settings->hooks === array(), 'The removal happens in the object');
+		$cached = $this->readCached();
+		$this->assertTrue(
+			$cached->hooks === array(),
+			'and reaches the cache, so a later request no longer runs the hook: '
+			. json_encode($cached->hooks)
+		);
+	}
+
+	// A removal is not written for a settings object the cache may not hold,
+	// on the same terms as any other store(): the cache keeps the last object
+	// a live probe produced rather than taking a failed one's word.
+	public function testAFailedProbeDoesNotWriteItsHookRemoval()
+	{
+		$good = $this->makeSettings(true);
+		$good->registerEventHook('extratio', 'LabelChanged', 10, true);
+
+		$failed = $this->makeSettings(false);
+		$failed->registerEventHook('extratio', 'LabelChanged', 10, false);
+		$failed->unregisterEventHook($this->hookSubject('extratio'), 'LabelChanged');
+
+		$cached = $this->readCached();
+		$this->assertTrue(
+			$cached->hooks === array('LabelChanged' => array($this->hookSubject('extratio'))),
+			'An unprobed object does not remove a hook from the cache: ' . json_encode($cached->hooks)
+		);
+	}
 }
