@@ -39,6 +39,10 @@ $tests = array(
                 $client = new SnoopyInvalidURLClient();
                 $client->proxy_host = $client->proxy_port = '';
                 $client->proxy_proto = 'http';
+                // conf/config.php reaches this client through php/util.php,
+                // and the guard refuses the fixture host before the seed
+                // request is made.
+                $client->block_private = false;
                 try {
                     invalidURLAssert($client->fetch('http://fixture.test/ok'), 'A real parsed response seeds the client');
                     invalidURLAssert($client->results === 'ok' && (int)$client->status === 200, 'The seed response is successful');
@@ -61,6 +65,7 @@ $tests = array(
             $client = new SnoopyInvalidURLClient();
             $client->proxy_host = $client->proxy_port = '';
             $client->proxy_proto = 'http';
+            $client->block_private = false;
             try {
                 invalidURLAssert($client->fetchComplex($url . ':COOKIE:session=abc'), 'URL cookies must be stripped before URL validation');
                 invalidURLAssert($client->results === 'ok' && (int)$client->status === 200, 'The cookie request succeeds');
