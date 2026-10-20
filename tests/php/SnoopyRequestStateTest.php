@@ -236,6 +236,40 @@ $tests = array(
             rmdir($temporary);
         }
     },
+    // A request the client refuses before it sends anything still has to
+    // answer for itself. Callers reuse one client for a sequence of fetches
+    // and read $status and $results rather than the return value, so a refusal
+    // that leaves those alone hands back the last response that worked.
+    'a refused request discards the previous response' => function () use ($ok) {
+        statePeer(array($ok, $ok), function ($client, $port) {
+            $client->private_allowlist = array();
+            $refusals = array(
+                'a blocked private target' => array('url' => 'http://127.0.0.1:' . $port . '/blocked', 'block' => true),
+                'an unsupported protocol' => array('url' => 'ftp://first.test:' . $port . '/file', 'block' => false),
+            );
+            foreach ($refusals as $name => $case) {
+                $client->block_private = false;
+                stateAssert($client->fetch('http://first.test:' . $port . '/ok'), 'The seed request succeeds before ' . $name);
+                stateAssert($client->results === 'ok' && (int) $client->status === 200 && $client->headers !== array(),
+                    'The seed response is a complete success before ' . $name);
+                $connections = $client->connections;
+                $client->block_private = $case['block'];
+                stateAssert($client->fetch($case['url']) === false, $name . ' is refused');
+                stateAssert($client->connections === $connections, $name . ' opens no connection');
+                stateAssert($client->status === Snoopy::RESPONSE_BODY_FAILED, $name . ' replaces the earlier status');
+                stateAssert($client->results === '', $name . ' discards the earlier body');
+                stateAssert($client->headers === array() && $client->response_code === '',
+                    $name . ' discards the earlier headers');
+                stateAssert($client->_redirectaddr === false, $name . ' discards the earlier redirect');
+                stateAssert($client->error !== '', $name . ' states its own reason');
+            }
+            stateAssert(strpos($client->error, 'invalid-protocol') === 0 && strpos($client->error, 'ftp') !== false,
+                'The refused protocol stays readable in the reason');
+            return function ($requests) {
+                stateAssert(count($requests) === 2, 'Only the two seed requests reach the peer');
+            };
+        });
+    },
 );
 $failures = 0;
 foreach ($tests as $name => $test) {

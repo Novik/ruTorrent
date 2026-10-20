@@ -307,12 +307,7 @@ class Snoopy
 			$this->lastredirectaddr = '';
 		$parts = parse_url($URI);
 		if( !is_array($parts) || !isset($parts["scheme"]) || !isset($parts["host"]) )
-		{
-			$this->headers = array();
-			$this->response_code = "";
-			$this->_redirectaddr = false;
-			return($this->refuseResponseBody("invalid-url"));
-		}
+			return($this->refuseRequest("invalid-url"));
 		rTorrentSettings::get()->pushEvent( "HostConnect", array
 		(
 			"client" => &$this,
@@ -331,8 +326,9 @@ class Snoopy
 		$this->host = $parts["host"];
 		$this->_isproxy = (!empty($this->proxy_host) && !empty($this->proxy_port));
 		$this->_pinnedaddr = false;
+		// checkTarget() names in $error the rule that turned the host down.
 		if($this->block_private && ($parts["scheme"]=="http" || $parts["scheme"]=="https") && !$this->checkTarget($this->host))
-			return(false);
+			return($this->refuseRequest());
 		$ret = true;
 		switch($parts["scheme"])
 		{
@@ -364,9 +360,7 @@ class Snoopy
 			}
 			default:
 			{
-				// not a valid protocol
-				$this->error = 'Invalid protocol "'.$parts["scheme"].'"\n';
-				$ret = false;
+				$ret = $this->refuseRequest('invalid-protocol "'.$parts["scheme"].'"');
 				break;
 			}
 		}
@@ -550,6 +544,19 @@ class Snoopy
 	{
 		$value = $this->get_header( 'Last-Modified' );
 		return( $value ? strtotime($value) : false );
+	}
+
+	// A request refused before any reply arrives has to replace the whole
+	// response and not only its body: $status, $results, the headers and the
+	// redirect target otherwise still describe whatever the client last
+	// fetched, and a caller reusing one client reads those rather than the
+	// return value. Called without a $reason, the one in $error stands.
+	protected function refuseRequest($reason = null)
+	{
+		$this->headers = array();
+		$this->response_code = "";
+		$this->_redirectaddr = false;
+		return($this->refuseResponseBody($reason === null ? $this->error : $reason));
 	}
 
 	protected function refuseResponseBody($reason)
