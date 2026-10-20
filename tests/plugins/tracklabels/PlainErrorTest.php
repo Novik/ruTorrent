@@ -95,6 +95,8 @@ tracklabelsWithServer(function($address, $image) use (&$failures) {
             $type = strtolower($headers['content-type'] ?? '');
             if ($type !== ($valid ? 'image/png' : 'text/plain; charset=utf-8'))
                 throw new RuntimeException('Unexpected response MIME: ' . $type);
+            if (!$valid && ($headers['x-content-type-options'] ?? '') !== 'nosniff')
+                throw new RuntimeException('The refusal does not forbid sniffing');
             $expected = $valid ? $image : 'Invalid ' . $field . ': ' . $value;
             if ($body !== $expected)
                 throw new RuntimeException('The response bytes changed');
