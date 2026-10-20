@@ -90,12 +90,12 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 	/**
 	 * Forwarded, with the bytes stated rather than assumed.
 	 */
-	private function assertForwarded($decision, $absent, $present, $what)
+	private function assertForwarded($decision, $absent, $present, $what, $trusted = false)
 	{
 		$this->assertTrue($decision['action'] === 'send',
 			$what . ' is forwarded (action=' . $decision['action'] . ')');
-		$this->assertTrue($decision['trusted'] === false,
-			$what . ' is forwarded untrusted');
+		$this->assertTrue($decision['trusted'] === $trusted,
+			$what . ' is forwarded ' . ($trusted ? 'trusted' : 'untrusted'));
 		foreach((array)$absent as $bytes)
 			$this->assertTrue(strpos($decision['payload'], $bytes) === false,
 				$what . ' does not put ' . var_export($bytes, true) . ' on the wire');
@@ -121,7 +121,7 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 		$this->assertForwarded($decision,
 			'd.custom1.set=x;execute=cat,/etc/passwd',
 			'd.custom1.set="x;execute=cat","/etc/passwd"',
-			'a label carrying a second command');
+			'a label carrying a second command', true);
 	}
 
 	/**
@@ -138,7 +138,7 @@ class XMLRPCProxyCommandCarrierTest extends TestCase
 		$this->assertForwarded($decision,
 			'd.directory.set=/torrents1/a;d.directory.set=/var/www/html',
 			'd.directory.set="/torrents1/a;d.directory.set=/var/www/html"',
-			'a directory carrying a second directory setter');
+			'a directory carrying a second directory setter', true);
 	}
 
 	/**

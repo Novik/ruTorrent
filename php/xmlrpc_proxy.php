@@ -555,6 +555,14 @@ class XMLRPCProxy
 				}
 			}
 
+			// A batch whose members would each be sent trusted on their own
+			// goes on one trusted connection. Every other batch, mixed ones
+			// included, is forwarded untrusted below, as it always was.
+			$trusted = self::trustedSystemMulticall($xml, $mode, $safeParams,
+				$allowLocalPaths, $options);
+			if($trusted !== null)
+				return $trusted;
+
 			// What was judged is what is sent. Every command parameter the
 			// rebuild accepted goes out in its rebuilt spelling, where each
 			// argument is quoted and therefore stays one argument; the original
@@ -570,6 +578,149 @@ class XMLRPCProxy
 		// Unknown method — pass through as untrusted.
 		// rtorrent's own whitelist will allow/reject.
 		return self::forward($rawData, false, "untrusted: ".self::logValue($methodName));
+	}
+
+	/**
+	 * The batch on a trusted connection, or null to leave it to the untrusted
+	 * forward. From 0.16.9 rtorrent checks UNTRUSTED_CONNECTION at each member,
+	 * so calls that are trusted alone are refused one by one when they arrive
+	 * batched. Trust is given only to a batch in exactly the shape XML-RPC
+	 * defines whose every member, decided as a call of its own, is sent trusted
+	 * with all of its arguments. The batch is re-emitted from those decisions
+	 * with methodName first, because rtorrent reads the two fields by position.
+	 */
+	private static function trustedSystemMulticall($xml, $mode, $safeParams,
+		$allowLocalPaths, $options)
+	{
+		$data = self::systemMulticallData($xml);
+		if($data === null)
+			return null;
+
+		$members = '';
+		$count = 0;
+		foreach($data->value as $member)
+		{
+			$call = self::systemMemberCall($member);
+			if($call === null)
+				return null;
+			$decision = self::decide($call['xml'], $mode, $safeParams, $allowLocalPaths, $options);
+			if(($decision['action'] !== 'send') || !$decision['trusted'])
+				return null;
+			$checked = self::parseXml($decision['payload']);
+			if(($checked === false) || ((string)$checked->methodName !== $call['method']))
+				return null;
+			$values = '';
+			$emitted = 0;
+			if(isset($checked->params->param))
+				foreach($checked->params->param as $param)
+				{
+					if(!isset($param->value))
+						return null;
+					$values .= $param->value->asXML();
+					$emitted++;
+				}
+			// A load alone may strip a command it does not rebuild; a member
+			// that would lose one is not sent trusted.
+			if($emitted !== $call['params'])
+				return null;
+			$members .= '<value><struct><member><name>methodName</name><value><string>'
+				.htmlspecialchars($call['method'], ENT_NOQUOTES, 'UTF-8')
+				.'</string></value></member><member><name>params</name><value><array><data>'
+				.$values.'</data></array></value></member></struct></value>';
+			$count++;
+		}
+		if($count === 0)
+			return null;
+
+		return self::forward('<?xml version="1.0" encoding="UTF-8"?>' . "\n"
+			. '<methodCall><methodName>system.multicall</methodName><params><param><value><array><data>'
+			. $members . '</data></array></value></param></params></methodCall>',
+			true, 'trusted: system.multicall ('.$count.' members)');
+	}
+
+	/** Exact unqualified children; comments and formatting whitespace are harmless. */
+	private static function hasChildren($element, $names, $allowText = false)
+	{
+		$children = $element->xpath('./*');
+		$plain = $element->xpath('./*[namespace-uri() = ""]');
+		$attributes = $element->xpath('./@*');
+		if($children === false || $plain === false || $attributes === false ||
+			count($attributes) !== 0 || count($children) !== count($names) ||
+			count($plain) !== count($names) || (!$allowText && trim((string)$element) !== ''))
+			return false;
+		foreach($children as $index => $child)
+			if($child->getName() !== $names[$index])
+				return false;
+		return true;
+	}
+
+	/** The members of a system.multicall in exactly the shape XML-RPC defines, or null. */
+	private static function systemMulticallData($xml)
+	{
+		if($xml->getName() !== 'methodCall' || !self::hasChildren($xml, array('methodName', 'params')) ||
+			!self::hasChildren($xml->methodName, array(), true))
+			return null;
+		$node = $xml->params;
+		foreach(array('param', 'value', 'array', 'data') as $name)
+		{
+			if(!self::hasChildren($node, array($name)))
+				return null;
+			$node = $node->$name;
+		}
+		return self::hasChildren($node, array_fill(0, count($node->children()), 'value')) ? $node : null;
+	}
+
+	/**
+	 * A member as a call of its own, or null when its shape is ambiguous or it
+	 * is a nested batch. An implicit method name is kept as written: rtorrent
+	 * does not trim it.
+	 */
+	private static function systemMemberCall($member)
+	{
+		if(!self::hasChildren($member, array('struct')) ||
+			!self::hasChildren($member->struct, array('member', 'member')))
+			return null;
+		$name = null;
+		$params = null;
+		foreach($member->struct->member as $field)
+		{
+			if(!self::hasChildren($field, array('name', 'value')) ||
+				!self::hasChildren($field->name, array(), true))
+				return null;
+			$key = (string)$field->name;
+			if($key === 'methodName' && $name === null)
+			{
+				if(!self::hasChildren($field->value, array(), true) &&
+					(!self::hasChildren($field->value, array('string')) ||
+					!self::hasChildren($field->value->string, array(), true)))
+					return null;
+				$name = isset($field->value->string)
+					? (string)$field->value->string
+					: (string)$field->value;
+			}
+			else if($key === 'params' && $params === null &&
+				self::hasChildren($field->value, array('array')) &&
+				self::hasChildren($field->value->array, array('data')))
+			{
+				$params = $field->value->array->data;
+				if(!self::hasChildren($params, array_fill(0, count($params->children()), 'value')))
+					return null;
+			}
+			else
+				return null;
+		}
+		if($name === null || $name === '' || $params === null || $name === 'system.multicall')
+			return null;
+		$values = '';
+		$count = 0;
+		foreach($params->value as $value)
+		{
+			$values .= '<param>'.$value->asXML().'</param>';
+			$count++;
+		}
+		return array('method' => $name, 'params' => $count,
+			'xml' => '<methodCall><methodName>'.htmlspecialchars($name, ENT_NOQUOTES, 'UTF-8')
+				.'</methodName><params>'.$values.'</params></methodCall>');
 	}
 
 	/**
