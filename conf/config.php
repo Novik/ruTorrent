@@ -129,6 +129,10 @@
 	$enabledOrigins = array();		// List of enabled domains for CSRF check (only hostnames, without protocols, port etc.).
 						// If empty, then will retrieve domain from HTTP_HOST / HTTP_X_FORWARDED_HOST
 
+	// Absolute public application base, including a reverse proxy's path prefix, for feed links.
+	// A nonempty RU_PUBLIC_URL environment variable overrides this setting.
+	$publicURL = '';
+
 	// Load local deployment overrides if present
 	$configLocalPath = dirname(__FILE__)."/config.local.php";
 	if(is_file($configLocalPath) && is_readable($configLocalPath))

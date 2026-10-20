@@ -27,6 +27,17 @@ This project is released under the GPLv3 license, for more details, take a look 
   * After setting up the webserver `ruTorrent` itself needs to be configured. Instructions can be found in various articles in the [wiki](https://github.com/Novik/ruTorrent/wiki).
   * Keep `share/`, `conf/` and `tests/` out of what the web server will serve. `share/` holds the profile data — settings, stored torrents, and the tracker credentials the `loginmgr` plugin keeps — and it sits under the document root by default. Point `$profilePath` in `conf/config.php` at a directory outside the document root, such as `/var/lib/rutorrent`: that is the one measure nothing else has to be right for. Apache denies the three directories from the `.htaccess` file already in each of them; nginx and lighttpd do not read `.htaccess` and need the rules in [`nginx-example.conf`](nginx-example.conf) — written for the prefix the install is served under, and placed before the `.php` handler.
 
+## Public feed links behind a reverse proxy
+
+When a reverse proxy changes the application host or path prefix, set the full public application URL in `conf/config.local.php` so the `feeds` plugin generates working channel, image and download links:
+
+```php
+<?php
+$publicURL = 'https://example.org/torrents/';
+```
+
+A nonempty `RU_PUBLIC_URL` environment variable overrides this setting; an empty or unset variable permits the local value. Use an absolute HTTP(S) URL without credentials, query or fragment. Without an explicit setting, feed links use the request's host, scheme and actual script path. A proxy that rewrites that path needs the explicit public prefix; `X-Forwarded-Host` does not select it.
+
 ## Contributing
 
 Pull requests target **`master`**. There is no `develop` branch — it was retired,

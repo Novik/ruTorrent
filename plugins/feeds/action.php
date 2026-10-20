@@ -115,13 +115,19 @@ function sortByPubDate( $a, $b )
 }
 
 $mode = (isset($_REQUEST['mode'])) ? $_REQUEST['mode'] : 'all';
-$url = (empty($_SERVER['HTTPS']) ? "http" : "https")."://".$_SERVER['HTTP_HOST'].str_replace('/plugins/feeds/action.php','/',$_SERVER['PHP_SELF']);
+$url = Requests::publicBaseURL('/plugins/feeds/action.php');
+if($url === false)
+{
+	header('HTTP/1.0 500 Internal Server Error', true, 500);
+	die('Unable to determine the public feed URL. Configure RU_PUBLIC_URL or publicURL.');
+}
+$xmlURL = htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $server = explode(':',rTorrentSettings::get()->server);
 $ret = '<?xml version="1.0" encoding="UTF-8"?>'.
 	'<rss version="2.0"><channel><description>*** rTorrent '.
 	rTorrentSettings::get()->version.'/'.rTorrentSettings::get()->libVersion." - ".$server[0].' ***</description><link>'.
-	$url.'</link><title>'.$server[0].': '.$theUILang[$mode].'</title>'.
-	'<image><url>'.$url.'images/logo.png</url><link>'.$url.'</link><title>ruTorrent</title></image>';
+	$xmlURL.'</link><title>'.$server[0].': '.$theUILang[$mode].'</title>'.
+	'<image><url>'.$xmlURL.'images/logo.png</url><link>'.$xmlURL.'</link><title>ruTorrent</title></image>';
 
 $view = '';	// all, inactive
 switch($mode)
