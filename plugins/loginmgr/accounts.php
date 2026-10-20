@@ -409,6 +409,7 @@ class accountManager
 
 	public function set()
 	{
+		$previous = $this->accounts;
 		foreach( $this->accounts as $name=>$nfo )
 		{
 			if(isset($_REQUEST[$name."_enabled"]))
@@ -419,10 +420,17 @@ class accountManager
 				$this->accounts[$name]["password"] = self::asText($_REQUEST[$name."_password"]);
 			if(isset($_REQUEST[$name."_auto"]))
 				$this->accounts[$name]["auto"] = self::asNumber($_REQUEST[$name."_auto"]);
-			$this->forgetSession($name);
 		}
-		$this->store();
+		// A refused edit must leave the active credentials and sessions in place.
+		if(!$this->store())
+		{
+			$this->accounts = $previous;
+			return(false);
+		}
+		foreach(array_keys($this->accounts) as $name)
+			$this->forgetSession($name);
 		$this->setHandlers();
+		return(true);
 	}
 
 	// The cookies and referer held for this account. Whatever was just written
