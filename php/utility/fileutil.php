@@ -250,7 +250,8 @@ class FileUtil
 		$oldMask = umask(0);
 		foreach(is_array($dirs) ? $dirs : array($dirs) as $dir)
 		{
-			// mkdir's EEXIST path cannot remode a directory another request just sealed.
+			// A directory that is already there keeps the mode it has: only a
+			// missing one is created, and with the mode the caller asked for.
 			if($preserveExisting)
 			{
 				if(!is_dir($dir))
