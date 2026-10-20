@@ -366,7 +366,8 @@ class rCache
 		if(is_null($name))
 			return(false);
 		$lockName = $name.'.lock';
-		// Delete cache data and its sidecar lock while holding the same key lock used by writers.
+		// Writers may have opened this sidecar before remove() acquired it.
+		// Keep its inode so those writers and later ones still share one lock.
 		$lock = fopen( $lockName, "c" );
 		if($lock!==false)
 		{
@@ -376,12 +377,13 @@ class rCache
 				$ret = @unlink($name);
 				flock( $lock, LOCK_UN );
 				fclose( $lock );
-				@unlink($lockName);
 				return($ret);
 			}
 			fclose($lock);
 		}
-		return(@unlink($name));
+		// Deletion needs the writer lock too; a failed lock is not permission
+		// to unlink an entry that another process may be publishing.
+		return(false);
 	}
 	// Null when the key names anything other than a file in this directory.
 	// Every caller treats that as a miss rather than reaching for the path.
