@@ -6,6 +6,13 @@
 // require order. A minimal local runner keeps the real classes intact.
 require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 
+// php/util.php loads conf/config.php, so the configuration of the install the
+// suite is run from decides what a plain Snoopy starts out as. The cases below
+// measure the class, and the ones about the private-network guard turn it on
+// for the client they test, so hold it off here rather than inherit it.
+$GLOBALS['httpBlockPrivateNetworks'] = false;
+$GLOBALS['httpPrivateNetworkAllowlist'] = array();
+
 function snoopyAssertTrue($condition, $message)
 {
     if (!$condition) {
@@ -262,6 +269,7 @@ PHP
 <?php
 require_once($argv[1]);
 $client = new Snoopy();
+$client->block_private = false;
 $client->read_timeout = 10;
 if ($argv[3] !== '') {
     $client->maxlength = (int) $argv[3];
@@ -1143,6 +1151,7 @@ $tests = array(
 require_once($argv[1]);
 $pathToExternals['curl'] = $argv[2];
 $client = new Snoopy();
+$client->block_private = false;
 $client->maxlength = 1048576;
 $fetched = $client->fetch('https://tracker.test/huge');
 echo json_encode(array(

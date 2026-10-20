@@ -46,6 +46,11 @@ PHP;
         $client->proxy_host = $client->proxy_port = '';
         $client->proxy_proto = 'http';
         $client->IP = null;
+        // php/util.php loads conf/config.php, so the configuration of the
+        // install the suite is run from reaches this client. With the
+        // private-network guard on, fetch() refuses the loopback peer before
+        // connecting and the failure reads as the peer's.
+        $client->block_private = false;
         $client->read_timeout = 3;
         $url = 'http://' . $address . '/body';
         if ($curl) {
