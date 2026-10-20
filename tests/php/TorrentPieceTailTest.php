@@ -4,9 +4,9 @@ require_once(__DIR__ . '/TestCase.php');
 require_once(__DIR__ . '/../../php/Torrent.php');
 
 /**
- * A single-file torrent's info dictionary has to carry one SHA-1 per piece:
- * ceil(length / piece length) of them, the last one over a short tail. The
- * length key and the pieces key are written from the same file in the same
+ * A torrent's info dictionary has to carry one SHA-1 per piece:
+ * ceil(total length / piece length) of them, the last one over a short tail. The
+ * length(s) and the pieces key are written from the same files in the same
  * call, so the two disagreeing is not a cosmetic defect -- a client that is
  * given more data than the hashes account for has no hash to check the last
  * piece against, and rejects the metainfo.
@@ -146,25 +146,68 @@ class TorrentPieceTailTest extends TestCase
 			$what . ': it names the file: ' . json_encode($info['name']));
 		$this->assertTrue($info['length'] === strlen($content),
 			$what . ': its length is the file\'s: ' . json_encode($info['length']));
-		$this->assertTrue($info['piece length'] === (self::PIECE_KB * 1024),
-			$what . ': its piece length is the one asked for: ' . json_encode($info['piece length']));
-
-		$pieceLength = $info['piece length'];
-		$expected = (int)ceil($info['length'] / $pieceLength);
-		$this->assertTrue((strlen($info['pieces']) % 20) === 0,
-			$what . ': pieces is a whole number of SHA-1 hashes: ' . strlen($info['pieces']) . ' bytes');
-		$this->assertTrue(strlen($info['pieces']) === ($expected * 20),
-			$what . ': pieces holds ' . (strlen($info['pieces']) / 20) . ' hashes, and '
-			. $info['length'] . ' bytes in pieces of ' . $pieceLength . ' need ' . $expected);
-
 		// file_get_contents, not a read loop: the bytes each hash is checked
 		// against must not be assembled the way the code under test does it.
 		$bytes = file_get_contents($path);
 		$this->assertTrue($bytes === $content, $what . ': the fixture reads back as it was written');
+		$this->assertPiecesMatch($what, $info, $bytes);
+	}
+
+	private function assertPiecesMatch($what, $info, $bytes)
+	{
+		$this->assertTrue($info['piece length'] === (self::PIECE_KB * 1024),
+			$what . ': its piece length is the one asked for: ' . json_encode($info['piece length']));
+		$pieceLength = $info['piece length'];
+		$expected = (int)ceil(strlen($bytes) / $pieceLength);
+		$this->assertTrue((strlen($info['pieces']) % 20) === 0,
+			$what . ': pieces is a whole number of SHA-1 hashes: ' . strlen($info['pieces']) . ' bytes');
+		$this->assertTrue(strlen($info['pieces']) === ($expected * 20),
+			$what . ': pieces holds ' . (strlen($info['pieces']) / 20) . ' hashes, and '
+			. strlen($bytes) . ' bytes in pieces of ' . $pieceLength . ' need ' . $expected);
 		for ($piece = 0; $piece < $expected; $piece++) {
 			$this->assertTrue(substr($info['pieces'], $piece * 20, 20)
 					=== sha1(substr($bytes, $piece * $pieceLength, $pieceLength), true),
 				$what . ': hash ' . $piece . ' is the SHA-1 of piece ' . $piece);
+		}
+	}
+
+	/** File-list and folder inputs share the same concatenated piece stream. */
+	private function assertFilesAreHashedWhole($what, $contents)
+	{
+		$directory = $this->base . '/files';
+		mkdir($directory, 0700);
+		$paths = array();
+		try {
+			foreach ($contents as $index => $content) {
+				$path = $directory . '/part-' . sprintf('%03d', $index) . '.data';
+				$this->assertTrue(file_put_contents($path, $content) === strlen($content),
+					$what . ': file ' . $index . ' is written whole');
+				$paths[] = $path;
+			}
+			foreach (array('file list' => array_reverse($paths), 'folder' => $directory) as $mode => $input) {
+				$label = $what . ' (' . $mode . ')';
+				$torrent = new Torrent($input, array(), self::PIECE_KB);
+				$this->assertTrue($torrent->errors() === false, $label . ': the torrent is built without errors');
+				$info = $this->metainfo((string)$torrent, $label);
+				$this->assertTrue(isset($info['files'], $info['name'], $info['piece length'], $info['pieces'])
+					&& !isset($info['length']), $label . ': it is multi-file metainfo');
+				$this->assertTrue($info['name'] === basename($directory), $label . ': it names the shared directory');
+				$this->assertTrue(count($info['files']) === count($contents), $label . ': every file is listed');
+				$bytes = '';
+				foreach ($info['files'] as $index => $file) {
+					$this->assertTrue($file['path'] === array(basename($paths[$index])),
+						$label . ': file ' . $index . ' has the expected relative path and order');
+					$this->assertTrue($file['length'] === strlen($contents[$index]),
+						$label . ': file ' . $index . ' has its complete length');
+					$content = file_get_contents($directory . '/' . $file['path'][0]);
+					$this->assertTrue($content === $contents[$index], $label . ': file ' . $index . ' reads back whole');
+					$bytes .= $content;
+				}
+				$this->assertPiecesMatch($label, $info, $bytes);
+			}
+		} finally {
+			foreach ($paths as $path) unlink($path);
+			rmdir($directory);
 		}
 	}
 
@@ -196,6 +239,36 @@ class TorrentPieceTailTest extends TestCase
 		$this->assertFileIsHashedWhole('a file of one piece exactly', str_repeat('x', $piece));
 		$this->assertFileIsHashedWhole('a file of three pieces exactly', str_repeat('x', 3 * $piece));
 		$this->assertFileIsHashedWhole('a file of one byte that is not zero', '1');
+	}
+
+	public function testMultipleFileInputsKeepAZeroTail()
+	{
+		$piece = self::PIECE_KB * 1024;
+		foreach (array(
+			'one file of one zero byte' => array('0'),
+			'a zero after a complete file' => array(str_repeat('x', $piece), '0'),
+			'a piece crosses files before a zero tail' => array(str_repeat('x', $piece - 1), 'x0'),
+			'two pieces cross three files before a zero tail' => array(str_repeat('x', 2 * $piece - 1), 'x', '0'),
+			'a zero between empty files' => array('', '0', ''),
+		) as $what => $contents) {
+			$this->assertFilesAreHashedWhole($what, $contents);
+		}
+	}
+
+	public function testMultipleFileInputsKeepOrdinaryAndEmptyTails()
+	{
+		$piece = self::PIECE_KB * 1024;
+		foreach (array(
+			'one file of one nonzero byte' => array('1'),
+			'a nonzero after a complete file' => array(str_repeat('x', $piece), '1'),
+			'an exact piece crosses files' => array(str_repeat('x', $piece - 1), 'x'),
+			'a longer tail follows a file boundary' => array(str_repeat('x', $piece - 2), 'x0123'),
+			'an empty file follows an exact piece' => array(str_repeat('x', $piece), ''),
+			'only empty files' => array('', ''),
+			'a complete piece of zero characters' => array(str_repeat('0', $piece)),
+		) as $what => $contents) {
+			$this->assertFilesAreHashedWhole($what, $contents);
+		}
 	}
 
 	/** The bencode reader above refuses what it should, so its acceptance means something. */
