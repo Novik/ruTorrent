@@ -144,3 +144,4 @@ class rDiskSpace
         {
                 return $this->disks;
         }
+}
