@@ -292,6 +292,46 @@ $tests = array(
             };
         });
     },
+    // The cookie a redirect sets reaches the hop that redirect names, which
+    // is the one thing $passcookies is for.
+    'a cookie set on a followed redirect reaches the next hop' => function () use ($ok) {
+        $handover = array('wire' => "HTTP/1.0 302 Found\r\nSet-Cookie: session=abc; path=/\r\n"
+            . "Location: http://first.test:{PORT}/next\r\n\r\n");
+        statePeer(array($handover, $ok), function ($client, $port) {
+            stateAssert($client->fetch('http://first.test:' . $port . '/start') && $client->results === 'ok',
+                'The redirect is followed to its answer');
+            return function ($requests) {
+                stateAssert(count($requests) === 2, 'The chain is two requests long');
+                stateAssert(stateHeader($requests[1], 'Cookie') === array('session=abc'),
+                    'The followed hop carries the cookie its redirect set');
+            };
+        });
+    },
+    // A reply whose body the client will not take is not a response. Nothing
+    // of it answers for the request it arrived on, and nothing of it is left
+    // behind for a caller's own setcookies() to read.
+    'a reply the client refuses leaves nothing of itself' => function () use ($ok) {
+        $undecodable = array('wire' => "HTTP/1.0 302 Found\r\nSet-Cookie: stale=yes; path=/\r\n"
+            . "Location: http://first.test:{PORT}/next\r\nContent-Encoding: gzip\r\n\r\nnotgzipdata-notgzipdata");
+        statePeer(array($ok, $undecodable, $ok), function ($client, $port) {
+            stateAssert($client->fetch('http://first.test:' . $port . '/ok') && $client->results === 'ok',
+                'The seed request succeeds');
+            stateAssert($client->fetch('http://first.test:' . $port . '/start') === false
+                && $client->status === Snoopy::RESPONSE_BODY_FAILED, 'The undecodable reply fails the request');
+            stateAssert($client->results === '' && $client->headers === array() && $client->response_code === '',
+                'The refused reply reports no response');
+            stateAssert($client->_redirectaddr === false, 'The refused reply reports no redirect');
+            $client->setcookies();
+            stateAssert($client->cookies === array(), 'A refused reply is no source of cookies');
+            stateAssert($client->fetch('http://second.test:' . $port . '/file') && $client->results === 'ok',
+                'The next independent request succeeds');
+            return function ($requests) {
+                stateAssert(count($requests) === 3, 'All three requests reach the peer');
+                stateAssert(stateHeader($requests[2], 'Cookie') === array(),
+                    'No cookie from the refused reply reaches the wire');
+            };
+        });
+    },
 );
 $failures = 0;
 foreach ($tests as $name => $test) {

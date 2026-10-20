@@ -386,6 +386,10 @@ class Snoopy
 				/* url was redirected, check if we've hit the max depth */
 				if($this->maxredirs > $this->_redirectdepth)
 				{
+					// The response naming this redirect is the only thing the
+					// next hop may take a cookie from, and it is complete here.
+					if($this->passcookies)
+						$this->setcookies();
 					$this->_redirectdepth++;
 					$this->lastredirectaddr=$this->_redirectaddr;
 					if($this->redirectLeavesOrigin($parts,$this->_redirectaddr))
@@ -553,25 +557,30 @@ class Snoopy
 		return( $value ? strtotime($value) : false );
 	}
 
-	// A request refused before any reply arrives has to replace the whole
-	// response and not only its body: $status, $results, the headers and the
-	// redirect target otherwise still describe whatever the client last
-	// fetched, and a caller reusing one client reads those rather than the
-	// return value. Called without a $reason, the one in $error stands.
+	// A refused request has to replace the whole response and not only its
+	// body: $status, $results, the headers and the redirect target otherwise
+	// still describe whatever the client last fetched, and a caller reusing
+	// one client reads those rather than the return value. Called without a
+	// $reason, the one in $error stands.
 	protected function refuseRequest($reason = null)
+	{
+		$this->discardResponse();
+		$this->status = self::RESPONSE_BODY_FAILED;
+		if($reason !== null)
+			$this->error = $reason;
+		return false;
+	}
+
+	// A reply the client could not take is not a response: none of it answers
+	// for the request it arrived on, and none of it is a source of cookies for
+	// the request after that one. $status is left to the caller, which says in
+	// its own terms what did not arrive.
+	protected function discardResponse()
 	{
 		$this->headers = array();
 		$this->response_code = "";
-		$this->_redirectaddr = false;
-		return($this->refuseResponseBody($reason === null ? $this->error : $reason));
-	}
-
-	protected function refuseResponseBody($reason)
-	{
-		$this->status = self::RESPONSE_BODY_FAILED;
-		$this->error = $reason;
 		$this->results = "";
-		return false;
+		$this->_redirectaddr = false;
 	}
 
 	// $maxlength as a byte count, which is what both paths bound against.
@@ -629,8 +638,7 @@ class Snoopy
 
 	function _httprequest($url,$fp,$URI,$http_method,$content_type="",$body="")
 	{
-		if($this->passcookies && $this->_redirectaddr)
-			$this->setcookies();
+		$this->discardResponse();
 		if(empty($url))
 			$url = "/";
 		$headers = $http_method." ".$url." ".$this->_httpversion."\r\n";
@@ -674,16 +682,14 @@ class Snoopy
 			stream_set_timeout($fp, $this->read_timeout);
 		$this->timed_out = false;
 		fwrite($fp,$headers.$body,strlen($headers.$body));
-		$this->_redirectaddr = false;
-		$this->headers = array();
 		$is_gzipped = false;
 
 		while(($currentHeader = fgets($fp,$this->_maxlinelen)) !== false)
 		{
 			if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 			{
+				$this->discardResponse();
 				$this->status=-100;
-				$this->results = "";
 				return false;
 			}
 
@@ -735,8 +741,8 @@ class Snoopy
 		// Check before another read can clear the stream's timeout flag.
 		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 		{
+			$this->discardResponse();
 			$this->status=-100;
-			$this->results = "";
 			return false;
 		}
 
@@ -750,8 +756,8 @@ class Snoopy
 		}
 		if ($this->read_timeout > 0 && $this->_check_timeout($fp))
 		{
+			$this->discardResponse();
 			$this->status=-100;
-			$this->results = "";
 			return false;
 		}
 
@@ -761,14 +767,14 @@ class Snoopy
 		// to tell a cut-off document from a whole one, so it is refused on the
 		// same terms as a body that inflates past the bound.
 		if( strlen($results) > $limit )
-			return $this->refuseResponseBody('oversized-response-body');
+			return $this->refuseRequest('oversized-response-body');
 
 		// gunzip
 		if ( $is_gzipped )
 		{
 			$results = $this->decodeGzipBody($results);
 			if($results === false)
-				return $this->refuseResponseBody('invalid-or-oversized-gzip');
+				return $this->refuseRequest('invalid-or-oversized-gzip');
 		}
 
 		$this->results = $results;
@@ -777,8 +783,7 @@ class Snoopy
 
 	function _httpsrequest($url,$content_type="",$body="",$http_method="GET")
 	{
-		if($this->passcookies && $this->_redirectaddr)
-			$this->setcookies();
+		$this->discardResponse();
 		$headers = array();
 		if(!empty($this->agent))
 			$headers[] = "User-Agent: ".$this->agent;
@@ -851,11 +856,7 @@ class Snoopy
 			$cmdline_params .= " -k";
 		$cmdline_params .= " -s ";
 		exec(escapeshellarg(Utility::getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
-		$this->_redirectaddr = false;
-		$this->headers = array();
 		$this->status = $return;
-		$this->response_code = "";
-		$this->results = "";
 		$is_gzipped = false;
 		if($return)
 		{
@@ -942,7 +943,7 @@ class Snoopy
 			{
 				@unlink($headerfile);
 				@unlink($contfile);
-				return $this->refuseResponseBody('oversized-response-body');
+				return $this->refuseRequest('oversized-response-body');
 			}
 			// gunzip
 			if ( $is_gzipped )
@@ -952,7 +953,7 @@ class Snoopy
 				{
 					@unlink($headerfile);
 					@unlink($contfile);
-					return $this->refuseResponseBody('invalid-or-oversized-gzip');
+					return $this->refuseRequest('invalid-or-oversized-gzip');
 				}
 			}
 			$this->results = $results;
