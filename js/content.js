@@ -47,21 +47,42 @@ function makeContent() {
 		},
 	});
 
+	// Collect the rendered noty calls, as the mobile UI does. A refusal or
+	// unreadable browser error page has no results; show a failure and keep
+	// the input for correction. Clear it only after a confirmed success.
+	var addTorrentFinished = function(frame, input, button, isEmpty) {
+		var d = null;
+		try { d = frame.contentDocument || frame.contentWindow.document; } catch(e) {}
+		// Inserting the frame also loads its initial blank page.
+		if(d && (d.location.href == "about:blank"))
+			return;
+		var results = [];
+		var collect = function(text, kind) {
+			results.push({ text: String(text), kind: String(kind) });
+		};
+		var answer = (d && d.body) ? (d.body.textContent || d.body.innerText || "") : "";
+		String(answer).split("\n").forEach(function(line) {
+			line = line.trim();
+			if(line.indexOf("noty(") === 0)
+				try { (new Function("noty", "theUILang", line))(collect, theUILang); } catch(e) {}
+		});
+		if(!results.length)
+			results.push({ text: theUILang.addTorrentFailed, kind: "error" });
+		var added = false;
+		results.forEach(function(result) {
+			noty(result.text, result.kind);
+			added = added || (result.kind == "success");
+		});
+		if(added)
+			$(input).val("");
+		$(button).prop("disabled", isEmpty());
+	};
 	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function() {
-		$("#torrent_file").val("");
-		$("#add_button").prop("disabled",true);
-		var d = this.contentDocument;
-		if (d && (d.location.href != "about:blank")) {
-			try { var txt = d.body.textContent ? d.body.textContent : d.body.innerText; eval(txt); } catch(e) {}
-		}
+		addTorrentFinished(this, "#torrent_file", "#add_button",
+			() => !$$("torrent_file").files || ($$("torrent_file").files.length === 0));
 	}));
 	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function() {
-		$("#url").val("");
-		var d = this.contentDocument;
-		if (d && d.location.href != "about:blank")
-			try {
-				eval(d.body.textContent ? d.body.textContent : d.body.innerText);
-			} catch(e) {}
+		addTorrentFinished(this, "#url", "#add_url", () => $("#url").val().trim() === "");
 	}));
 
 	const paddContent = $("<div>").addClass("cont").append(
