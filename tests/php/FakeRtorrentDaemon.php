@@ -19,7 +19,8 @@
 class FakeRtorrentDaemon
 {
 	private $socket;
-	private $pid;
+	private $pid = 0;
+	private $process;
 	private $port;
 	private $logFile;
 	private $bodyLogFile;
@@ -65,38 +66,108 @@ class FakeRtorrentDaemon
 	/**
 	 * $replies is a list, one per request: each entry is the list of values
 	 * the daemon answers that request with, self::fault(...) or
-	 * self::raw(...).
+	 * self::raw(...), self::paced(...), or null to close without a reply.
 	 *
-	 * It may instead be a Closure taking the request body and returning one
-	 * of those, for a caller whose own next request depends on the answer to
+	 * It may instead be a Closure taking the request body and returning one of
+	 * those, for a caller whose own next request depends on the answer to
 	 * this one -- rTorrentSettings::obtain() is seven round trips and chooses
 	 * several of them from what it has been told so far. Such a daemon
 	 * answers for as long as it is asked rather than for a fixed count.
+	 * Serializable plans run through proc_open(); a Closure retains the optional
+	 * pcntl path. A serializable responder object instead receives the body and
+	 * method names. $replyClassFiles must define its test-owned class before the
+	 * worker unserializes it.
 	 */
-	public function __construct($replies, $logFile)
+	public function __construct($replies, $logFile, $worker = false, $replyClassFiles = array())
 	{
 		$this->logFile = $logFile;
-		// The method log answers "was this called"; a shape test also has to
-		// ask "carrying what", and the parameters are only in the body. Kept
-		// in a second file so calls() stays a plain list of names.
+		// Keep bodies separate so calls() remains a plain method-name list.
 		$this->bodyLogFile = $logFile . '.bodies';
+		if($worker)
+		{
+			$this->listen();
+			fwrite(STDOUT, $this->port . "\n");
+			fflush(STDOUT);
+			$this->serve($replies);
+			return;
+		}
 		@unlink($this->logFile);
 		@unlink($this->bodyLogFile);
-		$this->socket = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
-		if ($this->socket === false) {
-			throw new RuntimeException('cannot listen: ' . $errstr);
+		if($replies instanceof Closure)
+		{
+			if(!function_exists('pcntl_fork') || !function_exists('pcntl_waitpid')
+				|| !function_exists('posix_kill'))
+				throw new RuntimeException('a closure reply requires pcntl and posix; use a serializable reply plan');
+			$this->listen();
+			$this->pid = pcntl_fork();
+			if($this->pid === -1)
+			{
+				fclose($this->socket);
+				throw new RuntimeException('cannot fork a daemon');
+			}
+			if($this->pid === 0)
+			{
+				$this->serve($replies);
+				exit(0);
+			}
+			return;
 		}
+		$this->startProcess($replies, $replyClassFiles);
+	}
+
+	private function listen()
+	{
+		$this->socket = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
+		if($this->socket === false)
+			throw new RuntimeException('cannot listen: ' . $errstr);
 		$name = stream_socket_get_name($this->socket, false);
 		$this->port = (int)substr($name, strrpos($name, ':') + 1);
+	}
 
-		$this->pid = pcntl_fork();
-		if ($this->pid === -1) {
-			throw new RuntimeException('cannot fork a daemon');
+	private function startProcess($replies, $replyClassFiles)
+	{
+		$source = 'require ' . var_export(__FILE__, true) . ';';
+		// Test-owned serializable responders must be defined before the
+		// worker unserializes its plan, also when pcntl is unavailable.
+		foreach($replyClassFiles as $file)
+			$source .= 'require_once '.var_export($file, true).';';
+		$source .= 'FakeRtorrentDaemon::runWorker();';
+		// An argv command owns the PHP process directly, without a shell to orphan it.
+		$command = array(PHP_BINARY, '-d', 'display_errors=stderr', '-r', $source);
+		$plan = serialize(array('replies' => $replies, 'logFile' => $this->logFile));
+		$this->process = proc_open($command, array(
+			0 => array('pipe', 'r'),
+			1 => array('pipe', 'w'),
+			2 => array('file', $this->logFile . '.server.err', 'a'),
+		), $pipes, dirname($this->logFile));
+		if(!is_resource($this->process))
+			throw new RuntimeException('cannot start a daemon process');
+		$sent = 0;
+		while($sent < strlen($plan))
+		{
+			$written = @fwrite($pipes[0], substr($plan, $sent));
+			if($written === false || $written === 0) break;
+			$sent += $written;
 		}
-		if ($this->pid === 0) {
-			$this->serve($replies);
-			exit(0);
+		fclose($pipes[0]);
+		stream_set_timeout($pipes[1], 10);
+		$ready = ($sent === strlen($plan)) ? fgets($pipes[1]) : false;
+		fclose($pipes[1]);
+		if(!is_string($ready) || !preg_match('/^[1-9][0-9]*\n$/D', $ready))
+		{
+			$this->stop();
+			throw new RuntimeException('fake daemon process did not announce a port: '
+				. @file_get_contents($this->logFile . '.server.err'));
 		}
+		$this->port = (int)$ready;
+	}
+
+	public static function runWorker()
+	{
+		$plan = @unserialize(stream_get_contents(STDIN));
+		if(!is_array($plan) || !array_key_exists('replies', $plan) || !isset($plan['logFile']))
+			throw new RuntimeException('invalid fake daemon reply plan');
+		new self($plan['replies'], $plan['logFile'], true);
 	}
 
 	public function port()
@@ -135,36 +206,39 @@ class FakeRtorrentDaemon
 	public function stop()
 	{
 		if ($this->pid > 0) {
-			// The child exits on its own when the replies run out; this is the
-			// backstop for a test that sent fewer requests than that.
 			posix_kill($this->pid, SIGTERM);
 			pcntl_waitpid($this->pid, $status);
 			$this->pid = 0;
 		}
-		if (is_resource($this->socket)) {
-			@fclose($this->socket);
+		if (is_resource($this->process)) {
+			$status = proc_get_status($this->process);
+			if($status['running']) @proc_terminate($this->process);
+			@proc_close($this->process);
+			$this->process = null;
 		}
+		if (is_resource($this->socket)) @fclose($this->socket);
 	}
 
 	private function serve($replies)
 	{
 		@fclose(STDOUT);
-		$responder = ($replies instanceof Closure) ? $replies : null;
-		$queue = ($responder === null) ? $replies : array();
-		while (($responder !== null) || (count($queue) > 0)) {
+		$dynamic = is_callable($replies);
+		for ($index = 0; $dynamic || $index < count($replies); $index++) {
 			$client = @stream_socket_accept($this->socket, 10);
 			if ($client === false) {
 				break;
 			}
 			$body = $this->readRequest($client);
 			file_put_contents($this->bodyLogFile, $body . "\x00--REQ--\x00", FILE_APPEND);
-			foreach ($this->methodNames($body) as $method) {
+			$methods = $this->methodNames($body);
+			foreach ($methods as $method) {
 				file_put_contents($this->logFile, $method . "\n", FILE_APPEND);
 			}
-			$values = ($responder === null) ? array_shift($queue) : $responder($body);
+			$values = $dynamic ? $replies($body, $methods) : $replies[$index];
 			if (isset($values[self::PACED])) {
 				$this->writePaced($client, $values[self::PACED]);
-			} else {
+			} elseif ($values !== null) {
+				// A null plan deliberately drops the reply after recording the call.
 				@fwrite($client, $this->reply($values));
 			}
 			@fclose($client);
