@@ -344,6 +344,10 @@ class accountManager
 		return($cache->set($this));
 	}
 
+	// True when the discovered list is durable. A refused write leaves that
+	// list standing for this request only, so the scheduled job is left
+	// alone as well: it would otherwise describe accounts that no later
+	// request can read.
 	public function obtain( $dir = '../plugins/loginmgr/accounts' )
 	{
 		$oldAccounts = $this->accounts;
@@ -369,8 +373,13 @@ class accountManager
 			closedir($handle);
 	        }
 		ksort($this->accounts);
-		$this->store();
+		if(!$this->store())
+		{
+			FileUtil::toLog('loginmgr: the discovered account list could not be saved.');
+			return(false);
+		}
 		$this->setHandlers();
+		return(true);
 	}
 
 	// A stored scalar is a flag, a number or a text, and nothing else is kept.

@@ -5,7 +5,15 @@ $em = accountManager::load();
 if($em===false)
 {
 	$em = new accountManager();
-	$em->obtain("./accounts");
+	// A profile with no stored list is built from the accounts directory and
+	// written. Answering a settings request from a list that could not be
+	// written offers settings the next request will not find.
+	if(!$em->obtain("./accounts"))
+	{
+		FileUtil::toLog('loginmgr: account-discovery-failed');
+		http_response_code(500);
+		CachedEcho::send('Account settings could not be read.','text/plain');
+	}
 }
 
 if(isset($_REQUEST['mode']))
