@@ -150,7 +150,13 @@ class UnconfirmedEraseTest extends TestCase
 			. ' $__s = $__r->newInstanceWithoutConstructor();'
 			. ' $__s->iVersion = 0x904; $__s->aliases = array(); $__s->plugins = array();'
 			. ' $__s->directory = ' . var_export($this->base, true) . '; $__s->linkExist = true;'
-			. ' $__p = $__r->getProperty("theSettings"); $__p->setAccessible(true);'
+			. ' $__p = $__r->getProperty("theSettings");'
+			// Before 8.1 a private static property cannot be written through
+			// reflection without lifting its visibility first; from 8.1 the call
+			// has no effect, and on 8.5 its deprecation notice would land in the
+			// driver output the cases compare. The driver runs under PHP_BINARY,
+			// so this process's version is the driver's.
+			. (PHP_VERSION_ID < 80100 ? ' $__p->setAccessible(true);' : '')
 			. ' $__p->setValue(null, $__s);' . "\n";
 	}
 
