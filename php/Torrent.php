@@ -606,12 +606,12 @@ class Torrent
 	 */
 	private function files( $files, $piece_length )
 	{
-		if(!$this->basedir)
+		if(is_null( $this->basedir ))
         		$files  = array_map( 'realpath', $files );
 
 		usort( $files, array($this,'sortNames') );
 
-		if($this->basedir)
+		if(!is_null( $this->basedir ))
 			$path   = explode( DIRECTORY_SEPARATOR, $this->basedir );
 		else
 		        $path   = explode( DIRECTORY_SEPARATOR, dirname( realpath( current( $files ) ) ) );
