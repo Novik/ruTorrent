@@ -4,23 +4,28 @@ eval( FileUtil::getPluginConf( $plugin["name"] ) );
 
 if( is_null($partitionDirectory) )
 {
-	// If we run locally && we the download directory seems to exists
-	if ( User::isLocalMode() && rTorrentSettings::get()->linkExist && file_exists(rTorrentSettings::get()->directory) )
-	{
-		$partitionDirectory = rTorrentSettings::get()->directory; // Then we can show the disk space of the download directory
-	}
-	else
-	{
-		$partitionDirectory = &$topDirectory; // Else, we show $topDirectory by default as fallback
-	}
+        // If we run locally && we the download directory seems to exists
+        if ( User::isLocalMode() && rTorrentSettings::get()->linkExist && file_exists(rTorrentSettings::get()->directory) )
+        {
+                $partitionDirectory = rTorrentSettings::get()->directory; // Then we can show the disk space of the download directory
+        }
+        else
+        {
+                $partitionDirectory = &$topDirectory; // Else, we show $topDirectory by default as fallback
+        }
 }
+$checkDirectory = $partitionDirectory;
+if (is_array($partitionDirectory))
+        $checkDirectory = reset($partitionDirectory);
 
 if(!function_exists('disk_total_space') || !function_exists('disk_free_space') ||
-	(disk_total_space($partitionDirectory)===false) || (disk_free_space($partitionDirectory)===false))
-	$jResult .= "plugin.disable();";
+        (disk_total_space($checkDirectory)===false) || (disk_free_space($checkDirectory)===false))
+{
+        $jResult .= "plugin.disable();";
+}
 else
 {
-	$jResult.="plugin.interval = ".$diskUpdateInterval."; plugin.notifySpaceLimit = ".($notifySpaceLimit*1024*1024).";";
-	$jResult.="plugin.freeBytesInMeter = ".($freeBytesInMeter ? 1 : 0).";";
-	$theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
+        $jResult.="plugin.interval = ".$diskUpdateInterval."; plugin.notifySpaceLimit = ".($notifySpaceLimit*1024*1024).";";
+        $jResult.="plugin.freeBytesInMeter = ".($freeBytesInMeter ? 1 : 0).";";
+        $theSettings->registerPlugin($plugin["name"],$pInfo["perms"]);
 }
