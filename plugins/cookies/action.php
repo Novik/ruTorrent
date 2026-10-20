@@ -14,6 +14,7 @@ switch($cmd)
 			CachedEcho::send(JSON::safeEncode($cookies->getCookiesForHost($_REQUEST['host'])),"application/json");
 		else
 			CachedEcho::send(JSON::safeEncode($cookies->getInfo()),"application/json");
+		break;
 	}
 	case 'add':
 	{
@@ -21,11 +22,13 @@ switch($cmd)
 		if(isset($_REQUEST['host']))
 			$cookies->add($_REQUEST['host'],rawurldecode($_REQUEST['cookies']));
         	CachedEcho::send(JSON::safeEncode($cookies->getInfo()),"application/json");
+		break;
 	}
 	default:
 	{
 		$cookies = new rCookies();
 		$cookies->set();
 		CachedEcho::send($cookies->get(),"application/javascript");
+		break;
 	}
 }
