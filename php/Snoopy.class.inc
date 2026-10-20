@@ -968,7 +968,11 @@ class Snoopy
 	{
 		foreach($this->headers as $header)
 		{
-			if(preg_match("/^set-cookie:[\s]+([^=]+)=([^;]+)/i", $header,$match))
+			// Neither a cookie name nor its value carries a control
+			// character. A value bounded only by ";" takes the line
+			// terminator of an attributeless Set-Cookie with it, and what is
+			// stored here is written into an outgoing request header by hand.
+			if(preg_match("/^set-cookie:[\s]+([^;=[:cntrl:]]+)=([^;[:cntrl:]]+)/i", $header,$match))
 			{
 				if($match[2]=="deleted")
 					unset($this->cookies[$match[1]]);
