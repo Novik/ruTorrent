@@ -655,7 +655,7 @@ class Torrent
 					'files'         => $info_files,
 					'name'          => end( $path ),
 					'piece length'  => $piece_length,
-					'pieces'        => $pieces . ( $piece ? self::pack( $piece ) : '' )
+					'pieces'        => $pieces . ( $piece !== '' ? self::pack( $piece ) : '' )
 					));
         	}
     	}
