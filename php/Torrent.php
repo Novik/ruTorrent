@@ -535,9 +535,9 @@ class Torrent
 	{
 	        if(is_null( $filename ))
 			$filename = $this->info['name'].'.torrent';
-		if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
-			$filename = rawurlencode($filename);
-        	header( 'Content-Disposition: attachment; filename="'.$filename.'"' );
+		require_once( __DIR__.'/utility/contentdisposition.php' );
+		header( 'Content-Disposition: '.ContentDisposition::attachment($filename,
+			isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null) );
         	CachedEcho::send( $this->__toString(), 'application/x-bittorrent', true );
     	}
 
