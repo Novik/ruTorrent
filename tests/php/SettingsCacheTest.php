@@ -128,6 +128,25 @@ class SettingsCacheTest extends TestCase
 		);
 	}
 
+	public function testUnregisteringHookSubjectsPreservesOtherPluginsAndSparseEntries()
+	{
+		$settings = $this->makeSettings(false);
+		$settings->registerEventHook('rssurlrewrite', array('RSSFetched', 'URLFetched'), 10);
+		$settings->registerEventHook('_cloudflare', 'URLFetched', 20);
+		$settings->unregisterEventHook('rssurlrewrite', array('RSSFetched', 'URLFetched'), false);
+		$this->assertTrue(!array_key_exists('RSSFetched', $settings->hooks),
+			'The last subject retires its event key');
+		$this->assertEquals(array(array('name' => '_cloudflare', 'level' => 20)),
+			array_values($settings->hooks['URLFetched']), 'Only the named plugin is removed');
+		$remaining = $settings->hooks;
+		$settings->unregisterEventHook('_cloudflare', 'missing', false);
+		$this->assertEquals($remaining, $settings->hooks, 'An absent event preserves the remaining hooks');
+		$settings->unregisterEventHook('missing-plugin', 'URLFetched', false);
+		$this->assertEquals($remaining, $settings->hooks, 'An absent plugin preserves the remaining subjects');
+		$settings->unregisterEventHook('_cloudflare', 'URLFetched', false);
+		$this->assertEquals(array(), $settings->hooks, 'A remaining sparse subject can also be removed');
+	}
+
 	// What the tenant meets when the map is lost: the status bar's rate control
 	// sends a name rtorrent has not answered to since 0.9.x, and the daemon
 	// faults instead of throttling.
