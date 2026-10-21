@@ -46,6 +46,10 @@ class Snoopy
 	// arrived" need no new case; the reason is in $error.
 	const RESPONSE_BODY_FAILED = -101;
 	const SOCKET_CONNECT_FAILED = -102;
+	// Provisional (1xx) blocks one answer may carry before its final response.
+	// A server sends one or two; each block is discarded when it ends, so only
+	// this count stops a peer that streams them without end.
+	const MAX_INTERIM_RESPONSES = 5;
 
 	/**** Public variables ****/
 
@@ -701,6 +705,7 @@ class Snoopy
 		$this->timed_out = false;
 		fwrite($fp,$headers.$body,strlen($headers.$body));
 		$is_gzipped = false;
+		$interimResponses = 0;
 
 		while(($currentHeader = fgets($fp,$this->_maxlinelen)) !== false)
 		{
@@ -712,7 +717,21 @@ class Snoopy
 			}
 
 			if(preg_match("/^\r?\n$/", $currentHeader))
-			      break;
+			{
+				$status = (int)$this->status;
+				if($status >= 100 && $status < 200 && $status !== 101)
+				{
+					// A provisional block owns neither the final metadata nor
+					// its body. 101 switches protocols rather than preceding it.
+					if(++$interimResponses > self::MAX_INTERIM_RESPONSES)
+						return $this->refuseRequest('too-many-interim-responses');
+					$this->discardResponse();
+					$this->status = 0;
+					$is_gzipped = false;
+					continue;
+				}
+				break;
+			}
 
 			// if a header begins with Location: or URI:, set the redirect
 			if(preg_match("/^(Location:|URI:|Refresh:)/i",$currentHeader))
@@ -767,6 +786,9 @@ class Snoopy
 			$this->status=-100;
 			return false;
 		}
+		if(($interimResponses > 0 && $this->response_code === '')
+			|| ((int)$this->status >= 100 && (int)$this->status < 200 && (int)$this->status !== 101))
+			return $this->refuseRequest('missing-final-response');
 
 		$results = "";
 		$limit = $this->responseLimit();
@@ -1005,6 +1027,12 @@ class Snoopy
 				}
 				if(preg_match("|^HTTP/|",$header))
 				{
+					// curl -D includes CONNECT and provisional responses before
+					// the origin's final block. None of their metadata survives it.
+					$this->headers = array();
+					$this->_redirectaddr = false;
+					$this->status = 0;
+					$is_gzipped = false;
 					$this->response_code = $header;
 					if(preg_match("|^HTTP/[^\s]*\s(.*?)\s|",$this->response_code, $match))
 						$this->status= $match[1];
@@ -1012,6 +1040,12 @@ class Snoopy
 				if (preg_match("/Content-Encoding: gzip/i", $header) )
 					$is_gzipped = true;
 				$this->headers[] = $header;
+			}
+			if((int)$this->status >= 100 && (int)$this->status < 200 && (int)$this->status !== 101)
+			{
+				@unlink($headerfile);
+				@unlink($contfile);
+				return $this->refuseRequest('missing-final-response');
 			}
 			if( is_string($results) && strlen($results) > $limit )
 			{
