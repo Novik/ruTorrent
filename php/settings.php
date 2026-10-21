@@ -113,7 +113,10 @@ class rTorrentSettings
 	        {
 			foreach( $this->hooks[$ename] as $i => $subject )
 			{
-				if($subject["name"] === $plugin)
+				// A cache written before 63f15c6c holds the plugin name alone
+				// where a subject array sits now, and either shape answers for
+				// the same registration.
+				if(($subject["name"] ?? $subject) === $plugin)
 				{
 					unset($this->hooks[$ename][$i]);
 					if( empty($this->hooks[$ename]) )
