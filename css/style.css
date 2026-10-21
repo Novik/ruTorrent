@@ -595,7 +595,8 @@ div.graph_tab {
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 13px;
-  white-space: normal;
+  /* A pane may put each figure on its own line; a long one still wraps. */
+  white-space: pre-line;
   pointer-events: none;
   color: var(--status-tip-color);
   background-color: var(--status-tip-background-color);
