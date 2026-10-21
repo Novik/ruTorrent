@@ -409,6 +409,23 @@ class Snoopy
 		return($ret);
 	}
 
+	// The redirect target a response names, or false for a response that
+	// names none this client can write. The target becomes the next request's
+	// target and its Host header, and Snoopy writes both by hand: a request
+	// target carries no whitespace and no control character, and neither does
+	// a host name. A space ends the target as far as a server's parser is
+	// concerned, so a request line carrying one has a part too many and is
+	// refused; parse_url() turns a control character into "_" but keeps
+	// whatever followed it, spaces included. Bounding the capture at the byte
+	// rather than dropping the target would send the request to whatever came
+	// before it, which is a different resource and not a refusal.
+	protected function redirectTargetFrom($matches)
+	{
+		if(!isset($matches[2]) || $matches[2] === '')
+			return(false);
+		return(preg_match("/[[:space:][:cntrl:]]/",$matches[2]) ? false : $matches[2]);
+	}
+
 	// Whether following this redirect hands the request to somewhere the
 	// credentials were not meant for. What they were meant for is an origin:
 	// the scheme, the host and the port together, each port carrying its
@@ -703,26 +720,30 @@ class Snoopy
 				// get URL portion of the redirect
 				if(!preg_match("/^(Location:|URI:)\s+(.*)/i",chop($currentHeader),$matches))
 					preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($currentHeader),$matches);
-				// a "//host/path" Location is a network-path reference (RFC 3986
-				// 4.2): it carries its own authority and inherits only the
-				// scheme. Resolved against the requested host it would become
-				// http://old.host:80//new.host/path, which redirects again
-				// until maxredirs runs out.
-				if(preg_match("|^//|",$matches[2]))
-					$this->_redirectaddr = "http:".$matches[2];
-				// look for :// in the Location header to see if hostname is included
-				else if(!preg_match("|\:\/\/|",$matches[2]))
+				$target = $this->redirectTargetFrom($matches);
+				if($target !== false)
 				{
-					$host = isset($this->rawheaders['Host']) ? $this->rawheaders['Host'] : $this->host;
-					$this->_redirectaddr = "http://".$host.":".$this->port;
-					// eliminate double slash
-					if(!preg_match("|^/|",$matches[2]))
-						$this->_redirectaddr .= "/".$matches[2];
+					// a "//host/path" Location is a network-path reference
+					// (RFC 3986 4.2): it carries its own authority and
+					// inherits only the scheme. Resolved against the requested
+					// host it would become http://old.host:80//new.host/path,
+					// which redirects again until maxredirs runs out.
+					if(preg_match("|^//|",$target))
+						$this->_redirectaddr = "http:".$target;
+					// look for :// in the Location header to see if hostname is included
+					else if(!preg_match("|\:\/\/|",$target))
+					{
+						$host = isset($this->rawheaders['Host']) ? $this->rawheaders['Host'] : $this->host;
+						$this->_redirectaddr = "http://".$host.":".$this->port;
+						// eliminate double slash
+						if(!preg_match("|^/|",$target))
+							$this->_redirectaddr .= "/".$target;
+						else
+							$this->_redirectaddr .= $target;
+					}
 					else
-						$this->_redirectaddr .= $matches[2];
+						$this->_redirectaddr = $target;
 				}
-				else
-					$this->_redirectaddr = $matches[2];
 			}
 			if(preg_match("|^HTTP/|",$currentHeader))
 			{
@@ -933,27 +954,32 @@ class Snoopy
 					if(!preg_match("/^(Location: |URI:)(.*)/i",chop($header),$matches))
 						preg_match("/(^Refresh:\s+\d+\s*;\s*url\s*=\s*)(.*)/i",chop($header),$matches);
 
-					// a "//host/path" Location is a network-path reference
-					// (RFC 3986 4.2): it carries its own authority and
-					// inherits only the scheme. Resolved against the requested
-					// host it would become https://old.host:443//new.host/path,
-					// which redirects again until maxredirs runs out.
-					if(preg_match("|^//|",$matches[2]))
-						$this->_redirectaddr = "https:".$matches[2];
-					// look for :// in the Location header to see if hostname is included
-					else if(!preg_match("|\:\/\/|",$matches[2]))
+					$target = $this->redirectTargetFrom($matches);
+					if($target !== false)
 					{
-						// no host in the path, so prepend
-						$host = isset($this->rawheaders['Host']) ? $this->rawheaders['Host'] : $this->host;
-						$this->_redirectaddr = "https://".$host.":".$this->port;
-						// eliminate double slash
-						if(!preg_match("|^/|",$matches[2]))
-							$this->_redirectaddr .= "/".$matches[2];
+						// a "//host/path" Location is a network-path reference
+						// (RFC 3986 4.2): it carries its own authority and
+						// inherits only the scheme. Resolved against the
+						// requested host it would become
+						// https://old.host:443//new.host/path, which redirects
+						// again until maxredirs runs out.
+						if(preg_match("|^//|",$target))
+							$this->_redirectaddr = "https:".$target;
+						// look for :// in the Location header to see if hostname is included
+						else if(!preg_match("|\:\/\/|",$target))
+						{
+							// no host in the path, so prepend
+							$host = isset($this->rawheaders['Host']) ? $this->rawheaders['Host'] : $this->host;
+							$this->_redirectaddr = "https://".$host.":".$this->port;
+							// eliminate double slash
+							if(!preg_match("|^/|",$target))
+								$this->_redirectaddr .= "/".$target;
+							else
+								$this->_redirectaddr .= $target;
+						}
 						else
-							$this->_redirectaddr .= $matches[2];
+							$this->_redirectaddr = $target;
 					}
-					else
-						$this->_redirectaddr = $matches[2];
 				}
 				if(preg_match("|^HTTP/|",$header))
 				{
