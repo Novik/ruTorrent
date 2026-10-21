@@ -96,7 +96,7 @@ abstract class commonAccount
 	// user -- plugins/rss follows links out of a feed.
 	public function test($url)
 	{
-		if($this->unconfigured()!=='')
+		if($this->refuseUnconfigured())
 			return(false);
 		$site = parse_url((string) $this->url);
 		return(self::urlAddresses($url,array($site["host"]),$site["scheme"]));
@@ -128,6 +128,50 @@ abstract class commonAccount
 			FileUtil::toLog('loginmgr: '.$name.' is not used: '.$reason);
 		}
 		return(true);
+	}
+
+	// $value as "https://host[:port]", or '' with the reason in $error. An
+	// origin is a scheme, an ASCII host and at most a port: no userinfo, path,
+	// query or fragment, since those would go into every URL built on it. A
+	// trailing slash is allowed; case and a trailing dot in the host are
+	// folded. parse_url() alone accepts "https://a b.example" and
+	// "https://a..example" as hosts, hence the host pattern.
+	static protected function configuredOrigin($value,&$error)
+	{
+		if(!is_string($value))
+		{
+			$error = 'is not a string';
+			return('');
+		}
+		if($value==='')
+		{
+			$error = 'is not set';
+			return('');
+		}
+		$error = 'is not an https origin ("https://host" with an ASCII host, optionally a port, and nothing else)';
+		$parts = @parse_url($value);
+		if(!is_array($parts) || empty($parts["scheme"]) || empty($parts["host"]) ||
+			strtolower($parts["scheme"])!=='https' ||
+			isset($parts["user"]) || isset($parts["pass"]) || isset($parts["query"]) || isset($parts["fragment"]) ||
+			(isset($parts["path"]) && $parts["path"]!=='' && $parts["path"]!=='/'))
+			return('');
+		$host = rtrim(strtolower($parts["host"]),'.');
+		if(!preg_match('/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)*[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/',$host))
+			return('');
+		if(isset($parts["port"]) && (($parts["port"]<1) || ($parts["port"]>65535)))
+			return('');
+		$error = '';
+		return('https://'.$host.(isset($parts["port"]) ? ':'.$parts["port"] : ''));
+	}
+
+	// The reason an account that takes its site from configuration cannot be
+	// used, naming the setting that carries it and where to set it. The value
+	// is never quoted: a mistyped setting can hold a password.
+	static protected function unconfiguredOrigin($setting,$error)
+	{
+		return('$'.$setting.' '.$error
+			.'; set it to the tracker\'s origin in plugins/loginmgr/conf.local.php'
+			.' or conf/users/<user>/plugins/loginmgr/conf.php');
 	}
 
 	// True when $url's host is one of $hosts, or a subdomain of one, and its
