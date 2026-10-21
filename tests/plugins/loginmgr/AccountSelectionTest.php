@@ -13,9 +13,14 @@ foreach (glob(__DIR__ . '/../../../plugins/loginmgr/accounts/*.php') as $account
     require_once($accountFile);
 }
 
-// YggTorrent names no site until one is configured; YggTorrentOriginTest is
-// about that. Here it has one, so that it is asked like every other account.
+// Five accounts name no site until one is configured; YggTorrentOriginTest and
+// ConfiguredOriginTest are about that. Here they have one, so that they are
+// asked like every other account.
 $yggTorrentOrigin = 'https://yggtorrent.example';
+$abTorrentsOrigin = 'https://abtorrents.example';
+$revolutionTTOrigin = 'https://revolutiontt.example';
+$tfileOrigin = 'https://tfile.example';
+$redactedOrigin = 'https://redacted.example';
 
 // A site still configured http, to pin the direction the rule allows.
 class ProbeHttpSiteAccount extends commonAccount
@@ -44,10 +49,17 @@ $tests = array(
         // the account's cookies to a host the attacker controls, and the url
         // need not come from the user -- plugins/rss follows feed links.
         $cases = array(
-            array('ABTorrentsAccount', 'https://abtorrents.me/x', true),
-            array('ABTorrentsAccount', 'https://abtorrents.me@evil.test/', false),
-            array('ABTorrentsAccount', 'https://abtorrents.me.evil.test/', false),
-            array('ABTorrentsAccount', 'https://evil.test/abtorrents.me/', false),
+            array('ABTorrentsAccount', 'https://abtorrents.example/x', true),
+            array('ABTorrentsAccount', 'https://abtorrents.example@evil.test/', false),
+            array('ABTorrentsAccount', 'https://abtorrents.example.evil.test/', false),
+            array('ABTorrentsAccount', 'https://evil.test/abtorrents.example/', false),
+            array('TfileAccount', 'https://tfile.example/forum/index.php', true),
+            array('TfileAccount', 'https://tfile.example/other/', false),
+            array('TfileAccount', 'https://evil.test/x/tfile.example/forum/', false),
+            array('RedactedAccount', 'https://redacted.example/torrents.php?id=1', true),
+            array('RedactedAccount', 'https://redacted.example.evil.test/torrents.php?id=1', false),
+            array('RevolutionTTAccount', 'https://revolutiontt.example/download.php/1/x', true),
+            array('RevolutionTTAccount', 'https://revolutiontt.example@evil.test/download.php/1/x', false),
             array('KinozalTVAccount', 'https://kinozal.guru/details.php?id=1', true),
             array('KinozalTVAccount', 'https://dl.kinozal.guru/download.php?id=1', true),
             array('KinozalTVAccount', 'https://evil.test/path/kinozal.guru/feed', false),
@@ -75,9 +87,9 @@ $tests = array(
         // redirect could upgrade it -- and the url can arrive from a feed.
         foreach (array(
             array('LostFilmAccount', 'http://lostfilm.tv/download.php?id=7&'),
-            array('TfileAccount', 'http://megatfile.cc/forum/index.php'),
+            array('TfileAccount', 'http://tfile.example/forum/index.php'),
             array('AniDUBAccount', 'http://tr.anidub.com/'),
-            array('ABTorrentsAccount', 'http://abtorrents.me/x'),
+            array('ABTorrentsAccount', 'http://abtorrents.example/x'),
         ) as $case) {
             list($class, $url) = $case;
             $account = new $class();

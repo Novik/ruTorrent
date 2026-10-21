@@ -2,7 +2,26 @@
 
 class TfileAccount extends commonAccount
 {
-	public $url = "https://megatfile.cc";
+	// The tracker's origin is not written here: it is $tfileOrigin in
+	// plugins/loginmgr/conf.php, and this is that origin as
+	// "https://host[:port]", or '' while none is configured.
+	public $url = '';
+
+	// Why $tfileOrigin is not usable, for the log line, or '' when it is.
+	private $originError = '';
+
+	public function __construct()
+	{
+		global $tfileOrigin;
+		$this->url = self::configuredOrigin(isset($tfileOrigin) ? $tfileOrigin : '', $this->originError);
+	}
+
+	protected function unconfigured()
+	{
+		if($this->url!=='')
+			return('');
+		return(self::unconfiguredOrigin('tfileOrigin',$this->originError));
+	}
 
 	protected function isOK($client)
 	{
@@ -24,12 +43,15 @@ class TfileAccount extends commonAccount
 		}
 		return(false);
 	}
-	// Matched against the URL's host, not against the URL string: the pattern
-	// this replaced also accepted https://evil.test/path/megatfile.cc/forum/x, whose
-	// host is the attacker's, and loginmgr would then have sent this account's
-	// cookies there.
+	// The forum of the configured origin, and nothing else. Matched against
+	// the URL's host, not against the URL string, which would also accept
+	// https://evil.test/path/<host>/forum/x -- whose host is the attacker's,
+	// and loginmgr would hand this account's cookies to whoever runs it.
 	public function test($url)
 	{
-		return(self::urlAddresses($url,array("megatfile.cc"),"https","/forum/"));
+		if($this->refuseUnconfigured())
+			return(false);
+		$site = parse_url($this->url);
+		return(self::urlAddresses($url,array($site["host"]),$site["scheme"],"/forum/"));
 	}
 }

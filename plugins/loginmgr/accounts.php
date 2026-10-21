@@ -8,7 +8,7 @@ require_once( dirname(__FILE__)."/../../php/utility/json.php");
 // included from, and that is not always the global one: on the download
 // path it is Snoopy::fetchComplex(), a method. The accounts read their
 // settings as globals, so the settings are declared global here first.
-global $yggTorrentOrigin;
+global $yggTorrentOrigin, $abTorrentsOrigin, $revolutionTTOrigin, $tfileOrigin, $redactedOrigin;
 eval( FileUtil::getPluginConf( 'loginmgr' ) );
 
 class privateData
