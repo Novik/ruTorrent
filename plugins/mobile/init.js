@@ -1536,6 +1536,8 @@ plugin.loadFiles = function() {
     var hash = this.torrent.hash;
     $('#detailsFilesPage').html('');
     this.request('?action=getfiles&hash=' + hash, function(data) {
+      // Ignore replies for a torrent that is no longer selected.
+      if (mobile.torrent == undefined || hash !== mobile.torrent.hash) return;
       var rawFiles = data[hash];
       var files = {root: true, directory: true, priority: -1, container: {}};
 
