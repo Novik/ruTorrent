@@ -10,7 +10,15 @@ class RedactedEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'https://redacted.ch';
+		// The tracker's origin is not written here: it is loginmgr's
+		// $redactedOrigin, read through the Redacted account, so that the
+		// search, the download links and the login use one host.
+		$url = $this->accountOrigin('Redacted');
+		if($url==='')
+		{
+			$this->unconfiguredOriginEntry('Redacted','redactedOrigin',$ret);
+			return;
+		}
 		if($useGlobalCats)
 			$categories = array( 'all'=>'', 'music'=>'&filter_cat[1]=1', 'software'=>'&filter_cat[2]=1', 'books'=>'&filter_cat[3]=1&filter_cat[4]=1&filter_cat[6]=1&filter_cat[7]=1' );
 		else
