@@ -60,4 +60,44 @@ final class RSSManagerStateTest extends TestCase
 		$this->assertEquals(array('http://example.invalid/one', 'http://example.invalid/two'), $urls,
 			'the feed added during the run is still listed: ' . json_encode($urls));
 	}
+
+	public function testAnErrorReportedAfterTogglingAFeedStaysClearedOnRepeatedSaves()
+	{
+		$url = 'http://example.invalid/one';
+		$seed = new rRSSManager();
+		$this->addFeed($seed, $url);
+		$seed->rssList->addError('cantFetchRSS', $url);
+		$seed->saveState(false);
+
+		$manager = new rRSSManager();
+		$manager->toggleStatus(md5($url));
+		$this->assertEquals(1, count($manager->rssList->formatErrors()), 'the response reports the pending error');
+		// action.php clears reported errors after the action has saved once.
+		$manager->clearErrors();
+		for ($save = 1; $save <= 3; $save++) {
+			$manager->saveState(false);
+			$check = new rRSSManager();
+			$this->assertEquals(array(), $check->rssList->formatErrors(),
+				'the reported error stays cleared after save ' . $save);
+			$this->assertEquals(0, $check->rssList->lst[md5($url)]['enabled'], 'the feed stays disabled');
+		}
+	}
+
+	public function testAFeedAddedAfterThisManagersOwnStoreSurvivesItsNextSave()
+	{
+		$update = new rRSSManager();
+		$this->addFeed($update, 'http://example.invalid/own-store');
+		$update->saveState(false);
+
+		$webui = new rRSSManager();
+		$this->addFeed($webui, 'http://example.invalid/later-store');
+		$webui->saveState(false);
+		$update->rssList->touch();
+		$update->saveState(true);
+
+		$urls = array_column((new rRSSManager())->rssList->lst, 'url');
+		$this->assertTrue(in_array('http://example.invalid/own-store', $urls), 'the manager keeps its own feed');
+		$this->assertTrue(in_array('http://example.invalid/later-store', $urls),
+			'a newer write is merged even after this manager has stored once');
+	}
 }
