@@ -172,8 +172,8 @@ if(!function_exists('erasedataDrainQueue'))
 	}
 
 	// The hashes rtorrent currently holds, or null when it will not say; $why
-	// then tells which it was: "no-answer" (no connection, or no reply) or
-	// "fault" (it refused the question).
+	// then tells which it was: "no-answer" (no connection, no reply, or a reply
+	// the transport refused) or "fault" (it refused the question).
 	function erasedataLiveHashes(&$why = null)
 	{
 		$req = new rXMLRPCRequest( new rXMLRPCCommand("d.multicall",
@@ -181,7 +181,7 @@ if(!function_exists('erasedataDrainQueue'))
 		$req->important = false;
 		if(!$req->success())
 		{
-			$why = $req->fault ? "fault" : "no-answer";
+			$why = ($req->fault && ($req->transportFailure === null)) ? "fault" : "no-answer";
 			return(null);
 		}
 		$why = null;

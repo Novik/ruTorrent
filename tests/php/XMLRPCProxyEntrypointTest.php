@@ -1,6 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/TestHttpServer.php');
+require_once(__DIR__ . '/TestTree.php');
+require_once(__DIR__ . '/../../php/scgitransport.php');
 
 /**
  * These tests exercise the two HTTP doors, not a reimplementation of them.
@@ -69,6 +72,16 @@ class XMLRPCProxyEntrypointTest extends TestCase
 			'httprpc sends the admitted XML payload');
 		$this->assertTrue($result['state']['trusted'] === false,
 			'httprpc sends an ordinary admitted method as untrusted');
+	}
+
+	public function testHttprpcReturnsOnlyTheCompleteXmlBody()
+	{
+		$result = $this->runEntrypoint('action', $this->allowedXml(), true);
+		$this->assertHttp($result, '200 OK', 'text/xml; charset=UTF-8',
+			'<?xml version="1.0"?><methodResponse><params></params></methodResponse>');
+		$this->assertEquals(rSCGITransport::RESPONSE_BODY, $result['state']['responseMode'],
+			'httprpc asks the transport for the body without copying daemon headers');
+		$this->assertCounts($result['state'], 1, 1);
 	}
 
 	public function testRpc2UnreadableInputReturnsClassified400()
@@ -162,7 +175,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 	private function runEntrypoint($door, $body, $logging, $send = 'success', $policy = 'shipped')
 	{
 		$tree = sys_get_temp_dir() . '/rutorrent-entrypoint-' . uniqid('', true);
-		$process = null;
+		$server = null;
 		try
 		{
 			if(!mkdir($tree, 0700, true) && !is_dir($tree))
@@ -171,34 +184,19 @@ class XMLRPCProxyEntrypointTest extends TestCase
 			$state = $tree . '/state.json';
 			file_put_contents($state, json_encode(array(
 				'sends' => 0, 'responses' => 0, 'logs' => array(),
-				'payload' => null, 'trusted' => null,
+				'payload' => null, 'trusted' => null, 'responseMode' => null,
 			)));
 			$this->writeStubs($tree);
 
-			$port = $this->reservePort();
-			$environment = array_merge($_ENV, array(
+			$environment = array(
 				'XMLRPC_ENTRYPOINT_STATE' => $state,
 				'XMLRPC_ENTRYPOINT_LOGGING' => $logging ? '1' : '0',
 				'XMLRPC_ENTRYPOINT_SEND' => $send,
 				'XMLRPC_ENTRYPOINT_UNREADABLE' => ($body === 'unreadable') ? '1' : '0',
-			));
-			// "exec" replaces the shell proc_open() runs the string through, so the
-			// server is the process proc_terminate() signals; /bin/sh forks php and
-			// signalling only the shell would leave the server running.
-			$command = 'exec ' . escapeshellarg(PHP_BINARY)
-				. ' -d auto_prepend_file=' . escapeshellarg($tree . '/prepend.php')
-				. ' -d display_errors=0'
-				. ' -S 127.0.0.1:' . $port . ' -t ' . escapeshellarg($tree);
-			$process = proc_open($command, array(
-				0 => array('pipe', 'r'),
-				1 => array('file', $tree . '/server.out', 'a'),
-				2 => array('file', $tree . '/server.err', 'a'),
-			), $pipes, $tree, $environment);
-			if(!is_resource($process))
-				throw new Exception('could not start copied PHP entrypoint server');
-			fclose($pipes[0]);
-			$this->waitForServer($port, $process, $tree . '/server.err');
-			$response = $this->rawPost($port, ($door === 'action')
+			);
+			$server = TestHttpServer::start($tree, $environment, array(
+				'-d', 'auto_prepend_file=' . $tree . '/prepend.php', '-d', 'display_errors=0'));
+			$response = TestHttpServer::rawPost($server->port(), ($door === 'action')
 				? '/plugins/httprpc/action.php' : '/rpc2.php', ($body === 'unreadable') ? '' : $body);
 			$decoded = json_decode(file_get_contents($state), true);
 			if(!is_array($decoded))
@@ -210,12 +208,9 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		}
 		finally
 		{
-			if(is_resource($process))
-			{
-				@proc_terminate($process);
-				@proc_close($process);
-			}
-			$this->deleteTree($tree);
+			if($server !== null)
+				$server->close();
+			TestTree::remove($tree);
 		}
 	}
 
@@ -224,6 +219,7 @@ class XMLRPCProxyEntrypointTest extends TestCase
 		$files = array(
 			'plugins/httprpc/action.php',
 			'php/xmlrpc_proxy.php',
+			'php/scgitransport.php',
 			'rpc2.php',
 		);
 		// The shipped policy files, so that what a door decides here is what it
@@ -251,13 +247,14 @@ class XMLRPCProxyEntrypointTest extends TestCase
 			mkdir($tree . '/conf', 0700, true);
 		file_put_contents($tree . '/php/xmlrpc.php', <<<'PHP'
 <?php
+require_once(dirname(__FILE__) . '/scgitransport.php');
 function entrypoint_state($key, $value = null)
 {
 	$path = getenv('XMLRPC_ENTRYPOINT_STATE');
 	$state = json_decode(file_get_contents($path), true);
 	if(!is_array($state))
 		$state = array('sends' => 0, 'responses' => 0, 'logs' => array(),
-			'payload' => null, 'trusted' => null);
+			'payload' => null, 'trusted' => null, 'responseMode' => null);
 	if($key === 'log')
 		$state['logs'][] = $value;
 	elseif($key === 'send')
@@ -265,6 +262,7 @@ function entrypoint_state($key, $value = null)
 		$state['sends']++;
 		$state['payload'] = $value[0];
 		$state['trusted'] = $value[1];
+		$state['responseMode'] = $value[2];
 	}
 	elseif($key === 'response')
 		$state['responses']++;
@@ -286,10 +284,17 @@ class FileUtil
 }
 class rXMLRPCRequest
 {
-	public static function send($payload, $trusted)
+	public static function send($payload, $trusted, &$failure = null, $responseMode = rSCGITransport::RESPONSE_RAW)
 	{
-		entrypoint_state('send', array($payload, $trusted));
-		return (getenv('XMLRPC_ENTRYPOINT_SEND') === 'false') ? false : '';
+		entrypoint_state('send', array($payload, $trusted, $responseMode));
+		if(getenv('XMLRPC_ENTRYPOINT_SEND') === 'false')
+		{
+			$failure = 'read-failed';
+			return false;
+		}
+		$body = '<?xml version="1.0"?><methodResponse><params></params></methodResponse>';
+		return ($responseMode === rSCGITransport::RESPONSE_BODY) ? $body
+			: "Status: 200 OK\r\nContent-Type: text/xml\r\nContent-Length: " . strlen($body) . "\r\n\r\n" . $body;
 	}
 }
 class CachedEcho
@@ -299,7 +304,7 @@ class CachedEcho
 		header('Content-Type: ' . $type . '; charset=UTF-8');
 		entrypoint_state('response');
 		echo $body;
-		return;
+		exit;
 	}
 }
 class JSON { public static function safeEncode($value) { return json_encode($value); } }
@@ -334,62 +339,6 @@ PHP
 );
 	}
 
-	private function reservePort()
-	{
-		$socket = stream_socket_server('tcp://127.0.0.1:0', $errno, $error);
-		if($socket === false)
-			throw new Exception('could not reserve local test port: ' . $error);
-		$name = stream_socket_get_name($socket, false);
-		fclose($socket);
-		$parts = explode(':', $name);
-		return intval(array_pop($parts));
-	}
-
-	private function waitForServer($port, $process, $errorFile)
-	{
-		for($i = 0; $i < 100; $i++)
-		{
-			$socket = @fsockopen('127.0.0.1', $port, $errno, $error, 0.05);
-			if($socket !== false)
-			{
-				fclose($socket);
-				return;
-			}
-			$status = proc_get_status($process);
-			if(!$status['running'])
-				throw new Exception('copied PHP entrypoint server exited: ' . @file_get_contents($errorFile));
-			usleep(25000);
-		}
-		throw new Exception('copied PHP entrypoint server did not start');
-	}
-
-	private function rawPost($port, $path, $body)
-	{
-		$socket = @fsockopen('127.0.0.1', $port, $errno, $error, 2);
-		if($socket === false)
-			throw new Exception('could not connect raw HTTP client: ' . $error);
-		$request = "POST " . $path . " HTTP/1.1\r\nHost: 127.0.0.1\r\n"
-			. "Content-Type: text/xml\r\nContent-Length: " . strlen($body)
-			. "\r\nConnection: close\r\n\r\n" . $body;
-		if(fwrite($socket, $request) === false)
-			throw new Exception('could not write raw HTTP request');
-		$raw = stream_get_contents($socket);
-		fclose($socket);
-		if($raw === false || strpos($raw, "\r\n\r\n") === false)
-			throw new Exception('copied entrypoint returned no complete HTTP response');
-		list($headerBlock, $responseBody) = explode("\r\n\r\n", $raw, 2);
-		$headers = explode("\r\n", $headerBlock);
-		$status = array_shift($headers);
-		$values = array();
-		foreach($headers as $header)
-		{
-			$position = strpos($header, ':');
-			if($position !== false)
-				$values[strtolower(trim(substr($header, 0, $position)))] = trim(substr($header, $position + 1));
-		}
-		return array('status' => $status, 'headers' => $values, 'body' => $responseBody);
-	}
-
 	private function assertHttp($result, $status, $type, $body = null)
 	{
 		$this->assertTrue(strpos($result['status'], $status) !== false,
@@ -417,19 +366,4 @@ PHP
 		$this->assertTrue(strpos($result['rpc2logs'], $needle) !== false, $message);
 	}
 
-	private function deleteTree($path)
-	{
-		if(!is_dir($path))
-			return;
-		foreach(scandir($path) as $entry)
-			if(($entry !== '.') && ($entry !== '..'))
-			{
-				$child = $path . '/' . $entry;
-				if(is_dir($child))
-					$this->deleteTree($child);
-				else
-					@unlink($child);
-			}
-		@rmdir($path);
-	}
 }

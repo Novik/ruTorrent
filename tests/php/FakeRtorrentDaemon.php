@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__.'/SCGIRequest.php');
+
 /**
  * An SCGI listener that answers like rtorrent, for tests that need to drive a
  * top level script rather than a function.
@@ -9,11 +11,10 @@
  * the only way to see that the erase happened and the reload did not is to be
  * the daemon on the other end of both.
  *
- * php/xmlrpc.php reads a reply by regex over <value><string> and <value><i8>
- * and requires it to end with </methodResponse>, so a reply here is that and
- * nothing else; no HTTP framing is involved, except in a raw() entry, which
- * is sent as it is given. The request is an SCGI netstring header followed by
- * the XMLRPC body, and the method names are taken out of the body -- both the
+ * Ordinary and fault replies use the same SCGI Content-Length framing as
+ * rtorrent. raw() and paced() entries preserve their exact scripted bytes.
+ * The request is an SCGI netstring header followed by the XMLRPC body, and
+ * the method names are taken out of the body -- both the
  * single <methodName> form and the members of a system.multicall.
  */
 class FakeRtorrentDaemon
@@ -93,6 +94,7 @@ class FakeRtorrentDaemon
 		}
 		@unlink($this->logFile);
 		@unlink($this->bodyLogFile);
+		@unlink($this->logFile . '.server.err');
 		if($replies instanceof Closure)
 		{
 			if(!function_exists('pcntl_fork') || !function_exists('pcntl_waitpid')
@@ -107,8 +109,21 @@ class FakeRtorrentDaemon
 			}
 			if($this->pid === 0)
 			{
-				$this->serve($replies);
-				exit(0);
+				// The child must never return into the test that forked it:
+				// an exception unwinding from here would run that test's
+				// catch and finally blocks, and the rest of the run, twice.
+				$code = 0;
+				try
+				{
+					$this->serve($replies);
+				}
+				catch(Throwable $error)
+				{
+					@file_put_contents($this->logFile . '.server.err',
+						get_class($error) . ': ' . $error->getMessage() . "\n", FILE_APPEND);
+					$code = 1;
+				}
+				exit($code);
 			}
 			return;
 		}
@@ -223,18 +238,28 @@ class FakeRtorrentDaemon
 	{
 		@fclose(STDOUT);
 		$dynamic = is_callable($replies);
-		for ($index = 0; $dynamic || $index < count($replies); $index++) {
+		$index = 0;
+		while ($dynamic || $index < count($replies)) {
 			$client = @stream_socket_accept($this->socket, 10);
 			if ($client === false) {
 				break;
 			}
-			$body = $this->readRequest($client);
+			try {
+				$body = SCGIRequest::read($client)['payload'];
+			} catch (RuntimeException $error) {
+				// A client that connected and sent nothing, or stopped inside
+				// the request, is not a request: it gets no reply and uses no
+				// reply entry.
+				@fclose($client);
+				continue;
+			}
 			file_put_contents($this->bodyLogFile, $body . "\x00--REQ--\x00", FILE_APPEND);
 			$methods = $this->methodNames($body);
 			foreach ($methods as $method) {
 				file_put_contents($this->logFile, $method . "\n", FILE_APPEND);
 			}
 			$values = $dynamic ? $replies($body, $methods) : $replies[$index];
+			$index++;
 			if (isset($values[self::PACED])) {
 				$this->writePaced($client, $values[self::PACED]);
 			} elseif ($values !== null) {
@@ -259,42 +284,6 @@ class FakeRtorrentDaemon
 			@fwrite($client, $piece);
 			@fflush($client);
 		}
-	}
-
-	/** SCGI: "<len>:<headers>,<body>", with CONTENT_LENGTH in the headers. */
-	private function readRequest($client)
-	{
-		stream_set_timeout($client, 10);
-		$length = '';
-		while (($char = fread($client, 1)) !== '' && $char !== false && $char !== ':') {
-			$length .= $char;
-		}
-		$headers = '';
-		$want = (int)$length;
-		while (strlen($headers) < $want) {
-			$chunk = fread($client, $want - strlen($headers));
-			if ($chunk === '' || $chunk === false) {
-				break;
-			}
-			$headers .= $chunk;
-		}
-		fread($client, 1); // the ',' that closes the netstring
-		$fields = explode("\x00", $headers);
-		$contentLength = 0;
-		for ($i = 0; $i + 1 < count($fields); $i += 2) {
-			if ($fields[$i] === 'CONTENT_LENGTH') {
-				$contentLength = (int)$fields[$i + 1];
-			}
-		}
-		$body = '';
-		while (strlen($body) < $contentLength) {
-			$chunk = fread($client, $contentLength - strlen($body));
-			if ($chunk === '' || $chunk === false) {
-				break;
-			}
-			$body .= $chunk;
-		}
-		return $body;
 	}
 
 	private function methodNames($body)
@@ -329,7 +318,7 @@ class FakeRtorrentDaemon
 	private function reply($values)
 	{
 		if (isset($values[self::FAULT])) {
-			return self::faultReply($values[self::FAULT]);
+			return self::frame(self::faultReply($values[self::FAULT]));
 		}
 		if (isset($values[self::RAW])) {
 			return $values[self::RAW];
@@ -341,7 +330,13 @@ class FakeRtorrentDaemon
 				? '<value><i8>' . $value . '</i8></value>'
 				: '<value><string>' . self::escapeText((string)$value) . '</string></value>';
 		}
-		return $xml . '</data></array></value></param></params></methodResponse>';
+		return self::frame($xml . '</data></array></value></param></params></methodResponse>');
+	}
+
+	private static function frame($body)
+	{
+		return "Status: 200 OK\r\nContent-Type: text/xml\r\nContent-Length: "
+			. strlen($body) . "\r\n\r\n" . $body;
 	}
 
 	private static function faultReply($fault)

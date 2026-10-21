@@ -16,9 +16,8 @@
  * failures mean ruTorrent will not work; RECOMMENDED failures only limit
  * specific features or plugins.
  *
- * Everything here is self-contained (the only ruTorrent file it reads is
- * conf/config.php, to locate rtorrent and validate settings), so the checker
- * still runs when the rest of ruTorrent is broken by a missing prerequisite.
+ * It reads conf/config.php and uses the common SCGI transport, without loading
+ * the application or plugins, so missing prerequisites can still be diagnosed.
  */
 
 /**
@@ -236,7 +235,22 @@ foreach (array(
 ) as $ext => $why) {
 	check('req', extension_loaded($ext), "PHP extension: $ext", $why);
 }
-check('req', fn_available('fsockopen', $disabled), 'fsockopen() available', 'used to talk to rtorrent over SCGI');
+$transportFile = __DIR__.'/php/scgitransport.php';
+$transportAvailable = is_readable($transportFile);
+check('req', $transportAvailable, 'SCGI transport', 'php/scgitransport.php must be readable');
+if($transportAvailable) {
+	require_once($transportFile);
+	foreach(rSCGITransport::requiredFunctions() as $function) {
+		$available = fn_available($function, $disabled);
+		check('req', $available, $function.'() available', 'used to talk to rtorrent over SCGI');
+		$transportAvailable = $transportAvailable && $available;
+	}
+	$clock = false;
+	foreach(rSCGITransport::clockFunctions() as $function)
+		$clock = $clock || fn_available($function, $disabled);
+	check('req', $clock, 'hrtime() or microtime() available', 'times the SCGI transfer budget');
+	$transportAvailable = $transportAvailable && $clock;
+}
 
 // ---- Recommended extensions ----------------------------------------------
 foreach (array(
@@ -278,6 +292,9 @@ function load_ru_config() {
 			'topdir'    => isset($topDirectory) ? $topDirectory : null,
 			'log'       => isset($log_file) ? $log_file : null,
 			'tmp'       => isset($tempDirectory) ? $tempDirectory : null,
+			'max'       => isset($rpcMaxResponseBytes) ? $rpcMaxResponseBytes : null,
+			'connect'   => isset($rpcTimeOut) ? $rpcTimeOut : null,
+			'transfer'  => isset($rpcTransferTimeOut) ? $rpcTransferTimeOut : null,
 		);
 	};
 	return @$load();
@@ -292,6 +309,19 @@ if ($cfg === null) {
 		'$scgi_host / $scgi_port', 'rtorrent SCGI address: ' . Requirements::scgiLabel($cfg['scgi_host'], $cfg['scgi_port']));
 	check('config', Requirements::xmlrpcMountPointValid($cfg['mount']),
 		'$XMLRPCMountPoint', 'must be set (config warns not to delete it); found: ' . var_export($cfg['mount'], true));
+	if(class_exists('rSCGITransport') && !rSCGITransport::isValidResponseLimit($cfg['max'])) {
+		check('config', false, '$rpcMaxResponseBytes', 'invalid value '.var_export($cfg['max'], true)
+			.'; using 104857600 bytes (100 MiB). Set an integer from 1 to 104857600.');
+	}
+	if(class_exists('rSCGITransport')) {
+		list($connect, $transfer) = rSCGITransport::timeouts($cfg['connect'], $cfg['transfer']);
+		if(!rSCGITransport::isValidTimeout($cfg['connect']))
+			check('config', false, '$rpcTimeOut', 'invalid value '.var_export($cfg['connect'], true)
+				.'; using 30 seconds. Set a positive number of seconds.');
+		if(!rSCGITransport::isValidTimeout($cfg['transfer']))
+			check('config', false, '$rpcTransferTimeOut', 'invalid value '.var_export($cfg['transfer'], true)
+				.'; using '.$transfer.' seconds, as for null. Set null or a positive number of seconds.');
+	}
 	if ($cfg['topdir'] !== null) {
 		$ok = Requirements::looksAbsolute($cfg['topdir']) && @is_dir($cfg['topdir']) && @is_readable($cfg['topdir']);
 		check('config', $ok, '$topDirectory', ($ok ? 'ok: ' : 'not an existing readable directory: ') . $cfg['topdir']);
@@ -366,17 +396,26 @@ function scgi_params($params) {
 		$xml .= '<param><value><string>' . htmlspecialchars($p, ENT_QUOTES) . '</string></value></param>';
 	return $xml;
 }
-function scgi_call($host, $port, $methodName, $params = array(), $asList = false) {
+// A check that prints nothing for a minute looks hung itself, so a probe
+// connects and waits within the WebUI's budgets, but no longer than this.
+if (!defined('ENV_CHECK_PROBE_SECONDS')) define('ENV_CHECK_PROBE_SECONDS', 10);
+function probe_budgets() {
+	global $cfg;
+	list($connect, $transfer) = rSCGITransport::timeouts($cfg['connect'], $cfg['transfer']);
+	return array(min($connect, (float)ENV_CHECK_PROBE_SECONDS), min($transfer, (float)ENV_CHECK_PROBE_SECONDS), $transfer, $connect);
+}
+function scgi_call($host, $port, $methodName, $params = array(), $asList = false, &$failure = null) {
+	global $cfg;
 	$body = '<?xml version="1.0"?><methodCall><methodName>' . $methodName . '</methodName><params>' . scgi_params($params) . '</params></methodCall>';
-	$hdr  = "CONTENT_LENGTH\x00" . strlen($body) . "\x00SCGI\x001\x00";
-	$packet = strlen($hdr) . ':' . $hdr . ',' . $body;
-	$fp = Requirements::isUnixSocket($host) ? @fsockopen($host, -1, $en, $es, 5) : @fsockopen($host, (int)$port, $en, $es, 5);
-	if (!$fp) return null;
-	@fwrite($fp, $packet);
-	$resp = '';
-	while (!feof($fp)) { $chunk = @fread($fp, 8192); if ($chunk === false) break; $resp .= $chunk; }
-	@fclose($fp);
-	if (strpos($resp, '<fault>') !== false) return null;
+	list($connect, $probe) = probe_budgets();
+	$resp = rSCGITransport::send($host, $port, $body, true, array('connectTimeout' => $connect,
+		'transferTimeout' => $probe, 'maxResponseBytes' => $cfg['max'],
+		'responseMode' => rSCGITransport::RESPONSE_BODY, 'temporaryDirectory' => $cfg['tmp']), $failure);
+	if ($resp === null) return null;
+	if (strpos($resp, '<fault>') !== false) {
+		$failure = 'fault';
+		return null;
+	}
 	if ($asList) {
 		if (preg_match_all('#<string>(.*?)</string>#s', $resp, $m)) return $m[1];
 		return array();
@@ -385,11 +424,27 @@ function scgi_call($host, $port, $methodName, $params = array(), $asList = false
 	if (preg_match('#<string>(.*?)</string>#s', $resp, $m)) return $m[1];
 	return null;
 }
-if ($cfg && Requirements::scgiConfigured($cfg['scgi_host'], $cfg['scgi_port'])) {
-	$ver = scgi_call($cfg['scgi_host'], $cfg['scgi_port'], 'system.client_version');
+if ($transportAvailable && $cfg && Requirements::scgiConfigured($cfg['scgi_host'], $cfg['scgi_port'])) {
+	$ver = scgi_call($cfg['scgi_host'], $cfg['scgi_port'], 'system.client_version', array(), false, $failure);
 	$where = Requirements::scgiLabel($cfg['scgi_host'], $cfg['scgi_port']);
 	if ($ver === null) {
-		check('rtorrent', null, 'rtorrent reachable', "could not reach rtorrent at $where -- is it running and is the SCGI address correct?");
+		if ($failure === 'read-timeout' || $failure === 'write-timeout') {
+			list(, $probe, $transfer) = probe_budgets();
+			$why = ($probe < $transfer)
+				? "rtorrent at $where did not answer within {$probe} seconds -- it may be busy; the WebUI waits up to {$transfer} seconds"
+				: "rtorrent at $where did not answer within the {$transfer}-second transfer budget -- it may be busy; raise \$rpcTransferTimeOut if this persists";
+		} elseif ($failure === 'connect-failed') {
+			list($probe, , , $connect) = probe_budgets();
+			$why = "could not reach rtorrent at $where -- is it running and is the SCGI address correct?"
+				. (($probe < $connect) ? " (this check connects within {$probe} seconds; the WebUI waits up to {$connect})" : '');
+		} elseif ($failure === 'fault') {
+			$why = "rtorrent at $where answered system.client_version with a fault";
+		} elseif ($failure !== null) {
+			$why = "rtorrent at $where sent no usable SCGI reply ($failure)";
+		} else {
+			$why = "rtorrent at $where answered system.client_version without a version";
+		}
+		check('rtorrent', null, 'rtorrent reachable', $why);
 	} else {
 		list($ok, $note) = Requirements::rtorrentSupport($ver);
 		check('rtorrent', $ok, 'rtorrent version', "$ver -- $note");
@@ -411,7 +466,7 @@ if ($cfg && Requirements::scgiConfigured($cfg['scgi_host'], $cfg['scgi_port'])) 
 		}
 	}
 } else {
-	check('rtorrent', null, 'rtorrent version', 'no usable SCGI address in config -- cannot check rtorrent');
+	check('rtorrent', null, 'rtorrent version', 'no usable SCGI address or transport -- cannot check rtorrent');
 }
 
 // ---- Render --------------------------------------------------------------
@@ -440,5 +495,5 @@ $lines[] = ($req_fail === 0)
 	: "RESULT: $req_fail required check(s) FAILED -- ruTorrent will not work until fixed.";
 $report = implode("\n", $lines) . "\n";
 
-fwrite(STDOUT, $report);
+echo $report;
 exit($req_fail === 0 ? 0 : 1);

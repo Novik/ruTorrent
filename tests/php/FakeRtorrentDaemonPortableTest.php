@@ -2,7 +2,9 @@
 
 require_once(__DIR__ . '/TestCase.php');
 require_once(__DIR__ . '/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/PhpProcess.php');
 require_once(__DIR__ . '/RtorrentProbeFixture.php');
+require_once(__DIR__ . '/TestTree.php');
 require_once(__DIR__ . '/../../php/xmlrpc.php');
 
 /** A test-owned callable whose class has to be loaded in the worker. */
@@ -28,60 +30,32 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 
 	public function tearDown()
 	{
-		foreach(glob($this->base . '/*') as $file)
-			unlink($file);
-		rmdir($this->base);
+		TestTree::remove($this->base);
 	}
 
-	private function child($mode, $withoutIni = true, $disablePcntl = true)
+	private function child($mode, $withoutIni = true, $disablePcntl = true, $environment = array())
 	{
-		$command = array(PHP_BINARY);
+		$arguments = array();
 		if($withoutIni)
-			$command[] = '-n';
+			$arguments[] = '-n';
 		if($disablePcntl)
-		{
-			$command[] = '-d';
-			$command[] = 'disable_functions=pcntl_fork,pcntl_waitpid,posix_kill';
-		}
-		$source = 'require ' . var_export(__DIR__ . '/FakeRtorrentDaemonPortableTest.php', true) . ';'
+			array_push($arguments, '-d', 'disable_functions=pcntl_fork,pcntl_waitpid,posix_kill');
+		// conf/config.php reads RU_LOG_FILE from $_ENV, which a php.ini
+		// without E in variables_order leaves empty.
+		array_push($arguments, '-d', 'variables_order=EGPCS', '-d', 'display_errors=stderr', '-r',
+			'require ' . var_export(__DIR__ . '/FakeRtorrentDaemonPortableTest.php', true) . ';'
 			. 'FakeRtorrentDaemonPortableTest::scenario('
-			. var_export($mode, true) . ',' . var_export($this->base, true) . ');';
-		$command = array_merge($command, array('-d', 'display_errors=stderr', '-r', $source));
-		$process = proc_open($command, array(0 => array('pipe', 'r'),
-			1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
-		if(!is_resource($process))
-			throw new RuntimeException('cannot start the fixture test child');
-		fclose($pipes[0]);
-		// Pipe streams do not honor stream_set_timeout(); wait on both without
-		// blocking so a peer that never starts cannot hang the regression itself.
-		stream_set_blocking($pipes[1], false);
-		stream_set_blocking($pipes[2], false);
-		$out = $errors = '';
-		$deadline = microtime(true) + 15;
-		while((!feof($pipes[1]) || !feof($pipes[2])) && microtime(true) < $deadline)
-		{
-			$read = array();
-			foreach(array(1, 2) as $fd)
-				if(!feof($pipes[$fd])) $read[] = $pipes[$fd];
-			$write = $except = null;
-			if(stream_select($read, $write, $except, 0, 100000) > 0)
-			{
-				foreach($read as $pipe)
-				{
-					$chunk = stream_get_contents($pipe);
-					if($pipe === $pipes[1]) $out .= $chunk;
-					else $errors .= $chunk;
-				}
-			}
-		}
-		$timedOut = !feof($pipes[1]) || !feof($pipes[2]);
-		if($timedOut) proc_terminate($process);
-		fclose($pipes[1]);
-		fclose($pipes[2]);
-		$code = proc_close($process);
-		$this->assertTrue(!$timedOut && $code === 0 && $out === "OK\n" && $errors === '',
+			. var_export($mode, true) . ',' . var_export($this->base, true) . ');');
+		@unlink($this->base . '/finally.pids');
+		// A peer that never starts cannot hang the regression past this timeout.
+		$run = PhpProcess::run($arguments, array('timeout' => 15, 'env' => $environment));
+		$finally = is_file($this->base . '/finally.pids')
+			? file($this->base . '/finally.pids', FILE_IGNORE_NEW_LINES) : array();
+		$this->assertTrue(!$run['timedOut'] && $run['code'] === 0 && $run['out'] === "OK\n"
+			&& $run['err'] === '' && count($finally) === 1,
 			$mode . ($withoutIni ? ' under php -n' : ' with php.ini')
-			. ': exit=' . $code . ', stdout=' . json_encode($out) . ', stderr=' . json_encode($errors));
+			. ': exit=' . $run['code'] . ', stdout=' . json_encode($run['out'])
+			. ', stderr=' . json_encode($run['err']) . ', finally ran in ' . json_encode($finally));
 	}
 
 	public function testQueuedRepliesWorkWithoutPcntlOrPosix()
@@ -116,6 +90,34 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 		$this->child('closure-unavailable');
 	}
 
+	public function testAConnectionWithoutARequestDoesNotStopTheWorker()
+	{
+		$this->child('empty-client');
+	}
+
+	public function testAForkedDaemonSurvivesAConnectionWithoutARequest()
+	{
+		$this->child('fork-empty-client', false, false);
+	}
+
+	public function testAForkedDaemonThatFailsNeverReturnsIntoTheTest()
+	{
+		$this->child('fork-closure-throws', false, false);
+	}
+
+	public function testTheRequestLogStaysInThePrivateFile()
+	{
+		// The dropped reply in the queue makes rXMLRPCRequest log a failure
+		// line. Nothing can create this RU_LOG_FILE, so a line that went to
+		// conf/config.php's log instead of the private one is a warning on
+		// stderr.
+		@unlink($this->base . '/errors.log');
+		$this->child('queue', true, true, array('RU_LOG_FILE' => '/proc/rutorrent-none/errors.log'));
+		$this->assertTrue(is_file($this->base . '/errors.log')
+			&& strpos(file_get_contents($this->base . '/errors.log'), 'rXMLRPCRequest: ') !== false,
+			'the failure line is in the private log');
+	}
+
 	private static function expect($condition, $message)
 	{
 		if(!$condition)
@@ -127,8 +129,24 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 		$GLOBALS['scgi_host'] = '127.0.0.1';
 		$GLOBALS['scgi_port'] = $daemon->port();
 		$GLOBALS['rpcTimeOut'] = 3;
+		// A forked daemon that died leaves the listener open in this process,
+		// so a request would otherwise wait for default_socket_timeout.
+		$GLOBALS['rpcTransferTimeOut'] = 3;
 		$GLOBALS['rpcLogCalls'] = false;
 		return rXMLRPCRequest::send($body);
+	}
+
+	/** One client that sends nothing and one that stops inside the netstring. */
+	private static function connectWithoutRequest($daemon)
+	{
+		foreach(array('', '24:CONTENT_LENGTH') as $partial)
+		{
+			$client = @stream_socket_client('tcp://127.0.0.1:' . $daemon->port(), $errno, $error, 3);
+			self::expect(is_resource($client), 'a client connects to the daemon: ' . $error);
+			if($partial !== '')
+				fwrite($client, $partial);
+			fclose($client);
+		}
 	}
 
 	/** Invoked by an isolated PHP process, including one with no loaded ini. */
@@ -136,24 +154,52 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 	{
 		$daemon = null;
 		$code = 0;
+		$GLOBALS['log_file'] = $base . '/errors.log';
 		try
 		{
 			$body = "<methodCall><methodName>probe</methodName><params>line\n2</params></methodCall>";
-			if($mode === 'closure' || $mode === 'closure-unavailable')
+			if(in_array($mode, array('closure', 'closure-unavailable', 'fork-empty-client', 'fork-closure-throws'), true))
 			{
 				$available = function_exists('pcntl_fork') && function_exists('pcntl_waitpid')
 					&& function_exists('posix_kill');
+				$reply = ($mode === 'fork-closure-throws')
+					? function($request) { throw new RuntimeException('scripted closure failure'); }
+					: function($request) { return array($request); };
 				try
 				{
-					$daemon = new FakeRtorrentDaemon(function($request) { return array($request); }, $base . '/closure');
-					self::expect($available, 'closures cannot fork without pcntl and posix');
-					self::expect(strpos(self::request($daemon, $body), '&lt;methodCall&gt;') !== false,
-						'the closure receives the request body');
+					$daemon = new FakeRtorrentDaemon($reply, $base . '/closure');
 				}
 				catch(RuntimeException $error)
 				{
 					self::expect(!$available && strpos($error->getMessage(), 'closure reply requires') !== false,
 						'an unavailable closure has an actionable refusal');
+				}
+				self::expect($available === ($daemon !== null), 'closures fork only with pcntl and posix');
+				if($daemon !== null && $mode === 'fork-closure-throws')
+				{
+					self::expect(self::request($daemon, $body) === false, 'a closure that throws sends no reply');
+					// The child reports and exits on its own; a child that
+					// returned into this frame runs the finally block below.
+					$report = $base . '/closure.server.err';
+					for($i = 0; $i < 100; $i++)
+					{
+						clearstatcache();
+						if(strpos((string)@file_get_contents($report), "\n") !== false
+							|| is_file($base . '/finally.pids'))
+							break;
+						usleep(50000);
+					}
+					self::expect(strpos((string)@file_get_contents($report),
+						'RuntimeException: scripted closure failure') !== false,
+						'the forked child names its failure in its error file');
+				}
+				elseif($daemon !== null)
+				{
+					if($mode === 'fork-empty-client')
+						self::connectWithoutRequest($daemon);
+					self::expect(strpos(self::request($daemon, $body), '&lt;methodCall&gt;') !== false,
+						'the closure receives the request body');
+					self::expect($daemon->calls() === array('probe'), 'only the request is logged as one');
 				}
 			}
 			else
@@ -162,13 +208,25 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 				$disabled = array_map('trim', explode(',', ini_get('disable_functions')));
 				self::expect(array_diff(array('pcntl_fork', 'pcntl_waitpid', 'posix_kill'), $disabled) === array(),
 					'the parent disables its fork, wait and signal functions');
-				if($mode === 'queue')
+				if($mode === 'empty-client')
 				{
-					$raw = "Status: 200 OK\r\n\r\n0\x00exact\x80";
+					$daemon = new FakeRtorrentDaemon(array(array(1)), $base . '/empty-client');
+					self::connectWithoutRequest($daemon);
+					self::expect(strpos((string)self::request($daemon, $body), '<i8>1</i8>') !== false,
+						'the worker still answers after connections without a request');
+					self::expect($daemon->calls() === array('probe'), 'only the request is logged as one');
+				}
+				elseif($mode === 'queue')
+				{
+					$rawBody = "0\x00exact\x80";
+					$raw = "Status: 200 OK\r\nContent-Length: " . strlen($rawBody) . "\r\n\r\n" . $rawBody;
+					$pacedChunks = array('prefix', '0', 'suffix');
+					$pacedHeader = "Status: 200 OK\r\nContent-Length: " . strlen(implode('', $pacedChunks)) . "\r\n\r\n";
+					$pacedChunks[0] = $pacedHeader . $pacedChunks[0];
 					$daemon = new FakeRtorrentDaemon(array(array(7, "a&<b>\"\\\x80"),
 						FakeRtorrentDaemon::fault('missing & gone', -500),
 						FakeRtorrentDaemon::raw($raw), null,
-						FakeRtorrentDaemon::paced(array('prefix', '0', 'suffix'), 20000)), $base . '/queue');
+						FakeRtorrentDaemon::paced($pacedChunks, 20000)), $base . '/queue');
 					$reply = self::request($daemon, $body);
 					self::expect(strpos($reply, '<i8>7</i8>') !== false
 						&& strpos($reply, "a&amp;&lt;b&gt;\"\\\x80") !== false, 'scalar XML preserves literal bytes');
@@ -176,8 +234,8 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 					self::expect(strpos($reply, '<i4>-500</i4>') !== false
 						&& strpos($reply, 'missing &amp; gone') !== false, 'fault code and message survive');
 					self::expect(self::request($daemon, $body) === $raw, 'raw replies preserve every byte');
-					self::expect(self::request($daemon, $body) === '', 'null drops the reply');
-					self::expect(self::request($daemon, $body) === 'prefix0suffix', 'paced pieces include the single zero');
+					self::expect(self::request($daemon, $body) === false, 'a dropped reply fails the SCGI exchange');
+					self::expect(self::request($daemon, $body) === $pacedHeader . 'prefix0suffix', 'paced pieces include the single zero');
 					self::expect($daemon->calls() === array_fill(0, 5, 'probe'), 'every request is logged once');
 					self::expect($daemon->bodies() === array_fill(0, 5, $body), 'body logs retain record boundaries');
 					self::expect($daemon->received('probe') && !$daemon->received('absent'), 'received uses the method log');
@@ -246,6 +304,9 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 		finally
 		{
 			if($daemon !== null) $daemon->stop();
+			// Only this process may get here: a forked daemon that returned
+			// into this frame would add a second line.
+			file_put_contents($base . '/finally.pids', getmypid() . "\n", FILE_APPEND);
 		}
 		if($code !== 0) exit($code);
 	}

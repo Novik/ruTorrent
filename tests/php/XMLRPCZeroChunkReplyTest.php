@@ -1,30 +1,15 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/GlobalSettingsFixture.php');
 require_once(__DIR__ . '/../../php/xmlrpc.php');
 require_once(__DIR__ . '/FakeRtorrentDaemon.php');
 
 /**
- * rXMLRPCRequest::send() is the SCGI transport under every call run() makes,
- * and it reads the answer in whatever pieces the socket gives it. How the
- * answer divides between reads is the kernel's business, not the daemon's: a
- * reply written in one call still arrives in as many pieces as TCP chose, and
- * one of those pieces can be a single byte.
- *
- * A read of one byte is only special when that byte is '0', which is the one
- * non-empty string PHP calls false. An answer divided there is read as having
- * ended, and what the reader keeps is the part before the zero.
- *
- * It is an answer a caller cannot tell from a short one: the reply ends
- * mid-document, so isCompleteAnswer() refuses it and the request fails -- a
- * d.multicall2 that reports no torrents, a load that reports it did not
- * happen, with the daemon having answered correctly. Zeros are everywhere in
- * these replies: in the SCGI status line, in a hash, in a byte count, in a
- * port number.
- *
- * The daemon here writes each piece in a call of its own, with a pause
- * between, so the reader's reads fall where the test says and not where the
- * kernel happens to put them.
+ * A single-byte socket read containing "0" is data, although PHP considers
+ * that string false. Dropping it truncates the SCGI frame and must fail the
+ * request rather than publish a partial answer. The peer pauses between
+ * chunks so the zero reaches the reader on its own.
  */
 class XMLRPCZeroChunkReplyTest extends TestCase
 {
@@ -35,11 +20,13 @@ class XMLRPCZeroChunkReplyTest extends TestCase
 	);
 
 	private $previousSettings;
+	private $previousGlobals;
 	private $base;
 	private $daemon;
 
 	public function setUp()
 	{
+		$this->previousGlobals = GlobalSettingsFixture::scgi();
 		// run() asks the settings to adapt old command names and to size a
 		// multicall; a fixed version keeps it from asking a daemon first.
 		$settings = (new ReflectionClass('rTorrentSettings'))->newInstanceWithoutConstructor();
@@ -50,21 +37,32 @@ class XMLRPCZeroChunkReplyTest extends TestCase
 
 		$GLOBALS['scgi_host'] = '127.0.0.1';
 		$GLOBALS['rpcTimeOut'] = 5;
+		$GLOBALS['rpcTransferTimeOut'] = 5;
+		unset($GLOBALS['rpcMaxResponseBytes']);
 		$GLOBALS['rpcLogCalls'] = false;
 		$GLOBALS['rpcLogFaults'] = false;
 
 		$this->base = sys_get_temp_dir() . '/rutorrent-zero-chunk-' . getmypid();
 		@mkdir($this->base, 0700, true);
+		$GLOBALS['log_file'] = $this->base . '/errors.log';
+		$GLOBALS['tempDirectory'] = $this->base;
+		$GLOBALS['tempDirectory_init_done'] = false;
 	}
 
 	public function tearDown()
 	{
-		self::swapSettings($this->previousSettings);
-		$this->stopDaemon();
-		foreach (glob($this->base . '/*') as $file) {
-			@unlink($file);
+		try
+		{
+			self::swapSettings($this->previousSettings);
+			$this->stopDaemon();
+			foreach(glob($this->base . '/*') as $file)
+				@unlink($file);
+			@rmdir($this->base);
 		}
-		@rmdir($this->base);
+		finally
+		{
+			$this->previousGlobals->restore();
+		}
 	}
 
 	/** Install $settings as rTorrentSettings::get()'s answer, returning the previous one. */
