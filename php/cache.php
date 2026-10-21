@@ -4,7 +4,7 @@ require_once( 'util.php' );
 class rCache
 {
 	protected $dir;
-	// How a cache file looked when get() loaded it into a merge-capable
+	// How a cache file looked when get() loaded it or set() stored a merge-capable
 	// object: the stamp stampOf() read and a digest of the bytes, which
 	// decides when the stamp repeats. Kept per loaded object, not per cache
 	// key: two objects of one key in one process can hold different versions,
@@ -30,9 +30,8 @@ class rCache
 		}
 		return(true);
 	}
-	// What get() recorded when it loaded this very object; null when the
-	// object was not loaded from a cache file, or when its class has no
-	// merge() and get() therefore recorded nothing.
+	// What get() or set() recorded for this very object; null when neither
+	// loaded nor stored it, or when its class has no merge().
 	protected static function loadedStamp( $rss )
 	{
 		$loaded = self::$loadStamps[spl_object_id($rss)] ?? null;
@@ -288,6 +287,11 @@ class rCache
 					if(@rename( $tmpName, $name ))
 					{
 						@chmod($name,$profileMask & 0666);
+						// The next store must not merge this object's own published version.
+						if(is_object($rss) && method_exists($rss,"merge"))
+							self::$loadStamps[spl_object_id($rss)] = array(
+								'object' => WeakReference::create($rss),
+								'stamp' => self::stampOf($name), 'digest' => hash('sha256',$str));
 						flock( $lock, LOCK_UN );
 						fclose( $lock );
 						return(true);
