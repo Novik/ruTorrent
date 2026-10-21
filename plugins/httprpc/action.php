@@ -791,20 +791,15 @@ switch($mode)
 				CachedEcho::send(XMLRPCProxy::rejectionFault($decision['method']), "text/xml");
 				exit;
 			}
-			$result = rXMLRPCRequest::send($decision['payload'], $decision['trusted']);
+			$result = rXMLRPCRequest::send($decision['payload'], $decision['trusted'], $failure,
+				rSCGITransport::RESPONSE_BODY);
 			if($result === false)
 			{
 				header("HTTP/1.0 500 Server Error");
 				CachedEcho::send("Could not complete the rTorrent XMLRPC request.", "text/html");
 				exit;
 			}
-			if(!empty($result))
-			{
-				$pos = strpos($result, "\r\n\r\n");
-				if($pos !== false)
-					$result = substr($result,$pos+4);
-				CachedEcho::send($result, "text/xml");
-			}
+			CachedEcho::send($result, "text/xml");
 		}
 		break;
 	}

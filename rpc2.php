@@ -43,6 +43,7 @@ if(!isset($_SERVER['RUTORRENT_XMLRPC_ENDPOINT']) ||
 
 require_once(dirname(__FILE__).'/conf/config.php');
 require_once(dirname(__FILE__).'/php/xmlrpc_proxy.php');
+require_once(dirname(__FILE__).'/php/scgitransport.php');
 
 $policyFile = dirname(__FILE__).'/conf/xmlrpc_proxy.php';
 if(is_file($policyFile) && is_readable($policyFile))
@@ -80,9 +81,7 @@ function rpc2_resolve_path($path)
 }
 
 /**
- * Written here rather than through FileUtil so that this file needs nothing
- * but the proxy and the configuration — the point of the endpoint is that it
- * does one thing.
+ * Keep logging independent of ruTorrent's profile/settings bootstrap.
  */
 function rpc2_log($message)
 {
@@ -110,42 +109,22 @@ function rpc2_fault($status, $message)
 }
 
 /**
- * One SCGI request to rtorrent, with the trust the policy decided on. Same
- * wire format ruTorrent's rXMLRPCRequest::send() uses; kept here so the
- * endpoint does not need ruTorrent's settings bootstrap to make a call.
+ * One exchange through the shared transport, without the settings bootstrap.
  */
 function rpc2_send($payload, $trusted)
 {
-	global $scgi_host, $scgi_port, $rpcTimeOut;
-
-	$timeout = empty($rpcTimeOut) ? 30 : $rpcTimeOut;
-	$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, $timeout);
-	if(!$socket)
+	global $scgi_host;
+	$result = rSCGITransport::sendConfigured($payload, $trusted,
+		array('responseMode' => rSCGITransport::RESPONSE_BODY), $failure, $error);
+	if($result === null)
 	{
-		rpc2_log('cannot reach rtorrent at '.$scgi_host.': '.$errstr);
-		return null;
+		rpc2_log(($failure === 'connect-failed') ? 'cannot reach rtorrent at '.$scgi_host.': '.$error
+			: rSCGITransport::describeFailure($failure));
+		rpc2_fault('502 Bad Gateway', ($failure === 'connect-failed')
+			? 'Could not reach rTorrent over XMLRPC. Is rTorrent running?'
+			: 'Could not complete the rTorrent XMLRPC request.');
 	}
-
-	$header = "CONTENT_LENGTH\x00".strlen($payload)."\x00CONTENT_TYPE\x00text/xml\x00"
-		."SCGI\x001\x00UNTRUSTED_CONNECTION\x00".($trusted ? '0' : '1')."\x00";
-	$request = strlen($header).':'.$header.','.$payload;
-
-	stream_set_timeout($socket, $timeout);
-	@fwrite($socket, $request, strlen($request));
-
-	$response = '';
-	while(!feof($socket))
-	{
-		$chunk = fread($socket, 65536);
-		if($chunk === false)
-			break;
-		$response .= $chunk;
-	}
-	fclose($socket);
-
-	// rtorrent answers with its own headers; the body is what the client asked for.
-	$split = strpos($response, "\r\n\r\n");
-	return ($split === false) ? $response : substr($response, $split + 4);
+	return $result;
 }
 
 if(!isset($_SERVER['REQUEST_METHOD']) || ($_SERVER['REQUEST_METHOD'] !== 'POST'))
@@ -197,8 +176,6 @@ if($decision['action'] !== 'send')
 	rpc2_fault('403 Forbidden', XMLRPCProxy::rejectionMessage($decision['method'] ?? null));
 
 $result = rpc2_send($decision['payload'], $decision['trusted']);
-if($result === null)
-	rpc2_fault('502 Bad Gateway', 'Could not reach rTorrent over XMLRPC. Is rTorrent running?');
 
 header('Content-Type: text/xml');
 header('Content-Length: '.strlen($result));
