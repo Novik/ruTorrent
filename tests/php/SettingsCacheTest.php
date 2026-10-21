@@ -224,4 +224,27 @@ class SettingsCacheTest extends TestCase
 			'An unprobed object does not remove a hook from the cache: ' . json_encode($cached->hooks)
 		);
 	}
+	// The format before 63f15c6c stored a bare plugin name where a subject
+	// array sits now, and a cache written by that version can still be the one
+	// on disk, so the name has to be read out of either shape.
+	public function testUnregisteringReadsAPlainNameSubject()
+	{
+		$settings = $this->makeSettings(false);
+		$settings->hooks = array(
+			"RSSFetched" => array("rssurlrewrite"),
+			"URLFetched" => array("rssurlrewrite", $this->hookSubject("_cloudflare", 20)),
+		);
+
+		$settings->unregisterEventHook("rssurlrewrite", array("RSSFetched", "URLFetched"), false);
+
+		$this->assertTrue(
+			!array_key_exists("RSSFetched", $settings->hooks),
+			"A plain-name subject is removed and retires its event key"
+		);
+		$this->assertEquals(
+			array($this->hookSubject("_cloudflare", 20)),
+			array_values($settings->hooks["URLFetched"]),
+			"A plain-name subject is removed from beside a subject array"
+		);
+	}
 }
