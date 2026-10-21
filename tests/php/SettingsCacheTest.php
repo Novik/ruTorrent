@@ -195,7 +195,7 @@ class SettingsCacheTest extends TestCase
 			'The hook is in the cache before it is removed'
 		);
 
-		$settings->unregisterEventHook($this->hookSubject('extratio'), 'LabelChanged');
+		$settings->unregisterEventHook('extratio', 'LabelChanged');
 
 		$this->assertTrue($settings->hooks === array(), 'The removal happens in the object');
 		$cached = $this->readCached();
@@ -216,7 +216,7 @@ class SettingsCacheTest extends TestCase
 
 		$failed = $this->makeSettings(false);
 		$failed->registerEventHook('extratio', 'LabelChanged', 10, false);
-		$failed->unregisterEventHook($this->hookSubject('extratio'), 'LabelChanged');
+		$failed->unregisterEventHook('extratio', 'LabelChanged');
 
 		$cached = $this->readCached();
 		$this->assertTrue(
