@@ -15,7 +15,15 @@ class ABTorrentsEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'https://abtorrents.me';
+		// The tracker's origin is not written here: it is loginmgr's
+		// $abTorrentsOrigin, read through the ABTorrents account, so that the
+		// search, the download links and the login use one host.
+		$url = $this->accountOrigin('ABTorrents');
+		if($url==='')
+		{
+			$this->unconfiguredOriginEntry('ABTorrents','abTorrentsOrigin',$ret);
+			return;
+		}
 		if($useGlobalCats)
 			$categories = array( 'all'=>'&c0=1' );
 		else
