@@ -209,16 +209,182 @@ class PluginInitPathsTest extends TestCase
 	}
 
 	/**
-	 * Both loaders reach init.php by the same relative path, so both hand it
-	 * the same working directory.
+	 * Stands in for a variable part of a path built at runtime.
 	 */
-	public function testBothLoadersReachInitByTheSameRelativePath()
+	const HOLE = "\0";
+
+	/**
+	 * The index of the next token that carries meaning, skipping whitespace and
+	 * comments, or null at the end of the file.
+	 */
+	private function nextSignificant($tokens, $k)
 	{
-		foreach (array('initplugins.php', 'getplugins.php') as $loader) {
-			$src = file_get_contents($this->root . '/php/' . $loader);
-			$this->assertTrue(
-				strpos($src, '"../plugins/".$file."/init.php"') !== false,
-				'php/' . $loader . ' loads each plugin as ../plugins/<name>/init.php');
+		for ($total = count($tokens); $k < $total; $k++) {
+			if (!is_array($tokens[$k]) || !in_array($tokens[$k][0],
+				array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+				return $k;
+			}
 		}
+		return null;
+	}
+
+	/**
+	 * Every string $file builds out of literals and variables, as
+	 * array('line' => ..., 'template' => the text with the file's own directory
+	 * substituted for either spelling of the directory anchor and a HOLE where
+	 * each variable part goes, 'holes' => how many variable parts there were).
+	 *
+	 * Neither loader requires a plugin's init.php by a literal path: each one
+	 * builds the path from the plugin's directory name, tests it with
+	 * is_readable() and requires the result. The expression that builds it is
+	 * therefore what has to be judged, and reading it from the tokens leaves
+	 * this test indifferent to whether it is written as a concatenation or as
+	 * an interpolation, and to how either is spaced.
+	 *
+	 * A run that reaches a call other than the two directory anchors is
+	 * dropped: what it produces cannot be known without running it.
+	 */
+	private function stringTemplatesIn($file)
+	{
+		$tokens = token_get_all(file_get_contents($file));
+		$total = count($tokens);
+		$found = array();
+		$template = '';
+		$holes = 0;
+		$line = 0;
+		$usable = true;
+		for ($i = 0; $i < $total; $i++) {
+			$t = $tokens[$i];
+			$id = is_array($t) ? $t[0] : null;
+			$text = is_array($t) ? $t[1] : $t;
+			$piece = null;
+
+			// Separators, and the punctuation of an interpolated string: they
+			// carry no text of their own and do not end the run.
+			if ($id === T_WHITESPACE || $id === T_COMMENT || $id === T_DOC_COMMENT
+				|| $id === T_CURLY_OPEN || $text === '"' || $text === '}'
+				|| $text === '.') {
+				continue;
+			}
+
+			if ($id === T_CONSTANT_ENCAPSED_STRING) {
+				$piece = substr($t[1], 1, -1);
+			} elseif ($id === T_ENCAPSED_AND_WHITESPACE) {
+				// A literal run between the interpolations of "...".
+				$piece = $t[1];
+			} elseif ($id === T_DIR) {
+				$piece = dirname($file);
+			} elseif ($id === T_VARIABLE) {
+				$piece = self::HOLE;
+				$holes++;
+			} elseif ($id === T_STRING && strtolower($t[1]) === 'dirname') {
+				// dirname(__FILE__), the pre-5.3 spelling of the anchor.
+				$open = $this->nextSignificant($tokens, $i + 1);
+				$arg = ($open === null) ? null : $this->nextSignificant($tokens, $open + 1);
+				$close = ($arg === null) ? null : $this->nextSignificant($tokens, $arg + 1);
+				if ($close !== null && $tokens[$open] === '(' && $tokens[$close] === ')'
+					&& is_array($tokens[$arg]) && $tokens[$arg][0] === T_FILE) {
+					$piece = dirname($file);
+					$i = $close;
+				} else {
+					$usable = false;
+					continue;
+				}
+			} elseif ($id === T_STRING || $text === '(') {
+				$usable = false;
+				continue;
+			}
+
+			if ($piece !== null) {
+				if ($template === '') {
+					$line = is_array($t) ? $t[2] : $line;
+				}
+				$template .= $piece;
+				continue;
+			}
+
+			// Anything else ends the run.
+			if ($template !== '' && $usable) {
+				$found[] = array('line' => $line, 'template' => $template,
+					'holes' => $holes);
+			}
+			$template = '';
+			$holes = 0;
+			$usable = true;
+		}
+		if ($template !== '' && $usable) {
+			$found[] = array('line' => $line, 'template' => $template,
+				'holes' => $holes);
+		}
+		return $found;
+	}
+
+	/**
+	 * A template with its hole spelled out, for a failure message.
+	 */
+	public function readable($template)
+	{
+		return str_replace(self::HOLE, '<plugin>', $template);
+	}
+
+	/**
+	 * What each loader does with that working directory, rather than how the
+	 * line is written. The path a loader builds for a plugin must reach every
+	 * plugin in the tree from php/; must reach none of them from anywhere else,
+	 * which is the dependency the first test rests on; and must be the same
+	 * path in both loaders, so that a plugin cannot be loaded from one place by
+	 * one loader and from another by the other.
+	 */
+	public function testBothLoadersBuildTheSameCwdRelativePluginInitPath()
+	{
+		// An empty directory of our own, so nothing that happens to sit in the
+		// system temp directory can answer for a path that does not resolve.
+		$elsewhere = sys_get_temp_dir() . '/rutorrent-initpaths-loaders-' . getmypid();
+		@mkdir($elsewhere);
+
+		$built = array();
+		foreach (array('initplugins.php', 'getplugins.php') as $name) {
+			$loader = $this->root . '/php/' . $name;
+			$reaching = array();
+			foreach ($this->stringTemplatesIn($loader) as $tpl) {
+				if ($tpl['holes'] === 1 && substr($tpl['template'], -9) === '/init.php') {
+					$reaching[$tpl['template']] = true;
+				}
+			}
+			$this->assertTrue(count($reaching) === 1,
+				'php/' . $name . ' builds one plugin init.php path out of the'
+				. ' plugin name (' . count($reaching) . ': '
+				. implode(', ', array_map(array($this, 'readable'),
+					array_keys($reaching))) . ')');
+			if (count($reaching) !== 1) {
+				continue;
+			}
+			$template = key($reaching);
+
+			$checked = 0;
+			foreach ($this->initFiles() as $init) {
+				$plugin = basename(dirname($init));
+				$path = str_replace(self::HOLE, $plugin, $template);
+				$this->assertTrue(
+					$this->resolveAsPhpWould($loader, $path, $this->root . '/php')
+						=== realpath($init),
+					'php/' . $name . ' reaches plugins/' . $plugin
+						. '/init.php from the loader working directory php/');
+				$this->assertTrue(
+					$this->resolveAsPhpWould($loader, $path, $elsewhere) === false,
+					'php/' . $name . ' reaches plugins/' . $plugin
+						. '/init.php only from php/, so it is the working'
+						. ' directory that places it');
+				$checked++;
+			}
+			$this->assertTrue($checked > 0,
+				'found plugins for php/' . $name . ' to be checked against');
+			$built[$name] = $template;
+		}
+		@rmdir($elsewhere);
+
+		$this->assertTrue(count($built) === 2 && count(array_unique($built)) === 1,
+			'both loaders build the same path ('
+			. implode(' vs ', array_map(array($this, 'readable'), $built)) . ')');
 	}
 }
