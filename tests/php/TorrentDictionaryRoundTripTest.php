@@ -65,10 +65,13 @@ class TorrentDictionaryRoundTripTest extends TestCase
 	/** Ordinary metainfo around $info, with $extra top level keys added. */
 	private function metainfoAround($info, $extra = array())
 	{
-		return $this->dict(array_merge(array(
+		// A union rather than array_merge(), which renumbers integer keys: a
+		// numeric key in $extra has to stay the key the caller wrote, or the
+		// fixture states something other than the case under test.
+		return $this->dict($extra + array(
 			'announce' => 'http://tracker.invalid/announce',
 			'info' => $info,
-		), $extra));
+		));
 	}
 
 	/** The raw bencode of the top level info value, located independently. */
@@ -165,6 +168,52 @@ class TorrentDictionaryRoundTripTest extends TestCase
 		$this->assertWrittenBackOrRefused('a BEP 52 file tree with a directory named 2024',
 			$this->bencode($this->metainfoAround($this->info(array('file tree' => $tree)))),
 			'refused');
+	}
+
+	/**
+	 * The top level dictionary, which is the one dictionary in a torrent that
+	 * does not reach the encoder the way every other one does. The others are
+	 * carried as the array decode_dictionary() built; this one is merged with
+	 * the caller's own metainfo in the constructor first, and a merge that
+	 * renumbers integer keys writes the torrent back under a key it never
+	 * carried.
+	 *
+	 * The report above does not cover it. It fires on a dictionary whose keys
+	 * are all decimal numbers, and metainfo has announce and info beside
+	 * them, so the top level is exactly the shape that report leaves alone.
+	 */
+	public function testNumericTopLevelKeysAreWrittenBack()
+	{
+		foreach (array(
+			'a top level key of 5' => array('5' => 7),
+			'a top level key of 0' => array('0' => 7),
+			'two numeric top level keys' => array('5' => 7, '6' => 8),
+			'a negative numeric top level key' => array('-1' => 7),
+			'a numeric top level key beside an ordinary one' => array('5' => 7, 'comment' => 'hello'),
+		) as $what => $extra) {
+			$this->assertWrittenBackOrRefused($what,
+				$this->bencode($this->metainfoAround($this->info(), $extra)),
+				'written back');
+		}
+	}
+
+	/**
+	 * Which side of the merge wins, pinned because the merge is what keeps
+	 * the numeric keys above. A torrent read from a file announces to the
+	 * tracker the file names, whatever the caller passed alongside it, and a
+	 * key the file has not got is still taken from the caller.
+	 */
+	public function testTheDecodedKeysWinOverTheCallersMetainfo()
+	{
+		$bytes = $this->bencode($this->metainfoAround($this->info()));
+		$torrent = new Torrent($bytes, array(
+			'announce' => 'http://elsewhere.invalid/announce',
+			'comment' => 'from the caller',
+		));
+		$this->assertTrue($torrent->announce() === 'http://tracker.invalid/announce',
+			'the announce in the file wins over the one given to the constructor');
+		$this->assertTrue($torrent->comment() === 'from the caller',
+			'a key the file has not got is taken from the constructor');
 	}
 
 	/**
