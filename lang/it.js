@@ -320,6 +320,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 h", 10800: "3 h"},
  badTempPath			: "L'utente che esegue il Webserver non ha i permessi di lettura/scrittura/esecuzione sulla cartella tmp. ruTorrent non funzionerà.",
  badTempPath2			: "L'utente che esegue rTorrent deve avere i permessi di lettura/esecuzione sulla cartella tmp. ruTorrent non funzionerà.",
+ worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash		: "Varia i dati di hash per fare cross-seeding",
  Recreate_files			: "Accoda la ricreazione di file",
  Address			: "Indirizzo",

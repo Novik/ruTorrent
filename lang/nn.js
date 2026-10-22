@@ -369,6 +369,8 @@ var theUILang = {
     "Webserverbrukaren har ikkje lese-, skrive- eller køyringstilgang til tmp-mappa. ruTorrent vil ikkje fungere.",
   badTempPath2:
     "rTorrent-brukaren har ikkje lese- eller køyringstilgang til tmp-mappa. ruTorrent vil ikkje fungere.",
+  worldWritableTempPath:
+    "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
   doRandomizeHash: "Gjer info-hashar tilfeldige for kryss-seeding",
   Recreate_files: "Lag filer på nytt",
   Address: "Adresse",

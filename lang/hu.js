@@ -319,6 +319,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 perc", 1800: "30 perc", 3600: "1 óra", 10800: "3 óra"},
  badTempPath			: "A webszerver felhasználónak nincs olvasási/írási/végrehajtási hozzáférése a tmp könyvtárhoz. A ruTorrent nem fog működni.",
  badTempPath2			: "Az rTorrent felhasználónak read/execute hozzáféréssel kell rendelkeznie a tmp könyvtárhoz. ruTorrent nem fog működni.",
+ worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash		: "Véletlenszerű info hash-ok a cross-seed",
  Recreate_files			: "Sorban álló fájlok újbóli létrehozása",
  Address			: "Cím",
