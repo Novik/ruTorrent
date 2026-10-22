@@ -2,6 +2,12 @@
 
 
 class AniDUBCheckImpl{
+    // The site is read over https, which is the scheme the loginmgr AniDUB
+    // account names. commonAccount::test() refuses a url weaker than its
+    // site's, so a cleartext request selects no account and reads the page a
+    // guest is shown.
+    const SITE = "https://tr.anidub.com";
+
     static public function download_torrent($url, $hash, $old_torrent){
         if( preg_match( '`^http://tr\.anidub\.com/\?newsid=(?P<id>\d+)$`',$url, $matches ) ) {
             $topic_id = $matches["id"];
@@ -30,7 +36,7 @@ class AniDUBCheckImpl{
             # exit, no way to get torrent file without this
             if ($torrent_quality === null) return ruTrackerChecker::STE_NOT_NEED;
 
-            $client = ruTrackerChecker::makeClient($url);
+            $client = ruTrackerChecker::makeClient(self::SITE."/?newsid=".$topic_id);
             if($client->status!=200) return ruTrackerChecker::STE_CANT_REACH_TRACKER;
 
             $resp = preg_replace( "/\r|\n/", "", $client->results);
@@ -41,7 +47,7 @@ class AniDUBCheckImpl{
             if (!preg_match('/\/engine\/download\.php\?id=\d{1,10}/i', $url_matches["url"], $m)) ruTrackerChecker::STE_CANT_REACH_TRACKER;
 
             $client->setcookies();
-            $client->fetchComplex("http://tr.anidub.com" . $url_matches["url"]);
+            $client->fetchComplex(self::SITE . $url_matches["url"]);
 
             if(intval($client->status)!=200) return (($client->status<0) ? ruTrackerChecker::STE_CANT_REACH_TRACKER : ruTrackerChecker::STE_DELETED );
 
