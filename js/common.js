@@ -1020,6 +1020,55 @@ function noty(msg, status, noTime) {
 	log(msg, noTime, "std", force);
 }
 
+// An add-torrent upload posts into a hidden frame; this reads what came back.
+// Null means the frame still holds the blank page it was inserted with, which
+// loads before the upload finishes. A failed request leaves the browser's own
+// error page there, and that page is cross-origin: reading it throws, so the
+// answer is empty.
+function uploadFrameAnswer(frame) {
+	var d = null;
+	try {
+		d = frame.contentDocument || frame.contentWindow.document;
+	} catch(e) {}
+	if(d && (d.location.href == "about:blank"))
+		return(null);
+	return((d && d.body) ? (d.body.textContent || d.body.innerText || "") : "");
+}
+
+// php/addtorrent.php answers an upload with a script of noty(text, kind)
+// calls, one per item. Run them against a local noty that collects the pairs
+// rather than reading the text out with a pattern: a batch writes several
+// calls, and the message lookup is spelled either as a dotted key or as
+// theUILang["addTorrent"+"<status>"], depending on the server's version. The
+// server writes every name and kind as an escaped JSON literal, so they stay
+// data; the caller renders them through noty() or the mobile plugin's
+// showAlert(), and both escape.
+// An answer with no call at all is a refusal or a failure -- the origin
+// check's 403, the web server's 413 or 5xx page, a lost connection -- and
+// becomes one error, so an upload never ends without a message.
+function uploadResults(answer) {
+	var results = [];
+	var collect = function(text, kind) {
+		results.push({text: String(text), kind: String(kind)});
+	};
+	// Only lines that start a call run: the renderer writes its calls on one
+	// line, and text printed around them, such as a PHP notice, is not part
+	// of the answer
+	String(answer).split("\n").forEach(function(line) {
+		line = line.trim();
+		if(line.indexOf("noty(") === 0) {
+			try {
+				(new Function("noty", "theUILang", line))(collect, theUILang);
+			} catch(e) {
+				console.error("unreadable add-torrent result:", e);
+			}
+		}
+	});
+	if(!results.length)
+		results.push({text: theUILang.addTorrentFailed, kind: "error"});
+	return(results);
+}
+
 function fallbackCopyToClipboard(text)
 {
 	var textarea = document.createElement("textarea");
