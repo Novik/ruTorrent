@@ -43,7 +43,7 @@ describe("the context menu scanner reports", () => {
       theContextMenu.add([label, command]);
     `);
     expect(f).toHaveLength(1);
-    expect(f[0]).toMatch(/fixture.js:3  string command/);
+    expect(f[0]).toMatch(/fixture.js:3 {2}string command/);
   });
 
   it("a string in one branch of a conditional", () => {
@@ -53,8 +53,8 @@ describe("the context menu scanner reports", () => {
       theContextMenu.add([label, fn || "theWebUI.foo()"]);
     `);
     expect(f).toHaveLength(2);
-    expect(f[0]).toMatch(/fixture.js:3  string command/);
-    expect(f[1]).toMatch(/fixture.js:4  string command/);
+    expect(f[0]).toMatch(/fixture.js:3 {2}string command/);
+    expect(f[1]).toMatch(/fixture.js:4 {2}string command/);
   });
 
   it("a string on a selected entry", () => {
@@ -82,7 +82,7 @@ describe("the context menu scanner reports", () => {
       theContextMenu.add([CMENU_CHILD, theUILang.Priority, _bf]);
     `);
     expect(f).toHaveLength(1);
-    expect(f[0]).toMatch(/fixture.js:5  string command \(built by concatenation\)/);
+    expect(f[0]).toMatch(/fixture.js:5 {2}string command \(built by concatenation\)/);
   });
 
   it("a string in a list rebuilt by concat and assignment", () => {
@@ -147,7 +147,7 @@ describe("the context menu scanner reports", () => {
       `
     );
     expect(f).toHaveLength(1);
-    expect(f[0]).toMatch(/^other1.js:17  string command \(built by concatenation\)/);
+    expect(f[0]).toMatch(/^other1.js:17 {2}string command \(built by concatenation\)/);
   });
 
   it("a string returned by an object method the menu is built from", () => {
@@ -204,11 +204,11 @@ describe("the context menu scanner reports", () => {
       `
     );
     expect(f).toHaveLength(5);
-    expect(f[0]).toMatch(/fixture.js:2  command could not be proved a function \(result of a call\)/);
-    expect(f[1]).toMatch(/fixture.js:3  command theWebUI.nothingDefinesThis: nothing in the tree defines a method/);
-    expect(f[2]).toMatch(/fixture.js:4  command nothingDefinesThisEither: nothing in the tree defines a function/);
-    expect(f[3]).toMatch(/fixture.js:5  command could not be proved a function \(computed property\)/);
-    expect(f[4]).toMatch(/fixture.js:6  command could not be proved a function \(BooleanLiteral\)/);
+    expect(f[0]).toMatch(/fixture.js:2 {2}command could not be proved a function \(result of a call\)/);
+    expect(f[1]).toMatch(/fixture.js:3 {2}command theWebUI.nothingDefinesThis: nothing in the tree defines a method/);
+    expect(f[2]).toMatch(/fixture.js:4 {2}command nothingDefinesThisEither: nothing in the tree defines a function/);
+    expect(f[3]).toMatch(/fixture.js:5 {2}command could not be proved a function \(computed property\)/);
+    expect(f[4]).toMatch(/fixture.js:6 {2}command could not be proved a function \(BooleanLiteral\)/);
   });
 
   it("an entry or list it cannot read", () => {
@@ -225,12 +225,12 @@ describe("the context menu scanner reports", () => {
       `
     );
     expect(f).toHaveLength(6);
-    expect(f[0]).toMatch(/fixture.js:2  entry entry came in as a parameter/);
-    expect(f[1]).toMatch(/fixture.js:3  entry someGlobalEntry is not bound here/);
-    expect(f[2]).toMatch(/fixture.js:4  entry someElement is not bound here/);
-    expect(f[3]).toMatch(/fixture.js:5  entry list comes from buildList\(\), which nothing in the tree defines/);
-    expect(f[4]).toMatch(/fixture.js:6  entry list could not be read \(MemberExpression\)/);
-    expect(f[5]).toMatch(/fixture.js:8  entry list list is passed to decorate, which the scanner does not follow/);
+    expect(f[0]).toMatch(/fixture.js:2 {2}entry entry came in as a parameter/);
+    expect(f[1]).toMatch(/fixture.js:3 {2}entry someGlobalEntry is not bound here/);
+    expect(f[2]).toMatch(/fixture.js:4 {2}entry someElement is not bound here/);
+    expect(f[3]).toMatch(/fixture.js:5 {2}entry list comes from buildList\(\), which nothing in the tree defines/);
+    expect(f[4]).toMatch(/fixture.js:6 {2}entry list could not be read \(MemberExpression\)/);
+    expect(f[5]).toMatch(/fixture.js:8 {2}entry list list is passed to decorate, which the scanner does not follow/);
   });
 
   it("an entry or list changed in place in a way it does not follow", () => {
@@ -246,9 +246,9 @@ describe("the context menu scanner reports", () => {
       `
     );
     expect(f).toHaveLength(3);
-    expect(f[0]).toMatch(/fixture.js:3  entry a is rebuilt in place/);
-    expect(f[1]).toMatch(/fixture.js:6  entry list list is changed in place/);
-    expect(f[2]).toMatch(/fixture.js:7  entry list list is used through list.forEach/);
+    expect(f[0]).toMatch(/fixture.js:3 {2}entry a is rebuilt in place/);
+    expect(f[1]).toMatch(/fixture.js:6 {2}entry list list is changed in place/);
+    expect(f[2]).toMatch(/fixture.js:7 {2}entry list list is used through list.forEach/);
   });
 
   it("a menu added through a method named by a string", () => {
@@ -290,7 +290,7 @@ describe("the context menu scanner reports", () => {
       theContextMenu.add(entry);
     `);
     expect(f).toHaveLength(1);
-    expect(f[0]).toMatch(/fixture.js:4  entry alias is changed in place/);
+    expect(f[0]).toMatch(/fixture.js:4 {2}entry alias is changed in place/);
     const g = findings(`
       const entry = [label, () => theWebUI.foo()];
       const alias = entry;
@@ -298,7 +298,7 @@ describe("the context menu scanner reports", () => {
       theContextMenu.add(entry);
     `);
     expect(g).toHaveLength(1);
-    expect(g[0]).toMatch(/fixture.js:4  entry alias is rebuilt in place/);
+    expect(g[0]).toMatch(/fixture.js:4 {2}entry alias is rebuilt in place/);
   });
 
   it("a list pushed onto through a method named by a string", () => {

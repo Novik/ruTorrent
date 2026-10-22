@@ -15,8 +15,7 @@ export default [
 			'**/bootstrap*',
 			'**/codemirror*/**',
 			'**/vendor/**',
-			'tests/**',
-			'node_modules/**',
+			'**/node_modules/**',
 		],
 	},
 	{
@@ -45,5 +44,24 @@ export default [
 		// Files that are ES modules (top-level import/export).
 		files: ['js/backgroundtask.js', 'js/category-list.js', 'js/panel.js', 'plugins/rss/bbcode.js'],
 		languageOptions: { sourceType: 'module' },
+	},
+	{
+		// The jest specs run under node rather than in the page. Some are
+		// CommonJS and some use import; babel-jest takes either, and
+		// 'module' is the parser setting that accepts both. no-undef is off
+		// for the reason it is off above: the globals here are node's and
+		// jest's rather than the page's, and listing them exhaustively would
+		// only go stale.
+		files: ['tests/**/*.js'],
+		languageOptions: {
+			ecmaVersion: 2022,
+			sourceType: 'module',
+		},
+		rules: {
+			...js.configs.recommended.rules,
+			'no-undef': 'off',
+			'no-empty': ['error', { allowEmptyCatch: true }],
+			'no-unused-vars': ['error', { vars: 'local', args: 'none', caughtErrors: 'none' }],
+		},
 	},
 ];

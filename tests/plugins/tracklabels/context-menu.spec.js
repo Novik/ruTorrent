@@ -9,7 +9,7 @@ window.$ = require("jquery");
 function activate(entry) {
   const action = entry[1];
   if (typeof action === "string") {
-    // eslint-disable-next-line no-eval
+
     return eval(action);
   }
   return action();

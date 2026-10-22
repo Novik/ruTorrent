@@ -61,7 +61,7 @@ function buildWith(labels) {
   const box = {};
   const theDialogManager = { setHandler: (dlg, ev, fn) => (box.fn = fn) };
 
-  // eslint-disable-next-line no-new-func
+
   new Function(
     "$", "theUILang", "$$", "theWebUI", "theDialogManager",
     `${onChange}\n${builder}`

@@ -16,7 +16,7 @@ const vm = require("vm");
  */
 
 const ROOT = path.join(__dirname, "..", "..");
-const readLang = (file) => fs.readFileSync(file, "utf8").replace(/^﻿/, "");
+const readLang = (file) => fs.readFileSync(file, "utf8").replace(/^\uFEFF/, "");
 
 function keysOf(files) {
   const context = vm.createContext({

@@ -8,6 +8,8 @@ on:
 jobs:
   php-syntax:
     # Blocking: every PHP file must parse, on every PHP the README supports.
+    # tests/ included: a test that does not parse is a test that does not run,
+    # and nothing else reads those files before CI executes them.
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,7 +24,7 @@ jobs:
           fail=0
           while IFS= read -r f; do
             php -l "$f" > /dev/null || { echo "::error file=$f::PHP syntax error"; fail=1; }
-          done < <(find . -type f -name '*.php' -not -path './tests/*' -not -path './node_modules/*')
+          done < <(find . -type f -name '*.php' -not -path '*/node_modules/*')
           exit $fail
 
   editorconfig:
@@ -56,7 +58,8 @@ jobs:
         run: npx --yes editorconfig-checker@7
 
   eslint:
-    # Advisory for now (same plan as editorconfig).
+    # Advisory for now (same plan as editorconfig). Covers the jest specs
+    # under tests/ as well as js/ and plugins/.
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -73,6 +76,7 @@ jobs:
 
   phpstan:
     # Blocking: the tree is at zero level-0 findings and stays there.
+    # See phpstan.neon for what it reads, tests/ included.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
