@@ -320,6 +320,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 godz.", 10800: "3 godz."},
  badTempPath			: "Użytkownik serwera WWW nie ma uprawnień odczytu/zapisu/wykonywania w katalogu tymczasowym. ruTorrent nie będzie działać.",
  badTempPath2			: "Użytkownik rTorrent nie ma uprawnień odczytu/zapisu/wykonywania w katalogu tymczasowym. ruTorrent nie będzie działać.",
+ worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash		: "Losuj info hash (cross-seeding)",
  Recreate_files			: "Utwórz pliki ponownie",
  Address			: "Adres",

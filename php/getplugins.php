@@ -222,6 +222,16 @@ if($handle = opendir('../plugins'))
 	$tmp = FileUtil::getTempDirectory();
 	if(!is_dir($tmp) || !@file_exists($tmp.'.') || !is_readable($tmp) || !is_writable($tmp))
 		$jResult.="noty(theUILang.badTempPath+' (".$tempDirectory.")','error');";
+	else
+	{
+		// Sticky, and only sticky, is what keeps a shared temp directory safe:
+		// without it any user on the box may rename or delete a file another
+		// user left there. /tmp is 1777 and is what an install that configures
+		// nothing gets, so world-writable on its own would report every install.
+		$tmpPerms = @fileperms($tmp);
+		if(($tmpPerms!==false) && (($tmpPerms & 0002)!=0) && (($tmpPerms & 01000)==0))
+			$jResult.="noty(theUILang.worldWritableTempPath+' (".$tempDirectory.")','error');";
+	}
 
 	if(!function_exists('preg_match_all'))
 	{

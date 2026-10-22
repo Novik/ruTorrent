@@ -317,6 +317,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 λεπτά", 1800: "30 λεπτά", 3600: "1 ώρα", 10800: "3 ώρες"},
  badTempPath			: "Ο χρήστης του διακομιστή Web δεν έχει δικαιώματα για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
  badTempPath2			: "Ο χρήστης του rTorrent πρέπει να έχει δικαιώματα για ανάγνωση/εγγραφή/εκτέλεση στο φάκελο tmp. Το ruTorrent δεν θα λειτουργήσει.",
+ worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash		: "Δημιουργία τυχαίων info hashes για cross-seeding",
  Recreate_files			: "Δρομολόγηση επαναδημιουργίας αρχείων",
  Address			: "Διεύθυνση",
