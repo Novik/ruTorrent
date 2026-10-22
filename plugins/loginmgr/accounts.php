@@ -392,31 +392,44 @@ class accountManager
 	// list standing for this request only, so the scheduled job is left
 	// alone as well: it would otherwise describe accounts that no later
 	// request can read.
+	//
+	// A directory that cannot be enumerated is not a directory holding no
+	// accounts, and the difference matters because only one of the two may be
+	// written down: a store of the empty list succeeds, and from then on
+	// load() answers every later request from it, so the plugin stays empty
+	// after whatever denied the read is repaired. What that store lands on is
+	// whatever the profile held, credentials included -- action.php reaches
+	// here whenever the stored list could not be loaded, not only when there
+	// is none.
 	public function obtain( $dir = '../plugins/loginmgr/accounts' )
 	{
 		$oldAccounts = $this->accounts;
-		$this->accounts = array();
-		if( $handle = opendir($dir) )
+		$handle = @opendir($dir);
+		if($handle===false)
 		{
-			while(false !== ($file = readdir($handle)))
+			FileUtil::toLog('loginmgr: the accounts directory could not be read, so the stored list is left alone: '.$dir);
+			return(false);
+		}
+		$accounts = array();
+		while(false !== ($file = readdir($handle)))
+		{
+			if(is_file($dir.'/'.$file))
 			{
-				if(is_file($dir.'/'.$file))
+				$name = basename($file,".php");
+				$accounts[$name] = array( "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 );
+				if(array_key_exists($name,$oldAccounts) && array_key_exists("login",$oldAccounts[$name]))
 				{
-					$name = basename($file,".php");
-					$this->accounts[$name] = array( "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 );
-					if(array_key_exists($name,$oldAccounts) && array_key_exists("login",$oldAccounts[$name]))
-					{
-						$this->accounts[$name]["login"] = self::asText($oldAccounts[$name]["login"]);
-						$this->accounts[$name]["password"] = self::asText($oldAccounts[$name]["password"]);
-						$this->accounts[$name]["enabled"] = self::asFlag($oldAccounts[$name]["enabled"]);
-						if(array_key_exists("auto",$oldAccounts[$name]))
-							$this->accounts[$name]["auto"] = self::asNumber($oldAccounts[$name]["auto"]);
-					}
+					$accounts[$name]["login"] = self::asText($oldAccounts[$name]["login"]);
+					$accounts[$name]["password"] = self::asText($oldAccounts[$name]["password"]);
+					$accounts[$name]["enabled"] = self::asFlag($oldAccounts[$name]["enabled"]);
+					if(array_key_exists("auto",$oldAccounts[$name]))
+						$accounts[$name]["auto"] = self::asNumber($oldAccounts[$name]["auto"]);
 				}
 			}
-			closedir($handle);
-	        }
-		ksort($this->accounts);
+		}
+		closedir($handle);
+		ksort($accounts);
+		$this->accounts = $accounts;
 		if(!$this->store())
 		{
 			FileUtil::toLog('loginmgr: the discovered account list could not be saved.');
