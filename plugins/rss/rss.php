@@ -144,6 +144,30 @@ class rRSS
 		return($ret);
 	}
 
+	// The entity tag a response carries, or null for anything that is not
+	// one. What is kept here goes back out as an If-None-Match request
+	// header this plugin writes by hand, and the feed chooses the bytes, so
+	// the bytes allowed are the ones an entity tag may hold: a quoted
+	// string of visible characters other than the quote, optionally marked
+	// weak (RFC 9110 8.8.3). A tag bounded at an offending byte rather than
+	// declined would be a prefix, and a prefix names a different entity.
+	static protected function entityTag($value)
+	{
+		return(preg_match('/^(?:W\/)?"[\x21\x23-\x7e\x80-\xff]*"$/D',$value) ? $value : null);
+	}
+
+	// The last-modified date a response carries, or null. The three formats
+	// a recipient must accept (RFC 9110 5.6.7) are spelled out of letters,
+	// digits, spaces, commas, colons and hyphens and nothing else; the
+	// parse then says whether those bytes are a date and not merely
+	// date-shaped.
+	static protected function httpDate($value)
+	{
+		if(!preg_match('/^[A-Za-z0-9,:\- ]{1,64}$/D',$value))
+			return(null);
+		return(strtotime($value)===false ? null : $value);
+	}
+
 	public function fetch( $history )
 	{
 		$headers = [];
@@ -173,14 +197,19 @@ class rRSS
 		$this->lastModified = null;
 		foreach($cli->headers as $header)
 		{
-			$field = explode(': ', trim(strtolower($header)), 2);
+			// Only the field name is folded. A validator cannot judge a
+			// value whose case has already been destroyed, and an entity tag
+			// is an opaque octet sequence: a folded one is a different tag
+			// from the one the server issued, so the conditional request
+			// built out of it could never match.
+			$field = explode(': ', trim($header), 2);
 			$value = count($field) > 1 ? $field[1] : '';
-			switch($field[0]) {
+			switch(strtolower($field[0])) {
 				case 'etag':
-					$this->etag = $value;
+					$this->etag = self::entityTag($value);
 					break;
 				case 'last-modified':
-					$this->lastModified = $value;
+					$this->lastModified = self::httpDate($value);
 			}
 		}
 		// map data from Atom or RSS feeds
