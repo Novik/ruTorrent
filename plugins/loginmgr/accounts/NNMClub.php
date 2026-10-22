@@ -12,8 +12,15 @@ class NNMClubAccount extends commonAccount
 	protected function login($client,$login,$password,&$url,&$method,&$content_type,&$body,&$is_result_fetched)
 	{
 		$is_result_fetched = false;
+		// Neither a cookie name nor its value carries a control character, and
+		// this pair is read out of a response body, where CR and LF both pass.
+		// What is captured here is merged into the jar Snoopy writes into the
+		// next request's Cookie header by hand. The trailing ";" means a name
+		// or a value carrying one of those bytes names no cookie at all, which
+		// is the refusal the bound is for: the login still goes out, without
+		// a token no server issued.
 		if($client->fetch( $this->url.'/forum/login.php' ) &&
-			preg_match( "`document.cookie='_ddn_(?P<cname>[^=]+)=(?P<cvalue>[^;]*);`si", $client->results, $matches ))
+			preg_match( "`document.cookie='_ddn_(?P<cname>[^=[:cntrl:]]+)=(?P<cvalue>[^;[:cntrl:]]*);`si", $client->results, $matches ))
 		{
 			$client->cookies = array_merge($client->cookies, array('_ddn_'.$matches["cname"]=>$matches["cvalue"]));
 		}
