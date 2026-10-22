@@ -13,6 +13,14 @@
  * The refused writes below are suppressed at the call site because what is
  * asserted here is the answer, not the warning: what the cache reports about
  * a write it would not make is the cache's own tests to assert.
+ *
+ * Reading the directory can fail as well, and that failure is not the same as
+ * finding it empty. An enumeration that never happened says nothing about
+ * which accounts exist, so it may not be written down as "none": the store
+ * that follows succeeds, and an empty list is durable in a way the condition
+ * that produced it is not. action.php reaches obtain() whenever the stored
+ * list cannot be loaded, so what the write lands on may be a list with
+ * credentials in it.
  */
 
 $discoveryBase = sys_get_temp_dir() . '/rutorrent-account-discovery-' . getmypid() . '-' . bin2hex(random_bytes(4));
@@ -58,6 +66,87 @@ function discoverySeed()
     mkdir($accounts, 0700);
     foreach (array('Alpha', 'Beta') as $name) touch($accounts . '/' . $name . '.php');
     return $accounts;
+}
+
+// A profile holding a discovered list with credentials filled in, as one is
+// after the settings page has been used once.
+function discoveryStoreCredentials()
+{
+    $manager = new DiscoveryManager();
+    discoveryAssert($manager->obtain(discoverySeed()) === true, 'The discovered list is stored');
+    $manager->accounts['Alpha']['login'] = 'alpha-login';
+    $manager->accounts['Alpha']['password'] = 'alpha-password';
+    $manager->accounts['Alpha']['enabled'] = 1;
+    $manager->accounts['Alpha']['auto'] = 3600;
+    discoveryAssert($manager->store() === true, 'The filled-in credentials are stored');
+}
+
+// What the next request would load.
+function discoveryStored()
+{
+    $stored = new DiscoveryManager();
+    discoveryAssert((new rCache())->get($stored), 'The stored account list is readable');
+    return $stored->accounts;
+}
+
+// A directory opendir() refuses. Being refused takes a uid that can be
+// refused: root reads a 0000 directory, and there the absent path below is
+// the one shape of the same failure left. The caller restores the mode.
+function discoveryUnreadableDir()
+{
+    global $discoveryBase;
+    $locked = $discoveryBase . '/locked';
+    discoveryRemoveTree($locked);
+    mkdir($locked, 0700);
+    touch($locked . '/Gamma.php');
+    chmod($locked, 0000);
+    $handle = @opendir($locked);
+    if ($handle === false) return $locked;
+    closedir($handle);
+    chmod($locked, 0700);
+    return $discoveryBase . '/absent';
+}
+
+// obtain() against a directory it cannot enumerate, with the credentials the
+// profile held before it recorded for comparison.
+function discoveryFailedEnumeration($dir)
+{
+    global $discoveryBase;
+    discoveryStoreCredentials();
+    $before = discoveryStored();
+    discoveryAssert($before['Alpha']['login'] === 'alpha-login' && $before['Alpha']['enabled'] === 1,
+        'The profile holds configured credentials before the discovery that fails');
+
+    $manager = new DiscoveryManager();
+    $manager->accounts = $before;
+    // A handler is called for a diagnostic the call site suppressed as well,
+    // and error_reporting() is what says which those were. What is asserted
+    // is that nothing reportable is raised: obtain() runs while action.php is
+    // composing a response, and a warning there is printed into it.
+    $diagnostics = array();
+    set_error_handler(function ($number, $message) use (&$diagnostics) {
+        if (error_reporting() & $number) $diagnostics[] = $message;
+        return true;
+    });
+    ob_start();
+    try {
+        $written = $manager->obtain($dir);
+    } finally {
+        $printed = ob_get_clean();
+        restore_error_handler();
+    }
+
+    discoveryAssert($written === false, 'A discovery that could not read the directory answers false');
+    discoveryAssert($diagnostics === array(),
+        'and raises no PHP diagnostic into the answer being composed: ' . implode('; ', $diagnostics));
+    discoveryAssert($printed === '', 'and prints nothing into it: ' . $printed);
+    discoveryAssert(discoveryStored() === $before, 'The stored credentials are the ones that were there');
+    discoveryAssert($manager->accounts === $before,
+        'and the list this request answers from is the one it had');
+    discoveryAssert($manager->handlerCalls === 0,
+        'No schedule is registered for a list that was never discovered');
+    discoveryAssert(strpos(file_get_contents($discoveryBase . '/application.log'),
+        'the accounts directory could not be read') !== false, 'The refusal is logged');
 }
 
 function discoveryBlockWrite()
@@ -140,6 +229,18 @@ $tests = array(
             'the discovered account list could not be saved') !== false, 'The refusal is logged');
         discoveryAssert(array_keys($manager->accounts) === array('Alpha', 'Beta'),
             'The list this request answers from is still the one that was discovered');
+    },
+    'an accounts directory that cannot be read is not a discovery of nothing' => function () {
+        $locked = discoveryUnreadableDir();
+        try {
+            discoveryFailedEnumeration($locked);
+        } finally {
+            @chmod($locked, 0700);
+        }
+    },
+    'an accounts directory that is not there is not a discovery of nothing' => function () {
+        global $discoveryBase;
+        discoveryFailedEnumeration($discoveryBase . '/absent');
     },
     'a discovery write that was made reports success' => function () {
         $accounts = discoverySeed();
