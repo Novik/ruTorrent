@@ -1469,12 +1469,12 @@ plugin.drawFiles = function(p) {
 
     var filesList = '';
     if (!vars[1].directory) {
-      filesList = vars[1].id;
+      filesList = '&v=' + vars[1].id;
     } else {
       filesList = plugin.getFilesList(vars[1].container);
     }
 
-    plugin.request('?action=setprio&hash=' + plugin.torrent.hash  + '&v=' +filesList + '&s=' + newValue);
+    plugin.request('?action=setprio&hash=' + plugin.torrent.hash + filesList + '&s=' + newValue);
   });
 }
 
