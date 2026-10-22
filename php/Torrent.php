@@ -387,12 +387,30 @@ class Torrent
         	if($delim_pos===false)
 	       		throw new Exception('Bad torrent data4');
 		$integer = substr($this->data, $this->pointer, $delim_pos - $this->pointer);
-		if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
-			$this->notify_err('Bad integer');
-//		$integer = abs(floatval($integer));
-		$integer = floatval($integer);
 		$this->pointer = $delim_pos + 1;
-		return($integer);
+		if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
+		{
+			$this->notify_err('Bad integer');
+			return(floatval($integer));
+		}
+		// An int carries every value up to PHP_INT_MAX exactly and writes back
+		// the digits it was read as. A float does not: it rounds silently above
+		// 2^53, and from 1e16 up PHP renders it as 1.0E+16, which is not a
+		// bencoded integer at all. Either outcome inside info moves the info
+		// hash, so the torrent that gets loaded describes different files from
+		// the one that was read.
+		//
+		// BEP 3 puts no bound on a bencoded integer, so a value can arrive that
+		// no PHP scalar holds. Carrying it as a string is not open either: the
+		// encoder would write it as a bencoded string and change its type. It
+		// is reported instead, on the same ground as a dictionary whose keys
+		// cannot survive -- the caller is told rather than handed a torrent
+		// that is not the one it read.
+		$value = intval($integer);
+		if(strval($value) === $integer)
+			return($value);
+		$this->notify_err('Cannot write back this integer unchanged: '.$integer);
+		return(floatval($integer));
 	}
 
 	private function isOfType($type)

@@ -307,7 +307,7 @@ class TorrentMetaTest extends TestCase
 		$torrent = new Torrent($this->fixture());
 		$this->assertTrue($torrent->meta('created by') === 'uTorrent/3.5.5',
 			'meta() reads the created by key');
-		$this->assertTrue($torrent->meta('creation date') == 1234567890,
+		$this->assertTrue($torrent->meta('creation date') === 1234567890,
 			'meta() reads the creation date key');
 		$this->assertTrue($torrent->meta('url-list') === array('http://web.example.test/f.dat'),
 			'meta() reads the url-list key');
@@ -316,7 +316,7 @@ class TorrentMetaTest extends TestCase
 		$torrent->setMeta('nodes', array(array('router.test', 6881)));
 		$torrent->clearMeta('url-list');
 		$reread = new Torrent((string)$torrent);
-		$this->assertTrue($reread->meta('nodes') === array(array('router.test', 6881.0)),
+		$this->assertTrue($reread->meta('nodes') === array(array('router.test', 6881)),
 			'setMeta() writes a key the torrent has not got');
 		$this->assertTrue(is_null($reread->meta('url-list')), 'clearMeta() drops a key');
 	}
