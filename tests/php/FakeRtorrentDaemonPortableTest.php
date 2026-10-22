@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/TestCase.php');
 require_once(__DIR__ . '/FakeRtorrentDaemon.php');
+require_once(__DIR__ . '/RtorrentProbeFixture.php');
 require_once(__DIR__ . '/../../php/xmlrpc.php');
 
 /** A test-owned callable whose class has to be loaded in the worker. */
@@ -92,6 +93,11 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 	public function testSerializableRespondersRetainStateAndMulticallMethods()
 	{
 		$this->child('responder');
+	}
+
+	public function testTheProbeFixtureRespondsWithoutPcntlOrPosix()
+	{
+		$this->child('probe-fixture');
 	}
 
 	public function testStopReapsTheWorkerAndReleasesItsListener()
@@ -188,6 +194,20 @@ class FakeRtorrentDaemonPortableTest extends TestCase
 						&& strpos($reply, '<string>first,second</string>') !== false
 						&& strpos($reply, '&lt;methodCall&gt;') !== false, 'callable retains state and receives body and parsed methods');
 					self::expect($daemon->calls() === array('first', 'second', 'first', 'second'), 'multicall log contains its members');
+				}
+				elseif($mode === 'probe-fixture')
+				{
+					// Most of the tests that drive a top level script run
+					// against this one daemon, so whether its reply plan can
+					// be serialized decides whether the suite needs pcntl.
+					$daemon = new FakeRtorrentDaemon(RtorrentProbeFixture::responder(),
+						$base . '/probe-fixture', false, RtorrentProbeFixture::replyClassFiles());
+					$version = '<methodCall><methodName>system.client_version</methodName></methodCall>';
+					self::expect(strpos(self::request($daemon, $version),
+						'<string>' . RtorrentProbeFixture::VERSION . '</string>') !== false,
+						'the probe fixture answers a version request');
+					self::expect($daemon->calls() === array('system.client_version'),
+						'the request reached the worker');
 				}
 				elseif($mode === 'stop')
 				{

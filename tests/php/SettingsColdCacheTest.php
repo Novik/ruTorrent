@@ -5,6 +5,19 @@ require_once(__DIR__ . '/FakeRtorrentDaemon.php');
 require_once(__DIR__ . '/RtorrentProbeFixture.php');
 
 /**
+ * A daemon that accepts the connection and answers with no values at all.
+ * An object rather than a Closure so the worker can unserialize it instead
+ * of being forked to, which is what keeps this file off pcntl and posix.
+ */
+class SettingsColdCacheSilentDaemon
+{
+	public function __invoke($body)
+	{
+		return array();
+	}
+}
+
+/**
  * What rTorrentSettings::get() hands back when share/settings/rtorrent.dat is
  * not there to read.
  *
@@ -74,7 +87,7 @@ class SettingsColdCacheTest extends TestCase
 		$root = $this->repoRoot();
 		@mkdir($profile . '/settings', 0700, true);
 		$this->daemon = new FakeRtorrentDaemon(RtorrentProbeFixture::responder(),
-			$this->base . '/calls.log');
+			$this->base . '/calls.log', false, RtorrentProbeFixture::replyClassFiles());
 
 		$driver = $this->base . '/drive.php';
 		file_put_contents($driver, "<?php\n"
@@ -199,9 +212,8 @@ class SettingsColdCacheTest extends TestCase
 		$root = $this->repoRoot();
 		$profile = $this->base . '/silent';
 		@mkdir($profile . '/settings', 0700, true);
-		// A daemon that accepts the connection and says nothing back.
-		$this->daemon = new FakeRtorrentDaemon(function () { return array(); },
-			$this->base . '/calls.log');
+		$this->daemon = new FakeRtorrentDaemon(new SettingsColdCacheSilentDaemon(),
+			$this->base . '/calls.log', false, array(__DIR__ . '/SettingsColdCacheTest.php'));
 
 		$driver = $this->base . '/drive-silent.php';
 		file_put_contents($driver, "<?php\n"
