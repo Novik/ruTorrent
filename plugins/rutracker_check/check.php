@@ -635,8 +635,7 @@ class ruTrackerChecker
 			require_once(dirname(__FILE__)."/../loginmgr/accounts.php");
 			require_once($file);
 		}
-		// Without autoloading: what declares an account is the file above, and
-		// ruTorrent's autoloader warns about a class it cannot place.
+		// Without autoloading: what declares an account is the file above.
 		if(!class_exists($class,false))
 			return('');
 		$account = new $class();

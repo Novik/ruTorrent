@@ -14,13 +14,20 @@ spl_autoload_register(function ($class)
 	$arr = explode('\\',$class);
 	$class = end($arr);
 
+	// Every autoloader in the chain is offered every name, so most of what
+	// arrives here belongs to a plugin or to a later autoloader. Only a name
+	// this one can place is worth an include; the rest are passed over.
+	$file = dirname(__FILE__).'/utility/'. strtolower($class). '.php';
+	if(!is_file($file))
+		return;
+
 	// Suppress include warnings if the user disables al_diagnostic
 	// For compatibility with 3rd party plugins which use autoloaders
 	global $al_diagnostic;
 	if($al_diagnostic)
-		include_once 'utility/'. strtolower($class). '.php';
+		include_once $file;
 	else
-		@include_once 'utility/'. strtolower($class). '.php';
+		@include_once $file;
 });
 
 // Only allow "POST" or "GET" request methods
