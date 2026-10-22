@@ -91,7 +91,8 @@ class FeedsPubDateTest extends TestCase
 	 * Runs action.php and returns [title => pubDate or null] for every item
 	 * in the feed it prints.
 	 */
-	private function feed($descriptions, $server = array(), $public = null, $environment = null)
+	private function feed($descriptions, $server = array(), $public = null, $environment = null,
+		$sessionName = 'fake')
 	{
 		$root = realpath(__DIR__ . '/../../..');
 		$tree = $this->base . '/tree-' . ($descriptions ? 'on' : 'off');
@@ -144,7 +145,7 @@ class FeedsPubDateTest extends TestCase
 			. '$settings->linkExist = true;' . "\n"
 			. '$settings->iVersion = 0x1018;' . "\n"
 			. '$settings->version = $settings->libVersion = \'0.16.24\';' . "\n"
-			. '$settings->server = \'fake\';' . "\n"
+			. '$settings->server = ' . var_export($sessionName, true) . ";\n"
 			. '$settings->registerPlugin(\'data\');' . "\n"
 			. 'require(' . var_export($tree . '/plugins/feeds/action.php', true) . ");\n");
 
@@ -261,6 +262,32 @@ class FeedsPubDateTest extends TestCase
 		}
 		$this->assertTrue((string)$xml->channel->link === 'https://public.test/torrents/',
 			'The scheme the client used is the first entry of the forwarded header');
+	}
+
+	/**
+	 * The channel title and description carry rtorrent's session name,
+	 * which is free text its owner sets in .rtorrent.rc.
+	 */
+	public function testSessionNameCannotBreakTheChannelHeader()
+	{
+		$name = 'box</title><script>alert(1)</script> & "quoted" \'single\'';
+		list($items, $output, $status) = $this->feed(false, array(), null, null, $name);
+		$document = new DOMDocument();
+		$this->assertTrue(@$document->loadXML($output),
+			'The feed of a session name with markup is well-formed XML: ' . substr($output, 0, 400));
+		if (!@$document->loadXML($output)) {
+			throw new Exception('The feed could not be parsed');
+		}
+		$this->assertEquals(200, $status, 'The feed is still served');
+		$channel = $document->getElementsByTagName('channel')->item(0);
+		$title = $channel->getElementsByTagName('title')->item(0)->textContent;
+		$description = $channel->getElementsByTagName('description')->item(0)->textContent;
+		$this->assertEquals($name . ': All torrents', $title,
+			'The channel title reads back as the session name, as text: ' . $title);
+		$this->assertTrue(strpos($description, $name) !== false,
+			'The channel description reads back the session name too: ' . $description);
+		$this->assertEquals(0, $document->getElementsByTagName('script')->length,
+			'The session name produces no element of its own');
 	}
 
 	public function testInvalidPublicBaseRefusesBeforeReadingTheDaemon()

@@ -123,10 +123,15 @@ if($url === false)
 }
 $xmlURL = htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $server = explode(':',rTorrentSettings::get()->server);
+// The daemon's name and versions are text it was configured with, so they
+// are written as text and cannot close an element of the document.
+$xmlServer = htmlspecialchars($server[0], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+$xmlVersion = htmlspecialchars(rTorrentSettings::get()->version.'/'.rTorrentSettings::get()->libVersion,
+	ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $ret = '<?xml version="1.0" encoding="UTF-8"?>'.
 	'<rss version="2.0"><channel><description>*** rTorrent '.
-	rTorrentSettings::get()->version.'/'.rTorrentSettings::get()->libVersion." - ".$server[0].' ***</description><link>'.
-	$xmlURL.'</link><title>'.$server[0].': '.$theUILang[$mode].'</title>'.
+	$xmlVersion." - ".$xmlServer.' ***</description><link>'.
+	$xmlURL.'</link><title>'.$xmlServer.': '.$theUILang[$mode].'</title>'.
 	'<image><url>'.$xmlURL.'images/logo.png</url><link>'.$xmlURL.'</link><title>ruTorrent</title></image>';
 
 $view = '';	// all, inactive
