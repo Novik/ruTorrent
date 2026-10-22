@@ -26,6 +26,15 @@ class SnoopyInvalidURLClient extends Snoopy
 }
 
 $tests = array(
+    'the refusal statuses keep the numbers callers compare against' => function () {
+        // A status below 100 means no reply arrived; the number says which
+        // refusal it was, and callers read the number rather than the
+        // constant -- plugins/rss/rss.php tests $cli->status for -100 to
+        // tell a read timeout from anything else. Renumbering one of these
+        // is a protocol change, so the values are asserted, not just the names.
+        invalidURLAssert(Snoopy::RESPONSE_BODY_FAILED === -101, 'A refused request reports -101');
+        invalidURLAssert(Snoopy::SOCKET_CONNECT_FAILED === -102, 'A failed connection reports -102');
+    },
     'malformed URL encoding does not throw' => function () {
         foreach (array('http://example.test:99999/path', 'http://:') as $url) {
             invalidURLAssert(Snoopy::linkencode($url) === $url, 'Malformed input remains available for fetch refusal');
