@@ -2,7 +2,7 @@
 
 /**
  * rRSS::fetch() keeps the ETag and Last-Modified of a feed's answer and sends
- * them back on the next poll as If-None-Match and If-Last-Modified. Snoopy
+ * them back on the next poll as If-None-Match and If-Modified-Since. Snoopy
  * writes rawheaders by hand, and it writes them ahead of the content headers
  * and the Authorization header, so a validator carrying a line terminator
  * ends the header block of the poll that sends it and strands everything
@@ -133,9 +133,11 @@ $tests = array(
                     'The date is kept with its case');
                 rsAssert(in_array('If-None-Match: "aB3-Xy"', rsFieldLines($requests[1]), true),
                     'The entity tag is one field line of the second poll');
-                rsAssert(in_array('If-Last-Modified: Wed, 21 Oct 2026 07:28:00 GMT',
+                rsAssert(in_array('If-Modified-Since: Wed, 21 Oct 2026 07:28:00 GMT',
                     rsFieldLines($requests[1]), true),
                     'The date is one field line of the second poll');
+                rsAssert(stripos($requests[1], 'If-Last-Modified') === false,
+                    'and it rides no header a server does not answer');
                 rsAssert(in_array(RS_AUTH, rsFieldLines($requests[1]), true),
                     'The credentials stay inside the header block');
             });
@@ -214,9 +216,75 @@ $tests = array(
         rsPoll("Last-Modified: not a date at all\r\n", function ($requests, $first) {
             rsAssert($first['lastModified'] === null, 'A string that parses as no date is not kept');
             foreach (rsFieldLines($requests[1]) as $line)
-                rsAssert(strpos($line, 'If-Last-Modified') !== 0,
+                rsAssert(strpos($line, 'If-Modified-Since') !== 0,
                     'The second poll sends no date');
         });
+    },
+    // A date goes back out in If-Modified-Since. There is no If-Last-Modified
+    // in HTTP, so a server reading the poll never saw the question and
+    // answered the whole feed to every poll that asked it.
+    'the date asks the question under the name a server answers' => function () {
+        rsPoll("Last-Modified: Wed, 21 Oct 2026 07:28:00 GMT\r\n",
+            function ($requests, $first) {
+                $lines = rsFieldLines($requests[1]);
+                rsAssert(in_array('If-Modified-Since: Wed, 21 Oct 2026 07:28:00 GMT', $lines, true),
+                    'The poll asks If-Modified-Since: ' . json_encode($lines));
+                foreach ($lines as $line)
+                    rsAssert(stripos($line, 'If-Last-Modified') !== 0,
+                        'and asks under no other name: ' . $line);
+            });
+    },
+    // RFC 9110 5.6.7: a recipient must accept all three formats, and a
+    // sender must generate the first of them. These two are what the other
+    // two look like.
+    'a date in the obsolete RFC 850 format is sent in the one required' => function () {
+        rsPoll("Last-Modified: Sunday, 06-Nov-94 08:49:37 GMT\r\n",
+            function ($requests, $first) {
+                rsAssert($first['lastModified'] === 'Sun, 06 Nov 1994 08:49:37 GMT',
+                    'The date is kept as the format the header requires: '
+                        . var_export($first['lastModified'], true));
+                rsAssert(in_array('If-Modified-Since: Sun, 06 Nov 1994 08:49:37 GMT',
+                    rsFieldLines($requests[1]), true),
+                    'and the poll asks with it: ' . json_encode(rsFieldLines($requests[1])));
+            });
+    },
+    'a date in the asctime format is sent in the one required' => function () {
+        rsPoll("Last-Modified: Sun Nov  6 08:49:37 1994\r\n",
+            function ($requests, $first) {
+                rsAssert($first['lastModified'] === 'Sun, 06 Nov 1994 08:49:37 GMT',
+                    'The date is kept as the format the header requires: '
+                        . var_export($first['lastModified'], true));
+                rsAssert(in_array('If-Modified-Since: Sun, 06 Nov 1994 08:49:37 GMT',
+                    rsFieldLines($requests[1]), true),
+                    'and the poll asks with it: ' . json_encode(rsFieldLines($requests[1])));
+            });
+    },
+    // A recipient must ignore an If-Modified-Since that is not an HTTP-date,
+    // so a date-shaped string that is not one buys exactly what the wrong
+    // header name bought.
+    'a timestamp that is not an HTTP-date is not kept' => function () {
+        foreach (array('2026-10-21 07:28:00', '21 Oct 2026 07:28:00 GMT',
+            'Wed, 21 Oct 2026 07:28:00 +0000', 'Wed, 21 Oct 2026 07:28:00 GMT junk',
+            '1761031680', 'Wed, 32 Oct 2026 07:28:00 GMT') as $value) {
+            rsPoll("Last-Modified: " . $value . "\r\n", function ($requests, $first) use ($value) {
+                rsAssert($first['lastModified'] === null,
+                    '"' . $value . '" is not an HTTP-date: ' . var_export($first['lastModified'], true));
+                foreach (rsFieldLines($requests[1]) as $line)
+                    rsAssert(stripos($line, 'If-Modified-Since') !== 0,
+                        'so the poll is unconditional on it: ' . $line);
+            });
+        }
+    },
+    // The day name is part of the date and names the same day. PHP reads a
+    // mismatched one as "the next such weekday", which silently moves the
+    // date the poll then asks about.
+    'a date whose day name is not its own day is not kept' => function () {
+        rsPoll("Last-Modified: Mon, 06 Nov 1994 08:49:37 GMT\r\n",
+            function ($requests, $first) {
+                rsAssert($first['lastModified'] === null,
+                    'The 6th of November 1994 was a Sunday: '
+                        . var_export($first['lastModified'], true));
+            });
     },
     // obs-text is part of the grammar, so a tag carrying high bytes is kept:
     // the bound is on the bytes an entity tag may not hold, not on byte

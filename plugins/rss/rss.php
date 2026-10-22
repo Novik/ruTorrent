@@ -156,16 +156,33 @@ class rRSS
 		return(preg_match('/^(?:W\/)?"[\x21\x23-\x7e\x80-\xff]*"$/D',$value) ? $value : null);
 	}
 
-	// The last-modified date a response carries, or null. The three formats
-	// a recipient must accept (RFC 9110 5.6.7) are spelled out of letters,
-	// digits, spaces, commas, colons and hyphens and nothing else; the
-	// parse then says whether those bytes are a date and not merely
-	// date-shaped.
+	// The last-modified date a response carries, as the single format a
+	// sender must generate, or null for anything that is not a date. What is
+	// kept here goes back out as an If-Modified-Since request header, which
+	// a recipient must ignore unless its value is an HTTP-date, so the three
+	// formats a recipient must accept are the ones read and the first of
+	// them is the one written (RFC 9110 5.6.7).
+	//
+	// Each is asked for by re-spelling the parse: a format the whole value
+	// does not spell comes back as different bytes. That is also what
+	// settles the day name, which PHP otherwise reads as "the next such
+	// weekday" and so moves the date to one the feed never named.
 	static protected function httpDate($value)
 	{
-		if(!preg_match('/^[A-Za-z0-9,:\- ]{1,64}$/D',$value))
-			return(null);
-		return(strtotime($value)===false ? null : $value);
+		$utc = new DateTimeZone('UTC');
+		foreach(array('D, d M Y H:i:s \G\M\T','l, d-M-y H:i:s \G\M\T','asctime') as $format)
+		{
+			$date = @DateTimeImmutable::createFromFormat('!'.
+				($format==='asctime' ? 'D M j H:i:s Y' : $format),$value,$utc);
+			if($date===false)
+				continue;
+			$spelled = ($format==='asctime')
+				? $date->format('D M ').str_pad($date->format('j'),2,' ',STR_PAD_LEFT).$date->format(' H:i:s Y')
+				: $date->format($format);
+			if($spelled===$value)
+				return($date->format('D, d M Y H:i:s \G\M\T'));
+		}
+		return(null);
 	}
 
 	public function fetch( $history )
@@ -175,7 +192,7 @@ class rRSS
 		if($this->etag)
 			$headers['If-None-Match'] = $this->etag;
 		if($this->lastModified)
-			$headers['If-Last-Modified'] = $this->lastModified;
+			$headers['If-Modified-Since'] = $this->lastModified;
 		$cli = call_user_func($this->fetchURL, $this->url, $this->cookies, $headers);
 		if($cli->status<200 || $cli->status>=300) {
 			if ($cli->status != 304) {
