@@ -92,7 +92,7 @@ class FeedsPubDateTest extends TestCase
 	 * in the feed it prints.
 	 */
 	private function feed($descriptions, $server = array(), $public = null, $environment = null,
-		$sessionName = 'fake')
+		$sessionName = 'fake', $mode = 'all', $reportErrors = false)
 	{
 		$root = realpath(__DIR__ . '/../../..');
 		$tree = $this->base . '/tree-' . ($descriptions ? 'on' : 'off');
@@ -137,7 +137,7 @@ class FeedsPubDateTest extends TestCase
 			. '$_SERVER = array_merge($_SERVER, ' . var_export($server, true) . ");\n"
 			. 'register_shutdown_function(function() { file_put_contents(' . var_export($this->base . '/response-status', true)
 				. ', (string)(http_response_code() ?: 200)); });' . "\n"
-			. '$_REQUEST[\'mode\'] = \'all\';' . "\n"
+			. '$_REQUEST[\'mode\'] = ' . var_export($mode, true) . ";\n"
 			. 'chdir(' . var_export($tree . '/plugins/feeds', true) . ");\n"
 			. 'require_once(' . var_export($tree . '/php/util.php', true) . ");\n"
 			. 'require_once(' . var_export($tree . '/php/settings.php', true) . ");\n"
@@ -149,7 +149,11 @@ class FeedsPubDateTest extends TestCase
 			. '$settings->registerPlugin(\'data\');' . "\n"
 			. 'require(' . var_export($tree . '/plugins/feeds/action.php', true) . ");\n");
 
-		$output = shell_exec(escapeshellarg(PHP_BINARY) . ' -d error_reporting=0 ' . escapeshellarg($driver));
+		// A diagnostic printed by the script lands ahead of the document it
+		// is building, so a test about the document's shape has to be able to
+		// see one rather than run with them switched off.
+		$diagnostics = $reportErrors ? ' -d error_reporting=-1 -d display_errors=1 ' : ' -d error_reporting=0 ';
+		$output = shell_exec(escapeshellarg(PHP_BINARY) . $diagnostics . escapeshellarg($driver));
 		$items = array();
 		preg_match_all('`<item>(.*)</item>`Us', (string)$output, $matches);
 		foreach ($matches[1] as $item) {
@@ -288,6 +292,106 @@ class FeedsPubDateTest extends TestCase
 			'The channel description reads back the session name too: ' . $description);
 		$this->assertEquals(0, $document->getElementsByTagName('script')->length,
 			'The session name produces no element of its own');
+	}
+
+	/**
+	 * The view asked of rtorrent. d.multicall takes the target first and the
+	 * view second, so the view is the second string of the call.
+	 */
+	private function viewAsked()
+	{
+		foreach ($this->daemon->bodies() as $body) {
+			if (strpos($body, '<methodName>d.multicall</methodName>') === false) {
+				continue;
+			}
+			preg_match_all('`<value><string>([^<]*)</string></value>`', $body, $strings);
+			return isset($strings[1][1]) ? $strings[1][1] : null;
+		}
+		return null;
+	}
+
+	private function channelTitle($output)
+	{
+		// An empty body is the shape a script that died where it was reading
+		// the title leaves behind, and loadXML() refuses it with a different
+		// error than it gives malformed markup.
+		$this->assertTrue($output !== '', 'the feed has a body at all');
+		$document = new DOMDocument();
+		$parsed = $output !== '' && @$document->loadXML($output);
+		$this->assertTrue($parsed, 'the feed is well-formed XML: ' . substr($output, 0, 400));
+		if (!$parsed) {
+			throw new Exception('The feed could not be parsed');
+		}
+		return $document->getElementsByTagName('channel')->item(0)
+			->getElementsByTagName('title')->item(0)->textContent;
+	}
+
+	/**
+	 * mode arrives in the request and titles the channel out of the language
+	 * file, so an unknown key reads no string: the diagnostic that produces
+	 * is printed before the document the script is still building, and the
+	 * reader is handed bytes ahead of the XML declaration.
+	 */
+	public function testAnUnknownModeStillProducesAWellFormedFeed()
+	{
+		foreach (array('nosuchmode', '', '0', 'ALL', 'all\'; drop', '../../lang/en') as $mode) {
+			list($items, $output, $status) = $this->feed(false, array(), null, null, 'fake', $mode, true);
+			$this->assertEquals(200, $status, 'an unknown mode still serves a feed: ' . substr($output, 0, 200));
+			$this->assertEquals('fake: All torrents', $this->channelTitle($output),
+				'a mode the feed does not serve is titled as the whole list');
+			$this->assertEquals('', $this->viewAsked(),
+				'and lists every torrent, which is what that title says');
+			$this->assertEquals($this->expected(), $items, 'the items are the feed\'s own');
+		}
+	}
+
+	/**
+	 * A language file holds more than the six views. Reading a title out of
+	 * it by request names free text from a translation, and reaches entries
+	 * that are not a title at all.
+	 */
+	public function testAModeNamingAnotherLanguageEntryDoesNotTitleTheFeed()
+	{
+		foreach (array('Comment', 'Seeds', 'time_w', 'bytes') as $mode) {
+			list($items, $output, $status) = $this->feed(false, array(), null, null, 'fake', $mode, true);
+			$this->assertEquals('fake: All torrents', $this->channelTitle($output),
+				'"' . $mode . '" is an entry of the language file, not a view of this feed');
+		}
+	}
+
+	/** $_REQUEST carries whatever shape the query string spells. */
+	public function testAModeThatIsNotAStringStillProducesAFeed()
+	{
+		list($items, $output, $status) = $this->feed(false, array(), null, null, 'fake',
+			array('all'), true);
+		$this->assertEquals(200, $status, 'an array mode still serves a feed: ' . substr($output, 0, 200));
+		$this->assertEquals('fake: All torrents', $this->channelTitle($output),
+			'and is titled as the whole list');
+	}
+
+	public function testEachViewTheFeedServesKeepsItsOwnTitleAndView()
+	{
+		// Title, the view asked of rtorrent, and how many of the three rows
+		// the daemon returns survive the filter this mode applies to them.
+		// None of the fixtures carries a message or any rate, so error and
+		// active keep none of them and inactive keeps all three.
+		$views = array(
+			'all' => array('All torrents', '', 3),
+			'inactive' => array('Inactive torrents', '', 3),
+			'downloading' => array('Downloading torrents', 'incomplete', 3),
+			'completed' => array('Completed torrents', 'complete', 3),
+			'active' => array('Active torrents', 'active', 0),
+			'error' => array('Error torrents', 'active', 0),
+		);
+		foreach ($views as $mode => $expected) {
+			list($items, $output, $status) = $this->feed(false, array(), null, null, 'fake', $mode, true);
+			$this->assertEquals('fake: ' . $expected[0], $this->channelTitle($output),
+				$mode . ' keeps its own title');
+			$this->assertEquals($expected[1], $this->viewAsked(), $mode . ' asks rtorrent for its own view, got '
+				. var_export($this->viewAsked(), true));
+			$this->assertEquals($expected[2], count($items),
+				$mode . ' keeps the rows it is about: ' . json_encode($items));
+		}
 	}
 
 	public function testInvalidPublicBaseRefusesBeforeReadingTheDaemon()

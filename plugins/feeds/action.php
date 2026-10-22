@@ -114,7 +114,15 @@ function sortByPubDate( $a, $b )
 	return( (intval($a["pubDate"]) > intval($b["pubDate"])) ? -1 : ((intval($a["pubDate"]) < intval($b["pubDate"])) ? 1 : strcmp($a["title"],$b["title"])) );
 }
 
-$mode = (isset($_REQUEST['mode'])) ? $_REQUEST['mode'] : 'all';
+// The views this feed serves. mode arrives in the request and titles the
+// channel out of the language file, so it is read as one of these and
+// nothing else: another key of the file titles the feed with an entry that
+// is not a title, a key the file does not hold leaves no title at all, and
+// a mode that is not a string ends the script at that read, before any of
+// the document has been written.
+$modes = array('all','downloading','completed','active','inactive','error');
+$mode = (isset($_REQUEST['mode']) && in_array($_REQUEST['mode'],$modes,true))
+	? $_REQUEST['mode'] : 'all';
 $url = Requests::publicBaseURL('/plugins/feeds/action.php');
 if($url === false)
 {
@@ -194,20 +202,20 @@ if($req->success())
 			"pubDate"=>floatval($req->val[$i+6]) );
 		if(rTorrentSettings::get()->isPluginRegistered('data'))
 			$item["link"] = $url.'plugins/data/action.php?hash='.$req->val[$i].'&no=0&readable=1';
-		if($_REQUEST['mode']=='error')
+		if($mode=='error')
 		{
                         if(empty($req->val[$i+2]))
 				continue;
 		}
 		else
 		{
-			if($_REQUEST['mode']=='active')
+			if($mode=='active')
 			{
 				if( floatval($req->val[$i+3])<1024 && floatval($req->val[$i+4])<1024 )
 					continue;
 			}
 			else
-			if($_REQUEST['mode']=='inactive')
+			if($mode=='inactive')
 			{
 				if( floatval($req->val[$i+3])>=1024 || floatval($req->val[$i+4])>=1024 )
 					continue;
