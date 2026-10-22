@@ -85,6 +85,32 @@ describe("mobile file response ownership", () => {
     expect(sent).toEqual(['?action=setprio&hash=' + hash + '&v=1&s=0']);
   }
 
+  // A folder's row carries every file under it. The request names one file
+  // index per file, and names no other file: the priority a reader picks for
+  // a folder is the priority of that folder's files.
+  it("names every file under a folder, and only those, when its priority changes", () => {
+    select('A', 20);
+    reply('A', ['season/ep1', 'season/ep2', 'readme.txt']);
+    $('#detailsFilesPage select').eq(0).val('0').trigger('change');
+    expect(sent).toEqual(['?action=setprio&hash=A&v=0&v=1&s=0']);
+  });
+
+  it("names the files of a nested folder from the folder's own row", () => {
+    select('A', 20);
+    reply('A', ['season/extra/behind', 'season/ep1', 'readme.txt']);
+    $('#detailsFilesPage select').eq(0).val('2').trigger('change');
+    expect(sent).toEqual(['?action=setprio&hash=A&v=0&v=1&s=2']);
+  });
+
+  // The whole page is one folder's worth of rows, so the file rows have to
+  // keep working beside it.
+  it("names one file when a file's own row changes", () => {
+    select('A', 20);
+    reply('A', ['season/ep1', 'readme.txt']);
+    $('#detailsFilesPage select').eq(1).val('0').trigger('change');
+    expect(sent).toEqual(['?action=setprio&hash=A&v=1&s=0']);
+  });
+
   it("renders the selected torrent files and applies priority to its own file index", () => {
     select('A', 20);
     reply('A', ['first-a', 'second-a']);
