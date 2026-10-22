@@ -902,6 +902,24 @@ class Snoopy
 		if(!$this->verify_certificates)
 			$cmdline_params .= " -k";
 		$cmdline_params .= " -s ";
+
+		// escapeshellarg() keeps only the bytes that form a character in the
+		// process locale and drops the rest, so a url is not something the
+		// command line carries as it stands: under C every byte above ASCII
+		// goes, and a six-byte path arrives as four -- a request for a
+		// resource nobody asked for, with nothing to say it happened.
+		// Percent-encoding those bytes first leaves the locale nothing to
+		// decide, and in a path it is what curl does with them in any case.
+		// The authority keeps its own bytes: a non-ASCII host is curl's to
+		// resolve, and it has an IDN library for that.
+		$authority = strpos($url, '://');
+		$authority = ($authority === false) ? 0 : $authority + 3;
+		$target = $authority + strcspn($url, '/?#', $authority);
+		$encoded = '';
+		for($at = $target, $end = strlen($url); $at < $end; $at++)
+			$encoded .= (ord($url[$at]) < 0x80) ? $url[$at] : sprintf('%%%02X', ord($url[$at]));
+		$url = substr($url, 0, $target).$encoded;
+
 		exec(escapeshellarg(Utility::getExternal('curl'))." -g -D ".escapeshellarg($headerfile)." -o ".escapeshellarg($contfile)." ".$cmdline_params." ".escapeshellarg($url),$results,$return);
 		// curl has read the body by now, and nothing below this line needs it,
 		// so the one copy of it on disk goes away before any return path.
