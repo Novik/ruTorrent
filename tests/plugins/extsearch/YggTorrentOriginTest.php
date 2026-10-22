@@ -170,6 +170,23 @@ $tests = array(
         extYggSame(2, $item['peers'], 'the leechers are read');
     },
 
+    // The category is read off the path of the description link, whichever
+    // host it names or none: binding it to the configured origin, or to the
+    // host of the first row, loses it for a mirror's or a relative link.
+    'the category is read off a description link on another host or a relative one' => function () {
+        extYggConfigure('https://yggtorrent.example');
+        foreach (array('https://ygg-mirror.example' => 'another host', '' => 'a relative link') as $host => $what) {
+            $engine = new ExtYggProbeEngine();
+            $engine->page = extYggPage($host, 2, array(101));
+            $ret = extYggSearch($engine);
+            $link = 'https://yggtorrent.example/engine/download_torrent?id=101';
+            extYggSame(array($link), array_keys($ret), 'one entry for a description on ' . $what);
+            extYggSame($host . '/torrent/filmvidéo/film/101-name-101', $ret[$link]['desc'],
+                'the description link is the one the page gave, on ' . $what);
+            extYggSame('Film/Vidéos > Film', $ret[$link]['cat'], 'the category is read for ' . $what);
+        }
+    },
+
     'the origin is used as loginmgr normalises it' => function () {
         extYggConfigure('HTTPS://YggTorrent.Example.:8443/');
         $engine = new ExtYggProbeEngine();
