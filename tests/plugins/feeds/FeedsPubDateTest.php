@@ -231,6 +231,38 @@ class FeedsPubDateTest extends TestCase
 			'The actual script path and HTTPS=off determine a direct installation base');
 	}
 
+	public function testDirectFeedKeepsTheSchemeTheServerTerminated()
+	{
+		list($items, $output, $status) = $this->feed(false, array('HTTP_HOST' => 'public.test',
+			'HTTPS' => 'on', 'HTTP_X_FORWARDED_PROTO' => 'http',
+			'SCRIPT_NAME' => '/torrents/plugins/feeds/action.php'));
+		$xml = @simplexml_load_string($output);
+		$this->assertTrue($xml !== false, 'The feed of a secured request is well-formed XML');
+		if ($xml === false) {
+			throw new Exception('The feed could not be parsed');
+		}
+		$this->assertEquals(200, $status, 'A secured request produces a feed');
+		$this->assertTrue((string)$xml->channel->link === 'https://public.test/torrents/',
+			'A request header does not turn the links of a secured feed into http');
+		$this->assertTrue(strpos($output, 'http://public.test') === false,
+			'No link in the document is downgraded');
+	}
+
+	public function testFeedBehindChainedProxiesUsesTheClientScheme()
+	{
+		list($items, $output, $status) = $this->feed(false, array('HTTP_HOST' => 'public.test',
+			'HTTP_X_FORWARDED_PROTO' => 'https,http',
+			'SCRIPT_NAME' => '/torrents/plugins/feeds/action.php'));
+		$xml = @simplexml_load_string($output);
+		$this->assertEquals(200, $status, 'A chain of proxies still produces a feed: ' . substr($output, 0, 200));
+		$this->assertTrue($xml !== false, 'The feed behind a proxy chain is well-formed XML');
+		if ($xml === false) {
+			throw new Exception('The feed could not be parsed');
+		}
+		$this->assertTrue((string)$xml->channel->link === 'https://public.test/torrents/',
+			'The scheme the client used is the first entry of the forwarded header');
+	}
+
 	public function testInvalidPublicBaseRefusesBeforeReadingTheDaemon()
 	{
 		list($items, $output, $status) = $this->feed(false, array(), 'https://user:secret@public.test/app/');

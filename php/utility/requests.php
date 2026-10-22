@@ -51,15 +51,41 @@ class Requests
 		return false;
 	}
 
+	/**
+	 * The scheme of this request. HTTPS and REQUEST_SCHEME are set by the
+	 * server and describe the connection it accepted; X-Forwarded-Proto is
+	 * written by whoever spoke to it last, which includes the client. So the
+	 * header is read only where the server reports no TLS of its own: a
+	 * proxy that terminates TLS is believed, as it has to be, and no request
+	 * can turn the links of a secured page into http.
+	 *
+	 * Each proxy of a chain appends to the header, and the scheme the client
+	 * used is the first entry. Values are compared without regard to case,
+	 * which is all CGI promises of HTTPS, and one naming no web scheme is
+	 * passed over rather than carried into a URL.
+	 */
+	private static function requestScheme()
+	{
+		$secure = isset($_SERVER['HTTPS']) && is_scalar($_SERVER['HTTPS']) ? strval($_SERVER['HTTPS']) : '';
+		$scheme = $secure !== '' && strcasecmp($secure, 'off') !== 0 ? 'https'
+			: (isset($_SERVER['REQUEST_SCHEME']) && is_string($_SERVER['REQUEST_SCHEME'])
+				? strtolower($_SERVER['REQUEST_SCHEME']) : '');
+		if($scheme === 'https')
+			return 'https';
+		if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && is_string($_SERVER['HTTP_X_FORWARDED_PROTO']))
+		{
+			$parts = explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO']);
+			$forwarded = strtolower(trim($parts[0]));
+			if(in_array($forwarded, array('http', 'https'), true))
+				return $forwarded;
+		}
+		return 'http';
+	}
+
 	private static function currentOrigin()
 	{
-		$scheme = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
-			? strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'])
-			: (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https'
-				: (isset($_SERVER['REQUEST_SCHEME']) ? strtolower($_SERVER['REQUEST_SCHEME']) : 'http'));
-		$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
-		return in_array($scheme, array('http', 'https'), true) && $host !== ''
-			? $scheme.'://'.$host : null;
+		$host = isset($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+		return $host !== '' ? self::requestScheme().'://'.$host : null;
 	}
 
 	public static function disableUnsupportedMethods()
