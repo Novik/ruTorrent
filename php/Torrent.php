@@ -159,7 +159,12 @@ class Torrent
 			if(!is_array($arr))
 				$this->notify_err('Bad torrent data');
 			else
-				$meta = array_merge( $meta, $arr );
+				// A union rather than array_merge(): a top level key that is a
+				// decimal number is an integer array key by the time it reaches
+				// here, and array_merge() renumbers integer keys, so a torrent
+				// carrying a key of "5" would be written back under "0". The
+				// decoded keys take precedence over the caller's, as before.
+				$meta = $arr + $meta;
 		}
 		foreach( $meta as $key => $value )
 			if(substr(strval( $key ),0,1)!="\x00")
