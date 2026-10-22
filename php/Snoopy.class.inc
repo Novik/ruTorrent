@@ -1077,6 +1077,11 @@ class Snoopy
 			$fp = fsockopen($host,$port,$errno,$errstr,$this->_fp_timeout);
 		if(!$fp)
 		{
+			// A request whose socket never opened has no response of its own,
+			// and the one still in place describes whatever the client last
+			// fetched. Callers reuse a client for a sequence of fetches and
+			// read $results and $headers rather than the return value.
+			$this->discardResponse();
 			// Positive OS errno values overlap HTTP statuses. Keep the errno in
 			// the message and use a distinct transport status, not -100 or -101.
 			$this->status = $errno > 0 ? self::SOCKET_CONNECT_FAILED : $errno;
