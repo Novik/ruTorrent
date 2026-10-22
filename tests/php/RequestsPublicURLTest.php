@@ -89,6 +89,60 @@ class RequestsPublicURLTest extends TestCase
 			'The server request scheme is normalized when HTTPS is absent');
 	}
 
+	/**
+	 * The scheme of a generated link is the one the server reports for the
+	 * connection. X-Forwarded-Proto is written by whatever spoke to the
+	 * server last, the client included, and is read only where the server
+	 * reports no TLS of its own: a request can raise a link to https, which
+	 * is what a TLS-terminating proxy needs, and can never lower one.
+	 */
+	public function testServerTLSStateOutranksTheForwardedScheme()
+	{
+		$this->resetRequest();
+		$_SERVER['HTTPS'] = 'on';
+		$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'https://public.test:8443/app/',
+			'A forwarded scheme cannot downgrade a request the server itself secured');
+		$this->resetRequest();
+		unset($_SERVER['HTTPS']);
+		$_SERVER['REQUEST_SCHEME'] = 'https';
+		$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'https://public.test:8443/app/',
+			'Nor the scheme the server reports for the connection');
+		$this->resetRequest();
+		$_SERVER['HTTPS'] = 'OFF';
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'http://public.test:8443/app/',
+			'HTTPS is read without regard to case, so OFF is not TLS');
+		$this->resetRequest();
+		unset($_SERVER['HTTPS']);
+		$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'https://public.test:8443/app/',
+			'A proxy that terminates TLS is believed where the server reports none');
+		$this->resetRequest();
+		unset($_SERVER['HTTPS']);
+		$_SERVER['HTTP_X_FORWARDED_PROTO'] = ' HTTPS ,http';
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'https://public.test:8443/app/',
+			'Each proxy of a chain appends to the header, and the client scheme is the first entry');
+		$this->resetRequest();
+		unset($_SERVER['HTTPS']);
+		$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'ftp';
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'http://public.test:8443/app/',
+			'A forwarded value naming no web scheme is passed over, not fatal to the feed');
+		$this->resetRequest();
+		unset($_SERVER['HTTPS']);
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'http://public.test:8443/app/',
+			'A plain request with nothing forwarded is HTTP');
+		$this->resetRequest();
+		$_SERVER['HTTPS'] = array('on');
+		$_SERVER['REQUEST_SCHEME'] = array('https');
+		$_SERVER['HTTP_X_FORWARDED_PROTO'] = array('https');
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === 'http://public.test:8443/app/',
+			'Metadata that is not a string at all names no scheme, and is not fatal to the feed');
+		$_SERVER['HTTP_HOST'] = array('public.test');
+		$this->assertTrue(Requests::publicBaseURL('/plugins/feeds/action.php') === false,
+			'Nor does it name a host');
+	}
+
 	public function testInvalidExplicitBaseIsVisibleAndNeverUsesTheInternalHost()
 	{
 		foreach (array('https://user:secret@public.test/app/', 'https://public.test/app/?a=b',
@@ -113,7 +167,7 @@ class RequestsPublicURLTest extends TestCase
 	public function testInvalidRequestMetadataIsRefusedWithoutAnExplicitBase()
 	{
 		foreach (array(array('HTTP_HOST' => 'user@trap.test'), array('HTTP_HOST' => 'public.test/path'),
-			array('HTTP_HOST' => "public.test\r\nHeader: x"), array('HTTP_X_FORWARDED_PROTO' => 'https,http'),
+			array('HTTP_HOST' => "public.test\r\nHeader: x"),
 			array('SCRIPT_NAME' => '/app/plugins/feeds/action.php/extra')) as $bad) {
 			$this->resetRequest();
 			$_SERVER = array_merge($_SERVER, $bad);
