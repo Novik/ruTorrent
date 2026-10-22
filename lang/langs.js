@@ -117,13 +117,43 @@ function SetActiveLanguage(lang)
 	document.cookie = "Language="+ lang + expires +"; path=/";
 }
 
+/*
+ * Fill in whatever the chosen language does not define from English, in
+ * place, so the chosen wording always wins where it exists. Three core keys
+ * (MoveView, retryOnErrorList, speedGraphDurationOptions) hold a group of
+ * strings rather than one, and a group is filled member by member: a
+ * translation that carries half of one would otherwise keep the half it has
+ * and lose the rest.
+ */
+function mergeUILang(english, chosen)
+{
+	for (const key of Object.keys(english)) {
+		const base = english[key];
+		if (!(key in chosen))
+			chosen[key] = base;
+		else if (base !== null && typeof base === 'object' &&
+			 chosen[key] !== null && typeof chosen[key] === 'object')
+			mergeUILang(base, chosen[key]);
+	}
+	return chosen;
+}
+
+function loadLangFile(lang, onLoad, onError)
+{
+	const langScript = document.createElement("script");
+	langScript.onload = onLoad;
+	if (onError)
+		langScript.onerror = onError;
+	langScript.src = `./lang/${lang}.js?v=5318`;
+	document.head.appendChild(langScript);
+}
+
 function loadUILang(onLoadFunc)
 {
 	const lang = GetActiveLanguage();
 	document.documentElement.setAttribute('lang', lang);
 
-	const langScript = document.createElement("script");
-	langScript.onload = () => {
+	const done = () => {
 		if (onLoadFunc) {
 			onLoadFunc();
 		}
@@ -133,8 +163,29 @@ function loadUILang(onLoadFunc)
 			translateDOM();
 		}
 	};
-	langScript.src = `./lang/${lang}.js?v=5318`;
-	document.head.appendChild(langScript);
+
+	/*
+	 * en.js is the one file that defines every key -- the other 28 are
+	 * translations of it. A key only English has reads as the literal
+	 * "undefined" everywhere else, so English is loaded underneath and the
+	 * chosen language laid over it. Each file assigns theUILang rather than
+	 * adding to it, which is why English is kept aside before the second
+	 * load replaces it.
+	 */
+	loadLangFile('en', () => {
+		if (lang === 'en') {
+			done();
+			return;
+		}
+		const english = theUILang;
+		loadLangFile(lang, () => {
+			mergeUILang(english, theUILang);
+			done();
+		}, () => {
+			theUILang = english;
+			done();
+		});
+	});
 }
 
 function translateDOM() {
