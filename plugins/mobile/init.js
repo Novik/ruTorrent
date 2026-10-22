@@ -253,15 +253,11 @@ plugin.createiFrame = function(form) {
 };
 
 plugin.uploadFinished = function(frame) {
-  var d = null;
-  try {
-    d = frame.contentDocument || frame.contentWindow.document;
-  } catch (e) {
-    // A failed request leaves the browser's own error page in the frame,
-    // and that page is cross-origin
-  }
-  if (!d || d.location.href != 'about:blank') {
-    this.showUploadResults(this.uploadResults((d && d.body) ? d.body.textContent : ''));
+  // Report the answer, but restore the buttons and drop the frame either
+  // way: the blank page the frame is inserted with loads here too
+  var answer = uploadFrameAnswer(frame);
+  if (answer !== null) {
+    this.showUploadResults(uploadResults(answer));
   }
   $('#addUrl').prop('disabled', $.trim($('#url').val()) === '');
   $('#torrentFileSend').prop('disabled', $('#torrent_file')[0].files.length === 0);
@@ -269,45 +265,11 @@ plugin.uploadFinished = function(frame) {
   this.update(true);
 };
 
-// php/addtorrent.php answers an upload with a script of noty(text, kind)
-// calls, one per item, which the desktop evaluates (js/content.js). Run
-// the calls against a local noty that collects the pairs. Matching one
-// call with a pattern broke when upstream #3280 respelled the message
-// lookup from a dotted key to theUILang["addTorrent"+"<status>"], and it
-// reported one item of a batch. The server writes every name and kind as
-// an escaped JSON literal, so they stay data.
-plugin.uploadResults = function(answer) {
-  var results = [];
-  var collect = function(text, kind) {
-    results.push({text: String(text), kind: String(kind)});
-  };
-  $.each(String(answer).split('\n'), function(i, line) {
-    line = $.trim(line);
-    // Only lines that start a call run: the renderer writes its calls on
-    // one line, and text printed around them, such as a PHP notice, is
-    // not part of the answer
-    if (line.indexOf('noty(') === 0) {
-      try {
-        (new Function('noty', 'theUILang', line))(collect, theUILang);
-      } catch (e) {
-        console.error('mobile: unreadable add-torrent result:', e);
-      }
-    }
-  });
-  return results;
-};
-
 // One alert per item. An upload that added anything clears the add forms,
 // which would otherwise send the added items again, and returns to the
 // list; when nothing was added the inputs are kept so they can be
 // corrected.
 plugin.showUploadResults = function(results) {
-  if (!results.length) {
-    // An answer without results is a refusal or a failure (the origin
-    // check's 403, the web server's 413 or 5xx page, a lost connection),
-    // which would otherwise end the upload with no message at all
-    results = [{text: theUILang.addTorrentFailed, kind: 'error'}];
-  }
   var added = false;
   $.each(results, function(i, result) {
     plugin.showAlert(result.text, plugin.alertClass(result.kind));
