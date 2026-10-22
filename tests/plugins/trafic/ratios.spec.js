@@ -44,8 +44,6 @@ el.textContent =
   "window.traficPlugin = plugin;" + code;
 document.body.appendChild(el);
 
-const plugin = window.traficPlugin;
-
 // A getratios round trip: the response script sets ratiosStat, then the
 // callback runs.
 function ratiosArrive(stat) {

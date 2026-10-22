@@ -18,7 +18,7 @@ const vm = require("vm");
  */
 
 const ROOT = path.join(__dirname, "..", "..");
-const source = fs.readFileSync(path.join(ROOT, "lang", "langs.js"), "utf8").replace(/^﻿/, "");
+const source = fs.readFileSync(path.join(ROOT, "lang", "langs.js"), "utf8").replace(/^\uFEFF/, "");
 
 function load(language) {
   const context = vm.createContext({

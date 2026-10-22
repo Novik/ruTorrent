@@ -68,6 +68,7 @@ describe("geoip Country column sorting", () => {
   it("sorts the Country column by localized name, not the raw code", () => {
     const sort = prsTable.getSortFunc("country", 0, (k) => codes[k]);
     expect(Object.keys(codes).sort(sort)).toEqual(byName);
+    expect(Object.keys(codes).sort(sort)).not.toEqual(byCode);
   });
 
   it("reverses on the same localized name order", () => {

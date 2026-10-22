@@ -81,7 +81,7 @@ describe("filedrop: paste-to-add", () => {
     const input = document.createElement("input");
     document.body.appendChild(input);
 
-    const handled = plugin.handlePaste(pasteEvent(input, MAGNET));
+    plugin.handlePaste(pasteEvent(input, MAGNET));
 
     expect(ajaxMock).not.toHaveBeenCalled();
     input.remove();

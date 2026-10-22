@@ -62,7 +62,7 @@ function buildWith(labels) {
     },
   };
 
-  // eslint-disable-next-line no-new-func
+
   new Function(
     "$", "theUILang", "theWebUI", "theDialogManager",
     `${onChange}\n${onReturn}\n${builder}`
