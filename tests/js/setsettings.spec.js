@@ -832,7 +832,7 @@ describe("the options save request", () => {
 			"error"
 		);
 
-		expect(diagnostic).toHaveBeenCalledWith(expect.stringContaining("500"), "UI save refused");
+		expect(diagnostic).toHaveBeenCalledWith(expect.stringContaining("500"), "UI save refused", null);
 		expect(reload).not.toHaveBeenCalled();
 		expect(theWebUI.settingsSavePending).toBe(false);
 		expect(save.disabled).toBe(false);
@@ -873,7 +873,7 @@ describe("the options save request", () => {
 		);
 
 		expect(diagnostic).toHaveBeenCalledTimes(1);
-		expect(diagnostic).toHaveBeenCalledWith(expect.stringContaining("401"), "UI session expired");
+		expect(diagnostic).toHaveBeenCalledWith(expect.stringContaining("401"), "UI session expired", null);
 		expect(savedReload).not.toHaveBeenCalled();
 		expect(theWebUI.authExpired).toBe(false);
 		expect(theWebUI.settingsSavePending).toBe(false);
@@ -967,7 +967,7 @@ describe("the options save request", () => {
 			"error"
 		);
 
-		expect(diagnostic).toHaveBeenCalledWith(expect.stringContaining("0"), "");
+		expect(diagnostic).toHaveBeenCalledWith(expect.stringContaining("0"), "", null);
 		expect(reload).not.toHaveBeenCalled();
 		expect(theWebUI.settingsSavePending).toBe(false);
 		expect(save.disabled).toBe(false);
