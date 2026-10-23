@@ -59,4 +59,21 @@ class UrlHost
 		$host = self::normalize($host);
 		return $host !== '' && in_array($host, array_map(array(__CLASS__, 'normalize'), (array) $hosts), true);
 	}
+
+	/** True for a normalized host or one of its subdomains, at a label boundary. */
+	static public function isOneOf($host, $hosts)
+	{
+		$host = self::normalize($host);
+		if($host === '')
+			return false;
+		foreach((array) $hosts as $candidate)
+		{
+			$candidate = self::normalize($candidate);
+			if($candidate !== '' && ($host === $candidate
+				|| substr($host, -strlen($candidate) - 1) === '.' . $candidate))
+				return true;
+		}
+		return false;
+	}
+
 }
