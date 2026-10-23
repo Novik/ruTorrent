@@ -5,6 +5,36 @@ require_once( 'utility.php' );
 
 class CachedEcho
 {
+	private static function gzipEncoding($header)
+	{
+		$weights = array();
+		foreach(explode(',', $header) as $item)
+		{
+			$parts = explode(';', trim($item), 2);
+			$name = strtolower(trim($parts[0]));
+			if(!in_array($name, array('gzip', 'x-gzip', '*'), true))
+				continue;
+			$weight = 1.0;
+			if(isset($parts[1]))
+			{
+				if(preg_match('/^q\s*=\s*(0(?:\.[0-9]{0,3})?|1(?:\.0{0,3})?)\s*$/iD',
+					trim($parts[1]), $match))
+					$weight = (float)$match[1];
+				else
+					$weight = 0.0;
+			}
+			// Repeated codings retain their lowest weight, including explicit refusals.
+			$weights[$name] = isset($weights[$name]) ? min($weights[$name], $weight) : $weight;
+		}
+		$gzip = $weights['gzip'] ?? 0.0;
+		$xGzip = $weights['x-gzip'] ?? 0.0;
+		// x-gzip aliases gzip; a wildcard cannot undo an explicit refusal of either label.
+		if(!isset($weights['gzip']) && !isset($weights['x-gzip']))
+			$gzip = $weights['*'] ?? 0.0;
+		if(($gzip > 0) && ($gzip >= $xGzip)) return 'gzip';
+		return ($xGzip > 0) ? 'x-gzip' : null;
+	}
+
 	public static function send( $content, $type = null, $cacheable = false, $exit = true )
 	{
 		header("X-Server-Timestamp: ".time());
@@ -37,11 +67,7 @@ class CachedEcho
 				global $phpUseGzip;
 				if($phpUseGzip && isset($_SERVER['HTTP_ACCEPT_ENCODING']))
 				{
-					$encoding = null;
-					if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false )
-						$encoding = 'x-gzip';
-				else if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false )
-						$encoding = 'gzip';
+					$encoding = self::gzipEncoding($_SERVER['HTTP_ACCEPT_ENCODING']);
 				if($encoding && ($len>=2048))
 				{
 					global $phpGzipLevel;
