@@ -266,6 +266,7 @@ theWebUI.getRSSSettings = function( d )
 	if(theWebUI.updateRSSTimer)
 		clearTimeout(theWebUI.updateRSSTimer);
 	const loadRSSLoop = () => {
+		theWebUI.rssFollowUpPolls = 0;
 		theWebUI.loadRSS();
 		theWebUI.updateRSSTimer = setTimeout(
 			loadRSSLoop,
@@ -732,6 +733,16 @@ theWebUI.showErrors = function(errors)
 
 theWebUI.addRSSItems = function(d)
 {
+	// The backend answered from its cache and is fetching fresher feeds after
+	// the response. Poll once more when that should be done, rather than
+	// waiting for the next regular update.
+	if (d.refreshing && !theWebUI.rssFollowUpTimer && (theWebUI.rssFollowUpPolls || 0) < 1) {
+		theWebUI.rssFollowUpPolls = (theWebUI.rssFollowUpPolls || 0) + 1;
+		theWebUI.rssFollowUpTimer = setTimeout(() => {
+			theWebUI.rssFollowUpTimer = null;
+			theWebUI.loadRSS();
+		}, 45 * 1000);
+	}
 	const rssItems = {};
 	const rssLabels = {};
 	const table = this.getTable("rss");
