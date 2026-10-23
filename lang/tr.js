@@ -319,6 +319,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 dk", 1800: "30 dk", 3600: "1 saat", 10800: "3 saat"},
  badTempPath : "Web sunucusu kullanıcısının tmp dizinine okuma/yazma/çalıştırma erişimi yok. ruTorrent çalışmayacak.",
  badTempPath2 : "rTorrent kullanıcısının tmp dizinine okuma/çalıştırma erişimi olmalıdır. ruTorrent çalışmayacak.",
+ worldWritableTempPath : "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash : "Çapraz seed için info hash'leri rastgele düzenle",
  Recreate_files : "Dosya yeniden oluşturmayı sıraya al",
  Address			: "Adres",

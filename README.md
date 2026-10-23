@@ -27,6 +27,17 @@ This project is released under the GPLv3 license, for more details, take a look 
   * After setting up the webserver `ruTorrent` itself needs to be configured. Instructions can be found in various articles in the [wiki](https://github.com/Novik/ruTorrent/wiki).
   * Keep `share/`, `conf/` and `tests/` out of what the web server will serve. `share/` holds the profile data — settings, stored torrents, and the tracker credentials the `loginmgr` plugin keeps — and it sits under the document root by default. Point `$profilePath` in `conf/config.php` at a directory outside the document root, such as `/var/lib/rutorrent`: that is the one measure nothing else has to be right for. Apache denies the three directories from the `.htaccess` file already in each of them; nginx and lighttpd do not read `.htaccess` and need the rules in [`nginx-example.conf`](nginx-example.conf) — written for the prefix the install is served under, and placed before the `.php` handler.
 
+## Public feed links behind a reverse proxy
+
+When a reverse proxy changes the application host or path prefix, set the full public application URL in `conf/config.local.php` so the `feeds` plugin generates working channel, image and download links:
+
+```php
+<?php
+$publicURL = 'https://example.org/torrents/';
+```
+
+A nonempty `RU_PUBLIC_URL` environment variable overrides this setting; an empty or unset variable permits the local value. Use an absolute HTTP(S) URL without credentials, query or fragment. Without an explicit setting, feed links use the request's host, scheme and actual script path. A proxy that rewrites that path needs the explicit public prefix; `X-Forwarded-Host` does not select it.
+
 ## Contributing
 
 Pull requests target **`master`**. There is no `develop` branch — it was retired,
@@ -76,3 +87,9 @@ classify its version and to check that ruTorrent's event handlers are registered
 with it. It exits `0` when everything required passes and `1` otherwise, so it
 can be used in scripts. For safety it runs on the command line only and refuses
 to run under a web server.
+
+### SCGI transport limits
+
+`$rpcTimeOut` bounds connecting to rTorrent; a missing or unusable value means 30 seconds. `$rpcTransferTimeOut` bounds the complete request write and response read together. Its default `null`, and any value that is not a finite positive number, takes the greater of the connection timeout and PHP's finite positive `default_socket_timeout` (or 60 seconds otherwise). Byte-by-byte progress cannot extend this total budget, and a request that runs out of it is logged with the budget and the setting to raise. For a large response over a slow connection, set a finite positive `$rpcTransferTimeOut`, for example `180` for a transfer expected to take 80 seconds, and allow enough time in PHP and the web server too. Both timeouts are capped at 2147483 seconds; there is no unlimited transfer setting. `php env_check.php` reports unusable values of both settings. While it waits, the client watches the socket and reads as soon as rTorrent answers, waking at least every 32 milliseconds to check the budget. Where `stream_select()` is disabled or cannot watch the socket, it sleeps instead: 50 microseconds at first and twice as long each time up to 32 milliseconds. The previous `rpc2.php` reader handled a delayed response inconsistently: on PHP 8 it could return HTTP 200 with an empty body, while PHP 7.4 could wait without a bound.
+
+`$rpcMaxResponseBytes` limits the declared response body. Its default is 100 MiB, the largest response rTorrent itself sends; a smaller positive integer refuses larger responses. A larger or unusable value means 100 MiB; `php env_check.php` reports this configuration mistake. A response above 1 MiB is collected in the configured `$tempDirectory`. When it is unset, the WebUI uses ruTorrent's existing temporary-directory detection and `rpc2.php` uses PHP's system temporary directory. A world-writable directory without the sticky bit is not used; the WebUI reports such a temporary directory as unsafe. Only a new, empty file in the directory is used, and it is unlinked before any response byte is written, so terminating the worker leaves no response file behind. Accounts that may write to the directory through its group can still substitute a file of their own. If no such file can be used, the response is collected in memory, where one near 100 MiB needs about twice its size. These settings apply to both the WebUI and the filtered `rpc2.php` endpoint, including persisted configurations that omit them. Incomplete or malformed SCGI frames fail the request rather than publishing a partial result. This does not change which XMLRPC calls the proxy permits.

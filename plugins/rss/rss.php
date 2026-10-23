@@ -147,6 +147,47 @@ class rRSS
 		return($ret);
 	}
 
+	// The entity tag a response carries, or null for anything that is not
+	// one. What is kept here goes back out as an If-None-Match request
+	// header this plugin writes by hand, and the feed chooses the bytes, so
+	// the bytes allowed are the ones an entity tag may hold: a quoted
+	// string of visible characters other than the quote, optionally marked
+	// weak (RFC 9110 8.8.3). A tag bounded at an offending byte rather than
+	// declined would be a prefix, and a prefix names a different entity.
+	static protected function entityTag($value)
+	{
+		return(preg_match('/^(?:W\/)?"[\x21\x23-\x7e\x80-\xff]*"$/D',$value) ? $value : null);
+	}
+
+	// The last-modified date a response carries, as the single format a
+	// sender must generate, or null for anything that is not a date. What is
+	// kept here goes back out as an If-Modified-Since request header, which
+	// a recipient must ignore unless its value is an HTTP-date, so the three
+	// formats a recipient must accept are the ones read and the first of
+	// them is the one written (RFC 9110 5.6.7).
+	//
+	// Each is asked for by re-spelling the parse: a format the whole value
+	// does not spell comes back as different bytes. That is also what
+	// settles the day name, which PHP otherwise reads as "the next such
+	// weekday" and so moves the date to one the feed never named.
+	static protected function httpDate($value)
+	{
+		$utc = new DateTimeZone('UTC');
+		foreach(array('D, d M Y H:i:s \G\M\T','l, d-M-y H:i:s \G\M\T','asctime') as $format)
+		{
+			$date = @DateTimeImmutable::createFromFormat('!'.
+				($format==='asctime' ? 'D M j H:i:s Y' : $format),$value,$utc);
+			if($date===false)
+				continue;
+			$spelled = ($format==='asctime')
+				? $date->format('D M ').str_pad($date->format('j'),2,' ',STR_PAD_LEFT).$date->format(' H:i:s Y')
+				: $date->format($format);
+			if($spelled===$value)
+				return($date->format('D, d M Y H:i:s \G\M\T'));
+		}
+		return(null);
+	}
+
 	public function fetch( $history )
 	{
 		$headers = [];
@@ -154,7 +195,7 @@ class rRSS
 		if($this->etag)
 			$headers['If-None-Match'] = $this->etag;
 		if($this->lastModified)
-			$headers['If-Last-Modified'] = $this->lastModified;
+			$headers['If-Modified-Since'] = $this->lastModified;
 		$cli = call_user_func($this->fetchURL, $this->url, $this->cookies, $headers);
 		if($cli->status<200 || $cli->status>=300) {
 			if ($cli->status != 304) {
@@ -176,14 +217,19 @@ class rRSS
 		$this->lastModified = null;
 		foreach($cli->headers as $header)
 		{
-			$field = explode(': ', trim(strtolower($header)), 2);
+			// Only the field name is folded. A validator cannot judge a
+			// value whose case has already been destroyed, and an entity tag
+			// is an opaque octet sequence: a folded one is a different tag
+			// from the one the server issued, so the conditional request
+			// built out of it could never match.
+			$field = explode(': ', trim($header), 2);
 			$value = count($field) > 1 ? $field[1] : '';
-			switch($field[0]) {
+			switch(strtolower($field[0])) {
 				case 'etag':
-					$this->etag = $value;
+					$this->etag = self::entityTag($value);
 					break;
 				case 'last-modified':
-					$this->lastModified = $value;
+					$this->lastModified = self::httpDate($value);
 			}
 		}
 		// map data from Atom or RSS feeds

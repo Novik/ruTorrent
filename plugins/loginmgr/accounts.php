@@ -8,7 +8,7 @@ require_once( dirname(__FILE__)."/../../php/utility/json.php");
 // included from, and that is not always the global one: on the download
 // path it is Snoopy::fetchComplex(), a method. The accounts read their
 // settings as globals, so the settings are declared global here first.
-global $yggTorrentOrigin;
+global $yggTorrentOrigin, $abTorrentsOrigin, $revolutionTTOrigin, $tfileOrigin, $redactedOrigin;
 eval( FileUtil::getPluginConf( 'loginmgr' ) );
 
 class privateData
@@ -41,10 +41,14 @@ class privateData
 		$this->loaded = false;
 	}
 
+	// True when this account holds no stored session afterwards. The cache
+	// refuses a removal it cannot make safely -- it needs the writer lock the
+	// stores take, and the unlink itself can fail -- so the answer belongs to
+	// the caller, which has no other way to tell.
 	public function remove()
 	{
 		$cache = new rCache('/accounts');
-		$cache->remove($this);
+		return($cache->remove($this));
 	}
 
 	public function store( $client )
@@ -96,7 +100,7 @@ abstract class commonAccount
 	// user -- plugins/rss follows links out of a feed.
 	public function test($url)
 	{
-		if($this->unconfigured()!=='')
+		if($this->refuseUnconfigured())
 			return(false);
 		$site = parse_url((string) $this->url);
 		return(self::urlAddresses($url,array($site["host"]),$site["scheme"]));
@@ -128,6 +132,50 @@ abstract class commonAccount
 			FileUtil::toLog('loginmgr: '.$name.' is not used: '.$reason);
 		}
 		return(true);
+	}
+
+	// $value as "https://host[:port]", or '' with the reason in $error. An
+	// origin is a scheme, an ASCII host and at most a port: no userinfo, path,
+	// query or fragment, since those would go into every URL built on it. A
+	// trailing slash is allowed; case and a trailing dot in the host are
+	// folded. parse_url() alone accepts "https://a b.example" and
+	// "https://a..example" as hosts, hence the host pattern.
+	static protected function configuredOrigin($value,&$error)
+	{
+		if(!is_string($value))
+		{
+			$error = 'is not a string';
+			return('');
+		}
+		if($value==='')
+		{
+			$error = 'is not set';
+			return('');
+		}
+		$error = 'is not an https origin ("https://host" with an ASCII host, optionally a port, and nothing else)';
+		$parts = @parse_url($value);
+		if(!is_array($parts) || empty($parts["scheme"]) || empty($parts["host"]) ||
+			strtolower($parts["scheme"])!=='https' ||
+			isset($parts["user"]) || isset($parts["pass"]) || isset($parts["query"]) || isset($parts["fragment"]) ||
+			(isset($parts["path"]) && $parts["path"]!=='' && $parts["path"]!=='/'))
+			return('');
+		$host = rtrim(strtolower($parts["host"]),'.');
+		if(!preg_match('/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)*[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/',$host))
+			return('');
+		if(isset($parts["port"]) && (($parts["port"]<1) || ($parts["port"]>65535)))
+			return('');
+		$error = '';
+		return('https://'.$host.(isset($parts["port"]) ? ':'.$parts["port"] : ''));
+	}
+
+	// The reason an account that takes its site from configuration cannot be
+	// used, naming the setting that carries it and where to set it. The value
+	// is never quoted: a mistyped setting can hold a password.
+	static protected function unconfiguredOrigin($setting,$error)
+	{
+		return('$'.$setting.' '.$error
+			.'; set it to the tracker\'s origin in plugins/loginmgr/conf.local.php'
+			.' or conf/users/<user>/plugins/loginmgr/conf.php');
 	}
 
 	// True when $url's host is one of $hosts, or a subdomain of one, and its
@@ -340,33 +388,55 @@ class accountManager
 		return($cache->set($this));
 	}
 
+	// True when the discovered list is durable. A refused write leaves that
+	// list standing for this request only, so the scheduled job is left
+	// alone as well: it would otherwise describe accounts that no later
+	// request can read.
+	//
+	// A directory that cannot be enumerated is not a directory holding no
+	// accounts, and the difference matters because only one of the two may be
+	// written down: a store of the empty list succeeds, and from then on
+	// load() answers every later request from it, so the plugin stays empty
+	// after whatever denied the read is repaired. What that store lands on is
+	// whatever the profile held, credentials included -- action.php reaches
+	// here whenever the stored list could not be loaded, not only when there
+	// is none.
 	public function obtain( $dir = '../plugins/loginmgr/accounts' )
 	{
 		$oldAccounts = $this->accounts;
-		$this->accounts = array();
-		if( $handle = opendir($dir) )
+		$handle = @opendir($dir);
+		if($handle===false)
 		{
-			while(false !== ($file = readdir($handle)))
+			FileUtil::toLog('loginmgr: the accounts directory could not be read, so the stored list is left alone: '.$dir);
+			return(false);
+		}
+		$accounts = array();
+		while(false !== ($file = readdir($handle)))
+		{
+			if(is_file($dir.'/'.$file))
 			{
-				if(is_file($dir.'/'.$file))
+				$name = basename($file,".php");
+				$accounts[$name] = array( "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 );
+				if(array_key_exists($name,$oldAccounts) && array_key_exists("login",$oldAccounts[$name]))
 				{
-					$name = basename($file,".php");
-					$this->accounts[$name] = array( "name"=>$name, "path"=>FileUtil::fullpath($dir.'/'.$file), "object"=>$name."Account", "login"=>'', "password"=>'', "enabled"=>0, "auto"=>0 );
-					if(array_key_exists($name,$oldAccounts) && array_key_exists("login",$oldAccounts[$name]))
-					{
-						$this->accounts[$name]["login"] = self::asText($oldAccounts[$name]["login"]);
-						$this->accounts[$name]["password"] = self::asText($oldAccounts[$name]["password"]);
-						$this->accounts[$name]["enabled"] = self::asFlag($oldAccounts[$name]["enabled"]);
-						if(array_key_exists("auto",$oldAccounts[$name]))
-							$this->accounts[$name]["auto"] = self::asNumber($oldAccounts[$name]["auto"]);
-					}
+					$accounts[$name]["login"] = self::asText($oldAccounts[$name]["login"]);
+					$accounts[$name]["password"] = self::asText($oldAccounts[$name]["password"]);
+					$accounts[$name]["enabled"] = self::asFlag($oldAccounts[$name]["enabled"]);
+					if(array_key_exists("auto",$oldAccounts[$name]))
+						$accounts[$name]["auto"] = self::asNumber($oldAccounts[$name]["auto"]);
 				}
 			}
-			closedir($handle);
-	        }
-		ksort($this->accounts);
-		$this->store();
+		}
+		closedir($handle);
+		ksort($accounts);
+		$this->accounts = $accounts;
+		if(!$this->store())
+		{
+			FileUtil::toLog('loginmgr: the discovered account list could not be saved.');
+			return(false);
+		}
 		$this->setHandlers();
+		return(true);
 	}
 
 	// A stored scalar is a flag, a number or a text, and nothing else is kept.
@@ -407,8 +477,12 @@ class accountManager
 		return("theWebUI.theAccounts = ".JSON::jsValue((object) $accounts).";\n");
 	}
 
-	public function set()
+	// $notRetired comes back holding the accounts whose stored session is
+	// still on disk after a save that changed their credentials. The save
+	// itself succeeded in that case, so the return value cannot carry it.
+	public function set( &$notRetired = null )
 	{
+		$previous = $this->accounts;
 		foreach( $this->accounts as $name=>$nfo )
 		{
 			if(isset($_REQUEST[$name."_enabled"]))
@@ -419,19 +493,35 @@ class accountManager
 				$this->accounts[$name]["password"] = self::asText($_REQUEST[$name."_password"]);
 			if(isset($_REQUEST[$name."_auto"]))
 				$this->accounts[$name]["auto"] = self::asNumber($_REQUEST[$name."_auto"]);
-			$this->forgetSession($name);
 		}
-		$this->store();
+		// A refused edit must leave the active credentials and sessions in place.
+		if(!$this->store())
+		{
+			$this->accounts = $previous;
+			return(false);
+		}
+		$notRetired = array();
+		foreach(array_keys($this->accounts) as $name)
+			if(!$this->forgetSession($name))
+				$notRetired[] = $name;
+		// A session the cache would not discard is still sent to the tracker
+		// under credentials that no longer exist, which is the one thing
+		// forgetSession() is for. Nothing here can force the removal, so the
+		// names go where an operator can read them.
+		if(count($notRetired))
+			FileUtil::toLog('loginmgr: a stored session outlived the credentials it was made with: '.
+				implode(', ',$notRetired));
 		$this->setHandlers();
+		return(true);
 	}
 
-	// The cookies and referer held for this account. Whatever was just written
-	// may name another site or another user, so the session that belonged to
-	// the previous settings does not survive the write.
+	// Discards the cookies and referer held for this account: whatever was
+	// just written may name another site or another user. False when the
+	// session is still there afterwards.
 	protected function forgetSession( $name )
 	{
 		$data = new privateData( $name );
-		$data->remove();
+		return($data->remove());
 	}
 
 	public function getAccount( $url )

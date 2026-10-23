@@ -4,7 +4,7 @@ require_once( 'util.php' );
 class rCache
 {
 	protected $dir;
-	// How a cache file looked when get() loaded it into a merge-capable
+	// How a cache file looked when get() loaded it or set() stored a merge-capable
 	// object: the stamp stampOf() read and a digest of the bytes, which
 	// decides when the stamp repeats. Kept per loaded object, not per cache
 	// key: two objects of one key in one process can hold different versions,
@@ -30,9 +30,8 @@ class rCache
 		}
 		return(true);
 	}
-	// What get() recorded when it loaded this very object; null when the
-	// object was not loaded from a cache file, or when its class has no
-	// merge() and get() therefore recorded nothing.
+	// What get() or set() recorded for this very object; null when neither
+	// loaded nor stored it, or when its class has no merge().
 	protected static function loadedStamp( $rss )
 	{
 		$loaded = self::$loadStamps[spl_object_id($rss)] ?? null;
@@ -288,6 +287,11 @@ class rCache
 					if(@rename( $tmpName, $name ))
 					{
 						@chmod($name,$profileMask & 0666);
+						// The next store must not merge this object's own published version.
+						if(is_object($rss) && method_exists($rss,"merge"))
+							self::$loadStamps[spl_object_id($rss)] = array(
+								'object' => WeakReference::create($rss),
+								'stamp' => self::stampOf($name), 'digest' => hash('sha256',$str));
 						flock( $lock, LOCK_UN );
 						fclose( $lock );
 						return(true);
@@ -366,7 +370,8 @@ class rCache
 		if(is_null($name))
 			return(false);
 		$lockName = $name.'.lock';
-		// Delete cache data and its sidecar lock while holding the same key lock used by writers.
+		// Writers may have opened this sidecar before remove() acquired it.
+		// Keep its inode so those writers and later ones still share one lock.
 		$lock = fopen( $lockName, "c" );
 		if($lock!==false)
 		{
@@ -376,12 +381,13 @@ class rCache
 				$ret = @unlink($name);
 				flock( $lock, LOCK_UN );
 				fclose( $lock );
-				@unlink($lockName);
 				return($ret);
 			}
 			fclose($lock);
 		}
-		return(@unlink($name));
+		// Deletion needs the writer lock too; a failed lock is not permission
+		// to unlink an entry that another process may be publishing.
+		return(false);
 	}
 	// Null when the key names anything other than a file in this directory.
 	// Every caller treats that as a miss rather than reaching for the path.

@@ -150,7 +150,13 @@ class UnconfirmedEraseTest extends TestCase
 			. ' $__s = $__r->newInstanceWithoutConstructor();'
 			. ' $__s->iVersion = 0x904; $__s->aliases = array(); $__s->plugins = array();'
 			. ' $__s->directory = ' . var_export($this->base, true) . '; $__s->linkExist = true;'
-			. ' $__p = $__r->getProperty("theSettings"); $__p->setAccessible(true);'
+			. ' $__p = $__r->getProperty("theSettings");'
+			// Before 8.1 a private static property cannot be written through
+			// reflection without lifting its visibility first; from 8.1 the call
+			// has no effect, and on 8.5 its deprecation notice would land in the
+			// driver output the cases compare. The driver runs under PHP_BINARY,
+			// so this process's version is the driver's.
+			. (PHP_VERSION_ID < 80100 ? ' $__p->setAccessible(true);' : '')
 			. ' $__p->setValue(null, $__s);' . "\n";
 	}
 
@@ -175,8 +181,9 @@ class UnconfirmedEraseTest extends TestCase
 			. 'require_once(' . var_export($root . '/plugins/erasedata/removewithdata.php', true) . ");\n"
 			. '$__result = erasedataRemoveWithData(array(' . var_export($hash, true) . '), "1");' . "\n"
 			. 'echo ($__result === false) ? "refused" : "erased";' . "\n");
-		// The writer reads a reply until the daemon closes the connection, so a
-		// daemon that never answers holds it for default_socket_timeout.
+		// rSCGITransport::sendConfigured() sets the transfer budget to
+		// max(default_socket_timeout, $rpcTimeOut): config.php leaves
+		// $rpcTransferTimeOut null, and the preamble sets $rpcTimeOut = 5.
 		return $this->run_($driver, '-d default_socket_timeout=' . (int)$socketTimeout);
 	}
 
@@ -238,11 +245,10 @@ class UnconfirmedEraseTest extends TestCase
 	{
 		$this->fresh();
 		$download = $this->download();
-		// One reply: the paths. The listening socket stays open in this
-		// process, so the erase request connects and is never read, and the
-		// writer gives up when its read times out -- what a daemon that hung,
-		// or was killed before it read the request, looks like from the
-		// writer's side. The download is still loaded on the other end.
+		// One reply: the paths. The daemon's worker then closes its listener
+		// and exits, so the erase request meets a refused connection -- a
+		// daemon that stopped between the two requests. No timeout is
+		// reached. To the writer, the download is still loaded.
 		$this->startDaemon(array($this->pathsReply($download)));
 
 		$verdict = $this->removeWithData(2);

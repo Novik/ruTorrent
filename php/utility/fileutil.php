@@ -212,13 +212,13 @@ class FileUtil
 				if(empty($tempDirectory))
 				{
 					$tempDirectory = self::getProfilePath().'/tmp';
-					FileUtil::makeDirectory($tempDirectory);
+					self::makeDirectory($tempDirectory, null, true);
 				}
 			}
 			else
 			{
-				// User provided, create if not exist.
-				FileUtil::makeDirectory($tempDirectory);
+				// User provided: an existing directory may have a protected mode.
+				self::makeDirectory($tempDirectory, null, true);
 			}
 			// Make sure that temp dir always have trail slash.
 			$tempDirectory = self::addslash( $tempDirectory );
@@ -242,22 +242,23 @@ class FileUtil
 		return($fname);
 	}
 
-	public static function makeDirectory( $dirs, $perms = null )
+	public static function makeDirectory($dirs, $perms = null, $preserveExisting = false)
 	{
 		global $profileMask;
 		if(is_null($perms))
 			$perms = isset($profileMask) ? $profileMask : 0777;
 		$oldMask = umask(0);
-		if(is_array($dirs))
+		foreach(is_array($dirs) ? $dirs : array($dirs) as $dir)
 		{
-			foreach($dirs as $dir)
+			// A directory that is already there keeps the mode it has: only a
+			// missing one is created, and with the mode the caller asked for.
+			if($preserveExisting)
 			{
-				(file_exists(self::addslash($dir).'.') && @chmod($dir,$perms)) || @mkdir($dir,$perms,true);
+				if(!is_dir($dir))
+					@mkdir($dir, $perms, true);
 			}
-		}
-		else
-		{
-			(file_exists(self::addslash($dirs).'.') && @chmod($dirs,$perms)) || @mkdir($dirs,$perms,true);
+			else
+				(file_exists(self::addslash($dir).'.') && @chmod($dir,$perms)) || @mkdir($dir,$perms,true);
 		}
 		@umask($oldMask);
 	}

@@ -319,6 +319,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Веб-сервер не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
  badTempPath2			: "rTorrent не має повного доступу до каталогу tmp. ruTorrent не зможе працювати.",
+ worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash		: "Зробити хеш унікальним",
  Recreate_files			: "Виконати повторне створення файлів у черзі",
  Address			: "Адреса",

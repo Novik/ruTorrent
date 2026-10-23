@@ -2,6 +2,7 @@
 
 require_once( 'util.php' );
 require_once( 'settings.php' );
+require_once( 'scgitransport.php' );
 
 class rXMLRPCParam
 {
@@ -133,6 +134,8 @@ class rXMLRPCRequest
 	public $val = array();
 	public $fault = false;
 	public $faultString = '';
+	// The transport's classified failure when it returned no answer, else null.
+	public $transportFailure = null;
 	public $parseByTypes = false;
 	public $important = true;
 
@@ -148,29 +151,20 @@ class rXMLRPCRequest
 		}
 	}
 
-	public static function send( $data, $trusted = true )
+	public static function send( $data, $trusted = true, &$failure = null, $responseMode = rSCGITransport::RESPONSE_RAW )
 	{
 		global $rpcLogCalls;
 		if($rpcLogCalls)
 			FileUtil::toLog($data);
-		$result = false;
-		$contentlength = strlen($data);
-		if($contentlength>0)
+		$result = rSCGITransport::sendConfigured($data, $trusted, array('responseMode' => $responseMode,
+			'temporaryDirectory' => FileUtil::getTempDirectory()), $failure);
+		if($result === null)
 		{
-			global $rpcTimeOut;
-			global $scgi_host;
-			global $scgi_port;
-			$socket = @fsockopen($scgi_host, $scgi_port, $errno, $errstr, $rpcTimeOut);
-			if($socket)
-			{
-				$reqheader = "CONTENT_LENGTH\x0".$contentlength."\x0"."CONTENT_TYPE\x0"."text/xml\x0"."SCGI\x0"."1\x0UNTRUSTED_CONNECTION\x0".($trusted ? "0" : "1")."\x0";
-				$tosend = strlen($reqheader).":{$reqheader},{$data}";
-				@fwrite($socket,$tosend,strlen($tosend));
-				$result = '';
-				while($data = fread($socket, 65536))
-					$result .= $data;
-				fclose($socket);
-			}
+			// A stopped daemon would add a line on every WebUI poll, which
+			// already answers "Could not reach rTorrent"; log the other failures.
+			if($failure !== 'connect-failed')
+				FileUtil::toLog('rXMLRPCRequest: '.rSCGITransport::describeFailure($failure));
+			$result = false;
 		}
 		if($rpcLogCalls)
 			FileUtil::toLog($result);
@@ -264,6 +258,7 @@ class rXMLRPCRequest
 	public function run($trusted = true)
 	{
 	        $ret = false;
+		$this->transportFailure = null;
 		$this->i8s = array();
 		$this->strings = array();
 		$this->val = array();
@@ -291,7 +286,14 @@ class rXMLRPCRequest
 		$this->commandOffset = 0;
 		while($this->makeNextCall())
 		{
-			$answer = self::send($this->content,$trusted);
+			$answer = self::send($this->content,$trusted,$failure);
+			if($answer === false)
+				$this->transportFailure = $failure;
+			if(($answer === false) && ($failure !== 'connect-failed'))
+			{
+				$this->fault = true;
+				$this->faultString = 'Could not complete the rTorrent XMLRPC request ('.$failure.').';
+			}
 			if(self::isCompleteAnswer($answer))
 			{
 				if($this->parseByTypes)
@@ -360,10 +362,8 @@ class rXMLRPCRequest
 
 	// rtorrent ends every answer with </methodResponse>: built with xmlrpc-c
 	// (as 0.9.8 is) it adds a CRLF, built with tinyxml2 (as 0.16.25 is)
-	// nothing. An answer that does not end so was cut short: rtorrent stopped
-	// while writing it, or the read timed out. The values written before the
-	// cut are still whole, so read as they are they pass for a complete,
-	// shorter result.
+	// nothing. Even a complete SCGI frame may contain unfinished XML. Values
+	// before the cut must not pass for a complete, shorter result.
 	static protected function isCompleteAnswer($answer)
 	{
 		if(!is_string($answer))

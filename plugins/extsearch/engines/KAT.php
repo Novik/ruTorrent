@@ -26,9 +26,7 @@ class KATEngine extends commonEngine
 		{
 			if(!$cookie)
 			{
-				foreach($client->headers as $header)
-					if(preg_match("/^set-cookie:[\s]+([^=]+)=([^;]+)/i", $header, $match))
-						$client->cookies[$match[1]] = $match[2];
+				$client->setcookies();
 				return($client->cookies);
 			}
 			else

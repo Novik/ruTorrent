@@ -22,6 +22,7 @@ class CachedEcho
 			if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] == $etag)
 			{
 				header('HTTP/1.0 304 Not Modified');
+				if($exit) exit;
 				return;
 			}
 			header('Etag: '.$etag);
@@ -36,6 +37,7 @@ class CachedEcho
 				global $phpUseGzip;
 				if($phpUseGzip && isset($_SERVER['HTTP_ACCEPT_ENCODING']))
 				{
+					$encoding = null;
 					if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false )
 						$encoding = 'x-gzip';
 				else if( strpos($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false )
@@ -49,6 +51,7 @@ class CachedEcho
 					file_put_contents($randName,$content);
 					passthru( $gzip." -".$phpGzipLevel." -c < ".$randName );
 					unlink($randName);
+					if($exit) exit;
 					return;
 				}
 			}

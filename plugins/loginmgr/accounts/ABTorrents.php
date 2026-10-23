@@ -2,7 +2,26 @@
 
 class ABTorrentsAccount extends commonAccount
 {
-	public $url = "https://abtorrents.me";
+	// The tracker's origin is not written here: it is $abTorrentsOrigin in
+	// plugins/loginmgr/conf.php, and this is that origin as
+	// "https://host[:port]", or '' while none is configured.
+	public $url = '';
+
+	// Why $abTorrentsOrigin is not usable, for the log line, or '' when it is.
+	private $originError = '';
+
+	public function __construct()
+	{
+		global $abTorrentsOrigin;
+		$this->url = self::configuredOrigin(isset($abTorrentsOrigin) ? $abTorrentsOrigin : '', $this->originError);
+	}
+
+	protected function unconfigured()
+	{
+		if($this->url!=='')
+			return('');
+		return(self::unconfiguredOrigin('abTorrentsOrigin',$this->originError));
+	}
 
 	protected function isOK($client)
 	{

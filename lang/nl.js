@@ -319,6 +319,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "Webserver-gebruiker heeft geen lees-, schrijf of uitvoerrechten op de tmp-map. ruTorrent zal niet functioneren.",
  badTempPath2			: "rTorrent-gebruiker moet lees- en uitvoerrechten hebben op de tmp-map. ruTorrent zal niet functioneren.",
+ worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
  Recreate_files			: "Queue Files Recreation",
  Address			: "Address",

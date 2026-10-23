@@ -319,6 +319,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "ওয়েবসার্ভার ব্যবহারকারীর tmp ডিরেক্টরিতে রিড/রাইট/এক্সেকিউট করার অ্যাক্সেস নেই। ruTorrent কাজ করবে না।",
  badTempPath2			: "rTorrent ব্যবহারকারীর অবশ্যই tmp ডিরেক্টরিতে রিড/এক্সেকিউট করার অ্যাক্সেস থাকতে হবে। ruTorrent কাজ করবে না।",
+ worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash		: "Randomize info hashes for cross-seeding",
  Recreate_files			: "Queue Files Recreation",
  Address			: "এড্রেস",

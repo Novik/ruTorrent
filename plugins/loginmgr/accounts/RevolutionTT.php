@@ -6,7 +6,26 @@
 
 class RevolutionTTAccount extends commonAccount
 {
-	public $url = "https://revolutiontt.me";
+	// The tracker's origin is not written here: it is $revolutionTTOrigin in
+	// plugins/loginmgr/conf.php, and this is that origin as
+	// "https://host[:port]", or '' while none is configured.
+	public $url = '';
+
+	// Why $revolutionTTOrigin is not usable, for the log line, or '' when it is.
+	private $originError = '';
+
+	public function __construct()
+	{
+		global $revolutionTTOrigin;
+		$this->url = self::configuredOrigin(isset($revolutionTTOrigin) ? $revolutionTTOrigin : '', $this->originError);
+	}
+
+	protected function unconfigured()
+	{
+		if($this->url!=='')
+			return('');
+		return(self::unconfiguredOrigin('revolutionTTOrigin',$this->originError));
+	}
 
 	protected function isOK($client)
 	{

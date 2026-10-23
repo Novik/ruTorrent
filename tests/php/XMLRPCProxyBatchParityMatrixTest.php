@@ -35,10 +35,11 @@ require_once(__DIR__ . '/../../php/xmlrpc_proxy.php');
  *
  * R1, R5 and R3 are about this proxy's own answer, not rtorrent's. "Sent" here
  * means this side decided to send; trust is a property of the connection, and
- * a batch is one connection carrying every member in it, so a member that
- * would be sent trusted on its own is carried untrusted in a batch and a
- * daemon that enforces the untrusted flag refuses it at inner dispatch. That
- * is deliberate and is not something these relations can state: what they
+ * a batch is one connection carrying every member in it. A batch is trusted
+ * only when every member would be trusted on its own, so a member that would
+ * be sent trusted alone is still carried untrusted beside one that would not,
+ * and a daemon that enforces the untrusted flag refuses it at inner dispatch.
+ * That is deliberate and is not something these relations can state: what they
  * state is that batching is not a way to be answered differently by this side,
  * and R2 that a member reaching rtorrent at all reaches it transformed the way
  * the same call alone would be.
@@ -707,7 +708,9 @@ class XMLRPCProxyBatchParityMatrixTest extends TestCase
 	 * An elevate member alongside members that are not elevated, which is the
 	 * shape a batch actually arrives in and the one where the batch cannot be
 	 * trusted as a whole. What the single-call path does to the arguments it
-	 * validates still has to have happened.
+	 * validates still has to have happened. Beside other elevated members
+	 * only, the batch is trusted as the call alone is and carries the
+	 * arguments the call alone sends.
 	 */
 	public function testAnElevateMemberIsTransformedAlongsideOtherMembers()
 	{
@@ -728,6 +731,19 @@ class XMLRPCProxyBatchParityMatrixTest extends TestCase
 			$this->cases++;
 
 			$alone = $this->decide($this->single($method, $good), false);
+
+			$control = ($method === 'd.start') ? 'd.stop' : 'd.start';
+			$trusted = $this->decide($this->batch(array(
+				$this->member($control, array($this->hash)),
+				$this->member($method, $good),
+				$this->member($control, array($this->hash)))), false);
+			$sent = $this->arguments($alone['payload'], $method);
+			if(($alone['action'] !== 'send') || !$alone['trusted'] || ($sent === null) ||
+				($trusted['action'] !== 'send') || !$trusted['trusted'] ||
+				($this->arguments($trusted['payload'], $method) !== $sent))
+				$this->bad[] = 'trusted ' . $method . ' among elevated members: not sent '
+					. 'trusted with the arguments the call alone sends';
+
 			$batch = $this->decide($this->batch(array(
 				$this->member('d.multicall2', array('', 'main', 'd.name=')),
 				$this->member($method, $good),
@@ -762,7 +778,7 @@ class XMLRPCProxyBatchParityMatrixTest extends TestCase
 						. $this->showArg($value) . ' alone and '
 						. $this->showArg($carried[$index]) . ' batched';
 		}
-		$this->verdict('$elevate members in a mixed batch');
+		$this->verdict('$elevate members in mixed and trusted batches');
 	}
 
 	/**

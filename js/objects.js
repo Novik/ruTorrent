@@ -45,6 +45,8 @@ class DnD {
 		}
 		// disallow dnd on links
 		if (e.target.tagName === "A") return false;
+		// a secondary click is not the start of a drag
+		if (e.maybeSecondaryClick) return false;
 
 		if (self.options.onStart(e)) {
 			$(document).on("mousemove", self, self.run);
@@ -305,9 +307,19 @@ var theContextMenu =
 	init: function() {
 		var self = this;
 		$(document).on('mousemove', function(e) { self.mouse.x = e.clientX; self.mouse.y = e.clientY; } );
+		// A contextmenu event that arrives while the button is still down -- what
+		// ctrl with the primary button does on macOS -- opens the menu before the
+		// release. That release has to be read as the secondary click it is, or it
+		// hides the menu the same gesture has just opened. The flag is cleared on
+		// every mousedown, so it only ever describes the gesture under way.
+		var menuGesture = false;
+		$(document).on('mousedown', function() { menuGesture = false; });
+		$(document).on('contextmenu', function() { menuGesture = true; });
 		$(document).on('mouseup', function(e) {
 			const ele = $(e.target);
-			if (e.which === 3) {
+			const secondary = (e.which === 3) || menuGesture;
+			menuGesture = false;
+			if (secondary) {
 				if (!e.fromTextCtrl)
 					e.stopPropagation();
 			} else {
@@ -446,8 +458,8 @@ var theContextMenu =
 			y = 0;
 		obj.css( { left: x, top: y, "z-index": ++theDialogManager.maxZ } );
 		obj.children("li").on({
-			mouseover: theContextMenu.openSubmenu,
-			mouseout: theContextMenu.closeSubmenu,
+			mouseenter: theContextMenu.openSubmenu,
+			mouseleave: theContextMenu.closeSubmenu,
 		});
 		obj.show(theDialogManager.divider, function() { obj.css( { overflow: "visible" } ); } );
 	},

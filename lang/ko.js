@@ -317,6 +317,7 @@ var theUILang =
  speedGraphDurationOptions		: {600: "10 min", 1800: "30 min", 3600: "1 hr", 10800: "3 hrs"},
  badTempPath			: "웹서버 사용자가 tmp 디렉토리에 읽기/쓰기/실행 권한을 갖고 있지 않습니다. ruTorrent가 동작할 수 없습니다.",
  badTempPath2			: "rTorrent 사용자가 반드시 tmp 디렉토리에 읽기/실행 권한을 가져야 합니다. ruTorrent가 동작할 수 없습니다.",
+ worldWritableTempPath			: "Every user on this system can write to the tmp directory and the sticky bit is not set, so any of them can rename or delete ruTorrent's files in it. Set the sticky bit on it, or point ruTorrent at a directory that is not world-writable.",
  doRandomizeHash		: "Cross-seed를 위해 정보 해시값 임의로 재생성",
  Recreate_files			: "대기열 파일 재생성",
  Address			: "주소",

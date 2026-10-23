@@ -148,10 +148,10 @@ else
 			}
 		}
 	}
-	if (!empty($_SERVER['PHP_SELF']) && !empty($_SERVER['HTTP_HOST']))
-		$location = "Location: //".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'])."/addtorrent.php?";
-	else
-		$location = "Location: ./addtorrent.php?";
+	// A Location may be a relative reference, so an install whose public
+	// address cannot be determined is still sent back to the page it posted.
+	$base = Requests::publicBaseURL('/php/addtorrent.php');
+	$location = "Location: ".($base===false ? "./addtorrent.php?" : $base."php/addtorrent.php?");
 	if(empty($uploaded_files))
 		$uploaded_files = array( array( 'status' => "Failed" ) );
 	foreach($uploaded_files as &$file)

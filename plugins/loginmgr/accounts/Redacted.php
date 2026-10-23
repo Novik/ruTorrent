@@ -2,7 +2,26 @@
 
 class RedactedAccount extends commonAccount
 {
-	public $url = "https://redacted.ch";
+	// The tracker's origin is not written here: it is $redactedOrigin in
+	// plugins/loginmgr/conf.php, and this is that origin as
+	// "https://host[:port]", or '' while none is configured.
+	public $url = '';
+
+	// Why $redactedOrigin is not usable, for the log line, or '' when it is.
+	private $originError = '';
+
+	public function __construct()
+	{
+		global $redactedOrigin;
+		$this->url = self::configuredOrigin(isset($redactedOrigin) ? $redactedOrigin : '', $this->originError);
+	}
+
+	protected function unconfigured()
+	{
+		if($this->url!=='')
+			return('');
+		return(self::unconfiguredOrigin('redactedOrigin',$this->originError));
+	}
 
 	protected function isOK($client)
 	{

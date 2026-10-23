@@ -30,7 +30,7 @@ function fakeTable(columns, fmtdata) {
       "<table><colgroup></colgroup><thead><tr></tr></thead><tbody></tbody></table>" +
     "</div>"
   );
-  for (const _ of columns) {
+  for (let i = 0; i < columns.length; i++) {
     dCont.find("colgroup").append(window.$("<col>"));
     dCont.find("thead tr").append(window.$("<td>").css("text-align", "left"));
   }

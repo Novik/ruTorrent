@@ -47,21 +47,28 @@ function makeContent() {
 		},
 	});
 
+	// One toast per item. The input is cleared only after a confirmed
+	// success, so a refusal leaves it to be corrected and sent again, and
+	// the send button is restored for this form alone.
+	var addTorrentFinished = function(frame, input, button, isEmpty) {
+		var answer = uploadFrameAnswer(frame);
+		if(answer === null)
+			return;
+		var added = false;
+		uploadResults(answer).forEach(function(result) {
+			noty(result.text, result.kind);
+			added = added || (result.kind == "success");
+		});
+		if(added)
+			$(input).val("");
+		$(button).prop("disabled", isEmpty());
+	};
 	$(document.body).append($("<iframe name='uploadfrm'/>").css({visibility: "hidden"}).attr( { name: "uploadfrm" } ).width(0).height(0).on('load', function() {
-		$("#torrent_file").val("");
-		$("#add_button").prop("disabled",true);
-		var d = this.contentDocument;
-		if (d && (d.location.href != "about:blank")) {
-			try { var txt = d.body.textContent ? d.body.textContent : d.body.innerText; eval(txt); } catch(e) {}
-		}
+		addTorrentFinished(this, "#torrent_file", "#add_button",
+			() => !$$("torrent_file").files || ($$("torrent_file").files.length === 0));
 	}));
 	$(document.body).append($("<iframe name='uploadfrmurl'/>").css({visibility: "hidden"}).attr( { name: "uploadfrmurl" } ).width(0).height(0).on('load', function() {
-		$("#url").val("");
-		var d = this.contentDocument;
-		if (d && d.location.href != "about:blank")
-			try {
-				eval(d.body.textContent ? d.body.textContent : d.body.innerText);
-			} catch(e) {}
+		addTorrentFinished(this, "#url", "#add_url", () => $("#url").val().trim() === "");
 	}));
 
 	const paddContent = $("<div>").addClass("cont").append(

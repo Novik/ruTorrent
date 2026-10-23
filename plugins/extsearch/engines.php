@@ -35,6 +35,33 @@ class commonEngine
 			"peers"=>0,
 			));
 	}
+	// The origin an engine whose tracker has no fixed domain searches, taken
+	// from the loginmgr account of the same name so that the search, the
+	// download links and the login use one host. '' when loginmgr is not
+	// installed, or while its setting for that account is not set or not
+	// usable.
+	protected function accountOrigin($name)
+	{
+		$file = dirname(__FILE__)."/../loginmgr/accounts/".$name.".php";
+		if(!is_file($file))
+			return('');
+		require_once(dirname(__FILE__)."/../loginmgr/accounts.php");
+		require_once($file);
+		$class = $name."Account";
+		$account = new $class();
+		return($account->url);
+	}
+
+	// The one entry a search returns when it has no origin to search: the
+	// setting to fill in, in place of results from a host nobody chose.
+	protected function unconfiguredOriginEntry($name,$setting,&$ret)
+	{
+		$item = $this->getNewEntry();
+		$item["name"] = $name.': set $'.$setting.' to the tracker\'s https origin'
+			.' in the loginmgr plugin configuration';
+		$ret[""] = $item;
+	}
+
 	public function makeClient($url)
 	{
 		global $HTTPTimeoutPerSite;

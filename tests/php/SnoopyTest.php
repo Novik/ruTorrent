@@ -6,6 +6,13 @@
 // require order. A minimal local runner keeps the real classes intact.
 require_once(__DIR__ . '/../../php/Snoopy.class.inc');
 
+// php/util.php loads conf/config.php, so the configuration of the install the
+// suite is run from decides what a plain Snoopy starts out as. The cases below
+// measure the class, and the ones about the private-network guard turn it on
+// for the client they test, so hold it off here rather than inherit it.
+$GLOBALS['httpBlockPrivateNetworks'] = false;
+$GLOBALS['httpPrivateNetworkAllowlist'] = array();
+
 function snoopyAssertTrue($condition, $message)
 {
     if (!$condition) {
@@ -35,7 +42,8 @@ function snoopyCurlArgs()
 // Location instead; $SNOOPY_TEST_SEEN is how the script remembers it did.
 // $SNOOPY_TEST_BODY names a file whose bytes become the response body;
 // $SNOOPY_TEST_NO_BODY leaves no body file at all, as curl does when the
-// answer has no body.
+// answer has no body. An argument naming a file with a leading @ is read the
+// way curl reads one, so the record holds the request body itself.
 $curlPath = tempnam(sys_get_temp_dir(), 'snoopy-curl-');
 $argsPath = tempnam(sys_get_temp_dir(), 'snoopy-args-');
 $bodyPath = tempnam(sys_get_temp_dir(), 'snoopy-body-');
@@ -55,6 +63,15 @@ while [ "$#" -gt 0 ]; do
 		-o)
 			shift
 			body_file=$1
+			;;
+		# curl reads a request body named with a leading @ out of that
+		# file, so the record carries the bytes it was handed and not
+		# only the name of the file they came in.
+		@/*)
+			if [ -f "${1#@}" ]; then
+				cat "${1#@}" >> "$SNOOPY_TEST_ARGS"
+				printf '\n' >> "$SNOOPY_TEST_ARGS"
+			fi
 			;;
 	esac
 	shift
@@ -262,6 +279,7 @@ PHP
 <?php
 require_once($argv[1]);
 $client = new Snoopy();
+$client->block_private = false;
 $client->read_timeout = 10;
 if ($argv[3] !== '') {
     $client->maxlength = (int) $argv[3];
@@ -1143,6 +1161,7 @@ $tests = array(
 require_once($argv[1]);
 $pathToExternals['curl'] = $argv[2];
 $client = new Snoopy();
+$client->block_private = false;
 $client->maxlength = 1048576;
 $fetched = $client->fetch('https://tracker.test/huge');
 echo json_encode(array(

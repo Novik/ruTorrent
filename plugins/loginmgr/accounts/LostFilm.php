@@ -22,7 +22,12 @@ class LostFilmAccount extends commonAccount
 		if(	preg_match("`/download\.php\?id=(\d+)&`si", $url, $matches) &&
 			preg_match("`/browse.php\?cat=`si", (string) $client->lastredirectaddr) &&
 			$client->fetch($this->url."/details.php?id=".$matches[1]) &&
-			preg_match("`/download\.php\?id=".$matches[1]."&\S+\s*\sonMouseOver=\"setCookie\('dlt','([^']*)'`si", $client->results, $md5))
+			// The token is read out of a response body, where CR and LF both
+			// pass, and it goes into the jar Snoopy writes into the next
+			// request's Cookie header by hand. A cookie value carries no
+			// control character, and the trailing "'" means one that does
+			// matches nothing, so the retry below is not attempted.
+			preg_match("`/download\.php\?id=".$matches[1]."&\S+\s*\sonMouseOver=\"setCookie\('dlt','([^'[:cntrl:]]*)'`si", $client->results, $md5))
 		{
 			$client->cookies["dlt_2"] = $md5[1];
 			// The retry is an answer like any other. get_filename() reads only

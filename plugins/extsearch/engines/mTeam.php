@@ -29,7 +29,7 @@ class mTeamEngine extends commonEngine
 
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
-		$url = 'http://mteam.fr';
+		$url = 'https://mteam.fr';
 		if($useGlobalCats)
 			$categories = array( 'all'=>'' );
 		else

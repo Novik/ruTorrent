@@ -66,7 +66,7 @@ class HttprpcColdCacheListTest extends TestCase
 		$this->stopDaemon();
 		@mkdir($profile . '/settings', 0700, true);
 		$this->daemon = new FakeRtorrentDaemon(RtorrentProbeFixture::responder(self::HASH),
-			$this->base . '/calls.log');
+			$this->base . '/calls.log', false, RtorrentProbeFixture::replyClassFiles());
 
 		$driver = $this->base . '/drive-httprpc.php';
 		file_put_contents($driver, "<?php\n"

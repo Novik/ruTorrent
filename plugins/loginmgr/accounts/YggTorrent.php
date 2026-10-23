@@ -16,42 +16,7 @@ class YggTorrentAccount extends commonAccount
     public function __construct()
     {
         global $yggTorrentOrigin;
-        $this->url = self::origin(isset($yggTorrentOrigin) ? $yggTorrentOrigin : '', $this->originError);
-    }
-
-    // $value as "https://host[:port]", or '' with the reason in $error. An
-    // origin is a scheme, an ASCII host and at most a port: no userinfo,
-    // path, query or fragment, since those would go into every URL built on
-    // it. A trailing slash is allowed; case and a trailing dot in the host are
-    // folded. parse_url() alone would pass "https://ygg example" and
-    // "https://ygg..example" as hosts, hence the host pattern.
-    static protected function origin($value, &$error)
-    {
-        if (!is_string($value)) {
-            $error = 'is not a string';
-            return '';
-        }
-        if ($value === '') {
-            $error = 'is not set';
-            return '';
-        }
-        $error = 'is not an https origin ("https://host" with an ASCII host, optionally a port, and nothing else)';
-        $parts = @parse_url($value);
-        if (!is_array($parts) || empty($parts["scheme"]) || empty($parts["host"]) ||
-            strtolower($parts["scheme"]) !== 'https' ||
-            isset($parts["user"]) || isset($parts["pass"]) || isset($parts["query"]) || isset($parts["fragment"]) ||
-            (isset($parts["path"]) && $parts["path"] !== '' && $parts["path"] !== '/')) {
-            return '';
-        }
-        $host = rtrim(strtolower($parts["host"]), '.');
-        if (!preg_match('/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)*[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/', $host)) {
-            return '';
-        }
-        if (isset($parts["port"]) && ($parts["port"] < 1 || $parts["port"] > 65535)) {
-            return '';
-        }
-        $error = '';
-        return 'https://' . $host . (isset($parts["port"]) ? ':' . $parts["port"] : '');
+        $this->url = self::configuredOrigin(isset($yggTorrentOrigin) ? $yggTorrentOrigin : '', $this->originError);
     }
 
     protected function unconfigured()
@@ -59,9 +24,7 @@ class YggTorrentAccount extends commonAccount
         if ($this->url !== '') {
             return '';
         }
-        return '$yggTorrentOrigin ' . $this->originError
-            . '; set it to the tracker\'s origin in plugins/loginmgr/conf.local.php'
-            . ' or conf/users/<user>/plugins/loginmgr/conf.php';
+        return self::unconfiguredOrigin('yggTorrentOrigin', $this->originError);
     }
 
     // True when $url is on the configured origin: https, the same host (case

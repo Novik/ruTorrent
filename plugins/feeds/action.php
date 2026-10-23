@@ -114,14 +114,33 @@ function sortByPubDate( $a, $b )
 	return( (intval($a["pubDate"]) > intval($b["pubDate"])) ? -1 : ((intval($a["pubDate"]) < intval($b["pubDate"])) ? 1 : strcmp($a["title"],$b["title"])) );
 }
 
-$mode = (isset($_REQUEST['mode'])) ? $_REQUEST['mode'] : 'all';
-$url = (empty($_SERVER['HTTPS']) ? "http" : "https")."://".$_SERVER['HTTP_HOST'].str_replace('/plugins/feeds/action.php','/',$_SERVER['PHP_SELF']);
+// The views this feed serves. mode arrives in the request and titles the
+// channel out of the language file, so it is read as one of these and
+// nothing else: another key of the file titles the feed with an entry that
+// is not a title, a key the file does not hold leaves no title at all, and
+// a mode that is not a string ends the script at that read, before any of
+// the document has been written.
+$modes = array('all','downloading','completed','active','inactive','error');
+$mode = (isset($_REQUEST['mode']) && in_array($_REQUEST['mode'],$modes,true))
+	? $_REQUEST['mode'] : 'all';
+$url = Requests::publicBaseURL('/plugins/feeds/action.php');
+if($url === false)
+{
+	header('HTTP/1.0 500 Internal Server Error', true, 500);
+	die('Unable to determine the public feed URL. Configure RU_PUBLIC_URL or publicURL.');
+}
+$xmlURL = htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $server = explode(':',rTorrentSettings::get()->server);
+// The daemon's name and versions are text it was configured with, so they
+// are written as text and cannot close an element of the document.
+$xmlServer = htmlspecialchars($server[0], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+$xmlVersion = htmlspecialchars(rTorrentSettings::get()->version.'/'.rTorrentSettings::get()->libVersion,
+	ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $ret = '<?xml version="1.0" encoding="UTF-8"?>'.
 	'<rss version="2.0"><channel><description>*** rTorrent '.
-	rTorrentSettings::get()->version.'/'.rTorrentSettings::get()->libVersion." - ".$server[0].' ***</description><link>'.
-	$url.'</link><title>'.$server[0].': '.$theUILang[$mode].'</title>'.
-	'<image><url>'.$url.'images/logo.png</url><link>'.$url.'</link><title>ruTorrent</title></image>';
+	$xmlVersion." - ".$xmlServer.' ***</description><link>'.
+	$xmlURL.'</link><title>'.$xmlServer.': '.$theUILang[$mode].'</title>'.
+	'<image><url>'.$xmlURL.'images/logo.png</url><link>'.$xmlURL.'</link><title>ruTorrent</title></image>';
 
 $view = '';	// all, inactive
 switch($mode)
@@ -183,20 +202,20 @@ if($req->success())
 			"pubDate"=>floatval($req->val[$i+6]) );
 		if(rTorrentSettings::get()->isPluginRegistered('data'))
 			$item["link"] = $url.'plugins/data/action.php?hash='.$req->val[$i].'&no=0&readable=1';
-		if($_REQUEST['mode']=='error')
+		if($mode=='error')
 		{
                         if(empty($req->val[$i+2]))
 				continue;
 		}
 		else
 		{
-			if($_REQUEST['mode']=='active')
+			if($mode=='active')
 			{
 				if( floatval($req->val[$i+3])<1024 && floatval($req->val[$i+4])<1024 )
 					continue;
 			}
 			else
-			if($_REQUEST['mode']=='inactive')
+			if($mode=='inactive')
 			{
 				if( floatval($req->val[$i+3])>=1024 || floatval($req->val[$i+4])>=1024 )
 					continue;

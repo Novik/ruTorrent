@@ -159,7 +159,12 @@ class Torrent
 			if(!is_array($arr))
 				$this->notify_err('Bad torrent data');
 			else
-				$meta = array_merge( $meta, $arr );
+				// A union rather than array_merge(): a top level key that is a
+				// decimal number is an integer array key by the time it reaches
+				// here, and array_merge() renumbers integer keys, so a torrent
+				// carrying a key of "5" would be written back under "0". The
+				// decoded keys take precedence over the caller's, as before.
+				$meta = $arr + $meta;
 		}
 		foreach( $meta as $key => $value )
 			if(substr(strval( $key ),0,1)!="\x00")
@@ -340,6 +345,19 @@ class Torrent
 			$dictionary[$key] = $this->decode_data();
 	        }
         	$this->pointer++;
+		// is_list() is the question encode_array() puts to this array when the
+		// torrent is written back, and PHP has already turned every key that is
+		// a decimal number into an integer, so a dictionary it answers yes for
+		// leaves here as a list carrying the values with the keys gone. Nothing
+		// in the array can tell the two apart any more, so the caller is told
+		// instead of being handed a torrent that is not the one it read.
+		//
+		// An empty dictionary is not that: it holds no keys to lose, and it is
+		// indistinguishable from an empty list with nothing either way to
+		// prefer one reading over the other. It stays a list, as before.
+		if( $dictionary && self::is_list( $dictionary ) )
+			$this->notify_err( 'Cannot write back a dictionary whose keys are all decimal numbers: '
+				.implode( ', ', array_keys( $dictionary ) ) );
 	        return($dictionary);
 	}
 
@@ -374,12 +392,30 @@ class Torrent
         	if($delim_pos===false)
 	       		throw new Exception('Bad torrent data4');
 		$integer = substr($this->data, $this->pointer, $delim_pos - $this->pointer);
-		if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
-			$this->notify_err('Bad integer');
-//		$integer = abs(floatval($integer));
-		$integer = floatval($integer);
 		$this->pointer = $delim_pos + 1;
-		return($integer);
+		if(($integer === '-0') || ((substr($integer, 0, 1) == '0') && (strlen($integer) > 1)))
+		{
+			$this->notify_err('Bad integer');
+			return(floatval($integer));
+		}
+		// An int carries every value up to PHP_INT_MAX exactly and writes back
+		// the digits it was read as. A float does not: it rounds silently above
+		// 2^53, and from 1e16 up PHP renders it as 1.0E+16, which is not a
+		// bencoded integer at all. Either outcome inside info moves the info
+		// hash, so the torrent that gets loaded describes different files from
+		// the one that was read.
+		//
+		// BEP 3 puts no bound on a bencoded integer, so a value can arrive that
+		// no PHP scalar holds. Carrying it as a string is not open either: the
+		// encoder would write it as a bencoded string and change its type. It
+		// is reported instead, on the same ground as a dictionary whose keys
+		// cannot survive -- the caller is told rather than handed a torrent
+		// that is not the one it read.
+		$value = intval($integer);
+		if(strval($value) === $integer)
+			return($value);
+		$this->notify_err('Cannot write back this integer unchanged: '.$integer);
+		return(floatval($integer));
 	}
 
 	private function isOfType($type)
@@ -535,9 +571,9 @@ class Torrent
 	{
 	        if(is_null( $filename ))
 			$filename = $this->info['name'].'.torrent';
-		if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
-			$filename = rawurlencode($filename);
-        	header( 'Content-Disposition: attachment; filename="'.$filename.'"' );
+		require_once( __DIR__.'/utility/contentdisposition.php' );
+		header( 'Content-Disposition: '.ContentDisposition::attachment($filename,
+			isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null) );
         	CachedEcho::send( $this->__toString(), 'application/x-bittorrent', true );
     	}
 
@@ -582,7 +618,7 @@ class Torrent
 			return(false);
         	}
 		$pieces = '';
-		while( $piece = fread( $handle, $piece_length ) )
+		while( ($piece = fread( $handle, $piece_length )) !== false && $piece !== '' )
 			$pieces .= self::pack( $piece );
 		fclose( $handle );
 		return(array(
@@ -606,12 +642,12 @@ class Torrent
 	 */
 	private function files( $files, $piece_length )
 	{
-		if(!$this->basedir)
+		if(is_null( $this->basedir ))
         		$files  = array_map( 'realpath', $files );
 
 		usort( $files, array($this,'sortNames') );
 
-		if($this->basedir)
+		if(!is_null( $this->basedir ))
 			$path   = explode( DIRECTORY_SEPARATOR, $this->basedir );
 		else
 		        $path   = explode( DIRECTORY_SEPARATOR, dirname( realpath( current( $files ) ) ) );
@@ -655,7 +691,7 @@ class Torrent
 					'files'         => $info_files,
 					'name'          => end( $path ),
 					'piece length'  => $piece_length,
-					'pieces'        => $pieces . ( $piece ? self::pack( $piece ) : '' )
+					'pieces'        => $pieces . ( $piece !== '' ? self::pack( $piece ) : '' )
 					));
         	}
     	}

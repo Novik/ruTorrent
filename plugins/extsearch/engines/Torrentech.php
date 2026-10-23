@@ -7,7 +7,7 @@ class TorrentechEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'http://www.torrentech.org';
+		$url = 'https://www.torrentech.org';
 		for($pg = 0; $pg<10; $pg++)
 		{
 			$cli = $this->fetch( $url.'/index.php?forums=all&act=search&CODE=01&search_in=titles&result_type=topics&torrents-only=1&keywords='.$what.'&st='.($pg*25) );

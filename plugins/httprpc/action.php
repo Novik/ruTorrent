@@ -404,7 +404,16 @@ switch($mode)
 	{
 		$req = new rXMLRPCRequest();
 		foreach($vs as $v)
+		{
+			// A file index, spelled as one. "v" is this door's general
+			// parameter and carries a label or a peer address in other modes,
+			// so the shape is required here rather than at the parse. intval()
+			// answers 0 for every string that is not a number, and 0 is a file
+			// of the torrent this command would then set.
+			if(!preg_match('/^[0-9]+$/D',$v))
+				continue;
 			$req->addCommand( new rXMLRPCCommand( "f.set_priority", array($hash[0], intval($v), intval($ss[0])) ) );
+		}
 		$req->addCommand( new rXMLRPCCommand("d.update_priorities", $hash[0]) );
 		if($req->success(true))
 	        	$result = $req->val;
@@ -782,20 +791,15 @@ switch($mode)
 				CachedEcho::send(XMLRPCProxy::rejectionFault($decision['method']), "text/xml");
 				exit;
 			}
-			$result = rXMLRPCRequest::send($decision['payload'], $decision['trusted']);
+			$result = rXMLRPCRequest::send($decision['payload'], $decision['trusted'], $failure,
+				rSCGITransport::RESPONSE_BODY);
 			if($result === false)
 			{
 				header("HTTP/1.0 500 Server Error");
 				CachedEcho::send("Could not complete the rTorrent XMLRPC request.", "text/html");
 				exit;
 			}
-			if(!empty($result))
-			{
-				$pos = strpos($result, "\r\n\r\n");
-				if($pos !== false)
-					$result = substr($result,$pos+4);
-				CachedEcho::send($result, "text/xml");
-			}
+			CachedEcho::send($result, "text/xml");
 		}
 		break;
 	}

@@ -52,6 +52,135 @@ window.__mobile = {
 
 const plugin = window.__mobile;
 
+describe("mobile file response ownership", () => {
+  let pending;
+  let sent;
+
+  beforeEach(() => {
+    document.body.innerHTML = '<div id="detailsFilesPage"></div>';
+    plugin.torrent = undefined;
+    plugin.files = undefined;
+    plugin.filesDownloaded = undefined;
+    pending = {};
+    sent = [];
+    plugin.request = (url, callback) => {
+      if (callback) pending[url] = callback;
+      else sent.push(url);
+    };
+  });
+
+  function select(hash, downloaded = 0) {
+    plugin.torrent = { hash, downloaded };
+    plugin.loadFiles();
+  }
+
+  function reply(hash, names) {
+    pending['?action=getfiles&hash=' + hash]({
+      [hash]: names.map(name => ({ name, size: 100, done: 20, priority: 1 })),
+    });
+  }
+
+  function changeSecondFilePriority(hash) {
+    $('#detailsFilesPage select').eq(1).val('0').trigger('change');
+    expect(sent).toEqual(['?action=setprio&hash=' + hash + '&v=1&s=0']);
+  }
+
+  // A folder's row carries every file under it. The request names one file
+  // index per file, and names no other file: the priority a reader picks for
+  // a folder is the priority of that folder's files.
+  it("names every file under a folder, and only those, when its priority changes", () => {
+    select('A', 20);
+    reply('A', ['season/ep1', 'season/ep2', 'readme.txt']);
+    $('#detailsFilesPage select').eq(0).val('0').trigger('change');
+    expect(sent).toEqual(['?action=setprio&hash=A&v=0&v=1&s=0']);
+  });
+
+  it("names the files of a nested folder from the folder's own row", () => {
+    select('A', 20);
+    reply('A', ['season/extra/behind', 'season/ep1', 'readme.txt']);
+    $('#detailsFilesPage select').eq(0).val('2').trigger('change');
+    expect(sent).toEqual(['?action=setprio&hash=A&v=0&v=1&s=2']);
+  });
+
+  // The whole page is one folder's worth of rows, so the file rows have to
+  // keep working beside it.
+  it("names one file when a file's own row changes", () => {
+    select('A', 20);
+    reply('A', ['season/ep1', 'readme.txt']);
+    $('#detailsFilesPage select').eq(1).val('0').trigger('change');
+    expect(sent).toEqual(['?action=setprio&hash=A&v=1&s=0']);
+  });
+
+  it("renders the selected torrent files and applies priority to its own file index", () => {
+    select('A', 20);
+    reply('A', ['first-a', 'second-a']);
+    expect(Object.keys(plugin.files.container)).toEqual(['first-a', 'second-a']);
+    expect($('#detailsFilesPage').text()).toContain('second-a');
+    expect(plugin.filesDownloaded).toBe(20);
+    changeSecondFilePriority('A');
+  });
+
+  it("accepts a response while a newer snapshot still selects the same hash", () => {
+    select('A', 20);
+    plugin.torrent = { hash: 'A', downloaded: 40 };
+    reply('A', ['first-a', 'second-a']);
+    expect(plugin.filesDownloaded).toBe(40);
+    expect(Object.keys(plugin.files.container)).toEqual(['first-a', 'second-a']);
+    changeSecondFilePriority('A');
+  });
+
+  it("keeps the selected torrent tree when an older torrent response arrives last", () => {
+    select('A', 20);
+    select('B', 50);
+    reply('B', ['first-b', 'second-b']);
+    const tree = plugin.files;
+    reply('A', ['old-a']);
+    expect(plugin.files).toBe(tree);
+    expect(Object.keys(plugin.files.container)).toEqual(['first-b', 'second-b']);
+    expect($('#detailsFilesPage').text()).not.toContain('old-a');
+    expect(plugin.filesDownloaded).toBe(50);
+    changeSecondFilePriority('B');
+  });
+
+  it("leaves the new torrent page empty until its own response arrives", () => {
+    select('A');
+    select('B');
+    reply('A', ['old-a']);
+    expect(plugin.files).toBeUndefined();
+    expect($('#detailsFilesPage').children()).toHaveLength(0);
+    reply('B', ['first-b', 'second-b']);
+    expect(Object.keys(plugin.files.container)).toEqual(['first-b', 'second-b']);
+    changeSecondFilePriority('B');
+  });
+
+  it("ignores a late response when the old torrent is absent from it", () => {
+    select('A');
+    select('B');
+    reply('B', ['first-b', 'second-b']);
+    const tree = plugin.files;
+    expect(() => pending['?action=getfiles&hash=A']({})).not.toThrow();
+    expect(plugin.files).toBe(tree);
+    changeSecondFilePriority('B');
+  });
+
+  it.each([undefined, null])("ignores pending files after the selection becomes %s", selection => {
+    select('A');
+    plugin.torrent = selection;
+    expect(() => reply('A', ['old-a'])).not.toThrow();
+    expect(plugin.files).toBeUndefined();
+    expect(plugin.filesDownloaded).toBeUndefined();
+    expect($('#detailsFilesPage').children()).toHaveLength(0);
+  });
+
+  it.each([undefined, null])("does not request files without a selection (%s)", selection => {
+    plugin.torrent = selection;
+    plugin.loadFiles();
+    expect(Object.keys(pending)).toEqual([]);
+    expect(plugin.files).toBeUndefined();
+    expect($('#detailsFilesPage').children()).toHaveLength(0);
+  });
+});
+
 // The rows fillDetails writes into, with the ids the real markup uses.
 function detailsMarkup() {
   document.body.insertAdjacentHTML(

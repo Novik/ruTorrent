@@ -31,7 +31,7 @@ class ProbeLiteralManager extends accountManager
     public $forgotten = array();
     public function store() { $this->stored++; return true; }
     public function setHandlers() {}
-    protected function forgetSession($name) { $this->forgotten[] = $name; }
+    protected function forgetSession($name) { $this->forgotten[] = $name; return true; }
 }
 
 function litAssertTrue($condition, $message)

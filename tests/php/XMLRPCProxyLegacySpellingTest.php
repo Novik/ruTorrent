@@ -60,30 +60,182 @@ class XMLRPCProxyLegacySpellingTest extends TestCase
 	/**
 	 * The seventh table. php/settings.php builds one inline for every daemon
 	 * above 0.8.6, before it requires any of the files, and a caller reaches
-	 * rXMLRPCCommand through that one too. It is read out of the source rather
-	 * than written out here, so an entry added to it is covered without this
-	 * file being edited — and the count is asserted, so a change in how it is
-	 * written is a failure rather than a silent empty table.
+	 * rXMLRPCCommand through that one too.
+	 *
+	 * obtain() cannot be called to get it: it interrogates a live daemon before
+	 * it reaches the assignment. So the assignment is found among the tokens
+	 * and its literal evaluated, which gives the entries the file declares
+	 * without the answer depending on how the literal is laid out or which
+	 * array syntax and quotes it is written in. An entry added to it is covered
+	 * without this file being edited, and a table that could not be read at all
+	 * is a failure below rather than a silent empty one.
 	 */
 	private function inlineAliases()
 	{
-		$source = file_get_contents(__DIR__ . '/../../php/settings.php');
-		$start = strpos($source, '$this->aliases = array');
-		if($start === false)
-			return array();
-		$end = strpos($source, ');', $start);
-		$block = substr($source, $start, ($end === false) ? null : $end - $start);
-
 		$found = array();
-		preg_match_all('/"([^"]+)"\s*=>\s*array\(\s*"name"\s*=>\s*"([^"]+)"/',
-			$block, $matches, PREG_SET_ORDER);
-		foreach($matches as $match)
+		foreach ($this->inlineAliasTable() as $name => $info) {
+			$target = (is_array($info) && isset($info['name']))
+				? $info['name'] : (string)$info;
 			$found[] = array(
 				'file'   => 'settings.php',
-				'name'   => $match[1],
-				'target' => $match[2],
+				'name'   => $name,
+				'target' => $target,
 			);
+		}
 		return $found;
+	}
+
+	/**
+	 * The tokens of $source with whitespace and comments dropped, each as
+	 * array(token id or null for punctuation, text).
+	 */
+	private function significantTokens($source)
+	{
+		$out = array();
+		foreach (token_get_all($source) as $token) {
+			if (is_array($token)) {
+				if (in_array($token[0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+					continue;
+				}
+				$out[] = array($token[0], $token[1]);
+			} else {
+				$out[] = array(null, $token);
+			}
+		}
+		return $out;
+	}
+
+	/**
+	 * The array php/settings.php assigns to $this->aliases inline, or an empty
+	 * array if there is no such assignment of a constant literal.
+	 */
+	private function inlineAliasTable()
+	{
+		$tokens = $this->significantTokens(
+			file_get_contents(__DIR__ . '/../../php/settings.php'));
+		$shape = array(
+			array(T_VARIABLE, '$this'),
+			array(T_OBJECT_OPERATOR, '->'),
+			array(T_STRING, 'aliases'),
+			array(null, '='),
+		);
+		for ($i = 0, $total = count($tokens); $i + count($shape) < $total; $i++) {
+			$matched = true;
+			foreach ($shape as $offset => $want) {
+				if ($tokens[$i + $offset][0] !== $want[0]
+					|| $tokens[$i + $offset][1] !== $want[1]) {
+					$matched = false;
+					break;
+				}
+			}
+			if (!$matched) {
+				continue;
+			}
+			$at = $i + count($shape);
+			$value = $this->constantValue($tokens, $at);
+			if (is_array($value)) {
+				return $value;
+			}
+		}
+		return array();
+	}
+
+	/**
+	 * The value of the constant expression starting at $at, advancing $at past
+	 * it, or null if the expression is not one this can evaluate -- anything
+	 * built from a variable or a call.
+	 */
+	private function constantValue($tokens, &$at)
+	{
+		if (!isset($tokens[$at])) {
+			return null;
+		}
+		list($id, $text) = $tokens[$at];
+
+		if ($id === T_ARRAY) {
+			$at++;
+			if (!isset($tokens[$at]) || $tokens[$at][1] !== '(') {
+				return null;
+			}
+			return $this->constantArray($tokens, $at, ')');
+		}
+		if ($text === '[') {
+			return $this->constantArray($tokens, $at, ']');
+		}
+		if ($id === T_CONSTANT_ENCAPSED_STRING) {
+			$at++;
+			return $this->literalString($text);
+		}
+		if ($id === T_LNUMBER) {
+			$at++;
+			return intval($text, 0);
+		}
+		if ($id === T_DNUMBER) {
+			$at++;
+			return floatval($text);
+		}
+		if ($text === '-') {
+			$at++;
+			$value = $this->constantValue($tokens, $at);
+			return is_int($value) || is_float($value) ? -$value : null;
+		}
+		if ($id === T_STRING && in_array(strtolower($text), array('true', 'false', 'null'), true)) {
+			$at++;
+			switch (strtolower($text)) {
+				case 'true': return true;
+				case 'false': return false;
+			}
+			return null;
+		}
+		return null;
+	}
+
+	/**
+	 * The entries of an array literal whose opening bracket is at $at, up to
+	 * $close. A trailing comma is allowed, as PHP allows it.
+	 */
+	private function constantArray($tokens, &$at, $close)
+	{
+		$at++;    // the opening bracket
+		$result = array();
+		while (isset($tokens[$at])) {
+			if ($tokens[$at][1] === $close) {
+				$at++;
+				return $result;
+			}
+			$first = $this->constantValue($tokens, $at);
+			if ($first === null) {
+				return null;
+			}
+			if (isset($tokens[$at]) && $tokens[$at][0] === T_DOUBLE_ARROW) {
+				$at++;
+				$second = $this->constantValue($tokens, $at);
+				if ($second === null) {
+					return null;
+				}
+				$result[$first] = $second;
+			} else {
+				$result[] = $first;
+			}
+			if (isset($tokens[$at]) && $tokens[$at][1] === ',') {
+				$at++;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * The text a quoted literal stands for. A single-quoted one knows only two
+	 * escapes; a double-quoted one here carries no interpolation, because an
+	 * interpolated string is not one token.
+	 */
+	private function literalString($text)
+	{
+		$body = substr($text, 1, -1);
+		if (substr($text, 0, 1) === "'") {
+			return str_replace(array("\\\\", "\\'"), array("\\", "'"), $body);
+		}
+		return stripcslashes($body);
 	}
 
 	/**
@@ -145,9 +297,17 @@ class XMLRPCProxyLegacySpellingTest extends TestCase
 
 		$this->assertTrue(count($files) === 7,
 			'all seven alias tables are read (' . implode(', ', array_keys($files)) . ')');
-		$this->assertTrue(count($this->inlineAliases()) >= 2,
-			'the table php/settings.php builds inline was parsed out of it ('
-			. count($this->inlineAliases()) . ' entries)');
+		$inline = $this->inlineAliases();
+		$this->assertTrue(count($inline) >= 2,
+			'the table php/settings.php builds inline was read out of it ('
+			. count($inline) . ' entries)');
+
+		// Every entry must carry the pair the rest of this file reads, so an
+		// entry written in another shape is named here rather than dropped.
+		foreach($this->inlineAliasTable() as $name => $info)
+			$this->assertTrue(is_array($info) && isset($info['name'])
+				&& array_key_exists('prm', $info),
+				'the inline entry ' . $name . ' names a command and a prm flag');
 	}
 
 	/**

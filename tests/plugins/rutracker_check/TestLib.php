@@ -383,6 +383,10 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
         public static $logs = array();
         public static $registrations = array();
         public static $createResult = null;
+        // What ruTrackerChecker::accountOrigin() answers, by account name. The
+        // real one asks loginmgr, which would bring the real Snoopy in behind
+        // the fake one above.
+        public static $accountOrigins = array();
 
         public static function reset()
         {
@@ -391,6 +395,7 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
             self::$logs = array();
             self::$registrations = array();
             self::$createResult = null;
+            self::$accountOrigins = array();
             Snoopy::reset();
             rXMLRPCRequest::reset();
         }
@@ -416,6 +421,11 @@ if (defined('TESTLIB_HANDLER_STUBS')) {
             }
             self::$created[] = array('payload' => $payload, 'old_hash' => $oldHash);
             return self::$createResult;
+        }
+
+        public static function accountOrigin($name)
+        {
+            return isset(self::$accountOrigins[$name]) ? self::$accountOrigins[$name] : '';
         }
 
         public static function logDebug($message)

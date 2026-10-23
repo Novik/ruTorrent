@@ -15,6 +15,8 @@ function try_send_image($image_name, $mime = 'image/png')
 
 function bad($message) {
 	http_response_code(400);
+	header('Content-Type: text/plain; charset=UTF-8');
+	header('X-Content-Type-Options: nosniff');
 	echo $message;
 	exit;
 }

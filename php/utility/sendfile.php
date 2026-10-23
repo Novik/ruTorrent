@@ -27,9 +27,9 @@ class SendFile
 				header('Content-Type: '.(is_null($contentType) ? 'application/octet-stream' : $contentType));
 				if(is_null($nameToSent))
 					$nameToSent = self::getFileName($filename);
-				if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
-					$nameToSent = rawurlencode($nameToSent);
-				header('Content-Disposition: attachment; filename="'.$nameToSent.'"');
+				require_once( __DIR__.'/contentdisposition.php' );
+				header('Content-Disposition: '.ContentDisposition::attachment($nameToSent,
+					isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null));
 
 				if( $mustExit && $canUseXSendFile &&
 					function_exists('apache_get_modules') &&

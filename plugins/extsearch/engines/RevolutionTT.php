@@ -41,7 +41,15 @@ class RevolutionTTEngine extends commonEngine
 	public function action($what,$cat,&$ret,$limit,$useGlobalCats)
 	{
 		$added = 0;
-		$url = 'https://revolutiontt.me';
+		// The tracker's origin is not written here: it is loginmgr's
+		// $revolutionTTOrigin, read through the RevolutionTT account, so that the
+		// search, the download links and the login use one host.
+		$url = $this->accountOrigin('RevolutionTT');
+		if($url==='')
+		{
+			$this->unconfiguredOriginEntry('RevolutionTT','revolutionTTOrigin',$ret);
+			return;
+		}
 		if($useGlobalCats)
 			$categories = array(
 				'all'=>'&cat=0',

@@ -75,25 +75,9 @@ class YggTorrentEngine extends commonEngine
         'filmvidéo' => 'Film/Vidéos'
     );
 
-    // The tracker moves between domains, so its origin is not written here:
-    // it is loginmgr's $yggTorrentOrigin, read through the YggTorrent account,
-    // so that the search, the download links and the login use one host.
-    // '' while it is not set or not usable.
-    protected function origin()
-    {
-        $account = __DIR__ . '/../../loginmgr/accounts/YggTorrent.php';
-        if (!is_file($account)) {
-            return '';
-        }
-        require_once(__DIR__ . '/../../loginmgr/accounts.php');
-        require_once($account);
-        $ygg = new YggTorrentAccount();
-        return $ygg->url;
-    }
-
     public function action($what, $cat, &$ret, $limit, $useGlobalCats)
     {
-        $origin = $this->origin();
+        $origin = $this->accountOrigin('YggTorrent');
         if ($origin === '') {
             $item = $this->getNewEntry();
             $item["name"] = 'YggTorrent: set $yggTorrentOrigin to the tracker\'s https origin in the loginmgr plugin configuration';

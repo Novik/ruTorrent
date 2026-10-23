@@ -81,7 +81,8 @@ class RtorrentProbeFixture
 	{
 		$base = sys_get_temp_dir() . '/rutorrent-probe-fixture-' . getmypid();
 		@mkdir($base . '/settings', 0700, true);
-		$daemon = new FakeRtorrentDaemon(self::responder(), $base . '/calls.log');
+		$daemon = new FakeRtorrentDaemon(self::responder(), $base . '/calls.log',
+			false, self::replyClassFiles());
 		$root = dirname(__DIR__, 2);
 		$driver = $base . '/probe.php';
 		file_put_contents($driver, "<?php\n"
@@ -107,42 +108,70 @@ class RtorrentProbeFixture
 		return $cache;
 	}
 
+	/**
+	 * The files a daemon worker has to load before it unserializes a reply
+	 * plan built from responder().
+	 */
+	public static function replyClassFiles()
+	{
+		return array(__FILE__);
+	}
+
 	public static function responder($hash = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
 	{
-		return function ($body) use ($hash) {
-			$names = RtorrentProbeFixture::methodNames($body);
-			$single = (count($names) === 1) ? $names[0] : '';
+		return new RtorrentProbeResponder($hash);
+	}
+}
 
-			if ($single === 'd.multicall') {
-				if (RtorrentProbeFixture::firstParameter($body) !== '') {
-					return FakeRtorrentDaemon::fault(RtorrentProbeFixture::INVALID_TARGET);
-				}
-				// The httprpc list mode asks for 36 columns.
-				return RtorrentProbeFixture::row($hash, 36);
+/**
+ * The answers above as an object rather than a Closure. A Closure cannot be
+ * serialized into the daemon's worker process, so it has to be forked to,
+ * which puts pcntl and posix in the way of every test that drives a script
+ * against this daemon.
+ */
+class RtorrentProbeResponder
+{
+	private $hash;
+
+	public function __construct($hash)
+	{
+		$this->hash = $hash;
+	}
+
+	public function __invoke($body)
+	{
+		$names = RtorrentProbeFixture::methodNames($body);
+		$single = (count($names) === 1) ? $names[0] : '';
+
+		if ($single === 'd.multicall') {
+			if (RtorrentProbeFixture::firstParameter($body) !== '') {
+				return FakeRtorrentDaemon::fault(RtorrentProbeFixture::INVALID_TARGET);
 			}
-			switch ($single) {
-				case 'system.client_version':
-					return array(RtorrentProbeFixture::VERSION);
-				case 'system.api_version':
-					return array('11');
-				case 'convert.kb':
-					return array('1');
-				case 'network.listen.port':
-					return array('6890');
-				case 'execute.capture':
-					// uid, group list, home -- the three lines obtain() reads.
-					return array("1000\n1000 1001\n/home/rtorrent\n");
-			}
-			// The settings batch: directory, session, library version, name,
-			// port range, bind address, local address. Every one of these
-			// but the library version is answered with the value the class
-			// carries unprobed, so that warmSettingsCache() changes what a
-			// script knows about the daemon's commands and nothing else.
-			if (count($names) === 7) {
-				return array('/tmp', '', RtorrentProbeFixture::VERSION, '',
-					'6890-6999', '0.0.0.0', '0.0.0.0');
-			}
-			return array_fill(0, max(1, count($names)), '0');
-		};
+			// The httprpc list mode asks for 36 columns.
+			return RtorrentProbeFixture::row($this->hash, 36);
+		}
+		switch ($single) {
+			case 'system.client_version':
+				return array(RtorrentProbeFixture::VERSION);
+			case 'system.api_version':
+				return array('11');
+			case 'convert.kb':
+				return array('1');
+			case 'network.listen.port':
+				return array('6890');
+			case 'execute.capture':
+				// uid, group list, home -- the three lines obtain() reads.
+				return array("1000\n1000 1001\n/home/rtorrent\n");
+		}
+		// The settings batch: directory, session, library version, name,
+		// port range, bind address, local address. Every one of these but
+		// the library version is answered with the value the class carries
+		// unprobed, so that warmSettingsCache() changes what a script knows
+		// about the daemon's commands and nothing else.
+		if (count($names) === 7) {
+			return array('/tmp', '', RtorrentProbeFixture::VERSION, '',
+				'6890-6999', '0.0.0.0', '0.0.0.0');
+		}
+		return array_fill(0, max(1, count($names)), '0');
 	}
 }

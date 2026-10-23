@@ -1,22 +1,17 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/GlobalSettingsFixture.php');
 require_once(__DIR__ . '/../../php/xmlrpc.php');
 require_once(__DIR__ . '/FakeRtorrentDaemon.php');
 
 /**
- * rXMLRPCRequest::run() reads rtorrent's answer until the connection closes
- * and takes out every value in it. An answer that stops early -- rtorrent
- * stopped or restarted while writing it, a read that timed out while the
- * daemon was busy -- still holds every value written before the cut, and read
- * that way it is a complete, shorter result: three loaded torrents become two,
- * or none, and a caller asking whether a hash is loaded is told it is not.
+ * The transport rejects an incomplete SCGI frame; run() also refuses a complete
+ * frame whose XML stops early, before publishing any values from it. These
+ * replies preserve rTorrent's captured headers unless a test explicitly
+ * reframes a shortened body to exercise that XML completeness guard.
  *
- * rtorrent ends every answer with </methodResponse>: built with xmlrpc-c (as
- * 0.9.8 is) it adds a CRLF, built with tinyxml2 (as 0.16.25 is) nothing. The
- * answers below were captured from both over SCGI, byte for byte with
- * rtorrent's own headers, and are cut here the way a connection is: anywhere,
- * including inside a value.
+ * xmlrpc-c (0.9.8) ends its XML with CRLF; tinyxml2 (0.16.25) does not.
  */
 class XMLRPCTruncatedReplyTest extends TestCase
 {
@@ -122,11 +117,13 @@ class XMLRPCTruncatedReplyTest extends TestCase
 	);
 
 	private $previousSettings;
+	private $previousGlobals;
 	private $base;
 	private $daemon;
 
 	public function setUp()
 	{
+		$this->previousGlobals = GlobalSettingsFixture::scgi();
 		// run() asks the settings to adapt old command names and to size a
 		// multicall; a fixed version keeps it from asking a daemon first.
 		$settings = (new ReflectionClass('rTorrentSettings'))->newInstanceWithoutConstructor();
@@ -137,21 +134,32 @@ class XMLRPCTruncatedReplyTest extends TestCase
 
 		$GLOBALS['scgi_host'] = '127.0.0.1';
 		$GLOBALS['rpcTimeOut'] = 5;
+		$GLOBALS['rpcTransferTimeOut'] = 5;
+		unset($GLOBALS['rpcMaxResponseBytes']);
 		$GLOBALS['rpcLogCalls'] = false;
 		$GLOBALS['rpcLogFaults'] = false;
 
 		$this->base = sys_get_temp_dir() . '/rutorrent-truncated-reply-' . getmypid();
 		@mkdir($this->base, 0700, true);
+		$GLOBALS['log_file'] = $this->base . '/errors.log';
+		$GLOBALS['tempDirectory'] = $this->base;
+		$GLOBALS['tempDirectory_init_done'] = false;
 	}
 
 	public function tearDown()
 	{
-		self::swapSettings($this->previousSettings);
-		$this->stopDaemon();
-		foreach (glob($this->base . '/*') as $file) {
-			@unlink($file);
+		try
+		{
+			self::swapSettings($this->previousSettings);
+			$this->stopDaemon();
+			foreach(glob($this->base . '/*') as $file)
+				@unlink($file);
+			@rmdir($this->base);
 		}
-		@rmdir($this->base);
+		finally
+		{
+			$this->previousGlobals->restore();
+		}
 	}
 
 	/** Install $settings as rTorrentSettings::get()'s answer, returning the previous one. */
@@ -239,6 +247,63 @@ class XMLRPCTruncatedReplyTest extends TestCase
 			$this->assertTrue($request->run() === true, $version . ': a fault is an answer');
 			$this->assertTrue(($request->fault === true) && ($request->faultString === $reason),
 				$version . ': and it is reported as one, with its reason: ' . $request->faultString);
+		}
+	}
+
+	public function testTransportFailureReachesTheRequestFault()
+	{
+		$this->daemon(array(FakeRtorrentDaemon::raw("Content-Length: 5\r\n\r\nx")));
+		$request = $this->hashRequest();
+		$this->assertTrue($request->success() === false && $request->fault === true,
+			'a malformed transport response fails the request with an operator-visible fault');
+		$this->assertTrue(strpos($request->faultString, 'truncated-body') !== false,
+			'the request fault names the transport failure rather than suggesting the daemon is stopped');
+	}
+
+	public function testAnAnsweredRunForgetsTheEarlierTransportFailure()
+	{
+		$this->daemon(array(FakeRtorrentDaemon::raw("Content-Length: 5\r\n\r\nx"), FakeRtorrentDaemon::raw(self::HASHES_016)));
+		$request = $this->hashRequest();
+		$this->assertTrue(!$request->success() && ($request->transportFailure === 'truncated-body'),
+			'the first run records the transport failure');
+		// run() spends its commands; a caller that reuses the request adds them again.
+		$request->addCommand(new rXMLRPCCommand('d.multicall2', array('', 'default', 'd.hash=')));
+		$this->assertTrue($request->success() && ($request->transportFailure === null),
+			'an answered run leaves no earlier failure behind');
+	}
+
+	public function testErasedataTellsATransportFailureFromAFault()
+	{
+		require_once(__DIR__ . '/../../plugins/erasedata/pending.php');
+		$this->daemon(array(FakeRtorrentDaemon::raw("Content-Length: 5\r\n\r\nx")));
+		$this->assertTrue(erasedataLiveHashes($why) === null && $why === 'no-answer',
+			'a reply the transport refused is no answer, not a refusal by rtorrent');
+		$this->daemon(array(FakeRtorrentDaemon::raw(self::FAULT_016)));
+		$this->assertTrue(erasedataLiveHashes($why) === null && $why === 'fault', 'a fault from rtorrent is still a fault');
+
+		$this->daemon(array(FakeRtorrentDaemon::raw("Content-Length: 5\r\n\r\nx"), FakeRtorrentDaemon::raw(self::HASHES_016)));
+		$request = $this->hashRequest();
+		$this->assertTrue($request->success() === false && $request->transportFailure === 'truncated-body',
+			'the request records the transport failure');
+		$request = $this->hashRequest();
+		$this->assertTrue($request->success() === true && $request->transportFailure === null,
+			'a later answered request does not inherit it');
+	}
+
+	public function testACompleteFrameWithUnfinishedXmlPublishesNoHashes()
+	{
+		foreach(array('016' => self::HASHES_016, '098' => self::HASHES_098) as $version => $answer)
+		{
+			$cut = $this->cutInside($answer, self::HASHES[$version][2], 20);
+			list($headers, $body) = explode("\r\n\r\n", $cut, 2);
+			$frame = preg_replace('/Content-Length: [0-9]+/', 'Content-Length: ' . strlen($body), $headers)
+				. "\r\n\r\n" . $body;
+			$this->daemon(array(FakeRtorrentDaemon::raw($frame), FakeRtorrentDaemon::raw($frame)));
+			$this->assertTrue(rXMLRPCRequest::send('<request/>') === $frame,
+				$version . ': the complete SCGI frame reaches the XML reader');
+			$request = $this->hashRequest();
+			$this->assertTrue($request->success() === false && $request->val === array(),
+				$version . ': unfinished XML publishes none of its complete hash values');
 		}
 	}
 

@@ -39,7 +39,20 @@
 	$httpVerifyCertificates = true;
 
 	// for xmlrpc actions
-	$rpcTimeOut = 5;			// in seconds
+	$rpcTimeOut = 5;			// connect timeout, in seconds; unusable values mean 30
+	// One total budget for the complete request write and response read, in seconds.
+	// null, and any value that is not a finite positive number, uses the larger of
+	// the connect timeout and PHP's positive default_socket_timeout (or 60).
+	// For slow, large responses, set a finite positive value (e.g. 180 seconds)
+	// and raise PHP/web-server timeouts too. Maximum: 2147483 seconds; there is
+	// no unlimited mode. php env_check.php reports unusable values.
+	$rpcTransferTimeOut = null;
+	// Largest accepted daemon response body, in bytes. The default is rTorrent's
+	// own maximum, 100 MiB; a larger or unusable value also means 100 MiB and
+	// is reported by php env_check.php. Use an integer byte count, not "64M".
+	// Without a usable temporary directory, a response this large needs about
+	// twice its size in PHP memory.
+	$rpcMaxResponseBytes = 104857600;
 	$rpcLogCalls = false;
 	$rpcLogFaults = true;
 
@@ -128,6 +141,10 @@
 	$enableCSRFCheck = false;		// If true then Origin and Referer will be checked
 	$enabledOrigins = array();		// List of enabled domains for CSRF check (only hostnames, without protocols, port etc.).
 						// If empty, then will retrieve domain from HTTP_HOST / HTTP_X_FORWARDED_HOST
+
+	// Absolute public application base, including a reverse proxy's path prefix, for feed links.
+	// A nonempty RU_PUBLIC_URL environment variable overrides this setting.
+	$publicURL = '';
 
 	// Load local deployment overrides if present
 	$configLocalPath = dirname(__FILE__)."/config.local.php";

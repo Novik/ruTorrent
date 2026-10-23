@@ -617,6 +617,31 @@ class ruTrackerChecker
 		return self::STE_NOT_NEED;
 	}
 
+	// The origin a handler whose tracker has no fixed domain works on, taken
+	// from the loginmgr account of the same name so that the pages this
+	// plugin reads are on the host loginmgr logs in at. '' when loginmgr is
+	// not installed, or while its setting for that account is not set or not
+	// usable -- a handler with no origin has nowhere to ask, and the account
+	// is what decides that an origin is an https one and nothing more.
+	//
+	// loginmgr is reached only when a handler asks, so this plugin still
+	// loads without it.
+	static public function accountOrigin($name)
+	{
+		$file = dirname(__FILE__)."/../loginmgr/accounts/".$name.".php";
+		$class = $name."Account";
+		if(is_file($file))
+		{
+			require_once(dirname(__FILE__)."/../loginmgr/accounts.php");
+			require_once($file);
+		}
+		// Without autoloading: what declares an account is the file above.
+		if(!class_exists($class,false))
+			return('');
+		$account = new $class();
+		return(is_string($account->url) ? $account->url : '');
+	}
+
 	static public function logDebug($message)
 	{
 		global $rutrackerCheckDebug;
