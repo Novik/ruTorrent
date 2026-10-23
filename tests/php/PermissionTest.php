@@ -13,11 +13,8 @@ class PermissionTest extends TestCase
 	public function setUp()
 	{
 		$this->fixtureDir = sys_get_temp_dir() . '/rutorrent-permission-' . uniqid('', true);
-		if (!mkdir($this->fixtureDir, 0711)) {
-			throw new RuntimeException('Could not create permission fixtures');
-		}
-		chmod($this->fixtureDir, 0711);
 		$this
+			->makeDir($this->fixtureDir, 0711)
 			->addDir('dir1', '/dir1')
 			->addDir('dir2', '/dir2')
 			->addDir('dir3', '/dir1/dir3', $this->fixtureDir . '/dir2')
@@ -51,10 +48,36 @@ class PermissionTest extends TestCase
 				}
 				symlink($symlink, $dir);
 			} else {
-				if (!is_dir($dir)) {
-					mkdir($dir, 0777, true);
-				}
+				$this->makeDir($dir, 0777);
 			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * mkdir() subtracts the process umask, so a fixture asked for 0777 arrives
+	 * at 0600 under `umask 0177` and the cases below stop testing the mode
+	 * they name. Ask for the mode with no umask in the way, then read it back.
+	 */
+	protected function makeDir($dir, $mode)
+	{
+		$mask = umask(0);
+		try {
+			if (!is_dir($dir) && !mkdir($dir, $mode, true)) {
+				throw new RuntimeException('Could not create fixture directory ' . $dir);
+			}
+			if (!chmod($dir, $mode)) {
+				throw new RuntimeException('Could not set the mode of fixture directory ' . $dir);
+			}
+		} finally {
+			umask($mask);
+		}
+		clearstatcache(true, $dir);
+		$actual = fileperms($dir) & 07777;
+		if ($actual !== $mode) {
+			throw new RuntimeException('Fixture directory ' . $dir . ' is mode ' . decoct($actual)
+				. ', not the ' . decoct($mode) . ' it was created with');
 		}
 
 		return $this;
