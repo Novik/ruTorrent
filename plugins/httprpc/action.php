@@ -824,6 +824,13 @@ if(is_null($result))
 	else
 	if(isset($req) && $req->fault)
 		$message = ($req->faultString==='') ? "Warning: the XMLRPC call failed." : $req->faultString;
+	else
+		// The sentence above is what a person reads, and it stays free to be
+		// reworded, translated or wrapped. This names the same answer for a
+		// program, so a client can tell this door from any other 500 without
+		// matching prose. It is sent on this branch alone: a refusal and a
+		// fault came back from a daemon that answered.
+		header("X-rTorrent-State: unreachable");
 	CachedEcho::send($message,"text/html");
 }
 else
