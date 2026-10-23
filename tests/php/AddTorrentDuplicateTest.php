@@ -29,7 +29,7 @@ class AddTorrentDuplicateTest extends TestCase
 
 	public function setUp()
 	{
-		$this->base = sys_get_temp_dir() . '/rutorrent-addtorrent-duplicate-' . getmypid();
+		$this->base = sys_get_temp_dir() . '/rutorrent-addtorrent-duplicate-' . uniqid('', true);
 		@mkdir($this->base . '/profile/torrents', 0700, true);
 		@mkdir($this->base . '/profile/settings', 0700, true);
 	}
