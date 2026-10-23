@@ -9,20 +9,17 @@ class Permission
 		$ss=LFS::stat($file);
 		if($ss)
 		{
-			$p=$ss['mode'];
-			if(($p & $flags) == $flags)
-			{
-				return(true);
-			}
-			$flags<<=3;
-			foreach( $gids as $ndx=>$gid)
-					if(($gid==$ss['gid']) &&
-					(($p & $flags) == $flags))
-					return(true);
-			$flags<<=3;
-			if(($uid==$ss['uid']) &&
-				(($p & $flags) == $flags))
-				return(true);
+			// POSIX selects exactly one class: owner, matching group, or other.
+			if($uid==$ss['uid'])
+				$flags<<=6;
+			else
+				foreach($gids as $gid)
+					if($gid==$ss['gid'])
+					{
+						$flags<<=3;
+						break;
+					}
+			return(($ss['mode'] & $flags) == $flags);
 		}
 		return(false);
 	}
@@ -38,9 +35,12 @@ class Permission
 		}
 		if(is_link($file))
 		{
-			$newfile = readlink($file);
-			// check for relative link, e.g. ../path/to/other/dir
-			$file = substr($newfile, 0, 1) === '.' ? realpath(dirname($file) . DIRECTORY_SEPARATOR . $newfile) : $newfile;
+			try { $newfile = @readlink($file); }
+			catch(Throwable $error) { return(false); }
+			if(!is_string($newfile) || ($newfile === ''))
+				return(false);
+			$file = substr($newfile, 0, 1) === '/' ? $newfile
+				: realpath(dirname($file) . DIRECTORY_SEPARATOR . $newfile);
 		}
 		if(self::isUserHavePrim($uid,$gids,$file,$flags))
 		{
