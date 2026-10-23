@@ -49,10 +49,14 @@ catlist.refreshPanel.ptrackers = () => [
 plugin.config = theWebUI.config;
 theWebUI.config = function()
 {
-	if(plugin.canChangeColumns())
+	const changeColumns = plugin.canChangeColumns();
+	if(changeColumns)
 	{
 		theWebUI.tables.trt.columns.push({ text: theUILang.Tracker, width: '100px', id: 'tracker', type: TYPE_STRING});
-		plugin.config.call(this);
+	}
+	plugin.config.apply(this, arguments);
+	if(changeColumns)
+	{
 		plugin.reqId = theRequestManager.addRequest("trk", null, function(hash,tracker,value)
 		{
 			const domain = theWebUI.getTrackerName( tracker.name );
