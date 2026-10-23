@@ -1,6 +1,8 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/TestHttpServer.php');
+require_once(__DIR__ . '/TestTree.php');
 
 /**
  * php/doneplugins.php dispatches on the cmd parameter. These tests run the
@@ -125,22 +127,10 @@ class DonePluginsCommandTest extends TestCase
 			)));
 			$this->writeStubs($base, $journal);
 
-			$port = $this->reservePort();
-			// "exec" replaces the shell proc_open() runs the string through, so the
-			// server is the process proc_terminate() signals; /bin/sh forks php and
-			// signalling only the shell would leave the server running.
-			$command = 'exec ' . escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -d zlib.output_compression=0'
-				. ' -S 127.0.0.1:' . $port . ' -t ' . escapeshellarg($base . '/php');
-			$process = proc_open($command, array(
-				0 => array('pipe', 'r'),
-				1 => array('file', $base . '/server.out', 'a'),
-				2 => array('file', $base . '/server.err', 'a'),
-			), $pipes, $base . '/php');
-			if(!is_resource($process))
-				throw new Exception('could not start copied PHP server');
-			fclose($pipes[0]);
-			$this->waitForServer($port, $process, $base . '/server.err');
-			$response = $this->rawPost($port, '/doneplugins.php', $body);
+			$process = TestHttpServer::start($base.'/php', array(),
+				array_merge(PhpProcess::sameIni(), array('-d', 'zlib.output_compression=0')));
+			$response = TestHttpServer::rawPost($process->port(), '/doneplugins.php', $body,
+				'application/x-www-form-urlencoded');
 			$decoded = json_decode(file_get_contents($journal), true);
 			if(!is_array($decoded))
 				throw new Exception('the fixture journal was not readable');
@@ -149,12 +139,8 @@ class DonePluginsCommandTest extends TestCase
 		}
 		finally
 		{
-			if(is_resource($process))
-			{
-				@proc_terminate($process);
-				@proc_close($process);
-			}
-			$this->deleteTree($base);
+			if($process !== null) $process->close();
+			TestTree::remove($base);
 		}
 	}
 
@@ -236,77 +222,5 @@ PHP
 			file_put_contents($base . '/plugins/' . $plugin . '/done.php',
 				"<?php\ndoneplugins_journal('done', " . var_export($plugin, true) . ");\n");
 		}
-	}
-
-	private function reservePort()
-	{
-		$socket = stream_socket_server('tcp://127.0.0.1:0', $errno, $error);
-		if($socket === false)
-			throw new Exception('could not reserve local test port: ' . $error);
-		$name = stream_socket_get_name($socket, false);
-		fclose($socket);
-		$parts = explode(':', $name);
-		return intval(array_pop($parts));
-	}
-
-	private function waitForServer($port, $process, $errorFile)
-	{
-		for($i = 0; $i < 100; $i++)
-		{
-			$socket = @fsockopen('127.0.0.1', $port, $errno, $error, 0.05);
-			if($socket !== false)
-			{
-				fclose($socket);
-				return;
-			}
-			$status = proc_get_status($process);
-			if(!$status['running'])
-				throw new Exception('copied PHP server exited: ' . @file_get_contents($errorFile));
-			usleep(25000);
-		}
-		throw new Exception('copied PHP server did not start');
-	}
-
-	private function rawPost($port, $path, $body)
-	{
-		$socket = @fsockopen('127.0.0.1', $port, $errno, $error, 2);
-		if($socket === false)
-			throw new Exception('could not connect raw HTTP client: ' . $error);
-		$request = "POST " . $path . " HTTP/1.1\r\nHost: 127.0.0.1\r\n"
-			. "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: " . strlen($body)
-			. "\r\nConnection: close\r\n\r\n" . $body;
-		if(fwrite($socket, $request) === false)
-			throw new Exception('could not write raw HTTP request');
-		$raw = stream_get_contents($socket);
-		fclose($socket);
-		if($raw === false || strpos($raw, "\r\n\r\n") === false)
-			throw new Exception('copied doneplugins.php returned no complete HTTP response');
-		list($headerBlock, $responseBody) = explode("\r\n\r\n", $raw, 2);
-		$headers = explode("\r\n", $headerBlock);
-		$status = array_shift($headers);
-		$values = array();
-		foreach($headers as $header)
-		{
-			$position = strpos($header, ':');
-			if($position !== false)
-				$values[strtolower(trim(substr($header, 0, $position)))] = trim(substr($header, $position + 1));
-		}
-		return array('status' => $status, 'headers' => $values, 'body' => $responseBody);
-	}
-
-	private function deleteTree($path)
-	{
-		if(!is_dir($path))
-			return;
-		foreach(scandir($path) as $entry)
-			if(($entry !== '.') && ($entry !== '..'))
-			{
-				$child = $path . '/' . $entry;
-				if(is_dir($child))
-					$this->deleteTree($child);
-				else
-					@unlink($child);
-			}
-		@rmdir($path);
 	}
 }

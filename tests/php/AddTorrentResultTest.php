@@ -1,6 +1,8 @@
 <?php
 
 require_once(__DIR__ . '/TestCase.php');
+require_once(__DIR__ . '/TestHttpServer.php');
+require_once(__DIR__ . '/TestTree.php');
 
 /**
  * php/addtorrent.php reflects the result[] and name[] query parameters into
@@ -250,31 +252,14 @@ class AddTorrentResultTest extends TestCase
 			}
 			$this->writeStubs($tree);
 
-			$port = $this->reservePort();
-			// "exec" replaces the shell proc_open() runs the string through, so the
-			// server is the process proc_terminate() signals; /bin/sh forks php and
-			// signalling only the shell would leave the server running.
-			$command = 'exec ' . escapeshellarg(PHP_BINARY) . ' -d display_errors=0 -d zlib.output_compression=0'
-				. ' -S 127.0.0.1:' . $port . ' -t ' . escapeshellarg($tree);
-			$process = proc_open($command, array(
-				0 => array('pipe', 'r'),
-				1 => array('file', $tree . '/server.out', 'a'),
-				2 => array('file', $tree . '/server.err', 'a'),
-			), $pipes, $tree);
-			if(!is_resource($process))
-				throw new Exception('could not start copied PHP server');
-			fclose($pipes[0]);
-			$this->waitForServer($port, $process, $tree . '/server.err');
-			return $this->rawGet($port, '/php/addtorrent.php' . $query);
+			$process = TestHttpServer::start($tree, array(),
+				array_merge(PhpProcess::sameIni(), array('-d', 'zlib.output_compression=0')));
+			return TestHttpServer::rawGet($process->port(), '/php/addtorrent.php' . $query);
 		}
 		finally
 		{
-			if(is_resource($process))
-			{
-				@proc_terminate($process);
-				@proc_close($process);
-			}
-			$this->deleteTree($tree);
+			if($process !== null) $process->close();
+			TestTree::remove($tree);
 		}
 	}
 
@@ -286,75 +271,5 @@ class AddTorrentResultTest extends TestCase
 			. "\$phpUseGzip = false;\n");
 		file_put_contents($tree . '/php/utility/fileutil.php', "<?php\nclass FileUtil {}\n");
 		file_put_contents($tree . '/php/utility/utility.php', "<?php\nclass Utility {}\n");
-	}
-
-	private function reservePort()
-	{
-		$socket = stream_socket_server('tcp://127.0.0.1:0', $errno, $error);
-		if($socket === false)
-			throw new Exception('could not reserve local test port: ' . $error);
-		$name = stream_socket_get_name($socket, false);
-		fclose($socket);
-		$parts = explode(':', $name);
-		return intval(array_pop($parts));
-	}
-
-	private function waitForServer($port, $process, $errorFile)
-	{
-		for($i = 0; $i < 100; $i++)
-		{
-			$socket = @fsockopen('127.0.0.1', $port, $errno, $error, 0.05);
-			if($socket !== false)
-			{
-				fclose($socket);
-				return;
-			}
-			$status = proc_get_status($process);
-			if(!$status['running'])
-				throw new Exception('copied PHP server exited: ' . @file_get_contents($errorFile));
-			usleep(25000);
-		}
-		throw new Exception('copied PHP server did not start');
-	}
-
-	private function rawGet($port, $path)
-	{
-		$socket = @fsockopen('127.0.0.1', $port, $errno, $error, 2);
-		if($socket === false)
-			throw new Exception('could not connect raw HTTP client: ' . $error);
-		$request = "GET " . $path . " HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n";
-		if(fwrite($socket, $request) === false)
-			throw new Exception('could not write raw HTTP request');
-		$raw = stream_get_contents($socket);
-		fclose($socket);
-		if($raw === false || strpos($raw, "\r\n\r\n") === false)
-			throw new Exception('copied addtorrent.php returned no complete HTTP response');
-		list($headerBlock, $body) = explode("\r\n\r\n", $raw, 2);
-		$headers = explode("\r\n", $headerBlock);
-		$status = array_shift($headers);
-		$values = array();
-		foreach($headers as $header)
-		{
-			$position = strpos($header, ':');
-			if($position !== false)
-				$values[strtolower(trim(substr($header, 0, $position)))] = trim(substr($header, $position + 1));
-		}
-		return array('status' => $status, 'headers' => $values, 'body' => $body);
-	}
-
-	private function deleteTree($path)
-	{
-		if(!is_dir($path))
-			return;
-		foreach(scandir($path) as $entry)
-			if(($entry !== '.') && ($entry !== '..'))
-			{
-				$child = $path . '/' . $entry;
-				if(is_dir($child))
-					$this->deleteTree($child);
-				else
-					@unlink($child);
-			}
-		@rmdir($path);
 	}
 }
