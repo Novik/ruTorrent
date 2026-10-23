@@ -4,8 +4,8 @@
 // than the page itself -- a feed item, a search result, a stored look-at
 // template. js/common.js decides that for real, in isExternalURL(), and
 // hands what it accepts to window.open(); this answers the same question
-// where the address is stored, so that nothing is kept that could not then
-// be opened and nothing is thrown away that could.
+// where the address is stored. This is a bounded admission check, not a full
+// implementation of the browser's domain/IDNA normalization.
 //
 // Callers: plugins/rss/rss.php, for a feed item's link and permalink in the
 // rss branch and the atom branch, and plugins/lookat/lookat.php, for a
@@ -61,7 +61,7 @@ class ExternalURL
 
 	// The authority the parser would read out of the rest of the address, and
 	// whether it could make a host of it. An empty host, a code point the host
-	// parser forbids, a percent-escape it cannot read, brackets that do not
+	// parser forbids, invalid special-host UTF-8, brackets that do not
 	// hold an ipv6 address, or a port outside 0-65535 all make the whole
 	// address fail to parse, and an item carrying one is a row in the feed
 	// that does nothing when it is opened.
@@ -97,8 +97,21 @@ class ExternalURL
 				return(!$special && !$credentials && ($port===''));
 			if(preg_match('~[\x00-\x20#/:<>?@\[\\\\\]^|]~',$host)===1)
 				return(false);
-			if(preg_match('~%(?![0-9A-Fa-f]{2})~',$host)===1)
-				return(false);
+			if($special)
+			{
+				// HTTP, HTTPS and FTP decode their domain before checking it.
+				// FTPS has an opaque host: even malformed escapes stay literal.
+				// Only a host that needs decoding needs the decoder.
+				if(strpos($host,'%')!==false)
+				{
+					if(!function_exists('rawurldecode'))
+						return(false);
+					$host = rawurldecode($host);
+				}
+				if((preg_match('~[\x00-\x20\x7f%#/:<>?@\[\\\\\]^|]~',$host)!==0) ||
+					(preg_match('//u',$host)!==1))
+					return(false);
+			}
 		}
 		if($port==='')
 			return(true);
