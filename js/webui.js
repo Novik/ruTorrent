@@ -988,7 +988,7 @@ var theWebUI = {
 		request.onXMLFailure = this.finishSettingsSave.bind(this);
 		this.requestWithTimeout(request, [this.finishSettingsRefresh, this],
 			function() { theWebUI.timeout(); theWebUI.finishSettingsSave(); },
-			function(status, text) { theWebUI.error(status, text); theWebUI.finishSettingsSave(); }, true);
+			function(status, text, state) { theWebUI.error(status, text, state); theWebUI.finishSettingsSave(); }, true);
 	},
 
 	finishSettingsRefresh: function(data)
@@ -1074,7 +1074,7 @@ var theWebUI = {
 			theWebUI.requestWithTimeout(request,
 				function(data) { try { if(reply) reply(data); } finally { finish(); } },
 				function() { try { theWebUI.timeout(); } finally { finish(); } },
-				function(status, text) { try { theWebUI.error(status, text); } finally { finish(); } });
+				function(status, text, state) { try { theWebUI.error(status, text, state); } finally { finish(); } });
 		}
 		else
 			theWebUI.request(query, reply);
@@ -1782,9 +1782,9 @@ var theWebUI = {
 		this.perform("createqueued");
    	},
 
-	listRequestFailed: function(status,text)
+	listRequestFailed: function(status,text,state)
 	{
-		this.error(status,text);
+		this.error(status,text,state);
 		if(this.settings["webui.retry_on_error"])
 			this.setInterval( iv(this.settings["webui.retry_on_error"])*1000 );
 	},
@@ -1802,10 +1802,12 @@ var theWebUI = {
 	   			theWebUI.timeout();
 				theWebUI.setInterval();
 		   	},
-			function(status,text)
+			function(status,text,state)
 			{
-				// A failed list request alone does not establish whether rTorrent is running.
-				theWebUI.listRequestFailed(status,text);
+				// A failed list request alone does not establish whether rTorrent is
+				// running. Only the state the answer named does, and it is carried
+				// through to error() below.
+				theWebUI.listRequestFailed(status,text,state);
 		   	});
    	},
 
@@ -2678,9 +2680,14 @@ var theWebUI = {
 			}
    	},
 
-	error: function(status,text)
+	error: function(status,text,state)
 	{
 		theWebUI.show();
+		// Only an answer that named the daemon unreachable establishes that it is.
+		// A refusal, a fault and a local timeout each leave the last confirmed
+		// state standing, and the next list that comes back announces its return.
+		if(state === "unreachable")
+			theWebUI.systemInfo.rTorrent.started = false;
 		noty("Bad response from server: ("+status+") "+
 			(text ? text : "the server sent no message"),"error");
 	},
