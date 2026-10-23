@@ -314,6 +314,138 @@ PHP;
 		$this->assertTrue($run['out'] === serialize(array(true, false)), 'The POSIX-free child grants the real readable file and refuses the missing file');
 	}
 
+	/**
+	 * Settings splits `id -G`, so an entry can be a string that spells no
+	 * number at all. Such an entry names no group, and the answer must be the
+	 * one a caller with no groups gets. Group zero is the only value a
+	 * non-numeric entry can be confused with, so the fixture needs that group.
+	 */
+	public function testAnEntryThatNamesNoGroupLeavesTheOtherClassSelected()
+	{
+		$file = $this->createFile('no-group-entry', 0004);
+		@chgrp($file, 0);
+		clearstatcache(true, $file);
+		if (filegroup($file) !== 0) {
+			echo "NOT CHECKED: a group-zero fixture requires a process in group 0\n";
+			return;
+		}
+		$foreignUid = fileowner($file) === 12345 ? 12346 : 12345;
+		$noGroups = Permission::doesUserHave($foreignUid, array(), $file, 4);
+		$this->assertTrue($noGroups === true,
+			'A caller with no groups reads a group-zero file through the other bit');
+		$entries = array('empty string' => '', 'null' => null, 'non-numeric' => 'abc',
+			'blank' => ' ', 'false' => false, 'non-integer' => '0.5', 'unrelated number' => '4242');
+		foreach ($entries as $name => $entry) {
+			$this->assertTrue(Permission::doesUserHave($foreignUid, array($entry), $file, 4) === $noGroups,
+				'An entry that names no group (' . $name . ') leaves the other class selected');
+		}
+		$this->assertTrue(Permission::doesUserHave($foreignUid, array('0'), $file, 4) === false,
+			'An entry that does name group zero still selects the group class');
+	}
+
+	/**
+	 * The kernel decides each row: a child drops to an unprivileged account
+	 * either outside group 0 or inside it, and reads the fixture for real. A
+	 * gid list is a claim about the caller, so each shape is compared with the
+	 * identity it claims to be -- shapes naming no group against the child
+	 * outside group 0, shapes naming group zero against the child inside it.
+	 */
+	public function testGroupClassSelectionAgreesWithTheKernel()
+	{
+		if (posix_getuid() !== 0) {
+			echo "NOT CHECKED: a group-zero fixture owned by another user, and a probe from outside group 0, both need root\n";
+			return;
+		}
+		$file = $this->createFile('kernel-oracle', 0004);
+		$this->assertTrue(fileowner($file) === 0 && filegroup($file) === 0,
+			'The kernel oracle fixture is owned by user and group zero');
+		$shapes = array('no groups' => array(), 'empty string' => array(''), 'null' => array(null),
+			'non-numeric' => array('abc'), 'blank' => array(' '), 'false' => array(false),
+			'non-integer' => array('0.5'), 'unrelated number' => array('4242'),
+			'group zero string' => array('0'), 'group zero int' => array(0),
+			'duplicated group zero' => array('0', '0'), 'minus one then duplicates' => array(-1, '0', '0'));
+		$claimsGroupZero = array('group zero string', 'group zero int', 'duplicated group zero',
+			'minus one then duplicates');
+		foreach (array(0004, 0040, 0044, 0000) as $mode) {
+			$this->assertTrue(chmod($file, $mode), 'The oracle fixture takes mode ' . decoct($mode));
+			$probes = array();
+			foreach (array('outside', 'inside') as $where) {
+				$probes[$where] = $this->probeAsUnprivileged($file, $where, $shapes);
+				if ($probes[$where] === null) {
+					return;
+				}
+			}
+			$this->assertTrue(!in_array(0, $probes['outside']['groups'], true),
+				'The outside probe really left group 0: ' . implode(',', $probes['outside']['groups']));
+			$this->assertTrue(in_array(0, $probes['inside']['groups'], true),
+				'The inside probe really kept group 0: ' . implode(',', $probes['inside']['groups']));
+			foreach ($shapes as $name => $ignored) {
+				$where = in_array($name, $claimsGroupZero, true) ? 'inside' : 'outside';
+				$this->assertTrue($probes[$where]['answers'][$name] === $probes[$where]['kernel'],
+					'Mode ' . decoct($mode) . ', ' . $name . ': the helper answers '
+					. var_export($probes[$where]['answers'][$name], true) . ' and the kernel '
+					. var_export($probes[$where]['kernel'], true));
+			}
+		}
+	}
+
+	/**
+	 * Runs doesUserHave() and a real fopen() in a child that has dropped to an
+	 * unprivileged account, so both sides of a row see the same identity.
+	 * `$where` is 'outside' to replace the supplementary groups with the
+	 * account's own, or 'inside' to keep group 0.
+	 */
+	protected function probeAsUnprivileged($file, $where, $shapes)
+	{
+		$code = <<<'PHP'
+require $argv[1];
+$account = null;
+foreach (array('nobody', 'daemon', 'bin', 'www-data') as $name) {
+    $candidate = posix_getpwnam($name);
+    if ($candidate && ($candidate['uid'] > 0) && ($candidate['gid'] > 0)) {
+        $account = $candidate;
+        break;
+    }
+}
+if (!$account) {
+    fwrite(STDERR, "no unprivileged account to drop to\n");
+    exit(3);
+}
+if ($argv[3] === 'outside') {
+    if (!posix_initgroups($account['name'], $account['gid']) || !posix_setgid($account['gid'])) {
+        fwrite(STDERR, "could not leave group 0\n");
+        exit(4);
+    }
+} else if (!posix_setgid(0)) {
+    fwrite(STDERR, "could not keep group 0\n");
+    exit(5);
+}
+if (!posix_setuid($account['uid'])) {
+    fwrite(STDERR, "could not drop the user\n");
+    exit(6);
+}
+$uid = posix_getuid();
+$handle = @fopen($argv[2], 'r');
+$kernel = ($handle !== false);
+if ($handle) fclose($handle);
+$answers = array();
+foreach (unserialize($argv[4], array('allowed_classes' => false)) as $name => $gids) {
+    $answers[$name] = Permission::doesUserHave($uid, $gids, $argv[2], 4);
+}
+echo serialize(array('uid' => $uid, 'groups' => posix_getgroups(), 'kernel' => $kernel, 'answers' => $answers));
+PHP;
+		$run = PhpProcess::run(array_merge(PhpProcess::sameIni(), array('-d', 'display_errors=stderr',
+			'-r', $code, realpath(__DIR__ . '/../../php/utility/permission.php'), $file, $where,
+			serialize($shapes))));
+		$this->assertTrue($run['code'] === 0 && !$run['timedOut'],
+			'The ' . $where . ' probe completes: ' . $run['err']);
+		$this->assertTrue($run['err'] === '', 'The ' . $where . ' probe emits no diagnostics: ' . $run['err']);
+		$probe = @unserialize($run['out'], array('allowed_classes' => false));
+		$this->assertTrue(is_array($probe) && isset($probe['answers']) && ($probe['uid'] > 0),
+			'The ' . $where . ' probe reports an unprivileged identity and a full row');
+		return (is_array($probe) && isset($probe['answers']) && ($probe['uid'] > 0)) ? $probe : null;
+	}
+
 	public function testPermission()
 	{
 		// doesUserHave() answers "would this uid/gids have rwx on the file" from

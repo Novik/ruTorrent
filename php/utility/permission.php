@@ -14,11 +14,17 @@ class Permission
 				$flags<<=6;
 			else
 				foreach($gids as $gid)
-					if($gid==$ss['gid'])
+				{
+					// Group IDs arrive as strings from command output, so they
+					// are compared as numbers -- and only when the entry spells
+					// one, because anything else names no group at all.
+					$id=(int)$gid;
+					if(((string)$id===(string)$gid) && ($id===(int)$ss['gid']))
 					{
 						$flags<<=3;
 						break;
 					}
+				}
 			return(($ss['mode'] & $flags) == $flags);
 		}
 		return(false);
