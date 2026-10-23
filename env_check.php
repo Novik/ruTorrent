@@ -158,6 +158,52 @@ class Requirements
 		return $ret;
 	}
 
+	/**
+	 * The bundled Public Suffix List is a dated snapshot, and an install cannot
+	 * refresh it: php/publicsuffix.php pins its SHA-256, so a newer .dat makes
+	 * every lookup throw. Upgrading ruTorrent is the only remedy, which is why
+	 * the age is reported and not repaired.
+	 *
+	 * The bound sits above the age a correct install already shows. A snapshot
+	 * reaches the tree weeks after it is published -- the shipped one was four
+	 * weeks old on arrival -- and the last twelve releases are up to 24 days
+	 * apart, so 52 days is the oldest a fully current install can be. One
+	 * release cycle, 8.9 days on average across those twelve, would warn about
+	 * a tree with nothing wrong with it.
+	 */
+	const MAX_PSL_AGE_DAYS = 56;
+
+	/** The list's own '// VERSION: 2026-09-24_13-26-36_UTC' stamp, as a UTC timestamp. */
+	public static function publicSuffixListDate($data)
+	{
+		if (!is_string($data) || !preg_match(
+			'~^//[ \t]*VERSION:[ \t]*([0-9]{4})-([0-9]{2})-([0-9]{2})_([0-9]{2})-([0-9]{2})-([0-9]{2})_UTC[ \t\r]*$~m',
+			$data, $matches)) return null;
+		list(, $year, $month, $day, $hour, $minute, $second) = array_map('intval', $matches);
+		if (!checkdate($month, $day, $year) || $hour > 23 || $minute > 59 || $second > 60) return null;
+		return gmmktime($hour, $minute, $second, $month, $day, $year);
+	}
+
+	/**
+	 * How old the bundled list reads, as array(ok, detail) -- the shape
+	 * rtorrentSupport() answers in. Age is a warning and never a failure: a
+	 * public suffix the snapshot does not know widens a cookie's accepted
+	 * Domain scope back to what it was before any list was consulted, so it
+	 * admits names it should refuse and refuses nothing it should admit.
+	 */
+	public static function publicSuffixListAge($data, $now)
+	{
+		$stamped = self::publicSuffixListDate($data);
+		if ($stamped === null)
+			return array(false, 'carries no "// VERSION:" stamp, so its age cannot be read');
+		$days = intdiv(max(0, (int)$now - $stamped), 86400);
+		$detail = 'published ' . gmdate('Y-m-d', $stamped) . ', ' . $days . ' day(s) ago';
+		if ($days <= self::MAX_PSL_AGE_DAYS) return array(true, $detail);
+		return array(false, $detail . ' -- over ' . self::MAX_PSL_AGE_DAYS .
+			'; a public suffix delegated since then is unknown here, so a cookie Domain naming' .
+			' one is accepted. Upgrade ruTorrent for a newer list.');
+	}
+
 	public static function logFileStreamScheme($path)
 	{
 		if (!is_string($path) ||
@@ -274,6 +320,18 @@ if (fn_available('exec', $disabled)) {
 	}
 } else {
 	check('rec', false, 'external programs', 'exec() is disabled -- cannot check for php/curl/gzip; some plugins may not work');
+}
+
+// ---- The bundled Public Suffix List --------------------------------------
+// php/publicsuffix.php decides from this snapshot whether a cookie Domain
+// names a public suffix. Nothing else reports that the snapshot is dated.
+$pslData = @file_get_contents(__DIR__ . '/php/public_suffix_list.dat');
+if (!is_string($pslData)) {
+	check('rec', false, 'Public Suffix List',
+		'php/public_suffix_list.dat is unreadable, so every cookie carrying a Domain attribute is refused');
+} else {
+	list($pslOk, $pslNote) = Requirements::publicSuffixListAge($pslData, time());
+	check('rec', $pslOk, 'Public Suffix List', $pslNote);
 }
 
 // ---- Load ruTorrent config (best effort) ---------------------------------
