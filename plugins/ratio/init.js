@@ -191,7 +191,7 @@ if(plugin.canChangeMenu())
 	       		if(sr[k] && (k.length==40))
 				req += ("&hash=" + k + "&v="+ratio);
 		if(req.length>0)
-			this.request("?action=setratio"+req+"&list=1",[this.addTorrents, this]);
+			this.request("?action=setratio"+req+"&list=1",[this.receiveTorrents, this]);
 	}
 
 	rTorrentStub.prototype.setratio = function()
