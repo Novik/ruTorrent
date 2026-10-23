@@ -1139,6 +1139,16 @@ class Snoopy
 		return $pairs;
 	}
 
+	/**
+	 * A jar entry's identity: the tuple RFC 6265 section 5.3 stores a cookie
+	 * under. None of the four can contain NUL, so the join is unambiguous, and
+	 * one spelling keeps an exported action naming the entry it came from.
+	 */
+	private static function responseCookieKey($domain, $hostOnly, $path, $name)
+	{
+		return $domain . "\0" . (int) $hostOnly . "\0" . $path . "\0" . $name;
+	}
+
 	private static function cookiePathMatches($requestPath, $cookiePath)
 	{
 		if(strncmp($requestPath, $cookiePath, strlen($cookiePath)) !== 0)
@@ -1287,8 +1297,7 @@ class Snoopy
 				$expires = $age <= 0 ? $receivedAt : ($age >= PHP_INT_MAX - $receivedAt
 					? PHP_INT_MAX : $receivedAt + (int) $age);
 			}
-			$key = $domain . "\0" . (int) $hostOnly
-				. "\0" . $cookiePath . "\0" . $name;
+			$key = self::responseCookieKey($domain, $hostOnly, $cookiePath, $name);
 			$this->purgeResponseCookies();
 			if($sourceScheme !== 'https'
 				&& $this->overwritesSecureCookie($name, $domain, $cookiePath))
@@ -1310,8 +1319,7 @@ class Snoopy
 
 	private function rememberResponseCookie($name, $value, $domain, $hostOnly, $path, $secure, $expires)
 	{
-		$key = $domain . "\0" . (int) $hostOnly
-			. "\0" . $path . "\0" . $name;
+		$key = self::responseCookieKey($domain, $hostOnly, $path, $name);
 		$created = isset($this->responseCookieJar[$key])
 			? $this->responseCookieJar[$key]['created'] : ++$this->responseCookieSequence;
 		$this->responseCookieJar[$key] = array(
