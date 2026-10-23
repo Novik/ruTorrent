@@ -957,6 +957,15 @@ function getXMLRPCFaultString(text)
 	return(text);
 }
 
+// plugins/httprpc/action.php names the daemon's state in X-rTorrent-State on the
+// one answer that establishes it, and says "unreachable" there. Reading it out of
+// band leaves the sentence in the body to the reader, in whatever language it is
+// written, and tells that answer apart from every other 500 a door can send.
+function rTorrentStateHeader(jqXHR)
+{
+	return(jqXHR.getResponseHeader("X-rTorrent-State"));
+}
+
 rTorrentStub.prototype.getResponse = function(data)
 {
 	var ret = "";
@@ -1524,7 +1533,8 @@ function Ajax(URI, isASync, onComplete, onTimeout, onError, reqTimeout, partialD
 				response = errorThrown;
 			else
 				response = getXMLRPCFaultString(response);
-			onError(status+" ["+textStatus+","+stub.action+"]",response);
+			onError(status+" ["+textStatus+","+stub.action+"]",response,
+				rTorrentStateHeader(jqXHR));
 		}
 		stub.finishSetsettingsFailure();
 		stub = null; // Cleanup memory leak
