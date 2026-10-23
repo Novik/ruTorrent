@@ -14,6 +14,9 @@ require_once(__DIR__ . '/TestTree.php');
  * no fault, and drops the new copy. So the answer to the load cannot tell the
  * two apart; the script has to know what was loaded before it sent it.
  *
+ * A load rtorrent refuses is the third outcome: no hash comes back at all,
+ * so it is neither an addition nor a duplicate.
+ *
  * addtorrent.php answers with a redirect whose result[] values are the
  * outcome, so it is served by PHP's built-in server, through a router that
  * points it at FakeRtorrentDaemon, and the Location header is what is read.
@@ -63,16 +66,16 @@ class AddTorrentDuplicateTest extends TestCase
 	/**
 	 * Sends one request to addtorrent.php, with a daemon that has the $loaded
 	 * hashes and answers $loads loads, and returns the result[] values it
-	 * redirects with.
+	 * redirects with. $loads is a count of loads answered the way rtorrent
+	 * answers an accepted one, or the list of reply entries to answer them
+	 * with when the answer itself is the subject.
 	 */
 	private function add($loaded, $loads, $contentType, $body)
 	{
 		$this->stop();
 		$root = realpath(__DIR__ . '/../..');
-		$replies = array($loaded);
-		for ($i = 0; $i < $loads; $i++) {
-			$replies[] = array(0);
-		}
+		$replies = array_merge(array($loaded),
+			is_array($loads) ? $loads : array_fill(0, $loads, array(0)));
 		// An install whose interface has been opened has a settings cache.
 		// This script is driven against a profile of its own, so leave one
 		// there rather than have it probe and spend the replies below.
@@ -124,7 +127,7 @@ class AddTorrentDuplicateTest extends TestCase
 		$this->assertEquals(3, $this->loadCalls(), 'each magnet was still sent');
 	}
 
-	private function upload($loaded, $names)
+	private function upload($loaded, $names, $loads = null)
 	{
 		foreach ($this->kept() as $file) {
 			unlink($this->base . '/profile/torrents/' . $file);
@@ -138,7 +141,8 @@ class AddTorrentDuplicateTest extends TestCase
 				. "Content-Type: application/x-bittorrent\r\n\r\n" . $torrent . "\r\n";
 		}
 		$body .= '--' . $boundary . "--\r\n";
-		return $this->add($loaded ? array(self::LOADED, $hash) : array(self::LOADED), count($names),
+		return $this->add($loaded ? array(self::LOADED, $hash) : array(self::LOADED),
+			$loads === null ? count($names) : $loads,
 			'multipart/form-data; boundary=' . $boundary, $body);
 	}
 
@@ -164,6 +168,28 @@ class AddTorrentDuplicateTest extends TestCase
 		$this->assertEquals(2, $this->loadCalls(), 'both uploads were sent');
 		$this->assertEquals(array('one.torrent'), $this->kept(),
 			'only the upload that was added is kept: ' . json_encode($this->kept()));
+	}
+
+	public function testAnUploadRtorrentRefusesIsFailedAndNotKept()
+	{
+		$results = $this->upload(false, array('one.torrent'),
+			array(FakeRtorrentDaemon::fault('Could not create download')));
+		$this->assertEquals(array('Failed'), $results,
+			'a load rtorrent refused is a failure: ' . json_encode($results));
+		$this->assertEquals(1, $this->loadCalls(), 'the upload was still sent');
+		$this->assertEquals(array(), $this->kept(),
+			'and the refused copy is not kept: ' . json_encode($this->kept()));
+	}
+
+	public function testAMagnetRtorrentRefusesIsFailed()
+	{
+		$results = $this->add(array(self::LOADED),
+			array(FakeRtorrentDaemon::fault('Could not create download')),
+			'application/x-www-form-urlencoded',
+			'url=' . rawurlencode('magnet:?xt=urn:btih:' . self::FRESH));
+		$this->assertEquals(array('Failed'), $results,
+			'a magnet rtorrent refused is a failure: ' . json_encode($results));
+		$this->assertEquals(1, $this->loadCalls(), 'the magnet was still sent');
 	}
 
 	public function testTheResultPageShowsADuplicateAsAnAlert()
