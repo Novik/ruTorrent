@@ -171,7 +171,7 @@ if(plugin.canChangeMenu())
        			if(sr[k] && (k.length==40))
 				req += ("&hash=" + k);
 		if(req.length>0)
-			this.request("?action=setthrottle&v="+throttle+req+"&list=1",[this.addTorrents, this]);
+			this.request("?action=setthrottle&v="+throttle+req+"&list=1",[this.receiveTorrents, this]);
 	}
 
 	rTorrentStub.prototype.setthrottle = function()

@@ -1796,7 +1796,7 @@ var theWebUI = {
 		this.timer.start();
 		if(qs != "list=1")
 			qs = "action=" + qs;
-		this.requestWithTimeout("?" + qs + "&getmsg=1", [this.addTorrents, this],
+		this.requestWithTimeout("?" + qs + "&getmsg=1", [this.receiveTorrents, this],
 			function()
 			{
 	   			theWebUI.timeout();
@@ -1832,15 +1832,41 @@ var theWebUI = {
 	 * @property {number} size
 	 */
 
+	torrentListValid: function(data)
+	{
+		// A 204 response reaches here as an empty string through getResponse().
+		return(!!data && !!data.torrents && (typeof data.torrents === "object")
+			&& !Array.isArray(data.torrents));
+	},
+
+	/**
+	 * Where a torrent list from the server enters the interface.
+	 *
+	 * addTorrents is an extension point: plugins replace it with a wrapper that
+	 * annotates the torrents on their way through, and the wrapper reads
+	 * data.torrents to do it. A container that is not one therefore has to be
+	 * refused ahead of that chain rather than inside the function it wraps.
+	 *
+	 * @param {Object} data
+	 * @param {Object.<string, WebUITorrent>} data.torrents
+	 */
+	receiveTorrents: function(data)
+	{
+		if(!this.torrentListValid(data))
+		{
+			this.listRequestFailed("Invalid torrent list response", "Missing torrents");
+			return;
+		}
+		this.addTorrents(data);
+	},
+
 	/**
 	 * @param {Object} data
 	 * @param {Object.<string, WebUITorrent>} data.torrents
 	 */
 	addTorrents: function(data)
 	{
-		// A 204 response reaches here as an empty string through getResponse().
-		if(!data || !data.torrents || typeof data.torrents !== "object"
-			|| Array.isArray(data.torrents))
+		if(!this.torrentListValid(data))
 		{
 			this.listRequestFailed("Invalid torrent list response", "Missing torrents");
 			return;
@@ -2153,7 +2179,7 @@ var theWebUI = {
       				req += ("&hash=" + k + "&s=label&v=" + encodeURIComponent(lbl));
 		}
 		if(req.length>0)
-			this.request("?action=setlabel"+req+"&list=1",[this.addTorrents, this]);
+			this.request("?action=setlabel"+req+"&list=1",[this.receiveTorrents, this]);
 	},
 
 	removeLabel: function()
@@ -2190,7 +2216,7 @@ var theWebUI = {
 	         			req+=("&hash=" + k + "&s=label&v=" + encodeURIComponent(lbl));
 	         	}
 			if(req.length>0)
-				this.request("?action=setlabel"+req+"&list=1",[this.addTorrents, this]);
+				this.request("?action=setlabel"+req+"&list=1",[this.receiveTorrents, this]);
 		}
 	},
 
