@@ -1782,6 +1782,13 @@ var theWebUI = {
 		this.perform("createqueued");
    	},
 
+	listRequestFailed: function(status,text)
+	{
+		this.error(status,text);
+		if(this.settings["webui.retry_on_error"])
+			this.setInterval( iv(this.settings["webui.retry_on_error"])*1000 );
+	},
+
 	getTorrents: function(qs)
 	{
 		if(this.updTimer)
@@ -1797,10 +1804,8 @@ var theWebUI = {
 		   	},
 			function(status,text)
 			{
-				theWebUI.systemInfo.rTorrent.started = false;
-	   			theWebUI.error(status,text);
-				if(theWebUI.settings["webui.retry_on_error"])
-					theWebUI.setInterval( iv(theWebUI.settings["webui.retry_on_error"])*1000 );
+				// A failed list request alone does not establish whether rTorrent is running.
+				theWebUI.listRequestFailed(status,text);
 		   	});
    	},
 
@@ -1831,6 +1836,13 @@ var theWebUI = {
 	 */
 	addTorrents: function(data)
 	{
+		// A 204 response reaches here as an empty string through getResponse().
+		if(!data || !data.torrents || typeof data.torrents !== "object"
+			|| Array.isArray(data.torrents))
+		{
+			this.listRequestFailed("Invalid torrent list response", "Missing torrents");
+			return;
+		}
 		if(!theWebUI.systemInfo.rTorrent.started)
 		{
 			noty(theUILang.linkTorTorrentRestored,'success');
