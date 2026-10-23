@@ -16,7 +16,7 @@ function rssFetchURL($url, $cookies = null, $headers = null )
 		$client->cookies = $cookies;
 	// Cap per-feed wait so a feed behind Cloudflare/DDoS-Guard can't stall the rest
 	$client->_fp_timeout = min($client->_fp_timeout, 10);
-	$client->read_timeout = ($client->read_timeout > 0) ? min($client->read_timeout, 15) : 15;
+	$client->read_timeout = min($client->read_timeout, 15);
 	@$client->fetchComplex($url);
 	return $client;
 }
@@ -147,47 +147,6 @@ class rRSS
 		return($ret);
 	}
 
-	// The entity tag a response carries, or null for anything that is not
-	// one. What is kept here goes back out as an If-None-Match request
-	// header this plugin writes by hand, and the feed chooses the bytes, so
-	// the bytes allowed are the ones an entity tag may hold: a quoted
-	// string of visible characters other than the quote, optionally marked
-	// weak (RFC 9110 8.8.3). A tag bounded at an offending byte rather than
-	// declined would be a prefix, and a prefix names a different entity.
-	static protected function entityTag($value)
-	{
-		return(preg_match('/^(?:W\/)?"[\x21\x23-\x7e\x80-\xff]*"$/D',$value) ? $value : null);
-	}
-
-	// The last-modified date a response carries, as the single format a
-	// sender must generate, or null for anything that is not a date. What is
-	// kept here goes back out as an If-Modified-Since request header, which
-	// a recipient must ignore unless its value is an HTTP-date, so the three
-	// formats a recipient must accept are the ones read and the first of
-	// them is the one written (RFC 9110 5.6.7).
-	//
-	// Each is asked for by re-spelling the parse: a format the whole value
-	// does not spell comes back as different bytes. That is also what
-	// settles the day name, which PHP otherwise reads as "the next such
-	// weekday" and so moves the date to one the feed never named.
-	static protected function httpDate($value)
-	{
-		$utc = new DateTimeZone('UTC');
-		foreach(array('D, d M Y H:i:s \G\M\T','l, d-M-y H:i:s \G\M\T','asctime') as $format)
-		{
-			$date = @DateTimeImmutable::createFromFormat('!'.
-				($format==='asctime' ? 'D M j H:i:s Y' : $format),$value,$utc);
-			if($date===false)
-				continue;
-			$spelled = ($format==='asctime')
-				? $date->format('D M ').str_pad($date->format('j'),2,' ',STR_PAD_LEFT).$date->format(' H:i:s Y')
-				: $date->format($format);
-			if($spelled===$value)
-				return($date->format('D, d M Y H:i:s \G\M\T'));
-		}
-		return(null);
-	}
-
 	public function fetch( $history )
 	{
 		$headers = [];
@@ -195,7 +154,7 @@ class rRSS
 		if($this->etag)
 			$headers['If-None-Match'] = $this->etag;
 		if($this->lastModified)
-			$headers['If-Modified-Since'] = $this->lastModified;
+			$headers['If-Last-Modified'] = $this->lastModified;
 		$cli = call_user_func($this->fetchURL, $this->url, $this->cookies, $headers);
 		if($cli->status<200 || $cli->status>=300) {
 			if ($cli->status != 304) {
@@ -217,19 +176,14 @@ class rRSS
 		$this->lastModified = null;
 		foreach($cli->headers as $header)
 		{
-			// Only the field name is folded. A validator cannot judge a
-			// value whose case has already been destroyed, and an entity tag
-			// is an opaque octet sequence: a folded one is a different tag
-			// from the one the server issued, so the conditional request
-			// built out of it could never match.
-			$field = explode(': ', trim($header), 2);
+			$field = explode(': ', trim(strtolower($header)), 2);
 			$value = count($field) > 1 ? $field[1] : '';
-			switch(strtolower($field[0])) {
+			switch($field[0]) {
 				case 'etag':
-					$this->etag = self::entityTag($value);
+					$this->etag = $value;
 					break;
 				case 'last-modified':
-					$this->lastModified = self::httpDate($value);
+					$this->lastModified = $value;
 			}
 		}
 		// map data from Atom or RSS feeds
@@ -869,6 +823,14 @@ class rRSSManager
 	public $rssList = null;
 	public $groups = null;
 	public $data = null;
+	// Feeds get() found listed but not cached. They are fetched by
+	// runPendingWork() after the response is sent, never inside get().
+	protected $pendingFetch = array();
+
+	// How long past its due time the last full update may be before a UI
+	// request starts one itself. Covers installs with no rTorrent scheduler
+	// (not local mode, or no link to rTorrent) and a scheduler that stopped.
+	const OVERDUE_GRACE = 300;
 
 	public function __construct()
 	{
@@ -1107,15 +1069,8 @@ class rRSSManager
 		$filters = $this->loadFilters();
 		foreach($this->rssList->lst as $hash=>$info)
 		{
-			$rss = new rRSS();
-			$rss->hash = $hash;
-			if($this->cache->get($rss) && $info['enabled'])
-			{
-				if($this->tryFetch($rss))
-				{
-					$this->checkFilters($rss,$filters);
-				}
-			}
+			if($info['enabled'])
+				$this->refreshFeed($hash,$info,$filters);
 		}
 		if(!$manual)
 		{
@@ -1123,6 +1078,59 @@ class rRSSManager
                 	$this->saveState(true);
 		}
 		$this->saveHistory();
+	}
+	// Fetch one listed feed. A feed whose cache file is missing is fetched
+	// from the URL kept in rssList; if that first fetch fails, an empty entry
+	// is cached so later updates retry it on the normal schedule (reporting
+	// cantFetchRSS as for any other feed) instead of every UI request.
+	private function refreshFeed($hash,$info,$filters)
+	{
+		$rss = new rRSS(array_key_exists('url',$info) ? $info['url'] : null);
+		$rss->hash = $hash;
+		$cached = $this->cache->get($rss);
+		if(!$cached && empty($rss->srcURL))
+			return(false);
+		if($this->tryFetch($rss))
+		{
+			$this->checkFilters($rss,$filters);
+			return(true);
+		}
+		if(!$cached)
+			$this->cache->set($rss);
+		return(false);
+	}
+	public function isUpdateOverdue()
+	{
+		return( (time() - $this->rssList->updatedAt) > ($this->data->interval*60 + self::OVERDUE_GRACE) );
+	}
+	public function hasPendingFetch()
+	{
+		return(count($this->pendingFetch)>0);
+	}
+	// Runs after the response has been sent. Shares update.php's lock, so it
+	// never overlaps the scheduler or another tab doing the same work.
+	public function runPendingWork( $fullUpdate )
+	{
+		if(!$fullUpdate && !$this->hasPendingFetch())
+			return(false);
+		require_once( dirname(__FILE__).'/../../php/lock.php' );
+		$lock = rLock::obtain( 'rss/update' );
+		if(!$lock)
+			return(false);
+		if($fullUpdate)
+			$this->update();	// also fetches the pending feeds
+		else
+		{
+			$filters = $this->loadFilters();
+			foreach($this->pendingFetch as $hash)
+				if($this->rssList->isExist($hash))
+					$this->refreshFeed($hash,$this->rssList->lst[$hash],$filters);
+			$this->saveState(true);
+			$this->saveHistory();
+		}
+		$this->pendingFetch = array();
+		$lock->release();
+		return(true);
 	}
 	public function getSettings()
 	{
@@ -1140,11 +1148,11 @@ class rRSSManager
 		{
 			$rss = new rRSS(array_key_exists('url',$info) ? $info['url'] : null);
 			$rss->hash = $hash;
-			if(!$this->cache->get($rss) && !empty($rss->srcURL) && $rss->fetch($this->history))
-			{
-				$this->cache->set($rss);
-				$this->saveHistory();
-			}
+			// Never fetch here: get() answers UI requests, which give up after
+			// webui.reqtimeout. An uncached feed is listed empty for now and
+			// fetched by runPendingWork() once the response is sent.
+			if(!$this->cache->get($rss) && !empty($rss->srcURL) && $info['enabled'])
+				$this->pendingFetch[] = $hash;
 			if(!empty($rss->srcURL))
 			{
 				$ret["list"][] = $rss->getContents($info['label'],$info['auto'],$info['enabled'],$this->history);
