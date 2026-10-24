@@ -168,7 +168,11 @@ else
 			}
 			else
 			{
-				if(isset($_REQUEST['randomize_hash']))
+				// Randomizing adds a key to the info dictionary, which gives the
+				// torrent a new info hash. A private torrent's tracker knows it only
+				// by its own info hash and refuses a new one as unregistered, so a
+				// private torrent is left as it is.
+				if(isset($_REQUEST['randomize_hash']) && !$torrent->is_private())
 					$torrent->info['unique'] = uniqid("rutorrent-",true);
 				$file['status'] = addtorrent_status(rTorrent::sendTorrent($torrent,
 					!isset($_REQUEST['torrents_start_stopped']),
